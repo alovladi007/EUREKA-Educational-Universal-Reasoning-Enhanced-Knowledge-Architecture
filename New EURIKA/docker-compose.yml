@@ -1,0 +1,169 @@
+version: '3.8'
+
+services:
+  # Shared Database
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: eureka
+      POSTGRES_USER: eureka
+      POSTGRES_PASSWORD: eureka_dev_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eureka"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # High School Tier Service
+  tier-hs:
+    build:
+      context: ./services/tier-hs
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_pass@postgres:5432/eureka
+      REDIS_URL: redis://redis:6379
+      TIER: high_school
+      ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/tier-hs:/app
+      - ./curricula:/app/curricula:ro
+      - ./gamify:/app/gamify:ro
+
+  # Undergraduate Tier Service
+  tier-ug:
+    build:
+      context: ./services/tier-ug
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_pass@postgres:5432/eureka
+      REDIS_URL: redis://redis:6379
+      TIER: undergraduate
+      ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/tier-ug:/app
+      - ./curricula:/app/curricula:ro
+
+  # Graduate Tier Service
+  tier-grad:
+    build:
+      context: ./services/tier-grad
+      dockerfile: Dockerfile
+    ports:
+      - "8003:8000"
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_pass@postgres:5432/eureka
+      REDIS_URL: redis://redis:6379
+      TIER: graduate
+      ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/tier-grad:/app
+      - ./curricula:/app/curricula:ro
+
+  # High School Web App
+  web-hs:
+    build:
+      context: ./apps/web-hs
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://tier-hs:8000
+      NODE_ENV: development
+    depends_on:
+      - tier-hs
+    volumes:
+      - ./apps/web-hs:/app
+      - /app/node_modules
+      - /app/.next
+
+  # Undergraduate Web App
+  web-ug:
+    build:
+      context: ./apps/web-ug
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://tier-ug:8000
+      NODE_ENV: development
+    depends_on:
+      - tier-ug
+    volumes:
+      - ./apps/web-ug:/app
+      - /app/node_modules
+      - /app/.next
+
+  # Graduate Web App
+  web-grad:
+    build:
+      context: ./apps/web-grad
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://tier-grad:8000
+      NODE_ENV: development
+    depends_on:
+      - tier-grad
+    volumes:
+      - ./apps/web-grad:/app
+      - /app/node_modules
+      - /app/.next
+
+  # Admin Dashboard
+  admin:
+    build:
+      context: ./apps/admin
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_HS_API: http://tier-hs:8000
+      NEXT_PUBLIC_UG_API: http://tier-ug:8000
+      NEXT_PUBLIC_GRAD_API: http://tier-grad:8000
+      NODE_ENV: development
+    depends_on:
+      - tier-hs
+      - tier-ug
+      - tier-grad
+    volumes:
+      - ./apps/admin:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  postgres_data:
