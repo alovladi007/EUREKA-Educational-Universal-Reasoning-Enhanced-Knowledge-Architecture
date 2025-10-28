@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     
     # Service
     SERVICE_NAME: str = "assessment-engine"
-    PORT: int = 8051  # Changed from 8003 to avoid port conflicts
+    PORT: int = 8051  # Changed from 8003 to avoid conflicts with ATLAS-ML
     
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://eureka:eureka123@localhost:5432/eureka"

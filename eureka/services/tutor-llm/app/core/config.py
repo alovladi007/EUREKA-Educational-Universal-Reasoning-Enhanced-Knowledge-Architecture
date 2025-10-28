@@ -9,7 +9,7 @@ class Settings(BaseSettings):
     
     # Service
     SERVICE_NAME: str = "tutor-llm"
-    PORT: int = 8050  # Changed from 8002 to avoid conflict with ATLAS-ML
+    PORT: int = 8050  # Changed from 8002 to avoid conflicts with ATLAS-ML
     
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://eureka:eureka123@localhost:5432/eureka"

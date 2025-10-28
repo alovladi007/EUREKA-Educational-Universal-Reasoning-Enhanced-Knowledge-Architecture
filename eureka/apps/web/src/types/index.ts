@@ -1,117 +1,92 @@
+// API Types
 export interface User {
-  id: string
-  email: string
-  name: string
-  role: 'student' | 'teacher' | 'admin' | 'parent'
-  tier: 'hs' | 'ug' | 'grad' | 'med' | 'law' | 'mba' | 'eng'
-  avatar?: string
-  organizationId: string
-}
-
-export interface Course {
-  id: string
-  title: string
-  description: string
-  tier: string
-  subject: string
-  instructor: User
-  enrollmentCount: number
-  thumbnail?: string
-  progress?: number
-  startDate: string
-  endDate: string
-  status: 'draft' | 'published' | 'archived'
-}
-
-export interface Lesson {
-  id: string
-  courseId: string
-  title: string
-  description: string
-  type: 'video' | 'reading' | 'quiz' | 'lab' | 'discussion'
-  duration: number
-  order: number
-  isCompleted?: boolean
-  content: any
-}
-
-export interface Assessment {
-  id: string
-  courseId: string
-  title: string
-  description: string
-  type: 'quiz' | 'exam' | 'assignment' | 'project'
-  questions: Question[]
-  timeLimit?: number
-  dueDate: string
-  totalPoints: number
-  status: 'not_started' | 'in_progress' | 'submitted' | 'graded'
-  score?: number
-}
-
-export interface Question {
-  id: string
-  type: 'multiple_choice' | 'true_false' | 'short_answer' | 'essay' | 'code'
-  question: string
-  options?: string[]
-  correctAnswer?: any
-  points: number
-  explanation?: string
-}
-
-export interface TutorMessage {
-  id: string
-  role: 'user' | 'assistant'
-  content: string
-  timestamp: string
-  context?: any
-}
-
-export interface LearningPath {
-  id: string
-  studentId: string
-  courseId: string
-  modules: LearningModule[]
-  masteryLevel: number
-  adaptiveRecommendations: string[]
-}
-
-export interface LearningModule {
-  id: string
-  title: string
-  skills: Skill[]
-  isUnlocked: boolean
-  isCompleted: boolean
-  masteryScore: number
-}
-
-export interface Skill {
-  id: string
-  name: string
-  knowledgeState: 'unknown' | 'learning' | 'practiced' | 'mastered'
-  probability: number
-}
-
-export interface Analytics {
-  overallProgress: number
-  timeSpent: number
-  assignmentsCompleted: number
-  averageScore: number
-  strengths: string[]
-  areasForImprovement: string[]
-  engagementTrend: DataPoint[]
-  performanceTrend: DataPoint[]
-}
-
-export interface DataPoint {
-  date: string
-  value: number
+  id: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+  display_name?: string;
+  role: 'super_admin' | 'org_admin' | 'teacher' | 'student' | 'parent';
+  org_id: string;
+  avatar_url?: string;
+  is_active: boolean;
+  email_verified: boolean;
+  created_at: string;
 }
 
 export interface Organization {
-  id: string
-  name: string
-  type: 'school' | 'university' | 'professional'
-  tier: string
-  settings: any
+  id: string;
+  name: string;
+  slug: string;
+  tier: string;
+  email?: string;
+  phone?: string;
+  website?: string;
+  is_active: boolean;
+  is_verified: boolean;
+}
+
+export interface Course {
+  id: string;
+  org_id: string;
+  title: string;
+  code?: string;
+  description?: string;
+  tier: string;
+  instructor_id?: string;
+  subject?: string;
+  level?: string;
+  credits?: number;
+  is_published: boolean;
+  is_archived: boolean;
+  start_date?: string;
+  end_date?: string;
+  created_at: string;
+}
+
+export interface Enrollment {
+  id: string;
+  user_id: string;
+  course_id: string;
+  status: string;
+  progress_percent: number;
+  mastery_level: number;
+  enrolled_at: string;
+  completed_at?: string;
+}
+
+export interface Badge {
+  id: string;
+  name: string;
+  description: string;
+  icon_url: string;
+  points: number;
+  tier: string;
+  category: string;
+  requirements: Record<string, any>;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  first_name: string;
+  last_name: string;
+  org_id: string;
+  date_of_birth?: string;
+  parent_email?: string;
+}
+
+export interface AuthResponse {
+  access_token: string;
+  refresh_token: string;
+  token_type: string;
+  user: User;
+}
+
+export interface ApiError {
+  detail: string;
 }

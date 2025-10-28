@@ -6,17 +6,17 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { getInitials } from "@/lib/utils"
+import type { User } from "@/types"
 
 interface HeaderProps {
-  user?: {
-    name: string
-    email: string
-    avatar?: string
-  }
+  user?: User
 }
 
 export function Header({ user }: HeaderProps) {
   const { theme, setTheme } = useTheme()
+
+  const userName = user?.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'User'
+  const userInitials = user ? getInitials(user.first_name, user.last_name) : 'U'
 
   return (
     <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
@@ -47,8 +47,8 @@ export function Header({ user }: HeaderProps) {
         </Button>
 
         <Avatar className="h-9 w-9">
-          <AvatarImage src={user?.avatar} alt={user?.name} />
-          <AvatarFallback>{getInitials(user?.name || "User")}</AvatarFallback>
+          <AvatarImage src={user?.avatar_url} alt={userName} />
+          <AvatarFallback>{userInitials}</AvatarFallback>
         </Avatar>
       </div>
     </header>

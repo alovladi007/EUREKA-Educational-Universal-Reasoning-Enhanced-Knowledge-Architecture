@@ -1,117 +1,112 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { GraduationCap } from "lucide-react"
-import { toast } from "sonner"
-import api from "@/lib/api"
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { useAuthStore } from '@/stores/auth';
+import Button from '@/components/ui/Button';
+import Input from '@/components/ui/Input';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 
 export default function LoginPage() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  })
+  const router = useRouter();
+  const login = useAuthStore((state) => state.login);
+  
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
+    e.preventDefault();
+    setError('');
+    setIsLoading(true);
 
     try {
-      const response = await api.post('/auth/login', formData)
-      localStorage.setItem('access_token', response.data.access_token)
-      localStorage.setItem('user', JSON.stringify(response.data.user))
-      toast.success('Login successful!')
-      router.push('/dashboard')
-    } catch (error: any) {
-      toast.error(error.response?.data?.detail || 'Login failed')
+      await login(email, password);
+      router.push('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.detail || 'Login failed. Please try again.');
     } finally {
-      setLoading(false)
+      setIsLoading(false);
     }
-  }
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-secondary/20 px-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <GraduationCap className="h-12 w-12 text-primary" />
-          </div>
-          <CardTitle className="text-2xl">Welcome back</CardTitle>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
+      <Card className="w-full max-w-md" variant="elevated">
+        <CardHeader>
+          <CardTitle>Welcome Back</CardTitle>
           <CardDescription>
-            Enter your credentials to access your account
+            Sign in to your EUREKA account
           </CardDescription>
         </CardHeader>
+        
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
+            {error && (
+              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
+                {error}
+              </div>
+            )}
+
+            <Input
+              label="Email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              placeholder="you@example.com"
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              placeholder="••••••••"
+            />
+
+            <div className="flex items-center justify-between">
+              <label className="flex items-center">
+                <input type="checkbox" className="mr-2" />
+                <span className="text-sm text-gray-600">Remember me</span>
               </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="student@school.edu"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
-                Password
-              </label>
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                required
-              />
-            </div>
-            <div className="flex justify-end">
-              <Link href="/auth/forgot-password" className="text-sm text-primary hover:underline">
+              <Link href="/auth/forgot-password" className="text-sm text-primary-600 hover:underline">
                 Forgot password?
               </Link>
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Signing in..." : "Sign in"}
+
+            <Button
+              type="submit"
+              className="w-full"
+              isLoading={isLoading}
+            >
+              Sign In
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm">
-            Don't have an account?{" "}
-            <Link href="/auth/register" className="text-primary hover:underline">
+          <div className="mt-6 text-center text-sm text-gray-600">
+            Don't have an account?{' '}
+            <Link href="/auth/register" className="text-primary-600 hover:underline font-medium">
               Sign up
             </Link>
           </div>
 
-          <div className="relative my-6">
-            <div className="absolute inset-0 flex items-center">
-              <span className="w-full border-t" />
+          <div className="mt-6 border-t pt-6">
+            <p className="text-xs text-gray-500 text-center mb-4">
+              Test Credentials:
+            </p>
+            <div className="text-xs text-gray-600 space-y-1">
+              <div>Admin: admin@eureka.edu</div>
+              <div>Teacher: teacher@springfield-hs.edu</div>
+              <div>Student: student@midwest-state.edu</div>
+              <div className="font-medium">Password: TestPass123!</div>
             </div>
-            <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <Button variant="outline" type="button">
-              Google
-            </Button>
-            <Button variant="outline" type="button">
-              Microsoft
-            </Button>
           </div>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
