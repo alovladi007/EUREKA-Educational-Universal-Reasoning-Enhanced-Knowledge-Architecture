@@ -32,6 +32,22 @@ export default function LoginPage() {
     }
   };
 
+  const handleDemoMode = () => {
+    // Set demo user in localStorage
+    const demoUser = {
+      id: 'demo-user-123',
+      email: 'demo@eureka.edu',
+      name: 'Demo User',
+      role: 'student',
+      tier: 'undergraduate',
+    };
+    localStorage.setItem('user', JSON.stringify(demoUser));
+    localStorage.setItem('access_token', 'demo-token-123');
+
+    // Navigate to dashboard
+    router.push('/dashboard');
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
       <Card className="w-full max-w-md" variant="elevated">
@@ -86,6 +102,17 @@ export default function LoginPage() {
               Sign In
             </Button>
           </form>
+
+          <div className="mt-4">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={handleDemoMode}
+            >
+              🚀 Continue in Demo Mode (Full Access)
+            </Button>
+          </div>
 
           <div className="mt-6 text-center text-sm text-gray-600">
             Don't have an account?{' '}

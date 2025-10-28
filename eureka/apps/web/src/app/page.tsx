@@ -1,10 +1,27 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Button from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 
 export default function HomePage() {
+  const router = useRouter();
+
+  const handleExplorePlatform = () => {
+    // Set demo user in localStorage for full access
+    const demoUser = {
+      id: 'demo-user-123',
+      email: 'demo@eureka.edu',
+      name: 'Demo User',
+      role: 'student',
+      tier: 'undergraduate',
+    };
+    localStorage.setItem('user', JSON.stringify(demoUser));
+    localStorage.setItem('access_token', 'demo-token-123');
+    router.push('/dashboard');
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 to-primary-100">
       <nav className="bg-white shadow-sm">
@@ -93,10 +110,18 @@ export default function HomePage() {
           </Card>
         </div>
 
-        <div className="text-center">
-          <Link href="/auth/register">
-            <Button size="lg">Get Started Free</Button>
-          </Link>
+        <div className="text-center space-y-4">
+          <div className="flex gap-4 justify-center">
+            <Button size="lg" onClick={handleExplorePlatform}>
+              🚀 Explore Platform (Full Access)
+            </Button>
+            <Link href="/auth/register">
+              <Button size="lg" variant="outline">Get Started Free</Button>
+            </Link>
+          </div>
+          <p className="text-sm text-gray-500">
+            No login required - explore all features instantly
+          </p>
         </div>
       </main>
     </div>
