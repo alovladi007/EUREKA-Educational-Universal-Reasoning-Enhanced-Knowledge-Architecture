@@ -30,12 +30,14 @@ const services = [
   { name: 'Ingestion Service', url: 'http://localhost:8203', category: 'data' },
 ];
 
-async function checkService(url: string): Promise<boolean> {
+async function checkService(url: string, name: string): Promise<boolean> {
   try {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 2000);
 
-    const response = await fetch(`${url}/health`, {
+    // Web Portal uses /api/health instead of /health
+    const healthPath = name === 'Web Portal' ? '/api/health' : '/health';
+    const response = await fetch(`${url}${healthPath}`, {
       signal: controller.signal,
     });
 
@@ -50,7 +52,7 @@ export async function GET() {
   const results = await Promise.all(
     services.map(async (service) => ({
       ...service,
-      status: await checkService(service.url) ? 'online' : 'offline',
+      status: await checkService(service.url, service.name) ? 'online' : 'offline',
     }))
   );
 
