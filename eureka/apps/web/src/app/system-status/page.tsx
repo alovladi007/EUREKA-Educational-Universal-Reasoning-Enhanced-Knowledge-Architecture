@@ -158,8 +158,10 @@ const services: Service[] = [
 export default function SystemStatusPage() {
   const [serviceStatuses, setServiceStatuses] = useState<Service[]>(services);
   const [lastCheck, setLastCheck] = useState<Date>(new Date());
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     checkAllServices();
     const interval = setInterval(() => {
       checkAllServices();
@@ -310,7 +312,7 @@ export default function SystemStatusPage() {
             </CardHeader>
             <CardContent>
               <div className="text-sm font-medium">
-                {lastCheck.toLocaleTimeString()}
+                {mounted ? lastCheck.toLocaleTimeString() : '--:--:--'}
               </div>
               <Button
                 variant="ghost"
