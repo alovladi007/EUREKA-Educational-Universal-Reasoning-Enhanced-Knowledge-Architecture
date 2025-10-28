@@ -1,0 +1,181 @@
+{
+  "standards": {
+    "NGSS.HS-LS1-1": {
+      "code": "HS-LS1-1",
+      "discipline": "Life Sciences",
+      "topic": "From Molecules to Organisms: Structures and Processes",
+      "performance_expectation": "Construct an explanation based on evidence for how the structure of DNA determines the structure of proteins which carry out the essential functions of life through systems of specialized cells.",
+      "grade_level": "High School",
+      "subject": "Biology",
+      "science_practices": [
+        "Constructing Explanations and Designing Solutions"
+      ],
+      "disciplinary_core_ideas": [
+        "LS1.A: Structure and Function"
+      ],
+      "crosscutting_concepts": [
+        "Structure and Function"
+      ],
+      "inquiry_activities": [
+        "DNA extraction lab",
+        "Protein synthesis simulation",
+        "Building DNA models"
+      ],
+      "at_home_safe_activities": [
+        "DNA extraction from strawberries using household items",
+        "Online protein folding simulations",
+        "Virtual cell tours"
+      ]
+    },
+    "NGSS.HS-LS1-2": {
+      "code": "HS-LS1-2",
+      "discipline": "Life Sciences",
+      "topic": "From Molecules to Organisms: Structures and Processes",
+      "performance_expectation": "Develop and use a model to illustrate the hierarchical organization of interacting systems that provide specific functions within multicellular organisms.",
+      "grade_level": "High School",
+      "subject": "Biology",
+      "science_practices": [
+        "Developing and Using Models"
+      ],
+      "disciplinary_core_ideas": [
+        "LS1.A: Structure and Function"
+      ],
+      "crosscutting_concepts": [
+        "Systems and System Models"
+      ],
+      "inquiry_activities": [
+        "Dissection labs",
+        "System interaction diagrams",
+        "3D organ models"
+      ]
+    },
+    "NGSS.HS-PS1-1": {
+      "code": "HS-PS1-1",
+      "discipline": "Physical Sciences",
+      "topic": "Matter and Its Interactions",
+      "performance_expectation": "Use the periodic table as a model to predict the relative properties of elements based on the patterns of electrons in the outermost energy level of atoms.",
+      "grade_level": "High School",
+      "subject": "Chemistry",
+      "science_practices": [
+        "Developing and Using Models"
+      ],
+      "disciplinary_core_ideas": [
+        "PS1.A: Structure and Properties of Matter"
+      ],
+      "crosscutting_concepts": [
+        "Patterns"
+      ],
+      "inquiry_activities": [
+        "Periodic trends lab",
+        "Electron configuration practice",
+        "Element property comparisons"
+      ],
+      "at_home_safe_activities": [
+        "Online periodic table explorer",
+        "Virtual electron configuration builder",
+        "Periodic trends graphing"
+      ]
+    },
+    "NGSS.HS-ESS2-1": {
+      "code": "HS-ESS2-1",
+      "discipline": "Earth and Space Sciences",
+      "topic": "Earth's Systems",
+      "performance_expectation": "Develop a model to illustrate how Earth's internal and surface processes operate at different spatial and temporal scales to form continental and ocean-floor features.",
+      "grade_level": "High School",
+      "subject": "Earth Science",
+      "science_practices": [
+        "Developing and Using Models"
+      ],
+      "disciplinary_core_ideas": [
+        "ESS2.A: Earth Materials and Systems",
+        "ESS2.B: Plate Tectonics and Large-Scale System Interactions"
+      ],
+      "crosscutting_concepts": [
+        "Patterns",
+        "Scale, Proportion, and Quantity"
+      ]
+    }
+  },
+  "courses": {
+    "biology": {
+      "title": "Biology",
+      "description": "Study of living organisms and life processes",
+      "grade_levels": [9, 10],
+      "standards": [
+        "HS-LS1-1",
+        "HS-LS1-2",
+        "HS-LS1-3",
+        "HS-LS2-1",
+        "HS-LS3-1"
+      ],
+      "units": [
+        {
+          "unit_number": 1,
+          "title": "Cell Structure and Function",
+          "standards": ["HS-LS1-1", "HS-LS1-2"],
+          "duration_weeks": 4,
+          "labs": [
+            "Microscopy lab",
+            "Cell membrane diffusion",
+            "DNA extraction"
+          ]
+        },
+        {
+          "unit_number": 2,
+          "title": "Genetics and Heredity",
+          "standards": ["HS-LS3-1", "HS-LS3-2"],
+          "duration_weeks": 4,
+          "labs": [
+            "Punnett square simulations",
+            "DNA modeling",
+            "Inheritance patterns"
+          ]
+        }
+      ]
+    },
+    "chemistry": {
+      "title": "Chemistry",
+      "description": "Study of matter and its interactions",
+      "grade_levels": [10, 11],
+      "standards": [
+        "HS-PS1-1",
+        "HS-PS1-2",
+        "HS-PS1-3"
+      ],
+      "units": [
+        {
+          "unit_number": 1,
+          "title": "Atomic Structure",
+          "standards": ["HS-PS1-1"],
+          "duration_weeks": 3,
+          "labs": [
+            "Flame test lab",
+            "Spectroscopy",
+            "Periodic trends"
+          ]
+        }
+      ]
+    }
+  },
+  "three_dimensional_learning": {
+    "science_practices": [
+      "Asking Questions and Defining Problems",
+      "Developing and Using Models",
+      "Planning and Carrying Out Investigations",
+      "Analyzing and Interpreting Data",
+      "Using Mathematics and Computational Thinking",
+      "Constructing Explanations and Designing Solutions",
+      "Engaging in Argument from Evidence",
+      "Obtaining, Evaluating, and Communicating Information"
+    ],
+    "crosscutting_concepts": [
+      "Patterns",
+      "Cause and Effect",
+      "Scale, Proportion, and Quantity",
+      "Systems and System Models",
+      "Energy and Matter",
+      "Structure and Function",
+      "Stability and Change"
+    ]
+  }
+}

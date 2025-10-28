@@ -1,0 +1,274 @@
+xp_rules:
+  actions:
+    ask_question:
+      xp: 5
+      description: "Ask tutor a question"
+      cooldown_minutes: 0
+    
+    complete_practice_question:
+      xp: 10
+      description: "Complete a practice question correctly"
+      cooldown_minutes: 0
+      bonus_conditions:
+        first_try: 5
+        no_hints: 5
+    
+    finish_lesson:
+      xp: 50
+      description: "Complete all lesson activities"
+      cooldown_minutes: 0
+    
+    master_concept:
+      xp: 100
+      description: "Demonstrate concept mastery"
+      cooldown_minutes: 0
+    
+    complete_unit:
+      xp: 200
+      description: "Finish entire unit"
+      cooldown_minutes: 0
+    
+    daily_login:
+      xp: 10
+      description: "Log in and study"
+      cooldown_minutes: 1440  # Once per day
+    
+    perfect_practice_set:
+      xp: 50
+      description: "100% correct on practice set"
+      cooldown_minutes: 0
+
+  penalties:
+    use_hint:
+      xp: -2
+      description: "Use a hint (encourages trying first)"
+
+badges:
+  streaks:
+    streak_7:
+      name: "Week Warrior"
+      description: "7 day learning streak!"
+      icon: "🔥"
+      icon_url: "/badges/streak_7.png"
+      xp_bonus: 50
+      requirements:
+        streak_days: 7
+    
+    streak_14:
+      name: "Fortnight Champion"
+      description: "14 day learning streak!"
+      icon: "⚡"
+      icon_url: "/badges/streak_14.png"
+      xp_bonus: 100
+      requirements:
+        streak_days: 14
+    
+    streak_30:
+      name: "Monthly Master"
+      description: "30 day learning streak!"
+      icon: "💎"
+      icon_url: "/badges/streak_30.png"
+      xp_bonus: 250
+      requirements:
+        streak_days: 30
+    
+    streak_100:
+      name: "Century Scholar"
+      description: "100 day learning streak!"
+      icon: "👑"
+      icon_url: "/badges/streak_100.png"
+      xp_bonus: 1000
+      requirements:
+        streak_days: 100
+  
+  mastery:
+    concept_mastery:
+      name: "Concept Master"
+      description: "Mastered a difficult concept!"
+      icon: "🎯"
+      icon_url: "/badges/mastery.png"
+      xp_bonus: 75
+      requirements:
+        concepts_mastered: 1
+    
+    subject_expert:
+      name: "Subject Expert"
+      description: "Mastered 10 concepts in one subject!"
+      icon: "🏆"
+      icon_url: "/badges/subject_expert.png"
+      xp_bonus: 500
+      requirements:
+        concepts_mastered_same_subject: 10
+  
+  performance:
+    perfect_week:
+      name: "Perfect Week"
+      description: "100% correct answers for a week!"
+      icon: "⭐"
+      icon_url: "/badges/perfect_week.png"
+      xp_bonus: 150
+      requirements:
+        perfect_days_in_row: 7
+    
+    speed_demon:
+      name: "Speed Demon"
+      description: "Completed 50 questions in one day!"
+      icon: "⚡"
+      icon_url: "/badges/speed.png"
+      xp_bonus: 100
+      requirements:
+        questions_one_day: 50
+  
+  engagement:
+    lab_star:
+      name: "Lab Star"
+      description: "Excellent lab work!"
+      icon: "🔬"
+      icon_url: "/badges/lab_star.png"
+      xp_bonus: 60
+      requirements:
+        lab_score_min: 90
+    
+    helper:
+      name: "Helpful Student"
+      description: "Helped classmates 10 times!"
+      icon: "🤝"
+      icon_url: "/badges/helper.png"
+      xp_bonus: 80
+      requirements:
+        helped_peers: 10
+
+levels:
+  thresholds:
+    - level: 1
+      xp_min: 0
+      xp_max: 100
+      title: "Beginner"
+      perks: []
+    
+    - level: 2
+      xp_min: 100
+      xp_max: 300
+      title: "Learner"
+      perks: ["unlock_hints_level_2"]
+    
+    - level: 3
+      xp_min: 300
+      xp_max: 600
+      title: "Scholar"
+      perks: ["unlock_advanced_problems", "custom_avatar"]
+    
+    - level: 4
+      xp_min: 600
+      xp_max: 1000
+      title: "Expert"
+      perks: ["unlock_challenge_mode", "mentor_badge"]
+    
+    - level: 5
+      xp_min: 1000
+      xp_max: 1500
+      title: "Master"
+      perks: ["all_content_unlocked", "gold_badge"]
+    
+    - level: 6
+      xp_min: 1500
+      xp_max: 2500
+      title: "Guru"
+      perks: ["create_custom_problems", "platinum_badge"]
+    
+    - level: 7
+      xp_min: 2500
+      xp_max: 4000
+      title: "Legend"
+      perks: ["exclusive_challenges", "diamond_badge"]
+    
+    - level: 8
+      xp_min: 4000
+      xp_max: null
+      title: "Grand Master"
+      perks: ["all_perks", "ultimate_badge"]
+
+streaks:
+  rules:
+    min_activity_minutes: 15  # Minimum study time to count for streak
+    grace_period_hours: 36    # Can miss one day with 36h grace period
+    reset_on_miss: true        # Streak resets if grace period exceeded
+  
+  milestones:
+    - days: 7
+      reward_xp: 50
+    - days: 14
+      reward_xp: 100
+    - days: 30
+      reward_xp: 250
+    - days: 60
+      reward_xp: 500
+    - days: 100
+      reward_xp: 1000
+
+leaderboards:
+  types:
+    - name: "Weekly XP"
+      scope: "week"
+      metric: "xp_earned"
+      rewards:
+        1: {xp: 100, badge: "weekly_champion"}
+        2: {xp: 75, badge: "weekly_runner_up"}
+        3: {xp: 50, badge: "weekly_bronze"}
+    
+    - name: "Monthly Streak"
+      scope: "month"
+      metric: "longest_streak"
+      rewards:
+        1: {xp: 200, badge: "streak_champion"}
+    
+    - name: "All-Time Masters"
+      scope: "all_time"
+      metric: "concepts_mastered"
+      rewards:
+        1: {badge: "ultimate_master"}
+
+parent_teacher_dashboard:
+  metrics:
+    - total_xp
+    - current_level
+    - streak_days
+    - time_spent_minutes
+    - concepts_mastered
+    - practice_accuracy
+    - lessons_completed
+    - badges_earned
+  
+  alerts:
+    - type: "streak_broken"
+      message: "Student's streak was broken"
+    - type: "struggling_concept"
+      message: "Student may need help with {concept}"
+      threshold: "accuracy < 60%"
+    - type: "achievement"
+      message: "Student earned {badge}!"
+    - type: "level_up"
+      message: "Student reached level {level}!"
+
+engagement_multipliers:
+  consecutive_days:
+    7: 1.1   # 10% bonus after 7 days
+    14: 1.2  # 20% bonus after 14 days
+    30: 1.5  # 50% bonus after 30 days
+  
+  time_of_day:
+    morning: 1.0    # No bonus
+    afternoon: 1.0
+    evening: 1.1    # 10% bonus for evening study
+    night: 1.0
+
+special_events:
+  challenge_weeks:
+    frequency: "monthly"
+    xp_multiplier: 2.0
+    special_badges: ["challenge_master"]
+  
+  group_competitions:
+    enabled: true
+    min_group_size: 5
+    bonus_for_winning_team: 500

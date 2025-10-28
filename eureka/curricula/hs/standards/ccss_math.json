@@ -1,0 +1,112 @@
+{
+  "standards": {
+    "CCSS.MATH.CONTENT.HSA-CED.A.1": {
+      "code": "CCSS.MATH.CONTENT.HSA-CED.A.1",
+      "domain": "Creating Equations",
+      "cluster": "Create equations that describe numbers or relationships",
+      "standard": "Create equations and inequalities in one variable and use them to solve problems. Include equations arising from linear and quadratic functions, and simple rational and exponential functions.",
+      "grade_level": "High School",
+      "subject": "Algebra",
+      "prerequisites": [
+        "CCSS.MATH.CONTENT.8.EE.C.7",
+        "CCSS.MATH.CONTENT.8.F.A.1"
+      ],
+      "related_standards": [
+        "CCSS.MATH.CONTENT.HSA-CED.A.2",
+        "CCSS.MATH.CONTENT.HSA-CED.A.3"
+      ],
+      "learning_objectives": [
+        "Understand how to represent real-world problems as mathematical equations",
+        "Create equations in one variable to model situations",
+        "Solve problems using created equations",
+        "Distinguish between different types of functions in equations"
+      ],
+      "example_problems": [
+        "A cell phone plan costs $50 per month plus $0.10 per text message. Write an equation to represent the monthly cost.",
+        "The population of a town increases by 2% each year. Write an equation to model the population after t years."
+      ]
+    },
+    "CCSS.MATH.CONTENT.HSA-CED.A.2": {
+      "code": "CCSS.MATH.CONTENT.HSA-CED.A.2",
+      "domain": "Creating Equations",
+      "cluster": "Create equations that describe numbers or relationships",
+      "standard": "Create equations in two or more variables to represent relationships between quantities; graph equations on coordinate axes with labels and scales.",
+      "grade_level": "High School",
+      "subject": "Algebra",
+      "prerequisites": [
+        "CCSS.MATH.CONTENT.8.F.A.2"
+      ],
+      "learning_objectives": [
+        "Create multi-variable equations",
+        "Graph relationships on coordinate plane",
+        "Label axes appropriately",
+        "Choose appropriate scales"
+      ]
+    },
+    "CCSS.MATH.CONTENT.HSG-CO.A.1": {
+      "code": "CCSS.MATH.CONTENT.HSG-CO.A.1",
+      "domain": "Congruence",
+      "cluster": "Experiment with transformations in the plane",
+      "standard": "Know precise definitions of angle, circle, perpendicular line, parallel line, and line segment, based on the undefined notions of point, line, distance along a line, and distance around a circular arc.",
+      "grade_level": "High School",
+      "subject": "Geometry",
+      "prerequisites": [],
+      "learning_objectives": [
+        "Define geometric terms precisely",
+        "Understand undefined terms in geometry",
+        "Apply definitions to solve problems"
+      ]
+    }
+  },
+  "courses": {
+    "algebra1": {
+      "title": "Algebra I",
+      "description": "Foundation course in algebraic thinking and problem solving",
+      "grade_levels": [8, 9],
+      "standards": [
+        "CCSS.MATH.CONTENT.HSA-CED.A.1",
+        "CCSS.MATH.CONTENT.HSA-CED.A.2",
+        "CCSS.MATH.CONTENT.HSA-REI.A.1",
+        "CCSS.MATH.CONTENT.HSA-REI.B.3"
+      ],
+      "units": [
+        {
+          "unit_number": 1,
+          "title": "Linear Equations and Inequalities",
+          "standards": ["CCSS.MATH.CONTENT.HSA-CED.A.1"],
+          "duration_weeks": 4
+        },
+        {
+          "unit_number": 2,
+          "title": "Systems of Equations",
+          "standards": ["CCSS.MATH.CONTENT.HSA-CED.A.2", "CCSS.MATH.CONTENT.HSA-REI.C.6"],
+          "duration_weeks": 3
+        },
+        {
+          "unit_number": 3,
+          "title": "Functions",
+          "standards": ["CCSS.MATH.CONTENT.HSF-IF.A.1", "CCSS.MATH.CONTENT.HSF-IF.B.4"],
+          "duration_weeks": 4
+        }
+      ]
+    },
+    "geometry": {
+      "title": "Geometry",
+      "description": "Study of shapes, transformations, and spatial reasoning",
+      "grade_levels": [9, 10],
+      "standards": [
+        "CCSS.MATH.CONTENT.HSG-CO.A.1",
+        "CCSS.MATH.CONTENT.HSG-CO.B.6",
+        "CCSS.MATH.CONTENT.HSG-SRT.A.1"
+      ],
+      "units": [
+        {
+          "unit_number": 1,
+          "title": "Transformations",
+          "standards": ["CCSS.MATH.CONTENT.HSG-CO.A.1"],
+          "duration_weeks": 3
+        }
+      ]
+    }
+  }
+}

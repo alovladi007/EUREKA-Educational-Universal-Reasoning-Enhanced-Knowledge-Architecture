@@ -1,0 +1,42 @@
+{
+  "name": "eureka-monorepo",
+  "version": "1.0.0",
+  "description": "Educational Universal Reasoning & Enhanced Knowledge Architecture",
+  "private": true,
+  "workspaces": [
+    "services/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev:hs\" \"npm run dev:ug\" \"npm run dev:grad\"",
+    "dev:hs": "cd services/tier-hs && npm run dev",
+    "dev:ug": "cd services/tier-ug && npm run dev",
+    "dev:grad": "cd services/tier-grad && npm run dev",
+    "test": "jest",
+    "test:hs": "jest services/tier-hs",
+    "test:ug": "jest services/tier-ug",
+    "test:grad": "jest services/tier-grad",
+    "test:e2e": "playwright test",
+    "lint": "eslint . --ext .ts,.tsx,.js,.jsx",
+    "build": "npm run build:hs && npm run build:ug && npm run build:grad",
+    "build:hs": "cd services/tier-hs && npm run build",
+    "build:ug": "cd services/tier-ug && npm run build",
+    "build:grad": "cd services/tier-grad && npm run build"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "concurrently": "^8.2.0",
+    "eslint": "^8.50.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.2.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
