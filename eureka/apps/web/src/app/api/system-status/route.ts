@@ -12,16 +12,16 @@ const services = [
 
   // Tier Services
   { name: 'High School Tier API', url: 'http://localhost:8001', category: 'tier' },
-  { name: 'Undergraduate Tier API', url: 'http://localhost:8002', category: 'tier' },
-  { name: 'Graduate Tier API', url: 'http://localhost:8003', category: 'tier' },
-  { name: 'Medical School API', url: 'http://localhost:8004', category: 'tier' },
-  { name: 'Law School API', url: 'http://localhost:8005', category: 'tier' },
-  { name: 'MBA API', url: 'http://localhost:8006', category: 'tier' },
-  { name: 'Engineering API', url: 'http://localhost:8007', category: 'tier' },
+  { name: 'Undergraduate Tier API', url: 'http://localhost:8010', category: 'tier' },
+  { name: 'Graduate Tier API', url: 'http://localhost:8011', category: 'tier' },
+  { name: 'Medical School API', url: 'http://localhost:8012', category: 'tier' },
+  { name: 'Law School API', url: 'http://localhost:8013', category: 'tier' },
+  { name: 'MBA API', url: 'http://localhost:8014', category: 'tier' },
+  { name: 'Engineering API', url: 'http://localhost:8015', category: 'tier' },
 
-  // AI Services
-  { name: 'AI Tutor (LLM)', url: 'http://localhost:8101', category: 'ai' },
-  { name: 'Assessment Engine', url: 'http://localhost:8102', category: 'ai' },
+  // AI Services (Session 6 - NEW!)
+  { name: 'AI Tutor (LLM)', url: 'http://localhost:8002', category: 'ai' },
+  { name: 'Assessment Engine', url: 'http://localhost:8003', category: 'ai' },
   { name: 'Adaptive Learning', url: 'http://localhost:8103', category: 'ai' },
 
   // Data Services
