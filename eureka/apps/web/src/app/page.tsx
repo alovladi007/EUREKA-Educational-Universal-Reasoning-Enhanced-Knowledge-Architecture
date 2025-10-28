@@ -31,6 +31,9 @@ export default function HomePage() {
               <h1 className="text-2xl font-bold text-primary-600">EUREKA</h1>
             </div>
             <div className="flex gap-4">
+              <Link href="/demo">
+                <Button variant="ghost">Interactive Demo</Button>
+              </Link>
               <Link href="/system-status">
                 <Button variant="ghost">System Status</Button>
               </Link>

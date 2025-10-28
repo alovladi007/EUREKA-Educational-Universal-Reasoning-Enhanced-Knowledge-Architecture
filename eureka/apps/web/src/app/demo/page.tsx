@@ -52,10 +52,12 @@ export default function DemoPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full gap-2">
-                <PlayCircle className="h-4 w-4" />
-                Try AI Tutor
-              </Button>
+              <Link href="/dashboard/tutor">
+                <Button className="w-full gap-2">
+                  <PlayCircle className="h-4 w-4" />
+                  Try AI Tutor
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -68,10 +70,12 @@ export default function DemoPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full gap-2">
-                <PlayCircle className="h-4 w-4" />
-                Start Learning Path
-              </Button>
+              <Link href="/dashboard/learning-path">
+                <Button className="w-full gap-2">
+                  <PlayCircle className="h-4 w-4" />
+                  Start Learning Path
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
@@ -84,10 +88,12 @@ export default function DemoPage() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Button className="w-full gap-2">
-                <PlayCircle className="h-4 w-4" />
-                Take Sample Quiz
-              </Button>
+              <Link href="/dashboard/assessments">
+                <Button className="w-full gap-2">
+                  <PlayCircle className="h-4 w-4" />
+                  Take Sample Quiz
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         </div>
