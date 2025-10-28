@@ -20,8 +20,8 @@ const services = [
   { name: 'Engineering API', url: 'http://localhost:8015', category: 'tier' },
 
   // AI Services (Session 6 - NEW!)
-  { name: 'AI Tutor (LLM)', url: 'http://localhost:8002', category: 'ai' },
-  { name: 'Assessment Engine', url: 'http://localhost:8003', category: 'ai' },
+  { name: 'AI Tutor (LLM)', url: 'http://localhost:8050', category: 'ai' },
+  { name: 'Assessment Engine', url: 'http://localhost:8051', category: 'ai' },
   { name: 'Adaptive Learning', url: 'http://localhost:8103', category: 'ai' },
 
   // Data Services

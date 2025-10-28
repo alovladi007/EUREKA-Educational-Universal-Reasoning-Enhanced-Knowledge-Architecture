@@ -105,16 +105,16 @@ const services: Service[] = [
   // AI Services (Session 6 - NEW!)
   {
     name: 'AI Tutor (LLM)',
-    url: 'http://localhost:8002',
-    port: 8002,
+    url: 'http://localhost:8050',
+    port: 8050,
     description: 'AI tutoring with RAG, Socratic method (Session 6)',
     status: 'checking',
     category: 'ai',
   },
   {
     name: 'Assessment Engine',
-    url: 'http://localhost:8003',
-    port: 8003,
+    url: 'http://localhost:8051',
+    port: 8051,
     description: 'Auto-grading, AI essay grading, rubrics (Session 6)',
     status: 'checking',
     category: 'ai',
