@@ -43,12 +43,8 @@ docker-clean: ## Remove all containers, volumes, and images
 
 seed: ## Seed database with sample data
 	@echo "Seeding database..."
-	python scripts/seed_data.py
-	@echo "✅ Database seeded with:"
-	@echo "   - 3 organizations"
-	@echo "   - 50 users (students, teachers, admins)"
-	@echo "   - 20 courses across all tiers"
-	@echo "   - 500+ assessments"
+	cd services/api-core && python scripts/seed_data.py
+	@echo "✅ Database seeded"
 
 test: ## Run all tests
 	@echo "Running backend tests..."

@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   # ==========================================
   # Infrastructure
@@ -12,7 +14,7 @@ services:
       POSTGRES_PASSWORD: eureka_dev_password
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5436:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./ops/db/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -26,7 +28,7 @@ services:
     image: redis:7-alpine
     container_name: eureka-redis
     ports:
-      - "6380:6379"
+      - "6379:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -43,8 +45,8 @@ services:
       MINIO_ROOT_USER: eureka
       MINIO_ROOT_PASSWORD: eureka_minio_password
     ports:
-      - "9010:9000"
-      - "9011:9001"
+      - "9000:9000"
+      - "9001:9001"
     volumes:
       - minio_data:/data
     healthcheck:
@@ -107,7 +109,7 @@ services:
       JWT_SECRET: dev_jwt_secret_change_in_production
       ENVIRONMENT: development
     ports:
-      - "8100:8000"
+      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -130,7 +132,7 @@ services:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       ENVIRONMENT: development
     ports:
-      - "8101:8000"
+      - "8001:8000"
     depends_on:
       - db
       - redis
@@ -151,7 +153,7 @@ services:
       S3_SECRET_KEY: eureka_minio_password
       ENVIRONMENT: development
     ports:
-      - "8102:8000"
+      - "8002:8000"
     depends_on:
       - db
       - redis
@@ -168,7 +170,7 @@ services:
       REDIS_URL: redis://redis:6379/3
       ENVIRONMENT: development
     ports:
-      - "8103:8000"
+      - "8003:8000"
     depends_on:
       - db
       - redis
@@ -187,7 +189,7 @@ services:
       S3_SECRET_KEY: eureka_minio_password
       ENVIRONMENT: development
     ports:
-      - "8104:8000"
+      - "8004:8000"
     depends_on:
       - db
       - minio
@@ -205,7 +207,7 @@ services:
       REDIS_URL: redis://redis:6379/4
       ENVIRONMENT: development
     ports:
-      - "8105:8000"
+      - "8005:8000"
     depends_on:
       - db
       - kafka
@@ -229,7 +231,7 @@ services:
       TUTOR_LLM_URL: http://tutor-llm:8000
       ENVIRONMENT: development
     ports:
-      - "8110:8000"
+      - "8010:8000"
     depends_on:
       - api-core
       - tutor-llm
@@ -248,7 +250,7 @@ services:
       TUTOR_LLM_URL: http://tutor-llm:8000
       ENVIRONMENT: development
     ports:
-      - "8111:8000"
+      - "8011:8000"
     depends_on:
       - api-core
       - tutor-llm
@@ -267,7 +269,7 @@ services:
       TUTOR_LLM_URL: http://tutor-llm:8000
       ENVIRONMENT: development
     ports:
-      - "8112:8000"
+      - "8012:8000"
     depends_on:
       - api-core
       - tutor-llm
@@ -291,7 +293,7 @@ services:
       HIPAA_MODE: "true"
       ENVIRONMENT: development
     ports:
-      - "8120:8000"
+      - "8020:8000"
     depends_on:
       - api-core
       - tutor-llm
@@ -311,7 +313,7 @@ services:
       ABA_COMPLIANCE: "true"
       ENVIRONMENT: development
     ports:
-      - "8121:8000"
+      - "8021:8000"
     depends_on:
       - api-core
       - tutor-llm
@@ -330,7 +332,7 @@ services:
       TUTOR_LLM_URL: http://tutor-llm:8000
       ENVIRONMENT: development
     ports:
-      - "8122:8000"
+      - "8022:8000"
     depends_on:
       - api-core
       - tutor-llm
@@ -349,7 +351,7 @@ services:
       TUTOR_LLM_URL: http://tutor-llm:8000
       ENVIRONMENT: development
     ports:
-      - "8123:8000"
+      - "8023:8000"
     depends_on:
       - api-core
       - tutor-llm
@@ -366,10 +368,10 @@ services:
       dockerfile: Dockerfile.dev
     container_name: eureka-web
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8100
-      NEXT_PUBLIC_TUTOR_URL: http://localhost:8101
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_TUTOR_URL: http://localhost:8001
     ports:
-      - "4500:3000"
+      - "3000:3000"
     depends_on:
       - api-core
     volumes:
@@ -383,9 +385,9 @@ services:
       dockerfile: Dockerfile.dev
     container_name: eureka-admin
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8100
+      NEXT_PUBLIC_API_URL: http://localhost:8000
     ports:
-      - "4501:3000"
+      - "3001:3000"
     depends_on:
       - api-core
     volumes:

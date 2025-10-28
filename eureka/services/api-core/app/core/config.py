@@ -24,13 +24,16 @@ class Settings(BaseSettings):
     API_PREFIX: str = "/api/v1"
     
     # Database
-    DATABASE_URL: PostgresDsn = Field(..., env="DATABASE_URL")
+    DATABASE_URL: str = Field(
+        default="postgresql+asyncpg://eureka:eurekapass@localhost:5432/eureka",
+        env="DATABASE_URL"
+    )
     DB_POOL_SIZE: int = Field(default=20, env="DB_POOL_SIZE")
     DB_MAX_OVERFLOW: int = Field(default=10, env="DB_MAX_OVERFLOW")
     DB_ECHO: bool = Field(default=False, env="DB_ECHO")
     
     # Redis
-    REDIS_URL: str = Field(..., env="REDIS_URL")
+    REDIS_URL: str = Field(default="redis://localhost:6379/0", env="REDIS_URL")
     REDIS_MAX_CONNECTIONS: int = Field(default=50, env="REDIS_MAX_CONNECTIONS")
     
     # Security
@@ -50,9 +53,9 @@ class Settings(BaseSettings):
     )
     
     # S3/MinIO
-    S3_ENDPOINT: str = Field(..., env="S3_ENDPOINT")
-    S3_ACCESS_KEY: str = Field(..., env="S3_ACCESS_KEY")
-    S3_SECRET_KEY: str = Field(..., env="S3_SECRET_KEY")
+    S3_ENDPOINT: str = Field(default="http://localhost:9000", env="S3_ENDPOINT")
+    S3_ACCESS_KEY: str = Field(default="minioadmin", env="S3_ACCESS_KEY")
+    S3_SECRET_KEY: str = Field(default="minioadmin", env="S3_SECRET_KEY")
     S3_BUCKET_NAME: str = Field(default="eureka", env="S3_BUCKET_NAME")
     S3_REGION: str = Field(default="us-east-1", env="S3_REGION")
     
