@@ -19,10 +19,11 @@ const services = [
   { name: 'MBA API', url: 'http://localhost:8014', category: 'tier' },
   { name: 'Engineering API', url: 'http://localhost:8015', category: 'tier' },
 
-  // AI Services (Session 6 - NEW!)
+  // AI Services (Session 6)
   { name: 'AI Tutor (LLM)', url: 'http://localhost:8050', category: 'ai' },
   { name: 'Assessment Engine', url: 'http://localhost:8051', category: 'ai' },
-  { name: 'Adaptive Learning', url: 'http://localhost:8103', category: 'ai' },
+  { name: 'Adaptive Learning', url: 'http://localhost:8052', category: 'ai' },
+  { name: 'Analytics Dashboard', url: 'http://localhost:8053', category: 'ai' },
 
   // Data Services
   { name: 'Content Service', url: 'http://localhost:8201', category: 'data' },

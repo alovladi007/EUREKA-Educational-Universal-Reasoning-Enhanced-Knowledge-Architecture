@@ -102,12 +102,12 @@ const services: Service[] = [
     category: 'tier',
   },
 
-  // AI Services (Session 6 - NEW!)
+  // AI Services (Session 6)
   {
     name: 'AI Tutor (LLM)',
     url: 'http://localhost:8050',
     port: 8050,
-    description: 'AI tutoring with RAG, Socratic method (Session 6)',
+    description: 'AI tutoring with RAG, Socratic method (Session 6 Part I)',
     status: 'checking',
     category: 'ai',
   },
@@ -115,15 +115,23 @@ const services: Service[] = [
     name: 'Assessment Engine',
     url: 'http://localhost:8051',
     port: 8051,
-    description: 'Auto-grading, AI essay grading, rubrics (Session 6)',
+    description: 'Auto-grading, AI essay grading, rubrics (Session 6 Part I)',
     status: 'checking',
     category: 'ai',
   },
   {
     name: 'Adaptive Learning',
-    url: 'http://localhost:8103',
-    port: 8103,
-    description: 'Personalized learning paths',
+    url: 'http://localhost:8052',
+    port: 8052,
+    description: 'Knowledge graphs, personalized learning paths (Session 6 Part II)',
+    status: 'checking',
+    category: 'ai',
+  },
+  {
+    name: 'Analytics Dashboard',
+    url: 'http://localhost:8053',
+    port: 8053,
+    description: 'Student analytics, at-risk identification (Session 6 Part II)',
     status: 'checking',
     category: 'ai',
   },
