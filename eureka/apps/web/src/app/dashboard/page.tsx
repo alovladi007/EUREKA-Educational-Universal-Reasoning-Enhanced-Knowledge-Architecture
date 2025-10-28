@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
@@ -12,7 +13,12 @@ import {
   TrendingUp,
   Play,
   CheckCircle2,
-  AlertCircle
+  AlertCircle,
+  Target,
+  BarChart3,
+  FileCheck,
+  Sparkles,
+  Activity
 } from "lucide-react"
 
 export default function DashboardPage() {
@@ -71,6 +77,73 @@ export default function DashboardPage() {
     { id: "3", action: "Started", item: "Lab: Binary Trees Implementation", time: "2 days ago" },
   ]
 
+  const services = [
+    {
+      name: "AI Tutor",
+      description: "Chat with AI for personalized help",
+      icon: Brain,
+      href: "/dashboard/tutor",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      name: "My Courses",
+      description: "Browse and manage your courses",
+      icon: BookOpen,
+      href: "/dashboard/courses",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      name: "Analytics",
+      description: "View performance insights",
+      icon: BarChart3,
+      href: "/dashboard/analytics",
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+    },
+    {
+      name: "Assessments",
+      description: "Tests, quizzes, and assignments",
+      icon: FileCheck,
+      href: "/dashboard/assessments",
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+    },
+    {
+      name: "Learning Path",
+      description: "Adaptive learning recommendations",
+      icon: Target,
+      href: "/dashboard/learning-path",
+      color: "text-pink-600",
+      bgColor: "bg-pink-50",
+    },
+    {
+      name: "System Status",
+      description: "View all services status",
+      icon: Activity,
+      href: "/system-status",
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50",
+    },
+    {
+      name: "Profile",
+      description: "Manage your settings",
+      icon: Trophy,
+      href: "/dashboard/profile",
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50",
+    },
+    {
+      name: "Teacher Tools",
+      description: "Course creation and management",
+      icon: Sparkles,
+      href: "/dashboard/teacher",
+      color: "text-red-600",
+      bgColor: "bg-red-50",
+    },
+  ]
+
   return (
     <div className="space-y-6">
       {/* Welcome Section */}
@@ -125,6 +198,37 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* EUREKA Services Grid */}
+      <Card>
+        <CardHeader>
+          <CardTitle>EUREKA Services</CardTitle>
+          <CardDescription>Access all platform features</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service) => (
+              <Link key={service.name} href={service.href}>
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary">
+                  <CardContent className="pt-6">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className={`${service.bgColor} p-3 rounded-lg`}>
+                        <service.icon className={`h-6 w-6 ${service.color}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">{service.name}</h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {service.description}
+                        </p>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Recent Courses */}
@@ -221,33 +325,6 @@ export default function DashboardPage() {
           </CardContent>
         </Card>
       </div>
-
-      {/* Quick Actions */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Quick Actions</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <Brain className="h-6 w-6" />
-              <span>Ask AI Tutor</span>
-            </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <BookOpen className="h-6 w-6" />
-              <span>Browse Courses</span>
-            </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <TrendingUp className="h-6 w-6" />
-              <span>View Analytics</span>
-            </Button>
-            <Button variant="outline" className="h-auto flex-col gap-2 p-4">
-              <Trophy className="h-6 w-6" />
-              <span>My Achievements</span>
-            </Button>
-          </div>
-        </CardContent>
-      </Card>
     </div>
   )
 }
