@@ -1,73 +1,233 @@
+# EUREKA .gitignore
+
+# ==========================================
+# Environment & Secrets
+# ==========================================
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.crt
+secrets/
+vault_keys.txt
+
+# ==========================================
 # Python
+# ==========================================
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
-venv/
-env/
-ENV/
-.venv
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+services/**/lib/
+services/**/lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 pip-log.txt
 pip-delete-this-directory.txt
+.venv
+venv/
+ENV/
+env/
 .pytest_cache/
 .coverage
 htmlcov/
-*.egg-info/
-dist/
-build/
+.tox/
+.hypothesis/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.ruff_cache/
 
-# Node
+# ==========================================
+# Node.js
+# ==========================================
 node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+lerna-debug.log*
 .npm
+.pnpm-debug.log*
+.yarn-integrity
 .next/
 out/
-.cache/
+.nuxt
+dist
+.cache
+.parcel-cache
+.turbo
 
-# Environment
-.env
-.env.local
-.env.*.local
-
-# IDEs
+# ==========================================
+# IDEs and Editors
+# ==========================================
 .vscode/
+!.vscode/settings.json.example
+!.vscode/extensions.json
 .idea/
 *.swp
 *.swo
-*.swn
+*~
 .DS_Store
+.AppleDouble
+.LSOverride
+*.sublime-project
+*.sublime-workspace
+.project
+.classpath
+.c9/
+*.launch
+.settings/
 
+# ==========================================
+# OS Files
+# ==========================================
+Thumbs.db
+Desktop.ini
+._*
+.Spotlight-V100
+.Trashes
+
+# ==========================================
 # Logs
+# ==========================================
 logs/
 *.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# Database
+# ==========================================
+# Databases
+# ==========================================
 *.db
 *.sqlite
 *.sqlite3
+*.sql
+*.dump
+pgdata/
 
+# ==========================================
 # Docker
+# ==========================================
 .dockerignore
+docker-compose.override.yml
 
+# ==========================================
 # Testing
+# ==========================================
 coverage/
-.nyc_output/
+.nyc_output
+playwright-report/
+test-results/
+e2e-results/
+*.spec.js.snap
 
-# Build outputs
-dist/
+# ==========================================
+# Build Artifacts
+# ==========================================
+*.tar.gz
+*.zip
+*.rar
 build/
-*.egg
-*.egg-info/
+dist/
+target/
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Temporary files
-*.tmp
-*.temp
-tmp/
+# ==========================================
+# Data & Uploads
+# ==========================================
+uploads/
+datasets/generated/
 temp/
+tmp/
+*.csv
+*.xlsx
+*.pdf
+# Allow sample datasets
+!datasets/samples/
+
+# ==========================================
+# AI & ML Models
+# ==========================================
+models/
+*.pt
+*.pth
+*.onnx
+*.h5
+*.pkl
+*.joblib
+embeddings_cache/
+
+# ==========================================
+# Documentation Build
+# ==========================================
+site/
+_site/
+.jekyll-cache/
+docs/_build/
+
+# ==========================================
+# Terraform
+# ==========================================
+.terraform/
+*.tfstate
+*.tfstate.*
+.terraform.lock.hcl
+*.tfvars
+!terraform.tfvars.example
+
+# ==========================================
+# Kubernetes
+# ==========================================
+*.kubeconfig
+secrets.yaml
+!secrets.example.yaml
+
+# ==========================================
+# Monitoring
+# ==========================================
+prometheus_data/
+grafana_data/
+
+# ==========================================
+# Backups
+# ==========================================
+*.bak
+*.backup
+*.old
+backup/
+
+# ==========================================
+# License Keys & Certificates
+# ==========================================
+license.key
+*.license
+ca-certificates/
+
+# ==========================================
+# Misc
+# ==========================================
+.scratch/
+.local/
+.cache/
+TODO.md
+NOTES.md
+*.private

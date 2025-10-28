@@ -1,170 +1,405 @@
 services:
-  # Shared Database
-  postgres:
-    image: postgres:15-alpine
+  # ==========================================
+  # Infrastructure
+  # ==========================================
+  
+  db:
+    image: pgvector/pgvector:pg16
+    container_name: eureka-db
     environment:
       POSTGRES_DB: eureka
       POSTGRES_USER: eureka
-      POSTGRES_PASSWORD: eureka_dev_pass
+      POSTGRES_PASSWORD: eureka_dev_password
+      POSTGRES_HOST_AUTH_METHOD: trust
     ports:
       - "5436:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./ops/db/init.sql:/docker-entrypoint-initdb.d/init.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U eureka"]
-      interval: 5s
+      interval: 10s
       timeout: 5s
       retries: 5
 
-  # Redis for caching
   redis:
     image: redis:7-alpine
+    container_name: eureka-redis
     ports:
       - "6380:6379"
+    volumes:
+      - redis_data:/data
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 5s
+      interval: 10s
       timeout: 3s
       retries: 5
 
-  # High School Tier Service
+  minio:
+    image: minio/minio:latest
+    container_name: eureka-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: eureka
+      MINIO_ROOT_PASSWORD: eureka_minio_password
+    ports:
+      - "9010:9000"
+      - "9011:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+
+  opensearch:
+    image: opensearchproject/opensearch:2
+    container_name: eureka-opensearch
+    environment:
+      - discovery.type=single-node
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - DISABLE_SECURITY_PLUGIN=true
+    ports:
+      - "9200:9200"
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kafka:
+    image: docker.redpanda.com/redpandadata/redpanda:latest
+    container_name: eureka-kafka
+    command:
+      - redpanda
+      - start
+      - --smp 1
+      - --memory 1G
+      - --reserve-memory 0M
+      - --overprovisioned
+      - --node-id 0
+      - --kafka-addr PLAINTEXT://0.0.0.0:29092,OUTSIDE://0.0.0.0:9092
+      - --advertise-kafka-addr PLAINTEXT://kafka:29092,OUTSIDE://localhost:9092
+    ports:
+      - "9092:9092"
+      - "29092:29092"
+    volumes:
+      - kafka_data:/var/lib/redpanda/data
+
+  # ==========================================
+  # Core Services
+  # ==========================================
+
+  api-core:
+    build:
+      context: ./services/api-core
+      dockerfile: Dockerfile
+    container_name: eureka-api-core
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/0
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: eureka
+      S3_SECRET_KEY: eureka_minio_password
+      JWT_SECRET: dev_jwt_secret_change_in_production
+      ENVIRONMENT: development
+    ports:
+      - "8100:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/api-core:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  tutor-llm:
+    build:
+      context: ./services/tutor-llm
+      dockerfile: Dockerfile
+    container_name: eureka-tutor-llm
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/1
+      OPENSEARCH_URL: http://opensearch:9200
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ENVIRONMENT: development
+    ports:
+      - "8101:8000"
+    depends_on:
+      - db
+      - redis
+      - opensearch
+    volumes:
+      - ./services/tutor-llm:/app
+
+  assess:
+    build:
+      context: ./services/assess
+      dockerfile: Dockerfile
+    container_name: eureka-assess
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/2
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: eureka
+      S3_SECRET_KEY: eureka_minio_password
+      ENVIRONMENT: development
+    ports:
+      - "8102:8000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./services/assess:/app
+
+  adaptive:
+    build:
+      context: ./services/adaptive
+      dockerfile: Dockerfile
+    container_name: eureka-adaptive
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/3
+      ENVIRONMENT: development
+    ports:
+      - "8103:8000"
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - ./services/adaptive:/app
+
+  content:
+    build:
+      context: ./services/content
+      dockerfile: Dockerfile
+    container_name: eureka-content
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: eureka
+      S3_SECRET_KEY: eureka_minio_password
+      ENVIRONMENT: development
+    ports:
+      - "8104:8000"
+    depends_on:
+      - db
+      - minio
+    volumes:
+      - ./services/content:/app
+
+  analytics:
+    build:
+      context: ./services/analytics
+      dockerfile: Dockerfile
+    container_name: eureka-analytics
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      KAFKA_BROKERS: kafka:29092
+      REDIS_URL: redis://redis:6379/4
+      ENVIRONMENT: development
+    ports:
+      - "8105:8000"
+    depends_on:
+      - db
+      - kafka
+      - redis
+    volumes:
+      - ./services/analytics:/app
+
+  # ==========================================
+  # Academic Tier Services
+  # ==========================================
+
   tier-hs:
     build:
       context: ./services/tier-hs
       dockerfile: Dockerfile
-    ports:
-      - "9001:8000"
+    container_name: eureka-tier-hs
     environment:
-      DATABASE_URL: postgresql://eureka:eureka_dev_pass@postgres:5432/eureka
-      REDIS_URL: redis://redis:6379
-      TIER: high_school
-      ENV: development
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/5
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      ENVIRONMENT: development
+    ports:
+      - "8110:8000"
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - api-core
+      - tutor-llm
     volumes:
       - ./services/tier-hs:/app
-      - ./curricula:/app/curricula:ro
-      - ./gamify:/app/gamify:ro
 
-  # Undergraduate Tier Service
   tier-ug:
     build:
       context: ./services/tier-ug
       dockerfile: Dockerfile
-    ports:
-      - "9002:8000"
+    container_name: eureka-tier-ug
     environment:
-      DATABASE_URL: postgresql://eureka:eureka_dev_pass@postgres:5432/eureka
-      REDIS_URL: redis://redis:6379
-      TIER: undergraduate
-      ENV: development
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/6
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      ENVIRONMENT: development
+    ports:
+      - "8111:8000"
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - api-core
+      - tutor-llm
     volumes:
       - ./services/tier-ug:/app
-      - ./curricula:/app/curricula:ro
 
-  # Graduate Tier Service
   tier-grad:
     build:
       context: ./services/tier-grad
       dockerfile: Dockerfile
-    ports:
-      - "9003:8000"
+    container_name: eureka-tier-grad
     environment:
-      DATABASE_URL: postgresql://eureka:eureka_dev_pass@postgres:5432/eureka
-      REDIS_URL: redis://redis:6379
-      TIER: graduate
-      ENV: development
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/7
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      ENVIRONMENT: development
+    ports:
+      - "8112:8000"
     depends_on:
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
+      - api-core
+      - tutor-llm
     volumes:
       - ./services/tier-grad:/app
-      - ./curricula:/app/curricula:ro
 
-  # Web apps are disabled until they are implemented
-  # To enable them, you'll need to create Dockerfiles and Next.js apps in the apps/ directory
+  # ==========================================
+  # Professional Tier Services
+  # ==========================================
 
-  # # High School Web App
-  # web-hs:
-  #   build:
-  #     context: ./apps/web-hs
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3001:3000"
-  #   environment:
-  #     NEXT_PUBLIC_API_URL: http://tier-hs:8000
-  #     NODE_ENV: development
-  #   depends_on:
-  #     - tier-hs
-  #   volumes:
-  #     - ./apps/web-hs:/app
-  #     - /app/node_modules
-  #     - /app/.next
+  pro-med:
+    build:
+      context: ./services/pro-med
+      dockerfile: Dockerfile
+    container_name: eureka-pro-med
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/8
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      HIPAA_MODE: "true"
+      ENVIRONMENT: development
+    ports:
+      - "8120:8000"
+    depends_on:
+      - api-core
+      - tutor-llm
+    volumes:
+      - ./services/pro-med:/app
 
-  # # Undergraduate Web App
-  # web-ug:
-  #   build:
-  #     context: ./apps/web-ug
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3002:3000"
-  #   environment:
-  #     NEXT_PUBLIC_API_URL: http://tier-ug:8000
-  #     NODE_ENV: development
-  #   depends_on:
-  #     - tier-ug
-  #   volumes:
-  #     - ./apps/web-ug:/app
-  #     - /app/node_modules
-  #     - /app/.next
+  pro-law:
+    build:
+      context: ./services/pro-law
+      dockerfile: Dockerfile
+    container_name: eureka-pro-law
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/9
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      ABA_COMPLIANCE: "true"
+      ENVIRONMENT: development
+    ports:
+      - "8121:8000"
+    depends_on:
+      - api-core
+      - tutor-llm
+    volumes:
+      - ./services/pro-law:/app
 
-  # # Graduate Web App
-  # web-grad:
-  #   build:
-  #     context: ./apps/web-grad
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3003:3000"
-  #   environment:
-  #     NEXT_PUBLIC_API_URL: http://tier-grad:8000
-  #     NODE_ENV: development
-  #   depends_on:
-  #     - tier-grad
-  #   volumes:
-  #     - ./apps/web-grad:/app
-  #     - /app/node_modules
-  #     - /app/.next
+  pro-mba:
+    build:
+      context: ./services/pro-mba
+      dockerfile: Dockerfile
+    container_name: eureka-pro-mba
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/10
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      ENVIRONMENT: development
+    ports:
+      - "8122:8000"
+    depends_on:
+      - api-core
+      - tutor-llm
+    volumes:
+      - ./services/pro-mba:/app
 
-  # # Admin Dashboard
-  # admin:
-  #   build:
-  #     context: ./apps/admin
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "3000:3000"
-  #   environment:
-  #     NEXT_PUBLIC_HS_API: http://tier-hs:8000
-  #     NEXT_PUBLIC_UG_API: http://tier-ug:8000
-  #     NEXT_PUBLIC_GRAD_API: http://tier-grad:8000
-  #     NODE_ENV: development
-  #   depends_on:
-  #     - tier-hs
-  #     - tier-ug
-  #     - tier-grad
-  #   volumes:
-  #     - ./apps/admin:/app
-  #     - /app/node_modules
-  #     - /app/.next
+  pro-eng:
+    build:
+      context: ./services/pro-eng
+      dockerfile: Dockerfile
+    container_name: eureka-pro-eng
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/11
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      ENVIRONMENT: development
+    ports:
+      - "8123:8000"
+    depends_on:
+      - api-core
+      - tutor-llm
+    volumes:
+      - ./services/pro-eng:/app
+
+  # ==========================================
+  # Frontend Applications
+  # ==========================================
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile.dev
+    container_name: eureka-web
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8100
+      NEXT_PUBLIC_TUTOR_URL: http://localhost:8101
+    ports:
+      - "4500:3000"
+    depends_on:
+      - api-core
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+
+  admin:
+    build:
+      context: ./apps/admin
+      dockerfile: Dockerfile.dev
+    container_name: eureka-admin
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8100
+    ports:
+      - "4501:3000"
+    depends_on:
+      - api-core
+    volumes:
+      - ./apps/admin:/app
+      - /app/node_modules
+      - /app/.next
 
 volumes:
   postgres_data:
+  redis_data:
+  minio_data:
+  opensearch_data:
+  kafka_data:
+
+networks:
+  default:
+    name: eureka-network

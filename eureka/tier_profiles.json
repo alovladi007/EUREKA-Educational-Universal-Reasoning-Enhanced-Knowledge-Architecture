@@ -1,0 +1,303 @@
+{
+  "tier_profiles": {
+    "high_school": {
+      "tier_id": "hs",
+      "display_name": "High School",
+      "competency_standards": ["NGSS", "Common Core Math", "Common Core ELA", "AP"],
+      "ai_behavior": {
+        "persona": "encouraging_mentor",
+        "tone": "friendly, patient, uses analogies and visual examples",
+        "complexity_level": 1,
+        "max_explanation_length": "medium",
+        "citation_style": "simple",
+        "feedback_style": "immediate with hints"
+      },
+      "assessment_modes": [
+        "multiple_choice",
+        "short_answer",
+        "interactive_simulation",
+        "mini_essay"
+      ],
+      "content_features": {
+        "gamification": true,
+        "badges": true,
+        "xp_system": true,
+        "streaks": true,
+        "parent_dashboard": true
+      },
+      "ethics_compliance": {
+        "primary_regulations": ["COPPA", "FERPA"],
+        "age_verification": true,
+        "parental_consent": true,
+        "content_filters": ["age_appropriate", "lexile_band"],
+        "pii_protection": "strict"
+      },
+      "difficulty_scale": 1,
+      "locales": ["en-US", "es-ES"],
+      "max_session_length_minutes": 45
+    },
+    "undergraduate": {
+      "tier_id": "ug",
+      "display_name": "Undergraduate",
+      "competency_standards": ["ABET", "AACSB", "ACM", "IEEE"],
+      "ai_behavior": {
+        "persona": "socratic_peer",
+        "tone": "collaborative, asks probing questions, encourages deeper thinking",
+        "complexity_level": 2,
+        "max_explanation_length": "detailed",
+        "citation_style": "academic (APA/MLA)",
+        "feedback_style": "formative with rubrics"
+      },
+      "assessment_modes": [
+        "problem_sets",
+        "lab_reports",
+        "coding_assignments",
+        "essays",
+        "peer_review"
+      ],
+      "content_features": {
+        "labs": true,
+        "code_sandboxes": true,
+        "peer_review": true,
+        "office_hours": true,
+        "study_groups": true
+      },
+      "ethics_compliance": {
+        "primary_regulations": ["FERPA"],
+        "plagiarism_detection": true,
+        "academic_integrity": "strict",
+        "citation_enforcement": true,
+        "pii_protection": "standard"
+      },
+      "integrations": ["LTI_1.3", "QTI_3.0", "SCORM", "xAPI"],
+      "difficulty_scale": 2,
+      "locales": ["en-US", "es-ES", "zh-CN"],
+      "max_session_length_minutes": 90
+    },
+    "graduate": {
+      "tier_id": "grad",
+      "display_name": "Graduate",
+      "competency_standards": [
+        "Council of Graduate Schools",
+        "Dissertation Guidelines",
+        "Research Ethics (IRB)"
+      ],
+      "ai_behavior": {
+        "persona": "research_advisor",
+        "tone": "scholarly, methodological, rigorous",
+        "complexity_level": 3,
+        "max_explanation_length": "comprehensive",
+        "citation_style": "strict academic (APA/Chicago/IEEE)",
+        "feedback_style": "peer-review level critique"
+      },
+      "assessment_modes": [
+        "literature_review",
+        "research_proposal",
+        "methodology_critique",
+        "conference_presentation",
+        "dissertation_defense"
+      ],
+      "content_features": {
+        "research_workspace": true,
+        "citation_manager": true,
+        "latex_export": true,
+        "data_analysis_notebooks": true,
+        "collaboration_tools": true
+      },
+      "ethics_compliance": {
+        "primary_regulations": ["FERPA", "IRB", "Research Ethics"],
+        "fabrication_detection": "strict",
+        "citation_verification": "mandatory",
+        "data_governance": true,
+        "consent_tracking": true,
+        "pii_protection": "maximum"
+      },
+      "integrations": ["Zotero", "Mendeley", "LaTeX", "Jupyter"],
+      "difficulty_scale": 3,
+      "locales": ["en-US", "en-GB", "es-ES", "zh-CN", "de-DE"],
+      "max_session_length_minutes": 120
+    },
+    "professional_medical": {
+      "tier_id": "pro-med",
+      "display_name": "Medical School",
+      "competency_standards": ["LCME", "AAMC EPAs", "USMLE", "NBME"],
+      "ai_behavior": {
+        "persona": "clinical_educator",
+        "tone": "precise, evidence-based, patient-centered",
+        "complexity_level": 4,
+        "max_explanation_length": "case-based",
+        "citation_style": "medical (AMA/Vancouver)",
+        "feedback_style": "clinical reasoning with differential diagnosis"
+      },
+      "assessment_modes": [
+        "clinical_cases",
+        "osce_stations",
+        "board_style_mcq",
+        "procedural_simulation",
+        "diagnostic_reasoning"
+      ],
+      "content_features": {
+        "case_simulator": true,
+        "osce_runner": true,
+        "differential_dx_engine": true,
+        "virtual_patients": true,
+        "cme_tracker": true
+      },
+      "ethics_compliance": {
+        "primary_regulations": ["HIPAA", "FERPA", "IRB"],
+        "phi_protection": "maximum",
+        "de_identification": "automatic",
+        "audit_logging": "comprehensive",
+        "consent_forms": true,
+        "pii_protection": "maximum"
+      },
+      "integrations": ["USMLE_content", "NBME_items", "Clinical_guidelines"],
+      "difficulty_scale": 4,
+      "locales": ["en-US"],
+      "max_session_length_minutes": 180,
+      "specialized_modules": ["bayesian_dx", "osce", "board_prep", "cme"]
+    },
+    "professional_law": {
+      "tier_id": "pro-law",
+      "display_name": "Law School",
+      "competency_standards": ["ABA", "NCBE", "State Bar Requirements"],
+      "ai_behavior": {
+        "persona": "legal_scholar",
+        "tone": "analytical, precedent-focused, argumentative",
+        "complexity_level": 4,
+        "max_explanation_length": "case-based with precedent",
+        "citation_style": "legal (Bluebook)",
+        "feedback_style": "IRAC critique with counter-arguments"
+      },
+      "assessment_modes": [
+        "issue_spotters",
+        "legal_memos",
+        "case_briefs",
+        "oral_arguments",
+        "bar_exam_style"
+      ],
+      "content_features": {
+        "case_reasoner": true,
+        "moot_court": true,
+        "bluebook_validator": true,
+        "precedent_search": true,
+        "ethics_checker": true
+      },
+      "ethics_compliance": {
+        "primary_regulations": ["ABA", "FERPA", "Attorney-Client Privilege"],
+        "confidentiality": "strict",
+        "conflict_checking": true,
+        "professional_responsibility": true,
+        "pii_protection": "maximum"
+      },
+      "integrations": ["Caselaw_Access_Project", "Legal_databases"],
+      "difficulty_scale": 4,
+      "locales": ["en-US"],
+      "max_session_length_minutes": 180,
+      "specialized_modules": ["irac", "moot_court", "bluebook", "bar_prep"]
+    },
+    "professional_mba": {
+      "tier_id": "pro-mba",
+      "display_name": "Business School (MBA)",
+      "competency_standards": ["AACSB", "EQUIS", "AMBA"],
+      "ai_behavior": {
+        "persona": "business_consultant",
+        "tone": "strategic, data-driven, pragmatic",
+        "complexity_level": 4,
+        "max_explanation_length": "case-based with frameworks",
+        "citation_style": "business (APA/Harvard)",
+        "feedback_style": "executive summary with recommendations"
+      },
+      "assessment_modes": [
+        "case_analysis",
+        "financial_modeling",
+        "strategy_papers",
+        "presentations",
+        "simulations"
+      ],
+      "content_features": {
+        "case_lab": true,
+        "finance_sandbox": true,
+        "negotiation_sim": true,
+        "ops_modeling": true,
+        "esg_scorer": true
+      },
+      "ethics_compliance": {
+        "primary_regulations": ["FERPA", "Corporate Ethics"],
+        "confidentiality": "standard",
+        "bias_detection": true,
+        "esg_compliance": true,
+        "pii_protection": "standard"
+      },
+      "integrations": ["Excel_API", "Financial_databases", "Case_libraries"],
+      "difficulty_scale": 4,
+      "locales": ["en-US", "zh-CN", "es-ES"],
+      "max_session_length_minutes": 180,
+      "specialized_modules": ["case_method", "finance", "ops_sim", "strategy"]
+    },
+    "professional_engineering": {
+      "tier_id": "pro-eng",
+      "display_name": "Engineering (Professional Licensure)",
+      "competency_standards": ["ABET", "NCEES", "FE/PE Exams"],
+      "ai_behavior": {
+        "persona": "engineering_mentor",
+        "tone": "precise, methodical, problem-solving focused",
+        "complexity_level": 4,
+        "max_explanation_length": "derivation with steps",
+        "citation_style": "technical (IEEE)",
+        "feedback_style": "solution verification with units check"
+      },
+      "assessment_modes": [
+        "problem_solving",
+        "simulations",
+        "design_projects",
+        "fe_pe_practice",
+        "lab_reports"
+      ],
+      "content_features": {
+        "exam_coach": true,
+        "circuit_sim": true,
+        "control_sim": true,
+        "thermal_sim": true,
+        "reference_handbook": true
+      },
+      "ethics_compliance": {
+        "primary_regulations": ["FERPA", "Professional Ethics (NSPE)"],
+        "academic_integrity": "strict",
+        "safety_protocols": true,
+        "pii_protection": "standard"
+      },
+      "integrations": ["MATLAB_Online", "CAD_APIs", "Simulation_engines"],
+      "difficulty_scale": 4,
+      "locales": ["en-US"],
+      "max_session_length_minutes": 240,
+      "specialized_modules": ["fe_pe_prep", "simulations", "design_studio"]
+    }
+  },
+  "cross_tier_features": {
+    "accessibility": {
+      "wcag_level": "AA",
+      "screen_reader": true,
+      "keyboard_navigation": true,
+      "high_contrast": true,
+      "text_scaling": true
+    },
+    "analytics": {
+      "learning_gains": true,
+      "time_to_mastery": true,
+      "engagement_metrics": true,
+      "risk_flags": true,
+      "cohort_comparison": true
+    },
+    "interoperability": {
+      "lti_1_3": true,
+      "qti_3_0": true,
+      "xapi": true,
+      "scorm": true,
+      "ims_caliper": true,
+      "oneroster": true
+    }
+  },
+  "version": "1.0.0",
+  "last_updated": "2025-01-27"
+}
