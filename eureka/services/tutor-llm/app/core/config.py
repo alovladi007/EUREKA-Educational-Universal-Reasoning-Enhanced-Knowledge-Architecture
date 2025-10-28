@@ -1,45 +1,54 @@
 """
-Configuration for Tutor-LLM Service
+AI Tutor Service - Configuration
 """
 from pydantic_settings import BaseSettings
-from typing import Optional
+from functools import lru_cache
+
 
 class Settings(BaseSettings):
     """Service configuration"""
     
-    # Service
-    SERVICE_NAME: str = "tutor-llm"
-    PORT: int = 8050  # Changed from 8002 to avoid conflicts with ATLAS-ML
+    # Service info
+    SERVICE_NAME: str = "ai-tutor"
+    VERSION: str = "1.0.0"
+    PORT: int = 8050
     
     # Database
     DATABASE_URL: str = "postgresql+asyncpg://eureka:eureka123@localhost:5432/eureka"
     
-    # OpenAI
-    OPENAI_API_KEY: Optional[str] = None
+    # OpenAI Configuration
+    OPENAI_API_KEY: str = ""
     OPENAI_MODEL: str = "gpt-4-turbo-preview"
     OPENAI_TEMPERATURE: float = 0.7
-    OPENAI_MAX_TOKENS: int = 2000
+    OPENAI_MAX_TOKENS: int = 1000
     
-    # Anthropic (Claude)
-    ANTHROPIC_API_KEY: Optional[str] = None
+    # Anthropic Configuration (optional alternative)
+    ANTHROPIC_API_KEY: str = ""
     ANTHROPIC_MODEL: str = "claude-3-opus-20240229"
+    ANTHROPIC_TEMPERATURE: float = 0.7
+    ANTHROPIC_MAX_TOKENS: int = 1000
+    
+    # Embedding Configuration
+    EMBEDDING_MODEL: str = "text-embedding-3-small"
+    EMBEDDING_DIMENSIONS: int = 1536
     
     # RAG Configuration
-    EMBEDDING_MODEL: str = "text-embedding-3-small"
-    EMBEDDING_DIMENSION: int = 1536
-    CHUNK_SIZE: int = 1000
-    CHUNK_OVERLAP: int = 200
-    TOP_K_RESULTS: int = 5
+    TOP_K_RESULTS: int = 5  # Number of similar chunks to retrieve
+    SIMILARITY_THRESHOLD: float = 0.7  # Minimum similarity score
     
-    # Conversation
-    MAX_CONVERSATION_HISTORY: int = 20
-    CONVERSATION_TIMEOUT_HOURS: int = 24
-    
-    # Teaching Style
+    # Teaching Configuration
     USE_SOCRATIC_METHOD: bool = True
-    DIFFICULTY_LEVELS: list[str] = ["beginner", "intermediate", "advanced"]
+    GENERATE_FOLLOW_UPS: bool = True
+    MAX_FOLLOW_UP_QUESTIONS: int = 3
+    
+    # Knowledge Tracking
+    MASTERY_THRESHOLD: float = 0.85  # 85% mastery required
+    CONFIDENCE_THRESHOLD: float = 0.75  # 75% confidence required
     
     class Config:
         env_file = ".env"
 
-settings = Settings()
+
+@lru_cache()
+def get_settings() -> Settings:
+    return Settings()

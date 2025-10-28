@@ -1,190 +1,260 @@
 """
-Pydantic schemas for Tutor-LLM Service
+AI Tutor Service - Pydantic Schemas (FIXED VERSION)
+
+Request/response models for API validation with proper field definitions.
 """
-from pydantic import BaseModel, Field, validator
-from typing import Optional, List, Dict, Any
 from datetime import datetime
+from typing import Optional, List, Dict, Any
 from uuid import UUID
-
-# ============================================================================
-# Conversation Schemas
-# ============================================================================
-
-class ConversationCreate(BaseModel):
-    """Create a new conversation"""
-    user_id: UUID
-    course_id: Optional[UUID] = None
-    title: Optional[str] = None
-    subject: Optional[str] = None
-    difficulty_level: str = Field(default="intermediate", pattern="^(beginner|intermediate|advanced)$")
-    use_socratic_method: bool = True
-    teaching_style: str = Field(default="adaptive", pattern="^(adaptive|direct|socratic)$")
-
-class ConversationResponse(BaseModel):
-    """Conversation response"""
-    id: UUID
-    user_id: UUID
-    course_id: Optional[UUID]
-    title: Optional[str]
-    subject: Optional[str]
-    difficulty_level: str
-    use_socratic_method: bool
-    teaching_style: str
-    is_active: bool
-    message_count: int
-    created_at: datetime
-    last_activity: datetime
-    
-    class Config:
-        from_attributes = True
+from pydantic import BaseModel, Field, ConfigDict
 
 
-# ============================================================================
-# Message Schemas
-# ============================================================================
-
-class MessageCreate(BaseModel):
-    """Send a message"""
-    conversation_id: UUID
-    content: str = Field(..., min_length=1, max_length=5000)
-
-class MessageResponse(BaseModel):
-    """Message response"""
-    id: UUID
-    conversation_id: UUID
-    role: str
-    content: str
-    context_used: Optional[List[UUID]] = None
-    confidence_score: Optional[float] = None
-    tokens_used: Optional[int] = None
-    model_used: Optional[str] = None
-    created_at: datetime
-    
-    class Config:
-        from_attributes = True
-
-class ConversationWithMessages(BaseModel):
-    """Conversation with all messages"""
-    conversation: ConversationResponse
-    messages: List[MessageResponse]
-
-
-# ============================================================================
-# Tutoring Request/Response
-# ============================================================================
+# ============= Tutor Request/Response =============
 
 class TutorRequest(BaseModel):
-    """Request for AI tutoring"""
-    conversation_id: Optional[UUID] = None
+    """Request to ask the AI tutor a question"""
     user_id: UUID
-    course_id: Optional[UUID] = None
-    message: str = Field(..., min_length=1, max_length=5000)
-    
-    # Optional preferences
+    course_id: UUID
+    message: str = Field(..., min_length=1)
+    conversation_id: Optional[UUID] = None
     use_rag: bool = True
-    use_socratic_method: Optional[bool] = None
-    difficulty_level: Optional[str] = None
-    include_examples: bool = True
-    
-    @validator('difficulty_level')
-    def validate_difficulty(cls, v):
-        if v and v not in ['beginner', 'intermediate', 'advanced']:
-            raise ValueError('Invalid difficulty level')
-        return v
+    use_socratic_method: bool = True
+
+
+class SourceDocument(BaseModel):
+    """Source document used in response"""
+    id: UUID
+    title: str
+    content_type: str
+    similarity: float
+    excerpt: Optional[str] = None
+
 
 class TutorResponse(BaseModel):
-    """AI tutor response"""
+    """Response from the AI tutor"""
     conversation_id: UUID
     message_id: UUID
     response: str
-    sources_used: List[Dict[str, Any]] = []
-    confidence: float
-    follow_up_suggestions: List[str] = []
-    topics_covered: List[str] = []
+    sources_used: List[SourceDocument] = Field(default_factory=list)
+    confidence: float = Field(..., ge=0.0, le=1.0)
+    follow_up_suggestions: List[str] = Field(default_factory=list)
+    timestamp: datetime
+
+
+# ============= Message Schemas =============
+
+class MessageBase(BaseModel):
+    """Base message schema"""
+    role: str = Field(..., pattern="^(user|assistant|system)$")
+    content: str
+
+
+class MessageResponse(MessageBase):
+    """Message response"""
+    id: UUID
+    conversation_id: UUID
+    context_used: List[UUID] = Field(default_factory=list)
+    sources: List[Dict[str, Any]] = Field(default_factory=list)
+    confidence_score: Optional[float] = None
+    tokens_used: Optional[int] = None
+    was_helpful: Optional[bool] = None
+    feedback_text: Optional[str] = None
+    created_at: datetime
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
-# ============================================================================
-# Course Content Schemas
-# ============================================================================
+# ============= Conversation Schemas =============
 
-class CourseContentCreate(BaseModel):
-    """Add course content for RAG"""
+class ConversationBase(BaseModel):
+    """Base conversation schema"""
+    title: str = Field(..., max_length=200)
+    subject: Optional[str] = Field(None, max_length=100)
+    difficulty_level: Optional[str] = None
+    use_socratic_method: bool = True
+    teaching_style: Optional[str] = None
+
+
+class ConversationCreate(ConversationBase):
+    """Create new conversation"""
+    user_id: UUID
     course_id: UUID
-    content_type: str = Field(..., pattern="^(lecture|reading|video_transcript|assignment)$")
-    title: str = Field(..., min_length=1, max_length=500)
-    content: str = Field(..., min_length=1)
+
+
+class ConversationUpdate(BaseModel):
+    """Update conversation"""
+    title: Optional[str] = Field(None, max_length=200)
+    is_active: Optional[bool] = None
+    teaching_style: Optional[str] = None
+
+
+class ConversationResponse(ConversationBase):
+    """Conversation response without messages"""
+    id: UUID
+    user_id: UUID
+    course_id: UUID
+    is_active: bool
+    message_count: int
+    created_at: datetime
+    updated_at: datetime
+    last_activity: datetime
+    ended_at: Optional[datetime] = None
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class ConversationWithMessages(ConversationResponse):
+    """Conversation response with messages included"""
+    messages: List[MessageResponse] = Field(default_factory=list)
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ============= Course Content Schemas =============
+
+class CourseContentBase(BaseModel):
+    """Base course content schema"""
+    content_type: str = Field(..., max_length=50)
+    title: str = Field(..., max_length=200)
+    content: str
     module_id: Optional[UUID] = None
     week_number: Optional[int] = Field(None, ge=1, le=52)
-    difficulty: Optional[str] = Field(None, pattern="^(beginner|intermediate|advanced)$")
-    topics: Optional[List[str]] = None
-    source_url: Optional[str] = None
-    author: Optional[str] = None
+    topics: List[str] = Field(default_factory=list)
+    difficulty: Optional[str] = None
+    estimated_time_minutes: Optional[int] = Field(None, ge=0)
+    source_url: Optional[str] = Field(None, max_length=500)
 
-class CourseContentResponse(BaseModel):
+
+class CourseContentCreate(CourseContentBase):
+    """Create new course content"""
+    course_id: UUID
+
+
+class CourseContentResponse(CourseContentBase):
     """Course content response"""
     id: UUID
     course_id: UUID
-    content_type: str
-    title: str
-    content: str
-    topics: Optional[List[str]]
-    difficulty: Optional[str]
     created_at: datetime
+    updated_at: datetime
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 
-# ============================================================================
-# Knowledge Tracking Schemas
-# ============================================================================
+# ============= Student Knowledge Schemas =============
 
-class StudentKnowledgeUpdate(BaseModel):
-    """Update student knowledge"""
-    topic: str
-    was_correct: bool
-    confidence: Optional[float] = Field(None, ge=0.0, le=1.0)
+class StudentKnowledgeBase(BaseModel):
+    """Base student knowledge schema"""
+    topic: str = Field(..., max_length=200)
+    mastery_level: float = Field(0.0, ge=0.0, le=1.0)
+    confidence: float = Field(0.0, ge=0.0, le=1.0)
+    questions_asked: int = Field(0, ge=0)
+    correct_responses: int = Field(0, ge=0)
+    total_attempts: int = Field(0, ge=0)
+    difficulty_level: str = "beginner"
+    needs_review: bool = False
 
-class StudentKnowledgeResponse(BaseModel):
-    """Student knowledge state"""
-    id: UUID
+
+class StudentKnowledgeCreate(BaseModel):
+    """Create student knowledge record"""
     user_id: UUID
     course_id: UUID
     topic: str
-    mastery_level: float
-    confidence: float
-    questions_asked: int
-    correct_responses: int
-    total_attempts: int
-    difficulty_level: str
-    needs_review: bool
-    last_practiced: Optional[datetime]
-    
-    class Config:
-        from_attributes = True
 
 
-# ============================================================================
-# Analytics Schemas
-# ============================================================================
-
-class TutorAnalytics(BaseModel):
-    """Analytics for tutoring sessions"""
+class KnowledgeUpdateRequest(BaseModel):
+    """Request to update knowledge state"""
     user_id: UUID
-    total_conversations: int
+    course_id: UUID
+    topic: str
+    correct: bool
+    confidence: Optional[float] = Field(None, ge=0.0, le=1.0)
+
+
+class StudentKnowledgeResponse(StudentKnowledgeBase):
+    """Student knowledge response"""
+    id: UUID
+    user_id: UUID
+    course_id: UUID
+    first_encountered: datetime
+    last_updated: datetime
+    mastered_at: Optional[datetime] = None
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+# ============= Session Analytics Schemas =============
+
+class SessionBase(BaseModel):
+    """Base session schema"""
+    duration_seconds: Optional[int] = Field(None, ge=0)
+    messages_exchanged: int = Field(0, ge=0)
+    topics_covered: List[str] = Field(default_factory=list)
+    concepts_learned: List[str] = Field(default_factory=list)
+    satisfaction_score: Optional[float] = Field(None, ge=0.0, le=5.0)
+    avg_confidence: Optional[float] = Field(None, ge=0.0, le=1.0)
+
+
+class SessionCreate(BaseModel):
+    """Create session"""
+    user_id: UUID
+    conversation_id: UUID
+
+
+class SessionResponse(SessionBase):
+    """Session response"""
+    id: UUID
+    user_id: UUID
+    conversation_id: UUID
+    started_at: datetime
+    ended_at: Optional[datetime] = None
+    
+    model_config = ConfigDict(from_attributes=True)
+
+
+class SessionAnalytics(BaseModel):
+    """Complete session analytics"""
+    user_id: UUID
+    total_sessions: int
     total_messages: int
-    average_session_duration: float
-    topics_mastered: List[str]
-    topics_needing_review: List[str]
-    total_time_spent_seconds: int
-    average_satisfaction: Optional[float]
-    knowledge_growth: Dict[str, float]  # topic -> growth percentage
+    total_duration_seconds: int
+    average_satisfaction: float
+    topics_covered: List[str]
+    concepts_learned: List[str]
+    recent_sessions: List[SessionResponse]
+
+
+# ============= Feedback Schemas =============
 
 class FeedbackCreate(BaseModel):
-    """Submit feedback on a message"""
+    """Submit feedback on a tutor response"""
     message_id: UUID
     was_helpful: bool
     feedback_text: Optional[str] = None
+
+
+class FeedbackResponse(BaseModel):
+    """Feedback response"""
+    message_id: UUID
+    was_helpful: bool
+    feedback_text: Optional[str] = None
+    submitted_at: datetime
+
+
+# ============= RAG Query Schemas =============
+
+class RAGQueryRequest(BaseModel):
+    """Request for RAG content search"""
+    course_id: UUID
+    query: str
+    top_k: int = Field(5, ge=1, le=20)
+    min_similarity: float = Field(0.7, ge=0.0, le=1.0)
+
+
+class RAGSearchResult(BaseModel):
+    """Individual RAG search result"""
+    content_id: UUID
+    title: str
+    content: str
+    content_type: str
+    similarity: float
+    topics: List[str]

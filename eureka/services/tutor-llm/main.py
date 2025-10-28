@@ -1,72 +1,71 @@
 """
-EUREKA Tutor-LLM Service
-AI-powered tutoring with RAG (Retrieval-Augmented Generation)
-Port: 8002
+AI Tutor (LLM) Service - Main Application
+
+Port: 8050
+Purpose: AI-powered tutoring with RAG, conversation management, and knowledge tracking
 """
-from fastapi import FastAPI, HTTPException, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from contextlib import asynccontextmanager
-import uvicorn
-
 from app.api.v1 import router as api_router
-from app.core.config import settings
-from app.core.database import engine, Base
+from app.core.config import get_settings
 
-@asynccontextmanager
-async def lifespan(app: FastAPI):
-    """Startup and shutdown events"""
-    # Startup
-    print("🤖 Starting Tutor-LLM Service...")
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
-    print(f"✅ Tutor-LLM Service running on port {settings.PORT}")
-    yield
-    # Shutdown
-    print("👋 Shutting down Tutor-LLM Service...")
+settings = get_settings()
 
+# Create FastAPI app
 app = FastAPI(
-    title="EUREKA Tutor-LLM Service",
-    description="AI-powered tutoring with RAG for personalized learning",
-    version="1.0.0",
-    lifespan=lifespan,
+    title="EUREKA AI Tutor Service",
+    description="AI-powered tutoring with RAG and personalized learning support",
+    version=settings.VERSION,
     docs_url="/docs",
     redoc_url="/redoc"
 )
 
-# CORS
+# CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["*"],  # Configure for production
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Routes
-app.include_router(api_router, prefix="/api/v1/tutor")
+# Include API routes
+app.include_router(api_router, prefix="/api/v1/tutor", tags=["tutor"])
+
 
 @app.get("/")
 async def root():
-    """Service info"""
+    """Service information"""
     return {
-        "service": "tutor-llm",
-        "version": "1.0.0",
+        "service": settings.SERVICE_NAME,
+        "version": settings.VERSION,
         "status": "running",
+        "port": settings.PORT,
         "features": [
-            "AI tutoring with RAG",
+            "AI-powered tutoring (GPT-4 & Claude)",
+            "RAG with vector embeddings",
             "Conversation management",
-            "Personalized learning",
-            "Socratic teaching",
-            "Multi-modal support"
+            "Socratic teaching method",
+            "Knowledge state tracking",
+            "Confidence scoring",
+            "Follow-up suggestions",
+            "Session analytics"
         ]
     }
 
+
 @app.get("/health")
-async def health():
-    """Health check"""
-    return {"status": "healthy", "service": "tutor-llm"}
+async def health_check():
+    """Health check endpoint"""
+    return {
+        "status": "healthy", 
+        "service": settings.SERVICE_NAME,
+        "port": settings.PORT
+    }
+
 
 if __name__ == "__main__":
+    import uvicorn
     uvicorn.run(
         "main:app",
         host="0.0.0.0",

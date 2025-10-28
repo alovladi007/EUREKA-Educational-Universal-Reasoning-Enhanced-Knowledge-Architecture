@@ -1,127 +1,142 @@
 """
-Database models for Tutor-LLM Service
+AI Tutor Service - Database Models
+
+Handles conversations, messages, RAG content, knowledge tracking, and session analytics.
 """
-from sqlalchemy import Column, String, Text, Integer, Float, Boolean, DateTime, ForeignKey, JSON
-from sqlalchemy.dialects.postgresql import UUID, ARRAY
-from sqlalchemy.sql import func
+from datetime import datetime
+from typing import Optional
+from sqlalchemy import (
+    Column, String, Integer, Float, Boolean, DateTime, 
+    ForeignKey, Text, JSON, ARRAY
+)
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.orm import declarative_base
 import uuid
 
-from app.core.database import Base
+Base = declarative_base()
 
-class Conversation(Base):
-    """Tutoring conversation session"""
+
+# 1. Tutor Conversations - Session Management
+class TutorConversation(Base):
+    """Manages tutoring conversation sessions"""
     __tablename__ = "tutor_conversations"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
-    course_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    course_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     
-    # Conversation metadata
-    title = Column(String(255), nullable=True)
-    subject = Column(String(100), nullable=True)
-    difficulty_level = Column(String(50), default="intermediate")
+    # Conversation details
+    title = Column(String(200), nullable=False)
+    subject = Column(String(100))
+    difficulty_level = Column(String(50))  # beginner, intermediate, advanced
     
     # Teaching preferences
     use_socratic_method = Column(Boolean, default=True)
-    teaching_style = Column(String(50), default="adaptive")  # adaptive, direct, socratic
-    language = Column(String(10), default="en")
+    teaching_style = Column(String(50))  # guiding, direct, exploratory
     
-    # State
+    # Status
     is_active = Column(Boolean, default=True)
     message_count = Column(Integer, default=0)
     
-    # Tracking
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
-    last_activity = Column(DateTime(timezone=True), server_default=func.now())
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    last_activity = Column(DateTime, default=datetime.utcnow)
+    ended_at = Column(DateTime)
 
 
-class Message(Base):
-    """Individual message in a conversation"""
+# 2. Tutor Messages - Individual Messages
+class TutorMessage(Base):
+    """Individual messages in tutoring conversations"""
     __tablename__ = "tutor_messages"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     conversation_id = Column(UUID(as_uuid=True), ForeignKey("tutor_conversations.id"), nullable=False, index=True)
     
-    # Message content
+    # Message details
     role = Column(String(20), nullable=False)  # user, assistant, system
     content = Column(Text, nullable=False)
     
     # Context used (for RAG)
-    context_used = Column(JSON, nullable=True)  # IDs of content chunks used
-    confidence_score = Column(Float, nullable=True)
+    context_used = Column(JSON, default=list)  # List of content IDs used
+    sources = Column(JSON, default=list)  # Source documents
     
-    # Metadata
-    tokens_used = Column(Integer, nullable=True)
-    model_used = Column(String(100), nullable=True)
+    # Quality metrics
+    confidence_score = Column(Float)  # AI's confidence in response (0.0-1.0)
+    tokens_used = Column(Integer)
     
     # Feedback
-    was_helpful = Column(Boolean, nullable=True)
-    feedback_text = Column(Text, nullable=True)
+    was_helpful = Column(Boolean)
+    feedback_text = Column(Text)
     
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
+    # Timestamp
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
+# 3. Course Content - RAG Content with Embeddings
 class CourseContent(Base):
-    """Course content for RAG"""
+    """Course content with vector embeddings for RAG"""
     __tablename__ = "course_content"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     course_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     
-    # Content
-    content_type = Column(String(50), nullable=False)  # lecture, reading, video_transcript, assignment
-    title = Column(String(500), nullable=False)
+    # Content details
+    content_type = Column(String(50), nullable=False)  # lecture, reading, video, etc.
+    title = Column(String(200), nullable=False)
     content = Column(Text, nullable=False)
     
+    # Vector embedding for similarity search
+    embedding = Column(ARRAY(Float))  # 1536 dimensions for OpenAI embeddings
+    
+    # Organization
+    module_id = Column(UUID(as_uuid=True))
+    week_number = Column(Integer)
+    topics = Column(JSON, default=list)
+    
     # Metadata
-    module_id = Column(UUID(as_uuid=True), nullable=True)
-    week_number = Column(Integer, nullable=True)
-    difficulty = Column(String(20), nullable=True)
-    topics = Column(ARRAY(String), nullable=True)
+    difficulty = Column(String(50))
+    estimated_time_minutes = Column(Integer)
+    source_url = Column(String(500))
     
-    # Vector embedding (for similarity search)
-    embedding = Column(ARRAY(Float), nullable=True)  # Will store the vector
-    
-    # Source
-    source_url = Column(String(1000), nullable=True)
-    author = Column(String(255), nullable=True)
-    
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    # Timestamps
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
+# 4. Student Knowledge - Knowledge State Tracking
 class StudentKnowledge(Base):
-    """Track student's knowledge state for adaptive learning"""
+    """Tracks student knowledge and understanding"""
     __tablename__ = "student_knowledge"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     course_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    topic = Column(String(200), nullable=False)
     
-    # Knowledge tracking
-    topic = Column(String(255), nullable=False)
-    mastery_level = Column(Float, default=0.0)  # 0.0 to 1.0
-    confidence = Column(Float, default=0.0)  # 0.0 to 1.0
+    # Knowledge metrics
+    mastery_level = Column(Float, default=0.0)  # 0.0 - 1.0
+    confidence = Column(Float, default=0.0)  # 0.0 - 1.0
     
-    # Learning metrics
+    # Interaction stats
     questions_asked = Column(Integer, default=0)
     correct_responses = Column(Integer, default=0)
     total_attempts = Column(Integer, default=0)
     
-    # Recommendations
-    difficulty_level = Column(String(20), default="intermediate")
+    # Learning state
+    difficulty_level = Column(String(50), default="beginner")
     needs_review = Column(Boolean, default=False)
-    suggested_resources = Column(JSON, nullable=True)
     
     # Timestamps
-    last_practiced = Column(DateTime(timezone=True), nullable=True)
-    created_at = Column(DateTime(timezone=True), server_default=func.now())
-    updated_at = Column(DateTime(timezone=True), onupdate=func.now())
+    first_encountered = Column(DateTime, default=datetime.utcnow)
+    last_updated = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    mastered_at = Column(DateTime)
 
 
+# 5. Tutor Sessions - Session Analytics
 class TutorSession(Base):
-    """Track tutoring sessions for analytics"""
+    """Analytics for individual tutoring sessions"""
     __tablename__ = "tutor_sessions"
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
@@ -129,15 +144,17 @@ class TutorSession(Base):
     conversation_id = Column(UUID(as_uuid=True), ForeignKey("tutor_conversations.id"), nullable=False)
     
     # Session metrics
-    duration_seconds = Column(Integer, nullable=True)
+    duration_seconds = Column(Integer)
     messages_exchanged = Column(Integer, default=0)
-    topics_covered = Column(ARRAY(String), nullable=True)
     
-    # Learning outcomes
-    concepts_learned = Column(ARRAY(String), nullable=True)
-    questions_resolved = Column(Integer, default=0)
-    satisfaction_score = Column(Integer, nullable=True)  # 1-5
+    # Content covered
+    topics_covered = Column(JSON, default=list)
+    concepts_learned = Column(JSON, default=list)
     
-    # Session data
-    started_at = Column(DateTime(timezone=True), server_default=func.now())
-    ended_at = Column(DateTime(timezone=True), nullable=True)
+    # Quality metrics
+    satisfaction_score = Column(Float)  # User feedback (0.0-5.0)
+    avg_confidence = Column(Float)  # Average AI confidence
+    
+    # Timestamps
+    started_at = Column(DateTime, default=datetime.utcnow)
+    ended_at = Column(DateTime)

@@ -1,231 +1,195 @@
 """
-CRUD operations for Tutor-LLM Service
+AI Tutor Service - CRUD Operations (FIXED VERSION)
+
+Database operations for tutoring service.
 """
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select, func, and_, update, delete
-from typing import List, Optional, Dict, Any
+from typing import List, Optional
 from uuid import UUID
-from datetime import datetime, timedelta
+from datetime import datetime
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, and_
 
 from app.core.models import (
-    Conversation, Message, CourseContent,
+    TutorConversation, TutorMessage, CourseContent,
     StudentKnowledge, TutorSession
 )
-from app.schemas import (
-    ConversationCreate, MessageCreate, CourseContentCreate,
-    StudentKnowledgeUpdate
-)
 
-# ============================================================================
-# Conversation CRUD
-# ============================================================================
+
+# ============= Conversation CRUD =============
 
 async def create_conversation(
     db: AsyncSession,
-    data: ConversationCreate
-) -> Conversation:
+    user_id: UUID,
+    course_id: UUID,
+    title: str,
+    **kwargs
+) -> TutorConversation:
     """Create a new conversation"""
-    conversation = Conversation(**data.model_dump())
+    conversation = TutorConversation(
+        user_id=user_id,
+        course_id=course_id,
+        title=title,
+        **kwargs
+    )
     db.add(conversation)
-    await db.flush()
+    await db.commit()
     await db.refresh(conversation)
     return conversation
+
 
 async def get_conversation(
     db: AsyncSession,
     conversation_id: UUID
-) -> Optional[Conversation]:
-    """Get conversation by ID"""
+) -> Optional[TutorConversation]:
+    """Get a conversation by ID"""
     result = await db.execute(
-        select(Conversation).where(Conversation.id == conversation_id)
+        select(TutorConversation).where(TutorConversation.id == conversation_id)
     )
     return result.scalar_one_or_none()
 
-async def get_user_conversations(
+
+async def list_user_conversations(
     db: AsyncSession,
     user_id: UUID,
     course_id: Optional[UUID] = None,
-    is_active: Optional[bool] = None,
-    limit: int = 50
-) -> List[Conversation]:
-    """Get all conversations for a user"""
-    query = select(Conversation).where(Conversation.user_id == user_id)
+    active_only: bool = False
+) -> List[TutorConversation]:
+    """List conversations for a user"""
+    query = select(TutorConversation).where(TutorConversation.user_id == user_id)
     
     if course_id:
-        query = query.where(Conversation.course_id == course_id)
-    if is_active is not None:
-        query = query.where(Conversation.is_active == is_active)
+        query = query.where(TutorConversation.course_id == course_id)
     
-    query = query.order_by(Conversation.last_activity.desc()).limit(limit)
+    if active_only:
+        query = query.where(TutorConversation.is_active == True)
     
-    result = await db.execute(query)
-    return list(result.scalars().all())
+    result = await db.execute(query.order_by(TutorConversation.last_activity.desc()))
+    return result.scalars().all()
 
-async def update_conversation_activity(
+
+async def update_conversation(
     db: AsyncSession,
-    conversation_id: UUID
-) -> None:
-    """Update last activity timestamp"""
-    await db.execute(
-        update(Conversation)
-        .where(Conversation.id == conversation_id)
-        .values(
-            last_activity=datetime.utcnow(),
-            message_count=Conversation.message_count + 1
-        )
-    )
-
-async def end_conversation(
-    db: AsyncSession,
-    conversation_id: UUID
-) -> None:
-    """Mark conversation as inactive"""
-    await db.execute(
-        update(Conversation)
-        .where(Conversation.id == conversation_id)
-        .values(is_active=False)
-    )
+    conversation_id: UUID,
+    **kwargs
+) -> TutorConversation:
+    """Update a conversation"""
+    conversation = await get_conversation(db, conversation_id)
+    if not conversation:
+        raise ValueError("Conversation not found")
+    
+    for key, value in kwargs.items():
+        setattr(conversation, key, value)
+    
+    await db.commit()
+    await db.refresh(conversation)
+    return conversation
 
 
-# ============================================================================
-# Message CRUD
-# ============================================================================
+# ============= Message CRUD =============
 
 async def create_message(
     db: AsyncSession,
     conversation_id: UUID,
     role: str,
     content: str,
-    context_used: Optional[List[UUID]] = None,
-    confidence_score: Optional[float] = None,
-    tokens_used: Optional[int] = None,
-    model_used: Optional[str] = None
-) -> Message:
+    **kwargs
+) -> TutorMessage:
     """Create a new message"""
-    message = Message(
+    message = TutorMessage(
         conversation_id=conversation_id,
         role=role,
         content=content,
-        context_used=context_used,
-        confidence_score=confidence_score,
-        tokens_used=tokens_used,
-        model_used=model_used
+        **kwargs
     )
     db.add(message)
-    await db.flush()
+    await db.commit()
     await db.refresh(message)
     return message
 
+
 async def get_conversation_messages(
     db: AsyncSession,
-    conversation_id: UUID,
-    limit: Optional[int] = None
-) -> List[Message]:
+    conversation_id: UUID
+) -> List[TutorMessage]:
     """Get all messages in a conversation"""
-    query = select(Message).where(Message.conversation_id == conversation_id)
-    query = query.order_by(Message.created_at.asc())
-    
-    if limit:
-        query = query.limit(limit)
-    
-    result = await db.execute(query)
-    return list(result.scalars().all())
-
-async def get_recent_messages(
-    db: AsyncSession,
-    conversation_id: UUID,
-    count: int = 10
-) -> List[Message]:
-    """Get recent messages for context"""
-    query = (
-        select(Message)
-        .where(Message.conversation_id == conversation_id)
-        .order_by(Message.created_at.desc())
-        .limit(count)
+    result = await db.execute(
+        select(TutorMessage)
+        .where(TutorMessage.conversation_id == conversation_id)
+        .order_by(TutorMessage.created_at)
     )
-    
-    result = await db.execute(query)
-    messages = list(result.scalars().all())
-    return list(reversed(messages))  # Return in chronological order
+    return result.scalars().all()
 
-async def add_message_feedback(
+
+# ============= Course Content CRUD =============
+
+async def create_content(
     db: AsyncSession,
-    message_id: UUID,
-    was_helpful: bool,
-    feedback_text: Optional[str] = None
-) -> None:
-    """Add feedback to a message"""
-    await db.execute(
-        update(Message)
-        .where(Message.id == message_id)
-        .values(
-            was_helpful=was_helpful,
-            feedback_text=feedback_text
-        )
-    )
-
-
-# ============================================================================
-# Course Content CRUD
-# ============================================================================
-
-async def create_course_content(
-    db: AsyncSession,
-    data: CourseContentCreate,
-    embedding: Optional[List[float]] = None
+    course_id: UUID,
+    content: str,
+    **kwargs
 ) -> CourseContent:
-    """Create course content with embedding"""
-    content = CourseContent(
-        **data.model_dump(),
-        embedding=embedding
+    """Create course content"""
+    db_content = CourseContent(
+        course_id=course_id,
+        content=content,
+        **kwargs
     )
-    db.add(content)
-    await db.flush()
-    await db.refresh(content)
-    return content
+    db.add(db_content)
+    await db.commit()
+    await db.refresh(db_content)
+    return db_content
 
-async def get_course_content(
+
+async def get_content(
+    db: AsyncSession,
+    content_id: UUID
+) -> Optional[CourseContent]:
+    """Get content by ID"""
+    result = await db.execute(
+        select(CourseContent).where(CourseContent.id == content_id)
+    )
+    return result.scalar_one_or_none()
+
+
+async def list_course_content(
     db: AsyncSession,
     course_id: UUID,
     content_type: Optional[str] = None
 ) -> List[CourseContent]:
-    """Get all content for a course"""
+    """List content for a course"""
     query = select(CourseContent).where(CourseContent.course_id == course_id)
     
     if content_type:
         query = query.where(CourseContent.content_type == content_type)
     
     result = await db.execute(query)
-    return list(result.scalars().all())
+    return result.scalars().all()
 
-async def search_course_content(
+
+async def search_content_by_embedding(
     db: AsyncSession,
     course_id: UUID,
-    topics: List[str]
+    query_embedding: List[float],
+    top_k: int = 5
 ) -> List[CourseContent]:
-    """Search content by topics"""
-    query = select(CourseContent).where(
-        and_(
-            CourseContent.course_id == course_id,
-            CourseContent.topics.overlap(topics)
-        )
-    )
-    
-    result = await db.execute(query)
-    return list(result.scalars().all())
+    """
+    Search content using vector similarity.
+    Note: This requires pgvector extension in PostgreSQL.
+    """
+    # For now, return all content (would need pgvector for real similarity search)
+    return await list_course_content(db, course_id)
 
 
-# ============================================================================
-# Student Knowledge CRUD
-# ============================================================================
+# ============= Student Knowledge CRUD =============
 
-async def get_or_create_student_knowledge(
+async def create_or_update_knowledge(
     db: AsyncSession,
     user_id: UUID,
     course_id: UUID,
-    topic: str
+    topic: str,
+    **kwargs
 ) -> StudentKnowledge:
-    """Get or create student knowledge entry"""
+    """Create or update knowledge state"""
     result = await db.execute(
         select(StudentKnowledge).where(
             and_(
@@ -237,177 +201,116 @@ async def get_or_create_student_knowledge(
     )
     knowledge = result.scalar_one_or_none()
     
+    # Extract mastery_delta if present
+    mastery_delta = kwargs.pop('mastery_delta', None)
+    
     if not knowledge:
+        # Create new knowledge record
+        initial_mastery = mastery_delta if mastery_delta is not None else 0.0
         knowledge = StudentKnowledge(
             user_id=user_id,
             course_id=course_id,
-            topic=topic
+            topic=topic,
+            mastery_level=initial_mastery,
+            **kwargs
         )
         db.add(knowledge)
-        await db.flush()
-        await db.refresh(knowledge)
-    
-    return knowledge
-
-async def update_student_knowledge(
-    db: AsyncSession,
-    user_id: UUID,
-    course_id: UUID,
-    topic: str,
-    was_correct: bool,
-    confidence: Optional[float] = None
-) -> StudentKnowledge:
-    """Update student knowledge based on practice"""
-    knowledge = await get_or_create_student_knowledge(db, user_id, course_id, topic)
-    
-    # Update metrics
-    knowledge.questions_asked += 1
-    knowledge.total_attempts += 1
-    if was_correct:
-        knowledge.correct_responses += 1
-    
-    # Calculate new mastery level
-    accuracy = knowledge.correct_responses / knowledge.total_attempts
-    knowledge.mastery_level = min(accuracy * 1.2, 1.0)  # Cap at 1.0
-    
-    # Update confidence
-    if confidence is not None:
-        knowledge.confidence = confidence
-    
-    # Update difficulty and review status
-    if knowledge.mastery_level >= 0.8:
-        knowledge.difficulty_level = "advanced"
-        knowledge.needs_review = False
-    elif knowledge.mastery_level >= 0.5:
-        knowledge.difficulty_level = "intermediate"
-        knowledge.needs_review = False
     else:
-        knowledge.difficulty_level = "beginner"
-        knowledge.needs_review = True
+        # Update existing knowledge
+        if mastery_delta is not None:
+            # Apply delta to mastery level (cap at 1.0)
+            knowledge.mastery_level = min(1.0, max(0.0, knowledge.mastery_level + mastery_delta))
+        
+        # Update other fields
+        for key, value in kwargs.items():
+            setattr(knowledge, key, value)
+        
+        # Update total attempts
+        knowledge.total_attempts += 1
+        
+        # Update last_updated timestamp
+        knowledge.last_updated = datetime.utcnow()
+        
+        # Check if mastered
+        if knowledge.mastery_level >= 0.85 and not knowledge.mastered_at:
+            knowledge.mastered_at = datetime.utcnow()
     
-    knowledge.last_practiced = datetime.utcnow()
-    
-    await db.flush()
+    await db.commit()
     await db.refresh(knowledge)
     return knowledge
 
-async def get_student_knowledge_state(
+
+async def get_student_knowledge(
     db: AsyncSession,
     user_id: UUID,
-    course_id: Optional[UUID] = None
+    course_id: Optional[UUID] = None,
+    topic: Optional[str] = None
 ) -> List[StudentKnowledge]:
-    """Get all knowledge states for a student"""
+    """Get knowledge state for a student"""
     query = select(StudentKnowledge).where(StudentKnowledge.user_id == user_id)
     
     if course_id:
         query = query.where(StudentKnowledge.course_id == course_id)
     
-    result = await db.execute(query)
-    return list(result.scalars().all())
-
-async def get_topics_needing_review(
-    db: AsyncSession,
-    user_id: UUID,
-    course_id: UUID
-) -> List[StudentKnowledge]:
-    """Get topics that need review"""
-    query = select(StudentKnowledge).where(
-        and_(
-            StudentKnowledge.user_id == user_id,
-            StudentKnowledge.course_id == course_id,
-            StudentKnowledge.needs_review == True
-        )
-    ).order_by(StudentKnowledge.mastery_level.asc())
+    if topic:
+        query = query.where(StudentKnowledge.topic == topic)
     
     result = await db.execute(query)
-    return list(result.scalars().all())
+    return result.scalars().all()
 
 
-# ============================================================================
-# Session CRUD
-# ============================================================================
+# ============= Session CRUD =============
 
-async def create_tutor_session(
+async def create_session(
     db: AsyncSession,
     user_id: UUID,
-    conversation_id: UUID
+    conversation_id: UUID,
+    **kwargs
 ) -> TutorSession:
-    """Create a new tutoring session"""
+    """Create a tutoring session"""
     session = TutorSession(
         user_id=user_id,
-        conversation_id=conversation_id
+        conversation_id=conversation_id,
+        **kwargs
     )
     db.add(session)
-    await db.flush()
+    await db.commit()
     await db.refresh(session)
     return session
 
-async def end_tutor_session(
+
+async def update_session(
     db: AsyncSession,
     session_id: UUID,
-    topics_covered: List[str],
-    concepts_learned: List[str],
-    satisfaction_score: Optional[int] = None
-) -> None:
-    """End a tutoring session"""
-    await db.execute(
-        update(TutorSession)
-        .where(TutorSession.id == session_id)
-        .values(
-            ended_at=datetime.utcnow(),
-            topics_covered=topics_covered,
-            concepts_learned=concepts_learned,
-            satisfaction_score=satisfaction_score
-        )
+    **kwargs
+) -> TutorSession:
+    """Update a session"""
+    result = await db.execute(
+        select(TutorSession).where(TutorSession.id == session_id)
     )
+    session = result.scalar_one_or_none()
+    
+    if not session:
+        raise ValueError("Session not found")
+    
+    for key, value in kwargs.items():
+        setattr(session, key, value)
+    
+    await db.commit()
+    await db.refresh(session)
+    return session
 
-async def get_user_analytics(
+
+async def get_user_sessions(
     db: AsyncSession,
     user_id: UUID,
-    days: int = 30
-) -> Dict[str, Any]:
-    """Get analytics for a user"""
-    cutoff_date = datetime.utcnow() - timedelta(days=days)
+    limit: Optional[int] = None
+) -> List[TutorSession]:
+    """Get sessions for a user"""
+    query = select(TutorSession).where(TutorSession.user_id == user_id)
     
-    # Get conversation count
-    conv_result = await db.execute(
-        select(func.count(Conversation.id))
-        .where(
-            and_(
-                Conversation.user_id == user_id,
-                Conversation.created_at >= cutoff_date
-            )
-        )
-    )
-    total_conversations = conv_result.scalar()
+    if limit:
+        query = query.limit(limit)
     
-    # Get message count
-    msg_result = await db.execute(
-        select(func.count(Message.id))
-        .join(Conversation, Message.conversation_id == Conversation.id)
-        .where(
-            and_(
-                Conversation.user_id == user_id,
-                Message.created_at >= cutoff_date
-            )
-        )
-    )
-    total_messages = msg_result.scalar()
-    
-    # Get knowledge states
-    knowledge_states = await get_student_knowledge_state(db, user_id)
-    
-    topics_mastered = [
-        k.topic for k in knowledge_states if k.mastery_level >= 0.8
-    ]
-    topics_needing_review = [
-        k.topic for k in knowledge_states if k.needs_review
-    ]
-    
-    return {
-        "total_conversations": total_conversations,
-        "total_messages": total_messages,
-        "topics_mastered": topics_mastered,
-        "topics_needing_review": topics_needing_review,
-        "knowledge_states": knowledge_states
-    }
+    result = await db.execute(query.order_by(TutorSession.started_at.desc()))
+    return result.scalars().all()

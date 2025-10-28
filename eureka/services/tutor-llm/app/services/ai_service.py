@@ -1,44 +1,60 @@
 """
-AI Service for LLM interactions with RAG
-Supports both OpenAI and Anthropic models
+AI Tutor Service - AI Integration
+
+Handles RAG, embeddings, and AI model interactions.
 """
-from typing import List, Dict, Any, Optional, Tuple
-import openai
-from anthropic import Anthropic
-import numpy as np
 from datetime import datetime
+from typing import List, Optional, Dict
+from uuid import UUID
+import numpy as np
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select, and_
 
-from app.core.config import settings
-from app.core.models import Message, CourseContent, StudentKnowledge
+from app.core.config import get_settings
+from app.core.models import (
+    TutorConversation, TutorMessage, CourseContent, 
+    StudentKnowledge, TutorSession
+)
+from app.schemas import TutorResponse, SourceDocument
+from app.crud import (
+    create_message, get_conversation_messages,
+    create_or_update_knowledge
+)
 
-class AIService:
-    """AI service for tutoring with RAG"""
+settings = get_settings()
+
+
+class AITutoringService:
+    """Core AI tutoring service with RAG capabilities"""
     
     def __init__(self):
         self.openai_client = None
         self.anthropic_client = None
-        
-        # Initialize clients if API keys are provided
+        self._initialize_clients()
+    
+    def _initialize_clients(self):
+        """Initialize AI clients if API keys are available"""
         if settings.OPENAI_API_KEY:
-            openai.api_key = settings.OPENAI_API_KEY
-            self.openai_client = openai
-            
+            try:
+                from openai import AsyncOpenAI
+                self.openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
+            except ImportError:
+                print("OpenAI package not installed")
+        
         if settings.ANTHROPIC_API_KEY:
-            self.anthropic_client = Anthropic(api_key=settings.ANTHROPIC_API_KEY)
+            try:
+                from anthropic import AsyncAnthropic
+                self.anthropic_client = AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
+            except ImportError:
+                print("Anthropic package not installed")
+    
+    # ============= Embedding Generation =============
     
     async def generate_embedding(self, text: str) -> List[float]:
-        """
-        Generate embedding for text using OpenAI
-        
-        Args:
-            text: Text to embed
-            
-        Returns:
-            List of floats representing the embedding
-        """
+        """Generate vector embedding for text using OpenAI"""
         if not self.openai_client:
             # Return dummy embedding if no API key
-            return [0.0] * settings.EMBEDDING_DIMENSION
+            return [0.0] * settings.EMBEDDING_DIMENSIONS
         
         try:
             response = await self.openai_client.embeddings.create(
@@ -48,192 +64,310 @@ class AIService:
             return response.data[0].embedding
         except Exception as e:
             print(f"Error generating embedding: {e}")
-            return [0.0] * settings.EMBEDDING_DIMENSION
+            return [0.0] * settings.EMBEDDING_DIMENSIONS
     
-    def cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
-        """Calculate cosine similarity between two vectors"""
-        vec1_array = np.array(vec1)
-        vec2_array = np.array(vec2)
-        
-        dot_product = np.dot(vec1_array, vec2_array)
-        norm1 = np.linalg.norm(vec1_array)
-        norm2 = np.linalg.norm(vec2_array)
-        
-        if norm1 == 0 or norm2 == 0:
-            return 0.0
-        
-        return float(dot_product / (norm1 * norm2))
+    # ============= RAG Content Retrieval =============
     
     async def retrieve_relevant_content(
         self,
+        db: AsyncSession,
+        course_id: UUID,
         query: str,
-        course_contents: List[CourseContent],
         top_k: int = None
-    ) -> List[Tuple[CourseContent, float]]:
-        """
-        Retrieve most relevant course content using RAG
-        
-        Args:
-            query: User's question
-            course_contents: Available course content
-            top_k: Number of results to return
-            
-        Returns:
-            List of (content, similarity_score) tuples
-        """
-        if not course_contents:
-            return []
-        
-        top_k = top_k or settings.TOP_K_RESULTS
+    ) -> List[CourseContent]:
+        """Retrieve relevant course content using RAG"""
+        if top_k is None:
+            top_k = settings.TOP_K_RESULTS
         
         # Generate query embedding
         query_embedding = await self.generate_embedding(query)
         
-        # Calculate similarities
+        # Get all content for the course
+        result = await db.execute(
+            select(CourseContent).where(CourseContent.course_id == course_id)
+        )
+        all_content = result.scalars().all()
+        
+        if not all_content:
+            return []
+        
+        # Calculate cosine similarity for each content item
         similarities = []
-        for content in course_contents:
+        for content in all_content:
             if content.embedding:
-                similarity = self.cosine_similarity(query_embedding, content.embedding)
-                similarities.append((content, similarity))
+                similarity = self._cosine_similarity(query_embedding, content.embedding)
+                if similarity >= settings.SIMILARITY_THRESHOLD:
+                    similarities.append((content, similarity))
         
         # Sort by similarity and return top k
         similarities.sort(key=lambda x: x[1], reverse=True)
-        return similarities[:top_k]
+        return [content for content, _ in similarities[:top_k]]
+    
+    def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
+        """Calculate cosine similarity between two vectors"""
+        try:
+            a = np.array(vec1)
+            b = np.array(vec2)
+            return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b)))
+        except Exception:
+            return 0.0
+    
+    # ============= AI Response Generation =============
     
     async def generate_response(
         self,
-        messages: List[Dict[str, str]],
-        system_prompt: str,
-        relevant_content: Optional[List[CourseContent]] = None,
-        use_socratic: bool = True,
-        model: str = None
-    ) -> Tuple[str, int]:
-        """
-        Generate AI response using LLM
+        db: AsyncSession,
+        conversation_id: UUID,
+        user_id: UUID,
+        course_id: UUID,
+        message: str,
+        use_rag: bool = True,
+        use_socratic_method: bool = True
+    ) -> TutorResponse:
+        """Generate AI tutor response with RAG and Socratic method"""
         
-        Args:
-            messages: Conversation history
-            system_prompt: System instructions
-            relevant_content: RAG context
-            use_socratic: Use Socratic teaching method
-            model: Model to use (defaults to config)
-            
-        Returns:
-            Tuple of (response_text, tokens_used)
-        """
-        # Prepare context from RAG
-        context = ""
-        if relevant_content:
-            context = "\n\n### Relevant Course Material:\n"
-            for content in relevant_content:
-                context += f"\n**{content.title}** ({content.content_type}):\n{content.content[:500]}...\n"
+        # Create user message
+        user_message = await create_message(
+            db=db,
+            conversation_id=conversation_id,
+            role="user",
+            content=message
+        )
         
-        # Adjust system prompt based on teaching style
-        teaching_instructions = ""
-        if use_socratic:
-            teaching_instructions = """
-Use the Socratic method: Instead of directly answering, guide the student to discover the answer through thoughtful questions. 
-Ask probing questions that lead to understanding. Build on the student's knowledge.
-"""
+        # Retrieve relevant content if RAG is enabled
+        relevant_content = []
+        context_ids = []
+        if use_rag:
+            relevant_content = await self.retrieve_relevant_content(
+                db=db,
+                course_id=course_id,
+                query=message
+            )
+            context_ids = [content.id for content in relevant_content]
         
-        full_system_prompt = f"""{system_prompt}
+        # Get conversation history
+        history = await get_conversation_messages(db, conversation_id)
         
-{teaching_instructions}
-
-{context}
-
-Remember to:
-- Be encouraging and supportive
-- Break complex topics into digestible parts
-- Use examples when helpful
-- Check for understanding
-- Adapt to the student's level
-"""
+        # Generate AI response
+        ai_response, confidence = await self._call_ai_model(
+            message=message,
+            history=history,
+            relevant_content=relevant_content,
+            use_socratic_method=use_socratic_method
+        )
         
-        # Use OpenAI by default (or fallback to mock response)
+        # Generate follow-up suggestions
+        follow_ups = []
+        if settings.GENERATE_FOLLOW_UPS:
+            follow_ups = await self._generate_follow_ups(
+                message=message,
+                response=ai_response,
+                context=relevant_content
+            )
+        
+        # Create assistant message
+        assistant_message = await create_message(
+            db=db,
+            conversation_id=conversation_id,
+            role="assistant",
+            content=ai_response,
+            context_used=context_ids,
+            confidence_score=confidence
+        )
+        
+        # Build source documents
+        sources = [
+            SourceDocument(
+                id=content.id,
+                title=content.title,
+                content_type=content.content_type,
+                similarity=0.9,  # Would calculate actual similarity
+                excerpt=content.content[:200] if content.content else None
+            )
+            for content in relevant_content
+        ]
+        
+        return TutorResponse(
+            conversation_id=conversation_id,
+            message_id=assistant_message.id,
+            response=ai_response,
+            sources_used=sources,
+            confidence=confidence,
+            follow_up_suggestions=follow_ups,
+            timestamp=datetime.utcnow()
+        )
+    
+    async def _call_ai_model(
+        self,
+        message: str,
+        history: List[TutorMessage],
+        relevant_content: List[CourseContent],
+        use_socratic_method: bool
+    ) -> tuple[str, float]:
+        """Call AI model (OpenAI or Anthropic) to generate response"""
+        
+        # Build context from relevant content
+        context = "\n\n".join([
+            f"**{content.title}**:\n{content.content[:500]}..."
+            for content in relevant_content
+        ])
+        
+        # Build system prompt
+        system_prompt = self._build_system_prompt(use_socratic_method, context)
+        
+        # Build message history
+        messages = []
+        for msg in history[-10:]:  # Last 10 messages for context
+            messages.append({
+                "role": msg.role,
+                "content": msg.content
+            })
+        
+        # Add current message
+        messages.append({
+            "role": "user",
+            "content": message
+        })
+        
+        # Try OpenAI first
         if self.openai_client:
             try:
                 response = await self.openai_client.chat.completions.create(
-                    model=model or settings.OPENAI_MODEL,
+                    model=settings.OPENAI_MODEL,
                     messages=[
-                        {"role": "system", "content": full_system_prompt},
+                        {"role": "system", "content": system_prompt},
                         *messages
                     ],
                     temperature=settings.OPENAI_TEMPERATURE,
-                    max_tokens=settings.OPENAI_MAX_TOKENS,
+                    max_tokens=settings.OPENAI_MAX_TOKENS
                 )
                 
-                return (
-                    response.choices[0].message.content,
-                    response.usage.total_tokens
-                )
+                content = response.choices[0].message.content
+                # Calculate confidence based on finish_reason
+                confidence = 0.9 if response.choices[0].finish_reason == "stop" else 0.7
+                
+                return content, confidence
+                
             except Exception as e:
-                print(f"Error generating response: {e}")
+                print(f"OpenAI error: {e}")
         
-        # Fallback response if no API key or error
-        return self._generate_fallback_response(messages[-1]["content"]), 0
+        # Try Anthropic as fallback
+        if self.anthropic_client:
+            try:
+                response = await self.anthropic_client.messages.create(
+                    model=settings.ANTHROPIC_MODEL,
+                    system=system_prompt,
+                    messages=messages,
+                    temperature=settings.ANTHROPIC_TEMPERATURE,
+                    max_tokens=settings.ANTHROPIC_MAX_TOKENS
+                )
+                
+                content = response.content[0].text
+                confidence = 0.9 if response.stop_reason == "end_turn" else 0.7
+                
+                return content, confidence
+                
+            except Exception as e:
+                print(f"Anthropic error: {e}")
+        
+        # Fallback response if no AI available
+        return self._generate_fallback_response(message, relevant_content), 0.5
     
-    def _generate_fallback_response(self, user_message: str) -> str:
-        """Generate a fallback response when AI is not available"""
-        responses = {
-            "hello": "Hello! I'm your AI tutor. How can I help you learn today?",
-            "help": "I can help you understand course material, answer questions, and guide you through problems. What would you like to learn about?",
-            "explain": "I'd be happy to explain! Let me break this down into simpler concepts...",
-            "default": "That's a great question! Let me help you think through this. What do you already know about this topic?"
-        }
+    def _build_system_prompt(self, use_socratic_method: bool, context: str) -> str:
+        """Build system prompt for AI tutor"""
+        base_prompt = """You are an expert AI tutor helping students learn. Your role is to:
+- Provide clear, accurate explanations
+- Be encouraging and supportive
+- Adapt to the student's level
+- Use examples and analogies
+- Check for understanding
+"""
         
-        message_lower = user_message.lower()
-        for key, response in responses.items():
-            if key in message_lower:
-                return response
+        if use_socratic_method:
+            base_prompt += """
+- Use the Socratic method: guide students to discover answers through thoughtful questions
+- Don't give direct answers immediately; help students think through problems
+- Ask probing questions that lead to deeper understanding
+"""
         
-        return responses["default"]
+        if context:
+            base_prompt += f"""
+
+**Relevant course content for context:**
+{context}
+
+Use this content to inform your response, but explain concepts in your own words.
+"""
+        
+        return base_prompt
     
-    async def calculate_confidence(
+    async def _generate_follow_ups(
         self,
-        query: str,
-        relevant_content: List[Tuple[CourseContent, float]]
-    ) -> float:
-        """
-        Calculate confidence score based on available context
-        
-        Args:
-            query: User's question
-            relevant_content: Retrieved content with similarity scores
-            
-        Returns:
-            Confidence score between 0 and 1
-        """
-        if not relevant_content:
-            return 0.3  # Low confidence without context
-        
-        # Average similarity of top results
-        avg_similarity = sum(score for _, score in relevant_content) / len(relevant_content)
-        
-        # Factor in number of relevant sources
-        source_factor = min(len(relevant_content) / settings.TOP_K_RESULTS, 1.0)
-        
-        # Combined confidence
-        confidence = (avg_similarity * 0.7) + (source_factor * 0.3)
-        
-        return min(max(confidence, 0.0), 1.0)
-    
-    def generate_follow_up_suggestions(
-        self,
-        topic: str,
-        student_knowledge: Optional[StudentKnowledge] = None
+        message: str,
+        response: str,
+        context: List[CourseContent]
     ) -> List[str]:
         """Generate follow-up question suggestions"""
-        suggestions = [
-            f"Can you explain {topic} in more depth?",
-            f"What are some real-world applications of {topic}?",
-            f"How does {topic} relate to other concepts we've learned?",
+        # Simple rule-based follow-ups for now
+        follow_ups = [
+            "Can you give me an example of how this works?",
+            "What are some common mistakes to avoid?",
+            "How does this relate to other concepts we've learned?"
         ]
         
-        if student_knowledge and student_knowledge.mastery_level < 0.5:
-            suggestions.insert(0, f"Can you give me an example of {topic}?")
-        
-        return suggestions
+        return follow_ups[:settings.MAX_FOLLOW_UP_QUESTIONS]
+    
+    def _generate_fallback_response(
+        self, 
+        message: str, 
+        content: List[CourseContent]
+    ) -> str:
+        """Generate fallback response when AI is unavailable"""
+        if content:
+            return f"""I found some relevant course material about "{message}". 
+            
+Based on the course content, this topic covers important concepts that build on your previous learning. 
 
-# Singleton instance
-ai_service = AIService()
+Would you like me to break down any specific aspect of this topic? I can help explain the fundamentals or work through examples together."""
+        
+        return f"""That's a great question about "{message}"! While I'm experiencing some technical limitations right now, I encourage you to:
+
+1. Review the related course materials
+2. Try working through some practice problems
+3. Discuss with classmates or your instructor
+
+What specific aspect would you like to focus on?"""
+    
+    # ============= Knowledge State Tracking =============
+    
+    async def update_knowledge_state(
+        self,
+        db: AsyncSession,
+        user_id: UUID,
+        course_id: UUID,
+        topic: str,
+        correct: bool,
+        confidence: Optional[float] = None
+    ) -> StudentKnowledge:
+        """Update student's knowledge state based on interaction"""
+        
+        # Calculate new mastery level
+        # Simple exponential moving average
+        alpha = 0.3  # Weight for new data
+        new_score = 1.0 if correct else 0.0
+        
+        knowledge = await create_or_update_knowledge(
+            db=db,
+            user_id=user_id,
+            course_id=course_id,
+            topic=topic,
+            mastery_delta=new_score * alpha,
+            confidence=confidence or 0.7
+        )
+        
+        return knowledge
+
+
+# Create singleton instance
+ai_service = AITutoringService()
+
