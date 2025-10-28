@@ -32,17 +32,17 @@ Your EUREKA Educational Platform has been successfully extracted and integrated.
 
 All three backend API services are fully functional:
 
-- **High School Tier** - [http://localhost:8001](http://localhost:8001)
+- **High School Tier** - [http://localhost:9001](http://localhost:9001)
   - Endpoints: `/tutor`, `/generate_unit`, `/practice_set`, `/hint`, `/badge_award`, `/progress/:id`
-  - Interactive API docs: [http://localhost:8001/docs](http://localhost:8001/docs)
+  - Interactive API docs: [http://localhost:9001/docs](http://localhost:9001/docs)
 
-- **Undergraduate Tier** - [http://localhost:8002](http://localhost:8002)
+- **Undergraduate Tier** - [http://localhost:9002](http://localhost:9002)
   - Endpoints: `/socratic`, `/lab_template`, `/code_grade`, `/peer_review`, `/lti_launch`
-  - Interactive API docs: [http://localhost:8002/docs](http://localhost:8002/docs)
+  - Interactive API docs: [http://localhost:9002/docs](http://localhost:9002/docs)
 
-- **Graduate Tier** - [http://localhost:8003](http://localhost:8003)
+- **Graduate Tier** - [http://localhost:9003](http://localhost:9003)
   - Endpoints: `/lit_review`, `/method_plan`, `/power_calc`, `/thesis_outline`, `/chapter_draft`
-  - Interactive API docs: [http://localhost:8003/docs](http://localhost:8003/docs)
+  - Interactive API docs: [http://localhost:9003/docs](http://localhost:9003/docs)
 
 ## How to Start the Platform
 
@@ -57,9 +57,9 @@ make docker-up
 
 # Wait about 30 seconds for services to initialize
 # Then access the API documentation at:
-# - http://localhost:8001/docs (High School)
-# - http://localhost:8002/docs (Undergraduate)
-# - http://localhost:8003/docs (Graduate)
+# - http://localhost:9001/docs (High School)
+# - http://localhost:9002/docs (Undergraduate)
+# - http://localhost:9003/docs (Graduate)
 ```
 
 ### Stop Services
@@ -81,7 +81,7 @@ docker-compose logs -f tier-grad
 ### Test High School Tier
 
 ```bash
-curl -X POST http://localhost:8001/tutor \
+curl -X POST http://localhost:9001/tutor \
   -H "Content-Type: application/json" \
   -d '{"student_id":"test_001","question":"How do I solve 2x+5=11?","subject":"algebra1"}'
 ```
@@ -89,7 +89,7 @@ curl -X POST http://localhost:8001/tutor \
 ### Test Undergraduate Tier
 
 ```bash
-curl -X POST http://localhost:8002/socratic \
+curl -X POST http://localhost:9002/socratic \
   -H "Content-Type: application/json" \
   -d '{"student_id":"test_001","question":"Explain limits","discipline":"calculus","require_citations":true}'
 ```
@@ -97,7 +97,7 @@ curl -X POST http://localhost:8002/socratic \
 ### Test Graduate Tier
 
 ```bash
-curl http://localhost:8003/health
+curl http://localhost:9003/health
 ```
 
 ## What Needs to Be Done Next
@@ -177,8 +177,11 @@ make test           # Run tests (when in local dev mode)
 
 ```bash
 # Find and kill processes using the ports
-lsof -i :8001
-lsof -i :5432
+lsof -i :9001
+lsof -i :9002
+lsof -i :9003
+lsof -i :5436
+lsof -i :6380
 # Then kill with: kill -9 <PID>
 ```
 
@@ -226,10 +229,20 @@ docker-compose logs postgres
 - Thesis coaching with LaTeX export
 - IRB assessment guidance
 
+## Ports Used
+
+Due to port conflicts with other running services, EUREKA uses these ports:
+
+- **PostgreSQL**: 5436 (instead of default 5432)
+- **Redis**: 6380 (instead of default 6379)
+- **High School API**: 9001 (instead of 8001)
+- **Undergraduate API**: 9002 (instead of 8002)
+- **Graduate API**: 9003 (instead of 8003)
+
 ## Next Steps
 
 1. **Start the services**: `make docker-up`
-2. **Explore the APIs**: Visit http://localhost:8001/docs
+2. **Explore the APIs**: Visit http://localhost:9001/docs
 3. **Add your API keys**: Edit the `.env` file
 4. **Test the endpoints**: Use the curl commands above
 5. **Build frontends** (optional): Implement the Next.js apps

@@ -38,10 +38,12 @@ test-coverage:
 docker-up:
 	docker-compose up -d
 	@echo "Services starting..."
-	@echo "High School:   http://localhost:3001 (API: http://localhost:8001)"
-	@echo "Undergraduate: http://localhost:3002 (API: http://localhost:8002)"
-	@echo "Graduate:      http://localhost:3003 (API: http://localhost:8003)"
-	@echo "Admin:         http://localhost:3000"
+	@echo "High School API:   http://localhost:9001 (Docs: http://localhost:9001/docs)"
+	@echo "Undergraduate API: http://localhost:9002 (Docs: http://localhost:9002/docs)"
+	@echo "Graduate API:      http://localhost:9003 (Docs: http://localhost:9003/docs)"
+	@echo ""
+	@echo "Database: localhost:5436"
+	@echo "Redis:    localhost:6380"
 
 docker-down:
 	docker-compose down
@@ -54,17 +56,17 @@ e2e-demo:
 	@echo "Running E2E Demo: HS → UG → Grad"
 	@echo "================================"
 	@echo "1. High School: Algebra I unit generation"
-	curl -X POST http://localhost:8001/generate_unit \
+	curl -X POST http://localhost:9001/generate_unit \
 		-H "Content-Type: application/json" \
 		-d '{"subject":"algebra1","standard":"CCSS.MATH.CONTENT.HSA-CED.A.1"}'
 	@echo "\n2. Undergraduate: Physics lab template"
-	curl -X POST http://localhost:8002/lab_template \
+	curl -X POST http://localhost:9002/lab_template \
 		-H "Content-Type: application/json" \
 		-d '{"course":"physics1","topic":"kinematics"}'
 	@echo "\n3. Graduate: Literature review"
-	curl -X POST http://localhost:8003/lit_review \
+	curl -X POST http://localhost:9003/lit_review \
 		-H "Content-Type: application/json" \
-		-d '{"domain":"CS","papers":["sample1.pdf","sample2.pdf"]}'
+		-d '{"user_id":"test_001","domain":"ee_cs","papers":["sample1.pdf","sample2.pdf"]}'
 	@echo "\nDemo complete!"
 
 clean:
