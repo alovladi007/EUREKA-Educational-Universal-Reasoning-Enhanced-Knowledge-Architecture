@@ -116,31 +116,59 @@ export default function DemoPage() {
 
         {/* Educational Tiers Demo */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold mb-6 text-center">Try Different Educational Levels</h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            {[
-              { name: "High School", tier: "hs", desc: "Gamified learning with CCSS standards" },
-              { name: "Undergraduate", tier: "ug", desc: "Lab-based learning and projects" },
-              { name: "Graduate", tier: "grad", desc: "Research tools and thesis support" },
-              { name: "Medical School", tier: "med", desc: "Clinical reasoning and USMLE prep" },
-              { name: "Law School", tier: "law", desc: "Case analysis and bar exam prep" },
-              { name: "MBA", tier: "mba", desc: "Case studies and simulations" },
-              { name: "Engineering", tier: "eng", desc: "FE/PE exam preparation" },
-            ].map((tier) => (
-              <Card key={tier.tier} className="hover:shadow-lg transition-shadow">
-                <CardHeader>
-                  <CardTitle className="text-lg">{tier.name}</CardTitle>
-                  <CardDescription>{tier.desc}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <Link href={`/tiers/${tier.tier}`}>
-                    <Button variant="outline" className="w-full">
-                      Explore {tier.name}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            ))}
+          <h2 className="text-3xl font-bold mb-8 text-center">Try Different Educational Levels</h2>
+
+          {/* Academic Path */}
+          <div className="mb-12">
+            <h3 className="text-2xl font-semibold mb-4">Academic Path</h3>
+            <div className="grid gap-6 md:grid-cols-3">
+              {[
+                { name: "High School", tier: "hs", desc: "Gamified learning with CCSS standards", color: "bg-blue-50 hover:bg-blue-100" },
+                { name: "Undergraduate", tier: "ug", desc: "Lab-based learning and projects", color: "bg-green-50 hover:bg-green-100" },
+                { name: "Graduate", tier: "grad", desc: "Research tools and thesis support", color: "bg-purple-50 hover:bg-purple-100" },
+              ].map((tier) => (
+                <Card key={tier.tier} className={`hover:shadow-lg transition-all ${tier.color}`}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{tier.name}</CardTitle>
+                    <CardDescription>{tier.desc}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Link href={`/tiers/${tier.tier}`}>
+                      <Button variant="outline" className="w-full">
+                        Explore {tier.name}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+
+          {/* Professional Path */}
+          <div>
+            <h3 className="text-2xl font-semibold mb-4">Professional Path</h3>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {[
+                { name: "Medical School", tier: "med", desc: "Clinical reasoning and USMLE prep", color: "bg-red-50 hover:bg-red-100" },
+                { name: "Law School", tier: "law", desc: "Case analysis and bar exam prep", color: "bg-amber-50 hover:bg-amber-100" },
+                { name: "MBA", tier: "mba", desc: "Case studies and simulations", color: "bg-cyan-50 hover:bg-cyan-100" },
+                { name: "Engineering", tier: "eng", desc: "FE/PE exam preparation", color: "bg-orange-50 hover:bg-orange-100" },
+              ].map((tier) => (
+                <Card key={tier.tier} className={`hover:shadow-lg transition-all ${tier.color}`}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{tier.name}</CardTitle>
+                    <CardDescription>{tier.desc}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Link href={`/tiers/${tier.tier}`}>
+                      <Button variant="outline" className="w-full">
+                        Explore {tier.name}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
         </div>
 
