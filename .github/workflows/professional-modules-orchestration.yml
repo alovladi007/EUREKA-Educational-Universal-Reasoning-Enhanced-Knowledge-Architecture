@@ -19,6 +19,11 @@ on:
       - 'services/**'
       - 'frontend/**'
 
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
 concurrency:
   group: professional-modules-${{ github.ref }}
   cancel-in-progress: true
