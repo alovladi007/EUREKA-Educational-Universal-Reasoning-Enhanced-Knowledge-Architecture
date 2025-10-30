@@ -66,6 +66,39 @@ jobs:
           mkdir -p services frontend docs modules
           echo "✅ Directory structure validated"
 
+      - name: Create labels if they don't exist
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "📋 Creating labels..."
+
+          # Function to create label if it doesn't exist
+          create_label() {
+            local name=$1
+            local color=$2
+            local description=$3
+
+            if ! gh label list | grep -q "^${name}"; then
+              gh label create "${name}" --color "${color}" --description "${description}" || true
+              echo "✅ Created label: ${name}"
+            else
+              echo "ℹ️  Label already exists: ${name}"
+            fi
+          }
+
+          # Create tier labels
+          create_label "tier:medical" "e74c3c" "Medical School tier"
+          create_label "tier:law" "3498db" "Law School tier"
+          create_label "tier:mba" "2ecc71" "MBA Program tier"
+          create_label "tier:engineering" "f39c12" "Engineering tier"
+
+          # Create other labels
+          create_label "enhancement" "a2eeef" "New feature or request"
+          create_label "automated" "0e8a16" "Automated PR/issue"
+          create_label "priority:high" "d73a4a" "High priority"
+
+          echo "✅ All labels ready"
+
   build-professional-modules:
     name: Build ${{ matrix.module.name }} Module
     runs-on: ubuntu-latest
