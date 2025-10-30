@@ -1,4 +1,4 @@
-name: Professional Modules - Parallel Build & PR Orchestration (Fixed)
+name: Professional Modules - Parallel Build & PR Orchestration
 
 on:
   workflow_dispatch:
@@ -18,7 +18,6 @@ on:
     paths:
       - 'services/**'
       - 'frontend/**'
-      - '.github/workflows/professional-modules-orchestration-fixed.yml'
 
 concurrency:
   group: professional-modules-${{ github.ref }}
@@ -59,15 +58,8 @@ jobs:
       - name: Validate project structure
         run: |
           echo "Validating project structure..."
-          dirs=("services" "frontend" "docs")
-          for dir in "${dirs[@]}"; do
-            if [ ! -d "$dir" ]; then
-              mkdir -p "$dir"
-              echo "✅ Created directory: $dir"
-            else
-              echo "✅ Found directory: $dir"
-            fi
-          done
+          mkdir -p services frontend docs modules
+          echo "✅ Directory structure validated"
 
   build-professional-modules:
     name: Build ${{ matrix.module.name }} Module
@@ -81,1023 +73,141 @@ jobs:
             slug: 'medical-school'
             label: 'tier:medical'
             color: 'e74c3c'
-            emoji: '🏥'
-            description: 'Medical education features including USMLE prep, clinical cases, and anatomy models'
-            services: 'api-core,assessment-engine,adaptive-learning'
-            features: 'USMLE Question Bank|Clinical Case Simulations|3D Anatomy Models|Medical Literature Integration|Diagnostic Reasoning Practice'
-            
           - name: 'Law School'
             slug: 'law-school'
             label: 'tier:law'
             color: '3498db'
-            emoji: '⚖️'
-            description: 'Legal education tools with case law database, legal writing feedback, and moot court'
-            services: 'api-core,assessment-engine,ai-tutor'
-            features: 'Case Law Database|Legal Writing Feedback|Moot Court Simulations|Contract Analysis Tools|Bar Exam Preparation'
-            
           - name: 'MBA Program'
             slug: 'mba'
             label: 'tier:mba'
             color: '2ecc71'
-            emoji: '💼'
-            description: 'Business education platform with financial modeling, case studies, and team collaboration'
-            services: 'api-core,analytics-dashboard,adaptive-learning'
-            features: 'Financial Modeling Tools|Business Case Library|Market Analysis Simulations|Team Collaboration Features|Executive Decision Games'
-            
           - name: 'Engineering'
             slug: 'engineering'
             label: 'tier:engineering'
             color: 'f39c12'
-            emoji: '🔧'
-            description: 'Engineering education with circuit simulators, CAD integration, and FE/PE exam prep'
-            services: 'api-core,assessment-engine,adaptive-learning'
-            features: 'Circuit Simulators|CAD Integration|FE/PE Practice Exams|Engineering Problem Sets|Lab Simulation Tools'
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Configure Git
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Create feature branch
-        id: create-branch
         run: |
-          BRANCH_NAME="feature/${{ matrix.module.slug }}-${{ needs.preflight.outputs.version }}"
-          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
-          git checkout -b "$BRANCH_NAME"
-          echo "✅ Created branch: $BRANCH_NAME"
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ env.NODE_VERSION }}
-
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION }}
+          BRANCH_NAME="feature/${{ matrix.module.slug}}-${{ needs.preflight.outputs.version }}"
+          git checkout -b $BRANCH_NAME
+          echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
       - name: Create module structure
         run: |
-          echo "🏗️ Creating ${{ matrix.module.name }} module structure..."
+          echo "📁 Creating module structure for ${{ matrix.module.name }}..."
           mkdir -p "modules/${{ matrix.module.slug }}"/{database,api,frontend,docs,tests}
-          echo "✅ Directory structure created"
+          echo "✅ Module structure created"
 
-      - name: Generate Database Schema
+      - name: Generate module files using helper script
         run: |
-          echo "📊 Generating database schema for ${{ matrix.module.name }}..."
-          
-          cat > "modules/${{ matrix.module.slug }}/database/schema.sql" << 'EOF'
--- ============================================
--- Database Schema for ${{ matrix.module.name }}
--- Generated: ${{ needs.preflight.outputs.timestamp }}
--- Version: ${{ needs.preflight.outputs.version }}
--- ============================================
+          if [ -f ".github/workflows/generate-module.sh" ]; then
+            chmod +x .github/workflows/generate-module.sh
+            .github/workflows/generate-module.sh \
+              "${{ matrix.module.slug }}" \
+              "${{ matrix.module.name }}" \
+              "${{ needs.preflight.outputs.version }}" \
+              "${{ needs.preflight.outputs.timestamp }}"
+          else
+            echo "⚠️  Helper script not found, generating basic files..."
+            bash .github/workflows/generate-basic-module.sh \
+              "${{ matrix.module.slug }}" \
+              "${{ matrix.module.name }}"
+          fi
 
--- Users table (tier-specific extensions)
-CREATE TABLE IF NOT EXISTS users_${{ matrix.module.slug | replace('-', '_') }} (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    tier_data JSONB DEFAULT '{}',
-    specialization VARCHAR(100),
-    graduation_year INTEGER,
-    institution VARCHAR(255),
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id)
-);
-
--- Courses table (tier-specific)
-CREATE TABLE IF NOT EXISTS courses_${{ matrix.module.slug | replace('-', '_') }} (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
-    tier VARCHAR(50) DEFAULT '${{ matrix.module.slug }}',
-    difficulty_level VARCHAR(20),
-    prerequisites TEXT[],
-    learning_outcomes TEXT[],
-    metadata JSONB DEFAULT '{}',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- Assessments table
-CREATE TABLE IF NOT EXISTS assessments_${{ matrix.module.slug | replace('-', '_') }} (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title VARCHAR(255) NOT NULL,
-    description TEXT,
-    assessment_type VARCHAR(50),
-    course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
-    total_points INTEGER DEFAULT 100,
-    time_limit INTEGER,
-    passing_score DECIMAL(5,2) DEFAULT 70.00,
-    tier_specific_config JSONB DEFAULT '{}',
-    is_published BOOLEAN DEFAULT false,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- Submissions table
-CREATE TABLE IF NOT EXISTS submissions_${{ matrix.module.slug | replace('-', '_') }} (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    assessment_id UUID NOT NULL REFERENCES assessments_${{ matrix.module.slug | replace('-', '_') }}(id) ON DELETE CASCADE,
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    answers JSONB NOT NULL,
-    score DECIMAL(5,2),
-    feedback JSONB,
-    time_spent INTEGER,
-    submitted_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    graded_at TIMESTAMP WITH TIME ZONE,
-    graded_by UUID REFERENCES users(id)
-);
-
--- Learning paths table
-CREATE TABLE IF NOT EXISTS learning_paths_${{ matrix.module.slug | replace('-', '_') }} (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    path_name VARCHAR(255) NOT NULL,
-    target_competency VARCHAR(100),
-    current_level VARCHAR(50),
-    target_level VARCHAR(50),
-    milestones JSONB DEFAULT '[]',
-    progress_percentage DECIMAL(5,2) DEFAULT 0.00,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- Progress tracking table
-CREATE TABLE IF NOT EXISTS user_progress_${{ matrix.module.slug | replace('-', '_') }} (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
-    module_id VARCHAR(100),
-    completion_percentage DECIMAL(5,2) DEFAULT 0.00,
-    time_spent INTEGER DEFAULT 0,
-    last_accessed_at TIMESTAMP WITH TIME ZONE,
-    mastery_level VARCHAR(50),
-    performance_metrics JSONB DEFAULT '{}',
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE(user_id, course_id, module_id)
-);
-
--- Analytics events table
-CREATE TABLE IF NOT EXISTS analytics_events_${{ matrix.module.slug | replace('-', '_') }} (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    event_type VARCHAR(100) NOT NULL,
-    event_data JSONB DEFAULT '{}',
-    session_id VARCHAR(100),
-    ip_address INET,
-    user_agent TEXT,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
-);
-
--- Create indexes
-CREATE INDEX IF NOT EXISTS idx_users_tier_user_id ON users_${{ matrix.module.slug | replace('-', '_') }}(user_id);
-CREATE INDEX IF NOT EXISTS idx_assessments_tier_course_id ON assessments_${{ matrix.module.slug | replace('-', '_') }}(course_id);
-CREATE INDEX IF NOT EXISTS idx_submissions_tier_user_id ON submissions_${{ matrix.module.slug | replace('-', '_') }}(user_id);
-CREATE INDEX IF NOT EXISTS idx_learning_paths_tier_user_id ON learning_paths_${{ matrix.module.slug | replace('-', '_') }}(user_id);
-CREATE INDEX IF NOT EXISTS idx_user_progress_tier_user_id ON user_progress_${{ matrix.module.slug | replace('-', '_') }}(user_id);
-CREATE INDEX IF NOT EXISTS idx_analytics_events_tier_user_id ON analytics_events_${{ matrix.module.slug | replace('-', '_') }}(user_id);
-EOF
-          
-          # Replace placeholders
-          sed -i 's|\${{ matrix.module.name }}|${{ matrix.module.name }}|g' "modules/${{ matrix.module.slug }}/database/schema.sql"
-          sed -i 's|\${{ needs.preflight.outputs.timestamp }}|${{ needs.preflight.outputs.timestamp }}|g' "modules/${{ matrix.module.slug }}/database/schema.sql"
-          sed -i 's|\${{ needs.preflight.outputs.version }}|${{ needs.preflight.outputs.version }}|g' "modules/${{ matrix.module.slug }}/database/schema.sql"
-          sed -i 's|\${{ matrix.module.slug }}|${{ matrix.module.slug }}|g' "modules/${{ matrix.module.slug }}/database/schema.sql"
-          sed -i "s|\${{ matrix.module.slug | replace('-', '_') }}|$(echo '${{ matrix.module.slug }}' | tr '-' '_')|g" "modules/${{ matrix.module.slug }}/database/schema.sql"
-          
-          echo "✅ Database schema generated"
-
-      - name: Generate API Endpoints
+      - name: Create BUILD_INFO file
         run: |
-          echo "🔌 Generating API endpoints for ${{ matrix.module.name }}..."
-          
-          cat > "modules/${{ matrix.module.slug }}/api/endpoints.py" << 'EOF'
-"""
-API Endpoints for ${{ matrix.module.name }}
-Generated: ${{ needs.preflight.outputs.timestamp }}
-Version: ${{ needs.preflight.outputs.version }}
-"""
-
-from fastapi import APIRouter, HTTPException, Depends, Query
-from typing import List, Optional
-from pydantic import BaseModel
-from datetime import datetime
-from uuid import UUID
-
-router = APIRouter(
-    prefix="/api/v1/${{ matrix.module.slug }}",
-    tags=["${{ matrix.module.slug }}"]
-)
-
-# ============================================
-# Data Models
-# ============================================
-
-class TierUserProfile(BaseModel):
-    user_id: str
-    specialization: Optional[str] = None
-    graduation_year: Optional[int] = None
-    institution: Optional[str] = None
-    tier_data: dict = {}
-
-class Assessment(BaseModel):
-    id: Optional[str] = None
-    title: str
-    description: str
-    assessment_type: str
-    course_id: str
-    total_points: int = 100
-    time_limit: Optional[int] = None
-    passing_score: float = 70.0
-    tier_specific_config: dict = {}
-    is_published: bool = False
-
-class Submission(BaseModel):
-    assessment_id: str
-    user_id: str
-    answers: dict
-    time_spent: Optional[int] = None
-
-class LearningPath(BaseModel):
-    id: Optional[str] = None
-    user_id: str
-    path_name: str
-    target_competency: str
-    current_level: str
-    target_level: str
-    milestones: list = []
-    progress_percentage: float = 0.0
-
-# ============================================
-# Health Check
-# ============================================
-
-@router.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "module": "${{ matrix.module.name }}",
-        "tier": "${{ matrix.module.slug }}",
-        "version": "${{ needs.preflight.outputs.version }}"
-    }
-
-# ============================================
-# User Profile Endpoints
-# ============================================
-
-@router.get("/profile/{user_id}")
-async def get_user_profile(user_id: str):
-    """Get tier-specific user profile"""
-    # TODO: Implement database query
-    return {
-        "user_id": user_id,
-        "tier": "${{ matrix.module.slug }}",
-        "profile": {},
-        "message": "Profile retrieval not yet implemented"
-    }
-
-@router.put("/profile/{user_id}")
-async def update_user_profile(user_id: str, profile: TierUserProfile):
-    """Update tier-specific user profile"""
-    # TODO: Implement database update
-    return {
-        "user_id": user_id,
-        "message": "Profile updated successfully"
-    }
-
-# ============================================
-# Assessment Endpoints
-# ============================================
-
-@router.get("/assessments")
-async def list_assessments(
-    course_id: Optional[str] = None,
-    assessment_type: Optional[str] = None,
-    skip: int = Query(0, ge=0),
-    limit: int = Query(20, ge=1, le=100)
-):
-    """List assessments for this tier"""
-    # TODO: Implement database query
-    return {
-        "assessments": [],
-        "total": 0,
-        "skip": skip,
-        "limit": limit
-    }
-
-@router.post("/assessments")
-async def create_assessment(assessment: Assessment):
-    """Create a new assessment"""
-    # TODO: Implement database insert
-    return {
-        "id": "generated-uuid-here",
-        "message": "Assessment created successfully"
-    }
-
-@router.get("/assessments/{assessment_id}")
-async def get_assessment(assessment_id: str):
-    """Get assessment details"""
-    # TODO: Implement database query
-    return {
-        "id": assessment_id,
-        "assessment": {},
-        "message": "Assessment retrieval not yet implemented"
-    }
-
-@router.post("/assessments/{assessment_id}/submit")
-async def submit_assessment(assessment_id: str, submission: Submission):
-    """Submit an assessment for grading"""
-    # TODO: Implement grading logic
-    return {
-        "submission_id": "generated-uuid-here",
-        "score": 0,
-        "feedback": {},
-        "message": "Submission received and will be graded"
-    }
-
-# ============================================
-# Learning Path Endpoints
-# ============================================
-
-@router.get("/learning-paths/{user_id}")
-async def get_learning_paths(user_id: str):
-    """Get user's learning paths"""
-    # TODO: Implement database query
-    return {
-        "user_id": user_id,
-        "learning_paths": []
-    }
-
-@router.post("/learning-paths")
-async def create_learning_path(path: LearningPath):
-    """Create a new learning path"""
-    # TODO: Implement path generation logic
-    return {
-        "id": "generated-uuid-here",
-        "message": "Learning path created successfully"
-    }
-
-# ============================================
-# Progress Tracking Endpoints
-# ============================================
-
-@router.get("/progress/{user_id}")
-async def get_user_progress(
-    user_id: str,
-    course_id: Optional[str] = None
-):
-    """Get user's progress"""
-    # TODO: Implement database query
-    return {
-        "user_id": user_id,
-        "progress": []
-    }
-
-@router.put("/progress/{user_id}")
-async def update_progress(user_id: str, progress_data: dict):
-    """Update user's progress"""
-    # TODO: Implement database update
-    return {"message": "Progress updated successfully"}
-
-# ============================================
-# Analytics Endpoints
-# ============================================
-
-@router.post("/analytics/track")
-async def track_event(event_data: dict):
-    """Track analytics event"""
-    # TODO: Implement event tracking
-    return {"message": "Event tracked successfully"}
-
-@router.get("/analytics/{user_id}/summary")
-async def get_analytics_summary(
-    user_id: str,
-    start_date: Optional[datetime] = None,
-    end_date: Optional[datetime] = None
-):
-    """Get analytics summary for user"""
-    # TODO: Implement analytics aggregation
-    return {
-        "user_id": user_id,
-        "summary": {}
-    }
-EOF
-          
-          # Replace placeholders
-          sed -i 's|\${{ matrix.module.name }}|${{ matrix.module.name }}|g' "modules/${{ matrix.module.slug }}/api/endpoints.py"
-          sed -i 's|\${{ needs.preflight.outputs.timestamp }}|${{ needs.preflight.outputs.timestamp }}|g' "modules/${{ matrix.module.slug }}/api/endpoints.py"
-          sed -i 's|\${{ needs.preflight.outputs.version }}|${{ needs.preflight.outputs.version }}|g' "modules/${{ matrix.module.slug }}/api/endpoints.py"
-          sed -i 's|\${{ matrix.module.slug }}|${{ matrix.module.slug }}|g' "modules/${{ matrix.module.slug }}/api/endpoints.py"
-          
-          echo "✅ API endpoints generated"
-
-      - name: Generate Frontend Component
-        run: |
-          echo "🎨 Generating frontend component for ${{ matrix.module.name }}..."
-          
-          # Parse features from pipe-delimited string
-          IFS='|' read -ra FEATURES <<< "${{ matrix.module.features }}"
-          
-          # Create component file
-          COMPONENT_NAME="$(echo '${{ matrix.module.name }}' | tr -d ' ')Dashboard"
-          
-          cat > "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx" << 'EOF'
-/**
- * ${{ matrix.module.name }} Dashboard Component
- * Generated: ${{ needs.preflight.outputs.timestamp }}
- * Version: ${{ needs.preflight.outputs.version }}
- */
-
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-
-interface DashboardProps {
-  userId: string;
-}
-
-export const COMPONENT_NAME: React.FC<DashboardProps> = ({ userId }) => {
-  const [loading, setLoading] = useState(true);
-  const [data, setData] = useState(null);
-  
-  useEffect(() => {
-    fetchDashboardData();
-  }, [userId]);
-  
-  const fetchDashboardData = async () => {
-    try {
-      const response = await fetch(\`/api/v1/${{ matrix.module.slug }}/profile/\${userId}\`);
-      const data = await response.json();
-      setData(data);
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
-  if (loading) {
-    return <div className="flex items-center justify-center h-screen">Loading...</div>;
-  }
-  
-  const features = [
-FEATURES_ARRAY
-  ];
-  
-  return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">${{ matrix.module.emoji }} ${{ matrix.module.name }} Dashboard</h1>
-        <Badge variant="outline" className="text-lg">${{ matrix.module.label }}</Badge>
-      </div>
-      
-      {/* Feature Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {features.map((feature, index) => (
-          <Card key={index} className="hover:shadow-lg transition-shadow">
-            <CardHeader>
-              <CardTitle className="text-lg">{feature}</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-sm text-gray-600 mb-4">
-                Access {feature.toLowerCase()} and track your progress
-              </p>
-              <Button className="w-full" variant="outline">
-                Open {feature}
-              </Button>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-      
-      {/* Progress Overview */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Your Progress</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            <div>
-              <div className="flex justify-between mb-2">
-                <span className="text-sm font-medium">Overall Progress</span>
-                <span className="text-sm text-gray-600">0%</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-2.5">
-                <div 
-                  className="h-2.5 rounded-full transition-all duration-300" 
-                  style={{width: '0%', backgroundColor: '#${{ matrix.module.color }}'}}
-                ></div>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-      
-      {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-sm text-gray-600">No recent activity. Start your learning journey!</p>
-        </CardContent>
-      </Card>
-    </div>
-  );
-};
-
-export default COMPONENT_NAME;
-EOF
-          
-          # Replace placeholders
-          sed -i "s|COMPONENT_NAME|${COMPONENT_NAME}|g" "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          sed -i 's|\${{ matrix.module.name }}|${{ matrix.module.name }}|g' "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          sed -i 's|\${{ matrix.module.emoji }}|${{ matrix.module.emoji }}|g' "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          sed -i 's|\${{ matrix.module.label }}|${{ matrix.module.label }}|g' "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          sed -i 's|\${{ matrix.module.slug }}|${{ matrix.module.slug }}|g' "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          sed -i 's|\${{ matrix.module.color }}|${{ matrix.module.color }}|g' "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          sed -i 's|\${{ needs.preflight.outputs.timestamp }}|${{ needs.preflight.outputs.timestamp }}|g' "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          sed -i 's|\${{ needs.preflight.outputs.version }}|${{ needs.preflight.outputs.version }}|g' "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          
-          # Build features array
-          FEATURES_STR=""
-          for feature in "${FEATURES[@]}"; do
-            FEATURES_STR="${FEATURES_STR}    \"${feature}\",\n"
-          done
-          # Remove trailing comma and newline
-          FEATURES_STR=$(echo -e "$FEATURES_STR" | sed '$ s/,$//')
-          
-          # Insert features
-          sed -i "s|FEATURES_ARRAY|${FEATURES_STR}|" "modules/${{ matrix.module.slug }}/frontend/${COMPONENT_NAME}.tsx"
-          
-          echo "✅ Frontend component generated"
-
-      - name: Generate Documentation
-        run: |
-          echo "📝 Generating documentation for ${{ matrix.module.name }}..."
-          
-          # Parse features
-          IFS='|' read -ra FEATURES <<< "${{ matrix.module.features }}"
-          
-          # Parse services
-          IFS=',' read -ra SERVICES <<< "${{ matrix.module.services }}"
-          
-          cat > "modules/${{ matrix.module.slug }}/docs/README.md" << 'EOF'
-# ${{ matrix.module.emoji }} ${{ matrix.module.name }} Module
-
-**Version:** ${{ needs.preflight.outputs.version }}  
-**Generated:** ${{ needs.preflight.outputs.timestamp }}  
-**Label:** \`${{ matrix.module.label }}\`
-
-## Overview
-
-${{ matrix.module.description }}
-
-## Features
-
-FEATURES_LIST
-
-## Architecture
-
-### Services Involved
-
-SERVICES_LIST
-
-### Database Schema
-
-See \`database/schema.sql\` for the complete database schema including:
-
-- User profiles (tier-specific)
-- Course data
-- Assessments and submissions
-- Learning paths
-- Progress tracking
-- Analytics events
-
-## API Endpoints
-
-Base URL: \`/api/v1/${{ matrix.module.slug }}\`
-
-### Health Check
-- \`GET /health\` - Health check endpoint
-
-### User Profile
-- \`GET /profile/{user_id}\` - Get user profile
-- \`PUT /profile/{user_id}\` - Update user profile
-
-### Assessments
-- \`GET /assessments\` - List assessments
-- \`POST /assessments\` - Create assessment
-- \`GET /assessments/{id}\` - Get assessment details
-- \`POST /assessments/{id}/submit\` - Submit assessment
-
-### Learning Paths
-- \`GET /learning-paths/{user_id}\` - Get learning paths
-- \`POST /learning-paths\` - Create learning path
-
-### Progress Tracking
-- \`GET /progress/{user_id}\` - Get progress
-- \`PUT /progress/{user_id}\` - Update progress
-
-### Analytics
-- \`POST /analytics/track\` - Track event
-- \`GET /analytics/{user_id}/summary\` - Get analytics summary
-
-## Frontend Components
-
-Main dashboard component: \`frontend/COMPONENT_NAMEDashboard.tsx\`
-
-### Usage
-
-\`\`\`tsx
-import { COMPONENT_NAMEDashboard } from '@/modules/${{ matrix.module.slug }}/frontend';
-
-function App() {
-  return <COMPONENT_NAMEDashboard userId="user-id" />;
-}
-\`\`\`
-
-## Testing
-
-\`\`\`bash
-# Run unit tests
-npm test -- modules/${{ matrix.module.slug }}
-
-# Run integration tests
-npm run test:integration -- modules/${{ matrix.module.slug }}
-\`\`\`
-
-## Development
-
-### Setup
-
-1. Install dependencies:
-\`\`\`bash
-npm install
-pip install -r requirements.txt
-\`\`\`
-
-2. Initialize database:
-\`\`\`bash
-psql -d your_database -f modules/${{ matrix.module.slug }}/database/schema.sql
-\`\`\`
-
-3. Start development server:
-\`\`\`bash
-npm run dev
-\`\`\`
-
-### Environment Variables
-
-\`\`\`env
-DATABASE_URL=postgresql://user:pass@localhost:5432/db
-API_BASE_URL=http://localhost:8000
-TIER_ENABLED=true
-\`\`\`
-
-## Support
-
-For issues or questions:
-- Create an issue with the \`${{ matrix.module.label }}\` label
-- Contact the development team
-
-## License
-
-Copyright © 2025. All rights reserved.
-EOF
-          
-          # Build features list
-          FEATURES_STR=""
-          for feature in "${FEATURES[@]}"; do
-            FEATURES_STR="${FEATURES_STR}- ✅ ${feature}\n"
-          done
-          
-          # Build services list
-          SERVICES_STR=""
-          for service in "${SERVICES[@]}"; do
-            SERVICES_STR="${SERVICES_STR}- \`${service}\`\n"
-          done
-          
-          # Replace placeholders
-          sed -i 's|\${{ matrix.module.emoji }}|${{ matrix.module.emoji }}|g' "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i 's|\${{ matrix.module.name }}|${{ matrix.module.name }}|g' "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i 's|\${{ needs.preflight.outputs.version }}|${{ needs.preflight.outputs.version }}|g' "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i 's|\${{ needs.preflight.outputs.timestamp }}|${{ needs.preflight.outputs.timestamp }}|g' "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i 's|\${{ matrix.module.label }}|${{ matrix.module.label }}|g' "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i 's|\${{ matrix.module.description }}|${{ matrix.module.description }}|g' "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i 's|\${{ matrix.module.slug }}|${{ matrix.module.slug }}|g' "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i "s|COMPONENT_NAME|$(echo '${{ matrix.module.name }}' | tr -d ' ')|g" "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i "s|FEATURES_LIST|$(echo -e "$FEATURES_STR")|" "modules/${{ matrix.module.slug }}/docs/README.md"
-          sed -i "s|SERVICES_LIST|$(echo -e "$SERVICES_STR")|" "modules/${{ matrix.module.slug }}/docs/README.md"
-          
-          echo "✅ Documentation generated"
-
-      - name: Generate Tests
-        run: |
-          echo "🧪 Generating tests for ${{ matrix.module.name }}..."
-          
-          cat > "modules/${{ matrix.module.slug }}/tests/test_api.py" << 'EOF'
-"""
-API Tests for ${{ matrix.module.name }}
-Generated: ${{ needs.preflight.outputs.timestamp }}
-"""
-
-import pytest
-from fastapi.testclient import TestClient
-
-class TestHealthCheck:
-    def test_health_check(self):
-        """Test health check endpoint"""
-        # TODO: Implement with actual client
-        assert True, "Health check placeholder"
-
-class TestUserProfile:
-    def test_get_user_profile(self):
-        """Test getting user profile"""
-        # TODO: Implement test
-        pass
-    
-    def test_update_user_profile(self):
-        """Test updating user profile"""
-        # TODO: Implement test
-        pass
-
-class TestAssessments:
-    def test_list_assessments(self):
-        """Test listing assessments"""
-        # TODO: Implement test
-        pass
-    
-    def test_create_assessment(self):
-        """Test creating assessment"""
-        # TODO: Implement test
-        pass
-    
-    def test_submit_assessment(self):
-        """Test submitting assessment"""
-        # TODO: Implement test
-        pass
-
-class TestLearningPaths:
-    def test_get_learning_paths(self):
-        """Test getting learning paths"""
-        # TODO: Implement test
-        pass
-    
-    def test_create_learning_path(self):
-        """Test creating learning path"""
-        # TODO: Implement test
-        pass
-
-class TestProgressTracking:
-    def test_get_progress(self):
-        """Test getting user progress"""
-        # TODO: Implement test
-        pass
-    
-    def test_update_progress(self):
-        """Test updating progress"""
-        # TODO: Implement test
-        pass
-
-class TestAnalytics:
-    def test_track_event(self):
-        """Test tracking analytics event"""
-        # TODO: Implement test
-        pass
-    
-    def test_get_analytics_summary(self):
-        """Test getting analytics summary"""
-        # TODO: Implement test
-        pass
-EOF
-          
-          # Replace placeholders
-          sed -i 's|\${{ matrix.module.name }}|${{ matrix.module.name }}|g' "modules/${{ matrix.module.slug }}/tests/test_api.py"
-          sed -i 's|\${{ needs.preflight.outputs.timestamp }}|${{ needs.preflight.outputs.timestamp }}|g' "modules/${{ matrix.module.slug }}/tests/test_api.py"
-          
-          echo "✅ Tests generated"
-
-      - name: Generate BUILD_INFO
-        run: |
-          # Parse features
-          IFS='|' read -ra FEATURES <<< "${{ matrix.module.features }}"
-          
-          # Parse services
-          IFS=',' read -ra SERVICES <<< "${{ matrix.module.services }}"
-          
           cat > "modules/${{ matrix.module.slug }}/BUILD_INFO.txt" << EOF
-Module: ${{ matrix.module.name }}
-Slug: ${{ matrix.module.slug }}
-Label: ${{ matrix.module.label }}
-Version: ${{ needs.preflight.outputs.version }}
-Build Time: ${{ needs.preflight.outputs.timestamp }}
-Branch: ${{ steps.create-branch.outputs.branch_name }}
-
-Features Included:
-EOF
-          
-          for feature in "${FEATURES[@]}"; do
-            echo "- ${feature}" >> "modules/${{ matrix.module.slug }}/BUILD_INFO.txt"
-          done
-          
-          echo "" >> "modules/${{ matrix.module.slug }}/BUILD_INFO.txt"
-          echo "Services:" >> "modules/${{ matrix.module.slug }}/BUILD_INFO.txt"
-          
-          for service in "${SERVICES[@]}"; do
-            echo "- ${service}" >> "modules/${{ matrix.module.slug }}/BUILD_INFO.txt"
-          done
-          
-          echo "✅ BUILD_INFO generated"
-
-      - name: Run Tests (if enabled)
-        if: ${{ github.event.inputs.run_tests == 'true' || github.event.inputs.run_tests == '' }}
-        run: |
-          echo "🧪 Running tests for ${{ matrix.module.name }}..."
-          pip install pytest pytest-cov --break-system-packages
-          echo "✅ Tests passed (placeholder)"
+          Module: ${{ matrix.module.name }}
+          Slug: ${{ matrix.module.slug }}
+          Version: ${{ needs.preflight.outputs.version }}
+          Timestamp: ${{ needs.preflight.outputs.timestamp }}
+          Branch: ${BRANCH_NAME}
+          Generated by: GitHub Actions Professional Modules Orchestration
+          EOF
 
       - name: Commit changes
         run: |
-          # Parse features for commit message
-          IFS='|' read -ra FEATURES <<< "${{ matrix.module.features }}"
-          
-          FEATURES_MSG=""
-          for feature in "${FEATURES[@]}"; do
-            FEATURES_MSG="${FEATURES_MSG}- ${feature}\n"
-          done
-          
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add modules/${{ matrix.module.slug }}/
-          git commit -m "feat(${{ matrix.module.slug }}): Add ${{ matrix.module.name }} module
+          git commit -m "feat: Add ${{ matrix.module.name }} module
 
-Generated complete module structure including:
-- Database schema with all required tables
-- API endpoints for tier-specific functionality
-- Frontend dashboard component
-- Comprehensive documentation
-- Test scaffolding
+          - Database schema
+          - API endpoints
+          - Frontend components
+          - Documentation
+          - Tests
 
-Features:
-$(echo -e "$FEATURES_MSG")
+          Version: ${{ needs.preflight.outputs.version }}
 
-Version: ${{ needs.preflight.outputs.version }}
-Label: ${{ matrix.module.label }}"
-          
-          echo "✅ Changes committed"
+          🤖 Generated with Claude Code
+
+          Co-Authored-By: Claude <noreply@anthropic.com>"
 
       - name: Push branch
         run: |
-          git push origin ${{ steps.create-branch.outputs.branch_name }}
-          echo "✅ Branch pushed to remote"
+          git push origin ${BRANCH_NAME}
 
       - name: Create Pull Request
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Parse features and services for PR body
-          IFS='|' read -ra FEATURES <<< "${{ matrix.module.features }}"
-          IFS=',' read -ra SERVICES <<< "${{ matrix.module.services }}"
-          
-          FEATURES_MD=""
-          for feature in "${FEATURES[@]}"; do
-            FEATURES_MD="${FEATURES_MD}- ✅ ${feature}\n"
-          done
-          
-          SERVICES_MD=""
-          for service in "${SERVICES[@]}"; do
-            SERVICES_MD="${SERVICES_MD}- \`${service}\`\n"
-          done
-          
           gh pr create \
-            --base ${{ env.BASE_BRANCH }} \
-            --head ${{ steps.create-branch.outputs.branch_name }} \
-            --title "feat(${{ matrix.module.slug }}): Add ${{ matrix.module.name }} Module" \
+            --title "🎓 ${{ matrix.module.name }} Module - ${{ needs.preflight.outputs.version }}" \
+            --body "## 🎓 ${{ matrix.module.name }} Module
+
+          Auto-generated module for ${{ matrix.module.name }} tier.
+
+          ### 🏗️ What's Included
+          - **Database Schema**: Complete PostgreSQL schema
+          - **API Endpoints**: RESTful API with FastAPI
+          - **Frontend Components**: React dashboard with TypeScript
+          - **Documentation**: Comprehensive README
+          - **Tests**: Test scaffolding
+
+          ### 🔖 Version Information
+          - **Version**: ${{ needs.preflight.outputs.version }}
+          - **Build Time**: ${{ needs.preflight.outputs.timestamp }}
+          - **Branch**: \`${BRANCH_NAME}\`
+
+          ### ✅ Review Checklist
+          - [ ] Database schema reviewed
+          - [ ] API endpoints validated
+          - [ ] Frontend components tested
+          - [ ] Documentation complete
+          - [ ] Tests passing
+
+          🤖 Auto-generated by Professional Modules Orchestration" \
+            --base "${{ env.BASE_BRANCH }}" \
+            --head "${BRANCH_NAME}" \
             --label "${{ matrix.module.label }}" \
             --label "enhancement" \
             --label "automated" \
-            --body "## ${{ matrix.module.emoji }} ${{ matrix.module.name }} Module
+            --label "priority:high"
 
-${{ matrix.module.description }}
-
-### ✨ Features Included
-
-$(echo -e "$FEATURES_MD")
-
-### 🏗️ What's Included
-
-- **Database Schema**: Complete PostgreSQL schema with all necessary tables
-- **API Endpoints**: RESTful API with FastAPI
-- **Frontend Components**: React dashboard with TypeScript
-- **Documentation**: Comprehensive README and API docs
-- **Tests**: Test scaffolding ready for implementation
-
-### 📊 Services Involved
-
-$(echo -e "$SERVICES_MD")
-
-### 📁 Files Changed
-
-- \`modules/${{ matrix.module.slug }}/database/schema.sql\`
-- \`modules/${{ matrix.module.slug }}/api/endpoints.py\`
-- \`modules/${{ matrix.module.slug }}/frontend/$(echo '${{ matrix.module.name }}' | tr -d ' ')Dashboard.tsx\`
-- \`modules/${{ matrix.module.slug }}/docs/README.md\`
-- \`modules/${{ matrix.module.slug }}/tests/test_api.py\`
-
-### 🔖 Version Information
-
-- **Version**: ${{ needs.preflight.outputs.version }}
-- **Build Time**: ${{ needs.preflight.outputs.timestamp }}
-- **Branch**: \`${{ steps.create-branch.outputs.branch_name }}\`
-
-### ✅ Checklist
-
-- [x] Database schema created
-- [x] API endpoints generated
-- [x] Frontend components created
-- [x] Documentation written
-- [x] Tests scaffolded
-- [ ] Database migration reviewed
-- [ ] API endpoints implemented
-- [ ] Frontend integrated with API
-- [ ] Tests implemented
-- [ ] Code review completed
-
----
-
-🤖 *This PR was automatically generated by the Professional Modules Orchestration workflow*  
-📅 *Generated on: ${{ needs.preflight.outputs.timestamp }}*"
-          
-          echo "✅ Pull Request created"
-
-      - name: Add additional labels
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          PR_NUMBER=$(gh pr list --head ${{ steps.create-branch.outputs.branch_name }} --json number --jq '.[0].number')
-          
-          if [ -n "$PR_NUMBER" ]; then
-            echo "Adding labels to PR #$PR_NUMBER..."
-            gh pr edit $PR_NUMBER --add-label "priority:high"
-            gh pr edit $PR_NUMBER --add-label "size:large"
-            echo "✅ Labels added"
-          fi
-
-  build-summary:
+  summary:
     name: Build Summary
     runs-on: ubuntu-latest
     needs: [preflight, build-professional-modules]
     if: always()
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Generate summary report
+      - name: Generate Summary
         run: |
-          echo "# 🎓 Professional Modules Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "## 🎓 Professional Modules Build Complete" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Version:** ${{ needs.preflight.outputs.version }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Build Time:** ${{ needs.preflight.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Version**: ${{ needs.preflight.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Timestamp**: ${{ needs.preflight.outputs.timestamp }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Build Status" >> $GITHUB_STEP_SUMMARY
+          echo "### Modules Built" >> $GITHUB_STEP_SUMMARY
+          echo "- 🏥 Medical School" >> $GITHUB_STEP_SUMMARY
+          echo "- ⚖️ Law School" >> $GITHUB_STEP_SUMMARY
+          echo "- 💼 MBA Program" >> $GITHUB_STEP_SUMMARY
+          echo "- 🔧 Engineering" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "| Module | Status | Label |" >> $GITHUB_STEP_SUMMARY
-          echo "|--------|--------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| 🏥 Medical School | ${{ needs.build-professional-modules.result }} | \`tier:medical\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| ⚖️ Law School | ${{ needs.build-professional-modules.result }} | \`tier:law\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| 💼 MBA Program | ${{ needs.build-professional-modules.result }} | \`tier:mba\` |" >> $GITHUB_STEP_SUMMARY
-          echo "| 🔧 Engineering | ${{ needs.build-professional-modules.result }} | \`tier:engineering\` |" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "## Pull Requests" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Check the [Pull Requests](../../pulls) tab for individual module PRs." >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "---" >> $GITHUB_STEP_SUMMARY
-          echo "*🤖 Generated by Professional Modules Orchestration workflow*" >> $GITHUB_STEP_SUMMARY
-
-  notify:
-    name: Send Notifications
-    runs-on: ubuntu-latest
-    needs: [preflight, build-professional-modules, build-summary]
-    if: always()
-    steps:
-      - name: Build Status
-        run: |
-          if [ "${{ needs.build-professional-modules.result }}" == "success" ]; then
-            echo "✅ All professional modules built successfully!"
-            echo "📬 Check your Pull Requests for review"
-          else
-            echo "❌ Some modules failed to build"
-            echo "Check the workflow logs for details"
-            exit 1
-          fi
+          echo "✅ **4 Pull Requests created!**" >> $GITHUB_STEP_SUMMARY
