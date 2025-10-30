@@ -10,7 +10,7 @@ Welcome to the Professional Modules Orchestration system! This index will help y
 - **[WORKFLOW_DIAGRAM.md](WORKFLOW_DIAGRAM.md)** - Visual diagrams and flowcharts
 
 ### Configuration
-- **[config.yml](config.yml)** - Module configuration and workflow settings
+- **[modules-modules-config.yml](modules-modules-config.yml)** - Module configuration and workflow settings
 
 ### Scripts
 - **[test-local.sh](test-local.sh)** - Local testing script
@@ -23,7 +23,7 @@ Welcome to the Professional Modules Orchestration system! This index will help y
 3. Use [QUICK_REFERENCE.md](QUICK_REFERENCE.md) for quick commands
 
 ### For Developers
-1. Review [config.yml](config.yml) to understand module configuration
+1. Review [modules-modules-config.yml](modules-modules-config.yml) to understand module configuration
 2. Run [test-local.sh](test-local.sh) to test locally
 3. Check [README.md#customization](README.md#customization) for customization options
 
@@ -103,7 +103,7 @@ See [QUICK_REFERENCE.md#manage-prs](QUICK_REFERENCE.md#manage-prs) for more comm
 ## 🔧 Configuration Reference
 
 ### Module Configuration
-See [config.yml#modules](config.yml) for:
+See [modules-config.yml#modules](modules-config.yml) for:
 - Module names and slugs
 - Feature lists
 - Service dependencies
@@ -111,14 +111,14 @@ See [config.yml#modules](config.yml) for:
 - API endpoints
 
 ### Workflow Configuration
-See [config.yml#workflow](config.yml) for:
+See [modules-config.yml#workflow](modules-config.yml) for:
 - Base branch settings
 - Test configuration
 - Node/Python versions
 - Notification settings
 
 ### Build Configuration
-See [config.yml#build](config.yml) for:
+See [modules-config.yml#build](modules-config.yml) for:
 - Parallel execution settings
 - Timeout configuration
 - Artifact retention
@@ -128,7 +128,7 @@ See [config.yml#build](config.yml) for:
 ### Understanding the System
 - [README.md#what-it-does](README.md#what-it-does)
 - [WORKFLOW_DIAGRAM.md#workflow-architecture](WORKFLOW_DIAGRAM.md#workflow-architecture)
-- [config.yml#modules](config.yml#modules)
+- [modules-config.yml#modules](modules-config.yml#modules)
 
 ### Running the Workflow
 - [README.md#how-to-use](README.md#how-to-use)
@@ -146,7 +146,7 @@ See [config.yml#build](config.yml) for:
 
 ### Customization
 - [README.md#customization](README.md#customization)
-- [config.yml](config.yml)
+- [modules-config.yml](modules-config.yml)
 
 ## 🎨 Visual Resources
 
@@ -190,7 +190,7 @@ All diagrams available in [WORKFLOW_DIAGRAM.md](WORKFLOW_DIAGRAM.md)
 | First-time setup | [README.md](README.md) |
 | Quick commands | [QUICK_REFERENCE.md](QUICK_REFERENCE.md) |
 | Understanding workflow | [WORKFLOW_DIAGRAM.md](WORKFLOW_DIAGRAM.md) |
-| Customizing modules | [config.yml](config.yml) |
+| Customizing modules | [modules-config.yml](modules-config.yml) |
 | Local testing | [test-local.sh](test-local.sh) |
 | Troubleshooting | [QUICK_REFERENCE.md#troubleshooting](QUICK_REFERENCE.md#troubleshooting) |
 
@@ -198,7 +198,7 @@ All diagrams available in [WORKFLOW_DIAGRAM.md](WORKFLOW_DIAGRAM.md)
 | User Type | Start Here |
 |-----------|------------|
 | New User | [README.md](README.md) → [WORKFLOW_DIAGRAM.md](WORKFLOW_DIAGRAM.md) |
-| Developer | [config.yml](config.yml) → [test-local.sh](test-local.sh) |
+| Developer | [modules-config.yml](modules-config.yml) → [test-local.sh](test-local.sh) |
 | Reviewer | [QUICK_REFERENCE.md#review-checklist](QUICK_REFERENCE.md#review-checklist) |
 | DevOps | [professional-modules-orchestration.yml](professional-modules-orchestration.yml) |
 
@@ -312,7 +312,7 @@ gh run view <run-id> --log
 - 📖 [Full Documentation](README.md)
 - ⚡ [Quick Reference](QUICK_REFERENCE.md)
 - 🎨 [Visual Diagrams](WORKFLOW_DIAGRAM.md)
-- ⚙️ [Configuration](config.yml)
+- ⚙️ [Configuration](modules-config.yml)
 - 🧪 [Test Script](test-local.sh)
 - 🔄 [Workflow File](professional-modules-orchestration.yml)
 
