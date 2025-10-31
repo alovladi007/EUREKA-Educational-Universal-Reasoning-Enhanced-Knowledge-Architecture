@@ -35,8 +35,8 @@ CREATE TABLE IF NOT EXISTS organizations (
     CONSTRAINT valid_slug CHECK (slug ~ '^[a-z0-9-]+$')
 );
 
-CREATE INDEX idx_orgs_tier ON organizations(tier);
-CREATE INDEX idx_orgs_active ON organizations(is_active) WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_orgs_tier ON organizations(tier);
+CREATE INDEX IF NOT EXISTS idx_orgs_active ON organizations(is_active) WHERE is_active = TRUE;
 
 -- Users
 CREATE TYPE user_role AS ENUM ('super_admin', 'org_admin', 'teacher', 'student', 'parent');
@@ -69,10 +69,10 @@ CREATE TABLE IF NOT EXISTS users (
     CONSTRAINT unique_email_per_org UNIQUE (org_id, email)
 );
 
-CREATE INDEX idx_users_org ON users(org_id);
-CREATE INDEX idx_users_email ON users(email);
-CREATE INDEX idx_users_role ON users(role);
-CREATE INDEX idx_users_active ON users(is_active) WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_users_org ON users(org_id);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users(email);
+CREATE INDEX IF NOT EXISTS idx_users_role ON users(role);
+CREATE INDEX IF NOT EXISTS idx_users_active ON users(is_active) WHERE is_active = TRUE;
 
 -- Courses
 CREATE TABLE IF NOT EXISTS courses (
@@ -98,10 +98,10 @@ CREATE TABLE IF NOT EXISTS courses (
     CONSTRAINT unique_course_code_per_org UNIQUE (org_id, code)
 );
 
-CREATE INDEX idx_courses_org ON courses(org_id);
-CREATE INDEX idx_courses_instructor ON courses(instructor_id);
-CREATE INDEX idx_courses_status ON courses(status);
-CREATE INDEX idx_courses_active ON courses(is_active) WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_courses_org ON courses(org_id);
+CREATE INDEX IF NOT EXISTS idx_courses_instructor ON courses(instructor_id);
+CREATE INDEX IF NOT EXISTS idx_courses_status ON courses(status);
+CREATE INDEX IF NOT EXISTS idx_courses_active ON courses(is_active) WHERE is_active = TRUE;
 
 -- Course Modules
 CREATE TABLE IF NOT EXISTS course_modules (
@@ -119,8 +119,8 @@ CREATE TABLE IF NOT EXISTS course_modules (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_modules_course ON course_modules(course_id);
-CREATE INDEX idx_modules_order ON course_modules(course_id, order_index);
+CREATE INDEX IF NOT EXISTS idx_modules_course ON course_modules(course_id);
+CREATE INDEX IF NOT EXISTS idx_modules_order ON course_modules(course_id, order_index);
 
 -- Enrollments
 CREATE TYPE enrollment_status AS ENUM ('active', 'completed', 'dropped', 'failed');
@@ -139,9 +139,9 @@ CREATE TABLE IF NOT EXISTS enrollments (
     CONSTRAINT unique_enrollment UNIQUE (course_id, user_id)
 );
 
-CREATE INDEX idx_enrollments_course ON enrollments(course_id);
-CREATE INDEX idx_enrollments_user ON enrollments(user_id);
-CREATE INDEX idx_enrollments_status ON enrollments(status);
+CREATE INDEX IF NOT EXISTS idx_enrollments_course ON enrollments(course_id);
+CREATE INDEX IF NOT EXISTS idx_enrollments_user ON enrollments(user_id);
+CREATE INDEX IF NOT EXISTS idx_enrollments_status ON enrollments(status);
 
 -- Assignments
 CREATE TYPE assignment_type AS ENUM ('homework', 'quiz', 'exam', 'project', 'discussion');
@@ -164,9 +164,9 @@ CREATE TABLE IF NOT EXISTS assignments (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_assignments_course ON assignments(course_id);
-CREATE INDEX idx_assignments_module ON assignments(module_id);
-CREATE INDEX idx_assignments_due ON assignments(due_date);
+CREATE INDEX IF NOT EXISTS idx_assignments_course ON assignments(course_id);
+CREATE INDEX IF NOT EXISTS idx_assignments_module ON assignments(module_id);
+CREATE INDEX IF NOT EXISTS idx_assignments_due ON assignments(due_date);
 
 -- Grades
 CREATE TABLE IF NOT EXISTS grades (
@@ -189,9 +189,9 @@ CREATE TABLE IF NOT EXISTS grades (
     CONSTRAINT unique_grade_attempt UNIQUE (enrollment_id, assignment_id, attempt_number)
 );
 
-CREATE INDEX idx_grades_enrollment ON grades(enrollment_id);
-CREATE INDEX idx_grades_assignment ON grades(assignment_id);
-CREATE INDEX idx_grades_graded_by ON grades(graded_by);
+CREATE INDEX IF NOT EXISTS idx_grades_enrollment ON grades(enrollment_id);
+CREATE INDEX IF NOT EXISTS idx_grades_assignment ON grades(assignment_id);
+CREATE INDEX IF NOT EXISTS idx_grades_graded_by ON grades(graded_by);
 
 -- =====================================================
 -- AI TUTOR / LLM SERVICE TABLES (tutor-llm service)
@@ -212,9 +212,9 @@ CREATE TABLE IF NOT EXISTS tutor_conversations (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_tutor_conv_user ON tutor_conversations(user_id);
-CREATE INDEX idx_tutor_conv_course ON tutor_conversations(course_id);
-CREATE INDEX idx_tutor_conv_active ON tutor_conversations(is_active) WHERE is_active = TRUE;
+CREATE INDEX IF NOT EXISTS idx_tutor_conv_user ON tutor_conversations(user_id);
+CREATE INDEX IF NOT EXISTS idx_tutor_conv_course ON tutor_conversations(course_id);
+CREATE INDEX IF NOT EXISTS idx_tutor_conv_active ON tutor_conversations(is_active) WHERE is_active = TRUE;
 
 -- Tutor Messages
 CREATE TYPE message_role AS ENUM ('user', 'assistant', 'system');
@@ -232,8 +232,8 @@ CREATE TABLE IF NOT EXISTS tutor_messages (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_tutor_messages_conv ON tutor_messages(conversation_id);
-CREATE INDEX idx_tutor_messages_created ON tutor_messages(created_at);
+CREATE INDEX IF NOT EXISTS idx_tutor_messages_conv ON tutor_messages(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_tutor_messages_created ON tutor_messages(created_at);
 
 -- Course Content (for RAG)
 CREATE TABLE IF NOT EXISTS course_content (
@@ -249,9 +249,9 @@ CREATE TABLE IF NOT EXISTS course_content (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_content_course ON course_content(course_id);
-CREATE INDEX idx_content_embedding ON course_content USING ivfflat (embedding vector_cosine_ops);
-CREATE INDEX idx_content_type ON course_content(content_type);
+CREATE INDEX IF NOT EXISTS idx_content_course ON course_content(course_id);
+CREATE INDEX IF NOT EXISTS idx_content_embedding ON course_content USING ivfflat (embedding vector_cosine_ops);
+CREATE INDEX IF NOT EXISTS idx_content_type ON course_content(content_type);
 
 -- Student Knowledge State
 CREATE TABLE IF NOT EXISTS student_knowledge (
@@ -270,8 +270,8 @@ CREATE TABLE IF NOT EXISTS student_knowledge (
     CONSTRAINT unique_student_topic UNIQUE (user_id, course_id, topic)
 );
 
-CREATE INDEX idx_knowledge_user_course ON student_knowledge(user_id, course_id);
-CREATE INDEX idx_knowledge_mastery ON student_knowledge(mastery_level);
+CREATE INDEX IF NOT EXISTS idx_knowledge_user_course ON student_knowledge(user_id, course_id);
+CREATE INDEX IF NOT EXISTS idx_knowledge_mastery ON student_knowledge(mastery_level);
 
 -- Tutor Sessions (Analytics)
 CREATE TABLE IF NOT EXISTS tutor_sessions (
@@ -291,9 +291,9 @@ CREATE TABLE IF NOT EXISTS tutor_sessions (
     metadata JSONB DEFAULT '{}'
 );
 
-CREATE INDEX idx_sessions_user ON tutor_sessions(user_id);
-CREATE INDEX idx_sessions_course ON tutor_sessions(course_id);
-CREATE INDEX idx_sessions_started ON tutor_sessions(started_at);
+CREATE INDEX IF NOT EXISTS idx_sessions_user ON tutor_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_course ON tutor_sessions(course_id);
+CREATE INDEX IF NOT EXISTS idx_sessions_started ON tutor_sessions(started_at);
 
 -- =====================================================
 -- ASSESSMENT ENGINE TABLES (assess service)
@@ -324,9 +324,9 @@ CREATE TABLE IF NOT EXISTS assessments (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_assessments_course ON assessments(course_id);
-CREATE INDEX idx_assessments_assignment ON assessments(assignment_id);
-CREATE INDEX idx_assessments_type ON assessments(assessment_type);
+CREATE INDEX IF NOT EXISTS idx_assessments_course ON assessments(course_id);
+CREATE INDEX IF NOT EXISTS idx_assessments_assignment ON assessments(assignment_id);
+CREATE INDEX IF NOT EXISTS idx_assessments_type ON assessments(assessment_type);
 
 -- Questions
 CREATE TYPE question_type AS ENUM ('multiple_choice', 'true_false', 'short_answer', 'essay', 'coding', 'matching');
@@ -349,9 +349,9 @@ CREATE TABLE IF NOT EXISTS questions (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_questions_assessment ON questions(assessment_id);
-CREATE INDEX idx_questions_order ON questions(assessment_id, order_index);
-CREATE INDEX idx_questions_type ON questions(question_type);
+CREATE INDEX IF NOT EXISTS idx_questions_assessment ON questions(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_questions_order ON questions(assessment_id, order_index);
+CREATE INDEX IF NOT EXISTS idx_questions_type ON questions(question_type);
 
 -- Grading Rubrics
 CREATE TABLE IF NOT EXISTS grading_rubrics (
@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS grading_rubrics (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_rubrics_question ON grading_rubrics(question_id);
+CREATE INDEX IF NOT EXISTS idx_rubrics_question ON grading_rubrics(question_id);
 
 -- Submissions
 CREATE TYPE submission_status AS ENUM ('draft', 'submitted', 'grading', 'graded', 'returned');
@@ -393,9 +393,9 @@ CREATE TABLE IF NOT EXISTS submissions (
     CONSTRAINT unique_submission_attempt UNIQUE (assessment_id, user_id, attempt_number)
 );
 
-CREATE INDEX idx_submissions_assessment ON submissions(assessment_id);
-CREATE INDEX idx_submissions_user ON submissions(user_id);
-CREATE INDEX idx_submissions_status ON submissions(status);
+CREATE INDEX IF NOT EXISTS idx_submissions_assessment ON submissions(assessment_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_user ON submissions(user_id);
+CREATE INDEX IF NOT EXISTS idx_submissions_status ON submissions(status);
 
 -- Answers
 CREATE TABLE IF NOT EXISTS answers (
@@ -413,8 +413,8 @@ CREATE TABLE IF NOT EXISTS answers (
     CONSTRAINT unique_submission_question UNIQUE (submission_id, question_id)
 );
 
-CREATE INDEX idx_answers_submission ON answers(submission_id);
-CREATE INDEX idx_answers_question ON answers(question_id);
+CREATE INDEX IF NOT EXISTS idx_answers_submission ON answers(submission_id);
+CREATE INDEX IF NOT EXISTS idx_answers_question ON answers(question_id);
 
 -- Rubric Scores
 CREATE TABLE IF NOT EXISTS rubric_scores (
@@ -429,8 +429,8 @@ CREATE TABLE IF NOT EXISTS rubric_scores (
     CONSTRAINT unique_answer_rubric UNIQUE (answer_id, rubric_id)
 );
 
-CREATE INDEX idx_rubric_scores_answer ON rubric_scores(answer_id);
-CREATE INDEX idx_rubric_scores_rubric ON rubric_scores(rubric_id);
+CREATE INDEX IF NOT EXISTS idx_rubric_scores_answer ON rubric_scores(answer_id);
+CREATE INDEX IF NOT EXISTS idx_rubric_scores_rubric ON rubric_scores(rubric_id);
 
 -- Grading Results (Detailed feedback)
 CREATE TABLE IF NOT EXISTS grading_results (
@@ -445,7 +445,7 @@ CREATE TABLE IF NOT EXISTS grading_results (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_grading_results_submission ON grading_results(submission_id);
+CREATE INDEX IF NOT EXISTS idx_grading_results_submission ON grading_results(submission_id);
 
 -- =====================================================
 -- ADAPTIVE LEARNING TABLES (adaptive service)
@@ -467,8 +467,8 @@ CREATE TABLE IF NOT EXISTS concepts (
     CONSTRAINT unique_concept_name UNIQUE (course_id, name)
 );
 
-CREATE INDEX idx_concepts_course ON concepts(course_id);
-CREATE INDEX idx_concepts_difficulty ON concepts(difficulty_level);
+CREATE INDEX IF NOT EXISTS idx_concepts_course ON concepts(course_id);
+CREATE INDEX IF NOT EXISTS idx_concepts_difficulty ON concepts(difficulty_level);
 
 -- Student Mastery
 CREATE TABLE IF NOT EXISTS student_mastery (
@@ -486,9 +486,9 @@ CREATE TABLE IF NOT EXISTS student_mastery (
     CONSTRAINT unique_student_concept UNIQUE (user_id, concept_id)
 );
 
-CREATE INDEX idx_mastery_user ON student_mastery(user_id);
-CREATE INDEX idx_mastery_concept ON student_mastery(concept_id);
-CREATE INDEX idx_mastery_level ON student_mastery(mastery_level);
+CREATE INDEX IF NOT EXISTS idx_mastery_user ON student_mastery(user_id);
+CREATE INDEX IF NOT EXISTS idx_mastery_concept ON student_mastery(concept_id);
+CREATE INDEX IF NOT EXISTS idx_mastery_level ON student_mastery(mastery_level);
 
 -- Learning Paths
 CREATE TABLE IF NOT EXISTS learning_paths (
@@ -509,9 +509,9 @@ CREATE TABLE IF NOT EXISTS learning_paths (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_paths_user ON learning_paths(user_id);
-CREATE INDEX idx_paths_course ON learning_paths(course_id);
-CREATE INDEX idx_paths_status ON learning_paths(status);
+CREATE INDEX IF NOT EXISTS idx_paths_user ON learning_paths(user_id);
+CREATE INDEX IF NOT EXISTS idx_paths_course ON learning_paths(course_id);
+CREATE INDEX IF NOT EXISTS idx_paths_status ON learning_paths(status);
 
 -- Recommendations
 CREATE TABLE IF NOT EXISTS recommendations (
@@ -530,10 +530,10 @@ CREATE TABLE IF NOT EXISTS recommendations (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_recommendations_user ON recommendations(user_id);
-CREATE INDEX idx_recommendations_course ON recommendations(course_id);
-CREATE INDEX idx_recommendations_priority ON recommendations(priority DESC);
-CREATE INDEX idx_recommendations_active ON recommendations(is_acted_on) WHERE is_acted_on = FALSE;
+CREATE INDEX IF NOT EXISTS idx_recommendations_user ON recommendations(user_id);
+CREATE INDEX IF NOT EXISTS idx_recommendations_course ON recommendations(course_id);
+CREATE INDEX IF NOT EXISTS idx_recommendations_priority ON recommendations(priority DESC);
+CREATE INDEX IF NOT EXISTS idx_recommendations_active ON recommendations(is_acted_on) WHERE is_acted_on = FALSE;
 
 -- Skill Gaps
 CREATE TABLE IF NOT EXISTS skill_gaps (
@@ -549,10 +549,10 @@ CREATE TABLE IF NOT EXISTS skill_gaps (
     CONSTRAINT unique_student_gap UNIQUE (user_id, concept_id)
 );
 
-CREATE INDEX idx_gaps_user ON skill_gaps(user_id);
-CREATE INDEX idx_gaps_concept ON skill_gaps(concept_id);
-CREATE INDEX idx_gaps_severity ON skill_gaps(gap_severity);
-CREATE INDEX idx_gaps_status ON skill_gaps(remediation_status);
+CREATE INDEX IF NOT EXISTS idx_gaps_user ON skill_gaps(user_id);
+CREATE INDEX IF NOT EXISTS idx_gaps_concept ON skill_gaps(concept_id);
+CREATE INDEX IF NOT EXISTS idx_gaps_severity ON skill_gaps(gap_severity);
+CREATE INDEX IF NOT EXISTS idx_gaps_status ON skill_gaps(remediation_status);
 
 -- Practice Sessions
 CREATE TABLE IF NOT EXISTS practice_sessions (
@@ -569,9 +569,9 @@ CREATE TABLE IF NOT EXISTS practice_sessions (
     metadata JSONB DEFAULT '{}'
 );
 
-CREATE INDEX idx_practice_user ON practice_sessions(user_id);
-CREATE INDEX idx_practice_concept ON practice_sessions(concept_id);
-CREATE INDEX idx_practice_started ON practice_sessions(started_at);
+CREATE INDEX IF NOT EXISTS idx_practice_user ON practice_sessions(user_id);
+CREATE INDEX IF NOT EXISTS idx_practice_concept ON practice_sessions(concept_id);
+CREATE INDEX IF NOT EXISTS idx_practice_started ON practice_sessions(started_at);
 
 -- =====================================================
 -- ANALYTICS DASHBOARD TABLES (analytics service)
@@ -620,10 +620,10 @@ CREATE TABLE IF NOT EXISTS student_analytics (
     CONSTRAINT unique_student_analytics UNIQUE (user_id, course_id, timeframe, period_start)
 );
 
-CREATE INDEX idx_analytics_user ON student_analytics(user_id);
-CREATE INDEX idx_analytics_course ON student_analytics(course_id);
-CREATE INDEX idx_analytics_timeframe ON student_analytics(timeframe, period_start);
-CREATE INDEX idx_analytics_risk ON student_analytics(risk_level);
+CREATE INDEX IF NOT EXISTS idx_analytics_user ON student_analytics(user_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_course ON student_analytics(course_id);
+CREATE INDEX IF NOT EXISTS idx_analytics_timeframe ON student_analytics(timeframe, period_start);
+CREATE INDEX IF NOT EXISTS idx_analytics_risk ON student_analytics(risk_level);
 
 -- Course Analytics
 CREATE TABLE IF NOT EXISTS course_analytics (
@@ -662,8 +662,8 @@ CREATE TABLE IF NOT EXISTS course_analytics (
     CONSTRAINT unique_course_analytics UNIQUE (course_id, timeframe, period_start)
 );
 
-CREATE INDEX idx_course_analytics_course ON course_analytics(course_id);
-CREATE INDEX idx_course_analytics_timeframe ON course_analytics(timeframe, period_start);
+CREATE INDEX IF NOT EXISTS idx_course_analytics_course ON course_analytics(course_id);
+CREATE INDEX IF NOT EXISTS idx_course_analytics_timeframe ON course_analytics(timeframe, period_start);
 
 -- Learning Outcomes
 CREATE TABLE IF NOT EXISTS learning_outcomes (
@@ -680,7 +680,7 @@ CREATE TABLE IF NOT EXISTS learning_outcomes (
     CONSTRAINT unique_outcome_code UNIQUE (course_id, outcome_code)
 );
 
-CREATE INDEX idx_outcomes_course ON learning_outcomes(course_id);
+CREATE INDEX IF NOT EXISTS idx_outcomes_course ON learning_outcomes(course_id);
 
 -- Student Outcome Achievements
 CREATE TABLE IF NOT EXISTS student_outcome_achievements (
@@ -697,9 +697,9 @@ CREATE TABLE IF NOT EXISTS student_outcome_achievements (
     CONSTRAINT unique_student_outcome UNIQUE (user_id, outcome_id)
 );
 
-CREATE INDEX idx_achievements_user ON student_outcome_achievements(user_id);
-CREATE INDEX idx_achievements_outcome ON student_outcome_achievements(outcome_id);
-CREATE INDEX idx_achievements_achieved ON student_outcome_achievements(is_achieved) WHERE is_achieved = TRUE;
+CREATE INDEX IF NOT EXISTS idx_achievements_user ON student_outcome_achievements(user_id);
+CREATE INDEX IF NOT EXISTS idx_achievements_outcome ON student_outcome_achievements(outcome_id);
+CREATE INDEX IF NOT EXISTS idx_achievements_achieved ON student_outcome_achievements(is_achieved) WHERE is_achieved = TRUE;
 
 -- At-Risk Alerts
 CREATE TYPE alert_severity AS ENUM ('low', 'medium', 'high', 'critical');
@@ -723,10 +723,10 @@ CREATE TABLE IF NOT EXISTS at_risk_alerts (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_alerts_user ON at_risk_alerts(user_id);
-CREATE INDEX idx_alerts_course ON at_risk_alerts(course_id);
-CREATE INDEX idx_alerts_severity ON at_risk_alerts(severity);
-CREATE INDEX idx_alerts_unresolved ON at_risk_alerts(is_resolved) WHERE is_resolved = FALSE;
+CREATE INDEX IF NOT EXISTS idx_alerts_user ON at_risk_alerts(user_id);
+CREATE INDEX IF NOT EXISTS idx_alerts_course ON at_risk_alerts(course_id);
+CREATE INDEX IF NOT EXISTS idx_alerts_severity ON at_risk_alerts(severity);
+CREATE INDEX IF NOT EXISTS idx_alerts_unresolved ON at_risk_alerts(is_resolved) WHERE is_resolved = FALSE;
 
 -- Engagement Events
 CREATE TYPE event_type AS ENUM ('login', 'logout', 'page_view', 'content_access', 'assignment_start', 'assignment_submit', 'quiz_start', 'quiz_submit', 'tutor_interaction', 'forum_post', 'resource_download');
@@ -744,11 +744,11 @@ CREATE TABLE IF NOT EXISTS engagement_events (
     metadata JSONB DEFAULT '{}'
 );
 
-CREATE INDEX idx_events_user ON engagement_events(user_id);
-CREATE INDEX idx_events_course ON engagement_events(course_id);
-CREATE INDEX idx_events_type ON engagement_events(event_type);
-CREATE INDEX idx_events_occurred ON engagement_events(occurred_at);
-CREATE INDEX idx_events_session ON engagement_events(session_id);
+CREATE INDEX IF NOT EXISTS idx_events_user ON engagement_events(user_id);
+CREATE INDEX IF NOT EXISTS idx_events_course ON engagement_events(course_id);
+CREATE INDEX IF NOT EXISTS idx_events_type ON engagement_events(event_type);
+CREATE INDEX IF NOT EXISTS idx_events_occurred ON engagement_events(occurred_at);
+CREATE INDEX IF NOT EXISTS idx_events_session ON engagement_events(session_id);
 
 -- Performance Trends
 CREATE TABLE IF NOT EXISTS performance_trends (
@@ -765,10 +765,10 @@ CREATE TABLE IF NOT EXISTS performance_trends (
     CONSTRAINT unique_metric_period UNIQUE (user_id, course_id, metric_name, time_period)
 );
 
-CREATE INDEX idx_trends_user ON performance_trends(user_id);
-CREATE INDEX idx_trends_course ON performance_trends(course_id);
-CREATE INDEX idx_trends_metric ON performance_trends(metric_name);
-CREATE INDEX idx_trends_period ON performance_trends(time_period);
+CREATE INDEX IF NOT EXISTS idx_trends_user ON performance_trends(user_id);
+CREATE INDEX IF NOT EXISTS idx_trends_course ON performance_trends(course_id);
+CREATE INDEX IF NOT EXISTS idx_trends_metric ON performance_trends(metric_name);
+CREATE INDEX IF NOT EXISTS idx_trends_period ON performance_trends(time_period);
 
 -- =====================================================
 -- CONTENT SERVICE TABLES (content service)
@@ -804,11 +804,11 @@ CREATE TABLE IF NOT EXISTS content_items (
     updated_at TIMESTAMP
 );
 
-CREATE INDEX idx_content_org ON content_items(org_id);
-CREATE INDEX idx_content_course ON content_items(course_id);
-CREATE INDEX idx_content_module ON content_items(module_id);
-CREATE INDEX idx_content_type ON content_items(content_type);
-CREATE INDEX idx_content_status ON content_items(status);
+CREATE INDEX IF NOT EXISTS idx_content_org ON content_items(org_id);
+CREATE INDEX IF NOT EXISTS idx_content_course ON content_items(course_id);
+CREATE INDEX IF NOT EXISTS idx_content_module ON content_items(module_id);
+CREATE INDEX IF NOT EXISTS idx_content_type ON content_items(content_type);
+CREATE INDEX IF NOT EXISTS idx_content_status ON content_items(status);
 
 -- Content Access Logs
 CREATE TABLE IF NOT EXISTS content_access_logs (
@@ -822,9 +822,9 @@ CREATE TABLE IF NOT EXISTS content_access_logs (
     metadata JSONB DEFAULT '{}'
 );
 
-CREATE INDEX idx_access_content ON content_access_logs(content_id);
-CREATE INDEX idx_access_user ON content_access_logs(user_id);
-CREATE INDEX idx_access_timestamp ON content_access_logs(accessed_at);
+CREATE INDEX IF NOT EXISTS idx_access_content ON content_access_logs(content_id);
+CREATE INDEX IF NOT EXISTS idx_access_user ON content_access_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_access_timestamp ON content_access_logs(accessed_at);
 
 -- =====================================================
 -- GAMIFICATION TABLES (High School Tier)
@@ -845,8 +845,8 @@ CREATE TABLE IF NOT EXISTS badges (
     CONSTRAINT unique_badge_name UNIQUE (org_id, name)
 );
 
-CREATE INDEX idx_badges_org ON badges(org_id);
-CREATE INDEX idx_badges_rarity ON badges(rarity);
+CREATE INDEX IF NOT EXISTS idx_badges_org ON badges(org_id);
+CREATE INDEX IF NOT EXISTS idx_badges_rarity ON badges(rarity);
 
 -- User Badges
 CREATE TABLE IF NOT EXISTS user_badges (
@@ -858,9 +858,9 @@ CREATE TABLE IF NOT EXISTS user_badges (
     CONSTRAINT unique_user_badge UNIQUE (user_id, badge_id)
 );
 
-CREATE INDEX idx_user_badges_user ON user_badges(user_id);
-CREATE INDEX idx_user_badges_badge ON user_badges(badge_id);
-CREATE INDEX idx_user_badges_earned ON user_badges(earned_at);
+CREATE INDEX IF NOT EXISTS idx_user_badges_user ON user_badges(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_badges_badge ON user_badges(badge_id);
+CREATE INDEX IF NOT EXISTS idx_user_badges_earned ON user_badges(earned_at);
 
 -- Points
 CREATE TABLE IF NOT EXISTS points_transactions (
@@ -874,8 +874,8 @@ CREATE TABLE IF NOT EXISTS points_transactions (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_points_user ON points_transactions(user_id);
-CREATE INDEX idx_points_created ON points_transactions(created_at);
+CREATE INDEX IF NOT EXISTS idx_points_user ON points_transactions(user_id);
+CREATE INDEX IF NOT EXISTS idx_points_created ON points_transactions(created_at);
 
 -- Leaderboards
 CREATE TABLE IF NOT EXISTS leaderboard_entries (
@@ -894,9 +894,9 @@ CREATE TABLE IF NOT EXISTS leaderboard_entries (
     CONSTRAINT unique_leaderboard_entry UNIQUE (user_id, course_id, timeframe, period_start)
 );
 
-CREATE INDEX idx_leaderboard_course ON leaderboard_entries(course_id, timeframe, period_start);
-CREATE INDEX idx_leaderboard_org ON leaderboard_entries(org_id, timeframe, period_start);
-CREATE INDEX idx_leaderboard_rank ON leaderboard_entries(rank);
+CREATE INDEX IF NOT EXISTS idx_leaderboard_course ON leaderboard_entries(course_id, timeframe, period_start);
+CREATE INDEX IF NOT EXISTS idx_leaderboard_org ON leaderboard_entries(org_id, timeframe, period_start);
+CREATE INDEX IF NOT EXISTS idx_leaderboard_rank ON leaderboard_entries(rank);
 
 -- Streaks
 CREATE TABLE IF NOT EXISTS user_streaks (
@@ -911,8 +911,8 @@ CREATE TABLE IF NOT EXISTS user_streaks (
     CONSTRAINT unique_user_streak UNIQUE (user_id, streak_type)
 );
 
-CREATE INDEX idx_streaks_user ON user_streaks(user_id);
-CREATE INDEX idx_streaks_type ON user_streaks(streak_type);
+CREATE INDEX IF NOT EXISTS idx_streaks_user ON user_streaks(user_id);
+CREATE INDEX IF NOT EXISTS idx_streaks_type ON user_streaks(streak_type);
 
 -- =====================================================
 -- AUDIT LOGGING
@@ -934,11 +934,11 @@ CREATE TABLE IF NOT EXISTS audit_logs (
     occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_audit_org ON audit_logs(org_id);
-CREATE INDEX idx_audit_user ON audit_logs(user_id);
-CREATE INDEX idx_audit_action ON audit_logs(action);
-CREATE INDEX idx_audit_occurred ON audit_logs(occurred_at);
-CREATE INDEX idx_audit_resource ON audit_logs(resource_type, resource_id);
+CREATE INDEX IF NOT EXISTS idx_audit_org ON audit_logs(org_id);
+CREATE INDEX IF NOT EXISTS idx_audit_user ON audit_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_action ON audit_logs(action);
+CREATE INDEX IF NOT EXISTS idx_audit_occurred ON audit_logs(occurred_at);
+CREATE INDEX IF NOT EXISTS idx_audit_resource ON audit_logs(resource_type, resource_id);
 
 -- =====================================================
 -- FILE UPLOADS
@@ -964,9 +964,9 @@ CREATE TABLE IF NOT EXISTS file_uploads (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE INDEX idx_uploads_org ON file_uploads(org_id);
-CREATE INDEX idx_uploads_user ON file_uploads(uploaded_by);
-CREATE INDEX idx_uploads_reference ON file_uploads(reference_type, reference_id);
+CREATE INDEX IF NOT EXISTS idx_uploads_org ON file_uploads(org_id);
+CREATE INDEX IF NOT EXISTS idx_uploads_user ON file_uploads(uploaded_by);
+CREATE INDEX IF NOT EXISTS idx_uploads_reference ON file_uploads(reference_type, reference_id);
 
 -- =====================================================
 -- NOTIFICATIONS
@@ -993,9 +993,9 @@ CREATE TABLE IF NOT EXISTS notifications (
     expires_at TIMESTAMP
 );
 
-CREATE INDEX idx_notifications_user ON notifications(user_id);
-CREATE INDEX idx_notifications_unread ON notifications(user_id, is_read) WHERE is_read = FALSE;
-CREATE INDEX idx_notifications_created ON notifications(created_at);
+CREATE INDEX IF NOT EXISTS idx_notifications_user ON notifications(user_id);
+CREATE INDEX IF NOT EXISTS idx_notifications_unread ON notifications(user_id, is_read) WHERE is_read = FALSE;
+CREATE INDEX IF NOT EXISTS idx_notifications_created ON notifications(created_at);
 
 -- =====================================================
 -- PARENTAL CONTROLS (High School)
@@ -1014,8 +1014,8 @@ CREATE TABLE IF NOT EXISTS parent_student_relationships (
     CONSTRAINT different_users CHECK (parent_user_id != student_user_id)
 );
 
-CREATE INDEX idx_parent_relationships ON parent_student_relationships(parent_user_id);
-CREATE INDEX idx_student_relationships ON parent_student_relationships(student_user_id);
+CREATE INDEX IF NOT EXISTS idx_parent_relationships ON parent_student_relationships(parent_user_id);
+CREATE INDEX IF NOT EXISTS idx_student_relationships ON parent_student_relationships(student_user_id);
 
 -- =====================================================
 -- REFRESH TOKENS (for JWT)
@@ -1034,9 +1034,9 @@ CREATE TABLE IF NOT EXISTS refresh_tokens (
     user_agent TEXT
 );
 
-CREATE INDEX idx_refresh_tokens_user ON refresh_tokens(user_id);
-CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
-CREATE INDEX idx_refresh_tokens_active ON refresh_tokens(user_id, is_revoked, expires_at) 
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_user ON refresh_tokens(user_id);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_token ON refresh_tokens(token);
+CREATE INDEX IF NOT EXISTS idx_refresh_tokens_active ON refresh_tokens(user_id, is_revoked, expires_at) 
 WHERE is_revoked = FALSE AND expires_at > CURRENT_TIMESTAMP;
 
 -- =====================================================

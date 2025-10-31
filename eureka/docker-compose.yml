@@ -14,7 +14,7 @@ services:
       POSTGRES_PASSWORD: eureka_dev_password
       POSTGRES_HOST_AUTH_METHOD: trust
     ports:
-      - "5432:5432"
+      - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./ops/db:/docker-entrypoint-initdb.d
@@ -28,7 +28,7 @@ services:
     image: redis:7-alpine
     container_name: eureka-redis
     ports:
-      - "6379:6379"
+      - "6380:6379"
     volumes:
       - redis_data:/data
     healthcheck:
