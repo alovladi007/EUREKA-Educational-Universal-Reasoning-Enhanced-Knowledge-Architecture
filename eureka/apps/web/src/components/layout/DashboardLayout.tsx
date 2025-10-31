@@ -18,6 +18,8 @@ import {
   UserCircle,
   Bell,
   TrendingUp,
+  Library,
+  MessageSquare,
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -34,6 +36,8 @@ interface NavItem {
 const navigation: NavItem[] = [
   { name: 'Dashboard', href: '/dashboard', icon: Home },
   { name: 'My Courses', href: '/dashboard/courses', icon: BookOpen },
+  { name: 'Resources', href: '/dashboard/resources', icon: Library },
+  { name: 'Community', href: '/dashboard/community', icon: MessageSquare },
   { name: 'My Classes', href: '/dashboard/classes', icon: GraduationCap, roles: ['teacher', 'admin'] },
   { name: 'Students', href: '/dashboard/students', icon: Users, roles: ['teacher', 'admin'] },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3, roles: ['teacher', 'admin'] },
