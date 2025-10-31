@@ -24,6 +24,7 @@ from app.utils.auth import (
 )
 from app.utils.dependencies import get_current_user
 from app.core.models import User
+from app.services.email import email_service
 
 router = APIRouter()
 
@@ -83,11 +84,15 @@ async def register(
     
     access_token = create_access_token(token_data)
     refresh_token = create_refresh_token(token_data)
-    
-    # TODO: Send verification email
-    # verification_token = create_email_verification_token(str(user.id), user.email)
-    # await send_verification_email(user.email, verification_token)
-    
+
+    # Send verification email
+    verification_token = create_email_verification_token(str(user.id), user.email)
+    await email_service.send_verification_email(
+        to_email=user.email,
+        user_name=f"{user.first_name} {user.last_name}",
+        verification_token=verification_token
+    )
+
     return TokenResponse(
         access_token=access_token,
         refresh_token=refresh_token,
@@ -307,10 +312,13 @@ async def request_password_reset(
     if user and user.is_active:
         # Generate reset token
         reset_token = create_password_reset_token(str(user.id), user.email)
-        
-        # TODO: Send password reset email
-        # await send_password_reset_email(user.email, reset_token)
-        pass
+
+        # Send password reset email
+        await email_service.send_password_reset_email(
+            to_email=user.email,
+            user_name=f"{user.first_name} {user.last_name}",
+            reset_token=reset_token
+        )
     
     # Always return success (don't reveal if email exists)
     return {"message": "If the email exists, a password reset link has been sent"}
