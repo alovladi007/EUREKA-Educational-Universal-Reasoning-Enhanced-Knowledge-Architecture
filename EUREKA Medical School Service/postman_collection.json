@@ -1,0 +1,443 @@
+{
+  "info": {
+    "name": "EUREKA Medical School API",
+    "description": "Complete API collection for Medical School service testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8020",
+      "type": "string"
+    },
+    {
+      "key": "api_version",
+      "value": "v1",
+      "type": "string"
+    },
+    {
+      "key": "org_id",
+      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "string"
+    },
+    {
+      "key": "user_id",
+      "value": "660e8400-e29b-41d4-a716-446655440000",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "System",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          }
+        },
+        {
+          "name": "Root",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "USMLE Questions",
+      "item": [
+        {
+          "name": "Create Question",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"org_id\": \"{{org_id}}\",\n  \"question_text\": \"A 55-year-old man with Type 2 diabetes presents with chest pain. What is the most appropriate next step?\",\n  \"vignette\": \"Patient has history of hypertension and hyperlipidemia.\",\n  \"option_a\": \"Obtain ECG\",\n  \"option_b\": \"Start aspirin\",\n  \"option_c\": \"Order stress test\",\n  \"option_d\": \"Discharge home\",\n  \"option_e\": \"Admit to ICU\",\n  \"correct_answer\": \"A\",\n  \"difficulty_level\": \"Step 2 CK\",\n  \"subject\": \"Cardiology\",\n  \"topic\": \"Chest Pain Evaluation\",\n  \"explanation\": \"ECG is the first-line test for chest pain evaluation to rule out acute coronary syndrome.\",\n  \"learning_objectives\": [\"Chest pain workup\", \"ECG interpretation\"]\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/usmle/questions",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "usmle", "questions"]
+            }
+          }
+        },
+        {
+          "name": "List Questions",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/usmle/questions?limit=20&offset=0",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "usmle", "questions"],
+              "query": [
+                {
+                  "key": "difficulty_level",
+                  "value": "Step 1",
+                  "disabled": true
+                },
+                {
+                  "key": "subject",
+                  "value": "Cardiology",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "key": "offset",
+                  "value": "0"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Question by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/usmle/questions/{{question_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "usmle", "questions", "{{question_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Submit Answer",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"question_id\": \"{{question_id}}\",\n  \"selected_answer\": \"A\",\n  \"time_spent_seconds\": 120\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/usmle/attempts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "usmle", "attempts"]
+            }
+          }
+        },
+        {
+          "name": "Get My Attempts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/usmle/attempts/me?limit=50",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "usmle", "attempts", "me"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "50"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get My Statistics",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/usmle/stats/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "usmle", "stats", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Clinical Cases",
+      "item": [
+        {
+          "name": "List Cases",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/clinical-cases?limit=20",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "clinical-cases"],
+              "query": [
+                {
+                  "key": "specialty",
+                  "value": "Cardiology",
+                  "disabled": true
+                },
+                {
+                  "key": "complexity",
+                  "value": "intermediate",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Case by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/clinical-cases/{{case_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "clinical-cases", "{{case_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Start Case Attempt",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"case_id\": \"{{case_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/clinical-cases/attempts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "clinical-cases", "attempts"]
+            }
+          }
+        },
+        {
+          "name": "Submit Diagnosis",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"case_id\": \"{{case_id}}\",\n  \"differential_diagnosis\": [\n    {\n      \"diagnosis\": \"Acute appendicitis\",\n      \"probability\": \"high\",\n      \"reasoning\": \"Classic presentation with RLQ pain and migration\"\n    },\n    {\n      \"diagnosis\": \"Gastroenteritis\",\n      \"probability\": \"low\",\n      \"reasoning\": \"Less likely given localized pain\"\n    }\n  ],\n  \"primary_diagnosis\": \"Acute appendicitis\",\n  \"diagnostic_reasoning\": \"Patient presents with classic appendicitis: periumbilical pain migrating to RLQ, anorexia, nausea, and RLQ tenderness on exam. Rovsing and psoas signs are positive.\",\n  \"treatment_plan\": {\n    \"immediate\": [\"IV fluids\", \"NPO\", \"Surgical consultation\"],\n    \"medications\": [\"IV antibiotics\"],\n    \"procedures\": [\"Appendectomy\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/clinical-cases/attempts/{{attempt_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "clinical-cases", "attempts", "{{attempt_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "OSCE Stations",
+      "item": [
+        {
+          "name": "List Stations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/osce/stations",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "osce", "stations"]
+            }
+          }
+        },
+        {
+          "name": "Get Station by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/osce/stations/{{station_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "osce", "stations", "{{station_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Submit OSCE Performance",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"station_id\": \"{{station_id}}\",\n  \"checklist_scores\": {\n    \"rapport\": 2,\n    \"assess\": 2,\n    \"deliver\": 3,\n    \"emotion\": 2,\n    \"information\": 2,\n    \"support\": 2,\n    \"followup\": 1\n  },\n  \"student_reflection\": \"I felt I established good rapport and delivered the news compassionately. I could have provided more specific information about treatment options.\",\n  \"recording_consent_given\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/osce/attempts",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "osce", "attempts"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Student Profile",
+      "item": [
+        {
+          "name": "Get My Profile",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/profile/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "profile", "me"]
+            }
+          }
+        },
+        {
+          "name": "Create Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"user_id\": \"{{user_id}}\",\n  \"medical_school\": \"Johns Hopkins School of Medicine\",\n  \"graduation_year\": 2026,\n  \"current_year\": 2,\n  \"specialty_interests\": [\"Cardiology\", \"Internal Medicine\"],\n  \"target_step1_score\": 240,\n  \"study_hours_per_week\": 40\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/profile",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "profile"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get My Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/dashboard/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "dashboard", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get Recommendations",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/recommendations/me?limit=10",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "recommendations", "me"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Alerts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/alerts/me",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "alerts", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medications",
+      "item": [
+        {
+          "name": "Search Medications",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/medications?search=lisinopril",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "medications"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "lisinopril"
+                },
+                {
+                  "key": "drug_class",
+                  "value": "ACE Inhibitor",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Medication by ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/{{api_version}}/medications/{{medication_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "{{api_version}}", "medications", "{{medication_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

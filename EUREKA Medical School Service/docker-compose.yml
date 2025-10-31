@@ -1,0 +1,53 @@
+version: '3.8'
+
+services:
+  medical-school:
+    build: .
+    container_name: eureka-medical-school
+    ports:
+      - "8020:8020"
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
+      - REDIS_URL=redis://redis:6379/10
+      - API_CORE_URL=http://api-core:8000
+      - HIPAA_MODE=true
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - eureka-network
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:15-alpine
+    container_name: eureka-postgres
+    environment:
+      - POSTGRES_USER=eureka
+      - POSTGRES_PASSWORD=eureka123
+      - POSTGRES_DB=eureka
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - eureka-network
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    container_name: eureka-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - eureka-network
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:
+
+networks:
+  eureka-network:
+    driver: bridge
