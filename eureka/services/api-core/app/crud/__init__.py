@@ -39,7 +39,7 @@ from app.crud.course import (
     update_course,
     delete_course,
     publish_course,
-    archive_course,
+    unpublish_course,
     get_course_stats,
 )
 
@@ -50,8 +50,7 @@ from app.crud.course import (
     get_user_enrollments,
     get_course_enrollments,
     update_enrollment,
-    withdraw_enrollment,
-    complete_enrollment,
+    delete_enrollment,
 )
 
 __all__ = [
@@ -83,7 +82,7 @@ __all__ = [
     "update_course",
     "delete_course",
     "publish_course",
-    "archive_course",
+    "unpublish_course",
     "get_course_stats",
     # Enrollment
     "create_enrollment",
@@ -91,6 +90,5 @@ __all__ = [
     "get_user_enrollments",
     "get_course_enrollments",
     "update_enrollment",
-    "withdraw_enrollment",
-    "complete_enrollment",
+    "delete_enrollment",
 ]

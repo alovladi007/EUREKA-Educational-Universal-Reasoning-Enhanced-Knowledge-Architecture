@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database for Assessment Engine
+  db-assessment:
+    image: postgres:14
+    container_name: eduflow-db-assessment
+    environment:
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      POSTGRES_DB: eduflow_assessment
+    ports:
+      - "5433:5432"
+    volumes:
+      - assessment_db_data:/var/lib/postgresql/data
+      # Mount init script if you have it
+      # - ./init-assessment-engine.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_assessment"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Assessment Engine Service
+  assess:
+    build: .
+    container_name: eduflow-assess
+    ports:
+      - "8002:8002"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eduflow_user:eduflow_password@db-assessment:5432/eduflow_assessment
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      SERVICE_PORT: 8002
+      DEBUG: "true"
+      CORS_ORIGINS: "http://localhost:3006,http://localhost:3000"
+    depends_on:
+      db-assessment:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./app:/app/app  # Mount for development hot reload
+
+volumes:
+  assessment_db_data:

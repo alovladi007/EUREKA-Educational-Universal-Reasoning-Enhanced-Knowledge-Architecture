@@ -17,8 +17,8 @@ import logging
 import time
 
 from app.core.config import settings
-from app.core.database import engine
-from app.core import models
+from app.core.database import engine, Base
+from app import models  # noqa: F401  - Import for side effects (model registration)
 from app.api.v1 import api_router
 from app.middleware.tenancy import TenancyMiddleware
 from app.middleware.audit import AuditMiddleware
@@ -42,7 +42,7 @@ async def lifespan(app: FastAPI):
     # Create database tables (in production, use Alembic migrations)
     if settings.ENVIRONMENT == "development":
         async with engine.begin() as conn:
-            await conn.run_sync(models.Base.metadata.create_all)
+            await conn.run_sync(Base.metadata.create_all)
             logger.info("Database tables created")
     
     yield

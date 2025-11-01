@@ -1,0 +1,285 @@
+version: '3.8'
+
+services:
+  # ==================================================================
+  # CORE SERVICES DATABASES
+  # ==================================================================
+  
+  postgres-api-core:
+    image: postgres:14-alpine
+    container_name: eduflow-db-api-core
+    environment:
+      POSTGRES_DB: eduflow_api_core
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5432:5432"
+    volumes:
+      - api-core-data:/var/lib/postgresql/data
+      - ./init-api-core.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_api_core"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-assessment:
+    image: postgres:14-alpine
+    container_name: eduflow-db-assessment
+    environment:
+      POSTGRES_DB: eduflow_assessment
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    volumes:
+      - assessment-data:/var/lib/postgresql/data
+      - ./init-assessment-engine.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_assessment"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-adaptive:
+    image: postgres:14-alpine
+    container_name: eduflow-db-adaptive
+    environment:
+      POSTGRES_DB: eduflow_adaptive
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5434:5432"
+    volumes:
+      - adaptive-data:/var/lib/postgresql/data
+      - ./init-adaptive-learning.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_adaptive"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-analytics:
+    image: postgres:14-alpine
+    container_name: eduflow-db-analytics
+    environment:
+      POSTGRES_DB: eduflow_analytics
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5435:5432"
+    volumes:
+      - analytics-data:/var/lib/postgresql/data
+      - ./init-analytics-dashboard.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_analytics"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-tutor:
+    image: postgres:14-alpine
+    container_name: eduflow-db-tutor
+    environment:
+      POSTGRES_DB: eduflow_tutor
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5436:5432"
+    volumes:
+      - tutor-data:/var/lib/postgresql/data
+      - ./init-tutor-llm.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_tutor"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-content:
+    image: postgres:14-alpine
+    container_name: eduflow-db-content
+    environment:
+      POSTGRES_DB: eduflow_content
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5437:5432"
+    volumes:
+      - content-data:/var/lib/postgresql/data
+      - ./init-content-service.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_content"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ==================================================================
+  # PROFESSIONAL TIER DATABASES
+  # ==================================================================
+
+  postgres-pro-med:
+    image: postgres:14-alpine
+    container_name: eduflow-db-pro-med
+    environment:
+      POSTGRES_DB: eduflow_pro_med
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5438:5432"
+    volumes:
+      - pro-med-data:/var/lib/postgresql/data
+      - ./init-pro-med.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_pro_med"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-pro-law:
+    image: postgres:14-alpine
+    container_name: eduflow-db-pro-law
+    environment:
+      POSTGRES_DB: eduflow_pro_law
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5439:5432"
+    volumes:
+      - pro-law-data:/var/lib/postgresql/data
+      - ./init-pro-law.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_pro_law"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-pro-mba:
+    image: postgres:14-alpine
+    container_name: eduflow-db-pro-mba
+    environment:
+      POSTGRES_DB: eduflow_pro_mba
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5440:5432"
+    volumes:
+      - pro-mba-data:/var/lib/postgresql/data
+      - ./init-pro-mba.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_pro_mba"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  postgres-pro-eng:
+    image: postgres:14-alpine
+    container_name: eduflow-db-pro-eng
+    environment:
+      POSTGRES_DB: eduflow_pro_eng
+      POSTGRES_USER: eduflow_user
+      POSTGRES_PASSWORD: eduflow_password
+      PGDATA: /var/lib/postgresql/data/pgdata
+    ports:
+      - "5441:5432"
+    volumes:
+      - pro-eng-data:/var/lib/postgresql/data
+      - ./init-pro-eng.sql:/docker-entrypoint-initdb.d/01-init.sql
+    networks:
+      - eduflow-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eduflow_user -d eduflow_pro_eng"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  # ==================================================================
+  # PGADMIN FOR DATABASE MANAGEMENT (Optional)
+  # ==================================================================
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: eduflow-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@eduflow.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+    ports:
+      - "5050:80"
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    networks:
+      - eduflow-network
+    depends_on:
+      - postgres-api-core
+      - postgres-assessment
+      - postgres-adaptive
+      - postgres-analytics
+      - postgres-tutor
+      - postgres-content
+    restart: unless-stopped
+
+networks:
+  eduflow-network:
+    driver: bridge
+    name: eduflow-network
+
+volumes:
+  api-core-data:
+    name: eduflow-api-core-data
+  assessment-data:
+    name: eduflow-assessment-data
+  adaptive-data:
+    name: eduflow-adaptive-data
+  analytics-data:
+    name: eduflow-analytics-data
+  tutor-data:
+    name: eduflow-tutor-data
+  content-data:
+    name: eduflow-content-data
+  pro-med-data:
+    name: eduflow-pro-med-data
+  pro-law-data:
+    name: eduflow-pro-law-data
+  pro-mba-data:
+    name: eduflow-pro-mba-data
+  pro-eng-data:
+    name: eduflow-pro-eng-data
+  pgadmin-data:
+    name: eduflow-pgadmin-data
