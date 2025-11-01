@@ -38,15 +38,17 @@ class AITutoringService:
             try:
                 from openai import AsyncOpenAI
                 self.openai_client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-            except ImportError:
-                print("OpenAI package not installed")
-        
+            except (ImportError, TypeError, Exception) as e:
+                print(f"OpenAI client initialization failed: {e}")
+                print("Service will run without OpenAI support")
+
         if settings.ANTHROPIC_API_KEY:
             try:
                 from anthropic import AsyncAnthropic
                 self.anthropic_client = AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
-            except ImportError:
-                print("Anthropic package not installed")
+            except (ImportError, Exception) as e:
+                print(f"Anthropic client initialization failed: {e}")
+                print("Service will run without Anthropic support")
     
     # ============= Embedding Generation =============
     

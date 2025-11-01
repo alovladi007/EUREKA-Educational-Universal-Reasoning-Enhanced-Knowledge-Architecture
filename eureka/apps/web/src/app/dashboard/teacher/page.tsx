@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { Card } from '@/components/ui/Card';
+import { Card } from '@/components/ui/card';
 import { apiClient } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth';
 import {

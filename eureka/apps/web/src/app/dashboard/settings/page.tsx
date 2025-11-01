@@ -58,12 +58,12 @@ export default function SettingsPage() {
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
-
+  
   // Account Settings
   const [language, setLanguage] = useState('en');
   const [timezone, setTimezone] = useState('America/New_York');
   const [theme, setTheme] = useState<'light' | 'dark' | 'auto'>('light');
-
+  
   // Notification Settings
   const [notifications, setNotifications] = useState<NotificationSettings>({
     email_notifications: true,
@@ -76,7 +76,7 @@ export default function SettingsPage() {
     study_group_invites: true,
     weekly_summary: true,
   });
-
+  
   // Privacy Settings
   const [privacy, setPrivacy] = useState<PrivacySettings>({
     profile_visibility: 'students',
@@ -85,14 +85,14 @@ export default function SettingsPage() {
     show_progress: true,
     allow_messages: true,
   });
-
+  
   // Security Settings
   const [security, setSecurity] = useState<SecuritySettings>({
     two_factor_enabled: false,
     login_alerts: true,
     session_timeout: 30,
   });
-
+  
   // Password Change
   const [passwordData, setPasswordData] = useState({
     current_password: '',
@@ -169,7 +169,7 @@ export default function SettingsPage() {
       showMessage('error', 'New passwords do not match!');
       return;
     }
-
+    
     if (passwordData.new_password.length < 8) {
       showMessage('error', 'Password must be at least 8 characters long!');
       return;
@@ -182,7 +182,7 @@ export default function SettingsPage() {
       //   current_password: passwordData.current_password,
       //   new_password: passwordData.new_password,
       // });
-
+      
       setPasswordData({ current_password: '', new_password: '', confirm_password: '' });
       showMessage('success', 'Password changed successfully!');
     } catch (error) {

@@ -125,7 +125,7 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-tutor-llm
     environment:
-      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka_dev_password@db:5432/eureka
       REDIS_URL: redis://redis:6379/1
       OPENSEARCH_URL: http://opensearch:9200
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
@@ -394,6 +394,36 @@ services:
       - ./apps/admin:/app
       - /app/node_modules
       - /app/.next
+
+  medical-school:
+    build:
+      context: ./services/medical-school
+      dockerfile: Dockerfile
+    container_name: eureka-medical-school
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/15
+      API_CORE_URL: http://api-core:8000
+      TUTOR_LLM_URL: http://tutor-llm:8000
+      ASSESSMENT_ENGINE_URL: http://assess:8000
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ENVIRONMENT: development
+      PORT: 8000
+      HIPAA_MODE: true
+      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
+    ports:
+      - "8100:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      api-core:
+        condition: service_started
+    volumes:
+      - ./services/medical-school:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
 volumes:
   postgres_data:

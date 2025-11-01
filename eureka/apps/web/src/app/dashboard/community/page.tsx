@@ -188,7 +188,7 @@ export default function CommunityPage() {
     try {
       // API call to join group
       // await apiClient.post(`/study-groups/${groupId}/join`);
-
+      
       setStudyGroups(studyGroups.map(g =>
         g.id === groupId
           ? { ...g, is_member: true, member_count: g.member_count + 1 }
@@ -203,7 +203,7 @@ export default function CommunityPage() {
     try {
       // API call to leave group
       // await apiClient.post(`/study-groups/${groupId}/leave`);
-
+      
       setStudyGroups(studyGroups.map(g =>
         g.id === groupId
           ? { ...g, is_member: false, member_count: g.member_count - 1 }

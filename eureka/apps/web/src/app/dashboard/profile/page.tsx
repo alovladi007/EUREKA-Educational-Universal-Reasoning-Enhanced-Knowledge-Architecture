@@ -3,9 +3,9 @@
 import { useState, useEffect } from 'react';
 import DashboardLayout from '@/components/layout/DashboardLayout';
 import ProtectedRoute from '@/components/auth/ProtectedRoute';
-import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Button } from '@/components/ui/Button';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth';
 import { UserCircle, Mail, Phone, MapPin, Calendar, Save, Edit2 } from 'lucide-react';

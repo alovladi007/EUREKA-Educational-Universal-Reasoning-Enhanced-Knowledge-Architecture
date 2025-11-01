@@ -2,9 +2,13 @@
 AI Tutor Service - Database Configuration
 """
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+from sqlalchemy.orm import declarative_base
 from app.core.config import get_settings
 
 settings = get_settings()
+
+# Create declarative base for ORM models
+Base = declarative_base()
 
 # Create async engine
 engine = create_async_engine(

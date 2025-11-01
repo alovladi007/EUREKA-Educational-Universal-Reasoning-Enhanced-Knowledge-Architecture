@@ -1,8 +1,8 @@
 # Core Framework
 fastapi==0.109.0
 uvicorn[standard]==0.27.0
-pydantic==2.5.3
-pydantic-settings==2.1.0
+pydantic==2.7.0
+pydantic-settings==2.6.1
 
 # Database
 sqlalchemy==2.0.25
@@ -23,6 +23,7 @@ pyjwt==2.8.0
 # Validation & Serialization
 email-validator==2.1.0
 python-dateutil==2.8.2
+aiosmtplib==3.0.1
 
 # HTTP Client
 httpx==0.26.0
@@ -59,8 +60,3 @@ celery[redis]==5.3.6
 
 # API Documentation
 pyyaml==6.0.1
-
-# Additional dependencies for Session 2
-python-jose[cryptography]==3.3.0
-alembic==1.13.1
-pydantic-settings==2.6.1

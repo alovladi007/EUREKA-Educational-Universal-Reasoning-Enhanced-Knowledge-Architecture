@@ -20,6 +20,7 @@ import {
   TrendingUp,
   Library,
   MessageSquare,
+  Stethoscope,
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -38,6 +39,7 @@ const navigation: NavItem[] = [
   { name: 'My Courses', href: '/dashboard/courses', icon: BookOpen },
   { name: 'Resources', href: '/dashboard/resources', icon: Library },
   { name: 'Community', href: '/dashboard/community', icon: MessageSquare },
+  { name: 'Medical Education', href: '/dashboard/medical', icon: Stethoscope },
   { name: 'My Classes', href: '/dashboard/classes', icon: GraduationCap, roles: ['teacher', 'admin'] },
   { name: 'Students', href: '/dashboard/students', icon: Users, roles: ['teacher', 'admin'] },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3, roles: ['teacher', 'admin'] },

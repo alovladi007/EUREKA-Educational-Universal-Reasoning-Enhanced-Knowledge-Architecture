@@ -52,3 +52,6 @@ class Settings(BaseSettings):
 @lru_cache()
 def get_settings() -> Settings:
     return Settings()
+
+# Create a settings instance for easy import
+settings = get_settings()
