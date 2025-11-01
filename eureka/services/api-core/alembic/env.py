@@ -12,7 +12,10 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from app.core.config import settings
-from app.core.models import Base
+from app.core.database import Base
+
+# Import all models so they're registered with Base.metadata
+from app.models import Organization, User, Course, Enrollment  # noqa: F401
 
 # this is the Alembic Config object
 config = context.config
