@@ -23,7 +23,7 @@ from app.utils.auth import (
     verify_email_token, create_password_reset_token, verify_password_reset_token
 )
 from app.utils.dependencies import get_current_user
-from app.core.models import User
+from app.models import User
 from app.services.email import email_service
 
 router = APIRouter()

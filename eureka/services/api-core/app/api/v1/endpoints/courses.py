@@ -21,7 +21,8 @@ from app.utils.dependencies import (
     get_current_user, get_current_active_user, require_teacher,
     get_current_org_id, verify_org_access
 )
-from app.core.models import User, UserRole, TierType
+from app.models import User
+from app.core.models import UserRole, TierType
 
 router = APIRouter()
 

@@ -20,7 +20,8 @@ from app.schemas.auth import UserResponse
 from app.utils.dependencies import (
     get_current_user, require_super_admin, verify_org_access
 )
-from app.core.models import User, UserRole
+from app.models import User
+from app.core.models import UserRole
 
 router = APIRouter()
 

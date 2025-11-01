@@ -11,7 +11,8 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
-from app.core.models import Organization, TierType, User, Course, Enrollment
+from app.models import Organization, User, Course, Enrollment
+from app.core.models import TierType
 from app.schemas.organization import OrganizationCreate, OrganizationUpdate, OrganizationStats
 
 
@@ -32,7 +33,7 @@ async def create_organization(
     org = Organization(
         name=org_data.name,
         slug=org_data.slug,
-        tier=TierType(org_data.tier),
+        tier=org_data.tier,
         email=org_data.email,
         phone=org_data.phone,
         website=str(org_data.website) if org_data.website else None,

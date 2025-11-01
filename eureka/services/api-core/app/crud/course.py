@@ -11,7 +11,8 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
-from app.core.models import Course, Enrollment, User, TierType
+from app.models import Course, Enrollment, User
+from app.core.models import TierType
 from app.schemas.course import (
     CourseCreate, CourseUpdate, EnrollmentCreate,
     EnrollmentUpdate, CourseStats
@@ -41,7 +42,7 @@ async def create_course(
         title=course_data.title,
         code=course_data.code,
         description=course_data.description,
-        tier=TierType(course_data.tier),
+        tier=course_data.tier,
         instructor_id=course_data.instructor_id,
         syllabus=course_data.syllabus,
         learning_objectives=course_data.learning_objectives,

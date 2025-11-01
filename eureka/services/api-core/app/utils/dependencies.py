@@ -13,7 +13,8 @@ from jose import JWTError
 from uuid import UUID
 
 from app.core.database import get_db
-from app.core.models import User, UserRole
+from app.models import User
+from app.core.models import UserRole
 from app.utils.auth import verify_token
 from app.schemas.auth import UserResponse
 

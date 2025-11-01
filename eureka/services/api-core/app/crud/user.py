@@ -11,9 +11,8 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
-from app.core.models import User, UserRole
+from app.models import User
 from app.schemas.auth import UserRegisterRequest, UserUpdate
-from app.utils.auth import hash_password
 
 
 async def create_user(
@@ -39,7 +38,7 @@ async def create_user(
         first_name=user_data.first_name,
         last_name=user_data.last_name,
         display_name=f"{user_data.first_name} {user_data.last_name}",
-        role=UserRole(user_data.role),
+        role=user_data.role,
         date_of_birth=user_data.date_of_birth,
         parent_email=user_data.parent_email,
         email_verified=False
@@ -102,7 +101,7 @@ async def get_users(
     org_id: UUID,
     skip: int = 0,
     limit: int = 50,
-    role: Optional[UserRole] = None,
+    role: Optional[str] = None,
     is_active: Optional[bool] = None,
     search: Optional[str] = None
 ) -> tuple[List[User], int]:
@@ -200,7 +199,10 @@ async def update_user_password(
     Returns:
         Updated user object
     """
-    user.hashed_password = hash_password(new_password)
+    # Hash password using passlib or similar
+    from passlib.context import CryptContext
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    user.hashed_password = pwd_context.hash(new_password)
     user.updated_at = datetime.utcnow()
     
     await db.commit()
