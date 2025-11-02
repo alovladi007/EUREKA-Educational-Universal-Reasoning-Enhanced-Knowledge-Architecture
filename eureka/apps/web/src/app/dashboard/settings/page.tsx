@@ -263,7 +263,7 @@ export default function SettingsPage() {
                       onClick={() => setActiveTab(tab.id as any)}
                       className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-colors ${
                         activeTab === tab.id
-                          ? 'bg-indigo-50 text-indigo-600'
+                          ? 'bg-primary-50 text-primary-600'
                           : 'text-gray-700 hover:bg-gray-50'
                       }`}
                     >
@@ -294,7 +294,7 @@ export default function SettingsPage() {
                         <select
                           value={language}
                           onChange={(e) => setLanguage(e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                         >
                           <option value="en">English</option>
                           <option value="es">Español</option>
@@ -313,7 +313,7 @@ export default function SettingsPage() {
                         <select
                           value={timezone}
                           onChange={(e) => setTimezone(e.target.value)}
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                         >
                           <option value="America/New_York">Eastern Time (ET)</option>
                           <option value="America/Chicago">Central Time (CT)</option>
@@ -341,7 +341,7 @@ export default function SettingsPage() {
                               onClick={() => setTheme(value as any)}
                               className={`p-4 border-2 rounded-lg transition-colors ${
                                 theme === value
-                                  ? 'border-indigo-600 bg-indigo-50'
+                                  ? 'border-primary-600 bg-primary-50'
                                   : 'border-gray-200 hover:border-gray-300'
                               }`}
                             >
@@ -488,7 +488,7 @@ export default function SettingsPage() {
                                   [key]: e.target.checked,
                                 })
                               }
-                              className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                              className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                             />
                             <Icon className="h-5 w-5 text-gray-400" />
                             <span className="text-sm text-gray-700">{label}</span>
@@ -521,7 +521,7 @@ export default function SettingsPage() {
                                   [key]: e.target.checked,
                                 })
                               }
-                              className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                              className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                             />
                           </label>
                         ))}
@@ -559,7 +559,7 @@ export default function SettingsPage() {
                             profile_visibility: e.target.value as any,
                           })
                         }
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                       >
                         <option value="public">Public - Anyone can view</option>
                         <option value="students">Students Only - Only classmates can view</option>
@@ -581,7 +581,7 @@ export default function SettingsPage() {
                             onChange={(e) =>
                               setPrivacy({ ...privacy, show_email: e.target.checked })
                             }
-                            className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                           />
                         </label>
                         <label className="flex items-center justify-between cursor-pointer">
@@ -592,7 +592,7 @@ export default function SettingsPage() {
                             onChange={(e) =>
                               setPrivacy({ ...privacy, show_phone: e.target.checked })
                             }
-                            className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                           />
                         </label>
                       </div>
@@ -610,7 +610,7 @@ export default function SettingsPage() {
                             onChange={(e) =>
                               setPrivacy({ ...privacy, show_progress: e.target.checked })
                             }
-                            className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                           />
                         </label>
                         <label className="flex items-center justify-between cursor-pointer">
@@ -623,7 +623,7 @@ export default function SettingsPage() {
                             onChange={(e) =>
                               setPrivacy({ ...privacy, allow_messages: e.target.checked })
                             }
-                            className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                            className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                           />
                         </label>
                       </div>
@@ -691,7 +691,7 @@ export default function SettingsPage() {
                           onChange={(e) =>
                             setSecurity({ ...security, login_alerts: e.target.checked })
                           }
-                          className="w-5 h-5 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                          className="w-5 h-5 text-primary-600 border-gray-300 rounded focus:ring-primary-500"
                         />
                       </label>
 
@@ -708,7 +708,7 @@ export default function SettingsPage() {
                               session_timeout: parseInt(e.target.value),
                             })
                           }
-                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500"
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
                         >
                           <option value="15">15 minutes</option>
                           <option value="30">30 minutes</option>

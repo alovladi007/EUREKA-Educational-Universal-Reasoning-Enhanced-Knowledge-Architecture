@@ -239,7 +239,7 @@ export default function CommunityPage() {
                 onClick={() => setActiveTab('discussions')}
                 className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'discussions'
-                    ? 'border-indigo-600 text-indigo-600'
+                    ? 'border-primary-600 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -250,7 +250,7 @@ export default function CommunityPage() {
                 onClick={() => setActiveTab('groups')}
                 className={`pb-4 px-1 border-b-2 font-medium text-sm transition-colors ${
                   activeTab === 'groups'
-                    ? 'border-indigo-600 text-indigo-600'
+                    ? 'border-primary-600 text-primary-600'
                     : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 }`}
               >
@@ -279,7 +279,7 @@ export default function CommunityPage() {
                   <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500"
+                    className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500"
                   >
                     {categories.map((cat) => (
                       <option key={cat.value} value={cat.value}>
@@ -316,7 +316,7 @@ export default function CommunityPage() {
                                 </span>
                               )}
                               {thread.course && (
-                                <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-indigo-100 text-indigo-800 rounded">
+                                <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-primary-100 text-primary-800 rounded">
                                   <BookOpen className="h-3 w-3 mr-1" />
                                   {thread.course}
                                 </span>
@@ -391,8 +391,8 @@ export default function CommunityPage() {
                         {/* Header */}
                         <div>
                           <div className="flex items-start justify-between mb-2">
-                            <div className="p-2 bg-indigo-100 rounded-lg">
-                              <Users className="h-6 w-6 text-indigo-600" />
+                            <div className="p-2 bg-primary-100 rounded-lg">
+                              <Users className="h-6 w-6 text-primary-600" />
                             </div>
                             {group.is_member && (
                               <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">
@@ -426,7 +426,7 @@ export default function CommunityPage() {
                             <span>{group.meeting_schedule}</span>
                           </div>
                           {group.next_session && (
-                            <div className="flex items-center gap-2 text-indigo-600 font-medium">
+                            <div className="flex items-center gap-2 text-primary-600 font-medium">
                               <Clock className="h-4 w-4" />
                               <span>Next: {formatTimeAgo(group.next_session)}</span>
                             </div>
@@ -443,7 +443,7 @@ export default function CommunityPage() {
                           </div>
                           <div className="w-full bg-gray-200 rounded-full h-2">
                             <div
-                              className="bg-indigo-600 h-2 rounded-full transition-all"
+                              className="bg-primary-600 h-2 rounded-full transition-all"
                               style={{
                                 width: `${(group.member_count / group.max_members) * 100}%`,
                               }}

@@ -232,7 +232,7 @@ export default function ResourcesPage() {
                         onClick={() => setSelectedType(type.value)}
                         className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                           selectedType === type.value
-                            ? 'bg-indigo-600 text-white'
+                            ? 'bg-primary-600 text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >
@@ -247,7 +247,7 @@ export default function ResourcesPage() {
                 <select
                   value={selectedSubject}
                   onChange={(e) => setSelectedSubject(e.target.value)}
-                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                  className="px-4 py-2 border border-gray-300 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 >
                   {subjects.map((subject) => (
                     <option key={subject} value={subject}>
@@ -275,7 +275,7 @@ export default function ResourcesPage() {
           {/* Resources Grid */}
           {loading ? (
             <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600" />
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
             </div>
           ) : resources.length === 0 ? (
             <Card className="p-12 text-center">
@@ -293,8 +293,8 @@ export default function ResourcesPage() {
                       {/* Header */}
                       <div className="flex items-start justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="p-2 bg-indigo-100 rounded-lg">
-                            <Icon className="h-6 w-6 text-indigo-600" />
+                          <div className="p-2 bg-primary-100 rounded-lg">
+                            <Icon className="h-6 w-6 text-primary-600" />
                           </div>
                           <div>
                             <span className="text-xs font-medium text-gray-500 uppercase">
