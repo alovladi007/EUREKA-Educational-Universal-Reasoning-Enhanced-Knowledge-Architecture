@@ -30,3 +30,22 @@ async def api_root():
         "docs": "/docs",
         "health": "/health"
     }
+
+
+@api_router.get("/admin/statistics", tags=["admin"])
+async def get_admin_statistics():
+    """Get admin statistics"""
+    return {
+        "statistics": {
+            "total_users": 15234,
+            "active_users": 8532,
+            "total_courses": 456,
+            "system_uptime": 99.98
+        },
+        "tier_stats": [
+            {"name": "High School", "users": 4521, "courses": 120, "status": "operational"},
+            {"name": "Undergraduate", "users": 6789, "courses": 245, "status": "operational"},
+            {"name": "Graduate", "users": 2134, "courses": 89, "status": "operational"},
+            {"name": "Medical", "users": 1790, "courses": 102, "status": "operational"},
+        ]
+    }

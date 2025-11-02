@@ -30,7 +30,7 @@ export default function MedicalEducationPage() {
     try {
       setLoading(true);
 
-      // Fetch USMLE questions
+      // Fetch USMLE questions - medical service is on port 8030
       const questions = await apiClient.getUSMLEQuestions({ limit: 10 });
       setUsmleQuestions(questions || []);
 

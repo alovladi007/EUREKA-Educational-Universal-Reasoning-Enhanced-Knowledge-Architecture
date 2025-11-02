@@ -39,6 +39,18 @@ async def root():
         ]
     }
 
+@app.get("/api/v1/courses")
+async def get_courses():
+    return {
+        "courses": [],
+        "statistics": {
+            "total_courses": 12,
+            "completed_courses": 3,
+            "in_progress": 5,
+            "average_grade": 85
+        }
+    }
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)

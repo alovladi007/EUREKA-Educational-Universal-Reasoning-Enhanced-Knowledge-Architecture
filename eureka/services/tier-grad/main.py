@@ -233,6 +233,18 @@ async def root():
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
 
+@app.get("/api/v1/courses")
+async def get_courses():
+    return {
+        "courses": [],
+        "statistics": {
+            "total_courses": 24,
+            "completed_courses": 16,
+            "current_gpa": 3.85,
+            "research_hours": 340
+        }
+    }
+
 @app.post("/lit_review", response_model=LitReviewResponse)
 async def conduct_literature_review(request: LitReviewRequest):
     """

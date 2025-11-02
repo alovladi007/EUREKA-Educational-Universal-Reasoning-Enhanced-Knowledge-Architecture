@@ -627,6 +627,35 @@ services:
       - ../services/shared:/shared
     command: uvicorn main:app --host 0.0.0.0 --port 8110 --reload
 
+  notebook:
+    build:
+      context: ../services/notebook
+      dockerfile: Dockerfile
+    container_name: eureka-notebook
+    environment:
+      PORT: 8120
+      NODE_ENV: development
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: eureka
+      DB_USER: eureka
+      DB_PASSWORD: eureka_dev_password
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_EXPIRE: 7d
+      MAX_FILE_SIZE: 10485760
+      UPLOAD_DIR: ./uploads
+      FRONTEND_URL: http://localhost:3000
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+    ports:
+      - "8120:8120"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ../services/notebook:/app
+      - notebook_uploads:/app/uploads
+    command: sh -c "npm install && node server.js"
+
   # Supporting infrastructure for Phase-2
   neo4j:
     image: neo4j:5
@@ -659,6 +688,7 @@ volumes:
   xr_simulations:
   neo4j_data:
   qdrant_data:
+  notebook_uploads:
 
 networks:
   default:
