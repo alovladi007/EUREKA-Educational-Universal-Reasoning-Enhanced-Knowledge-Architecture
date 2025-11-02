@@ -1,8 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Card } from '@/components/ui/card';
 import { apiClient } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth';
@@ -87,21 +85,15 @@ export default function TeacherDashboard() {
 
   if (loading) {
     return (
-      <ProtectedRoute allowedRoles={['teacher', 'admin']}>
-        <DashboardLayout>
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-600" />
-          </div>
-        </DashboardLayout>
-      </ProtectedRoute>
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+      </div>
     );
   }
 
   return (
-    <ProtectedRoute allowedRoles={['teacher', 'admin']}>
-      <DashboardLayout>
-        <div className="space-y-6">
-          {/* Header */}
+    <div className="space-y-6">
+      {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Teacher Dashboard</h1>
@@ -248,8 +240,6 @@ export default function TeacherDashboard() {
               </Card>
             </div>
           </div>
-        </div>
-      </DashboardLayout>
-    </ProtectedRoute>
+    </div>
   );
 }

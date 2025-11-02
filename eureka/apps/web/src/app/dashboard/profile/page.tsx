@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -79,10 +77,8 @@ export default function ProfilePage() {
   };
 
   return (
-    <ProtectedRoute>
-      <DashboardLayout>
-        <div className="max-w-4xl mx-auto space-y-6">
-          {/* Header */}
+    <div className="max-w-4xl mx-auto space-y-6">
+      {/* Header */}
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold text-gray-900">My Profile</h1>
@@ -299,8 +295,6 @@ export default function ProfilePage() {
               </div>
             </div>
           </Card>
-        </div>
-      </DashboardLayout>
-    </ProtectedRoute>
+    </div>
   );
 }

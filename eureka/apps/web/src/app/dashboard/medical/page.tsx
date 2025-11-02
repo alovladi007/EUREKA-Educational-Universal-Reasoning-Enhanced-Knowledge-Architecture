@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/api-client';
@@ -65,10 +63,8 @@ export default function MedicalEducationPage() {
   };
 
   return (
-    <ProtectedRoute>
-      <DashboardLayout>
-        <div className="space-y-6">
-          {/* Header */}
+    <div className="space-y-6">
+      {/* Header */}
           <div>
             <h1 className="text-3xl font-bold mb-2">Medical Education</h1>
             <p className="text-muted-foreground">
@@ -268,8 +264,6 @@ export default function MedicalEducationPage() {
               <Button>Start Diagnostic Session</Button>
             </Card>
           </div>
-        </div>
-      </DashboardLayout>
-    </ProtectedRoute>
+    </div>
   );
 }
