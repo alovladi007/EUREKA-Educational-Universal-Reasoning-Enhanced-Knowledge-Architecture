@@ -14,6 +14,7 @@ import {
   GraduationCap,
   Target,
   FileText,
+  Stethoscope,
 } from "lucide-react"
 
 const navigation = [
@@ -23,6 +24,7 @@ const navigation = [
   { name: "Assessments", href: "/dashboard/assessments", icon: ClipboardList },
   { name: "Learning Path", href: "/dashboard/learning-path", icon: Target },
   { name: "Analytics", href: "/dashboard/analytics", icon: LineChart },
+  { name: "Medical Education", href: "/dashboard/medical", icon: Stethoscope },
   { name: "Resources", href: "/dashboard/resources", icon: FileText },
   { name: "Community", href: "/dashboard/community", icon: Users },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
