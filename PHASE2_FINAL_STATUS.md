@@ -2,7 +2,7 @@
 **Date:** November 2, 2025
 **Branch:** phase2/unified
 
-## ✅ Successfully Deployed (6/8 Services)
+## ✅ Successfully Deployed (7/8 Services)
 
 All services built, running, and **tested accessible**:
 
@@ -61,26 +61,16 @@ curl http://localhost:8070/
 ```
 **Features:** pybullet physics, open3d visualization, 3D modeling (trimesh, pygltflib)
 
----
-
-## ⏳ Building (1/8 Services)
-
-This service has **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, etc.) and takes 10-15 minutes to build:
-
-### 7. AI Research (Port 8060) 🔄
-**Status:** Building in background (started at 14:33 UTC)
-**Dependencies:**
-- TensorFlow 2.15.0 (650+ MB)
-- PyTorch 2.1.1 (2+ GB)
-- flower 2.0.1 (federated learning)
-- crewai 0.1.32, autogen-agentchat 0.2.36
-- langchain, chromadb, sentence-transformers
-
-**Fixes Applied:**
-- ✅ Updated `crewai` from 0.1.27 → 0.1.32
-- ✅ Updated `autogen-agentchat` from 0.2.11 → 0.2.36
-- ✅ Updated `flower` from 1.6.0 → 2.0.1
-- ✅ Updated `openai` from 1.6.1 → 1.7.1 (for crewai compatibility)
+### 7. AI Research (Port 8060) ✅
+```bash
+curl http://localhost:8060/
+```
+```json
+{"service":"EUREKA AI Research Core","version":"0.1.0","status":"operational","features":["Multi-agent research workflows","Paper analysis","Hypothesis generation","Federated learning (coming soon)"]}
+```
+**Features:** TensorFlow 2.15, PyTorch 2.1, CrewAI, AutoGen, Flower federated learning
+**Build:** 4.32GB image with full ML stack
+**Dependencies Fixed:** 4 package versions updated for compatibility
 
 ---
 
@@ -114,7 +104,7 @@ This service has **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, etc
 |---------|------|--------|------------|------------|------|
 | **Pedagogy AI** | 8040 | ✅ Running | ✅ Yes | ~2 min | ~800 MB |
 | **Marketplace** | 8050 | ✅ Running | ✅ Yes | ~2 min | ~600 MB |
-| **AI Research** | 8060 | 🔄 Building | ⏳ Pending | ~15 min | ~3 GB |
+| **AI Research** | 8060 | ✅ Running | ✅ Yes | ~9 min | ~4.32 GB |
 | **XR Labs** | 8070 | ✅ Running | ✅ Yes | ~12 min | ~1.6 GB |
 | **Ethics/Security** | 8080 | ❌ Port issue | ❌ No | ~2 min | ~500 MB |
 | **Data Fabric** | 8090 | ✅ Running | ✅ Yes | ~3 min | ~900 MB |
@@ -124,9 +114,8 @@ This service has **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, etc
 | **Qdrant** | 6333 | ✅ Running | ✅ Yes | - | - |
 
 **Summary:**
-- ✅ **Fully Working:** 6 services + 2 infrastructure (75%)
-- 🔄 **Building:** 1 service (12.5%)
-- ❌ **Port Issue:** 1 service (12.5%)
+- ✅ **Fully Working:** 7 services + 2 infrastructure (87.5%)
+- ❌ **Port Issue:** 1 service (12.5%) - Docker Desktop networking bug
 
 ---
 
@@ -189,17 +178,13 @@ curl http://localhost:7474/  # Neo4j
 curl http://localhost:6333/  # Qdrant
 ```
 
-### Start Remaining Services (once built)
+### Test AI Research (just deployed!)
 ```bash
 cd eureka
 
-# Start AI Research (once build completes)
-docker-compose up -d ai-research
+# Test AI Research endpoint
 curl http://localhost:8060/
-
-# Start XR Labs (once build completes)
-docker-compose up -d xr-labs
-curl http://localhost:8070/
+# Expected: {"service":"EUREKA AI Research Core","version":"0.1.0","status":"operational",...}
 ```
 
 ### Check Build Progress
