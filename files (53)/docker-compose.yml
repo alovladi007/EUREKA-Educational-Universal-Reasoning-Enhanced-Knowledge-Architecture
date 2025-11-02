@@ -1,0 +1,274 @@
+# EUREKA Platform - Docker Compose Configuration
+# Orchestrates all microservices and infrastructure
+
+version: '3.8'
+
+services:
+  # ========================================
+  # DATABASE SERVICES
+  # ========================================
+  
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: eureka-postgres
+    environment:
+      POSTGRES_USER: eureka
+      POSTGRES_PASSWORD: eureka123
+      POSTGRES_DB: eureka
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U eureka"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - eureka-network
+  
+  redis:
+    image: redis:7-alpine
+    container_name: eureka-redis
+    command: redis-server --appendonly yes --requirepass eureka123
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "--raw", "incr", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - eureka-network
+  
+  # ========================================
+  # STORAGE SERVICES
+  # ========================================
+  
+  minio:
+    image: minio/minio:latest
+    container_name: eureka-minio
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - eureka-network
+  
+  # ========================================
+  # CORE SERVICES
+  # ========================================
+  
+  api-core:
+    build:
+      context: ./services/api-core
+      dockerfile: Dockerfile
+    container_name: eureka-api-core
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
+      REDIS_URL: redis://:eureka123@redis:6379/0
+      SECRET_KEY: ${SECRET_KEY:-your-secret-key-change-in-production}
+      ALGORITHM: HS256
+      ACCESS_TOKEN_EXPIRE_MINUTES: 15
+      REFRESH_TOKEN_EXPIRE_DAYS: 7
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/api-core:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    networks:
+      - eureka-network
+  
+  tutor-llm:
+    build:
+      context: ./services/tutor-llm
+      dockerfile: Dockerfile
+    container_name: eureka-tutor-llm
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
+      REDIS_URL: redis://:eureka123@redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENAI_MODEL: gpt-4-turbo-preview
+      ANTHROPIC_MODEL: claude-sonnet-4-20250514
+      RAG_ENABLED: true
+      AI_FALLBACK_ENABLED: true
+    ports:
+      - "8002:8002"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./services/tutor-llm:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8002 --reload
+    networks:
+      - eureka-network
+  
+  assessment-engine:
+    build:
+      context: ./services/assessment-engine
+      dockerfile: Dockerfile
+    container_name: eureka-assessment-engine
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
+      REDIS_URL: redis://:eureka123@redis:6379/0
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+    ports:
+      - "8003:8003"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./services/assessment-engine:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8003 --reload
+    networks:
+      - eureka-network
+  
+  adaptive-learning:
+    build:
+      context: ./services/adaptive-learning
+      dockerfile: Dockerfile
+    container_name: eureka-adaptive-learning
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
+      REDIS_URL: redis://:eureka123@redis:6379/0
+    ports:
+      - "8004:8004"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./services/adaptive-learning:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8004 --reload
+    networks:
+      - eureka-network
+  
+  analytics-dashboard:
+    build:
+      context: ./services/analytics-dashboard
+      dockerfile: Dockerfile
+    container_name: eureka-analytics-dashboard
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
+      REDIS_URL: redis://:eureka123@redis:6379/0
+    ports:
+      - "8005:8005"
+    depends_on:
+      - postgres
+      - redis
+    volumes:
+      - ./services/analytics-dashboard:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8005 --reload
+    networks:
+      - eureka-network
+  
+  file-storage:
+    build:
+      context: ./services/file-storage
+      dockerfile: Dockerfile
+    container_name: eureka-file-storage
+    environment:
+      DATABASE_URL: postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: minioadmin
+      S3_SECRET_KEY: minioadmin
+      S3_BUCKET_NAME: eureka-files
+      S3_REGION: us-east-1
+    ports:
+      - "8006:8006"
+    depends_on:
+      - postgres
+      - minio
+    volumes:
+      - ./services/file-storage:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8006 --reload
+    networks:
+      - eureka-network
+  
+  # ========================================
+  # FRONTEND
+  # ========================================
+  
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: eureka-web
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-core
+    volumes:
+      - ./apps/web:/app
+      - /app/node_modules
+      - /app/.next
+    command: npm run dev
+    networks:
+      - eureka-network
+  
+  # ========================================
+  # MONITORING & OBSERVABILITY
+  # ========================================
+  
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: eureka-prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+    networks:
+      - eureka-network
+  
+  grafana:
+    image: grafana/grafana:latest
+    container_name: eureka-grafana
+    environment:
+      GF_SECURITY_ADMIN_USER: admin
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "3001:3000"
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards
+    depends_on:
+      - prometheus
+    networks:
+      - eureka-network
+
+networks:
+  eureka-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  redis_data:
+  minio_data:
+  prometheus_data:
+  grafana_data:
