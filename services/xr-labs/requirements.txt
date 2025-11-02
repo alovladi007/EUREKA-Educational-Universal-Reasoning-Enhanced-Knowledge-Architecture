@@ -1,0 +1,20 @@
+# EUREKA XR Labs - Immersive Learning
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# 3D/Graphics
+open3d==0.18.0
+trimesh==4.0.9
+pygltflib==1.16.1
+
+# Physics Engine
+pybullet==3.2.6
+
+# WebXR/WebGL
+aiofiles==23.2.1
+jinja2==3.1.2
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
