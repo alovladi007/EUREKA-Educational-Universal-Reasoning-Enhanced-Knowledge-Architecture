@@ -109,7 +109,7 @@ services:
       JWT_SECRET: dev_jwt_secret_change_in_production
       ENVIRONMENT: development
     ports:
-      - "8000:8000"
+      - "8009:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -437,6 +437,9 @@ services:
       DATABASE_URL: postgresql+asyncpg://eureka:eureka_dev_password@db:5432/eureka_pedagogy
       REDIS_URL: redis://redis:6379/20
       API_CORE_URL: http://api-core:8000
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       COMPLIANCE_ENABLED: "true"
       DKT_HIDDEN_DIM: 128
       IRT_MODEL_TYPE: "2PL"
@@ -448,8 +451,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      kafka:
+        condition: service_started
     volumes:
       - ../services/pedagogy:/app
+      - ../services/shared:/shared
     command: uvicorn main:app --host 0.0.0.0 --port 8040 --reload
 
   marketplace:
@@ -460,6 +466,9 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://eureka:eureka_dev_password@db:5432/eureka_marketplace
       REDIS_URL: redis://redis:6379/21
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       STRIPE_API_KEY: ${STRIPE_API_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
       CONTENT_STORAGE_PATH: /data/marketplace/content
@@ -470,10 +479,13 @@ services:
     depends_on:
       db:
         condition: service_healthy
+      kafka:
+        condition: service_started
       redis:
         condition: service_healthy
     volumes:
       - ../services/marketplace:/app
+      - ../services/shared:/shared
       - marketplace_content:/data/marketplace/content
     command: uvicorn main:app --host 0.0.0.0 --port 8050 --reload
 
@@ -485,6 +497,9 @@ services:
     environment:
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       CHROMA_DB_PATH: /data/research/chromadb
       PAPER_CACHE_DIR: /data/research/papers
       DEFAULT_LLM_MODEL: "gpt-4-turbo-preview"
@@ -492,8 +507,12 @@ services:
       ENVIRONMENT: development
     ports:
       - "8060:8060"
+    depends_on:
+      kafka:
+        condition: service_started
     volumes:
       - ../services/ai-research:/app
+      - ../services/shared:/shared
       - ai_research_data:/data/research
     command: uvicorn main:app --host 0.0.0.0 --port 8060 --reload
 
@@ -503,11 +522,18 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-xr-labs
     environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       ENVIRONMENT: development
     ports:
       - "8070:8070"
+    depends_on:
+      kafka:
+        condition: service_started
     volumes:
       - ../services/xr-labs:/app
+      - ../services/shared:/shared
       - xr_simulations:/data/xr
     command: uvicorn main:app --host 0.0.0.0 --port 8070 --reload
 
@@ -517,11 +543,18 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-ethics-security
     environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       ENVIRONMENT: development
     ports:
       - "8080:8080"
+    depends_on:
+      kafka:
+        condition: service_started
     volumes:
       - ../services/ethics-security:/app
+      - ../services/shared:/shared
     command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload
 
   data-fabric:
@@ -534,6 +567,9 @@ services:
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD:-eureka_neo4j_dev}
       QDRANT_URL: http://qdrant:6333
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       ENVIRONMENT: development
     ports:
       - "8090:8090"
@@ -542,6 +578,7 @@ services:
       - qdrant
     volumes:
       - ../services/data-fabric:/app
+      - ../services/shared:/shared
     command: uvicorn main:app --host 0.0.0.0 --port 8090 --reload
 
   institutions:
@@ -552,6 +589,9 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://eureka:eureka_dev_password@db:5432/eureka_institutions
       REDIS_URL: redis://redis:6379/22
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       ENVIRONMENT: development
     ports:
       - "8100:8100"
@@ -560,8 +600,11 @@ services:
         condition: service_healthy
       redis:
         condition: service_healthy
+      kafka:
+        condition: service_started
     volumes:
       - ../services/institutions:/app
+      - ../services/shared:/shared
     command: uvicorn main:app --host 0.0.0.0 --port 8100 --reload
 
   futures:
@@ -570,11 +613,18 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-futures
     environment:
+      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      JWT_ALGORITHM: HS256
       ENVIRONMENT: development
     ports:
       - "8110:8110"
+    depends_on:
+      kafka:
+        condition: service_started
     volumes:
       - ../services/futures:/app
+      - ../services/shared:/shared
     command: uvicorn main:app --host 0.0.0.0 --port 8110 --reload
 
   # Supporting infrastructure for Phase-2

@@ -9,12 +9,27 @@ babel==2.14.0
 # Edge Sync
 pysyncobj==0.3.12
 
-# Quantum (stubs)
-qiskit==0.45.1
-cirq==1.3.0
+# Quantum (stubs) - Commented out due to httpx version conflicts
+# qiskit==0.45.1
+# cirq==1.3.0
 
 # AI Agents
 anthropic==0.39.0
 
 # Testing
 pytest==7.4.3
+pytest-asyncio==0.21.1
+
+# Core dependencies
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# Monitoring
+structlog==23.2.0
+
+# HTTP Client
+httpx==0.25.2
+
+# Shared module dependencies
+python-jose[cryptography]==3.3.0
+aiokafka==0.10.0

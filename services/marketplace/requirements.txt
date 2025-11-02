@@ -44,3 +44,6 @@ httpx==0.25.2
 
 # Compliance (reuse from pedagogy)
 better-profanity==0.7.0
+
+# Shared module dependencies
+aiokafka==0.10.0

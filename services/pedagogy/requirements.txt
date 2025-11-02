@@ -45,3 +45,7 @@ pyyaml==6.0.1
 
 # Monitoring & Logging
 structlog==23.2.0
+
+# Shared module dependencies
+python-jose[cryptography]==3.3.0
+aiokafka==0.8.1
