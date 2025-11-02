@@ -1,0 +1,358 @@
+version: '3.9'
+
+services:
+  # ==========================================
+  # Infrastructure Services
+  # ==========================================
+  
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: medatlas-postgres
+    environment:
+      POSTGRES_DB: medatlas
+      POSTGRES_USER: medatlas
+      POSTGRES_PASSWORD: medatlas_dev_pass
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U medatlas"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - medatlas
+
+  redis:
+    image: redis:7-alpine
+    container_name: medatlas-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+    networks:
+      - medatlas
+
+  minio:
+    image: minio/minio:latest
+    container_name: medatlas-minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: medatlas
+      MINIO_ROOT_PASSWORD: medatlas_minio_pass
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 30s
+      timeout: 20s
+      retries: 3
+    networks:
+      - medatlas
+
+  # ==========================================
+  # API Gateway (NestJS)
+  # ==========================================
+  
+  api-gateway:
+    build:
+      context: ../../apps/api-gateway
+      dockerfile: Dockerfile
+    container_name: medatlas-api-gateway
+    environment:
+      NODE_ENV: development
+      PORT: 8000
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev-jwt-secret-change-in-prod
+      QBANK_SERVICE_URL: http://qbank:8001
+      CONTENT_SERVICE_URL: http://content:8002
+      CASES_SERVICE_URL: http://cases:8003
+      OSCE_SERVICE_URL: http://osce:8004
+      ANATOMY3D_SERVICE_URL: http://anatomy3d:8005
+      GRADING_SERVICE_URL: http://grading:8006
+      AUDIT_SERVICE_URL: http://audit:8007
+      MLHUB_SERVICE_URL: http://mlhub:8008
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../apps/api-gateway:/app
+      - /app/node_modules
+
+  # ==========================================
+  # Core Services
+  # ==========================================
+  
+  qbank:
+    build:
+      context: ../../services/qbank
+      dockerfile: Dockerfile
+    container_name: medatlas-qbank
+    environment:
+      NODE_ENV: development
+      PORT: 8001
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      REDIS_URL: redis://redis:6379/1
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../services/qbank:/app
+      - /app/node_modules
+
+  content:
+    build:
+      context: ../../services/content
+      dockerfile: Dockerfile
+    container_name: medatlas-content
+    environment:
+      NODE_ENV: development
+      PORT: 8002
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: medatlas
+      S3_SECRET_KEY: medatlas_minio_pass
+      S3_BUCKET: content
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../services/content:/app
+      - /app/node_modules
+
+  cases:
+    build:
+      context: ../../services/cases
+      dockerfile: Dockerfile
+    container_name: medatlas-cases
+    environment:
+      NODE_ENV: development
+      PORT: 8003
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      REDIS_URL: redis://redis:6379/2
+    ports:
+      - "8003:8003"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../services/cases:/app
+      - /app/node_modules
+
+  osce:
+    build:
+      context: ../../services/osce
+      dockerfile: Dockerfile
+    container_name: medatlas-osce
+    environment:
+      NODE_ENV: development
+      PORT: 8004
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      REDIS_URL: redis://redis:6379/3
+    ports:
+      - "8004:8004"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../services/osce:/app
+      - /app/node_modules
+
+  anatomy3d:
+    build:
+      context: ../../services/anatomy3d
+      dockerfile: Dockerfile
+    container_name: medatlas-anatomy3d
+    environment:
+      NODE_ENV: development
+      PORT: 8005
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: medatlas
+      S3_SECRET_KEY: medatlas_minio_pass
+      S3_BUCKET: anatomy3d
+    ports:
+      - "8005:8005"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../services/anatomy3d:/app
+      - /app/node_modules
+
+  grading:
+    build:
+      context: ../../services/grading
+      dockerfile: Dockerfile
+    container_name: medatlas-grading
+    environment:
+      NODE_ENV: development
+      PORT: 8006
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      REDIS_URL: redis://redis:6379/4
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+    ports:
+      - "8006:8006"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../services/grading:/app
+      - /app/node_modules
+
+  audit:
+    build:
+      context: ../../services/audit
+      dockerfile: Dockerfile
+    container_name: medatlas-audit
+    environment:
+      NODE_ENV: development
+      PORT: 8007
+      DATABASE_URL: postgresql://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+    ports:
+      - "8007:8007"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../services/audit:/app
+      - /app/node_modules
+
+  # ==========================================
+  # ML Hub (Python FastAPI)
+  # ==========================================
+  
+  mlhub:
+    build:
+      context: ../../apps/mlhub
+      dockerfile: Dockerfile
+    container_name: medatlas-mlhub
+    environment:
+      ENVIRONMENT: development
+      DATABASE_URL: postgresql+asyncpg://medatlas:medatlas_dev_pass@postgres:5432/medatlas
+      REDIS_URL: redis://redis:6379/5
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: medatlas
+      S3_SECRET_KEY: medatlas_minio_pass
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      HF_TOKEN: ${HF_TOKEN:-}
+    ports:
+      - "8008:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+    networks:
+      - medatlas
+    volumes:
+      - ../../apps/mlhub:/app
+      - ml_models:/app/models
+
+  # ==========================================
+  # Frontend Applications
+  # ==========================================
+  
+  web:
+    build:
+      context: ../../apps/web
+      dockerfile: Dockerfile.dev
+    container_name: medatlas-web
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_WS_URL: ws://localhost:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api-gateway
+    networks:
+      - medatlas
+    volumes:
+      - ../../apps/web:/app
+      - /app/node_modules
+      - /app/.next
+
+  admin:
+    build:
+      context: ../../apps/admin
+      dockerfile: Dockerfile.dev
+    container_name: medatlas-admin
+    environment:
+      NODE_ENV: development
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+    ports:
+      - "3001:3000"
+    depends_on:
+      - api-gateway
+    networks:
+      - medatlas
+    volumes:
+      - ../../apps/admin:/app
+      - /app/node_modules
+      - /app/.next
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  minio_data:
+    driver: local
+  ml_models:
+    driver: local
+
+networks:
+  medatlas:
+    driver: bridge
