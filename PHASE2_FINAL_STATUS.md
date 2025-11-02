@@ -2,7 +2,7 @@
 **Date:** November 2, 2025
 **Branch:** phase2/unified
 
-## ✅ Successfully Deployed (5/8 Services)
+## ✅ Successfully Deployed (6/8 Services)
 
 All services built, running, and **tested accessible**:
 
@@ -52,14 +52,23 @@ curl http://localhost:8110/
 ```
 **Features:** i18n (Babel), Edge sync, Qiskit/Cirq quantum stubs, Anthropic AI
 
+### 6. XR Labs (Port 8070) ✅
+```bash
+curl http://localhost:8070/
+```
+```json
+{"service":"EUREKA XR Labs","features":["WebXR simulations","Physics sandbox","3D scenarios","VR/AR learning"]}
+```
+**Features:** pybullet physics, open3d visualization, 3D modeling (trimesh, pygltflib)
+
 ---
 
-## ⏳ Building (2/8 Services)
+## ⏳ Building (1/8 Services)
 
-These services have **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, etc.) and take 10-15 minutes to build:
+This service has **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, etc.) and takes 10-15 minutes to build:
 
-### 6. AI Research (Port 8060) 🔄
-**Status:** Building in background
+### 7. AI Research (Port 8060) 🔄
+**Status:** Building in background (started at 14:33 UTC)
 **Dependencies:**
 - TensorFlow 2.15.0 (650+ MB)
 - PyTorch 2.1.1 (2+ GB)
@@ -71,16 +80,7 @@ These services have **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, 
 - ✅ Updated `crewai` from 0.1.27 → 0.1.32
 - ✅ Updated `autogen-agentchat` from 0.2.11 → 0.2.36
 - ✅ Updated `flower` from 1.6.0 → 2.0.1
-
-### 7. XR Labs (Port 8070) 🔄
-**Status:** Building in background
-**Dependencies:**
-- pybullet 3.2.6 (physics engine, requires C++ compilation)
-- open3d 0.18.0 (3D visualization)
-- trimesh, pygltflib (3D modeling)
-
-**Fixes Applied:**
-- ✅ Added `build-essential` to Dockerfile for pybullet compilation
+- ✅ Updated `openai` from 1.6.1 → 1.7.1 (for crewai compatibility)
 
 ---
 
@@ -115,7 +115,7 @@ These services have **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, 
 | **Pedagogy AI** | 8040 | ✅ Running | ✅ Yes | ~2 min | ~800 MB |
 | **Marketplace** | 8050 | ✅ Running | ✅ Yes | ~2 min | ~600 MB |
 | **AI Research** | 8060 | 🔄 Building | ⏳ Pending | ~15 min | ~3 GB |
-| **XR Labs** | 8070 | 🔄 Building | ⏳ Pending | ~12 min | ~2 GB |
+| **XR Labs** | 8070 | ✅ Running | ✅ Yes | ~12 min | ~1.6 GB |
 | **Ethics/Security** | 8080 | ❌ Port issue | ❌ No | ~2 min | ~500 MB |
 | **Data Fabric** | 8090 | ✅ Running | ✅ Yes | ~3 min | ~900 MB |
 | **Institutions** | 8100 | ✅ Running | ✅ Yes | ~3 min | ~1 GB |
@@ -124,8 +124,8 @@ These services have **large ML/AI dependencies** (TensorFlow 2.15, PyTorch 2.1, 
 | **Qdrant** | 6333 | ✅ Running | ✅ Yes | - | - |
 
 **Summary:**
-- ✅ **Fully Working:** 5 services + 2 infrastructure (62.5%)
-- 🔄 **Building:** 2 services (25%)
+- ✅ **Fully Working:** 6 services + 2 infrastructure (75%)
+- 🔄 **Building:** 1 service (12.5%)
 - ❌ **Port Issue:** 1 service (12.5%)
 
 ---
@@ -147,6 +147,7 @@ RUN apt-get update && apt-get install -y \
 crewai==0.1.32  # was 0.1.27
 autogen-agentchat==0.2.36  # was 0.2.11
 flower==2.0.1  # was 1.6.0
+openai==1.7.1  # was 1.6.1, updated for crewai compatibility
 ```
 
 ### 3. Futures ([services/futures/requirements.txt](../services/futures/requirements.txt))
