@@ -1,0 +1,19 @@
+# EUREKA Ethics & Security Suite
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic==2.5.0
+
+# Explainable AI
+shap==0.43.0
+lime==0.2.0.1
+
+# Fairness & Bias
+fairlearn==0.9.0
+aif360==0.5.0
+
+# Security
+cryptography==41.0.7
+python-jose[cryptography]==3.3.0
+
+# Testing
+pytest==7.4.3
