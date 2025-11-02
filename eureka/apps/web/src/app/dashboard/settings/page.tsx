@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import DashboardLayout from '@/components/layout/DashboardLayout';
-import ProtectedRoute from '@/components/auth/ProtectedRoute';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -222,10 +220,8 @@ export default function SettingsPage() {
   };
 
   return (
-    <ProtectedRoute>
-      <DashboardLayout>
-        <div className="space-y-6">
-          {/* Header */}
+    <div className="space-y-6">
+      {/* Header */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900">Settings</h1>
             <p className="mt-2 text-sm text-gray-600">
@@ -759,8 +755,6 @@ export default function SettingsPage() {
               )}
             </div>
           </div>
-        </div>
-      </DashboardLayout>
-    </ProtectedRoute>
+    </div>
   );
 }
