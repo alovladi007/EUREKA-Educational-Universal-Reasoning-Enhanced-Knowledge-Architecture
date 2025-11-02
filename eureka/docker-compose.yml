@@ -411,7 +411,6 @@ services:
       ENVIRONMENT: development
       PORT: 8000
       HIPAA_MODE: true
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
     ports:
       - "8030:8000"
     depends_on:
@@ -441,7 +440,6 @@ services:
       COMPLIANCE_ENABLED: "true"
       DKT_HIDDEN_DIM: 128
       IRT_MODEL_TYPE: "2PL"
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8040:8040"
@@ -466,7 +464,6 @@ services:
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
       CONTENT_STORAGE_PATH: /data/marketplace/content
       COMPLIANCE_ENABLED: "true"
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8050:8050"
@@ -492,7 +489,6 @@ services:
       PAPER_CACHE_DIR: /data/research/papers
       DEFAULT_LLM_MODEL: "gpt-4-turbo-preview"
       ENABLE_AGENT_MEMORY: "true"
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8060:8060"
@@ -507,7 +503,6 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-xr-labs
     environment:
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8070:8070"
@@ -522,7 +517,6 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-ethics-security
     environment:
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8080:8080"
@@ -540,7 +534,6 @@ services:
       NEO4J_USER: neo4j
       NEO4J_PASSWORD: ${NEO4J_PASSWORD:-eureka_neo4j_dev}
       QDRANT_URL: http://qdrant:6333
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8090:8090"
@@ -559,7 +552,6 @@ services:
     environment:
       DATABASE_URL: postgresql+asyncpg://eureka:eureka_dev_password@db:5432/eureka_institutions
       REDIS_URL: redis://redis:6379/22
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8100:8100"
@@ -578,7 +570,6 @@ services:
       dockerfile: Dockerfile
     container_name: eureka-futures
     environment:
-      CORS_ORIGINS: http://localhost:3000,http://localhost:3001
       ENVIRONMENT: development
     ports:
       - "8110:8110"
