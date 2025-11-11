@@ -1,0 +1,527 @@
+[
+  {
+    "id": "cal-lsat-anal-001",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 1",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.2,
+      "b": -1.46,
+      "c": 0.2
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-002",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.92,
+      "b": -1.38,
+      "c": 0.2
+    },
+    "time_sec_suggested": 67,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-003",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 3",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.97,
+      "b": -1.52,
+      "c": 0.2
+    },
+    "time_sec_suggested": 65,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-004",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 4",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.19,
+      "b": -0.71,
+      "c": 0.2
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-005",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 5",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.99,
+      "b": -0.82,
+      "c": 0.2
+    },
+    "time_sec_suggested": 74,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-006",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 6",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.14,
+      "b": -0.82,
+      "c": 0.2
+    },
+    "time_sec_suggested": 74,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-007",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 7",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.57,
+      "b": 0.09,
+      "c": 0.2
+    },
+    "time_sec_suggested": 85,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-008",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 8",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.19,
+      "b": 0.08,
+      "c": 0.2
+    },
+    "time_sec_suggested": 84,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-009",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 9",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.25,
+      "b": -0.22,
+      "c": 0.2
+    },
+    "time_sec_suggested": 81,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-010",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 10",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.23,
+      "b": 0.71,
+      "c": 0.2
+    },
+    "time_sec_suggested": 92,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-011",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 11",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.21,
+      "b": 0.84,
+      "c": 0.2
+    },
+    "time_sec_suggested": 94,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-012",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 12",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.02,
+      "b": 0.79,
+      "c": 0.2
+    },
+    "time_sec_suggested": 93,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-013",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 13",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.22,
+      "b": 1.4,
+      "c": 0.2
+    },
+    "time_sec_suggested": 100,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-014",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 14",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.59,
+      "b": 1.28,
+      "c": 0.2
+    },
+    "time_sec_suggested": 99,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-anal-015",
+    "exam": "LSAT",
+    "section": "Analytical Reasoning",
+    "topic_path": [
+      "Analytical Reasoning",
+      "Calibration"
+    ],
+    "stem": "LSAT Analytical Reasoning calibration item 15",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Analytical Reasoning",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.92,
+      "b": 1.47,
+      "c": 0.2
+    },
+    "time_sec_suggested": 101,
+    "tags": [
+      "calibration",
+      "lsat",
+      "analytical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]

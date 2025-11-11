@@ -1,0 +1,527 @@
+[
+  {
+    "id": "cal-lsat-logi-001",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Arguments",
+      "Main Conclusion"
+    ],
+    "stem": "What is the main conclusion of the argument?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Main Conclusion reasoning at difficulty b=-1.42",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.26,
+      "b": -1.42,
+      "c": 0.2
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-002",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Arguments",
+      "Main Conclusion"
+    ],
+    "stem": "What is the main conclusion of the argument?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Main Conclusion reasoning at difficulty b=-1.53",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.25,
+      "b": -1.53,
+      "c": 0.2
+    },
+    "time_sec_suggested": 65,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-003",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Arguments",
+      "Main Conclusion"
+    ],
+    "stem": "What is the main conclusion of the argument?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Main Conclusion reasoning at difficulty b=-1.51",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.01,
+      "b": -1.51,
+      "c": 0.2
+    },
+    "time_sec_suggested": 65,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-004",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Assumptions",
+      "Necessary Assumption"
+    ],
+    "stem": "The argument assumes which of the following?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Necessary Assumption reasoning at difficulty b=-1.02",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.29,
+      "b": -1.02,
+      "c": 0.2
+    },
+    "time_sec_suggested": 71,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-005",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Assumptions",
+      "Necessary Assumption"
+    ],
+    "stem": "The argument assumes which of the following?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Necessary Assumption reasoning at difficulty b=-0.8",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.95,
+      "b": -0.8,
+      "c": 0.2
+    },
+    "time_sec_suggested": 74,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-006",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Assumptions",
+      "Necessary Assumption"
+    ],
+    "stem": "The argument assumes which of the following?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Necessary Assumption reasoning at difficulty b=-0.68",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.92,
+      "b": -0.68,
+      "c": 0.2
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-007",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Flaws",
+      "Reasoning Flaw"
+    ],
+    "stem": "The reasoning is flawed because it...",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Reasoning Flaw reasoning at difficulty b=-0.17",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.52,
+      "b": -0.17,
+      "c": 0.2
+    },
+    "time_sec_suggested": 81,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-008",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Flaws",
+      "Reasoning Flaw"
+    ],
+    "stem": "The reasoning is flawed because it...",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Reasoning Flaw reasoning at difficulty b=-0.02",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.98,
+      "b": -0.02,
+      "c": 0.2
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-009",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Flaws",
+      "Reasoning Flaw"
+    ],
+    "stem": "The reasoning is flawed because it...",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 4,
+    "explanation": "Tests Reasoning Flaw reasoning at difficulty b=-0.02",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.03,
+      "b": -0.02,
+      "c": 0.2
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-010",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Evidence",
+      "Strengthen"
+    ],
+    "stem": "Which would most strengthen the argument?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Strengthen reasoning at difficulty b=0.63",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.06,
+      "b": 0.63,
+      "c": 0.2
+    },
+    "time_sec_suggested": 91,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-011",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Evidence",
+      "Strengthen"
+    ],
+    "stem": "Which would most strengthen the argument?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Strengthen reasoning at difficulty b=0.63",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.97,
+      "b": 0.63,
+      "c": 0.2
+    },
+    "time_sec_suggested": 91,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-012",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Evidence",
+      "Strengthen"
+    ],
+    "stem": "Which would most strengthen the argument?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Strengthen reasoning at difficulty b=0.69",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.24,
+      "b": 0.69,
+      "c": 0.2
+    },
+    "time_sec_suggested": 92,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-013",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Formal Logic",
+      "Parallel Reasoning"
+    ],
+    "stem": "Which argument has the same logical structure?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Parallel Reasoning reasoning at difficulty b=1.49",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.08,
+      "b": 1.49,
+      "c": 0.2
+    },
+    "time_sec_suggested": 101,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-014",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Formal Logic",
+      "Parallel Reasoning"
+    ],
+    "stem": "Which argument has the same logical structure?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 4,
+    "explanation": "Tests Parallel Reasoning reasoning at difficulty b=1.3",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.56,
+      "b": 1.3,
+      "c": 0.2
+    },
+    "time_sec_suggested": 99,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-logi-015",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": [
+      "Formal Logic",
+      "Parallel Reasoning"
+    ],
+    "stem": "Which argument has the same logical structure?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Parallel Reasoning reasoning at difficulty b=1.36",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.26,
+      "b": 1.36,
+      "c": 0.2
+    },
+    "time_sec_suggested": 100,
+    "tags": [
+      "calibration",
+      "lsat",
+      "logical reasoning",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]

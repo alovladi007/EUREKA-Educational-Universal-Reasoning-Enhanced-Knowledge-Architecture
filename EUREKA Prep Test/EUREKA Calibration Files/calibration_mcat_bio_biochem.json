@@ -1,0 +1,512 @@
+[
+  {
+    "id": "cal-mcat-bio/-001",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 1",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.02,
+      "b": -1.34,
+      "c": 0.25
+    },
+    "time_sec_suggested": 67,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-002",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.08,
+      "b": -1.45,
+      "c": 0.25
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-003",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 3",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.28,
+      "b": -1.64,
+      "c": 0.25
+    },
+    "time_sec_suggested": 64,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-004",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 4",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.1,
+      "b": -0.75,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-005",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 5",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.18,
+      "b": -0.73,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-006",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 6",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.29,
+      "b": -0.63,
+      "c": 0.25
+    },
+    "time_sec_suggested": 76,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-007",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 7",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.59,
+      "b": -0.01,
+      "c": 0.25
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-008",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 8",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.19,
+      "b": 0.13,
+      "c": 0.25
+    },
+    "time_sec_suggested": 85,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-009",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 9",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.29,
+      "b": 0.07,
+      "c": 0.25
+    },
+    "time_sec_suggested": 84,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-010",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 10",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.17,
+      "b": 0.71,
+      "c": 0.25
+    },
+    "time_sec_suggested": 92,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-011",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 11",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.06,
+      "b": 0.81,
+      "c": 0.25
+    },
+    "time_sec_suggested": 93,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-012",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 12",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.02,
+      "b": 0.74,
+      "c": 0.25
+    },
+    "time_sec_suggested": 92,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-013",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 13",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.29,
+      "b": 1.54,
+      "c": 0.25
+    },
+    "time_sec_suggested": 102,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-014",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 14",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.48,
+      "b": 1.51,
+      "c": 0.25
+    },
+    "time_sec_suggested": 102,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-bio/-015",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Bio/Biochem",
+      "Calibration"
+    ],
+    "stem": "MCAT Bio/Biochem calibration item 15",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Bio/Biochem",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.28,
+      "b": 1.43,
+      "c": 0.25
+    },
+    "time_sec_suggested": 101,
+    "tags": [
+      "calibration",
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]

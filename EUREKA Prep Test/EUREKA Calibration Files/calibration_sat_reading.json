@@ -1,0 +1,512 @@
+[
+  {
+    "id": "cal-sat-read-001",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 1",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.06,
+      "b": -1.5,
+      "c": 0.25
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-002",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.0,
+      "b": -1.3,
+      "c": 0.25
+    },
+    "time_sec_suggested": 68,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-003",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 3",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.07,
+      "b": -1.44,
+      "c": 0.25
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-004",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 4",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.13,
+      "b": -0.87,
+      "c": 0.25
+    },
+    "time_sec_suggested": 73,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-005",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 5",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.05,
+      "b": -0.65,
+      "c": 0.25
+    },
+    "time_sec_suggested": 76,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-006",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 6",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.15,
+      "b": -1.0,
+      "c": 0.25
+    },
+    "time_sec_suggested": 72,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-007",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 7",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.54,
+      "b": 0.14,
+      "c": 0.25
+    },
+    "time_sec_suggested": 85,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-008",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 8",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.07,
+      "b": 0.24,
+      "c": 0.25
+    },
+    "time_sec_suggested": 86,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-009",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 9",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.1,
+      "b": 0.13,
+      "c": 0.25
+    },
+    "time_sec_suggested": 85,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-010",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 10",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.9,
+      "b": 0.92,
+      "c": 0.25
+    },
+    "time_sec_suggested": 95,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-011",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 11",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.09,
+      "b": 0.78,
+      "c": 0.25
+    },
+    "time_sec_suggested": 93,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-012",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 12",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.09,
+      "b": 0.84,
+      "c": 0.25
+    },
+    "time_sec_suggested": 94,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-013",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 13",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.23,
+      "b": 1.44,
+      "c": 0.25
+    },
+    "time_sec_suggested": 101,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-014",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 14",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.49,
+      "b": 1.44,
+      "c": 0.25
+    },
+    "time_sec_suggested": 101,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-read-015",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": [
+      "Reading",
+      "Calibration"
+    ],
+    "stem": "SAT Reading calibration item 15",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Reading",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.22,
+      "b": 1.55,
+      "c": 0.25
+    },
+    "time_sec_suggested": 102,
+    "tags": [
+      "calibration",
+      "sat",
+      "reading",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]

@@ -1,0 +1,512 @@
+[
+  {
+    "id": "cal-mcat-chem-001",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Kinematics"
+    ],
+    "stem": "Calculate velocity after 2s of constant acceleration at 5 m/s\u00b2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Kinematics at difficulty b=-1.28",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.15,
+      "b": -1.28,
+      "c": 0.25
+    },
+    "time_sec_suggested": 68,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-002",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Kinematics"
+    ],
+    "stem": "Calculate velocity after 2s of constant acceleration at 5 m/s\u00b2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Kinematics at difficulty b=-1.58",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.01,
+      "b": -1.58,
+      "c": 0.25
+    },
+    "time_sec_suggested": 65,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-003",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Kinematics"
+    ],
+    "stem": "Calculate velocity after 2s of constant acceleration at 5 m/s\u00b2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Kinematics at difficulty b=-1.49",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.03,
+      "b": -1.49,
+      "c": 0.25
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-004",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Chemistry",
+      "Stoichiometry"
+    ],
+    "stem": "How many moles in 36g of H\u2082O?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Stoichiometry at difficulty b=-0.63",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.91,
+      "b": -0.63,
+      "c": 0.25
+    },
+    "time_sec_suggested": 76,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-005",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Chemistry",
+      "Stoichiometry"
+    ],
+    "stem": "How many moles in 36g of H\u2082O?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Stoichiometry at difficulty b=-0.73",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.24,
+      "b": -0.73,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-006",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Chemistry",
+      "Stoichiometry"
+    ],
+    "stem": "How many moles in 36g of H\u2082O?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Stoichiometry at difficulty b=-0.82",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.17,
+      "b": -0.82,
+      "c": 0.25
+    },
+    "time_sec_suggested": 74,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-007",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Energy"
+    ],
+    "stem": "Calculate kinetic energy of 2kg mass at 10 m/s",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Energy at difficulty b=-0.02",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.58,
+      "b": -0.02,
+      "c": 0.25
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-008",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Energy"
+    ],
+    "stem": "Calculate kinetic energy of 2kg mass at 10 m/s",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Energy at difficulty b=0.01",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.27,
+      "b": 0.01,
+      "c": 0.25
+    },
+    "time_sec_suggested": 84,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-009",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Energy"
+    ],
+    "stem": "Calculate kinetic energy of 2kg mass at 10 m/s",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Energy at difficulty b=-0.07",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.17,
+      "b": -0.07,
+      "c": 0.25
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-010",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Chemistry",
+      "pH"
+    ],
+    "stem": "What is the pH of 0.001 M HCl?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests pH at difficulty b=0.61",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.1,
+      "b": 0.61,
+      "c": 0.25
+    },
+    "time_sec_suggested": 91,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-011",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Chemistry",
+      "pH"
+    ],
+    "stem": "What is the pH of 0.001 M HCl?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests pH at difficulty b=0.51",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.94,
+      "b": 0.51,
+      "c": 0.25
+    },
+    "time_sec_suggested": 90,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-012",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Chemistry",
+      "pH"
+    ],
+    "stem": "What is the pH of 0.001 M HCl?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests pH at difficulty b=0.73",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.96,
+      "b": 0.73,
+      "c": 0.25
+    },
+    "time_sec_suggested": 92,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-013",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Optics"
+    ],
+    "stem": "Calculate focal length for converging lens system",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Optics at difficulty b=1.63",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.22,
+      "b": 1.63,
+      "c": 0.25
+    },
+    "time_sec_suggested": 103,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-014",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Optics"
+    ],
+    "stem": "Calculate focal length for converging lens system",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Optics at difficulty b=1.68",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.48,
+      "b": 1.68,
+      "c": 0.25
+    },
+    "time_sec_suggested": 104,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-chem-015",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Physics",
+      "Optics"
+    ],
+    "stem": "Calculate focal length for converging lens system",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Optics at difficulty b=1.48",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.11,
+      "b": 1.48,
+      "c": 0.25
+    },
+    "time_sec_suggested": 101,
+    "tags": [
+      "calibration",
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]

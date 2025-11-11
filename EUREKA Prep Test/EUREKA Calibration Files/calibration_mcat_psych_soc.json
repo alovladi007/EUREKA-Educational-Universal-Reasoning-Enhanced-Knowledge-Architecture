@@ -1,0 +1,512 @@
+[
+  {
+    "id": "cal-mcat-psyc-001",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 1",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.1,
+      "b": -1.47,
+      "c": 0.25
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-002",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.19,
+      "b": -1.52,
+      "c": 0.25
+    },
+    "time_sec_suggested": 65,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-003",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 3",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.07,
+      "b": -1.61,
+      "c": 0.25
+    },
+    "time_sec_suggested": 64,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-004",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 4",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.18,
+      "b": -0.74,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-005",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 5",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.94,
+      "b": -0.86,
+      "c": 0.25
+    },
+    "time_sec_suggested": 73,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-006",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 6",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.2,
+      "b": -0.83,
+      "c": 0.25
+    },
+    "time_sec_suggested": 74,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-007",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 7",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.49,
+      "b": 0.12,
+      "c": 0.25
+    },
+    "time_sec_suggested": 85,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-008",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 8",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.14,
+      "b": -0.09,
+      "c": 0.25
+    },
+    "time_sec_suggested": 82,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-009",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 9",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.02,
+      "b": -0.02,
+      "c": 0.25
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-010",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 10",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.0,
+      "b": 0.56,
+      "c": 0.25
+    },
+    "time_sec_suggested": 90,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-011",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 11",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.12,
+      "b": 0.78,
+      "c": 0.25
+    },
+    "time_sec_suggested": 93,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-012",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 12",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.98,
+      "b": 0.75,
+      "c": 0.25
+    },
+    "time_sec_suggested": 93,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-013",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 13",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.21,
+      "b": 1.29,
+      "c": 0.25
+    },
+    "time_sec_suggested": 99,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-014",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 14",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.57,
+      "b": 1.54,
+      "c": 0.25
+    },
+    "time_sec_suggested": 102,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-psyc-015",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Psych/Soc",
+      "Calibration"
+    ],
+    "stem": "MCAT Psych/Soc calibration item 15",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D"
+    ],
+    "correct_index": 0,
+    "explanation": "Calibration item for Psych/Soc",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.97,
+      "b": 1.3,
+      "c": 0.25
+    },
+    "time_sec_suggested": 99,
+    "tags": [
+      "calibration",
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]
