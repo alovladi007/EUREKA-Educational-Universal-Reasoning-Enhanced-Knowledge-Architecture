@@ -1,0 +1,107 @@
+[
+  {
+    "id": "lsat-001",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": ["Argument", "Conclusion"],
+    "stem": "Which statement most accurately expresses the argument's main conclusion?",
+    "choices": [
+      "A description of a study",
+      "A background fact",
+      "The author's central claim",
+      "An example supporting a claim"
+    ],
+    "correct_index": 2,
+    "explanation": "The conclusion is the central claim that the premises support, not background or examples.",
+    "difficulty_label": "easy",
+    "irt": { "a": 0.9, "b": -0.6, "c": 0.22 },
+    "time_sec_suggested": 70,
+    "tags": ["identify-conclusion", "argument-structure"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "lsat-002",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": ["Reasoning", "Assumptions"],
+    "stem": "An argument relies on an assumption if:",
+    "choices": [
+      "The premise is true",
+      "The conclusion restates the premise",
+      "The conclusion would be undermined if it were false",
+      "It is stated explicitly"
+    ],
+    "correct_index": 2,
+    "explanation": "A necessary assumption is required for the conclusion; if false, the conclusion fails.",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.0, "b": 0.0, "c": 0.24 },
+    "time_sec_suggested": 80,
+    "tags": ["necessary-assumption", "logic"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "lsat-003",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": ["Flaws", "Causation"],
+    "stem": "Identifying a cause solely from correlation commits which flaw?",
+    "choices": [
+      "Straw man",
+      "Ad hominem",
+      "Post hoc/causal confounding",
+      "Equivocation"
+    ],
+    "correct_index": 2,
+    "explanation": "Correlation doesn't imply causation; confounding variables or reverse causation possible.",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.1, "b": 0.2, "c": 0.23 },
+    "time_sec_suggested": 85,
+    "tags": ["causal-flaw", "logical-fallacy"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "lsat-004",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": ["Inference", "Must Be True"],
+    "stem": "If all A are B, and some B are C, which must be true?",
+    "choices": [
+      "Some A are C",
+      "No A are C",
+      "Some C are A",
+      "None of the above must be true"
+    ],
+    "correct_index": 3,
+    "explanation": "All A are B, some B are C doesn't guarantee A intersects with C portion of B.",
+    "difficulty_label": "medium",
+    "irt": { "a": 0.9, "b": 0.1, "c": 0.25 },
+    "time_sec_suggested": 80,
+    "tags": ["set-logic", "formal-logic"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "lsat-005",
+    "exam": "LSAT",
+    "section": "Logical Reasoning",
+    "topic_path": ["Strengthen/Weaken", "Evidence"],
+    "stem": "Which new evidence would most weaken a claim that a policy reduced traffic?",
+    "choices": [
+      "Traffic decreased after policy, but fuel prices spiked simultaneously",
+      "Citizens favored the policy",
+      "The policy was inexpensive",
+      "Public transport ridership increased"
+    ],
+    "correct_index": 0,
+    "explanation": "Alternative cause (fuel prices) weakens causal claim about policy effectiveness.",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.0, "b": 0.2, "c": 0.24 },
+    "time_sec_suggested": 85,
+    "tags": ["alternative-cause", "weaken"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "cal-sat-000",
+    "exam": "SAT",
+    "irt_a": 1.72,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-001",
+    "exam": "SAT",
+    "irt_a": 1.21,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-002",
+    "exam": "SAT",
+    "irt_a": 1.6,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-003",
+    "exam": "SAT",
+    "irt_a": 1.33,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-004",
+    "exam": "SAT",
+    "irt_a": 1.34,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-005",
+    "exam": "SAT",
+    "irt_a": 1.26,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-006",
+    "exam": "SAT",
+    "irt_a": 1.45,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-007",
+    "exam": "SAT",
+    "irt_a": 1.47,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-008",
+    "exam": "SAT",
+    "irt_a": 1.31,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-009",
+    "exam": "SAT",
+    "irt_a": 1.59,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-010",
+    "exam": "SAT",
+    "irt_a": 1.37,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-011",
+    "exam": "SAT",
+    "irt_a": 1.3,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-012",
+    "exam": "SAT",
+    "irt_a": 1.35,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-013",
+    "exam": "SAT",
+    "irt_a": 1.25,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-014",
+    "exam": "SAT",
+    "irt_a": 1.43,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-015",
+    "exam": "SAT",
+    "irt_a": 1.43,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-016",
+    "exam": "SAT",
+    "irt_a": 1.22,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-017",
+    "exam": "SAT",
+    "irt_a": 1.5,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-018",
+    "exam": "SAT",
+    "irt_a": 1.61,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-019",
+    "exam": "SAT",
+    "irt_a": 1.78,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  }
+]

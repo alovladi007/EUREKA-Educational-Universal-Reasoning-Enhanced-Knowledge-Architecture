@@ -1,0 +1,1602 @@
+[
+  {
+    "id": "mcat-sample-0001",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 1 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT CARS.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.91,
+      "b": -0.89,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0002",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 2 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample hard question for MCAT Bio/Biochem.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.36,
+      "b": 1.04,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0003",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 3 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample medium question for MCAT Psych/Soc.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.97,
+      "b": 0.46,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0004",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 4 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample easy question for MCAT Chem/Phys.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.77,
+      "b": -1.22,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0005",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 5 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample medium question for MCAT CARS.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.29,
+      "b": -0.44,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0006",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 6 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample hard question for MCAT Bio/Biochem.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.33,
+      "b": 1.79,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0007",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 7 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample hard question for MCAT CARS.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.52,
+      "b": 1.64,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0008",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 8 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample hard question for MCAT Bio/Biochem.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.46,
+      "b": 1.03,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0009",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 9 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This is a sample hard question for MCAT Chem/Phys.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.01,
+      "b": 1.4,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0010",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 10 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample hard question for MCAT Psych/Soc.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.45,
+      "b": 1.42,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0011",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 11 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample medium question for MCAT CARS.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.15,
+      "b": -0.49,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0012",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 12 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This is a sample hard question for MCAT Chem/Phys.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.0,
+      "b": 1.78,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0013",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 13 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample easy question for MCAT Psych/Soc.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.95,
+      "b": -1.67,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0014",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 14 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample medium question for MCAT Psych/Soc.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.94,
+      "b": 0.29,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0015",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 15 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample medium question for MCAT CARS.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.94,
+      "b": 0.37,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0016",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 16 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample medium question for MCAT CARS.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.06,
+      "b": 0.17,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0017",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 17 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample medium question for MCAT CARS.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.25,
+      "b": 0.26,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0018",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 18 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This is a sample medium question for MCAT Psych/Soc.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.02,
+      "b": 0.26,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0019",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 19 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT Chem/Phys.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.93,
+      "b": -1.24,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0020",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 20 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample medium question for MCAT Psych/Soc.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.2,
+      "b": 0.23,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0021",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 21 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample hard question for MCAT Bio/Biochem.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.17,
+      "b": 0.99,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0022",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 22 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample medium question for MCAT Chem/Phys.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.28,
+      "b": 0.17,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0023",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 23 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT Psych/Soc.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.07,
+      "b": -1.52,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0024",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 24 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This is a sample easy question for MCAT Psych/Soc.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.01,
+      "b": -1.39,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0025",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 25 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample easy question for MCAT Chem/Phys.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.72,
+      "b": -1.52,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0026",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 26 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample hard question for MCAT Bio/Biochem.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.36,
+      "b": 1.51,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0027",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 27 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample hard question for MCAT CARS.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.45,
+      "b": 1.83,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0028",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 28 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT Chem/Phys.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.91,
+      "b": -0.83,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0029",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 29 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT CARS.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.05,
+      "b": -1.56,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0030",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 30 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample medium question for MCAT Psych/Soc.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.29,
+      "b": -0.22,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0031",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 31 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample hard question for MCAT Chem/Phys.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.53,
+      "b": 1.91,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0032",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 32 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample hard question for MCAT Chem/Phys.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.33,
+      "b": 1.91,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0033",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 33 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample easy question for MCAT CARS.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.06,
+      "b": -1.92,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0034",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 34 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample medium question for MCAT Chem/Phys.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.02,
+      "b": -0.37,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0035",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 35 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample medium question for MCAT Psych/Soc.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.92,
+      "b": -0.12,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0036",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 36 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample hard question for MCAT Psych/Soc.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.25,
+      "b": 1.61,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0037",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 37 - Difficulty: medium",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample medium question for MCAT CARS.",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.18,
+      "b": -0.36,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "medium"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0038",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 38 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample hard question for MCAT CARS.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.06,
+      "b": 1.48,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0039",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 39 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT Bio/Biochem.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.72,
+      "b": -1.84,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0040",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 40 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample hard question for MCAT Bio/Biochem.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.13,
+      "b": 1.49,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0041",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 41 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This is a sample hard question for MCAT Chem/Phys.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.54,
+      "b": 1.07,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0042",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 42 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This is a sample easy question for MCAT Psych/Soc.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.87,
+      "b": -1.42,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0043",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 43 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample hard question for MCAT Bio/Biochem.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.33,
+      "b": 1.71,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0044",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 44 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT CARS.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.99,
+      "b": -1.53,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0045",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Bio/Biochem question 45 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample easy question for MCAT Bio/Biochem.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.94,
+      "b": -1.69,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "bio/biochem",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0046",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Chem/Phys question 46 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample hard question for MCAT Chem/Phys.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.33,
+      "b": 1.65,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "chem/phys",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0047",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 47 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This is a sample easy question for MCAT CARS.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.71,
+      "b": -1.14,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0048",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 48 - Difficulty: hard",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This is a sample hard question for MCAT Psych/Soc.",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.36,
+      "b": 1.59,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "hard"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0049",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT CARS question 49 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This is a sample easy question for MCAT CARS.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.08,
+      "b": -1.75,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "cars",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-sample-0050",
+    "exam": "MCAT",
+    "section": "Psych/Soc",
+    "topic_path": [
+      "Sample Topic",
+      "Sample Subtopic"
+    ],
+    "stem": "Sample MCAT Psych/Soc question 50 - Difficulty: easy",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This is a sample easy question for MCAT Psych/Soc.",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.71,
+      "b": -1.37,
+      "c": 0.25
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "mcat",
+      "psych/soc",
+      "easy"
+    ],
+    "source_note": "sample-batch-v1",
+    "needs_review": false
+  }
+]

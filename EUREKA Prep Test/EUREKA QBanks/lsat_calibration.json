@@ -1,0 +1,162 @@
+[
+  {
+    "id": "cal-lsat-000",
+    "exam": "LSAT",
+    "irt_a": 1.52,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-001",
+    "exam": "LSAT",
+    "irt_a": 1.41,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-002",
+    "exam": "LSAT",
+    "irt_a": 1.56,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-003",
+    "exam": "LSAT",
+    "irt_a": 1.45,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-004",
+    "exam": "LSAT",
+    "irt_a": 1.5,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-005",
+    "exam": "LSAT",
+    "irt_a": 1.63,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-006",
+    "exam": "LSAT",
+    "irt_a": 1.59,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-007",
+    "exam": "LSAT",
+    "irt_a": 1.4,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-008",
+    "exam": "LSAT",
+    "irt_a": 1.56,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-009",
+    "exam": "LSAT",
+    "irt_a": 1.41,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-010",
+    "exam": "LSAT",
+    "irt_a": 1.26,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-011",
+    "exam": "LSAT",
+    "irt_a": 1.53,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-012",
+    "exam": "LSAT",
+    "irt_a": 1.24,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-013",
+    "exam": "LSAT",
+    "irt_a": 1.57,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-014",
+    "exam": "LSAT",
+    "irt_a": 1.3,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-015",
+    "exam": "LSAT",
+    "irt_a": 1.55,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-016",
+    "exam": "LSAT",
+    "irt_a": 1.75,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-017",
+    "exam": "LSAT",
+    "irt_a": 1.44,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-018",
+    "exam": "LSAT",
+    "irt_a": 1.58,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-lsat-019",
+    "exam": "LSAT",
+    "irt_a": 1.37,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  }
+]

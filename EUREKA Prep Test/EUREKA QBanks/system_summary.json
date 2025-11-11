@@ -1,0 +1,26 @@
+{
+  "generated_at": "2025-11-11T05:17:47.430239",
+  "total_questions": 12400,
+  "exams": {
+    "GRE": 3100,
+    "LSAT": 3100,
+    "MCAT": 3100,
+    "SAT": 3100
+  },
+  "difficulty": {
+    "easy": 3780,
+    "hard": 2549,
+    "medium": 6071
+  },
+  "database": "/home/claude/eureka_demo/questions.db",
+  "calibration_sets": 4,
+  "features": [
+    "3000+ questions per exam",
+    "IRT parameters (a, b, c) for adaptive testing",
+    "Calibration sets for initial ability estimation",
+    "SQLite database for efficient querying",
+    "Topic and difficulty distribution",
+    "Time suggestions per question",
+    "Ready for production deployment"
+  ]
+}
