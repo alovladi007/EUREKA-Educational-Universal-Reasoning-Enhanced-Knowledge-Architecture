@@ -15,7 +15,11 @@ from app.core.config import settings
 from app.core.database import Base
 
 # Import all models so they're registered with Base.metadata
-from app.models import Organization, User, Course, Enrollment  # noqa: F401
+from app.models import (  # noqa: F401
+    Organization, User, Course, Enrollment,
+    Assignment, Submission, Grade, RefreshToken,
+    AuditLog, FileUpload, Notification
+)
 
 # this is the Alembic Config object
 config = context.config
