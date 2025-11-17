@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: eureka-config
+  namespace: eureka
+data:
+  # Application Settings
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "INFO"
+
+  # Database Settings (non-sensitive)
+  POSTGRES_DB: "eureka"
+  POSTGRES_USER: "eureka"
+
+  # Redis Settings
+  REDIS_DB: "0"
+
+  # JWT Settings
+  JWT_ALGORITHM: "HS256"
+  ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+  REFRESH_TOKEN_EXPIRE_DAYS: "7"
+
+  # Service URLs (internal cluster DNS)
+  DATABASE_HOST: "postgres-service.eureka.svc.cluster.local"
+  DATABASE_PORT: "5432"
+  REDIS_HOST: "redis-service.eureka.svc.cluster.local"
+  REDIS_PORT: "6379"
+  MINIO_HOST: "minio-service.eureka.svc.cluster.local"
+  MINIO_PORT: "9000"
+  OPENSEARCH_HOST: "opensearch-service.eureka.svc.cluster.local"
+  OPENSEARCH_PORT: "9200"
+  KAFKA_HOST: "kafka-service.eureka.svc.cluster.local"
+  KAFKA_PORT: "9092"
+
+  # CORS Settings
+  CORS_ORIGINS: "https://eureka.example.com,https://app.eureka.example.com"
+
+  # Feature Flags
+  ENABLE_RATE_LIMITING: "true"
+  ENABLE_AUDIT_LOGGING: "true"
+  ENABLE_EMAIL_VERIFICATION: "true"
+
+  # Compliance
+  FERPA_ENABLED: "true"
+  COPPA_ENABLED: "true"
+  GDPR_ENABLED: "true"
