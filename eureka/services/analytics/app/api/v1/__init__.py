@@ -9,12 +9,16 @@ from sqlalchemy import select, and_
 
 from app.core.database import get_db
 from app.core.models import (
-    StudentAnalytics, CourseAnalytics, AtRiskAlert, EngagementEvent
+    StudentAnalytics, CourseAnalytics, AtRiskAlert, EngagementEvent,
+    LearningOutcome, StudentOutcomeAchievement, PerformanceTrend, CohortAnalytics
 )
 from app.schemas import (
     StudentAnalyticsResponse, CourseAnalyticsResponse,
     AtRiskAlertResponse, AtRiskAlertUpdate,
     EngagementEventCreate, EngagementEventResponse,
+    LearningOutcomeCreate, LearningOutcomeUpdate, LearningOutcomeResponse,
+    StudentOutcomeAchievementResponse, PerformanceTrendResponse,
+    CohortAnalyticsCreate, CohortAnalyticsResponse,
     CalculateAnalyticsRequest, IdentifyAtRiskRequest,
     StudentDashboardSummary
 )
@@ -263,3 +267,287 @@ async def get_student_dashboard(
         engagement_score=engagement_score,
         performance_rating=rating
     )
+
+
+# ============= Learning Outcomes =============
+
+@router.post("/outcomes", response_model=LearningOutcomeResponse, status_code=201)
+async def create_learning_outcome(
+    outcome: LearningOutcomeCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Create a new learning outcome"""
+    db_outcome = LearningOutcome(**outcome.dict())
+    db.add(db_outcome)
+    await db.commit()
+    await db.refresh(db_outcome)
+    return db_outcome
+
+
+@router.get("/outcomes/{outcome_id}", response_model=LearningOutcomeResponse)
+async def get_learning_outcome(
+    outcome_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get a specific learning outcome"""
+    result = await db.execute(
+        select(LearningOutcome).where(LearningOutcome.id == outcome_id)
+    )
+    outcome = result.scalar_one_or_none()
+
+    if not outcome:
+        raise HTTPException(status_code=404, detail="Learning outcome not found")
+
+    return outcome
+
+
+@router.get("/courses/{course_id}/outcomes", response_model=List[LearningOutcomeResponse])
+async def list_course_outcomes(
+    course_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """List all learning outcomes for a course"""
+    result = await db.execute(
+        select(LearningOutcome).where(LearningOutcome.course_id == course_id)
+    )
+    return result.scalars().all()
+
+
+@router.patch("/outcomes/{outcome_id}", response_model=LearningOutcomeResponse)
+async def update_learning_outcome(
+    outcome_id: UUID,
+    outcome_update: LearningOutcomeUpdate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Update a learning outcome"""
+    result = await db.execute(
+        select(LearningOutcome).where(LearningOutcome.id == outcome_id)
+    )
+    outcome = result.scalar_one_or_none()
+
+    if not outcome:
+        raise HTTPException(status_code=404, detail="Learning outcome not found")
+
+    update_data = outcome_update.dict(exclude_unset=True)
+    for field, value in update_data.items():
+        setattr(outcome, field, value)
+
+    await db.commit()
+    await db.refresh(outcome)
+    return outcome
+
+
+@router.delete("/outcomes/{outcome_id}", status_code=204)
+async def delete_learning_outcome(
+    outcome_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a learning outcome"""
+    result = await db.execute(
+        select(LearningOutcome).where(LearningOutcome.id == outcome_id)
+    )
+    outcome = result.scalar_one_or_none()
+
+    if not outcome:
+        raise HTTPException(status_code=404, detail="Learning outcome not found")
+
+    await db.delete(outcome)
+    await db.commit()
+    return None
+
+
+# ============= Student Outcome Achievements =============
+
+@router.get("/users/{user_id}/achievements", response_model=List[StudentOutcomeAchievementResponse])
+async def get_student_achievements(
+    user_id: UUID,
+    outcome_id: Optional[UUID] = None,
+    achieved_only: bool = False,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get student outcome achievements"""
+    query = select(StudentOutcomeAchievement).where(StudentOutcomeAchievement.user_id == user_id)
+
+    if outcome_id:
+        query = query.where(StudentOutcomeAchievement.outcome_id == outcome_id)
+
+    if achieved_only:
+        query = query.where(StudentOutcomeAchievement.is_achieved == True)
+
+    result = await db.execute(query.order_by(StudentOutcomeAchievement.achieved_at.desc()))
+    return result.scalars().all()
+
+
+@router.get("/outcomes/{outcome_id}/achievements", response_model=List[StudentOutcomeAchievementResponse])
+async def get_outcome_achievements(
+    outcome_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get all students who achieved a specific outcome"""
+    result = await db.execute(
+        select(StudentOutcomeAchievement).where(
+            and_(
+                StudentOutcomeAchievement.outcome_id == outcome_id,
+                StudentOutcomeAchievement.is_achieved == True
+            )
+        )
+    )
+    return result.scalars().all()
+
+
+# ============= Performance Trends =============
+
+@router.post("/trends", response_model=PerformanceTrendResponse, status_code=201)
+async def create_performance_trend(
+    user_id: UUID,
+    course_id: UUID,
+    metric_type: str,
+    metric_value: float,
+    period_start: datetime,
+    period_end: datetime,
+    db: AsyncSession = Depends(get_db)
+):
+    """Create a performance trend record"""
+    from app.core.models import MetricType
+    from datetime import datetime
+
+    trend = PerformanceTrend(
+        user_id=user_id,
+        course_id=course_id,
+        metric_type=MetricType(metric_type),
+        metric_value=metric_value,
+        period_start=period_start,
+        period_end=period_end
+    )
+    db.add(trend)
+    await db.commit()
+    await db.refresh(trend)
+    return trend
+
+
+@router.get("/trends/user/{user_id}", response_model=List[PerformanceTrendResponse])
+async def get_user_performance_trends(
+    user_id: UUID,
+    course_id: Optional[UUID] = None,
+    metric_type: Optional[str] = None,
+    limit: int = 50,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get performance trends for a user"""
+    from app.core.models import MetricType
+
+    query = select(PerformanceTrend).where(PerformanceTrend.user_id == user_id)
+
+    if course_id:
+        query = query.where(PerformanceTrend.course_id == course_id)
+
+    if metric_type:
+        query = query.where(PerformanceTrend.metric_type == MetricType(metric_type))
+
+    result = await db.execute(
+        query.order_by(PerformanceTrend.period_start.desc()).limit(limit)
+    )
+    return result.scalars().all()
+
+
+# ============= Cohort Analytics =============
+
+@router.post("/cohorts", response_model=CohortAnalyticsResponse, status_code=201)
+async def create_cohort(
+    cohort: CohortAnalyticsCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Create a new cohort for analytics"""
+    db_cohort = CohortAnalytics(**cohort.dict())
+    db.add(db_cohort)
+    await db.commit()
+    await db.refresh(db_cohort)
+    return db_cohort
+
+
+@router.get("/cohorts/{cohort_id}", response_model=CohortAnalyticsResponse)
+async def get_cohort(
+    cohort_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get a specific cohort"""
+    result = await db.execute(
+        select(CohortAnalytics).where(CohortAnalytics.id == cohort_id)
+    )
+    cohort = result.scalar_one_or_none()
+
+    if not cohort:
+        raise HTTPException(status_code=404, detail="Cohort not found")
+
+    return cohort
+
+
+@router.get("/organizations/{org_id}/cohorts", response_model=List[CohortAnalyticsResponse])
+async def list_organization_cohorts(
+    org_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """List all cohorts for an organization"""
+    result = await db.execute(
+        select(CohortAnalytics).where(CohortAnalytics.organization_id == org_id)
+    )
+    return result.scalars().all()
+
+
+@router.delete("/cohorts/{cohort_id}", status_code=204)
+async def delete_cohort(
+    cohort_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a cohort"""
+    result = await db.execute(
+        select(CohortAnalytics).where(CohortAnalytics.id == cohort_id)
+    )
+    cohort = result.scalar_one_or_none()
+
+    if not cohort:
+        raise HTTPException(status_code=404, detail="Cohort not found")
+
+    await db.delete(cohort)
+    await db.commit()
+    return None
+
+
+# ============= Delete Operations =============
+
+@router.delete("/at-risk/{alert_id}", status_code=204)
+async def delete_alert(
+    alert_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete an at-risk alert"""
+    result = await db.execute(
+        select(AtRiskAlert).where(AtRiskAlert.id == alert_id)
+    )
+    alert = result.scalar_one_or_none()
+
+    if not alert:
+        raise HTTPException(status_code=404, detail="Alert not found")
+
+    await db.delete(alert)
+    await db.commit()
+    return None
+
+
+@router.delete("/events/{event_id}", status_code=204)
+async def delete_engagement_event(
+    event_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete an engagement event"""
+    result = await db.execute(
+        select(EngagementEvent).where(EngagementEvent.id == event_id)
+    )
+    event = result.scalar_one_or_none()
+
+    if not event:
+        raise HTTPException(status_code=404, detail="Event not found")
+
+    await db.delete(event)
+    await db.commit()
+    return None

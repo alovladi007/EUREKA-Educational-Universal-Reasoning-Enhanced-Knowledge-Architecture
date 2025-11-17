@@ -9,6 +9,13 @@ from app.models.organization import Organization
 from app.models.user import User
 from app.models.course import Course
 from app.models.enrollment import Enrollment
+from app.models.assignment import Assignment
+from app.models.submission import Submission
+from app.models.grade import Grade
+from app.models.refresh_token import RefreshToken
+from app.models.audit_log import AuditLog
+from app.models.file_upload import FileUpload
+from app.models.notification import Notification
 
 __all__ = [
     "Base",
@@ -16,4 +23,11 @@ __all__ = [
     "User",
     "Course",
     "Enrollment",
+    "Assignment",
+    "Submission",
+    "Grade",
+    "RefreshToken",
+    "AuditLog",
+    "FileUpload",
+    "Notification",
 ]
