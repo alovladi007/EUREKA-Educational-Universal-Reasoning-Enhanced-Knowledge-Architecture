@@ -1,8 +1,8 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { cn } from "@/lib/utils"
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   BookOpen,
@@ -26,15 +26,19 @@ import {
   Building2,
   Rocket,
   FolderKanban,
-} from "lucide-react"
+  Trophy,
+  BookCheck,
+} from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "High School", href: "/dashboard/high-school", icon: School },
+  { name: "Test Prep", href: "/dashboard/test-prep", icon: Trophy },
   { name: "Undergraduate", href: "/dashboard/undergraduate", icon: GraduationCap },
   { name: "Graduate", href: "/dashboard/graduate", icon: GraduationCap },
   { name: "Medical Education", href: "/dashboard/medical", icon: Stethoscope },
   { name: "My Courses", href: "/dashboard/courses", icon: BookOpen },
+  { name: "Teacher Tools", href: "/dashboard/teacher", icon: BookCheck },
   { name: "AI Tutor", href: "/dashboard/tutor", icon: Brain },
   { name: "AI Research", href: "/dashboard/ai-research", icon: Sparkles },
   { name: "Assessments", href: "/dashboard/assessments", icon: ClipboardList },
@@ -52,20 +56,21 @@ const navigation = [
   { name: "Futures", href: "/dashboard/futures", icon: Rocket },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
   { name: "Admin", href: "/dashboard/admin", icon: Shield },
-]
+];
 
 export function Sidebar() {
-  const pathname = usePathname()
+  const pathname = usePathname();
 
   return (
-    <div className="flex h-full w-64 flex-col border-r bg-card">
-      <div className="flex h-16 items-center gap-2 border-b px-6">
+    <aside className="flex h-screen w-64 flex-col border-r bg-card">
+      <div className="flex h-16 shrink-0 items-center gap-2 border-b px-6 bg-card">
         <GraduationCap className="h-8 w-8 text-primary" />
         <span className="text-xl font-bold">EUREKA</span>
       </div>
-      <nav className="flex-1 space-y-1 p-4">
+      <div className="flex-1 overflow-y-scroll min-h-0">
+        <nav className="p-4 space-y-1">
         {navigation.map((item) => {
-          const isActive = pathname === item.href
+          const isActive = pathname === item.href;
           return (
             <Link
               key={item.name}
@@ -80,9 +85,10 @@ export function Sidebar() {
               <item.icon className="h-5 w-5" />
               {item.name}
             </Link>
-          )
+          );
         })}
-      </nav>
-    </div>
-  )
+        </nav>
+      </div>
+    </aside>
+  );
 }

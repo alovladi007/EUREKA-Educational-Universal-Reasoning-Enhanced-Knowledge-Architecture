@@ -1,0 +1,512 @@
+[
+  {
+    "id": "cal-sat-math-001",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Algebra",
+      "Linear Equations"
+    ],
+    "stem": "Solve for x: 2x + 5 = 11",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Linear Equations concepts at difficulty level b=-1.23",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.02,
+      "b": -1.23,
+      "c": 0.25
+    },
+    "time_sec_suggested": 69,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-002",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Algebra",
+      "Linear Equations"
+    ],
+    "stem": "Solve for x: 2x + 5 = 11",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This tests Linear Equations concepts at difficulty level b=-1.52",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.98,
+      "b": -1.52,
+      "c": 0.25
+    },
+    "time_sec_suggested": 65,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-003",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Algebra",
+      "Linear Equations"
+    ],
+    "stem": "Solve for x: 2x + 5 = 11",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This tests Linear Equations concepts at difficulty level b=-1.62",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.1,
+      "b": -1.62,
+      "c": 0.25
+    },
+    "time_sec_suggested": 64,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-004",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Geometry",
+      "Area"
+    ],
+    "stem": "Find the area of a rectangle with length 8 and width 5",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Area concepts at difficulty level b=-0.64",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.16,
+      "b": -0.64,
+      "c": 0.25
+    },
+    "time_sec_suggested": 76,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-005",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Geometry",
+      "Area"
+    ],
+    "stem": "Find the area of a rectangle with length 8 and width 5",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Area concepts at difficulty level b=-0.83",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.29,
+      "b": -0.83,
+      "c": 0.25
+    },
+    "time_sec_suggested": 74,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-006",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Geometry",
+      "Area"
+    ],
+    "stem": "Find the area of a rectangle with length 8 and width 5",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Area concepts at difficulty level b=-0.65",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.19,
+      "b": -0.65,
+      "c": 0.25
+    },
+    "time_sec_suggested": 76,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-007",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Functions",
+      "Quadratics"
+    ],
+    "stem": "Find the vertex of y = x\u00b2 - 4x + 3",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This tests Quadratics concepts at difficulty level b=0.01",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.54,
+      "b": 0.01,
+      "c": 0.25
+    },
+    "time_sec_suggested": 84,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-008",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Functions",
+      "Quadratics"
+    ],
+    "stem": "Find the vertex of y = x\u00b2 - 4x + 3",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 0,
+    "explanation": "This tests Quadratics concepts at difficulty level b=-0.03",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.07,
+      "b": -0.03,
+      "c": 0.25
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-009",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Functions",
+      "Quadratics"
+    ],
+    "stem": "Find the vertex of y = x\u00b2 - 4x + 3",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 3,
+    "explanation": "This tests Quadratics concepts at difficulty level b=0.19",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.94,
+      "b": 0.19,
+      "c": 0.25
+    },
+    "time_sec_suggested": 86,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-010",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Statistics",
+      "Standard Deviation"
+    ],
+    "stem": "Calculate the standard deviation of {2, 4, 6, 8, 10}",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Standard Deviation concepts at difficulty level b=0.9",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.07,
+      "b": 0.9,
+      "c": 0.25
+    },
+    "time_sec_suggested": 94,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-011",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Statistics",
+      "Standard Deviation"
+    ],
+    "stem": "Calculate the standard deviation of {2, 4, 6, 8, 10}",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This tests Standard Deviation concepts at difficulty level b=0.84",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.25,
+      "b": 0.84,
+      "c": 0.25
+    },
+    "time_sec_suggested": 94,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-012",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Statistics",
+      "Standard Deviation"
+    ],
+    "stem": "Calculate the standard deviation of {2, 4, 6, 8, 10}",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Standard Deviation concepts at difficulty level b=0.65",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.3,
+      "b": 0.65,
+      "c": 0.25
+    },
+    "time_sec_suggested": 91,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-013",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Advanced Math",
+      "Complex Numbers"
+    ],
+    "stem": "Simplify: (2 + 3i)(1 - 2i)",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Complex Numbers concepts at difficulty level b=1.46",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.93,
+      "b": 1.46,
+      "c": 0.25
+    },
+    "time_sec_suggested": 101,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-014",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Advanced Math",
+      "Complex Numbers"
+    ],
+    "stem": "Simplify: (2 + 3i)(1 - 2i)",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 2,
+    "explanation": "This tests Complex Numbers concepts at difficulty level b=1.6",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.55,
+      "b": 1.6,
+      "c": 0.25
+    },
+    "time_sec_suggested": 103,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-sat-math-015",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": [
+      "Advanced Math",
+      "Complex Numbers"
+    ],
+    "stem": "Simplify: (2 + 3i)(1 - 2i)",
+    "choices": [
+      "Option A",
+      "Option B",
+      "Option C",
+      "Option D"
+    ],
+    "correct_index": 1,
+    "explanation": "This tests Complex Numbers concepts at difficulty level b=1.4",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.91,
+      "b": 1.4,
+      "c": 0.25
+    },
+    "time_sec_suggested": 100,
+    "tags": [
+      "calibration",
+      "sat",
+      "math",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]

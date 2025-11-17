@@ -1,0 +1,162 @@
+[
+  {
+    "id": "cal-mcat-000",
+    "exam": "MCAT",
+    "irt_a": 1.26,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-001",
+    "exam": "MCAT",
+    "irt_a": 1.76,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-002",
+    "exam": "MCAT",
+    "irt_a": 1.74,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-003",
+    "exam": "MCAT",
+    "irt_a": 1.38,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-004",
+    "exam": "MCAT",
+    "irt_a": 1.45,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-005",
+    "exam": "MCAT",
+    "irt_a": 1.21,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-006",
+    "exam": "MCAT",
+    "irt_a": 1.22,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-007",
+    "exam": "MCAT",
+    "irt_a": 1.34,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-008",
+    "exam": "MCAT",
+    "irt_a": 1.58,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-009",
+    "exam": "MCAT",
+    "irt_a": 1.34,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-010",
+    "exam": "MCAT",
+    "irt_a": 1.22,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-011",
+    "exam": "MCAT",
+    "irt_a": 1.34,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-012",
+    "exam": "MCAT",
+    "irt_a": 1.67,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-013",
+    "exam": "MCAT",
+    "irt_a": 1.65,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-014",
+    "exam": "MCAT",
+    "irt_a": 1.25,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-015",
+    "exam": "MCAT",
+    "irt_a": 1.55,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-016",
+    "exam": "MCAT",
+    "irt_a": 1.5,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-017",
+    "exam": "MCAT",
+    "irt_a": 1.74,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-018",
+    "exam": "MCAT",
+    "irt_a": 1.46,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-mcat-019",
+    "exam": "MCAT",
+    "irt_a": 1.51,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  }
+]

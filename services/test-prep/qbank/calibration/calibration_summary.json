@@ -1,0 +1,32 @@
+{
+  "generated_at": "2025-11-11T15:52:34.465654",
+  "statistics": {
+    "total_items": 165,
+    "by_exam": {
+      "SAT": 30,
+      "GRE": 30,
+      "LSAT": 45,
+      "MCAT": 60
+    },
+    "by_difficulty": {
+      "easy": 45,
+      "medium": 67,
+      "hard": 53
+    }
+  },
+  "configuration": {
+    "items_per_section": 15,
+    "b_targets": [
+      -1.5,
+      -0.75,
+      0,
+      0.75,
+      1.5
+    ],
+    "a_range": [
+      0.9,
+      1.6
+    ],
+    "purpose": "initial_ability_estimation"
+  }
+}

@@ -1,0 +1,92 @@
+[
+  {
+    "id": "mcat-001",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": ["Kinematics", "Acceleration"],
+    "stem": "A car accelerates uniformly from rest to 20 m/s in 5 s. Average acceleration?",
+    "choices": ["2 m/s^2", "4 m/s^2", "5 m/s^2", "10 m/s^2"],
+    "correct_index": 1,
+    "explanation": "a = Δv/Δt = (20-0)/5 = 4 m/s^2. Uniform acceleration from rest.",
+    "difficulty_label": "easy",
+    "irt": { "a": 0.9, "b": -0.7, "c": 0.2 },
+    "time_sec_suggested": 75,
+    "tags": ["units", "motion", "kinematics"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-002",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": ["Enzymes", "Kinetics"],
+    "stem": "Competitive inhibition primarily affects which kinetic parameter?",
+    "choices": ["Vmax decreases", "Km increases", "Km decreases", "Vmax increases"],
+    "correct_index": 1,
+    "explanation": "Competitive inhibitors increase apparent Km; Vmax unchanged (can be overcome by substrate).",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.1, "b": 0.2, "c": 0.22 },
+    "time_sec_suggested": 80,
+    "tags": ["michaelis-menten", "enzyme-kinetics"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-003",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": ["Reasoning", "Tone/Purpose"],
+    "stem": "A passage adopts a skeptical tone toward technological solutionism. The author most likely:",
+    "choices": [
+      "Accepts all proposed innovations",
+      "Questions whether problems are mischaracterized",
+      "Argues for deregulation",
+      "Focuses on technical specifications only"
+    ],
+    "correct_index": 1,
+    "explanation": "Skeptical tone implies questioning framing/assumptions about problems and solutions.",
+    "difficulty_label": "medium",
+    "irt": { "a": 0.9, "b": 0.1, "c": 0.25 },
+    "time_sec_suggested": 90,
+    "tags": ["passage-analysis", "tone"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-004",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": ["Electrochemistry", "Cells"],
+    "stem": "For a galvanic cell, which is true?",
+    "choices": [
+      "Anode is positive; reduction occurs at anode",
+      "Cathode is negative; oxidation occurs at cathode",
+      "Anode is negative; oxidation occurs at anode",
+      "Cathode is positive; oxidation occurs at cathode"
+    ],
+    "correct_index": 2,
+    "explanation": "Galvanic cell: Anode (−, oxidation), Cathode (+, reduction). Remember: An Ox, Red Cat.",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.0, "b": 0.0, "c": 0.2 },
+    "time_sec_suggested": 80,
+    "tags": ["mnemonics", "redox", "electrochemistry"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-005",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": ["Genetics", "Central Dogma"],
+    "stem": "Which process directly results in synthesis of polypeptides?",
+    "choices": ["Replication", "Transcription", "Translation", "Reverse transcription"],
+    "correct_index": 2,
+    "explanation": "Translation produces polypeptides on ribosomes from mRNA template.",
+    "difficulty_label": "easy",
+    "irt": { "a": 0.8, "b": -1.0, "c": 0.2 },
+    "time_sec_suggested": 60,
+    "tags": ["central-dogma", "protein-synthesis"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  }
+]

@@ -1,0 +1,162 @@
+[
+  {
+    "id": "cal-gre-000",
+    "exam": "GRE",
+    "irt_a": 1.37,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-001",
+    "exam": "GRE",
+    "irt_a": 1.61,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-002",
+    "exam": "GRE",
+    "irt_a": 1.66,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-003",
+    "exam": "GRE",
+    "irt_a": 1.57,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-004",
+    "exam": "GRE",
+    "irt_a": 1.34,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-005",
+    "exam": "GRE",
+    "irt_a": 1.61,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-006",
+    "exam": "GRE",
+    "irt_a": 1.27,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-007",
+    "exam": "GRE",
+    "irt_a": 1.27,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-008",
+    "exam": "GRE",
+    "irt_a": 1.24,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-009",
+    "exam": "GRE",
+    "irt_a": 1.33,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-010",
+    "exam": "GRE",
+    "irt_a": 1.8,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-011",
+    "exam": "GRE",
+    "irt_a": 1.45,
+    "irt_b": -1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-012",
+    "exam": "GRE",
+    "irt_a": 1.78,
+    "irt_b": -0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-013",
+    "exam": "GRE",
+    "irt_a": 1.74,
+    "irt_b": 0.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-014",
+    "exam": "GRE",
+    "irt_a": 1.65,
+    "irt_b": 0.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-015",
+    "exam": "GRE",
+    "irt_a": 1.48,
+    "irt_b": 1.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-016",
+    "exam": "GRE",
+    "irt_a": 1.67,
+    "irt_b": 1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-017",
+    "exam": "GRE",
+    "irt_a": 1.48,
+    "irt_b": 2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-018",
+    "exam": "GRE",
+    "irt_a": 1.52,
+    "irt_b": -2.0,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-019",
+    "exam": "GRE",
+    "irt_a": 1.61,
+    "irt_b": -1.5,
+    "irt_c": 0.25,
+    "purpose": "initial_ability_estimation"
+  }
+]

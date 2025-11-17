@@ -1,0 +1,527 @@
+[
+  {
+    "id": "cal-gre-quan-001",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Arithmetic",
+      "Percentages"
+    ],
+    "stem": "What is 15% of 80?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Percentages at difficulty b=-1.56",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.97,
+      "b": -1.56,
+      "c": 0.2
+    },
+    "time_sec_suggested": 65,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-002",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Arithmetic",
+      "Percentages"
+    ],
+    "stem": "What is 15% of 80?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Percentages at difficulty b=-1.4",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 1.24,
+      "b": -1.4,
+      "c": 0.2
+    },
+    "time_sec_suggested": 67,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-003",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Arithmetic",
+      "Percentages"
+    ],
+    "stem": "What is 15% of 80?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Percentages at difficulty b=-1.45",
+    "difficulty_label": "easy",
+    "irt": {
+      "a": 0.96,
+      "b": -1.45,
+      "c": 0.2
+    },
+    "time_sec_suggested": 66,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "easy"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-004",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Algebra",
+      "Systems"
+    ],
+    "stem": "Solve: x + y = 10 and x - y = 2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 4,
+    "explanation": "Tests Systems at difficulty b=-0.72",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.0,
+      "b": -0.72,
+      "c": 0.2
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-005",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Algebra",
+      "Systems"
+    ],
+    "stem": "Solve: x + y = 10 and x - y = 2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Systems at difficulty b=-0.71",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.25,
+      "b": -0.71,
+      "c": 0.2
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-006",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Algebra",
+      "Systems"
+    ],
+    "stem": "Solve: x + y = 10 and x - y = 2",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Systems at difficulty b=-0.73",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.92,
+      "b": -0.73,
+      "c": 0.2
+    },
+    "time_sec_suggested": 75,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-007",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Geometry",
+      "Triangles"
+    ],
+    "stem": "In a right triangle with legs 3 and 4, find the hypotenuse",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 2,
+    "explanation": "Tests Triangles at difficulty b=0.0",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.57,
+      "b": 0.0,
+      "c": 0.2
+    },
+    "time_sec_suggested": 84,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-008",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Geometry",
+      "Triangles"
+    ],
+    "stem": "In a right triangle with legs 3 and 4, find the hypotenuse",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Triangles at difficulty b=0.09",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 0.92,
+      "b": 0.09,
+      "c": 0.2
+    },
+    "time_sec_suggested": 85,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-009",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Geometry",
+      "Triangles"
+    ],
+    "stem": "In a right triangle with legs 3 and 4, find the hypotenuse",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 4,
+    "explanation": "Tests Triangles at difficulty b=-0.06",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.19,
+      "b": -0.06,
+      "c": 0.2
+    },
+    "time_sec_suggested": 83,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-010",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Data Analysis",
+      "Combinations"
+    ],
+    "stem": "How many ways to choose 3 items from 7?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Combinations at difficulty b=0.83",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 0.96,
+      "b": 0.83,
+      "c": 0.2
+    },
+    "time_sec_suggested": 93,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-011",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Data Analysis",
+      "Combinations"
+    ],
+    "stem": "How many ways to choose 3 items from 7?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 4,
+    "explanation": "Tests Combinations at difficulty b=0.64",
+    "difficulty_label": "medium",
+    "irt": {
+      "a": 1.24,
+      "b": 0.64,
+      "c": 0.2
+    },
+    "time_sec_suggested": 91,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "medium"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-012",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Data Analysis",
+      "Combinations"
+    ],
+    "stem": "How many ways to choose 3 items from 7?",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 0,
+    "explanation": "Tests Combinations at difficulty b=0.98",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.02,
+      "b": 0.98,
+      "c": 0.2
+    },
+    "time_sec_suggested": 95,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-013",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Number Properties",
+      "Prime Factorization"
+    ],
+    "stem": "Find the number of distinct prime factors of 2520",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 1,
+    "explanation": "Tests Prime Factorization at difficulty b=1.58",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.05,
+      "b": 1.58,
+      "c": 0.2
+    },
+    "time_sec_suggested": 102,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-014",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Number Properties",
+      "Prime Factorization"
+    ],
+    "stem": "Find the number of distinct prime factors of 2520",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Prime Factorization at difficulty b=1.66",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.54,
+      "b": 1.66,
+      "c": 0.2
+    },
+    "time_sec_suggested": 103,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  },
+  {
+    "id": "cal-gre-quan-015",
+    "exam": "GRE",
+    "section": "Quantitative",
+    "topic_path": [
+      "Number Properties",
+      "Prime Factorization"
+    ],
+    "stem": "Find the number of distinct prime factors of 2520",
+    "choices": [
+      "A",
+      "B",
+      "C",
+      "D",
+      "E"
+    ],
+    "correct_index": 3,
+    "explanation": "Tests Prime Factorization at difficulty b=1.52",
+    "difficulty_label": "hard",
+    "irt": {
+      "a": 1.29,
+      "b": 1.52,
+      "c": 0.2
+    },
+    "time_sec_suggested": 102,
+    "tags": [
+      "calibration",
+      "gre",
+      "quantitative",
+      "hard"
+    ],
+    "source_note": "calibration-v1",
+    "needs_review": false,
+    "purpose": "initial_ability_estimation"
+  }
+]

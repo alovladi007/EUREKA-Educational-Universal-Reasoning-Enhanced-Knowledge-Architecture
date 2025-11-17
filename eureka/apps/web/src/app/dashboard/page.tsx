@@ -87,6 +87,14 @@ export default function DashboardPage() {
       bgColor: "bg-blue-50",
     },
     {
+      name: "Test Prep",
+      description: "Adaptive exam preparation (GRE, GMAT, SAT)",
+      icon: Target,
+      href: "/dashboard/test-prep",
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50",
+    },
+    {
       name: "My Courses",
       description: "Browse and manage your courses",
       icon: BookOpen,

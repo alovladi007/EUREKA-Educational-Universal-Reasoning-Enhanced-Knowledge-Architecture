@@ -1,0 +1,25 @@
+{
+  "generated_at": "2025-11-11T15:52:55.902832",
+  "total_questions": 390,
+  "by_exam": {
+    "SAT": 93,
+    "GRE": 90,
+    "LSAT": 78,
+    "MCAT": 129
+  },
+  "by_difficulty": {
+    "easy": 130,
+    "medium": 130,
+    "hard": 130
+  },
+  "files_created": [
+    "/mnt/user-data/outputs/qbank_sat_complete.jsonl",
+    "/mnt/user-data/outputs/qbank_sat_import.csv",
+    "/mnt/user-data/outputs/qbank_gre_complete.jsonl",
+    "/mnt/user-data/outputs/qbank_gre_import.csv",
+    "/mnt/user-data/outputs/qbank_lsat_complete.jsonl",
+    "/mnt/user-data/outputs/qbank_lsat_import.csv",
+    "/mnt/user-data/outputs/qbank_mcat_complete.jsonl",
+    "/mnt/user-data/outputs/qbank_mcat_import.csv"
+  ]
+}

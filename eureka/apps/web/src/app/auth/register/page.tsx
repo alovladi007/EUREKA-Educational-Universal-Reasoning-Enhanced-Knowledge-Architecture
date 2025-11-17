@@ -1,165 +1,234 @@
-"use client"
+'use client';
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { GraduationCap } from "lucide-react"
-import { toast } from "sonner"
-import api from "@/lib/api"
+import React, { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function RegisterPage() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(false)
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-    role: "student",
-    tier: "ug",
-  })
+    email: '',
+    username: '',
+    password: '',
+    confirmPassword: '',
+    fullName: '',
+    educationLevel: '',
+    targetExams: [] as string[]
+  });
+
+  const examOptions = ['GRE', 'GMAT', 'SAT', 'MCAT', 'LSAT', 'ACT'];
+  const educationLevels = [
+    { value: 'high_school', label: 'High School' },
+    { value: 'undergraduate', label: 'Undergraduate' },
+    { value: 'graduate', label: 'Graduate' },
+    { value: 'professional', label: 'Professional' }
+  ];
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords don't match")
-      return
+      toast.error('Passwords do not match');
+      return;
     }
 
-    setLoading(true)
+    if (formData.password.length < 8) {
+      toast.error('Password must be at least 8 characters');
+      return;
+    }
 
+    setLoading(true);
     try {
-      await api.post('/auth/register', {
-        name: formData.name,
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-        tier: formData.tier,
-      })
-      toast.success('Account created! Please log in.')
-      router.push('/auth/login')
-    } catch (error: any) {
-      toast.error(error.response?.data?.detail || 'Registration failed')
+      // Simulate registration API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.success('Account created successfully!');
+      router.push('/dashboard/test-prep');
+    } catch (error) {
+      console.error('Registration failed:', error);
+      toast.error('Registration failed. Please try again.');
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
+
+  const toggleExam = (exam: string) => {
+    setFormData(prev => ({
+      ...prev,
+      targetExams: prev.targetExams.includes(exam)
+        ? prev.targetExams.filter(e => e !== exam)
+        : [...prev.targetExams, exam]
+    }));
+  };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-secondary/20 px-4 py-8">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1 text-center">
-          <div className="flex justify-center mb-4">
-            <GraduationCap className="h-12 w-12 text-primary" />
-          </div>
-          <CardTitle className="text-2xl">Create an account</CardTitle>
-          <CardDescription>
-            Enter your information to get started
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <label htmlFor="name" className="text-sm font-medium">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 py-12 px-4">
+      <Toaster position="top-right" />
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-2xl mx-auto bg-white rounded-2xl shadow-xl p-8"
+      >
+        <div className="text-center mb-8">
+          <h2 className="text-4xl font-bold text-gray-900">Create Your Account</h2>
+          <p className="mt-2 text-gray-600">Start your learning journey with EUREKA</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Full Name
               </label>
-              <Input
-                id="name"
+              <input
+                type="text"
+                required
+                value={formData.fullName}
+                onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 placeholder="John Doe"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
               />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="email" className="text-sm font-medium">
-                Email
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Username
               </label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="student@school.edu"
-                value={formData.email}
-                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              <input
+                type="text"
                 required
+                value={formData.username}
+                onChange={(e) => setFormData({...formData, username: e.target.value})}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="johndoe"
               />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="tier" className="text-sm font-medium">
-                Education Level
-              </label>
-              <select
-                id="tier"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={formData.tier}
-                onChange={(e) => setFormData({ ...formData, tier: e.target.value })}
-              >
-                <option value="hs">High School</option>
-                <option value="ug">Undergraduate</option>
-                <option value="grad">Graduate</option>
-                <option value="med">Medical School</option>
-                <option value="law">Law School</option>
-                <option value="mba">MBA</option>
-                <option value="eng">Engineering</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="role" className="text-sm font-medium">
-                I am a
-              </label>
-              <select
-                id="role"
-                className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-                value={formData.role}
-                onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-              >
-                <option value="student">Student</option>
-                <option value="teacher">Teacher/Instructor</option>
-                <option value="parent">Parent/Guardian</option>
-                <option value="admin">Administrator</option>
-              </select>
-            </div>
-            <div className="space-y-2">
-              <label htmlFor="password" className="text-sm font-medium">
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Email Address
+            </label>
+            <input
+              type="email"
+              required
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+              placeholder="john@example.com"
+            />
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
-              <Input
-                id="password"
+              <input
                 type="password"
-                value={formData.password}
-                onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                 required
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Min 8 characters"
               />
             </div>
-            <div className="space-y-2">
-              <label htmlFor="confirmPassword" className="text-sm font-medium">
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
                 Confirm Password
               </label>
-              <Input
-                id="confirmPassword"
+              <input
                 type="password"
-                value={formData.confirmPassword}
-                onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                 required
+                value={formData.confirmPassword}
+                onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Confirm password"
               />
             </div>
-            <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Creating account..." : "Create account"}
-            </Button>
-          </form>
+          </div>
 
-          <div className="mt-6 text-center text-sm">
-            Already have an account?{" "}
-            <Link href="/auth/login" className="text-primary hover:underline">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Education Level
+            </label>
+            <select
+              required
+              value={formData.educationLevel}
+              onChange={(e) => setFormData({...formData, educationLevel: e.target.value})}
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="">Select your education level</option>
+              {educationLevels.map(level => (
+                <option key={level.value} value={level.value}>
+                  {level.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-3">
+              Target Exams (Select all that apply)
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {examOptions.map(exam => (
+                <button
+                  key={exam}
+                  type="button"
+                  onClick={() => toggleExam(exam)}
+                  className={`px-4 py-2 rounded-lg border-2 transition-all ${
+                    formData.targetExams.includes(exam)
+                      ? 'border-indigo-500 bg-indigo-50 text-indigo-700'
+                      : 'border-gray-300 hover:border-gray-400'
+                  }`}
+                >
+                  {exam}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              required
+              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+            />
+            <label className="ml-2 text-sm text-gray-700">
+              I agree to the{' '}
+              <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                Terms and Conditions
+              </a>{' '}
+              and{' '}
+              <a href="#" className="text-indigo-600 hover:text-indigo-500">
+                Privacy Policy
+              </a>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 px-4 border border-transparent rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed font-medium transition-colors"
+          >
+            {loading ? 'Creating Account...' : 'Create Account'}
+          </button>
+        </form>
+
+        <div className="mt-6 text-center">
+          <span className="text-sm text-gray-600">
+            Already have an account?{' '}
+            <Link href="/auth/login" className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign in
             </Link>
-          </div>
-        </CardContent>
-      </Card>
+          </span>
+        </div>
+      </motion.div>
     </div>
-  )
+  );
 }

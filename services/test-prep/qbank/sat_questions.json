@@ -1,0 +1,92 @@
+[
+  {
+    "id": "sat-001",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": ["Algebra", "Linear Equations"],
+    "stem": "If 3x - 2 = 16, what is x?",
+    "choices": ["4", "5", "6", "7"],
+    "correct_index": 2,
+    "explanation": "Starting with 3x - 2 = 16, add 2 to both sides: 3x = 18. Then divide by 3: x = 6. The correct answer is 6.",
+    "difficulty_label": "easy",
+    "irt": { "a": 0.9, "b": -1.2, "c": 0.2 },
+    "time_sec_suggested": 60,
+    "tags": ["solve-for-x", "linear-equations"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "sat-002",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": ["Functions", "Quadratics"],
+    "stem": "The function f(x)=x^2-4x+3 has zeros at:",
+    "choices": ["x=1 only", "x=3 only", "x=1 and x=3", "No real zeros"],
+    "correct_index": 2,
+    "explanation": "Factor: x^2-4x+3=(x-1)(x-3). Setting equal to zero gives zeros at x=1 and x=3.",
+    "difficulty_label": "easy",
+    "irt": { "a": 1.1, "b": -1.0, "c": 0.2 },
+    "time_sec_suggested": 75,
+    "tags": ["factoring", "quadratics", "zeros"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "sat-003",
+    "exam": "SAT",
+    "section": "Reading",
+    "topic_path": ["Evidence", "Inference"],
+    "stem": "A passage states a scientist 'tentatively supports' a hypothesis. Which inference is most justified?",
+    "choices": [
+      "The scientist rejects the hypothesis",
+      "The scientist believes the hypothesis is proven",
+      "The scientist supports it with reservations",
+      "The scientist is unaware of the hypothesis"
+    ],
+    "correct_index": 2,
+    "explanation": "'Tentatively supports' means provisional support with reservations, not full acceptance or rejection.",
+    "difficulty_label": "medium",
+    "irt": { "a": 0.9, "b": 0.0, "c": 0.25 },
+    "time_sec_suggested": 75,
+    "tags": ["word-in-context", "inference"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "sat-004",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": ["Data", "Linear Models"],
+    "stem": "A best-fit line has slope 2.1 and intercept −5. What does the intercept represent?",
+    "choices": [
+      "The predicted y when x=0",
+      "The change in x when y increases by 1",
+      "The average of x values",
+      "The correlation coefficient"
+    ],
+    "correct_index": 0,
+    "explanation": "The y-intercept is the predicted y-value when x=0 in the equation y=mx+b.",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.0, "b": -0.2, "c": 0.2 },
+    "time_sec_suggested": 75,
+    "tags": ["interpretation", "linear-models"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "sat-005",
+    "exam": "SAT",
+    "section": "Math",
+    "topic_path": ["Geometry", "Angles"],
+    "stem": "In a triangle, two angles measure 35° and 65°. What is the third angle?",
+    "choices": ["70°", "80°", "85°", "95°"],
+    "correct_index": 1,
+    "explanation": "Triangle angles sum to 180°. So 180°−(35°+65°)=80°.",
+    "difficulty_label": "easy",
+    "irt": { "a": 0.8, "b": -1.5, "c": 0.2 },
+    "time_sec_suggested": 45,
+    "tags": ["triangle-sum", "angles"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  }
+]

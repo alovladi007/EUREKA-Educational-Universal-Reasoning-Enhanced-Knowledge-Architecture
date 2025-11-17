@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/api-client';
@@ -14,9 +16,15 @@ import {
   Award,
   Clock,
   CheckCircle,
+  Bot,
+  MessageCircle,
+  Brain,
+  FileText,
+  PenTool,
 } from 'lucide-react';
 
 export default function MedicalEducationPage() {
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [usmleQuestions, setUsmleQuestions] = useState<any[]>([]);
   const [clinicalCases, setClinicalCases] = useState<any[]>([]);
@@ -123,6 +131,90 @@ export default function MedicalEducationPage() {
             </Card>
           </div>
 
+          {/* Content Studio Section */}
+          <div className="space-y-4">
+            <Card className="p-8 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-full bg-purple-500/10">
+                    <PenTool className="w-8 h-8 text-purple-600" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
+                      Content Studio
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl">
+                      Create and manage educational content with rich formatting, citations, and version control.
+                      Author modules, lessons, and learning objectives with a professional editor.
+                    </p>
+                    <div className="flex gap-3 mt-4">
+                      <div className="flex items-center gap-2 text-sm">
+                        <FileText className="w-4 h-4 text-purple-600" />
+                        <span>Rich Text Editor</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <BookOpen className="w-4 h-4 text-purple-600" />
+                        <span>Citations & Media</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <TrendingUp className="w-4 h-4 text-purple-600" />
+                        <span>Version Control</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link href="/dashboard/medical/content-studio">
+                  <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
+                    <PenTool className="w-4 h-4 mr-2" />
+                    Create Content
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          </div>
+
+          {/* AI Tutor Section */}
+          <div className="space-y-4">
+            <Card className="p-8 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-full bg-primary/10">
+                    <Bot className="w-8 h-8 text-primary" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
+                      AI Medical Tutor
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl">
+                      Get personalized help with medical concepts, clinical reasoning, and exam preparation.
+                      Ask questions, receive evidence-based explanations, and learn with the Socratic method.
+                    </p>
+                    <div className="flex gap-3 mt-4">
+                      <div className="flex items-center gap-2 text-sm">
+                        <MessageCircle className="w-4 h-4 text-primary" />
+                        <span>Interactive Chat</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Stethoscope className="w-4 h-4 text-primary" />
+                        <span>Clinical Focus</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <TrendingUp className="w-4 h-4 text-primary" />
+                        <span>Adaptive Learning</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link href="/dashboard/medical/ai-tutor">
+                  <Button size="lg">
+                    <MessageCircle className="w-4 h-4 mr-2" />
+                    Start Conversation
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          </div>
+
           {/* USMLE Questions Section */}
           <div className="space-y-4">
             <div className="flex justify-between items-center">
@@ -130,7 +222,7 @@ export default function MedicalEducationPage() {
                 <BookOpen className="w-6 h-6" />
                 USMLE Question Bank
               </h2>
-              <Button>
+              <Button onClick={() => router.push('/dashboard/medical/qbank')}>
                 <BookOpen className="w-4 h-4 mr-2" />
                 Start Practice Session
               </Button>
@@ -186,10 +278,12 @@ export default function MedicalEducationPage() {
                 <Stethoscope className="w-6 h-6" />
                 Clinical Case Studies
               </h2>
-              <Button>
-                <Stethoscope className="w-4 h-4 mr-2" />
-                Start New Case
-              </Button>
+              <Link href="/dashboard/medical/cases">
+                <Button>
+                  <Stethoscope className="w-4 h-4 mr-2" />
+                  Browse All Cases
+                </Button>
+              </Link>
             </div>
 
             {loading ? (
@@ -203,7 +297,9 @@ export default function MedicalEducationPage() {
                 <p className="text-muted-foreground mb-4">
                   Clinical cases help you practice diagnostic reasoning
                 </p>
-                <Button>Browse Cases</Button>
+                <Link href="/dashboard/medical/cases">
+                  <Button>Browse Cases</Button>
+                </Link>
               </Card>
             ) : (
               <div className="grid gap-4">
@@ -212,7 +308,9 @@ export default function MedicalEducationPage() {
                     <div className="space-y-3">
                       <div className="flex justify-between items-start">
                         <h3 className="text-lg font-semibold">{clinicalCase.title}</h3>
-                        <Button variant="outline" size="sm">Start Case</Button>
+                        <Link href={`/dashboard/medical/cases/${clinicalCase.id}`}>
+                          <Button variant="outline" size="sm">Start Case</Button>
+                        </Link>
                       </div>
                       <p className="text-muted-foreground">{clinicalCase.description}</p>
                       <div className="flex gap-4 text-sm">
@@ -235,33 +333,127 @@ export default function MedicalEducationPage() {
 
           {/* OSCE Section */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold flex items-center gap-2">
-              <ClipboardList className="w-6 h-6" />
-              OSCE Simulation
-            </h2>
-            <Card className="p-12 text-center">
-              <ClipboardList className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">OSCE Practice Stations</h3>
-              <p className="text-muted-foreground mb-4">
-                Objective Structured Clinical Examination practice stations
-              </p>
-              <Button>Browse OSCE Stations</Button>
+            <Card className="p-8 bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-full bg-blue-500/10">
+                    <ClipboardList className="w-8 h-8 text-blue-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
+                      OSCE Practice Stations
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl">
+                      Practice clinical skills with standardized OSCE scenarios. Comprehensive checklists,
+                      timed examinations, and detailed feedback on history taking, physical exam, and communication skills.
+                    </p>
+                    <div className="flex gap-3 mt-4">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Stethoscope className="w-4 h-4 text-blue-500" />
+                        <span>Multiple Domains</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Clock className="w-4 h-4 text-blue-500" />
+                        <span>Timed Exams</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Award className="w-4 h-4 text-blue-500" />
+                        <span>Performance Tracking</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link href="/dashboard/medical/osce">
+                  <Button size="lg" className="bg-blue-500 hover:bg-blue-600">
+                    <ClipboardList className="w-4 h-4 mr-2" />
+                    Browse Stations
+                  </Button>
+                </Link>
+              </div>
             </Card>
           </div>
 
-          {/* Diagnostic Reasoning Section */}
+          {/* 3D Anatomy Section */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold flex items-center gap-2">
-              <Activity className="w-6 h-6" />
-              Diagnostic Reasoning
-            </h2>
-            <Card className="p-12 text-center">
-              <Activity className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">Clinical Decision Making</h3>
-              <p className="text-muted-foreground mb-4">
-                Practice clinical decision making and differential diagnosis
-              </p>
-              <Button>Start Diagnostic Session</Button>
+            <Card className="p-8 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-full bg-purple-500/10">
+                    <Activity className="w-8 h-8 text-purple-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
+                      3D Anatomy Viewer
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl">
+                      Interactive 3D visualization of human anatomy. Explore skeletal, cardiovascular, nervous, and organ systems
+                      with real-time layer controls and multiple viewing angles.
+                    </p>
+                    <div className="flex gap-3 mt-4">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Activity className="w-4 h-4 text-purple-500" />
+                        <span>Interactive 3D</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <BookOpen className="w-4 h-4 text-purple-500" />
+                        <span>Multiple Systems</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Award className="w-4 h-4 text-purple-500" />
+                        <span>Layer Controls</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link href="/dashboard/medical/anatomy">
+                  <Button size="lg" className="bg-purple-500 hover:bg-purple-600">
+                    <Activity className="w-4 h-4 mr-2" />
+                    Open Viewer
+                  </Button>
+                </Link>
+              </div>
+            </Card>
+          </div>
+
+          {/* ML Demos Section */}
+          <div className="space-y-4">
+            <Card className="p-8 bg-gradient-to-br from-green-500/10 via-green-500/5 to-transparent border-green-500/20">
+              <div className="flex items-center justify-between">
+                <div className="flex items-start gap-4">
+                  <div className="p-3 rounded-full bg-green-500/10">
+                    <Brain className="w-8 h-8 text-green-500" />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
+                      AI/ML Model Demos
+                    </h2>
+                    <p className="text-muted-foreground max-w-2xl">
+                      Explore state-of-the-art machine learning models for medical image analysis. Try ECG interpretation,
+                      chest X-ray classification, and dermatology lesion detection with real-time predictions.
+                    </p>
+                    <div className="flex gap-3 mt-4">
+                      <div className="flex items-center gap-2 text-sm">
+                        <Brain className="w-4 h-4 text-green-500" />
+                        <span>Deep Learning</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Activity className="w-4 h-4 text-green-500" />
+                        <span>Real-time Analysis</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <TrendingUp className="w-4 h-4 text-green-500" />
+                        <span>3 Specialties</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <Link href="/dashboard/medical/ml-demos">
+                  <Button size="lg" className="bg-green-500 hover:bg-green-600">
+                    <Brain className="w-4 h-4 mr-2" />
+                    Try Demos
+                  </Button>
+                </Link>
+              </div>
             </Card>
           </div>
     </div>

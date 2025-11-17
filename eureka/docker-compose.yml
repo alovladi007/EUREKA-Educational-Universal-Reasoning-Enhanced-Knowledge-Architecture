@@ -398,31 +398,31 @@ services:
   medical-school:
     build:
       context: ./services/medical-school
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.nestjs
     container_name: eureka-medical-school
     environment:
-      DATABASE_URL: postgresql+asyncpg://eureka:eureka_dev_password@db:5432/eureka
+      NODE_ENV: development
+      PORT: 8100
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
       REDIS_URL: redis://redis:6379/15
-      API_CORE_URL: http://api-core:8000
-      TUTOR_LLM_URL: http://tutor-llm:8000
-      ASSESSMENT_ENGINE_URL: http://assess:8000
+      JWT_SECRET: dev_jwt_secret_change_in_production
+      JWT_EXPIRES_IN: 15m
+      REFRESH_TOKEN_EXPIRES_IN: 7d
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
-      ENVIRONMENT: development
-      PORT: 8000
-      HIPAA_MODE: true
+      ANTHROPIC_MODEL: claude-sonnet-4-20250514
+      ANTHROPIC_MAX_TOKENS: 4096
+      CORS_ORIGIN: http://localhost:3000,http://localhost:4500
     ports:
-      - "8030:8000"
+      - "8030:8100"
     depends_on:
       db:
         condition: service_healthy
       redis:
         condition: service_healthy
-      api-core:
-        condition: service_started
     volumes:
       - ./services/medical-school:/app
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - /app/node_modules
+    command: npm run start:dev
 
   # ==========================================
   # Phase-2 Advanced Services
@@ -655,6 +655,36 @@ services:
       - ../services/notebook:/app
       - notebook_uploads:/app/uploads
     command: sh -c "npm install && node server.js"
+
+  # ==========================================
+  # Test Prep Service (Adaptive Learning Platform)
+  # ==========================================
+
+  test-prep:
+    build:
+      context: ../services/test-prep
+      dockerfile: Dockerfile
+    container_name: eureka-test-prep
+    environment:
+      SECRET_KEY: eureka_test_prep_secret_key_change_in_production
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/23
+      CELERY_BROKER_URL: redis://redis:6379/24
+      CELERY_RESULT_BACKEND: redis://redis:6379/25
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000
+      ENVIRONMENT: development
+    ports:
+      - "8200:8200"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../services/test-prep:/app
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8200 --reload
 
   # Supporting infrastructure for Phase-2
   neo4j:

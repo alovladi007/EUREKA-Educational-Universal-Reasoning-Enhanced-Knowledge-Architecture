@@ -1,0 +1,92 @@
+[
+  {
+    "id": "mcat-001",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": ["Kinematics", "Acceleration"],
+    "stem": "A car accelerates uniformly from rest to 20 m/s in 5 s. What is the average acceleration?",
+    "choices": ["2 m/s²", "4 m/s²", "5 m/s²", "10 m/s²"],
+    "correct_index": 1,
+    "explanation": "Using a = Δv/Δt = (20 - 0)/5 = 20/5 = 4 m/s². Uniform acceleration from rest means constant acceleration throughout.",
+    "difficulty_label": "easy",
+    "irt": { "a": 0.9, "b": -0.7, "c": 0.25 },
+    "time_sec_suggested": 75,
+    "tags": ["units", "motion", "kinematics", "acceleration"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-002",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": ["Enzymes", "Kinetics"],
+    "stem": "Competitive inhibition primarily affects which kinetic parameter?",
+    "choices": ["Vmax decreases", "Km increases", "Km decreases", "Vmax increases"],
+    "correct_index": 1,
+    "explanation": "Competitive inhibitors increase apparent Km (reducing affinity); Vmax remains unchanged because high substrate concentrations can overcome the inhibition.",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.1, "b": 0.2, "c": 0.25 },
+    "time_sec_suggested": 80,
+    "tags": ["michaelis-menten", "enzyme-kinetics", "inhibition"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-003",
+    "exam": "MCAT",
+    "section": "CARS",
+    "topic_path": ["Reasoning", "Tone/Purpose"],
+    "stem": "A passage adopts a skeptical tone toward technological solutionism. The author most likely:",
+    "choices": [
+      "Accepts all proposed innovations",
+      "Questions whether problems are properly understood before proposing tech solutions",
+      "Argues for complete deregulation of technology",
+      "Focuses only on technical specifications"
+    ],
+    "correct_index": 1,
+    "explanation": "A skeptical tone toward technological solutionism implies questioning the framing and assumptions about problems and whether technology is always the answer.",
+    "difficulty_label": "medium",
+    "irt": { "a": 0.9, "b": 0.1, "c": 0.25 },
+    "time_sec_suggested": 90,
+    "tags": ["passage-analysis", "tone", "author-perspective"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-004",
+    "exam": "MCAT",
+    "section": "Chem/Phys",
+    "topic_path": ["Electrochemistry", "Galvanic Cells"],
+    "stem": "For a galvanic cell, which statement is true?",
+    "choices": [
+      "Anode is positive; reduction occurs at anode",
+      "Cathode is negative; oxidation occurs at cathode",
+      "Anode is negative; oxidation occurs at anode",
+      "Cathode is positive; oxidation occurs at cathode"
+    ],
+    "correct_index": 2,
+    "explanation": "In a galvanic cell: Anode (negative electrode, oxidation occurs), Cathode (positive electrode, reduction occurs). Remember: 'An Ox, Red Cat' - Anode Oxidation, Reduction Cathode.",
+    "difficulty_label": "medium",
+    "irt": { "a": 1.0, "b": 0.0, "c": 0.25 },
+    "time_sec_suggested": 80,
+    "tags": ["mnemonics", "redox", "electrochemistry", "galvanic-cell"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  },
+  {
+    "id": "mcat-005",
+    "exam": "MCAT",
+    "section": "Bio/Biochem",
+    "topic_path": ["Genetics", "Central Dogma"],
+    "stem": "Which process directly results in the synthesis of polypeptides?",
+    "choices": ["Replication", "Transcription", "Translation", "Reverse transcription"],
+    "correct_index": 2,
+    "explanation": "Translation is the process that produces polypeptides (proteins) on ribosomes using mRNA as a template. Replication copies DNA, transcription makes RNA from DNA, and reverse transcription makes DNA from RNA.",
+    "difficulty_label": "easy",
+    "irt": { "a": 0.8, "b": -1.0, "c": 0.25 },
+    "time_sec_suggested": 60,
+    "tags": ["central-dogma", "protein-synthesis", "molecular-biology"],
+    "source_note": "seed-v1",
+    "needs_review": false
+  }
+]

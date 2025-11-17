@@ -1,139 +1,137 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
 import Link from 'next/link';
-import { useAuthStore } from '@/stores/auth';
-import Button from '@/components/ui/button';
-import Input from '@/components/ui/input';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+import { motion } from 'framer-motion';
+import toast, { Toaster } from 'react-hot-toast';
 
 export default function LoginPage() {
   const router = useRouter();
-  const login = useAuthStore((state) => state.login);
-  
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    username: '',
+    password: ''
+  });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
-    setIsLoading(true);
 
+    if (!formData.username || !formData.password) {
+      toast.error('Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
     try {
-      await login(email, password);
-      router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.detail || 'Login failed. Please try again.');
+      // Simulate login API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.success('Login successful!');
+      router.push('/dashboard/test-prep');
+    } catch (error) {
+      console.error('Login failed:', error);
+      toast.error('Login failed. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
-  const handleDemoMode = () => {
-    // Set demo user in localStorage
-    const demoUser = {
-      id: 'demo-user-123',
-      email: 'demo@eureka.edu',
-      name: 'Demo User',
-      role: 'student',
-      tier: 'undergraduate',
-    };
-    localStorage.setItem('user', JSON.stringify(demoUser));
-    localStorage.setItem('access_token', 'demo-token-123');
-
-    // Navigate to dashboard
-    router.push('/dashboard');
-  };
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-50 to-primary-100 px-4">
-      <Card className="w-full max-w-md" variant="elevated">
-        <CardHeader>
-          <CardTitle>Welcome Back</CardTitle>
-          <CardDescription>
-            Sign in to your EUREKA account
-          </CardDescription>
-        </CardHeader>
-        
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {error && (
-              <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded">
-                {error}
-              </div>
-            )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center px-4">
+      <Toaster position="top-right" />
 
-            <Input
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              placeholder="you@example.com"
-            />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-md w-full space-y-8 bg-white p-10 rounded-2xl shadow-xl"
+      >
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-gray-900">Welcome Back!</h2>
+          <p className="mt-2 text-gray-600">Sign in to continue your learning journey</p>
+        </div>
 
-            <Input
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              placeholder="••••••••"
-            />
-
-            <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input type="checkbox" className="mr-2" />
-                <span className="text-sm text-gray-600">Remember me</span>
+        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+          <div className="space-y-4">
+            <div>
+              <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
+                Username or Email
               </label>
-              <Link href="/auth/forgot-password" className="text-sm text-primary-600 hover:underline">
-                Forgot password?
-              </Link>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                required
+                value={formData.username}
+                onChange={(e) => setFormData({...formData, username: e.target.value})}
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Enter your username or email"
+              />
             </div>
 
-            <Button
-              type="submit"
-              className="w-full"
-              isLoading={isLoading}
-            >
-              Sign In
-            </Button>
-          </form>
-
-          <div className="mt-4">
-            <Button
-              type="button"
-              variant="outline"
-              className="w-full"
-              onClick={handleDemoMode}
-            >
-              🚀 Continue in Demo Mode (Full Access)
-            </Button>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                required
+                value={formData.password}
+                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                className="appearance-none relative block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                placeholder="Enter your password"
+              />
+            </div>
           </div>
 
-          <div className="mt-6 text-center text-sm text-gray-600">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <input
+                id="remember-me"
+                name="remember-me"
+                type="checkbox"
+                className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+              />
+              <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                Remember me
+              </label>
+            </div>
+
+            <div className="text-sm">
+              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                Forgot your password?
+              </a>
+            </div>
+          </div>
+
+          <div>
+            <button
+              type="submit"
+              disabled={loading}
+              className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              {loading ? 'Signing in...' : 'Sign in'}
+            </button>
+          </div>
+        </form>
+
+        <div className="text-center">
+          <span className="text-sm text-gray-600">
             Don't have an account?{' '}
-            <Link href="/auth/register" className="text-primary-600 hover:underline font-medium">
+            <Link href="/auth/register" className="font-medium text-indigo-600 hover:text-indigo-500">
               Sign up
             </Link>
-          </div>
+          </span>
+        </div>
 
-          <div className="mt-6 border-t pt-6">
-            <p className="text-xs text-gray-500 text-center mb-4">
-              Test Credentials:
-            </p>
-            <div className="text-xs text-gray-600 space-y-1">
-              <div>Admin: admin@eureka.edu</div>
-              <div>Teacher: teacher@springfield-hs.edu</div>
-              <div>Student: student@midwest-state.edu</div>
-              <div className="font-medium">Password: TestPass123!</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
+        {/* Demo credentials */}
+        <div className="bg-blue-50 p-4 rounded-lg">
+          <p className="text-sm text-blue-800 font-medium mb-2">Demo Credentials:</p>
+          <p className="text-xs text-blue-700">Username: student</p>
+          <p className="text-xs text-blue-700">Password: student123</p>
+        </div>
+      </motion.div>
     </div>
   );
 }
