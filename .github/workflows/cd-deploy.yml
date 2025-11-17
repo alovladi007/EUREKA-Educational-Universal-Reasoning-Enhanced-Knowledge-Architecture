@@ -1,0 +1,236 @@
+name: CD - Deploy to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Environment to deploy to'
+        required: true
+        type: choice
+        options:
+          - development
+          - staging
+          - production
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_PREFIX: ghcr.io/${{ github.repository_owner }}
+
+jobs:
+  # Build and Push Docker Images
+  build-and-push:
+    name: Build and Push Images
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    strategy:
+      matrix:
+        service:
+          - api-core
+          - tutor-llm
+          - assess
+          - web
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE_PREFIX }}/eureka-${{ matrix.service }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest,enable={{is_default_branch}}
+
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./eureka/services/${{ matrix.service }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64,linux/arm64
+
+  # Deploy to Development
+  deploy-development:
+    name: Deploy to Development
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/develop' || github.event.inputs.environment == 'development'
+    environment:
+      name: development
+      url: https://dev.eureka.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_DEV }}" | base64 -d > ~/.kube/config
+          kubectl config use-context development
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install eureka-dev ./eureka/helm/eureka-platform \
+            --namespace eureka-dev \
+            --create-namespace \
+            --values ./eureka/helm/eureka-platform/values-development.yaml \
+            --set apiCore.image.tag=${{ github.sha }} \
+            --set tutorLLM.image.tag=${{ github.sha }} \
+            --set assessmentEngine.image.tag=${{ github.sha }} \
+            --set webApp.image.tag=${{ github.sha }} \
+            --wait \
+            --timeout 10m
+
+      - name: Verify deployment
+        run: |
+          kubectl rollout status deployment/api-core -n eureka-dev
+          kubectl rollout status deployment/tutor-llm -n eureka-dev
+
+  # Deploy to Staging
+  deploy-staging:
+    name: Deploy to Staging
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    if: github.ref == 'refs/heads/main' || github.event.inputs.environment == 'staging'
+    environment:
+      name: staging
+      url: https://staging.eureka.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_STAGING }}" | base64 -d > ~/.kube/config
+          kubectl config use-context staging
+
+      - name: Run database migrations
+        run: |
+          kubectl create job --from=cronjob/db-migrate db-migrate-${{ github.sha }} -n eureka-staging || true
+          kubectl wait --for=condition=complete --timeout=5m job/db-migrate-${{ github.sha }} -n eureka-staging
+
+      - name: Deploy with Helm
+        run: |
+          helm upgrade --install eureka-staging ./eureka/helm/eureka-platform \
+            --namespace eureka-staging \
+            --create-namespace \
+            --values ./eureka/helm/eureka-platform/values.yaml \
+            --set global.environment=staging \
+            --set apiCore.image.tag=${{ github.sha }} \
+            --set tutorLLM.image.tag=${{ github.sha }} \
+            --set assessmentEngine.image.tag=${{ github.sha }} \
+            --set webApp.image.tag=${{ github.sha }} \
+            --wait \
+            --timeout 15m
+
+      - name: Run smoke tests
+        run: |
+          kubectl run smoke-test --image=curlimages/curl:latest --rm -i --restart=Never \
+            -- curl -f http://api-core-service.eureka-staging.svc.cluster.local:8000/health
+
+  # Deploy to Production
+  deploy-production:
+    name: Deploy to Production
+    runs-on: ubuntu-latest
+    needs: [build-and-push, deploy-staging]
+    if: startsWith(github.ref, 'refs/tags/v') || github.event.inputs.environment == 'production'
+    environment:
+      name: production
+      url: https://eureka.example.com
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_PROD }}" | base64 -d > ~/.kube/config
+          kubectl config use-context production
+
+      - name: Create backup before deployment
+        run: |
+          kubectl create job --from=cronjob/db-backup db-backup-pre-deploy-${{ github.sha }} -n eureka || true
+
+      - name: Deploy with Helm (Blue-Green)
+        run: |
+          # Deploy to green environment
+          helm upgrade --install eureka ./eureka/helm/eureka-platform \
+            --namespace eureka \
+            --values ./eureka/helm/eureka-platform/values-production.yaml \
+            --set apiCore.image.tag=${{ github.sha }} \
+            --set tutorLLM.image.tag=${{ github.sha }} \
+            --set assessmentEngine.image.tag=${{ github.sha }} \
+            --set webApp.image.tag=${{ github.sha }} \
+            --wait \
+            --timeout 20m
+
+      - name: Run health checks
+        run: |
+          kubectl wait --for=condition=available --timeout=5m deployment/api-core -n eureka
+          kubectl run health-check --image=curlimages/curl:latest --rm -i --restart=Never \
+            -- curl -f http://api-core-service.eureka.svc.cluster.local:8000/health
+
+      - name: Notify deployment
+        uses: 8398a7/action-slack@v3
+        if: always()
+        with:
+          status: ${{ job.status }}
+          text: 'Production deployment completed'
+          webhook_url: ${{ secrets.SLACK_WEBHOOK }}
+
+  # Rollback job (manual trigger)
+  rollback:
+    name: Rollback Deployment
+    runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.environment != ''
+    environment:
+      name: ${{ github.event.inputs.environment }}
+
+    steps:
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+
+      - name: Configure kubectl
+        run: |
+          mkdir -p ~/.kube
+          echo "${{ secrets.KUBE_CONFIG_PROD }}" | base64 -d > ~/.kube/config
+
+      - name: Rollback with Helm
+        run: |
+          helm rollback eureka -n eureka

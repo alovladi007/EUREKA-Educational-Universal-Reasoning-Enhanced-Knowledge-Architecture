@@ -1,0 +1,272 @@
+# Default values for eureka-platform
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global configuration
+global:
+  environment: production
+  domain: eureka.example.com
+
+# API Core Service
+apiCore:
+  enabled: true
+  replicaCount: 3
+
+  image:
+    repository: eureka/api-core
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+    targetMemoryUtilizationPercentage: 80
+
+  health:
+    liveness:
+      path: /health
+      initialDelaySeconds: 30
+      periodSeconds: 10
+    readiness:
+      path: /health
+      initialDelaySeconds: 10
+      periodSeconds: 5
+
+  # Environment variables
+  env:
+    ENVIRONMENT: production
+    LOG_LEVEL: INFO
+    JWT_ALGORITHM: HS256
+    ACCESS_TOKEN_EXPIRE_MINUTES: "30"
+    REFRESH_TOKEN_EXPIRE_DAYS: "7"
+    ENABLE_RATE_LIMITING: "true"
+    ENABLE_AUDIT_LOGGING: "true"
+
+# AI Tutor Service
+tutorLLM:
+  enabled: true
+  replicaCount: 2
+
+  image:
+    repository: eureka/tutor-llm
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  resources:
+    requests:
+      memory: "1Gi"
+      cpu: "500m"
+    limits:
+      memory: "4Gi"
+      cpu: "2000m"
+
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilizationPercentage: 75
+
+# Assessment Engine Service
+assessmentEngine:
+  enabled: true
+  replicaCount: 2
+
+  image:
+    repository: eureka/assessment-engine
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  service:
+    type: ClusterIP
+    port: 8000
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+# Frontend Web Application
+webApp:
+  enabled: true
+  replicaCount: 2
+
+  image:
+    repository: eureka/web-app
+    pullPolicy: IfNotPresent
+    tag: "latest"
+
+  service:
+    type: ClusterIP
+    port: 3000
+
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "100m"
+    limits:
+      memory: "1Gi"
+      cpu: "500m"
+
+# PostgreSQL Database (Bitnami chart dependency)
+postgresql:
+  enabled: true
+  auth:
+    username: eureka
+    password: ""  # Set via secret
+    database: eureka
+  primary:
+    persistence:
+      enabled: true
+      size: 20Gi
+    resources:
+      requests:
+        memory: "512Mi"
+        cpu: "250m"
+      limits:
+        memory: "2Gi"
+        cpu: "1000m"
+  image:
+    repository: pgvector/pgvector
+    tag: pg16
+
+# Redis Cache (Bitnami chart dependency)
+redis:
+  enabled: true
+  auth:
+    enabled: true
+    password: ""  # Set via secret
+  master:
+    persistence:
+      enabled: true
+      size: 10Gi
+    resources:
+      requests:
+        memory: "256Mi"
+        cpu: "100m"
+      limits:
+        memory: "1Gi"
+        cpu: "500m"
+
+# MinIO (S3-compatible storage)
+minio:
+  enabled: true
+  replicas: 1
+
+  image:
+    repository: minio/minio
+    tag: latest
+
+  persistence:
+    enabled: true
+    size: 50Gi
+
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "2Gi"
+      cpu: "1000m"
+
+  service:
+    type: ClusterIP
+    port: 9000
+    consolePort: 9001
+
+# Ingress configuration
+ingress:
+  enabled: true
+  className: nginx
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/limit-rps: "100"
+    nginx.ingress.kubernetes.io/proxy-body-size: "50m"
+
+  hosts:
+    - host: api.eureka.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: api-core
+    - host: app.eureka.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+          service: web-app
+
+  tls:
+    - secretName: eureka-tls-cert
+      hosts:
+        - api.eureka.example.com
+        - app.eureka.example.com
+
+# Secrets management
+secrets:
+  # Use external secrets operator or sealed secrets in production
+  create: true
+  externalSecrets:
+    enabled: false
+
+# Monitoring and observability
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    serviceMonitor:
+      enabled: true
+  grafana:
+    enabled: true
+  loki:
+    enabled: false
+
+# Service Account
+serviceAccount:
+  create: true
+  annotations: {}
+  name: eureka-api
+
+# Pod Security Policy
+podSecurityPolicy:
+  enabled: true
+
+# Network Policy
+networkPolicy:
+  enabled: true
+  policyTypes:
+    - Ingress
+    - Egress
+
+# Priority Class for critical pods
+priorityClassName: ""
+
+# Node selector for pod placement
+nodeSelector: {}
+
+# Tolerations for pod scheduling
+tolerations: []
+
+# Affinity rules
+affinity: {}
