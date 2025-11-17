@@ -22,6 +22,8 @@ from app.schemas import (
     RecommendationCreate, RecommendationResponse,
     # Skill Gap
     SkillGapCreate, SkillGapUpdate, SkillGapResponse,
+    # Practice Session
+    PracticeSessionCreate, PracticeSessionResponse,
     # Special requests
     GeneratePathRequest, GetRecommendationsRequest, UpdateMasteryRequest,
     MasteryOverview, SkillGapReport
@@ -87,17 +89,36 @@ async def update_concept(
         select(Concept).where(Concept.id == concept_id)
     )
     concept = result.scalar_one_or_none()
-    
+
     if not concept:
         raise HTTPException(status_code=404, detail="Concept not found")
-    
+
     update_data = concept_update.dict(exclude_unset=True)
     for field, value in update_data.items():
         setattr(concept, field, value)
-    
+
     await db.commit()
     await db.refresh(concept)
     return concept
+
+
+@router.delete("/concepts/{concept_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_concept(
+    concept_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a concept (also deletes related mastery, recommendations, skill gaps)"""
+    result = await db.execute(
+        select(Concept).where(Concept.id == concept_id)
+    )
+    concept = result.scalar_one_or_none()
+
+    if not concept:
+        raise HTTPException(status_code=404, detail="Concept not found")
+
+    await db.delete(concept)
+    await db.commit()
+    return None
 
 
 # ============= Learning Paths =============
@@ -158,17 +179,36 @@ async def update_learning_path(
         select(LearningPath).where(LearningPath.id == path_id)
     )
     path = result.scalar_one_or_none()
-    
+
     if not path:
         raise HTTPException(status_code=404, detail="Learning path not found")
-    
+
     update_data = path_update.dict(exclude_unset=True)
     for field, value in update_data.items():
         setattr(path, field, value)
-    
+
     await db.commit()
     await db.refresh(path)
     return path
+
+
+@router.delete("/learning-paths/{path_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_learning_path(
+    path_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a learning path"""
+    result = await db.execute(
+        select(LearningPath).where(LearningPath.id == path_id)
+    )
+    path = result.scalar_one_or_none()
+
+    if not path:
+        raise HTTPException(status_code=404, detail="Learning path not found")
+
+    await db.delete(path)
+    await db.commit()
+    return None
 
 
 # ============= Mastery Tracking =============
@@ -387,22 +427,157 @@ async def update_skill_gap(
 ):
     """Update a skill gap (e.g., mark as addressed)"""
     from datetime import datetime
-    
+
     result = await db.execute(
         select(SkillGap).where(SkillGap.id == gap_id)
     )
     gap = result.scalar_one_or_none()
-    
+
     if not gap:
         raise HTTPException(status_code=404, detail="Skill gap not found")
-    
+
     update_data = gap_update.dict(exclude_unset=True)
     for field, value in update_data.items():
         setattr(gap, field, value)
-    
+
     if gap.is_addressed and not gap.addressed_at:
         gap.addressed_at = datetime.utcnow()
-    
+
     await db.commit()
     await db.refresh(gap)
     return gap
+
+
+@router.delete("/skill-gaps/{gap_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_skill_gap(
+    gap_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a skill gap record"""
+    result = await db.execute(
+        select(SkillGap).where(SkillGap.id == gap_id)
+    )
+    gap = result.scalar_one_or_none()
+
+    if not gap:
+        raise HTTPException(status_code=404, detail="Skill gap not found")
+
+    await db.delete(gap)
+    await db.commit()
+    return None
+
+
+# ============= Practice Sessions =============
+
+@router.post("/practice-sessions", response_model=PracticeSessionResponse, status_code=status.HTTP_201_CREATED)
+async def create_practice_session(
+    session: PracticeSessionCreate,
+    db: AsyncSession = Depends(get_db)
+):
+    """Create a new practice session"""
+    from app.core.models import PracticeSession
+    from app.schemas import PracticeSessionCreate
+
+    db_session = PracticeSession(**session.dict())
+    db.add(db_session)
+    await db.commit()
+    await db.refresh(db_session)
+    return db_session
+
+
+@router.get("/practice-sessions/{session_id}", response_model=PracticeSessionResponse)
+async def get_practice_session(
+    session_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Get a specific practice session"""
+    from app.core.models import PracticeSession
+
+    result = await db.execute(
+        select(PracticeSession).where(PracticeSession.id == session_id)
+    )
+    session = result.scalar_one_or_none()
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Practice session not found")
+
+    return session
+
+
+@router.get("/users/{user_id}/practice-sessions", response_model=List[PracticeSessionResponse])
+async def list_user_practice_sessions(
+    user_id: UUID,
+    concept_id: Optional[UUID] = None,
+    limit: int = 20,
+    offset: int = 0,
+    db: AsyncSession = Depends(get_db)
+):
+    """List practice sessions for a user with pagination"""
+    from app.core.models import PracticeSession
+
+    query = select(PracticeSession).where(PracticeSession.user_id == user_id)
+
+    if concept_id:
+        query = query.where(PracticeSession.concept_id == concept_id)
+
+    query = query.order_by(PracticeSession.started_at.desc()).offset(offset).limit(limit)
+
+    result = await db.execute(query)
+    return result.scalars().all()
+
+
+@router.patch("/practice-sessions/{session_id}/end", response_model=PracticeSessionResponse)
+async def end_practice_session(
+    session_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Mark a practice session as ended"""
+    from datetime import datetime
+    from app.core.models import PracticeSession
+
+    result = await db.execute(
+        select(PracticeSession).where(PracticeSession.id == session_id)
+    )
+    session = result.scalar_one_or_none()
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Practice session not found")
+
+    if session.ended_at:
+        raise HTTPException(status_code=400, detail="Practice session already ended")
+
+    session.ended_at = datetime.utcnow()
+
+    # Calculate accuracy
+    if session.questions_answered > 0:
+        session.accuracy = session.correct_answers / session.questions_answered
+
+    # Calculate duration
+    if session.started_at:
+        duration = (datetime.utcnow() - session.started_at).total_seconds() / 60
+        session.duration_minutes = int(duration)
+
+    await db.commit()
+    await db.refresh(session)
+    return session
+
+
+@router.delete("/practice-sessions/{session_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_practice_session(
+    session_id: UUID,
+    db: AsyncSession = Depends(get_db)
+):
+    """Delete a practice session"""
+    from app.core.models import PracticeSession
+
+    result = await db.execute(
+        select(PracticeSession).where(PracticeSession.id == session_id)
+    )
+    session = result.scalar_one_or_none()
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Practice session not found")
+
+    await db.delete(session)
+    await db.commit()
+    return None
