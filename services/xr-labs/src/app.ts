@@ -30,6 +30,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import winston from 'winston';
+import enhancedRoutes, { initializeEnhancedRoutes } from './routes/enhanced-api';
 
 dotenv.config();
 
@@ -1450,6 +1451,14 @@ function generateRoomCode(): string {
   }
   return code;
 }
+
+// =====================================================
+// ENHANCED API ROUTES
+// =====================================================
+
+// Mount enhanced routes (dashboard, ratings, scene builder, etc.)
+const enhancedApiRoutes = initializeEnhancedRoutes(pool, authenticateToken);
+app.use('/api/xr', enhancedApiRoutes);
 
 // =====================================================
 // HEALTH CHECK
