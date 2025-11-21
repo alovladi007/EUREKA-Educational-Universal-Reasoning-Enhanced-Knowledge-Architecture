@@ -17,7 +17,7 @@ const router = Router();
 
 // Assume these are passed in from main app.ts
 let pool: Pool;
-let authenticateToken: any;
+let authenticateToken: any = (req: Request, res: Response, next: any) => next(); // Dummy middleware initially
 
 export function initializeEnhancedRoutes(dbPool: Pool, authMiddleware: any) {
   pool = dbPool;
