@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 import {
   Glasses,
   Box,
@@ -16,7 +17,7 @@ import {
   Layers,
 } from 'lucide-react';
 
-const XR_LABS_API = process.env.NEXT_PUBLIC_XR_LABS_URL || 'http://localhost:8070';
+const XR_LABS_API = API_ENDPOINTS.XR_LABS;
 
 export default function XRLabsPage() {
   const [loading, setLoading] = useState(true);

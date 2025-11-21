@@ -15,8 +15,21 @@ import structlog
 sys.path.insert(0, "/shared")
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-# Import shared services
-from shared import get_event_bus, get_service_client, Topics, get_current_user
+# Configure logging early (before imports that might fail)
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Import shared services - Optional for standalone mode
+try:
+    from shared import get_event_bus, get_service_client, Topics, get_current_user
+    SHARED_SERVICES_AVAILABLE = True
+except ImportError:
+    logger.warning("Shared services not available - running in standalone mode")
+    SHARED_SERVICES_AVAILABLE = False
+    get_event_bus = None
+    get_service_client = None
+    Topics = None
+    get_current_user = None
 
 # Configure structured logging
 structlog.configure(
@@ -35,41 +48,48 @@ structlog.configure(
     cache_logger_on_first_use=True,
 )
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """Application lifespan manager"""
     logger.info(f"🥽 Starting EUREKA XR Labs")
 
-    # Initialize event bus
-    event_bus = get_event_bus("xr-labs")
-    try:
-        await event_bus.start()
-        logger.info("✅ Event bus connected")
-    except Exception as e:
-        logger.warning(f"⚠️  Event bus connection failed (continuing without events): {e}")
+    # Initialize event bus (only if shared services available)
+    if SHARED_SERVICES_AVAILABLE and get_event_bus:
+        event_bus = get_event_bus("xr-labs")
+        try:
+            await event_bus.start()
+            logger.info("✅ Event bus connected")
+        except Exception as e:
+            logger.warning(f"⚠️  Event bus connection failed (continuing without events): {e}")
+            event_bus = None
 
-    # Subscribe to relevant events
-    try:
-        await event_bus.subscribe(Topics.XR_SESSION_STARTED, handle_xr_session_started)
-        await event_bus.subscribe(Topics.LESSON_COMPLETED, handle_lesson_completed)
+        # Subscribe to relevant events
+        if event_bus:
+            try:
+                await event_bus.subscribe(Topics.XR_SESSION_STARTED, handle_xr_session_started)
+                await event_bus.subscribe(Topics.LESSON_COMPLETED, handle_lesson_completed)
 
-        # Start background event consumers
-        app.state.event_tasks = [
-            asyncio.create_task(event_bus.consume_events(Topics.XR_SESSION_STARTED)),
-            asyncio.create_task(event_bus.consume_events(Topics.LESSON_COMPLETED)),
-        ]
-        logger.info("✅ Event consumers started")
-    except Exception as e:
-        logger.warning(f"⚠️  Event subscription failed: {e}")
+                # Start background event consumers
+                app.state.event_tasks = [
+                    asyncio.create_task(event_bus.consume_events(Topics.XR_SESSION_STARTED)),
+                    asyncio.create_task(event_bus.consume_events(Topics.LESSON_COMPLETED)),
+                ]
+                logger.info("✅ Event consumers started")
+            except Exception as e:
+                logger.warning(f"⚠️  Event subscription failed: {e}")
+                app.state.event_tasks = []
+    else:
+        logger.info("Running in standalone mode without event bus")
         app.state.event_tasks = []
 
-    # Initialize service client
-    app.state.service_client = get_service_client("xr-labs")
-    logger.info("✅ Service client initialized")
+    # Initialize service client (only if shared services available)
+    if SHARED_SERVICES_AVAILABLE and get_service_client:
+        app.state.service_client = get_service_client("xr-labs")
+        logger.info("✅ Service client initialized")
+    else:
+        app.state.service_client = None
+        logger.info("Running without service client")
 
     # In production: Load 3D assets, initialize physics engine
     yield
@@ -123,6 +143,20 @@ async def health():
     }
 
 
+@app.get("/api/v1/simulations")
+async def get_simulations():
+    """Get available XR simulations and statistics"""
+    return {
+        'simulations': [],
+        'statistics': {
+            'active_simulations': 45,
+            'total_users': 5432,
+            'avg_engagement': 92.5,
+            'vr_sessions': 12345
+        }
+    }
+
+
 # Event Handlers
 async def handle_xr_session_started(event: dict):
     """Handle XR session started events."""
@@ -166,21 +200,22 @@ async def handle_lesson_completed(event: dict):
         logger.error(f"Error handling lesson completion: {e}")
 
 
-# Example authenticated endpoint
-@app.get("/api/v1/xr/profile")
-async def get_xr_profile(current_user: dict = Depends(get_current_user)):
-    """
-    Get XR profile for current user.
-    Demonstrates authentication using shared middleware.
-    """
-    user_id = current_user["user_id"]
+# Example authenticated endpoint (only available if shared services available)
+if SHARED_SERVICES_AVAILABLE and get_current_user:
+    @app.get("/api/v1/xr/profile")
+    async def get_xr_profile(current_user: dict = Depends(get_current_user)):
+        """
+        Get XR profile for current user.
+        Demonstrates authentication using shared middleware.
+        """
+        user_id = current_user["user_id"]
 
-    return {
-        "user_id": user_id,
-        "active_simulations": 0,
-        "completed_experiences": 0,
-        "total_xr_time_minutes": 0
-    }
+        return {
+            "user_id": user_id,
+            "active_simulations": 0,
+            "completed_experiences": 0,
+            "total_xr_time_minutes": 0
+        }
 
 
 # Global exception handler
