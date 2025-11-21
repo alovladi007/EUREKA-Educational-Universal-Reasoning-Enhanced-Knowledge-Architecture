@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Save, Eye, Send, FileText, BookOpen, Target, CheckCircle, FileDown } from 'lucide-react';
+import { MEDICAL_ENDPOINTS } from '@/lib/api-endpoints';
 
 export default function ContentStudioPage() {
   const [title, setTitle] = useState('');
@@ -87,7 +88,7 @@ export default function ContentStudioPage() {
         payload.assessable = assessable;
       }
 
-      const response = await fetch(`http://localhost:8030${endpoint}`, {
+      const response = await fetch(`${MEDICAL_ENDPOINTS.BASE}${endpoint}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -120,7 +121,7 @@ export default function ContentStudioPage() {
 
     setIsSaving(true);
     try {
-      const response = await fetch(`http://localhost:8030/content/${contentId}/workflow`, {
+      const response = await fetch(`${MEDICAL_ENDPOINTS.BASE}/content/${contentId}/workflow`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: WorkflowStatus.IN_REVIEW }),
@@ -153,7 +154,7 @@ export default function ContentStudioPage() {
     }
 
     try {
-      const response = await fetch(`http://localhost:8030/api/v1/content/export/pdf/${contentId}`);
+      const response = await fetch(`${MEDICAL_ENDPOINTS.BASE}/api/v1/content/export/pdf/${contentId}`);
 
       if (!response.ok) {
         throw new Error('Failed to export PDF');

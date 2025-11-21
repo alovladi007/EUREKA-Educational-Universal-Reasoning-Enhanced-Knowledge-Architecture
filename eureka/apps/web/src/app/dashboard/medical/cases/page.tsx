@@ -18,8 +18,9 @@ import {
   ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
+import { MEDICAL_ENDPOINTS } from '@/lib/api-endpoints';
 
-const API_BASE_URL = 'http://localhost:8030/api/v1';
+const API_BASE_URL = MEDICAL_ENDPOINTS.CASES;
 
 interface ClinicalCase {
   id: string;

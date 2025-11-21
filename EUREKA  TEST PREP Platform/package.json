@@ -1,8 +1,0 @@
-{
-  "name": "@eureka/testprep-monorepo",
-  "version": "1.0.0",
-  "workspaces": [
-    "packages/*",
-    "services/*"
-  ]
-}

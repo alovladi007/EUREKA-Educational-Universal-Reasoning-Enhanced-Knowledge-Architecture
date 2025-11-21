@@ -28,8 +28,9 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { MEDICAL_ENDPOINTS } from "@/lib/api-endpoints";
 
-const API_BASE_URL = "http://localhost:8030/api/v1/osce";
+const API_BASE_URL = MEDICAL_ENDPOINTS.OSCE;
 
 interface ChecklistItem {
   description: string;

@@ -109,7 +109,7 @@ services:
       JWT_SECRET: dev_jwt_secret_change_in_production
       ENVIRONMENT: development
     ports:
-      - "8009:8000"
+      - "8000:8000"
     depends_on:
       db:
         condition: service_healthy
@@ -402,7 +402,7 @@ services:
     container_name: eureka-medical-school
     environment:
       NODE_ENV: development
-      PORT: 8100
+      PORT: 8020
       DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
       REDIS_URL: redis://redis:6379/15
       JWT_SECRET: dev_jwt_secret_change_in_production
@@ -413,7 +413,7 @@ services:
       ANTHROPIC_MAX_TOKENS: 4096
       CORS_ORIGIN: http://localhost:3000,http://localhost:4500
     ports:
-      - "8030:8100"
+      - "8020:8020"
     depends_on:
       db:
         condition: service_healthy

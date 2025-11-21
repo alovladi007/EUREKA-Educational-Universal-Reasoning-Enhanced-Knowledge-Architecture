@@ -13,6 +13,7 @@ import {
   FileText,
   ArrowRight,
 } from 'lucide-react';
+import { NOTEBOOK_ENDPOINTS } from '@/lib/api-endpoints';
 
 interface SearchResults {
   projects: any[];
@@ -178,7 +179,7 @@ export default function SearchPage() {
                       <Button
                         size="sm"
                         variant="outline"
-                        onClick={() => window.open(`http://localhost:8120/api/files/${file.id}/download`)}
+                        onClick={() => window.open(NOTEBOOK_ENDPOINTS.DOWNLOAD(file.id))}
                       >
                         Download
                       </Button>

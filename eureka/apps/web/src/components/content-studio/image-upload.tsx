@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Upload, Image as ImageIcon, X } from 'lucide-react';
+import { MEDICAL_ENDPOINTS } from '@/lib/api-endpoints';
 
 interface ImageUploadProps {
   onUpload: (assetId: string, url: string) => void;
@@ -49,7 +50,7 @@ export function ImageUpload({
       formData.append('file', file);
       formData.append('alt', file.name);
 
-      const response = await fetch('http://localhost:8030/api/v1/assets/upload', {
+      const response = await fetch(MEDICAL_ENDPOINTS.ASSETS_UPLOAD, {
         method: 'POST',
         body: formData,
       });

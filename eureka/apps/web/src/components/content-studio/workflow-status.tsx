@@ -14,6 +14,7 @@ import {
   Clock,
   ChevronRight
 } from 'lucide-react';
+import { MEDICAL_ENDPOINTS } from '@/lib/api-endpoints';
 
 export enum WorkflowStatus {
   DRAFT = 'draft',
@@ -99,7 +100,7 @@ export function WorkflowStatusComponent({
 
     setIsTransitioning(true);
     try {
-      const response = await fetch(`http://localhost:8030/content/${contentId}/workflow`, {
+      const response = await fetch(`${MEDICAL_ENDPOINTS.BASE}/content/${contentId}/workflow`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),

@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { TEST_PREP_ENDPOINTS } from '@/lib/api-endpoints';
 
 interface Plan {
   id: string;
@@ -49,7 +50,7 @@ export default function TestPrepPricingPage() {
   const fetchPlans = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:3010/api/plans?exam_category=${selectedExam}`);
+      const response = await fetch(TEST_PREP_ENDPOINTS.PLANS + '?exam_category=' + selectedExam);
       const data = await response.json();
       setPlans(data.plans || []);
     } catch (error) {
@@ -65,7 +66,7 @@ export default function TestPrepPricingPage() {
 
       const token = localStorage.getItem('authToken'); // Get auth token
 
-      const response = await fetch('http://localhost:3010/api/subscribe', {
+      const response = await fetch(TEST_PREP_ENDPOINTS.SUBSCRIBE, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

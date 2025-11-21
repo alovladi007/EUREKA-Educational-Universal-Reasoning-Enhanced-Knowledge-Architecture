@@ -2,7 +2,7 @@
 Main API router aggregating all endpoints
 """
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content
+from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content, pricing
 
 api_router = APIRouter()
 
@@ -17,6 +17,7 @@ api_router.include_router(exams.router, prefix="/exams", tags=["exams"])
 api_router.include_router(analytics.router, prefix="/analytics", tags=["analytics"])
 api_router.include_router(study_planner.router, prefix="/study-planner", tags=["study-planning"])
 api_router.include_router(ai_content.router, prefix="/ai", tags=["ai-content"])
+api_router.include_router(pricing.router, prefix="/test-prep", tags=["pricing"])
 
 @api_router.get("/")
 async def api_root():
@@ -33,6 +34,7 @@ async def api_root():
             "exams": "/api/v1/exams",
             "analytics": "/api/v1/analytics",
             "study_planner": "/api/v1/study-planner",
-            "ai_content": "/api/v1/ai"
+            "ai_content": "/api/v1/ai",
+            "pricing": "/api/v1/test-prep"
         }
     }

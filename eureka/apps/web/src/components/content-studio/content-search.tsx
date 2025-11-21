@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Search, Filter, X, FileText, BookOpen, Target, Eye } from 'lucide-react';
+import { MEDICAL_ENDPOINTS } from '@/lib/api-endpoints';
 
 interface SearchFilters {
   type?: 'module' | 'lesson' | 'objective';
@@ -54,7 +55,7 @@ export function ContentSearch() {
         filters.tags.forEach(tag => params.append('tags', tag));
       }
 
-      const response = await fetch(`http://localhost:8030/api/v1/content/search?${params.toString()}`);
+      const response = await fetch(MEDICAL_ENDPOINTS.CONTENT_SEARCH + '?' + params.toString());
       if (response.ok) {
         const data = await response.json();
         setResults(data);

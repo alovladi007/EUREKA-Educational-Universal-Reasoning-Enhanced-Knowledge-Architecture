@@ -1,1 +1,0 @@
-export const theta = (r: any) => 0;

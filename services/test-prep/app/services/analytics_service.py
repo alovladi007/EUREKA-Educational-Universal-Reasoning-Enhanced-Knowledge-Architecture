@@ -15,8 +15,7 @@ from sqlalchemy import func
 import math
 
 from app.models.question import Question
-from app.models.question_attempt import QuestionAttempt
-from app.models.study_session import StudySession
+from app.models.question_attempt import QuestionAttempt, StudySession
 
 
 class InsightType(str, Enum):

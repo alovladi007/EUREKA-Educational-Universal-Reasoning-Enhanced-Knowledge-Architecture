@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { GitCompare, ArrowLeftRight, List, CheckCircle, XCircle, Edit } from 'lucide-react';
+import { MEDICAL_ENDPOINTS } from '@/lib/api-endpoints';
 
 interface DiffChange {
   added: boolean;
@@ -65,7 +66,7 @@ export function VersionDiffViewer({ contentId, version1, version2 }: VersionDiff
     setError(null);
     try {
       const response = await fetch(
-        `http://localhost:8030/api/v1/content/${contentId}/versions/compare?v1=${version1}&v2=${version2}`
+        `${MEDICAL_ENDPOINTS.BASE}/api/v1/content/${contentId}/versions/compare?v1=${version1}&v2=${version2}`
       );
 
       if (!response.ok) {

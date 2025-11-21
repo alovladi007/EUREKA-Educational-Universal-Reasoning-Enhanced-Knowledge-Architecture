@@ -243,6 +243,12 @@ export default function TestPrepDashboard() {
             <p className="text-indigo-100">
               You're on a {stats?.current_streak || 0} day streak! Keep up the great work!
             </p>
+            <Link
+              href="/test-prep/pricing"
+              className="inline-block mt-4 bg-white text-indigo-600 px-6 py-3 rounded-lg font-semibold hover:bg-indigo-50 transition-colors"
+            >
+              🎯 View Prep Plans: Videos+Notes | QBank | Complete Bundle
+            </Link>
           </div>
           <div className="text-right">
             <p className="text-sm text-indigo-100 mb-1">Current Level</p>
