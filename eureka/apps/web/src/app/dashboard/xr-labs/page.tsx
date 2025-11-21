@@ -102,7 +102,11 @@ export default function XRLabsPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Avg Engagement</p>
-              <p className="text-2xl font-bold">{statistics?.avg_engagement?.toFixed(1) || 0}%</p>
+              <p className="text-2xl font-bold">
+                {typeof statistics?.avg_engagement === 'number' && !isNaN(statistics.avg_engagement)
+                  ? statistics.avg_engagement.toFixed(1)
+                  : 0}%
+              </p>
             </div>
             <TrendingUp className="w-8 h-8 text-emerald-500" />
           </div>
