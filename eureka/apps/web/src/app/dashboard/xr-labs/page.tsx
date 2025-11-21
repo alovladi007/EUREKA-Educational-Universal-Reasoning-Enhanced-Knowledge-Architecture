@@ -15,6 +15,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { API_ENDPOINTS } from '@/lib/api-endpoints';
 
 // =====================================================
 // TYPES
@@ -59,7 +60,7 @@ interface Category {
 // CONSTANTS
 // =====================================================
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_XR_API_URL || 'http://localhost:3005/api/xr';
+const API_BASE_URL = `${API_ENDPOINTS.XR_LABS}/api/xr`;
 
 const TYPE_BADGES = {
   vr_lab: { label: 'VR', color: 'bg-purple-500' },
