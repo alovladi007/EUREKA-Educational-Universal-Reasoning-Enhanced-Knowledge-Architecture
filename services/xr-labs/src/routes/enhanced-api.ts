@@ -707,6 +707,7 @@ router.get('/asset-library/search', async (req: Request, res: Response) => {
   try {
     const {
       category,
+      subject,
       search,
       format,
       hasAnimations,
@@ -730,9 +731,15 @@ router.get('/asset-library/search', async (req: Request, res: Response) => {
       paramIndex++;
     }
 
+    if (subject) {
+      params.push(subject);
+      query += ` AND a.subject = $${paramIndex}`;
+      paramIndex++;
+    }
+
     if (search) {
       params.push(`%${search}%`);
-      query += ` AND (a.asset_name ILIKE $${paramIndex} OR a.description ILIKE $${paramIndex})`;
+      query += ` AND (a.name ILIKE $${paramIndex} OR a.description ILIKE $${paramIndex})`;
       paramIndex++;
     }
 
