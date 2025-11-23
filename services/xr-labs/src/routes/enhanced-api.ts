@@ -13,17 +13,8 @@
 import { Router, Request, Response } from 'express';
 import { Pool } from 'pg';
 
-const router = Router();
-
-// Assume these are passed in from main app.ts
-let pool: Pool;
-let authenticateToken: any;
-
-export function initializeEnhancedRoutes(dbPool: Pool, authMiddleware: any) {
-  pool = dbPool;
-  authenticateToken = authMiddleware;
-  return router;
-}
+export function initializeEnhancedRoutes(pool: Pool, authenticateToken: any) {
+  const router = Router();
 
 // =====================================================
 // DASHBOARD ANALYTICS
@@ -882,12 +873,13 @@ router.get('/monitoring/experience-center-stats', async (req: Request, res: Resp
 router.get('/compatibility/check', async (req: Request, res: Response) => {
   try {
     const { userAgent } = req.headers;
+    const ua = Array.isArray(userAgent) ? userAgent[0] : userAgent;
 
     // Simple device detection
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent || '');
-    const isIOS = /iPhone|iPad|iPod/i.test(userAgent || '');
-    const isAndroid = /Android/i.test(userAgent || '');
-    const isQuest = /Quest/i.test(userAgent || '');
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua || '');
+    const isIOS = /iPhone|iPad|iPod/i.test(ua || '');
+    const isAndroid = /Android/i.test(ua || '');
+    const isQuest = /Quest/i.test(ua || '');
 
     const compatibility = {
       device: {
@@ -1023,4 +1015,5 @@ router.post('/refresh-analytics', authenticateToken, async (req: Request, res: R
   }
 });
 
-export default router;
+  return router;
+}

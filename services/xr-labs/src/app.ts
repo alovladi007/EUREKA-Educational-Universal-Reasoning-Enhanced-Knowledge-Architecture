@@ -30,7 +30,7 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import winston from 'winston';
-import enhancedRoutes, { initializeEnhancedRoutes } from './routes/enhanced-api';
+import { initializeEnhancedRoutes } from './routes/enhanced-api';
 
 dotenv.config();
 
