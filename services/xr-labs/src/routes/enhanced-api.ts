@@ -158,7 +158,13 @@ router.get('/simulations', async (req: Request, res: Response) => {
     params.push(limitNum, offsetNum);
     query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
 
+    console.log('[DEBUG] Simulations query:', query);
+    console.log('[DEBUG] Simulations params:', params);
+
     const result = await pool.query(query, params);
+
+    console.log('[DEBUG] Query executed, rows returned:', result.rows.length);
+    console.log('[DEBUG] First row:', result.rows[0]);
 
     // Get total count
     let countQuery = 'SELECT COUNT(*) FROM v_simulation_cards WHERE 1=1';
@@ -180,6 +186,9 @@ router.get('/simulations', async (req: Request, res: Response) => {
     const countResult = await pool.query(countQuery, countParams);
     const totalCount = parseInt(countResult.rows[0].count);
 
+    console.log('[DEBUG] Total count:', totalCount);
+    console.log('[DEBUG] Returning simulations:', result.rows.length);
+
     res.json({
       simulations: result.rows,
       total: totalCount,
@@ -189,6 +198,7 @@ router.get('/simulations', async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error('Error fetching simulations:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ error: error.message });
   }
 });

@@ -1142,40 +1142,11 @@ app.get('/api/xr/labs/:experienceId', async (req: Request, res: Response) => {
 
 /**
  * Get XR Simulations
+ * NOTE: This endpoint has been moved to enhanced-api.ts
+ * The enhanced version uses v_simulation_cards materialized view
+ * for better performance and includes ratings, user counts, etc.
  */
-app.get('/api/xr/simulations', async (req: Request, res: Response) => {
-  try {
-    const { subject, difficulty } = req.query;
-
-    let query = `
-      SELECT s.*, e.title, e.description
-      FROM xr_simulations s
-      JOIN xr_experiences e ON s.experience_id = e.id
-      WHERE 1=1
-    `;
-    const params: any[] = [];
-    let paramIndex = 1;
-
-    if (subject) {
-      query += ` AND e.lab_subject = $${paramIndex}`;
-      params.push(subject);
-      paramIndex++;
-    }
-
-    if (difficulty) {
-      query += ` AND e.difficulty_level = $${paramIndex}`;
-      params.push(difficulty);
-      paramIndex++;
-    }
-
-    const result = await pool.query(query, params);
-
-    res.json({ simulations: result.rows });
-  } catch (error: any) {
-    logger.error('Error fetching simulations:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// REMOVED - using enhanced-api.ts version instead
 
 // =====================================================
 // AR MARKER MANAGEMENT
