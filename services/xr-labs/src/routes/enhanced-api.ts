@@ -152,7 +152,10 @@ router.get('/simulations', async (req: Request, res: Response) => {
         query += ' ORDER BY user_count DESC';
     }
 
-    params.push(limit, offset);
+    const limitNum = parseInt(limit as string) || 50;
+    const offsetNum = parseInt(offset as string) || 0;
+
+    params.push(limitNum, offsetNum);
     query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
 
     const result = await pool.query(query, params);
@@ -836,15 +839,15 @@ router.get('/monitoring/experience-center-stats', async (req: Request, res: Resp
   try {
     const result = await pool.query(`
       SELECT
-        COUNT(*) FILTER (WHERE ended_at IS NULL) as active_sessions,
-        COALESCE(AVG(session_duration) FILTER (WHERE ended_at IS NOT NULL), 0) as avg_session_duration,
+        COUNT(*) FILTER (WHERE session_end IS NULL) as active_sessions,
+        COALESCE(AVG(duration_seconds) FILTER (WHERE session_end IS NOT NULL), 0) as avg_session_duration,
         COALESCE(
           (COUNT(*) FILTER (WHERE completion_percentage >= 80)::DECIMAL /
-           NULLIF(COUNT(*) FILTER (WHERE ended_at IS NOT NULL), 0) * 100),
+           NULLIF(COUNT(*) FILTER (WHERE session_end IS NOT NULL), 0) * 100),
           0
         ) as completion_rate
       FROM xr_user_sessions
-      WHERE started_at > NOW() - INTERVAL '24 hours'
+      WHERE session_start > NOW() - INTERVAL '24 hours'
     `);
 
     const stats = result.rows[0];
