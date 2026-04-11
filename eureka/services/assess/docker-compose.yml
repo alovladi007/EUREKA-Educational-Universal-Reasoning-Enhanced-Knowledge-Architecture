@@ -33,7 +33,7 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       SERVICE_PORT: 8002
       DEBUG: "true"
-      CORS_ORIGINS: "http://localhost:3006,http://localhost:3000"
+      CORS_ORIGINS: "http://localhost:3000,http://localhost:3001"
     depends_on:
       db-assessment:
         condition: service_healthy

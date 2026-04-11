@@ -5,8 +5,9 @@ services:
     build: .
     container_name: eureka-medical-school
     ports:
-      - "8020:8020"
+      - "8030:8030"
     environment:
+      - PORT=8030
       - DATABASE_URL=postgresql+asyncpg://eureka:eureka123@postgres:5432/eureka
       - REDIS_URL=redis://redis:6379/10
       - API_CORE_URL=http://api-core:8000

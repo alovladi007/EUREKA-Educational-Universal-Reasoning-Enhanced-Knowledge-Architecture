@@ -1,0 +1,15 @@
+# Copy to docker-compose.override.yml (gitignored) only if api-core cannot reach
+# db/redis/minio via Docker DNS (rare sandboxed environments). Uses the same host
+# port numbers as this repo (5434, 6380, 9000) — change those here if your machine
+# maps EUREKA to different host ports.
+#
+#   cp docker-compose.override.example.yml docker-compose.override.yml
+#
+services:
+  api-core:
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@host.docker.internal:5434/eureka
+      REDIS_URL: redis://host.docker.internal:6380/0
+      S3_ENDPOINT: http://host.docker.internal:9000

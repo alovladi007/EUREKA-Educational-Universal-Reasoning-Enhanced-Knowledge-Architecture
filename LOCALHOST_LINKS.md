@@ -1,12 +1,14 @@
 # EUREKA Platform - Localhost Access Links
 
+Ports below match `eureka/docker-compose.yml` and `PORT_REFERENCE.md`. If another project already uses a port on your machine, change **only** the host side in Compose (or use per-project Docker networks) rather than reusing another app’s port numbers.
+
 ## Frontend Applications
 
 ### Main Web Application
-- **Homepage**: [http://localhost:3006](http://localhost:3006)
-- **Dashboard**: [http://localhost:3006/dashboard](http://localhost:3006/dashboard)
-- **Demo Page**: [http://localhost:3006/demo](http://localhost:3006/demo)
-- **Tiers Page**: [http://localhost:3006/tiers](http://localhost:3006/tiers)
+- **Homepage**: [http://localhost:3000](http://localhost:3000)
+- **Dashboard**: [http://localhost:3000/dashboard](http://localhost:3000/dashboard)
+- **Demo Page**: [http://localhost:3000/demo](http://localhost:3000/demo)
+- **Tiers Page**: [http://localhost:3000/tiers](http://localhost:3000/tiers)
 
 ## Backend API Services
 
@@ -41,8 +43,11 @@
   - Docs: [http://localhost:8012/docs](http://localhost:8012/docs)
 
 ### Professional Tier Services
-- **Medical School**: [http://localhost:8020](http://localhost:8020)
+- **Pro Med (FastAPI)**: [http://localhost:8020](http://localhost:8020)
   - Docs: [http://localhost:8020/docs](http://localhost:8020/docs)
+
+- **Medical School (NestJS)**: [http://localhost:8030](http://localhost:8030)
+  - Docs: [http://localhost:8030/docs](http://localhost:8030/docs)
 
 - **Law School**: [http://localhost:8021](http://localhost:8021)
   - Docs: [http://localhost:8021/docs](http://localhost:8021/docs)
@@ -56,10 +61,10 @@
 ## Infrastructure Services
 
 ### Database & Admin
-- **PostgreSQL**: `localhost:5432`
+- **PostgreSQL**: `localhost:5434` (maps to container `5432`)
   - Database: `eureka`
-  - Username: `postgres`
-  - Connect: `psql -h localhost -U postgres -d eureka`
+  - Username: `eureka`
+  - Connect: `psql -h localhost -p 5434 -U eureka -d eureka`
 
 ### Storage & Cache
 - **MinIO Console**: [http://localhost:9001](http://localhost:9001)
@@ -208,22 +213,18 @@ docker exec biomedical-postgres psql -U postgres -d eureka -c "SELECT COUNT(*) F
 
 ## Notes
 
-- **Frontend** is currently running on port 3006 due to port 3000 being occupied
-- **Backend services** require Dockerfiles to be fully implemented
-- **Database** is using existing `biomedical-postgres` container on port 5432
-- **Complete schema** with 45 tables has been initialized
-- **Demo data** is pre-loaded for immediate testing
+- **Frontend** in Compose is published on **3000** (`web` service); use **3001** for `admin`.
+- **PostgreSQL** for this stack is on **5434** on the host (not 5432), to avoid clashing with other local Postgres instances.
+- **Pro Med** and **Medical School (NestJS)** use different host ports (**8020** vs **8030**) so both can run together.
 
 ## Status
 
-| Component | Status | Link |
-|-----------|--------|------|
-| Frontend | Running | [localhost:3006](http://localhost:3006) |
-| Database | Running | localhost:5432 |
-| MinIO | Running | [localhost:9001](http://localhost:9001) |
-| Backend Services | Pending Implementation | - |
-| Academic Tiers | Pending Implementation | - |
-| Professional Tiers | Pending Implementation | - |
+| Component | Typical port | Link |
+|-----------|----------------|------|
+| Web app | 3000 | [localhost:3000](http://localhost:3000) |
+| Database | 5434 | `localhost:5434` |
+| MinIO Console | 9001 | [localhost:9001](http://localhost:9001) |
+| API Core | 8000 | [localhost:8000](http://localhost:8000) |
 
 ---
 
