@@ -371,8 +371,9 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8000
       NEXT_PUBLIC_TUTOR_URL: http://localhost:8001
+    # Host port is configurable via eureka/.env (WEB_HOST_PORT) if 3000 is taken by another project
     ports:
-      - "3000:3000"
+      - "${WEB_HOST_PORT:-3000}:3000"
     depends_on:
       - api-core
     volumes:
@@ -388,7 +389,7 @@ services:
     environment:
       NEXT_PUBLIC_API_URL: http://localhost:8000
     ports:
-      - "3001:3000"
+      - "${ADMIN_HOST_PORT:-3001}:3000"
     depends_on:
       - api-core
     volumes:
