@@ -1,9 +1,9 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { Providers } from '@/components/providers';
 import './globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+// Avoid next/font/google (downloads at build/request time) — breaks offline/Docker/firewalls
+// and can contribute to flaky responses. Tailwind `font-sans` uses the system stack.
 
 export const metadata: Metadata = {
   title: 'EUREKA - Educational Platform',
@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>
