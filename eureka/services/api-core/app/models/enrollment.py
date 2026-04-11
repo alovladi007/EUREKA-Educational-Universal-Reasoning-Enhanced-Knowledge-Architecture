@@ -32,7 +32,7 @@ class Enrollment(Base):
     mastery_level = Column(Integer, nullable=False, default=0)
 
     # Timestamps
-    enrolled_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+    enrolled_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     completed_at = Column(DateTime, nullable=True, index=True)
     withdrawn_at = Column(DateTime, nullable=True)
 

@@ -122,6 +122,8 @@ pids
 *.sqlite
 *.sqlite3
 *.sql
+!ops/db/
+!ops/db/**/*.sql
 *.dump
 pgdata/
 

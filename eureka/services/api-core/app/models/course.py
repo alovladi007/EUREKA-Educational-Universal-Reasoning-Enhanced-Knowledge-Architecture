@@ -47,8 +47,8 @@ class Course(Base):
     is_published = Column(Boolean, nullable=False, default=False, index=True)
     is_archived = Column(Boolean, nullable=False, default=False, index=True)
 
-    # Schedule
-    start_date = Column(DateTime, nullable=True, index=True)
+    # Schedule (indexed via ix_courses_start_date in __table_args__)
+    start_date = Column(DateTime, nullable=True)
     end_date = Column(DateTime, nullable=True)
 
     # Audit Timestamps

@@ -32,7 +32,7 @@ class AuditLog(Base):
     # Details
     description = Column(Text, nullable=True)
     changes = Column(JSONB, nullable=True)  # Before/after for updates
-    metadata = Column(JSONB, nullable=True)  # Additional context
+    extra_metadata = Column(JSONB, nullable=True)
 
     # Request Information
     ip_address = Column(INET, nullable=True, index=True)
@@ -75,7 +75,7 @@ class AuditLog(Base):
             "resource_id": str(self.resource_id) if self.resource_id else None,
             "description": self.description,
             "changes": self.changes,
-            "metadata": self.metadata,
+            "metadata": self.extra_metadata,
             "ip_address": str(self.ip_address) if self.ip_address else None,
             "user_agent": self.user_agent,
             "request_method": self.request_method,
@@ -101,7 +101,7 @@ class AuditLog(Base):
             resource_id=resource_id,
             description=description,
             changes=changes,
-            metadata=metadata,
+            extra_metadata=metadata,
             ip_address=ip_address,
             user_agent=user_agent,
             request_method=request_method,

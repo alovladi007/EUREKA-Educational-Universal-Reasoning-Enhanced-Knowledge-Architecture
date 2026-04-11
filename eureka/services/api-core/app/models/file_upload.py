@@ -29,7 +29,7 @@ class FileUpload(Base):
     original_filename = Column(String(255), nullable=False)
     file_path = Column(String(1000), nullable=False)  # Path in S3/MinIO
     file_size_bytes = Column(BigInteger, nullable=False)
-    mime_type = Column(String(100), nullable=False, index=True)
+    mime_type = Column(String(100), nullable=False)
     file_hash = Column(String(64), nullable=True)  # SHA-256 hash for deduplication
 
     # Storage Information

@@ -4,6 +4,8 @@
 -- Creates all tables for EUREKA Medical School Service
 -- =====================================================
 
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
 -- Drop existing tables (if recreating)
 -- DROP TABLE IF EXISTS usmle_attempts CASCADE;
 -- DROP TABLE IF EXISTS case_attempts CASCADE;

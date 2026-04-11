@@ -100,10 +100,14 @@ services:
       context: ./services/api-core
       dockerfile: Dockerfile
     container_name: eureka-api-core
+    # Route DB/Redis/MinIO via host-published ports — direct container-to-container TCP
+    # to db/redis can fail in some sandboxed Docker setups.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
-      REDIS_URL: redis://redis:6379/0
-      S3_ENDPOINT: http://minio:9000
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@host.docker.internal:5434/eureka
+      REDIS_URL: redis://host.docker.internal:6380/0
+      S3_ENDPOINT: http://host.docker.internal:9000
       S3_ACCESS_KEY: eureka
       S3_SECRET_KEY: eureka_minio_password
       JWT_SECRET: dev_jwt_secret_change_in_production

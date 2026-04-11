@@ -28,13 +28,13 @@ class Submission(Base):
     # Submission Content
     content = Column(Text, nullable=True)
     attachments = Column(JSONB, nullable=True)  # List of file references
-    metadata = Column(JSONB, nullable=True)  # Additional submission data
+    submission_metadata = Column(JSONB, nullable=True)
 
     # Attempt Tracking
     attempt_number = Column(Integer, nullable=False, default=1)
 
     # Timestamps
-    submitted_at = Column(DateTime, nullable=False, default=datetime.utcnow, index=True)
+    submitted_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     started_at = Column(DateTime, nullable=True)  # For timed assignments
 
     # Grading
@@ -128,7 +128,7 @@ class Submission(Base):
             "graded_by": str(self.graded_by) if self.graded_by else None,
             "content": self.content,
             "attachments": self.attachments,
-            "metadata": self.metadata,
+            "metadata": self.submission_metadata,
             "attempt_number": self.attempt_number,
             "submitted_at": self.submitted_at.isoformat() if self.submitted_at else None,
             "started_at": self.started_at.isoformat() if self.started_at else None,

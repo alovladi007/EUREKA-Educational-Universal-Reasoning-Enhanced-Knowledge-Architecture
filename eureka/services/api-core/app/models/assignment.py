@@ -40,7 +40,7 @@ class Assignment(Base):
 
     # Due Dates
     available_from = Column(DateTime, nullable=True, index=True)
-    due_date = Column(DateTime, nullable=True, index=True)
+    due_date = Column(DateTime, nullable=True)
     late_submission_allowed = Column(Boolean, nullable=False, default=False)
     late_penalty_percent = Column(Integer, nullable=False, default=0)
 
