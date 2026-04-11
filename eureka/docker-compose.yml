@@ -29,7 +29,7 @@ services:
     image: redis:7-alpine
     container_name: eureka-redis
     ports:
-      - "6380:6379"
+      - "6381:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -46,8 +46,8 @@ services:
       MINIO_ROOT_USER: eureka
       MINIO_ROOT_PASSWORD: eureka_minio_password
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "9004:9000"
+      - "9005:9001"
     volumes:
       - minio_data:/data
     healthcheck:
@@ -226,7 +226,7 @@ services:
       REDIS_URL: redis://redis:6379/4
       ENVIRONMENT: development
     ports:
-      - "8005:8000"
+      - "8006:8000"
     depends_on:
       - db
       - kafka
@@ -320,7 +320,7 @@ services:
       HIPAA_MODE: "true"
       ENVIRONMENT: development
     ports:
-      - "8020:8000"
+      - "8025:8000"
     depends_on:
       - api-core
       - tutor-llm

@@ -16,7 +16,9 @@ import {
 } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import Confetti from 'react-confetti';
+import { useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
+import { EXAM_TYPE_LIST, getSectionsForExam } from '@/lib/exam-config';
 
 interface AdaptiveSession {
   session_id: string;
@@ -30,6 +32,9 @@ interface AdaptiveSession {
 }
 
 export default function PracticeModePage() {
+  const searchParams = useSearchParams();
+  const initialExam = searchParams.get('exam') || 'GRE';
+
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionData, setSessionData] = useState<AdaptiveSession | null>(null);
   const [currentQuestion, setCurrentQuestion] = useState<any>(null);
@@ -51,10 +56,12 @@ export default function PracticeModePage() {
   const [showHint, setShowHint] = useState(false);
   const [showSetup, setShowSetup] = useState(true);
   const [sessionConfig, setSessionConfig] = useState({
-    examType: 'GRE',
-    section: 'Quantitative',
+    examType: initialExam,
+    section: getSectionsForExam(initialExam)[0]?.id || '',
     targetQuestions: 20
   });
+
+  const currentSections = getSectionsForExam(sessionConfig.examType);
 
   // Start timer when new question loads
   useEffect(() => {
@@ -275,16 +282,20 @@ export default function PracticeModePage() {
                 </label>
                 <select
                   value={sessionConfig.examType}
-                  onChange={(e) => setSessionConfig({...sessionConfig, examType: e.target.value})}
+                  onChange={(e) => {
+                    const newExam = e.target.value;
+                    const newSections = getSectionsForExam(newExam);
+                    setSessionConfig({
+                      ...sessionConfig,
+                      examType: newExam,
+                      section: newSections[0]?.id || '',
+                    });
+                  }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  <option value="GRE">GRE</option>
-                  <option value="GMAT">GMAT</option>
-                  <option value="SAT">SAT</option>
-                  <option value="LSAT">LSAT</option>
-                  <option value="MCAT">MCAT</option>
-                  <option value="TOEFL">TOEFL</option>
-                  <option value="FE">Fundamentals of Engineering</option>
+                  {EXAM_TYPE_LIST.map((exam) => (
+                    <option key={exam.id} value={exam.id}>{exam.name}</option>
+                  ))}
                 </select>
               </div>
 
@@ -297,11 +308,9 @@ export default function PracticeModePage() {
                   onChange={(e) => setSessionConfig({...sessionConfig, section: e.target.value})}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
-                  <option value="Quantitative">Quantitative Reasoning</option>
-                  <option value="Verbal">Verbal Reasoning</option>
-                  <option value="Math">Mathematics</option>
-                  <option value="Reading">Reading Comprehension</option>
-                  <option value="Writing">Analytical Writing</option>
+                  {currentSections.map((section) => (
+                    <option key={section.id} value={section.id}>{section.name}</option>
+                  ))}
                 </select>
               </div>
 

@@ -2,7 +2,7 @@
 Main API router aggregating all endpoints
 """
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content, pricing
+from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content, pricing, lessons, notes, qbank, flashcards, patent_bar
 
 api_router = APIRouter()
 
@@ -18,6 +18,11 @@ api_router.include_router(analytics.router, prefix="/analytics", tags=["analytic
 api_router.include_router(study_planner.router, prefix="/study-planner", tags=["study-planning"])
 api_router.include_router(ai_content.router, prefix="/ai", tags=["ai-content"])
 api_router.include_router(pricing.router, prefix="/test-prep", tags=["pricing"])
+api_router.include_router(lessons.router, prefix="/lessons", tags=["video-lessons"])
+api_router.include_router(notes.router, prefix="/notes", tags=["notes"])
+api_router.include_router(qbank.router, prefix="/qbank", tags=["qbank"])
+api_router.include_router(flashcards.router, prefix="/flashcards", tags=["flashcards"])
+api_router.include_router(patent_bar.router, prefix="/patent-bar", tags=["patent-bar"])
 
 @api_router.get("/")
 async def api_root():
@@ -35,6 +40,13 @@ async def api_root():
             "analytics": "/api/v1/analytics",
             "study_planner": "/api/v1/study-planner",
             "ai_content": "/api/v1/ai",
-            "pricing": "/api/v1/test-prep"
+            "pricing": "/api/v1/test-prep",
+            "lessons": "/api/v1/lessons",
+            "notes": "/api/v1/notes",
+            "qbank": "/api/v1/qbank",
+            "flashcards": "/api/v1/flashcards",
+            "patent_bar": "/api/v1/patent-bar",
+            "patent_bar_live_office_hours": "/api/v1/patent-bar/live/office-hours",
+            "patent_bar_live_cohorts": "/api/v1/patent-bar/live/cohorts",
         }
     }

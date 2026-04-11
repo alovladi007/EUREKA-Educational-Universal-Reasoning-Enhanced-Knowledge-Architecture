@@ -23,6 +23,7 @@ import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import { apiClient } from '@/lib/api-client';
+import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
 
 interface UserStats {
   total_questions: number;
@@ -196,12 +197,9 @@ export default function TestPrepDashboard() {
           onChange={(e) => setExamType(e.target.value)}
           className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
         >
-          <option value="GRE">GRE</option>
-          <option value="GMAT">GMAT</option>
-          <option value="LSAT">LSAT</option>
-          <option value="MCAT">MCAT</option>
-          <option value="TOEFL">TOEFL</option>
-          <option value="FE">FE Exam</option>
+          {EXAM_TYPE_LIST.map((exam) => (
+            <option key={exam.id} value={exam.id}>{exam.shortName}</option>
+          ))}
         </select>
       </div>
 
@@ -247,47 +245,69 @@ export default function TestPrepDashboard() {
           </div>
         </div>
 
-        <Link href="/test-prep/pricing">
-          <Button className="w-full sm:w-auto">
-            <Target className="w-4 h-4 mr-2" />
-            View Prep Plans: Videos+Notes | QBank | Complete Bundle
-          </Button>
-        </Link>
+        <div className="flex flex-wrap gap-3">
+          <Link href={`/dashboard/test-prep/${examType.toLowerCase()}`}>
+            <Button className="w-full sm:w-auto">
+              <Target className="w-4 h-4 mr-2" />
+              Start Studying: Lessons, Notes & QBank
+            </Button>
+          </Link>
+          <Link href="/test-prep/pricing">
+            <Button variant="outline" className="w-full sm:w-auto">
+              View Prep Plans
+            </Button>
+          </Link>
+        </div>
       </Card>
+
+      {/* Exam Info */}
+      {examType && (
+        <Card className="p-4 border-l-4 border-l-primary">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium">{getExamConfig(examType).name}</p>
+              <p className="text-xs text-muted-foreground">
+                {getExamConfig(examType).description} &middot; Score range: {getExamConfig(examType).scoreRange.label} &middot;{' '}
+                {getExamConfig(examType).sections.length} sections &middot; {getExamConfig(examType).totalDuration} min
+              </p>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {/* Quick Actions */}
       <div>
         <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Link href="/dashboard/test-prep/practice">
+          <Link href={`/dashboard/test-prep/practice?exam=${examType}`}>
             <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full">
               <BookOpen className="h-8 w-8 text-blue-500 mb-3" />
               <h3 className="font-semibold mb-1">Adaptive Practice</h3>
-              <p className="text-sm text-muted-foreground">IRT-based questions</p>
+              <p className="text-sm text-muted-foreground">IRT-based {examType} questions</p>
             </Card>
           </Link>
 
-          <Link href="/dashboard/test-prep/exam">
+          <Link href={`/dashboard/test-prep/exam?exam=${examType}`}>
             <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full">
               <GraduationCap className="h-8 w-8 text-green-500 mb-3" />
               <h3 className="font-semibold mb-1">Mock Exam</h3>
-              <p className="text-sm text-muted-foreground">Full test simulation</p>
+              <p className="text-sm text-muted-foreground">Full {examType} simulation</p>
             </Card>
           </Link>
 
-          <Link href="/dashboard/test-prep/analytics">
+          <Link href={`/dashboard/test-prep/analytics?exam=${examType}`}>
             <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full">
               <BarChart3 className="h-8 w-8 text-purple-500 mb-3" />
               <h3 className="font-semibold mb-1">Analytics</h3>
-              <p className="text-sm text-muted-foreground">Track progress</p>
+              <p className="text-sm text-muted-foreground">Track {examType} progress</p>
             </Card>
           </Link>
 
-          <Link href="/dashboard/test-prep/study-plan">
+          <Link href={`/dashboard/test-prep/study-plan?exam=${examType}`}>
             <Card className="p-6 hover:shadow-lg transition-shadow cursor-pointer h-full">
               <Calendar className="h-8 w-8 text-orange-500 mb-3" />
               <h3 className="font-semibold mb-1">AI Study Plan</h3>
-              <p className="text-sm text-muted-foreground">Personalized schedule</p>
+              <p className="text-sm text-muted-foreground">Personalized {examType} schedule</p>
             </Card>
           </Link>
         </div>

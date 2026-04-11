@@ -1,3 +1,10 @@
 alovladi007-EUREKA-Educational-Universal-Reasoning-Enhanced-Knowledge-Architecture/
 temp_integration/
 eureka/ops/db.backup.*/
+
+# Python (services outside eureka/)
+__pycache__/
+*.py[cod]
+
+# Local dev SQLite for test-prep service
+services/test-prep/*.db

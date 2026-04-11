@@ -13,7 +13,9 @@ import {
   PlayIcon
 } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
+import { useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
+import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
 
 interface ExamConfig {
   examType: string;
@@ -49,11 +51,20 @@ interface ExamType {
 
 export default function ExamSimulatorPage() {
   const router = useRouter();
-  const [examConfig, setExamConfig] = useState<ExamConfig>({
-    examType: '',
-    duration: 180,
-    questionCount: 50,
-    sections: []
+  const searchParams = useSearchParams();
+  const initialExam = searchParams.get('exam') || '';
+
+  const [examConfig, setExamConfig] = useState<ExamConfig>(() => {
+    if (initialExam) {
+      const cfg = getExamConfig(initialExam);
+      return {
+        examType: cfg.id,
+        duration: cfg.totalDuration,
+        questionCount: cfg.totalQuestions,
+        sections: cfg.sections.map(s => s.id),
+      };
+    }
+    return { examType: '', duration: 180, questionCount: 50, sections: [] };
   });
   const [examStarted, setExamStarted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -65,12 +76,12 @@ export default function ExamSimulatorPage() {
   const [examCompleted, setExamCompleted] = useState(false);
   const [results, setResults] = useState<ExamResults | null>(null);
 
-  const examTypes: ExamType[] = [
-    { id: 'GRE', name: 'GRE General Test', duration: 180, questions: 80 },
-    { id: 'GMAT', name: 'GMAT', duration: 187, questions: 80 },
-    { id: 'SAT', name: 'SAT', duration: 180, questions: 154 },
-    { id: 'PRACTICE', name: 'Practice Test', duration: 60, questions: 30 }
-  ];
+  const examTypes: ExamType[] = EXAM_TYPE_LIST.map(cfg => ({
+    id: cfg.id,
+    name: cfg.name,
+    duration: cfg.totalDuration,
+    questions: cfg.totalQuestions,
+  }));
 
   // Timer countdown effect
   useEffect(() => {
@@ -259,12 +270,15 @@ export default function ExamSimulatorPage() {
                   {examTypes.map(exam => (
                     <button
                       key={exam.id}
-                      onClick={() => setExamConfig({
-                        examType: exam.id,
-                        duration: exam.duration,
-                        questionCount: exam.questions,
-                        sections: []
-                      })}
+                      onClick={() => {
+                        const cfg = getExamConfig(exam.id);
+                        setExamConfig({
+                          examType: exam.id,
+                          duration: exam.duration,
+                          questionCount: exam.questions,
+                          sections: cfg.sections.map(s => s.id),
+                        });
+                      }}
                       className={`p-4 rounded-lg border-2 text-left transition-all ${
                         examConfig.examType === exam.id
                           ? 'border-indigo-500 bg-indigo-50'
@@ -297,8 +311,26 @@ export default function ExamSimulatorPage() {
                       <span className="font-medium text-blue-900">{examConfig.duration} minutes</span>
                     </div>
                     <div className="flex justify-between">
+                      <span className="text-blue-700">Score Range:</span>
+                      <span className="font-medium text-blue-900">{getExamConfig(examConfig.examType).scoreRange.label}</span>
+                    </div>
+                    <div className="flex justify-between">
                       <span className="text-blue-700">Question Navigation:</span>
                       <span className="font-medium text-blue-900">Allowed</span>
+                    </div>
+                  </div>
+                  <div className="mt-4 pt-3 border-t border-blue-200">
+                    <p className="text-xs font-medium text-blue-800 mb-2">Sections:</p>
+                    <div className="space-y-1">
+                      {getExamConfig(examConfig.examType).sections.map((s) => (
+                        <div key={s.id} className="flex justify-between text-xs">
+                          <span className="text-blue-700">{s.name}</span>
+                          <span className="text-blue-900 font-medium">
+                            {s.questionCount ? `${s.questionCount} Q` : ''}
+                            {s.timeMinutes ? ` · ${s.timeMinutes} min` : ''}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
                 </motion.div>
