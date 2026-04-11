@@ -30,7 +30,8 @@ import { v4 as uuidv4 } from 'uuid';
 import * as dotenv from 'dotenv';
 import rateLimit from 'express-rate-limit';
 import winston from 'winston';
-import enhancedRoutes, { initializeEnhancedRoutes } from './routes/enhanced-api';
+import { initializeEnhancedRoutes } from './routes/enhanced-api';
+import { initializeAuthRoutes } from './routes/auth';
 
 dotenv.config();
 
@@ -109,30 +110,103 @@ const upload = multer({
   },
 });
 
-// Rate Limiting
+// Rate Limiting Configurations
 const apiLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // Limit each IP to 100 requests per windowMs
   message: 'Too many requests from this IP, please try again later.',
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 10, // Stricter limit for auth endpoints
+  message: 'Too many authentication attempts, please try again later.',
+  skipSuccessfulRequests: true, // Don't count successful requests
 });
 
 // =====================================================
 // MIDDLEWARE
 // =====================================================
 
-app.use(helmet());
-app.use(cors());
-app.use(compression());
+// Security Headers
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'"],
+      scriptSrc: ["'self'"],
+      imgSrc: ["'self'", 'data:', 'https:'],
+    },
+  },
+  crossOriginEmbedderPolicy: false, // Required for WebXR
+}));
+
+// CORS Configuration
+const corsOptions = {
+  origin: process.env.NODE_ENV === 'production'
+    ? (process.env.ALLOWED_ORIGINS || '').split(',')
+    : '*',
+  credentials: true,
+  optionsSuccessStatus: 200,
+  maxAge: 86400, // 24 hours
+};
+app.use(cors(corsOptions));
+
+// Compression
+app.use(compression({
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    return compression.filter(req, res);
+  },
+  level: 6, // Balanced compression level
+}));
+
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
-app.use('/api/', apiLimiter);
 
-// Request Logging
+// Rate Limiting
+app.use('/api/', apiLimiter);
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+
+// Request Timing & Logging
 app.use((req, res, next) => {
-  logger.info(`${req.method} ${req.path}`, {
-    ip: req.ip,
-    userAgent: req.get('user-agent'),
+  const startTime = Date.now();
+
+  res.on('finish', () => {
+    const duration = Date.now() - startTime;
+    logger.info(`${req.method} ${req.path} ${res.statusCode} ${duration}ms`, {
+      ip: req.ip,
+      userAgent: req.get('user-agent'),
+      responseTime: duration,
+    });
   });
+
+  next();
+});
+
+// Cache Control for Static/Readonly Endpoints
+app.use((req, res, next) => {
+  // Cache health checks for 30 seconds
+  if (req.path.startsWith('/health')) {
+    res.set('Cache-Control', 'public, max-age=30');
+  }
+  // Cache asset library for 5 minutes
+  else if (req.path.includes('/asset-library')) {
+    res.set('Cache-Control', 'public, max-age=300');
+  }
+  // Cache simulations/experiences for 2 minutes
+  else if (req.path.includes('/simulations') || req.path.includes('/experiences')) {
+    res.set('Cache-Control', 'public, max-age=120');
+  }
+  // No cache for auth and user-specific endpoints
+  else if (req.path.includes('/auth') || req.path.includes('/sessions') || req.path.includes('/dashboard')) {
+    res.set('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  }
   next();
 });
 
@@ -1142,40 +1216,11 @@ app.get('/api/xr/labs/:experienceId', async (req: Request, res: Response) => {
 
 /**
  * Get XR Simulations
+ * NOTE: This endpoint has been moved to enhanced-api.ts
+ * The enhanced version uses v_simulation_cards materialized view
+ * for better performance and includes ratings, user counts, etc.
  */
-app.get('/api/xr/simulations', async (req: Request, res: Response) => {
-  try {
-    const { subject, difficulty } = req.query;
-
-    let query = `
-      SELECT s.*, e.title, e.description
-      FROM xr_simulations s
-      JOIN xr_experiences e ON s.experience_id = e.id
-      WHERE 1=1
-    `;
-    const params: any[] = [];
-    let paramIndex = 1;
-
-    if (subject) {
-      query += ` AND e.lab_subject = $${paramIndex}`;
-      params.push(subject);
-      paramIndex++;
-    }
-
-    if (difficulty) {
-      query += ` AND e.difficulty_level = $${paramIndex}`;
-      params.push(difficulty);
-      paramIndex++;
-    }
-
-    const result = await pool.query(query, params);
-
-    res.json({ simulations: result.rows });
-  } catch (error: any) {
-    logger.error('Error fetching simulations:', error);
-    res.status(500).json({ error: error.message });
-  }
-});
+// REMOVED - using enhanced-api.ts version instead
 
 // =====================================================
 // AR MARKER MANAGEMENT
@@ -1453,6 +1498,14 @@ function generateRoomCode(): string {
 }
 
 // =====================================================
+// AUTHENTICATION ROUTES
+// =====================================================
+
+// Mount authentication routes (register, login, profile, refresh)
+const authRoutes = initializeAuthRoutes(pool, JWT_SECRET);
+app.use('/api/auth', authRoutes);
+
+// =====================================================
 // ENHANCED API ROUTES
 // =====================================================
 
@@ -1461,14 +1514,106 @@ const enhancedApiRoutes = initializeEnhancedRoutes(pool, authenticateToken);
 app.use('/api/xr', enhancedApiRoutes);
 
 // =====================================================
-// HEALTH CHECK
+// HEALTH CHECK ENDPOINTS
 // =====================================================
 
+/**
+ * Basic health check - returns 200 if service is running
+ */
 app.get('/health', (req: Request, res: Response) => {
   res.json({
     status: 'healthy',
     service: 'XR Labs Backend',
     version: '1.0.0',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+/**
+ * Detailed health check - includes database, memory, and component status
+ */
+app.get('/health/detailed', async (req: Request, res: Response) => {
+  const startTime = Date.now();
+  const healthStatus: any = {
+    status: 'healthy',
+    service: 'XR Labs Backend',
+    version: '1.0.0',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    components: {},
+  };
+
+  // Check database connectivity
+  try {
+    const dbStart = Date.now();
+    await pool.query('SELECT 1');
+    const dbDuration = Date.now() - dbStart;
+    healthStatus.components.database = {
+      status: 'healthy',
+      responseTime: dbDuration,
+      poolSize: pool.totalCount,
+      poolActive: pool.totalCount - pool.idleCount,
+      poolIdle: pool.idleCount,
+    };
+  } catch (error: any) {
+    healthStatus.status = 'unhealthy';
+    healthStatus.components.database = {
+      status: 'unhealthy',
+      error: error.message,
+    };
+  }
+
+  // Check memory usage
+  const memUsage = process.memoryUsage();
+  healthStatus.components.memory = {
+    status: memUsage.heapUsed / memUsage.heapTotal < 0.9 ? 'healthy' : 'warning',
+    heapUsed: `${Math.round(memUsage.heapUsed / 1024 / 1024)}MB`,
+    heapTotal: `${Math.round(memUsage.heapTotal / 1024 / 1024)}MB`,
+    rss: `${Math.round(memUsage.rss / 1024 / 1024)}MB`,
+    external: `${Math.round(memUsage.external / 1024 / 1024)}MB`,
+  };
+
+  // Check WebSocket server
+  healthStatus.components.websocket = {
+    status: 'healthy',
+    connectedClients: io.engine.clientsCount,
+  };
+
+  // Overall response time
+  healthStatus.responseTime = Date.now() - startTime;
+
+  // Set HTTP status based on overall health
+  const statusCode = healthStatus.status === 'healthy' ? 200 : 503;
+  res.status(statusCode).json(healthStatus);
+});
+
+/**
+ * Readiness check - returns 200 if service is ready to accept traffic
+ */
+app.get('/health/ready', async (req: Request, res: Response) => {
+  try {
+    // Check database connectivity
+    await pool.query('SELECT 1');
+
+    res.json({
+      status: 'ready',
+      timestamp: new Date().toISOString(),
+    });
+  } catch (error: any) {
+    res.status(503).json({
+      status: 'not ready',
+      error: error.message,
+      timestamp: new Date().toISOString(),
+    });
+  }
+});
+
+/**
+ * Liveness check - returns 200 if service is alive
+ */
+app.get('/health/live', (req: Request, res: Response) => {
+  res.json({
+    status: 'alive',
     timestamp: new Date().toISOString(),
   });
 });

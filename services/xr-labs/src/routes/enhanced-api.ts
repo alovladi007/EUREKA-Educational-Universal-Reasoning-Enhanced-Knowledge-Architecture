@@ -13,17 +13,10 @@
 import { Router, Request, Response } from 'express';
 import { Pool } from 'pg';
 
-const router = Router();
-
-// Assume these are passed in from main app.ts
-let pool: Pool;
-let authenticateToken: any = (req: Request, res: Response, next: any) => next(); // Dummy middleware initially
-
 export function initializeEnhancedRoutes(dbPool: Pool, authMiddleware: any) {
-  pool = dbPool;
-  authenticateToken = authMiddleware;
-  return router;
-}
+  const router = Router();
+  const pool = dbPool;
+  const authenticateToken = authMiddleware;
 
 // =====================================================
 // DASHBOARD ANALYTICS
@@ -161,10 +154,19 @@ router.get('/simulations', async (req: Request, res: Response) => {
         query += ' ORDER BY user_count DESC';
     }
 
-    params.push(limit, offset);
+    const limitNum = parseInt(limit as string) || 50;
+    const offsetNum = parseInt(offset as string) || 0;
+
+    params.push(limitNum, offsetNum);
     query += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
 
+    console.log('[DEBUG] Simulations query:', query);
+    console.log('[DEBUG] Simulations params:', params);
+
     const result = await pool.query(query, params);
+
+    console.log('[DEBUG] Query executed, rows returned:', result.rows.length);
+    console.log('[DEBUG] First row:', result.rows[0]);
 
     // Get total count
     let countQuery = 'SELECT COUNT(*) FROM v_simulation_cards WHERE 1=1';
@@ -186,6 +188,9 @@ router.get('/simulations', async (req: Request, res: Response) => {
     const countResult = await pool.query(countQuery, countParams);
     const totalCount = parseInt(countResult.rows[0].count);
 
+    console.log('[DEBUG] Total count:', totalCount);
+    console.log('[DEBUG] Returning simulations:', result.rows.length);
+
     res.json({
       simulations: result.rows,
       total: totalCount,
@@ -195,6 +200,7 @@ router.get('/simulations', async (req: Request, res: Response) => {
     });
   } catch (error: any) {
     console.error('Error fetching simulations:', error);
+    console.error('Error stack:', error.stack);
     res.status(500).json({ error: error.message });
   }
 });
@@ -703,6 +709,7 @@ router.get('/asset-library/search', async (req: Request, res: Response) => {
   try {
     const {
       category,
+      subject,
       search,
       format,
       hasAnimations,
@@ -726,9 +733,15 @@ router.get('/asset-library/search', async (req: Request, res: Response) => {
       paramIndex++;
     }
 
+    if (subject) {
+      params.push(subject);
+      query += ` AND a.subject = $${paramIndex}`;
+      paramIndex++;
+    }
+
     if (search) {
       params.push(`%${search}%`);
-      query += ` AND (a.asset_name ILIKE $${paramIndex} OR a.description ILIKE $${paramIndex})`;
+      query += ` AND (a.name ILIKE $${paramIndex} OR a.description ILIKE $${paramIndex})`;
       paramIndex++;
     }
 
@@ -845,15 +858,15 @@ router.get('/monitoring/experience-center-stats', async (req: Request, res: Resp
   try {
     const result = await pool.query(`
       SELECT
-        COUNT(*) FILTER (WHERE ended_at IS NULL) as active_sessions,
-        COALESCE(AVG(session_duration) FILTER (WHERE ended_at IS NOT NULL), 0) as avg_session_duration,
+        COUNT(*) FILTER (WHERE session_end IS NULL) as active_sessions,
+        COALESCE(AVG(duration_seconds) FILTER (WHERE session_end IS NOT NULL), 0) as avg_session_duration,
         COALESCE(
           (COUNT(*) FILTER (WHERE completion_percentage >= 80)::DECIMAL /
-           NULLIF(COUNT(*) FILTER (WHERE ended_at IS NOT NULL), 0) * 100),
+           NULLIF(COUNT(*) FILTER (WHERE session_end IS NOT NULL), 0) * 100),
           0
         ) as completion_rate
       FROM xr_user_sessions
-      WHERE started_at > NOW() - INTERVAL '24 hours'
+      WHERE session_start > NOW() - INTERVAL '24 hours'
     `);
 
     const stats = result.rows[0];
@@ -882,12 +895,13 @@ router.get('/monitoring/experience-center-stats', async (req: Request, res: Resp
 router.get('/compatibility/check', async (req: Request, res: Response) => {
   try {
     const { userAgent } = req.headers;
+    const ua = Array.isArray(userAgent) ? userAgent[0] : userAgent;
 
     // Simple device detection
-    const isMobile = /iPhone|iPad|iPod|Android/i.test(userAgent || '');
-    const isIOS = /iPhone|iPad|iPod/i.test(userAgent || '');
-    const isAndroid = /Android/i.test(userAgent || '');
-    const isQuest = /Quest/i.test(userAgent || '');
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(ua || '');
+    const isIOS = /iPhone|iPad|iPod/i.test(ua || '');
+    const isAndroid = /Android/i.test(ua || '');
+    const isQuest = /Quest/i.test(ua || '');
 
     const compatibility = {
       device: {
@@ -1023,4 +1037,5 @@ router.post('/refresh-analytics', authenticateToken, async (req: Request, res: R
   }
 });
 
-export default router;
+  return router;
+}
