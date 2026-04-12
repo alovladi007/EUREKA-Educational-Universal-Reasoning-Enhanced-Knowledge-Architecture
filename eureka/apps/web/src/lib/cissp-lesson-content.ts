@@ -461,14 +461,12 @@ questions. The qualifier word tells you which.
 `,
 
 cissp_risk_mgmt: `
-## 11. Sub-objective 1.9 — Risk management concepts
 
-### 11.1.a Conceptual explanation
+## Risk Management
 
-Risk management is the beating heart of Domain 1. The CISSP exam
-treats every security decision as a risk decision, so fluency in
-risk vocabulary and the risk workflow is the highest-leverage
-investment a candidate can make.
+Risk management is the beating heart of Domain 1. The CISSP exam treats every security decision as a risk decision, so fluency in risk vocabulary and the risk workflow is the highest-leverage investment a candidate can make.
+
+### Core Formula
 
 The foundational equation:
 
@@ -476,387 +474,133 @@ The foundational equation:
 Risk = Threat × Vulnerability × Impact
 \`\`\`
 
-Some textbooks drop one factor ("Risk = Threat × Vulnerability") or
-add **Likelihood** as a separate factor. The exam is tolerant of
-variations as long as you understand the intuition: risk requires a
-threat with the **capability and intent** to exploit a **vulnerability**
-to produce an **impact**.
+Some textbooks drop one factor or add Likelihood as a separate factor. The exam is tolerant of variations as long as you understand the intuition: risk requires a threat with the capability and intent to exploit a vulnerability to produce an impact.
 
-Core terms the exam demands precision on:
+### Key Terms
 
-- **Asset** — anything of value to the organization. People, data,
-  systems, reputation, processes.
-- **Asset value (AV)** — typically the replacement cost or the
-  financial impact of its loss. Expressed in currency.
-- **Threat** — a potential cause of an unwanted incident (ISO 27000).
-  A threat **agent** (or actor) is the entity that initiates it.
-- **Vulnerability** — a weakness that could be exploited.
-- **Exploit** — the mechanism or technique used to take advantage of
-  a vulnerability.
-- **Impact** — the consequence of a successful exploitation.
-- **Exposure factor (EF)** — the portion of the asset value lost in a
-  single incident, expressed as a percentage.
-- **Single loss expectancy (SLE)** — the loss from one incident.
-  SLE = AV × EF.
-- **Annualized rate of occurrence (ARO)** — how often the incident is
-  expected to happen per year.
-- **Annualized loss expectancy (ALE)** — the expected annual loss.
-  ALE = SLE × ARO.
-- **Total cost of ownership (TCO)** of a control — the full cost to
-  own and operate the control, not just the purchase price.
-- **Return on security investment (ROSI)** — (ALE_before − ALE_after
-  − control_cost) / control_cost, simplified. A positive value
-  justifies the control.
-- **Risk appetite** — the amount and type of risk the organization is
-  willing to pursue in pursuit of objectives. Set by the board.
-- **Risk tolerance** — the acceptable variance around the risk
-  appetite. More operational than appetite.
-- **Risk capacity** — the maximum risk the organization could absorb
-  without failing. A hard ceiling above tolerance.
-- **Residual risk** — the risk that remains after controls are
-  applied. Must be ≤ risk appetite for management to formally accept.
-- **Inherent risk** — the risk before any controls.
-
-### 11.1.b Technical / procedural deep-dive: quantitative risk math
-
-The CISSP exam loves quantitative risk arithmetic because it is
-unambiguously testable. Memorize:
-
-\`\`\`
-SLE  = AV × EF                  (single loss expectancy)
-ALE  = SLE × ARO                (annualized loss expectancy)
-     = AV × EF × ARO
-
-ROSI = (ALE_before − ALE_after − annual_control_cost)
-       / annual_control_cost
-\`\`\`
-
-Worked example:
-
-> A laptop fleet has 1,000 devices worth $1,500 each. Historical data
-> shows that 2% of laptops are lost or stolen per year, with an EF of
-> 100% (total loss of the asset to the organization). A full-disk
-> encryption solution costs $50 per laptop per year to license and
-> operate, and reduces the EF to 10% (because the device hardware is
-> still lost but the data is not).
-
-Calculations:
-
-\`\`\`
-AV (per laptop)    = $1,500
-EF (before)        = 100% = 1.0
-ARO (per laptop)   = 2% = 0.02
-SLE (before)       = 1,500 × 1.0 = $1,500
-ALE (before)       = 1,500 × 0.02 = $30 per laptop per year
-Fleet ALE (before) = $30 × 1,000 = $30,000 per year
-
-EF (after)         = 10% = 0.1
-SLE (after)        = 1,500 × 0.1 = $150
-ALE (after)        = 150 × 0.02 = $3 per laptop per year
-Fleet ALE (after)  = $3 × 1,000 = $3,000 per year
-
-Control cost       = $50 × 1,000 = $50,000 per year
-ROSI               = ($30,000 − $3,000 − $50,000) / $50,000
-                   = −$23,000 / $50,000
-                   = −0.46 → negative, control is not justified
-                     on pure financial grounds
-\`\`\`
-
-The exam will present ROSI-like questions and expect you to recognize
-when a control is financially unjustified — **and** to recognize when
-qualitative factors (regulatory requirement, reputational impact,
-ethical obligation) override pure financial ROSI.
-
-Qualitative risk assessment uses subjective scales rather than
-monetary math: Low/Medium/High or 1–5 rating matrices for likelihood
-and impact, with risk score computed as the product or lookup in a
-matrix. Qualitative is faster and cheaper; quantitative is more
-defensible to a CFO but harder to produce credible inputs for.
-
-### 11.1.c Frameworks
-
-- **NIST SP 800-30 Rev 1** — Guide for Conducting Risk Assessments.
-  Canonical US reference. Uses a semi-quantitative approach and
-  explicit threat-source catalogs.
-- **NIST SP 800-37 Rev 2 — Risk Management Framework (RMF)** — the
-  seven-step process for federal systems: Prepare → Categorize →
-  Select → Implement → Assess → Authorize → Monitor.
-- **NIST SP 800-39** — Managing Information Security Risk across
-  three tiers: organization, mission/business process, information
-  system.
-- **ISO/IEC 27005** — information security risk management aligned
-  with ISO 27001's ISMS approach.
-- **ISO 31000** — enterprise risk management framework; parent to
-  27005.
-- **FAIR (Factor Analysis of Information Risk)** — a quantitative
-  risk analysis methodology gaining adoption; breaks risk into loss
-  event frequency and loss magnitude factors.
-- **OCTAVE / OCTAVE Allegro** — asset-driven, workshop-based risk
-  methodology from CERT/Carnegie Mellon.
-- **COSO ERM** — enterprise risk management framework more common
-  in finance and audit than in IT.
-
-### 11.1.d Risk treatment options
-
-The exam distinguishes four (sometimes five) **risk treatment**
-options:
-
-1. **Avoid (eliminate)** — discontinue the activity that creates the
-   risk. Example: stop offering a product feature that exposes PII
-   beyond appetite.
-2. **Mitigate (reduce)** — apply controls to reduce likelihood or
-   impact. Most common treatment.
-3. **Transfer (share)** — shift risk to a third party, usually via
-   insurance, contract, or outsourcing. Note: you can never transfer
-   **accountability**, only financial consequences.
-4. **Accept** — acknowledge the risk and take no further action.
-   Requires formal sign-off by an authority with the risk appetite
-   to do so. Must be documented.
-5. **(Sometimes)** **Reject / ignore** — listed only to be called
-   out as NOT a valid treatment. Ignoring risk without acknowledgment
-   is a governance failure.
-
-The CISSP ordering is: **mitigate down to the risk appetite → transfer
-residual → accept what remains**. Avoidance is reserved for risks
-above the capacity ceiling.
-
-### 11.1.e Control categories and types
-
-The exam tests two orthogonal classifications of controls:
-
-**By category (who/what implements)**:
-- **Administrative / managerial** — policies, procedures, training,
-  background checks.
-- **Technical / logical** — firewalls, encryption, IAM, IDS/IPS.
-- **Physical** — locks, guards, fences, bollards, mantraps.
-
-**By function (when/how it acts)**:
-- **Preventive** — stop an event. Locks, encryption, firewalls.
-- **Detective** — identify an event. IDS, logs, CCTV, audits.
-- **Corrective** — recover from an event. Backups, patches, incident
-  response.
-- **Deterrent** — discourage an event. Warning signs, audit visibility.
-- **Recovery** — restore operations after an event. DR plans,
-  backups, recovery sites.
-- **Compensating** — alternative when the primary control cannot be
-  used. Example: manual review when automated deny-list is offline.
-- **Directive** — guide behavior. Policies, signs, training.
-
-Exam favorite: "which control type is a CCTV camera?" — it is
-**both deterrent** (visible cameras discourage action) **and
-detective** (recordings reveal events after the fact). The best
-answer depends on the scenario's emphasis.
-
-### 11.1.f Misconceptions
-
-- "Risk can be eliminated." Only in the trivial sense of avoiding the
-  activity entirely. All residual risk is nonzero.
-- "Transfer means the risk is gone." Transfer shifts financial
-  consequences. Accountability, reputational damage, and regulatory
-  obligations typically stay with the original owner.
-- "Quantitative is always better than qualitative." Quantitative is
-  more defensible when inputs are credible. For novel or data-sparse
-  risks, qualitative may be more honest.
-- "The CISO accepts risks." Only within delegated authority. Risks
-  above the CISO's delegation must be accepted by higher management
-  or the board.
-
-### 11.1.g Exam nuance
-
-CISSP wants risk decisions to follow a **formal, documented** process
-that ties back to business objectives. A scenario that offers "the
-team decides informally" vs "the risk is formally accepted by the
-system owner with documentation" always wants the documented option.
-
-When a question asks what to do FIRST after identifying a risk, the
-answer is usually **assess** (quantitatively or qualitatively) — not
-mitigate, transfer, or accept. You cannot choose a treatment until
-you have assessed.
-
-When a question involves **who** owns a risk, the answer is typically
-the **business process owner** or **data owner**, not the CISO. The
-CISO facilitates; the business owns.
-
-### 11.1.h Case studies
-
-1. **Equifax (2017).** Risk identification (an Apache Struts CVE)
-   was timely; risk treatment (patch) was not. The failure was in
-   execution, not recognition. Governance lesson: risk tracking
-   without treatment enforcement is security theater.
-2. **Capital One (2019).** Risk acceptance decisions around a WAF
-   configuration left an SSRF path to an over-privileged IAM role.
-   The risk was arguably knowable; the treatment was inadequate.
-3. **Maersk / NotPetya (2017).** A $300M+ event from a tax-software
-   supply-chain compromise. Highlighted that some risks are both
-   catastrophic and under-assessed because organizations did not
-   model "all Windows servers destroyed simultaneously" as a
-   plausible scenario. Post-incident, Maersk explicitly rebuilt its
-   risk model.
-
-### 11.1.i Memory aids
-
-- **"AVEFARO-ALE"** — Asset Value, Exposure Factor, Annualized Rate
-  of Occurrence, Annualized Loss Expectancy. Say it fast before
-  every risk-math question.
-- **"Avoid, Mitigate, Transfer, Accept"** — the four treatments.
-  Mnemonic: "A Man Takes Action".
-- **"PCDD"** or **"P-D-C-D-D-R-C-D"** — the control types.
-  Preventive, Detective, Corrective, Deterrent, Directive, Recovery,
-  Compensating. Memorize; the exam will test every one.
-
-### 11.1.j Cross-references
-
-- **Domain 1 §1.3** — governance sets the risk appetite that risk
-  management enforces.
-- **Domain 1 §1.11** — SCRM is risk management applied to suppliers.
-- **Domain 6** — assessments generate the data risk management
-  consumes.
-- **Domain 7** — incident response executes the "prepare and
-  respond" side of risk management.
-
----
-
-## 12. Sub-objective 1.10 — Threat modeling
-
-### 12.1.a Conceptual explanation
-
-Threat modeling is the structured, systematic process of **identifying
-what can go wrong** with a system, **how** it can go wrong, **who**
-might cause it, and **what** you will do about it. It is performed
-ideally during design (cheapest) and revisited as the system evolves.
-
-Four questions structure most threat modeling methodologies (Shostack's
-four-question framework, echoed in the OWASP Threat Modeling Manifesto):
-
-1. **What are we building?** Architecture, data flows, trust
-   boundaries.
-2. **What can go wrong?** Threats against each asset and flow.
-3. **What are we going to do about it?** Mitigations and prioritization.
-4. **Did we do a good job?** Validation and iteration.
-
-The exam tests recognition of the major methodologies:
-
-- **STRIDE** (Microsoft) — a **threat taxonomy**:
-  **S**poofing, **T**ampering, **R**epudiation, **I**nformation
-  disclosure, **D**enial of service, **E**levation of privilege.
-  Each letter corresponds to a CIA/AAA property being violated.
-- **DREAD** (Microsoft, deprecated but still tested) — a **scoring
-  model** for prioritization: **D**amage, **R**eproducibility,
-  **E**xploitability, **A**ffected users, **D**iscoverability. Scored
-  1–10, averaged. Criticized as subjective; Microsoft officially
-  moved away from it but CISSP still references it.
-- **PASTA (Process for Attack Simulation and Threat Analysis)** — a
-  seven-stage, risk-centric, business-aligned methodology. Stages
-  include defining objectives, technical scope, decomposition,
-  threat analysis, vulnerability analysis, attack modeling, risk and
-  impact.
-- **VAST (Visual, Agile, Simple Threat)** — scalable, agile-friendly
-  methodology that distinguishes application threat models from
-  operational threat models.
-- **Trike** — open source, automation-focused.
-- **LINDDUN** — privacy-focused counterpart to STRIDE: Linkability,
-  Identifiability, Non-repudiation, Detectability, Disclosure,
-  Unawareness, Non-compliance.
-- **Attack trees** — Schneier's hierarchical decomposition of attacker
-  goals into sub-goals and leaf attacks, with costs and probabilities
-  optionally attached.
-- **Kill chain models** — Lockheed Martin Cyber Kill Chain® (7 stages)
-  and the MITRE ATT&CK framework (tactics and techniques). ATT&CK is
-  operational rather than design-time but is increasingly used in
-  threat modeling.
-
-### 12.1.b Technical deep-dive: STRIDE per asset vs per element
-
-Microsoft's SDL team uses STRIDE in two modes. **STRIDE-per-element**
-walks each element of a data flow diagram (DFD) and asks which STRIDE
-threats apply (a process is vulnerable to all six; a data store is
-vulnerable to T, I, R, D). **STRIDE-per-interaction** walks each flow
-and asks which threats apply to the source, the destination, and the
-channel.
-
-Mapping STRIDE to security properties:
-
-| STRIDE letter | Violates |
+| Term | Definition |
 |---|---|
-| Spoofing | Authentication |
-| Tampering | Integrity |
-| Repudiation | Non-repudiation |
-| Information disclosure | Confidentiality |
-| Denial of service | Availability |
-| Elevation of privilege | Authorization |
+| **Asset Value (AV)** | Replacement cost or financial impact of loss, in currency |
+| **Threat** | Potential cause of an unwanted incident (ISO 27000) |
+| **Threat agent / actor** | Entity that initiates a threat |
+| **Vulnerability** | Weakness that could be exploited |
+| **Exploit** | Mechanism or technique to take advantage of a vulnerability |
+| **Impact** | Consequence of successful exploitation |
+| **Exposure Factor (EF)** | Portion of asset value lost in one incident (percentage) |
+| **Single Loss Expectancy (SLE)** | Loss from one incident: SLE = AV × EF |
+| **Annualized Rate of Occurrence (ARO)** | Expected frequency per year |
+| **Annualized Loss Expectancy (ALE)** | Expected annual loss: ALE = SLE × ARO |
+| **Risk appetite** | Amount of risk the org is willing to pursue (set by the board) |
+| **Risk tolerance** | Acceptable variance around the appetite |
+| **Risk capacity** | Maximum risk the org could absorb without failing |
+| **Residual risk** | Risk remaining after controls are applied |
+| **Inherent risk** | Risk before any controls |
 
-The exam rewards recognition of the inverse mapping: if a question
-says "the attacker impersonated a legitimate user", the STRIDE category
-is Spoofing and the violated property is Authentication.
+### Quantitative Risk Math
 
-### 12.1.c Frameworks
+The CISSP exam loves quantitative risk arithmetic because it is unambiguously testable:
 
-- **Microsoft Security Development Lifecycle (SDL)** — home of STRIDE.
-- **OWASP Threat Modeling Manifesto** — vendor-neutral principles and
-  values; the "four questions" framework.
-- **NIST SP 800-154 (Draft) — Guide to Data-Centric System Threat
-  Modeling.**
-- **MITRE ATT&CK** — operational adversary behavior matrix; cross-
-  references into threat models in recent textbooks.
-- **CAPEC (Common Attack Pattern Enumerations and Classifications)**
-  — MITRE-maintained catalog of attack patterns.
+\`\`\`
+SLE  = AV × EF
+ALE  = SLE × ARO = AV × EF × ARO
+ROSI = (ALE_before - ALE_after - annual_control_cost) / annual_control_cost
+\`\`\`
 
-### 12.1.d Misconceptions
+#### Worked Example
 
-- "Threat modeling is only for new systems." No — it is valuable on
-  legacy systems too, especially around changes. Agile threat
-  modeling is lightweight and repeatable.
-- "STRIDE tells you the risk." No — STRIDE is a taxonomy of threats;
-  it does not rank them. DREAD or PASTA handles ranking.
-- "Threat modeling is a pentest." No — threat modeling is a design-
-  time or analysis-time activity; pentesting is an adversarial
-  empirical check. They complement each other.
+A laptop fleet has 1,000 devices worth \\$1,500 each. Historical data shows 2% are lost or stolen per year, with 100% loss per incident. A full-disk encryption solution costs \\$50/laptop/year and reduces EF to 10%.
 
-### 12.1.e Exam nuance
+\`\`\`
+AV = $1,500; EF_before = 1.0; ARO = 0.02
+SLE_before = $1,500 × 1.0 = $1,500
+ALE_before = $1,500 × 0.02 = $30/laptop = $30,000/year (fleet)
 
-CISSP wants you to use threat modeling as a **design-time control**
-that anticipates threats **before** deployment. A question that
-offers "run a pentest" vs "perform a threat model" for a system
-being designed wants the threat model. For a system already in
-production, pentesting or assessment may be the BEST answer.
+EF_after = 0.1
+SLE_after = $1,500 × 0.1 = $150
+ALE_after = $150 × 0.02 = $3/laptop = $3,000/year (fleet)
 
-When asked which methodology is BEST for a given scenario: STRIDE
-for systematic categorization of technical threats, PASTA for
-business-aligned risk assessment that links threats to business
-impact, LINDDUN for privacy, attack trees for adversary-goal
-decomposition.
+Control cost = $50 × 1,000 = $50,000/year
+ROSI = ($30,000 - $3,000 - $50,000) / $50,000 = -0.46 (NEGATIVE)
+\`\`\`
 
-### 12.1.f Case studies
+A negative ROSI means the control is not financially justified on pure math. BUT: regulatory requirements, reputational damage, and ethical obligations can override pure ROSI.
 
-1. **Microsoft SDL adoption (2004→)** — the original corporate proof
-   that threat modeling at scale measurably reduces vulnerabilities
-   reaching customers.
-2. **Apple iMessage end-to-end encryption design.** Public
-   post-mortems (e.g., JHU 2016 paper) revealed padding-oracle-like
-   weaknesses that a formal threat model would have surfaced; the
-   case is frequently cited for "design-time modeling matters".
-3. **Tesla Model S CAN bus research (2020).** Demonstrated how attack
-   trees can map the path from a compromised infotainment system to
-   the drivetrain. Each node in the tree represents a control failure.
+### Qualitative Risk Assessment
 
-### 12.1.g Memory aids
+Uses subjective scales (Low/Medium/High or 1-5) for likelihood and impact. Faster and cheaper than quantitative; appropriate when data is scarce. Produces a risk matrix rather than dollar figures. Less defensible to a CFO but more honest when quantitative inputs would be fabricated.
 
-- **STRIDE**: "Spoofing, Tampering, Repudiation, Info disclosure,
-  DoS, Elevation".
-- **DREAD**: "Damage, Reproducibility, Exploitability, Affected,
-  Discoverability".
-- **Four questions**: "What? What wrong? What do? Did well?"
+### Four Risk Treatments
 
-### 12.1.h Cross-references
+1. **Avoid (eliminate)** — discontinue the activity creating the risk. Example: stop offering a feature that creates GDPR Article 9 exposure.
+2. **Mitigate (reduce)** — apply controls to reduce likelihood or impact. Most common treatment and most of what security teams do.
+3. **Transfer (share)** — shift financial consequence to a third party via insurance, contract, or outsourcing. Note: you can NEVER transfer accountability, only financial consequences.
+4. **Accept** — acknowledge the risk and take no further action. Requires formal sign-off by an authority with risk appetite to do so. Must be documented.
 
-- **Domain 3** — secure design principles are implemented in response
-  to threat model output.
-- **Domain 8** — SDL / DevSecOps integrates threat modeling into the
-  SDLC.
-- **Domain 6** — assessments validate that modeled threats are
-  mitigated.
+**"Ignore" is NOT a valid treatment.** Undocumented, unassessed risks are governance failures, not risk decisions.
 
----
+**Treatment order: Mitigate down to appetite → Transfer residual → Accept what remains → Avoid if risk exceeds capacity.**
+
+### Control Categories and Types
+
+**By implementer (who/what):**
+- **Administrative / managerial** — policies, procedures, training, background checks
+- **Technical / logical** — firewalls, encryption, IAM, IDS/IPS
+- **Physical** — locks, guards, fences, bollards, mantraps
+
+**By function (when/how):**
+- **Preventive** — stop an event (locks, encryption, firewalls)
+- **Detective** — identify an event (IDS, logs, CCTV, audits)
+- **Corrective** — recover from an event (backups, patches, IR)
+- **Deterrent** — discourage an event (warning signs, audit visibility)
+- **Recovery** — restore operations after an event (DR plans, backups)
+- **Compensating** — alternative when primary can't be used
+- **Directive** — guide behavior (policies, signs, training)
+
+### Threat Modeling
+
+Threat modeling is performed ideally during design and identifies what can go wrong, how, who might cause it, and what to do about it.
+
+**Shostack's Four Questions:**
+1. What are we building?
+2. What can go wrong?
+3. What are we going to do about it?
+4. Did we do a good job?
+
+**Major Methodologies:**
+- **STRIDE** — Spoofing, Tampering, Repudiation, Information disclosure, DoS, Elevation of privilege
+- **PASTA** — Process for Attack Simulation and Threat Analysis (seven stages, risk-centric)
+- **DREAD** — Damage, Reproducibility, Exploitability, Affected users, Discoverability (scoring model, deprecated but still tested)
+- **LINDDUN** — privacy-focused counterpart to STRIDE
+- **Attack trees** — hierarchical decomposition of attacker goals
+- **Kill chain** — Lockheed Martin (7 stages) and MITRE ATT&CK
+
+### Risk Frameworks
+
+| Framework | Focus |
+|---|---|
+| **NIST SP 800-30 Rev 1** | Guide for Conducting Risk Assessments |
+| **NIST SP 800-37 Rev 2 (RMF)** | Prepare → Categorize → Select → Implement → Assess → Authorize → Monitor |
+| **NIST SP 800-39** | Managing risk across three tiers: org, mission, system |
+| **ISO/IEC 27005** | Information security risk management |
+| **ISO 31000** | Enterprise risk management |
+| **FAIR** | Quantitative: Loss Event Frequency × Loss Magnitude |
+| **OCTAVE / OCTAVE Allegro** | Asset-driven, workshop-based |
+| **COSO ERM** | Enterprise risk management for finance and audit |
+
+### Exam Tips
+
+- When asked what to do FIRST after identifying a risk: **assess** (not mitigate, transfer, or accept). You cannot choose a treatment without first assessing.
+- **Who owns a risk?** The business process owner or data owner, NOT the CISO. The CISO facilitates; the business owns.
+- Risk decisions must be **formal, documented**, and tied to business objectives.
+- Residual risk can never be zero (except by avoiding the activity entirely).
+- When quantitative and qualitative both appear as options, choose the one that matches the available data — quantitative when data exists, qualitative when it doesn't.
+
+### Case Studies
+
+1. **Equifax 2017**: Risk identification (Apache Struts CVE) was timely; risk treatment (patch) was not. Governance failed to enforce treatment.
+2. **Capital One 2019**: Risk acceptance decisions around a WAF configuration left an SSRF path. The risk was knowable; treatment was inadequate.
+3. **Maersk / NotPetya 2017**: \\$300M+ event from a supply-chain compromise. Risk model didn't include "all Windows servers destroyed simultaneously" as a plausible scenario.
+
 `,
 
 cissp_compliance: `
@@ -1265,152 +1009,81 @@ come first.
 `,
 
 cissp_bcdr: `
-## 9. Sub-objective 1.7 — Business Continuity requirements
 
-### 9.1.a Conceptual explanation
+## Business Continuity & Disaster Recovery
 
-Business Continuity (BC) and Disaster Recovery (DR) are frequently
-confused, including by practitioners. CISSP distinguishes them:
+### BIA (Business Impact Analysis)
 
-- **Business Continuity** is the broad program to keep the business
-  operating during and after a disruption. Its scope is business
-  processes, not just IT.
-- **Disaster Recovery** is a subset of BC focused on **restoring IT
-  services** after a disruption.
+The BIA is the foundation of all business continuity planning. It identifies critical business processes, quantifies the impact of their disruption over time, and produces recovery metrics.
 
-Both sit under the parent discipline of **resilience**, sometimes
-referred to as **operational resilience** in the financial sector.
+**What the BIA produces:**
+- Identification and prioritization of critical business processes
+- Quantification of financial and operational impact of disruption
+- Recovery metrics: MTD, RTO, RPO, WRT for each critical process
+- Dependencies between processes (upstream/downstream)
+- Resource requirements for recovery
 
-The heart of BC is the **Business Impact Analysis (BIA)**. A BIA
-identifies the organization's critical business processes, quantifies
-the impact of their disruption over time, and produces the four
-foundational metrics of recovery:
+### Recovery Metrics
 
 | Metric | Meaning | Example |
 |---|---|---|
-| **MTD / MTPD** | Maximum Tolerable Downtime / Maximum Tolerable Period of Disruption. The longest the business can survive without the process. | "We can survive 72 hours without payroll; beyond that, critical staff leave." |
-| **RTO** | Recovery Time Objective. The target time to restore the process after a disruption. Must be ≤ MTD. | "Payroll must be restored within 24 hours." |
-| **RPO** | Recovery Point Objective. The maximum acceptable data loss, measured in time. | "We can lose at most 4 hours of payroll transactions." |
-| **WRT** | Work Recovery Time. The time needed to verify data integrity, test, and resume normal operations after technical recovery. | "After the system is restored, 8 more hours to reconcile and re-enable users." |
+| **MTD / MTPD** | Maximum Tolerable Downtime — the longest the business can survive without the process | "We can survive 72h without payroll" |
+| **RTO** | Recovery Time Objective — target time to restore | "Payroll restored within 24h" |
+| **RPO** | Recovery Point Objective — max acceptable data loss (in time) | "Lose at most 4h of transactions" |
+| **WRT** | Work Recovery Time — time to verify data, test, resume normal | "8h to reconcile and re-enable" |
 
-The arithmetic every CISSP candidate must internalize is:
+**Critical formula: RTO + WRT ≤ MTD**
 
-\`\`\`
-RTO + WRT = MTD   (must hold for each critical process)
-\`\`\`
+If RTO is 24h and WRT is 8h, MTD must be at least 32h. If MTD is only 24h, the plan is infeasible on paper.
 
-If RTO is 24 hours and WRT is 8 hours, the MTD must be at least 32
-hours, or the design is infeasible.
+### BCP vs DRP
 
-The BIA feeds into the **Business Continuity Plan (BCP)**, which in
-turn contains subordinate **Disaster Recovery Plans (DRPs)**, **Crisis
-Management Plans**, **Emergency Response Plans**, and **Continuity of
-Operations Plans (COOP)** — the exact taxonomy depends on the
-framework (NIST vs ISO vs DRI International).
+- **Business Continuity Plan (BCP)** — the broad program to keep the business operating during and after disruption. Scope: business processes, not just IT.
+- **Disaster Recovery Plan (DRP)** — a subset of BCP focused on restoring IT services.
 
-### 9.1.b Technical / procedural deep-dive: recovery site types
+Both sit under the parent discipline of **operational resilience**.
 
-| Site type | Hardware | Data | Recovery time | Cost |
-|---|---|---|---|---|
-| **Cold site** | Empty facility, power, environmental | None / backups delivered | Days to weeks | Lowest |
-| **Warm site** | Hardware installed, not current | Periodic sync or restored from backup | Hours to days | Moderate |
-| **Hot site** | Fully equipped, current | Near real-time replication | Minutes to hours | High |
-| **Mirror / dual site** | Identical to primary, active-active | Synchronous replication | Near zero | Highest |
-| **Mobile site** | Trailer or container with equipment | Brought on demand | Hours to days | Varies |
-| **Reciprocal / mutual aid** | Another org's facility, by agreement | Depends | Days | Very low |
-| **Cloud DR** | Cloud-provider capacity on demand | Replicated / snapshots | Minutes to hours | Variable, often cost-effective |
+### BCP Test Types
 
-Exam nuance: **reciprocal agreements** are rarely recommended in
-practice because they depend on the partner having capacity when you
-need it (which typically coincides with when they need it), but they
-still appear on the exam as a low-cost option.
+From least to most disruptive:
+1. **Checklist review** — paper verification of plan completeness
+2. **Tabletop exercise** — discussion-based scenario walkthrough
+3. **Walkthrough** — detailed step-by-step review with SMEs
+4. **Simulation** — partial execution in a controlled environment
+5. **Parallel test** — full execution at DR site, primary continues
+6. **Full interruption** — shut down primary, force real failover
 
-### 9.1.c Frameworks
+### Crisis Management
 
-- **NIST SP 800-34 Rev 1** — Contingency Planning Guide for Federal
-  Information Systems. Canonical US reference; introduces the BIA /
-  BCP / DRP / COOP taxonomy used on the exam.
-- **ISO 22301** — international standard for Business Continuity
-  Management Systems (BCMS). Includes a BIA requirement, RTO/RPO
-  definitions, exercise and testing requirements.
-- **ISO/IEC 27031** — guidelines for ICT readiness for business
-  continuity; bridges ISO 22301 and the 27000 family.
-- **DRI International Professional Practices** — vendor-neutral body
-  of practice used by BCP professionals; CISSP sometimes references
-  its ten professional practices.
+During a crisis, the priority order is always:
+1. **Personnel safety** — evacuate, account for people, provide medical aid
+2. **Business continuity** — maintain critical processes via alternate means
+3. **Technology recovery** — restore IT systems and data
 
-### 9.1.d Misconceptions
+A CISSP who recommends a technology action before ensuring personnel safety has the wrong answer on the exam.
 
-- "BIA is a technical exercise." No — it is a **business** exercise
-  led by business process owners, supported by IT and security.
-- "RTO and RPO are the same thing with different units." No. RTO is
-  time to restore; RPO is data-loss tolerance. Measured the same
-  (hours), but they answer different questions.
-- "Hot sites are always better." No — hot sites cost more than many
-  processes can justify. The BIA determines the right choice.
-- "DRP testing means running a full failover." Not necessarily. The
-  CISSP test hierarchy runs from least to most disruptive: **check-
-  list review → tabletop → walkthrough → simulation → parallel →
-  full interruption**.
+### Key Frameworks
 
-### 9.1.e Exam nuance
+- **NIST SP 800-34 Rev 1** — Contingency Planning Guide for Federal Information Systems
+- **ISO 22301** — Business Continuity Management Systems (BCMS)
+- **ISO/IEC 27031** — ICT readiness for business continuity
+- **DRI International Professional Practices** — ten practices for BCP professionals
 
-CISSP wants you to treat BC/DR as **risk-proportional** and
-**business-led**. A question that asks "what should the CISO do FIRST
-after a disaster?" is almost never "rebuild the servers" — it is
-"execute the BCP / activate the incident command structure / ensure
-personnel safety". Personnel safety is always first; business-process
-continuity is second; technology restoration is third.
+### Case Studies
 
-Another favorite: a question that asks what is MOST important to
-include in the BCP. The answer is typically **the BIA results** (or,
-equivalently, the identification and prioritization of critical
-processes), because every other part of the plan is derived from it.
+1. **Hurricane Katrina (2005)**: Organizations with only local DR lost both primary and secondary. Lesson: geographic separation.
+2. **AWS us-east-1 outages (multiple)**: Cloud is not automatically multi-region. Cloud DR requires explicit design.
+3. **WannaCry / NHS (2017)**: Business continuity mattered more than IT recovery — surgeries cancelled, patients diverted, paper workflows activated.
 
-Test type ordering is also heavily tested. Memorize the progression:
-**checklist → tabletop → walkthrough → simulation → parallel → full
-interruption**. Checklist is least disruptive; full interruption is
-most disruptive. A question that asks "which test is LEAST
-disruptive?" wants "checklist"; "which MOST realistically validates
-the plan?" wants "parallel" or "full interruption" (usually parallel,
-because full interruption carries its own risk).
+### Exam Tips
 
-### 9.1.f Case studies
+- The BIA is the MOST IMPORTANT element of the BCP
+- Personnel safety is ALWAYS first in a disaster
+- "Which test is LEAST disruptive?" → Checklist
+- "MOST realistic while preserving production?" → Parallel
+- Reciprocal agreements are rarely recommended (both need it simultaneously)
+- RTO + WRT ≤ MTD — write this on your scratch paper at exam start
 
-1. **Hurricane Katrina (2005).** Entire data centers rendered
-   inaccessible for weeks; organizations with only local or regional
-   DR found both primary and secondary sites affected. Lesson: DR
-   site must be geographically distant enough to avoid the same
-   disaster.
-2. **AWS us-east-1 outage (multiple — 2017, 2021, 2023).** Taught
-   cloud-native organizations that "the cloud" is not automatically
-   multi-region. Cloud DR requires explicit regional (and often
-   multi-cloud) design.
-3. **2017 WannaCry impact on the UK NHS.** Non-IT business continuity
-   mattered more than technical DR: surgeries cancelled, patients
-   diverted, paper-based workflows activated. A reminder that BCP is
-   about the business, not just IT.
-
-### 9.1.g Memory aids
-
-- **"MTD ≥ RTO + WRT"** — write this on your scratch paper at exam
-  start. Any BC/DR math question becomes mechanical.
-- **"Checklist-Tabletop-Walkthrough-Simulation-Parallel-Full"** —
-  "CTWSPF" is unpronounceable, but you can remember "Cats Trample
-  Wet Snakes, Parallel Failover" or similar.
-- **"Safety, Business, Technology"** — the order of priorities in
-  an actual disaster. Personnel first, business second, tech third.
-
-### 9.1.h Cross-references
-
-- **Domain 7** — incident response is a peer discipline; BC/DR runs
-  when incident response determines the event is disruptive enough.
-- **Domain 2** — data classification informs RPO (higher-value data
-  needs shorter RPO).
-- **Domain 3** — redundancy and fault-tolerance architecture
-  implement the availability side of BC/DR.
-
----
 `,
 
 cissp_personnel: `
@@ -3584,29 +3257,83 @@ opportunistic encryption (OWE) for open networks.
 `,
 
 cissp_wireless_net: `
-### 5.c VPN topologies
 
-- **Site-to-site VPN:** two networks connected as if adjacent.
-  Typically IPsec tunnel mode with pre-shared keys or certificates.
-- **Remote-access VPN:** individual users connecting to a corporate
-  network. IPsec or SSL VPN.
-- **SSL VPN:** browser-based or client-based, typically over 443.
-  Won market share for remote access because of firewall
-  friendliness.
-- **WireGuard:** modern, minimal, fast VPN. Single cipher suite,
-  cryptographic key identities.
-- **ZTNA (Zero Trust Network Access):** per-application tunneling
-  instead of full-network VPN. Aligns with zero trust.
+## Wireless & Remote Access
 
-### 5.d Wireless security
+### Wireless Security Standards
 
-- **WEP** — broken for decades.
-- **WPA/WPA2** — TKIP/AES; WPA2-PSK vulnerable to offline
-  dictionary attacks after handshake capture; KRACK attack (2017)
-  broke WPA2 handshake.
-- **WPA3** — SAE replaces PSK, forward secrecy, OWE for open
-  networks.
-- **WPA3-Enterprise** — 192-bit mode for highest assurance.
+| Standard | Security | Key Features | Status |
+|---|---|---|---|
+| **WEP** | Broken | RC4 with static keys; IV collision attack | Deprecated, do not use |
+| **WPA** | Weak | TKIP wrapper around WEP; temporal keys | Legacy, avoid |
+| **WPA2** | Standard | AES-CCMP for data, HMAC-SHA1 for MIC | Deprecated for new deployments |
+| **WPA3** | Current | SAE handshake, forward secrecy, OWE | Recommended standard |
+
+### WPA3 in Detail
+
+**SAE (Simultaneous Authentication of Equals)** replaces WPA2's Pre-Shared Key four-way handshake. SAE is based on the Dragonfly key exchange protocol and provides:
+
+- **Offline dictionary attack resistance**: each authentication attempt requires an online interaction with the network. An attacker who captures the handshake cannot run offline brute-force.
+- **Forward secrecy**: past sessions cannot be decrypted even if the password is later compromised, because each session uses ephemeral keys.
+- **Protection with weak passwords**: even short or simple passwords are significantly harder to attack than under WPA2-PSK.
+
+**WPA3-Enterprise 192-bit mode** uses a stronger cipher suite (AES-256-GCM, SHA-384, ECDH P-384) for environments requiring the highest assurance.
+
+**Opportunistic Wireless Encryption (OWE)** provides encryption for open networks (cafes, airports) without requiring a password — encryption without authentication, preventing passive eavesdropping.
+
+### KRACK Attack (2017)
+
+Key Reinstallation Attack exploited WPA2's four-way handshake by forcing nonce reuse in the encryption. Affected every WPA2 implementation. Allowed decryption of traffic and injection of forged frames. WPA3-SAE is immune by design.
+
+### 802.1X (Port-Based Network Access Control)
+
+Three roles in 802.1X:
+1. **Supplicant** — the client device requesting access
+2. **Authenticator** — the switch or wireless access point
+3. **Authentication Server** — typically a RADIUS server
+
+The supplicant sends credentials via EAP (Extensible Authentication Protocol) to the authenticator, which forwards them to the RADIUS server. On success, the port is opened.
+
+**EAP Methods:**
+- **EAP-TLS** — certificate-based authentication for both client and server. Strongest method; requires PKI for client certificates.
+- **PEAP (Protected EAP)** — creates a TLS tunnel, then uses MSCHAPv2 for password authentication inside the tunnel. Most common enterprise method.
+- **EAP-TTLS** — similar to PEAP; creates a TLS tunnel for inner authentication methods.
+- **EAP-FAST** — Cisco-developed; uses Protected Access Credentials instead of certificates.
+
+### VPN Types
+
+| Type | Technology | Use Case |
+|---|---|---|
+| **Site-to-site** | IPsec tunnel mode | Connect two office networks |
+| **Remote access (SSL VPN)** | TLS over port 443 | Individual users to corporate |
+| **Remote access (IPsec)** | IKEv2 + ESP | Traditional client VPN |
+| **WireGuard** | Modern, minimal | Fast VPN with single cipher suite |
+| **ZTNA** | Identity-aware proxy | Per-application access (zero trust) |
+
+### ZTNA vs Traditional VPN
+
+Traditional VPN grants full network access once authenticated — a compromised user can move laterally across all internal resources. ZTNA (Zero Trust Network Access) provides per-application access based on identity, device posture, and policy. Users never "join" the network; they are granted access to specific applications per-request.
+
+**ZTNA is the modern answer to remote access** because it aligns with zero trust principles: no implicit trust from network location, every request evaluated independently.
+
+### Wireless Attacks
+
+| Attack | Description | Defense |
+|---|---|---|
+| **Rogue AP / Evil twin** | Attacker-controlled AP mimicking legitimate | WIDS, 802.1X |
+| **Karma attack** | Rogue AP responds to any probe request | Device policy: don't auto-connect |
+| **Deauthentication** | Forged deauth frames disconnect clients | 802.11w (Management Frame Protection) |
+| **WPS attack** | Brute-force WPS PIN | Disable WPS |
+| **Bluetooth attacks** | Bluejacking, Bluesnarfing, KNOB | Disable when not in use, BLE 5.0+ |
+
+### Exam Tips
+
+- WPA3 SAE = resistant to offline dictionary attacks + forward secrecy
+- 802.1X: supplicant → authenticator → RADIUS server; EAP-TLS is strongest
+- ZTNA > VPN for zero trust alignment
+- KRACK attacked WPA2's handshake via nonce reinstallation
+- WPA3 is the CURRENT standard; WPA2 is legacy
+
 `,
 
 cissp_network_attacks: `
@@ -4257,64 +3984,281 @@ When a scenario involves a SaaS vendor evaluation, SOC 2 Type II is the typical 
 `,
 
 cissp_testing: `
-### Application security testing
-- **SAST (Static Application Security Testing)**: analyzes source code without running it. Finds many real bugs but also many false positives. Best run at commit time or in CI.
-- **DAST (Dynamic Application Security Testing)**: tests running applications from the outside. Finds runtime bugs that SAST misses. Requires deployed instance.
-- **IAST (Interactive Application Security Testing)**: instruments the running application from inside, combining SAST-like visibility with DAST-like runtime behavior.
-- **SCA (Software Composition Analysis)**: identifies open-source components and their known vulnerabilities. Essential for supply chain security.
-- **RASP (Runtime Application Self-Protection)**: instruments the application to block attacks at runtime.
-- **Fuzzing**: randomized or mutation-based input generation to find crash-inducing bugs.
 
-## 6. Sub-objective 6.4 — Analyze test output and generate reports
+## Software Testing
 
-### Report consumers
-- **Executive summary**: one page for the board, outcome framed, risk framed.
-- **Technical report**: full findings for remediation teams.
-- **Compliance letter**: attestation for auditors and customers.
+### Application Security Testing Tools
 
-### Findings structure
-- **Description**: what was found.
-- **Impact**: what could happen.
-- **Likelihood**: how likely under the current state.
-- **Severity**: combination of impact and likelihood.
-- **Remediation**: specific steps to fix.
-- **Evidence**: screenshots, logs, reproduction steps.
+| Tool | Method | Strengths | Weaknesses |
+|---|---|---|---|
+| **SAST** | Reads source code without running | Fast, finds many bugs early, covers full codebase | High false positives, misses runtime issues |
+| **DAST** | Probes running application from outside | Finds real exploitable bugs, tests business logic | Misses code paths not exercised, requires deployed instance |
+| **IAST** | Instruments running app from inside | Lower false positives, runtime + code visibility | Requires instrumentation, framework support needed |
+| **SCA** | Inventories dependencies vs vulnerability DBs | Catches supply chain risks (Log4Shell) | Only finds known vulnerabilities in known components |
+| **RASP** | Runtime protection inside the app | Blocks attacks at runtime | Performance overhead, deployment complexity |
+| **Fuzzing** | Randomized input generation | Finds crash-inducing bugs, edge cases | No guarantee of coverage, requires test harness |
 
-### False positives and false negatives
-All testing tools have both. A report that ignores false positives wastes remediation effort; a report that ignores false negatives gives false confidence. Mature programs tune tools to balance the two.
+**"SAST reads, DAST probes, IAST watches, SCA lists, RASP defends."**
 
----
+### SAST (Static Application Security Testing)
+
+Analyzes source code, bytecode, or binary without executing it. Parses code into an abstract syntax tree, traces data flows, and identifies patterns matching known vulnerability classes: SQL injection, XSS, path traversal, hardcoded credentials, insecure crypto.
+
+**When to run:** At commit time in CI, or in the IDE during development. Best when fast and tuned to critical issues only.
+
+**Limitations:** High false positive rate because it cannot observe runtime behavior. Cannot detect business logic flaws. May not understand framework-specific security patterns.
+
+### DAST (Dynamic Application Security Testing)
+
+Tests a running application from the outside by sending HTTP requests and analyzing responses. Crawls the application, submits test payloads (injection strings, XSS probes), and observes whether the application responds in ways that indicate vulnerabilities.
+
+**When to run:** Against a deployed test environment. In CI/CD after deployment to a staging environment.
+
+**Limitations:** Only exercises code paths that the crawler finds. Cannot see internal code logic. Requires a running instance. Slower than SAST.
+
+### IAST (Interactive Application Security Testing)
+
+Instruments the running application with an agent that observes data flows, function calls, and security-relevant operations from inside. Combines SAST's code visibility with DAST's runtime accuracy.
+
+**When to run:** During functional testing. The agent observes what happens when tests exercise the application.
+
+**Advantages:** Lower false positives than SAST, catches issues DAST misses, provides precise code location of findings.
+
+**Limitations:** Requires compatible language/framework support. Performance overhead from instrumentation. Effectiveness depends on test coverage.
+
+### SCA (Software Composition Analysis)
+
+Inventories open-source and third-party components and cross-references them against known-vulnerability databases (NVD, OSV, GitHub Advisory Database).
+
+**Critical because:** Modern applications are 80-90% someone else's code. Log4Shell (CVE-2021-44228) demonstrated that organizations without SCA could not answer "do we use this component?" quickly.
+
+**Tools:** Snyk, Dependabot, WhiteSource/Mend, JFrog Xray, Black Duck, Trivy.
+
+### Manual Code Review
+
+Automated tools miss business logic flaws, complex authorization issues, and novel attack patterns. Manual review by skilled security engineers catches what automation cannot.
+
+**Most valuable for:** High-risk code paths, new architectures, authentication/authorization logic, cryptographic implementations.
+
+### Penetration Testing vs Vulnerability Scanning
+
+- **Scan** = automated, signature-based, finds KNOWN vulnerabilities. Answers "what COULD be wrong."
+- **Pentest** = human-driven, chains exploits, finds EXPLOITABLE paths. Answers "what IS exploitable right now."
+
+Both are needed. Scans provide breadth; pentests provide depth.
+
+### Red Team / Blue Team / Purple Team
+
+- **Red team** — adversary simulation over weeks-months, realistic threat actor behavior
+- **Blue team** — defenders: detection and response
+- **Purple team** — joint debrief where red shows blue what they did and missed; mutual improvement
+- **White team** — coordinators who plan, observe, and referee
+
+### Exam Tips
+
+- No single tool is sufficient — mature programs use SAST + DAST + IAST + SCA + manual review
+- SCA is the ONLY tool that catches dependency vulnerabilities quickly
+- IAST has lower false positives than SAST but needs instrumentation
+- Manual code review catches business logic that automation misses
+- Assessment without remediation = security theater
+- "Shift left" = catch early. "Shift everywhere" = no stage catches everything.
+
 `,
 
 cissp_ir: `
-## 7. Incident response
 
-**IR lifecycle (NIST SP 800-61 Rev 2):**
+## Incident Management
 
-1. **Preparation** — policy, procedures, team, tools, training, exercises.
-2. **Detection and analysis** — identifying that an incident has occurred; triage.
-3. **Containment, eradication, recovery** — stopping the spread, removing the threat, restoring operations.
-4. **Post-incident activity (lessons learned)** — debrief, update procedures, feed back into the program.
+### NIST SP 800-61 Rev 2 — IR Lifecycle
 
-Containment has short-term (isolate the affected host) and long-term (segment the affected network area) phases. Eradication removes the attacker's presence (delete malware, close backdoors, rotate credentials, rebuild systems). Recovery restores operations and monitors for re-infection.
+The incident response lifecycle has four phases that form a continuous loop:
 
-**IR team (CSIRT or SOC):** clear roles (lead, analyst, communicator, legal, executive liaison), 24/7 coverage for critical events, on-call rotation, pre-assigned responsibilities.
+**Phase 1: Preparation**
+- Develop IR policy and procedures
+- Build and train the IR team (CSIRT)
+- Deploy tools: SIEM, EDR, forensic imaging, communication channels
+- Establish communication plans: internal (management, affected teams) and external (customers, regulators, law enforcement, media)
+- Run exercises: tabletop, walkthrough, simulation
+- Pre-designate a spokesperson for external communication
+- Pre-draft communication templates for common scenarios
+- Establish relationships with law enforcement, CERT, and ISAC contacts
 
-**Communications:** internal (management, affected teams), external (customers, regulators, law enforcement, media). Pre-drafted templates and a single spokesperson pattern.
+**Phase 2: Detection and Analysis**
+- Identify that an incident has occurred through alerts, user reports, or proactive hunting
+- Triage: determine severity, scope, and classification
+- Initial scoping: how many systems affected, what data at risk, what is the attacker doing
+- Activate the IR plan if thresholds are met
+- Begin evidence preservation immediately
 
-**Legal and regulatory obligations:** breach notification timelines (GDPR 72 hours to supervisory authority, SEC 4 business days for material incidents at public companies, state laws for consumer notification, industry-specific rules).
+**Phase 3: Containment, Eradication, and Recovery**
 
-**Insurance:** cyber insurance engagement at the appropriate time. Many policies require specific IR firms and processes.
+*Containment (short-term):*
+- Isolate affected systems from the network
+- Disable compromised accounts
+- Block malicious IPs/domains
+- Preserve evidence before containment actions that would destroy it
 
-**Playbooks:** specific runbooks for common incident types (ransomware, BEC, credential compromise, data exfiltration, DDoS, insider).
+*Containment (long-term):*
+- Segment affected network areas
+- Deploy additional monitoring
+- Patch or mitigate the exploited vulnerability
+- Prepare for eradication
+
+*Eradication:*
+- Remove attacker's presence: malware, backdoors, unauthorized accounts
+- Rotate all credentials used on compromised systems
+- Rebuild compromised systems from clean images
+- Close the attack vector
+
+*Recovery:*
+- Restore operations in phases, starting with most critical
+- Monitor intensively for re-infection or attacker return
+- Validate data integrity before resuming normal operations
+- Gradually reduce heightened monitoring as confidence increases
+
+**Phase 4: Post-Incident Activity (Lessons Learned)**
+- Conduct a formal debrief within 1-2 weeks of resolution
+- Document what happened, when, how it was detected, how it was contained, and what went well or poorly
+- Produce specific remediation actions with owners and deadlines
+- Update IR procedures, detection rules, and training based on findings
+- Track remediation completion as a closed loop
+- The lessons-learned debrief is the most important phase — it turns incidents into program improvement
+
+### IR Team Roles
+
+- **IR Lead / Incident Commander** — owns the response, makes decisions
+- **Technical analysts** — perform triage, forensics, containment
+- **Communications** — manages internal and external messaging
+- **Legal** — advises on evidence, notification obligations, privilege
+- **Executive liaison** — keeps leadership informed, authorizes resources
+- **HR** — involved when insiders are implicated
+
+### Breach Notification Timelines
+
+| Regulation | Timeline | Trigger |
+|---|---|---|
+| **GDPR** | 72 hours to supervisory authority | Risk to rights and freedoms |
+| **SEC (US public companies)** | 4 business days (8-K) | Material incident determination |
+| **HIPAA** | 60 days to HHS + individuals | PHI breach affecting 500+ |
+| **US state laws** | Varies (typically "without unreasonable delay") | PII breach |
+| **PCI-DSS** | Varies by card brand | Cardholder data compromise |
+
+### Playbooks
+
+Incident-specific runbooks for common types:
+- **Ransomware** — containment, backup assessment, law enforcement, payment decision
+- **Business Email Compromise** — email forensics, financial recovery (wire recall has short windows)
+- **Credential compromise** — credential rotation, session revocation, scope assessment
+- **Data exfiltration** — scope, evidence preservation, notification analysis
+- **DDoS** — upstream coordination, scrubbing services, customer communication
+- **Insider threat** — HR coordination, legal, evidence preservation under employment law
+
+### Exam Tips
+
+- Personnel safety is ALWAYS first — before any technology response
+- Preserve evidence BEFORE containment actions that would destroy it
+- The correct FIRST action in most scenarios: activate the IR plan / notify IR team
+- Single spokesperson for external communications (communications/PR with legal support)
+- Blameless post-mortems produce better learning than blame-focused reviews
+- IR is a LOOP — lessons feed back into preparation
+- "What should the CISSP do FIRST after discovering an incident?" → Contain and preserve evidence (not reboot, not call the media)
+
 `,
 
 cissp_investigations: `
-## 3. Investigations
 
-(Cross-reference Domain 1 §1.5.) CISSP recognizes five investigation types: administrative, criminal, civil, regulatory, industry-standard. Each has a different burden of proof and different procedures. Evidence integrity follows RFC 3227 order of volatility (CPU/registers → memory → disk → archival) and requires forensically sound imaging, chain of custody, and adherence to the five evidence rules (authentic, accurate, complete, convincing, admissible). NIST SP 800-86 provides the US federal reference for integrating forensic techniques into incident response. ISO/IEC 27037 is the international counterpart.
+## Investigations & Evidence
 
-**Key points:** preserve first, analyze second. Write blockers for disk imaging. Forensic images with cryptographic hashes. Document who touched what and when. Do not boot suspect systems before imaging. Engage legal early when criminal or civil investigation is possible. Consider eDiscovery obligations under the Federal Rules of Civil Procedure for litigation-adjacent investigations.
+### Investigation Types
+
+The CISSP exam distinguishes five investigation types:
+
+| Type | Burden of Proof | Consumer | Typical Trigger |
+|---|---|---|---|
+| **Administrative** | Policy/agreement | HR, management | Policy violation |
+| **Criminal** | Beyond a reasonable doubt | Prosecutor, court | Alleged crime |
+| **Civil** | Preponderance of evidence | Plaintiff's counsel | Tort, contract dispute |
+| **Regulatory** | Varies (often preponderance) | Regulator | Compliance failure |
+| **Industry** | Contractual | Industry body / auditor | Audit finding |
+
+The same conduct can trigger multiple investigation types simultaneously. An employee who steals data may face an administrative investigation (HR discipline), a civil investigation (company sues for damages), a criminal investigation (CFAA charges), and a regulatory investigation (HIPAA violation) — all at the same time.
+
+### Burden of Proof
+
+Understanding the burden of proof is the most-tested concept here:
+
+- **Beyond a reasonable doubt** (criminal) — highest standard; the prosecution must prove guilt to near certainty
+- **Preponderance of evidence** (civil) — "more likely than not" (>50%); lower standard
+- **Administrative** — internal policy; typically the lowest standard
+
+The exam will present a scenario and ask "what standard of proof applies?" — the answer is always tied to the investigation type.
+
+### Evidence Handling
+
+**Chain of custody** — documented record of every person who handled the evidence, with timestamps. Every handoff is recorded. Breaks in the chain are grounds to exclude evidence at trial.
+
+**Best evidence rule** — original evidence is preferable; copies admitted only when originals are unavailable. For digital evidence, the "original" is a forensically sound image.
+
+**Five rules of evidence:**
+1. **Authentic** — evidence is what it claims to be
+2. **Accurate** — evidence has not been altered
+3. **Complete** — evidence tells the whole story
+4. **Convincing** — evidence is persuasive to the trier of fact
+5. **Admissible** — evidence was collected properly and is legally permissible
+
+### Forensic Procedures
+
+**Order of volatility (RFC 3227)** — collect more-volatile evidence first:
+1. CPU registers, cache
+2. Routing tables, ARP cache, process tables, memory
+3. Temporary file systems
+4. Disk storage
+5. Remote logging and monitoring data
+6. Physical configuration and network topology
+7. Archival media
+
+**Forensic imaging** — bit-for-bit copy with cryptographic hash (SHA-256) computed before and after to prove the image is exact. Tools: dd, FTK Imager, EnCase.
+
+**Write blockers** — hardware or software that prevents writes to evidence media during imaging. Always use when imaging.
+
+**Live forensics vs dead forensics:**
+- **Live** — system is running; capture volatile evidence (RAM, process state, network connections) before powering down
+- **Dead** — system is powered off; image the disk
+
+### Digital Forensics Process
+
+1. **Identification** — determine that an incident has occurred and that evidence exists
+2. **Collection** — gather evidence following order of volatility, with chain of custody
+3. **Examination** — process the evidence to extract relevant data
+4. **Analysis** — interpret the extracted data in context of the investigation
+5. **Reporting** — document findings with evidence, methodology, and conclusions
+
+### eDiscovery
+
+Electronic discovery for litigation. The Federal Rules of Civil Procedure (FRCP) govern eDiscovery in US federal courts. Key obligations:
+
+- **Preservation** — once litigation is reasonably anticipated, relevant ESI (electronically stored information) must be preserved
+- **Litigation hold** — formal notice to preserve; overrides normal retention
+- **Spoliation** — destruction of relevant evidence; sanctionable (FRCP Rule 37(e))
+- **Proportionality** — discovery obligations are proportional to the case
+
+### Key Frameworks
+
+- **RFC 3227** — Guidelines for Evidence Collection and Archiving
+- **NIST SP 800-86** — Guide to Integrating Forensic Techniques Into Incident Response
+- **ISO/IEC 27037** — Identification, Collection, Acquisition, Preservation of Digital Evidence
+- **ISO/IEC 27042** — Analysis and Interpretation of Digital Evidence
+- **Federal Rules of Evidence (US)** — especially Rules 702 (expert testimony), 901 (authentication)
+
+### Exam Tips
+
+- Preserve first, analyze second. Never analyze the original.
+- Chain of custody starts at first acquisition, NOT at the lab.
+- Criminal and civil cases CAN run in parallel (different burden).
+- Administrative investigations are the most common in CISSP's context.
+- When a scenario hints at potential criminal conduct, preserve evidence AS IF prosecution were possible.
+- RFC 3227 order: CPU → memory → disk → archival (most volatile first)
+
 `,
 
 cissp_operations: `
@@ -4362,55 +4306,175 @@ cissp_operations: `
 `,
 
 cissp_disaster: `
-## 8. Disaster recovery
 
-(Cross-reference Domain 1 §1.7 BCP/BIA.) Disaster recovery is the IT side of business continuity — restoring services after a disruption.
+## Disaster Recovery Operations
 
-**Recovery strategies:**
+### Recovery Site Types
 
-- **Backup and restore** — traditional, slowest recovery.
-- **Warm standby** — hardware in place, data current or near-current.
-- **Hot standby** — fully operational failover environment.
-- **Active-active** — both sites operating simultaneously; failover is automatic.
-- **Cloud DR** — cloud region as secondary site, with replication and automation.
-- **Multi-cloud** — redundancy across providers to eliminate provider-level SPOF.
+| Site | Hardware | Data | Recovery Time | Cost |
+|---|---|---|---|---|
+| **Cold site** | Empty facility, power, HVAC | None / backups delivered | Days to weeks | Lowest |
+| **Warm site** | Hardware installed, not current | Periodic sync or restored | Hours to days | Moderate |
+| **Hot site** | Fully equipped, current | Near real-time replication | Minutes to hours | High |
+| **Mirror / dual site** | Identical, active-active | Synchronous replication | Near zero | Highest |
+| **Mobile site** | Trailer or container | Brought on demand | Hours to days | Varies |
+| **Reciprocal / mutual aid** | Partner org's facility | Depends | Days | Very low |
+| **Cloud DR** | Cloud-provider capacity | Replicated / snapshots | Minutes to hours | Variable |
 
-**Backup strategies:**
+**Reciprocal agreements** are rarely recommended — both partners typically need the facility at the same time (the same disaster affects both).
 
-- **Full, incremental, differential** — classic levels.
-- **Snapshot** — point-in-time copy.
-- **Replication** — continuous copy to a secondary location.
-- **3-2-1 rule**: 3 copies, 2 different media, 1 offsite.
-- **3-2-1-1-0**: adds 1 immutable/offline copy and 0 errors verified.
-- **Air-gapped / immutable backups** — defense against ransomware destruction of backups.
-- **Backup testing** — restores must be tested regularly; untested backups often fail.
+### Backup Strategies
 
-**Recovery testing:** per Domain 1 lesson plan — checklist → tabletop → walkthrough → simulation → parallel → full interruption. Progressive levels of realism.
+**Full backup** — complete copy of all data. Longest to create, fastest to restore.
+**Incremental backup** — copies only data changed since the LAST backup (full or incremental). Fastest to create, slowest to restore (need full + all incrementals).
+**Differential backup** — copies data changed since the LAST FULL backup. Middle ground: faster than full to create, faster than incremental to restore.
+
+**3-2-1 rule:** 3 copies, 2 different media types, 1 copy offsite.
+**3-2-1-1-0:** adds 1 immutable/air-gapped copy (ransomware defense) + 0 errors verified (test restores).
+
+### Modern Backup Considerations
+
+**Air-gapped / immutable backups** are the defense against ransomware that specifically targets backup infrastructure. Implementations:
+- AWS S3 Object Lock (WORM compliance mode)
+- Azure Immutable Blob Storage with time-based retention
+- Google Cloud Storage retention policies
+- Physical tape in a vault
+- Offline systems with write-once media
+
+**Cloud DR** is not automatically multi-region. Deploying to a single cloud region does not provide DR — an explicit multi-region design with replication and failover automation is required.
+
+### Recovery Testing
+
+BCP/DR test types from least to most disruptive:
+
+1. **Checklist review** — paper verification that plans and contacts are current
+2. **Tabletop exercise** — discussion-based scenario walkthrough
+3. **Walkthrough** — detailed step-by-step review with SMEs
+4. **Simulation** — partial execution in a test environment
+5. **Parallel test** — full execution at DR site while primary continues (MOST realistic without risking production)
+6. **Full interruption** — shut down primary, force real failover (MOST realistic overall)
+
+### DR Site Geographic Considerations
+
+The DR site must be geographically distant enough to avoid the same regional disaster:
+- Same earthquake fault line → both sites destroyed
+- Same hurricane path → both sites flooded
+- Same power grid → both sites blacked out
+- Same network backbone → both sites offline
+
+Hurricane Katrina (2005) taught this: organizations with DR in the same coastal region lost both sites.
+
+### Failover and Failback
+
+**Failover** — switching operations from primary to DR site. Can be automatic (active-active, automated health checks) or manual (human decision).
+
+**Failback** — returning from DR to primary after recovery. Often harder than failover because:
+- Data has changed at the DR site during the outage
+- The primary may need to be rebuilt or cleaned
+- Users are already working at the DR site
+
+### Exam Tips
+
+- "Which test is LEAST disruptive?" → Checklist
+- "Which test MOST realistically validates while preserving production?" → Parallel
+- "Which test is MOST realistic?" → Full interruption
+- RTO + WRT must be ≤ MTD
+- Personnel safety is ALWAYS first in a disaster — before technology recovery
+- Cloud DR requires explicit multi-region design
+- Failback planning should start BEFORE the disaster occurs
+- Test restores regularly — untested backups often fail at the worst moment
+
 `,
 
 cissp_sdlc: `
-## 3. Secure SDLC
 
-### Phases
-1. **Requirements** — security requirements captured alongside functional requirements. Includes compliance, privacy, threat modeling inputs, and security objectives.
-2. **Design** — threat modeling (Shostack 4 questions, STRIDE, PASTA), secure architecture patterns, selection of frameworks and libraries, review by security team.
-3. **Build** — secure coding practices, code review (manual and automated), SAST/SCA in IDE and CI, developer training.
-4. **Test** — DAST, IAST, fuzzing, penetration testing, integration with QA.
-5. **Deploy** — secure configuration, IaC scanning, secrets management, deployment gates.
-6. **Operate** — monitoring, runtime protection (RASP/WAF), incident response, vulnerability management.
+## Secure SDLC
 
-### Development methodologies
-- **Waterfall** — sequential phases, less flexible but predictable.
-- **Agile** — iterative, adaptive; security must be integrated per sprint.
-- **DevOps** — tight integration of development and operations with automation.
-- **DevSecOps** — security integrated into DevOps pipeline.
+### Security Activities by Phase
 
-### Secure SDLC frameworks
-- **Microsoft SDL** — canonical secure SDLC. Stages: training, requirements, design, implementation, verification, release, response.
-- **NIST SP 800-218 (SSDF)** — Secure Software Development Framework. Four practice groups: Prepare the Organization, Protect the Software, Produce Well-Secured Software, Respond to Vulnerabilities.
-- **OWASP SAMM** — Software Assurance Maturity Model. Provides a measurable maturity framework.
-- **BSIMM** — Building Security In Maturity Model. Descriptive benchmark of what real software security programs do.
-- **ISO/IEC 27034** — application security guidelines.
+**1. Requirements**
+- Capture security requirements alongside functional requirements
+- Identify applicable compliance obligations (GDPR, HIPAA, PCI-DSS)
+- Define abuse cases (how the system could be misused)
+- Specify authentication, authorization, and audit requirements
+- Establish data classification for data the system will handle
+- Document security acceptance criteria
+
+**2. Design**
+- Threat modeling: identify threats using STRIDE, PASTA, or Shostack's four questions
+- Secure architecture patterns: defense in depth, least privilege, fail-safe defaults
+- Select frameworks and libraries with known security properties
+- Design authentication and authorization flows
+- Plan encryption strategy (at rest, in transit, in use)
+- Security architecture review by the security team
+
+**3. Build (Implementation)**
+- Secure coding practices: input validation, output encoding, parameterized queries
+- Code review: manual and automated (SAST in IDE and CI)
+- SCA scanning to catch vulnerable dependencies at commit time
+- Secret scanning to prevent credential leaks
+- Developer security training integrated into the workflow
+
+**4. Test**
+- DAST against running application in test environment
+- IAST with instrumented application during functional tests
+- Fuzzing for crash-inducing or unexpected behavior
+- Penetration testing by qualified testers
+- Security-specific test cases derived from threat model
+
+**5. Deploy**
+- IaC scanning for infrastructure misconfigurations
+- Container image scanning for vulnerable base images
+- Secrets management: no credentials in code or config
+- Deployment gates: final security check before production
+- Signed artifacts with verified provenance
+
+**6. Operate**
+- Runtime monitoring: RASP, WAF, anomaly detection
+- Vulnerability management for the running application
+- Incident response readiness for application-level incidents
+- Continuous monitoring and detection rule tuning
+- Feedback loop: findings from operations feed back into design
+
+### Secure SDLC Frameworks
+
+**Microsoft SDL (Security Development Lifecycle)**
+Phases: Training → Requirements → Design → Implementation → Verification → Release → Response. The original corporate-scale secure SDLC framework. Proven at Microsoft to measurably reduce shipped vulnerabilities.
+
+**NIST SSDF (SP 800-218 — Secure Software Development Framework)**
+Four practice groups:
+1. **PO (Prepare the Organization)** — policies, roles, training, tools
+2. **PS (Protect the Software)** — protect source, protect build, protect release
+3. **PW (Produce Well-Secured Software)** — design, implement, review, test
+4. **RV (Respond to Vulnerabilities)** — identify, analyze, remediate, disclose
+
+Required for US federal software suppliers under EO 14028 and OMB M-22-18.
+
+**OWASP SAMM (Software Assurance Maturity Model)**
+Measurable maturity framework with five business functions: Governance, Design, Implementation, Verification, Operations. Each has security practices with maturity levels 1-3.
+
+**BSIMM (Building Security In Maturity Model)**
+Descriptive benchmark based on what real software security programs actually do. Published annually with data from 100+ organizations.
+
+### Development Methodology Considerations
+
+**Waterfall** — sequential phases; security activities map clearly to each phase. Security requirements up front, testing at the end.
+
+**Agile** — iterative sprints; security must be integrated per sprint, not deferred. Security stories in the backlog. Threat modeling updates with each major feature. SAST/DAST in CI.
+
+**DevOps** — tight dev/ops integration with automation. Security must be embedded in the automation or it gets bypassed.
+
+**DevSecOps** — security integrated into the DevOps pipeline at every stage. The mature model for modern software development.
+
+### Exam Tips
+
+- Threat modeling at design time is the cheapest place to find and fix security issues
+- "Secure by design" prevents entire classes of vulnerability; "security tested" finds individual bugs
+- NIST SSDF is now a federal procurement requirement (EO 14028)
+- Microsoft SDL is the canonical corporate secure SDLC
+- Shift left for speed (catch early), shift everywhere for depth (no single stage catches everything)
+- Security requirements must be in the backlog alongside functional requirements
+
 `,
 
 cissp_app_vuln: `
