@@ -20,6 +20,7 @@ import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
 import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
+import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
@@ -579,7 +580,12 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
           apiClient.getLessons(examType).catch(() => null),
           apiClient.getLessonProgress(examType).catch(() => null),
         ]);
-        if (lessonData?.sections) setLessons(lessonData.sections);
+        if (lessonData?.sections && Object.keys(lessonData.sections).length > 0) {
+          setLessons(lessonData.sections);
+        } else if (examType === 'CISSP') {
+          // Fallback: use static CISSP video lesson data
+          setLessons(getCISSPVideoLessons());
+        }
         if (progressData) setProgress(progressData);
       } catch { /* ignore */ }
       setLoading(false);
