@@ -24,6 +24,7 @@ import {
 } from 'recharts';
 import { apiClient } from '@/lib/api-client';
 import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
+import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
 
 interface UserStats {
   total_questions: number;
@@ -80,63 +81,78 @@ export default function TestPrepDashboard() {
     }, 3000);
 
     try {
-      const [statsRes, activityRes, recRes] = await Promise.all([
-        apiClient.getUserStats().catch(e => { throw e; }),
-        apiClient.getUserProgress().catch(e => { throw e; }),
-        apiClient.getAdaptiveLearningPath(examType).catch(e => { throw e; })
-      ]);
+      // Fetch real QBank stats for the selected exam type
+      const qbankStats = await apiClient.getQBankStats(examType).catch(() => null);
+      const qbankHistory = await apiClient.getQBankHistory(examType).catch(() => ({ sessions: [] }));
 
       clearTimeout(loadingTimeout);
 
+      // Compute real stats from QBank session history
+      const sessions = qbankHistory.sessions || [];
+      const totalQuestions = sessions.reduce((sum: number, s: any) => sum + (s.questions_answered || 0), 0);
+      const totalCorrect = sessions.reduce((sum: number, s: any) => sum + (s.correct_count || 0), 0);
+      const totalTime = sessions.reduce((sum: number, s: any) => sum + (s.total_time_seconds || 0), 0);
+      const overallAccuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+
       setStats({
-        total_questions: statsRes.total_questions || statsRes.total_questions_answered || 0,
-        overall_accuracy: statsRes.overall_accuracy || 0,
-        current_streak: statsRes.current_streak || statsRes.current_streak_days || 0,
-        questions_today: statsRes.questions_today || 0,
-        total_study_time: statsRes.total_study_time || statsRes.total_study_time_minutes || 0,
-        ability_level: statsRes.ability_level || 'Beginner'
+        total_questions: totalQuestions,
+        overall_accuracy: overallAccuracy,
+        current_streak: 0,
+        questions_today: 0,
+        total_study_time: totalTime,
+        ability_level: totalQuestions === 0 ? 'New' : totalQuestions < 50 ? 'Beginner' : totalQuestions < 200 ? 'Intermediate' : 'Advanced'
       });
 
-      setRecentActivity(activityRes.data?.activities || activityRes.activities || []);
-
-      const focusAreas = recRes.data?.focus_areas || recRes.focus_areas || [];
-      if (focusAreas.length > 0) {
-        setRecommendations(focusAreas.map((area: any, idx: number) => ({
-          id: `rec-${idx}`,
-          priority: area.priority || 'medium',
-          type: 'topic',
-          title: area.topic || 'Practice',
-          description: `Focus on ${area.topic || 'this topic'} - ${area.recommended_questions || 10} questions recommended`,
-          estimated_impact: 'Medium',
-          time_required: '30 minutes'
+      // Build real performance data from session history (last 7 sessions)
+      if (sessions.length > 0) {
+        const recentSessions = sessions.slice(0, 7).reverse();
+        setPerformanceData(recentSessions.map((s: any, i: number) => ({
+          day: s.completed_at ? new Date(s.completed_at).toLocaleDateString('en-US', { weekday: 'short' }) : `S${i + 1}`,
+          accuracy: Math.round(s.score_percent || 0),
+          questions: s.questions_answered || 0,
         })));
-
-        setInsights(focusAreas.slice(0, 3).map((area: any, idx: number) => ({
-          id: `insight-${idx}`,
-          type: area.priority === 'high' ? 'weakness' : 'opportunity',
-          title: area.topic || 'Topic',
-          description: `${area.recommended_questions || 10} questions recommended`,
-          importance: area.priority === 'high' ? 0.9 : 0.5,
-          actionable: true,
-          recommendations: [`Practice ${area.recommended_questions || 10} questions on ${area.topic}`]
-        })));
+      } else {
+        setPerformanceData([]);
       }
 
-      setPerformanceData([
-        { day: 'Mon', accuracy: 65, questions: 20 },
-        { day: 'Tue', accuracy: 70, questions: 25 },
-        { day: 'Wed', accuracy: 68, questions: 30 },
-        { day: 'Thu', accuracy: 75, questions: 22 },
-        { day: 'Fri', accuracy: 78, questions: 28 },
-        { day: 'Sat', accuracy: 82, questions: 35 },
-        { day: 'Sun', accuracy: 85, questions: 40 }
-      ]);
+      // Build real recommendations from QBank section stats
+      if (qbankStats?.sections && qbankStats.sections.length > 0) {
+        setRecommendations(qbankStats.sections.map((sec: any, idx: number) => ({
+          id: `rec-${idx}`,
+          priority: idx < 3 ? 'high' : 'medium',
+          type: 'domain',
+          title: sec.section,
+          description: `${sec.count} questions available — practice this domain`,
+          estimated_impact: 'High',
+          time_required: `${Math.round(sec.count * 2)} minutes`
+        })));
 
-      setUser({
-        full_name: 'Student',
-        username: 'student',
-        daily_goal_minutes: 30
-      });
+        setInsights(qbankStats.sections.slice(0, 3).map((sec: any, idx: number) => ({
+          id: `insight-${idx}`,
+          type: 'opportunity',
+          title: sec.section,
+          description: `${sec.count} practice questions available`,
+          importance: 0.7,
+          actionable: true,
+          recommendations: [`Start a ${Math.min(sec.count, 25)}-question practice session on ${sec.section}`]
+        })));
+      } else {
+        setRecommendations([]);
+        setInsights([]);
+      }
+
+      // Build real recent activity from session history
+      if (sessions.length > 0) {
+        setRecentActivity(sessions.slice(0, 5).map((s: any) => ({
+          type: `${s.mode === 'tutor' ? 'Practice' : 'Timed'} Session`,
+          time: s.completed_at ? new Date(s.completed_at).toLocaleString() : 'Recent',
+          details: `${s.correct_count || 0}/${s.questions_answered || 0} correct (${Math.round(s.score_percent || 0)}%)`
+        })));
+      } else {
+        setRecentActivity([]);
+      }
+
+      setUser(null);
     } catch (error) {
       console.error('Failed to fetch dashboard data:', error);
       clearTimeout(loadingTimeout);
@@ -147,22 +163,13 @@ export default function TestPrepDashboard() {
         current_streak: 0,
         questions_today: 0,
         total_study_time: 0,
-        ability_level: 'Beginner'
+        ability_level: 'New'
       });
-      setPerformanceData([
-        { day: 'Mon', accuracy: 0, questions: 0 },
-        { day: 'Tue', accuracy: 0, questions: 0 },
-        { day: 'Wed', accuracy: 0, questions: 0 },
-        { day: 'Thu', accuracy: 0, questions: 0 },
-        { day: 'Fri', accuracy: 0, questions: 0 },
-        { day: 'Sat', accuracy: 0, questions: 0 },
-        { day: 'Sun', accuracy: 0, questions: 0 }
-      ]);
-      setUser({
-        full_name: 'Student',
-        username: 'student',
-        daily_goal_minutes: 30
-      });
+      setPerformanceData([]);
+      setRecommendations([]);
+      setInsights([]);
+      setRecentActivity([]);
+      setUser(null);
     } finally {
       setLoading(false);
     }
@@ -208,14 +215,16 @@ export default function TestPrepDashboard() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold mb-2">
-              Welcome back, {user?.full_name || user?.username}!
+              {getExamConfig(examType).name} Prep
             </h2>
             <p className="text-muted-foreground">
-              You're on a {stats?.current_streak || 0} day streak! Keep up the great work!
+              {(stats?.total_questions || 0) > 0
+                ? `${stats?.total_questions} questions answered · ${stats?.overall_accuracy || 0}% accuracy`
+                : 'Start practicing to track your progress'}
             </p>
           </div>
           <div className="text-right">
-            <p className="text-sm text-muted-foreground mb-1">Current Level</p>
+            <p className="text-sm text-muted-foreground mb-1">Level</p>
             <p className="text-2xl font-bold">{stats?.ability_level || 'Beginner'}</p>
           </div>
         </div>
@@ -274,6 +283,8 @@ export default function TestPrepDashboard() {
           </div>
         </Card>
       )}
+
+      {examType === 'PATENT_BAR' && <PatentBarCohortPanel />}
 
       {/* Quick Actions */}
       <div>
