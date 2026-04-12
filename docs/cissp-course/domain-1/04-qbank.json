@@ -1,0 +1,1140 @@
+{
+  "meta": {
+    "domain": 1,
+    "domain_name": "Security and Risk Management",
+    "exam_weight_percent": 16,
+    "exam_outline_version": "2024-04-15",
+    "question_count": 50,
+    "difficulty_mix": {
+      "recall": 5,
+      "application": 20,
+      "analysis": 25
+    },
+    "eureka_topic_ids": [
+      "cissp_governance",
+      "cissp_risk_mgmt",
+      "cissp_compliance",
+      "cissp_bcdr",
+      "cissp_personnel"
+    ],
+    "notes": "AI-generated practice content aligned to the (ISC)² CISSP Exam Outline effective April 15, 2024. Requires human SME review before publication to learners. Do not treat as official (ISC)² material."
+  },
+  "questions": [
+    {
+      "id": "D1-Q001",
+      "type": "recall",
+      "stem": "Which of the following BEST defines the Annualized Loss Expectancy (ALE)?",
+      "options": {
+        "A": "The monetary value of a single asset, adjusted for depreciation",
+        "B": "The expected financial loss from a single incident",
+        "C": "The expected financial loss from all incidents of a given type over one year",
+        "D": "The total cost of implementing a risk control over its useful life"
+      },
+      "correct": "C",
+      "rationale": "ALE is the expected annual financial loss from a specific risk, computed as Single Loss Expectancy (SLE) multiplied by Annualized Rate of Occurrence (ARO). Option A describes Asset Value, which is an input to SLE but not ALE itself. Option B describes the Single Loss Expectancy (SLE = AV × EF), which is the loss from one incident, not the yearly expectation. Option D describes Total Cost of Ownership for a control, an input to ROSI calculations but not ALE itself. The CISSP exam repeatedly tests the formula chain AV → SLE → ALE because it is the foundation of quantitative risk analysis and feeds into ROSI-based justification for security controls. NIST SP 800-30 Rev 1 provides the canonical definitions of these terms. Memorize SLE = AV × EF and ALE = SLE × ARO at the start of the exam on scratch paper. The manager-mindset point embedded here: ALE is how you express risk to a CFO. Any control proposal should cite the before-ALE, the after-ALE, and the control cost, letting the math justify the investment in language executives can immediately evaluate rather than technical language that requires translation.",
+      "blooms": "Remember",
+      "sub_objective": "1.9",
+      "difficulty": 1,
+      "tags": [
+        "risk-management",
+        "quantitative-risk",
+        "ale",
+        "formulas"
+      ]
+    },
+    {
+      "id": "D1-Q002",
+      "type": "recall",
+      "stem": "Which (ISC)² Code of Ethics canon takes the HIGHEST priority when canons conflict?",
+      "options": {
+        "A": "Protect society, the common good, necessary public trust and confidence, and the infrastructure",
+        "B": "Act honorably, honestly, justly, responsibly, and legally",
+        "C": "Provide diligent and competent service to principals",
+        "D": "Advance and protect the profession"
+      },
+      "correct": "A",
+      "rationale": "The (ISC)² Code of Ethics lists four Canons in explicit priority order, and Canon I — protect society, the common good, necessary public trust and confidence, and the infrastructure — always takes precedence. Option B is Canon II, option C is Canon III, and option D is Canon IV. The exam tests this ordering because candidates routinely default to Canon III (duty to employer or client) when a scenario creates a conflict; that instinct is wrong when it pits employer interests against public welfare or legality. The correct approach on any ethics question is a two-step test: identify which canons are in tension, then choose the option that serves the lowest-numbered canon. Draw 'S-H-S-P' (Society, Honorable conduct, Service, Profession) on your scratch paper at exam start to keep the ordering in front of you. Also remember the separate rule on complaint standing: anyone may complain about Canon I violations, first-hand witnesses about Canon II, only principals about Canon III, and only licensed professionals about Canon IV — another favorite exam distractor.",
+      "blooms": "Remember",
+      "sub_objective": "1.1",
+      "difficulty": 1,
+      "tags": [
+        "ethics",
+        "canons",
+        "isc2-code"
+      ]
+    },
+    {
+      "id": "D1-Q007",
+      "type": "recall",
+      "stem": "The maximum period of time a business process can be unavailable before the organization suffers unacceptable consequences is the:",
+      "options": {
+        "A": "Recovery Time Objective (RTO)",
+        "B": "Recovery Point Objective (RPO)",
+        "C": "Maximum Tolerable Downtime (MTD)",
+        "D": "Work Recovery Time (WRT)"
+      },
+      "correct": "C",
+      "rationale": "MTD (sometimes called Maximum Tolerable Period of Disruption, MTPD) is the longest a process can remain unavailable before the business is harmed beyond recovery — staff attrition, customer loss, regulatory failure. It is a business attribute determined by the BIA, not an IT target. Option A (RTO) is the technical target for restoring the service; RTO must be less than or equal to MTD minus WRT. Option B (RPO) is the maximum acceptable data loss measured in time, which is a backup-and-replication attribute, not an outage-duration attribute. Option D (WRT) is the work required after technical recovery to verify data integrity, test, and resume normal operations. The CISSP inequality MTD ≥ RTO + WRT is tested repeatedly and should be written on scratch paper at exam start. BIA results feed RTO, RPO, WRT, and MTD; every subsequent continuity decision — which DR site type, which backup cadence, which replication technology — follows from these four values. Remember the directionality: RPO looks backward from the disaster to the last good backup, while RTO and WRT both look forward from the disaster to the point of fully restored operations.",
+      "blooms": "Remember",
+      "sub_objective": "1.7",
+      "difficulty": 2,
+      "tags": [
+        "bcp",
+        "bia",
+        "mtd",
+        "rto",
+        "rpo",
+        "wrt"
+      ]
+    },
+    {
+      "id": "D1-Q008",
+      "type": "recall",
+      "stem": "Which STRIDE category corresponds to a violation of the authentication security property?",
+      "options": {
+        "A": "Spoofing",
+        "B": "Tampering",
+        "C": "Repudiation",
+        "D": "Elevation of privilege"
+      },
+      "correct": "A",
+      "rationale": "STRIDE is a threat taxonomy from Microsoft's Security Development Lifecycle. Each letter maps to a specific security property being violated: Spoofing violates Authentication, Tampering violates Integrity, Repudiation violates Non-repudiation, Information disclosure violates Confidentiality, Denial of service violates Availability, and Elevation of privilege violates Authorization. Spoofing is impersonation — an attacker claiming to be someone or something they are not — which is definitionally an authentication failure because the system cannot reliably establish the claimed identity. Option B (Tampering) relates to integrity, not authentication. Option C (Repudiation) is about deniability of an action already taken, not establishing identity in the first place. Option D (Elevation of privilege) is an authorization failure — the attacker has been authenticated as some principal but gains permissions beyond that principal's legitimate scope. Memorize the mapping; CISSP will test the inverse (given a violation, name the STRIDE category) and the forward (given a STRIDE category, name the property).",
+      "blooms": "Remember",
+      "sub_objective": "1.10",
+      "difficulty": 1,
+      "tags": [
+        "threat-modeling",
+        "stride",
+        "authentication"
+      ]
+    },
+    {
+      "id": "D1-Q010",
+      "type": "recall",
+      "stem": "The RFC 3227 order of volatility for evidence collection states that investigators should collect:",
+      "options": {
+        "A": "The most persistent evidence first, then progressively more volatile evidence",
+        "B": "The most volatile evidence first, then progressively more persistent evidence",
+        "C": "Disk images first, then memory dumps",
+        "D": "Evidence in alphabetical order of device type"
+      },
+      "correct": "B",
+      "rationale": "RFC 3227, 'Guidelines for Evidence Collection and Archiving,' specifies that investigators should collect evidence in order of volatility, from most volatile to least. The canonical order runs: CPU registers and caches → routing tables, ARP cache, process tables, kernel statistics, memory → temporary file systems → disk storage → remote logging and monitoring data → physical configuration and network topology → archival media. The rationale is simple: volatile evidence disappears when the system is touched or powered off, so it must be captured first before the act of investigation destroys it. Option A reverses the correct order and is a common CISSP distractor. Option C is partially consistent with the principle but not the canonical rule — memory dumps come before disk images, not after. Option D is nonsensical. The exam tests this ordering because forensic integrity depends on it and because candidates who rely on TV-show intuition often assume disk imaging is first. A closely related point: first-responders who boot a suspect system before imaging it destroy volatile evidence and alter disk state, which can undermine the chain of custody even if later forensic work is impeccable. NIST SP 800-86 and ISO/IEC 27037 reinforce the same ordering.",
+      "blooms": "Remember",
+      "sub_objective": "1.5",
+      "difficulty": 2,
+      "tags": [
+        "forensics",
+        "evidence",
+        "rfc-3227",
+        "order-of-volatility"
+      ]
+    },
+    {
+      "id": "D1-Q011",
+      "type": "application",
+      "stem": "A CISSP at a US-based SaaS company discovers that a senior executive has been falsifying security metrics reported to customers in a SOC 2 Type II audit. The executive pressures the CISSP to remain silent. What should the CISSP do FIRST?",
+      "options": {
+        "A": "Comply with the executive's request to preserve the customer relationship",
+        "B": "Escalate the matter through internal formal compliance or ethics channels",
+        "C": "Immediately notify the affected customers via public statement",
+        "D": "Resign without making further comment"
+      },
+      "correct": "B",
+      "rationale": "This is an ethics scenario that directly tests the (ISC)² canon priority order. Falsifying audit reports violates Canon II (act honorably, honestly, justly, responsibly, and legally) and arguably Canon I (public trust) because customers are being deceived. The CISSP must act, but the FIRST action is internal escalation through formal channels — compliance hotline, ethics committee, audit committee of the board, general counsel — which gives the organization the opportunity to self-correct before external disclosure becomes necessary. Option A (comply) directly violates Canon II and Canon I. Option C (public disclosure) may ultimately be justified under Canon I if internal channels fail, but it is the wrong FIRST action because it bypasses less drastic remedies that could satisfy the same canon. Option D (resign quietly) fails both Canon I and Canon II: silent departure leaves ongoing deception untouched and does nothing to protect the public or the customers. The pattern the exam rewards is: act internally first through formal channels, escalate externally only if internal channels demonstrably fail to act. Ethics questions that involve a FIRST qualifier almost always want internal escalation before external disclosure.",
+      "blooms": "Apply",
+      "sub_objective": "1.1",
+      "difficulty": 3,
+      "tags": [
+        "ethics",
+        "whistleblower",
+        "canon-i",
+        "canon-ii",
+        "escalation"
+      ]
+    },
+    {
+      "id": "D1-Q012",
+      "type": "application",
+      "stem": "An organization's risk appetite statement, approved by the board, is $500,000 in annual loss. A newly identified risk has an ALE of $750,000. Which treatment option should the risk owner pursue FIRST?",
+      "options": {
+        "A": "Accept the risk and document the decision with executive sign-off",
+        "B": "Mitigate the risk to reduce ALE below the risk appetite threshold",
+        "C": "Transfer the risk via insurance without further analysis",
+        "D": "Avoid the risk by discontinuing the associated business activity"
+      },
+      "correct": "B",
+      "rationale": "The CISSP manager mindset on risk treatment is: mitigate first to bring residual risk within appetite, transfer what remains if economically sensible, and accept what is left after mitigation and transfer. Avoidance is reserved for risks that exceed the organization's risk capacity (a higher threshold than risk appetite) or that cannot be economically reduced. Option B is correct because the first response to a risk above appetite is to identify and apply controls that reduce likelihood or impact until residual risk falls below the $500,000 threshold. Option A is premature: acceptance is only appropriate for residual risk within appetite, not for inherent risk above appetite. Option C (transfer without further analysis) is incomplete; transfer is a secondary treatment, and insurance rarely covers 100% of a loss — deductibles, exclusions, and reputational impact remain with the insured. Transfer is also inappropriate without first confirming that mitigation cannot economically bring the risk within appetite. Option D (avoid) is reserved for risks that cannot be mitigated to within capacity; an ALE of $750,000 vs an appetite of $500,000 is a $250,000 gap, almost certainly closable by targeted mitigation. The risk management process is sequential, and the exam punishes candidates who skip to accept, transfer, or avoid without first trying to mitigate.",
+      "blooms": "Apply",
+      "sub_objective": "1.9",
+      "difficulty": 3,
+      "tags": [
+        "risk-treatment",
+        "risk-appetite",
+        "mitigation"
+      ]
+    },
+    {
+      "id": "D1-Q013",
+      "type": "application",
+      "stem": "A BIA for an e-commerce checkout process has established MTD = 8 hours, RTO = 4 hours, and WRT = 3 hours. Which of the following BEST describes the state of the continuity plan?",
+      "options": {
+        "A": "The plan is feasible because RTO + WRT < MTD",
+        "B": "The plan is infeasible because RPO has not been specified",
+        "C": "The plan is infeasible because RTO exceeds WRT",
+        "D": "The plan is feasible only if WRT is reduced to zero"
+      },
+      "correct": "A",
+      "rationale": "The fundamental CISSP continuity inequality is MTD ≥ RTO + WRT. In this scenario, RTO + WRT = 4 + 3 = 7 hours, which is less than MTD = 8 hours, so the plan is mathematically feasible: technical recovery and subsequent operational verification can both complete before the business reaches its maximum tolerable downtime. Option A is correct. Option B is wrong because RPO (recovery point objective) addresses data loss tolerance, not the time-domain feasibility of restoration; the plan may still need an RPO, but absence of RPO does not make it infeasible. Option C misstates the relationship: RTO and WRT are additive and neither needs to exceed the other. Option D is wrong because WRT does not need to be zero; it only needs to keep RTO + WRT at or below MTD. CISSP candidates should draw the BIA timeline on scratch paper — disaster at t=0, backup point at t=–RPO, service restored at t=RTO, operations verified at t=RTO+WRT — and confirm that the verification point sits to the left of the MTD deadline. If it does not, the plan is infeasible on paper and the design must change: shorter RTO through a hotter DR site, shorter WRT through better test automation, or higher MTD through business process changes.",
+      "blooms": "Apply",
+      "sub_objective": "1.7",
+      "difficulty": 3,
+      "tags": [
+        "bcp",
+        "bia",
+        "mtd",
+        "rto",
+        "wrt",
+        "calculations"
+      ]
+    },
+    {
+      "id": "D1-Q014",
+      "type": "application",
+      "stem": "An organization is onboarding a new cloud-based human resources vendor that will process employee personal data from the European Union, California, and Japan. Which action should the organization take FIRST?",
+      "options": {
+        "A": "Sign the master services agreement and begin configuring the integration",
+        "B": "Conduct due diligence including review of SOC 2 Type II and privacy certifications",
+        "C": "Execute a data processing agreement only if the vendor is US-based",
+        "D": "Rely on the vendor's public marketing materials to assess privacy posture"
+      },
+      "correct": "B",
+      "rationale": "The CISSP manager mindset treats third-party engagements as governance-first activities: verify before you trust. Before signing a contract or configuring any integration, the engaging organization must perform due diligence — reviewing independent attestations such as SOC 2 Type II reports, ISO/IEC 27001 certificates, penetration test summaries, privacy program documentation, and any relevant certifications (TRUSTe, APEC CBPR, or regional equivalents). Option B captures this correctly. Option A reverses the correct order; signing the MSA before due diligence leaves the organization contractually committed to a vendor whose security posture has not been verified. Option C is incorrect on two points: data processing agreements are required regardless of the vendor's physical location because GDPR, the Japan APPI, and CCPA all contemplate processor obligations extraterritorially, and DPAs are a legal prerequisite when processing EU personal data under Article 28. Option D confuses marketing claims with independent assurance — marketing materials are not attestations. This pattern — due diligence before contract, contract before integration, integration before production — is the order the exam rewards. The scenario's emphasis on multiple jurisdictions also reinforces that a single jurisdiction cannot be assumed; each regulation must be evaluated independently against the vendor's controls.",
+      "blooms": "Apply",
+      "sub_objective": "1.11",
+      "difficulty": 3,
+      "tags": [
+        "third-party",
+        "due-diligence",
+        "scrm",
+        "gdpr",
+        "ccpa"
+      ]
+    },
+    {
+      "id": "D1-Q015",
+      "type": "application",
+      "stem": "A publicly traded US company operates both a healthcare division (US patients) and a consumer app (California residents). Which set of regulations MOST LIKELY applies simultaneously?",
+      "options": {
+        "A": "HIPAA, CCPA/CPRA, and SOX",
+        "B": "GDPR, PIPEDA, and NERC CIP",
+        "C": "HIPAA, FERPA, and GLBA",
+        "D": "PCI-DSS and ITAR"
+      },
+      "correct": "A",
+      "rationale": "The scenario provides three independent triggers that map cleanly to three regulations. A US healthcare division handling Protected Health Information is subject to HIPAA (as a covered entity or business associate, depending on the relationship). A consumer app handling California residents' personal information is subject to CCPA and its extension CPRA. And the fact that the company is publicly traded in the US subjects it to Sarbanes-Oxley, which drives internal control obligations over financial reporting — indirectly but meaningfully including IT general controls and security controls that support financial data integrity. Option A captures all three. Option B is wrong because GDPR applies to EU residents (not mentioned in the scenario), PIPEDA is Canadian, and NERC CIP applies to the bulk electric system. Option C is wrong because FERPA applies to educational records and GLBA applies to financial institutions — neither matches the scenario. Option D is wrong because the scenario does not mention payment card processing (PCI-DSS) or export of defense articles (ITAR). The CISSP exam tests these multi-regulation scenarios because real companies rarely operate under a single regime, and the practitioner must map each data element to the set of regulations that touch it.",
+      "blooms": "Apply",
+      "sub_objective": "1.4",
+      "difficulty": 3,
+      "tags": [
+        "compliance",
+        "hipaa",
+        "ccpa",
+        "sox",
+        "multi-regulation"
+      ]
+    },
+    {
+      "id": "D1-Q016",
+      "type": "application",
+      "stem": "An IT administrator accidentally exposes a customer database to the internet for 72 hours. The data is encrypted at rest using AES-256 and the key is stored separately and was not exposed. Under most US state breach notification laws, the notification obligation is:",
+      "options": {
+        "A": "Automatically triggered because personal information was exposed",
+        "B": "Potentially not triggered due to encryption safe-harbor provisions",
+        "C": "Triggered only if the key is eventually compromised",
+        "D": "Triggered only if the state attorney general discovers the incident"
+      },
+      "correct": "B",
+      "rationale": "Most US state breach notification statutes include an encryption safe harbor: if the compromised personal information was encrypted and the encryption key was not also compromised, the notification obligation may not be triggered. The statutory logic is that encrypted data without a key is not meaningfully 'acquired' by an unauthorized party. Option B is correct because it accurately describes the conditional nature of the safe harbor — it exists, but only if specific technical conditions (algorithmic strength, key separation) are met. Option A is incorrect because it ignores the safe harbor entirely. Option C misstates the condition: the safe harbor applies when the key is not compromised, not merely after the key has been proven safe forever. Option D is wrong because notification obligations are triggered by the incident and the controller's knowledge of it, not by the AG's discovery. The CISSP exam tests this nuance because candidates commonly over-simplify breach notification to 'always notify' or 'never notify' when the reality is state-specific and fact-dependent. The practitioner should consult counsel in every actual incident; on the exam, recognize that encryption with proper key management materially changes the notification analysis. Note that GDPR has a similar but narrower concept under Article 34, and HIPAA's Breach Notification Rule also contains an encryption safe harbor implemented through a technical standard published by HHS.",
+      "blooms": "Apply",
+      "sub_objective": "1.4",
+      "difficulty": 3,
+      "tags": [
+        "breach-notification",
+        "encryption",
+        "safe-harbor",
+        "state-laws"
+      ]
+    },
+    {
+      "id": "D1-Q018",
+      "type": "application",
+      "stem": "A risk register entry shows: Asset value = $500,000, Exposure factor = 40%, Annualized rate of occurrence = 0.25. A proposed control costs $30,000 per year and would reduce the exposure factor to 10%. What is the approximate return on security investment (ROSI)?",
+      "options": {
+        "A": "–$5,000 (negative, control not justified)",
+        "B": "+$7,500 (positive, control justified)",
+        "C": "+$30,000 (positive, control breaks even)",
+        "D": "+$100,000 (positive, control highly justified)"
+      },
+      "correct": "B",
+      "rationale": "Work through the math step by step. SLE_before = AV × EF = $500,000 × 0.40 = $200,000. ALE_before = SLE_before × ARO = $200,000 × 0.25 = $50,000. SLE_after = $500,000 × 0.10 = $50,000. ALE_after = $50,000 × 0.25 = $12,500. Savings = ALE_before – ALE_after = $50,000 – $12,500 = $37,500 per year. Net benefit = Savings – Control cost = $37,500 – $30,000 = $7,500. ROSI in dollar terms is $7,500 positive per year; in ratio form, ROSI = $7,500 / $30,000 = 0.25 or 25%, indicating the control pays for itself roughly four times over during its useful life. Option B is correct. Option A is the wrong sign and suggests the candidate subtracted control cost twice or reversed the subtraction. Option C confuses the control cost ($30,000) with the net benefit. Option D inflates the benefit, likely by ignoring the ARO and treating the full SLE reduction as an annual figure. CISSP quantitative risk questions require mechanical arithmetic and attention to units — always confirm whether the final figure is a dollar value, a ratio, or a percentage.",
+      "blooms": "Apply",
+      "sub_objective": "1.9",
+      "difficulty": 4,
+      "tags": [
+        "risk-management",
+        "quantitative-risk",
+        "rosi",
+        "calculations"
+      ]
+    },
+    {
+      "id": "D1-Q019",
+      "type": "application",
+      "stem": "An organization discovers that a departing employee with privileged access intends to leave voluntarily in two weeks' notice. What is the BEST personnel security practice for the notice period?",
+      "options": {
+        "A": "Revoke all access immediately upon notice and escort the employee out the same day",
+        "B": "Allow the employee full access until the last day to ensure knowledge transfer",
+        "C": "Reduce privileges to the minimum necessary for the role, monitor activity, and plan access revocation for the final day",
+        "D": "Move the employee to a non-technical role during the notice period"
+      },
+      "correct": "C",
+      "rationale": "The CISSP personnel security approach differentiates voluntary from involuntary terminations. Voluntary notice does not require the severe precautions appropriate for an involuntary termination, but it does require proportional risk management: privilege reduction to the minimum needed for remaining work, enhanced monitoring of privileged activity during the notice period, and planned access revocation aligned with the termination date and time. Option C captures this proportional approach. Option A is an involuntary-termination protocol and is overkill for voluntary notice; it damages trust, harms knowledge transfer, and may not fit jurisdictions where immediate escort is seen as constructive dismissal. Option B is too permissive: an employee who knows they are leaving may inadvertently or deliberately copy information, establish external access, or disable audit controls. Some of the highest-impact insider incidents involve the transition window. Option D is a non-sequitur: moving the employee to a different role creates onboarding friction without addressing access risk. The exam's personnel security questions consistently want a risk-proportional answer: high-risk terminations (involuntary, high-privilege, hostile) trigger immediate revocation; low-risk terminations (voluntary, low-privilege, cordial) trigger monitoring and planned revocation. Always check the scenario for signals of risk level.",
+      "blooms": "Apply",
+      "sub_objective": "1.8",
+      "difficulty": 3,
+      "tags": [
+        "personnel-security",
+        "termination",
+        "privileged-access"
+      ]
+    },
+    {
+      "id": "D1-Q020",
+      "type": "application",
+      "stem": "A security team is performing a threat model of a new e-commerce application using the STRIDE methodology. During the session, a team member identifies that an attacker could submit a forged JWT with an 'admin' claim because the application does not verify the token signature. Which STRIDE category BEST captures this threat?",
+      "options": {
+        "A": "Spoofing",
+        "B": "Tampering",
+        "C": "Elevation of privilege",
+        "D": "Information disclosure"
+      },
+      "correct": "C",
+      "rationale": "The scenario describes an attacker who gains administrative privileges by forging a token whose signature the application fails to verify. The core violation is that the attacker ends up with more privilege than they should have — specifically, admin privilege they were never granted. That is elevation of privilege (EoP), which violates the authorization security property. Option C is correct. Option A (Spoofing) is plausible because the attacker is impersonating an admin, but STRIDE's Spoofing specifically concerns the establishment of identity at the boundary — a better fit for 'the attacker logs in as someone else'. Here, the attacker does not log in; the attacker manipulates an authorization claim to gain privilege. Option B (Tampering) is also defensible because the attacker modifies the token, but STRIDE treats tampering primarily as an integrity violation of data at rest or in transit between known principals, not as a privilege-gaining attack on an auth token. Option D (Information disclosure) does not fit because the attack escalates privilege rather than exfiltrating data. The exam rewards the BEST answer. CISSP categorizes this canonical attack pattern as EoP because the outcome — privilege escalation — defines it. The underlying technical fix is signature validation on all inbound tokens, which is both a Tampering mitigation (protecting the token from modification) and an Elevation-of-privilege mitigation (preventing the forged token from granting unauthorized access).",
+      "blooms": "Apply",
+      "sub_objective": "1.10",
+      "difficulty": 3,
+      "tags": [
+        "threat-modeling",
+        "stride",
+        "elevation-of-privilege",
+        "jwt"
+      ]
+    },
+    {
+      "id": "D1-Q021",
+      "type": "application",
+      "stem": "A CISO needs a BCP test that will MOST realistically validate failover capability without risking disruption to customer-facing production services. Which test type is BEST?",
+      "options": {
+        "A": "Checklist review",
+        "B": "Tabletop exercise",
+        "C": "Parallel test",
+        "D": "Full interruption test"
+      },
+      "correct": "C",
+      "rationale": "A parallel test executes recovery procedures at the DR site while primary operations continue uninterrupted. It is the most realistic test that preserves customer-facing availability: it actually exercises infrastructure, people, and process in the recovery environment without cutting over real traffic. Option C is correct because it balances realism (actual execution, not just discussion) with risk (no production disruption). Option A (checklist) is the least realistic and does not validate execution at all. Option B (tabletop) is discussion-based and does not exercise the technology stack. Option D (full interruption) is the most realistic overall but explicitly involves taking the primary offline to validate cutover, which the question rules out. The CISSP exam uses qualifier words to distinguish these options: when the qualifier is 'MOST realistic while preserving production', the answer is parallel; when the qualifier is 'MOST realistic without qualification', the answer is full interruption. Memorize both patterns, because the exam tests each separately.",
+      "blooms": "Apply",
+      "sub_objective": "1.7",
+      "difficulty": 3,
+      "tags": [
+        "bcp",
+        "dr",
+        "testing",
+        "parallel-test"
+      ]
+    },
+    {
+      "id": "D1-Q023",
+      "type": "application",
+      "stem": "An organization is considering using cyber insurance to address a high-impact, low-probability data breach scenario. Which risk treatment does this represent, and what is its PRIMARY limitation?",
+      "options": {
+        "A": "Acceptance; the primary limitation is lack of executive sign-off",
+        "B": "Transfer; the primary limitation is that accountability and reputational damage cannot be transferred",
+        "C": "Avoidance; the primary limitation is loss of business opportunity",
+        "D": "Mitigation; the primary limitation is residual technical risk"
+      },
+      "correct": "B",
+      "rationale": "Cyber insurance is a classic risk transfer mechanism: the organization shifts some or all of the financial consequence of a loss event to an insurer in exchange for a premium. Option B correctly identifies the treatment and the primary limitation: transfer moves financial consequence but does not move accountability to the regulator, the data subjects, or the public. Reputation cannot be insured away; regulatory fines may or may not be covered depending on policy terms and jurisdiction (some jurisdictions prohibit insuring regulatory fines as against public policy); breach-response obligations remain with the covered entity. Option A misclassifies the treatment: acceptance is the explicit decision to take no further action, typically for residual risk within appetite. Option C is wrong because avoidance means discontinuing the activity, not insuring it. Option D is wrong because mitigation reduces likelihood or impact through controls, not through contractual shifting. The CISSP exam emphasizes this boundary repeatedly because practitioners routinely conflate transfer with elimination. The correct mental model is: transfer redistributes money, not duty.",
+      "blooms": "Apply",
+      "sub_objective": "1.9",
+      "difficulty": 3,
+      "tags": [
+        "risk-treatment",
+        "transfer",
+        "cyber-insurance"
+      ]
+    },
+    {
+      "id": "D1-Q024",
+      "type": "application",
+      "stem": "Following the announcement of a zero-day vulnerability in a widely-used Java logging library, the CISO needs to determine which of 300 internal applications use the affected component. Which governance artifact MOST directly enables this determination?",
+      "options": {
+        "A": "An incident response plan",
+        "B": "A vulnerability management policy",
+        "C": "A software bill of materials (SBOM) program",
+        "D": "A third-party risk register"
+      },
+      "correct": "C",
+      "rationale": "A Software Bill of Materials is a machine-readable inventory of the components (direct and transitive) that make up a piece of software. A mature SBOM program produces and maintains SBOMs for every application the organization ships or operates, which makes it possible to answer 'do we use component X?' across a large portfolio in minutes rather than weeks. The Log4Shell incident in December 2021 was the defining case for SBOMs at scale: organizations with good SBOM practice triaged exposure in hours, while organizations without one spent days or weeks manually auditing code bases. Option C is correct. Option A (incident response plan) is essential for coordinating the overall response but does not itself provide component-level visibility. Option B (vulnerability management policy) establishes what should happen but does not provide the inventory data needed to act on it. Option D (third-party risk register) tracks vendor-level relationships and assessments but typically does not contain component-level dependency data. The CISSP exam increasingly tests SBOM concepts because EO 14028 and NIST SP 800-218 (SSDF) have made SBOMs a federal procurement requirement and a security best practice. The exam expects candidates to recognize SBOM as the specific artifact that enables rapid component-level exposure assessment.",
+      "blooms": "Apply",
+      "sub_objective": "1.11",
+      "difficulty": 3,
+      "tags": [
+        "scrm",
+        "sbom",
+        "log4shell",
+        "component-inventory"
+      ]
+    },
+    {
+      "id": "D1-Q025",
+      "type": "application",
+      "stem": "A new regulation requires that an organization maintain an audit trail of all changes to customer data, signed by the person making the change, such that the signer cannot later deny the action. Which security property MUST be provided?",
+      "options": {
+        "A": "Authenticity",
+        "B": "Non-repudiation",
+        "C": "Integrity",
+        "D": "Confidentiality"
+      },
+      "correct": "B",
+      "rationale": "Non-repudiation is the property that the originator of an action cannot plausibly deny having taken it. It requires a cryptographic primitive in which only one entity possesses the signing key — typically a digital signature produced with a private key bound to a single identity through a properly managed PKI. Shared-secret MACs (like HMAC) cannot provide non-repudiation because any party with the shared key could have produced the MAC, leaving the authorship ambiguous. Option B is correct. Option A (authenticity) is closely related but weaker: authenticity establishes that data originated from a claimed source but does not necessarily survive a later dispute in which the claimed source denies authorship. Integrity (option C) protects against modification but is silent on authorship. Confidentiality (option D) addresses disclosure, not authorship or deniability. The CISSP exam tests this boundary because practitioners frequently conflate authenticity and non-repudiation. Memorize the rule: non-repudiation requires a private key bound to a single identity; anything less — shared keys, organizational certificates, rubber-stamped CA practices — weakens the non-repudiation claim. The regulation in this scenario explicitly requires that the signer 'cannot later deny the action,' which is a non-repudiation requirement on its face.",
+      "blooms": "Apply",
+      "sub_objective": "1.2",
+      "difficulty": 3,
+      "tags": [
+        "non-repudiation",
+        "cryptography",
+        "digital-signatures"
+      ]
+    },
+    {
+      "id": "D1-Q026",
+      "type": "application",
+      "stem": "A CISO wants to establish a metric to demonstrate the effectiveness of the security awareness program over time. Which metric PAIR is MOST valuable?",
+      "options": {
+        "A": "Phishing-simulation click rate only",
+        "B": "Phishing-simulation click rate and phishing-reporting rate",
+        "C": "Number of awareness emails sent per quarter",
+        "D": "Total headcount completing annual compliance training"
+      },
+      "correct": "B",
+      "rationale": "Awareness program metrics should measure resilience, not activity. The click rate alone (option A) is a useful but incomplete signal because a program that drives clicks down without driving reports up has not created a reporting culture — and the reporting culture is what allows incident response to catch real phishing. The reporting rate captures whether users are actively identifying suspicious messages and alerting the security team. Together, the pair tells a complete story: a healthy program shows click rates trending down and report rates trending up over time. Option B is correct. Option C (awareness emails sent) is a pure activity metric; it measures what the security team did, not what the organization learned. Option D (training completion) is also activity, not outcome. The CISSP exam rewards outcome metrics over activity metrics for the same reason it rewards business-aligned security decisions over technology-aligned ones: outcomes demonstrate effect on the organization. NIST SP 800-50 and the SANS Security Awareness Maturity Model both emphasize this progression from activity measurement to outcome measurement. A common additional signal is the incident-rate-per-capita before and after interventions, which measures whether awareness has actually changed end-user behavior in a way that affects incidents.",
+      "blooms": "Apply",
+      "sub_objective": "1.12",
+      "difficulty": 3,
+      "tags": [
+        "awareness",
+        "training",
+        "metrics",
+        "phishing"
+      ]
+    },
+    {
+      "id": "D1-Q027",
+      "type": "application",
+      "stem": "A recently hired security analyst discovers that a finance manager has exported a database of employee salaries, which is outside the manager's role. What should the analyst do FIRST?",
+      "options": {
+        "A": "Confront the finance manager directly to understand the rationale",
+        "B": "Delete the exported file to prevent further distribution",
+        "C": "Preserve evidence and escalate through established incident response channels",
+        "D": "Notify law enforcement immediately"
+      },
+      "correct": "C",
+      "rationale": "A potential insider incident is a trigger for incident response procedures — not an invitation for the analyst to investigate independently. Option C is correct: preserve evidence in a forensically sound manner (image before analysis, maintain chain of custody) and escalate through the established IR process, which will coordinate HR, legal, and security as appropriate. Option A (direct confrontation) is wrong on multiple counts: it tips off a potential wrongdoer, risks evidence destruction, and places the analyst in an HR role they do not own. Option B (deleting the file) destroys evidence and is itself potentially a policy or legal violation — evidence preservation is the analyst's duty, not suppression. Option D (notifying law enforcement immediately) is premature; law enforcement engagement, if warranted, flows through legal and senior management after internal triage establishes what happened and whether criminal investigation is appropriate. The CISSP exam consistently rewards the answer that preserves evidence, escalates through proper channels, and avoids unilateral action. Insider cases are especially sensitive: they often begin as administrative investigations (internal HR matter), may escalate to civil action (wrongful termination claims or data misuse suits), and occasionally become criminal — all four investigation types can apply to the same underlying act, so the analyst should treat early evidence handling as if the most rigorous chain-of-custody requirements will eventually apply.",
+      "blooms": "Apply",
+      "sub_objective": "1.5",
+      "difficulty": 3,
+      "tags": [
+        "incident-response",
+        "insider-threat",
+        "evidence-preservation",
+        "chain-of-custody"
+      ]
+    },
+    {
+      "id": "D1-Q028",
+      "type": "application",
+      "stem": "A CISO presents a proposed $200,000 annual investment in an endpoint detection and response (EDR) platform to the executive team. The CFO asks how the investment is justified. Which response is the BEST manager-mindset answer?",
+      "options": {
+        "A": "EDR is an industry best practice; most competitors have it",
+        "B": "The CISO has determined EDR is necessary for technical reasons",
+        "C": "A quantitative risk analysis shows that EDR reduces the annual loss expectancy of endpoint-related threats from $X to $Y, making the investment net-positive after considering residual risk",
+        "D": "Regulators have not yet mandated EDR, but they likely will in the future"
+      },
+      "correct": "C",
+      "rationale": "The CISSP manager mindset requires that security investments be justified in business terms tied to measurable risk reduction. Option C frames the investment through quantitative risk analysis (before-and-after ALE, net benefit, residual risk) — exactly the language a CFO can evaluate and a board can approve. Option A appeals to peer practice, which is not a valid risk-based justification; 'everyone else does it' is not a defensible investment case. Option B substitutes the CISO's authority for analysis — the exam punishes this because CISOs without quantified justification lose credibility with governance. Option D speculates about future regulation, which may be relevant as context but is not a current justification. The manager-mindset shift the exam rewards is: translate technical necessity into dollars-and-cents risk language that executives can act on. This applies to every control conversation, not just EDR. CISSP candidates should be able to speak fluently about ALE reduction, ROSI, and residual risk in any context; it is the difference between 'we need this tool' (unfunded) and 'this tool reduces annual loss exposure by $X at a cost of $Y, with a positive ROSI of Z%' (funded).",
+      "blooms": "Apply",
+      "sub_objective": "1.9",
+      "difficulty": 3,
+      "tags": [
+        "risk-justification",
+        "business-case",
+        "manager-mindset",
+        "rosi"
+      ]
+    },
+    {
+      "id": "D1-Q029",
+      "type": "application",
+      "stem": "A multinational organization operates under ISO/IEC 27001 certification and is adopting the NIST Cybersecurity Framework 2.0 as an additional reference model. An operations director objects, saying 'ISO 27001 already covers everything; NIST CSF is redundant.' What is the BEST response?",
+      "options": {
+        "A": "Agree; drop NIST CSF to avoid duplication",
+        "B": "Explain that ISO 27001 is a management system standard while NIST CSF provides an outcome-oriented common language, and the two complement each other",
+        "C": "Adopt NIST CSF and retire the ISO 27001 certification",
+        "D": "Defer the decision to the board without further analysis"
+      },
+      "correct": "B",
+      "rationale": "ISO/IEC 27001 is a management-system standard: it certifies that an organization has implemented a documented, risk-based Information Security Management System (ISMS) with continuous improvement. NIST CSF 2.0 is an outcome-oriented framework organized around six functions (Govern, Identify, Protect, Detect, Respond, Recover) that provides a common vocabulary for communicating security posture across business units, regulators, and partners. The two do not conflict; they answer different questions. ISO 27001 asks 'do you have a management system that actually operates?'; NIST CSF asks 'can you articulate your security outcomes in a common framework?'. Many mature organizations map their ISO 27001 controls to CSF outcomes to get the best of both. Option B captures this correctly. Option A misdiagnoses the relationship as redundancy. Option C would sacrifice the auditable management system for a framework that does not itself certify. Option D abdicates the CISO's duty to explain the value of framework coexistence to the operations director. The CISSP exam increasingly tests NIST CSF 2.0 because the Govern function was added in February 2024, which explicitly raises the governance conversation to a framework-level concern — exactly the integration a mature program should make.",
+      "blooms": "Apply",
+      "sub_objective": "1.3",
+      "difficulty": 3,
+      "tags": [
+        "governance",
+        "iso-27001",
+        "nist-csf",
+        "frameworks"
+      ]
+    },
+    {
+      "id": "D1-Q030",
+      "type": "application",
+      "stem": "A software vendor's monthly product update is signed with a valid certificate, installed automatically by customers, and found — weeks later — to contain backdoor code inserted during a compromise of the vendor's build system. Which category of risk is PRIMARILY illustrated?",
+      "options": {
+        "A": "Insider threat",
+        "B": "Zero-day exploitation",
+        "C": "Supply chain risk",
+        "D": "Physical security failure"
+      },
+      "correct": "C",
+      "rationale": "The scenario describes a supply chain attack: trusted software from a trusted supplier was weaponized upstream of the customers. The SolarWinds Orion incident in 2020 is the canonical example, and the CISSP exam references it implicitly under Supply Chain Risk Management. The customers did nothing wrong at the point of installation — the update was legitimately signed and sourced through legitimate channels. The risk entered the customers' environment through their trusted supplier. Option C is correct. Option A (insider threat) could be relevant if the backdoor were inserted by a rogue employee at the customer, but the scenario places the compromise in the vendor's build system. Option B (zero-day exploitation) is wrong because a zero-day is a previously-unknown vulnerability in legitimate code; the scenario describes intentionally-inserted malicious code, which is different. Option D (physical security failure) does not fit. The lesson CISSP candidates should take is that supply chain risk cannot be managed by customer controls alone: the customer's defense requires visibility into the supplier's development, signing, and update practices. SBOMs, SSDF attestations (NIST SP 800-218), vendor assurance programs, and EO 14028 procurement requirements all address this risk. The incident also informs the governance-level point that 'trust the update' is not a valid strategy; anomaly detection and behavioral monitoring must validate that signed software behaves as expected.",
+      "blooms": "Apply",
+      "sub_objective": "1.11",
+      "difficulty": 3,
+      "tags": [
+        "scrm",
+        "supply-chain",
+        "solarwinds",
+        "trusted-update"
+      ]
+    },
+    {
+      "id": "D1-Q031",
+      "type": "application",
+      "stem": "A regional hospital in the United States uses a cloud-based electronic health record system. The EHR vendor's infrastructure resides in Canada. Which legal instrument is MOST directly required for the hospital to lawfully share PHI with this vendor?",
+      "options": {
+        "A": "A SOC 2 Type II report",
+        "B": "A HIPAA Business Associate Agreement (BAA)",
+        "C": "A cross-border data transfer assessment under CCPA",
+        "D": "An ISO/IEC 27001 certificate"
+      },
+      "correct": "B",
+      "rationale": "Under the HIPAA Privacy and Security Rules, a covered entity (such as a hospital) may share Protected Health Information with a third party only if that third party is a Business Associate and the relationship is governed by a Business Associate Agreement (BAA). The BAA is a contractual instrument that binds the Business Associate to HIPAA's safeguards and breach notification obligations. Option B is correct. Option A (SOC 2 Type II) is a useful due-diligence artifact but is not a legal instrument establishing HIPAA-compliant data sharing; it attests to controls but does not bind the vendor to HIPAA obligations. Option C (CCPA cross-border transfer) does not apply: CCPA governs California resident personal information and contains no specific cross-border transfer framework analogous to GDPR's Schrems/SCC regime. Option D (ISO 27001) is an assurance mechanism, not a legal instrument; it also does not by itself create HIPAA compliance. The exam tests this precisely because candidates often default to 'sign a NDA' or 'get a SOC 2', neither of which substitutes for the statutorily required BAA. Additionally, the exam may test the scope: sub-contractors of the Business Associate must also be bound by BAAs, flowed down from the original Business Associate — a HITECH Act 2013 update that formalized sub-processor obligations in HIPAA.",
+      "blooms": "Apply",
+      "sub_objective": "1.4",
+      "difficulty": 3,
+      "tags": [
+        "hipaa",
+        "baa",
+        "third-party",
+        "phi"
+      ]
+    },
+    {
+      "id": "D1-Q034",
+      "type": "application",
+      "stem": "During a security incident, an organization determines that a former employee, terminated two months ago, still has active VPN credentials and has been accessing customer data. Which personnel security control MOST directly failed?",
+      "options": {
+        "A": "Background screening",
+        "B": "Access recertification and timely termination access revocation",
+        "C": "Mandatory vacation",
+        "D": "Security awareness training"
+      },
+      "correct": "B",
+      "rationale": "The failure is explicitly that access was not revoked in a timely manner upon termination, and that periodic access recertification did not detect the orphaned account. Both are personnel security lifecycle controls: termination access revocation is the control that should have immediately removed VPN credentials at separation, and access recertification is the compensating control that should have caught the failure within a defined review cycle (quarterly is common). Option B is correct. Option A (background screening) is a pre-hire control and is irrelevant to account termination. Option C (mandatory vacation) is a fraud-detection control for currently-employed staff and does not address former employees. Option D (training) might reduce incident probability but is a preventive awareness control, not an access management control. The CISSP exam tests this scenario because it reflects a common real-world failure pattern: organizations have well-written termination procedures but do not enforce them in time, and do not implement a compensating access recertification cadence to catch the misses. NIST SP 800-53 PS-4 (Personnel Termination) and AC-2 (Account Management) are the control references; both are failing in the scenario.",
+      "blooms": "Apply",
+      "sub_objective": "1.8",
+      "difficulty": 3,
+      "tags": [
+        "personnel-security",
+        "termination",
+        "access-recertification",
+        "orphaned-accounts"
+      ]
+    },
+    {
+      "id": "D1-Q036",
+      "type": "analysis",
+      "stem": "A global manufacturer is building a security program and must choose a primary risk methodology. The organization is data-rich (extensive historical incident data), has strong actuarial talent from its insurance operations, and the CFO has explicitly asked for monetary-terms risk reporting. Which risk methodology is the BEST fit?",
+      "options": {
+        "A": "Qualitative risk assessment using a 5x5 heat map",
+        "B": "Factor Analysis of Information Risk (FAIR)",
+        "C": "OCTAVE Allegro workshop-based methodology",
+        "D": "Ad hoc expert judgment"
+      },
+      "correct": "B",
+      "rationale": "FAIR (Factor Analysis of Information Risk) is a quantitative risk analysis methodology that decomposes risk into Loss Event Frequency and Loss Magnitude, each of which is further decomposed until terminal factors can be estimated (often using probability distributions rather than point values). FAIR is the right fit for an organization that (a) has historical data to populate its factors credibly, (b) has actuarial talent to handle distributions and Monte Carlo techniques, and (c) has a CFO who wants dollar-denominated output for executive consumption. The combination of data, talent, and audience makes FAIR maximally valuable here. Option B is correct. Option A (qualitative heat map) sacrifices the monetary precision the CFO asked for; heat maps are fast and accessible but cannot be aggregated into a portfolio-level financial exposure. Option C (OCTAVE Allegro) is a workshop-based, asset-driven methodology that is strong for organizations with less data and more tacit knowledge — opposite the fit profile described. Option D is not a methodology; expert judgment without a structured process is not defensible to a CFO or board. CISSP expects candidates to match methodology to context. The right answer is rarely 'the newest' or 'the most rigorous' — it is the one whose assumptions about data and audience fit the organization. FAIR is also the Open Group's OpenFAIR standard, giving it an independent governance body, which helps its credibility with regulators and auditors.",
+      "blooms": "Analyze",
+      "sub_objective": "1.9",
+      "difficulty": 4,
+      "tags": [
+        "risk-management",
+        "fair",
+        "quantitative",
+        "methodology-selection"
+      ]
+    },
+    {
+      "id": "D1-Q037",
+      "type": "analysis",
+      "stem": "A CISO is preparing a board update and must explain why the security program still has residual risk after substantial investment. Which of the following statements BEST reflects the CISSP manager mindset the CISO should convey?",
+      "options": {
+        "A": "Residual risk exists because the security team has not deployed enough tools yet",
+        "B": "Residual risk is the portion of inherent risk remaining after controls; it can be reduced further but never eliminated, and must be compared to the organization's risk appetite",
+        "C": "Residual risk should be zero in a well-managed security program",
+        "D": "Residual risk is always caused by failures of the security team"
+      },
+      "correct": "B",
+      "rationale": "Residual risk is a core concept in Domain 1: it is the risk that remains after controls have been applied, as distinct from inherent risk (before controls). Residual risk can be reduced by additional controls, transferred through insurance or contracts, or accepted when it falls within the organization's risk appetite — but it cannot be driven to zero except by ceasing the underlying business activity, which is almost never acceptable. Option B correctly conveys this: residual risk is an irreducible feature of operating the business, and the relevant governance conversation is whether residual risk sits at or below risk appetite, not whether it equals zero. Option A blames the security team and mistakes risk reduction for a tool-acquisition problem — the manager mindset rejects 'just add tools' framing. Option C is mathematically and operationally wrong; zero residual risk means zero business activity. Option D is unfair to the security team and wrong on substance: residual risk exists because business activity involves risk, not because security teams have failed. Boards tend to appreciate the clarity of option B's framing because it makes the real question explicit: are we operating within our appetite? If yes, residual risk is acceptable; if no, the organization must mitigate, transfer, or avoid. The CISSP exam rewards this crisp governance language over vague promises of 'more security'.",
+      "blooms": "Analyze",
+      "sub_objective": "1.9",
+      "difficulty": 3,
+      "tags": [
+        "risk-management",
+        "residual-risk",
+        "risk-appetite",
+        "board-reporting"
+      ]
+    },
+    {
+      "id": "D1-Q038",
+      "type": "analysis",
+      "stem": "Following a major breach, a CISO is asked why the organization's detection controls failed despite significant investment. Root cause analysis identifies that the SIEM was deployed but no one was tuning rules or investigating alerts. What is the BEST description of this failure?",
+      "options": {
+        "A": "A technical control failure; the SIEM product is inadequate",
+        "B": "A people-and-process failure; technical controls require ongoing operation and oversight",
+        "C": "A budget failure; the security team needs more headcount",
+        "D": "A vendor failure; the SIEM integrator did not configure the product properly"
+      },
+      "correct": "B",
+      "rationale": "The scenario is a textbook example of deploying technology without establishing the operational capacity to use it. SIEM platforms require continuous tuning, use-case development, alert triage, and incident handoff — all people-and-process activities that cannot be outsourced to the tool itself. When those activities are absent, the tool becomes expensive decoration. Option B captures the root cause correctly. Option A misdiagnoses the failure as technical; the SIEM is functioning as designed but is receiving no human attention. Option C is a common symptom description but not a root cause framing; whether the answer is more headcount or different workflow depends on analysis not included in the scenario, and simply adding headcount without process change rarely works. Option D partially applies but is too narrow; even a perfectly configured SIEM requires ongoing operation, which integrators do not provide. The CISSP exam rewards root-cause answers that distinguish between capability (the technology) and capacity (the people and process to use it). Many security failures are not failures of capability; they are failures of capacity. The classic mitigation is to staff and process SIEM operations (often as a SOC) before or concurrent with deployment, and to retire SIEM use cases that do not produce actionable output.",
+      "blooms": "Analyze",
+      "sub_objective": "1.3",
+      "difficulty": 3,
+      "tags": [
+        "governance",
+        "operational-security",
+        "people-process-technology",
+        "siem"
+      ]
+    },
+    {
+      "id": "D1-Q039",
+      "type": "analysis",
+      "stem": "A new CISO inherits an environment with extensive documentation — policies, standards, and procedures — but observes that compliance audits consistently find gaps between documented practice and actual behavior. Which of the following interventions addresses the MOST LIKELY root cause?",
+      "options": {
+        "A": "Write more detailed procedures to eliminate ambiguity",
+        "B": "Conduct additional security awareness training for all staff",
+        "C": "Implement a continuous compliance monitoring program that measures actual behavior against documented expectations, with feedback to governance",
+        "D": "Replace the existing documentation with a new framework"
+      },
+      "correct": "C",
+      "rationale": "The scenario describes a gap between documented intent and operational reality — the classic 'paper compliance' problem. The root cause is typically absence of continuous measurement and feedback: without a mechanism that regularly tests whether practice conforms to documentation, drift accumulates silently until an audit surfaces it. Option C addresses the root cause by establishing continuous monitoring that measures actual behavior (logs, system states, user actions) against documented expectations and feeds the findings back to governance for action. Option A assumes the problem is document quality; more detailed procedures do not fix behavior unless the monitoring loop forces compliance. Option B (more training) may help at the margin but cannot compensate for the absence of measurement. Option D (new documentation) wastes effort and rebuilds the same problem — the documents are probably fine; the feedback loop is missing. The CISSP exam rewards answers that address root cause and create closed-loop feedback, reflecting Plan-Do-Check-Act thinking from ISO/IEC 27001 and similar management systems. Continuous compliance monitoring is the 'Check' step; feedback to governance is the 'Act' step. Any program that lacks one of these steps will drift until the next audit.",
+      "blooms": "Analyze",
+      "sub_objective": "1.6",
+      "difficulty": 4,
+      "tags": [
+        "governance",
+        "compliance",
+        "continuous-monitoring",
+        "paper-compliance"
+      ]
+    },
+    {
+      "id": "D1-Q040",
+      "type": "analysis",
+      "stem": "A company that is not subject to GDPR processes a small amount of data about EU residents who visit its California-based website. A consultant argues that because the company is US-based and the data is processed in the US, GDPR does not apply. What is the BEST response from a CISSP standpoint?",
+      "options": {
+        "A": "The consultant is correct because GDPR is a regional law",
+        "B": "The consultant is incorrect; GDPR's territorial scope extends to processors outside the EU when they process EU residents' personal data in connection with offering goods or services or monitoring behavior",
+        "C": "The consultant is correct unless the company has an EU office",
+        "D": "The consultant is correct unless the company uses EU-based cloud services"
+      },
+      "correct": "B",
+      "rationale": "GDPR Article 3 establishes its territorial scope extraterritorially: it applies to any controller or processor handling personal data of EU residents in connection with offering them goods or services (paid or free) or monitoring their behavior, regardless of whether the controller or processor is established in the EU. The consultant's framing — 'US-based, therefore no GDPR' — is a common misconception that the exam tests precisely because practitioners repeat it. Option B states the rule correctly. Option A is the incorrect intuitive answer. Option C is wrong because physical establishment in the EU is sufficient but not necessary to trigger GDPR; extraterritorial scope applies without establishment. Option D is wrong because cloud provider location is not a factor in determining controller obligations under Article 3; it may affect transfer mechanisms (standard contractual clauses, adequacy decisions) but not whether GDPR applies in the first place. The CISSP exam loves this question because it punishes geographic intuition and rewards textual reading of the statute. Practical advice for candidates: any time a scenario mentions EU residents, assume GDPR applies unless a Ministry-of-Truth exception is explicitly stated (household activity exception, law-enforcement exception, etc.), and evaluate accordingly.",
+      "blooms": "Analyze",
+      "sub_objective": "1.4",
+      "difficulty": 4,
+      "tags": [
+        "gdpr",
+        "extraterritorial",
+        "compliance",
+        "article-3"
+      ]
+    },
+    {
+      "id": "D1-Q041",
+      "type": "analysis",
+      "stem": "An organization's BIA has identified 50 business processes, each with an RTO and RPO. When designing the BCP, what is the MOST important consideration when interdependencies exist between processes?",
+      "options": {
+        "A": "Treat each process independently and restore in alphabetical order",
+        "B": "Identify dependency chains and ensure upstream processes are restored before dependent downstream processes",
+        "C": "Restore processes with the lowest RTO first, regardless of dependencies",
+        "D": "Restore processes in the order they were identified in the BIA document"
+      },
+      "correct": "B",
+      "rationale": "Business processes are almost never independent. Payroll depends on HR master data; e-commerce checkout depends on authentication; customer support depends on CRM which depends on database services. If the BCP restores dependent processes before their upstream providers, the dependent processes will fail on startup and the restoration effort will be wasted. The correct approach is to construct a dependency graph during BIA and sequence restoration so upstream services come online before downstream services — even if this means a process with a shorter RTO waits briefly for its dependencies. Option B is correct. Option A is nonsensical; alphabetical order has no operational meaning. Option C reflects a common but naive view: 'sort by RTO' ignores the fact that a process's RTO is only achievable if its dependencies are already available. Option D is arbitrary and equally wrong. The CISSP exam tests interdependency awareness because many candidates treat processes in isolation, which works on paper but fails at recovery time. NIST SP 800-34 Rev 1 explicitly calls out process interdependency identification as a BIA task, and ISO 22301 treats it as a pre-requisite for recovery strategy selection.",
+      "blooms": "Analyze",
+      "sub_objective": "1.7",
+      "difficulty": 4,
+      "tags": [
+        "bcp",
+        "bia",
+        "interdependencies",
+        "recovery-sequencing"
+      ]
+    },
+    {
+      "id": "D1-Q042",
+      "type": "analysis",
+      "stem": "A CISO is preparing a board presentation on third-party risk. Which of the following metrics would BEST demonstrate the effectiveness of the SCRM program?",
+      "options": {
+        "A": "Total number of vendors assessed annually",
+        "B": "Percentage of critical vendors with current assessments, percentage with contractual security terms, and mean time to remediate discovered vendor risks",
+        "C": "Total dollar value of vendor contracts",
+        "D": "Number of vendor security incidents reported to the organization"
+      },
+      "correct": "B",
+      "rationale": "SCRM effectiveness is measured by outcomes and coverage, not activity volume. Option B captures a credible outcome-oriented metric set: (1) coverage — what percentage of critical vendors (tiered by risk) have up-to-date assessments; (2) contractual control — what percentage have the required security clauses, DPAs, right-to-audit, notification obligations, and flow-down requirements; (3) responsiveness — mean time to remediate issues once discovered. Together these demonstrate that the program has visibility (assessments), control (contracts), and agility (remediation). Option A is pure activity and does not measure effectiveness — a program could 'assess' 1,000 vendors poorly and report a large number. Option C is not a risk metric; contract value is a procurement metric. Option D is a useful signal but on its own measures only what was reported, not what is known or managed. The CISSP exam consistently rewards outcome metrics over activity metrics, and SCRM is an area where the distinction matters because third-party risk programs are often judged on volume rather than quality. A well-instrumented program tracks the ratio of controlled risk to known risk over time, which is the only metric that tells the board whether the program is actually working.",
+      "blooms": "Analyze",
+      "sub_objective": "1.11",
+      "difficulty": 4,
+      "tags": [
+        "scrm",
+        "metrics",
+        "third-party-risk",
+        "board-reporting"
+      ]
+    },
+    {
+      "id": "D1-Q043",
+      "type": "analysis",
+      "stem": "During an internal investigation of suspected fraud, the security team collects evidence but later discovers that the forensic image of a laptop was taken after the laptop had been booted into the operating system by a first-responder. What is the MOST likely consequence?",
+      "options": {
+        "A": "The evidence is completely useless",
+        "B": "The evidence may be challenged on integrity grounds; some volatile evidence was lost and the disk state may have been altered during boot",
+        "C": "The evidence is unaffected because the forensic imaging occurred later",
+        "D": "The evidence becomes inadmissible in all jurisdictions"
+      },
+      "correct": "B",
+      "rationale": "When a suspect system is booted by a first-responder, multiple problems arise: volatile evidence (RAM contents, network connections, running processes) is lost because those state elements do not survive the boot; disk state changes because the operating system writes to the disk during boot (swap files, last-access timestamps, application startup artifacts, possibly automatic malware execution); and the chain of custody must now account for an untrained handler whose actions may or may not have altered artifacts. The practical consequence is that opposing counsel or a regulator will challenge the integrity of the evidence, and depending on the quality of remaining documentation and the severity of the alterations, some findings may be excluded or weakened. Option B accurately describes this nuance. Option A overstates the consequence — the evidence is not completely useless; post-boot disk images still contain substantial useful information, and the remaining evidence may still support disciplinary action under administrative burden of proof even if it is weakened for criminal prosecution. Option C is wrong because the alterations occurred before imaging and are now baked into the image. Option D overstates jurisdictional consequence: admissibility is fact-specific and jurisdiction-specific, and most courts will admit challenged evidence with appropriate qualification rather than exclude it entirely. The CISSP exam rewards realistic, nuanced answers about evidence handling. RFC 3227's order-of-volatility rule exists specifically to prevent this class of error; first-responders should preserve the live state before any action that alters it, including powering on.",
+      "blooms": "Analyze",
+      "sub_objective": "1.5",
+      "difficulty": 4,
+      "tags": [
+        "forensics",
+        "evidence",
+        "chain-of-custody",
+        "first-responder"
+      ]
+    },
+    {
+      "id": "D1-Q044",
+      "type": "analysis",
+      "stem": "An organization is choosing between two identical-cost controls to mitigate a risk with ALE = $250,000. Control A reduces ALE to $50,000. Control B reduces ALE to $100,000 but also detects and provides forensic data about attempted exploitation. The organization operates in a heavily regulated industry with mandatory incident reporting. Which control is the BEST choice?",
+      "options": {
+        "A": "Control A, because it produces a larger ALE reduction",
+        "B": "Control B, because its detection and forensic capability provides regulatory value that Control A lacks, even though its raw ALE reduction is smaller",
+        "C": "Neither control; run the math again",
+        "D": "Both controls; install them in parallel"
+      },
+      "correct": "B",
+      "rationale": "The question deliberately pits a pure ROSI answer against a manager-mindset answer that accounts for regulatory context. On strict ALE math, Control A is superior: $200,000 reduction vs $150,000 reduction, at the same cost. But the scenario explicitly invokes a heavily regulated industry with mandatory incident reporting. In such industries, the ability to detect and generate forensic data is not merely nice-to-have; it is often a regulatory requirement, affects breach notification timelines, supports defensibility in post-incident enforcement actions, and reduces the total cost of the incident (including regulatory penalties) beyond what ALE alone captures. Option B is correct because it recognizes that ROSI is a decision input, not a decision, and that regulatory context can rationally override raw ALE reduction. Option A takes the exam-trap view that ALE reduction alone wins — the CISSP exam explicitly tests against this reductive approach. Option C is a non-answer; the math is valid, so 'run it again' does not help. Option D ignores the stipulated cost equivalence; the question asks which single control to choose. A related CISSP principle: risk analysis should surface quantitative information but decisions should be made by the appropriate authority using both quantitative and qualitative inputs. When regulatory or reputational considerations meaningfully affect total cost, the control with weaker pure ROSI may be the right choice.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.9",
+      "difficulty": 5,
+      "tags": [
+        "risk-management",
+        "rosi",
+        "regulatory-context",
+        "manager-mindset"
+      ]
+    },
+    {
+      "id": "D1-Q045",
+      "type": "analysis",
+      "stem": "A CISSP is asked to review a security awareness program that has been running for three years. Key findings: phishing click rates dropped from 22% to 4%, reporting rates rose from 5% to 45%, training completion stays near 100%, and the organization has not experienced a successful phishing-related incident in 18 months. The CFO asks whether the program can be reduced. What is the BEST response?",
+      "options": {
+        "A": "Agree to cut the program; the metrics show it is no longer needed",
+        "B": "Disagree; point out that the favorable metrics are a direct result of the sustained program and that reducing investment would likely cause regression over time",
+        "C": "Agree to cut the program but increase spend on technical email filtering instead",
+        "D": "Recommend retaining the program as-is without justification"
+      },
+      "correct": "B",
+      "rationale": "The scenario presents the classic success paradox of security awareness programs: sustained investment produces strong metrics, which can be misinterpreted as evidence that the investment is no longer needed. In reality, those metrics are a direct product of the ongoing program; stopping or reducing the investment typically causes skills and vigilance to degrade, and click rates creep back up as novel lures appear. Option B correctly frames this as a cause-and-effect relationship and defends continued investment with a substantive argument, not just authority. Option A is the trap answer — it misreads the metrics. Option C is plausible but misses that email filtering and awareness address different failure modes and that replacing one with the other loses defense in depth. The strongest programs combine both. Option D preserves the program but fails to articulate why, which is exactly the wrong manager-mindset answer because it cannot withstand scrutiny. The CISSP exam rewards candidates who can explain security program economics to a CFO in language the CFO can evaluate. A good longitudinal case for the exam is the UK NHS phishing awareness program, which has published metrics showing sustained investment produces sustained improvement while disinvestment causes regression.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.12",
+      "difficulty": 4,
+      "tags": [
+        "awareness",
+        "metrics",
+        "program-sustainment",
+        "cfo-conversation"
+      ]
+    },
+    {
+      "id": "D1-Q046",
+      "type": "analysis",
+      "stem": "A CISSP evaluating a new vendor contract notes that the security addendum includes a mandatory 24-hour breach notification clause, but no right-to-audit provision, no flow-down requirement to sub-processors, and no exit assistance clause. From a SCRM perspective, what is the MOST significant gap?",
+      "options": {
+        "A": "The 24-hour notification is insufficient; it should be 72 hours",
+        "B": "The absence of flow-down requirements and right-to-audit prevents the organization from verifying vendor security posture and extending its requirements to the vendor's sub-processors, leaving a significant visibility and control gap",
+        "C": "The absence of an exit assistance clause is the only significant gap",
+        "D": "The notification clause by itself is sufficient for regulatory purposes"
+      },
+      "correct": "B",
+      "rationale": "The scenario asks for the MOST significant gap, which requires weighing each missing element. Breach notification is important but is only one event-driven control; without flow-down and right-to-audit, the organization has neither the visibility to confirm that the vendor maintains adequate security nor the contractual leverage to extend its requirements to the vendor's own sub-processors (which are where many supply-chain incidents originate). The absence of these two terms leaves the organization structurally blind and structurally powerless, regardless of how short the notification clause is. Option B correctly identifies the compound gap. Option A inverts the situation — 24-hour notification is tighter than 72-hour (which is the GDPR controller-to-regulator standard) and is generally a favorable term, not a gap. Option C correctly identifies exit as a gap but mischaracterizes it as the only significant one; exit matters but is less immediate than visibility and flow-down. Option D is the trap answer that ignores the SCRM principles (visibility, tiering, assurance, flow-down, monitoring, exit planning) and assumes notification alone covers risk. The CISSP exam rewards the answer that reflects multiple SCRM pillars rather than a single one. A contract that lacks right-to-audit and flow-down is a common real-world deficiency because vendors resist those clauses during negotiation; part of the CISSP role is recognizing and pushing back on this deficiency.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.11",
+      "difficulty": 4,
+      "tags": [
+        "scrm",
+        "contracts",
+        "right-to-audit",
+        "flow-down",
+        "vendor-risk"
+      ]
+    },
+    {
+      "id": "D1-Q047",
+      "type": "analysis",
+      "stem": "A mid-size organization is implementing its first formal risk management program. The CISO must choose between running a full quantitative risk assessment (requiring data the organization does not yet have) or running a qualitative assessment using expert judgment and a 5x5 heat map. Which approach is the BEST first step?",
+      "options": {
+        "A": "Full quantitative only; any other approach is indefensible to the board",
+        "B": "Qualitative first, to produce an actionable baseline quickly; then progressively incorporate quantitative methods as data becomes available",
+        "C": "Avoid formal risk assessment entirely; rely on ad hoc expert judgment",
+        "D": "Outsource the entire risk assessment to an external firm"
+      },
+      "correct": "B",
+      "rationale": "A mid-size organization without historical incident data and without mature actuarial capability cannot credibly execute a full quantitative assessment — the numbers would be fabricated, which is worse than no numbers. The pragmatic approach is to begin with a qualitative assessment that produces an actionable baseline using structured expert judgment (workshops, Delphi techniques, scenario analysis) mapped to a 5x5 or similar ordinal scale, and then to progressively introduce quantitative elements (FAIR, or semi-quantitative ranges) as data and talent mature. Option B correctly sequences the approach. Option A is dogmatic: it treats quantitative as the only defensible method and ignores the data-quality prerequisite. Option C abandons formal process, which is a governance failure. Option D is premature outsourcing that does not build internal capability and tends to produce a point-in-time deliverable rather than a sustained program. The CISSP exam rewards context-aware methodology selection. Qualitative assessments are fast, cheap, and appropriate when data is scarce; quantitative assessments are precise but expensive when data is rich. The right answer depends on the organization, and the exam punishes candidates who default to 'quantitative is always better'.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.9",
+      "difficulty": 4,
+      "tags": [
+        "risk-management",
+        "qualitative",
+        "quantitative",
+        "program-maturity"
+      ]
+    },
+    {
+      "id": "D1-Q048",
+      "type": "analysis",
+      "stem": "A large healthcare system is developing an AI model that analyzes patient data to recommend treatments. From a Domain 1 perspective, which of the following concerns deserves the MOST weight in the governance review?",
+      "options": {
+        "A": "Computational cost of model training",
+        "B": "Privacy implications under HIPAA and state law, bias and fairness implications, explainability for clinician decision support, and alignment with the organization's risk appetite for automated clinical recommendations",
+        "C": "Vendor selection for the GPU infrastructure",
+        "D": "Open-source license compatibility of the training framework"
+      },
+      "correct": "B",
+      "rationale": "A governance review of a clinical AI system touches several Domain 1 concerns simultaneously. Privacy implications fall under §1.4 (compliance) and require HIPAA analysis of any use of PHI, plus state-level privacy laws (California, Washington's My Health My Data Act, and similar). Bias and fairness implications are an emerging governance concern that does not cleanly fit a single sub-objective but affects risk (§1.9) and ethics (§1.1) simultaneously — biased clinical recommendations harm patients, which engages Canon I. Explainability is both a clinical requirement (clinicians must be able to trust and verify recommendations) and increasingly a regulatory one (FDA, EU AI Act). Alignment with risk appetite is the core governance question: has the board explicitly accepted the risk of automated clinical decision support, at what error rate, under what oversight? Option B captures the spectrum of legitimate Domain 1 concerns. Options A (compute cost), C (vendor infrastructure), and D (open source licensing) are operational or procurement concerns that may matter but do not rise to the governance level the scenario describes. The exam increasingly tests AI governance because frameworks are evolving — NIST AI RMF, ISO/IEC 42001, the EU AI Act — and candidates should be ready to apply traditional Domain 1 thinking to AI systems. The underlying point is unchanged: governance asks 'does this system align with business objectives, risk appetite, legal obligations, and ethical principles?' before it asks 'does this system work?'",
+      "blooms": "Evaluate",
+      "sub_objective": "1.3",
+      "difficulty": 5,
+      "tags": [
+        "governance",
+        "ai-risk",
+        "healthcare",
+        "hipaa",
+        "ethics"
+      ]
+    },
+    {
+      "id": "D1-Q049",
+      "type": "analysis",
+      "stem": "Two months after a ransomware event that cost $8M to contain, a CISO is reviewing the incident. The organization had a BCP, a DR plan, a cyber insurance policy, and a 24/7 monitoring service, but recovery took 9 days vs an MTD of 3 days. Post-incident analysis identifies that no one had tested the DR plan in the past 18 months. What is the ROOT CAUSE?",
+      "options": {
+        "A": "The cyber insurance policy was inadequate",
+        "B": "The DR plan was wrong; it should be rewritten",
+        "C": "The absence of regular DR testing left the organization unaware of gaps between documented plan and actual capability, a governance failure in plan maintenance",
+        "D": "The monitoring service failed to detect the initial compromise"
+      },
+      "correct": "C",
+      "rationale": "The root cause is not the content of the DR plan but the absence of testing. BCP/DR plans degrade rapidly without testing: personnel change, systems change, dependencies change, and the plan quickly diverges from reality even if no one edits it. Recovery taking 9 days against an MTD of 3 days is the operational consequence; the root governance cause is that testing — the control that would have surfaced the gap before a real incident — was not being performed. Option C correctly identifies this as a plan-maintenance governance failure. Option A (insurance) might be partially true as a contributing factor but is not the root cause of the recovery delay; insurance pays for consequence, not for operational capability. Option B (rewrite the plan) treats the symptom; the plan may or may not need rewriting, but without testing, a new plan will suffer the same fate. Option D (monitoring failure) addresses a different control domain — detection vs recovery — and even perfect detection would not have prevented the 9-day recovery once the incident occurred. The CISSP exam rewards answers that distinguish contributing factors from root cause, and that recognize continuous testing (via the checklist → tabletop → walkthrough → simulation → parallel → full-interruption progression) as a governance obligation, not an optional best practice. ISO 22301 and NIST SP 800-34 both treat testing as a mandatory element of a BCP/DR program; an untested plan is a governance violation regardless of its content.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.7",
+      "difficulty": 5,
+      "tags": [
+        "bcp",
+        "dr",
+        "testing",
+        "governance-failure",
+        "root-cause"
+      ]
+    },
+    {
+      "id": "D1-Q050",
+      "type": "analysis",
+      "stem": "A CISSP is advising a startup founder on what to do FIRST to build a security program. The startup has 30 employees, handles customer financial data, and has no existing security documentation. Which approach is the BEST first step?",
+      "options": {
+        "A": "Purchase a SIEM and a WAF",
+        "B": "Engage a penetration tester",
+        "C": "Establish a risk-based security policy approved by leadership, define a minimum viable control baseline aligned to business objectives, and assign ownership for identified risks",
+        "D": "Hire a CISO immediately"
+      },
+      "correct": "C",
+      "rationale": "Building a security program from scratch requires establishing the governance foundation first: a documented, leadership-approved security policy that states intent and scope; a minimum viable set of controls (encryption of customer data, access control, logging, incident response, backup) tied to the actual business; and assigned ownership for identified risks so that decisions can be made and tracked. Option C captures this governance-first sequence. Option A (buy tools) is the technology-first trap; tools without policy, process, and ownership are expensive shelfware — and at 30 employees, a SIEM is usually premature. Option B (pentest) is useful later but premature for an organization without any baseline — pentest findings without a framework to interpret and remediate them are decorative. Option D (hire a CISO) is not wrong in principle but is neither the FIRST step (policy, controls, and ownership can begin before a full-time CISO is hired) nor necessarily the right step for a 30-person organization, which may be better served by a fractional CISO, a security-literate founder, or a contracted advisory relationship until the program is mature enough to justify a full-time executive. The CISSP exam rewards the governance-first answer consistently: policy before technology, baselines before tools, ownership before metrics. Several frameworks — NIST CSF 2.0's Govern function, ISO 27001 clause 5, COBIT 2019's EDM objectives — explicitly operationalize this 'start with governance' sequence.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.3",
+      "difficulty": 4,
+      "tags": [
+        "governance",
+        "program-building",
+        "startup",
+        "first-steps",
+        "manager-mindset"
+      ]
+    },
+    {
+      "id": "D1-Q051",
+      "type": "analysis",
+      "stem": "A multinational retailer is preparing a 10-K filing that discloses material cybersecurity risks under the SEC's 2023 cybersecurity disclosure rules. The CISO wants to describe the company's risk management program without disclosing information that an attacker could weaponize. The GC wants sufficient specificity to satisfy the SEC. Which approach BEST balances these competing concerns?",
+      "options": {
+        "A": "Disclose only that 'the company has a cybersecurity program' without further detail",
+        "B": "Describe the governance structure, risk assessment process, and material-risk treatment approach using framework-level language (e.g., 'aligned to NIST CSF'), while withholding control specifics, vendor names, and architectural details",
+        "C": "Publish the full risk register including residual risk ratings and the incident response runbook",
+        "D": "Defer to external auditors and copy their exact language without independent review"
+      },
+      "correct": "B",
+      "rationale": "The SEC's 2023 cybersecurity disclosure rules (Item 106 of Regulation S-K and Item 1.05 of Form 8-K) require public companies to describe their cybersecurity risk management, strategy, and governance in sufficient detail for investors to evaluate the program, without requiring disclosures that would compromise security. The balancing test the exam rewards is: disclose at the governance and process level using recognized framework language, but withhold operational details that would help an attacker prioritize targets. Option B captures this correctly. Option A is insufficient — the 2023 rules explicitly require description of the risk management process, board oversight, and material-risk handling; a one-line disclosure invites SEC comment letters and potential enforcement. Option C is reckless and over-discloses: publishing a risk register with residual risk ratings would tell an attacker which areas the company considers weak, and publishing an IR runbook would let an attacker design around the company's playbook. Option D abdicates the board's oversight duty and may also produce disclosures that do not match the company's actual program. The CISSP manager mindset here is that disclosure is a governance decision owned by the board and the GC, informed by the CISO, with security-safe framing — not a pure security decision and not a pure legal decision. Note also that the SEC's 8-K rule for material cybersecurity incidents requires disclosure within four business days of determining materiality, which is a separate clock from GDPR's 72-hour notification.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.4",
+      "difficulty": 5,
+      "tags": [
+        "sec-disclosure",
+        "compliance",
+        "governance",
+        "risk-disclosure",
+        "manager-mindset"
+      ]
+    },
+    {
+      "id": "D1-Q052",
+      "type": "analysis",
+      "stem": "A CISO receives a credible tip that a high-performing employee is preparing to leave for a direct competitor and has begun downloading large volumes of sensitive project files. HR confirms the employee has not yet resigned. Legal advises that monitoring is permitted under the employment agreement. Which sequence of actions BEST balances legal risk, evidence preservation, and operational continuity?",
+      "options": {
+        "A": "Immediately terminate the employee's access and confront them in a disciplinary meeting",
+        "B": "Do nothing until the employee resigns, then revoke access at separation",
+        "C": "Preserve existing evidence, engage HR and legal to coordinate a documented investigation plan, enable enhanced monitoring per policy, and prepare for a planned separation with evidence preservation",
+        "D": "Publicly reassign the employee to a different role to send a signal without formal action"
+      },
+      "correct": "C",
+      "rationale": "This is a multi-disciplinary insider threat scenario that tests the CISSP candidate's ability to coordinate personnel security, evidence handling, legal, and HR simultaneously. Option C reflects the correct sequenced response: (1) preserve evidence of what has already occurred (snapshots, logs, copies of downloaded file lists) so future investigation is defensible; (2) convene HR, legal, security, and management in a documented investigation plan, which ensures the response is attorney-client privileged where appropriate and coordinated across functions; (3) enable enhanced monitoring per established policy (not ad hoc surveillance that could violate employment contracts or jurisdiction-specific privacy law); (4) plan a separation event with pre-revocation of sensitive access, return of assets, and a final interview. Option A is premature: confronting the employee destroys any chance of clean evidence collection, violates policy in most jurisdictions, and can expose the company to wrongful termination claims if the tip turns out to be inaccurate. Option B is negligent: doing nothing while evidence mounts and data leaves the building violates the duty of care to stakeholders. Option D is worst — it tips off the employee, changes nothing about the underlying risk, and creates a retaliation-adjacent employment law exposure. The exam rewards the coordinated, documented, legally supervised response because it is the only path that preserves the organization's options (civil action, criminal referral, trade secret protection) while minimizing legal risk to the employer.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.8",
+      "difficulty": 5,
+      "tags": [
+        "insider-threat",
+        "personnel-security",
+        "evidence-preservation",
+        "legal-coordination",
+        "investigation"
+      ]
+    },
+    {
+      "id": "D1-Q053",
+      "type": "analysis",
+      "stem": "An organization's board has set a risk appetite that allows up to $2M in annual expected loss across the cyber risk portfolio. The current portfolio ALE is $3.5M. The CISO proposes three controls that would each cost $400K/year: Control A reduces portfolio ALE by $900K, Control B reduces it by $600K but also creates forensic capability for incident response, Control C reduces it by $800K but addresses a regulatory finding from last year's audit. The budget allows only two of the three. Which selection BEST satisfies the risk appetite while reflecting manager-mindset priorities?",
+      "options": {
+        "A": "Select A and C — total reduction $1.7M, leaving residual ALE $1.8M within appetite, and closing the audit finding",
+        "B": "Select A and B — largest total ALE reduction ($1.5M)",
+        "C": "Select B and C — lowest total ALE reduction ($1.4M)",
+        "D": "Reject all three and escalate to the board for more budget"
+      },
+      "correct": "A",
+      "rationale": "This question tests the candidate's ability to weigh multiple decision criteria simultaneously: pure ALE reduction, regulatory exposure, and operational capability, within a budget constraint. Option A is the best choice because (1) it brings residual ALE to $1.8M, inside the $2M appetite; (2) it closes a regulatory audit finding, which is both a legal obligation and a reputational concern that is not captured in pure ALE math; (3) the $1.7M reduction is within $200K of the maximum. Option B achieves the highest total ALE reduction ($1.7M still) but leaves residual ALE at... wait: A=$900K+C=$800K=$1.7M, A+B=$900K+$600K=$1.5M. Option A's total is actually higher than B's, so option B offers less reduction AND no regulatory closure, making it strictly worse. Option C has the lowest reduction and no regulatory closure on its own (C alone closes the finding, but without A the portfolio ALE stays at $2.1M, outside appetite). Option D is the wrong default: escalating for more budget should be reserved for cases where no feasible combination meets appetite, which is not the case here. The manager-mindset takeaway is that regulatory findings carry weight beyond their raw dollar figure because they create audit scrutiny, potential enforcement, and reputational exposure; a control that closes a finding should be weighted higher than its ALE-reduction number alone suggests. Option A captures this by combining the largest single-control reduction with the audit closer.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.9",
+      "difficulty": 5,
+      "tags": [
+        "risk-treatment",
+        "portfolio-management",
+        "budget-constraints",
+        "regulatory-findings",
+        "manager-mindset"
+      ]
+    },
+    {
+      "id": "D1-Q054",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing the organization's incident response plan and notes that it specifies a 2-hour escalation timeline for material incidents but does not define 'material'. The GC points out that the SEC now requires 8-K disclosure within four business days of a company's determination that a cyber incident is material, and the organization is publicly traded. What is the MOST significant gap the CISSP should recommend addressing?",
+      "options": {
+        "A": "Shorten the 2-hour escalation timeline to 1 hour",
+        "B": "Define a written materiality determination process with criteria, responsible decision-makers, and a documented clock-start moment — aligned to the SEC disclosure rule",
+        "C": "Remove the materiality concept from the IR plan to avoid ambiguity",
+        "D": "Add a requirement to notify law enforcement immediately for all incidents"
+      },
+      "correct": "B",
+      "rationale": "The SEC's 2023 cybersecurity disclosure rule (Item 1.05 of Form 8-K) starts a four-business-day clock from the moment the company determines that a cyber incident is material to investors. The statutory clock does not start at incident detection; it starts at materiality determination. Without a written process defining who decides materiality, what criteria apply, and when the clock starts, the company is exposed to either over-disclosure (panicking and filing 8-Ks for non-material incidents, which is itself a disclosure risk) or under-disclosure (missing the four-day window because 'nobody formally decided it was material'). Option B captures the correct gap: the IR plan must operationalize the disclosure rule by defining the materiality determination process itself. Option A shortens an internal escalation timeline that is not the binding constraint here; escalation timing matters but it is not the governance gap the scenario highlights. Option C eliminates the concept the SEC rule depends on — exactly the wrong direction. Option D creates unnecessary law enforcement engagement for incidents that do not warrant it and does not address the materiality gap. The exam rewards candidates who recognize that new regulatory obligations translate into specific, documented governance processes, not generic acceleration of existing timelines. Materiality under securities law is a specific legal concept (a reasonable investor would consider it important to an investment decision), and the CISO's role is to ensure the IR plan collects and escalates the information the materiality decision-makers need, not to make the call alone.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.4",
+      "difficulty": 5,
+      "tags": [
+        "incident-response",
+        "sec-disclosure",
+        "materiality",
+        "governance",
+        "public-company"
+      ]
+    },
+    {
+      "id": "D1-Q055",
+      "type": "analysis",
+      "stem": "An organization operating in 14 countries discovers that a single cloud service provider (CSP) hosts 85% of its critical applications. Leadership has accepted this concentration risk informally for three years. The CISO presents a risk analysis showing that a multi-day CSP outage would exceed the organization's stated risk appetite and its maximum tolerable downtime for 6 of 9 critical processes. Which action MOST directly addresses the governance failure this scenario illustrates?",
+      "options": {
+        "A": "Immediately migrate all critical applications to a second CSP",
+        "B": "Document the concentration risk formally, present the analysis and proposed treatment options to the board-level risk committee, and obtain a formal risk decision",
+        "C": "Purchase additional cyber insurance covering CSP outage",
+        "D": "Accept the risk informally, because the CSP has historically had high uptime"
+      },
+      "correct": "B",
+      "rationale": "The core failure here is not technical — the CSP concentration is what it is — but governance: a risk exceeding appetite has been accepted informally, without a documented, authoritative decision. The remedy is to force the decision out of informality and into the governance process. Option B correctly frames this: document the analysis, present options (migrate, multi-cloud, enhanced DR, insurance, hybrid of these) to the appropriate governance body (a board-level risk committee), and obtain a formal decision that either (i) accepts the residual risk with documented justification, (ii) directs mitigation to specified thresholds, or (iii) directs avoidance. Option A is premature: large-scale CSP migrations are multi-year, multi-million-dollar efforts, and no CISO should initiate one without governance authorization. Option C is a narrow treatment — insurance addresses financial consequence but not operational continuity, does not restore service during an outage, and does not reduce the dwell-time risk to MTD. Option D perpetuates the governance failure and is the wrong answer the exam explicitly teaches against. The CISSP manager mindset on concentration risk is that it is exactly the kind of strategic risk governance bodies exist to decide. When a risk exceeds appetite and has been unaddressed for years, the fix is to make the decision visible and formal, not to make a unilateral engineering move or a reflex insurance purchase. A common real-world parallel is the 2017 and 2021 AWS us-east-1 outages, which drove many customers to formally reassess their concentration risk posture at the board level.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.9",
+      "difficulty": 5,
+      "tags": [
+        "risk-management",
+        "concentration-risk",
+        "governance",
+        "cloud",
+        "risk-acceptance"
+      ]
+    },
+    {
+      "id": "D1-Q056",
+      "type": "analysis",
+      "stem": "A CISSP is advising a fast-growing SaaS company that has just signed its first Fortune 500 customer. The customer's security team is requiring SOC 2 Type II, ISO/IEC 27001 certification, a formal vendor risk program, and a named DPO within 90 days. The CISSP's budget will only cover two of these in the time available. Which selection BEST serves the company's long-term security program while satisfying the customer?",
+      "options": {
+        "A": "SOC 2 Type II and ISO/IEC 27001 — two external certifications maximize customer confidence",
+        "B": "SOC 2 Type I and a documented vendor risk program — Type I can be issued faster than Type II, and vendor risk management is a foundational capability the company will need regardless",
+        "C": "ISO/IEC 27001 and a named DPO — combining an ISMS with a privacy officer",
+        "D": "Decline the customer because the requirements cannot be fully met"
+      },
+      "correct": "B",
+      "rationale": "SOC 2 Type II requires a minimum observation period (typically 6–12 months) of the company's controls operating effectively — it cannot be issued within 90 days if no observation history exists. Type I (design-of-controls attestation) can be issued quickly and is a credible interim step; many large customers accept Type I with a roadmap to Type II. Meanwhile, a documented vendor risk management program is a foundational capability the company will need regardless of this specific customer, and it supports downstream certifications. Option B captures both constraints: achievable in 90 days AND valuable beyond this customer. Option A is infeasible because Type II cannot be achieved in 90 days from a cold start. Option C is better than A but still has the Type II timing constraint baked into the customer's requirements that option C does not address. Option D sacrifices a material business opportunity when a credible alternative path exists, and the CISSP manager mindset does not treat customer requirements as binary pass/fail — it treats them as negotiable starting positions informed by timeline and feasibility. The correct response is almost always 'here is the most credible path we can execute in 90 days, with a roadmap to the full requirement', presented to the customer with the CISO and CEO behind it. The exam rewards feasibility-conscious answers that preserve the customer relationship without overcommitting to something that cannot be delivered.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.3",
+      "difficulty": 5,
+      "tags": [
+        "governance",
+        "certifications",
+        "soc-2",
+        "iso-27001",
+        "program-prioritization",
+        "startup"
+      ]
+    },
+    {
+      "id": "D1-Q057",
+      "type": "analysis",
+      "stem": "An engineering team wants to deploy a new third-party analytics library that processes user interaction data. The CISO's review identifies that (a) the library is maintained by a single individual on GitHub, (b) it has 200,000 weekly downloads, (c) it has no SBOM or signed releases, and (d) it is licensed under MIT. The engineering team argues that the library is popular and therefore safe. Which response BEST reflects the CISSP SCRM manager mindset?",
+      "options": {
+        "A": "Approve the library because popularity is a reasonable proxy for safety",
+        "B": "Reject the library unconditionally because it has a single maintainer",
+        "C": "Require formal risk assessment, vendor due diligence on the maintainer, contingency for maintainer unavailability, ongoing vulnerability monitoring, and a documented risk acceptance decision by an authorized owner before approving for use",
+        "D": "Approve the library but route all usage through an internal fork"
+      },
+      "correct": "C",
+      "rationale": "The engineering team's argument — 'popular, therefore safe' — conflates adoption with security, which is one of the core supply chain risk fallacies the CISSP exam tests against. Popularity is a probabilistic indicator but not a control. The SCRM manager mindset is to treat every third-party component as a formal risk that requires assessment, treatment, and documented decision. Option C captures the correct response: run the risk assessment, investigate the maintainer (who they are, their disclosure history, their ability to respond to reports), plan for the bus-factor risk (what happens if the maintainer disappears — fork, replacement, in-house rewrite), establish ongoing monitoring (vulnerability feeds, dependency scanning, anomaly detection), and obtain a documented risk acceptance decision by an authorized owner. Option A (approve because popular) is exactly the reasoning the exam teaches against. Option B (reject because single maintainer) is overly restrictive and would eliminate much of the open source ecosystem from use, including widely-trusted libraries with single maintainers; the right response is proportional assessment, not categorical rejection. Option D (internal fork) is a partial mitigation but does not address the core issues of vulnerability monitoring and maintainer assessment, and internal forks create their own maintenance burden that is often under-estimated. The broader point is that open-source supply chain risk is the largest single category of modern SCRM risk — Log4Shell, event-stream, colors.js, and similar incidents all involved components previously considered 'popular and safe'. The correct answer treats the risk with formal process regardless of the component's popularity.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.11",
+      "difficulty": 5,
+      "tags": [
+        "scrm",
+        "open-source",
+        "third-party",
+        "risk-acceptance",
+        "log4shell"
+      ]
+    },
+    {
+      "id": "D1-Q058",
+      "type": "analysis",
+      "stem": "A multinational organization has ISO/IEC 27001 certification, SOC 2 Type II, PCI-DSS Level 1 merchant status, and is subject to GDPR and HIPAA. The new CISO observes that each regulation and framework is managed in a separate control library, with significant duplication and inconsistent evidence collection. Which approach BEST addresses this compliance burden over the long term?",
+      "options": {
+        "A": "Maintain separate control libraries to satisfy each auditor precisely",
+        "B": "Implement a unified control framework that cross-maps each control to all applicable regulations and standards, with a single evidence repository and a controls-to-obligations matrix",
+        "C": "Abandon the weakest-enforced framework to reduce the workload",
+        "D": "Outsource each compliance program to a specialized vendor"
+      },
+      "correct": "B",
+      "rationale": "Compliance consolidation is a mature-organization problem the CISSP exam increasingly tests because nearly every real CISO faces it. The correct approach is a unified (or 'harmonized') control framework where a single set of enterprise controls is cross-mapped to every applicable regulation, framework, and standard. A single control can satisfy multiple obligations — for example, a documented access review process can simultaneously satisfy ISO 27001 A.8.18, SOC 2 CC6.2, PCI-DSS 7.2.5, HIPAA §164.308(a)(4), and GDPR Article 32 — and maintaining a controls-to-obligations matrix lets the organization produce auditor-specific evidence packages from a single source. Option B correctly captures this approach. Option A produces exactly the duplication and inconsistency the scenario describes, and scales poorly as new regulations are added. Option C is reckless: the organization's obligations do not go away because the CISO stops managing them, and abandoning a framework that customers or regulators require is a business failure. Option D creates coordination and accountability problems — the organization is still the data controller or covered entity and cannot transfer accountability, only execution. The exam rewards harmonized control frameworks because they reflect real-world practice at mature organizations and the language the CISSP expects: control mapping, evidence consolidation, and single-source-of-truth compliance. Several frameworks — SCF (Secure Controls Framework), CIS Controls with regulatory mappings, UCF (Unified Compliance Framework) — exist specifically for this purpose, and the exam may reference them.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.4",
+      "difficulty": 5,
+      "tags": [
+        "compliance",
+        "harmonization",
+        "unified-control-framework",
+        "multi-regulation",
+        "governance"
+      ]
+    },
+    {
+      "id": "D1-Q059",
+      "type": "analysis",
+      "stem": "Six months into a major ERP transformation, the CISO discovers that the project team has been granting developers production database access to expedite testing, contrary to the company's separation of duties policy. The project is on a tight deadline, and the CFO is pressuring the CISO to 'just let it work for now.' What is the BEST response?",
+      "options": {
+        "A": "Grant a blanket temporary exception covering the remainder of the project",
+        "B": "Refuse any exception and require the project to proceed without production access",
+        "C": "Assess the actual risk of the current access pattern, propose compensating controls (break-glass access with enhanced monitoring, session recording, approval workflow, time-limited credentials), document a formal policy exception with owner, duration, and review cadence, and require a plan to remediate the deviation",
+        "D": "Escalate directly to the board without discussing with the CFO first"
+      },
+      "correct": "C",
+      "rationale": "The CISO is being asked to balance three forces: a legitimate business deadline, a real security principle (SoD), and a real policy. The correct response is neither blanket exception (option A, which weakens the policy and normalizes violations) nor rigid refusal (option B, which sacrifices business outcomes for absolutism). Option C reflects the manager-mindset answer: translate the informal exception into a formal risk-managed exception with compensating controls that approximate the intent of SoD (break-glass access, session recording, monitoring, approval workflow, time limits), document the exception with an owner and a review cadence, and require a plan to remediate the deviation so the exception does not become permanent. This approach preserves the policy's authority, reduces actual risk, and does not block the business unnecessarily. Option A is what weak CISOs do — they grant a blanket exception that never gets closed and that becomes a permanent drift from policy. Option B is what engineer-minded CISOs do — they say no and are seen as obstacles to the business. Option D (escalating directly to the board without engaging the CFO) bypasses the chain of authority and damages the CISO's working relationship with the CFO; the escalation should be pre-coordinated with the CFO, not a surprise attack. The CISSP exam consistently rewards the documented, time-bound, compensating-control answer because it is the only one that reflects how risk decisions should be made in real organizations: formally, with tradeoffs explicit, ownership assigned, and exit criteria defined.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.8",
+      "difficulty": 5,
+      "tags": [
+        "separation-of-duties",
+        "policy-exception",
+        "compensating-controls",
+        "manager-mindset",
+        "erp"
+      ]
+    },
+    {
+      "id": "D1-Q060",
+      "type": "analysis",
+      "stem": "A CISSP is building a first-time security program at a healthcare startup. The founder asks for one KPI that, if reported to the board quarterly, would best tell the board whether the security program is working. Which KPI is the BEST single answer?",
+      "options": {
+        "A": "Number of security incidents per quarter",
+        "B": "Percentage of known critical risks that are within risk appetite, trending over time",
+        "C": "Total dollars spent on security tools",
+        "D": "Phishing simulation click rate"
+      },
+      "correct": "B",
+      "rationale": "The question asks for the single most board-relevant KPI. A board's job is to ensure that risk is managed within the organization's stated appetite; a board does not operate controls. The KPI that maps directly to this job is: what percentage of our known critical risks are currently within our stated risk appetite, and how is that percentage trending? Option B captures this. It is a single outcome metric that answers the question 'is the program working?' in terms the board can act on — any downward trend is a cue to reinforce or reallocate. Option A (incidents per quarter) is a lagging indicator subject to noise and detection bias — fewer reported incidents may mean fewer attacks, or it may mean weaker detection, and a board cannot distinguish those from a raw count. Option C (dollars spent) is an input metric, not an outcome metric — spending more does not equal being safer. Option D (phishing click rate) is a useful operational metric but addresses only one threat vector and does not map to portfolio-level risk management. The CISSP exam rewards outcome metrics over activity and input metrics, portfolio-level aggregation over point-in-time event counts, and board-relevant language over operational language. The specific framing 'percentage of critical risks within appetite, trending over time' is drawn directly from ISO 31000, NIST SP 800-39, and COSO ERM literature on KRIs (Key Risk Indicators) and is the phrasing that survives scrutiny from board audit committees.",
+      "blooms": "Evaluate",
+      "sub_objective": "1.3",
+      "difficulty": 5,
+      "tags": [
+        "governance",
+        "kpis",
+        "board-reporting",
+        "risk-appetite",
+        "metrics"
+      ]
+    }
+  ]
+}
