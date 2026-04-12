@@ -1,10 +1,10 @@
 """
 Application configuration settings
 """
-from typing import List, Optional
+from typing import List, Optional, Union
 from pydantic_settings import BaseSettings
-from pydantic import AnyHttpUrl
 import os
+import json
 
 
 class Settings(BaseSettings):
@@ -17,29 +17,40 @@ class Settings(BaseSettings):
     API_V1_PREFIX: str = "/api/v1"
     DEBUG: bool = True
     PORT: int = int(os.getenv("PORT", "8200"))
-    
+
     # Security
     SECRET_KEY: str = os.getenv("SECRET_KEY", "your-secret-key-here-change-in-production")
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
-    
+
     # Database
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",
         "sqlite:///./qbank/questions.db"
     )
-    
+
     # Redis
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
-    
-    # CORS
-    ALLOWED_ORIGINS: List[str] = [
-        "http://localhost:3000",
-        "http://localhost:3001",
-        "http://localhost:8000",
-        "https://eureka-test-prep.com"
-    ]
+
+    # CORS — stored as comma-separated string to avoid pydantic-settings parsing issues
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:8000,https://eureka-test-prep.com"
+
+    @property
+    def allowed_origins_list(self) -> List[str]:
+        """Parse ALLOWED_ORIGINS string into a list."""
+        if not self.ALLOWED_ORIGINS:
+            return ["http://localhost:3000"]
+        # Handle both JSON array and comma-separated formats
+        raw = self.ALLOWED_ORIGINS.strip()
+        if raw.startswith("["):
+            try:
+                parsed = json.loads(raw)
+                if isinstance(parsed, list):
+                    return [str(s).strip() for s in parsed]
+            except (json.JSONDecodeError, TypeError):
+                pass
+        return [s.strip() for s in raw.split(",") if s.strip()]
     
     # OpenAI
     OPENAI_API_KEY: Optional[str] = os.getenv("OPENAI_API_KEY")

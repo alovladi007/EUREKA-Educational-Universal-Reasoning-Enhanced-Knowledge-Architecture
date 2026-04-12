@@ -2,7 +2,7 @@
 Main API router aggregating all endpoints
 """
 from fastapi import APIRouter
-from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content, pricing, lessons, notes, qbank, flashcards, patent_bar
+from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content, pricing, lessons, notes, qbank, flashcards, patent_bar, patent_community, cissp_qbank
 
 api_router = APIRouter()
 
@@ -21,8 +21,10 @@ api_router.include_router(pricing.router, prefix="/test-prep", tags=["pricing"])
 api_router.include_router(lessons.router, prefix="/lessons", tags=["video-lessons"])
 api_router.include_router(notes.router, prefix="/notes", tags=["notes"])
 api_router.include_router(qbank.router, prefix="/qbank", tags=["qbank"])
+api_router.include_router(cissp_qbank.router, prefix="/qbank", tags=["cissp-qbank"])
 api_router.include_router(flashcards.router, prefix="/flashcards", tags=["flashcards"])
 api_router.include_router(patent_bar.router, prefix="/patent-bar", tags=["patent-bar"])
+api_router.include_router(patent_community.router, prefix="/patent-bar/community", tags=["patent-community"])
 
 @api_router.get("/")
 async def api_root():
@@ -48,5 +50,6 @@ async def api_root():
             "patent_bar": "/api/v1/patent-bar",
             "patent_bar_live_office_hours": "/api/v1/patent-bar/live/office-hours",
             "patent_bar_live_cohorts": "/api/v1/patent-bar/live/cohorts",
+            "patent_bar_community": "/api/v1/patent-bar/community",
         }
     }
