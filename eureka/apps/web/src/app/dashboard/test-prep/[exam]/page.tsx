@@ -19,6 +19,8 @@ import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
 import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
+import { getCISSPCourseContent, hasCISSPCourseContent, type TopicLesson } from '@/lib/cissp-course-data';
+import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
 import ReactMarkdown from 'react-markdown';
@@ -405,6 +407,69 @@ function ReadLessonsTab({ examType }: { examType: string }) {
 
           <div className="prose prose-sm dark:prose-invert max-w-none">
             {(() => {
+              // Try rich course data first (structured with sections + quizzes)
+              const courseData = hasCISSPCourseContent(activeTopic.id) ? getCISSPCourseContent(activeTopic.id) : null;
+              if (courseData) {
+                return (
+                  <div className="space-y-6">
+                    {/* Overview */}
+                    <div className="bg-muted/50 rounded-lg p-6">
+                      <p className="text-muted-foreground">{courseData.overview}</p>
+                    </div>
+
+                    {/* Sections */}
+                    {courseData.sections.map((section) => (
+                      <div key={section.id} className="border rounded-lg overflow-hidden">
+                        <h3 className="text-lg font-semibold p-4 bg-accent/30">{section.title}</h3>
+                        <div className="p-4">
+                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                            {section.content}
+                          </ReactMarkdown>
+
+                          {/* Exam Tip */}
+                          {section.examTip && (
+                            <div className="mt-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
+                              <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
+                                <Lightbulb className="h-4 w-4" /> Exam Tip
+                              </h4>
+                              <p className="text-sm text-amber-800 dark:text-amber-200">{section.examTip}</p>
+                            </div>
+                          )}
+
+                          {/* Important Note */}
+                          {section.importantNote && (
+                            <div className="mt-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                              <p className="text-sm text-blue-800 dark:text-blue-200">{section.importantNote}</p>
+                            </div>
+                          )}
+
+                          {/* Inline Quiz */}
+                          {section.quiz && section.quiz.length > 0 && (
+                            <LessonQuiz questions={section.quiz} title={`${section.title} — Quick Check`} />
+                          )}
+                        </div>
+                      </div>
+                    ))}
+
+                    {/* Key Takeaways */}
+                    {courseData.keyTakeaways && courseData.keyTakeaways.length > 0 && (
+                      <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-6">
+                        <h3 className="font-semibold text-green-900 dark:text-green-100 mb-3">Key Takeaways</h3>
+                        <ul className="space-y-2">
+                          {courseData.keyTakeaways.map((takeaway, i) => (
+                            <li key={i} className="flex items-start gap-2 text-sm text-green-800 dark:text-green-200">
+                              <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
+                              <span>{takeaway}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                );
+              }
+
+              // Fall back to markdown lesson content
               const lessonContent = getCISSPLessonContent(activeTopic.id);
               if (lessonContent) {
                 return (
@@ -413,35 +478,16 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                   </ReactMarkdown>
                 );
               }
+
+              // Final fallback: generic placeholder
               return (
-                <>
-                  <div className="bg-muted/50 rounded-lg p-6 mb-6">
-                    <h3 className="text-lg font-semibold mb-3">Lesson Overview</h3>
-                    <p className="mb-4">{activeTopic.summary}</p>
-                    <p className="text-sm text-muted-foreground">
-                      This is a comprehensive lesson covering all key concepts, formulas, strategies, and practice problems for <strong>{activeTopic.title}</strong> as tested on the {examType} exam.
-                    </p>
-                  </div>
-
-                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-6">
-                    <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
-                      <Lightbulb className="h-4 w-4" /> Key Takeaways
-                    </h4>
-                    <ul className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
-                      <li>• Understand the core principles behind {activeTopic.title.toLowerCase()}</li>
-                      <li>• Know the most commonly tested patterns and question formats</li>
-                      <li>• Practice applying concepts to exam-style questions</li>
-                      <li>• Memorize the essential formulas, rules, and exceptions</li>
-                    </ul>
-                  </div>
-
-                  <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-6">
-                    <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">Exam Tips</h4>
-                    <p className="text-sm text-amber-800 dark:text-amber-200">
-                      On the {examType}, this topic typically appears in questions that test your ability to apply concepts under time pressure. Focus on recognizing patterns quickly and eliminating wrong answers.
-                    </p>
-                  </div>
-                </>
+                <div className="bg-muted/50 rounded-lg p-6">
+                  <h3 className="text-lg font-semibold mb-3">Lesson Overview</h3>
+                  <p className="mb-4">{activeTopic.summary}</p>
+                  <p className="text-sm text-muted-foreground">
+                    Content for <strong>{activeTopic.title}</strong> is being developed.
+                  </p>
+                </div>
               );
             })()}
           </div>
