@@ -1,0 +1,673 @@
+{
+  "meta": {
+    "domain": 3,
+    "domain_name": "Security Architecture and Engineering",
+    "exam_weight_percent": 13,
+    "exam_outline_version": "2024-04-15",
+    "question_count": 50,
+    "difficulty_mix": {
+      "recall": 5,
+      "application": 20,
+      "analysis": 25
+    },
+    "eureka_topic_ids": [
+      "cissp_models",
+      "cissp_crypto",
+      "cissp_physical",
+      "cissp_secure_design"
+    ],
+    "notes": "AI-generated practice content aligned to the (ISC)² CISSP Exam Outline effective April 15, 2024. Requires human SME review before publication."
+  },
+  "questions": [
+    {
+      "id": "D3-Q001",
+      "type": "recall",
+      "stem": "Which three properties must a reference monitor satisfy according to CISSP doctrine?",
+      "options": {
+        "A": "Always invoked, tamper-proof, and verifiable",
+        "B": "Encrypted, authenticated, and audited",
+        "C": "Redundant, fault-tolerant, and monitored",
+        "D": "Authorized, accountable, and reviewed"
+      },
+      "correct": "A",
+      "rationale": "The reference monitor is an abstract concept — an arbiter of all subject-to-object accesses — that must satisfy three classical requirements: (1) always invoked (also called complete mediation), meaning every access is checked and nothing bypasses the monitor; (2) tamper-proof, meaning the monitor and its enforcement logic cannot be modified by unauthorized parties; and (3) verifiable, meaning the monitor is small enough and simple enough to be analyzed and tested for correctness. These three requirements appear in the original TCSEC (Orange Book) and in every modern security architecture textbook. The CISSP exam tests this triple directly and also tests scenarios where one of the three is violated — for example, a privileged user who can disable the access-check middleware violates 'always invoked', while a security kernel that is 500,000 lines of unstructured code violates 'verifiable'. Option B lists generic security properties. Option C is about availability, not access control. Option D describes audit accountability, which is related but distinct. Memorize the three words: Always, Tamper, Verifiable."
+    },
+    {
+      "id": "D3-Q002",
+      "type": "recall",
+      "stem": "The Bell-LaPadula model's *-property (star property) states:",
+      "options": {
+        "A": "No read up",
+        "B": "No write down",
+        "C": "No read down",
+        "D": "No write up"
+      },
+      "correct": "B",
+      "rationale": "Bell-LaPadula is a confidentiality model. It defines two main rules: the simple security property says 'no read up' (a subject cannot read an object at a higher security level), and the star property (*-property) says 'no write down' (a subject cannot write to an object at a lower security level). The star property prevents a high-level subject from leaking information to a lower level by writing it there. The combination of no-read-up and no-write-down enforces one-way information flow from low to high, which is the confidentiality property the model is designed to preserve. Option A is the simple security property, not the star property. Option C is Biba's simple integrity property (no read down), the dual of BLP's simple security property. Option D is Biba's star property (no write up), the dual of BLP's star property. The CISSP exam tests this inversion repeatedly, and candidates should memorize the full matrix: BLP: no read up, no write down (confidentiality). Biba: no read down, no write up (integrity). Mixing them up is the single most common Domain 3 model error."
+    },
+    {
+      "id": "D3-Q003",
+      "type": "recall",
+      "stem": "Which cryptographic primitive provides non-repudiation?",
+      "options": {
+        "A": "HMAC with a shared secret",
+        "B": "AES-GCM with a shared key",
+        "C": "Digital signature with a private key bound to a single identity",
+        "D": "SHA-256 hash"
+      },
+      "correct": "C",
+      "rationale": "Non-repudiation is the property that the originator of an action cannot plausibly deny having performed it. It requires a cryptographic primitive in which only one entity possesses the signing key, so that a valid signature can be attributed to that entity alone. A digital signature, produced with a private key bound to a single identity through a properly-managed PKI, provides non-repudiation. Option A (HMAC) does not provide non-repudiation because the MAC key is shared between two parties, meaning either party could have produced the MAC — so neither can prove to a third party that the other specifically originated the message. Option B (AES-GCM) is authenticated encryption but again with a shared key; it provides authenticity between sharing parties but not non-repudiation. Option D (SHA-256 alone) provides integrity checking only when combined with some authentication mechanism; it has no party-binding property whatsoever. The CISSP exam tests this distinction because many practitioners conflate authentication with non-repudiation. The key difference: authenticity requires knowing who claims to have sent a message; non-repudiation requires being able to prove it to a third party who may be skeptical. Only primitives with a single-holder key (digital signatures) satisfy the stronger property."
+    },
+    {
+      "id": "D3-Q004",
+      "type": "recall",
+      "stem": "Which block cipher mode is considered INSECURE for data containing patterns because identical plaintext blocks produce identical ciphertext blocks?",
+      "options": {
+        "A": "CBC",
+        "B": "CTR",
+        "C": "ECB",
+        "D": "GCM"
+      },
+      "correct": "C",
+      "rationale": "Electronic Code Book (ECB) is the simplest block cipher mode: it divides the plaintext into blocks the size of the cipher's block length and encrypts each block independently with the same key. The consequence is that identical plaintext blocks always produce identical ciphertext blocks, which leaks structural information about the plaintext. The canonical demonstration is the 'encrypted Tux penguin' image, where ECB-encrypted imagery still clearly shows the silhouette because pixel patterns map to repeating ciphertext blocks. The result is that ECB is broken for any plaintext with patterns, which includes most real-world data. Option A (CBC) chains each block to the previous one via XOR with the previous ciphertext, so identical plaintext produces different ciphertext; CBC has its own weaknesses (padding oracles, malleability without a MAC) but it does not leak the pattern structure. Option B (CTR, counter mode) turns a block cipher into a stream cipher using an incrementing counter, producing different keystream for every block. Option D (GCM, Galois/Counter Mode) is an AEAD mode that combines CTR with authentication; also strong. The CISSP exam tests ECB's weakness because it is a textbook example of how a choice of mode can completely undermine an otherwise strong primitive like AES. The lesson: do not use ECB for anything with patterns, and never for new designs."
+    },
+    {
+      "id": "D3-Q005",
+      "type": "recall",
+      "stem": "Which post-quantum cryptographic standard was finalized by NIST as FIPS 203 for key encapsulation?",
+      "options": {
+        "A": "ML-KEM (formerly CRYSTALS-Kyber)",
+        "B": "ML-DSA (formerly CRYSTALS-Dilithium)",
+        "C": "SLH-DSA (formerly SPHINCS+)",
+        "D": "Classical RSA-3072"
+      },
+      "correct": "A",
+      "rationale": "In August 2024 NIST finalized the first batch of post-quantum cryptographic standards: FIPS 203 for key encapsulation (ML-KEM, based on the CRYSTALS-Kyber submission), FIPS 204 for digital signatures (ML-DSA, based on CRYSTALS-Dilithium), and FIPS 205 for stateless hash-based signatures (SLH-DSA, based on SPHINCS+). Falcon (FN-DSA) is expected to be standardized in a subsequent FIPS release. Option A correctly pairs ML-KEM with FIPS 203. Option B is ML-DSA (FIPS 204), which is a signature standard, not a KEM. Option C is SLH-DSA (FIPS 205), also a signature standard. Option D is classical RSA at a key size that is not quantum-resistant regardless of length; Shor's algorithm on a sufficiently large quantum computer breaks RSA at any practical key size. The CISSP exam increasingly tests post-quantum cryptography because the standards are finalized, the transition is underway, and the 'harvest now, decrypt later' threat means that data encrypted today with classical public-key crypto may be compromised in the future. CISSPs should know the names and what each standard provides: KEM for key encapsulation (shared key establishment), DSA for signatures. Memorize ML-KEM, ML-DSA, SLH-DSA as the first batch, and understand crypto-agility as the operational response — inventory, prioritize, and plan migration for high-value, long-lived data first."
+    },
+    {
+      "id": "D3-Q006",
+      "type": "application",
+      "stem": "A security team is designing an internal PKI for issuing TLS certificates to hundreds of microservices. Which architectural choice BEST reduces the blast radius of a CA compromise?",
+      "options": {
+        "A": "Use a single online CA for both root and issuance",
+        "B": "Use a two-tier hierarchy with an offline root CA and online intermediate issuing CAs",
+        "C": "Use self-signed certificates on every microservice",
+        "D": "Use the same root CA certificate as a public commercial CA"
+      },
+      "correct": "B",
+      "rationale": "A two-tier PKI with an offline root CA and online intermediate issuing CAs is the standard design for reducing the blast radius of a CA compromise. The root CA is kept offline (air-gapped, powered down, physically secured, used only for signing intermediate certificates and the occasional CRL), which dramatically reduces the attack surface. If an intermediate is compromised, the root can revoke it and issue a replacement without forcing every relying party to update their trust stores. If the root were online, its compromise would be catastrophic and would require every relying party to update trust — a process that often takes years and is operationally painful (see DigiNotar 2011). Option A concentrates risk at a single online CA. Option C (self-signed everywhere) abandons centralized trust and produces unmanageable operational complexity; it also makes revocation impossible. Option D is a category error — you cannot reuse a public CA's certificate without its cooperation. The CISSP exam tests PKI hierarchy design because it is one of the clearest examples of defense in depth applied to cryptographic infrastructure. Related best practices: protect the root CA's private key in an HSM validated to FIPS 140-3 Level 3 or higher, generate the root at a formal key ceremony with witnesses, limit root validity to 10-20 years, rotate intermediates on shorter cycles, and publish CRLs and OCSP responders for both tiers."
+    },
+    {
+      "id": "D3-Q007",
+      "type": "application",
+      "stem": "A developer needs to store user passwords in a database. Which approach is MOST appropriate?",
+      "options": {
+        "A": "Encrypt passwords with AES-256 using a server-held key",
+        "B": "Hash passwords with SHA-256",
+        "C": "Store passwords using a memory-hard password KDF such as Argon2id with a unique per-user salt and an appropriate cost parameter",
+        "D": "Store passwords in plaintext but restrict database access"
+      },
+      "correct": "C",
+      "rationale": "Passwords should never be stored in a recoverable form (encryption) because any compromise of the encryption key reveals every password; instead they must be stored as a one-way derivation. The correct primitive is a password KDF (not a plain hash function), which is specifically designed to make brute-force attacks slow. Argon2id, winner of the Password Hashing Competition in 2015, is the current recommended choice because it is memory-hard (resistant to GPU and ASIC acceleration), side-channel resistant, and parameter-tunable. A unique per-user salt prevents rainbow-table attacks; the cost parameter (iterations, memory, parallelism) is tuned to make each hash operation take ~100 ms on the production hardware, which is cheap for occasional login verification but expensive for bulk brute force. Option A is recoverable and catastrophic on key compromise. Option B (SHA-256) is too fast for password hashing — GPUs can compute billions of SHA-256 per second, making brute force of human-memorable passwords practical. Option D is never acceptable. Also valid alternatives: bcrypt (older, still acceptable but not memory-hard), scrypt (memory-hard but less tunable than Argon2id). PBKDF2 is acceptable for legacy interop but not preferred for new designs. The CISSP exam tests this because password storage is one of the most commonly mis-implemented security controls and appears in nearly every major breach post-mortem."
+    },
+    {
+      "id": "D3-Q008",
+      "type": "application",
+      "stem": "An organization needs to protect data being actively processed by a cloud-based analytics application from the cloud provider's own privileged administrators. Which technology is MOST DIRECTLY designed for this threat model?",
+      "options": {
+        "A": "At-rest encryption with provider-managed keys",
+        "B": "TLS in transit",
+        "C": "Confidential computing using hardware-enforced memory encryption and attestation (Intel SGX/TDX, AMD SEV-SNP, AWS Nitro Enclaves, Azure Confidential VMs)",
+        "D": "Full-disk encryption on customer devices"
+      },
+      "correct": "C",
+      "rationale": "The threat model is data in use: protecting the plaintext of data while it is being processed by an application running on infrastructure the attacker (a privileged cloud administrator) controls. Traditional at-rest encryption does not help because the data is not at rest during processing; TLS does not help because the data is not in transit. Confidential computing is the technology family designed specifically for this threat. Hardware-enforced memory encryption isolates the application's memory from the hypervisor, the host OS, and any privileged administrator; remote attestation allows the customer to verify that the enclave is running expected code before sending data. Option C captures this correctly. Option A (at-rest with provider-managed keys) does not protect data in use and also leaves the keys in the provider's control. Option B (TLS) protects in transit only. Option D (full-disk encryption on customer devices) addresses a different threat model entirely. The CISSP exam tests confidential computing because it is the emerging answer to one of the hardest data-protection problems and because NIST SP 800-207 references it as a component of zero trust. Implementations include Intel SGX (per-enclave), Intel TDX (per-VM), AMD SEV-SNP (per-VM), AWS Nitro Enclaves (AWS-specific), and Azure Confidential VMs (leveraging SEV-SNP and TDX). Each has trade-offs around performance, memory size, compatibility, and remote attestation capabilities."
+    },
+    {
+      "id": "D3-Q009",
+      "type": "application",
+      "stem": "A CISSP is reviewing a new design that uses SHA-256 to compute file checksums for integrity verification. An engineer asks whether this is sufficient to detect malicious tampering. What is the MOST accurate response?",
+      "options": {
+        "A": "Yes — SHA-256 is a strong hash and prevents tampering",
+        "B": "Not sufficient alone — a plain hash can be recomputed by an attacker who modifies the file; integrity against malicious tampering requires authentication via HMAC (if using a shared key) or a digital signature (if non-repudiation is needed)",
+        "C": "No — SHA-256 is broken and should not be used",
+        "D": "Yes, if combined with MD5 as a secondary check"
+      },
+      "correct": "B",
+      "rationale": "A plain cryptographic hash provides integrity only in the sense that any change to the input produces a detectably different output. But if an attacker can modify both the file and its published hash — which is typical when the hash is stored alongside the file or transmitted over the same channel — the attacker simply recomputes the hash for the modified file and updates it, and the verification passes. Integrity against malicious tampering requires an authenticated primitive: an HMAC (if the verifier and authenticator share a secret key) or a digital signature (if non-repudiation is also needed, or if the verifier cannot share a key with the signer). Option B captures this correctly. Option A misunderstands the threat model — plain hashes work against accidental corruption, not malicious tampering. Option C is wrong — SHA-256 is still a strong, current hash. Option D is wrong and dangerous: MD5 is cryptographically broken and should not be used for any security purpose, and adding a broken hash to a strong one does not strengthen the combination. The CISSP exam tests this distinction because it is one of the most common integrity-protection mistakes in real systems. The mature practice: use HMAC-SHA256 for shared-key integrity, Ed25519 or RSA-PSS signatures for asymmetric integrity, and reserve plain hashing for non-security uses like deduplication or content addressing."
+    },
+    {
+      "id": "D3-Q010",
+      "type": "application",
+      "stem": "A security team identifies that a public-facing web application is vulnerable to padding oracle attacks against its CBC-mode encrypted session tokens. Which remediation BEST addresses the root cause?",
+      "options": {
+        "A": "Disable error messages entirely",
+        "B": "Switch to an AEAD cipher mode such as AES-GCM or ChaCha20-Poly1305 that does not rely on padding",
+        "C": "Rotate the encryption key daily",
+        "D": "Add a WAF to block long URLs"
+      },
+      "correct": "B",
+      "rationale": "Padding oracle attacks exploit a specific weakness of CBC mode (and other padded block cipher modes): the receiver's validity check leaks information about whether the padding of a decrypted message is correct, even if no plaintext is returned to the attacker. Over many iterations the attacker can recover the plaintext byte by byte without ever seeing the decryption key. The root cause is the combination of CBC padding and an observable validity check. The correct remediation is to switch to an AEAD mode — AES-GCM, ChaCha20-Poly1305, or AES-CCM — which does not use padding (CTR-based modes operate on arbitrary lengths) and which computes authentication before exposing any decrypted content, so the oracle cannot exist. Option B captures the root-cause fix. Option A (disable error messages) is security theater — the attacker can often infer validity from timing or response-size differences even without explicit error messages, and information leaks are hard to fully eliminate at the application layer. Option C (rotate keys) slows the attacker but does not fix the primitive; with fast enough oracle, the attacker can still recover session tokens before rotation. Option D (WAF) does not address the vulnerability class. The CISSP exam tests padding oracles because they are a recurring failure pattern and because the AEAD fix is architectural — not a patch but a redesign. TLS 1.3 removed CBC entirely for exactly this reason; mature systems should follow suit."
+    },
+    {
+      "id": "D3-Q011",
+      "type": "application",
+      "stem": "A CISO is asked which security model BEST applies to a medical records system where the primary concern is preventing unauthorized modification of patient records (tampering) rather than unauthorized disclosure.",
+      "options": {
+        "A": "Bell-LaPadula",
+        "B": "Biba or Clark-Wilson",
+        "C": "Brewer-Nash",
+        "D": "Take-Grant"
+      },
+      "correct": "B",
+      "rationale": "The scenario describes an integrity concern: preventing unauthorized modification. Bell-LaPadula is a confidentiality model and does not address integrity. Biba is the classic integrity model (no read down, no write up), and Clark-Wilson is a commercial integrity model based on well-formed transactions (CDIs, TPs, IVPs, separation of duties). Either is appropriate for the medical records scenario; Clark-Wilson is often the better practical fit because it maps directly to the maker-checker workflows and audit-trail requirements typical in healthcare, while Biba is more theoretical and harder to implement directly. Option B captures both acceptable answers. Option A (BLP) is a confidentiality-only model and does not address the integrity concern. Option C (Brewer-Nash) is a conflict-of-interest model for scenarios like audit firms with competing clients — not the scenario described. Option D (Take-Grant) is a theoretical model for proving safety properties of access control graphs; it is not a practical model for system design. The CISSP exam tests model selection by matching the scenario's primary concern to the model designed for that concern. Memorize: confidentiality → BLP; integrity → Biba or Clark-Wilson; conflict of interest → Brewer-Nash; formal safety analysis → Take-Grant, HRU."
+    },
+    {
+      "id": "D3-Q012",
+      "type": "application",
+      "stem": "A data center is being designed with fire suppression for a mission-critical environment containing sensitive electronics. Which approach BEST balances speed, false-discharge risk, and equipment protection?",
+      "options": {
+        "A": "Wet-pipe sprinklers throughout the entire space",
+        "B": "Pre-action sprinkler system combined with very-early smoke detection (VESDA) and an inert-gas or halocarbon backup",
+        "C": "Halon 1301 flood system",
+        "D": "Manual fire extinguishers only"
+      },
+      "correct": "B",
+      "rationale": "Modern data center fire protection combines multiple layers: pre-action sprinklers (which require both smoke detection and head activation before water enters the pipes, reducing false-discharge risk), VESDA (very-early smoke detection apparatus, typically laser-based air sampling that detects incipient combustion long before flames), and an inert gas (Inergen, IG-55, FE-13) or halocarbon agent (FM-200, Novec 1230) system that can suppress an early-stage fire without water damage. The combination provides early warning, avoids accidental water discharge, and preserves equipment for minor incidents while still having water as a last resort for catastrophic fires. Option B captures this layered approach. Option A (wet-pipe everywhere) is unacceptable because a false activation floods the space. Option C (Halon 1301) is banned under the Montreal Protocol because of ozone depletion — the exam may still test recognition but Halon is not a current design choice. Option D (manual extinguishers only) is grossly insufficient for a mission-critical environment and would fail most regulatory and insurance requirements. The CISSP exam tests data center fire suppression because it intersects several themes: layered defense, false-positive management, and the trade-off between people safety (life safety always wins) and equipment protection. Related: pre-action systems come in single-interlock and double-interlock variants; the double-interlock requires both smoke detection and a specific sprinkler head activation before water enters, further reducing false activation."
+    },
+    {
+      "id": "D3-Q013",
+      "type": "application",
+      "stem": "A CISO wants to implement zero trust architecture in an organization that currently relies on VPN-based perimeter security. Which of the following is the MOST appropriate FIRST step?",
+      "options": {
+        "A": "Replace VPNs with a single zero trust product",
+        "B": "Define the protect surface (the critical data, assets, applications, and services), map transactions and dependencies, and identify the specific resources that will be protected under a zero trust policy",
+        "C": "Decommission the internal network",
+        "D": "Deploy multi-factor authentication everywhere and declare the work complete"
+      },
+      "correct": "B",
+      "rationale": "NIST SP 800-207 defines zero trust as an architecture built around policy decisions made per-request, with continuous evaluation. Implementing it is a multi-year transformation and must begin with a clear definition of what is being protected. Forrester's original Zero Trust Extended framework and NIST's guidance both identify 'defining the protect surface' (sometimes called 'the crown jewels') as step one: identify the specific data, assets, applications, and services that matter most, map how they are used and by whom, and establish clear policies about who can access what under what conditions. Without this foundational step, any subsequent technology investment is aimed at an unclear target. Option B captures this correctly. Option A (replace VPNs with a product) is vendor-led and skips the foundational analysis; zero trust is not a product to buy, it is an architecture to implement, and a single product cannot replace a comprehensive architecture. Option C (decommission internal network) is operationally impossible and not required by zero trust; the architecture works with or without a perimeter. Option D (MFA everywhere) is one necessary control but is far from sufficient and does not constitute zero trust by itself. The CISSP exam tests zero trust because it is the dominant architectural conversation in security today, and candidates should recognize it as an architecture (not a product), multi-year, and starting with protect-surface definition."
+    },
+    {
+      "id": "D3-Q014",
+      "type": "application",
+      "stem": "An application design uses AES-GCM for session encryption. During a code review, a CISSP notices that the nonce is initialized to zero and incremented by one for each message in a session, but the same key is used across multiple sessions. What is the MOST SIGNIFICANT concern?",
+      "options": {
+        "A": "Nonce-reuse with the same key in GCM is catastrophic: if a nonce is ever reused with the same key, an attacker can recover the authentication key and forge arbitrary ciphertexts; the design should use a KDF to derive a per-session key or use a random 96-bit nonce with a large enough space to ensure uniqueness",
+        "B": "GCM is too slow for production",
+        "C": "The nonce should be encrypted separately",
+        "D": "Nonces should be derived from timestamps"
+      },
+      "correct": "A",
+      "rationale": "Nonce reuse is the most catastrophic failure mode of AES-GCM and other AEAD modes based on counter encryption plus authentication. If two different messages are encrypted under the same (key, nonce) pair, an attacker who observes both ciphertexts can derive the authentication subkey H and then forge arbitrary ciphertexts for any message of their choice. The described design — nonce starting from zero and incrementing per session, with the key shared across sessions — essentially guarantees nonce collisions whenever a new session starts on the same key, because each session will independently produce ciphertexts with the same low-valued nonces. The fix is either to derive a per-session key (using HKDF or similar from the long-term key plus a session identifier) so that nonces are effectively isolated, or to use random 96-bit nonces (which have a birthday-bound probability of collision of 2^-48 after 2^48 messages, typically acceptable). Option A captures the critical concern. Option B (speed) is not a security concern. Option C is a category error. Option D (timestamps) introduces its own failure modes (clock skew, predictability, low entropy) and is not a standard GCM recommendation. The CISSP exam tests nonce-reuse because it is one of the most devastating crypto-implementation errors and is still common in real code. Related: nonce-reuse-resistant AEAD modes like AES-SIV and GCM-SIV exist specifically to defend against this failure mode at the cost of some performance."
+    },
+    {
+      "id": "D3-Q015",
+      "type": "application",
+      "stem": "An organization must enable relying parties to check whether a TLS certificate has been revoked. The organization prefers a solution that minimizes client-side privacy leakage and reduces load on the CA. Which mechanism is MOST appropriate?",
+      "options": {
+        "A": "Certificate Revocation List (CRL)",
+        "B": "Online Certificate Status Protocol (OCSP) without stapling",
+        "C": "OCSP stapling (server fetches and caches the OCSP response and includes it in the TLS handshake)",
+        "D": "No revocation checking; rely on short certificate validity"
+      },
+      "correct": "C",
+      "rationale": "OCSP stapling is the modern best practice for certificate revocation checking. The server periodically fetches its own OCSP response from the CA, caches it, and includes it in the TLS handshake as part of the Certificate Status extension. This approach minimizes client-side privacy leakage (clients do not query the CA directly, so the CA cannot observe which sites each client is visiting), reduces load on the CA (far fewer client queries), improves handshake performance (no extra round-trip to the OCSP responder during connection), and makes revocation checking reliable because the server controls the refresh cadence. Option C captures this. Option A (CRL) is the legacy mechanism, requiring clients to download and parse potentially-large revocation lists, which does not scale well and has significant latency. Option B (OCSP without stapling) works but leaks client browsing history to the CA and creates a load spike on the CA whenever a popular site has a CRL update; major browsers have been deprecating it. Option D (short validity instead of revocation) is a legitimate alternative — Let's Encrypt uses 90-day validity — but does not replace revocation checking for all use cases and does not address the immediate mid-validity revocation need. The CISSP exam tests OCSP stapling because it is the correct answer for a mature PKI that balances performance, privacy, and CA load."
+    },
+    {
+      "id": "D3-Q016",
+      "type": "application",
+      "stem": "A security architect is designing session authentication for a distributed microservices system and must provide non-repudiation of user actions for audit purposes. Which of the following BEST satisfies the requirement?",
+      "options": {
+        "A": "HMAC-signed session tokens with a shared server key",
+        "B": "Digitally-signed audit events using per-user or per-session private keys managed in a HSM, producing signatures that can be independently verified by any audit authority",
+        "C": "Session tokens in cookies",
+        "D": "Plain JSON logs with timestamps"
+      },
+      "correct": "B",
+      "rationale": "Non-repudiation in an audit context requires that audit events cannot be plausibly denied by the actor who performed them. This demands (1) a cryptographic primitive that binds the event to a single-holder key, and (2) key management that makes it implausible for someone other than the actor to produce valid signatures. A digital signature using a private key is the only primitive that satisfies (1), and an HSM-backed key store satisfies (2) by ensuring that the private key cannot be exported, shared, or easily compromised. Option B captures this correctly. Option A (HMAC with a shared server key) fails the non-repudiation test because the server holds the key and could have produced the MAC itself — the user can plausibly deny authorship. Option C (session tokens in cookies) addresses session management but not audit non-repudiation; the cookies themselves do not sign user actions. Option D (plain JSON logs) has no cryptographic protection at all. The CISSP exam tests this pattern in enterprise contexts where regulatory requirements (SOX, HIPAA, some financial services rules) require that actions be attributable in a way that survives a dispute. The operational implementation uses short-lived signing keys issued per session or per user, chained to long-lived identity keys in an HSM, and audit events are signed at creation and verified at read."
+    },
+    {
+      "id": "D3-Q017",
+      "type": "application",
+      "stem": "A design proposes using TLS 1.3 with modern cipher suites for all API communication. During review, one team member argues that TLS is 'enough' and that application-layer encryption is unnecessary for sensitive data. A CISSP is asked to weigh in. Which response is BEST?",
+      "options": {
+        "A": "Agree — TLS 1.3 is sufficient for all cases",
+        "B": "TLS protects data in transit between TLS endpoints; it does not protect data at rest, in use, or beyond the decryption point. If sensitive data traverses multiple hops, terminates at load balancers, is logged, or is stored downstream, additional application-layer encryption may be required to maintain protection across the full data flow",
+        "C": "Disagree — TLS is too weak and should be replaced with a custom protocol",
+        "D": "Application-layer encryption should always replace TLS"
+      },
+      "correct": "B",
+      "rationale": "TLS protects data only between TLS endpoints and only while the data is in transit within that tunnel. It does not protect data once it is decrypted at the receiving endpoint, and it does not protect data traversing intermediate components that terminate TLS (load balancers, API gateways, service meshes) and re-establish it. It does not protect data that gets logged, stored, or passed through components that operate on plaintext. For sensitive data that traverses a complex pipeline, application-layer or field-level encryption provides protection across the full path, keeping ciphertext all the way to the end-to-end endpoint regardless of how many TLS hops are in between. Option B captures this correctly. Option A mis-states the coverage of TLS. Option C is wrong — TLS 1.3 is not weak and a custom protocol would introduce more risk than it removes (Kerckhoffs' principle: use standardized, peer-reviewed protocols). Option D is the opposite error and ignores the value of TLS in protecting the network path. The CISSP exam tests this pattern because modern architectures routinely involve multiple TLS-terminating intermediaries, and many practitioners mistakenly assume 'TLS in transit' means end-to-end encryption. True end-to-end requires application-layer or field-level cryptography. A related point: even within a single TLS hop, the decrypted plaintext may be logged, cached, or observed by privileged processes on the receiving host; TLS alone does not defend against these exposures."
+    },
+    {
+      "id": "D3-Q018",
+      "type": "application",
+      "stem": "An organization is selecting physical access controls for a sensitive server room. The design must prevent tailgating (unauthorized individuals following authorized ones through doors). Which control is MOST DIRECTLY designed for this?",
+      "options": {
+        "A": "Single-door proximity card reader",
+        "B": "Mantrap / access control vestibule requiring the first door to close and authorization before the second door opens",
+        "C": "CCTV monitoring",
+        "D": "Visitor log at the main entrance"
+      },
+      "correct": "B",
+      "rationale": "A mantrap (now often called an access control vestibule) is a two-door chamber designed specifically to prevent tailgating. The first door admits one person at a time; after entry, the first door must close and the person must authenticate before the second door opens. The small enclosed space between the doors makes it physically impossible for a second person to enter unnoticed. Optional additions include weight sensors to confirm single-occupancy, video monitoring, and emergency overrides that fail-safe. Option B captures this correctly. Option A (single-door prox reader) is easily defeated by tailgating; an authorized user badges in and an unauthorized person follows through the opening door. Option C (CCTV) detects but does not prevent tailgating; by the time an operator reviews footage the unauthorized access has already occurred. Option D (visitor log) is a procedural control that does not prevent physical tailgating. The CISSP exam tests physical access controls because they are part of Domain 3's site and facility section, and because many candidates under-study physical security. Related concepts: fail-safe (in fire or power loss, doors unlock to permit egress — life safety always wins) vs fail-secure (doors remain locked) as it applies to different zones; turnstiles as an alternative tailgating defense in public areas; and the layered-defense principle that combines badges, mantraps, CCTV, and guards."
+    },
+    {
+      "id": "D3-Q019",
+      "type": "application",
+      "stem": "A CISSP is reviewing a design that uses HKDF to derive application-level encryption keys from a long-term master key in a KMS. Which of the following is the PRIMARY benefit of this pattern?",
+      "options": {
+        "A": "HKDF makes the master key impossible to compromise",
+        "B": "HKDF enables cryptographic separation: multiple independent derived keys from a single master key, such that compromise of one derived key does not reveal the master or any other derived keys, supporting key rotation, per-tenant isolation, and least-privilege key usage",
+        "C": "HKDF is faster than AES",
+        "D": "HKDF provides non-repudiation"
+      },
+      "correct": "B",
+      "rationale": "HKDF (HMAC-based Key Derivation Function, RFC 5869) is designed to derive multiple cryptographically-independent keys from a single input keying material (IKM). The pattern provides cryptographic separation: a compromise of one derived key does not reveal the IKM or any other derived key, because HKDF's output is computationally unrelated to the input in a recoverable way. This enables several operational benefits: per-tenant keys derived from a single master, per-session keys derived from a long-term secret, per-purpose keys for encryption vs MAC, key rotation by deriving new keys with new salts or info parameters, and least-privilege key usage by distributing only the derived keys needed. Option B captures these benefits. Option A misstates the security property — HKDF does not prevent master key compromise; it prevents compromise of one derived key from leading to compromise of the master. Option C (speed) is irrelevant to the primary benefit. Option D (non-repudiation) is not a KDF property. The CISSP exam tests HKDF because it is the standard key derivation primitive used in TLS 1.3, Signal, and countless modern protocols. Candidates should distinguish HKDF from password KDFs like Argon2id: HKDF is for deriving keys from existing uniform random shared secrets, Argon2id is for deriving keys from low-entropy passwords (which requires memory-hardness to resist brute force)."
+    },
+    {
+      "id": "D3-Q020",
+      "type": "application",
+      "stem": "An engineer asks a CISSP whether it is acceptable to use MD5 for storing the integrity hash of downloaded software packages that will be verified by end users. What is the BEST response?",
+      "options": {
+        "A": "Yes, MD5 is still acceptable for download integrity",
+        "B": "No — MD5 is cryptographically broken for collision resistance, and a malicious actor could produce a different file with the same MD5 hash. Use SHA-256 or SHA-3 for integrity, and combine with a digital signature for authenticity",
+        "C": "Yes, but only if combined with a CRC32",
+        "D": "MD5 is acceptable for small files only"
+      },
+      "correct": "B",
+      "rationale": "MD5 was broken for collision resistance in 2004 and practical collision attacks have been demonstrated since. While MD5 may still be adequate for non-security-critical uses like cache keys or data deduplication, it is not acceptable for software distribution integrity because an attacker could produce a malicious file that hashes to the same MD5 value as a legitimate one, defeating the integrity check. For cryptographic integrity, the current standard choices are SHA-256, SHA-384, or SHA-512 (SHA-2 family, FIPS 180-4) or SHA-3 variants (FIPS 202). But even a modern hash alone does not provide authenticity — the hash could be replaced along with the file. For software distribution, the mature pattern is to sign the hash with a digital signature (e.g., GPG for software packages, X.509 signatures for installers), so that both integrity and authenticity are verified against the software publisher's public key. Option B captures this. Option A is dangerously wrong. Option C is wrong — CRC32 is not a cryptographic hash and does not strengthen a broken cryptographic hash. Option D has no basis. The CISSP exam tests MD5 and SHA-1 as deprecated primitives because they still appear in legacy systems and practitioners need to recognize when to push back. MD5 is broken for collisions; SHA-1 has also been broken for collisions (SHAttered, 2017); both should be replaced in security-critical contexts."
+    },
+    {
+      "id": "D3-Q021",
+      "type": "application",
+      "stem": "A security team wants to verify at boot that a server has not been tampered with since last shutdown. Which technology is MOST directly designed for this purpose?",
+      "options": {
+        "A": "BIOS password",
+        "B": "Trusted Platform Module (TPM) measured boot with remote attestation",
+        "C": "Host-based IDS",
+        "D": "Full-disk encryption"
+      },
+      "correct": "B",
+      "rationale": "Measured boot is a TPM feature (TPM 2.0 is current) that hashes each stage of the boot process — BIOS/UEFI firmware, bootloader, kernel, drivers, initramfs — and extends the hashes into Platform Configuration Registers (PCRs). Each PCR extension is a cryptographic one-way operation that combines the previous PCR value with the new hash. At the end of boot, the PCRs contain a chain that represents the complete boot state. The TPM can sign the PCR values with an attestation key so that a remote verifier can check whether the boot state matches expected values. If any stage has been modified, the PCRs will differ from the expected values and the attestation will fail. Option B captures this correctly. Option A (BIOS password) prevents unauthorized configuration but does not detect tampering with boot components. Option C (host-based IDS) operates at or above the OS layer and cannot detect pre-boot tampering. Option D (full-disk encryption) prevents offline data access but does not verify boot integrity. The CISSP exam tests measured boot and TPM because they are the foundation of trusted computing and are increasingly the basis for zero trust device posture assessment. Related concepts: Secure Boot (UEFI feature that only loads signed boot components), Intel Boot Guard (hardware-enforced root of trust), and the overall chain-of-trust concept from hardware root of trust through OS and application."
+    },
+    {
+      "id": "D3-Q022",
+      "type": "application",
+      "stem": "A software vendor is releasing a new product that will be installed on customer servers. Which is the MOST effective control to ensure customers can verify that they received an authentic, unaltered copy of the product?",
+      "options": {
+        "A": "MD5 hash published on the vendor's website",
+        "B": "Digitally-signed installer, with the vendor's public key distributed via an independently-trusted channel (e.g., a root CA or out-of-band key fingerprint), verified by the customer's installer or OS before execution",
+        "C": "A certificate in the installer's metadata",
+        "D": "HTTPS download from the vendor's website"
+      },
+      "correct": "B",
+      "rationale": "Software distribution authenticity requires a digital signature on the installer, produced with the vendor's private key and verifiable with the vendor's public key. The public key must be distributed through a channel the customer can independently trust — typically a root CA embedded in the operating system's code-signing trust store (Microsoft, Apple, Linux distros all have these) or an out-of-band published key fingerprint. When the installer runs, the OS verifies the signature against the trust store; a mismatch, a revoked certificate, or an untrusted signer produces a warning or blocks execution. Option B captures this correctly. Option A (MD5 hash) is vulnerable to two problems: MD5 is cryptographically broken for collisions, and an attacker who controls the vendor's website can replace both the installer and the hash. Option C ('certificate in metadata') is too vague — a certificate without a proper verification chain and active verification is decorative. Option D (HTTPS) protects the download in transit but does not protect against a compromised vendor website or against tampering by the vendor itself; TLS is transport security, not origin authentication in a way that survives a compromised origin. The CISSP exam tests code signing because it is one of the most commonly-mis-implemented controls and was central to the SolarWinds incident — where even legitimate signatures did not prevent the attack because the build system itself was compromised, reinforcing that signing is necessary but not sufficient."
+    },
+    {
+      "id": "D3-Q023",
+      "type": "application",
+      "stem": "A financial services firm is designing internal workflows and wants to enforce that no single person can create AND approve a funds transfer. Which design principle and implementation BEST satisfy this?",
+      "options": {
+        "A": "Defense in depth with two firewalls",
+        "B": "Separation of duties implemented via role-based access control: the 'create transfer' role and the 'approve transfer' role are mutually exclusive, enforced at the application and IAM layer",
+        "C": "Least privilege on database accounts",
+        "D": "Encryption of transfer records"
+      },
+      "correct": "B",
+      "rationale": "Separation of duties (SoD) is the security principle that prevents a single actor from completing a high-risk workflow end-to-end. In the funds-transfer scenario, SoD means that 'create transfer' and 'approve transfer' are different actions, assigned to different roles, with technical enforcement that a single user cannot hold both roles simultaneously. The implementation pattern is typically role-based access control with SoD constraints: the IAM system enforces that the two roles are mutually exclusive, and the application enforces the constraint at the transaction level (the creator cannot also be the approver on the same transaction). Option B captures both the principle and the implementation. Option A (defense in depth with firewalls) is a different principle addressing a different threat model. Option C (least privilege on database accounts) limits direct database access but does not prevent a single user from holding both application roles. Option D (encryption) addresses confidentiality, not workflow control. The CISSP exam tests SoD because it is a foundational control for fraud prevention and internal control (central to SOX and most financial audit standards). Related concepts: dual control (two people simultaneously for a single action), M-of-N control (any M of N authorized parties), and the distinction between static SoD (role assignments never permit the conflict) and dynamic SoD (the conflict is prevented per-transaction at runtime)."
+    },
+    {
+      "id": "D3-Q024",
+      "type": "application",
+      "stem": "A CISSP is reviewing an application design that uses AES-256-CBC with a static IV. What is the MOST significant issue?",
+      "options": {
+        "A": "AES-256 is too slow",
+        "B": "A static IV in CBC mode causes identical plaintexts to produce identical ciphertexts, leaking information about the data; IVs must be unique (and ideally random) per encryption with a given key",
+        "C": "CBC mode is faster than ECB",
+        "D": "The key size should be reduced to 128 bits"
+      },
+      "correct": "B",
+      "rationale": "CBC (Cipher Block Chaining) mode XORs each plaintext block with the previous ciphertext block before encryption, and uses an initialization vector (IV) as the 'previous block' for the first block. The IV must be unpredictable (ideally cryptographically random) and unique per encryption with the same key. A static IV causes CBC to behave partially like ECB for the first block: identical plaintext first blocks produce identical ciphertext first blocks, leaking information about repeated data. Over many encryptions, an attacker can also launch chosen-plaintext attacks against predictable IVs. The correct pattern is to generate a fresh random IV for every encryption, prepend or transmit it alongside the ciphertext (IVs do not need to be secret), and never reuse an IV with the same key. Option B captures this. Option A (AES-256 too slow) is not the issue and is not generally true. Option C confuses mode characteristics and is not the issue. Option D (reduce key size) is wrong — reducing key size reduces security and does not address the IV problem. The CISSP exam tests IV misuse because it is one of the most common CBC mistakes and because the fix is both easy and well-known. Related: TLS 1.1 and later require unique random IVs for CBC suites, TLS 1.3 removed CBC entirely in favor of AEAD modes, and modern designs should prefer AEAD (AES-GCM, ChaCha20-Poly1305) which do not have the IV-reuse weakness in the same form."
+    },
+    {
+      "id": "D3-Q025",
+      "type": "application",
+      "stem": "A CISSP is asked whether it is acceptable to re-use the same symmetric encryption key for both disk encryption at rest and TLS session encryption in transit for the same application. What is the BEST response?",
+      "options": {
+        "A": "Yes, a single key simplifies key management",
+        "B": "No — the principle of purpose separation (cryptographic key separation) dictates that different purposes should use different keys, derived independently or generated separately, so that compromise of one usage does not compromise the other and so that key rotation and revocation can be performed per-purpose",
+        "C": "Yes, if the key is 256 bits",
+        "D": "No, because AES-256 cannot be used for both purposes"
+      },
+      "correct": "B",
+      "rationale": "Cryptographic key separation is a fundamental design principle: keys should be used for a single purpose, because reuse across purposes creates multiple failure modes. First, different purposes have different threat models — an at-rest key compromise from a disk theft does not immediately expose TLS sessions if the keys are separate, but if they are the same, it does. Second, key rotation schedules differ — session keys may be short-lived, disk-encryption keys may be long-lived, and combining them forces one schedule on both. Third, algorithm or mode constraints differ — AES-GCM for TLS has specific nonce-management requirements that differ from at-rest encryption. Fourth, access patterns differ — the TLS endpoint may need to be highly available, while the at-rest key may be held in an HSM with tighter access controls. The correct pattern is to use a KDF (HKDF) to derive purpose-specific keys from a single master, or to generate independent keys and manage them separately. Option B captures this. Option A is a short-term convenience that creates long-term risk. Option C is wrong — key size does not address the purpose-separation issue. Option D is factually wrong — AES-256 can be used for both purposes, just with separate keys. The CISSP exam tests key separation because it is one of the clearest examples of cryptographic hygiene and because reuse errors in this dimension are common in less-mature systems."
+    },
+    {
+      "id": "D3-Q026",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a new IoT device architecture. The device uses a shared symmetric key hard-coded in firmware for all deployed devices, with the same key used for both device authentication to the cloud and encryption of telemetry. Which is the MOST SIGNIFICANT architectural concern?",
+      "options": {
+        "A": "The device is too small to use asymmetric cryptography",
+        "B": "A single compromised device reveals the shared key, which simultaneously compromises authentication and confidentiality for the entire fleet, enables impersonation, and has no revocation path; the architecture violates key-per-device, purpose separation, and revocation principles and must be redesigned to use per-device keys, preferably with a hardware root of trust",
+        "C": "The device cannot be firmware-updated",
+        "D": "The symmetric algorithm is too weak"
+      },
+      "correct": "B",
+      "rationale": "This scenario compounds multiple cryptographic architecture failures. A fleet-wide shared key means any single device compromise (physical extraction, debug port access, side-channel attack, firmware reverse engineering) reveals the key for every device in the fleet. Using the same key for both authentication and encryption violates key separation and means the same compromise undermines both properties. Hard-coding the key in firmware with no revocation path means that once compromised, the entire fleet must be re-flashed or replaced — often impossible for already-deployed devices. The correct architecture is per-device keys, ideally tied to a hardware root of trust (TPM-equivalent for embedded devices, or secure element chips like NXP's A71CH or STMicro's STSAFE), provisioned at manufacture with unique device identities, with separate keys or HKDF-derived keys for different purposes, and with a revocation mechanism supported by the cloud backend. Option B captures the full set of concerns. Option A is incorrect — most modern IoT devices can afford at least ECC operations. Option C (lack of firmware update) is a separate concern and not the primary crypto issue. Option D (weak algorithm) is not the described issue. The CISSP exam tests IoT security because it is one of the fastest-growing attack surfaces and because shared-key architectures are still common in poorly-designed consumer IoT. Real-world examples of this failure mode include Mirai (2016, using default credentials), various smart-home devices, and industrial control systems with hardcoded keys."
+    },
+    {
+      "id": "D3-Q027",
+      "type": "analysis",
+      "stem": "A CISSP is advising on the selection of an HSM for a financial services PKI. The firm needs to protect the private keys of an online issuing CA used for high-volume certificate issuance. Which HSM characteristic is MOST CRITICAL?",
+      "options": {
+        "A": "Lowest cost per operation",
+        "B": "FIPS 140-3 Level 3 (or higher) validation, which provides tamper-evidence, identity-based authentication, physical resistance to tampering, and protection of the CSP (critical security parameter) during use; combined with operational controls like dual-authentication, audit logging, and integration with the CA's issuance workflow",
+        "C": "Fastest TLS performance",
+        "D": "Ability to export keys to backup"
+      },
+      "correct": "B",
+      "rationale": "For an online CA protecting keys used at scale, the HSM's core guarantee is that the private key cannot be extracted, cannot be used without authorization, and cannot be tampered with undetected. FIPS 140-3 Level 3 is the standard validation level for financial and high-assurance PKI use: it provides identity-based authentication for operators, physical tamper-evidence, environmental failure protection, and resistance to attacks against the module's boundary. Level 4 is higher but typically unnecessary for commercial CAs outside of classified contexts. Operational controls complete the picture: dual control for high-risk operations (key generation, CA certificate creation, backup), logging of every key operation, integration with the CA issuance workflow, and key ceremonies for root generation. Option B captures these concerns. Option A (lowest cost) is the wrong optimization for a CA — cost per operation matters, but not at the expense of assurance. Option C (TLS performance) is misdirection — HSMs are for key protection, not TLS offload (which is a different use case). Option D (exportable keys) is exactly what an HSM should NOT allow; non-exportability is a core HSM guarantee. The CISSP exam tests HSM selection because it is a specific, testable area where the FIPS 140 validation level and operational characteristics are clearly distinguishable. Related: FIPS 140-3 superseded FIPS 140-2 in 2019 (with a transition period running through 2026); Level 1 is basic, Level 2 adds role-based authentication, Level 3 adds identity-based and tamper-evidence, Level 4 adds environmental failure protection."
+    },
+    {
+      "id": "D3-Q028",
+      "type": "analysis",
+      "stem": "A security team is evaluating whether to trust a newly-discovered 'cryptographic breakthrough' proposed by a single academic paper claiming orders-of-magnitude speedups. Which response BEST reflects sound CISSP practice?",
+      "options": {
+        "A": "Deploy the new primitive immediately to gain the performance benefits",
+        "B": "Reject all new cryptographic primitives",
+        "C": "Require several years of public cryptanalysis, peer review, implementation by experts, and ideally standardization (NIST, IETF, ISO) before adoption; apply the mantra 'don't roll your own crypto' and treat the academic paper as a starting point, not a production-ready solution",
+        "D": "Consult only the original paper"
+      },
+      "correct": "C",
+      "rationale": "Cryptographic primitives require extensive public cryptanalysis before they can be trusted in production. A single paper — even a good one — is only the beginning of the review process. The crypto community's track record is that genuinely secure primitives survive years of sustained attack and that many promising ideas are later broken. The prudent adoption path is: public peer review, independent cryptanalysis, multiple implementations by experts, ideally an NIST or IETF standardization process (which includes extensive formal review), and only then consideration for production use. Crypto-agility — designing systems so that primitives can be replaced without rewrites — supports this gradual adoption. Option C captures the mature approach. Option A is reckless and is exactly the kind of thinking that produced the Dual_EC_DRBG affair, where a suspected backdoor made it into a NIST standard and was only caught years later. Option B (reject all new) is too conservative and would prevent progress. Option D (consult only the original paper) ignores the peer-review process entirely. The CISSP exam tests this pattern because cryptographic conservatism is core to the manager mindset in Domain 3: the cost of a broken primitive (retroactively decryptable data, forged signatures, undermined authentication) is usually catastrophic and is often discovered long after deployment. The Post-Quantum Cryptography standardization process (2016–2024) is an example of the correct gradual adoption: seven years of public review, elimination of candidates, before finalization."
+    },
+    {
+      "id": "D3-Q029",
+      "type": "analysis",
+      "stem": "A CISO is evaluating 'crypto-agility' as a strategic initiative in preparation for post-quantum cryptography migration. Which of the following is the MOST IMPORTANT first step?",
+      "options": {
+        "A": "Purchase post-quantum hardware immediately",
+        "B": "Inventory all uses of public-key cryptography across the organization (TLS, signing, key exchange, VPN, authentication, encryption, legacy embedded systems), identifying algorithm, library, version, and dependency chain; then prioritize based on data value, longevity, and exposure",
+        "C": "Wait until post-quantum quantum computers exist",
+        "D": "Replace all AES-256 with ML-KEM"
+      },
+      "correct": "B",
+      "rationale": "Crypto-agility starts with visibility. Before an organization can replace a cryptographic primitive, it must know where that primitive is used. A thorough inventory covers: TLS endpoints (servers, load balancers, API gateways), code-signing systems, PKI (CAs, subordinate CAs, certificate stores), VPN endpoints, SSH key material, authentication tokens (JWT signing keys, SAML signing keys), encryption at rest using asymmetric wrapping, embedded systems with legacy crypto, third-party libraries and their transitive dependencies, and hardware (HSMs, TPMs, TLS accelerators). With the inventory in hand, prioritization is driven by three factors: (1) data value and longevity — long-lived data encrypted today may be decrypted in the future, so high-value long-lived data goes first; (2) exposure — public-facing systems are higher risk than isolated internal systems; (3) replacement feasibility — systems with active maintenance and modern libraries are easier to migrate than legacy embedded devices. Option B captures the correct first step. Option A (purchase hardware) skips the foundational inventory and is premature. Option C (wait) ignores the 'harvest now, decrypt later' threat. Option D conflates symmetric with asymmetric — AES-256 is already considered quantum-resistant in most threat models (Grover's algorithm only halves the effective security, so AES-256 provides ~128-bit post-quantum security), and ML-KEM is a KEM, not a replacement for a bulk cipher. The CISSP exam tests PQC planning because it is the defining cryptographic transformation of the decade."
+    },
+    {
+      "id": "D3-Q030",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a multi-tenant SaaS architecture where all tenant data is stored in a shared database, with tenant isolation enforced at the application layer via WHERE clauses based on the authenticated user's tenant ID. Which vulnerability class is the MOST SIGNIFICANT concern?",
+      "options": {
+        "A": "Covert channels via CPU caches",
+        "B": "SQL injection or application bugs that bypass the tenant filter cause cross-tenant data disclosure, a catastrophic failure that compromises every tenant's data simultaneously — a violation of least-common-mechanism and a consequence of logical rather than physical isolation",
+        "C": "TLS certificate mismatches",
+        "D": "DNS rebinding"
+      },
+      "correct": "B",
+      "rationale": "Application-layer tenant isolation via WHERE clauses is a logical isolation model that depends entirely on the application correctly applying the tenant filter to every query. A single SQL injection vulnerability, a single missing filter, a single bug in a new feature, or a single misconfigured ORM can bypass the isolation and expose data from all tenants. Because the filter is enforced in application code rather than at the storage layer, the security property cannot be verified independently of application correctness, and any application bug becomes a multi-tenant data breach. This is a violation of least-common-mechanism (all tenants share the same database and the same filter logic) and a consequence of using logical rather than physical isolation. Option B captures this risk. Option A (covert channels via CPU caches) is a real concern in multi-tenant hardware but is several orders of magnitude less likely than an application-layer filter bypass. Options C and D are unrelated to the scenario. The correct remediation options include: adding database-layer row security (PostgreSQL row-level security, Oracle VPD, SQL Server RLS) so the filter is enforced below the application layer; adding per-tenant database schemas or separate databases (stronger logical isolation); moving to physical tenant isolation with dedicated compute or storage per tenant (the Domain 2 'single-tenant architecture' answer for customers who require it); and aggressive testing including mutation testing, fuzz testing, and specific cross-tenant access tests in CI. The CISSP exam tests multi-tenancy because it is a defining design choice in SaaS architecture and because logical isolation failures have been the root cause of many real-world breaches."
+    },
+    {
+      "id": "D3-Q031",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a data center design. The facility is in a coastal area with hurricane risk, and the design calls for battery UPS backed by diesel generators for power resilience. A reviewer notes that the diesel fuel is sourced from a single local supplier. Which consideration is MOST IMPORTANT to add to the design?",
+      "options": {
+        "A": "Switch entirely to battery",
+        "B": "Establish a multi-supplier fuel contract, document a minimum onsite fuel stockpile calculated against MTTR for the longest plausible outage including post-hurricane supply disruption, and test the full power-recovery chain including fuel delivery under realistic scenarios",
+        "C": "Move the data center inland",
+        "D": "Remove the generators since they are unreliable"
+      },
+      "correct": "B",
+      "rationale": "Diesel generator resilience depends not only on the generator itself but on the fuel supply chain. In a post-hurricane scenario, local fuel suppliers may be unavailable for days or weeks: roads are impassable, refineries are disrupted, priority is given to emergency services. A single-supplier contract is a single point of failure in the supply chain. The mature design requires: multiple fuel suppliers with separate sourcing; a minimum onsite fuel stockpile sized to cover the longest plausible outage plus a safety margin; regular testing of both generator operation and fuel delivery; and coordination with regional emergency services for priority access. Option B captures the layered supply-chain-aware response. Option A (battery only) typically cannot provide the runtime needed for multi-day outages; batteries bridge the gap to generator start, not the entire outage. Option C (move inland) is not a reasonable one-time response and may not be operationally feasible. Option D (remove generators) is worse, not better. The CISSP exam tests physical security and BCP intersections like this because many candidates over-focus on the primary control (generator) and under-consider supply chain dependencies. The broader lesson is that resilience design must model the full dependency graph of every critical control — the generator depends on fuel, the fuel depends on supply, the supply depends on logistics, the logistics depend on infrastructure — and must test the full chain, not just the primary element."
+    },
+    {
+      "id": "D3-Q032",
+      "type": "analysis",
+      "stem": "A financial-services CISSP is asked to evaluate whether a proposed homomorphic encryption scheme is a viable solution for enabling a cloud provider to perform analytics on sensitive customer data without ever seeing the plaintext. Which assessment is MOST REALISTIC?",
+      "options": {
+        "A": "Homomorphic encryption is production-ready for all analytics workloads",
+        "B": "Fully homomorphic encryption (FHE) is mathematically capable of arbitrary computation on ciphertext but carries orders-of-magnitude performance overhead that makes it impractical for most general-purpose analytics today; partially homomorphic schemes (additive only, multiplicative only) and somewhat-homomorphic schemes can be practical for specific narrow use cases (private set intersection, secure aggregation), and the viable alternative for most cases is confidential computing with hardware enclaves",
+        "C": "Homomorphic encryption is theoretical and cannot be implemented",
+        "D": "Homomorphic encryption provides non-repudiation and so is ideal for audit"
+      },
+      "correct": "B",
+      "rationale": "Homomorphic encryption is real and mathematically powerful but has major practical limitations. Fully homomorphic encryption (FHE), invented by Gentry in 2009, allows arbitrary computation on ciphertext but has performance overhead of 10^4 to 10^6 compared to plaintext operations, making it impractical for most general-purpose workloads. Partially homomorphic schemes (Paillier for addition, unpadded RSA for multiplication) and somewhat-homomorphic schemes (limited-depth arithmetic circuits) are practical for specific use cases: private set intersection (matching records without revealing them), secure aggregation (computing sums without seeing individuals), certain specific statistical operations. For most analytics workloads where an organization wants the cloud provider unable to see plaintext, confidential computing (hardware enclaves like Intel SGX/TDX, AMD SEV-SNP, AWS Nitro Enclaves, Azure Confidential VMs) is the more practical choice because it provides protection at near-native performance, with the trade-off that the customer must trust the hardware vendor and the enclave implementation. Option B captures this nuanced reality. Option A overstates FHE's current practicality. Option C is wrong — FHE has been implemented (IBM HElib, Microsoft SEAL, OpenFHE, Concrete), just with performance limitations. Option D confuses primitive purposes. The CISSP exam tests FHE because it is an emerging area the outline references and because practitioners routinely over-estimate its current practicality."
+    },
+    {
+      "id": "D3-Q033",
+      "type": "analysis",
+      "stem": "A CISSP is auditing a new identity provider (IdP) that uses SAML assertions to federate login across partner organizations. The IdP signs SAML assertions with a single long-lived RSA-2048 key stored in a software KeyStore on the IdP server. Which SINGLE improvement would MOST INCREASE the security of the system?",
+      "options": {
+        "A": "Increase key size to RSA-3072",
+        "B": "Move the signing key to an HSM, with identity-based authentication for signing operations, and establish a key rotation schedule; this addresses the most significant current risk (server compromise revealing the signing key) and provides a path to crypto-agility",
+        "C": "Switch to AES for signing",
+        "D": "Add more servers"
+      },
+      "correct": "B",
+      "rationale": "The most immediate risk in the current design is that a server compromise (privilege escalation, OS vulnerability, insider access, supply-chain attack) reveals the single signing key, allowing the attacker to forge SAML assertions and impersonate any principal — a total compromise of the federation trust. Moving the signing key to an HSM addresses this by ensuring the key cannot be extracted from the hardware module; the IdP can request signing operations but cannot read the key material. Identity-based authentication for signing operations provides additional access control. A key rotation schedule reduces the impact of any future compromise by limiting the lifetime of compromised keys. Option B captures these improvements. Option A (increase key size) does not address the server-compromise risk — a 3072-bit key stored in software is still extractable. Option C (AES for signing) is a category error — AES is a symmetric cipher, not a signature scheme, and cannot provide the non-repudiation required for SAML assertions. Option D (more servers) increases attack surface without adding protection. The CISSP exam tests SAML/OIDC signing-key protection because it is frequently mis-implemented in enterprise federation deployments. The broader pattern: any long-lived key with broad trust implications should be protected in hardware with identity-based operational access, logged at every use, and rotated on a schedule appropriate to the data it protects. Key compromise is one of the highest-impact events in a federation, and HSM protection is the primary defense."
+    },
+    {
+      "id": "D3-Q034",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating a legacy application that stores session tokens as unsalted MD5 hashes of usernames in a database. Which combination of issues is MOST CRITICAL to address?",
+      "options": {
+        "A": "The MD5 algorithm is fast, the values are predictable (unsalted hashes of usernames can be precomputed in rainbow tables), MD5 is cryptographically broken for collision resistance, and the design assumes secrecy of a value that is not actually secret because usernames are guessable; the session-token scheme is fundamentally broken and should be replaced with cryptographically-random tokens bound to server-side session state",
+        "B": "MD5 is fast",
+        "C": "The tokens are stored in a database",
+        "D": "MD5 outputs are 128 bits"
+      },
+      "correct": "A",
+      "rationale": "The scenario combines several failures. First, MD5 is fast, which means the hash offers almost no resistance to brute-force enumeration. Second, the inputs (usernames) are low-entropy and often predictable, so an attacker can precompute MD5 hashes for likely usernames. Third, the hashes are unsalted, which means the same username always produces the same hash — a rainbow table attack is trivial. Fourth, MD5 is cryptographically broken for collision resistance (not directly relevant to authentication but a sign of an overall weak primitive). Fifth, and most fundamentally, the design assumes that the hash of a username is a secret, but it is not — it is a deterministic function of a predictable input. The session tokens can therefore be recovered by anyone with knowledge of usernames and MD5. The fix is not to strengthen the hash but to redesign the scheme: session tokens should be cryptographically-random values (at least 128 bits of entropy, ideally 256), generated per session, stored server-side and associated with session state, and transmitted to the client as opaque identifiers. The client never needs to derive or recompute them. Option A captures the compound nature of the failure. Options B, C, and D each identify a single issue but miss the central point. The CISSP exam tests this pattern because session-token generation is one of the most commonly-broken controls, and the correct answer is architectural (random tokens) rather than primitive-level (stronger hash)."
+    },
+    {
+      "id": "D3-Q035",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a secure boot implementation for a new embedded device. The boot chain verifies signatures of each loaded component, using a root public key stored in one-time programmable (OTP) fuses on the chip. Which consideration is MOST IMPORTANT to add for long-term security?",
+      "options": {
+        "A": "Use a larger key",
+        "B": "Plan for root key rotation by supporting multiple root keys in OTP or a multi-root authorization scheme; otherwise a compromise or quantum-era obsolescence of the single root key creates a permanent, unremediable vulnerability in every shipped device",
+        "C": "Use AES instead of signatures",
+        "D": "Remove the OTP fuses"
+      },
+      "correct": "B",
+      "rationale": "A hardware root of trust based on a single root public key in OTP fuses is a powerful assurance — but only as long as the key remains trustworthy. Because OTP fuses cannot be rewritten, a single root key creates a permanent, unremediable dependency: if the key is compromised (via side-channel attack, factorization, quantum computer, or supply-chain compromise of the keying ceremony), every device shipped with that key becomes untrustable forever, with no remediation path. Mature designs plan for root key rotation by (a) supporting multiple independent root keys in OTP fuses and a mechanism to revoke one and fall back to another, (b) using multi-root authorization schemes where any of several signatures is valid, or (c) layering a firmware-updatable intermediate root that is itself signed by the hardware root but can be rotated over the device's lifetime. Post-quantum cryptography adds urgency: RSA and ECC root keys may become breakable in 10–20 years, and devices shipped today with single classical root keys may be obsolete before their physical life ends. Option B captures the long-term design concern. Option A (larger key) does not address the quantum threat and does not enable rotation. Option C (AES) is a category error — AES is not a signature scheme and cannot be used for code signing. Option D (remove OTP fuses) abandons the hardware root of trust entirely. The CISSP exam tests embedded/IoT security because it is a growing area and because the unique constraints of OTP and fixed keys create design challenges that differ from software systems."
+    },
+    {
+      "id": "D3-Q036",
+      "type": "analysis",
+      "stem": "A CISSP is advising a financial firm considering whether to implement confidential computing for its highest-sensitivity trading workloads. Which factor is MOST IMPORTANT in the decision?",
+      "options": {
+        "A": "Confidential computing is free",
+        "B": "Whether the threat model includes compromise of the hypervisor, cloud provider administrators, or privileged internal staff with host access; if so, confidential computing is directly useful; if the threat model is only remote attackers and application-level flaws, traditional controls are typically more cost-effective",
+        "C": "Whether the team prefers Intel or AMD",
+        "D": "Whether the application uses Python"
+      },
+      "correct": "B",
+      "rationale": "Confidential computing protects data in use against threats from privileged system code — the hypervisor, the host OS, cloud provider administrators, privileged internal staff with host access, and related insider or supply-chain risks. If the firm's threat model explicitly includes these actors as potential adversaries (often the case for high-sensitivity workloads in public cloud, or in sectors with hostile-insider concerns, or in cross-jurisdictional deployments where legal compulsion of the provider is a concern), confidential computing provides a direct and powerful defense that traditional controls cannot offer. If the threat model does not include these actors — if the firm is in a trusted on-premises environment with robust insider controls — then confidential computing's additional protection may not justify its cost and complexity (specialized development, performance overhead, ecosystem limits, attestation infrastructure, operational burden). Option B captures this threat-model-driven decision. Option A is factually wrong — confidential computing carries meaningful cost in performance, complexity, and infrastructure. Option C (Intel vs AMD) is a vendor comparison, not a strategic decision factor. Option D is irrelevant. The CISSP exam rewards threat-model-driven answers to architectural decisions. The broader principle: controls should be selected based on the specific threats they address, not adopted broadly because they are new or strong in general. A control that does not map to a threat in the threat model is probably not the right investment."
+    },
+    {
+      "id": "D3-Q037",
+      "type": "analysis",
+      "stem": "An organization is evaluating whether to use a commercial CA or run its own internal CA for internal TLS certificates. Which factor is MOST IMPORTANT in the decision?",
+      "options": {
+        "A": "Internal CAs are always cheaper",
+        "B": "Whether the relying parties are exclusively within the organization's trust boundary (in which case an internal CA is appropriate and gives the organization full control over issuance, revocation, and lifecycle) or include external parties (in which case a commercial CA with widely-trusted root certificates is usually required to avoid deployment friction with external clients)",
+        "C": "Whether the CA software is open source",
+        "D": "Whether the organization has an HSM"
+      },
+      "correct": "B",
+      "rationale": "The fundamental question for CA choice is who the relying parties are. An internal CA is appropriate when all relying parties are within the organization's control: internal microservices, internal clients, managed endpoints. The organization can distribute the root certificate via configuration management and gain full control over issuance policies, validity periods, revocation, and automation. A commercial CA is typically required when relying parties include external users — their browsers, devices, or OS will not trust an internal root unless it is specifically installed, which is impractical for public-facing services. Option B captures the correct framing. Option A (internal always cheaper) is not consistently true; commercial certificates are cheap or free (Let's Encrypt, ZeroSSL, AWS ACM), while running an internal CA requires HSM infrastructure, operational processes, and dedicated expertise. Option C (open source) is a tool choice, not a decision factor. Option D (HSM availability) is a capability question but not the determining factor. The CISSP exam tests CA architecture decisions because they come up often in enterprise environments and because the right answer depends on the trust boundary. A related principle: internal CAs and commercial CAs are often combined — commercial for public-facing, internal for internal service mesh — and the organization maintains both simultaneously. Another related point: DigiNotar 2011 and various CA-level incidents have reinforced the importance of Certificate Transparency (CT) logs, which let relying parties audit whether any CA has issued certificates for their domain."
+    },
+    {
+      "id": "D3-Q038",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a new design that uses JSON Web Tokens (JWT) for user authentication across a microservices architecture. The tokens are signed with HS256 (HMAC-SHA256) using a shared secret distributed to every microservice. Which is the MOST SIGNIFICANT weakness?",
+      "options": {
+        "A": "JWT is slow",
+        "B": "Shared-secret HMAC distributed to every microservice means any single service compromise reveals the secret and enables token forgery across the entire system; in a microservices architecture, asymmetric signing (RS256 with a single private issuing key and public verification keys distributed to services) provides better separation because a compromised verifier cannot forge tokens",
+        "C": "JSON is not typed",
+        "D": "Tokens should be in cookies"
+      },
+      "correct": "B",
+      "rationale": "JWT supports both HMAC (HS256, HS384, HS512) and asymmetric signatures (RS256, ES256, PS256). HMAC is appropriate when there is a single trusted issuer-verifier pair, because verification requires the same key as signing. In a microservices architecture, every service that verifies tokens must hold the HMAC secret, which means every service can also issue valid tokens. A compromise of any single service reveals the secret and allows the attacker to forge tokens authenticating as any user against any service in the system. The correct pattern for microservices is asymmetric signing: a single trusted issuer (the auth service) holds a private signing key and produces signed tokens; each verifier holds only the public verification key and can verify signatures but cannot issue new ones. A compromised verifier cannot forge tokens. Option B captures this. Option A (slow) is not the core issue — JWT verification is cheap. Option C (JSON typing) is unrelated. Option D (cookies) is a transport choice unrelated to the signing weakness. The CISSP exam tests JWT patterns because they are ubiquitous and because the HMAC-vs-asymmetric distinction maps directly to the core asymmetric-cryptography question of who holds the signing key. Related concerns the exam may test: 'none' algorithm attacks (libraries that accepted 'alg: none' as valid — CVE pattern), RS256/HS256 confusion attacks (using the RSA public key as an HMAC secret), and the need to verify the 'alg' claim strictly rather than trusting the token's declaration."
+    },
+    {
+      "id": "D3-Q039",
+      "type": "analysis",
+      "stem": "A CISO is evaluating whether the organization should mandate full-disk encryption on all laptops. Which consideration is MOST IMPORTANT in the decision?",
+      "options": {
+        "A": "FDE is slow on modern hardware",
+        "B": "FDE protects data at rest on powered-off devices; it does not protect a running device from malware, a logged-in device from theft with the screen unlocked, or data already copied off the device. The policy should assume FDE is a baseline control and combine it with endpoint detection, strong authentication, remote wipe capability, DLP, and awareness training",
+        "C": "FDE is unnecessary because cloud storage is sufficient",
+        "D": "FDE requires a dedicated key management server"
+      },
+      "correct": "B",
+      "rationale": "Full-disk encryption is a baseline control for laptops and endpoints, and its primary value is protecting data at rest on powered-off or stolen devices. State breach notification laws and many regulations provide an encryption safe harbor: a stolen but encrypted device with separately-held keys typically does not trigger breach notification obligations. But FDE has important limits: a running laptop with the disk unlocked is not protected by FDE (malware, process-level theft, logged-in theft all bypass it); a laptop that has copied data to cloud services is protected at the device level but not at the cloud level; FDE does not prevent the user from sending data off the device via email or upload. The correct policy treats FDE as a baseline and layers it with endpoint detection and response (EDR), strong authentication (MFA, minimum password requirements, screen-lock timeouts), remote wipe capability, DLP, awareness training, and physical security guidance. Option B captures the full context. Option A (speed) has not been an issue since modern CPUs added AES-NI in the early 2010s. Option C is wrong — cloud storage is a separate concern and does not replace endpoint encryption. Option D is wrong — FDE on managed endpoints typically uses local TPM-backed keys or enterprise key escrow via MDM, not a dedicated key management server. The CISSP exam tests FDE as a specific example of a necessary but not sufficient control and rewards the layered-defense framing."
+    },
+    {
+      "id": "D3-Q040",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing the physical security design of a data center and notices that the entrance uses a single-factor card reader. The facility contains Restricted-class customer data. Which improvement is MOST EFFECTIVE given that cost and operational impact are both concerns?",
+      "options": {
+        "A": "Replace the card reader with biometric-only access",
+        "B": "Add a second factor (PIN or biometric) to create a two-factor entry, add a mantrap or access control vestibule to prevent tailgating, add CCTV with monitoring, and maintain an access log correlated with HR records; the combination provides layered defense at modest incremental cost",
+        "C": "Hire a full-time guard at every door",
+        "D": "Eliminate all access controls and rely on the building's exterior lock"
+      },
+      "correct": "B",
+      "rationale": "Single-factor card access is insufficient for a facility containing Restricted data because cards can be stolen, cloned, or borrowed without the holder's knowledge. The cost-effective improvement is to add a second factor (PIN pad or biometric) for multi-factor entry, add a mantrap to prevent tailgating, and add CCTV with active monitoring to detect and deter attempts. Access logs correlated with HR records enable detection of anomalies (badge used outside working hours, holder's badge used while HR shows the holder on leave). Option B captures this layered approach. Option A (biometric-only) is a single-factor authentication again with its own failure modes (biometric spoofing, false rejects creating operational friction, compromised biometric data). Option C (full-time guard at every door) is typically cost-prohibitive for multi-door facilities and has high operational impact; security-cleared guards are expensive and shift coverage adds complexity. Option D abandons protection entirely. The CISSP exam tests physical-security upgrades because they illustrate the same cost-benefit and layered-defense principles as logical security. The broader principle: the right physical-security bar matches the data-sensitivity bar, and it is achieved through layers (perimeter → building → floor → rack) with each layer adding specific controls proportional to the protected contents."
+    },
+    {
+      "id": "D3-Q041",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating a vendor's claim that their TLS implementation 'achieves perfect forward secrecy by default'. Which verification should the CISSP perform?",
+      "options": {
+        "A": "Trust the vendor's marketing",
+        "B": "Verify that the TLS configuration uses ephemeral key exchange (ECDHE or DHE) for all cipher suites and that static RSA key exchange is disabled; review the actual negotiated cipher suites via a TLS analyzer; and confirm that session ticket handling does not undermine forward secrecy by leaking long-lived session keys",
+        "C": "Ask the vendor to provide a compliance certificate",
+        "D": "Check that the vendor uses TLS at all"
+      },
+      "correct": "B",
+      "rationale": "Perfect Forward Secrecy (PFS) means that compromise of a long-term private key does not allow decryption of past recorded sessions. PFS requires ephemeral key exchange: ECDHE (Elliptic Curve Diffie-Hellman Ephemeral) or DHE (Diffie-Hellman Ephemeral) must be used, and static RSA key exchange must not be used. The verification is straightforward: inspect the actual negotiated cipher suites (TLS analyzers like testssl.sh, sslyze, or Qualys SSL Labs can enumerate what the server offers) and confirm that every allowed suite uses ECDHE or DHE. TLS 1.3 provides PFS by default because it removed static RSA key exchange entirely. TLS 1.2 supports both and must be configured carefully. One subtlety: TLS session tickets (RFC 5077) and TLS 1.3 PSK-based resumption can undermine forward secrecy if the ticket-encryption keys are long-lived; mature configurations rotate ticket keys frequently or disable session tickets altogether for highest-sensitivity use cases. Option B captures the verification steps. Option A (trust vendor marketing) is the CISSP anti-pattern. Option C (compliance certificate) is a documentation artifact, not operational verification. Option D is insufficient. The CISSP exam tests TLS configuration because it is a common area where real-world configurations diverge from marketing claims, and candidates should be ready to verify claims empirically."
+    },
+    {
+      "id": "D3-Q042",
+      "type": "analysis",
+      "stem": "A security team discovers that a vendor's 'end-to-end encrypted' messaging app uses AES-256-CBC with a hardcoded IV. Which is the MOST SIGNIFICANT implication?",
+      "options": {
+        "A": "The app is slow",
+        "B": "A hardcoded IV in CBC mode means identical plaintext messages produce identical ciphertext, leaking information about message content; combined with the fact that the app is advertised as end-to-end encrypted, the implementation is materially weaker than users believe and may violate consumer-protection expectations or specific regulatory representations about encryption strength",
+        "C": "AES-256 is deprecated",
+        "D": "CBC is faster than GCM"
+      },
+      "correct": "B",
+      "rationale": "A hardcoded IV in CBC mode is a well-known implementation failure that causes identical plaintext messages (or messages with identical first blocks) to produce identical ciphertext, leaking information about message content. For a messaging app, this can reveal when the same message is sent repeatedly, when two messages start with the same template, and other patterns an attacker can exploit with frequency analysis. The more significant concern is that the vendor advertised 'end-to-end encryption' while implementing cryptography in a way that materially weakens the guarantee. Users who relied on the marketing claim have lower-than-expected security, and the gap between claim and implementation can trigger consumer protection actions (FTC unfair-and-deceptive practices), regulatory exposure (if the app is used in healthcare, finance, or other regulated sectors with specific encryption representations), and reputational damage. Option B captures both the technical and the representational issues. Option A is not the issue. Option C is wrong — AES-256 is current. Option D confuses performance with security. The CISSP exam tests this pattern because marketing claims about encryption are frequently inaccurate, and the CISSP role includes verifying claims against implementation. Related failures: Telegram's 'MTProto' had issues identified by cryptographers; various 'military-grade encryption' marketing has been shown to use broken or weakened primitives; and the general lesson is that any claim of encryption should be verified against the actual implementation, including library versions, modes, IV handling, and key management."
+    },
+    {
+      "id": "D3-Q043",
+      "type": "analysis",
+      "stem": "A CISSP is asked to evaluate whether a '100% secure' custom-designed encryption protocol should be deployed to protect a customer-facing API. The vendor claims the protocol has been 'tested extensively internally'. Which response is BEST?",
+      "options": {
+        "A": "Approve the protocol on the strength of internal testing",
+        "B": "Reject the protocol on Kerckhoffs' principle and the 'don't roll your own crypto' axiom, because custom protocols are almost always weaker than they appear to their designers, internal testing does not substitute for public cryptanalysis, and the cost of a post-deployment break is catastrophic; recommend TLS 1.3 with modern cipher suites",
+        "C": "Require additional vendor documentation",
+        "D": "Deploy the protocol in a pilot"
+      },
+      "correct": "B",
+      "rationale": "Custom-designed cryptographic protocols have a catastrophic track record. Even protocols designed by people with strong mathematical and security backgrounds have failed, including protocols from major organizations that passed their own internal review. Kerckhoffs' principle states that security should depend only on the secrecy of the key, and a corollary is that the protocol itself must withstand public scrutiny — internal testing is not public cryptanalysis and cannot substitute for it. The phrase 'don't roll your own crypto' captures the accumulated wisdom: use standardized, peer-reviewed, widely-implemented protocols (TLS 1.3 for transport, Signal Protocol for messaging, NaCl/libsodium for application crypto, JSON Web Tokens with standard signing algorithms for authentication) rather than custom designs. Option B captures this. Option A accepts a risk the CISSP exam explicitly teaches against. Option C (more documentation) does not fix the underlying problem — the protocol's security cannot be established by reading vendor documentation. Option D (pilot deployment) exposes real customers to an unvalidated protocol and does not produce the cryptanalysis needed to validate it. The CISSP exam tests this pattern repeatedly because it is one of the clearest examples of the 'technology answer' being wrong and the 'boring standardized answer' being right. The right answer to 'should we build our own encryption' is almost always 'no, use a standard'."
+    },
+    {
+      "id": "D3-Q044",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a design that uses the same AES-256 key to both encrypt data and compute an HMAC-SHA256 for integrity. The engineer argues that this is simpler and more efficient than having two keys. Which is the MOST ACCURATE response?",
+      "options": {
+        "A": "Agree — one key is simpler",
+        "B": "Disagree — key separation is a foundational cryptographic principle. Using the same key for encryption and MAC creates cross-primitive attack surfaces and violates the assumption that both primitives are independent. The correct pattern is to derive two independent keys from a single master using HKDF or similar, or to use an AEAD mode (AES-GCM, ChaCha20-Poly1305) that combines both operations in a single proven design",
+        "C": "Agree if the key is rotated monthly",
+        "D": "Agree if the algorithm is AES-256"
+      },
+      "correct": "B",
+      "rationale": "Cryptographic key separation — using independent keys for independent purposes — is a foundational design principle with both theoretical and practical justifications. Theoretically, the security proofs for AES and HMAC assume their keys are independent and are not analyzed under shared-key conditions. Practically, sharing a key creates cross-primitive attack surfaces: if an attacker finds a weakness in one use, it may leak information about the key in a way that affects the other use. The correct pattern is to derive two (or more) independent keys from a single master using a KDF (HKDF is the standard choice), or to use an AEAD mode (AES-GCM, ChaCha20-Poly1305) that combines encryption and authentication in a single proven design with an internally-managed subkey derivation. AEAD is typically preferred in new designs because it is faster, simpler to implement correctly, and eliminates the possibility of encrypt-and-MAC implementation mistakes. Option B captures the correct response. Option A is incorrect because the 'simpler' framing ignores the actual cryptographic guarantees. Option C (rotation) does not address the cross-primitive concern. Option D (AES-256) is about algorithm strength, not the key-sharing issue. The CISSP exam tests key separation because it is one of the clearest examples of a design principle that has both theoretical and practical weight. HKDF with domain separation (using different 'info' parameters to derive encryption and MAC keys from the same master) is the standard mature pattern."
+    },
+    {
+      "id": "D3-Q045",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating a design that uses Intel SGX to protect a customer workload in a cloud environment. Which SGX-specific limitation is MOST IMPORTANT to communicate to the customer?",
+      "options": {
+        "A": "SGX provides perfect protection against all attacks",
+        "B": "SGX provides strong protection against hypervisor and system-level attackers but has a significant history of side-channel vulnerabilities (Spectre variants, Foreshadow/L1TF, LVI, SGAxe, CacheOut), limited enclave memory size, and operational complexity; mitigations include microcode updates, compiler-level hardening, and careful workload selection — but the threat model must acknowledge side-channel risks",
+        "C": "SGX only works on Linux",
+        "D": "SGX can only protect data at rest"
+      },
+      "correct": "B",
+      "rationale": "Intel SGX has provided strong protection against many threats, but a long history of side-channel vulnerabilities has complicated its deployment. Major categories include speculative-execution attacks (Spectre variants, Foreshadow/L1TF, LVI) that leak enclave data through CPU microarchitectural state, and various cache and branch-prediction side channels (SGAxe, CacheOut). Intel has responded with microcode updates and compiler-level mitigations, but the ongoing stream of side-channel findings means that SGX deployments must actively track and apply mitigations. Additional limitations include enclave memory size constraints (historical EPC limits, though expanded in newer generations), operational complexity (enclave development, attestation infrastructure, debugging constraints), and the broader question of whether to trust Intel's implementation and attestation keys. Option B captures these concerns honestly. Option A is false — SGX is not perfect and its limitations are well-documented. Option C is wrong — SGX works on Windows and Linux and is supported in major cloud platforms. Option D is wrong — SGX specifically protects data in use, not at rest. The CISSP exam tests confidential computing's actual limitations because the technology is increasingly deployed and because claims of 'hardware security' often oversimplify the picture. Related emerging alternatives include Intel TDX (trust domain extensions, per-VM rather than per-enclave), AMD SEV-SNP (also per-VM), and ARM CCA (Confidential Compute Architecture). Each has its own security posture and maturation trajectory."
+    },
+    {
+      "id": "D3-Q046",
+      "type": "analysis",
+      "stem": "A CISSP is designing an HSM-backed signing service for a PKI that issues hundreds of certificates per day. Which operational control is MOST IMPORTANT?",
+      "options": {
+        "A": "Use a single operator account for signing",
+        "B": "Implement dual-authentication for the signing operation, separate administrator and operator roles, log every signing operation with subject and timestamp, protect the HSM with physical access controls, and integrate the signing workflow with the CA issuance policy to enforce quality controls on what can be signed",
+        "C": "Back up the HSM daily",
+        "D": "Rotate the HSM password monthly"
+      },
+      "correct": "B",
+      "rationale": "An HSM-backed signing service is a high-value target because it controls the issuance of certificates that relying parties trust. The operational controls must be proportional: (1) dual authentication for signing operations, so that no single operator can issue certificates alone — protects against insider threats and account compromise; (2) separation between administrator and operator roles, so that the person who configures the HSM is not the same person who uses it for routine operations (classic SoD); (3) logging of every signing operation with full context (subject, timestamp, requester, approval chain) — enables audit and detection of abuse; (4) physical access controls on the HSM — it should be in a secure environment with limited physical access; (5) integration with the CA issuance policy — the signing service should only sign certificates that match the CA's policy (correct subject names, valid fields, authorized requests), not arbitrary certificate requests. Option B captures these core operational controls. Option A (single operator account) violates separation of duties and eliminates dual authentication. Option C (backup HSM) is a legitimate concern but is secondary to the operational controls that prevent abuse in the first place. Option D (rotate password monthly) is partial security hygiene and is less important than the dual-control operational pattern. The CISSP exam tests CA operational controls because PKI trust depends on them and because CA compromise (DigiNotar, Trustico, various others) has been a recurring failure mode with systemic consequences."
+    },
+    {
+      "id": "D3-Q047",
+      "type": "analysis",
+      "stem": "A CISSP is asked to evaluate a claim that a vendor's 'quantum-safe' solution uses 'random numbers generated from quantum effects, making encryption unbreakable'. Which response is MOST ACCURATE?",
+      "options": {
+        "A": "Agree — quantum randomness makes encryption unbreakable",
+        "B": "True quantum random number generators (QRNGs) can produce high-quality entropy for key generation and are genuinely useful, but their use does not make encryption 'unbreakable'. Encryption security depends on the primitive (AES, RSA, ECC, or post-quantum algorithms), not on the entropy source. A QRNG-backed RSA-2048 system remains vulnerable to Shor's algorithm on a sufficiently large quantum computer, just like any other RSA-2048 system. 'Quantum-safe' usually refers to post-quantum cryptographic algorithms, not to quantum entropy sources. The vendor's claim conflates two different concepts and is marketing-first",
+        "C": "Disagree — quantum effects are mystical",
+        "D": "True — only quantum random numbers are secure"
+      },
+      "correct": "B",
+      "rationale": "Quantum random number generators are a legitimate technology and produce high-quality entropy that can be used for key generation, session nonces, and other cryptographic purposes where good randomness matters. ID Quantique, PicoQuant, and others sell commercial QRNGs, and several cloud providers offer QRNG-backed random number services. But the quality of the random source does not make the cryptographic primitive itself quantum-resistant. RSA-2048, ECDSA P-256, and DH with classical groups are all vulnerable to Shor's algorithm on a sufficiently large quantum computer regardless of how well the keys were generated. The entropy source and the algorithm's quantum resistance are two independent properties, and a vendor claiming that QRNG-backed classical crypto is 'quantum-safe' is conflating them. True quantum-safe (i.e., post-quantum) solutions require post-quantum algorithms: ML-KEM, ML-DSA, SLH-DSA, or hybrid schemes combining classical and PQ primitives. Option B captures this distinction accurately. Option A accepts the vendor's conflation. Option C is dismissive and wrong in tone. Option D is wrong on substance. The CISSP exam tests crypto marketing claims because they are ubiquitous and frequently misleading, and the CISSP role includes pushing back on vendor claims that confuse different security properties. The general approach: verify what primitive is being used, what threat it defends against, and whether the vendor's framing accurately represents the guarantee."
+    },
+    {
+      "id": "D3-Q048",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a zero trust architecture rollout. The policy engine grants access based on user identity, device posture, and network location. The team plans to include network location as a positive trust factor ('requests from corporate offices are more trusted'). Which is the MOST SIGNIFICANT CONCERN with this design?",
+      "options": {
+        "A": "The policy engine is too fast",
+        "B": "Treating network location as a positive trust factor is the pattern zero trust was designed to eliminate. Location-based trust reintroduces perimeter thinking: compromised internal devices, insiders, and attackers who reach the internal network can exploit the 'trusted location' designation. The correct ZTA position is that location may be a signal but should not raise trust; trust flows from verified identity, device posture, and per-request authorization, not from IP address ranges",
+        "C": "Identity is too hard",
+        "D": "Device posture checking is not possible"
+      },
+      "correct": "B",
+      "rationale": "Zero trust architecture, per NIST SP 800-207, is fundamentally premised on the idea that no implicit trust should be granted based on network location. The legacy perimeter model treated the internal network as trusted and the external network as untrusted, which created a flat interior where any compromised device could reach any other. Zero trust breaks this by requiring per-request authentication and authorization regardless of where the request originates. If a zero trust implementation reintroduces location-based trust as a positive factor (granting more access based on network origin), it recreates the exact vulnerability zero trust was designed to eliminate: an attacker who reaches the 'trusted' network is elevated to trusted status. Legitimate ZTA designs treat location as a signal (detecting anomalous origin may be a risk factor) but never as a source of increased trust. Trust flows from verified identity, device posture, behavioral signals, and the principle of least privilege, not from IP address ranges. Option B captures this core ZTA principle. Option A is not a concern. Options C and D are wrong — modern ZTA implementations handle both identity and device posture. The CISSP exam tests zero trust carefully because it is ubiquitous in architecture discussions and frequently misimplemented. The correct framing: 'never trust, always verify', with continuous evaluation of every request against the current state of the subject and context."
+    },
+    {
+      "id": "D3-Q049",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a legacy application that was written in 2005 using DES-CBC for session encryption. Modernization is planned but will take 18 months. Which interim control is MOST APPROPRIATE to reduce risk during the transition?",
+      "options": {
+        "A": "Leave DES in place since modernization is planned",
+        "B": "Apply compensating controls: reduce the threat window by shortening session lifetimes, restrict the attack surface through network segmentation and access controls limiting reach to the legacy application, monitor for anomalous activity, and plan a key rotation and re-key event immediately while the modernization proceeds on schedule",
+        "C": "Upgrade to 3DES as a quick fix",
+        "D": "Disable the application entirely"
+      },
+      "correct": "B",
+      "rationale": "DES has been broken for decades: its 56-bit key is trivially brute-forceable, and major breaks have been demonstrated publicly since 1997. Leaving DES in place for 18 months without compensating controls is unacceptable. The correct interim approach is compensating controls that reduce the effective risk window: (1) shorten session lifetimes so that the window during which a captured session can be decrypted is minimized; (2) segment the network so that only specific, monitored callers can reach the legacy application; (3) monitor for anomalous activity including brute-force attempts; (4) restrict the data the legacy application handles to reduce the blast radius of a successful decryption; (5) increase authentication strength around the application to make the DES-protected session less valuable; (6) rotate keys immediately if key management is possible; (7) document the temporary exception with formal risk acceptance through governance and a hard deadline aligned with modernization. Option B captures this layered compensating-control approach. Option A abdicates responsibility. Option C (3DES) is a marginal upgrade that does not address the core problem — 3DES is deprecated by NIST and also has the meet-in-the-middle weakness bringing effective security to ~112 bits, below modern standards. Option D (disable entirely) may be appropriate if the application is non-critical but is disproportionate if it is business-critical. The CISSP exam tests legacy cryptographic deprecation because it is a real-world pattern: organizations routinely run known-broken cryptographic code and must manage the risk until modernization catches up. The compensating-control answer reflects mature risk management under constraint."
+    },
+    {
+      "id": "D3-Q050",
+      "type": "analysis",
+      "stem": "A CISSP is designing a new authentication system and is asked whether to use password-based authentication, hardware tokens, or biometric authentication as the primary factor. Which consideration is MOST IMPORTANT?",
+      "options": {
+        "A": "Pick the cheapest",
+        "B": "No single factor is sufficient for high-assurance authentication; the correct design uses multi-factor authentication combining at least two of (something you know / something you have / something you are) with phishing-resistance as a primary requirement, and evaluates each proposed factor against threat model, user experience, recovery, and regulatory constraints. FIDO2/WebAuthn tokens are often the strongest practical choice because they are phishing-resistant, hardware-backed, and standardized",
+        "C": "Biometric is always best",
+        "D": "Passwords are always sufficient"
+      },
+      "correct": "B",
+      "rationale": "No single authentication factor is sufficient for high-assurance authentication. Passwords are phishable, reusable, and weak against automated attacks. Hardware tokens are strong but can be lost. Biometrics are convenient but have no revocation story (you cannot reset your fingerprint) and are not 'secrets' in the classical sense because they are observable. Each factor has specific failure modes and the right answer depends on the threat model. The correct design combines at least two factors of different types — the classical 'something you know, something you have, something you are' — with phishing-resistance as a primary requirement because phishing is the most common authentication attack. FIDO2/WebAuthn tokens are often the strongest practical choice in modern designs because they are hardware-backed, phishing-resistant by design (the token cryptographically binds authentication to the origin, so it cannot be tricked into authenticating to a phishing site), and standardized across platforms. For fallback, backup methods, and recovery, the design must consider the full lifecycle: enrollment, normal use, loss, reset, and de-enrollment. Regulatory constraints (NIST SP 800-63B AAL levels, FFIEC, PCI-DSS, HIPAA) shape the required assurance level for specific contexts. Option B captures the multi-dimensional decision. Option A (cheapest) sacrifices security for cost. Option C and D are simplistic and wrong. The CISSP exam tests authentication design because it is central to Domain 5 and intersects Domain 3 where the cryptographic primitives are defined. The mature answer is MFA with phishing-resistance, not a single-factor choice."
+    }
+  ]
+}

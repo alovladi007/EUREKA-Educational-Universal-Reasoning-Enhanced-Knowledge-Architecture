@@ -1,0 +1,672 @@
+{
+  "meta": {
+    "domain": 8,
+    "domain_name": "Software Development Security",
+    "exam_weight_percent": 10,
+    "exam_outline_version": "2024-04-15",
+    "question_count": 50,
+    "difficulty_mix": {
+      "recall": 5,
+      "application": 20,
+      "analysis": 25
+    },
+    "eureka_topic_ids": [
+      "cissp_sdlc",
+      "cissp_app_vuln",
+      "cissp_devops"
+    ],
+    "notes": "AI-generated practice content. Requires human SME review."
+  },
+  "questions": [
+    {
+      "id": "D8-Q001",
+      "type": "recall",
+      "stem": "Which OWASP Top 10 (2021) category represents the MOST COMMON web application security risk?",
+      "options": {
+        "A": "A03: Injection",
+        "B": "A01: Broken Access Control",
+        "C": "A10: Server-Side Request Forgery",
+        "D": "A05: Security Misconfiguration"
+      },
+      "correct": "B",
+      "rationale": "The OWASP Top 10 2021 edition ranked Broken Access Control as A01, the most common web application security risk, moving it up from A05 in the 2017 edition. Broken Access Control covers failures in enforcing authorization — users accessing resources or performing actions they should not be permitted to. Examples include IDOR (Insecure Direct Object References), privilege escalation, accessing admin panels without authorization, bypassing access control checks through URL manipulation, and API endpoints missing authorization enforcement. Option A (Injection) was A01 in 2017 but was moved to A03 in 2021 as frameworks have improved default protection. Option C (SSRF) was new in 2021 at A10. Option D (Security Misconfiguration) moved from A06 to A05. The CISSP exam tests the OWASP Top 10 ranking because it reflects the current threat landscape and because candidates should know the relative prevalence of web application risk categories. Memorize at least the top five: A01 Broken Access Control, A02 Cryptographic Failures, A03 Injection, A04 Insecure Design, A05 Security Misconfiguration."
+    },
+    {
+      "id": "D8-Q002",
+      "type": "recall",
+      "stem": "Which defense is MOST EFFECTIVE against SQL injection?",
+      "options": {
+        "A": "Input length limits",
+        "B": "Parameterized queries (prepared statements)",
+        "C": "Client-side JavaScript validation",
+        "D": "Web application firewall alone"
+      },
+      "correct": "B",
+      "rationale": "Parameterized queries (also called prepared statements) are the definitive defense against SQL injection because they separate SQL code from user-supplied data at the database protocol level. When a query uses parameters, the database engine treats user input as data values and never interprets them as SQL code, regardless of their content. This makes SQL injection structurally impossible for that query. Option A (input length limits) reduces the attack surface but does not prevent injection — many injection payloads are short. Option C (client-side validation) is trivially bypassed by intercepting requests before they reach the server — it provides user experience, not security. Option D (WAF alone) can catch many known injection patterns through signature matching but cannot guarantee complete protection: novel payloads, encoding bypasses, and application-specific logic can evade WAF rules. WAFs are a valuable defense-in-depth layer but should never be the sole control. The CISSP exam tests parameterized queries specifically because it is the gold-standard defense and because candidates must distinguish it from less reliable alternatives. OWASP's SQL Injection Prevention Cheat Sheet names parameterized queries as the primary defense. Related: ORMs that use parameters correctly also provide this protection, as do stored procedures that use parameters internally."
+    },
+    {
+      "id": "D8-Q003",
+      "type": "recall",
+      "stem": "NIST SP 800-218 (Secure Software Development Framework / SSDF) defines how many practice groups?",
+      "options": {
+        "A": "Two",
+        "B": "Three",
+        "C": "Four",
+        "D": "Five"
+      },
+      "correct": "C",
+      "rationale": "The NIST Secure Software Development Framework (SSDF), published as NIST SP 800-218, defines four practice groups: (1) Prepare the Organization (PO) — policies, roles, training, tools, and infrastructure to support secure software development; (2) Protect the Software (PS) — protect source code, builds, and releases from tampering and unauthorized access; (3) Produce Well-Secured Software (PW) — design, implement, review, and test software with security in mind; (4) Respond to Vulnerabilities (RV) — identify, analyze, remediate, and disclose vulnerabilities in released software. The SSDF was mandated for US federal software suppliers by Executive Order 14028 (Improving the Nation's Cybersecurity, May 2021) and OMB M-22-18, which requires self-attestation of SSDF practices from critical software suppliers to federal agencies. Option C is correct. Options A, B, D are incorrect counts. The CISSP exam tests the SSDF because it is current, authoritative, and increasingly required in federal procurement — and because its four practice groups are a specific, testable structure. Memorize: PO (Prepare), PS (Protect), PW (Produce), RV (Respond)."
+    },
+    {
+      "id": "D8-Q004",
+      "type": "recall",
+      "stem": "Which application security testing technique instruments a running application from inside to combine source-code visibility with runtime accuracy?",
+      "options": {
+        "A": "SAST",
+        "B": "DAST",
+        "C": "IAST",
+        "D": "SCA"
+      },
+      "correct": "C",
+      "rationale": "IAST (Interactive Application Security Testing) instruments a running application with an agent that observes data flows, function calls, and security-relevant operations from inside the application process. It combines SAST's visibility into code (it can see which code paths are executing and where data flows) with DAST's runtime accuracy (it observes actual runtime behavior, not just static patterns). This combination typically produces lower false positive rates than SAST alone and catches issues DAST cannot see because DAST only observes external behavior. Option A (SAST) analyzes source code without running it. Option B (DAST) tests a running application from outside without internal instrumentation. Option D (SCA) inventories dependencies and matches against vulnerability databases. The CISSP exam tests the distinction between SAST, DAST, IAST, and SCA because each addresses a different layer of application security risk, and mature programs use multiple techniques together. Memorize: SAST reads source, DAST probes externally, IAST watches from inside, SCA lists dependencies. A related technology is RASP (Runtime Application Self-Protection), which is similar to IAST but focused on blocking attacks at runtime rather than detecting vulnerabilities during testing."
+    },
+    {
+      "id": "D8-Q005",
+      "type": "recall",
+      "stem": "Which format is MOST COMMONLY used for machine-readable Software Bills of Materials (SBOM)?",
+      "options": {
+        "A": "PDF",
+        "B": "SPDX or CycloneDX",
+        "C": "Word document",
+        "D": "CSV"
+      },
+      "correct": "B",
+      "rationale": "Software Bills of Materials are formal, machine-readable inventories of the components that make up a piece of software. The two leading formats are SPDX (Software Package Data Exchange, ISO/IEC 5962:2021, a Linux Foundation project) and CycloneDX (an OWASP project focused on application security use cases). Both formats support structured representation of components, versions, licenses, hashes, dependencies, and vulnerability correlation. SPDX has a slightly broader scope (originally focused on license compliance, now expanded to security) while CycloneDX was designed with security as the primary use case. US Executive Order 14028 and NTIA's SBOM guidance reference both formats as acceptable. Option B captures the two standard formats. Option A (PDF) is not machine-readable. Option C (Word document) is not structured. Option D (CSV) is structured but lacks the schema, relationships, and standardization that SPDX and CycloneDX provide. The CISSP exam tests SBOM formats because SBOMs are a growing area of supply chain security practice and because the formats are specific and testable. Related tools: Syft, Trivy, and CycloneDX CLI generate SBOMs from container images, codebases, and package managers."
+    },
+    {
+      "id": "D8-Q006",
+      "type": "application",
+      "stem": "A development team proposes using string concatenation to build SQL queries because 'it is simpler'. The CISSP should:",
+      "options": {
+        "A": "Approve — simplicity matters",
+        "B": "Reject — string concatenation of user input into SQL queries creates SQL injection vulnerabilities by design. Require parameterized queries or ORM frameworks that use parameters internally as the mandatory coding standard; enforce via SAST rules in CI and code review checklists",
+        "C": "Approve if input is validated",
+        "D": "Approve for internal applications only"
+      },
+      "correct": "B",
+      "rationale": "String concatenation of user input into SQL queries is the root cause of SQL injection, which has been one of the most exploited vulnerability classes for two decades. When user input is concatenated into a query string, the database cannot distinguish between the developer's intended SQL and the attacker's injected SQL. Parameterized queries solve this structurally: the database receives the SQL template and the parameter values separately, and treats the values as data rather than code. No amount of input validation can match the structural guarantee of parameterized queries, because validation relies on correctly predicting every possible encoding and bypass technique, while parameterization makes the problem impossible by design. Option B captures the correct policy. Option A accepts the vulnerability. Option C (input validation) is defense in depth but insufficient as the sole control. Option D (internal only) misunderstands the threat — internal applications are attacked by insiders, lateral movement, and supply chain compromises. The CISSP exam tests this because parameterized queries vs string concatenation is a textbook secure coding standard that appears in OWASP, NIST, CWE, and every secure coding guideline."
+    },
+    {
+      "id": "D8-Q007",
+      "type": "application",
+      "stem": "A CISSP is reviewing the CI/CD pipeline and finds no security gates between code commit and production deployment. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "Add a single annual pentest",
+        "B": "Implement security gates at multiple stages: secret scanning and SCA at commit, SAST at build, container scanning at image creation, DAST/IAST at test, compliance checks at pre-deploy, and runtime monitoring post-deploy; gates should block on critical findings and alert on medium findings, tuned to avoid breaking builds on noise",
+        "C": "Disable the pipeline",
+        "D": "Add only a manual review gate"
+      },
+      "correct": "B",
+      "rationale": "A CI/CD pipeline without security gates deploys vulnerabilities to production at the speed of development. The correct approach integrates security checks at every natural stage of the pipeline: (1) commit — secret scanning catches accidentally-committed credentials, SCA catches known-vulnerable dependencies before they enter the build; (2) build — SAST catches code-level vulnerabilities, container scanning catches vulnerable base images, SBOM is generated; (3) test — DAST probes the deployed application in a test environment, IAST instruments the application during functional tests; (4) pre-deploy — compliance checks validate that the artifact meets organizational standards, approval workflows gate sensitive deployments; (5) post-deploy — runtime monitoring (RASP, WAF, anomaly detection) catches what build-time tools missed. Gates should block on critical findings (fail the pipeline) and alert on medium findings (create tickets for review) to balance security with development velocity. Tuning is essential: gates that break builds on every low-severity finding create developer fatigue and get bypassed. Option B captures this layered approach. Option A (annual pentest) is useful but not a substitute for pipeline-integrated checks. Option C (disable) is drastic. Option D (manual only) does not scale. The CISSP exam tests DevSecOps pipeline design because it is the modern approach to software security and because the specific stages and tools are testable."
+    },
+    {
+      "id": "D8-Q008",
+      "type": "application",
+      "stem": "A CISSP discovers that a web application stores session tokens in browser localStorage. Which remediation is MOST IMPORTANT?",
+      "options": {
+        "A": "Encrypt the tokens in localStorage",
+        "B": "Move session tokens to httpOnly cookies with Secure and SameSite attributes, so they are not accessible to JavaScript and are protected against XSS-based token theft; combine with Content Security Policy headers to reduce XSS risk further",
+        "C": "Increase token length",
+        "D": "Store tokens in sessionStorage instead"
+      },
+      "correct": "B",
+      "rationale": "Browser localStorage is accessible to any JavaScript running on the page, meaning any XSS vulnerability anywhere in the application (first-party code, third-party scripts, compromised dependencies, malicious advertisements) can read and exfiltrate session tokens. This makes localStorage fundamentally unsuitable for sensitive tokens. The correct storage is httpOnly cookies: the httpOnly flag prevents JavaScript access via document.cookie, the Secure flag ensures the cookie is only sent over HTTPS, and the SameSite attribute (Strict or Lax) prevents the cookie from being sent in cross-site requests, providing CSRF protection. Combined with Content Security Policy (CSP) headers that restrict which scripts can execute, the attack surface for token theft is dramatically reduced. Option B captures this. Option A (encrypt in localStorage) does not help — the decryption key would also need to be in JavaScript, which is the same problem. Option C (longer tokens) does not address the exposure vector. Option D (sessionStorage) is marginally better (cleared on tab close) but equally accessible to JavaScript and equally vulnerable to XSS. The CISSP exam tests session storage because it is a specific, well-defined modern web application security issue with a clear correct answer."
+    },
+    {
+      "id": "D8-Q009",
+      "type": "application",
+      "stem": "A CISSP is asked whether a WAF is sufficient protection for a web application. Which response is BEST?",
+      "options": {
+        "A": "Yes — WAF is complete protection",
+        "B": "No — a WAF is a valuable defense-in-depth layer that catches many known attack patterns (injection, XSS, SSRF, OWASP Top 10), but it cannot replace secure coding practices because WAFs have inherent limitations: novel payloads bypass signatures, business logic flaws are invisible to WAFs, encoding tricks evade pattern matching, and WAF rules require ongoing tuning. The correct approach combines a WAF with secure coding, code review, SAST/DAST/SCA, and threat modeling",
+        "C": "Yes if the WAF is expensive enough",
+        "D": "WAFs are useless"
+      },
+      "correct": "B",
+      "rationale": "WAFs operate by pattern-matching inbound HTTP requests against known attack signatures and blocking matches. They are effective at catching many common attacks but have fundamental limitations: (1) novel payloads that do not match existing signatures bypass the WAF until new rules are added; (2) business logic flaws (IDOR, broken access control, workflow bypasses) are invisible to WAFs because they look like legitimate requests; (3) encoding tricks, fragmentation, and protocol-level manipulation can evade pattern matching; (4) WAF rules require ongoing tuning — over-aggressive rules block legitimate traffic, under-aggressive rules miss attacks; (5) WAFs cannot validate that the application's internal logic is correct. The mature approach treats a WAF as one layer of defense in depth: the WAF catches the obvious attacks at the perimeter, while secure coding practices, code review, SAST/DAST/SCA in the pipeline, and threat modeling address the vulnerabilities that WAFs cannot see. The CISSP manager mindset: no single control is sufficient; WAFs are necessary but not sufficient. Option B captures this. Options A, C, D are oversimplified."
+    },
+    {
+      "id": "D8-Q010",
+      "type": "application",
+      "stem": "A CISSP is reviewing a design where developers have direct access to production secrets (database passwords, API keys) in environment variables. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "Rotate secrets monthly",
+        "B": "Move secrets to a secrets manager (HashiCorp Vault, AWS Secrets Manager, Azure Key Vault, GCP Secret Manager) with programmatic access only, audit logging, automatic rotation, least-privilege IAM policies, and no developer access to production secrets; developers should use development-only credentials in non-production environments",
+        "C": "Encrypt the environment variables",
+        "D": "Document the secrets in a wiki"
+      },
+      "correct": "B",
+      "rationale": "Developer access to production secrets is a common and dangerous pattern. The risks: (1) any developer can access production data, violating least privilege; (2) secrets in environment variables can be logged, leaked via process dumps, or exposed by configuration errors; (3) rotation is manual and painful, so it happens rarely; (4) no audit trail of who accessed which secret when; (5) a developer's laptop compromise exposes production secrets. The correct architecture uses a secrets manager: (1) secrets are stored in a centralized, encrypted vault with access controls; (2) applications retrieve secrets programmatically at runtime through authenticated API calls; (3) audit logging records every access; (4) automatic rotation changes secrets on a schedule without manual intervention; (5) least-privilege IAM policies ensure that only the specific applications and services that need each secret can access it; (6) developers never see production secrets — they use development-only credentials in non-production environments. Option B captures this. Option A (rotate monthly) is insufficient without addressing the architecture. Option C (encrypt env vars) does not address the access control problem. Option D (wiki) is worse. The CISSP exam tests secrets management because it is a specific, well-defined modern software security practice."
+    },
+    {
+      "id": "D8-Q011",
+      "type": "application",
+      "stem": "A CISSP discovers that the organization's applications use Java native serialization to handle user-submitted data. Which concern is MOST SIGNIFICANT?",
+      "options": {
+        "A": "Serialization is slow",
+        "B": "Java native serialization of untrusted data is a well-known remote code execution vector: crafted payloads can trigger arbitrary class instantiation and code execution during deserialization, before any application-level validation. The remediation is to avoid native serialization for untrusted input, use safe formats (JSON with strict schema validation), or if native serialization is unavoidable, implement class allowlists and integrity checks",
+        "C": "Serialization produces large files",
+        "D": "Serialization is deprecated in Java"
+      },
+      "correct": "B",
+      "rationale": "Java native serialization (ObjectInputStream) is one of the most dangerous patterns in application security. When an application deserializes untrusted data using Java's native serialization, the deserialization process can trigger arbitrary class instantiation with attacker-controlled parameters. If the classpath includes 'gadget chain' classes (which are present in many common libraries — Apache Commons Collections, Spring, and others), the attacker can chain these classes to achieve remote code execution. The attack occurs during deserialization, before any application-level validation runs. The Apache Struts vulnerability that led to the Equifax 2017 breach (CVE-2017-5638) was a deserialization-adjacent vulnerability. Numerous Java library CVEs (Log4Shell being a related but distinct pattern) have involved deserialization-like attack paths. The remediation: (1) do not deserialize untrusted data using native serialization — use safe formats like JSON with strict schema validation; (2) if native serialization is unavoidable, implement class allowlists that restrict which classes can be deserialized; (3) add integrity checks (signatures or HMACs) to serialized data so tampering is detected before deserialization; (4) sandbox the deserialization process. Option B captures the concern. Options A, C, D are secondary."
+    },
+    {
+      "id": "D8-Q012",
+      "type": "application",
+      "stem": "A CISSP is asked to review a new application's error handling. The application returns stack traces to users when exceptions occur. Which change is MOST IMPORTANT?",
+      "options": {
+        "A": "Display longer stack traces",
+        "B": "Replace user-facing error responses with generic messages that do not leak internal details (stack traces, framework versions, database queries, file paths, internal IP addresses); log the full error details server-side for debugging; configure the framework to use production error handlers that suppress technical output",
+        "C": "Disable all error handling",
+        "D": "Email stack traces to users"
+      },
+      "correct": "B",
+      "rationale": "Stack traces and verbose error messages leak information that aids attackers: framework and library versions (enabling targeted CVE exploitation), internal file paths (aiding path traversal and code analysis), database query structures (aiding SQL injection), internal IP addresses (aiding network reconnaissance), and exception class names (revealing the technology stack). The correct error handling pattern: (1) user-facing error responses show generic messages ('An error occurred. Please try again or contact support.') with an incident reference ID that support can use to find the details; (2) server-side logging captures the full error details (stack trace, request context, timing, user context) for debugging and incident response; (3) the framework's production error handler is explicitly configured to suppress technical output — many frameworks default to verbose errors in development and require explicit production configuration. Option B captures this. Option A (longer traces) worsens the leak. Option C (disable) loses debugging capability. Option D (email) sends technical details to untrusted channels. The CISSP exam tests error handling because it is a specific, well-defined secure coding practice from the OWASP Proactive Controls and ASVS."
+    },
+    {
+      "id": "D8-Q013",
+      "type": "application",
+      "stem": "A CISSP is reviewing a microservices architecture where services communicate via REST APIs. Which authentication pattern is MOST APPROPRIATE for service-to-service calls?",
+      "options": {
+        "A": "No authentication — services trust each other",
+        "B": "Mutual TLS (mTLS) with per-service certificates issued by an internal CA, combined with authorization at each service verifying the caller's identity and permissions before processing the request; service mesh implementations automate this",
+        "C": "Shared API key for all services",
+        "D": "Username and password in each request"
+      },
+      "correct": "B",
+      "rationale": "Service-to-service authentication in a microservices architecture requires strong, per-service identity with cryptographic verification. Mutual TLS is the standard pattern: each service has a certificate issued by an internal CA that identifies it, and both sides of every connection verify each other's certificate. This provides authentication, confidentiality, and integrity in one protocol. Per-service certificates ensure that compromise of one service does not reveal credentials for others. Authorization at each service verifies the caller's identity and permissions before processing — not all services should be able to call all others. Service mesh implementations (Istio, Linkerd, Consul Connect, Cilium) automate mTLS, certificate issuance and rotation, and often implement the SPIFFE specification for workload identity. Option B captures this. Option A (no authentication) is the flat-network-equivalent for microservices — any compromised service can reach any other. Option C (shared API key) means one compromise reveals the key for all services. Option D (username/password) does not scale and is weaker than certificate-based authentication. The CISSP exam tests service-to-service auth because it is increasingly important in modern architectures and because the shared-key anti-pattern is still common."
+    },
+    {
+      "id": "D8-Q014",
+      "type": "application",
+      "stem": "A CISSP is asked to evaluate whether the organization should adopt a 'secure by default' framework approach for new application development. Which response is BEST?",
+      "options": {
+        "A": "Frameworks don't matter",
+        "B": "Secure-by-default frameworks dramatically reduce vulnerability density by making the safe path the easy path: auto-escaping template engines prevent XSS, ORM-based query builders prevent injection, framework-managed session handling prevents session fixation, built-in CSRF protection prevents cross-site request forgery, and sensible Content Security Policy defaults limit script execution. The CISSP should champion framework selection as a security decision and maintain a list of approved frameworks with known security properties",
+        "C": "Custom code is always better",
+        "D": "Frameworks introduce too many dependencies"
+      },
+      "correct": "B",
+      "rationale": "Secure-by-default frameworks are one of the highest-leverage investments in application security because they shift the burden from individual developer discipline to framework design. Instead of requiring every developer to remember output encoding for XSS, the template engine auto-escapes by default and the developer must explicitly opt out to render raw HTML. Instead of requiring parameterized queries, the ORM builds them by default. Instead of requiring CSRF tokens, the framework manages them automatically. Examples: React auto-escapes by default, Django and Rails have auto-escaping and built-in CSRF protection, Spring Security provides authentication and authorization out of the box. The result is dramatically reduced vulnerability density because the safe path is the easy path and the dangerous path requires explicit opt-out. The CISSP's role is to champion framework selection as a security decision: maintain a list of approved frameworks with documented security properties, evaluate new frameworks before adoption, and ensure that developer training covers the security features of the chosen frameworks. Option B captures this. Option A dismisses a high-leverage control. Option C (custom code) dramatically increases vulnerability risk. Option D (dependency concern) is legitimate but secondary to the security benefit. The CISSP exam tests this because it is a specific, actionable recommendation."
+    },
+    {
+      "id": "D8-Q015",
+      "type": "application",
+      "stem": "A CISSP is reviewing a design that uses client-side JavaScript to enforce access control (hiding UI elements for unauthorized users). Which concern is MOST SIGNIFICANT?",
+      "options": {
+        "A": "JavaScript is fast",
+        "B": "Client-side access control is trivially bypassable because the client is under the user's control — the user can modify JavaScript, use browser developer tools, or call APIs directly. Access control must be enforced server-side on every request; client-side restrictions are UX conveniences, not security controls",
+        "C": "Client-side is sufficient",
+        "D": "JavaScript is secure"
+      },
+      "correct": "B",
+      "rationale": "Client-side access control is a UI convenience, not a security control. Any enforcement that runs in the browser is under the user's control: JavaScript can be modified, disabled, or bypassed entirely by calling the API directly with tools like curl, Postman, or browser developer tools. An attacker does not need to see a UI element to call the API endpoint behind it. The correct pattern: (1) enforce access control server-side on every API request, checking the authenticated user's permissions against the requested resource and action before processing; (2) use client-side restrictions (hiding UI elements, disabling buttons) as UX conveniences that improve the user experience for non-malicious users; (3) never trust client-side decisions for security-relevant outcomes. This principle applies to all client-side validation: form validation, role checks, feature flags, and rate limiting that runs in the browser are all UX, not security. The CISSP exam tests this because 'client-side enforcement' is one of the most common broken access control patterns (OWASP A01) and because the correct answer is specific and well-defined."
+    },
+    {
+      "id": "D8-Q016",
+      "type": "application",
+      "stem": "A CISSP is reviewing a new feature that allows users to upload files. Which security controls are MOST IMPORTANT?",
+      "options": {
+        "A": "Accept any file type",
+        "B": "Validate file type by content inspection (not just extension), enforce size limits, store uploads outside the web root, rename files to random names (preventing path traversal), scan for malware, serve files with Content-Disposition: attachment and appropriate Content-Type headers, and restrict upload destinations with least-privilege permissions",
+        "C": "Only check file extension",
+        "D": "Disable file uploads entirely"
+      },
+      "correct": "B",
+      "rationale": "File upload is one of the most dangerous features to implement because it gives users a way to place arbitrary content on the server. Unrestricted file upload has been the root cause of many web shell compromises, malware distribution incidents, and path traversal attacks. The controls: (1) validate file type by content inspection (magic bytes, MIME type detection) rather than trusting the file extension, which can be spoofed; (2) enforce size limits to prevent denial of service and resource exhaustion; (3) store uploads outside the web root so that they cannot be directly executed by the web server; (4) rename files to random names to prevent path traversal and to avoid naming collisions; (5) scan for malware using antivirus or sandbox analysis; (6) serve files with Content-Disposition: attachment so browsers download rather than render them, and with correct Content-Type headers to prevent MIME confusion; (7) restrict upload destination permissions with least privilege so that the web server process cannot write to arbitrary locations. Option B captures these controls. Option A (accept anything) is dangerous. Option C (extension only) is trivially bypassed. Option D (disable) may not be operationally acceptable. The CISSP exam tests file upload security because it is a specific, well-defined vulnerability class with a clear set of controls."
+    },
+    {
+      "id": "D8-Q017",
+      "type": "application",
+      "stem": "A CISSP is asked to review a CI/CD pipeline that has no secret scanning. Developers occasionally commit API keys and database passwords to Git. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "Tell developers to be careful",
+        "B": "Deploy automated secret scanning (GitLeaks, TruffleHog, GitHub Secret Scanning, or equivalent) as a pre-commit hook and in CI, combined with a documented incident response process for discovered secrets (rotate immediately, audit usage, add to blocklist) and developer training on secrets management best practices",
+        "C": "Encrypt the Git repository",
+        "D": "Use a private repository"
+      },
+      "correct": "B",
+      "rationale": "Accidentally-committed secrets are one of the most common and impactful software security failures. Once a secret (API key, database password, cloud credential, private key) is committed to a Git repository, it exists in the Git history even if the commit is subsequently reverted, and it may be replicated to developer machines, CI systems, backup services, and (if the repository is public) the entire internet. Automated secret scanning addresses this by detecting secrets before or at commit time: (1) pre-commit hooks catch secrets before they enter the repository; (2) CI scanning catches any that bypass pre-commit; (3) discovered secrets trigger an incident response: rotate the secret immediately (the old one must be assumed compromised), audit usage to determine if the secret was exploited, add the pattern to the scanner's blocklist, and notify the developer. Developer training on secrets management complements the technical controls: use secrets managers, environment-specific credentials, and never hardcode secrets. Option B captures this. Option A (tell developers to be careful) is awareness without enforcement. Option C (encrypt the repo) does not prevent secrets from being committed. Option D (private repo) reduces exposure but does not prevent the secret from being accessible to every developer with access. The CISSP exam tests secret scanning because it is a specific, actionable DevSecOps practice."
+    },
+    {
+      "id": "D8-Q018",
+      "type": "application",
+      "stem": "A CISSP is reviewing an API design where error responses include the full database query that caused the error. Which change is MOST IMPORTANT?",
+      "options": {
+        "A": "Include longer queries",
+        "B": "Remove database query details from API error responses; return generic error messages with reference IDs; log full query details server-side for debugging; sanitize all error responses before returning to clients",
+        "C": "Use POST instead of GET",
+        "D": "Add rate limiting"
+      },
+      "correct": "B",
+      "rationale": "Exposing database queries in API error responses is a severe information disclosure that directly aids SQL injection, database enumeration, and schema discovery. An attacker who can see the full query structure knows: the table and column names (enabling targeted injection), the query logic (enabling bypass), the database technology (enabling version-specific attacks), and the application's data model (enabling business logic abuse). The correct practice: (1) API error responses return generic error messages ('An error occurred') with a reference ID that support or developers can use to find the details; (2) full error details (including the query) are logged server-side in a secure, access-controlled log store; (3) all error responses are sanitized before returning to clients — this means an explicit production error handler that strips technical details, not just hoping the framework handles it. Option B captures this. Options A, C, D are wrong or incomplete. The CISSP exam tests error information leakage because it is one of the most common and easily-preventable web application vulnerabilities."
+    },
+    {
+      "id": "D8-Q019",
+      "type": "application",
+      "stem": "A CISSP is reviewing a containerized application deployment. Container images are pulled from Docker Hub without verification. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "Continue pulling from Docker Hub",
+        "B": "Pull images only from a private registry with vetted, signed base images; verify image signatures before deployment; scan images for vulnerabilities at build and pull time; use minimal base images (distroless, Alpine) to reduce attack surface; pin image digests rather than mutable tags",
+        "C": "Use the largest base image for compatibility",
+        "D": "Build images without any base"
+      },
+      "correct": "B",
+      "rationale": "Container images pulled from public registries without verification are a supply chain risk: they may contain known vulnerabilities, malicious code, or configurations that weaken security. The correct approach: (1) pull images from a private registry (AWS ECR, Azure ACR, GCP Artifact Registry, Harbor, JFrog Artifactory) where base images are vetted and approved before making them available to developers; (2) verify image signatures before deployment using tools like cosign (Sigstore) or Notary, so that only images signed by authorized parties are deployed; (3) scan images for vulnerabilities at build time and pull time using tools like Trivy, Anchore, Aqua, or Prisma Cloud; (4) use minimal base images (Google distroless, Alpine, scratch) to reduce the attack surface — fewer packages means fewer vulnerabilities; (5) pin image digests (sha256 hashes) rather than mutable tags like 'latest' so that the exact image deployed is known and reproducible. Option B captures these practices. Options A, C, D are wrong. The CISSP exam tests container security because containers are the dominant deployment unit and because supply chain risks in container images are well-documented."
+    },
+    {
+      "id": "D8-Q020",
+      "type": "application",
+      "stem": "A CISSP is asked whether the organization should use allowlists or blocklists for input validation. Which response is BEST?",
+      "options": {
+        "A": "Blocklists are better because they catch known bad patterns",
+        "B": "Allowlists are preferred because they define what IS permitted rather than trying to enumerate everything that is NOT; blocklists are inherently incomplete because they can only block known-bad patterns, and novel attack payloads bypass them. Allowlists are harder to implement but structurally more secure; combine both where possible (allowlist primary, blocklist as defense in depth)",
+        "C": "Neither is needed",
+        "D": "Only validate on the client"
+      },
+      "correct": "B",
+      "rationale": "Input validation using allowlists (defining what IS permitted) is structurally more secure than blocklists (defining what is NOT permitted) because allowlists are closed by default — anything not explicitly allowed is rejected — while blocklists are open by default — anything not explicitly blocked is allowed. Blocklists are inherently incomplete because the set of possible attack payloads is unbounded: new encoding tricks, new Unicode normalizations, new protocol-level manipulations, and new attack techniques all bypass existing blocklists until specific signatures are added. Allowlists are harder to implement because they require understanding the legitimate input space (which characters, formats, lengths, and values are actually valid), but they are structurally secure because they reject everything unexpected. The mature approach uses allowlists as the primary validation method and adds blocklists as defense in depth for known-dangerous patterns (e.g., common SQL injection signatures) that might slip through a poorly-defined allowlist. Option B captures this. Option A (blocklists better) is the weaker choice. Option C (neither) is negligent. Option D (client only) is not security. The CISSP exam tests allowlist vs blocklist because it is a foundational secure coding principle."
+    },
+    {
+      "id": "D8-Q021",
+      "type": "application",
+      "stem": "A CISSP is reviewing an application that stores passwords using SHA-256 without salt. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "Use SHA-512 instead",
+        "B": "Migrate to a password KDF (Argon2id, bcrypt, or scrypt) with unique per-user salts and appropriate cost parameters; SHA-256 without salt is vulnerable to rainbow table attacks and GPU-accelerated brute force because it is fast and deterministic",
+        "C": "Add pepper only",
+        "D": "Use MD5 with salt"
+      },
+      "correct": "B",
+      "rationale": "SHA-256 without salt has two critical weaknesses for password storage: (1) it is fast — modern GPUs can compute billions of SHA-256 hashes per second, making brute-force attacks against human-memorable passwords practical; (2) without salt, identical passwords produce identical hashes, enabling rainbow table attacks and precomputation attacks against the entire database simultaneously. The correct defense is a password KDF specifically designed for password hashing: Argon2id (current recommendation, winner of the Password Hashing Competition 2015), bcrypt (older but still acceptable), or scrypt (memory-hard). These KDFs are deliberately slow (tuned to ~100ms per hash on production hardware) and use unique per-user salts to prevent precomputation and rainbow tables. The cost parameter controls how much computation each hash requires, and should be tuned to the hardware. Option B captures this. Option A (SHA-512) is still fast and still vulnerable. Option C (pepper only) adds a server-side secret but does not address the speed problem. Option D (MD5) is cryptographically broken and should never be used. The CISSP exam tests password storage because it is one of the most commonly mis-implemented security controls."
+    },
+    {
+      "id": "D8-Q022",
+      "type": "application",
+      "stem": "A security team finds that a third-party JavaScript library loaded by the application from a CDN was recently compromised and served malicious code. Which control would have MOST DIRECTLY mitigated this risk?",
+      "options": {
+        "A": "Loading the library from a different CDN",
+        "B": "Subresource Integrity (SRI) attributes on the script tag, which specify a cryptographic hash of the expected file content; the browser verifies the hash before executing the script and refuses to execute if the content has been tampered with",
+        "C": "A stronger Content-Type header",
+        "D": "Minifying the script"
+      },
+      "correct": "B",
+      "rationale": "Subresource Integrity (SRI) is a browser security feature that allows a web page to specify a cryptographic hash of the expected content of an externally-loaded resource (script, stylesheet). When the browser loads the resource, it computes the hash of the received content and compares it to the expected hash in the integrity attribute. If the hashes do not match — because the content was modified at the CDN, during transit, or by the CDN itself — the browser refuses to execute the script. This directly mitigates the supply chain risk of compromised CDN-hosted libraries. The canonical example is the British Airways Magecart attack (2018), where malicious JavaScript was injected into a third-party script. SRI would have prevented the modified script from executing. Option B captures this. Option A (different CDN) changes the provider but does not verify content integrity. Option C (Content-Type) addresses MIME confusion, not tampering. Option D (minification) is an optimization, not a security control. The CISSP exam tests SRI because it is a specific, well-defined browser security feature that addresses a current supply chain risk."
+    },
+    {
+      "id": "D8-Q023",
+      "type": "application",
+      "stem": "A CISSP is reviewing an application's CSRF (Cross-Site Request Forgery) protection. The application relies solely on checking the Referer header. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "Referer checking is sufficient",
+        "B": "Implement CSRF tokens (synchronizer token pattern or SameSite cookies) in addition to or instead of Referer checking; Referer headers can be stripped by privacy settings, proxies, or browser extensions, and some attack scenarios can forge or omit Referers. Framework-managed CSRF tokens are the standard defense",
+        "C": "Disable CSRF protection for performance",
+        "D": "Use CORS instead of CSRF tokens"
+      },
+      "correct": "B",
+      "rationale": "Referer header checking is a partial CSRF defense but has significant limitations: (1) Referer headers can be stripped by user privacy settings, browser extensions (Privacy Badger, uBlock Origin), corporate proxies, and referrer policy configurations — when the Referer is absent, the check must either fail-open (allowing CSRF) or fail-closed (blocking legitimate requests); (2) some attack scenarios can manipulate Referer headers, though this is less common; (3) Referer checking does not have the framework support and standardization that CSRF tokens have. The standard defense is the synchronizer token pattern: the server generates a unique token per session (or per request), includes it in forms and AJAX requests, and validates it on submission. Modern alternatives include SameSite cookies (SameSite=Strict or SameSite=Lax), which prevent the browser from sending cookies in cross-site requests, eliminating the CSRF vector at the cookie level. Most modern web frameworks (Django, Rails, Spring, Express with csurf, etc.) provide built-in CSRF protection. Option B captures the correct improvement. Options A, C, D are wrong. The CISSP exam tests CSRF protection because it is a specific web application security control with a well-defined correct implementation."
+    },
+    {
+      "id": "D8-Q024",
+      "type": "application",
+      "stem": "A CISSP is evaluating whether to adopt memory-safe languages (Rust, Go) for new system-level development instead of C/C++. Which consideration is MOST IMPORTANT?",
+      "options": {
+        "A": "Memory-safe languages are slower",
+        "B": "Memory safety eliminates entire classes of vulnerabilities (buffer overflows, use-after-free, double-free, null pointer dereferences) that account for approximately 70% of serious security vulnerabilities in C/C++ codebases (per Microsoft and Google's published data). The adoption decision should weigh the vulnerability reduction against ecosystem maturity, developer availability, performance requirements, and interop with existing C/C++ code; for new system-level work, the security benefit is substantial",
+        "C": "C is always better",
+        "D": "Memory safety doesn't matter"
+      },
+      "correct": "B",
+      "rationale": "Memory safety is one of the most impactful security improvements available for system-level code. Microsoft and Google have both published data showing that approximately 70% of their serious security vulnerabilities in C/C++ code are memory-safety issues: buffer overflows, use-after-free, double-free, null pointer dereferences, and related classes. Memory-safe languages like Rust eliminate these classes by construction: the compiler enforces ownership, borrowing, and lifetime rules that prevent the vast majority of memory-safety bugs without runtime garbage collection overhead. Go provides garbage collection and bounds checking that eliminate most memory-safety issues at some performance cost. The adoption decision involves trade-offs: (1) ecosystem maturity — Rust and Go have rich ecosystems but may not have equivalents for every C/C++ library; (2) developer availability — Rust developers are scarcer than C/C++ developers; (3) performance — Rust matches C/C++ in most cases; Go is somewhat slower for CPU-intensive workloads; (4) interop — FFI (Foreign Function Interface) allows calling C/C++ from Rust/Go and vice versa, enabling incremental migration. For new system-level development, the security benefit is substantial and increasingly recognized: the White House ONCD's 2024 technical report explicitly recommends memory-safe languages. Option B captures the balanced assessment. Options A, C, D are oversimplified."
+    },
+    {
+      "id": "D8-Q025",
+      "type": "application",
+      "stem": "A CISSP is reviewing a deployment pipeline that builds applications from source but does not generate or maintain SBOMs. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "SBOMs are unnecessary",
+        "B": "Integrate SBOM generation into the build pipeline (using tools like Syft, CycloneDX CLI, or Trivy) in SPDX or CycloneDX format, store SBOMs alongside build artifacts, cross-reference with vulnerability databases continuously, and use SBOMs for incident response (quickly answering 'do we use component X?')",
+        "C": "Generate SBOMs manually once a year",
+        "D": "Only track direct dependencies"
+      },
+      "correct": "B",
+      "rationale": "SBOM generation integrated into the build pipeline is the foundational supply chain security practice. Without it, the organization cannot answer the most basic supply chain security question: 'what components are in our software?' The correct approach: (1) integrate SBOM generation into the build pipeline using automated tools (Syft for container images and filesystems, CycloneDX CLI for various ecosystems, Trivy for combined vulnerability scanning and SBOM generation); (2) output in standardized formats (SPDX or CycloneDX) for machine-readable consumption; (3) store SBOMs alongside build artifacts so that every release has a corresponding inventory; (4) cross-reference SBOMs with vulnerability databases continuously — when a new CVE is published, the SBOM instantly identifies which applications use the affected component; (5) use SBOMs for incident response — Log4Shell demonstrated that organizations without SBOMs spent days or weeks manually auditing codebases while organizations with SBOMs triaged exposure in hours. Option B captures this. Option A dismisses a critical practice. Option C (annual) misses the continuous value. Option D (direct only) misses transitive dependencies, which are often where vulnerabilities hide. The CISSP exam tests SBOMs because they are increasingly required (EO 14028, NIST SSDF) and are a specific, testable practice."
+    },
+    {
+      "id": "D8-Q026",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating whether the organization's SDLC is truly 'secure by design' or merely 'security-tested'. Which distinction is MOST SIGNIFICANT?",
+      "options": {
+        "A": "They are the same",
+        "B": "'Security-tested' means vulnerabilities are found and fixed after implementation; 'secure by design' means security requirements and threat models drive the architecture from the start, and the design itself prevents classes of vulnerability (e.g., choosing a memory-safe language, an auto-escaping template engine, parameterized queries by default). The difference is proactive prevention vs reactive detection — both are needed but secure-by-design produces fundamentally fewer vulnerabilities",
+        "C": "Testing is always sufficient",
+        "D": "Design doesn't affect security"
+      },
+      "correct": "B",
+      "rationale": "The distinction between 'secure by design' and 'security-tested' is one of the most important concepts in modern software security. 'Security-tested' programs rely on finding and fixing bugs after code is written: SAST, DAST, pentest, and code review catch individual vulnerabilities, and the team remediates them one by one. This is reactive and produces a continuous stream of findings that must be managed. 'Secure by design' programs make architectural decisions that prevent entire classes of vulnerability: choosing a memory-safe language eliminates buffer overflows; choosing an ORM with parameterized queries by default eliminates SQL injection; choosing an auto-escaping template engine eliminates most XSS; choosing a framework with built-in CSRF protection eliminates CSRF. The design itself is the control, not the test. Both approaches are needed: secure-by-design reduces the volume of vulnerabilities that testing must catch, and testing catches the individual issues that design cannot prevent (business logic flaws, configuration errors, novel attack patterns). But the leverage is in design: a single design decision can prevent thousands of potential bugs. Option B captures this. Options A, C, D are wrong. The CISSP exam tests this because OWASP Top 10 2021 added A04 'Insecure Design' as a new category specifically to highlight that design-time failures cannot be fixed by implementation-time testing."
+    },
+    {
+      "id": "D8-Q027",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating the security of a CI/CD pipeline. An attacker who compromises a single CI runner could modify build artifacts for any application. Which is the MOST SIGNIFICANT architectural concern?",
+      "options": {
+        "A": "CI runners are fast",
+        "B": "A single CI runner with access to all build artifacts represents a single point of compromise for the entire software supply chain; the mitigation is to isolate build environments per application or per security tier, use ephemeral runners that are destroyed after each build, sign build artifacts with per-project keys, verify signatures before deployment, and implement the SLSA framework's build-level protections",
+        "C": "CI runners should not be monitored",
+        "D": "Build artifacts do not need integrity"
+      },
+      "correct": "B",
+      "rationale": "CI/CD pipelines are high-value supply chain targets because they produce the artifacts that customers and systems trust. SolarWinds SUNBURST (2020) demonstrated that compromising the build system allows injection of malicious code into legitimately-signed software that passes all downstream verification. A single CI runner with access to all projects' build artifacts means that compromise of one runner compromises every project's output. The architectural mitigations: (1) isolate build environments — per-project or per-security-tier runners so that compromise of one project's runner does not affect others; (2) use ephemeral runners that are destroyed after each build and recreated fresh from trusted images, preventing persistent compromise; (3) sign build artifacts with per-project keys so that each project's signatures are independent; (4) verify signatures before deployment so that unsigned or incorrectly-signed artifacts are rejected; (5) implement SLSA (Supply chain Levels for Software Artifacts) framework protections — SLSA L1 requires documented build process, L2 requires hosted build, L3 requires hardened builds with non-falsifiable provenance. Option B captures this. Options A, C, D are wrong. The CISSP exam tests CI/CD security because it is the most consequential modern supply chain surface."
+    },
+    {
+      "id": "D8-Q028",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing the organization's approach to third-party JavaScript dependencies. The application uses 200+ npm packages. Which concern is MOST SIGNIFICANT?",
+      "options": {
+        "A": "200 packages is too few",
+        "B": "Each dependency is a trust decision: the organization trusts 200+ maintainers (and their dependencies' maintainers) to not introduce malicious or vulnerable code. Risks include dependency confusion, typosquatting, protestware, compromised maintainer accounts, and known-vulnerable transitive dependencies. Mitigations include SCA scanning, lockfile pinning with hashes, private registry mirroring with vetting, regular audit of dependency graph, and a policy for evaluating new dependencies before adoption",
+        "C": "Dependencies are always safe",
+        "D": "npm packages are vetted by npm Inc."
+      },
+      "correct": "B",
+      "rationale": "Third-party dependencies are the largest unmanaged attack surface in most modern applications. 200+ npm packages likely expand to 1000+ including transitive dependencies, each of which is maintained by individuals or teams whose security practices the consuming organization does not control. The risks are well-documented: (1) dependency confusion — private package names typosquatted on public registries can trick build systems into pulling malicious public packages; (2) typosquatting — packages with near-duplicate names (e.g., 'lodash' vs 'lodahs') contain malicious code; (3) protestware — maintainers who add destructive or political code to their own packages (colors.js, node-ipc); (4) compromised maintainer accounts — attacker gains access to a legitimate package and publishes a malicious update (event-stream 2018); (5) known-vulnerable transitive dependencies — vulnerabilities deep in the dependency tree that are invisible without SCA. Mitigations: (1) SCA scanning continuously monitors the dependency graph against vulnerability databases; (2) lockfile pinning with hashes ensures that the exact versions used in development are used in production; (3) private registry mirroring (Artifactory, Verdaccio, GitHub Packages) with vetting allows the organization to control which packages are available; (4) regular audit of the dependency graph to identify unmaintained or high-risk packages; (5) a policy for evaluating new dependencies before adoption (maintenance activity, security history, bus factor, license). Option B captures these. Options A, C, D are wrong. The CISSP exam tests dependency management because it is the most impactful modern software supply chain issue."
+    },
+    {
+      "id": "D8-Q029",
+      "type": "analysis",
+      "stem": "A CISSP is asked whether AI code generation tools (GitHub Copilot, ChatGPT, Claude) introduce security risks. Which assessment is MOST ACCURATE?",
+      "options": {
+        "A": "AI-generated code is always secure",
+        "B": "AI code generation tools produce code that may contain known vulnerability patterns (injection, broken access control, insecure deserialization, hardcoded secrets), because the models were trained on code that includes vulnerable patterns alongside secure patterns. The tool does not distinguish between secure and insecure patterns without explicit prompting. Mitigation includes treating AI-generated code with the same review rigor as human code (SAST, code review, DAST), training developers on secure prompting, and maintaining the same coding standards regardless of code origin",
+        "C": "AI-generated code is always insecure",
+        "D": "AI tools should replace security review"
+      },
+      "correct": "B",
+      "rationale": "AI code generation tools produce code by predicting the most likely continuation based on training data, which includes both secure and insecure code patterns. Research (including studies by GitHub, Stanford, and various academic institutions) has shown that AI-generated code can contain SQL injection, XSS, insecure cryptographic choices, hardcoded secrets, broken authentication, path traversal, and other well-known vulnerability patterns — not because the tool is 'trying' to be insecure but because insecure patterns exist in the training data and the model does not reliably distinguish them without explicit prompting. The mitigation is straightforward: treat AI-generated code with the same review rigor as any other code. This means SAST scanning, code review by human developers, DAST testing, and SCA for any dependencies the AI suggests. Developer training should cover secure prompting (explicitly asking for parameterized queries, secure defaults, error handling) and critical review of generated code. The organizational coding standards and pipeline security gates apply regardless of whether the code was written by a human or generated by AI. Option B captures this balanced assessment. Options A, C, D are oversimplified. The CISSP exam may test AI-in-development because it is current and rapidly growing."
+    },
+    {
+      "id": "D8-Q030",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating whether the organization should adopt the SLSA (Supply chain Levels for Software Artifacts) framework for its build pipeline. Which benefit is MOST SIGNIFICANT?",
+      "options": {
+        "A": "SLSA is a compliance checkbox",
+        "B": "SLSA provides a graduated framework for build integrity: L1 requires a documented build process, L2 requires hosted builds with version-controlled inputs, L3 requires hardened builds with non-falsifiable provenance (cryptographically-signed statements about what was built, from what source, by which build system). Adopting SLSA incrementally improves build trustworthiness and provides evidence to downstream consumers that the organization's artifacts can be trusted",
+        "C": "SLSA replaces all other security controls",
+        "D": "SLSA is too expensive for any organization"
+      },
+      "correct": "B",
+      "rationale": "SLSA (pronounced 'salsa') is a framework from Google that defines levels of build integrity for software artifacts. It addresses the specific threat demonstrated by the SolarWinds attack: an attacker who compromises the build system can inject malicious code into an artifact that looks legitimate and is signed with the organization's keys. SLSA's levels provide a graduated defense: (1) L1 — documented build process (basic; establishes the baseline that the build process exists and is known); (2) L2 — hosted build with version-controlled inputs (the build runs in a hosted environment and the inputs are known and tracked); (3) L3 — hardened build with non-falsifiable provenance (the build system generates a cryptographically-signed provenance statement that attests to what was built, from what source, by which build system, and the statement cannot be forged by a compromised build step). The graduated nature means organizations can adopt SLSA incrementally: start at L1, mature to L2, work toward L3. The provenance statements provide evidence to downstream consumers — customers, partners, regulators — that the organization's artifacts can be trusted. Option B captures the specific value. Options A, C, D are oversimplified. The CISSP exam tests SLSA because it is the leading framework for build integrity and because SolarWinds made build-system compromise a board-level concern."
+    },
+    {
+      "id": "D8-Q031",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a multi-team development organization. Each team manages its own dependencies without central governance. Which risk is MOST SIGNIFICANT?",
+      "options": {
+        "A": "Teams work faster",
+        "B": "Without central dependency governance, different teams may use different versions of the same library (including known-vulnerable versions), adopt unmaintained or high-risk packages without evaluation, have no visibility into the organization's aggregate dependency risk, and produce inconsistent SBOM quality. A centralized dependency policy with a curated private registry, minimum version standards, and automated enforcement reduces this risk",
+        "C": "Central governance is too slow",
+        "D": "Dependencies manage themselves"
+      },
+      "correct": "B",
+      "rationale": "Decentralized dependency management at scale produces several compounding risks: (1) inconsistent versions — Team A uses log4j 2.17.1 (patched) while Team B still uses 2.14.1 (vulnerable), and nobody knows because there is no central visibility; (2) unevaluated adoption — a developer in Team C adopts a new package without evaluating its maintenance status, security history, or license implications, and the package becomes a risk for the organization; (3) no aggregate visibility — when a new CVE is published, the organization cannot answer 'which teams use this component' without manually asking every team; (4) inconsistent SBOM quality — some teams generate SBOMs and some do not, making supply chain security reporting incomplete; (5) duplicated effort — multiple teams independently evaluate the same packages. The centralized approach: (1) a curated private registry (Artifactory, Verdaccio, GitHub Packages) that mirrors approved packages and blocks unapproved ones; (2) minimum version standards that are enforced in CI (no build passes if a dependency is below minimum version); (3) automated enforcement via SCA tools configured to fail builds on known-vulnerable dependencies above a severity threshold; (4) a dependency evaluation policy for new packages (who evaluates, what criteria, where is the decision documented); (5) organization-wide SBOM aggregation for portfolio-level visibility. Option B captures this. Options A, C, D are wrong."
+    },
+    {
+      "id": "D8-Q032",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating a proposal to run all security tests in a shared staging environment that mirrors production. The test environment shares a database with production through a read-replica. Which concern is MOST SIGNIFICANT?",
+      "options": {
+        "A": "Shared environments are efficient",
+        "B": "A test environment that shares data with production (even via read-replica) exposes production data to test tools, test users, and test configurations that are not subject to production security controls; DAST tools may inadvertently interact with production data, and test accounts may access real customer information. The environment should use synthetic or anonymized data, and the network boundary between test and production should prevent any data leakage",
+        "C": "Test environments should match production exactly",
+        "D": "No concern"
+      },
+      "correct": "B",
+      "rationale": "Test environments that share data with production create multiple security and privacy risks: (1) DAST tools that send test payloads (injection strings, fuzzing, enumeration) may interact with production data via the shared database, potentially corrupting or disclosing it; (2) test user accounts may access real customer data, violating privacy obligations under GDPR, HIPAA, and similar regulations; (3) test environment security controls are typically weaker than production (wider access, less monitoring, more permissive configurations), exposing production data to a weaker control environment; (4) test results may contain production data fragments that are then shared with developers, testers, or third parties. The correct approach: (1) test environments use synthetic or anonymized data that preserves data distributions for realistic testing without exposing real customer information; (2) the network boundary between test and production prevents any data flow from production to test except through a controlled, privacy-preserving pipeline; (3) access controls on test environments are appropriate for the data they contain, not relaxed because 'it is just test'. Option B captures the concern. Options A, C, D are wrong. The CISSP exam tests environment isolation because it is a specific, well-defined development security practice."
+    },
+    {
+      "id": "D8-Q033",
+      "type": "analysis",
+      "stem": "A CISSP is asked to evaluate the security implications of adopting a microservices architecture from a monolith. Which security consideration is MOST SIGNIFICANT?",
+      "options": {
+        "A": "Microservices are always more secure",
+        "B": "Microservices increase the network attack surface (many inter-service calls over the network instead of in-process function calls), multiply the number of authentication and authorization decisions, distribute secrets across many services, complicate logging and tracing, and introduce service mesh and container orchestration as new attack surfaces. The security program must adapt: mTLS for service-to-service auth, centralized identity, distributed tracing, network policies, and container security become essential controls that monoliths did not require",
+        "C": "Microservices have no security implications",
+        "D": "Monoliths are always insecure"
+      },
+      "correct": "B",
+      "rationale": "Migrating from a monolith to microservices has significant security implications that are often underestimated. In a monolith, inter-component communication is in-process (function calls), authentication happens once at the boundary, secrets are centralized, and logging is unified. In microservices, every inter-service call crosses the network, multiplying the authentication and authorization surface; secrets must be distributed to many services; logging is distributed across many services and requires correlation via distributed tracing; and new infrastructure (service mesh, container orchestrator, container registry) introduces new attack surfaces. The security controls that become essential: (1) mTLS for service-to-service authentication and encryption; (2) centralized identity and authorization (per-service policies enforced consistently); (3) distributed tracing (Jaeger, Zipkin, OpenTelemetry) for cross-service investigation; (4) network policies (Kubernetes NetworkPolicy, service mesh policy) for micro-segmentation; (5) container security (image scanning, runtime protection, least-privilege containers); (6) secrets management (per-service credentials via Vault or KMS); (7) API gateways for external-facing entry points. Option B captures these implications. Options A, C, D are oversimplified. The CISSP exam tests architectural security implications because they are design-time decisions with long-term consequences."
+    },
+    {
+      "id": "D8-Q034",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing an application that uses Content Security Policy (CSP) headers. The current policy is 'Content-Security-Policy: default-src *'. Which improvement is MOST IMPORTANT?",
+      "options": {
+        "A": "Remove CSP entirely",
+        "B": "Restrict the policy to the minimum sources required: replace 'default-src *' with specific directives for each resource type (script-src with hash or nonce, style-src, img-src, connect-src, etc.) limited to trusted origins; 'default-src *' permits loading resources from any origin and provides no protection against XSS or data injection",
+        "C": "Change to 'default-src **'",
+        "D": "Add more wildcards"
+      },
+      "correct": "B",
+      "rationale": "Content Security Policy (CSP) is a browser security mechanism that restricts the sources from which a page can load scripts, styles, images, fonts, media, and other resources. An effective CSP prevents XSS by blocking inline scripts and restricting script sources to trusted origins. But 'default-src *' is a non-policy: it permits loading any resource from any origin, which provides no protection against XSS, clickjacking, or data injection. The correct approach: (1) remove 'default-src *' and replace with a restrictive default-src (typically 'self' only); (2) add specific directives for each resource type limited to trusted origins: script-src with hash-based or nonce-based allowlists for inline scripts, style-src for trusted stylesheet origins, img-src for trusted image origins, connect-src for trusted API endpoints; (3) avoid 'unsafe-inline' and 'unsafe-eval' in script-src, as these re-enable XSS; (4) use report-uri or report-to to collect CSP violation reports for tuning; (5) deploy in report-only mode first to identify what breaks before enforcing. Option B captures this. Options A, C, D are wrong. The CISSP exam tests CSP because it is a specific, well-defined browser security mechanism."
+    },
+    {
+      "id": "D8-Q035",
+      "type": "analysis",
+      "stem": "A CISSP is asked how to handle the 'dependency confusion' attack pattern, where an attacker publishes a public package with the same name as an internal private package to trick build systems into pulling the public version. Which defense is MOST EFFECTIVE?",
+      "options": {
+        "A": "Hope it doesn't happen",
+        "B": "Configure package managers to prioritize the private registry over public registries (scoped packages in npm, namespace prefixes, explicit registry mapping); use lockfiles with integrity hashes so that unexpected packages are detected; mirror approved public packages in the private registry; and monitor for unexpected package sources in build logs",
+        "C": "Only use public packages",
+        "D": "Never use packages"
+      },
+      "correct": "B",
+      "rationale": "Dependency confusion (also called namespace confusion or substitution attack) was publicly demonstrated by Alex Birsan in 2021, affecting Apple, Microsoft, PayPal, and many other organizations. The attack exploits a common configuration where build systems check both private and public registries and prefer the higher version number regardless of source. If an attacker publishes a public package with the same name as an internal package and a higher version number, the build system pulls the attacker's package. Defenses: (1) configure package managers to prioritize the private registry — npm supports scoped packages (@org/package-name) that are always resolved from the configured scope registry; Python pip supports --index-url and --extra-index-url priorities; similar patterns exist in Maven, NuGet, Go; (2) use lockfiles with integrity hashes so that any unexpected package change (source or content) is detected and flagged before installation; (3) mirror approved public packages in the private registry so the build system never needs to reach the public registry directly; (4) monitor build logs for unexpected package sources or version changes; (5) use namespace prefixes for all internal packages so they cannot collide with public names. Option B captures this layered defense. Options A, C, D are wrong. The CISSP exam tests supply chain attacks because they are current, impactful, and have specific defenses."
+    },
+    {
+      "id": "D8-Q036",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing the organization's approach to application logging. Developers log user passwords in cleartext 'for debugging'. Which response is MOST APPROPRIATE?",
+      "options": {
+        "A": "Approve — debugging needs data",
+        "B": "Reject — logging passwords in cleartext creates a high-value target in the log storage, violates data minimization principles, and is explicitly prohibited by most security standards (OWASP ASVS, PCI-DSS, HIPAA). Remediation: scrub sensitive data from logs before writing, use structured logging with explicit field classification, configure logging frameworks to redact sensitive fields automatically, and add SAST rules to detect credential logging in code",
+        "C": "Approve if logs are encrypted",
+        "D": "Approve for test environments only"
+      },
+      "correct": "B",
+      "rationale": "Logging passwords in cleartext is a severe security failure regardless of intent. Log files are typically stored with broad read access (monitoring teams, support staff, SIEM ingestion), retained for months or years, and replicated across multiple systems (aggregation, backup, SIEM, cold storage). Every system that receives the logs now holds cleartext credentials. Specifically prohibited by: OWASP Application Security Verification Standard (ASVS) V7 (Error Handling and Logging), PCI-DSS Requirement 3 (Protect Cardholder Data, which explicitly prohibits storing authentication credentials post-authorization), and HIPAA (which treats authentication credentials as sensitive data). The remediation is multi-layered: (1) scrub sensitive data from logs before writing — log the authentication event but not the credential; (2) use structured logging with explicit field classification so that sensitive fields are identified and can be automatically redacted; (3) configure logging frameworks to redact fields matching sensitive patterns (password, secret, token, key); (4) add SAST rules to detect credential logging in code (patterns like 'log.info(password)' should fail CI). Option B captures this. Options A, C, D are wrong. The CISSP exam tests credential logging because it is a specific, common, and severely impactful practice."
+    },
+    {
+      "id": "D8-Q037",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating whether to adopt Infrastructure as Code (IaC) for the organization's cloud deployments. Which security consideration is MOST IMPORTANT?",
+      "options": {
+        "A": "IaC is only for large organizations",
+        "B": "IaC enables reproducible, auditable, peer-reviewed infrastructure but introduces its own security requirements: IaC templates must be scanned for misconfigurations before deployment (Checkov, tfsec, Terrascan, KICS), templates are code and must be version-controlled and reviewed like application code, secrets must not be hardcoded in templates, and the IaC pipeline itself must be protected as a supply chain target (since compromised templates deploy compromised infrastructure)",
+        "C": "IaC has no security implications",
+        "D": "IaC replaces all security controls"
+      },
+      "correct": "B",
+      "rationale": "Infrastructure as Code provides significant security benefits — reproducibility (every deployment matches the template), auditability (every change is a tracked commit), peer review (infrastructure changes go through code review), and automation (reducing human error in manual configuration). But IaC introduces its own security surface: (1) IaC templates can encode insecure configurations (public S3 buckets, over-permissive IAM roles, missing encryption, wide-open security groups) as code, and these misconfigurations are deployed automatically at scale; (2) templates must be scanned before deployment using policy-as-code tools (Checkov, tfsec, Terrascan, KICS, OPA/Rego, Sentinel); (3) templates are code and must be version-controlled, reviewed, and approved like any other code; (4) secrets must not be hardcoded in templates — use parameter stores, KMS references, or secrets managers; (5) the IaC pipeline itself is a supply chain target — a compromised template or a compromised IaC tool deploys compromised infrastructure. Option B captures the balanced view. Options A, C, D are oversimplified."
+    },
+    {
+      "id": "D8-Q038",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing the organization's approach to open-source adoption. There is no formal policy; developers adopt packages freely. Which is the MOST APPROPRIATE first step?",
+      "options": {
+        "A": "Ban all open source",
+        "B": "Establish a lightweight open-source adoption policy that includes: evaluation criteria for new packages (maintenance activity, security history, bus factor, license compatibility), a curated private registry of approved packages, SCA scanning in CI to enforce minimum security standards, and a process for reporting and responding to vulnerabilities in adopted packages; the policy should enable developers while providing governance",
+        "C": "Continue without policy",
+        "D": "Adopt everything without evaluation"
+      },
+      "correct": "B",
+      "rationale": "Open-source software provides enormous value and is unavoidable in modern development, but uncontrolled adoption creates supply chain risk. A lightweight policy balances enablement with governance: (1) evaluation criteria for new packages — maintenance activity (how frequently is the package updated, how responsive are maintainers to issues), security history (past vulnerabilities, response time, disclosure practices), bus factor (how many active maintainers), license compatibility (does the license permit the organization's use case); (2) curated private registry — an Artifactory, Verdaccio, or GitHub Packages instance that mirrors approved public packages and blocks unapproved ones, providing both control and availability; (3) SCA scanning in CI — automated enforcement that fails builds on known-vulnerable dependencies above a severity threshold, ensuring that policy is enforced technically; (4) vulnerability response process — when a CVE is published for an adopted package, a defined process for assessing impact, updating the dependency, and verifying the fix. The policy should explicitly enable developers — not create a months-long approval process that drives shadow adoption — while providing the minimum governance needed. Option B captures this. Option A (ban) is impractical. Options C and D accept unmanaged risk."
+    },
+    {
+      "id": "D8-Q039",
+      "type": "analysis",
+      "stem": "A CISSP is asked to evaluate the SSRF (Server-Side Request Forgery) risk in a new application feature that fetches content from user-supplied URLs. Which assessment is MOST COMPREHENSIVE?",
+      "options": {
+        "A": "SSRF is not a real risk",
+        "B": "SSRF allows an attacker to make the server issue requests to unintended destinations: cloud metadata endpoints (169.254.169.254), internal services, administrative interfaces, and external systems. The Capital One 2019 breach exploited SSRF to reach AWS metadata and steal IAM credentials. Mitigations must be layered: URL validation against an allowlist of permitted destinations, blocking of private/reserved IP ranges, blocking of cloud metadata endpoints, use of IMDSv2 (which requires token-based requests), network-level egress restrictions, and least-privilege IAM roles so that even a successful SSRF has limited access",
+        "C": "SSRF only affects internal systems",
+        "D": "Input validation alone prevents SSRF"
+      },
+      "correct": "B",
+      "rationale": "SSRF is a powerful attack class because it leverages the server's trusted network position to reach destinations the attacker cannot reach directly. Common targets: (1) cloud metadata endpoints (169.254.169.254 in AWS, equivalent in Azure and GCP) that reveal instance credentials, user data, and configuration; (2) internal services (databases, admin panels, internal APIs) that are not internet-accessible but are reachable from the server; (3) external systems that the attacker wants to probe or attack from the server's IP (pivoting, reputation laundering). Capital One 2019 is the defining case: an SSRF in a web application reached the AWS metadata service, retrieved an over-privileged IAM role's temporary credentials, and used those credentials to exfiltrate 100 million customer records. Mitigations must be layered because no single control is sufficient: (1) URL validation against an allowlist of permitted destinations is the primary control; (2) blocking private and reserved IP ranges (10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16, 127.0.0.0/8, 169.254.0.0/16) prevents most internal targeting; (3) blocking cloud metadata endpoints specifically; (4) using IMDSv2 (AWS's instance metadata service v2, which requires token-based requests that cannot be forged via SSRF); (5) network-level egress restrictions that limit where the server can connect; (6) least-privilege IAM roles so that even a successful SSRF has minimal access. Option B captures the comprehensive assessment. Options A, C, D are incomplete."
+    },
+    {
+      "id": "D8-Q040",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating whether threat modeling should be performed for every feature or only for major architectural changes. Which response is BEST?",
+      "options": {
+        "A": "Only for major changes",
+        "B": "Lightweight threat modeling should be performed for every feature that touches security-relevant boundaries (authentication, authorization, data handling, external interfaces, trust boundaries), while full formal threat modeling (STRIDE, PASTA) is reserved for major architectural changes and new systems. The Shostack four-question framework is lightweight enough for feature-level use; if a feature does not cross a security boundary, it can skip the model with a documented exemption",
+        "C": "Never",
+        "D": "Every line of code"
+      },
+      "correct": "B",
+      "rationale": "Threat modeling at different depths for different changes is the mature approach. Every feature does not need a full STRIDE analysis, but every feature that touches a security-relevant boundary should receive some level of threat consideration. The practical approach: (1) for new systems and major architectural changes, full formal threat modeling (STRIDE, PASTA, or similar) with a multi-session workshop, detailed DFD, systematic threat identification, and documented mitigations; (2) for features that touch security boundaries (authentication flows, authorization changes, data handling, external interfaces, trust boundary crossings), lightweight threat modeling using the Shostack four questions ('What are we building? What can go wrong? What are we going to do about it? Did we do a good job?') in a focused session (30-60 minutes); (3) for features that do not cross security boundaries (UI text changes, color updates, non-security configuration), skip with a documented exemption that confirms no security relevance. This graduated approach makes threat modeling sustainable and scalable rather than an occasional heavyweight exercise. Option B captures this. Options A, C, D are extreme. The CISSP exam tests threat modeling scope because the mature answer balances thoroughness with sustainability."
+    },
+    {
+      "id": "D8-Q041",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing an application that uses JWT tokens for API authentication. The JWT library accepts the 'alg: none' header, which disables signature verification. Which is the MOST SIGNIFICANT risk?",
+      "options": {
+        "A": "JWT is slow",
+        "B": "If the library accepts 'alg: none', an attacker can forge arbitrary JWTs by setting the algorithm header to 'none' and omitting the signature; the server accepts the forged token as valid, enabling complete authentication bypass. The fix is to configure the JWT library to reject 'alg: none', explicitly specify the allowed algorithm on the server side (never trust the token's declared algorithm), and verify signatures strictly",
+        "C": "JWT is insecure by design",
+        "D": "JWT should be encrypted"
+      },
+      "correct": "B",
+      "rationale": "The 'alg: none' vulnerability is one of the most well-known JWT security issues. JWT specifications define a 'none' algorithm for unsigned tokens, which is intended for use only in trusted contexts where the transport provides integrity (e.g., inside a TLS-protected internal channel where no tampering is possible). But many JWT libraries by default accept any algorithm declared in the token's header, including 'none'. An attacker who sets 'alg: none' and omits the signature presents a token that passes the library's verification because the library skips signature checking for 'none' — and the attacker can forge any claims they want (user ID, roles, permissions). The fix: (1) configure the JWT library to reject 'alg: none' — most modern libraries do this by default, but older versions may not; (2) explicitly specify the allowed algorithm(s) on the server side — never trust the token's declared algorithm, because the token is under attacker control; (3) verify signatures strictly against known keys. A related vulnerability is the RS256/HS256 confusion attack, where an attacker sets 'alg: HS256' and uses the RSA public key as the HMAC secret — some libraries accept this, effectively using a known public value as a symmetric key. Option B captures the risk and fix. Options A, C, D are wrong."
+    },
+    {
+      "id": "D8-Q042",
+      "type": "analysis",
+      "stem": "A CISSP is asked how to balance security gate strictness in CI/CD with developer productivity. Which approach is MOST EFFECTIVE?",
+      "options": {
+        "A": "Maximum strictness — block on every finding",
+        "B": "Risk-tiered gates: block builds on critical and high findings only, alert (create tickets) for medium findings, collect data on low findings for trend analysis; combine with developer-friendly tooling (IDE integration, clear fix guidance, fast feedback), quick false-positive resolution processes, and periodic review of gate thresholds. The goal is to catch the things that matter without creating noise that erodes developer trust in the tools",
+        "C": "No gates — security is the security team's job",
+        "D": "Gates only in production"
+      },
+      "correct": "B",
+      "rationale": "Security gate strictness in CI/CD is a critical balancing act. Too strict (blocking on every finding including low-severity and false positives) creates developer fatigue, erodes trust in the security tools, drives developers to work around the gates, and ultimately reduces security rather than improving it. Too loose (no blocking) makes the gates decorative and produces vulnerability debt. The mature approach is risk-tiered: (1) block on critical and high findings — these are the vulnerabilities that matter most and that the organization cannot afford to deploy; (2) alert on medium findings — create tickets that are tracked and prioritized alongside other work, but do not break the build because the risk is manageable within a reasonable SLA; (3) collect data on low findings for trend analysis rather than per-instance action; (4) developer-friendly tooling that provides clear, actionable fix guidance in the IDE or PR review rather than generic scanner output; (5) quick false-positive resolution processes so that developers who report false positives get a response quickly and the scanner is tuned; (6) periodic review of gate thresholds as the program matures and vulnerability density decreases. Option B captures this. Option A creates unsustainable friction. Options C and D abdicate or defer responsibility."
+    },
+    {
+      "id": "D8-Q043",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating the impact of the Log4Shell vulnerability (CVE-2021-44228) on the organization's software security practices. Which lesson is MOST IMPORTANT?",
+      "options": {
+        "A": "Log4j should be banned",
+        "B": "Log4Shell demonstrated that a single transitive dependency can create critical exposure across thousands of applications, that organizations without SBOM and SCA programs cannot assess their exposure quickly, that supply chain visibility is a security prerequisite, and that remediation requires not just patching but also defense-in-depth (WAF rules, network segmentation, egress filtering) to bridge the gap until patches are deployed across the entire portfolio. The lasting lesson is that dependency management is first-class security work",
+        "C": "Java should not be used",
+        "D": "Logging libraries are inherently dangerous"
+      },
+      "correct": "B",
+      "rationale": "Log4Shell (CVE-2021-44228, December 2021) was a remote code execution vulnerability in Apache Log4j, a ubiquitous Java logging library used in tens of thousands of applications across virtually every industry. Its impact was amplified by several factors: (1) Log4j was a transitive dependency in many applications — developers did not know they used it because it was pulled in by other libraries; (2) organizations without SBOM and SCA programs could not answer 'do we use Log4j?' quickly, and many spent days or weeks manually auditing codebases; (3) the vulnerability was trivially exploitable (a single log message containing a JNDI lookup string triggered RCE), meaning exploitation began within hours of public disclosure; (4) patching required identifying every application using Log4j, testing the patch, and deploying — a process that took weeks or months across large portfolios; (5) defense-in-depth (WAF rules blocking JNDI patterns, egress filtering preventing LDAP callbacks, network segmentation limiting blast radius) was needed to bridge the gap until patches were deployed. The lasting lessons: (1) SBOM and SCA are prerequisites for supply chain security; (2) dependency management is first-class security work; (3) defense-in-depth buys time during zero-day response; (4) remediation speed depends on visibility. Option B captures these lessons. Options A, C, D are oversimplified."
+    },
+    {
+      "id": "D8-Q044",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating an API design. The API uses HTTP Basic Authentication over TLS. Which concern is MOST SIGNIFICANT for production use?",
+      "options": {
+        "A": "Basic Auth is fine for all uses",
+        "B": "HTTP Basic Authentication transmits credentials (base64-encoded, not encrypted) in every request header; while TLS protects them in transit, the credentials are available in server logs, proxy logs, and application memory on every request, increasing exposure surface. For production APIs, token-based authentication (OAuth 2.0 access tokens, JWT with short lifetimes, API keys with rotation) provides better security because tokens are limited in scope and lifetime, and credential compromise does not immediately yield the user's long-term password",
+        "C": "Basic Auth is encrypted",
+        "D": "TLS makes any authentication secure"
+      },
+      "correct": "B",
+      "rationale": "HTTP Basic Authentication base64-encodes the username and password and sends them in the Authorization header of every request. Base64 is an encoding, not encryption — anyone who captures the header (from server logs, proxy logs, load balancer logs, or application memory) can decode the credentials instantly. TLS protects the credentials in transit over the network, but does not protect them at the endpoints: the decrypted header is available in the clear on every server, proxy, and log that processes the request. For production APIs, token-based authentication provides better security: (1) OAuth 2.0 access tokens are limited in scope (specific permissions) and lifetime (minutes to hours), so a stolen token has bounded damage; (2) JWT tokens with short lifetimes expire automatically; (3) API keys can be rotated without changing the user's password; (4) none of these approaches transmit the user's long-term credential on every request. Option B captures the concern. Option A is wrong. Option C confuses encoding with encryption. Option D overstates TLS's scope. The CISSP exam tests API authentication because it is a specific, current design decision."
+    },
+    {
+      "id": "D8-Q045",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing a feature where the application generates dynamic SQL based on user-selected filter criteria. The developer claims that because only column names (not values) come from user input, injection is not possible. Which assessment is MOST ACCURATE?",
+      "options": {
+        "A": "The developer is correct",
+        "B": "The developer is wrong — SQL injection through column names (and table names, ORDER BY clauses, and other structural elements) is a known attack vector that parameterized queries cannot directly address because parameters are designed for values, not identifiers. The mitigation is an allowlist of permitted column names validated against the schema, with the user's selection mapped to the allowlist before being included in the query — never interpolating user input directly into structural SQL positions",
+        "C": "Column-name injection is theoretical",
+        "D": "SQL only supports value injection"
+      },
+      "correct": "B",
+      "rationale": "SQL injection through structural elements (column names, table names, ORDER BY clauses, LIMIT values) is a real attack vector that is frequently overlooked because parameterized queries, which are the standard defense against value injection, cannot parameterize identifiers — most database engines require that identifiers be known at query parse time and do not support binding them as parameters. An attacker who controls a column name can inject: (1) additional SQL through the column position (SELECT [injected SQL] FROM users); (2) subqueries or UNION operations in some database engines; (3) ORDER BY injection that leaks data through observable sorting differences (a classic blind-injection technique). The defense is an allowlist: maintain a list of permitted column names (validated against the database schema), and map the user's selection to the allowlist. If the user's input is not in the allowlist, reject the request. Never interpolate user input directly into structural SQL positions. This applies equally to table names, function names, ORDER BY clauses, and any other structural element. Option B captures this. Option A is wrong. Options C and D understate the risk."
+    },
+    {
+      "id": "D8-Q046",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating the security of a serverless (AWS Lambda, Azure Functions, GCP Cloud Functions) application architecture. Which security consideration is MOST DIFFERENT from traditional server-based architectures?",
+      "options": {
+        "A": "Serverless has no security considerations",
+        "B": "Serverless shifts responsibility for infrastructure security to the cloud provider but introduces new concerns: function permission over-provisioning (IAM roles with too many permissions), event injection (untrusted event sources triggering functions), cold-start timing variations that may leak information, dependency vulnerabilities in function packages, secrets management without persistent filesystems, and reduced visibility because traditional network monitoring does not see function-to-function calls. Security testing and monitoring must adapt to the event-driven, ephemeral nature of serverless",
+        "C": "Serverless is inherently secure",
+        "D": "Traditional security controls apply without change"
+      },
+      "correct": "B",
+      "rationale": "Serverless architectures (Functions-as-a-Service) shift the infrastructure security responsibility (patching, hardening, networking) to the cloud provider, which is a significant benefit. But they introduce new security concerns that traditional controls do not address: (1) function permission over-provisioning — each function runs with an IAM role, and overly-permissive roles are the most common serverless security issue; the correct practice is per-function least-privilege IAM roles; (2) event injection — functions are triggered by events (HTTP, queue, storage, timer), and untrusted event sources can inject malicious payloads; input validation must be applied to every event source; (3) dependency vulnerabilities — functions package dependencies in deployment bundles, and SCA scanning must cover these bundles; (4) secrets management — serverless functions have no persistent filesystem, so secrets must come from environment variables (risky) or secrets managers (correct); (5) reduced network visibility — traditional network monitoring (NIDS, flow logs) does not see function-to-function invocations within the cloud provider's infrastructure; cloud-native monitoring (CloudWatch, X-Ray, Application Insights) must replace or supplement it; (6) cold-start timing variations may create side-channel information leakage in some scenarios. Option B captures these. Options A, C, D are wrong."
+    },
+    {
+      "id": "D8-Q047",
+      "type": "analysis",
+      "stem": "A CISSP is reviewing an application's Cross-Origin Resource Sharing (CORS) configuration. The configuration allows all origins ('Access-Control-Allow-Origin: *') with credentials. Which concern is MOST SIGNIFICANT?",
+      "options": {
+        "A": "CORS is not a security feature",
+        "B": "Allowing all origins with credentials enables any website to make authenticated cross-origin requests to the API and read the responses — effectively bypassing the same-origin policy for authenticated requests. This enables cross-site data theft where a malicious site reads the user's data from the API. The fix: restrict Access-Control-Allow-Origin to specific trusted origins, and never combine wildcard origins with Access-Control-Allow-Credentials: true (browsers actually block this combination, but misconfigurations that reflect the Origin header without validation produce the same effect)",
+        "C": "CORS prevents all attacks",
+        "D": "Wildcard origins are always safe"
+      },
+      "correct": "B",
+      "rationale": "CORS (Cross-Origin Resource Sharing) controls which external origins can make requests to an API and read the responses. The same-origin policy blocks cross-origin requests by default, and CORS headers selectively relax this restriction. 'Access-Control-Allow-Origin: *' with credentials would allow any website to make authenticated requests (sending cookies, authorization headers) to the API and read the responses — but browsers actually refuse this specific combination because it is too dangerous. The practical equivalent that many applications implement is reflecting the Origin header from the request into the Access-Control-Allow-Origin response without validation — if the API returns whatever origin the attacker claims, combined with Allow-Credentials: true, the effect is the same: any site can make authenticated cross-origin requests and read the responses. This enables cross-site data theft: an attacker hosts a malicious page, the victim visits it, the page makes authenticated requests to the API using the victim's cookies, and reads the victim's data. The fix: restrict CORS to specific trusted origins (explicit allowlist), validate the Origin header against the allowlist, and never reflect arbitrary origins with credentials. Option B captures this. Options A, C, D are wrong."
+    },
+    {
+      "id": "D8-Q048",
+      "type": "analysis",
+      "stem": "A CISSP is evaluating the use of code signing for all internal applications. Which benefit is MOST SIGNIFICANT?",
+      "options": {
+        "A": "Code signing makes code run faster",
+        "B": "Code signing establishes provenance and integrity: it proves that the code was produced by a trusted party and has not been modified since signing. This enables deployment systems to reject unsigned or tampered artifacts, provides accountability for what was deployed, supports forensic investigation when incidents involve deployed code, and creates a chain of trust from build to runtime. For maximum value, combine with reproducible builds and SLSA provenance attestations",
+        "C": "Code signing prevents all attacks",
+        "D": "Code signing is only for operating systems"
+      },
+      "correct": "B",
+      "rationale": "Code signing provides two critical properties: (1) provenance — the signature proves that the code was produced by a trusted party (the entity holding the signing key), enabling relying systems to verify that the artifact came from the expected source; (2) integrity — the signature proves that the code has not been modified since signing, detecting any tampering between build and deployment. Together, these properties enable several security controls: (1) deployment systems can reject unsigned or tampered artifacts, preventing unauthorized code from running; (2) every deployed artifact is attributable to the signing identity, creating accountability; (3) forensic investigation can verify whether the code currently running matches what was intended to be deployed; (4) a chain of trust from build (SLSA provenance attestation from the build system) through signing (code signature from the signing key) to runtime (signature verification at deployment or load) provides end-to-end integrity. Limitations: code signing does not prove the code is secure or bug-free — SolarWinds' compromised code was legitimately signed because the build system was compromised before signing. This is why SLSA and reproducible builds complement signing. Option B captures the correct framing. Options A, C, D are wrong."
+    },
+    {
+      "id": "D8-Q049",
+      "type": "analysis",
+      "stem": "A CISSP is asked to design the application security training program for developers. Which approach is MOST EFFECTIVE?",
+      "options": {
+        "A": "Annual security awareness video",
+        "B": "Role-specific, language-specific, hands-on training: secure coding workshops in the developer's actual language and framework, CTF-style exercises with real vulnerability examples, integration with the SDLC (review findings together, learn from real bugs), continuous reinforcement through IDE plugins, code review feedback, and 'security champions' embedded in development teams who maintain security expertise and serve as first points of contact",
+        "C": "No training needed",
+        "D": "All developers should get CISSP"
+      },
+      "correct": "B",
+      "rationale": "Developer security training is most effective when it is specific, hands-on, and continuous rather than generic, passive, and annual. The effective approach: (1) role-specific — different roles need different training: frontend developers need XSS prevention, backend developers need injection prevention, infrastructure engineers need IaC security, mobile developers need mobile-specific threats; (2) language-specific — training in the developer's actual language and framework, using real examples from that ecosystem, not generic examples from a different technology; (3) hands-on — CTF-style exercises, code review exercises, vulnerability reproduction workshops where developers exploit and then fix real bugs; (4) SDLC-integrated — review real findings from SAST/DAST/pentest with developers so they learn from their own codebase's bugs, not hypothetical examples; (5) continuous reinforcement — IDE plugins that catch issues as developers type, code review feedback that teaches on every PR, security-focused documentation alongside developer documentation; (6) security champions — developers embedded in each team who maintain deeper security expertise, serve as first points of contact for security questions, and bridge the gap between the security team and the development organization. Option B captures this. Option A (annual video) is the anti-pattern the CISSP exam teaches against. Options C and D are wrong."
+    },
+    {
+      "id": "D8-Q050",
+      "type": "analysis",
+      "stem": "A CISSP is asked to evaluate the claim that 'we don't need application security because we have a WAF and an EDR agent'. Which response is MOST ACCURATE?",
+      "options": {
+        "A": "WAF and EDR are sufficient",
+        "B": "WAF and EDR are valuable defense-in-depth layers but cannot substitute for secure development practices. WAFs miss business logic flaws, novel payloads, and application-specific vulnerabilities; EDR operates at the endpoint and cannot see application-layer logic. Secure coding, code review, SAST/DAST/SCA, threat modeling, and secure design are the primary controls; WAF and EDR are compensating controls that catch what the primary controls miss. Mature programs need both — development-time prevention and runtime detection",
+        "C": "WAF and EDR replace developers",
+        "D": "Application security is unnecessary"
+      },
+      "correct": "B",
+      "rationale": "The claim that WAF and EDR eliminate the need for application security is a dangerous misconception. Both tools are valuable but address different layers and have fundamental limitations. WAFs operate at the HTTP layer and use pattern matching to block known attack patterns. They miss: (1) business logic flaws that look like valid requests; (2) novel payloads that do not match existing signatures; (3) application-specific vulnerabilities that require understanding the application's intent; (4) SSRF and internal service exploitation that does not traverse the WAF. EDR operates at the endpoint and can detect process-level anomalies and post-exploitation activity but cannot see application-layer logic: it does not know whether a SQL query is legitimate or injected, whether an authorization check was bypassed, or whether a user is accessing someone else's data. Secure development practices (secure coding, code review, SAST/DAST/SCA, threat modeling, secure design) are the primary application security controls: they prevent vulnerabilities from existing in the first place. WAF and EDR are detection and defense-in-depth layers that catch what the primary controls miss and provide runtime protection against zero-days during the patch window. Mature programs need both. Option B captures this. Options A, C, D are wrong. The CISSP exam tests this because 'WAF as a substitute for secure development' is one of the most common and dangerous misconceptions in application security."
+    }
+  ]
+}
