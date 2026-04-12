@@ -1,7 +1,7 @@
 /**
  * CISSP lesson content keyed by topic ID from exam-curriculum.ts.
  * Each entry is markdown-formatted lesson body text extracted from
- * the detailed notes in docs/cissp-course/domain-*/02-detailed-notes.md.
+ * the detailed notes in docs/cissp-course/domain-N/02-detailed-notes.md files.
  *
  * AI-generated study material aligned to the (ISC)² CISSP Exam Outline
  * effective April 15, 2024. Requires human SME review before publication.
