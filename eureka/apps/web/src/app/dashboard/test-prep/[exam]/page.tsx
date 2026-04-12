@@ -18,6 +18,11 @@ import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
 import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
+import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
+import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
 
 type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep';
 
@@ -82,6 +87,8 @@ export default function ExamPage() {
           </div>
         </Card>
       )}
+
+      {isPatentBar && <PatentBarCohortPanel />}
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 bg-muted p-1 rounded-lg w-fit">
@@ -396,32 +403,46 @@ function ReadLessonsTab({ examType }: { examType: string }) {
           )}
 
           <div className="prose prose-sm dark:prose-invert max-w-none">
-            <div className="bg-muted/50 rounded-lg p-6 mb-6">
-              <h3 className="text-lg font-semibold mb-3">Lesson Overview</h3>
-              <p className="mb-4">{activeTopic.summary}</p>
-              <p className="text-sm text-muted-foreground">
-                This is a comprehensive lesson covering all key concepts, formulas, strategies, and practice problems for <strong>{activeTopic.title}</strong> as tested on the {examType} exam.
-              </p>
-            </div>
+            {(() => {
+              const lessonContent = getCISSPLessonContent(activeTopic.id);
+              if (lessonContent) {
+                return (
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                    {lessonContent}
+                  </ReactMarkdown>
+                );
+              }
+              return (
+                <>
+                  <div className="bg-muted/50 rounded-lg p-6 mb-6">
+                    <h3 className="text-lg font-semibold mb-3">Lesson Overview</h3>
+                    <p className="mb-4">{activeTopic.summary}</p>
+                    <p className="text-sm text-muted-foreground">
+                      This is a comprehensive lesson covering all key concepts, formulas, strategies, and practice problems for <strong>{activeTopic.title}</strong> as tested on the {examType} exam.
+                    </p>
+                  </div>
 
-            <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-6">
-              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
-                <Lightbulb className="h-4 w-4" /> Key Takeaways
-              </h4>
-              <ul className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
-                <li>• Understand the core principles behind {activeTopic.title.toLowerCase()}</li>
-                <li>• Know the most commonly tested patterns and question formats</li>
-                <li>• Practice applying concepts to exam-style questions</li>
-                <li>• Memorize the essential formulas, rules, and exceptions</li>
-              </ul>
-            </div>
+                  <div className="bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-6 mb-6">
+                    <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+                      <Lightbulb className="h-4 w-4" /> Key Takeaways
+                    </h4>
+                    <ul className="space-y-1 text-sm text-blue-800 dark:text-blue-200">
+                      <li>• Understand the core principles behind {activeTopic.title.toLowerCase()}</li>
+                      <li>• Know the most commonly tested patterns and question formats</li>
+                      <li>• Practice applying concepts to exam-style questions</li>
+                      <li>• Memorize the essential formulas, rules, and exceptions</li>
+                    </ul>
+                  </div>
 
-            <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-6">
-              <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">Exam Tips</h4>
-              <p className="text-sm text-amber-800 dark:text-amber-200">
-                On the {examType}, this topic typically appears in questions that test your ability to apply concepts under time pressure. Focus on recognizing patterns quickly and eliminating wrong answers.
-              </p>
-            </div>
+                  <div className="bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-6">
+                    <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2">Exam Tips</h4>
+                    <p className="text-sm text-amber-800 dark:text-amber-200">
+                      On the {examType}, this topic typically appears in questions that test your ability to apply concepts under time pressure. Focus on recognizing patterns quickly and eliminating wrong answers.
+                    </p>
+                  </div>
+                </>
+              );
+            })()}
           </div>
 
           <div className="flex items-center justify-between mt-8 pt-6 border-t">
@@ -1202,8 +1223,30 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
       setTimer(0);
       setView('session');
     } catch {
-      // Fallback if no questions in DB
-      alert('No questions available for this exam yet. Questions are being added.');
+      // Fallback: use static CISSP questions if API is unavailable
+      if (examType === 'CISSP') {
+        const staticQs = getCISSPQuestions({
+          sectionIds: selectedSections.length > 0 ? selectedSections : undefined,
+          count: questionCount,
+        });
+        if (staticQs.length > 0) {
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({
+            session_id: fakeSessionId,
+            question_count: staticQs.length,
+            _staticQuestions: staticQs,
+          });
+          setCurrentQ(staticQs[0]);
+          setCurrentIndex(0);
+          setTimer(0);
+          setView('session');
+        } else {
+          alert('No questions available for the selected sections.');
+        }
+      } else {
+        alert('No questions available for this exam yet. Questions are being added.');
+      }
     }
     setLoading(false);
   };
@@ -1211,6 +1254,19 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   const submitAnswer = async () => {
     if (selectedAnswer === null || !sessionId || !currentQ) return;
     setLoading(true);
+
+    // Static fallback: evaluate locally
+    if (sessionId.startsWith('static-')) {
+      const isCorrect = selectedAnswer === currentQ.correct_index;
+      setAnswerResult({
+        correct_index: currentQ.correct_index,
+        is_correct: isCorrect,
+        explanation: currentQ.explanation,
+      });
+      setLoading(false);
+      return;
+    }
+
     try {
       const result = await apiClient.submitQBankAnswer(sessionId, {
         question_id: currentQ.id,
@@ -1227,6 +1283,24 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     if (!sessionId) return;
     const nextIdx = currentIndex + 1;
     setLoading(true);
+
+    // Static fallback: serve next question from local array
+    if (sessionId.startsWith('static-') && sessionData?._staticQuestions) {
+      const staticQs = sessionData._staticQuestions as CISSPQuestion[];
+      if (nextIdx < staticQs.length) {
+        setCurrentQ(staticQs[nextIdx]);
+        setCurrentIndex(nextIdx);
+        setSelectedAnswer(null);
+        setAnswerResult(null);
+        setTimer(0);
+      } else {
+        setResults({ score_percent: 0, total_questions: staticQs.length, session_id: sessionId });
+        setView('results');
+      }
+      setLoading(false);
+      return;
+    }
+
     try {
       const data = await apiClient.getQBankQuestion(sessionId, nextIdx);
       setCurrentQ(data.question);
@@ -1248,6 +1322,15 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
 
   const finishSession = async () => {
     if (!sessionId) return;
+
+    // Static fallback: just show results
+    if (sessionId.startsWith('static-')) {
+      const staticQs = sessionData?._staticQuestions || [];
+      setResults({ score_percent: 0, total_questions: staticQs.length, session_id: sessionId });
+      setView('results');
+      return;
+    }
+
     const res = await apiClient.completeQBankSession(sessionId);
     setResults(res);
     setView('results');
