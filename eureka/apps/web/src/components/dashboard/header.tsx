@@ -1,11 +1,12 @@
 "use client"
 
+import Link from "next/link"
 import { Bell, Search, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { getInitials } from "@/lib/utils"
+import { getUserDisplayName, getUserInitials } from "@/lib/utils"
 import type { User } from "@/types"
 
 interface HeaderProps {
@@ -15,8 +16,8 @@ interface HeaderProps {
 export function Header({ user }: HeaderProps) {
   const { theme, setTheme } = useTheme()
 
-  const userName = user?.display_name || `${user?.first_name || ''} ${user?.last_name || ''}`.trim() || 'User'
-  const userInitials = user ? getInitials(user.first_name, user.last_name) : 'U'
+  const userName = user ? getUserDisplayName(user) : "User"
+  const userInitials = user ? getUserInitials(user) : "U"
 
   return (
     <header className="flex h-16 items-center gap-4 border-b bg-background px-6">
@@ -46,10 +47,14 @@ export function Header({ user }: HeaderProps) {
           <span className="sr-only">Notifications</span>
         </Button>
 
-        <Avatar className="h-9 w-9">
-          <AvatarImage src={user?.avatar_url} alt={userName} />
-          <AvatarFallback>{userInitials}</AvatarFallback>
-        </Avatar>
+        <Button variant="ghost" size="icon" className="rounded-full p-0" asChild>
+          <Link href="/dashboard/profile" title="My profile — photo & account">
+            <Avatar className="h-9 w-9">
+              <AvatarImage src={user?.avatar_url} alt={userName} />
+              <AvatarFallback>{userInitials}</AvatarFallback>
+            </Avatar>
+          </Link>
+        </Button>
       </div>
     </header>
   )

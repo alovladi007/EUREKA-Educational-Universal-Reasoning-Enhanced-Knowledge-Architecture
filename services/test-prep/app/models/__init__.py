@@ -11,6 +11,12 @@ from app.models.qbank_session import QBankSession
 from app.models.flashcard import Flashcard, FlashcardProgress
 from app.models.mpep_bookmark import MpepBookmark
 from app.models.patent_live import PatentOfficeHoursSlot, PatentCohort
+from app.models.patent_community import (
+    PatentCourseRoster,
+    PatentStudyGroup,
+    PatentStudyGroupMember,
+    PatentCommunityMessage,
+)
 
 __all__ = [
     "User",
@@ -29,4 +35,8 @@ __all__ = [
     "MpepBookmark",
     "PatentOfficeHoursSlot",
     "PatentCohort",
+    "PatentCourseRoster",
+    "PatentStudyGroup",
+    "PatentStudyGroupMember",
+    "PatentCommunityMessage",
 ]

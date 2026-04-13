@@ -2,22 +2,29 @@
 
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
-import { useEffect, useState } from "react"
-import type { User } from "@/types"
+import { useEffect } from "react"
+import { useAuthStore } from "@/stores/auth"
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const [user, setUser] = useState<User | null>(null)
+  const user = useAuthStore((s) => s.user)
+  const refreshUser = useAuthStore((s) => s.refreshUser)
 
   useEffect(() => {
-    const userStr = localStorage.getItem('user')
-    if (userStr) {
-      setUser(JSON.parse(userStr))
+    const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null
+    if (token) {
+      refreshUser().catch(() => {})
     }
-  }, [])
+  }, [refreshUser])
+
+  useEffect(() => {
+    if (user && typeof window !== "undefined") {
+      localStorage.setItem("user", JSON.stringify(user))
+    }
+  }, [user])
 
   return (
     <div className="flex h-screen overflow-hidden">

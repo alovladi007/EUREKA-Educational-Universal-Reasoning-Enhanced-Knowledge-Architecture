@@ -2,7 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { cn, getUserDisplayName, getUserInitials } from "@/lib/utils";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuthStore } from "@/stores/auth";
 import {
   LayoutDashboard,
   BookOpen,
@@ -60,6 +62,8 @@ const navigation = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const user = useAuthStore((s) => s.user);
+  const display = user ? getUserDisplayName(user) : "Account";
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-card">
@@ -88,6 +92,23 @@ export function Sidebar() {
           );
         })}
         </nav>
+      </div>
+      <div className="shrink-0 border-t p-4">
+        <Link
+          href="/dashboard/profile"
+          className="flex items-center gap-3 rounded-lg p-2 -m-2 hover:bg-accent transition-colors"
+        >
+          <Avatar className="h-9 w-9">
+            <AvatarImage src={user?.avatar_url} alt={display} />
+            <AvatarFallback>{user ? getUserInitials(user) : "U"}</AvatarFallback>
+          </Avatar>
+          <div className="min-w-0 flex-1 text-left">
+            <p className="text-sm font-medium truncate">{display}</p>
+            <p className="text-xs text-muted-foreground capitalize truncate">
+              {user?.role || "Student"}
+            </p>
+          </div>
+        </Link>
       </div>
     </aside>
   );

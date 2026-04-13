@@ -6,12 +6,16 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { apiClient } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth';
-import { UserCircle, Mail, Phone, MapPin, Calendar, Save, Edit2 } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { getUserDisplayName, getUserInitials } from '@/lib/utils';
+import { Mail, Phone, MapPin, Calendar, Save, Edit2, Camera } from 'lucide-react';
 
 interface ProfileData {
   first_name: string;
   last_name: string;
+  display_name: string;
   email: string;
+  avatar_url: string;
   phone?: string;
   bio?: string;
   location?: string;
@@ -19,14 +23,16 @@ interface ProfileData {
 }
 
 export default function ProfilePage() {
-  const { user, setUser } = useAuthStore();
+  const { user, setUser, refreshUser } = useAuthStore();
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [profileData, setProfileData] = useState<ProfileData>({
     first_name: '',
     last_name: '',
+    display_name: '',
     email: '',
+    avatar_url: '',
     phone: '',
     bio: '',
     location: '',
@@ -34,15 +40,21 @@ export default function ProfilePage() {
   });
 
   useEffect(() => {
+    refreshUser().catch(() => {});
+  }, [refreshUser]);
+
+  useEffect(() => {
     if (user) {
       setProfileData({
         first_name: user.first_name,
         last_name: user.last_name,
+        display_name: user.display_name || '',
         email: user.email,
-        phone: user.phone || '',
-        bio: user.bio || '',
-        location: user.location || '',
-        date_of_birth: user.date_of_birth || '',
+        avatar_url: user.avatar_url || '',
+        phone: (user as { phone?: string }).phone || '',
+        bio: (user as { bio?: string }).bio || '',
+        location: (user as { location?: string }).location || '',
+        date_of_birth: (user as { date_of_birth?: string }).date_of_birth || '',
       });
     }
   }, [user]);
@@ -50,8 +62,16 @@ export default function ProfilePage() {
   const handleSave = async () => {
     try {
       setSaving(true);
-      const response = await apiClient.patch('/users/me', profileData);
-      setUser(response.data);
+      const updated = await apiClient.updateMyProfile({
+        first_name: profileData.first_name,
+        last_name: profileData.last_name,
+        display_name: profileData.display_name?.trim() || undefined,
+        avatar_url: profileData.avatar_url?.trim() || undefined,
+      });
+      setUser(updated);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('user', JSON.stringify(updated));
+      }
       setIsEditing(false);
     } catch (error) {
       console.error('Failed to update profile:', error);
@@ -66,11 +86,13 @@ export default function ProfilePage() {
       setProfileData({
         first_name: user.first_name,
         last_name: user.last_name,
+        display_name: user.display_name || '',
         email: user.email,
-        phone: user.phone || '',
-        bio: user.bio || '',
-        location: user.location || '',
-        date_of_birth: user.date_of_birth || '',
+        avatar_url: user.avatar_url || '',
+        phone: (user as { phone?: string }).phone || '',
+        bio: (user as { bio?: string }).bio || '',
+        location: (user as { location?: string }).location || '',
+        date_of_birth: (user as { date_of_birth?: string }).date_of_birth || '',
       });
     }
     setIsEditing(false);
@@ -85,6 +107,10 @@ export default function ProfilePage() {
               <p className="mt-2 text-sm text-gray-600">
                 Manage your account information and preferences.
               </p>
+              <p className="mt-2 text-sm text-indigo-700 dark:text-indigo-300">
+                Your profile photo appears in the <strong>dashboard header</strong> (top right), in the{' '}
+                <strong>sidebar</strong> account area, and for classmates when you use Patent Bar cohort features.
+              </p>
             </div>
             {!isEditing && (
               <Button onClick={() => setIsEditing(true)}>
@@ -94,20 +120,48 @@ export default function ProfilePage() {
             )}
           </div>
 
-          {/* Profile Picture */}
+          {/* Profile photo — persisted via api-core PATCH /users/me (avatar_url) */}
           <Card className="p-6">
-            <div className="flex items-center space-x-6">
-              <div className="h-24 w-24 rounded-full bg-indigo-100 flex items-center justify-center">
-                <UserCircle className="h-16 w-16 text-indigo-600" />
-              </div>
-              <div>
-                <h3 className="text-lg font-semibold text-gray-900">
-                  {user?.first_name} {user?.last_name}
-                </h3>
-                <p className="text-sm text-gray-600 capitalize">{user?.role}</p>
-                <button className="mt-2 text-sm text-indigo-600 hover:text-indigo-700">
-                  Change Photo
-                </button>
+            <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Camera className="h-5 w-5" />
+              Profile photo
+            </h2>
+            <div className="flex flex-col sm:flex-row sm:items-start gap-6">
+              <Avatar className="h-28 w-28 border-2 border-indigo-100 dark:border-indigo-900">
+                <AvatarImage src={profileData.avatar_url || user?.avatar_url} alt={user ? getUserDisplayName(user) : 'Profile'} />
+                <AvatarFallback className="text-2xl bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-100">
+                  {user ? getUserInitials(user) : 'U'}
+                </AvatarFallback>
+              </Avatar>
+              <div className="flex-1 space-y-3 min-w-0">
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-900">
+                    {user ? getUserDisplayName(user) : '—'}
+                  </h3>
+                  <p className="text-sm text-gray-600 capitalize">{user?.role}</p>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Photo URL
+                  </label>
+                  <Input
+                    type="url"
+                    placeholder="https://example.com/your-photo.jpg"
+                    value={profileData.avatar_url}
+                    onChange={(e) => setProfileData({ ...profileData, avatar_url: e.target.value })}
+                    disabled={!isEditing}
+                    className={!isEditing ? 'bg-gray-50' : ''}
+                  />
+                  <p className="mt-1 text-xs text-gray-500">
+                    Use a direct HTTPS link to an image file. This is stored on your account and shown across the dashboard.
+                  </p>
+                </div>
+                {!isEditing && (
+                  <Button type="button" variant="outline" size="sm" onClick={() => setIsEditing(true)}>
+                    <Edit2 className="h-4 w-4 mr-2" />
+                    Edit photo URL
+                  </Button>
+                )}
               </div>
             </div>
           </Card>
@@ -143,6 +197,21 @@ export default function ProfilePage() {
                   }
                   disabled={!isEditing}
                   className={!isEditing ? 'bg-gray-50' : ''}
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Display name <span className="text-gray-400 font-normal">(optional)</span>
+                </label>
+                <Input
+                  value={profileData.display_name}
+                  onChange={(e) =>
+                    setProfileData({ ...profileData, display_name: e.target.value })
+                  }
+                  disabled={!isEditing}
+                  className={!isEditing ? 'bg-gray-50' : ''}
+                  placeholder="Shown in the header and cohort if set"
                 />
               </div>
 

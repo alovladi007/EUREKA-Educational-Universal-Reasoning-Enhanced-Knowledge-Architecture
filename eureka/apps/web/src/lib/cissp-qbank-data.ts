@@ -1,5 +1,5 @@
 /**
- * CISSP QBank data converted from docs/cissp-course/domain-*/04-qbank.json.
+ * CISSP QBank data converted from docs/cissp-course/domain-N/04-qbank.json files.
  * 400 questions across 8 domains, in the format QBankTab expects.
  * AI-generated. Requires SME review.
  */

@@ -55,6 +55,43 @@ export function getInitials(firstName?: string, lastName?: string): string {
   return `${firstName?.charAt(0) || ''}${lastName?.charAt(0) || ''}`.toUpperCase();
 }
 
+/** Display name for UI when first/last may be empty (uses display_name or email local part). */
+export function getUserDisplayName(
+  user: { display_name?: string; first_name?: string; last_name?: string; email?: string } | null | undefined
+): string {
+  if (!user) return 'Account';
+  const d = user.display_name?.trim();
+  if (d) return d;
+  const n = `${user.first_name || ''} ${user.last_name || ''}`.trim();
+  if (n) return n;
+  if (user.email?.includes('@')) {
+    const local = user.email.split('@')[0] || '';
+    return local || 'Account';
+  }
+  return 'Account';
+}
+
+/** Initials for avatars when first/last may be missing. */
+export function getUserInitials(
+  user: { display_name?: string; first_name?: string; last_name?: string; email?: string } | null | undefined
+): string {
+  if (!user) return 'U';
+  if (user.first_name?.trim() || user.last_name?.trim()) {
+    return getInitials(user.first_name, user.last_name);
+  }
+  if (user.display_name?.trim()) {
+    const parts = user.display_name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) return `${parts[0][0]}${parts[parts.length - 1][0]}`.toUpperCase();
+    if (parts[0].length >= 2) return parts[0].slice(0, 2).toUpperCase();
+    return parts[0].charAt(0).toUpperCase();
+  }
+  if (user.email?.includes('@')) {
+    const local = user.email.split('@')[0] || 'U';
+    return local.slice(0, 2).toUpperCase();
+  }
+  return 'U';
+}
+
 /**
  * Calculate progress percentage
  */

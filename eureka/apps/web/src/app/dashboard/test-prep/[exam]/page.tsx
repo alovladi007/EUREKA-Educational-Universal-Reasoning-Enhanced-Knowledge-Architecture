@@ -359,6 +359,29 @@ function ReadLessonsTab({ examType }: { examType: string }) {
   const [expandedSection, setExpandedSection] = useState<string | null>(curriculum[0]?.sectionId || null);
   const [activeTopic, setActiveTopic] = useState<any>(null);
   const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());
+  const [expandedLessonSections, setExpandedLessonSections] = useState<Set<string>>(new Set());
+  const [readSections, setReadSections] = useState<Set<string>>(new Set());
+
+  const toggleLessonSection = (sectionId: string) => {
+    setExpandedLessonSections(prev => {
+      const next = new Set(prev);
+      if (next.has(sectionId)) next.delete(sectionId); else next.add(sectionId);
+      return next;
+    });
+    // Mark as read when expanded
+    setReadSections(prev => new Set(prev).add(sectionId));
+  };
+
+  const expandAllSections = (sectionIds: string[]) => {
+    setExpandedLessonSections(new Set(sectionIds));
+    setReadSections(prev => {
+      const next = new Set(prev);
+      sectionIds.forEach(id => next.add(id));
+      return next;
+    });
+  };
+
+  const collapseAllSections = () => setExpandedLessonSections(new Set());
 
   const toggleComplete = (topicId: string) => {
     setCompletedTopics((prev) => {
@@ -378,13 +401,18 @@ function ReadLessonsTab({ examType }: { examType: string }) {
           <ArrowLeft className="h-4 w-4" /> Back to syllabus
         </Button>
 
-        <Card className="p-8">
-          <div className="flex items-center gap-2 mb-2">
-            <Badge variant="secondary">{section?.sectionName}</Badge>
-            <Badge variant="outline">{activeTopic.readTimeMin} min read</Badge>
+        <div className="rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm overflow-hidden">
+          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 px-8 py-6">
+            <div className="flex items-center gap-2 mb-3">
+              <Badge className="bg-white/20 text-white border-0 text-xs backdrop-blur-sm">{section?.sectionName}</Badge>
+              <Badge className="bg-white/20 text-white border-0 text-xs backdrop-blur-sm flex items-center gap-1">
+                <Clock className="h-3 w-3" /> {activeTopic.readTimeMin} min read
+              </Badge>
+            </div>
+            <h2 className="text-2xl font-black text-white mb-2">{activeTopic.title}</h2>
+            <p className="text-white/80 text-sm leading-relaxed">{activeTopic.summary}</p>
           </div>
-          <h2 className="text-2xl font-bold mb-4">{activeTopic.title}</h2>
-          <p className="text-muted-foreground mb-6">{activeTopic.summary}</p>
+          <div className="p-6 sm:p-8">
 
           {examType === 'PATENT_BAR' && PATENT_TOPIC_ANCHORS[activeTopic.id] && (
             <Card className="p-4 mb-6 bg-amber-50/60 dark:bg-amber-950/25 border-amber-200 dark:border-amber-900">
@@ -405,61 +433,227 @@ function ReadLessonsTab({ examType }: { examType: string }) {
             </Card>
           )}
 
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            {(() => {
+          {(() => {
               // Try rich course data first (structured with sections + quizzes)
               const courseData = hasCISSPCourseContent(activeTopic.id) ? getCISSPCourseContent(activeTopic.id) : null;
+
+              // Custom ReactMarkdown components for beautiful table + content rendering
+              const mdComponents = {
+                table: ({ children, ...props }: any) => (
+                  <div className="my-5 overflow-x-auto rounded-xl border-2 border-indigo-100 dark:border-indigo-900/60 shadow-sm">
+                    <table className="w-full text-sm border-collapse" {...props}>{children}</table>
+                  </div>
+                ),
+                thead: ({ children, ...props }: any) => (
+                  <thead className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/60 dark:to-purple-950/60" {...props}>{children}</thead>
+                ),
+                th: ({ children, ...props }: any) => (
+                  <th className="px-4 py-3 text-left text-xs font-bold text-indigo-900 dark:text-indigo-200 uppercase tracking-wider border-b-2 border-indigo-200 dark:border-indigo-800" {...props}>{children}</th>
+                ),
+                td: ({ children, ...props }: any) => (
+                  <td className="px-4 py-3 text-sm border-b border-gray-100 dark:border-gray-800" {...props}>{children}</td>
+                ),
+                tr: ({ children, ...props }: any) => (
+                  <tr className="hover:bg-indigo-50/40 dark:hover:bg-indigo-950/30 transition-colors" {...props}>{children}</tr>
+                ),
+                h2: ({ children, ...props }: any) => (
+                  <h2 className="text-xl font-bold mt-8 mb-4 pb-2 border-b-2 border-indigo-200 dark:border-indigo-800 text-indigo-900 dark:text-indigo-100" {...props}>{children}</h2>
+                ),
+                h3: ({ children, ...props }: any) => (
+                  <h3 className="text-lg font-semibold mt-6 mb-3 text-gray-900 dark:text-gray-100 flex items-center gap-2" {...props}>
+                    <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500 flex-shrink-0" />
+                    {children}
+                  </h3>
+                ),
+                h4: ({ children, ...props }: any) => (
+                  <h4 className="text-base font-semibold mt-5 mb-2 text-gray-800 dark:text-gray-200" {...props}>{children}</h4>
+                ),
+                ul: ({ children, ...props }: any) => (
+                  <ul className="my-3 space-y-1.5 list-none pl-0" {...props}>{children}</ul>
+                ),
+                li: ({ children, ...props }: any) => (
+                  <li className="flex items-start gap-2.5 text-sm leading-relaxed" {...props}>
+                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-indigo-400 dark:bg-indigo-500 flex-shrink-0" />
+                    <span className="flex-1">{children}</span>
+                  </li>
+                ),
+                strong: ({ children, ...props }: any) => (
+                  <strong className="font-semibold text-gray-900 dark:text-gray-100" {...props}>{children}</strong>
+                ),
+                p: ({ children, ...props }: any) => (
+                  <p className="my-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300" {...props}>{children}</p>
+                ),
+                hr: (props: any) => (
+                  <hr className="my-6 border-none h-px bg-gradient-to-r from-transparent via-indigo-200 dark:via-indigo-800 to-transparent" {...props} />
+                ),
+              };
+
               if (courseData) {
+                const allSectionIds = courseData.sections.map(s => s.id);
+                const readCount = courseData.sections.filter(s => readSections.has(s.id)).length;
+                const sectionProgress = courseData.sections.length > 0 ? Math.round((readCount / courseData.sections.length) * 100) : 0;
+
                 return (
                   <div className="space-y-6">
-                    {/* Overview */}
-                    <div className="bg-muted/50 rounded-lg p-6">
-                      <p className="text-muted-foreground">{courseData.overview}</p>
-                    </div>
-
-                    {/* Sections */}
-                    {courseData.sections.map((section) => (
-                      <div key={section.id} className="border rounded-lg overflow-hidden">
-                        <h3 className="text-lg font-semibold p-4 bg-accent/30">{section.title}</h3>
-                        <div className="p-4">
-                          <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                            {section.content}
-                          </ReactMarkdown>
-
-                          {/* Exam Tip */}
-                          {section.examTip && (
-                            <div className="mt-4 bg-amber-50 dark:bg-amber-950 border border-amber-200 dark:border-amber-800 rounded-lg p-4">
-                              <h4 className="font-semibold text-amber-900 dark:text-amber-100 mb-2 flex items-center gap-2">
-                                <Lightbulb className="h-4 w-4" /> Exam Tip
-                              </h4>
-                              <p className="text-sm text-amber-800 dark:text-amber-200">{section.examTip}</p>
-                            </div>
-                          )}
-
-                          {/* Important Note */}
-                          {section.importantNote && (
-                            <div className="mt-4 bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                              <p className="text-sm text-blue-800 dark:text-blue-200">{section.importantNote}</p>
-                            </div>
-                          )}
-
-                          {/* Inline Quiz */}
-                          {section.quiz && section.quiz.length > 0 && (
-                            <LessonQuiz questions={section.quiz} title={`${section.title} — Quick Check`} />
-                          )}
+                    {/* Topic Overview Card */}
+                    <div className="relative overflow-hidden rounded-2xl border-2 border-indigo-100 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 dark:from-indigo-950/40 dark:via-gray-950 dark:to-purple-950/40 p-6 shadow-sm">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-indigo-200/30 to-transparent dark:from-indigo-800/20 rounded-bl-full" />
+                      <div className="flex items-start gap-4">
+                        <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+                          <BookOpen className="h-6 w-6 text-white" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-3 mb-2">
+                            <Badge className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 border-0 text-xs">
+                              {courseData.domainWeight} Exam Weight
+                            </Badge>
+                            <span className="text-xs text-muted-foreground">{courseData.sections.length} sections</span>
+                          </div>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{courseData.overview}</p>
                         </div>
                       </div>
-                    ))}
+                      {/* Section Progress */}
+                      <div className="mt-4 flex items-center gap-3">
+                        <div className="flex-1 h-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-full overflow-hidden">
+                          <div className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-700" style={{ width: `${sectionProgress}%` }} />
+                        </div>
+                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{readCount}/{courseData.sections.length} read</span>
+                      </div>
+                    </div>
+
+                    {/* Expand/Collapse Controls */}
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => expandAllSections(allSectionIds)}
+                        className="text-xs px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors font-medium"
+                      >
+                        Expand All
+                      </button>
+                      <button
+                        onClick={collapseAllSections}
+                        className="text-xs px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors font-medium"
+                      >
+                        Collapse All
+                      </button>
+                    </div>
+
+                    {/* Sections - Collapsible Accordion */}
+                    <div className="space-y-3">
+                    {courseData.sections.map((section, sIdx) => {
+                      const isOpen = expandedLessonSections.has(section.id);
+                      const isRead = readSections.has(section.id);
+                      const hasQuiz = section.quiz && section.quiz.length > 0;
+                      const hasExamTip = !!section.examTip;
+
+                      return (
+                        <div
+                          key={section.id}
+                          className={`rounded-2xl border-2 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md ${
+                            isOpen
+                              ? 'border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-950'
+                              : isRead
+                              ? 'border-green-200/60 dark:border-green-900/40 bg-green-50/30 dark:bg-green-950/10'
+                              : 'border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80'
+                          }`}
+                        >
+                          {/* Section Header (clickable) */}
+                          <button
+                            onClick={() => toggleLessonSection(section.id)}
+                            className="w-full flex items-center gap-4 p-4 sm:p-5 text-left hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all duration-200"
+                          >
+                            <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shadow-sm transition-all duration-300 ${
+                              isRead
+                                ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white'
+                                : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white'
+                            }`}>
+                              {isRead ? <CheckCircle2 className="h-4 w-4" /> : sIdx + 1}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 truncate">{section.title}</h3>
+                              <div className="flex items-center gap-2 mt-1">
+                                {hasExamTip && (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
+                                    <Lightbulb className="h-2.5 w-2.5" /> Exam Tip
+                                  </span>
+                                )}
+                                {hasQuiz && (
+                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300">
+                                    <BrainCircuit className="h-2.5 w-2.5" /> Quiz
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-transform duration-300 ${
+                              isOpen ? 'rotate-90 bg-indigo-100 dark:bg-indigo-900' : 'bg-gray-100 dark:bg-gray-800'
+                            }`}>
+                              <ChevronRight className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                            </div>
+                          </button>
+
+                          {/* Section Content (collapsible) */}
+                          {isOpen && (
+                            <div className="px-5 pb-6 pt-1 border-t border-gray-100 dark:border-gray-800">
+                              <div className="prose prose-sm dark:prose-invert max-w-none">
+                                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                                  {section.content}
+                                </ReactMarkdown>
+                              </div>
+
+                              {/* Exam Tip */}
+                              {section.examTip && (
+                                <div className="mt-6 rounded-xl border-2 border-amber-200 dark:border-amber-800/60 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 p-5 shadow-sm">
+                                  <div className="flex items-center gap-3 mb-3">
+                                    <div className="flex-shrink-0 h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
+                                      <Lightbulb className="h-4 w-4 text-white" />
+                                    </div>
+                                    <h4 className="font-bold text-amber-900 dark:text-amber-100 text-sm uppercase tracking-wide">Exam Tip</h4>
+                                  </div>
+                                  <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed pl-12">{section.examTip}</p>
+                                </div>
+                              )}
+
+                              {/* Important Note */}
+                              {section.importantNote && (
+                                <div className="mt-5 rounded-xl border-2 border-blue-200 dark:border-blue-800/60 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/40 dark:to-cyan-950/30 p-5 shadow-sm">
+                                  <div className="flex items-center gap-3 mb-3">
+                                    <div className="flex-shrink-0 h-9 w-9 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center shadow-sm">
+                                      <AlertCircle className="h-4 w-4 text-white" />
+                                    </div>
+                                    <h4 className="font-bold text-blue-900 dark:text-blue-100 text-sm uppercase tracking-wide">Important</h4>
+                                  </div>
+                                  <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed pl-12">{section.importantNote}</p>
+                                </div>
+                              )}
+
+                              {/* Inline Quiz */}
+                              {section.quiz && section.quiz.length > 0 && (
+                                <div className="mt-6">
+                                  <LessonQuiz questions={section.quiz} title={`${section.title} — Quick Check`} />
+                                </div>
+                              )}
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
+                    </div>
 
                     {/* Key Takeaways */}
                     {courseData.keyTakeaways && courseData.keyTakeaways.length > 0 && (
-                      <div className="bg-green-50 dark:bg-green-950 border border-green-200 dark:border-green-800 rounded-lg p-6">
-                        <h3 className="font-semibold text-green-900 dark:text-green-100 mb-3">Key Takeaways</h3>
-                        <ul className="space-y-2">
+                      <div className="rounded-2xl border-2 border-green-200 dark:border-green-800/60 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/30 p-6 shadow-sm">
+                        <div className="flex items-center gap-3 mb-4">
+                          <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-md">
+                            <Trophy className="h-5 w-5 text-white" />
+                          </div>
+                          <h3 className="font-bold text-green-900 dark:text-green-100 text-base">Key Takeaways</h3>
+                        </div>
+                        <ul className="space-y-3 pl-1">
                           {courseData.keyTakeaways.map((takeaway, i) => (
-                            <li key={i} className="flex items-start gap-2 text-sm text-green-800 dark:text-green-200">
-                              <CheckCircle2 className="h-4 w-4 mt-0.5 flex-shrink-0" />
-                              <span>{takeaway}</span>
+                            <li key={i} className="flex items-start gap-3 text-sm text-green-800 dark:text-green-200">
+                              <div className="flex-shrink-0 mt-0.5 h-5 w-5 rounded-full bg-green-500/20 dark:bg-green-500/30 flex items-center justify-center">
+                                <CheckCircle2 className="h-3 w-3 text-green-600 dark:text-green-400" />
+                              </div>
+                              <span className="leading-relaxed">{takeaway}</span>
                             </li>
                           ))}
                         </ul>
@@ -473,30 +667,30 @@ function ReadLessonsTab({ examType }: { examType: string }) {
               const lessonContent = getCISSPLessonContent(activeTopic.id);
               if (lessonContent) {
                 return (
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                    {lessonContent}
-                  </ReactMarkdown>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                      {lessonContent}
+                    </ReactMarkdown>
+                  </div>
                 );
               }
 
               // Final fallback: generic placeholder
               return (
-                <div className="bg-muted/50 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold mb-3">Lesson Overview</h3>
-                  <p className="mb-4">{activeTopic.summary}</p>
-                  <p className="text-sm text-muted-foreground">
-                    Content for <strong>{activeTopic.title}</strong> is being developed.
-                  </p>
+                <div className="relative overflow-hidden rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-8 text-center">
+                  <BookOpen className="h-12 w-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">{activeTopic.title}</h3>
+                  <p className="text-sm text-muted-foreground mb-2">{activeTopic.summary}</p>
+                  <p className="text-xs text-muted-foreground">Content is being prepared for this topic.</p>
                 </div>
               );
             })()}
-          </div>
 
-          <div className="flex items-center justify-between mt-8 pt-6 border-t">
+          <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
             <Button
               variant={completedTopics.has(activeTopic.id) ? "default" : "outline"}
               onClick={() => toggleComplete(activeTopic.id)}
-              className="gap-2"
+              className={`gap-2 rounded-xl ${completedTopics.has(activeTopic.id) ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 border-0 text-white' : ''}`}
             >
               <CheckCircle2 className="h-4 w-4" />
               {completedTopics.has(activeTopic.id) ? 'Completed' : 'Mark as Complete'}
@@ -508,99 +702,144 @@ function ReadLessonsTab({ examType }: { examType: string }) {
               const idx = allTopics.findIndex((t) => t.id === activeTopic.id);
               const next = idx >= 0 && idx < allTopics.length - 1 ? allTopics[idx + 1] : null;
               return next ? (
-                <Button variant="outline" onClick={() => { setActiveTopic(next); window.scrollTo(0, 0); }} className="gap-2">
+                <Button variant="outline" onClick={() => { setActiveTopic(next); window.scrollTo(0, 0); }} className="gap-2 rounded-xl">
                   Next: {next.title} <ArrowRight className="h-4 w-4" />
                 </Button>
               ) : null;
             })()}
           </div>
-        </Card>
+          </div>{/* close p-6 sm:p-8 */}
+        </div>{/* close outer card */}
       </div>
     );
   }
 
   return (
     <div className="space-y-6">
-      {/* Progress */}
-      <Card className="p-4">
-        <div className="flex items-center justify-between mb-2">
-          <span className="text-sm font-medium">Reading Progress</span>
-          <span className="text-sm text-muted-foreground">{completedCount}/{totalTopics} lessons</span>
+      {/* Progress Card */}
+      <div className="rounded-2xl border-2 border-indigo-100 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 dark:from-indigo-950/40 dark:via-gray-950 dark:to-purple-950/40 p-6 shadow-sm">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+            <BookMarked className="h-6 w-6 text-white" />
+          </div>
+          <div className="flex-1">
+            <div className="flex items-center justify-between mb-1">
+              <span className="text-sm font-bold text-gray-900 dark:text-gray-100">Reading Progress</span>
+              <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{completedCount}/{totalTopics} lessons</span>
+            </div>
+            <div className="w-full h-2.5 bg-indigo-100 dark:bg-indigo-900/50 rounded-full overflow-hidden">
+              <div className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-700" style={{ width: `${totalTopics > 0 ? (completedCount / totalTopics) * 100 : 0}%` }} />
+            </div>
+          </div>
         </div>
-        <div className="w-full bg-muted rounded-full h-2">
-          <div className="bg-primary h-2 rounded-full transition-all" style={{ width: `${totalTopics > 0 ? (completedCount / totalTopics) * 100 : 0}%` }} />
-        </div>
-      </Card>
+        {completedCount === totalTopics && totalTopics > 0 && (
+          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 font-medium">
+            <Trophy className="h-4 w-4" /> All lessons complete!
+          </div>
+        )}
+      </div>
 
       {/* Curriculum */}
       {curriculum.length === 0 ? (
-        <Card className="p-12 text-center">
-          <BookOpen className="h-16 w-16 mx-auto mb-4 text-muted-foreground/40" />
+        <div className="rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-12 text-center">
+          <BookOpen className="h-16 w-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" />
           <h3 className="text-lg font-semibold mb-2">Curriculum coming soon</h3>
           <p className="text-muted-foreground">Reading lessons for {examType} are being prepared.</p>
-        </Card>
+        </div>
       ) : (
-        <div className="space-y-3">
-          {curriculum.map((section) => {
+        <div className="space-y-4">
+          {curriculum.map((section, secIdx) => {
             const isExpanded = expandedSection === section.sectionId;
             const sectionCompleted = section.topics.filter((t) => completedTopics.has(t.id)).length;
+            const sectionProgress = section.topics.length > 0 ? Math.round((sectionCompleted / section.topics.length) * 100) : 0;
+            const isDone = sectionCompleted === section.topics.length && section.topics.length > 0;
 
             return (
-              <Card key={section.sectionId} className="overflow-hidden">
+              <div key={section.sectionId} className={`rounded-2xl border-2 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md ${
+                isDone
+                  ? 'border-green-200 dark:border-green-900/50 bg-green-50/30 dark:bg-green-950/10'
+                  : isExpanded
+                  ? 'border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-950'
+                  : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950'
+              }`}>
                 <button
                   onClick={() => setExpandedSection(isExpanded ? null : section.sectionId)}
-                  className="w-full p-4 flex items-center justify-between hover:bg-accent/50 transition-colors text-left"
+                  className="w-full p-5 flex items-center justify-between hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all duration-200 text-left"
                 >
-                  <div className="flex items-center gap-3">
-                    <div className="flex-shrink-0 h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <BookOpen className="h-5 w-5 text-primary" />
+                  <div className="flex items-center gap-4">
+                    <div className={`flex-shrink-0 h-11 w-11 rounded-xl flex items-center justify-center text-sm font-bold shadow-sm transition-all ${
+                      isDone
+                        ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white'
+                        : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white'
+                    }`}>
+                      {isDone ? <CheckCircle2 className="h-5 w-5" /> : secIdx + 1}
                     </div>
                     <div>
-                      <p className="font-semibold text-sm">{section.sectionName}</p>
-                      <p className="text-xs text-muted-foreground">{section.topics.length} lessons &middot; {sectionCompleted}/{section.topics.length} complete</p>
+                      <p className="font-bold text-sm text-gray-900 dark:text-gray-100">{section.sectionName}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-xs text-muted-foreground">{section.topics.length} lessons</span>
+                        <div className="w-16 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
+                          <div className={`h-full rounded-full transition-all duration-500 ${isDone ? 'bg-green-500' : 'bg-indigo-500'}`} style={{ width: `${sectionProgress}%` }} />
+                        </div>
+                        <span className="text-xs font-medium text-muted-foreground">{sectionCompleted}/{section.topics.length}</span>
+                      </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    {sectionCompleted === section.topics.length && section.topics.length > 0 && (
-                      <Badge className="bg-green-600 text-white">Done</Badge>
+                    {isDone && (
+                      <Badge className="bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 border-0 text-xs">Complete</Badge>
                     )}
-                    <ChevronRight className={`h-4 w-4 text-muted-foreground transition-transform ${isExpanded ? 'rotate-90' : ''}`} />
+                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-transform duration-300 ${
+                      isExpanded ? 'rotate-90 bg-indigo-100 dark:bg-indigo-900' : 'bg-gray-100 dark:bg-gray-800'
+                    }`}>
+                      <ChevronRight className="h-4 w-4 text-gray-600 dark:text-gray-400" />
+                    </div>
                   </div>
                 </button>
 
                 {isExpanded && (
-                  <div className="border-t">
+                  <div className="border-t border-gray-100 dark:border-gray-800">
                     {section.topics.map((topic, i) => {
                       const done = completedTopics.has(topic.id);
+                      const hasContent = hasCISSPCourseContent(topic.id);
                       return (
                         <div
                           key={topic.id}
-                          className="flex items-center gap-3 px-4 py-3 hover:bg-accent/30 transition-colors cursor-pointer border-b last:border-b-0"
+                          className="flex items-center gap-4 px-5 py-4 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all duration-200 cursor-pointer border-b border-gray-50 dark:border-gray-900 last:border-b-0"
                           onClick={() => setActiveTopic(topic)}
                         >
                           <button
                             onClick={(e) => { e.stopPropagation(); toggleComplete(topic.id); }}
-                            className={`flex-shrink-0 h-6 w-6 rounded-full border-2 flex items-center justify-center transition-colors ${
-                              done ? 'bg-green-500 border-green-500 text-white' : 'border-muted-foreground/30 hover:border-primary'
+                            className={`flex-shrink-0 h-8 w-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
+                              done
+                                ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-sm'
+                                : 'border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500'
                             }`}
                           >
                             {done && <CheckCircle2 className="h-4 w-4" />}
-                            {!done && <span className="text-[10px] font-medium text-muted-foreground">{i + 1}</span>}
+                            {!done && <span className="text-xs font-bold text-gray-400 dark:text-gray-500">{i + 1}</span>}
                           </button>
                           <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-medium ${done ? 'text-muted-foreground line-through' : ''}`}>{topic.title}</p>
-                            <p className="text-xs text-muted-foreground truncate">{topic.summary}</p>
+                            <p className={`text-sm font-semibold ${done ? 'text-gray-400 dark:text-gray-600 line-through' : 'text-gray-900 dark:text-gray-100'}`}>{topic.title}</p>
+                            <p className="text-xs text-muted-foreground truncate mt-0.5">{topic.summary}</p>
                           </div>
-                          <div className="flex items-center gap-2 flex-shrink-0">
-                            <span className="text-xs text-muted-foreground">{topic.readTimeMin} min</span>
-                            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+                          <div className="flex items-center gap-3 flex-shrink-0">
+                            {hasContent && (
+                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-medium">
+                                Full Content
+                              </span>
+                            )}
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Clock className="h-3 w-3" /> {topic.readTimeMin}m
+                            </span>
+                            <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600" />
                           </div>
                         </div>
                       );
                     })}
                   </div>
                 )}
-              </Card>
+              </div>
             );
           })}
         </div>

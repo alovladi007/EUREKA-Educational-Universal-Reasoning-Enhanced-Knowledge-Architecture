@@ -67,18 +67,18 @@ Effective governance typically involves multiple committees with defined roles a
 ## 1.3 Organizational Roles and Responsibilities
 
 Clear role definition is essential for effective security governance. Responsibilities must be explicitly assigned, understood, and communicated across the organization.
-RoleResponsibilities| Role | Responsibilities |
+| Role | Responsibilities |
 |---|---|
-CEO/Executive LeadershipUltimate accountability for organizational security; sets tone; allocates budget; communicates importance| CEO/Executive Leadership | Ultimate accountability for organizational security; sets tone; allocates budget; communicates importance |
-Board/Board Audit CommitteeProvides oversight; reviews security risks; approves major policies; monitors compliance| Board/Board Audit Committee | Provides oversight; reviews security risks; approves major policies; monitors compliance |
-CISO/Chief Information Security OfficerDevelops security strategy; manages security team; reports to executive leadership; owns security governance| CISO/Chief Information Security Officer | Develops security strategy; manages security team; reports to executive leadership; owns security governance |
-Security ArchitectDesigns security infrastructure; aligns with business requirements; develops standards and guidelines| Security Architect | Designs security infrastructure; aligns with business requirements; develops standards and guidelines |
-Security Operations Center (SOC)Monitors for threats; responds to incidents; manages security tools; provides 24/7 coverage| Security Operations Center (SOC) | Monitors for threats; responds to incidents; manages security tools; provides 24/7 coverage |
-Compliance OfficerEnsures regulatory compliance; manages audit relationships; tracks policy adherence; handles data protection| Compliance Officer | Ensures regulatory compliance; manages audit relationships; tracks policy adherence; handles data protection |
-Risk ManagerIdentifies and assesses enterprise risks; develops mitigation strategies; reports to risk committee| Risk Manager | Identifies and assesses enterprise risks; develops mitigation strategies; reports to risk committee |
-Business Unit LeadersResponsible for security within their domain; fund security initiatives; support awareness programs| Business Unit Leaders | Responsible for security within their domain; fund security initiatives; support awareness programs |
-Data OwnersClassify data; define access requirements; approve access requests; ensure proper handling| Data Owners | Classify data; define access requirements; approve access requests; ensure proper handling |
-System OwnersResponsible for system security; implement controls; conduct testing; manage patches and updates| System Owners | Responsible for system security; implement controls; conduct testing; manage patches and updates |
+| CEO/Executive Leadership | Ultimate accountability for organizational security; sets tone; allocates budget; communicates importance |
+| Board/Board Audit Committee | Provides oversight; reviews security risks; approves major policies; monitors compliance |
+| CISO/Chief Information Security Officer | Develops security strategy; manages security team; reports to executive leadership; owns security governance |
+| Security Architect | Designs security infrastructure; aligns with business requirements; develops standards and guidelines |
+| Security Operations Center (SOC) | Monitors for threats; responds to incidents; manages security tools; provides 24/7 coverage |
+| Compliance Officer | Ensures regulatory compliance; manages audit relationships; tracks policy adherence; handles data protection |
+| Risk Manager | Identifies and assesses enterprise risks; develops mitigation strategies; reports to risk committee |
+| Business Unit Leaders | Responsible for security within their domain; fund security initiatives; support awareness programs |
+| Data Owners | Classify data; define access requirements; approve access requests; ensure proper handling |
+| System Owners | Responsible for system security; implement controls; conduct testing; manage patches and updates |
 
 ## 1.4 Security Control Frameworks
 
@@ -98,13 +98,13 @@ SABSA (Sherwood Applied Business Security Architecture) is a risk-driven methodo
 ### CIS Critical Security Controls
 
 The Center for Internet Security (CIS) provides a prioritized set of 20 technical security controls based on analysis of real-world data breaches. Organizations implement these sequentially, starting with the highest-impact controls to optimize resource allocation.
-FrameworkPrimary Focus| Framework | Primary Focus |
+| Framework | Primary Focus |
 |---|---|
-NIST CSF/RMFCore functions and risk management process; federal mandate| NIST CSF/RMF | Core functions and risk management process; federal mandate |
-ISO 27001/27002ISMS establishment and best practices; international standard| ISO 27001/27002 | ISMS establishment and best practices; international standard |
-COBIT 2019Enterprise governance and IT alignment; business-focused| COBIT 2019 | Enterprise governance and IT alignment; business-focused |
-SABSAArchitecture-driven security design; strategic approach| SABSA | Architecture-driven security design; strategic approach |
-CIS ControlsPrioritized technical controls; breach prevention focus| CIS Controls | Prioritized technical controls; breach prevention focus |
+| NIST CSF/RMF | Core functions and risk management process; federal mandate |
+| ISO 27001/27002 | ISMS establishment and best practices; international standard |
+| COBIT 2019 | Enterprise governance and IT alignment; business-focused |
+| SABSA | Architecture-driven security design; strategic approach |
+| CIS Controls | Prioritized technical controls; breach prevention focus |
 
 ## 1.5 Due Care and Due Diligence
 
@@ -309,12 +309,12 @@ Patents protect novel inventions for a limited period (typically 20 years). Pate
 ### Trade Secrets
 
 Trade secrets are valuable information that derives economic value from not being generally known and is subject to reasonable efforts to maintain secrecy. Examples include source code, algorithms, customer lists, and business processes. The Uniform Trade Secrets Act (UTSA) and Economic Espionage Act (EEA) provide legal protection for trade secrets. Organizations protect trade secrets through confidentiality agreements, restricted access, and clear marking of confidential materials.
-IP TypeDuration & Key Requirement| IP Type | Duration & Key Requirement |
+| IP Type | Duration & Key Requirement |
 |---|---|
-CopyrightLife + 70 years; automatic upon creation; original work| Copyright | Life + 70 years; automatic upon creation; original work |
-TrademarkIndefinite (renewable); ongoing use and enforcement; distinctive mark| Trademark | Indefinite (renewable); ongoing use and enforcement; distinctive mark |
-Patent20 years from filing; novel invention; published requirements| Patent | 20 years from filing; novel invention; published requirements |
-Trade SecretIndefinite; reasonable secrecy efforts; economic value from secrecy| Trade Secret | Indefinite; reasonable secrecy efforts; economic value from secrecy |
+| Copyright | Life + 70 years; automatic upon creation; original work |
+| Trademark | Indefinite (renewable); ongoing use and enforcement; distinctive mark |
+| Patent | 20 years from filing; novel invention; published requirements |
+| Trade Secret | Indefinite; reasonable secrecy efforts; economic value from secrecy |
 
 ## 3.3 Import/Export Controls
 
@@ -376,13 +376,13 @@ Baselines are the minimum security configurations required for specific system t
 ### Guidelines and Procedures
 
 Guidelines provide recommendations for accomplishing security objectives without mandating a specific approach. Procedures provide step-by-step instructions for performing specific security tasks. For example, an incident response procedure defines exactly how to detect, investigate, and respond to security incidents, while a guideline on password selection provides recommendations for creating strong passwords.
-Document TypeScope & Purpose| Document Type | Scope & Purpose |
+| Document Type | Scope & Purpose |
 |---|---|
-PolicyHigh-level objectives and rules; what must be done| Policy | High-level objectives and rules; what must be done |
-StandardSpecific technical requirements; how to implement policy| Standard | Specific technical requirements; how to implement policy |
-BaselineMinimum required configuration for a system type| Baseline | Minimum required configuration for a system type |
-ProcedureStep-by-step instructions; how to perform a task| Procedure | Step-by-step instructions; how to perform a task |
-GuidelineRecommendations; suggestions for good practice| Guideline | Recommendations; suggestions for good practice |
+| Policy | High-level objectives and rules; what must be done |
+| Standard | Specific technical requirements; how to implement policy |
+| Baseline | Minimum required configuration for a system type |
+| Procedure | Step-by-step instructions; how to perform a task |
+| Guideline | Recommendations; suggestions for good practice |
 
 ## 5.3 Policy Lifecycle
 
@@ -452,12 +452,12 @@ Systems can be designed with redundancy for critical functions. Active-active co
 ### Recovery Sites
 
 Organizations may establish recovery sites for critical business functions. Hot sites are fully equipped and continuously synchronized with the primary site, enabling recovery in minutes but at high cost. Warm sites have equipment and some data but require configuration and data restoration, providing recovery in hours at moderate cost. Cold sites are empty facilities with basic infrastructure where equipment must be installed and configured, providing recovery in days at minimal cost. Organizations choose based on RTO and budget constraints.
-Recovery Site TypeCost / Recovery Time| Recovery Site Type | Cost / Recovery Time |
+| Recovery Site Type | Cost / Recovery Time |
 |---|---|
-Hot SiteHigh cost; minutes to recovery; continuously synchronized| Hot Site | High cost; minutes to recovery; continuously synchronized |
-Warm SiteModerate cost; hours to recovery; periodic synchronization| Warm Site | Moderate cost; hours to recovery; periodic synchronization |
-Cold SiteLow cost; days to recovery; requires configuration| Cold Site | Low cost; days to recovery; requires configuration |
-Cloud-basedVariable; rapid scaling; on-demand resources| Cloud-based | Variable; rapid scaling; on-demand resources |
+| Hot Site | High cost; minutes to recovery; continuously synchronized |
+| Warm Site | Moderate cost; hours to recovery; periodic synchronization |
+| Cold Site | Low cost; days to recovery; requires configuration |
+| Cloud-based | Variable; rapid scaling; on-demand resources |
 
 ### Disaster Recovery Testing
 
@@ -473,13 +473,13 @@ Simulation testing involves partial failover or testing during planned maintenan
 Parallel testing involves running both primary and recovery systems simultaneously, comparing outputs to verify consistency. This validates that recovery systems produce correct results but requires double resource usage during the test.
 
 Full interruption testing is the most rigorous approach - actually switching to the recovery site and sustaining operations for a period. This fully validates recovery capability but creates significant business disruption risk if something fails, so it's typically done only for critical systems and planned carefully.
-Test TypeMethodCost / Validation| Test Type | Method | Cost / Validation |
+| Test Type | Method | Cost / Validation |
 |---|---|---|
-TabletopDiscussion of scenario without system changesLow cost; identifies process gaps| Tabletop | Discussion of scenario without system changes | Low cost; identifies process gaps |
-WalkthroughExecute procedures in controlled environmentLow to moderate cost; validates procedures| Walkthrough | Execute procedures in controlled environment | Low to moderate cost; validates procedures |
-SimulationPartial failover with subset of systemsModerate cost; realistic conditions| Simulation | Partial failover with subset of systems | Moderate cost; realistic conditions |
-ParallelRun both systems simultaneously, compareHigh cost; validates consistency| Parallel | Run both systems simultaneously, compare | High cost; validates consistency |
-Full InterruptionActual production failover for sustained periodHighest cost/disruption; highest validation| Full Interruption | Actual production failover for sustained period | Highest cost/disruption; highest validation |
+| Tabletop | Discussion of scenario without system changes | Low cost; identifies process gaps |
+| Walkthrough | Execute procedures in controlled environment | Low to moderate cost; validates procedures |
+| Simulation | Partial failover with subset of systems | Moderate cost; realistic conditions |
+| Parallel | Run both systems simultaneously, compare | High cost; validates consistency |
+| Full Interruption | Actual production failover for sustained period | Highest cost/disruption; highest validation |
 
 ## 6.3 Recovery Strategies and Plan Implementation
 
@@ -603,12 +603,12 @@ Mitigation means implementing controls to reduce the likelihood or impact of ris
 ### Risk Acceptance
 
 Acceptance means acknowledging a risk and choosing not to mitigate it (or accepting residual risk after mitigation). This should only be done for low-impact risks or when mitigation costs exceed potential impact. Risk acceptance should be documented with explanation of why the risk is acceptable, and should be periodically reviewed to ensure conditions haven't changed.
-Risk ResponseWhen Used| Risk Response | When Used |
+| Risk Response | When Used |
 |---|---|
-AvoidEliminate the activity; used when risk is unacceptable and avoidance is feasible| Avoid | Eliminate the activity; used when risk is unacceptable and avoidance is feasible |
-TransferShift to third party via insurance/vendor; reduces financial impact| Transfer | Shift to third party via insurance/vendor; reduces financial impact |
-MitigateImplement controls to reduce likelihood or impact; most common approach| Mitigate | Implement controls to reduce likelihood or impact; most common approach |
-AcceptAccept residual risk; used for low-impact risks or when cost exceeds benefit| Accept | Accept residual risk; used for low-impact risks or when cost exceeds benefit |
+| Avoid | Eliminate the activity; used when risk is unacceptable and avoidance is feasible |
+| Transfer | Shift to third party via insurance/vendor; reduces financial impact |
+| Mitigate | Implement controls to reduce likelihood or impact; most common approach |
+| Accept | Accept residual risk; used for low-impact risks or when cost exceeds benefit |
 
 ## 8.4 Risk Management Frameworks
 
@@ -824,13 +824,13 @@ Organizations must establish clear criteria for determining appropriate classifi
 Classifications are typically established when information is created or acquired, reviewed during its lifecycle, and updated as business circumstances change. Organizations should reclassify information as sensitivity decreases over time.
 ### 1.3 Classification Levels Comparison
 
-LevelGovernmentCommercialAccess ScopeControl Intensity| Level | Government | Commercial | Access Scope | Control Intensity |
+| Level | Government | Commercial | Access Scope | Control Intensity |
 |---|---|---|---|---|
-Level 4Top SecretConfidentialNeed-to-know basisMaximum| Level 4 | Top Secret | Confidential | Need-to-know basis | Maximum |
-Level 3SecretPrivateLimited distributionHigh| Level 3 | Secret | Private | Limited distribution | High |
-Level 2ConfidentialSensitiveDepartment/functionMedium| Level 2 | Confidential | Sensitive | Department/function | Medium |
-Level 1UnclassifiedInternalWider organizationalLow| Level 1 | Unclassified | Internal | Wider organizational | Low |
-Level 0PublicPublicNo restrictionsMinimal| Level 0 | Public | Public | No restrictions | Minimal |`,
+| Level 4 | Top Secret | Confidential | Need-to-know basis | Maximum |
+| Level 3 | Secret | Private | Limited distribution | High |
+| Level 2 | Confidential | Sensitive | Department/function | Medium |
+| Level 1 | Unclassified | Internal | Wider organizational | Low |
+| Level 0 | Public | Public | No restrictions | Minimal |`,
       examTip: `When the exam asks about data roles, remember the hierarchy: Data OWNER (executive who sets classification and policy), Data CUSTODIAN (IT staff who implements controls), Data STEWARD (ensures data quality and compliance). The owner is ALWAYS a business executive, never IT staff. If an answer puts IT in charge of classification decisions, it is wrong.`,
     },
     {
@@ -876,25 +876,25 @@ Level 0PublicPublicNo restrictionsMinimal| Level 0 | Public | Public | No restri
 
 ### 2.2 Roles and Responsibilities Matrix
 
-RoleClassificationAccess ControlTechnical ProtectionComplianceData Quality| Role | Classification | Access Control | Technical Protection | Compliance | Data Quality |
+| Role | Classification | Access Control | Technical Protection | Compliance | Data Quality |
 |---|---|---|---|---|---|
-Data OwnerDecidesApprovesDirectsResponsibleDefines standards| Data Owner | Decides | Approves | Directs | Responsible | Defines standards |
-Data CustodianImplementsEnforcesImplementsManagesMaintains controls| Data Custodian | Implements | Enforces | Implements | Manages | Maintains controls |
-Data StewardUnderstandsUsesSupportsAssistsResponsible| Data Steward | Understands | Uses | Supports | Assists | Responsible |
-System OwnerSupportsImplementsResponsibleImplementsMaintains| System Owner | Supports | Implements | Responsible | Implements | Maintains |
-Business OwnerApprovesAuthorizesFundsResponsibleAuthorizes| Business Owner | Approves | Authorizes | Funds | Responsible | Authorizes |
+| Data Owner | Decides | Approves | Directs | Responsible | Defines standards |
+| Data Custodian | Implements | Enforces | Implements | Manages | Maintains controls |
+| Data Steward | Understands | Uses | Supports | Assists | Responsible |
+| System Owner | Supports | Implements | Responsible | Implements | Maintains |
+| Business Owner | Approves | Authorizes | Funds | Responsible | Authorizes |
 
 ### 2.3 GDPR Data Controller vs Data Processor
 
 Under GDPR and similar data protection regulations, roles are formally defined with legal obligations. This framework is increasingly adopted globally.
-Data ControllerData Processor| Data Controller | Data Processor |
+| Data Controller | Data Processor |
 |---|---|
-Determines purposes and means of processingProcesses data on instructions of controller| Determines purposes and means of processing | Processes data on instructions of controller |
-Responsible for legal complianceAssists controller in compliance| Responsible for legal compliance | Assists controller in compliance |
-Responds to data subject requestsSupports controller's responses| Responds to data subject requests | Supports controller's responses |
-Conducts Data Protection Impact AssessmentsAssists with DPIA when required| Conducts Data Protection Impact Assessments | Assists with DPIA when required |
-Maintains personal data processing recordsMaintains processing records at controller's direction| Maintains personal data processing records | Maintains processing records at controller's direction |
-Liable for regulatory violationsShares liability; contractually bound| Liable for regulatory violations | Shares liability; contractually bound |
+| Determines purposes and means of processing | Processes data on instructions of controller |
+| Responsible for legal compliance | Assists controller in compliance |
+| Responds to data subject requests | Supports controller's responses |
+| Conducts Data Protection Impact Assessments | Assists with DPIA when required |
+| Maintains personal data processing records | Maintains processing records at controller's direction |
+| Liable for regulatory violations | Shares liability; contractually bound |
 
 Many organizations now use GDPR terminology even outside European jurisdictions, as it provides clear legal framework for data handling responsibilities.`,
       examTip: `The exam tests your ability to distinguish between roles. Data Owner (classification/access decisions), Data Custodian (technical protection), Data Steward (quality/metadata), System Owner (system security), Business Owner (strategic decisions). Each has different responsibilities.`,
@@ -915,16 +915,16 @@ Effective retention policies address:
 
 ### 4.2 Typical Retention Schedules
 
-Record TypeTypical RetentionLegal Basis| Record Type | Typical Retention | Legal Basis |
+| Record Type | Typical Retention | Legal Basis |
 |---|---|---|
-Tax/Financial Records5-7 yearsIRS, SEC, Sarbanes-Oxley| Tax/Financial Records | 5-7 years | IRS, SEC, Sarbanes-Oxley |
-Medical Records5-10 years (varies)HIPAA, state laws| Medical Records | 5-10 years (varies) | HIPAA, state laws |
-Employment Records3-7 yearsEEOC, labor laws| Employment Records | 3-7 years | EEOC, labor laws |
-ContractsDuration + 3-5 yearsStatute of limitations| Contracts | Duration + 3-5 years | Statute of limitations |
-Email1-3 years typicaleDiscovery, regulatory| Email | 1-3 years typical | eDiscovery, regulatory |
-Backup Media3-5 yearsRecovery and compliance| Backup Media | 3-5 years | Recovery and compliance |
-CCTV Footage30-90 days typicalPrivacy, storage cost| CCTV Footage | 30-90 days typical | Privacy, storage cost |
-Access Logs30-90 daysIntrusion detection needs| Access Logs | 30-90 days | Intrusion detection needs |
+| Tax/Financial Records | 5-7 years | IRS, SEC, Sarbanes-Oxley |
+| Medical Records | 5-10 years (varies) | HIPAA, state laws |
+| Employment Records | 3-7 years | EEOC, labor laws |
+| Contracts | Duration + 3-5 years | Statute of limitations |
+| Email | 1-3 years typical | eDiscovery, regulatory |
+| Backup Media | 3-5 years | Recovery and compliance |
+| CCTV Footage | 30-90 days typical | Privacy, storage cost |
+| Access Logs | 30-90 days | Intrusion detection needs |
 
 Retention periods must be documented and enforced. Litigation holds override normal retention policies, requiring preservation of specified data pending legal proceedings.
 ### 4.3 Data Archiving
@@ -991,13 +991,13 @@ Physical storage media presents significant security risk. Media containing sens
 
 ### 6.4 Sanitization Methods Comparison
 
-MethodTechniqueMedia ReuseCostAssurance LevelRecovery Risk| Method | Technique | Media Reuse | Cost | Assurance Level | Recovery Risk |
+| Method | Technique | Media Reuse | Cost | Assurance Level | Recovery Risk |
 |---|---|---|---|---|---|
-ClearingSingle/multi-pass overwriteYes, internallyLowMediumLow if multiple passes| Clearing | Single/multi-pass overwrite | Yes, internally | Low | Medium | Low if multiple passes |
-Purging7-pass DoD standard overwritePossibleMediumHighVery Low| Purging | 7-pass DoD standard overwrite | Possible | Medium | High | Very Low |
-DegaussingMagnetic field erasureNoMediumHigh (for magnetic)Very Low| Degaussing | Magnetic field erasure | No | Medium | High (for magnetic) | Very Low |
-DestructionPhysical shredding/meltingNoHighHighestImpossible| Destruction | Physical shredding/melting | No | High | Highest | Impossible |
-IncinerationHeat destructionNoHighHighestImpossible| Incineration | Heat destruction | No | High | Highest | Impossible |
+| Clearing | Single/multi-pass overwrite | Yes, internally | Low | Medium | Low if multiple passes |
+| Purging | 7-pass DoD standard overwrite | Possible | Medium | High | Very Low |
+| Degaussing | Magnetic field erasure | No | Medium | High (for magnetic) | Very Low |
+| Destruction | Physical shredding/melting | No | High | Highest | Impossible |
+| Incineration | Heat destruction | No | High | Highest | Impossible |
 
 **NIST SP 800-88** provides comprehensive guidelines for media sanitization. The appropriate method depends on sensitivity of data, regulatory requirements, and intended media reuse.
 ### 6.5 NIST SP 800-88 Guidelines
@@ -1064,14 +1064,14 @@ IncinerationHeat destructionNoHighHighestImpossible| Incineration | Heat destruc
 
 ### 7.2 Data Lifecycle Security Controls Matrix
 
-PhasePrimary ThreatsKey ControlsResponsible PartyComplianceTimeline| Phase | Primary Threats | Key Controls | Responsible Party | Compliance | Timeline |
+| Phase | Primary Threats | Key Controls | Responsible Party | Compliance | Timeline |
 |---|---|---|---|---|---|
-CreateUnauthorized creation, missing classificationClassification, ownership assignment, initial access controlData OwnerMandatoryImmediate| Create | Unauthorized creation, missing classification | Classification, ownership assignment, initial access control | Data Owner | Mandatory | Immediate |
-StoreBreach, theft, unauthorized accessEncryption, access controls, physical security, monitoringData CustodianMandatoryOngoing| Store | Breach, theft, unauthorized access | Encryption, access controls, physical security, monitoring | Data Custodian | Mandatory | Ongoing |
-UseUnauthorized disclosure, malware, insider threatAuthentication, authorization, auditing, DLPSystem/Application OwnerRequiredOngoing| Use | Unauthorized disclosure, malware, insider threat | Authentication, authorization, auditing, DLP | System/Application Owner | Required | Ongoing |
-ShareInterception, misdirection, eavesdroppingEncryption in transit, authentication, secure channelsData CustodianRequiredPer request| Share | Interception, misdirection, eavesdropping | Encryption in transit, authentication, secure channels | Data Custodian | Required | Per request |
-ArchiveLost access, data decay, unauthorized retrievalEncryption, indexing, availability controlsRecords ManagerMandatoryScheduled| Archive | Lost access, data decay, unauthorized retrieval | Encryption, indexing, availability controls | Records Manager | Mandatory | Scheduled |
-DestroyIncomplete destruction, recovery, compliance failureProper sanitization, documentation, verificationData Custodian/ComplianceMandatoryScheduled| Destroy | Incomplete destruction, recovery, compliance failure | Proper sanitization, documentation, verification | Data Custodian/Compliance | Mandatory | Scheduled |`,
+| Create | Unauthorized creation, missing classification | Classification, ownership assignment, initial access control | Data Owner | Mandatory | Immediate |
+| Store | Breach, theft, unauthorized access | Encryption, access controls, physical security, monitoring | Data Custodian | Mandatory | Ongoing |
+| Use | Unauthorized disclosure, malware, insider threat | Authentication, authorization, auditing, DLP | System/Application Owner | Required | Ongoing |
+| Share | Interception, misdirection, eavesdropping | Encryption in transit, authentication, secure channels | Data Custodian | Required | Per request |
+| Archive | Lost access, data decay, unauthorized retrieval | Encryption, indexing, availability controls | Records Manager | Mandatory | Scheduled |
+| Destroy | Incomplete destruction, recovery, compliance failure | Proper sanitization, documentation, verification | Data Custodian/Compliance | Mandatory | Scheduled |`,
     },
     {
       id: '8-data-states-and-scoping',
@@ -1349,14 +1349,14 @@ Several data transformation techniques support anonymization and pseudonymizatio
 ### When to Use Anonymization vs. Pseudonymization
 
 **Use Anonymization for**: Public datasets, research publications, non-sensitive analytics where individual identification isn't needed and data won't be combined with other sources. Anonymization removes regulatory obligations but is risky if re-identification is possible. **Use Pseudonymization for**: Internal processing, clinical trials, employee databases, and situations where subjects may need to be re-identified later or where re-identification risk is high. Pseudonymization maintains compliance obligations but enables legitimate re-identification when authorized.
-CharacteristicAnonymization vs. Pseudonymization| Characteristic | Anonymization vs. Pseudonymization |
+| Characteristic | Anonymization vs. Pseudonymization |
 |---|---|
-ReversibilityAnonymized: irreversible. Pseudonymized: reversible with mapping table| Reversibility | Anonymized: irreversible. Pseudonymized: reversible with mapping table |
-Personal Data?Anonymized: NO (outside GDPR scope). Pseudonymized: YES (GDPR applies)| Personal Data? | Anonymized: NO (outside GDPR scope). Pseudonymized: YES (GDPR applies) |
-Re-identificationAnonymized: theoretically impossible. Pseudonymized: possible with mapping table| Re-identification | Anonymized: theoretically impossible. Pseudonymized: possible with mapping table |
-Use CasesAnonymized: public data, research, published stats. Pseudonymized: internal processing, trials, re-identification needed| Use Cases | Anonymized: public data, research, published stats. Pseudonymized: internal processing, trials, re-identification needed |
-Regulatory ImpactAnonymized: exempt from privacy laws. Pseudonymized: subject to privacy laws| Regulatory Impact | Anonymized: exempt from privacy laws. Pseudonymized: subject to privacy laws |
-RiskAnonymized: higher (re-id via combination). Pseudonymized: controlled (mapping table secured)| Risk | Anonymized: higher (re-id via combination). Pseudonymized: controlled (mapping table secured) |`,
+| Reversibility | Anonymized: irreversible. Pseudonymized: reversible with mapping table |
+| Personal Data? | Anonymized: NO (outside GDPR scope). Pseudonymized: YES (GDPR applies) |
+| Re-identification | Anonymized: theoretically impossible. Pseudonymized: possible with mapping table |
+| Use Cases | Anonymized: public data, research, published stats. Pseudonymized: internal processing, trials, re-identification needed |
+| Regulatory Impact | Anonymized: exempt from privacy laws. Pseudonymized: subject to privacy laws |
+| Risk | Anonymized: higher (re-id via combination). Pseudonymized: controlled (mapping table secured) |`,
       examTip: `Anonymized data is NOT personal data under GDPR. Pseudonymized data IS still personal data because re-identification is possible. The exam will test this distinction. Also know k-anonymity, l-diversity, and t-closeness concepts for re-identification risk measurement.`,
     },
     {
@@ -1728,16 +1728,16 @@ Restricts the flow of information from one object to another. Prevents data from
 Uses a mathematical lattice structure to define security levels. Elements in the lattice have partial orderings, allowing formal analysis of information flow.
 ### Security Models Comparison
 
-ModelPrimary Focus| Model | Primary Focus |
+| Model | Primary Focus |
 |---|---|
-Bell-LaPadulaConfidentiality; No Read Up, No Write Down| Bell-LaPadula | Confidentiality; No Read Up, No Write Down |
-BibaIntegrity; No Write Up, No Read Down| Biba | Integrity; No Write Up, No Read Down |
-Clark-WilsonIntegrity with certified transactions| Clark-Wilson | Integrity with certified transactions |
-Brewer-NashConflict of interest in multi-party access| Brewer-Nash | Conflict of interest in multi-party access |
-Graham-DenningCapability-based access control rights| Graham-Denning | Capability-based access control rights |
-State MachineSecure state transitions and policies| State Machine | Secure state transitions and policies |
-Information FlowPrevents unauthorized data flow directions| Information Flow | Prevents unauthorized data flow directions |
-Lattice-BasedMathematical security level relationships| Lattice-Based | Mathematical security level relationships |`,
+| Bell-LaPadula | Confidentiality; No Read Up, No Write Down |
+| Biba | Integrity; No Write Up, No Read Down |
+| Clark-Wilson | Integrity with certified transactions |
+| Brewer-Nash | Conflict of interest in multi-party access |
+| Graham-Denning | Capability-based access control rights |
+| State Machine | Secure state transitions and policies |
+| Information Flow | Prevents unauthorized data flow directions |
+| Lattice-Based | Mathematical security level relationships |`,
       examTip: `For CISSP exam: Bell-LaPadula = Confidentiality (government model), Biba = Integrity. Remember &quot;No Read Up&quot; and &quot;No Write Down&quot; for Bell-LaPadula, and invert them for Biba.`,
     },
     {
@@ -1746,15 +1746,15 @@ Lattice-BasedMathematical security level relationships| Lattice-Based | Mathemat
       content: `### Common Criteria (CC)
 
 International standard (ISO/IEC 15408) for evaluating IT security. Products are rated on **Evaluation Assurance Levels (EAL)** from 1-7 based on rigor of testing and documentation.
-EAL LevelNameDescription| EAL Level | Name | Description |
+| EAL Level | Name | Description |
 |---|---|---|
-EAL 1Functionally TestedMinimal assurance; basic testing against specification| EAL 1 | Functionally Tested | Minimal assurance; basic testing against specification |
-EAL 2Structurally TestedStructural testing; security design reviewed| EAL 2 | Structurally Tested | Structural testing; security design reviewed |
-EAL 3Methodically Tested & CheckedMethodical testing; informal security analysis| EAL 3 | Methodically Tested & Checked | Methodical testing; informal security analysis |
-EAL 4Methodically Designed, Tested & ReviewedFormal design specification; structural coverage| EAL 4 | Methodically Designed, Tested & Reviewed | Formal design specification; structural coverage |
-EAL 5Semiformally Designed & TestedSemiformal specification; formal analysis of key areas| EAL 5 | Semiformally Designed & Tested | Semiformal specification; formal analysis of key areas |
-EAL 6Semiformally Verified, Designed & TestedSemiformal verification; detailed analysis| EAL 6 | Semiformally Verified, Designed & Tested | Semiformal verification; detailed analysis |
-EAL 7Formally Verified, Designed & TestedFormal verification of specification; highest assurance| EAL 7 | Formally Verified, Designed & Tested | Formal verification of specification; highest assurance |
+| EAL 1 | Functionally Tested | Minimal assurance; basic testing against specification |
+| EAL 2 | Structurally Tested | Structural testing; security design reviewed |
+| EAL 3 | Methodically Tested & Checked | Methodical testing; informal security analysis |
+| EAL 4 | Methodically Designed, Tested & Reviewed | Formal design specification; structural coverage |
+| EAL 5 | Semiformally Designed & Tested | Semiformal specification; formal analysis of key areas |
+| EAL 6 | Semiformally Verified, Designed & Tested | Semiformal verification; detailed analysis |
+| EAL 7 | Formally Verified, Designed & Tested | Formal verification of specification; highest assurance |
 
 ### ITSEC (Information Technology Security Evaluation Criteria)
 
@@ -1762,15 +1762,15 @@ European standard that predated Common Criteria. Used similar levels but with di
 ### TCSEC (Trusted Computer System Evaluation Criteria)
 
 Also called the **Orange Book** (due to its orange cover). U.S. DoD standard from 1983 for evaluating operating system security. Largely obsolete but important for exam knowledge.
-LevelCategoryDescription| Level | Category | Description |
+| Level | Category | Description |
 |---|---|---|
-A1Verified DesignFormal top-level specification and verification; highest security| A1 | Verified Design | Formal top-level specification and verification; highest security |
-B3Security DomainsFormal security model; security administrator role| B3 | Security Domains | Formal security model; security administrator role |
-B2Structured ProtectionMandatory and discretionary controls; enforced data hiding| B2 | Structured Protection | Mandatory and discretionary controls; enforced data hiding |
-B1Labeled Security ProtectionMandatory access control with security labels| B1 | Labeled Security Protection | Mandatory access control with security labels |
-C2Controlled Access ProtectionDiscretionary access control; audit capabilities| C2 | Controlled Access Protection | Discretionary access control; audit capabilities |
-C1Discretionary Security ProtectionBasic discretionary access control; minimal protection| C1 | Discretionary Security Protection | Basic discretionary access control; minimal protection |
-DMinimal ProtectionFails to meet C1 minimum requirements| D | Minimal Protection | Fails to meet C1 minimum requirements |
+| A1 | Verified Design | Formal top-level specification and verification; highest security |
+| B3 | Security Domains | Formal security model; security administrator role |
+| B2 | Structured Protection | Mandatory and discretionary controls; enforced data hiding |
+| B1 | Labeled Security Protection | Mandatory access control with security labels |
+| C2 | Controlled Access Protection | Discretionary access control; audit capabilities |
+| C1 | Discretionary Security Protection | Basic discretionary access control; minimal protection |
+| D | Minimal Protection | Fails to meet C1 minimum requirements |
 
 ### Rainbow Series
 
@@ -1837,38 +1837,38 @@ cissp_crypto: {
       content: `### Symmetric Encryption
 
 Uses the same key for encryption and decryption. Fast but requires secure key distribution.
-AlgorithmKey SizeBlock/StreamNotes| Algorithm | Key Size | Block/Stream | Notes |
+| Algorithm | Key Size | Block/Stream | Notes |
 |---|---|---|---|
-AES (Rijndael)128/192/256 bitsBlock (128-bit)NIST standard; currently recommended for all new applications| AES (Rijndael) | 128/192/256 bits | Block (128-bit) | NIST standard; currently recommended for all new applications |
-DES56 bits (effective)Block (64-bit)Obsolete; too short for modern attacks; broken| DES | 56 bits (effective) | Block (64-bit) | Obsolete; too short for modern attacks; broken |
-3DES (Triple DES)168 bitsBlock (64-bit)Three iterations of DES; still used but deprecated| 3DES (Triple DES) | 168 bits | Block (64-bit) | Three iterations of DES; still used but deprecated |
-Blowfish32-448 bitsBlock (64-bit)Fast for non-cryptographic purposes; small block size limits use| Blowfish | 32-448 bits | Block (64-bit) | Fast for non-cryptographic purposes; small block size limits use |
-Twofish128-256 bitsBlock (128-bit)AES finalist; rarely adopted; stronger than Blowfish| Twofish | 128-256 bits | Block (128-bit) | AES finalist; rarely adopted; stronger than Blowfish |
-RC440-256 bitsStreamOnce widely used; now considered insecure; vulnerable in TLS| RC4 | 40-256 bits | Stream | Once widely used; now considered insecure; vulnerable in TLS |
-IDEA128 bitsBlock (64-bit)Used in PGP; patent issues restricted adoption| IDEA | 128 bits | Block (64-bit) | Used in PGP; patent issues restricted adoption |
+| AES (Rijndael) | 128/192/256 bits | Block (128-bit) | NIST standard; currently recommended for all new applications |
+| DES | 56 bits (effective) | Block (64-bit) | Obsolete; too short for modern attacks; broken |
+| 3DES (Triple DES) | 168 bits | Block (64-bit) | Three iterations of DES; still used but deprecated |
+| Blowfish | 32-448 bits | Block (64-bit) | Fast for non-cryptographic purposes; small block size limits use |
+| Twofish | 128-256 bits | Block (128-bit) | AES finalist; rarely adopted; stronger than Blowfish |
+| RC4 | 40-256 bits | Stream | Once widely used; now considered insecure; vulnerable in TLS |
+| IDEA | 128 bits | Block (64-bit) | Used in PGP; patent issues restricted adoption |
 
 ### Asymmetric Encryption
 
 Uses a pair of keys: public key for encryption, private key for decryption. Enables secure communication without prior key exchange. Slower than symmetric.
-AlgorithmKey SizeUse CaseSecurity Basis| Algorithm | Key Size | Use Case | Security Basis |
+| Algorithm | Key Size | Use Case | Security Basis |
 |---|---|---|---|
-RSA2048+ bitsEncryption, digital signatures, key exchangeInteger factorization problem| RSA | 2048+ bits | Encryption, digital signatures, key exchange | Integer factorization problem |
-ECC (Elliptic Curve)256-521 bitsEncryption, signatures, key exchangeDiscrete logarithm problem (smaller keys for equivalent security)| ECC (Elliptic Curve) | 256-521 bits | Encryption, signatures, key exchange | Discrete logarithm problem (smaller keys for equivalent security) |
-Diffie-Hellman2048+ bitsKey agreement/exchangeDiscrete logarithm in finite fields| Diffie-Hellman | 2048+ bits | Key agreement/exchange | Discrete logarithm in finite fields |
-ElGamal2048+ bitsEncryption, signaturesDiscrete logarithm problem| ElGamal | 2048+ bits | Encryption, signatures | Discrete logarithm problem |
-DSA (Digital Signature Algorithm)1024-3072 bitsDigital signatures onlyDiscrete logarithm problem| DSA (Digital Signature Algorithm) | 1024-3072 bits | Digital signatures only | Discrete logarithm problem |
+| RSA | 2048+ bits | Encryption, digital signatures, key exchange | Integer factorization problem |
+| ECC (Elliptic Curve) | 256-521 bits | Encryption, signatures, key exchange | Discrete logarithm problem (smaller keys for equivalent security) |
+| Diffie-Hellman | 2048+ bits | Key agreement/exchange | Discrete logarithm in finite fields |
+| ElGamal | 2048+ bits | Encryption, signatures | Discrete logarithm problem |
+| DSA (Digital Signature Algorithm) | 1024-3072 bits | Digital signatures only | Discrete logarithm problem |
 
 ### Cryptographic Hash Functions
 
 One-way functions that produce a fixed-size digest from variable-length input. Any change to input produces completely different hash (avalanche effect).
-AlgorithmOutput SizeStatusNotes| Algorithm | Output Size | Status | Notes |
+| Algorithm | Output Size | Status | Notes |
 |---|---|---|---|
-MD5128 bitsBrokenCollisions found; do not use for new applications| MD5 | 128 bits | Broken | Collisions found; do not use for new applications |
-SHA-1160 bitsDeprecatedTheoretical attacks; NIST deprecated for new use| SHA-1 | 160 bits | Deprecated | Theoretical attacks; NIST deprecated for new use |
-SHA-2 Family224-512 bitsCurrent standardSHA-256, SHA-384, SHA-512 are secure| SHA-2 Family | 224-512 bits | Current standard | SHA-256, SHA-384, SHA-512 are secure |
-SHA-3224-512 bitsSecure alternativeLatest NIST standard; Keccak algorithm| SHA-3 | 224-512 bits | Secure alternative | Latest NIST standard; Keccak algorithm |
-BLAKE2256-512 bitsHigh performanceFaster than MD5, as secure as SHA-3| BLAKE2 | 256-512 bits | High performance | Faster than MD5, as secure as SHA-3 |
-RIPEMD-160160 bitsAdequateUsed in Bitcoin; older but not broken| RIPEMD-160 | 160 bits | Adequate | Used in Bitcoin; older but not broken |
+| MD5 | 128 bits | Broken | Collisions found; do not use for new applications |
+| SHA-1 | 160 bits | Deprecated | Theoretical attacks; NIST deprecated for new use |
+| SHA-2 Family | 224-512 bits | Current standard | SHA-256, SHA-384, SHA-512 are secure |
+| SHA-3 | 224-512 bits | Secure alternative | Latest NIST standard; Keccak algorithm |
+| BLAKE2 | 256-512 bits | High performance | Faster than MD5, as secure as SHA-3 |
+| RIPEMD-160 | 160 bits | Adequate | Used in Bitcoin; older but not broken |
 
 ### Digital Signatures
 
@@ -2008,15 +2008,15 @@ Physical barriers protecting facility boundaries:
 ### Fire Suppression Systems
 
 Different systems suited for different hazards and environments:
-System TypeAgentUse CaseAdvantages/Disadvantages| System Type | Agent | Use Case | Advantages/Disadvantages |
+| System Type | Agent | Use Case | Advantages/Disadvantages |
 |---|---|---|---|
-Wet PipeWater with sprinkler headsGeneral office buildingsFast, inexpensive; water damage to equipment| Wet Pipe | Water with sprinkler heads | General office buildings | Fast, inexpensive; water damage to equipment |
-Dry PipePressurized air with water in pipesCold environments (below freezing)Delayed activation; prevents pipe freezing| Dry Pipe | Pressurized air with water in pipes | Cold environments (below freezing) | Delayed activation; prevents pipe freezing |
-DelugeOpen sprinklers; water floods areaHigh-hazard areas (flammable materials)Rapid water discharge; massive water damage| Deluge | Open sprinklers; water floods area | High-hazard areas (flammable materials) | Rapid water discharge; massive water damage |
-PreactionHeat detector + sprinklersComputer rooms, data centersTwo-stage system; minimizes water damage| Preaction | Heat detector + sprinklers | Computer rooms, data centers | Two-stage system; minimizes water damage |
-Gas-Based (FM-200, Halon)Gaseous suppressantsHigh-value, sensitive equipmentNo water damage; CFCs/halons ozone-depleting (phased out)| Gas-Based (FM-200, Halon) | Gaseous suppressants | High-value, sensitive equipment | No water damage; CFCs/halons ozone-depleting (phased out) |
-FoamFoam concentrate + waterFlammable liquid firesSuppresses flammable liquids effectively| Foam | Foam concentrate + water | Flammable liquid fires | Suppresses flammable liquids effectively |
-Dry ChemicalPowder agentsSpecific hazard areasCorrosive; leaves residue| Dry Chemical | Powder agents | Specific hazard areas | Corrosive; leaves residue |
+| Wet Pipe | Water with sprinkler heads | General office buildings | Fast, inexpensive; water damage to equipment |
+| Dry Pipe | Pressurized air with water in pipes | Cold environments (below freezing) | Delayed activation; prevents pipe freezing |
+| Deluge | Open sprinklers; water floods area | High-hazard areas (flammable materials) | Rapid water discharge; massive water damage |
+| Preaction | Heat detector + sprinklers | Computer rooms, data centers | Two-stage system; minimizes water damage |
+| Gas-Based (FM-200, Halon) | Gaseous suppressants | High-value, sensitive equipment | No water damage; CFCs/halons ozone-depleting (phased out) |
+| Foam | Foam concentrate + water | Flammable liquid fires | Suppresses flammable liquids effectively |
+| Dry Chemical | Powder agents | Specific hazard areas | Corrosive; leaves residue |
 
 **Carbon Dioxide systems**: Displace oxygen; risk of asphyxiation to personnel in enclosed spaces.
 ### HVAC and Environmental Controls
@@ -2115,11 +2115,11 @@ VMs introduce unique security challenges beyond traditional infrastructure:
 ### Cloud Computing Security Models
 
 Cloud offerings differ in shared responsibility between provider and customer:
-ModelProvider ResponsibleCustomer ResponsibleShared Responsibility| Model | Provider Responsible | Customer Responsible | Shared Responsibility |
+| Model | Provider Responsible | Customer Responsible | Shared Responsibility |
 |---|---|---|---|
-IaaSHypervisor, CPU, storage, networkingOS patching, app security, identity, data encryption, network configCompute resources, data access controls| IaaS | Hypervisor, CPU, storage, networking | OS patching, app security, identity, data encryption, network config | Compute resources, data access controls |
-PaaSOS, middleware, runtime, databaseApp code, identity integration, API security, data governanceApplication architecture, user access| PaaS | OS, middleware, runtime, database | App code, identity integration, API security, data governance | Application architecture, user access |
-SaaSEverything below app layerUser access, data classification, policy complianceIdentity federation, multi-tenancy controls| SaaS | Everything below app layer | User access, data classification, policy compliance | Identity federation, multi-tenancy controls |
+| IaaS | Hypervisor, CPU, storage, networking | OS patching, app security, identity, data encryption, network config | Compute resources, data access controls |
+| PaaS | OS, middleware, runtime, database | App code, identity integration, API security, data governance | Application architecture, user access |
+| SaaS | Everything below app layer | User access, data classification, policy compliance | Identity federation, multi-tenancy controls |
 
 **Key Point**: As you move up the stack (IaaS → PaaS → SaaS), provider assumes more responsibility, but customer retains ultimate responsibility for data security and compliance.
 ### Cloud Security Architecture
@@ -2182,15 +2182,15 @@ cissp_network: {
       content: `### Overview
 
 The OSI (Open Systems Interconnection) model defines 7 layers of network communication. Each layer provides services to the layer above and receives services from below. Understanding each layer is critical for network security.
-LayerNameKey FunctionsProtocols/Devices| Layer | Name | Key Functions | Protocols/Devices |
+| Layer | Name | Key Functions | Protocols/Devices |
 |---|---|---|---|
-7ApplicationUser applications, services, APIs, encryption at app levelHTTP/HTTPS, FTP, SSH, DNS, SMTP, Telnet, POP3, IMAP| 7 | Application | User applications, services, APIs, encryption at app level | HTTP/HTTPS, FTP, SSH, DNS, SMTP, Telnet, POP3, IMAP |
-6PresentationData translation, encryption, compression, character encodingTLS/SSL (partly), JPEG, GIF, MPEG, ASCII| 6 | Presentation | Data translation, encryption, compression, character encoding | TLS/SSL (partly), JPEG, GIF, MPEG, ASCII |
-5SessionEstablish, maintain, terminate sessionsNetBIOS, PPTP, L2TP, RPC, X11| 5 | Session | Establish, maintain, terminate sessions | NetBIOS, PPTP, L2TP, RPC, X11 |
-4TransportEnd-to-end communication, reliability, flow control, port-based multiplexingTCP, UDP, SCTP, DCCP| 4 | Transport | End-to-end communication, reliability, flow control, port-based multiplexing | TCP, UDP, SCTP, DCCP |
-3NetworkRouting, logical addressing (IP), packet forwardingIP (IPv4/IPv6), ICMP, IGMP, IPSec, Routers| 3 | Network | Routing, logical addressing (IP), packet forwarding | IP (IPv4/IPv6), ICMP, IGMP, IPSec, Routers |
-2Data LinkFrame formatting, MAC addressing, physical link control, switchingEthernet, PPP, Frame Relay, HDLC, MAC address, Switches| 2 | Data Link | Frame formatting, MAC addressing, physical link control, switching | Ethernet, PPP, Frame Relay, HDLC, MAC address, Switches |
-1PhysicalPhysical transmission media, signaling, cablingCopper wire, Fiber, Radio, Hubs, Repeaters, RJ45, Modems| 1 | Physical | Physical transmission media, signaling, cabling | Copper wire, Fiber, Radio, Hubs, Repeaters, RJ45, Modems |
+| 7 | Application | User applications, services, APIs, encryption at app level | HTTP/HTTPS, FTP, SSH, DNS, SMTP, Telnet, POP3, IMAP |
+| 6 | Presentation | Data translation, encryption, compression, character encoding | TLS/SSL (partly), JPEG, GIF, MPEG, ASCII |
+| 5 | Session | Establish, maintain, terminate sessions | NetBIOS, PPTP, L2TP, RPC, X11 |
+| 4 | Transport | End-to-end communication, reliability, flow control, port-based multiplexing | TCP, UDP, SCTP, DCCP |
+| 3 | Network | Routing, logical addressing (IP), packet forwarding | IP (IPv4/IPv6), ICMP, IGMP, IPSec, Routers |
+| 2 | Data Link | Frame formatting, MAC addressing, physical link control, switching | Ethernet, PPP, Frame Relay, HDLC, MAC address, Switches |
+| 1 | Physical | Physical transmission media, signaling, cabling | Copper wire, Fiber, Radio, Hubs, Repeaters, RJ45, Modems |
 
 ### Layer 7 (Application)
 
@@ -2235,13 +2235,13 @@ Physical transmission media and signaling. Cables, radio frequencies, connectors
       content: `### Overview
 
 The TCP/IP model (also called Internet Protocol Suite) has 4 or 5 layers depending on source. It's more practical and widely used than OSI.
-TCP/IP LayerOSI LayersProtocols & Examples| TCP/IP Layer | OSI Layers | Protocols & Examples |
+| TCP/IP Layer | OSI Layers | Protocols & Examples |
 |---|---|---|
-Application (5)Layers 5-7HTTP, HTTPS, FTP, SSH, DNS, SMTP, Telnet, SNMP| Application (5) | Layers 5-7 | HTTP, HTTPS, FTP, SSH, DNS, SMTP, Telnet, SNMP |
-Transport (4)Layer 4TCP, UDP, SCTP| Transport (4) | Layer 4 | TCP, UDP, SCTP |
-Internet (3)Layer 3IP (v4/v6), ICMP, IGMP, IPSec| Internet (3) | Layer 3 | IP (v4/v6), ICMP, IGMP, IPSec |
-Link/Network Access (2)Layers 1-2Ethernet, PPP, Frame Relay, ARP| Link/Network Access (2) | Layers 1-2 | Ethernet, PPP, Frame Relay, ARP |
-Physical (1 - sometimes)Layer 1Cabling, signaling, modulation| Physical (1 - sometimes) | Layer 1 | Cabling, signaling, modulation |
+| Application (5) | Layers 5-7 | HTTP, HTTPS, FTP, SSH, DNS, SMTP, Telnet, SNMP |
+| Transport (4) | Layer 4 | TCP, UDP, SCTP |
+| Internet (3) | Layer 3 | IP (v4/v6), ICMP, IGMP, IPSec |
+| Link/Network Access (2) | Layers 1-2 | Ethernet, PPP, Frame Relay, ARP |
+| Physical (1 - sometimes) | Layer 1 | Cabling, signaling, modulation |
 
 ### Key Protocols at Each Layer
 
@@ -2254,26 +2254,30 @@ Physical (1 - sometimes)Layer 1Cabling, signaling, modulation| Physical (1 - som
     {
       id: '3-network-topologies',
       title: `3. Network Topologies`,
-      content: `TopologyDescriptionAdvantagesDisadvantages| Topology | Description | Advantages | Disadvantages |
+      content: `Network topology defines the physical and logical arrangement of nodes and connections in a network. Understanding topologies is critical for designing resilient, performant networks.
+
+| Topology | Description | Advantages | Disadvantages |
 |---|---|---|---|
-StarAll devices connect to central hub/switchSingle point of management; easy to add/remove nodes; failures isolatedCentral hub is bottleneck and single point of failure| Star | All devices connect to central hub/switch | Single point of management; easy to add/remove nodes; failures isolated | Central hub is bottleneck and single point of failure |
-MeshEach device connects to multiple/all others; full or partialRedundancy; no single failure point; self-healingExpensive; complex; high overhead| Mesh | Each device connects to multiple/all others; full or partial | Redundancy; no single failure point; self-healing | Expensive; complex; high overhead |
-BusAll devices on single cable; shared mediumInexpensive; simple; easy to extendShared medium contention; single cable failure impacts all| Bus | All devices on single cable; shared medium | Inexpensive; simple; easy to extend | Shared medium contention; single cable failure impacts all |
-RingEach device connects to exactly two others in a circleEqual access opportunity; no hub neededSingle failure breaks entire ring; latency grows with number of nodes| Ring | Each device connects to exactly two others in a circle | Equal access opportunity; no hub needed | Single failure breaks entire ring; latency grows with number of nodes |
-HybridCombination of two or more topologiesFlexible; can optimize for specific needsComplex to design and manage| Hybrid | Combination of two or more topologies | Flexible; can optimize for specific needs | Complex to design and manage |`,
+| Star | All devices connect to central hub/switch | Single point of management; easy to add/remove nodes; failures isolated | Central hub is bottleneck and single point of failure |
+| Mesh | Each device connects to multiple/all others; full or partial | Redundancy; no single failure point; self-healing | Expensive; complex; high overhead |
+| Bus | All devices on single cable; shared medium | Inexpensive; simple; easy to extend | Shared medium contention; single cable failure impacts all |
+| Ring | Each device connects to exactly two others in a circle | Equal access opportunity; no hub needed | Single failure breaks entire ring; latency grows with number of nodes |
+| Hybrid | Combination of two or more topologies | Flexible; can optimize for specific needs | Complex to design and manage |`,
     },
     {
       id: '4-network-types-and-sizes',
       title: `4. Network Types and Sizes`,
-      content: `Network TypeDescription| Network Type | Description |
+      content: `Networks are classified by their geographic scope, speed, and purpose. Understanding these categories is essential for designing appropriate security controls.
+
+| Network Type | Description |
 |---|---|
-LAN (Local Area Network)Limited geographic scope (office, campus); high speed (10 Mbps to 100 Gbps); low latency| LAN (Local Area Network) | Limited geographic scope (office, campus); high speed (10 Mbps to 100 Gbps); low latency |
-WAN (Wide Area Network)Spans large geographic distances (cities, countries); slower than LAN; higher latency; uses ISP connections| WAN (Wide Area Network) | Spans large geographic distances (cities, countries); slower than LAN; higher latency; uses ISP connections |
-MAN (Metropolitan Area Network)Covers metropolitan area (city); larger than LAN, smaller than WAN; moderate speed and latency| MAN (Metropolitan Area Network) | Covers metropolitan area (city); larger than LAN, smaller than WAN; moderate speed and latency |
-PAN (Personal Area Network)Very short range (within reach of person); wireless (Bluetooth, NFC, Zigbee); for personal devices| PAN (Personal Area Network) | Very short range (within reach of person); wireless (Bluetooth, NFC, Zigbee); for personal devices |
-SAN (Storage Area Network)Dedicated high-speed network for block-level storage; Fibre Channel or iSCSI; NOT about security| SAN (Storage Area Network) | Dedicated high-speed network for block-level storage; Fibre Channel or iSCSI; NOT about security |
-WLAN (Wireless LAN)Wireless variant of LAN using 802.11 standards; convenience vs security trade-offs| WLAN (Wireless LAN) | Wireless variant of LAN using 802.11 standards; convenience vs security trade-offs |
-CAN (Campus Area Network)Connects multiple LANs across a campus; owned by single organization| CAN (Campus Area Network) | Connects multiple LANs across a campus; owned by single organization |`,
+| LAN (Local Area Network) | Limited geographic scope (office, campus); high speed (10 Mbps to 100 Gbps); low latency |
+| WAN (Wide Area Network) | Spans large geographic distances (cities, countries); slower than LAN; higher latency; uses ISP connections |
+| MAN (Metropolitan Area Network) | Covers metropolitan area (city); larger than LAN, smaller than WAN; moderate speed and latency |
+| PAN (Personal Area Network) | Very short range (within reach of person); wireless (Bluetooth, NFC, Zigbee); for personal devices |
+| SAN (Storage Area Network) | Dedicated high-speed network for block-level storage; Fibre Channel or iSCSI; NOT about security |
+| WLAN (Wireless LAN) | Wireless variant of LAN using 802.11 standards; convenience vs security trade-offs |
+| CAN (Campus Area Network) | Connects multiple LANs across a campus; owned by single organization |`,
     },
     {
       id: '5-ip-addressing-and-subnetting',
@@ -2556,23 +2560,23 @@ cissp_wireless_net: {
       title: `8. Wireless Networking`,
       content: `### 802.11 Standards
 
-StandardYearFrequencyData RateRangeNotes| Standard | Year | Frequency | Data Rate | Range | Notes |
+| Standard | Year | Frequency | Data Rate | Range | Notes |
 |---|---|---|---|---|---|
-802.11a19995 GHz54 Mbps35-100mLess interference; lower range| 802.11a | 1999 | 5 GHz | 54 Mbps | 35-100m | Less interference; lower range |
-802.11b19992.4 GHz11 Mbps35-140mSlow but longer range; congested band| 802.11b | 1999 | 2.4 GHz | 11 Mbps | 35-140m | Slow but longer range; congested band |
-802.11g20032.4 GHz54 Mbps35-140mBackward compatible with 11b| 802.11g | 2003 | 2.4 GHz | 54 Mbps | 35-140m | Backward compatible with 11b |
-802.11n (WiFi 4)20092.4/5 GHz600 Mbps70-250mMIMO; dual band| 802.11n (WiFi 4) | 2009 | 2.4/5 GHz | 600 Mbps | 70-250m | MIMO; dual band |
-802.11ac (WiFi 5)20135 GHz only6.9 Gbps50-100mWide channels; high throughput| 802.11ac (WiFi 5) | 2013 | 5 GHz only | 6.9 Gbps | 50-100m | Wide channels; high throughput |
-802.11ax (WiFi 6)20202.4/5/6 GHz9.6 Gbps30-100mLatest standard; OFDMA; improved efficiency| 802.11ax (WiFi 6) | 2020 | 2.4/5/6 GHz | 9.6 Gbps | 30-100m | Latest standard; OFDMA; improved efficiency |
+| 802.11a | 1999 | 5 GHz | 54 Mbps | 35-100m | Less interference; lower range |
+| 802.11b | 1999 | 2.4 GHz | 11 Mbps | 35-140m | Slow but longer range; congested band |
+| 802.11g | 2003 | 2.4 GHz | 54 Mbps | 35-140m | Backward compatible with 11b |
+| 802.11n (WiFi 4) | 2009 | 2.4/5 GHz | 600 Mbps | 70-250m | MIMO; dual band |
+| 802.11ac (WiFi 5) | 2013 | 5 GHz only | 6.9 Gbps | 50-100m | Wide channels; high throughput |
+| 802.11ax (WiFi 6) | 2020 | 2.4/5/6 GHz | 9.6 Gbps | 30-100m | Latest standard; OFDMA; improved efficiency |
 
 ### Wireless Encryption Protocols
 
-ProtocolYearEncryptionStatusSecurity Notes| Protocol | Year | Encryption | Status | Security Notes |
+| Protocol | Year | Encryption | Status | Security Notes |
 |---|---|---|---|---|
-WEP1997RC4 64/128-bitBroken/DeprecatedWeak IV, easy to crack (< 1 hour)| WEP | 1997 | RC4 64/128-bit | Broken/Deprecated | Weak IV, easy to crack (< 1 hour) |
-WPA2003TKIP (RC4)DeprecatedBetter than WEP; still crackable| WPA | 2003 | TKIP (RC4) | Deprecated | Better than WEP; still crackable |
-WPA22004CCMP (AES)Current standardStrong; widely deployed; WPA2-PSK/Enterprise| WPA2 | 2004 | CCMP (AES) | Current standard | Strong; widely deployed; WPA2-PSK/Enterprise |
-WPA32018CCMP-256/GCMP-256LatestImproved; Simultaneous Auth of Equals (SAE) instead of PSK| WPA3 | 2018 | CCMP-256/GCMP-256 | Latest | Improved; Simultaneous Auth of Equals (SAE) instead of PSK |
+| WEP | 1997 | RC4 64/128-bit | Broken/Deprecated | Weak IV, easy to crack (< 1 hour) |
+| WPA | 2003 | TKIP (RC4) | Deprecated | Better than WEP; still crackable |
+| WPA2 | 2004 | CCMP (AES) | Current standard | Strong; widely deployed; WPA2-PSK/Enterprise |
+| WPA3 | 2018 | CCMP-256/GCMP-256 | Latest | Improved; Simultaneous Auth of Equals (SAE) instead of PSK |
 
 ### TKIP vs CCMP
 
@@ -2618,14 +2622,14 @@ Provides port-level authentication before accessing network. Controlled (port bl
 ### EAP (Extensible Authentication Protocol)
 
 Flexible framework for authentication methods. Works with 802.1X.
-EAP MethodAuthentication TypeSecurity LevelTypical Use| EAP Method | Authentication Type | Security Level | Typical Use |
+| EAP Method | Authentication Type | Security Level | Typical Use |
 |---|---|---|---|
-EAP-MD5Password hashWeakLegacy; no mutual auth; vulnerable to dictionary attacks| EAP-MD5 | Password hash | Weak | Legacy; no mutual auth; vulnerable to dictionary attacks |
-EAP-TLSCertificate (TLS)StrongEnterprise; requires client certificate| EAP-TLS | Certificate (TLS) | Strong | Enterprise; requires client certificate |
-PEAPCertificate + inner auth methodStrongProtected EAP; common in enterprise| PEAP | Certificate + inner auth method | Strong | Protected EAP; common in enterprise |
-EAP-TTLSCertificate + tunneled inner authStrongLegacy method tunnel; good compatibility| EAP-TTLS | Certificate + tunneled inner auth | Strong | Legacy method tunnel; good compatibility |
-EAP-FASTProtected access credentialsStrongCisco proprietary; PACs instead of certificates| EAP-FAST | Protected access credentials | Strong | Cisco proprietary; PACs instead of certificates |
-EAP-GTCGeneric Token Card (OTP)StrongSupports one-time passwords| EAP-GTC | Generic Token Card (OTP) | Strong | Supports one-time passwords |
+| EAP-MD5 | Password hash | Weak | Legacy; no mutual auth; vulnerable to dictionary attacks |
+| EAP-TLS | Certificate (TLS) | Strong | Enterprise; requires client certificate |
+| PEAP | Certificate + inner auth method | Strong | Protected EAP; common in enterprise |
+| EAP-TTLS | Certificate + tunneled inner auth | Strong | Legacy method tunnel; good compatibility |
+| EAP-FAST | Protected access credentials | Strong | Cisco proprietary; PACs instead of certificates |
+| EAP-GTC | Generic Token Card (OTP) | Strong | Supports one-time passwords |
 
 ### RADIUS (Remote Authentication Dial In User Service)
 
@@ -2704,14 +2708,14 @@ SDN enables dynamic security policies—block malicious IPs instantly, segment t
 - **BeyondCorp Model**: Users access apps through proxy/gateway; gateway enforces device compliance, user identity, network conditions before access
 
 **Implementation**: Proxies inspect traffic before forwarding to resources. Corporate apps served via cloud-based access gateway rather than VPN.
-AspectZero Trust (ZTNA)Traditional VPN| Aspect | Zero Trust (ZTNA) | Traditional VPN |
+| Aspect | Zero Trust (ZTNA) | Traditional VPN |
 |---|---|---|
-Trust BoundaryUser identity + device + contextNetwork perimeter (inside/outside)| Trust Boundary | User identity + device + context | Network perimeter (inside/outside) |
-AuthorizationPer-transaction/requestOne-time VPN authentication| Authorization | Per-transaction/request | One-time VPN authentication |
-MonitoringContinuous; revoke if anomaly detectedAfter connection established| Monitoring | Continuous; revoke if anomaly detected | After connection established |
-Lateral MovementMicrosegmentation limits riskFull internal network access| Lateral Movement | Microsegmentation limits risk | Full internal network access |
-Device RequirementCompliance checked (antivirus, encryption, patches)Any device allowed if credentials valid| Device Requirement | Compliance checked (antivirus, encryption, patches) | Any device allowed if credentials valid |
-ScalabilityCloud-native; works globallyVPN concentrators; scaling difficult| Scalability | Cloud-native; works globally | VPN concentrators; scaling difficult |
+| Trust Boundary | User identity + device + context | Network perimeter (inside/outside) |
+| Authorization | Per-transaction/request | One-time VPN authentication |
+| Monitoring | Continuous; revoke if anomaly detected | After connection established |
+| Lateral Movement | Microsegmentation limits risk | Full internal network access |
+| Device Requirement | Compliance checked (antivirus, encryption, patches) | Any device allowed if credentials valid |
+| Scalability | Cloud-native; works globally | VPN concentrators; scaling difficult |
 
 ### Cloud Networking Security
 
@@ -2932,12 +2936,12 @@ Authentication mechanisms are classified into five categories based on what user
       title: `2. Identification and Authentication`,
       content: `### Identification vs. Authentication vs. Authorization
 
-TermDefinition| Term | Definition |
+| Term | Definition |
 |---|---|
-IdentificationDeclaring who you claim to be (username, email). Not verification.| Identification | Declaring who you claim to be (username, email). Not verification. |
-AuthenticationProving your identity through credentials (passwords, certificates, tokens).| Authentication | Proving your identity through credentials (passwords, certificates, tokens). |
-AuthorizationDetermining what authenticated user can do (permissions, access rights).| Authorization | Determining what authenticated user can do (permissions, access rights). |
-AccountabilityLogging and tracking user actions for audit and forensics.| Accountability | Logging and tracking user actions for audit and forensics. |
+| Identification | Declaring who you claim to be (username, email). Not verification. |
+| Authentication | Proving your identity through credentials (passwords, certificates, tokens). |
+| Authorization | Determining what authenticated user can do (permissions, access rights). |
+| Accountability | Logging and tracking user actions for audit and forensics. |
 
 ### Multifactor Authentication (MFA)
 
@@ -3022,16 +3026,16 @@ Two fundamental error types affect biometric accuracy:
 
 ### Biometrics Comparison Table
 
-TypeAccuracySpoofing RiskUser AcceptanceDeploymentCost| Type | Accuracy | Spoofing Risk | User Acceptance | Deployment | Cost |
+| Type | Accuracy | Spoofing Risk | User Acceptance | Deployment | Cost |
 |---|---|---|---|---|---|
-FingerprintHigh (FAR 0.01%)Moderate - molds, printsHigh - fast, familiarVery widespread - phones, bordersLow| Fingerprint | High (FAR 0.01%) | Moderate - molds, prints | High - fast, familiar | Very widespread - phones, borders | Low |
-IrisVery High (FAR 0.001%)Low - difficult to forgeModerate - requires positioningGrowing - airports, visasHigh| Iris | Very High (FAR 0.001%) | Low - difficult to forge | Moderate - requires positioning | Growing - airports, visas | High |
-RetinaExcellentVery LowLow - inconvenientLimited - banks, labsVery High| Retina | Excellent | Very Low | Low - inconvenient | Limited - banks, labs | Very High |
-FacialGood to ExcellentModerate - photos, masksVery High - touchlessRapidly expanding - mobile, airportsMedium| Facial | Good to Excellent | Moderate - photos, masks | Very High - touchless | Rapidly expanding - mobile, airports | Medium |
-Palm VeinHighVery Low - internalModerate - new technologyGrowing - JapanHigh| Palm Vein | High | Very Low - internal | Moderate - new technology | Growing - Japan | High |
-VoiceGoodHigh - recordingsVery High - telephoneGrowing - remote accessLow| Voice | Good | High - recordings | Very High - telephone | Growing - remote access | Low |
-KeystrokeModerateHigh - keystroke injectionLow - requires trainingLimited - continuous authLow| Keystroke | Moderate | High - keystroke injection | Low - requires training | Limited - continuous auth | Low |
-SignatureModerateHigh - signature imitationModerateLimited - specific domainsLow| Signature | Moderate | High - signature imitation | Moderate | Limited - specific domains | Low |
+| Fingerprint | High (FAR 0.01%) | Moderate - molds, prints | High - fast, familiar | Very widespread - phones, borders | Low |
+| Iris | Very High (FAR 0.001%) | Low - difficult to forge | Moderate - requires positioning | Growing - airports, visas | High |
+| Retina | Excellent | Very Low | Low - inconvenient | Limited - banks, labs | Very High |
+| Facial | Good to Excellent | Moderate - photos, masks | Very High - touchless | Rapidly expanding - mobile, airports | Medium |
+| Palm Vein | High | Very Low - internal | Moderate - new technology | Growing - Japan | High |
+| Voice | Good | High - recordings | Very High - telephone | Growing - remote access | Low |
+| Keystroke | Moderate | High - keystroke injection | Low - requires training | Limited - continuous auth | Low |
+| Signature | Moderate | High - signature imitation | Moderate | Limited - specific domains | Low |
 
 ### Biometric System Concerns
 
@@ -3205,14 +3209,14 @@ cissp_access_control: {
 **Rule-Based Access Control:** Access decisions based on specific rules evaluated at request time. Example: Allow users in subnet X to access database Y during hours 8-18. **Risk-Based Access Control:** Grants or denies access based on risk score. High-risk scenarios require additional authentication or approval.
 ### Access Control Models Comparison
 
-ModelCharacteristics| Model | Characteristics |
+| Model | Characteristics |
 |---|---|
-DACOwner-controlled, flexible but weak, supports delegation| DAC | Owner-controlled, flexible but weak, supports delegation |
-MACPolicy-enforced, strong but inflexible, security labels required| MAC | Policy-enforced, strong but inflexible, security labels required |
-RBACJob-based, simplifies management, aligns with organizations| RBAC | Job-based, simplifies management, aligns with organizations |
-ABACAttribute-based, most flexible and granular, complex to implement| ABAC | Attribute-based, most flexible and granular, complex to implement |
-Rule-BasedRule-evaluated, situational policies, condition-based| Rule-Based | Rule-evaluated, situational policies, condition-based |
-Risk-BasedRisk-assessed, adaptive, requires risk calculation engine| Risk-Based | Risk-assessed, adaptive, requires risk calculation engine |`,
+| DAC | Owner-controlled, flexible but weak, supports delegation |
+| MAC | Policy-enforced, strong but inflexible, security labels required |
+| RBAC | Job-based, simplifies management, aligns with organizations |
+| ABAC | Attribute-based, most flexible and granular, complex to implement |
+| Rule-Based | Rule-evaluated, situational policies, condition-based |
+| Risk-Based | Risk-assessed, adaptive, requires risk calculation engine |`,
     },
     {
       id: '6-access-control-techniques-and-technologies',
@@ -3264,10 +3268,10 @@ Users authorized only for information necessary to perform their job duties. Red
 **UI designed to present only options available to user based on authorization.** Administrative functions hidden from users without admin role. Reduces user confusion and accidental misuse. Menu options dynamically rendered based on user permissions.
 ### Default Deny vs. Default Allow
 
-ApproachDescription| Approach | Description |
+| Approach | Description |
 |---|---|
-Default DenyAccess denied unless explicitly allowed. More secure. Requires careful management.| Default Deny | Access denied unless explicitly allowed. More secure. Requires careful management. |
-Default AllowAccess allowed unless explicitly denied. Less secure. Dangerous for new resources.| Default Allow | Access allowed unless explicitly denied. Less secure. Dangerous for new resources. |`,
+| Default Deny | Access denied unless explicitly allowed. More secure. Requires careful management. |
+| Default Allow | Access allowed unless explicitly denied. Less secure. Dangerous for new resources. |`,
     },
   ],
 },
@@ -3360,16 +3364,16 @@ cissp_identity: {
 **CHAP (Challenge Handshake Authentication Protocol):** PPP protocol using three-way handshake. More secure than PAP as password not transmitted over network. **EAP (Extensible Authentication Protocol):** Framework for authentication supporting multiple methods (MD5, TLS, PEAP, EAP-FAST). Used in wireless networks with 802.1X.
 ### Authentication Protocols Comparison
 
-ProtocolTypeUse CaseStrengthsLimitations| Protocol | Type | Use Case | Strengths | Limitations |
+| Protocol | Type | Use Case | Strengths | Limitations |
 |---|---|---|---|---|
-KerberosNetwork AuthEnterprise LANMutual auth, no pwd over network, SSOClock sync, complex, realm-based| Kerberos | Network Auth | Enterprise LAN | Mutual auth, no pwd over network, SSO | Clock sync, complex, realm-based |
-LDAPDirectoryUser lookupHierarchical, flexible, lightweightNot encryption by default, not auth| LDAP | Directory | User lookup | Hierarchical, flexible, lightweight | Not encryption by default, not auth |
-SAMLFederated SSOB2B, CloudXML assertions, metadata, established standardXML overhead, SP/IdP coupling| SAML | Federated SSO | B2B, Cloud | XML assertions, metadata, established standard | XML overhead, SP/IdP coupling |
-OAuth 2.0AuthorizationDelegation, third-party appsSimple, flexible, API-friendlyNot for authentication, token replay| OAuth 2.0 | Authorization | Delegation, third-party apps | Simple, flexible, API-friendly | Not for authentication, token replay |
-OIDCAuth + AuthzSSO, modern webBuilt on OAuth, identity claims, JWTNewer, less mature than SAML| OIDC | Auth + Authz | SSO, modern web | Built on OAuth, identity claims, JWT | Newer, less mature than SAML |
-NTLMWindows AuthLegacy WindowsIntegrated, backward compatibleSecurity flaws, replaced by Kerberos| NTLM | Windows Auth | Legacy Windows | Integrated, backward compatible | Security flaws, replaced by Kerberos |
-CHAPPPP AuthDial-up, ISDNMore secure than PAPOutdated, single exchange| CHAP | PPP Auth | Dial-up, ISDN | More secure than PAP | Outdated, single exchange |
-EAPWireless Auth802.1X, Wi-FiFlexible, extensibleComplex implementation| EAP | Wireless Auth | 802.1X, Wi-Fi | Flexible, extensible | Complex implementation |`,
+| Kerberos | Network Auth | Enterprise LAN | Mutual auth, no pwd over network, SSO | Clock sync, complex, realm-based |
+| LDAP | Directory | User lookup | Hierarchical, flexible, lightweight | Not encryption by default, not auth |
+| SAML | Federated SSO | B2B, Cloud | XML assertions, metadata, established standard | XML overhead, SP/IdP coupling |
+| OAuth 2.0 | Authorization | Delegation, third-party apps | Simple, flexible, API-friendly | Not for authentication, token replay |
+| OIDC | Auth + Authz | SSO, modern web | Built on OAuth, identity claims, JWT | Newer, less mature than SAML |
+| NTLM | Windows Auth | Legacy Windows | Integrated, backward compatible | Security flaws, replaced by Kerberos |
+| CHAP | PPP Auth | Dial-up, ISDN | More secure than PAP | Outdated, single exchange |
+| EAP | Wireless Auth | 802.1X, Wi-Fi | Flexible, extensible | Complex implementation |`,
       examTip: `The exam tests TRUE multi-factor authentication. Password + security question is NOT MFA (both are knowledge factors). Password + SMS code IS MFA (knowledge + possession). For biometrics: FAR (False Accept Rate) = Type II error = letting impostor in. FRR (False Reject Rate) = Type I error = locking legitimate user out. CER/EER is where they cross - LOWER CER means MORE accurate biometric.`,
       importantNote: `KDC (Key Distribution Center): Central authentication server holding user and service secrets. | Authentication Server (AS): Part of KDC. Issues ticket granting tickets (TGT). | Ticket Granting Server (TGS): Part of KDC. Issues service tickets. | Service Principal: Server account registered with KDC. | Realm: Kerberos domain with its own KDC.`,
     },
@@ -3518,13 +3522,13 @@ Certificate trust depends on hierarchical relationships between CAs:
 ### Certificate Revocation Methods
 
 When certificates must be invalidated before expiration, two primary methods exist:
-MethodDetails| Method | Details |
+| Method | Details |
 |---|---|
-CRL (Certificate Revocation List)Periodic list published by CA; contains serial numbers of revoked certs and revocation dates; clients download and cache; can be large; update delays (days)| CRL (Certificate Revocation List) | Periodic list published by CA; contains serial numbers of revoked certs and revocation dates; clients download and cache; can be large; update delays (days) |
-OCSP (Online Certificate Status Protocol)Real-time query to OCSP responder; client asks 'is this cert valid?'; immediate response; lightweight; single certificate query; requires network access| OCSP (Online Certificate Status Protocol) | Real-time query to OCSP responder; client asks 'is this cert valid?'; immediate response; lightweight; single certificate query; requires network access |
-OCSP StaplingServer includes OCSP response in TLS handshake; prevents client from contacting responder; reduces latency; responder response cached by server| OCSP Stapling | Server includes OCSP response in TLS handshake; prevents client from contacting responder; reduces latency; responder response cached by server |
-CRL Distribution PointsExtension in certificate indicating where CRL can be fetched; allows flexibility in revocation infrastructure| CRL Distribution Points | Extension in certificate indicating where CRL can be fetched; allows flexibility in revocation infrastructure |
-OCSP Must-StapleExtension requiring server to provide OCSP response; if no response, client must fail open; reduces OCSP responder load| OCSP Must-Staple | Extension requiring server to provide OCSP response; if no response, client must fail open; reduces OCSP responder load |
+| CRL (Certificate Revocation List) | Periodic list published by CA; contains serial numbers of revoked certs and revocation dates; clients download and cache; can be large; update delays (days) |
+| OCSP (Online Certificate Status Protocol) | Real-time query to OCSP responder; client asks 'is this cert valid?'; immediate response; lightweight; single certificate query; requires network access |
+| OCSP Stapling | Server includes OCSP response in TLS handshake; prevents client from contacting responder; reduces latency; responder response cached by server |
+| CRL Distribution Points | Extension in certificate indicating where CRL can be fetched; allows flexibility in revocation infrastructure |
+| OCSP Must-Staple | Extension requiring server to provide OCSP response; if no response, client must fail open; reduces OCSP responder load |
 
 **Certificate Pinning**: Application/browser pins expected certificate or public key; rejects valid certificates from different issuers; prevents interception by compromised CAs.
 
@@ -3686,10 +3690,10 @@ cissp_vuln: {
       content: `**Security assessments are systematic evaluations of security posture.** Different strategies provide different perspectives and insights. Combination of approaches provides comprehensive understanding:
 ### Internal vs External Assessments
 
-TypeCharacteristics| Type | Characteristics |
+| Type | Characteristics |
 |---|---|
-InternalConducted from inside organization. Tests controls from employee/network perspective. Can access internal systems. Limited by organizational policies.| Internal | Conducted from inside organization. Tests controls from employee/network perspective. Can access internal systems. Limited by organizational policies. |
-ExternalConducted from outside organization. Tests perimeter defenses and public-facing systems. Simulates attacker perspective. No internal access.| External | Conducted from outside organization. Tests perimeter defenses and public-facing systems. Simulates attacker perspective. No internal access. |
+| Internal | Conducted from inside organization. Tests controls from employee/network perspective. Can access internal systems. Limited by organizational policies. |
+| External | Conducted from outside organization. Tests perimeter defenses and public-facing systems. Simulates attacker perspective. No internal access. |
 
 ### Manual vs Automated Testing
 
@@ -3852,14 +3856,14 @@ Threat modeling prevents common mistakes: hardcoded passwords, unencrypted data 
 ### STRIDE Model in Detail
 
 **STRIDE** is a threat categorization framework. For each component (process, data store, external entity, data flow), ask: 'What STRIDE threats apply?'
-Threat TypeDefinitionExampleMitigation| Threat Type | Definition | Example | Mitigation |
+| Threat Type | Definition | Example | Mitigation |
 |---|---|---|---|
-SpoofingAttacker pretends to be someone else (identity impersonation)Attacker logs in as admin by stealing credentialsAuthentication (passwords, certs, MFA), non-repudiation (digital signatures)| Spoofing | Attacker pretends to be someone else (identity impersonation) | Attacker logs in as admin by stealing credentials | Authentication (passwords, certs, MFA), non-repudiation (digital signatures) |
-TamperingUnauthorized modification of data or codeAttacker modifies database records or intercepts HTTPS requestIntegrity checks (HMAC, digital signatures), encryption, immutable logs| Tampering | Unauthorized modification of data or code | Attacker modifies database records or intercepts HTTPS request | Integrity checks (HMAC, digital signatures), encryption, immutable logs |
-RepudiationAttacker denies performing an action; no audit trailUser denies placing order; no way to prove they didAudit logging, digital signatures, non-repudiation mechanisms| Repudiation | Attacker denies performing an action; no audit trail | User denies placing order; no way to prove they did | Audit logging, digital signatures, non-repudiation mechanisms |
-Information DisclosureConfidential data exposed (unencrypted transmission, poor access control)Attacker intercepts unencrypted password or reads sensitive fileEncryption (TLS, file encryption), access controls, minimize data exposure| Information Disclosure | Confidential data exposed (unencrypted transmission, poor access control) | Attacker intercepts unencrypted password or reads sensitive file | Encryption (TLS, file encryption), access controls, minimize data exposure |
-Denial of ServiceSystem made unavailable to legitimate usersDDoS attack floods server; attacker deletes databaseRate limiting, redundancy, backup/recovery, DDoS mitigation| Denial of Service | System made unavailable to legitimate users | DDoS attack floods server; attacker deletes database | Rate limiting, redundancy, backup/recovery, DDoS mitigation |
-Elevation of PrivilegeAttacker gains higher permissions than authorizedUser escalates to admin; app flaw allows read of other user dataLeast privilege, input validation, secure coding, privilege separation| Elevation of Privilege | Attacker gains higher permissions than authorized | User escalates to admin; app flaw allows read of other user data | Least privilege, input validation, secure coding, privilege separation |
+| Spoofing | Attacker pretends to be someone else (identity impersonation) | Attacker logs in as admin by stealing credentials | Authentication (passwords, certs, MFA), non-repudiation (digital signatures) |
+| Tampering | Unauthorized modification of data or code | Attacker modifies database records or intercepts HTTPS request | Integrity checks (HMAC, digital signatures), encryption, immutable logs |
+| Repudiation | Attacker denies performing an action; no audit trail | User denies placing order; no way to prove they did | Audit logging, digital signatures, non-repudiation mechanisms |
+| Information Disclosure | Confidential data exposed (unencrypted transmission, poor access control) | Attacker intercepts unencrypted password or reads sensitive file | Encryption (TLS, file encryption), access controls, minimize data exposure |
+| Denial of Service | System made unavailable to legitimate users | DDoS attack floods server; attacker deletes database | Rate limiting, redundancy, backup/recovery, DDoS mitigation |
+| Elevation of Privilege | Attacker gains higher permissions than authorized | User escalates to admin; app flaw allows read of other user data | Least privilege, input validation, secure coding, privilege separation |
 
 For example, analyzing 'payment processing' service: identify STRIDE threats (Spoofing: use fake payment card; Tampering: modify amount; Repudiation: deny transaction; Info Disclosure: sniff card number; DoS: crash payment system; Elevation: access other user payments). Design mitigations for each.
 ### PASTA Framework
@@ -3937,16 +3941,16 @@ Example: SQL Injection in publicly exposed web app (AV:N AC:L PR:N UI:N S:C CIA:
 Developers study CWEs to learn what NOT to do. Security teams patch CVEs to fix specific vulnerabilities.
 
 **CVSS Base Metrics Severity Mapping**:
-Base MetricLow SeverityMedium SeverityHigh Severity| Base Metric | Low Severity | Medium Severity | High Severity |
+| Base Metric | Low Severity | Medium Severity | High Severity |
 |---|---|---|---|
-Attack VectorPhysical, LocalAdjacentNetwork| Attack Vector | Physical, Local | Adjacent | Network |
-Attack ComplexityHighN/ALow| Attack Complexity | High | N/A | Low |
-Privileges RequiredHighLowNone| Privileges Required | High | Low | None |
-User InteractionRequiredN/ANone| User Interaction | Required | N/A | None |
-ScopeUnchangedN/AChanged| Scope | Unchanged | N/A | Changed |
-Confidentiality ImpactNoneLowHigh| Confidentiality Impact | None | Low | High |
-Integrity ImpactNoneLowHigh| Integrity Impact | None | Low | High |
-Availability ImpactNoneLowHigh| Availability Impact | None | Low | High |`,
+| Attack Vector | Physical, Local | Adjacent | Network |
+| Attack Complexity | High | N/A | Low |
+| Privileges Required | High | Low | None |
+| User Interaction | Required | N/A | None |
+| Scope | Unchanged | N/A | Changed |
+| Confidentiality Impact | None | Low | High |
+| Integrity Impact | None | Low | High |
+| Availability Impact | None | Low | High |`,
       examTip: `Penetration testing vs vulnerability assessment is a favorite exam distinction. Vulnerability assessment IDENTIFIES weaknesses but does not exploit them. Penetration testing ACTIVELY EXPLOITS vulnerabilities to determine real-world impact. A vulnerability scan might find an open port; a pen test would attempt to use that port to gain unauthorized access. The exam wants you to know that pen testing requires explicit written authorization.`,
     },
     {
@@ -4096,13 +4100,13 @@ Identifies relationships between separate events that indicate attack. Example: 
 - Confidentiality: Information designated as confidential is protected
 - Privacy: Personal information is collected, used, retained per privacy policy
 
-Type IType II| Type I | Type II |
+| Type I | Type II |
 |---|---|
-Evaluates control designEvaluates control operation over time| Evaluates control design | Evaluates control operation over time |
-Point-in-time assessmentTests controls over 6-12 months| Point-in-time assessment | Tests controls over 6-12 months |
-Whether controls exist and are suitableWhether controls worked effectively| Whether controls exist and are suitable | Whether controls worked effectively |
-Typically 1-2 weeks of fieldworkExtended fieldwork and testing period| Typically 1-2 weeks of fieldwork | Extended fieldwork and testing period |
-Less assurance to usersHigher assurance; typically required by major customers| Less assurance to users | Higher assurance; typically required by major customers |
+| Evaluates control design | Evaluates control operation over time |
+| Point-in-time assessment | Tests controls over 6-12 months |
+| Whether controls exist and are suitable | Whether controls worked effectively |
+| Typically 1-2 weeks of fieldwork | Extended fieldwork and testing period |
+| Less assurance to users | Higher assurance; typically required by major customers |
 
 ### ISO 27001 Audits
 
@@ -4311,14 +4315,14 @@ Measure what percentage of code has been executed during testing:
 
 ### Code Review and Testing Comparison
 
-TypeExecutionCoverageFalse +TimingCost| Type | Execution | Coverage | False + | Timing | Cost |
+| Type | Execution | Coverage | False + | Timing | Cost |
 |---|---|---|---|---|---|
-SASTStatic/No run100% codeHighDevelopmentLow| SAST | Static/No run | 100% code | High | Development | Low |
-DASTDynamic/RunLimited pathsLowTesting stageMedium| DAST | Dynamic/Run | Limited paths | Low | Testing stage | Medium |
-IASTInstrumented runGoodMediumTestingHigh| IAST | Instrumented run | Good | Medium | Testing | High |
-Manual reviewExpert reviewVariableVery LowAnyHigh| Manual review | Expert review | Variable | Very Low | Any | High |
-FuzzingExecution/RandomGoodMediumTestingMedium| Fuzzing | Execution/Random | Good | Medium | Testing | Medium |
-Unit testingDevelopmentMeasuredVery LowDevelopmentLow| Unit testing | Development | Measured | Very Low | Development | Low |`,
+| SAST | Static/No run | 100% code | High | Development | Low |
+| DAST | Dynamic/Run | Limited paths | Low | Testing stage | Medium |
+| IAST | Instrumented run | Good | Medium | Testing | High |
+| Manual review | Expert review | Variable | Very Low | Any | High |
+| Fuzzing | Execution/Random | Good | Medium | Testing | Medium |
+| Unit testing | Development | Measured | Very Low | Development | Low |`,
     },
     {
       id: '8-software-testing-levels',
@@ -4584,12 +4588,12 @@ Law enforcement (FBI, local police) may request organizations **delay** breach n
 - Unreasonable delays (>30-60 days) may violate regulations; consult legal counsel
 
 **Breach Notification Timeline Comparison**:
-RegulationNotify Supervisory AuthorityNotify IndividualsDeadlineKey Condition| Regulation | Notify Supervisory Authority | Notify Individuals | Deadline | Key Condition |
+| Regulation | Notify Supervisory Authority | Notify Individuals | Deadline | Key Condition |
 |---|---|---|---|---|
-GDPRAlways (72 hours)If high risk72 hours to authority; flexible to individualsEU resident data| GDPR | Always (72 hours) | If high risk | 72 hours to authority; flexible to individuals | EU resident data |
-US State LawsState AG if 500+ peopleAll affected persons30-60 days (state-specific)Varies by state| US State Laws | State AG if 500+ people | All affected persons | 30-60 days (state-specific) | Varies by state |
-HIPAAHHS within 60 daysAll affected patients60 daysProtected health info| HIPAA | HHS within 60 days | All affected patients | 60 days | Protected health info |
-PCI DSSAcquiring bank + networks immediatelyPer state law (60 days)Immediate to bankCardholder data| PCI DSS | Acquiring bank + networks immediately | Per state law (60 days) | Immediate to bank | Cardholder data |`,
+| GDPR | Always (72 hours) | If high risk | 72 hours to authority; flexible to individuals | EU resident data |
+| US State Laws | State AG if 500+ people | All affected persons | 30-60 days (state-specific) | Varies by state |
+| HIPAA | HHS within 60 days | All affected patients | 60 days | Protected health info |
+| PCI DSS | Acquiring bank + networks immediately | Per state law (60 days) | Immediate to bank | Cardholder data |`,
     },
     {
       id: 'practice-questions',
@@ -4728,16 +4732,16 @@ PAM solutions provide **centralized control, monitoring, and auditing** of privi
       content: `### Evidence Types and Classification
 
 Proper evidence handling is critical for both internal investigations and legal proceedings. Evidence must be classified, preserved, and managed according to legal standards.
-Evidence TypeDefinition| Evidence Type | Definition |
+| Evidence Type | Definition |
 |---|---|
-Real EvidencePhysical items directly involved in the incident (hard drives, devices, logs)| Real Evidence | Physical items directly involved in the incident (hard drives, devices, logs) |
-Direct EvidenceTestimony or documentation that directly proves or disproves a fact| Direct Evidence | Testimony or documentation that directly proves or disproves a fact |
-Circumstantial EvidenceEvidence that implies a fact but does not directly prove it| Circumstantial Evidence | Evidence that implies a fact but does not directly prove it |
-Corroborative EvidenceEvidence that supports or reinforces other evidence| Corroborative Evidence | Evidence that supports or reinforces other evidence |
-HearsaySecond-hand information; generally inadmissible in court without exceptions| Hearsay | Second-hand information; generally inadmissible in court without exceptions |
-Best Evidence RuleOriginal documents preferred; copies acceptable if original unavailable| Best Evidence Rule | Original documents preferred; copies acceptable if original unavailable |
-Secondary EvidenceCopies or descriptions of original evidence when original is unavailable| Secondary Evidence | Copies or descriptions of original evidence when original is unavailable |
-Demonstrative EvidenceCharts, diagrams, animations created to illustrate concepts| Demonstrative Evidence | Charts, diagrams, animations created to illustrate concepts |
+| Real Evidence | Physical items directly involved in the incident (hard drives, devices, logs) |
+| Direct Evidence | Testimony or documentation that directly proves or disproves a fact |
+| Circumstantial Evidence | Evidence that implies a fact but does not directly prove it |
+| Corroborative Evidence | Evidence that supports or reinforces other evidence |
+| Hearsay | Second-hand information; generally inadmissible in court without exceptions |
+| Best Evidence Rule | Original documents preferred; copies acceptable if original unavailable |
+| Secondary Evidence | Copies or descriptions of original evidence when original is unavailable |
+| Demonstrative Evidence | Charts, diagrams, animations created to illustrate concepts |
 
 ### Chain of Custody (CoC)
 
@@ -4880,18 +4884,18 @@ Imaging and automation ensure **consistency and rapid deployment**:
 ### Change Management Process (CAB)
 
 The **Change Advisory Board (CAB)** oversees all significant changes:
-StepDescriptionResponsibility| Step | Description | Responsibility |
+| Step | Description | Responsibility |
 |---|---|---|
-Request InitiationRequester submits change request (RFC) with business justificationChange Requester| Request Initiation | Requester submits change request (RFC) with business justification | Change Requester |
-Impact AnalysisAssess scope, dependencies, potential risks, and rollback planTechnical Team| Impact Analysis | Assess scope, dependencies, potential risks, and rollback plan | Technical Team |
-CAB ReviewEvaluate risk, cost, and business benefit; approve/rejectChange Advisory Board| CAB Review | Evaluate risk, cost, and business benefit; approve/reject | Change Advisory Board |
-SchedulingDetermine implementation window and maintenance durationChange Manager| Scheduling | Determine implementation window and maintenance duration | Change Manager |
-PreparationPrepare rollback plan, notify stakeholders, ready backup systemsTechnical Team| Preparation | Prepare rollback plan, notify stakeholders, ready backup systems | Technical Team |
-ImplementationExecute change in controlled manner; monitor for issuesChange Manager| Implementation | Execute change in controlled manner; monitor for issues | Change Manager |
-TestingVerify change functioning correctly; check for regressionsQA/Technical Team| Testing | Verify change functioning correctly; check for regressions | QA/Technical Team |
-VerificationConfirm business objectives achieved and service intactBusiness Owner| Verification | Confirm business objectives achieved and service intact | Business Owner |
-DocumentationUpdate configuration management database (CMDB) and runbooksDocumentation Team| Documentation | Update configuration management database (CMDB) and runbooks | Documentation Team |
-ReviewPost-implementation review: successes, issues, lessons learnedChange Manager| Review | Post-implementation review: successes, issues, lessons learned | Change Manager |
+| Request Initiation | Requester submits change request (RFC) with business justification | Change Requester |
+| Impact Analysis | Assess scope, dependencies, potential risks, and rollback plan | Technical Team |
+| CAB Review | Evaluate risk, cost, and business benefit; approve/reject | Change Advisory Board |
+| Scheduling | Determine implementation window and maintenance duration | Change Manager |
+| Preparation | Prepare rollback plan, notify stakeholders, ready backup systems | Technical Team |
+| Implementation | Execute change in controlled manner; monitor for issues | Change Manager |
+| Testing | Verify change functioning correctly; check for regressions | QA/Technical Team |
+| Verification | Confirm business objectives achieved and service intact | Business Owner |
+| Documentation | Update configuration management database (CMDB) and runbooks | Documentation Team |
+| Review | Post-implementation review: successes, issues, lessons learned | Change Manager |
 
 ### Emergency Changes
 
@@ -5030,15 +5034,15 @@ Virtual machines and cloud resources require **similar controls as physical asse
       content: `Physical security controls **prevent or detect unauthorized physical access** to facilities and equipment. Controls are categorized by function.
 ### Physical Security Control Types
 
-Control TypePurpose and Example| Control Type | Purpose and Example |
+| Control Type | Purpose and Example |
 |---|---|
-PreventivePrevent unauthorized access (locks, barriers, guards, access badges)| Preventive | Prevent unauthorized access (locks, barriers, guards, access badges) |
-DetectiveDetect unauthorized access (cameras, motion sensors, alarms, logs)| Detective | Detect unauthorized access (cameras, motion sensors, alarms, logs) |
-CorrectiveRespond to security incidents (guards, emergency response)| Corrective | Respond to security incidents (guards, emergency response) |
-DeterrentDiscourage attempts (security signage, visible cameras, guards)| Deterrent | Discourage attempts (security signage, visible cameras, guards) |
-CompensatingSubstitute for primary control (additional guards if alarm fails)| Compensating | Substitute for primary control (additional guards if alarm fails) |
-DirectiveEstablish expectations (security policies, visitor badges)| Directive | Establish expectations (security policies, visitor badges) |
-RecoveryRestore normal operations (fire suppression, emergency shutoff systems)| Recovery | Restore normal operations (fire suppression, emergency shutoff systems) |
+| Preventive | Prevent unauthorized access (locks, barriers, guards, access badges) |
+| Detective | Detect unauthorized access (cameras, motion sensors, alarms, logs) |
+| Corrective | Respond to security incidents (guards, emergency response) |
+| Deterrent | Discourage attempts (security signage, visible cameras, guards) |
+| Compensating | Substitute for primary control (additional guards if alarm fails) |
+| Directive | Establish expectations (security policies, visitor badges) |
+| Recovery | Restore normal operations (fire suppression, emergency shutoff systems) |
 
 ### Perimeter Controls
 
@@ -5165,26 +5169,26 @@ cissp_disaster: {
 ### Recovery Metrics
 
 Key metrics define **recovery speed and data loss tolerance**:
-MetricDefinition| Metric | Definition |
+| Metric | Definition |
 |---|---|
-RTO (Recovery Time Objective)Maximum acceptable time to restore system/data after disaster (e.g., 4 hours)| RTO (Recovery Time Objective) | Maximum acceptable time to restore system/data after disaster (e.g., 4 hours) |
-RPO (Recovery Point Objective)Maximum acceptable data loss; how recent backups must be (e.g., 1 hour)| RPO (Recovery Point Objective) | Maximum acceptable data loss; how recent backups must be (e.g., 1 hour) |
-MTD/MAO (Maximum Tolerable Downtime)Maximum time business can operate without system; enforces RTO limits| MTD/MAO (Maximum Tolerable Downtime) | Maximum time business can operate without system; enforces RTO limits |
-MTBF (Mean Time Between Failures)Average time before system failure; determines backup frequency| MTBF (Mean Time Between Failures) | Average time before system failure; determines backup frequency |
-MTTR (Mean Time To Repair)Average time to fix failed component; used for SLA calculations| MTTR (Mean Time To Repair) | Average time to fix failed component; used for SLA calculations |
-WRT (Work Recovery Time)Time needed after system recovery for applications to resume full functionality| WRT (Work Recovery Time) | Time needed after system recovery for applications to resume full functionality |
+| RTO (Recovery Time Objective) | Maximum acceptable time to restore system/data after disaster (e.g., 4 hours) |
+| RPO (Recovery Point Objective) | Maximum acceptable data loss; how recent backups must be (e.g., 1 hour) |
+| MTD/MAO (Maximum Tolerable Downtime) | Maximum time business can operate without system; enforces RTO limits |
+| MTBF (Mean Time Between Failures) | Average time before system failure; determines backup frequency |
+| MTTR (Mean Time To Repair) | Average time to fix failed component; used for SLA calculations |
+| WRT (Work Recovery Time) | Time needed after system recovery for applications to resume full functionality |
 
 ### Recovery Site Types
 
 Organizations select recovery sites based on **RTO, RPO, and budget constraints**:
-Site TypeSetup TimeCostBest For| Site Type | Setup Time | Cost | Best For |
+| Site Type | Setup Time | Cost | Best For |
 |---|---|---|---|
-Cold Site1-2 weeksLowSystems with long RTO (24-48 hours); cost-sensitive| Cold Site | 1-2 weeks | Low | Systems with long RTO (24-48 hours); cost-sensitive |
-Warm Site4-24 hoursMediumBalance of cost and speed; RTO 4-24 hours| Warm Site | 4-24 hours | Medium | Balance of cost and speed; RTO 4-24 hours |
-Hot SiteMinutesHighCritical systems requiring rapid recovery; RTO < 1 hour| Hot Site | Minutes | High | Critical systems requiring rapid recovery; RTO < 1 hour |
-Mobile SiteHoursMediumRapid deployment when building unavailable; temporary solution| Mobile Site | Hours | Medium | Rapid deployment when building unavailable; temporary solution |
-Reciprocal SiteVariableLowPartner organizations share facilities; cost-effective but coordination risk| Reciprocal Site | Variable | Low | Partner organizations share facilities; cost-effective but coordination risk |
-Cloud-based DRMinutesMediumScalable, pay-as-you-go; on-demand resources| Cloud-based DR | Minutes | Medium | Scalable, pay-as-you-go; on-demand resources |
+| Cold Site | 1-2 weeks | Low | Systems with long RTO (24-48 hours); cost-sensitive |
+| Warm Site | 4-24 hours | Medium | Balance of cost and speed; RTO 4-24 hours |
+| Hot Site | Minutes | High | Critical systems requiring rapid recovery; RTO < 1 hour |
+| Mobile Site | Hours | Medium | Rapid deployment when building unavailable; temporary solution |
+| Reciprocal Site | Variable | Low | Partner organizations share facilities; cost-effective but coordination risk |
+| Cloud-based DR | Minutes | Medium | Scalable, pay-as-you-go; on-demand resources |
 
 ### Recovery Strategies
 
@@ -5198,13 +5202,13 @@ Cloud-based DRMinutesMediumScalable, pay-as-you-go; on-demand resources| Cloud-b
 ### DR Testing
 
 Regular testing **verifies recovery procedures and identifies gaps**:
-Test TypeDescriptionImpact| Test Type | Description | Impact |
+| Test Type | Description | Impact |
 |---|---|---|
-Read-ThroughReview recovery procedures and documentation; no systems involvedLow; identifies documentation gaps| Read-Through | Review recovery procedures and documentation; no systems involved | Low; identifies documentation gaps |
-Structured WalkthroughTeam reviews procedures and discusses execution; simulates decisionsLow; tests knowledge and processes| Structured Walkthrough | Team reviews procedures and discusses execution; simulates decisions | Low; tests knowledge and processes |
-SimulationExecute recovery procedures without actual failover; use test dataMedium; identifies actual technical issues| Simulation | Execute recovery procedures without actual failover; use test data | Medium; identifies actual technical issues |
-Parallel TestRun systems at recovery site alongside production; compare resultsHigh; verifies data consistency| Parallel Test | Run systems at recovery site alongside production; compare results | High; verifies data consistency |
-Full InterruptionFail over to recovery site; cease production operations during testCritical impact; most realistic test| Full Interruption | Fail over to recovery site; cease production operations during test | Critical impact; most realistic test |
+| Read-Through | Review recovery procedures and documentation; no systems involved | Low; identifies documentation gaps |
+| Structured Walkthrough | Team reviews procedures and discusses execution; simulates decisions | Low; tests knowledge and processes |
+| Simulation | Execute recovery procedures without actual failover; use test data | Medium; identifies actual technical issues |
+| Parallel Test | Run systems at recovery site alongside production; compare results | High; verifies data consistency |
+| Full Interruption | Fail over to recovery site; cease production operations during test | Critical impact; most realistic test |
 
 ### DR Best Practices
 
@@ -5268,25 +5272,25 @@ BC planning addresses **organizational resilience across all dimensions**:
       content: `Backups are **the foundation of recovery capability**. Different backup types provide different speed, storage, and data freshness tradeoffs.
 ### Backup Types and Characteristics
 
-Backup TypeDescriptionAdvantagesDisadvantages| Backup Type | Description | Advantages | Disadvantages |
+| Backup Type | Description | Advantages | Disadvantages |
 |---|---|---|---|
-Full BackupCopy all data each backup cycleComplete recovery; independentSlow; high storage; high bandwidth| Full Backup | Copy all data each backup cycle | Complete recovery; independent | Slow; high storage; high bandwidth |
-IncrementalCopy only changes since last backupFast; low storage; low bandwidthComplex restore; multiple tapes needed| Incremental | Copy only changes since last backup | Fast; low storage; low bandwidth | Complex restore; multiple tapes needed |
-DifferentialCopy changes since last full backupFaster full than incremental; simpler restoreMedium storage; more than incremental| Differential | Copy changes since last full backup | Faster full than incremental; simpler restore | Medium storage; more than incremental |
-ContinuousReal-time or near-real-time data replicationMinimal data loss (low RPO)High cost; complex; high bandwidth| Continuous | Real-time or near-real-time data replication | Minimal data loss (low RPO) | High cost; complex; high bandwidth |
-MirrorSynchronous copy to alternate locationInstant failover; full recoveryVery high cost; bandwidth intensive| Mirror | Synchronous copy to alternate location | Instant failover; full recovery | Very high cost; bandwidth intensive |
+| Full Backup | Copy all data each backup cycle | Complete recovery; independent | Slow; high storage; high bandwidth |
+| Incremental | Copy only changes since last backup | Fast; low storage; low bandwidth | Complex restore; multiple tapes needed |
+| Differential | Copy changes since last full backup | Faster full than incremental; simpler restore | Medium storage; more than incremental |
+| Continuous | Real-time or near-real-time data replication | Minimal data loss (low RPO) | High cost; complex; high bandwidth |
+| Mirror | Synchronous copy to alternate location | Instant failover; full recovery | Very high cost; bandwidth intensive |
 
 ### RAID (Redundant Array of Independent Disks)
 
 RAID levels provide **fault tolerance and performance improvements** at the storage layer:
-RAID LevelConfigurationFault ToleranceCapacity LossUse Case| RAID Level | Configuration | Fault Tolerance | Capacity Loss | Use Case |
+| RAID Level | Configuration | Fault Tolerance | Capacity Loss | Use Case |
 |---|---|---|---|---|
-RAID 0 (Striping)Data split across drives; no redundancyNone; 1 drive failure = data lossNone; 100% capacityHigh performance; non-critical data| RAID 0 (Striping) | Data split across drives; no redundancy | None; 1 drive failure = data loss | None; 100% capacity | High performance; non-critical data |
-RAID 1 (Mirroring)Identical copies on 2 drives; 50% redundantSurvive 1 drive failure50%; 2 drives for 1 capacityDatabases; critical systems| RAID 1 (Mirroring) | Identical copies on 2 drives; 50% redundant | Survive 1 drive failure | 50%; 2 drives for 1 capacity | Databases; critical systems |
-RAID 5 (Striping + Parity)Data + parity across 3+ drives; distributedSurvive 1 drive failure33%; 3 drives for 2 capacityMost common; good balance| RAID 5 (Striping + Parity) | Data + parity across 3+ drives; distributed | Survive 1 drive failure | 33%; 3 drives for 2 capacity | Most common; good balance |
-RAID 6 (Dual Parity)Data + 2 parity blocks across 4+ drivesSurvive 2 drive failures50%; 4 drives for 2 capacityLarge capacity arrays; reduced risk| RAID 6 (Dual Parity) | Data + 2 parity blocks across 4+ drives | Survive 2 drive failures | 50%; 4 drives for 2 capacity | Large capacity arrays; reduced risk |
-RAID 10 (1+0)Mirrored pairs striped togetherSurvive up to 50% failures50%; 4 drives for 2 capacityHigh performance and reliability| RAID 10 (1+0) | Mirrored pairs striped together | Survive up to 50% failures | 50%; 4 drives for 2 capacity | High performance and reliability |
-RAID 50/60Multiple RAID 5 or 6 arrays stripedMultiple drive failures toleratedVariesLarge enterprise arrays| RAID 50/60 | Multiple RAID 5 or 6 arrays striped | Multiple drive failures tolerated | Varies | Large enterprise arrays |
+| RAID 0 (Striping) | Data split across drives; no redundancy | None; 1 drive failure = data loss | None; 100% capacity | High performance; non-critical data |
+| RAID 1 (Mirroring) | Identical copies on 2 drives; 50% redundant | Survive 1 drive failure | 50%; 2 drives for 1 capacity | Databases; critical systems |
+| RAID 5 (Striping + Parity) | Data + parity across 3+ drives; distributed | Survive 1 drive failure | 33%; 3 drives for 2 capacity | Most common; good balance |
+| RAID 6 (Dual Parity) | Data + 2 parity blocks across 4+ drives | Survive 2 drive failures | 50%; 4 drives for 2 capacity | Large capacity arrays; reduced risk |
+| RAID 10 (1+0) | Mirrored pairs striped together | Survive up to 50% failures | 50%; 4 drives for 2 capacity | High performance and reliability |
+| RAID 50/60 | Multiple RAID 5 or 6 arrays striped | Multiple drive failures tolerated | Varies | Large enterprise arrays |
 
 ### Backup Rotation Schemes
 
@@ -5478,12 +5482,12 @@ Three related but distinct metrics:
 If RTO + WRT exceeds MTD, recovery is inadequate. Must invest in faster recovery.
 
 **Example BIA Table for Critical Functions**:
-FunctionMTD (hours)RTO (hours)RPO (minutes)Estimated Impact/Hour| Function | MTD (hours) | RTO (hours) | RPO (minutes) | Estimated Impact/Hour |
+| Function | MTD (hours) | RTO (hours) | RPO (minutes) | Estimated Impact/Hour |
 |---|---|---|---|---|
-Order Processing43.530$50,000 revenue loss| Order Processing | 4 | 3.5 | 30 | $50,000 revenue loss |
-Payroll861440$5,000 operational cost + penalties| Payroll | 8 | 6 | 1440 | $5,000 operational cost + penalties |
-Customer Support Portal121060$10,000 reputation + SLA penalty| Customer Support Portal | 12 | 10 | 60 | $10,000 reputation + SLA penalty |
-Email2416240$1,000 productivity loss| Email | 24 | 16 | 240 | $1,000 productivity loss |
+| Order Processing | 4 | 3.5 | 30 | $50,000 revenue loss |
+| Payroll | 8 | 6 | 1440 | $5,000 operational cost + penalties |
+| Customer Support Portal | 12 | 10 | 60 | $10,000 reputation + SLA penalty |
+| Email | 24 | 16 | 240 | $1,000 productivity loss |
 
 ### Recovery Point Objective (RPO)
 
@@ -5583,16 +5587,16 @@ Sustain security throughout the application lifecycle:
       id: '2-sdlc-models',
       title: `2. SDLC Models`,
       content: `Different **development models** have varying security implications and maturity requirements.
-ModelApproachSecurity AdvantagesSecurity Disadvantages| Model | Approach | Security Advantages | Security Disadvantages |
+| Model | Approach | Security Advantages | Security Disadvantages |
 |---|---|---|---|
-WaterfallSequential phases; each completed before next startsClear requirements; extensive documentation; formal reviewsLate security discovery; difficult changes; long time to deployment| Waterfall | Sequential phases; each completed before next starts | Clear requirements; extensive documentation; formal reviews | Late security discovery; difficult changes; long time to deployment |
-Agile (Scrum)Iterative sprints with continuous feedback and adaptationQuick feedback; continuous testing; rapid response to issuesMinimal documentation; security easily de-prioritized; scope creep| Agile (Scrum) | Iterative sprints with continuous feedback and adaptation | Quick feedback; continuous testing; rapid response to issues | Minimal documentation; security easily de-prioritized; scope creep |
-SpiralIterative with risk assessment at each iterationRisk management focused; early threat identificationComplex process; higher cost; extensive documentation required| Spiral | Iterative with risk assessment at each iteration | Risk management focused; early threat identification | Complex process; higher cost; extensive documentation required |
-V-ModelVerification at each development level; testing parallel to developmentQuality focused; early testing; alignment of test to requirementsRigid; document-heavy; similar weaknesses to Waterfall| V-Model | Verification at each development level; testing parallel to development | Quality focused; early testing; alignment of test to requirements | Rigid; document-heavy; similar weaknesses to Waterfall |
-DevOpsDevelopment and operations integrated; continuous deliveryRapid deployment; quick feedback; frequent updates and patchesSecurity often deprioritized in speed; infrastructure as code risks| DevOps | Development and operations integrated; continuous delivery | Rapid deployment; quick feedback; frequent updates and patches | Security often deprioritized in speed; infrastructure as code risks |
-DevSecOpsSecurity integrated into DevOps pipelineSecurity built-in; automated security testing; continuous complianceRequires cultural change; skills shortage; tool complexity| DevSecOps | Security integrated into DevOps pipeline | Security built-in; automated security testing; continuous compliance | Requires cultural change; skills shortage; tool complexity |
-RADRapid Application Development using visual toolsQuick delivery; user involvement; flexible requirementsSecurity often neglected; insufficient testing; technical debt| RAD | Rapid Application Development using visual tools | Quick delivery; user involvement; flexible requirements | Security often neglected; insufficient testing; technical debt |
-PrototypingBuild prototype to clarify requirements before full developmentEarly feedback; reduced misunderstandingsPrototype may become production; security gaps in rush| Prototyping | Build prototype to clarify requirements before full development | Early feedback; reduced misunderstandings | Prototype may become production; security gaps in rush |
+| Waterfall | Sequential phases; each completed before next starts | Clear requirements; extensive documentation; formal reviews | Late security discovery; difficult changes; long time to deployment |
+| Agile (Scrum) | Iterative sprints with continuous feedback and adaptation | Quick feedback; continuous testing; rapid response to issues | Minimal documentation; security easily de-prioritized; scope creep |
+| Spiral | Iterative with risk assessment at each iteration | Risk management focused; early threat identification | Complex process; higher cost; extensive documentation required |
+| V-Model | Verification at each development level; testing parallel to development | Quality focused; early testing; alignment of test to requirements | Rigid; document-heavy; similar weaknesses to Waterfall |
+| DevOps | Development and operations integrated; continuous delivery | Rapid deployment; quick feedback; frequent updates and patches | Security often deprioritized in speed; infrastructure as code risks |
+| DevSecOps | Security integrated into DevOps pipeline | Security built-in; automated security testing; continuous compliance | Requires cultural change; skills shortage; tool complexity |
+| RAD | Rapid Application Development using visual tools | Quick delivery; user involvement; flexible requirements | Security often neglected; insufficient testing; technical debt |
+| Prototyping | Build prototype to clarify requirements before full development | Early feedback; reduced misunderstandings | Prototype may become production; security gaps in rush |
 
 ### Secure SDLC Practices by Model
 
@@ -5795,14 +5799,14 @@ SBOM documents all software components in container:
 - **Use**: Track which images affected by CVE; dependency mapping; compliance/license tracking
 - **Format**: SPDX, CycloneDX standards; machine-readable for automation
 
-Security LayerControl ExamplesRisk if Skipped| Security Layer | Control Examples | Risk if Skipped |
+| Security Layer | Control Examples | Risk if Skipped |
 |---|---|---|
-ImageScan for vulns, harden, signDeploy vulnerable/malicious images| Image | Scan for vulns, harden, sign | Deploy vulnerable/malicious images |
-RegistryAccess controls, scan on pushUnauthorized image push; vulnerable images in registry| Registry | Access controls, scan on push | Unauthorized image push; vulnerable images in registry |
-RuntimeRead-only fs, resource limitsLateral movement; DoS attacks; persistence| Runtime | Read-only fs, resource limits | Lateral movement; DoS attacks; persistence |
-OrchestrationRBAC, network policies, admissionUnauthorized resource access; cluster compromise| Orchestration | RBAC, network policies, admission | Unauthorized resource access; cluster compromise |
-SecretsExternal vaults, no env varsSecrets in images/logs; exposed to attackers| Secrets | External vaults, no env vars | Secrets in images/logs; exposed to attackers |
-Supply ChainSBOM, signature verification, whitelistTyposquatting; compromised images; malicious packages| Supply Chain | SBOM, signature verification, whitelist | Typosquatting; compromised images; malicious packages |
+| Image | Scan for vulns, harden, sign | Deploy vulnerable/malicious images |
+| Registry | Access controls, scan on push | Unauthorized image push; vulnerable images in registry |
+| Runtime | Read-only fs, resource limits | Lateral movement; DoS attacks; persistence |
+| Orchestration | RBAC, network policies, admission | Unauthorized resource access; cluster compromise |
+| Secrets | External vaults, no env vars | Secrets in images/logs; exposed to attackers |
+| Supply Chain | SBOM, signature verification, whitelist | Typosquatting; compromised images; malicious packages |
 
 ### Infrastructure as Code (IaC)
 
@@ -5902,13 +5906,13 @@ Verify **software meets requirements** before deployment:
       content: `### CMMI (Capability Maturity Model Integration)
 
 **CMMI measures organizational development maturity** across levels:
-LevelNameCharacteristics| Level | Name | Characteristics |
+| Level | Name | Characteristics |
 |---|---|---|
-1InitialAd hoc processes; success depends on individuals; unpredictable| 1 | Initial | Ad hoc processes; success depends on individuals; unpredictable |
-2ManagedBasic project management; requirements and changes tracked; repeatable| 2 | Managed | Basic project management; requirements and changes tracked; repeatable |
-3DefinedProcesses standardized and documented; proactive management; consistent| 3 | Defined | Processes standardized and documented; proactive management; consistent |
-4Quantitatively ManagedProcesses measured and controlled; quantitative objectives set| 4 | Quantitatively Managed | Processes measured and controlled; quantitative objectives set |
-5OptimizingFocus on continuous improvement; innovation and optimization| 5 | Optimizing | Focus on continuous improvement; innovation and optimization |
+| 1 | Initial | Ad hoc processes; success depends on individuals; unpredictable |
+| 2 | Managed | Basic project management; requirements and changes tracked; repeatable |
+| 3 | Defined | Processes standardized and documented; proactive management; consistent |
+| 4 | Quantitatively Managed | Processes measured and controlled; quantitative objectives set |
+| 5 | Optimizing | Focus on continuous improvement; innovation and optimization |
 
 ### SAMM (Software Assurance Maturity Model)
 
@@ -6186,18 +6190,18 @@ Access **files outside intended directory** using path manipulation:
 
 ### OWASP Top 10 (2021)
 
-RankVulnerabilityDescription| Rank | Vulnerability | Description |
+| Rank | Vulnerability | Description |
 |---|---|---|
-1Broken Access ControlAuthorization bypass; users access unauthorized data or functions| 1 | Broken Access Control | Authorization bypass; users access unauthorized data or functions |
-2Cryptographic FailuresData exposure; weak encryption, missing encryption, poor key management| 2 | Cryptographic Failures | Data exposure; weak encryption, missing encryption, poor key management |
-3InjectionSQL, OS, LDAP, XML injection; execute unintended code/commands| 3 | Injection | SQL, OS, LDAP, XML injection; execute unintended code/commands |
-4Insecure DesignMissing security controls; inadequate threat modeling| 4 | Insecure Design | Missing security controls; inadequate threat modeling |
-5Security MisconfigurationDebug features enabled, unnecessary services, weak defaults| 5 | Security Misconfiguration | Debug features enabled, unnecessary services, weak defaults |
-6Vulnerable ComponentsOutdated libraries with known vulnerabilities; supply chain risks| 6 | Vulnerable Components | Outdated libraries with known vulnerabilities; supply chain risks |
-7Authentication FailuresWeak passwords, missing MFA, session management flaws| 7 | Authentication Failures | Weak passwords, missing MFA, session management flaws |
-8Data Integrity FailuresInsufficient logging, monitoring; insecure CI/CD pipelines| 8 | Data Integrity Failures | Insufficient logging, monitoring; insecure CI/CD pipelines |
-9Logging & MonitoringInsufficient logging; inability to detect/respond to incidents| 9 | Logging & Monitoring | Insufficient logging; inability to detect/respond to incidents |
-10Server-Side Template InjectionInject templates; execute server-side code; data access/modification| 10 | Server-Side Template Injection | Inject templates; execute server-side code; data access/modification |`,
+| 1 | Broken Access Control | Authorization bypass; users access unauthorized data or functions |
+| 2 | Cryptographic Failures | Data exposure; weak encryption, missing encryption, poor key management |
+| 3 | Injection | SQL, OS, LDAP, XML injection; execute unintended code/commands |
+| 4 | Insecure Design | Missing security controls; inadequate threat modeling |
+| 5 | Security Misconfiguration | Debug features enabled, unnecessary services, weak defaults |
+| 6 | Vulnerable Components | Outdated libraries with known vulnerabilities; supply chain risks |
+| 7 | Authentication Failures | Weak passwords, missing MFA, session management flaws |
+| 8 | Data Integrity Failures | Insufficient logging, monitoring; insecure CI/CD pipelines |
+| 9 | Logging & Monitoring | Insufficient logging; inability to detect/respond to incidents |
+| 10 | Server-Side Template Injection | Inject templates; execute server-side code; data access/modification |`,
     },
     {
       id: '5-database-security',
@@ -6348,18 +6352,18 @@ Application makes requests to URLs from user input; attacker targets internal re
 - **URL Validation**: Allowlist acceptable domains; block internal ranges (127.0.0.1, 192.168.x.x, 10.0.0.0/8, 169.254.169.254)
 
 **OWASP Top 10 2021 Quick Reference**:
-VulnerabilityPrimary CausePrevention Strategy| Vulnerability | Primary Cause | Prevention Strategy |
+| Vulnerability | Primary Cause | Prevention Strategy |
 |---|---|---|
-A01: Broken Access ControlMissing authorization checksImplement RBAC/ABAC; deny by default; verify authz before every action| A01: Broken Access Control | Missing authorization checks | Implement RBAC/ABAC; deny by default; verify authz before every action |
-A02: Cryptographic FailuresWeak encryption/cleartextUse strong algorithms (AES-256, TLS 1.2+); encrypt sensitive data; manage keys securely| A02: Cryptographic Failures | Weak encryption/cleartext | Use strong algorithms (AES-256, TLS 1.2+); encrypt sensitive data; manage keys securely |
-A03: InjectionUntrusted input to interpretersUse parameterized queries; validate/escape input; ORM parameterized methods| A03: Injection | Untrusted input to interpreters | Use parameterized queries; validate/escape input; ORM parameterized methods |
-A04: Insecure DesignMissing security in designThreat modeling; security requirements; secure design patterns| A04: Insecure Design | Missing security in design | Threat modeling; security requirements; secure design patterns |
-A05: Security MisconfigurationDefault/insecure settingsHarden systems; remove unnecessary features; security headers; secrets management| A05: Security Misconfiguration | Default/insecure settings | Harden systems; remove unnecessary features; security headers; secrets management |
-A06: Vulnerable ComponentsOutdated librariesTrack dependencies; patch regularly; use SCA tools; maintain SBOM| A06: Vulnerable Components | Outdated libraries | Track dependencies; patch regularly; use SCA tools; maintain SBOM |
-A07: Authz/Authn FailuresWeak authentication/sessionsStrong passwords; MFA; secure session management; rate limiting| A07: Authz/Authn Failures | Weak authentication/sessions | Strong passwords; MFA; secure session management; rate limiting |
-A08: Data Integrity FailuresUnsafe deserialization/updatesValidate serialized data; sign updates; secure CI/CD; no untrusted deserialization| A08: Data Integrity Failures | Unsafe deserialization/updates | Validate serialized data; sign updates; secure CI/CD; no untrusted deserialization |
-A09: Logging FailuresNo visibility/monitoringLog all security events; centralize logs; real-time alerting; long retention| A09: Logging Failures | No visibility/monitoring | Log all security events; centralize logs; real-time alerting; long retention |
-A10: SSRFURL to untrusted sourceAllowlist URLs; block internal ranges; validate/encode user input| A10: SSRF | URL to untrusted source | Allowlist URLs; block internal ranges; validate/encode user input |`,
+| A01: Broken Access Control | Missing authorization checks | Implement RBAC/ABAC; deny by default; verify authz before every action |
+| A02: Cryptographic Failures | Weak encryption/cleartext | Use strong algorithms (AES-256, TLS 1.2+); encrypt sensitive data; manage keys securely |
+| A03: Injection | Untrusted input to interpreters | Use parameterized queries; validate/escape input; ORM parameterized methods |
+| A04: Insecure Design | Missing security in design | Threat modeling; security requirements; secure design patterns |
+| A05: Security Misconfiguration | Default/insecure settings | Harden systems; remove unnecessary features; security headers; secrets management |
+| A06: Vulnerable Components | Outdated libraries | Track dependencies; patch regularly; use SCA tools; maintain SBOM |
+| A07: Authz/Authn Failures | Weak authentication/sessions | Strong passwords; MFA; secure session management; rate limiting |
+| A08: Data Integrity Failures | Unsafe deserialization/updates | Validate serialized data; sign updates; secure CI/CD; no untrusted deserialization |
+| A09: Logging Failures | No visibility/monitoring | Log all security events; centralize logs; real-time alerting; long retention |
+| A10: SSRF | URL to untrusted source | Allowlist URLs; block internal ranges; validate/encode user input |`,
       examTip: `OWASP Top 10 is heavily tested on security exams. Questions ask about prevention strategies and real-world exploitation. A01/A02/A03 are most common (access control, crypto, injection).`,
     },
   ],
@@ -6590,16 +6594,16 @@ Cryptographic operations depend on high-quality randomness:
 ### Password Storage Best Practices
 
 Storing passwords securely prevents mass credential exposure in database breach:
-AlgorithmDescription & Use| Algorithm | Description & Use |
+| Algorithm | Description & Use |
 |---|---|
-bcryptKDF based on Blowfish; configurable cost factor (rounds); automatically includes salt; slows down brute force; recommended for passwords| bcrypt | KDF based on Blowfish; configurable cost factor (rounds); automatically includes salt; slows down brute force; recommended for passwords |
-scryptMemory-hard KDF; requires significant memory and CPU; even harder to parallelize than bcrypt; excellent choice for password storage| scrypt | Memory-hard KDF; requires significant memory and CPU; even harder to parallelize than bcrypt; excellent choice for password storage |
-Argon2Modern NIST-approved password hasher; three variants (Argon2i, Argon2d, Argon2id); memory-hard and time-hard; best current option| Argon2 | Modern NIST-approved password hasher; three variants (Argon2i, Argon2d, Argon2id); memory-hard and time-hard; best current option |
-PBKDF2Older standard; less effective against GPUs; iterations can be tuned; acceptable if properly configured (100k+ iterations)| PBKDF2 | Older standard; less effective against GPUs; iterations can be tuned; acceptable if properly configured (100k+ iterations) |
-SHA-256 (WRONG)Fast cryptographic hash; designed for integrity not password storage; GPU cracking feasible; never use alone for passwords| SHA-256 (WRONG) | Fast cryptographic hash; designed for integrity not password storage; GPU cracking feasible; never use alone for passwords |
-MD5/SHA1 (WRONG)Broken algorithms; collision vulnerabilities; use only for non-security purposes; never for passwords| MD5/SHA1 (WRONG) | Broken algorithms; collision vulnerabilities; use only for non-security purposes; never for passwords |
-SaltingAdd random value to password before hashing; prevents rainbow tables; every password gets unique salt; required with all algorithms| Salting | Add random value to password before hashing; prevents rainbow tables; every password gets unique salt; required with all algorithms |
-PepperingAdd secret constant to password before hashing; server-side secret; different from salt; provides additional protection if password db leaked| Peppering | Add secret constant to password before hashing; server-side secret; different from salt; provides additional protection if password db leaked |
+| bcrypt | KDF based on Blowfish; configurable cost factor (rounds); automatically includes salt; slows down brute force; recommended for passwords |
+| scrypt | Memory-hard KDF; requires significant memory and CPU; even harder to parallelize than bcrypt; excellent choice for password storage |
+| Argon2 | Modern NIST-approved password hasher; three variants (Argon2i, Argon2d, Argon2id); memory-hard and time-hard; best current option |
+| PBKDF2 | Older standard; less effective against GPUs; iterations can be tuned; acceptable if properly configured (100k+ iterations) |
+| SHA-256 (WRONG) | Fast cryptographic hash; designed for integrity not password storage; GPU cracking feasible; never use alone for passwords |
+| MD5/SHA1 (WRONG) | Broken algorithms; collision vulnerabilities; use only for non-security purposes; never for passwords |
+| Salting | Add random value to password before hashing; prevents rainbow tables; every password gets unique salt; required with all algorithms |
+| Peppering | Add secret constant to password before hashing; server-side secret; different from salt; provides additional protection if password db leaked |
 
 **Best Practice**: Use Argon2id with appropriate parameters (memory=19 MiB, time=2 iterations, parallelism=1) or bcrypt with cost factor ≥12.
 ### API Security Deep Dive
