@@ -12,7 +12,7 @@ import {
   Flag, ArrowRight, ArrowLeft, Timer, Pause, Play, X, Lightbulb,
   BookMarked, Video, StickyNote, BrainCircuit, Trophy, AlertCircle,
   RotateCcw, Eye, EyeOff, Layers, Zap, ThumbsUp, ThumbsDown,
-  Library, ExternalLink, Search as SearchIcon, Hash,
+  Library, ExternalLink, Search as SearchIcon, Hash, Sparkles, XCircle,
 } from 'lucide-react';
 import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
@@ -23,6 +23,7 @@ import { getCISSPCourseContent, hasCISSPCourseContent, type TopicLesson } from '
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
+import { getCISSPFlashcards, CISSP_FLASHCARD_DOMAINS, CISSP_FLASHCARD_COUNT } from '@/lib/cissp-flashcard-data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
@@ -1157,295 +1158,318 @@ function NotesTab({ examType, sections }: { examType: string; sections: any[] })
 // ═══════════════════════════════════════════════════════════════
 
 function FlashcardsTab({ examType, sections }: { examType: string; sections: any[] }) {
+  const isCISSP = examType === 'CISSP';
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
-  const [cards, setCards] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [activeDomain, setActiveDomain] = useState<string | null>(null);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [shuffled, setShuffled] = useState(false);
 
   // Study state
   const [deck, setDeck] = useState<any[]>([]);
   const [deckIndex, setDeckIndex] = useState(0);
   const [flipped, setFlipped] = useState(false);
-  const [sessionStats, setSessionStats] = useState({ seen: 0, correct: 0, incorrect: 0 });
+  const [sessionStats, setSessionStats] = useState({ seen: 0, know: 0, dontKnow: 0 });
+  const [knownCards, setKnownCards] = useState<Set<number>>(new Set());
 
-  // Create state
-  const [form, setForm] = useState({ front: '', back: '', hint: '', section_id: '', topic: '', difficulty: 'medium' });
+  // Get filtered cards
+  const allCards = isCISSP ? getCISSPFlashcards(activeDomain || undefined) : [];
+  const filteredCards = allCards.filter(c => {
+    if (activeCategory && c.category !== activeCategory) return false;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      return c.front.toLowerCase().includes(q) || c.back.toLowerCase().includes(q);
+    }
+    return true;
+  });
 
-  useEffect(() => {
-    (async () => {
-      setLoading(true);
-      try {
-        const [cardData, statsData] = await Promise.all([
-          apiClient.getDueFlashcards(examType, 30).catch(() => null),
-          apiClient.getFlashcardStats(examType).catch(() => null),
-        ]);
-        if (cardData?.cards) setCards(cardData.cards);
-        if (statsData) setStats(statsData);
-      } catch { /* ignore */ }
-      setLoading(false);
-    })();
-  }, [examType]);
+  const domainCounts = isCISSP ? CISSP_FLASHCARD_DOMAINS : [];
 
-  const startStudy = () => {
+  const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
-    setDeck(cards);
+    const studyDeck = shuffled ? [...cards].sort(() => Math.random() - 0.5) : cards;
+    setDeck(studyDeck);
     setDeckIndex(0);
     setFlipped(false);
-    setSessionStats({ seen: 0, correct: 0, incorrect: 0 });
+    setSessionStats({ seen: 0, know: 0, dontKnow: 0 });
+    setKnownCards(new Set());
     setView('study');
   };
 
-  const rateCard = async (rating: number) => {
+  const rateCard = (knew: boolean) => {
     const card = deck[deckIndex];
     if (!card) return;
-
-    try {
-      await apiClient.reviewFlashcard({ flashcard_id: card.id, rating });
-    } catch { /* ignore */ }
-
-    setSessionStats((prev) => ({
+    setSessionStats(prev => ({
       seen: prev.seen + 1,
-      correct: rating >= 3 ? prev.correct + 1 : prev.correct,
-      incorrect: rating < 3 ? prev.incorrect + 1 : prev.incorrect,
+      know: knew ? prev.know + 1 : prev.know,
+      dontKnow: knew ? prev.dontKnow : prev.dontKnow + 1,
     }));
+    if (knew) setKnownCards(prev => new Set(prev).add(card.id));
 
     if (deckIndex + 1 < deck.length) {
       setDeckIndex(deckIndex + 1);
       setFlipped(false);
     } else {
       setView('home');
-      // Refresh stats
-      apiClient.getFlashcardStats(examType).then(setStats).catch(() => {});
-      apiClient.getDueFlashcards(examType, 30).then((d) => setCards(d.cards || [])).catch(() => {});
     }
-  };
-
-  const saveCard = async () => {
-    if (!form.front.trim() || !form.back.trim()) return;
-    try {
-      await apiClient.createFlashcard({ exam_type: examType, ...form });
-      setForm({ front: '', back: '', hint: '', section_id: '', topic: '', difficulty: 'medium' });
-      setView('home');
-      apiClient.getFlashcardStats(examType).then(setStats).catch(() => {});
-      apiClient.getDueFlashcards(examType, 30).then((d) => setCards(d.cards || [])).catch(() => {});
-    } catch { /* ignore */ }
   };
 
   // ── Study view ──
   if (view === 'study' && deck.length > 0) {
     const card = deck[deckIndex];
-    const progress = deckIndex / deck.length;
+    const progress = ((deckIndex + 1) / deck.length) * 100;
 
     return (
       <div className="space-y-6 max-w-2xl mx-auto">
-        {/* Progress */}
+        {/* Header */}
         <div className="flex items-center justify-between">
-          <Button variant="ghost" size="sm" onClick={() => setView('home')}>
-            <ArrowLeft className="h-4 w-4 mr-1" /> Exit
-          </Button>
-          <span className="text-sm text-muted-foreground">{deckIndex + 1} / {deck.length}</span>
-          <div className="flex gap-2 text-sm">
-            <span className="text-green-600 font-medium">{sessionStats.correct}</span>
-            <span className="text-muted-foreground">/</span>
-            <span className="text-red-600 font-medium">{sessionStats.incorrect}</span>
+          <button onClick={() => setView('home')} className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <ArrowLeft className="h-4 w-4" /> Exit
+          </button>
+          <span className="text-sm font-medium text-muted-foreground">{deckIndex + 1} / {deck.length}</span>
+          <div className="flex gap-3 text-sm font-medium">
+            <span className="text-green-600 flex items-center gap-1"><CheckCircle2 className="h-3.5 w-3.5" />{sessionStats.know}</span>
+            <span className="text-red-500 flex items-center gap-1"><XCircle className="h-3.5 w-3.5" />{sessionStats.dontKnow}</span>
           </div>
         </div>
-        <div className="w-full bg-muted rounded-full h-1.5">
-          <div className="bg-primary h-1.5 rounded-full transition-all" style={{ width: `${progress * 100}%` }} />
+
+        {/* Progress */}
+        <div className="w-full h-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-500" style={{ width: `${progress}%` }} />
         </div>
 
         {/* Card */}
-        <div
-          onClick={() => setFlipped(!flipped)}
-          className="cursor-pointer select-none"
-        >
-          <Card className={`p-8 min-h-[320px] flex flex-col items-center justify-center text-center transition-all ${
-            flipped ? 'bg-blue-50 dark:bg-blue-950 border-blue-200 dark:border-blue-800' : ''
+        <div onClick={() => setFlipped(!flipped)} className="cursor-pointer select-none perspective-1000">
+          <div className={`relative rounded-2xl border-2 min-h-[360px] transition-all duration-500 shadow-lg hover:shadow-xl ${
+            flipped
+              ? 'bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 border-indigo-500 text-white'
+              : 'bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800'
           }`}>
-            {card.section_id && (
-              <Badge variant="secondary" className="mb-4">{card.section_id}{card.topic ? ` · ${card.topic}` : ''}</Badge>
+            <div className="absolute top-4 left-4 right-4 flex items-center justify-between">
+              <Badge className={`text-[10px] border-0 ${flipped ? 'bg-white/20 text-white' : 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300'}`}>
+                {card.domainName}
+              </Badge>
+              {card.category && (
+                <span className={`text-[10px] font-medium px-2 py-0.5 rounded-full ${flipped ? 'bg-white/15 text-white/80' : 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300'}`}>
+                  {card.category}
+                </span>
+              )}
+            </div>
+            <div className="flex flex-col items-center justify-center text-center p-8 pt-14 min-h-[360px]">
+              {!flipped ? (
+                <>
+                  <div className="h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md mb-5">
+                    <BrainCircuit className="h-6 w-6 text-white" />
+                  </div>
+                  <p className="text-lg font-semibold leading-relaxed mb-6">{card.front}</p>
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5">
+                    <Eye className="h-3.5 w-3.5" /> Tap to reveal answer
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs uppercase tracking-widest font-bold mb-4 opacity-60">Answer</p>
+                  <p className="text-base leading-relaxed">{card.back}</p>
+                </>
+              )}
+            </div>
+            {card.topics && card.topics.length > 0 && (
+              <div className={`absolute bottom-4 left-4 right-4 text-center text-[10px] ${flipped ? 'text-white/50' : 'text-muted-foreground'}`}>
+                {card.topics.join(' / ')}
+              </div>
             )}
-            {!flipped ? (
-              <>
-                <p className="text-xl font-medium mb-6">{card.front}</p>
-                <p className="text-sm text-muted-foreground flex items-center gap-1">
-                  <Eye className="h-4 w-4" /> Tap to reveal answer
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-xs uppercase tracking-wider text-muted-foreground mb-3">Answer</p>
-                <p className="text-lg mb-4">{card.back}</p>
-                {card.hint && (
-                  <p className="text-sm text-muted-foreground italic">💡 {card.hint}</p>
-                )}
-              </>
-            )}
-          </Card>
+          </div>
         </div>
 
-        {/* Rating buttons (only after flip) */}
+        {/* Rating - show after flip */}
         {flipped && (
-          <div className="grid grid-cols-4 gap-2">
-            <Button variant="outline" className="flex-col h-auto py-3 border-red-200 hover:bg-red-50 dark:border-red-800 dark:hover:bg-red-950" onClick={() => rateCard(1)}>
-              <RotateCcw className="h-5 w-5 text-red-500 mb-1" />
-              <span className="text-xs font-medium">Again</span>
-              <span className="text-[10px] text-muted-foreground">1 min</span>
-            </Button>
-            <Button variant="outline" className="flex-col h-auto py-3 border-orange-200 hover:bg-orange-50 dark:border-orange-800 dark:hover:bg-orange-950" onClick={() => rateCard(2)}>
-              <ThumbsDown className="h-5 w-5 text-orange-500 mb-1" />
-              <span className="text-xs font-medium">Hard</span>
-              <span className="text-[10px] text-muted-foreground">~1 day</span>
-            </Button>
-            <Button variant="outline" className="flex-col h-auto py-3 border-green-200 hover:bg-green-50 dark:border-green-800 dark:hover:bg-green-950" onClick={() => rateCard(3)}>
-              <ThumbsUp className="h-5 w-5 text-green-500 mb-1" />
-              <span className="text-xs font-medium">Good</span>
-              <span className="text-[10px] text-muted-foreground">~3 days</span>
-            </Button>
-            <Button variant="outline" className="flex-col h-auto py-3 border-blue-200 hover:bg-blue-50 dark:border-blue-800 dark:hover:bg-blue-950" onClick={() => rateCard(4)}>
-              <Zap className="h-5 w-5 text-blue-500 mb-1" />
-              <span className="text-xs font-medium">Easy</span>
-              <span className="text-[10px] text-muted-foreground">~7 days</span>
-            </Button>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              onClick={() => rateCard(false)}
+              className="flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-red-200 dark:border-red-800/60 bg-red-50/50 dark:bg-red-950/20 hover:bg-red-100 dark:hover:bg-red-950/40 transition-all text-red-600 dark:text-red-400 font-semibold text-sm"
+            >
+              <RotateCcw className="h-5 w-5" /> Still Learning
+            </button>
+            <button
+              onClick={() => rateCard(true)}
+              className="flex items-center justify-center gap-2 py-4 rounded-xl border-2 border-green-200 dark:border-green-800/60 bg-green-50/50 dark:bg-green-950/20 hover:bg-green-100 dark:hover:bg-green-950/40 transition-all text-green-600 dark:text-green-400 font-semibold text-sm"
+            >
+              <CheckCircle2 className="h-5 w-5" /> Got It
+            </button>
           </div>
         )}
-      </div>
-    );
-  }
 
-  // ── Create view ──
-  if (view === 'create') {
-    return (
-      <div className="max-w-xl mx-auto space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => setView('home')}>
-          <ArrowLeft className="h-4 w-4 mr-1" /> Back
-        </Button>
-        <Card className="p-6 space-y-4">
-          <h3 className="text-lg font-semibold">Create Flashcard</h3>
-          <div>
-            <label className="block text-sm font-medium mb-1">Front (Question / Term)</label>
-            <textarea value={form.front} onChange={(e) => setForm({ ...form, front: e.target.value })} rows={3}
-              placeholder="e.g. What is the Commerce Clause?"
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Back (Answer / Definition)</label>
-            <textarea value={form.back} onChange={(e) => setForm({ ...form, back: e.target.value })} rows={3}
-              placeholder="e.g. Article I, Section 8 grants Congress the power to regulate commerce among the states..."
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary resize-none" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium mb-1">Hint (optional)</label>
-            <input value={form.hint} onChange={(e) => setForm({ ...form, hint: e.target.value })}
-              placeholder="A short clue..."
-              className="w-full px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <label className="block text-sm font-medium mb-1">Section</label>
-              <select value={form.section_id} onChange={(e) => setForm({ ...form, section_id: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg text-sm">
-                <option value="">General</option>
-                {sections.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Difficulty</label>
-              <select value={form.difficulty} onChange={(e) => setForm({ ...form, difficulty: e.target.value })}
-                className="w-full px-3 py-2 border rounded-lg text-sm">
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </select>
-            </div>
-          </div>
-          <div className="flex gap-2 pt-2">
-            <Button variant="ghost" onClick={() => setView('home')}>Cancel</Button>
-            <Button onClick={saveCard} disabled={!form.front.trim() || !form.back.trim()}>Save Flashcard</Button>
-          </div>
-        </Card>
+        {/* Keyboard hint */}
+        <p className="text-center text-[10px] text-muted-foreground">Click card to flip</p>
       </div>
     );
   }
 
   // ── Home view ──
+  if (!isCISSP) {
+    return (
+      <div className="rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-12 text-center">
+        <Layers className="h-16 w-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" />
+        <h3 className="text-lg font-semibold mb-2">Flashcards coming soon</h3>
+        <p className="text-muted-foreground">Flashcard deck for {examType} is being prepared.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
-      {/* Stats */}
-      {stats && (
-        <div className="grid gap-4 sm:grid-cols-4">
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold">{stats.total_cards}</p>
-            <p className="text-xs text-muted-foreground">Total Cards</p>
-          </Card>
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold text-amber-600">{stats.due_now}</p>
-            <p className="text-xs text-muted-foreground">Due for Review</p>
-          </Card>
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold text-green-600">{stats.mastered}</p>
-            <p className="text-xs text-muted-foreground">Mastered</p>
-          </Card>
-          <Card className="p-4 text-center">
-            <p className="text-2xl font-bold text-blue-600">{stats.studied}</p>
-            <p className="text-xs text-muted-foreground">Studied</p>
-          </Card>
-        </div>
-      )}
-
-      {/* Actions */}
-      <div className="flex gap-3">
-        <Button onClick={startStudy} disabled={loading || cards.length === 0} size="lg">
-          <Layers className="h-4 w-4 mr-2" />
-          Study {cards.length > 0 ? `(${cards.length} cards)` : ''}
-        </Button>
-        <Button variant="outline" onClick={() => setView('create')} size="lg">
-          <Plus className="h-4 w-4 mr-2" /> Create Card
-        </Button>
-      </div>
-
-      {loading ? (
-        <div className="flex justify-center py-12">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-        </div>
-      ) : cards.length === 0 && (!stats || stats.total_cards === 0) ? (
-        <Card className="p-12 text-center">
-          <Layers className="h-16 w-16 mx-auto mb-4 text-muted-foreground/40" />
-          <h3 className="text-lg font-semibold mb-2">No flashcards yet</h3>
-          <p className="text-muted-foreground mb-4 max-w-md mx-auto">
-            Create your own flashcards or wait for the {examType} deck to be added.
-          </p>
-          <Button onClick={() => setView('create')}>
-            <Plus className="h-4 w-4 mr-2" /> Create your first flashcard
-          </Button>
-        </Card>
-      ) : (
-        <div>
-          <h3 className="font-semibold mb-3">Cards Due for Review</h3>
-          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            {cards.slice(0, 12).map((card: any) => (
-              <Card key={card.id} className="p-4 hover:shadow-md transition-shadow">
-                <div className="flex items-start justify-between mb-2">
-                  {card.section_id && <Badge variant="secondary" className="text-[10px]">{card.section_id}</Badge>}
-                  {card.difficulty && (
-                    <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded ${
-                      card.difficulty === 'easy' ? 'bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300'
-                        : card.difficulty === 'hard' ? 'bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-300'
-                        : 'bg-yellow-100 text-yellow-700 dark:bg-yellow-900 dark:text-yellow-300'
-                    }`}>{card.difficulty}</span>
-                  )}
-                </div>
-                <p className="text-sm font-medium line-clamp-2">{card.front}</p>
-                {card.progress && (
-                  <p className="text-[10px] text-muted-foreground mt-2">
-                    Streak: {card.progress.streak} &middot; Seen: {card.progress.times_seen}x
-                  </p>
-                )}
-              </Card>
-            ))}
+      {/* Hero Stats */}
+      <div className="rounded-2xl border-2 border-indigo-100 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 dark:from-indigo-950/40 dark:via-gray-950 dark:to-purple-950/40 p-6 shadow-sm">
+        <div className="flex items-center gap-4 mb-4">
+          <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
+            <Layers className="h-6 w-6 text-white" />
+          </div>
+          <div>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">CISSP Flashcard Deck</h3>
+            <p className="text-sm text-muted-foreground">{CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras</p>
           </div>
         </div>
-      )}
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          {[
+            { label: 'Total Cards', value: CISSP_FLASHCARD_COUNT, color: 'text-indigo-600 dark:text-indigo-400' },
+            { label: 'Concepts', value: allCards.filter(c => c.category === 'concept').length, color: 'text-blue-600 dark:text-blue-400' },
+            { label: 'Definitions', value: allCards.filter(c => c.category === 'definition').length, color: 'text-purple-600 dark:text-purple-400' },
+            { label: 'Questions', value: allCards.filter(c => c.category === 'question').length, color: 'text-amber-600 dark:text-amber-400' },
+            { label: 'Tips', value: allCards.filter(c => c.category === 'tip').length, color: 'text-green-600 dark:text-green-400' },
+          ].map(s => (
+            <div key={s.label} className="bg-white/60 dark:bg-gray-900/40 rounded-xl p-3 text-center border border-gray-100 dark:border-gray-800">
+              <p className={`text-xl font-bold ${s.color}`}>{s.value.toLocaleString()}</p>
+              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-wide">{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Domain Filter */}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">Filter by Domain</h3>
+          {activeDomain && (
+            <button onClick={() => setActiveDomain(null)} className="text-xs text-indigo-500 hover:text-indigo-700 font-medium">Clear filter</button>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-2">
+          {domainCounts.map(d => (
+            <button
+              key={d.id}
+              onClick={() => setActiveDomain(activeDomain === d.id ? null : d.id)}
+              className={`px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 border-2 ${
+                activeDomain === d.id
+                  ? 'bg-indigo-500 text-white border-indigo-500 shadow-sm'
+                  : 'bg-white dark:bg-gray-950 border-gray-200 dark:border-gray-800 hover:border-indigo-300 dark:hover:border-indigo-700'
+              }`}
+            >
+              {d.label} <span className="opacity-60">({d.count})</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Category Filter + Search */}
+      <div className="flex flex-wrap items-center gap-3">
+        <div className="flex gap-1.5">
+          {['concept', 'definition', 'question', 'comparison', 'tip'].map(cat => (
+            <button
+              key={cat}
+              onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+              className={`px-2.5 py-1 rounded-lg text-[11px] font-medium transition-all ${
+                activeCategory === cat
+                  ? 'bg-purple-500 text-white'
+                  : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 hover:bg-purple-100 dark:hover:bg-purple-900/30'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
+        <div className="flex-1 min-w-[200px]">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
+            <input
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              placeholder="Search flashcards..."
+              className="w-full pl-9 pr-3 py-2 rounded-xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 text-sm focus:outline-none focus:border-indigo-400 dark:focus:border-indigo-600 transition-colors"
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Study Actions */}
+      <div className="flex items-center gap-3">
+        <button
+          onClick={() => startStudy(filteredCards)}
+          disabled={filteredCards.length === 0}
+          className="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-xl font-semibold text-sm hover:from-indigo-600 hover:to-purple-700 transition-all shadow-md hover:shadow-lg active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-2"
+        >
+          <Layers className="h-4 w-4" />
+          Study {filteredCards.length > 0 ? `(${filteredCards.length} cards)` : ''}
+        </button>
+        <button
+          onClick={() => setShuffled(!shuffled)}
+          className={`px-4 py-3 rounded-xl text-sm font-medium border-2 transition-all ${
+            shuffled
+              ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-300 dark:border-amber-700 text-amber-700 dark:text-amber-300'
+              : 'border-gray-200 dark:border-gray-800 text-gray-600 dark:text-gray-400 hover:border-amber-300'
+          }`}
+        >
+          <Sparkles className="h-4 w-4 inline mr-1.5" />
+          {shuffled ? 'Shuffled' : 'Shuffle'}
+        </button>
+      </div>
+
+      {/* Card Preview Grid */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-bold text-gray-900 dark:text-gray-100">
+            {filteredCards.length.toLocaleString()} cards{activeDomain ? ` in ${domainCounts.find(d => d.id === activeDomain)?.name || activeDomain}` : ''}
+          </h3>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {filteredCards.slice(0, 18).map(card => (
+            <div
+              key={card.id}
+              className="rounded-xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 p-4 hover:shadow-md hover:border-indigo-200 dark:hover:border-indigo-800 transition-all duration-200 cursor-pointer group"
+              onClick={() => {
+                setDeck([card]);
+                setDeckIndex(0);
+                setFlipped(false);
+                setSessionStats({ seen: 0, know: 0, dontKnow: 0 });
+                setView('study');
+              }}
+            >
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400">
+                  {card.domainName?.split(' ').slice(0, 2).join(' ') || card.domain}
+                </span>
+                {card.category && (
+                  <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${
+                    card.category === 'concept' ? 'bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300'
+                    : card.category === 'definition' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300'
+                    : card.category === 'question' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300'
+                    : card.category === 'tip' ? 'bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300'
+                    : 'bg-gray-100 text-gray-700 dark:bg-gray-900/50 dark:text-gray-300'
+                  }`}>{card.category}</span>
+                )}
+              </div>
+              <p className="text-sm font-medium line-clamp-2 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">{card.front}</p>
+              {card.topics && card.topics.length > 0 && (
+                <p className="text-[10px] text-muted-foreground mt-2 truncate">{card.topics[0]}</p>
+              )}
+            </div>
+          ))}
+        </div>
+        {filteredCards.length > 18 && (
+          <p className="text-center text-xs text-muted-foreground mt-4">
+            Showing 18 of {filteredCards.length.toLocaleString()} cards. Click "Study" to go through all of them.
+          </p>
+        )}
+      </div>
     </div>
   );
 }
