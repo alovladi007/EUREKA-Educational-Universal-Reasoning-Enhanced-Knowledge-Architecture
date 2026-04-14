@@ -20,10 +20,12 @@ import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
 import { getCISSPCourseContent, hasCISSPCourseContent, type TopicLesson } from '@/lib/cissp-course-data';
+import { getSecurityPlusCourseContent, hasSecurityPlusCourseContent } from '@/lib/security-plus-course-data';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
 import { getCISSPFlashcards, CISSP_FLASHCARD_DOMAINS, CISSP_FLASHCARD_COUNT } from '@/lib/cissp-flashcard-data';
+import { getSecurityPlusFlashcards, SECPLUS_FLASHCARD_DOMAINS, SECPLUS_FLASHCARD_COUNT } from '@/lib/security-plus-flashcard-data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
@@ -436,7 +438,11 @@ function ReadLessonsTab({ examType }: { examType: string }) {
 
           {(() => {
               // Try rich course data first (structured with sections + quizzes)
-              const courseData = hasCISSPCourseContent(activeTopic.id) ? getCISSPCourseContent(activeTopic.id) : null;
+              const courseData = (() => {
+                if (hasCISSPCourseContent(activeTopic.id)) return getCISSPCourseContent(activeTopic.id);
+                if (hasSecurityPlusCourseContent(activeTopic.id)) return getSecurityPlusCourseContent(activeTopic.id);
+                return null;
+              })();
 
               // Custom ReactMarkdown components for beautiful table + content rendering
               const mdComponents = {
@@ -802,7 +808,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                   <div className="border-t border-gray-100 dark:border-gray-800">
                     {section.topics.map((topic, i) => {
                       const done = completedTopics.has(topic.id);
-                      const hasContent = hasCISSPCourseContent(topic.id);
+                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id);
                       return (
                         <div
                           key={topic.id}
@@ -1159,6 +1165,8 @@ function NotesTab({ examType, sections }: { examType: string; sections: any[] })
 
 function FlashcardsTab({ examType, sections }: { examType: string; sections: any[] }) {
   const isCISSP = examType === 'CISSP';
+  const isSecPlus = examType === 'SECURITY_PLUS';
+  const hasFlashcards = isCISSP || isSecPlus;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1173,7 +1181,11 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const [knownCards, setKnownCards] = useState<Set<number>>(new Set());
 
   // Get filtered cards
-  const allCards = isCISSP ? getCISSPFlashcards(activeDomain || undefined) : [];
+  const allCards = isCISSP
+    ? getCISSPFlashcards(activeDomain || undefined)
+    : isSecPlus
+      ? getSecurityPlusFlashcards(activeDomain || undefined)
+      : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1183,7 +1195,14 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
     return true;
   });
 
-  const domainCounts = isCISSP ? CISSP_FLASHCARD_DOMAINS : [];
+  const domainCounts = isCISSP ? CISSP_FLASHCARD_DOMAINS : isSecPlus ? SECPLUS_FLASHCARD_DOMAINS : [];
+  const flashcardCount = isCISSP ? CISSP_FLASHCARD_COUNT : isSecPlus ? SECPLUS_FLASHCARD_COUNT : 0;
+  const flashcardTitle = isCISSP ? 'CISSP Flashcard Deck' : isSecPlus ? 'Security+ Flashcard Deck' : 'Flashcard Deck';
+  const flashcardSubtitle = isCISSP
+    ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
+    : isSecPlus
+      ? `${SECPLUS_FLASHCARD_COUNT.toLocaleString()} cards across all 5 domains + exam tips`
+      : '';
 
   const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
@@ -1306,7 +1325,7 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   }
 
   // ── Home view ──
-  if (!isCISSP) {
+  if (!hasFlashcards) {
     return (
       <div className="rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-12 text-center">
         <Layers className="h-16 w-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" />
@@ -1325,13 +1344,13 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
             <Layers className="h-6 w-6 text-white" />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">CISSP Flashcard Deck</h3>
-            <p className="text-sm text-muted-foreground">{CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras</p>
+            <h3 className="text-lg font-bold text-gray-900 dark:text-gray-100">{flashcardTitle}</h3>
+            <p className="text-sm text-muted-foreground">{flashcardSubtitle}</p>
           </div>
         </div>
         <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
           {[
-            { label: 'Total Cards', value: CISSP_FLASHCARD_COUNT, color: 'text-indigo-600 dark:text-indigo-400' },
+            { label: 'Total Cards', value: flashcardCount, color: 'text-indigo-600 dark:text-indigo-400' },
             { label: 'Concepts', value: allCards.filter(c => c.category === 'concept').length, color: 'text-blue-600 dark:text-blue-400' },
             { label: 'Definitions', value: allCards.filter(c => c.category === 'definition').length, color: 'text-purple-600 dark:text-purple-400' },
             { label: 'Questions', value: allCards.filter(c => c.category === 'question').length, color: 'text-amber-600 dark:text-amber-400' },
