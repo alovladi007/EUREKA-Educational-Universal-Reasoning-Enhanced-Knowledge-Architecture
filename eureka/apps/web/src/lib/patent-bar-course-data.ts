@@ -4255,6 +4255,1350 @@ Protests under 37 CFR §1.291 are a different pre-grant mechanism:
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// PART 4 — OFFICE ACTIONS
+// MPEP Chapter 700 · 37 CFR 1.104–1.116
+// ═══════════════════════════════════════════════════════════════
+
+po_nonfinal: {
+  topicId: 'po_nonfinal',
+  title: `Non-Final Office Actions and Responses`,
+  domainWeight: 'Office Actions · MPEP 706–707',
+  overview: `A non-final Office Action (OA) is the examiner's first substantive analysis of the claims. It identifies rejections, objections, and requirements, and invites the applicant to respond with amendments and/or arguments. Understanding the required elements of a response under 37 CFR §1.111 — and the distinction between rejections (substantive) and objections (formal) — is foundational for prosecution. Non-final responses are the primary vehicle for shaping a patent's scope.`,
+  sections: [
+    {
+      id: 'nonfinal-contents',
+      title: `1. Contents of a Non-Final Office Action`,
+      content: `## 1.1 Structure
+
+A typical non-final OA contains:
+- **Cover sheet**: identifies the application, examiner, mailing date
+- **Summary of action**: list of pending claims, which are allowed/rejected/objected
+- **Detailed action**: substantive analysis of each rejection and objection
+- **Notice of references cited**: PTO-892 form listing prior art
+- **Interview summary** (if any)
+- **Response period**: typically 3 months shortened statutory period (extendable to 6 months)
+
+## 1.2 Rejections vs. Objections
+
+### Rejections (Substantive)
+- Under 35 U.S.C. §101 (subject matter), §102 (anticipation), §103 (obviousness), §112 (disclosure/definiteness)
+- Go to patentability — claim cannot issue as-is
+- Responded to with amendments and/or arguments
+- Can be appealed to the PTAB
+
+### Objections (Formal)
+- Drawing quality, abstract format, typography, informal specification
+- Do NOT go to patentability
+- Usually remedied by correction or amendment
+- Typically cannot be appealed (petitions available for some)
+
+## 1.3 Typical Rejections and Their Bases
+
+| Rejection | Statute | What Examiner Must Show |
+|---|---|---|
+| §101 subject matter | 35 U.S.C. §101 | Claim directed to judicial exception without significantly more |
+| §101 utility | 35 U.S.C. §101 | Claim lacks specific, substantial, credible utility |
+| §102 anticipation | 35 U.S.C. §102 | Single reference discloses every element |
+| §103 obviousness | 35 U.S.C. §103 | Combination of references + rationale (MPEP §2143) |
+| §112(a) written description | 35 U.S.C. §112(a) | Spec does not show possession of full claim scope |
+| §112(a) enablement | 35 U.S.C. §112(a) | Spec does not enable full claim scope (Wands) |
+| §112(b) indefiniteness | 35 U.S.C. §112(b) | Claim not understandable with reasonable certainty |
+| §112(d) improper dependency | 35 U.S.C. §112(d) | Dependent claim doesn't further limit |
+| Double patenting | Judicially created | ODP; terminal disclaimer available |
+
+## 1.4 Prior Art Citation Format
+
+References are cited using the PTO-892 form:
+- Patent number or publication identifier
+- Date of publication/issuance
+- Inventor/assignee
+- Relevant column/page citation
+- Primary references (marked with asterisk) vs. secondary
+
+## 1.5 Interview Summary
+
+If there was a prior interview with the examiner, the OA may include an interview summary. Interviews are a valuable tool to clarify the examiner's position and narrow issues before formal response.`,
+    },
+    {
+      id: 'nonfinal-response-requirements',
+      title: `2. Response Requirements (37 CFR §1.111)`,
+      content: `## 2.1 What the Response Must Do
+
+37 CFR §1.111(b) requires that the reply:
+- **Address every rejection**, objection, and requirement in the Office Action
+- Distinctly and specifically respond to each point
+- Identify amendments, arguments, and evidence
+
+## 2.2 Types of Response Elements
+
+### Amendments
+- Changes to claims (add, cancel, modify)
+- Changes to specification or drawings (limited — no new matter)
+- Formatted per 37 CFR §1.121 (see §2.3 below)
+
+### Arguments
+- Traverse (argue against) each rejection
+- Explain why amendments overcome the rejection
+- Cite relevant law or prior MPEP sections
+
+### Evidence
+- Declarations under 37 CFR §1.132 (secondary considerations, facts)
+- Exhibits (test data, market evidence)
+- Substitute drawings (if needed)
+
+## 2.3 Amendment Formatting (37 CFR §1.121)
+
+All amendments must use a specific format:
+- **Claim amendments**: use underline for added text, strikethrough for deleted text, use markings like "(Currently amended)", "(Previously presented)", "(New)", "(Canceled)"
+- **Specification amendments**: identify sections being changed, show the new text
+- **Drawing amendments**: submit replacement sheets with "Replacement Sheet" annotation; optionally annotated sheets showing changes
+
+Each claim in a response must show its status:
+- (Original): never amended
+- (Currently amended): being amended now (show underline/strikethrough)
+- (Previously presented): previously amended, now unchanged
+- (New): newly added
+- (Canceled): removed
+
+## 2.4 What a Complete Response Looks Like
+
+A complete response to a non-final OA typically includes:
+1. **Remarks section**: identifies claims pending, examined, etc.
+2. **Amendments to the claims** (if any), with status markers
+3. **Amendments to the specification** (if any)
+4. **Amendments to the drawings** (if any)
+5. **Arguments traversing each rejection**
+6. **Evidence** (declarations, exhibits)
+7. **Concluding statement**: requests favorable action
+
+## 2.5 Bona Fide Attempt at Completion
+
+37 CFR §1.111 requires a "bona fide attempt" at a complete response. A response that is clearly incomplete or fails to address the examiner's points may be treated as non-responsive — triggering a Notice of Non-Compliant Response and requiring correction.
+
+## 2.6 Claims Status After Response
+
+Each claim must have a clear status after amendment. The response should number and identify every pending claim.
+
+### Claims Language Template
+- (Original) — claim as originally filed, not amended
+- (Currently amended) — amended in this response
+- (Previously presented) — amended in a prior response, not amended here
+- (New) — new claim added in this response
+- (Canceled) — canceled in this response
+- (Withdrawn) — non-elected claim
+- (Not entered) — claim that failed formal requirements`,
+      examTip: `The claim status labels [(Original), (Currently amended), (Previously presented), (New), (Canceled), (Withdrawn)] are heavily tested. Every claim in every response must have a status label. Amendment formatting (underline for added, strikethrough for deleted) is required under 37 CFR §1.121.`,
+    },
+    {
+      id: 'nonfinal-strategies',
+      title: `3. Response Strategies`,
+      content: `## 3.1 Choosing Amendment vs. Argument
+
+- **Argument only**: preserve broad claim scope; hope examiner withdraws rejection
+- **Amendment only**: narrow claim to clearly distinguish over art
+- **Combination**: amend to narrow, then argue that narrowed claim is novel/non-obvious
+
+## 3.2 Amending to Distinguish Over Prior Art
+
+Common amendment strategies:
+- Add a limitation the prior art doesn't teach
+- Narrow a range or scope to exclude prior-art examples
+- Add a functional limitation with corresponding structure
+- Add a combination that no single reference teaches
+
+Risk: narrowing amendments may create prosecution history estoppel, limiting later infringement claims under doctrine of equivalents (*Festo*, 2002).
+
+## 3.3 Arguing Against Rejections
+
+Common argument strategies for §102/§103:
+- Reference doesn't disclose a claim element
+- Reference is non-analogous art
+- No motivation to combine references
+- Teaching away by one reference
+- Unpredictability in the art
+- Secondary considerations (declarations under §1.132)
+
+For §112 rejections:
+- Point to specific support in specification for written description
+- Provide calculations or examples showing enablement
+- Clarify claim language for indefiniteness
+
+For §101 rejections:
+- Argue technical improvement (Enfish, McRO, DDR, Finjan)
+- Identify practical application under Step 2A Prong 2
+- Distinguish from abstract idea patterns
+
+## 3.4 Interviews
+
+Examiner interviews are highly valuable:
+- Can be conducted by phone, in person, or video (USPTO allows)
+- Not counted against response deadline
+- Can clarify examiner's position before formal response
+- Can lead to examiner suggestions for allowable claims
+
+Available at:
+- **First action interview pilot program** (pre-first-action): optional pre-examination interview for certain applicants
+- **After first action**: standard right to interview
+- **After final**: limited right, depends on examiner discretion
+
+Interviews should be summarized in writing (examiner issues an Interview Summary, or the applicant files a summary within 2 months).
+
+## 3.5 Declarations Under 37 CFR §1.132
+
+Declarations present evidence:
+- **Unexpected results** (secondary consideration for §103)
+- **Commercial success** with nexus to claimed features
+- **Long-felt need** or **failure of others**
+- **Skilled artisan declarations** on what was known or obvious
+- **Expert testimony** on predictability or POSITA level
+
+Declaration requirements:
+- Signed by a person with relevant knowledge
+- Factual statements supported by evidence
+- Must address the specific examiner rejection
+- Must establish nexus between evidence and claimed invention
+
+## 3.6 Supplemental Responses
+
+After filing a response, the applicant can file a supplemental response:
+- Before the examiner mails the next action
+- Corrects errors, adds missing material, etc.
+- Not common but occasionally useful
+
+## 3.7 Common Response Pitfalls
+
+- Missing the deadline (abandonment)
+- Not addressing every rejection (non-responsive)
+- Using improper claim amendment formatting
+- Adding new matter through amendment (§112 rejection)
+- Failing to show nexus in §1.132 declarations
+- Over-arguing (cluttering the record for later litigation)`,
+      importantNote: `A response must address **every** rejection, objection, and requirement in the OA. If the examiner raises five rejections and you address only four, the response is non-compliant. Remedy: Notice of Non-Compliant Response, requiring a supplemental response within a short window.`,
+    },
+  ],
+  keyTakeaways: [
+    'Non-final OA: first substantive examiner analysis. 3-month SSP, extendable to 6 months under §1.136(a).',
+    'Rejections (substantive, §§101/102/103/112) vs. objections (formal, cosmetic issues). Different appeal paths.',
+    'Response under 37 CFR §1.111 must address EVERY rejection, objection, and requirement distinctly.',
+    'Amendment formatting (§1.121): underline added text, strikethrough deleted. Every claim gets a status label.',
+    'Claim status labels: Original, Currently amended, Previously presented, New, Canceled, Withdrawn.',
+    'Three response strategies: amendment only, argument only, combination. Narrowing amendments create prosecution estoppel.',
+    'Declarations under §1.132 present evidence: unexpected results, commercial success, long-felt need, POSITA testimony. Must establish nexus.',
+    'Examiner interviews available before/after first action. Valuable for clarifying position. Don\'t count against response deadline.',
+  ],
+},
+
+po_final: {
+  topicId: 'po_final',
+  title: `Final Rejections and Response Options`,
+  domainWeight: 'Office Actions · MPEP 706.07, 714.13',
+  overview: `A Final Office Action closes prosecution in the current round. The applicant's options become narrowed: after-final amendment (limited), RCE (reopens prosecution), appeal, or abandonment. Understanding what CAN be amended after final, what requires an RCE, and how the AFCP 2.0 program fits in is essential for practical prosecution and is frequently tested.`,
+  sections: [
+    {
+      id: 'final-when-proper',
+      title: `1. When Is a Final Rejection Proper? (MPEP §706.07)`,
+      content: `## 1.1 The Standard
+
+A final rejection is proper when:
+- The claims are unpatentable, AND
+- The rejection is based on:
+  - Art/issues that were properly raised in the prior action, OR
+  - New art/issues that were necessitated by the applicant's amendment
+
+## 1.2 When Final Is NOT Proper
+
+A final rejection is IMPROPER if:
+- The examiner introduces a new ground of rejection that was not necessitated by the applicant's amendments
+- The examiner raises new issues that could have been raised earlier
+- The rejection is based on a new reference that was available but not cited in the non-final action
+
+In such cases, the applicant can petition to have the rejection re-designated as non-final (37 CFR §1.181).
+
+## 1.3 Prosecution Typically Goes Final on Second Action
+
+Standard prosecution pattern:
+- First action: typically non-final
+- Response to first action
+- Second action: typically final (if any rejections remain)
+- Response options after final
+
+Some applications have multiple non-finals (e.g., if examiner introduces substantial new issues), but the typical pattern is two actions.
+
+## 1.4 What "Final" Means for the Applicant
+
+Final rejection means:
+- The examiner will NOT enter further amendments as a matter of right
+- Applicant has limited options
+- Response must generally close out prosecution or continue via RCE/appeal
+
+## 1.5 What "Final" Does NOT Mean
+
+- Final is NOT an outright rejection of the application (that's abandonment)
+- Final can be reopened via RCE (most common)
+- Final can be reversed via appeal (if examiner is wrong)
+- Final decisions are subject to the right to continue prosecution
+
+## 1.6 First Action on the Merits Can Be Final
+
+In limited circumstances, a first action can be final:
+- Continuations where all amendments are the same as the parent (no new issues)
+- Applications in which the applicant has previously had a chance to respond on the merits (e.g., after Notice of Appeal in a different application involving same subject matter)
+
+This is rare but tested.`,
+    },
+    {
+      id: 'final-response-options',
+      title: `2. Response Options After Final`,
+      content: `## 2.1 Five Basic Options
+
+After a final rejection, the applicant can:
+
+1. **File an after-final amendment** (limited; examiner may or may not enter)
+2. **File a Request for Continued Examination (RCE)** — reopens prosecution
+3. **File a Notice of Appeal** — appeal to PTAB
+4. **Use After-Final Consideration Pilot (AFCP 2.0)** — streamlined after-final review
+5. **Abandon** — let the application die
+
+Each has different procedural requirements and strategic implications.
+
+## 2.2 After-Final Amendments (37 CFR §1.116)
+
+After-final amendments are permitted only in limited circumstances:
+- **Amendments to cancel rejected claims** or to comply with objections/requirements as to form
+- **Amendments to rewrite dependent claims into independent form** (to protect allowable subject matter)
+- **Amendments to put the application in condition for allowance** by addressing all rejections
+
+The examiner has discretion to enter or refuse after-final amendments. Examiners will typically enter after-final amendments that:
+- Cancel rejected claims
+- Correct minor formalities
+- Present allowable subject matter
+
+Will typically refuse:
+- Amendments that require additional search
+- New claims beyond simple reformulation
+- Amendments that raise new issues
+
+## 2.3 Advisory Action
+
+After an after-final amendment, the examiner may issue an **Advisory Action**:
+- States whether the amendment overcomes the final rejection
+- Does NOT reopen prosecution or restart the deadline
+- The 6-month response period continues from the original final action mailing date
+- If the Advisory Action says "amendment not entered," applicant should file RCE or appeal
+
+## 2.4 Deadline Calculation After Final
+
+Deadlines run from the **final rejection mailing date**, not from any Advisory Action:
+- 3-month SSP
+- Extensions under §1.136(a) up to 6 months
+- Strict 6-month absolute maximum
+
+The Advisory Action is for information only; it does NOT extend any deadline.
+
+## 2.5 Strategic Considerations
+
+### Choose RCE When:
+- Complex amendments are needed
+- New evidence/declarations are being submitted
+- The examiner has suggested a path to allowance
+- Appeal is unlikely to succeed
+
+### Choose Appeal When:
+- The examiner's rejection is clearly wrong
+- The applicant has strong legal arguments
+- Amendment alone cannot overcome rejection
+- The applicant wants a formal resolution
+
+### Use AFCP 2.0 When:
+- Simple amendment that would overcome final
+- Want examiner to make a quick assessment
+- Time is short
+
+## 2.6 After-Final Amendment + RCE
+
+A common strategy: file an after-final amendment to push for allowance, and if the Advisory Action says the amendment wouldn't be entered, file an RCE within the 6-month window.`,
+    },
+    {
+      id: 'rce-basics',
+      title: `3. Request for Continued Examination (RCE)`,
+      content: `## 3.1 What an RCE Does
+
+Under 37 CFR §1.114:
+- Reopens prosecution on the merits
+- Examiner considers the application as if a new non-final action had been issued
+- Any previously unentered amendments can be entered
+- Applicant responds to the RCE with a fresh response (typically filed with the RCE)
+- Examiner issues a new Office Action (may be non-final or final)
+
+## 3.2 When Available
+
+An RCE can be filed after:
+- Final rejection
+- Appeal brief (but typically better to file before)
+- Notice of Allowance (to reopen for further issues)
+- Any action closing prosecution
+
+## 3.3 RCE Requirements
+
+- Filed via Patent Center
+- Fee required (around $1,360 regular, $544 small, $272 micro; increased for second/third RCEs)
+- A "submission" (typically an amendment or evidence) that addresses outstanding rejections
+- Must be filed BEFORE payment of issue fee (or with petition to withdraw from issue)
+
+## 3.4 The RCE Fee Structure
+
+Historically, the first RCE had a modest fee. The USPTO raised fees to discourage repeated RCEs:
+- First RCE: ~$1,360 regular entity
+- Second and subsequent RCEs: significantly higher (~$2,000+)
+
+## 3.5 RCE Does NOT Change Effective Filing Date
+
+An RCE is NOT a new application. It:
+- Does not create a new filing date
+- Does not require a new oath/declaration
+- Does not create new priority issues
+- Uses the original application number
+
+## 3.6 After RCE, First Action May Be Final
+
+After an RCE, the examiner's next action:
+- Typically non-final if responsive amendments make material changes
+- Can be final immediately if the RCE doesn't introduce new issues (like a second continuation argument)
+
+## 3.7 When to File RCE vs. Continuation
+
+| Factor | RCE | Continuation |
+|---|---|---|
+| New application? | No | Yes |
+| Filing fees | RCE fee (~$1,360) | Full non-prov fee (~$1,820) |
+| Extends prosecution? | Yes, in same app | Yes, in new app |
+| Allows new matter? | No | Yes (if CIP) |
+| Patent term | Same as original | Same EFD, new 20-year term starts from earliest |
+| Preserves parent? | Parent continues | Parent can abandon or issue |
+
+## 3.8 Multiple RCEs
+
+No statutory limit on RCEs. However:
+- Each RCE costs fees
+- USPTO may view excessive RCE use unfavorably
+- Patent term adjustment (PTA) analysis may be affected by repeated RCEs (delays from applicant-requested RCEs are subtracted from PTA)`,
+      examTip: `**RCE = continuation of the same application**, NOT a new application. RCE costs an RCE fee (not a full filing fee), uses the same app number, keeps the same EFD and priority. Best used when a modest change (amendment, declaration) can put the case in allowance.`,
+    },
+    {
+      id: 'afcp-2',
+      title: `4. After Final Consideration Pilot (AFCP 2.0)`,
+      content: `## 4.1 What AFCP 2.0 Is
+
+AFCP 2.0 (After Final Consideration Pilot 2.0) is an optional streamlined review program for certain after-final amendments:
+- Allows the examiner to make a quick assessment
+- Pays for up to 3 hours of additional examination
+- Can include a telephonic interview
+
+## 4.2 Eligibility
+
+To qualify for AFCP 2.0:
+- Application must be under final rejection
+- Amendment must be narrow (examiners typically define as changes to at least one independent claim without broadening or adding claims)
+- Request must be timely (during the 6-month final response window)
+
+## 4.3 Form
+
+File Form PTO/SB/434 (AFCP 2.0 Request) along with:
+- The after-final amendment
+- A request for AFCP 2.0 consideration
+- No additional fee
+
+## 4.4 How It Works
+
+1. Applicant files after-final amendment + AFCP 2.0 request
+2. Examiner reviews for eligibility
+3. If eligible:
+   - Examiner spends additional hours reviewing
+   - Optional telephonic interview
+   - Decision: amendment overcomes rejection (advisory) OR further response needed
+
+## 4.5 Outcomes
+
+- **Amendment entered; case allowed**: straightforward — NOA follows
+- **Amendment entered; still rejected**: Advisory Action; applicant can file RCE or appeal
+- **Amendment not entered (ineligible)**: Advisory Action; applicant continues with RCE or appeal
+
+## 4.6 Benefits
+
+- Lower cost than RCE
+- Faster than RCE
+- Preserves the ability to file RCE if AFCP 2.0 doesn't succeed
+- Allows informal discussion with examiner
+
+## 4.7 When Not to Use AFCP 2.0
+
+- Complex amendments requiring new search
+- Substantial new evidence
+- Appeal-worthy rejections
+- New claim scope
+
+## 4.8 AFCP 2.0 Status
+
+AFCP 2.0 has been periodically extended by the USPTO. Check current status — as of 2025, the program has been active but subject to ongoing USPTO review. Typical duration is annual renewals.`,
+    },
+  ],
+  keyTakeaways: [
+    'Final Office Action closes prosecution in current round. Typically issued on second action. Requires final rejection standard to be met.',
+    'After-final amendments (§1.116): limited to cancellation, formalities, putting case in allowance condition. Examiner has discretion to enter or refuse.',
+    'Advisory Action informs if after-final amendment overcomes rejection but does NOT extend deadlines.',
+    'Five options after final: after-final amendment, RCE, appeal, AFCP 2.0, abandonment.',
+    'RCE (§1.114) reopens prosecution in the same application. Fee ~$1,360 (first), higher for subsequent RCEs. Does NOT change EFD or priority.',
+    'RCE vs. continuation: RCE continues same application; continuation is new application with same EFD.',
+    'AFCP 2.0: streamlined review for narrow after-final amendments. No additional fee. Examiner spends up to 3 hours + optional interview.',
+    '6-month absolute deadline runs from final rejection mailing, NOT from any advisory action. Don\'t wait for Advisory Action to decide on RCE/appeal.',
+  ],
+},
+
+po_amendments: {
+  topicId: 'po_amendments',
+  title: `Amendments During Prosecution`,
+  domainWeight: 'Office Actions · MPEP 714',
+  overview: `Amendments are changes to the specification, claims, or drawings during prosecution. 37 CFR §1.121 governs their form (claim status labels, underline/strikethrough), and the "new matter" prohibition of §132 bars amendments that introduce subject matter not supported by the original specification. Timing rules dictate when amendments of right are available vs. when examiner discretion applies. Amendment practice is heavily tested because it affects priority, scope, and formal compliance.`,
+  sections: [
+    {
+      id: 'amendments-rights-vs-discretion',
+      title: `1. When Amendments Are of Right vs. Discretionary`,
+      content: `## 1.1 Amendments of Right (Before First Action on Merits)
+
+Before the first Office Action on the merits:
+- Applicant may amend the specification, claims, or drawings at any time as a matter of right
+- No examiner discretion involved
+- Common mechanism: **Preliminary Amendment** filed with the application or before first OA
+
+## 1.2 Preliminary Amendments
+
+- Filed at or before the application is filed
+- Can add claims, cancel claims, correct typographical errors
+- Often used to present the claims in their ideal form even if the filing documents were prepared quickly
+- Must comply with §1.121 formatting (claim status labels, markups)
+
+## 1.3 Amendments After Non-Final Office Action
+
+- Filed in response to a non-final OA
+- Part of the response under §1.111
+- Relatively free — examiner generally enters amendments that comply with formal rules
+- Can amend broadly, not just in response to specific rejections
+
+## 1.4 Amendments After Final
+
+Examiner's discretion (§1.116) — see Part 4 Final Rejection topic.
+
+## 1.5 Amendments After Allowance (§1.312)
+
+After Notice of Allowance, amendments are EXCEPTIONAL:
+- Generally require a petition to withdraw from issue (§1.313)
+- Limited amendments may be accepted: fix typos, clarify claims
+- Examiner has broad discretion to refuse
+
+## 1.6 Amendments During Reissue, Reexam, IPR
+
+Each post-grant procedure has its own amendment rules — different from original prosecution.
+
+## 1.7 Amendments Submitted With an RCE
+
+An RCE typically is filed with an amendment as the "submission":
+- Treated like a response to a non-final action
+- Examiner enters the amendment and re-examines`,
+    },
+    {
+      id: 'amendments-format',
+      title: `2. Amendment Formatting Rules (37 CFR §1.121)`,
+      content: `## 2.1 Claim Amendments
+
+Every claim in the response must have a status label:
+- **(Original)** — as originally filed, unchanged
+- **(Currently amended)** — changed in this response
+- **(Previously presented)** — amended in a prior response
+- **(Canceled)** — removed in this response
+- **(New)** — added for the first time
+- **(Withdrawn)** — non-elected, unchanged
+- **(Withdrawn — Currently amended)** — non-elected, but amended
+
+## 2.2 Markup Conventions
+
+For **(Currently amended)** claims:
+- Added text: **underlined**
+- Deleted text: ~~strikethrough~~ or [in brackets]
+
+Example:
+"A widget comprising: a body; a ~~first~~ **second** component connected to the body; and a third component."
+
+For **(Canceled)** claims: Just write "Claim X. (Canceled)"
+
+For **(New)** claims: Include full claim text, marked "(New)"
+
+For **(Previously presented)** claims: Just include the full claim text as it currently stands; no markup
+
+## 2.3 Specification Amendments
+
+To amend the specification:
+- Identify the specific location (page/paragraph/line)
+- Show the new text (often in a markup format)
+- Example: "At page 5, line 3, replace 'widget' with 'device'."
+- For additions to the specification, mark clearly and ensure no new matter
+
+## 2.4 Drawing Amendments
+
+Three types of sheets:
+- **Replacement Sheet**: new version of a figure; labeled "Replacement Sheet" at top
+- **New Sheet**: adding a figure that wasn't in the original drawings
+- **Annotated Sheet**: shows changes from prior drawings (optional)
+
+Drawing amendments must NOT introduce new subject matter.
+
+## 2.5 Common Formatting Errors
+
+- Missing claim status labels
+- Incorrect markup (no underline for additions or no strikethrough for deletions)
+- Adding new text in italics or bold instead of underline
+- Failing to list ALL pending claims (even if unchanged)
+- Mis-numbering claims
+- Using "amended claim 1" instead of "Claim 1 (Currently amended)"
+
+## 2.6 Non-Compliance Notice
+
+If amendments don't comply with §1.121, the examiner issues a Notice of Non-Compliant Response:
+- Applicant has 1-2 months to correct (not extendable beyond the original 6-month period)
+- No fee to correct (usually)
+- Failure to correct may result in treating response as non-filed
+- This can waste the response window
+
+## 2.7 Multiple Amendments in a Single Paper
+
+A single response paper can amend:
+- Claims
+- Specification
+- Drawings
+
+All in one document, each in its own section, each properly formatted.`,
+      examTip: `The claim status labels and markup conventions are tested verbatim. **(Original), (Currently amended), (Previously presented), (New), (Canceled), (Withdrawn)** — memorize all six. Underline added text. Strikethrough deleted text. Missing these formatting requirements = non-compliant response.`,
+    },
+    {
+      id: 'new-matter',
+      title: `3. New Matter Prohibition (35 U.S.C. §132)`,
+      content: `## 3.1 The Rule
+
+"No amendment shall introduce new matter into the disclosure of the invention." — 35 U.S.C. §132
+
+New matter = subject matter not supported by the original specification, claims, or drawings as filed.
+
+## 3.2 Why This Matters
+
+- Amendments must be supported by the ORIGINAL filing date documents
+- Subject matter added later does NOT get the original filing date
+- Introducing new matter → §112(a) rejection (lack of written description)
+- Can undermine priority claims
+
+## 3.3 Common New-Matter Scenarios
+
+### Scenario A: Narrowing Range Not Disclosed
+- Spec discloses range 100-200°C
+- Applicant amends claim to 150-180°C
+- If the narrower range isn't disclosed or inherently supported → new matter
+- Remedy: document the support in response (cite specification), or amend the spec FIRST
+
+### Scenario B: Adding Unsupported Feature
+- Spec discloses valve with sealing element
+- Applicant amends claim to add "valve having a metal sealing element"
+- If metal is not mentioned → new matter
+- Remedy: remove the limitation or cite spec evidence
+
+### Scenario C: Drawing-Only Support
+- Spec does not describe element X, but the drawing shows it clearly
+- Applicant claims element X
+- Drawing support may suffice if feature is clearly identifiable, but risky
+- Best practice: ensure drawings and specification are consistent
+
+### Scenario D: Inherent Disclosure
+- Spec discloses property Y
+- Applicant claims property Y + inherent feature Z
+- Z is "necessarily present" per POSITA
+- Acceptable as original disclosure (inherency)
+
+## 3.4 Remedies for New Matter Rejections
+
+- Cancel the amendment
+- Cite specification/drawing support for the amendment
+- Argue inherency
+- File a CIP containing the new matter (loses priority for those claims)
+
+## 3.5 Drawing Changes and New Matter
+
+Drawing changes can introduce new matter:
+- Adding a new feature not originally disclosed → new matter
+- Changing proportions materially → potentially new matter
+- Fixing line quality, typos → not new matter (cosmetic)
+
+## 3.6 Specification Changes and New Matter
+
+Adding new paragraphs, new examples, or new claim-support language = new matter if not already disclosed.
+
+Editorial/corrective changes:
+- Correct typos in the spec → not new matter (cosmetic)
+- Fix grammar → not new matter
+- Add a new example → new matter if not originally disclosed
+- Rearrange content → not new matter
+
+## 3.7 Standard: POSITA Possession
+
+The test for new matter is whether a POSITA reading the original specification would understand the amendment to be part of the original disclosure. Same test as §112(a) written description.
+
+## 3.8 Best Practices
+
+- Draft specifications broadly to support future amendments
+- Include alternative embodiments, ranges, materials
+- Use "preferably," "more preferably," "most preferably" to support narrowing
+- Keep drawings detailed and consistent with specification
+- When amending, always check specification support first`,
+      importantNote: `The "new matter" doctrine is a significant trap. Applicants often think they can add ANY narrowing limitation during prosecution, but if that limitation wasn't in the original spec, it's new matter. Always verify §112(a) support BEFORE filing a narrowing amendment.`,
+    },
+  ],
+  keyTakeaways: [
+    'Amendments of right: available before first action on merits and in response to non-final OA. After final, examiner discretion.',
+    'Preliminary amendments filed with or before first OA. Useful for correcting filing or adding claims.',
+    '37 CFR §1.121 formatting: every claim needs status label (Original, Currently amended, Previously presented, New, Canceled, Withdrawn).',
+    'Markup conventions: underline for added text, strikethrough for deleted text. Not italics or bold.',
+    'New matter prohibition (§132): no amendment can introduce subject matter beyond the original disclosure.',
+    'New matter scenarios: narrower ranges not disclosed, unsupported features, new examples, new drawings of new elements.',
+    'Drawing changes: adding new elements = new matter; fixing cosmetic issues = not new matter.',
+    'Non-compliant amendments trigger Notice of Non-Compliant Response. Correction required within response window.',
+  ],
+},
+
+po_response_strategies: {
+  topicId: 'po_response_strategies',
+  title: `Advanced Response Strategies`,
+  domainWeight: 'Office Actions · MPEP 700',
+  overview: `Beyond the basic response mechanics, effective prosecution involves choosing the right combination of amendments, arguments, evidence, and interviews. Topics here include: secondary considerations declarations (Rule 1.132), interviewing the examiner, addressing rejection combinations, and strategic timing of responses. These are less commonly tested as explicit topics but appear woven into fact patterns.`,
+  sections: [
+    {
+      id: 'declarations-strategy',
+      title: `1. Rule 1.132 Declarations Strategy`,
+      content: `## 1.1 When to Use a Declaration
+
+File a declaration when:
+- Arguing unexpected results (common for §103 rejections in chemical arts)
+- Establishing POSITA level or state of the art
+- Providing commercial success evidence
+- Asserting failure of others / long-felt need
+- Supporting a specific technical fact
+
+## 1.2 Types of Declarations
+
+### Unexpected Results Declaration
+- Compare claimed invention to the closest prior art
+- Show 10-fold (or greater) improvement in a relevant property
+- Test at least one representative species across the claim scope
+- Explain why the result was unexpected
+
+### Commercial Success Declaration
+- Show sales data, market share, revenue
+- Establish nexus between the commercial success and the claimed features
+- Distinguish from marketing or branding effects
+- Provide timeline of commercial development
+
+### POSITA/Expert Declaration
+- Establish the POSITA level (education, experience)
+- Describe what was known or unknown at the relevant date
+- Opine on obviousness or non-obviousness
+- Provide technical analysis
+
+## 1.3 Declaration Best Practices
+
+- Be specific (data, not generalities)
+- Establish nexus
+- Avoid over-claiming (examiner may discount the declaration)
+- Include credentials and qualifications of the declarant
+- Address the specific examiner rejection
+
+## 1.4 Who Can Be a Declarant
+
+- The inventor (often used for simple factual matters)
+- Technical experts (third-party for unexpected results)
+- Business personnel (for commercial success)
+- Prosecution counsel rarely as a witness (conflict concerns)
+
+## 1.5 Evidentiary Requirements
+
+- Declarations must include factual data, not just opinions
+- Data must be relevant to the claims
+- Must establish nexus (see §1.2)
+- Expert qualifications should support the declarant's opinions
+
+## 1.6 Countering a Declaration
+
+The examiner may:
+- Discount the declaration if nexus is missing
+- Accept but give less weight
+- Request additional information
+- Ultimately reject anyway if prima facie case is strong
+
+## 1.7 Declaration Example — Unexpected Results
+
+A pharmaceutical company receives §103 rejection over two prior art compounds. The company files a Rule 1.132 declaration:
+- Scientific expert compares the inventor's compound to the prior art compounds
+- Shows 100× greater biological activity
+- Attributes the result to a specific structural feature
+- Declaration explains why this result was unexpected given the prior art's teaching
+- Examiner withdraws §103 rejection and allows the application`,
+    },
+    {
+      id: 'examiner-interviews',
+      title: `2. Examiner Interviews`,
+      content: `## 2.1 Types of Interviews
+
+### Telephonic Interview
+- Most common
+- Applicant's counsel and examiner (and SPE if needed)
+- Typically 30-60 minutes
+- Scheduled in advance
+
+### Video Interview (Virtual)
+- Since 2020 COVID expansion, USPTO supports video interviews
+- Can share screens to show documents, figures, prior art
+- Increasingly common
+
+### In-Person Interview
+- At USPTO offices (Alexandria, Detroit, Dallas, Denver, San Jose, Silicon Valley)
+- Less common but valuable for complex cases
+
+## 2.2 When to Request an Interview
+
+### Before First Office Action (Pilot Programs)
+- **First Action Interview Pilot (FAIPP)**: optional pre-first-action interview
+- Examiner provides pre-interview communication identifying potential issues
+- Interview is scheduled before first action
+- Applicant can amend or argue based on examiner's concerns
+
+### After First Action
+- Common timing
+- Discuss rejections, proposed amendments, and potential path to allowance
+- Examiner may suggest allowable amendments
+
+### After Final
+- Limited right
+- Requires examiner agreement
+- Can be effective when clarifying issues
+
+### After Appeal Brief
+- Appeal conference (optional) with examiner and SPE
+- Last chance before formal PTAB review
+
+## 2.3 Preparing for an Interview
+
+- Identify specific rejections to discuss
+- Prepare proposed amendments and arguments
+- Anticipate examiner's counter-arguments
+- Have the file and references ready
+
+## 2.4 Interview Conduct
+
+- Professional and collaborative
+- Focus on substantive issues
+- Avoid personal remarks
+- Be open to examiner's suggestions
+
+## 2.5 Interview Summary
+
+After the interview:
+- **Examiner issues Interview Summary** (PTO-413) describing key points
+- **Applicant may file a supplemental interview summary** within 2 months, describing their understanding
+- Both become part of the record
+
+## 2.6 Benefits of Interviews
+
+- Clarify examiner's position
+- Learn what examiner considers allowable
+- Resolve misunderstandings quickly
+- Can lead to examiner-suggested amendments
+- Faster path to allowance
+
+## 2.7 When to Interview (vs. Not)
+
+### Interview when:
+- The rejection is unclear
+- The examiner's reasoning has gaps
+- You want feedback on potential amendments
+- Complex subject matter benefits from discussion
+
+### Don't interview when:
+- Issues are simple (waste of time)
+- The examiner's position is well-documented
+- Amendment + argument is clearly sufficient
+- You prefer not to reveal your strategy
+
+## 2.8 Video-Based Interviews (Post-2020)
+
+The USPTO has substantially expanded video interviews:
+- Use of Microsoft Teams or similar
+- Screen sharing for documents
+- Can accommodate remote parties
+- Nearly as effective as in-person`,
+    },
+    {
+      id: 'multi-rejection-strategy',
+      title: `3. Addressing Multiple Rejection Combinations`,
+      content: `## 3.1 When Rejections Combine
+
+Common examiner-rejection patterns:
+- §101 (subject matter) + §112 (indefiniteness)
+- §102 (anticipation) + §103 (obviousness over other references)
+- §112(a) (enablement) + §112(b) (definiteness)
+- §103 (obviousness) + Double patenting
+
+## 3.2 Prioritizing Rejection Responses
+
+Not all rejections are equally problematic. Prioritize by:
+1. **Rejections affecting multiple claims** — address first to narrow the issues
+2. **Rejections with clear defect** — argue if the rejection is clearly wrong
+3. **Rejections requiring amendment** — amend to reduce scope and overcome
+
+## 3.3 Simultaneous §102 and §103 Rejections
+
+Examiners sometimes reject under both §102 and §103:
+- §102 rejection by reference A
+- §103 rejection by reference A in combination with reference B
+
+Response:
+- If A doesn't anticipate → overcome §102
+- Then argue combination of A + B isn't obvious (§103)
+- Two separate analyses
+
+## 3.4 §101 + §103 Combination
+
+- §101 rejection: claim is abstract idea
+- §103 rejection: claim is obvious over prior art
+
+Response options:
+- Focus on §101 first (add technical improvement) → may moot §103 if amendments narrow claim
+- Argue both simultaneously
+- Submit declarations for §103 (secondary considerations); arguments for §101
+
+## 3.5 Restriction + Rejection
+
+Sometimes a restriction requirement is combined with some examination:
+- Examiner restricts to certain claims
+- Provides some analysis of allowed/rejected claims within the restriction
+
+Response:
+- Elect (with or without traversal)
+- Respond to any rejections in elected claims
+- File divisional for non-elected claims
+
+## 3.6 Objection + Rejection
+
+- **Rejection**: substantive issue; appealable
+- **Objection**: formal issue; petition (not appeal)
+
+Response:
+- Address both in the single response
+- Correct objections (e.g., drawing fixes)
+- Argue/amend rejections
+
+## 3.7 Order of Operations
+
+Typical response structure:
+1. Status of claims
+2. Restriction/election (if applicable)
+3. Objections (address first for completeness)
+4. Rejections (major substantive section)
+5. Conclusion
+
+## 3.8 Efficiency Considerations
+
+- Group similar rejections for unified argument
+- Cite previously submitted evidence rather than re-attaching
+- Reference MPEP sections for legal standards
+- Be concise but thorough`,
+    },
+  ],
+  keyTakeaways: [
+    'Rule 1.132 declarations: powerful tool for unexpected results, commercial success, failure of others. Require nexus and factual data.',
+    'Declarations compared to CLOSEST prior art. Tests at least one representative species across the claim scope.',
+    'Examiner interviews: telephonic, video, or in-person. Most common: video. Schedule in advance. Expect 30-60 minutes.',
+    'First Action Interview Pilot (FAIPP): optional pre-first-action interview after examiner sends pre-interview communication.',
+    'Interview Summary (PTO-413) issued by examiner; applicant can file supplemental within 2 months.',
+    'Multi-rejection strategy: prioritize rejections affecting most claims; handle combined §102/§103 as separate analyses.',
+    '§101 + §103 combination: narrowing amendments can sometimes moot §103 while addressing §101.',
+    'Objections vs. rejections: substantive = appealable; formal = petitionable (§1.181).',
+  ],
+},
+
+po_appeal_brief_prep: {
+  topicId: 'po_appeal_brief_prep',
+  title: `Preparing for Appeal — Notice of Appeal and Brief`,
+  domainWeight: 'Office Actions · MPEP 1200',
+  overview: `When the examiner maintains rejections despite the applicant's best arguments and amendments, the applicant can appeal to the Patent Trial and Appeal Board (PTAB). The appeal process starts with a Notice of Appeal, followed by an Appeal Brief (within 2 months), and may include a pre-appeal brief conference or examiner's answer. Understanding timing, fee, and content requirements is essential. Appeal-related rules are tested less frequently than basic prosecution, but they're important for complete prosecution competence.`,
+  sections: [
+    {
+      id: 'appeal-notice',
+      title: `1. Notice of Appeal`,
+      content: `## 1.1 When to File a Notice of Appeal
+
+A Notice of Appeal is filed:
+- After final rejection
+- When the applicant has exhausted amendment/argument options in the current round
+- When the applicant believes the rejection is legally incorrect
+
+## 1.2 Filing Requirements
+
+- Form: Notice of Appeal (PTO/SB/31)
+- Fee: ~$890 (regular entity, 2025 rates), reduced for small/micro
+- Identify the application and final rejection being appealed
+- Filed via Patent Center
+
+## 1.3 Effect of Notice of Appeal
+
+- Prosecution is **suspended** — examiner typically takes no further action
+- The clock for filing the appeal brief starts (2 months)
+- Application remains pending (not abandoned)
+
+## 1.4 Statute and Regulations
+
+35 U.S.C. §134 governs appeals. 37 CFR §41.30 et seq. provides procedural rules.
+
+## 1.5 Deadline for Appeal
+
+Must be filed within the response period for the final rejection:
+- 3-month SSP
+- Extendable to 6 months with §1.136(a) extensions
+- Strict 6-month absolute maximum
+
+## 1.6 Who Signs
+
+- Patent attorney/agent (as representative)
+- Inventor (pro se)
+
+## 1.7 Alternatives to Appeal
+
+Instead of appealing, applicant can:
+- File RCE (reopens prosecution)
+- File a continuation application
+- Allow abandonment
+- Try the AFCP 2.0 program
+
+## 1.8 Strategic Considerations
+
+Appeal vs. RCE:
+- Appeal: formal resolution by PTAB; applicant believes examiner is wrong on law
+- RCE: continues prosecution; applicant wants to amend or try new approach
+
+Appeal is slower (12-24 months to PTAB decision) but results in a binding legal determination.`,
+    },
+    {
+      id: 'pre-appeal-brief',
+      title: `2. Pre-Appeal Brief Conference`,
+      content: `## 2.1 What Is a Pre-Appeal Brief Conference?
+
+An informal review of the appeal by a panel of 3 examiners (including the SPE and primary examiner):
+- Intended to resolve cases that don't need formal PTAB review
+- Optional — applicant chooses whether to request
+
+## 2.2 How to Request
+
+- File "Request for Pre-Appeal Brief Conference" on Form PTO/SB/33
+- Must be filed with the Notice of Appeal
+- Include a concise statement (5 pages max) of why the rejection is wrong
+- No fee
+
+## 2.3 Process
+
+1. Applicant files Notice of Appeal + Pre-Appeal Brief Conference Request
+2. A panel of 3 examiners reviews
+3. Within ~45 days, the panel issues a decision:
+   - **Application allowed**: rejection withdrawn
+   - **Proceed to examiner's answer**: proceed with formal appeal brief
+   - **Applicant may file appeal brief**: proceed formally
+   - **Reopen prosecution**: go back to examination (examiner re-issues action)
+
+## 2.4 Benefits
+
+- Lower cost than full appeal
+- Faster resolution
+- Can clarify issues for appeal brief if proceeding
+
+## 2.5 Limitations
+
+- Conference decision is not a legal ruling
+- If pre-appeal fails, applicant still must file appeal brief within original 2-month window
+- Limited effectiveness if examiner's reasoning is sophisticated
+
+## 2.6 Strategic Use
+
+Pre-appeal is best for:
+- Clear-cut legal errors in rejection
+- Situations where a fresh look may lead to withdrawal
+- Cases where the primary examiner has taken an overly rigid view`,
+    },
+    {
+      id: 'appeal-brief',
+      title: `3. The Appeal Brief (37 CFR §41.37)`,
+      content: `## 3.1 Filing Timing
+
+The Appeal Brief must be filed within **2 months** of the Notice of Appeal. Extensions available under §1.136(a) — but the brief must be filed before any pre-appeal brief conference decision (if requested).
+
+## 3.2 Required Content (37 CFR §41.37)
+
+The Appeal Brief must include:
+1. **Real party in interest**
+2. **Related appeals and proceedings** in the USPTO or courts
+3. **Summary of the claimed subject matter**
+4. **Grounds of rejection to be reviewed** on appeal
+5. **Argument** addressing each ground of rejection
+6. **Claims on appeal** in an appendix
+7. **Evidence appendix** (if applicable)
+8. **Related Proceedings Appendix** (if applicable)
+
+## 3.3 Claim Appendix
+
+All claims on appeal must be listed in the claim appendix:
+- Each claim in full text
+- Marked with status (same status labels as during prosecution)
+- Appellant's proposed claims (if amendments are pending on appeal)
+
+## 3.4 Evidence Appendix
+
+Evidence that was submitted during prosecution and is relied upon on appeal:
+- Declarations
+- Exhibits
+- Any evidence the PTAB should consider
+
+## 3.5 Argument Structure
+
+For each rejection:
+- State the rejection (statute, reference, claim)
+- Explain why the rejection is wrong
+- Cite supporting law (cases, MPEP sections)
+- Apply the facts of the application to the law
+
+## 3.6 Fee for Appeal Brief
+
+- ~$2,240 (regular entity, 2025 rates)
+- Reduced for small/micro entity
+- Paid when the brief is filed
+
+## 3.7 Technical Formatting
+
+- Typically 30 pages max (extensions rare)
+- Specific format per 37 CFR §41.37
+- Patent drawings can be cited but not attached unless new
+- Electronic filing via Patent Center
+
+## 3.8 Common Mistakes
+
+- Failing to address every rejection in the argument
+- Including evidence not in the prosecution record
+- Adding new arguments not raised earlier
+- Poor organization (arguments scattered, not by rejection)
+- Technical issues (missing appendices, improper formatting)
+
+## 3.9 After the Appeal Brief
+
+The examiner responds with an **Examiner's Answer**:
+- Reaffirms rejection (typically)
+- Addresses applicant's arguments
+- May introduce a "new ground of rejection" (applicant has options to respond)
+
+After Examiner's Answer, applicant may file:
+- **Reply Brief** (within 2 months, no fee)
+- **Request for Oral Hearing** (fee required)
+
+## 3.10 Oral Hearing
+
+If the applicant pays the oral hearing fee:
+- 20-minute argument (applicant speaks first, then may rebut)
+- Held at USPTO (in person or video)
+- 3-judge PTAB panel
+- Panel issues final decision ~3-6 months later`,
+      examTip: `Appeal timing: **Notice of Appeal within 6-month final response window, then Appeal Brief within 2 months of Notice**. Memorize the fees (~$890 NOA, ~$2,240 brief). Pre-appeal brief conference is a free, faster alternative — but still requires Notice of Appeal.`,
+    },
+  ],
+  keyTakeaways: [
+    'Notice of Appeal filed during 6-month final response window. Fee ~$890. Prosecution suspended on filing.',
+    'Appeal Brief filed within 2 months of Notice of Appeal. Fee ~$2,240. Must comply with 37 CFR §41.37 content requirements.',
+    'Pre-Appeal Brief Conference: optional, no fee, 5-page concise statement filed with Notice of Appeal. Panel of 3 examiners reviews.',
+    'Pre-Appeal outcomes: allow, proceed to examiner\'s answer, proceed to brief, reopen prosecution.',
+    'Appeal Brief content: real party, related proceedings, claim summary, grounds being appealed, argument, claim appendix, evidence appendix.',
+    'After Appeal Brief: examiner\'s answer → optional reply brief → optional oral hearing → PTAB decision.',
+    'Alternative to appeal: RCE (reopens prosecution) or continuation application. Appeal = formal legal determination.',
+    'Pre-appeal is fastest/cheapest; full appeal is slowest but gives binding decision. 12-24 months typical for PTAB outcome.',
+  ],
+},
+
+po_reopen_prosecution: {
+  topicId: 'po_reopen_prosecution',
+  title: `Reopening Prosecution and Examiner Actions After Appeal`,
+  domainWeight: 'Office Actions · MPEP 1207.04, 1214',
+  overview: `After appeal, the examiner may reopen prosecution rather than submit an Examiner's Answer — for example, to address new prior art or a deficient rejection. The applicant can also reopen prosecution from its side by filing an RCE or amendment. Understanding these procedural interactions is important for complete prosecution strategy.`,
+  sections: [
+    {
+      id: 'examiner-reopen',
+      title: `1. Examiner-Initiated Reopening`,
+      content: `## 1.1 When the Examiner Reopens
+
+After a Notice of Appeal or during the appeal brief preparation:
+- Examiner realizes a previously-considered reference has different teachings
+- New prior art is discovered
+- A rejection was improperly articulated
+- SPE or appeals committee suggests re-examination
+
+The examiner may reopen prosecution instead of defending the rejection on appeal.
+
+## 1.2 How Reopening Occurs
+
+The examiner issues a new Office Action. This:
+- Withdraws the final rejection
+- Issues a non-final rejection
+- Re-starts the prosecution clock
+
+If the examiner adds a NEW ground of rejection:
+- Applicant can respond to it as a non-final
+- Applicant's rights are preserved
+
+## 1.3 Procedural Rights
+
+Rule: An examiner cannot make the reopened action final without giving the applicant a chance to respond.
+
+37 CFR §41.39 governs the examiner's answer and reopening. If the examiner adds new grounds in an Examiner's Answer (after the applicant's appeal brief):
+- Applicant can request that the examiner reopen prosecution
+- Petition to the Director may be used
+
+## 1.4 Strategic Implications
+
+Examiner reopening:
+- Gives applicant another chance to amend
+- Preserves priority and procedural rights
+- Changes the landscape — may resolve the case without formal appeal
+
+## 1.5 Common Reasons for Reopening
+
+- New prior art found (maybe from a continuation of the same application)
+- Examiner realizes §112 issue not previously raised
+- Court decision changes the law (e.g., *Amgen* for enablement)
+- USPTO guidance update (e.g., new §101 guidelines)`,
+    },
+    {
+      id: 'applicant-reopen',
+      title: `2. Applicant-Initiated Reopening`,
+      content: `## 2.1 Applicant RCE After Notice of Appeal
+
+Before the examiner's answer is issued, applicant may:
+- File an RCE with new amendments or evidence
+- This reopens prosecution and effectively withdraws the appeal
+
+## 2.2 Applicant RCE After Examiner's Answer
+
+After the examiner's answer:
+- Applicant may still file an RCE
+- But the RCE fee is higher for second/third RCEs
+- The appeal can be withdrawn in connection with the RCE
+
+## 2.3 Continuation Application
+
+Applicant may file a continuation while appeal is pending:
+- Gives applicant a fresh start with different claims
+- Keeps the appeal in the parent alive
+- Useful for pursuing different claim strategies in parallel
+
+## 2.4 Amendment in Conjunction with RCE
+
+An RCE is typically accompanied by an amendment:
+- Addresses the final rejection
+- Narrows claims or adds limitations
+- Designed to put the case in allowable condition
+
+## 2.5 Express Abandonment
+
+Applicant can expressly abandon at any time, including after appeal brief:
+- May be done as part of strategy to refile as continuation or CIP
+- Voluntary; cannot be reversed via §1.137
+
+## 2.6 Strategic Considerations
+
+RCE vs. Appeal:
+- RCE: continues prosecution, cheaper, faster
+- Appeal: formal legal determination, slower, more expensive
+
+When to reopen via RCE:
+- Clear path to allowance via amendment
+- New evidence available
+- Examiner suggestion indicates willingness to allow
+- Applicant wants to avoid risk of PTAB affirmance
+
+When to proceed with appeal:
+- Examiner's legal analysis is wrong
+- No amendment would preserve desired claim scope
+- Applicant has strong legal argument
+- Willingness to accept longer timeline`,
+    },
+    {
+      id: 'after-appeal-decisions',
+      title: `3. PTAB Decisions and Post-Decision Options`,
+      content: `## 3.1 PTAB Decision Types
+
+After reviewing the appeal, the PTAB issues a decision:
+- **Affirm**: rejection upheld
+- **Reverse**: rejection withdrawn
+- **Remand**: case sent back for further examination
+- **Affirm-in-part**: some rejections affirmed, others reversed
+- **New ground of rejection**: PTAB may raise new rejection not previously considered
+
+## 3.2 If PTAB Affirms
+
+Applicant options:
+- Accept and allow prosecution to continue as per PTAB direction
+- Request rehearing (37 CFR §41.52) within 2 months
+- Appeal to Federal Circuit (35 U.S.C. §141)
+
+## 3.3 If PTAB Reverses
+
+- Examiner must withdraw the rejection
+- Prosecution returns to examiner
+- Examiner may:
+  - Allow the application
+  - Issue a new action addressing different grounds (if new grounds exist)
+
+## 3.4 Federal Circuit Appeal (§141)
+
+The applicant may appeal PTAB decision to the Federal Circuit:
+- 60 days from PTAB decision to file notice of appeal to court
+- Filed with USPTO and served on Director
+- Federal Circuit reviews legal questions de novo; factual findings for substantial evidence
+- Ultimate appeal body before Supreme Court
+
+## 3.5 Federal Circuit vs. District Court
+
+Applicant can also file a civil action under 35 U.S.C. §145:
+- Filed in district court (E.D. Va., where USPTO is)
+- Can introduce new evidence (unlike Federal Circuit review)
+- More expensive, more time
+
+## 3.6 Rehearing
+
+Request for rehearing (§41.52):
+- Within 2 months of PTAB decision
+- Limited to identifying specific points the panel allegedly overlooked
+- Rarely granted`,
+    },
+  ],
+  keyTakeaways: [
+    'Examiner may reopen prosecution after Notice of Appeal by issuing a new Office Action. Withdraws final rejection.',
+    'Applicant may reopen via RCE before or after Examiner\'s Answer. Effectively withdraws the appeal.',
+    'Continuation application during appeal: gives fresh start with different claims while keeping parent appeal alive.',
+    'PTAB decision types: affirm, reverse, remand, affirm-in-part, new ground of rejection.',
+    'After PTAB affirmance: request rehearing (§41.52) within 2 months, or appeal to Federal Circuit (§141) within 60 days.',
+    'Federal Circuit review: legal de novo, factual for substantial evidence. Last appellate body before Supreme Court.',
+    'Alternative to Federal Circuit: §145 civil action in E.D. Va. district court, with right to introduce new evidence.',
+    'Reopening vs. appeal: RCE for tactical, appeal for legal clarity. Both preserve ultimate patent if successful.',
+  ],
+},
+
 }; // end PATENT_BAR_COURSE
 
 export function hasPatentBarCourseContent(topicId: string): boolean {
