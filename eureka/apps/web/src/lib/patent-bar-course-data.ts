@@ -5599,6 +5599,1161 @@ Request for rehearing (§41.52):
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// PART 5 — PCT INTERNATIONAL APPLICATIONS
+// MPEP Chapter 1800 · 35 U.S.C. §§ 351–376 · PCT Articles & Rules
+// ═══════════════════════════════════════════════════════════════
+
+pct_overview: {
+  topicId: 'pct_overview',
+  title: `PCT Overview and Timeline`,
+  domainWeight: 'PCT International · MPEP 1801–1805',
+  overview: `The Patent Cooperation Treaty (PCT) is an international treaty administered by WIPO that streamlines the patent filing process across 150+ contracting states. A single PCT application filed in one Receiving Office reserves patent rights in all designated countries for up to 30 (or 31) months from the priority date. The PCT process has two phases: the **international phase** (filing, search, examination at WIPO and ISA/IPEA) and the **national phase** (entry into individual country patent offices). Critical deadlines — the 12-month priority deadline from initial filing and the 30-month national stage entry deadline — are among the most tested on the Patent Bar exam.`,
+  sections: [
+    {
+      id: 'pct-basics',
+      title: `1. What Is the PCT?`,
+      content: `## 1.1 Purpose
+
+The PCT simplifies international patent filing by:
+- Allowing a **single international application** to preserve rights in all PCT contracting states
+- Providing a centralized **international search** by a qualified Searching Authority
+- Providing optional **international preliminary examination**
+- Delaying the need to file separate national applications by up to 30+ months
+
+The PCT does NOT grant "international patents" — patents are still granted nationally/regionally (e.g., by USPTO, EPO, JPO). The PCT is a procedural tool, not a substantive grant mechanism.
+
+## 1.2 Key Parties and Authorities
+
+| Entity | Role |
+|---|---|
+| **WIPO International Bureau (IB)** | Central administrator; publishes applications; transmits documents |
+| **Receiving Office (RO)** | Where the PCT application is filed (e.g., USPTO as RO/US, EPO as RO/EP) |
+| **International Searching Authority (ISA)** | Conducts the international search; prepares the International Search Report (ISR) and Written Opinion |
+| **International Preliminary Examining Authority (IPEA)** | Conducts Chapter II preliminary examination (optional) |
+| **Designated Office (DO)** | National/regional office where national phase entry occurs |
+| **Elected Office (EO)** | Designated Office if Chapter II was requested |
+
+## 1.3 US as PCT Authority
+
+The USPTO serves as:
+- **RO/US** — Receiving Office for US applicants or applications filed with US priority
+- **ISA/US** — International Searching Authority
+- **IPEA/US** — International Preliminary Examining Authority
+- **DO/US** — Designated Office when the US is entered during national phase
+
+Applicants using the USPTO for multiple roles simplifies the filing process but is not required.
+
+## 1.4 PCT Member States
+
+150+ contracting states, including:
+- United States, Canada, Mexico
+- Most of Europe (via EPC states or directly)
+- Japan, Korea, China, India, Australia
+- Brazil, Russia, South Africa
+- Most African and Asian countries
+
+Non-PCT countries (filing requires direct national applications):
+- Taiwan
+- Venezuela
+- Argentina (for some applicants)
+
+## 1.5 Benefits of the PCT Route
+
+1. **Time** — delay national filing decisions by 18+ months (30 months from priority vs. 12 months for Paris Convention direct filings)
+2. **Cost deferral** — push back the expense of multiple national filings
+3. **Unified search** — single ISR informs strategy in all countries
+4. **Market testing** — see commercial viability before committing to national phase
+5. **Simplified filing** — one application in one language (typically English, French, Chinese, etc.)
+
+## 1.6 Limitations
+
+- PCT does NOT grant patents — only procedural
+- Languages are limited (RO/US accepts only English)
+- National phase is still required; each country's substantive law applies
+- Costs accumulate in national phase (fees, translations, local counsel)`,
+      examTip: `**PCT ≠ international patent.** The PCT is a procedural treaty that delays, simplifies, and unifies parts of the international patent process. Patents are still granted nationally. Memorize the 30-month (or 31-month for some countries) national phase deadline from the **priority date**.`,
+    },
+    {
+      id: 'pct-timeline',
+      title: `2. The PCT Timeline`,
+      content: `## 2.1 Standard Timeline from Priority Date
+
+Priority date (Month 0) = filing date of earliest priority application (e.g., US provisional)
+
+| Month | Event |
+|---|---|
+| **0** | Earliest priority application filed (e.g., US provisional) |
+| **12** | Deadline to file PCT (Paris Convention priority) |
+| **16** | International Search Report (ISR) + Written Opinion typically issued |
+| **18** | International publication by WIPO |
+| **19** | Deadline to file Article 19 amendments (2 months from ISR transmittal) |
+| **22** | Optional Demand for Chapter II examination (22 months from priority OR 3 months from ISR, whichever later) |
+| **28** | International Preliminary Report on Patentability (IPRP) if Chapter II |
+| **30 (or 31)** | National phase entry deadline — file in each designated country |
+
+## 2.2 Priority Chain Example
+
+### US Provisional → PCT → US National Stage
+- Jan 1, 2024: US Provisional filed
+- Jan 1, 2025: PCT filed within 12 months, claiming priority to the provisional (Month 12)
+- July 1, 2025: ISR issued (Month 18 from priority)
+- July 1, 2025: PCT published (Month 18 from priority)
+- July 1, 2026: 30-month deadline — enter national stage in desired countries (Month 30 from priority = Jan 1, 2024 + 30 months = July 1, 2026)
+
+**Key point**: the 30-month deadline runs from the **priority date** (earliest filing), not from the PCT filing date.
+
+## 2.3 30-Month vs. 31-Month National Stage
+
+Most countries: **30 months** from priority date
+- United States
+- EPO (via Unitary Patent or individual EPC states)
+- Japan, Korea, China, Australia, Canada
+
+Some countries: **31 months** from priority date
+- United Kingdom (single state)
+- Sweden (if EPO route not used)
+- Singapore
+- A few others
+
+Check the country's specific deadline at the time of filing (deadlines can change).
+
+## 2.4 Restoration of Right of Priority
+
+If the PCT is filed **after** the 12-month deadline (but within 14 months), priority can be restored:
+- Statement that the delay was **unintentional** (or **in spite of due care** — stricter standard)
+- Petition to the Receiving Office
+- Fee required
+
+The RO/US uses the "unintentional" standard. Other Receiving Offices may use "in spite of due care" (stricter).
+
+## 2.5 Missed National Stage Deadline
+
+If the applicant misses the 30/31-month deadline:
+- Most countries consider the application abandoned in their jurisdiction
+- Limited restoration possible in some countries
+- Generally a hard deadline — plan well in advance
+
+## 2.6 Key Calendar Rules
+
+- If a deadline falls on a Saturday, Sunday, or national holiday in the relevant jurisdiction → extended to next working day
+- Some jurisdictions use their own calendar; WIPO uses Geneva business days for WIPO deadlines
+- USPTO uses Eastern time zone
+
+## 2.7 PCT Priority Claim (Paris Convention)
+
+To claim priority from an earlier application:
+- Must be within 12 months of the earlier filing
+- The PCT application must identify the earlier application
+- Certified copy of the priority document must be provided (can use DAS/PDX)
+- At least one inventor in common
+
+## 2.8 Priority Within the PCT — §§119(a), 365(b)
+
+If the US is the national phase, the US application benefits from:
+- §119(a)-(d) — foreign priority from non-PCT foreign applications cited in the PCT
+- §365(b) — priority of earlier foreign application claimed in PCT
+- §365(c) — benefit of the PCT filing itself when entering US national stage`,
+      importantNote: `The **30-month deadline runs from the priority date** (earliest filing), not from the PCT filing date. Common exam trap: asking when national phase entry is due. Calculate from priority — if applicant filed provisional Jan 1, 2024, deadline is July 1, 2026 regardless of when the PCT was filed.`,
+    },
+    {
+      id: 'pct-who-can-file',
+      title: `3. Who Can File a PCT Application?`,
+      content: `## 3.1 Applicant Requirements
+
+Under PCT Article 9, a PCT application can be filed by:
+- A **national or resident** of a PCT Contracting State
+- For the US Receiving Office: at least one applicant must be a US national or resident
+
+Corporations qualify as "residents" of their country of incorporation.
+
+## 3.2 Multiple Applicants
+
+- Different applicants can be named for different designated states (was important before AIA; largely moot now)
+- Joint applicants can file together
+- In US context, the assignee-applicant can file under 37 CFR §1.46
+
+## 3.3 Filing Language
+
+Receiving Office determines accepted languages:
+- **RO/US**: English only
+- **RO/EP**: English, French, German
+- **RO/JP**: Japanese or English
+- **RO/CN**: Chinese or English
+- Other receiving offices: specific language rules
+
+## 3.4 Required Components for PCT Filing
+
+- **Request** (Form PCT/RO/101) — identifies applicant, inventor, priority claim, designated states (now all states by default)
+- **Description** — typically detailed technical specification
+- **Claims** — the substantive claims (unlike provisional, claims REQUIRED)
+- **Abstract** — summary
+- **Drawings** (if necessary for understanding)
+- **Fee** — international filing fee + search fee + transmittal fee
+
+## 3.5 Fees (PCT)
+
+Approximate fees for a PCT application (2025):
+- International filing fee (WIPO): ~$1,500
+- Search fee (varies by ISA): ~$600 (USPTO), ~$2,200 (EPO)
+- Transmittal fee (varies by RO): ~$240 (USPTO)
+- Various supplementary fees (page size, search reports)
+
+Total ~$2,000-$5,000 depending on ISA selection.
+
+## 3.6 Designation of States
+
+Since 2004 (Rule 4.9(a)):
+- PCT applications automatically designate ALL PCT contracting states by default
+- No need to individually designate each state
+- Applicant can withdraw designations before/after filing
+
+## 3.7 Filing via Patent Center (US)
+
+US applicants typically file via Patent Center:
+- Upload specification, drawings, Request form
+- Pay fees electronically
+- Receive immediate filing receipt
+- PCT application number assigned (PCT/US[year]/[number])`,
+    },
+  ],
+  keyTakeaways: [
+    'PCT is a procedural treaty, NOT an international patent. Patents are still granted nationally.',
+    'PCT administered by WIPO. Key authorities: RO (receiving office), ISA (search), IPEA (optional exam), DO (designated office).',
+    'National phase entry deadline: 30 months from PRIORITY date (not PCT filing date). Some countries use 31 months.',
+    'Priority chain: provisional (month 0) → PCT (by month 12) → ISR (~month 16) → publication (month 18) → Chapter II demand optional (by month 22) → national phase (month 30).',
+    '150+ PCT member states. Non-members (e.g., Taiwan, Argentina) require direct national filings.',
+    'Restoration of priority: file PCT within 14 months of priority. RO/US uses "unintentional" standard; others may use stricter "in spite of due care."',
+    'Since 2004: PCT automatically designates ALL contracting states by default. No need for individual state designation.',
+    'Claims REQUIRED for PCT filing (unlike US provisionals). Full specification, drawings, abstract also required.',
+  ],
+},
+
+pct_international_phase: {
+  topicId: 'pct_international_phase',
+  title: `International Phase — Filing, Search, and Publication`,
+  domainWeight: 'PCT International · MPEP 1812–1844',
+  overview: `The PCT international phase runs from filing through approximately month 18-28. During this phase, WIPO publishes the application, the ISA conducts an international search and issues the ISR and Written Opinion, and optional amendments can be made under Article 19 (to claims) or Article 34 (Chapter II). Understanding the Article 19 amendment window and the publication mechanics is essential.`,
+  sections: [
+    {
+      id: 'int-phase-filing',
+      title: `1. Filing and Receiving Office Processing`,
+      content: `## 1.1 Filing Date
+
+The PCT application filing date is established when the Receiving Office receives:
+- An indication that it is intended as a PCT application
+- Applicant's name(s)
+- A description
+- One or more claims
+
+The filing date is the date the RO receives all required elements.
+
+## 1.2 RO Review
+
+The Receiving Office:
+- Confirms eligibility
+- Verifies the priority claim
+- Checks formal compliance
+- Transmits to WIPO and the ISA
+
+If elements are missing, the RO issues a notice requiring correction.
+
+## 1.3 Transmittal to ISA
+
+Within ~1 month of filing, the RO transmits:
+- A copy of the application to the ISA
+- The prescribed search fee
+- The record copy to WIPO IB
+
+## 1.4 Fees Paid to RO
+
+- **International filing fee** (paid to RO, transmitted to WIPO)
+- **Search fee** (paid to RO, transmitted to ISA)
+- **Transmittal fee** (retained by RO)
+
+All fees due within 1 month of filing. Late payment possible with surcharge.
+
+## 1.5 Language Requirements
+
+If the PCT is filed in a language not accepted by the chosen ISA, a translation must be provided within 1 month.
+
+## 1.6 Receiving Office Responsibilities
+
+- Confirm filing date
+- Check formal compliance
+- Transmit to WIPO IB and ISA
+- Resolve priority issues
+- Handle restoration of priority petitions`,
+    },
+    {
+      id: 'int-search',
+      title: `2. International Search and the ISR`,
+      content: `## 2.1 Role of the International Searching Authority (ISA)
+
+The ISA:
+- Searches for relevant prior art in all major databases
+- Prepares the International Search Report (ISR)
+- Prepares a Written Opinion of the ISA (WOISA) — a non-binding assessment of patentability
+
+Applicant chooses the ISA when filing (limited by RO — RO/US allows USPTO, EPO, KIPO, and others).
+
+## 2.2 Choice of ISA
+
+For US applicants, common choices:
+- **USPTO**: familiar, $600 search fee, but less thorough searches than EPO
+- **EPO**: $2,200 search fee, considered gold standard for thoroughness
+- **Korean IPO**: $1,100, good quality
+
+Strategic considerations:
+- Cost vs. search quality
+- Relevance to target markets
+- Timing (some ISAs are faster)
+
+## 2.3 Timing of the ISR
+
+The ISR is due:
+- 3 months from the receipt of the search copy by the ISA, OR
+- 9 months from the priority date, whichever is later
+
+Typically issued ~month 16-18 from priority.
+
+## 2.4 Contents of the ISR
+
+- Citations of prior art references
+- Categorization of each reference:
+  - **X** — particularly relevant (novelty destroying)
+  - **Y** — relevant combined with another document (obviousness)
+  - **A** — general background, not destructive of novelty/inventive step
+  - **P** — published before priority date but after application date
+  - **E** — another application earlier in date not previously published
+- Specific claims affected by each reference
+
+## 2.5 Written Opinion (WOISA)
+
+Along with the ISR, the ISA issues:
+- Written Opinion on novelty, inventive step, and industrial applicability
+- Objections to specific claims
+- Not legally binding, but very persuasive in national phase
+
+## 2.6 Use of ISR in Strategy
+
+The ISR informs applicant strategy:
+- If ISR is favorable → strong basis for national phase entry
+- If ISR shows concerning prior art → amend via Article 19 or Chapter II, or reconsider national filings
+- Prior art cited in ISR often appears in national phase office actions
+
+## 2.7 Cost of Search by USPTO vs. Other ISAs
+
+For budget-conscious applicants, USPTO search is cheaper but generally less thorough than EPO. For high-value applications, EPO search is often worth the extra cost.`,
+      examTip: `Know the ISR categories: **X** = destructive novelty, **Y** = destructive inventive step (with other reference), **A** = background, **P/E** = technical date categories. The Written Opinion is **non-binding but persuasive** in national phase — not a final decision.`,
+    },
+    {
+      id: 'int-article-19',
+      title: `3. Article 19 Amendments`,
+      content: `## 3.1 What Are Article 19 Amendments?
+
+Article 19 allows the applicant to **amend the claims** after receiving the ISR:
+- Limited to CLAIM amendments (not specification or drawings)
+- No new matter can be introduced
+- Amendments filed directly with WIPO
+
+## 3.2 Timing
+
+- Must be filed within **2 months** from the date of transmittal of the ISR, OR
+- Within **16 months** from the priority date, whichever is later
+
+Typically deadline is month 18-19 from priority.
+
+## 3.3 Purpose
+
+- Narrow claims to distinguish over prior art cited in the ISR
+- Clarify scope
+- Add dependent claims
+- Remove claims directed to non-patentable subject matter
+
+## 3.4 Format
+
+Article 19 amendments are submitted as:
+- A complete replacement set of claims (not just changes)
+- Accompanying statement explaining the basis in the application
+- Filed in paper or electronically via PCT-SAFE or ePCT
+
+## 3.5 Effect on Publication
+
+If Article 19 amendments are filed BEFORE international publication (month 18):
+- The amended claims are published as part of the international publication
+- Original claims are also typically included
+
+If filed AFTER publication:
+- Published later as a separate WIPO document
+- Still takes effect for national phase purposes
+
+## 3.6 Strategic Considerations
+
+### Pros
+- No additional fee
+- Can affect national phase analysis by presenting narrower claims
+- May influence national examiner's view
+
+### Cons
+- Only claims can be amended
+- Cannot respond to ISR with new specification language
+- Amendments are visible to all competitors via publication
+
+## 3.7 Relation to Chapter II
+
+Article 19 amendments are for the international phase. Chapter II examination (discussed next topic) allows more comprehensive amendments to description, claims, AND drawings.
+
+Strategic choice:
+- Article 19 only: cheaper, faster, only if claim amendment is enough
+- Chapter II (+ Article 34 amendments): more expensive, more comprehensive`,
+    },
+    {
+      id: 'int-publication',
+      title: `4. International Publication`,
+      content: `## 4.1 Timing
+
+WIPO publishes the PCT application **18 months from the priority date**. Publication creates:
+- A **public disclosure** that becomes prior art under AIA §102(a)(1) ("printed publication")
+- Pre-publication status ends; all elements are public
+- Third parties can search and file preissuance submissions (if designated country allows)
+
+## 4.2 Publication Contents
+
+The international publication includes:
+- Full application (description, claims, abstract)
+- Drawings
+- ISR (if issued before publication)
+- Any Article 19 amendments
+- Bibliographic data
+
+## 4.3 Language of Publication
+
+Published in the language of filing. If filed in English, published in English. WIPO publishes:
+- English, French, German, Spanish, Chinese, Japanese, Korean, Russian, Arabic, Portuguese
+
+## 4.4 Deferred Publication
+
+Applicant may request deferred publication in limited circumstances:
+- If withdrawing the application before month 15
+- Not common; generally applications publish automatically at month 18
+
+## 4.5 Early Publication
+
+Applicant may request early publication (before month 18):
+- Rare
+- May be relevant for provisional royalties in some jurisdictions
+- Request through RO
+
+## 4.6 Publication as Prior Art
+
+Once published:
+- Under AIA §102(a)(1): publication is prior art worldwide
+- Under pre-AIA §102(a): publication was prior art only if known before applicant's invention date
+- Under §102(a)(2) AIA: the published PCT is prior art from the PCT's filing date, not publication date, if it names another inventor with an earlier EFD
+
+## 4.7 Public Accessibility of File
+
+Once published:
+- WIPO PATENTSCOPE provides public access
+- Full document history available
+- Third parties can track the application through national phase entries`,
+      importantNote: `**Publication at 18 months** converts the PCT into a public prior art reference. Under AIA, this publication is §102(a)(1) prior art worldwide. Applicants with concerns about early disclosure must decide whether the PCT strategy's 30-month deferment of national-phase decisions outweighs the 18-month public disclosure.`,
+    },
+  ],
+  keyTakeaways: [
+    'Receiving Office establishes filing date, checks formality, transmits to ISA and WIPO IB. USPTO = RO/US for US applicants.',
+    'ISA conducts international search, issues ISR (Search Report) and WOISA (Written Opinion). Timing: 3 months from ISA receipt or 9 months from priority, whichever later.',
+    'ISR categories: X (destructive novelty), Y (destructive inventive step with combination), A (background), P (published before priority), E (earlier unpublished).',
+    'Applicant chooses ISA: USPTO ($600, faster), EPO ($2,200, gold standard), KIPO ($1,100, balance).',
+    'Article 19 amendments: only CLAIMS, no new matter. Filed within 2 months of ISR or 16 months from priority.',
+    'International publication at 18 months from priority. Creates §102(a)(1) prior art worldwide.',
+    'Published application includes spec, claims, drawings, ISR, Article 19 amendments, bibliographic data.',
+    'Written Opinion is non-binding but persuasive in national phase. ISR categories help applicant strategize amendments.',
+  ],
+},
+
+pct_chapter_ii: {
+  topicId: 'pct_chapter_ii',
+  title: `PCT Chapter II — Demand and Preliminary Examination`,
+  domainWeight: 'PCT International · MPEP 1870–1878',
+  overview: `Chapter II of the PCT is an optional second phase that provides international preliminary examination by an IPEA, resulting in an International Preliminary Report on Patentability (IPRP). Chapter II requires filing a Demand within 22 months of priority (or 3 months from ISR transmittal, whichever later). It allows more comprehensive amendments under Article 34 and can influence national phase outcomes. Not all applicants use Chapter II — for many, Chapter I (international phase without Chapter II) is sufficient.`,
+  sections: [
+    {
+      id: 'chapter-ii-demand',
+      title: `1. Filing a Demand for Chapter II`,
+      content: `## 1.1 What Is a Demand?
+
+A Demand is the applicant's request for Chapter II international preliminary examination. Filed with an IPEA (International Preliminary Examining Authority).
+
+## 1.2 Timing for Demand
+
+The Demand must be filed within the later of:
+- **22 months from the priority date**, OR
+- **3 months from the date of transmittal of the ISR and WOISA**
+
+Whichever is later.
+
+Typical timeline:
+- Priority date: Month 0
+- PCT filed: Month 12
+- ISR + WOISA issued: Month 16
+- Demand deadline: Month 19 (3 months after ISR) OR Month 22 (from priority), whichever later → Month 22
+
+## 1.3 Who to File With
+
+The applicant chooses an IPEA:
+- **IPEA/US**: USPTO (English)
+- **IPEA/EP**: EPO (English, French, German)
+- **IPEA/KR**: KIPO (English, Korean)
+- Others: JP, AU, CN, etc.
+
+Often the same as the ISA that conducted the search, but not required.
+
+## 1.4 Content of Demand
+
+- Form PCT/IPEA/401
+- Identify the PCT application
+- Select the IPEA
+- Pay the preliminary examination fee
+
+## 1.5 Fees for Chapter II
+
+Approximate fees (2025):
+- IPEA handling fee: ~$200-600 depending on IPEA
+- Preliminary examination fee: ~$600-2,500 depending on IPEA
+- Late fees possible for late filing
+
+## 1.6 Effect of Filing Demand
+
+- Extends opportunity for applicant-examiner dialogue
+- Allows comprehensive amendments via Article 34
+- Creates opportunity for IPRP favorable to applicant
+- National phase entry countries become **"Elected Offices"**
+
+## 1.7 Why Not Chapter II?
+
+Chapter I may be sufficient if:
+- Applicant is satisfied with ISR/WOISA results
+- No need for further amendments
+- Cost savings important
+- Applicant will amend in national phase anyway`,
+    },
+    {
+      id: 'article-34-amendments',
+      title: `2. Article 34 Amendments and Examiner Dialogue`,
+      content: `## 2.1 Article 34 Amendments
+
+Under Article 34, during Chapter II examination, applicant may amend:
+- Description
+- Claims
+- Drawings
+
+Broader scope than Article 19 (which only allows claim amendments).
+
+## 2.2 Timing
+
+- Filed with the IPEA as part of the Chapter II process
+- Typically submitted with or after the Demand
+- Specific deadlines set by the IPEA
+
+## 2.3 Format
+
+- Replacement pages or paragraphs
+- Basis for amendments in the original disclosure must be identified
+- No new matter allowed (same rule as national practice)
+
+## 2.4 Dialogue with Examiner
+
+Chapter II allows:
+- Multiple rounds of amendment and argument
+- Written communications with the examiner
+- In some cases, telephonic interviews with IPEA
+
+This is a substantive back-and-forth similar to national examination, but at the international level.
+
+## 2.5 Written Opinion of the IPEA (WOIPEA)
+
+If the IPEA thinks the application has issues:
+- Issues a Written Opinion of the IPEA (WOIPEA)
+- Identifies novelty, inventive step, or industrial applicability issues
+- Applicant can respond with arguments or amendments
+
+The WOIPEA is the first formal opportunity for the applicant to interact with an international examiner on substance.
+
+## 2.6 Response to WOIPEA
+
+Applicant responds by:
+- Submitting arguments
+- Amending claims/specification/drawings under Article 34
+- Typically 3 months from WOIPEA mailing date
+- Can be by letter or formal submission
+
+## 2.7 Advantages of Chapter II
+
+- More comprehensive amendments (spec + drawings + claims)
+- Applicant-examiner dialogue
+- Favorable IPRP can smooth national phase
+- Examiner's analysis informs national phase strategy
+- Helps identify unpatentable claims early
+
+## 2.8 Disadvantages
+
+- Additional fees
+- More time commitment
+- Prolongs international phase
+- IPRP is advisory (not binding on national offices)
+- National examiners may conduct independent searches anyway`,
+    },
+    {
+      id: 'iprp',
+      title: `3. International Preliminary Report on Patentability (IPRP)`,
+      content: `## 3.1 What Is the IPRP?
+
+At the end of Chapter II, the IPEA issues an IPRP:
+- Formal report on novelty, inventive step, industrial applicability
+- Non-binding on national patent offices
+- Issued to applicant and transmitted to WIPO
+- Becomes public 30 months after priority date
+
+## 3.2 Timing
+
+- Issued at the end of Chapter II examination
+- Typically within 28 months from priority date
+- Must be issued before 30-month national phase deadline
+
+## 3.3 Chapter I vs. Chapter II IPRP
+
+- **Chapter I IPRP**: the Written Opinion of the ISA (WOISA), renamed after 30 months
+  - Automatically created if no Demand is filed
+  - Same substantive opinion as WOISA
+- **Chapter II IPRP**: based on Chapter II proceedings
+  - Reflects applicant's amendments and arguments
+  - Can be more favorable than WOISA if applicant successfully amended
+
+## 3.4 Contents of IPRP
+
+- Box I: Basis of the opinion (claims examined)
+- Box II: Non-written disclosures
+- Box III: Observations on claims for novelty, inventive step, industrial applicability
+- Box IV: Lack of unity of invention
+- Box V: Reasoned statement under Article 35(2)
+- Box VI: Certain documents cited
+- Box VII: Certain defects in the application
+- Box VIII: Certain observations on the application
+
+## 3.5 Effect in National Phase
+
+The IPRP is not binding on national patent offices, but:
+- National examiners often review the IPRP
+- A favorable IPRP can influence examination
+- If IPEA found claims allowable, national offices may be more receptive
+- Negative IPRP can be rebutted in national phase with arguments and amendments
+
+## 3.6 Publication of IPRP
+
+IPRP (Chapter I or II) is published:
+- Made public via WIPO PATENTSCOPE 30 months after priority
+- Available to applicants, examiners, and competitors
+
+## 3.7 No Appeal at PCT Level
+
+The IPRP is not appealable. If the applicant disagrees:
+- Must handle in national phase
+- Each country's examination is independent
+- National examiners may or may not concur with IPEA
+
+## 3.8 Use of IPRP in US National Phase
+
+When entering US national stage:
+- USPTO will review the IPRP
+- May cite IPRP references in US examination
+- Applicant should be prepared to address IPRP findings in US prosecution`,
+      importantNote: `The IPRP is NOT binding on national offices. Even if the IPEA finds claims unpatentable, the USPTO or other national office may independently grant a patent on the same claims. Conversely, a favorable IPRP doesn't guarantee national grants. National examination is independent.`,
+    },
+  ],
+  keyTakeaways: [
+    'Chapter II is optional: file Demand within 22 months from priority OR 3 months from ISR, whichever later.',
+    'Demand filed with IPEA (chosen by applicant). Allows Article 34 amendments to description, claims, and drawings.',
+    'Article 34 amendments are BROADER than Article 19 (which only allows claim amendments).',
+    'IPEA may issue a Written Opinion (WOIPEA) for issues. Applicant responds with arguments or Article 34 amendments.',
+    'IPRP issued at end of Chapter II. Chapter I IPRP is just the renamed WOISA.',
+    'IPRP is non-binding on national offices but persuasive. Favorable IPRP smooths national phase; negative IPRP must be rebutted.',
+    'IPRP becomes public 30 months from priority. Cannot be appealed at PCT level.',
+    'Chapter II costs more but allows comprehensive amendments and examiner dialogue. Many applicants skip Chapter II.',
+  ],
+},
+
+pct_national_stage: {
+  topicId: 'pct_national_stage',
+  title: `National Stage Entry — 35 U.S.C. §371`,
+  domainWeight: 'PCT International · MPEP 1893',
+  overview: `After the PCT international phase, the applicant must enter the national (or regional) phase in each desired country/region to obtain patent rights. In the US, national stage entry is governed by 35 U.S.C. §371. The 30-month deadline from priority is absolute (with limited restoration options in some cases). Entry requires English translation (if needed), inventor oath/declaration, national phase fees, and any preliminary amendments. Understanding §371 requirements and the "bypass continuation" alternative is critical.`,
+  sections: [
+    {
+      id: 'national-stage-basics',
+      title: `1. US National Stage Entry Under §371`,
+      content: `## 1.1 The 30-Month Deadline
+
+The US national stage must be entered within **30 months of the priority date**. Missing this deadline = loss of US patent rights from the PCT.
+
+## 1.2 Required Documents for National Stage Entry (§371(c))
+
+To enter US national stage, applicant files:
+- **Copy of international application** (if not already received from WIPO IB)
+- **English translation** of the application (if not in English) — must be complete and verified
+- **Filing fee, search fee, examination fee** — US national stage fees (same structure as §111(a) applications)
+- **Oath or declaration** (can be filed later, but must be on file before issue fee)
+- **Inventor oath** — each inventor executes
+- **IDS** (if any prior art needs disclosure)
+- **Application Data Sheet** (ADS)
+
+## 1.3 "Complete Submission" and Extended Deadlines
+
+If the applicant submits all required documents within 30 months, the national stage entry is "complete."
+
+If the application is incomplete (e.g., missing oath, translation):
+- Applicant has limited additional time
+- Late submissions may require a revival petition under §1.137
+
+## 1.4 Substantive Examination
+
+After entry, the application is examined like any other US non-provisional:
+- USPTO examiner reviews claims
+- Rejections under §§101, 102, 103, 112 possible
+- US examiner may cite new prior art not in ISR
+- Applicant responds per normal prosecution
+
+## 1.5 Effective Filing Date for §102 Purposes
+
+For AIA §102 analysis:
+- §102(a)(2) (secret prior art): the PCT application has prior-art effect as of its **international filing date** (if published and designating US — AIA rule per 35 U.S.C. §102(d))
+- §102(a)(1) (public disclosure): publication date of the PCT (18 months from priority) is the date
+
+For pre-AIA §102(e) (if the PCT's priority chain goes back before March 16, 2013):
+- If published in English and designated US, prior-art effect back to PCT filing date
+- If published in non-English and designated US, §102(e) effect back to PCT filing date
+- Complex rules; check MPEP §2136.03
+
+## 1.6 Priority Claim in National Stage
+
+The PCT application already contains the priority claim:
+- Priority to earlier foreign/provisional applications is automatically carried over
+- The applicant does NOT need to re-file priority claim in US national stage
+- The PCT establishes the priority chain
+
+## 1.7 Restoration of Priority
+
+If the applicant missed the 30-month deadline:
+- Very limited restoration available
+- Must show unintentional delay
+- Fees and petition required
+- Different from restoration at PCT filing stage`,
+      examTip: `**§371 national stage = 30 months from PRIORITY date.** Deadline is absolute with narrow restoration. Required docs: translation (if applicable), oath, fees. Examination proceeds like normal §111(a) non-provisional thereafter.`,
+    },
+    {
+      id: 'bypass-continuation',
+      title: `2. Bypass Continuation (§111(a)) as Alternative`,
+      content: `## 2.1 What Is a Bypass?
+
+Instead of entering the US national stage under §371, an applicant may file a **regular US non-provisional application under §111(a)**, claiming benefit of the PCT under §365(c).
+
+This is called a "bypass" or "continuation" from the PCT.
+
+## 2.2 Requirements for Bypass
+
+- File the US application under §111(a) within 30 months of priority date
+- Specific reference to the PCT under §120 / §365(c)
+- Copendency with the PCT (PCT must still be "pending" when bypass is filed)
+- Full US non-provisional filing requirements (including fees, claims, spec, drawings, oath)
+
+## 2.3 Bypass vs. §371 — Key Differences
+
+| Feature | §371 National Stage | §111(a) Bypass |
+|---|---|---|
+| Legal basis | Direct national phase entry | New US non-provisional application |
+| Application number | 371 format (e.g., 11/XXX,XXX) | 17/XXX,XXX or 18/XXX,XXX |
+| Oath/declaration | May use PCT Request signature | Separate US oath required |
+| Priority claim | Auto from PCT | Must specifically claim |
+| Translation | Required if non-English | Can be filed in English from scratch |
+| Filing fee | Full fee | Full fee (same) |
+| Patent term | From earliest US filing date | From bypass filing date |
+| Examination | Starts from PCT state | Fresh US examination |
+
+## 2.4 When to Use a Bypass
+
+Reasons to file bypass instead of §371:
+- **Amend before entering examination**: bypass allows full rewriting of spec/claims
+- **Different claim strategy**: different claims than the PCT without the constraint of matching
+- **Avoid PCT-specific requirements**: streamline US-specific drafting
+- **Separate applications**: file multiple bypasses on the same PCT (similar to continuations)
+- **Avoid US examiner seeing IPRP**: bypass may be examined fresh
+
+## 2.5 When §371 Is Better
+
+- Simpler procedure (no new §111(a) fees beyond translation)
+- Preserves priority chain exactly as in PCT
+- Suitable when no major changes to specification needed
+
+## 2.6 PCT + Bypass Combination
+
+An applicant can file BOTH:
+- §371 national stage entry (for direct PCT benefit)
+- §111(a) bypass (for additional claim strategies)
+
+This creates two related US applications from the same PCT. Each is examined separately.
+
+## 2.7 Copendency and Bypass
+
+For a bypass to claim §120/§365(c) benefit:
+- The PCT must be pending at the time of bypass filing
+- The PCT remains pending through 30 months from priority (during which time the applicant can either enter national stage or abandon)
+
+If the PCT is already abandoned in the national phase (e.g., missed 30-month deadline in US), bypass is no longer available.`,
+    },
+    {
+      id: 'national-stage-special',
+      title: `3. Special Considerations`,
+      content: `## 3.1 Amendments in National Phase
+
+After §371 entry, the applicant can amend under normal US rules:
+- Preliminary amendment before first Office Action (if none yet)
+- Response amendments after OA
+- Article 19 and Article 34 amendments from PCT are typically already in the application
+
+If Article 19 amendments were filed in PCT, they are typically submitted as part of national stage entry (USPTO receives them automatically).
+
+## 3.2 Multiple Priority Claims
+
+A US national stage application may have multiple priority claims:
+- PCT priority (from earlier filings)
+- Domestic benefit (from US provisional or earlier US non-provisional)
+
+All must be properly claimed in the ADS.
+
+## 3.3 Translation Requirements
+
+If the PCT was not filed in English:
+- Must file **verified English translation** at national stage entry
+- Translation must be complete (spec, claims, drawings)
+- Translation errors can cause issues — use professional translators
+
+## 3.4 Correct Inventorship at National Stage
+
+- Inventorship must be correct at national stage entry
+- Corrections per 37 CFR §1.48 procedures
+- Each inventor executes oath/declaration
+
+## 3.5 Fees for National Stage
+
+Approximate fees (2025):
+- Basic filing fee: $320 regular / $128 small / $64 micro
+- Search fee: $700 regular / $280 small / $140 micro
+- Examination fee: $800 regular / $320 small / $160 micro
+- Total: ~$1,820 regular / $728 small / $364 micro
+
+Similar to regular non-provisional fees. Translation costs are additional.
+
+## 3.6 Excess Claim and Excess Pages Fees
+
+Same as regular non-provisional:
+- $500 per claim over 20
+- $110 per independent claim over 3 (regular entity)
+- Multiple dependent claims count separately
+
+## 3.7 ADS Requirements
+
+The ADS must include:
+- All inventor information
+- All priority/benefit claims (PCT, foreign, provisional, earlier non-provisional)
+- Correspondence address
+- Applicant details
+
+## 3.8 Interview Opportunities
+
+In US national stage:
+- Examiner interviews allowed (same as §111(a))
+- Video or in-person
+- Can discuss IPRP findings, prior art, amendments
+
+## 3.9 PPH from PCT
+
+If the PCT received a favorable IPRP, applicant may use **PCT-PPH** (PCT Patent Prosecution Highway):
+- USPTO expedites examination
+- No additional fee
+- Requires correspondence of claims between PCT and US
+- Not available if IPRP was negative`,
+    },
+  ],
+  keyTakeaways: [
+    'US national stage entry: 30-month deadline from priority (absolute with limited restoration). Use §371 or §111(a) bypass.',
+    '§371 requires: translation (if applicable), oath/declaration (later OK), filing/search/examination fees, IDS, ADS.',
+    'Bypass continuation (§111(a) + §365(c)): separate US application claiming benefit of PCT. Different flexibility.',
+    'Bypass pros: fresh US draft, different claims, multiple bypasses possible. Cons: extra fees, copendency required.',
+    'AIA §102(a)(2) prior art effect: published PCT (designating US) has prior-art effect back to INTERNATIONAL filing date.',
+    'Pre-AIA §102(e) prior art for PCT: back to international filing date if published in English and designated US.',
+    'Priority claims carry over automatically from PCT to US national stage (no re-filing needed).',
+    'PCT-PPH: expedited US examination if favorable IPRP exists. Requires matching claims.',
+  ],
+},
+
+pct_strategy: {
+  topicId: 'pct_strategy',
+  title: `PCT Strategy and Common Scenarios`,
+  domainWeight: 'PCT International · MPEP 1801–1900',
+  overview: `PCT strategy involves balancing cost, timing, and geographic coverage. Common scenarios include: first filing as PCT vs. provisional + PCT; choice of ISA for search quality; when to use Chapter II; national phase entry decisions; and handling deadlines across multiple jurisdictions. This topic synthesizes earlier PCT topics and provides practical exam scenarios.`,
+  sections: [
+    {
+      id: 'pct-strategic-use',
+      title: `1. Strategic Use of the PCT`,
+      content: `## 1.1 Who Should Use the PCT?
+
+Applicants benefit most from PCT when:
+- Filing in 3+ countries
+- Uncertain about market viability in various regions
+- Need 18+ additional months to make decisions
+- Want a centralized international search
+
+Applicants may not need PCT when:
+- Filing only in the US (domestic only)
+- Filing in 1-2 known foreign countries (Paris Convention direct filings may be cheaper)
+- Need immediate examination (PCT deferrs)
+
+## 1.2 PCT vs. Paris Convention Direct Filings
+
+### Paris Convention (12-month deadline from priority)
+- Direct national applications in each country
+- Must file each within 12 months of priority
+- Each country has its own fees, translations, representatives
+- Faster to examination but much front-loaded cost
+
+### PCT (30-month deadline from priority)
+- One PCT application + centralized search
+- Defers national-phase costs by 18+ months
+- Single filing manages multiple jurisdictions
+- Lower upfront costs but eventual national stage fees
+
+### Cost Comparison (Rough Estimates)
+- Paris Convention, 5 countries: $25,000-$40,000 in first 12 months
+- PCT, 5 countries: $15,000-$20,000 in first 12 months + $20,000-$30,000 at 30 months
+
+## 1.3 Common Strategies
+
+### Strategy 1: US Provisional → PCT
+- File US provisional (cheap, secures priority)
+- Within 12 months, file PCT
+- At 30 months, enter desired national stages
+- Total: ~32 months of protection before national fees
+
+### Strategy 2: Direct PCT Filing
+- Skip the provisional
+- File PCT directly as first application
+- 30-month deadline runs from PCT filing date
+- Less common for US applicants
+
+### Strategy 3: US Non-Provisional + PCT
+- File US non-provisional first
+- Within 12 months, file PCT claiming priority
+- US examination starts immediately; PCT provides international options
+- Used when US is primary market with foreign coverage desired
+
+### Strategy 4: Multiple Provisionals → Single PCT
+- File several provisionals over 12 months (different aspects)
+- Combine all in a single PCT at month 12
+- 30-month deadline from earliest provisional
+- Useful for building out an invention incrementally
+
+## 1.4 When Chapter II Is Worth It
+
+Chapter II is worth the extra cost when:
+- The ISR cites concerning prior art
+- The applicant wants examiner dialogue
+- Amendments to description or drawings are needed
+- The applicant wants a favorable IPRP to influence national phase
+
+Chapter II is NOT worth it when:
+- The ISR is favorable (no need for further review)
+- The applicant will amend in national phase anyway
+- Cost is a major concern
+
+## 1.5 Choice of ISA — Strategic Matrix
+
+| Goal | Choice | Reason |
+|---|---|---|
+| Lowest cost | USPTO | ~$600 search fee |
+| Highest quality search | EPO | Thorough searches, respected globally |
+| Multiple jurisdictions | EPO | EPO search well-regarded in Europe AND US |
+| Software/business method | USPTO | Better US §101 analysis |
+| Pharma / biotech | EPO | Strong in life sciences |
+
+## 1.6 National Phase Entry Decisions
+
+At month 24-30 of priority, applicant decides which countries to enter:
+- High-value markets: US, EU (EPO), China, Japan, Korea
+- Emerging markets: India, Brazil, Mexico
+- Specific needs: Canada, Australia, Singapore
+- Budget countries: may skip or choose carefully
+
+Typical pattern: enter 3-5 core countries initially, consider additional countries based on developments.`,
+    },
+    {
+      id: 'pct-common-exam-scenarios',
+      title: `2. Common Patent Bar Exam Scenarios`,
+      content: `## 2.1 Scenario — Priority Date Calculation
+
+### Setup
+- US provisional filed March 1, 2024
+- PCT filed February 1, 2025
+- US national stage deadline?
+
+### Analysis
+- Priority date = March 1, 2024 (provisional)
+- 30-month deadline = September 1, 2026
+- PCT filing was within 12 months → valid priority
+- National stage entry must be by September 1, 2026
+
+## 2.2 Scenario — Missed 30-Month Deadline
+
+### Setup
+- Priority: Jan 1, 2023
+- PCT: Dec 1, 2023
+- Applicant forgot to enter US national stage until August 1, 2025 (31 months from priority)
+
+### Analysis
+- 30-month deadline: July 1, 2025 (missed)
+- Applicant needs to petition for revival under 37 CFR §1.137
+- Must show unintentional delay, pay fees
+- If denied, US rights lost (other countries may still be viable)
+
+## 2.3 Scenario — Bypass Decision
+
+### Setup
+- Applicant filed PCT with 50-page specification in Chinese
+- IPRP found claim 1 lacks novelty
+- Applicant wants to pursue claims with different scope in the US
+
+### Analysis
+- Option A: §371 + English translation + amendment in US prosecution
+- Option B: §111(a) bypass with modified US-specific specification and new claims
+- Option B may be cleaner for significant changes
+
+## 2.4 Scenario — Article 19 vs. Chapter II
+
+### Setup
+- PCT received ISR citing 3 references
+- Applicant believes 2 claims need narrow amendment and 1 claim can be argued as distinguishing
+- No changes needed to spec or drawings
+
+### Analysis
+- Article 19 amendments sufficient (only claim changes)
+- Save Chapter II fees
+- Narrow claims 1-2 via Article 19
+- Argue claim 3 in national phase
+
+## 2.5 Scenario — Multiple Priority Claims
+
+### Setup
+- US provisional 1: January 1, 2024 (compound A)
+- US provisional 2: March 1, 2024 (method of using A)
+- PCT: December 15, 2024, claiming benefit of both
+- Non-US priority countries?
+
+### Analysis
+- Priority to earlier US filings preserved through PCT
+- 30-month deadline = July 1, 2026 (from earliest provisional)
+- In national stage, claims to compound A get January 1, 2024 EFD; claims to method get March 1, 2024 EFD
+- Each country examines independently but respects priority chain
+
+## 2.6 Scenario — Restoration of Priority
+
+### Setup
+- US provisional: January 1, 2024
+- PCT: March 15, 2025 (14 months + 14 days after provisional)
+
+### Analysis
+- Paris Convention 12-month deadline missed
+- Within 2-month grace window (14 months)
+- Applicant petitions RO for restoration
+- RO/US uses "unintentional" standard
+- If granted, priority preserved; national stage deadline calculated from provisional`,
+    },
+    {
+      id: 'pct-pitfalls',
+      title: `3. Common PCT Pitfalls and How to Avoid Them`,
+      content: `## 3.1 Missing National Stage Deadlines
+
+**Pitfall**: Forgetting the 30-month deadline in various countries.
+
+**Remedy**: Use a docketing system with alerts at 24, 27, and 29 months.
+
+## 3.2 Inadequate Translation
+
+**Pitfall**: Hasty translation leads to errors that affect claim scope.
+
+**Remedy**: Use professional translators; review claims carefully before filing.
+
+## 3.3 Wrong Choice of ISA
+
+**Pitfall**: Selecting USPTO as ISA but planning to enter Europe, where EPO's search would be more relevant.
+
+**Remedy**: Consider target markets when selecting ISA.
+
+## 3.4 Neglecting Article 19 Amendments
+
+**Pitfall**: Ignoring the ISR and letting potentially unpatentable claims publish.
+
+**Remedy**: Review ISR promptly; file Article 19 amendments to narrow claims before publication.
+
+## 3.5 Misunderstanding §102(a)(2) Effect of PCT
+
+**Pitfall**: Assuming a PCT's prior art effect is from publication date (month 18).
+
+**Remedy**: Remember AIA §102(a)(2) effect is from **international filing date** if the PCT designates the US. This is earlier than publication.
+
+## 3.6 Copendency Errors
+
+**Pitfall**: Filing a bypass continuation after the PCT has been abandoned in the US national phase.
+
+**Remedy**: Ensure the PCT is still pending at the time of bypass filing.
+
+## 3.7 Priority Chain Breaks
+
+**Pitfall**: Failing to properly claim priority through multiple priority chain links (provisional → non-provisional → PCT).
+
+**Remedy**: Use ADS to claim priority to every relevant earlier application.
+
+## 3.8 Late Response to ISR
+
+**Pitfall**: Missing the Article 19 amendment window (2 months from ISR transmittal).
+
+**Remedy**: Process ISR immediately; file amendments within window.
+
+## 3.9 Wrong Demand Timing
+
+**Pitfall**: Filing Demand for Chapter II just after the 22-month deadline, assuming the 3-month-from-ISR window extends the deadline.
+
+**Remedy**: Mark BOTH deadlines on calendar — 22 months OR 3 months from ISR, whichever is LATER.
+
+## 3.10 National Stage Fee Omissions
+
+**Pitfall**: Entering national stage but missing some fees, causing abandonment.
+
+**Remedy**: Use checklists to verify all fees (filing, search, examination, late fees if any).`,
+      examTip: `Common exam traps: (1) confusing 30-month (from priority) with 30-month from filing; (2) forgetting §371 vs §111(a) bypass distinction; (3) miscalculating Article 19 and Chapter II deadlines; (4) misapplying AIA §102(a)(2) PCT prior-art effect (international filing date, not publication date).`,
+    },
+  ],
+  keyTakeaways: [
+    'PCT best for 3+ countries and when 18+ months deferral matters. Paris Convention better for 1-2 countries or when examination speed matters.',
+    'Common strategies: US provisional → PCT; direct PCT; US non-provisional + PCT; multiple provisionals → single PCT.',
+    'ISA choice: USPTO (cheap, fast), EPO (thorough, expensive), KIPO (balance). Choose based on target markets and budget.',
+    'Chapter II worth it when ISR cites concerning art, need comprehensive amendments, or want examiner dialogue. Not worth it if ISR favorable.',
+    'National stage vs. bypass: §371 for simple entry; §111(a) bypass for different claim scope or fresh drafting.',
+    'PCT prior art effect: AIA §102(a)(2) = international filing date if designated US. Publication (month 18) = §102(a)(1) worldwide.',
+    'Deadline calculations: all major deadlines run from PRIORITY date, not PCT filing date.',
+    'Professional translation essential for non-English PCTs entering US national stage.',
+  ],
+},
+
 }; // end PATENT_BAR_COURSE
 
 export function hasPatentBarCourseContent(topicId: string): boolean {
