@@ -8199,6 +8199,1242 @@ If yes to most, supplemental examination is a powerful tool.`,
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// PART 7 — ETHICS AND USPTO RULES OF PROFESSIONAL CONDUCT
+// MPEP Chapter 2000 · 37 CFR Part 11 (§11.101 et seq.)
+// ═══════════════════════════════════════════════════════════════
+
+eth_duty: {
+  topicId: 'eth_duty',
+  title: `Duty of Candor and Good Faith — 37 CFR §1.56`,
+  domainWeight: 'Ethics · MPEP 2001',
+  overview: `The duty of candor and good faith under 37 CFR §1.56 is the single most heavily tested ethics rule on the Patent Bar. Every person involved in patent prosecution — inventors, attorneys, agents, and others substantively involved — owes an unwavering duty to disclose to the USPTO all information material to patentability. Violation of this duty can constitute **inequitable conduct**, rendering the entire patent unenforceable. Understanding who owes the duty, what is material, when disclosure is required, and how to meet the duty via IDS is essential.`,
+  sections: [
+    {
+      id: 'duty-who',
+      title: `1. Who Owes the Duty`,
+      content: `## 1.1 The Rule
+
+37 CFR §1.56(c) identifies the individuals who owe the duty of candor:
+
+1. **Each inventor** named in the application
+2. **Each attorney or agent** who prepares or prosecutes the application
+3. **Every other person** who is substantively involved in the preparation or prosecution of the application and who is associated with the inventor, the applicant, an assignee, or anyone to whom there is an obligation to assign the application
+
+## 1.2 "Substantively Involved"
+
+The phrase "substantively involved" means materially participating in:
+- Drafting the specification
+- Drafting or prosecuting claims
+- Providing technical or legal input that influences prosecution
+- Managing the application
+
+NOT substantively involved (usually):
+- Paralegals preparing formality documents only
+- Secretaries typing documents
+- Contracted translators
+- General corporate employees with no specific patent role
+
+## 1.3 Duty Owed by Each Individual Independently
+
+Each person who owes the duty owes it independently:
+- Not a duty owed "by the company"
+- Not a duty discharged by one person's disclosure if another has different relevant information
+- Each individual must disclose information within their knowledge
+
+## 1.4 Examples of Duty Holders
+
+- **Inventor**: knows everything about their invention, prior art they've seen, prior public disclosures they've made
+- **Attorney**: knows the legal landscape, prior similar patent applications, search results
+- **Agent**: same as attorney
+- **R&D Director**: may have knowledge of internal company documents that are material
+- **Client CEO**: may have knowledge of public disclosures the inventor didn't know about
+
+## 1.5 Cessation of Duty
+
+The duty ceases:
+- When the application is abandoned (and no continuations are pending)
+- When the patent issues (duty may re-attach in post-grant proceedings involving the same application)
+- When the individual formally disassociates from the application
+
+## 1.6 Attribution of Knowledge
+
+Knowledge of one individual is NOT automatically imputed to another:
+- Each person must disclose what they personally know
+- BUT: organizational policies often create imputation (e.g., assignee rules)
+- Modern practice: have every contributor review the prior art list
+
+## 1.7 Practical Compliance
+
+To meet the duty in practice:
+- Every inventor signs an oath/declaration acknowledging the duty
+- Attorneys/agents conduct searches and disclose results
+- All individuals submit information via IDS throughout prosecution
+- Checkpoints before final allowance to ensure completeness`,
+    },
+    {
+      id: 'duty-what-material',
+      title: `2. What Is Material Information?`,
+      content: `## 2.1 Materiality Standard (§1.56(b))
+
+Information is material if it is not cumulative to information already of record AND:
+
+### (b)(1) Establishes prima facie unpatentability
+A reference or fact that, standing alone or in combination with others, would make a claim unpatentable.
+
+### (b)(2) Refutes or is inconsistent with a position
+Taken by the applicant in:
+- Opposing a rejection, OR
+- Asserting an argument of patentability
+
+## 2.2 Examples of Material Information
+
+- Prior art that anticipates (§102) or makes obvious (§103) a claim
+- Prior art cited in a related foreign office action
+- Prior art cited in a co-pending related application
+- Internal company documents disclosing the invention before filing
+- Statements of other inventors disclosing the invention
+- Test data contradicting an applicant's argument
+- Public use or on-sale activity by the inventor
+
+## 2.3 Cumulative Information
+
+Information is NOT material if it is **cumulative**:
+- Already disclosed in another reference
+- Already before the examiner in substance
+- Not adding anything new to the examiner's analysis
+
+In practice, cumulative references can be omitted, but better practice is to disclose when in doubt.
+
+## 2.4 Material vs. Best Practice
+
+Material information MUST be disclosed. Other information NEED NOT be:
+- Technically not required if not material
+- But best practice is to disclose when close call
+- "When in doubt, cite"
+
+## 2.5 Information Acquired After Filing
+
+The duty is ongoing. Information discovered after filing must be disclosed:
+- Prior art found in a foreign search
+- Communications from third parties
+- New technical developments
+- Court decisions or academic papers
+
+## 2.6 Self-Citation Limits
+
+- The applicant's own prior publications must be disclosed if material
+- The applicant's own prior patent applications must be disclosed if material
+- This includes the applicant's own sales activity if material
+
+## 2.7 Pre-Filing Activities
+
+- Public use by the inventor before filing
+- Sales activities before filing
+- Grant proposals or conference presentations
+- All must be disclosed if they're prior art
+
+## 2.8 Therasense Standard for Inequitable Conduct
+
+*Therasense, Inc. v. Becton, Dickinson & Co.*, 649 F.3d 1276 (Fed. Cir. 2011) (en banc):
+- Materiality: **but-for** — the patent would not have issued if the information had been disclosed
+- Intent: specific intent to deceive — the **single most reasonable inference** from the evidence
+
+This is a stringent standard for inequitable conduct in litigation, but does NOT lower the DISCLOSURE standard under §1.56(b). Disclosure duty remains: anything meeting §1.56(b) must be disclosed.`,
+      importantNote: `**§1.56(b) materiality** (disclosure duty) is BROADER than **Therasense materiality** (inequitable conduct). Information is material to the disclosure duty if it is not cumulative AND either (1) establishes prima facie unpatentability or (2) refutes a position. Therasense requires "but-for" materiality for inequitable conduct. Disclose per §1.56; don't rely on Therasense to avoid disclosure.`,
+    },
+    {
+      id: 'duty-how-disclose',
+      title: `3. How to Comply — IDS Submission`,
+      content: `## 3.1 Information Disclosure Statement (IDS)
+
+The primary mechanism for complying with §1.56 is the IDS:
+- Lists references
+- Provides copies of non-US references
+- Provides translations or concise descriptions of non-English material
+
+## 3.2 IDS Timing Rules
+
+Per 37 CFR §1.97, IDS timing determines what is required:
+- **Before first OA or within 3 months of filing**: no fee, no statement
+- **After first OA, before final/NOA**: fee OR statement
+- **After final/NOA**: fee AND statement
+
+See Part 2 pp_ids topic for detailed timing rules.
+
+## 3.3 IDS Certification
+
+Under 37 CFR §1.97(e), a statement can certify:
+- **(e)(1)**: no item was cited in a foreign office action more than 3 months before the IDS filing
+- **(e)(2)**: no item was known to any person with a duty of disclosure more than 3 months before the IDS filing
+
+## 3.4 Beyond the IDS
+
+Sometimes disclosure is needed outside the IDS:
+- **During appeal**: raise with PTAB if new material info discovered
+- **Supplemental exam**: for issued patents with newly discovered material
+- **IPR/PGR**: patent owner's response may include relevant info
+
+## 3.5 Good Faith Standard
+
+The duty is one of **good faith** — the individual must:
+- Disclose what they know
+- Act honestly and without intent to deceive
+- NOT deliberately withhold information
+
+Good faith mistakes or oversight are not violations — only intentional or reckless failures to disclose.
+
+## 3.6 Common Disclosure Scenarios
+
+### Scenario 1: Prior Publication by Inventor
+- Inventor published a paper 14 months before filing
+- Publication is §102(a)(1) prior art (outside the AIA grace period)
+- Must be disclosed immediately; IDS should include the publication
+
+### Scenario 2: Co-Pending Application
+- Applicant has a related application with similar claims
+- Info from that prosecution may be material
+- Cross-cite between applications in IDSs
+
+### Scenario 3: Foreign Prosecution
+- Corresponding foreign application is being examined
+- Foreign office cites a new reference
+- Applicant must file IDS in US application disclosing the foreign search results
+
+### Scenario 4: Internal Documents
+- Engineer's earlier draft describes the same solution as claimed
+- Draft was not public but is material to patentability
+- Disclose via IDS
+
+## 3.7 Consequences of Violation
+
+### During Examination
+- If examiner discovers the omission, may:
+  - Withdraw allowance
+  - Issue new rejection
+  - Refer to Office of Enrollment and Discipline (OED)
+
+### During Litigation
+- Accused infringer may assert inequitable conduct
+- Must prove (Therasense):
+  - But-for material
+  - Specific intent to deceive (single most reasonable inference)
+- If proven, patent is unenforceable (entire patent, not just affected claims)
+
+### OED Discipline
+- Practitioner may be subject to discipline under 37 CFR Part 11
+- Ranging from warning to suspension to disbarment
+
+## 3.8 Strategic Considerations
+
+### For Inventors
+- Disclose all known prior art to your attorney
+- Describe your own prior activities
+- Don't assume something is immaterial — let attorney decide
+
+### For Attorneys
+- Build a strong search record
+- Disclose potentially material info via IDS promptly
+- Document the disclosure decisions in the file
+- Periodically check for new material info throughout prosecution
+
+### Record Keeping
+- Keep copies of searches, IDSs, and emails documenting disclosures
+- Maintain evidence of good faith
+- If material information is discovered late, disclose and document the delay`,
+      examTip: `**Inequitable conduct defense** is a big deal: if proven, the **entire patent** is unenforceable, not just the affected claims. Therasense (2011) set stringent requirements: but-for materiality AND specific intent to deceive (single most reasonable inference). But the disclosure duty under §1.56(b) is broader — disclose anything meeting its standard, even if it wouldn't meet Therasense.`,
+    },
+  ],
+  keyTakeaways: [
+    'Duty of candor (§1.56) owed by inventors, attorneys, agents, and all substantively involved individuals. Owed independently by each person.',
+    'Material information: NOT cumulative AND either (1) establishes prima facie unpatentability or (2) refutes applicant\'s position.',
+    'Duty is CONTINUING — applies from filing through issuance. New material info found later must be disclosed promptly.',
+    'Primary compliance mechanism: Information Disclosure Statement (IDS) under 37 CFR §§1.97–1.98.',
+    'Knowledge is not automatically imputed across individuals — each person must disclose what they personally know.',
+    'Therasense (2011) inequitable conduct: requires BUT-FOR materiality + specific intent to deceive (single most reasonable inference).',
+    '§1.56(b) disclosure duty is BROADER than Therasense materiality standard. Disclose per §1.56, don\'t rely on Therasense to avoid disclosure.',
+    'Violation consequences: examiner may withdraw allowance; in litigation, entire patent unenforceable; practitioner discipline by OED.',
+  ],
+},
+
+eth_discipline: {
+  topicId: 'eth_discipline',
+  title: `USPTO Rules of Professional Conduct — 37 CFR Part 11`,
+  domainWeight: 'Ethics · MPEP 402, 1000',
+  overview: `The USPTO Rules of Professional Conduct (37 CFR Part 11) govern the ethical behavior of all patent practitioners. Modeled largely on the ABA Model Rules of Professional Conduct with modifications for USPTO practice, Part 11 covers competence, confidentiality, conflicts of interest, communications with clients and tribunals, and duties to the profession. Violations can lead to discipline by the Office of Enrollment and Discipline (OED), including warnings, suspension, or disbarment. Understanding the key rules — particularly 11.101 (competence), 11.103 (diligence), 11.104 (communication), 11.106 (confidentiality), 11.107-11.111 (conflicts), and 11.18 (signature rules) — is critical.`,
+  sections: [
+    {
+      id: 'rules-client-relations',
+      title: `1. Duties to Clients (§§11.101-11.106)`,
+      content: `## 1.1 §11.101 — Competence
+
+A practitioner must provide competent representation, requiring:
+- Legal knowledge
+- Skill
+- Thoroughness
+- Preparation
+
+For patent practitioners specifically:
+- Knowledge of patent law and USPTO procedures
+- Understanding of the technology involved
+- Proper research and preparation
+
+## 1.2 §11.102 — Scope of Representation
+
+Practitioner must:
+- Consult with client about the means to achieve objectives
+- Abide by client's decision on settlement
+- Limit representation to specific matters if agreed
+
+## 1.3 §11.103 — Diligence
+
+Practitioner must:
+- Act with reasonable diligence
+- Avoid unreasonable delay
+- Commit to reasonable effort for each matter
+
+### Common Diligence Violations:
+- Missing filing deadlines
+- Failing to respond to Office Actions timely
+- Abandoning applications without notice
+- Slow response to client inquiries
+
+## 1.4 §11.104 — Communication with Client
+
+Practitioner must:
+- Promptly inform client of developments requiring consent
+- Reasonably consult on means to achieve objectives
+- Keep client reasonably informed
+- Promptly respond to reasonable requests for information
+- Explain matters sufficiently for client to make informed decisions
+
+### Common Communication Violations:
+- Not reporting new prior art to client
+- Failing to describe examiner rejection
+- Not getting client authority to take strategic steps
+- Delayed response to client emails/calls
+
+## 1.5 §11.105 — Fees
+
+Practitioner must:
+- Charge reasonable fees (and expenses)
+- Communicate fees to client before or at start of representation
+- Provide written notice of fee changes
+- Return unearned portions of fees upon termination
+
+### Factors Determining Reasonable Fees:
+- Time and labor required
+- Novelty and difficulty of the questions
+- Skill requisite to perform the legal service properly
+- Customary fees in the locality
+- Amount involved and results obtained
+- Time limitations
+- Nature and length of professional relationship
+- Experience, reputation, and ability of the practitioner
+- Whether fee is fixed or contingent
+
+## 1.6 §11.106 — Confidentiality of Information
+
+Practitioner must keep confidential:
+- Information relating to representation of client
+- Not to be revealed without informed consent
+- Exceptions: (1) to prevent reasonably certain death or bodily harm; (2) to prevent substantial financial harm; (3) to secure legal advice about compliance; (4) to establish a claim or defense; (5) to comply with law or court order
+
+### In Patent Practice:
+- Invention details
+- Client's strategy
+- Business information
+- Competitor information
+
+### Common Confidentiality Violations:
+- Disclosing client info to unauthorized third parties
+- Discussing cases with family/friends
+- Leaving files in public places
+- Email mistakes (sending confidential info to wrong address)
+
+## 1.7 Practical Guidance
+
+### Engagement Letters
+- Describe scope of representation
+- Specify fee arrangement
+- State conflict check completion
+- Document communication expectations
+
+### Docketing Systems
+- Critical for meeting deadlines (diligence)
+- Alerts for deadline approach
+- Backup systems for critical deadlines
+
+### Client Reports
+- Regular status updates
+- Reports after every Office Action
+- Summary of strategic decisions needed`,
+    },
+    {
+      id: 'rules-conflicts',
+      title: `2. Conflicts of Interest (§§11.107-11.111)`,
+      content: `## 2.1 §11.107 — Concurrent Conflicts
+
+A concurrent conflict exists when representation of one client would be:
+- Directly adverse to another current client, OR
+- Materially limited by practitioner's responsibilities to another client, former client, third party, or personal interest
+
+### Examples in Patent Practice:
+- Representing two companies on the same invention
+- Representing companies on related/competing patents
+- Filing oppositions against a former client's patent
+
+### Resolution:
+- Obtain informed consent in writing from ALL affected clients
+- If consent impossible or improper, withdraw from one or both matters
+
+## 2.2 §11.108 — Specific Rules on Conflicts
+
+### (a) Business Transactions with Clients
+- Practitioner cannot enter into a business transaction with a client unless:
+  - Transaction is fair and reasonable
+  - Client is advised in writing of right to independent counsel
+  - Client gives written informed consent
+
+### (b) Using Client Information
+- Cannot use client confidential information to client's disadvantage
+- Cannot use client information for practitioner's benefit without consent
+
+### (c) Giving Gifts from Client
+- Cannot solicit substantial gifts from client
+- Cannot prepare instrument for client to give substantial gift to practitioner (except from close family)
+
+### (d) Aggregate Settlements
+- Cannot aggregate settlement among multiple clients without informed consent from each
+
+### (i) Contingent Fees in Domestic Relations or Criminal
+- Not applicable to patent practice (patent fees can be contingent)
+
+## 2.3 §11.109 — Duties to Former Clients
+
+Practitioner cannot represent another person:
+- In the SAME matter, OR
+- In a SUBSTANTIALLY RELATED matter
+
+Where the new representation is materially adverse to the former client, UNLESS:
+- Informed consent in writing
+
+### "Substantially Related" in Patent Context:
+- Same invention or patent family
+- Same technical area requiring knowledge gained from prior representation
+- Related IP portfolio
+
+### Not Substantially Related:
+- Different technology areas
+- Pure legal issues without factual overlap
+- Separate portfolios with no connection
+
+## 2.4 §11.110 — Imputation of Conflicts (Law Firm Rule)
+
+If any practitioner in a firm has a conflict:
+- Firm typically cannot represent the client
+- Screening may permit conflicts:
+  - Strict ethical walls
+  - No disclosure of confidences
+  - Written notice to affected parties
+  - Documentation of procedures
+
+### USPTO Application
+- Patent firms often have multiple practitioners
+- Conflicts can pass between practitioners
+- Robust conflict check systems required
+
+## 2.5 §11.111 — Client Trust Accounts
+
+Practitioner must:
+- Safeguard client funds
+- Keep separate from practitioner's own funds
+- Maintain detailed records
+- Return client funds promptly when earned
+
+### Typical Use:
+- Filing fees held before paying USPTO
+- Maintenance fee escrow
+- Retainer fees
+
+### Failure Consequences:
+- Loss of registration
+- Criminal liability (in severe cases)
+- Civil malpractice
+
+## 2.6 Screening and Ethical Walls
+
+To address conflicts, firms may:
+- Screen specific practitioners from new matter
+- Require no-discussion policies
+- Prevent access to electronic files
+- Monitor compliance
+
+### Requirements:
+- Formal written procedure
+- Promptly implemented
+- Notice to affected parties (former client)
+- Ongoing enforcement
+
+## 2.7 Practical Compliance
+
+- Conduct conflict checks before accepting new matters
+- Maintain conflicts database
+- Get informed consent when needed (in writing)
+- Train staff on conflicts policies
+- Audit compliance regularly`,
+      importantNote: `Conflict of interest rules are **strictly enforced**. A single conflict can render all work product subject to disqualification. Before accepting a new matter, conduct a thorough conflict check. When in doubt, obtain informed written consent or decline the representation.`,
+    },
+    {
+      id: 'rules-practitioner-duties',
+      title: `3. Duties in USPTO Practice`,
+      content: `## 3.1 §11.301 — Meritorious Claims
+
+Practitioner cannot:
+- Knowingly bring or defend a proceeding
+- That is NOT warranted by existing law or a reasonable extension/argument for change
+- EXCEPT for a good-faith argument for reversal of existing law
+
+In USPTO practice:
+- Cannot argue a baseless position
+- Cannot knowingly submit an invalid patent application
+
+## 3.2 §11.303 — Candor Toward the Tribunal (§1.56 counterpart)
+
+Practitioner must:
+- Not knowingly make false statements of material fact or law
+- Not knowingly offer evidence known to be false
+- Disclose material adverse legal authority
+- Correct false statements made by client or witnesses
+
+### USPTO Context:
+- Duty to disclose material prior art (§1.56)
+- Duty to correct misstatements about the law
+- Duty not to support false inventor statements
+
+## 3.3 §11.304 — Fairness to Opposing Party and Counsel
+
+Practitioner must:
+- Not falsify evidence
+- Not obstruct opposing party's access to evidence
+- Not communicate with represented parties (see §11.402)
+- Treat opposing counsel professionally
+
+### In USPTO Practice:
+- Although USPTO is primarily ex parte (no opposing party), this rule still applies:
+  - In inter partes proceedings (IPR/PGR)
+  - When dealing with opposing counsel in litigation linked to prosecution
+  - Professional respect for examiners
+
+## 3.4 §11.305 — Impartiality and Decorum of Tribunal
+
+Practitioner must:
+- Respect the tribunal
+- Not make statements intended to influence improperly
+- Not engage in conduct demeaning to the tribunal
+
+### In USPTO Context:
+- Professional communications with examiners
+- Respectful tone in responses
+- No disparagement of USPTO, PTAB, or individual examiners
+
+## 3.5 §11.307 — Advocate as Witness
+
+Practitioner cannot act as both advocate and witness in the same matter unless:
+- Testimony relates to uncontested issue
+- Relates to service legal services rendered in the matter
+- Disqualification would cause substantial hardship
+
+### USPTO Context:
+- Attorney rarely a witness in prosecution
+- May arise in inequitable conduct litigation
+
+## 3.6 §11.401 — Truthfulness in Statements to Others
+
+Practitioner must:
+- Not make false statements to third parties
+- Not make material misrepresentations
+- Not engage in fraud, dishonesty, or misrepresentation
+
+## 3.7 §11.402 — Communication with Represented Persons
+
+Practitioner cannot communicate with person represented by counsel:
+- About the subject of the representation
+- Without consent of the other lawyer
+- Unless authorized by law or court order
+
+### In Patent Practice:
+- Cannot contact another company's inventors directly if the company has counsel
+- Cannot communicate with the opposing party in IPR/litigation directly
+
+## 3.8 §11.405 — Voluntary Pro Bono Publico
+
+Practitioner should aspire to provide:
+- Legal services to those of limited means
+- Legal services to charitable, religious, or educational organizations
+- Pro bono requirement is aspirational, not mandatory`,
+    },
+    {
+      id: 'rules-discipline',
+      title: `4. Discipline and Office of Enrollment and Discipline`,
+      content: `## 4.1 Office of Enrollment and Discipline (OED)
+
+OED is responsible for:
+- Registration of patent agents and attorneys
+- Receiving complaints against practitioners
+- Investigating alleged misconduct
+- Prosecuting disciplinary proceedings
+- Managing the Patent Bar Exam
+
+## 4.2 Discipline Types (§11.803)
+
+### Warning
+- Private caution
+- Not public
+- No further action
+
+### Public Reprimand
+- Published warning
+- Record of misconduct
+- May affect future actions
+
+### Suspension
+- Temporary loss of registration
+- Cannot practice before USPTO during suspension
+- Duration: typically 6 months to 5 years
+- Reinstatement required to resume practice
+
+### Exclusion (Disbarment)
+- Permanent loss of registration
+- May apply for reinstatement after set period (often 5 years)
+- Public record
+- Most severe sanction
+
+## 4.3 Grounds for Discipline (§11.804)
+
+Practitioner may be disciplined for:
+- Violating any rule of Part 11
+- Fraud or deceit
+- Conviction of a serious crime
+- Failure to fulfill obligations to a tribunal
+- Willful violation of USPTO rules
+- Moral turpitude
+
+### Examples:
+- Inequitable conduct
+- Conflict of interest
+- Misappropriation of client funds
+- Failure to competently represent client
+- False statements to USPTO
+
+## 4.4 Complaint Process (§11.805)
+
+1. **Complaint filed** with OED (by anyone)
+2. **Initial review** by OED
+3. **If merit**: formal investigation opened
+4. **Request for response** from practitioner
+5. **Recommendation** to Director or Committee on Discipline
+6. **Formal charge** (if disciplinary action warranted)
+7. **Hearing** before administrative judge
+8. **Decision** with right of review
+
+## 4.5 Registration Requirements (§11.7)
+
+To be admitted to practice:
+- **Scientific/technical background**: degree in a relevant technical field OR equivalent
+- **Character and fitness**: clean background
+- **Legal ability**: pass the Patent Bar Exam
+- **Oath**: affirmation of duty to USPTO
+
+## 4.6 Continuing Compliance
+
+Registered practitioners must:
+- Maintain registration annually (renewal fee)
+- Update contact information
+- Report discipline from other jurisdictions
+- Notify OED of certain events (bankruptcy, disbarment)
+
+## 4.7 Patent Agents vs. Patent Attorneys
+
+- **Patent Agent**: Registered with USPTO; can practice before USPTO but NOT in courts
+- **Patent Attorney**: Registered with USPTO AND admitted to state bar; can practice before USPTO and in courts
+
+Both are subject to Part 11 rules. Attorneys also subject to state bar rules.
+
+## 4.8 Inter-Jurisdictional Issues
+
+Discipline in one jurisdiction:
+- State bar discipline may trigger USPTO discipline
+- USPTO discipline may trigger state bar discipline
+- Reciprocal disbarment common
+
+## 4.9 Resignation
+
+A practitioner may voluntarily:
+- Resign from the Patent Bar
+- Stop practicing before USPTO
+- Must comply with post-resignation procedures (file withdrawal in pending matters)
+
+### Forced Resignation
+- Resignation while under disciplinary investigation is sometimes offered as alternative
+- May preserve some career options but still publicly recorded`,
+    },
+  ],
+  keyTakeaways: [
+    'USPTO Rules of Professional Conduct (37 CFR Part 11) govern all practitioners. Modeled on ABA Model Rules.',
+    'Duty of competence (§11.101): legal knowledge, skill, thoroughness, preparation. Technical knowledge required.',
+    'Duty of diligence (§11.103): act timely. Missing deadlines common violation.',
+    'Duty of communication (§11.104): keep client informed, promptly respond, explain matters.',
+    'Duty of confidentiality (§11.106): cannot disclose client info without consent (limited exceptions).',
+    'Conflicts of interest (§§11.107-11.111): concurrent, former client, imputation. Informed written consent required.',
+    'OED (Office of Enrollment and Discipline) enforces rules. Sanctions: warning, public reprimand, suspension, exclusion.',
+    'Patent Agents practice before USPTO only. Patent Attorneys practice before USPTO AND courts. Both subject to Part 11.',
+  ],
+},
+
+eth_signatures: {
+  topicId: 'eth_signatures',
+  title: `Signatures and Certifications — 37 CFR §1.4, §11.18`,
+  domainWeight: 'Ethics · MPEP 402',
+  overview: `Every document submitted to the USPTO must be signed, and each signature carries specific certifications under 37 CFR §11.18. These certifications — that statements are true to the best of the signer's knowledge, that submissions are not for improper purposes, and that legal contentions are warranted — create personal liability for false statements. Understanding what a signature represents, who can sign, and how signatures are applied electronically is essential.`,
+  sections: [
+    {
+      id: 'signature-requirements',
+      title: `1. Signature Requirements (37 CFR §1.4)`,
+      content: `## 1.1 Types of Signatures
+
+37 CFR §1.4 allows:
+- **Handwritten signature**: on paper or scanned
+- **Electronic signature**: using /[signature]/ format with attorney's name between forward slashes
+- **S-signature**: USPTO-approved symbolic signature
+- **Digital signature**: (some contexts)
+
+## 1.2 Electronic S-Signature Format
+
+The standard format for electronic submissions:
+- Forward slash, name, forward slash
+- Example: /John Smith/
+- Name clearly identifiable
+- Position in document makes authorship clear
+
+## 1.3 Who Can Sign
+
+### For Applicant Documents:
+- **Inventors**: sign oath/declaration, assignments
+- **Applicant-assignee**: signs if applicant under AIA §1.46
+- **Authorized representative**: typically attorney or agent
+
+### For Practitioner Documents:
+- **Registered practitioner**: attorney or agent with USPTO registration
+- **Acting on behalf of client**: with proper authorization
+
+### For Office Communications:
+- **Examiner**: signs Office Actions
+- **Supervisory Patent Examiner (SPE)**: signs notices, supports
+- **Director**: signs certain petitions and notices
+
+## 1.4 Application Data Sheet (ADS) Signature
+
+ADS must be signed by:
+- Applicant, OR
+- Registered practitioner authorized by applicant
+
+## 1.5 Reproduced Signatures
+
+Photocopies of signatures generally accepted, but:
+- Electronic filing uses the electronic signature format
+- Paper submissions require legible reproductions
+
+## 1.6 Ink Requirements
+
+For handwritten signatures on paper submissions:
+- Must be in non-black ink (blue is standard) historically
+- Modern practice: any legible ink, usually blue or black
+- Pencil signatures are unacceptable`,
+    },
+    {
+      id: 'rule-18-certifications',
+      title: `2. 37 CFR §11.18 Certifications`,
+      content: `## 2.1 The Four Certifications
+
+Every signature on a USPTO document is a certification by the signer that:
+
+### (1) Statements Are True
+- All statements of material fact are true, OR
+- Made on information and belief, to the best of the signer's knowledge, information, and belief, formed after reasonable inquiry
+
+### (2) Not for Improper Purpose
+- The document is not being presented:
+  - For improper purpose
+  - Such as to harass someone
+  - To cause unnecessary delay
+  - To needlessly increase litigation costs
+
+### (3) Legal Contentions Warranted
+- The legal contentions are:
+  - Warranted by existing law, OR
+  - Arguable extensions, modifications, or reversals of existing law, OR
+  - Establishment of new law
+
+### (4) Allegations Have Evidentiary Support
+- Factual allegations have evidentiary support, OR
+- Will likely have evidentiary support after further investigation
+
+## 2.2 Scope of §11.18
+
+Applies to:
+- Everything filed at the USPTO
+- Including: applications, responses, petitions, IDS, declarations, arguments
+- Every signature by every signer
+
+## 2.3 Consequences of False Certifications
+
+### To the Practitioner:
+- Violation of ethical rules
+- Discipline by OED
+- Potential suspension or exclusion
+
+### To the Patent:
+- Inequitable conduct if material info withheld
+- Potential unenforceability
+
+### Criminal Liability:
+- False statements to federal government may violate 18 U.S.C. §1001
+- Perjury (though not under oath for standard §11.18 certifications)
+- Fraud
+
+### Tort Liability:
+- Malpractice claims from client
+- Fraud claims from opposing parties
+
+## 2.4 The Standard — Reasonable Inquiry
+
+§11.18 requires inquiries "reasonable under the circumstances":
+- Review available records
+- Consult with knowledgeable persons
+- Read relevant cited references
+- Understand the technology
+- Verify legal positions
+
+NOT required:
+- Exhaustive investigation of every possible fact
+- Personal knowledge of everything signed
+- Verification impossible as a matter of fact
+
+## 2.5 Examples
+
+### Valid §11.18 Certification:
+- Attorney signs response after reviewing examiner's OA, client's technical input, applicable cases, prior art cited
+- Inquiry is reasonable; all certifications supportable
+
+### Violation of §11.18:
+- Attorney signs response without reading examiner's OA
+- Attorney signs claiming certain prior art wasn't disclosed when the attorney knows it was
+- Attorney signs making arguments without any legal support
+
+## 2.6 Impact on Practice
+
+### Pre-Signing Review:
+- Read documents before signing
+- Verify key facts with client
+- Confirm legal contentions
+- Check for improper purposes
+
+### Post-Signing Consequences:
+- False certifications can be raised as defense in litigation
+- Can lead to inequitable conduct findings
+- Can trigger OED investigation
+
+## 2.7 Third-Party Documents
+
+Attorney signing a document prepared by others:
+- Must review the document
+- Must be satisfied with certifications
+- Cannot simply rely on others' work without verification
+
+### Examples:
+- Inventor declaration signed by inventor; attorney doesn't sign the declaration itself but may co-sign related documents
+- Client factual statement: attorney should verify before incorporating into USPTO filings
+- Technical declarations: attorney should understand and agree with the content`,
+      examTip: `**§11.18 four certifications** on every signature: (1) statements are true (personal knowledge or on information and belief after reasonable inquiry), (2) not for improper purpose, (3) legal contentions warranted, (4) factual allegations have evidentiary support. Every signature — every time — certifies all four. False certifications can lead to discipline, malpractice, and potentially criminal charges.`,
+    },
+    {
+      id: 'specific-signature-rules',
+      title: `3. Specific Signature Rules`,
+      content: `## 3.1 Inventor Oath/Declaration
+
+Each inventor must sign their own oath/declaration:
+- Cannot be signed by someone else (except substitute statement — see Part 2)
+- Oath/declaration includes specific statements required by §1.63
+- Certification under §11.18 applies
+
+## 3.2 Attorney/Agent Signatures
+
+Registered practitioners sign on behalf of clients:
+- Must have authority
+- Authority from power of attorney (POA) or client engagement
+
+### Power of Attorney (§1.32)
+- Formal authorization
+- Can be specific to one application or general for multiple
+- Filed separately or combined with filing documents
+
+### Authority Without POA
+- Some actions don't require POA (e.g., filing the application)
+- POA required for substantive responses, correspondence with USPTO
+
+## 3.3 Payment of Fees
+
+Fee authorizations can be signed by:
+- Applicant
+- Attorney/agent with authority
+- Other authorized individuals (with proof of authority)
+
+## 3.4 Substitute Statements (§1.64)
+
+Signed by:
+- Joint inventor (of deceased/incapacitated)
+- Legal representative
+- Assignee or obligated assignee
+
+## 3.5 Correspondence Address Updates
+
+Changes to correspondence address:
+- Applicant or registered practitioner can sign
+- Specific forms (Form PTO/SB/122) may be used
+
+## 3.6 Issue Fee Transmittal
+
+Can be signed by:
+- Applicant
+- Attorney/agent
+- No specific authority requirements
+
+## 3.7 Special Cases
+
+### Notice of Appeal
+- Signed by applicant or attorney/agent
+- No special requirements beyond regular signature rules
+
+### IDS
+- Typically signed by registered practitioner
+- Affirms completeness of disclosure
+
+### Assignment Documents
+- Signed by assignor (the inventor or previous owner)
+- Notarization may be required in some jurisdictions
+
+## 3.8 Electronic Filing Signatures
+
+In Patent Center or EFS-Web:
+- Electronic signature format: /[Name]/
+- Must be within the document where signatures are expected
+- Must include typed name
+- Example: "Respectfully submitted, /John Smith/ John Smith Reg. No. 12345"
+
+## 3.9 Signature Verification
+
+USPTO verifies:
+- Signer is the same as typed name
+- Signature is on appropriate documents
+- Authority is sufficient
+
+Missing or incorrect signatures may result in:
+- Document not accepted
+- Delay in processing
+- Request for corrected document`,
+    },
+  ],
+  keyTakeaways: [
+    'Every USPTO document must be signed. 37 CFR §1.4 allows handwritten, electronic (/Name/), s-signature formats.',
+    'Electronic s-signature: /Full Name/ format. Clear and identifiable. Must match typed name.',
+    '37 CFR §11.18 certifications on every signature: (1) statements true, (2) not for improper purpose, (3) legal contentions warranted, (4) allegations have evidentiary support.',
+    'Standard: reasonable inquiry under the circumstances. Not exhaustive investigation but proper review.',
+    'False certifications can lead to: OED discipline, inequitable conduct, malpractice, potentially criminal charges under 18 USC §1001.',
+    'Inventors must sign their own oath/declaration (except substitute statement under §1.64).',
+    'Attorneys/agents sign on behalf of clients with authority from Power of Attorney (§1.32).',
+    'Specific forms (PTO/SB/01, /02, /08, /434, etc.) have specific signature requirements. Always use correct form for action.',
+  ],
+},
+
+eth_representation: {
+  topicId: 'eth_representation',
+  title: `Client Representation — Power of Attorney, Withdrawal, Assignments`,
+  domainWeight: 'Ethics · MPEP 402, 1100',
+  overview: `The attorney-client relationship in patent practice has specific procedural requirements under USPTO rules. Power of Attorney (37 CFR §1.32) establishes the practitioner's authority; Revocation ends it; Withdrawal (§1.36) has specific procedures and ethical requirements. Understanding when a practitioner can or must withdraw, and how assignments affect power of attorney, is critical for ethical prosecution. Heavily tested because it combines ethics rules with procedural USPTO rules.`,
+  sections: [
+    {
+      id: 'power-of-attorney',
+      title: `1. Power of Attorney (37 CFR §1.32)`,
+      content: `## 1.1 What Is a Power of Attorney?
+
+A Power of Attorney (POA) is a formal document authorizing a practitioner to act on behalf of a client before the USPTO:
+- Grants authority to represent the applicant
+- Specifies the practitioner(s)
+- Signed by the applicant or assignee
+- Filed with the USPTO
+
+## 1.2 Form and Filing
+
+Typical forms:
+- **PTO/SB/80**: Power of Attorney with General Authorizations
+- **PTO/SB/81**: Power of Attorney to All Practitioners of Record
+- **PTO/SB/82**: Power of Attorney and Change of Correspondence Address
+
+## 1.3 Scope of Authority
+
+POA authority includes:
+- Signing responses to Office Actions
+- Arguing amendments
+- Paying fees
+- Receiving communications from USPTO
+- Filing continuations and divisionals
+- Taking other actions in the application
+
+## 1.4 Multiple Practitioners
+
+Multiple practitioners can have POA in the same application:
+- Listed individually or by firm
+- Each can sign; all receive correspondence (typically)
+- Correspondence address typically specifies one recipient
+
+## 1.5 Associated Persons
+
+A POA typically names the practitioner directly but may also:
+- Authorize the practitioner's firm
+- Authorize specific employees or paralegals for certain actions
+- Authorize electronic filing access
+
+## 1.6 Post-AIA Changes
+
+Under AIA, applicant can be the assignee (§1.46):
+- POA signed by assignee-applicant
+- Attorneys can act on assignee's behalf
+- Inventor-specific POAs sometimes needed for specific actions (inventorship changes)
+
+## 1.7 POA Revocation
+
+The applicant (or assignee with authority) can revoke POA:
+- File new POA
+- File formal revocation
+- Specify effective date (usually immediately)
+
+## 1.8 Common POA Scenarios
+
+### Scenario 1: New Engagement
+- Client hires law firm
+- Firm files POA with initial application
+- Multiple firm practitioners listed
+
+### Scenario 2: Practitioner Changes
+- Individual attorney leaves firm
+- New POA may need to be filed to continue representation
+- Firm-wide POA may survive individual changes
+
+### Scenario 3: Firm Change
+- Client moves from Firm A to Firm B
+- New POA filed with Firm B
+- Firm A's POA revoked
+
+### Scenario 4: Assignee Takes Over
+- Originally filed by inventor
+- Assignment recorded; assignee becomes applicant
+- New POA may be needed reflecting assignee's authority`,
+    },
+    {
+      id: 'withdrawal',
+      title: `2. Withdrawal by Practitioner (37 CFR §1.36)`,
+      content: `## 2.1 When Withdrawal Is Allowed
+
+A practitioner may withdraw from representation:
+- **Client's consent**: usually easy, client authorizes change
+- **Good cause**: specific circumstances per §1.36
+
+## 2.2 Good Cause (§1.36)
+
+Permitted reasons to withdraw:
+- Client fails to pay fees owed
+- Client makes demands that would require unethical action
+- Client insists on pursuing objectives practitioner considers repugnant
+- Other good cause
+
+## 2.3 Procedural Requirements (§1.36)
+
+To withdraw:
+1. **Submit request** to USPTO
+2. **Include**:
+   - Fact of withdrawal
+   - Reason for withdrawal (not necessarily all details)
+   - Consent of client OR evidence of good cause
+   - Notice to client at client's last known address
+
+3. **Provide client**:
+   - Copy of pending Office Action (if any)
+   - Calendar of upcoming deadlines
+   - All client file materials
+
+## 2.4 Continuing Obligations
+
+Even after withdrawal:
+- Confidentiality obligations continue (former client)
+- Cannot represent adverse party in same or substantially related matter
+- May need to continue representation briefly to protect client interests
+
+## 2.5 Ethical Considerations
+
+Under Model Rules:
+- Withdrawal should not harm client's interests
+- Must give reasonable notice
+- Must refund unearned fees
+- Should not withdraw at critical moments (e.g., just before major deadline)
+
+## 2.6 Withdrawal Timing
+
+### Avoid Withdrawal When:
+- Just before a critical deadline (response due, appeal brief, issue fee)
+- During IPR hearing preparation
+- At any moment client's position would be harmed
+
+### Better Timing:
+- Between Office Actions
+- After allowance (transfer remaining work to new counsel)
+- When client expresses dissatisfaction before critical period
+
+## 2.7 Common Withdrawal Scenarios
+
+### Scenario 1: Non-payment
+- Client owes fees beyond agreed terms
+- Practitioner asks to withdraw
+- Client must find replacement or proceed pro se
+
+### Scenario 2: Ethical Conflict
+- Practitioner discovers material fact requiring disclosure
+- Client refuses to allow disclosure
+- Practitioner must withdraw (and potentially disclose if required)
+
+### Scenario 3: Communication Breakdown
+- Client unresponsive
+- Critical deadlines approaching
+- Practitioner withdraws after documented attempts to contact
+
+## 2.8 Withdrawal and Successor Counsel
+
+After withdrawal:
+- Client typically hires new practitioner
+- New practitioner files new POA
+- Predecessor's files may need to be transferred
+- Fee disputes between predecessor and successor possible`,
+    },
+    {
+      id: 'assignments',
+      title: `3. Assignments and Patent Ownership`,
+      content: `## 3.1 What Is an Assignment?
+
+An assignment transfers ownership of a patent (or application) from one party to another:
+- From inventor to employer
+- From company to company (acquisitions)
+- From estate to beneficiary
+
+## 3.2 Assignment Recording (§1.331)
+
+Assignments should be recorded with the USPTO:
+- Not strictly required for ownership
+- But recording provides legal protection:
+  - Priority over later assignees
+  - Public notice
+  - Required for some post-grant proceedings
+
+### Filing Requirements:
+- USPTO Form PTO-1595 (Assignment Recordation Form)
+- Electronic submission via EPAS or by paper
+- Fee: approximately $40 per property
+
+## 3.3 Timing of Recording
+
+- Best to record soon after execution
+- Must record within 3 months of execution to preserve priority against subsequent bona fide purchasers
+- Late recording still effective but may not bind intervening parties
+
+## 3.4 Types of Assignments
+
+### Assignment of Entire Interest
+- Full transfer of all rights
+- Most common in employment context
+
+### Assignment of Part Interest
+- Transfer of a fraction or specific rights
+- Less common; complex
+
+### Conditional Assignment
+- Transfer contingent on event
+- Must be documented carefully
+
+## 3.5 Employee Inventions
+
+### Employment Agreements
+- Typically require assignment of inventions
+- Written agreement at time of hire
+- May include "shop rights" for employer (non-exclusive use)
+
+### Hired to Invent
+- Inventor hired specifically to develop an invention
+- Assignment often implied even without explicit agreement
+
+### Ordinary Employment
+- Inventor develops invention during employment but not as primary duty
+- Analysis varies — need to consider scope of duties, use of employer resources, etc.
+
+## 3.6 Post-Assignment Power of Attorney
+
+After assignment:
+- Assignee becomes owner
+- Assignee may need new POA reflecting ownership change
+- Original practitioner may need to withdraw or continue per assignee's instructions
+
+## 3.7 Assignment and Inventorship
+
+Important distinction:
+- **Assignment** transfers ownership
+- **Inventorship** identifies who conceived — cannot be transferred or changed by assignment alone
+
+If inventorship needs correction:
+- §1.48 (pending applications) or §1.324 (issued patents)
+- Requires separate petition, not just assignment
+
+## 3.8 Assignments in Litigation
+
+Assignments affect litigation:
+- Only current owner has standing to sue
+- Must be real party in interest
+- Assignments before litigation should be recorded and documented
+
+## 3.9 Confidentiality and Assignment
+
+- Assignment documents may contain confidential terms (consideration, business deal)
+- USPTO recording requires cover sheet with specific info, not full agreement
+- Detailed terms can be kept confidential
+
+## 3.10 Common Assignment Issues
+
+- Assignment with incorrect inventor names
+- Assignment after inventor's death (need estate authorization)
+- Assignment without proper consideration
+- Assignments across jurisdictions (may need multiple filings)
+- Assignment of pending applications (easier than issued patents)`,
+    },
+  ],
+  keyTakeaways: [
+    'Power of Attorney (§1.32): formal authorization for practitioner to represent applicant. Filed on Form PTO/SB/80-82.',
+    'Multiple practitioners can have POA. Correspondence address specifies recipient. Firm-wide POAs common.',
+    'POA revocation: applicant files new POA or formal revocation. Automatic if applicant changes (assignment).',
+    'Withdrawal (§1.36): practitioner needs client consent OR good cause. Must provide notice, file copies, deadline calendar.',
+    'Withdrawal timing: avoid critical periods (near deadlines). Post-withdrawal: confidentiality continues, can\'t represent adverse party in same matter.',
+    'Assignments transfer ownership. Record with USPTO (Form PTO-1595) within 3 months for priority against bona fide purchasers. Fee ~$40.',
+    'Assignment does NOT change inventorship. Inventorship corrections use §1.48 (pending) or §1.324 (issued) — separate from assignment.',
+    'Post-assignment POA: assignee may need new POA reflecting ownership. Assignee-applicant under AIA §1.46 files POA themselves.',
+  ],
+},
+
 }; // end PATENT_BAR_COURSE
 
 export function hasPatentBarCourseContent(topicId: string): boolean {
