@@ -2629,6 +2629,1632 @@ A patent can also be corrected for inventorship during litigation under 35 U.S.C
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// PART 3 — FILING & PROSECUTION
+// MPEP Chapters 200, 500, 600, 700, 800 · 35 U.S.C. §§ 111, 119, 120, 121, 132
+// ═══════════════════════════════════════════════════════════════
+
+pf_provisional: {
+  topicId: 'pf_provisional',
+  title: `Provisional Applications — 35 U.S.C. §111(b)`,
+  domainWeight: 'Filing & Prosecution · MPEP 201.04',
+  overview: `A provisional application is a simplified, low-cost filing that establishes an early effective filing date but does NOT get examined and automatically expires after 12 months. It is the most common strategy for securing priority before public disclosure while the applicant prepares a full non-provisional. The key rules: 12-month pendency, must claim benefit within 12 months (no extensions beyond 2-month unintentional restoration), must have §112(a) support for any claim that benefits from it. Heavily tested because of the interplay with §102 prior art dates.`,
+  sections: [
+    {
+      id: 'prov-basics',
+      title: `1. What Is a Provisional Application?`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §111(b) authorizes provisional applications. They:
+- Establish a **constructive reduction to practice** and an effective filing date
+- Are NOT examined
+- Cannot mature into an issued patent
+- **Expire automatically 12 months** after filing (no extension, though 2-month unintentional-delay restoration is available)
+- Cannot claim priority to any other application
+
+## 1.2 Required Components
+
+A provisional application requires (37 CFR §1.53(c)):
+- A **specification** (description of the invention) compliant with §112(a) — written description, enablement (best mode arguably required but rarely enforced)
+- **Drawings** if necessary to understand the invention
+- **Cover sheet** identifying the application as provisional (Form PTO/SB/16 or equivalent)
+- **Applicable filing fee** (much lower than non-provisional)
+- **Names of all inventors**
+
+## 1.3 What Is NOT Required
+
+A provisional application does NOT need:
+- **Claims** (unlike a non-provisional)
+- **Oath or declaration** (not required for provisionals)
+- **Information Disclosure Statement** (no duty to disclose in provisional since it is not examined)
+- **Assignment** (though recording early helps)
+
+## 1.4 The 12-Month Clock
+
+The priority period is **12 months**, measured from the provisional's filing date. Within that window, the applicant must:
+- File a non-provisional application claiming benefit under §119(e), OR
+- File a PCT application designating the US, OR
+- Lose the priority benefit
+
+If the 12-month anniversary is a Saturday, Sunday, or federal holiday, the filing deadline is the next business day (35 U.S.C. §21(b)).
+
+## 1.5 Restoration of Priority (2-Month Window)
+
+Under 37 CFR §1.78(b), if a non-provisional is filed within **2 months after** the 12-month deadline, priority can be restored upon:
+- Petition
+- Statement that the delay was **unintentional**
+- Payment of the restoration fee
+
+Beyond 14 months total, no restoration is available.
+
+## 1.6 Provisional Cannot Claim Priority
+
+A provisional is a standalone filing. It cannot claim priority to any earlier application (domestic or foreign). It is the FIRST link in the priority chain.
+
+## 1.7 Provisional Cannot Become a Patent
+
+A provisional NEVER matures into an issued patent. It is a temporary placeholder. The non-provisional filed within 12 months is the application that can issue as a patent.`,
+      examTip: `Memorize: provisional = 12-month lifespan, NO claims required, NO oath/declaration required, NO examination, CANNOT claim priority, CANNOT issue. The non-provisional that claims benefit under §119(e) is the real application. 2-month unintentional-delay restoration extends the priority window to 14 months max.`,
+    },
+    {
+      id: 'prov-support',
+      title: `2. §112(a) Support Requirement`,
+      content: `## 2.1 The Rule
+
+For a non-provisional claim to get benefit of a provisional's filing date, the provisional must provide §112(a) written description and enablement for that claim.
+
+- Provisional discloses compound A + utility → non-provisional claim to A can get provisional's date
+- Provisional discloses A but not B → non-provisional claim to B gets the non-provisional's filing date, not the provisional's
+
+## 2.2 Claim-by-Claim Analysis
+
+Priority benefit is assessed **claim by claim**. A single non-provisional may have some claims entitled to the provisional's date (because the provisional adequately supported them) and other claims entitled only to the non-provisional's date.
+
+## 2.3 Practical Implications
+
+- A prior-art reference published in the gap between provisional and non-provisional may:
+  - NOT be prior art against claims supported by the provisional
+  - BE prior art against claims added after the provisional was filed
+
+## 2.4 The "Skeleton Provisional" Trap
+
+Inventors sometimes file "skeleton" provisionals with minimal disclosure to preserve early filing dates. Courts strictly enforce §112(a):
+- *New Railhead Manufacturing, L.L.C. v. Vermeer Manufacturing Co.*, 298 F.3d 1290 (Fed. Cir. 2002) — provisional that did not disclose the claimed drill bit did not provide priority.
+- *Anascape, Ltd. v. Nintendo of America Inc.*, 601 F.3d 1333 (Fed. Cir. 2010) — incomplete provisional lost priority for some claims.
+
+## 2.5 Best Practices
+
+- Draft the provisional like a non-provisional (detailed, multiple embodiments, alternative configurations)
+- Include drawings
+- Include a claim set even though not required (helps frame the disclosure)
+- Describe as many permutations as the invention supports`,
+    },
+    {
+      id: 'prov-strategy',
+      title: `3. Strategic Uses and Pitfalls`,
+      content: `## 3.1 Why Use a Provisional?
+
+1. **Early filing date**: establishes priority before public disclosure
+2. **Lower cost**: filing fee is lower than non-provisional
+3. **Time to refine**: 12 months to develop the invention, test, and draft claims
+4. **Multiple provisionals**: filing multiple provisionals and combining them in a single non-provisional
+
+## 3.2 Common Pitfalls
+
+- **Missing the 12-month deadline**: catastrophic unless restoration is available
+- **Inadequate disclosure**: non-provisional claims lose the provisional's priority
+- **No claim to benefit**: forgetting to claim §119(e) benefit in the non-provisional
+- **Disclosure exceeds the provisional**: later-added subject matter loses the provisional's date (only supported claims get the earlier date)
+
+## 3.3 Multiple Provisionals
+
+An applicant can file multiple provisionals and then combine them in one non-provisional:
+- Provisional A filed Jan 1, 2024 (compound X)
+- Provisional B filed June 1, 2024 (method using compound X)
+- Non-provisional filed Dec 15, 2024 claiming benefit of both
+- Claims to compound X get Jan 1, 2024 EFD; claims to method get June 1, 2024 EFD (assuming proper support)
+
+Each provisional's 12-month clock runs independently.
+
+## 3.4 Provisional + PCT Strategy
+
+A common international strategy:
+- File US provisional
+- Within 12 months, file PCT designating the US
+- PCT gets provisional's priority date
+- At 30 months from provisional, enter national stage in US and other countries
+
+## 3.5 Foreign Filing Risks
+
+- **Paris Convention priority** (§119(a)) gives 12 months for foreign filings from the earliest US filing
+- If provisional is filed and public disclosure occurs, foreign rights may be lost (most countries lack the US-style grace period)
+- File foreign applications within 12 months of the provisional to preserve the priority date abroad
+
+## 3.6 Abandonment
+
+A provisional is automatically "abandoned" after 12 months (effectively expires). It cannot be revived or extended (except 2-month unintentional restoration).`,
+    },
+  ],
+  keyTakeaways: [
+    'Provisional: 12-month lifespan, no claims required, no oath required, not examined, cannot claim priority, cannot issue.',
+    'Components: specification (§112(a)), drawings (if needed), cover sheet, filing fee, inventor names.',
+    'Non-provisional must be filed within 12 months to claim §119(e) benefit. 2-month unintentional restoration available (max 14 months).',
+    'Priority benefit is assessed claim-by-claim. Provisional must provide §112(a) support for EACH claim seeking the earlier date.',
+    'Multiple provisionals can be combined in one non-provisional; each provisional\'s 12-month clock runs separately.',
+    'Provisional + PCT: PCT filed within 12 months of provisional gets provisional\'s priority date. 30-month national stage deadline runs from provisional.',
+    'Foreign filings (Paris Convention) must be within 12 months of provisional. Many countries lack US-style grace period.',
+    'Drafting trap: skeleton provisionals fail — Federal Circuit strictly enforces §112(a). Provisional should be drafted with the same care as a non-provisional.',
+  ],
+},
+
+pf_nonprovisional: {
+  topicId: 'pf_nonprovisional',
+  title: `Non-Provisional Applications — 35 U.S.C. §111(a)`,
+  domainWeight: 'Filing & Prosecution · MPEP 601',
+  overview: `A non-provisional application (sometimes called a "utility application") is the standard patent application that is examined and can issue as a patent. It requires a full specification, at least one claim, an oath or declaration, drawings (if needed), and appropriate fees. Non-provisionals can be original filings or can claim benefit of earlier provisional, non-provisional, or PCT applications. Understanding filing requirements and fee tiers (micro, small, regular) is frequently tested.`,
+  sections: [
+    {
+      id: 'nonprov-requirements',
+      title: `1. Non-Provisional Filing Requirements`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §111(a) governs non-provisional applications. Requirements for a filing date (35 U.S.C. §111(a)(2), as amended by the Patent Law Treaty Implementation Act 2012):
+
+### Post-PLT (December 18, 2013) Requirements:
+1. **Specification** (at least a description or a reference to a previously filed application)
+2. **Fee** (basic filing fee + search fee + examination fee; can be paid later with surcharge)
+
+Notably, POST-PLT, a non-provisional can get a filing date WITHOUT claims. Claims can be filed later (with a surcharge).
+
+Pre-PLT (before December 18, 2013) required at least one claim to get a filing date.
+
+## 1.2 What Is Required for Complete Application
+
+While a filing date can be obtained with minimal content, a **complete** non-provisional (ready for examination) requires:
+- Specification (with detailed description)
+- At least one claim
+- Drawings (where necessary)
+- Oath or declaration (can be filed later, but before issue fee)
+- Application Data Sheet (ADS)
+- Basic filing fee, search fee, examination fee
+- IDS (if prior art is known)
+
+## 1.3 Fee Structure (37 CFR §1.16)
+
+Three entity tiers determine fees:
+
+| Entity | Discount |
+|---|---|
+| **Regular** | Full fee |
+| **Small entity** | 60% discount (40% of regular fee) |
+| **Micro entity** | 80% discount (20% of regular fee) |
+
+### Small Entity (37 CFR §1.27):
+- Fewer than 500 employees (including affiliates)
+- Independent inventors, small businesses, nonprofit organizations
+- Not assigned/licensed to a non-qualifying entity
+
+### Micro Entity (37 CFR §1.29):
+Meets all four requirements:
+1. Qualifies as small entity
+2. Not named as inventor on more than 4 previously filed applications (not counting provisionals and foreign apps)
+3. Gross income in preceding year does not exceed 3× the median household income
+4. Has not assigned or licensed rights to an entity with income above 3× median
+
+## 1.4 Core Fees
+
+Approximate fees at 2025 rates (regular entity):
+- **Basic filing fee**: $320
+- **Search fee**: $700
+- **Examination fee**: $800
+- **Total basic filing cost**: ~$1,820 for regular entity
+- **Total for small entity**: ~$728
+- **Total for micro entity**: ~$364
+
+Excess claim fees and surcharges are additional.
+
+## 1.5 Electronic Filing
+
+Most non-provisionals are filed via Patent Center. Paper filing requires a $400 "non-electronic filing fee" as a surcharge (unless micro entity, who can file paper without surcharge).
+
+## 1.6 Application Data Sheet (ADS) — 37 CFR §1.76
+
+The ADS is a structured form that contains:
+- Bibliographic information (applicant, inventors, correspondence address)
+- Priority/benefit claims (provisional, foreign, continuation)
+- Representative and agent information
+- Assignment information
+
+ADS is required whenever the applicant wants to claim priority or benefit.`,
+    },
+    {
+      id: 'nonprov-missing-parts',
+      title: `2. Missing Parts and Notice to File Missing Parts`,
+      content: `## 2.1 The USPTO's Review
+
+After filing, the Office of Patent Application Processing (OPAP) reviews the application for completeness. If something is missing, OPAP issues a **Notice to File Missing Parts** identifying the deficiencies.
+
+## 2.2 Common Missing Parts
+
+- Oath or declaration
+- Signatures
+- English translation (if non-English application)
+- Claims (pre-PLT requirement if filed before December 18, 2013)
+- Drawings (for applications requiring them)
+- Fees (some or all)
+- ADS
+
+## 2.3 Time to Respond
+
+Typically 2 months, extendable to the statutory maximum (6 months), with petition fees for extensions.
+
+## 2.4 Consequences of Non-Response
+
+If the applicant does not respond:
+- Application is **abandoned** for failure to respond
+- Can be revived for **unintentional delay** under 37 CFR §1.137(a) with petition fee
+
+## 2.5 Late-Filed Oath/Declaration
+
+Oath or declaration can be filed up to payment of the issue fee with surcharge. Absent oath/declaration, the patent cannot issue.
+
+## 2.6 The Application Number
+
+Upon filing, the USPTO assigns:
+- **Application number** (8-digit): 17/XXXXXX or 18/XXXXXX series
+- **Confirmation number**: 4-digit code for later correspondence
+- **Filing receipt**: issued after initial processing confirming the data on the application
+
+The applicant should verify the filing receipt carefully — errors can affect priority claims and inventorship.`,
+    },
+    {
+      id: 'nonprov-track-one',
+      title: `3. Accelerated Examination Options`,
+      content: `Standard non-provisional examination takes 18-36+ months from filing to first office action. The USPTO offers several accelerated programs.
+
+## 3.1 Track One — Prioritized Examination (37 CFR §1.102(e))
+
+- Fast-track examination with a goal of final disposition within **12 months**
+- Requires prioritized exam fee (approximately $4,200 at regular rate; $1,680 for small; $840 for micro)
+- Maximum 4 independent claims and 30 total claims
+- Must be original utility or plant non-provisional (not design, not CIP)
+- Filed with original application or after RCE
+
+## 3.2 Patent Prosecution Highway (PPH)
+
+If a counterpart application has been allowed in a partner patent office (EPO, JPO, KIPO, etc.), PPH can expedite US examination:
+- No additional fee
+- Must identify corresponding claims
+- First action typically within 3-6 months
+
+## 3.3 Accelerated Examination Program (AEP)
+
+Older program less commonly used now. Requires:
+- Pre-examination search document
+- Accelerated examination support document
+- Limited to 3 independent/20 total claims
+
+## 3.4 Petition to Make Special
+
+Available without fee for specific circumstances:
+- **Age or health**: applicant 65+ or in poor health
+- **Environmental quality**: invention relates to environmental improvement
+- **Energy**: invention relates to energy development
+- **Counter-terrorism**: invention relates to counter-terrorism
+
+## 3.5 COVID-19 Prioritized Examination Program (Historical)
+
+The USPTO had a COVID-specific program from 2020-2023 that has since expired.`,
+      examTip: `Track One (prioritized examination) is most commonly tested. Memorize: 12-month target, max 4 independent / 30 total claims, requires fee, for original non-provisionals (NOT CIPs).`,
+    },
+  ],
+  keyTakeaways: [
+    'Non-provisional under §111(a) is the standard examined application that can issue as a patent.',
+    'Post-PLT (Dec 18, 2013+): filing date requires only specification + fee. Claims can be filed later with surcharge.',
+    'Entity tiers: regular, small (60% discount), micro (80% discount). Know the qualifying criteria.',
+    'Core fees: basic filing, search, examination — total ~$1,820 for regular entity at 2025 rates.',
+    'ADS (37 CFR §1.76) required whenever claiming priority/benefit. Contains bibliographic and priority info.',
+    'Missing Parts Notice: 2 months to respond, extendable to 6 months. Non-response = abandonment.',
+    'Track One prioritized exam: 12-month goal, max 4 indep / 30 total claims, ~$4,200 fee for regular entity.',
+    'PPH (Patent Prosecution Highway): no-fee expedite based on favorable foreign office results.',
+  ],
+},
+
+pf_priority: {
+  topicId: 'pf_priority',
+  title: `Priority & Benefit Claims — §§119, 120, 365`,
+  domainWeight: 'Filing & Prosecution · MPEP 211, 213, 1895',
+  overview: `Priority claims allow a later application to benefit from the filing date of an earlier application. There are three major statutory bases: §119(e) for provisionals, §120 for continuations/divisionals/CIPs, and §119(a)/(b) and §365 for foreign applications. Each has specific procedural requirements and timing rules. Properly claiming priority is essential for securing an effective filing date for prior art purposes. The interplay of priority chains, §112(a) support, and effective filing dates is one of the most heavily tested areas on the exam.`,
+  sections: [
+    {
+      id: 'priority-domestic',
+      title: `1. Domestic Benefit — §§119(e), 120`,
+      content: `## 1.1 §119(e) — Benefit of Provisional
+
+A non-provisional claims benefit of a provisional under §119(e):
+- Must be filed within 12 months of the provisional (or 14 months with unintentional-delay restoration)
+- Must have at least one common inventor with the provisional
+- Specific reference must be made: "This application claims the benefit of U.S. Provisional Application No. 63/XXX,XXX, filed [date]."
+- Reference must be in an ADS (Application Data Sheet) filed within the time period of 37 CFR §1.78(a)(4) — usually 4 months from actual filing date OR 16 months from provisional filing date (whichever is later)
+
+## 1.2 §120 — Benefit of Earlier Non-Provisional
+
+A continuation, divisional, or CIP claims benefit of an earlier non-provisional under §120. Requirements:
+1. **Copendency**: the earlier application must be pending (or become a patent on the same day as the later application is filed)
+2. **Common inventor**: at least one common inventor
+3. **Specific reference**: reference to the earlier application (in ADS)
+4. **§112(a) support**: the earlier application must provide written description and enablement for claims seeking its filing date
+
+Copendency is a bright-line rule — if the parent is abandoned or issued BEFORE the child is filed, there is no §120 benefit.
+
+## 1.3 Priority Claim Timing (37 CFR §1.78)
+
+The priority claim must be filed within:
+- **4 months from the actual filing date** of the later application, OR
+- **16 months from the priority date**
+
+Whichever is later. If the deadline is missed, a petition to accept the unintentionally delayed priority claim is available.
+
+## 1.4 Chain of Priority
+
+Priority can chain through multiple applications:
+- Provisional A (Jan 2022) → Non-provisional B (Dec 2022) → Continuation C (June 2023) → Continuation D (Jan 2024)
+
+Claims in D that are supported by A can reach back to A's January 2022 EFD, provided:
+- Each link in the chain properly claimed priority
+- Copendency is maintained at each link
+- §112(a) support exists at each link
+
+## 1.5 Common Trap — Chain Break
+
+If any link in the priority chain is defective (no copendency, no specific reference, no §112(a) support), the chain is broken for that application going forward.
+
+**Example**: Provisional A → Non-provisional B claims §119(e) benefit of A. Continuation C claims §120 benefit of B only (not A). C can only reach back to B's date, not A's — even though A → B → C is a valid chain for the claims.
+
+Modern applications typically include multiple priority claims (to A, B, etc.) to preserve the earliest possible date.
+
+## 1.6 Cross-Referencing in the Specification
+
+In addition to the ADS, a cross-reference to related applications should appear in the specification at the beginning (per 37 CFR §1.77(b)(2)). Example:
+"This application is a continuation of U.S. Application No. 17/XXX,XXX, filed [date], which claims the benefit of U.S. Provisional Application No. 63/XXX,XXX, filed [date]."`,
+      examTip: `The **4-months-from-filing OR 16-months-from-priority, whichever is later** rule is tested verbatim. Copendency is a bright-line rule — miss it and the priority chain breaks irreparably. §119(e) requires provisional priority; §120 requires non-provisional benefit. Do not confuse them.`,
+    },
+    {
+      id: 'priority-foreign',
+      title: `2. Foreign Priority — §§119(a)-(d), 365`,
+      content: `## 2.1 The Paris Convention Basis
+
+The Paris Convention for the Protection of Industrial Property (1883) grants a 12-month priority period for foreign filings. The US implements this through 35 U.S.C. §119(a)-(d).
+
+## 2.2 Requirements (§119(a)-(d))
+
+A US application can claim foreign priority if:
+1. The foreign application was filed in a **Paris Convention country** (or WTO member)
+2. The foreign application was filed **within 12 months** of the US application (6 months for design patents under §172)
+3. There is a **common inventor** or applicant
+4. The applicant makes a specific claim for priority
+5. **Certified copy of the foreign application** is filed (usually via PDX digital exchange)
+
+## 2.3 Timing of the Priority Claim (37 CFR §1.55)
+
+For foreign priority, the claim must be filed within:
+- **4 months from actual filing date** of the US application, OR
+- **16 months from the foreign priority date**
+
+Whichever is later.
+
+## 2.4 Certified Copy Requirements
+
+The certified copy of the foreign application must be:
+- Filed in the USPTO, OR
+- Retrievable via PDX (Priority Document Exchange — digital exchange with major patent offices), OR
+- Retrievable via WIPO DAS (Digital Access Service)
+
+Deadline: generally 4 months from US filing or 16 months from foreign priority date.
+
+## 2.5 Multiple Foreign Priority Claims
+
+An applicant can claim multiple foreign priorities:
+- Priority to France filing (Feb 2023)
+- Priority to Germany filing (May 2023) — if independent of France filing
+- Priority to US provisional (Jan 2023)
+
+Claims in the US application are entitled to the earliest date supported by the originating foreign application AND meeting §112(a).
+
+## 2.6 Restoration of Foreign Priority
+
+Under 37 CFR §1.55(c), foreign priority can be restored within **2 months** after the 12-month deadline (14 months total max), upon:
+- Petition
+- Statement that delay was unintentional
+- Payment of restoration fee
+
+## 2.7 §365 — PCT Application Priority
+
+35 U.S.C. §365 governs priority claims involving PCT applications:
+- **§365(a)**: National application can claim priority of PCT (treated like foreign priority)
+- **§365(b)**: PCT application can claim priority of foreign application (treated like §119)
+- **§365(c)**: National application can claim benefit of PCT designating the US (treated like §120 benefit)
+
+## 2.8 Practical Examples
+
+| Scenario | Authority |
+|---|---|
+| US non-prov claims priority to 12-mo earlier Japanese patent app | §119(a) |
+| US non-prov claims benefit of 12-mo earlier US provisional | §119(e) |
+| US non-prov claims benefit of earlier US non-provisional | §120 |
+| US non-prov claims benefit of earlier PCT designating US | §365(c) |
+| PCT claims priority to earlier US provisional | §365(b) |`,
+      importantNote: `The 12-month Paris Convention deadline is critical. A foreign filing even ONE DAY late loses priority, except for the narrow 2-month restoration for unintentional delay. Many applicants file on the LAST DAY, making calendar accuracy essential.`,
+    },
+    {
+      id: 'priority-cip-traps',
+      title: `3. Priority Traps with CIPs and Partial Support`,
+      content: `## 3.1 Continuation-in-Part (CIP) — Mixed Priority
+
+A CIP adds new matter beyond the parent. This creates CLAIM-by-CLAIM priority:
+- Claims fully supported by the parent → parent's filing date
+- Claims reciting NEW matter (not in parent) → CIP's filing date (later)
+
+## 3.2 Example — CIP Priority Analysis
+
+Parent filed Jan 1, 2023, discloses compound A and utility X.
+CIP filed Jan 1, 2024, adds disclosure of compound B and utility Y.
+
+| Claim | Content | EFD |
+|---|---|---|
+| Compound A for utility X | Fully supported by parent | Jan 1, 2023 |
+| Compound A for utility Y | Y is new matter in CIP | Jan 1, 2024 |
+| Compound B | B is new matter in CIP | Jan 1, 2024 |
+| Compound A for utility X OR Y | Partial new matter; treated as Jan 1, 2024 for safety |
+
+## 3.3 Prior Art Hits Between Parent and CIP
+
+If prior art is published BETWEEN the parent's filing and the CIP's filing:
+- Claims entitled to parent's date → reference is NOT prior art
+- Claims entitled only to CIP's date → reference IS prior art
+
+This is a classic trap: the applicant thinks "we have an earlier filing," but the added matter doesn't benefit from it.
+
+## 3.4 §112(a) Support — The Gatekeeper
+
+For ANY claim to benefit from ANY earlier application, §112(a) support must exist in that earlier application. The analysis:
+1. Does the earlier application describe the claimed subject matter with sufficient detail (written description)? AND
+2. Does it enable a POSITA to practice (enablement)?
+
+If no → claim doesn't get the earlier date.
+
+## 3.5 Common Exam Scenarios
+
+### Scenario A: Provisional Missing the Claimed Feature
+- Provisional discloses widget with feature X only
+- Non-provisional adds feature Y and claims widget with X or Y
+- Claim to X alone: provisional's date
+- Claim to Y alone: non-provisional's date
+- Claim to X+Y combination: depends on disclosure
+
+### Scenario B: Continuation Adding Narrower Range
+- Parent discloses temperature range 100-200°C
+- Continuation claims 150-180°C
+- If parent discloses or contemplates the narrower range with possession, continuation claim gets parent's date
+- If parent is silent on 150-180°C → arguably lacks written description, continuation date applies
+
+### Scenario C: Broadening in Continuation
+- Parent discloses and claims A
+- Continuation claims A, B, C (where B and C weren't originally disclosed)
+- Original claim (A) gets parent's date
+- New claims (B, C) require §112(a) support in parent — likely no
+
+## 3.6 Priority Chain Verification
+
+When advising on an EFD question:
+1. Identify every application in the priority chain
+2. Verify copendency at each step
+3. Verify specific reference at each step
+4. Verify §112(a) support for the specific claim at issue
+5. Only the EARLIEST application providing proper chain continuity AND §112(a) support = EFD`,
+    },
+  ],
+  keyTakeaways: [
+    '§119(e) = benefit of US provisional. §120 = benefit of US non-provisional. §119(a)-(d) = foreign priority. §365 = PCT priority/benefit.',
+    'Priority claim timing: 4 months from filing OR 16 months from priority date, whichever is later. Must be in ADS.',
+    'Copendency is bright-line for §120. Parent must be pending when child is filed, or both mature to patents the same day.',
+    'Foreign priority (Paris Convention): 12 months from foreign filing (6 months for design). 2-month unintentional-delay restoration.',
+    'Priority is claim-by-claim. Each claim needs §112(a) support in the earlier application to get its filing date.',
+    'CIP analysis: claims supported by parent get parent\'s date; claims reciting new matter get CIP\'s date.',
+    'Chain breaks if any link is defective (no specific reference, no copendency, no §112(a) support). Modern applications claim priority to all relevant parents.',
+    'PDX (Priority Document Exchange) and WIPO DAS allow digital delivery of certified copies — avoid paper certified copy filings when possible.',
+  ],
+},
+
+pf_continuations: {
+  topicId: 'pf_continuations',
+  title: `Continuations, Divisionals, and CIPs`,
+  domainWeight: 'Filing & Prosecution · MPEP 201.07–201.09',
+  overview: `Continuation practice lets an applicant keep prosecution alive by filing a new application that claims the benefit of an earlier application. Three common variants: (1) continuation — same disclosure, different claims; (2) divisional — filed in response to a restriction requirement; (3) continuation-in-part (CIP) — adds new matter. Each has distinct requirements, advantages, and traps. The 2007 proposed "continuation limits" rules were enjoined, so currently there is no limit on the number of continuations. Heavily tested — especially the §121 safe harbor and CIP effective filing date rules.`,
+  sections: [
+    {
+      id: 'cont-types',
+      title: `1. Three Types of Continuation Applications`,
+      content: `## 1.1 Continuation (§120)
+
+A continuation (sometimes called "straight continuation"):
+- Same disclosure as parent (no new matter)
+- Different (often broader or different-scope) claims
+- Claims benefit of parent under §120
+- Filed while parent is pending (copendency)
+
+### Why File a Continuation?
+- Pursue claims the examiner wouldn't allow in the parent
+- Keep the application alive to pursue emerging market opportunities (claim-scope strategy)
+- Respond to competitive developments
+- Allow amendment of claims based on later-discovered prior art
+
+## 1.2 Divisional (§121)
+
+A divisional:
+- Filed in response to a **restriction requirement** in the parent
+- Contains only the claims restricted OUT in the parent (the "non-elected" inventions)
+- Gets §121 safe harbor against ODP based on the parent
+- Claims benefit of parent under §120
+
+### Key Protection: §121 Safe Harbor
+Because the applicant filed the divisional in response to the examiner's restriction, §121 prevents the PTO or courts from rejecting either the parent or divisional based on obviousness-type double patenting (ODP) over the other.
+
+## 1.3 Continuation-in-Part (CIP) (§120)
+
+A CIP:
+- Contains the disclosure of the parent PLUS new matter
+- Has claims, some of which may be supported by the parent and some only by the new matter
+- Each claim gets priority based on where it is fully supported
+
+### When to File a CIP
+- Adding improvements developed after parent filing
+- Disclosing new embodiments
+- Expanding scope
+- Supporting new claim limitations
+
+### Risks of CIP
+- Claims with new-matter subject matter lose parent's priority date
+- Potential terminal disclaimer issues (ODP over parent)
+- Extended patent term might create ODP issues later
+
+## 1.4 Summary Table
+
+| Type | Disclosure | Claim Scope | Reason to File | Priority Benefit |
+|---|---|---|---|---|
+| **Continuation** | Identical to parent | Different/broader | Pursue different claim angles | Full parent date |
+| **Divisional** | Identical to parent | Only non-elected inventions | Required by restriction | Full parent date + §121 safe harbor |
+| **CIP** | Parent + new matter | May include new-matter claims | Add improvements | Parent date ONLY for claims fully supported in parent |`,
+    },
+    {
+      id: 'cont-filing-requirements',
+      title: `2. Filing Requirements and Procedures`,
+      content: `## 2.1 Common Requirements
+
+All three types (continuation, divisional, CIP):
+- **Filed while parent is pending** (copendency) — MUST be filed before parent is abandoned or issues as a patent (though filing on the day of issuance is acceptable)
+- **At least one common inventor** with the parent
+- **Specific reference** to the parent in the ADS (and ideally in the specification)
+- **Section 120 priority claim** in the ADS
+- **Filing fees**, including full non-provisional fees
+- **New oath or declaration** (or incorporation of earlier oath if within 37 CFR §1.63 rules)
+
+## 2.2 Filing Mechanism
+
+Option 1: **Straight filing** under 35 U.S.C. §111(a) — file a new application that specifically claims benefit of the parent.
+
+Option 2: **Continued Prosecution Application (CPA)** — available ONLY for design patents under 37 CFR §1.53(d). NOT available for utility patents (was phased out circa 2000).
+
+Option 3: **Request for Continued Examination (RCE)** — different mechanism, discussed separately (not a new application, but continues prosecution of existing application). Covered in Part 4.
+
+## 2.3 Section 120 Reference
+
+The §120 priority claim must:
+- Be in an ADS (or in the first sentence of the specification per some older practice)
+- Be made within 4 months of the actual filing date OR 16 months from the priority date (whichever is later)
+- Specifically identify the parent by application number and filing date
+
+## 2.4 Copendency Details
+
+A continuation or CIP is "copending" with its parent if:
+- Filed while parent is pending (not abandoned, not issued), OR
+- Filed on the same day the parent issues (the parent is considered pending for this purpose)
+
+Exactly WHEN the parent "issues" can matter: issue is typically Tuesday mornings; the parent is abandoned/issued at the time of issuance. File the continuation BEFORE that specific moment to preserve copendency.
+
+## 2.5 Common Traps
+
+- **Missing copendency**: parent abandoned before continuation filed → no §120 benefit
+- **Missing §120 claim**: forgetting to claim benefit → default to non-provisional's own date
+- **New matter in continuation (not CIP)**: straight continuations cannot add new matter; if new matter is added, treat as CIP
+- **Omitting the ADS**: priority claims in the specification alone are sometimes rejected`,
+      importantNote: `The key distinction: **continuation** = same disclosure as parent (no new matter); **CIP** = parent disclosure + new matter. Do not use "continuation" to describe a CIP. The USPTO will reject the continuation as improperly claimed if new matter is present.`,
+    },
+    {
+      id: 'cont-cip-deep-dive',
+      title: `3. CIP Deep Dive — Priority Analysis`,
+      content: `## 3.1 Why CIPs Are Tricky
+
+A CIP blends old and new disclosure. The claims must be analyzed individually:
+
+- Claim to subject matter fully disclosed in parent → parent's date
+- Claim to subject matter disclosed only in CIP → CIP's date
+- Claim to a genus that overlaps both → parent's date for the overlapping part; CIP's date for the new genus
+
+## 3.2 Classic CIP Trap — Written Description in Genus
+
+Parent discloses compound A.
+CIP discloses compound B and claims "a compound selected from A or B."
+- If the claim covers both A and B, the claim can only get the CIP's date (because B is new matter)
+- The claim is entitled to A's priority only if separately rewritten to cover A alone
+
+## 3.3 Prior Art Between Parent and CIP
+
+If a third party publishes between parent filing and CIP filing:
+- Claims fully supported by parent → reference NOT prior art
+- Claims supported only by CIP → reference IS prior art
+
+This scenario is a major strategic consideration. If the applicant anticipates possible third-party disclosures, they should try to support all claim variants in the parent.
+
+## 3.4 Double-Patenting Analysis for CIPs
+
+A CIP risks ODP with its parent:
+- Parent claims compound A
+- CIP claims compound A and compound B
+
+If the CIP's claim to B is patentably indistinct from the parent's claim to A → ODP rejection. Remedy: terminal disclaimer.
+
+## 3.5 Patent Term Considerations
+
+A CIP's patent term is generally 20 years from its effective filing date — which can be the parent's date or the CIP's date depending on the claim. Since each claim's term is the patent's term (not the claim's EFD), CIP claims have the 20-year term from the earliest priority application.
+
+However, for ODP purposes, patent term differences can create problems (see *In re Cellect*, 81 F.4th 1216 (Fed. Cir. 2023)).
+
+## 3.6 Best Practices
+
+- Identify clearly what is old disclosure (from parent) vs. new matter in the CIP
+- File CIPs thoughtfully — sometimes a straight continuation or divisional is better
+- For genus claims, include dependent claims that track only the parent's disclosure to preserve earlier priority
+- Consider filing multiple CIPs for different improvements, each claiming only one priority chain
+
+## 3.7 Example Prosecution Strategy
+
+Parent: "A widget comprising part A"
+Improvement 1: "A widget comprising part A and additional part B"
+Improvement 2: "A widget comprising part A and additional part C"
+
+Options:
+- Single CIP adding B and C → mixed priority on certain claims
+- Two separate CIPs, one for B and one for C → cleaner priority analysis
+- Amend parent if still pending (only if new matter supported)`,
+    },
+  ],
+  keyTakeaways: [
+    'Three types: continuation (same disclosure, different claims), divisional (non-elected claims from restriction), CIP (adds new matter).',
+    'All three require copendency with parent (filed before parent abandons or issues) and at least one common inventor.',
+    '§121 safe harbor: divisional filed in response to restriction cannot create ODP with parent. Must maintain consonance.',
+    'Continuation cannot add new matter. Adding new matter = CIP.',
+    'CIP analysis: priority is claim-by-claim. Claims supported by parent get parent\'s date; claims with new matter get CIP\'s date.',
+    '§120 priority claim must be in ADS, filed within 4 months of actual filing OR 16 months from priority (whichever later).',
+    'No continuation limits currently — 2007 proposed rules were enjoined. Multiple continuations allowed.',
+    'Patent term runs from earliest EFD; CIP claims get 20 years from the priority they are entitled to. Cellect (2023) warns about PTA + ODP interaction.',
+  ],
+},
+
+pf_restriction: {
+  topicId: 'pf_restriction',
+  title: `Restriction Requirements and Elections`,
+  domainWeight: 'Filing & Prosecution · MPEP 800',
+  overview: `A restriction requirement is the examiner's refusal to examine multiple distinct inventions in a single application. The applicant must elect one invention to prosecute; the non-elected inventions can be pursued in divisional applications (§121). Restriction practice is governed by MPEP 800 and 37 CFR §1.141–§1.146. Understanding when a restriction is proper, how to traverse (argue against) it, and the strategic use of divisionals is a major exam topic.`,
+  sections: [
+    {
+      id: 'restriction-basics',
+      title: `1. Basis for Restriction`,
+      content: `## 1.1 Statutory Authority
+
+35 U.S.C. §121: "If two or more independent and distinct inventions are claimed in one application, the Director may require the application to be restricted to one of the inventions."
+
+## 1.2 Two-Part Test for Restriction
+
+An examiner may require restriction if:
+1. The claims are to **two or more inventions** that are **independent and distinct**; AND
+2. The inventions would require a **serious search burden** if examined together.
+
+### Independent and Distinct
+- **Independent**: the inventions have unrelated subject matter (e.g., a widget vs. an unrelated chemical process)
+- **Distinct**: inventions that share subject matter but are separately patentable (e.g., a product and a method of making it; product and method of using it; process and apparatus performing the process)
+
+Two inventions are distinct if one can be made or used without the other.
+
+### Serious Search Burden
+The examiner must be able to justify that searching both inventions would require:
+- Different classifications in the CPC/USPC schema
+- Different fields of search
+- Non-coextensive queries
+
+## 1.3 Types of Restriction
+
+Common restriction categories:
+- **Product + Process**: apparatus + method of using; composition + method of making
+- **Species**: multiple specific embodiments within a genus that are patentably distinct
+- **Combination/subcombination**: a system and its components
+
+## 1.4 Species Election
+
+When a generic claim encompasses multiple species (specific embodiments) that are patentably distinct:
+- The examiner may require election of a single species to examine
+- If the generic claim is allowable, species are typically examined together
+- If the generic claim is not allowable, the elected species is examined alone (and non-elected species are withdrawn from consideration)
+
+### Markush Group Election
+For Markush claims ("selected from A, B, C, D"), if the members are not patentably indistinct, the examiner may require election of a single member.
+
+## 1.5 Unity of Invention (PCT-Based Standard)
+
+For PCT applications entering the US national stage, a different standard applies: **unity of invention** (37 CFR §1.475). This looks for a single "general inventive concept." More restrictive on the examiner's ability to restrict than US-origin applications.
+
+## 1.6 Timing of the Restriction
+
+Restrictions are typically issued as **preliminary** actions (early in prosecution), before the examiner substantively examines the claims. Late restrictions (after substantial examination) are generally not allowed.`,
+      examTip: `Two-step test: **(1) independent and distinct inventions (2) serious search burden**. Both are required. If one claim is a broader genus that reads on multiple species, a species election may be required. Remember: the examiner must articulate the search burden — the applicant can traverse by showing it's not serious.`,
+    },
+    {
+      id: 'restriction-election',
+      title: `2. Election and Traversal`,
+      content: `## 2.1 Making the Election
+
+When a restriction is issued, the applicant must:
+1. **Elect** one invention (the "elected invention") to prosecute
+2. State whether the election is **with traversal** or **without traversal**
+
+### Election Without Traversal
+- Applicant accepts the restriction as correct
+- Only the elected invention will be examined
+- Non-elected inventions can be pursued in divisionals
+- No argument about the restriction
+
+### Election With Traversal
+- Applicant argues the restriction is improper (preserving the right to later challenge)
+- Still must pick one invention to examine
+- If the traversal prevails later (e.g., on appeal), non-elected claims can be re-joined
+
+## 2.2 Provisional vs. Permanent Election
+
+- An election before a restriction action is called a "tentative" or "provisional" election. It's not binding.
+- An election after the restriction action is **binding** unless changed by later examiner action (unlikely).
+
+## 2.3 Consequences of No Election
+
+If the applicant does not respond to a restriction requirement, the application is abandoned.
+
+## 2.4 Traversal Arguments
+
+Common grounds for traversal:
+- The inventions are not independent and distinct (they overlap significantly)
+- No serious search burden exists (same classification, same art)
+- Restriction is improper because the grouped inventions are materially interrelated
+
+## 2.5 Rejoinder
+
+After the elected invention is allowed, **rejoinder** permits previously withdrawn claims to be added back if they depend from or otherwise require all the limitations of an allowed claim:
+- Withdrawn method claims may be rejoined to an allowed product claim
+- Withdrawn product claims may be rejoined to an allowed process claim
+- Applicant requests rejoinder; examiner decides
+- Rejoined claims do NOT trigger a new restriction (protection for the applicant)
+
+## 2.6 Withdrawn Claims
+
+Non-elected claims are "withdrawn from consideration" but remain in the application until:
+- Rejoinder occurs, OR
+- The non-elected inventions are pursued in a divisional, OR
+- The claims are canceled
+
+Withdrawn claims are NOT examined for patentability but can be amended for clarity (formatting, antecedent basis) during prosecution.
+
+## 2.7 Continuing the Non-Elected Inventions
+
+After restriction, the non-elected inventions can be pursued in a **divisional application**:
+- Divisional gets §120 benefit of parent
+- Enjoys §121 safe harbor (no ODP with parent for these claims)
+- Divisional must be filed before parent abandons/issues
+- Consonance must be maintained (non-elected claims stay in divisional)
+
+## 2.8 Timing for Divisional
+
+The divisional can be filed:
+- While the parent is pending — yes, this is the safe path
+- After the parent issues/abandons — no §120 benefit (violates copendency)
+
+Best practice: file divisional BEFORE parent issues, even if this means filing immediately after the restriction is entered.`,
+      importantNote: `**Election with traversal** preserves the right to argue the restriction was improper without losing the benefit of continued examination. If the examiner refuses to withdraw the restriction, the applicant can appeal or take the restriction as final and pursue divisionals.`,
+    },
+    {
+      id: 'restriction-strategy',
+      title: `3. Strategic Use of Restrictions and Divisionals`,
+      content: `## 3.1 Advantages of Restriction Practice
+
+For the applicant:
+- Restriction creates §121 safe harbor → no ODP between parent and divisional
+- Divisionals may issue independently with separate terms
+- Each invention gets a fresh patent term (20 years from each filing, subject to priority)
+
+For the examiner:
+- Reduced search burden on single application
+- Cleaner examination of each invention
+
+## 3.2 Restriction as a Window Into Examiner Thinking
+
+The restriction requirement often signals which combinations the examiner thinks are patentably distinct. This can inform:
+- How to draft claims in future applications
+- Which embodiments to pursue as primary claims
+- Strategy for continuation and divisional practice
+
+## 3.3 Common Restriction Scenarios
+
+### Scenario A: Product + Process
+- Claim 1: A widget [product]
+- Claim 10: A method of manufacturing a widget [process]
+- Examiner restricts → applicant elects the product (Claim 1)
+- Method claims (10) pursued in a divisional
+
+### Scenario B: Product + Method of Use
+- Claim 1: A drug composition
+- Claim 10: A method of treating disease X with the composition
+- Restriction → elect composition
+- Method of treatment in divisional
+
+### Scenario C: Species Election
+- Claim 1: A composition comprising compound selected from the group consisting of A, B, C, D
+- If A, B, C, D are patentably distinct, election of one species required
+- Remaining species withdrawn; can be pursued in continuations or amendments
+
+## 3.4 Interaction with §121 Safe Harbor
+
+If a divisional is NOT filed in direct response to a restriction (e.g., a continuation that is not a divisional), it does NOT get the §121 safe harbor. ODP rejections may be made against the continuation.
+
+**Example**: Parent → restriction → applicant elects, some claims withdrawn. Applicant files a continuation (not divisional) pursuing the withdrawn claims with amendments. This is NOT a divisional. §121 safe harbor may not apply. → ODP rejection possible.
+
+Best practice: file a true divisional, retaining only non-elected claims without amendment that would make them patentably distinct from the restricted grouping.
+
+## 3.5 Loss of Safe Harbor
+
+The §121 safe harbor can be LOST if:
+- The applicant adds claims to the divisional that were elected in the parent (ODP risk returns)
+- The restriction "consonance" is broken (the division no longer tracks the examiner's original grouping)
+
+## 3.6 Appeal of Restriction
+
+If the applicant traverses and the examiner maintains the restriction:
+- Applicant may file a **petition** under 37 CFR §1.144 within 2 months of the next Office Action
+- Alternative: elect with traversal, continue prosecution, and raise the restriction issue in appeal or litigation
+- Petitions to withdraw restriction are rare and difficult to win`,
+    },
+  ],
+  keyTakeaways: [
+    'Restriction test: (1) independent and distinct inventions, AND (2) serious search burden.',
+    'Common restriction types: product + process, product + method of use, species within a genus.',
+    'Applicant must elect an invention; election with traversal preserves the right to argue the restriction later.',
+    'Non-elected claims are "withdrawn from consideration" and can be pursued in divisionals.',
+    '§121 safe harbor: divisional filed in response to restriction cannot create ODP with parent. Requires consonance.',
+    'Rejoinder: after allowance of the elected invention, withdrawn claims may be rejoined if they depend on or require the allowed claims.',
+    'PCT unity of invention (§1.475) applies to national-stage applications — stricter standard limiting examiner\'s ability to restrict.',
+    'Petition under 37 CFR §1.144 to contest restriction. Rare successful; most applicants elect and file divisionals.',
+  ],
+},
+
+pf_office_action_timing: {
+  topicId: 'pf_office_action_timing',
+  title: `First Action Timelines and Response Deadlines`,
+  domainWeight: 'Filing & Prosecution · MPEP 710',
+  overview: `The USPTO sets statutory and regulatory deadlines that drive prosecution pace. A non-final Office Action typically allows 3 months to respond (shortened statutory period), extendable to 6 months (maximum statutory period). Extensions under 37 CFR §1.136(a) are automatic with fee; extensions under §1.136(b) require showing of extraordinary circumstances. Missing these deadlines results in abandonment unless revived. Exam questions on timing are frequent and precise.`,
+  sections: [
+    {
+      id: 'oa-timing-basics',
+      title: `1. Basic Timing Rules`,
+      content: `## 1.1 Statutory Maximum (35 U.S.C. §133)
+
+The statutory maximum period for response to any USPTO action is **6 months** from the mailing date. Failure to respond within 6 months results in **automatic abandonment** (no extension possible beyond 6 months, with narrow exceptions).
+
+## 1.2 Shortened Statutory Period (SSP)
+
+The USPTO sets a "shortened statutory period" for each action, typically:
+- **3 months** for most non-final Office Actions
+- **3 months** for final Office Actions
+- **2 months** for notices of missing parts, Ex parte Quayle actions
+- **1 month** for restriction requirements (shorter than most)
+- **3 months** for notices of appeal brief due dates
+
+The SSP starts running from the mailing date of the action.
+
+## 1.3 Extensions (37 CFR §1.136)
+
+Two types of extensions:
+
+### §1.136(a) — Automatic Extensions
+- Available for most actions (not for design patents, interferences, etc.)
+- Can extend up to the 6-month maximum
+- Automatic upon payment of fee (no showing of cause required)
+- Each 1 month = 1 extension fee tier (increasing cost)
+
+Extension fee structure (approximate 2025 rates, regular entity):
+- 1 month: $220
+- 2 months: $640
+- 3 months: $1,480
+- 4 months: $2,360
+- 5 months: $3,240
+
+### §1.136(b) — Extension by Petition
+- Required when extraordinary circumstances warrant
+- Must file petition explaining the circumstances
+- Examples: illness, natural disaster, serious emergencies
+- Extension beyond what §1.136(a) allows (rare, subject to discretion)
+
+## 1.4 The 6-Month Absolute Maximum
+
+No extension beyond 6 months from the SSP start date (mailing date), except for:
+- Revivals under 37 CFR §1.137 for unintentional delay
+- Petitions under 37 CFR §1.313 to withdraw from issue
+- Certain extraordinary petitions
+
+## 1.5 Saturday/Sunday/Holiday Rule
+
+If a deadline falls on a Saturday, Sunday, or federal holiday, the deadline is the next business day (35 U.S.C. §21(b)).
+
+## 1.6 Application Filing Date vs. Mailing Date
+
+- **Filing date**: the date an application is filed at the USPTO
+- **Mailing date**: the date the USPTO sent an action to the applicant (used to calculate response deadline)
+- **Receipt date** (old practice): less relevant today with electronic mailing
+
+## 1.7 Express Mail / Priority Mail Express
+
+Older rule: the "certificate of mailing" or "Express Mail date" can establish filing as of the date of mailing, not the date received at the USPTO. Relevant for paper filings, which are rare today.
+
+For electronic filings, the filing date is the date the submission reaches Patent Center or EFS-Web.`,
+      examTip: `The **6-month absolute maximum** is heavily tested. Memorize: SSP is typically 3 months for OA responses, extendable by §1.136(a) fee to 6 months total. Beyond 6 months → abandonment unless revived. Weekend/holiday rule extends to next business day.`,
+    },
+    {
+      id: 'oa-actions-and-responses',
+      title: `2. Types of Office Actions and Response Requirements`,
+      content: `## 2.1 First Non-Final Office Action
+
+The first substantive action from the examiner. Typical contents:
+- Restriction requirement (if applicable)
+- Rejections (e.g., §101, §102, §103, §112)
+- Objections (informal issues like drawings, formalities)
+- Allowable subject matter identified (if any)
+
+**Response deadline**: 3 months (SSP); extendable to 6 months.
+
+**Response requirements** (37 CFR §1.111):
+- Address every rejection, objection, and requirement
+- Traverse or remedy each issue
+- Can include amendments, arguments, evidence
+
+## 2.2 Final Office Action
+
+A "final rejection" closes the prosecution in the current round:
+- Generally issued after the applicant has had one round of response to non-final
+- Applicant has limited options: RCE, appeal, after-final amendment (limited), abandonment
+
+**Response deadline**: 3 months (SSP); extendable to 6 months.
+
+**Response options at final**:
+- File Request for Continued Examination (RCE) with fee
+- File an appeal (Notice of Appeal + appeal brief)
+- File an amendment that meets narrow after-final rules (may or may not be entered)
+- File an After Final Consideration Pilot (AFCP 2.0) request
+- Abandon
+
+## 2.3 Notice of Appeal
+
+After final rejection, applicant may file a Notice of Appeal. Triggers:
+- Fee required
+- 2 months from filing notice to file appeal brief
+- Examiner reviews; may issue an Examiner's Answer or withdraw the rejection
+
+## 2.4 Advisory Action
+
+After an after-final amendment or response, the examiner may issue an **Advisory Action**:
+- Informs the applicant whether the response overcomes the final rejection
+- Does not restart any deadlines
+- Applicant should file RCE or appeal within the original 6-month window
+
+## 2.5 Notice of Allowance
+
+- Application is ready for issuance
+- Applicant has **3 months** to pay the issue fee (no extensions for issue fee under §1.136(a), but under §1.137 for unintentional delay)
+- Failure to pay issue fee → abandonment
+- Surcharge available via petition for late issue fee if unintentional (§1.137)
+
+## 2.6 Ex parte Quayle Action
+
+A specialized action when the only outstanding issues are formal (e.g., claim formatting, drawings):
+- Prosecution is CLOSED on the merits
+- Applicant responds only to formal issues
+- Typically 2-month SSP; extendable
+
+## 2.7 Notice to File Missing Parts
+
+Issued by OPAP if application is incomplete. Typical deadlines:
+- 2 months for initial response
+- Extendable to 6 months total
+- Must include missing parts + fees + surcharge (if applicable)`,
+    },
+    {
+      id: 'oa-certificate-of-mailing',
+      title: `3. Certificate of Mailing and Date Calculations`,
+      content: `## 3.1 Certificate of Mailing (37 CFR §1.8)
+
+Documents mailed to the USPTO via first-class mail can be timely if accompanied by a Certificate of Mailing:
+- Certificate states the date of mailing
+- Document is deemed filed as of the mailing date, even if received later
+- Certificate must be on the document or attached separately
+
+### Exceptions (Cannot Use Certificate of Mailing):
+- Pay issue fee
+- Initial filings (must have actual receipt)
+- Interference papers
+
+## 3.2 Priority Mail Express (Formerly "Express Mail")
+
+Documents sent via USPS Priority Mail Express can be timely as of the date the package was deposited at the USPS:
+- Works for initial application filings
+- Works for any paper required to be filed
+- Use the Express Mail number as the identifier
+- Even if USPTO receives the package later, filing date is the PME deposit date
+
+## 3.3 Electronic Filing (Primary Method)
+
+For electronic filings:
+- Filing date is the date Patent Center or EFS-Web receives the submission
+- Time zone is USPTO's time zone (Eastern)
+- A submission at 11:59 PM Eastern on the deadline is timely
+- A submission at 12:01 AM Eastern the next day is late
+
+## 3.4 Calculating Deadlines
+
+To calculate a response deadline from an action's mailing date:
+1. Identify the mailing date (shown on the action)
+2. Add the SSP (typically 3 months)
+3. If that date is a weekend/holiday, extend to next business day
+4. Beyond that, up to 6 months total from mailing, §1.136(a) extensions with fee
+5. After 6 months from mailing date → abandonment
+
+### Example
+- OA mailed March 1, 2025
+- SSP = 3 months → June 1, 2025 (Sunday) → Monday June 2, 2025 deadline
+- §1.136(a) extensions add 1-3 months (with fee) → up to August 1, 2025
+- Final hard deadline: September 1, 2025 (6 months); Labor Day = next business day
+
+## 3.5 Common Timing Traps
+
+- Failing to account for weekend/holiday extensions
+- Confusing SSP with 6-month maximum
+- Missing that extensions §1.136(a) do not extend beyond 6 months
+- Treating the mailing date as the filing date of the response (it's not)
+- Assuming the Advisory Action extends the response deadline (it does not)`,
+    },
+  ],
+  keyTakeaways: [
+    'Statutory maximum response period: 6 months from mailing date (35 USC §133). Absolute — no extensions beyond except revival.',
+    'Shortened Statutory Period (SSP) typically 3 months for OA responses. Set by examiner on each action.',
+    '37 CFR §1.136(a) extensions: automatic upon fee, up to 6-month maximum. §1.136(b) extensions: require petition with cause.',
+    'Weekend/holiday rule: deadlines falling on Sat/Sun/federal holiday extend to next business day (35 USC §21(b)).',
+    'Response at final: RCE, appeal, narrow after-final amendment, or abandonment. After-final amendments are limited.',
+    'Advisory Action informs whether after-final response overcomes rejection but does NOT extend deadlines.',
+    'Issue fee: 3 months to pay after Notice of Allowance; late fee under §1.137 (unintentional delay) but no §1.136(a) extensions.',
+    'Certificate of Mailing allows paper filings to be timely as of mailing date (with exceptions). Priority Mail Express also available. Electronic filings dominant.',
+  ],
+},
+
+pf_extensions: {
+  topicId: 'pf_extensions',
+  title: `Extensions of Time and Petitions for Revival`,
+  domainWeight: 'Filing & Prosecution · MPEP 710.02, 711',
+  overview: `When deadlines are missed or additional time is needed, the applicant can seek extensions (before abandonment) or revival (after abandonment). 37 CFR §1.136(a) provides automatic extensions by fee up to 6-month statutory maximum. Abandoned applications can be revived under 37 CFR §1.137 for unintentional delay (most common) or 37 CFR §1.17(l) for unavoidable delay. Understanding when each mechanism applies is frequently tested.`,
+  sections: [
+    {
+      id: 'extensions-automatic',
+      title: `1. Automatic Extensions — §1.136(a)`,
+      content: `## 1.1 Coverage
+
+§1.136(a) extensions are available for most deadlines in patent prosecution, including:
+- Response to Office Actions (non-final and final)
+- Response to Notice to File Missing Parts
+- Response to Ex parte Quayle actions
+- Response to requirements for information
+- Filing of appeal briefs
+
+## 1.2 How They Work
+
+- Payment of the extension fee
+- No need to show cause or file petition
+- Extension granted automatically upon fee payment
+- Can be filed at the time of response (extension "retroactively" covers the delay)
+
+## 1.3 Maximum Extension
+
+The extension cannot exceed the 6-month statutory maximum:
+- SSP (e.g., 3 months) + extensions (up to 3 more months) = 6 months total
+- Cannot extend beyond 6 months from mailing date under §1.136(a)
+
+## 1.4 Fee Structure
+
+Extension fees are tiered by month. Approximate regular-entity fees (2025):
+
+| Months | Regular | Small Entity | Micro Entity |
+|---|---|---|---|
+| 1 | $220 | $88 | $44 |
+| 2 | $640 | $256 | $128 |
+| 3 | $1,480 | $592 | $296 |
+| 4 | $2,360 | $944 | $472 |
+| 5 | $3,240 | $1,296 | $648 |
+
+Note: fees are cumulative (month 3 = cost of months 1+2+3 combined).
+
+## 1.5 Not Available for All Actions
+
+§1.136(a) does NOT apply to:
+- Payment of the issue fee (separate rules under §1.137)
+- Filing of a notice of appeal for reexamination proceedings
+- Interference papers
+- Some final notices
+
+## 1.6 Strategic Timing
+
+- File extensions AT RESPONSE TIME, not in advance
+- Pay the fee only if actually needed
+- One extension request can cover multiple months
+
+## 1.7 Petition for Extraordinary Extension — §1.136(b)
+
+If more than 6 months is needed:
+- Must file petition showing extraordinary circumstances
+- Rarely granted
+- Relief usually through revival instead
+
+## 1.8 The Issue Fee Exception
+
+Issue fee deadline is **not** extendable under §1.136(a). If missed:
+- Abandonment results
+- Revival under §1.137 for unintentional delay (with fee)
+- Surcharge may apply`,
+    },
+    {
+      id: 'revival-unintentional',
+      title: `2. Revival Under §1.137 — Unintentional Delay`,
+      content: `## 2.1 When an Application Is Abandoned
+
+An application is abandoned when:
+- Applicant fails to respond within 6 months of mailing date (absent extensions)
+- Applicant expressly abandons
+- Failure to pay issue fee (within 3 months + revival window)
+
+## 2.2 §1.137 — Unintentional Delay Standard
+
+Applicable when the abandonment was **unintentional**:
+- Applicant states that the delay was unintentional from the time the application became abandoned to the time of the petition
+- Pays the petition fee (relatively modest — approximately $2,100 for regular entity, reduced for small/micro)
+- Typically granted if statement is credible
+
+## 2.3 What "Unintentional" Means
+
+The applicant did not consciously choose to abandon. Examples:
+- Docketing error (missed the deadline)
+- Illness or temporary unavailability of responsible person
+- Miscommunication between attorney and client
+- Mail delay
+
+"Unintentional" does NOT include:
+- Strategic decision to let application lapse and reconsider
+- Deliberate abandonment that is later regretted (unless no intent to permanently abandon was formed)
+
+## 2.4 Timing of Revival
+
+§1.137 petition must be filed **promptly** after the applicant becomes aware of the abandonment. "Promptly" is not defined but has been interpreted as:
+- Within 2 months of becoming aware (strong position)
+- Up to 1 year may be acceptable with good explanation
+- Lengthy unexplained delays may result in denial
+
+## 2.5 Abandonment History
+
+The USPTO may consider the applicant's history:
+- Multiple abandonments in a portfolio → scrutinized more
+- Pattern of delays and revivals → may suggest intentional conduct
+- USPTO has broad discretion to deny revival when statement lacks credibility
+
+## 2.6 What Happens on Revival
+
+- Application is restored to pending status
+- Response/fee/document that was missing must be filed with the petition
+- Examination resumes where it left off
+- Any deadlines that would have been missed during the abandonment period are handled under normal rules
+
+## 2.7 Content of Petition
+
+The petition must include:
+1. The reply (or document that was originally due)
+2. The required petition fee
+3. A statement that the entire delay was unintentional
+4. Any required fees that should have been paid
+
+## 2.8 Duty of Candor
+
+The statement that delay was unintentional is a factual statement. False statements to the USPTO can constitute inequitable conduct. The practitioner should not sign such a statement without confirming the facts.`,
+      importantNote: `The "unintentional" standard is BROAD. Most good-faith abandonments qualify — docketing errors, illness, miscommunication. But the applicant must ALWAYS include the required statement and must be willing to certify that the statement is true. False statements create serious liability risks.`,
+    },
+    {
+      id: 'revival-other',
+      title: `3. Other Revival Mechanisms and Special Cases`,
+      content: `## 3.1 §1.17(l) — "Unavoidable Delay" (Historical)
+
+Before 2013, §1.137 also allowed revival for "unavoidable delay" — a stricter standard than unintentional. The Patent Law Treaty Implementation Act in 2013 merged both into the single "unintentional" standard. The "unavoidable" language is largely historical but may appear on exam questions referencing older cases.
+
+## 3.2 §1.313 — Withdrawal from Issue
+
+If a Notice of Allowance has been issued but the applicant wants to continue prosecution (e.g., to submit an IDS, amend claims):
+- File petition under 37 CFR §1.313
+- Reasons: errors in claims, need to submit prior art, need to claim additional subject matter
+- Fee required
+- Petition granted at USPTO's discretion
+- If granted, application returns to pending status; further action follows
+
+## 3.3 §1.481 — Express Abandonment
+
+Applicant can expressly abandon an application. This is:
+- Voluntary
+- Not reversible by §1.137 (abandonment was intentional)
+- Useful when withdrawing for strategic reasons (e.g., filing a continuation)
+
+## 3.4 Lost Applications
+
+If an application is lost in the USPTO's system:
+- Filing receipt may be unavailable
+- File a petition to restore the application under §1.181 if necessary
+- Rare in the electronic era
+
+## 3.5 Revival of Provisional
+
+Provisional applications CAN be revived if abandoned under §1.137 for unintentional delay:
+- The abandonment typically occurs if missing components or fees aren't corrected
+- Revival restores the provisional, but the 12-month clock continues from the original filing date
+
+## 3.6 Revival After Final Abandonment vs. Non-Final
+
+The §1.137 procedure is the same whether abandonment followed a final OA, notice of allowance, or any other action. The timing within the 6-month response period or issue fee period determines whether extensions were first available under §1.136(a).
+
+## 3.7 Revival and Statutory Bars
+
+Revival does NOT restore the application's effective filing date for §102 purposes. The filing date is unchanged. But the RESPONSE is accepted as of the revival date.
+
+## 3.8 Practical Timing Example
+
+- OA mailed: January 1, 2025
+- SSP: 3 months → April 1, 2025
+- §1.136(a) max: 6 months → July 1, 2025
+- Applicant misses July 1 deadline → application ABANDONED on July 2
+- Applicant realizes in December 2025 → files §1.137 petition with delayed response, petition fee, and unintentional-delay statement
+- Revival likely granted if statement is credible; application restored`,
+    },
+  ],
+  keyTakeaways: [
+    '§1.136(a) extensions: automatic upon fee, up to 6-month statutory maximum. Cumulative fee structure.',
+    'Extensions NOT available for: issue fee payment, certain reexamination deadlines, interference papers.',
+    '§1.137 revival: for unintentional delay, most common revival mechanism. Requires statement, petition fee, and the originally-due document.',
+    'Unintentional = did not consciously choose to abandon. Docketing errors, illness, miscommunication qualify. Strategic lapses don\'t.',
+    'Revival petition should be filed PROMPTLY after realizing abandonment. Lengthy unexplained delays may result in denial.',
+    '§1.17(l) "unavoidable delay" standard was merged into §1.137 "unintentional" standard in 2013 (stricter old standard largely gone).',
+    '§1.313 withdrawal from issue: after NOA, lets applicant reopen prosecution. Requires petition and fee.',
+    'Provisional applications can be revived under §1.137. Express abandonment under §1.481 is voluntary and not reversible.',
+  ],
+},
+
+pf_allowance_issue: {
+  topicId: 'pf_allowance_issue',
+  title: `Notice of Allowance and Issue Fee`,
+  domainWeight: 'Filing & Prosecution · MPEP 1303–1311',
+  overview: `After the examiner determines the claims are allowable, the USPTO mails a Notice of Allowance. The applicant has 3 months to pay the issue fee — no extensions under §1.136(a). Between the allowance and issue, the applicant can still: withdraw from issue (§1.313), file an IDS (under strict rules), or file a continuation. After issuance, the patent term begins and post-grant procedures govern any changes. This final prosecution stage has specific procedural requirements that are commonly tested.`,
+  sections: [
+    {
+      id: 'notice-of-allowance',
+      title: `1. Notice of Allowance (NOA)`,
+      content: `## 1.1 When NOA Is Issued
+
+The USPTO mails a Notice of Allowance when:
+- All claims have been examined and found allowable
+- All rejections, objections, and requirements have been resolved
+- Drawings (if required) are approved
+- Any formal issues are resolved
+
+## 1.2 Contents of the NOA
+
+The NOA provides:
+- Confirmation that the application is in condition for allowance
+- Amount of the issue fee due
+- Publication fee (if requested)
+- 3-month deadline to pay the issue fee
+- Allowed claim set
+- Issue date (will be set upon payment)
+
+## 1.3 Issue Fee Deadline
+
+The issue fee must be paid **within 3 months** of the NOA mailing date. This is a strict deadline:
+- No extensions under §1.136(a)
+- Revival under §1.137 for unintentional delay is available with petition fee
+
+## 1.4 Issue Fee Amount
+
+Approximate fees (2025, regular entity):
+- Issue fee: $1,200
+- Publication fee: $0 (after 2013, no separate publication fee)
+- Small entity: 60% discount
+- Micro entity: 80% discount
+
+## 1.5 What If the Applicant Disagrees With the Allowance?
+
+If the applicant wants to make changes:
+- Changes to claims (amendments): File petition under §1.313 to withdraw from issue + amendment + response
+- Changes to specification: Very limited options; certificate of correction may be possible post-issue (§1.322)
+- Strategy change: File a continuation before paying issue fee to preserve options`,
+      examTip: `**3-month deadline to pay issue fee is NOT extendable** under §1.136(a). Missing it causes abandonment. Revival under §1.137 requires a petition with fee and unintentional-delay statement. This is a common test trap.`,
+    },
+    {
+      id: 'between-noa-and-issue',
+      title: `2. Options Between NOA and Issue`,
+      content: `## 2.1 Withdrawal from Issue (§1.313)
+
+If the applicant needs to make changes after NOA:
+- File petition under 37 CFR §1.313
+- Reasons: need to amend claims, submit newly-discovered prior art, etc.
+- Fee required
+- Discretionary: USPTO may or may not grant
+
+If granted, the application returns to pending status and prosecution resumes.
+
+## 2.2 Late IDS After NOA
+
+Under 37 CFR §1.97(d), an IDS can be filed after NOA but before payment of issue fee if:
+- §1.97(e) statement is provided (no knowledge more than 3 months earlier OR derived from a foreign office action within 3 months)
+- Fee is paid
+- Strict timing: after NOA, before issue fee payment
+
+If the IDS is filed AFTER issue fee payment or after the issue date, it is NOT considered unless the applicant files a petition and the USPTO grants a withdrawal from issue.
+
+## 2.3 Continuation Application
+
+Before issue, applicant can file a continuation:
+- Preserves the parent's benefit under §120
+- Allows pursuit of different claim sets
+- Must be filed BEFORE the parent issues (copendency)
+
+The parent issues Tuesday mornings (typically). The continuation must be filed no later than Monday of that week.
+
+## 2.4 Express Abandonment
+
+If the applicant decides not to proceed to issue:
+- File petition for express abandonment under §1.481
+- Application abandoned intentionally
+- No revival available under §1.137 (because intentional)
+
+Rare, but relevant when applicant has filed a continuation and no longer wants the parent to issue.
+
+## 2.5 Amendment After NOA
+
+If an amendment is filed after NOA (with fees):
+- Examiner may allow it without withdrawing from issue (if simple and non-substantive)
+- Complex amendments may require withdrawal from issue
+- Amendments must comply with 37 CFR §1.312 (amendments after final/allowance)
+
+## 2.6 Prior Art Submissions
+
+If the applicant becomes aware of material prior art after NOA:
+- File an IDS under §1.97(d) if before issue fee payment
+- File a withdrawal from issue (§1.313) if after issue fee payment
+- Failure to disclose material prior art known to the applicant could be inequitable conduct`,
+    },
+    {
+      id: 'patent-issue-process',
+      title: `3. Patent Issuance and Post-Issue Actions`,
+      content: `## 3.1 Issue Date
+
+The USPTO typically issues patents on **Tuesdays**. After issue fee payment:
+- Issue date is scheduled (generally 4-8 weeks after payment)
+- Issue date is listed in the Notice of Allowance or PAIR system
+
+## 3.2 Patent Number
+
+- Issued patents are numbered sequentially (utility patents above 11,000,000 as of 2023)
+- Patent number is assigned at issue
+- Design patents have "D" prefix (e.g., D1,000,000)
+- Plant patents have "PP" prefix
+
+## 3.3 Publication
+
+On the issue date:
+- Patent is published in the Official Gazette
+- Full patent text becomes publicly available via USPTO Public PAIR
+- Patent is searchable in databases (Google Patents, etc.)
+
+## 3.4 Certificate of Correction (§1.322, §1.323)
+
+After issue, the applicant can request minor corrections via a Certificate of Correction:
+- Clerical or typographical errors made by the USPTO (§1.322) — no fee
+- Minor errors made by the applicant (§1.323) — fee required
+- Cannot change substantive claim scope
+- Cannot add or remove claims
+
+## 3.5 Disclaimer of Claim
+
+After issue, a patent owner may:
+- Disclaim individual claims under 35 U.S.C. §253
+- Disclaim the remaining patent term (terminal disclaimer) for ODP or term alignment
+- These are recorded at the USPTO
+
+## 3.6 Maintenance Fees
+
+Utility patents require maintenance fees at:
+- 3.5 years from issue
+- 7.5 years from issue
+- 11.5 years from issue
+
+Failure to pay → patent EXPIRES for failure to pay maintenance fees. Can be revived under §41(c)(1) if delay was unintentional (2.5-year window + fee).
+
+Design patents and plant patents do NOT require maintenance fees.
+
+## 3.7 Patent Term
+
+Utility patent term: 20 years from effective filing date (earliest non-provisional in the chain). Extended by Patent Term Adjustment (PTA) for USPTO delays.
+
+Design patent term: 15 years from issue.
+
+Plant patent term: 20 years from earliest filing.`,
+    },
+  ],
+  keyTakeaways: [
+    'Issue fee deadline: 3 months from NOA mailing date. NOT extendable under §1.136(a). Late payment requires §1.137 revival with petition fee.',
+    'IDS after NOA but before issue fee payment: allowed under §1.97(d) with statement + fee.',
+    '§1.313 withdrawal from issue: petition to return to pending status for amendments, IDS, etc. Discretionary.',
+    'Continuation must be filed BEFORE parent issues (copendency). Issue typically Tuesday mornings.',
+    'Certificate of Correction: USPTO errors (§1.322, no fee), applicant errors (§1.323, fee). Cannot change substantive claim scope.',
+    'Maintenance fees for utility patents: 3.5, 7.5, 11.5 years from issue. Missed = patent expires. Revival under §41(c)(1) within 2.5 years for unintentional delay.',
+    'Patent term: 20 years from earliest non-provisional EFD (utility), 15 years from issue (design), 20 years from filing (plant).',
+    'Express abandonment post-NOA is voluntary and cannot be revived under §1.137.',
+  ],
+},
+
+pf_preissuance: {
+  topicId: 'pf_preissuance',
+  title: `Preissuance Submissions and Third-Party Participation`,
+  domainWeight: 'Filing & Prosecution · MPEP 1134',
+  overview: `Third parties (not the applicant) have limited ways to challenge a pending application. The AIA introduced preissuance submissions under 35 U.S.C. §122(e) — allowing third parties to submit relevant prior art to the USPTO for consideration during examination. Preissuance submissions must be filed within specific time windows, contain a concise description of relevance, and meet format requirements. Understanding this procedure is tested because it's a key AIA innovation.`,
+  sections: [
+    {
+      id: 'preissuance-basics',
+      title: `1. Preissuance Submissions (§122(e))`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §122(e) (added by AIA) allows any third party to submit **patents, published patent applications, and other printed publications** that may be of potential relevance to the examination of a pending application.
+
+## 1.2 Time Window
+
+Preissuance submissions can be filed:
+- Before the earlier of:
+  - First Office Action on the merits, OR
+  - 6 months after the application's publication date
+
+The publication date is typically 18 months after filing. So the window is roughly:
+- From publication (18 months after filing) to about 24 months after filing (or first OA, whichever comes first)
+
+After a Notice of Allowance, no more preissuance submissions are allowed.
+
+## 1.3 What Can Be Submitted
+
+- Patents (US or foreign)
+- Published patent applications
+- Printed publications (articles, books, websites, etc.)
+
+What CANNOT be submitted:
+- Oral art (not memorialized in writing)
+- Prior public use or on-sale evidence
+- Arguments about inventorship or inequitable conduct
+
+## 1.4 Required Content
+
+A preissuance submission must include:
+1. A list of references cited (format similar to IDS)
+2. Copies of each reference
+3. **Concise description of the asserted relevance** of each reference
+4. Statement of compliance with §1.290(a)-(d)
+5. Fee (modest, per document or per reference)
+
+## 1.5 Anonymous Submission Allowed
+
+The third party can submit anonymously. The identity of the submitting party is NOT made public.
+
+## 1.6 USPTO's Treatment
+
+The examiner considers preissuance submissions as part of the prior art. The examiner may or may not cite the references. The applicant has no duty to respond specifically to a preissuance submission.
+
+## 1.7 Limitation on Submissions
+
+- A submitter can file MULTIPLE references in a single submission
+- The submitter cannot submit an argument more sophisticated than "here is prior art; here's why it's relevant" — no legal briefing
+
+## 1.8 Fee Structure (37 CFR §1.290)
+
+Approximately (2025):
+- 1-10 items: $180 (first submission, small entity rates apply)
+- 11-20 items: $360
+- Etc.`,
+    },
+    {
+      id: 'preissuance-strategy',
+      title: `2. Strategic Use of Preissuance Submissions`,
+      content: `## 2.1 Why File a Preissuance Submission?
+
+For competitors of the applicant:
+- Prevent the grant of overly broad patents
+- Bring relevant prior art to the examiner's attention
+- Cheaper and faster than post-grant review
+
+For members of the industry:
+- Protect freedom to operate
+- Influence patent scope
+
+## 2.2 Timing Consideration
+
+Preissuance submissions should be filed EARLY:
+- Before first Office Action is ideal (examiner hasn't formed a position)
+- Window closes 6 months after publication OR at first OA
+
+## 2.3 How Applicants Can Respond
+
+The applicant typically:
+- Does not need to respond in writing
+- May amend claims to distinguish over the submitted prior art (to reduce examiner's rejection)
+- May submit comments or arguments in a supplemental response
+
+## 2.4 Third-Party Observations (Under PCT)
+
+For PCT applications, third-party observations can be submitted to WIPO:
+- Different procedure than USPTO preissuance submissions
+- Limited time windows
+- Observations are forwarded to the designated offices
+
+## 2.5 Distinction from Post-Grant Review
+
+Preissuance submissions occur DURING examination of a pending application. Post-grant proceedings (IPR, PGR, CBM) occur AFTER issuance — different procedures, different effects.
+
+## 2.6 Limits of Preissuance Submissions
+
+Preissuance submissions do NOT:
+- Allow participation in examination
+- Allow briefing or legal arguments
+- Bind the examiner or applicant
+- Estop the third party from later challenging the patent
+
+## 2.7 Relationship to Protest (§1.291)
+
+Protests under 37 CFR §1.291 are a different pre-grant mechanism:
+- More limited than preissuance submissions
+- Typically require a showing of lack of novelty
+- Rarely used; preissuance submissions are the standard path for third-party submissions`,
+      importantNote: `Preissuance submissions (§122(e)) are the primary AIA third-party mechanism. Windows are narrow — submissions must generally be filed BEFORE the first Office Action OR within 6 months of publication. Concise description of relevance is required. Anonymous filings allowed.`,
+    },
+  ],
+  keyTakeaways: [
+    'Preissuance submissions (§122(e)): AIA-created mechanism for third parties to submit prior art to USPTO during examination.',
+    'Submission window: before first Office Action OR within 6 months of publication, whichever is earlier. Ends at Notice of Allowance.',
+    'What can be submitted: patents, published applications, printed publications. NOT oral art or inequitable conduct arguments.',
+    'Required content: list of references, copies, concise description of relevance, compliance statement, fee.',
+    'Submissions may be filed ANONYMOUSLY. Applicant has no duty to respond specifically.',
+    'Examiner considers the references as prior art but is not obligated to cite them.',
+    'Distinction: preissuance submissions occur before issuance; post-grant (IPR, PGR) occur after issuance — different procedures.',
+    'Protests under §1.291 are a narrower alternative; preissuance submissions are the more commonly used path.',
+  ],
+},
+
 }; // end PATENT_BAR_COURSE
 
 export function hasPatentBarCourseContent(topicId: string): boolean {
