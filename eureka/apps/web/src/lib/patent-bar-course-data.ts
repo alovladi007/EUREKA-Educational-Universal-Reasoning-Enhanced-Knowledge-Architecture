@@ -6754,6 +6754,1451 @@ Typical pattern: enter 3-5 core countries initially, consider additional countri
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// PART 6 — APPEALS AND POST-GRANT PROCEEDINGS
+// MPEP Chapters 1200, 1400, 2200, 2600 · 35 U.S.C. §§ 134, 251-256, 301-329
+// ═══════════════════════════════════════════════════════════════
+
+pg_ptab_appeal: {
+  topicId: 'pg_ptab_appeal',
+  title: `Ex Parte Appeals to the PTAB`,
+  domainWeight: 'Appeals · MPEP 1200',
+  overview: `Under 35 U.S.C. §134(a), an applicant who twice had claims finally rejected may appeal to the Patent Trial and Appeal Board (PTAB). PTAB is a 3-judge panel that reviews the examiner's rejections de novo on the law and for substantial evidence on facts. Ex parte appeals are the primary route to obtain a legal ruling on contested rejections. Procedure includes Notice of Appeal, Appeal Brief, Examiner's Answer, optional Reply Brief, optional oral hearing, and PTAB decision. Understanding each step and timing is essential for strategic prosecution decisions.`,
+  sections: [
+    {
+      id: 'ptab-jurisdiction',
+      title: `1. PTAB Jurisdiction and Standard of Review`,
+      content: `## 1.1 Statutory Authority
+
+35 U.S.C. §134(a): "An applicant for a patent, any of whose claims has been twice rejected, may appeal from the decision of the primary examiner to the Patent Trial and Appeal Board..."
+
+"Twice rejected" means two final rejections, OR a final rejection after an RCE (which is treated as a second rejection).
+
+## 1.2 What PTAB Reviews
+
+PTAB reviews:
+- The examiner's rejections (§§101, 102, 103, 112, double patenting, etc.)
+- The examiner's refusals to enter amendments
+- The examiner's refusals to make claims allowable
+
+PTAB does NOT review:
+- Restriction requirements (petition to the Director under §1.144 instead)
+- Election requirements (petition to the Director)
+- Formal objections (petition under §1.181)
+
+## 1.3 Standard of Review
+
+- **Legal issues**: reviewed **de novo** (PTAB reaches its own legal conclusions)
+- **Factual findings**: reviewed under "**substantial evidence**" standard (deferential to examiner if there's any reasonable evidence)
+
+Legal issues subject to de novo review:
+- Claim construction
+- Whether prior art qualifies
+- Whether rejection meets legal standards
+
+Factual issues subject to substantial evidence:
+- What a reference actually discloses
+- Level of ordinary skill
+- Motivation to combine
+- Unexpected results
+
+## 1.4 Composition of PTAB
+
+- Administrative Patent Judges (APJs) — highly qualified attorneys with patent expertise
+- Panels of 3 APJs decide each appeal
+- Some cases have larger panels for precedential issues
+
+## 1.5 Precedential vs. Informational Decisions
+
+- **Precedential decisions**: binding on future PTAB panels and examiners
+- **Informational decisions**: informative but not binding
+- **Routine decisions**: decide the specific case only
+
+Most PTAB decisions are routine. Precedential decisions are designated after review.`,
+    },
+    {
+      id: 'appeal-process-detailed',
+      title: `2. The Appeal Process Step-by-Step`,
+      content: `## 2.1 Step 1 — Notice of Appeal
+
+- Filed during final response window (before 6 months from mailing)
+- Fee: ~$890 regular entity
+- Must identify the application
+- Prosecution suspends on filing
+
+## 2.2 Step 2 — Optional Pre-Appeal Brief Conference
+
+- File Request + 5-page concise statement with Notice of Appeal
+- No additional fee
+- 3-examiner panel reviews within ~45 days
+- Outcomes: allow, proceed to examiner's answer, reopen prosecution, proceed to formal appeal
+
+## 2.3 Step 3 — Appeal Brief
+
+- Due: 2 months from Notice of Appeal (extendable under §1.136(a))
+- Fee: ~$2,240 regular
+- Content per 37 CFR §41.37:
+  - Real party in interest
+  - Related proceedings
+  - Summary of claimed subject matter
+  - Grounds of rejection to be reviewed
+  - Argument
+  - Claim appendix (all claims with status labels)
+  - Evidence appendix
+- Max 30 pages typically (extensions rare)
+
+## 2.4 Step 4 — Examiner's Answer
+
+- Examiner's response to the Appeal Brief
+- Defends the rejections
+- May introduce a "new ground of rejection" (with SPE approval)
+- Transmitted to applicant after internal USPTO review
+
+## 2.5 Step 5 — Options After Examiner's Answer
+
+If the Examiner's Answer contains a NEW ground of rejection:
+- Applicant has 2 months to either:
+  - Request reopening of prosecution (examiner issues non-final action)
+  - File a supplemental Reply Brief addressing the new ground
+
+If no new ground:
+- Applicant may (optionally) file a Reply Brief within 2 months
+
+## 2.6 Step 6 — Reply Brief (Optional)
+
+- Addresses arguments in Examiner's Answer
+- Cannot raise new arguments
+- No fee
+- Up to 20 pages
+- Due within 2 months of Examiner's Answer
+
+## 2.7 Step 7 — Oral Hearing (Optional)
+
+- Applicant requests oral hearing
+- Fee: ~$1,460 regular
+- 20-minute argument (applicant first, rebuttal at end)
+- 3-APJ panel
+- Held at USPTO (Alexandria) or via video
+
+## 2.8 Step 8 — PTAB Decision
+
+- Panel issues written decision
+- Typical timeline: 12-24 months from appeal docketing
+- Decision types:
+  - **Affirm** — examiner's rejection upheld
+  - **Reverse** — examiner's rejection withdrawn
+  - **Affirm-in-part** — mixed outcome
+  - **Remand** — return to examiner for further consideration
+  - **New ground of rejection** — PTAB raises its own rejection
+
+## 2.9 Timing Summary
+
+| Event | Timeline |
+|---|---|
+| Notice of Appeal | Within 6-month final response window |
+| Appeal Brief | 2 months from Notice |
+| Examiner's Answer | ~3-6 months from brief |
+| Reply Brief | 2 months from Examiner's Answer |
+| Oral Hearing (if requested) | ~6-12 months after briefing |
+| PTAB Decision | 12-24 months total from docketing |`,
+      examTip: `The fees are tested: **Notice of Appeal ~$890, Appeal Brief ~$2,240, Oral Hearing ~$1,460**. Appeal Brief due 2 months from Notice. Reply Brief (if filed) due 2 months from Examiner's Answer.`,
+    },
+    {
+      id: 'ptab-post-decision',
+      title: `3. After the PTAB Decision`,
+      content: `## 3.1 If PTAB Affirms
+
+Rejection is upheld. Applicant options:
+- **Request rehearing** (37 CFR §41.52) within 2 months
+- **Appeal to Federal Circuit** (35 U.S.C. §141) within 60 days
+- **File civil action under §145** in E.D. Va. district court within 60 days
+- **Abandon the application**
+- **File a continuation** to try different claim scope
+
+## 3.2 If PTAB Reverses
+
+- Examiner must enter allowable subject matter (if PTAB identified any)
+- Prosecution returns to examiner
+- Examiner may issue new rejection on different grounds (if unrelated to what PTAB reversed)
+- Allowable subject matter goes to allowance
+
+## 3.3 If PTAB Issues New Ground of Rejection
+
+Under 37 CFR §41.50(b), the PTAB may raise a new ground of rejection:
+- Identifies a new basis for rejection not previously applied by the examiner
+- Applicant has 2 months to respond with:
+  - Request to reopen prosecution (examiner issues non-final)
+  - Request for rehearing
+  - Continuation/RCE
+
+## 3.4 Request for Rehearing (§41.52)
+
+- Filed within 2 months of PTAB decision
+- Limited to identifying specific points the panel overlooked or misapprehended
+- Not a second appeal — very narrow scope
+- Rarely granted
+
+## 3.5 Federal Circuit Appeal (§141)
+
+- 60 days from PTAB decision (with 30-day extension available)
+- File notice of appeal with USPTO, serve Director
+- USPTO and applicant file briefs with Federal Circuit
+- Oral argument typically held
+- Federal Circuit reviews:
+  - Legal questions: de novo
+  - Factual findings: substantial evidence (deferential)
+- Decision typically 12-18 months from oral argument
+
+## 3.6 §145 Civil Action
+
+- Alternative to Federal Circuit appeal
+- Filed in E.D. Va. district court (where USPTO is located)
+- Key advantage: applicant can introduce NEW evidence not in PTAB record
+- Discovery available
+- USPTO Director is the defendant
+- Slower and more expensive, but sometimes strategic
+
+## 3.7 Abandonment During Appeal
+
+If applicant wants to abandon during appeal:
+- File express abandonment or let application abandon
+- PTAB dismisses appeal
+- Application is abandoned (no patent)
+
+## 3.8 Continuation During Appeal
+
+Applicant may file a continuation at any time:
+- Preserves the parent's benefit
+- Allows parallel pursuit of different claim scope
+- Parent appeal continues independently`,
+      importantNote: `Two paths from PTAB: **§141 appeal to Federal Circuit** (paper record only, no new evidence) OR **§145 civil action in E.D. Va.** (can introduce new evidence). §145 is slower and more expensive but sometimes valuable when new evidence is available.`,
+    },
+  ],
+  keyTakeaways: [
+    'Ex parte appeal to PTAB under §134(a) available after claim is "twice rejected" (two finals or final + RCE + final).',
+    'PTAB reviews: legal issues de novo, factual findings for substantial evidence.',
+    'Appeal process: Notice of Appeal → (optional Pre-Appeal Conference) → Appeal Brief (2 months) → Examiner\'s Answer → optional Reply Brief (2 months) → optional oral hearing → PTAB decision.',
+    'PTAB fees: ~$890 Notice, ~$2,240 Brief, ~$1,460 oral hearing.',
+    'PTAB decisions: affirm, reverse, affirm-in-part, remand, new ground of rejection (§41.50(b)).',
+    'After affirmance: request rehearing (§41.52, 2 months), Federal Circuit appeal (§141, 60 days), or E.D. Va. civil action (§145, 60 days).',
+    '§141 Fed. Cir. appeal: paper record only, no new evidence. §145 civil action: new evidence allowed, discovery, more time/expense.',
+    'Decision timeline: typically 12-24 months from docketing. Many appeals include reopening by examiner, avoiding formal PTAB decision.',
+  ],
+},
+
+pg_reissue: {
+  topicId: 'pg_reissue',
+  title: `Reissue Applications — 35 U.S.C. §§251-252`,
+  domainWeight: 'Post-Grant · MPEP 1400',
+  overview: `Reissue is a procedure for correcting a defective issued patent. Under 35 U.S.C. §251, a patent owner can surrender the original patent and obtain a reissued patent that is corrected. The error must be made without deceptive intent (though this standard was relaxed by the AIA). Broadening reissue (enlarging scope) must be filed within 2 years of original issue. Narrowing reissue has no such deadline. Reissue is heavily tested because it involves interplay of §251 requirements, recapture doctrine, and intervening rights.`,
+  sections: [
+    {
+      id: 'reissue-basics',
+      title: `1. Reissue Requirements (§251)`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §251(a): "Whenever any patent is, through error, deemed wholly or partly inoperative or invalid, by reason of a defective specification or drawing, or by reason of the patentee claiming more or less than he had a right to claim in the patent, the Director shall, on the surrender of such patent and the payment of the fee required by law, reissue the patent for the invention disclosed in the original patent..."
+
+## 1.2 Basic Elements
+
+A reissue requires:
+1. **Defect in the original patent** — specification, drawing, or claims
+2. **Error** by the patentee (not deliberate, but post-AIA need not show "without deceptive intent")
+3. **Surrender of original patent**
+4. **Payment of fee**
+5. **Proper application documents** (specification, claims, drawings, declaration)
+
+## 1.3 Common Reasons to File Reissue
+
+- **Narrow claims** that are too broad and include prior art
+- **Broaden claims** that were unnecessarily narrow (within 2-year window)
+- **Fix specification errors** that affect claim interpretation
+- **Add new claims** covering embodiments disclosed but not claimed
+- **Correct inventorship** (when not correctable by §1.324 CoC)
+
+## 1.4 AIA Change to §251
+
+Pre-AIA required "without any deceptive intention" in the declaration. AIA removed this requirement. Now the patentee only needs to show the error was made (no specific intent required for §251 purposes).
+
+However, intentional errors (fraud) can still be challenged via other mechanisms (inequitable conduct, §256 inventorship correction).
+
+## 1.5 Who Can File
+
+- Patent owner (current assignee)
+- Inventor (if patent has not been assigned)
+- Multiple owners (joint action required)
+
+## 1.6 Procedure Overview
+
+1. File reissue application with specification, drawings, claims
+2. Surrender original patent (physically returning certificate is not required; effectively surrendered by the reissue process)
+3. Pay fees
+4. Execute reissue declaration (37 CFR §1.175)
+5. Application examined like a new application
+6. If allowed, reissued patent issues, replacing the original
+
+## 1.7 Broadening vs. Narrowing Reissue
+
+### Broadening Reissue
+- Expands claim scope beyond original patent
+- **Must be filed within 2 years** of original issue date (35 U.S.C. §251(d))
+- Strictly enforced — 2-year deadline is absolute
+- Narrow path for broadening
+
+### Narrowing Reissue
+- Reduces claim scope
+- No deadline — can be filed at any time during the patent's term
+- More commonly used
+
+### Same-Scope Reissue
+- Claims have same scope; just fixes specification or drawings
+- No deadline
+- Often used for specification corrections`,
+    },
+    {
+      id: 'reissue-recapture',
+      title: `2. Recapture Doctrine`,
+      content: `## 2.1 What Is Recapture?
+
+The recapture doctrine prevents a patentee from using reissue to recapture subject matter that was deliberately surrendered during original prosecution to overcome prior art.
+
+**Why**: reissue cannot undo narrowing amendments made to achieve patentability in the original prosecution.
+
+## 2.2 The Recapture Test
+
+The Federal Circuit's three-step test (*Clement v. Dow Chemical Co.*, 62 F.3d 403 (Fed. Cir. 1995)):
+
+### Step 1: Is the reissue claim broader than the patented claim?
+If no — no recapture issue.
+If yes — proceed to Step 2.
+
+### Step 2: Does the broader reissue claim recapture surrendered subject matter?
+If the reissue claim broadens in an area that was surrendered in original prosecution (e.g., removing a limitation that was added to overcome prior art):
+- Recapture issue present
+- Analyze Step 3.
+
+### Step 3: Are the broadening changes in areas that were not surrendered?
+If yes (broadening is only in non-surrendered areas) — reissue allowable.
+If no (broadening is in the surrendered area) — reissue prohibited due to recapture.
+
+## 2.3 Examples
+
+### Example 1: Recapture Prohibited
+Original application: Claim 1 rejected over prior art. Applicant adds limitation "further comprising element X" to overcome. Claim issues as "A, B, X."
+
+Later, in reissue: Applicant tries to remove element X from Claim 1.
+→ **Recapture prohibited** — element X was added to overcome prior art.
+
+### Example 2: Recapture Permitted
+Original application: Claim 1 issues as "A, B, X."
+Applicant discovers in reissue: the specification discloses a distinct embodiment "A, B, Y" that is patentably distinct.
+
+Applicant adds new claim: "A, B, Y" in reissue.
+→ **Permitted** — adding new claims that don't recapture surrendered subject matter is fine.
+
+## 2.4 Relationship to Prosecution History
+
+Recapture is a prosecution history doctrine. The examiner reviews the original file history to determine what was surrendered.
+
+- Amendments overcoming prior art rejections → surrendered
+- Amendments overcoming §112 rejections → generally not surrendered (just clarifications)
+- Amendments for unity/formality → typically not surrendered
+
+## 2.5 Avoiding Recapture
+
+- Preserve all desired claim scope in the original prosecution
+- File continuations with broader claims during original pendency
+- Use reissue primarily for new embodiments not claimed, not for recapturing surrendered scope
+
+## 2.6 Recapture and Broadening Reissue
+
+Recapture is particularly relevant to broadening reissues. The 2-year window to broaden encourages timely action, but even within that window, recapture can still bar the broadening.`,
+      examTip: `**Recapture is the #1 trap in broadening reissue.** Memorize: (1) was reissue claim broader? (2) does it recapture surrendered subject matter? (3) are broadening changes in non-surrendered areas? If surrendered subject matter is recaptured, reissue is barred even within the 2-year window.`,
+    },
+    {
+      id: 'reissue-intervening-rights',
+      title: `3. Intervening Rights (§252)`,
+      content: `## 3.1 The Problem
+
+When a reissue changes claim scope, third parties may have already begun using the invention in reliance on the original patent claims. §252 provides protection for such intervening rights.
+
+## 3.2 Two Types of Intervening Rights
+
+### Absolute Intervening Rights (§252, first paragraph)
+- For acts that were NOT infringing under the original patent but WOULD infringe the reissued patent
+- Third party could:
+  - Continue using, selling, or offering to sell specific products already made, purchased, or imported before reissue
+  - No compensation required
+
+### Equitable Intervening Rights (§252, second paragraph)
+- For investments made before reissue that the court finds should be protected
+- Continued manufacture of products OR practice of the process
+- Requires proof of substantial investment
+- Compensation (royalty) may be ordered
+- Court has equitable discretion to protect
+
+## 3.3 Conditions
+
+- Claim must have been changed or added (not unchanged claims — existing patent rights continue)
+- Activity must have been initiated before reissue
+- Third-party reliance on original claims must be genuine
+
+## 3.4 Who Invokes
+
+- Accused infringers raise as a defense in litigation
+- Can also be raised during patent examination indirectly
+
+## 3.5 Specific Activities Protected
+
+- Manufacturing specific products already made
+- Using or selling inventory on hand
+- Fulfilling existing contracts
+- Continuing operations with purchased equipment
+
+## 3.6 Scope Limitations
+
+Absolute intervening rights are LIMITED:
+- Only the specific, already-produced items
+- Not future production of additional units
+- Not expansion of operations
+
+Equitable intervening rights are BROADER:
+- Can cover continued manufacture
+- Subject to court's discretion
+- May require royalty
+
+## 3.7 Policy Rationale
+
+§252 balances:
+- Patent owner's interest in correcting errors
+- Public's and competitors' interest in relying on issued patents
+- Fair treatment of third parties who acted in good faith
+
+## 3.8 Example Scenario
+
+Original patent issues with Claim 1 limiting element A to "copper." Competitor begins manufacturing widgets with element A as "aluminum."
+
+Patentee files broadening reissue expanding Claim 1 to cover "metal" (including aluminum).
+
+After reissue, competitor has:
+- **Absolute intervening rights** for aluminum widgets already in inventory before reissue
+- **Equitable intervening rights** possibly for continued production (depends on investment)`,
+    },
+    {
+      id: 'reissue-procedure',
+      title: `4. Reissue Procedure and Examination`,
+      content: `## 4.1 Required Documents (37 CFR §1.171)
+
+- Reissue application (same format as non-provisional)
+- Specification (can be same as original, plus amendments)
+- Claims (original, amended, or new)
+- Drawings (can be same as original, plus amendments)
+- Reissue declaration under 37 CFR §1.175 — identifies the error being corrected
+- Original patent (effectively surrendered)
+- Consent of all assignees
+- Fee
+
+## 4.2 Reissue Declaration (§1.175)
+
+The declaration must:
+- Identify at least one error being corrected
+- Explain why the original patent was defective
+- State that the error occurred without deceptive intent (pre-AIA; removed under AIA but still good practice)
+
+## 4.3 Examination
+
+- Reissue is examined like a new application
+- Examiner considers:
+  - Whether the error exists and warrants correction
+  - Whether the reissue claims are patentable over prior art
+  - Whether recapture applies
+  - Whether any new matter is added (prohibited)
+  - §112 support for amended or new claims
+
+## 4.4 Rejections Common in Reissue
+
+- §251 defects (no cognizable error)
+- Recapture
+- Prior art (§§102, 103)
+- §112 issues for new claims
+- New matter
+
+## 4.5 Surrender of Original Patent
+
+- Original patent is "surrendered" by operation of the reissue statute
+- Physical return of certificate not required
+- Effect: original patent becomes ineffective once reissue issues
+- If reissue is denied, original remains valid
+
+## 4.6 Multiple Reissues
+
+A patentee can file multiple reissues for the same patent, but:
+- Must correct different errors
+- Cannot re-litigate issues already decided
+
+## 4.7 Coexistence with Litigation
+
+A reissue can be filed even during infringement litigation:
+- Court may stay litigation pending reissue
+- Reissue can strengthen or narrow patent
+- Strategic tool when patent faces invalidity challenges
+
+## 4.8 Examples of Reissue Use Cases
+
+- **Too-narrow claims**: patent issued with narrower scope than deserved → broadening reissue (within 2 years)
+- **Too-broad claims**: patent issued with claims now known to be invalid → narrowing reissue
+- **Specification errors**: typos or technical errors affecting interpretation → same-scope reissue
+- **Missed embodiments**: disclosed but not claimed → add new claims via reissue
+- **Inventorship errors**: when §1.324 Certificate of Correction insufficient
+- **AIA changes**: correcting claims to address post-issue prior art discoveries`,
+    },
+  ],
+  keyTakeaways: [
+    'Reissue (§251) corrects defective issued patents: specification, drawings, claims, or inventorship.',
+    'Error must be made by the patentee. Post-AIA: no "without deceptive intent" requirement. Pre-AIA: required.',
+    'Broadening reissue: 2-year hard deadline from original issue. Absolute — no extensions.',
+    'Narrowing reissue: no deadline; can be filed any time during patent term.',
+    'Recapture doctrine (Clement test): cannot use reissue to recapture subject matter surrendered to overcome prior art in original prosecution.',
+    'Intervening rights (§252): (1) absolute — for already-made products; (2) equitable — for continued manufacture, at court\'s discretion.',
+    'Reissue examined like a new application. Examiner reviews error, patentability, recapture, new matter.',
+    'Multiple reissues allowed for different errors. Reissue can coexist with litigation; court may stay pending outcome.',
+  ],
+},
+
+pg_ex_parte_reexam: {
+  topicId: 'pg_ex_parte_reexam',
+  title: `Ex Parte Reexamination — 35 U.S.C. §§301-307`,
+  domainWeight: 'Post-Grant · MPEP 2200',
+  overview: `Ex parte reexamination allows the USPTO to reconsider the patentability of an issued patent in light of prior art consisting of patents or printed publications. Anyone — including third parties, the patent owner, or the USPTO Director — can request ex parte reexamination. The requester files a request citing the prior art; if the USPTO finds a "substantial new question of patentability" (SNQ), reexamination is ordered. During reexamination, only the patent owner participates (not the third-party requester) — hence "ex parte." Reexamination is a cost-effective way to challenge patents, though less powerful than IPR.`,
+  sections: [
+    {
+      id: 'reexam-basics',
+      title: `1. What Is Ex Parte Reexamination?`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §§301-307 establish ex parte reexamination. Introduced in 1981, it was the primary post-grant challenge mechanism before AIA added IPR/PGR in 2012.
+
+## 1.2 Scope of Challenge
+
+Ex parte reexamination is LIMITED to:
+- Prior art consisting of **patents or printed publications**
+- Challenges under §§102 (novelty) and §103 (obviousness)
+
+NOT available:
+- §101 (subject matter eligibility)
+- §112 (written description, enablement, definiteness)
+- Public use, on-sale, or other non-patent/non-publication prior art
+- Inequitable conduct
+
+## 1.3 Who Can Request
+
+Any party can request:
+- **Third party** (competitor, challenger)
+- **Patent owner** (own-patent reexamination)
+- **USPTO Director** (sua sponte)
+
+Third-party requesters can be anonymous (identity not disclosed).
+
+## 1.4 Substantial New Question of Patentability (SNQ)
+
+The USPTO grants reexamination only if the request raises a **substantial new question of patentability**. The SNQ standard:
+- Requires art not previously considered by the examiner, OR
+- Art that was considered but now being raised in a new light, OR
+- Art that was considered but not applied as the requester is applying it
+
+Post-AIA: "raised or could have been raised" standard — SNQ exists even if the art COULD have been raised in the original prosecution.
+
+## 1.5 Key Differences from IPR
+
+| Feature | Ex Parte Reexam | IPR |
+|---|---|---|
+| Who participates | Patent owner only (requester after initial request) | Both petitioner and patent owner |
+| Scope | §§102, 103 only, patents/publications only | §§102, 103, patents/publications only |
+| Timing | Any time during patent term | 1 year from service in infringement suit |
+| Forum | Examiner (Central Reexamination Unit) | PTAB |
+| Discovery | None | Limited |
+| Estoppel | None (for third parties) | Broad (grounds that could have been raised) |
+| Cost | ~$12,200 request fee | ~$40,000+ petition fee |
+
+## 1.6 Use Cases
+
+- Third party wants to invalidate a patent cheaply (< IPR cost)
+- Patent owner wants to confirm patentability and add new claims
+- USPTO Director initiates based on apparent issues
+- Pre-litigation tool to weaken a patent before filing an IPR
+
+## 1.7 Procedure Overview
+
+1. **Request** filed with USPTO Central Reexamination Unit (CRU)
+2. USPTO Director determines whether SNQ exists
+3. If granted, **reexamination order** issues
+4. Patent owner files **statement** responding to SNQ (optional)
+5. Examiner examines claims in light of the SNQ art
+6. Patent owner may amend claims or argue during examination
+7. Examiner issues Office Actions (typical prosecution)
+8. Final Office Action → Advisory Action → Certificate issues
+
+## 1.8 Timeline
+
+- Request to SNQ determination: ~3 months
+- Reexamination to completion: typically 1-2 years (historically longer)`,
+    },
+    {
+      id: 'reexam-request',
+      title: `2. Filing the Request`,
+      content: `## 2.1 Required Contents (37 CFR §1.510)
+
+A request for ex parte reexamination must include:
+- **Statement pointing out each substantial new question of patentability**
+- **Identification of every claim** for which reexamination is requested
+- **Detailed explanation of the pertinence** and manner of applying the cited prior art
+- **Copy of every prior art reference** relied upon
+- **Copy of the patent** for which reexamination is requested
+- **Certification**: identity of real party in interest (for third-party requests); anonymity preserved in the public file
+- **Fee**: ~$12,200 regular entity
+
+## 2.2 Real Party in Interest
+
+- Third-party requesters must identify the real party in interest (RPI) in a separate paper
+- RPI can be kept confidential (not published)
+- This prevents the patent owner from discovering the requester's identity during reexamination
+
+## 2.3 Prior Art Requirements
+
+Prior art must be:
+- Patents or printed publications (not physical samples, oral testimony, etc.)
+- Actually cited to the specific claims
+- Explained clearly (not just listed)
+
+## 2.4 SNQ Determination
+
+USPTO's initial review determines:
+- Does the request raise an SNQ?
+- Decision within 3 months of request
+
+If YES: reexamination ordered.
+If NO: request denied; refund of fees (minus processing fee).
+
+## 2.5 Patent Owner's Options
+
+After the SNQ determination:
+- **Statement**: patent owner may file a statement responding to the SNQ (voluntary, within 2 months of SNQ order)
+- The statement is served on the requester (third-party requester receives it)
+- Requester may respond to patent owner's statement (only initial request + response to statement; then requester drops out)
+
+## 2.6 Order of Events
+
+1. Request filed
+2. USPTO grants/denies (SNQ determination)
+3. If granted, reexamination ordered
+4. Patent owner's statement (optional)
+5. Requester's reply (optional, limited)
+6. Examination by CRU examiner begins
+7. Patent owner responds to Office Actions
+8. Requester does NOT participate from this point — truly "ex parte"
+
+## 2.7 Fee Schedule (2025 Estimates)
+
+- **Request fee**: ~$12,200 (regular entity)
+- **Small entity**: ~$6,100
+- **Micro entity**: ~$3,050
+- Additional fees for:
+  - Excess claim reexamination
+  - Certificate of correction
+
+## 2.8 No Estoppel for Third-Party Requester
+
+- Third-party requester in ex parte reexam is NOT estopped from later challenging the patent
+- Can subsequently file an IPR (if timely)
+- Can assert invalidity in district court
+- This is a major advantage over IPR, which has strict estoppel
+
+## 2.9 Strategic Considerations for Third Parties
+
+Why file ex parte vs. IPR:
+- Lower cost
+- No estoppel (can also file IPR later)
+- Anonymous
+- No 1-year deadline (unlike IPR)
+
+Why NOT file ex parte:
+- Cannot directly participate in examination (patent owner gets all the input)
+- Limited scope (no §101, §112)
+- Outcome uncertain (examiner's discretion)
+- No binding legal precedent
+
+## 2.10 Patent Owner's Use of Reexamination
+
+Patent owner may file own reexamination to:
+- Confirm patentability over newly found prior art
+- Add new claims (limited to scope of original disclosure)
+- Strengthen patent before litigation
+- Gain flexibility in amendments`,
+      importantNote: `**No estoppel for third-party requester** in ex parte reexamination — this is a significant advantage over IPR. A competitor can file ex parte reexam, see how it goes, and still file an IPR later (if within 1-year service window). Can also still argue invalidity in district court.`,
+    },
+    {
+      id: 'reexam-outcomes',
+      title: `3. Reexamination Outcomes and Certificate`,
+      content: `## 3.1 Possible Outcomes
+
+After examination:
+- **All claims confirmed**: patent unchanged; certificate issues
+- **Claims canceled**: some or all claims found unpatentable; certificate reflects cancellation
+- **Claims amended**: claims changed; reissued certificate reflects amendments
+- **New claims added**: patent owner added claims during reexamination (with proper basis)
+
+## 3.2 Reexamination Certificate
+
+At the end of reexamination, the USPTO issues a **Reexamination Certificate**:
+- Published like a patent
+- Reflects the final status of claims (confirmed, canceled, amended)
+- Has its own certificate number
+- Serves as the current authoritative version of the patent
+
+## 3.3 Intervening Rights
+
+§307 provides intervening rights (similar to reissue §252):
+- **Absolute intervening rights**: for products made before the certificate issues
+- **Equitable intervening rights**: for continued manufacture
+
+These protect third parties who relied on the original claims.
+
+## 3.4 Estoppel in Ex Parte Reexam
+
+- **Patent owner**: bound by PTO's determination; cannot re-challenge claims confirmed
+- **Third-party requester**: NO estoppel — free to challenge patent again elsewhere
+- **Examiner**: cannot rely on earlier SNQ art as ground for later rejection without new substance
+
+## 3.5 Amendments During Reexamination
+
+Patent owner can:
+- Amend existing claims
+- Add new claims (must be supported by original disclosure)
+- Cancel claims
+- No new matter allowed
+
+## 3.6 Federal Circuit Review
+
+If patent owner disagrees with the reexamination outcome:
+- Appeal to PTAB → Federal Circuit (same as normal prosecution)
+- Standard of review: de novo on law, substantial evidence on facts
+- Reexam certificates can be reviewed up to and including Federal Circuit
+
+## 3.7 Impact on Litigation
+
+Reexamination results:
+- Patent owner's confirmed claims → strengthened in litigation
+- Canceled/amended claims → patent owner's rights limited accordingly
+- Reexamination certificate is presumptively valid in litigation
+- But validity challenges in district court remain available (especially on grounds not raised in reexam — non-patent art, §101, §112)
+
+## 3.8 Timeline Comparison
+
+| Event | Ex Parte Reexam | IPR |
+|---|---|---|
+| Filing to initial determination | 3 months | 3 months (institution) |
+| Initial to completion | 2-3 years | 12 months (statutory) |
+| Appeal available? | Yes (PTAB → Fed. Cir.) | Yes (Fed. Cir. directly from PTAB) |
+
+## 3.9 Strategic Considerations Summary
+
+### File Ex Parte Reexam When:
+- Cost is critical
+- Need anonymity
+- Want parallel proceedings with IPR/litigation
+- Challenging with patents/printed publications only
+- No need for participation after initial request
+
+### File IPR When:
+- Need to actively participate
+- Need a definitive decision in 12 months
+- Strong prior art case
+- Willing to accept estoppel
+
+### File District Court Invalidity When:
+- Want jury trial
+- Have non-patent/non-publication evidence
+- Challenging §101 or §112 grounds
+- Willing to bear higher litigation costs`,
+    },
+  ],
+  keyTakeaways: [
+    'Ex parte reexamination (§§301-307): USPTO reconsiders patent in light of patents/printed publications raising SNQ.',
+    'Limited to §§102, 103 challenges based on patents or printed publications ONLY. No §101, §112, public use, on-sale.',
+    'Any party can request: third parties (anonymous), patent owner, or USPTO Director sua sponte.',
+    'Substantial New Question (SNQ) standard: prior art not previously considered OR considered in new light.',
+    'Third-party requester participates only in initial request + response to patent owner statement — then drops out ("ex parte").',
+    'Fee: ~$12,200 (regular entity). No estoppel on third-party requester — can still file IPR, litigate later.',
+    'Intervening rights (§307): absolute for pre-certificate products; equitable for continued manufacture.',
+    'Reexamination Certificate issues at completion, reflecting confirmed/canceled/amended claims. Appealable to PTAB → Federal Circuit.',
+  ],
+},
+
+pg_ipr: {
+  topicId: 'pg_ipr',
+  title: `Inter Partes Review (IPR) — 35 U.S.C. §§311-319`,
+  domainWeight: 'Post-Grant · MPEP 2200',
+  overview: `Inter Partes Review (IPR) is the most commonly used AIA post-grant proceeding. Created by the AIA effective September 16, 2012, IPR allows third parties to challenge an issued patent's claims before the PTAB, using patents or printed publications to assert §§102 or §103 invalidity. IPR is popular because: (1) it's faster than litigation, (2) it's less expensive than full litigation, (3) it has a lower burden of proof (preponderance of the evidence vs. clear and convincing). However, IPR has strict estoppel that bars petitioners from later re-litigating grounds that were raised or reasonably could have been raised. Deadlines: 9 months after patent grant/reissue (or 1 year after being served with infringement lawsuit).`,
+  sections: [
+    {
+      id: 'ipr-basics',
+      title: `1. IPR Overview and Eligibility`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §§311-319 (AIA). Effective September 16, 2012. Replaced the older inter partes reexamination for petitions filed on or after that date.
+
+## 1.2 Who Can Petition
+
+- Any person who is **not the patent owner**
+- Must NOT have filed a prior civil action challenging the validity of a claim of the patent
+- Must NOT have been served with infringement complaint more than 1 year ago
+
+## 1.3 What Can Be Challenged
+
+IPR challenges are LIMITED to:
+- Grounds under §§102 (novelty) and §103 (obviousness)
+- Using only **patents or printed publications** as prior art
+
+NOT available in IPR:
+- §101 subject matter
+- §112 written description, enablement, definiteness
+- Public use, on-sale, prior invention (non-patent/non-publication art)
+- Inequitable conduct
+
+## 1.4 Timing Limits
+
+### 9-Month Post-Grant Rule
+- IPR petition can be filed at any time 9+ months after the patent grant or reissue
+- Purpose: PGR handles the first 9 months; IPR handles after
+- Applies to AIA patents (i.e., those having at least one claim with EFD on/after March 16, 2013)
+
+### 1-Year Post-Service Rule
+- If petitioner was served with a complaint alleging patent infringement, the IPR must be filed within 1 year of service
+- After 1 year, IPR is barred
+- This is a strict statutory deadline
+
+## 1.5 Institution Standard
+
+USPTO institutes IPR if the petitioner establishes:
+- **Reasonable likelihood** that petitioner would prevail with respect to at least one claim challenged
+- Substantive review within 3 months of petition filing
+- Director has discretionary power to deny institution (Fintiv factors, exceptional circumstances)
+
+## 1.6 Fees
+
+Approximate IPR fees (2025):
+- **Petition fee**: ~$19,500
+- **Post-institution fee**: ~$23,750
+- **Total**: ~$43,250 (minimum)
+
+Additional fees for:
+- Claims beyond 20
+- Excess pages
+
+## 1.7 Timeline
+
+IPR is a **12-month statutory timeline** from institution to final decision:
+- **Petition filed**: Day 0
+- **Patent owner preliminary response**: within 3 months
+- **Institution decision**: within 6 months
+- **Final decision**: within 12 months of institution (can be extended by 6 months for good cause)
+
+Total time: ~18 months from petition to final decision.
+
+## 1.8 Standard of Proof
+
+- Petitioner must prove unpatentability by **preponderance of the evidence**
+- Lower than district court's "clear and convincing" standard
+- Benefits challengers`,
+      examTip: `**IPR timing is heavily tested**: (1) 9 months after grant (minimum), (2) 1 year after service of infringement complaint (maximum). Miss either and IPR is barred. 12-month statutory timeline from institution to final decision. Preponderance of the evidence standard (not clear and convincing).`,
+    },
+    {
+      id: 'ipr-procedure',
+      title: `2. IPR Procedure`,
+      content: `## 2.1 Petition Requirements
+
+Under 37 CFR §§42.100-42.108, the IPR petition must include:
+- **Identification of each claim being challenged**
+- **Grounds for challenge** (§102, §103)
+- **Prior art relied upon**
+- **Detailed explanation** of how the art invalidates the claims
+- **Proposed claim construction** (if relevant)
+- **Evidence supporting the invalidity**: expert declarations, exhibits, prior art citations
+- **Petitioner fees**
+
+## 2.2 Patent Owner Preliminary Response (POPR)
+
+Within 3 months of petition filing:
+- Patent owner files an optional Preliminary Response
+- Argues against institution (e.g., no reasonable likelihood, procedural bars)
+- No discovery at this stage
+- Limited length
+
+## 2.3 Institution Decision
+
+Within 6 months of petition filing, PTAB issues:
+- **Institution Decision**
+- **Institute**: grounds on which IPR will proceed
+- **Deny**: no trial (refund minus filing fee)
+
+Current law: institution is all-or-nothing at the petition level (SAS Institute). If instituted, all grounds in the petition are heard, not just some.
+
+## 2.4 Trial Phase
+
+After institution:
+- Patent owner files **Patent Owner Response** (within 3 months of institution)
+- Petitioner files **Petitioner Reply** (within 3 months after Patent Owner Response)
+- Discovery is limited: depositions of declarants, routine discovery, limited additional discovery
+
+## 2.5 Claim Amendments in IPR
+
+Patent owner can propose amended claims:
+- One motion to amend (per trial)
+- Claims must be supported by original specification
+- Must not enlarge scope
+- PTAB reviews for patentability
+
+This is a limited path — most IPRs end with cancellation of challenged claims.
+
+## 2.6 Oral Hearing
+
+Both parties present arguments at an oral hearing:
+- Typically in the last quarter of the 12-month trial
+- 30-60 minute argument per side
+- 3-APJ panel
+
+## 2.7 Final Written Decision
+
+PTAB issues final written decision within 12 months of institution:
+- **All challenged claims canceled**: patent owner loses
+- **Some canceled, some upheld**: mixed outcome
+- **All upheld**: patent owner wins
+
+## 2.8 Evidence and Witnesses
+
+- **Expert declarations**: primary form of evidence
+- **Depositions**: of witness declarants by opposing party
+- **No live testimony** at oral hearing — paper-based proceeding
+- Limited depositions compared to district court litigation
+
+## 2.9 Appeal
+
+Final Written Decision is appealable:
+- Directly to the **Federal Circuit** (35 U.S.C. §319)
+- 63 days from Final Written Decision to file notice
+- Federal Circuit reviews legal determinations de novo, factual for substantial evidence
+
+Supreme Court can review via writ of certiorari (rare).
+
+## 2.10 Settlement
+
+Parties can settle:
+- Before or after institution
+- Patent owner and petitioner may file a joint motion to terminate
+- PTAB may terminate the proceeding
+- Settlement agreement must be disclosed to PTAB (§317(b))`,
+    },
+    {
+      id: 'ipr-estoppel',
+      title: `3. IPR Estoppel`,
+      content: `## 3.1 Statutory Estoppel (§315(e))
+
+If IPR results in a Final Written Decision:
+- Petitioner (and real party in interest, privy) is estopped from asserting in:
+  - Future USPTO proceedings, OR
+  - Future civil actions, OR
+  - ITC proceedings
+- The grounds that the petitioner:
+  - **Raised** in the IPR, OR
+  - **Reasonably could have raised** in the IPR
+
+## 3.2 "Reasonably Could Have Been Raised"
+
+This phrase is the most consequential part of IPR estoppel. It means:
+- The petitioner is estopped from grounds that a competent petitioner would have discovered in a diligent search
+- This is a broad interpretation in most jurisdictions
+- Patents and printed publications in relevant fields are typically deemed "reasonably could have been raised"
+
+### Limits
+- Estoppel is LIMITED to grounds under §§102/103 using patents/printed publications — the IPR scope
+- Does NOT estop challenges based on:
+  - §101 subject matter
+  - §112 requirements
+  - Non-patent, non-publication evidence (public use, on-sale, prior invention)
+  - Inequitable conduct
+
+## 3.3 When Estoppel Applies
+
+- **After** final written decision (not during pendency)
+- **Against** the petitioner and real parties in interest, privies
+- **For** grounds raised or reasonably could have been raised
+
+## 3.4 Strategic Implications for Petitioners
+
+**Use IPR when**:
+- Strong prior art case (patents/publications)
+- Want faster, cheaper than litigation
+- Willing to accept estoppel in exchange for PTAB review
+
+**Avoid IPR when**:
+- Want to challenge multiple grounds including §101/§112 (IPR is narrow)
+- Need time to develop evidence (1-year deadline may be tight)
+- Worried about estoppel effect on future litigation
+
+## 3.5 Multiple IPRs
+
+A petitioner cannot file multiple IPRs on the same patent to get around estoppel:
+- Second IPR on same patent is barred if the first resulted in Final Written Decision
+- Other entities can file IPRs, but each new petitioner gets one shot
+
+## 3.6 Stay of District Court Litigation
+
+If an IPR is filed:
+- District court may stay the litigation pending IPR
+- Factors: stage of litigation, likelihood IPR will simplify issues, risk of prejudice
+- Most courts grant stays when IPR is instituted
+
+## 3.7 Settlement and Estoppel
+
+- If the parties settle before Final Written Decision, NO estoppel
+- Strong incentive for early settlement if preservation of future options is important
+
+## 3.8 Comparison to Reissue and Reexam
+
+| Feature | IPR | Ex Parte Reexam | Reissue |
+|---|---|---|---|
+| Who files | Third party | Any party | Patent owner |
+| Estoppel (requester) | Broad | None | N/A |
+| Scope | §§102, 103, patent/pub | §§102, 103, patent/pub | Correct patent errors |
+| Forum | PTAB | CRU examiner | USPTO examiner |
+| Timeline | 12 months | 2-3 years | Variable |
+| Cost | ~$43K+ | ~$12K | Variable |
+| Outcome | Claims canceled or upheld | Claims confirmed/amended/canceled | Reissued patent |`,
+      importantNote: `IPR estoppel is **broad and permanent**. Once a final written decision issues, the petitioner cannot raise ANY grounds that were raised OR reasonably could have been raised. This affects district court invalidity defenses too. Consider estoppel carefully before filing IPR — it's a one-shot weapon.`,
+    },
+  ],
+  keyTakeaways: [
+    'IPR (AIA §§311-319, effective 2012): third-party challenge before PTAB. Grounds: §§102, 103 using patents/printed publications only.',
+    'Timing: 9 months after patent grant (minimum) AND 1 year after service of infringement complaint (maximum).',
+    'Institution standard: "reasonable likelihood" of prevailing on at least one claim. PTAB decision within 6 months of petition.',
+    '12-month statutory trial (post-institution), extendable 6 months for good cause. Preponderance of the evidence standard.',
+    'Fees: ~$43,250 minimum. Institution fee + post-institution fee + excess claim fees.',
+    'Statutory estoppel (§315(e)): petitioner barred from raising grounds "raised OR reasonably could have been raised" in later USPTO, court, ITC proceedings.',
+    'Estoppel scope: §§102/103 with patents/publications. Does NOT bar §101, §112, or non-patent/non-publication evidence in later proceedings.',
+    'Final Written Decision appealable directly to Federal Circuit (§319) within 63 days. Supreme Court via cert (rare).',
+  ],
+},
+
+pg_pgr: {
+  topicId: 'pg_pgr',
+  title: `Post-Grant Review (PGR) — 35 U.S.C. §§321-329`,
+  domainWeight: 'Post-Grant · MPEP 2200',
+  overview: `Post-Grant Review (PGR) is a broader AIA post-grant proceeding, filed within 9 months of patent grant or reissue. Unlike IPR, PGR allows challenges on ALL invalidity grounds — §§101, 102, 103, 112 — and can use any type of prior art (including public use, on-sale, non-patent evidence). PGR is only available for patents having at least one claim with effective filing date on or after March 16, 2013 (i.e., AIA patents). PGR is less commonly used than IPR because of its narrow 9-month window, but it's more powerful when available.`,
+  sections: [
+    {
+      id: 'pgr-basics',
+      title: `1. PGR Overview`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §§321-329 (AIA). Available for AIA patents (having at least one claim with EFD on/after March 16, 2013).
+
+## 1.2 Eligibility
+
+Patents eligible for PGR:
+- Must have at least one claim with **EFD on/after March 16, 2013** (AIA patent)
+- Must be within the **9-month window** from grant or reissue
+
+Patents issued before March 16, 2013, or having only pre-AIA claims, CANNOT be challenged via PGR. Only IPR and ex parte reexamination are available.
+
+## 1.3 Who Can File
+
+- Any person **other than the patent owner** (like IPR)
+- Must not have filed a prior civil action challenging validity
+- No 1-year service bar (unlike IPR — because the 9-month window is so short)
+
+## 1.4 Grounds for Challenge
+
+PGR allows challenges on **ALL invalidity grounds**:
+- **§101**: subject matter eligibility, double patenting
+- **§102**: novelty (with all forms of prior art)
+- **§103**: obviousness
+- **§112**: written description, enablement, definiteness
+- **Utility**
+- **Any patentability defect**
+
+This is BROADER than IPR, which is limited to §§102/103 using patents/printed publications.
+
+## 1.5 Prior Art Scope
+
+PGR allows:
+- Patents and printed publications
+- **Public use, on-sale, prior invention, other public availability**
+- **Non-patent evidence** (technical reports, trade literature, expert testimony)
+
+This is BROADER than IPR, which only allows patents and printed publications.
+
+## 1.6 Timing
+
+### 9-Month Window
+- Filed within **9 months of patent grant or reissue**
+- After 9 months, only IPR is available (for AIA patents)
+- Strict deadline — no extensions
+
+### No 1-Year Service Bar
+- Unlike IPR, PGR is not barred by receipt of infringement complaint
+- However, the 9-month window is so short that litigation timing is rarely an issue
+
+## 1.7 Institution Standard
+
+Under §324, PGR is instituted if petitioner establishes:
+- **More likely than not** that at least one challenged claim is unpatentable, OR
+- A **novel or unsettled legal question** that is important to other patents or patent applications
+
+"More likely than not" is slightly higher than IPR's "reasonable likelihood" standard.
+
+## 1.8 Fees
+
+Approximate PGR fees (2025):
+- Petition fee: ~$20,000
+- Post-institution fee: ~$25,000
+- Total: ~$45,000+ (more than IPR)`,
+    },
+    {
+      id: 'pgr-procedure',
+      title: `2. PGR Procedure and Timeline`,
+      content: `## 2.1 Petition Requirements
+
+Under 37 CFR §§42.200-42.208:
+- Similar to IPR petition structure
+- Must detail each ground of challenge
+- Evidence supporting invalidity (declarations, exhibits, prior art)
+- More comprehensive than IPR due to broader scope
+
+## 2.2 Timing
+
+- **Filed**: within 9 months of grant
+- **Patent owner preliminary response**: 3 months
+- **Institution decision**: 3 months after POPR (approximately 6 months after petition)
+- **Trial**: 12 months after institution (extendable 6 months)
+- **Total**: ~18-24 months from petition to final decision
+
+## 2.3 Patent Owner's Strategy
+
+- Patent owner knows PGR is possible in the first 9 months
+- Often files preliminary response arguing:
+  - Grounds don't meet institution standard
+  - Procedural defects in petition
+  - Claim construction defeats grounds
+
+## 2.4 Trial Proceedings
+
+Similar to IPR:
+- Patent owner response (3 months after institution)
+- Petitioner reply
+- Limited discovery (depositions, limited other)
+- Oral hearing
+- Final written decision within 12 months
+
+## 2.5 Amendment
+
+Patent owner may propose amended claims:
+- One motion to amend
+- Support in original specification required
+- Cannot enlarge scope
+
+## 2.6 Estoppel
+
+Like IPR:
+- Petitioner estopped from raising grounds raised OR reasonably could have been raised
+- Applies to future USPTO, court, ITC proceedings
+- Scope of PGR estoppel is BROADER than IPR estoppel because PGR grounds are broader
+
+### Specifically for PGR
+- §101 grounds can be estopped in future proceedings (not available in IPR)
+- §112 grounds can be estopped
+- Non-patent art grounds estopped
+
+## 2.7 Appeal
+
+Final Written Decision appealable:
+- Directly to Federal Circuit (§329)
+- Within 63 days of decision
+- Federal Circuit reviews de novo on law, substantial evidence on facts
+
+## 2.8 Strategic Decision: PGR vs. IPR
+
+**Choose PGR when**:
+- Patent has AIA claim (post-March 16, 2013)
+- Strong multiple grounds (§§101, 112, prior use)
+- Need broader scope of challenge
+- Within 9-month window
+
+**Choose IPR when**:
+- Patent is pre-AIA, OR
+- Only have prior art (patents/publications)
+- Outside 9-month window
+- Want to limit estoppel scope
+
+## 2.9 Combining Proceedings
+
+- Can pursue PGR + IPR? Generally no — once PGR is instituted or final, IPR may be estopped
+- Can pursue PGR + district court? Stay typically requested
+- Can pursue PGR + ex parte reexam? Possible but complex`,
+      examTip: `**PGR is broader and narrower than IPR**. Broader in SCOPE (§§101, 102, 103, 112, all evidence types) but NARROWER in TIMING (9 months only). PGR only available for patents with at least one post-AIA claim (EFD ≥ March 16, 2013). Otherwise IPR is the only option.`,
+    },
+    {
+      id: 'pgr-cbm-history',
+      title: `3. Covered Business Method (CBM) Review (Phased Out)`,
+      content: `## 3.1 CBM Review History
+
+The AIA created **Covered Business Method Review** (CBM) under §18 (not in 35 U.S.C.):
+- Limited to business method patents
+- Available to parties sued or threatened with suit
+- Broader grounds like PGR
+
+## 3.2 CBM Sunset
+
+CBM was a **transitional program**:
+- Effective September 16, 2012
+- Expired **September 16, 2020**
+- No new petitions accepted after that date
+- Pending CBMs at expiration could proceed to completion
+
+## 3.3 Why CBM Existed
+
+CBM targeted business method patents that:
+- Were often litigated
+- Had §101 eligibility issues
+- Were perceived as lower quality
+
+## 3.4 CBM vs. PGR
+
+- CBM: limited to CBM patents, no timing limit (until sunset)
+- PGR: any AIA patent, 9-month window
+
+Post-2020, challengers of business method patents must use:
+- PGR (within 9 months of grant)
+- IPR (limited to §§102/103)
+- District court litigation
+
+## 3.5 Why CBM Is Still Tested
+
+Patent Bar exam questions may reference CBM for historical context or comparison. Understand:
+- CBM existed from 2012-2020
+- Broader grounds than IPR
+- Targeted specific patent type (CBM patents)
+- Now expired; PGR is the active broader-scope review
+
+## 3.6 Practical Implications
+
+For patents covered by the post-2020 regime:
+- Business method patents are challenged via PGR (9-month window) or IPR
+- Pre-AIA business method patents can only use IPR or ex parte reexam
+- CBM is no longer an option for new filings`,
+    },
+  ],
+  keyTakeaways: [
+    'PGR (§§321-329): post-grant challenge before PTAB. Grounds: §§101, 102, 103, 112 — all invalidity theories.',
+    'Timing: 9 months from patent grant/reissue. NO extensions. No 1-year service bar (unlike IPR).',
+    'Only available for AIA patents: at least one claim with EFD on/after March 16, 2013.',
+    'Prior art: ALL types — patents, publications, public use, on-sale, non-patent evidence. Broader than IPR.',
+    'Institution standard: "more likely than not" that one claim is unpatentable, OR novel/unsettled legal question. Slightly higher than IPR.',
+    'Fees: ~$45,000+ (higher than IPR). Trial: 12 months from institution, extendable 6 months.',
+    'Estoppel: broader than IPR (covers §§101/112 grounds too). Petitioner barred from grounds raised or reasonably could have been raised.',
+    'CBM Review (§18): transitional program 2012-2020, now expired. Targeted business method patents with broader grounds than IPR.',
+  ],
+},
+
+pg_supplemental_exam: {
+  topicId: 'pg_supplemental_exam',
+  title: `Supplemental Examination — 35 U.S.C. §257`,
+  domainWeight: 'Post-Grant · MPEP 2800',
+  overview: `Supplemental examination (AIA §257) allows a patent owner to ask the USPTO to consider, reconsider, or correct information believed relevant to the patent. If the USPTO finds a Substantial New Question of Patentability (SNQ), ex parte reexamination is ordered. The primary benefit: supplemental examination can "cure" inequitable conduct allegations — if the patent owner raises information that was allegedly withheld, resolution through supplemental examination can bar inequitable conduct defenses in later litigation. This is a powerful tool for patent owners seeking to strengthen patents before enforcement.`,
+  sections: [
+    {
+      id: 'supp-exam-purpose',
+      title: `1. Purpose and Effect`,
+      content: `## 1.1 Statutory Basis
+
+35 U.S.C. §257 (added by AIA, effective September 16, 2012).
+
+## 1.2 What Can Be Submitted
+
+Patent owner can request consideration of:
+- Prior art (patents, publications) not previously considered
+- Information that was disclosed but not fully considered
+- Information relevant to patentability that was not before examiner
+
+## 1.3 Primary Benefits
+
+### Cure Inequitable Conduct
+The most important use of supplemental examination:
+- If a court later finds information was withheld with intent to deceive, inequitable conduct could render the patent unenforceable
+- Supplemental examination allows the patent owner to "cure" this by bringing the information to USPTO before litigation
+- If supplemental examination is granted and completed without invalidating claims, a later inequitable conduct defense based on that information is BARRED
+
+### Strengthen Patent
+- Clarify that the patent was granted with all relevant information considered
+- Confirm patentability over additional prior art
+- Build a strong record for litigation
+
+## 1.4 Timing
+
+- Can be filed at any time during the patent's term
+- Useful pre-litigation, during litigation (with stay), or proactively
+
+## 1.5 Procedure Overview
+
+1. Patent owner files request
+2. USPTO reviews the request (3 months)
+3. If SNQ found → ex parte reexamination ordered
+4. If no SNQ → supplemental exam concluded; no further action
+5. Certificate issued regardless
+
+## 1.6 Who Can File
+
+Only the patent owner. Not third parties.`,
+    },
+    {
+      id: 'supp-exam-procedure',
+      title: `2. Supplemental Examination Procedure`,
+      content: `## 2.1 Request Requirements
+
+The request must include:
+- **Identification of the patent**
+- **Each item of information** to be considered or corrected (up to 12 items per request)
+- **Detailed explanation** of relevance to the claims
+- **Copies of the items** (if not already of record)
+- **Fee**: approximately $4,500 for supplemental exam (with reexam fee of ~$12,200 on top if SNQ is found and reexam ordered)
+
+## 2.2 Items of Information
+
+Each item can be:
+- A reference (patent, publication, etc.)
+- A discovered error in the specification
+- An invention disclosure issue
+- Any other information "relevant to the patent"
+
+Each request is limited to 12 items. Multiple requests possible for more.
+
+## 2.3 USPTO Review
+
+Within **3 months** of filing:
+- USPTO determines whether any item raises an SNQ
+- Issues a Certificate of Supplemental Examination
+
+### Possible Outcomes:
+- **No SNQ**: supplemental exam concludes; no further action
+- **SNQ raised**: ex parte reexamination is ordered based on the SNQ item(s)
+
+## 2.4 If Ex Parte Reexam Is Ordered
+
+- Standard reexamination procedure ensues
+- Patent owner can amend claims, argue patentability
+- Reexamination certificate issues at the end
+
+## 2.5 If No Reexam Is Ordered
+
+- Patent remains unchanged
+- Certificate of Supplemental Examination issues
+- Provides record that USPTO considered the information
+
+## 2.6 Publication and Public Access
+
+- Request is public unless patent owner files properly identified confidential material
+- Certificate of Supplemental Examination is public
+- Reexamination (if ordered) follows normal publication rules`,
+    },
+    {
+      id: 'supp-exam-inequitable-conduct',
+      title: `3. Inequitable Conduct "Cure"`,
+      content: `## 3.1 The Inequitable Conduct Problem
+
+Inequitable conduct is a doctrine that can render a patent unenforceable:
+- Failure to disclose material information to USPTO
+- With specific intent to deceive (after *Therasense* 2011, the standard is rigorous)
+- If proven, entire patent is unenforceable
+
+## 3.2 Supplemental Examination as Cure
+
+AIA §257(c) provides:
+> "A patent shall not be held unenforceable on the basis of conduct relating to information that had not been considered, was inadequately considered, or was incorrect in a prior examination of the patent if the information was considered, reconsidered, or corrected during a supplemental examination of the patent."
+
+### Key Requirements
+1. Information was the subject of supplemental examination
+2. Supplemental examination resulted in either:
+   - No SNQ found (and certificate issued), OR
+   - Ex parte reexamination was conducted and completed
+
+## 3.3 Limitations on Cure
+
+The cure does NOT apply if:
+- The information was allegedly withheld in a prior USPTO proceeding before the supplemental examination request was filed
+- A patent infringement action was filed AFTER supplemental examination request but the information wasn't part of that request
+- The patent owner acted fraudulently in the supplemental examination itself
+
+## 3.4 Timing Considerations
+
+The cure is forward-looking:
+- If supplemental examination is completed BEFORE a suit is filed, inequitable conduct based on the considered information is barred
+- If a suit is filed BEFORE supplemental examination is completed, the cure may not apply
+- This creates a "race to the USPTO" incentive if litigation is contemplated
+
+## 3.5 Strategic Value
+
+### Use Supplemental Examination When:
+- Aware of information that could be raised as inequitable conduct
+- About to file infringement litigation
+- Uncertain about completeness of original prosecution record
+- Want to bolster the patent's enforceability
+
+### Do NOT Use Supplemental Examination When:
+- The potential inequitable conduct information could be proven fraudulent rather than material
+- Cost is a serious concern (no benefit if cure doesn't apply)
+- No anticipated litigation
+
+## 3.6 Interaction with Other Proceedings
+
+- **With IPR/PGR**: supplemental examination can be filed during or before IPR/PGR
+- **With district court litigation**: court may consider supplemental examination on pending §1.56 arguments
+- **With ex parte reexam**: if supplemental exam leads to reexam, the reexam is essentially the same as a third-party-initiated one
+
+## 3.7 Sample Fact Pattern
+
+Patent owner discovers during internal review that a prior art reference (patent) was not disclosed during original prosecution. The reference is clearly material (publicly known, in the same field).
+
+Options:
+1. **Do nothing**: risk inequitable conduct defense in future litigation
+2. **Disclose in an IDS**: cannot — original prosecution is over
+3. **File supplemental examination**: include the reference as an "item of information"
+4. **USPTO finds SNQ**: ex parte reexamination ordered
+5. **Patent owner argues patentability** in reexam
+6. If patentable → certificate issues; inequitable conduct cure available for this reference
+
+## 3.8 Checklist Before Filing
+
+- Is the patent owner aware of information that could support inequitable conduct?
+- Is the information material?
+- Is the patent important enough for the expense?
+- Is litigation anticipated (or already threatened)?
+- Can the patent owner identify the source and relevance of each item?
+
+If yes to most, supplemental examination is a powerful tool.`,
+      importantNote: `Supplemental examination's primary benefit is the **inequitable conduct cure**. The patent owner brings potentially problematic information before the USPTO and gets a resolution. Once the supplemental examination is complete, inequitable conduct based on that specific information is BARRED in future litigation. This is a major risk-management tool for patent owners.`,
+    },
+  ],
+  keyTakeaways: [
+    'Supplemental examination (§257): patent owner asks USPTO to reconsider information related to the patent.',
+    'Can be filed any time during patent term. Only patent owner can file (not third parties).',
+    'USPTO review: 3 months to determine if SNQ exists. If yes → ex parte reexam ordered. If no → concludes.',
+    'Fee: ~$4,500 for supplemental exam + ~$12,200 for reexam (if ordered). Up to 12 items per request.',
+    'Primary benefit: INEQUITABLE CONDUCT CURE under §257(c). Information considered in supplemental exam cannot later support inequitable conduct defense.',
+    'Cure requires: (1) information was subject of supplemental exam, (2) exam concluded (with or without reexam).',
+    'Cure timing: must be completed BEFORE litigation begins. Race to USPTO if litigation anticipated.',
+    'Limitations: cure does not apply if information was withheld in prior USPTO proceeding, or if patent owner acts fraudulently in supplemental exam itself.',
+  ],
+},
+
 }; // end PATENT_BAR_COURSE
 
 export function hasPatentBarCourseContent(topicId: string): boolean {
