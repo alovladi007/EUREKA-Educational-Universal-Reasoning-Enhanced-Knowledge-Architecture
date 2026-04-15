@@ -6,9 +6,8 @@
  * Federal Register notices, and USPTO-released past exam questions). No third-party proprietary
  * prep-course content is reproduced.
  *
- * Topic IDs match the existing PATENT_TOPIC_ANCHORS and PATENT_BAR curriculum where applicable
- * (pp_*, pa_*, pi_*, pct_*, eth_*, dp_*). New IDs are added for topics not yet in the curriculum
- * (using the same prefix conventions).
+ * Topic IDs match `exam-curriculum.ts` PATENT_BAR and `patent-topic-anchors.ts` (pp_*, pa_*, pi_*,
+ * pct_*, eth_*, dp_*, st_*). Use the same ids as `activeTopic.id` in the test-prep dashboard.
  */
 
 import type { QuizQuestion } from '@/components/test-prep/cissp/LessonQuiz';
@@ -1584,6 +1583,45 @@ When filed after issuance, it requires a separate fee and proper recordation.`,
     'Cellect (2023): PTA-extended patents are still vulnerable to ODP invalidation over earlier commonly-owned patents.',
     'ODP applies only when the two applications share at least one inventor OR are commonly owned.',
     'Common exam trap: asking whether a terminal disclaimer fixes a §103 rejection. Answer: NO. TDs are ONLY for ODP.',
+  ],
+},
+
+pa_utility: {
+  topicId: 'pa_utility',
+  title: `Utility Requirement — 35 U.S.C. §101`,
+  domainWeight: 'Patentability · MPEP 2107',
+  overview: `Beyond eligible subject matter, a claimed invention must be **useful**: it must have a specific, substantial, and credible utility. The utility requirement is separate from §101 eligibility (Alice) and from enablement under §112. Exam questions often test credible utility vs. incredible assertions, operability, and the relationship to best mode.`,
+  sections: [
+    {
+      id: 'utility-standards',
+      title: `1. Specific, Substantial, and Credible Utility`,
+      content: `## 1.1 Statutory Hook
+
+35 U.S.C. §101 requires that the invention be **useful**. Courts interpret this as requiring **specific** and **substantial** utility that is **credible** to a person of ordinary skill (*Brenner v. Manson*, 383 U.S. 519 (1966)).
+
+## 1.2 Specific Utility
+The utility must be **particular** to the claimed invention — not a vague statement of possible benefit.
+
+## 1.3 Substantial Utility
+The claimed invention must provide a **real-world** benefit (not a throwaway or trivial utility).
+
+## 1.4 Credible Utility
+Utility must be **believable** from the disclosure, without requiring speculative leaps. Assertions that contradict established scientific principles may fail unless supported.
+
+## 1.5 Inoperative Embodiments
+If the specification teaches an embodiment that cannot work as claimed, that can raise enablement/written-description issues as well as utility (*In re Harwood*, 390 F.2d 985 (C.C.P.A. 1968)).`,
+    },
+    {
+      id: 'utility-exam',
+      title: `2. Exam Pointers`,
+      content: `- Distinguish **§101 utility** from **§112 enablement** (can you make and use it?) and from **§101 subject-matter eligibility** (abstract idea, etc.).
+- **Chemical/pharma**: utility often tied to a disclosed use; bare "research tool" claims may need more.
+- **Perpetual motion / impossible machines**: generally fail credible utility absent proof.`,
+    },
+  ],
+  keyTakeaways: [
+    '§101 utility: specific, substantial, credible — *Brenner v. Manson*.',
+    'Utility is not the same as Alice/Mayo eligibility or §112 enablement.',
   ],
 },
 
@@ -6284,8 +6322,8 @@ When entering US national stage:
   ],
 },
 
-pct_national_stage: {
-  topicId: 'pct_national_stage',
+pct_national: {
+  topicId: 'pct_national',
   title: `National Stage Entry — 35 U.S.C. §371`,
   domainWeight: 'PCT International · MPEP 1893',
   overview: `After the PCT international phase, the applicant must enter the national (or regional) phase in each desired country/region to obtain patent rights. In the US, national stage entry is governed by 35 U.S.C. §371. The 30-month deadline from priority is absolute (with limited restoration options in some cases). Entry requires English translation (if needed), inventor oath/declaration, national phase fees, and any preliminary amendments. Understanding §371 requirements and the "bypass continuation" alternative is critical.`,
@@ -6986,8 +7024,8 @@ Applicant may file a continuation at any time:
   ],
 },
 
-pg_reissue: {
-  topicId: 'pg_reissue',
+pi_reissue: {
+  topicId: 'pi_reissue',
   title: `Reissue Applications — 35 U.S.C. §§251-252`,
   domainWeight: 'Post-Grant · MPEP 1400',
   overview: `Reissue is a procedure for correcting a defective issued patent. Under 35 U.S.C. §251, a patent owner can surrender the original patent and obtain a reissued patent that is corrected. The error must be made without deceptive intent (though this standard was relaxed by the AIA). Broadening reissue (enlarging scope) must be filed within 2 years of original issue. Narrowing reissue has no such deadline. Reissue is heavily tested because it involves interplay of §251 requirements, recapture doctrine, and intervening rights.`,
@@ -7265,8 +7303,8 @@ A reissue can be filed even during infringement litigation:
   ],
 },
 
-pg_ex_parte_reexam: {
-  topicId: 'pg_ex_parte_reexam',
+pi_reexam: {
+  topicId: 'pi_reexam',
   title: `Ex Parte Reexamination — 35 U.S.C. §§301-307`,
   domainWeight: 'Post-Grant · MPEP 2200',
   overview: `Ex parte reexamination allows the USPTO to reconsider the patentability of an issued patent in light of prior art consisting of patents or printed publications. Anyone — including third parties, the patent owner, or the USPTO Director — can request ex parte reexamination. The requester files a request citing the prior art; if the USPTO finds a "substantial new question of patentability" (SNQ), reexamination is ordered. During reexamination, only the patent owner participates (not the third-party requester) — hence "ex parte." Reexamination is a cost-effective way to challenge patents, though less powerful than IPR.`,
@@ -7534,8 +7572,8 @@ Reexamination results:
   ],
 },
 
-pg_ipr: {
-  topicId: 'pg_ipr',
+pi_ipr: {
+  topicId: 'pi_ipr',
   title: `Inter Partes Review (IPR) — 35 U.S.C. §§311-319`,
   domainWeight: 'Post-Grant · MPEP 2200',
   overview: `Inter Partes Review (IPR) is the most commonly used AIA post-grant proceeding. Created by the AIA effective September 16, 2012, IPR allows third parties to challenge an issued patent's claims before the PTAB, using patents or printed publications to assert §§102 or §103 invalidity. IPR is popular because: (1) it's faster than litigation, (2) it's less expensive than full litigation, (3) it has a lower burden of proof (preponderance of the evidence vs. clear and convincing). However, IPR has strict estoppel that bars petitioners from later re-litigating grounds that were raised or reasonably could have been raised. Deadlines: 9 months after patent grant/reissue (or 1 year after being served with infringement lawsuit).`,
@@ -7789,8 +7827,8 @@ If an IPR is filed:
   ],
 },
 
-pg_pgr: {
-  topicId: 'pg_pgr',
+pi_pgr: {
+  topicId: 'pi_pgr',
   title: `Post-Grant Review (PGR) — 35 U.S.C. §§321-329`,
   domainWeight: 'Post-Grant · MPEP 2200',
   overview: `Post-Grant Review (PGR) is a broader AIA post-grant proceeding, filed within 9 months of patent grant or reissue. Unlike IPR, PGR allows challenges on ALL invalidity grounds — §§101, 102, 103, 112 — and can use any type of prior art (including public use, on-sale, non-patent evidence). PGR is only available for patents having at least one claim with effective filing date on or after March 16, 2013 (i.e., AIA patents). PGR is less commonly used than IPR because of its narrow 9-month window, but it's more powerful when available.`,
@@ -9432,6 +9470,628 @@ Assignments affect litigation:
     'Assignments transfer ownership. Record with USPTO (Form PTO-1595) within 3 months for priority against bona fide purchasers. Fee ~$40.',
     'Assignment does NOT change inventorship. Inventorship corrections use §1.48 (pending) or §1.324 (issued) — separate from assignment.',
     'Post-assignment POA: assignee may need new POA reflecting ownership. Assignee-applicant under AIA §1.46 files POA themselves.',
+  ],
+},
+
+dp_design: {
+  topicId: 'dp_design',
+  title: `Design Patents — 35 U.S.C. §171`,
+  domainWeight: 'Design · MPEP 1500',
+  overview: `A design patent protects **ornamental** appearance for an article of manufacture — not structure or utility. Claims are typically a single claim referencing figures; broken lines show unclaimed environment. Infringement compares the **ordinary observer** overall appearance to the patented design.`,
+  sections: [
+    {
+      id: 'design-basics',
+      title: `1. Requirements and Figures`,
+      content: `## 1.1 Subject Matter
+Design patents cover **ornamental** design embodied in or applied to an article — shape, surface ornamentation, or combination (35 U.S.C. §171).
+
+## 1.2 Drawings
+Solid lines = claimed design; **broken lines** = unclaimed environment or boundary. Consistency between figures and claim is critical (MPEP §1504).
+
+## 1.3 Single Claim
+Standard practice: one claim referring to the figure(s). Functional features alone are not protectable as design; overlap with utility patents is coordinated by election/restriction practice.`,
+    },
+  ],
+  keyTakeaways: [
+    '§171: ornamental design for an article of manufacture; not functional features per se.',
+    'Broken-line practice defines what is claimed vs. environment.',
+  ],
+},
+
+dp_plant: {
+  topicId: 'dp_plant',
+  title: `Plant Patents — 35 U.S.C. §§161–164`,
+  domainWeight: 'Plant · MPEP 1600',
+  overview: `Plant patents cover **asexually reproduced** new varieties of plant (excluding tuber-propagated or plants found in an uncultivated state). The application requires a detailed description and may include color photographs where color is a distinguishing characteristic.`,
+  sections: [
+    {
+      id: 'plant-basics',
+      title: `1. Eligibility and Formalities`,
+      content: `## 1.1 Asexual Reproduction
+The claimed plant must be **asexually reproduced** (e.g., grafting, cutting) — not from seeds if that would introduce variability inconsistent with the claimed variety.
+
+## 1.2 Exclusions
+Tuber-propagated plants (e.g., potato) and plants found in an uncultivated state are excluded from plant patent protection under §161.
+
+## 1.3 Comparison to Utility
+Utility patents can also cover plants (e.g., genetically modified) under §101; plant patents are a specialized route for distinct varieties asexually reproduced.`,
+    },
+  ],
+  keyTakeaways: [
+    '§161: new, asexually reproduced plant varieties; detailed description + photos as needed.',
+    'Excluded: tuber-propagated plants; plants found uncultivated.',
+  ],
+},
+
+// ═══════════════════════════════════════════════════════════════
+// PART 8 — SPECIAL TOPICS
+// Patent Term Adjustment/Extension · AI-Assisted Inventions
+// ═══════════════════════════════════════════════════════════════
+
+st_pta_pte: {
+  topicId: 'st_pta_pte',
+  title: `Patent Term Adjustment (PTA) and Extension (PTE)`,
+  domainWeight: 'Special Topics · MPEP 2700, 2750',
+  overview: `US patent term runs 20 years from the earliest non-provisional effective filing date (35 U.S.C. §154). Two mechanisms can extend that term: Patent Term Adjustment (PTA) compensates for USPTO processing delays during prosecution; Patent Term Extension (PTE) compensates for regulatory review delays (FDA review for drugs, medical devices). PTA is calculated under complex statutory categories ("A delay," "B delay," "C delay") and reduced for applicant delays. PTE applies only to specific patent categories (pharmaceuticals, biologics, medical devices, certain agricultural products). Both are heavily tested.`,
+  sections: [
+    {
+      id: 'pta-basics',
+      title: `1. Patent Term Adjustment (PTA) — 35 U.S.C. §154(b)`,
+      content: `## 1.1 Purpose
+
+PTA compensates the patentee for USPTO processing delays that eroded patent term:
+- Patent term starts from earliest non-provisional filing date
+- Prosecution can take years
+- PTA adds back time for USPTO-caused delays
+
+## 1.2 Three Categories of USPTO Delay
+
+### "A Delay" — First Action Delay
+USPTO fails to issue a first Office Action within 14 months of filing (or entry into national stage). PTA: one day per day of delay beyond 14 months.
+
+### "B Delay" — Pendency Delay
+USPTO fails to issue the patent within 3 years of filing. PTA: one day per day of delay beyond 3 years.
+
+Notable exclusion: time periods during applicant's actions (RCE, appeals, voluntary delays) do NOT count toward B delay.
+
+### "C Delay" — Specific USPTO Actions
+- Appeal that results in reversal at PTAB or court
+- Interference proceedings
+- Secrecy orders
+- PTA: full duration of the delay
+
+## 1.3 Applicant Delays (Reduction)
+
+PTA is reduced for applicant-caused delays:
+- Late responses to Office Actions (past 3-month SSP)
+- Filing RCEs
+- Failing to request continued examination
+- Certain voluntary delays
+
+Reduction is on a day-for-day basis: every day of applicant delay subtracts from PTA.
+
+## 1.4 PTA Calculation
+
+Total PTA = (A Delay + B Delay + C Delay) − Overlap − Applicant Delay
+
+Where Overlap represents time counted in multiple categories (only counted once).
+
+## 1.5 Example Calculation
+
+- Application filed: January 1, 2020
+- First OA: March 1, 2022 (14 months + 2 months = 2 months of A delay = ~60 days)
+- Issue date: April 1, 2024 (over 3 years from filing → B delay applies)
+- Applicant filed RCE on March 1, 2023 (6 months of B delay excluded for RCE)
+- Applicant delays: 45 days late responses
+
+### Rough Calculation:
+- A delay: ~60 days
+- B delay: ~300 days (total) − 180 days RCE = ~120 days
+- Applicant delay: −45 days
+- PTA: ~135 days
+
+Exact calculation by USPTO is complex and automated.
+
+## 1.6 Notification and Review
+
+- USPTO calculates PTA at issue (shown on Notice of Allowance)
+- PTA appears on the face of the issued patent
+- Patent owner may request reconsideration within 2 months of issue
+- Formal request for reconsideration under 37 CFR §1.705
+
+## 1.7 Federal Circuit Review
+
+Disputes over PTA can be appealed:
+- Court of Federal Claims jurisdiction under 35 U.S.C. §154(b)(4)(A)
+- Within 180 days of USPTO's final determination
+- Standards of review apply
+
+## 1.8 Cellect (2023) — PTA and ODP
+
+*In re Cellect, LLC*, 81 F.4th 1216 (Fed. Cir. 2023):
+- A patent with PTA can still face ODP invalidation over earlier commonly-owned patents
+- PTA does not immunize from ODP
+- This is a significant concern for continuations and divisionals
+- Remedy: terminal disclaimer (but that forfeits the PTA benefit)`,
+      examTip: `**Three PTA categories**: A (14-month first action), B (3-year pendency), C (appeals, interferences). Reduced by applicant delays. Cellect (2023): PTA does NOT insulate from ODP. Must balance PTA vs. terminal disclaimer risk.`,
+    },
+    {
+      id: 'pte-basics',
+      title: `2. Patent Term Extension (PTE) — 35 U.S.C. §156`,
+      content: `## 2.1 Purpose
+
+PTE compensates for regulatory review that delays commercial use:
+- Common for pharmaceuticals (FDA approval takes years)
+- Also for medical devices, biologics, certain agricultural products
+- Up to 5 years extension, capped at 14 years from approval
+
+## 2.2 Eligibility
+
+PTE is available for:
+- **Human drugs** (pharmaceuticals) approved by FDA
+- **Biologics** (including biosimilars)
+- **Animal drugs** approved by FDA
+- **Medical devices** Class III approved by FDA
+- **Food additives** approved by FDA
+- **Pesticides** approved by EPA (including herbicides)
+- **Plant biostimulants** (recent additions)
+
+## 2.3 Requirements
+
+To qualify for PTE:
+1. The patent covers:
+   - A **drug product** (or active ingredient), OR
+   - A **method of using** the product, OR
+   - A **method of making** the product
+
+2. The product has received **regulatory review delay**:
+   - IND (Investigational New Drug) for drugs
+   - Clinical trials
+   - NDA (New Drug Application) review
+   - Approval
+
+3. The patent has **not expired** at time of application for PTE
+
+4. The applicant files for PTE within **60 days** of regulatory approval
+
+## 2.4 Calculation
+
+PTE is calculated based on "regulatory review period":
+- **IND to submission of application**: count half the time (not all)
+- **Application submission to approval**: full time
+- Maximum: 5 years extension
+- Capped at: 14 years total from approval
+
+Example:
+- Patent filed and issued
+- 10 years of regulatory review before approval
+- Some time excluded (delays attributable to applicant)
+- PTE ~ 3.5 years (capped)
+
+## 2.5 Application Process
+
+To obtain PTE:
+1. File Application for Extension within 60 days of regulatory approval
+2. Provide detailed calculation
+3. USPTO reviews and issues PTE certificate
+4. Extension adds to patent term
+
+## 2.6 Scope of PTE
+
+PTE extends only those claims that:
+- Cover the approved product (or use/method)
+- Specifically claim the approved subject matter
+
+Other claims (broader or different scope) do NOT get PTE.
+
+## 2.7 One Patent Per Product Rule
+
+For a single approved product:
+- Only ONE patent can receive PTE for that product
+- Applicant chooses which patent (usually most valuable)
+- Multiple products can have separate PTE on separate patents
+
+## 2.8 PTE vs. Regulatory Exclusivity
+
+Different concepts:
+- **PTE**: adds years to patent term
+- **FDA regulatory exclusivity**: prevents FDA from approving generics/biosimilars (separate from patent)
+- Both can provide market protection
+
+## 2.9 PTE Calculation Example
+
+Drug approval timeline:
+- Patent filed: 2010
+- IND filed: 2015
+- NDA approval: 2020
+- Patent expiration (without PTE): 2030
+
+Regulatory review period:
+- IND to NDA (2015-2020): 5 years (count half = 2.5 years)
+- Actually: IND part + testing + NDA review
+- Assume: half of pre-submission + full submission period = 2.5 years
+
+Extension = 2.5 years (capped at 5 and at 14 years from approval)
+
+New expiration: 2032.5
+
+## 2.10 PTE Statutory Caps
+
+The extension is capped:
+- **Maximum 5 years** extension
+- Total patent term capped at **14 years from FDA approval**
+
+So if a patent has 20 years of term left and gets 5 years PTE, total is 25 years — but that's capped at 14 years from approval.
+
+## 2.11 Recent Developments
+
+- **Cellect** analysis may affect PTE + ODP interactions
+- PTE + PTA can be stacked (first PTA, then PTE)
+- Generic entry timelines continue to be litigated
+- Hatch-Waxman Act governs many PTE issues for pharmaceuticals`,
+      importantNote: `PTE is **narrow** — only for specific regulatory categories (drugs, devices, biologics). Maximum extension is 5 years. PTE requires timely application (60 days from approval). Only ONE patent per product can get PTE. This is different from PTA, which applies to all patents with prosecution delays.`,
+    },
+    {
+      id: 'pta-pte-interaction',
+      title: `3. PTA and PTE Interaction`,
+      content: `## 3.1 Stacking PTA and PTE
+
+- **PTA** is calculated first (prosecution-based)
+- **PTE** is applied on top of PTA (regulatory-based)
+- Maximum total extension can be significant for drug patents
+
+## 3.2 Maintenance Fees
+
+- Paid at 3.5, 7.5, and 11.5 years from issue
+- PTA/PTE do not affect fee deadlines
+- But if patent expires for failure to pay, no PTA/PTE saves it
+
+## 3.3 Practical Example
+
+- Application filed: 2010
+- First OA: 2012 (within 14 months → no A delay)
+- Issue: 2015 (5 years from filing → 2 years of B delay, but reduced for any applicant delays)
+- Let's say PTA = 1.5 years
+- Patent normally expires: 2030 + 1.5 years = mid-2031
+- IND filed: 2011
+- NDA approval: 2024
+- PTE: 5 years (maximum)
+- Total patent term: 2036.5 (if not capped)
+
+### But 14-Year Cap from Approval:
+- Approval: 2024
+- 14 years from 2024: 2038
+- So patent term is effectively the earlier of:
+  - Base term + PTA + PTE = 2036.5
+  - 14 years from approval = 2038
+- PTE applies → 2036.5 term
+
+## 3.4 Cellect Concerns
+
+With PTA extensions:
+- Patent with PTA may have term extending beyond a commonly-owned patent without PTA
+- This can create ODP issues
+- Terminal disclaimer might be needed, but that eliminates the PTA benefit
+
+Strategic considerations:
+- File continuations carefully
+- Monitor ODP interactions
+- Consider terminal disclaimer implications during prosecution
+
+## 3.5 Comparison Table
+
+| Feature | PTA | PTE |
+|---|---|---|
+| Basis | USPTO prosecution delays | Regulatory review delays |
+| Statute | 35 USC §154(b) | 35 USC §156 |
+| Available for | All utility/plant patents | Pharma, biologics, medical devices, certain ag |
+| Maximum | No statutory cap | 5 years |
+| Overall cap | None | 14 years from regulatory approval |
+| Calculation | Categories A, B, C | Regulatory review period |
+| When to file | Automatic (USPTO calculates) | Within 60 days of approval |
+
+## 3.6 Common Exam Traps
+
+- Thinking PTA and PTE are the same (different statutes, different rules)
+- Forgetting that PTE is limited to specific patent categories
+- Missing the 60-day deadline for PTE application
+- Assuming PTA protects against ODP (Cellect says no)
+- Miscalculating PTA categories (A, B, C)`,
+    },
+  ],
+  keyTakeaways: [
+    'PTA (35 USC §154(b)): compensates for USPTO prosecution delays. Three categories: A (first action delay), B (3-year pendency), C (appeals, interferences).',
+    'PTA reduced by applicant delays (late responses, RCEs, voluntary delays). Day-for-day reduction.',
+    'PTA calculated automatically; patent owner can request reconsideration within 2 months of issue.',
+    'PTE (35 USC §156): compensates for regulatory review delays. Maximum 5 years extension.',
+    'PTE available for: pharmaceuticals, biologics, medical devices (Class III), certain animal drugs, certain pesticides.',
+    'PTE requirements: patent covers approved product, regulatory review delay, not expired, file within 60 days of approval.',
+    'PTE calculation: "regulatory review period" counts half of IND period + full submission-to-approval. Capped at 14 years from approval.',
+    'Cellect (2023): PTA does NOT insulate from obviousness-type double patenting. Terminal disclaimer may be needed but forfeits PTA benefit.',
+  ],
+},
+
+st_ai_inventions: {
+  topicId: 'st_ai_inventions',
+  title: `AI-Assisted Inventions and USPTO Guidance`,
+  domainWeight: 'Special Topics · USPTO 2024 AI Inventorship Guidance',
+  overview: `In February 2024, the USPTO issued Inventorship Guidance for AI-Assisted Inventions (89 Fed. Reg. 10043). This guidance confirms that only natural persons can be inventors, but a natural person may be an inventor of an AI-assisted invention if they made a significant contribution to the conception. The Federal Circuit's Thaler v. Vidal decision (2022) held that AI (DABUS) cannot be named as an inventor. Understanding the significance-of-contribution analysis is increasingly important for exam questions.`,
+  sections: [
+    {
+      id: 'ai-inventorship-basics',
+      title: `1. Only Natural Persons Can Be Inventors`,
+      content: `## 1.1 Thaler v. Vidal (Fed. Cir. 2022)
+
+*Thaler v. Vidal*, 43 F.4th 1207 (Fed. Cir. 2022), affirmed that:
+- An AI system (DABUS) cannot be an inventor
+- 35 U.S.C. §100(f) defines "inventor" as "the individual or individuals"
+- The word "individual" means a natural person, not an artificial construct
+- A patent application listing DABUS as sole inventor was properly rejected
+
+The Supreme Court denied certiorari, so Thaler is the controlling law.
+
+## 1.2 USPTO February 2024 Guidance
+
+89 Fed. Reg. 10043 (February 13, 2024), effective on publication:
+- Only natural persons can be inventors
+- A natural person may be an inventor of an AI-assisted invention
+- Must have made a **significant contribution** to the invention's conception
+
+## 1.3 Who Cannot Be an Inventor
+
+- AI systems
+- Software programs
+- Algorithms
+- Corporate entities (already established, AI guidance reaffirms)
+
+## 1.4 Historical Cases Confirming
+
+- *Ex parte Thaler* (USPTO Board, 2020) — DABUS rejected as inventor
+- *Thaler v. Comptroller* (UK High Court, 2023) — similar ruling internationally
+- International consensus: AI not inventorable
+
+## 1.5 Why Only Natural Persons?
+
+### Legal Policy
+- Inventorship is rooted in human creativity
+- Patent rights require personhood for legal attribution
+- Consistent with international patent law
+
+### Practical Considerations
+- Accountability: an inventor can be a witness, sign oaths
+- Ownership: natural persons have clear property rights
+- Enforcement: easier to identify responsibility
+
+## 1.6 Distinction from Ownership
+
+- AI cannot be an inventor
+- But AI-assisted inventions can have OWNERS
+- The natural person inventor (if significant contribution) owns initially
+- Assignee (employer, etc.) can own through assignment
+
+## 1.7 Multiple Scenarios
+
+### Scenario A: Pure AI Output
+- Human gives AI a general problem
+- AI produces solution independently
+- Human has not made significant contribution to conception
+- → No human inventor → patent application rejected (no eligible inventor)
+
+### Scenario B: Human-AI Collaboration
+- Human has specific insight about approach
+- AI helps explore, analyze, optimize
+- Human makes creative choices about claim scope
+- → Human may be significant contributor → eligible inventor
+
+### Scenario C: AI as Tool
+- Human conceives solution (like using a calculator)
+- AI performs computation or search
+- Human interprets and refines
+- → Human is clearly inventor (AI is just a tool)`,
+    },
+    {
+      id: 'ai-significant-contribution',
+      title: `2. Significant Contribution Analysis`,
+      content: `## 2.1 The Significance Standard
+
+A natural person is an inventor if they made a **significant contribution** to the conception of the invention:
+- **"Conception"** is the traditional legal standard (Sewall v. Walters)
+- **"Significant"** means more than trivial contribution
+
+## 2.2 USPTO Guidance Factors
+
+The February 2024 Guidance provides five factors to consider:
+
+### Factor 1: Significant Contribution to Conception
+The natural person's contribution to conception must be significant relative to the invention as a whole. Not every contribution counts — only those that represent creative insight.
+
+### Factor 2: Recognition of Problem
+Did the person recognize the specific problem to be solved? Merely posing a general problem (e.g., "develop a new drug") is insufficient without more.
+
+### Factor 3: Contribution to Solution
+Did the person specifically contribute to the solution? For example:
+- Specific design choices
+- Selection of particular materials or parameters
+- Creative problem-solving
+
+### Factor 4: Integration and Refinement
+Did the person integrate AI outputs with other considerations? Making decisions about which AI outputs to use (or modify) can be significant.
+
+### Factor 5: Experimentation and Testing
+Did the person conduct experiments that informed the invention? Active role in testing, validation, refinement.
+
+## 2.3 Contributions That Are NOT Enough
+
+- **Simply prompting AI** with a general task
+- **Selecting among AI outputs** without substantial creative modification
+- **Providing funding or supervision**
+- **Providing computing resources**
+
+These do not rise to the level of inventorship without more.
+
+## 2.4 Contributions That ARE Enough
+
+- **Specific problem formulation** with creative insight
+- **Design of the AI system** used to solve the problem (in that case, system developer may be inventor)
+- **Critical interpretation or modification** of AI output
+- **Creative choice of claim scope and limitations**
+- **Experimentation that led to specific embodiments**
+
+## 2.5 Multi-Inventor Analysis
+
+For inventions with multiple natural persons and AI assistance:
+- Each human's contribution analyzed separately
+- Only those who made significant contributions are inventors
+- AI is never an inventor (not named at all)
+
+## 2.6 Common Exam Scenarios
+
+### Scenario 1: Researcher Uses AI for Structure Optimization
+- Researcher identifies a problem (new inhibitor)
+- Uses AI to predict molecular structures
+- Selects candidate, validates experimentally
+- Researcher likely an inventor (identified problem + validation)
+
+### Scenario 2: Programmer Builds AI That Invents
+- Programmer creates AI system
+- AI independently solves a problem
+- No human modification or integration
+- Programmer may or may not be inventor — fact-dependent
+
+### Scenario 3: Multiple Researchers + AI
+- Team uses AI extensively
+- Some team members provide domain expertise
+- Others just use AI without creative input
+- Only those with significant contribution to conception are inventors
+
+## 2.7 Evidence of Inventorship
+
+To establish inventorship:
+- Document the natural person's contributions
+- Lab notebooks, code repositories, meeting notes
+- Specific decisions made that shaped the invention
+- Evidence of recognition of the problem
+- Experimental contributions
+
+## 2.8 Relation to Traditional Inventorship
+
+The AI guidance is CONSISTENT with traditional inventorship rules:
+- Conception test still applies
+- Contribution to at least one claim
+- Not just reducing to practice
+- Focus on creative insight
+
+What's NEW:
+- Explicit exclusion of AI
+- Guidance on analyzing AI-assisted inventions
+- Factors for determining significance`,
+      examTip: `The 2024 USPTO Guidance on AI-assisted inventions is likely to appear on current exams. Memorize: **(1) only natural persons can be inventors, (2) natural person must make SIGNIFICANT contribution to conception, (3) prompting AI or selecting outputs without creative input is insufficient.**`,
+    },
+    {
+      id: 'ai-practical-issues',
+      title: `3. Practical Issues and Best Practices`,
+      content: `## 3.1 Inventorship Disputes
+
+When AI is used:
+- Document human contributions carefully
+- Identify specific creative insights
+- Record the decision points
+- Preserve email chains and notes
+
+## 3.2 Oath/Declaration Considerations
+
+- Inventor must sign oath/declaration
+- Inventor declares they are the original inventor
+- Falsely claiming inventorship for AI-generated invention = ethics violation
+
+## 3.3 Prior Art Considerations
+
+AI output published online:
+- AI-generated articles
+- AI-generated code on GitHub
+- AI-generated patents (theoretically)
+- All of these are potential prior art under §102
+
+### Materiality
+- Even AI-generated prior art counts as prior art
+- Must be disclosed in IDS if material
+
+## 3.4 Invention Disclosures and AI
+
+When documenting invention disclosures:
+- Include the AI tools used
+- Describe specific human contributions
+- Identify creative decisions
+- Note any AI outputs that were modified
+
+## 3.5 Training Data and Patents
+
+If AI is trained on proprietary or patented material:
+- Does not automatically infringe patents (patents cover inventions, not information)
+- But the training process may raise copyright or trade secret issues
+- Separate legal analysis from inventorship
+
+## 3.6 International Considerations
+
+Other countries have different approaches:
+- **UK**: similar to US (Thaler rejected)
+- **South Africa**: allowed DABUS as inventor (but this is unusual)
+- **EPO**: natural persons only
+- **Australia**: initially allowed AI, then reversed
+
+Most major jurisdictions follow the US approach.
+
+## 3.7 Implications for Filing Strategy
+
+### Strategy 1: Document Human Contribution
+- Keep records of human creative input
+- Identify specific decisions and insights
+- Use as evidence if inventorship is challenged
+
+### Strategy 2: Involve AI Intentionally as Tool
+- Position AI as assistance, not source
+- Ensure human drives creative decisions
+- Design workflow to preserve human conception
+
+### Strategy 3: File Carefully
+- If no significant human contribution → no inventor, no patent
+- Don't artificially include humans as inventors
+- Honest inventorship analysis required
+
+## 3.8 Future Developments
+
+The AI guidance may be refined:
+- USPTO monitoring implementation
+- Cases may clarify the "significant contribution" standard
+- Possible legislative updates
+- International harmonization discussions
+
+## 3.9 Patent Strategy for AI-Heavy Work
+
+Companies using AI extensively should:
+- Establish documentation practices
+- Train R&D staff on inventorship rules
+- Include inventorship analysis in patent process
+- Consider whether AI-assisted work is patentable
+
+## 3.10 Ethics Considerations
+
+Patent practitioners should:
+- Advise clients on inventorship carefully
+- Avoid filing patents with false inventorship
+- Disclose AI involvement where relevant
+- Comply with ethical duties of candor`,
+    },
+  ],
+  keyTakeaways: [
+    'Thaler v. Vidal (Fed. Cir. 2022): AI (DABUS) cannot be listed as an inventor. §100(f) requires "individual" = natural person.',
+    'USPTO February 2024 Guidance: only natural persons can be inventors. AI-assisted inventions require significant human contribution.',
+    'Significant contribution analysis: problem recognition, contribution to solution, integration/refinement, experimentation. Five factors.',
+    'Simply prompting AI with a general task is NOT significant contribution. Significant requires creative insight.',
+    'Selecting among AI outputs without creative modification is NOT significant contribution.',
+    'Multi-inventor AI-assisted inventions: analyze each human contribution separately. AI never named.',
+    'If no human makes significant contribution → no eligible inventor → patent application will be rejected.',
+    'Documentation crucial: keep records of human decision points, creative insights, experimental contributions.',
   ],
 },
 
