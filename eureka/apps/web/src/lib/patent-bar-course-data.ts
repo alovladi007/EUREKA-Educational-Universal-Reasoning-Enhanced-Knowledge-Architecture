@@ -1587,6 +1587,1048 @@ When filed after issuance, it requires a separate fee and proper recordation.`,
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// PART 2 — APPLICATION PREPARATION
+// MPEP Chapter 600 · 37 CFR 1.52–1.84 · 35 U.S.C. §§ 111, 112, 115
+// ═══════════════════════════════════════════════════════════════
+
+pp_specification: {
+  topicId: 'pp_specification',
+  title: `Specification Requirements — MPEP 608`,
+  domainWeight: 'Application Preparation · MPEP 608',
+  overview: `The specification is the written description portion of the patent application. It must satisfy both statutory requirements (§112(a) disclosure, §112(b) claim definiteness) and procedural requirements (37 CFR §1.71–§1.75). A properly prepared specification contains a title, cross-references, field of invention, background, summary, brief description of drawings, detailed description, claims, and abstract — arranged in the order set by 37 CFR §1.77. Understanding the required content and sequence of each section is essential for both drafting and answering exam questions about application preparation.`,
+  sections: [
+    {
+      id: 'spec-structure',
+      title: `1. Required Specification Structure (37 CFR §1.77)`,
+      content: `The USPTO prescribes a specific order for application sections. While not strictly mandatory, applications filed in the correct order are processed more efficiently and avoid formal objections.
+
+## 1.1 The Standard Order (37 CFR §1.77(b))
+
+1. **Title of the invention** (short and specific, 500 characters max per §1.72(a))
+2. **Cross-reference to related applications** (if any)
+3. **Statement regarding federally sponsored research or development** (if applicable, per Bayh-Dole)
+4. **Names of parties to a joint research agreement** (if applicable for AIA §102(c))
+5. **Reference to a "Sequence Listing," table, or computer program listing appendix** submitted on compact disc (if applicable)
+6. **Statement regarding prior disclosures by inventor or joint inventor** (37 CFR §1.77(b)(6), for AIA applications invoking §102(b)(1) or (b)(2))
+7. **Background of the invention**
+   - (a) Field of the invention
+   - (b) Description of the related art (prior art)
+8. **Brief summary of the invention**
+9. **Brief description of the several views of the drawing**
+10. **Detailed description of the invention**
+11. **One or more claims**
+12. **Abstract of the disclosure**
+13. **Sequence listing** (if applicable)
+
+## 1.2 Title Requirements (37 CFR §1.72(a))
+
+- Short, specific, and technically accurate
+- 500 characters maximum
+- Cannot contain trademarks, abbreviations (unless universally known), or puffery ("new," "improved")
+- Appears on filing receipt, gazette, and front of issued patent
+
+Improper titles: "New Widget" · "Best Ever Device" · "Patent Pending Invention"
+Proper titles: "Thermally Actuated Valve Assembly" · "Method of Purifying Recombinant Antibodies"
+
+## 1.3 Abstract Requirements (37 CFR §1.72(b))
+
+- Single paragraph, 150 words maximum
+- Starts on a separate sheet (if paper filed) or as a separate section (if electronic)
+- Discloses what is NEW about the invention
+- Written in narrative form, not list form
+- Should not use legal phraseology ("means," "comprising")
+- Should be a technical disclosure, not an advertising statement
+
+## 1.4 Paper-Filing Formatting Requirements
+
+If filed on paper (rarely done now, but may appear on exam):
+- White, flexible, smooth paper
+- 8.5" × 11" (or A4 in some jurisdictions)
+- Line spacing: 1.5 or double
+- Page margins: at least 1" top, bottom, left; 2/3" right
+- Pagination: bottom center, below margin
+- One-sided printing only
+
+## 1.5 Electronic Filing
+
+Most applications are filed via EFS-Web or Patent Center. Electronic filing uses:
+- DOCX format (preferred since 2024; PDF fallback)
+- Specific file-naming conventions
+- Digital signatures
+
+Failure to comply with formatting can result in objections (not rejections) requiring correction but not affecting patentability.`,
+      examTip: `The numerical order of sections in 37 CFR §1.77(b) is sometimes tested. Memorize the sequence: **title → cross-references → federal research → joint research → sequence listing reference → prior disclosures statement → background → summary → drawings description → detailed description → claims → abstract**. Abstract is last before any sequence listing.`,
+    },
+    {
+      id: 'spec-detailed-description',
+      title: `2. Detailed Description Requirements`,
+      content: `The detailed description is the heart of the specification. It must satisfy §112(a) for every claim and provide enough support for claim amendments.
+
+## 2.1 What Must Be Disclosed
+
+### Per §112(a):
+1. **Written description**: shows possession of the invention (Ariad)
+2. **Enablement**: allows POSITA to make and use without undue experimentation (Wands)
+3. **Best mode**: the inventor's preferred embodiment
+
+### Practical Content:
+- Structure of the invention (parts, components, subsystems)
+- Function (how each component operates)
+- Methods of making (synthesis, assembly, manufacturing)
+- Methods of using (operation, application)
+- Alternative embodiments
+- Working examples (especially in unpredictable arts)
+- Preferred ranges and parameters
+- Comparison with prior art (how invention differs)
+
+## 2.2 Drawings Integration
+
+Every numbered element in the drawings must be identified in the detailed description:
+- Each reference numeral introduced with a descriptive phrase
+- Consistent numbering across drawings
+- Cross-reference to multiple figures where applicable
+
+Example: "Turning to FIG. 2, the valve assembly (10) includes a body (12), a stem (14) slidably disposed within body (12), and a biasing spring (16) coupled between stem (14) and cap (18)..."
+
+## 2.3 Use of Examples
+
+Working examples illustrate how to practice the invention:
+- Common in chemistry, biology, pharmaceuticals
+- Numbered sequentially ("Example 1," "Example 2")
+- Provide specific materials, quantities, conditions
+- Often labeled as "prophetic" (not actually performed) or "working" (actually performed)
+
+**Prophetic examples** must be written in **present or future tense**, never past tense. A prophetic example written in past tense is a false statement (potential inequitable conduct).
+
+## 2.4 Incorporation by Reference
+
+Material from another document can be incorporated by reference:
+- Must be explicit: "[Document] is hereby incorporated by reference in its entirety"
+- Identify the document specifically
+- **Essential material** cannot be incorporated from a non-essential source — essential material must be reproduced or incorporated from US patents/published applications (37 CFR §1.57(d))
+- **Non-essential material** can be incorporated from any publication
+
+## 2.5 Use of Claim Terms
+
+The detailed description must support every term used in the claims. If a claim uses "about 50%," the spec should describe what "about" means. If a claim uses a term of art, the spec should use it consistently.
+
+## 2.6 Section Headings (Optional but Recommended)
+
+Common headings:
+- Field of the Invention
+- Background
+- Brief Summary
+- Brief Description of the Drawings
+- Detailed Description
+- Examples
+- Claims
+
+Headings help the reader navigate and the examiner search the disclosure.`,
+    },
+    {
+      id: 'spec-sequence-listings',
+      title: `3. Sequence Listings (Biological Sequences)`,
+      content: `If the application discloses nucleotide or amino acid sequences, special rules apply for sequence listings (37 CFR §1.831–§1.835 under the new ST.26 standard).
+
+## 3.1 When a Sequence Listing Is Required
+
+Required for sequences:
+- Nucleotide sequences of 10 or more bases
+- Amino acid sequences of 4 or more residues
+
+All qualifying sequences must be included in a sequence listing, numbered sequentially as SEQ ID NOs.
+
+## 3.2 WIPO ST.26 Standard (Effective July 1, 2022)
+
+The USPTO adopted WIPO Standard ST.26 on July 1, 2022, replacing the older ST.25 standard. ST.26 requires:
+- XML format (not text)
+- Specific element structure per ST.26 schema
+- File extension: .xml
+
+Applications filed BEFORE July 1, 2022, may still use ST.25 format.
+
+## 3.3 Filing Requirements
+
+- ST.26 XML file submitted via Patent Center or EFS-Web
+- Referenced in the specification: "The Sequence Listing filed herewith forms part of the specification..."
+- Statement of no new matter: the sequences in the listing must match the disclosure; any discrepancy is new matter
+
+## 3.4 Use of SEQ ID NO Throughout
+
+Sequences disclosed in the specification, drawings, or claims must refer to their sequence listing entry by SEQ ID NO.
+
+Example: "The protein comprises the amino acid sequence of SEQ ID NO: 12..."
+
+## 3.5 Sequence Data in Specification
+
+Short sequences (below the threshold) may appear directly in the specification. Longer sequences must be in the listing, but the spec can cite them by SEQ ID NO.`,
+    },
+  ],
+  keyTakeaways: [
+    'Specification order per 37 CFR §1.77(b): title, cross-ref, fed research, joint research, sequence listing ref, prior disclosure statement, background, summary, drawings description, detailed description, claims, abstract.',
+    'Title: 500 chars max, technically specific, no puffery or trademarks.',
+    'Abstract: single paragraph, 150 words max, on separate sheet, no legal phraseology.',
+    'Every drawing reference numeral must be identified in the detailed description with descriptive text.',
+    'Prophetic examples must be in PRESENT/FUTURE tense, never past tense. Past tense = false statement = potential inequitable conduct.',
+    'Incorporation by reference: essential material must come from US patents/published applications; non-essential from any publication (37 CFR §1.57).',
+    'Sequence listings: required for nucleotide sequences ≥10 bases or amino acid sequences ≥4 residues. WIPO ST.26 XML format since July 1, 2022.',
+    'All specification content measured as of effective filing date. Post-filing additions = new matter (§132 violation).',
+  ],
+},
+
+pp_claim_drafting: {
+  topicId: 'pp_claim_drafting',
+  title: `Claim Drafting — Format, Types, and Rules`,
+  domainWeight: 'Application Preparation · MPEP 608.01(m)–608.01(n), 2173',
+  overview: `Claims define the legal scope of the patent. They must be drafted with precision to balance breadth (covering commercial variants) against invalidity risk (over-broad claims fail §§102, 103, 112). The exam tests specific claim formats (Jepson, Markush, means-plus-function), multiple dependent claim rules, transitional phrases, and the technical requirements of 37 CFR §1.75. Claim drafting rules are heavily tested because they appear in virtually every prosecution scenario.`,
+  sections: [
+    {
+      id: 'claim-format',
+      title: `1. Basic Claim Format Requirements (37 CFR §1.75)`,
+      content: `## 1.1 The Claim Structure
+
+A claim has three parts:
+1. **Preamble** — describes what the invention is (name, category)
+2. **Transitional phrase** — links preamble to body (comprising / consisting of / consisting essentially of)
+3. **Body** — recites the elements/limitations of the invention
+
+**Example claim structure:**
+"A widget [preamble], comprising [transitional]: a first component; a second component connected to the first component; and a third component [body]."
+
+## 1.2 One-Sentence Rule
+
+Each claim must be a **single sentence** (37 CFR §1.75(i)). Use semicolons to separate clauses but no periods within the claim. The sentence begins with a capitalized word and ends with a period.
+
+## 1.3 Numbering and Dependency
+
+- Claims are numbered sequentially with Arabic numerals (1, 2, 3...) from the beginning of the claim section.
+- Independent claims can appear anywhere in the sequence but are typically listed first.
+- Dependent claims reference earlier claims by number: "The widget of claim 1, wherein..."
+- No numbering gaps allowed on the face of a patent.
+
+## 1.4 Transitional Phrases
+
+The transitional phrase determines whether the claim is **open** or **closed**:
+
+| Phrase | Meaning | Scope |
+|---|---|---|
+| **"Comprising"** | Open — includes the listed elements + any unlisted ones | Broad |
+| **"Consisting of"** | Closed — ONLY the listed elements | Narrow |
+| **"Consisting essentially of"** | Semi-closed — listed elements + anything that doesn't materially affect basic/novel characteristics | Intermediate |
+| **"Including"** | Usually open (like "comprising") | Broad |
+| **"Having"** | Context-dependent | Intermediate |
+
+"Comprising" is the most common and most favorable for the patentee. "Consisting of" is narrow but useful to overcome prior art.
+
+## 1.5 Preamble Considerations
+
+- Preamble limitations: whether preamble language limits the claim depends on whether it gives "life, meaning, and vitality" to the claim (*Bell Communications Research, Inc. v. Vitalink Communications Corp.*, 55 F.3d 615 (Fed. Cir. 1995)).
+- "A method for X" — preamble purpose often limiting
+- Preamble as antecedent basis for body elements — limiting
+
+## 1.6 Dependent Claims
+
+A dependent claim must:
+- Reference the claim(s) it depends from
+- **Further limit** the referenced claim (not broaden)
+- Incorporate all limitations of the referenced claim
+
+Example:
+- Claim 1: "A widget comprising A, B, and C."
+- Claim 2: "The widget of claim 1, further comprising D." → valid dependent
+- Claim 3: "The widget of claim 1, wherein A is replaced by E." → INVALID (broadens, doesn't further limit)
+
+## 1.7 Multiple Dependent Claims (37 CFR §1.75(c))
+
+A multiple dependent claim references multiple other claims in the ALTERNATIVE:
+- Correct: "The widget of any one of claims 1-5, wherein..."
+- Correct: "The widget of claim 1 or claim 2, wherein..."
+- **Incorrect**: "The widget of claims 1 and 2, wherein..." (cumulative)
+- **Incorrect**: Multiple dependent claim cannot depend on another multiple dependent claim
+
+Multiple dependent claims count as multiple claims for fee purposes (each referenced claim = one claim).`,
+      examTip: `The difference between "comprising," "consisting of," and "consisting essentially of" is tested repeatedly. **Comprising = open** (includes listed + more). **Consisting of = closed** (only listed). **Consisting essentially of = semi-closed** (listed + immaterial additions). If a question describes a composition with extra ingredients not mentioned in the claim, "consisting of" fails but "comprising" passes.`,
+    },
+    {
+      id: 'claim-types',
+      title: `2. Types of Claims`,
+      content: `## 2.1 Apparatus / Product Claims
+
+Claim the thing itself (machine, manufacture, composition).
+- "A widget comprising..." (apparatus)
+- "A pharmaceutical composition comprising..." (composition)
+- "An article of manufacture having..." (manufacture)
+
+## 2.2 Method / Process Claims
+
+Claim a series of steps.
+- "A method of doing X, comprising the steps of: (a)..., (b)..., (c)..."
+- Steps should be in a clear sequence if order matters
+- Active verbs (forming, heating, applying) preferred
+
+## 2.3 Means-Plus-Function Claims (§112(f))
+
+Covered in depth under Part 1. Uses "means for [function]" format. Construed to cover disclosed structure + equivalents. Narrower than it reads.
+
+## 2.4 Jepson Claims
+
+A Jepson claim admits what is old and claims what is new:
+- "In a widget having a frame and a wheel, the improvement comprising [new features]."
+- The preamble admits the old elements as prior art
+- The transition "wherein the improvement comprises" marks the inventive part
+
+Useful for:
+- Improvement inventions
+- Situations where the old art is extensive
+- Claims following a restriction requirement
+
+Risk: Jepson preamble may be treated as an admission of prior art.
+
+## 2.5 Markush Claims
+
+A Markush claim uses a closed group:
+- "A compound selected from the group consisting of A, B, C, and D."
+- Treated as disclosing each listed member as alternatives
+- Named after *Ex parte Markush*, 1925 Dec. Comm'r Pat. 126
+
+Rules:
+- Must use "selected from the group consisting of" (closed language)
+- Members should share a common use or property
+- Improper Markush: disparate members not sharing a common characteristic
+
+## 2.6 Product-by-Process Claims
+
+Claim a product by reference to the process that made it:
+- "A product made by the process of: [step 1], [step 2]..."
+- Useful when the product is difficult to describe structurally
+- The product is limited by the PROCESS steps (even though claiming the product) per *Abbott Laboratories v. Sandoz, Inc.*, 566 F.3d 1282 (Fed. Cir. 2009)
+
+Caution: product-by-process claims are patentable only if the product itself is novel and nonobvious — the process doesn't save an old product.
+
+## 2.7 Claims for Software / Computer-Implemented Inventions
+
+Common formats:
+- **Method claims**: "A method comprising: receiving X; processing Y; outputting Z."
+- **System claims**: "A system comprising: a processor configured to [algorithm]; a memory..."
+- **Computer-readable medium (CRM) claims**: "A non-transitory computer-readable medium storing instructions that, when executed, cause [result]."
+
+CRM claims MUST recite "non-transitory" — otherwise they fail §101 as transitory signals (*In re Nuijten*).
+
+## 2.8 Beauregard Claims
+
+A specific type of CRM claim named after *In re Beauregard*, 53 F.3d 1583 (Fed. Cir. 1995). Always use "non-transitory" computer-readable medium.
+
+## 2.9 Use Claims
+
+"A use of compound X for treating Y." Common in Europe but generally NOT allowed as method claims in the US. US practice rephrases: "A method of treating Y comprising administering compound X."`,
+    },
+    {
+      id: 'claim-special-rules',
+      title: `3. Special Claim Rules`,
+      content: `## 3.1 Claim Fees (37 CFR §1.16)
+
+Filing fees depend on claim count:
+- First **20 total claims** — included in basic filing fee
+- Each additional claim above 20 — excess claim fee
+- First **3 independent claims** — included
+- Each additional independent claim above 3 — excess independent fee
+- Multiple dependent claims — each referenced claim counts separately
+- Small/micro entity discounts reduce these fees
+
+## 3.2 Claims Must Be in English (or Translated)
+
+Claims must be in English. Foreign-language applications must include an English translation of the claims for fee calculation and examination (37 CFR §1.52(d)).
+
+## 3.3 Claim Numbering After Amendment
+
+When claims are canceled during prosecution:
+- Remaining claims keep their original numbers
+- New claims added get new numbers (canceled numbers are NOT reused)
+- Final issued patent may have numbering gaps — but the USPTO renumbers at issue
+
+## 3.4 Narrowing Amendments and Estoppel
+
+Narrowing a claim during prosecution may create **prosecution history estoppel** — limiting the doctrine of equivalents. *Festo Corp. v. Shoketsu Kinzoku Kogyo Kabushiki Co.*, 535 U.S. 722 (2002).
+
+Relevant to later infringement litigation, not examination.
+
+## 3.5 Common Claim Drafting Errors
+
+| Error | Problem |
+|---|---|
+| Missing antecedent basis | "The widget" before "a widget" is introduced |
+| Multiple dependent depending on multiple dependent | Violates 37 CFR §1.75(c) |
+| Dependent claim broader than independent | Invalid (must further limit) |
+| Using "about" without context | Potential indefiniteness (Nautilus) |
+| Omitting "non-transitory" from CRM claim | §101 rejection for transitory signals |
+| Mixing statutory categories in single claim | "A method and apparatus" — improper |
+| Claiming after-arising technology | §112 written description / enablement problem |
+
+## 3.6 Proper Claim Language Checklist
+
+- [ ] Single sentence per claim
+- [ ] Proper antecedent basis for every noun
+- [ ] Consistent terminology (don't use "widget" and "device" interchangeably)
+- [ ] Precise transitional phrase (comprising/consisting of/consisting essentially of)
+- [ ] Claim maps to the specification (every term supported)
+- [ ] Dependent claims further limit (not broaden)
+- [ ] Multiple dependent claims in alternative form
+- [ ] CRM claims specify "non-transitory"
+- [ ] Proper numbering (sequential Arabic numerals)`,
+      importantNote: `A common exam trick: presenting a dependent claim that appears to add a limitation but actually broadens (e.g., "The widget of claim 1, wherein A may be replaced by B"). A dependent claim must ONLY further limit — a claim that introduces an alternative without narrowing is invalid.`,
+    },
+  ],
+  keyTakeaways: [
+    'Claim structure: preamble + transitional phrase + body. Must be a single sentence (37 CFR §1.75(i)).',
+    'Transitional phrases: comprising (OPEN), consisting of (CLOSED), consisting essentially of (SEMI-CLOSED).',
+    'Multiple dependent claims must be in ALTERNATIVE ("any one of claims 1-5"), not cumulative ("claims 1 and 2"). Cannot depend on another multiple dependent claim.',
+    'Dependent claims must FURTHER LIMIT, not broaden. Each dependent claim incorporates all limitations of the parent.',
+    'Jepson format: "In [known apparatus], the improvement comprising [new]." Preamble may be treated as admitted prior art.',
+    'Markush: "selected from the group consisting of A, B, C." Members should share a common property or use.',
+    'Product-by-process claims: product is limited by the process (Abbott Labs, 2009). Product must itself be novel/nonobvious.',
+    'CRM (Beauregard) claims MUST recite "non-transitory" to avoid §101 rejection for transitory signals (Nuijten).',
+  ],
+},
+
+pp_drawings: {
+  topicId: 'pp_drawings',
+  title: `Drawing Requirements — 37 CFR §1.81–§1.84`,
+  domainWeight: 'Application Preparation · MPEP 608.02',
+  overview: `Drawings are required whenever needed to understand the invention (35 U.S.C. §113). They must comply with specific formatting rules under 37 CFR §1.84 governing sheet size, margins, numbering, line quality, and views. Drawings are often where applications receive non-substantive objections (not rejections) — simple to fix but commonly tested on the exam.`,
+  sections: [
+    {
+      id: 'drawings-when-required',
+      title: `1. When Are Drawings Required?`,
+      content: `## 1.1 Statutory Standard (35 U.S.C. §113)
+
+The applicant must furnish a drawing **when necessary for the understanding of the subject matter sought to be patented**. If no drawing is necessary, none is required.
+
+## 1.2 Categories Typically Requiring Drawings
+
+- **Mechanical inventions**: nearly always require drawings
+- **Electrical circuits**: schematic drawings
+- **Chemical apparatus**: often required
+- **Methods**: flowcharts if steps are complex
+- **Software**: system diagrams, flowcharts, or data-flow diagrams
+
+## 1.3 Inventions That May Not Need Drawings
+
+- **Compositions of matter**: a chemical compound claimed by structural formula may not need a drawing (the formula itself may suffice in the spec)
+- **Pure method claims without apparatus**: if the method is simple and clearly described in text, no drawing may be needed
+- **Plant patents**: require a drawing or photograph showing the plant's characteristics
+
+## 1.4 Missing Drawings — Filing Date Impact
+
+If a drawing is required and was not filed, the application is incomplete:
+- **Pre-AIA filing date**: no filing date until drawings are submitted
+- **Post-AIA (December 18, 2013+)**: filing date can be preserved if description enables POSITA to make/use; missing drawings can be added later, but added drawings MUST NOT introduce new matter (per *Hyatt v. Dudas*, 492 F.3d 1365 (Fed. Cir. 2007))
+
+## 1.5 Color Drawings and Photographs
+
+- Black-and-white line drawings are the default
+- Color drawings allowed only if granted a petition under 37 CFR §1.84(a)(2) with fee
+- Photographs allowed if necessary (e.g., histology, microstructure)
+- Color photographs require petition + fee
+
+## 1.6 Electronic Filing
+
+Most drawings are filed electronically in PDF or DOCX. The drawings must be scalable and legible at actual size.`,
+    },
+    {
+      id: 'drawings-format',
+      title: `2. Drawing Format Requirements (37 CFR §1.84)`,
+      content: `## 2.1 Sheet Size
+
+Two sizes permitted:
+- **US Letter**: 8.5" × 11" (preferred in US)
+- **A4**: 21 cm × 29.7 cm (international)
+
+All drawings in a single application must use the same size.
+
+## 2.2 Margins
+
+- **Top**: 2.5 cm (1")
+- **Left**: 2.5 cm (1")
+- **Right**: 1.5 cm (5/8")
+- **Bottom**: 1.0 cm (3/8")
+
+Drawings must fit within these margins — no text or illustration may extend into the margin.
+
+## 2.3 Sheet Numbering (37 CFR §1.84(t))
+
+Sheets numbered consecutively using Arabic numerals:
+- Format: "current sheet number" / "total sheets" (e.g., "2/5")
+- Placed at the top center or top corner
+- Not inside the drawing area
+
+## 2.4 View Numbering
+
+Each figure/view is numbered with Arabic numerals:
+- "FIG. 1," "FIG. 2," "FIG. 3A," "FIG. 3B"
+- Letters allow multiple related views (e.g., FIG. 3A and 3B)
+
+## 2.5 Reference Numerals
+
+Every element shown has a reference numeral:
+- Arabic numerals used consistently across all figures
+- Same element = same numeral in every figure
+- Numerals should be at least 0.32 cm (1/8") in height
+- Lead lines connect numerals to the elements they identify
+- Cannot cross or overlap
+
+Every reference numeral in the drawings must be mentioned in the specification, and every numeral mentioned in the specification must appear in the drawings (MPEP §608.01(g)).
+
+## 2.6 Line Quality
+
+- Solid black lines
+- No gray scale (unless granted petition)
+- No shading that obscures details
+- Hatching/cross-hatching only where necessary and per standard conventions
+
+## 2.7 Lettering and Graphic Content
+
+- Lettering at least 0.32 cm (1/8") high
+- Latin letters (with standard foreign characters OK)
+- Chemical and mathematical formulas allowed
+- Cross-referencing symbols must match the specification
+
+## 2.8 Flowcharts and Block Diagrams
+
+Flowcharts for methods must:
+- Use standard flowchart symbols (rectangles for steps, diamonds for decisions)
+- Contain text describing each step
+- Have directional arrows showing flow
+
+Block diagrams for systems:
+- Rectangular blocks representing components
+- Labeled with component names
+- Connected by lines showing relationships
+
+## 2.9 Prohibited Content
+
+- Trademarks (except where they identify the invention or prior art)
+- Puffery ("best," "new")
+- Unnecessary text (drawings should be primarily graphical)
+- Frames or borders (internal frames around elements are allowed for clarity)`,
+      examTip: `The USPTO drawing rules are **very specific**. Common test points: sheet numbering format (X/Y at top), reference numeral consistency (same element = same number across figures), lettering height (at least 1/8"), margins (1" top/left, 5/8" right, 3/8" bottom). If a question describes a drawing flaw, identify which 37 CFR §1.84 requirement is violated.`,
+    },
+    {
+      id: 'drawings-corrections',
+      title: `3. Drawing Corrections and Amendments`,
+      content: `## 3.1 Replacement Drawings
+
+Corrections to drawings are submitted as **replacement sheets**:
+- Each sheet that contains changed drawings is replaced in full
+- Identified as "Replacement Sheet" at the top
+- Changed views marked with "REPLACEMENT SHEET" annotation
+- Filed with a transmittal letter explaining the changes
+
+## 3.2 Annotated Drawings
+
+Changes to drawings may be shown via annotated drawings:
+- Red lines (or other color) showing changes
+- "ANNOTATED SHEET" designation
+- Optional but encouraged to help examiner understand amendments
+
+## 3.3 New Matter Prohibited
+
+Drawings cannot introduce new matter after filing:
+- Adding a new reference numeral not originally disclosed → new matter
+- Adding a new view depicting an element not described in original spec → new matter
+- Minor cosmetic corrections (line quality, typography) → not new matter
+
+If new matter is identified, the examiner objects; applicant must remove the new matter.
+
+## 3.4 Formal Drawings vs. Informal Drawings
+
+- **Formal drawings**: comply with all 37 CFR §1.84 requirements; required for issuance
+- **Informal drawings**: may be accepted at filing, but formal drawings must be submitted before issue
+- Rough sketches, photocopies, and computer printouts of informal drawings may be accepted to establish filing date
+
+The Notice of Allowance often notes whether formal drawings are required before issue.
+
+## 3.5 Three-Dimensional Views
+
+- Perspective views allowed and often required for 3D inventions
+- Exploded views acceptable (components shown separated with indication of relationships)
+- Cross-sectional views marked with hatching showing the section line in the full view
+- Phantom lines (dashed) for hidden or movable elements`,
+    },
+  ],
+  keyTakeaways: [
+    'Drawings required when necessary to understand the invention (35 U.S.C. §113). Compositions and simple methods may not need them.',
+    'Sheet sizes: US Letter (8.5x11") or A4 (21x29.7cm). Must be consistent across the application.',
+    'Margins: 1" top/left, 5/8" right, 3/8" bottom. Drawings must fit within margins.',
+    'Sheet numbering: Arabic numerals in X/Y format (e.g., "2/5"), at top, outside drawing area.',
+    'Every reference numeral in drawings must appear in the spec, and vice versa.',
+    'Reference numerals at least 1/8" (0.32 cm) high. Solid black lines. No gray scale unless petitioned.',
+    'Color drawings and photographs require petition and fee (37 CFR §1.84(a)(2)).',
+    'New drawings cannot introduce new matter — the application is frozen as of the effective filing date.',
+  ],
+},
+
+pp_oath_declaration: {
+  topicId: 'pp_oath_declaration',
+  title: `Oath and Declaration — 37 CFR §1.63`,
+  domainWeight: 'Application Preparation · MPEP 602',
+  overview: `Every patent application must be supported by an oath or declaration from each inventor affirming that they believe themselves to be the original inventor and acknowledging the duty of disclosure. The AIA significantly simplified the oath/declaration regime, eliminating many traditional requirements. Substitute statements allow applications to proceed when an inventor is deceased, legally incapacitated, cannot be found, or refuses to sign. Understanding when an assignee can act in place of an inventor is a frequent exam topic.`,
+  sections: [
+    {
+      id: 'oath-requirements',
+      title: `1. Oath/Declaration Requirements (37 CFR §1.63)`,
+      content: `## 1.1 The Basic Statement
+
+Each inventor must make an oath or declaration stating:
+1. The application was made or authorized to be made by the declarant
+2. The declarant believes the named inventor(s) to be the original inventor(s)
+3. Acknowledgment of the duty to disclose information material to patentability (37 CFR §1.56)
+4. Acknowledgment that willful false statements are punishable under 18 U.S.C. §1001
+
+The declaration must be signed by **each inventor** unless a substitute statement applies.
+
+## 1.2 What the Oath/Declaration Does NOT Require (Post-AIA)
+
+Pre-AIA oaths required additional statements:
+- ~~Country of citizenship~~ (removed)
+- ~~That applicant has reviewed and understands the specification~~ (removed, though good practice)
+- ~~That applicant does not know/believe the invention was ever known~~ (removed)
+
+## 1.3 Form
+
+- USPTO Form PTO/AIA/01 (oath by inventor)
+- USPTO Form PTO/AIA/02 (declaration by inventor)
+- Must be executed by the inventor(s)
+- Can be signed on paper, scanned, and filed, or signed digitally
+
+## 1.4 Timing
+
+- Can be filed with the application at initial filing
+- Can be filed later but MUST be filed before payment of the issue fee
+- If not filed by then, the application cannot issue
+
+## 1.5 Combined with Assignment
+
+An "assignment with declaration" is a combined document where the inventor both declares inventorship and assigns rights to an entity. This is a common and efficient practice.
+
+## 1.6 One Declaration for Multiple Applications
+
+A single declaration can cover:
+- A parent application and its continuations (if the declaration references the parent)
+- Divisionals (if the declaration is proper for the divisional)
+- CIPs only if the declaration covers all inventive entities across CIP and parent`,
+    },
+    {
+      id: 'substitute-statement',
+      title: `2. Substitute Statements (37 CFR §1.64)`,
+      content: `When an inventor cannot sign, a substitute statement can be filed by the applicant (assignee or person to whom the inventor is obligated to assign).
+
+## 2.1 When Substitute Statement Is Available
+
+An inventor's oath/declaration may be replaced by a substitute statement if the inventor:
+- **Is deceased**
+- **Is legally incapacitated**
+- **Cannot be found or reached after diligent effort**
+- **Refuses to sign** the oath/declaration
+
+## 2.2 Who Can Sign a Substitute Statement
+
+- **Joint inventor** (if the non-signing inventor is deceased, incapacitated, or cannot be found)
+- **Legal representative** (of deceased or incapacitated inventor)
+- **Assignee or obligated assignee** (the entity to which the inventor is obligated to assign)
+
+## 2.3 Required Content (37 CFR §1.64)
+
+The substitute statement must:
+- Identify the inventor in whose place it is executed
+- State the relationship of the signer to the inventor
+- State the circumstances that warrant the substitute (which of the four reasons above)
+- Include the same statements as the inventor oath (belief in inventorship, duty of disclosure)
+- Be signed by the substitute signer
+
+## 2.4 Refusal to Sign
+
+If an inventor refuses to sign, the applicant (typically the assignee or employer) can:
+1. File a substitute statement with evidence of the inventor's refusal (email correspondence, memorandum, etc.)
+2. Provide last known contact information for the inventor
+3. Explain efforts made to obtain the inventor's signature
+
+The inventor must still be named as the inventor — the substitute statement does not remove inventorship, only the signature requirement.
+
+## 2.5 Practical Context
+
+Substitute statements are common when:
+- An inventor has left a company on bad terms
+- An inventor has died during prosecution
+- An inventor is a contractor who is no longer reachable
+- An inventor is in a foreign country and non-responsive
+
+## 2.6 Correction of Inventorship
+
+The correction of inventorship is covered by **37 CFR §1.48**:
+- File a request for correction
+- Provide supporting statement
+- Pay a fee
+- Executed before issuance (different rules apply after issue — §1.324 for issued patents)
+
+Correction of inventorship is different from substitute statements: correction changes WHO is named; substitute statement handles missing signatures.`,
+      importantNote: `A **substitute statement** does NOT remove an inventor from the patent. The inventor is still named as the inventor; the substitute statement only handles the signature requirement. If an inventor was wrongly named, the remedy is **correction of inventorship** under 37 CFR §1.48, not a substitute statement.`,
+    },
+    {
+      id: 'applicant-vs-inventor',
+      title: `3. Applicant vs. Inventor (Post-AIA)`,
+      content: `The AIA changed who can be the "applicant" for a patent. This is a significant shift from the pre-AIA regime.
+
+## 3.1 Pre-AIA: Inventor-Only Applicant
+
+Under pre-AIA, only inventors could be applicants. An assignee was the "applicant of record" but filings had to name the inventors.
+
+## 3.2 AIA: Expanded Applicants (37 CFR §1.46)
+
+Under AIA, the applicant can be:
+- **The inventor(s)**
+- **The legal representative** (of deceased/incapacitated inventor)
+- **The assignee** (if the inventor has assigned the application)
+- **An obligated assignee** (someone with an obligation to receive assignment from the inventor)
+- **Anyone who shows sufficient proprietary interest**
+
+## 3.3 How Assignee Becomes Applicant
+
+To file as an assignee-applicant:
+- Include Form PTO/AIA/96 (Statement Under 37 CFR §1.46) with the filing
+- Record the assignment (or obligation) at the Assignment Recordation Branch
+- Identify both the applicant (assignee) and the inventors on the Application Data Sheet
+
+## 3.4 Benefits of Assignee as Applicant
+
+- Assignee has direct communication with USPTO (no need to go through inventors)
+- Assignee can respond to office actions without inventor signatures
+- Assignee can make amendments, argue for allowance, accept the patent
+- Reduces delays when inventors are unavailable
+
+## 3.5 The Inventor Still Matters
+
+Even with an assignee-applicant, inventors must still:
+- Be correctly named on the application
+- Sign oath/declaration OR a substitute statement must be filed
+- Sign assignments of their rights (or the rights flow from employment agreement)
+
+## 3.6 Common Practice
+
+Large corporations typically file as assignee-applicants, having inventors execute both:
+1. An oath/declaration (Form PTO/AIA/01 or /02)
+2. An assignment transferring patent rights to the company
+
+Smaller inventors typically file as inventor-applicants.`,
+    },
+  ],
+  keyTakeaways: [
+    'Every inventor must execute an oath/declaration (or have a substitute statement filed on their behalf).',
+    'Oath/declaration must: (1) state the application was authorized, (2) affirm inventorship belief, (3) acknowledge duty of disclosure (§1.56), (4) acknowledge false-statement liability.',
+    'Post-AIA oath/declaration simplified — no country of citizenship, no statement of reviewing specification, no knowledge statements.',
+    'Substitute statement (37 CFR §1.64) available when inventor is deceased, legally incapacitated, cannot be found, or refuses to sign.',
+    'Substitute statements DO NOT remove the inventor from the patent — only replace the signature requirement.',
+    'Post-AIA applicant can be the inventor OR the assignee OR obligated assignee (37 CFR §1.46), using Form PTO/AIA/96.',
+    'Correction of inventorship (changing who is named) uses 37 CFR §1.48 pre-issuance, §1.324 post-issuance. Different from substitute statements.',
+    'Oath/declaration can be filed later but MUST be on file before issue fee payment or the patent cannot issue.',
+  ],
+},
+
+pp_ids: {
+  topicId: 'pp_ids',
+  title: `Information Disclosure Statements (IDS) — 37 CFR §1.97–§1.98`,
+  domainWeight: 'Application Preparation · MPEP 609',
+  overview: `Information Disclosure Statements (IDSs) are the formal means by which applicants fulfill their duty of disclosure under 37 CFR §1.56. An IDS must list all material prior art known to the applicant and include copies of non-US references. The timing requirements are strict: IDSs filed late require fees or a certification, and IDSs filed after final rejection may not be considered. Understanding the three-tier timing system is a critical exam topic.`,
+  sections: [
+    {
+      id: 'ids-duty-of-disclosure',
+      title: `1. Duty of Disclosure (37 CFR §1.56)`,
+      content: `## 1.1 Who Owes the Duty
+
+The duty of disclosure is owed by:
+- Each named inventor
+- Each attorney or agent who prepares or prosecutes the application
+- Every other person substantively involved in the preparation or prosecution
+
+## 1.2 What Must Be Disclosed
+
+**Material information** — information that is not cumulative to information already of record and:
+- **Rule 56(b)(1)** establishes a prima facie case of unpatentability, OR
+- **Rule 56(b)(2)** refutes or is inconsistent with a position taken by the applicant.
+
+This is the "material to patentability" standard.
+
+## 1.3 No Duty to Search
+
+There is NO obligation to conduct a prior art search. The duty extends only to information actually known by the individuals subject to the duty. If an inventor knows a reference exists, it must be disclosed. If the inventor doesn't know about it, no duty.
+
+## 1.4 Duration
+
+The duty continues throughout prosecution — from filing through issuance. New material information discovered after filing must be disclosed promptly.
+
+## 1.5 Consequences of Breach
+
+Failure to disclose material information with intent to deceive the USPTO is **inequitable conduct**, a doctrine that can render the entire patent unenforceable. *Therasense, Inc. v. Becton, Dickinson & Co.*, 649 F.3d 1276 (Fed. Cir. 2011) (en banc) — requires both materiality (but-for) and specific intent to deceive.
+
+Therasense raised the bar: mere negligence or gross negligence is insufficient. Specific intent to deceive must be the single most reasonable inference from the evidence.`,
+    },
+    {
+      id: 'ids-requirements',
+      title: `2. IDS Content and Format (37 CFR §1.98)`,
+      content: `## 2.1 Required Content
+
+An IDS must include:
+1. **List of references** (citation format on USPTO Form PTO/SB/08 or equivalent)
+2. **Copies of non-US patent documents and non-patent literature**
+3. **Concise statement of relevance** for non-English references (or English translation)
+
+## 2.2 What References To Include
+
+- US patents (by number; copies not required)
+- US published applications (by publication number; copies not required)
+- Foreign patent documents (copies required)
+- Non-patent literature: journal articles, textbook excerpts, conference papers (copies required)
+- Oral or written prior art the applicant has been informed of
+- Court pleadings and decisions related to related applications or same subject matter
+
+## 2.3 Format — Form PTO/SB/08
+
+The standard IDS form lists:
+- Patent/publication number
+- Country code
+- Kind code
+- Issue/publication date
+- Inventor name or patentee
+- Relevant pages or claims (optional)
+
+Each reference gets one line.
+
+## 2.4 Copies of References
+
+- **US patents and US published applications**: No copies required; the USPTO has access
+- **Foreign patents and applications**: Copies required in full
+- **Non-patent literature (NPL)**: Copies required; may be full article or relevant portions
+- **Concise statement of relevance**: Required for non-English references; recommended for any non-obvious relevance
+
+## 2.5 Cumulative References
+
+If a reference is merely cumulative to a previously cited reference, it may be omitted per the materiality standard. However, the safer practice is to cite everything known.
+
+## 2.6 Publication Dates
+
+Each reference should have its publication date. For non-patent literature, the date of public availability is the relevant date.
+
+## 2.7 Electronic Filing
+
+IDSs are filed electronically via Patent Center or EFS-Web. The form is typically submitted as a PDF, and referenced documents are uploaded as separate files.`,
+    },
+    {
+      id: 'ids-timing',
+      title: `3. IDS Timing Rules (37 CFR §1.97)`,
+      content: `The timing of IDS filing dictates whether the IDS is considered and what is required. This three-tier system is one of the most commonly tested aspects of Patent Bar prosecution.
+
+## 3.1 Tier 1 — Early Filing (No Fee, No Statement)
+
+The IDS is timely WITHOUT a fee or statement if filed:
+- Within 3 months of the U.S. filing date, OR
+- Within 3 months of the date of entry into the national stage (for PCT applications), OR
+- Before the first Office action on the merits
+
+Whichever is later. This is the most common timing.
+
+## 3.2 Tier 2 — Middle Filing (Fee OR Statement)
+
+The IDS requires **either** the fee OR a statement if filed:
+- After the first Office action on the merits, AND
+- Before mailing of: (a) a Final Office Action, (b) a Notice of Allowance, OR (c) an action that closes prosecution
+
+Required:
+- **Fee**: 37 CFR §1.17(p) — about $260 ($130 for small entity, $65 for micro entity)
+- **Statement** (37 CFR §1.97(e)): certifying that each reference was first cited in a foreign office action not more than 3 months before filing the IDS, OR that no individual with a duty of disclosure knew of the references more than 3 months before filing the IDS
+
+Either the fee OR the statement suffices; both are not required.
+
+## 3.3 Tier 3 — Late Filing (Fee AND Statement)
+
+After final office action or notice of allowance, the IDS requires **both** the fee AND the statement. The statement must be the same §1.97(e) certification as Tier 2.
+
+## 3.4 Tier 4 — After Issue Fee Payment
+
+Once the issue fee is paid, an IDS generally cannot be considered. Options:
+- **Withdraw the application from issue** under 37 CFR §1.313 (pay fees, submit new response)
+- **File a Request for Continued Examination (RCE)**
+- **File a continuation application**
+
+## 3.5 Statement of Non-Knowledge (§1.97(e))
+
+Two alternative certifications:
+
+### (e)(1) — Foreign Office Action Certification
+No item in the IDS was cited in a foreign office action dated more than 3 months prior to the filing of the IDS.
+
+### (e)(2) — No Knowledge Certification
+No item in the IDS was known to any individual with a duty of disclosure more than 3 months prior to the filing of the IDS.
+
+The certification is a statement that the applicant did NOT know of the references earlier (or recently received them from a foreign office). It is a factual certification — false statements can lead to inequitable conduct.
+
+## 3.6 Timing Trap on Exams
+
+A common exam pattern: "The applicant received a foreign search report today listing a reference. How can the IDS be filed?"
+
+If the search report is fresh (within 3 months), the applicant can use §1.97(e)(1) certification → fee OR statement suffices (Tier 2 or Tier 3 depending on stage).
+
+## 3.7 Refile to Get Consideration
+
+If an IDS is not considered because it's too late, the applicant can file an RCE to get it considered. RCE reopens prosecution and re-sets the IDS timing clock.`,
+      examTip: `Memorize the **three-tier IDS timing**: (1) **Tier 1** — within 3 months of filing OR before first OA → no fee, no statement. (2) **Tier 2** — after first OA but before final/NOA → fee OR statement. (3) **Tier 3** — after final/NOA → fee AND statement. The certification in §1.97(e) is the key to Tiers 2 and 3.`,
+    },
+  ],
+  keyTakeaways: [
+    'Duty of disclosure (37 CFR §1.56) is owed by inventors, practitioners, and others substantively involved. No duty to search, only to disclose known material info.',
+    'Material = not cumulative AND either (a) establishes prima facie unpatentability or (b) refutes a position the applicant has taken.',
+    'Therasense (2011): inequitable conduct requires BUT-FOR materiality AND specific intent to deceive — specific intent must be the single most reasonable inference.',
+    'IDS tier 1 (before first OA or within 3 months of filing): no fee, no statement.',
+    'IDS tier 2 (after first OA, before final/NOA): requires fee OR statement (not both).',
+    'IDS tier 3 (after final/NOA): requires fee AND statement.',
+    'Statement under 37 CFR §1.97(e): either (e)(1) foreign OA within 3 months, or (e)(2) no knowledge more than 3 months prior.',
+    'After issue fee payment, IDS is not considered — must withdraw from issue, RCE, or file continuation to get new references in.',
+  ],
+},
+
+pp_inventorship: {
+  topicId: 'pp_inventorship',
+  title: `Inventorship — 35 U.S.C. §115, 37 CFR §1.48`,
+  domainWeight: 'Application Preparation · MPEP 2137.01',
+  overview: `Inventorship is a matter of federal patent law. An inventor is the person who conceived of the claimed invention — not the person who merely reduced it to practice, provided funding, or supervised the research. Incorrect inventorship can invalidate a patent unless corrected. The AIA simplified the test for joint inventorship and allowed corrections without requiring proof of non-deceptive intent. Inventorship questions are heavily tested, especially where fact patterns involve research teams, contributions of different scopes, and AI-assisted inventions (the 2024 USPTO guidance).`,
+  sections: [
+    {
+      id: 'inventorship-test',
+      title: `1. Who Is an Inventor?`,
+      content: `## 1.1 The Conception Test
+
+An inventor is one who **conceived** of the claimed invention. Conception is:
+> The formation in the mind of the inventor of a definite and permanent idea of the complete and operative invention.
+
+*Sewall v. Walters*, 21 F.3d 411 (Fed. Cir. 1994).
+
+Conception is complete when the inventor has a definite idea such that POSITA could practice the invention without further inventive skill (even if reduction to practice requires ordinary engineering).
+
+## 1.2 NOT Inventorship
+
+The following individuals are NOT inventors merely by their role:
+- **Mere reducers to practice**: a technician who builds a prototype based on the inventor's drawings
+- **Supervisors**: a boss who funded the research and assigned the project
+- **Testers**: someone who only ran experiments to confirm the inventor's idea
+- **Consultants**: who gave general advice but not inventive contribution
+- **Co-workers**: who merely carried out the inventor's instructions
+- **Attorneys**: who drafted the specification (drafting ≠ inventing)
+- **Clients**: who provided the problem but not the solution
+
+## 1.3 Joint Inventorship
+
+Under 35 U.S.C. §116, inventors may jointly apply for a patent even though:
+1. They did not physically work together or at the same time
+2. Each did not make the same type or amount of contribution
+3. Each did not make a contribution to every claim
+
+Each joint inventor must contribute to the conception of **at least one claim**. Contribution to the implementation alone is NOT enough — there must be contribution to the inventive concept.
+
+## 1.4 Requirements for Joint Inventorship
+
+Fed. Cir. case law (summarized in MPEP §2137.01) requires joint inventors to:
+- Make some contribution to the conception of the invention (not of every claim)
+- Make a contribution that is NOT insignificant in quality
+- Do more than merely explain what the invention requires (e.g., describing well-known concepts)
+
+*Pannu v. Iolab Corp.*, 155 F.3d 1344 (Fed. Cir. 1998) — the "three-factor Pannu test" for joint inventorship contribution.
+
+## 1.5 The Employer Is Not an Inventor
+
+An employer does not become an inventor by virtue of employing the inventor, even if the employer:
+- Paid for the research
+- Owns the patent (through assignment)
+- Directed the employee to work on the problem
+- Has the rights via employment agreement
+
+Employers are OWNERS of patents (through assignment), not INVENTORS.
+
+## 1.6 AI Cannot Be an Inventor
+
+USPTO Guidance on AI-Assisted Inventions (February 2024, 89 Fed. Reg. 10043) confirms:
+- Only natural persons can be inventors
+- An AI cannot be listed as an inventor
+- A natural person may be an inventor if they made a **significant contribution** to the conception of the invention, even if an AI contributed
+
+If a human simply prompted an AI with a problem and the AI produced the solution, the human is likely not an inventor. If the human made specific design choices, refined AI outputs, or integrated AI results creatively, the human may be an inventor. The analysis is fact-specific.`,
+      examTip: `Inventorship is about **CONCEPTION**, not reduction to practice or ownership. A technician who built the prototype is NOT an inventor. An employer is NOT an inventor. An AI is NOT an inventor. Only natural persons who contributed to conception of at least one claim are inventors.`,
+    },
+    {
+      id: 'inventorship-correction',
+      title: `2. Correction of Inventorship`,
+      content: `## 2.1 Why Correction Might Be Needed
+
+Inventorship errors arise because:
+- Research team misunderstands conception rules
+- New inventors added as claims are amended during prosecution
+- Non-inventors initially included in error
+- Assignments were signed assuming different inventorship
+
+## 2.2 Correction in Pending Application (37 CFR §1.48)
+
+Under AIA, correction is relatively simple:
+- File a request under 37 CFR §1.48(a)
+- Include a new Application Data Sheet (ADS) reflecting correct inventorship
+- Include a statement of the facts causing the inventorship to be incorrect
+- Pay the processing fee
+- Include new oath/declaration from any newly added inventor (or substitute statement)
+
+Pre-AIA (Sept. 16, 2012+) required a statement of no deceptive intent. That requirement was eliminated by the AIA for pending applications.
+
+## 2.3 Correction After Issue (37 CFR §1.324)
+
+For issued patents, the correction is via Certificate of Correction:
+- Petition under 37 CFR §1.324
+- Supporting statement from current named inventors
+- Supporting statement from inventors being added
+- Consent of the assignee(s)
+- Pay the fee
+
+Post-AIA: no requirement to show "without deceptive intent" (previously required).
+
+## 2.4 Correction in Litigation
+
+A patent can also be corrected for inventorship during litigation under 35 U.S.C. §256:
+- Court may order correction
+- Applies where discovery reveals inventorship error
+- Does NOT require showing of no deceptive intent (post-AIA)
+
+## 2.5 Consequences of Wrong Inventorship
+
+- If error is intentional and with deceptive intent → patent can be held unenforceable
+- If error is innocent → correction typically fixes the problem
+- If correction is not sought when error is known → risk of estoppel or unenforceability
+
+## 2.6 Strategic Considerations
+
+- Correct inventorship ASAP when errors are identified
+- Have all inventors (and former inventors) review and sign confirmations
+- Document the facts supporting the correction
+- Inform the USPTO before any litigation discovery if possible`,
+      importantNote: `Under the AIA, correction of inventorship does NOT require a showing that the error was "without deceptive intent." This is a key change from pre-AIA practice. However, evidence of intentional misidentification can still be raised as **inequitable conduct** in litigation, which is a different ground for unenforceability.`,
+    },
+  ],
+  keyTakeaways: [
+    'An inventor is one who CONCEIVED the invention. Conception = forming in the mind a definite and permanent idea of the complete, operative invention.',
+    'Reducers to practice, supervisors, funders, testers, and attorneys are NOT inventors unless they also contributed to conception of at least one claim.',
+    'Joint inventors under §116: each must contribute to conception of at least one claim. Pannu test assesses quality of contribution.',
+    'Employers are not inventors. They OWN patents through assignment but do not create inventorship.',
+    'AI cannot be an inventor (USPTO 2024 Guidance). A human who makes a significant contribution to conception CAN be an inventor even if AI assisted.',
+    'Correction during prosecution: 37 CFR §1.48 — file corrected ADS, statement, new declaration from added inventors, fee.',
+    'Correction after issue: 37 CFR §1.324 — petition, inventor statements, assignee consent, fee.',
+    'AIA eliminated the "without deceptive intent" requirement for inventorship corrections. But intentional misidentification can still be inequitable conduct.',
+  ],
+},
+
 }; // end PATENT_BAR_COURSE
 
 export function hasPatentBarCourseContent(topicId: string): boolean {
