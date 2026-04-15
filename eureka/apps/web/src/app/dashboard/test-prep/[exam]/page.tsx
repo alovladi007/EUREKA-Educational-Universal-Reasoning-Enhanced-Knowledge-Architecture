@@ -27,6 +27,7 @@ import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
 import { getCISSPFlashcards, CISSP_FLASHCARD_DOMAINS, CISSP_FLASHCARD_COUNT } from '@/lib/cissp-flashcard-data';
 import { getSecurityPlusFlashcards, SECPLUS_FLASHCARD_DOMAINS, SECPLUS_FLASHCARD_COUNT } from '@/lib/security-plus-flashcard-data';
+import { getPatentBarFlashcards, PATENT_BAR_FLASHCARD_DOMAINS, PATENT_BAR_FLASHCARD_COUNT } from '@/lib/patent-bar-flashcard-data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
@@ -1168,7 +1169,8 @@ function NotesTab({ examType, sections }: { examType: string; sections: any[] })
 function FlashcardsTab({ examType, sections }: { examType: string; sections: any[] }) {
   const isCISSP = examType === 'CISSP';
   const isSecPlus = examType === 'SECURITY_PLUS';
-  const hasFlashcards = isCISSP || isSecPlus;
+  const isPatentBar = examType === 'PATENT_BAR';
+  const hasFlashcards = isCISSP || isSecPlus || isPatentBar;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1187,7 +1189,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
     ? getCISSPFlashcards(activeDomain || undefined)
     : isSecPlus
       ? getSecurityPlusFlashcards(activeDomain || undefined)
-      : [];
+      : isPatentBar
+        ? getPatentBarFlashcards(activeDomain || undefined)
+        : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1197,14 +1201,34 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
     return true;
   });
 
-  const domainCounts = isCISSP ? CISSP_FLASHCARD_DOMAINS : isSecPlus ? SECPLUS_FLASHCARD_DOMAINS : [];
-  const flashcardCount = isCISSP ? CISSP_FLASHCARD_COUNT : isSecPlus ? SECPLUS_FLASHCARD_COUNT : 0;
-  const flashcardTitle = isCISSP ? 'CISSP Flashcard Deck' : isSecPlus ? 'Security+ Flashcard Deck' : 'Flashcard Deck';
+  const domainCounts = isCISSP
+    ? CISSP_FLASHCARD_DOMAINS
+    : isSecPlus
+      ? SECPLUS_FLASHCARD_DOMAINS
+      : isPatentBar
+        ? PATENT_BAR_FLASHCARD_DOMAINS
+        : [];
+  const flashcardCount = isCISSP
+    ? CISSP_FLASHCARD_COUNT
+    : isSecPlus
+      ? SECPLUS_FLASHCARD_COUNT
+      : isPatentBar
+        ? PATENT_BAR_FLASHCARD_COUNT
+        : 0;
+  const flashcardTitle = isCISSP
+    ? 'CISSP Flashcard Deck'
+    : isSecPlus
+      ? 'Security+ Flashcard Deck'
+      : isPatentBar
+        ? 'Patent Bar Flashcard Deck'
+        : 'Flashcard Deck';
   const flashcardSubtitle = isCISSP
     ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
     : isSecPlus
       ? `${SECPLUS_FLASHCARD_COUNT.toLocaleString()} cards across all 5 domains + exam tips`
-      : '';
+      : isPatentBar
+        ? `${PATENT_BAR_FLASHCARD_COUNT.toLocaleString()} cards across Parts 1–8 + exam traps`
+        : '';
 
   const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
