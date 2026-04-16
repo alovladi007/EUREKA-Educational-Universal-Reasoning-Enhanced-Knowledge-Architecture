@@ -327,56 +327,152 @@ const MCAT: ExamCurriculum = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// FE
+// FE MECHANICAL ENGINEERING
 // ═══════════════════════════════════════════════════════════════
 
-const FE: ExamCurriculum = [
-  { sectionId: 'math', sectionName: 'Mathematics & Statistics', topics: [
-    t('fe_calculus', 'Differential & Integral Calculus', 'Limits, derivatives, integrals, series, and multivariable calculus.'),
-    t('fe_linear_algebra', 'Linear Algebra', 'Matrices, determinants, eigenvalues, and systems of equations.'),
-    t('fe_diffeq', 'Differential Equations', 'First and second order ODEs, Laplace transforms.'),
-    t('fe_probability', 'Probability & Statistics', 'Distributions, hypothesis testing, confidence intervals, and regression.'),
-  ]},
-  { sectionId: 'ethics', sectionName: 'Ethics & Professional Practice', topics: [
-    t('fe_codes', 'Codes of Ethics', 'NSPE Code of Ethics, professional responsibility, and licensure requirements.'),
-    t('fe_contracts', 'Contracts & Liability', 'Professional liability, standard of care, and contract types.'),
-  ]},
-  { sectionId: 'engineering_econ', sectionName: 'Engineering Economics', topics: [
-    t('fe_tvm', 'Time Value of Money', 'Present value, future value, annuities, and amortization.'),
-    t('fe_cost_analysis', 'Cost Analysis & Comparison', 'Benefit-cost ratio, rate of return, breakeven, and depreciation.'),
-  ]},
-  { sectionId: 'statics', sectionName: 'Statics', topics: [
-    t('fe_equilibrium', 'Force Systems & Equilibrium', 'Free-body diagrams, resultants, moment of a force, and equilibrium conditions.'),
-    t('fe_trusses', 'Trusses & Frames', 'Method of joints, method of sections, and zero-force members.'),
-    t('fe_centroids', 'Centroids & Moments of Inertia', 'Center of gravity, centroid calculation, and area/mass moment of inertia.'),
-  ]},
-  { sectionId: 'dynamics', sectionName: 'Dynamics', topics: [
-    t('fe_kinematics', 'Kinematics', 'Rectilinear, curvilinear, and relative motion of particles and rigid bodies.'),
-    t('fe_kinetics', 'Kinetics', 'Newtons laws, work-energy, impulse-momentum, and vibrations.'),
-  ]},
-  { sectionId: 'mechanics_materials', sectionName: 'Mechanics of Materials', topics: [
-    t('fe_stress_strain', 'Stress & Strain', 'Normal and shear stress, strain, Hookes law, and Mohrs circle.'),
-    t('fe_beams', 'Beams & Deflection', 'Shear and moment diagrams, bending stress, and beam deflection.'),
-    t('fe_columns', 'Columns & Buckling', 'Euler buckling, effective length, and slenderness ratio.'),
-  ]},
-  { sectionId: 'fluid_mechanics', sectionName: 'Fluid Mechanics', topics: [
-    t('fe_fluid_statics', 'Fluid Statics', 'Pressure, buoyancy, and manometers.'),
-    t('fe_fluid_dynamics', 'Fluid Dynamics', 'Bernoulli equation, continuity, pipe flow, Reynolds number, and head loss.'),
-  ]},
-  { sectionId: 'thermodynamics', sectionName: 'Thermodynamics & Heat Transfer', topics: [
-    t('fe_thermo_laws', 'Laws of Thermodynamics', 'First and second law, entropy, and energy balances.'),
-    t('fe_cycles', 'Power & Refrigeration Cycles', 'Carnot, Rankine, Otto, Diesel, and vapor-compression cycles.'),
-    t('fe_heat_transfer', 'Heat Transfer', 'Conduction, convection, radiation, and heat exchangers.'),
-  ]},
-  { sectionId: 'electrical', sectionName: 'Electricity & Magnetism', topics: [
-    t('fe_circuits', 'DC & AC Circuits', 'Ohm law, Kirchhoff laws, series/parallel, and AC phasors.'),
-    t('fe_em', 'Electromagnetism', 'Electric and magnetic fields, Faraday law, and inductance.'),
-  ]},
-  { sectionId: 'materials', sectionName: 'Material Science', topics: [
-    t('fe_crystal', 'Crystal Structure & Defects', 'Unit cells, Miller indices, point/line/surface defects.'),
-    t('fe_mech_props', 'Mechanical Properties', 'Tensile testing, hardness, fatigue, creep, and fracture mechanics.'),
-    t('fe_phase', 'Phase Diagrams', 'Iron-carbon diagram, eutectic, eutectoid, and lever rule.'),
-  ]},
+const FE_ME: ExamCurriculum = [
+  {
+    sectionId: 'fme_math', sectionName: 'Mathematics (6%)',
+    topics: [
+      t('fme_calculus', 'Differential & Integral Calculus', 'Limits, derivatives, integrals, series, multivariable calculus, and applications.'),
+      t('fme_linear_algebra', 'Linear Algebra', 'Matrices, determinants, eigenvalues, systems of equations, and vector spaces.'),
+      t('fme_diffeq', 'Differential Equations', 'First/second order ODEs, Laplace transforms, and initial value problems.'),
+      t('fme_vector_calc', 'Vector Calculus', 'Gradient, divergence, curl, line/surface integrals, theorems of Green/Stokes/Gauss.'),
+      t('fme_numerical', 'Numerical Methods', 'Root finding (Newton-Raphson, bisection), numerical integration, curve fitting.'),
+    ],
+  },
+  {
+    sectionId: 'fme_prob_stats', sectionName: 'Probability & Statistics (4%)',
+    topics: [
+      t('fme_prob_dist', 'Probability Distributions', 'Binomial, Poisson, normal, exponential; PDF, CDF, expected values.'),
+      t('fme_regression', 'Regression & Curve Fitting', 'Linear regression, correlation coefficient, R-squared, least squares.'),
+      t('fme_hypothesis', 'Hypothesis Testing & Confidence', 'Type I/II errors, p-values, t-test, chi-square, confidence intervals.'),
+    ],
+  },
+  {
+    sectionId: 'fme_comp_tools', sectionName: 'Computational Tools (3%)',
+    topics: [
+      t('fme_spreadsheets', 'Spreadsheets & Programming', 'Engineering calculations, iterative solutions, and data analysis tools.'),
+      t('fme_modeling', 'Modeling & Simulation', 'FEA concepts, CFD basics, and computational approaches to engineering problems.'),
+    ],
+  },
+  {
+    sectionId: 'fme_ethics', sectionName: 'Ethics & Professional Practice (4%)',
+    topics: [
+      t('fme_codes_ethics', 'Codes of Ethics', 'NSPE code, public welfare, conflicts of interest, whistleblowing.'),
+      t('fme_licensure', 'Professional Licensure', 'FE/PE path, EIT credentials, state licensure, comity, continuing education.'),
+      t('fme_liability', 'Professional Liability & Contracts', 'Standard of care, stamping responsibility, contract types, ethical decisions.'),
+    ],
+  },
+  {
+    sectionId: 'fme_eng_econ', sectionName: 'Engineering Economics (4%)',
+    topics: [
+      t('fme_tvm', 'Time Value of Money', 'Present/future value, annuities, P/A, F/A, A/P factors, effective rates.'),
+      t('fme_cost_analysis', 'Cost Analysis & Comparison', 'NPV, IRR, benefit-cost ratio, annual worth, payback period, MARR.'),
+      t('fme_depreciation', 'Depreciation', 'Straight-line, MACRS, sum-of-years digits, book value, tax implications.'),
+    ],
+  },
+  {
+    sectionId: 'fme_statics', sectionName: 'Statics (8%)',
+    topics: [
+      t('fme_equilibrium', 'Force Systems & Equilibrium', 'Free-body diagrams, 2D/3D force systems, resultants, moment of a force, couple.'),
+      t('fme_trusses', 'Trusses & Frames', 'Method of joints, method of sections, zero-force members, frames and machines.'),
+      t('fme_centroids', 'Centroids & Moments of Inertia', 'Center of gravity, centroid of composite shapes, parallel axis theorem.'),
+      t('fme_friction', 'Friction', 'Dry friction, wedges, belts, screws, bearings, Coulomb friction model.'),
+    ],
+  },
+  {
+    sectionId: 'fme_dynamics', sectionName: 'Dynamics, Kinematics & Vibrations (9%)',
+    topics: [
+      t('fme_kinematics', 'Kinematics of Particles & Rigid Bodies', 'Rectilinear, curvilinear, projectile, relative motion, rotating frames.'),
+      t('fme_kinetics', 'Kinetics & Newton Laws', 'F=ma, work-energy theorem, impulse-momentum, impact, angular momentum.'),
+      t('fme_energy_methods', 'Energy Methods', 'Conservation of energy, potential/kinetic energy, power, efficiency.'),
+      t('fme_vibrations', 'Mechanical Vibrations', 'Free/forced vibration, damping, natural frequency, resonance, isolation.'),
+      t('fme_rigid_body', 'Rigid Body Dynamics', 'Mass moment of inertia, rotation about fixed axis, general plane motion.'),
+    ],
+  },
+  {
+    sectionId: 'fme_mechanics', sectionName: 'Mechanics of Materials (8%)',
+    topics: [
+      t('fme_stress_strain', 'Stress & Strain', 'Normal, shear, bearing stress; Hooke law, Poisson ratio, stress-strain diagrams.'),
+      t('fme_axial_torsion', 'Axial Loading & Torsion', 'Deformation, statically indeterminate, torsion of circular shafts, power transmission.'),
+      t('fme_beams', 'Beams: Shear, Moment & Deflection', 'Shear/moment diagrams, bending stress, beam deflection methods.'),
+      t('fme_combined', 'Combined Loading & Mohr Circle', 'Principal stresses, maximum shear, Mohr circle construction, transformation.'),
+      t('fme_columns', 'Columns & Buckling', 'Euler critical load, effective length, slenderness ratio, eccentrically loaded.'),
+    ],
+  },
+  {
+    sectionId: 'fme_materials', sectionName: 'Material Science (5%)',
+    topics: [
+      t('fme_crystal', 'Crystal Structure & Defects', 'Unit cells (BCC, FCC, HCP), Miller indices, defects, diffusion.'),
+      t('fme_mech_props', 'Mechanical Properties & Testing', 'Tensile test, yield/ultimate strength, hardness, fatigue, creep, fracture.'),
+      t('fme_phase', 'Phase Diagrams & Heat Treatment', 'Iron-carbon diagram, eutectic/eutectoid, lever rule, TTT, quenching.'),
+      t('fme_materials_select', 'Material Selection', 'Metals, polymers, ceramics, composites; selection criteria, Ashby charts.'),
+    ],
+  },
+  {
+    sectionId: 'fme_fluids', sectionName: 'Fluid Mechanics (8%)',
+    topics: [
+      t('fme_fluid_statics', 'Fluid Statics', 'Pressure distribution, hydrostatic force on surfaces, buoyancy, manometers.'),
+      t('fme_fluid_dynamics', 'Fluid Dynamics & Bernoulli', 'Continuity, Bernoulli equation, energy/momentum equations, Pitot tubes.'),
+      t('fme_pipe_flow', 'Internal Flow & Pipe Systems', 'Reynolds number, Darcy-Weisbach, Moody diagram, minor losses, pipe networks.'),
+      t('fme_external_flow', 'External Flow & Drag', 'Boundary layers, drag coefficient, lift, flow over bodies.'),
+      t('fme_turbomachinery', 'Turbomachinery', 'Pumps, turbines, fans, performance curves, NPSH, specific speed.'),
+    ],
+  },
+  {
+    sectionId: 'fme_thermo', sectionName: 'Thermodynamics (8%)',
+    topics: [
+      t('fme_thermo_laws', 'Laws of Thermodynamics', 'First law (energy balance), second law (entropy), property relations.'),
+      t('fme_properties', 'Thermodynamic Properties & Tables', 'Ideal gas law, steam tables, refrigerant tables, quality, superheat.'),
+      t('fme_cycles', 'Power & Refrigeration Cycles', 'Carnot, Rankine, Otto, Diesel, Brayton, vapor-compression, COP.'),
+      t('fme_mixtures', 'Mixtures & Psychrometrics', 'Gas mixtures, humidity, wet-bulb, psychrometric chart.'),
+      t('fme_combustion', 'Combustion & Energy Systems', 'Stoichiometry, air-fuel ratio, heating value, adiabatic flame temperature.'),
+    ],
+  },
+  {
+    sectionId: 'fme_heat', sectionName: 'Heat Transfer (7%)',
+    topics: [
+      t('fme_conduction', 'Conduction', 'Fourier law, thermal resistance, composite walls, fins, transient, Biot number.'),
+      t('fme_convection', 'Convection', 'Newton cooling law, forced/natural convection, Nusselt/Reynolds/Prandtl numbers.'),
+      t('fme_radiation', 'Radiation', 'Stefan-Boltzmann law, emissivity, view factors, blackbody, radiation networks.'),
+      t('fme_exchangers', 'Heat Exchangers', 'LMTD method, NTU-effectiveness, parallel/counter flow, fouling, overall U.'),
+    ],
+  },
+  {
+    sectionId: 'fme_controls', sectionName: 'Measurements, Instrumentation & Controls (5%)',
+    topics: [
+      t('fme_sensors', 'Sensors & Measurement', 'Strain gauges, thermocouples, pressure transducers, flow meters, accuracy.'),
+      t('fme_controls_basic', 'Control Systems Fundamentals', 'Block diagrams, transfer functions, feedback, stability, PID control.'),
+      t('fme_signal', 'Signal Conditioning & DAQ', 'Amplifiers, filters, A/D conversion, sampling theorem, data acquisition.'),
+    ],
+  },
+  {
+    sectionId: 'fme_design', sectionName: 'Mechanical Design & Analysis (9%)',
+    topics: [
+      t('fme_fasteners', 'Fasteners & Joints', 'Bolted joints, preload, welded connections, adhesive bonds, rivets.'),
+      t('fme_bearings', 'Bearings & Lubrication', 'Rolling element bearings, journal bearings, bearing life L10, lubricant selection.'),
+      t('fme_gears', 'Gears & Power Transmission', 'Spur, helical, bevel, worm gears; gear trains, speed ratios, efficiency.'),
+      t('fme_shafts', 'Shafts & Shaft Design', 'Combined loading, fatigue analysis (Goodman, Soderberg), keyways, critical speed.'),
+      t('fme_springs', 'Springs & Mechanical Elements', 'Helical springs, leaf springs, spring rate, energy storage, Wahl factor.'),
+      t('fme_fatigue', 'Fatigue & Failure Analysis', 'S-N curves, endurance limit, Miner rule, stress concentration, safety factors.'),
+    ],
+  },
+  {
+    sectionId: 'fme_manufacturing', sectionName: 'Manufacturing Processes (4%)',
+    topics: [
+      t('fme_machining', 'Machining & Material Removal', 'Turning, milling, drilling; cutting speed, feed, MRR, tool life (Taylor).'),
+      t('fme_forming', 'Forming & Joining', 'Casting, forging, rolling, extrusion; welding (arc, MIG, TIG), brazing.'),
+      t('fme_tolerancing', 'Tolerancing & GD&T', 'Dimensional tolerances, geometric tolerances, fits and clearances, surface finish.'),
+    ],
+  },
+  {
+    sectionId: 'fme_management', sectionName: 'Engineering Management (3%)',
+    topics: [
+      t('fme_project', 'Project Management', 'CPM, PERT, Gantt charts, critical path, resource allocation, scheduling.'),
+      t('fme_quality', 'Quality & Reliability', 'Six Sigma, SPC, control charts, reliability, MTBF, FMEA, root cause analysis.'),
+    ],
+  },
 ];
 
 // ═══════════════════════════════════════════════════════════════
@@ -706,7 +802,7 @@ const FE_EE: ExamCurriculum = [
 // ═══════════════════════════════════════════════════════════════
 
 export const EXAM_CURRICULA: Record<string, ExamCurriculum> = {
-  SAT, GRE, GMAT, LSAT, PATENT_BAR, MCAT, FE, FE_EE, PE, SECURITY_PLUS, CISSP,
+  SAT, GRE, GMAT, LSAT, PATENT_BAR, MCAT, FE_ME, FE_EE, PE, SECURITY_PLUS, CISSP,
 };
 
 export function getCurriculum(examType: string): ExamCurriculum {
