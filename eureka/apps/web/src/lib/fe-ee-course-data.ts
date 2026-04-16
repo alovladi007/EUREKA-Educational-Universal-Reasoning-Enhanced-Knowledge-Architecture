@@ -5982,73 +5982,1733 @@ For standard inputs:
   ],
 },
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 13 — COMMUNICATIONS  (5 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+  /* ══════════════════════════════════════════════════════════════════
+   * TOPIC 13 — COMMUNICATIONS  (5 curriculum IDs)  ·  4–6 %
+   * ══════════════════════════════════════════════════════════════════ */
 
-  fee_am_fm: { topicId: 'fee_am_fm', title: 'Analog Modulation: AM & FM', domainWeight: 'Communications · 4–6%', overview: 'Covers analog and digital modulation, noise analysis, channel capacity, and multiplexing.', sections: [{ id: 'fee_am_fm_main', title: 'AM & FM Modulation', content: `AM: s(t) = Ac[1+m(t)]cos(ωct). BW = 2fm. Efficiency η = ma^2/(2+ma^2) approximately 33% at ma=1. FM: s(t) = Ac cos(ωct + β·sin(ωmt)), β = Δf/fm. Carson's rule: BW approximately 2(Δf + fm). AM uses less bandwidth but is noise-sensitive; FM wider bandwidth but noise-resistant.`, examTip: 'Key formulas:\nAM: BW = 2fm, η = ma^2/(2+ma^2)\nFM: BW approximately 2(Δf+fm)\nβ = Δf/fm' }], keyTakeaways: ['AM: BW = 2fm; efficiency approximately 33%', "FM: BW approximately 2(Δf+fm) by Carson's rule", 'AM noise-sensitive; FM noise-resistant (bandwidth tradeoff)', 'Modulation index: AM is ma, FM is β = Δf/fm'] },
+fee_am_fm: { topicId: 'fee_am_fm', title: 'Analog Modulation: AM & FM', domainWeight: 'Communications · 4–6%',
+  overview: 'Amplitude Modulation (AM) and Frequency Modulation (FM) are the two foundational analog modulation techniques. AM encodes information in the carrier amplitude and is bandwidth-efficient but noise-sensitive. FM encodes information in the carrier frequency and trades wider bandwidth for superior noise immunity.',
+  sections: [
+    { id: 'am-fundamentals', title: '1. Amplitude Modulation (AM)',
+      content: `## 1.1 AM Signal Representation
 
-  fee_digital_mod: { topicId: 'fee_digital_mod', title: 'Digital Modulation: ASK, FSK, PSK, QAM', domainWeight: 'Communications · 4–6%', overview: 'Covers analog and digital modulation, noise analysis, channel capacity, and multiplexing.', sections: [{ id: 'fee_digital_mod_main', title: 'Digital Modulation', content: `ASK: simplest but noise-sensitive. FSK: more noise-resistant. PSK: BPSK 1 bit/symbol; QPSK 2 bits/symbol with same bandwidth. QAM: varies amplitude and phase; 16-QAM has 4 bits/symbol. Higher-order modulations increase spectral efficiency but require better SNR. BER for BPSK approximately Q(sqrt(2Eb/N0)).`, examTip: 'Key formulas:\nBPSK: 1 bit/symbol\nQPSK: 2 bits/symbol\n16-QAM: 4 bits/symbol\nBER_BPSK approximately Q(sqrt(2Eb/N0))' }], keyTakeaways: ['ASK (noise-sensitive), FSK (moderate), PSK (resistant), QAM (high efficiency)', 'BPSK: 1 bit/symbol; QPSK: 2; 16-QAM: 4', 'Higher modulation orders require higher SNR', 'BER depends on Eb/N0'] },
+**s(t) = A_c [1 + m_a * m(t)] cos(2 pi f_c t)**
 
-  fee_noise_snr: { topicId: 'fee_noise_snr', title: 'Noise and Signal-to-Noise Ratio', domainWeight: 'Communications · 4–6%', overview: 'Covers analog and digital modulation, noise analysis, channel capacity, and multiplexing.', sections: [{ id: 'fee_noise_snr_main', title: 'Noise & SNR', content: `Thermal noise: Pn = kT·B where k=1.38x10^-23 J/K. Noise figure F = SNRin/SNRout; in dB: NF = 10log₁₀(F). Cascade: F = F1 + (F2-1)/G1 + (F3-1)/(G1·G2). First stage dominates if G1 is large. SNR in dB: 10log₁₀(Psignal/Pnoise).`, examTip: 'Key formulas:\nPn = kT·B\nF = SNRin/SNRout\nCascade: F = F1+(F2-1)/G1\nSNR_dB = 10log₁₀(Ps/Pn)' }], keyTakeaways: ['Thermal noise: Pn = kT·B; increases with temperature and bandwidth', 'Noise figure F = SNRin/SNRout; smaller is better', 'Cascade: F approximately F1 if G1 large; first stage dominates', 'SNR in dB: 10log₁₀(Psignal/Pnoise)'] },
+where A_c is carrier amplitude, m(t) is the normalized message (|m(t)| <= 1), and m_a is the **modulation index**.
 
-  fee_channel_cap: { topicId: 'fee_channel_cap', title: 'Channel Capacity & Shannon-Hartley', domainWeight: 'Communications · 4–6%', overview: 'Covers analog and digital modulation, noise analysis, channel capacity, and multiplexing.', sections: [{ id: 'fee_channel_cap_main', title: 'Shannon-Hartley', content: `Shannon capacity: C = B·log₂(1 + S/N) — maximum reliable information rate. Every 10 dB SNR increase adds approximately 3.3 bits/s/Hz. To increase capacity: increase power, bandwidth, or modulation efficiency. Eb/N0 = (S/N)·(B/C) relates energy per bit to SNR. Capacity scales with log(SNR), not linearly.`, examTip: 'Key formulas:\nC = B·log₂(1+S/N)\nEb/N0 = (S/N)·(B/C)' }], keyTakeaways: ['Shannon: C = B·log₂(1+S/N); limits all communication', 'Every 10 dB SNR increase adds approximately 3.3 bits/s/Hz', 'To increase capacity: boost power, bandwidth, or modulation efficiency', 'Eb/N0 threshold determines modulation feasibility'] },
+- **m_a > 1** causes **overmodulation** -- envelope crosses zero, distorting the recovered signal.
 
-  fee_multiplexing: { topicId: 'fee_multiplexing', title: 'Multiplexing: TDM, FDM, CDM', domainWeight: 'Communications · 4–6%', overview: 'Covers analog and digital modulation, noise analysis, channel capacity, and multiplexing.', sections: [{ id: 'fee_multiplexing_main', title: 'Multiplexing', content: `FDM: each signal occupies distinct frequency band; total BW = sum + guards. TDM: signals take turns in time slots; total BW = signal BW but time-shared. Synchronous TDM: fixed slots (wastes if inactive). Statistical TDM: dynamic assignment (efficient). CDM/CDMA: unique spreading codes, simultaneous transmission, soft capacity limit. WDM: wavelength division in fiber optics.`, examTip: 'Key formulas:\nFDM: B_total = B1+B2+...+guards\nTDM: rate = f1+f2+...\nCDM spreading gain = code_length' }], keyTakeaways: ['FDM: separate frequencies; TDM: time slots', 'CDM/CDMA: unique codes, simultaneous, soft capacity', 'WDM: wavelength division in fiber', 'FDM for analog, TDM for digital; CDM for mobile'] },
+## 1.2 AM Bandwidth and Power
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 14 — COMPUTER NETWORKS  (5 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+| Parameter | Formula | Notes |
+|---|---|---|
+| Bandwidth | **BW = 2 f_m** | f_m = highest message frequency |
+| Carrier power | **P_c = A_c^2 / (2R)** | No information in carrier |
+| Sideband power | **P_s = P_c * m_a^2 / 2** | Contains all information |
+| Total power | **P_total = P_c (1 + m_a^2 / 2)** | Carrier + sidebands |
+| Efficiency | **eta = m_a^2 / (2 + m_a^2)** | Max ~33% at m_a = 1 |
 
-  fee_osi_tcpip: { topicId: 'fee_osi_tcpip', title: 'OSI and TCP/IP Models', domainWeight: 'Computer Networks · 3–5%', overview: 'Covers OSI/TCP/IP models, IP addressing, topologies, security, and performance.', sections: [{ id: 'fee_osi_tcpip_main', title: 'OSI & TCP/IP', content: `OSI: 7 layers — Physical(1), Data Link(2), Network(3), Transport(4), Session(5), Presentation(6), Application(7). TCP/IP: 4 layers — Link, Internet, Transport, Application. Protocol layering encapsulates data with headers at each layer. Routers work L3 (IP); switches L2 (MAC); hubs L1. Key ports: HTTP=80, HTTPS=443, SMTP=25, SSH=22, DNS=53, FTP=21.`, examTip: 'Key protocols:\nHTTP=80, HTTPS=443, SMTP=25, SSH=22, DNS=53' }], keyTakeaways: ['OSI: 7 layers; TCP/IP: 4 practical layers', 'Encapsulation: each layer adds headers', 'Routers L3, switches L2, hubs L1', 'Key protocols: IP, TCP, UDP, HTTP, DNS, SMTP'] },
+### AM Variants
 
-  fee_ip_subnetting: { topicId: 'fee_ip_subnetting', title: 'IP Addressing and Subnetting', domainWeight: 'Computer Networks · 3–5%', overview: 'Covers OSI/TCP/IP models, IP addressing, topologies, security, and performance.', sections: [{ id: 'fee_ip_subnetting_main', title: 'IP Addressing & Subnetting', content: `IPv4: 32 bits, dotted decimal. CIDR notation: /24 means 24 network bits, 8 host bits. Usable hosts = 2^(32-prefix) - 2. Network address: host bits = 0. Broadcast: host bits = 1. IPv6: 128 bits, hex notation. Subnetting divides networks: /24 into /25 gives 2 subnets of 126 usable hosts each.`, examTip: 'Key formulas:\nUsable hosts: 2^(32-prefix)-2\nSubnet size: 2^(32-prefix)\nBroadcast: network | inverse_mask' }], keyTakeaways: ['IPv4: 32 bits; CIDR /n means n network bits', 'Hosts = 2^(32-n)-2; subtract network and broadcast', 'Network address: host bits 0; broadcast: host bits 1', 'IPv6: 128 bits, hex notation'] },
+- **DSB-SC**: removes carrier, 100% efficiency, requires coherent detection.
+- **SSB**: one sideband only -- BW = f_m (half of standard AM).
+- **VSB**: one sideband + vestige -- used in analog TV.`,
+      examTip: 'AM efficiency is at most 33% at full modulation (m_a = 1) because the carrier carries no information. If asked for "useful power," compute P_s = P_c * m_a^2 / 2. DSB-SC achieves 100% efficiency but needs a synchronous detector.',
+      importantNote: 'Overmodulation (m_a > 1) causes the AM envelope to cross zero, making envelope detection fail. The FE exam commonly tests whether a given modulation index causes overmodulation.',
+    },
+    { id: 'fm-fundamentals', title: '2. Frequency Modulation (FM)',
+      content: `## 2.1 FM Signal Representation
 
-  fee_topologies: { topicId: 'fee_topologies', title: 'Network Topologies', domainWeight: 'Computer Networks · 3–5%', overview: 'Covers OSI/TCP/IP models, IP addressing, topologies, security, and performance.', sections: [{ id: 'fee_topologies_main', title: 'Topologies', content: `Star: central switch, easy management, central failure point. Ring: deterministic access, breaks on failure. Mesh: redundancy, full mesh needs N(N-1)/2 links. Bus: simple broadcast, CSMA/CD. Tree: hierarchical. Modern networks use star with redundant links; mesh for critical systems.`, examTip: 'Key formulas:\nFull mesh: N(N-1)/2 links\nBus: CSMA/CD collision detection' }], keyTakeaways: ['Star: central failure but easy management', 'Mesh: redundancy; full mesh needs N(N-1)/2 links', 'Bus: simple, broadcast; replaced by switches', 'Modern: star topology with redundant links'] },
+**s(t) = A_c cos(2 pi f_c t + beta * sin(2 pi f_m t))**
 
-  fee_net_security: { topicId: 'fee_net_security', title: 'Network Security', domainWeight: 'Computer Networks · 3–5%', overview: 'Covers OSI/TCP/IP models, IP addressing, topologies, security, and performance.', sections: [{ id: 'fee_net_security_main', title: 'Network Security', content: `Firewall: stateful examines state; packet filter simple; proxy intermediary. Symmetric encryption (AES): fast, shared secret. Asymmetric (RSA): public/private key pairs, enables key exchange and signatures. Hash functions (SHA) provide integrity. Digital signatures: authentication + integrity. VPN: encrypted tunnel over public network. Defense in depth: multiple layers beat single strong tool.`, examTip: 'Key concepts:\nSymmetric: fast, shared key (AES)\nAsymmetric: public/private (RSA)\nVPN: encrypted tunnel (IPSec, TLS)' }], keyTakeaways: ['Firewall: stateful, packet filter, or proxy', 'Symmetric fast (AES); asymmetric enables exchange (RSA)', 'Hash for integrity; digital signature for authentication', 'VPN: encrypted tunnel; defense in depth'] },
+| Parameter | Formula | Meaning |
+|---|---|---|
+| Frequency deviation | **Delta_f = k_f * A_m** | Max shift from carrier |
+| Modulation index | **beta = Delta_f / f_m** | Ratio of deviation to message freq |
+| Carson's rule BW | **BW = 2(Delta_f + f_m)** | Practical bandwidth estimate |
 
-  fee_net_perf: { topicId: 'fee_net_perf', title: 'Network Performance', domainWeight: 'Computer Networks · 3–5%', overview: 'Covers OSI/TCP/IP models, IP addressing, topologies, security, and performance.', sections: [{ id: 'fee_net_perf_main', title: 'Performance', content: `Bandwidth: channel capacity (bps). Throughput: actual achieved rate (less than or equal to bandwidth). Latency = propagation + transmission + queuing + processing. Transmission delay = bits/bandwidth. Propagation delay = distance/speed. Jitter: latency variation (critical for voice/video). Bottleneck: slowest link determines throughput.`, examTip: 'Key formulas:\nTransmission delay = bits/bandwidth\nPropagation delay = distance/speed\nTotal latency = prop+tx+queuing+processing' }], keyTakeaways: ['Bandwidth: capacity; throughput: actual rate', 'Latency = propagation + transmission + queuing', 'Jitter critical for real-time; high jitter worse than high latency', 'Bottleneck: slowest link determines throughput'] },
+- **Narrowband FM (beta << 1)**: BW approx 2 f_m (similar to AM).
+- **Wideband FM (beta >> 1)**: BW approx 2 Delta_f.
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 15 — DIGITAL SYSTEMS  (5 curriculum IDs from 4 sections)
-   * ────────────────────────────────────────────────────────────────── */
+## 2.2 FM vs. AM
 
-  fee_number_sys: { topicId: 'fee_number_sys', title: 'Number Systems and Boolean Algebra', domainWeight: 'Digital Systems · 7–11%', overview: 'Covers number systems, combinational logic, sequential logic, state machines, and memory.', sections: [{ id: 'fee_number_sys_main', title: 'Number Systems & Boolean Algebra', content: `Binary (base 2), octal (base 8), hexadecimal (base 16). Binary to decimal: 1010 = 10. Hex simplifies binary (4 bits = 1 hex digit). Boolean: AND (A·B), OR (A+B), NOT (A'). DeMorgan: (A·B)' = A'+B' and (A+B)' = A'·B'. Karnaugh maps simplify Boolean expressions by grouping adjacent 1s.`, examTip: "Key formulas:\nDeMorgan: (A·B)' = A'+B'\n(A+B)' = A'·B'\nK-map: group adjacent 1s in powers of 2" }], keyTakeaways: ['Binary/octal/hex conversion using place values', "DeMorgan: swap operators, complement all", 'K-map: group adjacent 1s for minimization', 'Minimize to fewest terms and literals'] },
+| Feature | AM | FM |
+|---|---|---|
+| Bandwidth | **2 f_m** | **2(Delta_f + f_m)** |
+| Noise immunity | Poor | Excellent -- limiter removes amplitude noise |
+| Efficiency | Low (max ~33%) | N/A (constant-envelope) |
+| Complexity | Simple envelope detector | Frequency discriminator needed |
 
-  fee_comb_logic: { topicId: 'fee_comb_logic', title: 'Combinational Logic: MUX, Decoders, Adders', domainWeight: 'Digital Systems · 7–11%', overview: 'Covers number systems, combinational logic, sequential logic, state machines, and memory.', sections: [{ id: 'fee_comb_logic_main', title: 'Combinational Logic', content: `Output depends only on current inputs (no memory). MUX: selects one of N inputs; 2^n inputs need n select lines. Decoder: n inputs, 2^n outputs. Full-adder: Sum = A XOR B XOR Cin, Cout = A·B + Cin·(A XOR B). Ripple-carry: simple but slow. Carry-lookahead: faster, more complex. Subtraction via 2's complement: invert bits, add 1.`, examTip: "Key formulas:\nFull adder: Sum = A XOR B XOR Cin\nCout = AB + Cin(A XOR B)" }], keyTakeaways: ['MUX selects input; decoder activates one output', 'Full-adder: Sum = A XOR B XOR Cin; Cout = AB + Cin(A XOR B)', 'Ripple-carry simple but slow; carry-lookahead faster', "2's complement for subtraction"] },
+## 2.3 Phase Modulation (PM)
 
-  fee_seq_logic: { topicId: 'fee_seq_logic', title: 'Sequential Logic: Flip-Flops & Counters', domainWeight: 'Digital Systems · 7–11%', overview: 'Covers number systems, combinational logic, sequential logic, state machines, and memory.', sections: [{ id: 'fee_seq_logic_main', title: 'Sequential Logic', content: `Sequential circuits have memory; output depends on past inputs. D flip-flop: captures D on clock edge, Q = D. SR: S=1 sets, R=1 resets, S=R=1 undefined. JK: J=1 sets, K=1 resets, J=K=1 toggles. T: toggles on T=1. Setup and hold times must be satisfied to avoid metastability. Counters cascade flip-flops: binary counts 0 to 2^n-1. Synchronous: all FF clock simultaneously (fast, reliable).`, examTip: 'Key concepts:\nD FF: Q becomes D on clock edge\nSetup/hold time violations cause metastability\nSynchronous > asynchronous for reliability' }], keyTakeaways: ['D FF captures input; Q = D on clock edge', 'JK is universal; T toggles', 'Setup/hold time violations cause metastability', 'Synchronous counter: all FF driven by same clock'] },
+**s(t) = A_c cos(2 pi f_c t + k_p m(t))**. FM and PM are closely related -- FM of m(t) is equivalent to PM of its integral. Digital PSK is fundamentally phase modulation.`,
+      examTip: 'Carson\'s rule BW = 2(Delta_f + f_m) is the most-tested FM formula. For narrowband FM (beta << 1) it simplifies to 2 f_m. For wideband FM (beta >> 1) it becomes ~2 Delta_f. Always compute beta first.',
+    },
+    { id: 'am-fm-receivers', title: '3. Superheterodyne Receivers and Tradeoffs',
+      content: `## 3.1 The Bandwidth-Noise Tradeoff
 
-  fee_state_machines: { topicId: 'fee_state_machines', title: 'Finite State Machines', domainWeight: 'Digital Systems · 7–11%', overview: 'Covers number systems, combinational logic, sequential logic, state machines, and memory.', sections: [{ id: 'fee_state_machines_main', title: 'Finite State Machines', content: `A Finite State Machine (FSM) consists of states (circles in diagrams) and transitions (arrows between states triggered by inputs). Moore FSM: output depends only on current state — output changes only on state transitions, making it synchronous and glitch-free. Mealy FSM: output depends on both current state and current input — can respond faster to input changes but may produce glitches. Design process: (1) list all states needed, (2) create a state transition table with current state, input, next state, and output, (3) assign binary codes to states, (4) derive next-state logic using flip-flop excitation equations, (5) implement with flip-flops and combinational logic. State minimization reduces the number of states (and flip-flops) by combining equivalent states — two states are equivalent if for all inputs they produce the same output and transition to equivalent next states. On the FE exam, you may need to design a simple FSM from a word description, trace through a state diagram given inputs, or convert between Moore and Mealy representations. Counter design is a special case of FSM design where states follow a fixed sequence.`, examTip: 'Key concepts:\nMoore: output = f(state only)\nMealy: output = f(state, input)\nDesign: state table -> excitation equations -> implementation' }], keyTakeaways: ['Moore output depends on state only; Mealy on state and input', 'Design: list states, create transition table, derive logic', 'State minimization combines equivalent states to reduce hardware', 'Counters are special-case FSMs with fixed sequences'] },
+**Wider bandwidth can be traded for better noise performance.** FM exploits this -- spreading the signal over wider bandwidth lets the receiver reject more noise.
 
-  fee_memory: { topicId: 'fee_memory', title: 'Memory Systems: ROM, RAM, Cache, FPGA', domainWeight: 'Digital Systems · 7–11%', overview: 'Covers number systems, combinational logic, sequential logic, state machines, and memory.', sections: [{ id: 'fee_memory_main', title: 'Memory Systems', content: `ROM: nonvolatile, permanent. PROM: write once. EPROM: UV erasable. EEPROM/Flash: electrically erasable. RAM: volatile. SRAM: fast, expensive, uses latches. DRAM: slower, cheap, uses capacitors, needs refresh. Memory hierarchy: registers (fastest) > L1 cache > L2 > RAM > disk (largest). Cache exploits locality: temporal and spatial. Cache hit rate = hits/(hits+misses). FPGA: configurable logic blocks, reprogrammable without hardware change.`, examTip: 'Key formulas:\nCache hit rate = hits/(hits+misses)\nMemory capacity = 2^address_bits bytes' }], keyTakeaways: ['ROM nonvolatile; RAM volatile; SRAM fast/expensive, DRAM large/cheap', 'Memory hierarchy: registers > cache > RAM > disk', 'Cache exploits temporal and spatial locality', 'FPGA: reprogrammable logic'] },
+**FM improvement factor**: SNR_out / SNR_in = 3 beta^2 (beta + 1) for wideband FM.
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 16 — COMPUTER SYSTEMS  (4 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+## 3.2 Superheterodyne Receiver
 
-  fee_architecture: { topicId: 'fee_architecture', title: 'Computer Architecture', domainWeight: 'Computer Systems · 3–5%', overview: 'Covers computer architecture, memory hierarchy, I/O interfacing, and performance metrics.', sections: [{ id: 'fee_architecture_main', title: 'Architecture', content: `Von Neumann: single memory for instructions and data (bottleneck). Harvard: separate memories (parallel fetch). Most modern CPUs use modified Harvard with separate L1 caches. RISC: simple instructions, efficient pipelining (ARM, MIPS). CISC: complex instructions, variable cycles (x86). Pipeline: IF-ID-EX-MEM-WB stages; hazards reduce efficiency. Superscalar: multiple instructions simultaneously.`, examTip: 'Key concepts:\nVon Neumann: single memory\nHarvard: separate instruction/data\nRISC: simple, pipelinable\nCISC: complex, variable cycles' }], keyTakeaways: ['Von Neumann: single memory; Harvard: separate instruction/data', 'RISC: simple, fast, pipelinable; CISC: complex, powerful per instruction', 'Pipeline: IF-ID-EX-MEM-WB; hazards reduce efficiency', 'Superscalar: multiple instructions simultaneously'] },
+1. **RF amplifier** -- sets noise figure
+2. **Mixer + LO** -- down-converts to IF
+3. **IF amplifier + filter** -- selectivity and gain
+4. **Detector** -- envelope (AM) or discriminator (FM)
 
-  fee_mem_hierarchy: { topicId: 'fee_mem_hierarchy', title: 'Memory Hierarchy and Virtual Memory', domainWeight: 'Computer Systems · 3–5%', overview: 'Covers computer architecture, memory hierarchy, I/O interfacing, and performance metrics.', sections: [{ id: 'fee_mem_hierarchy_main', title: 'Memory Hierarchy', content: `Registers (<1 KB, ~1 ns), L1 cache (32-64 KB, ~4 ns), L2 (256 KB-1 MB, ~10 ns), RAM (GB, ~100 ns), disk (TB, ~10 ms). Principle of locality: temporal and spatial. Average access time = h·tc + (1-h)·tm. Write-through: write to cache and memory. Write-back: write cache only, mark dirty. Virtual memory: page table translates virtual to physical. TLB caches translations. Page fault: very expensive disk fetch.`, examTip: 'Key formulas:\nAverage access time = h·tc + (1-h)·tm\nHit rate h = hits/(hits+misses)' }], keyTakeaways: ['Cache exploits locality: small, fast copies of frequent data', 'Average access time depends on hit rate', 'Write-through vs write-back cache policies', 'Virtual memory: disk extends RAM; page faults very expensive'] },
+- **Image frequency**: f_image = f_signal + 2 f_IF
+- Higher IF improves image rejection but worsens adjacent-channel selectivity
 
-  fee_io_interfacing: { topicId: 'fee_io_interfacing', title: 'I/O and Interfacing', domainWeight: 'Computer Systems · 3–5%', overview: 'Covers computer architecture, memory hierarchy, I/O interfacing, and performance metrics.', sections: [{ id: 'fee_io_interfacing_main', title: 'I/O & Interfacing', content: `Programmed I/O: CPU controls all (slow). Interrupt: device signals CPU asynchronously. DMA: device transfers directly to memory without CPU. I2C: two-wire, master-slave, for sensors. SPI: four-wire, faster. USB: serial, hot-plug. PCIe: high-speed point-to-point. Bandwidth: USB 2.0 approximately 480 Mbps, USB 3.0 approximately 5 Gbps.`, examTip: 'Key concepts:\nProgrammed I/O < Interrupt < DMA (increasing efficiency)\nI2C < SPI < USB < PCIe (increasing speed)' }], keyTakeaways: ['Programmed I/O slow; Interrupt better; DMA best for bulk transfer', 'I2C, SPI, USB, PCIe: increasing speed and complexity', 'DMA offloads CPU; essential for high-speed devices', 'Interrupt handler: device-specific code; priority determines order'] },
+## 3.3 Pre-emphasis / De-emphasis
 
-  fee_performance: { topicId: 'fee_performance', title: 'Performance Metrics: CPI, MIPS, Amdahl\'s Law', domainWeight: 'Computer Systems · 3–5%', overview: 'Covers computer architecture, memory hierarchy, I/O interfacing, and performance metrics.', sections: [{ id: 'fee_performance_main', title: 'Performance Metrics', content: `Execution time = instructions x CPI / frequency. CPI: cycles per instruction (ideal 1). MIPS = freq(MHz)/CPI. Amdahl's Law: speedup = 1/[(1-f) + f/S] where f is fraction affected, S is improvement factor. If 50% parallelizable, max speedup is 2x even with infinite S. Power scales cubically with frequency.`, examTip: "Key formulas:\nCPI = cycles/instructions\nMIPS = freq(MHz)/CPI\nAmdahl: speedup = 1/[(1-f)+f/S]\nTime = instructions x CPI / frequency" }], keyTakeaways: ['CPI: cycles per instruction; MIPS = freq/CPI', 'Execution time = instructions x CPI / frequency', "Amdahl: max speedup = 1/(1-f+f/S); diminishing returns", 'Power-performance: frequency cubes'] },
+FM uses pre-emphasis (boost highs before TX) and de-emphasis (attenuate after RX) to improve high-frequency SNR.`,
+      examTip: 'Image frequency = f_signal + 2 f_IF. The image is always separated from the desired signal by exactly twice the IF frequency.',
+    },
+  ],
+  keyTakeaways: [
+    'AM: s(t) = A_c[1+m_a*m(t)]cos(wt); BW = 2f_m; efficiency eta = m_a^2/(2+m_a^2), max ~33%.',
+    'FM: beta = Delta_f/f_m; Carson\'s rule BW = 2(Delta_f + f_m).',
+    'AM is bandwidth-efficient but noise-sensitive; FM trades wider BW for noise immunity.',
+    'Overmodulation (m_a > 1) causes AM envelope distortion -- common exam trap.',
+    'DSB-SC removes carrier for 100% efficiency; SSB halves bandwidth to f_m.',
+    'Superheterodyne: RF amp -> mixer -> IF filter -> detector; image freq = f_signal + 2f_IF.',
+  ],
+},
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 17 — SOFTWARE DEVELOPMENT  (5 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+fee_digital_mod: { topicId: 'fee_digital_mod', title: 'Digital Modulation: ASK, FSK, PSK, QAM', domainWeight: 'Communications · 4–6%',
+  overview: 'Digital modulation encodes discrete bits as distinct changes in a carrier signal. ASK varies amplitude, FSK varies frequency, PSK varies phase, and QAM combines amplitude and phase. Higher-order modulations pack more bits per symbol but demand higher SNR.',
+  sections: [
+    { id: 'digmod-basic', title: '1. Basic Digital Modulation Schemes',
+      content: `## 1.1 ASK, FSK, PSK
 
-  fee_algorithms: { topicId: 'fee_algorithms', title: 'Algorithms and Complexity', domainWeight: 'Software Development · 3–5%', overview: 'Covers data structures, algorithms, OOP, SDLC, and databases.', sections: [{ id: 'fee_algorithms_main', title: 'Algorithms & Complexity', content: `Big-O notation: O(1) constant, O(log n) logarithmic, O(n) linear, O(n log n) linearithmic, O(n^2) quadratic, O(2^n) exponential. Sorting: Bubble/Insertion O(n^2); Merge/Quick O(n log n). Binary search: O(log n) on sorted data. Recursion: base case prevents infinite recursion. Divide-and-conquer splits problem. Dynamic programming: memoization avoids redundant computation. Greedy: locally optimal choices.`, examTip: 'Key formulas:\nBinary search: O(log n)\nMerge sort: O(n log n)\nFibonacci naive: O(2^n), DP: O(n)' }], keyTakeaways: ['Big-O: asymptotic upper bound; focus on dominant term', 'O(n log n) sorts: merge, quick; O(n^2): bubble, insertion', 'Binary search O(log n) requires sorted data', 'Dynamic programming eliminates redundant computation'] },
+**ASK**: maps bits to amplitude levels. Simplest but most noise-sensitive.
 
-  fee_data_structures: { topicId: 'fee_data_structures', title: 'Data Structures', domainWeight: 'Software Development · 3–5%', overview: 'Covers data structures, algorithms, OOP, SDLC, and databases.', sections: [{ id: 'fee_data_structures_main', title: 'Data Structures', content: `Arrays: O(1) access, O(n) insert. Linked lists: O(1) insert at known position, O(n) search. Stack (LIFO): push/pop from top; applications: function calls, expression evaluation. Queue (FIFO): enqueue rear, dequeue front; applications: scheduling, BFS. BST: O(log n) if balanced; AVL/Red-Black maintain balance. Hash table: O(1) average lookup; collision resolution: chaining or open addressing. Load factor = size/capacity.`, examTip: 'Key complexities:\nArray access: O(1), insert: O(n)\nBST balanced: O(log n)\nHash: O(1) average, O(n) worst' }], keyTakeaways: ['Arrays: O(1) access, O(n) insert; lists: O(1) insert, O(n) search', 'Stack LIFO, Queue FIFO; efficient for specific use cases', 'BST O(log n) if balanced; AVL/RB maintain balance', 'Hash table O(1) average; collision handling critical'] },
+**FSK**: maps bits to different frequencies. BW_FSK = |f_1 - f_0| + 2B. More noise-resistant than ASK.
 
-  fee_oop: { topicId: 'fee_oop', title: 'Object-Oriented Programming', domainWeight: 'Software Development · 3–5%', overview: 'Covers data structures, algorithms, OOP, SDLC, and databases.', sections: [{ id: 'fee_oop_main', title: 'OOP & Programming Concepts', content: `OOP organizes code as objects (data + methods). Class: blueprint. Instance: specific object. Encapsulation: hide internals, expose interface. Inheritance: child inherits from parent (code reuse). Polymorphism: same method name, different behavior. Abstraction: expose essential, hide complexity. Recursion: function calls itself with smaller input until base case. Functional programming: functions as first-class objects, immutability, higher-order functions (map, filter, reduce).`, examTip: 'Key concepts:\nEncapsulation, Inheritance, Polymorphism, Abstraction\nRecursion: base case essential\nFunctional: immutable, pure functions' }], keyTakeaways: ['OOP: encapsulation, inheritance, polymorphism', 'Recursion: elegant for hierarchical problems; watch stack overflow', 'Dynamic programming: memoization for optimization', 'Functional: immutable, composable, declarative'] },
+**PSK**:
 
-  fee_sdlc: { topicId: 'fee_sdlc', title: 'Software Development Lifecycle', domainWeight: 'Software Development · 3–5%', overview: 'Covers data structures, algorithms, OOP, SDLC, and databases.', sections: [{ id: 'fee_sdlc_main', title: 'SDLC & Testing', content: `Waterfall: sequential (requirements, design, code, test, deploy). Advantage: clear plan. Disadvantage: inflexible, late error detection. Agile/Scrum: iterative sprints, continuous feedback. Testing: Unit (functions), Integration (components), System (full), Acceptance (user). TDD: write tests before code. Git: commit (snapshot), branch (parallel), merge (combine). CI/CD: automated testing and deployment.`, examTip: 'Key concepts:\nWaterfall: sequential, plan-heavy\nAgile: iterative, feedback-driven\nTesting: unit > integration > system > acceptance' }], keyTakeaways: ['Waterfall: sequential; Agile: iterative', 'Testing: unit, integration, system, acceptance; earlier = cheaper', 'Git: commit, branch, merge', 'CI/CD: automate testing and deployment'] },
+| Scheme | Phases | Bits/Symbol | Key Property |
+|---|---|---|---|
+| **BPSK** | 0, pi | 1 | Most noise-resistant |
+| **QPSK** | 0, pi/2, pi, 3pi/2 | 2 | Same BW as BPSK, double throughput |
+| **8-PSK** | 8 equally spaced | 3 | Needs higher SNR |
 
-  fee_databases: { topicId: 'fee_databases', title: 'Databases: SQL & Normalization', domainWeight: 'Software Development · 3–5%', overview: 'Covers data structures, algorithms, OOP, SDLC, and databases.', sections: [{ id: 'fee_databases_main', title: 'Databases', content: `Relational databases: tables with rows/columns. Primary key: unique identifier. Foreign key: references another table. SQL: SELECT (retrieve), INSERT, UPDATE, DELETE, JOIN. Normalization: 1NF (atomic values), 2NF (no partial dependencies), 3NF (no transitive dependencies). ACID: Atomicity (all-or-nothing), Consistency (valid state), Isolation (no interference), Durability (survives failures). Indexes accelerate lookups but slow writes.`, examTip: 'Key concepts:\nSQL: SELECT, INSERT, UPDATE, DELETE, JOIN\n1NF: atomic; 2NF: full dependency; 3NF: no transitive\nACID: atomicity, consistency, isolation, durability' }], keyTakeaways: ['Relational: tables with primary/foreign keys', 'SQL: SELECT, INSERT, UPDATE, DELETE, JOIN', 'Normalization: 1NF atomic, 2NF full dependency, 3NF no transitive', 'ACID: atomicity, consistency, isolation, durability'] },
+**BPSK bit-error rate**: BER = Q(sqrt(2 E_b / N_0))
+
+QPSK achieves **2 bits/symbol with the same bandwidth** as BPSK -- this dominates practical systems.
+
+## 1.2 QAM (Quadrature Amplitude Modulation)
+
+QAM varies **both amplitude and phase**:
+
+| Scheme | Points | Bits/Symbol | Spectral Efficiency |
+|---|---|---|---|
+| **4-QAM (= QPSK)** | 4 | 2 | 2 bits/s/Hz |
+| **16-QAM** | 16 | 4 | 4 bits/s/Hz |
+| **64-QAM** | 64 | 6 | 6 bits/s/Hz |
+| **256-QAM** | 256 | 8 | 8 bits/s/Hz |
+
+**bits/symbol = log_2(M)** where M is constellation size.
+**Required SNR increases ~6 dB for every doubling of M.**`,
+      examTip: 'QPSK transmits 2 bits/symbol with the SAME bandwidth as BPSK -- essentially two independent BPSK streams on I and Q channels. This is the most important spectral-efficiency fact for the FE exam.',
+      importantNote: 'Do not confuse bits per symbol with bits per second. Bits/s = bits/symbol * symbol rate. QPSK at 1 Msym/s = 2 Mbps.',
+    },
+    { id: 'digmod-ber', title: '2. BER and Design Tradeoffs',
+      content: `## 2.1 BER Expressions
+
+| Scheme | BER Formula | Notes |
+|---|---|---|
+| BPSK | **Q(sqrt(2 E_b/N_0))** | Best BER per E_b/N_0 |
+| QPSK | **Q(sqrt(2 E_b/N_0))** | Same as BPSK (independent I/Q) |
+| 16-QAM | ~4 dB more than QPSK | Higher constellation penalty |
+
+**E_b/N_0 = (S/N) * (B/R_b)** -- universal digital link quality metric.
+
+## 2.2 The Fundamental Tradeoff
+
+- **Higher M** -> more bits/symbol -> higher spectral efficiency
+- **Higher M** -> closer constellation points -> higher required E_b/N_0
+- This is the **bandwidth-power tradeoff**.
+
+## 2.3 Practical Techniques
+
+- **Gray coding**: adjacent points differ by 1 bit, minimizing bit errors
+- **Differential encoding**: data in phase changes, avoids carrier recovery
+- **Adaptive modulation**: switch M based on channel conditions (WiFi, 4G/5G)
+
+**Bandwidth**: BW = R_s * (1 + alpha) where alpha is roll-off factor (0.2-0.5 typical).`,
+      examTip: 'BPSK and QPSK have identical BER per E_b/N_0 because QPSK is two independent BPSK streams. For 16-QAM, you need ~4 dB more E_b/N_0 than QPSK for the same BER.',
+    },
+  ],
+  keyTakeaways: [
+    'ASK (noise-sensitive), FSK (moderate), PSK (robust), QAM (high efficiency).',
+    'BPSK: 1 bit/symbol; QPSK: 2 bits/symbol with same BW and same BER as BPSK.',
+    'QAM: 16-QAM = 4 bits/symbol, 64-QAM = 6; bits/symbol = log_2(M).',
+    'Each doubling of constellation size costs ~6 dB more SNR.',
+    'BER for BPSK/QPSK: Q(sqrt(2 E_b/N_0)); E_b/N_0 = (S/N)*(B/R_b).',
+    'Gray coding minimizes bit errors; adaptive modulation matches M to channel.',
+  ],
+},
+
+fee_noise_snr: { topicId: 'fee_noise_snr', title: 'Noise and Signal-to-Noise Ratio', domainWeight: 'Communications · 4–6%',
+  overview: 'Noise sets the fundamental limit on communication system performance. Understanding thermal noise power, noise figure, cascade noise analysis, and SNR calculations is essential for designing receivers. The Friis cascade formula is one of the most frequently tested communications concepts on the FE exam.',
+  sections: [
+    { id: 'noise-thermal', title: '1. Noise Sources and Thermal Noise',
+      content: `## 1.1 Types of Noise
+
+| Noise Type | Source | Spectrum |
+|---|---|---|
+| **Thermal (Johnson)** | Random electron motion in resistors | White (flat) |
+| **Shot** | Discrete charge carriers (diodes) | White |
+| **Flicker (1/f)** | Surface defects in semiconductors | Pink |
+| **Quantization** | ADC rounding | White (approx.) |
+
+## 1.2 Thermal Noise Power
+
+**P_n = k T B**
+
+- k = 1.38 x 10^-23 J/K (Boltzmann constant)
+- T = temperature in Kelvin (standard: 290 K)
+- B = noise bandwidth (Hz)
+
+At room temperature: **P_n = -174 dBm/Hz** (memorize this!)
+
+For bandwidth B: **P_n(dBm) = -174 + 10 log_10(B)**
+
+## 1.3 Signal-to-Noise Ratio
+
+**SNR = P_signal / P_noise** (linear)
+
+**SNR(dB) = 10 log_10(P_signal / P_noise) = P_signal(dBm) - P_noise(dBm)**`,
+      examTip: 'Memorize -174 dBm/Hz as thermal noise floor at room temperature. For noise in 1 MHz bandwidth: P_n = -174 + 60 = -114 dBm. This is the fastest way to solve FE noise problems.',
+      importantNote: 'Temperature must be in Kelvin. Room temp is T_0 = 290 K (not 300 K). If a problem specifies a different temperature, use that value.',
+    },
+    { id: 'noise-cascade', title: '2. Noise Figure and Friis Cascade Formula',
+      content: `## 2.1 Noise Figure
+
+**F = SNR_in / SNR_out** (linear, >= 1)
+
+**NF = 10 log_10(F)** (dB, >= 0)
+
+- Ideal amplifier: F = 1 (NF = 0 dB)
+- Passive attenuator with loss L: **F = L** (noise figure equals attenuation)
+- Typical LNA: NF = 0.5-2 dB; typical mixer: NF = 6-10 dB
+
+## 2.2 Noise Temperature
+
+**T_e = (F - 1) * T_0** where T_0 = 290 K
+
+## 2.3 Friis Cascade Formula
+
+**F_total = F_1 + (F_2 - 1)/G_1 + (F_3 - 1)/(G_1 * G_2) + ...**
+
+### Critical Insight
+
+Each stage's noise contribution is **divided by cumulative gain** of preceding stages:
+- **First stage dominates** when G_1 is large
+- **LNA as first stage** minimizes system noise figure
+- A 3 dB cable loss BEFORE the LNA has F = 2, severely degrading the system
+
+| Cascade Example | F_total Impact |
+|---|---|
+| LNA first (NF=1 dB, G=20 dB) | System NF ~ 1.1 dB |
+| 3 dB cable first, then LNA | System NF ~ 4 dB |`,
+      examTip: 'Friis formula: place lowest NF device FIRST with maximum gain. If G_1 = 100 (20 dB), second stage noise barely matters. A passive loss BEFORE the LNA is devastating.',
+      importantNote: 'A cable/filter with 3 dB loss placed before the LNA adds F = 2 to the cascade, often doubling the system noise figure. Always put the LNA as close to the antenna as possible.',
+    },
+  ],
+  keyTakeaways: [
+    'Thermal noise: P_n = kTB; at room temp, noise floor = -174 dBm/Hz.',
+    'Noise figure F = SNR_in/SNR_out; NF(dB) = 10 log_10(F); lower is better.',
+    'Friis cascade: F_total = F_1 + (F_2-1)/G_1 + (F_3-1)/(G_1*G_2) + ...',
+    'First stage dominates: place lowest-NF device first with maximum gain.',
+    'Noise temperature: T_e = (F-1)*T_0; passive loss L has F = L.',
+    'SNR(dB) = P_signal(dBm) - P_noise(dBm).',
+  ],
+},
+
+fee_channel_cap: { topicId: 'fee_channel_cap', title: 'Channel Capacity & Shannon-Hartley Theorem', domainWeight: 'Communications · 4–6%',
+  overview: 'The Shannon-Hartley theorem establishes the absolute maximum information rate for a noisy channel. This limit applies to every modulation and coding scheme. Understanding how capacity depends on bandwidth and SNR, and the E_b/N_0 metric, is essential for the FE exam.',
+  sections: [
+    { id: 'shannon-cap', title: '1. Shannon-Hartley Theorem',
+      content: `## 1.1 Channel Capacity
+
+**C = B * log_2(1 + S/N)** (bits/second)
+
+- C = maximum achievable bit rate with arbitrarily low error
+- B = bandwidth (Hz), S/N = signal-to-noise ratio (LINEAR, not dB)
+
+### Key Properties
+
+| Property | Detail |
+|---|---|
+| SNR dependence | Logarithmic -- doubling power adds ~1 bit/s/Hz at high SNR |
+| BW dependence | Linear -- doubling BW doubles C if SNR constant |
+| +3 dB SNR | Adds ~1 bit/s/Hz spectral efficiency |
+| +10 dB SNR | Adds ~3.32 bits/s/Hz |
+
+## 1.2 Bandwidth-Limited vs. Power-Limited
+
+| Regime | Strategy |
+|---|---|
+| **BW-limited** (high SNR) | Use higher-order modulation (more bits/symbol) |
+| **Power-limited** (low SNR) | Spread over wider BW, low-order modulation |
+
+## 1.3 Shannon Limit
+
+As BW -> infinity: **C_max = 1.44 * S/N_0** where N_0 is noise PSD. Even infinite bandwidth gives finite capacity.`,
+      examTip: 'ALWAYS check if SNR is given in linear or dB. If dB, convert first: S/N(linear) = 10^(SNR_dB/10). A 20 dB SNR = 100 linear, so C = B*log_2(101). Forgetting this conversion is the #1 exam mistake.',
+      importantNote: 'Shannon capacity is a theoretical MAXIMUM. Real systems operate below it. If a problem says capacity = C, no system can exceed it -- but not every system achieves it.',
+    },
+    { id: 'ebn0', title: '2. E_b/N_0 and Spectral Efficiency',
+      content: `## 2.1 Energy per Bit
+
+**E_b/N_0 = (S/N) * (B/R_b)**
+
+- E_b = energy per information bit (J)
+- N_0 = noise power spectral density (W/Hz)
+- R_b = bit rate (bps)
+
+E_b/N_0 is the **universal figure of merit** for digital communication.
+
+## 2.2 Shannon Limit for E_b/N_0
+
+At capacity: **E_b/N_0 >= ln(2) = -1.59 dB** (theoretical minimum)
+
+| Modulation | Required E_b/N_0 for BER = 10^-5 |
+|---|---|
+| BPSK/QPSK | ~9.6 dB |
+| 16-QAM | ~13.4 dB |
+| 64-QAM | ~17.8 dB |
+
+## 2.3 Spectral Efficiency
+
+**eta = R_b / B = log_2(1 + S/N)** at capacity
+
+Higher spectral efficiency requires higher SNR -- no free lunch.`,
+      examTip: 'E_b/N_0 = (S/N)*(B/R_b) bridges analog and digital metrics. Shannon limit of -1.59 dB is theoretical; practical systems need 5-18 dB depending on modulation.',
+    },
+  ],
+  keyTakeaways: [
+    'Shannon: C = B * log_2(1 + S/N); absolute maximum reliable rate.',
+    'Capacity grows logarithmically with SNR but linearly with bandwidth.',
+    'Every 10 dB SNR increase adds ~3.32 bits/s/Hz.',
+    'E_b/N_0 = (S/N)*(B/R_b); universal digital link quality metric.',
+    'Shannon limit: E_b/N_0 >= -1.59 dB; practical systems need 5-18 dB.',
+    'Always convert SNR from dB to linear before using Shannon formula.',
+  ],
+},
+
+fee_multiplexing: { topicId: 'fee_multiplexing', title: 'Multiplexing: TDM, FDM, CDM', domainWeight: 'Communications · 4–6%',
+  overview: 'Multiplexing combines multiple signals onto a single shared channel. FDM separates users in frequency, TDM in time, CDM by unique spreading codes. Each has distinct bandwidth, complexity, and interference characteristics.',
+  sections: [
+    { id: 'mux-fdm-tdm', title: '1. FDM and TDM',
+      content: `## 1.1 Frequency Division Multiplexing (FDM)
+
+Each user gets a **distinct frequency band**. All transmit simultaneously at different frequencies.
+
+- **Total BW** = B_1 + B_2 + ... + B_n + guard bands
+- Guard bands prevent adjacent-channel interference
+- Analog-friendly: AM/FM radio, cable TV
+
+## 1.2 Time Division Multiplexing (TDM)
+
+Each user takes turns using **full bandwidth** in assigned time slots.
+
+| TDM Type | Slot Assignment | Efficiency |
+|---|---|---|
+| **Synchronous** | Fixed per user | Low (wastes idle slots) |
+| **Statistical** | Dynamic, on-demand | High |
+
+- **Total rate**: R_total = R_1 + R_2 + ... + R_n
+- **T1 frame**: 24 channels * 8 bits + 1 framing = 193 bits, 8000 frames/s = **1.544 Mbps**
+
+## 1.3 FDM vs. TDM
+
+| Feature | FDM | TDM |
+|---|---|---|
+| Domain | Frequency | Time |
+| Simultaneous | Yes (different freqs) | No (turns) |
+| Guards | Frequency guard bands | Time guard intervals |
+| Best for | Analog | Digital |`,
+      examTip: 'T1 = 1.544 Mbps (24 * 64 kbps + 8 kbps framing). For FDM bandwidth, do not forget guard bands.',
+      importantNote: 'Synchronous TDM wastes bandwidth when users are idle. Statistical TDM solves this with dynamic slot assignment but adds variable delay and buffering complexity.',
+    },
+    { id: 'mux-cdm-wdm', title: '2. CDM, CDMA, and WDM',
+      content: `## 2.1 Code Division Multiplexing (CDMA)
+
+All users transmit **simultaneously on same frequency** using unique orthogonal spreading codes.
+
+1. Each user has unique **PN code** of length L
+2. Data multiplied by code, spreading BW by factor L
+3. Receiver correlates with desired code to extract data
+
+**Spreading gain**: **G_p = BW_spread / BW_data = L**
+
+### CDMA Properties
+
+- **Soft capacity limit**: more users = higher noise floor, no hard cutoff
+- **Near-far problem**: strong nearby signals drown weak distant ones -- requires **power control**
+- **Graceful degradation**: performance degrades gradually with users
+
+## 2.2 Wavelength Division Multiplexing (WDM)
+
+FDM for fiber optics using different optical wavelengths:
+- **CWDM**: ~18 channels, 20 nm spacing
+- **DWDM**: 40-160+ channels, 0.8 nm spacing, terabit/s capacity
+
+## 2.3 OFDM
+
+Divides wideband channel into many narrow orthogonal subcarriers:
+- Used in WiFi, 4G LTE, 5G NR
+- Resilient to multipath fading
+- Efficient spectrum use (overlapping but orthogonal)`,
+      examTip: 'CDMA spreading gain = code length L. Near-far problem is the critical practical limitation -- without power control, CDMA fails.',
+    },
+  ],
+  keyTakeaways: [
+    'FDM: separate frequency bands; total BW = sum + guard bands.',
+    'TDM: time slots; synchronous (fixed, wasteful) vs. statistical (dynamic, efficient).',
+    'T1 = 24 * 64 kbps + 8 kbps framing = 1.544 Mbps.',
+    'CDMA: unique spreading codes, all share same freq; soft capacity; spreading gain = code length.',
+    'Near-far problem requires power control in CDMA systems.',
+    'WDM: FDM for fiber; DWDM enables 40-160+ channels per fiber.',
+  ],
+},
+
+  /* ══════════════════════════════════════════════════════════════════
+   * TOPIC 14 — COMPUTER NETWORKS  (5 curriculum IDs)  ·  3–5 %
+   * ══════════════════════════════════════════════════════════════════ */
+
+fee_osi_tcpip: { topicId: 'fee_osi_tcpip', title: 'OSI and TCP/IP Models', domainWeight: 'Computer Networks · 3–5%',
+  overview: 'The OSI seven-layer model and TCP/IP four-layer model provide the conceptual framework for network communication. Protocol layering, encapsulation, device-layer mapping, and well-known port numbers are fundamental FE exam topics.',
+  sections: [
+    { id: 'osi-layers', title: '1. OSI Reference Model',
+      content: `## 1.1 The Seven Layers
+
+| Layer | Name | Function | Examples | PDU |
+|---|---|---|---|---|
+| 7 | **Application** | User services | HTTP, SMTP, DNS, FTP, SSH | Data |
+| 6 | **Presentation** | Encryption, encoding | SSL/TLS, JPEG | Data |
+| 5 | **Session** | Session management | NetBIOS, RPC | Data |
+| 4 | **Transport** | End-to-end delivery | **TCP** (reliable), **UDP** (fast) | Segment |
+| 3 | **Network** | Routing, IP addressing | **IP**, ICMP, OSPF | Packet |
+| 2 | **Data Link** | Framing, MAC addresses | Ethernet, WiFi | Frame |
+| 1 | **Physical** | Bit transmission | Cables, fiber, hubs | Bits |
+
+## 1.2 Encapsulation
+
+Data moves DOWN the stack: each layer adds its header.
+Data moves UP at receiver: each layer strips its header.
+
+## 1.3 Devices by Layer
+
+| Device | Layer | Function |
+|---|---|---|
+| **Hub / Repeater** | L1 | Amplifies signal; no intelligence |
+| **Switch / Bridge** | L2 | Forwards by MAC address |
+| **Router** | L3 | Forwards by IP address |
+| **Firewall** | L3-L7 | Filters by IP, port, or content |`,
+      examTip: 'Hub = L1 (dumb repeater), Switch = L2 (MAC), Router = L3 (IP). A switch does NOT examine IP addresses; a hub does NOT examine anything.',
+    },
+    { id: 'tcpip-ports', title: '2. TCP/IP Model and Key Protocols',
+      content: `## 2.1 TCP/IP Layers
+
+| TCP/IP Layer | OSI Equiv | Protocols |
+|---|---|---|
+| Application | L5-7 | HTTP, HTTPS, SMTP, DNS, FTP, SSH |
+| Transport | L4 | TCP (reliable), UDP (fast) |
+| Internet | L3 | IP, ICMP, ARP, OSPF |
+| Link | L1-2 | Ethernet, WiFi, PPP |
+
+## 2.2 TCP vs. UDP
+
+| Feature | TCP | UDP |
+|---|---|---|
+| Connection | 3-way handshake | Connectionless |
+| Reliability | Guaranteed, in-order | Best-effort |
+| Overhead | 20+ byte header | 8-byte header |
+| Use cases | Web, email, files | Streaming, DNS, VoIP |
+
+## 2.3 Well-Known Ports
+
+| Port | Protocol | Service |
+|---|---|---|
+| **20/21** | FTP | File transfer |
+| **22** | SSH | Secure shell |
+| **25** | SMTP | Email sending |
+| **53** | DNS | Name resolution |
+| **80** | HTTP | Web |
+| **443** | HTTPS | Secure web |`,
+      examTip: 'Memorize: HTTP=80, HTTPS=443, SSH=22, DNS=53, SMTP=25, FTP=20/21. TCP uses 3-way handshake (SYN, SYN-ACK, ACK); UDP does not.',
+      importantNote: 'DNS typically uses UDP for queries (small packets) but TCP for zone transfers (large data). This dual-protocol behavior is commonly tested.',
+    },
+  ],
+  keyTakeaways: [
+    'OSI: 7 layers (Physical through Application); TCP/IP: 4 practical layers.',
+    'Encapsulation adds headers down the stack; decapsulation strips them up.',
+    'Hub=L1, Switch=L2 (MAC), Router=L3 (IP) -- most-tested device-layer mapping.',
+    'TCP: reliable, 3-way handshake. UDP: fast, connectionless, best-effort.',
+    'Key ports: HTTP=80, HTTPS=443, SSH=22, DNS=53, SMTP=25, FTP=20/21.',
+  ],
+},
+
+fee_ip_subnetting: { topicId: 'fee_ip_subnetting', title: 'IP Addressing and Subnetting', domainWeight: 'Computer Networks · 3–5%',
+  overview: 'IP addressing and subnetting partition networks into manageable segments. IPv4 uses 32-bit addresses with CIDR notation. Calculating usable hosts, network addresses, and broadcast addresses from a CIDR prefix is a core FE exam skill.',
+  sections: [
+    { id: 'ipv4-addr', title: '1. IPv4 Addressing and CIDR',
+      content: `## 1.1 Address Structure
+
+IPv4: **32 bits** in dotted decimal (e.g., 192.168.1.100). Split into network and host by subnet mask.
+
+| CIDR | Mask | Host Bits | Usable Hosts |
+|---|---|---|---|
+| /24 | 255.255.255.0 | 8 | 254 |
+| /25 | 255.255.255.128 | 7 | 126 |
+| /26 | 255.255.255.192 | 6 | 62 |
+| /27 | 255.255.255.224 | 5 | 30 |
+| /28 | 255.255.255.240 | 4 | 14 |
+| /30 | 255.255.255.252 | 2 | 2 |
+
+## 1.2 Key Formulas
+
+- **Total addresses**: 2^(32 - prefix)
+- **Usable hosts**: **2^(32 - prefix) - 2** (subtract network + broadcast)
+- **Network address**: host bits all 0
+- **Broadcast address**: host bits all 1
+
+## 1.3 Private Ranges
+
+| Class | Range | CIDR |
+|---|---|---|
+| A | 10.0.0.0 - 10.255.255.255 | 10.0.0.0/8 |
+| B | 172.16.0.0 - 172.31.255.255 | 172.16.0.0/12 |
+| C | 192.168.0.0 - 192.168.255.255 | 192.168.0.0/16 |`,
+      examTip: 'Most common problem: given IP + prefix, find network, broadcast, and host range. Strategy: block size = 2^host_bits; find which block the IP falls in.',
+      importantNote: '/30 has only 2 usable hosts (point-to-point links). /31 is a special case per RFC 3021. /32 is a single host.',
+    },
+    { id: 'subnetting-ipv6', title: '2. Subnetting and IPv6',
+      content: `## 2.1 Subnetting Example
+
+192.168.1.0/24 divided into 4 subnets (borrow 2 bits -> /26):
+
+| Subnet | Network | Range | Broadcast |
+|---|---|---|---|
+| 1 | 192.168.1.0/26 | .1-.62 | .63 |
+| 2 | 192.168.1.64/26 | .65-.126 | .127 |
+| 3 | 192.168.1.128/26 | .129-.190 | .191 |
+| 4 | 192.168.1.192/26 | .193-.254 | .255 |
+
+Each: 2^6 - 2 = **62 usable hosts**.
+
+**Subnets created = 2^(bits borrowed)**
+**Hosts per subnet = 2^(remaining host bits) - 2**
+
+## 2.2 Supernetting
+
+Combine contiguous networks: 192.168.0.0/24 + 192.168.1.0/24 = **192.168.0.0/23** (510 hosts).
+
+## 2.3 IPv6
+
+- **128-bit** addresses in hex: 2001:0db8::1
+- 2^128 = 3.4 x 10^38 addresses
+- No broadcast (uses multicast/anycast), no NAT needed`,
+      examTip: 'Subnets = 2^(bits borrowed). Hosts/subnet = 2^(remaining) - 2. Memorize powers of 2 up to 2^10 = 1024.',
+    },
+  ],
+  keyTakeaways: [
+    'IPv4: 32-bit; CIDR /n = n network bits, (32-n) host bits.',
+    'Usable hosts = 2^(32-n) - 2 (subtract network + broadcast).',
+    'Network addr: host bits 0; broadcast: host bits 1.',
+    'Subnets = 2^(bits borrowed); hosts = 2^(remaining) - 2.',
+    'Private: 10.0.0.0/8, 172.16.0.0/12, 192.168.0.0/16.',
+    'IPv6: 128 bits, hex notation; no broadcast, no NAT.',
+  ],
+},
+
+fee_topologies: { topicId: 'fee_topologies', title: 'Network Topologies', domainWeight: 'Computer Networks · 3–5%',
+  overview: 'Network topology describes the arrangement of devices and links. Each offers tradeoffs in cost, reliability, and scalability. Full mesh link count and topology identification are common FE exam questions.',
+  sections: [
+    { id: 'topo-types', title: '1. Topology Types',
+      content: `## 1.1 Common Topologies
+
+| Topology | Structure | Advantage | Disadvantage |
+|---|---|---|---|
+| **Star** | All to central switch | Easy mgmt, isolated faults | Central failure point |
+| **Ring** | Closed loop | Deterministic (token) | Single break disrupts |
+| **Bus** | Shared medium | Simple, cheap | Collisions (CSMA/CD) |
+| **Mesh** | Every node to every other | Max redundancy | Expensive: **N(N-1)/2 links** |
+| **Tree** | Hierarchical star-of-stars | Scalable | Root failure affects all |
+
+## 1.2 Full Mesh Link Count
+
+**Links = N(N-1)/2**
+
+| N | Links |
+|---|---|
+| 5 | 10 |
+| 10 | 45 |
+| 100 | 4,950 |
+
+## 1.3 Access Methods
+
+- **CSMA/CD**: Ethernet bus/hub; detect collisions, retransmit
+- **CSMA/CA**: WiFi; avoid collisions via RTS/CTS
+- **Token passing**: token ring; deterministic, no collisions`,
+      examTip: 'Full mesh = N(N-1)/2 links -- most tested topology formula. Modern networks use star + switches; full mesh only for critical backbone.',
+    },
+    { id: 'topo-modern', title: '2. Reliability and Modern Design',
+      content: `## 2.1 Failure Impact
+
+| Topology | Link Failure | Node Failure |
+|---|---|---|
+| Star | Only that node | Central = total |
+| Ring | Breaks network | Breaks network |
+| Mesh | Alternate paths | Reroute around |
+
+## 2.2 Redundancy Techniques
+
+- **Dual ring**: counter-rotating backup (SONET)
+- **Partial mesh**: selected redundant links (cost vs. reliability)
+- **STP (Spanning Tree Protocol)**: prevents loops in switched Ethernet
+- **Link aggregation**: bond multiple links for BW and redundancy
+
+## 2.3 Modern Three-Tier Architecture
+
+1. **Core**: high-speed backbone (mesh/partial mesh)
+2. **Distribution**: policy, inter-VLAN routing (partial mesh)
+3. **Access**: end-user connections (star with switches)`,
+      examTip: 'Most common modern topology: star at access layer with switches. Pure ring and bus are largely obsolete for wired LANs.',
+    },
+  ],
+  keyTakeaways: [
+    'Star: easy management, central failure point. Ring: deterministic but fragile.',
+    'Full mesh: N(N-1)/2 links; grows O(N^2) -- impractical for large N.',
+    'CSMA/CD for Ethernet, CSMA/CA for WiFi, token passing for token ring.',
+    'Modern networks: star at access, partial mesh at core.',
+    'STP prevents loops; link aggregation increases bandwidth and redundancy.',
+  ],
+},
+
+fee_net_security: { topicId: 'fee_net_security', title: 'Network Security', domainWeight: 'Computer Networks · 3–5%',
+  overview: 'Network security protects confidentiality, integrity, and availability through encryption, firewalls, and VPNs. Understanding symmetric vs. asymmetric encryption, digital signatures, and defense-in-depth is essential for the FE exam.',
+  sections: [
+    { id: 'netsec-crypto', title: '1. Encryption and Digital Signatures',
+      content: `## 1.1 Symmetric Encryption
+
+Same key for encrypt/decrypt:
+
+| Algorithm | Key Size | Status |
+|---|---|---|
+| **AES** | 128/192/256 | Current standard |
+| **DES** | 56 | Obsolete |
+| **3DES** | 168 | Legacy |
+
+Fast but has **key distribution problem**.
+
+## 1.2 Asymmetric Encryption (Public Key)
+
+Key pair: public (shared) + private (secret):
+
+| Algorithm | Use |
+|---|---|
+| **RSA** | Key exchange, signatures |
+| **ECC** | Same security, shorter keys |
+| **Diffie-Hellman** | Key exchange only |
+
+## 1.3 Hash Functions
+
+**SHA-256**: one-way, collision-resistant, fixed output. Used for integrity and signatures.
+
+## 1.4 Digital Signatures
+
+1. Sender hashes message -> digest
+2. Sender encrypts digest with **private key**
+3. Receiver decrypts with **public key**, compares to own hash
+
+Provides: **authentication + integrity + non-repudiation**.`,
+      examTip: 'Symmetric = fast (AES). Asymmetric = solves key distribution (RSA). Practice: asymmetric exchanges symmetric session key, then symmetric handles bulk data (TLS/HTTPS).',
+      importantNote: 'Digital signatures: PRIVATE key to sign, PUBLIC key to verify. This is backwards from encryption. Mixing them up is a common exam error.',
+    },
+    { id: 'netsec-fw-vpn', title: '2. Firewalls, VPNs, Defense in Depth',
+      content: `## 2.1 Firewall Types
+
+| Type | Layer | Security |
+|---|---|---|
+| **Packet filter** | L3-L4 | Basic |
+| **Stateful** | L3-L4 | Moderate |
+| **Proxy / App** | L7 | High |
+| **NGFW** | L3-L7 | Highest |
+
+## 2.2 VPN
+
+Encrypted tunnel over public network:
+
+| Protocol | Layer |
+|---|---|
+| **IPSec** | L3 (transport + tunnel modes) |
+| **TLS/SSL** | L4 |
+
+IPSec tunnel mode encrypts entire packet; transport mode encrypts payload only.
+
+## 2.3 Defense in Depth
+
+Multiple layers: physical -> network (firewall, IDS) -> host (patches) -> application (auth) -> data (encryption).
+
+### CIA Triad
+
+- **Confidentiality**: prevent disclosure (encryption)
+- **Integrity**: prevent modification (hashing, signatures)
+- **Availability**: ensure access (redundancy, DDoS protection)`,
+      examTip: 'Defense in depth = multiple layers, never a single tool. CIA triad (Confidentiality, Integrity, Availability) is the framework for evaluating security.',
+    },
+  ],
+  keyTakeaways: [
+    'Symmetric (AES): fast, shared key. Asymmetric (RSA): public/private pair, solves key distribution.',
+    'Hash (SHA-256): one-way, integrity. Digital signature: private signs, public verifies.',
+    'Firewall: packet filter < stateful < proxy < NGFW.',
+    'VPN: encrypted tunnel; IPSec (L3) or TLS (L4).',
+    'Defense in depth: multiple layers. CIA: confidentiality, integrity, availability.',
+  ],
+},
+
+fee_net_perf: { topicId: 'fee_net_perf', title: 'Network Performance', domainWeight: 'Computer Networks · 3–5%',
+  overview: 'Network performance is characterized by bandwidth, throughput, latency, jitter, and packet loss. Understanding delay components, bottleneck analysis, and QoS principles is critical for the FE exam.',
+  sections: [
+    { id: 'netperf-delay', title: '1. Delay Components and Throughput',
+      content: `## 1.1 End-to-End Delay
+
+**Total delay = d_prop + d_trans + d_queue + d_proc**
+
+| Component | Formula | Depends On |
+|---|---|---|
+| **Propagation** | **d_prop = distance / speed** | Medium (~2/3 c for fiber) |
+| **Transmission** | **d_trans = packet_size / bandwidth** | Link speed, packet size |
+| **Queuing** | Variable | Traffic load |
+| **Processing** | Small | Router speed |
+
+### Example
+
+1000-byte packet, 100 Mbps link, 200 km fiber:
+- d_trans = 8000 / 10^8 = 80 us
+- d_prop = 200000 / (2*10^8) = 1 ms
+- Total ~ 1.08 ms
+
+## 1.2 Bandwidth vs. Throughput
+
+- **Bandwidth**: max capacity (theoretical)
+- **Throughput**: actual rate achieved (<= bandwidth)
+- **Bottleneck**: slowest link determines throughput
+
+## 1.3 Bandwidth-Delay Product
+
+**BDP = bandwidth * RTT** (bits in flight)
+
+Determines optimal TCP window size for full utilization.`,
+      examTip: 'Transmission delay = packet_size/bandwidth (push bits onto wire). Propagation delay = distance/speed (bit travels). These are DIFFERENT. Transmission dominates on slow links; propagation on long links.',
+      importantNote: 'RTT = 2 * one-way delay (approx). For TCP, RTT determines ACK speed and throughput.',
+    },
+    { id: 'netperf-qos', title: '2. QoS, Jitter, Bottleneck Analysis',
+      content: `## 2.1 QoS
+
+| Traffic | Sensitivity | Priority |
+|---|---|---|
+| **Voice** | Latency < 150 ms, jitter < 30 ms | Highest |
+| **Video** | Latency < 300 ms | High |
+| **Web** | Tolerates latency | Medium |
+| **Files** | Needs throughput | Low |
+
+Techniques: priority queuing, weighted fair queuing, traffic shaping.
+
+## 2.2 Jitter
+
+**Jitter = variation in packet delay.** Caused by variable queuing.
+
+- Critical for voice/video (choppy audio)
+- High jitter often WORSE than high latency
+- **Jitter buffer** smooths variations
+
+## 2.3 Bottleneck
+
+Slowest link = max throughput. For 1G -> 100M -> 1G: throughput = 100 Mbps.
+
+**Utilization** = throughput/bandwidth. At > 80%, queuing delays spike exponentially.`,
+      examTip: 'Bottleneck = slowest link. For voice/video, jitter matters more than absolute latency. Consistent 200 ms > varying 50-300 ms.',
+    },
+  ],
+  keyTakeaways: [
+    'Total delay = propagation + transmission + queuing + processing.',
+    'Transmission = packet_size/BW; propagation = distance/speed.',
+    'Throughput limited by bottleneck (slowest) link.',
+    'BDP = bandwidth * RTT; determines TCP window size.',
+    'Jitter (delay variation) critical for real-time; worse than consistent high latency.',
+    'QoS prioritizes voice/video; utilization > 80% causes exponential queuing.',
+  ],
+},
+
+  /* ══════════════════════════════════════════════════════════════════
+   * TOPIC 15 — DIGITAL SYSTEMS  (5 curriculum IDs)  ·  7–11 %
+   * ══════════════════════════════════════════════════════════════════ */
+
+fee_number_sys: { topicId: 'fee_number_sys', title: 'Number Systems and Boolean Algebra', domainWeight: 'Digital Systems · 7–11%',
+  overview: 'Number systems (binary, octal, hex) and Boolean algebra form the mathematical foundation of digital design. Base conversions, DeMorgan\'s laws, and Karnaugh map simplification appear frequently on the FE exam. Digital Systems is one of the highest-weighted topics (7-11%).',
+  sections: [
+    { id: 'numsys-conv', title: '1. Number Systems and Conversions',
+      content: `## 1.1 Positional Systems
+
+| Base | Name | Grouping |
+|---|---|---|
+| 2 | Binary | Native |
+| 8 | Octal | 3 binary bits |
+| 16 | Hex | 4 binary bits |
+
+## 1.2 Conversions
+
+- **Binary->Decimal**: 1010 = 1*8+0+1*2+0 = **10**
+- **Decimal->Binary**: divide by 2 repeatedly, read remainders bottom-up
+- **Binary->Hex**: group 4 bits: 10101100 = **AC**
+- **Hex->Decimal**: 2A = 2*16+10 = **42**
+
+## 1.3 Signed Numbers (2's Complement)
+
+| Method | -3 (4 bits) | Notes |
+|---|---|---|
+| Sign-magnitude | 1011 | Two zeros |
+| 1's complement | 1100 | Invert bits |
+| **2's complement** | **1101** | Invert + add 1; ONE zero; **standard** |
+
+**Range (n bits): -2^(n-1) to +2^(n-1)-1**
+- 8 bits: -128 to +127
+- To negate: invert all bits, add 1`,
+      examTip: '2\'s complement: invert + add 1. Range is asymmetric: 8 bits = -128 to +127 (not -127). This asymmetry is a common exam trap.',
+      importantNote: 'The 2\'s complement range has one extra negative value because there is only one representation of zero. 8 bits: -128 exists but +128 does not.',
+    },
+    { id: 'numsys-bool', title: '2. Boolean Algebra and K-Maps',
+      content: `## 2.1 Boolean Laws
+
+- **DeMorgan's**: **(A*B)' = A'+B'** and **(A+B)' = A'*B'**
+- Identity: A+0=A, A*1=A
+- Complement: A+A'=1, A*A'=0
+- Absorption: A+A*B=A
+
+**NAND and NOR** are universal gates -- any function from either alone.
+
+## 2.2 Karnaugh Maps
+
+1. Fill cells from truth table
+2. Group adjacent 1s in powers of 2 (1, 2, 4, 8)
+3. Groups wrap around edges
+4. Variables that change in a group are eliminated
+5. OR all product terms
+
+| Variables | K-map |
+|---|---|
+| 2 | 2x2 |
+| 3 | 2x4 |
+| 4 | 4x4 |
+
+**Don't-care** (X) conditions can be 0 or 1 to make larger groups.`,
+      examTip: 'DeMorgan: break the bar, change the operator. K-maps: make groups as LARGE as possible. Groups must be powers of 2.',
+    },
+  ],
+  keyTakeaways: [
+    'Binary/octal/hex: group binary by 3 (octal) or 4 (hex).',
+    '2\'s complement: invert+add 1; range -2^(n-1) to +2^(n-1)-1.',
+    'DeMorgan: (A*B)\'=A\'+B\'; (A+B)\'=A\'*B\'.',
+    'K-map: group adjacent 1s in powers of 2; larger = simpler.',
+    'NAND/NOR are universal gates.',
+    'Don\'t-cares maximize group size for simpler expressions.',
+  ],
+},
+
+fee_comb_logic: { topicId: 'fee_comb_logic', title: 'Combinational Logic: MUX, Decoders, Adders', domainWeight: 'Digital Systems · 7–11%',
+  overview: 'Combinational circuits have outputs depending solely on current inputs (no memory). MUX, decoders, and adders are fundamental building blocks. Their truth tables and Boolean equations are essential for FE exam digital design questions.',
+  sections: [
+    { id: 'comblog-mux', title: '1. MUX and Decoders',
+      content: `## 1.1 Multiplexer (MUX)
+
+Selects 1 of 2^n inputs via n select lines:
+
+| MUX | Inputs | Select Lines |
+|---|---|---|
+| 2-to-1 | 2 | 1 |
+| 4-to-1 | 4 | 2 |
+| 8-to-1 | 8 | 3 |
+
+**Any n-variable Boolean function** implementable with a 2^n-to-1 MUX.
+
+## 1.2 Decoder
+
+n inputs -> 2^n outputs (one active per input pattern):
+- 2-to-4: outputs are minterms A'B', A'B, AB', AB
+- **Any function = decoder + OR gate** (OR the minterm outputs)
+
+## 1.3 Priority Encoder
+
+Multiple active inputs -> encodes highest-priority one. Used in interrupt systems.`,
+      examTip: 'MUX: 2^n inputs need n select lines. Decoder: n inputs produce 2^n minterms. Do not confuse MUX data inputs with select lines.',
+      importantNote: '4-to-1 MUX has 2 select lines and 4 data inputs. The number of data inputs = 2^(select lines).',
+    },
+    { id: 'comblog-adder', title: '2. Adders and Subtractors',
+      content: `## 2.1 Half-Adder
+
+- **Sum = A XOR B**
+- **Carry = A AND B**
+
+## 2.2 Full-Adder
+
+**Sum = A XOR B XOR C_in**
+**C_out = A*B + C_in*(A XOR B)**
+
+| A | B | Cin | Sum | Cout |
+|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | 0 |
+| 0 | 1 | 1 | 0 | 1 |
+| 1 | 1 | 0 | 0 | 1 |
+| 1 | 1 | 1 | 1 | 1 |
+
+## 2.3 Adder Types
+
+| Type | Delay | Notes |
+|---|---|---|
+| **Ripple-carry** | O(n) | Simple, slow |
+| **Carry-lookahead** | O(log n) | Fast, uses G=AB, P=A XOR B |
+
+## 2.4 Subtraction
+
+**A - B = A + (~B) + 1** (2's complement). Same adder with invert path.`,
+      examTip: 'Full-adder: Sum = A XOR B XOR Cin, Cout = AB + Cin(A XOR B). Most tested combinational equations. A - B = A + NOT(B) + 1.',
+    },
+  ],
+  keyTakeaways: [
+    'MUX: 2^n inputs, n select; implements any n-variable function.',
+    'Decoder: n inputs, 2^n minterms; any function = decoder + OR.',
+    'Full-adder: Sum = A XOR B XOR Cin; Cout = AB + Cin(A XOR B).',
+    'Ripple-carry O(n); carry-lookahead O(log n).',
+    'Subtraction: A - B = A + (~B) + 1 via 2\'s complement.',
+    'Priority encoder: encodes highest-priority active input.',
+  ],
+},
+
+fee_seq_logic: { topicId: 'fee_seq_logic', title: 'Sequential Logic: Flip-Flops & Counters', domainWeight: 'Digital Systems · 7–11%',
+  overview: 'Sequential circuits have memory -- outputs depend on current inputs and past state. Flip-flops store bits, counters count pulses. Understanding FF types, timing (setup/hold), and synchronous design is critical for the FE exam.',
+  sections: [
+    { id: 'seqlog-ff', title: '1. Flip-Flop Types and Timing',
+      content: `## 1.1 Flip-Flop Types
+
+| Type | Equation | Key Property |
+|---|---|---|
+| **SR** | Q+ = S+R'Q (S*R=0) | S=R=1 **forbidden** |
+| **D** | **Q+ = D** | Captures input on edge |
+| **JK** | Q+ = JQ'+K'Q | J=K=1 toggles; universal |
+| **T** | Q+ = T XOR Q | T=1 toggles, T=0 holds |
+
+## 1.2 Timing Constraints
+
+| Parameter | Definition |
+|---|---|
+| **Setup time (t_su)** | Data stable BEFORE clock edge |
+| **Hold time (t_h)** | Data stable AFTER clock edge |
+| **Clock-to-Q (t_cq)** | Delay from edge to output |
+
+Violations cause **metastability** (unpredictable state).
+
+**Max frequency**: **f_max = 1 / (t_cq + t_comb + t_su)**`,
+      examTip: 'D FF: Q+ = D (most common and most tested). f_max = 1/(t_cq + t_comb + t_su). Setup/hold violations cause metastability.',
+      importantNote: 'SR with S=R=1 is forbidden (indeterminate). JK solves this: J=K=1 = toggle. This is why JK is called "universal."',
+    },
+    { id: 'seqlog-counters', title: '2. Counters and Registers',
+      content: `## 2.1 Counter Types
+
+| Type | Clocking | Speed |
+|---|---|---|
+| **Asynchronous (ripple)** | Each FF by previous | Slow (cumulative) |
+| **Synchronous** | All FFs same clock | Fast |
+| **Mod-N** | Counts 0 to N-1 | ceil(log_2(N)) FFs |
+| **BCD** | Mod-10 (0-9) | 4 FFs + reset |
+
+## 2.2 Shift Registers
+
+- **SISO**: serial delay element
+- **SIPO**: serial-to-parallel
+- **PISO**: parallel-to-serial
+- **LFSR**: feedback for pseudo-random / CRC
+
+## 2.3 Synchronous vs. Asynchronous
+
+| | Synchronous | Asynchronous |
+|---|---|---|
+| Clock | Shared | Cascaded |
+| Speed | Fast | Slow |
+| Glitches | None | Possible |`,
+      examTip: 'Synchronous always preferred (fast, reliable). Mod-N counter: ceil(log_2(N)) flip-flops with reset at N.',
+    },
+  ],
+  keyTakeaways: [
+    'D FF: Q+=D (most common). JK: universal (J=K=1 toggles). T: toggles when T=1.',
+    'SR S=R=1 forbidden. JK resolves this.',
+    'Setup/hold violations -> metastability. f_max = 1/(t_cq + t_comb + t_su).',
+    'Synchronous counters: fast, reliable (shared clock). Asynchronous: slow, glitchy.',
+    'Mod-N: ceil(log_2(N)) FFs with reset logic.',
+    'Shift registers: SISO, SIPO, PISO, PIPO; LFSR for pseudo-random.',
+  ],
+},
+
+fee_state_machines: { topicId: 'fee_state_machines', title: 'Finite State Machines', domainWeight: 'Digital Systems · 7–11%',
+  overview: 'A Finite State Machine (FSM) is defined by states, transitions on inputs, and outputs. Moore and Mealy are the two architectures. FSM design from word description to implementation is a core FE exam skill.',
+  sections: [
+    { id: 'fsm-types', title: '1. Moore and Mealy Machines',
+      content: `## 1.1 FSM Components
+
+- **States**: circles in diagrams
+- **Transitions**: arrows labeled with inputs
+- **Outputs**: on states (Moore) or transitions (Mealy)
+
+## 1.2 Moore vs. Mealy
+
+| Feature | Moore | Mealy |
+|---|---|---|
+| Output depends on | State only | State AND input |
+| Glitch behavior | Glitch-free | May glitch |
+| States needed | More | Fewer |
+| Response time | 1 clock slower | Within same cycle |
+
+## 1.3 Conversion
+
+- **Moore -> Mealy**: move output labels from states to incoming transitions
+- **Mealy -> Moore**: split states with different transition outputs`,
+      examTip: 'Moore = f(state); Mealy = f(state, input). Moore needs more states but glitch-free. FE exam may ask you to trace a state diagram given inputs.',
+    },
+    { id: 'fsm-design', title: '2. FSM Design Process',
+      content: `## 2.1 Design Steps
+
+1. **State diagram** from problem description
+2. **State table**: current state, input, next state, output
+3. **State assignment**: binary codes (n states need ceil(log_2(n)) FFs)
+4. **Excitation equations**: next-state logic for chosen FF type
+5. **Output equations**: derive output logic
+6. **Implementation**: FFs + combinational logic
+
+## 2.2 State Minimization
+
+Two states are **equivalent** if for ALL inputs they produce same output and go to equivalent next states. Combining equivalent states reduces hardware.
+
+## 2.3 State Assignment
+
+| Strategy | FFs | Best For |
+|---|---|---|
+| **Binary** | ceil(log_2(n)) | Minimum FFs |
+| **Gray code** | ceil(log_2(n)) | Fewer glitches |
+| **One-hot** | n (one per state) | Fast logic, FPGAs |
+
+Counters are special-case FSMs with fixed state sequences.`,
+      examTip: 'One-hot uses n FFs for n states -- more FFs but simpler logic. Preferred in FPGAs where FFs are abundant.',
+      importantNote: 'State minimization combines EQUIVALENT states. Do not confuse with state encoding (choosing binary codes for states).',
+    },
+  ],
+  keyTakeaways: [
+    'Moore: output = f(state), glitch-free, more states. Mealy: f(state,input), fewer states, faster.',
+    'Design: state diagram -> table -> assignment -> excitation equations -> implement.',
+    'State minimization: combine equivalent states (same output, equivalent next states).',
+    'Binary (min FFs), Gray (min glitches), one-hot (fast logic, n FFs for n states).',
+    'n states need ceil(log_2(n)) FFs in binary, or n in one-hot.',
+    'Counters = FSMs with fixed sequences.',
+  ],
+},
+
+fee_memory: { topicId: 'fee_memory', title: 'Memory Systems: ROM, RAM, Cache, FPGA', domainWeight: 'Digital Systems · 7–11%',
+  overview: 'Memory systems store data across a hierarchy trading speed for capacity. ROM is permanent, RAM is volatile, cache bridges the speed gap, and FPGAs offer reconfigurable logic. Cache hit-rate formula and the speed-capacity tradeoff are essential FE exam topics.',
+  sections: [
+    { id: 'mem-types', title: '1. ROM and RAM Technologies',
+      content: `## 1.1 ROM (Nonvolatile)
+
+| Type | Erase |
+|---|---|
+| ROM | Never |
+| PROM | Never (one-time) |
+| EPROM | UV light |
+| EEPROM | Electrically (byte) |
+| **Flash** | Electrically (block) |
+
+## 1.2 RAM (Volatile)
+
+| Type | Cell | Speed | Density | Refresh |
+|---|---|---|---|---|
+| **SRAM** | 6 transistors | Fast (~1-10 ns) | Low | No |
+| **DRAM** | 1T + 1C | Slower (~50-100 ns) | High | Yes |
+
+## 1.3 Memory Addressing
+
+- **Capacity** = 2^(address_bits) locations
+- n address lines, m bits/location: total = 2^n * m bits
+
+## 1.4 Memory Hierarchy
+
+| Level | Size | Access |
+|---|---|---|
+| Registers | < 1 KB | ~0.5 ns |
+| L1 Cache | 32-64 KB | ~1-4 ns |
+| L2 Cache | 256 KB-1 MB | ~4-10 ns |
+| RAM | 4-64 GB | ~50-100 ns |
+| SSD | 256 GB-4 TB | ~50-100 us |
+| HDD | 1-20 TB | ~5-10 ms |
+
+Each level: ~10x larger, ~10x slower, ~10x cheaper.`,
+      examTip: 'Memory capacity = 2^(address_bits). "How many lines for 64K locations?" = 16 (2^16 = 65536). SRAM = cache; DRAM = main memory.',
+      importantNote: 'DRAM needs refresh every few ms (unavailable during refresh). SRAM has no refresh -- one reason it is used for cache.',
+    },
+    { id: 'mem-cache-fpga', title: '2. Cache and FPGA',
+      content: `## 2.1 Cache Performance
+
+**Hit rate**: h = hits / (hits + misses)
+
+**Average access time**: **t_avg = h * t_cache + (1-h) * t_memory**
+
+### Cache Organization
+
+| Type | Description | Hit Time | Miss Rate |
+|---|---|---|---|
+| **Direct-mapped** | 1 location per block | Fastest | Highest |
+| **Fully associative** | Any location | Slowest | Lowest |
+| **N-way set-assoc** | N locations | Balanced | Balanced |
+
+### Write Policies
+
+- **Write-through**: writes to cache AND memory (simple, slow)
+- **Write-back**: cache only, dirty bit (fast, complex)
+
+## 2.2 FPGA
+
+- **CLBs**: configurable logic blocks
+- **Programmable interconnects**: route signals
+- **Reconfigurable**: reprogram without hardware change
+
+| | FPGA | ASIC |
+|---|---|---|
+| Reconfigurable | Yes | No |
+| Dev cost | Low | Very high |
+| Performance | Good | Best |
+| Best for | Prototyping, low volume | High volume |`,
+      examTip: 'Cache: t_avg = h*t_cache + (1-h)*t_memory. With h=0.95, t_cache=5ns, t_memory=100ns: t_avg = 9.75 ns -- 10x improvement.',
+    },
+  ],
+  keyTakeaways: [
+    'ROM nonvolatile (PROM, EPROM, Flash). RAM volatile (SRAM fast, DRAM dense/refresh).',
+    'Capacity = 2^(address_bits) locations.',
+    'Hierarchy: registers > cache > RAM > SSD > HDD (speed vs. capacity).',
+    'Cache: t_avg = h*t_cache + (1-h)*t_memory; hit rate h is key.',
+    'Direct-mapped (fast) vs. fully associative (flexible) vs. N-way (balanced).',
+    'FPGA: reconfigurable, low dev cost; ASIC: best performance, high dev cost.',
+  ],
+},
+
+  /* ══════════════════════════════════════════════════════════════════
+   * TOPIC 16 — COMPUTER SYSTEMS  (4 curriculum IDs)  ·  3–5 %
+   * ══════════════════════════════════════════════════════════════════ */
+
+fee_architecture: { topicId: 'fee_architecture', title: 'Computer Architecture', domainWeight: 'Computer Systems · 3–5%',
+  overview: 'Computer architecture defines how a processor fetches, decodes, and executes instructions. Von Neumann vs. Harvard, RISC vs. CISC, and pipelining with hazard handling are the core concepts tested on the FE exam.',
+  sections: [
+    { id: 'arch-models', title: '1. Architectural Models and ISA',
+      content: `## 1.1 Von Neumann vs. Harvard
+
+| Feature | Von Neumann | Harvard |
+|---|---|---|
+| Memory | Single (code + data) | Separate instruction/data |
+| Bus | Shared (bottleneck) | Independent (parallel) |
+| Modern use | Main memory | L1 cache (separate I$/D$) |
+
+**Modified Harvard**: separate L1 caches, unified L2/L3 and main memory.
+
+## 1.2 RISC vs. CISC
+
+| | RISC | CISC |
+|---|---|---|
+| Instructions | Simple, fixed-length | Complex, variable |
+| CPI | ~1 (pipelined) | Variable |
+| Registers | Many (32-64) | Few (8-16) |
+| Pipelining | Efficient | Harder |
+| Examples | ARM, MIPS, RISC-V | x86 |
+
+## 1.3 Instruction Cycle
+
+IF (Fetch) -> ID (Decode) -> EX (Execute) -> MEM (Memory) -> WB (Writeback)`,
+      examTip: 'Von Neumann = shared memory (bottleneck). Harvard = separate (faster). Modern = Modified Harvard. RISC = simple, pipelinable. CISC = complex, variable.',
+    },
+    { id: 'arch-pipeline', title: '2. Pipelining and Hazards',
+      content: `## 2.1 Pipeline
+
+Multiple instructions overlap in different stages simultaneously.
+
+**Ideal throughput**: 1 instruction/cycle. **Ideal speedup**: = number of stages.
+
+## 2.2 Hazards
+
+| Type | Cause | Solution |
+|---|---|---|
+| **Data** | Needs result from in-progress instr | **Forwarding**, stalling |
+| **Control** | Branch changes flow | **Branch prediction** |
+| **Structural** | Two instrs need same resource | **Duplication** |
+
+## 2.3 Advanced
+
+- **Superscalar**: multiple pipelines, multiple instrs/cycle
+- **Out-of-order**: execute when operands ready
+- **Branch prediction**: >95% accurate in modern CPUs
+
+**CPI_real = 1 + stall_cycles_per_instr**`,
+      examTip: 'Three hazards: data (forwarding), control (prediction), structural (duplication). Ideal pipeline CPI = 1; real > 1 due to stalls.',
+      importantNote: 'Deeper pipelines increase branch misprediction penalty. This is why modern CPUs invest heavily in branch prediction.',
+    },
+  ],
+  keyTakeaways: [
+    'Von Neumann: single memory. Harvard: separate. Modern: Modified Harvard (split L1 cache).',
+    'RISC: simple, pipelinable (ARM, MIPS). CISC: complex, variable (x86).',
+    'Pipeline: IF-ID-EX-MEM-WB; ideal = 1 instr/cycle.',
+    'Hazards: data (forwarding), control (branch prediction), structural (duplication).',
+    'Superscalar: multiple instrs/cycle. Out-of-order: execute when ready.',
+  ],
+},
+
+fee_mem_hierarchy: { topicId: 'fee_mem_hierarchy', title: 'Memory Hierarchy and Virtual Memory', domainWeight: 'Computer Systems · 3–5%',
+  overview: 'The memory hierarchy bridges the processor-memory speed gap through caching and virtual memory. Average access time, cache write policies, page tables, and TLB are core FE exam topics.',
+  sections: [
+    { id: 'memh-cache', title: '1. Cache Performance and Write Policies',
+      content: `## 1.1 Hierarchy Levels
+
+| Level | Size | Access |
+|---|---|---|
+| Registers | < 1 KB | ~0.5 ns |
+| L1 Cache | 32-64 KB | ~1-4 ns |
+| L2 Cache | 256 KB-1 MB | ~10 ns |
+| RAM | GBs | ~100 ns |
+| Disk | TBs | ~10 ms |
+
+## 1.2 Average Access Time
+
+**t_avg = h * t_cache + (1-h) * t_memory**
+
+Multi-level: t_avg = h_1*t_L1 + (1-h_1)*h_2*t_L2 + (1-h_1)(1-h_2)*t_mem
+
+## 1.3 Write Policies
+
+| Policy | Mechanism | Tradeoff |
+|---|---|---|
+| **Write-through** | Cache + memory | Simple, slow |
+| **Write-back** | Cache only, dirty bit | Fast, complex |`,
+      examTip: 't_avg = h*t_cache + (1-h)*t_memory is the most-tested cache formula. Multi-level: work from L1 outward.',
+      importantNote: 'Miss rate = 1-h. L1 miss 10%, L2 miss 5% -> combined miss to RAM = 0.10*0.05 = 0.5%. Multi-level caches are multiplicatively effective.',
+    },
+    { id: 'memh-virtual', title: '2. Virtual Memory',
+      content: `## 2.1 Concept
+
+Programs use **virtual addresses**; page table maps to **physical addresses**.
+
+- Virtual address = **VPN + page offset**
+- Physical address = **PFN + page offset** (offset unchanged)
+- Page offset bits = log_2(page_size)
+- VPN bits = address_bits - offset_bits
+
+Example: 32-bit address, 4 KB page -> 12 offset bits, 20 VPN bits, 2^20 page table entries.
+
+## 2.2 TLB
+
+Small fast cache of recent translations. Hit: ~1 ns. Miss: page table access (~100 ns).
+
+## 2.3 Page Faults
+
+Page not in RAM -> fetch from disk: **~10 ms** (millions of cycles).
+
+Replacement: LRU (good), FIFO (simple), Optimal (theoretical best).`,
+      examTip: 'Offset bits = log_2(page_size). VPN = remaining bits. Page faults cost ~10 ms -- catastrophically slow.',
+    },
+  ],
+  keyTakeaways: [
+    'Hierarchy: each level ~10x larger/slower. t_avg = h*t_cache + (1-h)*t_memory.',
+    'Write-through: simple. Write-back: fast (dirty bit).',
+    'Virtual memory: page table maps VPN -> PFN. Offset unchanged.',
+    'Page offset = log_2(page_size); VPN = address_bits - offset_bits.',
+    'TLB caches translations (~1 ns hit vs ~100 ns miss).',
+    'Page faults ~10 ms; minimizing faults is critical.',
+  ],
+},
+
+fee_io_interfacing: { topicId: 'fee_io_interfacing', title: 'I/O and Interfacing', domainWeight: 'Computer Systems · 3–5%',
+  overview: 'I/O interfacing connects CPU to peripherals via programmed I/O, interrupts, or DMA. Serial protocols (I2C, SPI, USB, PCIe) offer different speed/complexity tradeoffs.',
+  sections: [
+    { id: 'io-methods', title: '1. I/O Methods',
+      content: `## 1.1 Three I/O Approaches
+
+| Method | CPU Usage | Throughput | Complexity |
+|---|---|---|---|
+| **Programmed (polling)** | 100% busy-wait | Lowest | Simplest |
+| **Interrupt-driven** | Low (ISR only) | Moderate | Moderate |
+| **DMA** | Minimal (setup only) | Highest | Most complex |
+
+## 1.2 Interrupts
+
+| Type | Property |
+|---|---|
+| Maskable | Can be disabled |
+| Non-maskable (NMI) | Cannot disable (power fail) |
+| Vectored | Device provides ISR address |
+
+**Interrupt latency**: time from request to ISR execution.
+
+## 1.3 DMA
+
+DMA controller transfers data directly between device and memory. CPU only handles setup and completion interrupt. Essential for disk/network.`,
+      examTip: 'Efficiency: Programmed < Interrupt < DMA. DMA frees CPU during transfer -- essential for high-speed devices.',
+      importantNote: 'DMA and CPU share the memory bus. DMA may temporarily block CPU memory access (cycle stealing).',
+    },
+    { id: 'io-protocols', title: '2. Serial Protocols',
+      content: `## 2.1 Common Interfaces
+
+| Protocol | Wires | Speed | Topology |
+|---|---|---|---|
+| **I2C** | 2 (SDA, SCL) | Up to 3.4 Mbps | Multi-master/slave |
+| **SPI** | 4 (MOSI, MISO, CLK, CS) | 50+ Mbps | Single master |
+| **UART** | 2 (TX, RX) | ~1 Mbps | Point-to-point |
+| **USB 2.0** | 4 | 480 Mbps | Host-device |
+| **USB 3.0** | 9 | 5 Gbps | Host-device |
+| **PCIe 4.0** | Lanes | 16 GT/s/lane | Point-to-point |
+
+**Speed order**: I2C < SPI < UART < USB < PCIe
+
+## 2.2 I2C vs. SPI
+
+- I2C: 2 wires, addressing, multi-device, slower
+- SPI: 4 wires (+ 1 CS per slave), no addressing, faster, full-duplex`,
+      examTip: 'Speed: I2C < SPI < USB < PCIe. I2C uses 2 wires (simplest). SPI: 4 wires, faster. USB: hot-plug. PCIe: fastest.',
+    },
+  ],
+  keyTakeaways: [
+    'Programmed I/O (busy-wait) < Interrupt < DMA (highest throughput).',
+    'Interrupts: maskable vs. NMI. Interrupt latency critical for real-time.',
+    'DMA: direct device-to-memory; CPU free during transfer.',
+    'I2C: 2 wires, slow. SPI: 4 wires, faster. USB: hot-plug. PCIe: fastest.',
+    'Speed hierarchy: I2C < SPI < USB < PCIe.',
+  ],
+},
+
+fee_performance: { topicId: 'fee_performance', title: 'Performance Metrics: CPI, MIPS, Amdahl\'s Law', domainWeight: 'Computer Systems · 3–5%',
+  overview: 'CPU performance is quantified by execution time, CPI, and MIPS. Amdahl\'s Law governs speedup limits when improving part of a system. These are among the most frequently tested computer systems formulas on the FE exam.',
+  sections: [
+    { id: 'perf-cpi', title: '1. Execution Time, CPI, MIPS',
+      content: `## 1.1 CPU Execution Time
+
+**Execution time = IC * CPI / f**
+
+| Term | Definition |
+|---|---|
+| IC | Instruction count |
+| CPI | Cycles per instruction |
+| f | Clock frequency (Hz) |
+
+## 1.2 Weighted CPI
+
+**CPI_avg = SUM(CPI_i * fraction_i)**
+
+Example: ALU (CPI=1, 40%), Load (CPI=3, 30%), Branch (CPI=2, 30%):
+CPI = 0.4 + 0.9 + 0.6 = **1.9**
+
+## 1.3 MIPS
+
+**MIPS = f(MHz) / CPI**
+
+Execution time is the ONLY reliable metric. MIPS can be misleading (ignores instruction complexity).`,
+      examTip: 'Time = IC*CPI/f. CPI is often weighted. MIPS = f(MHz)/CPI. Lower execution time = better. When comparing CPUs, use execution time on the SAME program.',
+      importantNote: 'Clock speed alone does NOT determine performance. 2 GHz with CPI=2 equals 4 GHz with CPI=4 (same instruction count).',
+    },
+    { id: 'perf-amdahl', title: '2. Amdahl\'s Law and Power',
+      content: `## 2.1 Amdahl's Law
+
+**Speedup = 1 / [(1-f) + f/S]**
+
+f = fraction improved, S = improvement factor.
+
+**Max speedup = 1/(1-f)** (when S -> infinity)
+
+| f | Max Speedup |
+|---|---|
+| 50% | 2x |
+| 90% | 10x |
+| 95% | 20x |
+| 99% | 100x |
+
+Example: 50% parallelizable, S=10: speedup = 1/(0.5+0.05) = **1.82x** (not 5x!)
+
+## 2.2 Power
+
+**Dynamic power: P = C * V^2 * f**
+
+- Power linear with frequency
+- Power quadratic with voltage
+- Reducing voltage most effective
+
+**Energy per op: E = C * V^2** (independent of frequency)`,
+      examTip: 'Amdahl: speedup = 1/[(1-f)+f/S]. Max = 1/(1-f). If 90% parallelizable, max speedup = 10x regardless of processor count. The sequential fraction dominates.',
+    },
+  ],
+  keyTakeaways: [
+    'Execution time = IC * CPI / f; only reliable performance metric.',
+    'CPI_avg = SUM(CPI_i * fraction_i) for mixed workloads.',
+    'MIPS = f(MHz)/CPI; can be misleading.',
+    'Amdahl: speedup = 1/[(1-f)+f/S]; max = 1/(1-f).',
+    'Power P = C*V^2*f; voltage reduction most effective.',
+    'Sequential fraction fundamentally limits achievable speedup.',
+  ],
+},
+
+  /* ══════════════════════════════════════════════════════════════════
+   * TOPIC 17 — SOFTWARE DEVELOPMENT  (5 curriculum IDs)  ·  3–5 %
+   * ══════════════════════════════════════════════════════════════════ */
+
+fee_algorithms: { topicId: 'fee_algorithms', title: 'Algorithms and Complexity', domainWeight: 'Software Development · 3–5%',
+  overview: 'Algorithm analysis determines how execution time grows with input size. Big-O notation, sorting/searching complexities, and paradigms (divide-and-conquer, DP, greedy) are core FE exam topics.',
+  sections: [
+    { id: 'algo-bigo', title: '1. Big-O and Complexity Classes',
+      content: `## 1.1 Common Complexities
+
+| O() | Name | Example |
+|---|---|---|
+| **O(1)** | Constant | Hash lookup |
+| **O(log n)** | Logarithmic | Binary search |
+| **O(n)** | Linear | Linear search |
+| **O(n log n)** | Linearithmic | Merge sort |
+| **O(n^2)** | Quadratic | Bubble sort |
+| **O(2^n)** | Exponential | Brute-force subsets |
+
+## 1.2 Rules
+
+1. Drop constants: 3n^2 -> O(n^2)
+2. Keep dominant: n^2+5n -> O(n^2)
+3. Sequential adds: O(n)+O(n^2) -> O(n^2)
+4. Nested loops multiply: O(n)*O(n) -> O(n^2)`,
+      examTip: 'Count nested loops: 1 loop = O(n), 2 nested = O(n^2), halving each step = O(log n). Focus on dominant term, drop constants.',
+    },
+    { id: 'algo-sort-search', title: '2. Sorting, Searching, Paradigms',
+      content: `## 2.1 Sorting
+
+| Algorithm | Average | Worst | Space | Stable |
+|---|---|---|---|---|
+| **Bubble** | O(n^2) | O(n^2) | O(1) | Yes |
+| **Insertion** | O(n^2) | O(n^2) | O(1) | Yes |
+| **Merge** | O(n log n) | O(n log n) | O(n) | Yes |
+| **Quick** | O(n log n) | O(n^2) | O(log n) | No |
+| **Heap** | O(n log n) | O(n log n) | O(1) | No |
+
+## 2.2 Searching
+
+- **Linear**: O(n), any data
+- **Binary**: O(log n), **requires sorted data**
+
+## 2.3 Paradigms
+
+| Paradigm | Strategy | Examples |
+|---|---|---|
+| **Divide-and-conquer** | Split, solve, combine | Merge sort, binary search |
+| **Dynamic programming** | Memoize overlapping sub-problems | Fibonacci, shortest path |
+| **Greedy** | Locally optimal | Dijkstra, Huffman |
+
+Fibonacci: naive O(2^n); DP O(n).`,
+      examTip: 'Binary search O(log n) requires sorted data. Merge sort O(n log n) guaranteed. Quick sort O(n log n) avg but O(n^2) worst. DP reduces exponential to polynomial via memoization.',
+      importantNote: 'Quick sort O(n^2) worst case when pivot is always min/max. Still fastest in practice due to cache locality. Merge sort guarantees O(n log n) but needs O(n) extra space.',
+    },
+  ],
+  keyTakeaways: [
+    'Big-O: asymptotic upper bound; drop constants, keep dominant term.',
+    'O(1) < O(log n) < O(n) < O(n log n) < O(n^2) < O(2^n).',
+    'Merge: O(n log n) guaranteed. Quick: O(n log n) avg, O(n^2) worst.',
+    'Binary search: O(log n), requires sorted data.',
+    'DP = recursion + memoization; exponential -> polynomial.',
+    'Greedy: fast but not always optimal.',
+  ],
+},
+
+fee_data_structures: { topicId: 'fee_data_structures', title: 'Data Structures', domainWeight: 'Software Development · 3–5%',
+  overview: 'Data structures organize data for efficient access. Arrays, linked lists, stacks, queues, trees, and hash tables each optimize for different patterns. Knowing time complexity and when to use each is essential for the FE exam.',
+  sections: [
+    { id: 'ds-linear', title: '1. Arrays, Lists, Stacks, Queues',
+      content: `## 1.1 Arrays
+
+O(1) access by index. O(n) insert/delete (shift elements). Cache-friendly.
+
+## 1.2 Linked Lists
+
+O(1) insert/delete at known position. O(n) search. Singly, doubly, circular variants.
+
+## 1.3 Stack (LIFO)
+
+push/pop/peek: all O(1). Uses: function calls, expression eval, DFS, undo.
+
+## 1.4 Queue (FIFO)
+
+enqueue/dequeue: O(1). Uses: scheduling, BFS, print queues.
+
+**Priority queue**: dequeue by priority (implemented with heap).
+
+## 1.5 Summary
+
+| Op | Array | List | Stack | Queue |
+|---|---|---|---|---|
+| Access | **O(1)** | O(n) | N/A | N/A |
+| Search | O(n) | O(n) | N/A | N/A |
+| Insert | O(n) | **O(1)*** | **O(1)** | **O(1)** |
+| Delete | O(n) | **O(1)*** | **O(1)** | **O(1)** |
+
+*at known position`,
+      examTip: 'Arrays: O(1) access, O(n) insert. Lists: O(1) insert, O(n) search. Stack=LIFO, Queue=FIFO. Know WHICH structure for which application.',
+    },
+    { id: 'ds-tree-hash', title: '2. Trees and Hash Tables',
+      content: `## 2.1 BST
+
+BST property: left < node < right.
+
+| Op | Balanced | Unbalanced |
+|---|---|---|
+| Search/Insert/Delete | **O(log n)** | O(n) |
+
+Self-balancing: **AVL** (strict), **Red-Black** (relaxed).
+
+## 2.2 Heap
+
+Complete binary tree. Max-heap: parent >= children.
+
+| Op | Complexity |
+|---|---|
+| Find min/max | **O(1)** |
+| Insert/Extract | O(log n) |
+| Build | O(n) |
+
+## 2.3 Hash Table
+
+**index = hash(key) % size**. O(1) average lookup.
+
+Collision resolution: **chaining** (lists) or **open addressing** (probing).
+
+**Load factor** = entries/size. Rehash when > ~0.7.
+
+- Average: O(1)
+- Worst: O(n) (all keys collide)`,
+      examTip: 'Fastest average lookup: hash table O(1). Maintains sorted order: BST. BST degenerates to O(n) if unbalanced -- use AVL/Red-Black.',
+      importantNote: 'BST degenerates to linked list O(n) if inserted in sorted order. Self-balancing trees (AVL, Red-Black) guarantee O(log n).',
+    },
+  ],
+  keyTakeaways: [
+    'Arrays: O(1) access, O(n) insert. Lists: O(1) insert, O(n) search.',
+    'Stack=LIFO (DFS, function calls). Queue=FIFO (BFS, scheduling).',
+    'BST: O(log n) balanced; AVL/Red-Black guarantee balance.',
+    'Heap: O(1) find-min/max, O(log n) insert/extract.',
+    'Hash: O(1) avg lookup; chaining or open addressing for collisions.',
+    'Load factor > 0.7 -> rehash.',
+  ],
+},
+
+fee_oop: { topicId: 'fee_oop', title: 'Object-Oriented Programming', domainWeight: 'Software Development · 3–5%',
+  overview: 'OOP organizes software as objects encapsulating data and behavior. The four pillars -- encapsulation, inheritance, polymorphism, abstraction -- promote modularity and reuse. Recursion and functional programming complement OOP on the FE exam.',
+  sections: [
+    { id: 'oop-pillars', title: '1. Four Pillars of OOP',
+      content: `## 1.1 The Pillars
+
+| Pillar | Definition | Example |
+|---|---|---|
+| **Encapsulation** | Hide internals, expose interface | Private fields, public methods |
+| **Inheritance** | Child inherits from parent | Dog IS-A Animal |
+| **Polymorphism** | Same interface, different behavior | Animal.speak() -> "Woof" or "Meow" |
+| **Abstraction** | Expose essentials, hide complexity | Abstract class, interface |
+
+## 1.2 Relationships
+
+- **Inheritance (is-a)**: Dog is-a Animal
+- **Composition (has-a)**: Car has-a Engine
+- **Override**: child replaces parent method
+- **Overload**: same name, different parameters`,
+      examTip: 'Four pillars: Encapsulation, Inheritance, Polymorphism, Abstraction. FE tests these through scenarios.',
+    },
+    { id: 'oop-recursion', title: '2. Recursion and Functional Programming',
+      content: `## 2.1 Recursion
+
+Function calls itself with smaller input until **base case**.
+
+- Without base case -> infinite recursion -> stack overflow
+- **Tail recursion**: recursive call is last operation; compiler optimizes to loop
+- Each call uses stack space: O(n) for n calls
+
+## 2.2 Dynamic Programming
+
+Recursion + memoization: store results of overlapping sub-problems.
+
+- Fibonacci naive: O(2^n)
+- Fibonacci DP: O(n)
+
+## 2.3 Functional Programming
+
+| Concept | Description |
+|---|---|
+| Pure functions | No side effects, deterministic |
+| Immutability | Data never modified |
+| Higher-order | Functions as arguments/return values |
+| map/filter/reduce | Declarative collection processing |`,
+      examTip: 'Every recursive function MUST have a base case. DP = recursion + memoization. Fibonacci: naive O(2^n), DP O(n).',
+      importantNote: 'Deep recursion risks stack overflow. Fibonacci(50) naive makes ~2^50 calls (impossible). DP solves only 50 sub-problems.',
+    },
+  ],
+  keyTakeaways: [
+    'Four pillars: encapsulation, inheritance, polymorphism, abstraction.',
+    'Inheritance = is-a. Composition = has-a.',
+    'Polymorphism: overriding (runtime) vs. overloading (compile-time).',
+    'Recursion needs base case; uses O(n) stack. Tail recursion optimizable.',
+    'DP = recursion + memoization; exponential -> polynomial.',
+    'Functional: pure functions, immutability, map/filter/reduce.',
+  ],
+},
+
+fee_sdlc: { topicId: 'fee_sdlc', title: 'Software Development Lifecycle', domainWeight: 'Software Development · 3–5%',
+  overview: 'SDLC provides structured approaches to building software. Waterfall and Agile represent opposite philosophies. Testing at multiple levels catches defects early. Version control and CI/CD automate workflows.',
+  sections: [
+    { id: 'sdlc-models', title: '1. SDLC Models',
+      content: `## 1.1 Waterfall
+
+Sequential: Requirements -> Design -> Code -> Test -> Deploy -> Maintain.
+
+| Pro | Con |
+|---|---|
+| Clear milestones | Late error detection |
+| Easy to manage | Inflexible to changes |
+
+## 1.2 Agile / Scrum
+
+Iterative sprints (1-4 weeks): plan -> develop -> review -> retro.
+
+| Pro | Con |
+|---|---|
+| Rapid feedback | Scope creep risk |
+| Adaptable | Needs discipline |
+
+## 1.3 Other Models
+
+| Model | Key Feature |
+|---|---|
+| **V-Model** | Each dev phase has test phase |
+| **Spiral** | Risk-driven iterations |
+| **DevOps** | Continuous dev + ops integration |`,
+      examTip: 'Waterfall = sequential, plan-heavy. Agile = iterative, feedback-driven. If requirements are changing, choose Agile.',
+    },
+    { id: 'sdlc-testing', title: '2. Testing, VCS, CI/CD',
+      content: `## 2.1 Testing Levels
+
+| Level | Tests | Who |
+|---|---|---|
+| **Unit** | Functions | Developers |
+| **Integration** | Components | Dev/QA |
+| **System** | Full system | QA |
+| **Acceptance** | User requirements | Customer |
+
+Bug cost: unit ~1x, integration ~10x, production ~100x.
+
+- **TDD**: write tests before code
+- **Black-box**: test inputs/outputs
+- **White-box**: test code structure
+
+## 2.2 Version Control (Git)
+
+commit (snapshot), branch (parallel), merge (combine), pull request (review).
+
+## 2.3 CI/CD
+
+- **CI**: auto build + test on every commit
+- **CD**: auto prepare/deploy releases
+
+Reduces integration risk and human error.`,
+      examTip: 'Testing: unit -> integration -> system -> acceptance. Earlier = cheaper. TDD and CI are best practices.',
+      importantNote: 'Merge conflict: two branches modify same lines. Git cannot auto-resolve -- developer must manually choose.',
+    },
+  ],
+  keyTakeaways: [
+    'Waterfall: sequential. Agile: iterative sprints.',
+    'Testing: unit -> integration -> system -> acceptance; earlier = cheaper.',
+    'Bug cost: ~1x at unit, ~10x integration, ~100x production.',
+    'TDD: tests before code. CI: auto test on commit.',
+    'Git: commit, branch, merge, pull request.',
+    'CI/CD automates build/test/deploy.',
+  ],
+},
+
+fee_databases: { topicId: 'fee_databases', title: 'Databases: SQL & Normalization', domainWeight: 'Software Development · 3–5%',
+  overview: 'Relational databases organize data in tables with SQL queries. Normalization eliminates redundancy through 1NF, 2NF, and 3NF. ACID properties ensure transaction reliability.',
+  sections: [
+    { id: 'db-sql', title: '1. Relational Model and SQL',
+      content: `## 1.1 Key Concepts
+
+| Term | Definition |
+|---|---|
+| **Table** | Rows + columns |
+| **Primary Key** | Unique row identifier |
+| **Foreign Key** | References another table's PK |
+
+## 1.2 SQL Operations
+
+| Op | SQL | Example |
+|---|---|---|
+| Read | SELECT | SELECT name FROM students WHERE gpa > 3.0 |
+| Create | INSERT | INSERT INTO students VALUES ('Alice', 22) |
+| Update | UPDATE | UPDATE students SET age=23 WHERE name='Alice' |
+| Delete | DELETE | DELETE FROM students WHERE gpa < 2.0 |
+
+## 1.3 JOINs
+
+| Type | Returns |
+|---|---|
+| **INNER** | Matching rows in BOTH |
+| **LEFT** | All left + matching right (NULL if none) |
+| **RIGHT** | All right + matching left |
+
+## 1.4 Aggregation
+
+COUNT, SUM, AVG, MIN, MAX with GROUP BY and HAVING.`,
+      examTip: 'INNER JOIN = only matching rows. LEFT JOIN = all left + matches. WHERE filters rows; HAVING filters groups after aggregation.',
+      importantNote: 'WHERE vs HAVING: WHERE filters before grouping, HAVING filters after. Mixing them up is commonly tested.',
+    },
+    { id: 'db-norm-acid', title: '2. Normalization and ACID',
+      content: `## 2.1 Normal Forms
+
+| NF | Rule | Eliminates |
+|---|---|---|
+| **1NF** | Atomic values (no lists) | Repeating groups |
+| **2NF** | No partial dependencies | Partial deps |
+| **3NF** | No transitive dependencies | Transitive deps |
+
+Example: Student(ID, Name, DeptID, DeptName) violates 3NF because DeptName depends on DeptID, not the key. Fix: split into Student(ID, Name, DeptID) + Dept(DeptID, DeptName).
+
+## 2.2 ACID
+
+| Property | Meaning |
+|---|---|
+| **Atomicity** | All-or-nothing |
+| **Consistency** | Valid state to valid state |
+| **Isolation** | Concurrent txns don't interfere |
+| **Durability** | Committed data survives failures |
+
+## 2.3 Indexes
+
+- **B-tree**: O(log n), range + exact match
+- **Hash**: O(1), exact match only
+- Tradeoff: faster reads, slower writes`,
+      examTip: '1NF = atomic. 2NF = no partial deps. 3NF = no transitive deps. ACID: Atomicity, Consistency, Isolation, Durability.',
+    },
+  ],
+  keyTakeaways: [
+    'Tables with PK (unique) and FK (relationships). SQL: SELECT, INSERT, UPDATE, DELETE.',
+    'INNER JOIN: matching rows. LEFT JOIN: all left + matches.',
+    '1NF: atomic. 2NF: no partial deps. 3NF: no transitive deps.',
+    'ACID: atomicity, consistency, isolation, durability.',
+    'B-tree index: O(log n) + ranges. Hash: O(1) exact only.',
+    'WHERE filters rows; HAVING filters groups.',
+  ],
+},
 
 
 };
