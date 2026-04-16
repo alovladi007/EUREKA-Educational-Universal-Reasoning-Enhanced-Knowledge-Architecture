@@ -29,6 +29,8 @@ import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
 import { getCISSPFlashcards, CISSP_FLASHCARD_DOMAINS, CISSP_FLASHCARD_COUNT } from '@/lib/cissp-flashcard-data';
 import { getSecurityPlusFlashcards, SECPLUS_FLASHCARD_DOMAINS, SECPLUS_FLASHCARD_COUNT } from '@/lib/security-plus-flashcard-data';
 import { getPatentBarFlashcards, PATENT_BAR_FLASHCARD_DOMAINS, PATENT_BAR_FLASHCARD_COUNT } from '@/lib/patent-bar-flashcard-data';
+import { getFEEEFlashcards, FEEE_FLASHCARD_DOMAINS, FEEE_FLASHCARD_COUNT } from '@/lib/fe-ee-flashcard-data';
+import { FE_EE_QUESTIONS, type FEEEQuestion } from '@/lib/fe-ee-qbank-data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
@@ -1193,7 +1195,8 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const isCISSP = examType === 'CISSP';
   const isSecPlus = examType === 'SECURITY_PLUS';
   const isPatentBar = examType === 'PATENT_BAR';
-  const hasFlashcards = isCISSP || isSecPlus || isPatentBar;
+  const isFEEE = examType === 'FE_EE';
+  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1214,7 +1217,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
       ? getSecurityPlusFlashcards(activeDomain || undefined)
       : isPatentBar
         ? getPatentBarFlashcards(activeDomain || undefined)
-        : [];
+        : isFEEE
+          ? getFEEEFlashcards(activeDomain || undefined)
+          : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1230,27 +1235,35 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
       ? SECPLUS_FLASHCARD_DOMAINS
       : isPatentBar
         ? PATENT_BAR_FLASHCARD_DOMAINS
-        : [];
+        : isFEEE
+          ? FEEE_FLASHCARD_DOMAINS
+          : [];
   const flashcardCount = isCISSP
     ? CISSP_FLASHCARD_COUNT
     : isSecPlus
       ? SECPLUS_FLASHCARD_COUNT
       : isPatentBar
         ? PATENT_BAR_FLASHCARD_COUNT
-        : 0;
+        : isFEEE
+          ? FEEE_FLASHCARD_COUNT
+          : 0;
   const flashcardTitle = isCISSP
     ? 'CISSP Flashcard Deck'
     : isSecPlus
       ? 'Security+ Flashcard Deck'
       : isPatentBar
         ? 'Patent Bar Flashcard Deck'
-        : 'Flashcard Deck';
+        : isFEEE
+          ? 'FE Electrical & Computer Flashcard Deck'
+          : 'Flashcard Deck';
   const flashcardSubtitle = isCISSP
     ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
     : isSecPlus
       ? `${SECPLUS_FLASHCARD_COUNT.toLocaleString()} cards across all 5 domains + exam tips`
       : isPatentBar
         ? `${PATENT_BAR_FLASHCARD_COUNT.toLocaleString()} cards across Parts 1–8 + exam traps`
+        : isFEEE
+          ? `${FEEE_FLASHCARD_COUNT.toLocaleString()} cards across all 18 EE topics + formulas`
         : '';
 
   const startStudy = (cards: any[]) => {
@@ -1621,6 +1634,48 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             _staticQuestions: staticQs,
           });
           setCurrentQ(staticQs[0]);
+          setCurrentIndex(0);
+          setTimer(0);
+          setView('session');
+        } else {
+          alert('No questions available for the selected sections.');
+        }
+      } else if (examType === 'FE_EE') {
+        // Static fallback for FE EE using local question bank
+        let feQuestions = [...FE_EE_QUESTIONS];
+        if (selectedSections.length > 0) {
+          // Map section IDs to numeric topicIds
+          const sectionToTopic: Record<string, number> = {
+            fee_math: 0, fee_prob_stats: 1, fee_ethics: 2, fee_eng_econ: 3,
+            fee_materials: 4, fee_eng_sci: 5, fee_circuits: 6, fee_linear_sys: 7,
+            fee_signal_proc: 8, fee_electronics: 9, fee_power_sys: 10,
+            fee_electromagnetics: 11, fee_control: 12, fee_comms: 13,
+            fee_networks: 14, fee_digital: 15, fee_comp_sys: 16, fee_software: 17,
+          };
+          const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
+          feQuestions = feQuestions.filter(q => topicIds.includes(q.topicId));
+        }
+        // Shuffle and limit
+        feQuestions = feQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        if (feQuestions.length > 0) {
+          // Normalize to match the static question format
+          const normalized = feQuestions.map((q, i) => ({
+            ...q,
+            question_text: q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct,
+            explanation_text: q.explanation,
+            section_id: `fee_topic${q.topicId}`,
+            _idx: i,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({
+            session_id: fakeSessionId,
+            question_count: normalized.length,
+            _staticQuestions: normalized,
+          });
+          setCurrentQ(normalized[0]);
           setCurrentIndex(0);
           setTimer(0);
           setView('session');
