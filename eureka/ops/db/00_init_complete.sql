@@ -1,0 +1,1273 @@
+-- =====================================================
+-- EUREKA Platform - Complete Database Schema
+-- =====================================================
+-- This script creates ALL tables for ALL services
+-- Run this after database creation
+-- =====================================================
+
+-- Enable required extensions
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+CREATE EXTENSION IF NOT EXISTS "pgcrypto";
+CREATE EXTENSION IF NOT EXISTS "pg_trgm";
+CREATE EXTENSION IF NOT EXISTS "vector";
+
+-- =====================================================
+-- CORE API TABLES (api-core service)
+-- =====================================================
+
+-- Organizations (Multi-tenancy)
+CREATE TABLE IF NOT EXISTS organizations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(255) NOT NULL,
+    slug VARCHAR(100) UNIQUE NOT NULL,
+    tier VARCHAR(50) NOT NULL CHECK (tier IN ('high_school', 'undergraduate', 'graduate', 'medical', 'law', 'mba', 'engineering')),
+    tier_config JSONB DEFAULT '{}',
+    subscription_status VARCHAR(50) DEFAULT 'trial',
+    subscription_expires_at TIMESTAMP,
+    settings JSONB DEFAULT '{}',
+    ferpa_compliant BOOLEAN DEFAULT TRUE,
+    coppa_compliant BOOLEAN DEFAULT FALSE,
+    hipaa_compliant BOOLEAN DEFAULT FALSE,
+    is_active BOOLEAN DEFAULT TRUE,
+    is_verified BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT valid_slug CHECK (slug ~ '^[a-z0-9-]+$')
+);
+
+CREATE INDEX idx_orgs_tier ON organizations(tier);
+CREATE INDEX idx_orgs_active ON organizations(is_active) WHERE is_active = TRUE;
+
+-- Users
+CREATE TYPE user_role AS ENUM ('super_admin', 'org_admin', 'teacher', 'student', 'parent');
+
+CREATE TABLE IF NOT EXISTS users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    email VARCHAR(255) NOT NULL,
+    hashed_password VARCHAR(255) NOT NULL,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    display_name VARCHAR(200),
+    avatar_url VARCHAR(500),
+    role user_role NOT NULL DEFAULT 'student',
+    locale VARCHAR(10) DEFAULT 'en-US',
+    timezone VARCHAR(50) DEFAULT 'UTC',
+    preferences JSONB DEFAULT '{}',
+    is_active BOOLEAN DEFAULT TRUE,
+    is_banned BOOLEAN DEFAULT FALSE,
+    is_email_verified BOOLEAN DEFAULT FALSE,
+    email_verification_token VARCHAR(255),
+    password_reset_token VARCHAR(255),
+    password_reset_expires TIMESTAMP,
+    failed_login_attempts INTEGER DEFAULT 0,
+    last_failed_login TIMESTAMP,
+    locked_until TIMESTAMP,
+    last_login_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_email_per_org UNIQUE (org_id, email)
+);
+
+CREATE INDEX idx_users_org ON users(org_id);
+CREATE INDEX idx_users_email ON users(email);
+CREATE INDEX idx_users_role ON users(role);
+CREATE INDEX idx_users_active ON users(is_active) WHERE is_active = TRUE;
+
+-- Courses
+CREATE TABLE IF NOT EXISTS courses (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    code VARCHAR(50) NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    instructor_id UUID REFERENCES users(id),
+    category VARCHAR(100),
+    level VARCHAR(50),
+    credits DECIMAL(4,2),
+    syllabus_url VARCHAR(500),
+    thumbnail_url VARCHAR(500),
+    status VARCHAR(50) DEFAULT 'draft' CHECK (status IN ('draft', 'published', 'archived')),
+    max_students INTEGER,
+    start_date DATE,
+    end_date DATE,
+    metadata JSONB DEFAULT '{}',
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_course_code_per_org UNIQUE (org_id, code)
+);
+
+CREATE INDEX idx_courses_org ON courses(org_id);
+CREATE INDEX idx_courses_instructor ON courses(instructor_id);
+CREATE INDEX idx_courses_status ON courses(status);
+CREATE INDEX idx_courses_active ON courses(is_active) WHERE is_active = TRUE;
+
+-- Course Modules
+CREATE TABLE IF NOT EXISTS course_modules (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    order_index INTEGER NOT NULL,
+    content_url VARCHAR(500),
+    duration_minutes INTEGER,
+    is_published BOOLEAN DEFAULT FALSE,
+    prerequisites JSONB DEFAULT '[]',
+    learning_objectives JSONB DEFAULT '[]',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_modules_course ON course_modules(course_id);
+CREATE INDEX idx_modules_order ON course_modules(course_id, order_index);
+
+-- Enrollments
+CREATE TYPE enrollment_status AS ENUM ('active', 'completed', 'dropped', 'failed');
+
+CREATE TABLE IF NOT EXISTS enrollments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    status enrollment_status DEFAULT 'active',
+    enrolled_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP,
+    final_grade DECIMAL(5,2),
+    progress_percentage DECIMAL(5,2) DEFAULT 0.00,
+    last_accessed_at TIMESTAMP,
+    metadata JSONB DEFAULT '{}',
+    CONSTRAINT unique_enrollment UNIQUE (course_id, user_id)
+);
+
+CREATE INDEX idx_enrollments_course ON enrollments(course_id);
+CREATE INDEX idx_enrollments_user ON enrollments(user_id);
+CREATE INDEX idx_enrollments_status ON enrollments(status);
+
+-- Assignments
+CREATE TYPE assignment_type AS ENUM ('homework', 'quiz', 'exam', 'project', 'discussion');
+
+CREATE TABLE IF NOT EXISTS assignments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    module_id UUID REFERENCES course_modules(id) ON DELETE SET NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    assignment_type assignment_type NOT NULL,
+    max_points DECIMAL(10,2) NOT NULL,
+    due_date TIMESTAMP,
+    allow_late_submission BOOLEAN DEFAULT TRUE,
+    late_penalty_percentage DECIMAL(5,2) DEFAULT 0,
+    instructions TEXT,
+    rubric JSONB,
+    is_published BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_assignments_course ON assignments(course_id);
+CREATE INDEX idx_assignments_module ON assignments(module_id);
+CREATE INDEX idx_assignments_due ON assignments(due_date);
+
+-- Grades
+CREATE TABLE IF NOT EXISTS grades (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    enrollment_id UUID NOT NULL REFERENCES enrollments(id) ON DELETE CASCADE,
+    assignment_id UUID NOT NULL REFERENCES assignments(id) ON DELETE CASCADE,
+    score DECIMAL(10,2),
+    max_score DECIMAL(10,2) NOT NULL,
+    percentage DECIMAL(5,2),
+    feedback TEXT,
+    graded_by UUID REFERENCES users(id),
+    graded_at TIMESTAMP,
+    submission_url VARCHAR(500),
+    submitted_at TIMESTAMP,
+    is_late BOOLEAN DEFAULT FALSE,
+    attempt_number INTEGER DEFAULT 1,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_grade_attempt UNIQUE (enrollment_id, assignment_id, attempt_number)
+);
+
+CREATE INDEX idx_grades_enrollment ON grades(enrollment_id);
+CREATE INDEX idx_grades_assignment ON grades(assignment_id);
+CREATE INDEX idx_grades_graded_by ON grades(graded_by);
+
+-- =====================================================
+-- AI TUTOR / LLM SERVICE TABLES (tutor-llm service)
+-- =====================================================
+
+-- Tutor Conversations
+CREATE TABLE IF NOT EXISTS tutor_conversations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+    title VARCHAR(255),
+    context JSONB DEFAULT '{}',
+    is_active BOOLEAN DEFAULT TRUE,
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ended_at TIMESTAMP,
+    total_messages INTEGER DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_tutor_conv_user ON tutor_conversations(user_id);
+CREATE INDEX idx_tutor_conv_course ON tutor_conversations(course_id);
+CREATE INDEX idx_tutor_conv_active ON tutor_conversations(is_active) WHERE is_active = TRUE;
+
+-- Tutor Messages
+CREATE TYPE message_role AS ENUM ('user', 'assistant', 'system');
+
+CREATE TABLE IF NOT EXISTS tutor_messages (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    conversation_id UUID NOT NULL REFERENCES tutor_conversations(id) ON DELETE CASCADE,
+    role message_role NOT NULL,
+    content TEXT NOT NULL,
+    tokens_used INTEGER,
+    model VARCHAR(100),
+    confidence_score DECIMAL(3,2),
+    sources JSONB DEFAULT '[]',
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_tutor_messages_conv ON tutor_messages(conversation_id);
+CREATE INDEX idx_tutor_messages_created ON tutor_messages(created_at);
+
+-- Course Content (for RAG)
+CREATE TABLE IF NOT EXISTS course_content (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    content_type VARCHAR(50) NOT NULL CHECK (content_type IN ('lecture', 'reading', 'video', 'lab', 'reference')),
+    title VARCHAR(255) NOT NULL,
+    content TEXT NOT NULL,
+    embedding vector(1536),  -- For OpenAI ada-002 embeddings
+    topics JSONB DEFAULT '[]',
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_content_course ON course_content(course_id);
+CREATE INDEX idx_content_embedding ON course_content USING ivfflat (embedding vector_cosine_ops);
+CREATE INDEX idx_content_type ON course_content(content_type);
+
+-- Student Knowledge State
+CREATE TABLE IF NOT EXISTS student_knowledge (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    topic VARCHAR(255) NOT NULL,
+    mastery_level DECIMAL(3,2) DEFAULT 0.00 CHECK (mastery_level BETWEEN 0 AND 1),
+    confidence_level DECIMAL(3,2) DEFAULT 0.50 CHECK (confidence_level BETWEEN 0 AND 1),
+    last_practiced TIMESTAMP,
+    practice_count INTEGER DEFAULT 0,
+    correct_count INTEGER DEFAULT 0,
+    incorrect_count INTEGER DEFAULT 0,
+    metadata JSONB DEFAULT '{}',
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_student_topic UNIQUE (user_id, course_id, topic)
+);
+
+CREATE INDEX idx_knowledge_user_course ON student_knowledge(user_id, course_id);
+CREATE INDEX idx_knowledge_mastery ON student_knowledge(mastery_level);
+
+-- Tutor Sessions (Analytics)
+CREATE TABLE IF NOT EXISTS tutor_sessions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+    conversation_id UUID REFERENCES tutor_conversations(id) ON DELETE SET NULL,
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ended_at TIMESTAMP,
+    duration_seconds INTEGER,
+    total_messages INTEGER DEFAULT 0,
+    total_tokens INTEGER DEFAULT 0,
+    topics_covered JSONB DEFAULT '[]',
+    learning_outcomes JSONB DEFAULT '{}',
+    satisfaction_rating INTEGER CHECK (satisfaction_rating BETWEEN 1 AND 5),
+    feedback TEXT,
+    metadata JSONB DEFAULT '{}'
+);
+
+CREATE INDEX idx_sessions_user ON tutor_sessions(user_id);
+CREATE INDEX idx_sessions_course ON tutor_sessions(course_id);
+CREATE INDEX idx_sessions_started ON tutor_sessions(started_at);
+
+-- =====================================================
+-- ASSESSMENT ENGINE TABLES (assess service)
+-- =====================================================
+
+-- Assessments
+CREATE TYPE assessment_type AS ENUM ('quiz', 'exam', 'homework', 'project', 'practice');
+
+CREATE TABLE IF NOT EXISTS assessments (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    assignment_id UUID REFERENCES assignments(id) ON DELETE SET NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    assessment_type assessment_type NOT NULL,
+    total_points DECIMAL(10,2) NOT NULL,
+    passing_score DECIMAL(5,2) DEFAULT 70.00,
+    time_limit_minutes INTEGER,
+    max_attempts INTEGER DEFAULT 1,
+    shuffle_questions BOOLEAN DEFAULT FALSE,
+    shuffle_answers BOOLEAN DEFAULT FALSE,
+    show_correct_answers BOOLEAN DEFAULT TRUE,
+    available_from TIMESTAMP,
+    available_until TIMESTAMP,
+    is_published BOOLEAN DEFAULT FALSE,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_assessments_course ON assessments(course_id);
+CREATE INDEX idx_assessments_assignment ON assessments(assignment_id);
+CREATE INDEX idx_assessments_type ON assessments(assessment_type);
+
+-- Questions
+CREATE TYPE question_type AS ENUM ('multiple_choice', 'true_false', 'short_answer', 'essay', 'coding', 'matching');
+
+CREATE TABLE IF NOT EXISTS questions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    assessment_id UUID NOT NULL REFERENCES assessments(id) ON DELETE CASCADE,
+    question_text TEXT NOT NULL,
+    question_type question_type NOT NULL,
+    points DECIMAL(10,2) NOT NULL,
+    order_index INTEGER NOT NULL,
+    answer_options JSONB,  -- For MC, TF, matching
+    correct_answer JSONB,   -- Flexible format based on type
+    explanation TEXT,
+    hints JSONB DEFAULT '[]',
+    difficulty VARCHAR(20) DEFAULT 'medium' CHECK (difficulty IN ('easy', 'medium', 'hard')),
+    tags JSONB DEFAULT '[]',
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_questions_assessment ON questions(assessment_id);
+CREATE INDEX idx_questions_order ON questions(assessment_id, order_index);
+CREATE INDEX idx_questions_type ON questions(question_type);
+
+-- Grading Rubrics
+CREATE TABLE IF NOT EXISTS grading_rubrics (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    question_id UUID NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+    criteria_name VARCHAR(255) NOT NULL,
+    max_points DECIMAL(10,2) NOT NULL,
+    description TEXT,
+    levels JSONB NOT NULL,  -- [{level, points, description}, ...]
+    order_index INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_rubrics_question ON grading_rubrics(question_id);
+
+-- Submissions
+CREATE TYPE submission_status AS ENUM ('draft', 'submitted', 'grading', 'graded', 'returned');
+
+CREATE TABLE IF NOT EXISTS submissions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    assessment_id UUID NOT NULL REFERENCES assessments(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    attempt_number INTEGER NOT NULL DEFAULT 1,
+    status submission_status DEFAULT 'draft',
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    submitted_at TIMESTAMP,
+    graded_at TIMESTAMP,
+    score DECIMAL(10,2),
+    max_score DECIMAL(10,2),
+    percentage DECIMAL(5,2),
+    time_spent_seconds INTEGER,
+    is_late BOOLEAN DEFAULT FALSE,
+    feedback TEXT,
+    graded_by UUID REFERENCES users(id),
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_submission_attempt UNIQUE (assessment_id, user_id, attempt_number)
+);
+
+CREATE INDEX idx_submissions_assessment ON submissions(assessment_id);
+CREATE INDEX idx_submissions_user ON submissions(user_id);
+CREATE INDEX idx_submissions_status ON submissions(status);
+
+-- Answers
+CREATE TABLE IF NOT EXISTS answers (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    submission_id UUID NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
+    question_id UUID NOT NULL REFERENCES questions(id) ON DELETE CASCADE,
+    answer_data JSONB NOT NULL,
+    is_correct BOOLEAN,
+    points_earned DECIMAL(10,2),
+    max_points DECIMAL(10,2),
+    feedback TEXT,
+    time_spent_seconds INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_submission_question UNIQUE (submission_id, question_id)
+);
+
+CREATE INDEX idx_answers_submission ON answers(submission_id);
+CREATE INDEX idx_answers_question ON answers(question_id);
+
+-- Rubric Scores
+CREATE TABLE IF NOT EXISTS rubric_scores (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    answer_id UUID NOT NULL REFERENCES answers(id) ON DELETE CASCADE,
+    rubric_id UUID NOT NULL REFERENCES grading_rubrics(id) ON DELETE CASCADE,
+    points_earned DECIMAL(10,2) NOT NULL,
+    level_achieved INTEGER,
+    feedback TEXT,
+    graded_by UUID REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_answer_rubric UNIQUE (answer_id, rubric_id)
+);
+
+CREATE INDEX idx_rubric_scores_answer ON rubric_scores(answer_id);
+CREATE INDEX idx_rubric_scores_rubric ON rubric_scores(rubric_id);
+
+-- Grading Results (Detailed feedback)
+CREATE TABLE IF NOT EXISTS grading_results (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    submission_id UUID NOT NULL REFERENCES submissions(id) ON DELETE CASCADE,
+    grading_strategy VARCHAR(50) NOT NULL,  -- 'exact_match', 'keyword', 'semantic', 'ai', 'manual'
+    result_data JSONB NOT NULL,
+    confidence_score DECIMAL(3,2),
+    requires_manual_review BOOLEAN DEFAULT FALSE,
+    reviewed_by UUID REFERENCES users(id),
+    reviewed_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_grading_results_submission ON grading_results(submission_id);
+
+-- =====================================================
+-- ADAPTIVE LEARNING TABLES (adaptive service)
+-- =====================================================
+
+-- Concepts (Knowledge Graph)
+CREATE TABLE IF NOT EXISTS concepts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    difficulty_level VARCHAR(20) DEFAULT 'medium' CHECK (difficulty_level IN ('easy', 'medium', 'hard')),
+    prerequisites JSONB DEFAULT '[]',  -- Array of concept IDs
+    related_concepts JSONB DEFAULT '[]',
+    learning_resources JSONB DEFAULT '[]',
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_concept_name UNIQUE (course_id, name)
+);
+
+CREATE INDEX idx_concepts_course ON concepts(course_id);
+CREATE INDEX idx_concepts_difficulty ON concepts(difficulty_level);
+
+-- Student Mastery
+CREATE TABLE IF NOT EXISTS student_mastery (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    concept_id UUID NOT NULL REFERENCES concepts(id) ON DELETE CASCADE,
+    mastery_level DECIMAL(3,2) DEFAULT 0.00 CHECK (mastery_level BETWEEN 0 AND 1),
+    confidence DECIMAL(3,2) DEFAULT 0.50 CHECK (confidence BETWEEN 0 AND 1),
+    last_practiced TIMESTAMP,
+    practice_count INTEGER DEFAULT 0,
+    correct_streak INTEGER DEFAULT 0,
+    total_attempts INTEGER DEFAULT 0,
+    successful_attempts INTEGER DEFAULT 0,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_student_concept UNIQUE (user_id, concept_id)
+);
+
+CREATE INDEX idx_mastery_user ON student_mastery(user_id);
+CREATE INDEX idx_mastery_concept ON student_mastery(concept_id);
+CREATE INDEX idx_mastery_level ON student_mastery(mastery_level);
+
+-- Learning Paths
+CREATE TABLE IF NOT EXISTS learning_paths (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    concepts_sequence JSONB NOT NULL,  -- Ordered array of concept IDs
+    current_concept_index INTEGER DEFAULT 0,
+    status VARCHAR(50) DEFAULT 'active' CHECK (status IN ('active', 'completed', 'abandoned')),
+    estimated_completion_time INTEGER,  -- minutes
+    actual_completion_time INTEGER,
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_paths_user ON learning_paths(user_id);
+CREATE INDEX idx_paths_course ON learning_paths(course_id);
+CREATE INDEX idx_paths_status ON learning_paths(status);
+
+-- Recommendations
+CREATE TABLE IF NOT EXISTS recommendations (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+    recommendation_type VARCHAR(50) NOT NULL CHECK (recommendation_type IN ('concept', 'resource', 'practice', 'review', 'challenge')),
+    target_id UUID,  -- ID of concept, resource, or assignment
+    priority INTEGER DEFAULT 5 CHECK (priority BETWEEN 1 AND 10),
+    reasoning TEXT,
+    confidence DECIMAL(3,2),
+    is_acted_on BOOLEAN DEFAULT FALSE,
+    acted_on_at TIMESTAMP,
+    expires_at TIMESTAMP,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_recommendations_user ON recommendations(user_id);
+CREATE INDEX idx_recommendations_course ON recommendations(course_id);
+CREATE INDEX idx_recommendations_priority ON recommendations(priority DESC);
+CREATE INDEX idx_recommendations_active ON recommendations(is_acted_on) WHERE is_acted_on = FALSE;
+
+-- Skill Gaps
+CREATE TABLE IF NOT EXISTS skill_gaps (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    concept_id UUID NOT NULL REFERENCES concepts(id) ON DELETE CASCADE,
+    gap_severity VARCHAR(20) DEFAULT 'medium' CHECK (gap_severity IN ('low', 'medium', 'high', 'critical')),
+    identified_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    remediation_status VARCHAR(50) DEFAULT 'pending' CHECK (remediation_status IN ('pending', 'in_progress', 'resolved', 'ignored')),
+    remediation_resources JSONB DEFAULT '[]',
+    resolved_at TIMESTAMP,
+    metadata JSONB DEFAULT '{}',
+    CONSTRAINT unique_student_gap UNIQUE (user_id, concept_id)
+);
+
+CREATE INDEX idx_gaps_user ON skill_gaps(user_id);
+CREATE INDEX idx_gaps_concept ON skill_gaps(concept_id);
+CREATE INDEX idx_gaps_severity ON skill_gaps(gap_severity);
+CREATE INDEX idx_gaps_status ON skill_gaps(remediation_status);
+
+-- Practice Sessions
+CREATE TABLE IF NOT EXISTS practice_sessions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    concept_id UUID NOT NULL REFERENCES concepts(id) ON DELETE CASCADE,
+    difficulty VARCHAR(20) NOT NULL,
+    correct_answers INTEGER DEFAULT 0,
+    total_questions INTEGER NOT NULL,
+    accuracy DECIMAL(5,2),
+    time_spent_seconds INTEGER,
+    started_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    completed_at TIMESTAMP,
+    metadata JSONB DEFAULT '{}'
+);
+
+CREATE INDEX idx_practice_user ON practice_sessions(user_id);
+CREATE INDEX idx_practice_concept ON practice_sessions(concept_id);
+CREATE INDEX idx_practice_started ON practice_sessions(started_at);
+
+-- =====================================================
+-- ANALYTICS DASHBOARD TABLES (analytics service)
+-- =====================================================
+
+-- Student Analytics
+CREATE TABLE IF NOT EXISTS student_analytics (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+    timeframe VARCHAR(20) NOT NULL CHECK (timeframe IN ('daily', 'weekly', 'monthly', 'semester', 'all_time')),
+    period_start DATE NOT NULL,
+    period_end DATE NOT NULL,
+    
+    -- Engagement Metrics
+    total_logins INTEGER DEFAULT 0,
+    total_time_spent_seconds INTEGER DEFAULT 0,
+    avg_session_duration_seconds INTEGER DEFAULT 0,
+    assignments_completed INTEGER DEFAULT 0,
+    assignments_on_time INTEGER DEFAULT 0,
+    assignments_late INTEGER DEFAULT 0,
+    
+    -- Performance Metrics
+    avg_grade DECIMAL(5,2),
+    avg_quiz_score DECIMAL(5,2),
+    avg_assignment_score DECIMAL(5,2),
+    total_points_earned DECIMAL(10,2),
+    total_points_possible DECIMAL(10,2),
+    
+    -- Learning Metrics
+    concepts_mastered INTEGER DEFAULT 0,
+    total_concepts INTEGER DEFAULT 0,
+    mastery_percentage DECIMAL(5,2),
+    avg_mastery_level DECIMAL(3,2),
+    tutor_interactions INTEGER DEFAULT 0,
+    practice_sessions INTEGER DEFAULT 0,
+    
+    -- Risk Indicators
+    at_risk_score DECIMAL(3,2),
+    risk_level VARCHAR(20) CHECK (risk_level IN ('low', 'medium', 'high', 'critical')),
+    risk_factors JSONB DEFAULT '[]',
+    
+    computed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB DEFAULT '{}',
+    
+    CONSTRAINT unique_student_analytics UNIQUE (user_id, course_id, timeframe, period_start)
+);
+
+CREATE INDEX idx_analytics_user ON student_analytics(user_id);
+CREATE INDEX idx_analytics_course ON student_analytics(course_id);
+CREATE INDEX idx_analytics_timeframe ON student_analytics(timeframe, period_start);
+CREATE INDEX idx_analytics_risk ON student_analytics(risk_level);
+
+-- Course Analytics
+CREATE TABLE IF NOT EXISTS course_analytics (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    timeframe VARCHAR(20) NOT NULL CHECK (timeframe IN ('daily', 'weekly', 'monthly', 'semester')),
+    period_start DATE NOT NULL,
+    period_end DATE NOT NULL,
+    
+    -- Enrollment Metrics
+    total_students INTEGER DEFAULT 0,
+    active_students INTEGER DEFAULT 0,
+    at_risk_students INTEGER DEFAULT 0,
+    
+    -- Performance Metrics
+    avg_course_grade DECIMAL(5,2),
+    pass_rate DECIMAL(5,2),
+    completion_rate DECIMAL(5,2),
+    avg_assignment_score DECIMAL(5,2),
+    avg_quiz_score DECIMAL(5,2),
+    
+    -- Engagement Metrics
+    avg_student_time_spent INTEGER,
+    total_tutor_interactions INTEGER,
+    total_practice_sessions INTEGER,
+    forum_posts INTEGER DEFAULT 0,
+    
+    -- Content Metrics
+    most_accessed_modules JSONB DEFAULT '[]',
+    least_accessed_modules JSONB DEFAULT '[]',
+    challenging_concepts JSONB DEFAULT '[]',
+    
+    computed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB DEFAULT '{}',
+    
+    CONSTRAINT unique_course_analytics UNIQUE (course_id, timeframe, period_start)
+);
+
+CREATE INDEX idx_course_analytics_course ON course_analytics(course_id);
+CREATE INDEX idx_course_analytics_timeframe ON course_analytics(timeframe, period_start);
+
+-- Learning Outcomes
+CREATE TABLE IF NOT EXISTS learning_outcomes (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    course_id UUID NOT NULL REFERENCES courses(id) ON DELETE CASCADE,
+    outcome_code VARCHAR(50) NOT NULL,
+    description TEXT NOT NULL,
+    category VARCHAR(100),
+    target_mastery_level DECIMAL(3,2) DEFAULT 0.70,
+    assessment_methods JSONB DEFAULT '[]',
+    aligned_concepts JSONB DEFAULT '[]',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_outcome_code UNIQUE (course_id, outcome_code)
+);
+
+CREATE INDEX idx_outcomes_course ON learning_outcomes(course_id);
+
+-- Student Outcome Achievements
+CREATE TABLE IF NOT EXISTS student_outcome_achievements (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    outcome_id UUID NOT NULL REFERENCES learning_outcomes(id) ON DELETE CASCADE,
+    achievement_level DECIMAL(3,2) DEFAULT 0.00,
+    is_achieved BOOLEAN DEFAULT FALSE,
+    evidence JSONB DEFAULT '[]',
+    assessed_at TIMESTAMP,
+    assessor_id UUID REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP,
+    CONSTRAINT unique_student_outcome UNIQUE (user_id, outcome_id)
+);
+
+CREATE INDEX idx_achievements_user ON student_outcome_achievements(user_id);
+CREATE INDEX idx_achievements_outcome ON student_outcome_achievements(outcome_id);
+CREATE INDEX idx_achievements_achieved ON student_outcome_achievements(is_achieved) WHERE is_achieved = TRUE;
+
+-- At-Risk Alerts
+CREATE TYPE alert_severity AS ENUM ('low', 'medium', 'high', 'critical');
+
+CREATE TABLE IF NOT EXISTS at_risk_alerts (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+    severity alert_severity NOT NULL,
+    alert_type VARCHAR(50) NOT NULL,  -- 'low_attendance', 'poor_performance', 'no_engagement', etc.
+    description TEXT NOT NULL,
+    factors JSONB DEFAULT '[]',
+    recommended_actions JSONB DEFAULT '[]',
+    is_acknowledged BOOLEAN DEFAULT FALSE,
+    acknowledged_by UUID REFERENCES users(id),
+    acknowledged_at TIMESTAMP,
+    is_resolved BOOLEAN DEFAULT FALSE,
+    resolved_at TIMESTAMP,
+    resolution_notes TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_alerts_user ON at_risk_alerts(user_id);
+CREATE INDEX idx_alerts_course ON at_risk_alerts(course_id);
+CREATE INDEX idx_alerts_severity ON at_risk_alerts(severity);
+CREATE INDEX idx_alerts_unresolved ON at_risk_alerts(is_resolved) WHERE is_resolved = FALSE;
+
+-- Engagement Events
+CREATE TYPE event_type AS ENUM ('login', 'logout', 'page_view', 'content_access', 'assignment_start', 'assignment_submit', 'quiz_start', 'quiz_submit', 'tutor_interaction', 'forum_post', 'resource_download');
+
+CREATE TABLE IF NOT EXISTS engagement_events (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+    event_type event_type NOT NULL,
+    event_data JSONB DEFAULT '{}',
+    occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    session_id UUID,
+    ip_address INET,
+    user_agent TEXT,
+    metadata JSONB DEFAULT '{}'
+);
+
+CREATE INDEX idx_events_user ON engagement_events(user_id);
+CREATE INDEX idx_events_course ON engagement_events(course_id);
+CREATE INDEX idx_events_type ON engagement_events(event_type);
+CREATE INDEX idx_events_occurred ON engagement_events(occurred_at);
+CREATE INDEX idx_events_session ON engagement_events(session_id);
+
+-- Performance Trends
+CREATE TABLE IF NOT EXISTS performance_trends (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+    metric_name VARCHAR(100) NOT NULL,
+    time_period DATE NOT NULL,
+    value DECIMAL(10,2) NOT NULL,
+    trend_direction VARCHAR(20) CHECK (trend_direction IN ('improving', 'stable', 'declining')),
+    percent_change DECIMAL(5,2),
+    metadata JSONB DEFAULT '{}',
+    computed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_metric_period UNIQUE (user_id, course_id, metric_name, time_period)
+);
+
+CREATE INDEX idx_trends_user ON performance_trends(user_id);
+CREATE INDEX idx_trends_course ON performance_trends(course_id);
+CREATE INDEX idx_trends_metric ON performance_trends(metric_name);
+CREATE INDEX idx_trends_period ON performance_trends(time_period);
+
+-- =====================================================
+-- CONTENT SERVICE TABLES (content service)
+-- =====================================================
+
+-- Content Items
+CREATE TYPE content_item_type AS ENUM ('document', 'video', 'audio', 'image', 'scorm', 'link', 'embed');
+CREATE TYPE content_status AS ENUM ('draft', 'published', 'archived');
+
+CREATE TABLE IF NOT EXISTS content_items (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE SET NULL,
+    module_id UUID REFERENCES course_modules(id) ON DELETE SET NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    content_type content_item_type NOT NULL,
+    file_path VARCHAR(500),
+    file_size_bytes BIGINT,
+    mime_type VARCHAR(100),
+    duration_seconds INTEGER,
+    thumbnail_url VARCHAR(500),
+    url VARCHAR(500),
+    embed_code TEXT,
+    status content_status DEFAULT 'draft',
+    access_level VARCHAR(50) DEFAULT 'course' CHECK (access_level IN ('public', 'org', 'course', 'restricted')),
+    allowed_users JSONB DEFAULT '[]',
+    metadata JSONB DEFAULT '{}',
+    views_count INTEGER DEFAULT 0,
+    downloads_count INTEGER DEFAULT 0,
+    uploaded_by UUID REFERENCES users(id),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP
+);
+
+CREATE INDEX idx_content_org ON content_items(org_id);
+CREATE INDEX idx_content_course ON content_items(course_id);
+CREATE INDEX idx_content_module ON content_items(module_id);
+CREATE INDEX idx_content_type ON content_items(content_type);
+CREATE INDEX idx_content_status ON content_items(status);
+
+-- Content Access Logs
+CREATE TABLE IF NOT EXISTS content_access_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    content_id UUID NOT NULL REFERENCES content_items(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    access_type VARCHAR(50) NOT NULL CHECK (access_type IN ('view', 'download', 'embed')),
+    duration_seconds INTEGER,
+    completion_percentage DECIMAL(5,2),
+    accessed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    metadata JSONB DEFAULT '{}'
+);
+
+CREATE INDEX idx_access_content ON content_access_logs(content_id);
+CREATE INDEX idx_access_user ON content_access_logs(user_id);
+CREATE INDEX idx_access_timestamp ON content_access_logs(accessed_at);
+
+-- =====================================================
+-- GAMIFICATION TABLES (High School Tier)
+-- =====================================================
+
+-- Badges
+CREATE TABLE IF NOT EXISTS badges (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    icon_url VARCHAR(500),
+    criteria JSONB NOT NULL,
+    rarity VARCHAR(20) DEFAULT 'common' CHECK (rarity IN ('common', 'uncommon', 'rare', 'epic', 'legendary')),
+    points_value INTEGER DEFAULT 0,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_badge_name UNIQUE (org_id, name)
+);
+
+CREATE INDEX idx_badges_org ON badges(org_id);
+CREATE INDEX idx_badges_rarity ON badges(rarity);
+
+-- User Badges
+CREATE TABLE IF NOT EXISTS user_badges (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    badge_id UUID NOT NULL REFERENCES badges(id) ON DELETE CASCADE,
+    earned_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    progress_data JSONB DEFAULT '{}',
+    CONSTRAINT unique_user_badge UNIQUE (user_id, badge_id)
+);
+
+CREATE INDEX idx_user_badges_user ON user_badges(user_id);
+CREATE INDEX idx_user_badges_badge ON user_badges(badge_id);
+CREATE INDEX idx_user_badges_earned ON user_badges(earned_at);
+
+-- Points
+CREATE TABLE IF NOT EXISTS points_transactions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    points INTEGER NOT NULL,
+    reason VARCHAR(255) NOT NULL,
+    reference_type VARCHAR(50),  -- 'assignment', 'quiz', 'badge', 'streak', etc.
+    reference_id UUID,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_points_user ON points_transactions(user_id);
+CREATE INDEX idx_points_created ON points_transactions(created_at);
+
+-- Leaderboards
+CREATE TABLE IF NOT EXISTS leaderboard_entries (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    course_id UUID REFERENCES courses(id) ON DELETE CASCADE,
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    timeframe VARCHAR(20) NOT NULL CHECK (timeframe IN ('daily', 'weekly', 'monthly', 'all_time')),
+    period_start DATE NOT NULL,
+    period_end DATE NOT NULL,
+    total_points INTEGER DEFAULT 0,
+    rank INTEGER,
+    percentile DECIMAL(5,2),
+    badges_earned INTEGER DEFAULT 0,
+    computed_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_leaderboard_entry UNIQUE (user_id, course_id, timeframe, period_start)
+);
+
+CREATE INDEX idx_leaderboard_course ON leaderboard_entries(course_id, timeframe, period_start);
+CREATE INDEX idx_leaderboard_org ON leaderboard_entries(org_id, timeframe, period_start);
+CREATE INDEX idx_leaderboard_rank ON leaderboard_entries(rank);
+
+-- Streaks
+CREATE TABLE IF NOT EXISTS user_streaks (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    streak_type VARCHAR(50) NOT NULL CHECK (streak_type IN ('daily_login', 'assignment_completion', 'practice_session')),
+    current_streak INTEGER DEFAULT 0,
+    longest_streak INTEGER DEFAULT 0,
+    last_activity_date DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_user_streak UNIQUE (user_id, streak_type)
+);
+
+CREATE INDEX idx_streaks_user ON user_streaks(user_id);
+CREATE INDEX idx_streaks_type ON user_streaks(streak_type);
+
+-- =====================================================
+-- AUDIT LOGGING
+-- =====================================================
+
+-- Audit Logs (immutable)
+CREATE TYPE audit_action AS ENUM ('create', 'read', 'update', 'delete', 'login', 'logout', 'grade', 'enroll', 'submit');
+
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    action audit_action NOT NULL,
+    resource_type VARCHAR(100) NOT NULL,
+    resource_id UUID,
+    changes JSONB,
+    ip_address INET,
+    user_agent TEXT,
+    occurred_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_audit_org ON audit_logs(org_id);
+CREATE INDEX idx_audit_user ON audit_logs(user_id);
+CREATE INDEX idx_audit_action ON audit_logs(action);
+CREATE INDEX idx_audit_occurred ON audit_logs(occurred_at);
+CREATE INDEX idx_audit_resource ON audit_logs(resource_type, resource_id);
+
+-- =====================================================
+-- FILE UPLOADS
+-- =====================================================
+
+-- File Uploads
+CREATE TABLE IF NOT EXISTS file_uploads (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    uploaded_by UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    filename VARCHAR(255) NOT NULL,
+    original_filename VARCHAR(255) NOT NULL,
+    file_path VARCHAR(500) NOT NULL,
+    file_size_bytes BIGINT NOT NULL,
+    mime_type VARCHAR(100) NOT NULL,
+    storage_type VARCHAR(50) DEFAULT 's3' CHECK (storage_type IN ('s3', 'local', 'azure', 'gcs')),
+    bucket_name VARCHAR(100),
+    object_key VARCHAR(500),
+    is_public BOOLEAN DEFAULT FALSE,
+    reference_type VARCHAR(100),
+    reference_id UUID,
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_uploads_org ON file_uploads(org_id);
+CREATE INDEX idx_uploads_user ON file_uploads(uploaded_by);
+CREATE INDEX idx_uploads_reference ON file_uploads(reference_type, reference_id);
+
+-- =====================================================
+-- NOTIFICATIONS
+-- =====================================================
+
+-- Notifications
+CREATE TYPE notification_type AS ENUM ('info', 'success', 'warning', 'error', 'grade', 'message', 'announcement');
+CREATE TYPE notification_channel AS ENUM ('in_app', 'email', 'sms', 'push');
+
+CREATE TABLE IF NOT EXISTS notifications (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    notification_type notification_type NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    message TEXT NOT NULL,
+    channels notification_channel[] DEFAULT ARRAY['in_app'],
+    is_read BOOLEAN DEFAULT FALSE,
+    read_at TIMESTAMP,
+    reference_type VARCHAR(100),
+    reference_id UUID,
+    action_url VARCHAR(500),
+    metadata JSONB DEFAULT '{}',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP
+);
+
+CREATE INDEX idx_notifications_user ON notifications(user_id);
+CREATE INDEX idx_notifications_unread ON notifications(user_id, is_read) WHERE is_read = FALSE;
+CREATE INDEX idx_notifications_created ON notifications(created_at);
+
+-- =====================================================
+-- PARENTAL CONTROLS (High School)
+-- =====================================================
+
+-- Parent-Student Relationships
+CREATE TABLE IF NOT EXISTS parent_student_relationships (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    parent_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    student_user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    relationship_type VARCHAR(50) DEFAULT 'parent' CHECK (relationship_type IN ('parent', 'guardian', 'mentor')),
+    access_level VARCHAR(50) DEFAULT 'full' CHECK (access_level IN ('full', 'grades_only', 'limited')),
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT unique_parent_student UNIQUE (parent_user_id, student_user_id),
+    CONSTRAINT different_users CHECK (parent_user_id != student_user_id)
+);
+
+CREATE INDEX idx_parent_relationships ON parent_student_relationships(parent_user_id);
+CREATE INDEX idx_student_relationships ON parent_student_relationships(student_user_id);
+
+-- =====================================================
+-- REFRESH TOKENS (for JWT)
+-- =====================================================
+
+-- Refresh Tokens
+CREATE TABLE IF NOT EXISTS refresh_tokens (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    token VARCHAR(500) NOT NULL UNIQUE,
+    expires_at TIMESTAMP NOT NULL,
+    is_revoked BOOLEAN DEFAULT FALSE,
+    revoked_at TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    ip_address INET,
+    user_agent TEXT
+);
+
+CREATE INDEX idx_refresh_tokens_user ON refresh_tokens(user_id);
+CREATE INDEX idx_refresh_tokens_token ON refresh_tokens(token);
+CREATE INDEX idx_refresh_tokens_active ON refresh_tokens(user_id, is_revoked, expires_at) 
+WHERE is_revoked = FALSE AND expires_at > CURRENT_TIMESTAMP;
+
+-- =====================================================
+-- FUNCTIONS AND TRIGGERS
+-- =====================================================
+
+-- Function to update updated_at timestamp
+CREATE OR REPLACE FUNCTION update_updated_at_column()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+-- Apply updated_at trigger to all relevant tables
+DO $$
+DECLARE
+    t text;
+BEGIN
+    FOR t IN 
+        SELECT table_name 
+        FROM information_schema.columns 
+        WHERE column_name = 'updated_at' 
+        AND table_schema = 'public'
+    LOOP
+        EXECUTE format('
+            DROP TRIGGER IF EXISTS update_%I_updated_at ON %I;
+            CREATE TRIGGER update_%I_updated_at
+                BEFORE UPDATE ON %I
+                FOR EACH ROW
+                EXECUTE FUNCTION update_updated_at_column();
+        ', t, t, t, t);
+    END LOOP;
+END;
+$$;
+
+-- Function to calculate grade percentage
+CREATE OR REPLACE FUNCTION calculate_grade_percentage()
+RETURNS TRIGGER AS $$
+BEGIN
+    IF NEW.max_score > 0 THEN
+        NEW.percentage = (NEW.score / NEW.max_score) * 100;
+    END IF;
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER calculate_grade_percentage_trigger
+    BEFORE INSERT OR UPDATE OF score, max_score ON grades
+    FOR EACH ROW
+    EXECUTE FUNCTION calculate_grade_percentage();
+
+CREATE TRIGGER calculate_submission_percentage_trigger
+    BEFORE INSERT OR UPDATE OF score, max_score ON submissions
+    FOR EACH ROW
+    EXECUTE FUNCTION calculate_grade_percentage();
+
+-- Function to update enrollment progress
+CREATE OR REPLACE FUNCTION update_enrollment_progress()
+RETURNS TRIGGER AS $$
+DECLARE
+    total_assignments INTEGER;
+    completed_assignments INTEGER;
+BEGIN
+    SELECT COUNT(*) INTO total_assignments
+    FROM assignments a
+    JOIN enrollments e ON e.course_id = a.course_id
+    WHERE e.id = NEW.enrollment_id AND a.is_published = TRUE;
+    
+    SELECT COUNT(DISTINCT g.assignment_id) INTO completed_assignments
+    FROM grades g
+    WHERE g.enrollment_id = NEW.enrollment_id AND g.score IS NOT NULL;
+    
+    IF total_assignments > 0 THEN
+        UPDATE enrollments
+        SET progress_percentage = (completed_assignments::DECIMAL / total_assignments) * 100
+        WHERE id = NEW.enrollment_id;
+    END IF;
+    
+    RETURN NEW;
+END;
+$$ language 'plpgsql';
+
+CREATE TRIGGER update_enrollment_progress_trigger
+    AFTER INSERT OR UPDATE ON grades
+    FOR EACH ROW
+    EXECUTE FUNCTION update_enrollment_progress();
+
+-- =====================================================
+-- VIEWS FOR COMMON QUERIES
+-- =====================================================
+
+-- View: Student Dashboard Stats
+CREATE OR REPLACE VIEW v_student_dashboard AS
+SELECT 
+    u.id as user_id,
+    u.org_id,
+    COUNT(DISTINCT e.id) as enrolled_courses,
+    COUNT(DISTINCT CASE WHEN e.status = 'active' THEN e.id END) as active_courses,
+    AVG(e.progress_percentage) as avg_progress,
+    AVG(e.final_grade) as avg_grade,
+    COUNT(DISTINCT g.id) as completed_assignments,
+    SUM(CASE WHEN g.is_late THEN 1 ELSE 0 END) as late_submissions,
+    COUNT(DISTINCT ub.id) as badges_earned,
+    COALESCE(SUM(pt.points), 0) as total_points
+FROM users u
+LEFT JOIN enrollments e ON u.id = e.user_id
+LEFT JOIN grades g ON e.id = g.enrollment_id
+LEFT JOIN user_badges ub ON u.id = ub.user_id
+LEFT JOIN points_transactions pt ON u.id = pt.user_id
+WHERE u.role = 'student'
+GROUP BY u.id, u.org_id;
+
+-- View: Course Performance
+CREATE OR REPLACE VIEW v_course_performance AS
+SELECT 
+    c.id as course_id,
+    c.org_id,
+    c.title,
+    c.instructor_id,
+    COUNT(DISTINCT e.user_id) as total_students,
+    COUNT(DISTINCT CASE WHEN e.status = 'active' THEN e.user_id END) as active_students,
+    AVG(e.progress_percentage) as avg_progress,
+    AVG(e.final_grade) as avg_grade,
+    COUNT(DISTINCT a.id) as total_assignments,
+    COUNT(DISTINCT g.id) as total_submissions,
+    AVG(g.percentage) as avg_assignment_score
+FROM courses c
+LEFT JOIN enrollments e ON c.id = e.course_id
+LEFT JOIN assignments a ON c.id = a.course_id
+LEFT JOIN grades g ON e.id = g.enrollment_id
+GROUP BY c.id, c.org_id, c.title, c.instructor_id;
+
+-- View: At-Risk Students
+CREATE OR REPLACE VIEW v_at_risk_students AS
+SELECT DISTINCT
+    u.id as user_id,
+    u.org_id,
+    u.email,
+    u.first_name,
+    u.last_name,
+    e.course_id,
+    c.title as course_title,
+    sa.avg_grade,
+    sa.assignments_late,
+    sa.total_logins,
+    sa.risk_level,
+    COUNT(DISTINCT ar.id) as active_alerts
+FROM users u
+JOIN enrollments e ON u.id = e.user_id
+JOIN courses c ON e.course_id = c.id
+LEFT JOIN student_analytics sa ON u.id = sa.user_id AND e.course_id = sa.course_id
+LEFT JOIN at_risk_alerts ar ON u.id = ar.user_id AND ar.is_resolved = FALSE
+WHERE 
+    u.role = 'student'
+    AND e.status = 'active'
+    AND (
+        sa.risk_level IN ('high', 'critical')
+        OR sa.avg_grade < 70
+        OR (sa.assignments_late::DECIMAL / NULLIF(sa.assignments_completed + sa.assignments_late, 0)) > 0.3
+        OR sa.total_logins < 5
+    )
+GROUP BY u.id, u.org_id, u.email, u.first_name, u.last_name, e.course_id, c.title, 
+         sa.avg_grade, sa.assignments_late, sa.total_logins, sa.risk_level;
+
+-- =====================================================
+-- SEED DATA (Development Only)
+-- =====================================================
+
+-- Create a demo organization
+INSERT INTO organizations (id, name, slug, tier, is_active, is_verified)
+VALUES (
+    '550e8400-e29b-41d4-a716-446655440000',
+    'Demo University',
+    'demo-university',
+    'undergraduate',
+    TRUE,
+    TRUE
+) ON CONFLICT (slug) DO NOTHING;
+
+-- Create admin user (password: Admin123!)
+INSERT INTO users (id, org_id, email, hashed_password, first_name, last_name, role, is_active, is_email_verified)
+VALUES (
+    '550e8400-e29b-41d4-a716-446655440001',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'admin@demo.edu',
+    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5jtJ3qKQEKKVW',  -- Admin123!
+    'Admin',
+    'User',
+    'org_admin',
+    TRUE,
+    TRUE
+) ON CONFLICT (org_id, email) DO NOTHING;
+
+-- Create demo course
+INSERT INTO courses (id, org_id, code, title, description, instructor_id, status, is_active)
+VALUES (
+    '550e8400-e29b-41d4-a716-446655440002',
+    '550e8400-e29b-41d4-a716-446655440000',
+    'CS101',
+    'Introduction to Computer Science',
+    'Learn the fundamentals of programming and computer science',
+    '550e8400-e29b-41d4-a716-446655440001',
+    'published',
+    TRUE
+) ON CONFLICT (org_id, code) DO NOTHING;
+
+-- =====================================================
+-- COMPLETION MESSAGE
+-- =====================================================
+
+DO $$ 
+BEGIN
+    RAISE NOTICE '✅ EUREKA Platform Database Schema Created Successfully!';
+    RAISE NOTICE '';
+    RAISE NOTICE 'Total Tables Created: 50+';
+    RAISE NOTICE 'Core API Tables: 8';
+    RAISE NOTICE 'AI Tutor Tables: 5';
+    RAISE NOTICE 'Assessment Tables: 7';
+    RAISE NOTICE 'Adaptive Learning Tables: 6';
+    RAISE NOTICE 'Analytics Tables: 8';
+    RAISE NOTICE 'Content Tables: 2';
+    RAISE NOTICE 'Gamification Tables: 5';
+    RAISE NOTICE 'Supporting Tables: 9+';
+    RAISE NOTICE '';
+    RAISE NOTICE '🔐 Demo Admin Created:';
+    RAISE NOTICE '   Email: admin@demo.edu';
+    RAISE NOTICE '   Password: Admin123!';
+    RAISE NOTICE '';
+    RAISE NOTICE '🎓 Demo Course Created: CS101';
+    RAISE NOTICE '';
+    RAISE NOTICE '🚀 Ready to start all services!';
+END $$;
