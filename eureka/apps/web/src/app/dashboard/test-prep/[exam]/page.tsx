@@ -35,7 +35,7 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
 
-type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep';
+type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep' | 'exam' | 'analytics';
 
 export default function ExamPage() {
   const params = useParams();
@@ -53,6 +53,10 @@ export default function ExamPage() {
     { id: 'notes', label: 'My Notes', icon: <StickyNote className="h-4 w-4" /> },
     { id: 'qbank', label: 'QBank', icon: <BrainCircuit className="h-4 w-4" /> },
     ...(isPatentBar ? [{ id: 'mpep' as Tab, label: 'MPEP', icon: <Library className="h-4 w-4" /> }] : []),
+    ...(isFEEE ? [
+      { id: 'exam' as Tab, label: 'Full Exam', icon: <Trophy className="h-4 w-4" /> },
+      { id: 'analytics' as Tab, label: 'Analytics', icon: <BarChart3 className="h-4 w-4" /> },
+    ] : []),
   ];
 
   return (
@@ -147,6 +151,8 @@ export default function ExamPage() {
       {activeTab === 'notes' && <NotesTab examType={examId} sections={sections} />}
       {activeTab === 'qbank' && <QBankTab examType={examId} config={config} sections={sections} />}
       {activeTab === 'mpep' && isPatentBar && <MPEPTab />}
+      {activeTab === 'exam' && isFEEE && <FEEEExamTab />}
+      {activeTab === 'analytics' && isFEEE && <FEEEAnalyticsTab />}
     </div>
   );
 }
@@ -2080,4 +2086,426 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   }
 
   return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FE EE FULL EXAM SIMULATOR
+// ═══════════════════════════════════════════════════════════════
+
+const FE_EE_TOPIC_NAMES = [
+  'Mathematics', 'Probability & Statistics', 'Ethics & Professional Practice',
+  'Engineering Economics', 'Electrical Materials', 'Engineering Sciences',
+  'Circuit Analysis (DC & AC)', 'Linear Systems', 'Signal Processing',
+  'Electronics', 'Power Systems', 'Electromagnetics', 'Control Systems',
+  'Communications', 'Computer Networks', 'Digital Systems', 'Computer Systems',
+  'Software Development',
+];
+
+const FE_EE_TOPIC_DISTRIBUTION = [8, 4, 4, 4, 4, 4, 11, 6, 6, 7, 7, 6, 7, 6, 6, 7, 5, 4];
+const FE_EE_EXAM_TIME = 19200; // 5 hours 20 minutes
+
+function FEEEExamTab() {
+  const [phase, setPhase] = useState<'intro' | 'exam' | 'results'>('intro');
+  const [questions, setQuestions] = useState<any[]>([]);
+  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [flagged, setFlagged] = useState<Set<number>>(new Set());
+  const [currentIdx, setCurrentIdx] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(FE_EE_EXAM_TIME);
+  const [results, setResults] = useState<any>(null);
+  const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  // Timer
+  React.useEffect(() => {
+    if (phase !== 'exam') return;
+    timerRef.current = setInterval(() => {
+      setTimeLeft(prev => {
+        if (prev <= 1) {
+          clearInterval(timerRef.current!);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => { if (timerRef.current) clearInterval(timerRef.current); };
+  }, [phase]);
+
+  // Auto-submit when time runs out
+  React.useEffect(() => {
+    if (phase === 'exam' && timeLeft === 0) handleSubmit();
+  }, [timeLeft, phase]);
+
+  const formatTime = (s: number) => {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  };
+
+  const startExam = () => {
+    const examQs: any[] = [];
+    let idx = 0;
+    for (let topicId = 0; topicId < 18; topicId++) {
+      const count = FE_EE_TOPIC_DISTRIBUTION[topicId];
+      const topicQs = FE_EE_QUESTIONS.filter(q => q.topicId === topicId);
+      const shuffled = [...topicQs].sort(() => Math.random() - 0.5).slice(0, count);
+      shuffled.forEach(q => { examQs.push({ ...q, examIdx: idx }); idx++; });
+    }
+    setQuestions(examQs);
+    setAnswers({});
+    setFlagged(new Set());
+    setCurrentIdx(0);
+    setTimeLeft(FE_EE_EXAM_TIME);
+    setPhase('exam');
+  };
+
+  const handleSubmit = () => {
+    if (timerRef.current) clearInterval(timerRef.current);
+    const res: any = { total: questions.length, correct: 0, incorrect: [], byTopic: {}, timeSpent: FE_EE_EXAM_TIME - timeLeft };
+    questions.forEach(q => {
+      if (!res.byTopic[q.topicId]) res.byTopic[q.topicId] = { correct: 0, total: 0 };
+      res.byTopic[q.topicId].total++;
+      if (answers[q.examIdx] === q.correct) {
+        res.correct++;
+        res.byTopic[q.topicId].correct++;
+      } else {
+        res.incorrect.push({ question: q, userAnswer: answers[q.examIdx] !== undefined ? q.options[answers[q.examIdx]] : 'Not answered', correctAnswer: q.options[q.correct], explanation: q.explanation });
+      }
+    });
+    res.percentage = Math.round((res.correct / res.total) * 100);
+    res.passed = res.percentage >= 70;
+    // Save to localStorage for analytics
+    const history = JSON.parse(localStorage.getItem('feee_exam_history') || '[]');
+    history.push({ date: new Date().toISOString(), score: res.percentage, passed: res.passed, correct: res.correct, total: res.total, timeSpent: res.timeSpent, byTopic: res.byTopic });
+    localStorage.setItem('feee_exam_history', JSON.stringify(history));
+    setResults(res);
+    setPhase('results');
+  };
+
+  // INTRO
+  if (phase === 'intro') {
+    return (
+      <div className="space-y-6">
+        <Card className="overflow-hidden">
+          <div className="bg-gradient-to-r from-red-600 to-red-800 p-8 text-white text-center">
+            <Trophy className="h-12 w-12 mx-auto mb-4" />
+            <h2 className="text-3xl font-bold mb-2">FE Electrical & Computer — Full Practice Exam</h2>
+            <p className="text-red-100 text-lg">110 Questions &middot; 5 Hours 20 Minutes</p>
+          </div>
+          <div className="p-6 space-y-4">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <p className="text-2xl font-bold text-blue-600">110</p>
+                <p className="text-xs text-muted-foreground">Questions</p>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <p className="text-2xl font-bold text-purple-600">18</p>
+                <p className="text-xs text-muted-foreground">Topics</p>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <p className="text-2xl font-bold text-amber-600">5:20</p>
+                <p className="text-xs text-muted-foreground">Hours</p>
+              </div>
+              <div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4">
+                <p className="text-2xl font-bold text-green-600">70%</p>
+                <p className="text-xs text-muted-foreground">Est. Pass</p>
+              </div>
+            </div>
+            <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 rounded-lg p-4 text-sm space-y-1">
+              <p className="font-semibold text-red-900 dark:text-red-200">Exam Rules:</p>
+              <ul className="text-red-800 dark:text-red-300 space-y-1 ml-4 list-disc">
+                <li>Questions selected per NCEES weight distribution</li>
+                <li>Timer starts immediately — auto-submits at 0:00</li>
+                <li>Flag questions for review before submitting</li>
+                <li>Results saved locally for analytics tracking</li>
+              </ul>
+            </div>
+            <Button onClick={startExam} className="w-full py-6 text-lg font-bold bg-green-600 hover:bg-green-700">
+              Start Exam Now
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  // EXAM
+  if (phase === 'exam' && questions.length > 0) {
+    const q = questions[currentIdx];
+    const answered = Object.keys(answers).length;
+    const isFlagged = flagged.has(currentIdx);
+
+    return (
+      <div className="space-y-4">
+        {/* Timer + Progress */}
+        <Card className="p-4">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-4">
+              <span className="text-sm font-medium">Q {currentIdx + 1} / {questions.length}</span>
+              <div className="w-48 bg-gray-200 dark:bg-gray-800 rounded-full h-2">
+                <div className="bg-blue-600 h-2 rounded-full transition-all" style={{ width: `${((currentIdx + 1) / questions.length) * 100}%` }} />
+              </div>
+              <span className="text-xs text-muted-foreground">{answered} answered</span>
+            </div>
+            <div className={`text-2xl font-mono font-bold ${timeLeft < 600 ? 'text-red-600 animate-pulse' : 'text-gray-900 dark:text-gray-100'}`}>
+              {formatTime(timeLeft)}
+            </div>
+          </div>
+        </Card>
+
+        {/* Question */}
+        <Card className="p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Badge variant="secondary" className="text-xs">{FE_EE_TOPIC_NAMES[q.topicId]}</Badge>
+            <Badge variant="outline" className="text-xs">{q.subtopic}</Badge>
+          </div>
+          <h3 className="text-lg font-semibold mb-6">{q.question}</h3>
+          <div className="space-y-3">
+            {q.options.map((opt: string, i: number) => (
+              <button key={i} onClick={() => setAnswers(prev => ({ ...prev, [currentIdx]: i }))}
+                className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                  answers[currentIdx] === i
+                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-400'
+                }`}>
+                <span className="font-mono text-sm mr-3 text-muted-foreground">{String.fromCharCode(65 + i)}</span>
+                {opt}
+              </button>
+            ))}
+          </div>
+          <div className="flex items-center justify-between mt-6">
+            <button onClick={() => { const nf = new Set(flagged); isFlagged ? nf.delete(currentIdx) : nf.add(currentIdx); setFlagged(nf); }}
+              className={`px-4 py-2 rounded-lg text-sm font-medium transition ${isFlagged ? 'bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100' : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}`}>
+              {isFlagged ? '★ Flagged' : '☆ Flag'}
+            </button>
+            <div className="flex gap-2">
+              <Button variant="outline" size="sm" disabled={currentIdx === 0} onClick={() => setCurrentIdx(currentIdx - 1)}>← Prev</Button>
+              {currentIdx < questions.length - 1
+                ? <Button size="sm" onClick={() => setCurrentIdx(currentIdx + 1)}>Next →</Button>
+                : <Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={() => { if (confirm('Submit exam? You cannot change answers.')) handleSubmit(); }}>Submit Exam</Button>
+              }
+            </div>
+          </div>
+        </Card>
+
+        {/* Navigation Grid */}
+        <Card className="p-4">
+          <p className="text-xs font-medium text-muted-foreground mb-2">Question Navigator</p>
+          <div className="flex flex-wrap gap-1">
+            {questions.map((_, i) => (
+              <button key={i} onClick={() => setCurrentIdx(i)}
+                className={`w-7 h-7 rounded text-[10px] font-bold transition ${
+                  i === currentIdx ? 'bg-blue-600 text-white'
+                  : flagged.has(i) ? 'bg-amber-400 dark:bg-amber-600 text-amber-900 dark:text-white'
+                  : answers[i] !== undefined ? 'bg-green-400 dark:bg-green-600 text-green-900 dark:text-white'
+                  : 'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'
+                }`}>
+                {i + 1}
+              </button>
+            ))}
+          </div>
+          <div className="flex gap-4 mt-2 text-[10px] text-muted-foreground">
+            <span className="flex items-center gap-1"><span className="w-3 h-3 bg-gray-200 dark:bg-gray-700 rounded" /> Unanswered</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 bg-green-400 dark:bg-green-600 rounded" /> Answered</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 bg-amber-400 dark:bg-amber-600 rounded" /> Flagged</span>
+            <span className="flex items-center gap-1"><span className="w-3 h-3 bg-blue-600 rounded" /> Current</span>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  // RESULTS
+  if (phase === 'results' && results) {
+    return (
+      <div className="space-y-6">
+        <Card className={`overflow-hidden ${results.passed ? 'border-green-500' : 'border-red-500'} border-2`}>
+          <div className={`p-8 text-center text-white ${results.passed ? 'bg-gradient-to-r from-green-600 to-emerald-700' : 'bg-gradient-to-r from-red-600 to-red-800'}`}>
+            <p className="text-6xl font-black mb-2">{results.percentage}%</p>
+            <p className="text-xl">{results.correct} of {results.total} correct</p>
+            <p className="mt-2 text-lg font-bold">{results.passed ? '✓ PASS — You\'re ready!' : '⚠ NEEDS REVIEW — Keep studying'}</p>
+            <p className="text-sm mt-1 opacity-80">Time: {formatTime(results.timeSpent)} &middot; Avg: {Math.round(results.timeSpent / results.total)}s per question</p>
+          </div>
+        </Card>
+
+        {/* By Topic */}
+        <Card className="p-6">
+          <h3 className="font-bold text-lg mb-4">Performance by Topic</h3>
+          <div className="space-y-3">
+            {Object.entries(results.byTopic).map(([tid, data]: [string, any]) => {
+              const pct = Math.round((data.correct / data.total) * 100);
+              return (
+                <div key={tid}>
+                  <div className="flex justify-between text-sm mb-1">
+                    <span className="font-medium">{FE_EE_TOPIC_NAMES[Number(tid)]}</span>
+                    <span className={pct >= 70 ? 'text-green-600' : 'text-red-600'}>{data.correct}/{data.total} ({pct}%)</span>
+                  </div>
+                  <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2">
+                    <div className={`h-2 rounded-full ${pct >= 70 ? 'bg-green-500' : 'bg-red-500'}`} style={{ width: `${pct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </Card>
+
+        {/* Missed Questions */}
+        {results.incorrect.length > 0 && (
+          <Card className="p-6">
+            <h3 className="font-bold text-lg mb-4">Review Missed Questions ({results.incorrect.length})</h3>
+            <div className="space-y-4 max-h-[500px] overflow-y-auto">
+              {results.incorrect.map((item: any, i: number) => (
+                <div key={i} className="border-l-4 border-red-500 pl-4 py-2">
+                  <p className="font-medium text-sm mb-1">{item.question.question}</p>
+                  <p className="text-xs text-red-600">Your answer: {item.userAnswer}</p>
+                  <p className="text-xs text-green-600">Correct: {item.correctAnswer}</p>
+                  <p className="text-xs text-muted-foreground mt-1 bg-gray-50 dark:bg-gray-900 p-2 rounded">{item.explanation}</p>
+                </div>
+              ))}
+            </div>
+          </Card>
+        )}
+
+        <div className="flex gap-4">
+          <Button onClick={() => { setPhase('intro'); setResults(null); }} className="flex-1" variant="outline">Take Another Exam</Button>
+          <Button onClick={() => setPhase('intro')} className="flex-1">Back to Intro</Button>
+        </div>
+      </div>
+    );
+  }
+
+  return null;
+}
+
+// ═══════════════════════════════════════════════════════════════
+// FE EE ANALYTICS TAB
+// ═══════════════════════════════════════════════════════════════
+
+function FEEEAnalyticsTab() {
+  const [history, setHistory] = useState<any[]>([]);
+
+  React.useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem('feee_exam_history') || '[]');
+    setHistory(stored);
+  }, []);
+
+  const latestByTopic: Record<number, { correct: number; total: number }> = {};
+  if (history.length > 0) {
+    const latest = history[history.length - 1];
+    if (latest.byTopic) {
+      Object.entries(latest.byTopic).forEach(([tid, data]: [string, any]) => {
+        latestByTopic[Number(tid)] = data;
+      });
+    }
+  }
+
+  const totalAttempts = history.length;
+  const avgScore = totalAttempts > 0 ? Math.round(history.reduce((s: number, h: any) => s + h.score, 0) / totalAttempts) : 0;
+  const bestScore = totalAttempts > 0 ? Math.max(...history.map((h: any) => h.score)) : 0;
+  const passCount = history.filter((h: any) => h.passed).length;
+
+  const weakTopics = Object.entries(latestByTopic)
+    .map(([tid, d]) => ({ id: Number(tid), name: FE_EE_TOPIC_NAMES[Number(tid)], pct: Math.round((d.correct / d.total) * 100), correct: d.correct, total: d.total }))
+    .sort((a, b) => a.pct - b.pct);
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-gradient-to-r from-purple-600 to-blue-600 rounded-xl p-6 text-white">
+        <h2 className="text-2xl font-bold mb-1">Performance Analytics</h2>
+        <p className="text-purple-100 text-sm">Track your FE EE exam preparation progress</p>
+      </div>
+
+      {totalAttempts === 0 ? (
+        <Card className="p-8 text-center">
+          <BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+          <h3 className="text-lg font-semibold mb-2">No exam attempts yet</h3>
+          <p className="text-muted-foreground text-sm">Take a Full Exam to see your performance analytics here.</p>
+        </Card>
+      ) : (
+        <>
+          {/* Summary Cards */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card className="p-4 text-center">
+              <p className="text-3xl font-bold text-blue-600">{totalAttempts}</p>
+              <p className="text-xs text-muted-foreground">Exams Taken</p>
+            </Card>
+            <Card className="p-4 text-center">
+              <p className="text-3xl font-bold text-purple-600">{avgScore}%</p>
+              <p className="text-xs text-muted-foreground">Average Score</p>
+            </Card>
+            <Card className="p-4 text-center">
+              <p className="text-3xl font-bold text-green-600">{bestScore}%</p>
+              <p className="text-xs text-muted-foreground">Best Score</p>
+            </Card>
+            <Card className="p-4 text-center">
+              <p className="text-3xl font-bold text-amber-600">{passCount}/{totalAttempts}</p>
+              <p className="text-xs text-muted-foreground">Pass Rate</p>
+            </Card>
+          </div>
+
+          {/* Exam History */}
+          <Card className="p-6">
+            <h3 className="font-bold text-lg mb-4">Exam History</h3>
+            <div className="space-y-2">
+              {[...history].reverse().map((h: any, i: number) => (
+                <div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                  <span className="text-sm text-muted-foreground">{new Date(h.date).toLocaleDateString()} {new Date(h.date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                  <span className="font-bold">{h.score}%</span>
+                  <span className="text-sm">{h.correct}/{h.total}</span>
+                  <Badge className={h.passed ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}>
+                    {h.passed ? 'PASS' : 'REVIEW'}
+                  </Badge>
+                </div>
+              ))}
+            </div>
+          </Card>
+
+          {/* Performance by Topic (latest exam) */}
+          {weakTopics.length > 0 && (
+            <Card className="p-6">
+              <h3 className="font-bold text-lg mb-4">Latest Exam — Performance by Topic</h3>
+              <div className="space-y-3">
+                {weakTopics.map(t => (
+                  <div key={t.id}>
+                    <div className="flex justify-between text-sm mb-1">
+                      <span className="font-medium">{t.name}</span>
+                      <span className={t.pct >= 70 ? 'text-green-600 font-semibold' : 'text-red-600 font-semibold'}>{t.correct}/{t.total} ({t.pct}%)</span>
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2.5">
+                      <div className={`h-2.5 rounded-full transition-all ${t.pct >= 70 ? 'bg-green-500' : t.pct >= 50 ? 'bg-amber-500' : 'bg-red-500'}`} style={{ width: `${t.pct}%` }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {/* Weakest Areas */}
+          {weakTopics.length > 0 && (
+            <Card className="p-6 bg-orange-50 dark:bg-orange-950/20 border-orange-200 dark:border-orange-900">
+              <h3 className="font-bold text-lg mb-3 text-orange-900 dark:text-orange-200">Areas for Improvement</h3>
+              <div className="space-y-2">
+                {weakTopics.filter(t => t.pct < 70).slice(0, 5).map(t => (
+                  <div key={t.id} className="flex justify-between items-center">
+                    <span className="text-orange-800 dark:text-orange-200 text-sm">{t.name}</span>
+                    <span className="font-semibold text-orange-600">{t.pct}%</span>
+                  </div>
+                ))}
+                {weakTopics.filter(t => t.pct < 70).length === 0 && (
+                  <p className="text-green-700 dark:text-green-300 text-sm font-medium">All topics at 70% or above — great work!</p>
+                )}
+              </div>
+            </Card>
+          )}
+
+          {/* Clear History */}
+          <div className="text-center">
+            <button onClick={() => { if (confirm('Clear all exam history?')) { localStorage.removeItem('feee_exam_history'); setHistory([]); } }}
+              className="text-xs text-muted-foreground hover:text-red-500 transition">
+              Clear exam history
+            </button>
+          </div>
+        </>
+      )}
+    </div>
+  );
 }
