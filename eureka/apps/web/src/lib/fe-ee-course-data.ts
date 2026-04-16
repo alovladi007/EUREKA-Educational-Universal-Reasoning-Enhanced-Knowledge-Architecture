@@ -3026,6 +3026,44 @@ If a pole lies exactly on the imaginary axis (e.g., s = jω₀), the system is *
         examTip: 'The FE exam loves to test stability classification. Given a characteristic equation, find the poles. All poles with negative real parts → stable. Any pole with zero real part → marginally stable. Any pole with positive real part → unstable. Do not confuse "marginally stable" with "stable" — for BIBO, marginal means unstable.',
         importantNote: 'Causality and stability are independent properties. A system can be causal but unstable (pole in RHP), or stable but non-causal (two-sided exponential). All physical real-time systems are causal, but offline digital processing can use non-causal filters.',
       },
+      {
+        id: 'td-exam-strategies',
+        title: '3. Practical Exam Strategies for Time Domain',
+        content: `## 3.1 Worked Example: Convolution of Two Signals
+
+**Problem**: Find y(t) = x(t) * h(t) where x(t) = u(t) − u(t−2) (rectangular pulse, width 2) and h(t) = e^(−t)·u(t).
+
+**Step-by-step solution:**
+
+1. **Set up the integral**: y(t) = ∫₀^∞ x(τ)·h(t−τ) dτ
+2. **Identify nonzero region of x(τ)**: x(τ) = 1 for 0 ≤ τ ≤ 2, zero elsewhere
+3. **Substitute**: y(t) = ∫₀^min(t,2) e^(−(t−τ)) dτ (require t−τ ≥ 0 for causality of h)
+4. **For 0 ≤ t ≤ 2**: y(t) = e^(−t) · ∫₀^t e^τ dτ = e^(−t)·(e^t − 1) = **1 − e^(−t)**
+5. **For t > 2**: y(t) = e^(−t) · ∫₀^2 e^τ dτ = e^(−t)·(e² − 1) = **(e² − 1)·e^(−t)**
+
+The result is a rising exponential that transitions to a decaying exponential at t = 2.
+
+## 3.2 Common Mistakes to Avoid
+
+- **Forgetting initial conditions**: When using Laplace to solve ODEs, always include the initial condition terms in L{y'(t)} = sY(s) − y(0⁻). Setting y(0) = 0 when it is not zero produces a completely wrong answer.
+- **Confusing impulse vs. step**: The impulse response h(t) and step response g(t) are related by differentiation: h(t) = dg(t)/dt. If the problem gives the step response, differentiate to get h(t) before convolving.
+- **Wrong convolution limits**: The integral limits depend on the support of BOTH signals. Sketch both x(τ) and h(t−τ) to determine where they overlap — this visual approach prevents limit errors.
+
+## 3.3 Quick Checks for System Properties
+
+**Causality check**: Examine h(t). If h(t) = 0 for all t < 0, the system is causal. On the exam, verify by inspection — does the impulse response "start" at or after t = 0?
+
+**BIBO stability check**: Compute ∫|h(t)|dt. For exponential responses like h(t) = Ae^(−at)·u(t) with a > 0, the integral equals A/a (finite) — **stable**. If h(t) = u(t), the integral diverges — **unstable**.
+
+| System | h(t) | Causal? | BIBO Stable? |
+|---|---|---|---|
+| h(t) = e^(−3t)·u(t) | Decaying exponential | Yes | Yes (integral = 1/3) |
+| h(t) = e^(2t)·u(t) | Growing exponential | Yes | **No** (integral diverges) |
+| h(t) = e^(−\|t\|) | Two-sided | No | Yes (integral = 2) |
+| h(t) = u(t) | Step function | Yes | **No** (integral diverges) |`,
+        examTip: 'When convolving a rectangular pulse with an exponential on the FE exam, the result always has two regions — a rising portion and a decaying tail. Sketch the shape rather than memorizing the formula. If the problem involves δ(t), remember: x(t)*δ(t−t₀) = x(t−t₀) — no integration needed.',
+        importantNote: 'Always verify your convolution result at key points: at t = 0 the output should be zero (for causal signals), and as t → ∞ the output should decay to zero (for stable systems). These sanity checks catch algebraic errors quickly.',
+      },
     ],
     keyTakeaways: [
       'Impulse response h(t) fully characterizes LTI systems; use convolution y(t) = ∫x(τ)h(t−τ)dτ to find output.',
@@ -3120,6 +3158,57 @@ The **ROC** specifies the values of s where the integral converges. It is essent
 - **Initial Value Theorem**: lim(t→0⁺) f(t) = lim(s→∞) s·F(s)`,
         examTip: 'The Final Value Theorem is a huge time-saver on the FE exam — it gives steady-state values directly from the s-domain without performing an inverse transform. But verify all poles of s·F(s) are in the LHP first, otherwise the theorem gives a wrong answer.',
         importantNote: 'On the FE exam, use the Laplace transform table provided in the reference handbook — do not try to compute transforms from the integral definition. The table lookup approach is much faster and less error-prone.',
+      },
+      {
+        id: 'fd-laplace-shortcuts',
+        title: '3. Common Laplace Transform Pairs & Exam Shortcuts',
+        content: `## 3.1 The 10 Must-Know Laplace Transform Pairs
+
+Memorize these pairs — they cover 90% of FE exam transform problems:
+
+| # | Time Domain f(t) | Laplace Domain F(s) |
+|---|---|---|
+| 1 | **δ(t)** | **1** |
+| 2 | **u(t)** | **1/s** |
+| 3 | **t·u(t)** | **1/s²** |
+| 4 | **t^n·u(t)** | **n!/s^(n+1)** |
+| 5 | **e^(−at)·u(t)** | **1/(s+a)** |
+| 6 | **t·e^(−at)·u(t)** | **1/(s+a)²** |
+| 7 | **sin(ωt)·u(t)** | **ω/(s²+ω²)** |
+| 8 | **cos(ωt)·u(t)** | **s/(s²+ω²)** |
+| 9 | **e^(−at)·sin(ωt)·u(t)** | **ω/((s+a)²+ω²)** |
+| 10 | **e^(−at)·cos(ωt)·u(t)** | **(s+a)/((s+a)²+ω²)** |
+
+**Pattern recognition tip**: Pairs 9 and 10 are just pairs 7 and 8 with **s replaced by (s+a)** — this is the frequency-shift property.
+
+## 3.2 Partial Fraction Decomposition Tips
+
+**Step 1**: Factor the denominator completely into first-order and irreducible quadratic terms.
+
+**Step 2**: Use the **cover-up method** for distinct real poles:
+- For A/(s+a): cover (s+a) in the original expression, evaluate at s = −a
+
+**Step 3**: For complex conjugate poles, keep as a quadratic:
+- **(As+B)/(s²+2αs+ω₀²)** → complete the square to **(A(s+α)+C)/((s+α)²+ω_d²)**
+- Match to damped sinusoid pairs 9 and 10
+
+**Step 4**: For repeated poles, use differentiation:
+- **B₂ = F(s)·(s+a)²|_{s=−a}**, then **B₁ = d/ds[F(s)·(s+a)²]|_{s=−a}**
+
+## 3.3 Final Value vs. Initial Value Theorem
+
+| Theorem | Formula | Gives You | Validity Check |
+|---|---|---|---|
+| **Final Value** | lim(s→0) s·F(s) | Steady-state f(∞) | All poles of s·F(s) in LHP |
+| **Initial Value** | lim(s→∞) s·F(s) | Starting value f(0⁺) | Always valid if F(s) is proper |
+
+**When to use each**:
+- **Final Value Theorem**: Finding steady-state output, DC gain verification, checking if a controller eliminates steady-state error
+- **Initial Value Theorem**: Verifying initial conditions match the problem statement, sanity-checking inverse transforms
+
+**Critical trap**: The Final Value Theorem gives a **wrong answer** if s·F(s) has poles on the imaginary axis or in the RHP. For example, F(s) = ω/(s²+ω²) represents sin(ωt) — applying FVT gives lim(s→0) sω/(s²+ω²) = 0, but sin(ωt) does NOT converge to zero. Always check pole locations first.`,
+        examTip: 'The FE exam reference handbook includes a Laplace transform table, but knowing the pairs from memory saves lookup time. Focus on pairs 5 (exponential decay) and 9-10 (damped sinusoids) — these appear in nearly every circuit transient and control system problem.',
+        importantNote: 'Before applying the Final Value Theorem, ALWAYS verify that all poles of s·F(s) are in the open left half-plane. If even one pole is on the jw axis or in the RHP, the theorem is invalid and will give an incorrect result. This validity check is itself a common exam question.',
       },
     ],
     keyTakeaways: [
@@ -3217,6 +3306,58 @@ Keep as a second-order term: **(As + B)/(s² + 2αs + ω₀²)** and use the dam
 The **Routh-Hurwitz criterion** tests stability without explicitly computing poles — essential when the characteristic polynomial is higher than second order.`,
         examTip: 'For partial fractions on the FE exam, use the "cover-up" method: to find the coefficient for pole at s = p, cover up the (s−p) factor in the denominator and evaluate the remaining expression at s = p. This is dramatically faster than setting up simultaneous equations.',
         importantNote: 'A common FE exam mistake is forgetting that repeated poles on the imaginary axis (e.g., double pole at s = 0) produce growing responses (t·u(t)), making the system unstable — not marginally stable.',
+      },
+      {
+        id: 'tf-worked-pole-zero',
+        title: '3. Worked Example: Pole-Zero Analysis',
+        content: `## 3.1 Problem Statement
+
+**Given**: H(s) = 10(s + 2) / [(s + 1)(s + 5)]
+
+Find: DC gain, poles, zeros, sketch Bode magnitude, and determine stability.
+
+## 3.2 Step-by-Step Solution
+
+**Step 1 — Identify Poles and Zeros:**
+- **Zero**: s + 2 = 0 → **z₁ = −2** (numerator root)
+- **Poles**: s + 1 = 0 → **p₁ = −1**; s + 5 = 0 → **p₂ = −5** (denominator roots)
+- System is **2nd order** (degree of denominator = 2)
+
+**Step 2 — DC Gain (evaluate at s = 0):**
+
+H(0) = 10(0 + 2) / [(0 + 1)(0 + 5)] = 20/5 = **4** (equivalently **12.04 dB**)
+
+**Step 3 — Stability Analysis:**
+- Both poles at s = −1 and s = −5 have **negative real parts** (both in LHP)
+- **Conclusion: System is asymptotically stable**
+
+**Step 4 — Bode Magnitude Sketch:**
+
+Rewrite in standard form by factoring out DC values:
+
+H(s) = 4 · (1 + s/2) / [(1 + s/1)(1 + s/5)]
+
+Corner frequencies: **ω = 1 rad/s** (pole), **ω = 2 rad/s** (zero), **ω = 5 rad/s** (pole)
+
+| Frequency Range | Slope | Reasoning |
+|---|---|---|
+| ω < 1 | 0 dB/dec | Flat at DC gain = 12 dB |
+| 1 < ω < 2 | −20 dB/dec | Pole at ω = 1 adds −20 dB/dec |
+| 2 < ω < 5 | 0 dB/dec | Zero at ω = 2 cancels: −20 + 20 = 0 |
+| ω > 5 | −20 dB/dec | Pole at ω = 5 adds −20 dB/dec |
+
+**Step 5 — High-Frequency Gain:**
+
+As ω → ∞: |H(jω)| → 10·ω/(ω·ω) = 10/ω → rolls off at −20 dB/decade
+
+## 3.3 Key Observations and Exam Traps
+
+- **Zeros pull the magnitude UP** (or flatten the roll-off); **poles pull it DOWN**. When a zero and pole are close together, they partially cancel.
+- **DC gain shortcut**: H(0) = K · (product of zeros) / (product of poles) using absolute values. Here: 10 × 2 / (1 × 5) = 4.
+- **Dominant pole**: The pole at s = −1 is closest to the imaginary axis and dominates the transient response (time constant τ = 1 second).
+- **Common trap**: Students often forget to convert H(s) to standard form before sketching Bode plots. The corner frequency for (s + a) is ω = a, NOT the coefficient in front of s.`,
+        examTip: 'For any transfer function on the FE exam: (1) find poles and zeros by factoring, (2) evaluate H(0) for DC gain, (3) check pole locations for stability, (4) rewrite in standard form for Bode. This four-step method works for every problem and prevents skipped steps under time pressure.',
+        importantNote: 'When computing DC gain, substitute s = 0 directly into H(s). Do NOT set s = jω and then ω = 0 — while equivalent, direct substitution is faster and less error-prone. DC gain H(0) = 4 means a unit step input produces a steady-state output of 4.',
       },
     ],
     keyTakeaways: [
@@ -3435,6 +3576,68 @@ Fourier analysis has a **duality** property: if x(t) ↔ X(f), then X(t) ↔ x(�
         examTip: 'On the FE exam, remember the sinc function relationship: a rectangular pulse of width τ has a sinc spectrum with first null at f = 1/τ. Wider pulses have narrower spectra (better frequency localization) and vice versa. This tradeoff appears in both signal processing and communications problems.',
         importantNote: 'Differentiation in time corresponds to multiplication by j2πf in frequency. This means sharp signal transitions (large derivatives) require high-frequency content — the fundamental reason why bandwidth-limited channels distort signals with sharp edges.',
       },
+      {
+        id: 'fs-exam-walkthrough',
+        title: '3. Exam Problem Walkthrough: Fourier Analysis',
+        content: `## 3.1 Problem: Fourier Series of a Square Wave
+
+**Given**: A square wave with amplitude A = 5 V, period T₀ = 4 ms, and 50% duty cycle (symmetric about zero).
+
+**Find**: Fundamental frequency, first three nonzero Fourier coefficients, and sketch the amplitude spectrum.
+
+## 3.2 Step-by-Step Solution
+
+**Step 1 — Fundamental frequency:**
+
+**f₀ = 1/T₀ = 1/(4 × 10⁻³) = 250 Hz**; ω₀ = 2πf₀ = 500π rad/s
+
+**Step 2 — Identify symmetry:**
+
+A symmetric square wave (odd function) has **only sine terms** (aₙ = 0 for all n, including a₀ = 0).
+
+**Step 3 — Compute Fourier coefficients:**
+
+For an odd-symmetric square wave of amplitude A:
+
+**bₙ = (4A)/(nπ)** for n = 1, 3, 5, ... (odd harmonics only)
+
+**bₙ = 0** for n = 2, 4, 6, ... (even harmonics vanish due to half-wave symmetry)
+
+| Harmonic | Frequency | Coefficient bₙ | Amplitude |
+|---|---|---|---|
+| n = 1 (fundamental) | 250 Hz | 4(5)/(1·π) = **6.37 V** | 6.37 V |
+| n = 3 (3rd harmonic) | 750 Hz | 4(5)/(3·π) = **2.12 V** | 2.12 V |
+| n = 5 (5th harmonic) | 1250 Hz | 4(5)/(5·π) = **1.27 V** | 1.27 V |
+
+**Step 4 — Reconstruct the signal:**
+
+x(t) ≈ 6.37·sin(500πt) + 2.12·sin(1500πt) + 1.27·sin(2500πt) + ...
+
+The amplitude spectrum shows spikes at odd multiples of 250 Hz, decreasing as 1/n.
+
+## 3.3 Critical Exam Trap: Fourier Series vs. Fourier Transform
+
+| Feature | Fourier Series | Fourier Transform |
+|---|---|---|
+| **Applies to** | **Periodic** signals | **Aperiodic** signals |
+| **Spectrum type** | **Discrete** (spikes at nf₀) | **Continuous** (smooth curve) |
+| **Coefficients** | cₙ (dimensionless or V) | X(f) (V/Hz or V·s) |
+| **Energy** | Infinite (signal extends forever) | Finite (Parseval applies) |
+
+**Common mistake**: Using the Fourier Transform on a periodic signal or Fourier Series on a one-time pulse. The Series is for periodic signals that repeat forever; the Transform is for finite-energy aperiodic signals.
+
+## 3.4 Symmetry Shortcuts for Fast Solutions
+
+- **Even function** (symmetric about t = 0): bₙ = 0 → only cosine terms
+- **Odd function** (antisymmetric): aₙ = 0 → only sine terms
+- **Half-wave symmetry** (x(t) = −x(t + T₀/2)): only odd harmonics (n = 1, 3, 5, ...)
+- **Quarter-wave even**: only odd cosine harmonics
+- **Quarter-wave odd**: only odd sine harmonics
+
+Exploiting symmetry can eliminate 50–75% of the computation on an exam problem.`,
+        examTip: 'If the FE exam gives a symmetric square wave or triangle wave, immediately recognize: odd function → sine terms only, half-wave symmetry → odd harmonics only. The coefficients decrease as 1/n for square waves and 1/n² for triangle waves. These facts alone can answer many problems without any integration.',
+        importantNote: 'The 1/n roll-off of the square wave spectrum means you need many harmonics to reconstruct the signal accurately. This is why square waves have high bandwidth requirements and why the Gibbs phenomenon (9% overshoot at discontinuities) persists regardless of how many terms you include.',
+      },
     ],
     keyTakeaways: [
       'Periodic signals → Fourier Series (discrete spectrum at harmonics nf₀); aperiodic → Fourier Transform (continuous).',
@@ -3527,6 +3730,64 @@ An **anti-aliasing filter** is a low-pass filter placed **before** the analog-to
 Modern systems often **oversample** (sample at much higher than 2·f_max), then digitally filter and **decimate**. This relaxes the analog anti-aliasing filter requirements since the gap between f_max and fₛ/2 is large.`,
         examTip: 'When the FE exam asks for the aliased frequency, use this quick method: fold the signal frequency into the range [0, fₛ/2] by repeatedly subtracting fₛ and taking the absolute value. For instance, 75 kHz sampled at 40 kHz: |75−40| = 35, |35−40| = 5 kHz. The aliased frequency is 5 kHz.',
         importantNote: 'Anti-aliasing filters must be analog — they operate before the ADC. A digital filter cannot remove aliasing because the aliased components are already folded into the baseband and are indistinguishable from genuine low-frequency content.',
+      },
+      {
+        id: 'samp-aliasing-design',
+        title: '3. Aliasing Problems & Anti-Aliasing Design',
+        content: `## 3.1 Worked Example: Computing Aliased Frequency
+
+**Problem**: A signal contains a component at **f = 15 kHz**. It is sampled at **fₛ = 20 kHz**. What frequency appears in the sampled output?
+
+**Solution**:
+- Nyquist frequency: fₙ = fₛ/2 = 10 kHz
+- Since f = 15 kHz > fₙ = 10 kHz, **aliasing occurs**
+- Aliased frequency: f_alias = |f − fₛ| = |15 − 20| = **5 kHz**
+
+The 15 kHz signal appears as a phantom 5 kHz signal after sampling. This aliased component is **completely indistinguishable** from a genuine 5 kHz signal — no amount of post-processing can separate them.
+
+**Verification**: The aliased frequency must fall in [0, fₛ/2] = [0, 10 kHz]. Our result of 5 kHz is in this range. If the first subtraction gives a result outside [0, fₛ/2], subtract fₛ again.
+
+## 3.2 Multi-Component Aliasing Example
+
+**Problem**: A signal x(t) = cos(2π·3000t) + cos(2π·14000t) + cos(2π·22000t) is sampled at fₛ = 16 kHz.
+
+| Component | Frequency | fₛ/2 = 8 kHz | Aliased? | Apparent Frequency |
+|---|---|---|---|---|
+| 1st | 3 kHz | 3 < 8 | No | **3 kHz** (unchanged) |
+| 2nd | 14 kHz | 14 > 8 | Yes | \|14 − 16\| = **2 kHz** |
+| 3rd | 22 kHz | 22 > 8 | Yes | \|22 − 16\| = 6, in range → **6 kHz** |
+
+After sampling, the output appears to contain 3 kHz, 2 kHz, and 6 kHz — the original 14 kHz and 22 kHz components are permanently destroyed and replaced by aliases.
+
+## 3.3 Anti-Aliasing Filter Design
+
+**Design goal**: Remove all frequencies above fₛ/2 before sampling.
+
+**Design procedure:**
+1. **Determine signal bandwidth**: f_max = highest frequency of interest
+2. **Choose sampling rate**: fₛ ≥ 2.5 × f_max (practical margin above Nyquist minimum)
+3. **Set filter cutoff**: fc = fₛ/2 (or slightly below)
+4. **Choose filter order**: higher order = steeper roll-off in the transition band
+5. **Select filter type**: Butterworth for flat passband; Chebyshev for sharper cutoff
+
+**Example**: Audio signal with f_max = 20 kHz, sampled at fₛ = 44.1 kHz.
+- Anti-aliasing filter cutoff: fc = 22.05 kHz
+- Transition band: 20 kHz to 22.05 kHz (only 2.05 kHz wide)
+- Required: sharp cutoff → use 8th-order elliptic filter (steep roll-off)
+
+**Key constraint**: The anti-aliasing filter MUST be analog. Digital filters operate after sampling, when aliasing has already occurred and cannot be undone.
+
+## 3.4 Oversampling as an Alternative
+
+Instead of a sharp (expensive) analog filter, **oversample** at much higher rate:
+- Sample at 4× or 8× the Nyquist rate (e.g., 176.4 kHz for audio)
+- Use a gentle analog anti-aliasing filter (transition band is now very wide)
+- Apply a sharp **digital** filter after sampling
+- **Decimate** (reduce sample rate) to the final desired rate
+
+This trades digital processing cost for analog filter complexity — standard practice in modern ADCs.`,
+        examTip: 'For aliasing problems on the FE exam, use the folding formula: f_alias = |f − k·fₛ| where k is the nearest integer that brings the result into [0, fₛ/2]. Practice: 75 kHz at fₛ = 40 kHz → |75 − 2(40)| = |75 − 80| = 5 kHz. Always verify your answer is below fₛ/2.',
+        importantNote: 'A common exam trap is asking about a signal at exactly fₛ/2 (the Nyquist frequency). At this frequency, sampling captures exactly 2 samples per cycle — reconstruction is theoretically possible but extremely sensitive to phase. In practice, signals at exactly fₛ/2 are unreliable.',
       },
     ],
     keyTakeaways: [
@@ -3851,6 +4112,66 @@ For practical design, account for diode drops: each silicon diode subtracts ~0.7
         examTip: 'For Zener regulator problems on the FE exam, always check that the Zener current stays above the minimum (Iz > Iz_min) at worst-case conditions (minimum Vin, maximum IL). If Iz drops below minimum, the Zener falls out of breakdown and regulation is lost.',
         importantNote: 'A common FE exam mistake is forgetting to subtract diode voltage drops in rectifier circuits. A full-wave bridge loses 2 × 0.7 = 1.4 V, so actual Vdc = 2(Vpeak − 1.4)/π for the constant-drop model. This matters significantly for low-voltage circuits.',
       },
+      {
+        id: 'diode-rectifier-design',
+        title: '3. Rectifier Design Calculations',
+        content: `## 3.1 Full Worked Example: Full-Wave Bridge Rectifier with Filter
+
+**Design requirements:**
+- Input: 120 Vrms, 60 Hz AC
+- Output: approximately 15 V DC
+- Maximum ripple voltage: 0.5 V peak-to-peak
+- Load resistance: RL = 100 Ω
+
+**Step 1 — Determine the transformer turns ratio:**
+
+Required secondary peak voltage: Vpeak = Vdc + Vripple/2 + 2·Vdiode = 15 + 0.25 + 1.4 = **16.65 V**
+
+Secondary RMS voltage: Vrms = Vpeak/√2 = 16.65/1.414 = **11.78 V**
+
+Turns ratio: n = Vsecondary/Vprimary = 11.78/120 ≈ **1:10.2** (use standard 1:10 transformer)
+
+**Step 2 — Calculate the filter capacitor:**
+
+For a full-wave rectifier with capacitor filter, ripple voltage is:
+
+**ΔV = Idc / (2·f·C)**
+
+where Idc = Vdc/RL = 15/100 = 150 mA, and f = 60 Hz.
+
+Solving for C: **C = Idc / (2·f·ΔV) = 0.15 / (2 × 60 × 0.5) = 2500 μF**
+
+Select next standard value: **C = 3300 μF** (provides margin).
+
+**Step 3 — Determine PIV rating:**
+
+For a bridge rectifier: **PIV = Vpeak = 16.65 V** per diode.
+
+Select diodes rated for at least **2× PIV = 33.3 V** (safety margin). A 1N4001 (PIV = 50 V) is suitable.
+
+**Step 4 — Verify average DC output:**
+
+With the capacitor filter, **Vdc ≈ Vpeak − ΔV/2 − 2·Vdiode = 16.95 − 0.25 − 1.4 ≈ 15.3 V** (acceptable).
+
+## 3.2 Ripple Factor Calculations
+
+| Parameter | Half-Wave | Full-Wave Bridge |
+|---|---|---|
+| Ripple voltage ΔV | Idc/(f·C) | **Idc/(2f·C)** |
+| Ripple frequency | f (60 Hz) | **2f (120 Hz)** |
+| Ripple factor (with C) | 1/(2√3·f·R·C) | **1/(4√3·f·R·C)** |
+
+**Key insight**: The full-wave bridge has **half the ripple** of a half-wave rectifier for the same capacitor — this is why bridge rectifiers are preferred for most applications.
+
+## 3.3 Common Design Mistakes
+
+- **Forgetting diode drops**: Each diode subtracts 0.7 V. A bridge has 2 diodes in the current path → subtract 1.4 V from peak output.
+- **PIV confusion**: In a bridge, each diode sees only Vpeak. In a center-tap full-wave, each diode sees 2·Vpeak. The bridge configuration has a lower PIV requirement.
+- **Surge current**: At power-on, the discharged capacitor draws a large inrush current. Add a small series resistor (1–10 Ω) or use an NTC thermistor to limit surge.
+- **Load current vs. ripple tradeoff**: Heavier load (smaller RL) increases ripple for a given C. If the exam asks "what happens when load increases," the answer is always "more ripple."`,
+        examTip: 'On the FE exam, the ripple formula ΔV = Idc/(2fC) for full-wave is the most commonly tested calculation. Remember the factor of 2 in the denominator for full-wave — if you use ΔV = Idc/(fC) you will get the half-wave answer, which is a classic trap.',
+        importantNote: 'When calculating Vpeak from Vrms for a sinusoidal source, use Vpeak = √2 × Vrms. A very common mistake is using Vpeak = 2 × Vrms (which applies to peak-to-peak, not peak). For 120 Vrms: Vpeak = 169.7 V, NOT 240 V.',
+      },
     ],
     keyTakeaways: [
       'Half-wave: Vdc = Vpeak/π ≈ 0.318·Vpeak; full-wave bridge: Vdc = 2Vpeak/π ≈ 0.636·Vpeak.',
@@ -3957,6 +4278,73 @@ The BJT has frequency-dependent behavior due to internal capacitances:
 - **Bandwidth**: inversely related to gain (gain-bandwidth product ≈ constant)`,
         examTip: 'The small-signal transconductance gm = IC/VT is the most important parameter. At room temperature, VT ≈ 26 mV. For IC = 1 mA: gm = 1/26 ≈ 38.5 mS. Voltage gain of CE stage is Av = −gm·RC, so gain is proportional to bias current.',
         importantNote: 'Always verify the transistor is in the active region before applying small-signal analysis. Small-signal parameters (gm, rπ) are only valid at the Q-point. If VCE < 0.2 V (saturation) or IB ≈ 0 (cutoff), the linear small-signal model does not apply.',
+      },
+      {
+        id: 'bjt-amplifier-design',
+        title: '3. BJT Amplifier Design Problem',
+        content: `## 3.1 Design Problem Statement
+
+**Design a common-emitter amplifier** with the following specifications:
+- Supply: VCC = 12 V
+- Voltage gain: |Av| ≈ 20
+- Transistor: β = 100, VBE = 0.7 V
+- Q-point: IC ≈ 2 mA, VCE ≈ 6 V (midpoint biasing for maximum swing)
+
+## 3.2 Step-by-Step Design
+
+**Step 1 — Choose RC and RE from the Q-point:**
+
+Apply KVL around the collector-emitter loop:
+
+VCC = IC·RC + VCE + IE·RE ≈ IC·(RC + RE) + VCE (since IC ≈ IE)
+
+12 = 2 mA · (RC + RE) + 6 → **RC + RE = 3 kΩ**
+
+**Step 2 — Set RC from the gain requirement:**
+
+Small-signal gain: |Av| = gm · RC (with bypassed RE)
+
+First, find gm: **gm = IC/VT = 2 mA / 26 mV = 76.9 mS**
+
+RC = |Av|/gm = 20/0.0769 = **260 Ω** → use standard value **RC = 270 Ω**
+
+Then RE = 3000 − 270 = **2730 Ω** → use **RE = 2.7 kΩ**
+
+**Step 3 — Design the voltage divider bias:**
+
+Required base voltage: VB = VBE + IE·RE = 0.7 + 2 mA × 2.7 kΩ = **6.1 V**
+
+For stable biasing, divider current should be ~10× IB:
+
+IB = IC/β = 2 mA/100 = 20 μA → Idivider ≈ 200 μA
+
+**R2 = VB/Idivider = 6.1/0.2 mA = 30.5 kΩ** → use **R2 = 30 kΩ**
+
+**R1 = (VCC − VB)/Idivider = (12 − 6.1)/0.2 mA = 29.5 kΩ** → use **R1 = 30 kΩ**
+
+**Step 4 — Verify the Q-point:**
+
+VB = 12 × 30/(30+30) = **6.0 V** (close to target)
+
+VE = 6.0 − 0.7 = 5.3 V → IE = 5.3/2.7k = **1.96 mA** ≈ 2 mA
+
+VCE = 12 − 1.96 mA × (270 + 2700) = 12 − 5.82 = **6.18 V** → active region confirmed (VCE > 0.2 V)
+
+**Step 5 — Calculate actual small-signal gain:**
+
+gm = 1.96 mA / 26 mV = 75.4 mS
+
+**Av = −gm × RC = −75.4 × 0.270 = −20.4** (meets spec, negative sign = 180° inversion)
+
+## 3.3 Design Verification Checklist
+
+- **Active region**: VCE = 6.18 V >> 0.2 V → confirmed
+- **Bias stability**: Divider current (200 μA) >> IB (20 μA) → β-independent
+- **Gain**: |Av| = 20.4 ≈ 20 → meets specification
+- **Swing**: VCE at midpoint allows ±5 V output swing before clipping
+- **Bypass capacitor**: CE across RE is needed for full AC gain; without it, Av = −RC/(RE + 1/gm) ≈ −0.1 (gain drops dramatically)`,
+        examTip: 'The FE exam BJT amplifier design sequence is always: (1) set Q-point from VCC and desired VCE, (2) find gm = IC/VT, (3) choose RC = |Av|/gm, (4) design bias divider with current ~10× IB. If the bypass capacitor is removed, gain drops to approximately −RC/RE — the exam may ask about this.',
+        importantNote: 'The bypass capacitor across RE is essential for AC gain. It short-circuits RE at signal frequencies, giving full gain Av = −gm·RC. Without it, RE provides negative feedback and gain drops to about −RC/RE. Many FE exam questions test whether you recognize this distinction.',
       },
     ],
     keyTakeaways: [
@@ -4201,6 +4589,74 @@ Higher gain → lower bandwidth. This is a fundamental tradeoff.`,
         examTip: 'The integrator and differentiator are frequently tested on the FE exam. Key distinction: integrator has C in feedback (replaces Rf), differentiator has C at input (replaces Rin). In the s-domain: integrator gain = −1/(sRC) rolls off with frequency; differentiator gain = −sRC increases with frequency.',
         importantNote: 'Real integrators need a DC feedback path (large resistor across C) to prevent output saturation from input offset. Real differentiators need a series resistor with C to limit high-frequency noise amplification. The FE exam may ask about these practical limitations.',
       },
+      {
+        id: 'opamp-analysis-shortcuts',
+        title: '3. Op-Amp Circuit Analysis Shortcuts',
+        content: `## 3.1 The Virtual Short Method — Quick Analysis
+
+For ANY ideal op-amp circuit with negative feedback, apply these two rules and solve:
+
+**Rule 1**: V⁺ = V⁻ (virtual short — no voltage difference between inputs)
+**Rule 2**: I⁺ = I⁻ = 0 (no current into either input terminal)
+
+**Worked Example — Determine the output of this circuit:**
+
+Non-inverting input: V⁺ connected to 3 V. Feedback: Rf = 20 kΩ from output to V⁻. Rin = 10 kΩ from V⁻ to ground.
+
+1. By Rule 1: V⁻ = V⁺ = **3 V**
+2. Current through Rin: I = V⁻/Rin = 3/10k = **0.3 mA** (flows toward ground)
+3. By Rule 2: same current flows through Rf (no current into the op-amp)
+4. Voltage across Rf: V_Rf = I × Rf = 0.3 mA × 20 kΩ = **6 V**
+5. Output: Vo = V⁻ + V_Rf = 3 + 6 = **9 V**
+
+**Verification**: Non-inverting gain = 1 + Rf/Rin = 1 + 20/10 = 3. Vo = 3 × 3 V = 9 V. Confirmed.
+
+## 3.2 Superposition in Op-Amp Circuits
+
+When multiple inputs feed an op-amp circuit, use **superposition**:
+
+1. Set all inputs to zero except one
+2. Find the output contribution from that input
+3. Repeat for each input
+4. Sum all contributions
+
+**Example — Summing amplifier with two inputs:**
+
+V1 = 2 V through R1 = 10 kΩ; V2 = −1 V through R2 = 20 kΩ; Rf = 40 kΩ
+
+- From V1 alone: Vo1 = −(Rf/R1)·V1 = −(40/10)·2 = **−8 V**
+- From V2 alone: Vo2 = −(Rf/R2)·V2 = −(40/20)·(−1) = **+2 V**
+- **Total: Vo = −8 + 2 = −6 V**
+
+## 3.3 Common Trap: Rail Voltage Saturation
+
+The ideal op-amp model assumes infinite output voltage range, but **real op-amps clip** at the supply rails:
+
+- If V+ supply = +15 V and V− supply = −15 V, output saturates at approximately **±13 to ±14 V** (1–2 V below rails for standard op-amps)
+- Rail-to-rail op-amps can reach within 50–200 mV of the supply
+
+**Example trap**: An inverting amplifier with Av = −100, Vin = 0.5 V → calculated Vo = −50 V. But if supply is ±15 V, the actual output is **−14 V** (saturated, not −50 V).
+
+**How to spot saturation on the exam:**
+1. Calculate the ideal output voltage
+2. Compare to supply rails
+3. If |Vo| > |Vsupply| − 1.5 V, the output is **clipped/saturated**
+4. When saturated, the virtual short (V⁺ = V⁻) **no longer holds** — the op-amp is in open-loop
+
+## 3.4 Quick Gain Formulas Reference
+
+| Circuit | Gain Formula | Notes |
+|---|---|---|
+| Inverting | **−Rf/Rin** | Input impedance = Rin |
+| Non-inverting | **1 + Rf/Rin** | Input impedance ≈ ∞ |
+| Buffer | **1** | Rf = 0, Rin = ∞ |
+| Summing | **−Rf·Σ(Vi/Ri)** | One term per input |
+| Difference | **(Rf/Rin)·(V2−V1)** | When ratios matched |
+| Integrator | **−1/(sRC)** | C replaces Rf |
+| Differentiator | **−sRC** | C replaces Rin |`,
+        examTip: 'On the FE exam, always check for saturation after computing the ideal output. If the calculated output exceeds the supply voltage, the answer is the saturation voltage, not the calculated value. This trap appears in problems where the gain is very high (Av > 50) or the input is unexpectedly large.',
+        importantNote: 'When an op-amp saturates, the virtual short assumption breaks down. The output is stuck at the rail, and V⁺ is no longer equal to V⁻. If an exam problem asks what happens when positive feedback is applied (output to + input), the answer is always a comparator or latch — the output slams to one rail.',
+      },
     ],
     keyTakeaways: [
       'Virtual short principle: V⁺ = V⁻ and I⁺ = I⁻ = 0 with negative feedback — solves any ideal op-amp circuit.',
@@ -4417,6 +4873,75 @@ Unbalanced currents or voltages decompose into three **sequence** sets:
 **Transformation**: V₀ = ⅓(Va + Vb + Vc); V₁ = ⅓(Va + a·Vb + a²·Vc); V₂ = ⅓(Va + a²·Vb + a·Vc)`,
       examTip: 'On the FE exam, three-phase power problems almost always give line voltage and line current. Plug directly into P = √3·V_LL·I_L·cos(φ). If they give phase quantities, first convert to line quantities using the Y or Δ relationship.',
     },
+    {
+      id: '3ph-calculation-shortcuts',
+      title: '3. Three-Phase Calculation Shortcuts',
+      content: `## 3.1 Quick Conversion Reference
+
+**Y ↔ Δ Impedance Conversion (Balanced):**
+- **Z_Δ = 3 · Z_Y** (Delta impedance is 3× the Wye impedance)
+- **Z_Y = Z_Δ / 3**
+
+**Line ↔ Phase Conversions:**
+
+| Connection | Voltage Relationship | Current Relationship |
+|---|---|---|
+| **Wye (Y)** | V_LL = √3 · V_ph | I_L = I_ph |
+| **Delta (Δ)** | V_LL = V_ph | I_L = √3 · I_ph |
+
+**Memory trick**: The √3 factor always multiplies the LARGER quantity — in Y, line voltage is larger; in Δ, line current is larger.
+
+## 3.2 Worked Example: Balanced Y Load
+
+**Problem**: A balanced three-phase Y-connected load has impedance Z_Y = 10 + j5 Ω per phase. The line-to-line voltage is V_LL = 480 V. Find all currents and powers.
+
+**Step 1 — Phase voltage:**
+
+V_ph = V_LL / √3 = 480 / 1.732 = **277.1 V**
+
+**Step 2 — Phase current (= line current for Y):**
+
+|Z_Y| = √(10² + 5²) = √125 = **11.18 Ω**
+
+I_ph = V_ph / |Z_Y| = 277.1 / 11.18 = **24.79 A**
+
+**I_L = I_ph = 24.79 A** (Y connection)
+
+**Step 3 — Power factor angle:**
+
+φ = arctan(X/R) = arctan(5/10) = **26.57°**
+
+cos(φ) = cos(26.57°) = **0.894 lagging** (inductive load)
+
+**Step 4 — Three-phase power:**
+
+| Power | Formula | Result |
+|---|---|---|
+| **Real power P** | √3 · V_LL · I_L · cos(φ) | √3 × 480 × 24.79 × 0.894 = **18,432 W ≈ 18.4 kW** |
+| **Reactive power Q** | √3 · V_LL · I_L · sin(φ) | √3 × 480 × 24.79 × 0.447 = **9,216 VAR ≈ 9.22 kVAR** |
+| **Apparent power S** | √3 · V_LL · I_L | √3 × 480 × 24.79 = **20,608 VA ≈ 20.6 kVA** |
+
+**Verification**: S² = P² + Q² → 20,608² ≈ 18,432² + 9,216² → 424.5M ≈ 339.7M + 84.9M ≈ 424.6M. Confirmed.
+
+## 3.3 Equivalent Delta Load
+
+If the same load were Δ-connected: Z_Δ = 3 × Z_Y = 30 + j15 Ω
+
+- V_ph(Δ) = V_LL = 480 V (phase voltage equals line voltage in Δ)
+- I_ph(Δ) = 480 / |30+j15| = 480 / 33.54 = 14.31 A
+- I_L = √3 × 14.31 = **24.79 A** (same line current as Y — proves equivalence)
+- Total power: **identical** to the Y case (18.4 kW)
+
+**Key insight**: A balanced Δ load with Z_Δ = 3·Z_Y draws exactly the same line current and power as the equivalent Y load. The per-phase analysis gives identical results regardless of which connection is used.
+
+## 3.4 Common Exam Traps
+
+- **Mixing line and phase quantities**: Always identify whether given values are line or phase before plugging into formulas
+- **Forgetting √3 in power formula**: P = √3·V_LL·I_L·cos(φ), NOT 3·V_LL·I_L·cos(φ). The factor 3 appears only when using phase quantities: P = 3·V_ph·I_ph·cos(φ)
+- **Voltage given as line-to-neutral vs. line-to-line**: "480 V three-phase" means V_LL = 480 V; "277 V phase" means V_ph = 277 V`,
+      examTip: 'When the FE exam says "480 V three-phase system," this ALWAYS means V_LL = 480 V (line-to-line). The phase voltage is V_ph = 480/√3 = 277 V. If you use 480 V as the phase voltage, every answer will be wrong by a factor of √3.',
+      importantNote: 'For balanced loads, you can convert freely between Y and Δ representations using Z_Δ = 3·Z_Y. The total power drawn from the source is identical in both cases. The FE exam often gives a Δ-connected load and expects you to convert to Y for per-phase analysis.',
+    },
   ],
   keyTakeaways: [
     'Y connection: V_LL = √3·V_ph, I_L = I_ph; Delta: V_LL = V_ph, I_L = √3·I_ph.',
@@ -4508,6 +5033,72 @@ Equivalently: **η = P_out / P_in × 100%**
 
 Per-unit impedance is the same on both sides of the transformer — no need to reflect through n².`,
       examTip: 'Maximum transformer efficiency occurs when core loss equals copper loss. This is a classic FE exam question. At rated load, typical transformer efficiency is 95-99%. If you are asked "at what load is efficiency maximum," set P_core = P_copper and solve for load fraction.',
+    },
+    {
+      id: 'xfmr-problem-checklist',
+      title: '3. Transformer Problem-Solving Checklist',
+      content: `## 3.1 Step-by-Step for Any Transformer Problem
+
+Follow this checklist for every transformer problem on the FE exam:
+
+1. **Identify the turns ratio**: n = Ns/Np = Vs/Vp (from nameplate or given data)
+2. **Reflect impedances to one side**: Z_reflected = Z_load × (Np/Ns)² = Z_load/n²
+3. **Find equivalent circuit parameters** (from test data if given)
+4. **Calculate voltage regulation**: VR = (V_nl − V_fl)/V_fl × 100%
+5. **Calculate efficiency**: η = Pout/(Pout + Pcore + Pcopper) × 100%
+
+## 3.2 Worked Example: Using OC and SC Test Data
+
+**Given**: 10 kVA, 2400/240 V transformer (n = 240/2400 = 0.1 or 1:10)
+
+**Open-circuit test** (on low-voltage side): Voc = 240 V, Ioc = 1.2 A, Poc = 60 W
+
+**Short-circuit test** (on high-voltage side): Vsc = 48 V, Isc = 4.17 A, Psc = 120 W
+
+**Step 1 — Core loss parameters (from OC test):**
+
+- Core loss: **Pcore = 60 W** (constant at rated voltage)
+- Apparent power: Soc = 240 × 1.2 = 288 VA
+- Core loss resistance: Rc = V²/Poc = 240²/60 = **960 Ω** (referred to LV side)
+- Magnetizing reactance: Xm = V²/Qoc where Qoc = √(S² − P²) = √(288² − 60²) = 281.7 → Xm = 240²/281.7 = **204.5 Ω**
+
+**Step 2 — Copper loss parameters (from SC test):**
+
+- Copper loss at rated current: **Pcopper = 120 W**
+- Equivalent impedance (referred to HV side): Zeq = Vsc/Isc = 48/4.17 = **11.51 Ω**
+- Equivalent resistance: Req = Psc/Isc² = 120/4.17² = **6.90 Ω**
+- Equivalent reactance: Xeq = √(Zeq² − Req²) = √(11.51² − 6.90²) = **9.21 Ω**
+
+**Step 3 — Voltage regulation at full load, 0.8 PF lagging:**
+
+VR ≈ (Irated × (Req·cos(φ) + Xeq·sin(φ))) / Vrated × 100%
+
+Irated(HV) = 10,000/2400 = 4.17 A; cos(φ) = 0.8, sin(φ) = 0.6
+
+ΔV = 4.17 × (6.90 × 0.8 + 9.21 × 0.6) = 4.17 × (5.52 + 5.53) = 4.17 × 11.05 = **46.1 V**
+
+**VR = 46.1/2400 × 100% = 1.92%** (excellent regulation)
+
+**Step 4 — Efficiency at full load, 0.8 PF:**
+
+Pout = S × PF = 10,000 × 0.8 = 8,000 W
+
+η = 8,000 / (8,000 + 60 + 120) × 100% = 8,000/8,180 = **97.8%**
+
+**Step 5 — Load for maximum efficiency:**
+
+Max efficiency when Pcore = Pcopper → Pcopper = Psc × (load fraction)²
+
+60 = 120 × x² → x = √(60/120) = √0.5 = **0.707 = 70.7% of full load**
+
+## 3.3 Common Mistakes and Exam Traps
+
+- **Impedance reflection direction**: When reflecting from secondary to primary, multiply by (Np/Ns)². When reflecting primary to secondary, multiply by (Ns/Np)². Getting the direction wrong flips the ratio.
+- **Test side matters**: OC test is done on the low-voltage side (measures core parameters on that side). SC test is done on the high-voltage side (measures leakage impedance on that side). Parameters must be reflected to the same side before combining.
+- **Regulation sign**: Negative VR means the voltage RISES under load (leading PF with capacitive loads). This is physically real and not an error.
+- **Efficiency vs. load**: η is NOT maximum at full load. Maximum η occurs when Pcore = Pcopper, which is typically 50–80% of rated load.`,
+      examTip: 'On the FE exam, the OC/SC test interpretation is frequently tested. Remember: OC test → core losses and magnetizing branch; SC test → copper losses and leakage impedance. The OC test gives constant losses (voltage-dependent), and the SC test gives variable losses (current-dependent).',
+      importantNote: 'Maximum transformer efficiency does NOT occur at full load — it occurs when core loss equals copper loss. Since core loss is constant and copper loss varies as I², the maximum efficiency point is at a specific load fraction x = √(Pcore/Pcopper_rated). This is one of the most commonly tested transformer concepts.',
     },
   ],
   keyTakeaways: [
@@ -5572,6 +6163,87 @@ For stability: **(6-K)/3 > 0** → K < 6, and **K > 0**
 **Range: 0 < K < 6**`,
       examTip: 'The FE exam frequently asks "find the range of K for stability." Build the Routh array with K as a variable, then set each first-column entry > 0 and solve the inequalities. The intersection of all conditions gives the valid range.',
     },
+    {
+      id: 'stab-routh-worked',
+      title: '3. Routh-Hurwitz Worked Examples',
+      content: `## 3.1 Example 1: Stable System
+
+**Characteristic polynomial**: D(s) = s⁴ + 3s³ + 5s² + 4s + 2
+
+**Step 1 — Check necessary condition**: All coefficients are positive (1, 3, 5, 4, 2). Proceed to Routh array.
+
+**Step 2 — Construct the array:**
+
+| Row | Col 1 | Col 2 | Col 3 |
+|---|---|---|---|
+| s⁴ | 1 | 5 | 2 |
+| s³ | 3 | 4 | 0 |
+| s² | (3×5 − 1×4)/3 = **11/3** | (3×2 − 1×0)/3 = **2** | 0 |
+| s¹ | (11/3 × 4 − 3 × 2)/(11/3) = **(44/3 − 6)/(11/3)** = **(26/3)/(11/3)** = **26/11** | 0 | 0 |
+| s⁰ | **2** | 0 | 0 |
+
+**Step 3 — Read first column**: 1, 3, 11/3, 26/11, 2 → **all positive, zero sign changes**
+
+**Conclusion: System is stable** (all 4 poles in LHP).
+
+## 3.2 Example 2: System with RHP Poles
+
+**Characteristic polynomial**: D(s) = s⁴ + 2s³ + s² + 4s + 2
+
+**Step 1 — All coefficients positive** (1, 2, 1, 4, 2). Must build array.
+
+**Step 2 — Construct the array:**
+
+| Row | Col 1 | Col 2 | Col 3 |
+|---|---|---|---|
+| s⁴ | 1 | 1 | 2 |
+| s³ | 2 | 4 | 0 |
+| s² | (2×1 − 1×4)/2 = **−1** | (2×2 − 1×0)/2 = **2** | 0 |
+| s¹ | (−1×4 − 2×2)/(−1) = **8** | 0 | 0 |
+| s⁰ | **2** | 0 | 0 |
+
+**Step 3 — Read first column**: 1, 2, **−1**, 8, 2
+
+Sign changes: +2 to −1 (one change), −1 to +8 (second change) = **2 sign changes**
+
+**Conclusion: System is unstable** with exactly **2 poles in the RHP**.
+
+## 3.3 Special Case: Zero in First Column
+
+**Characteristic polynomial**: D(s) = s³ + s² + 2s + 2
+
+| Row | Col 1 | Col 2 |
+|---|---|---|
+| s³ | 1 | 2 |
+| s² | 1 | 2 |
+| s¹ | (1×2 − 1×2)/1 = **0** | 0 |
+
+The s¹ row has a zero in the first column. **Replace 0 with ε (small positive number)**:
+
+| Row | Col 1 | Col 2 |
+|---|---|---|
+| s¹ | ε | 0 |
+| s⁰ | 2 | 0 |
+
+First column: 1, 1, ε, 2. As ε → 0⁺, all entries remain positive → **no sign changes**.
+
+But wait — the entire s¹ row was zeros before we used ε, indicating **symmetric roots**. Form the auxiliary polynomial from the s² row:
+
+**P(s) = s² + 2 = 0** → s = ±j√2
+
+These are **poles on the imaginary axis** → system is **marginally stable** (sustained oscillations at ω = √2 rad/s).
+
+## 3.4 Summary: Decision Flowchart
+
+1. **Any missing or negative coefficient?** → Unstable (stop here)
+2. **All coefficients positive?** → Build Routh array
+3. **Count sign changes in first column** = number of RHP poles
+4. **Zero sign changes** → Stable
+5. **Zero in first column only** → Replace with ε, continue
+6. **Entire row of zeros** → Symmetric root pairs; form auxiliary polynomial and differentiate`,
+      examTip: 'On the FE exam, always check the necessary condition first — if any coefficient is zero or negative, mark "unstable" and move on without building the array. This saves 2-3 minutes. For 2nd-order, just check all coefficients positive. For 3rd-order, also verify bc > ad.',
+      importantNote: 'The Routh array tells you HOW MANY poles are in the RHP, not WHERE they are. If you need pole locations, you must factor the polynomial or use other methods. But for stability determination (stable/unstable), the Routh criterion is the fastest approach on the FE exam.',
+    },
   ],
   keyTakeaways: [
     'First column sign changes = number of RHP (unstable) poles; all positive = stable.',
@@ -5768,6 +6440,87 @@ If the open-loop system is stable (P = 0), the Nyquist plot must **not encircle 
       examTip: 'PM ≈ 100·ζ is a quick approximation that links frequency-domain and time-domain specs. If the exam asks for a phase margin of 45°, the damping ratio is approximately 0.45 and the overshoot is about 20%. This shortcut saves significant time.',
       importantNote: 'Gain margin and phase margin must BOTH be positive for stability. A system can have positive GM but negative PM (or vice versa) and still be unstable. Always check both margins.',
     },
+    {
+      id: 'bode-step-by-step',
+      title: '3. Drawing Bode Plots Step-by-Step',
+      content: `## 3.1 Problem Statement
+
+**Given**: G(s) = 100 / [s(s + 10)]
+
+Draw the magnitude and phase Bode plots. Find the gain margin (GM) and phase margin (PM). Determine closed-loop stability.
+
+## 3.2 Step 1 — Rewrite in Standard Bode Form
+
+Factor out constants so each term has the form (1 + s/a):
+
+G(s) = 100 / [s · 10 · (1 + s/10)] = **10 / [s · (1 + s/10)]**
+
+**Components to plot:**
+- Constant gain: K = 10 → 20·log₁₀(10) = **20 dB**
+- Integrator: 1/s → **−20 dB/decade**, passes through 0 dB at ω = 1
+- Real pole: 1/(1 + s/10) → corner at **ω = 10 rad/s**, then −20 dB/decade
+
+## 3.3 Step 2 — Magnitude Plot
+
+**Low frequencies (ω << 10):**
+
+|G(jω)| ≈ 10/ω → slope = −20 dB/decade (integrator dominates)
+
+At ω = 1: |G| = 10/1 = 10 → **20 dB**
+At ω = 10: |G| = 10/10 = 1 → **0 dB** (before the pole kicks in)
+
+**High frequencies (ω >> 10):**
+
+|G(jω)| ≈ 10/(ω · ω/10) = 100/ω² → slope = **−40 dB/decade**
+
+| Frequency (rad/s) | Magnitude (dB) | Slope |
+|---|---|---|
+| 0.1 | 40 dB | −20 dB/dec |
+| 1 | 20 dB | −20 dB/dec |
+| 10 | 0 dB | Transition to −40 dB/dec |
+| 100 | −20 dB | −40 dB/dec |
+
+## 3.4 Step 3 — Phase Plot
+
+- Integrator 1/s: constant **−90°** at all frequencies
+- Pole at ω = 10: contributes 0° for ω << 10, −45° at ω = 10, −90° for ω >> 10
+
+**Total phase:**
+
+| Frequency | Integrator | Pole at 10 | Total Phase |
+|---|---|---|---|
+| ω = 1 | −90° | ≈ −6° | **−96°** |
+| ω = 10 | −90° | −45° | **−135°** |
+| ω = 100 | −90° | ≈ −84° | **−174°** |
+| ω → ∞ | −90° | −90° | **−180°** |
+
+## 3.5 Step 4 — Find GM and PM
+
+**Gain crossover frequency ω_gc** (where |G| = 0 dB):
+
+From the magnitude plot: |G(jω_gc)| = 1 → 10/[ω_gc · √(1 + ω_gc²/100)] = 1
+
+At ω = 10: |G| = 10/(10 · √2) = 0.707 → −3 dB (close to 0 dB)
+
+Solving exactly: ω_gc ≈ **9.05 rad/s**
+
+**Phase margin**: PM = 180° + ∠G(jω_gc) = 180° + (−90° − arctan(9.05/10)) = 180° − 90° − 42.1° = **47.9°**
+
+**Phase crossover frequency ω_pc** (where ∠G = −180°):
+
+Total phase reaches −180° as ω → ∞ (asymptotically). Strictly, ω_pc = **∞**.
+
+**Gain margin**: GM = −20·log₁₀|G(j∞)| = **∞ dB** (magnitude is zero at infinite frequency)
+
+## 3.6 Step 5 — Stability Conclusion
+
+- **PM = 47.9° > 0°** → Stable
+- **GM = ∞ dB > 0 dB** → Stable
+- The system is **closed-loop stable** with good phase margin (near the 45–60° design target)
+- Expected damping ratio: ζ ≈ PM/100 ≈ 0.48 → moderate overshoot (~18%)`,
+      examTip: 'On the FE exam, for systems with an integrator (1/s), the low-frequency slope starts at −20 dB/decade. Each additional pole adds another −20 dB/decade at its corner frequency. The magnitude at ω = 1 equals 20·log₁₀(K), which gives you the starting point for the entire plot.',
+      importantNote: 'A type-1 system (one integrator) like G(s) = K/[s(s+a)] has phase approaching −180° but never exceeding it. This means GM = infinity. Such systems are always stable for any positive gain K. However, a type-2 system (two integrators) starts at −180° and WILL go unstable at some gain.',
+    },
   ],
   keyTakeaways: [
     'Bode magnitude in dB = 20·log₁₀|G(jω)|; each pole adds −20 dB/decade, each zero adds +20 dB/decade.',
@@ -5865,6 +6618,107 @@ Design the PID so the open-loop Bode plot has:
 - **Phase margin** of 45–60° for good damping`,
       examTip: 'Ziegler-Nichols tuning tends to produce aggressive controllers with about 25% overshoot. The FE exam may ask you to apply the ultimate gain method: find K_u (gain at sustained oscillation), measure P_u (oscillation period), then use the table to compute K_p, T_i, T_d.',
       importantNote: 'The derivative term amplifies noise because it differentiates the error signal. In practice, a low-pass filter is always added to the D term: K_d·s/(1 + s/N) where N is typically 10–20. Pure derivative (K_d·s) is never used in real implementations.',
+    },
+    {
+      id: 'pid-tuning-worked',
+      title: '3. PID Tuning Worked Example',
+      content: `## 3.1 Problem Statement
+
+**Given plant**: G(s) = 1 / [s(s + 2)]
+
+Design a PID controller using the **Ziegler-Nichols ultimate gain method**. Find the ultimate gain K_u and ultimate period P_u. Calculate K_p, K_i, K_d. Verify closed-loop stability.
+
+## 3.2 Step 1 — Find the Ultimate Gain K_u
+
+With P-only control, the closed-loop characteristic equation is:
+
+**1 + K_p · G(s) = 0** → s(s + 2) + K_p = 0 → **s² + 2s + K_p = 0**
+
+Use **Routh-Hurwitz** to find K_p that causes sustained oscillation:
+
+| Row | Col 1 | Col 2 |
+|---|---|---|
+| s² | 1 | K_p |
+| s¹ | 2 | 0 |
+| s⁰ | K_p | 0 |
+
+For stability: all first-column entries > 0 → K_p > 0 AND 2 > 0. The system is stable for **all K_p > 0**.
+
+**Problem**: This 2nd-order system never oscillates — it cannot reach the −180° phase crossover with P-only control because it is only type 1 (total phase approaches −180° but never reaches it).
+
+**Resolution**: For Ziegler-Nichols ultimate gain method, we need a system that CAN oscillate. Let us add a realistic delay or use a higher-order plant. For this problem, we use the **frequency response approach** instead.
+
+## 3.3 Alternative: Frequency Response PID Design
+
+Since the pure plant G(s) = 1/[s(s+2)] has infinite gain margin, we design for a **target phase margin of 50°** and **bandwidth of 5 rad/s**.
+
+**Step 1 — Evaluate the plant at ω = 5 rad/s:**
+
+G(j5) = 1/[j5 · (j5 + 2)] = 1/[j5 · (2 + j5)] = 1/(−25 + j10)
+
+|G(j5)| = 1/√(625 + 100) = 1/√725 = **0.0371** (−28.6 dB)
+
+∠G(j5) = −90° − arctan(5/2) = −90° − 68.2° = **−158.2°**
+
+**Step 2 — Required controller phase at ω = 5:**
+
+For PM = 50°: total phase = −180° + 50° = −130°
+
+Controller must add: −130° − (−158.2°) = **+28.2° of phase lead**
+
+**Step 3 — Design PID parameters:**
+
+Using the PID transfer function: C(s) = K_p(1 + 1/(T_i·s) + T_d·s)
+
+Choose **T_d = 0.15 s** (provides phase lead near ω = 5):
+- Phase from D term at ω = 5: arctan(T_d·ω) = arctan(0.75) = +36.9°
+
+Choose **T_i = 2 s** (integral time, slow enough not to destabilize):
+- Phase from I term at ω = 5: −arctan(1/(T_i·ω)) = −arctan(0.1) = −5.7°
+
+Net controller phase: +36.9° − 5.7° = **+31.2°** (close to target of +28.2°, with margin)
+
+**Step 4 — Set K_p for 0 dB gain crossover at ω = 5:**
+
+|C(j5)| · |G(j5)| = 1
+
+|C(j5)| = |K_p| · |1 + 1/(j10) + j0.75| = K_p · |1.75 + j0.65| = K_p · 1.867
+
+K_p = 1/(1.867 × 0.0371) = **14.4**
+
+## 3.4 Final PID Parameters
+
+| Parameter | Value | Derived Values |
+|---|---|---|
+| **K_p** | 14.4 | Proportional gain |
+| **T_i** | 2.0 s | K_i = K_p/T_i = **7.2** |
+| **T_d** | 0.15 s | K_d = K_p·T_d = **2.16** |
+
+**Controller**: C(s) = 14.4 + 7.2/s + 2.16s
+
+## 3.5 Verification — Closed-Loop Stability
+
+Open-loop transfer function: L(s) = C(s)·G(s) = (14.4 + 7.2/s + 2.16s) · 1/[s(s+2)]
+
+At ω = 5 rad/s: |L(j5)| ≈ 1 (0 dB) and ∠L(j5) ≈ −130° → **PM ≈ 50°**
+
+The closed-loop system is stable with good damping (ζ ≈ 0.5, ~16% overshoot).
+
+## 3.6 Ziegler-Nichols Quick Reference (For Higher-Order Plants)
+
+When the ultimate gain method IS applicable (3rd order or higher):
+
+1. Increase K_p until sustained oscillation → **K_u** (ultimate gain)
+2. Measure oscillation period → **P_u**
+3. Apply the table:
+
+| Controller | K_p | K_i = K_p/T_i | K_d = K_p·T_d |
+|---|---|---|---|
+| **P** | 0.5·K_u | — | — |
+| **PI** | 0.45·K_u | 0.45·K_u/(P_u/1.2) | — |
+| **PID** | 0.6·K_u | 0.6·K_u/(P_u/2) = **1.2·K_u/P_u** | 0.6·K_u·P_u/8 = **0.075·K_u·P_u** |`,
+      examTip: 'If the FE exam gives a 2nd-order plant with no delay, the Ziegler-Nichols ultimate gain method may not apply directly (the system may be stable for all gains). In that case, use the frequency response approach or recognize that the exam expects you to apply the table formulas with given K_u and P_u values.',
+      importantNote: 'Ziegler-Nichols tuning is a starting point, not a final design. It typically produces about 25% overshoot. For tighter specifications, reduce K_p by 20-30% from the Z-N value and increase T_i. The FE exam usually tests the Z-N table lookup, not iterative refinement.',
     },
   ],
   keyTakeaways: [

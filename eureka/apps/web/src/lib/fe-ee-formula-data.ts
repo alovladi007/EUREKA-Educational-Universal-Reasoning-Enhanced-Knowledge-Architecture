@@ -278,6 +278,56 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
         name: "Step Response (First Order)",
         formula: "y(t) = K(1 - e^(-t/τ))u(t)",
         notes: "Output response to unit step input; shows settling behavior"
+      },
+      {
+        name: "Second-Order Standard Form",
+        formula: "H(s) = ωn²/(s² + 2ζωns + ωn²)",
+        notes: "Standard second-order transfer function; ζ is damping ratio, ωn is natural frequency"
+      },
+      {
+        name: "Damped Frequency",
+        formula: "ωd = ωn√(1 - ζ²)",
+        notes: "Actual oscillation frequency of underdamped system; ωd < ωn when 0 < ζ < 1"
+      },
+      {
+        name: "Settling Time (2%)",
+        formula: "ts ≈ 4/(ζωn)",
+        notes: "Time to remain within 2% of final value; inversely proportional to ζωn"
+      },
+      {
+        name: "Rise Time (Second Order)",
+        formula: "tr ≈ (π - arccos ζ)/ωd",
+        notes: "Time from 0% to 100% of final value for underdamped second-order system"
+      },
+      {
+        name: "Peak Time",
+        formula: "tp = π/ωd",
+        notes: "Time to reach first overshoot peak; only for underdamped systems (ζ < 1)"
+      },
+      {
+        name: "Percent Overshoot",
+        formula: "%OS = e^(-πζ/√(1-ζ²)) × 100",
+        notes: "Maximum overshoot as percentage of final value; decreases as ζ increases"
+      },
+      {
+        name: "State-Space Representation",
+        formula: "ẋ = Ax + Bu, y = Cx + Du",
+        notes: "Matrix form of system equations; A is system, B is input, C is output, D is feedthrough"
+      },
+      {
+        name: "Transfer Function from State-Space",
+        formula: "H(s) = C(sI - A)⁻¹B + D",
+        notes: "Converts state-space to transfer function; eigenvalues of A are system poles"
+      },
+      {
+        name: "Frequency Shift Property",
+        formula: "L{e^(-at)f(t)} = F(s + a)",
+        notes: "Multiplication by exponential shifts F(s) in the s-domain by a"
+      },
+      {
+        name: "Differentiation in s-Domain",
+        formula: "L{t·f(t)} = -dF(s)/ds",
+        notes: "Multiplication by t in time domain corresponds to negative derivative in s-domain"
       }
     ]
   },
@@ -352,13 +402,58 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
       },
       {
         name: "Power Spectral Density",
-        formula: "S(f) = |F(f)|²/T or E(f) = |F(f)|²",
+        formula: "Sxx(f) = |X(f)|²/T",
         notes: "Power per unit frequency; used for random signals analysis"
       },
       {
         name: "Filter Attenuation (dB)",
         formula: "Attenuation(dB) = 20·log₁₀(|H(f)|)",
         notes: "Logarithmic measure of filter gain; negative for attenuation"
+      },
+      {
+        name: "DFT Frequency of Bin k",
+        formula: "fk = k·fs/N",
+        notes: "Physical frequency corresponding to DFT bin index k; k ranges from 0 to N-1"
+      },
+      {
+        name: "Windowing Effect",
+        formula: "x_w[n] = w[n]·x[n]",
+        notes: "Reduces spectral sidelobes but widens main lobe; common windows: Hamming, Hanning, Blackman"
+      },
+      {
+        name: "FIR Filter",
+        formula: "y[n] = Σ(k=0 to M) b_k·x[n-k]",
+        notes: "Finite impulse response; always stable; linear phase possible; no feedback"
+      },
+      {
+        name: "IIR Filter",
+        formula: "y[n] = Σ(k=0 to M) b_k·x[n-k] - Σ(k=1 to N) a_k·y[n-k]",
+        notes: "Infinite impulse response; uses feedback; more efficient but can be unstable"
+      },
+      {
+        name: "Bilinear Transform",
+        formula: "s = (2/T)(z - 1)/(z + 1)",
+        notes: "Maps analog s-plane to digital z-plane; warps frequency axis; preserves stability"
+      },
+      {
+        name: "Decimation Output Rate",
+        formula: "fs_out = fs_in / M",
+        notes: "Down-sampling by factor M; must apply anti-aliasing LP filter before decimation"
+      },
+      {
+        name: "Interpolation Output Rate",
+        formula: "fs_out = fs_in × L",
+        notes: "Up-sampling by factor L; insert L-1 zeros between samples then LP filter"
+      },
+      {
+        name: "Convolution Length",
+        formula: "len(x * h) = len(x) + len(h) - 1",
+        notes: "Output length of linear convolution of two finite-length sequences"
+      },
+      {
+        name: "Zero-Padding in DFT",
+        formula: "N_padded > N_original; Δf_display = fs/N_padded",
+        notes: "Increases frequency display resolution but does not improve actual spectral resolution"
       }
     ]
   },
@@ -398,8 +493,8 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
       },
       {
         name: "Op-Amp Inverting Gain",
-        formula: "Vout = -Vf·(Rf/Rin)",
-        notes: "Output inverted; gain magnitude = Rf/Rin; ideal op-amp (infinite CMRR)"
+        formula: "Vout = -Vin·(Rf/Rin)",
+        notes: "Output inverted; gain magnitude = Rf/Rin; ideal op-amp (infinite gain, CMRR)"
       },
       {
         name: "Op-Amp Non-Inverting Gain",
@@ -440,6 +535,61 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
         name: "Voltage Regulation",
         formula: "Vr = (Vout,no-load - Vout,full-load)/Vout,full-load × 100%",
         notes: "Percentage change in output voltage with load variation"
+      },
+      {
+        name: "BJT Small-Signal Transconductance",
+        formula: "gm = IC/VT",
+        notes: "Small-signal transconductance; VT ≈ 26mV at room temperature"
+      },
+      {
+        name: "BJT Small-Signal Input Resistance",
+        formula: "rπ = β/gm",
+        notes: "Base-emitter small-signal resistance; seen looking into the base"
+      },
+      {
+        name: "MOSFET Transconductance",
+        formula: "gm = 2ID/(VGS - VT)",
+        notes: "Small-signal transconductance in saturation; also gm = √(2μₙCox(W/L)ID)"
+      },
+      {
+        name: "Common-Emitter Voltage Gain",
+        formula: "Av = -gm·RC",
+        notes: "Inverting gain; RC is collector resistance; magnitude increases with gm"
+      },
+      {
+        name: "Common-Source Voltage Gain",
+        formula: "Av = -gm·RD",
+        notes: "MOSFET analog of common-emitter; RD is drain resistance"
+      },
+      {
+        name: "Gain-Bandwidth Product",
+        formula: "GBW = Aol × f3dB",
+        notes: "Constant for a given op-amp; closed-loop gain trades off with bandwidth"
+      },
+      {
+        name: "Slew Rate",
+        formula: "SR = dVout/dt|max",
+        notes: "Maximum rate of output voltage change; limits large-signal bandwidth"
+      },
+      {
+        name: "Common-Mode Rejection Ratio",
+        formula: "CMRR = 20·log₁₀(Ad/Acm) dB",
+        notes: "Ratio of differential gain to common-mode gain; higher is better"
+      },
+      {
+        name: "Buck Converter Inductor Ripple",
+        formula: "ΔIL = Vin·D/(L·fs)",
+        notes: "Peak-to-peak inductor current ripple; D is duty cycle, fs is switching frequency"
+      },
+      {
+        name: "Boost Converter Inductor Ripple",
+        formula: "ΔIL = Vin·D/(L·fs)",
+        notes: "Same ripple formula as buck; Vout = Vin/(1-D) for boost topology"
+      },
+      {
+        name: "Full-Wave Rectifier Ripple Voltage",
+        formula: "Vr = I/(2fC)",
+        notes: "Peak-to-peak ripple with capacitor filter; I is load current, f is line frequency"
       }
     ]
   },
@@ -504,7 +654,7 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
       },
       {
         name: "Induction Motor Torque",
-        formula: "τ = (3·Vs²·R'r)/(ωs·(Rs + Rr)² + (Xs + X'r)²))",
+        formula: "τ = (3·Vs²·R'r)/(ωs·((Rs + R'r/s)² + (Xs + X'r)²))",
         notes: "Maximum torque at specific slip value; dependent on rotor resistance"
       },
       {
@@ -521,6 +671,51 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
         name: "Load Angle (Generator)",
         formula: "Pout = (Ef·Vt/X)·sin(δ)",
         notes: "δ is load angle between EMF and terminal voltage; maximum at δ=90°"
+      },
+      {
+        name: "Rotor Frequency",
+        formula: "fr = s·f",
+        notes: "Frequency of currents induced in rotor; s is slip, f is stator supply frequency"
+      },
+      {
+        name: "Per-Unit Impedance",
+        formula: "Zpu = Z/Zbase",
+        notes: "Normalizes impedance; simplifies calculations in multi-voltage systems"
+      },
+      {
+        name: "Base Impedance",
+        formula: "Zbase = Vbase²/Sbase",
+        notes: "Derived from chosen base voltage and base apparent power"
+      },
+      {
+        name: "Voltage Regulation (General)",
+        formula: "VR = (Vnl - Vfl)/Vfl × 100%",
+        notes: "Percentage voltage change from no-load to full-load; lower is better"
+      },
+      {
+        name: "Transformer Efficiency",
+        formula: "η = Pout/(Pout + Pcore + Pcopper)",
+        notes: "Output power over total input; Pcore is iron loss, Pcopper is winding loss"
+      },
+      {
+        name: "Maximum Transformer Efficiency Condition",
+        formula: "Maximum η when Pcore = Pcopper",
+        notes: "Core (iron) losses equal copper losses at the load giving peak efficiency"
+      },
+      {
+        name: "Fault Current",
+        formula: "If = Vprefault / Zfault",
+        notes: "Symmetrical fault current; Zfault is total impedance to fault point"
+      },
+      {
+        name: "Base Current",
+        formula: "Ibase = Sbase / (√3·Vbase)",
+        notes: "Three-phase base current derived from base apparent power and base line voltage"
+      },
+      {
+        name: "Per-Unit Impedance Conversion",
+        formula: "Zpu,new = Zpu,old × (Vbase,old/Vbase,new)² × (Sbase,new/Sbase,old)",
+        notes: "Converts per-unit impedance between different base values"
       }
     ]
   },
@@ -574,9 +769,14 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
         notes: "Describes EM wave propagation; c = 3×10⁸ m/s in vacuum"
       },
       {
-        name: "Intrinsic Impedance",
-        formula: "η = √(μ/ε) = (μ₀/ε₀)√(μᵣ/εᵣ)",
-        notes: "Wave impedance of medium; η₀ ≈ 377Ω in free space"
+        name: "Wave Impedance",
+        formula: "η = √(μ/ε)",
+        notes: "Intrinsic impedance of medium; ratio of E to H field magnitudes in plane wave"
+      },
+      {
+        name: "Free-Space Impedance",
+        formula: "η₀ = √(μ₀/ε₀) ≈ 377 Ω",
+        notes: "Intrinsic impedance of free space; fundamental constant for EM wave propagation"
       },
       {
         name: "Reflection Coefficient",
@@ -590,7 +790,7 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
       },
       {
         name: "Skin Depth",
-        formula: "δ = 1/√(πfμσ)",
+        formula: "δ = √(2/(ωμσ))",
         notes: "Depth where current density drops to 1/e of surface value; higher frequency = shallower"
       },
       {
@@ -602,6 +802,51 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
         name: "Maxwell's Equations Summary",
         formula: "∮E·dA = Q/ε₀, ∮B·dA = 0, ∮E·dl = -dΦB/dt, ∮B·dl = μ₀(I + ε₀·dΦE/dt)",
         notes: "Foundation of electromagnetism; relates E, B, charges, and currents"
+      },
+      {
+        name: "Capacitance (Parallel Plate)",
+        formula: "C = εA/d",
+        notes: "ε = ε₀εr; A is plate area, d is separation; increases with area and permittivity"
+      },
+      {
+        name: "Capacitance (Coaxial)",
+        formula: "C = 2πεL/ln(b/a)",
+        notes: "a is inner radius, b is outer radius, L is length; per-length: C/L = 2πε/ln(b/a)"
+      },
+      {
+        name: "Inductance (Solenoid)",
+        formula: "L = μn²Al",
+        notes: "μ = μ₀μr; n is turns per unit length, A is cross-section area, l is solenoid length"
+      },
+      {
+        name: "Inductance (Coaxial, per unit length)",
+        formula: "L/l = (μ/2π)·ln(b/a)",
+        notes: "a is inner radius, b is outer radius; used in transmission line calculations"
+      },
+      {
+        name: "Boundary Condition: Tangential E",
+        formula: "E₁t = E₂t",
+        notes: "Tangential component of electric field is continuous across boundary between two media"
+      },
+      {
+        name: "Boundary Condition: Tangential H",
+        formula: "H₁t - H₂t = Js",
+        notes: "Discontinuity in tangential H equals surface current density Js; if no surface current, H₁t = H₂t"
+      },
+      {
+        name: "Quarter-Wave Transformer",
+        formula: "Zin = Z₀²/ZL",
+        notes: "λ/4 section transforms load impedance; Z₀ = √(Zin·ZL) for matching"
+      },
+      {
+        name: "Propagation Constant",
+        formula: "γ = α + jβ where β = ω√(με), α = 0 (lossless)",
+        notes: "α is attenuation constant, β is phase constant; β = 2π/λ"
+      },
+      {
+        name: "Wavelength in Medium",
+        formula: "λ = λ₀/√(εr·μr)",
+        notes: "Wavelength shorter in material than free space; λ₀ = c/f"
       }
     ]
   },
@@ -683,6 +928,56 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
         name: "Phase Margin",
         formula: "PM = 180° + ∠G(jωgc) where |G(jωgc)| = 1",
         notes: "Amount of phase decrease to instability; ωgc is gain crossover frequency"
+      },
+      {
+        name: "Position Error Constant",
+        formula: "Kp = lim[s→0] G(s)·H(s)",
+        notes: "Determines steady-state error to step input; infinite for type 1+ systems"
+      },
+      {
+        name: "Velocity Error Constant",
+        formula: "Kv = lim[s→0] s·G(s)·H(s)",
+        notes: "Determines steady-state error to ramp input; infinite for type 2+ systems"
+      },
+      {
+        name: "Acceleration Error Constant",
+        formula: "Ka = lim[s→0] s²·G(s)·H(s)",
+        notes: "Determines steady-state error to parabolic input; infinite for type 3+ systems"
+      },
+      {
+        name: "Gain Margin (dB)",
+        formula: "GM(dB) = -20·log₁₀|G(jωpc)|",
+        notes: "Positive GM (dB) indicates stable system; measured at phase crossover"
+      },
+      {
+        name: "Routh Stability Criterion",
+        formula: "All first-column entries of Routh array must be positive → stable",
+        notes: "Number of sign changes in first column equals number of RHP poles"
+      },
+      {
+        name: "Root Locus Asymptote Angles",
+        formula: "θ = (2k+1)·180°/(n-m), k = 0, 1, ..., n-m-1",
+        notes: "n is number of poles, m is number of zeros; asymptotes radiate from centroid"
+      },
+      {
+        name: "Root Locus Centroid",
+        formula: "σ = (Σpoles - Σzeros)/(n - m)",
+        notes: "Real-axis intersection of asymptotes; n is pole count, m is zero count"
+      },
+      {
+        name: "PID Transfer Function (s-domain)",
+        formula: "C(s) = Kp + Ki/s + Kd·s",
+        notes: "Laplace domain form of PID; Ki adds a pole at origin, Kd adds a zero"
+      },
+      {
+        name: "Second-Order Closed-Loop Poles",
+        formula: "s = -ζωn ± jωn√(1-ζ²)",
+        notes: "Complex conjugate poles for underdamped system; real part determines decay rate"
+      },
+      {
+        name: "Disturbance Rejection TF",
+        formula: "Y(s)/D(s) = G₂(s)/(1 + G₁(s)·G₂(s)·H(s))",
+        notes: "Transfer function from disturbance to output; high loop gain reduces disturbance effect"
       }
     ]
   },
@@ -764,6 +1059,51 @@ export const FE_EE_FORMULA_SHEETS: FormulaSheet[] =
         name: "Link Budget Equation",
         formula: "PRx(dBm) = PTx(dBm) + GTx(dBi) + GRx(dBi) - PathLoss(dB)",
         notes: "Received power calculation; critical for wireless system design"
+      },
+      {
+        name: "Eb/N0 Relationship",
+        formula: "Eb/N₀ = (S/N)·(B/Rb)",
+        notes: "Converts SNR to energy-per-bit metric; B is bandwidth, Rb is bit rate"
+      },
+      {
+        name: "Noise Temperature",
+        formula: "Te = (F - 1)·T₀",
+        notes: "Equivalent noise temperature from noise figure; T₀ = 290 K standard reference"
+      },
+      {
+        name: "Thermal Noise Power",
+        formula: "N = kTB",
+        notes: "k = 1.38×10⁻²³ J/K (Boltzmann); T in Kelvin; B is bandwidth in Hz"
+      },
+      {
+        name: "PCM Signal-to-Quantization-Noise Ratio",
+        formula: "SQNR ≈ 6.02n + 1.76 dB",
+        notes: "n is number of bits per sample; each additional bit adds ~6 dB of SQNR"
+      },
+      {
+        name: "16-QAM Spectral Efficiency",
+        formula: "η = 4 bits/symbol",
+        notes: "16-QAM uses 16 constellation points; higher spectral efficiency but needs higher SNR"
+      },
+      {
+        name: "Free-Space Path Loss",
+        formula: "FSPL(dB) = 20·log₁₀(4πd/λ) = 20·log₁₀(d) + 20·log₁₀(f) + 32.44",
+        notes: "d in km, f in MHz; fundamental path loss model for line-of-sight propagation"
+      },
+      {
+        name: "AM Power with Modulation",
+        formula: "Ptotal = Pc·(1 + μ²/2)",
+        notes: "Pc is unmodulated carrier power; μ is modulation index; sidebands add power"
+      },
+      {
+        name: "Nyquist Bandwidth",
+        formula: "Rmax = 2B·log₂(M) bits/s",
+        notes: "Maximum symbol rate is 2B symbols/s for bandwidth B; M is number of signal levels"
+      },
+      {
+        name: "Symbol Rate (Baud Rate)",
+        formula: "Rs = Rb / log₂(M)",
+        notes: "Rb is bit rate, M is constellation size; baud rate is always ≤ bit rate"
       }
     ]
   },
