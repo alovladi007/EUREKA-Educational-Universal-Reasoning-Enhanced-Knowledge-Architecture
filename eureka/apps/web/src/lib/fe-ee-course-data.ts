@@ -6920,6 +6920,49 @@ where A_c is carrier amplitude, m(t) is the normalized message (|m(t)| <= 1), an
 FM uses pre-emphasis (boost highs before TX) and de-emphasis (attenuate after RX) to improve high-frequency SNR.`,
       examTip: 'Image frequency = f_signal + 2 f_IF. The image is always separated from the desired signal by exactly twice the IF frequency.',
     },
+    { id: 'am-fm-worked', title: '3. AM/FM Worked Problems',
+      content: `## 3.1 AM Bandwidth and Efficiency (m = 0.8)
+
+**Given**: Carrier power P_c = 10 kW, modulation index m_a = 0.8, message bandwidth f_m = 5 kHz.
+
+**Step 1 — Bandwidth**: BW = 2 * f_m = 2 * 5 kHz = **10 kHz**
+
+**Step 2 — Sideband power**: P_s = P_c * m_a^2 / 2 = 10000 * 0.64 / 2 = **3200 W**
+
+**Step 3 — Total power**: P_total = P_c(1 + m_a^2/2) = 10000(1 + 0.32) = **13,200 W**
+
+**Step 4 — Efficiency**: eta = m_a^2 / (2 + m_a^2) = 0.64 / 2.64 = **24.2%**
+
+| Parameter | Value |
+|---|---|
+| Bandwidth | 10 kHz |
+| Sideband power | 3,200 W |
+| Total power | 13,200 W |
+| Efficiency | 24.2% |
+
+## 3.2 FM Carson's Bandwidth
+
+**Given**: Frequency deviation Delta_f = 75 kHz, message frequency f_m = 15 kHz.
+
+- **Modulation index**: beta = Delta_f / f_m = 75 / 15 = **5** (wideband FM)
+- **Carson's rule**: BW = 2(Delta_f + f_m) = 2(75 + 15) = **180 kHz**
+
+Since beta = 5 >> 1, this is wideband FM with excellent noise immunity.
+
+## 3.3 DSB-AM vs SSB Bandwidth Savings
+
+| Scheme | Bandwidth | Efficiency | Detection |
+|---|---|---|---|
+| Standard AM | 2 f_m = 10 kHz | 24.2% (m=0.8) | Envelope (simple) |
+| DSB-SC | 2 f_m = 10 kHz | 100% | Coherent (complex) |
+| SSB | f_m = 5 kHz | 100% | Coherent (complex) |
+
+**SSB saves 50% bandwidth** vs standard AM or DSB-SC while achieving 100% power efficiency. The tradeoff is receiver complexity — SSB requires a synchronous detector or Weaver method.
+
+**Exam strategy**: Always compute beta first for FM problems. If beta < 0.3, use narrowband approximation (BW ≈ 2f_m). If beta > 1, use Carson's rule. For AM, the efficiency formula eta = m_a^2/(2 + m_a^2) is the fastest path.`,
+      examTip: 'For AM efficiency at any m_a, just plug into eta = m_a^2/(2+m_a^2). At m_a=1 you get 33%. At m_a=0.5, only 11%. The carrier wastes most power in standard AM.',
+      importantNote: 'Carson\'s rule gives an approximate 98% bandwidth. The exact FM bandwidth is infinite (Bessel functions), but Carson\'s rule is always accepted on the FE exam.',
+    },
   ],
   keyTakeaways: [
     'AM: s(t) = A_c[1+m_a*m(t)]cos(wt); BW = 2f_m; efficiency eta = m_a^2/(2+m_a^2), max ~33%.',
@@ -6994,6 +7037,47 @@ QAM varies **both amplitude and phase**:
 
 **Bandwidth**: BW = R_s * (1 + alpha) where alpha is roll-off factor (0.2-0.5 typical).`,
       examTip: 'BPSK and QPSK have identical BER per E_b/N_0 because QPSK is two independent BPSK streams. For 16-QAM, you need ~4 dB more E_b/N_0 than QPSK for the same BER.',
+    },
+    { id: 'digmod-exam', title: '3. Digital Modulation Exam Problems',
+      content: `## 3.1 QPSK vs 16-QAM Bandwidth Efficiency
+
+**Problem**: A channel has 1 MHz bandwidth with roll-off factor alpha = 0.25. Compare throughput for QPSK and 16-QAM.
+
+**Symbol rate**: R_s = BW / (1 + alpha) = 1 MHz / 1.25 = **800 ksym/s**
+
+| Scheme | Bits/Symbol | Bit Rate | Spectral Efficiency |
+|---|---|---|---|
+| **QPSK** | 2 | 2 * 800k = **1.6 Mbps** | 1.6 bits/s/Hz |
+| **16-QAM** | 4 | 4 * 800k = **3.2 Mbps** | 3.2 bits/s/Hz |
+
+16-QAM doubles throughput but requires **~4 dB more E_b/N_0** for the same BER.
+
+## 3.2 BER for BPSK at E_b/N_0 = 10 dB
+
+**Step 1**: Convert to linear: E_b/N_0 = 10^(10/10) = **10**
+
+**Step 2**: BER = Q(sqrt(2 * 10)) = Q(sqrt(20)) = Q(4.47)
+
+**Step 3**: From Q-function table: Q(4.47) ≈ **3.9 x 10^-6**
+
+At E_b/N_0 = 10 dB, BPSK and QPSK both achieve BER near 10^-6 — excellent for most applications.
+
+## 3.3 Bits per Symbol for 64-QAM
+
+**bits/symbol = log_2(M) = log_2(64) = 6**
+
+| M-QAM | Constellation Points | Bits/Symbol | Required E_b/N_0 (BER=10^-5) |
+|---|---|---|---|
+| 4-QAM (QPSK) | 4 | 2 | ~9.6 dB |
+| 16-QAM | 16 | 4 | ~13.4 dB |
+| **64-QAM** | 64 | **6** | ~17.8 dB |
+| 256-QAM | 256 | 8 | ~21.5 dB |
+
+**Rule of thumb**: each doubling of M costs ~3-4 dB more E_b/N_0. The formula bits = log_2(M) is guaranteed on the FE reference sheet, but memorizing common values saves time.
+
+**Exam strategy**: For any M-ary modulation, start with bits/symbol = log_2(M). Then bit rate = bits/symbol * symbol rate. For BER questions, remember BPSK/QPSK share the same curve, and higher M needs more E_b/N_0.`,
+      examTip: 'Quick formula chain: symbol rate = BW/(1+alpha), bit rate = log_2(M) * symbol rate. QPSK and BPSK have identical BER — this fact appears almost every exam cycle.',
+      importantNote: 'Roll-off factor alpha is sometimes given as "excess bandwidth." BW = R_s(1+alpha). If alpha is not given, assume alpha = 0 (Nyquist minimum bandwidth = R_s).',
     },
   ],
   keyTakeaways: [
@@ -7072,6 +7156,52 @@ Each stage's noise contribution is **divided by cumulative gain** of preceding s
       examTip: 'Friis formula: place lowest NF device FIRST with maximum gain. If G_1 = 100 (20 dB), second stage noise barely matters. A passive loss BEFORE the LNA is devastating.',
       importantNote: 'A cable/filter with 3 dB loss placed before the LNA adds F = 2 to the cascade, often doubling the system noise figure. Always put the LNA as close to the antenna as possible.',
     },
+    { id: 'noise-worked', title: '3. Noise Calculation Walkthrough',
+      content: `## 3.1 Three-Stage Amplifier Friis Cascade
+
+**Given**: Stage 1: F_1 = 2 dB, G_1 = 20 dB. Stage 2: F_2 = 6 dB, G_2 = 10 dB. Stage 3: F_3 = 10 dB.
+
+**Step 1 — Convert to linear**:
+
+| Parameter | dB | Linear |
+|---|---|---|
+| F_1 | 2 dB | 10^(2/10) = **1.585** |
+| G_1 | 20 dB | 10^(20/10) = **100** |
+| F_2 | 6 dB | 10^(6/10) = **3.981** |
+| G_2 | 10 dB | 10^(10/10) = **10** |
+| F_3 | 10 dB | 10^(10/10) = **10** |
+
+**Step 2 — Friis cascade formula**:
+
+F_total = F_1 + (F_2 - 1)/G_1 + (F_3 - 1)/(G_1 * G_2)
+
+F_total = 1.585 + (3.981 - 1)/100 + (10 - 1)/(100 * 10)
+
+F_total = 1.585 + 0.0298 + 0.009 = **1.624**
+
+**NF_total = 10 log_10(1.624) = 2.11 dB**
+
+The first stage dominates: 1.585 of 1.624 total. Stages 2 and 3 contribute only 0.039 combined.
+
+## 3.2 Thermal Noise Power for B = 1 MHz at T = 290 K
+
+**Method 1 — Direct**: P_n = kTB = 1.38e-23 * 290 * 1e6 = **4.0 x 10^-15 W**
+
+**Method 2 — dBm shortcut** (faster on exam):
+
+P_n(dBm) = -174 + 10 log_10(B) = -174 + 10 log_10(10^6) = -174 + 60 = **-114 dBm**
+
+| Bandwidth | Noise Power |
+|---|---|
+| 1 Hz | -174 dBm |
+| 1 kHz | -144 dBm |
+| **1 MHz** | **-114 dBm** |
+| 1 GHz | -84 dBm |
+
+**Exam strategy**: Always convert NF and gain to linear before applying Friis. The dBm shortcut (-174 + 10 log B) is the fastest approach for thermal noise. Verify that stage 1 dominates — if it does not, the receiver design is suboptimal.`,
+      examTip: 'Friis step-by-step: (1) convert all dB to linear, (2) apply formula, (3) convert result back to dB. The most common error is mixing dB and linear in the same equation.',
+      importantNote: 'If the first stage has low gain (e.g., a passive mixer at G = -6 dB = 0.25 linear), later stages dominate noise. Reorder or add an LNA before the mixer.',
+    },
   ],
   keyTakeaways: [
     'Thermal noise: P_n = kTB; at room temp, noise floor = -174 dBm/Hz.',
@@ -7143,6 +7273,48 @@ At capacity: **E_b/N_0 >= ln(2) = -1.59 dB** (theoretical minimum)
 
 Higher spectral efficiency requires higher SNR -- no free lunch.`,
       examTip: 'E_b/N_0 = (S/N)*(B/R_b) bridges analog and digital metrics. Shannon limit of -1.59 dB is theoretical; practical systems need 5-18 dB depending on modulation.',
+    },
+    { id: 'shannon-worked', title: '3. Shannon Capacity Problems',
+      content: `## 3.1 Calculate C for B = 4 kHz, SNR = 31
+
+**Given**: Bandwidth B = 4 kHz, SNR = 31 (linear — NOT dB).
+
+C = B * log_2(1 + S/N) = 4000 * log_2(1 + 31) = 4000 * log_2(32) = 4000 * 5 = **20,000 bps = 20 kbps**
+
+**Verification**: This is the classic telephone channel result. 4 kHz voice band with 31 linear SNR (~15 dB) gives 20 kbps — matching V.34 modem rates.
+
+**Common trap**: If SNR were given as 15 dB instead, you must convert: S/N = 10^(15/10) = 31.6, then C = 4000 * log_2(32.6) ≈ 20.1 kbps.
+
+## 3.2 Minimum E_b/N_0 for Reliable Communication
+
+At Shannon limit: **E_b/N_0 >= ln(2) = 0.693 = -1.59 dB**
+
+No system can communicate reliably below this threshold, regardless of coding or modulation.
+
+| System | E_b/N_0 Required | Gap from Shannon |
+|---|---|---|
+| Shannon limit | -1.59 dB | 0 dB |
+| Turbo codes | ~0.7 dB | ~2.3 dB |
+| BPSK uncoded | ~9.6 dB | ~11.2 dB |
+| 16-QAM uncoded | ~13.4 dB | ~15.0 dB |
+
+Modern turbo and LDPC codes operate within 1 dB of Shannon limit.
+
+## 3.3 Bandwidth-Limited vs Power-Limited Comparison
+
+**Scenario A — Bandwidth-limited**: B = 1 MHz, SNR = 30 dB (1000 linear)
+C = 10^6 * log_2(1001) ≈ 10^6 * 9.97 = **9.97 Mbps**
+Strategy: use 256-QAM or higher to approach capacity.
+
+**Scenario B — Power-limited**: B = 10 MHz, SNR = 0 dB (1 linear)
+C = 10^7 * log_2(2) = 10^7 * 1 = **10 Mbps**
+Strategy: spread over wide bandwidth with BPSK + coding.
+
+Both achieve ~10 Mbps but with opposite strategies. The bandwidth-limited system uses high-order modulation; the power-limited system uses wide bandwidth with robust modulation.
+
+**Exam strategy**: Always check SNR units (dB vs linear). If log_2 is hard to compute, use log_2(x) = 3.32 * log_10(x). Memorize: log_2(2)=1, log_2(4)=2, log_2(8)=3, log_2(32)=5, log_2(1024)=10.`,
+      examTip: 'Shortcut: log_2(x) = 3.322 * log_10(x). For SNR = 31, log_2(32) = 5 exactly. Memorize powers of 2 — the FE exam loves clean numbers like 32, 64, 1024.',
+      importantNote: 'Shannon capacity is the UPPER BOUND. If a problem asks "can system X achieve rate R?" and R > C, the answer is always NO, regardless of the modulation or coding scheme used.',
     },
   ],
   keyTakeaways: [
@@ -7220,6 +7392,61 @@ Divides wideband channel into many narrow orthogonal subcarriers:
 - Resilient to multipath fading
 - Efficient spectrum use (overlapping but orthogonal)`,
       examTip: 'CDMA spreading gain = code length L. Near-far problem is the critical practical limitation -- without power control, CDMA fails.',
+    },
+    { id: 'mux-worked', title: '3. Multiplexing Design Problems',
+      content: `## 3.1 TDM Frame Structure for 24 Channels at 64 kbps
+
+**Design a T1 TDM frame:**
+
+- Each channel: 64 kbps = 8 bits/sample at 8000 samples/s
+- **24 channels * 8 bits = 192 data bits per frame**
+- Add 1 framing bit: **193 bits/frame**
+- Frame rate: 8000 frames/s
+- **Total bit rate**: 193 * 8000 = **1.544 Mbps**
+
+| Parameter | Value |
+|---|---|
+| Channels | 24 |
+| Bits per channel per frame | 8 |
+| Framing bits | 1 |
+| Frame size | 193 bits |
+| Frame rate | 8000 frames/s |
+| **Total rate** | **1.544 Mbps** |
+
+Frame duration: 1/8000 = **125 us** (one sample period at 8 kHz).
+
+## 3.2 FDM Guard Band Calculation
+
+**Given**: 12 voice channels, each 4 kHz bandwidth, guard bands of 1 kHz between channels.
+
+- Channel bandwidth: 12 * 4 kHz = 48 kHz
+- Guard bands: 11 * 1 kHz = 11 kHz (between channels, not at edges)
+- **Total bandwidth**: 48 + 11 = **59 kHz**
+
+**Efficiency**: 48/59 = **81.4%** (guard bands waste 18.6%)
+
+Wider guard bands improve adjacent-channel rejection but waste spectrum. Narrower guard bands require sharper (more expensive) filters.
+
+## 3.3 CDMA Processing Gain
+
+**Given**: Chip rate = 1.2288 Mcps (IS-95 standard), data rate = 9.6 kbps.
+
+**Processing gain**: G_p = chip_rate / data_rate = 1,228,800 / 9,600 = **128 = 21.1 dB**
+
+This means the signal is spread across 128x the minimum bandwidth, providing 21 dB of interference rejection.
+
+| Parameter | IS-95 CDMA |
+|---|---|
+| Chip rate | 1.2288 Mcps |
+| Data rate | 9.6 kbps |
+| **Processing gain** | **128 (21.1 dB)** |
+| Bandwidth | ~1.25 MHz |
+
+**Maximum users** (approximate): N ≈ G_p / (E_b/N_0) = 128 / 7 ≈ **18 users/cell** (with voice activity factor ~2x: ~36 users).
+
+**Exam strategy**: For TDM, the frame structure formula is total_rate = (channels * bits_per_channel + framing) * frame_rate. For FDM, always account for guard bands. For CDMA, G_p = chip_rate / data_rate.`,
+      examTip: 'T1 = 1.544 Mbps is the most-tested TDM value. Remember: 24 channels * 8 bits + 1 framing bit = 193 bits * 8000 frames/s. E1 (European) = 32 channels * 8 bits = 256 bits * 8000 = 2.048 Mbps.',
+      importantNote: 'CDMA capacity is soft-limited (degrades gracefully) unlike TDM/FDM which have hard limits. Adding one more CDMA user slightly raises the noise floor for all users.',
     },
   ],
   keyTakeaways: [
@@ -7299,6 +7526,55 @@ Data moves UP at receiver: each layer strips its header.
       examTip: 'Memorize: HTTP=80, HTTPS=443, SSH=22, DNS=53, SMTP=25, FTP=20/21. TCP uses 3-way handshake (SYN, SYN-ACK, ACK); UDP does not.',
       importantNote: 'DNS typically uses UDP for queries (small packets) but TCP for zone transfers (large data). This dual-protocol behavior is commonly tested.',
     },
+    { id: 'osi-exam', title: '3. Protocol Analysis Exam Problems',
+      content: `## 3.1 Trace a Packet Through OSI Layers
+
+**Scenario**: User sends an HTTP request to www.example.com.
+
+| Layer | Action | Header/Encapsulation Added |
+|---|---|---|
+| **L7 Application** | HTTP GET request created | HTTP header |
+| **L6 Presentation** | TLS encryption applied | TLS record header |
+| **L5 Session** | Session tracking | Session ID |
+| **L4 Transport** | TCP segment, port 443 | TCP header (src port, dst port 443, seq #) |
+| **L3 Network** | IP packet, routing | IP header (src IP, dst IP) |
+| **L2 Data Link** | Ethernet frame | MAC header (src MAC, dst MAC) + FCS trailer |
+| **L1 Physical** | Electrical/optical bits | Preamble, encoding |
+
+At the receiver, headers are stripped in **reverse order** (L1 -> L7).
+
+## 3.2 Layer Identification Scenarios
+
+**Match the scenario to the correct OSI layer:**
+
+| Scenario | Layer | Why |
+|---|---|---|
+| MAC address lookup | **L2 (Data Link)** | Switch forwarding table |
+| IP routing decision | **L3 (Network)** | Router next-hop lookup |
+| Retransmission of lost segment | **L4 (Transport)** | TCP reliability |
+| URL resolution to IP | **L7 (Application)** | DNS protocol |
+| Bit encoding on copper wire | **L1 (Physical)** | Signal transmission |
+| Establishing encrypted session | **L5/L6 (Session/Presentation)** | TLS handshake |
+
+## 3.3 Port Number Quick-Reference
+
+| Port | Protocol | Transport | Category |
+|---|---|---|---|
+| 20/21 | FTP | TCP | File transfer |
+| 22 | SSH/SFTP | TCP | Secure remote |
+| 23 | Telnet | TCP | Insecure remote |
+| 25 | SMTP | TCP | Email send |
+| 53 | DNS | UDP/TCP | Name resolution |
+| 67/68 | DHCP | UDP | IP assignment |
+| 80 | HTTP | TCP | Web |
+| 110 | POP3 | TCP | Email retrieve |
+| 143 | IMAP | TCP | Email retrieve |
+| 443 | HTTPS | TCP | Secure web |
+
+**Exam strategy**: For "which layer?" questions, ask: Is it about physical signals (L1)? MAC addresses (L2)? IP addresses/routing (L3)? End-to-end delivery/ports (L4)? Application protocol (L7)? This decision tree covers 90% of FE exam scenarios.`,
+      examTip: 'The FE exam loves "which layer handles X?" questions. Remember: anything with MAC = L2, anything with IP = L3, anything with ports = L4, anything the user sees = L7.',
+      importantNote: 'Switches operate at L2 (MAC) by default. A "Layer 3 switch" also routes by IP. If the exam says "switch" without qualification, assume L2.',
+    },
   ],
   keyTakeaways: [
     'OSI: 7 layers (Physical through Application); TCP/IP: 4 practical layers.',
@@ -7371,6 +7647,51 @@ Combine contiguous networks: 192.168.0.0/24 + 192.168.1.0/24 = **192.168.0.0/23*
 - No broadcast (uses multicast/anycast), no NAT needed`,
       examTip: 'Subnets = 2^(bits borrowed). Hosts/subnet = 2^(remaining) - 2. Memorize powers of 2 up to 2^10 = 1024.',
     },
+    { id: 'subnet-worked', title: '3. Subnetting Worked Examples',
+      content: `## 3.1 Create 4 Subnets from 192.168.10.0/24
+
+**Borrow 2 bits** from host portion: /24 -> **/26** (2^2 = 4 subnets).
+
+Block size = 2^(32-26) = 2^6 = **64 addresses per subnet**.
+
+| Subnet | Network Address | Usable Range | Broadcast | Hosts |
+|---|---|---|---|---|
+| 1 | 192.168.10.0/26 | .1 - .62 | .63 | 62 |
+| 2 | 192.168.10.64/26 | .65 - .126 | .127 | 62 |
+| 3 | 192.168.10.128/26 | .129 - .190 | .191 | 62 |
+| 4 | 192.168.10.192/26 | .193 - .254 | .255 | 62 |
+
+**Verification**: 4 subnets * 62 hosts = 248 usable (vs 254 in original /24 — lost 6 to extra network/broadcast addresses).
+
+## 3.2 Find Network, Broadcast, and Usable Range
+
+**Given**: Host IP = 192.168.10.147/26
+
+**Step 1**: Block size = 64. Which block contains .147?
+- 0, 64, 128, 192 -> **.147 falls in the 128 block** (128 <= 147 < 192)
+
+**Step 2**:
+- Network: **192.168.10.128/26**
+- Broadcast: 128 + 64 - 1 = **192.168.10.191**
+- Usable: **192.168.10.129 - 192.168.10.190** (62 hosts)
+
+## 3.3 VLSM for Departments of 100, 50, 25, 10 Hosts
+
+**Given**: 192.168.10.0/24. Assign subnets for each department (largest first).
+
+| Department | Hosts Needed | Prefix | Block | Network | Range |
+|---|---|---|---|---|---|
+| Dept A (100) | 128 = 2^7 | **/25** | 128 | 192.168.10.0/25 | .1-.126 |
+| Dept B (50) | 64 = 2^6 | **/26** | 64 | 192.168.10.128/26 | .129-.190 |
+| Dept C (25) | 32 = 2^5 | **/27** | 32 | 192.168.10.192/27 | .193-.222 |
+| Dept D (10) | 16 = 2^4 | **/28** | 16 | 192.168.10.224/28 | .225-.238 |
+
+**VLSM key**: allocate largest subnet first, then fill remaining space with smaller subnets. Each subnet starts at the next available address after the previous broadcast.
+
+**Exam strategy**: For subnetting, always compute block size = 2^(host bits) first. The network address is always a multiple of the block size. Broadcast = network + block - 1. For VLSM, sort departments largest-first.`,
+      examTip: 'Block size is your best friend. /26 = block of 64. To find which subnet an IP belongs to, divide the host octet by block size and round down. 147/64 = 2.29 -> subnet starts at 2*64 = 128.',
+      importantNote: 'VLSM (Variable Length Subnet Masking) uses different prefix lengths per subnet. Always allocate the LARGEST subnet first to avoid fragmentation and wasted addresses.',
+    },
   ],
   keyTakeaways: [
     'IPv4: 32-bit; CIDR /n = n network bits, (32-n) host bits.',
@@ -7435,6 +7756,57 @@ fee_topologies: { topicId: 'fee_topologies', title: 'Network Topologies', domain
 2. **Distribution**: policy, inter-VLAN routing (partial mesh)
 3. **Access**: end-user connections (star with switches)`,
       examTip: 'Most common modern topology: star at access layer with switches. Pure ring and bus are largely obsolete for wired LANs.',
+    },
+    { id: 'topo-exam', title: '3. Topology Comparison & Design',
+      content: `## 3.1 Calculate Links for Full Mesh of 8 Nodes
+
+**Formula**: Links = N(N-1)/2
+
+For N = 8: Links = 8 * 7 / 2 = **28 links**
+
+| Nodes (N) | Full Mesh Links | Star Links | Ratio |
+|---|---|---|---|
+| 4 | 6 | 3 | 2x |
+| 8 | **28** | 7 | 4x |
+| 16 | 120 | 15 | 8x |
+| 32 | 496 | 31 | 16x |
+
+Full mesh grows as **O(N^2)** while star grows as **O(N)**. This is why full mesh is impractical beyond ~10 nodes in practice.
+
+## 3.2 Star vs Mesh Reliability Comparison
+
+**Scenario**: Compare reliability for a 6-node network.
+
+| Failure Type | Star | Full Mesh | Ring |
+|---|---|---|---|
+| Single link failure | 1 node isolated | All nodes still connected | Network broken |
+| Central node failure | **Total failure** | N/A (no central) | N/A |
+| Any single node failure | Others unaffected | Others fully connected | Network broken |
+| Links needed | 5 | 15 | 6 |
+
+**Reliability ranking**: Full mesh > Partial mesh > Star (with redundant switch) > Ring > Bus
+
+**Cost ranking** (inverse): Bus < Ring < Star < Partial mesh < Full mesh
+
+## 3.3 Bus Collision Domain Analysis
+
+**Bus topology** (shared medium with CSMA/CD):
+
+- All N nodes share **one collision domain**
+- Maximum throughput degrades with more nodes
+- At high load: **efficiency ≈ 1 / (1 + 5a)** where a = propagation/transmission delay ratio
+
+**Switched star eliminates collisions**: each switch port is its own collision domain.
+
+| Topology | Collision Domains | Broadcast Domains |
+|---|---|---|
+| Hub (bus) | **1** (all share) | 1 |
+| Switch (star) | **N** (one per port) | 1 |
+| Router | N | **N** (one per interface) |
+
+**Exam strategy**: Full mesh links = N(N-1)/2 — this is the most tested topology formula. For design questions, star is almost always the right choice for access layer. Use partial mesh only for backbone redundancy where the link count is manageable.`,
+      examTip: 'Hub = 1 collision domain (all share). Switch = N collision domains (one per port). Router = N broadcast domains. This distinction appears on nearly every FE networking section.',
+      importantNote: 'A switch does NOT reduce broadcast domains — all ports still receive broadcasts. Only a router (or VLAN) creates separate broadcast domains.',
     },
   ],
   keyTakeaways: [
@@ -7518,6 +7890,49 @@ Multiple layers: physical -> network (firewall, IDS) -> host (patches) -> applic
 - **Availability**: ensure access (redundancy, DDoS protection)`,
       examTip: 'Defense in depth = multiple layers, never a single tool. CIA triad (Confidentiality, Integrity, Availability) is the framework for evaluating security.',
     },
+    { id: 'netsec-exam', title: '3. Security Scenario Analysis',
+      content: `## 3.1 Identify the Attack Type
+
+**Match each description to the correct attack:**
+
+| Scenario | Attack | Layer | Defense |
+|---|---|---|---|
+| Attacker sends fake ARP replies mapping gateway IP to attacker MAC | **ARP Spoofing** | L2 | Dynamic ARP inspection, static ARP |
+| Attacker intercepts traffic between client and server by sitting in the middle | **Man-in-the-Middle (MITM)** | L3-L7 | TLS/SSL, certificate pinning |
+| Thousands of compromised hosts flood target server | **DDoS** | L3-L4 | Rate limiting, CDN, scrubbing |
+| Attacker crafts packets with spoofed source IP | **IP Spoofing** | L3 | Ingress filtering (BCP38) |
+| Malicious SQL in web form input | **SQL Injection** | L7 | Input validation, parameterized queries |
+
+## 3.2 Choose Encryption for the Scenario
+
+| Scenario | Best Choice | Rationale |
+|---|---|---|
+| Encrypt 10 GB file transfer | **AES-256** (symmetric) | Fast bulk encryption |
+| Exchange keys over untrusted channel | **RSA / Diffie-Hellman** (asymmetric) | Key distribution problem |
+| Verify file integrity | **SHA-256** (hash) | One-way, collision-resistant |
+| Prove sender identity | **Digital signature** (RSA + SHA) | Non-repudiation |
+| Secure web browsing | **TLS** (asymmetric + symmetric) | RSA for key exchange, AES for data |
+
+**TLS combines both**: asymmetric (RSA/ECDH) for key exchange, then symmetric (AES) for bulk data. This is the most efficient approach.
+
+## 3.3 VPN Tunnel Design
+
+**IPSec Modes**:
+
+| Mode | Encrypts | Use Case |
+|---|---|---|
+| **Transport** | Payload only | Host-to-host |
+| **Tunnel** | Entire original packet | Site-to-site (gateway) |
+
+**Design example**: Connect two offices (10.1.0.0/16 and 10.2.0.0/16) over public internet.
+- Use **IPSec tunnel mode** between gateway routers
+- ESP (Encapsulating Security Payload) provides confidentiality + integrity
+- AH (Authentication Header) provides integrity only (no encryption)
+
+**Exam strategy**: For "which attack?" questions, focus on what is being manipulated — MAC addresses (ARP spoofing), IP addresses (IP spoofing), or application data (SQL injection). For encryption, symmetric = fast bulk data, asymmetric = key exchange, hash = integrity.`,
+      examTip: 'ARP spoofing = L2 attack (MAC). MITM = interception. DDoS = availability attack. Always map the attack to the CIA triad property it violates: spoofing violates integrity, DDoS violates availability.',
+      importantNote: 'IPSec tunnel mode is required for site-to-site VPNs because it encrypts the entire original IP header. Transport mode only works host-to-host since the original header remains visible.',
+    },
   ],
   keyTakeaways: [
     'Symmetric (AES): fast, shared key. Asymmetric (RSA): public/private pair, solves key distribution.',
@@ -7590,6 +8005,51 @@ Slowest link = max throughput. For 1G -> 100M -> 1G: throughput = 100 Mbps.
 
 **Utilization** = throughput/bandwidth. At > 80%, queuing delays spike exponentially.`,
       examTip: 'Bottleneck = slowest link. For voice/video, jitter matters more than absolute latency. Consistent 200 ms > varying 50-300 ms.',
+    },
+    { id: 'netperf-exam', title: '3. Network Performance Calculations',
+      content: `## 3.1 Total Latency: 1500-Byte Packet Over 100 Mbps Link + 200 km Fiber
+
+**Given**: Packet size = 1500 bytes, link rate = 100 Mbps, distance = 200 km, fiber speed = 2 x 10^8 m/s.
+
+**Step 1 — Transmission delay** (push packet onto wire):
+d_trans = packet_size / bandwidth = (1500 * 8) / (100 * 10^6) = 12000 / 10^8 = **0.12 ms**
+
+**Step 2 — Propagation delay** (signal traverses fiber):
+d_prop = distance / speed = 200,000 / (2 * 10^8) = **1.0 ms**
+
+**Step 3 — Total** (ignoring queuing and processing):
+d_total = 0.12 + 1.0 = **1.12 ms**
+
+Propagation dominates here (89%). On a 1 Gbps link, d_trans drops to 0.012 ms and propagation dominates even more.
+
+## 3.2 Bandwidth-Delay Product
+
+**BDP = bandwidth * RTT**
+
+For 1 Gbps link with RTT = 20 ms:
+BDP = 10^9 * 0.020 = **20 Mbit = 2.5 MB**
+
+This means **2.5 MB of data is "in flight"** at any instant. The TCP window must be at least this large to fully utilize the link.
+
+| Link | RTT | BDP | Required TCP Window |
+|---|---|---|---|
+| 100 Mbps, 2 ms | 2 ms | 200 kbit = 25 KB | 25 KB |
+| 1 Gbps, 20 ms | 20 ms | 20 Mbit = **2.5 MB** | 2.5 MB |
+| 10 Gbps, 100 ms | 100 ms | 1 Gbit = 125 MB | 125 MB |
+
+## 3.3 TCP Window Sizing
+
+**Throughput = Window_size / RTT** (simplified, no loss)
+
+**Problem**: TCP window = 64 KB (default), RTT = 50 ms. What is max throughput?
+
+Throughput = 65536 * 8 / 0.050 = 524288 / 0.050 = **10.49 Mbps**
+
+Even on a 1 Gbps link, a 64 KB window limits throughput to ~10 Mbps with 50 ms RTT. **Window scaling** (RFC 1323) extends the window to 1 GB to solve this.
+
+**Exam strategy**: Separate transmission delay (packet_size/BW) from propagation delay (distance/speed). They are fundamentally different. BDP = BW * RTT gives the pipe capacity. If TCP window < BDP, the link is underutilized.`,
+      examTip: 'Transmission delay depends on packet size and link speed. Propagation delay depends on distance and medium speed. Do NOT mix them up — this is the #1 tested distinction in network performance.',
+      importantNote: 'RTT = 2 * one-way propagation delay (approximately). For TCP throughput, RTT determines how fast ACKs return and thus how fast the sender can advance its window.',
     },
   ],
   keyTakeaways: [
@@ -7666,6 +8126,63 @@ fee_number_sys: { topicId: 'fee_number_sys', title: 'Number Systems and Boolean 
 **Don't-care** (X) conditions can be 0 or 1 to make larger groups.`,
       examTip: 'DeMorgan: break the bar, change the operator. K-maps: make groups as LARGE as possible. Groups must be powers of 2.',
     },
+    { id: 'numsys-exam', title: '3. Number System & Boolean Exam Problems',
+      content: `## 3.1 Base Conversion with Fractional Parts
+
+**Convert 26.625 (decimal) to binary:**
+
+**Integer part** (divide by 2): 26 = 11010
+- 26/2 = 13 R0, 13/2 = 6 R1, 6/2 = 3 R0, 3/2 = 1 R1, 1/2 = 0 R1
+- Read bottom-up: **11010**
+
+**Fractional part** (multiply by 2): 0.625
+- 0.625 * 2 = **1**.250, 0.250 * 2 = **0**.500, 0.500 * 2 = **1**.000
+- Read top-down: **.101**
+
+**Result**: 26.625 (decimal) = **11010.101** (binary)
+
+**Verify**: 16 + 8 + 2 + 0.5 + 0.125 = 26.625
+
+## 3.2 Two's Complement Range for n Bits
+
+| Bits (n) | Range | Min | Max |
+|---|---|---|---|
+| 4 | -8 to +7 | 1000 | 0111 |
+| 8 | **-128 to +127** | 10000000 | 01111111 |
+| 16 | -32768 to +32767 | — | — |
+| 32 | -2^31 to +2^31-1 | — | — |
+
+**Negate -45 in 8-bit two's complement:**
+- +45 = 00101101
+- Invert: 11010010
+- Add 1: **11010011** = -45
+
+**Verify**: 11010011 -> invert = 00101100 -> +1 = 00101101 = 45. Correct.
+
+## 3.3 K-Map Simplification — 4-Variable Worked Example
+
+**Given**: F(A,B,C,D) = sum of minterms(0,1,2,5,8,9,10)
+
+**4x4 K-map** (Gray code order AB vs CD):
+
+|  | CD=00 | CD=01 | CD=11 | CD=10 |
+|---|---|---|---|---|
+| AB=00 | **1** | **1** | 0 | **1** |
+| AB=01 | 0 | **1** | 0 | 0 |
+| AB=11 | 0 | 0 | 0 | 0 |
+| AB=10 | **1** | **1** | 0 | **1** |
+
+**Groups**: (1) cells 0,1,8,9 = group of 4 -> **B'D'** wait — let me group properly:
+- Group 1: m(0,2,8,10) -> corners wrap: **B'D'**
+- Group 2: m(0,1,8,9) -> left column wrap: **B'C'**
+- Group 3: m(1,5) -> **A'C'D**
+
+**Simplified**: F = **B'D' + B'C' + A'C'D**
+
+**Exam strategy**: For fractional conversions, integer part divides, fraction part multiplies. For 2's complement, always verify by converting back. For K-maps, wrap around ALL edges and make the largest possible groups.`,
+      examTip: 'K-map edge wrapping is the most common mistake. The top row IS adjacent to the bottom row. The left column IS adjacent to the right column. Always check wrap-around groups.',
+      importantNote: 'Some FE problems give minterms; others give maxterms (POS form). For minterms, place 1s in the K-map. For maxterms, place 0s and group the 0s to get POS.',
+    },
   ],
   keyTakeaways: [
     'Binary/octal/hex: group binary by 3 (octal) or 4 (hex).',
@@ -7735,6 +8252,63 @@ Multiple active inputs -> encodes highest-priority one. Used in interrupt system
 **A - B = A + (~B) + 1** (2's complement). Same adder with invert path.`,
       examTip: 'Full-adder: Sum = A XOR B XOR Cin, Cout = AB + Cin(A XOR B). Most tested combinational equations. A - B = A + NOT(B) + 1.',
     },
+    { id: 'comblog-exam', title: '3. Combinational Circuit Design',
+      content: `## 3.1 Design a 4-Bit Priority Encoder
+
+A priority encoder outputs the **binary code of the highest-priority active input**.
+
+**Truth table** (4-input, highest = I3):
+
+| I3 | I2 | I1 | I0 | Y1 | Y0 | Valid |
+|---|---|---|---|---|---|---|
+| 0 | 0 | 0 | 0 | X | X | 0 |
+| 0 | 0 | 0 | 1 | 0 | 0 | 1 |
+| 0 | 0 | 1 | X | 0 | 1 | 1 |
+| 0 | 1 | X | X | 1 | 0 | 1 |
+| 1 | X | X | X | 1 | 1 | 1 |
+
+**Boolean equations**:
+- Y1 = I3 + I2
+- Y0 = I3 + I1*I2'
+- Valid = I3 + I2 + I1 + I0
+
+## 3.2 Full Adder from Half Adders
+
+**Half-adder**: Sum = A XOR B, Carry = A AND B
+
+**Full-adder from two half-adders + OR gate**:
+1. HA1: Sum1 = A XOR B, Carry1 = A AND B
+2. HA2: Sum = Sum1 XOR Cin, Carry2 = Sum1 AND Cin
+3. **Cout = Carry1 OR Carry2**
+
+| Component | Gate Count |
+|---|---|
+| Half-adder | 1 XOR + 1 AND |
+| Full-adder (from HAs) | 2 XOR + 2 AND + 1 OR = **5 gates** |
+
+## 3.3 BCD to Excess-3 Converter
+
+**Excess-3** = BCD + 3 (binary). Input: BCD digits 0-9 (A,B,C,D). Output: W,X,Y,Z.
+
+| Decimal | BCD (ABCD) | Excess-3 (WXYZ) |
+|---|---|---|
+| 0 | 0000 | 0011 |
+| 1 | 0001 | 0100 |
+| 2 | 0010 | 0101 |
+| 3 | 0011 | 0110 |
+| 4 | 0100 | 0111 |
+| 5 | 0101 | 1000 |
+| 6 | 0110 | 1001 |
+| 7 | 0111 | 1010 |
+| 8 | 1000 | 1011 |
+| 9 | 1001 | 1100 |
+
+Inputs 10-15 are **don't-cares** (invalid BCD). Use K-maps with don't-cares for each output bit to get minimized gate equations. This is a classic FE exam design problem.
+
+**Exam strategy**: For combinational design, always start with the truth table. Then use K-maps to minimize. Priority encoders use X (don't-care) in lower-priority positions. BCD converters have 6 don't-care inputs (10-15) — use them to simplify.`,
+      examTip: 'BCD has only 10 valid inputs (0-9), giving 6 don\'t-cares. ALWAYS include don\'t-cares in your K-map groups — they can significantly simplify the logic.',
+      importantNote: 'A 4-bit priority encoder is NOT the same as a regular encoder. In a regular encoder, only one input should be active. In a priority encoder, multiple can be active and the highest wins.',
+    },
   ],
   keyTakeaways: [
     'MUX: 2^n inputs, n select; implements any n-variable function.',
@@ -7799,6 +8373,55 @@ Violations cause **metastability** (unpredictable state).
 | Glitches | None | Possible |`,
       examTip: 'Synchronous always preferred (fast, reliable). Mod-N counter: ceil(log_2(N)) flip-flops with reset at N.',
     },
+    { id: 'seqlog-exam', title: '3. Sequential Circuit Analysis',
+      content: `## 3.1 Trace JK Flip-Flop Sequence
+
+**Given**: JK flip-flop, initial Q = 0. Input sequence: J=1,K=0 / J=1,K=1 / J=0,K=1 / J=1,K=1.
+
+| Clock | J | K | Action | Q+ |
+|---|---|---|---|---|
+| 1 | 1 | 0 | **Set** | **1** |
+| 2 | 1 | 1 | **Toggle** | **0** |
+| 3 | 0 | 1 | **Reset** | **0** |
+| 4 | 1 | 1 | **Toggle** | **1** |
+
+**JK rules**: J=0,K=0 -> Hold; J=1,K=0 -> Set; J=0,K=1 -> Reset; J=1,K=1 -> Toggle.
+
+## 3.2 Design Mod-6 Counter State Table
+
+**Mod-6**: counts 0,1,2,3,4,5 then resets to 0. Needs ceil(log_2(6)) = **3 flip-flops** (Q2,Q1,Q0).
+
+| Current (Q2Q1Q0) | Next | Q2+ | Q1+ | Q0+ |
+|---|---|---|---|---|
+| 000 (0) | 001 (1) | 0 | 0 | 1 |
+| 001 (1) | 010 (2) | 0 | 1 | 0 |
+| 010 (2) | 011 (3) | 0 | 1 | 1 |
+| 011 (3) | 100 (4) | 1 | 0 | 0 |
+| 100 (4) | 101 (5) | 1 | 0 | 1 |
+| 101 (5) | 000 (0) | 0 | 0 | 0 |
+| 110 (6) | XXX | X | X | X |
+| 111 (7) | XXX | X | X | X |
+
+States 6 and 7 are **don't-cares** (never reached in normal operation). Use D flip-flops: D_i = Q_i+ from the table. K-map each output for minimal logic.
+
+## 3.3 Shift Register LFSR Analysis
+
+**4-bit LFSR** with feedback: new_bit = Q3 XOR Q2. Seed = 1000.
+
+| Clock | Q3 | Q2 | Q1 | Q0 | Feedback (Q3 XOR Q2) |
+|---|---|---|---|---|---|
+| 0 | 1 | 0 | 0 | 0 | 1 XOR 0 = 1 |
+| 1 | 1 | 1 | 0 | 0 | 1 XOR 1 = 0 |
+| 2 | 0 | 1 | 1 | 0 | 0 XOR 1 = 1 |
+| 3 | 1 | 0 | 1 | 1 | 1 XOR 0 = 1 |
+| 4 | 1 | 1 | 0 | 1 | 1 XOR 1 = 0 |
+
+The LFSR cycles through a **pseudo-random sequence**. With proper tap selection, a maximal-length LFSR of n bits produces 2^n - 1 states before repeating (all states except all-zeros).
+
+**Exam strategy**: For JK flip-flop tracing, apply the rules at each clock edge in order. For counter design, write the state table first, mark unused states as don't-cares, then derive excitation equations with K-maps.`,
+      examTip: 'JK: J=K=1 means TOGGLE (not set, not reset). This is the most commonly confused JK condition. For counters, unused states are don\'t-cares — use them to simplify.',
+      importantNote: 'Mod-N counter with N not a power of 2 requires external reset logic. The counter reaches state N-1, then the next clock edge forces it back to 0 via combinational decode.',
+    },
   ],
   keyTakeaways: [
     'D FF: Q+=D (most common). JK: universal (J=K=1 toggles). T: toggles when T=1.',
@@ -7860,6 +8483,51 @@ Two states are **equivalent** if for ALL inputs they produce same output and go 
 Counters are special-case FSMs with fixed state sequences.`,
       examTip: 'One-hot uses n FFs for n states -- more FFs but simpler logic. Preferred in FPGAs where FFs are abundant.',
       importantNote: 'State minimization combines EQUIVALENT states. Do not confuse with state encoding (choosing binary codes for states).',
+    },
+    { id: 'fsm-exam', title: '3. FSM Design Walkthrough',
+      content: `## 3.1 Design Sequence Detector for "101"
+
+**Specification**: Detect the pattern "101" in a serial bit stream. Output = 1 when "101" detected. Allow overlapping sequences.
+
+**States** (Moore machine):
+- **S0**: no bits matched (output 0)
+- **S1**: matched "1" (output 0)
+- **S2**: matched "10" (output 0)
+- **S3**: matched "101" (output 1)
+
+## 3.2 Complete State Table and Transition Diagram
+
+| Current State | Input = 0 | Input = 1 | Output |
+|---|---|---|---|
+| **S0** | S0 | S1 | 0 |
+| **S1** | S2 | S1 | 0 |
+| **S2** | S0 | **S3** | 0 |
+| **S3** | S2 | S1 | **1** |
+
+**Key transitions**:
+- S2 + input 1 -> S3 (pattern "101" complete)
+- S3 + input 0 -> S2 (overlap: the "1" from "101" starts a new "10")
+- S3 + input 1 -> S1 (the last "1" starts a new potential match)
+
+**Flip-flop equations** (2 D flip-flops, binary encoding S0=00, S1=01, S2=10, S3=11):
+- D1 = Q1'*Q0*X' + Q1*Q0'*X (next state MSB)
+- D0 = X (next state LSB)
+- Output = Q1 AND Q0
+
+## 3.3 Moore vs Mealy Comparison for Same Problem
+
+| Feature | Moore "101" Detector | Mealy "101" Detector |
+|---|---|---|
+| States | **4** (S0-S3) | **3** (S0-S2) |
+| Output timing | 1 clock after pattern | Same clock as last bit |
+| Glitches | None | Possible on input change |
+| Output depends on | State only | State AND input |
+
+**Mealy version** (3 states): S2 + input 1 -> S0 with output **1** on the transition. The output appears one clock cycle earlier but may glitch if input changes asynchronously.
+
+**Exam strategy**: For FSM design, always: (1) identify states by what has been matched so far, (2) handle overlapping by reusing partial matches, (3) Moore needs one extra state vs Mealy for the output. The state table is the most important step — get it right and the implementation follows mechanically.`,
+      examTip: 'Sequence detectors are the #1 FSM exam problem. Always consider overlapping detection — after detecting "101", the final "1" can start a new match. Moore needs 4 states; Mealy needs 3.',
+      importantNote: 'Moore outputs change only on clock edges (glitch-free). Mealy outputs can change mid-cycle when inputs change. For synchronous designs, register Mealy outputs to prevent glitches.',
     },
   ],
   keyTakeaways: [
@@ -7947,6 +8615,56 @@ Each level: ~10x larger, ~10x slower, ~10x cheaper.`,
 | Best for | Prototyping, low volume | High volume |`,
       examTip: 'Cache: t_avg = h*t_cache + (1-h)*t_memory. With h=0.95, t_cache=5ns, t_memory=100ns: t_avg = 9.75 ns -- 10x improvement.',
     },
+    { id: 'mem-exam', title: '3. Memory System Calculations',
+      content: `## 3.1 Address Lines for 256 KB Memory
+
+**Capacity** = 256 KB = 256 * 1024 = 262,144 bytes = 2^18 bytes
+
+**Address lines needed**: log_2(2^18) = **18 address lines**
+
+| Memory Size | Bytes | Address Lines |
+|---|---|---|
+| 1 KB | 2^10 | 10 |
+| 64 KB | 2^16 | 16 |
+| **256 KB** | **2^18** | **18** |
+| 1 MB | 2^20 | 20 |
+| 4 GB | 2^32 | 32 |
+
+If each location stores W bits (word width), total bits = 2^n * W. Data bus width = W bits; address bus = n bits.
+
+## 3.2 Cache Hit Rate Impact on EMAT
+
+**Effective Memory Access Time**: t_avg = h * t_cache + (1-h) * t_memory
+
+| Hit Rate (h) | t_cache = 5 ns | t_memory = 100 ns | **t_avg** |
+|---|---|---|---|
+| 80% | 0.80 * 5 = 4.0 | 0.20 * 100 = 20.0 | **24.0 ns** |
+| 90% | 0.90 * 5 = 4.5 | 0.10 * 100 = 10.0 | **14.5 ns** |
+| 95% | 0.95 * 5 = 4.75 | 0.05 * 100 = 5.0 | **9.75 ns** |
+| 99% | 0.99 * 5 = 4.95 | 0.01 * 100 = 1.0 | **5.95 ns** |
+
+Going from 90% to 95% hit rate improves EMAT by 33%. Going from 95% to 99% improves by another 39%. **Every percentage point matters more at higher hit rates.**
+
+## 3.3 DRAM Refresh Overhead Calculation
+
+**Given**: 4096-row DRAM, refresh interval = 64 ms, each refresh takes 50 ns.
+
+- **Refreshes per interval**: 4096 rows
+- **Total refresh time**: 4096 * 50 ns = 204.8 us
+- **Overhead**: 204.8 us / 64 ms = **0.32%** of time spent refreshing
+
+| DRAM Rows | Refresh Time | Overhead |
+|---|---|---|
+| 2048 | 102.4 us | 0.16% |
+| **4096** | **204.8 us** | **0.32%** |
+| 8192 | 409.6 us | 0.64% |
+
+During refresh, that row is **unavailable** for read/write. Modern DRAM controllers schedule refreshes during idle periods to minimize impact.
+
+**Exam strategy**: Address lines = log_2(total locations). For EMAT, just plug into h*t_fast + (1-h)*t_slow. For multi-level cache, chain: EMAT = h1*t_L1 + (1-h1)*h2*t_L2 + (1-h1)*(1-h2)*t_mem. DRAM refresh overhead = (rows * t_refresh) / refresh_interval.`,
+      examTip: 'Address lines = log_2(locations). Memorize: 2^10 = 1K, 2^16 = 64K, 2^20 = 1M, 2^30 = 1G, 2^32 = 4G. These powers of 2 appear on every memory problem.',
+      importantNote: 'EMAT formula assumes miss penalty includes the full memory access time. Some problems separate it: t_avg = t_cache + (1-h) * t_miss_penalty. Read the problem carefully to determine which model is used.',
+    },
   ],
   keyTakeaways: [
     'ROM nonvolatile (PROM, EPROM, Flash). RAM volatile (SRAM fast, DRAM dense/refresh).',
@@ -8016,6 +8734,64 @@ Multiple instructions overlap in different stages simultaneously.
       examTip: 'Three hazards: data (forwarding), control (prediction), structural (duplication). Ideal pipeline CPI = 1; real > 1 due to stalls.',
       importantNote: 'Deeper pipelines increase branch misprediction penalty. This is why modern CPUs invest heavily in branch prediction.',
     },
+    { id: 'arch-exam', title: '3. Architecture Comparison Problems',
+      content: `## 3.1 RISC Pipeline vs CISC Multi-Cycle
+
+**Problem**: Execute 1000 instructions. RISC: 5-stage pipeline, 1 GHz clock, CPI = 1.2 (with stalls). CISC: multi-cycle, 2 GHz clock, CPI = 3.5.
+
+**RISC execution time**:
+T_RISC = IC * CPI / f = 1000 * 1.2 / 10^9 = **1.2 us**
+
+**CISC execution time**:
+T_CISC = IC * CPI / f = 1000 * 3.5 / (2 * 10^9) = **1.75 us**
+
+| Metric | RISC (1 GHz) | CISC (2 GHz) |
+|---|---|---|
+| CPI | 1.2 | 3.5 |
+| Execution time | **1.2 us** | 1.75 us |
+| MIPS | 833 | 571 |
+
+RISC wins despite lower clock speed because its pipeline achieves much lower CPI.
+
+## 3.2 Pipeline Speedup with 20% Branch Penalty
+
+**Given**: 5-stage pipeline, 20% branch instructions, branch misprediction rate = 30%, penalty = 2 cycles.
+
+**Effective CPI**:
+CPI = 1 + (branch_fraction * mispredict_rate * penalty)
+CPI = 1 + (0.20 * 0.30 * 2) = 1 + 0.12 = **1.12**
+
+**Speedup vs non-pipelined** (5 cycles/instr):
+Speedup = 5 / 1.12 = **4.46x** (vs ideal 5x)
+
+| Branch Prediction Accuracy | Misprediction Rate | CPI | Speedup |
+|---|---|---|---|
+| 70% | 30% | 1.12 | 4.46x |
+| 90% | 10% | 1.04 | 4.81x |
+| 95% | 5% | 1.02 | 4.90x |
+
+Better branch prediction approaches the ideal 5x speedup.
+
+## 3.3 Harvard vs Von Neumann Throughput
+
+**Von Neumann** (shared bus): cannot fetch instruction and data simultaneously.
+- IF takes 1 cycle, MEM takes 1 cycle, both use same bus
+- Pipeline stall when IF and MEM overlap: **structural hazard**
+
+**Harvard** (separate buses): instruction fetch and data access proceed in parallel.
+- No IF/MEM conflict -> eliminates ~20-30% of structural hazards
+- Modern CPUs: separate L1 I-cache and D-cache (Modified Harvard)
+
+| Architecture | Structural Hazards | Throughput Impact |
+|---|---|---|
+| Von Neumann | IF/MEM conflicts | CPI penalty ~0.2-0.3 |
+| **Harvard** | No IF/MEM conflicts | Near-ideal CPI |
+| Modified Harvard | L1 split, L2+ unified | Best of both |
+
+**Exam strategy**: Performance = IC * CPI / f. Compare systems by execution time on the SAME program, not by clock speed or MIPS alone. For pipeline problems, compute effective CPI = 1 + stall_contributions.`,
+      examTip: 'Never compare processors by clock speed alone. A 1 GHz RISC with CPI=1 beats a 2 GHz CISC with CPI=4. Always compute execution time = IC * CPI / f.',
+      importantNote: 'Pipeline speedup is limited by the SLOWEST stage. If one stage takes 2x longer than others, it becomes the bottleneck. Balance stage delays for maximum throughput.',
+    },
   ],
   keyTakeaways: [
     'Von Neumann: single memory. Harvard: separate. Modern: Modified Harvard (split L1 cache).',
@@ -8078,6 +8854,55 @@ Page not in RAM -> fetch from disk: **~10 ms** (millions of cycles).
 Replacement: LRU (good), FIFO (simple), Optimal (theoretical best).`,
       examTip: 'Offset bits = log_2(page_size). VPN = remaining bits. Page faults cost ~10 ms -- catastrophically slow.',
     },
+    { id: 'memh-exam', title: '3. Cache & Memory Worked Examples',
+      content: `## 3.1 Two-Level Cache EMAT
+
+**Given**: L1 hit rate = 95%, t_L1 = 1 ns. L2 hit rate = 80% (of L1 misses), t_L2 = 10 ns. Memory t_mem = 100 ns.
+
+**EMAT = h1*t_L1 + (1-h1)*h2*t_L2 + (1-h1)*(1-h2)*t_mem**
+
+EMAT = 0.95 * 1 + 0.05 * 0.80 * 10 + 0.05 * 0.20 * 100
+
+EMAT = 0.95 + 0.40 + 1.00 = **2.35 ns**
+
+| Component | Probability | Time | Contribution |
+|---|---|---|---|
+| L1 hit | 95% | 1 ns | 0.95 ns |
+| L1 miss, L2 hit | 4% | 10 ns | 0.40 ns |
+| Both miss | 1% | 100 ns | 1.00 ns |
+| **Total EMAT** | | | **2.35 ns** |
+
+Only 1% of accesses reach main memory, yet that 1% contributes 43% of the average access time. This shows why minimizing misses matters enormously.
+
+## 3.2 Page Table Walk Latency
+
+**Given**: 32-bit virtual address, 4 KB pages, 2-level page table. TLB miss rate = 5%. Each table access = 100 ns.
+
+- Page offset = log_2(4096) = **12 bits**
+- VPN = 32 - 12 = 20 bits -> split into two 10-bit indices
+- **2-level walk**: 2 memory accesses * 100 ns = **200 ns per TLB miss**
+
+**Effective translation time**:
+t_translate = h_TLB * t_TLB + (1 - h_TLB) * t_walk
+t_translate = 0.95 * 1 + 0.05 * 200 = 0.95 + 10 = **10.95 ns**
+
+Without TLB: every access costs 200 ns extra. The TLB reduces average translation overhead by **95%**.
+
+## 3.3 TLB Hit Rate Impact
+
+| TLB Hit Rate | Translation Time | Impact on Memory Access |
+|---|---|---|
+| 99% | 0.99 + 2.0 = 2.99 ns | Negligible overhead |
+| 95% | 0.95 + 10.0 = **10.95 ns** | Moderate |
+| 90% | 0.90 + 20.0 = 20.90 ns | Significant |
+| 80% | 0.80 + 40.0 = 40.80 ns | Severe — redesign needed |
+
+**Working set**: if a program's actively-used pages fit in the TLB, hit rate stays > 99%. Large, scattered data structures (e.g., pointer-chasing) cause TLB thrashing.
+
+**Exam strategy**: For multi-level cache, chain probabilities: EMAT = sum of (probability of reaching level i) * (access time at level i). For page tables, TLB miss penalty = number of levels * memory access time. A 4-level page table (64-bit systems) costs 400 ns per TLB miss.`,
+      examTip: 'Multi-level EMAT: probability of reaching each level multiplied by its access time, summed. L1 miss, L2 hit probability = (1-h1)*h2. Both miss = (1-h1)*(1-h2).',
+      importantNote: 'L2 hit rate is measured as a fraction of L1 MISSES, not total accesses. If the problem says "L2 hit rate = 80%," that means 80% of accesses that missed L1 are found in L2.',
+    },
   ],
   keyTakeaways: [
     'Hierarchy: each level ~10x larger/slower. t_avg = h*t_cache + (1-h)*t_memory.',
@@ -8136,6 +8961,54 @@ DMA controller transfers data directly between device and memory. CPU only handl
 - I2C: 2 wires, addressing, multi-device, slower
 - SPI: 4 wires (+ 1 CS per slave), no addressing, faster, full-duplex`,
       examTip: 'Speed: I2C < SPI < USB < PCIe. I2C uses 2 wires (simplest). SPI: 4 wires, faster. USB: hot-plug. PCIe: fastest.',
+    },
+    { id: 'io-exam', title: '3. I/O & Bus Problems',
+      content: `## 3.1 DMA Transfer Time for 1 MB at 100 MB/s
+
+**Given**: Transfer size = 1 MB, bus speed = 100 MB/s, DMA setup = 5 us, interrupt latency = 2 us.
+
+**Transfer time**: t_transfer = size / rate = 10^6 / (100 * 10^6) = **10 ms**
+
+**Total DMA time**: t_total = t_setup + t_transfer + t_interrupt = 5 us + 10 ms + 2 us = **10.007 ms**
+
+| Phase | Time | CPU Busy? |
+|---|---|---|
+| DMA setup | 5 us | Yes |
+| Data transfer | 10 ms | **No (CPU free)** |
+| Completion interrupt | 2 us | Yes |
+| **Total** | **10.007 ms** | **7 us (0.07%)** |
+
+**CPU utilization**: 7 us / 10007 us = **0.07%** — DMA frees the CPU for 99.93% of the transfer.
+
+**Compare with programmed I/O**: CPU busy for entire 10 ms = 100% utilization. DMA is ~1400x more CPU-efficient.
+
+## 3.2 Interrupt Service Routine Timing
+
+**Given**: Clock = 1 GHz, interrupt latency = 50 cycles, ISR = 200 instructions at CPI = 1.5, context save/restore = 30 cycles each.
+
+- Interrupt latency: 50 / 10^9 = 50 ns
+- Context save: 30 / 10^9 = 30 ns
+- ISR execution: 200 * 1.5 / 10^9 = 300 ns
+- Context restore: 30 / 10^9 = 30 ns
+- **Total**: 50 + 30 + 300 + 30 = **410 ns**
+
+**Maximum interrupt rate**: 1 / 410 ns = **2.44 MHz** (before CPU is fully consumed)
+
+## 3.3 I2C vs SPI Throughput Comparison
+
+| Feature | I2C (Fast Mode) | SPI |
+|---|---|---|
+| Clock speed | 400 kHz | 10 MHz |
+| Data lines | 1 (SDA) | 2 (MOSI + MISO) |
+| Overhead per byte | ~9 bits (8 data + ACK) | 8 bits (pure data) |
+| **Effective throughput** | 400k/9 = **44.4 kB/s** | 10M * 2 / 8 = **2.5 MB/s** |
+| Duplex | Half | **Full** |
+
+SPI is **~56x faster** than I2C Fast Mode. But I2C uses only 2 wires and supports multi-master with built-in addressing — better for low-speed sensor networks.
+
+**Exam strategy**: For DMA, total time = setup + transfer + interrupt. CPU is free during transfer. For interrupt timing, sum all phases: latency + save + ISR + restore. For protocol comparison, compute effective throughput including overhead bits.`,
+      examTip: 'DMA total = setup + transfer + interrupt. The key insight: CPU utilization during DMA is nearly 0%. Compare this to 100% for polled I/O — a dramatic difference.',
+      importantNote: 'DMA uses cycle stealing or burst mode. In cycle stealing, DMA takes one bus cycle at a time (minimal CPU disruption). In burst mode, DMA holds the bus for the entire transfer (faster but blocks CPU memory access).',
     },
   ],
   keyTakeaways: [
@@ -8205,6 +9078,65 @@ Example: 50% parallelizable, S=10: speedup = 1/(0.5+0.05) = **1.82x** (not 5x!)
 **Energy per op: E = C * V^2** (independent of frequency)`,
       examTip: 'Amdahl: speedup = 1/[(1-f)+f/S]. Max = 1/(1-f). If 90% parallelizable, max speedup = 10x regardless of processor count. The sequential fraction dominates.',
     },
+    { id: 'perf-exam', title: '3. Performance Analysis Walkthrough',
+      content: `## 3.1 Amdahl's Law: 40% Parallelizable, 8 Cores
+
+**Given**: f = 0.40 (parallelizable fraction), S = 8 (8 cores for parallel portion).
+
+**Speedup** = 1 / [(1-f) + f/S] = 1 / [0.60 + 0.40/8] = 1 / [0.60 + 0.05] = 1 / 0.65 = **1.538x**
+
+**Max speedup** (infinite cores): 1 / (1-f) = 1 / 0.60 = **1.667x**
+
+| Cores | f/S | Speedup | % of Max |
+|---|---|---|---|
+| 2 | 0.200 | 1.25x | 75% |
+| 4 | 0.100 | 1.43x | 86% |
+| **8** | **0.050** | **1.54x** | **92%** |
+| 16 | 0.025 | 1.60x | 96% |
+| infinity | 0 | 1.67x | 100% |
+
+Going from 8 to 16 cores gains only 0.06x — diminishing returns. The 60% sequential portion fundamentally limits speedup.
+
+## 3.2 CPI for Instruction Mix
+
+**Given**: ALU (40%, CPI=1), Load (30%, CPI=3), Store (20%, CPI=2), Branch (10%, CPI=4).
+
+**CPI_avg = SUM(fraction_i * CPI_i)**
+
+CPI = 0.40*1 + 0.30*3 + 0.20*2 + 0.10*4
+CPI = 0.40 + 0.90 + 0.40 + 0.40 = **2.10**
+
+| Instruction | Fraction | CPI | Contribution |
+|---|---|---|---|
+| ALU | 40% | 1 | 0.40 |
+| Load | 30% | 3 | 0.90 |
+| Store | 20% | 2 | 0.40 |
+| Branch | 10% | 4 | 0.40 |
+| **Weighted CPI** | | | **2.10** |
+
+**Load instructions dominate** (0.90 of 2.10 = 43%) despite being only 30% of instructions. Optimizing load latency (cache) has the biggest impact.
+
+## 3.3 MIPS Calculation
+
+**Given**: Clock frequency = 2 GHz, CPI = 2.10.
+
+**MIPS = f(MHz) / CPI = 2000 / 2.10 = 952.4 MIPS**
+
+**Execution time for 10^6 instructions**:
+T = IC * CPI / f = 10^6 * 2.10 / (2 * 10^9) = **1.05 ms**
+
+**Caution**: MIPS is misleading for cross-architecture comparison. A CISC processor might accomplish in 1 instruction what RISC needs 3 for. Always compare **execution time for the same task**.
+
+| Metric | Value | Reliable? |
+|---|---|---|
+| Clock speed | 2 GHz | No (ignores CPI) |
+| MIPS | 952 | No (ignores instruction complexity) |
+| **Execution time** | **1.05 ms** | **Yes (only reliable metric)** |
+
+**Exam strategy**: Amdahl's law: identify f (parallelizable fraction) and S (speedup factor). For CPI, multiply each type's fraction by its CPI and sum. MIPS = f(MHz)/CPI. Always prefer execution time for comparison.`,
+      examTip: 'Amdahl\'s law trap: 40% parallelizable does NOT mean 8 cores give 40% improvement. The sequential 60% limits speedup to 1.67x maximum. Always compute the denominator carefully.',
+      importantNote: 'CPI contributions reveal optimization priorities. If loads contribute 43% of CPI, improving cache hit rate has more impact than reducing branch mispredictions (19% contribution).',
+    },
   ],
   keyTakeaways: [
     'Execution time = IC * CPI / f; only reliable performance metric.',
@@ -8270,6 +9202,63 @@ fee_algorithms: { topicId: 'fee_algorithms', title: 'Algorithms and Complexity',
 Fibonacci: naive O(2^n); DP O(n).`,
       examTip: 'Binary search O(log n) requires sorted data. Merge sort O(n log n) guaranteed. Quick sort O(n log n) avg but O(n^2) worst. DP reduces exponential to polynomial via memoization.',
       importantNote: 'Quick sort O(n^2) worst case when pivot is always min/max. Still fastest in practice due to cache locality. Merge sort guarantees O(n log n) but needs O(n) extra space.',
+    },
+    { id: 'algo-exam', title: '3. Algorithm Analysis Problems',
+      content: `## 3.1 Master Theorem: T(n) = 4T(n/2) + n^2
+
+**Master theorem**: T(n) = aT(n/b) + O(n^d)
+
+Here: a = 4, b = 2, d = 2. Compare **log_b(a)** with **d**:
+
+log_2(4) = 2 = d
+
+**Case 2** (log_b(a) = d): T(n) = O(n^d * log n) = **O(n^2 log n)**
+
+| Case | Condition | Result |
+|---|---|---|
+| 1 | log_b(a) > d | O(n^(log_b(a))) |
+| **2** | **log_b(a) = d** | **O(n^d log n)** |
+| 3 | log_b(a) < d | O(n^d) |
+
+**Quick check**: T(n) = 2T(n/2) + n -> a=2, b=2, d=1 -> log_2(2)=1=d -> Case 2: **O(n log n)** (merge sort!).
+
+## 3.2 Merge Sort vs Quick Sort for Nearly-Sorted Data
+
+| Property | Merge Sort | Quick Sort |
+|---|---|---|
+| Best case | O(n log n) | O(n log n) |
+| Average | O(n log n) | O(n log n) |
+| **Nearly-sorted worst** | O(n log n) | **O(n^2)** (bad pivot) |
+| Space | O(n) | O(log n) |
+| Stable | Yes | No |
+
+For **nearly-sorted data**, quick sort with naive pivot (first/last element) degrades to O(n^2) because partitions are maximally unbalanced. Solutions:
+- **Randomized pivot**: expected O(n log n) regardless
+- **Median-of-three**: avoids worst case on sorted input
+- **Use insertion sort**: O(n) on nearly-sorted data (best choice if truly almost sorted)
+
+## 3.3 Binary Search: Off-by-One Analysis
+
+**Standard binary search** on sorted array of n elements:
+
+- **Iterations**: ceil(log_2(n)) + 1 (maximum)
+- **Comparison count**: log_2(n) average for successful search
+
+| Array Size | Max Comparisons |
+|---|---|
+| 100 | 7 |
+| 1,000 | 10 |
+| 1,000,000 | 20 |
+| 10^9 | 30 |
+
+**Common off-by-one errors**:
+- Loop condition: use **low <= high** (not low < high) to check single-element range
+- Mid calculation: **mid = low + (high - low) / 2** (avoids integer overflow vs (low+high)/2)
+- Update: low = mid + 1 or high = mid - 1 (not mid, which causes infinite loops)
+
+**Exam strategy**: For Master theorem, compute log_b(a) and compare to d. For sorting, if data is nearly sorted, insertion sort is O(n). For binary search, always verify the loop terminates by checking low > high.`,
+      examTip: 'Master theorem shortcut: compute log_b(a). If it equals d, answer is O(n^d log n). If greater, answer is O(n^(log_b(a))). If less, answer is O(n^d). This covers 90% of FE recurrence problems.',
+      importantNote: 'The Master theorem only applies to recurrences of the form T(n) = aT(n/b) + O(n^d). For other forms like T(n) = T(n-1) + O(n), use the recursion tree or substitution method.',
     },
   ],
   keyTakeaways: [
@@ -8350,6 +9339,65 @@ Collision resolution: **chaining** (lists) or **open addressing** (probing).
       examTip: 'Fastest average lookup: hash table O(1). Maintains sorted order: BST. BST degenerates to O(n) if unbalanced -- use AVL/Red-Black.',
       importantNote: 'BST degenerates to linked list O(n) if inserted in sorted order. Self-balancing trees (AVL, Red-Black) guarantee O(log n).',
     },
+    { id: 'ds-exam', title: '3. Data Structure Operation Problems',
+      content: `## 3.1 BST Insertion Sequence and Resulting Tree
+
+**Insert sequence**: 50, 30, 70, 20, 40, 60, 80
+
+**Step-by-step**:
+1. 50 -> root
+2. 30 < 50 -> left child of 50
+3. 70 > 50 -> right child of 50
+4. 20 < 50, < 30 -> left child of 30
+5. 40 < 50, > 30 -> right child of 30
+6. 60 > 50, < 70 -> left child of 70
+7. 80 > 50, > 70 -> right child of 70
+
+**Resulting balanced BST** (height = 2):
+- Root: 50 (L:30, R:70)
+- Level 1: 30 (L:20, R:40), 70 (L:60, R:80)
+
+**Same data, sorted insert** (20,30,40,50,60,70,80) -> degenerates to linked list (height = 6, all right children). This is why self-balancing matters.
+
+## 3.2 Heap Extract-Min Step-by-Step
+
+**Min-heap**: [10, 20, 15, 30, 40, 25, 18]
+
+**Extract-min (remove 10)**:
+
+| Step | Action | Heap State |
+|---|---|---|
+| 1 | Remove root (10) | [_, 20, 15, 30, 40, 25, 18] |
+| 2 | Move last element (18) to root | [18, 20, 15, 30, 40, 25] |
+| 3 | Sift down: 18 vs children (20, 15) | 15 < 18, swap |
+| 4 | [15, 20, 18, 30, 40, 25] | 18 vs children (25): 18 < 25, stop |
+| **Result** | | **[15, 20, 18, 30, 40, 25]** |
+
+**Complexity**: O(log n) for sift-down. The heap property is restored by swapping with the smaller child at each level.
+
+## 3.3 Hash Table with Chaining — Lookup Steps
+
+**Given**: Table size = 7, hash(key) = key mod 7. Keys inserted: 14, 21, 7, 28, 35, 42.
+
+All keys hash to **index 0** (all multiples of 7):
+- Slot 0: 14 -> 21 -> 7 -> 28 -> 35 -> 42 (chain of 6)
+
+**Lookup for key 35**:
+1. hash(35) = 35 mod 7 = 0 -> go to slot 0
+2. Compare: 14 (no), 21 (no), 7 (no), 28 (no), **35 (yes!)**
+3. **5 comparisons** needed
+
+| Load Factor | Avg Lookup (chaining) | Performance |
+|---|---|---|
+| 0.5 | ~1.25 | Excellent |
+| 1.0 | ~1.5 | Good |
+| 2.0 | ~2.0 | Acceptable |
+| 6.0 (our example) | ~3.5 | Poor — rehash! |
+
+**Exam strategy**: For BST, trace the insertion path (left if smaller, right if larger). For heaps, extract = remove root, move last to root, sift down. For hash tables, compute hash, then walk the chain. Load factor > 0.7 signals time to rehash.`,
+      examTip: 'BST insertion: compare with each node, go left (smaller) or right (larger). Heap extract: always O(log n). Hash lookup: O(1) average, but O(n) worst case if all keys collide.',
+      importantNote: 'A bad hash function that maps many keys to the same bucket destroys hash table performance. The example above (all mod 7 = 0) shows worst-case O(n) behavior. Good hash functions distribute keys uniformly.',
+    },
   ],
   keyTakeaways: [
     'Arrays: O(1) access, O(n) insert. Lists: O(1) insert, O(n) search.',
@@ -8408,6 +9456,62 @@ Recursion + memoization: store results of overlapping sub-problems.
 | map/filter/reduce | Declarative collection processing |`,
       examTip: 'Every recursive function MUST have a base case. DP = recursion + memoization. Fibonacci: naive O(2^n), DP O(n).',
       importantNote: 'Deep recursion risks stack overflow. Fibonacci(50) naive makes ~2^50 calls (impossible). DP solves only 50 sub-problems.',
+    },
+    { id: 'oop-exam', title: '3. OOP Design Problems',
+      content: `## 3.1 Identify the Pattern from Code Snippet
+
+**Pattern 1 — Singleton**: Only one instance exists.
+- Private constructor, static getInstance() method
+- Use case: database connection pool, configuration manager
+
+**Pattern 2 — Observer**: Objects subscribe to events.
+- Subject maintains list of observers, notifies on change
+- Use case: GUI event handling, pub/sub messaging
+
+**Pattern 3 — Factory**: Creates objects without specifying exact class.
+- Factory method returns interface/base type
+- Use case: creating different shapes, database drivers
+
+| Pattern | Intent | Key Indicator |
+|---|---|---|
+| **Singleton** | One instance globally | Private constructor + static method |
+| **Observer** | Notify dependents of change | subscribe/notify methods |
+| **Factory** | Create without specifying class | Returns base type/interface |
+| **Strategy** | Swap algorithms at runtime | Interface parameter in constructor |
+| **Decorator** | Add behavior dynamically | Wraps same interface |
+
+## 3.2 Inheritance vs Composition Tradeoff
+
+| Criteria | Inheritance (is-a) | Composition (has-a) |
+|---|---|---|
+| Coupling | **Tight** (child depends on parent) | **Loose** (delegate to component) |
+| Flexibility | Fixed at compile time | Changeable at runtime |
+| Code reuse | Inherits everything (even unwanted) | Cherry-pick behaviors |
+| Fragile base class | Yes (parent change breaks children) | No |
+
+**Rule of thumb**: "Favor composition over inheritance" (Gang of Four).
+- Use inheritance when there is a true **is-a** relationship (Dog is-a Animal)
+- Use composition when sharing behavior (Car has-a Engine, not Car is-a Engine)
+
+## 3.3 Polymorphism: Virtual Method Dispatch
+
+**Base class Animal** has virtual method speak(). Dog overrides with "Woof", Cat with "Meow".
+
+**Runtime dispatch** (dynamic binding):
+- Variable type: Animal. Actual object: Dog.
+- **Animal a = new Dog(); a.speak() -> "Woof"**
+- The runtime type (Dog) determines which method executes, not the declared type (Animal).
+
+**Static dispatch** (overloading): resolved at compile time based on parameter types.
+
+| Dispatch Type | When Resolved | Mechanism |
+|---|---|---|
+| **Dynamic (override)** | Runtime | vtable pointer |
+| **Static (overload)** | Compile time | Parameter signature |
+
+**Exam strategy**: For pattern identification, look for structural clues — private constructor (Singleton), listener lists (Observer), creation methods returning base types (Factory). For inheritance vs composition, ask "is this truly an is-a relationship?" If not, use composition.`,
+      examTip: 'Polymorphism question trick: the RUNTIME type determines which overridden method runs, not the declared type. Animal a = new Dog(); a.speak() calls Dog.speak(), not Animal.speak().',
+      importantNote: 'The Singleton pattern is NOT thread-safe by default. In multi-threaded environments, use double-checked locking or initialize-on-demand holder. This detail sometimes appears on the FE exam.',
     },
   ],
   keyTakeaways: [
@@ -8479,6 +9583,54 @@ commit (snapshot), branch (parallel), merge (combine), pull request (review).
 Reduces integration risk and human error.`,
       examTip: 'Testing: unit -> integration -> system -> acceptance. Earlier = cheaper. TDD and CI are best practices.',
       importantNote: 'Merge conflict: two branches modify same lines. Git cannot auto-resolve -- developer must manually choose.',
+    },
+    { id: 'sdlc-exam', title: '3. Software Engineering Scenarios',
+      content: `## 3.1 Choose Agile vs Waterfall for Given Project
+
+| Project Characteristic | Best Model | Reasoning |
+|---|---|---|
+| Fixed requirements, regulatory compliance | **Waterfall** | Clear milestones, documentation |
+| Evolving requirements, customer feedback needed | **Agile** | Iterative, adaptable |
+| Safety-critical system (medical device) | **V-Model** (Waterfall variant) | Rigorous testing at each phase |
+| High-risk, unclear requirements | **Spiral** | Risk analysis each iteration |
+| Startup MVP, time-to-market critical | **Agile** | Ship fast, iterate |
+| Government contract, detailed spec | **Waterfall** | Contractual milestones |
+
+**Decision rule**: If requirements are stable and complete -> Waterfall. If requirements will change -> Agile. If high risk -> Spiral.
+
+## 3.2 Test Coverage: Statement vs Branch vs Path
+
+| Coverage Type | What It Measures | Strength |
+|---|---|---|
+| **Statement** | Every line executed at least once | Weakest |
+| **Branch** | Every true/false decision taken | Moderate |
+| **Path** | Every possible execution path | Strongest (often infeasible) |
+
+**Example**: if (A) { x(); } if (B) { y(); }
+- **Statements**: 2 test cases (A=true,B=true covers all lines)
+- **Branches**: 2 test cases (TT and FF)
+- **Paths**: 4 paths (TT, TF, FT, FF) -> 4 test cases
+
+**Path explosion**: n sequential if-statements create 2^n paths. For 20 branches: ~10^6 paths. This is why path coverage is impractical for large programs.
+
+## 3.3 Defect Cost Multiplier at Each SDLC Phase
+
+| Phase Found | Relative Cost | Example |
+|---|---|---|
+| Requirements | **1x** | Fix spec document |
+| Design | **5x** | Redesign architecture |
+| Coding | **10x** | Rewrite module |
+| Testing | **20x** | Fix + retest + regression |
+| **Production** | **100-1000x** | Patch + deploy + customer impact |
+
+**Key insight**: A bug found in production costs **100x or more** compared to finding it during requirements. This is the fundamental motivation for:
+- **TDD**: write tests before code (catches bugs at coding phase)
+- **Code reviews**: catch design flaws before testing
+- **CI/CD**: automated testing catches regressions immediately
+
+**Exam strategy**: For model selection, map project characteristics to model strengths. Stable requirements = Waterfall. Changing requirements = Agile. For testing, remember the hierarchy: statement < branch < path coverage. The cost multiplier (1x -> 100x) motivates shift-left testing.`,
+      examTip: 'The cost multiplier from requirements to production (1x to 100x) is the most-cited SDLC metric on the FE exam. "Shift left" = find bugs earlier = cheaper.',
+      importantNote: 'Agile does NOT mean no planning or documentation. It means adaptive planning with working software as the primary deliverable. Scrum ceremonies (sprint planning, retrospective) provide structure.',
     },
   ],
   keyTakeaways: [
@@ -8552,6 +9704,63 @@ Example: Student(ID, Name, DeptID, DeptName) violates 3NF because DeptName depen
 - **Hash**: O(1), exact match only
 - Tradeoff: faster reads, slower writes`,
       examTip: '1NF = atomic. 2NF = no partial deps. 3NF = no transitive deps. ACID: Atomicity, Consistency, Isolation, Durability.',
+    },
+    { id: 'db-exam', title: '3. SQL & Database Problems',
+      content: `## 3.1 Write a Query with JOIN, WHERE, GROUP BY, HAVING
+
+**Tables**: Students(id, name, dept_id), Enrollments(student_id, course_id, grade), Courses(id, title, credits).
+
+**Problem**: Find departments where the average GPA exceeds 3.0, showing department and average.
+
+**SQL**:
+- SELECT s.dept_id, AVG(e.grade) AS avg_gpa
+- FROM Students s
+- **INNER JOIN** Enrollments e ON s.id = e.student_id
+- **WHERE** e.grade IS NOT NULL
+- **GROUP BY** s.dept_id
+- **HAVING** AVG(e.grade) > 3.0
+- ORDER BY avg_gpa DESC;
+
+**Execution order**: FROM -> JOIN -> WHERE -> GROUP BY -> HAVING -> SELECT -> ORDER BY
+
+| Clause | Purpose | Filters |
+|---|---|---|
+| WHERE | Filter individual rows | Before grouping |
+| GROUP BY | Create groups | N/A |
+| **HAVING** | Filter groups | **After grouping** |
+
+## 3.2 Identify 1NF / 2NF / 3NF Violation
+
+**Table**: OrderDetail(OrderID, ProductID, ProductName, CustomerID, CustomerName, Qty, Price)
+
+**Primary key**: (OrderID, ProductID) — composite key.
+
+| Normal Form | Violation? | Problem |
+|---|---|---|
+| **1NF** | No | All values are atomic |
+| **2NF** | **Yes** | CustomerName depends on OrderID alone (partial dependency on composite key) |
+| **3NF** | **Yes** | ProductName depends on ProductID, not the whole key (transitive) |
+
+**Fix for 2NF**: Split into Orders(OrderID, CustomerID, CustomerName) + OrderItems(OrderID, ProductID, Qty, Price)
+
+**Fix for 3NF**: Further split Products(ProductID, ProductName) and replace ProductName in OrderItems with just ProductID.
+
+## 3.3 ACID Property Scenario Identification
+
+**Match each scenario to the ACID property:**
+
+| Scenario | ACID Property | Explanation |
+|---|---|---|
+| Bank transfer: debit + credit both succeed or both fail | **Atomicity** | All-or-nothing |
+| After transfer, total money unchanged | **Consistency** | Valid state to valid state |
+| Two users editing same record don't see partial changes | **Isolation** | Concurrent transactions separated |
+| Committed data survives server crash | **Durability** | Written to persistent storage |
+
+**Common exam trap**: "Consistency" in ACID means database constraints are maintained (valid state -> valid state). It does NOT mean "data is the same everywhere" (that is CAP theorem consistency).
+
+**Exam strategy**: For SQL, remember the execution order (FROM -> WHERE -> GROUP BY -> HAVING -> SELECT). WHERE filters rows before grouping; HAVING filters groups after. For normalization, check: 1NF (atomic?), 2NF (partial deps on composite key?), 3NF (transitive deps?). For ACID, atomicity = all-or-nothing is the most commonly tested property.`,
+      examTip: 'SQL execution order: FROM/JOIN first, WHERE second, GROUP BY third, HAVING fourth, SELECT fifth. This order explains why you cannot use column aliases in WHERE but can in HAVING (in some dialects).',
+      importantNote: '2NF violations only occur with COMPOSITE primary keys. If your table has a single-column PK, it is automatically in 2NF (there can be no partial dependencies). Check for composite keys first.',
     },
   ],
   keyTakeaways: [
