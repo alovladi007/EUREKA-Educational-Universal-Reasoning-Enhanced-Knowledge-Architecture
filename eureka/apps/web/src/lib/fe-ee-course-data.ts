@@ -4335,47 +4335,1652 @@ PWM controls average output by rapidly switching between on and off states:
    * TOPIC 10 — POWER SYSTEMS  (6 curriculum IDs from 5 sections)
    * ────────────────────────────────────────────────────────────────── */
 
-  fee_3phase_power: { topicId: 'fee_3phase_power', title: 'Three-Phase Power Systems', domainWeight: 'Power Systems · 4–6%', overview: 'Covers three-phase AC systems, transformers, per-unit analysis, transmission lines, power factor correction, and rotating machines.', sections: [{ id: 'fee_3phase_power_main', title: 'Three-Phase Systems', content: `Three-phase AC power is standard in industry offering constant power, efficient transmission, and compact motors. Three voltage sources 120 degrees apart. For balanced loads: Va+Vb+Vc = 0. Wye (Y): V_L = sqrt(3)·V_ph; Delta: I_L = sqrt(3)·I_ph. Power: P = sqrt(3)·V_L·I_L·cos(φ). Per-phase analysis simplifies balanced systems. Unbalanced loads analyzed with symmetrical components: zero, positive, negative sequences. Y-to-delta conversion: Z_delta = 3·Z_wye.`, examTip: 'Key formulas:\nV_L = sqrt(3)·V_ph (wye)\nI_L = sqrt(3)·I_ph (delta)\nP = sqrt(3)·V_L·I_L·cos(φ)\nZ_delta = 3·Z_wye' }], keyTakeaways: ['Y: V_L = sqrt(3)·V_ph; Delta: I_L = sqrt(3)·I_ph', 'Balanced: Va+Vb+Vc = 0; P = sqrt(3)·V_L·I_L·cos(φ)', 'Per-phase analysis for balanced; symmetrical components for unbalanced', 'Z_delta = 3·Z_wye for balanced conversion'] },
+  fee_3phase_power: {
+  topicId: 'fee_3phase_power',
+  title: 'Three-Phase Power Systems',
+  domainWeight: 'Power Systems · 4–6%',
+  overview: 'Three-phase AC power is the backbone of industrial and utility-scale electrical systems. Understanding balanced/unbalanced configurations, Y-delta conversions, and three-phase power calculations is essential for the FE exam and professional practice.',
+  sections: [
+    {
+      id: '3ph-fundamentals',
+      title: '1. Three-Phase Sources and Balanced Configurations',
+      content: `## 1.1 Why Three-Phase?
 
-  fee_transformers: { topicId: 'fee_transformers', title: 'Transformers: Equivalent Circuit & Efficiency', domainWeight: 'Power Systems · 4–6%', overview: 'Covers three-phase AC systems, transformers, per-unit analysis, transmission lines, power factor correction, and rotating machines.', sections: [{ id: 'fee_transformers_main', title: 'Transformers', content: `Transformers transfer power between circuits with different voltage levels. Ideal: Vs/Vp = Ns/Np = n (turns ratio); Ip/Is = n. Real transformers include core loss (hysteresis + eddy current) and copper loss. Voltage regulation VR = (Vnl - Vfl)/Vfl x 100%. Efficiency η = Pout/(Pout+Pcore+Pcopper), typically 95-99%. Open-circuit test measures core losses; short-circuit test measures copper losses.`, examTip: 'Key formulas:\nIdeal: Vs = n·Vp, Is = Ip/n\nVR = (Vnl-Vfl)/Vfl x 100%\nη = Pout/(Pout+Pcore+Pcopper)\nZpu = Zactual/Zbase' }], keyTakeaways: ['Ideal: Vs/Vp = Ns/Np = n; Is/Ip = 1/n', 'Core loss (no-load), copper loss (load dependent)', 'Voltage regulation = (Vnl-Vfl)/Vfl; desirable < 5%', 'Efficiency 95-99% at rated load'] },
+Three-phase systems deliver **constant instantaneous power** (no pulsation), use conductors more efficiently than single-phase, and produce rotating magnetic fields that drive motors directly.
 
-  fee_per_unit: { topicId: 'fee_per_unit', title: 'Per-Unit System for Simplified Analysis', domainWeight: 'Power Systems · 4–6%', overview: 'Covers three-phase AC systems, transformers, per-unit analysis, transmission lines, power factor correction, and rotating machines.', sections: [{ id: 'fee_per_unit_main', title: 'Per-Unit System', content: `The per-unit (pu) system normalizes voltages, currents, impedances relative to chosen base values. Choose Sbase (e.g., 100 MVA) and Vbase at one point; all other bases follow. Zbase = Vbase^2/Sbase. Per-unit: Vpu = Vactual/Vbase; Zpu = Zactual/Zbase. Impedance Zpu is independent of voltage level through transformers. Advantages: impedances approximately constant regardless of base voltage; transformers appear as ideal (n=1); numbers cluster near 1.0 making errors obvious.`, examTip: 'Key formulas:\nZbase = Vbase^2/Sbase\nVpu = Vactual/Vbase\nIpu = Iactual/Ibase\nPpu = Pactual/Sbase' }], keyTakeaways: ['Choose Sbase and Vbase at one location; compute Vbase at others via turns ratio', 'Zbase = Vbase^2/Sbase; Zpu = Zactual/Zbase', 'Zpu same across transformer ideal equivalents', 'Sbase constant throughout system'] },
+Three voltage sources separated by **120°**:
 
-  fee_tx_lines: { topicId: 'fee_tx_lines', title: 'Transmission Lines: Models and Parameters', domainWeight: 'Power Systems · 4–6%', overview: 'Covers three-phase AC systems, transformers, per-unit analysis, transmission lines, power factor correction, and rotating machines.', sections: [{ id: 'fee_tx_lines_main', title: 'Transmission Lines', content: `Transmission lines carry power over long distances; distributed parameters (R, L, C, G per unit length) significantly affect voltage drop and losses. Short line (<80 km): lumped series impedance. Medium line (80-240 km): pi or T equivalent. Long line (>240 km): distributed parameter model. Surge impedance Z₀ = sqrt(Z/Y) approximately sqrt(L/C), typically 200-400 ohm. Natural power Pnl = V^2/Z₀. Voltage regulation depends on load, power factor, and impedance. For short line: ΔV approximately (R·P + X·Q)/V. Ferranti effect: light load causes voltage rise due to charging current.`, examTip: 'Key formulas:\nZ₀ = sqrt(Z/Y)\nPnl = V^2/Z₀\nShort line ΔV approximately (RP+XQ)/V\nMedium line: pi model' }], keyTakeaways: ['Series impedance Z = R+jωL; shunt admittance Y = G+jωC per unit length', 'Short line: lumped; medium: pi/T; long: hyperbolic functions', 'Surge impedance Z₀ = sqrt(Z/Y); natural power Pnl = V^2/Z₀', 'Voltage drop depends on both P and Q'] },
+- **Va = V·cos(ωt)**
+- **Vb = V·cos(ωt − 120°)**
+- **Vc = V·cos(ωt − 240°)**
 
-  fee_pf_correction: { topicId: 'fee_pf_correction', title: 'Power Factor Correction', domainWeight: 'Power Systems · 4–6%', overview: 'Covers three-phase AC systems, transformers, per-unit analysis, transmission lines, power factor correction, and rotating machines.', sections: [{ id: 'fee_pf_correction_main', title: 'Power Factor Correction', content: `Power factor PF = cos(θ) = P/S measures the portion of apparent power actually transferred as real power. Inductive loads (motors, transformers) cause lagging current; utilities penalize PF < 0.95. Correction adds shunt capacitors: Qc = P(tan(θ_old) - tan(θ_new)). The required capacitor value C = Qc/(ω·V^2). Capacitor banks are switched to maintain desired PF as load varies. Over-correction (leading PF) can cause voltage rise and resonance problems. Synchronous condensers (synchronous motors at no-load) provide continuous reactive power support. Power factor correction reduces apparent power drawn from utility, decreasing I^2R losses in conductors and freeing transformer capacity for additional real power loads.`, examTip: 'Key formulas:\nPF = cos(θ) = P/S\nQc = P(tan(θ_old)-tan(θ_new))\nSlip s = (Ns-N)/Ns\nNs = 120·f/P (pole pairs)' }], keyTakeaways: ['PF = cos(θ) = P/S; inductive loads lag, capacitive lead', 'Capacitor for correction: Qc = P(tan(θ_old)-tan(θ_new))', 'Over-correction causes voltage rise and potential resonance', 'Synchronous condensers provide continuous reactive power support'] },
+In complex (phasor) notation using the **a-operator** where **a = e^(j120°) = −½ + j√3/2**:
 
-  fee_motors: { topicId: 'fee_motors', title: 'Rotating Machines: Motors & Generators', domainWeight: 'Power Systems · 4–6%', overview: 'Covers three-phase AC systems, transformers, per-unit analysis, transmission lines, power factor correction, and rotating machines.', sections: [{ id: 'fee_motors_main', title: 'Rotating Machines', content: `Induction motors are the largest industrial loads: slip s = (Ns - N)/Ns where Ns = 120f/P is synchronous speed (P = number of poles), N is actual speed. At no-load, slip is nearly zero; at full load, typically 2-5%. Starting torque is high but inrush current can be 5-8x rated; soft starters and variable frequency drives (VFDs) limit inrush. Synchronous motors run at synchronous speed always; field current controls power factor — over-excited synchronous motors can provide reactive power (act as capacitors). DC motors offer precise speed control via armature voltage and torque control via field current. Motor efficiency η = P_mech/P_elec; losses include copper (I^2R in windings), core (hysteresis + eddy current in iron), friction and windage. Motor selection considers load torque profile, speed range, efficiency, and starting requirements.`, examTip: 'Key formulas:\nSlip s = (Ns-N)/Ns\nNs = 120·f/P\nMotor efficiency η = P_mech/P_elec\nTorque proportional to I·B·A' }], keyTakeaways: ['Induction motor: slip s = (Ns-N)/Ns; Ns = 120f/P', 'Synchronous motor: speed = Ns always; field current sets power factor', 'Motor losses: copper, core, friction/windage', 'VFDs control speed and limit inrush current'] },
+| Phasor | Value |
+|---|---|
+| Va | V∠0° |
+| Vb | V∠−120° = a²·Va |
+| Vc | V∠−240° = a·Va |
+
+For **balanced** loads: **Va + Vb + Vc = 0** and **Ia + Ib + Ic = 0**.
+
+## 1.2 Wye (Y) vs. Delta (Δ) Connections
+
+| Property | Wye (Y) | Delta (Δ) |
+|---|---|---|
+| Line-to-line voltage | **V_LL = √3 · V_ph** | **V_LL = V_ph** |
+| Line current | **I_L = I_ph** | **I_L = √3 · I_ph** |
+| Neutral wire | Present (carries unbalanced current) | No neutral |
+| Typical use | Distribution, generators | Motors, capacitor banks |
+
+### Y ↔ Δ Impedance Conversion
+
+- **Z_Δ = 3·Z_Y** (balanced loads)
+- **Z_Y = Z_Δ / 3**`,
+      examTip: 'The √3 factor is the single most tested relationship: in a Y-connection it multiplies VOLTAGE (V_LL = √3·V_ph), while in a Δ-connection it multiplies CURRENT (I_L = √3·I_ph). If you mix these up, every downstream calculation is wrong.',
+      importantNote: 'The a-operator a = e^(j120°) satisfies 1 + a + a² = 0. This identity is the mathematical reason Va + Vb + Vc = 0 for a balanced set, and it is used repeatedly in symmetrical component analysis.',
+    },
+    {
+      id: '3ph-power-calcs',
+      title: '2. Three-Phase Power and Per-Phase Analysis',
+      content: `## 2.1 Three-Phase Power Formulas
+
+| Quantity | Formula | Unit |
+|---|---|---|
+| Real power | **P = √3 · V_LL · I_L · cos(φ)** | W |
+| Reactive power | **Q = √3 · V_LL · I_L · sin(φ)** | VAR |
+| Apparent power | **S = √3 · V_LL · I_L** | VA |
+| Complex power | **S = P + jQ** | VA |
+
+All formulas use **line** quantities (V_LL and I_L) — no need to know whether the load is Y or Δ.
+
+### Power per phase:
+- **P_phase = V_ph · I_ph · cos(φ)** → total **P = 3·P_phase**
+
+## 2.2 Per-Phase Analysis
+
+For **balanced** systems, analyze one phase as a single-phase circuit:
+
+1. Convert Δ-loads to equivalent Y: **Z_Y = Z_Δ/3**
+2. Solve the single-phase equivalent (line-to-neutral voltage, phase current)
+3. Multiply power by 3 for total three-phase power
+4. Line quantities: **V_LL = √3·V_ph**, **I_L = I_ph** (Y connection)
+
+## 2.3 Symmetrical Components (Unbalanced Analysis)
+
+Unbalanced currents or voltages decompose into three **sequence** sets:
+
+- **Positive sequence** (V₁): balanced, normal rotation (abc)
+- **Negative sequence** (V₂): balanced, reverse rotation (acb)
+- **Zero sequence** (V₀): all three phasors equal (in-phase)
+
+**Transformation**: V₀ = ⅓(Va + Vb + Vc); V₁ = ⅓(Va + a·Vb + a²·Vc); V₂ = ⅓(Va + a²·Vb + a·Vc)`,
+      examTip: 'On the FE exam, three-phase power problems almost always give line voltage and line current. Plug directly into P = √3·V_LL·I_L·cos(φ). If they give phase quantities, first convert to line quantities using the Y or Δ relationship.',
+    },
+  ],
+  keyTakeaways: [
+    'Y connection: V_LL = √3·V_ph, I_L = I_ph; Delta: V_LL = V_ph, I_L = √3·I_ph.',
+    'Three-phase power: P = √3·V_LL·I_L·cos(φ) using line quantities regardless of Y or Δ.',
+    'Balanced systems: Va + Vb + Vc = 0; per-phase analysis reduces to single-phase equivalent.',
+    'Y ↔ Δ conversion: Z_Δ = 3·Z_Y for balanced impedances.',
+    'Symmetrical components decompose unbalanced conditions into zero, positive, and negative sequences.',
+  ],
+},
+
+  fee_transformers: {
+  topicId: 'fee_transformers',
+  title: 'Transformers: Equivalent Circuit & Efficiency',
+  domainWeight: 'Power Systems · 4–6%',
+  overview: 'Transformers are the workhorses of power systems, stepping voltage up for efficient long-distance transmission and down for safe distribution. The FE exam tests ideal transformer ratios, equivalent circuit models, voltage regulation, and efficiency calculations.',
+  sections: [
+    {
+      id: 'xfmr-ideal-real',
+      title: '1. Ideal vs. Real Transformer Models',
+      content: `## 1.1 Ideal Transformer
+
+An ideal transformer has **perfect coupling, zero losses, and infinite permeability**:
+
+| Relationship | Formula |
+|---|---|
+| Voltage ratio | **Vs/Vp = Ns/Np = n** (turns ratio) |
+| Current ratio | **Ip/Is = n** (currents are inverse) |
+| Power conservation | **Pp = Ps** → **Vp·Ip = Vs·Is** |
+| Impedance reflection | **Z_primary = Z_load / n²** |
+
+## 1.2 Real Transformer Equivalent Circuit
+
+Real transformers have losses modeled by additional circuit elements:
+
+- **R_c** (core-loss resistance): models hysteresis + eddy-current losses (parallel branch)
+- **X_m** (magnetizing reactance): models finite permeability (parallel branch)
+- **R_1, R_2** (winding resistance): copper losses in primary/secondary
+- **X_1, X_2** (leakage reactance): flux that does not link both windings
+
+### Losses Summary
+
+| Loss Type | Cause | Depends On | Test |
+|---|---|---|---|
+| Core loss | Hysteresis + eddy currents | Voltage (constant at rated V) | Open-circuit test |
+| Copper loss | I²R in windings | Current (load-dependent) | Short-circuit test |
+
+## 1.3 Standard Tests
+
+- **Open-circuit test** (secondary open): measures core losses P_oc and magnetizing branch (R_c, X_m)
+- **Short-circuit test** (secondary shorted, reduced voltage): measures copper losses P_sc and leakage impedance (R_eq, X_eq)`,
+      examTip: 'The open-circuit test gives core losses and the short-circuit test gives copper losses. This is the most commonly tested transformer lab concept. Remember: OC = core (no load current, rated voltage), SC = copper (rated current, reduced voltage).',
+      importantNote: 'Impedance reflects through the turns ratio SQUARED: Z_primary = Z_load/n². A common FE exam mistake is using n instead of n². If n = 10 and Z_load = 5 ohm, the reflected impedance is 5/100 = 0.05 ohm, not 0.5 ohm.',
+    },
+    {
+      id: 'xfmr-regulation-efficiency',
+      title: '2. Voltage Regulation and Efficiency',
+      content: `## 2.1 Voltage Regulation
+
+**VR = (V_no-load − V_full-load) / V_full-load × 100%**
+
+- Low VR (< 5%) is desirable — output voltage stays nearly constant under load
+- Lagging power factor increases VR (inductive loads cause bigger voltage drop)
+- Leading power factor can produce negative VR (voltage rises under load)
+
+### Approximate Voltage Drop
+
+**ΔV ≈ I·(R_eq·cos(φ) + X_eq·sin(φ))**
+
+where R_eq and X_eq are equivalent series impedance referred to one side.
+
+## 2.2 Efficiency
+
+**η = P_out / (P_out + P_core + P_copper) × 100%**
+
+Equivalently: **η = P_out / P_in × 100%**
+
+| Load Condition | Core Loss | Copper Loss | Efficiency |
+|---|---|---|---|
+| No load | Full (rated) | Zero | Very low |
+| Light load | Full | Small | Moderate |
+| **Rated load** | Full | **Full** | **Maximum (~95–99%)** |
+| Overload | Full | Increases as I² | Decreasing |
+
+**Maximum efficiency** occurs when **P_core = P_copper** (core loss equals copper loss).
+
+### Per-Unit Impedance Shortcut
+
+**Z_pu = Z_actual / Z_base** where **Z_base = V_base² / S_base**
+
+Per-unit impedance is the same on both sides of the transformer — no need to reflect through n².`,
+      examTip: 'Maximum transformer efficiency occurs when core loss equals copper loss. This is a classic FE exam question. At rated load, typical transformer efficiency is 95-99%. If you are asked "at what load is efficiency maximum," set P_core = P_copper and solve for load fraction.',
+    },
+  ],
+  keyTakeaways: [
+    'Ideal transformer: Vs/Vp = n, Is/Ip = 1/n, impedance reflects by n².',
+    'Core loss (OC test) is voltage-dependent; copper loss (SC test) is current-dependent.',
+    'Voltage regulation VR = (V_nl − V_fl)/V_fl × 100%; lagging PF makes VR worse.',
+    'Maximum efficiency when P_core = P_copper; typical range 95–99%.',
+    'Per-unit impedance Z_pu = Z_actual/Z_base eliminates turns-ratio conversions.',
+  ],
+},
+
+  fee_per_unit: {
+  topicId: 'fee_per_unit',
+  title: 'Per-Unit System for Simplified Analysis',
+  domainWeight: 'Power Systems · 4–6%',
+  overview: 'The per-unit (pu) system normalizes all quantities to dimensionless ratios, eliminating turns-ratio conversions and making impedance values transferable across voltage zones. Mastering per-unit is essential for FE power systems problems.',
+  sections: [
+    {
+      id: 'pu-base-values',
+      title: '1. Base Values and Per-Unit Conversion',
+      content: `## 1.1 Choosing Base Values
+
+Select **two independent bases** — everything else follows:
+
+1. Choose **S_base** (common choice: 100 MVA for utility, or equipment rating)
+2. Choose **V_base** at one voltage zone
+
+### Derived Bases
+
+| Quantity | Formula | Note |
+|---|---|---|
+| **I_base** | S_base / (√3 · V_base) | Three-phase; use S_base / V_base for single-phase |
+| **Z_base** | V_base² / S_base | Most important derived base |
+| **P_base** | S_base | Same as S_base |
+
+## 1.2 Converting to Per-Unit
+
+- **V_pu = V_actual / V_base**
+- **I_pu = I_actual / I_base**
+- **Z_pu = Z_actual / Z_base**
+- **P_pu = P_actual / S_base**
+
+### Changing Base (Re-basing Equipment Data)
+
+Equipment nameplate impedance is given on the equipment's own base. To convert to the system base:
+
+**Z_pu(new) = Z_pu(old) × (S_base(new) / S_base(old)) × (V_base(old) / V_base(new))²**
+
+## 1.3 Multi-Zone Systems
+
+In a system with transformers:
+
+- **S_base is the same throughout** the entire network
+- **V_base changes at each transformer** according to the turns ratio
+- **Z_pu stays the same** on both sides of an ideal transformer (n:1 disappears)`,
+      examTip: 'The re-basing formula Z_pu(new) = Z_pu(old) × (S_new/S_old) × (V_old/V_new)² is tested frequently. If the exam gives generator impedance on its own MVA rating, you must re-base to the system base before combining impedances.',
+      importantNote: 'S_base is constant everywhere in the network. V_base changes at each transformer winding according to the turns ratio. Forgetting to change V_base across a transformer is the most common per-unit mistake on the FE exam.',
+    },
+    {
+      id: 'pu-advantages-workflow',
+      title: '2. Advantages and Problem-Solving Workflow',
+      content: `## 2.1 Why Per-Unit?
+
+- **Transformers disappear**: ideal transformers become 1:1 (no turns-ratio math)
+- **Error detection**: all normal per-unit values cluster near **1.0 pu** — a result of 15 pu is clearly wrong
+- **Equipment comparison**: generator with Z = 0.15 pu means 15% impedance regardless of voltage rating
+- **Simplified fault analysis**: fault currents computed directly without converting between voltage levels
+
+## 2.2 Step-by-Step Workflow
+
+1. **Choose S_base and V_base** at one zone (often the generator or largest transformer)
+2. **Compute V_base** at every other zone via transformer turns ratios
+3. **Compute Z_base = V_base²/S_base** at each zone
+4. **Convert all impedances** to per-unit on the system base (re-base if needed)
+5. **Draw the per-unit equivalent circuit** (transformers are short circuits)
+6. **Solve** using standard circuit analysis (KVL, KCL, Ohm's law in per-unit)
+7. **Convert results back** to actual values: V_actual = V_pu × V_base, etc.
+
+## 2.3 Fault Current Example
+
+For a three-phase fault at a bus:
+
+**I_fault(pu) = V_prefault(pu) / Z_total(pu)**
+
+Convert to actual: **I_fault = I_fault(pu) × I_base** where **I_base = S_base / (√3 · V_base)**`,
+      examTip: 'On multi-zone power system problems, draw the per-unit circuit first. All transformers become wires (1:1 ratio). Then solve using simple series/parallel impedance combinations. This avoids the messy turns-ratio algebra that causes errors under exam time pressure.',
+    },
+  ],
+  keyTakeaways: [
+    'Choose S_base and V_base at one zone; derive Z_base = V_base²/S_base.',
+    'V_base changes across transformers by the turns ratio; S_base stays constant everywhere.',
+    'Z_pu is the same on both sides of a transformer — turns ratios disappear.',
+    'Re-base formula: Z_pu(new) = Z_pu(old) × (S_new/S_old) × (V_old/V_new)².',
+    'Normal per-unit values cluster near 1.0; far-off values signal errors.',
+  ],
+},
+
+  fee_tx_lines: {
+  topicId: 'fee_tx_lines',
+  title: 'Transmission Lines: Models and Parameters',
+  domainWeight: 'Power Systems · 4–6%',
+  overview: 'Power transmission lines have distributed resistance, inductance, capacitance, and conductance that affect voltage regulation, losses, and stability. The FE exam tests line models (short, medium, long), surge impedance, and voltage drop calculations.',
+  sections: [
+    {
+      id: 'txl-parameters-models',
+      title: '1. Line Parameters and Circuit Models',
+      content: `## 1.1 Distributed Parameters
+
+Transmission lines have per-unit-length parameters:
+
+| Parameter | Symbol | Unit | Cause |
+|---|---|---|---|
+| Series resistance | R | Ω/km | Conductor resistivity |
+| Series inductance | L | H/km | Magnetic field around conductors |
+| Shunt capacitance | C | F/km | Electric field between conductors and ground |
+| Shunt conductance | G | S/km | Leakage (usually negligible) |
+
+**Series impedance per unit length**: **Z = R + jωL** (Ω/km)
+**Shunt admittance per unit length**: **Y = G + jωC** (S/km)
+
+## 1.2 Line Models by Length
+
+| Line Length | Model | Elements |
+|---|---|---|
+| **Short** (< 80 km) | Lumped series impedance | Z_total = z·ℓ (no shunt) |
+| **Medium** (80–240 km) | π or T equivalent | Series Z, shunt Y/2 at each end (π model) |
+| **Long** (> 240 km) | Distributed parameter | Hyperbolic functions: V = V_R·cosh(γℓ) + I_R·Z₀·sinh(γℓ) |
+
+where **γ = √(Z·Y)** is the propagation constant and **ℓ** is line length.
+
+## 1.3 Voltage Drop for Short Line
+
+**ΔV ≈ (R·P + X·Q) / V**
+
+- Both real power P and reactive power Q contribute to voltage drop
+- Poor power factor (large Q) worsens voltage drop even at moderate P`,
+      examTip: 'The short-line model (series impedance only, no shunt) is overwhelmingly the most tested on the FE exam. For short lines, voltage drop ΔV ≈ I·(R·cos(φ) + X·sin(φ)) or equivalently (RP + XQ)/V. Know this formula cold.',
+    },
+    {
+      id: 'txl-surge-ferranti',
+      title: '2. Surge Impedance, Natural Power, and Ferranti Effect',
+      content: `## 2.1 Surge Impedance and SIL
+
+**Surge impedance (characteristic impedance)**:
+
+**Z₀ = √(Z/Y) ≈ √(L/C)**
+
+Typical values: **200–400 Ω** for overhead lines, **30–60 Ω** for underground cables.
+
+**Surge Impedance Loading (SIL)** or Natural Power:
+
+**P_SIL = V²_LL / Z₀**
+
+| Load vs. SIL | Voltage Profile | Reactive Power |
+|---|---|---|
+| Load < SIL | Voltage rises along line (Ferranti effect) | Line generates Q (capacitive) |
+| Load = SIL | Flat voltage profile | Q generated = Q absorbed |
+| Load > SIL | Voltage drops along line | Line absorbs Q (inductive) |
+
+## 2.2 Ferranti Effect
+
+On **lightly loaded or unloaded** long lines, shunt capacitance charging current flows through series inductance, causing the **receiving-end voltage to exceed the sending-end voltage**.
+
+- More pronounced on longer lines and at higher voltages
+- Mitigated by shunt reactors (inductors) at the receiving end
+
+## 2.3 Charging Current
+
+No-load charging current: **I_c = V · ω · C · ℓ**
+
+Charging reactive power: **Q_c = V² · ω · C · ℓ** (can be hundreds of MVAR on long HV lines)`,
+      examTip: 'SIL = V²/Z₀ is the "sweet spot" where the line generates exactly as much reactive power as it absorbs. Below SIL, voltage rises (Ferranti); above SIL, voltage drops. The FE exam may ask you to identify the Ferranti effect scenario — it always involves a lightly loaded or open-ended long line.',
+    },
+  ],
+  keyTakeaways: [
+    'Distributed parameters: Z = R + jωL per km (series), Y = G + jωC per km (shunt).',
+    'Short line (< 80 km): lumped Z only; medium: π-model; long: hyperbolic.',
+    'Surge impedance Z₀ = √(L/C); SIL = V²/Z₀ defines flat voltage profile.',
+    'Short-line voltage drop: ΔV ≈ (RP + XQ)/V — both P and Q matter.',
+    'Ferranti effect: receiving voltage > sending voltage on lightly loaded long lines.',
+  ],
+},
+
+  fee_pf_correction: {
+  topicId: 'fee_pf_correction',
+  title: 'Power Factor Correction',
+  domainWeight: 'Power Systems · 4–6%',
+  overview: 'Power factor correction reduces reactive power demand, lowering utility penalties, reducing I²R losses, and freeing capacity. The FE exam tests PF concepts, capacitor sizing, and the power triangle.',
+  sections: [
+    {
+      id: 'pfc-power-triangle',
+      title: '1. Power Triangle and Power Factor Fundamentals',
+      content: `## 1.1 The Power Triangle
+
+| Quantity | Symbol | Formula | Unit |
+|---|---|---|---|
+| Real power | P | V·I·cos(φ) | W (watts) |
+| Reactive power | Q | V·I·sin(φ) | VAR |
+| Apparent power | S | V·I | VA |
+| Complex power | **S** | P + jQ | VA |
+
+**Power factor**: **PF = cos(φ) = P / S = P / √(P² + Q²)**
+
+- **Lagging PF** (φ > 0): current lags voltage — inductive loads (motors, transformers)
+- **Leading PF** (φ < 0): current leads voltage — capacitive loads
+- **Unity PF** (φ = 0): all power is real; Q = 0
+
+## 1.2 Why Correct Power Factor?
+
+| Effect of Low PF | Explanation |
+|---|---|
+| Higher current draw | I = S/V = P/(V·PF) — lower PF means more current for same real power |
+| Increased I²R losses | More current means more resistive losses in wires and transformers |
+| Utility penalties | Most utilities penalize PF below 0.90 or 0.95 |
+| Reduced capacity | Transformers and generators rated in VA, not W — low PF wastes capacity |
+
+## 1.3 Reactive Power Sign Convention
+
+- Inductive loads **consume** positive Q (lagging)
+- Capacitors **generate** positive Q (leading) — they supply the reactive power that inductors need
+- Adding a capacitor **reduces** the net Q drawn from the utility`,
+      examTip: 'The FE exam loves the formula I = P/(V·PF). Lower power factor means higher current for the same real power. If PF drops from 1.0 to 0.5, current doubles. This directly explains why utilities penalize poor PF.',
+    },
+    {
+      id: 'pfc-capacitor-sizing',
+      title: '2. Capacitor Sizing and Correction Methods',
+      content: `## 2.1 Capacitor Sizing Formula
+
+To correct from old angle θ₁ to new angle θ₂:
+
+**Q_c = P · (tan(θ₁) − tan(θ₂))**
+
+where:
+- P = real power of the load (unchanged by correction)
+- θ₁ = arccos(PF_old), θ₂ = arccos(PF_new)
+- Q_c = reactive power the capacitor must supply
+
+### Capacitor Value
+
+**C = Q_c / (ω · V²)** where ω = 2πf
+
+For three-phase: **Q_c(3φ) = 3 · V_ph² · ω · C** or **Q_c(3φ) = V_LL² · ω · C** (for Δ-connected caps)
+
+## 2.2 Correction Methods
+
+| Method | Mechanism | Pros | Cons |
+|---|---|---|---|
+| **Shunt capacitors** | Add Q_c directly | Simple, cheap, low maintenance | Fixed steps, possible resonance |
+| **Synchronous condensers** | Over-excited synchronous motor | Continuously variable Q | Expensive, requires rotating equipment |
+| **Static VAR compensator (SVC)** | Thyristor-switched capacitors/reactors | Fast, precise, wide range | Complex, expensive |
+
+## 2.3 Risks of Over-Correction
+
+- **Leading PF** can cause voltage rise on lightly loaded feeders
+- **Harmonic resonance**: capacitor bank + system inductance can resonate at harmonic frequencies (5th, 7th, 11th, 13th are common)
+- Utility may also penalize leading PF`,
+      examTip: 'The capacitor sizing formula Q_c = P·(tan(θ_old) − tan(θ_new)) is the single most tested power factor correction equation. P stays the same (capacitors do not change real power); only Q changes. Make sure to use the ANGLE (arccos of PF), not the PF directly, in the tangent.',
+      importantNote: 'Capacitors do NOT change real power P. They only reduce the reactive power Q drawn from the source. The load still consumes the same Q internally — the capacitor supplies it locally so the source does not have to.',
+    },
+  ],
+  keyTakeaways: [
+    'PF = cos(φ) = P/S; lagging PF (inductive) is the most common industrial issue.',
+    'Capacitor sizing: Q_c = P·(tan(θ_old) − tan(θ_new)); P is unchanged by correction.',
+    'Lower PF means higher current for the same real power: I = P/(V·PF).',
+    'Over-correction risks: voltage rise and harmonic resonance with system inductance.',
+    'Synchronous condensers provide continuously variable reactive power support.',
+  ],
+},
+
+  fee_motors: {
+  topicId: 'fee_motors',
+  title: 'Rotating Machines: Motors & Generators',
+  domainWeight: 'Power Systems · 4–6%',
+  overview: 'Rotating machines convert between electrical and mechanical energy. Induction motors dominate industrial loads; synchronous machines control power factor and generate utility power; DC motors offer precise speed/torque control. The FE exam tests slip, synchronous speed, efficiency, and motor characteristics.',
+  sections: [
+    {
+      id: 'motors-induction',
+      title: '1. Induction Motors',
+      content: `## 1.1 Synchronous Speed and Slip
+
+**Synchronous speed**: **N_s = 120·f / P** (rpm)
+
+where f = supply frequency (Hz), P = number of **poles** (not pole pairs).
+
+| Poles | 60 Hz N_s | 50 Hz N_s |
+|---|---|---|
+| 2 | 3600 rpm | 3000 rpm |
+| 4 | 1800 rpm | 1500 rpm |
+| 6 | 1200 rpm | 1000 rpm |
+| 8 | 900 rpm | 750 rpm |
+
+**Slip**: **s = (N_s − N) / N_s**
+
+- At **no-load**: s ≈ 0 (rotor nearly at synchronous speed)
+- At **full load**: s ≈ 0.02–0.05 (2–5%)
+- At **starting** (N = 0): s = 1
+- At **synchronous speed** (N = N_s): s = 0 (no torque — induction motor cannot run at N_s)
+
+**Rotor frequency**: **f_rotor = s · f_line**
+
+## 1.2 Torque-Speed Characteristic
+
+- **Starting torque**: moderate to high (design-dependent); inrush current 5–8× rated
+- **Breakdown torque**: maximum torque before stalling; typically 2–3× rated torque
+- **Operating region**: between no-load and rated slip (linear-ish portion)
+
+### Starting Methods
+
+| Method | Inrush Reduction | Torque Impact |
+|---|---|---|
+| Direct-on-line (DOL) | None (5–8× I_rated) | Full starting torque |
+| Star-delta starter | Reduces to 1/3 | Reduces to 1/3 |
+| Soft starter | Variable (2–4×) | Adjustable |
+| **VFD** | Minimal (1–1.5×) | Full torque at any speed |
+
+## 1.3 Efficiency and Losses
+
+**η = P_mechanical / P_electrical**
+
+Motor losses:
+- **Copper loss** (I²R in stator and rotor windings) — load-dependent
+- **Core loss** (hysteresis + eddy current) — voltage-dependent, roughly constant
+- **Friction and windage** — speed-dependent, roughly constant
+- **Stray load loss** — small, load-dependent`,
+      examTip: 'N_s = 120f/P and s = (N_s − N)/N_s are the two most tested motor formulas. A common FE exam question gives a 4-pole, 60 Hz motor running at 1740 rpm and asks for slip: s = (1800 − 1740)/1800 = 0.033 or 3.3%.',
+      importantNote: 'P in N_s = 120f/P is the number of POLES, not pole pairs. A 4-pole motor has 2 pole pairs. Some textbooks use pole pairs (p), giving N_s = 60f/p. On the FE exam, the NCEES handbook uses poles, not pole pairs.',
+    },
+    {
+      id: 'motors-synchronous-dc',
+      title: '2. Synchronous Machines and DC Motors',
+      content: `## 2.1 Synchronous Motors
+
+Synchronous motors run at **exactly N_s** — no slip.
+
+- **Field current** (DC excitation) controls power factor:
+  - **Over-excited**: acts as capacitor (generates Q) — used as synchronous condenser
+  - **Under-excited**: acts as inductor (absorbs Q)
+  - **Normal excitation**: unity power factor
+
+### V-Curve
+
+The V-curve plots armature current I_a vs. field current I_f at constant load:
+- Minimum I_a occurs at unity PF
+- Left of minimum: under-excited (lagging PF)
+- Right of minimum: over-excited (leading PF)
+
+## 2.2 DC Motors
+
+DC motors offer **precise speed and torque control**:
+
+| Type | Speed Control | Torque Characteristic |
+|---|---|---|
+| **Separately excited** | Armature voltage V_a | τ ∝ I_a (linear torque-current) |
+| **Shunt** | Field weakening or V_a | Approximately constant speed |
+| **Series** | V_a; never run unloaded! | High starting torque, speed varies with load |
+
+Key relationships:
+- **Back-EMF**: E = K·φ·ω (proportional to flux and speed)
+- **Torque**: τ = K·φ·I_a
+- **Speed**: ω = (V_a − I_a·R_a) / (K·φ)
+
+## 2.3 Motor Selection Guidelines
+
+| Application | Best Motor Type | Reason |
+|---|---|---|
+| Constant-speed pump/fan | Induction (squirrel cage) | Simple, cheap, reliable |
+| Precise speed control | DC or VFD-driven induction | Adjustable speed |
+| Power factor correction | Synchronous | Over-excitation generates Q |
+| High starting torque (crane) | DC series or wound-rotor induction | Torque profile matches |`,
+      examTip: 'Synchronous motors and power factor: over-excited = leading (capacitive), under-excited = lagging (inductive). For DC series motors, NEVER disconnect the load — the motor will overspeed dangerously because torque drops to zero while speed climbs without bound.',
+    },
+  ],
+  keyTakeaways: [
+    'Synchronous speed: N_s = 120f/P; slip: s = (N_s − N)/N_s.',
+    'Induction motor full-load slip is 2–5%; rotor frequency = s × f_line.',
+    'Synchronous motor speed = N_s exactly; field current controls PF.',
+    'DC motor: E = Kφω, τ = KφI_a; series motor has high starting torque but must never run unloaded.',
+    'Motor efficiency η = P_mech/P_elec; losses = copper + core + friction/windage.',
+    'VFDs provide soft starting and variable-speed operation with minimal inrush.',
+  ],
+},
 
   /* ──────────────────────────────────────────────────────────────────
    * TOPIC 11 — ELECTROMAGNETICS  (5 curriculum IDs)
    * ────────────────────────────────────────────────────────────────── */
 
-  fee_electrostatics: { topicId: 'fee_electrostatics', title: "Electrostatics: Coulomb's Law & Gauss's Law", domainWeight: 'Electromagnetics · 4–6%', overview: 'Covers electric and magnetic fields, Maxwell\'s equations, wave propagation, and transmission line theory.', sections: [{ id: 'fee_electrostatics_main', title: 'Electrostatics', content: `Coulomb's law: F = kQ₁Q₂/r^2 where k = 8.99x10^9. Electric field E = F/q. Gauss's law: closed surface integral of E·dA = Qenc/ε₀. Powerful for symmetric geometries: infinite sheet E = σ/(2ε₀), infinite line E = λ/(2πε₀r), sphere E = kQ/r^2 outside. Capacitance C = Q/V; parallel plate C = ε₀εrA/d. Energy stored U = (1/2)CV^2. Potential V = kQ/r; path-independent in conservative fields.`, examTip: 'Key formulas:\nF = kQ₁Q₂/r^2\nGauss: closed integral E·dA = Qenc/ε₀\nC = ε₀εrA/d\nU = (1/2)CV^2' }], keyTakeaways: ["Coulomb's law: F = kQ₁Q₂/r^2; electric field E = F/q", "Gauss's law powerful for symmetric charge distributions", 'Potential V = kQ/r; path-independent', 'Capacitance C = ε₀εrA/d; energy U = (1/2)CV^2'] },
+  fee_electrostatics: {
+  topicId: 'fee_electrostatics',
+  title: "Electrostatics: Coulomb's Law & Gauss's Law",
+  domainWeight: 'Electromagnetics · 4–6%',
+  overview: "Electrostatics governs stationary charge distributions and the electric fields they produce. Coulomb's law gives the force between point charges; Gauss's law provides a powerful shortcut for symmetric geometries. Capacitance, potential, and stored energy complete the picture.",
+  sections: [
+    {
+      id: 'es-coulomb-field',
+      title: "1. Coulomb's Law, Electric Field, and Potential",
+      content: `## 1.1 Coulomb's Law
 
-  fee_magnetostatics: { topicId: 'fee_magnetostatics', title: "Magnetostatics: Biot-Savart & Ampere's Law", domainWeight: 'Electromagnetics · 4–6%', overview: 'Covers electric and magnetic fields, Maxwell\'s equations, wave propagation, and transmission line theory.', sections: [{ id: 'fee_magnetostatics_main', title: 'Magnetostatics', content: `Ampere's law: closed integral B·dl = μ₀Ienc. Long straight wire: B = μ₀I/(2πr). Solenoid: B = μ₀nI inside. Magnetic flux Φ = integral B·dA (Weber). Inductance L = Φ/I; energy U = (1/2)LI^2. Force on current-carrying wire F = IL x B. Magnetic circuit analogy: Φ = mmf/reluctance = nI/R_m. Right-hand rule: thumb in current direction, fingers curl in field direction.`, examTip: 'Key formulas:\nAmpere: closed integral B·dl = μ₀Ienc\nLong wire: B = μ₀I/(2πr)\nSolenoid: B = μ₀nI\nL = Φ/I, U = (1/2)LI^2' }], keyTakeaways: ["Ampere's law for symmetric current distributions", 'Long wire: B = μ₀I/(2πr); solenoid: B = μ₀nI', 'Magnetic flux Φ = integral B·dA; inductance L = Φ/I', 'Force on wire: F = IL x B; energy U = (1/2)LI^2'] },
+Force between two point charges:
 
-  fee_maxwell: { topicId: 'fee_maxwell', title: "Maxwell's Equations", domainWeight: 'Electromagnetics · 4–6%', overview: 'Covers electric and magnetic fields, Maxwell\'s equations, wave propagation, and transmission line theory.', sections: [{ id: 'fee_maxwell_main', title: "Maxwell's Equations", content: `Maxwell's four equations unify electricity and magnetism. Gauss's law: div E = ρ/ε₀. No magnetic monopoles: div B = 0. Faraday's law: curl E = -∂B/∂t (changing B induces E). Ampere-Maxwell: curl B = μ₀(J + ε₀∂E/∂t) includes displacement current enabling wave propagation. In free space, wave equation: del^2 E = μ₀ε₀ ∂^2E/∂t^2. Wave velocity v = 1/sqrt(μ₀ε₀) = c approximately 3x10^8 m/s. In materials v = c/sqrt(μrεr).`, examTip: 'Key formulas:\ndiv E = ρ/ε₀\ndiv B = 0\ncurl E = -∂B/∂t\ncurl B = μ₀J + μ₀ε₀∂E/∂t\nWave speed: v = 1/sqrt(με)' }], keyTakeaways: ["Gauss: div E = ρ/ε₀ relates electric field to charge", 'No monopoles: div B = 0', "Faraday: curl E = -∂B/∂t relates changing B to induced E", 'Ampere-Maxwell includes displacement current enabling wave propagation'] },
+**F = k·Q₁·Q₂ / r²**
 
-  fee_wave_prop: { topicId: 'fee_wave_prop', title: 'Wave Propagation and Plane Waves', domainWeight: 'Electromagnetics · 4–6%', overview: 'Covers electric and magnetic fields, Maxwell\'s equations, wave propagation, and transmission line theory.', sections: [{ id: 'fee_wave_prop_main', title: 'Wave Propagation', content: `Plane waves have E and B perpendicular to propagation and to each other. Wave number k = 2π/λ = ω/v. Wavelength λ = v/f; in vacuum λ₀ = c/f. Skin depth δ = 1/sqrt(πfμσ) describes field penetration into conductors; at depth δ, amplitude decays by e^(-1). Copper at 60 Hz: δ approximately 8.5 mm. Poynting vector S = E x H represents power flow per unit area (W/m^2). Average power Pave = (1/2)|E||H|cos(φ).`, examTip: 'Key formulas:\nk = ω/v = 2π/λ\nλ = c/f in vacuum\nδ = 1/sqrt(πfμσ)\nS = E x H' }], keyTakeaways: ['Plane wave: E and B perpendicular to each other and propagation direction', 'Wave number k = 2π/λ = ω/v; wavelength λ = v/f', 'Skin depth δ = 1/sqrt(πfμσ); field decays as e^(-z/δ)', 'Poynting vector S = E x H; average power = (1/2)|E||H|cos(φ)'] },
+where **k = 1/(4πε₀) = 8.99 × 10⁹ N·m²/C²** and **ε₀ = 8.854 × 10⁻¹² F/m**.
 
-  fee_em_tx_lines: { topicId: 'fee_em_tx_lines', title: 'EM Transmission Lines: Impedance & Reflections', domainWeight: 'Electromagnetics · 4–6%', overview: 'Covers electric and magnetic fields, Maxwell\'s equations, wave propagation, and transmission line theory.', sections: [{ id: 'fee_em_tx_lines_main', title: 'Transmission Lines', content: `Transmission lines carry signals; characteristic impedance Z₀ = sqrt(L/C), typically 50 ohm (coax), 75 ohm (TV), 300 ohm (open wire). Reflection coefficient Γ = (ZL - Z₀)/(ZL + Z₀). Matched load ZL = Z₀: Γ = 0 (no reflection). Open circuit: Γ = 1. Short circuit: Γ = -1. VSWR = (1+|Γ|)/(1-|Γ|); VSWR = 1 is perfect match. Propagation velocity vp = c/sqrt(εrμr).`, examTip: 'Key formulas:\nZ₀ = sqrt(L/C)\nΓ = (ZL-Z₀)/(ZL+Z₀)\nVSWR = (1+|Γ|)/(1-|Γ|)\nvp = c/sqrt(εrμr)' }], keyTakeaways: ['Characteristic impedance Z₀ = sqrt(L/C); typical 50 ohm (coax)', 'Reflection: Γ = (ZL-Z₀)/(ZL+Z₀); matched = 0, open = +1, short = -1', 'VSWR = (1+|Γ|)/(1-|Γ|); VSWR=1 is matched', 'Impedance matching prevents reflections and power loss'] },
+- Like charges repel; unlike charges attract
+- Force is along the line connecting charges (radial)
+- In a medium with relative permittivity ε_r: replace ε₀ with ε = ε₀·ε_r
+
+## 1.2 Electric Field
+
+**E = F/q** (force per unit positive test charge, units: N/C = V/m)
+
+- Field lines point **away** from positive charges, **toward** negative charges
+- **Superposition**: E_total = ΣE_i (vector sum of fields from all charges)
+
+### Point charge field: **E = kQ/r²** (radial, directed away from +Q)
+
+## 1.3 Electric Potential
+
+**V(r) = kQ/r** (potential from a point charge, with V(∞) = 0 reference)
+
+- **Potential difference**: ΔV = −∫E·dr (path-independent in electrostatics)
+- **E = −∇V** (field points from high to low potential)
+- **Equipotential surfaces** are perpendicular to field lines`,
+      examTip: "Coulomb's law uses 1/r² for force, but potential uses 1/r (no square). A common FE exam mistake is mixing up the exponents. Force falls off as r² but potential falls off as r.",
+    },
+    {
+      id: 'es-gauss-capacitance',
+      title: "2. Gauss's Law, Capacitance, and Stored Energy",
+      content: `## 2.1 Gauss's Law
+
+**∮E·dA = Q_enc / ε₀**
+
+Total electric flux through a closed surface equals enclosed charge divided by permittivity.
+
+### Standard Geometries (memorize these)
+
+| Geometry | Gaussian Surface | Electric Field |
+|---|---|---|
+| Infinite plane (surface charge σ) | Pill box | **E = σ / (2ε₀)** |
+| Infinite line (charge λ per length) | Cylinder | **E = λ / (2πε₀r)** |
+| Conducting sphere (charge Q) | Concentric sphere | **E = kQ/r²** (outside); **E = 0** (inside) |
+| Uniformly charged sphere | Concentric sphere | **E = kQr/R³** (inside); **kQ/r²** (outside) |
+
+## 2.2 Capacitance
+
+**C = Q/V** (charge stored per volt, Farads)
+
+### Common Geometries
+
+| Type | Formula |
+|---|---|
+| Parallel plate | **C = ε₀·ε_r·A / d** |
+| Cylindrical | **C = 2πε₀·ε_r·L / ln(b/a)** |
+| Spherical | **C = 4πε₀·ε_r·a·b / (b − a)** |
+
+- Series capacitors: **1/C_eq = 1/C₁ + 1/C₂** (opposite of resistors)
+- Parallel capacitors: **C_eq = C₁ + C₂**
+
+## 2.3 Stored Energy
+
+**U = ½CV² = ½QV = Q²/(2C)**
+
+Energy density in an electric field: **u = ½ε₀E²** (J/m³)`,
+      examTip: "Gauss's law is the fastest path to E-field on the FE exam when symmetry exists. Choose the Gaussian surface so E is constant on it: sphere for point/spherical charges, cylinder for line charges, pillbox for plane charges. If there is no symmetry, fall back to Coulomb's law with superposition.",
+      importantNote: "Capacitors in series combine like resistors in parallel (1/C_eq = 1/C₁ + 1/C₂), and capacitors in parallel combine like resistors in series (C_eq = C₁ + C₂). This is the OPPOSITE of resistor rules and is a frequent source of FE exam errors.",
+    },
+  ],
+  keyTakeaways: [
+    "Coulomb's law: F = kQ₁Q₂/r²; electric field E = F/q = kQ/r².",
+    "Gauss's law ∮E·dA = Q_enc/ε₀ is the fastest method for symmetric geometries.",
+    'Potential V = kQ/r (1/r, not 1/r²); E = −∇V.',
+    'Parallel plate capacitance: C = ε₀ε_r·A/d; energy: U = ½CV².',
+    'Series caps: 1/C_eq = Σ(1/C_i); parallel caps: C_eq = ΣC_i (opposite of resistors).',
+  ],
+},
+
+  fee_magnetostatics: {
+  topicId: 'fee_magnetostatics',
+  title: "Magnetostatics: Biot-Savart & Ampere's Law",
+  domainWeight: 'Electromagnetics · 4–6%',
+  overview: "Magnetostatics describes magnetic fields produced by steady (DC) currents. Ampere's law provides efficient field computation for symmetric geometries, while the Biot-Savart law handles arbitrary current distributions. Inductance, magnetic energy, and force on conductors follow directly from these fields.",
+  sections: [
+    {
+      id: 'ms-ampere-biot',
+      title: "1. Ampere's Law and Biot-Savart Law",
+      content: `## 1.1 Ampere's Law
+
+**∮B·dl = μ₀·I_enc**
+
+The line integral of B around any closed path equals μ₀ times the enclosed current.
+
+### Standard Results (memorize)
+
+| Geometry | Amperian Path | Magnetic Field |
+|---|---|---|
+| Long straight wire | Circle of radius r | **B = μ₀I / (2πr)** |
+| Inside long wire (radius a) | Circle inside wire | **B = μ₀Ir / (2πa²)** |
+| Solenoid (n turns/m) | Rectangle through coil | **B = μ₀nI** (inside); **B ≈ 0** (outside) |
+| Toroid (N total turns) | Circle at radius r | **B = μ₀NI / (2πr)** (inside) |
+
+where **μ₀ = 4π × 10⁻⁷ T·m/A** (permeability of free space).
+
+## 1.2 Biot-Savart Law
+
+**dB = (μ₀/4π) · (I·dl × r̂) / r²**
+
+- Used when Ampere's law symmetry is absent (e.g., finite wire, circular loop)
+- Circular loop center: **B = μ₀I / (2R)**
+- **Right-hand rule**: thumb in current direction, fingers curl in B-field direction
+
+## 1.3 Permeability in Materials
+
+**μ = μ₀·μ_r** where μ_r is relative permeability:
+
+| Material Type | μ_r | Examples |
+|---|---|---|
+| Diamagnetic | ≈ 1 (slightly < 1) | Copper, silver |
+| Paramagnetic | ≈ 1 (slightly > 1) | Aluminum, platinum |
+| Ferromagnetic | **100 – 100,000** | Iron, nickel, cobalt |`,
+      examTip: "The long-wire formula B = μ₀I/(2πr) is the most-tested magnetostatics result on the FE exam. It decreases as 1/r (not 1/r²). Do not confuse this with Coulomb's law, which has 1/r². Magnetic field from a long wire is 1/r; electric field from a point charge is 1/r².",
+    },
+    {
+      id: 'ms-flux-inductance-force',
+      title: '2. Magnetic Flux, Inductance, and Force',
+      content: `## 2.1 Magnetic Flux and Inductance
+
+**Magnetic flux**: **Φ = ∫B·dA** (units: Weber = T·m²)
+
+**Inductance**: **L = NΦ/I** (for N-turn coil linking flux Φ)
+
+| Inductor Type | Inductance Formula |
+|---|---|
+| Solenoid (N turns, length ℓ, area A) | **L = μ₀·μ_r·N²·A / ℓ** |
+| Toroid (N turns, area A, mean radius r) | **L = μ₀·μ_r·N²·A / (2πr)** |
+| Coaxial cable (per unit length) | **L = (μ₀/2π)·ln(b/a)** |
+
+**Energy stored**: **U = ½LI²**
+
+Energy density: **u = B²/(2μ₀)** (J/m³)
+
+## 2.2 Magnetic Circuits
+
+Analogous to electric circuits:
+
+| Electric | Magnetic |
+|---|---|
+| EMF (V) | MMF = N·I (ampere-turns) |
+| Current I | Flux Φ |
+| Resistance R | Reluctance ℜ = ℓ/(μA) |
+| Ohm's law: V = IR | **Φ = MMF/ℜ = NI·μA/ℓ** |
+
+## 2.3 Force on Current-Carrying Conductors
+
+- **Force on wire**: **F = I·L × B** (magnitude F = BIL·sin(θ))
+- **Force between parallel wires**: **F/ℓ = μ₀I₁I₂ / (2πd)** — attractive for same-direction currents, repulsive for opposite
+- **Torque on loop**: **τ = N·I·A·B·sin(α) = m × B** where m = NIA is magnetic moment`,
+      examTip: 'Inductors in series ADD (like resistors): L_eq = L₁ + L₂. Inductors in parallel combine like resistors in parallel: 1/L_eq = 1/L₁ + 1/L₂. This is the SAME rule as resistors (unlike capacitors which are opposite). Think of inductance as "magnetic resistance" — it follows resistor rules.',
+      importantNote: 'Two parallel wires carrying current in the SAME direction attract each other. This is counterintuitive but follows from the Lorentz force. This fact defines the SI ampere: 1 A is the current that produces 2×10⁻⁷ N/m of force per meter between two wires 1 m apart.',
+    },
+  ],
+  keyTakeaways: [
+    "Ampere's law: ∮B·dl = μ₀I_enc; use for symmetric current distributions.",
+    'Long wire: B = μ₀I/(2πr); solenoid: B = μ₀nI inside.',
+    'Inductance L = NΦ/I; energy U = ½LI²; energy density u = B²/(2μ₀).',
+    'Magnetic circuit: Φ = NI/ℜ where reluctance ℜ = ℓ/(μA).',
+    'Force on wire: F = ILB·sin(θ); parallel same-direction wires attract.',
+  ],
+},
+
+  fee_maxwell: {
+  topicId: 'fee_maxwell',
+  title: "Maxwell's Equations",
+  domainWeight: 'Electromagnetics · 4–6%',
+  overview: "Maxwell's four equations unify electricity, magnetism, and optics into a single framework. They predict electromagnetic wave propagation, govern every antenna and waveguide, and underpin all of modern communications. The FE exam tests both integral and differential forms.",
+  sections: [
+    {
+      id: 'mx-four-equations',
+      title: "1. The Four Maxwell's Equations",
+      content: `## 1.1 Complete Table — Both Forms
+
+| Name | Differential Form | Integral Form | Physical Meaning |
+|---|---|---|---|
+| **Gauss's law (E)** | ∇·E = ρ/ε₀ | ∮E·dA = Q_enc/ε₀ | Charges create electric flux |
+| **Gauss's law (B)** | ∇·B = 0 | ∮B·dA = 0 | No magnetic monopoles |
+| **Faraday's law** | ∇×E = −∂B/∂t | ∮E·dl = −dΦ_B/dt | Changing B induces E |
+| **Ampere-Maxwell** | ∇×B = μ₀J + μ₀ε₀∂E/∂t | ∮B·dl = μ₀I_enc + μ₀ε₀dΦ_E/dt | Currents and changing E create B |
+
+## 1.2 Key Physical Insights
+
+- **Gauss (E)**: Electric field lines originate on positive charges, terminate on negative
+- **Gauss (B)**: Magnetic field lines always form closed loops (no isolated poles)
+- **Faraday**: A time-varying magnetic field induces an electric field (basis for transformers, generators)
+- **Ampere-Maxwell**: Steady currents AND time-varying electric fields produce magnetic fields
+
+### Displacement Current
+
+Maxwell's crucial addition: **J_d = ε₀·∂E/∂t** (displacement current density)
+
+Without it, Ampere's law fails for capacitors (current flows in but charge builds on plates, creating a changing E between them). Displacement current completes the circuit and enables electromagnetic wave propagation.`,
+      examTip: "On the FE exam, you are most likely to be tested on recognizing which equation applies to a scenario. Faraday's law = anything involving induced voltage from changing magnetic flux. Ampere's law = anything involving magnetic field from current. Gauss = relating charge to electric field flux.",
+    },
+    {
+      id: 'mx-wave-equation',
+      title: '2. Electromagnetic Wave Equation',
+      content: `## 2.1 Deriving the Wave Equation
+
+In **free space** (no charges, no currents: ρ = 0, J = 0), combining Faraday and Ampere-Maxwell gives:
+
+**∇²E = μ₀ε₀ · ∂²E/∂t²**
+
+**∇²B = μ₀ε₀ · ∂²B/∂t²**
+
+These are **wave equations** with propagation velocity:
+
+**v = 1/√(μ₀ε₀) = c ≈ 3 × 10⁸ m/s**
+
+Maxwell's prediction: light is an electromagnetic wave.
+
+## 2.2 Wave Speed in Materials
+
+In a medium with μ_r and ε_r:
+
+**v = c / √(μ_r · ε_r) = 1 / √(μ · ε)**
+
+**Index of refraction**: **n = c/v = √(μ_r · ε_r)** (for non-magnetic materials, n ≈ √ε_r)
+
+## 2.3 Intrinsic Impedance
+
+**η = √(μ/ε)**
+
+- Free space: **η₀ = √(μ₀/ε₀) ≈ 377 Ω** (≈ 120π Ω)
+- In a medium: η = η₀ · √(μ_r/ε_r)
+- Relates E and H in a plane wave: **E = η · H**
+
+## 2.4 Boundary Conditions
+
+At interface between two media:
+- **Tangential E is continuous**: E_t1 = E_t2
+- **Tangential H is continuous** (no surface current): H_t1 = H_t2
+- **Normal D jumps by surface charge**: D_n1 − D_n2 = σ_s
+- **Normal B is continuous**: B_n1 = B_n2`,
+      examTip: 'The intrinsic impedance of free space η₀ ≈ 377 Ω ≈ 120π Ω is a constant worth memorizing. It relates E and H in any plane wave in free space: |E|/|H| = 377 Ω. This appears in power flow (Poynting vector) calculations.',
+      importantNote: "Maxwell's displacement current ε₀·∂E/∂t is NOT a real current of moving charges. It is a changing electric field that produces a magnetic field just as real current does. Without it, electromagnetic waves could not exist.",
+    },
+  ],
+  keyTakeaways: [
+    "Gauss (E): ∇·E = ρ/ε₀ — charges produce electric field.",
+    "Gauss (B): ∇·B = 0 — no magnetic monopoles exist.",
+    "Faraday: ∇×E = −∂B/∂t — changing B induces E (transformers, generators).",
+    "Ampere-Maxwell: ∇×B = μ₀(J + ε₀∂E/∂t) — displacement current enables EM waves.",
+    "Wave speed: v = 1/√(με); in free space v = c ≈ 3 × 10⁸ m/s.",
+    "Intrinsic impedance of free space: η₀ = √(μ₀/ε₀) ≈ 377 Ω.",
+  ],
+},
+
+  fee_wave_prop: {
+  topicId: 'fee_wave_prop',
+  title: 'Wave Propagation and Plane Waves',
+  domainWeight: 'Electromagnetics · 4–6%',
+  overview: 'Electromagnetic waves carry energy through space at the speed of light. Understanding plane wave properties, skin depth in conductors, and the Poynting vector for power flow is essential for FE exam problems in EM and communications.',
+  sections: [
+    {
+      id: 'wp-plane-waves',
+      title: '1. Plane Wave Properties',
+      content: `## 1.1 Uniform Plane Wave
+
+A plane wave propagating in the +z direction:
+
+- **E(z,t) = E₀·cos(ωt − kz) x̂** (electric field in x-direction)
+- **H(z,t) = (E₀/η)·cos(ωt − kz) ŷ** (magnetic field in y-direction)
+
+Key relationships:
+
+| Quantity | Formula | Unit |
+|---|---|---|
+| Wave number | **k = 2π/λ = ω/v** | rad/m |
+| Wavelength | **λ = v/f** | m |
+| Frequency | **f = v/λ** | Hz |
+| Angular frequency | **ω = 2πf** | rad/s |
+| Phase velocity | **v = ω/k = fλ** | m/s |
+
+In vacuum: **λ₀ = c/f** where c ≈ 3 × 10⁸ m/s.
+
+## 1.2 Properties of Plane Waves
+
+- **E, H, and propagation direction** are mutually perpendicular (TEM wave)
+- **|E|/|H| = η** (intrinsic impedance of the medium)
+- **E and H are in phase** in lossless media
+- **Polarization**: direction of E-field oscillation (linear, circular, or elliptical)
+
+### Wavelength Examples
+
+| Signal | Frequency | Wavelength |
+|---|---|---|
+| AM radio | 1 MHz | 300 m |
+| FM radio | 100 MHz | 3 m |
+| Wi-Fi | 2.4 GHz | 12.5 cm |
+| Visible light | 600 THz | 500 nm |`,
+      examTip: 'The relationship λ = c/f (in vacuum) or λ = v/f (in medium) is the most fundamental. If an FE exam question gives frequency, convert to wavelength immediately — many subsequent formulas use λ or k = 2π/λ.',
+    },
+    {
+      id: 'wp-skin-poynting',
+      title: '2. Skin Depth and Poynting Vector (Power Flow)',
+      content: `## 2.1 Skin Depth
+
+In a **good conductor** (σ >> ωε), electromagnetic fields decay exponentially:
+
+**δ = 1 / √(πfμσ)**
+
+At depth z = δ, amplitude drops to **e⁻¹ ≈ 37%** of surface value.
+
+| Material | σ (S/m) | δ at 60 Hz | δ at 1 GHz |
+|---|---|---|---|
+| Copper | 5.8 × 10⁷ | 8.5 mm | 2.1 μm |
+| Aluminum | 3.5 × 10⁷ | 11 mm | 2.7 μm |
+| Seawater | 4 | 26 m | 0.25 m |
+
+### Practical Implications
+
+- At high frequencies, current flows only in a thin skin on conductor surface
+- Effective resistance increases with frequency: **R_ac = R_dc · (a/(2δ))** for wire radius a >> δ
+- Electromagnetic shielding: a few skin depths of conductor blocks most of the field
+
+## 2.2 Poynting Vector
+
+**S = E × H** (instantaneous power flow per unit area, W/m²)
+
+**Direction**: S points in the propagation direction
+
+### Time-Average Power
+
+**S_avg = ½·Re(E × H*) = |E₀|² / (2η)** (for plane wave in lossless medium)
+
+Equivalently: **S_avg = ½|E₀||H₀|·cos(φ)** where φ is phase angle between E and H.
+
+### Loss Tangent
+
+**tan(δ_loss) = σ/(ωε)**
+
+| tan(δ_loss) | Classification |
+|---|---|
+| << 1 | Low-loss dielectric (wave propagates) |
+| >> 1 | Good conductor (wave attenuates rapidly) |
+| ≈ 1 | Lossy dielectric (moderate attenuation) |`,
+      examTip: 'Skin depth δ = 1/√(πfμσ) decreases with increasing frequency. This means higher-frequency signals penetrate LESS into conductors. At microwave frequencies, skin depth is just a few micrometers — this is why thin copper plating on PCB traces is sufficient for RF.',
+      importantNote: 'Do not confuse the loss tangent angle δ_loss with skin depth δ — they use the same Greek letter but are completely different quantities. Skin depth has units of meters; loss tangent is dimensionless.',
+    },
+  ],
+  keyTakeaways: [
+    'Plane wave: E ⊥ H ⊥ propagation; |E|/|H| = η (intrinsic impedance).',
+    'Wave number k = 2π/λ = ω/v; wavelength λ = v/f; in vacuum λ₀ = c/f.',
+    'Skin depth: δ = 1/√(πfμσ); field decays as e^(−z/δ) in conductors.',
+    'Poynting vector S = E × H gives power flow; S_avg = |E₀|²/(2η).',
+    'Loss tangent tan(δ) = σ/(ωε) classifies material as conductor or dielectric.',
+  ],
+},
+
+  fee_em_tx_lines: {
+  topicId: 'fee_em_tx_lines',
+  title: 'EM Transmission Lines: Impedance & Reflections',
+  domainWeight: 'Electromagnetics · 4–6%',
+  overview: 'Transmission lines guide electromagnetic waves between source and load. Characteristic impedance, reflection coefficient, and VSWR determine signal integrity and power transfer efficiency. These concepts apply to coaxial cables, microstrip, and any guided-wave structure.',
+  sections: [
+    {
+      id: 'emtx-z0-gamma',
+      title: '1. Characteristic Impedance and Reflection Coefficient',
+      content: `## 1.1 Characteristic Impedance
+
+**Z₀ = √(L/C)** (for lossless line)
+
+where L and C are inductance and capacitance **per unit length**.
+
+For a lossy line: **Z₀ = √((R + jωL)/(G + jωC))**
+
+| Line Type | Typical Z₀ |
+|---|---|
+| Coaxial cable (50 Ω) | RF measurement, instruments |
+| Coaxial cable (75 Ω) | TV, video |
+| Microstrip (PCB) | 50–100 Ω (depends on geometry) |
+| Twin-lead (open wire) | 300 Ω |
+
+### Propagation Velocity
+
+**v_p = 1/√(LC) = c/√(ε_r · μ_r)**
+
+In most practical cables with dielectric filling: **v_p ≈ 0.66c to 0.85c**
+
+## 1.2 Reflection Coefficient
+
+At load impedance Z_L:
+
+**Γ = (Z_L − Z₀) / (Z_L + Z₀)**
+
+| Load Condition | Z_L | Γ | Physical Meaning |
+|---|---|---|---|
+| **Matched** | Z₀ | **0** | No reflection, maximum power transfer |
+| **Open circuit** | ∞ | **+1** | Total reflection, voltage doubles |
+| **Short circuit** | 0 | **−1** | Total reflection, voltage cancels |
+| Purely reactive | jX | **|Γ| = 1** | Total reflection with phase shift |
+
+### Reflected and Transmitted Power
+
+- **Reflected power**: P_r = |Γ|² · P_inc
+- **Transmitted power**: P_t = (1 − |Γ|²) · P_inc`,
+      examTip: 'Γ = (Z_L − Z₀)/(Z_L + Z₀) is the most tested transmission line formula. For a matched load (Z_L = Z₀), Γ = 0 and all power is delivered. For open or short, |Γ| = 1 and all power reflects. Partial mismatch gives 0 < |Γ| < 1.',
+      importantNote: 'The reflection coefficient Γ can be complex. Its magnitude |Γ| determines how much power reflects, and its phase determines where voltage maxima and minima occur on the line. For purely resistive loads, Γ is real.',
+    },
+    {
+      id: 'emtx-vswr-matching',
+      title: '2. VSWR, Standing Waves, and Impedance Matching',
+      content: `## 2.1 Standing Waves
+
+When Γ ≠ 0, incident and reflected waves superpose to create **standing waves**:
+
+- **Voltage maximum**: V_max = V_inc·(1 + |Γ|)
+- **Voltage minimum**: V_min = V_inc·(1 − |Γ|)
+
+## 2.2 Voltage Standing Wave Ratio (VSWR)
+
+**VSWR = V_max / V_min = (1 + |Γ|) / (1 − |Γ|)**
+
+| VSWR | |Γ| | Reflected Power | Match Quality |
+|---|---|---|---|
+| **1.0** | 0 | 0% | Perfect match |
+| 1.5 | 0.2 | 4% | Good |
+| 2.0 | 0.33 | 11% | Acceptable |
+| 3.0 | 0.5 | 25% | Poor |
+| **∞** | 1.0 | 100% | Open or short |
+
+Inverse: **|Γ| = (VSWR − 1) / (VSWR + 1)**
+
+## 2.3 Input Impedance
+
+At distance d from the load:
+
+**Z_in = Z₀ · (Z_L + jZ₀·tan(βd)) / (Z₀ + jZ_L·tan(βd))**
+
+where β = 2π/λ.
+
+### Special Cases
+
+| Distance | Z_in |
+|---|---|
+| **d = λ/4** (quarter-wave) | **Z_in = Z₀²/Z_L** (impedance inverter) |
+| **d = λ/2** (half-wave) | **Z_in = Z_L** (repeats load impedance) |
+
+## 2.4 Quarter-Wave Matching
+
+To match Z_L to a source Z_S, insert a **quarter-wave transformer** with:
+
+**Z₀(match) = √(Z_S · Z_L)**`,
+      examTip: 'The quarter-wave transformer formula Z₀ = √(Z_S·Z_L) is a classic FE exam question. A quarter-wave section transforms impedance by Z_in = Z₀²/Z_L. At half-wave, the impedance repeats (Z_in = Z_L). These two special cases cover most FE exam transmission line problems.',
+    },
+  ],
+  keyTakeaways: [
+    'Characteristic impedance: Z₀ = √(L/C); typical values 50 Ω (RF), 75 Ω (video).',
+    'Reflection coefficient: Γ = (Z_L − Z₀)/(Z_L + Z₀); matched load gives Γ = 0.',
+    'VSWR = (1 + |Γ|)/(1 − |Γ|); VSWR = 1 is perfect match.',
+    'Quarter-wave transformer: Z₀(match) = √(Z_S·Z_L); inverts impedance.',
+    'Standing waves: V_max = V_inc(1 + |Γ|), V_min = V_inc(1 − |Γ|).',
+    'Reflected power fraction = |Γ|²; transmitted = 1 − |Γ|².',
+  ],
+},
 
   /* ──────────────────────────────────────────────────────────────────
    * TOPIC 12 — CONTROL SYSTEMS  (6 curriculum IDs)
    * ────────────────────────────────────────────────────────────────── */
 
-  fee_block_diagrams: { topicId: 'fee_block_diagrams', title: 'Block Diagrams & Transfer Function Reduction', domainWeight: 'Control Systems · 4–6%', overview: 'Covers block diagram analysis, stability, root locus, frequency response, PID controllers, and time-domain specifications.', sections: [{ id: 'fee_block_diagrams_main', title: 'Block Diagrams', content: `Series blocks: multiply transfer functions. Parallel: add. Feedback: G = Gfwd/(1 + Gloop) for negative feedback. Mason's gain formula for complex systems. Feedback reduces steady-state error but also reduces bandwidth. Closed-loop poles determine stability.`, examTip: 'Key formulas:\nSeries: Gab = Ga·Gb\nParallel: Gab = Ga+Gb\nFeedback: G = Gfwd/(1+Gfb)' }], keyTakeaways: ['Series: multiply; parallel: add; feedback: G = Gfwd/(1+Gloop)', "Mason's gain for complex multi-loop systems", 'Negative feedback reduces error and nonlinearities', 'Closed-loop poles determine stability'] },
+  fee_block_diagrams: {
+  topicId: 'fee_block_diagrams',
+  title: 'Block Diagrams & Transfer Function Reduction',
+  domainWeight: 'Control Systems · 4–6%',
+  overview: 'Block diagrams represent control systems graphically with blocks (transfer functions), summing junctions, and pickoff points. Reducing complex diagrams to a single closed-loop transfer function is a core FE exam skill.',
+  sections: [
+    {
+      id: 'bd-reduction-rules',
+      title: '1. Block Diagram Reduction Rules',
+      content: `## 1.1 Fundamental Combinations
 
-  fee_stability: { topicId: 'fee_stability', title: 'Stability Analysis: Routh-Hurwitz Criterion', domainWeight: 'Control Systems · 4–6%', overview: 'Covers block diagram analysis, stability, root locus, frequency response, PID controllers, and time-domain specifications.', sections: [{ id: 'fee_stability_main', title: 'Routh-Hurwitz Stability', content: `Routh-Hurwitz determines stability without computing poles. Form Routh array from characteristic polynomial coefficients. Number of sign changes in first column equals number of RHP poles. All positive first-column entries means stable. For 2nd order: a, b, c > 0 ensures stability. Special cases: zero in first column (replace with small ε), entire zero row (imaginary axis poles).`, examTip: 'Key formulas:\nD(s) = an·s^n + ... + a0\nRouth array first column signs indicate RHP poles\nAll positive = stable' }], keyTakeaways: ['Routh array first column signs indicate RHP poles; all positive = stable', 'Sign changes = number of unstable poles', 'For 2nd/3rd order, simple coefficient conditions', 'Special cases for zero entries require careful treatment'] },
+| Configuration | Rule | Formula |
+|---|---|---|
+| **Series** (cascade) | Multiply | **G_total = G₁ · G₂** |
+| **Parallel** | Add | **G_total = G₁ + G₂** |
+| **Negative feedback** | Feedback formula | **T(s) = G(s) / (1 + G(s)·H(s))** |
+| **Positive feedback** | Sign change | **T(s) = G(s) / (1 − G(s)·H(s))** |
 
-  fee_root_locus: { topicId: 'fee_root_locus', title: 'Root Locus: Rules and System Design', domainWeight: 'Control Systems · 4–6%', overview: 'Covers block diagram analysis, stability, root locus, frequency response, PID controllers, and time-domain specifications.', sections: [{ id: 'fee_root_locus_main', title: 'Root Locus', content: `Root locus plots closed-loop pole paths as gain K varies from 0 to infinity. Starts at open-loop poles (K=0), ends at zeros or infinity. Real-axis segments include points where number of poles+zeros to right is odd. Asymptote angles: (2k+1)π/(n-m). Breakaway points: dD(s)/dK = 0. Design uses root locus to select K for desired damping ζ and natural frequency ωn. Compensators (lead, lag, PID) reshape root locus.`, examTip: 'Key formulas:\nAsymptote angles: (2k+1)π/(n-m)\nBreakaway: dD(s)/dK = 0\nCentroid σ = (Σpoles-Σzeros)/(n-m)' }], keyTakeaways: ['Root locus: closed-loop pole locations as K varies', 'Starts at open-loop poles, ends at zeros or infinity', 'Asymptotes and real-axis segments narrow down shape quickly', 'Design by selecting K for desired ζ and ωn'] },
+where G(s) is the forward path and H(s) is the feedback path.
 
-  fee_bode_nyquist: { topicId: 'fee_bode_nyquist', title: 'Frequency Response: Bode & Nyquist Plots', domainWeight: 'Control Systems · 4–6%', overview: 'Covers block diagram analysis, stability, root locus, frequency response, PID controllers, and time-domain specifications.', sections: [{ id: 'fee_bode_nyquist_main', title: 'Bode & Nyquist', content: `Bode plot: magnitude (dB) vs log frequency, phase vs log frequency. Pole at origin: -20 dB/decade, -90 degrees. Zero at origin: +20 dB/decade, +90 degrees. Real pole at -a: corner at ω = a, -20 dB/decade for ω > a. Gain margin GM = -|G(jωpc)| dB at phase-crossover (phase = -180 degrees). Phase margin PM = 180 + angle of G(jωgc) at gain-crossover (|G| = 0 dB). Stable: GM > 0 dB and PM > 0 degrees. Nyquist: G(jω) in complex plane; stable if does not encircle (-1,0).`, examTip: 'Key formulas:\nMagnitude: 20log₁₀|G(jω)| dB\nGM = -|G(jωpc)| dB\nPM = 180 + angle G(jωgc)' }], keyTakeaways: ['Bode: magnitude in dB, phase in degrees, vs log frequency', 'Pole: -20 dB/decade, -90 degrees; zero: +20 dB/decade, +90 degrees', 'Stable: GM > 0 dB and PM > 0 degrees', 'Nyquist: plot should not encircle -1'] },
+### Unity Feedback (H = 1)
 
-  fee_pid: { topicId: 'fee_pid', title: 'PID Controllers and Tuning', domainWeight: 'Control Systems · 4–6%', overview: 'Covers block diagram analysis, stability, root locus, frequency response, PID controllers, and time-domain specifications.', sections: [{ id: 'fee_pid_main', title: 'PID Controllers', content: `PID: u(t) = Kp·e(t) + Ki·integral(e)dt + Kd·de/dt. Proportional: immediate response, gain increases responsiveness but too high causes oscillation. Integral: eliminates steady-state error for step inputs; increases phase lag. Derivative: predicts error, adds phase lead, reduces overshoot; noise-sensitive. Ziegler-Nichols tuning uses system time constant and delay. Start with P, add I if steady-state error unacceptable, add D if overshooting.`, examTip: 'Key formulas:\nu(t) = Kp·e + Ki integral(e)dt + Kd·de/dt\nZiegler-Nichols: Kp=1.2/(θ·K)' }], keyTakeaways: ['P: instant response, no steady-state elimination', 'I: eliminates steady-state error, adds phase lag', 'D: reduces overshoot, adds phase lead; sensitive to noise', 'Tuning: Ziegler-Nichols, frequency response, or auto-tuning'] },
+**T(s) = G(s) / (1 + G(s))**
 
-  fee_time_specs: { topicId: 'fee_time_specs', title: 'Time-Domain Specifications', domainWeight: 'Control Systems · 4–6%', overview: 'Covers block diagram analysis, stability, root locus, frequency response, PID controllers, and time-domain specifications.', sections: [{ id: 'fee_time_specs_main', title: 'Time-Domain Specifications', content: `Overshoot OS = e^(-πζ/sqrt(1-ζ^2)) x 100% for 2nd-order underdamped. Settling time ts approximately 4/(ζ·ωn). Rise time tr approximately (π - arccos(ζ))/ωd where ωd = ωn·sqrt(1-ζ^2). Peak time tp = π/ωd. Steady-state error ess = 1/(1+Kp) for step (Type 0), 1/Kv for ramp (Type 1). System type = number of integrators. ζ approximately 0.7 gives OS approximately 5% with reasonable speed.`, examTip: 'Key formulas:\nOS = e^(-πζ/sqrt(1-ζ^2))\nts approximately 4/(ζ·ωn)\ness = 1/(1+Kp) for step\nωd = ωn·sqrt(1-ζ^2)' }], keyTakeaways: ['Overshoot: OS = e^(-πζ/sqrt(1-ζ^2)); settling time approximately 4/(ζωn)', 'Steady-state error depends on system type (number of integrators)', 'Error constants Kp, Kv, Ka depend on pole/zero structure', 'ζ approximately 0.7 gives OS approximately 5%'] },
+## 1.2 Block Diagram Manipulation
+
+When blocks cannot be directly combined, use these moves:
+
+- **Moving a pickoff point past a block**: multiply by 1/G (or G) in the moved branch
+- **Moving a summing junction past a block**: multiply by G (or 1/G) in the moved branch
+- **Swapping summing junctions**: order does not matter (commutative)
+
+### Step-by-Step Reduction
+
+1. Identify innermost feedback loops
+2. Reduce inner loops first using T = G/(1 + GH)
+3. Combine series blocks (multiply)
+4. Combine parallel blocks (add)
+5. Repeat until single transfer function remains
+
+## 1.3 Transfer Function Fundamentals
+
+**G(s) = Y(s)/R(s)** (output over input in Laplace domain)
+
+- **Poles**: values of s where denominator = 0 (determine stability and transient behavior)
+- **Zeros**: values of s where numerator = 0 (affect transient shape and steady-state)
+- **Order**: highest power of s in denominator`,
+      examTip: 'The feedback formula T(s) = G/(1 + GH) is the single most important control systems equation on the FE exam. For negative feedback, use + in the denominator; for positive feedback, use −. Most exam problems use negative feedback.',
+    },
+    {
+      id: 'bd-mason-sensitivity',
+      title: "2. Mason's Gain Formula and Feedback Benefits",
+      content: `## 2.1 Mason's Gain Formula
+
+For complex multi-loop systems where sequential reduction is tedious:
+
+**T(s) = Σ(P_k · Δ_k) / Δ**
+
+where:
+- **P_k** = gain of the k-th forward path
+- **Δ** = 1 − (sum of all loop gains) + (sum of products of non-touching loop pairs) − ...
+- **Δ_k** = Δ evaluated with all loops touching path k removed
+
+### Practical Steps
+
+1. Identify all **forward paths** from input to output → compute P_k
+2. Identify all **individual loop gains** → L₁, L₂, ...
+3. Find **non-touching loop pairs** (no shared nodes)
+4. Compute Δ = 1 − ΣL_i + ΣL_iL_j (non-touching pairs) − ...
+5. Compute Δ_k for each forward path
+
+## 2.2 Benefits of Negative Feedback
+
+| Benefit | Mechanism |
+|---|---|
+| **Reduces steady-state error** | Error = R/(1 + GH); larger GH → smaller error |
+| **Reduces sensitivity** | Sensitivity S = 1/(1 + GH); system less affected by G variations |
+| **Reduces distortion/nonlinearity** | Feedback linearizes the system |
+| **Extends bandwidth** | Closed-loop bandwidth > open-loop bandwidth |
+
+### Tradeoffs of Feedback
+
+- Requires more components (sensor, controller)
+- Can cause instability if loop gain is too high
+- Reduces overall gain by factor (1 + GH)`,
+      examTip: "Mason's gain formula is efficient for complex diagrams but rarely needed on the FE exam — most problems can be solved with the basic feedback formula T = G/(1+GH) and series/parallel rules. Use Mason only when the diagram has crossing loops that prevent sequential reduction.",
+      importantNote: 'Positive feedback (T = G/(1 − GH)) is inherently unstable if GH > 1. Most practical control systems use negative feedback. If an FE exam problem does not specify, assume negative feedback.',
+    },
+  ],
+  keyTakeaways: [
+    'Series blocks: multiply. Parallel blocks: add. Feedback: T = G/(1 + GH).',
+    'Unity feedback: T = G/(1 + G); closed-loop poles determine stability.',
+    "Mason's gain formula handles complex multi-loop diagrams.",
+    'Negative feedback reduces error, sensitivity, and distortion but lowers gain.',
+    'Poles of the closed-loop transfer function must have negative real parts for stability.',
+  ],
+},
+
+  fee_stability: {
+  topicId: 'fee_stability',
+  title: 'Stability Analysis: Routh-Hurwitz Criterion',
+  domainWeight: 'Control Systems · 4–6%',
+  overview: 'The Routh-Hurwitz criterion determines closed-loop stability without computing pole locations. By constructing a simple array from the characteristic polynomial coefficients, you can count the number of unstable (right-half-plane) poles. This algebraic method is faster than root-finding and is a staple FE exam topic.',
+  sections: [
+    {
+      id: 'stab-routh-array',
+      title: '1. Constructing and Reading the Routh Array',
+      content: `## 1.1 Characteristic Polynomial
+
+The closed-loop transfer function denominator:
+
+**D(s) = a_n·s^n + a_(n-1)·s^(n-1) + ... + a₁·s + a₀**
+
+**Necessary condition** for stability: all coefficients a_i must be **positive** (same sign). If any coefficient is zero or negative, the system is **definitely unstable** (no need to build the array).
+
+## 1.2 Building the Routh Array
+
+| Row | Entries |
+|---|---|
+| **s^n** | a_n, a_(n-2), a_(n-4), ... |
+| **s^(n-1)** | a_(n-1), a_(n-3), a_(n-5), ... |
+| **s^(n-2)** | b₁, b₂, b₃, ... |
+| **s^(n-3)** | c₁, c₂, c₃, ... |
+| ... | ... |
+| **s⁰** | last entry |
+
+### Computing Entries
+
+**b₁ = (a_(n-1)·a_(n-2) − a_n·a_(n-3)) / a_(n-1)**
+
+**b₂ = (a_(n-1)·a_(n-4) − a_n·a_(n-5)) / a_(n-1)**
+
+General pattern: **negative determinant** of 2×2 matrix from previous two rows, divided by first element of previous row.
+
+## 1.3 Reading Stability
+
+**Number of sign changes in the first column = number of right-half-plane (RHP) poles**
+
+- **All positive** first column → **STABLE** (all poles in LHP)
+- **One sign change** → one unstable pole
+- **Two sign changes** → two unstable poles
+
+### Quick Check for Low-Order Systems
+
+| Order | Stability Condition |
+|---|---|
+| 1st: as + b | a, b > 0 |
+| 2nd: as² + bs + c | a, b, c > 0 (all positive) |
+| 3rd: as³ + bs² + cs + d | a, b, c, d > 0 AND **bc > ad** |`,
+      examTip: 'For 2nd-order systems, just check that all three coefficients are positive — no array needed. For 3rd-order, check all four coefficients positive AND bc > ad. These shortcuts save significant time on the FE exam.',
+      importantNote: 'If ANY coefficient in the characteristic polynomial is missing (zero) or negative, the system is unstable — period. You do not need to construct the Routh array. This quick check eliminates many answer choices immediately.',
+    },
+    {
+      id: 'stab-special-cases',
+      title: '2. Special Cases and Stability Design',
+      content: `## 2.1 Special Case: Zero in First Column
+
+If a first-column entry is zero but the rest of the row is not all zeros:
+
+1. Replace the zero with a small positive number **ε**
+2. Continue building the array in terms of ε
+3. Take the limit as ε → 0⁺
+4. Examine sign changes in the first column
+
+## 2.2 Special Case: Entire Row of Zeros
+
+An entire row of zeros indicates **symmetric root pairs** about the origin:
+- Pairs of poles on the **imaginary axis** (marginally stable / sustained oscillation)
+- Or pairs of poles symmetric about the real axis
+
+### Procedure:
+1. Form the **auxiliary polynomial** from the row ABOVE the zero row
+2. Differentiate the auxiliary polynomial with respect to s
+3. Replace the zero row with coefficients of the derivative
+4. Continue building the array normally
+
+The roots of the auxiliary polynomial include the symmetric pairs.
+
+## 2.3 Using Routh-Hurwitz for Design
+
+Find the range of a parameter K that keeps the system stable:
+
+1. Write the characteristic polynomial in terms of K
+2. Build the Routh array (entries will contain K)
+3. Set all first-column entries > 0
+4. Solve the resulting inequalities for K
+
+### Example: s³ + 3s² + 2s + K = 0
+
+Routh array first column: [1, 3, (6-K)/3, K]
+
+For stability: **(6-K)/3 > 0** → K < 6, and **K > 0**
+
+**Range: 0 < K < 6**`,
+      examTip: 'The FE exam frequently asks "find the range of K for stability." Build the Routh array with K as a variable, then set each first-column entry > 0 and solve the inequalities. The intersection of all conditions gives the valid range.',
+    },
+  ],
+  keyTakeaways: [
+    'First column sign changes = number of RHP (unstable) poles; all positive = stable.',
+    'Necessary condition: all polynomial coefficients must be positive (same sign).',
+    '2nd order: all coefficients positive. 3rd order: all positive AND bc > ad.',
+    'Zero in first column: replace with small ε and take limit.',
+    'Entire zero row: use auxiliary polynomial derivative to continue.',
+    'Design: express Routh entries in terms of K, set all > 0, solve inequalities.',
+  ],
+},
+
+  fee_root_locus: {
+  topicId: 'fee_root_locus',
+  title: 'Root Locus: Rules and System Design',
+  domainWeight: 'Control Systems · 4–6%',
+  overview: 'The root locus is a graphical method that shows how closed-loop pole locations move as a parameter (usually gain K) varies from 0 to infinity. It connects open-loop pole/zero locations to closed-loop behavior and is a powerful design tool.',
+  sections: [
+    {
+      id: 'rl-sketching-rules',
+      title: '1. Root Locus Sketching Rules',
+      content: `## 1.1 Setup
+
+For a system with open-loop transfer function:
+
+**G(s)H(s) = K · N(s)/D(s)**
+
+where N(s) has m zeros and D(s) has n poles (n ≥ m).
+
+The characteristic equation is: **1 + K·N(s)/D(s) = 0** → **D(s) + K·N(s) = 0**
+
+## 1.2 The Eight Root Locus Rules
+
+| Rule | Description |
+|---|---|
+| **1. Number of branches** | n branches (one per open-loop pole) |
+| **2. Start and end** | Start at **open-loop poles** (K = 0), end at **open-loop zeros** or **infinity** (K → ∞) |
+| **3. Real-axis segments** | Locus exists on real axis where the **total count of poles + zeros to the RIGHT is ODD** |
+| **4. Symmetry** | Symmetric about the real axis (complex poles come in conjugate pairs) |
+| **5. Asymptotes** | n − m branches go to infinity along angles: **θ_a = (2k + 1)·180° / (n − m)**, k = 0, 1, ... |
+| **6. Asymptote centroid** | **σ_a = (Σ poles − Σ zeros) / (n − m)** |
+| **7. Breakaway/break-in** | Where branches leave/enter real axis: solve **dK/ds = 0** |
+| **8. Imaginary axis crossing** | Use Routh-Hurwitz to find K and ω where locus crosses jω axis |
+
+## 1.3 Angle and Magnitude Conditions
+
+A point s₀ is on the root locus if:
+
+- **Angle condition**: ∠G(s₀)H(s₀) = (2k + 1)·180° (odd multiple of 180°)
+- **Magnitude condition**: K = 1/|G(s₀)H(s₀)| (gives the gain at that point)`,
+      examTip: 'The real-axis rule (Rule 3) is the fastest way to sketch the rough shape: count poles + zeros to the RIGHT of a test point on the real axis. If the count is odd, the locus passes through that point. This eliminates most of the real axis immediately.',
+    },
+    {
+      id: 'rl-design',
+      title: '2. Design Using Root Locus',
+      content: `## 2.1 Relating Pole Locations to Performance
+
+For a second-order dominant pair of closed-loop poles at **s = −σ ± jω_d**:
+
+| Parameter | Formula | Effect |
+|---|---|---|
+| **Natural frequency** | ω_n = √(σ² + ω_d²) | Distance from origin |
+| **Damping ratio** | ζ = σ/ω_n = cos(θ) | Angle from negative real axis |
+| **Damped frequency** | ω_d = ω_n√(1 − ζ²) | Imaginary part |
+
+- **Constant ζ lines** are radial lines from origin (angle θ = arccos(ζ))
+- **Constant ω_n lines** are circles centered at origin
+
+## 2.2 Selecting Gain K
+
+1. Identify the desired pole location (from ζ and ω_n specs)
+2. Verify the point lies on the root locus (angle condition)
+3. Compute **K = 1/|G(s₀)H(s₀)|** (magnitude condition)
+
+## 2.3 Compensator Design
+
+When gain adjustment alone cannot meet specs, add compensators:
+
+| Compensator | Transfer Function | Effect on Root Locus |
+|---|---|---|
+| **Lead** | (s + z)/(s + p), p > z | Adds a zero closer to origin; pulls locus LEFT (more stable, faster) |
+| **Lag** | (s + z)/(s + p), z > p | Adds a pole-zero pair near origin; increases gain without moving dominant poles much |
+| **PID** | K_p + K_i/s + K_d·s | Combines lead and lag effects |
+
+### Lead Compensator Design Steps
+
+1. Place zero at desired location (near the desired closed-loop pole)
+2. Place pole further left (typically 3–10× the zero location)
+3. Verify the angle condition is satisfied at the desired pole
+4. Compute K from the magnitude condition`,
+      examTip: 'On the FE exam, if asked to "determine K for a damping ratio of 0.707," draw the ζ = 0.707 line (45 degrees from negative real axis), find where it intersects the root locus, and compute K at that point using the magnitude condition.',
+      importantNote: 'The root locus shows closed-loop poles, not open-loop poles. As K increases from 0, poles move from open-loop pole locations toward open-loop zero locations (or infinity). If a branch crosses the jω axis, the system becomes unstable at that gain.',
+    },
+  ],
+  keyTakeaways: [
+    'Root locus starts at open-loop poles (K = 0), ends at zeros or infinity (K → ∞).',
+    'Real-axis segments: locus exists where total poles + zeros to the right is odd.',
+    'Asymptote angles: (2k+1)·180°/(n−m); centroid: σ = (Σpoles − Σzeros)/(n−m).',
+    'Damping ratio ζ = cos(θ) where θ is angle from negative real axis.',
+    'Gain at any locus point: K = 1/|G(s₀)H(s₀)| (magnitude condition).',
+    'Lead compensator pulls locus left (improves stability); lag increases low-frequency gain.',
+  ],
+},
+
+  fee_bode_nyquist: {
+  topicId: 'fee_bode_nyquist',
+  title: 'Frequency Response: Bode & Nyquist Plots',
+  domainWeight: 'Control Systems · 4–6%',
+  overview: 'Frequency response analysis evaluates how a system responds to sinusoidal inputs at different frequencies. Bode plots provide magnitude and phase on logarithmic scales; Nyquist plots map the complex frequency response. Gain margin and phase margin quantify how close the system is to instability.',
+  sections: [
+    {
+      id: 'bode-construction',
+      title: '1. Bode Plot Construction',
+      content: `## 1.1 Bode Plot Basics
+
+Two semi-log plots:
+- **Magnitude**: 20·log₁₀|G(jω)| (dB) vs. log(ω)
+- **Phase**: ∠G(jω) (degrees) vs. log(ω)
+
+## 1.2 Building Blocks — Straight-Line Approximations
+
+| Factor | Magnitude Contribution | Phase Contribution |
+|---|---|---|
+| **Constant K** | 20·log₁₀(K) dB (flat line) | 0° (if K > 0) or −180° (if K < 0) |
+| **s (zero at origin)** | +20 dB/decade through 0 dB at ω = 1 | +90° at all frequencies |
+| **1/s (pole at origin)** | −20 dB/decade through 0 dB at ω = 1 | −90° at all frequencies |
+| **1 + s/a (real zero)** | 0 for ω < a; +20 dB/decade for ω > a | 0° → +45° at ω = a → +90° |
+| **1/(1 + s/a) (real pole)** | 0 for ω < a; −20 dB/decade for ω > a | 0° → −45° at ω = a → −90° |
+| **Quadratic pair** (ζ, ω_n) | 0 for ω < ω_n; −40 dB/decade for ω > ω_n | 0° → −90° at ω = ω_n → −180° |
+
+**Corner frequency** = pole or zero location on the real axis.
+
+## 1.3 Composite Bode Plot
+
+To plot G(s) = K·(s + z₁)/[(s)(s + p₁)(s + p₂)]:
+
+1. Factor out constants; compute 20·log₁₀(K·z₁/(p₁·p₂)) for the DC gain
+2. Add contributions of each pole and zero at each frequency decade
+3. Phase: sum individual phase contributions at each frequency
+
+### Magnitude in dB
+
+**|G(jω)|_dB = 20·log₁₀(K) + Σ(zero contributions) − Σ(pole contributions)**`,
+      examTip: 'Each real pole contributes −20 dB/decade and −90° of phase; each real zero contributes +20 dB/decade and +90°. An integrator (1/s) contributes −20 dB/decade starting from ω = 0 with a constant −90° phase. These building blocks let you sketch any Bode plot quickly.',
+    },
+    {
+      id: 'bode-margins-nyquist',
+      title: '2. Stability Margins and Nyquist Criterion',
+      content: `## 2.1 Gain Margin and Phase Margin
+
+| Margin | Definition | Measured At |
+|---|---|---|
+| **Gain Margin (GM)** | How much gain can increase before instability | **Phase-crossover frequency** ω_pc (where ∠G = −180°) |
+| **Phase Margin (PM)** | How much additional phase lag before instability | **Gain-crossover frequency** ω_gc (where |G| = 0 dB) |
+
+**GM = −20·log₁₀|G(jω_pc)|** (in dB)
+
+**PM = 180° + ∠G(jω_gc)**
+
+### Stability Requirement
+
+**Stable system: GM > 0 dB AND PM > 0°**
+
+| PM | System Behavior |
+|---|---|
+| > 60° | Well-damped, sluggish |
+| 40–60° | Good compromise |
+| 20–40° | Responsive but oscillatory |
+| < 0° | **Unstable** |
+
+Approximate relationship: **PM ≈ 100·ζ** (for ζ < 0.7, in degrees)
+
+## 2.2 Nyquist Criterion
+
+Plot G(jω) in the complex plane as ω goes from 0 to ∞ (and its mirror for −∞ to 0).
+
+**Nyquist stability criterion**:
+
+**Z = N + P**
+
+where:
+- **Z** = number of closed-loop RHP poles (unstable)
+- **N** = number of **clockwise** encirclements of the point **(-1, 0)**
+- **P** = number of open-loop RHP poles
+
+For a stable closed-loop system: **Z = 0** → **N = −P**
+
+If the open-loop system is stable (P = 0), the Nyquist plot must **not encircle (-1, 0)** at all.
+
+## 2.3 Relating Bode to Nyquist
+
+- GM is the distance from the Nyquist plot to (-1, 0) along the negative real axis
+- PM is the angle from the negative real axis to the point where |G| = 1 on the Nyquist plot
+- Both plots contain the same information; Bode is easier to sketch, Nyquist handles delays and non-minimum-phase systems better`,
+      examTip: 'PM ≈ 100·ζ is a quick approximation that links frequency-domain and time-domain specs. If the exam asks for a phase margin of 45°, the damping ratio is approximately 0.45 and the overshoot is about 20%. This shortcut saves significant time.',
+      importantNote: 'Gain margin and phase margin must BOTH be positive for stability. A system can have positive GM but negative PM (or vice versa) and still be unstable. Always check both margins.',
+    },
+  ],
+  keyTakeaways: [
+    'Bode magnitude in dB = 20·log₁₀|G(jω)|; each pole adds −20 dB/decade, each zero adds +20 dB/decade.',
+    'Gain margin: GM = −|G(jω_pc)| dB at phase crossover (∠G = −180°).',
+    'Phase margin: PM = 180° + ∠G(jω_gc) at gain crossover (|G| = 0 dB).',
+    'Stability requires GM > 0 dB AND PM > 0°; typical design target PM = 45–60°.',
+    'Nyquist: Z = N + P; for stable open-loop (P = 0), no encirclement of (−1, 0).',
+    'Approximate: PM ≈ 100·ζ degrees (for ζ < 0.7).',
+  ],
+},
+
+  fee_pid: {
+  topicId: 'fee_pid',
+  title: 'PID Controllers and Tuning',
+  domainWeight: 'Control Systems · 4–6%',
+  overview: 'The PID controller is the most widely used feedback controller in industry, combining proportional, integral, and derivative actions to balance responsiveness, accuracy, and stability. The FE exam tests PID transfer functions, the effect of each term, and basic tuning methods.',
+  sections: [
+    {
+      id: 'pid-actions',
+      title: '1. PID Controller Actions',
+      content: `## 1.1 The PID Control Law
+
+**Time domain**: **u(t) = K_p·e(t) + K_i·∫e(τ)dτ + K_d·de(t)/dt**
+
+**Laplace domain**: **C(s) = K_p + K_i/s + K_d·s**
+
+where e(t) = r(t) − y(t) is the error signal (setpoint minus output).
+
+## 1.2 Effect of Each Term
+
+| Action | Transfer Function | Effect on Response | Drawback |
+|---|---|---|---|
+| **Proportional (P)** | K_p | Reduces error proportionally; faster response | Steady-state error remains (for Type 0 systems) |
+| **Integral (I)** | K_i/s | **Eliminates steady-state error** (adds integrator → increases system type) | Adds phase lag; can cause oscillation/instability |
+| **Derivative (D)** | K_d·s | **Reduces overshoot** and oscillation; adds phase lead | Amplifies high-frequency noise; never used alone |
+
+### How Each Term Affects the Response
+
+- **Increasing K_p**: faster rise time, more overshoot, smaller steady-state error
+- **Increasing K_i**: eliminates steady-state error, increases overshoot, can cause instability
+- **Increasing K_d**: reduces overshoot, improves stability, but noise-sensitive
+
+## 1.3 Common PID Variants
+
+| Controller | Terms | When to Use |
+|---|---|---|
+| **P** only | K_p | Simple, fast; acceptable steady-state error |
+| **PI** | K_p + K_i/s | Most common; zero steady-state error needed |
+| **PD** | K_p + K_d·s | Need stability improvement; error acceptable |
+| **PID** | K_p + K_i/s + K_d·s | Full control; zero error + good transient |
+
+### Anti-Windup
+
+When the actuator saturates, the integral term continues accumulating error ("windup"). Anti-windup resets or clamps the integrator when output hits limits.`,
+      examTip: 'The integral term K_i/s adds a pole at the origin, increasing the system type by one. This is WHY integral action eliminates steady-state error for step inputs — it makes the system at least Type 1. This is the most important conceptual point about PID on the FE exam.',
+    },
+    {
+      id: 'pid-tuning',
+      title: '2. PID Tuning Methods',
+      content: `## 2.1 Ziegler-Nichols Step Response Method
+
+Apply a step input to the open-loop plant and measure:
+- **K** = process gain (steady-state output change / input change)
+- **θ** = apparent dead time (delay before response begins)
+- **τ** = time constant (time to reach 63% of final value)
+
+| Controller | K_p | T_i = K_p/K_i | T_d = K_d/K_p |
+|---|---|---|---|
+| **P** | τ/(K·θ) | — | — |
+| **PI** | 0.9·τ/(K·θ) | 3.3·θ | — |
+| **PID** | 1.2·τ/(K·θ) | 2·θ | 0.5·θ |
+
+## 2.2 Ziegler-Nichols Ultimate Gain Method
+
+1. Set K_i = 0 and K_d = 0 (P-only)
+2. Increase K_p until the system oscillates continuously → **K_u** (ultimate gain)
+3. Measure the oscillation period → **P_u** (ultimate period)
+
+| Controller | K_p | T_i | T_d |
+|---|---|---|---|
+| **P** | 0.5·K_u | — | — |
+| **PI** | 0.45·K_u | P_u/1.2 | — |
+| **PID** | 0.6·K_u | P_u/2 | P_u/8 |
+
+## 2.3 Practical Tuning Guidelines
+
+1. **Start with P only**: increase K_p until response is fast but oscillatory
+2. **Add I**: set T_i large (slow integration), decrease until steady-state error vanishes
+3. **Add D**: increase K_d to reduce overshoot; stop before noise amplification becomes a problem
+
+### Frequency-Domain Approach
+
+Design the PID so the open-loop Bode plot has:
+- **Gain crossover** at the desired bandwidth
+- **Phase margin** of 45–60° for good damping`,
+      examTip: 'Ziegler-Nichols tuning tends to produce aggressive controllers with about 25% overshoot. The FE exam may ask you to apply the ultimate gain method: find K_u (gain at sustained oscillation), measure P_u (oscillation period), then use the table to compute K_p, T_i, T_d.',
+      importantNote: 'The derivative term amplifies noise because it differentiates the error signal. In practice, a low-pass filter is always added to the D term: K_d·s/(1 + s/N) where N is typically 10–20. Pure derivative (K_d·s) is never used in real implementations.',
+    },
+  ],
+  keyTakeaways: [
+    'PID: u(t) = K_p·e + K_i·∫e dt + K_d·de/dt; in Laplace: C(s) = K_p + K_i/s + K_d·s.',
+    'P: reduces error proportionally. I: eliminates steady-state error (adds integrator). D: reduces overshoot (adds phase lead).',
+    'PI is the most common industrial controller; D is added only when overshoot is unacceptable.',
+    'Ziegler-Nichols: ultimate gain K_u and period P_u → K_p = 0.6K_u, T_i = P_u/2, T_d = P_u/8 for PID.',
+    'Anti-windup prevents integral term from accumulating during actuator saturation.',
+  ],
+},
+
+  fee_time_specs: {
+  topicId: 'fee_time_specs',
+  title: 'Time-Domain Specifications',
+  domainWeight: 'Control Systems · 4–6%',
+  overview: 'Time-domain specifications quantify transient and steady-state performance of control systems. Overshoot, settling time, rise time, and steady-state error are directly linked to damping ratio, natural frequency, and system type. These relationships are heavily tested on the FE exam.',
+  sections: [
+    {
+      id: 'ts-transient-specs',
+      title: '1. Transient Response Specifications',
+      content: `## 1.1 Second-Order System Standard Form
+
+**G(s) = ω_n² / (s² + 2ζω_n·s + ω_n²)**
+
+where:
+- **ω_n** = natural frequency (rad/s) — controls speed of response
+- **ζ** = damping ratio (dimensionless) — controls oscillation
+- **ω_d = ω_n·√(1 − ζ²)** = damped natural frequency
+
+### System Classification by ζ
+
+| ζ Value | Response Type | Poles |
+|---|---|---|
+| ζ = 0 | Undamped (sustained oscillation) | Purely imaginary: ±jω_n |
+| 0 < ζ < 1 | **Underdamped** (oscillatory) | Complex conjugate: −ζω_n ± jω_d |
+| ζ = 1 | Critically damped (fastest non-oscillatory) | Repeated real: −ω_n |
+| ζ > 1 | Overdamped (sluggish) | Two distinct real negatives |
+
+## 1.2 Key Transient Specifications (Underdamped, 0 < ζ < 1)
+
+| Specification | Formula | Description |
+|---|---|---|
+| **Percent Overshoot** | **OS% = e^(−πζ/√(1−ζ²)) × 100%** | Max peak above final value |
+| **Peak Time** | **t_p = π/ω_d** | Time to first peak |
+| **Rise Time (0→100%)** | **t_r ≈ (π − arccos(ζ))/ω_d** | Time from 0% to 100% of final value |
+| **Settling Time (2%)** | **t_s ≈ 4/(ζ·ω_n)** | Time to stay within 2% band |
+| **Settling Time (5%)** | **t_s ≈ 3/(ζ·ω_n)** | Time to stay within 5% band |
+
+## 1.3 Common ζ Values Worth Memorizing
+
+| ζ | OS% | Character |
+|---|---|---|
+| 0.1 | 73% | Very oscillatory |
+| 0.3 | 37% | Oscillatory |
+| 0.5 | 16% | Moderate |
+| **0.707** | **4.3%** | **Optimal (Butterworth)** |
+| 1.0 | 0% | Critically damped |`,
+      examTip: 'OS% = e^(−πζ/√(1−ζ²)) × 100% and t_s ≈ 4/(ζω_n) are the two most commonly tested formulas. Memorize that ζ ≈ 0.7 gives about 5% overshoot — this is the "standard good design" value that appears repeatedly on the FE exam.',
+      importantNote: 'Settling time t_s = 4/(ζω_n) uses the 2% criterion. Some problems use 5% criterion, which gives t_s = 3/(ζω_n). Always check which criterion the problem specifies. If not stated, assume 2%.',
+    },
+    {
+      id: 'ts-steady-state-error',
+      title: '2. Steady-State Error and System Type',
+      content: `## 2.1 System Type
+
+The **type number** equals the number of **free integrators** (poles at s = 0) in the open-loop transfer function G(s)H(s).
+
+| System Type | Integrators | Step Error | Ramp Error | Parabolic Error |
+|---|---|---|---|---|
+| **Type 0** | 0 | 1/(1+K_p) | ∞ | ∞ |
+| **Type 1** | 1 | **0** | 1/K_v | ∞ |
+| **Type 2** | 2 | **0** | **0** | 1/K_a |
+
+## 2.2 Error Constants
+
+For unity-feedback system with open-loop G(s):
+
+| Constant | Formula | Used For |
+|---|---|---|
+| **Position constant K_p** | lim(s→0) G(s) | Step input error |
+| **Velocity constant K_v** | lim(s→0) s·G(s) | Ramp input error |
+| **Acceleration constant K_a** | lim(s→0) s²·G(s) | Parabolic input error |
+
+### Steady-State Error Formula
+
+**e_ss = lim(s→0) s · R(s) / (1 + G(s))**
+
+For standard inputs:
+- **Step** (R(s) = 1/s): **e_ss = 1/(1 + K_p)**
+- **Ramp** (R(s) = 1/s²): **e_ss = 1/K_v**
+- **Parabola** (R(s) = 1/s³): **e_ss = 1/K_a**
+
+## 2.3 Design Implications
+
+- To **reduce** steady-state error: increase gain K or add integrators
+- Adding an integrator (increasing system type) eliminates one class of error but can worsen stability
+- **Final Value Theorem**: lim(t→∞) y(t) = lim(s→0) s·Y(s) — only valid if system is stable
+
+### Quick Checks
+
+- Type 0 with gain K: step error = 1/(1+K). Doubling K halves the error but never eliminates it.
+- Type 1 system: zero step error, but ramp error = 1/K_v. Increase K_v to reduce ramp error.
+- Each added integrator gives zero error to one more input class but adds −90° phase (stability risk).`,
+      examTip: 'The FE exam will often state "unity-feedback system with G(s) = K/(s(s+2))" and ask for the steady-state error to a unit step. This is Type 1 (one integrator in G(s)), so step error = 0 immediately — no calculation needed. For a ramp: K_v = lim(s→0) s·G(s) = K/2, so e_ss = 2/K.',
+      importantNote: 'The Final Value Theorem only works if the system is STABLE (all closed-loop poles in the LHP). If any pole is in the RHP or on the jω axis, the steady-state value does not exist and the theorem gives a wrong answer. Always verify stability first.',
+    },
+  ],
+  keyTakeaways: [
+    'Overshoot: OS% = e^(−πζ/√(1−ζ²)) × 100%; ζ ≈ 0.7 gives ~5% OS.',
+    'Settling time (2%): t_s ≈ 4/(ζω_n); peak time: t_p = π/ω_d.',
+    'System type = number of open-loop integrators; determines which errors are zero.',
+    'Type 0: step error = 1/(1+K_p). Type 1: step error = 0, ramp error = 1/K_v.',
+    'Error constants: K_p = lim G(s), K_v = lim s·G(s), K_a = lim s²·G(s) as s→0.',
+    'Final Value Theorem: lim(t→∞) y(t) = lim(s→0) s·Y(s) — only valid for stable systems.',
+  ],
+},
 
   /* ──────────────────────────────────────────────────────────────────
    * TOPIC 13 — COMMUNICATIONS  (5 curriculum IDs)
