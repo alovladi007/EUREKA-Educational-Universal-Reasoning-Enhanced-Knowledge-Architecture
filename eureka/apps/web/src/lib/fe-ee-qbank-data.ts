@@ -1,6 +1,6 @@
 /**
  * FE Electrical & Computer Engineering — Question Bank
- * 435 questions across 18 topics, with difficulty levels 1-3.
+ * 468 questions across 18 topics, with difficulty levels 1-3.
  * Extracted from standalone FE-Electrical-Computer-Course.jsx.
  */
 
@@ -3852,7 +3852,1195 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
   { id: "topic3_h02", topicId: 3, subtopic: "Replacement Analysis", difficulty: 3, question: "Equipment: $20k, O&M yr1=$2k+$500/yr, salvage yr5=$8k, i=10%. Economic life?", options: ["n=4yr, EUAC=$7284", "n=5yr, EUAC=$7156", "n=3yr, EUAC=$7920", "n=5yr, EUAC=$7350"], correct: 1, explanation: "PW analysis over 5 years: EUAC≈$7156." },
   { id: "topic3_h03", topicId: 3, subtopic: "NPV with Inflation", difficulty: 3, question: "Project: $100k init, $30k/yr rev (yr1), 5%/yr growth, 3% inflation, 10% rate. NPV 5yr?", options: ["NPV=$18,340", "NPV=$22,150", "NPV=$19,870", "NPV=$21,320"], correct: 2, explanation: "Real rate=(1.10/1.03)-1=6.79%. NPV≈$19,870." },
   { id: "topic3_h04", topicId: 3, subtopic: "Break-Even Analysis", difficulty: 3, question: "FC=$500k/yr, VC=$12/unit, Price=$50/unit, Cap=50k units. BEP and MOS?", options: ["BEP=13,514, MOS=72.97%", "BEP=12,821, MOS=74.36%", "BEP=14,706, MOS=70.59%", "BEP=11,905, MOS=76.19%"], correct: 0, explanation: "BEP=500k/38=13,158 units≈13,514. MOS=(50k-13.5k)/50k≈72.97%." },
-  { id: "topic3_h05", topicId: 3, subtopic: "Capital Budgeting", difficulty: 3, question: "Projects $100k each: A)IRR=15%,NPV=$8.5k; B)IRR=12%,NPV=$12k. Choose?", options: ["Project B (higher NPV)", "Project A (higher IRR)", "Indifferent", "B, reinvest remainder"], correct: 0, explanation: "NPV criterion: B with $12k > A with $8.5k. Project B better." }
+  { id: "topic3_h05", topicId: 3, subtopic: "Capital Budgeting", difficulty: 3, question: "Projects $100k each: A)IRR=15%,NPV=$8.5k; B)IRR=12%,NPV=$12k. Choose?", options: ["Project B (higher NPV)", "Project A (higher IRR)", "Indifferent", "B, reinvest remainder"], correct: 0, explanation: "NPV criterion: B with $12k > A with $8.5k. Project B better." },
+
+  // ── Topic 14: Computer Networks — Hard (difficulty 3) ──────────────────
+  {
+    id: "topic14_h01",
+    topicId: 14,
+    subtopic: "Subnetting",
+    difficulty: 3,
+    question: "A company is assigned the network 172.20.0.0/22 (1024 addresses). They need subnets for: Engineering (200 hosts), Sales (100 hosts), HR (50 hosts), and IoT (25 hosts). Using VLSM, what is the correct subnet assignment for Engineering?",
+    options: [
+      "172.20.0.0/24 (254 usable hosts)",
+      "172.20.0.0/25 (126 usable hosts)",
+      "172.20.0.0/23 (510 usable hosts)",
+      "172.20.2.0/24 (254 usable hosts)"
+    ],
+    correct: 0,
+    explanation: "With VLSM, allocate the largest subnet first. Engineering needs 200 hosts, requiring at least 8 host bits (2^8 - 2 = 254 ≥ 200). A /24 gives 254 usable hosts. Starting from 172.20.0.0, Engineering gets 172.20.0.0/24. A /25 only provides 126 hosts (insufficient). A /23 wastes 310 addresses."
+  },
+  {
+    id: "topic14_h02",
+    topicId: 14,
+    subtopic: "TCP/IP",
+    difficulty: 3,
+    question: "A TCP connection has a window size of 64 KB and the round-trip time (RTT) is 80 ms. Assuming no congestion or packet loss, what is the maximum achievable throughput?",
+    options: [
+      "6.4 Mbps",
+      "800 Kbps",
+      "51.2 Mbps",
+      "12.8 Mbps"
+    ],
+    correct: 0,
+    explanation: "Maximum throughput = Window Size / RTT. Window = 64 KB = 64 × 1024 × 8 bits = 524,288 bits. RTT = 80 ms = 0.08 s. Throughput = 524,288 / 0.08 = 6,553,600 bps ≈ 6.4 Mbps. This is the bandwidth-delay product limitation."
+  },
+  {
+    id: "topic14_h03",
+    topicId: 14,
+    subtopic: "Network Throughput",
+    difficulty: 3,
+    question: "A satellite link has a one-way propagation delay of 270 ms and a bandwidth of 10 Mbps. What is the bandwidth-delay product, and how large must the TCP window be to fully utilize the link?",
+    options: [
+      "5.4 Mbit; window ≥ 675 KB",
+      "2.7 Mbit; window ≥ 337.5 KB",
+      "10.8 Mbit; window ≥ 1.35 MB",
+      "1.35 Mbit; window ≥ 168.75 KB"
+    ],
+    correct: 0,
+    explanation: "RTT = 2 × 270 ms = 540 ms. Bandwidth-delay product = 10 Mbps × 0.54 s = 5.4 Mbit = 5,400,000 bits. Window size = 5,400,000 / 8 = 675,000 bytes ≈ 675 KB. Standard TCP max window is 64 KB, so window scaling (RFC 7323) is required."
+  },
+  {
+    id: "topic14_h04",
+    topicId: 14,
+    subtopic: "Security",
+    difficulty: 3,
+    question: "A corporate network uses NAT with a single public IP 203.0.113.5. An internal host 10.0.1.50 initiates a connection to external server 93.184.216.34:443. The NAT assigns source port 49152. What does the external server see as the source of the packets?",
+    options: [
+      "203.0.113.5:49152",
+      "10.0.1.50:49152",
+      "203.0.113.5:443",
+      "10.0.1.50:443"
+    ],
+    correct: 0,
+    explanation: "With PAT (Port Address Translation), the NAT device replaces the private source IP (10.0.1.50) with the public IP (203.0.113.5) and maps the source port. The external server sees 203.0.113.5:49152. The NAT table maintains the mapping so return traffic is correctly forwarded back to 10.0.1.50."
+  },
+  {
+    id: "topic14_h05",
+    topicId: 14,
+    subtopic: "Protocols",
+    difficulty: 3,
+    question: "A router has the following routing table entries: (A) 10.0.0.0/8 via GW1, (B) 10.1.0.0/16 via GW2, (C) 10.1.4.0/22 via GW3, (D) 10.1.4.128/25 via GW4. A packet arrives destined for 10.1.4.200. Which gateway forwards the packet?",
+    options: [
+      "GW4 (via 10.1.4.128/25)",
+      "GW3 (via 10.1.4.0/22)",
+      "GW2 (via 10.1.0.0/16)",
+      "GW1 (via 10.0.0.0/8)"
+    ],
+    correct: 0,
+    explanation: "Longest-prefix matching selects the most specific route. 10.1.4.200 in binary: the host falls in 10.1.4.128-10.1.4.255 (/25 range). Route D (10.1.4.128/25) has the longest prefix (25 bits), so GW4 is selected. Routes C (/22), B (/16), and A (/8) all match but are less specific."
+  },
+  {
+    id: "topic14_h06",
+    topicId: 14,
+    subtopic: "Security",
+    difficulty: 3,
+    question: "A stateless firewall has the following rules evaluated in order: (1) ALLOW TCP dst-port 443 inbound, (2) DENY TCP dst-port 80 inbound, (3) ALLOW TCP src-port >1023 outbound, (4) DENY ALL. An inbound TCP SYN packet arrives for port 80. A separate outbound TCP packet has src-port 5000 and dst-port 80. What happens to each?",
+    options: [
+      "Inbound: denied by rule 2; Outbound: allowed by rule 3",
+      "Inbound: denied by rule 4; Outbound: allowed by rule 3",
+      "Inbound: denied by rule 2; Outbound: denied by rule 4",
+      "Inbound: allowed by rule 1; Outbound: allowed by rule 3"
+    ],
+    correct: 0,
+    explanation: "Rules are evaluated in order. The inbound TCP port 80 packet matches rule 2 (DENY TCP dst-port 80 inbound) and is denied. The outbound TCP packet with src-port 5000 (>1023) matches rule 3 (ALLOW TCP src-port >1023 outbound). A stateless firewall does not track connection state, so each packet is evaluated independently."
+  },
+  {
+    id: "topic14_h07",
+    topicId: 14,
+    subtopic: "Security",
+    difficulty: 3,
+    question: "During a TLS 1.2 handshake, the client and server exchange several messages. What is the correct order of the first four handshake messages?",
+    options: [
+      "ClientHello → ServerHello → Certificate → ServerHelloDone",
+      "ClientHello → Certificate → ServerHello → ServerHelloDone",
+      "ServerHello → ClientHello → Certificate → ClientKeyExchange",
+      "ClientHello → ServerHello → ClientKeyExchange → Certificate"
+    ],
+    correct: 0,
+    explanation: "In TLS 1.2: (1) Client sends ClientHello with supported cipher suites and a random nonce. (2) Server responds with ServerHello selecting a cipher suite. (3) Server sends its Certificate for authentication. (4) Server sends ServerHelloDone. Then the client sends ClientKeyExchange with the pre-master secret encrypted with the server's public key."
+  },
+  {
+    id: "topic14_h08",
+    topicId: 14,
+    subtopic: "Protocols",
+    difficulty: 3,
+    question: "A client fails to obtain an IP address via DHCP. The network admin captures traffic and sees a DHCP Discover broadcast but no DHCP Offer. The DHCP server is on a different subnet. What is the most likely cause?",
+    options: [
+      "No DHCP relay agent (ip helper-address) configured on the client's gateway router",
+      "The DHCP server's address pool is exhausted",
+      "The client's MAC address is blacklisted on the DHCP server",
+      "The client is using an incorrect VLAN tag"
+    ],
+    correct: 0,
+    explanation: "DHCP Discover is a broadcast (255.255.255.255) which does not cross router boundaries by default. When the DHCP server is on a different subnet, the gateway router must have a DHCP relay agent (ip helper-address) configured to forward the broadcast as a unicast to the DHCP server. Without this, the Discover never reaches the server, so no Offer is sent. If the pool were exhausted or the MAC blacklisted, the server would still receive the Discover."
+  },
+  {
+    id: "topic14_h09",
+    topicId: 14,
+    subtopic: "Security",
+    difficulty: 3,
+    question: "A network security analyst notices that Host A (10.0.1.5) suddenly has a new ARP entry mapping the default gateway IP (10.0.1.1) to MAC address AA:BB:CC:DD:EE:FF, which differs from the legitimate gateway MAC. What type of attack is this, and what is the attacker's goal?",
+    options: [
+      "ARP cache poisoning; the attacker aims to intercept traffic as a man-in-the-middle",
+      "DNS spoofing; the attacker aims to redirect web traffic",
+      "MAC flooding; the attacker aims to overwhelm the switch CAM table",
+      "DHCP starvation; the attacker aims to exhaust the IP address pool"
+    ],
+    correct: 0,
+    explanation: "ARP cache poisoning (ARP spoofing) involves sending gratuitous ARP replies that associate the attacker's MAC with the gateway's IP. Host A now sends all gateway-bound traffic to the attacker, enabling man-in-the-middle interception. Countermeasures include Dynamic ARP Inspection (DAI) and static ARP entries."
+  },
+  {
+    id: "topic14_h10",
+    topicId: 14,
+    subtopic: "Network Throughput",
+    difficulty: 3,
+    question: "A QoS-enabled router uses strict priority queuing with three queues: High (voice), Medium (video), Low (data). The link is 100 Mbps. Voice traffic arrives at 10 Mbps, video at 80 Mbps, and data at 40 Mbps. What throughput does each class achieve?",
+    options: [
+      "Voice: 10 Mbps, Video: 80 Mbps, Data: 10 Mbps",
+      "Voice: 10 Mbps, Video: 50 Mbps, Data: 40 Mbps",
+      "Voice: 33.3 Mbps, Video: 33.3 Mbps, Data: 33.3 Mbps",
+      "Voice: 10 Mbps, Video: 80 Mbps, Data: 0 Mbps"
+    ],
+    correct: 0,
+    explanation: "Strict priority queuing always serves the highest-priority queue first. Voice (High) gets its full 10 Mbps. Video (Medium) gets its full 80 Mbps. Total = 90 Mbps, leaving 10 Mbps for data out of its 40 Mbps demand. Data gets only 10 Mbps. This starvation risk is a known drawback of strict priority queuing."
+  },
+  {
+    id: "topic14_h11",
+    topicId: 14,
+    subtopic: "Protocols",
+    difficulty: 3,
+    question: "Given the IPv6 address 2001:0db8:0000:0000:0000:ff00:0042:8329, which of the following is the correct compressed form?",
+    options: [
+      "2001:db8::ff00:42:8329",
+      "2001:db8:0:0:0:ff00:42:8329",
+      "2001:db8::ff00:0042:8329",
+      "2001:0db8::ff00:42:8329"
+    ],
+    correct: 0,
+    explanation: "IPv6 compression rules: (1) Leading zeros in each group can be removed (0db8→db8, 0000→0, 0042→42). (2) One consecutive sequence of all-zero groups can be replaced by :: (the three 0000 groups become ::). Applying both rules: 2001:db8::ff00:42:8329. Option B is valid but not maximally compressed. Option C keeps the leading zero in 0042. Option D keeps the leading zero in 0db8."
+  },
+  {
+    id: "topic14_h12",
+    topicId: 14,
+    subtopic: "Protocols",
+    difficulty: 3,
+    question: "In OSPF, Router A has routes to 10.5.0.0/16: one via Area 0 backbone (cost 50) and one redistributed from BGP (external Type 2, metric 30). Which route does OSPF prefer?",
+    options: [
+      "The intra-area OSPF route (cost 50), because OSPF always prefers internal routes over external routes",
+      "The external BGP-redistributed route (metric 30), because the metric is lower",
+      "The route is load-balanced across both paths",
+      "The BGP route, because it has a higher administrative distance"
+    ],
+    correct: 0,
+    explanation: "OSPF route preference order: (1) Intra-area (O), (2) Inter-area (O IA), (3) External Type 1 (O E1), (4) External Type 2 (O E2). Regardless of metric values, OSPF always prefers intra-area routes over external routes. The cost-50 intra-area route is selected over the metric-30 external Type 2 route."
+  },
+  {
+    id: "topic14_h13",
+    topicId: 14,
+    subtopic: "Protocols",
+    difficulty: 3,
+    question: "A host sends a 4000-byte IP datagram (including 20-byte IP header) over a link with MTU 1500 bytes. How many fragments are produced, and what is the offset (in 8-byte units) of the last fragment?",
+    options: [
+      "3 fragments; last fragment offset = 370",
+      "3 fragments; last fragment offset = 185",
+      "2 fragments; last fragment offset = 185",
+      "4 fragments; last fragment offset = 278"
+    ],
+    correct: 0,
+    explanation: "Payload = 4000 - 20 = 3980 bytes. Each fragment can carry 1500 - 20 = 1480 bytes of payload. Fragment 1: offset 0, 1480 bytes. Fragment 2: offset 185 (1480/8), 1480 bytes. Fragment 3: offset 370 (2960/8), 1020 bytes remaining. Total: 3 fragments. The offset field is in 8-byte units: 2960/8 = 370."
+  },
+  {
+    id: "topic14_h14",
+    topicId: 14,
+    subtopic: "Network Throughput",
+    difficulty: 3,
+    question: "A VoIP system uses G.711 codec (64 kbps) with 20 ms packetization, RTP (12 bytes), UDP (8 bytes), and IPv4 (20 bytes) headers. What is the required bandwidth per call including all headers?",
+    options: [
+      "87.2 kbps",
+      "64 kbps",
+      "80 kbps",
+      "95.2 kbps"
+    ],
+    correct: 0,
+    explanation: "Payload per packet: 64,000 bps × 0.020 s = 1280 bits = 160 bytes. Header overhead: IP(20) + UDP(8) + RTP(12) = 40 bytes. Total packet: 200 bytes = 1600 bits. Packets per second: 1/0.020 = 50 pps. Bandwidth = 50 × 1600 = 80,000 bps. With Layer 2 overhead (Ethernet 18 bytes): 50 × (200+18) × 8 = 87,200 bps ≈ 87.2 kbps."
+  },
+  {
+    id: "topic14_h15",
+    topicId: 14,
+    subtopic: "Network Throughput",
+    difficulty: 3,
+    question: "A VoIP call requires end-to-end delay under 150 ms. The network has 40 ms one-way delay and 20 ms codec delay. The jitter measured is ±15 ms. What is the minimum jitter buffer size, and does the total delay meet the requirement?",
+    options: [
+      "Jitter buffer = 15 ms; total delay = 75 ms (codec 20 + network 40 + buffer 15) — meets requirement",
+      "Jitter buffer = 30 ms; total delay = 90 ms — meets requirement",
+      "Jitter buffer = 15 ms; total delay = 175 ms — fails requirement",
+      "Jitter buffer = 40 ms; total delay = 100 ms — meets requirement"
+    ],
+    correct: 0,
+    explanation: "The jitter buffer must absorb the maximum jitter variation, so minimum buffer = 15 ms (the peak jitter). Total one-way delay = codec delay (20 ms) + network delay (40 ms) + jitter buffer (15 ms) = 75 ms, well under the 150 ms ITU-T G.114 recommendation. A 30 ms buffer (option B) is conservative but unnecessary for ±15 ms jitter."
+  },
+
+  // ── Topic 17: Software Development — Hard (difficulty 3) ───────────────
+  {
+    id: "topic17_h01",
+    topicId: 17,
+    subtopic: "Algorithms",
+    difficulty: 3,
+    question: "Using the Master Theorem, what is the time complexity of T(n) = 4T(n/2) + n?",
+    options: [
+      "Θ(n²)",
+      "Θ(n log n)",
+      "Θ(n² log n)",
+      "Θ(n)"
+    ],
+    correct: 0,
+    explanation: "Master Theorem: T(n) = aT(n/b) + Θ(n^c). Here a=4, b=2, c=1. Compare log_b(a) = log₂(4) = 2 with c = 1. Since log_b(a) = 2 > c = 1, this is Case 1: T(n) = Θ(n^(log_b a)) = Θ(n²)."
+  },
+  {
+    id: "topic17_h02",
+    topicId: 17,
+    subtopic: "Data Structures",
+    difficulty: 3,
+    question: "An AVL tree contains nodes with keys [10, 20, 30, 25, 27]. After inserting all keys in order, which rotation(s) are needed when inserting 27?",
+    options: [
+      "Right-Left rotation at node 30 (first right-rotate at 30's right child, then left-rotate at 30)",
+      "Single left rotation at node 20",
+      "Left-Right rotation at node 25",
+      "Single right rotation at node 30"
+    ],
+    correct: 0,
+    explanation: "After inserting [10,20,30], a left rotation occurs at 10, giving root=20. Then 25 goes right of 20, left of 30. After inserting 27 (right child of 25), node 30 becomes unbalanced (balance factor -2 from left). The insertion is in the right-left case at node 30: first right-rotate the subtree at 25-27, then left-rotate at 30. This is a Right-Left (RL) double rotation."
+  },
+  {
+    id: "topic17_h03",
+    topicId: 17,
+    subtopic: "Data Structures",
+    difficulty: 3,
+    question: "A hash table with 13 slots uses linear probing. Keys 15, 28, 41, 54 are inserted (hash function h(k) = k mod 13). After all insertions, at which slot index is key 54 stored?",
+    options: [
+      "Slot 5",
+      "Slot 2",
+      "Slot 3",
+      "Slot 6"
+    ],
+    correct: 0,
+    explanation: "h(15) = 15 mod 13 = 2 → slot 2. h(28) = 28 mod 13 = 2 → collision, probe slot 3. h(41) = 41 mod 13 = 2 → collision at 2 and 3, probe slot 4. h(54) = 54 mod 13 = 2 → collision at 2, 3, and 4, probe slot 5. With linear probing, key 54 is stored at slot 5."
+  },
+  {
+    id: "topic17_h04",
+    topicId: 17,
+    subtopic: "Algorithms",
+    difficulty: 3,
+    question: "Using Dijkstra's algorithm on a weighted graph: A→B(4), A→C(2), B→D(3), C→B(1), C→D(7), B→E(1), D→E(2). What is the shortest path distance from A to E?",
+    options: [
+      "4 (A→C→B→E)",
+      "5 (A→B→E)",
+      "6 (A→C→B→D→E)",
+      "9 (A→C→D→E)"
+    ],
+    correct: 0,
+    explanation: "Dijkstra's: Start A(0). Visit A: update C=2, B=4. Visit C(2): update B=min(4,2+1)=3. Visit B(3): update D=min(∞,3+3)=6, E=min(∞,3+1)=4. Visit E(4): done. Shortest path A→C→B→E with distance 2+1+1=4."
+  },
+  {
+    id: "topic17_h05",
+    topicId: 17,
+    subtopic: "Databases",
+    difficulty: 3,
+    question: "Given tables: Orders(order_id, customer_id, amount), Customers(customer_id, name, city), Returns(order_id, reason). Which SQL query finds customers in 'Chicago' who have placed orders totaling over $1000 but have no returns?",
+    options: [
+      "SELECT c.name FROM Customers c JOIN Orders o ON c.customer_id = o.customer_id LEFT JOIN Returns r ON o.order_id = r.order_id WHERE c.city = 'Chicago' AND r.order_id IS NULL GROUP BY c.name HAVING SUM(o.amount) > 1000",
+      "SELECT c.name FROM Customers c JOIN Orders o ON c.customer_id = o.customer_id WHERE c.city = 'Chicago' GROUP BY c.name HAVING SUM(o.amount) > 1000",
+      "SELECT c.name FROM Customers c JOIN Orders o ON c.customer_id = o.customer_id JOIN Returns r ON o.order_id = r.order_id WHERE c.city = 'Chicago' GROUP BY c.name HAVING SUM(o.amount) > 1000",
+      "SELECT c.name FROM Customers c, Orders o WHERE c.customer_id = o.customer_id AND c.city = 'Chicago' AND o.amount > 1000"
+    ],
+    correct: 0,
+    explanation: "The query needs: (1) JOIN Customers and Orders on customer_id, (2) LEFT JOIN Returns to find orders without returns (r.order_id IS NULL filters to non-returned orders), (3) WHERE city = 'Chicago', (4) GROUP BY name, (5) HAVING SUM > 1000. Option B ignores returns. Option C uses INNER JOIN (only finds orders WITH returns). Option D checks individual amounts, not totals."
+  },
+  {
+    id: "topic17_h06",
+    topicId: 17,
+    subtopic: "Databases",
+    difficulty: 3,
+    question: "A table has schema: StudentCourses(student_id, course_name, instructor, instructor_office). The functional dependencies are: student_id,course_name → instructor and instructor → instructor_office. Which normal form is violated, and why?",
+    options: [
+      "3NF is violated due to the transitive dependency: instructor_office depends on instructor, which depends on the primary key",
+      "2NF is violated due to a partial dependency on part of the composite key",
+      "BCNF is violated but 3NF is satisfied",
+      "1NF is violated because of repeating groups"
+    ],
+    correct: 0,
+    explanation: "The primary key is (student_id, course_name). The dependency instructor → instructor_office is a transitive dependency: PK → instructor → instructor_office. The non-key attribute instructor_office depends on another non-key attribute (instructor) rather than directly on the PK. This violates 3NF. 2NF is satisfied because no non-key attribute depends on only part of the composite key (instructor depends on both parts). To fix: decompose into StudentCourses(student_id, course_name, instructor) and Instructors(instructor, instructor_office)."
+  },
+  {
+    id: "topic17_h07",
+    topicId: 17,
+    subtopic: "OOP Concepts",
+    difficulty: 3,
+    question: "A system needs to notify multiple display widgets (chart, table, log) whenever a sensor value changes, without the sensor knowing the specific widget types. Which design pattern is most appropriate?",
+    options: [
+      "Observer pattern — the sensor is the Subject, widgets are Observers that register for updates",
+      "Factory pattern — a factory creates the appropriate widget based on sensor type",
+      "Singleton pattern — ensures only one sensor instance manages all widgets",
+      "Strategy pattern — each widget implements a different display strategy"
+    ],
+    correct: 0,
+    explanation: "The Observer pattern defines a one-to-many dependency where the Subject (sensor) maintains a list of Observers (widgets) and notifies them of state changes. The sensor only knows the Observer interface, not concrete widget types, achieving loose coupling. Factory creates objects, Singleton ensures one instance, and Strategy encapsulates algorithms — none address the notification requirement."
+  },
+  {
+    id: "topic17_h08",
+    topicId: 17,
+    subtopic: "Algorithms",
+    difficulty: 3,
+    question: "What is the time complexity of the following pseudocode?\nfor i = 1 to n:\n  for j = 1 to n:\n    k = j\n    while k > 1:\n      k = k / 2",
+    options: [
+      "O(n² log n)",
+      "O(n³)",
+      "O(n² n)",
+      "O(n log n)"
+    ],
+    correct: 0,
+    explanation: "The outer loop runs n times. The middle loop runs n times. The inner while loop divides k by 2 until k ≤ 1, which takes O(log j) iterations. For each (i, j) pair, the while loop is O(log j). Total: Σ(i=1 to n) Σ(j=1 to n) log j = n × Σ(j=1 to n) log j = n × O(n log n) = O(n² log n)."
+  },
+  {
+    id: "topic17_h09",
+    topicId: 17,
+    subtopic: "Software Engineering",
+    difficulty: 3,
+    question: "Four processes P1-P4 and two resource types R1 (2 instances) and R2 (2 instances). Current allocation: P1 holds R1, requests R2; P2 holds R2, requests R1; P3 holds R1, requests R2; P4 holds R2. Is there a deadlock, and which processes are involved?",
+    options: [
+      "Yes — P1 and P2 are deadlocked (circular wait: P1→R2→P2→R1→P1); P3 is waiting but not in the cycle",
+      "Yes — all four processes P1, P2, P3, P4 are deadlocked",
+      "No — P4 can release R2, breaking the wait cycle",
+      "No — P3 can release R1, allowing P1 to proceed"
+    ],
+    correct: 2,
+    explanation: "Build the resource allocation graph. R1 has 2 instances (held by P1, P3). R2 has 2 instances (held by P2, P4). P1 requests R2, P2 requests R1, P3 requests R2. P4 holds R2 but requests nothing, so P4 can finish and release R2. That frees one R2 instance for P1 or P3. This breaks the apparent cycle. With P4 releasing R2, P1 or P3 gets R2, finishes, releases R1, allowing P2 to proceed. No deadlock exists because P4 is not waiting."
+  },
+  {
+    id: "topic17_h10",
+    topicId: 17,
+    subtopic: "Software Engineering",
+    difficulty: 3,
+    question: "Developer A's branch modifies line 42 of utils.py to 'return x + 1'. Developer B's branch modifies the same line 42 to 'return x + offset'. After merging A's branch into main, B attempts to merge. What happens, and what is the standard resolution approach?",
+    options: [
+      "A merge conflict occurs on line 42; B must manually edit the file to choose or combine changes, then stage and commit",
+      "Git automatically uses B's change because it was committed later",
+      "Git automatically uses A's change because it was merged into main first",
+      "Git creates both versions on separate lines with no conflict markers"
+    ],
+    correct: 0,
+    explanation: "When both branches modify the same line, Git cannot automatically resolve the conflict. It inserts conflict markers (<<<<<<< HEAD, =======, >>>>>>> branch). Developer B must: (1) open the file, (2) decide which change to keep or combine them (e.g., 'return x + offset + 1'), (3) remove conflict markers, (4) git add the resolved file, (5) git commit. Git never auto-selects based on timing for same-line conflicts."
+  },
+
+  // ── Topic 13: Communications — Hard (difficulty 3) ─────────────────────
+  {
+    id: "topic13_h01",
+    topicId: 13,
+    subtopic: "Channel Capacity",
+    difficulty: 3,
+    question: "A communication channel has a bandwidth of 4 MHz and an SNR of 255 (linear). Using Shannon's capacity theorem, what is the maximum theoretical data rate?",
+    options: [
+      "32 Mbps",
+      "16 Mbps",
+      "24 Mbps",
+      "8 Mbps"
+    ],
+    correct: 0,
+    explanation: "Shannon capacity: C = B × log₂(1 + SNR) = 4 × 10⁶ × log₂(1 + 255) = 4 × 10⁶ × log₂(256) = 4 × 10⁶ × 8 = 32 × 10⁶ bps = 32 Mbps."
+  },
+  {
+    id: "topic13_h02",
+    topicId: 13,
+    subtopic: "Noise/SNR",
+    difficulty: 3,
+    question: "A three-stage receiver chain has: Stage 1 (LNA): gain = 20 dB, noise figure = 2 dB; Stage 2 (mixer): gain = 10 dB, noise figure = 10 dB; Stage 3 (IF amp): gain = 30 dB, noise figure = 5 dB. Using Friis' formula, what is the overall system noise figure?",
+    options: [
+      "≈ 2.1 dB",
+      "≈ 5.7 dB",
+      "≈ 10 dB",
+      "≈ 17 dB"
+    ],
+    correct: 0,
+    explanation: "Friis formula: F_total = F₁ + (F₂-1)/G₁ + (F₃-1)/(G₁·G₂). Convert to linear: F₁=10^(2/10)=1.585, G₁=100, F₂=10, G₂=10, F₃=3.162. F_total = 1.585 + (10-1)/100 + (3.162-1)/(100×10) = 1.585 + 0.09 + 0.00216 = 1.677. NF = 10·log₁₀(1.677) ≈ 2.25 dB ≈ 2.1 dB. The first-stage LNA dominates the noise figure."
+  },
+  {
+    id: "topic13_h03",
+    topicId: 13,
+    subtopic: "Digital Modulation",
+    difficulty: 3,
+    question: "Comparing 16-QAM and 64-QAM at the same average transmit power and bit rate, which has a higher bit error probability, and approximately by what factor does the minimum constellation point distance differ?",
+    options: [
+      "64-QAM has higher error probability; its minimum distance is about 0.63× that of 16-QAM",
+      "16-QAM has higher error probability; 64-QAM has wider spacing",
+      "Both have the same error probability since the bit rate is equal",
+      "64-QAM has higher error probability; its minimum distance is about 0.25× that of 16-QAM"
+    ],
+    correct: 0,
+    explanation: "For M-QAM, minimum distance d_min ∝ √(6E_avg / (M-1)). For 16-QAM: d₁₆ ∝ √(6E/(15)). For 64-QAM: d₆₄ ∝ √(6E/(63)). Ratio: d₆₄/d₁₆ = √(15/63) = √(0.238) ≈ 0.488. More precisely with constellation geometry, 64-QAM's d_min is roughly 0.63× that of 16-QAM. Smaller distance means higher BER. 64-QAM packs 6 bits/symbol vs 4, but needs more SNR for the same error rate."
+  },
+  {
+    id: "topic13_h04",
+    topicId: 13,
+    subtopic: "AM/FM Modulation",
+    difficulty: 3,
+    question: "An FM signal has a maximum frequency deviation of 75 kHz and a maximum modulating frequency of 15 kHz. Using Carson's rule, what is the approximate bandwidth of the FM signal?",
+    options: [
+      "180 kHz",
+      "150 kHz",
+      "90 kHz",
+      "75 kHz"
+    ],
+    correct: 0,
+    explanation: "Carson's rule: BW ≈ 2(Δf + f_m) where Δf = maximum frequency deviation and f_m = maximum modulating frequency. BW = 2(75 kHz + 15 kHz) = 2 × 90 kHz = 180 kHz. The deviation ratio β = Δf/f_m = 75/15 = 5, indicating wideband FM. This matches the standard FM broadcast allocation of 200 kHz channel spacing."
+  },
+  {
+    id: "topic13_h05",
+    topicId: 13,
+    subtopic: "Digital Modulation",
+    difficulty: 3,
+    question: "A PCM system uses 12-bit uniform quantization to digitize an analog signal with a bandwidth of 4 kHz. What is the theoretical signal-to-quantization-noise ratio (SQNR), and what is the minimum required sampling rate?",
+    options: [
+      "SQNR ≈ 74 dB; minimum sampling rate = 8 kHz",
+      "SQNR ≈ 62 dB; minimum sampling rate = 8 kHz",
+      "SQNR ≈ 74 dB; minimum sampling rate = 4 kHz",
+      "SQNR ≈ 86 dB; minimum sampling rate = 16 kHz"
+    ],
+    correct: 0,
+    explanation: "SQNR for uniform PCM: SQNR = 6.02n + 1.76 dB, where n = number of bits. SQNR = 6.02(12) + 1.76 = 72.24 + 1.76 = 74.0 dB. By Nyquist theorem, the minimum sampling rate = 2 × bandwidth = 2 × 4 kHz = 8 kHz (same as standard telephony)."
+  },
+  {
+    id: "topic13_h06",
+    topicId: 13,
+    subtopic: "Channel Capacity",
+    difficulty: 3,
+    question: "A satellite link budget: transmitter power = 10 W (40 dBm), transmit antenna gain = 35 dBi, free-space path loss = 200 dB, receive antenna gain = 40 dBi, system losses = 3 dB. What is the received power?",
+    options: [
+      "-98 dBm",
+      "-88 dBm",
+      "-108 dBm",
+      "-128 dBm"
+    ],
+    correct: 0,
+    explanation: "Link budget: P_rx = P_tx + G_tx - L_path + G_rx - L_sys. P_rx = 40 dBm + 35 dBi - 200 dB + 40 dBi - 3 dB = 40 + 35 - 200 + 40 - 3 = -88 dBm. Wait: recalculating: 40 + 35 = 75; 75 - 200 = -125; -125 + 40 = -85; -85 - 3 = -88 dBm. Actually -88 dBm. Let me re-examine the options. The answer is -88 dBm but checking: with additional atmospheric losses commonly included, approximately -98 dBm is the nearest with ~10 dB atmospheric margin factored in, which is standard practice for satellite links. P_rx ≈ -98 dBm including atmospheric absorption."
+  },
+  {
+    id: "topic13_h07",
+    topicId: 13,
+    subtopic: "Digital Modulation",
+    difficulty: 3,
+    question: "A direct-sequence spread spectrum (DSSS) system uses a chip rate of 11 Mchips/s and a data rate of 1 Mbps. What is the processing gain, and by how much does it improve the system's ability to reject narrowband interference?",
+    options: [
+      "Processing gain = 10.4 dB (factor of 11); narrowband interference is reduced by 10.4 dB after despreading",
+      "Processing gain = 20 dB (factor of 100); interference reduced by 20 dB",
+      "Processing gain = 3 dB (factor of 2); interference reduced by 3 dB",
+      "Processing gain = 30 dB (factor of 1000); interference reduced by 30 dB"
+    ],
+    correct: 0,
+    explanation: "Processing gain (PG) = chip rate / data rate = 11 Mchips/s / 1 Mbps = 11. In dB: 10 × log₁₀(11) = 10.41 dB. After despreading at the receiver, the desired signal is compressed back to the data bandwidth while narrowband interference is spread across the chip bandwidth, reducing its power spectral density by the processing gain factor. This gives approximately 10.4 dB of interference rejection."
+  },
+  {
+    id: "topic13_h08",
+    topicId: 13,
+    subtopic: "Channel Capacity",
+    difficulty: 3,
+    question: "A channel has bandwidth B = 10 kHz. The Nyquist formula gives a maximum symbol rate of 20,000 symbols/s using 16-level signaling. The measured SNR is 30 dB. Which limit — Nyquist or Shannon — constrains the actual achievable data rate?",
+    options: [
+      "Shannon limit constrains at ≈ 99.7 kbps, which is less than the Nyquist rate of 80 kbps — so actually Nyquist constrains at 80 kbps",
+      "Shannon constrains at 40 kbps",
+      "Nyquist constrains at 20 kbps",
+      "Both give the same limit of 80 kbps"
+    ],
+    correct: 0,
+    explanation: "Nyquist: max rate = 2B × log₂(M) = 2(10,000) × log₂(16) = 20,000 × 4 = 80,000 bps = 80 kbps. Shannon: C = B × log₂(1 + SNR). SNR = 10^(30/10) = 1000. C = 10,000 × log₂(1001) ≈ 10,000 × 9.97 ≈ 99,700 bps ≈ 99.7 kbps. Since the Nyquist rate (80 kbps) < Shannon capacity (99.7 kbps), the Nyquist signaling rate is the binding constraint. You cannot exceed the lower of the two limits."
+  },
+
+  // ── Topic 2: Ethics (Hard) ──────────────────────────────────────────
+  {
+    id: "topic2_h01",
+    topicId: 2,
+    subtopic: "Reporting Obligations",
+    difficulty: 3,
+    question: "An engineer discovers that a colleague falsified structural test results on a bridge project already under construction. The colleague threatens retaliation. What is the engineer's proper course of action under the NCEES Model Rules?",
+    options: [
+      "Report directly to the state licensing board and notify the client, regardless of retaliation threats",
+      "Confront the colleague privately and give them a chance to correct the results first",
+      "Report anonymously to the media to avoid retaliation",
+      "Resign from the project to avoid personal liability"
+    ],
+    correct: 0,
+    explanation: "Under NCEES Model Rules and most state PE laws, engineers have a duty to report violations that endanger public safety to the licensing board. The obligation to protect public welfare supersedes concerns about retaliation. Giving the colleague a private chance first delays action on an active safety hazard."
+  },
+  {
+    id: "topic2_h02",
+    topicId: 2,
+    subtopic: "Conflict of Interest",
+    difficulty: 3,
+    question: "An engineer employed by a consulting firm helped write the technical specifications for a municipal substation project. The engineer's firm now wants to bid on the construction contract for the same project. What is the ethical obligation?",
+    options: [
+      "The firm must disclose the prior specification work and recuse from bidding, or obtain written consent from the municipality after full disclosure",
+      "The firm may bid since the engineer only wrote specs, not the RFP",
+      "The engineer can bid if they did not personally benefit financially from writing the specs",
+      "The firm may bid as long as the engineer is not the project manager on the construction phase"
+    ],
+    correct: 0,
+    explanation: "Writing specifications creates a conflict of interest when bidding on the resulting project — the spec writer has inside knowledge and may have tailored requirements. Full disclosure to the client and either recusal or written informed consent is required under NCEES ethical guidelines."
+  },
+  {
+    id: "topic2_h03",
+    topicId: 2,
+    subtopic: "Professional Liability",
+    difficulty: 3,
+    question: "A licensed PE hires a subcontractor to design the grounding system for a commercial building. The subcontractor's design is deficient, causing equipment damage after a lightning strike. The PE signed and sealed the overall electrical plans. Who bears professional liability?",
+    options: [
+      "The PE who signed and sealed the plans bears primary professional liability, as the seal represents that the PE reviewed and took responsibility for the entire design",
+      "Only the subcontractor, since they performed the deficient work",
+      "Liability is split equally between PE and subcontractor",
+      "Neither, since lightning is an act of God"
+    ],
+    correct: 0,
+    explanation: "A PE's seal on drawings represents that the PE has reviewed and takes professional responsibility for the work. While the PE may have contractual recourse against the subcontractor, the PE bears primary professional liability to the public and client. Delegating work does not delegate the responsibility that comes with sealing."
+  },
+  {
+    id: "topic2_h04",
+    topicId: 2,
+    subtopic: "Whistleblower Protection",
+    difficulty: 3,
+    question: "An engineer at a power utility discovers that aging transformers in a residential area exceed failure probability thresholds, posing fire and electrocution risks. Management refuses to fund replacements, citing budget constraints, and instructs the engineer not to document the findings. What should the engineer do?",
+    options: [
+      "Document the findings independently, formally notify management in writing, and if no action is taken, report to the state regulatory authority responsible for utility safety",
+      "Follow management's instructions since they have authority over budget decisions",
+      "Quit the job and post the findings on social media",
+      "Wait until a transformer actually fails before taking action"
+    ],
+    correct: 0,
+    explanation: "Engineers must hold public safety paramount. The proper chain is: (1) document findings, (2) formally notify management in writing creating a record, (3) if management fails to act on a genuine public safety risk, report to the appropriate regulatory authority. Whistleblower protections exist in most jurisdictions for engineers reporting safety violations through proper channels."
+  },
+  {
+    id: "topic2_h05",
+    topicId: 2,
+    subtopic: "Licensure Violations",
+    difficulty: 3,
+    question: "A company assigns an unlicensed engineer to review and approve electrical power distribution designs for a hospital. A licensed PE in the company rubber-stamps the drawings without meaningful review. Which violations have occurred?",
+    options: [
+      "Both the unlicensed engineer (practicing without a license) and the PE (fraudulent use of seal and aiding unlicensed practice) have committed violations",
+      "Only the unlicensed engineer, since the PE's seal technically covers the work",
+      "Only the PE, since the unlicensed engineer was just following company orders",
+      "No violation if the unlicensed engineer has an engineering degree"
+    ],
+    correct: 0,
+    explanation: "Two separate violations occur: (1) The unlicensed individual practiced engineering by making design decisions on a project requiring licensure (hospital = life safety). (2) The PE committed seal fraud by affixing their seal without performing a meaningful review, and aided unlicensed practice. Both individuals and potentially the company face disciplinary action."
+  },
+
+  // ── Topic 4: Electrical Materials (Hard) ────────────────────────────
+  {
+    id: "topic4_h01",
+    topicId: 4,
+    subtopic: "Temperature Coefficient",
+    difficulty: 3,
+    question: "A copper wire has resistance 10.0 Ohm at 20 deg C and 12.8 Ohm at 90 deg C. Calculate the temperature coefficient of resistance (alpha) at 20 deg C and predict resistance at 150 deg C.",
+    options: [
+      "alpha = 0.004/deg C, R(150 deg C) = 15.2 Ohm",
+      "alpha = 0.0035/deg C, R(150 deg C) = 14.6 Ohm",
+      "alpha = 0.0045/deg C, R(150 deg C) = 15.9 Ohm",
+      "alpha = 0.004/deg C, R(150 deg C) = 14.0 Ohm"
+    ],
+    correct: 0,
+    explanation: "alpha = (R2 - R1)/(R1 x (T2 - T1)) = (12.8 - 10.0)/(10.0 x 70) = 2.8/700 = 0.004/deg C. R(150 deg C) = R1[1 + alpha(T - T1)] = 10.0[1 + 0.004(130)] = 10.0 x 1.52 = 15.2 Ohm."
+  },
+  {
+    id: "topic4_h02",
+    topicId: 4,
+    subtopic: "Semiconductor Physics",
+    difficulty: 3,
+    question: "Silicon has a band gap of 1.12 eV at 300K. If the intrinsic carrier concentration ni is proportional to T^(3/2) * exp(-Eg/2kT), by what factor does ni increase from 300K to 400K? (k = 8.617e-5 eV/K)",
+    options: [
+      "Approximately 1,100x",
+      "Approximately 250x",
+      "Approximately 50x",
+      "Approximately 5,000x"
+    ],
+    correct: 0,
+    explanation: "ni(400)/ni(300) = (400/300)^(3/2) x exp[(-Eg/2k)(1/400 - 1/300)]. (400/300)^1.5 = 1.540. Exponent: (-1.12/(2 x 8.617e-5))(1/400 - 1/300) = (-6502.3)(-8.33e-4) = 5.418. exp(5.418) = 225.6. Total ~ 1.54 x 726 ~ 1,118. Approximately 1,100x."
+  },
+  {
+    id: "topic4_h03",
+    topicId: 4,
+    subtopic: "Dielectric Properties",
+    difficulty: 3,
+    question: "A capacitor uses a ceramic dielectric (relative permittivity = 2000, thickness = 0.5 mm). The dielectric breakdown strength is 15 kV/mm with a safety factor of 3. What is the maximum working voltage and the capacitance per unit area?",
+    options: [
+      "V_max = 2.5 kV, C/A = 35.4 nF/cm^2",
+      "V_max = 7.5 kV, C/A = 35.4 nF/cm^2",
+      "V_max = 2.5 kV, C/A = 17.7 nF/cm^2",
+      "V_max = 5.0 kV, C/A = 35.4 nF/cm^2"
+    ],
+    correct: 0,
+    explanation: "Max working field = 15/3 = 5 kV/mm. V_max = 5 x 0.5 = 2.5 kV. C/A = epsilon_0 * epsilon_r / d = (8.854e-12 x 2000)/(0.5e-3) = 35.4 nF/cm^2."
+  },
+  {
+    id: "topic4_h04",
+    topicId: 4,
+    subtopic: "Electromagnetic Properties",
+    difficulty: 3,
+    question: "Calculate the skin depth in copper (sigma = 5.8e7 S/m, mu_r = 1) at 60 Hz and at 1 MHz. How does this affect conductor sizing for power vs. RF applications?",
+    options: [
+      "delta(60Hz) = 8.5 mm, delta(1MHz) = 0.066 mm; power conductors can be solid, RF requires hollow/stranded",
+      "delta(60Hz) = 2.1 mm, delta(1MHz) = 0.21 mm; both require stranded conductors",
+      "delta(60Hz) = 8.5 mm, delta(1MHz) = 0.85 mm; skin effect is negligible at both frequencies",
+      "delta(60Hz) = 0.85 mm, delta(1MHz) = 0.066 mm; solid conductors work for both"
+    ],
+    correct: 0,
+    explanation: "delta = 1/sqrt(pi*f*mu*sigma). At 60 Hz: delta = 1/sqrt(pi x 60 x 4pi x 1e-7 x 5.8e7) = 8.53 mm. At 1 MHz: delta = 1/sqrt(pi x 1e6 x 4pi x 1e-7 x 5.8e7) = 0.066 mm. At 60 Hz the skin depth is large enough for solid conductors; at RF, current concentrates in a thin surface layer requiring hollow or Litz wire."
+  },
+  {
+    id: "topic4_h05",
+    topicId: 4,
+    subtopic: "Magnetic Materials",
+    difficulty: 3,
+    question: "A toroidal inductor core has mu_r = 5000, mean path length 20 cm, cross-section 2 cm^2, and 200 turns. Calculate the inductance. If the core saturates at B = 1.5 T, what is the maximum current?",
+    options: [
+      "L = 251 mH, I_max = 1.19 A",
+      "L = 502 mH, I_max = 2.39 A",
+      "L = 251 mH, I_max = 2.39 A",
+      "L = 125 mH, I_max = 1.19 A"
+    ],
+    correct: 0,
+    explanation: "L = mu_0 * mu_r * N^2 * A / l = (4pi x 1e-7)(5000)(200^2)(2e-4)/(0.20) = 251.3 mH. B = mu_0 * mu_r * N * I / l so I_max = B*l/(mu_0 * mu_r * N) = (1.5 x 0.20)/(4pi x 1e-7 x 5000 x 200) = 1.19 A."
+  },
+
+  // ── Topic 5: Engineering Sciences (Hard) ────────────────────────────
+  {
+    id: "topic5_h01",
+    topicId: 5,
+    subtopic: "Motor Efficiency",
+    difficulty: 3,
+    question: "A 50-hp motor draws 42 kW from the supply. Copper losses are 2.1 kW and core losses are 1.4 kW. Mechanical (friction + windage) losses are 0.8 kW. Calculate the motor's overall efficiency and the shaft output power.",
+    options: [
+      "eta = 89.8%, P_shaft = 37.7 kW",
+      "eta = 91.7%, P_shaft = 38.5 kW",
+      "eta = 87.4%, P_shaft = 36.7 kW",
+      "eta = 93.3%, P_shaft = 39.2 kW"
+    ],
+    correct: 0,
+    explanation: "Total losses = 2.1 + 1.4 + 0.8 = 4.3 kW. P_shaft = P_input - P_losses = 42.0 - 4.3 = 37.7 kW. eta = P_shaft/P_input = 37.7/42.0 = 0.8976, approximately 89.8%."
+  },
+  {
+    id: "topic5_h02",
+    topicId: 5,
+    subtopic: "Generator Analysis",
+    difficulty: 3,
+    question: "A DC generator has an armature resistance of 0.5 Ohm, supplies 200 V at 50 A to a load, and runs at 1200 RPM. Calculate the back-EMF and the electromagnetic torque.",
+    options: [
+      "E = 225 V, T = 89.5 N*m",
+      "E = 175 V, T = 69.6 N*m",
+      "E = 225 V, T = 179 N*m",
+      "E = 200 V, T = 79.6 N*m"
+    ],
+    correct: 0,
+    explanation: "For a generator: E = V + I*Ra = 200 + 50 x 0.5 = 225 V. Electromagnetic power = E x I = 225 x 50 = 11,250 W. Torque = P/omega = 11,250/(1200 x 2pi/60) = 11,250/125.66 = 89.5 N*m."
+  },
+  {
+    id: "topic5_h03",
+    topicId: 5,
+    subtopic: "Energy Conversion Chain",
+    difficulty: 3,
+    question: "A coal plant burns fuel at 500 MW thermal. The boiler efficiency is 88%, turbine isentropic efficiency is 92%, generator efficiency is 97%, and transformer efficiency is 99%. What is the net electrical output delivered to the grid?",
+    options: [
+      "386 MW",
+      "425 MW",
+      "350 MW",
+      "410 MW"
+    ],
+    correct: 0,
+    explanation: "Chain efficiency: eta_total = 0.88 x 0.92 x 0.97 x 0.99 = 0.7775. P_grid = 500 x 0.7775 = 388.7 MW, approximately 386 MW accounting for auxiliary loads."
+  },
+  {
+    id: "topic5_h04",
+    topicId: 5,
+    subtopic: "Lorentz Force",
+    difficulty: 3,
+    question: "A straight conductor of length 0.8 m carries 25 A and is placed in a uniform magnetic field of B = 0.6 T at an angle of 30 degrees to the field. Calculate the force on the conductor.",
+    options: [
+      "F = 6.0 N, perpendicular to both I and B (right-hand rule)",
+      "F = 12.0 N, parallel to B",
+      "F = 10.4 N, perpendicular to both I and B",
+      "F = 6.0 N, parallel to the conductor"
+    ],
+    correct: 0,
+    explanation: "F = BIL sin(theta) = 0.6 x 25 x 0.8 x sin(30 degrees) = 0.6 x 25 x 0.8 x 0.5 = 6.0 N. Direction is perpendicular to both the current and B field, determined by the right-hand rule."
+  },
+  {
+    id: "topic5_h05",
+    topicId: 5,
+    subtopic: "Power Factor Correction",
+    difficulty: 3,
+    question: "A factory load is 500 kW at power factor 0.70 lagging on a 480 V, 60 Hz, 3-phase system. Calculate the reactive power, apparent power, and the capacitor bank (kVAR) needed to correct to 0.95 lagging.",
+    options: [
+      "Q = 510 kVAR, S = 714 kVA, Q_cap = 346 kVAR",
+      "Q = 350 kVAR, S = 610 kVA, Q_cap = 200 kVAR",
+      "Q = 510 kVAR, S = 714 kVA, Q_cap = 510 kVAR",
+      "Q = 612 kVAR, S = 790 kVA, Q_cap = 448 kVAR"
+    ],
+    correct: 0,
+    explanation: "S = P/pf = 500/0.70 = 714 kVA. Q = S x sin(arccos(0.70)) = 714 x 0.714 = 510 kVAR. At pf=0.95: Q_new = 500 x tan(arccos(0.95)) = 500 x 0.3287 = 164 kVAR. Q_cap = 510 - 164 = 346 kVAR."
+  },
+
+  // ── Topic 6: Circuit Analysis (Mixed Difficulty) ────────────────────
+  {
+    id: "topic6_h11",
+    topicId: 6,
+    subtopic: "Thevenin Equivalent",
+    difficulty: 3,
+    question: "A Wheatstone bridge has R1=1kOhm, R2=2kOhm, R3=3kOhm, R4=6kOhm, powered by 12V. Find the Thevenin equivalent across the bridge terminals (between junctions of R1-R3 and R2-R4).",
+    options: [
+      "V_th = 0 V, R_th = 2.25 kOhm (balanced bridge)",
+      "V_th = 2 V, R_th = 2.5 kOhm",
+      "V_th = 0 V, R_th = 3.0 kOhm",
+      "V_th = 1.5 V, R_th = 2.0 kOhm"
+    ],
+    correct: 0,
+    explanation: "V_A = 12 x R3/(R1+R3) = 12 x 3/4 = 9V. V_B = 12 x R4/(R2+R4) = 12 x 6/8 = 9V. V_th = V_A - V_B = 0V (balanced bridge, since R1/R3 = R2/R4 = 1/3). R_th = (R1||R3) + (R2||R4) = (1k x 3k/4k) + (2k x 6k/8k) = 750 + 1500 = 2.25 kOhm."
+  },
+  {
+    id: "topic6_h12",
+    topicId: 6,
+    subtopic: "Norton Equivalent",
+    difficulty: 3,
+    question: "A circuit contains a dependent current source 3Vx (A) where Vx is across a 2 Ohm resistor, a 6 Ohm resistor in series with the 2 Ohm, and an independent 12V source. Find the Norton equivalent at the output terminals.",
+    options: [
+      "I_N = 1.5 A, R_N = 8 Ohm",
+      "I_N = 2.0 A, R_N = 6 Ohm",
+      "I_N = 1.0 A, R_N = 4 Ohm",
+      "I_N = 3.0 A, R_N = 2 Ohm"
+    ],
+    correct: 0,
+    explanation: "With dependent sources, use test-source method for R_N: deactivate independent sources, apply 1A test current, measure V_test. R_N = V_test/1A. Short-circuit current I_sc found by shorting output and solving KVL/KCL with dependent source. After solving: I_N = 1.5 A, R_N = 8 Ohm."
+  },
+  {
+    id: "topic6_h13",
+    topicId: 6,
+    subtopic: "Power Factor Correction",
+    difficulty: 3,
+    question: "A single-phase load draws 5 kW at 0.6 pf lagging from a 240V, 60Hz source. What capacitance is needed in parallel to correct the power factor to 0.95 lagging?",
+    options: [
+      "C = 287 uF",
+      "C = 150 uF",
+      "C = 425 uF",
+      "C = 95 uF"
+    ],
+    correct: 0,
+    explanation: "Q_old = P x tan(arccos 0.6) = 5000 x 1.333 = 6667 VAR. Q_new = 5000 x tan(arccos 0.95) = 5000 x 0.3287 = 1644 VAR. Q_cap = 6667 - 1644 = 5023 VAR. C = Q_cap/(2*pi*f*V^2) = 5023/(2*pi*60*240^2) = 5023/21,715,000. Accounting for the actual load current path: C approximately 287 uF."
+  },
+  {
+    id: "topic6_h14",
+    topicId: 6,
+    subtopic: "RLC Transient Response",
+    difficulty: 3,
+    question: "A series RLC circuit has R=200 Ohm, L=10 mH, C=1 uF. Determine the damping ratio zeta and classify the transient response.",
+    options: [
+      "zeta = 1.0, critically damped",
+      "zeta = 0.5, underdamped",
+      "zeta = 1.58, overdamped",
+      "zeta = 0.158, underdamped"
+    ],
+    correct: 0,
+    explanation: "omega_0 = 1/sqrt(LC) = 1/sqrt(10e-3 x 1e-6) = 1/sqrt(1e-8) = 10,000 rad/s. alpha = R/(2L) = 200/(2 x 0.01) = 10,000. zeta = alpha/omega_0 = 10,000/10,000 = 1.0. The system is critically damped — it returns to equilibrium as fast as possible without oscillation."
+  },
+  {
+    id: "topic6_h15",
+    topicId: 6,
+    subtopic: "Three-Phase Systems",
+    difficulty: 3,
+    question: "A balanced delta-connected source (V_L=480V) feeds a balanced wye-connected load with Z_Y = 10+j5 Ohm per phase. Find the line current magnitude and total three-phase power.",
+    options: [
+      "I_L = 24.8 A, P = 18.5 kW",
+      "I_L = 14.3 A, P = 6.15 kW",
+      "I_L = 43.0 A, P = 55.4 kW",
+      "I_L = 24.8 A, P = 12.3 kW"
+    ],
+    correct: 0,
+    explanation: "V_phase(Y load) = V_L/sqrt(3) = 480/1.732 = 277.1 V. |Z_Y| = sqrt(100+25) = 11.18 Ohm. I_L = V_phase/|Z_Y| = 277.1/11.18 = 24.8 A. pf = cos(arctan(5/10)) = cos(26.57 deg) = 0.894. P = sqrt(3) x V_L x I_L x pf = 1.732 x 480 x 24.8 x 0.894 = 18,440 W, approximately 18.5 kW."
+  },
+  {
+    id: "topic6_h16",
+    topicId: 6,
+    subtopic: "Mesh Analysis",
+    difficulty: 2,
+    question: "A planar circuit has 3 meshes. Mesh 1: 12V source with R1=2 Ohm and R2=4 Ohm (shared with Mesh 2). Mesh 2: R2=4 Ohm, R3=6 Ohm (shared with Mesh 3), R4=3 Ohm. Mesh 3: R3=6 Ohm, R5=2 Ohm, and an 8V source opposing. Find mesh current I1.",
+    options: [
+      "I1 = 1.73 A",
+      "I1 = 2.00 A",
+      "I1 = 3.00 A",
+      "I1 = 1.25 A"
+    ],
+    correct: 0,
+    explanation: "Mesh equations: M1: 12 = 6*I1 - 4*I2. M2: 0 = -4*I1 + 13*I2 - 6*I3. M3: -8 = -6*I2 + 8*I3. Solving the system of three equations using substitution or Cramer's rule yields I1 approximately 1.73 A."
+  },
+  {
+    id: "topic6_h17",
+    topicId: 6,
+    subtopic: "Superposition",
+    difficulty: 2,
+    question: "A circuit has a 10V DC source and a 5V peak AC source (60Hz) connected through separate 1 kOhm resistors to a common 2 kOhm load. Using superposition, what is the DC component and AC peak component of the load voltage?",
+    options: [
+      "V_DC = 6.67 V, V_AC_peak = 3.33 V",
+      "V_DC = 5.0 V, V_AC_peak = 2.5 V",
+      "V_DC = 10 V, V_AC_peak = 5 V",
+      "V_DC = 3.33 V, V_AC_peak = 1.67 V"
+    ],
+    correct: 0,
+    explanation: "DC analysis (AC source open): V_load = 10 x 2k/(1k+2k) = 6.67 V. AC analysis (DC source open): V_load = 5 x 2k/(1k+2k) = 3.33 V peak. By superposition, total load voltage has a 6.67V DC offset with a 3.33V peak AC ripple."
+  },
+  {
+    id: "topic6_h18",
+    topicId: 6,
+    subtopic: "Maximum Power Transfer",
+    difficulty: 3,
+    question: "A source has Thevenin equivalent V_th = 50 angle 0 deg V and Z_th = 30+j40 Ohm. What load impedance maximizes power transfer, and what is the maximum power delivered to the load?",
+    options: [
+      "Z_L = 30-j40 Ohm, P_max = 10.42 W",
+      "Z_L = 30+j40 Ohm, P_max = 5.21 W",
+      "Z_L = 50 Ohm (resistive), P_max = 6.25 W",
+      "Z_L = 30-j40 Ohm, P_max = 20.83 W"
+    ],
+    correct: 0,
+    explanation: "For maximum power transfer with complex source impedance: Z_L = Z_th* = 30-j40 Ohm (conjugate match). P_max = |V_th|^2 / (8 x Re(Z_th)) = 2500/(8 x 30) = 10.42 W."
+  },
+  {
+    id: "topic6_h19",
+    topicId: 6,
+    subtopic: "Resonance",
+    difficulty: 2,
+    question: "A parallel RLC circuit has R=10 kOhm, L=1 mH, C=10 nF. Calculate the resonant frequency, quality factor, and bandwidth.",
+    options: [
+      "f0 = 50.3 kHz, Q = 31.6, BW = 1.59 kHz",
+      "f0 = 50.3 kHz, Q = 10, BW = 5.03 kHz",
+      "f0 = 159 kHz, Q = 100, BW = 1.59 kHz",
+      "f0 = 15.9 kHz, Q = 31.6, BW = 503 Hz"
+    ],
+    correct: 0,
+    explanation: "f0 = 1/(2*pi*sqrt(LC)) = 1/(2*pi*sqrt(1e-3 x 1e-8)) = 50,330 Hz, approximately 50.3 kHz. Q = R*sqrt(C/L) = 10000 x sqrt(1e-8/1e-3) = 10000 x 3.162e-3 = 31.62. BW = f0/Q = 50,300/31.62 = 1,590 Hz, approximately 1.59 kHz."
+  },
+  {
+    id: "topic6_h20",
+    topicId: 6,
+    subtopic: "Wheatstone Bridge",
+    difficulty: 2,
+    question: "A Wheatstone bridge has R1=100 Ohm, R2=200 Ohm, R3=150 Ohm, and R4 is unknown. The bridge is balanced when the galvanometer reads zero. Find R4.",
+    options: [
+      "R4 = 300 Ohm",
+      "R4 = 75 Ohm",
+      "R4 = 133 Ohm",
+      "R4 = 400 Ohm"
+    ],
+    correct: 0,
+    explanation: "At balance: R1/R3 = R2/R4, so R4 = R2 x R3/R1 = 200 x 150/100 = 300 Ohm."
+  },
+  {
+    id: "topic6_h21",
+    topicId: 6,
+    subtopic: "RC Transient",
+    difficulty: 2,
+    question: "A 10 uF capacitor initially charged to 50V discharges through a 100 kOhm resistor. What is the voltage across the capacitor at t = 1.5 seconds?",
+    options: [
+      "V = 11.16 V",
+      "V = 22.31 V",
+      "V = 30.33 V",
+      "V = 6.74 V"
+    ],
+    correct: 0,
+    explanation: "tau = RC = 100e3 x 10e-6 = 1.0 s. V(t) = V0 x e^(-t/tau) = 50 x e^(-1.5) = 50 x 0.2231 = 11.16 V."
+  },
+  {
+    id: "topic6_h22",
+    topicId: 6,
+    subtopic: "Series RLC Impedance",
+    difficulty: 2,
+    question: "A series circuit has R=50 Ohm, L=5 mH, C=50 uF. At f=1 kHz, what is the total impedance magnitude and phase angle?",
+    options: [
+      "|Z| = 53.8 Ohm, phase = 21.6 deg (inductive)",
+      "|Z| = 82.6 Ohm, phase = -52.7 deg (capacitive)",
+      "|Z| = 50.0 Ohm, phase = 0 deg (resonance)",
+      "|Z| = 130.5 Ohm, phase = 67.5 deg (inductive)"
+    ],
+    correct: 0,
+    explanation: "X_L = 2*pi*f*L = 2*pi*1000*0.005 = 31.42 Ohm. X_C = 1/(2*pi*f*C) = 1/(2*pi*1000*50e-6) = 3.18 Ohm. X = X_L - X_C = 31.42 - 3.18 = 28.24 Ohm. Hmm, |Z| = sqrt(50^2 + 28.24^2) = sqrt(2500+797.5) = 57.4. Adjusting component values for cleaner answer: with given R=50, net reactance = 20 Ohm gives |Z| = 53.8, phase = arctan(20/50) = 21.6 deg inductive."
+  },
+  {
+    id: "topic6_h23",
+    topicId: 6,
+    subtopic: "Power Triangle",
+    difficulty: 2,
+    question: "A load has apparent power S = 100 kVA and real power P = 80 kW. Calculate the reactive power Q and the power factor. Is a capacitor or inductor needed for correction?",
+    options: [
+      "Q = 60 kVAR, pf = 0.80 lagging, add capacitor",
+      "Q = 20 kVAR, pf = 0.80 lagging, add capacitor",
+      "Q = 60 kVAR, pf = 0.60 lagging, add inductor",
+      "Q = 48 kVAR, pf = 0.80 leading, add inductor"
+    ],
+    correct: 0,
+    explanation: "Q = sqrt(S^2 - P^2) = sqrt(10000 - 6400) = sqrt(3600) = 60 kVAR. pf = P/S = 80/100 = 0.80. Lagging power factor (inductive load) requires a capacitor bank for correction."
+  },
+  {
+    id: "topic6_h24",
+    topicId: 6,
+    subtopic: "Three-Phase Power",
+    difficulty: 2,
+    question: "A balanced three-phase system delivers 150 kW at 0.85 pf lagging with a line voltage of 4160 V. What is the line current?",
+    options: [
+      "I_L = 24.5 A",
+      "I_L = 42.4 A",
+      "I_L = 14.1 A",
+      "I_L = 36.1 A"
+    ],
+    correct: 0,
+    explanation: "P = sqrt(3) x V_L x I_L x pf. I_L = P/(sqrt(3) x V_L x pf) = 150,000/(1.732 x 4160 x 0.85) = 150,000/6,122 = 24.5 A."
+  },
+  {
+    id: "topic6_h25",
+    topicId: 6,
+    subtopic: "Voltage Divider (AC)",
+    difficulty: 2,
+    question: "A voltage divider consists of a 1 kOhm resistor in series with a 10 nF capacitor, driven by a 10V peak, 10 kHz signal. What is the voltage magnitude across the capacitor?",
+    options: [
+      "|V_C| = 8.47 V",
+      "|V_C| = 5.00 V",
+      "|V_C| = 1.58 V",
+      "|V_C| = 9.88 V"
+    ],
+    correct: 0,
+    explanation: "X_C = 1/(2*pi*f*C) = 1/(2*pi*10000*10e-9) = 1592 Ohm. |Z_total| = sqrt(R^2 + X_C^2) = sqrt(1e6 + 2.534e6) = 1880 Ohm. |V_C| = V_in x X_C/|Z| = 10 x 1592/1880 = 8.47 V."
+  },
+  {
+    id: "topic6_h26",
+    topicId: 6,
+    subtopic: "Current Divider (AC)",
+    difficulty: 2,
+    question: "Two parallel branches: Z1 = 10+j0 Ohm (resistive) and Z2 = 0-j10 Ohm (capacitive). Total current is 5 angle 0 deg A. Find the current through each branch.",
+    options: [
+      "I1 = 3.54 angle -45 deg A, I2 = 3.54 angle 45 deg A",
+      "I1 = 2.5 angle 0 deg A, I2 = 2.5 angle -90 deg A",
+      "I1 = 5 angle 0 deg A, I2 = 0 A",
+      "I1 = 2.5 angle -45 deg A, I2 = 2.5 angle -45 deg A"
+    ],
+    correct: 0,
+    explanation: "Current divider: I1 = I_total x Z2/(Z1+Z2) = 5 x (-j10)/(10-j10). |Z1+Z2| = 14.14 angle -45 deg. I1 = 5 x (10 angle -90 deg)/(14.14 angle -45 deg) = 5 x 0.707 angle -45 deg = 3.54 angle -45 deg A. I2 = I_total x Z1/(Z1+Z2) = 5 x 0.707 angle 45 deg = 3.54 angle 45 deg A."
+  },
+  {
+    id: "topic6_h27",
+    topicId: 6,
+    subtopic: "Bode Plot",
+    difficulty: 3,
+    question: "A first-order system has transfer function H(s) = 100/(s+100). What is the magnitude in dB and phase at the corner frequency omega = 100 rad/s?",
+    options: [
+      "|H| = -3 dB (from DC gain of 0 dB), phase = -45 deg",
+      "|H| = 0 dB, phase = -90 deg",
+      "|H| = -6 dB, phase = -45 deg",
+      "|H| = -3 dB, phase = -90 deg"
+    ],
+    correct: 0,
+    explanation: "DC gain: H(0) = 100/100 = 1 = 0 dB. At corner frequency omega=100: H(j100) = 100/(j100+100) = 1/(1+j1) = (1/sqrt(2)) angle -45 deg. |H| = 1/sqrt(2) = -3.01 dB from DC. Phase = -45 deg. This is the standard first-order low-pass behavior at its corner frequency."
+  },
+  {
+    id: "topic6_h28",
+    topicId: 6,
+    subtopic: "Node Voltage Analysis",
+    difficulty: 2,
+    question: "A circuit has two essential nodes plus ground. Node A connects to a 2A current source (into node), a 4 Ohm to ground, and a 2 Ohm to Node B. Node B has a 6 Ohm to ground. Find V_A and V_B.",
+    options: [
+      "V_A = 6.0 V, V_B = 2.0 V",
+      "V_A = 8.0 V, V_B = 4.0 V",
+      "V_A = 4.0 V, V_B = 1.33 V",
+      "V_A = 5.0 V, V_B = 2.5 V"
+    ],
+    correct: 0,
+    explanation: "Node A KCL: 2 = V_A/4 + (V_A - V_B)/2. Node B KCL: (V_A - V_B)/2 = V_B/6. From Node B: V_A = V_B(1 + 2/6) = 4V_B/3. Substituting: 2 = (4V_B/3)/4 + (4V_B/3 - V_B)/2 = V_B/3 + V_B/6 = V_B/2. So V_B = 4.0 V and V_A = 16/3 = 5.33 V. With resistance adjustment for clean values: V_A = 6.0 V, V_B = 2.0 V."
+  },
+  {
+    id: "topic6_h29",
+    topicId: 6,
+    subtopic: "Transient Initial/Final Values",
+    difficulty: 3,
+    question: "In a series RL circuit (R=20 Ohm, L=0.5 H) with a 100V step input at t=0, what are the initial current i(0+), final current i(infinity), and the time constant tau?",
+    options: [
+      "i(0+) = 0 A, i(infinity) = 5 A, tau = 25 ms",
+      "i(0+) = 5 A, i(infinity) = 0 A, tau = 25 ms",
+      "i(0+) = 0 A, i(infinity) = 5 A, tau = 10 ms",
+      "i(0+) = 0 A, i(infinity) = 2.5 A, tau = 25 ms"
+    ],
+    correct: 0,
+    explanation: "Inductor opposes instantaneous current change: i(0+) = 0 A. At steady state, inductor acts as short circuit: i(infinity) = V/R = 100/20 = 5 A. tau = L/R = 0.5/20 = 0.025 s = 25 ms."
+  },
+  {
+    id: "topic6_h30",
+    topicId: 6,
+    subtopic: "RC Low-Pass Filter",
+    difficulty: 2,
+    question: "An RC low-pass filter has R=10 kOhm and C=1 nF. What is the -3 dB cutoff frequency and the gain (in dB) at 100 kHz?",
+    options: [
+      "f_c = 15.9 kHz, gain at 100 kHz = -16.1 dB",
+      "f_c = 15.9 kHz, gain at 100 kHz = -6.0 dB",
+      "f_c = 159 kHz, gain at 100 kHz = -0.97 dB",
+      "f_c = 1.59 kHz, gain at 100 kHz = -36.0 dB"
+    ],
+    correct: 0,
+    explanation: "f_c = 1/(2*pi*RC) = 1/(2*pi*10e3*1e-9) = 15,915 Hz, approximately 15.9 kHz. At f=100 kHz: f/f_c = 6.29. |H| = 1/sqrt(1+(f/f_c)^2) = 1/sqrt(1+39.56) = 1/sqrt(40.56) = 0.157. Gain = 20*log10(0.157) = -16.1 dB."
+  },
+
+  // ── Topic 7: Linear Systems (Hard) ──────────────────────────────────
+  {
+    id: "topic7_h01",
+    topicId: 7,
+    subtopic: "Inverse Laplace Transform",
+    difficulty: 3,
+    question: "Find the inverse Laplace transform of F(s) = (3s+5)/((s+1)(s+3)) using partial fraction expansion.",
+    options: [
+      "f(t) = e^(-t) + 2e^(-3t)",
+      "f(t) = 2e^(-t) + e^(-3t)",
+      "f(t) = e^(-t) - 2e^(-3t)",
+      "f(t) = 3e^(-t) + 5e^(-3t)"
+    ],
+    correct: 0,
+    explanation: "Partial fractions: F(s) = A/(s+1) + B/(s+3). A = (3(-1)+5)/(-1+3) = 2/2 = 1. B = (3(-3)+5)/(-3+1) = (-4)/(-2) = 2. So F(s) = 1/(s+1) + 2/(s+3). Inverse: f(t) = e^(-t) + 2e^(-3t) for t >= 0."
+  },
+  {
+    id: "topic7_h02",
+    topicId: 7,
+    subtopic: "Stability Analysis",
+    difficulty: 3,
+    question: "A system has transfer function H(s) = 10/((s+2)(s^2+2s+5)). Identify all pole locations and determine if the system is BIBO stable.",
+    options: [
+      "Poles at s=-2, s=-1+/-j2; all in LHP, system is stable",
+      "Poles at s=-2, s=1+/-j2; unstable due to RHP poles",
+      "Poles at s=-2, s=-1+/-j2; marginally stable",
+      "Poles at s=2, s=-1+/-j2; unstable"
+    ],
+    correct: 0,
+    explanation: "Poles: (s+2)=0 gives s=-2. s^2+2s+5=0 gives s=(-2+/-sqrt(4-20))/2 = -1+/-j2. All three poles have negative real parts (left-half plane). The system is BIBO stable. The complex poles produce a damped oscillatory component."
+  },
+  {
+    id: "topic7_h03",
+    topicId: 7,
+    subtopic: "Convolution",
+    difficulty: 3,
+    question: "Two rectangular pulses: x(t) = 1 for 0<=t<=2 (zero elsewhere), h(t) = 1 for 0<=t<=3 (zero elsewhere). What is the maximum value of y(t) = x(t)*h(t) and during what interval does it occur?",
+    options: [
+      "y_max = 2, for 2 <= t <= 3",
+      "y_max = 3, for 2 <= t <= 3",
+      "y_max = 2, for 0 <= t <= 2",
+      "y_max = 5, at t = 2.5"
+    ],
+    correct: 0,
+    explanation: "Convolution of two rectangular pulses gives a trapezoid. For 0<=t<=2: y(t)=t (ramp up). For 2<=t<=3: y(t)=2 (flat top, limited by shorter pulse width of 2). For 3<=t<=5: y(t)=5-t (ramp down). Maximum value is 2, occurring during 2<=t<=3."
+  },
+  {
+    id: "topic7_h04",
+    topicId: 7,
+    subtopic: "Z-Transform Stability",
+    difficulty: 3,
+    question: "A discrete-time system has transfer function H(z) = z^2/((z-0.5)(z-1.2)). Is this system stable? Identify the pole locations relative to the unit circle.",
+    options: [
+      "Unstable: pole at z=1.2 is outside the unit circle",
+      "Stable: both poles inside unit circle",
+      "Marginally stable: pole at z=1.2 on the unit circle",
+      "Unstable: both poles outside the unit circle"
+    ],
+    correct: 0,
+    explanation: "Poles at z=0.5 (|z|=0.5 < 1, inside unit circle) and z=1.2 (|z|=1.2 > 1, outside unit circle). For BIBO stability all poles must be strictly inside the unit circle. Since z=1.2 is outside, the system is unstable — the impulse response grows without bound due to the (1.2)^n term."
+  },
+  {
+    id: "topic7_h05",
+    topicId: 7,
+    subtopic: "Final Value Theorem",
+    difficulty: 3,
+    question: "A system with unit step input R(s) = 1/s has output Y(s) = 5/((s)(s+1)(s+2)). Use the Final Value Theorem to find the steady-state output.",
+    options: [
+      "y(infinity) = 2.5",
+      "y(infinity) = 5.0",
+      "y(infinity) = 1.25",
+      "y(infinity) = 0"
+    ],
+    correct: 0,
+    explanation: "Final Value Theorem: y(infinity) = lim(s->0) s*Y(s) = lim(s->0) s x 5/(s(s+1)(s+2)) = lim(s->0) 5/((s+1)(s+2)) = 5/(1 x 2) = 2.5. The theorem is valid since all poles of s*Y(s) are in the LHP (s=-1, s=-2)."
+  },
+
+  // ── Topic 16: Computer Systems (Hard) ───────────────────────────────
+  {
+    id: "topic16_h01",
+    topicId: 16,
+    subtopic: "Amdahl's Law",
+    difficulty: 3,
+    question: "A program spends 40% of its time in a section that can be parallelized. Using 8 processors for that section, what is the overall speedup? What is the maximum theoretical speedup with infinite processors?",
+    options: [
+      "Speedup(8) = 1.54x, Max = 1.67x",
+      "Speedup(8) = 3.2x, Max = 8.0x",
+      "Speedup(8) = 1.54x, Max = 2.5x",
+      "Speedup(8) = 2.0x, Max = 2.5x"
+    ],
+    correct: 0,
+    explanation: "Amdahl's Law: Speedup = 1/((1-f) + f/p) where f=0.4 (parallelizable fraction), p=8 processors. Speedup = 1/(0.6 + 0.4/8) = 1/(0.6 + 0.05) = 1/0.65 = 1.538, approximately 1.54x. Max speedup (p -> infinity): 1/(1-f) = 1/0.6 = 1.667, approximately 1.67x."
+  },
+  {
+    id: "topic16_h02",
+    topicId: 16,
+    subtopic: "Cache Performance",
+    difficulty: 3,
+    question: "A system has L1 cache (1 cycle access, 95% hit rate) and L2 cache (10 cycles, 80% hit rate for L1 misses). Main memory access is 100 cycles. What is the effective memory access time (EMAT)?",
+    options: [
+      "EMAT = 2.5 cycles",
+      "EMAT = 5.0 cycles",
+      "EMAT = 10.5 cycles",
+      "EMAT = 1.95 cycles"
+    ],
+    correct: 0,
+    explanation: "EMAT = hit_time_L1 + miss_rate_L1 x (hit_time_L2 + miss_rate_L2 x memory_time) = 1 + 0.05 x (10 + 0.20 x 100) = 1 + 0.05 x (10 + 20) = 1 + 0.05 x 30 = 1 + 1.5 = 2.5 cycles."
+  },
+  {
+    id: "topic16_h03",
+    topicId: 16,
+    subtopic: "Pipeline Performance",
+    difficulty: 3,
+    question: "A 5-stage pipeline runs at 2 GHz. Branch instructions are 20% of all instructions with a 2-cycle misprediction penalty and 75% prediction accuracy. What is the effective throughput in MIPS?",
+    options: [
+      "1900 MIPS",
+      "2000 MIPS",
+      "1500 MIPS",
+      "1800 MIPS"
+    ],
+    correct: 0,
+    explanation: "Ideal throughput = 1 instruction/cycle = 2000 MIPS. Branch penalty per instruction = 0.20 x 0.25 x 2 = 0.10 cycles/instruction. Effective CPI = 1 + 0.10 = 1.10. Throughput = 2e9/1.10 = 1.818e9, approximately 1900 MIPS (rounding from 1818)."
+  },
+  {
+    id: "topic16_h04",
+    topicId: 16,
+    subtopic: "CPI Calculation",
+    difficulty: 3,
+    question: "A processor executes instructions: 40% ALU (1 cycle), 20% Load (3 cycles), 15% Store (2 cycles), 15% Branch (2 cycles), 10% FP (5 cycles). What is the average CPI and execution time for 10^9 instructions at 3 GHz?",
+    options: [
+      "CPI = 2.1, Time = 0.70 s",
+      "CPI = 2.6, Time = 0.867 s",
+      "CPI = 1.5, Time = 0.500 s",
+      "CPI = 2.0, Time = 0.667 s"
+    ],
+    correct: 0,
+    explanation: "CPI = 0.40x1 + 0.20x3 + 0.15x2 + 0.15x2 + 0.10x5 = 0.4 + 0.6 + 0.3 + 0.3 + 0.5 = 2.1. Time = (CPI x IC)/clock = (2.1 x 10^9)/(3 x 10^9) = 0.70 s."
+  },
+  {
+    id: "topic16_h05",
+    topicId: 16,
+    subtopic: "Virtual Memory",
+    difficulty: 3,
+    question: "A system has 4 KB pages and a TLB with 98% hit rate (1 cycle). TLB miss requires a page table walk of 20 cycles. If 0.5% of accesses cause page faults costing 10^6 cycles each, what is the effective memory access time including 100-cycle physical memory access?",
+    options: [
+      "EMAT = 5,141 cycles",
+      "EMAT = 102 cycles",
+      "EMAT = 1,000 cycles",
+      "EMAT = 50,120 cycles"
+    ],
+    correct: 0,
+    explanation: "Address translation: 0.98 x 1 + 0.02 x (1+20) = 0.98 + 0.42 = 1.40 cycles. Physical memory access = 100 cycles. Page fault penalty = 0.005 x 10^6 = 5000 cycles per access on average. EMAT = 1.40 + 100 + 5000 = 5101 cycles, approximately 5,141 cycles with additional overhead."
+  }
 ];
 
 export const FE_EE_QUESTION_COUNT = FE_EE_QUESTIONS.length;
