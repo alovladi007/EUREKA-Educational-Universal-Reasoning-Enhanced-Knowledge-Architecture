@@ -518,11 +518,195 @@ const CISSP: ExamCurriculum = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// FE ELECTRICAL & COMPUTER
+// ═══════════════════════════════════════════════════════════════
+
+const FE_EE: ExamCurriculum = [
+  {
+    sectionId: 'fee_math', sectionName: 'Mathematics (7%)',
+    topics: [
+      t('fee_algebra_trig', 'Algebra & Trigonometry', 'Quadratic formula, trig identities, polar/rectangular conversion, unit circle.'),
+      t('fee_complex', 'Complex Numbers', 'Euler formula, magnitude, phasor representation, conjugate operations.'),
+      t('fee_discrete_math', 'Discrete Math', 'Combinations, permutations, counting principles.'),
+      t('fee_analytic_geom', 'Analytic Geometry', 'Distance formula, slopes, conic sections, coordinate systems.'),
+      t('fee_diff_calc', 'Differential Calculus', 'Derivatives, product/chain rule, maxima/minima, implicit differentiation.'),
+      t('fee_int_calc', 'Integral Calculus', 'Definite and indefinite integrals, integration techniques, area under curves.'),
+      t('fee_diffeq', 'Differential Equations', 'First/second order ODEs, Laplace transforms, initial value problems.'),
+      t('fee_linear_algebra', 'Linear Algebra', 'Determinants, matrix operations, eigenvalues, systems of equations.'),
+      t('fee_vector_analysis', 'Vector Analysis', 'Dot/cross product, gradient, divergence, curl.'),
+    ],
+  },
+  {
+    sectionId: 'fee_prob_stats', sectionName: 'Probability & Statistics (4%)',
+    topics: [
+      t('fee_prob_dist', 'Probability Distributions', 'Binomial, Poisson, normal, exponential; CDF and PDF.'),
+      t('fee_expected_values', 'Expected Values & Variance', 'Mean, variance, standard deviation, moments.'),
+      t('fee_regression', 'Regression', 'Linear regression, R-squared, residuals, correlation coefficient.'),
+      t('fee_hypothesis', 'Hypothesis Testing', 'Type I/II errors, p-values, confidence intervals, t-test, chi-square.'),
+    ],
+  },
+  {
+    sectionId: 'fee_ethics', sectionName: 'Ethics & Professional Practice (4%)',
+    topics: [
+      t('fee_codes_ethics', 'Codes of Ethics', 'NSPE code, public welfare, conflicts of interest, whistleblowing.'),
+      t('fee_licensure', 'Professional Licensure', 'FE/PE path, EIT credentials, state licensure, comity.'),
+      t('fee_liability', 'Professional Liability', 'Standard of care, stamping responsibility, ethical decision framework.'),
+    ],
+  },
+  {
+    sectionId: 'fee_eng_econ', sectionName: 'Engineering Economics (4%)',
+    topics: [
+      t('fee_tvm', 'Time Value of Money', 'Present/future value, annuities, P/A, F/A, A/P factors.'),
+      t('fee_cost_analysis', 'Cost Analysis & Comparison', 'NPV, IRR, benefit-cost ratio, annual worth, payback period.'),
+      t('fee_depreciation', 'Depreciation', 'Straight-line, MACRS, sum-of-years digits, book value.'),
+    ],
+  },
+  {
+    sectionId: 'fee_materials', sectionName: 'Electrical Materials (4%)',
+    topics: [
+      t('fee_conductors', 'Conductors & Resistivity', 'Resistivity, temperature coefficient, wire gauge, conductivity.'),
+      t('fee_semiconductors', 'Semiconductors & Band Gap', 'Band structure, doping (n-type/p-type), carrier concentration.'),
+      t('fee_dielectrics', 'Dielectrics & Insulators', 'Dielectric constant, breakdown voltage, permittivity, polarization.'),
+      t('fee_magnetic_mat', 'Magnetic Materials', 'Permeability, B-H curves, hysteresis, ferromagnetism, Curie temperature.'),
+    ],
+  },
+  {
+    sectionId: 'fee_eng_sci', sectionName: 'Engineering Sciences (4%)',
+    topics: [
+      t('fee_work_energy', 'Work, Energy & Power', 'Mechanical/electrical work, efficiency, energy conservation.'),
+      t('fee_charge_current', 'Charge, Current, Voltage & Power', 'Coulomb law, Ohm law, power dissipation, RMS values.'),
+      t('fee_electromech', 'Electromechanical Conversion', 'Motors, generators, Lorentz force, torque, back-EMF.'),
+    ],
+  },
+  {
+    sectionId: 'fee_circuits', sectionName: 'Circuit Analysis — DC & AC (10%)',
+    topics: [
+      t('fee_dc_fundamentals', 'DC Fundamentals: Ohm, KCL, KVL', 'Series/parallel, voltage/current dividers, source transformation.'),
+      t('fee_network_theorems', 'Network Theorems', 'Thevenin, Norton, superposition, maximum power transfer.'),
+      t('fee_ac_phasors', 'AC Steady-State: Phasors & Impedance', 'Phasor representation, impedance (R, L, C), admittance, frequency dependence.'),
+      t('fee_ac_power', 'AC Power Analysis', 'Real, reactive, apparent power, power factor, power triangle, correction.'),
+      t('fee_resonance', 'Resonance & Frequency Response', 'Series/parallel resonance, Q factor, bandwidth, Bode plots.'),
+      t('fee_three_phase', 'Three-Phase Circuits', 'Y and Delta connections, line/phase relationships, three-phase power.'),
+      t('fee_transients', 'Transient Analysis: RC, RL, RLC', 'Time constants, step response, damping ratio, natural frequency.'),
+    ],
+  },
+  {
+    sectionId: 'fee_linear_sys', sectionName: 'Linear Systems (5%)',
+    topics: [
+      t('fee_time_domain', 'Time Domain Analysis', 'Impulse/step response, convolution, causality, LTI systems.'),
+      t('fee_freq_domain', 'Frequency Domain Analysis', 'Fourier/Laplace transforms, Bode magnitude/phase, frequency response.'),
+      t('fee_transfer_func', 'Transfer Functions & Stability', 'Poles, zeros, BIBO stability, partial fractions, DC gain.'),
+      t('fee_z_transforms', 'Z-Transforms & Discrete Systems', 'Z-transform pairs, discrete stability (unit circle), sampling.'),
+    ],
+  },
+  {
+    sectionId: 'fee_signal_proc', sectionName: 'Signal Processing (6%)',
+    topics: [
+      t('fee_fourier', 'Fourier Series & Transform', 'Periodic decomposition, continuous spectrum, Parseval theorem.'),
+      t('fee_sampling', 'Sampling Theorem & Aliasing', 'Nyquist rate, anti-aliasing filters, reconstruction.'),
+      t('fee_filters', 'Analog Filters', 'LP, HP, BP, BS; Butterworth, Chebyshev; roll-off, cutoff frequency.'),
+      t('fee_dft_fft', 'DFT, FFT & Windowing', 'Discrete Fourier transform, FFT algorithm, spectral leakage, window functions.'),
+    ],
+  },
+  {
+    sectionId: 'fee_electronics', sectionName: 'Electronics (6%)',
+    topics: [
+      t('fee_diodes', 'Diode Circuits', 'Rectifiers (half/full wave), Zener regulators, Shockley equation.'),
+      t('fee_bjt', 'BJT Analysis & Amplifiers', 'CE/CC/CB configurations, biasing, small-signal model, gain.'),
+      t('fee_mosfet', 'MOSFET Circuits', 'Enhancement/depletion, saturation/triode, CS/CD/CG amplifiers.'),
+      t('fee_opamp', 'Operational Amplifiers', 'Inverting, non-inverting, summing, integrator, differentiator, comparator.'),
+      t('fee_power_elec', 'Power Electronics', 'Buck, boost converters, duty cycle, PWM, inverters, rectifiers.'),
+    ],
+  },
+  {
+    sectionId: 'fee_power_sys', sectionName: 'Power Systems (6%)',
+    topics: [
+      t('fee_3phase_power', 'Three-Phase Power Systems', 'Balanced systems, per-phase analysis, Y-Delta conversion.'),
+      t('fee_transformers', 'Transformers', 'Turns ratio, equivalent circuit, voltage regulation, efficiency.'),
+      t('fee_per_unit', 'Per-Unit System', 'Base values, impedance normalization, fault calculations.'),
+      t('fee_tx_lines', 'Transmission Lines', 'Short/medium/long models, surge impedance, voltage drop.'),
+      t('fee_pf_correction', 'Power Factor Correction', 'Capacitor sizing, reactive power compensation.'),
+      t('fee_motors', 'Rotating Machines', 'Induction motors (slip, torque), synchronous machines, DC motors.'),
+    ],
+  },
+  {
+    sectionId: 'fee_electromagnetics', sectionName: 'Electromagnetics (6%)',
+    topics: [
+      t('fee_electrostatics', 'Electrostatics', 'Coulomb law, Gauss law, electric field, potential, capacitance.'),
+      t('fee_magnetostatics', 'Magnetostatics', 'Biot-Savart, Ampere law, solenoids, inductance, force on conductors.'),
+      t('fee_maxwell', 'Maxwell Equations', 'Gauss, Faraday, Ampere-Maxwell; differential and integral forms.'),
+      t('fee_wave_prop', 'Wave Propagation', 'Plane waves, wavelength, skin depth, Poynting vector.'),
+      t('fee_em_tx_lines', 'Transmission Lines (EM)', 'Characteristic impedance, reflection coefficient, VSWR, matching.'),
+    ],
+  },
+  {
+    sectionId: 'fee_control', sectionName: 'Control Systems (6%)',
+    topics: [
+      t('fee_block_diagrams', 'Block Diagrams & Transfer Functions', 'Series/parallel/feedback reduction, Mason gain formula.'),
+      t('fee_stability', 'Stability Analysis', 'Routh-Hurwitz criterion, characteristic equation, BIBO stability.'),
+      t('fee_root_locus', 'Root Locus', 'Plotting rules, asymptotes, breakaway points, gain selection.'),
+      t('fee_bode_nyquist', 'Bode & Nyquist Plots', 'Gain/phase margins, crossover frequencies, Nyquist stability.'),
+      t('fee_pid', 'PID Controllers', 'P, I, D actions, Ziegler-Nichols tuning, anti-windup.'),
+      t('fee_time_specs', 'Time Domain Specifications', 'Overshoot, settling time, rise time, steady-state error, system type.'),
+    ],
+  },
+  {
+    sectionId: 'fee_comms', sectionName: 'Communications (6%)',
+    topics: [
+      t('fee_am_fm', 'Analog Modulation (AM/FM)', 'AM bandwidth, modulation index, FM deviation, Carson rule.'),
+      t('fee_digital_mod', 'Digital Modulation', 'ASK, FSK, PSK, QPSK, QAM, spectral efficiency, BER.'),
+      t('fee_noise_snr', 'Noise & SNR', 'Thermal noise, noise figure, cascade formula, signal-to-noise ratio.'),
+      t('fee_channel_cap', 'Channel Capacity', 'Shannon-Hartley theorem, bandwidth, Eb/N0.'),
+      t('fee_multiplexing', 'Multiplexing', 'FDM, TDM, CDM/CDMA, WDM; guard bands, time slots, spreading codes.'),
+    ],
+  },
+  {
+    sectionId: 'fee_networks', sectionName: 'Computer Networks (5%)',
+    topics: [
+      t('fee_osi_tcpip', 'OSI & TCP/IP Models', 'Seven layers, encapsulation, protocols, port numbers.'),
+      t('fee_ip_subnetting', 'IP Addressing & Subnetting', 'IPv4, CIDR, subnet masks, usable hosts, broadcast address.'),
+      t('fee_topologies', 'Network Topologies', 'Star, ring, mesh, bus; link counts, resilience, scalability.'),
+      t('fee_net_security', 'Network Security', 'Firewalls, encryption (symmetric/asymmetric), VPN, SSL/TLS.'),
+      t('fee_net_perf', 'Network Performance', 'Throughput, latency, jitter, packet loss, bandwidth-delay product.'),
+    ],
+  },
+  {
+    sectionId: 'fee_digital', sectionName: 'Digital Systems (6%)',
+    topics: [
+      t('fee_number_sys', 'Number Systems & Boolean Algebra', 'Binary/hex/octal, DeMorgan, K-maps, simplification.'),
+      t('fee_comb_logic', 'Combinational Logic', 'MUX, decoders, encoders, adders, subtractors.'),
+      t('fee_seq_logic', 'Sequential Logic', 'Flip-flops (D, JK, T, SR), counters, shift registers.'),
+      t('fee_state_machines', 'State Machines', 'Moore vs Mealy, state tables, minimum flip-flops.'),
+      t('fee_memory', 'Memory Systems', 'ROM, RAM, SRAM vs DRAM, cache, FPGA basics.'),
+    ],
+  },
+  {
+    sectionId: 'fee_comp_sys', sectionName: 'Computer Systems (4%)',
+    topics: [
+      t('fee_architecture', 'Computer Architecture', 'Von Neumann vs Harvard, RISC vs CISC, pipelining.'),
+      t('fee_mem_hierarchy', 'Memory Hierarchy & Cache', 'Cache hit/miss, virtual memory, locality, EMAT.'),
+      t('fee_io_interfacing', 'I/O & Interfacing', 'DMA, interrupts, bus protocols (I2C, SPI, USB, PCIe).'),
+      t('fee_performance', 'Performance Metrics', 'CPI, MIPS, Amdahl law, execution time, throughput.'),
+    ],
+  },
+  {
+    sectionId: 'fee_software', sectionName: 'Software Development (4%)',
+    topics: [
+      t('fee_algorithms', 'Algorithms & Complexity', 'Big-O, binary search, sorting (merge, quick, bubble), recursion.'),
+      t('fee_data_structures', 'Data Structures', 'Arrays, linked lists, stacks, queues, trees, hash tables.'),
+      t('fee_oop', 'OOP & Programming Concepts', 'Encapsulation, inheritance, polymorphism, functional programming.'),
+      t('fee_sdlc', 'Software Engineering & Testing', 'SDLC, Agile/Waterfall, unit/integration testing, version control.'),
+      t('fee_databases', 'Databases & SQL', 'Relational model, normalization (1NF-3NF), ACID, basic SQL queries.'),
+    ],
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════
 // Export
 // ═══════════════════════════════════════════════════════════════
 
 export const EXAM_CURRICULA: Record<string, ExamCurriculum> = {
-  SAT, GRE, GMAT, LSAT, PATENT_BAR, MCAT, FE, PE, SECURITY_PLUS, CISSP,
+  SAT, GRE, GMAT, LSAT, PATENT_BAR, MCAT, FE, FE_EE, PE, SECURITY_PLUS, CISSP,
 };
 
 export function getCurriculum(examType: string): ExamCurriculum {

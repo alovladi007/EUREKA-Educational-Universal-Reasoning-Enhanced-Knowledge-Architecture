@@ -22,6 +22,7 @@ import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
 import { getCISSPCourseContent, hasCISSPCourseContent, type TopicLesson } from '@/lib/cissp-course-data';
 import { getSecurityPlusCourseContent, hasSecurityPlusCourseContent } from '@/lib/security-plus-course-data';
 import { getPatentBarCourseContent, hasPatentBarCourseContent } from '@/lib/patent-bar-course-data';
+import { getFEEECourseContent, hasFEEECourseContent } from '@/lib/fe-ee-course-data';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
@@ -444,6 +445,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                 if (hasCISSPCourseContent(activeTopic.id)) return getCISSPCourseContent(activeTopic.id);
                 if (hasSecurityPlusCourseContent(activeTopic.id)) return getSecurityPlusCourseContent(activeTopic.id);
                 if (hasPatentBarCourseContent(activeTopic.id)) return getPatentBarCourseContent(activeTopic.id);
+                if (hasFEEECourseContent(activeTopic.id)) return getFEEECourseContent(activeTopic.id);
                 return null;
               })();
 
@@ -811,7 +813,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                   <div className="border-t border-gray-100 dark:border-gray-800">
                     {section.topics.map((topic, i) => {
                       const done = completedTopics.has(topic.id);
-                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id) || hasPatentBarCourseContent(topic.id);
+                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id) || hasPatentBarCourseContent(topic.id) || hasFEEECourseContent(topic.id);
                       return (
                         <div
                           key={topic.id}
