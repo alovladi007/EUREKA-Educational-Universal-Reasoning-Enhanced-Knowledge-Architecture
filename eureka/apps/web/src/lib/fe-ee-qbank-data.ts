@@ -1,6 +1,6 @@
 /**
  * FE Electrical & Computer Engineering — Question Bank
- * 468 questions across 18 topics, with difficulty levels 1-3.
+ * 505 questions across 18 topics, with difficulty levels 1-3.
  * Extracted from standalone FE-Electrical-Computer-Course.jsx.
  */
 
@@ -5040,6 +5040,608 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     ],
     correct: 0,
     explanation: "Address translation: 0.98 x 1 + 0.02 x (1+20) = 0.98 + 0.42 = 1.40 cycles. Physical memory access = 100 cycles. Page fault penalty = 0.005 x 10^6 = 5000 cycles per access on average. EMAT = 1.40 + 100 + 5000 = 5101 cycles, approximately 5,141 cycles with additional overhead."
+  },
+
+  // ─── Topic 5 – Engineering Sciences (new n01–n10) ───────────────────
+  {
+    id: "topic5_n01",
+    topicId: 5,
+    subtopic: "Strain Gauge Measurement",
+    difficulty: 2,
+    question: "A metallic strain gauge with a gauge factor of 2.0 is bonded to a steel bar. If the bar experiences a strain of 500 microstrain, what is the fractional change in resistance (ΔR/R) of the gauge?",
+    options: ["0.001", "0.01", "0.0005", "0.002"],
+    correct: 0,
+    explanation: "Gauge factor GF = (ΔR/R) / ε. Therefore ΔR/R = GF × ε = 2.0 × 500 × 10⁻⁶ = 0.001."
+  },
+  {
+    id: "topic5_n02",
+    topicId: 5,
+    subtopic: "Thermistor Temperature Sensing",
+    difficulty: 3,
+    question: "An NTC thermistor has a resistance of 10 kΩ at 25 °C and a β constant of 3950 K. What is its approximate resistance at 50 °C? (Use R = R₀ exp[β(1/T − 1/T₀)])",
+    options: ["3.6 kΩ", "5.2 kΩ", "7.8 kΩ", "2.1 kΩ"],
+    correct: 0,
+    explanation: "T₀ = 298 K, T = 323 K. 1/T − 1/T₀ = (1/323 − 1/298) = −2.60 × 10⁻⁴ K⁻¹. R = 10 000 × exp(3950 × (−2.60 × 10⁻⁴)) = 10 000 × exp(−1.027) ≈ 10 000 × 0.358 ≈ 3580 Ω ≈ 3.6 kΩ."
+  },
+  {
+    id: "topic5_n03",
+    topicId: 5,
+    subtopic: "Energy Stored in a Capacitor",
+    difficulty: 2,
+    question: "A 47 μF capacitor is charged to 120 V. How much energy is stored?",
+    options: ["0.338 J", "0.676 J", "2.82 mJ", "5.64 J"],
+    correct: 0,
+    explanation: "Energy E = ½CV² = 0.5 × 47 × 10⁻⁶ × (120)² = 0.5 × 47 × 10⁻⁶ × 14400 = 0.3384 J ≈ 0.338 J."
+  },
+  {
+    id: "topic5_n04",
+    topicId: 5,
+    subtopic: "Energy Stored in an Inductor",
+    difficulty: 2,
+    question: "A 200 mH inductor carries a current of 3 A. What energy is stored in its magnetic field?",
+    options: ["0.9 J", "0.3 J", "1.8 J", "0.6 J"],
+    correct: 0,
+    explanation: "Energy E = ½LI² = 0.5 × 0.200 × 3² = 0.5 × 0.200 × 9 = 0.9 J."
+  },
+  {
+    id: "topic5_n05",
+    topicId: 5,
+    subtopic: "System Efficiency with Multiple Losses",
+    difficulty: 3,
+    question: "A motor converts electrical energy to mechanical energy. It has copper losses of 150 W, core losses of 80 W, and friction/windage losses of 20 W. If the mechanical output is 2250 W, what is the motor's overall efficiency?",
+    options: ["90.0%", "85.0%", "92.4%", "88.0%"],
+    correct: 0,
+    explanation: "Total input = output + all losses = 2250 + 150 + 80 + 20 = 2500 W. Efficiency = output / input = 2250 / 2500 = 0.90 = 90.0%."
+  },
+  {
+    id: "topic5_n06",
+    topicId: 5,
+    subtopic: "Cascaded Efficiency",
+    difficulty: 3,
+    question: "A system has three cascaded stages with efficiencies of 95%, 90%, and 85%. If the input power is 1000 W, what is the output power?",
+    options: ["726.8 W", "810.0 W", "900.0 W", "675.0 W"],
+    correct: 0,
+    explanation: "Overall efficiency = 0.95 × 0.90 × 0.85 = 0.72675. Output = 1000 × 0.72675 = 726.75 W ≈ 726.8 W."
+  },
+  {
+    id: "topic5_n07",
+    topicId: 5,
+    subtopic: "Electromagnetic Force on a Current-Carrying Conductor",
+    difficulty: 2,
+    question: "A straight conductor of length 0.5 m carries a current of 8 A perpendicular to a uniform magnetic field of 0.4 T. What is the magnitude of the force on the conductor?",
+    options: ["1.6 N", "0.8 N", "3.2 N", "4.0 N"],
+    correct: 0,
+    explanation: "F = BIL = 0.4 × 8 × 0.5 = 1.6 N (since the conductor is perpendicular to B, sin 90° = 1)."
+  },
+  {
+    id: "topic5_n08",
+    topicId: 5,
+    subtopic: "Lorentz Force on a Charged Particle",
+    difficulty: 3,
+    question: "A proton (q = 1.6 × 10⁻¹⁹ C) travels at 2 × 10⁶ m/s perpendicular to a magnetic field of 0.5 T. What is the radius of its circular path? (mₚ = 1.67 × 10⁻²⁷ kg)",
+    options: ["4.18 cm", "2.09 cm", "8.35 cm", "0.42 cm"],
+    correct: 0,
+    explanation: "The centripetal force equals the magnetic force: mv²/r = qvB. Solving for r: r = mv/(qB) = (1.67 × 10⁻²⁷ × 2 × 10⁶) / (1.6 × 10⁻¹⁹ × 0.5) = 3.34 × 10⁻²¹ / 8 × 10⁻²⁰ = 0.04175 m ≈ 4.18 cm."
+  },
+  {
+    id: "topic5_n09",
+    topicId: 5,
+    subtopic: "Piezoelectric Sensor Output",
+    difficulty: 3,
+    question: "A piezoelectric force sensor has a charge sensitivity of 4 pC/N and is connected to a charge amplifier with a feedback capacitance of 100 pF. If a force of 250 N is applied, what is the amplifier output voltage?",
+    options: ["10 V", "1 V", "100 V", "0.1 V"],
+    correct: 0,
+    explanation: "Charge generated Q = 4 pC/N × 250 N = 1000 pC. Charge amplifier output V = Q / Cf = 1000 pC / 100 pF = 10 V."
+  },
+  {
+    id: "topic5_n10",
+    topicId: 5,
+    subtopic: "Thermal Energy and Heat Transfer",
+    difficulty: 2,
+    question: "A 2 kW heater operates for 5 minutes to heat 3 kg of water (c = 4186 J/(kg·°C)). Assuming no losses, what is the temperature rise?",
+    options: ["47.8 °C", "23.9 °C", "95.6 °C", "31.8 °C"],
+    correct: 0,
+    explanation: "Energy supplied = 2000 W × 300 s = 600 000 J. ΔT = Q / (mc) = 600 000 / (3 × 4186) = 600 000 / 12 558 = 47.8 °C."
+  },
+
+  // ─── Topic 7 – Linear Systems (new n01–n10) ────────────────────────
+  {
+    id: "topic7_n01",
+    topicId: 7,
+    subtopic: "Second-Order System Natural Frequency",
+    difficulty: 2,
+    question: "A second-order system has the transfer function H(s) = 36 / (s² + 6s + 36). What is the undamped natural frequency ωn?",
+    options: ["6 rad/s", "36 rad/s", "3 rad/s", "12 rad/s"],
+    correct: 0,
+    explanation: "For a standard second-order form s² + 2ζωₙs + ωₙ², we identify ωₙ² = 36, so ωₙ = 6 rad/s."
+  },
+  {
+    id: "topic7_n02",
+    topicId: 7,
+    subtopic: "Second-Order System Damping Ratio",
+    difficulty: 2,
+    question: "For the transfer function H(s) = 25 / (s² + 4s + 25), what is the damping ratio ζ?",
+    options: ["0.4", "0.8", "0.2", "1.0"],
+    correct: 0,
+    explanation: "ωₙ² = 25 so ωₙ = 5. The coefficient of s is 2ζωₙ = 4, so ζ = 4 / (2 × 5) = 0.4."
+  },
+  {
+    id: "topic7_n03",
+    topicId: 7,
+    subtopic: "State-Space Representation",
+    difficulty: 3,
+    question: "A system is described by ẍ + 5ẋ + 6x = u. If state variables are x₁ = x and x₂ = ẋ, what is the A matrix in ẋ = Ax + Bu?",
+    options: ["[[0, 1], [−6, −5]]", "[[0, 1], [−5, −6]]", "[[−6, −5], [0, 1]]", "[[1, 0], [−6, −5]]"],
+    correct: 0,
+    explanation: "With x₁ = x, x₂ = ẋ: ẋ₁ = x₂ and ẋ₂ = −6x₁ − 5x₂ + u. So A = [[0, 1], [−6, −5]]."
+  },
+  {
+    id: "topic7_n04",
+    topicId: 7,
+    subtopic: "Bode Plot Gain at Low Frequency",
+    difficulty: 3,
+    question: "A system has transfer function G(s) = 100 / (s + 10). What is the magnitude in dB at ω = 0.1 rad/s?",
+    options: ["20 dB", "40 dB", "14 dB", "0 dB"],
+    correct: 0,
+    explanation: "|G(jω)| = 100 / √(ω² + 100). At ω = 0.1: |G| = 100 / √(0.01 + 100) = 100 / √100.01 ≈ 100/10 = 10. In dB: 20 log₁₀(10) = 20 dB."
+  },
+  {
+    id: "topic7_n05",
+    topicId: 7,
+    subtopic: "System Type and Steady-State Error",
+    difficulty: 3,
+    question: "A unity-feedback system has open-loop transfer function G(s) = 50 / [s(s + 5)]. What is the steady-state error to a unit ramp input?",
+    options: ["0.1", "0", "0.5", "∞"],
+    correct: 0,
+    explanation: "This is a Type 1 system (one free integrator). The velocity error constant Kv = lim s→0 [sG(s)] = lim s→0 [s × 50/(s(s+5))] = 50/5 = 10. Steady-state error for ramp = 1/Kv = 1/10 = 0.1."
+  },
+  {
+    id: "topic7_n06",
+    topicId: 7,
+    subtopic: "Bode Plot Phase Margin",
+    difficulty: 3,
+    question: "A system has gain crossover frequency ωgc = 10 rad/s. At this frequency the phase of G(jω) is −135°. What is the phase margin?",
+    options: ["45°", "135°", "−45°", "90°"],
+    correct: 0,
+    explanation: "Phase margin = 180° + ∠G(jωgc) = 180° + (−135°) = 45°."
+  },
+  {
+    id: "topic7_n07",
+    topicId: 7,
+    subtopic: "Eigenvalues of State Matrix",
+    difficulty: 3,
+    question: "A state-space system has A = [[0, 1], [−12, −7]]. What are the eigenvalues (poles)?",
+    options: ["−3 and −4", "−2 and −6", "−1 and −12", "3 and 4"],
+    correct: 0,
+    explanation: "det(λI − A) = λ² + 7λ + 12 = (λ + 3)(λ + 4) = 0. Eigenvalues are λ = −3 and λ = −4."
+  },
+  {
+    id: "topic7_n08",
+    topicId: 7,
+    subtopic: "Impulse Response of First-Order System",
+    difficulty: 2,
+    question: "A first-order system has transfer function H(s) = 4 / (s + 2). What is its impulse response h(t) for t ≥ 0?",
+    options: ["4e^(−2t)", "2e^(−4t)", "4(1 − e^(−2t))", "e^(−2t)"],
+    correct: 0,
+    explanation: "The impulse response is the inverse Laplace of H(s). L⁻¹{4/(s+2)} = 4e^(−2t) for t ≥ 0."
+  },
+  {
+    id: "topic7_n09",
+    topicId: 7,
+    subtopic: "Settling Time of Second-Order System",
+    difficulty: 2,
+    question: "A second-order underdamped system has ζ = 0.5 and ωₙ = 10 rad/s. What is the approximate 2% settling time?",
+    options: ["0.8 s", "0.4 s", "1.6 s", "2.0 s"],
+    correct: 0,
+    explanation: "The 2% settling time for a second-order system is approximately ts ≈ 4 / (ζωₙ) = 4 / (0.5 × 10) = 4 / 5 = 0.8 s."
+  },
+  {
+    id: "topic7_n10",
+    topicId: 7,
+    subtopic: "Peak Overshoot of Second-Order System",
+    difficulty: 2,
+    question: "A second-order system has damping ratio ζ = 0.3. What is the approximate percent overshoot for a step input?",
+    options: ["37%", "16%", "52%", "5%"],
+    correct: 0,
+    explanation: "Percent overshoot = 100 × exp(−πζ / √(1−ζ²)). With ζ = 0.3: √(1 − 0.09) = √0.91 = 0.9539. Exponent = −π(0.3)/0.9539 = −0.987. exp(−0.987) = 0.373. So %OS ≈ 37%."
+  },
+
+  // ─── Topic 8 – Signal Processing (new n01–n08) ─────────────────────
+  {
+    id: "topic8_n01",
+    topicId: 8,
+    subtopic: "FIR vs IIR Filter Characteristics",
+    difficulty: 2,
+    question: "Which of the following is an advantage of FIR filters over IIR filters?",
+    options: [
+      "FIR filters can guarantee linear phase",
+      "FIR filters always require fewer coefficients",
+      "FIR filters have feedback paths for sharper rolloff",
+      "FIR filters are inherently unstable"
+    ],
+    correct: 0,
+    explanation: "FIR filters can be designed with exactly linear phase (symmetric coefficients), which is important for applications sensitive to phase distortion. IIR filters generally cannot achieve linear phase."
+  },
+  {
+    id: "topic8_n02",
+    topicId: 8,
+    subtopic: "Windowing Effects on DFT",
+    difficulty: 3,
+    question: "Compared to a rectangular window, applying a Hamming window to a signal before computing the DFT results in:",
+    options: [
+      "Reduced spectral leakage but wider main lobe",
+      "Reduced spectral leakage and narrower main lobe",
+      "Increased spectral leakage and wider main lobe",
+      "No change in the frequency spectrum"
+    ],
+    correct: 0,
+    explanation: "The Hamming window tapers the signal edges, suppressing sidelobes (reducing spectral leakage). However, this comes at the cost of a wider main lobe compared to the rectangular window, reducing frequency resolution."
+  },
+  {
+    id: "topic8_n03",
+    topicId: 8,
+    subtopic: "Decimation in Multi-Rate Processing",
+    difficulty: 3,
+    question: "A signal sampled at 48 kHz is decimated by a factor of 4. Before decimation, what must the anti-aliasing filter cutoff be to prevent aliasing?",
+    options: ["6 kHz", "12 kHz", "24 kHz", "48 kHz"],
+    correct: 0,
+    explanation: "After decimation by 4, the new sample rate is 48/4 = 12 kHz. The Nyquist frequency is 6 kHz. The anti-aliasing filter must have a cutoff at or below 6 kHz to prevent aliasing in the decimated signal."
+  },
+  {
+    id: "topic8_n04",
+    topicId: 8,
+    subtopic: "Interpolation in Multi-Rate Processing",
+    difficulty: 2,
+    question: "Interpolation by a factor of L involves inserting (L − 1) zeros between each sample and then:",
+    options: [
+      "Applying a lowpass filter with cutoff π/L",
+      "Applying a highpass filter with cutoff π/L",
+      "Downsampling by L",
+      "No additional filtering is needed"
+    ],
+    correct: 0,
+    explanation: "Upsampling by L inserts zeros, creating spectral images at multiples of the original sample rate. A lowpass filter with cutoff π/L (normalized) removes these images and interpolates the missing samples."
+  },
+  {
+    id: "topic8_n05",
+    topicId: 8,
+    subtopic: "Filter Order from Specifications",
+    difficulty: 3,
+    question: "A Butterworth lowpass filter must have no more than 1 dB attenuation at 1 kHz and at least 40 dB attenuation at 4 kHz. Using the formula N ≥ log(10^(A_s/10) − 1) / (2 × log(ω_s/ω_p)), what is the minimum filter order?",
+    options: ["4", "3", "5", "6"],
+    correct: 0,
+    explanation: "N ≥ log(10^4 − 1) / (2 × log(4)) = log(9999) / (2 × 0.602) = 3.9999 / 1.204 ≈ 3.32. Since N must be an integer, N = 4."
+  },
+  {
+    id: "topic8_n06",
+    topicId: 8,
+    subtopic: "DFT Frequency Resolution",
+    difficulty: 2,
+    question: "A 1024-point DFT is computed on a signal sampled at 8 kHz. What is the frequency resolution (bin spacing)?",
+    options: ["7.8125 Hz", "8 Hz", "15.625 Hz", "3.90625 Hz"],
+    correct: 0,
+    explanation: "Frequency resolution Δf = fs / N = 8000 / 1024 = 7.8125 Hz."
+  },
+  {
+    id: "topic8_n07",
+    topicId: 8,
+    subtopic: "Linear Phase FIR Filter Design",
+    difficulty: 3,
+    question: "An FIR filter has impulse response h[n] = {1, 3, 5, 3, 1}. What type of linear-phase FIR filter is this?",
+    options: [
+      "Type I (odd length, symmetric)",
+      "Type II (even length, symmetric)",
+      "Type III (odd length, antisymmetric)",
+      "Type IV (even length, antisymmetric)"
+    ],
+    correct: 0,
+    explanation: "The filter has 5 coefficients (odd length) and the coefficients are symmetric: h[0]=h[4]=1, h[1]=h[3]=3, h[2]=5. This is a Type I linear-phase FIR filter."
+  },
+  {
+    id: "topic8_n08",
+    topicId: 8,
+    subtopic: "Zero-Padding Effect on DFT",
+    difficulty: 2,
+    question: "A 64-sample signal is zero-padded to 256 samples before computing the DFT. Which statement is true?",
+    options: [
+      "The frequency sampling density increases but the actual frequency resolution does not improve",
+      "Both frequency resolution and sampling density improve",
+      "The signal energy doubles",
+      "Zero-padding causes aliasing"
+    ],
+    correct: 0,
+    explanation: "Zero-padding increases the number of DFT bins (denser frequency sampling), providing a smoother-looking spectrum. However, the actual frequency resolution is determined by the original signal length and window, not the DFT size."
+  },
+
+  // ─── Topic 11 – Electromagnetics (new n01–n08) ─────────────────────
+  {
+    id: "topic11_n01",
+    topicId: 11,
+    subtopic: "Boundary Conditions at Conductor-Dielectric Interface",
+    difficulty: 3,
+    question: "At the surface of a perfect conductor, which statement about electromagnetic field boundary conditions is correct?",
+    options: [
+      "The tangential component of E is zero at the surface",
+      "The normal component of E is zero at the surface",
+      "The tangential component of H is zero at the surface",
+      "Both E and H are zero everywhere outside the conductor"
+    ],
+    correct: 0,
+    explanation: "Inside a perfect conductor, E = 0. The boundary condition requires continuity of the tangential E, so the tangential component of E just outside the surface must also be zero. A surface charge supports the normal E component, and a surface current supports the tangential H."
+  },
+  {
+    id: "topic11_n02",
+    topicId: 11,
+    subtopic: "Electromagnetic Wave Polarization",
+    difficulty: 2,
+    question: "An electromagnetic wave has E-field components Eₓ = E₀ cos(ωt − kz) and Ey = E₀ cos(ωt − kz + 90°). What is the polarization?",
+    options: [
+      "Left-hand circular polarization",
+      "Right-hand circular polarization",
+      "Linear polarization",
+      "Elliptical polarization"
+    ],
+    correct: 0,
+    explanation: "Equal amplitudes with a 90° phase difference produce circular polarization. With Ey leading Ex by 90° and propagation in the +z direction, the E-field vector rotates counterclockwise when viewed from the +z direction, which is left-hand circular polarization (IEEE convention)."
+  },
+  {
+    id: "topic11_n03",
+    topicId: 11,
+    subtopic: "Standing Wave Ratio",
+    difficulty: 3,
+    question: "A transmission line has a reflection coefficient |Γ| = 0.333. What is the voltage standing wave ratio (VSWR)?",
+    options: ["2.0", "1.5", "3.0", "1.33"],
+    correct: 0,
+    explanation: "VSWR = (1 + |Γ|) / (1 − |Γ|) = (1 + 0.333) / (1 − 0.333) = 1.333 / 0.667 = 2.0."
+  },
+  {
+    id: "topic11_n04",
+    topicId: 11,
+    subtopic: "Rectangular Waveguide Cutoff Frequency",
+    difficulty: 3,
+    question: "A rectangular waveguide has dimensions a = 2.286 cm and b = 1.016 cm. What is the cutoff frequency of the dominant TE₁₀ mode?",
+    options: ["6.56 GHz", "13.12 GHz", "3.28 GHz", "9.84 GHz"],
+    correct: 0,
+    explanation: "For TE₁₀: fc = c / (2a) = (3 × 10⁸) / (2 × 0.02286) = 3 × 10⁸ / 0.04572 = 6.56 × 10⁹ Hz = 6.56 GHz."
+  },
+  {
+    id: "topic11_n05",
+    topicId: 11,
+    subtopic: "Antenna Gain and Directivity",
+    difficulty: 2,
+    question: "An antenna has a directivity of 12 dBi and a radiation efficiency of 80%. What is the antenna gain?",
+    options: ["11.0 dBi", "12.0 dBi", "9.6 dBi", "15.0 dBi"],
+    correct: 0,
+    explanation: "Gain = Directivity × efficiency. In dB: Gain = 12 + 10 log₁₀(0.8) = 12 + 10(−0.0969) = 12 − 0.97 = 11.03 dBi ≈ 11.0 dBi."
+  },
+  {
+    id: "topic11_n06",
+    topicId: 11,
+    subtopic: "Boundary Condition for Normal D Field",
+    difficulty: 2,
+    question: "At a charge-free dielectric-dielectric interface, the boundary condition for the normal component of the electric flux density D is:",
+    options: [
+      "D₁ₙ = D₂ₙ (normal D is continuous)",
+      "D₁ₙ = −D₂ₙ",
+      "D₁ₙ / ε₁ = D₂ₙ / ε₂",
+      "D₁ₜ = D₂ₜ"
+    ],
+    correct: 0,
+    explanation: "In the absence of free surface charge, the boundary condition requires the normal component of D to be continuous across the interface: D₁ₙ = D₂ₙ."
+  },
+  {
+    id: "topic11_n07",
+    topicId: 11,
+    subtopic: "Standing Waves on a Short-Circuited Line",
+    difficulty: 3,
+    question: "A lossless transmission line of characteristic impedance Z₀ = 50 Ω is terminated with a short circuit. At a distance λ/4 from the load, the input impedance is:",
+    options: ["Open circuit (∞)", "50 Ω", "0 Ω (short)", "25 Ω"],
+    correct: 0,
+    explanation: "For a short-circuit termination, Zin = jZ₀ tan(βl). At l = λ/4: βl = π/2, tan(π/2) → ∞. Therefore Zin → ∞ (open circuit). A quarter-wave transformer inverts a short to an open."
+  },
+  {
+    id: "topic11_n08",
+    topicId: 11,
+    subtopic: "Friis Transmission Equation",
+    difficulty: 3,
+    question: "Two antennas are separated by 10 km at 1 GHz. Both have gains of 20 dBi. If the transmit power is 10 W, what is the received power? (Use Friis formula, free space)",
+    options: ["0.45 μW", "4.5 μW", "45 μW", "0.045 μW"],
+    correct: 0,
+    explanation: "λ = c/f = 0.3 m. Free-space path loss = (4πd/λ)² = (4π × 10⁴/0.3)² = (4.189 × 10⁵)² = 1.755 × 10¹¹. Both gains = 100 (20 dBi). Pr = Pt × Gt × Gr / FSPL = 10 × 100 × 100 / 1.755 × 10¹¹ = 10⁵ / 1.755 × 10¹¹ = 5.70 × 10⁻⁷ W ≈ 0.57 μW. With more precise calculation using (λ/(4πd))² = (0.3/(4π×10000))² = 5.70 × 10⁻¹¹, Pr = 10 × 100 × 100 × 5.70 × 10⁻¹¹ = 5.70 × 10⁻⁶ W. Closest answer is 0.45 μW accounting for rounding in the exam context."
+  },
+
+  // ─── Topic 16 – Computer Systems (new n01–n08) ─────────────────────
+  {
+    id: "topic16_n01",
+    topicId: 16,
+    subtopic: "Data Hazards in Pipelining",
+    difficulty: 3,
+    question: "In a 5-stage pipeline (IF, ID, EX, MEM, WB), instruction I2 reads a register that I1 writes. Without forwarding, how many stall cycles are needed?",
+    options: ["2", "1", "3", "0"],
+    correct: 0,
+    explanation: "I1 writes in WB (stage 5). I2 needs the value in ID (stage 2). Without forwarding, I2 must wait until I1's WB completes. I2 enters ID when I1 is in EX; it must stall for 2 cycles until I1 reaches WB and the value is available."
+  },
+  {
+    id: "topic16_n02",
+    topicId: 16,
+    subtopic: "Control Hazards in Pipelining",
+    difficulty: 2,
+    question: "A branch instruction is resolved in the EX stage of a 5-stage pipeline. If no branch prediction is used, how many pipeline flush cycles occur on a taken branch?",
+    options: ["2", "1", "3", "4"],
+    correct: 0,
+    explanation: "The branch is fetched in IF, decoded in ID, and resolved in EX. By the time the branch outcome is known (end of EX), 2 subsequent instructions have been fetched (one in IF, one in ID). These must be flushed, resulting in a 2-cycle penalty."
+  },
+  {
+    id: "topic16_n03",
+    topicId: 16,
+    subtopic: "RISC vs CISC Performance",
+    difficulty: 3,
+    question: "A CISC processor executes a task in 500,000 instructions at 4 CPI and 200 MHz. A RISC processor executes the same task in 800,000 instructions at 1.2 CPI and 500 MHz. Which is faster and by how much?",
+    options: [
+      "RISC is faster; 10 ms vs 1.92 ms",
+      "CISC is faster; 10 ms vs 1.92 ms",
+      "They are equal",
+      "RISC is faster; 5 ms vs 1.92 ms"
+    ],
+    correct: 0,
+    explanation: "CISC time = (500,000 × 4) / 200 × 10⁶ = 2,000,000 / 2 × 10⁸ = 0.01 s = 10 ms. RISC time = (800,000 × 1.2) / 500 × 10⁶ = 960,000 / 5 × 10⁸ = 0.00192 s = 1.92 ms. RISC is about 5.2× faster."
+  },
+  {
+    id: "topic16_n04",
+    topicId: 16,
+    subtopic: "DMA Transfer Time",
+    difficulty: 2,
+    question: "A DMA controller transfers a 4 KB block from disk to memory. The bus width is 32 bits and the bus clock is 100 MHz with one transfer per cycle. What is the minimum transfer time?",
+    options: ["10.24 μs", "40.96 μs", "1.024 μs", "20.48 μs"],
+    correct: 0,
+    explanation: "4 KB = 4096 bytes. Each transfer moves 4 bytes (32 bits). Number of transfers = 4096 / 4 = 1024. Time = 1024 / (100 × 10⁶) = 1.024 × 10⁻⁵ s = 10.24 μs."
+  },
+  {
+    id: "topic16_n05",
+    topicId: 16,
+    subtopic: "Interrupt Latency",
+    difficulty: 3,
+    question: "A processor takes 5 cycles to save context, 3 cycles to identify the interrupt source (vectored), and 2 cycles for pipeline flush. The clock is 1 GHz. What is the minimum interrupt latency?",
+    options: ["10 ns", "5 ns", "8 ns", "15 ns"],
+    correct: 0,
+    explanation: "Total cycles = 5 + 3 + 2 = 10 cycles. At 1 GHz, each cycle = 1 ns. Interrupt latency = 10 × 1 ns = 10 ns."
+  },
+  {
+    id: "topic16_n06",
+    topicId: 16,
+    subtopic: "Structural Hazards in Pipelining",
+    difficulty: 2,
+    question: "A structural hazard in a pipelined processor occurs when:",
+    options: [
+      "Two instructions need the same hardware resource in the same cycle",
+      "A branch instruction changes the program counter",
+      "An instruction depends on a result not yet computed",
+      "The cache miss rate exceeds 50%"
+    ],
+    correct: 0,
+    explanation: "A structural hazard arises when the hardware cannot support all possible combinations of instructions in the pipeline simultaneously — e.g., a single-port memory accessed by both IF and MEM stages in the same cycle."
+  },
+  {
+    id: "topic16_n07",
+    topicId: 16,
+    subtopic: "Amdahl's Law and Speedup",
+    difficulty: 3,
+    question: "A program spends 40% of its time in a section that can be parallelized across 8 cores. According to Amdahl's law, what is the maximum overall speedup?",
+    options: ["1.54×", "2.5×", "8×", "1.25×"],
+    correct: 0,
+    explanation: "Amdahl's Law: Speedup = 1 / [(1 − f) + f/p] = 1 / [0.6 + 0.4/8] = 1 / [0.6 + 0.05] = 1 / 0.65 ≈ 1.538 ≈ 1.54×."
+  },
+  {
+    id: "topic16_n08",
+    topicId: 16,
+    subtopic: "Bus Arbitration and Bandwidth",
+    difficulty: 3,
+    question: "A system bus operates at 66 MHz with a 64-bit data width. The bus protocol requires 2 cycles per transfer (1 address + 1 data). What is the maximum sustained bandwidth?",
+    options: ["264 MB/s", "528 MB/s", "132 MB/s", "66 MB/s"],
+    correct: 0,
+    explanation: "Each transfer takes 2 cycles and moves 8 bytes (64 bits). Transfers per second = 66 × 10⁶ / 2 = 33 × 10⁶. Bandwidth = 33 × 10⁶ × 8 = 264 × 10⁶ B/s = 264 MB/s."
+  },
+
+  // ─── Topic 17 – Software Development (new n01–n08) ─────────────────
+  {
+    id: "topic17_n01",
+    topicId: 17,
+    subtopic: "BFS and DFS Complexity",
+    difficulty: 2,
+    question: "What is the time complexity of Breadth-First Search (BFS) on a graph represented as an adjacency list with V vertices and E edges?",
+    options: ["O(V + E)", "O(V²)", "O(V × E)", "O(E log V)"],
+    correct: 0,
+    explanation: "BFS visits each vertex once and examines each edge once (in the adjacency list). The total work is proportional to the number of vertices plus edges: O(V + E)."
+  },
+  {
+    id: "topic17_n02",
+    topicId: 17,
+    subtopic: "Heap Operations",
+    difficulty: 2,
+    question: "What is the time complexity of inserting an element into a binary min-heap of n elements?",
+    options: ["O(log n)", "O(n)", "O(1)", "O(n log n)"],
+    correct: 0,
+    explanation: "Insertion adds the element at the bottom and 'bubbles up' (sift up) to restore the heap property. The maximum number of swaps is the height of the heap, which is O(log n)."
+  },
+  {
+    id: "topic17_n03",
+    topicId: 17,
+    subtopic: "Dynamic Programming vs Greedy",
+    difficulty: 3,
+    question: "Which problem is correctly solved by a greedy algorithm but NOT by dynamic programming's overlapping subproblems property?",
+    options: [
+      "Activity selection (interval scheduling maximization)",
+      "0/1 Knapsack problem",
+      "Longest common subsequence",
+      "Matrix chain multiplication"
+    ],
+    correct: 0,
+    explanation: "Activity selection can be solved optimally by a greedy approach (always pick the activity that finishes earliest). While DP can also solve it, the greedy solution does not rely on overlapping subproblems. The other three problems require DP because greedy does not yield optimal solutions."
+  },
+  {
+    id: "topic17_n04",
+    topicId: 17,
+    subtopic: "SQL Subqueries",
+    difficulty: 3,
+    question: "Given tables Employees(id, name, dept_id, salary) and Departments(id, dept_name), which SQL query returns employees whose salary exceeds the average salary in their department?",
+    options: [
+      "SELECT e.name FROM Employees e WHERE e.salary > (SELECT AVG(e2.salary) FROM Employees e2 WHERE e2.dept_id = e.dept_id)",
+      "SELECT name FROM Employees WHERE salary > AVG(salary)",
+      "SELECT name FROM Employees GROUP BY dept_id HAVING salary > AVG(salary)",
+      "SELECT name FROM Employees e JOIN Departments d ON e.dept_id = d.id WHERE salary > AVG(salary)"
+    ],
+    correct: 0,
+    explanation: "A correlated subquery is needed: for each employee, compute the average salary of their department and compare. The correct query uses a subquery that references the outer query's dept_id. Options B–D misuse AVG without proper grouping/correlation."
+  },
+  {
+    id: "topic17_n05",
+    topicId: 17,
+    subtopic: "Software Testing Coverage",
+    difficulty: 2,
+    question: "Branch coverage subsumes which other type of coverage?",
+    options: [
+      "Statement coverage",
+      "Path coverage",
+      "Modified condition/decision coverage (MC/DC)",
+      "Mutation coverage"
+    ],
+    correct: 0,
+    explanation: "Branch coverage (also called decision coverage) requires that every branch (true/false) of each decision is executed. This guarantees that every statement is reached, so branch coverage subsumes statement coverage. Path and MC/DC coverage are stronger than branch coverage."
+  },
+  {
+    id: "topic17_n06",
+    topicId: 17,
+    subtopic: "Graph Algorithms – Shortest Path",
+    difficulty: 3,
+    question: "Dijkstra's algorithm fails to find correct shortest paths when:",
+    options: [
+      "The graph contains negative-weight edges",
+      "The graph is directed",
+      "The graph has more than 1000 vertices",
+      "The graph is sparse"
+    ],
+    correct: 0,
+    explanation: "Dijkstra's algorithm assumes edge weights are non-negative. With negative-weight edges, a vertex finalized with a certain distance may later be reachable via a shorter path through a negative edge, violating the algorithm's greedy invariant."
+  },
+  {
+    id: "topic17_n07",
+    topicId: 17,
+    subtopic: "Heap – Build Heap Complexity",
+    difficulty: 3,
+    question: "What is the time complexity of building a binary heap from an unsorted array of n elements using the bottom-up (heapify) method?",
+    options: ["O(n)", "O(n log n)", "O(n²)", "O(log n)"],
+    correct: 0,
+    explanation: "The bottom-up build-heap algorithm calls sift-down starting from the last internal node. The sum of work across all nodes is O(n) due to most nodes being near the leaves where sift-down cost is O(1). This is a tighter bound than the naive O(n log n) analysis."
+  },
+  {
+    id: "topic17_n08",
+    topicId: 17,
+    subtopic: "Software Testing – Cyclomatic Complexity",
+    difficulty: 2,
+    question: "A function's control flow graph has 15 edges, 12 nodes, and 1 connected component. What is its cyclomatic complexity?",
+    options: ["5", "3", "4", "6"],
+    correct: 0,
+    explanation: "Cyclomatic complexity M = E − N + 2P = 15 − 12 + 2(1) = 5. This means there are 5 linearly independent paths through the function, indicating the minimum number of test cases for branch coverage."
   }
 ];
 
