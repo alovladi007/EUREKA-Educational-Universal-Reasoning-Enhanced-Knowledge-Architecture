@@ -106,25 +106,6 @@ export default function ExamPage() {
 
       {isPatentBar && <PatentBarCohortPanel />}
 
-      {isFEEE && (
-        <Card className="p-4 bg-blue-50/80 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="font-semibold text-sm">FE Electrical &amp; Computer Full Course</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Complete exam simulator with 435 questions, 5:20 timer, formula sheets, topic-based practice, and analytics dashboard.
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Link href="/dashboard/test-prep/fe-ee-course">
-                <Button size="sm" variant="default" className="gap-1.5">
-                  <Zap className="h-3.5 w-3.5" /> Full Exam Simulator
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </Card>
-      )}
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 bg-muted p-1 rounded-lg w-fit">
