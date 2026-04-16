@@ -1,7 +1,7 @@
 /**
  * FE Electrical & Computer Engineering — Course Content
- * 18 topics with detailed study content, key points, and formulas.
- * Every curriculum topic ID has real, substantial content from the source material.
+ * 87 curriculum topics with detailed study content, key points, and formulas.
+ * Every curriculum topic ID has real, substantial, CISSP-quality content.
  */
 
 import type { QuizQuestion } from '@/components/test-prep/cissp/LessonQuiz';
@@ -26,705 +26,2922 @@ export interface TopicLesson {
 
 export const FE_EE_COURSE: Record<string, TopicLesson> = {
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 0 — MATHEMATICS  (9 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+/* ══════════════════════════════════════════════════════════════════
+ * TOPIC 0 — MATHEMATICS  (9 curriculum IDs)  ·  7–11 %
+ * ══════════════════════════════════════════════════════════════════ */
 
-  fee_algebra_trig: {
-    topicId: 'fee_algebra_trig',
-    title: 'Algebra & Trigonometry',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_algebra_trig_main',
-      title: 'Algebra & Trigonometry',
-      content: `Algebra and trigonometry are fundamental to solving engineering equations. Quadratic equations appear frequently in circuit analysis and control systems. The quadratic formula x = (-b ± √(b²-4ac))/(2a) solves any equation of the form ax²+bx+c=0. Trigonometric identities are crucial for AC circuit analysis where sinusoidal steady-state behavior dominates. Key identities include sin²θ + cos²θ = 1, sin(A±B) = sinA·cosB ± cosA·sinB, and cos(A±B) = cosA·cosB ∓ sinA·sinB. The relationship between rectangular and polar forms — x = r·cosθ, y = r·sinθ — allows conversion between Cartesian and polar coordinates, essential for phasor analysis in AC circuits. On the FE exam, expect problems requiring you to manipulate algebraic expressions, solve systems of linear equations, and convert between trigonometric forms. Memorize the unit circle values for common angles (0°, 30°, 45°, 60°, 90°) as these appear repeatedly in problems.`,
-      examTip: 'Key formulas:\nx = (-b ± √(b²-4ac))/(2a)\nsin²θ + cos²θ = 1\nx = r·cosθ\ny = r·sinθ\nr = √(x²+y²)',
-    }],
-    keyTakeaways: [
-      'Quadratic formula solves ax²+bx+c=0; discriminant b²-4ac determines real/complex roots',
-      'sin²θ + cos²θ = 1 is the most important trigonometric identity',
-      'Rectangular to polar: r = √(x²+y²), θ = arctan(y/x); know how to work in both forms',
-      'Unit circle values are worth memorizing for speed on the exam',
-    ],
-  },
+fee_algebra_trig: {
+  topicId: 'fee_algebra_trig',
+  title: 'Algebra & Trigonometry',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Algebra and trigonometry form the computational bedrock for every FE Electrical exam topic. Quadratic equations, trigonometric identities, and polar-rectangular conversions appear repeatedly in circuit analysis, signal processing, and control systems.',
+  sections: [
+    {
+      id: 'at-quadratic-systems',
+      title: '1. Quadratic Equations and Systems of Equations',
+      content: `## 1.1 The Quadratic Formula
 
-  fee_complex: {
-    topicId: 'fee_complex',
-    title: 'Complex Numbers',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_complex_main',
-      title: 'Complex Numbers',
-      content: `Complex numbers are indispensable for AC circuit analysis. A complex number has the form a + jb where a is the real part, b is the imaginary part, and j = √(-1). Euler's formula e^(jθ) = cosθ + j·sinθ is the bridge between rectangular and polar forms. The magnitude of a complex number is |z| = √(a²+b²) and the angle is θ = arctan(b/a), keeping track of the correct quadrant. Complex arithmetic follows standard rules: addition is component-wise, multiplication requires using j² = -1, and division uses conjugate multiplication. The complex conjugate z* = a - jb is essential for impedance calculations and power factor analysis. On the FE exam, you'll frequently convert between rectangular form (R + jX) and polar form (|Z|∠θ) for impedance calculations. Practice with phasor representation of sinusoidal signals: v(t) = Vm·cos(ωt+φ) corresponds to phasor V = Vm∠φ.`,
-      examTip: 'Key formulas:\ne^(jθ) = cosθ + j·sinθ\nz = a + jb\n|z| = √(a²+b²)\nθ = arctan(b/a)\nz* = a - jb',
-    }],
-    keyTakeaways: [
-      "Euler's formula: e^(jθ) = cosθ + j·sinθ connects exponential, rectangular, and polar forms",
-      'Magnitude |z| = √(a²+b²); angle θ = arctan(b/a) with quadrant consideration',
-      'Conjugate multiplication for division: (a+jb)/(c+jd) = [(a+jb)(c-jd)]/[(c+jd)(c-jd)]',
-      'Phasor representation simplifies AC circuit analysis; always identify magnitude and phase angle',
-    ],
-  },
+The **quadratic formula** solves any equation of the form **ax² + bx + c = 0**:
 
-  fee_discrete_math: {
-    topicId: 'fee_discrete_math',
-    title: 'Discrete Mathematics',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_discrete_math_main',
-      title: 'Discrete Mathematics',
-      content: `Discrete mathematics deals with countable, distinct structures rather than continuous quantities. Sets, combinatorics, and logic form the backbone of digital systems and computer engineering. A set is a collection of distinct objects; operations include union (A ∪ B), intersection (A ∩ B), complement (A'), and difference (A - B). De Morgan's laws for sets state (A ∪ B)' = A' ∩ B' and (A ∩ B)' = A' ∪ B', directly analogous to Boolean algebra in digital circuits. Combinatorics counts arrangements: permutations P(n,r) = n!/(n-r)! count ordered selections, while combinations C(n,r) = n!/[r!(n-r)!] count unordered selections. The binomial theorem expands (a+b)^n = Σ C(n,k)·a^(n-k)·b^k. Propositional logic uses AND (∧), OR (∨), NOT (¬), implication (→), and biconditional (↔). A truth table exhaustively lists all input combinations and their outputs. Logical equivalences like contrapositive, De Morgan's laws, and distribution simplify complex expressions. Graph theory models networks: vertices (nodes) connected by edges; degree of a vertex counts incident edges. Euler's formula for planar graphs V - E + F = 2 relates vertices, edges, and faces. On the FE exam, expect problems on counting (permutations/combinations), set operations, Boolean logic, and basic graph properties. These concepts underpin digital systems, probability, and algorithm analysis.`,
-      examTip: 'Key formulas:\nP(n,r) = n!/(n-r)!\nC(n,r) = n!/[r!(n-r)!]\nDe Morgan: (A ∪ B)\' = A\' ∩ B\'\n(A ∩ B)\' = A\' ∪ B\'',
-    }],
-    keyTakeaways: [
-      'Permutations P(n,r) count ordered arrangements; combinations C(n,r) count unordered selections',
-      "De Morgan's laws for sets mirror Boolean algebra: (A ∪ B)' = A' ∩ B'",
-      'Truth tables verify logical equivalences; contrapositive of p→q is ¬q→¬p (logically equivalent)',
-      'Binomial theorem: (a+b)^n = Σ C(n,k)·a^(n-k)·b^k is useful in probability and series expansion',
-    ],
-  },
+**x = (-b ± sqrt(b² - 4ac)) / (2a)**
 
-  fee_analytic_geom: {
-    topicId: 'fee_analytic_geom',
-    title: 'Analytic Geometry',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_analytic_geom_main',
-      title: 'Analytic Geometry',
-      content: `Analytic geometry combines algebra and geometry to study curves, surfaces, and spatial relationships using coordinate systems. The distance between two points (x₁,y₁) and (x₂,y₂) is d = √[(x₂-x₁)² + (y₂-y₁)²]. The midpoint is ((x₁+x₂)/2, (y₁+y₂)/2). A line has slope m = (y₂-y₁)/(x₂-x₁) with point-slope form y - y₁ = m(x - x₁) and slope-intercept form y = mx + b. Two lines are parallel if slopes are equal (m₁ = m₂), perpendicular if m₁·m₂ = -1. Conic sections arise from slicing a cone: circle x² + y² = r², ellipse x²/a² + y²/b² = 1, parabola y = ax² + bx + c, and hyperbola x²/a² - y²/b² = 1. Each has characteristic properties: the circle has constant radius, the ellipse has two foci where the sum of distances to any point on the curve is constant, the parabola has a single focus and directrix, and the hyperbola has two branches with the difference of distances to foci being constant. In three dimensions, the distance formula extends to d = √[(x₂-x₁)² + (y₂-y₁)² + (z₂-z₁)²]. Plane equations have the form ax + by + cz = d, where (a,b,c) is the normal vector. Polar coordinates (r,θ) relate to Cartesian via x = r·cosθ, y = r·sinθ. Cylindrical coordinates (r,θ,z) and spherical coordinates (r,θ,φ) are used in electromagnetics for symmetry exploitation. On the FE exam, expect problems on distances, slopes, conic sections, and coordinate transformations — particularly polar-to-rectangular conversions needed for phasor analysis.`,
-      examTip: 'Key formulas:\nd = √[(x₂-x₁)² + (y₂-y₁)²]\ny - y₁ = m(x - x₁)\nCircle: x² + y² = r²\nEllipse: x²/a² + y²/b² = 1',
-    }],
-    keyTakeaways: [
-      'Distance formula d = √[(Δx)² + (Δy)²]; extends to 3D with (Δz)² term',
-      'Parallel lines have equal slopes; perpendicular lines satisfy m₁·m₂ = -1',
-      'Conic sections (circle, ellipse, parabola, hyperbola) each have characteristic geometric properties',
-      'Polar/cylindrical/spherical coordinates exploit symmetry in EM problems; know conversion formulas',
-    ],
-  },
+The **discriminant** D = b² - 4ac determines root type:
 
-  fee_diff_calc: {
-    topicId: 'fee_diff_calc',
-    title: 'Differential Calculus',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_diff_calc_main',
-      title: 'Differential Calculus',
-      content: `Calculus is essential for understanding rates of change in electrical systems. Differentiation measures how quantities change with respect to variables — in circuit analysis, dv/dt represents voltage change rate, which relates to capacitor and inductor behavior. Key derivatives include d/dx(x^n) = n·x^(n-1), d/dx(e^x) = e^x, d/dx(ln(x)) = 1/x, d/dx(sin(x)) = cos(x), and d/dx(cos(x)) = -sin(x). The product rule (uv)' = u'v + uv' and chain rule dy/dx = (dy/du)(du/dx) are frequently needed for complex expressions. Limits are foundational: lim(x→a) f(x) defines continuity and derivatives. L'Hopital's rule resolves indeterminate forms (0/0 or ∞/∞) by differentiating numerator and denominator. Partial derivatives extend differentiation to multivariable functions: ∂f/∂x treats other variables as constants. The gradient ∇f = (∂f/∂x)i + (∂f/∂y)j + (∂f/∂z)k gives the direction of steepest increase. Taylor series f(x) = f(a) + f'(a)(x-a) + f''(a)(x-a)²/2! + ... approximates functions near a point; linearization uses just the first two terms. On the FE exam, you'll use derivatives to find maxima/minima (set f'(x) = 0, check f''(x) sign), compute rates of change in circuit quantities like i_C = C·dv_C/dt and v_L = L·di_L/dt, and approximate functions via Taylor series.`,
-      examTip: 'Key formulas:\nd/dx(x^n) = n·x^(n-1)\nd/dx(e^x) = e^x\nd/dx(sin(x)) = cos(x)\nProduct rule: (uv)\' = u\'v + uv\'\nChain rule: dy/dx = (dy/du)(du/dx)',
-    }],
-    keyTakeaways: [
-      'Derivative df/dx represents instantaneous rate of change; essential for inductor (L·di/dt) and capacitor (C·dv/dt)',
-      "Product rule: (uv)' = u'v + uv'; chain rule: dy/dx = (dy/du)·(du/dx)",
-      "L'Hopital's rule resolves 0/0 or ∞/∞ by differentiating top and bottom",
-      'Taylor series linearization f(x) ≈ f(a) + f\'(a)(x-a) approximates near a point',
-    ],
-  },
+| Discriminant | Root Type | Engineering Significance |
+|---|---|---|
+| D > 0 | Two distinct real roots | Two separate operating points |
+| D = 0 | One repeated real root | Critically damped system |
+| D < 0 | Two complex conjugate roots | Oscillatory behavior (underdamped) |
 
-  fee_int_calc: {
-    topicId: 'fee_int_calc',
-    title: 'Integral Calculus',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_int_calc_main',
-      title: 'Integral Calculus',
-      content: `Integration is the reverse process of differentiation and computes accumulated quantities. Fundamental integrals: ∫x^n dx = x^(n+1)/(n+1) + C (n ≠ -1), ∫e^x dx = e^x + C, ∫1/x dx = ln|x| + C, ∫sin(x) dx = -cos(x) + C, ∫cos(x) dx = sin(x) + C. Integration by parts: ∫u dv = uv - ∫v du is useful for products of polynomials and exponentials or trigonometric functions. Integration by substitution (u-substitution) simplifies integrands by changing variables. The Fundamental Theorem of Calculus connects differentiation and integration: d/dx[∫ₐˣ f(t)dt] = f(x), and ∫ₐᵇ f(x)dx = F(b) - F(a) where F is any antiderivative of f. Definite integrals compute areas, volumes, and accumulated quantities. In electrical engineering, integration finds energy stored in capacitors W = ∫₀ᵛ Cv dv = ½CV² and inductors W = ∫₀ⁱ Li di = ½LI², total charge Q = ∫I dt, and average power P_avg = (1/T)∫₀ᵀ p(t)dt over one period. Improper integrals (infinite limits) appear in Laplace and Fourier transforms: F(s) = ∫₀^∞ f(t)e^(-st) dt. Multiple integrals (double, triple) compute volumes and surface integrals in electromagnetics. On the FE exam, you'll evaluate definite and indefinite integrals, apply integration to find energy and charge in circuits, and use integral formulas from reference tables efficiently.`,
-      examTip: 'Key formulas:\n∫x^n dx = x^(n+1)/(n+1) + C\n∫e^x dx = e^x + C\n∫u dv = uv - ∫v du\nW = ½CV²\nW = ½LI²',
-    }],
-    keyTakeaways: [
-      'Common integrals: ∫x^n dx = x^(n+1)/(n+1) + C, ∫e^x dx = e^x + C',
-      'Integration by parts: ∫u dv = uv - ∫v du is useful for products of polynomials and exponentials',
-      'Definite integrals compute energy in capacitors (½CV²) and inductors (½LI²)',
-      'Average power P_avg = (1/T)∫p(t)dt; Laplace transform uses improper integral ∫₀^∞ f(t)e^(-st)dt',
-    ],
-  },
+### Systems of Linear Equations
 
-  fee_diffeq: {
-    topicId: 'fee_diffeq',
-    title: 'Differential Equations',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_diffeq_main',
-      title: 'Differential Equations',
-      content: `Differential equations model dynamic behavior in electrical systems — circuit transients, control system responses, and signal processing all rely on differential equation solutions. A first-order linear ODE has the form dy/dt + P(t)·y = Q(t). For constant coefficients, dy/dt + ay = b with initial condition y(0) = y₀, the solution is y(t) = b/a + (y₀ - b/a)·e^(-at). This describes RC and RL circuit charging/discharging. A second-order linear ODE is d²y/dt² + 2ζωₙ·dy/dt + ωₙ²·y = ωₙ²·u(t), which describes RLC circuits and control systems. The solution depends on the damping ratio ζ: underdamped (ζ < 1) oscillates, critically damped (ζ = 1) returns fastest without overshoot, and overdamped (ζ > 1) decays slowly. On the FE exam, you'll solve first-order transient equations for RC/RL circuits and identify second-order system characteristics. The Laplace transform converts differential equations to algebraic equations — a major time-saver during the exam.`,
-      examTip: 'Key formulas:\ndy/dt + ay = b → y(t) = b/a + (y₀ - b/a)·e^(-at)\nτ = RC (capacitor)\nτ = L/R (inductor)',
-    }],
-    keyTakeaways: [
-      'First-order response: y(t) = steady-state + (initial_value - steady-state)·e^(-t/τ) where τ is time constant',
-      'Time constant τ = RC for capacitors, τ = L/R for inductors; represents 63% change from initial to steady-state',
-      'Damping ratio ζ = c/(2√(km)) determines underdamped (oscillatory) vs overdamped (smooth) response',
-      'Use Laplace transforms to convert ODEs to algebraic equations; solve, then inverse transform back to time domain',
-    ],
-  },
+Many circuit problems reduce to systems of linear equations. For two equations in two unknowns:
+- **Substitution**: solve one equation for one variable, substitute into the other
+- **Elimination**: multiply equations to cancel one variable
+- **Cramer's rule**: use determinants — x = det(Ax)/det(A), y = det(Ay)/det(A)
 
-  fee_linear_algebra: {
-    topicId: 'fee_linear_algebra',
-    title: 'Linear Algebra & Matrix Operations',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_linear_algebra_main',
-      title: 'Linear Algebra & Matrix Operations',
-      content: `Linear algebra provides tools for solving systems of equations and analyzing circuits with multiple nodes/loops. A system of linear equations can be written as Ax = b where A is the coefficient matrix, x is the unknown vector, and b is the constant vector. Matrix operations follow specific rules: addition is element-wise, multiplication is row-by-column (AB ≠ BA in general), and the inverse A⁻¹ satisfies A·A⁻¹ = I (identity matrix). Determinants and Cramer's rule provide solutions: for 2×2 matrices, det(A) = ad - bc. Eigenvalues and eigenvectors satisfy Ax = λx, where λ is the eigenvalue and x is the eigenvector; these are crucial for stability analysis in control systems. On the FE exam, you might solve nodal equations (KCL applied at each node) or mesh equations (KVL applied to each loop) using matrix methods. Gaussian elimination is faster than hand-calculating inverses for large systems. Understand that eigenvalues with negative real parts ensure system stability.`,
-      examTip: 'Key formulas:\ndet([a b; c d]) = ad - bc\nAx = b → x = A⁻¹b\nAx = λx (eigenvalue equation)',
-    }],
-    keyTakeaways: [
-      'Matrix form Ax = b solves n linear equations with n unknowns; use Gaussian elimination or matrix inversion',
-      'Determinant for 2×2: det([a b; c d]) = ad - bc; non-zero determinant means matrix is invertible',
-      'Eigenvalue equation Ax = λx; for control systems, all eigenvalues must have negative real parts for stability',
-      'Matrix multiplication: (AB)ij = Σk Aik·Bkj; associative but not commutative',
-    ],
-  },
+For the FE exam, Cramer's rule is fast for 2x2 systems:
+- Given a1·x + b1·y = c1 and a2·x + b2·y = c2
+- **x = (c1·b2 - c2·b1) / (a1·b2 - a2·b1)**
+- **y = (a1·c2 - a2·c1) / (a1·b2 - a2·b1)**`,
+      examTip: 'The discriminant b²-4ac tells you everything on the FE exam: positive means two real roots, zero means repeated (critically damped in circuits), negative means complex conjugate pair (oscillatory). Memorize this mapping — it saves time on second-order circuit and control system problems.',
+    },
+    {
+      id: 'at-trig-identities',
+      title: '2. Trigonometric Identities and Applications',
+      content: `## 2.1 Fundamental Identities
 
-  fee_vector_analysis: {
-    topicId: 'fee_vector_analysis',
-    title: 'Vector Analysis & Laplace Transform',
-    domainWeight: 'Mathematics · 7–11%',
-    overview: 'Mathematics forms the foundation for all engineering calculations on the FE exam. This topic covers algebra, trigonometry, calculus, differential equations, and linear algebra — the essential tools for solving complex engineering problems.',
-    sections: [{
-      id: 'fee_vector_analysis_main',
-      title: 'Vector Analysis & Laplace Transform',
-      content: `The Laplace transform converts time-domain functions into frequency-domain functions, simplifying differential equation solving. The definition is F(s) = ∫₀^∞ f(t)·e^(-st) dt where s = σ + jω. Key transform pairs: L{1} = 1/s, L{t} = 1/s², L{e^(-at)} = 1/(s+a), L{sin(ωt)} = ω/(s²+ω²), L{cos(ωt)} = s/(s²+ω²). The final value theorem states lim(t→∞) f(t) = lim(s→0) s·F(s), allowing you to find steady-state values without inverting the entire transform. Vector analysis involves gradient (∇f = ∂f/∂x i + ∂f/∂y j + ∂f/∂z k), divergence (∇·F = ∂Fx/∂x + ∂Fy/∂y + ∂Fz/∂z), curl (∇×F), and the dot/cross product. On the FE exam, Laplace transforms appear in control systems and circuit analysis. Vector operations appear in electromagnetics problems involving electric/magnetic fields.`,
-      examTip: 'Key formulas:\nF(s) = ∫₀^∞ f(t)·e^(-st) dt\nL{sin(ωt)} = ω/(s²+ω²)\nL{cos(ωt)} = s/(s²+ω²)\n∇f = ∂f/∂x i + ∂f/∂y j',
-    }],
-    keyTakeaways: [
-      'Laplace transform converts differential equations to algebraic equations in s-domain; final value theorem avoids inverse transform',
-      "Key pairs: L{t^n} = n!/s^(n+1), L{e^(-at)·f(t)} = F(s+a), L{f'(t)} = s·F(s) - f(0)",
-      'Gradient ∇f gives direction of steepest increase; divergence ∇·F measures outflow; curl ∇×F measures rotation',
-      'Dot product A·B = |A||B|cosθ (scalar); cross product |A×B| = |A||B|sinθ (vector perpendicular to both)',
-    ],
-  },
+The **Pythagorean identity** is the most important:
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 1 — PROBABILITY AND STATISTICS  (4 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+**sin²θ + cos²θ = 1**
 
-  fee_prob_dist: {
-    topicId: 'fee_prob_dist',
-    title: 'Probability Distributions',
-    domainWeight: 'Probability and Statistics · 4–6%',
-    overview: 'Probability and statistics enable engineers to make decisions under uncertainty, analyze measurement data, and design robust systems. This topic covers probability distributions, statistical measures, hypothesis testing, and regression.',
-    sections: [{
-      id: 'fee_prob_dist_main',
-      title: 'Probability Fundamentals & Distributions',
-      content: `Probability quantifies the likelihood of events. Basic rules: P(A) ranges from 0 to 1, P(A ∪ B) = P(A) + P(B) - P(A ∩ B) (union), P(A ∩ B) = P(A)·P(B|A) (intersection/conditional). Bayes' theorem P(A|B) = P(B|A)·P(A)/P(B) is fundamental for updating probabilities with new information. Common distributions include the binomial (n trials, each with probability p of success): P(X=k) = C(n,k)·p^k·(1-p)^(n-k), the Poisson (rare events with rate λ): P(X=k) = (λ^k·e^(-λ))/k!, and the normal distribution with PDF f(x) = (1/(σ√(2π)))·e^(-(x-μ)²/(2σ²)). The standard normal uses Z = (X-μ)/σ and is tabulated for quick lookup. On the FE exam, you'll identify which distribution fits a scenario, calculate probabilities, and use the cumulative distribution function (CDF) for ranges. The exponential distribution f(t) = λ·e^(-λt) models failure rates and waiting times in reliability analysis.`,
-      examTip: 'Key formulas:\nP(A ∪ B) = P(A) + P(B) - P(A ∩ B)\nBayes: P(A|B) = P(B|A)·P(A)/P(B)\nBinomial: P(X=k) = C(n,k)·p^k·(1-p)^(n-k)\nNormal: Z = (X-μ)/σ',
-    }],
-    keyTakeaways: [
-      "Bayes' theorem: P(A|B) = P(B|A)·P(A)/P(B); use when you want posterior probability given evidence",
-      'Binomial: discrete, n trials, fixed p; use for pass/fail scenarios',
-      'Poisson: rare events with rate λ; approximates binomial when n is large and p is small',
-      'Normal distribution: symmetric, defined by mean μ and std dev σ; use standard normal tables for Z = (X-μ)/σ',
-      'Exponential: models time between events; memoryless property P(T > t+s | T > s) = P(T > t)',
-    ],
-  },
+Derived identities:
+- **tan²θ + 1 = sec²θ**
+- **1 + cot²θ = csc²θ**
 
-  fee_expected_values: {
-    topicId: 'fee_expected_values',
-    title: 'Expected Values & Statistical Measures',
-    domainWeight: 'Probability and Statistics · 4–6%',
-    overview: 'Probability and statistics enable engineers to make decisions under uncertainty, analyze measurement data, and design robust systems.',
-    sections: [{
-      id: 'fee_expected_values_main',
-      title: 'Expected Values & Statistical Measures',
-      content: `Statistical measures summarize data: the mean (average) is μ = ΣX/n, the variance measures spread around the mean σ² = Σ(X-μ)²/n, and standard deviation σ = √(σ²). The median divides data in half and is robust to outliers. Expected value E[X] = Σ x·P(x) for discrete variables or ∫x·f(x)dx for continuous. Variance Var(X) = E[X²] - (E[X])². For combinations: E[aX+bY] = aE[X]+bE[Y] always; Var(aX+bY) = a²Var(X)+b²Var(Y) if X,Y independent. Covariance measures how two variables move together: Cov(X,Y) = E[(X-μₓ)(Y-μᵧ)], and correlation coefficient r = Cov(X,Y)/(σₓ·σᵧ) ranges from -1 (perfect negative) to +1 (perfect positive). For specific distributions: binomial has E[X] = np, Var(X) = np(1-p); Poisson has E[X] = Var(X) = λ; normal is fully defined by μ and σ. The law of large numbers states that sample mean converges to population mean as sample size increases. The central limit theorem says the distribution of sample means approaches normal regardless of population distribution as n→∞. On the FE exam, you'll compute expected values, variances, and correlations from datasets, and apply the properties of linearity of expectation.`,
-      examTip: 'Key formulas:\nμ = ΣX/n\nσ² = Σ(X-μ)²/n\nE[aX+bY] = aE[X]+bE[Y]\nVar(X) = E[X²] - (E[X])²',
-    }],
-    keyTakeaways: [
-      'Mean μ = ΣX/n; variance σ² = Σ(X-μ)²/n; std dev σ = √(σ²)',
-      'Expected value is linear: E[aX+bY] = aE[X]+bE[Y]; variance adds only for independent variables',
-      'Binomial: E[X] = np, Var = np(1-p); Poisson: E[X] = Var = λ',
-      'Central limit theorem: sample means → normal distribution as n→∞, enabling confidence intervals',
-    ],
-  },
+### Angle Addition Formulas
 
-  fee_regression: {
-    topicId: 'fee_regression',
-    title: 'Regression & Curve Fitting',
-    domainWeight: 'Probability and Statistics · 4–6%',
-    overview: 'Probability and statistics enable engineers to make decisions under uncertainty, analyze measurement data, and design robust systems.',
-    sections: [{
-      id: 'fee_regression_main',
-      title: 'Regression & Curve Fitting',
-      content: `Linear regression fits a line y = a + bx to data: the slope b = r·(σᵧ/σₓ) and intercept a = μᵧ - b·μₓ. The coefficient of determination R² = r² shows how much variance in y is explained by x (0 ≤ R² ≤ 1). Correlation coefficient r = Cov(X,Y)/(σₓ·σᵧ) ranges from -1 (perfect negative) to +1 (perfect positive). The least squares method minimizes the sum of squared residuals Σ(yi - ŷi)² to find the best-fit parameters. For polynomial regression y = a₀ + a₁x + a₂x² + ..., more parameters capture curvature but risk overfitting. The residual is the difference between observed and predicted values; normally distributed residuals with constant variance indicate a good fit. Multiple regression extends to y = b₀ + b₁x₁ + b₂x₂ + ... for multiple predictors. On the FE exam, you'll calculate regression coefficients from datasets, interpret correlation, and predict values using regression. Understand that correlation does not imply causation. Confidence intervals quantify uncertainty: for a normal distribution, the 95% CI is approximately μ ± 1.96σ.`,
-      examTip: 'Key formulas:\nb = r·(σᵧ/σₓ)\na = μᵧ - b·μₓ\nR² = r²\nr = Cov(X,Y)/(σₓ·σᵧ)',
-    }],
-    keyTakeaways: [
-      'Regression line y = a + bx where b = r·σᵧ/σₓ and a = μᵧ - b·μₓ',
-      'R² = r²; shows fraction of variance in y explained by x; closer to 1 is better fit',
-      'Correlation coefficient r ∈ [-1, +1]; r=0 means no linear relationship; r=±1 means perfect linear fit',
-      '95% confidence interval ≈ μ ± 1.96σ for normal distribution',
-    ],
-  },
+These appear constantly in AC circuit analysis where you combine sinusoidal signals:
 
-  fee_hypothesis: {
-    topicId: 'fee_hypothesis',
-    title: 'Hypothesis Testing',
-    domainWeight: 'Probability and Statistics · 4–6%',
-    overview: 'Probability and statistics enable engineers to make decisions under uncertainty, analyze measurement data, and design robust systems.',
-    sections: [{
-      id: 'fee_hypothesis_main',
-      title: 'Hypothesis Testing & Confidence Intervals',
-      content: `Hypothesis testing determines whether data supports a claim (null hypothesis H₀) or suggests an alternative (H₁). The process: state H₀ and H₁, choose a significance level α (typically 0.05), calculate a test statistic, find the p-value, and reject H₀ if p < α. A Type I error (false positive) rejects a true H₀ with probability α; a Type II error (false negative) fails to reject false H₀ with probability β. The t-test compares sample mean to a known value or between two samples: t = (x̄ - μ₀)/(s/√n) where s is sample standard deviation. The chi-square test examines categorical data: χ² = Σ(O-E)²/E where O is observed and E is expected frequency. Confidence intervals estimate population parameters: the 100(1-α)% CI for a mean is x̄ ± t(α/2,n-1)·s/√n, where the t-value comes from t-tables. On the FE exam, you'll interpret p-values, construct CIs, and identify appropriate tests. Remember that a 95% CI does NOT mean a 95% probability the parameter is in the interval — rather, 95% of such CIs constructed from repeated sampling would contain the true parameter.`,
-      examTip: 'Key formulas:\nt = (x̄ - μ₀)/(s/√n)\nχ² = Σ(O-E)²/E\nCI: x̄ ± t(α/2,n-1)·s/√n\nStandard error: SE = s/√n',
-    }],
-    keyTakeaways: [
-      'H₀ is the null hypothesis (no effect); H₁ is the alternative hypothesis; reject H₀ if p-value < α',
-      'Type I error: reject true H₀ (probability α); Type II error: fail to reject false H₀ (probability β)',
-      't-test: t = (x̄ - μ₀)/(s/√n) compares sample mean to reference; use t-table for critical value',
-      'Chi-square test: χ² = Σ(O-E)²/E tests categorical/goodness-of-fit; compare to chi-square table',
-      'Confidence interval: x̄ ± t·s/√n gives range around sample mean with specified confidence level',
-    ],
-  },
+- **sin(A ± B) = sinA·cosB ± cosA·sinB**
+- **cos(A ± B) = cosA·cosB ∓ sinA·sinB**
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 2 — ETHICS AND PROFESSIONAL PRACTICE  (3 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+### Double-Angle Formulas
 
-  fee_codes_ethics: {
-    topicId: 'fee_codes_ethics',
-    title: 'NCEES Model Rules & NSPE Code of Ethics',
-    domainWeight: 'Ethics and Professional Practice · 3–5%',
-    overview: 'Ethics and professional practice ensure engineers maintain integrity, prioritize public welfare, and act responsibly. The FE exam tests knowledge of the NCEES Model Rules and NSPE Code of Ethics through scenario-based questions.',
-    sections: [{
-      id: 'fee_codes_ethics_main',
-      title: 'NCEES Model Rules & NSPE Code of Ethics',
-      content: `The NCEES Model Rules and NSPE Code of Ethics establish the fundamental obligations of professional engineers. These codes prioritize public safety, health, and welfare above all other considerations — a principle that must guide every engineering decision. Engineers must maintain competence in their field, disclose conflicts of interest transparently, and refuse assignments outside their expertise. The codes explicitly address whistle-blowing, protecting engineers who report safety violations or unethical conduct from retaliation. Conflicts of interest arise when personal gain might compromise professional judgment; engineers must disclose these openly to clients and employers. When a project conflicts with public safety, the engineer's primary obligation is to the public, even if this creates professional difficulties. Real exam scenarios often present dilemmas where profit, schedule, or client pressure conflicts with safety — the correct answer always prioritizes public welfare.
+- **sin(2A) = 2·sinA·cosA**
+- **cos(2A) = cos²A - sin²A = 2cos²A - 1 = 1 - 2sin²A**
 
-Conflicts of interest extend beyond direct financial compensation to include family relationships, prior business dealings, and competing clients. An engineer must not accept work where they cannot maintain objectivity or where a family member might benefit unfairly. Whistle-blowing protection acknowledges that engineers may need to report illegal or dangerous practices to authorities or the public; the codes protect them from dismissal or retaliation for such reports. However, engineers should typically work through proper channels first before going public. The codes also address professional competence: accepting work beyond one's knowledge is unethical, even if financially attractive. Continuing professional development is not just encouraged but ethically required to maintain current knowledge in a rapidly evolving field.`,
-    }],
-    keyTakeaways: [
-      'Public safety and welfare are always the highest priority, superseding profit and client preferences',
-      'Engineers must disclose conflicts of interest and refuse assignments outside their expertise',
-      'Whistle-blowing is protected; reporting safety violations or illegal conduct is ethical and legally protected',
-      'Continuing education and maintaining professional competence are ethical obligations, not optional',
-    ],
-  },
+### Power-Reducing Formulas
 
-  fee_licensure: {
-    topicId: 'fee_licensure',
-    title: 'Professional Licensure & FE Exam Role',
-    domainWeight: 'Ethics and Professional Practice · 3–5%',
-    overview: 'Ethics and professional practice ensure engineers maintain integrity, prioritize public welfare, and act responsibly.',
-    sections: [{
-      id: 'fee_licensure_main',
-      title: 'Professional Licensure & FE Exam Role',
-      content: `The Professional Engineering (PE) license represents a commitment to public protection through demonstrated competence and adherence to ethical standards. The FE (Fundamentals of Engineering) exam is the first step in licensure, typically completed early in an engineer's career. After passing the FE exam and gaining required work experience (typically 4 years under a PE), engineers become eligible to take the PE exam. Different states have slightly different requirements, but all require FE passage as a prerequisite. Comity refers to the reciprocal recognition of PE licenses across state boundaries; an engineer licensed in one state can often become licensed in another without retesting, though some states may require additional forms or documentation. The FE exam itself is not a PE license but rather proof of fundamental competence in engineering principles. Many employers and positions now require FE passage even for positions that don't require PE licensure, making it a critical career credential.
+Used in power calculations for AC circuits:
+- **sin²θ = (1 - cos2θ) / 2**
+- **cos²θ = (1 + cos2θ) / 2**
 
-Continuing education (CE) requirements vary by state and jurisdiction but are essential for maintaining a PE license. Most states require 15-36 professional development hours annually, ensuring engineers remain current with evolving codes, technologies, and best practices. Failure to meet CE requirements can result in license suspension or revocation. The FE exam covers breadth across many engineering disciplines, preparing engineers for entry-level practice and future specialization. Understanding the role of the FE exam — as a qualification check, not a license itself — helps explain why exam breadth covers so many topics.`,
-    }],
-    keyTakeaways: [
-      'FE exam passage is prerequisite for PE licensure but is not itself a PE license; a PE license requires additional work experience and examination',
-      'Comity allows PE licensure reciprocity across states with generally minimal additional requirements',
-      'Continuing education requirements (typically 15-36 hours annually) are mandatory for maintaining PE licensure',
-      'State boards of engineering may have specific rules; always verify with your state board',
-    ],
-  },
+## 2.2 Rectangular-Polar Conversion
 
-  fee_liability: {
-    topicId: 'fee_liability',
-    title: 'Ethical Decision Making & Public Welfare Priority',
-    domainWeight: 'Ethics and Professional Practice · 3–5%',
-    overview: 'Ethics and professional practice ensure engineers maintain integrity, prioritize public welfare, and act responsibly.',
-    sections: [{
-      id: 'fee_liability_main',
-      title: 'Ethical Decision Making & Public Welfare Priority',
-      content: `Ethical decision-making in engineering requires systematic frameworks that balance competing interests while maintaining public safety as the paramount concern. When facing an ethical dilemma, engineers should first identify stakeholders (public, client, employer, colleagues, environment), then evaluate options against professional codes and legal requirements. The framework typically involves: (1) understanding the facts completely, (2) identifying the ethical issue and relevant principles, (3) considering alternatives without eliminating options prematurely, and (4) deciding based on code provisions and public welfare priority. Many exam questions present scenarios with incomplete information — the ethical approach requires seeking clarification before proceeding, not making assumptions. When public safety directly conflicts with client wishes or profit margins, engineers must prioritize safety even at personal professional cost.
+Every phasor problem on the FE exam requires converting between forms:
 
-Common ethical dilemmas in engineering practice include: cost-cutting that compromises quality, pressure to deliver unsafe designs, misrepresentation of qualifications, and conflicts between accurate reporting and job security. In each case, the professional codes provide guidance: never compromise safety, maintain honesty in communications, and act in the public interest. Documentation is critical — maintain records of your concerns, recommendations, and actions to protect yourself professionally. Professional liability arises when an engineer's work causes harm; the PE stamp on documents certifies personal responsibility. Liability insurance protects against claims but does not excuse negligent practice. Engineers who discover defects in delivered work must disclose and correct them. Recognize that ethical practice sometimes costs money or career advancement in the short term, but protects your professional reputation and the public long-term.`,
-    }],
-    keyTakeaways: [
-      'Systematic frameworks for ethical decisions: identify stakeholders, understand facts, evaluate against codes, prioritize public welfare',
-      'Public safety always supersedes profit, schedule, and client preferences — this is not negotiable',
-      'When conflicts arise, use proper escalation channels before external reporting, unless public safety is imminent',
-      'Maintain documentation of ethical concerns and your recommendations to establish a clear professional record',
-    ],
-  },
+| Conversion | Formula |
+|---|---|
+| Rectangular to Polar | r = sqrt(x² + y²), θ = arctan(y/x) |
+| Polar to Rectangular | x = r·cosθ, y = r·sinθ |
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 3 — ENGINEERING ECONOMICS  (3 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+### Unit Circle Values
 
-  fee_tvm: {
-    topicId: 'fee_tvm',
-    title: 'Time Value of Money & Financial Factors',
-    domainWeight: 'Engineering Economics · 3–5%',
-    overview: 'Engineering economics evaluates project costs and benefits, comparing alternatives and justifying investments. The FE exam tests time value of money, present/future value calculations, rate of return analysis, benefit-cost ratios, and depreciation.',
-    sections: [{
-      id: 'fee_tvm_main',
-      title: 'Time Value of Money & Financial Factors',
-      content: `The time value of money (TVM) principle states that a dollar today is worth more than a dollar in the future due to earning potential and inflation. This fundamental concept underlies all engineering economic analysis. The six standard cash flow factors enable conversion between different payment patterns and time points. Present Worth (PW) converts all future cash flows to today's value using the discount rate (interest rate). Future Worth (FW) converts cash flows to a single future time point. Annual Worth (AW) calculates equivalent uniform annual payments representing the same economic value. The factors use the interest rate i and number of periods n: F/P (future given present) multiplies present by (1+i)^n; P/F is the reciprocal. P/A (present worth of annuity) and A/P (annuity given present) convert between lump sums and uniform annual payments. A/F (annuity given future sum) and F/A (future worth of annuity) work with future values.
+| Angle | sin | cos | tan |
+|---|---|---|---|
+| 0° | 0 | 1 | 0 |
+| 30° | 1/2 | sqrt(3)/2 | 1/sqrt(3) |
+| 45° | sqrt(2)/2 | sqrt(2)/2 | 1 |
+| 60° | sqrt(3)/2 | 1/2 | sqrt(3) |
+| 90° | 1 | 0 | undefined |`,
+      examTip: 'When converting rectangular to polar, ALWAYS check the quadrant. arctan(y/x) gives the correct angle only in Q1 and Q4. For Q2 and Q3, add 180 degrees. The FE reference handbook has these formulas, but knowing them cold saves critical minutes.',
+      importantNote: 'The angle addition formulas are the basis for phasor addition in AC circuits. When you add two sinusoids of the same frequency, you are implicitly using these identities. Converting to phasors first is usually faster than expanding trig identities by hand.',
+    },
+  ],
+  keyTakeaways: [
+    'Quadratic formula solves ax²+bx+c=0; discriminant b²-4ac determines real vs. complex roots.',
+    'sin²θ + cos²θ = 1 is the most frequently used trigonometric identity on the FE exam.',
+    'Angle addition formulas are essential for combining sinusoidal signals in AC analysis.',
+    'Rectangular to polar: r = sqrt(x²+y²), θ = arctan(y/x) with quadrant correction.',
+    'Memorize unit circle values for 0, 30, 45, 60, 90 degrees — they appear repeatedly.',
+  ],
+},
 
-Exam problems require identifying the correct factor and applying it accurately. For example, if you save $1000 annually for 10 years at 5% interest, use F/A to find the future worth: FW = $1000 x [(1.05)^10 - 1]/0.05. Present worth analysis is most common in engineering: compare projects by computing PW of all costs and benefits; the project with highest PW is best. When comparing projects of different lengths, annualized cost or a common study period equalizes comparison. Discount rate selection is critical — typically the company's minimum acceptable rate of return (MARR) or the cost of capital. Nominal interest rate r (compounded m times per year) converts to effective annual rate (EAR) = (1 + r/m)^m - 1. Continuous compounding uses F = P·e^(rt).`,
-      examTip: 'Key formulas:\nF = P(1+i)^n\nP = F/(1+i)^n\n(P/A, i, n) = [(1+i)^n - 1]/[i(1+i)^n]\nEAR = (1 + r/m)^m - 1',
-    }],
-    keyTakeaways: [
-      'Six standard factors convert between present, future, and annual values; understand their relationships',
-      'Present worth (PW) is the most common analysis method: positive PW means the investment is justified',
-      'Annual worth (AW) is useful for comparing projects of different lengths',
-      'Discount rate (MARR) selection significantly impacts results; typically use company cost of capital',
-    ],
-  },
+fee_complex: {
+  topicId: 'fee_complex',
+  title: 'Complex Numbers',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Complex numbers are indispensable for AC circuit analysis. Phasor representation, impedance calculations, and power factor analysis all rely on fluent manipulation of complex arithmetic, Euler formula, and rectangular-polar conversions.',
+  sections: [
+    {
+      id: 'cx-forms-euler',
+      title: '1. Complex Number Forms and Euler Formula',
+      content: `## 1.1 Rectangular and Polar Forms
 
-  fee_cost_analysis: {
-    topicId: 'fee_cost_analysis',
-    title: 'Cost Analysis, NPV, IRR & Decision Making',
-    domainWeight: 'Engineering Economics · 3–5%',
-    overview: 'Engineering economics evaluates project costs and benefits, comparing alternatives and justifying investments.',
-    sections: [{
-      id: 'fee_cost_analysis_main',
-      title: 'Rate of Return & Investment Decision Making',
-      content: `Internal Rate of Return (IRR) is the discount rate that makes present worth equal zero; equivalently, it's the rate at which an investment breaks even. Projects with IRR exceeding the MARR are economically justified. IRR is calculated by solving PW(i) = 0, which typically requires iteration or financial calculators since it's a polynomial equation. Net Present Value (NPV) calculates the absolute value added: NPV = sum of all PW(benefits) - PW(costs). Positive NPV means the project is worth undertaking. Unlike IRR, NPV is directly comparable across different project sizes.
+A complex number has two equivalent representations:
 
-Benefit-Cost Ratio (B/C) divides present worth of benefits by present worth of costs; ratios greater than 1.0 indicate justified investments. This method is popular in public sector projects where benefits and costs are distinct. Incremental analysis compares two projects by evaluating the difference between them; if Project A has higher IRR but Project B has higher NPV, incremental analysis resolves the apparent contradiction. Breakeven analysis finds the value (price, volume, interest rate) where profit equals zero or two alternatives have equal cost. Decision rules: use NPV when comparing projects of different sizes or life spans; use IRR when comparing similar projects; use B/C for public sector analysis.`,
-      examTip: 'Key formulas:\nNPV = Σ CF_t / (1+i)^t\nIRR: solve PW(i) = 0\nB/C = PW(Benefits) / PW(Costs)\nAW = NPV x (A/P, i, n)',
-    }],
-    keyTakeaways: [
-      'IRR is the break-even discount rate (where NPV = 0); projects are justified if IRR > MARR',
-      'NPV directly measures value added in dollars; positive NPV indicates a justified investment',
-      'Benefit-Cost Ratio (B/C > 1) justifies projects and is standard in public sector analysis',
-      'Breakeven analysis finds critical values where projects transition from profitable to unprofitable',
-    ],
-  },
+- **Rectangular form**: z = a + jb (where j = sqrt(-1) in EE convention)
+- **Polar form**: z = r∠θ = r·e^(jθ)
 
-  fee_depreciation: {
-    topicId: 'fee_depreciation',
-    title: 'Depreciation Methods & Book Value',
-    domainWeight: 'Engineering Economics · 3–5%',
-    overview: 'Engineering economics evaluates project costs and benefits, comparing alternatives and justifying investments.',
-    sections: [{
-      id: 'fee_depreciation_main',
-      title: 'Depreciation Methods & Book Value',
-      content: `Depreciation is the systematic allocation of an asset's cost over its useful life, important for tax calculations and financial reporting. Straight-line depreciation divides the total depreciable base (cost minus salvage value) evenly across the useful life: Annual Depreciation = (Cost - Salvage Value) / Useful Life. Book value (BV) is the asset's value on the balance sheet: BV = Original Cost - Accumulated Depreciation. Book value decreases linearly with straight-line depreciation.
+The bridge between them is **Euler's formula**:
 
-MACRS (Modified Accelerated Cost Recovery System) is the U.S. tax depreciation method, which allows faster write-offs than straight-line, reducing early-year taxes. MACRS ignores salvage value and uses predetermined recovery periods (e.g., 5-year, 7-year, 39-year property) with accelerated schedules. The advantage of accelerated depreciation is time value of money: deducting costs earlier reduces taxes earlier, improving cash flow. Sum-of-years-digits (SYD) is an accelerated method: D = (Remaining useful life)/(Sum of all years) x (Cost - Salvage). Understanding the difference between book value and market value is crucial for asset replacement and sale decisions.`,
-      examTip: 'Key formulas:\nD = (Cost - Salvage) / Life\nBV = Cost - Accumulated Depreciation\nSYD: D = (Remaining years)/(Sum of years) x (Cost - Salvage)\nB/C ratio = PV(benefits) / PV(costs)',
-    }],
-    keyTakeaways: [
-      'Straight-line: D = (Cost - Salvage)/Life; book value BV = Cost - t·D',
-      'MACRS is U.S. tax depreciation allowing faster write-offs than straight-line',
-      'Accelerated depreciation improves cash flow by deferring taxes',
-      'Book value differs from market value; use each appropriately in analysis',
-    ],
-  },
+**e^(jθ) = cosθ + j·sinθ**
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 4 — PROPERTIES OF ELECTRICAL MATERIALS  (4 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+### Conversion Between Forms
 
-  fee_conductors: {
-    topicId: 'fee_conductors',
-    title: 'Conductors & Resistivity',
-    domainWeight: 'Properties of Electrical Materials · 3–5%',
-    overview: 'Fundamental material properties determining electrical behavior: conductivity, semiconductor band structure, dielectric characteristics, and magnetic responses essential for component selection and device design.',
-    sections: [{
-      id: 'fee_conductors_main',
-      title: 'Conductors & Resistivity',
-      content: `Conductors like copper and aluminum have abundant free electrons enabling charge flow; their conductivity depends on material composition, temperature, and geometric dimensions. Resistivity (ρ) is an intrinsic material property measuring resistance per unit length and cross-sectional area: R = ρL/A, where L is length, A is cross-sectional area, and ρ is resistivity in ohm-meters. Copper has low resistivity (~1.7 x 10^-8 ohm·m) making it ideal for wiring; aluminum has slightly higher resistivity (~2.8 x 10^-8 ohm·m) but lower density and cost. Temperature affects resistivity significantly; most conductors increase resistance with temperature following: ρ(T) = ρ₀[1 + α(T - T₀)], where α is the temperature coefficient of resistivity. Copper has α approximately 0.00393 per degrees C, meaning 0.4% resistance increase per degree Celsius.
+| From → To | Formula |
+|---|---|
+| Rectangular → Polar | r = sqrt(a² + b²), θ = arctan(b/a) |
+| Polar → Rectangular | a = r·cosθ, b = r·sinθ |
 
-Wire gauges follow standardized systems (AWG in North America) where smaller gauge numbers indicate larger cross-sectional areas and lower resistance. Selecting proper wire gauge requires balancing cost, voltage drop, and current capacity. Voltage drop V = IR limits how far current can travel at a given gauge before excessive loss. Conductivity σ is the reciprocal of resistivity: σ = 1/ρ, measured in siemens per meter (S/m). High-quality electrical connections require clean surface contact and adequate pressure; oxidation dramatically increases contact resistance.`,
-      examTip: 'Key formulas:\nR = ρL/A\nρ(T) = ρ₀[1 + α(T - T₀)]\nσ = 1/ρ\nV = IR (voltage drop)',
-    }],
-    keyTakeaways: [
-      'Resistivity (ρ) is an intrinsic material property; resistance R = ρL/A depends on geometry and material',
-      'Temperature coefficient α indicates resistance change with temperature: typical conductors increase 0.3-0.4% per C',
-      'Wire gauge (AWG) inversely relates to cross-sectional area; proper gauge selection balances cost, voltage drop, and current capacity',
-      'Conductivity σ = 1/ρ; clean conductor surfaces and good contact pressure minimize resistance',
-    ],
-  },
+### The Complex Conjugate
 
-  fee_semiconductors: {
-    topicId: 'fee_semiconductors',
-    title: 'Semiconductors: Band Structure & Doping',
-    domainWeight: 'Properties of Electrical Materials · 3–5%',
-    overview: 'Fundamental material properties determining electrical behavior: conductivity, semiconductor band structure, dielectric characteristics, and magnetic responses.',
-    sections: [{
-      id: 'fee_semiconductors_main',
-      title: 'Semiconductors: Band Structure & Doping',
-      content: `Semiconductors like silicon and germanium have conductivity between conductors and insulators, with properties controlled by doping (adding impurities). Silicon in pure form has a band gap of ~1.1 eV at room temperature, meaning thermal energy can excite electrons from the valence band to the conduction band, creating mobile charge carriers. Intrinsic semiconductors have equal concentrations of electrons (negative carriers) and holes (positive carriers); adding dopants shifts this balance. N-type semiconductors are doped with donors (phosphorus, arsenic) which have 5 valence electrons; the fifth electron is loosely bound and contributes to conduction. P-type semiconductors are doped with acceptors (boron, aluminum) which have 3 valence electrons, creating vacancies (holes). Doping levels are typically 10^15 to 10^20 dopants per cm cubed, dramatically changing conductivity.
+The **complex conjugate** of z = a + jb is z* = a - jb. Key properties:
+- **z · z* = a² + b² = |z|²** (always real and positive)
+- **Re(z) = (z + z*) / 2**
+- **Im(z) = (z - z*) / (2j)**
 
-Carrier concentration n (electrons) and p (holes) determine semiconductor properties. The intrinsic carrier concentration n_i is approximately 1.5 x 10^10 cm^-3 for silicon at 300K. For n-type with N_D donors: n approximately equals N_D and p = n_i squared/N_D. For p-type with N_A acceptors: p approximately equals N_A and n = n_i squared/N_A. The product n x p = n_i squared is constant at a given temperature, even with doping. Drift and diffusion are the two mechanisms of charge transport: drift occurs when an electric field accelerates carriers; diffusion occurs due to concentration gradients.`,
-      examTip: 'Key formulas:\nn_i approximately 1.5 x 10^10 cm^-3 for Si at 300K\nN-type: n approximately N_D, p = n_i^2/N_D\nP-type: p approximately N_A, n = n_i^2/N_A\nMass action law: n x p = n_i^2',
-    }],
-    keyTakeaways: [
-      'Band gap energy determines carrier excitation; intrinsic silicon has ~1.1 eV gap',
-      'N-type (donor doping) increases electrons; p-type (acceptor doping) increases holes',
-      'Carrier concentration n x p = n_i squared is constant at fixed temperature',
-      'Drift and diffusion transport charges; junction behavior depends on band alignment and depletion region width',
-    ],
-  },
+The conjugate is essential for:
+- Division of complex numbers
+- Computing power in AC circuits (S = V · I*)
+- Rationalizing denominators`,
+      examTip: 'Euler formula e^(jθ) = cosθ + j·sinθ connects all three forms. On the FE exam, use rectangular form for addition/subtraction and polar form for multiplication/division. Converting between forms is the most common source of errors — practice until automatic.',
+    },
+    {
+      id: 'cx-arithmetic',
+      title: '2. Complex Arithmetic for Circuit Analysis',
+      content: `## 2.1 Addition and Subtraction
 
-  fee_dielectrics: {
-    topicId: 'fee_dielectrics',
-    title: 'Dielectrics & Insulators',
-    domainWeight: 'Properties of Electrical Materials · 3–5%',
-    overview: 'Fundamental material properties determining electrical behavior: conductivity, semiconductor band structure, dielectric characteristics, and magnetic responses.',
-    sections: [{
-      id: 'fee_dielectrics_main',
-      title: 'Dielectrics & Insulators',
-      content: `Dielectric materials are insulators that can be polarized by electric fields, storing electrical energy and enabling capacitors. Dielectric constant κ (relative permittivity) measures how much a material can be polarized relative to vacuum: ε = κε₀, where ε₀ = 8.854 x 10^-12 F/m is the permittivity of free space. Common dielectrics: vacuum (κ = 1), air (κ approximately 1.0006), mica (κ = 3-7), ceramic (κ = 100-10000), and water (κ = 80). Higher κ allows capacitors to store more energy for the same volume and voltage, which is why ceramic or electrolytic capacitors are much smaller than air-gap capacitors. Capacitance C = κε₀A/d, where A is plate area and d is separation; high-κ materials enable miniaturization.
+Add/subtract in **rectangular form** — combine real and imaginary parts separately:
 
-Breakdown voltage is the electric field strength at which insulation fails and current suddenly increases. Breakdown field strength varies: air breaks down around 3 MV/m, mica 150 MV/m, ceramics 100-300 MV/m. Exceeding breakdown voltage causes permanent damage or arc formation. Polarization mechanisms determine dielectric response: electronic polarization at optical frequencies, ionic polarization at infrared frequencies, and dipolar/orientational polarization at lower frequencies. Each mechanism contributes differently at various frequencies, causing frequency-dependent permittivity. Dielectric loss (tan δ) represents energy dissipated as heat; low-loss materials minimize heating and are preferred for high-frequency applications.`,
-      examTip: 'Key formulas:\nC = κε₀A/d, where ε₀ = 8.854 x 10^-12 F/m\nE = V/d; breakdown at E_breakdown\nU = (1/2)CV^2 = (1/2)κε₀(A/d)V^2\nP_loss related to tan(δ)',
-    }],
-    keyTakeaways: [
-      'Dielectric constant κ determines energy storage capacity (C = κε₀A/d); higher κ enables smaller capacitors',
-      'Breakdown voltage represents maximum safe field strength; design margins (30-50%) prevent failure',
-      'Frequency-dependent permittivity reflects different polarization mechanisms',
-      'Dielectric loss (tan δ) and insulation resistance must be considered; moisture and temperature degrade properties',
-    ],
-  },
+- (a + jb) + (c + jd) = (a+c) + j(b+d)
+- (a + jb) - (c + jd) = (a-c) + j(b-d)
 
-  fee_magnetic_mat: {
-    topicId: 'fee_magnetic_mat',
-    title: 'Magnetic Materials & Magnetization',
-    domainWeight: 'Properties of Electrical Materials · 3–5%',
-    overview: 'Fundamental material properties determining electrical behavior: conductivity, semiconductor band structure, dielectric characteristics, and magnetic responses.',
-    sections: [{
-      id: 'fee_magnetic_mat_main',
-      title: 'Magnetic Materials & Magnetization',
-      content: `Magnetic materials respond to applied magnetic fields; their behavior is characterized by permeability μ, magnetic flux density B, and magnetization M. Permeability μ = μ_r x μ₀, where μ₀ = 4π x 10^-7 H/m is the permeability of free space and μ_r is relative permeability. Materials are classified as diamagnetic (μ_r < 1), paramagnetic (μ_r slightly > 1), or ferromagnetic (μ_r >> 1, typically 100-5000). Ferromagnetic materials (iron, nickel, cobalt) strongly amplify applied fields and retain magnetization after field removal. The B-H curve plots magnetic flux density B versus applied field H; starting from zero, initial permeability is steep, then saturation occurs where B levels off.
+## 2.2 Multiplication and Division
 
-Hysteresis is the lag in magnetization when the applied field changes direction. Starting at saturation and decreasing H to zero leaves residual magnetization (remanence) B_r. Reversing H requires a coercive field H_c to reduce B to zero. Area enclosed by the hysteresis loop represents energy dissipated as heat per cycle. Soft magnetic materials (iron-silicon) have narrow loops, low coercivity, high permeability — ideal for transformer cores. Hard magnetic materials (rare-earth magnets) have large loops, high coercivity, high remanence — ideal for permanent magnets. Transformer core losses include hysteresis loss (loop area) and eddy current loss; lamination reduces eddy currents. The Curie temperature T_c is where ferromagnetic materials lose spontaneous magnetization and become paramagnetic.`,
-      examTip: 'Key formulas:\nB = μ₀(H + M) = μ₀μ_r H\nM = χ_m H (magnetic susceptibility)\nHysteresis loss: W_h = (loop area) x frequency\nEddy current loss: P_e proportional to B^2 x f^2 x t^2 / ρ',
-    }],
-    keyTakeaways: [
-      'Permeability μ = μ_r x μ₀ determines field amplification; ferromagnetic materials have μ_r >> 1',
-      'B-H curves show magnetization behavior; saturation, remanence, and coercivity characterize material response',
-      'Hysteresis loop area represents energy loss per cycle; soft materials have narrow loops (low loss)',
-      'Curie temperature marks transition to paramagnetism; transformer losses controlled via lamination and material selection',
-    ],
-  },
+Multiply/divide in **polar form** — multiply magnitudes, add/subtract angles:
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 5 — ENGINEERING SCIENCES  (3 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+- (r₁∠θ₁) · (r₂∠θ₂) = r₁r₂ ∠(θ₁ + θ₂)
+- (r₁∠θ₁) / (r₂∠θ₂) = (r₁/r₂) ∠(θ₁ - θ₂)
 
-  fee_work_energy: {
-    topicId: 'fee_work_energy',
-    title: 'Work, Energy & Power',
-    domainWeight: 'Engineering Sciences · 3–5%',
-    overview: 'Fundamental physics principles: work, energy, power conservation, electric charge fundamentals, and electromechanical energy conversion essential for understanding electrical and mechanical systems.',
-    sections: [{
-      id: 'fee_work_energy_main',
-      title: 'Work, Energy & Power',
-      content: `Work is the transfer of energy through force applied over distance: W = F x d x cos(θ), where θ is the angle between force and displacement. In electrical systems, work W = P x t (power times time) or W = V x Q (voltage times charge), measured in joules. Energy is the capacity to perform work; mechanical energy exists as kinetic (KE = 1/2 m v squared) and potential (PE = mgh). Electrical energy is E = V x I x t or E = P x t. Power is the rate of energy transfer: P = W/t = F x v (mechanical) or P = V x I (electrical), measured in watts. Conservation of energy states that total energy in an isolated system remains constant. Efficiency η = (useful energy out) / (total energy in).
+In rectangular form, division uses the **conjugate**:
 
-Exam problems frequently require energy balance equations: energy in = energy out + losses. Electrical power: P = V x I = I squared R = V squared/R (for resistive loads). Power conservation in ideal transformers: V_p x I_p = V_s x I_s. In AC systems, apparent power S = V x I (in volt-amperes), real power P = V x I x cos(φ) (in watts), reactive power Q = V x I x sin(φ) (in VAR). Understanding power factor (cos φ) is critical: at unity power factor, real power equals apparent power; at lower power factors, much current is wasted in reactive power.`,
-      examTip: 'Key formulas:\nW = F·d, P = F·v\nP = V·I = I^2R = V^2/R\nAC: S = V·I, P = V·I·cos(φ), Q = V·I·sin(φ)\nη = P_out / P_in',
-    }],
-    keyTakeaways: [
-      'Work W = F·d (mechanical), W = V·Q (electrical); power P = W/t = V·I; energy is conserved',
-      'Efficiency η = (useful output) / (total input); real systems always have efficiency < 100%',
-      'Power in AC systems: apparent S = V·I (VA), real P = V·I·cos(φ) (W), reactive Q = V·I·sin(φ) (VAR)',
-      'Energy balance: total input = useful output + losses; losses often proportional to I^2R',
-    ],
-  },
+**(a + jb) / (c + jd) = [(a + jb)(c - jd)] / [(c + jd)(c - jd)] = [(ac + bd) + j(bc - ad)] / (c² + d²)**
 
-  fee_charge_current: {
-    topicId: 'fee_charge_current',
-    title: 'Charge, Current, Voltage & Power Fundamentals',
-    domainWeight: 'Engineering Sciences · 3–5%',
-    overview: 'Fundamental physics principles: work, energy, power conservation, electric charge fundamentals, and electromechanical energy conversion.',
-    sections: [{
-      id: 'fee_charge_current_main',
-      title: 'Charge, Current, Voltage & Power Fundamentals',
-      content: `Electric charge Q is measured in coulombs (C); one coulomb equals the charge of 6.24 x 10^18 electrons. Current I is the rate of charge flow: I = dQ/dt in amperes. Voltage (potential difference) V is the energy per unit charge: V = W/Q in volts. Coulomb's Law describes the force between charges: F = k·Q₁·Q₂/r squared, where k = 8.99 x 10^9 N·m squared/C squared. Like charges repel; opposite charges attract. Electric field E is the force per unit charge: E = F/Q = k·Q/r squared, directed away from positive charges. Potential difference between two points is the line integral of electric field: V = integral of E·dl. In a uniform field, V = E·d.
+## 2.3 Phasor Representation
 
-Electric power P = V·I measures energy transfer rate. For constant voltage and current, P = V·I watts. In resistive elements, P = I squared R = V squared/R. For sinusoidal AC, P_avg = V_rms·I_rms·cos(φ). RMS values produce equivalent power to DC: V_rms = V_peak/sqrt(2) approximately 0.707·V_peak. Impedance Z = R + jX generalizes Ohm's law for AC circuits. Power factor cos(φ) relates real to apparent power; low power factors increase I squared R losses and heating in conductors.`,
-      examTip: 'Key formulas:\nI = dQ/dt\nV = W/Q\nF = k·Q₁·Q₂/r^2\nP = V·I = I^2R = V^2/R\nV_rms = V_peak / sqrt(2)',
-    }],
-    keyTakeaways: [
-      'Current I = dQ/dt (amperes); voltage V = W/Q (volts); power P = V·I (watts)',
-      "Coulomb's Law and electric field describe charge interactions; potential difference is line integral of E",
-      'AC power analysis: RMS values, phase angles, and power factor determine real power transferred',
-      'Power factor correction and impedance (Z = R + jX) are essential for AC circuit analysis',
-    ],
-  },
+A sinusoidal signal v(t) = Vm·cos(ωt + φ) corresponds to **phasor V = Vm∠φ**:
 
-  fee_electromech: {
-    topicId: 'fee_electromech',
-    title: 'Electromechanical Conversion: Motors & Generators',
-    domainWeight: 'Engineering Sciences · 3–5%',
-    overview: 'Fundamental physics principles: work, energy, power conservation, electric charge fundamentals, and electromechanical energy conversion.',
-    sections: [{
-      id: 'fee_electromech_main',
-      title: 'Electromechanical Conversion: Motors & Generators',
-      content: `Electromechanical conversion transforms electrical energy to mechanical (motors) or mechanical to electrical (generators). The Lorentz force on a current-carrying conductor in a magnetic field is F = B·I·L, where B is flux density, I is current, and L is conductor length perpendicular to B. A generator converts mechanical motion into electrical voltage via Faraday's law: EMF = -N·dΦ/dt. Back-EMF in motors opposes applied voltage: V_applied = I·R + E_back, where E_back = k·ω (k is motor constant, ω is angular velocity). At startup, ω = 0 so back-EMF is zero, allowing large inrush current; as speed increases, back-EMF grows, limiting current.
+| Time Domain | Phasor Domain |
+|---|---|
+| v(t) = Vm·cos(ωt + φ) | V = Vm∠φ |
+| Addition of sinusoids | Vector addition of phasors |
+| Differentiation (jω multiplier) | Multiply by jω |
+| Integration (1/jω multiplier) | Divide by jω |
 
-Motor torque τ = k·I, proportional to current. Maximum torque occurs at startup with maximum current. Mechanical power output P_mech = τ·ω = E_back·I. Electrical power input P_elec = V·I. Efficiency η = P_mech / P_elec = E_back / V. AC induction motors operate with slip (rotor speed slightly below synchronous speed), inducing rotor currents that create torque. DC motors offer precise speed control via voltage adjustment and torque control via current adjustment. In generators, mechanical speed determines voltage magnitude; field current determines voltage level.`,
-      examTip: 'Key formulas:\nF = B·I·L\nEMF = -N·dΦ/dt\nE_back = k·ω, Motor: V = I·R + k·ω\nτ = k·I\nP_mech = τ·ω = E_back·I',
-    }],
-    keyTakeaways: [
-      "Lorentz force F = B·I·L drives motors; Faraday induction (EMF = -dΦ/dt) produces voltage in generators",
-      'Back-EMF opposes supply voltage; higher speed means higher back-EMF, lower current, lower torque',
-      'Motor torque τ = k·I is proportional to armature current; P = τ·ω = E_back·I',
-      'Generator voltage proportional to mechanical speed; field current controls voltage level',
-    ],
-  },
+### Why Phasors Work
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 6 — CIRCUIT ANALYSIS  (7 curriculum IDs)
-   * ────────────────────────────────────────────────────────────────── */
+Phasors eliminate the time variable by assuming all signals share the same frequency ω. This converts differential equations into algebraic equations — the entire basis of AC steady-state analysis.`,
+      examTip: 'When the FE exam gives you impedances to add in series, keep rectangular form (just add R and X components). When multiplying V = I·Z, convert to polar first. Getting this workflow automatic is the single biggest time-saver for circuit problems.',
+      importantNote: 'EE convention uses j (not i) for the imaginary unit because i is reserved for current. On the FE exam, all complex numbers use j notation. Remember j² = -1, j³ = -j, j⁴ = 1.',
+    },
+  ],
+  keyTakeaways: [
+    'Euler formula e^(jθ) = cosθ + j·sinθ connects exponential, rectangular, and polar forms.',
+    'Magnitude |z| = sqrt(a² + b²); angle θ = arctan(b/a) with quadrant correction.',
+    'Use rectangular for addition/subtraction; polar for multiplication/division.',
+    'Conjugate multiplication rationalizes denominators: z·z* = |z|².',
+    'Phasor V = Vm∠φ represents v(t) = Vm·cos(ωt+φ); eliminates time variable for AC analysis.',
+  ],
+},
 
-  fee_dc_fundamentals: {
-    topicId: 'fee_dc_fundamentals',
-    title: 'DC Fundamentals: Ohm\'s Law & Network Analysis',
-    domainWeight: 'Circuit Analysis · 10%',
-    overview: 'Circuit analysis is the core of electrical engineering and the most heavily weighted FE exam topic (10%). Master Ohm\'s law, Kirchhoff\'s laws, network theorems, AC analysis, and transient response.',
-    sections: [{
-      id: 'fee_dc_fundamentals_main',
-      title: "DC Fundamentals: Ohm's Law & Network Analysis",
-      content: `Ohm's Law V = I·R is the foundation of circuit analysis, relating voltage, current, and resistance. Kirchhoff's Current Law (KCL) states that the sum of currents entering a node equals the sum leaving: sum of I_in = sum of I_out. Kirchhoff's Voltage Law (KVL) states that the sum of voltages around any closed loop equals zero. Series circuits have a single current path; total resistance R_total = R1 + R2 + ... Voltage divides proportionally: V_k = V_total x (R_k / R_total). Parallel circuits have multiple paths; voltage across all parallel branches is identical, and currents divide: I_k = I_total x (R_eq / R_k). Equivalent parallel resistance is 1/R_eq = 1/R1 + 1/R2 + ..., always less than the smallest individual resistance.
+fee_discrete_math: {
+  topicId: 'fee_discrete_math',
+  title: 'Discrete Mathematics',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Discrete mathematics covers countable structures — sets, combinatorics, logic, and graph theory. These concepts underpin digital systems design, probability calculations, and algorithm analysis on the FE exam.',
+  sections: [
+    {
+      id: 'dm-sets-combinatorics',
+      title: '1. Sets, Combinatorics, and Counting',
+      content: `## 1.1 Set Operations
 
-Source transformations allow conversion between voltage and current sources with series/parallel impedance. Delta-wye transformations convert between three-element configurations, useful for three-phase circuits and bridge networks. For resistances, Z_Y = Z_delta/3 for balanced loads. These tools — KCL, KVL, voltage/current dividers, source transformations, delta-wye — enable systematic reduction of complex networks. Always verify results by checking power balance: total power generated equals total power dissipated.`,
-      examTip: 'Key formulas:\nV = I·R\nSeries: R_total = R1 + R2\nParallel: 1/R_eq = 1/R1 + 1/R2\nVoltage divider: V_k = V·R_k/(R1 + R2)\nPower: P = V·I = I^2·R = V^2/R',
-    }],
-    keyTakeaways: [
-      "Ohm's Law V = I·R; series resistance sums; parallel resistance reciprocal sums, always less than smallest R",
-      'KCL: sum of I at node = 0; KVL: sum of V around loop = 0; these enable nodal and loop analysis',
-      'Voltage divider V_k = V_total(R_k / R_total); current divider for quick solutions',
-      'Source transformations and delta-wye transformations simplify circuits; verify by power balance',
-    ],
-  },
+A **set** is a collection of distinct objects. Operations:
 
-  fee_network_theorems: {
-    topicId: 'fee_network_theorems',
-    title: 'Network Theorems: Thevenin, Norton & Superposition',
-    domainWeight: 'Circuit Analysis · 10%',
-    overview: 'Circuit analysis is the core of electrical engineering and the most heavily weighted FE exam topic.',
-    sections: [{
-      id: 'fee_network_theorems_main',
-      title: 'Network Theorems: Thevenin, Norton & Superposition',
-      content: `Thevenin's Theorem simplifies complex networks to a single equivalent circuit: V_Th in series with R_Th. Find V_Th = open-circuit voltage at terminals; find R_Th = equivalent resistance with all sources deactivated (voltage sources short-circuited, current sources open-circuited). Norton's Theorem is the dual: I_N in parallel with R_N where I_N = short-circuit current and R_N = R_Th. V_Th = I_N · R_N.
+| Operation | Symbol | Meaning |
+|---|---|---|
+| Union | A ∪ B | Elements in A or B (or both) |
+| Intersection | A ∩ B | Elements in both A and B |
+| Complement | A' | Elements NOT in A |
+| Difference | A - B | Elements in A but not B |
 
-Superposition states that in a linear network with multiple sources, the response is the sum of responses due to each source acting alone. To apply: consider one source, deactivate all others, calculate response, repeat for each source, sum algebraically. Maximum Power Transfer: load R_L = R_Th delivers maximum power P_max = V_Th^2/(4·R_Th). This principle guides impedance matching. Common pitfall: deactivating voltage source as open circuit instead of short circuit.
+**De Morgan's Laws** for sets mirror Boolean algebra:
+- **(A ∪ B)' = A' ∩ B'**
+- **(A ∩ B)' = A' ∪ B'**
 
-These theorems enable quick solutions without solving the entire network. For problems asking for current through one element, Thevenin equivalent of the rest of the circuit often provides the fastest path. Superposition reduces complexity for multi-source circuits. At maximum power transfer, efficiency is only 50% — efficiency increases as R_L increases beyond R_Th, but power delivered decreases.`,
-      examTip: 'Key formulas:\nV_Th = open-circuit voltage\nR_Th = resistance with sources deactivated\nI_N = V_Th/R_Th\nP_max = V_Th^2/(4·R_Th)',
-    }],
-    keyTakeaways: [
-      'Thevenin: V_Th (open-circuit voltage) in series with R_Th; any load sees this as source',
-      'Norton: I_N (short-circuit current) in parallel with R_N = R_Th',
-      'Superposition: sum responses due to each source individually (deactivating others)',
-      'Maximum power transfer: R_L = R_Th for maximum power; efficiency at max power is 50%',
-    ],
-  },
+## 1.2 Counting: Permutations and Combinations
 
-  fee_ac_phasors: {
-    topicId: 'fee_ac_phasors',
-    title: 'AC Steady-State Analysis: Phasors & Impedance',
-    domainWeight: 'Circuit Analysis · 10%',
-    overview: 'Circuit analysis is the core of electrical engineering and the most heavily weighted FE exam topic.',
-    sections: [{
-      id: 'fee_ac_phasors_main',
-      title: 'AC Steady-State Analysis: Phasors & Impedance',
-      content: `AC steady-state analysis uses phasors (complex numbers representing sinusoidal quantities) to convert differential equations into algebraic form. A sinusoidal voltage v(t) = V_m·cos(ωt + φ) is represented as phasor V = V_m∠φ. V_rms = V_m / sqrt(2). Impedance Z generalizes resistance to AC: Z = R + jX. For inductors, X_L = ωL (positive reactance, voltage leads current by 90 degrees). For capacitors, X_C = -1/(ωC) (negative reactance, current leads voltage by 90 degrees). V = I·Z in phasor form.
+- **Permutations** (order matters): P(n,r) = n! / (n-r)!
+- **Combinations** (order does not matter): C(n,r) = n! / [r!(n-r)!]
 
-In series circuits, impedances add; in parallel, admittances (Y = 1/Z) add. Reactance and impedance vary with frequency ω = 2πf. At very low frequencies, inductors approach short circuits and capacitors open circuits. At very high frequencies, inductors open and capacitors short. This frequency dependence is critical for filter design. The resonant frequency f₀ = 1/(2π sqrt(LC)) is where X_L = X_C, making impedance purely resistive. All DC techniques (KVL, KCL, Thevenin, superposition) apply to AC using phasors.`,
-      examTip: 'Key formulas:\nV = V_m∠φ\nV_rms = V_m / sqrt(2)\nZ_L = jωL, Z_C = 1/(jωC)\n|Z| = sqrt(R^2 + X^2)\nf₀ = 1/(2π sqrt(LC))',
-    }],
-    keyTakeaways: [
-      'Phasors represent sinusoids as complex numbers: V = V_m∠φ; V_rms = V_m/sqrt(2)',
-      'Impedance Z = R + jX; inductive X_L = ωL (positive), capacitive X_C = -1/(ωC) (negative)',
-      'Frequency dependence: low freq inductors short/caps open; high freq inductors open/caps short',
-      'Resonance at ω₀ = 1/sqrt(LC) where X_L = X_C; impedance is purely resistive, current is maximum',
-    ],
-  },
+### The Binomial Theorem
 
-  fee_ac_power: {
-    topicId: 'fee_ac_power',
-    title: 'AC Power Analysis: Real, Reactive & Apparent',
-    domainWeight: 'Circuit Analysis · 10%',
-    overview: 'Circuit analysis is the core of electrical engineering and the most heavily weighted FE exam topic.',
-    sections: [{
-      id: 'fee_ac_power_main',
-      title: 'AC Power Analysis',
-      content: `AC power has three components: real power P (watts) does useful work: P = V_rms·I_rms·cos(φ). Reactive power Q (VAR) oscillates in inductors and capacitors: Q = V_rms·I_rms·sin(φ). Apparent power S (VA) is total: S = V_rms·I_rms = sqrt(P^2 + Q^2). Power factor PF = P/S = cos(φ). Unity PF means all power is real; lower PF wastes transmission capacity. Lagging PF (inductive loads) requires capacitive correction.
+**(a + b)^n = Σ C(n,k) · a^(n-k) · b^k** for k = 0 to n
 
-Complex power S = P + jQ = V·I* captures all power information. Power factor correction adds capacitors in parallel with inductive loads: Qc = P(tan(θ_old) - tan(θ_new)). Utilities penalize low power factors (typically below 0.90). For a circuit element with impedance Z = R + jX: P = I^2·R and Q = I^2·X. The power triangle relates P (horizontal), Q (vertical), S (hypotenuse).`,
-      examTip: 'Key formulas:\nP = V·I·cos(φ) (watts)\nQ = V·I·sin(φ) (VAR)\nS = V·I (VA); S^2 = P^2 + Q^2\nPF = P/S = cos(φ)\nComplex power: S = P + jQ = V·I*',
-    }],
-    keyTakeaways: [
-      'Real power P = V·I·cos(φ); reactive Q = V·I·sin(φ); apparent S = sqrt(P^2 + Q^2)',
-      'Power factor PF = cos(φ); lower PF requires more current for same real power',
-      'Power factor correction: add parallel capacitors to reduce reactive power',
-      'Complex power S = P + jQ captures all power information; power triangle is fundamental',
-    ],
-  },
+This is used in probability (binomial distribution) and series expansion.`,
+      examTip: 'Permutations vs. combinations is a common FE question. Ask: "Does order matter?" If selecting a committee (no order), use C(n,r). If arranging items in sequence (order matters), use P(n,r). The binomial coefficient C(n,k) also appears in the binomial probability distribution.',
+    },
+    {
+      id: 'dm-logic-graphs',
+      title: '2. Propositional Logic and Graph Theory',
+      content: `## 2.1 Propositional Logic
 
-  fee_resonance: {
-    topicId: 'fee_resonance',
-    title: 'Resonance & Frequency Response',
-    domainWeight: 'Circuit Analysis · 10%',
-    overview: 'Circuit analysis is the core of electrical engineering and the most heavily weighted FE exam topic.',
-    sections: [{
-      id: 'fee_resonance_main',
-      title: 'Resonance & Frequency Response',
-      content: `Series RLC resonance occurs when inductive and capacitive reactances cancel: X_L = X_C, or ωL = 1/(ωC). Resonant frequency: ω₀ = 1/sqrt(LC), or f₀ = 1/(2π sqrt(LC)). At resonance, impedance Z = R (purely resistive), current is maximum I_max = V/R, and voltage and current are in phase. Quality factor Q = ω₀L/R = 1/(ω₀RC) measures selectivity: higher Q means narrower bandwidth. Bandwidth BW = f₀/Q is the frequency range where power is at least half maximum. Below resonance, capacitive reactance dominates; above, inductive dominates.
+Logic operations map directly to digital circuits:
 
-Parallel RLC resonance: impedance is maximum (purely resistive) at resonance. Voltage across the parallel combination is maximum. The concept of resonance is crucial for filter design, power factor correction, and understanding instability in electrical systems. Series minimizes impedance at resonance (good for series filters); parallel maximizes impedance (good for parallel filters, tank circuits).`,
-      examTip: 'Key formulas:\nω₀ = 1/sqrt(LC)\nf₀ = 1/(2π sqrt(LC))\nQ = ω₀L/R = 1/(ω₀RC)\nBW = f₀/Q\nX_L = ωL, X_C = 1/(ωC)',
-    }],
-    keyTakeaways: [
-      'Resonant frequency: ω₀ = 1/sqrt(LC); f₀ = 1/(2π sqrt(LC))',
-      'At resonance: X_L = X_C, impedance is minimum (series) or maximum (parallel)',
-      'Quality factor Q = ω₀L/R; higher Q means sharper resonance peak',
-      'Bandwidth BW = f₀/Q; series RLC Z_min = R; parallel RLC Z_max = R',
-    ],
-  },
+| Operation | Symbol | Circuit Gate | Truth |
+|---|---|---|---|
+| AND | p ∧ q | AND gate | True only if both true |
+| OR | p ∨ q | OR gate | True if either true |
+| NOT | ¬p | Inverter | Flips truth value |
+| Implication | p → q | — | False only if p true and q false |
+| Biconditional | p ↔ q | XNOR | True if both same |
 
-  fee_three_phase: {
-    topicId: 'fee_three_phase',
-    title: 'Three-Phase Circuits and Power',
-    domainWeight: 'Circuit Analysis · 10%',
-    overview: 'Circuit analysis is the core of electrical engineering and the most heavily weighted FE exam topic.',
-    sections: [{
-      id: 'fee_three_phase_main',
-      title: 'Three-Phase Circuits and Power',
-      content: `Three-phase AC power is standard in industry, offering constant power delivery (not pulsating like single-phase). Three voltage sources 120 degrees apart: Va, Vb = Va∠(-120), Vc = Va∠(-240). Balanced three-phase: Va+Vb+Vc = 0. Wye (Y) connection: line voltage = sqrt(3) x phase voltage, V_L = sqrt(3)·V_ph. Delta connection: line voltage equals phase voltage V_L = V_ph, but line current = sqrt(3) x phase current. Power: P = sqrt(3)·V_L·I_L·cos(φ), Q = sqrt(3)·V_L·I_L·sin(φ), S = sqrt(3)·V_L·I_L.
+**De Morgan's Laws** for logic:
+- **¬(p ∧ q) ≡ ¬p ∨ ¬q**
+- **¬(p ∨ q) ≡ ¬p ∧ ¬q**
 
-Per-phase analysis simplifies balanced systems to single-phase equivalent. Unbalanced loads require symmetrical components: zero-sequence (sum), positive-sequence (standard 120 degrees apart), negative-sequence (reverse order). Y-to-delta conversion: Z_delta = 3·Z_wye for balanced loads.`,
-      examTip: 'Key formulas:\nV_L = sqrt(3)·V_ph (wye)\nI_L = sqrt(3)·I_ph (delta)\nP = sqrt(3)·V_L·I_L·cos(φ)\nZ_delta = 3·Z_wye',
-    }],
-    keyTakeaways: [
-      'Wye: V_L = sqrt(3)·V_ph, I_L = I_ph; Delta: V_L = V_ph, I_L = sqrt(3)·I_ph',
-      'Three-phase power (constant): P = sqrt(3)·V_L·I_L·cos(φ)',
-      'Per-phase analysis: solve one phase, multiply power by 3',
-      'Delta-wye conversion: Z_delta = 3·Z_wye for equivalent impedances',
-    ],
-  },
+**Contrapositive**: p → q is logically equivalent to ¬q → ¬p (always valid reasoning).
 
-  fee_transients: {
-    topicId: 'fee_transients',
-    title: 'Transient Analysis: RC, RL, and RLC Circuits',
-    domainWeight: 'Circuit Analysis · 10%',
-    overview: 'Circuit analysis is the core of electrical engineering and the most heavily weighted FE exam topic.',
-    sections: [{
-      id: 'fee_transients_main',
-      title: 'Transient Analysis: Step Response & Time Constants',
-      content: `Transient analysis examines circuit behavior after a sudden change. For RC circuits: v_C(t) = V_in(1 - e^(-t/τ)) (charging), v_C(t) = V₀·e^(-t/τ) (discharging), where τ = RC. After 5τ, capacitor reaches ~99.3% of final value. For RL circuits: τ = L/R, i_L(t) = (V_in/R)(1 - e^(-t/τ)). At t = 0+, capacitors maintain their pre-transient voltage and inductors maintain their pre-transient current (continuity constraints).
+## 2.2 Graph Theory Basics
 
-Second-order RLC circuits have more complex responses determined by damping ratio ζ = R/(2 sqrt(L/C)): underdamped (ζ < 1) oscillates, critically damped (ζ = 1) fastest no-overshoot, overdamped (ζ > 1) slow monotonic. Practical circuits must limit inrush currents (using series resistors, soft starters) and suppress voltage spikes (using snubber circuits). When a switch opens, stored energy in inductors must dissipate; without a discharge path, dangerous voltage spikes appear. Laplace transform (s-domain) simplifies transient calculation: impedances become Z(s) = R + sL + 1/(sC).`,
-      examTip: 'Key formulas:\nτ = RC or τ = L/R\nv_C(t) = V(1 - e^(-t/τ))\ni_L(t) = (V/R)(1 - e^(-t/τ))\nζ = R/(2 sqrt(L/C))\nSettling time ≈ 5τ',
-    }],
-    keyTakeaways: [
-      'Time constant τ = RC (capacitor) or τ = L/R (inductor); 5τ is settling time',
-      'Natural response decays exponentially; forced response is steady-state; total is sum',
-      'Initial conditions: v_C(0+) = v_C(0-), i_L(0+) = i_L(0-) (continuity)',
-      'Second-order: underdamped (oscillatory), critically damped (fastest), overdamped (slow)',
-    ],
-  },
+A **graph** consists of vertices (nodes) connected by edges. Key properties:
+- **Degree** of a vertex: number of incident edges
+- **Euler's formula** for planar graphs: **V - E + F = 2** (vertices - edges + faces)
+- **Complete graph** K_n has n(n-1)/2 edges
+- A **tree** with n vertices has exactly n-1 edges
 
-  /* ──────────────────────────────────────────────────────────────────
-   * TOPIC 7 — LINEAR SYSTEMS  (4 curriculum IDs from 5 sections)
-   * ────────────────────────────────────────────────────────────────── */
+Graph theory models networks — useful for analyzing circuit topologies and computer networks.`,
+      examTip: 'De Morgan laws appear in both set theory and Boolean algebra on the FE exam. The pattern is identical: swap the operator (AND/OR or union/intersection) and complement everything. Memorize one form and you know both.',
+      importantNote: 'The contrapositive (p→q equivalent to ¬q→¬p) is logically valid, but the converse (q→p) and inverse (¬p→¬q) are NOT equivalent to the original. This distinction appears in logic-based FE questions.',
+    },
+  ],
+  keyTakeaways: [
+    'Permutations P(n,r) count ordered arrangements; combinations C(n,r) count unordered selections.',
+    'De Morgan laws for sets mirror Boolean algebra: (A ∪ B)\' = A\' ∩ B\'.',
+    'Contrapositive of p→q is ¬q→¬p and is logically equivalent.',
+    'Binomial theorem (a+b)^n = Σ C(n,k)·a^(n-k)·b^k is used in probability and series.',
+    'Complete graph K_n has n(n-1)/2 edges; a tree with n nodes has n-1 edges.',
+  ],
+},
+
+fee_analytic_geom: {
+  topicId: 'fee_analytic_geom',
+  title: 'Analytic Geometry',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Analytic geometry combines algebra and geometry to study curves, surfaces, and coordinate transformations. Distance formulas, conic sections, and polar/cylindrical coordinates are essential for electromagnetics and signal analysis.',
+  sections: [
+    {
+      id: 'ag-lines-distance',
+      title: '1. Lines, Distance, and Coordinate Systems',
+      content: `## 1.1 Distance and Midpoint
+
+- **Distance (2D)**: d = sqrt[(x₂-x₁)² + (y₂-y₁)²]
+- **Distance (3D)**: d = sqrt[(x₂-x₁)² + (y₂-y₁)² + (z₂-z₁)²]
+- **Midpoint**: ((x₁+x₂)/2, (y₁+y₂)/2)
+
+## 1.2 Lines
+
+- **Slope**: m = (y₂-y₁)/(x₂-x₁)
+- **Point-slope form**: y - y₁ = m(x - x₁)
+- **Slope-intercept**: y = mx + b
+- **Parallel lines**: m₁ = m₂
+- **Perpendicular lines**: m₁ · m₂ = -1
+
+## 1.3 Coordinate Systems
+
+| System | Coordinates | Use Case |
+|---|---|---|
+| Cartesian | (x, y, z) | General analysis |
+| Polar | (r, θ) | Phasor analysis, 2D symmetry |
+| Cylindrical | (r, θ, z) | Wire/cable fields |
+| Spherical | (r, θ, φ) | Antenna radiation patterns |
+
+### Conversion: Polar ↔ Cartesian
+- x = r·cosθ, y = r·sinθ
+- r = sqrt(x²+y²), θ = arctan(y/x)`,
+      examTip: 'Perpendicular lines satisfy m₁·m₂ = -1. This shows up when analyzing orthogonal signal components or checking if vectors are perpendicular. For the FE exam, know all four coordinate systems and when to use each.',
+    },
+    {
+      id: 'ag-conics',
+      title: '2. Conic Sections',
+      content: `## 2.1 Standard Forms
+
+Conic sections arise from slicing a cone at different angles:
+
+| Conic | Standard Form | Key Property |
+|---|---|---|
+| Circle | x² + y² = r² | Constant radius |
+| Ellipse | x²/a² + y²/b² = 1 | Sum of distances to foci = constant |
+| Parabola | y = ax² + bx + c | Single focus and directrix |
+| Hyperbola | x²/a² - y²/b² = 1 | Difference of distances to foci = constant |
+
+### Circle Properties
+- Center (h,k): (x-h)² + (y-k)² = r²
+- Area = πr², Circumference = 2πr
+
+### Ellipse Properties
+- Semi-major axis a, semi-minor axis b (a > b)
+- Eccentricity e = c/a where c = sqrt(a²-b²)
+- Area = πab
+
+### Parabola Properties
+- Vertex form: y = a(x-h)² + k
+- Focus at distance 1/(4a) from vertex
+- Used in antenna dish design (parabolic reflector)
+
+### Hyperbola Properties
+- Asymptotes: y = ±(b/a)x for centered hyperbola
+- Eccentricity e = c/a where c = sqrt(a²+b²), e > 1`,
+      examTip: 'On the FE exam, identify the conic section from its equation: both variables squared with same sign and same coefficient = circle; same sign but different coefficients = ellipse; one variable not squared = parabola; opposite signs = hyperbola.',
+    },
+  ],
+  keyTakeaways: [
+    'Distance formula d = sqrt[(Δx)² + (Δy)²] extends to 3D with (Δz)² term.',
+    'Parallel lines: equal slopes; perpendicular lines: m₁·m₂ = -1.',
+    'Four conic sections identified by signs and coefficients in the equation.',
+    'Polar/cylindrical/spherical coordinates exploit symmetry in EM problems.',
+    'Know conversion formulas between all coordinate systems.',
+  ],
+},
+
+fee_diff_calc: {
+  topicId: 'fee_diff_calc',
+  title: 'Differential Calculus',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Differentiation measures rates of change — fundamental to understanding capacitor voltage change (C·dv/dt), inductor current change (L·di/dt), and optimization problems throughout the FE exam.',
+  sections: [
+    {
+      id: 'dc-rules-derivatives',
+      title: '1. Derivative Rules and Common Derivatives',
+      content: `## 1.1 Definition and Basic Rules
+
+The derivative measures instantaneous rate of change: **f'(x) = lim(h→0) [f(x+h) - f(x)] / h**
+
+### Differentiation Rules
+
+| Rule | Formula |
+|---|---|
+| Power rule | d/dx(x^n) = n·x^(n-1) |
+| Constant multiple | d/dx(c·f) = c·f'(x) |
+| Sum rule | d/dx(f+g) = f' + g' |
+| Product rule | (uv)' = u'v + uv' |
+| Quotient rule | (u/v)' = (u'v - uv') / v² |
+| Chain rule | dy/dx = (dy/du)·(du/dx) |
+
+### Common Derivatives
+
+| Function | Derivative |
+|---|---|
+| e^x | e^x |
+| ln(x) | 1/x |
+| sin(x) | cos(x) |
+| cos(x) | -sin(x) |
+| tan(x) | sec²(x) |
+| e^(ax) | a·e^(ax) |
+
+## 1.2 Applications in Circuit Analysis
+
+In electrical engineering, derivatives describe dynamic behavior:
+- **Capacitor current**: i_C = C · dv_C/dt (current proportional to voltage rate of change)
+- **Inductor voltage**: v_L = L · di_L/dt (voltage proportional to current rate of change)
+- **Power rate of change**: dP/dt = d(vi)/dt`,
+      examTip: 'The product rule and chain rule are the two rules you will use most on the FE exam. For circuit problems: i_C = C·dv/dt means capacitor current is proportional to how fast voltage changes. If voltage is constant (DC steady state), capacitor current is zero — it acts as an open circuit.',
+    },
+    {
+      id: 'dc-applications',
+      title: '2. Limits, L\'Hopital\'s Rule, and Taylor Series',
+      content: `## 2.1 Limits and Continuity
+
+A limit **lim(x→a) f(x) = L** means f(x) approaches L as x approaches a. Limits define derivatives, integrals, and series convergence.
+
+### L'Hopital's Rule
+
+When a limit gives an **indeterminate form** (0/0 or ∞/∞), differentiate top and bottom:
+
+**lim(x→a) f(x)/g(x) = lim(x→a) f'(x)/g'(x)**
+
+This can be applied repeatedly until the limit is determinate.
+
+## 2.2 Optimization (Max/Min)
+
+To find extrema of f(x):
+1. Find critical points: set **f'(x) = 0** and solve
+2. **Second derivative test**: if f''(x) > 0 → local minimum; if f''(x) < 0 → local maximum
+
+### Applications
+- **Maximum power transfer**: differentiate P(R_L) and set to zero → R_L = R_Th
+- **Minimum cost**: differentiate total cost function and set to zero
+
+## 2.3 Taylor Series
+
+**f(x) = f(a) + f'(a)(x-a) + f''(a)(x-a)²/2! + f'''(a)(x-a)³/3! + ...**
+
+**Linearization** (first-order Taylor): f(x) ≈ f(a) + f'(a)(x-a)
+
+Common series:
+- **e^x = 1 + x + x²/2! + x³/3! + ...**
+- **sin(x) = x - x³/3! + x⁵/5! - ...**
+- **cos(x) = 1 - x²/2! + x⁴/4! - ...**
+
+### Partial Derivatives
+
+For multivariable functions, **∂f/∂x** treats all other variables as constants. The **gradient** ∇f = (∂f/∂x)i + (∂f/∂y)j + (∂f/∂z)k gives the direction of steepest increase.`,
+      examTip: 'L\'Hopital\'s rule only works for 0/0 or ∞/∞ forms. If the limit is not indeterminate, do NOT apply L\'Hopital. Taylor series linearization f(x) ≈ f(a) + f\'(a)(x-a) is used for small-signal analysis of nonlinear circuits (like diode linearization around the Q-point).',
+      importantNote: 'The maximum power transfer theorem (R_L = R_Th) is derived by differentiating P = V²·R_L/(R_Th+R_L)² and setting dP/dR_L = 0. This is a direct application of optimization using calculus.',
+    },
+  ],
+  keyTakeaways: [
+    'Derivative df/dx represents instantaneous rate of change; essential for i_C = C·dv/dt and v_L = L·di/dt.',
+    'Product rule: (uv)\' = u\'v + uv\'; chain rule: dy/dx = (dy/du)·(du/dx).',
+    'L\'Hopital\'s rule resolves 0/0 or ∞/∞ by differentiating top and bottom.',
+    'Taylor linearization f(x) ≈ f(a) + f\'(a)(x-a) underpins small-signal analysis.',
+    'Optimization: set f\'(x) = 0, check f\'\'(x) sign for max/min.',
+  ],
+},
+
+fee_int_calc: {
+  topicId: 'fee_int_calc',
+  title: 'Integral Calculus',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Integration computes accumulated quantities — energy stored in capacitors and inductors, total charge, average power, and RMS values. Mastering integration techniques is essential for the FE Electrical exam.',
+  sections: [
+    {
+      id: 'ic-fundamentals',
+      title: '1. Integration Techniques and Common Integrals',
+      content: `## 1.1 Fundamental Integrals
+
+| Function | Integral |
+|---|---|
+| x^n | x^(n+1)/(n+1) + C (n ≠ -1) |
+| 1/x | ln|x| + C |
+| e^x | e^x + C |
+| e^(ax) | (1/a)e^(ax) + C |
+| sin(x) | -cos(x) + C |
+| cos(x) | sin(x) + C |
+
+## 1.2 Integration Techniques
+
+### Integration by Substitution (u-substitution)
+Replace a composite expression with u, transform dx to du:
+- Let u = g(x), then du = g'(x)dx
+- ∫f(g(x))·g'(x)dx = ∫f(u)du
+
+### Integration by Parts
+**∫u dv = uv - ∫v du**
+
+Choose u and dv using **LIATE** priority: Logarithmic, Inverse trig, Algebraic, Trig, Exponential.
+
+### The Fundamental Theorem of Calculus
+
+**d/dx[∫ₐˣ f(t)dt] = f(x)**
+
+**∫ₐᵇ f(x)dx = F(b) - F(a)** where F is any antiderivative of f.`,
+      examTip: 'Integration by parts (∫u dv = uv - ∫v du) appears when integrating products like t·e^(-t) which arise in transient circuit analysis. Use LIATE to choose u: pick the function that simplifies when differentiated.',
+    },
+    {
+      id: 'ic-applications',
+      title: '2. Engineering Applications of Integration',
+      content: `## 2.1 Energy Storage
+
+Integration computes energy stored in reactive elements:
+
+- **Capacitor energy**: W = ∫₀ᵛ Cv dv = **½CV²**
+- **Inductor energy**: W = ∫₀ⁱ Li di = **½LI²**
+
+## 2.2 Charge and Current
+
+Total charge is the integral of current:
+- **Q = ∫I dt** (charge = area under current-time curve)
+
+## 2.3 Average and RMS Values
+
+- **Average value**: f_avg = (1/T)∫₀ᵀ f(t)dt
+- **RMS value**: f_rms = sqrt[(1/T)∫₀ᵀ f²(t)dt]
+- **Average power**: P_avg = (1/T)∫₀ᵀ p(t)dt = (1/T)∫₀ᵀ v(t)·i(t)dt
+
+For a sinusoid v(t) = Vm·cos(ωt):
+- **V_rms = Vm / sqrt(2) ≈ 0.707·Vm**
+
+## 2.4 Improper Integrals
+
+The **Laplace transform** uses an improper integral:
+- **F(s) = ∫₀^∞ f(t)·e^(-st)dt**
+
+This integral converges when the exponential decay e^(-st) dominates the growth of f(t), defining the **region of convergence**.`,
+      examTip: 'The three most important integration results for the FE exam: W = ½CV² (capacitor energy), W = ½LI² (inductor energy), and V_rms = V_peak/sqrt(2). These appear in power calculations, energy balance, and transient analysis.',
+      importantNote: 'RMS (root mean square) is NOT the same as average. For a sinusoid, V_avg = 0 (over full cycle) but V_rms = Vm/sqrt(2). RMS is used because it gives the equivalent DC value that delivers the same power to a resistive load.',
+    },
+  ],
+  keyTakeaways: [
+    'Common integrals: ∫x^n dx = x^(n+1)/(n+1) + C, ∫e^x dx = e^x + C.',
+    'Integration by parts: ∫u dv = uv - ∫v du; use LIATE to choose u.',
+    'Energy in capacitors ½CV² and inductors ½LI² derived from integration.',
+    'Average power P_avg = (1/T)∫p(t)dt; RMS value = sqrt[(1/T)∫f²(t)dt].',
+    'Laplace transform F(s) = ∫₀^∞ f(t)e^(-st)dt converts ODEs to algebraic equations.',
+  ],
+},
+
+fee_diffeq: {
+  topicId: 'fee_diffeq',
+  title: 'Differential Equations',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Differential equations model dynamic behavior in circuits — RC/RL transients, RLC oscillations, and control system responses. First-order and second-order linear ODEs with constant coefficients are the core of FE exam differential equations.',
+  sections: [
+    {
+      id: 'de-first-order',
+      title: '1. First-Order Linear ODEs',
+      content: `## 1.1 Standard Form and Solution
+
+A first-order linear ODE with constant coefficients:
+
+**dy/dt + ay = b**
+
+With initial condition y(0) = y₀, the solution is:
+
+**y(t) = b/a + (y₀ - b/a)·e^(-at)**
+
+This has two parts:
+- **Steady-state (forced) response**: y_ss = b/a (the value as t → ∞)
+- **Transient (natural) response**: (y₀ - y_ss)·e^(-at) (decays exponentially)
+
+### Time Constant
+
+The **time constant** τ = 1/a determines how fast the transient decays:
+
+| Time | Value of e^(-t/τ) | % of Steady State |
+|---|---|---|
+| t = τ | 0.368 | 63.2% |
+| t = 2τ | 0.135 | 86.5% |
+| t = 3τ | 0.050 | 95.0% |
+| t = 5τ | 0.007 | 99.3% |
+
+## 1.2 Circuit Applications
+
+- **RC circuit**: τ = RC; v_C(t) = V_final + (V_initial - V_final)·e^(-t/RC)
+- **RL circuit**: τ = L/R; i_L(t) = I_final + (I_initial - I_final)·e^(-tR/L)
+
+The general first-order transient formula works for ANY first-order circuit:
+
+**x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ)**`,
+      examTip: 'The universal first-order formula x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ) solves ANY RC or RL transient. Find three things: initial value x(0), final value x(∞), and time constant τ. This single formula covers charging, discharging, and source-switching problems.',
+      importantNote: 'At t = 0⁺ (just after switching): capacitor voltage CANNOT change instantly (v_C(0⁺) = v_C(0⁻)), and inductor current CANNOT change instantly (i_L(0⁺) = i_L(0⁻)). These continuity conditions are essential for finding initial values.',
+    },
+    {
+      id: 'de-second-order',
+      title: '2. Second-Order Linear ODEs and Damping',
+      content: `## 2.1 Standard Form
+
+The general second-order ODE for circuits and control systems:
+
+**d²y/dt² + 2ζωₙ·dy/dt + ωₙ²·y = ωₙ²·u(t)**
+
+Where:
+- **ωₙ** = natural frequency (rad/s)
+- **ζ** = damping ratio (dimensionless)
+
+### Characteristic Equation
+
+Setting u(t) = 0 gives the **characteristic equation**: s² + 2ζωₙs + ωₙ² = 0
+
+Roots: s = -ζωₙ ± ωₙ·sqrt(ζ² - 1)
+
+## 2.2 Response Types
+
+| Damping Ratio | Response Type | Root Type | Behavior |
+|---|---|---|---|
+| ζ < 1 | Underdamped | Complex conjugate | Oscillates with decaying envelope |
+| ζ = 1 | Critically damped | Repeated real | Fastest return without overshoot |
+| ζ > 1 | Overdamped | Distinct real | Slow, monotonic approach |
+
+### Series RLC Circuit Parameters
+
+For a series RLC circuit:
+- **ωₙ = 1/sqrt(LC)** (natural frequency)
+- **ζ = R/(2sqrt(L/C)) = R/(2)·sqrt(C/L)** (damping ratio)
+- **Damped frequency**: ωd = ωₙ·sqrt(1 - ζ²) (for underdamped case)
+
+### Laplace Transform Approach
+
+Converting to s-domain simplifies solving: the ODE becomes an algebraic equation in s.
+
+**s²Y(s) + 2ζωₙsY(s) + ωₙ²Y(s) = ωₙ²U(s)** (assuming zero initial conditions)
+
+This gives **H(s) = Y(s)/U(s) = ωₙ²/(s² + 2ζωₙs + ωₙ²)**`,
+      examTip: 'The damping ratio ζ is the MOST important parameter for second-order systems on the FE exam. ζ < 1 oscillates (underdamped), ζ = 1 is critically damped (fastest no-overshoot), ζ > 1 is overdamped (sluggish). For series RLC: ζ = R/(2sqrt(L/C)). Increasing R increases damping.',
+      importantNote: 'Critically damped (ζ = 1) is NOT the fastest response — underdamped (ζ < 1) reaches the target faster but overshoots. Critically damped is the fastest WITHOUT overshoot. This distinction is tested on the FE exam.',
+    },
+  ],
+  keyTakeaways: [
+    'First-order: x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ); τ = RC or L/R.',
+    'Time constant τ: 63.2% change at t = τ; 99.3% at t = 5τ.',
+    'Damping ratio ζ determines response: underdamped (ζ<1), critically damped (ζ=1), overdamped (ζ>1).',
+    'Series RLC: ωₙ = 1/sqrt(LC), ζ = R/(2sqrt(L/C)).',
+    'Laplace transform converts ODEs to algebraic equations in s-domain.',
+  ],
+},
+
+fee_linear_algebra: {
+  topicId: 'fee_linear_algebra',
+  title: 'Linear Algebra & Matrix Operations',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'Linear algebra provides tools for solving systems of equations arising from nodal and mesh analysis. Matrix operations, determinants, eigenvalues, and Cramer\'s rule are essential for multi-node circuit problems.',
+  sections: [
+    {
+      id: 'la-matrices',
+      title: '1. Matrix Operations and Determinants',
+      content: `## 1.1 Matrix Arithmetic
+
+A system **Ax = b** represents n equations in n unknowns:
+
+- **Addition**: element-wise (matrices must be same size)
+- **Scalar multiplication**: multiply every element
+- **Matrix multiplication**: (AB)ᵢⱼ = Σₖ Aᵢₖ·Bₖⱼ (row-by-column)
+- **NOT commutative**: AB ≠ BA in general
+- **Associative**: (AB)C = A(BC)
+
+### Determinants
+
+For a **2×2 matrix**: det([a b; c d]) = **ad - bc**
+
+For a **3×3 matrix**: expand along any row or column using cofactors.
+
+A matrix is **invertible** if and only if det(A) ≠ 0.
+
+### Matrix Inverse (2×2)
+
+**[a b; c d]⁻¹ = (1/(ad-bc)) · [d -b; -c a]**
+
+## 1.2 Solving Linear Systems
+
+### Cramer's Rule
+For Ax = b, each unknown xᵢ = det(Aᵢ)/det(A), where Aᵢ replaces column i with b.
+
+### Gaussian Elimination
+Reduce to row echelon form using elementary row operations. Faster than Cramer's for large systems.
+
+| Method | Best For | Complexity |
+|---|---|---|
+| Cramer's rule | 2×2 or 3×3 systems | O(n! · n) |
+| Gaussian elimination | Any size | O(n³) |
+| Matrix inverse | Multiple right-hand sides | O(n³) setup |`,
+      examTip: 'For 2×2 systems, Cramer\'s rule is fastest on the FE exam. For 3×3, Gaussian elimination is usually faster. Always check that det(A) ≠ 0 before applying Cramer\'s — if det = 0, the system has no unique solution.',
+    },
+    {
+      id: 'la-eigenvalues',
+      title: '2. Eigenvalues and Stability',
+      content: `## 2.1 Eigenvalue Problem
+
+The eigenvalue equation: **Ax = λx**
+
+Where λ is the **eigenvalue** and x is the **eigenvector**.
+
+To find eigenvalues, solve: **det(A - λI) = 0** (the characteristic equation)
+
+For a 2×2 matrix [a b; c d]:
+- **Characteristic equation**: λ² - (a+d)λ + (ad-bc) = 0
+- **Sum of eigenvalues** = trace = a + d
+- **Product of eigenvalues** = determinant = ad - bc
+
+## 2.2 Eigenvalues and System Stability
+
+Eigenvalues determine system behavior in control systems and circuit transients:
+
+| Eigenvalue Location | System Behavior |
+|---|---|
+| All eigenvalues have Re(λ) < 0 | **Stable** — all modes decay |
+| Any eigenvalue has Re(λ) > 0 | **Unstable** — at least one mode grows |
+| Eigenvalue has Re(λ) = 0 | **Marginally stable** — sustained oscillation |
+
+### Connection to Transfer Functions
+
+The eigenvalues of the system matrix A are the **poles** of the transfer function H(s). Stability requires all poles (eigenvalues) in the left half of the s-plane.`,
+      examTip: 'The characteristic equation det(A - λI) = 0 gives eigenvalues. For the FE exam, you mostly need 2×2 eigenvalues: solve the quadratic λ² - trace·λ + det = 0. The key insight: eigenvalues with negative real parts mean stability.',
+      importantNote: 'Eigenvalues of the system state matrix are identical to the poles of the transfer function. This connection between linear algebra and control theory is fundamental — know it for the FE exam.',
+    },
+  ],
+  keyTakeaways: [
+    'Matrix form Ax = b solves n equations with n unknowns; use Gaussian elimination or Cramer\'s rule.',
+    'Determinant for 2×2: det = ad - bc; non-zero means invertible.',
+    'Eigenvalue equation Ax = λx; eigenvalues found from det(A-λI) = 0.',
+    'All eigenvalues with negative real parts → stable system.',
+    'Matrix multiplication is associative but NOT commutative.',
+  ],
+},
+
+fee_vector_analysis: {
+  topicId: 'fee_vector_analysis',
+  title: 'Laplace Transform & Vector Analysis',
+  domainWeight: 'Mathematics · 7–11%',
+  overview: 'The Laplace transform converts time-domain differential equations into algebraic equations in the s-domain. Vector analysis — gradient, divergence, and curl — is essential for electromagnetics. Together these tools solve circuit transients and field problems.',
+  sections: [
+    {
+      id: 'va-laplace',
+      title: '1. Laplace Transform',
+      content: `## 1.1 Definition and Key Transform Pairs
+
+The Laplace transform: **F(s) = ∫₀^∞ f(t)·e^(-st)dt** where s = σ + jω
+
+### Essential Transform Pairs
+
+| f(t) | F(s) |
+|---|---|
+| 1 (unit step) | 1/s |
+| t | 1/s² |
+| t^n | n!/s^(n+1) |
+| e^(-at) | 1/(s+a) |
+| sin(ωt) | ω/(s²+ω²) |
+| cos(ωt) | s/(s²+ω²) |
+| e^(-at)·sin(ωt) | ω/[(s+a)²+ω²] |
+| e^(-at)·cos(ωt) | (s+a)/[(s+a)²+ω²] |
+
+### Key Properties
+
+- **Linearity**: L{af + bg} = aF(s) + bG(s)
+- **Frequency shift**: L{e^(-at)f(t)} = F(s+a)
+- **Derivative**: L{f'(t)} = sF(s) - f(0⁻)
+- **Integral**: L{∫f(t)dt} = F(s)/s
+- **Convolution**: L{f*g} = F(s)·G(s)
+
+## 1.2 Value Theorems
+
+- **Initial Value Theorem**: lim(t→0⁺) f(t) = lim(s→∞) sF(s)
+- **Final Value Theorem**: lim(t→∞) f(t) = lim(s→0) sF(s)
+
+The Final Value Theorem finds steady-state WITHOUT inverse transforming — a major time-saver.`,
+      examTip: 'The FE reference handbook has the Laplace transform table, but knowing the common pairs cold saves time. Most important: e^(-at) → 1/(s+a), sin(ωt) → ω/(s²+ω²), and the derivative property sF(s)-f(0). The Final Value Theorem is tested frequently — remember it only works if all poles of sF(s) are in the LHP.',
+      importantNote: 'The Final Value Theorem gives WRONG answers if the system is unstable or has poles on the imaginary axis (except at origin). Always verify that sF(s) has all poles in the left half-plane before applying it.',
+    },
+    {
+      id: 'va-vectors',
+      title: '2. Vector Calculus for Electromagnetics',
+      content: `## 2.1 Vector Operations
+
+- **Dot product**: A·B = |A||B|cosθ = AxBx + AyBy + AzBz (scalar result)
+- **Cross product**: |A×B| = |A||B|sinθ (vector result, direction by right-hand rule)
+
+The dot product tests perpendicularity (A·B = 0 if perpendicular).
+The cross product finds the area of the parallelogram and the normal direction.
+
+## 2.2 Vector Calculus Operators
+
+| Operator | Formula | Physical Meaning |
+|---|---|---|
+| **Gradient** ∇f | (∂f/∂x)i + (∂f/∂y)j + (∂f/∂z)k | Direction of steepest increase |
+| **Divergence** ∇·F | ∂Fx/∂x + ∂Fy/∂y + ∂Fz/∂z | Net outflow from a point |
+| **Curl** ∇×F | (see determinant formula) | Rotation/circulation of field |
+
+### Applications in Electromagnetics
+
+- **∇V = -E** (electric field is negative gradient of potential)
+- **∇·E = ρ/ε₀** (Gauss's law — charge creates divergence in E)
+- **∇·B = 0** (no magnetic monopoles — B has zero divergence)
+- **∇×E = -∂B/∂t** (Faraday's law — changing B creates curl in E)
+- **∇×B = μ₀J + μ₀ε₀∂E/∂t** (Ampere-Maxwell law)
+
+## 2.3 Integral Theorems
+
+- **Divergence theorem**: ∮F·dA = ∫∫∫(∇·F)dV (surface flux = volume divergence)
+- **Stokes' theorem**: ∮F·dl = ∫∫(∇×F)·dA (line circulation = surface curl)`,
+      examTip: 'For the FE exam: gradient points toward increasing potential, divergence measures source strength (charge density in E-fields), curl measures circulation (current density in B-fields). Know that ∇·B = 0 always (no magnetic monopoles) and ∇×E = 0 for electrostatics (conservative field).',
+    },
+  ],
+  keyTakeaways: [
+    'Laplace transform converts ODEs to algebraic equations; key pair: e^(-at) → 1/(s+a).',
+    'Final Value Theorem: lim(t→∞)f(t) = lim(s→0)sF(s) — finds steady-state without inverse transform.',
+    'Gradient ∇f gives direction of steepest increase; divergence ∇·F measures outflow.',
+    'Curl ∇×F measures rotation; zero curl means conservative (path-independent) field.',
+    'Dot product A·B = |A||B|cosθ (scalar); cross product |A×B| = |A||B|sinθ (vector).',
+  ],
+},
+
+/* ══════════════════════════════════════════════════════════════════
+ * TOPIC 1 — PROBABILITY AND STATISTICS  (4 curriculum IDs)  ·  4–6 %
+ * ══════════════════════════════════════════════════════════════════ */
+
+fee_prob_dist: {
+  topicId: 'fee_prob_dist',
+  title: 'Probability Distributions',
+  domainWeight: 'Probability & Statistics · 4–6%',
+  overview: 'Probability distributions model uncertainty in engineering — from component failure rates to measurement errors. The FE exam tests binomial, Poisson, normal, and exponential distributions along with basic probability rules.',
+  sections: [
+    {
+      id: 'pd-rules',
+      title: '1. Probability Rules and Bayes Theorem',
+      content: `## 1.1 Fundamental Rules
+
+- **Range**: 0 ≤ P(A) ≤ 1
+- **Complement**: P(A') = 1 - P(A)
+- **Union (OR)**: P(A ∪ B) = P(A) + P(B) - P(A ∩ B)
+- **Intersection (AND)**: P(A ∩ B) = P(A)·P(B|A)
+- **Independent events**: P(A ∩ B) = P(A)·P(B) when A, B are independent
+- **Conditional**: P(A|B) = P(A ∩ B)/P(B)
+
+## 1.2 Bayes' Theorem
+
+**P(A|B) = P(B|A)·P(A) / P(B)**
+
+Bayes' theorem updates probabilities with new evidence. It reverses the conditioning:
+- P(A) is the **prior** probability
+- P(A|B) is the **posterior** probability after observing B
+- P(B|A) is the **likelihood**
+
+### Total Probability
+
+P(B) = Σ P(B|Aᵢ)·P(Aᵢ) for all mutually exclusive events Aᵢ`,
+      examTip: 'On the FE exam, Bayes\' theorem problems typically give P(B|A) and ask for P(A|B). Set up the formula carefully and use total probability for the denominator. Common context: diagnostic testing (given test positive, what is probability of actual defect?).',
+    },
+    {
+      id: 'pd-distributions',
+      title: '2. Common Probability Distributions',
+      content: `## 2.1 Discrete Distributions
+
+### Binomial Distribution
+Models **n independent trials** with probability p of success each:
+
+**P(X=k) = C(n,k)·p^k·(1-p)^(n-k)**
+
+- Mean: E[X] = np
+- Variance: Var(X) = np(1-p)
+
+### Poisson Distribution
+Models **rare events** with average rate λ:
+
+**P(X=k) = (λ^k · e^(-λ)) / k!**
+
+- Mean = Variance = λ
+- Approximates binomial when n is large, p is small, and λ = np
+
+## 2.2 Continuous Distributions
+
+### Normal (Gaussian) Distribution
+
+**f(x) = (1/(σ·sqrt(2π))) · e^(-(x-μ)²/(2σ²))**
+
+- **Standard normal**: Z = (X - μ)/σ (use Z-tables for probabilities)
+- **68-95-99.7 rule**: ~68% within 1σ, ~95% within 2σ, ~99.7% within 3σ
+
+### Exponential Distribution
+
+**f(t) = λ·e^(-λt)** for t ≥ 0
+
+- Mean: 1/λ
+- **Memoryless property**: P(T > t+s | T > s) = P(T > t)
+- Models time between failures in reliability analysis
+
+| Distribution | Type | Use Case | Key Parameter |
+|---|---|---|---|
+| Binomial | Discrete | Pass/fail in n trials | n, p |
+| Poisson | Discrete | Rare event counts | λ (rate) |
+| Normal | Continuous | Measurement errors | μ, σ |
+| Exponential | Continuous | Time between failures | λ (failure rate) |`,
+      examTip: 'Know which distribution fits the scenario: fixed number of trials with pass/fail → binomial; counting rare events per interval → Poisson; continuous measurement with bell shape → normal; time until failure → exponential. The FE reference has Z-tables for normal distribution.',
+      importantNote: 'The exponential distribution is the ONLY continuous distribution with the memoryless property. This means the probability of surviving another hour is the same regardless of how long the component has already been running. This is unrealistic for wear-out failures but valid for random failures.',
+    },
+  ],
+  keyTakeaways: [
+    'Bayes\' theorem: P(A|B) = P(B|A)·P(A)/P(B) — reverses conditional probability.',
+    'Binomial: n trials, probability p; Poisson: rare events with rate λ.',
+    'Normal distribution: Z = (X-μ)/σ standardizes for table lookup.',
+    'Exponential: models failure times; memoryless property.',
+    '68-95-99.7 rule for normal: 68% within 1σ, 95% within 2σ, 99.7% within 3σ.',
+  ],
+},
+
+fee_expected_values: {
+  topicId: 'fee_expected_values',
+  title: 'Expected Values and Variance',
+  domainWeight: 'Probability & Statistics · 4–6%',
+  overview: 'Expected value and variance quantify the center and spread of distributions. These statistical measures summarize data for engineering decisions about tolerances, reliability, and quality control.',
+  sections: [
+    {
+      id: 'ev-measures',
+      title: '1. Central Tendency and Spread',
+      content: `## 1.1 Measures of Central Tendency
+
+- **Mean (average)**: μ = ΣX/n (population) or x̄ = ΣX/n (sample)
+- **Median**: middle value when sorted; robust to outliers
+- **Mode**: most frequent value
+
+### Expected Value
+
+For a discrete random variable: **E[X] = Σ xᵢ·P(xᵢ)**
+
+Properties:
+- E[aX + b] = a·E[X] + b
+- E[X + Y] = E[X] + E[Y] (always, even if dependent)
+- E[XY] = E[X]·E[Y] only if X, Y are independent
+
+## 1.2 Measures of Spread
+
+- **Variance**: σ² = E[(X - μ)²] = E[X²] - (E[X])²
+- **Standard deviation**: σ = sqrt(σ²) (same units as data)
+- **Sample variance**: s² = Σ(X - x̄)²/(n-1) (divide by n-1 for unbiased estimate)
+
+| Measure | Population | Sample |
+|---|---|---|
+| Mean | μ = ΣX/N | x̄ = ΣX/n |
+| Variance | σ² = Σ(X-μ)²/N | s² = Σ(X-x̄)²/(n-1) |
+| Std Dev | σ = sqrt(σ²) | s = sqrt(s²) |`,
+      examTip: 'Sample variance divides by (n-1), not n. This is called Bessel\'s correction and gives an unbiased estimate. The FE exam may test whether you use n or n-1 in the denominator — sample statistics always use n-1.',
+    },
+    {
+      id: 'ev-covariance',
+      title: '2. Covariance and Correlation',
+      content: `## 2.1 Covariance
+
+**Cov(X,Y) = E[(X - μx)(Y - μy)] = E[XY] - E[X]·E[Y]**
+
+- Positive covariance: X and Y tend to increase together
+- Negative covariance: one increases as the other decreases
+- Zero covariance: no linear relationship (but may have nonlinear)
+
+## 2.2 Correlation Coefficient
+
+**r = Cov(X,Y) / (σx · σy)**
+
+| r Value | Interpretation |
+|---|---|
+| r = +1 | Perfect positive linear relationship |
+| r = -1 | Perfect negative linear relationship |
+| r = 0 | No linear relationship |
+| 0 < |r| < 0.5 | Weak linear relationship |
+| 0.5 < |r| < 0.8 | Moderate linear relationship |
+| 0.8 < |r| < 1 | Strong linear relationship |
+
+### Variance of Sums
+
+- **Var(X + Y) = Var(X) + Var(Y) + 2·Cov(X,Y)**
+- If X, Y independent: Var(X + Y) = Var(X) + Var(Y)
+- **Var(aX) = a²·Var(X)**`,
+      examTip: 'Correlation does NOT imply causation — this is a classic FE exam concept. Two variables can be strongly correlated (r near ±1) without one causing the other. Also remember: r = 0 means no LINEAR relationship, but a strong nonlinear relationship could still exist.',
+      importantNote: 'When adding independent random variables, variances ADD but standard deviations do NOT. This is a common mistake: σ(X+Y) ≠ σ(X) + σ(Y). Instead, σ(X+Y) = sqrt(σx² + σy²).',
+    },
+  ],
+  keyTakeaways: [
+    'Mean μ = ΣX/n; variance σ² = Σ(X-μ)²/n; standard deviation σ = sqrt(σ²).',
+    'Sample variance uses n-1 (Bessel\'s correction); population variance uses N.',
+    'Correlation r ∈ [-1,+1]; r = 0 means no linear relationship.',
+    'Var(X+Y) = Var(X) + Var(Y) + 2·Cov(X,Y); simplifies if independent.',
+    'Correlation does NOT imply causation.',
+  ],
+},
+
+fee_regression: {
+  topicId: 'fee_regression',
+  title: 'Linear Regression',
+  domainWeight: 'Probability & Statistics · 4–6%',
+  overview: 'Linear regression fits a straight line to data, enabling prediction and trend analysis. The coefficient of determination R² measures goodness of fit. These tools support engineering data analysis and calibration.',
+  sections: [
+    {
+      id: 'reg-line',
+      title: '1. Least-Squares Regression Line',
+      content: `## 1.1 The Regression Equation
+
+The best-fit line through data: **y = a + bx**
+
+Where:
+- **Slope**: b = r · (sy/sx) = [nΣxy - ΣxΣy] / [nΣx² - (Σx)²]
+- **Intercept**: a = ȳ - b·x̄
+
+### Coefficient of Determination
+
+**R² = r²** measures the fraction of variance in y explained by x:
+- R² = 1: perfect fit (all points on line)
+- R² = 0: no linear relationship
+- R² = 0.85: 85% of y-variance explained by x
+
+## 1.2 Interpretation
+
+- The slope b represents the change in y per unit change in x
+- The intercept a is the predicted y when x = 0
+- **Extrapolation** (predicting outside data range) is unreliable
+- **Interpolation** (predicting within data range) is more reliable`,
+      examTip: 'On the FE exam, R² is the most common regression question. R² = r² tells you the proportion of variance explained. If r = 0.9, then R² = 0.81, meaning 81% of the variation in y is explained by x. The remaining 19% is due to other factors or random error.',
+    },
+    {
+      id: 'reg-multiple',
+      title: '2. Regression Applications and Residual Analysis',
+      content: `## 2.1 Residual Analysis
+
+A **residual** is the difference between observed and predicted: eᵢ = yᵢ - ŷᵢ
+
+Good regression has:
+- Residuals randomly scattered around zero
+- No patterns in residual plot (no curves, no funnels)
+- Residuals approximately normally distributed
+
+### Common Regression Pitfalls
+
+| Pitfall | Description | Symptom |
+|---|---|---|
+| Nonlinear data | Curved relationship forced into line | Curved residual pattern |
+| Outliers | Extreme points distort fit | Large individual residuals |
+| Extrapolation | Predicting outside data range | Unreliable predictions |
+| Correlation ≠ Causation | Statistical association ≠ cause | Misleading conclusions |
+
+## 2.2 Standard Error of Estimate
+
+**Se = sqrt[Σ(yᵢ - ŷᵢ)² / (n-2)]**
+
+This measures the typical distance of data points from the regression line. Smaller Se means better fit. Dividing by n-2 accounts for the two estimated parameters (slope and intercept).`,
+      examTip: 'If the FE exam shows a residual plot with a clear curve pattern, the linear model is inappropriate — the data has a nonlinear relationship. Transform the data (log, square root, etc.) or use a higher-order polynomial model.',
+    },
+  ],
+  keyTakeaways: [
+    'Regression line y = a + bx; slope b = r·(sy/sx); intercept a = ȳ - b·x̄.',
+    'R² = r² shows fraction of y-variance explained by x; closer to 1 is better.',
+    'Residuals should be random; patterns indicate model inadequacy.',
+    'Extrapolation is unreliable; interpolation is more trustworthy.',
+    'Standard error Se measures typical residual size; smaller is better.',
+  ],
+},
+
+fee_hypothesis: {
+  topicId: 'fee_hypothesis',
+  title: 'Hypothesis Testing & Confidence Intervals',
+  domainWeight: 'Probability & Statistics · 4–6%',
+  overview: 'Hypothesis testing determines whether data supports a claim. Confidence intervals quantify estimation uncertainty. Both are essential for quality control, reliability testing, and engineering decision-making on the FE exam.',
+  sections: [
+    {
+      id: 'ht-process',
+      title: '1. Hypothesis Testing Framework',
+      content: `## 1.1 The Testing Process
+
+1. **State hypotheses**: H₀ (null — no effect) and H₁ (alternative — effect exists)
+2. **Choose significance level** α (typically 0.05 = 5% risk of false positive)
+3. **Calculate test statistic** from data
+4. **Find p-value** or compare to critical value
+5. **Decide**: reject H₀ if p < α; fail to reject H₀ if p ≥ α
+
+## 1.2 Types of Errors
+
+| | H₀ True | H₀ False |
+|---|---|---|
+| **Reject H₀** | Type I error (α) | Correct! (Power = 1-β) |
+| **Fail to reject H₀** | Correct! | Type II error (β) |
+
+- **Type I error** (false positive): rejecting a true H₀; probability = α
+- **Type II error** (false negative): failing to reject a false H₀; probability = β
+- **Power** = 1 - β: probability of correctly detecting a real effect
+
+## 1.3 Common Tests
+
+### t-Test (comparing means)
+
+**t = (x̄ - μ₀) / (s/sqrt(n))**
+
+- Degrees of freedom: df = n - 1
+- Compare t to critical value from t-table at significance α
+
+### Chi-Square Test (categorical data)
+
+**χ² = Σ(O - E)²/E**
+
+- O = observed frequency, E = expected frequency
+- Compare χ² to critical value from chi-square table`,
+      examTip: 'The most common FE exam mistake in hypothesis testing: "fail to reject H₀" does NOT mean "accept H₀." We never prove the null hypothesis — we only fail to find evidence against it. Also, a smaller p-value means stronger evidence against H₀.',
+      importantNote: 'Reducing Type I error (lowering α) increases Type II error (β) and vice versa. The only way to reduce both simultaneously is to increase sample size n. This tradeoff is fundamental to statistical testing.',
+    },
+    {
+      id: 'ht-confidence',
+      title: '2. Confidence Intervals',
+      content: `## 2.1 Constructing Confidence Intervals
+
+A **confidence interval** estimates a population parameter:
+
+**CI = x̄ ± t(α/2, n-1) · s/sqrt(n)**
+
+Where:
+- x̄ is the sample mean
+- s is the sample standard deviation
+- n is the sample size
+- t(α/2, n-1) is the t-critical value for confidence level (1-α)
+
+### Common Confidence Levels
+
+| Confidence Level | α | t-multiplier (large n) |
+|---|---|---|
+| 90% | 0.10 | 1.645 |
+| 95% | 0.05 | 1.960 |
+| 99% | 0.01 | 2.576 |
+
+## 2.2 Interpretation
+
+A **95% confidence interval** means: if we repeated the sampling process many times, 95% of the resulting intervals would contain the true population parameter.
+
+It does **NOT** mean: "there is a 95% probability the true value is in this interval."
+
+### Standard Error
+
+**SE = s/sqrt(n)**
+
+The standard error decreases with larger n — more data gives more precise estimates. To halve the standard error, quadruple the sample size.`,
+      examTip: 'Confidence interval width depends on three things: confidence level (higher = wider), standard deviation (more spread = wider), and sample size (larger n = narrower). The formula SE = s/sqrt(n) shows why: doubling precision requires 4x the sample size.',
+    },
+  ],
+  keyTakeaways: [
+    'H₀ is null hypothesis; reject H₀ if p-value < α (significance level).',
+    'Type I error (α): reject true H₀; Type II error (β): fail to reject false H₀.',
+    't-test: t = (x̄ - μ₀)/(s/sqrt(n)); chi-square: χ² = Σ(O-E)²/E.',
+    'Confidence interval: x̄ ± t·s/sqrt(n); wider interval = more confidence but less precision.',
+    'SE = s/sqrt(n); quadruple sample size to halve standard error.',
+  ],
+},
+
+/* ══════════════════════════════════════════════════════════════════
+ * TOPIC 2 — ETHICS AND PROFESSIONAL PRACTICE  (3 curriculum IDs)  ·  3–5 %
+ * ══════════════════════════════════════════════════════════════════ */
+
+fee_codes_ethics: {
+  topicId: 'fee_codes_ethics',
+  title: 'NCEES Model Rules & NSPE Code of Ethics',
+  domainWeight: 'Ethics & Professional Practice · 3–5%',
+  overview: 'The NCEES Model Rules and NSPE Code of Ethics define the legal and professional obligations of engineers. Public safety, honesty, conflicts of interest, and professional competence are the core principles tested on the FE exam.',
+  sections: [
+    {
+      id: 'ce-codes',
+      title: '1. Professional Codes and Core Principles',
+      content: `## 1.1 NCEES Model Rules
+
+The NCEES Model Rules provide the **legal framework** for engineering licensure:
+- Obtain proper licenses before offering engineering services
+- **Public health and safety is paramount** — always the top priority
+- Follow applicable laws and regulations
+- Avoid conflicts of interest
+- Maintain professional competence through continuing education
+
+## 1.2 NSPE Code of Ethics — Fundamental Canons
+
+The NSPE Code establishes **professional values**:
+
+1. **Hold paramount** the safety, health, and welfare of the public
+2. Perform services only in areas of **competence**
+3. Issue public statements only in an **objective and truthful** manner
+4. Act for each employer or client as **faithful agents or trustees**
+5. Avoid **deceptive acts**
+6. Conduct themselves **honorably, responsibly, ethically, and lawfully**
+
+## 1.3 Hierarchy of Obligations
+
+When interests conflict, the priority is clear:
+
+| Priority | Obligation |
+|---|---|
+| 1 (Highest) | **Public safety, health, welfare** |
+| 2 | Laws and regulations |
+| 3 | Professional codes and standards |
+| 4 | Employer/client interests |
+| 5 (Lowest) | Personal interests |`,
+      examTip: 'On the FE exam, the correct answer to ethical dilemmas ALWAYS prioritizes public safety above all else — above profit, client satisfaction, employer directives, and personal convenience. If an answer choice mentions public welfare, it is very likely correct.',
+      importantNote: 'Engineers must not claim credit for work they did not perform, must not misrepresent their qualifications, and MUST report situations that endanger public safety through proper channels.',
+    },
+    {
+      id: 'ce-conflicts',
+      title: '2. Conflicts of Interest and Whistleblowing',
+      content: `## 2.1 Conflicts of Interest
+
+A **conflict of interest** arises when personal gain might compromise professional judgment. Engineers must:
+- **Disclose** conflicts to all affected parties
+- **Refuse** assignments where objectivity cannot be maintained
+- **Avoid** accepting gifts that could influence professional judgment
+- **Not** serve competing clients without full disclosure
+
+Conflicts extend beyond financial compensation to include:
+- Family relationships with clients or contractors
+- Prior business dealings that create bias
+- Financial interests in competing companies
+
+## 2.2 Whistleblowing and Reporting
+
+When an engineer discovers work that **endangers public safety**:
+
+1. **Document** the concern and your findings
+2. **Report** through internal channels first (supervisor, management)
+3. **Escalate** to the licensing board if internal reporting fails
+4. **Report to authorities** if public safety is imminently threatened
+
+Engineers who report safety violations in good faith are **protected from retaliation** under most state laws and professional codes.
+
+## 2.3 Professional Competence
+
+- Accept work **only** in areas where you have education, training, or experience
+- If a project requires expertise you lack, **seek qualified assistance**
+- Maintain competence through **continuing professional development**
+- Admit limitations honestly rather than guessing`,
+      examTip: 'FE exam ethics scenarios often present pressure to cut corners, falsify data, or exceed your competence. The correct answer always involves: (1) prioritizing public safety, (2) using proper channels to report concerns, (3) documenting everything, and (4) refusing to participate in unethical conduct.',
+    },
+  ],
+  keyTakeaways: [
+    'Public health and safety is ALWAYS the highest priority — above profit, client wishes, and employer directives.',
+    'Disclose conflicts of interest to all affected parties; refuse work where objectivity is compromised.',
+    'Report safety violations through proper channels; whistleblowers are protected.',
+    'Accept work only in areas of competence; seek assistance when needed.',
+    'Document ethical concerns and recommendations to protect your professional record.',
+  ],
+},
+
+fee_licensure: {
+  topicId: 'fee_licensure',
+  title: 'Professional Licensure & Authority',
+  domainWeight: 'Ethics & Professional Practice · 3–5%',
+  overview: 'Professional engineering licensure protects the public through demonstrated competence. The FE exam is the first step toward PE licensure. Understanding the licensure process, EIT/PE roles, and authority limits is essential.',
+  sections: [
+    {
+      id: 'lic-process',
+      title: '1. The Licensure Path: FE to PE',
+      content: `## 1.1 Licensure Steps
+
+| Step | Requirement | Result |
+|---|---|---|
+| 1 | ABET-accredited degree (or equivalent) | Education requirement met |
+| 2 | Pass FE exam | Become **EIT** (Engineer in Training) |
+| 3 | 4 years supervised experience under PE | Experience requirement met |
+| 4 | Pass PE exam | Become **licensed PE** |
+
+## 1.2 EIT vs PE Authority
+
+- **EIT (Engineer in Training)**: can work under PE supervision, cannot stamp drawings, cannot offer services to public independently
+- **PE (Professional Engineer)**: can stamp/seal drawings, take legal responsibility for designs, offer engineering services to the public
+
+### The PE Stamp
+
+The PE stamp on documents means:
+- The engineer has **personally reviewed** the work
+- The engineer takes **legal responsibility** for its accuracy and safety
+- It certifies the design meets applicable codes and standards
+
+## 1.3 Comity and Reciprocity
+
+**Comity** allows PE licensure reciprocity across states — a PE licensed in one state can often become licensed in another without retesting, though some documentation may be required. Each state licensing board sets its own specific requirements.`,
+      examTip: 'The FE exam is a prerequisite for PE licensure but is NOT itself a license to practice. As an EIT, you work under PE supervision. Only a PE can stamp drawings and take final legal responsibility. Understand this distinction clearly.',
+    },
+    {
+      id: 'lic-responsibilities',
+      title: '2. Professional Responsibilities and Record Keeping',
+      content: `## 2.1 Continuing Education
+
+Most states require **15-36 professional development hours annually** to maintain a PE license. Requirements vary by state and may include:
+- Technical courses in your specialty
+- Ethics training (often mandatory)
+- Attendance at professional conferences
+- Teaching or publishing technical content
+
+Failure to meet CE requirements can result in license **suspension or revocation**.
+
+## 2.2 Record Keeping and Documentation
+
+Professional engineers must:
+- **Maintain detailed records** of all engineering work
+- **Archive** calculations, drawings, and design decisions
+- **Document** assumptions, safety factors, and code references
+- Keep records for the **statute of limitations** period (varies by state)
+
+## 2.3 Scope of Practice
+
+- Engineers must practice only within their **area of competence**
+- Electrical engineers should not design structural elements without qualification
+- When work crosses disciplines, engage qualified professionals
+- Industrial exemptions may allow unlicensed practice in some contexts, but PE is required for **public-facing services**`,
+      examTip: 'The FE exam tests understanding of licensure requirements, not specific state rules. Key concepts: FE → EIT → experience → PE exam → PE license. Continuing education is mandatory. PE stamp = personal legal responsibility.',
+    },
+  ],
+  keyTakeaways: [
+    'FE exam passage makes you an EIT; PE requires 4 additional years of experience plus PE exam.',
+    'PE stamp means personal legal responsibility; only PEs can stamp/seal drawings.',
+    'Comity allows PE licensure reciprocity across states.',
+    'Continuing education (15-36 hours/year) is mandatory for PE maintenance.',
+    'Practice only within your area of competence; engage other professionals when needed.',
+  ],
+},
+
+fee_liability: {
+  topicId: 'fee_liability',
+  title: 'Professional Liability & Ethical Decision-Making',
+  domainWeight: 'Ethics & Professional Practice · 3–5%',
+  overview: 'Engineers face professional liability for their work. Understanding due care, due diligence, and systematic ethical decision-making protects both the public and the engineer\'s career.',
+  sections: [
+    {
+      id: 'liab-due-care',
+      title: '1. Due Care, Due Diligence, and Liability',
+      content: `## 1.1 Due Care vs Due Diligence
+
+| Concept | Definition | Example |
+|---|---|---|
+| **Due diligence** | Investigation and discovery of risks | Conducting a safety audit |
+| **Due care** | Implementing reasonable safeguards | Fixing the issues found in the audit |
+
+Both are necessary. An engineer who identifies hazards (due diligence) but fails to address them (due care) can be held **negligent**.
+
+## 1.2 Professional Liability
+
+Engineers can face liability for:
+- **Negligence**: failing to exercise reasonable care
+- **Malpractice**: professional services below acceptable standards
+- **Breach of contract**: failing to deliver agreed services
+- **Strict liability**: for inherently dangerous activities (rare in EE)
+
+### Defenses Against Liability
+- Evidence of following professional standards and codes
+- Documentation of design decisions and safety analysis
+- Professional liability insurance
+- Proper disclaimers and limitations in contracts`,
+      examTip: 'Due diligence = investigation (what is wrong?). Due care = implementation (fixing what is wrong). The FE exam tests this distinction. An engineer who knows about a problem and does nothing has failed in due care, even if due diligence was performed.',
+    },
+    {
+      id: 'liab-framework',
+      title: '2. Ethical Decision-Making Framework',
+      content: `## 2.1 Systematic Decision Process
+
+When facing an ethical dilemma:
+
+1. **Identify stakeholders**: public, employer, client, colleagues, yourself
+2. **Clarify the issue**: safety concern? conflict of interest? honesty issue?
+3. **Check applicable codes**: NCEES rules, NSPE code, laws, company policy
+4. **Identify options** and consequences of each
+5. **Decide**: prioritize public welfare above all
+6. **Act and document**: implement decision and keep records
+
+## 2.2 Common FE Exam Scenarios
+
+| Scenario | Correct Action |
+|---|---|
+| Asked to falsify test results | Refuse and report through proper channels |
+| Design flaw discovered after delivery | Disclose to client and correct immediately |
+| Pressure to cut corners for schedule | Advise of risks and resist; document |
+| Work outside your expertise | Decline or seek qualified assistance |
+| Conflict of interest discovered | Disclose to all affected parties |
+
+## 2.3 The Sunshine Test
+
+Ask: **"Would I be comfortable if this decision appeared in tomorrow's newspaper?"**
+
+If the answer is no, the decision is probably unethical. This simple test helps identify questionable choices before they become problems.`,
+      examTip: 'FE exam ethics questions rarely have ambiguous answers. The correct response always prioritizes public safety, follows proper channels, maintains honesty, and documents decisions. When in doubt, choose the answer that protects the public first.',
+      importantNote: 'Engineers should typically work through internal channels before going public with concerns. However, if public safety is IMMEDIATELY threatened and internal channels are unresponsive, reporting to authorities is both ethical and protected.',
+    },
+  ],
+  keyTakeaways: [
+    'Due diligence = investigation; due care = implementing safeguards. Both are required.',
+    'Negligence liability arises from failing to exercise reasonable professional care.',
+    'Framework: identify stakeholders → clarify issue → check codes → prioritize public welfare.',
+    'The sunshine test: would you be comfortable if this decision appeared in the news?',
+    'Document all ethical concerns, recommendations, and decisions for professional protection.',
+  ],
+},
+
+/* ══════════════════════════════════════════════════════════════════
+ * TOPIC 3 — ENGINEERING ECONOMICS  (3 curriculum IDs)  ·  3–5 %
+ * ══════════════════════════════════════════════════════════════════ */
+
+fee_tvm: {
+  topicId: 'fee_tvm',
+  title: 'Time Value of Money & Financial Factors',
+  domainWeight: 'Engineering Economics · 3–5%',
+  overview: 'The time value of money principle — a dollar today is worth more than a dollar tomorrow — underlies all engineering economic analysis. Standard cash flow factors convert between present, future, and annuity values.',
+  sections: [
+    {
+      id: 'tvm-factors',
+      title: '1. Compound Interest and Standard Factors',
+      content: `## 1.1 Compound Interest
+
+**F = P(1+i)^n** — future value of present amount P at interest rate i for n periods
+
+**P = F/(1+i)^n** — present value of future amount F
+
+## 1.2 The Six Standard Cash Flow Factors
+
+| Factor | Symbol | Formula | Converts |
+|---|---|---|---|
+| Future Worth | (F/P, i, n) | (1+i)^n | P → F |
+| Present Worth | (P/F, i, n) | 1/(1+i)^n | F → P |
+| Annuity to Future | (F/A, i, n) | [(1+i)^n - 1]/i | A → F |
+| Annuity to Present | (P/A, i, n) | [(1+i)^n - 1]/[i(1+i)^n] | A → P |
+| Capital Recovery | (A/P, i, n) | i(1+i)^n/[(1+i)^n - 1] | P → A |
+| Sinking Fund | (A/F, i, n) | i/[(1+i)^n - 1] | F → A |
+
+## 1.3 Effective Annual Rate
+
+For nominal rate r compounded m times per year:
+
+**EAR = (1 + r/m)^m - 1**
+
+For continuous compounding: **EAR = e^r - 1** and **F = P·e^(rt)**`,
+      examTip: 'The FE reference handbook includes factor tables. Know which factor to use: P/F for single future payment, P/A for uniform annual series, A/P for loan payments. The most common mistake is using the wrong factor — draw a cash flow diagram first to clarify.',
+      importantNote: 'When comparing alternatives with different lifespans, use Annual Worth (AW) method or find the least common multiple of lifespans. Do NOT directly compare NPV of projects with different durations.',
+    },
+    {
+      id: 'tvm-rates',
+      title: '2. Nominal vs Effective Rates and Cash Flow Diagrams',
+      content: `## 2.1 Nominal vs Effective Interest Rates
+
+- **Nominal rate** r: stated annual rate (e.g., "12% compounded monthly")
+- **Effective rate**: actual rate after compounding
+
+Example: 12% compounded monthly → i_monthly = 1%/month → EAR = (1.01)^12 - 1 = 12.68%
+
+### Continuous Compounding
+
+When compounding frequency approaches infinity: **F = P·e^(rt)**
+
+## 2.2 Cash Flow Diagrams
+
+A cash flow diagram is essential for setting up economic problems:
+- Horizontal axis represents time periods
+- Upward arrows represent cash **inflows** (benefits)
+- Downward arrows represent cash **outflows** (costs)
+- Time 0 is "now" (present)
+
+### Gradient Series
+
+Sometimes cash flows increase by a constant amount G each period:
+- **P = G · (P/G, i, n)** where (P/G, i, n) = [(1+i)^n - in - 1] / [i²(1+i)^n]
+
+Or by a constant percentage g each period (geometric gradient):
+- **P = A₁ · [(1 - (1+g)^n·(1+i)^(-n)) / (i - g)]** when i ≠ g`,
+      examTip: 'Always draw the cash flow diagram before selecting factors. Mark every payment with its correct time period. A common error is off-by-one timing — the first payment of an annuity occurs at the END of period 1, not at time 0.',
+    },
+  ],
+  keyTakeaways: [
+    'F = P(1+i)^n converts present to future; P = F/(1+i)^n converts future to present.',
+    'Six standard factors cover all conversions: P/F, F/P, P/A, A/P, F/A, A/F.',
+    'EAR = (1+r/m)^m - 1 converts nominal rate to effective annual rate.',
+    'Draw cash flow diagrams before selecting factors to avoid timing errors.',
+    'Use Annual Worth for comparing projects with different lifespans.',
+  ],
+},
+
+fee_cost_analysis: {
+  topicId: 'fee_cost_analysis',
+  title: 'NPV, Rate of Return, & Investment Analysis',
+  domainWeight: 'Engineering Economics · 3–5%',
+  overview: 'Net Present Value (NPV), Internal Rate of Return (IRR), and Benefit-Cost analysis are the primary methods for evaluating engineering investments. Each method has strengths depending on the decision context.',
+  sections: [
+    {
+      id: 'ca-npv-irr',
+      title: '1. NPV and Internal Rate of Return',
+      content: `## 1.1 Net Present Value (NPV)
+
+**NPV = -C₀ + Σ[Bₜ/(1+i)^t]**
+
+Where C₀ is initial cost, Bₜ is net benefit in year t, and i is discount rate.
+
+- **NPV > 0**: project adds value — accept
+- **NPV < 0**: project destroys value — reject
+- **NPV = 0**: project breaks even at the discount rate
+
+For mutually exclusive alternatives, choose the one with **highest NPV**.
+
+## 1.2 Internal Rate of Return (IRR)
+
+IRR is the discount rate that makes NPV = 0:
+
+**0 = -C₀ + Σ[Bₜ/(1+IRR)^t]**
+
+Decision rule: **accept if IRR > MARR** (Minimum Acceptable Rate of Return)
+
+### IRR vs NPV
+
+| Situation | Use NPV | Use IRR |
+|---|---|---|
+| Different project sizes | Preferred | Misleading |
+| Multiple sign changes in cash flow | Works correctly | May give multiple IRRs |
+| Simple accept/reject | Either works | Either works |
+| Ranking alternatives | Preferred | Need incremental analysis |`,
+      examTip: 'NPV is generally the safer method on the FE exam because it always gives a correct ranking. IRR can be misleading when comparing projects of different sizes or when cash flows change sign multiple times (creating multiple IRR solutions).',
+    },
+    {
+      id: 'ca-bc-payback',
+      title: '2. Benefit-Cost Ratio and Payback Period',
+      content: `## 2.1 Benefit-Cost Ratio
+
+**B/C = PV(benefits) / PV(costs)**
+
+- **B/C > 1**: project justified — accept
+- **B/C < 1**: costs exceed benefits — reject
+- Standard for **public sector** projects (government, infrastructure)
+
+For incremental analysis of two alternatives: accept the more expensive if incremental B/C > 1.
+
+## 2.2 Annual Worth
+
+**AW = NPV × (A/P, i, n)**
+
+Converts NPV to equivalent annual amount. Positive AW means the project is worthwhile. Particularly useful for comparing alternatives with **different lifespans**.
+
+## 2.3 Payback Period
+
+**Payback = Initial investment / Annual net benefit**
+
+- Simple to calculate but **ignores time value of money**
+- Ignores cash flows after payback
+- Use only for **screening**, not for final decisions
+
+### Profitability Index
+
+**PI = PV(benefits) / PV(costs) = 1 + NPV/PV(costs)**
+
+PI > 1 is acceptable. Useful for **capital rationing** when budget is limited.`,
+      examTip: 'On the FE exam, B/C analysis is common for public project evaluation. Remember: for incremental analysis between alternatives, compute incremental B/C = (ΔBenefits)/(ΔCosts). Accept the more expensive alternative only if incremental B/C > 1.',
+    },
+  ],
+  keyTakeaways: [
+    'NPV = -C₀ + Σ[Bₜ/(1+i)^t]; positive NPV means the project adds value.',
+    'IRR is the rate making NPV = 0; accept if IRR > MARR.',
+    'B/C ratio > 1 means justified; standard for public sector analysis.',
+    'Annual Worth (AW) is best for comparing alternatives with different lifespans.',
+    'Payback period ignores time value of money — use only for initial screening.',
+  ],
+},
+
+fee_depreciation: {
+  topicId: 'fee_depreciation',
+  title: 'Depreciation & Book Value',
+  domainWeight: 'Engineering Economics · 3–5%',
+  overview: 'Depreciation allocates an asset\'s cost over its useful life for accounting and tax purposes. Straight-line, MACRS, and sum-of-years-digits are the methods tested on the FE exam.',
+  sections: [
+    {
+      id: 'dep-methods',
+      title: '1. Depreciation Methods',
+      content: `## 1.1 Straight-Line Depreciation
+
+**D = (Cost - Salvage) / Useful Life**
+
+- Equal annual depreciation
+- **Book value**: BV_t = Cost - t·D
+- Simplest method; used for financial reporting
+
+## 1.2 MACRS (Modified Accelerated Cost Recovery System)
+
+- U.S. tax standard for depreciation
+- **Ignores salvage value** (depreciates full cost)
+- Uses IRS-defined recovery periods (3, 5, 7, 10, 15, 20 years)
+- Front-loads deductions (higher depreciation in early years)
+- Specific percentages from IRS tables
+
+### MACRS Advantage
+
+Accelerated depreciation reduces taxes earlier → better cash flow due to **time value of money**.
+
+## 1.3 Sum-of-Years-Digits (SYD)
+
+**D_t = (Remaining useful life / Sum of all years) × (Cost - Salvage)**
+
+Sum of years for n-year life: SYD = n(n+1)/2
+
+Example: 5-year life → SYD = 15
+- Year 1: D₁ = (5/15)(Cost-Salvage) = 33.3%
+- Year 2: D₂ = (4/15)(Cost-Salvage) = 26.7%
+- Year 3: D₃ = (3/15)(Cost-Salvage) = 20.0%
+
+| Method | Pattern | Salvage Value | Tax Use |
+|---|---|---|---|
+| Straight-line | Equal annual | Subtracted | Financial reporting |
+| MACRS | Accelerated | Ignored | U.S. tax calculations |
+| SYD | Accelerated | Subtracted | Some accounting |`,
+      examTip: 'The FE exam may ask you to compare depreciation methods. Straight-line is simplest; MACRS gives the best tax benefit early (time value advantage). For MACRS, you need the IRS recovery period table — the FE reference handbook provides these percentages.',
+    },
+    {
+      id: 'dep-bookvalue',
+      title: '2. Book Value, Market Value, and Tax Effects',
+      content: `## 2.1 Book Value vs Market Value
+
+- **Book value**: Cost minus accumulated depreciation (accounting value)
+- **Market value**: what the asset could actually sell for
+
+These diverge over time:
+- Well-maintained equipment may have market value > book value
+- Rapidly obsolete technology may have market value < book value
+
+## 2.2 Tax Shield from Depreciation
+
+Depreciation reduces taxable income, creating a **tax shield**:
+
+**Tax savings = D × Tax rate**
+
+Example: $10,000 depreciation at 30% tax rate → $3,000 tax savings
+
+### After-Tax Cash Flow
+
+**ATCF = Before-tax cash flow - Taxes + Depreciation tax shield**
+
+Or equivalently: ATCF = Revenue - Expenses - Taxes
+
+Where Taxes = (Revenue - Expenses - Depreciation) × Tax rate
+
+## 2.3 Disposal and Capital Gains
+
+When selling an asset:
+- If sale price > book value: **capital gain** (taxable)
+- If sale price < book value: **capital loss** (tax deduction)
+- If sale price = book value: no tax consequence`,
+      examTip: 'Depreciation is a non-cash expense — it does not involve actual money leaving the company. It reduces taxable income, which reduces taxes paid (a real cash savings). This tax shield effect must be included in after-tax NPV analysis.',
+    },
+  ],
+  keyTakeaways: [
+    'Straight-line: D = (Cost-Salvage)/Life; produces equal annual deductions.',
+    'MACRS is accelerated and ignores salvage; used for U.S. tax calculations.',
+    'SYD: D_t = (Remaining years/SYD)×(Cost-Salvage); SYD = n(n+1)/2.',
+    'Book value = Cost - Accumulated depreciation; differs from market value.',
+    'Depreciation creates tax shield: tax savings = D × tax rate.',
+  ],
+},
+
+/* ══════════════════════════════════════════════════════════════════
+ * TOPIC 4 — PROPERTIES OF ELECTRICAL MATERIALS  (4 curriculum IDs)  ·  3–5 %
+ * ══════════════════════════════════════════════════════════════════ */
+
+fee_conductors: {
+  topicId: 'fee_conductors',
+  title: 'Conductors and Resistivity',
+  domainWeight: 'Properties of Electrical Materials · 3–5%',
+  overview: 'Conductivity and resistivity are fundamental material properties determining how easily charge flows. Understanding resistance as a function of geometry, material, and temperature is essential for wire selection and circuit design.',
+  sections: [
+    {
+      id: 'cond-resistivity',
+      title: '1. Resistivity, Conductivity, and Resistance',
+      content: `## 1.1 Fundamental Relationships
+
+**Resistivity** ρ (ohm·meters) is an intrinsic material property:
+
+**R = ρL/A**
+
+Where:
+- R = resistance (Ω)
+- ρ = resistivity (Ω·m)
+- L = conductor length (m)
+- A = cross-sectional area (m²)
+
+**Conductivity** σ = 1/ρ (siemens/meter)
+
+### Material Classification
+
+| Material Type | Resistivity Range | Examples |
+|---|---|---|
+| Conductors | 10⁻⁸ Ω·m | Copper (1.7×10⁻⁸), Aluminum (2.8×10⁻⁸) |
+| Semiconductors | 10⁻⁴ to 10⁴ Ω·m | Silicon, Germanium |
+| Insulators | 10⁸ to 10²⁰ Ω·m | Glass, Rubber, Teflon |
+
+## 1.2 Temperature Dependence
+
+**ρ(T) = ρ₀[1 + α(T - T₀)]**
+
+Where α is the **temperature coefficient of resistance**:
+- **Metals** (positive α): resistance increases with temperature
+- **Semiconductors** (negative α): resistance decreases with temperature
+- **Superconductors**: ρ → 0 below critical temperature Tc`,
+      examTip: 'R = ρL/A is one of the most commonly tested formulas. Doubling length doubles resistance; doubling cross-sectional area halves resistance. Temperature coefficient α is positive for metals (resistance goes UP when hot) and negative for thermistors (resistance goes DOWN when hot).',
+    },
+    {
+      id: 'cond-current',
+      title: '2. Current Density and Wire Selection',
+      content: `## 2.1 Current Density and Drift Velocity
+
+**Current density**: J = I/A (A/m²)
+
+**Drift velocity**: vd = J/(n·e) where n is carrier concentration, e is electron charge
+
+Despite fast signal propagation (near light speed), electrons drift slowly (mm/s). The electric field propagates at near-light speed, pushing electrons throughout the wire almost simultaneously.
+
+## 2.2 Wire Gauge and Selection
+
+AWG (American Wire Gauge) is the standard wire sizing system:
+- **Smaller gauge number = thicker wire = lower resistance**
+- Each 3-gauge decrease roughly doubles the cross-sectional area
+- Each 10-gauge decrease multiplies area by ~10
+
+| AWG | Diameter (mm) | Resistance (mΩ/m) | Typical Use |
+|---|---|---|---|
+| 10 | 2.59 | 3.3 | 30A circuits |
+| 12 | 2.05 | 5.2 | 20A household |
+| 14 | 1.63 | 8.3 | 15A household |
+| 18 | 1.02 | 21 | Low-power electronics |
+
+### Wire Selection Criteria
+- **Current capacity** (ampacity): wire must handle the current without overheating
+- **Voltage drop**: V = IR limits distance; thicker wire for longer runs
+- **Cost**: larger wire costs more; balance against performance`,
+      examTip: 'For the FE exam, know that voltage drop V = I×R limits how far current can travel at a given wire gauge. For long cable runs, use thicker wire (lower gauge number) to keep voltage drop acceptable. The formula R = ρL/A directly determines this tradeoff.',
+    },
+  ],
+  keyTakeaways: [
+    'Resistivity ρ is intrinsic; resistance R = ρL/A depends on geometry.',
+    'Temperature coefficient α: positive for metals (R increases), negative for semiconductors.',
+    'Conductivity σ = 1/ρ; copper is the standard conductor (ρ ≈ 1.7×10⁻⁸ Ω·m).',
+    'AWG: smaller number = thicker wire = lower resistance.',
+    'Wire selection balances ampacity, voltage drop, and cost.',
+  ],
+},
+
+fee_semiconductors: {
+  topicId: 'fee_semiconductors',
+  title: 'Semiconductors and Band Gap',
+  domainWeight: 'Properties of Electrical Materials · 3–5%',
+  overview: 'Semiconductors have properties between conductors and insulators, controlled by doping. Band gap energy, carrier concentration, and the p-n junction are fundamental to all electronic devices.',
+  sections: [
+    {
+      id: 'semi-band',
+      title: '1. Band Structure and Intrinsic Semiconductors',
+      content: `## 1.1 Energy Bands
+
+In a semiconductor crystal:
+- **Valence band**: electrons are bound to atoms (cannot conduct)
+- **Conduction band**: electrons are free to move (can conduct)
+- **Band gap** Eg: energy required to promote an electron from valence to conduction band
+
+| Material | Band Gap Eg | Type |
+|---|---|---|
+| Silicon (Si) | 1.12 eV | Semiconductor |
+| Germanium (Ge) | 0.66 eV | Semiconductor |
+| Gallium Arsenide (GaAs) | 1.42 eV | Semiconductor |
+| Diamond | 5.47 eV | Insulator |
+
+## 1.2 Intrinsic Carrier Concentration
+
+**ni ∝ exp(-Eg/(2kT))**
+
+Where k = 8.617×10⁻⁵ eV/K (Boltzmann constant) and T is temperature in Kelvin.
+
+For silicon at 300K: **ni ≈ 1.5 × 10¹⁰ cm⁻³**
+
+### Temperature Effects
+- Higher T → more thermal energy → more electrons promoted → higher conductivity
+- Carrier concentration roughly **doubles every 5-10°C**
+- This is why semiconductor devices are temperature-sensitive`,
+      examTip: 'Smaller band gap = higher intrinsic conductivity at room temperature. Germanium (Eg = 0.66 eV) has more carriers than silicon (Eg = 1.12 eV) at room temperature, which means more leakage current. This is why silicon dominates — it has lower leakage.',
+    },
+    {
+      id: 'semi-doping',
+      title: '2. Doping and the p-n Junction',
+      content: `## 2.1 Doping
+
+Adding impurities dramatically changes conductivity:
+
+### N-type Doping (Donor)
+- Add atoms with 5 valence electrons (P, As, Sb)
+- Extra electron is loosely bound → easily becomes free carrier
+- **Majority carriers**: electrons; **Minority carriers**: holes
+- n ≈ ND (donor concentration), p = ni²/ND
+
+### P-type Doping (Acceptor)
+- Add atoms with 3 valence electrons (B, Al, Ga)
+- Missing electron creates a "hole" that acts as positive charge
+- **Majority carriers**: holes; **Minority carriers**: electrons
+- p ≈ NA (acceptor concentration), n = ni²/NA
+
+### Mass Action Law
+
+**n × p = ni²** (constant at fixed temperature, regardless of doping)
+
+## 2.2 The p-n Junction (Diode)
+
+When p-type meets n-type:
+- A **depletion region** forms at the junction (no free carriers)
+- Built-in potential ≈ 0.7 V for silicon
+- **Forward bias** (+ to p, - to n): narrows depletion region → current flows
+- **Reverse bias**: widens depletion region → minimal current (leakage only)
+
+### Shockley Diode Equation
+
+**I = Is(e^(qV/kT) - 1)**
+
+Where Is is saturation current (≈ 10⁻¹² A), q = 1.602×10⁻¹⁹ C, kT/q ≈ 26 mV at 300K.`,
+      examTip: 'The mass action law n×p = ni² is critical. If you dope silicon with ND = 10¹⁶ donors/cm³, then n ≈ 10¹⁶ and p = (1.5×10¹⁰)²/10¹⁶ = 2.25×10⁴ cm⁻³. The minority carrier concentration drops dramatically with doping.',
+      importantNote: 'Thermal runaway in power devices: as temperature rises, more carriers are generated, increasing current, which generates more heat, further increasing temperature. Without proper thermal management (heat sinks, thermal shutdown), this positive feedback loop destroys the device.',
+    },
+  ],
+  keyTakeaways: [
+    'Band gap Eg determines carrier excitation; silicon Eg = 1.12 eV, ni ≈ 1.5×10¹⁰ cm⁻³ at 300K.',
+    'N-type (donor): extra electrons; P-type (acceptor): extra holes.',
+    'Mass action law: n×p = ni² always holds at fixed temperature.',
+    'Shockley equation I = Is(e^(qV/kT)-1) describes diode exponential I-V curve.',
+    'Forward bias: current flows (V > 0.7V for Si); reverse bias: only leakage current.',
+  ],
+},
+
+fee_dielectrics: {
+  topicId: 'fee_dielectrics',
+  title: 'Dielectrics and Insulators',
+  domainWeight: 'Properties of Electrical Materials · 3–5%',
+  overview: 'Dielectric materials store energy in electric fields and enable capacitors. Dielectric constant, breakdown strength, and loss tangent determine capacitor performance and insulation reliability.',
+  sections: [
+    {
+      id: 'diel-cap',
+      title: '1. Dielectric Constant and Capacitance',
+      content: `## 1.1 Dielectric Properties
+
+The **dielectric constant** (relative permittivity) εr measures how much a material increases capacitance compared to vacuum:
+
+**C = εr·ε₀·A/d**
+
+Where ε₀ = 8.854×10⁻¹² F/m is permittivity of free space.
+
+| Material | εr | Typical Application |
+|---|---|---|
+| Vacuum | 1 | Reference |
+| Air | 1.0006 | Variable capacitors |
+| Mica | 3-7 | Precision capacitors |
+| Glass | 4-10 | Substrates |
+| Ceramic (X7R) | 100-10000 | High-density capacitors |
+| Water | 80 | (Not used in capacitors) |
+
+## 1.2 Energy Storage
+
+**U = ½CV² = ½εr·ε₀·(A/d)·V²**
+
+Higher εr → more energy stored per volume → smaller capacitors for same capacitance.
+
+## 1.3 Breakdown Voltage
+
+**Dielectric strength** is the maximum electric field before breakdown (permanent damage):
+- Air: ~3 MV/m
+- Mica: ~150 MV/m
+- Ceramic: 100-300 MV/m
+
+Design with **safety margin**: operating field should be 30-50% of breakdown strength.`,
+      examTip: 'C = εr·ε₀·A/d is a high-frequency FE exam formula. To increase capacitance: increase εr (better dielectric material), increase A (larger plates), or decrease d (thinner dielectric). But decreasing d also brings you closer to breakdown — there is always a tradeoff.',
+    },
+    {
+      id: 'diel-loss',
+      title: '2. Dielectric Loss and Insulation',
+      content: `## 2.1 Dielectric Loss
+
+Real dielectrics dissipate some energy as heat, characterized by the **loss tangent** tan(δ):
+
+- **Low-loss materials** (tan δ < 0.001): mica, PTFE — used in high-frequency applications
+- **High-loss materials** (tan δ > 0.01): some ceramics — cause heating at high frequency
+
+Dielectric power loss: **P_loss ∝ V²·f·tan(δ)**
+
+Higher frequency and higher voltage increase dielectric heating.
+
+## 2.2 Polarization Mechanisms
+
+Different polarization mechanisms contribute at different frequencies:
+
+| Mechanism | Frequency Range | Description |
+|---|---|---|
+| Electronic | Optical (10¹⁵ Hz) | Electron cloud shifts |
+| Ionic | Infrared (10¹² Hz) | Ions shift positions |
+| Dipolar | Microwave (10⁹ Hz) | Polar molecules rotate |
+| Interfacial | Low freq (10³ Hz) | Charges accumulate at interfaces |
+
+At higher frequencies, slower mechanisms cannot follow the field, reducing εr. This frequency-dependent permittivity must be considered in AC circuit design.
+
+## 2.3 Insulation Properties
+
+- **Insulation resistance**: should be > 10¹² Ω for good insulators
+- **Moisture absorption** degrades insulation — environmental protection required
+- **Temperature** affects all properties — insulation must work at maximum operating temperature`,
+      examTip: 'For high-frequency applications, use low-loss dielectrics (mica, PTFE). For high-capacitance applications, use high-εr materials (ceramic). The FE exam may ask you to select a dielectric based on application requirements.',
+    },
+  ],
+  keyTakeaways: [
+    'Dielectric constant εr increases capacitance: C = εr·ε₀·A/d.',
+    'Higher εr enables smaller capacitors but may increase loss.',
+    'Breakdown voltage limits operating field; design with 30-50% safety margin.',
+    'Loss tangent tan(δ) characterizes dielectric heating; critical at high frequencies.',
+    'Moisture and temperature degrade insulation properties.',
+  ],
+},
+
+fee_magnetic_mat: {
+  topicId: 'fee_magnetic_mat',
+  title: 'Magnetic Materials',
+  domainWeight: 'Properties of Electrical Materials · 3–5%',
+  overview: 'Magnetic materials determine inductance, transformer efficiency, and motor performance. Permeability, the B-H curve, hysteresis loss, and the Curie temperature are essential for understanding magnetic devices.',
+  sections: [
+    {
+      id: 'mag-types',
+      title: '1. Magnetic Material Classification',
+      content: `## 1.1 Permeability
+
+**B = μ₀·μr·H** where μ₀ = 4π×10⁻⁷ H/m
+
+**Permeability** μ = μ₀·μr determines field amplification.
+
+| Material Type | μr | Example | Behavior |
+|---|---|---|---|
+| Diamagnetic | < 1 (slightly) | Copper, Bismuth | Weakly repels field |
+| Paramagnetic | > 1 (slightly) | Aluminum | Weakly attracts field |
+| Ferromagnetic | >> 1 (100-5000) | Iron, Nickel, Cobalt | Strongly attracts, retains |
+
+## 1.2 Ferromagnetic Materials
+
+Ferromagnetic materials have **unpaired electrons** with exchange interactions causing spontaneous alignment. Key properties:
+- **High permeability**: greatly amplifies magnetic fields
+- **Saturation**: B levels off at high H (all domains aligned)
+- **Remanence**: retains magnetization after field removed
+- **Coercivity**: reverse field needed to demagnetize
+
+### Curie Temperature
+
+Above the **Curie temperature** Tc, ferromagnetic materials become paramagnetic:
+- Iron: Tc ≈ 770°C
+- Nickel: Tc ≈ 358°C
+- Cobalt: Tc ≈ 1115°C`,
+      examTip: 'Ferromagnetic cores dramatically increase inductance: L = μr·μ₀·n²·A/l. An iron core with μr = 1000 increases inductance by 1000× compared to air. This is why transformers and inductors use ferromagnetic cores.',
+    },
+    {
+      id: 'mag-hysteresis',
+      title: '2. Hysteresis and Core Losses',
+      content: `## 2.1 The B-H Curve and Hysteresis Loop
+
+As applied field H increases from zero:
+1. **Initial magnetization**: B rises steeply then levels off (saturation)
+2. **H decreases to zero**: B does not return to zero — **remanence** Br remains
+3. **H reversed**: coercive field **Hc** needed to bring B to zero
+4. **Full reversal**: creates the **hysteresis loop**
+
+### Hysteresis Loss
+
+The **area inside the hysteresis loop** represents energy dissipated as heat per cycle:
+
+**W_hysteresis = (loop area) × frequency**
+
+## 2.2 Soft vs Hard Magnetic Materials
+
+| Property | Soft Magnetic | Hard Magnetic |
+|---|---|---|
+| Loop shape | Narrow (small area) | Wide (large area) |
+| Coercivity | Low | High |
+| Remanence | Low-moderate | High |
+| Application | **Transformers, motors** | **Permanent magnets** |
+| Examples | Silicon steel, ferrites | NdFeB, SmCo, Alnico |
+
+## 2.3 Eddy Current Losses
+
+Changing magnetic flux induces circulating currents (**eddy currents**) in conductive cores:
+
+**P_eddy ∝ B²·f²·t²/ρ**
+
+Where t = lamination thickness, f = frequency, ρ = resistivity.
+
+### Reducing Core Losses
+- **Lamination**: thin stacked sheets limit eddy current paths
+- **Ferrites**: high-resistivity ceramic magnets for high-frequency applications
+- **Thinner laminations**: reduce eddy currents further but increase manufacturing cost`,
+      examTip: 'Transformer core losses = hysteresis loss + eddy current loss. Hysteresis loss is proportional to frequency (area × f). Eddy current loss is proportional to f² and to lamination thickness squared. This is why high-frequency transformers use ferrite cores (high ρ) instead of iron laminations.',
+      importantNote: 'Core losses are present whenever the magnetic field is changing — even at no load. Copper losses (I²R in windings) depend on load current. Total transformer loss = core loss + copper loss. Maximum efficiency occurs when core loss equals copper loss.',
+    },
+  ],
+  keyTakeaways: [
+    'Permeability μ = μ₀·μr; ferromagnetic materials have μr >> 1.',
+    'Hysteresis loop area = energy loss per cycle; soft materials minimize this loss.',
+    'Eddy current loss ∝ B²·f²·t²; lamination reduces eddy currents.',
+    'Curie temperature: ferromagnetic → paramagnetic transition.',
+    'Soft magnets for transformers/motors; hard magnets for permanent magnets.',
+  ],
+},
+
+/* ══════════════════════════════════════════════════════════════════
+ * TOPIC 5 — ENGINEERING SCIENCES  (3 curriculum IDs)  ·  3–5 %
+ * ══════════════════════════════════════════════════════════════════ */
+
+fee_work_energy: {
+  topicId: 'fee_work_energy',
+  title: 'Work, Energy, Power, and Efficiency',
+  domainWeight: 'Engineering Sciences · 3–5%',
+  overview: 'Energy conversion is the core of electrical engineering. Power in circuits, energy stored in reactive elements, and efficiency calculations connect electrical quantities to real-world mechanical and thermal systems.',
+  sections: [
+    {
+      id: 'we-power',
+      title: '1. Electrical Power and Energy',
+      content: `## 1.1 Power Fundamentals
+
+**P = V·I** (instantaneous power in watts)
+
+For resistive elements, three equivalent forms:
+- **P = V·I = I²R = V²/R**
+
+All three give the same result; choose based on which quantities you know.
+
+### Energy
+
+Energy is power integrated over time: **W = ∫P dt = P·t** (for constant power)
+
+Units: 1 joule = 1 watt·second; 1 kWh = 3.6 MJ
+
+## 1.2 Energy Stored in Reactive Elements
+
+| Element | Energy Formula | Stored In |
+|---|---|---|
+| Capacitor | **W = ½CV²** | Electric field |
+| Inductor | **W = ½LI²** | Magnetic field |
+
+Reactive elements store and return energy — they do NOT dissipate power (ideal case). Only resistors dissipate power as heat.
+
+## 1.3 Efficiency
+
+**η = P_out / P_in = (useful output) / (total input)**
+
+- Always less than 100% due to losses
+- Losses include: I²R (copper losses), core losses, friction, windage
+
+| Device | Typical Efficiency |
+|---|---|
+| Power transformer | 95-99% |
+| Electric motor | 80-95% |
+| Solar panel | 15-22% |
+| LED lighting | 30-50% |`,
+      examTip: 'P = V·I = I²R = V²/R — know all three forms and choose wisely. If you know V and R, use V²/R (do not solve for I first). If you know I and R, use I²R. This saves calculation steps on the FE exam.',
+    },
+    {
+      id: 'we-mechanical',
+      title: '2. Electromechanical Energy Conversion',
+      content: `## 2.1 Mechanical Power
+
+**P_mech = τ·ω** (torque × angular velocity)
+
+Where τ is in N·m and ω is in rad/s.
+
+### Conversion: Electrical ↔ Mechanical
+
+- **Motor**: electrical input → mechanical output; P_elec = V·I, P_mech = τ·ω
+- **Generator**: mechanical input → electrical output; P_mech = τ·ω, P_elec = V·I
+
+Efficiency: η = P_out/P_in (losses = P_in - P_out)
+
+## 2.2 Conservation of Energy
+
+In any system: **Energy in = Energy out + Losses**
+
+For a motor: V·I = τ·ω + P_copper + P_core + P_friction
+
+This energy balance is fundamental to every power conversion problem on the FE exam.
+
+## 2.3 Kinetic and Potential Energy
+
+- **Kinetic**: KE = ½mv²
+- **Gravitational potential**: PE = mgh
+- **Spring potential**: PE = ½kx²
+
+These appear in electromechanical problems where electrical energy converts to or from mechanical energy (motors, generators, actuators).`,
+      examTip: 'For motor problems: input power = V·I (electrical), output power = τ·ω (mechanical), and η = τ·ω/(V·I). Always check units: ω must be in rad/s (not RPM). Convert: ω = 2π·(RPM)/60.',
+      importantNote: 'Mechanical power P = τ·ω requires ω in rad/s. A common FE exam error is using RPM directly. Always convert: ω (rad/s) = 2π × N (rev/s) = 2π × RPM / 60.',
+    },
+  ],
+  keyTakeaways: [
+    'P = V·I = I²R = V²/R; three equivalent forms for resistive power.',
+    'Capacitor energy: W = ½CV²; inductor energy: W = ½LI².',
+    'Efficiency η = P_out/P_in; always < 100% due to losses.',
+    'Mechanical power P = τ·ω; convert RPM to rad/s: ω = 2π·RPM/60.',
+    'Energy balance: input = useful output + losses.',
+  ],
+},
+
+fee_charge_current: {
+  topicId: 'fee_charge_current',
+  title: 'Charge, Current, Voltage, and Coulomb Force',
+  domainWeight: 'Engineering Sciences · 3–5%',
+  overview: 'Electric charge, current, voltage, and the forces between charges are the most fundamental concepts in electrical engineering. Ohm\'s law, Coulomb\'s law, and the Lorentz force connect these quantities.',
+  sections: [
+    {
+      id: 'cc-fundamentals',
+      title: '1. Charge, Current, and Voltage',
+      content: `## 1.1 Electric Charge
+
+**Charge** Q is measured in coulombs (C). One electron carries q = 1.602×10⁻¹⁹ C.
+
+## 1.2 Current
+
+**I = dQ/dt** (rate of charge flow, in amperes)
+
+- 1 ampere = 1 coulomb/second
+- **Conventional current** flows from + to - (opposite to electron flow)
+- DC is constant; AC varies sinusoidally
+
+## 1.3 Voltage
+
+**V = dW/dQ** (work per unit charge, in volts)
+
+- 1 volt = 1 joule/coulomb
+- Voltage is the "pressure" that drives current through resistance
+- **Ohm's law**: V = I·R
+
+## 1.4 Coulomb's Law
+
+Force between point charges:
+
+**F = k·Q₁·Q₂/r²** where k = 8.99×10⁹ N·m²/C²
+
+- Like charges repel; opposite charges attract
+- Force decreases with square of distance (inverse-square law)
+
+### Electric Field
+
+**E = F/Q = V/d** (for uniform field)
+
+| Quantity | Symbol | Unit | Definition |
+|---|---|---|---|
+| Charge | Q | Coulomb (C) | Fundamental quantity |
+| Current | I | Ampere (A) | dQ/dt |
+| Voltage | V | Volt (V) | dW/dQ |
+| Electric field | E | V/m or N/C | Force per unit charge |`,
+      examTip: 'I = dQ/dt and V = dW/dQ are the two most fundamental definitions. Ohm\'s law V = IR is an empirical relationship for resistive materials — it does NOT apply to capacitors, inductors, or nonlinear devices like diodes.',
+    },
+    {
+      id: 'cc-lorentz',
+      title: '2. Lorentz Force and Moving Charges',
+      content: `## 2.1 The Lorentz Force
+
+A charge q moving with velocity v in electric field E and magnetic field B experiences:
+
+**F = q(E + v × B)**
+
+- Electric force qE: along E direction (accelerates or decelerates charge)
+- Magnetic force q(v×B): perpendicular to both v and B (deflects without doing work)
+
+## 2.2 Force on a Current-Carrying Conductor
+
+**F = I·L × B = B·I·L·sinθ**
+
+Where L is the conductor length vector and θ is the angle between L and B.
+
+Direction: use the **right-hand rule** — point fingers along I, curl toward B, thumb gives F direction.
+
+## 2.3 Applications
+
+- **DC motor**: current in magnetic field → force → rotation
+- **Generator**: conductor moves through field → induced EMF
+- **Hall effect sensor**: moving charges deflected → voltage across conductor
+- **Mass spectrometer**: magnetic force separates ions by mass
+
+### Motional EMF
+
+A conductor moving through a magnetic field:
+
+**ε = B·L·v** (for v perpendicular to B and L)`,
+      examTip: 'The Lorentz force F = q(E + v×B) combines electric and magnetic forces. The magnetic force is always PERPENDICULAR to velocity — it changes direction but not speed (does no work). This is why magnetic fields deflect charges but cannot accelerate them.',
+    },
+  ],
+  keyTakeaways: [
+    'Current I = dQ/dt; voltage V = dW/dQ; Ohm\'s law V = IR for resistive elements.',
+    'Coulomb\'s law: F = k·Q₁·Q₂/r²; inverse-square law.',
+    'Lorentz force: F = q(E + v×B); magnetic force is perpendicular to velocity.',
+    'Force on conductor: F = BIL; direction by right-hand rule.',
+    'Motional EMF: ε = BLv for conductor moving through field.',
+  ],
+},
+
+fee_electromech: {
+  topicId: 'fee_electromech',
+  title: 'Electromechanical Conversion & Sensors',
+  domainWeight: 'Engineering Sciences · 3–5%',
+  overview: 'Electromechanical conversion transforms electrical energy to mechanical (motors) and vice versa (generators). Sensors convert physical quantities to electrical signals. These bridge fundamental physics and practical engineering.',
+  sections: [
+    {
+      id: 'em-motors-gen',
+      title: '1. Motors and Generators',
+      content: `## 1.1 Motor Principles
+
+A current-carrying loop in a magnetic field experiences torque:
+
+**τ = N·B·I·A·sinθ**
+
+Where N = turns, B = flux density, I = current, A = loop area, θ = angle to field.
+
+- **Maximum torque**: τ_max = NBIA (when θ = 90°)
+- **Motor equation**: V_applied = I·R + E_back
+- **Back-EMF**: E_back = k·ω (proportional to speed)
+
+### Motor Operation
+
+At startup: ω = 0 → E_back = 0 → large inrush current I = V/R.
+At steady state: E_back ≈ V → small current (just supplying load + losses).
+
+## 1.2 Generator Principles
+
+**Faraday's law**: ε = -N·dΦ/dt
+
+A rotating coil in a magnetic field:
+
+**ε = N·B·ω·A·cos(ωt)**
+
+- Peak EMF: ε_peak = NBAω
+- Higher speed → higher voltage
+- This is the basis of all AC generators
+
+## 1.3 Power Conversion
+
+| Device | Input | Output | Efficiency |
+|---|---|---|---|
+| Motor | V·I (electrical) | τ·ω (mechanical) | η = τ·ω/(V·I) |
+| Generator | τ·ω (mechanical) | V·I (electrical) | η = V·I/(τ·ω) |`,
+      examTip: 'Motors and generators use the same electromagnetic principles in opposite directions. The motor equation V = IR + E_back is essential: at high speed, E_back is large so current is small. At stall (ω=0), current is maximum V/R — this is why motors need current limiting at startup.',
+    },
+    {
+      id: 'em-sensors',
+      title: '2. Sensors and Measurement',
+      content: `## 2.1 Common Sensors
+
+| Sensor | Measures | Principle | Key Formula |
+|---|---|---|---|
+| Strain gauge | Deformation | Resistance change | ΔR/R = GF·ε |
+| Thermistor | Temperature | R(T) changes | R = R₀·exp[β(1/T-1/T₀)] |
+| Thermocouple | Temperature | Seebeck voltage | V ∝ ΔT |
+| Accelerometer | Acceleration | Piezoelectric/MEMS | V ∝ acceleration |
+| Pressure sensor | Pressure | Diaphragm deflection | V ∝ pressure |
+
+## 2.2 Sensor Characteristics
+
+- **Sensitivity**: output change per unit input (e.g., mV/°C)
+- **Accuracy**: closeness to true value
+- **Precision**: repeatability of measurements
+- **Linearity**: output proportional to input over range
+- **Resolution**: smallest detectable change
+
+## 2.3 Wheatstone Bridge
+
+The **Wheatstone bridge** extracts small resistance changes from sensors:
+
+At balance: **R₁/R₂ = R₃/R₄** → output voltage = 0
+
+When one arm changes by ΔR (sensor):
+- Output voltage **V_out ≈ V_supply · ΔR/(4R)** (for small ΔR)
+
+Used with strain gauges, RTDs, and other resistive sensors for precise measurement.`,
+      examTip: 'For the strain gauge formula ΔR/R = GF·ε, the gauge factor GF ≈ 2 for metallic gauges. The Wheatstone bridge detects the tiny ΔR by producing a proportional output voltage. This is the standard measurement circuit for resistive sensors.',
+    },
+  ],
+  keyTakeaways: [
+    'Motor torque: τ = NBIA·sinθ; maximum when loop perpendicular to field.',
+    'Back-EMF: E_back = kω; motor equation: V = IR + E_back.',
+    'Generator EMF: ε = NBAω·cos(ωt); higher speed = higher voltage.',
+    'Strain gauge: ΔR/R = GF·ε (GF ≈ 2); thermistor: exponential R(T).',
+    'Wheatstone bridge: balance condition R₁/R₂ = R₃/R₄; detects small ΔR.',
+  ],
+},
+
+/* ══════════════════════════════════════════════════════════════════
+ * TOPIC 6 — CIRCUIT ANALYSIS  (7 curriculum IDs)  ·  10 %  ← HIGHEST WEIGHT
+ * ══════════════════════════════════════════════════════════════════ */
+
+fee_dc_fundamentals: {
+  topicId: 'fee_dc_fundamentals',
+  title: 'DC Circuit Fundamentals: Ohm\'s Law, KCL, KVL',
+  domainWeight: 'Circuit Analysis · 10%',
+  overview: 'Ohm\'s law, Kirchhoff\'s current law (KCL), and Kirchhoff\'s voltage law (KVL) are the three pillars of circuit analysis. Series and parallel combinations, voltage dividers, and current dividers build on these foundations.',
+  sections: [
+    {
+      id: 'dcf-ohm-kirchhoff',
+      title: '1. Ohm\'s Law and Kirchhoff\'s Laws',
+      content: `## 1.1 Ohm's Law
+
+**V = I·R** relates voltage, current, and resistance.
+
+Three equivalent forms for power: **P = V·I = I²R = V²/R**
+
+## 1.2 Kirchhoff's Current Law (KCL)
+
+**The sum of currents entering a node equals the sum leaving:**
+
+**ΣI_in = ΣI_out** or equivalently **ΣI = 0** (with sign convention)
+
+KCL is conservation of charge — charge cannot accumulate at a node.
+
+## 1.3 Kirchhoff's Voltage Law (KVL)
+
+**The sum of voltage rises around any closed loop equals zero:**
+
+**ΣV = 0** (around any closed loop)
+
+KVL is conservation of energy — energy gained equals energy lost around any path.
+
+### Systematic Approach
+
+For any DC circuit:
+1. **Label all nodes** and assign current directions (arbitrary — negative result means opposite)
+2. **Apply KCL** at each node (n-1 independent equations for n nodes)
+3. **Apply KVL** around each independent loop
+4. **Apply Ohm's law** (V = IR) to relate voltages and currents
+5. **Solve** the system of equations`,
+      examTip: 'If your calculated current is negative, the actual direction is opposite to your assumed direction — the magnitude is still correct. Do NOT redo the problem. This is the beauty of the systematic approach: arbitrary assumptions are self-correcting.',
+      importantNote: 'KCL applies at every node, and KVL applies around every loop — these laws are ALWAYS valid in lumped-element circuits. When other techniques (Thevenin, superposition) seem unclear, fall back to KCL/KVL. They never fail.',
+    },
+    {
+      id: 'dcf-series-parallel',
+      title: '2. Series/Parallel, Voltage Dividers, and Current Dividers',
+      content: `## 2.1 Series and Parallel Combinations
+
+### Series (same current through all elements)
+- **R_total = R₁ + R₂ + ... + Rₙ**
+- Voltages add: V_total = V₁ + V₂ + ...
+- Largest resistor has largest voltage drop
+
+### Parallel (same voltage across all elements)
+- **1/R_total = 1/R₁ + 1/R₂ + ... + 1/Rₙ**
+- For two resistors: **R_total = R₁·R₂/(R₁ + R₂)**
+- Currents add: I_total = I₁ + I₂ + ...
+- Total resistance is ALWAYS less than the smallest individual resistance
+
+## 2.2 Voltage Divider
+
+For resistors in series:
+
+**V_x = V_total · R_x / (R₁ + R₂ + ... + Rₙ)**
+
+For two resistors: V₁ = V · R₁/(R₁+R₂), V₂ = V · R₂/(R₁+R₂)
+
+## 2.3 Current Divider
+
+For two resistors in parallel:
+
+**I₁ = I_total · R₂/(R₁ + R₂)** (current through R₁ uses the OTHER resistance)
+
+**I₂ = I_total · R₁/(R₁ + R₂)**
+
+Note: current goes preferentially through the SMALLER resistance (path of least resistance).
+
+| Configuration | Same Quantity | Add Up | Equivalent |
+|---|---|---|---|
+| Series | Current | Voltages | R_eq = ΣR |
+| Parallel | Voltage | Currents | 1/R_eq = Σ(1/R) |`,
+      examTip: 'The current divider formula is backwards from what you might expect: I through R₁ uses R₂ in the numerator. Think of it as: more resistance in YOUR branch means LESS current goes through it, so the OTHER resistance goes on top.',
+    },
+  ],
+  keyTakeaways: [
+    'V = IR (Ohm\'s law); P = VI = I²R = V²/R (power).',
+    'KCL: ΣI at node = 0; KVL: ΣV around loop = 0.',
+    'Series: same current, R adds; parallel: same voltage, conductances add.',
+    'Voltage divider: V_x = V·R_x/R_total; current divider: I₁ = I·R₂/(R₁+R₂).',
+    'Parallel resistance is ALWAYS less than the smallest individual resistance.',
+  ],
+},
+
+fee_network_theorems: {
+  topicId: 'fee_network_theorems',
+  title: 'Network Theorems: Thevenin, Norton, Superposition',
+  domainWeight: 'Circuit Analysis · 10%',
+  overview: 'Thevenin and Norton theorems simplify complex networks to equivalent circuits. Superposition handles multiple-source circuits. Maximum power transfer determines optimal load matching. These are the most powerful tools in circuit analysis.',
+  sections: [
+    {
+      id: 'nt-thevenin-norton',
+      title: '1. Thevenin and Norton Equivalents',
+      content: `## 1.1 Thevenin's Theorem
+
+Any linear two-terminal network can be replaced by:
+- **V_Th** (Thevenin voltage) in series with **R_Th** (Thevenin resistance)
+
+### Finding V_Th and R_Th
+
+1. **Remove the load** from terminals A-B
+2. **V_Th = open-circuit voltage** at A-B (no load connected)
+3. **R_Th**: deactivate all independent sources, calculate resistance looking into A-B
+   - Voltage sources → short circuits (wire)
+   - Current sources → open circuits (removed)
+
+With load connected: **I_load = V_Th/(R_Th + R_load)**
+
+## 1.2 Norton's Theorem
+
+Any linear network = **I_N** (current source) in parallel with **R_N**
+
+- **I_N = short-circuit current** (short A-B terminals)
+- **R_N = R_Th** (same resistance)
+- **Relationship**: V_Th = I_N · R_N
+
+### When to Use Which
+
+| Situation | Best Approach |
+|---|---|
+| Analyzing varying loads | Thevenin or Norton |
+| Voltage-source-heavy circuit | Thevenin more intuitive |
+| Current-source-heavy circuit | Norton more intuitive |
+| Need current through one element | Thevenin often fastest |`,
+      examTip: 'To find R_Th: deactivate sources (voltage → short, current → open) and calculate resistance looking into the terminals. A common FE exam mistake is deactivating sources incorrectly — voltage sources become SHORT circuits (zero voltage), current sources become OPEN circuits (zero current).',
+      importantNote: 'Dependent sources are NEVER deactivated in Thevenin/Norton analysis. Only independent sources are turned off. If the circuit has dependent sources, use the test source method: apply a test voltage V_test, find resulting I_test, then R_Th = V_test/I_test.',
+    },
+    {
+      id: 'nt-superposition-maxpower',
+      title: '2. Superposition and Maximum Power Transfer',
+      content: `## 2.1 Superposition Theorem
+
+In a linear circuit with multiple independent sources, the response is the **sum of responses** due to each source acting alone.
+
+### Procedure:
+1. **Keep one source active**, deactivate all others
+2. **Solve** for the desired quantity
+3. **Repeat** for each source
+4. **Add** all contributions algebraically (with signs)
+
+### When Superposition Excels
+- Circuits with sources at **different frequencies** (DC + AC, or two different AC)
+- Sources at different frequencies do not interact, so superposition is natural
+
+## 2.2 Maximum Power Transfer
+
+Maximum power is delivered to a load when:
+
+**R_load = R_Th** (for purely resistive circuits)
+**Z_load = Z_Th*** (conjugate match for complex impedances)
+
+The maximum power delivered:
+
+**P_max = V_Th² / (4·R_Th)**
+
+### Important Tradeoffs
+
+| Condition | Power Transfer | Efficiency |
+|---|---|---|
+| R_L = R_Th | **Maximum** (P_max) | 50% |
+| R_L > R_Th | Less than max | Higher than 50% |
+| R_L >> R_Th | Much less | Approaches 100% |
+| R_L < R_Th | Less than max | Lower than 50% |
+
+Maximum power transfer and maximum efficiency are **opposite goals**.`,
+      examTip: 'Maximum power transfer delivers P_max = V_Th²/(4R_Th) at 50% efficiency. This matters in communications (match impedances for signal power). In power systems, efficiency matters more, so loads are NOT matched to source impedance.',
+      importantNote: 'For AC circuits with complex impedances, maximum power transfer requires the CONJUGATE match: Z_L = Z_Th*. If Z_Th = R + jX, then Z_L should be R - jX. The reactive parts cancel, and resistive parts match.',
+    },
+  ],
+  keyTakeaways: [
+    'Thevenin: V_Th (open-circuit voltage) + R_Th (resistance with sources off).',
+    'Norton: I_N (short-circuit current) + R_N = R_Th; V_Th = I_N·R_Th.',
+    'Superposition: sum responses from each source individually.',
+    'Max power transfer: R_L = R_Th; P_max = V_Th²/(4R_Th) at 50% efficiency.',
+    'Deactivate: voltage source → short circuit; current source → open circuit.',
+  ],
+},
+
+fee_ac_phasors: {
+  topicId: 'fee_ac_phasors',
+  title: 'AC Steady-State Analysis: Phasors and Impedance',
+  domainWeight: 'Circuit Analysis · 10%',
+  overview: 'Phasor analysis converts sinusoidal steady-state problems from differential equations to algebraic equations. Impedance generalizes resistance to AC, and all DC analysis techniques apply using phasors.',
+  sections: [
+    {
+      id: 'acp-phasors',
+      title: '1. Phasor Representation and Impedance',
+      content: `## 1.1 Phasor Conversion
+
+A sinusoidal signal v(t) = Vm·cos(ωt + φ) converts to phasor:
+
+**V = Vm∠φ** (polar form) or **V = Vm·cosφ + j·Vm·sinφ** (rectangular)
+
+The angular frequency ω = 2πf relates frequency f (Hz) to radians/second.
+
+## 1.2 Impedance
+
+**Impedance Z** generalizes Ohm's law to AC: **V = I·Z**
+
+| Element | Impedance | Reactance | Phase Relationship |
+|---|---|---|---|
+| Resistor | Z_R = R | X_R = 0 | V and I in phase |
+| Inductor | Z_L = jωL | X_L = ωL | V leads I by 90° |
+| Capacitor | Z_C = 1/(jωC) = -j/(ωC) | X_C = -1/(ωC) | I leads V by 90° |
+
+### Impedance in Rectangular and Polar Form
+
+**Z = R + jX = |Z|∠θ**
+
+Where:
+- |Z| = sqrt(R² + X²)
+- θ = arctan(X/R)
+- R is resistance (real part)
+- X is reactance (imaginary part)
+
+## 1.3 Admittance
+
+**Y = 1/Z = G + jB**
+
+Where G is conductance and B is susceptance. Admittance is useful for parallel circuits.
+
+### Combining Impedances
+
+- **Series**: Z_total = Z₁ + Z₂ (add impedances)
+- **Parallel**: 1/Z_total = 1/Z₁ + 1/Z₂ (add admittances)`,
+      examTip: 'Mnemonic for inductor/capacitor phase: "ELI the ICE man" — E leads I in L (inductor), I leads E in C (capacitor). On the FE exam, inductive impedance is +jωL (positive imaginary) and capacitive impedance is -j/(ωC) (negative imaginary).',
+      importantNote: 'ALL DC circuit analysis techniques work with phasors: KVL, KCL, Thevenin, Norton, superposition, voltage divider, current divider — just use impedances Z instead of resistances R, and phasors instead of DC values.',
+    },
+    {
+      id: 'acp-frequency',
+      title: '2. Frequency Behavior and RMS Values',
+      content: `## 2.1 Frequency-Dependent Behavior
+
+Impedance changes with frequency ω:
+
+| Frequency | Inductor Z_L = jωL | Capacitor Z_C = 1/(jωC) |
+|---|---|---|
+| DC (ω → 0) | **0** (short circuit) | **∞** (open circuit) |
+| Low ω | Small | Large |
+| High ω | Large | Small |
+| ω → ∞ | **∞** (open circuit) | **0** (short circuit) |
+
+This frequency dependence is the basis of filters:
+- **Low-pass filter**: passes low frequencies (inductor blocks high, capacitor shorts high)
+- **High-pass filter**: passes high frequencies (capacitor blocks low, inductor shorts low)
+
+## 2.2 RMS (Root Mean Square) Values
+
+For sinusoidal signals:
+
+**V_rms = V_peak / sqrt(2) ≈ 0.707 · V_peak**
+
+- RMS values are used for power calculations: **P = V_rms · I_rms · cosφ**
+- Standard outlet voltage (120V) is an RMS value; peak is 120·sqrt(2) ≈ 170V
+- Phasors typically represent **peak** values unless specified as RMS
+
+### Phasor Addition
+
+To add two sinusoids at the same frequency:
+1. Convert each to phasor (rectangular form)
+2. Add real parts, add imaginary parts
+3. Convert back to polar for magnitude and phase`,
+      examTip: 'At DC: inductors are short circuits (wire), capacitors are open circuits (break). At very high frequency: inductors are open, capacitors are short. This is the most important frequency-behavior fact for the FE exam.',
+    },
+  ],
+  keyTakeaways: [
+    'Phasor: v(t) = Vm·cos(ωt+φ) → V = Vm∠φ; all DC tools apply.',
+    'Impedance: Z_R = R, Z_L = jωL, Z_C = 1/(jωC).',
+    'ELI the ICE man: voltage leads current in inductors, current leads in capacitors.',
+    'At DC: L = short, C = open. At high frequency: L = open, C = short.',
+    'V_rms = V_peak/sqrt(2); power uses RMS values.',
+  ],
+},
+
+fee_ac_power: {
+  topicId: 'fee_ac_power',
+  title: 'AC Power: Real, Reactive, and Apparent',
+  domainWeight: 'Circuit Analysis · 10%',
+  overview: 'AC power has three components: real power (useful work), reactive power (energy oscillation), and apparent power (total burden). The power triangle and power factor correction are essential for power system analysis.',
+  sections: [
+    {
+      id: 'acpow-triangle',
+      title: '1. Power Triangle and Power Factor',
+      content: `## 1.1 Three Types of AC Power
+
+| Power | Symbol | Unit | Formula | Meaning |
+|---|---|---|---|---|
+| Real (Active) | P | Watts (W) | V·I·cosφ | Does useful work |
+| Reactive | Q | VAR | V·I·sinφ | Oscillates, no net work |
+| Apparent | S | VA | V·I | Total power burden |
+
+### The Power Triangle
+
+**S² = P² + Q²** (Pythagorean relationship)
+
+**S = P + jQ** (complex power)
+
+- P is the horizontal leg
+- Q is the vertical leg
+- S is the hypotenuse
+
+## 1.2 Power Factor
+
+**PF = cosφ = P/S**
+
+Where φ is the phase angle between voltage and current.
+
+| PF | Meaning | Load Type |
+|---|---|---|
+| PF = 1 | Unity (all real) | Purely resistive |
+| PF < 1, lagging | Current lags voltage | Inductive (motors) |
+| PF < 1, leading | Current leads voltage | Capacitive |
+
+### Why Power Factor Matters
+
+Low PF means:
+- More current needed for the same real power: **I = P/(V·PF)**
+- Higher I²R losses in conductors
+- Larger transformers and cables needed
+- Utilities charge penalties for low PF`,
+      examTip: 'The power triangle S² = P² + Q² and PF = P/S = cosφ are the most tested AC power concepts on the FE exam. Remember: S is always the largest (hypotenuse), P is always positive, and Q is positive for inductive (lagging) loads and negative for capacitive (leading) loads.',
+    },
+    {
+      id: 'acpow-correction',
+      title: '2. Complex Power and Power Factor Correction',
+      content: `## 2.1 Complex Power
+
+**S = V · I*** (voltage phasor times conjugate of current phasor)
+
+**S = P + jQ = |V|·|I|∠(θv - θi)**
+
+For a load with impedance Z = R + jX:
+- **P = I²·R** (real power dissipated in resistance)
+- **Q = I²·X** (reactive power in reactance)
+
+## 2.2 Power Factor Correction
+
+Industrial loads (motors) are inductive (lagging PF). Adding **parallel capacitors** reduces reactive power:
+
+### Calculating Required Capacitance
+
+To correct from PF₁ to PF₂:
+
+1. Calculate old angle: φ₁ = arccos(PF₁)
+2. Calculate new angle: φ₂ = arccos(PF₂)
+3. Required capacitive reactive power: **Q_C = P·(tanφ₁ - tanφ₂)**
+4. Capacitor value: **C = Q_C/(ω·V²)**
+
+### Example
+- 100 kW load at PF = 0.8 lagging; correct to PF = 0.95
+- φ₁ = arccos(0.8) = 36.87°, φ₂ = arccos(0.95) = 18.19°
+- Q_C = 100(tan36.87° - tan18.19°) = 100(0.75 - 0.329) = 42.1 kVAR
+
+The capacitor bank must supply 42.1 kVAR of reactive power.`,
+      examTip: 'Power factor correction adds capacitors in PARALLEL with the inductive load (not in series). The capacitor supplies reactive power locally, reducing the reactive power drawn from the source. This lowers apparent power and current without changing the real power consumed.',
+      importantNote: 'Over-correcting power factor (making it leading) can cause voltage rise and potential resonance problems. Utilities typically require PF between 0.90 and 1.00 lagging — not leading.',
+    },
+  ],
+  keyTakeaways: [
+    'P = VI·cosφ (real, watts); Q = VI·sinφ (reactive, VAR); S = VI (apparent, VA).',
+    'Power triangle: S² = P² + Q²; PF = P/S = cosφ.',
+    'Lagging PF (inductive loads) is most common; correct with parallel capacitors.',
+    'Q_C = P·(tanφ₁ - tanφ₂) calculates required capacitive reactive power.',
+    'Low PF increases current, losses, and equipment sizing requirements.',
+  ],
+},
+
+fee_resonance: {
+  topicId: 'fee_resonance',
+  title: 'Resonance and Frequency Response',
+  domainWeight: 'Circuit Analysis · 10%',
+  overview: 'Resonance occurs when inductive and capacitive reactances cancel. The resonant frequency, quality factor, and bandwidth characterize RLC circuit frequency response and are fundamental to filter design.',
+  sections: [
+    {
+      id: 'res-series-parallel',
+      title: '1. Series and Parallel Resonance',
+      content: `## 1.1 Resonant Frequency
+
+At resonance, X_L = X_C:
+
+**ω₀ = 1/sqrt(LC)** (rad/s) or **f₀ = 1/(2π·sqrt(LC))** (Hz)
+
+## 1.2 Series RLC Resonance
+
+At resonance:
+- **Z = R** (minimum impedance, purely resistive)
+- **Current is maximum**: I = V/R
+- Voltage and current are **in phase** (φ = 0)
+- Voltage across L and C can be **much larger** than source voltage (Q-factor amplification)
+
+## 1.3 Parallel RLC Resonance
+
+At resonance:
+- **Z = R** (maximum impedance, purely resistive)
+- Current from source is **minimum**: I = V/R
+- This is the opposite behavior from series resonance
+
+| Property | Series RLC | Parallel RLC |
+|---|---|---|
+| At resonance | Z minimum | Z maximum |
+| Current | Maximum | Minimum |
+| Impedance | Z = R | Z = R (or Q²R for practical) |
+| Application | Band-pass filter | Band-reject filter |`,
+      examTip: 'Series resonance: impedance MINIMUM, current MAXIMUM. Parallel resonance: impedance MAXIMUM, current MINIMUM. This is the most important distinction. The resonant frequency formula ω₀ = 1/sqrt(LC) is the same for both.',
+    },
+    {
+      id: 'res-q-bw',
+      title: '2. Quality Factor and Bandwidth',
+      content: `## 2.1 Quality Factor (Q)
+
+**Q = ω₀L/R = 1/(ω₀RC) = sqrt(L/C)/R**
+
+Q measures how "sharp" the resonance peak is:
+- **High Q** (> 10): narrow bandwidth, very selective
+- **Low Q** (< 1): broad bandwidth, not selective
+
+Q also represents energy stored vs. energy dissipated per cycle:
+- Q = 2π × (energy stored) / (energy dissipated per cycle)
+
+## 2.2 Bandwidth
+
+**BW = f₀/Q = R/(2πL)** for series RLC
+
+The bandwidth is the frequency range between the **-3 dB points** (half-power points):
+
+- Lower cutoff: f₁ = f₀ - BW/2
+- Upper cutoff: f₂ = f₀ + BW/2
+
+At the -3 dB points:
+- Power is **half** of peak power
+- Current is **1/sqrt(2) ≈ 0.707** of peak current
+- Impedance is **sqrt(2) ≈ 1.414** times minimum impedance
+
+### Selectivity
+
+| Q Value | Bandwidth | Application |
+|---|---|---|
+| Q > 100 | Very narrow | Radio tuning, crystal oscillators |
+| Q = 10-100 | Moderate | Band-pass filters |
+| Q < 10 | Wide | Broadband circuits |
+| Q < 1 | Very wide | Damped systems |`,
+      examTip: 'BW = f₀/Q tells you everything: higher Q = narrower bandwidth = more selective. On the FE exam, if asked about bandwidth, find Q first. Remember: Q = ω₀L/R, so increasing R decreases Q and widens bandwidth.',
+      importantNote: 'The -3 dB points are where power drops to HALF (-3 dB ≈ 10·log(0.5)) — not where voltage drops to half. Voltage at -3 dB is 1/sqrt(2) ≈ 0.707 of peak. This is a common source of confusion.',
+    },
+  ],
+  keyTakeaways: [
+    'Resonant frequency: ω₀ = 1/sqrt(LC); f₀ = 1/(2π·sqrt(LC)).',
+    'Series resonance: Z minimum, I maximum; parallel: Z maximum, I minimum.',
+    'Quality factor Q = ω₀L/R; higher Q = sharper peak.',
+    'Bandwidth BW = f₀/Q; -3 dB points are at half-power.',
+    'At resonance: impedance is purely resistive, voltage and current are in phase.',
+  ],
+},
+
+fee_three_phase: {
+  topicId: 'fee_three_phase',
+  title: 'Three-Phase Circuits and Power',
+  domainWeight: 'Circuit Analysis · 10%',
+  overview: 'Three-phase AC systems are the standard for industrial power delivery. Three voltages 120 degrees apart provide constant power, efficient transmission, and compact motor designs. Wye and delta configurations have different voltage-current relationships.',
+  sections: [
+    {
+      id: '3ph-config',
+      title: '1. Wye and Delta Configurations',
+      content: `## 1.1 Three-Phase Voltages
+
+Three balanced sinusoidal voltages, each 120° apart:
+- V_a = Vm∠0°
+- V_b = Vm∠-120°
+- V_c = Vm∠-240° (= Vm∠+120°)
+
+For balanced systems: **V_a + V_b + V_c = 0**
+
+## 1.2 Wye (Y) Connection
+
+Phase windings share a common **neutral point**.
+
+| Quantity | Relationship |
+|---|---|
+| Line voltage | V_L = sqrt(3) · V_ph |
+| Line current | I_L = I_ph |
+| Neutral carries | Only unbalanced current (zero if balanced) |
+
+## 1.3 Delta (Δ) Connection
+
+Phase windings form a closed triangle.
+
+| Quantity | Relationship |
+|---|---|
+| Line voltage | V_L = V_ph |
+| Line current | I_L = sqrt(3) · I_ph |
+| No neutral wire | Delta has no neutral point |
+
+### Delta-Wye Conversion
+
+For balanced impedances: **Z_Δ = 3 · Z_Y** (or Z_Y = Z_Δ/3)`,
+      examTip: 'The sqrt(3) factor appears in EVERY three-phase problem. For wye: multiply phase voltage by sqrt(3) to get line voltage. For delta: multiply phase current by sqrt(3) to get line current. Draw the phasor diagram if you forget which one.',
+    },
+    {
+      id: '3ph-power',
+      title: '2. Three-Phase Power and Per-Phase Analysis',
+      content: `## 2.1 Three-Phase Power
+
+For balanced systems:
+
+- **P = sqrt(3) · V_L · I_L · cosφ** (real power)
+- **Q = sqrt(3) · V_L · I_L · sinφ** (reactive power)
+- **S = sqrt(3) · V_L · I_L** (apparent power)
+
+Or equivalently: **P = 3 · V_ph · I_ph · cosφ** (three times single-phase power)
+
+### Key Advantage
+
+Three-phase power is **constant** — it does not pulsate like single-phase. This provides smoother torque in motors and more efficient power transmission.
+
+## 2.2 Per-Phase Analysis
+
+For balanced three-phase systems, analyze **one phase** and multiply by 3:
+
+1. Convert delta loads to wye equivalent if needed (Z_Y = Z_Δ/3)
+2. Draw single-phase equivalent circuit
+3. Solve for phase voltage, current, and power
+4. Multiply power by 3 for total three-phase power
+
+This simplifies analysis enormously — a three-phase problem becomes a single-phase problem.
+
+## 2.3 Unbalanced Systems
+
+When loads are unbalanced:
+- Per-phase analysis does NOT apply
+- Neutral current is NOT zero
+- Use **symmetrical components** (positive, negative, zero sequence) for analysis`,
+      examTip: 'Per-phase analysis is the key to solving three-phase problems quickly. Convert everything to wye, solve one phase, multiply power by 3. The FE exam typically gives balanced systems, so per-phase analysis works for most problems.',
+      importantNote: 'Three-phase power P = sqrt(3)·V_L·I_L·cosφ uses LINE values (not phase values). This is the standard formula because line values are what meters measure at terminals. Make sure you identify whether given values are line or phase before applying formulas.',
+    },
+  ],
+  keyTakeaways: [
+    'Wye: V_L = sqrt(3)·V_ph, I_L = I_ph; Delta: V_L = V_ph, I_L = sqrt(3)·I_ph.',
+    'Three-phase power: P = sqrt(3)·V_L·I_L·cosφ (constant, not pulsating).',
+    'Per-phase analysis: solve one phase, multiply power by 3 (balanced systems only).',
+    'Delta-wye conversion: Z_Δ = 3·Z_Y for balanced loads.',
+    'Balanced neutral current is zero; unbalanced systems need symmetrical components.',
+  ],
+},
+
+fee_transients: {
+  topicId: 'fee_transients',
+  title: 'Transient Analysis: RC, RL, and RLC Circuits',
+  domainWeight: 'Circuit Analysis · 10%',
+  overview: 'Transient response describes circuit behavior after switching events. First-order RC and RL circuits follow exponential responses with time constant τ. Second-order RLC circuits can be underdamped, critically damped, or overdamped.',
+  sections: [
+    {
+      id: 'trans-first',
+      title: '1. First-Order Transients (RC and RL)',
+      content: `## 1.1 The Universal First-Order Formula
+
+**x(t) = x(∞) + [x(0) - x(∞)] · e^(-t/τ)**
+
+This single formula solves ANY first-order transient. Find three things:
+1. **x(0)**: initial value (from circuit conditions before switching)
+2. **x(∞)**: final value (from circuit at t → ∞ in steady state)
+3. **τ**: time constant
+
+### Time Constants
+
+| Circuit | Time Constant | Settling Time (99%) |
+|---|---|---|
+| RC | τ = R·C | 5τ = 5RC |
+| RL | τ = L/R | 5τ = 5L/R |
+
+## 1.2 RC Circuit Responses
+
+### Charging (from 0 to V):
+- v_C(t) = V(1 - e^(-t/RC))
+- i(t) = (V/R)·e^(-t/RC)
+
+### Discharging (from V₀ to 0):
+- v_C(t) = V₀·e^(-t/RC)
+- i(t) = -(V₀/R)·e^(-t/RC)
+
+## 1.3 RL Circuit Response
+
+### Energizing (from 0 to V/R):
+- i_L(t) = (V/R)(1 - e^(-tR/L))
+- v_L(t) = V·e^(-tR/L)
+
+## 1.4 Initial Conditions (Continuity)
+
+At the instant of switching (t = 0⁺):
+- **Capacitor voltage cannot change instantly**: v_C(0⁺) = v_C(0⁻)
+- **Inductor current cannot change instantly**: i_L(0⁺) = i_L(0⁻)`,
+      examTip: 'The universal formula x(t) = x(∞) + [x(0)-x(∞)]·e^(-t/τ) is the MOST important transient formula. Step 1: find initial value. Step 2: find final value (replace C with open, L with short for DC steady state). Step 3: find τ. Plug in and you are done.',
+      importantNote: 'At t = 0⁺, capacitors act as voltage sources (maintaining their voltage) and inductors act as current sources (maintaining their current). At t = ∞, capacitors act as open circuits and inductors act as short circuits (DC steady state). These two limiting cases give you x(0) and x(∞).',
+    },
+    {
+      id: 'trans-second',
+      title: '2. Second-Order Transients (RLC)',
+      content: `## 2.1 RLC Circuit Response Types
+
+The characteristic equation: **s² + 2αs + ω₀² = 0**
+
+Where:
+- **α = R/(2L)** is the damping coefficient (series RLC)
+- **ω₀ = 1/sqrt(LC)** is the natural frequency
+- **ζ = α/ω₀ = R/(2sqrt(L/C))** is the damping ratio
+
+### Response Types
+
+| Condition | Type | Roots | Behavior |
+|---|---|---|---|
+| ζ < 1 (α < ω₀) | **Underdamped** | Complex conjugate | Oscillates with decay |
+| ζ = 1 (α = ω₀) | **Critically damped** | Repeated real | Fastest non-oscillatory |
+| ζ > 1 (α > ω₀) | **Overdamped** | Distinct real | Slow, monotonic |
+
+### Underdamped Response
+
+**x(t) = e^(-αt) · [A·cos(ωd·t) + B·sin(ωd·t)]**
+
+Where **ωd = ω₀·sqrt(1-ζ²)** is the damped natural frequency.
+
+## 2.2 Practical Implications
+
+- **Underdamped**: voltage/current oscillates (ringing) — seen in LC filters, clock circuits
+- **Critically damped**: fastest settling without overshoot — ideal for measurement systems
+- **Overdamped**: sluggish but no overshoot — over-designed damping
+
+### Protection Considerations
+
+- **Inductor switching**: opening a switch in an inductive circuit causes voltage spikes (v = L·di/dt with large di/dt)
+- **Solution**: snubber circuits, flyback diodes
+- **Capacitor switching**: closing a switch to charge a capacitor causes current spikes
+- **Solution**: series resistance to limit inrush current`,
+      examTip: 'The damping ratio ζ = R/(2sqrt(L/C)) is your go-to parameter. Increasing R increases ζ (more damping). ζ < 1 means oscillation; ζ = 1 is the critical boundary. On the FE exam, you will often need to identify which case applies from given R, L, C values.',
+    },
+  ],
+  keyTakeaways: [
+    'Universal first-order: x(t) = x(∞) + [x(0)-x(∞)]·e^(-t/τ); τ = RC or L/R.',
+    'At t=0⁺: v_C cannot change, i_L cannot change (continuity conditions).',
+    'At t=∞ (DC): C = open circuit, L = short circuit.',
+    'Damping ratio ζ = R/(2sqrt(L/C)); ζ<1 underdamped, ζ=1 critical, ζ>1 overdamped.',
+    'Settling time ≈ 5τ for first-order; depends on ζ and ωn for second-order.',
+  ],
+},
+
+
+// ═══════════════════════════════════════════════════════════════
+// TOPICS 7–17 (Linear Systems through Software Development)
+// ═══════════════════════════════════════════════════════════════
 
   fee_time_domain: {
     topicId: 'fee_time_domain',
@@ -950,11 +3167,8 @@ Common Z-Transform pairs: u[n] maps to z/(z-1), a^n u[n] maps to z/(z-a), n·a^n
 
   fee_databases: { topicId: 'fee_databases', title: 'Databases: SQL & Normalization', domainWeight: 'Software Development · 3–5%', overview: 'Covers data structures, algorithms, OOP, SDLC, and databases.', sections: [{ id: 'fee_databases_main', title: 'Databases', content: `Relational databases: tables with rows/columns. Primary key: unique identifier. Foreign key: references another table. SQL: SELECT (retrieve), INSERT, UPDATE, DELETE, JOIN. Normalization: 1NF (atomic values), 2NF (no partial dependencies), 3NF (no transitive dependencies). ACID: Atomicity (all-or-nothing), Consistency (valid state), Isolation (no interference), Durability (survives failures). Indexes accelerate lookups but slow writes.`, examTip: 'Key concepts:\nSQL: SELECT, INSERT, UPDATE, DELETE, JOIN\n1NF: atomic; 2NF: full dependency; 3NF: no transitive\nACID: atomicity, consistency, isolation, durability' }], keyTakeaways: ['Relational: tables with primary/foreign keys', 'SQL: SELECT, INSERT, UPDATE, DELETE, JOIN', 'Normalization: 1NF atomic, 2NF full dependency, 3NF no transitive', 'ACID: atomicity, consistency, isolation, durability'] },
 
-};
 
-/* ──────────────────────────────────────────────────────────────────
- * Helper functions
- * ────────────────────────────────────────────────────────────────── */
+};
 
 export function hasFEEECourseContent(topicId: string): boolean {
   return topicId in FE_EE_COURSE;
