@@ -2947,20 +2947,93 @@ Where **ωd = ω₀·sqrt(1-ζ²)** is the damped natural frequency.
     topicId: 'fee_time_domain',
     title: 'Time Domain Analysis & LTI Systems',
     domainWeight: 'Linear Systems · 4–6%',
-    overview: 'Covers fundamental signal processing and system analysis in both time and frequency domains, including impulse response, transforms, transfer functions, stability criteria, and Z-transforms.',
-    sections: [{
-      id: 'fee_time_domain_main',
-      title: 'Time Domain Analysis & LTI Systems',
-      content: `Time domain analysis examines system behavior using impulse and step responses. The impulse response h(t) completely characterizes an LTI system and allows prediction of output for any input through convolution: y(t) = integral of x(τ)h(t-τ)dτ. When an impulse δ(t) enters a system, the output h(t) reveals all system dynamics. The step response shows how quickly and smoothly a system reaches steady state. Causality requires h(t)=0 for t<0; all physical systems are causal.
+    overview: 'Time domain analysis examines system behavior using impulse and step responses. The impulse response h(t) completely characterizes an LTI system, enabling output prediction for any input through convolution. Understanding LTI properties, causality, and BIBO stability is essential for the FE exam.',
+    sections: [
+      {
+        id: 'td-impulse-step',
+        title: '1. Impulse Response and Convolution',
+        content: `## 1.1 The Impulse Response h(t)
 
-Linear Time-Invariant (LTI) systems obey superposition and are shift-invariant. Linearity means scaling and summing inputs produce scaled and summed outputs. Stability in the BIBO (Bounded Input Bounded Output) sense means bounded inputs always produce bounded outputs. For LTI systems, BIBO stability is equivalent to integral of |h(t)|dt < infinity, which means all poles in the open left half-plane. If a pole is exactly on the imaginary axis (marginal stability), the system is technically unstable in BIBO sense.`,
-      examTip: 'Key formulas:\ny(t) = integral of x(τ)h(t-τ)dτ (convolution)\ny[n] = sum of x[k]h[n-k]\nBIBO stability: integral |h(t)|dt < infinity',
-    }],
+The **impulse response** h(t) is the output of a system when the input is a unit impulse δ(t). It completely characterizes any **Linear Time-Invariant (LTI)** system — once you know h(t), you can predict the output for **any** input using convolution.
+
+**Continuous-time convolution:**
+
+**y(t) = ∫ x(τ) · h(t − τ) dτ**
+
+**Discrete-time convolution:**
+
+**y[n] = Σ x[k] · h[n − k]**
+
+| Signal | Response | What It Reveals |
+|---|---|---|
+| Impulse δ(t) | h(t) | All system dynamics — poles, zeros, decay, oscillation |
+| Step u(t) | g(t) = ∫h(τ)dτ | Settling time, overshoot, steady-state value |
+
+### Step Response
+
+The **step response** g(t) is the integral of the impulse response: **g(t) = ∫₀ᵗ h(τ)dτ**. Conversely, **h(t) = dg(t)/dt**. The step response reveals how quickly and smoothly a system reaches steady state.
+
+## 1.2 Convolution Properties
+
+- **Commutative**: x * h = h * x
+- **Associative**: (x * h₁) * h₂ = x * (h₁ * h₂)
+- **Distributive**: x * (h₁ + h₂) = x * h₁ + x * h₂
+- **Identity**: x(t) * δ(t) = x(t)
+- **Time-shift**: x(t) * δ(t − t₀) = x(t − t₀)
+
+For the FE exam, memorize key response shapes for first and second-order systems — these appear repeatedly in both circuit analysis and control questions.`,
+        examTip: 'On the FE exam, convolution problems often simplify dramatically. Remember that convolving any signal with δ(t) returns the signal itself, and convolving with δ(t−t₀) shifts it by t₀. For rectangular pulse convolution, the result is a trapezoid — sketch it rather than computing the integral.',
+      },
+      {
+        id: 'td-lti-stability',
+        title: '2. LTI Systems, Causality, and BIBO Stability',
+        content: `## 2.1 Linear Time-Invariant (LTI) Properties
+
+An LTI system must satisfy two properties:
+
+**Linearity (Superposition):**
+- If x₁(t) → y₁(t) and x₂(t) → y₂(t), then **α·x₁(t) + β·x₂(t) → α·y₁(t) + β·y₂(t)**
+
+**Time-Invariance:**
+- If x(t) → y(t), then **x(t − t₀) → y(t − t₀)** — the system response does not change over time
+
+| Property | Test | Engineering Significance |
+|---|---|---|
+| **Linearity** | Scale and add inputs → outputs scale and add | Enables superposition analysis |
+| **Time-invariance** | Shifted input → same shifted output | System parameters constant |
+| **Causality** | h(t) = 0 for t < 0 | Output depends only on past/present inputs |
+| **BIBO Stability** | ∫\|h(t)\|dt < ∞ | Bounded inputs produce bounded outputs |
+
+## 2.2 BIBO Stability
+
+A system is **Bounded-Input Bounded-Output (BIBO) stable** if every bounded input produces a bounded output. For LTI systems, this is equivalent to:
+
+**∫₋∞^∞ |h(t)| dt < ∞** (continuous-time)
+
+**Σ |h[n]| < ∞** (discrete-time)
+
+For systems described by rational transfer functions, BIBO stability requires **all poles in the open left half-plane** (Re(pᵢ) < 0).
+
+### Marginal Stability
+
+If a pole lies exactly on the imaginary axis (e.g., s = jω₀), the system is **marginally stable** — it produces sustained oscillations that never decay. In the BIBO sense, this is technically **unstable** because a bounded sinusoidal input at that frequency produces unbounded output.
+
+### Key Equivalences for BIBO Stability
+
+- All poles in open LHP ↔ ∫|h(t)|dt < ∞ ↔ BIBO stable
+- Poles on imaginary axis ↔ sustained oscillation ↔ marginally stable (BIBO unstable)
+- Any pole in RHP ↔ exponentially growing response ↔ unstable`,
+        examTip: 'The FE exam loves to test stability classification. Given a characteristic equation, find the poles. All poles with negative real parts → stable. Any pole with zero real part → marginally stable. Any pole with positive real part → unstable. Do not confuse "marginally stable" with "stable" — for BIBO, marginal means unstable.',
+        importantNote: 'Causality and stability are independent properties. A system can be causal but unstable (pole in RHP), or stable but non-causal (two-sided exponential). All physical real-time systems are causal, but offline digital processing can use non-causal filters.',
+      },
+    ],
     keyTakeaways: [
-      'Impulse response h(t) fully characterizes LTI systems; use convolution to find output',
-      'Causal systems satisfy h(t)=0 for t<0; all physical systems are causal',
-      'BIBO stable iff all poles in open LHP; convolution in time = multiplication in frequency',
-      'LTI: superposition principle applies; shift-invariance property holds',
+      'Impulse response h(t) fully characterizes LTI systems; use convolution y(t) = ∫x(τ)h(t−τ)dτ to find output.',
+      'Step response g(t) = ∫h(τ)dτ reveals settling time and overshoot; h(t) = dg(t)/dt.',
+      'Causal systems satisfy h(t) = 0 for t < 0; all physical real-time systems are causal.',
+      'BIBO stable ↔ all poles in open LHP ↔ ∫|h(t)|dt < ∞.',
+      'Convolution in time = multiplication in frequency — the cornerstone of filtering.',
+      'Marginal stability (poles on jω axis) is BIBO unstable — sustained oscillations.',
     ],
   },
 
@@ -2968,20 +3041,94 @@ Linear Time-Invariant (LTI) systems obey superposition and are shift-invariant. 
     topicId: 'fee_freq_domain',
     title: 'Frequency Domain Analysis: Fourier & Laplace',
     domainWeight: 'Linear Systems · 4–6%',
-    overview: 'Covers fundamental signal processing and system analysis in both time and frequency domains.',
-    sections: [{
-      id: 'fee_freq_domain_main',
-      title: 'Frequency Domain Analysis',
-      content: `The Fourier Transform converts time-domain signals into frequency-domain representations, showing which frequencies are present and their amplitudes. For periodic signals, Fourier Series decomposes them into discrete frequency components: x(t) = a₀ + sum of an·cos(nω₀t) + bn·sin(nω₀t). The Laplace Transform generalizes Fourier analysis by including an exponential convergence factor: X(s) = integral of e^(-st)x(t)dt, converting differential equations into algebraic equations. Region of convergence (ROC) defines where the transform exists and is crucial for uniqueness.
+    overview: 'The Fourier Transform reveals which frequencies compose a signal, while the Laplace Transform converts differential equations into algebraic equations. Together they form the analytical backbone of linear systems on the FE exam.',
+    sections: [
+      {
+        id: 'fd-fourier',
+        title: '1. Fourier Series and Fourier Transform',
+        content: `## 1.1 Fourier Series (Periodic Signals)
 
-Key advantage: time-domain convolution becomes frequency-domain multiplication, dramatically simplifying analysis. For practical signals, use table lookups rather than computing integrals by hand. Pole-zero plots in the s-plane determine time-domain response characteristics.`,
-      examTip: 'Key formulas:\nX(f) = integral of x(t)e^(-j2πft)dt\nX(s) = integral of x(t)e^(-st)dt\nx(t) = (1/2π) integral of X(jω)e^(jωt)dω',
-    }],
+For a signal with period **T₀** and fundamental frequency **f₀ = 1/T₀**, the **trigonometric form** is:
+
+**x(t) = a₀ + Σ aₙ·cos(nω₀t) + Σ bₙ·sin(nω₀t)**
+
+The **complex exponential form** is more compact:
+
+**x(t) = Σ cₙ · e^(j2πnf₀t)**
+
+where **cₙ = (1/T₀) ∫ x(t) · e^(−j2πnf₀t) dt**
+
+| Signal Type | Representation | Spectrum |
+|---|---|---|
+| Periodic | Fourier Series | **Discrete** — spikes at harmonics nf₀ |
+| Aperiodic | Fourier Transform | **Continuous** — smooth amplitude vs. frequency |
+
+## 1.2 Fourier Transform (Aperiodic Signals)
+
+The **Fourier Transform** extends analysis to non-periodic signals:
+
+**X(f) = ∫ x(t) · e^(−j2πft) dt**
+
+**Inverse: x(t) = ∫ X(f) · e^(j2πft) df**
+
+### Key Properties
+
+- **Linearity**: α·x₁ + β·x₂ → α·X₁ + β·X₂
+- **Time shift**: x(t − t₀) → X(f) · e^(−j2πft₀)
+- **Frequency shift**: x(t) · e^(j2πf₀t) → X(f − f₀)
+- **Convolution theorem**: x(t) * h(t) ↔ X(f) · H(f)
+- **Parseval's theorem**: ∫|x(t)|² dt = ∫|X(f)|² df (energy conservation)
+
+Differentiation in time multiplies by **j2πf** in frequency, so signals with sharp edges (discontinuities) have broader spectra.`,
+        examTip: 'On the FE exam, use the convolution theorem to avoid computing convolution integrals — just multiply in the frequency domain and inverse-transform. Parseval\'s theorem lets you compute signal energy from either domain, whichever is simpler.',
+      },
+      {
+        id: 'fd-laplace',
+        title: '2. Laplace Transform and the s-Domain',
+        content: `## 2.1 The Laplace Transform
+
+The Laplace Transform adds an exponential convergence factor to the Fourier Transform, handling unstable and growing signals:
+
+**X(s) = ∫₀^∞ x(t) · e^(−st) dt** where **s = σ + jω**
+
+This converts differential equations into **algebraic equations** in s, dramatically simplifying circuit and system analysis.
+
+### Essential Transform Pairs
+
+| Time Domain x(t) | s-Domain X(s) | ROC |
+|---|---|---|
+| δ(t) | 1 | All s |
+| u(t) | 1/s | Re(s) > 0 |
+| e^(−at)·u(t) | 1/(s+a) | Re(s) > −a |
+| t·e^(−at)·u(t) | 1/(s+a)² | Re(s) > −a |
+| sin(ωt)·u(t) | ω/(s²+ω²) | Re(s) > 0 |
+| cos(ωt)·u(t) | s/(s²+ω²) | Re(s) > 0 |
+
+## 2.2 Region of Convergence (ROC)
+
+The **ROC** specifies the values of s where the integral converges. It is essential for uniqueness — different time-domain signals can have the same algebraic expression but different ROCs.
+
+- **Causal signals**: ROC is a right half-plane (Re(s) > σ₀)
+- **Anti-causal signals**: ROC is a left half-plane
+- **Two-sided signals**: ROC is a vertical strip
+
+### Important Properties
+
+- **Differentiation**: L{f'(t)} = s·F(s) − f(0⁻) — converts derivatives to multiplication
+- **Integration**: L{∫f(t)dt} = F(s)/s — converts integrals to division
+- **Final Value Theorem**: lim(t→∞) f(t) = lim(s→0) s·F(s) — find steady-state without inverse transform
+- **Initial Value Theorem**: lim(t→0⁺) f(t) = lim(s→∞) s·F(s)`,
+        examTip: 'The Final Value Theorem is a huge time-saver on the FE exam — it gives steady-state values directly from the s-domain without performing an inverse transform. But verify all poles of s·F(s) are in the LHP first, otherwise the theorem gives a wrong answer.',
+        importantNote: 'On the FE exam, use the Laplace transform table provided in the reference handbook — do not try to compute transforms from the integral definition. The table lookup approach is much faster and less error-prone.',
+      },
+    ],
     keyTakeaways: [
-      'Fourier Series for periodic signals; Fourier Transform for non-periodic signals',
-      'Laplace Transform with ROC handles wider signal classes including growing exponentials',
-      'Time convolution corresponds to frequency multiplication (key for filtering)',
-      'Pole-zero plots in s-plane determine time-domain response characteristics',
+      'Fourier Series (discrete spectrum) for periodic signals; Fourier Transform (continuous spectrum) for aperiodic.',
+      'Laplace Transform X(s) = ∫x(t)e^(−st)dt converts ODEs to algebraic equations in s.',
+      'ROC determines uniqueness; causal signals have right half-plane ROC.',
+      'Time-domain convolution ↔ frequency-domain multiplication — cornerstone of filtering.',
+      'Final Value Theorem: lim(t→∞) f(t) = lim(s→0) s·F(s) — find steady-state directly.',
+      'Parseval: ∫|x(t)|²dt = ∫|X(f)|²df — energy is conserved across domains.',
     ],
   },
 
@@ -2989,20 +3136,96 @@ Key advantage: time-domain convolution becomes frequency-domain multiplication, 
     topicId: 'fee_transfer_func',
     title: 'Transfer Functions, Poles, and Zeros',
     domainWeight: 'Linear Systems · 4–6%',
-    overview: 'Covers fundamental signal processing and system analysis in both time and frequency domains.',
-    sections: [{
-      id: 'fee_transfer_func_main',
-      title: 'Transfer Functions, Poles, and Zeros',
-      content: `A transfer function H(s) = Y(s)/X(s) is the Laplace transform of the impulse response, representing the input-output relationship in the frequency domain. It can be expressed as a ratio of polynomials. Zeros are values of s where the numerator equals zero; poles are where the denominator equals zero. Pole locations in the s-plane directly determine time-domain behavior: poles in the left half-plane (LHP) correspond to decaying exponentials, poles on the imaginary axis produce sustained oscillations, and poles in the right half-plane (RHP) cause instability. A system is stable if and only if all poles lie in the open LHP.
+    overview: 'A transfer function H(s) = Y(s)/X(s) is the Laplace transform of the impulse response. Poles and zeros in the s-plane determine stability, transient behavior, and frequency response — the most powerful analysis tool on the FE exam.',
+    sections: [
+      {
+        id: 'tf-poles-zeros',
+        title: '1. Transfer Function Representation',
+        content: `## 1.1 Definition and Polynomial Form
 
-The number of poles equals system order, determining the number of energy-storage elements. Partial fraction decomposition separates complex transfer functions into simple terms whose inverse Laplace transforms are known. Dominant poles (closest to imaginary axis) control response speed; fast poles have little effect and can often be neglected.`,
-      examTip: 'Key formulas:\nH(s) = N(s)/D(s)\nStability: Re(p_i) < 0 for all poles\nPartial fractions for inverse transforms',
-    }],
+The **transfer function** relates output to input in the s-domain:
+
+**H(s) = Y(s)/X(s) = N(s)/D(s)**
+
+It can be written in **factored form**:
+
+**H(s) = K · Π(s − zᵢ) / Π(s − pⱼ)**
+
+where **zᵢ** are the **zeros** (numerator roots) and **pⱼ** are the **poles** (denominator roots).
+
+| Feature | Definition | Effect on Response |
+|---|---|---|
+| **Zeros** | Values where N(s) = 0 | Affect response magnitude and shape |
+| **Poles** | Values where D(s) = 0 | Determine stability and time constants |
+| **System order** | Degree of D(s) | Number of energy-storage elements |
+| **DC gain** | H(0) = K · Πzᵢ / Πpⱼ | Steady-state value for step input |
+
+## 1.2 Pole Locations and Time-Domain Behavior
+
+Pole position in the s-plane directly maps to time-domain behavior:
+
+| Pole Location | Time Response | Example |
+|---|---|---|
+| Real, negative (σ < 0) | **Decaying exponential** e^(σt) | RC discharge |
+| Real, positive (σ > 0) | **Growing exponential** | Unstable system |
+| Complex conjugate, LHP | **Damped sinusoid** e^(σt)·sin(ωt) | Underdamped RLC |
+| Purely imaginary (±jω) | **Sustained oscillation** sin(ωt) | Ideal LC circuit |
+| Repeated real | **t^k · e^(σt)** polynomial growth | Critically damped |
+
+### Dominant Poles
+
+**Dominant poles** are those closest to the imaginary axis — they have the slowest decay and control the visible response. Poles far into the LHP decay quickly and can often be neglected for approximate analysis.`,
+        examTip: 'On the FE exam, when asked to sketch or identify a time-domain response from a pole-zero plot: real negative poles give exponential decay, complex conjugate pairs in the LHP give damped oscillation, and the distance from the imaginary axis determines how fast the decay is.',
+      },
+      {
+        id: 'tf-partial-fractions',
+        title: '2. Partial Fraction Decomposition and Inverse Transforms',
+        content: `## 2.1 Partial Fraction Expansion
+
+To find the inverse Laplace transform of H(s), decompose into simple fractions:
+
+**H(s) = A₁/(s − p₁) + A₂/(s − p₂) + ... + Aₙ/(s − pₙ)**
+
+Each term has a known inverse transform: **Aᵢ/(s − pᵢ) → Aᵢ · e^(pᵢt) · u(t)**
+
+### Distinct Real Poles
+
+For **H(s) = (2s + 3)/[(s + 1)(s + 4)]**, expand as:
+
+**H(s) = A/(s+1) + B/(s+4)**
+
+Solve: A = H(s)·(s+1)|_{s=−1}, B = H(s)·(s+4)|_{s=−4}
+
+### Repeated Poles
+
+For a pole of multiplicity k at s = p:
+
+**... + B₁/(s−p) + B₂/(s−p)² + ... + Bₖ/(s−p)^k**
+
+### Complex Conjugate Poles
+
+Keep as a second-order term: **(As + B)/(s² + 2αs + ω₀²)** and use the damped sinusoid transform pair.
+
+## 2.2 Stability from Transfer Function
+
+| Stability | Condition | Pole Requirement |
+|---|---|---|
+| **Asymptotically stable** | All transients decay to zero | All Re(pᵢ) < 0 |
+| **Marginally stable** | Sustained oscillation, no growth | Simple poles on jω axis, rest in LHP |
+| **Unstable** | Output grows without bound | Any Re(pᵢ) > 0 or repeated jω poles |
+
+The **Routh-Hurwitz criterion** tests stability without explicitly computing poles — essential when the characteristic polynomial is higher than second order.`,
+        examTip: 'For partial fractions on the FE exam, use the "cover-up" method: to find the coefficient for pole at s = p, cover up the (s−p) factor in the denominator and evaluate the remaining expression at s = p. This is dramatically faster than setting up simultaneous equations.',
+        importantNote: 'A common FE exam mistake is forgetting that repeated poles on the imaginary axis (e.g., double pole at s = 0) produce growing responses (t·u(t)), making the system unstable — not marginally stable.',
+      },
+    ],
     keyTakeaways: [
-      'Poles in LHP = stable; on imaginary axis = marginal; in RHP = unstable',
-      'Pole locations determine response time and oscillation; zeros affect magnitude only',
-      'Order of denominator = system order = number of poles',
-      'Partial fractions decompose complex H(s) into simple inverse-transformable terms',
+      'H(s) = Y(s)/X(s) = K·Π(s−zᵢ)/Π(s−pⱼ); poles determine stability, zeros shape response.',
+      'Poles in LHP → stable; on jω axis → marginal; in RHP → unstable.',
+      'Dominant poles (closest to jω axis) control the visible transient response.',
+      'Partial fraction decomposition converts complex H(s) into simple inverse-transformable terms.',
+      'System order = degree of denominator = number of poles = number of energy-storage elements.',
+      'Cover-up method for partial fractions: evaluate remaining expression at pole location.',
     ],
   },
 
@@ -3010,20 +3233,115 @@ The number of poles equals system order, determining the number of energy-storag
     topicId: 'fee_z_transforms',
     title: 'Z-Transforms and Discrete Systems',
     domainWeight: 'Linear Systems · 4–6%',
-    overview: 'Covers fundamental signal processing and system analysis in both time and frequency domains.',
-    sections: [{
-      id: 'fee_z_transforms_main',
-      title: 'Z-Transforms and Discrete Systems',
-      content: `The Z-Transform is the discrete-time equivalent of the Laplace Transform, converting difference equations into algebraic form. For a discrete signal x[n], X(z) = sum of x[n]z^(-n). The relationship between s-plane and z-plane is z = e^(sT) where T is sampling period. This maps the imaginary axis to the unit circle; the LHP maps inside the unit circle. For discrete systems, stability requires poles inside the unit circle |z| < 1.
+    overview: 'The Z-Transform is the discrete-time counterpart of the Laplace Transform, converting difference equations into algebraic form. Stability in discrete systems requires poles inside the unit circle, and the mapping z = e^(sT) connects continuous and discrete domains.',
+    sections: [
+      {
+        id: 'zt-definition',
+        title: '1. Z-Transform Definition and Common Pairs',
+        content: `## 1.1 The Z-Transform
 
-Common Z-Transform pairs: u[n] maps to z/(z-1), a^n u[n] maps to z/(z-a), n·a^n u[n] maps to az/(z-a)^2. Unilateral Z-Transforms (causal sequences) are standard for digital control. Partial fractions and tables solve most inverse Z-Transform problems quickly. On the FE exam, expect table lookups, inverse transforms via partial fractions, or determining stability from pole locations in the z-plane.`,
-      examTip: 'Key formulas:\nX(z) = sum of x[n]z^(-n)\nz = e^(sT)\nStability: |poles| < 1 in z-plane\nu[n] -> z/(z-1), a^n·u[n] -> z/(z-a)',
-    }],
+For a discrete signal x[n], the **bilateral Z-Transform** is:
+
+**X(z) = Σ x[n] · z^(−n)** (sum over all n)
+
+The **unilateral Z-Transform** (causal sequences, n ≥ 0) is standard for digital control and FE exam problems.
+
+### Essential Z-Transform Pairs
+
+| Time Domain x[n] | Z-Domain X(z) | ROC |
+|---|---|---|
+| δ[n] | 1 | All z |
+| u[n] | z/(z−1) | \|z\| > 1 |
+| aⁿ·u[n] | z/(z−a) | \|z\| > \|a\| |
+| n·aⁿ·u[n] | az/(z−a)² | \|z\| > \|a\| |
+| n·u[n] | z/(z−1)² | \|z\| > 1 |
+| cos(ω₀n)·u[n] | z(z−cos ω₀)/(z²−2z cos ω₀+1) | \|z\| > 1 |
+
+### Key Properties
+
+- **Linearity**: Z{α·x₁ + β·x₂} = α·X₁(z) + β·X₂(z)
+- **Time shift**: Z{x[n−k]} = z^(−k)·X(z) — delay by k samples multiplies by z^(−k)
+- **Convolution**: Z{x[n]*h[n]} = X(z)·H(z)
+- **Initial value**: x[0] = lim(z→∞) X(z)
+- **Final value**: lim(n→∞) x[n] = lim(z→1) (z−1)·X(z) (if stable)
+
+## 1.2 Region of Convergence (ROC)
+
+The ROC specifies where the Z-Transform sum converges:
+
+- **Causal signals**: ROC is the exterior of a circle \|z\| > r₊
+- **Anti-causal signals**: ROC is the interior \|z\| < r₋
+- **Two-sided signals**: ROC is an annular ring r₋ < \|z\| < r₊
+- The ROC cannot contain poles`,
+        examTip: 'On the FE exam, you will almost always work with causal (unilateral) Z-Transforms. Memorize the key pairs: u[n] → z/(z−1) and aⁿ·u[n] → z/(z−a). These two cover most exam problems when combined with partial fraction expansion.',
+      },
+      {
+        id: 'zt-stability-mapping',
+        title: '2. s-to-z Mapping and Discrete Stability',
+        content: `## 2.1 Mapping Between s-Plane and z-Plane
+
+The fundamental relationship is:
+
+**z = e^(sT)** where T is the sampling period (T = 1/fₛ)
+
+This exponential mapping transforms continuous-domain regions to discrete-domain regions:
+
+| s-Plane Region | z-Plane Region | System Behavior |
+|---|---|---|
+| Left half-plane (LHP) | **Inside** unit circle \|z\| < 1 | Decaying (stable) |
+| Imaginary axis (jω) | **On** unit circle \|z\| = 1 | Sustained oscillation |
+| Right half-plane (RHP) | **Outside** unit circle \|z\| > 1 | Growing (unstable) |
+
+### Discrete-Time Stability
+
+For discrete systems, **BIBO stability requires all poles inside the unit circle**:
+
+**\|pᵢ\| < 1** for all poles pᵢ
+
+This is the discrete equivalent of "all poles in the LHP" for continuous systems.
+
+## 2.2 Inverse Z-Transform via Partial Fractions
+
+To find x[n] from X(z):
+
+1. Express X(z)/z in partial fractions
+2. Multiply each term by z
+3. Use the table: A·z/(z−a) → A·aⁿ·u[n]
+
+### Example
+
+**X(z) = 3z/[(z−0.5)(z−0.8)]**
+
+Partial fractions of X(z)/z: A/(z−0.5) + B/(z−0.8)
+
+A = 3/(0.5−0.8) = −10, B = 3/(0.8−0.5) = 10
+
+**x[n] = [−10·(0.5)ⁿ + 10·(0.8)ⁿ]·u[n]**
+
+Both poles (\|0.5\| < 1 and \|0.8\| < 1) are inside the unit circle → **stable**.
+
+## 2.3 Difference Equations
+
+Z-Transforms convert difference equations to algebraic form. For:
+
+**y[n] − 0.5·y[n−1] = x[n]**
+
+Taking Z-Transform: Y(z) − 0.5·z⁻¹·Y(z) = X(z)
+
+**H(z) = Y(z)/X(z) = 1/(1 − 0.5z⁻¹) = z/(z − 0.5)**
+
+Pole at z = 0.5 (inside unit circle) → stable system.`,
+        examTip: 'When computing inverse Z-Transforms on the FE exam, always divide by z first (form X(z)/z), do partial fractions, then multiply each term by z before looking up the table. This avoids sign errors and works for every problem type.',
+        importantNote: 'Do not confuse the continuous stability criterion (poles in LHP) with the discrete criterion (poles inside unit circle). The mapping z = e^(sT) explains why: the imaginary axis maps to the unit circle, so "left of jω" maps to "inside |z| = 1".',
+      },
+    ],
     keyTakeaways: [
-      'Z-Transform discretizes continuous systems; z=e^(sT) relates s and z planes',
-      'Stability: all poles must satisfy |p_i| < 1 (inside unit circle)',
-      'ROC defines uniqueness; unilateral Z-T for causal sequences is standard',
-      'Partial fractions and tables solve most inverse Z-Transform problems quickly',
+      'Z-Transform: X(z) = Σ x[n]·z^(−n); converts difference equations to algebra.',
+      'z = e^(sT) maps continuous s-plane to discrete z-plane; jω axis → unit circle.',
+      'Discrete BIBO stability: all poles must satisfy |pᵢ| < 1 (inside unit circle).',
+      'Key pairs: u[n] → z/(z−1), aⁿ·u[n] → z/(z−a), n·aⁿ·u[n] → az/(z−a)².',
+      'Inverse Z-Transform: divide by z, partial fractions, multiply by z, table lookup.',
+      'Time delay by k samples → multiply by z^(−k) in z-domain.',
     ],
   },
 
@@ -3031,27 +3349,987 @@ Common Z-Transform pairs: u[n] maps to z/(z-1), a^n u[n] maps to z/(z-a), n·a^n
    * TOPIC 8 — SIGNAL PROCESSING  (4 curriculum IDs)
    * ────────────────────────────────────────────────────────────────── */
 
-  fee_fourier: { topicId: 'fee_fourier', title: 'Fourier Series and Fourier Transform', domainWeight: 'Signal Processing · 4–6%', overview: 'Covers Fourier analysis for periodic and aperiodic signals, sampling theory, filter design, and DFT/FFT.', sections: [{ id: 'fee_fourier_main', title: 'Fourier Series and Fourier Transform', content: `Fourier Series decomposes periodic signals into a sum of sinusoids at harmonics of the fundamental frequency. For a signal with period T₀ and fundamental frequency f₀ = 1/T₀, the complex exponential form is x(t) = sum of cn·e^(j2πnf₀t) where cn = (1/T₀) integral of x(t)e^(-j2πnf₀t)dt. The Fourier Transform generalizes to aperiodic signals, producing a continuous frequency spectrum. Parseval's theorem: energy in time domain equals energy in frequency domain. The bandwidth of a signal indicates how much of the frequency spectrum is significant. Differentiation in time multiplies Fourier coefficients by j2πf, making sharp signals have broader spectra.`, examTip: 'Key formulas:\ncn = (1/T₀) integral of x(t)e^(-j2πnf₀t)dt\nX(f) = integral of x(t)e^(-j2πft)dt\nParseval: integral |x(t)|^2 dt = integral |X(f)|^2 df' }], keyTakeaways: ['Periodic signals use Fourier Series (discrete spectrum); aperiodic use Transform (continuous)', 'Complex exponential form is easiest for computation', 'Parseval: time-domain energy equals frequency-domain energy', 'Signal smoothness determines spectral roll-off; edges create high-frequency components'] },
+  fee_fourier: {
+    topicId: 'fee_fourier',
+    title: 'Fourier Series and Fourier Transform',
+    domainWeight: 'Signal Processing · 4–6%',
+    overview: 'Fourier analysis decomposes signals into frequency components. Fourier Series handles periodic signals (discrete spectrum), while the Fourier Transform handles aperiodic signals (continuous spectrum). Both are essential for filtering, modulation, and spectral analysis on the FE exam.',
+    sections: [
+      {
+        id: 'fs-series',
+        title: '1. Fourier Series for Periodic Signals',
+        content: `## 1.1 Trigonometric and Complex Forms
 
-  fee_sampling: { topicId: 'fee_sampling', title: 'Sampling Theorem and Nyquist Rate', domainWeight: 'Signal Processing · 4–6%', overview: 'Covers Fourier analysis, sampling theory, filter design, and DFT/FFT.', sections: [{ id: 'fee_sampling_main', title: 'Sampling Theorem and Nyquist Rate', content: `The Sampling Theorem (Shannon-Nyquist) states that to perfectly reconstruct a bandlimited signal from samples, the sampling frequency fs must exceed twice the highest frequency component: fs > 2f_max. The critical frequency is fn = fs/2 called the Nyquist frequency. Violating this causes aliasing — high-frequency components fold back into the baseband and become indistinguishable from lower frequencies. Anti-aliasing filters are placed before sampling to remove frequency components above the Nyquist frequency. Practical reconstruction from samples uses a sinc interpolation filter, though zero-order hold and first-order hold approximate it. Common mistake: confusing Nyquist frequency with sampling frequency — remember fn = fs/2.`, examTip: 'Key formulas:\nfs > 2f_max (Nyquist criterion)\nfn = fs/2 (Nyquist frequency)\nAliased frequency: |f mod fs| or |fs - f|' }], keyTakeaways: ['Nyquist rate fs > 2f_max; Nyquist frequency fn = fs/2 is the folding point', 'Aliasing occurs when fs <= 2f_max; anti-aliasing filter mandatory before sampling', 'Aliased frequency = |f +/- k·fs| for integers k', 'Perfect reconstruction needs sinc filter; practical systems use zero-order hold'] },
+For a periodic signal with period **T₀** and fundamental frequency **f₀ = 1/T₀**:
 
-  fee_filters: { topicId: 'fee_filters', title: 'Analog Filters: Butterworth, Chebyshev, and Types', domainWeight: 'Signal Processing · 4–6%', overview: 'Covers Fourier analysis, sampling theory, filter design, and DFT/FFT.', sections: [{ id: 'fee_filters_main', title: 'Analog Filters', content: `Analog filters shape frequency responses to pass desired frequencies and attenuate others. Low-pass filters (LP) pass low frequencies, block high; high-pass (HP) do the opposite; band-pass (BP) pass a frequency band; band-stop (BS) reject a band. Filter order n determines roll-off rate: -20n dB/decade asymptotically. Butterworth filters provide maximally flat passband response with smooth roll-off; no ripple. Chebyshev Type I has equiripple passband and sharp roll-off; Type II has ripple in stopband. Elliptic filters achieve steepest roll-off by accepting ripple in both bands. A first-order Butterworth LP has H(s) = ωc/(s + ωc); second-order is ωc^2/(s^2 + sqrt(2)·ωc·s + ωc^2). Filter order is often the biggest design variable affecting cost and complexity.`, examTip: 'Key formulas:\nFirst-order LP: H(s) = ωc/(s+ωc)\nSecond-order Butterworth: H(s) = ωc^2/(s^2+sqrt(2)·ωc·s+ωc^2)\nRolloff = -20n dB/decade' }], keyTakeaways: ['Filter type (LP/HP/BP/BS) determined by application; Butterworth preferred for flat response', 'Roll-off = -20n dB/decade where n is order; higher order = steeper but more complex', 'Chebyshev allows passband ripple for sharper roll-off; Butterworth avoids ripple', 'Cutoff frequency ωc is primary design parameter'] },
+**Trigonometric form:**
+**x(t) = a₀ + Σ aₙ·cos(nω₀t) + Σ bₙ·sin(nω₀t)**
 
-  fee_dft_fft: { topicId: 'fee_dft_fft', title: 'DFT, FFT, and Practical Implementation', domainWeight: 'Signal Processing · 4–6%', overview: 'Covers Fourier analysis, sampling theory, filter design, and DFT/FFT.', sections: [{ id: 'fee_dft_fft_main', title: 'DFT, FFT, and Practical Implementation', content: `The Discrete Fourier Transform (DFT) converts a finite sequence of N samples into N frequency components: X[k] = sum(n=0 to N-1) x[n]e^(-j2πkn/N). Frequency resolution Δf = fs/N determines ability to distinguish nearby frequencies. The Fast Fourier Transform (FFT) reduces DFT computation from O(N^2) to O(N log N). Windowing applies a tapered window function (Hamming, Hann, Blackman) to reduce spectral leakage. Leakage occurs because the DFT implicitly assumes the signal repeats periodically; discontinuities at edges create spurious frequency components. Common windows: rectangular (no taper, high side-lobes), Hamming (50 dB suppression), Blackman (60 dB). Zero-padding extends to power of 2 without loss of information.`, examTip: 'Key formulas:\nX[k] = sum x[n]e^(-j2πkn/N)\nΔf = fs/N\nFrequency of bin k: fk = k·fs/N' }], keyTakeaways: ['DFT: X[k] = sum x[n]e^(-j2πkn/N); FFT is O(N log N), DFT is O(N^2)', 'Frequency resolution Δf = fs/N; longer records improve resolution', 'Windowing reduces spectral leakage from signal truncation', 'Zero-padding increases display resolution but adds no new information'] },
+where ω₀ = 2πf₀ and:
+- **a₀ = (1/T₀) ∫ x(t) dt** (DC component / average value)
+- **aₙ = (2/T₀) ∫ x(t)·cos(nω₀t) dt**
+- **bₙ = (2/T₀) ∫ x(t)·sin(nω₀t) dt**
+
+**Complex exponential form** (more compact):
+**x(t) = Σ cₙ · e^(j2πnf₀t)**
+
+where **cₙ = (1/T₀) ∫ x(t) · e^(−j2πnf₀t) dt**
+
+## 1.2 Amplitude and Phase Spectra
+
+The **one-sided amplitude spectrum** plots |cₙ| at each harmonic frequency nf₀. The spectrum reveals:
+
+| Signal Shape | Spectral Characteristics |
+|---|---|
+| **Smooth** (e.g., sinusoid) | Energy concentrated at low harmonics; rapid roll-off |
+| **Sharp edges** (e.g., square wave) | Energy in many harmonics; slow 1/n roll-off |
+| **Impulse train** | Flat spectrum — all harmonics equal |
+| **Symmetric about zero** | Only cosine terms (bₙ = 0); aₙ nonzero |
+| **Antisymmetric (odd)** | Only sine terms (aₙ = 0); bₙ nonzero |
+
+### Gibbs Phenomenon
+
+Truncating a Fourier Series near a discontinuity produces **overshoot of approximately 9%** regardless of the number of terms — this is the Gibbs phenomenon. It does not vanish as more terms are added; only the region of overshoot narrows.`,
+        examTip: 'For FE exam problems, exploit signal symmetry to eliminate half the computation: even signals have only cosine terms (bₙ = 0), odd signals have only sine terms (aₙ = 0), and half-wave symmetric signals have only odd harmonics.',
+      },
+      {
+        id: 'fs-transform',
+        title: '2. Fourier Transform and Energy Spectra',
+        content: `## 2.1 Fourier Transform for Aperiodic Signals
+
+The **Fourier Transform** extends spectral analysis to non-periodic signals, producing a **continuous** frequency spectrum:
+
+**X(f) = ∫ x(t) · e^(−j2πft) dt**
+
+**Inverse: x(t) = ∫ X(f) · e^(j2πft) df**
+
+### Common Transform Pairs
+
+| Time Domain | Frequency Domain |
+|---|---|
+| Rectangular pulse rect(t/τ) | τ · sinc(fτ) |
+| Gaussian e^(−πt²) | e^(−πf²) (Gaussian in both domains) |
+| Exponential e^(−at)·u(t) | 1/(a + j2πf) |
+| Impulse δ(t) | 1 (flat — all frequencies present) |
+| Constant 1 | δ(f) (single frequency at DC) |
+
+## 2.2 Parseval's Theorem and Energy
+
+**Parseval's theorem** states energy is conserved across domains:
+
+**∫ |x(t)|² dt = ∫ |X(f)|² df**
+
+The **Energy Spectral Density (ESD)** is |X(f)|² — it shows how signal energy is distributed across frequency.
+
+### Bandwidth
+
+The **bandwidth** of a signal is the range of significant frequency content. Definitions vary:
+
+- **3-dB bandwidth**: frequencies where |X(f)| drops to 1/√2 of peak
+- **Null-to-null bandwidth**: distance between first zeros of |X(f)|
+- **99% energy bandwidth**: range containing 99% of signal energy
+
+### Duality Property
+
+Fourier analysis has a **duality** property: if x(t) ↔ X(f), then X(t) ↔ x(−f). This means a wide pulse in time produces a narrow spectrum, and vice versa — the **time-bandwidth uncertainty principle**: Δt · Δf ≥ 1/(4π).`,
+        examTip: 'On the FE exam, remember the sinc function relationship: a rectangular pulse of width τ has a sinc spectrum with first null at f = 1/τ. Wider pulses have narrower spectra (better frequency localization) and vice versa. This tradeoff appears in both signal processing and communications problems.',
+        importantNote: 'Differentiation in time corresponds to multiplication by j2πf in frequency. This means sharp signal transitions (large derivatives) require high-frequency content — the fundamental reason why bandwidth-limited channels distort signals with sharp edges.',
+      },
+    ],
+    keyTakeaways: [
+      'Periodic signals → Fourier Series (discrete spectrum at harmonics nf₀); aperiodic → Fourier Transform (continuous).',
+      'Complex exponential form: cₙ = (1/T₀) ∫ x(t)·e^(−j2πnf₀t)dt is most compact for computation.',
+      'Parseval: ∫|x(t)|²dt = ∫|X(f)|²df — energy conservation across domains.',
+      'Signal smoothness determines spectral roll-off; discontinuities create high-frequency components.',
+      'Time-bandwidth product Δt·Δf ≥ 1/(4π) — cannot be narrow in both domains simultaneously.',
+      'Exploit signal symmetry: even → cosine only; odd → sine only; half-wave → odd harmonics only.',
+    ],
+  },
+
+  fee_sampling: {
+    topicId: 'fee_sampling',
+    title: 'Sampling Theorem and Nyquist Rate',
+    domainWeight: 'Signal Processing · 4–6%',
+    overview: 'The Shannon-Nyquist sampling theorem establishes the minimum sampling rate for perfect signal reconstruction. Violations cause aliasing, where high frequencies masquerade as low frequencies. Anti-aliasing filters and proper sampling rates are critical for all digital signal processing.',
+    sections: [
+      {
+        id: 'samp-theorem',
+        title: '1. Shannon-Nyquist Sampling Theorem',
+        content: `## 1.1 The Fundamental Theorem
+
+To perfectly reconstruct a **bandlimited** signal from its samples, the sampling frequency must exceed twice the highest frequency component:
+
+**fₛ > 2·f_max** (Nyquist criterion)
+
+The **Nyquist rate** is the minimum sampling frequency: **fₛ_min = 2·f_max**
+
+The **Nyquist frequency** is the maximum recoverable frequency: **fₙ = fₛ/2**
+
+| Term | Definition | Example (audio CD) |
+|---|---|---|
+| **fₛ** (sampling frequency) | Samples per second | 44,100 Hz |
+| **f_max** (max signal freq) | Highest frequency in signal | 20,000 Hz |
+| **fₙ = fₛ/2** (Nyquist freq) | Folding frequency | 22,050 Hz |
+| **T = 1/fₛ** (sampling period) | Time between samples | 22.7 μs |
+
+### Frequency-Domain View
+
+Sampling replicates the signal spectrum at multiples of fₛ. If fₛ > 2·f_max, the replicas do not overlap and the original spectrum can be recovered by a low-pass filter at fₙ. If fₛ < 2·f_max, replicas overlap → **aliasing**.
+
+## 1.2 Reconstruction
+
+Perfect reconstruction uses a **sinc interpolation** filter:
+
+**x(t) = Σ x[n] · sinc[(t − nT)/T]**
+
+Practical systems use approximations:
+- **Zero-Order Hold (ZOH)**: staircase approximation (most common in DACs)
+- **First-Order Hold**: linear interpolation between samples
+- **Oversampling + digital filter**: sample at much higher rate, then filter digitally`,
+        examTip: 'The most common FE exam mistake is confusing Nyquist frequency (fₙ = fₛ/2) with sampling frequency (fₛ). The Nyquist frequency is the folding point — the maximum frequency that can be represented. Always verify: is the problem asking for the sampling rate or the Nyquist frequency?',
+      },
+      {
+        id: 'samp-aliasing',
+        title: '2. Aliasing and Anti-Aliasing Filters',
+        content: `## 2.1 Aliasing
+
+When a signal contains frequencies above fₙ = fₛ/2, those components **fold back** into the baseband and become indistinguishable from lower-frequency components.
+
+### Computing Aliased Frequency
+
+For a signal at frequency f sampled at fₛ, the **apparent (aliased) frequency** is:
+
+**f_alias = |f − k·fₛ|** for the integer k that brings the result into [0, fₛ/2]
+
+**Example**: A 15 kHz signal sampled at 20 kHz:
+- f_alias = |15 − 20| = 5 kHz
+- The 15 kHz tone appears as 5 kHz — completely indistinguishable from a real 5 kHz signal
+
+### Aliasing in the Frequency Domain
+
+| Condition | Result | Spectrum |
+|---|---|---|
+| fₛ > 2·f_max | **No aliasing** | Spectral replicas separated |
+| fₛ = 2·f_max | **Critical sampling** | Replicas touch — theoretically OK |
+| fₛ < 2·f_max | **Aliasing** | Replicas overlap — distortion |
+
+## 2.2 Anti-Aliasing Filters
+
+An **anti-aliasing filter** is a low-pass filter placed **before** the analog-to-digital converter (ADC):
+
+- **Cutoff frequency**: fₙ = fₛ/2
+- **Purpose**: remove all frequency content above fₙ before sampling
+- **Requirement**: must be an **analog** filter (cannot be digital, since aliasing occurs at sampling)
+- **Typical order**: 4th–8th order Butterworth or elliptic for steep roll-off
+
+### Practical Oversampling
+
+Modern systems often **oversample** (sample at much higher than 2·f_max), then digitally filter and **decimate**. This relaxes the analog anti-aliasing filter requirements since the gap between f_max and fₛ/2 is large.`,
+        examTip: 'When the FE exam asks for the aliased frequency, use this quick method: fold the signal frequency into the range [0, fₛ/2] by repeatedly subtracting fₛ and taking the absolute value. For instance, 75 kHz sampled at 40 kHz: |75−40| = 35, |35−40| = 5 kHz. The aliased frequency is 5 kHz.',
+        importantNote: 'Anti-aliasing filters must be analog — they operate before the ADC. A digital filter cannot remove aliasing because the aliased components are already folded into the baseband and are indistinguishable from genuine low-frequency content.',
+      },
+    ],
+    keyTakeaways: [
+      'Nyquist criterion: fₛ > 2·f_max for perfect reconstruction; Nyquist frequency fₙ = fₛ/2.',
+      'Aliasing folds frequencies above fₙ back into baseband: f_alias = |f − k·fₛ|.',
+      'Anti-aliasing filter (analog LP at fₙ) is mandatory before the ADC.',
+      'Perfect reconstruction uses sinc interpolation; practical systems use ZOH or oversampling.',
+      'Oversampling relaxes anti-aliasing filter requirements by widening the transition band.',
+      'Do not confuse Nyquist frequency (fₛ/2) with Nyquist rate (2·f_max) — common FE exam trap.',
+    ],
+  },
+
+  fee_filters: {
+    topicId: 'fee_filters',
+    title: 'Analog Filters: Butterworth, Chebyshev, and Types',
+    domainWeight: 'Signal Processing · 4–6%',
+    overview: 'Analog filters shape frequency responses to pass desired frequencies and attenuate others. Filter type (LP, HP, BP, BS), order, and approximation method (Butterworth, Chebyshev, Elliptic) are the key design choices. The FE exam tests filter identification, cutoff frequency calculation, and roll-off rate.',
+    sections: [
+      {
+        id: 'filt-types',
+        title: '1. Filter Types and Transfer Functions',
+        content: `## 1.1 Filter Classification by Frequency Response
+
+| Filter Type | Passes | Blocks | Application |
+|---|---|---|---|
+| **Low-Pass (LP)** | f < fₒ | f > fₒ | Anti-aliasing, noise removal |
+| **High-Pass (HP)** | f > fₒ | f < fₒ | DC blocking, bass cut |
+| **Band-Pass (BP)** | f₁ < f < f₂ | f < f₁ and f > f₂ | Radio tuning, selective amplification |
+| **Band-Stop (BS/Notch)** | f < f₁ and f > f₂ | f₁ < f < f₂ | 60 Hz hum removal, interference rejection |
+
+### Standard Transfer Functions
+
+**First-order LP:** **H(s) = ωc / (s + ωc)**
+
+**Second-order Butterworth LP:** **H(s) = ωc² / (s² + √2·ωc·s + ωc²)**
+
+**General second-order:** **H(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)**
+
+where ζ is the damping ratio and ωₙ is the natural frequency.
+
+## 1.2 Roll-Off and Filter Order
+
+The **order n** of a filter determines the asymptotic roll-off rate:
+
+**Roll-off = −20n dB/decade** (or −6n dB/octave)
+
+| Order | Roll-off | Poles | Complexity |
+|---|---|---|---|
+| 1st | −20 dB/dec | 1 | Single RC section |
+| 2nd | −40 dB/dec | 2 | Active filter (op-amp + R,C) |
+| 3rd | −60 dB/dec | 3 | Cascaded sections |
+| 4th | −80 dB/dec | 4 | Two second-order sections |
+
+Higher order = steeper transition from passband to stopband, but more components, higher cost, and greater group delay.
+
+### Cutoff Frequency
+
+The **−3 dB cutoff frequency** fₒ (or ωc) is where the output power drops to half (voltage to 1/√2 ≈ 0.707):
+
+**|H(jωc)| = 1/√2 ≈ −3 dB**`,
+        examTip: 'On the FE exam, if you see a transfer function and need to identify the filter type: look at the behavior at DC (s=0) and at high frequency (s→∞). LP has gain at DC and zero at infinity; HP has zero at DC and gain at infinity; BP has gain at a center frequency and zero at both extremes.',
+      },
+      {
+        id: 'filt-approx',
+        title: '2. Filter Approximations: Butterworth, Chebyshev, and Elliptic',
+        content: `## 2.1 Comparison of Filter Families
+
+| Property | Butterworth | Chebyshev I | Chebyshev II | Elliptic |
+|---|---|---|---|---|
+| **Passband** | Maximally flat | Equiripple | Flat | Equiripple |
+| **Stopband** | Monotonic | Monotonic | Equiripple | Equiripple |
+| **Roll-off** | Moderate | Sharp | Sharp | **Sharpest** |
+| **Group delay** | Good | Moderate | Moderate | Poor |
+| **Use case** | General purpose | Need sharp cutoff | Need flat passband | Minimum order |
+
+## 2.2 Butterworth Filters (Maximally Flat)
+
+The **Butterworth** filter has the flattest possible passband — no ripple:
+
+**|H(jω)|² = 1 / [1 + (ω/ωc)^(2n)]**
+
+At ω = ωc: |H| = 1/√2 = −3 dB regardless of order n.
+
+All poles lie on a circle of radius ωc in the s-plane, equally spaced in the LHP.
+
+## 2.3 Chebyshev Filters
+
+**Type I**: allows specified ripple (e.g., 0.5 dB) in the passband for a steeper roll-off than Butterworth of the same order.
+
+**Type II**: has ripple in the stopband while maintaining a flat passband.
+
+For the same specifications (passband ripple, stopband attenuation), Chebyshev requires **fewer stages** than Butterworth.
+
+## 2.4 Filter Design Workflow
+
+1. **Specify**: passband frequency, stopband frequency, passband ripple, stopband attenuation
+2. **Choose approximation**: Butterworth (flat), Chebyshev (ripple OK), Elliptic (minimum order)
+3. **Determine order** n from specifications
+4. **Look up or compute** normalized prototype poles
+5. **Frequency scale** and **impedance scale** to desired ωc and impedance level`,
+        examTip: 'Butterworth is the default choice when the FE exam does not specify a filter type — it has the simplest transfer function and the most predictable behavior. Chebyshev is used when the problem explicitly mentions passband ripple tolerance or requires a sharper transition with fewer components.',
+        importantNote: 'Filter order is the single biggest design variable. Doubling the order doubles the roll-off rate (e.g., from −40 to −80 dB/decade) but also doubles component count and can introduce stability issues in active filter implementations.',
+      },
+    ],
+    keyTakeaways: [
+      'LP, HP, BP, BS filter types determined by which frequencies pass through.',
+      'Roll-off = −20n dB/decade; higher order n = steeper cutoff but more complexity.',
+      'Butterworth: maximally flat passband, no ripple — general-purpose default.',
+      'Chebyshev I: equiripple passband, sharper roll-off than Butterworth of same order.',
+      'Elliptic: ripple in both bands, sharpest roll-off, minimum order for given specs.',
+      'Cutoff frequency ωc defined at −3 dB point where |H| = 1/√2.',
+    ],
+  },
+
+  fee_dft_fft: {
+    topicId: 'fee_dft_fft',
+    title: 'DFT, FFT, and Practical Implementation',
+    domainWeight: 'Signal Processing · 4–6%',
+    overview: 'The Discrete Fourier Transform (DFT) converts a finite sample sequence into frequency components. The Fast Fourier Transform (FFT) computes the DFT efficiently in O(N log N). Windowing and zero-padding are practical techniques for reducing spectral leakage and improving frequency display.',
+    sections: [
+      {
+        id: 'dft-def',
+        title: '1. DFT Definition and Frequency Resolution',
+        content: `## 1.1 The Discrete Fourier Transform
+
+The **DFT** converts N time-domain samples into N frequency-domain components:
+
+**X[k] = Σ(n=0 to N−1) x[n] · e^(−j2πkn/N)** for k = 0, 1, ..., N−1
+
+**Inverse DFT:**
+**x[n] = (1/N) Σ(k=0 to N−1) X[k] · e^(j2πkn/N)**
+
+### Frequency Bin Interpretation
+
+| Parameter | Formula | Meaning |
+|---|---|---|
+| **Frequency of bin k** | fₖ = k · fₛ/N | Center frequency of bin k |
+| **Frequency resolution** | Δf = fₛ/N | Smallest distinguishable frequency difference |
+| **Bin 0** | f₀ = 0 (DC) | Average value of signal |
+| **Bin N/2** | fₛ/2 (Nyquist) | Maximum frequency represented |
+| **Bins N/2+1 to N−1** | Negative frequencies | Mirror of bins 1 to N/2−1 for real signals |
+
+### Improving Frequency Resolution
+
+**Δf = fₛ/N = 1/(N·T) = 1/T_record**
+
+To improve resolution (smaller Δf):
+- **Increase N** (more samples) — adds actual information
+- **Decrease fₛ** — but risk aliasing
+- **Longer record time** T_record = N/fₛ — the fundamental limit
+
+## 1.2 The Fast Fourier Transform (FFT)
+
+The **FFT** is an algorithm (not a different transform) that computes the DFT efficiently:
+
+| Method | Operations | For N = 1024 |
+|---|---|---|
+| Direct DFT | **O(N²)** | ~1,048,576 |
+| FFT (Cooley-Tukey) | **O(N log₂ N)** | ~10,240 |
+
+The Cooley-Tukey algorithm requires N to be a **power of 2** (128, 256, 512, 1024, ...). If your data has a non-power-of-2 length, **zero-pad** to the next power of 2.`,
+        examTip: 'For FE exam DFT problems: given N samples at rate fₛ, the frequency resolution is Δf = fₛ/N and the maximum frequency is fₛ/2. If asked to identify which bin a frequency falls in: bin k = round(f/Δf). These three formulas solve most DFT exam problems.',
+      },
+      {
+        id: 'dft-windowing',
+        title: '2. Windowing and Spectral Leakage',
+        content: `## 2.1 Spectral Leakage
+
+The DFT implicitly assumes the signal **repeats periodically** every N samples. If the signal is not an exact integer number of periods within the N-sample window, discontinuities at the edges create spurious frequency components — this is **spectral leakage**.
+
+### Why It Happens
+
+A finite-length signal is equivalent to multiplying an infinite signal by a rectangular window. In the frequency domain, this multiplication becomes **convolution** with the window's spectrum (a sinc function), smearing energy into adjacent bins.
+
+## 2.2 Window Functions
+
+**Windowing** tapers the signal smoothly to zero at the edges, reducing discontinuities:
+
+| Window | Main-Lobe Width | Side-Lobe Level | Use Case |
+|---|---|---|---|
+| **Rectangular** | Narrowest | −13 dB (worst) | Only when signal is exactly periodic in window |
+| **Hann (Hanning)** | Moderate | −31 dB | General purpose |
+| **Hamming** | Moderate | −43 dB | Speech processing |
+| **Blackman** | Widest | −58 dB | When side-lobe suppression is critical |
+| **Kaiser** | Adjustable (β parameter) | Adjustable | Flexible tradeoff |
+
+### Tradeoff
+
+Windows reduce leakage (lower side-lobes) at the cost of **wider main lobe** (worse frequency resolution). No window eliminates leakage completely — it is a fundamental tradeoff.
+
+## 2.3 Zero-Padding
+
+**Zero-padding** appends zeros to the signal before computing the FFT:
+
+- **Does NOT improve true frequency resolution** (no new information)
+- **Does improve spectral display** by interpolating between DFT bins
+- **Makes N a power of 2** for efficient FFT computation
+- Useful for making spectral peaks easier to locate visually`,
+        examTip: 'The FE exam may ask about windowing effects. Key facts: (1) rectangular window has the narrowest main lobe but worst leakage, (2) Hamming/Hann reduce leakage but widen the main lobe, (3) zero-padding does NOT add new spectral information — it just interpolates between existing frequency bins.',
+        importantNote: 'A common misconception is that zero-padding improves frequency resolution. It does not — true resolution is Δf = fₛ/N where N is the number of actual data samples, not the zero-padded length. Zero-padding only provides a smoother-looking (interpolated) spectrum.',
+      },
+    ],
+    keyTakeaways: [
+      'DFT: X[k] = Σ x[n]·e^(−j2πkn/N); converts N samples to N frequency bins.',
+      'FFT computes DFT in O(N log N) vs O(N²); requires N = power of 2.',
+      'Frequency resolution Δf = fₛ/N; longer records improve resolution.',
+      'Frequency of bin k: fₖ = k·fₛ/N; maximum frequency at bin N/2 = fₛ/2.',
+      'Windowing reduces spectral leakage but widens the main lobe (resolution tradeoff).',
+      'Zero-padding improves spectral display (interpolation) but not true frequency resolution.',
+    ],
+  },
 
   /* ──────────────────────────────────────────────────────────────────
    * TOPIC 9 — ELECTRONICS  (5 curriculum IDs)
    * ────────────────────────────────────────────────────────────────── */
 
-  fee_diodes: { topicId: 'fee_diodes', title: 'Diode Circuits and Applications', domainWeight: 'Electronics · 7–11%', overview: 'Covers semiconductor devices including diodes, BJTs, MOSFETs, op-amps, and power conversion circuits.', sections: [{ id: 'fee_diodes_main', title: 'Diode Circuits and Applications', content: `Diodes are two-terminal devices allowing current in forward direction and blocking reverse. Practical silicon diodes have 0.6-0.7 V forward voltage drop. Half-wave rectifier: Vdc = 0.318·Vpeak; full-wave bridge: Vdc = 0.636·Vpeak. Peak Inverse Voltage (PIV) must be less than breakdown voltage; bridge rectifier PIV = Vpeak, half-wave PIV = 2Vpeak. Zener diodes maintain constant voltage in reverse breakdown region; used as voltage regulators. Clipper circuits limit signal peaks; clamper circuits shift DC level. Filtering capacitors reduce ripple: ripple factor r = 1/(2 sqrt(3)·fRC) for full-wave with capacitor.`, examTip: 'Key formulas:\nHalf-wave: Vdc = Vpeak/π\nFull-wave: Vdc = 2Vpeak/π\nRipple: r = 1/(2 sqrt(3)·fRC)\nPIV_bridge = Vpeak' }], keyTakeaways: ['Half-wave rectifier: Vdc = 0.318·Vpeak; full-wave: Vdc = 0.636·Vpeak', 'PIV for bridge = Vpeak, half-wave = 2Vpeak', 'Zener in reverse bias maintains constant voltage for regulation', 'Filtering capacitors reduce ripple; larger capacitance = lower ripple'] },
+  fee_diodes: {
+    topicId: 'fee_diodes',
+    title: 'Diode Circuits and Applications',
+    domainWeight: 'Electronics · 7–11%',
+    overview: 'Diodes are two-terminal semiconductor devices that allow current in one direction. Rectifier circuits (half-wave, full-wave bridge), Zener regulators, clippers, and clampers are fundamental building blocks tested on the FE exam. Key calculations involve DC output voltage, PIV ratings, and ripple factor.',
+    sections: [
+      {
+        id: 'diode-rectifiers',
+        title: '1. Diode Fundamentals and Rectifier Circuits',
+        content: `## 1.1 Diode Characteristics
 
-  fee_bjt: { topicId: 'fee_bjt', title: 'BJT Analysis and Amplifier Configurations', domainWeight: 'Electronics · 7–11%', overview: 'Covers semiconductor devices including diodes, BJTs, MOSFETs, op-amps, and power conversion.', sections: [{ id: 'fee_bjt_main', title: 'BJT Analysis and Amplifier Configurations', content: `Bipolar Junction Transistors (BJTs) are current-controlled devices with three terminals: base (B), collector (C), emitter (E). In active region, Ic = β·Ib where β (hfe) is current gain (typically 50-300). Vbe approximately 0.7 V; Vce must exceed saturation voltage Vce(sat) approximately 0.2 V for active region. For small-signal AC analysis: gm = Ic/Vt approximately Ic/26mV. Common-Emitter (CE): high gain (approximately β), moderate input impedance, phase inversion, Av = -gm·Rc. Common-Collector (CC) or emitter-follower: unity voltage gain, high input impedance, low output impedance — excellent buffer. Common-Base (CB): high input impedance backward, no phase inversion. Q-point biasing: use voltage divider for stability against β variations.`, examTip: 'Key formulas:\nIc = β·Ib\nVbe approximately 0.7 V\ngm = Ic/Vt\nAv = -gm·Rc (CE stage)' }], keyTakeaways: ['Active region: Ic = β·Ib; saturation when Vce < 0.2 V; cutoff when Ib approximately 0', 'CE: high gain, moderate Zin, phase inversion; CC: high Zin, low Zout, unity gain', 'Small-signal model: gm = Ic/Vt approximately Ic/26mV', 'Q-point biasing: use voltage divider for stability against β variations'] },
+The **ideal diode** has zero forward resistance and infinite reverse resistance. Practical **silicon diodes** have:
 
-  fee_mosfet: { topicId: 'fee_mosfet', title: 'MOSFET Circuits and Biasing', domainWeight: 'Electronics · 7–11%', overview: 'Covers semiconductor devices including diodes, BJTs, MOSFETs, op-amps, and power conversion.', sections: [{ id: 'fee_mosfet_main', title: 'MOSFET Circuits and Biasing', content: `MOSFETs are voltage-controlled devices. Enhancement-mode NMOS conducts only with Vgs > Vt (threshold, typically 0.5-2 V). In saturation: Id = (μnCox/2)·(W/L)·(Vgs-Vt)^2. Transconductance gm = μnCox(W/L)(Vgs-Vt). P-channel is complementary. Common-Source (CS) amplifier: Av = -gm·Rd. Common-Drain (CD) or source-follower: unity gain, very high Zin. Common-Gate (CG): high input impedance backward, low forward. Key advantage over BJTs: essentially zero gate current, simplifying biasing and allowing high input impedance. Self-biasing via source resistor: Vgs = Id·Rs.`, examTip: 'Key formulas:\nId = (μnCox/2)·(W/L)·(Vgs-Vt)^2 [saturation]\ngm = μnCox(W/L)(Vgs-Vt)\nAv = -gm·Rd [CS]\nZin_gate approaches infinity' }], keyTakeaways: ['NMOS enhancement: conducts for Vgs > Vt; saturation: Id = (μCox/2)(W/L)(Vgs-Vt)^2', 'CS amplifier: Av = -gm·Rd; CD: Av approximately 1; CG: low Zin forward', 'Zero gate current means very high input impedance', 'Self-biasing via Rs: Vgs = Id·Rs'] },
+- **Forward voltage drop**: Vf ≈ **0.6–0.7 V**
+- **Reverse leakage current**: negligible (nA range)
+- **Breakdown voltage**: diode fails if reverse voltage exceeds rating
 
-  fee_opamp: { topicId: 'fee_opamp', title: 'Operational Amplifier Circuits', domainWeight: 'Electronics · 7–11%', overview: 'Covers semiconductor devices including diodes, BJTs, MOSFETs, op-amps, and power conversion.', sections: [{ id: 'fee_opamp_main', title: 'Operational Amplifier Circuits', content: `Ideal op-amps have infinite open-loop gain, infinite input impedance, zero output impedance. With negative feedback: inverting Acl = -Rf/Rin, non-inverting Acl = 1+Rf/Rin. Unity-gain buffer: Acl = 1, Zin approximately infinity, Zout approximately 0. Integrator: Vo = -(1/RC) integral of Vi dt. Differentiator: Vo = -RC dVi/dt (noise-sensitive). Summing amplifier: Vo = -Rf(Vi1/R1 + Vi2/R2 + ...). Virtual short principle: V+ = V- with negative feedback; no current into inputs. Comparator uses open-loop gain to switch output between rail voltages. GBW product: gain x bandwidth = constant.`, examTip: 'Key formulas:\nInverting: Acl = -Rf/Rin\nNon-inverting: Acl = 1+Rf/Rin\nIntegrator: Vo = -(1/RC) integral Vi dt\nGBW = Aol·f_3dB' }], keyTakeaways: ['Virtual short: V+ = V- with negative feedback; no current into inputs', 'Inverting: Acl = -Rf/Rin; Non-inverting: Acl = 1+Rf/Rin; buffer: Acl = 1', 'Integrator: output proportional to integral of input; differentiator: proportional to derivative', 'Summing amplifier weights multiple inputs: Vo = -Rf(Vi1/R1 + Vi2/R2 + ...)'] },
+### Diode Models for Analysis
 
-  fee_power_elec: { topicId: 'fee_power_elec', title: 'Power Electronics: Rectifiers and Converters', domainWeight: 'Electronics · 7–11%', overview: 'Covers semiconductor devices including diodes, BJTs, MOSFETs, op-amps, and power conversion.', sections: [{ id: 'fee_power_elec_main', title: 'Power Electronics', content: `Power electronics processes large currents and voltages. Buck converter steps down: Vo = D·Vin where D is duty cycle 0-1. Boost converter steps up: Vo = Vin/(1-D). Three-phase rectifiers (six-pulse): Vdc approximately 1.35·Vrms for uncontrolled. PWM controls average output by varying on/off ratio; frequency much higher than load (typically 10+ kHz). Current ripple: ΔI = Vin·D/(L·fs). Voltage ripple: ΔV = I·D/(C·fs). Transformer-isolated converters provide safety isolation.`, examTip: 'Key formulas:\nBuck: Vo = D·Vin\nBoost: Vo = Vin/(1-D)\nΔI = Vin·D/(L·fs)\nΔV = I·D/(C·fs)' }], keyTakeaways: ['Buck: Vo = D·Vin; Boost: Vo = Vin/(1-D); D = ton/(ton+toff)', 'Ripple in inductors: ΔI = V·D/(L·fs); in capacitors: ΔV = I·D/(C·fs)', 'Three-phase rectifier: higher power, lower ripple than single-phase', 'PWM frequency >> load frequency ensures smooth output'] },
+| Model | Forward | Reverse | Use |
+|---|---|---|---|
+| **Ideal** | Short circuit | Open circuit | Quick estimation |
+| **Constant drop** | 0.7 V source | Open circuit | FE exam standard |
+| **Exponential** | i = Iₛ·(e^(v/nVt)−1) | −Iₛ | Precise analysis |
+
+where Vt = kT/q ≈ **26 mV** at room temperature (thermal voltage).
+
+## 1.2 Rectifier Circuits
+
+Rectifiers convert AC to DC:
+
+### Half-Wave Rectifier (1 diode)
+
+- Conducts only positive half-cycles
+- **Vdc = Vpeak/π ≈ 0.318·Vpeak**
+- **PIV = Vpeak** (for simple) or **2·Vpeak** (with filter capacitor)
+- Ripple frequency = input frequency f
+
+### Full-Wave Bridge Rectifier (4 diodes)
+
+- Conducts both half-cycles (flips negative half)
+- **Vdc = 2·Vpeak/π ≈ 0.636·Vpeak**
+- **PIV = Vpeak** per diode
+- Ripple frequency = **2f** (double the input frequency)
+
+| Parameter | Half-Wave | Full-Wave Bridge |
+|---|---|---|
+| Vdc | Vpeak/π | 2·Vpeak/π |
+| PIV per diode | 2·Vpeak | Vpeak |
+| Ripple frequency | f | 2f |
+| Efficiency | 40.6% | 81.2% |
+| Transformer utilization | Poor | Good |
+
+### Filtering
+
+A **smoothing capacitor** reduces ripple:
+
+**Ripple factor r ≈ 1/(2√3 · f · R · C)** (full-wave)
+
+Larger C or larger R (lighter load) = lower ripple.`,
+        examTip: 'Remember the π factor: half-wave Vdc = Vpeak/π, full-wave Vdc = 2Vpeak/π. For the bridge rectifier PIV, each diode sees only Vpeak (not 2Vpeak) because two diodes share the reverse voltage. This is a frequent FE exam question.',
+      },
+      {
+        id: 'diode-zener-clipper',
+        title: '2. Zener Regulators, Clippers, and Clampers',
+        content: `## 2.1 Zener Diode Voltage Regulators
+
+A **Zener diode** operates in **reverse breakdown** at a precisely controlled voltage Vz. It maintains constant output voltage despite load and supply variations.
+
+### Basic Zener Regulator Design
+
+**Circuit**: Vin → series resistor Rs → parallel Zener + load RL
+
+- **Series resistor current**: Is = (Vin − Vz)/Rs
+- **Load current**: IL = Vz/RL
+- **Zener current**: Iz = Is − IL
+- **Requirement**: Iz > Iz_min (Zener must stay in breakdown)
+- **Power dissipation**: Pz = Vz · Iz (must not exceed rating)
+
+### Design Constraints
+
+| Condition | Requirement |
+|---|---|
+| Minimum Vin | Iz ≥ Iz_min with maximum IL |
+| Maximum Vin | Pz ≤ Pz_max with minimum IL |
+| Load regulation | Vz stable as IL varies |
+| Line regulation | Vz stable as Vin varies |
+
+## 2.2 Clipper and Clamper Circuits
+
+**Clippers** (limiters) remove portions of a signal above or below a threshold:
+- **Series clipper**: diode in series blocks one polarity
+- **Parallel clipper**: diode + reference voltage shunts excess signal
+- **Biased clipper**: diode + DC source sets the clipping level at Vclip = Vbias + 0.7 V
+
+**Clampers** (DC restorers) shift the DC level of a signal without changing its AC shape:
+- A capacitor + diode combination shifts the entire waveform up or down
+- Output DC level is clamped to the diode reference voltage
+- The capacitor must be large enough to hold charge between cycles
+
+### Efficiency and Power
+
+Rectifier efficiency: **η = Pdc/Pac**
+
+For practical design, account for diode drops: each silicon diode subtracts ~0.7 V from the output. A bridge rectifier loses **2 × 0.7 = 1.4 V** from the peak output.`,
+        examTip: 'For Zener regulator problems on the FE exam, always check that the Zener current stays above the minimum (Iz > Iz_min) at worst-case conditions (minimum Vin, maximum IL). If Iz drops below minimum, the Zener falls out of breakdown and regulation is lost.',
+        importantNote: 'A common FE exam mistake is forgetting to subtract diode voltage drops in rectifier circuits. A full-wave bridge loses 2 × 0.7 = 1.4 V, so actual Vdc = 2(Vpeak − 1.4)/π for the constant-drop model. This matters significantly for low-voltage circuits.',
+      },
+    ],
+    keyTakeaways: [
+      'Half-wave: Vdc = Vpeak/π ≈ 0.318·Vpeak; full-wave bridge: Vdc = 2Vpeak/π ≈ 0.636·Vpeak.',
+      'PIV: bridge rectifier = Vpeak per diode; half-wave = 2Vpeak.',
+      'Ripple factor r ≈ 1/(2√3·f·R·C) for full-wave with capacitor filter.',
+      'Zener regulator: Vout = Vz constant; verify Iz > Iz_min at worst-case conditions.',
+      'Clippers limit signal amplitude; clampers shift DC level without changing AC shape.',
+      'Account for diode voltage drops (0.7 V per diode) in all practical calculations.',
+    ],
+  },
+
+  fee_bjt: {
+    topicId: 'fee_bjt',
+    title: 'BJT Analysis and Amplifier Configurations',
+    domainWeight: 'Electronics · 7–11%',
+    overview: 'Bipolar Junction Transistors (BJTs) are current-controlled devices forming the basis of analog amplifiers. The FE exam tests DC biasing (Q-point), operating region identification, small-signal analysis, and comparison of CE, CC, and CB amplifier configurations.',
+    sections: [
+      {
+        id: 'bjt-dc-bias',
+        title: '1. BJT Operating Regions and DC Biasing',
+        content: `## 1.1 BJT Operating Regions
+
+A BJT has three terminals: **Base (B)**, **Collector (C)**, **Emitter (E)**. For NPN:
+
+| Region | Condition | Behavior |
+|---|---|---|
+| **Active** (amplification) | VBE ≈ 0.7 V, VCE > VCE(sat) | Ic = β·Ib |
+| **Saturation** (switch ON) | VBE ≈ 0.7 V, VCE ≈ 0.2 V | Ic < β·Ib (current-limited by circuit) |
+| **Cutoff** (switch OFF) | VBE < 0.5 V, Ib ≈ 0 | Ic ≈ 0 (both junctions reverse-biased) |
+
+### Key DC Relationships
+
+- **Ic = β · Ib** (active region); β = hfe typically 50–300
+- **Ie = Ic + Ib = (β+1) · Ib**
+- **VBE ≈ 0.7 V** (silicon)
+- **VCE(sat) ≈ 0.2 V** (minimum collector-emitter voltage in saturation)
+
+## 1.2 Q-Point Biasing Methods
+
+The **Q-point** (quiescent operating point) sets DC conditions for amplification.
+
+### Voltage Divider Bias (Most Stable)
+
+The most common and stable biasing method:
+
+1. **VB = VCC · R2/(R1+R2)** (base voltage from voltage divider)
+2. **VE = VB − 0.7 V** (emitter voltage)
+3. **IE = VE/RE** (emitter current)
+4. **IC ≈ IE** (since β >> 1)
+5. **VCE = VCC − IC(RC+RE)** (verify active: VCE > 0.2 V)
+
+### Why Voltage Divider is Preferred
+
+- **Stability against β variations**: The Q-point depends on VB (set by resistors) rather than β
+- **Temperature compensation**: RE provides negative feedback — if IC increases, VE increases, reducing VBE and stabilizing IC
+- **Predictable**: Q-point nearly independent of transistor parameters`,
+        examTip: 'On the FE exam, voltage divider bias is the standard biasing method. The key steps: (1) find VB from the divider, (2) subtract 0.7 V for VE, (3) IE = VE/RE, (4) IC ≈ IE, (5) VCE = VCC − IC(RC+RE). Always verify VCE > 0.2 V to confirm active region.',
+      },
+      {
+        id: 'bjt-small-signal',
+        title: '2. Small-Signal Analysis and Amplifier Configurations',
+        content: `## 2.1 Small-Signal Model Parameters
+
+For AC analysis around the Q-point, the BJT is modeled with small-signal parameters:
+
+- **Transconductance**: **gm = IC/VT ≈ IC/26 mV** (at room temperature)
+- **Input resistance**: **rπ = β/gm = β·VT/IC**
+- **Small-signal emitter resistance**: **re = VT/IE ≈ 26 mV/IE**
+- **Output resistance**: **ro = VA/IC** (VA = Early voltage, typically 50–200 V)
+
+## 2.2 Amplifier Configurations
+
+| Parameter | Common-Emitter (CE) | Common-Collector (CC) | Common-Base (CB) |
+|---|---|---|---|
+| **Voltage gain** | **Av = −gm·RC** (high) | **Av ≈ 1** | **Av = gm·RC** (high) |
+| **Current gain** | **Ai ≈ β** (high) | **Ai ≈ β+1** | **Ai ≈ 1** |
+| **Input impedance** | **Zin = rπ** (moderate) | **Zin = rπ + (β+1)·RE** (high) | **Zin = re** (low) |
+| **Output impedance** | **Zout ≈ RC** | **Zout ≈ re** (low) | **Zout ≈ RC** |
+| **Phase inversion** | **Yes** (180°) | **No** | **No** |
+| **Primary use** | General amplification | Buffer / impedance matching | High-frequency / cascode |
+
+### Common-Emitter (CE) — Most Popular
+
+The CE configuration provides **high voltage gain** and **high current gain**, making it the most widely used amplifier stage:
+
+**Av = −gm · RC = −IC · RC / VT**
+
+The negative sign indicates **180° phase inversion**.
+
+### Common-Collector (CC) — Emitter Follower
+
+Unity voltage gain but **very high input impedance** and **very low output impedance** — ideal as a **buffer** between a high-impedance source and low-impedance load.
+
+### Common-Base (CB)
+
+Low input impedance but **no Miller effect** (no capacitive multiplication), making it excellent for **high-frequency applications** and as the second stage of a cascode amplifier.
+
+## 2.3 Frequency Response
+
+The BJT has frequency-dependent behavior due to internal capacitances:
+
+- **fT (unity-gain frequency)**: frequency where current gain drops to 1; **fT = gm/(2π·Cπ)**
+- **Miller effect**: in CE configuration, CBC appears multiplied by gain: **Cin_Miller = CBC·(1+|Av|)**
+- **Bandwidth**: inversely related to gain (gain-bandwidth product ≈ constant)`,
+        examTip: 'The small-signal transconductance gm = IC/VT is the most important parameter. At room temperature, VT ≈ 26 mV. For IC = 1 mA: gm = 1/26 ≈ 38.5 mS. Voltage gain of CE stage is Av = −gm·RC, so gain is proportional to bias current.',
+        importantNote: 'Always verify the transistor is in the active region before applying small-signal analysis. Small-signal parameters (gm, rπ) are only valid at the Q-point. If VCE < 0.2 V (saturation) or IB ≈ 0 (cutoff), the linear small-signal model does not apply.',
+      },
+    ],
+    keyTakeaways: [
+      'Active region: IC = β·IB; saturation: VCE < 0.2 V; cutoff: IB ≈ 0.',
+      'Voltage divider bias is most stable; Q-point: VB → VE = VB−0.7 → IE = VE/RE → VCE = VCC−IC(RC+RE).',
+      'Small-signal: gm = IC/VT ≈ IC/26 mV; rπ = β/gm; re = VT/IE.',
+      'CE: Av = −gm·RC (high gain, phase inversion); CC: Av ≈ 1 (buffer); CB: high-frequency use.',
+      'Miller effect multiplies CBC by (1+|Av|) in CE — limits bandwidth at high gain.',
+      'Frequency limit: fT = gm/(2π·Cπ); gain-bandwidth product is approximately constant.',
+    ],
+  },
+
+  fee_mosfet: {
+    topicId: 'fee_mosfet',
+    title: 'MOSFET Circuits and Biasing',
+    domainWeight: 'Electronics · 7–11%',
+    overview: 'MOSFETs are voltage-controlled devices with essentially zero gate current — the dominant transistor in modern electronics. The FE exam tests MOSFET operating regions, the square-law equation in saturation, biasing methods, and amplifier configurations (CS, CD, CG).',
+    sections: [
+      {
+        id: 'mos-regions',
+        title: '1. MOSFET Operating Regions and the Square-Law Model',
+        content: `## 1.1 Enhancement-Mode NMOS
+
+An **N-channel enhancement MOSFET** has three terminals: **Gate (G)**, **Drain (D)**, **Source (S)**.
+
+| Region | Condition | Drain Current |
+|---|---|---|
+| **Cutoff** | VGS < Vt | ID = 0 |
+| **Triode (Linear)** | VGS > Vt, VDS < VGS − Vt | ID = K·[2(VGS−Vt)·VDS − VDS²] |
+| **Saturation** | VGS > Vt, VDS ≥ VGS − Vt | **ID = K·(VGS − Vt)²** |
+
+where **K = (μₙCₒₓ/2)·(W/L)** is the device transconductance parameter.
+
+- **Vt** = threshold voltage (typically 0.5–2 V for NMOS)
+- **μₙCₒₓ** = process transconductance parameter (μA/V²)
+- **W/L** = width-to-length ratio (designer controls this)
+
+### Saturation Equation (Most Important)
+
+**ID = (μₙCₒₓ/2) · (W/L) · (VGS − Vt)²**
+
+This **square-law** relationship means doubling (VGS − Vt) quadruples the drain current.
+
+### Transconductance
+
+**gm = ∂ID/∂VGS = μₙCₒₓ · (W/L) · (VGS − Vt) = 2·ID/(VGS − Vt)**
+
+Alternative: **gm = √(2·μₙCₒₓ·(W/L)·ID)**
+
+## 1.2 P-Channel MOSFET
+
+PMOS is complementary — all voltages and currents reverse:
+- Conducts when **VGS < Vt** (Vt is negative)
+- Current flows from source to drain
+- Used in CMOS logic paired with NMOS
+
+## 1.3 Depletion-Mode MOSFET
+
+A **depletion-mode** MOSFET conducts at VGS = 0 and turns off with negative VGS (for N-channel):
+- **ID = IDSS · (1 − VGS/Vp)²** where IDSS is drain current at VGS = 0 and Vp is pinch-off voltage`,
+        examTip: 'The saturation current equation ID = K·(VGS−Vt)² is the most-tested MOSFET formula on the FE exam. Always check VDS ≥ VGS−Vt to confirm saturation before using this equation. If VDS < VGS−Vt, the MOSFET is in the triode (linear) region and requires the different formula.',
+      },
+      {
+        id: 'mos-amplifiers',
+        title: '2. MOSFET Biasing and Amplifier Configurations',
+        content: `## 2.1 Biasing Methods
+
+### Self-Bias with Source Resistor
+
+The most common discrete MOSFET biasing method:
+
+1. Gate voltage set by a resistor divider or directly: **VG = VDD · R2/(R1+R2)**
+2. Source voltage: **VS = ID · RS**
+3. Gate-source voltage: **VGS = VG − VS = VG − ID·RS**
+4. Solve simultaneously with saturation equation: ID = K·(VGS − Vt)²
+
+The source resistor RS provides **negative feedback**: if ID increases → VS increases → VGS decreases → ID decreases. This stabilizes the Q-point.
+
+### Key Advantage over BJTs
+
+MOSFET gate draws **essentially zero DC current** (IG ≈ 0), so:
+- Gate bias resistors do not affect the bias point
+- Input impedance is extremely high (MΩ to GΩ)
+- Biasing is simpler — no base current to account for
+
+## 2.2 Amplifier Configurations
+
+| Parameter | Common-Source (CS) | Common-Drain (CD) | Common-Gate (CG) |
+|---|---|---|---|
+| **Voltage gain** | **Av = −gm·RD** | **Av ≈ gm·RS/(1+gm·RS) ≈ 1** | **Av = gm·RD** |
+| **Input impedance** | **Very high** (gate) | **Very high** (gate) | **Low** (≈ 1/gm) |
+| **Output impedance** | **≈ RD** | **≈ 1/gm** (low) | **≈ RD** |
+| **Phase inversion** | **Yes** | **No** | **No** |
+| **Analog to BJT** | CE | CC (emitter follower) | CB |
+
+### Common-Source (CS) — Primary Amplifier
+
+**Av = −gm · RD** (without source degeneration)
+
+**Av = −gm · RD / (1 + gm·RS)** (with unbypassed RS — reduces gain but improves linearity)
+
+### Common-Drain (CD) — Source Follower
+
+**Av ≈ 1** (unity gain buffer), **Zin ≈ ∞**, **Zout ≈ 1/gm**
+
+Ideal for driving low-impedance loads from high-impedance sources.
+
+### Common-Gate (CG)
+
+Low input impedance (≈ 1/gm) but **no Miller effect** — excellent for **high-frequency** and **cascode** applications.
+
+## 2.3 CMOS Inverter
+
+The foundation of digital electronics: NMOS + PMOS in series between VDD and ground. When input is high, NMOS on / PMOS off → output low. When input is low, PMOS on / NMOS off → output high. **Zero static power dissipation** (no DC path in either state).`,
+        examTip: 'For MOSFET amplifier gain on the FE exam: CS gain is Av = −gm·RD. To find gm, first find the Q-point (ID from biasing), then gm = 2·ID/(VGS−Vt). This two-step process (bias first, then small-signal) is the standard approach for all transistor amplifier problems.',
+        importantNote: 'MOSFETs are vulnerable to electrostatic discharge (ESD) — the thin gate oxide can be permanently damaged by static voltages. This is an engineering practice detail that occasionally appears on the FE exam in the context of device handling and protection circuits.',
+      },
+    ],
+    keyTakeaways: [
+      'Saturation: ID = (μₙCₒₓ/2)·(W/L)·(VGS−Vt)²; requires VDS ≥ VGS−Vt.',
+      'Transconductance: gm = 2·ID/(VGS−Vt) = μₙCₒₓ·(W/L)·(VGS−Vt).',
+      'Zero gate current (IG ≈ 0) → very high input impedance; simpler biasing than BJTs.',
+      'CS: Av = −gm·RD (high gain, phase inversion); CD: Av ≈ 1 (buffer); CG: high-frequency.',
+      'Self-bias via RS: VGS = VG − ID·RS provides negative feedback stabilization.',
+      'CMOS (NMOS + PMOS): zero static power — basis of all modern digital circuits.',
+    ],
+  },
+
+  fee_opamp: {
+    topicId: 'fee_opamp',
+    title: 'Operational Amplifier Circuits',
+    domainWeight: 'Electronics · 7–11%',
+    overview: 'Operational amplifiers (op-amps) are high-gain differential amplifiers used with feedback to create precise analog circuits. The FE exam tests ideal op-amp analysis using the virtual short principle, inverting/non-inverting gain formulas, integrators, differentiators, and summing amplifiers.',
+    sections: [
+      {
+        id: 'opamp-ideal',
+        title: '1. Ideal Op-Amp Model and Feedback Circuits',
+        content: `## 1.1 Ideal Op-Amp Assumptions
+
+| Parameter | Ideal Value | Real (e.g., LM741) |
+|---|---|---|
+| **Open-loop gain (Aol)** | ∞ | 10⁵–10⁶ |
+| **Input impedance (Zin)** | ∞ | 1–10 MΩ |
+| **Output impedance (Zout)** | 0 | 50–100 Ω |
+| **Bandwidth** | ∞ | GBW ≈ 1 MHz |
+| **Input offset voltage** | 0 | 1–5 mV |
+| **Input bias current** | 0 | nA–μA |
+
+### The Virtual Short Principle
+
+With **negative feedback**, the ideal op-amp enforces two conditions:
+
+1. **V⁺ = V⁻** (virtual short — inputs are at the same voltage)
+2. **I⁺ = I⁻ = 0** (no current flows into the inputs)
+
+These two rules are sufficient to analyze **any** ideal op-amp circuit.
+
+## 1.2 Standard Feedback Configurations
+
+### Inverting Amplifier
+
+**Acl = −Rf/Rin**
+
+- Input applied to the inverting (−) terminal through Rin
+- Feedback from output to (−) through Rf
+- Input impedance = Rin (not infinite)
+- **180° phase inversion**
+
+### Non-Inverting Amplifier
+
+**Acl = 1 + Rf/Rin**
+
+- Input applied to the non-inverting (+) terminal
+- Feedback divider between output and (−) terminal
+- Input impedance ≈ ∞ (signal at high-Z + input)
+- **No phase inversion**
+
+### Unity-Gain Buffer (Voltage Follower)
+
+**Acl = 1** (Rf = 0, Rin = ∞: output connected directly to − input)
+
+- **Zin ≈ ∞, Zout ≈ 0** — perfect impedance matching buffer
+- Isolates a high-impedance source from a low-impedance load`,
+        examTip: 'For any op-amp circuit on the FE exam, apply two rules: (1) V⁺ = V⁻ and (2) no current into inputs. Write KCL at the inverting node using these constraints, and the gain formula falls out directly. This works for every configuration — inverting, non-inverting, summing, differencing, integrator, differentiator.',
+      },
+      {
+        id: 'opamp-special',
+        title: '2. Summing, Integrating, and Differentiating Circuits',
+        content: `## 2.1 Summing Amplifier
+
+Combines multiple weighted inputs:
+
+**Vo = −Rf · (V₁/R₁ + V₂/R₂ + V₃/R₃ + ...)**
+
+Each input is weighted by −Rf/Rᵢ. If all Rᵢ = R, then Vo = −(Rf/R)·(V₁+V₂+V₃+...) — a scaled sum.
+
+### Difference (Differential) Amplifier
+
+**Vo = (Rf/Rin) · (V₂ − V₁)** (when Rf/Rin = R₂/R₁)
+
+Amplifies the **difference** between two inputs while rejecting common-mode signals. The **Common-Mode Rejection Ratio (CMRR)** measures this ability.
+
+## 2.2 Integrator
+
+**Vo = −(1/RC) · ∫ Vi dt**
+
+- Capacitor C replaces Rf in the inverting configuration
+- Output is proportional to the integral of the input
+- A constant input produces a linear ramp output
+- **Practical issue**: DC offset causes unbounded drift — add a large resistor in parallel with C to limit DC gain
+
+### In the s-domain:
+
+**H(s) = −1/(sRC)** — gain increases without bound at low frequencies
+
+## 2.3 Differentiator
+
+**Vo = −RC · dVi/dt**
+
+- Capacitor C replaces Rin in the inverting configuration
+- Output proportional to the rate of change of input
+- **Practical issue**: amplifies high-frequency noise — add a small resistor in series with C
+
+### In the s-domain:
+
+**H(s) = −sRC** — gain increases without bound at high frequencies
+
+## 2.4 Gain-Bandwidth Product (GBW)
+
+For a real op-amp, the product of closed-loop gain and bandwidth is constant:
+
+**GBW = Aol · f₃dB = Acl · BW**
+
+| Closed-Loop Gain | Bandwidth |
+|---|---|
+| 1 (buffer) | 1 MHz (= GBW) |
+| 10 | 100 kHz |
+| 100 | 10 kHz |
+| 1000 | 1 kHz |
+
+Higher gain → lower bandwidth. This is a fundamental tradeoff.`,
+        examTip: 'The integrator and differentiator are frequently tested on the FE exam. Key distinction: integrator has C in feedback (replaces Rf), differentiator has C at input (replaces Rin). In the s-domain: integrator gain = −1/(sRC) rolls off with frequency; differentiator gain = −sRC increases with frequency.',
+        importantNote: 'Real integrators need a DC feedback path (large resistor across C) to prevent output saturation from input offset. Real differentiators need a series resistor with C to limit high-frequency noise amplification. The FE exam may ask about these practical limitations.',
+      },
+    ],
+    keyTakeaways: [
+      'Virtual short principle: V⁺ = V⁻ and I⁺ = I⁻ = 0 with negative feedback — solves any ideal op-amp circuit.',
+      'Inverting: Acl = −Rf/Rin; Non-inverting: Acl = 1 + Rf/Rin; Buffer: Acl = 1.',
+      'Summing amplifier: Vo = −Rf·(V₁/R₁ + V₂/R₂ + ...) — weighted sum of inputs.',
+      'Integrator: Vo = −(1/RC)·∫Vi dt; Differentiator: Vo = −RC·dVi/dt.',
+      'GBW = Aol · f₃dB = constant; higher gain means lower bandwidth.',
+      'Practical integrators need DC feedback; differentiators need noise-limiting resistor.',
+    ],
+  },
+
+  fee_power_elec: {
+    topicId: 'fee_power_elec',
+    title: 'Power Electronics: Rectifiers and Converters',
+    domainWeight: 'Electronics · 7–11%',
+    overview: 'Power electronics converts electrical energy between different voltage/current levels and between AC and DC. Buck and boost converters, three-phase rectifiers, PWM control, and ripple calculations are the key FE exam topics in this area.',
+    sections: [
+      {
+        id: 'pe-converters',
+        title: '1. DC-DC Converters: Buck and Boost',
+        content: `## 1.1 Buck Converter (Step-Down)
+
+The **buck converter** reduces DC voltage using a switch, inductor, diode, and capacitor:
+
+**Vo = D · Vin** where **D = ton/(ton + toff)** is the duty cycle (0 ≤ D ≤ 1)
+
+| Parameter | Formula |
+|---|---|
+| Output voltage | **Vo = D · Vin** |
+| Inductor current ripple | **ΔIL = Vin · D · (1−D) / (L · fₛ)** |
+| Output voltage ripple | **ΔVo = ΔIL / (8 · C · fₛ)** |
+| Minimum inductance (CCM) | **Lmin = (1−D) · R / (2 · fₛ)** |
+
+### Continuous vs. Discontinuous Conduction Mode
+
+- **CCM** (continuous): inductor current never reaches zero — formulas above apply
+- **DCM** (discontinuous): inductor current drops to zero each cycle — output depends on load
+
+## 1.2 Boost Converter (Step-Up)
+
+The **boost converter** increases DC voltage:
+
+**Vo = Vin / (1 − D)**
+
+| Parameter | Formula |
+|---|---|
+| Output voltage | **Vo = Vin/(1−D)** |
+| Inductor current ripple | **ΔIL = Vin · D / (L · fₛ)** |
+| Output voltage ripple | **ΔVo = Io · D / (C · fₛ)** |
+
+As D → 1, Vo → ∞ theoretically, but practical limits (losses, component ratings) cap the boost ratio to about 4–5×.
+
+## 1.3 Buck-Boost Converter
+
+**Vo = −Vin · D/(1−D)** (output is inverted polarity)
+
+Can step up (D > 0.5) or step down (D < 0.5) voltage.
+
+### Efficiency
+
+Ideal converters are **100% efficient** (Pin = Pout). Real converters: 85–95% typical. Losses include switch conduction and switching losses, inductor core/copper losses, and diode forward drop.`,
+        examTip: 'Buck: Vo = D·Vin (output always less than input). Boost: Vo = Vin/(1−D) (output always greater than input). These two formulas are the most-tested power electronics equations on the FE exam. Remember: D is always between 0 and 1.',
+      },
+      {
+        id: 'pe-rectifiers-pwm',
+        title: '2. Three-Phase Rectifiers and PWM Control',
+        content: `## 2.1 Three-Phase Rectifiers
+
+Three-phase rectifiers handle higher power with lower ripple than single-phase:
+
+### Six-Pulse (Uncontrolled) Diode Rectifier
+
+**Vdc = (3√3/π) · Vm ≈ 1.35 · VL_rms**
+
+where Vm is the peak phase voltage and VL_rms is the line-to-line RMS voltage.
+
+| Rectifier Type | Vdc | Ripple Frequency | Ripple Factor |
+|---|---|---|---|
+| Single-phase half-wave | Vm/π | f | 121% |
+| Single-phase full-wave | 2Vm/π | 2f | 48% |
+| Three-phase half-wave | 3√3·Vm/(2π) | 3f | 18% |
+| **Three-phase full-wave (6-pulse)** | **3√3·Vm/π** | **6f** | **4%** |
+
+### Controlled (SCR) Rectifiers
+
+Thyristor-based rectifiers allow variable DC output by delaying the firing angle α:
+
+**Vdc = (3√3·Vm/π) · cos(α)**
+
+At α = 0°: full output; at α = 90°: Vdc = 0; at α > 90°: negative Vdc (regeneration).
+
+## 2.2 Pulse-Width Modulation (PWM)
+
+PWM controls average output by rapidly switching between on and off states:
+
+**Vavg = D · Vsupply**
+
+### Key PWM Parameters
+
+- **Switching frequency fₛ**: typically 10–100 kHz (much higher than load bandwidth)
+- **Duty cycle D**: fraction of period the switch is on
+- **Ripple**: determined by L, C, and fₛ — higher fₛ means lower ripple
+
+### Energy Storage Principle
+
+- **Inductors** resist current change: smooth output current
+- **Capacitors** resist voltage change: smooth output voltage
+- Combined L-C filter produces clean DC from PWM switching
+
+## 2.3 Inverters (DC to AC)
+
+**Inverters** convert DC to AC for motor drives, solar grid-tie, and UPS systems:
+
+- **H-bridge**: four switches create alternating polarity across load
+- **PWM inverter**: modulates pulse widths to approximate a sinusoidal output
+- **Three-phase inverter**: six switches (three half-bridges) for motor drive applications`,
+        examTip: 'For ripple calculations on the FE exam: inductor ripple ΔIL = V·D/(L·fₛ) and capacitor ripple ΔVo = I·D/(C·fₛ). To reduce ripple, increase L, C, or switching frequency fₛ. The FE exam often asks which parameter change most effectively reduces ripple.',
+        importantNote: 'Three-phase rectifiers have dramatically lower ripple than single-phase (4% vs 48% for full-wave). This is why industrial power systems use three-phase power — not just for higher power, but for cleaner DC output. This concept frequently appears on the FE exam.',
+      },
+    ],
+    keyTakeaways: [
+      'Buck: Vo = D·Vin (step-down); Boost: Vo = Vin/(1−D) (step-up); D = ton/(ton+toff).',
+      'Inductor ripple: ΔIL = V·D/(L·fₛ); capacitor ripple: ΔVo = I·D/(C·fₛ).',
+      'Three-phase 6-pulse rectifier: Vdc ≈ 1.35·VL_rms with only 4% ripple.',
+      'PWM at high switching frequency + LC filter produces clean DC from switched output.',
+      'Controlled rectifiers use SCR firing angle α: Vdc = Vdc_max · cos(α).',
+      'Ideal converters: Pin = Pout (100% efficient); real converters: 85–95% typical.',
+    ],
+  },
 
   /* ──────────────────────────────────────────────────────────────────
    * TOPIC 10 — POWER SYSTEMS  (6 curriculum IDs from 5 sections)
