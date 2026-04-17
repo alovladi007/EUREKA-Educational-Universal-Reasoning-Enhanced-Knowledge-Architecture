@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from typing import List
 
 from app.core.database import get_db
-from app.auth.dependencies import get_current_user
+from app.utils.dependencies import get_current_user
 from app.crud.resume import (
     create_resume,
     get_resume,

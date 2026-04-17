@@ -5,10 +5,22 @@ import re
 import logging
 from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Header
 from pydantic import BaseModel
-from app.auth.dependencies import get_current_user
 from app.core.config import settings
+from types import SimpleNamespace
+from typing import Optional as Opt
+
+
+async def get_current_user_optional(authorization: Opt[str] = Header(None)):
+    """Optional auth for AI endpoints — allows unauthenticated access in dev mode."""
+    if settings.ENVIRONMENT == "development":
+        return SimpleNamespace(id="dev-user", email="dev@eureka.edu")
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    # In production, delegate to the real auth
+    from app.utils.dependencies import get_current_user as real_auth
+    return await real_auth(authorization)
 
 logger = logging.getLogger(__name__)
 
@@ -171,7 +183,7 @@ class ToneCheckResponse(BaseModel):
 @router.post("/generate-summary", response_model=SummaryResponse)
 async def generate_summary(
     request: SummaryRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user_optional),
 ):
     """Generate 3 professional summary variants using Claude."""
     exp_context = ""
@@ -213,7 +225,7 @@ Return as JSON: {{"variants": ["summary1", "summary2", "summary3"]}}"""
 @router.post("/generate-bullets", response_model=BulletResponse)
 async def generate_bullets(
     request: BulletRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user_optional),
 ):
     """Generate or improve resume bullet points using Claude."""
 
@@ -259,7 +271,7 @@ Return as JSON: {{"bullets": ["bullet1", "bullet2", "bullet3", "bullet4", "bulle
 @router.post("/tailor", response_model=TailorResponse)
 async def tailor_resume(
     request: TailorRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user_optional),
 ):
     """Tailor a resume to a specific job description using Claude."""
     resume = request.resume_data
@@ -327,7 +339,7 @@ Return as JSON:
 @router.post("/suggest-skills", response_model=SkillsResponse)
 async def suggest_skills(
     request: SkillsRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user_optional),
 ):
     """Suggest relevant skills based on job title and experience using Claude."""
 
@@ -364,7 +376,7 @@ Return as JSON:
 @router.post("/ats-score", response_model=ATSScoreResponse)
 async def ats_score(
     request: ATSScoreRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user_optional),
 ):
     """Full ATS analysis using Claude — optionally against a job description."""
     resume = request.resume_data
@@ -454,7 +466,7 @@ Return as JSON:
 @router.post("/check-tone", response_model=ToneCheckResponse)
 async def check_tone(
     request: ToneCheckRequest,
-    current_user=Depends(get_current_user),
+    current_user=Depends(get_current_user_optional),
 ):
     """Analyze resume text for weak language and suggest power verb replacements."""
     prompt = f"""Analyze this resume text for weak, vague, or passive language. Identify every instance of:

@@ -1,14 +1,11 @@
 """Resume database models."""
 
 from sqlalchemy import Column, String, Boolean, Integer, DateTime, JSON, ForeignKey, Text
+from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
 from app.core.database import Base
 import uuid
-
-
-def generate_uuid():
-    return str(uuid.uuid4())
 
 
 def generate_slug():
@@ -18,8 +15,8 @@ def generate_slug():
 class Resume(Base):
     __tablename__ = "resumes"
 
-    id = Column(String, primary_key=True, default=generate_uuid)
-    user_id = Column(String, ForeignKey("users.id"), nullable=True, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    user_id = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True, index=True)
     title = Column(String, default="My Resume")
     slug = Column(String, unique=True, default=generate_slug, index=True)
     is_public = Column(Boolean, default=False)
@@ -39,8 +36,8 @@ class Resume(Base):
 class ResumeVersion(Base):
     __tablename__ = "resume_versions"
 
-    id = Column(String, primary_key=True, default=generate_uuid)
-    resume_id = Column(String, ForeignKey("resumes.id"), nullable=False, index=True)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    resume_id = Column(UUID(as_uuid=True), ForeignKey("resumes.id"), nullable=False, index=True)
     version_number = Column(Integer, nullable=False)
     label = Column(String, nullable=True)  # e.g., "Before AI edit", "Applied to Google"
     data = Column(JSON, nullable=False)

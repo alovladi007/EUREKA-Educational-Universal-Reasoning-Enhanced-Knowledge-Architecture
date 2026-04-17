@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional
-from app.auth.dependencies import get_current_user
+from app.utils.dependencies import get_current_user
 
 router = APIRouter(prefix="/exports", tags=["resume-exports"])
 

@@ -16,6 +16,7 @@ from app.models.refresh_token import RefreshToken
 from app.models.audit_log import AuditLog
 from app.models.file_upload import FileUpload
 from app.models.notification import Notification
+from app.models.resume import Resume, ResumeVersion
 
 __all__ = [
     "Base",
@@ -30,4 +31,6 @@ __all__ = [
     "AuditLog",
     "FileUpload",
     "Notification",
+    "Resume",
+    "ResumeVersion",
 ]
