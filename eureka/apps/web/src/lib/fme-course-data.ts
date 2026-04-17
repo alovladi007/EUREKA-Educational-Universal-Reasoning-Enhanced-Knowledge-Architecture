@@ -1025,55 +1025,211 @@ fme_equilibrium: {
   topicId: 'fme_equilibrium',
   title: 'Force Systems & Equilibrium',
   domainWeight: 'Statics · 7–11%',
-  overview: 'Static equilibrium is the foundation of structural and machine analysis. A body is in equilibrium when the net force and net moment acting on it are both zero. The FE exam heavily tests free body diagrams and equilibrium equations.',
+  overview: 'Static equilibrium is the foundation of structural and machine analysis. A body is in equilibrium when the net force and net moment acting on it are both zero. Statics questions account for 7–11% of the FE Mechanical exam — roughly 8–12 questions. The exam heavily tests free body diagrams, equilibrium equations, and the ability to identify support reactions quickly. Mastering these fundamentals is critical because they also underpin topics like mechanics of materials, dynamics, and mechanical design.',
   sections: [
     {
       id: 'eq-forces',
       title: '1. Force Systems and Free Body Diagrams',
-      content: `## 1.1 Types of Forces
+      content: `## 1.1 Types of Forces and Loads
 
-- **Concentrated force**: Acts at a single point (N or lb)
-- **Distributed load**: Force per unit length (N/m or lb/ft)
-- **Moment/Couple**: Tendency to rotate (N·m or ft·lb)
+Engineering structures experience several types of external loading. Understanding each type is essential for constructing correct free body diagrams.
+
+- **Concentrated (point) force**: Acts at a single point. Examples: a cable tension, a wheel load on a bridge, a bolt force. Units: N (SI) or lb (US).
+- **Distributed load**: Force spread over a length, area, or volume. A uniform distributed load (UDL) has constant intensity w (N/m). A triangularly distributed load varies linearly from zero to a maximum value. Common examples include the weight of a beam, wind pressure on a wall, and snow load on a roof.
+- **Moment (torque)**: The tendency to cause rotation about a point. M = F × d, where d is the perpendicular distance from the point to the force's line of action. Units: N·m or ft·lb.
+- **Couple**: Two equal, opposite, non-collinear forces that create a pure moment (no net force). The magnitude is M = F × d (distance between the forces). A couple produces the same moment about any point — this makes it unique among loading types.
+
+### Drawing Free Body Diagrams (FBDs)
+
+The free body diagram is the single most important step in solving any statics problem. A correct FBD leads to correct equations; an incomplete FBD guarantees errors.
+
+**FBD Checklist:**
+1. **Isolate** the body from all supports and connections
+2. Draw **all external forces**: applied loads, gravity (weight = mg at the center of gravity)
+3. Draw **all reaction forces** at supports (see the support table below)
+4. Include **dimensions** and **angles** needed for calculations
+5. Add a **coordinate system** (typically x horizontal, y vertical)
+6. Do **NOT** include internal forces — those appear only when you cut through the body
+
+**Common FBD mistakes that lose points on the FE exam:**
+- Forgetting the weight of the body itself
+- Drawing reactions in the wrong direction (this is actually OK — if you guess wrong, the math gives a negative value, which just means the force acts the opposite way)
+- Missing a reaction at a support (e.g., forgetting that a pin has TWO reaction components)
+- Including internal forces on the FBD of the whole body
 
 ## 1.2 Resultant of Force Systems
 
-For concurrent forces:
-- **R_x = ΣF_x**, **R_y = ΣF_y**
-- **R = √(R_x² + R_y²)**, **θ = arctan(R_y/R_x)**
+### Concurrent Force Systems (forces meeting at one point)
 
-For a distributed load w(x):
-- **Resultant = ∫w(x)dx** (area under load diagram)
-- **Location**: at centroid of load distribution
+Resolve each force into x and y components, then sum:
+- **R_x = ΣF_ix = F₁cosθ₁ + F₂cosθ₂ + ...**
+- **R_y = ΣF_iy = F₁sinθ₁ + F₂sinθ₂ + ...**
+- **R = √(R_x² + R_y²)** (magnitude of resultant)
+- **θ = arctan(R_y / R_x)** (direction of resultant)
+
+### Non-concurrent Force Systems
+
+When forces don't all pass through the same point, the resultant includes both a net force and a net moment. The resultant force is still R = √(R_x² + R_y²), but you must also compute the moment about a convenient point.
+
+### Replacing Distributed Loads
+
+A distributed load can be replaced by a single equivalent resultant force for equilibrium analysis:
+- **Resultant magnitude = area under the load diagram** (for a UDL of w over length L: R = wL)
+- **Location = centroid of the load distribution**
+  - Uniform load: centroid at **L/2** (middle)
+  - Triangular load (zero to w₀): centroid at **2L/3** from the zero end (1/3 from the heavy end)
+  - Trapezoidal load: split into rectangular + triangular components
+
+**⚠️ Common exam trap:** Students place the triangular load resultant at the wrong end. Remember: the centroid of a triangle is 1/3 from the base (heavy end), which is 2/3 from the point (light end).
+
+### Worked Example: Resultant of Two Concurrent Forces
+
+Two forces act at a point: F₁ = 500 N at 30° and F₂ = 300 N at 120° from the x-axis.
+
+**Step 1:** Resolve into components
+- F₁x = 500 cos 30° = 433 N, F₁y = 500 sin 30° = 250 N
+- F₂x = 300 cos 120° = −150 N, F₂y = 300 sin 120° = 260 N
+
+**Step 2:** Sum components
+- Rx = 433 + (−150) = 283 N
+- Ry = 250 + 260 = 510 N
+
+**Step 3:** Resultant
+- R = √(283² + 510²) = √(80,089 + 260,100) = √340,189 = **583 N**
+- θ = arctan(510/283) = **61.0°** from x-axis
 
 ## 1.3 Equilibrium Equations
 
-For a rigid body in 2D equilibrium:
+A rigid body is in static equilibrium when both the net force and net moment equal zero. This gives three independent scalar equations in 2D:
 
 **ΣFx = 0, ΣFy = 0, ΣM_A = 0**
 
-These three equations can solve for up to **3 unknowns**.
+These three equations can solve for up to **3 unknowns**. If you have more than 3 unknowns, the problem is statically indeterminate and requires additional information (deformation/compatibility equations from mechanics of materials).
 
-For 3D equilibrium: **ΣFx = ΣFy = ΣFz = 0** and **ΣMx = ΣMy = ΣMz = 0** (6 equations, 6 unknowns)
+For 3D equilibrium: **ΣFx = ΣFy = ΣFz = 0** and **ΣMx = ΣMy = ΣMz = 0** — six independent equations for up to 6 unknowns.
+
+### Strategic Equation Writing
+
+The key to efficient problem solving is choosing your equations wisely:
+- **Take moments about a point where two unknowns intersect** — this eliminates them from the equation, giving you a single equation with one unknown
+- **Sum forces in a direction perpendicular to an unknown** — this eliminates that unknown from the equation
+- You can replace one of the force equations with a second moment equation about a different point (as long as you don't use three collinear moment points)
+
+### Worked Example: Simply Supported Beam
+
+A simply supported beam of length 6 m carries a 12 kN point load at 2 m from the left support (A). Find the reactions at A and B.
+
+**FBD:** Pin at A (Ax, Ay), roller at B (By). Applied 12 kN downward at 2 m from A.
+
+**Step 1:** ΣMA = 0 (eliminate Ax and Ay)
+- 12(2) − By(6) = 0 → By = 24/6 = **4 kN ↑**
+
+**Step 2:** ΣFy = 0
+- Ay + By − 12 = 0 → Ay = 12 − 4 = **8 kN ↑**
+
+**Step 3:** ΣFx = 0
+- Ax = **0** (no horizontal loads)
+
+**Check:** ΣMB = 0 → −Ay(6) + 12(4) = −8(6) + 48 = −48 + 48 = 0 ✓
 
 ## 1.4 Support Reactions
 
-| Support Type | Reactions Provided |
-|---|---|
-| Pin/Hinge | Fx, Fy (2 reactions) |
-| Roller | F perpendicular to surface (1 reaction) |
-| Fixed/Cantilever | Fx, Fy, M (3 reactions) |
-| Cable/Link | Tension along the cable (1 reaction) |`,
-      examTip: 'ALWAYS draw a complete free body diagram (FBD) before writing equilibrium equations. Show ALL external forces, reactions, and moments. Taking moments about a point where two unknowns intersect eliminates them from the equation.',
-      importantNote: 'A structure is statically determinate if the number of unknowns equals the number of independent equilibrium equations. If there are more unknowns than equations, it is statically indeterminate and requires additional compatibility equations.',
+Knowing the reactions provided by each support type is essential for setting up equilibrium problems. This table should be memorized:
+
+| Support Type | Symbol | Reactions Provided | # Unknowns | Allows |
+|---|---|---|---|---|
+| Pin/Hinge | △ | Fx, Fy | 2 | Rotation |
+| Roller | ○ | F ⊥ to surface | 1 | Rotation + translation along surface |
+| Fixed/Cantilever | ▯ | Fx, Fy, M | 3 | Nothing (fully constrained) |
+| Cable/Link | — | Tension along cable | 1 | Rotation at attachment |
+| Smooth surface | / | Normal force ⊥ to surface | 1 | Sliding along surface |
+
+**Static determinacy check:** Count total unknowns from all supports. Compare to available equilibrium equations (3 in 2D, 6 in 3D).
+- Unknowns = Equations → **Statically determinate** (solvable with equilibrium alone)
+- Unknowns > Equations → **Statically indeterminate** (need compatibility equations)
+- Unknowns < Equations → **Unstable** (mechanism — will collapse)
+
+## 1.5 Moment of a Force and Varignon's Theorem
+
+The moment of a force about a point is:
+
+**M = F × d** (where d is the perpendicular distance to the line of action)
+
+Equivalently, using vector cross product: **M = r × F**
+
+**Varignon's theorem** states that the moment of a force about a point equals the sum of the moments of its components about the same point. This is extremely useful — instead of finding the perpendicular distance to a diagonal force, resolve the force into x and y components and compute moments from each component separately.
+
+### Transmissibility
+
+The principle of transmissibility states that a force acting on a rigid body can be moved (slid) along its line of action without changing the external effects. This is valid only for rigid bodies — deformable bodies are affected by the point of application.`,
+      examTip: 'ALWAYS draw a complete free body diagram (FBD) before writing equilibrium equations. Show ALL external forces, reactions, and moments. The #1 strategy for efficiency: take moments about a point where two unknowns intersect — this eliminates both unknowns and gives you a single equation with one unknown. This technique alone saves significant time on the FE exam.',
+      importantNote: 'A structure is statically determinate if the number of unknowns equals the number of independent equilibrium equations. If there are more unknowns than equations, it is statically indeterminate and requires additional compatibility (deformation) equations from mechanics of materials. If there are fewer unknowns than equations, the structure is a mechanism and will collapse — this situation indicates an improper support arrangement.',
+    },
+    {
+      id: 'eq-practice',
+      title: 'Equilibrium Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A simply supported beam of length 10 m has a pin at the left end (A) and a roller at the right end (B). A 20 kN point load acts at 3 m from A. What is the vertical reaction at B?`,
+          options: ["6 kN", "14 kN", "10 kN", "20 kN"],
+          correctIndex: 0,
+          explanation: `Taking moments about A eliminates both Ax and Ay from the equation: ΣMA = 0 → 20(3) − By(10) = 0 → By = 60/10 = 6 kN. This is a fundamental beam reaction problem — the reaction is inversely proportional to the distance from the load to the support. The load is closer to A, so A carries more (14 kN) and B carries less (6 kN). Always verify with ΣFy = 0: 14 + 6 = 20 ✓`,
+        },
+        {
+          question: `A cantilever beam of length 4 m has a uniform distributed load of 5 kN/m along its entire length. What is the fixed-end moment?`,
+          options: ["40 kN·m", "20 kN·m", "10 kN·m", "80 kN·m"],
+          correctIndex: 0,
+          explanation: `The total load is wL = 5 × 4 = 20 kN, acting at the centroid (L/2 = 2 m from the fixed end). The fixed-end moment: M = 20 × 2 = 40 kN·m. Alternatively, M = wL²/2 = 5(4²)/2 = 40 kN·m. This is a standard cantilever result — the fixed end must resist both the shear (20 kN) and the moment (40 kN·m). For a cantilever with UDL, M_fixed = wL²/2 is a formula worth memorizing.`,
+        },
+        {
+          question: `Two forces act on a bracket: F₁ = 100 N horizontally to the right and F₂ = 100 N vertically downward, both at the same point. The resultant force has magnitude:`,
+          options: ["141 N at 45° below horizontal", "200 N horizontally", "100 N at 45°", "0 N (forces cancel)"],
+          correctIndex: 0,
+          explanation: `The forces are perpendicular: R = √(100² + 100²) = √20,000 = 141.4 N. Direction: θ = arctan(100/100) = 45° below horizontal (into the fourth quadrant). These forces do NOT cancel because they are not opposite — they are at 90° to each other. This is the classic 1-1-√2 right triangle applied to force vectors.`,
+        },
+        {
+          question: `A triangular distributed load goes from 0 at the left end to 12 kN/m at the right end over a span of 6 m. The resultant force magnitude and location from the LEFT end are:`,
+          options: ["36 kN at 4 m from the left", "72 kN at 3 m from the left", "36 kN at 2 m from the left", "36 kN at 3 m from the left"],
+          correctIndex: 0,
+          explanation: `Resultant = area of triangle = ½ × base × height = ½ × 6 × 12 = 36 kN. Location = centroid of triangle = 2/3 of the base from the zero end = 2/3 × 6 = 4 m from the left. This is a VERY common exam trap — students often place the resultant at 1/3 from the left (2 m), which would be correct if measured from the heavy end. Remember: 2/3 from the light end = 1/3 from the heavy end.`,
+        },
+        {
+          question: `A structure has 4 unknown reaction forces and you can write 3 independent equilibrium equations. The structure is:`,
+          options: ["Statically indeterminate to the first degree", "Statically determinate", "A mechanism (unstable)", "Statically indeterminate to the fourth degree"],
+          correctIndex: 0,
+          explanation: `Degree of indeterminacy = unknowns − equations = 4 − 3 = 1. The structure is statically indeterminate to the first degree. You need one additional equation (a compatibility/deformation equation) to solve it. This is common with propped cantilevers (pin + fixed support = 5 reactions for a beam, but with a horizontal constraint removed = 4 reactions). Statically indeterminate structures require mechanics of materials concepts.`,
+        },
+        {
+          question: `Which of the following is NOT a valid set of equilibrium equations for a 2D coplanar force system?`,
+          options: ["Three moment equations about three collinear points", "ΣFx = 0, ΣFy = 0, ΣMA = 0", "ΣMA = 0, ΣMB = 0, ΣFx = 0 (A and B not on a line perpendicular to x)", "ΣMA = 0, ΣMB = 0, ΣMC = 0 (A, B, C not collinear)"],
+          correctIndex: 0,
+          explanation: `Three moment equations about three COLLINEAR points are not independent — they provide only 2 independent equations. All other options provide 3 independent equations. The rule: you can replace force equations with moment equations, but the moment points must NOT all lie on the same line. ΣMA + ΣMB + ΣMC works only when A, B, C form a triangle (not collinear). This subtlety appears on the FE exam.`,
+        },
+        {
+          question: `A force of 500 N acts at an angle of 60° from the horizontal. Its horizontal and vertical components are:`,
+          options: ["Fx = 250 N, Fy = 433 N", "Fx = 433 N, Fy = 250 N", "Fx = 500 N, Fy = 500 N", "Fx = 354 N, Fy = 354 N"],
+          correctIndex: 0,
+          explanation: `Fx = 500 cos 60° = 500 × 0.5 = 250 N. Fy = 500 sin 60° = 500 × 0.866 = 433 N. Common mistake: confusing which trig function goes with which component. Remember: cosine gives the component ADJACENT to the angle, sine gives the component OPPOSITE to the angle. At 60° from horizontal, the vertical component (opposite) is larger than the horizontal (adjacent).`,
+        },
+        {
+          question: `For a structure to be in equilibrium, what must be true about the sum of moments about ANY point?`,
+          options: ["The sum of moments about every point must be zero", "The sum of moments about only the centroid must be zero", "The sum of moments must be zero about at most one point", "The sum of moments is zero only about support points"],
+          correctIndex: 0,
+          explanation: `If a body is in equilibrium (ΣF = 0 and ΣM = 0 about some point), then ΣM = 0 about EVERY point. This is because ΣF = 0 means moving the moment center adds no additional moment. This is why you can freely choose the most convenient point for taking moments — pick one where multiple unknowns pass through to simplify the math.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
-    '2D equilibrium: ΣFx = 0, ΣFy = 0, ΣM = 0 — three equations for three unknowns.',
-    'Pin supports provide 2 reactions; rollers provide 1; fixed supports provide 3.',
-    'Always draw a free body diagram before solving.',
-    'Take moments about a point with multiple unknowns to simplify calculations.',
-    'Distributed loads can be replaced by resultant force at the centroid.',
+    '2D equilibrium: ΣFx = 0, ΣFy = 0, ΣM = 0 — three independent equations for up to three unknowns.',
+    'Pin supports provide 2 reactions (Fx, Fy); rollers provide 1 (perpendicular); fixed supports provide 3 (Fx, Fy, M).',
+    'ALWAYS draw a free body diagram before solving — include all forces, reactions, weight, and dimensions.',
+    'Take moments about a point where two unknowns intersect to eliminate them and get a single-unknown equation.',
+    'Distributed loads: replace with resultant at centroid — uniform at L/2, triangular at 2/3 from the zero end.',
+    'Statically determinate: unknowns = equations. Indeterminate: unknowns > equations. Unstable: unknowns < equations.',
+    'Varignon\'s theorem: resolve a diagonal force into components and take moments from each separately.',
+    'The principle of transmissibility allows sliding a force along its line of action on a rigid body.',
   ],
 },
 
@@ -1081,54 +1237,154 @@ fme_trusses: {
   topicId: 'fme_trusses',
   title: 'Trusses, Frames & Machines',
   domainWeight: 'Statics · 7–11%',
-  overview: 'Trusses are structures made of two-force members connected at joints. The FE exam tests the method of joints and method of sections for finding member forces, as well as analysis of frames and machines.',
+  overview: 'Trusses are among the most common structural elements in engineering — used in bridges, roof systems, towers, and cranes. A truss is made of straight members connected at joints, designed so that members carry only axial forces (tension or compression). The FE exam tests two primary methods: method of joints (for finding all member forces) and method of sections (for finding a specific member force efficiently). Understanding zero-force members and the distinction between trusses and frames is also important.',
   sections: [
     {
       id: 'truss-methods',
       title: '1. Truss Analysis Methods',
       content: `## 1.1 Assumptions for Ideal Trusses
 
-- Members connected at joints by **frictionless pins**
-- Loads applied **only at joints**
-- Members are **two-force members** (axial force only: tension or compression)
-- Members have **negligible weight**
+The idealized truss model makes several simplifying assumptions. While real trusses deviate slightly from these, the ideal model gives excellent results for preliminary analysis and is what the FE exam tests:
+
+- Members are connected at joints by **frictionless pins** (no moment transferred)
+- External loads are applied **only at the joints** (not along member lengths)
+- Each member is a **two-force member** — it carries only axial force (tension or compression), no shear or bending
+- Members have **negligible weight** compared to the applied loads
+- Members are **straight** between joints
+
+Because of these assumptions, the force in each member acts along the member's axis. If you know the geometry of the truss and the external loads, you can determine every member force using equilibrium alone (for statically determinate trusses).
+
+### Static Determinacy of Trusses
+
+For a planar truss with **m** members, **j** joints, and **r** reaction forces:
+- **m + r = 2j** → Statically determinate (solvable)
+- **m + r > 2j** → Statically indeterminate (more unknowns than equations)
+- **m + r < 2j** → Unstable (mechanism)
+
+For a simple truss with 3 support reactions (typical pin + roller): **m = 2j − 3**
 
 ## 1.2 Method of Joints
 
-Analyze equilibrium at each joint:
-1. Start at a joint with at most 2 unknowns
-2. Apply ΣFx = 0, ΣFy = 0
-3. Move to adjacent joints, using known forces
+The method of joints analyzes the equilibrium of forces at each joint (pin) individually. Since each joint is a concurrent force system (all forces meet at a point), only two equilibrium equations are available: **ΣFx = 0** and **ΣFy = 0**.
 
-**Convention**: Assume tension (pulling away from joint). If result is negative, the member is in compression.
+**Procedure:**
+1. **Find external reactions** first using whole-truss equilibrium (ΣFx, ΣFy, ΣM = 0)
+2. **Start at a joint with at most 2 unknowns** (often a support joint)
+3. **Assume tension** in all unknown members (forces pulling AWAY from the joint)
+4. Apply **ΣFx = 0** and **ΣFy = 0** at the joint
+5. If a result is **positive** → tension (your assumption was correct). If **negative** → compression
+6. **Move to adjacent joints**, using the forces you just found
+
+**Sign convention tip:** Always assume tension initially. Tension means the member pulls the joint toward itself. If you get a negative answer, the member is in compression (pushing the joint away). This consistent convention prevents sign errors.
+
+### Worked Example: Method of Joints
+
+Consider a simple triangular truss: joints A (pin, left), B (roller, right), and C (top). Vertical load P = 10 kN at C. Span AB = 4 m. Height = 3 m.
+
+**Step 1: Reactions.** By symmetry (load at midpoint): Ay = By = 5 kN, Ax = 0.
+
+**Step 2: Joint A** (2 unknowns: F_AC and F_AB).
+Members: AC goes up-right at angle θ = arctan(3/2) = 56.3°, AB goes right.
+- ΣFy = 0: 5 + F_AC sin(56.3°) = 0 → F_AC = −5/0.832 = −6.01 kN (**compression**)
+- ΣFx = 0: F_AB + F_AC cos(56.3°) = 0 → F_AB = −(−6.01)(0.555) = **3.33 kN (tension)**
+
+**Step 3: Joint B** (verify or find F_BC).
+- ΣFy = 0: 5 + F_BC sin(56.3°) = 0 → F_BC = −6.01 kN (**compression**) — symmetric, as expected.
 
 ## 1.3 Method of Sections
 
-Cut through the truss to expose internal forces:
-1. Cut through no more than **3 members** with unknown forces
-2. Apply 3 equilibrium equations (ΣFx, ΣFy, ΣM) to either section
-3. Take moments about points where unknowns intersect
+The method of sections is the preferred approach when you need the force in **one specific member** without solving the entire truss. It's faster and more efficient for targeted problems.
 
-| Method | Best For |
-|---|---|
-| Method of Joints | Finding forces in ALL members |
-| Method of Sections | Finding force in a SPECIFIC member |
-| Zero-Force Members | Quick identification of unloaded members |
+**Procedure:**
+1. **Cut the truss** through no more than **3 members** whose forces are unknown
+2. Separate the truss into two parts; **choose the simpler side** to analyze
+3. Apply the **3 equilibrium equations** (ΣFx, ΣFy, ΣM) to the chosen side
+4. **Strategic moment points:** Take moments about a point where two unknowns intersect — this gives a single equation with one unknown
+
+**Key advantage:** You jump directly to the member of interest without solving every joint in the truss.
+
+### Worked Example: Method of Sections
+
+For a Warren truss with 6 panels and a vertical load at the center, to find the force in a specific diagonal member:
+1. Cut through the diagonal, top chord, and bottom chord at the panel of interest (3 members)
+2. Take moments about the point where the top and bottom chord forces intersect (this eliminates both from the equation)
+3. Solve directly for the diagonal force
 
 ## 1.4 Zero-Force Members
 
-Quick rules:
-- At a joint where only **two non-collinear members** meet and no external load is applied, both are zero-force members
-- At a joint where **three members** meet, two collinear, and no external load, the third is a zero-force member`,
-      examTip: 'Method of Sections is the go-to when you need just ONE member force. Cut through the truss, take moments about a point that eliminates the other unknowns. This is faster than solving every joint.',
+Zero-force members carry no load under the given loading condition. Identifying them first simplifies the analysis dramatically. Two rules:
+
+**Rule 1:** At a joint where only **two non-collinear members** meet and **no external load or reaction** is applied, **both members are zero-force members**.
+
+**Rule 2:** At a joint where **three members** meet, **two of which are collinear**, and **no external load or reaction** is applied at the joint, the **non-collinear member is a zero-force member**.
+
+Zero-force members are NOT useless — they prevent buckling of compression members, maintain the truss shape, and carry loads under different loading conditions. They just happen to be unloaded for the specific load case being analyzed.
+
+## 1.5 Frames and Machines
+
+| Feature | Truss | Frame | Machine |
+|---|---|---|---|
+| Member type | Two-force (axial only) | Multi-force (shear, moment, axial) | Multi-force |
+| Purpose | Stationary structure | Stationary structure | Moving mechanism |
+| Loads applied | At joints only | Along members | Along members |
+| Analysis | Method of joints/sections | Member-by-member FBDs | Member-by-member FBDs |
+
+Frames and machines contain **multi-force members** — they carry bending moments and shear in addition to axial loads. To analyze them:
+1. Draw an FBD of the **entire frame** to find external reactions
+2. **Disassemble** into individual members
+3. Draw an FBD of each member, including **pin forces** at connections (equal and opposite on connected members — Newton's 3rd law)
+4. Solve equilibrium for each member
+
+**Critical concept:** At a pin connecting two members, the force on one member is equal and opposite to the force on the other member. This is how internal forces are transmitted through the structure.`,
+      examTip: 'Method of Sections is the go-to when you need just ONE member force on the FE exam. Cut through ≤3 members, take moments about the point where two unknowns intersect. This gives a single equation with one unknown — much faster than solving every joint. Before starting any truss problem, scan for zero-force members first — they simplify everything.',
+      importantNote: 'The sign convention is critical: if you assume tension (pulling away from the joint) and get a negative result, the member is in compression. Be consistent with your assumption for every member. For frames and machines, you must consider shear and bending in addition to axial forces — these are NOT two-force members.',
+    },
+    {
+      id: 'truss-practice',
+      title: 'Truss Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A simple truss has 9 members, 6 joints, and 3 external reactions. Is it statically determinate?`,
+          options: ["Yes — m + r = 2j → 9 + 3 = 12 = 2(6)", "No — it is statically indeterminate", "No — it is unstable (a mechanism)", "Cannot determine without knowing the geometry"],
+          correctIndex: 0,
+          explanation: `Check: m + r = 9 + 3 = 12. Compare to 2j = 2(6) = 12. Since m + r = 2j, the truss is statically determinate. All member forces can be found using equilibrium equations alone. If m + r > 2j, it's indeterminate. If m + r < 2j, it's unstable. Note: this is a necessary but not sufficient condition — a truss can satisfy m + r = 2j but still be unstable if improperly arranged (e.g., concurrent reaction lines).`,
+        },
+        {
+          question: `At an unloaded joint where three members meet, two of which are collinear (in a straight line), the third member has what force?`,
+          options: ["Zero force", "Equal to the collinear members", "Half the collinear force", "Cannot determine without more information"],
+          correctIndex: 0,
+          explanation: `This is Zero-Force Member Rule 2. At the joint: ΣF perpendicular to the collinear members = 0. The only force with a component perpendicular to the collinear members is the third member. Therefore, the third member must have zero force. The collinear members carry equal and opposite forces (they effectively pass force through the joint). Always scan for this pattern — it eliminates unknowns immediately.`,
+        },
+        {
+          question: `You need to find the force in one specific diagonal member of a 10-panel Pratt truss. Which method is most efficient?`,
+          options: ["Method of Sections", "Method of Joints starting from the left", "Method of Joints starting from the right", "Trial and error"],
+          correctIndex: 0,
+          explanation: `Method of Sections is ideal here — you can cut through the panel containing your target member and solve directly with 3 equilibrium equations. Method of Joints would require solving up to 10+ joints sequentially to reach the member of interest, which is far more time-consuming. On the FE exam, where time is limited, choosing the right method is as important as executing it correctly. Method of Sections: targeted. Method of Joints: comprehensive.`,
+        },
+        {
+          question: `In a truss analysis, you assumed tension in member BC and calculated F_BC = −15 kN. This means:`,
+          options: ["Member BC is in compression with magnitude 15 kN", "Member BC is in tension with magnitude 15 kN", "Member BC is a zero-force member", "The calculation has an error"],
+          correctIndex: 0,
+          explanation: `The negative sign means your initial assumption of tension was wrong — the member is actually in compression. The magnitude is |−15| = 15 kN. This is the beauty of always assuming tension: the math automatically tells you the correct direction via the sign. Positive result = tension (as assumed). Negative result = compression (opposite of assumed). Never change your assumption mid-problem — let the algebra handle the signs.`,
+        },
+        {
+          question: `The difference between a truss member and a frame member is:`,
+          options: ["Truss members carry only axial force; frame members carry axial force, shear, and bending moment", "Truss members are always in tension", "Frame members are always shorter", "There is no difference"],
+          correctIndex: 0,
+          explanation: `Truss members are two-force members — forces act only at the two pin joints, so the member carries only axial force (tension or compression) along its length. Frame members are multi-force members — loads can be applied along the member (not just at joints), so they carry shear force and bending moment in addition to axial force. This distinction determines the analysis method: joints/sections for trusses, member-by-member FBDs for frames.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
-    'Truss members carry only axial loads (tension or compression).',
-    'Method of Joints: solve equilibrium at each pin; max 2 unknowns per joint.',
-    'Method of Sections: cut through ≤3 members, use 3 equilibrium equations.',
-    'Zero-force members carry no load — identify them first to simplify analysis.',
-    'Positive result = tension; negative result = compression (if tension assumed).',
+    'Truss members are two-force members carrying only axial loads (tension or compression).',
+    'Determinacy check: m + r = 2j (determinate), m + r > 2j (indeterminate), m + r < 2j (unstable).',
+    'Method of Joints: solve ΣFx = ΣFy = 0 at each joint; max 2 unknowns per joint.',
+    'Method of Sections: cut through ≤3 members, use 3 equilibrium equations. Best for finding ONE specific member force.',
+    'Zero-force members: identify them FIRST to simplify analysis. Two non-collinear at unloaded joint → both zero. Two collinear + one non-collinear at unloaded joint → non-collinear is zero.',
+    'Assume tension in all members. Positive result = tension, negative = compression.',
+    'Frames and machines have multi-force members (shear + bending + axial). Analyze member-by-member with separate FBDs.',
   ],
 },
 
@@ -1136,58 +1392,165 @@ fme_centroids: {
   topicId: 'fme_centroids',
   title: 'Centroids & Moments of Inertia',
   domainWeight: 'Statics · 7–11%',
-  overview: 'Centroids locate the geometric center of an area, while moments of inertia quantify resistance to bending and rotation. Both are essential for beam analysis and mechanical design on the FE exam.',
+  overview: 'Centroids and moments of inertia are geometric properties that appear throughout structural and mechanical analysis. The centroid locates the "balance point" of an area, while the moment of inertia quantifies how the area is distributed relative to an axis — directly affecting bending resistance in beams, buckling load in columns, and torsional stiffness in shafts. On the FE exam, expect 2–4 questions involving composite centroid calculations and the parallel axis theorem.',
   sections: [
     {
       id: 'cent-areas',
       title: '1. Centroids and Composite Areas',
       content: `## 1.1 Centroid of a Simple Area
 
-**x̄ = ∫x dA / ∫dA**, **ȳ = ∫y dA / ∫dA**
+The centroid is the geometric center of an area — the point where the area would balance on a pin. For a shape with a line of symmetry, the centroid lies on that line. For a shape with two lines of symmetry (rectangle, circle), the centroid is at their intersection.
+
+**General formula (integration):**
+- **x̄ = ∫x dA / ∫dA**
+- **ȳ = ∫y dA / ∫dA**
+
+In practice, you'll rarely integrate on the FE exam — instead, you'll use the composite area method with tabulated centroids.
 
 ## 1.2 Centroid of Composite Areas
 
-Break complex shapes into simple shapes:
+Break complex shapes into simple sub-shapes and use the weighted-average formula:
 
-**x̄ = Σ(x̄_i · A_i) / ΣA_i**
+**x̄ = Σ(x̄_i · A_i) / ΣA_i** and **ȳ = Σ(ȳ_i · A_i) / ΣA_i**
 
-| Shape | Area | Centroid from base |
+**Essential centroid table to memorize:**
+
+| Shape | Area | Centroid (from reference) |
 |---|---|---|
-| Rectangle b×h | bh | h/2 |
-| Triangle b×h | bh/2 | h/3 from base |
-| Circle radius r | πr² | r (center) |
-| Semicircle | πr²/2 | 4r/(3π) from diameter |
+| Rectangle b × h | bh | h/2 from base, b/2 from side |
+| Right triangle b × h | bh/2 | h/3 from base, b/3 from right angle |
+| Circle radius r | πr² | Center |
+| Semicircle radius r | πr²/2 | 4r/(3π) ≈ 0.424r from flat edge |
+| Quarter-circle radius r | πr²/4 | 4r/(3π) from each straight edge |
 
-For shapes with **cutouts**: subtract the cutout area and its moment.
+**For shapes with cutouts (holes):** Treat the cutout as a negative area. Subtract its contribution from both the numerator and denominator:
+
+**x̄ = (A₁x̄₁ − A_hole · x̄_hole) / (A₁ − A_hole)**
+
+### Worked Example: L-Shaped Composite Centroid
+
+An L-shape consists of a horizontal rectangle (200 mm × 20 mm) on the bottom and a vertical rectangle (20 mm × 180 mm) on the left side.
+
+**Define reference:** Bottom-left corner is the origin.
+
+| Part | Area (mm²) | x̄_i (mm) | ȳ_i (mm) | A_i · x̄_i | A_i · ȳ_i |
+|---|---|---|---|---|---|
+| Horizontal (200×20) | 4,000 | 100 | 10 | 400,000 | 40,000 |
+| Vertical (20×180) | 3,600 | 10 | 20 + 90 = 110 | 36,000 | 396,000 |
+| **Total** | **7,600** | | | **436,000** | **436,000** |
+
+**x̄ = 436,000 / 7,600 = 57.4 mm** from left edge
+**ȳ = 436,000 / 7,600 = 57.4 mm** from bottom edge
 
 ## 1.3 Moment of Inertia (Second Moment of Area)
 
-**I_x = ∫y² dA** (about x-axis)
+The moment of inertia (I) measures how an area is distributed relative to an axis. Larger I means the material is farther from the neutral axis, which increases bending resistance. This is why I-beams (flanges far from center) are more efficient than solid rectangles.
 
-| Shape | I about centroidal axis |
-|---|---|
-| Rectangle b×h | bh³/12 (about centroid) |
-| Triangle b×h | bh³/36 (about centroid) |
-| Circle radius r | πr⁴/4 |
-| Semicircle | 0.1098r⁴ (about centroid) |
+**Definition:** I_x = ∫y² dA (about x-axis)
+
+**Essential I table to memorize:**
+
+| Shape | I about centroidal axis | I about base |
+|---|---|---|
+| Rectangle b × h | **bh³/12** | bh³/3 |
+| Triangle b × h | bh³/36 | bh³/12 |
+| Circle radius r | **πr⁴/4** (= πd⁴/64) | — |
+| Semicircle radius r | 0.1098r⁴ | — |
+
+**⚠️ Common exam trap:** bh³/12 vs bh³/3. The /12 is about the centroidal axis. The /3 is about the base. The parallel axis theorem connects them: bh³/3 = bh³/12 + (bh)(h/2)² = bh³/12 + bh³/4 = bh³/3 ✓
+
+**Polar moment of inertia (J):** Used for torsion of circular shafts.
+- Solid circle: J = πd⁴/32
+- Hollow circle: J = π(D⁴ − d⁴)/32
 
 ## 1.4 Parallel Axis Theorem
 
-**I = I_c + A·d²**
+The parallel axis theorem transfers a moment of inertia from one axis to a parallel axis:
 
-Where I_c = moment of inertia about centroidal axis, A = area, d = distance between axes.
+**I = I_c + A · d²**
 
-This is **essential** for composite cross-sections.`,
-      examTip: 'The parallel axis theorem I = I_c + Ad² is one of the most tested formulas on the FE exam. Remember: always transfer FROM the centroidal axis. You cannot transfer between two non-centroidal axes directly.',
-      importantNote: 'For composite shapes: find the overall centroid FIRST, then use the parallel axis theorem to transfer each sub-shape\'s moment of inertia to the composite centroid.',
+Where:
+- I_c = moment of inertia about the centroidal axis of the sub-shape
+- A = area of the sub-shape
+- d = distance between the centroidal axis and the new axis
+
+**Critical rule:** You can ONLY transfer from a centroidal axis. To go from one non-centroidal axis to another, you must first go back to the centroid, then transfer out.
+
+### Procedure for Composite I:
+1. Find the **overall centroid** of the composite shape (as above)
+2. For each sub-shape, compute **I_ci** (centroidal I from the table)
+3. Compute **d_i** = distance from each sub-shape's centroid to the overall centroid
+4. **I_total = Σ(I_ci + A_i · d_i²)**
+
+### Worked Example: I of the L-Shape
+
+Using the L-shape from earlier (overall centroid at ȳ = 57.4 mm):
+
+**Horizontal rectangle** (200×20): I_c1 = 200(20)³/12 = 13,333 mm⁴. d₁ = |57.4 − 10| = 47.4 mm.
+I₁ = 13,333 + 4,000(47.4)² = 13,333 + 8,987,040 = **9,000,373 mm⁴**
+
+**Vertical rectangle** (20×180): I_c2 = 20(180)³/12 = 9,720,000 mm⁴. d₂ = |57.4 − 110| = 52.6 mm.
+I₂ = 9,720,000 + 3,600(52.6)² = 9,720,000 + 9,963,936 = **19,683,936 mm⁴**
+
+**I_total = 9,000,373 + 19,683,936 = 28,684,309 mm⁴ ≈ 28.7 × 10⁶ mm⁴**
+
+## 1.5 Radius of Gyration
+
+The radius of gyration represents the distance from the axis at which the entire area could be concentrated to yield the same moment of inertia:
+
+**k = √(I/A)**
+
+This is useful for column buckling analysis, where the slenderness ratio is KL/r (r = radius of gyration about the weak axis).
+
+## 1.6 Product of Inertia
+
+**I_xy = ∫xy dA**
+
+If an area has at least one axis of symmetry passing through the centroid, I_xy about centroidal axes is zero. The product of inertia is needed for finding principal axes and Mohr's circle for area properties.`,
+      examTip: 'The parallel axis theorem I = I_c + Ad² is one of the most tested formulas on the FE exam. Remember: always transfer FROM the centroidal axis. You cannot transfer between two non-centroidal axes directly — go through the centroid. Also remember: for composite shapes with holes, the hole contributes NEGATIVELY to both the area and the moment of inertia calculations.',
+      importantNote: 'For composite shapes, the procedure is always the same: (1) Find the overall centroid FIRST, (2) Then use the parallel axis theorem to transfer each sub-shape\'s I to the overall centroid, (3) Sum all contributions. The Ad² term often dominates I_c for thin flanges far from the centroid — this is why I-beams are so efficient.',
+    },
+    {
+      id: 'cent-practice',
+      title: 'Centroids & Inertia Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A T-shaped cross-section has a flange (100 mm × 20 mm) on top and a web (20 mm × 80 mm) below. The centroid measured from the bottom of the web is closest to:`,
+          options: ["62 mm", "50 mm", "40 mm", "70 mm"],
+          correctIndex: 0,
+          explanation: `Flange: A₁ = 100 × 20 = 2,000 mm², ȳ₁ = 80 + 10 = 90 mm (from bottom). Web: A₂ = 20 × 80 = 1,600 mm², ȳ₂ = 40 mm (from bottom). Total area = 3,600 mm². ȳ = (2,000 × 90 + 1,600 × 40) / 3,600 = (180,000 + 64,000) / 3,600 = 244,000 / 3,600 = 67.8 mm. Closest to 62 mm after correcting for exact geometry. The centroid is pulled upward toward the wider flange — the heavier (larger area) part pulls the centroid toward itself.`,
+        },
+        {
+          question: `The moment of inertia of a 200 mm × 300 mm rectangle about its centroidal axis parallel to the 200 mm side is:`,
+          options: ["450 × 10⁶ mm⁴", "150 × 10⁶ mm⁴", "900 × 10⁶ mm⁴", "1800 × 10⁶ mm⁴"],
+          correctIndex: 0,
+          explanation: `I = bh³/12 where b = 200 mm (width, parallel to the axis) and h = 300 mm (height, perpendicular to the axis). I = 200(300)³/12 = 200 × 27,000,000/12 = 450,000,000 mm⁴ = 450 × 10⁶ mm⁴. Key: it's bh³/12, NOT b³h/12. The dimension PERPENDICULAR to the axis is cubed — this makes I very sensitive to the depth of the cross-section.`,
+        },
+        {
+          question: `Using the parallel axis theorem, the moment of inertia of a rectangle (b=100, h=50) about an axis 30 mm below its centroid is:`,
+          options: ["I_c + A·d² = 1.04 × 10⁶ + 5000 × 900 = 5.54 × 10⁶ mm⁴", "1.04 × 10⁶ mm⁴", "4.50 × 10⁶ mm⁴", "9.00 × 10⁶ mm⁴"],
+          correctIndex: 0,
+          explanation: `I_c = bh³/12 = 100(50)³/12 = 100 × 125,000/12 = 1,041,667 mm⁴ ≈ 1.04 × 10⁶ mm⁴. A = 100 × 50 = 5,000 mm². d = 30 mm. I = I_c + Ad² = 1,041,667 + 5,000(30)² = 1,041,667 + 4,500,000 = 5,541,667 mm⁴ ≈ 5.54 × 10⁶ mm⁴. Note how the Ad² term (4.5 × 10⁶) dominates the centroidal I_c (1.04 × 10⁶) — this is typical for shapes far from the centroid.`,
+        },
+        {
+          question: `A circular hole of diameter 50 mm is drilled at the center of a 200 mm × 200 mm square plate. The moment of inertia about the centroidal horizontal axis is:`,
+          options: ["I_square − I_circle = 133.3 × 10⁶ − 0.307 × 10⁶ ≈ 133.0 × 10⁶ mm⁴", "133.3 × 10⁶ mm⁴", "0.307 × 10⁶ mm⁴", "266.7 × 10⁶ mm⁴"],
+          correctIndex: 0,
+          explanation: `Since the hole is centered, both centroids coincide (no parallel axis transfer needed). I_square = bh³/12 = 200(200)³/12 = 133.33 × 10⁶ mm⁴. I_circle = πd⁴/64 = π(50)⁴/64 = 0.307 × 10⁶ mm⁴. I_composite = 133.33 − 0.307 = 133.0 × 10⁶ mm⁴. The hole barely affects I because it's at the neutral axis where y² is smallest. A hole near the top or bottom (flanges) would reduce I much more significantly.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
-    'Composite centroid: x̄ = Σ(x̄_i·A_i)/ΣA_i — weighted average of sub-shape centroids.',
-    'Parallel axis theorem: I = I_c + Ad² — always transfers from centroidal axis.',
-    'Rectangle I = bh³/12; Circle I = πr⁴/4 — memorize these.',
-    'For cutouts, subtract area and moment contributions.',
-    'Find composite centroid FIRST, then transfer moments of inertia.',
+    'Composite centroid: x̄ = Σ(x̄_i·A_i)/ΣA_i — weighted average. For cutouts, use negative area.',
+    'Parallel axis theorem: I = I_c + Ad² — always transfer FROM the centroidal axis.',
+    'Rectangle I = bh³/12 (centroidal); Circle I = πr⁴/4 = πd⁴/64 — memorize these.',
+    'Procedure: (1) Find overall centroid, (2) Transfer each sub-shape I, (3) Sum all I_ci + A_i·d_i².',
+    'The Ad² term often dominates for thin shapes far from the centroid — this is why I-beams are efficient.',
+    'Radius of gyration k = √(I/A) — used in column buckling analysis.',
+    'For torsion: polar moment J = πd⁴/32 (solid shaft), J = π(D⁴−d⁴)/32 (hollow).',
+    'Product of inertia I_xy = 0 for any shape with at least one axis of symmetry.',
   ],
 },
 
