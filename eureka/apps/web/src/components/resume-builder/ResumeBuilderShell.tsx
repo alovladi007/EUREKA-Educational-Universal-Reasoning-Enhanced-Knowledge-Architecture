@@ -29,6 +29,7 @@ import { CertificationsPanel } from "./editor/CertificationsPanel";
 import { LanguagesPanel } from "./editor/LanguagesPanel";
 import { EditorSidebar } from "./editor/EditorSidebar";
 import { TemplateCustomizer } from "./customization/TemplateCustomizer";
+import { ExportDialog } from "./export/ExportDialog";
 import { TEMPLATES } from "@/lib/resume/template-registry";
 import type { TemplateId, TemplateProps } from "@/types/resume";
 
@@ -49,6 +50,7 @@ export function ResumeBuilderShell() {
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
   const [previewScale, setPreviewScale] = useState(0.55);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
+  const [showExport, setShowExport] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
   if (!doc) return null;
@@ -99,7 +101,7 @@ export function ResumeBuilderShell() {
           <div className="w-px h-5 bg-border mx-1 hidden md:block" />
 
           {/* Export */}
-          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => window.print()}>
+          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowExport(true)}>
             <Download className="w-3.5 h-3.5 mr-1" />
             Export
           </Button>
@@ -152,6 +154,7 @@ export function ResumeBuilderShell() {
           <div className="p-4 flex justify-center">
             <div
               ref={previewRef}
+              data-resume-preview
               className="shadow-xl"
               style={{
                 transform: `scale(${previewScale})`,
@@ -166,6 +169,9 @@ export function ResumeBuilderShell() {
           </div>
         </div>
       </div>
+
+      {/* Export Dialog */}
+      <ExportDialog open={showExport} onClose={() => setShowExport(false)} />
     </div>
   );
 }
