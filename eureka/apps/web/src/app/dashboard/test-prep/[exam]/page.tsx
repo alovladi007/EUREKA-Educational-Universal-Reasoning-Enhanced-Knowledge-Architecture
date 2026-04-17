@@ -24,8 +24,11 @@ import { getSecurityPlusCourseContent, hasSecurityPlusCourseContent } from '@/li
 import { getPatentBarCourseContent, hasPatentBarCourseContent } from '@/lib/patent-bar-course-data';
 import { getFEEECourseContent, hasFEEECourseContent } from '@/lib/fe-ee-course-data';
 import { getFMECourseContent, hasFMECourseContent } from '@/lib/fme-course-data';
+import { getPEEECourseContent, hasPEEECourseContent } from '@/lib/pe-ee-course-data';
 import { FME_QUESTIONS } from '@/lib/fme-qbank-data';
+import { PE_EE_QUESTIONS } from '@/lib/pe-ee-qbank-data';
 import { getFMEFlashcards, FME_FLASHCARD_DOMAINS, FME_FLASHCARD_COUNT } from '@/lib/fme-flashcard-data';
+import { getPEEEFlashcards, PEEE_FLASHCARD_DOMAINS, PEEE_FLASHCARD_COUNT } from '@/lib/pe-ee-flashcard-data';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
@@ -48,6 +51,7 @@ export default function ExamPage() {
   const isPatentBar = examId === 'PATENT_BAR';
   const isFEEE = examId === 'FE_EE';
   const isFEME = examId === 'FE_ME';
+  const isPEEE = examId === 'PE_EE';
   const [activeTab, setActiveTab] = useState<Tab>('read');
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
@@ -57,7 +61,7 @@ export default function ExamPage() {
     { id: 'notes', label: 'My Notes', icon: <StickyNote className="h-4 w-4" /> },
     { id: 'qbank', label: 'QBank', icon: <BrainCircuit className="h-4 w-4" /> },
     ...(isPatentBar ? [{ id: 'mpep' as Tab, label: 'MPEP', icon: <Library className="h-4 w-4" /> }] : []),
-    ...((isFEEE || isFEME) ? [
+    ...((isFEEE || isFEME || isPEEE) ? [
       { id: 'exam' as Tab, label: 'Full Exam', icon: <Trophy className="h-4 w-4" /> },
       { id: 'analytics' as Tab, label: 'Analytics', icon: <BarChart3 className="h-4 w-4" /> },
     ] : []),
@@ -140,6 +144,8 @@ export default function ExamPage() {
       {activeTab === 'analytics' && isFEEE && <FEEEAnalyticsTab />}
       {activeTab === 'exam' && isFEME && <FMEExamTab />}
       {activeTab === 'analytics' && isFEME && <FMEAnalyticsTab />}
+      {activeTab === 'exam' && isPEEE && <PEEEExamTab />}
+      {activeTab === 'analytics' && isPEEE && <PEEEAnalyticsTab />}
     </div>
   );
 }
@@ -463,6 +469,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                 if (hasPatentBarCourseContent(activeTopic.id)) return getPatentBarCourseContent(activeTopic.id);
                 if (hasFEEECourseContent(activeTopic.id)) return getFEEECourseContent(activeTopic.id);
                 if (hasFMECourseContent(activeTopic.id)) return getFMECourseContent(activeTopic.id);
+                if (hasPEEECourseContent(activeTopic.id)) return getPEEECourseContent(activeTopic.id);
                 return null;
               })();
 
@@ -830,7 +837,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                   <div className="border-t border-gray-100 dark:border-gray-800">
                     {section.topics.map((topic, i) => {
                       const done = completedTopics.has(topic.id);
-                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id) || hasPatentBarCourseContent(topic.id) || hasFEEECourseContent(topic.id) || hasFMECourseContent(topic.id);
+                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id) || hasPatentBarCourseContent(topic.id) || hasFEEECourseContent(topic.id) || hasFMECourseContent(topic.id) || hasPEEECourseContent(topic.id);
                       return (
                         <div
                           key={topic.id}
@@ -1191,7 +1198,8 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const isPatentBar = examType === 'PATENT_BAR';
   const isFEEE = examType === 'FE_EE';
   const isFEME = examType === 'FE_ME';
-  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME;
+  const isPEEE = examType === 'PE_EE';
+  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1216,7 +1224,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
           ? getFEEEFlashcards(activeDomain || undefined)
           : isFEME
             ? getFMEFlashcards(activeDomain || undefined)
-            : [];
+            : isPEEE
+              ? getPEEEFlashcards(activeDomain || undefined)
+              : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1236,7 +1246,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
           ? FEEE_FLASHCARD_DOMAINS
           : isFEME
             ? FME_FLASHCARD_DOMAINS
-            : [];
+            : isPEEE
+              ? PEEE_FLASHCARD_DOMAINS
+              : [];
   const flashcardCount = isCISSP
     ? CISSP_FLASHCARD_COUNT
     : isSecPlus
@@ -1247,7 +1259,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
           ? FEEE_FLASHCARD_COUNT
           : isFEME
             ? FME_FLASHCARD_COUNT
-            : 0;
+            : isPEEE
+              ? PEEE_FLASHCARD_COUNT
+              : 0;
   const flashcardTitle = isCISSP
     ? 'CISSP Flashcard Deck'
     : isSecPlus
@@ -1258,7 +1272,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
           ? 'FE Electrical & Computer Flashcard Deck'
           : isFEME
             ? 'FE Mechanical Engineering Flashcard Deck'
-            : 'Flashcard Deck';
+            : isPEEE
+              ? 'PE Electrical & Computer (Power) Flashcard Deck'
+              : 'Flashcard Deck';
   const flashcardSubtitle = isCISSP
     ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
     : isSecPlus
@@ -1269,7 +1285,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
           ? `${FEEE_FLASHCARD_COUNT.toLocaleString()} cards across all 18 EE topics + formulas`
           : isFEME
             ? `${FME_FLASHCARD_COUNT.toLocaleString()} cards across all 16 ME topics + formulas`
-        : '';
+            : isPEEE
+              ? `${PEEE_FLASHCARD_COUNT.toLocaleString()} cards across all 10 power sections + formulas`
+              : '';
 
   const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
@@ -1708,6 +1726,38 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             correct_index: q.correct,
             explanation_text: q.explanation,
             section_id: `fme_topic${q.topicId}`,
+            _idx: i,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
+          setCurrentQ(normalized[0]);
+          setCurrentIndex(0);
+          setTimer(0);
+          setView('session');
+        } else {
+          alert('No questions available for the selected sections.');
+        }
+      } else if (examType === 'PE_EE') {
+        let peeQuestions = [...PE_EE_QUESTIONS];
+        if (selectedSections.length > 0) {
+          const sectionToTopic: Record<string, number> = {
+            pee_general: 0, pee_measurement: 1, pee_circuits: 2, pee_rotating: 3,
+            pee_electromagnetics: 4, pee_transmission: 5, pee_protection: 6,
+            pee_power_quality: 7, pee_codes: 8, pee_power_system: 9,
+          };
+          const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
+          peeQuestions = peeQuestions.filter(q => topicIds.includes(q.topicId));
+        }
+        peeQuestions = peeQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        if (peeQuestions.length > 0) {
+          const normalized = peeQuestions.map((q: any, i: number) => ({
+            ...q,
+            question_text: q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct,
+            explanation_text: q.explanation,
+            section_id: `pee_topic${q.topicId}`,
             _idx: i,
           }));
           const fakeSessionId = `static-${Date.now()}`;
@@ -2570,4 +2620,34 @@ function FMEAnalyticsTab() {
   const totalAttempts = history.length; const avgScore = totalAttempts > 0 ? Math.round(history.reduce((s:number,h:any)=>s+h.score,0)/totalAttempts) : 0; const bestScore = totalAttempts > 0 ? Math.max(...history.map((h:any)=>h.score)) : 0; const passCount = history.filter((h:any)=>h.passed).length;
   const weakTopics = Object.entries(latestByTopic).map(([tid,d])=>({id:Number(tid),name:FME_TOPIC_NAMES[Number(tid)],pct:Math.round((d.correct/d.total)*100),correct:d.correct,total:d.total})).sort((a,b)=>a.pct-b.pct);
   return (<div className="space-y-6"><div className="bg-gradient-to-r from-orange-600 to-red-600 rounded-xl p-6 text-white"><h2 className="text-2xl font-bold mb-1">FE ME Performance Analytics</h2><p className="text-orange-100 text-sm">Track your Mechanical Engineering exam preparation</p></div>{totalAttempts===0?(<Card className="p-8 text-center"><BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4"/><h3 className="text-lg font-semibold mb-2">No exam attempts yet</h3><p className="text-muted-foreground text-sm">Take a Full Exam to see analytics.</p></Card>):(<><div className="grid grid-cols-2 md:grid-cols-4 gap-4"><Card className="p-4 text-center"><p className="text-3xl font-bold text-blue-600">{totalAttempts}</p><p className="text-xs text-muted-foreground">Exams</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-purple-600">{avgScore}%</p><p className="text-xs text-muted-foreground">Average</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-green-600">{bestScore}%</p><p className="text-xs text-muted-foreground">Best</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-amber-600">{passCount}/{totalAttempts}</p><p className="text-xs text-muted-foreground">Pass Rate</p></Card></div><Card className="p-6"><h3 className="font-bold text-lg mb-4">Exam History</h3><div className="space-y-2">{[...history].reverse().map((h:any,i:number)=>(<div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"><span className="text-sm text-muted-foreground">{new Date(h.date).toLocaleDateString()}</span><span className="font-bold">{h.score}%</span><Badge className={h.passed?'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200':'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}>{h.passed?'PASS':'REVIEW'}</Badge></div>))}</div></Card>{weakTopics.length>0&&(<Card className="p-6"><h3 className="font-bold text-lg mb-4">Latest — By Topic</h3><div className="space-y-3">{weakTopics.map(t=>(<div key={t.id}><div className="flex justify-between text-sm mb-1"><span className="font-medium">{t.name}</span><span className={t.pct>=70?'text-green-600 font-semibold':'text-red-600 font-semibold'}>{t.correct}/{t.total} ({t.pct}%)</span></div><div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2.5"><div className={`h-2.5 rounded-full ${t.pct>=70?'bg-green-500':t.pct>=50?'bg-amber-500':'bg-red-500'}`} style={{width:`${t.pct}%`}}/></div></div>))}</div></Card>)}<div className="text-center"><button onClick={()=>{if(confirm('Clear history?')){localStorage.removeItem('fme_exam_history');setHistory([]);}}} className="text-xs text-muted-foreground hover:text-red-500 transition">Clear history</button></div></>)}</div>);
+}
+
+// ═══════════════════════════════════════════════════════════════
+// PE EE FULL EXAM SIMULATOR + ANALYTICS
+// ═══════════════════════════════════════════════════════════════
+
+const PEE_TOPIC_NAMES = ['General Power Engineering','Measurement & Instrumentation','Circuit Analysis','Rotating Machines & Drives','Electromagnetic Devices','Transmission & Distribution','Protection','Power Quality & Reliability','Codes & Standards','Power System Analysis'];
+const PEE_TOPIC_DISTRIBUTION = [7,6,8,10,7,10,10,6,8,8];
+const PEE_EXAM_TIME = 28800; // 8 hours in seconds
+
+function PEEEExamTab() {
+  const [phase, setPhase] = useState<'intro' | 'exam' | 'results'>('intro');
+  const [questions, setQuestions] = useState<any[]>([]); const [answers, setAnswers] = useState<Record<number, number>>({}); const [flagged, setFlagged] = useState<Set<number>>(new Set()); const [currentIdx, setCurrentIdx] = useState(0); const [timeLeft, setTimeLeft] = useState(PEE_EXAM_TIME); const [results, setResults] = useState<any>(null); const timerRef = React.useRef<NodeJS.Timeout | null>(null);
+  React.useEffect(() => { if (phase !== 'exam') return; timerRef.current = setInterval(() => { setTimeLeft(prev => { if (prev <= 1) { clearInterval(timerRef.current!); return 0; } return prev - 1; }); }, 1000); return () => { if (timerRef.current) clearInterval(timerRef.current); }; }, [phase]);
+  React.useEffect(() => { if (phase === 'exam' && timeLeft === 0) handleSubmit(); }, [timeLeft, phase]);
+  const formatTime = (s: number) => { const h = Math.floor(s / 3600); const m = Math.floor((s % 3600) / 60); const sec = s % 60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; };
+  const startExam = () => { const examQs: any[] = []; let idx = 0; for (let tid = 0; tid < 10; tid++) { const count = PEE_TOPIC_DISTRIBUTION[tid]; const tQs = PE_EE_QUESTIONS.filter((q: any) => q.topicId === tid); const sh = [...tQs].sort(() => Math.random() - 0.5).slice(0, count); sh.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; }); } setQuestions(examQs); setAnswers({}); setFlagged(new Set()); setCurrentIdx(0); setTimeLeft(PEE_EXAM_TIME); setPhase('exam'); };
+  const handleSubmit = () => { if (timerRef.current) clearInterval(timerRef.current); const res: any = { total: questions.length, correct: 0, incorrect: [], byTopic: {}, timeSpent: PEE_EXAM_TIME - timeLeft }; questions.forEach(q => { if (!res.byTopic[q.topicId]) res.byTopic[q.topicId] = { correct: 0, total: 0 }; res.byTopic[q.topicId].total++; if (answers[q.examIdx] === q.correct) { res.correct++; res.byTopic[q.topicId].correct++; } else { res.incorrect.push({ question: q, userAnswer: answers[q.examIdx] !== undefined ? q.options[answers[q.examIdx]] : 'Not answered', correctAnswer: q.options[q.correct], explanation: q.explanation }); } }); res.percentage = Math.round((res.correct / res.total) * 100); res.passed = res.percentage >= 60; const hist = JSON.parse(localStorage.getItem('peee_exam_history') || '[]'); hist.push({ date: new Date().toISOString(), score: res.percentage, passed: res.passed, correct: res.correct, total: res.total, timeSpent: res.timeSpent, byTopic: res.byTopic }); localStorage.setItem('peee_exam_history', JSON.stringify(hist)); setResults(res); setPhase('results'); };
+  if (phase === 'intro') return (<div className="space-y-6"><Card className="overflow-hidden"><div className="bg-gradient-to-r from-yellow-600 to-amber-700 p-8 text-white text-center"><Trophy className="h-12 w-12 mx-auto mb-4" /><h2 className="text-3xl font-bold mb-2">PE Electrical & Computer (Power) — Full Practice Exam</h2><p className="text-yellow-100 text-lg">80 Questions &middot; 8 Hours</p></div><div className="p-6 space-y-4"><div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-blue-600">80</p><p className="text-xs text-muted-foreground">Questions</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-purple-600">10</p><p className="text-xs text-muted-foreground">Sections</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-amber-600">8:00</p><p className="text-xs text-muted-foreground">Hours</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-green-600">60%</p><p className="text-xs text-muted-foreground">Est. Pass</p></div></div><Button onClick={startExam} className="w-full py-6 text-lg font-bold bg-green-600 hover:bg-green-700">Start Exam Now</Button></div></Card></div>);
+  if (phase === 'exam' && questions.length > 0) { const q = questions[currentIdx]; const answered = Object.keys(answers).length; const isFl = flagged.has(currentIdx); return (<div className="space-y-4"><Card className="p-4"><div className="flex justify-between items-center"><div className="flex items-center gap-4"><span className="text-sm font-medium">Q {currentIdx+1} / {questions.length}</span><div className="w-48 bg-gray-200 dark:bg-gray-800 rounded-full h-2"><div className="bg-amber-600 h-2 rounded-full transition-all" style={{width:`${((currentIdx+1)/questions.length)*100}%`}}/></div><span className="text-xs text-muted-foreground">{answered} answered</span></div><div className={`text-2xl font-mono font-bold ${timeLeft<600?'text-red-600 animate-pulse':'text-gray-900 dark:text-gray-100'}`}>{formatTime(timeLeft)}</div></div></Card><Card className="p-6"><div className="flex items-center gap-2 mb-4"><Badge variant="secondary" className="text-xs">{PEE_TOPIC_NAMES[q.topicId]}</Badge><Badge variant="outline" className="text-xs">{q.subtopic}</Badge></div><h3 className="text-lg font-semibold mb-6">{q.question}</h3><div className="space-y-3">{q.options.map((opt:string,i:number)=>(<button key={i} onClick={()=>setAnswers(p=>({...p,[currentIdx]:i}))} className={`w-full text-left p-4 rounded-lg border-2 transition-all ${answers[currentIdx]===i?'border-amber-500 bg-amber-50 dark:bg-amber-950/30':'border-gray-200 dark:border-gray-700 hover:border-gray-400'}`}><span className="font-mono text-sm mr-3 text-muted-foreground">{String.fromCharCode(65+i)}</span>{opt}</button>))}</div><div className="flex items-center justify-between mt-6"><button onClick={()=>{const nf=new Set(flagged);isFl?nf.delete(currentIdx):nf.add(currentIdx);setFlagged(nf);}} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${isFl?'bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100':'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}`}>{isFl?'★ Flagged':'☆ Flag'}</button><div className="flex gap-2"><Button variant="outline" size="sm" disabled={currentIdx===0} onClick={()=>setCurrentIdx(currentIdx-1)}>← Prev</Button>{currentIdx<questions.length-1?<Button size="sm" onClick={()=>setCurrentIdx(currentIdx+1)}>Next →</Button>:<Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={()=>{if(confirm('Submit exam?'))handleSubmit();}}>Submit</Button>}</div></div></Card><Card className="p-4"><p className="text-xs font-medium text-muted-foreground mb-2">Navigator</p><div className="flex flex-wrap gap-1">{questions.map((_:any,i:number)=>(<button key={i} onClick={()=>setCurrentIdx(i)} className={`w-7 h-7 rounded text-[10px] font-bold transition ${i===currentIdx?'bg-amber-600 text-white':flagged.has(i)?'bg-yellow-400 dark:bg-yellow-600 text-yellow-900 dark:text-white':answers[i]!==undefined?'bg-green-400 dark:bg-green-600 text-green-900 dark:text-white':'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>{i+1}</button>))}</div></Card></div>); }
+  if (phase === 'results' && results) return (<div className="space-y-6"><Card className={`overflow-hidden ${results.passed?'border-green-500':'border-red-500'} border-2`}><div className={`p-8 text-center text-white ${results.passed?'bg-gradient-to-r from-green-600 to-emerald-700':'bg-gradient-to-r from-red-600 to-red-800'}`}><p className="text-6xl font-black mb-2">{results.percentage}%</p><p className="text-xl">{results.correct} of {results.total} correct</p><p className="mt-2 text-lg font-bold">{results.passed?'✓ PASS':'⚠ NEEDS REVIEW'}</p></div></Card><Card className="p-6"><h3 className="font-bold text-lg mb-4">By Section</h3><div className="space-y-3">{Object.entries(results.byTopic).map(([tid,data]:[string,any])=>{const pct=Math.round((data.correct/data.total)*100);return(<div key={tid}><div className="flex justify-between text-sm mb-1"><span className="font-medium">{PEE_TOPIC_NAMES[Number(tid)]}</span><span className={pct>=60?'text-green-600':'text-red-600'}>{data.correct}/{data.total} ({pct}%)</span></div><div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2"><div className={`h-2 rounded-full ${pct>=60?'bg-green-500':'bg-red-500'}`} style={{width:`${pct}%`}}/></div></div>);})}</div></Card>{results.incorrect.length>0&&(<Card className="p-6"><h3 className="font-bold text-lg mb-4">Missed ({results.incorrect.length})</h3><div className="space-y-4 max-h-[500px] overflow-y-auto">{results.incorrect.map((item:any,i:number)=>(<div key={i} className="border-l-4 border-red-500 pl-4 py-2"><p className="font-medium text-sm mb-1">{item.question.question}</p><p className="text-xs text-red-600">You: {item.userAnswer}</p><p className="text-xs text-green-600">Correct: {item.correctAnswer}</p><p className="text-xs text-muted-foreground mt-1 bg-gray-50 dark:bg-gray-900 p-2 rounded">{item.explanation}</p></div>))}</div></Card>)}<Button onClick={()=>{setPhase('intro');setResults(null);}} className="w-full" variant="outline">Take Another</Button></div>);
+  return null;
+}
+
+function PEEEAnalyticsTab() {
+  const [history, setHistory] = useState<any[]>([]); React.useEffect(() => { setHistory(JSON.parse(localStorage.getItem('peee_exam_history') || '[]')); }, []);
+  const latestByTopic: Record<number, {correct:number;total:number}> = {}; if (history.length > 0) { const latest = history[history.length-1]; if (latest.byTopic) Object.entries(latest.byTopic).forEach(([tid,data]:[string,any]) => { latestByTopic[Number(tid)] = data; }); }
+  const totalAttempts = history.length; const avgScore = totalAttempts > 0 ? Math.round(history.reduce((s:number,h:any)=>s+h.score,0)/totalAttempts) : 0; const bestScore = totalAttempts > 0 ? Math.max(...history.map((h:any)=>h.score)) : 0; const passCount = history.filter((h:any)=>h.passed).length;
+  const weakTopics = Object.entries(latestByTopic).map(([tid,d])=>({id:Number(tid),name:PEE_TOPIC_NAMES[Number(tid)],pct:Math.round((d.correct/d.total)*100),correct:d.correct,total:d.total})).sort((a,b)=>a.pct-b.pct);
+  return (<div className="space-y-6"><div className="bg-gradient-to-r from-yellow-600 to-amber-600 rounded-xl p-6 text-white"><h2 className="text-2xl font-bold mb-1">PE EE (Power) Performance Analytics</h2><p className="text-yellow-100 text-sm">Track your PE Electrical Power exam preparation</p></div>{totalAttempts===0?(<Card className="p-8 text-center"><BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4"/><h3 className="text-lg font-semibold mb-2">No exam attempts yet</h3><p className="text-muted-foreground text-sm">Take a Full Exam to see analytics.</p></Card>):(<><div className="grid grid-cols-2 md:grid-cols-4 gap-4"><Card className="p-4 text-center"><p className="text-3xl font-bold text-blue-600">{totalAttempts}</p><p className="text-xs text-muted-foreground">Exams</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-purple-600">{avgScore}%</p><p className="text-xs text-muted-foreground">Average</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-green-600">{bestScore}%</p><p className="text-xs text-muted-foreground">Best</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-amber-600">{passCount}/{totalAttempts}</p><p className="text-xs text-muted-foreground">Pass Rate</p></Card></div><Card className="p-6"><h3 className="font-bold text-lg mb-4">Exam History</h3><div className="space-y-2">{[...history].reverse().map((h:any,i:number)=>(<div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"><span className="text-sm text-muted-foreground">{new Date(h.date).toLocaleDateString()}</span><span className="font-bold">{h.score}%</span><Badge className={h.passed?'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200':'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}>{h.passed?'PASS':'REVIEW'}</Badge></div>))}</div></Card>{weakTopics.length>0&&(<Card className="p-6"><h3 className="font-bold text-lg mb-4">Latest — By Section</h3><div className="space-y-3">{weakTopics.map(t=>(<div key={t.id}><div className="flex justify-between text-sm mb-1"><span className="font-medium">{t.name}</span><span className={t.pct>=60?'text-green-600 font-semibold':'text-red-600 font-semibold'}>{t.correct}/{t.total} ({t.pct}%)</span></div><div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2.5"><div className={`h-2.5 rounded-full ${t.pct>=60?'bg-green-500':t.pct>=40?'bg-amber-500':'bg-red-500'}`} style={{width:`${t.pct}%`}}/></div></div>))}</div></Card>)}<div className="text-center"><button onClick={()=>{if(confirm('Clear history?')){localStorage.removeItem('peee_exam_history');setHistory([]);}}} className="text-xs text-muted-foreground hover:text-red-500 transition">Clear history</button></div></>)}</div>);
 }
