@@ -1166,6 +1166,25 @@ Find the interest rate that makes PW = 0:
 - Used primarily for public projects`,
       examTip: 'For mutually exclusive alternatives with unequal lives, Annual Worth analysis is the easiest method because it inherently handles different lifespans. Avoid present worth unless lives are equal or you use LCM.',
     },
+    {
+      id: 'cost-practice',
+      title: 'Cost Analysis Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A project costs $50,000 and returns $15,000/year for 5 years at MARR = 10%. NPV is (P/A,10%,5) = 3.791:`,
+          options: ["$6,865 — accept (NPV > 0)", "−$6,865 — reject", "$25,000", "$0"],
+          correctIndex: 0,
+          explanation: `NPV = −50,000 + 15,000 × (P/A,10%,5) = −50,000 + 15,000(3.791) = −50,000 + 56,865 = $6,865. Since NPV > 0, the project earns more than the 10% MARR and should be ACCEPTED. A positive NPV means the project creates value above the minimum required return.`,
+        },
+        {
+          question: `Project A has IRR = 25%, investment = $10K. Project B has IRR = 18%, investment = $100K. They are mutually exclusive. You should:`,
+          options: ["Choose B if incremental analysis shows ΔIRR > MARR, or use NPV directly", "Always choose A (higher IRR)", "Choose the one with lower cost", "Choose neither"],
+          correctIndex: 0,
+          explanation: `For mutually exclusive alternatives, IRR comparison alone is misleading. A has higher rate but smaller scale. B might create more total VALUE. Use NPV at MARR, or incremental analysis: check if the extra $90K investment in B earns more than MARR. If ΔIRR > MARR, choose B (the larger project). This is one of the most important concepts in engineering economics.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Present Worth: convert all cash flows to time zero; choose highest PW.',
@@ -1226,6 +1245,25 @@ The **US tax code standard**:
 Depreciation creates a **tax shield**: Tax savings = D × Tax rate`,
       examTip: 'MACRS always assumes salvage value = 0 and uses half-year convention. The FE reference handbook provides MACRS tables — use them directly instead of computing rates.',
       importantNote: 'Depreciation is a non-cash expense — it reduces taxable income but does not represent actual cash outflow. The real benefit is the tax shield: the reduction in taxes due to the depreciation deduction.',
+    },
+    {
+      id: 'dep-practice',
+      title: 'Depreciation Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `Straight-line depreciation of a $60,000 asset with $5,000 salvage over 10 years gives:`,
+          options: ["$5,500/year", "$6,000/year", "$6,500/year", "$5,000/year"],
+          correctIndex: 0,
+          explanation: `D = (B − S)/n = (60,000 − 5,000)/10 = $5,500/year. Book value at year k: BV = B − k·D. After 4 years: BV = 60,000 − 22,000 = $38,000. Straight-line is the simplest method and produces equal annual deductions.`,
+        },
+        {
+          question: `DDB rate for a 5-year life asset. Year 1 depreciation on $40,000 cost:`,
+          options: ["$16,000", "$8,000", "$12,000", "$7,000"],
+          correctIndex: 0,
+          explanation: `DDB rate = 2/n = 2/5 = 40%. Year 1: D₁ = 0.40 × $40,000 = $16,000. BV₁ = $24,000. DDB applies the rate to BOOK VALUE (not cost − salvage). Year 2: D₂ = 0.40 × $24,000 = $9,600. Never depreciate below salvage value. Switch to SL when it gives larger deductions.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -5450,6 +5488,25 @@ Uses three time estimates:
       examTip: 'The critical path has ZERO slack. To find it: forward pass (earliest times), backward pass (latest times), then slack = LS - ES. Activities with zero slack form the critical path.',
       importantNote: 'A project can have multiple critical paths. If any activity on ANY critical path is delayed, the project is delayed. Always check all paths when identifying the critical path(s).',
     },
+    {
+      id: 'proj-practice',
+      title: 'Project Management Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `PERT estimates for an activity: a = 2, m = 5, b = 14 days. The expected time and variance are:`,
+          options: ["t_e = 6 days, σ² = 4 days²", "t_e = 7 days, σ² = 4", "t_e = 5 days, σ² = 12", "t_e = 6 days, σ² = 2"],
+          correctIndex: 0,
+          explanation: `t_e = (a + 4m + b)/6 = (2 + 20 + 14)/6 = 36/6 = 6 days. σ² = ((b-a)/6)² = ((14-2)/6)² = (12/6)² = 4 days². σ = 2 days. These feed into project duration probability calculations: project σ = √(Σσ² on critical path). Then Z = (T_target − T_expected)/σ_project for finding completion probability.`,
+        },
+        {
+          question: `A project has CPI = 0.8 and BAC = $100,000. The estimate at completion (EAC) is:`,
+          options: ["$125,000", "$80,000", "$100,000", "$150,000"],
+          correctIndex: 0,
+          explanation: `EAC = BAC/CPI = 100,000/0.8 = $125,000. CPI < 1 means the project is OVER BUDGET — getting less value per dollar spent. The project will cost 25% more than planned if the current cost performance continues. SPI = EV/PV < 1 would mean behind schedule. EVM provides early warning of cost/schedule overruns.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Critical path = longest path = zero slack; determines project duration.',
@@ -5525,6 +5582,25 @@ fme_quality: {
 | 6σ | 3.4 | 99.99966% |`,
       examTip: 'C_p measures what the process COULD do if centered; C_pk measures what it actually does. If C_p is high but C_pk is low, the process is capable but not centered — shift the mean. This distinction is commonly tested.',
       importantNote: 'The Pareto principle (80/20 rule): roughly 80% of defects come from 20% of causes. Focus improvement efforts on the vital few causes identified by Pareto analysis.',
+    },
+    {
+      id: 'qual-practice',
+      title: 'Quality Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A process has USL = 60, LSL = 40, μ = 52, σ = 3. The Cpk is:`,
+          options: ["0.89", "1.11", "1.33", "2.67"],
+          correctIndex: 0,
+          explanation: `Cpk = min[(USL−μ)/(3σ), (μ−LSL)/(3σ)] = min[(60−52)/9, (52−40)/9] = min[0.89, 1.33] = 0.89. The process is NOT capable (Cpk < 1.0) because it's off-center toward USL. Cp = (USL−LSL)/(6σ) = 20/18 = 1.11 — potentially capable IF centered. Solution: shift mean to 50 (center) → Cpk would become 1.11.`,
+        },
+        {
+          question: `On a control chart, 8 consecutive points are above the center line. This indicates:`,
+          options: ["Out of control — a non-random pattern exists (process shift)", "Normal random variation", "The process is centered", "The control limits need widening"],
+          correctIndex: 0,
+          explanation: `Western Electric rules: 7+ consecutive points on ONE SIDE of the center line indicates a process shift (assignable cause). The probability of 8 consecutive points above center by chance is (0.5)^8 = 0.004 (0.4%) — very unlikely if the process is truly in control. Other out-of-control signals: point beyond 3σ limits, trend of 6+ points, 2 of 3 beyond 2σ.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
