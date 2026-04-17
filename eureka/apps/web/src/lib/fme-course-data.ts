@@ -4053,6 +4053,25 @@ For water/steam:
 **Quality**: x = (v - v_f)/(v_g - v_f) = (h - h_f)/(h_fg) = (s - s_f)/(s_fg)`,
       examTip: 'Quality x is only defined in the two-phase (wet) region. If x < 0 → subcooled liquid. If x > 1 → superheated vapor. On the FE exam, always check the state (phase) first before using property tables.',
     },
+    {
+      id: 'props-practice',
+      title: 'Thermo Properties Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `Water at 200 kPa has h = 2500 kJ/kg. If h_f = 505, h_fg = 2202 at 200 kPa, the quality is:`,
+          options: ["x = 0.906 (90.6% vapor)", "x = 0.50", "Superheated — x not applicable", "x = 1.0"],
+          correctIndex: 0,
+          explanation: `Check: h_f = 505, h_g = h_f + h_fg = 505 + 2202 = 2707. Since h_f < h (2500) < h_g (2707), it's in the two-phase region. x = (h − h_f)/h_fg = (2500 − 505)/2202 = 1995/2202 = 0.906. Quality x gives the vapor fraction by mass. x = 0 → saturated liquid, x = 1 → saturated vapor.`,
+        },
+        {
+          question: `Air (ideal gas) at 300 K, 100 kPa is compressed isentropically to 800 kPa. T₂ is (γ = 1.4):`,
+          options: ["543 K", "2400 K", "375 K", "300 K"],
+          correctIndex: 0,
+          explanation: `T₂/T₁ = (P₂/P₁)^((γ−1)/γ) = (800/100)^(0.4/1.4) = 8^(0.286) = 1.811. T₂ = 300 × 1.811 = 543 K. This is the isentropic temperature-pressure relation for ideal gases. The exponent (γ−1)/γ = 0.286 for air (γ=1.4). Higher pressure ratio → higher temperature rise. This calculation is fundamental for compressor/turbine analysis.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Ideal gas: PV = nRT; c_p - c_v = R; γ = c_p/c_v.',
@@ -4639,6 +4658,25 @@ If f = f(x₁, x₂, ...), then:
 **δf = √[Σ(∂f/∂x_i · δx_i)²]**`,
       examTip: 'Accuracy vs. precision: a measurement can be precise (repeatable) but inaccurate (biased). Think of darts — precision = tight cluster; accuracy = cluster at bullseye. The FE exam tests this distinction.',
     },
+    {
+      id: 'sens-practice',
+      title: 'Sensors Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A strain gauge (GF = 2.0) measures strain of 500 με (microstrain). If R = 120 Ω, the resistance change is:`,
+          options: ["0.12 Ω", "1.2 Ω", "240 Ω", "0.012 Ω"],
+          correctIndex: 0,
+          explanation: `GF = (ΔR/R)/ε → ΔR = GF × ε × R = 2.0 × 500×10⁻⁶ × 120 = 2.0 × 0.0005 × 120 = 0.12 Ω. This is a tiny change (0.1% of 120 Ω), which is why strain gauges use Wheatstone bridges to detect such small resistance variations. 500 με = 0.05% strain — typical for structural loads well within the elastic range.`,
+        },
+        {
+          question: `A thermocouple measures temperature based on:`,
+          options: ["Seebeck effect — voltage from junction of two dissimilar metals", "Resistance change with temperature", "Piezoelectric effect", "Thermal expansion"],
+          correctIndex: 0,
+          explanation: `Thermocouple: Seebeck effect generates a small voltage (μV to mV) at the junction of two different metals, proportional to temperature difference. Types: J, K, T, E etc., each with different temperature ranges. RTD: resistance change (Pt100). Thermistor: resistance (semiconductor, very sensitive but nonlinear). Each has different strengths — the FE exam tests which to choose for different applications.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Thermocouple: Seebeck effect; RTD: resistance vs. temperature; strain gauge: resistance vs. deformation.',
@@ -4831,6 +4869,25 @@ Typically C ≈ 0.2–0.3 (bolt carries only 20–30% of external load when prel
 | Grade 5 | 85 | 120 |
 | Grade 8 | 120 | 150 |`,
       examTip: 'The stiffness ratio C determines how much of the external load reaches the bolt. A good preload means C is small, so most of the external load is carried by clamping. This is why preload is critical for bolt fatigue life.',
+    },
+    {
+      id: 'fast-practice',
+      title: 'Fasteners Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A bolt with proof strength 830 MPa and tensile stress area 150 mm² has a proof load of:`,
+          options: ["124.5 kN", "55.3 kN", "83 kN", "12.45 kN"],
+          correctIndex: 0,
+          explanation: `F_proof = S_p × A_t = 830 × 150 = 124,500 N = 124.5 kN. Preload is typically 75-90% of proof: F_i = 0.75 × 124.5 = 93.4 kN to 0.9 × 124.5 = 112 kN. Never exceed proof load during tightening — the bolt would yield and lose clamping force.`,
+        },
+        {
+          question: `In a bolted joint with C = 0.2 and preload F_i = 50 kN, an external tensile load P = 20 kN is applied. The bolt load is:`,
+          options: ["54 kN", "70 kN", "50 kN", "20 kN"],
+          correctIndex: 0,
+          explanation: `F_bolt = F_i + C·P = 50 + 0.2(20) = 50 + 4 = 54 kN. The bolt only sees 20% of the external load (4 kN). The joint members absorb the other 80% (16 kN). Without preload: F_bolt = P = 20 kN (bolt sees 100%). Preload dramatically reduces bolt load variation → better fatigue life. Joint separation occurs when P > F_i/C = 50/0.2 = 250 kN.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -5048,6 +5105,25 @@ Or for a simply supported shaft with central mass:
 
 Design rule: Operating speed should be < 0.7·ω_cr or > 1.3·ω_cr.`,
       examTip: 'For shaft design, bending creates alternating stress (reverses each revolution) while torque is typically steady. Apply fatigue stress concentration factors K_f to bending, K_fs to torsion.',
+    },
+    {
+      id: 'shaft-practice',
+      title: 'Shaft Design Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A shaft transmits 30 kW at 1000 rpm. The torque is:`,
+          options: ["286 N·m", "30 N·m", "572 N·m", "4,775 N·m"],
+          correctIndex: 0,
+          explanation: `ω = 1000 × 2π/60 = 104.7 rad/s. T = P/ω = 30,000/104.7 = 286.5 N·m. This is the fundamental shaft calculation: given power and speed, find torque. Then use τ = Tc/J or shaft sizing formula d³ = 16T/(πτ_allow) for pure torsion. If bending is also present, use combined loading formulas.`,
+        },
+        {
+          question: `A shaft with M = 400 N·m and T = 300 N·m. The equivalent torque (max shear theory) is:`,
+          options: ["500 N·m", "700 N·m", "100 N·m", "350 N·m"],
+          correctIndex: 0,
+          explanation: `T_eq = √(M² + T²) = √(400² + 300²) = √(160,000 + 90,000) = √250,000 = 500 N·m. This is the classic 3-4-5 triangle scaled by 100! Use τ_max = 16T_eq/(πd³) to find shaft diameter. The equivalent torque combines bending and torsion into one equivalent loading for the max shear stress criterion.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -5374,6 +5450,25 @@ Types: Sand casting, die casting, investment (lost-wax) casting
 **Heat-affected zone (HAZ)**: Region adjacent to weld where microstructure changes.`,
       examTip: 'Hot working vs. cold working: hot working occurs above the recrystallization temperature. Cold working increases strength (work hardening) but reduces ductility. The FE exam tests this trade-off.',
     },
+    {
+      id: 'form-practice',
+      title: 'Forming Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `Hot working occurs above the recrystallization temperature. Its main advantage over cold working is:`,
+          options: ["Lower forming forces and no work hardening (material recrystallizes during deformation)", "Better surface finish", "Tighter dimensional tolerances", "No oxidation"],
+          correctIndex: 0,
+          explanation: `Hot working: material recrystallizes continuously during deformation → no strain hardening → lower forces needed → larger deformations possible in a single pass. Disadvantages: oxidation/scale, poor surface finish, loose tolerances. Cold working: higher forces, work hardening (strength ↑ ductility ↓), but better finish and tolerances. Choice depends on which properties matter most.`,
+        },
+        {
+          question: `The HAZ (heat-affected zone) in welding is:`,
+          options: ["Base metal whose microstructure changed by heat but did NOT melt", "The molten weld pool", "The filler metal", "Unaffected base metal"],
+          correctIndex: 0,
+          explanation: `The HAZ is heated enough to alter microstructure (grain growth, phase changes, possibly hardening or softening) but NOT melted. It's often the weakest zone in a welded joint — prone to cracking, reduced toughness, and corrosion. The fusion zone (molten and resolidified) has a different microstructure from both the HAZ and the unaffected base metal.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Hot working: above recrystallization temp, lower forces, no work hardening.',
@@ -5430,6 +5525,25 @@ fme_tolerancing: {
 
 RSS gives tighter assembly tolerance with high probability of fit (~99.73% for 3σ).`,
       examTip: 'Worst-case tolerance stacking adds all tolerances directly — guaranteed to fit but expensive. Statistical (RSS) tolerancing gives tighter assemblies with very high probability of fit and is more economical.',
+    },
+    {
+      id: 'tol-practice',
+      title: 'Tolerancing Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `Three parts stack up with individual tolerances ±0.1, ±0.2, ±0.15 mm. The worst-case assembly tolerance is:`,
+          options: ["±0.45 mm", "±0.27 mm", "±0.15 mm", "±0.50 mm"],
+          correctIndex: 0,
+          explanation: `Worst-case: T_total = Σt_i = 0.1 + 0.2 + 0.15 = ±0.45 mm. This guarantees 100% of assemblies fit. Statistical (RSS): T = √(0.1²+0.2²+0.15²) = √(0.01+0.04+0.0225) = √0.0725 = ±0.27 mm. RSS is tighter but only ~99.73% fit guaranteed. Worst-case is conservative; RSS saves cost by allowing tighter specifications.`,
+        },
+        {
+          question: `A shaft has diameter 25.00 +0.00/−0.05 mm and a hole is 25.05 +0.05/−0.00 mm. This is:`,
+          options: ["Clearance fit — shaft is always smaller than hole", "Interference fit", "Transition fit", "Press fit"],
+          correctIndex: 0,
+          explanation: `Shaft: 24.95 to 25.00 mm. Hole: 25.05 to 25.10 mm. Max shaft (25.00) < min hole (25.05) → always a gap → clearance fit. Min clearance = 25.05 − 25.00 = 0.05 mm. Max clearance = 25.10 − 24.95 = 0.15 mm. For interference: shaft min > hole max. Transition: ranges overlap.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
