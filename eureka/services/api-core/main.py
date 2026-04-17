@@ -62,18 +62,18 @@ app = FastAPI(
     lifespan=lifespan
 )
 
-# CORS middleware
+# Custom middleware (added first so they run after CORS)
+app.add_middleware(TenancyMiddleware)
+app.add_middleware(AuditMiddleware)
+
+# CORS middleware (added LAST so it runs FIRST — ensures CORS headers on ALL responses including errors)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=["*"] if settings.ENVIRONMENT == "development" else settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Custom middleware
-app.add_middleware(TenancyMiddleware)
-app.add_middleware(AuditMiddleware)
 
 
 # Global exception handler
