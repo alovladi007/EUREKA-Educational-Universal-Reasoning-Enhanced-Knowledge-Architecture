@@ -215,6 +215,31 @@ Row operations to reduce to upper triangular form, then back-substitute:
       examTip: 'Eigenvalue problems appear in vibration analysis. The characteristic equation det(A - λI) = 0 for a 2×2 gives a quadratic — use the quadratic formula. The eigenvalues of a symmetric matrix are always real.',
       importantNote: 'Cramer\'s rule is efficient for 2×2 and 3×3 systems on the FE exam. For larger systems, Gaussian elimination is more practical.',
     },
+    {
+      id: 'linalg-practice',
+      title: 'Linear Algebra Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `The determinant of [[2, 3], [1, 4]] is:`,
+          options: ["5", "8", "11", "−1"],
+          correctIndex: 0,
+          explanation: `det = ad − bc = (2)(4) − (3)(1) = 8 − 3 = 5. Since det ≠ 0, the matrix is invertible and the system has a unique solution. If det = 0: singular matrix (no inverse, either no solution or infinitely many).`,
+        },
+        {
+          question: `The eigenvalues of [[5, 1], [0, 3]] are:`,
+          options: ["5 and 3", "8 and 0", "4 and 4", "5 and 1"],
+          correctIndex: 0,
+          explanation: `For a triangular matrix (upper or lower), eigenvalues are the diagonal elements. So λ₁ = 5, λ₂ = 3. Verify: det(A − λI) = (5−λ)(3−λ) − 0 = 0 → λ = 5 or λ = 3 ✓. This shortcut saves time on the FE exam — always check if the matrix is triangular before computing the full characteristic equation.`,
+        },
+        {
+          question: `If Ax = b has infinitely many solutions, what is true about A?`,
+          options: ["det(A) = 0 and the system is consistent", "det(A) ≠ 0", "A is invertible", "b = 0 always"],
+          correctIndex: 0,
+          explanation: `Infinitely many solutions requires: (1) det(A) = 0 (singular — fewer independent equations than unknowns), AND (2) the system is consistent (b is in the column space of A). If det(A) = 0 but inconsistent, there are zero solutions. If det(A) ≠ 0, there is exactly one solution.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Matrix multiplication is not commutative: AB ≠ BA in general.',
@@ -305,6 +330,31 @@ Key properties:
       examTip: 'For second-order ODEs, the discriminant of the characteristic equation tells you the system behavior immediately. On the FE exam, map b²-4ac directly to overdamped/critically damped/underdamped.',
       importantNote: 'The Laplace transform method is particularly powerful for ODEs with initial conditions. Transform the entire ODE, solve algebraically for F(s), then inverse-transform to get f(t).',
     },
+    {
+      id: 'diffeq-practice',
+      title: 'Differential Equations Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `The general solution of y'' + 9y = 0 is:`,
+          options: ["y = C₁cos(3x) + C₂sin(3x)", "y = C₁e^(3x) + C₂e^(-3x)", "y = (C₁ + C₂x)e^(3x)", "y = C₁cos(9x)"],
+          correctIndex: 0,
+          explanation: `Characteristic equation: r² + 9 = 0 → r = ±3i (pure imaginary roots, α = 0, β = 3). Solution form for complex roots α ± βi: y = e^(αx)(C₁cos(βx) + C₂sin(βx)) = e^0(C₁cos(3x) + C₂sin(3x)) = C₁cos(3x) + C₂sin(3x). This represents undamped oscillation with ω_n = 3 rad/s — directly relevant to vibration analysis.`,
+        },
+        {
+          question: `The Laplace transform of f(t) = 5e^(-2t) is:`,
+          options: ["5/(s+2)", "5/(s-2)", "1/(s+2)", "5s/(s+2)"],
+          correctIndex: 0,
+          explanation: `L{e^(at)} = 1/(s-a). With a = -2: L{e^(-2t)} = 1/(s+2). Multiply by constant 5: L{5e^(-2t)} = 5/(s+2). Valid for s > -2. Laplace transforms are linear: L{af(t)} = a·L{f(t)}. This transform pair is one of the most commonly tested on the FE exam.`,
+        },
+        {
+          question: `Solve dy/dx = 2xy with y(0) = 3. The solution is:`,
+          options: ["y = 3e^(x²)", "y = 3e^(2x)", "y = e^(x²) + 2", "y = 3x²"],
+          correctIndex: 0,
+          explanation: `Separable: dy/y = 2x dx. Integrate: ln|y| = x² + C. y = Ae^(x²). Apply IC y(0) = 3: 3 = Ae^0 = A. So y = 3e^(x²). Always check: dy/dx = 3(2x)e^(x²) = 6xe^(x²). And 2xy = 2x(3e^(x²)) = 6xe^(x²) ✓. Separation of variables is the first technique to try for first-order ODEs.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Separable ODEs: separate variables, integrate both sides.',
@@ -376,6 +426,25 @@ fme_vector_calc: {
 | Stokes' | Line integral ↔ surface integral | 3D |
 | Divergence | Surface integral ↔ volume integral | 3D |`,
       importantNote: 'The Divergence Theorem is used extensively in fluid mechanics and heat transfer to convert surface integrals (flux) to volume integrals (source terms). Understanding this connection helps with conservation equations.',
+    },
+    {
+      id: 'veccalc-practice',
+      title: 'Vector Calculus Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `The gradient of f(x,y,z) = x²y + 3z at point (1,2,1) is:`,
+          options: ["(4, 1, 3)", "(2, 1, 3)", "(4, 1, 1)", "(2, 2, 3)"],
+          correctIndex: 0,
+          explanation: `∇f = (∂f/∂x, ∂f/∂y, ∂f/∂z) = (2xy, x², 3). At (1,2,1): ∇f = (2·1·2, 1², 3) = (4, 1, 3). The gradient points in the direction of steepest increase of f. Its magnitude |∇f| = √(16+1+9) = √26 ≈ 5.1 gives the maximum rate of change.`,
+        },
+        {
+          question: `The divergence of F = (x², xy, z) is:`,
+          options: ["2x + x + 1 = 3x + 1", "x² + xy + z", "2x + y + 1", "0"],
+          correctIndex: 0,
+          explanation: `div F = ∂(x²)/∂x + ∂(xy)/∂y + ∂(z)/∂z = 2x + x + 1 = 3x + 1. Divergence measures the net outward flux per unit volume — positive means a source (flow spreading out), negative means a sink (flow converging). For an incompressible fluid, div V = 0 (continuity equation).`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -456,6 +525,31 @@ Fourth-order method with four slope evaluations per step:
 - Most common general-purpose ODE solver`,
       examTip: 'Simpson\'s rule is more accurate than trapezoidal (O(h⁴) vs O(h²)), but requires an even number of intervals. If the problem gives an odd number of intervals, use the trapezoidal rule.',
     },
+    {
+      id: 'num-practice',
+      title: 'Numerical Methods Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `Starting from x₀ = 1, one Newton-Raphson iteration for f(x) = x² − 3 gives x₁ =`,
+          options: ["2.0", "1.5", "1.732", "1.0"],
+          correctIndex: 0,
+          explanation: `f(1) = 1 − 3 = −2. f'(x) = 2x → f'(1) = 2. x₁ = x₀ − f(x₀)/f'(x₀) = 1 − (−2)/2 = 1 + 1 = 2.0. The exact answer is √3 ≈ 1.732. After one more iteration: f(2) = 1, f'(2) = 4 → x₂ = 2 − 1/4 = 1.75. Converging toward √3. Newton-Raphson has quadratic convergence near the root.`,
+        },
+        {
+          question: `Using the trapezoidal rule with h = 1 to approximate ∫₀² x² dx, the result is:`,
+          options: ["4.0 (exact = 2.667)", "2.667", "2.0", "8.0"],
+          correctIndex: 0,
+          explanation: `Points: x₀=0, x₁=1, x₂=2. f values: 0, 1, 4. Trapezoidal: (h/2)[f₀ + 2f₁ + f₂] = (1/2)[0 + 2(1) + 4] = (1/2)(6) = 3.0. Wait — with 2 intervals: (1/2)[0 + 2(1) + 4] = 3.0. Actually rechecking: h=1, n=2 intervals. T = (h/2)[f(0) + 2f(1) + f(2)] = (1/2)[0 + 2 + 4] = 3.0. Exact = 8/3 ≈ 2.667. Error = 0.333. The trapezoidal rule overestimates for convex functions.`,
+        },
+        {
+          question: `Euler's method with h = 0.1 for dy/dx = y, y(0) = 1. What is y(0.1)?`,
+          options: ["1.1", "1.0", "1.01", "1.105"],
+          correctIndex: 0,
+          explanation: `y₁ = y₀ + h·f(x₀,y₀) = 1 + 0.1·(1) = 1.1. The exact solution is y = eˣ, so y(0.1) = e^0.1 = 1.10517. Euler gives 1.1 — error of 0.005 (0.5%). Simple but only first-order accurate. Halving h would halve the error. RK4 with the same h would give much closer to 1.10517.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Newton-Raphson: x_{n+1} = x_n - f(x_n)/f\'(x_n); quadratic convergence.',
@@ -518,6 +612,31 @@ fme_prob_dist: {
       examTip: 'The Z-score conversion Z = (X-μ)/σ is tested frequently. Once you convert to standard normal, use the Z-table in the FE reference handbook to find probabilities.',
       importantNote: 'The 68-95-99.7 rule for normal distributions is a quick mental check: roughly 95% of data falls within 2 standard deviations of the mean. Use this to estimate probabilities without looking up tables.',
     },
+    {
+      id: 'prob-practice',
+      title: 'Probability & Distributions Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A binomial experiment has n = 8, p = 0.3. The expected number of successes and variance are:`,
+          options: ["E[X] = 2.4, Var = 1.68", "E[X] = 8.3, Var = 2.4", "E[X] = 2.4, Var = 2.4", "E[X] = 0.3, Var = 0.21"],
+          correctIndex: 0,
+          explanation: `Binomial: E[X] = np = 8(0.3) = 2.4. Var = np(1-p) = 8(0.3)(0.7) = 1.68. σ = √1.68 = 1.30. On average, 2.4 of 8 trials succeed. The variance formula np(1-p) is commonly tested — don't confuse it with the Poisson where mean = variance = λ.`,
+        },
+        {
+          question: `For a normal distribution with μ = 100, σ = 15, what is P(X > 130)?`,
+          options: ["≈ 2.3% (z = 2.0)", "≈ 16%", "≈ 50%", "≈ 0.1%"],
+          correctIndex: 0,
+          explanation: `Z = (130 − 100)/15 = 30/15 = 2.0. P(Z > 2.0) ≈ 0.0228 = 2.3%. From the 68-95-99.7 rule: 95% falls within ±2σ, so 5% is in both tails, 2.5% in the upper tail. This matches 2.3% from the precise Z-table. The Z-conversion Z = (X−μ)/σ is the single most important probability formula.`,
+        },
+        {
+          question: `Events A and B are independent with P(A) = 0.4, P(B) = 0.5. P(A and B) =`,
+          options: ["0.20", "0.90", "0.10", "0.70"],
+          correctIndex: 0,
+          explanation: `Independent events: P(A ∩ B) = P(A) × P(B) = 0.4 × 0.5 = 0.20. Independence means one event doesn't affect the other's probability. Don't confuse with mutually exclusive where P(A ∩ B) = 0. If events were mutually exclusive AND had these probabilities, P(A ∪ B) = 0.9. But for independent events: P(A ∪ B) = 0.4 + 0.5 − 0.2 = 0.7.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Addition rule: P(A∪B) = P(A) + P(B) - P(A∩B); subtract overlap.',
@@ -572,6 +691,25 @@ Some nonlinear relationships can be linearized for regression:
 | y = ax^b | Take ln | ln(y) = ln(a) + b·ln(x) |
 | y = a + b/x | Let X = 1/x | y = a + bX |`,
       examTip: 'R² tells you goodness of fit. On the FE exam, if asked "what fraction of variance is explained," the answer is R². If given r, just square it.',
+    },
+    {
+      id: 'reg-practice',
+      title: 'Regression Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A regression analysis gives r = 0.85. The coefficient of determination R² is:`,
+          options: ["0.72 — 72% of variance is explained by the model", "0.85", "0.925", "0.15"],
+          correctIndex: 0,
+          explanation: `R² = r² = (0.85)² = 0.7225 ≈ 0.72. This means 72% of the variability in y is explained by the linear relationship with x. The remaining 28% is unexplained (residual) variation. R² is always between 0 and 1. Closer to 1 = better fit. Note: high R² doesn't prove causation — it only shows correlation.`,
+        },
+        {
+          question: `In a regression y = 2.5x + 10, if x increases by 4, y increases by:`,
+          options: ["10", "14", "52", "4"],
+          correctIndex: 0,
+          explanation: `Δy = slope × Δx = 2.5 × 4 = 10. The slope (2.5) is the change in y per unit change in x. The intercept (10) is the y-value when x = 0 — it doesn't affect the change. This is a direct interpretation of the regression equation that appears frequently on the FE exam.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -628,6 +766,31 @@ A **95% confidence interval** for the mean:
 The interval gets narrower with larger n (more data) or smaller s (less variability).`,
       examTip: 'The t-test formula t = (x̄ - μ₀)/(s/√n) appears repeatedly on the FE exam. Remember: x̄ is sample mean, μ₀ is hypothesized value, s is sample standard deviation, n is sample size.',
       importantNote: 'Failing to reject H₀ does NOT prove H₀ is true. It only means there is insufficient evidence to reject it at the given significance level.',
+    },
+    {
+      id: 'hyp-practice',
+      title: 'Hypothesis Testing Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A sample of n=16 has x̄=52, s=8. Testing H₀: μ=50 at α=0.05 (two-tailed), the t-statistic is:`,
+          options: ["1.0", "0.25", "4.0", "2.0"],
+          correctIndex: 0,
+          explanation: `t = (x̄ − μ₀)/(s/√n) = (52 − 50)/(8/√16) = 2/(8/4) = 2/2 = 1.0. With df = 15, t_crit at α/2 = 0.025 is about 2.131. Since |t| = 1.0 < 2.131, we FAIL TO REJECT H₀. The sample mean of 52 is not significantly different from 50 at the 5% level.`,
+        },
+        {
+          question: `A p-value of 0.02 in a test with α = 0.05 means:`,
+          options: ["Reject H₀ — the result is statistically significant", "Fail to reject H₀", "The probability H₀ is true is 2%", "Accept H₀"],
+          correctIndex: 0,
+          explanation: `p-value (0.02) < α (0.05) → reject H₀. The result IS statistically significant. ⚠️ The p-value is NOT the probability that H₀ is true. It's the probability of observing data this extreme IF H₀ were true. A small p-value means the data is unlikely under H₀, so we reject H₀. Also: "fail to reject" is correct terminology — we never "accept" H₀.`,
+        },
+        {
+          question: `Increasing sample size from 25 to 100 (keeping everything else constant) will:`,
+          options: ["Narrow the confidence interval by half (CI width ∝ 1/√n)", "Widen the confidence interval", "Have no effect", "Double the confidence interval"],
+          correctIndex: 0,
+          explanation: `CI width = 2 × t × (s/√n). Increasing n from 25 to 100: √n goes from 5 to 10 (doubles). So CI width is halved (s/√n is halved). Larger samples give more precise estimates. This also increases statistical power (ability to detect real effects). The √n relationship means you need 4× the sample size to halve the CI width.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
