@@ -2463,6 +2463,8 @@ Where E = Young's modulus (modulus of elasticity).
     'Poisson\'s ratio ν relates lateral and axial strains; G = E/[2(1+ν)].',
     'Yield strength defined by 0.2% offset for most metals.',
     'Ultimate tensile strength is the peak of the engineering stress-strain curve.',
+    'Factor of safety: n = σ_failure / σ_allowable. Must be > 1.',
+    'Generalized Hooke\'s law: ε_x = (1/E)[σ_x − ν(σ_y + σ_z)].',
   ],
 },
 
@@ -2618,6 +2620,43 @@ Common deflections (use FE reference handbook):
       examTip: 'Bending stress σ = Mc/I and shear stress τ = VQ/(Ib) are the two most important beam formulas. Remember: bending stress is maximum at the extreme fibers; shear stress is maximum at the neutral axis.',
       importantNote: 'The FE reference handbook has beam deflection tables — use them! Do not derive deflections by integration during the exam. Look up the standard case or use superposition.',
     },
+    {
+      id: 'beam-practice',
+      title: 'Beam Analysis Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A simply supported beam (L = 6 m) carries a uniform load of 10 kN/m. The maximum bending moment is:`,
+          options: ["45 kN·m", "60 kN·m", "30 kN·m", "90 kN·m"],
+          correctIndex: 0,
+          explanation: `M_max = wL²/8 = 10(6²)/8 = 10(36)/8 = 360/8 = 45 kN·m at the center. This is one of the most important beam formulas — memorize wL²/8. The reactions are each wL/2 = 30 kN. Maximum moment occurs at the center where V = 0 (by symmetry). M = R × L/2 − w(L/2)(L/4) = 30(3) − 10(3)(1.5) = 90 − 45 = 45 kN·m ✓`,
+        },
+        {
+          question: `A W-shape beam has I = 300 × 10⁶ mm⁴ and depth d = 400 mm (c = 200 mm). Under M = 150 kN·m, the maximum bending stress is:`,
+          options: ["100 MPa", "50 MPa", "200 MPa", "75 MPa"],
+          correctIndex: 0,
+          explanation: `σ = Mc/I = (150 × 10⁶ N·mm)(200 mm) / (300 × 10⁶ mm⁴) = 30 × 10⁹ / 300 × 10⁶ = 100 MPa. Alternatively: S = I/c = 300 × 10⁶/200 = 1.5 × 10⁶ mm³. σ = M/S = 150 × 10⁶ / 1.5 × 10⁶ = 100 MPa. This is a direct application of the flexure formula — the most tested beam stress equation.`,
+        },
+        {
+          question: `At a point on a beam where V = 30 kN and the cross-section is rectangular (50 × 200 mm), the maximum shear stress is:`,
+          options: ["4.5 MPa", "3.0 MPa", "6.0 MPa", "9.0 MPa"],
+          correctIndex: 0,
+          explanation: `For rectangular cross-section: τ_max = 3V/(2A) = 3(30,000)/(2 × 50 × 200) = 90,000/20,000 = 4.5 MPa. This occurs at the neutral axis (mid-height). At the top and bottom surfaces, τ = 0. The parabolic distribution peaks at the centroid. For non-rectangular sections, use τ = VQ/(Ib) with the appropriate Q.`,
+        },
+        {
+          question: `A cantilever beam of length 3 m carries an end load of 8 kN. Using E = 200 GPa and I = 50 × 10⁶ mm⁴, the tip deflection is:`,
+          options: ["7.2 mm", "3.6 mm", "14.4 mm", "1.8 mm"],
+          correctIndex: 0,
+          explanation: `δ = PL³/(3EI) = 8000(3000)³ / [3(200,000)(50 × 10⁶)] = 8000(27 × 10⁹) / (30 × 10¹²) = 216 × 10¹² / 30 × 10¹² = 7.2 mm. Key: keep units consistent (N, mm, MPa). PL³/(3EI) is the standard cantilever end-load deflection — look it up in the FE reference handbook.`,
+        },
+        {
+          question: `On a shear force diagram, a uniformly distributed load creates what shape for the shear curve?`,
+          options: ["Linear (straight line with constant slope)", "Parabolic", "Constant (horizontal line)", "Cubic"],
+          correctIndex: 0,
+          explanation: `dV/dx = −w (constant for UDL). Integrating a constant gives a linear function. So V(x) is a straight line with slope −w. The moment diagram (integral of V) would be parabolic. No load: V is constant, M is linear. Point load: V jumps, M has a kink. These patterns are fundamental for constructing V and M diagrams quickly.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Bending stress: σ = Mc/I; maximum at extreme fibers, zero at neutral axis.',
@@ -2625,6 +2664,9 @@ Common deflections (use FE reference handbook):
     'dV/dx = -w, dM/dx = V: relationships for constructing V and M diagrams.',
     'Maximum moment occurs where V = 0 or changes sign.',
     'Use beam deflection tables from the FE reference handbook — don\'t derive.',
+    'Key deflections: cantilever end load = PL³/(3EI); SS center load = PL³/(48EI); SS UDL = 5wL⁴/(384EI).',
+    'Section modulus S = I/c; σ_max = M/S — use for beam selection from tables.',
+    'Rectangular τ_max = 3V/(2A); circular τ_max = 4V/(3A) — at neutral axis.',
   ],
 },
 
@@ -2700,9 +2742,12 @@ For 3D: σ_vm = √[(σ₁-σ₂)² + (σ₂-σ₃)² + (σ₃-σ₁)²] / √2`
   keyTakeaways: [
     'Principal stresses: σ₁,₂ = (σ_x+σ_y)/2 ± R, where R = √[((σ_x-σ_y)/2)²+τ_xy²].',
     'τ_max = R = (σ₁-σ₂)/2; occurs at 45° to principal planes.',
-    'Mohr\'s circle: center at ((σ_x+σ_y)/2, 0), radius R.',
+    'Mohr\'s circle: center at ((σ_x+σ_y)/2, 0), radius R. Angles on circle = 2× physical angles.',
     'Von Mises: σ_vm = √(σ₁²-σ₁σ₂+σ₂²) for ductile material failure.',
+    'Tresca: τ_max = (σ₁−σ₂)/2 ≥ σ_y/2 — more conservative than von Mises.',
     'Max normal stress theory for brittle; von Mises for ductile materials.',
+    'Combined loading: add normal stresses algebraically, add shear stresses algebraically, then find principal stresses.',
+    'Plane stress: σ_z = 0 (thin plates). Plane strain: ε_z = 0 (thick bodies). Don\'t confuse which is zero.',
   ],
 },
 
@@ -2755,13 +2800,46 @@ Above this value → Euler; below → yielding or intermediate formula.
       examTip: 'Always use the MINIMUM moment of inertia for column buckling — the column buckles about its weakest axis. Also remember K = 2 for a cantilever (fixed-free), which quadruples the effective length and reduces P_cr by a factor of 16 compared to pinned-pinned.',
       importantNote: 'Euler\'s formula is only valid when σ_cr < σ_y (elastic buckling). If P_cr/A exceeds yield strength, the column fails by yielding, not buckling, and Euler\'s formula does not apply.',
     },
+    {
+      id: 'col-practice',
+      title: 'Column Buckling Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A pinned-pinned steel column (E = 200 GPa, I = 20 × 10⁶ mm⁴) is 3 m long. Its Euler critical load is:`,
+          options: ["4,386 kN", "2,193 kN", "8,772 kN", "1,097 kN"],
+          correctIndex: 0,
+          explanation: `P_cr = π²EI/(KL)² = π²(200,000 N/mm²)(20 × 10⁶ mm⁴) / (1.0 × 3000 mm)² = 9.87 × 200,000 × 20 × 10⁶ / 9 × 10⁶ = 39.48 × 10¹² / 9 × 10⁶ = 4,387 kN. For pinned-pinned: K = 1.0. Always check: σ_cr = P_cr/A — if this exceeds σ_y, the column yields before buckling and Euler doesn't apply.`,
+        },
+        {
+          question: `Changing a column's end conditions from pinned-pinned (K=1) to fixed-fixed (K=0.5) multiplies P_cr by:`,
+          options: ["4 (quadruples)", "2 (doubles)", "0.25 (quarters)", "8"],
+          correctIndex: 0,
+          explanation: `P_cr = π²EI/(KL)². Ratio: P_cr(K=0.5)/P_cr(K=1) = (1/0.5²)/(1/1²) = (1/0.25)/(1/1) = 4/1 = 4. Fixed-fixed has 4× the buckling load of pinned-pinned because the effective length is halved. K appears squared in the denominator, so halving K quadruples P_cr. This is why end fixity dramatically improves column strength.`,
+        },
+        {
+          question: `A column has I_x = 100 × 10⁶ mm⁴ and I_y = 30 × 10⁶ mm⁴. Buckling will occur about:`,
+          options: ["The y-axis (weaker axis, smaller I)", "The x-axis (stronger axis, larger I)", "Both axes simultaneously", "Neither — it depends on load"],
+          correctIndex: 0,
+          explanation: `Buckling occurs about the axis with the MINIMUM moment of inertia (weakest axis). P_cr = π²EI_min/(KL)². Since I_y = 30 × 10⁶ < I_x = 100 × 10⁶, the column buckles about the y-axis. This is why wide-flange beams (I-beams) used as columns need bracing about their weak axis. Always check which I to use!`,
+        },
+        {
+          question: `A steel column (σ_y = 250 MPa, E = 200 GPa) has a slenderness ratio KL/r = 50. The Euler stress is:`,
+          options: ["789 MPa — but column yields at 250 MPa, so Euler doesn't apply", "789 MPa", "250 MPa", "50 MPa"],
+          correctIndex: 0,
+          explanation: `σ_cr = π²E/(KL/r)² = π²(200,000)/(50²) = 1,974,000/2,500 = 789 MPa. But σ_y = 250 MPa, and σ_cr = 789 > 250, so the column would yield before it could buckle. Euler's formula doesn't apply — the column fails by crushing/yielding at 250 MPa. This is the "short column" case. Transition slenderness ratio = √(2π²E/σ_y) = √(2π² × 200,000/250) = 125.7. Since KL/r = 50 < 125.7, it's a short column.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Euler buckling: P_cr = π²EI/(KL)²; use minimum I.',
-    'Effective length factors: K = 0.5 (fixed-fixed), 1.0 (pinned-pinned), 2.0 (fixed-free).',
+    'Effective length factors: K = 0.5 (fixed-fixed), 0.7 (fixed-pinned), 1.0 (pinned-pinned), 2.0 (fixed-free).',
     'Slenderness ratio KL/r determines if column is long (Euler) or short (yielding).',
     'Buckling occurs about the weakest axis (smallest moment of inertia).',
     'Euler\'s formula only valid for elastic buckling: σ_cr < σ_y.',
+    'Factor of safety against buckling: n = P_cr / P_applied.',
+    'Fixed-free (cantilever) K=2.0 → effective length = 2L → P_cr is 1/4 of pinned-pinned.',
   ],
 },
 
