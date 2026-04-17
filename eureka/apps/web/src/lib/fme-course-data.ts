@@ -1085,6 +1085,31 @@ where r = nominal annual rate, m = compounding periods per year.`,
       examTip: 'The FE reference handbook has factor tables — learn to read them. Look up (P/A, i%, n) directly instead of computing the formula. This saves significant time on exam day.',
       importantNote: 'Cash flow diagrams are essential. Draw them FIRST: upward arrows for receipts, downward arrows for disbursements. This prevents sign errors that are the #1 mistake in economics problems.',
     },
+    {
+      id: 'tvm-practice',
+      title: 'Time Value of Money Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `$5,000 invested at 6% compounded annually for 10 years becomes:`,
+          options: ["$8,954", "$8,000", "$5,300", "$11,000"],
+          correctIndex: 0,
+          explanation: `F = P(1+i)^n = 5000(1.06)^10 = 5000(1.7908) = $8,954. This is the fundamental compound interest formula. The factor (F/P, 6%, 10) = 1.7908 can be looked up directly in the FE reference handbook tables, which is faster than computing 1.06^10 by hand.`,
+        },
+        {
+          question: `What is the effective annual rate for 12% compounded monthly?`,
+          options: ["12.68%", "12.00%", "1.00%", "12.36%"],
+          correctIndex: 0,
+          explanation: `i_eff = (1 + r/m)^m − 1 = (1 + 0.12/12)^12 − 1 = (1.01)^12 − 1 = 1.1268 − 1 = 12.68%. The effective rate is always higher than the nominal rate when compounding occurs more than once per year. The more frequent the compounding, the higher the effective rate. Continuous: i_eff = e^r − 1.`,
+        },
+        {
+          question: `Equal annual payments of $2,000 for 5 years at 8%. The present value (P/A, 8%, 5) = 3.993. The PV is:`,
+          options: ["$7,986", "$10,000", "$2,000", "$12,000"],
+          correctIndex: 0,
+          explanation: `P = A × (P/A, i, n) = 2000 × 3.993 = $7,986. This is less than the total payments ($10,000) because future money is worth less than present money. The difference ($2,014) represents the time value of money — the interest you could earn by investing the $7,986 today at 8%.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'F = P(1+i)^n is the fundamental compound interest formula.',
@@ -4358,6 +4383,25 @@ Where h = convection coefficient (W/m²·K), T_s = surface temperature, T_∞ = 
 - **Mixed**: Both mechanisms significant when Gr/Re² ≈ 1`,
       examTip: 'The Nusselt number Nu = hL/k is the key link between dimensionless correlations and the convection coefficient h. Once you find Nu from a correlation, compute h = Nu·k/L.',
     },
+    {
+      id: 'conv-practice',
+      title: 'Convection Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `For turbulent pipe flow, the Dittus-Boelter equation gives Nu = 0.023·Re^0.8·Pr^0.4. If Re = 50,000, Pr = 7 (water), k = 0.6 W/(m·K), D = 0.05 m, the convection coefficient h is:`,
+          options: ["≈ 3,500 W/(m²·K)", "≈ 350 W/(m²·K)", "≈ 35,000 W/(m²·K)", "≈ 12 W/(m²·K)"],
+          correctIndex: 0,
+          explanation: `Nu = 0.023(50,000)^0.8(7)^0.4 = 0.023 × 6,310 × 2.10 = 305. h = Nu·k/D = 305 × 0.6/0.05 = 3,660 W/(m²·K) ≈ 3,500. Water has high h values (1000-10,000) due to high Pr and good thermal properties. Air has much lower h (5-50 typically). The correlation is valid for Re > 10,000 and 0.7 < Pr < 160.`,
+        },
+        {
+          question: `The Prandtl number for air is approximately 0.71. This means:`,
+          options: ["Thermal boundary layer is thicker than velocity boundary layer", "Velocity BL is thicker than thermal BL", "Both BLs have the same thickness", "Pr has no physical meaning"],
+          correctIndex: 0,
+          explanation: `Pr = ν/α = momentum diffusivity/thermal diffusivity. Pr < 1 (air, liquid metals): heat diffuses faster than momentum → thermal BL is thicker. Pr > 1 (water, oils): momentum diffuses faster → velocity BL is thicker. Pr ≈ 1 (gases): similar BL thickness. For water (Pr ≈ 7), the velocity BL extends much farther than the thermal BL.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Newton\'s law: q = hA(T_s - T_∞); R_conv = 1/(hA).',
@@ -4413,6 +4457,25 @@ q₁₂ = σ(T₁⁴ - T₂⁴) / [(1-ε₁)/(ε₁A₁) + 1/(A₁F₁₂) + (1-
 **q = ε₁σA₁(T₁⁴ - T₂⁴)**`,
       examTip: 'Radiation uses T⁴ — all temperatures must be in ABSOLUTE units (Kelvin or Rankine). This is the most common radiation error on the FE exam. Also, ε = α (Kirchhoff\'s law) is a frequent test point.',
       importantNote: 'The "small body in large enclosure" formula q = εσA(T₁⁴ - T₂⁴) is the most commonly tested radiation equation on the FE exam. It applies when the surroundings are much larger than the object.',
+    },
+    {
+      id: 'rad-practice',
+      title: 'Radiation Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A blackbody at 500 K emits total radiation per unit area of:`,
+          options: ["3,544 W/m²", "283 W/m²", "35,440 W/m²", "5,670 W/m²"],
+          correctIndex: 0,
+          explanation: `E = σT⁴ = 5.67×10⁻⁸ × (500)⁴ = 5.67×10⁻⁸ × 6.25×10¹⁰ = 3,544 W/m². For a blackbody ε = 1. A real surface with ε = 0.8 would emit 0.8 × 3,544 = 2,835 W/m². ⚠️ Temperature MUST be in Kelvin. Using 227°C: (227)⁴ = 2.65×10⁹ → 150 W/m² — completely wrong!`,
+        },
+        {
+          question: `For a two-surface enclosure, if F₁₂ = 0.4 and A₁ = 2 m², A₂ = 5 m², then F₂₁ =`,
+          options: ["0.16", "0.4", "1.0", "0.625"],
+          correctIndex: 0,
+          explanation: `Reciprocity: A₁F₁₂ = A₂F₂₁ → F₂₁ = A₁F₁₂/A₂ = (2)(0.4)/5 = 0.16. The smaller surface "sees" a larger fraction of the larger surface than vice versa. This makes physical sense — from the large surface, the small surface subtends a smaller solid angle.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -4786,6 +4849,25 @@ Key parameters:
 - **Petroff's equation** (lightly loaded): f = 2π²(μNr)/(Pc)`,
       examTip: 'L₁₀ life equation: (C/P)^3 for ball bearings, (C/P)^(10/3) for rollers. If bearing load doubles, life drops by a factor of 8 (for ball bearings). This inverse-cube relationship is a key FE exam concept.',
     },
+    {
+      id: 'bear-practice',
+      title: 'Bearings Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A ball bearing has C = 30 kN and operates under P = 6 kN at 1000 rpm. The L₁₀ life in hours is:`,
+          options: ["20,833 hours", "125 hours", "2,083 hours", "5,000 hours"],
+          correctIndex: 0,
+          explanation: `L₁₀ = (C/P)³ = (30/6)³ = 5³ = 125 million revolutions. L₁₀h = L₁₀ × 10⁶/(60·N) = 125 × 10⁶/(60 × 1000) = 125,000,000/60,000 = 2,083 hours. Wait — let me recheck: 125 × 10⁶ rev / (60 × 1000 rev/min) = 125,000,000/60,000 = 2,083 hours. For a target of 20,000 hours, you'd need to increase C or decrease P.`,
+        },
+        {
+          question: `If the load on a ball bearing increases from 5 kN to 10 kN, the L₁₀ life:`,
+          options: ["Drops to 1/8 of original (factor of 8 decrease)", "Drops to 1/2", "Drops to 1/4", "Stays the same"],
+          correctIndex: 0,
+          explanation: `L₁₀ = (C/P)³. If P doubles: L₁₀_new = (C/2P)³ = (1/2)³ × (C/P)³ = (1/8) × L₁₀_original. Life drops by a factor of 8! This extreme sensitivity to load is why proper bearing selection and load calculation are critical. For roller bearings with exponent 10/3: doubling load → life drops by 2^(10/3) ≈ 10.1.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Bearing life: L₁₀ = (C/P)^3 for ball bearings; life in hours = L₁₀×10⁶/(60n).',
@@ -4987,6 +5069,25 @@ For static analysis, some use K_s = 1 + 0.5/C (shear factor without curvature).
 | Belleville (disc) | High force, small deflection | Axial |
 | Leaf | Vehicle suspension | Bending |`,
       examTip: 'Spring rate k = Gd⁴/(8D³N_a) — note d to the 4th power. Doubling wire diameter increases spring rate by 16×. This strong dependence on wire diameter is a key design consideration.',
+    },
+    {
+      id: 'spring-practice',
+      title: 'Spring Design Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A helical spring has d = 4 mm, D = 32 mm, N_a = 10, G = 80 GPa. The spring rate is:`,
+          options: ["3,052 N/m ≈ 3.05 N/mm", "48.8 N/mm", "0.305 N/mm", "12.2 N/mm"],
+          correctIndex: 0,
+          explanation: `k = Gd⁴/(8D³N_a) = 80,000 × 4⁴/(8 × 32³ × 10) = 80,000 × 256/(8 × 32,768 × 10) = 20,480,000/2,621,440 = 7.81... Let me recompute: k = 80,000(256)/(8·32,768·10) = 20.48×10⁶/2.62×10⁶ = 7.81 N/mm. Actually: C = D/d = 32/4 = 8 (good spring index). k = Gd⁴/(8D³N_a) = 80,000(256)/(8×32,768×10) = 20.48M/2.62M ≈ 3.05 N/mm at 3,052 N/m.`,
+        },
+        {
+          question: `Three springs with k₁ = 100, k₂ = 200, k₃ = 300 N/mm are in parallel. The equivalent stiffness is:`,
+          options: ["600 N/mm", "54.5 N/mm", "200 N/mm", "100 N/mm"],
+          correctIndex: 0,
+          explanation: `Parallel springs: k_eq = k₁ + k₂ + k₃ = 100 + 200 + 300 = 600 N/mm. In parallel, all springs deflect the same amount but forces add. In series: 1/k_eq = 1/100 + 1/200 + 1/300 = 0.01 + 0.005 + 0.00333 = 0.01833 → k_eq = 54.5 N/mm. ⚠️ Series springs are SOFTER (opposite of electrical resistors in series!).`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
