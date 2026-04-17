@@ -9,6 +9,7 @@ import {
   Download,
   ZoomIn,
   ZoomOut,
+  ChevronLeft,
 } from "lucide-react";
 import { MeridianTemplate } from "./templates/MeridianTemplate";
 import { AtlasTemplate } from "./templates/AtlasTemplate";
@@ -27,6 +28,7 @@ import { ProjectsPanel } from "./editor/ProjectsPanel";
 import { CertificationsPanel } from "./editor/CertificationsPanel";
 import { LanguagesPanel } from "./editor/LanguagesPanel";
 import { EditorSidebar } from "./editor/EditorSidebar";
+import { TemplateCustomizer } from "./customization/TemplateCustomizer";
 import { TEMPLATES } from "@/lib/resume/template-registry";
 import type { TemplateId, TemplateProps } from "@/types/resume";
 
@@ -44,6 +46,7 @@ const TEMPLATE_COMPONENTS: Record<string, React.ComponentType<TemplateProps>> = 
 export function ResumeBuilderShell() {
   const doc = useResumeStore((s) => s.activeDocument());
   const setTemplate = useResumeStore((s) => s.setTemplate);
+  const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
   const [previewScale, setPreviewScale] = useState(0.55);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const previewRef = useRef<HTMLDivElement>(null);
@@ -60,6 +63,9 @@ export function ResumeBuilderShell() {
       {/* Top Toolbar */}
       <div className="flex items-center justify-between px-4 py-2 border-b bg-background flex-shrink-0">
         <div className="flex items-center gap-2">
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={() => setActiveDocument(null)}>
+            <ChevronLeft className="w-4 h-4" />
+          </Button>
           <FileEdit className="w-5 h-5 text-primary" />
           <span className="font-semibold text-sm truncate max-w-[200px]">{doc.title}</span>
           <span className="text-xs text-muted-foreground hidden sm:inline">
@@ -128,6 +134,7 @@ export function ResumeBuilderShell() {
         <div className={`w-full md:w-1/2 lg:w-[45%] overflow-y-auto border-r bg-muted/30 ${mobileTab !== "edit" ? "hidden md:block" : ""}`}>
           <div className="p-4 space-y-3">
             <EditorSidebar />
+            <TemplateCustomizer />
 
             <ContactInfoPanel />
             <SummaryPanel />
