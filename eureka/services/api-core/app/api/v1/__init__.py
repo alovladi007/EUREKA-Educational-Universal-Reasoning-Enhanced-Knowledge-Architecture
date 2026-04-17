@@ -6,7 +6,7 @@ Aggregates all v1 API endpoints.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, users, organizations, courses
+from app.api.v1.endpoints import auth, users, organizations, courses, resumes
 
 api_router = APIRouter()
 
@@ -15,6 +15,7 @@ api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(organizations.router, prefix="/organizations", tags=["organizations"])
 api_router.include_router(courses.router, prefix="/courses", tags=["courses"])
+api_router.include_router(resumes.router, tags=["resumes"])
 
 @api_router.get("/")
 async def api_root():
@@ -26,6 +27,7 @@ async def api_root():
             "users": "/api/v1/users",
             "organizations": "/api/v1/organizations",
             "courses": "/api/v1/courses",
+            "resumes": "/api/v1/resumes",
         },
         "docs": "/docs",
         "health": "/health"
