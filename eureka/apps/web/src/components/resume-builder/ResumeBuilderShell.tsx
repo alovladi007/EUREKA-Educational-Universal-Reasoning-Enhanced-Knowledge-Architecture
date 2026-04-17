@@ -3,6 +3,7 @@
 import { useState, useRef, useMemo } from "react";
 import { useResumeStore } from "@/stores/resume";
 import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
+import { useAutoSave } from "@/hooks/useAutoSave";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // Drag-drop imports - lazy loaded to avoid monorepo resolution issues
@@ -70,6 +71,7 @@ export function ResumeBuilderShell() {
   const redo = useResumeStore((s) => s.redo);
   const canUndo = useResumeStore((s) => s.canUndo());
   const canRedo = useResumeStore((s) => s.canRedo());
+  const { status: saveStatus, lastSavedAt } = useAutoSave(30000);
   const [previewScale, setPreviewScale] = useState(0.55);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [showExport, setShowExport] = useState(false);
@@ -110,8 +112,8 @@ export function ResumeBuilderShell() {
           </Button>
           <FileEdit className="w-5 h-5 text-primary" />
           <span className="font-semibold text-sm truncate max-w-[200px]">{doc.title}</span>
-          <span className="text-xs text-muted-foreground hidden sm:inline">
-            {doc.updatedAt ? `Saved ${new Date(doc.updatedAt).toLocaleTimeString()}` : ""}
+          <span className={`text-xs hidden sm:inline ${saveStatus === "saving" ? "text-amber-500" : saveStatus === "saved" ? "text-green-500" : saveStatus === "error" ? "text-red-500" : "text-muted-foreground"}`}>
+            {saveStatus === "saving" ? "Saving..." : saveStatus === "saved" ? `Saved ${lastSavedAt?.toLocaleTimeString() ?? ""}` : saveStatus === "error" ? "Save failed" : lastSavedAt ? `Saved ${lastSavedAt.toLocaleTimeString()}` : ""}
           </span>
         </div>
 

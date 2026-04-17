@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Briefcase, Plus, Trash2, ChevronDown, ChevronRight, Star } from "lucide-react";
+import { Briefcase, Plus, Trash2, ChevronDown, ChevronRight, Star, Sparkles } from "lucide-react";
 
 export function ExperiencePanel() {
   const doc = useResumeStore((s) => s.activeDocument());
@@ -110,12 +110,19 @@ export function ExperiencePanel() {
                         >
                           <Star className="w-3 h-3" fill={bullet.highlighted ? "currentColor" : "none"} />
                         </button>
-                        <Input
-                          className="h-8 text-sm flex-1"
-                          value={bullet.content}
-                          onChange={(e) => updateBullet(exp.id, bullet.id, e.target.value)}
-                          placeholder="Led migration of API to microservices..."
-                        />
+                        <div className="flex-1 relative">
+                          <Input
+                            className={`h-8 text-sm w-full ${bullet.aiGenerated ? "pr-12" : ""}`}
+                            value={bullet.content}
+                            onChange={(e) => updateBullet(exp.id, bullet.id, e.target.value)}
+                            placeholder="Led migration of API to microservices..."
+                          />
+                          {bullet.aiGenerated && (
+                            <span className="absolute right-2 top-1.5 inline-flex items-center gap-0.5 text-[9px] text-violet-500 bg-violet-50 dark:bg-violet-950/30 px-1 py-0.5 rounded" title="AI-generated content">
+                              <Sparkles className="w-2.5 h-2.5" /> AI
+                            </span>
+                          )}
+                        </div>
                         <Button
                           variant="ghost" size="icon" className="h-8 w-8 text-destructive/50 hover:text-destructive flex-shrink-0"
                           onClick={() => removeBullet(exp.id, bullet.id)}

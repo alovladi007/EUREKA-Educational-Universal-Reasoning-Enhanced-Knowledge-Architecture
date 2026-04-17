@@ -5,6 +5,7 @@ import { useResumeStore } from "@/stores/resume";
 import { ResumeBuilderShell } from "@/components/resume-builder/ResumeBuilderShell";
 import { ImportDialog } from "@/components/resume-builder/export/ImportDialog";
 import { OnboardingWizard } from "@/components/resume-builder/OnboardingWizard";
+import { ConfirmDialog } from "@/components/resume-builder/ConfirmDialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -26,6 +27,7 @@ export default function ResumeBuilderPage() {
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
   const [showImport, setShowImport] = useState(false);
   const [showWizard, setShowWizard] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
   const docList = Object.values(documents);
   const hasActive = activeDocumentId && documents[activeDocumentId];
@@ -109,6 +111,16 @@ export default function ResumeBuilderPage() {
         />
       )}
 
+      {/* Delete Confirmation */}
+      <ConfirmDialog
+        open={!!deleteTarget}
+        title="Delete Resume"
+        message="Are you sure you want to delete this resume? This action cannot be undone."
+        confirmLabel="Delete"
+        onConfirm={() => { if (deleteTarget) deleteDocument(deleteTarget); setDeleteTarget(null); }}
+        onCancel={() => setDeleteTarget(null)}
+      />
+
       {/* Existing Resumes */}
       {docList.length > 0 && (
         <div className="space-y-3">
@@ -138,7 +150,7 @@ export default function ResumeBuilderPage() {
                   </Button>
                   <Button
                     variant="ghost" size="sm" className="h-7 text-xs text-destructive"
-                    onClick={(e) => { e.stopPropagation(); deleteDocument(doc.id); }}
+                    onClick={(e) => { e.stopPropagation(); setDeleteTarget(doc.id); }}
                   >
                     <Trash2 className="w-3 h-3 mr-1" /> Delete
                   </Button>

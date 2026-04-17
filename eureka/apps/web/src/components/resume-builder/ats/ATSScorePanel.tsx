@@ -5,7 +5,9 @@ import { useResumeStore } from "@/stores/resume";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Target, AlertTriangle, CheckCircle, AlertCircle, Loader2, X, ChevronDown, ChevronRight } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import { Target, AlertTriangle, CheckCircle, AlertCircle, Loader2, X, ChevronDown, ChevronRight, FileText } from "lucide-react";
+import { apiATSScore } from "@/lib/resume/api";
 import type { ATSAnalysis } from "@/types/resume";
 
 interface ATSScorePanelProps {
@@ -13,93 +15,33 @@ interface ATSScorePanelProps {
   onClose: () => void;
 }
 
-function analyzeResume(data: import("@/types/resume").ResumeData | null): ATSAnalysis {
-  if (!data) return { score: 0, grade: "F", summary: "No resume data", missingKeywords: [], presentKeywords: [], formatIssues: [], recommendations: [] };
-
-  let score = 0;
-  const issues: ATSAnalysis["formatIssues"] = [];
-  const recommendations: ATSAnalysis["recommendations"] = [];
-
-  // Section completeness (20%)
-  const sections = {
-    summary: !!data.summary.content,
-    experience: data.experience.length > 0,
-    education: data.education.length > 0,
-    skills: data.skills.groups.some(g => g.skills.length > 0),
-    contact: !!(data.header.email && data.header.phone),
-  };
-  const sectionScore = Object.values(sections).filter(Boolean).length / Object.keys(sections).length;
-  score += sectionScore * 20;
-
-  if (!sections.summary) recommendations.push({ title: "Add a Professional Summary", description: "A 2-4 sentence summary improves ATS parsing and helps recruiters quickly understand your value.", impact: "high" });
-  if (!sections.contact) issues.push({ issue: "Missing contact information", severity: "high", fix: "Add email and phone number" });
-
-  // Bullet quality (20%)
-  const allBullets = data.experience.flatMap(e => e.bullets.map(b => b.content)).filter(Boolean);
-  const bulletCount = allBullets.length;
-  const avgBulletsPerJob = data.experience.length > 0 ? bulletCount / data.experience.length : 0;
-  if (avgBulletsPerJob >= 3) score += 20;
-  else if (avgBulletsPerJob >= 2) score += 15;
-  else if (avgBulletsPerJob >= 1) score += 10;
-  else score += 5;
-
-  if (avgBulletsPerJob < 3) recommendations.push({ title: "Add More Bullet Points", description: `Aim for 3-5 bullets per role. You average ${avgBulletsPerJob.toFixed(1)} bullets per position.`, impact: "high" });
-
-  // Quantified achievements (20%)
-  const numberPattern = /\d+[%+]?|\$[\d,]+/;
-  const quantifiedBullets = allBullets.filter(b => numberPattern.test(b)).length;
-  const quantifiedRatio = bulletCount > 0 ? quantifiedBullets / bulletCount : 0;
-  score += quantifiedRatio * 20;
-
-  if (quantifiedRatio < 0.5) recommendations.push({ title: "Add Numbers to Bullets", description: `Only ${Math.round(quantifiedRatio * 100)}% of your bullets have quantified results. Add metrics like percentages, dollar amounts, or counts.`, impact: "high" });
-
-  // Action verb usage (10%)
-  const actionVerbs = ["led", "built", "designed", "managed", "created", "developed", "implemented", "improved", "increased", "reduced", "delivered", "launched", "spearheaded", "architected", "optimized", "automated", "mentored", "established"];
-  const bulletsWithActionVerbs = allBullets.filter(b => actionVerbs.some(v => b.toLowerCase().startsWith(v))).length;
-  const actionVerbRatio = bulletCount > 0 ? bulletsWithActionVerbs / bulletCount : 0;
-  score += actionVerbRatio * 10;
-
-  const weakVerbs = allBullets.filter(b => /^(responsible for|worked on|helped|assisted|involved in)/i.test(b));
-  if (weakVerbs.length > 0) issues.push({ issue: `${weakVerbs.length} bullet(s) start with weak verbs ("responsible for", "worked on")`, severity: "medium", fix: "Replace with strong action verbs like 'Led', 'Built', 'Delivered'" });
-
-  // Skills section (15%)
-  const totalSkills = data.skills.groups.reduce((sum, g) => sum + g.skills.length, 0);
-  if (totalSkills >= 10) score += 15;
-  else if (totalSkills >= 5) score += 10;
-  else if (totalSkills > 0) score += 5;
-
-  if (totalSkills < 8) recommendations.push({ title: "Expand Your Skills Section", description: `You have ${totalSkills} skills listed. Aim for 10-15+ relevant technical and soft skills.`, impact: "medium" });
-
-  // Format (15%)
-  score += 10; // Base format score for using our builder (ATS-safe templates)
-  if (data.header.firstName && data.header.lastName) score += 5;
-  if (!data.header.firstName || !data.header.lastName) issues.push({ issue: "Missing first or last name", severity: "high", fix: "Add your full name in the header" });
-
-  // Resume length
-  const totalContent = JSON.stringify(data).length;
-  if (totalContent > 10000) recommendations.push({ title: "Consider Trimming Content", description: "Your resume may be too long. Aim for 1 page for <10 years experience, 2 pages max.", impact: "low" });
-
-  score = Math.round(Math.min(100, Math.max(0, score)));
-  const grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : score >= 60 ? "D" : "F";
-  const summary = score >= 80 ? "Your resume is well-optimized for ATS systems." : score >= 60 ? "Your resume has a solid foundation but could use improvements." : "Your resume needs significant improvements for ATS compatibility.";
-
-  return { score, grade, summary, missingKeywords: [], presentKeywords: [], formatIssues: issues, recommendations };
-}
-
 export function ATSScorePanel({ open, onClose }: ATSScorePanelProps) {
   const doc = useResumeStore((s) => s.activeDocument());
-  const data = doc?.data ?? null;
   const [analysis, setAnalysis] = useState<ATSAnalysis | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [showDetails, setShowDetails] = useState(true);
+  const [jobDescription, setJobDescription] = useState("");
+  const [showJDInput, setShowJDInput] = useState(false);
 
-  const runAnalysis = useCallback(() => {
+  const runAnalysis = useCallback(async () => {
+    if (!doc) return;
     setLoading(true);
-    setTimeout(() => {
-      setAnalysis(analyzeResume(data));
+    setError(null);
+    try {
+      const result = await apiATSScore({
+        resume_data: doc.data as unknown as Record<string, unknown>,
+        job_description: jobDescription.trim() || undefined,
+      });
+      setAnalysis(result as ATSAnalysis);
+    } catch (err: unknown) {
+      // Fallback to client-side analysis if backend unavailable
+      setError(err instanceof Error ? err.message : "Backend unavailable — using local analysis");
+      setAnalysis(localAnalyze(doc.data));
+    } finally {
       setLoading(false);
-    }, 800);
-  }, [data]);
+    }
+  }, [doc, jobDescription]);
 
   if (!open) return null;
 
@@ -107,11 +49,12 @@ export function ATSScorePanel({ open, onClose }: ATSScorePanelProps) {
   const gradeColor = analysis ? (analysis.grade === "A" || analysis.grade === "B" ? "bg-green-100 text-green-700" : analysis.grade === "C" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700") : "";
 
   return (
-    <div className="fixed right-0 top-16 bottom-0 w-96 bg-background border-l shadow-xl z-40 flex flex-col">
+    <div className="fixed right-0 top-16 bottom-0 w-[420px] bg-background border-l shadow-xl z-40 flex flex-col">
       <div className="flex items-center justify-between px-4 py-3 border-b bg-blue-50 dark:bg-blue-950/20">
         <div className="flex items-center gap-2">
           <Target className="w-5 h-5 text-blue-500" />
           <span className="font-semibold text-sm">ATS Score Checker</span>
+          <Badge variant="secondary" className="text-[10px] h-4">AI-Powered</Badge>
         </div>
         <Button variant="ghost" size="icon" className="h-7 w-7" onClick={onClose}>
           <X className="w-4 h-4" />
@@ -120,17 +63,47 @@ export function ATSScorePanel({ open, onClose }: ATSScorePanelProps) {
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
         {!analysis ? (
-          <div className="text-center py-8 space-y-4">
-            <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-950/20 flex items-center justify-center mx-auto">
-              <Target className="w-8 h-8 text-blue-500" />
+          <div className="space-y-4">
+            <div className="text-center py-4">
+              <div className="w-16 h-16 rounded-full bg-blue-50 dark:bg-blue-950/20 flex items-center justify-center mx-auto">
+                <Target className="w-8 h-8 text-blue-500" />
+              </div>
+              <h3 className="font-semibold mt-3">Check ATS Compatibility</h3>
+              <p className="text-sm text-muted-foreground mt-1">
+                Analyze your resume against ATS scoring criteria
+              </p>
             </div>
-            <div>
-              <h3 className="font-semibold">Check ATS Compatibility</h3>
-              <p className="text-sm text-muted-foreground mt-1">Analyze your resume against ATS scoring criteria</p>
-            </div>
-            <Button className="bg-blue-500 hover:bg-blue-600" onClick={runAnalysis} disabled={loading}>
+
+            {/* Job Description Input */}
+            <Card className="p-3">
+              <button
+                className="flex items-center gap-2 w-full text-left text-sm font-medium"
+                onClick={() => setShowJDInput(!showJDInput)}
+              >
+                <FileText className="w-4 h-4 text-blue-500" />
+                <span>Target a specific job?</span>
+                <Badge variant="outline" className="text-[10px] ml-auto">Optional</Badge>
+                {showJDInput ? <ChevronDown className="w-3 h-3" /> : <ChevronRight className="w-3 h-3" />}
+              </button>
+              {showJDInput && (
+                <div className="mt-2">
+                  <Label className="text-xs">Paste the Job Description</Label>
+                  <textarea
+                    className="w-full min-h-[100px] rounded border bg-background px-3 py-2 text-sm resize-y mt-1 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+                    value={jobDescription}
+                    onChange={(e) => setJobDescription(e.target.value)}
+                    placeholder="We are looking for a Senior Software Engineer who..."
+                  />
+                  <p className="text-[10px] text-muted-foreground mt-1">
+                    AI will compare your resume keywords against this job description
+                  </p>
+                </div>
+              )}
+            </Card>
+
+            <Button className="w-full bg-blue-500 hover:bg-blue-600" onClick={runAnalysis} disabled={loading}>
               {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Target className="w-4 h-4 mr-2" />}
-              Run ATS Analysis
+              {jobDescription.trim() ? "Score Against This Job" : "Run General ATS Analysis"}
             </Button>
           </div>
         ) : (
@@ -145,7 +118,48 @@ export function ATSScorePanel({ open, onClose }: ATSScorePanelProps) {
               </div>
               <Badge className={`mt-2 ${gradeColor}`}>Grade: {analysis.grade}</Badge>
               <p className="text-sm text-muted-foreground mt-2">{analysis.summary}</p>
+              {jobDescription.trim() && (
+                <p className="text-[10px] text-blue-500 mt-1">Scored against provided job description</p>
+              )}
             </div>
+
+            {/* Missing Keywords */}
+            {analysis.missingKeywords.length > 0 && (
+              <Card className="p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <AlertTriangle className="w-4 h-4 text-red-500" />
+                  <span className="text-sm font-semibold">Missing Keywords ({analysis.missingKeywords.length})</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {analysis.missingKeywords.map((kw, i) => (
+                    <Badge key={i} variant="outline" className={`text-[10px] ${kw.importance === "critical" ? "border-red-300 text-red-600" : kw.importance === "important" ? "border-amber-300 text-amber-600" : "border-gray-300 text-gray-600"}`}>
+                      {kw.keyword}
+                      {kw.importance === "critical" && " ⚠️"}
+                    </Badge>
+                  ))}
+                </div>
+                <p className="text-[10px] text-muted-foreground mt-1">
+                  Add these keywords to your resume to improve your ATS match
+                </p>
+              </Card>
+            )}
+
+            {/* Present Keywords */}
+            {analysis.presentKeywords.length > 0 && (
+              <Card className="p-3">
+                <div className="flex items-center gap-2 mb-2">
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <span className="text-sm font-semibold">Matched Keywords ({analysis.presentKeywords.length})</span>
+                </div>
+                <div className="flex flex-wrap gap-1">
+                  {analysis.presentKeywords.map((kw, i) => (
+                    <Badge key={i} variant="outline" className="text-[10px] border-green-300 text-green-600">
+                      {kw.keyword} ({kw.count}x)
+                    </Badge>
+                  ))}
+                </div>
+              </Card>
+            )}
 
             {/* Issues */}
             {analysis.formatIssues.length > 0 && (
@@ -161,8 +175,8 @@ export function ATSScorePanel({ open, onClose }: ATSScorePanelProps) {
                       <div key={i} className="flex items-start gap-2 text-sm">
                         <AlertCircle className={`w-4 h-4 flex-shrink-0 mt-0.5 ${issue.severity === "high" ? "text-red-500" : issue.severity === "medium" ? "text-amber-500" : "text-blue-500"}`} />
                         <div>
-                          <p>{issue.issue}</p>
-                          <p className="text-xs text-muted-foreground">Fix: {issue.fix}</p>
+                          <p className="text-xs">{issue.issue}</p>
+                          <p className="text-[10px] text-muted-foreground">Fix: {issue.fix}</p>
                         </div>
                       </div>
                     ))}
@@ -181,20 +195,72 @@ export function ATSScorePanel({ open, onClose }: ATSScorePanelProps) {
                 <div className="space-y-2">
                   {analysis.recommendations.map((rec, i) => (
                     <div key={i} className="text-sm border-l-2 pl-2" style={{ borderColor: rec.impact === "high" ? "#ef4444" : rec.impact === "medium" ? "#f59e0b" : "#3b82f6" }}>
-                      <p className="font-medium">{rec.title}</p>
-                      <p className="text-xs text-muted-foreground">{rec.description}</p>
+                      <p className="font-medium text-xs">{rec.title}</p>
+                      <p className="text-[10px] text-muted-foreground">{rec.description}</p>
                     </div>
                   ))}
                 </div>
               </Card>
             )}
 
-            <Button variant="outline" className="w-full" onClick={runAnalysis}>
-              <Target className="w-4 h-4 mr-2" /> Re-analyze
+            {error && (
+              <p className="text-[10px] text-amber-500 text-center">{error}</p>
+            )}
+
+            <Button variant="outline" className="w-full" onClick={() => { setAnalysis(null); }}>
+              ← Back to Setup
+            </Button>
+            <Button variant="outline" className="w-full" onClick={runAnalysis} disabled={loading}>
+              {loading ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Target className="w-4 h-4 mr-2" />}
+              Re-analyze
             </Button>
           </>
         )}
       </div>
     </div>
   );
+}
+
+/** Fallback client-side analysis when backend is unavailable */
+function localAnalyze(data: import("@/types/resume").ResumeData): ATSAnalysis {
+  let score = 0;
+  const issues: ATSAnalysis["formatIssues"] = [];
+  const recommendations: ATSAnalysis["recommendations"] = [];
+
+  const has = {
+    summary: !!data.summary.content,
+    experience: data.experience.length > 0,
+    education: data.education.length > 0,
+    skills: data.skills.groups.some(g => g.skills.length > 0),
+    contact: !!(data.header.email && data.header.phone),
+  };
+  score += (Object.values(has).filter(Boolean).length / 5) * 20;
+  if (!has.summary) recommendations.push({ title: "Add Summary", description: "A professional summary improves ATS parsing", impact: "high" });
+  if (!has.contact) issues.push({ issue: "Missing contact info", severity: "high", fix: "Add email and phone" });
+
+  const bullets = data.experience.flatMap(e => e.bullets.map(b => b.content)).filter(Boolean);
+  const avg = bullets.length / Math.max(data.experience.length, 1);
+  score += avg >= 3 ? 20 : avg >= 2 ? 15 : avg >= 1 ? 10 : 5;
+  if (avg < 3) recommendations.push({ title: "Add More Bullets", description: `Average ${avg.toFixed(1)}/role. Aim for 3-5.`, impact: "high" });
+
+  const quantified = bullets.filter(b => /\d+[%+]?|\$[\d,]+/.test(b)).length;
+  score += (quantified / Math.max(bullets.length, 1)) * 20;
+
+  const verbs = ["led", "built", "designed", "managed", "created", "developed", "implemented", "improved"];
+  const withVerbs = bullets.filter(b => verbs.some(v => b.toLowerCase().startsWith(v))).length;
+  score += (withVerbs / Math.max(bullets.length, 1)) * 10;
+
+  const totalSkills = data.skills.groups.reduce((s, g) => s + g.skills.length, 0);
+  score += totalSkills >= 10 ? 15 : totalSkills >= 5 ? 10 : 5;
+
+  score += data.header.firstName && data.header.lastName ? 15 : 10;
+
+  score = Math.round(Math.min(100, Math.max(0, score)));
+  const grade = score >= 90 ? "A" : score >= 80 ? "B" : score >= 70 ? "C" : score >= 60 ? "D" : "F";
+
+  return {
+    score, grade,
+    summary: score >= 80 ? "Well-optimized for ATS." : score >= 60 ? "Solid foundation, room for improvement." : "Needs significant improvements.",
+    missingKeywords: [], presentKeywords: [], formatIssues: issues, recommendations,
+  };
 }
