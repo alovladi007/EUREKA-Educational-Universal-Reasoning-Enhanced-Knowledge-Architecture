@@ -231,7 +231,7 @@ export default function UndergraduatePage() {
           <Briefcase className="w-6 h-6" />
           Career Development
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <Card className="p-6 hover:shadow-lg transition-shadow">
             <Target className="w-12 h-12 text-blue-500 mb-4" />
             <h3 className="text-lg font-semibold mb-2">Internships</h3>
@@ -248,15 +248,6 @@ export default function UndergraduatePage() {
               Schedule a meeting with a career advisor
             </p>
             <Button className="w-full">Book Appointment</Button>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <Activity className="w-12 h-12 text-orange-500 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Resume Builder</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Create and update your professional resume
-            </p>
-            <Button className="w-full">Build Resume</Button>
           </Card>
         </div>
       </div>

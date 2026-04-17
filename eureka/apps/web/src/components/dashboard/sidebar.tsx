@@ -30,6 +30,7 @@ import {
   FolderKanban,
   Trophy,
   BookCheck,
+  FileEdit,
 } from "lucide-react";
 
 const navigation = [
@@ -49,6 +50,7 @@ const navigation = [
   { name: "Notebook", href: "/dashboard/notebook", icon: FolderKanban },
   { name: "Pedagogy", href: "/dashboard/pedagogy", icon: Lightbulb },
   { name: "XR Labs", href: "/dashboard/xr-labs", icon: Glasses },
+  { name: "Resume Builder", href: "/dashboard/resume-builder", icon: FileEdit },
   { name: "Resources", href: "/dashboard/resources", icon: FileText },
   { name: "Community", href: "/dashboard/community", icon: Users },
   { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingCart },
