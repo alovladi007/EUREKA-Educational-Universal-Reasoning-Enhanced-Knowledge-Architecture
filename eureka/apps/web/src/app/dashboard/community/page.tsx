@@ -1,427 +1,389 @@
 "use client";
-/**
- * EUREKA - Community Page
- * Discussion forums, study groups, and peer collaboration
- */
 
 import React, { useState, useEffect } from 'react';
-import {
-  MessageSquare,
-  Users,
-  TrendingUp,
-  Clock,
-  ThumbsUp,
-  MessageCircle,
-  Plus,
-  Search,
-  Filter
-} from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { MessageSquare, Users, ThumbsUp, Plus, Search, Clock, ArrowLeft, Send, Pin, Trash2 } from 'lucide-react';
 
-// Types
+interface Reply {
+  id: string;
+  author: string;
+  content: string;
+  createdAt: string;
+  likes: number;
+}
+
 interface Discussion {
   id: string;
   title: string;
   content: string;
-  author: {
-    id: string;
-    name: string;
-    avatar?: string;
-    role: string;
-  };
+  author: string;
   category: string;
   tags: string[];
-  replies: number;
+  replies: Reply[];
   likes: number;
   views: number;
   createdAt: string;
-  lastActivity: string;
   isPinned?: boolean;
-  isSolved?: boolean;
 }
 
-interface StudyGroup {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  members: number;
-  maxMembers: number;
-  isPublic: boolean;
-  meetingTime?: string;
-  nextMeeting?: string;
+const CATEGORIES = ['General', 'MCAT', 'CISSP', 'FE/PE Engineering', 'Patent Bar', 'Security+', 'Study Tips', 'Resources'];
+
+const STORAGE_KEY = 'eureka_community_discussions';
+
+const SEED_DISCUSSIONS: Discussion[] = [
+  {
+    id: 'seed-1', title: 'Tips for MCAT CARS section?', content: 'I\'m struggling with the CARS section timing. Any strategies for reading passages faster while still maintaining comprehension? I keep running out of time with 2-3 passages left.',
+    author: 'PreMedStudent', category: 'MCAT', tags: ['CARS', 'timing', 'strategy'],
+    replies: [
+      { id: 'r1', author: 'MCATVeteran', content: 'Focus on reading the first and last sentence of each paragraph first to get the structure, then do a full read. Also, don\'t go back to the passage for every question — trust your initial read for main idea questions.', createdAt: new Date(Date.now() - 86400000).toISOString(), likes: 5 },
+      { id: 'r2', author: 'ScoreImprover', content: 'I improved from 124 to 129 by doing 1 passage per day timed at 10 minutes. Consistency > cramming for CARS.', createdAt: new Date(Date.now() - 43200000).toISOString(), likes: 3 },
+    ],
+    likes: 12, views: 89, createdAt: new Date(Date.now() - 172800000).toISOString(), isPinned: true,
+  },
+  {
+    id: 'seed-2', title: 'CISSP Domain 1 vs Domain 3 — which to study first?',
+    content: 'I\'m starting my CISSP prep. Should I follow the domain order (start with Security & Risk Management) or jump to Security Architecture first since I have a technical background?',
+    author: 'CyberProf', category: 'CISSP', tags: ['study-plan', 'domains'],
+    replies: [
+      { id: 'r3', author: 'CISSPHolder', content: 'Start with Domain 1. The exam thinks like a manager, not an engineer. Domain 1 sets the governance mindset you need for the entire exam.', createdAt: new Date(Date.now() - 7200000).toISOString(), likes: 8 },
+    ],
+    likes: 7, views: 45, createdAt: new Date(Date.now() - 259200000).toISOString(),
+  },
+  {
+    id: 'seed-3', title: 'FE EE — Best calculator for the exam?',
+    content: 'What calculator are you all using for the FE exam? I want one that handles complex numbers well for circuit analysis.',
+    author: 'FutureEngineer', category: 'FE/PE Engineering', tags: ['calculator', 'preparation'],
+    replies: [
+      { id: 'r4', author: 'PELicensed', content: 'Casio fx-115 ES Plus is the gold standard. It handles complex numbers, matrix operations, and is NCEES-approved. Practice with it before exam day.', createdAt: new Date(Date.now() - 3600000).toISOString(), likes: 6 },
+    ],
+    likes: 9, views: 67, createdAt: new Date(Date.now() - 345600000).toISOString(),
+  },
+  {
+    id: 'seed-4', title: 'Study group for Patent Bar — January exam',
+    content: 'Looking for 2-3 people to form a study group for the Patent Bar. Planning to take it in January. We could meet weekly on Zoom to discuss MPEP chapters and quiz each other.',
+    author: 'PatentHopeful', category: 'Patent Bar', tags: ['study-group', 'MPEP'],
+    replies: [], likes: 4, views: 23, createdAt: new Date(Date.now() - 86400000).toISOString(),
+  },
+  {
+    id: 'seed-5', title: 'How I scored 520 on the MCAT — study schedule breakdown',
+    content: 'Just got my score back: 520 (130/128/131/131). Here\'s my 3-month study plan:\n\nMonth 1: Content review using EUREKA lessons + Flashcards (2-3 hours/day)\nMonth 2: QBank practice (200+ questions/week) + full-length every Saturday\nMonth 3: Full-lengths only + targeted review of weak areas from analytics\n\nThe analytics dashboard was clutch for identifying my weak spots in Psych/Soc.',
+    author: 'MedSchoolBound', category: 'MCAT', tags: ['score-report', 'study-plan', 'success'],
+    replies: [
+      { id: 'r5', author: 'Aspiring520', content: 'This is incredibly helpful. Did you use any other resources besides EUREKA?', createdAt: new Date(Date.now() - 1800000).toISOString(), likes: 2 },
+    ],
+    likes: 24, views: 156, createdAt: new Date(Date.now() - 432000000).toISOString(), isPinned: true,
+  },
+];
+
+function loadDiscussions(): Discussion[] {
+  if (typeof window === 'undefined') return SEED_DISCUSSIONS;
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) { localStorage.setItem(STORAGE_KEY, JSON.stringify(SEED_DISCUSSIONS)); return SEED_DISCUSSIONS; }
+    return JSON.parse(raw);
+  } catch { return SEED_DISCUSSIONS; }
 }
 
-const CommunityPage: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'discussions' | 'study-groups'>('discussions');
+function saveDiscussions(discussions: Discussion[]) {
+  if (typeof window === 'undefined') return;
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(discussions));
+}
+
+export default function CommunityPage() {
   const [discussions, setDiscussions] = useState<Discussion[]>([]);
-  const [studyGroups, setStudyGroups] = useState<StudyGroup[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [view, setView] = useState<'list' | 'thread' | 'new'>('list');
+  const [activeThread, setActiveThread] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    fetchCommunityData();
-  }, []);
+  // New discussion form
+  const [newTitle, setNewTitle] = useState('');
+  const [newContent, setNewContent] = useState('');
+  const [newCategory, setNewCategory] = useState('General');
+  const [newTags, setNewTags] = useState('');
 
-  const fetchCommunityData = async () => {
-    try {
-      setLoading(true);
-      // Mock data
-      const mockDiscussions: Discussion[] = [
-        {
-          id: '1',
-          title: 'Need help with calculus derivatives',
-          content: 'I\'m struggling to understand the chain rule. Can someone explain it with examples?',
-          author: {
-            id: 'user1',
-            name: 'Sarah Johnson',
-            avatar: '/avatars/user1.jpg',
-            role: 'Student'
-          },
-          category: 'Mathematics',
-          tags: ['calculus', 'derivatives', 'help'],
-          replies: 12,
-          likes: 24,
-          views: 156,
-          createdAt: '2024-11-01T10:30:00Z',
-          lastActivity: '2024-11-02T14:20:00Z',
-          isSolved: false
-        },
-        {
-          id: '2',
-          title: 'Study group for Physics final exam',
-          content: 'Looking for students to form a study group for the upcoming Physics final. Let\'s meet twice a week!',
-          author: {
-            id: 'user2',
-            name: 'Michael Chen',
-            avatar: '/avatars/user2.jpg',
-            role: 'Student'
-          },
-          category: 'Physics',
-          tags: ['study-group', 'exam-prep'],
-          replies: 8,
-          likes: 15,
-          views: 89,
-          createdAt: '2024-11-01T15:45:00Z',
-          lastActivity: '2024-11-02T09:10:00Z',
-          isPinned: true
-        },
-        {
-          id: '3',
-          title: 'Best resources for organic chemistry?',
-          content: 'What are the best online resources for learning organic chemistry reactions?',
-          author: {
-            id: 'user3',
-            name: 'Emily Rodriguez',
-            avatar: '/avatars/user3.jpg',
-            role: 'Student'
-          },
-          category: 'Chemistry',
-          tags: ['resources', 'organic-chemistry'],
-          replies: 25,
-          likes: 42,
-          views: 234,
-          createdAt: '2024-10-31T08:15:00Z',
-          lastActivity: '2024-11-02T11:30:00Z',
-          isSolved: true
-        }
-      ];
+  // Reply form
+  const [replyContent, setReplyContent] = useState('');
 
-      const mockStudyGroups: StudyGroup[] = [
-        {
-          id: '1',
-          name: 'Calculus Warriors',
-          description: 'Daily problem-solving sessions for Calculus I and II',
-          category: 'Mathematics',
-          members: 15,
-          maxMembers: 20,
-          isPublic: true,
-          meetingTime: 'Mon/Wed 7PM EST',
-          nextMeeting: '2024-11-04T19:00:00Z'
-        },
-        {
-          id: '2',
-          name: 'Physics Study Squad',
-          description: 'Preparing for AP Physics exams together',
-          category: 'Physics',
-          members: 8,
-          maxMembers: 12,
-          isPublic: true,
-          meetingTime: 'Tue/Thu 6PM EST'
-        },
-        {
-          id: '3',
-          name: 'Spanish Conversation Club',
-          description: 'Practice Spanish speaking skills with peers',
-          category: 'Languages',
-          members: 22,
-          maxMembers: 25,
-          isPublic: true,
-          meetingTime: 'Every Friday 5PM EST',
-          nextMeeting: '2024-11-06T17:00:00Z'
-        }
-      ];
+  useEffect(() => { setDiscussions(loadDiscussions()); setMounted(true); }, []);
 
-      setDiscussions(mockDiscussions);
-      setStudyGroups(mockStudyGroups);
-    } catch (error) {
-      console.error('Failed to fetch community data:', error);
-    } finally {
-      setLoading(false);
+  const updateDiscussions = (updated: Discussion[]) => {
+    setDiscussions(updated);
+    saveDiscussions(updated);
+  };
+
+  const createDiscussion = () => {
+    if (!newTitle.trim() || !newContent.trim()) return;
+    const disc: Discussion = {
+      id: `d-${Date.now()}`, title: newTitle.trim(), content: newContent.trim(),
+      author: 'You', category: newCategory,
+      tags: newTags.split(',').map(t => t.trim()).filter(Boolean),
+      replies: [], likes: 0, views: 0,
+      createdAt: new Date().toISOString(),
+    };
+    updateDiscussions([disc, ...discussions]);
+    setNewTitle(''); setNewContent(''); setNewTags('');
+    setView('list');
+  };
+
+  const addReply = (discussionId: string) => {
+    if (!replyContent.trim()) return;
+    const reply: Reply = {
+      id: `r-${Date.now()}`, author: 'You', content: replyContent.trim(),
+      createdAt: new Date().toISOString(), likes: 0,
+    };
+    const updated = discussions.map(d =>
+      d.id === discussionId ? { ...d, replies: [...d.replies, reply] } : d
+    );
+    updateDiscussions(updated);
+    setReplyContent('');
+  };
+
+  const likeDiscussion = (id: string) => {
+    updateDiscussions(discussions.map(d => d.id === id ? { ...d, likes: d.likes + 1 } : d));
+  };
+
+  const likeReply = (discussionId: string, replyId: string) => {
+    updateDiscussions(discussions.map(d =>
+      d.id === discussionId ? { ...d, replies: d.replies.map(r => r.id === replyId ? { ...r, likes: r.likes + 1 } : r) } : d
+    ));
+  };
+
+  const deleteDiscussion = (id: string) => {
+    if (confirm('Delete this discussion?')) {
+      updateDiscussions(discussions.filter(d => d.id !== id));
+      if (activeThread === id) { setView('list'); setActiveThread(null); }
     }
   };
 
-  const formatTimeAgo = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMins / 60);
-    const diffDays = Math.floor(diffHours / 24);
-
-    if (diffMins < 60) return `${diffMins}m ago`;
-    if (diffHours < 24) return `${diffHours}h ago`;
-    return `${diffDays}d ago`;
+  const timeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const min = Math.floor(diff / 60000);
+    if (min < 60) return `${min}m ago`;
+    const hrs = Math.floor(min / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    return `${days}d ago`;
   };
 
-  const DiscussionsTab = () => (
-    <div>
-      {/* New Discussion Button */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Discussions</h2>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-          <Plus className="w-4 h-4" />
-          <span>New Discussion</span>
-        </button>
-      </div>
+  const filtered = discussions
+    .filter(d => !activeCategory || d.category === activeCategory)
+    .filter(d => !searchQuery || d.title.toLowerCase().includes(searchQuery.toLowerCase()) || d.content.toLowerCase().includes(searchQuery.toLowerCase()))
+    .sort((a, b) => {
+      if (a.isPinned && !b.isPinned) return -1;
+      if (!a.isPinned && b.isPinned) return 1;
+      return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    });
 
-      {/* Discussions List */}
-      <div className="space-y-4">
-        {discussions.map(discussion => (
-          <div
-            key={discussion.id}
-            className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6"
-          >
-            <div className="flex items-start space-x-4">
-              {/* Avatar */}
-              <div className="flex-shrink-0">
-                <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-semibold">
-                  {discussion.author.name.charAt(0)}
-                </div>
-              </div>
+  const thread = activeThread ? discussions.find(d => d.id === activeThread) : null;
 
-              {/* Content */}
-              <div className="flex-1 min-w-0">
-                {/* Header */}
-                <div className="flex items-start justify-between mb-2">
-                  <div>
-                    {discussion.isPinned && (
-                      <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-yellow-100 text-yellow-800 rounded mr-2">
-                        Pinned
-                      </span>
-                    )}
-                    {discussion.isSolved && (
-                      <span className="inline-flex items-center px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded mr-2">
-                        Solved
-                      </span>
-                    )}
-                    <h3 className="text-lg font-semibold text-gray-900 hover:text-blue-600 cursor-pointer">
-                      {discussion.title}
-                    </h3>
-                  </div>
-                </div>
+  if (!mounted) return <div className="space-y-6"><div className="h-8 bg-gray-200 dark:bg-gray-800 rounded animate-pulse" /></div>;
 
-                {/* Author & Time */}
-                <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-                  <span className="font-medium">{discussion.author.name}</span>
-                  <span>•</span>
-                  <span>{discussion.author.role}</span>
-                  <span>•</span>
-                  <span>{formatTimeAgo(discussion.createdAt)}</span>
-                </div>
-
-                {/* Content Preview */}
-                <p className="text-gray-700 mb-3 line-clamp-2">{discussion.content}</p>
-
-                {/* Tags */}
-                <div className="flex flex-wrap gap-2 mb-3">
-                  {discussion.tags.map(tag => (
-                    <span key={tag} className="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                      #{tag}
-                    </span>
-                  ))}
-                </div>
-
-                {/* Stats */}
-                <div className="flex items-center space-x-6 text-sm text-gray-600">
-                  <div className="flex items-center space-x-1">
-                    <MessageCircle className="w-4 h-4" />
-                    <span>{discussion.replies} replies</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <ThumbsUp className="w-4 h-4" />
-                    <span>{discussion.likes} likes</span>
-                  </div>
-                  <div className="flex items-center space-x-1">
-                    <span>{discussion.views} views</span>
-                  </div>
-                  <div className="flex items-center space-x-1 ml-auto">
-                    <Clock className="w-4 h-4" />
-                    <span>Last activity {formatTimeAgo(discussion.lastActivity)}</span>
-                  </div>
-                </div>
-              </div>
+  // Thread view
+  if (view === 'thread' && thread) {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => { setView('list'); setActiveThread(null); }}>
+            <ArrowLeft className="h-4 w-4 mr-1" /> Back
+          </Button>
+        </div>
+        <Card>
+          <CardHeader>
+            <div className="flex items-center gap-2 mb-2">
+              {thread.isPinned && <Badge variant="secondary"><Pin className="h-3 w-3 mr-1" />Pinned</Badge>}
+              <Badge>{thread.category}</Badge>
+              {thread.tags.map(t => <Badge key={t} variant="outline" className="text-xs">{t}</Badge>)}
             </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
+            <CardTitle className="text-xl">{thread.title}</CardTitle>
+            <CardDescription className="flex items-center gap-3">
+              <span className="font-medium">{thread.author}</span>
+              <span>{timeAgo(thread.createdAt)}</span>
+              <span className="flex items-center gap-1"><ThumbsUp className="h-3 w-3" />{thread.likes}</span>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm whitespace-pre-wrap mb-4">{thread.content}</p>
+            <Button variant="ghost" size="sm" onClick={() => likeDiscussion(thread.id)} className="gap-1">
+              <ThumbsUp className="h-4 w-4" /> Like ({thread.likes})
+            </Button>
+          </CardContent>
+        </Card>
 
-  const StudyGroupsTab = () => (
-    <div>
-      {/* New Study Group Button */}
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Study Groups</h2>
-        <button className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-          <Plus className="w-4 h-4" />
-          <span>Create Group</span>
-        </button>
-      </div>
-
-      {/* Study Groups Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {studyGroups.map(group => (
-          <div key={group.id} className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6">
-            <div className="flex items-start justify-between mb-4">
-              <div className="flex items-center space-x-2">
-                <Users className="w-5 h-5 text-blue-600" />
-                <span className="px-2 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded">
-                  {group.category}
-                </span>
-              </div>
-              {group.isPublic && (
-                <span className="px-2 py-1 text-xs font-medium bg-green-100 text-green-800 rounded">
-                  Public
-                </span>
-              )}
-            </div>
-
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">{group.name}</h3>
-            <p className="text-sm text-gray-600 mb-4 line-clamp-2">{group.description}</p>
-
-            <div className="space-y-2 mb-4">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-600">Members</span>
-                <span className="font-medium">
-                  {group.members}/{group.maxMembers}
-                </span>
-              </div>
-              {group.meetingTime && (
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-gray-600">Meetings</span>
-                  <span className="font-medium">{group.meetingTime}</span>
+        {/* Replies */}
+        <div className="space-y-3">
+          <h3 className="font-semibold">{thread.replies.length} Replies</h3>
+          {thread.replies.map(reply => (
+            <Card key={reply.id} className="bg-gray-50 dark:bg-gray-900/50">
+              <CardContent className="pt-4">
+                <div className="flex justify-between items-start mb-2">
+                  <div className="flex items-center gap-2 text-sm">
+                    <span className="font-medium">{reply.author}</span>
+                    <span className="text-muted-foreground">{timeAgo(reply.createdAt)}</span>
+                  </div>
+                  <Button variant="ghost" size="sm" onClick={() => likeReply(thread.id, reply.id)} className="gap-1 text-xs">
+                    <ThumbsUp className="h-3 w-3" /> {reply.likes}
+                  </Button>
                 </div>
-              )}
-              {group.nextMeeting && (
-                <div className="flex items-center space-x-1 text-sm text-blue-600">
-                  <Clock className="w-4 h-4" />
-                  <span>Next: {new Date(group.nextMeeting).toLocaleDateString()}</span>
-                </div>
-              )}
-            </div>
-
-            <button className="w-full px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Join Group
-            </button>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-
-  return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-7xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Community</h1>
-          <p className="text-gray-600">Connect with fellow students, ask questions, and collaborate</p>
+                <p className="text-sm whitespace-pre-wrap">{reply.content}</p>
+              </CardContent>
+            </Card>
+          ))}
         </div>
 
-        {/* Tabs */}
-        <div className="bg-white rounded-lg shadow-sm mb-6">
-          <div className="border-b border-gray-200">
-            <div className="flex space-x-8 px-6">
-              <button
-                onClick={() => setActiveTab('discussions')}
-                className={`py-4 border-b-2 font-medium transition-colors ${
-                  activeTab === 'discussions'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <MessageSquare className="w-5 h-5" />
-                  <span>Discussions</span>
-                </div>
-              </button>
-              <button
-                onClick={() => setActiveTab('study-groups')}
-                className={`py-4 border-b-2 font-medium transition-colors ${
-                  activeTab === 'study-groups'
-                    ? 'border-blue-600 text-blue-600'
-                    : 'border-transparent text-gray-600 hover:text-gray-900'
-                }`}
-              >
-                <div className="flex items-center space-x-2">
-                  <Users className="w-5 h-5" />
-                  <span>Study Groups</span>
-                </div>
-              </button>
+        {/* Reply form */}
+        <Card>
+          <CardContent className="pt-4">
+            <div className="flex gap-2">
+              <textarea
+                className="flex-1 min-h-[80px] p-3 rounded-lg border bg-background text-sm resize-none"
+                placeholder="Write a reply..."
+                value={replyContent}
+                onChange={e => setReplyContent(e.target.value)}
+              />
             </div>
-          </div>
+            <div className="flex justify-end mt-2">
+              <Button size="sm" onClick={() => addReply(thread.id)} disabled={!replyContent.trim()} className="gap-1">
+                <Send className="h-4 w-4" /> Reply
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
-          {/* Search & Filter */}
-          <div className="p-6 border-b border-gray-200">
-            <div className="flex space-x-4">
-              <div className="flex-1 relative">
-                <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder={`Search ${activeTab === 'discussions' ? 'discussions' : 'study groups'}...`}
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
-                />
-              </div>
-              <select className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                <option value="all">All Categories</option>
-                <option value="mathematics">Mathematics</option>
-                <option value="physics">Physics</option>
-                <option value="chemistry">Chemistry</option>
-                <option value="biology">Biology</option>
-                <option value="languages">Languages</option>
+  // New discussion form
+  if (view === 'new') {
+    return (
+      <div className="space-y-6">
+        <div className="flex items-center gap-3">
+          <Button variant="ghost" size="sm" onClick={() => setView('list')}><ArrowLeft className="h-4 w-4 mr-1" /> Back</Button>
+          <h2 className="text-xl font-bold">New Discussion</h2>
+        </div>
+        <Card>
+          <CardContent className="pt-6 space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">Title</label>
+              <Input placeholder="What's your question or topic?" value={newTitle} onChange={e => setNewTitle(e.target.value)} />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Category</label>
+              <select className="w-full p-2 rounded-lg border bg-background text-sm" value={newCategory} onChange={e => setNewCategory(e.target.value)}>
+                {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
-              <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <Filter className="w-4 h-4" />
-                <span>Filters</span>
-              </button>
             </div>
-          </div>
-        </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Content</label>
+              <textarea
+                className="w-full min-h-[150px] p-3 rounded-lg border bg-background text-sm resize-none"
+                placeholder="Share your thoughts, ask a question, or start a discussion..."
+                value={newContent}
+                onChange={e => setNewContent(e.target.value)}
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Tags (comma-separated)</label>
+              <Input placeholder="e.g., study-tips, MCAT, biochem" value={newTags} onChange={e => setNewTags(e.target.value)} />
+            </div>
+            <Button onClick={createDiscussion} disabled={!newTitle.trim() || !newContent.trim()} className="w-full gap-1">
+              <Plus className="h-4 w-4" /> Post Discussion
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
-        {/* Content */}
-        {loading ? (
-          <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600" />
+  // Discussion list
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold">Community</h1>
+          <p className="text-muted-foreground">Discussion forums, study tips, and peer support</p>
+        </div>
+        <Button onClick={() => setView('new')} className="gap-1"><Plus className="h-4 w-4" /> New Discussion</Button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card>
+          <CardContent className="pt-4 flex items-center gap-3">
+            <MessageSquare className="h-8 w-8 text-blue-500" />
+            <div><p className="text-2xl font-bold">{discussions.length}</p><p className="text-xs text-muted-foreground">Discussions</p></div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4 flex items-center gap-3">
+            <Users className="h-8 w-8 text-green-500" />
+            <div><p className="text-2xl font-bold">{new Set(discussions.flatMap(d => [d.author, ...d.replies.map(r => r.author)])).size}</p><p className="text-xs text-muted-foreground">Contributors</p></div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-4 flex items-center gap-3">
+            <ThumbsUp className="h-8 w-8 text-purple-500" />
+            <div><p className="text-2xl font-bold">{discussions.reduce((s, d) => s + d.replies.length, 0)}</p><p className="text-xs text-muted-foreground">Replies</p></div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Search & Filter */}
+      <div className="flex gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <Input placeholder="Search discussions..." className="pl-9" value={searchQuery} onChange={e => setSearchQuery(e.target.value)} />
+        </div>
+      </div>
+
+      {/* Category pills */}
+      <div className="flex flex-wrap gap-2">
+        <button onClick={() => setActiveCategory(null)} className={`px-3 py-1 rounded-full text-xs font-medium transition ${!activeCategory ? 'bg-primary text-primary-foreground' : 'bg-gray-100 dark:bg-gray-800 text-muted-foreground hover:bg-gray-200'}`}>All</button>
+        {CATEGORIES.map(cat => (
+          <button key={cat} onClick={() => setActiveCategory(activeCategory === cat ? null : cat)} className={`px-3 py-1 rounded-full text-xs font-medium transition ${activeCategory === cat ? 'bg-primary text-primary-foreground' : 'bg-gray-100 dark:bg-gray-800 text-muted-foreground hover:bg-gray-200'}`}>{cat}</button>
+        ))}
+      </div>
+
+      {/* Discussion List */}
+      <div className="space-y-3">
+        {filtered.map(disc => (
+          <Card key={disc.id} className="cursor-pointer hover:shadow-md transition-all" onClick={() => { setActiveThread(disc.id); setView('thread'); }}>
+            <CardContent className="pt-4">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-1">
+                    {disc.isPinned && <Pin className="h-3 w-3 text-amber-500" />}
+                    <h3 className="font-semibold text-sm hover:text-primary transition">{disc.title}</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground line-clamp-2 mb-2">{disc.content}</p>
+                  <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="font-medium text-foreground">{disc.author}</span>
+                    <Badge variant="outline" className="text-[10px]">{disc.category}</Badge>
+                    <span className="flex items-center gap-1"><Clock className="h-3 w-3" />{timeAgo(disc.createdAt)}</span>
+                    <span className="flex items-center gap-1"><MessageSquare className="h-3 w-3" />{disc.replies.length}</span>
+                    <span className="flex items-center gap-1"><ThumbsUp className="h-3 w-3" />{disc.likes}</span>
+                  </div>
+                </div>
+                {disc.author === 'You' && (
+                  <Button variant="ghost" size="sm" onClick={(e) => { e.stopPropagation(); deleteDiscussion(disc.id); }}>
+                    <Trash2 className="h-4 w-4 text-muted-foreground" />
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+        {filtered.length === 0 && (
+          <div className="text-center py-12 text-muted-foreground">
+            <MessageSquare className="h-12 w-12 mx-auto mb-4 opacity-50" />
+            <p>No discussions found. Start the conversation!</p>
           </div>
-        ) : (
-          <div>{activeTab === 'discussions' ? <DiscussionsTab /> : <StudyGroupsTab />}</div>
         )}
       </div>
     </div>
   );
-};
-
-export default CommunityPage;
+}
