@@ -1190,6 +1190,7 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const isSecPlus = examType === 'SECURITY_PLUS';
   const isPatentBar = examType === 'PATENT_BAR';
   const isFEEE = examType === 'FE_EE';
+  const isFEME = examType === 'FE_ME';
   const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
