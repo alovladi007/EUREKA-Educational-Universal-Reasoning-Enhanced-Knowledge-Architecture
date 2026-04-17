@@ -929,6 +929,7 @@ where r = nominal annual rate, m = compounding periods per year.`,
     'Effective rate: i_eff = (1 + r/m)^m - 1 converts nominal to effective.',
     'Always draw cash flow diagrams before solving — prevents sign errors.',
     'Arithmetic gradient adds constant G per period; geometric gradient multiplies by (1+g).',
+    'Perpetuity: P = A/i (infinite life annuity). A/i gives the present value of receiving A forever.',
   ],
 },
 
@@ -2465,6 +2466,31 @@ For rolling without slip: T = ½(I_G + mR²)·ω² = ½I_O·ω²
 
 **ΣM_G = dH_G/dt** (Newton's second law for rotation)`,
       examTip: 'For rolling without slip problems, use the constraint v = Rω to reduce unknowns. The kinetic energy becomes T = ½(I_G + mR²)ω², which combines translation and rotation into a single expression.',
+    },
+    {
+      id: 'rb-practice',
+      title: 'Rigid Body Dynamics Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A solid cylinder (m=10 kg, R=0.3 m) rolls without slipping down a 30° incline. Its acceleration is:`,
+          options: ["3.27 m/s²", "4.91 m/s²", "6.54 m/s²", "9.81 m/s²"],
+          correctIndex: 0,
+          explanation: `For rolling without slip: a = g·sinθ/(1+I/(mR²)). For solid cylinder I = ½mR². I/(mR²) = ½. a = g·sin30°/(1+½) = 9.81(0.5)/(1.5) = 4.905/1.5 = 3.27 m/s². This is 2/3 of a frictionless sliding block's acceleration (4.91 m/s²). Energy goes to BOTH translation and rotation — that's why it's slower. A hollow cylinder (I=mR²) would be even slower: a = g·sin30°/2 = 2.45 m/s².`,
+        },
+        {
+          question: `The total kinetic energy of a 5 kg solid disk (R=0.2 m) rolling at v_center = 4 m/s is:`,
+          options: ["60 J", "40 J", "80 J", "20 J"],
+          correctIndex: 0,
+          explanation: `T = ½mv² + ½Iω². For solid disk: I = ½mR². ω = v/R = 4/0.2 = 20 rad/s. T = ½(5)(16) + ½(½×5×0.04)(400) = 40 + ½(0.1)(400) = 40 + 20 = 60 J. Or: T = ½(I_G + mR²)ω² = ½(0.1+0.2)(400) = ½(0.3)(400) = 60 J. Note: 1/3 of KE is rotational (20 J), 2/3 is translational (40 J) for a solid disk.`,
+        },
+        {
+          question: `A uniform rod (m=3 kg, L=1.2 m) pivots about one end. A torque of 10 N·m is applied. The angular acceleration is:`,
+          options: ["6.94 rad/s²", "2.78 rad/s²", "8.33 rad/s²", "3.47 rad/s²"],
+          correctIndex: 0,
+          explanation: `I about end = mL²/3 = 3(1.2²)/3 = 3(1.44)/3 = 1.44 kg·m². α = T/I = 10/1.44 = 6.94 rad/s². Note: I about end = mL²/3 (NOT mL²/12 — that's about the centroid). By parallel axis: I_end = mL²/12 + m(L/2)² = mL²/12 + mL²/4 = mL²/3. Always check which axis the rotation is about!`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -5166,6 +5192,8 @@ Uses three time estimates:
     'Forward pass: ES → EF; backward pass: LF → LS; slack = LS - ES.',
     'PERT: t_e = (a + 4m + b)/6; σ² = ((b-a)/6)².',
     'Delaying a critical activity delays the entire project.',
+    'Crashing: add resources to critical activities to shorten project. Crash cheapest first.',
+    'A project can have multiple critical paths. All must be shortened to reduce duration.',
   ],
 },
 
