@@ -14,6 +14,7 @@ const SECTIONS: { id: SectionId; label: string }[] = [
   { id: "projects", label: "Projects" },
   { id: "certifications", label: "Certifications" },
   { id: "languages", label: "Languages" },
+  { id: "custom", label: "Custom Sections" },
 ];
 
 export function EditorSidebar() {

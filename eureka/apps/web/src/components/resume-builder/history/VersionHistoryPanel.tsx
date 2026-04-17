@@ -1,20 +1,11 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { useResumeStore } from "@/stores/resume";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { History, X, Save, RotateCcw, Clock, Tag, Plus } from "lucide-react";
-import { generateId } from "@/lib/resume/default-data";
-import type { ResumeData } from "@/types/resume";
-
-interface Version {
-  id: string;
-  label: string;
-  data: ResumeData;
-  createdAt: string;
-}
 
 interface VersionHistoryPanelProps {
   open: boolean;
@@ -23,35 +14,22 @@ interface VersionHistoryPanelProps {
 
 export function VersionHistoryPanel({ open, onClose }: VersionHistoryPanelProps) {
   const doc = useResumeStore((s) => s.activeDocument());
-  const activeId = useResumeStore((s) => s.activeDocumentId);
-  const [versions, setVersions] = useState<Version[]>([]);
+  const saveVersion = useResumeStore((s) => s.saveVersion);
+  const restoreVersion = useResumeStore((s) => s.restoreVersion);
+  const versions = useResumeStore((s) => s.getSavedVersions());
   const [newLabel, setNewLabel] = useState("");
   const [showSave, setShowSave] = useState(false);
 
-  const saveVersion = useCallback(() => {
-    if (!doc) return;
-    const version: Version = {
-      id: generateId("ver"),
-      label: newLabel || `Version ${versions.length + 1}`,
-      data: structuredClone(doc.data),
-      createdAt: new Date().toISOString(),
-    };
-    setVersions((prev) => [version, ...prev]);
+  const handleSave = () => {
+    saveVersion(newLabel);
     setNewLabel("");
     setShowSave(false);
-  }, [doc, newLabel, versions.length]);
+  };
 
-  const restoreVersion = useCallback((version: Version) => {
-    if (!activeId) return;
-    if (!confirm(`Restore "${version.label}"? Your current changes will be replaced.`)) return;
-    useResumeStore.setState((state) => {
-      const d = state.documents[activeId];
-      if (d) {
-        d.data = structuredClone(version.data);
-        d.updatedAt = new Date().toISOString();
-      }
-    });
-  }, [activeId]);
+  const handleRestore = (versionId: string, label: string) => {
+    if (!confirm(`Restore "${label}"? Your current changes will be saved to undo history.`)) return;
+    restoreVersion(versionId);
+  };
 
   if (!open) return null;
 
@@ -75,10 +53,10 @@ export function VersionHistoryPanel({ open, onClose }: VersionHistoryPanelProps)
               value={newLabel}
               onChange={(e) => setNewLabel(e.target.value)}
               placeholder="e.g., 'Applied to Google'"
-              onKeyDown={(e) => { if (e.key === "Enter") saveVersion(); }}
+              onKeyDown={(e) => { if (e.key === "Enter") handleSave(); }}
               autoFocus
             />
-            <Button size="sm" className="h-8 text-xs" onClick={saveVersion}>
+            <Button size="sm" className="h-8 text-xs" onClick={handleSave}>
               <Save className="w-3 h-3 mr-1" /> Save
             </Button>
           </div>
@@ -90,7 +68,7 @@ export function VersionHistoryPanel({ open, onClose }: VersionHistoryPanelProps)
       </div>
 
       <div className="flex-1 overflow-y-auto p-3 space-y-2">
-        {/* Auto-save entry (current) */}
+        {/* Current auto-save */}
         <Card className="p-3 border-green-200 bg-green-50/50 dark:bg-green-950/10">
           <div className="flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-green-500" />
@@ -102,7 +80,7 @@ export function VersionHistoryPanel({ open, onClose }: VersionHistoryPanelProps)
           </div>
         </Card>
 
-        {/* Saved versions */}
+        {/* Saved versions (from store, persisted to localStorage) */}
         {versions.map((version) => (
           <Card key={version.id} className="p-3 hover:border-primary/30 transition-colors">
             <div className="flex items-center gap-2">
@@ -117,7 +95,7 @@ export function VersionHistoryPanel({ open, onClose }: VersionHistoryPanelProps)
               variant="ghost"
               size="sm"
               className="h-6 text-xs mt-2 w-full text-orange-600 hover:text-orange-700"
-              onClick={() => restoreVersion(version)}
+              onClick={() => handleRestore(version.id, version.label)}
             >
               <RotateCcw className="w-3 h-3 mr-1" /> Restore This Version
             </Button>
@@ -128,14 +106,14 @@ export function VersionHistoryPanel({ open, onClose }: VersionHistoryPanelProps)
           <div className="text-center py-8">
             <History className="w-8 h-8 text-muted-foreground/30 mx-auto" />
             <p className="text-xs text-muted-foreground mt-2">No saved versions yet</p>
-            <p className="text-[10px] text-muted-foreground">Save versions before major changes to easily revert</p>
+            <p className="text-[10px] text-muted-foreground">Save versions before major edits to easily revert</p>
           </div>
         )}
       </div>
 
       <div className="p-3 border-t bg-muted/30">
         <p className="text-[10px] text-muted-foreground text-center">
-          Versions are saved locally. Connect to backend for permanent storage.
+          Versions persist to local storage. Max 20 versions per resume.
         </p>
       </div>
     </div>

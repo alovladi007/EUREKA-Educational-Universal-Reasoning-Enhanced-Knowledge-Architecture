@@ -249,6 +249,36 @@ export function MeridianTemplate({ data, scale = 1, paperSize = "letter", sectio
           </div>
         </div>
       )}
+
+      {/* Custom Sections */}
+      {isVisible("custom") && data.customSections.length > 0 && data.customSections.map((section) => (
+        <div key={section.id} className="mb-4">
+          <h2 className="text-sm font-bold uppercase tracking-wider mb-2 pb-0.5" style={{ color: colorScheme, borderBottom: `1px solid ${colorScheme}40`, fontSize: "11pt" }}>
+            {section.title}
+          </h2>
+          {section.items.map((item) => (
+            <div key={item.id} className="mb-2">
+              <div className="flex justify-between items-start">
+                <div>
+                  <p className="font-semibold" style={{ fontSize: "10.5pt" }}>{item.heading}</p>
+                  {item.subheading && <p className="text-sm italic" style={{ color: "#475569" }}>{item.subheading}</p>}
+                </div>
+                {item.date && <p className="text-xs whitespace-nowrap ml-4" style={{ color: "#64748b", fontSize: "9pt" }}>{item.date}</p>}
+              </div>
+              {item.bullets.length > 0 && item.bullets.some(b => b) && (
+                <ul className="mt-1 space-y-0.5 pl-4">
+                  {item.bullets.filter(Boolean).map((bullet, i) => (
+                    <li key={i} className="relative text-sm pl-2" style={{ color: "#334155" }}>
+                      <span className="absolute -left-2">&bull;</span>
+                      {bullet}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

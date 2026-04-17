@@ -9,6 +9,7 @@ export const DEFAULT_SECTION_ORDER: SectionId[] = [
   "projects",
   "certifications",
   "languages",
+  "custom",
 ];
 
 export const DEFAULT_SECTION_VISIBILITY: Record<SectionId, boolean> = {

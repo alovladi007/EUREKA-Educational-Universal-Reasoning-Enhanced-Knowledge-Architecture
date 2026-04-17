@@ -22,6 +22,19 @@ import {
   generateId,
 } from "@/lib/resume/default-data";
 
+interface HistoryEntry {
+  documentId: string;
+  data: ResumeData;
+  timestamp: number;
+}
+
+interface SavedVersion {
+  id: string;
+  label: string;
+  data: ResumeData;
+  createdAt: string;
+}
+
 interface ResumeStore {
   // State
   documents: Record<string, ResumeDocument>;
@@ -29,6 +42,21 @@ interface ResumeStore {
   activeSection: SectionId | null;
   isSaving: boolean;
   lastSaved: string | null;
+
+  // Undo/Redo
+  undoStack: HistoryEntry[];
+  redoStack: HistoryEntry[];
+  undo: () => void;
+  redo: () => void;
+  pushHistory: () => void;
+  canUndo: () => boolean;
+  canRedo: () => boolean;
+
+  // Version History (persisted)
+  savedVersions: Record<string, SavedVersion[]>;
+  saveVersion: (label: string) => void;
+  restoreVersion: (versionId: string) => void;
+  getSavedVersions: () => SavedVersion[];
 
   // Computed
   activeDocument: () => ResumeDocument | null;
@@ -109,6 +137,98 @@ export const useResumeStore = create<ResumeStore>()(
       activeSection: null,
       isSaving: false,
       lastSaved: null,
+      undoStack: [],
+      redoStack: [],
+      savedVersions: {},
+
+      // Undo/Redo
+      pushHistory: () => {
+        const { activeDocumentId, documents } = get();
+        if (!activeDocumentId || !documents[activeDocumentId]) return;
+        set((state) => {
+          state.undoStack.push({
+            documentId: activeDocumentId,
+            data: structuredClone(documents[activeDocumentId].data),
+            timestamp: Date.now(),
+          });
+          // Keep max 50 entries
+          if (state.undoStack.length > 50) state.undoStack.shift();
+          state.redoStack = []; // Clear redo on new change
+        });
+      },
+
+      undo: () => {
+        const { undoStack, activeDocumentId, documents } = get();
+        if (undoStack.length === 0 || !activeDocumentId) return;
+        set((state) => {
+          const entry = state.undoStack.pop()!;
+          // Save current state to redo
+          state.redoStack.push({
+            documentId: activeDocumentId,
+            data: structuredClone(state.documents[activeDocumentId].data),
+            timestamp: Date.now(),
+          });
+          // Restore
+          state.documents[activeDocumentId].data = entry.data;
+          state.documents[activeDocumentId].updatedAt = new Date().toISOString();
+        });
+      },
+
+      redo: () => {
+        const { redoStack, activeDocumentId } = get();
+        if (redoStack.length === 0 || !activeDocumentId) return;
+        set((state) => {
+          const entry = state.redoStack.pop()!;
+          // Save current to undo
+          state.undoStack.push({
+            documentId: activeDocumentId,
+            data: structuredClone(state.documents[activeDocumentId].data),
+            timestamp: Date.now(),
+          });
+          state.documents[activeDocumentId].data = entry.data;
+          state.documents[activeDocumentId].updatedAt = new Date().toISOString();
+        });
+      },
+
+      canUndo: () => get().undoStack.length > 0,
+      canRedo: () => get().redoStack.length > 0,
+
+      // Version History (persisted in store)
+      saveVersion: (label) => {
+        const doc = get().activeDocument();
+        if (!doc) return;
+        const version: SavedVersion = {
+          id: generateId("ver"),
+          label: label || `Version ${(get().savedVersions[doc.id]?.length ?? 0) + 1}`,
+          data: structuredClone(doc.data),
+          createdAt: new Date().toISOString(),
+        };
+        set((state) => {
+          if (!state.savedVersions[doc.id]) state.savedVersions[doc.id] = [];
+          state.savedVersions[doc.id].unshift(version);
+          // Keep max 20 versions per document
+          if (state.savedVersions[doc.id].length > 20) state.savedVersions[doc.id].pop();
+        });
+      },
+
+      restoreVersion: (versionId) => {
+        const doc = get().activeDocument();
+        if (!doc) return;
+        const versions = get().savedVersions[doc.id] ?? [];
+        const version = versions.find((v) => v.id === versionId);
+        if (!version) return;
+        get().pushHistory(); // Save current state for undo
+        set((state) => {
+          state.documents[doc.id].data = structuredClone(version.data);
+          state.documents[doc.id].updatedAt = new Date().toISOString();
+        });
+      },
+
+      getSavedVersions: () => {
+        const doc = get().activeDocument();
+        if (!doc) return [];
+        return get().savedVersions[doc.id] ?? [];
+      },
 
       // Computed getters
       activeDocument: () => {
@@ -612,6 +732,7 @@ export const useResumeStore = create<ResumeStore>()(
       partialize: (state) => ({
         documents: state.documents,
         activeDocumentId: state.activeDocumentId,
+        savedVersions: state.savedVersions,
       }),
     }
   )

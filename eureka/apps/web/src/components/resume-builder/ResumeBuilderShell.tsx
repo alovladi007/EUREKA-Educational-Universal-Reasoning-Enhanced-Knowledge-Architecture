@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useMemo } from "react";
 import { useResumeStore } from "@/stores/resume";
+import { useKeyboardShortcuts } from "@/hooks/useKeyboardShortcuts";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 // Drag-drop imports - lazy loaded to avoid monorepo resolution issues
@@ -18,6 +19,8 @@ import {
   Share2,
   History,
   Upload,
+  Undo2,
+  Redo2,
 } from "lucide-react";
 import { MeridianTemplate } from "./templates/MeridianTemplate";
 import { AtlasTemplate } from "./templates/AtlasTemplate";
@@ -35,7 +38,9 @@ import { SkillsPanel } from "./editor/SkillsPanel";
 import { ProjectsPanel } from "./editor/ProjectsPanel";
 import { CertificationsPanel } from "./editor/CertificationsPanel";
 import { LanguagesPanel } from "./editor/LanguagesPanel";
+import { CustomSectionPanel } from "./editor/CustomSectionPanel";
 import { EditorSidebar } from "./editor/EditorSidebar";
+import { PageOverflowIndicator } from "./preview/PageOverflowIndicator";
 import { TemplateCustomizer } from "./customization/TemplateCustomizer";
 import { ExportDialog } from "./export/ExportDialog";
 import { AIAssistantPanel } from "./ai/AIAssistantPanel";
@@ -61,6 +66,10 @@ export function ResumeBuilderShell() {
   const doc = useResumeStore((s) => s.activeDocument());
   const setTemplate = useResumeStore((s) => s.setTemplate);
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
+  const undo = useResumeStore((s) => s.undo);
+  const redo = useResumeStore((s) => s.redo);
+  const canUndo = useResumeStore((s) => s.canUndo());
+  const canRedo = useResumeStore((s) => s.canRedo());
   const [previewScale, setPreviewScale] = useState(0.55);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [showExport, setShowExport] = useState(false);
@@ -72,6 +81,17 @@ export function ResumeBuilderShell() {
   const previewRef = useRef<HTMLDivElement>(null);
 
   const sectionOrder = doc?.data.meta.sectionOrder ?? [];
+
+  // Keyboard shortcuts
+  const shortcuts = useMemo(() => ({
+    "ctrl+z": undo,
+    "ctrl+y": redo,
+    "ctrl+shift+z": redo,
+    "ctrl+s": () => { /* auto-saved to localStorage */ },
+    "ctrl+p": () => setShowExport(true),
+    "ctrl+/": () => setShowAI(!showAI),
+  }), [undo, redo, showAI]);
+  useKeyboardShortcuts(shortcuts);
 
   if (!doc) return null;
 
@@ -116,6 +136,15 @@ export function ResumeBuilderShell() {
           </span>
           <Button variant="ghost" size="icon" className="h-7 w-7 hidden md:flex" onClick={zoomIn}>
             <ZoomIn className="w-3.5 h-3.5" />
+          </Button>
+
+          {/* Undo/Redo */}
+          <div className="w-px h-5 bg-border mx-1 hidden md:block" />
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={undo} disabled={!canUndo} title="Undo (Ctrl+Z)">
+            <Undo2 className="w-3.5 h-3.5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="h-7 w-7" onClick={redo} disabled={!canRedo} title="Redo (Ctrl+Y)">
+            <Redo2 className="w-3.5 h-3.5" />
           </Button>
 
           <div className="w-px h-5 bg-border mx-1 hidden md:block" />
@@ -208,6 +237,7 @@ export function ResumeBuilderShell() {
                   case "projects": return <ProjectsPanel />;
                   case "certifications": return <CertificationsPanel />;
                   case "languages": return <LanguagesPanel />;
+                  case "custom": return <CustomSectionPanel />;
                   default: return null;
                 }
               };
@@ -218,6 +248,9 @@ export function ResumeBuilderShell() {
 
         {/* Right: Live Preview */}
         <div className={`w-full md:w-1/2 lg:w-[55%] overflow-auto bg-muted/50 ${mobileTab !== "preview" ? "hidden md:block" : ""}`}>
+          <div className="px-4 pt-2">
+            <PageOverflowIndicator paperSize={doc.data.meta.paperSize} />
+          </div>
           <div className="p-4 flex justify-center">
             <div
               ref={previewRef}
