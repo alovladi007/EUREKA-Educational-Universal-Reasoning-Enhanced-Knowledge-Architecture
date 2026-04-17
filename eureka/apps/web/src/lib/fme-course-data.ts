@@ -3174,6 +3174,37 @@ Where:
       examTip: 'Bernoulli\'s equation assumes inviscid, incompressible, steady flow along a streamline. When there are losses (friction, valves, fittings), use the general energy equation with h_L. The FE exam often tests both.',
       importantNote: 'Reynolds number Re = ρVD/μ determines the flow regime. For pipe flow: Re < 2300 is laminar, Re > 4000 is turbulent. This affects which friction factor formula to use.',
     },
+    {
+      id: 'fd-practice',
+      title: 'Fluid Dynamics Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `Water flows through a horizontal pipe that narrows from 10 cm to 5 cm diameter. If the velocity at the larger section is 2 m/s, the velocity at the smaller section is:`,
+          options: ["8 m/s", "4 m/s", "16 m/s", "1 m/s"],
+          correctIndex: 0,
+          explanation: `Continuity: A₁V₁ = A₂V₂. Area is proportional to diameter squared: A = πd²/4. So V₂ = V₁(d₁/d₂)² = 2(10/5)² = 2(4) = 8 m/s. Halving the diameter quadruples the area ratio, so velocity increases by 4×. This is why garden hose nozzles create high-speed jets — the restriction forces the same flow through a smaller area.`,
+        },
+        {
+          question: `Bernoulli's equation applies when the flow is (select ALL that apply): steady, incompressible, inviscid, along a streamline. Which assumption is MOST commonly violated in real pipe flow?`,
+          options: ["Inviscid (real fluids have viscosity → friction losses)", "Steady", "Incompressible", "Along a streamline"],
+          correctIndex: 0,
+          explanation: `Real fluids have viscosity, creating friction losses that Bernoulli ignores. This is the most commonly violated assumption. That's why the general energy equation adds h_L (head loss) to account for viscous effects. Water and liquids are essentially incompressible, most engineering flows are steady-state, and analysis along streamlines is straightforward. Viscosity (friction) is the main reason Bernoulli must be extended for pipe systems.`,
+        },
+        {
+          question: `Water (ρ = 1000 kg/m³) flows at 3 m/s through a 0.1 m diameter pipe. With μ = 1 × 10⁻³ Pa·s, the Reynolds number is:`,
+          options: ["3 × 10⁵ (turbulent)", "300 (laminar)", "30,000 (turbulent)", "3000 (transitional)"],
+          correctIndex: 0,
+          explanation: `Re = ρVD/μ = (1000)(3)(0.1)/(1 × 10⁻³) = 300/0.001 = 300,000 = 3 × 10⁵. This is well above 4000 → turbulent flow. Most practical pipe flows are turbulent (Re >> 4000). Laminar flow (Re < 2300) occurs mainly in very viscous fluids (oils) or very small pipes (capillaries, microfluidics).`,
+        },
+        {
+          question: `A Pitot tube in airflow reads a stagnation pressure of 101,800 Pa and the static pressure is 101,325 Pa. If ρ_air = 1.2 kg/m³, the air velocity is:`,
+          options: ["28.1 m/s", "56.2 m/s", "14.1 m/s", "100 m/s"],
+          correctIndex: 0,
+          explanation: `V = √(2ΔP/ρ) = √(2 × (101,800 − 101,325) / 1.2) = √(2 × 475 / 1.2) = √(791.7) = 28.1 m/s. The Pitot tube measures the difference between stagnation (total) and static pressures. This ΔP equals the dynamic pressure ½ρV². ΔP = 475 Pa corresponds to about 100 km/h — typical for aircraft approach speed measurement.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Continuity: A₁V₁ = A₂V₂ for incompressible flow. Smaller area → higher velocity.',
@@ -3553,6 +3584,43 @@ Components: Compressor → Condenser → Expansion Valve → Evaporator
 - Throttling: h₃ = h₄ (enthalpy stays same, entropy increases)
 - Refrigerant exits evaporator as saturated or slightly superheated vapor`,
       examTip: 'In vapor-compression refrigeration, the expansion valve is isenthalpic (h₃ = h₄), NOT isentropic. This is a common FE exam trap. The throttling process is irreversible — entropy increases.',
+    },
+    {
+      id: 'cyc-practice',
+      title: 'Thermodynamic Cycles Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A Carnot engine operates between 800 K and 300 K. Its maximum efficiency is:`,
+          options: ["62.5%", "37.5%", "50%", "75%"],
+          correctIndex: 0,
+          explanation: `η_Carnot = 1 − T_L/T_H = 1 − 300/800 = 1 − 0.375 = 0.625 = 62.5%. ⚠️ TEMPERATURES MUST BE IN KELVIN. If the problem gave 527°C and 27°C: convert first → 800K and 300K. Using °C directly would give 1 − 27/527 = 94.9% — WRONG. This unit conversion trap is one of the most common FE exam errors.`,
+        },
+        {
+          question: `An Otto cycle has compression ratio r = 10 and γ = 1.4. The thermal efficiency is:`,
+          options: ["60.2%", "75%", "50%", "40%"],
+          correctIndex: 0,
+          explanation: `η = 1 − 1/r^(γ−1) = 1 − 1/10^(0.4) = 1 − 1/2.512 = 1 − 0.398 = 0.602 = 60.2%. Note: 10^0.4 = 10^(2/5) = (10²)^(1/5) = 100^0.2 ≈ 2.512. Higher compression ratio → higher efficiency, which is why modern engines aim for high compression ratios. Diesel engines have higher r than Otto → higher efficiency.`,
+        },
+        {
+          question: `A vapor-compression refrigerator has COP_R = 3.5. If the compressor power is 2 kW, the cooling capacity is:`,
+          options: ["7 kW", "3.5 kW", "0.57 kW", "5.5 kW"],
+          correctIndex: 0,
+          explanation: `COP_R = Q_L/W → Q_L = COP_R × W = 3.5 × 2 = 7 kW of cooling. The heat pump COP would be COP_HP = COP_R + 1 = 4.5, delivering Q_H = COP_HP × W = 9 kW of heat. Energy balance: Q_H = Q_L + W → 9 = 7 + 2 ✓. A COP > 1 doesn't violate thermodynamics — it means more energy is moved than the work input because you're moving heat, not creating it.`,
+        },
+        {
+          question: `In the expansion valve of a vapor-compression cycle, which property remains constant?`,
+          options: ["Enthalpy (h₃ = h₄, isenthalpic)", "Entropy (isentropic)", "Temperature (isothermal)", "Pressure (isobaric)"],
+          correctIndex: 0,
+          explanation: `Throttling is isenthalpic: h_in = h_out. The pressure drops, entropy increases (irreversible), and temperature typically drops. ⚠️ This is NOT isentropic — that's the #1 exam trap for this topic. The expansion valve is a simple restriction (orifice or capillary tube) with no work or heat transfer. No work + no heat + negligible KE change → h₁ = h₂ by the first law.`,
+        },
+        {
+          question: `A turbine with isentropic efficiency of 85% receives steam at h₁ = 3400 kJ/kg. The isentropic exit enthalpy is h₂s = 2200 kJ/kg. The actual exit enthalpy is:`,
+          options: ["2380 kJ/kg", "2200 kJ/kg", "3400 kJ/kg", "2600 kJ/kg"],
+          correctIndex: 0,
+          explanation: `η_t = (h₁ − h₂a)/(h₁ − h₂s) → 0.85 = (3400 − h₂a)/(3400 − 2200) = (3400 − h₂a)/1200. So 3400 − h₂a = 1020 → h₂a = 2380 kJ/kg. The actual work = h₁ − h₂a = 1020 kJ/kg, which is 85% of the ideal work (1200 kJ/kg). ⚠️ For compressors, the formula is INVERTED: η_c = (h₂s − h₁)/(h₂a − h₁). Don't mix them up!`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -4411,11 +4479,14 @@ Apply K_f to the **alternating** stress component: σ_a,effective = K_f · σ_a`
     },
   ],
   keyTakeaways: [
-    'Endurance limit S_e\' ≈ 0.5·S_ut for steels (S_ut < 200 ksi).',
-    'Modified endurance: S_e = k_a·k_b·k_c·k_d·k_e·S_e\'.',
-    'Goodman: σ_a/S_e + σ_m/S_ut = 1/n; apply K_f to σ_a only.',
-    'K_f = 1 + q(K_t - 1); q = notch sensitivity (0 to 1).',
-    'Aluminum has no endurance limit — S-N curve always decreases.',
+    'Endurance limit S_e\' ≈ 0.5·S_ut for steels (S_ut < 200 ksi / 1400 MPa).',
+    'Modified endurance: S_e = k_a·k_b·k_c·k_d·k_e·S_e\' — all factors reduce from the ideal test specimen.',
+    'Goodman: σ_a/S_e + σ_m/S_ut = 1/n; apply K_f to σ_a only (not σ_m).',
+    'K_f = 1 + q(K_t - 1); q = notch sensitivity (0 = no notch effect, 1 = full theoretical K_t).',
+    'Aluminum and other non-ferrous metals have NO true endurance limit.',
+    'Miner\'s rule: Σ(n_i/N_i) = 1 at failure (linear cumulative damage).',
+    'Fatigue causes ~90% of all mechanical failures — cracks initiate at stress concentrations.',
+    'R = σ_min/σ_max. R = −1: fully reversed. R = 0: zero-to-max (pulsating). R = 1: static.',
   ],
 },
 
