@@ -1965,56 +1965,175 @@ fme_kinetics: {
   topicId: 'fme_kinetics',
   title: 'Kinetics — Force, Mass & Acceleration',
   domainWeight: 'Dynamics, Kinematics & Vibrations · 9–14%',
-  overview: 'Kinetics relates forces to motion using Newton\'s laws. The FE exam tests particle and rigid body kinetics, including Newton\'s second law, friction dynamics, and rotational equations of motion.',
+  overview: 'Kinetics connects forces to motion — answering "given these forces, how does the body accelerate?" (direct problem) or "given this motion, what forces are required?" (inverse problem). Newton\'s second law (ΣF = ma) is the fundamental equation, extended to rotation as ΣM = Iα. The FE exam tests particle kinetics (blocks, pulleys, inclined planes), rigid body rotation, and the impulse-momentum and work-energy methods that provide powerful alternatives to direct F = ma analysis.',
   sections: [
     {
       id: 'kin-newton',
-      title: '1. Newton\'s Laws and Applications',
+      title: '1. Newton\'s Laws and Force-Mass-Acceleration',
       content: `## 1.1 Newton's Second Law
 
-**ΣF = ma** (particle)
-**ΣF = ma_G** (rigid body, G = center of mass)
-**ΣM_G = I_G·α** (rigid body rotation)
+The foundation of kinetics:
 
-For rotation about a fixed point O:
-**ΣM_O = I_O·α**
+**Particle:** **ΣF = ma** — the net force equals mass times acceleration (vector equation)
+**Rigid body (translation):** **ΣF = ma_G** — the net force accelerates the mass center G
+**Rigid body (rotation):** **ΣM_G = I_G · α** — the net moment about G causes angular acceleration
+
+For rotation about a **fixed point O** (pivot, bearing):
+**ΣM_O = I_O · α** — where I_O = I_G + md² (parallel axis theorem)
+
+**Using both simultaneously** (general plane motion):
+1. Draw the FBD and kinetic diagram (showing ma_G and I_G·α)
+2. Apply ΣF = ma_G (two scalar equations in 2D)
+3. Apply ΣM_G = I_G·α (or ΣM about a convenient point)
+4. Solve the system
 
 ## 1.2 Common Dynamic Systems
 
-**Block on inclined plane** (sliding):
-- Along plane: ma = mg·sinθ - μ_k·mg·cosθ
-- a = g(sinθ - μ_k·cosθ)
+### Block on Inclined Plane (Sliding)
 
-**Pulley systems**:
-- Draw FBD for each mass
-- Tension is the same throughout an ideal (massless, frictionless) rope
-- Use constraint equations to relate accelerations
+For a block of mass m sliding down a plane at angle θ with kinetic friction μ_k:
+- Along the plane: **ma = mg·sinθ − μ_k·mg·cosθ**
+- **a = g(sinθ − μ_k·cosθ)**
 
-**Circular motion**:
-- ΣF_n = mv²/r = mrω² (centripetal direction)
-- ΣF_t = m·a_t = m·r·α (tangential direction)
+If the block is being pushed UP the plane, friction reverses direction: a = g(sinθ + μ_k·cosθ) — friction and gravity both oppose motion.
 
-## 1.3 Mass Moment of Inertia
+### Worked Example: Block on an Incline
+
+A 10 kg block slides down a 40° incline with μ_k = 0.25. Find the acceleration.
+
+a = g(sinθ − μ_k·cosθ) = 9.81(sin40° − 0.25·cos40°) = 9.81(0.643 − 0.25 × 0.766) = 9.81(0.643 − 0.192) = 9.81 × 0.451 = **4.42 m/s²**
+
+### Pulley Systems (Atwood Machine)
+
+For two masses connected by a rope over an ideal (massless, frictionless) pulley:
+1. Draw separate FBDs for each mass
+2. Tension T is the **same** throughout the rope
+3. If one mass goes up, the other goes down with the **same magnitude** of acceleration (constraint)
+4. Write ΣF = ma for each mass, solve simultaneously
+
+For masses m₁ and m₂ (m₁ > m₂):
+- **a = (m₁ − m₂)g / (m₁ + m₂)**
+- **T = 2m₁m₂g / (m₁ + m₂)**
+
+### Circular Motion Kinetics
+
+For a particle moving in a circle of radius r:
+- **ΣF_n = mv²/r = mrω²** (centripetal — toward center)
+- **ΣF_t = ma_t = mrα** (tangential — along the path)
+
+Applications: banked curves, conical pendulums, centrifuges, roller coasters.
+
+**Banked curve (no friction):** tanθ = v²/(rg), where θ is the bank angle.
+
+## 1.3 Impulse and Momentum
+
+An alternative to F = ma when forces act over time intervals:
+
+**Linear impulse-momentum theorem:** **∫F dt = m(v₂ − v₁)** → **F·Δt = m·Δv** (for constant force)
+
+Impulse J = F·Δt has units of N·s = kg·m/s (same as momentum).
+
+**Conservation of momentum:** When no external forces act (or external impulse ≈ 0):
+**m₁v₁ + m₂v₂ = m₁v₁' + m₂v₂'** (before = after)
+
+### Coefficient of Restitution
+
+For a direct collision between two objects:
+**e = (v₂' − v₁') / (v₁ − v₂)** — ratio of separation to approach speed
+
+| e Value | Collision Type | Energy |
+|---|---|---|
+| e = 1 | Perfectly elastic | KE conserved |
+| 0 < e < 1 | Real collision | KE lost |
+| e = 0 | Perfectly plastic | Objects stick together; maximum KE loss |
+
+### Worked Example: Collision
+
+A 2 kg ball at 5 m/s collides head-on with a 3 kg ball at rest. If e = 0.6, find final velocities.
+
+**Momentum:** 2(5) + 3(0) = 2v₁' + 3v₂' → 10 = 2v₁' + 3v₂' ... (1)
+**Restitution:** e = (v₂' − v₁')/(v₁ − v₂) → 0.6 = (v₂' − v₁')/(5 − 0) → v₂' − v₁' = 3 ... (2)
+
+From (2): v₂' = v₁' + 3. Substitute into (1): 10 = 2v₁' + 3(v₁' + 3) = 5v₁' + 9 → v₁' = **0.2 m/s**, v₂' = **3.2 m/s**
+
+## 1.4 Mass Moment of Inertia
+
+The mass moment of inertia I measures resistance to angular acceleration. It plays the same role in rotation that mass plays in translation.
 
 | Body | I about centroidal axis |
 |---|---|
-| Slender rod (length L) | mL²/12 |
-| Solid cylinder (radius r) | mr²/2 |
-| Hollow cylinder (r₁, r₂) | m(r₁² + r₂²)/2 |
-| Solid sphere | 2mr²/5 |
-| Thin disk | mr²/2 |
+| Slender rod (length L) | **mL²/12** |
+| Solid cylinder/disk (radius r) | **mr²/2** |
+| Hollow cylinder (inner r₁, outer r₂) | m(r₁² + r₂²)/2 |
+| Solid sphere (radius r) | **2mr²/5** |
+| Thin spherical shell | 2mr²/3 |
 
-**Parallel axis theorem**: I_O = I_G + md²`,
-      examTip: 'For rigid body problems, use ΣF = ma_G for translation and ΣM_G = I_G·α for rotation simultaneously. For rotation about a fixed point O, you can simplify to ΣM_O = I_O·α (using parallel axis theorem for I_O).',
-      importantNote: 'Mass moment of inertia (kg·m²) is different from area moment of inertia (m⁴). Mass moment is used in dynamics (rotation); area moment is used in mechanics of materials (bending).',
+**Parallel axis theorem:** I_O = I_G + md² — transfers from the centroidal axis to a parallel axis distance d away. Always transfers FROM the centroid.
+
+**⚠️ Exam trap:** Mass moment of inertia (kg·m²) is NOT the same as area moment of inertia (m⁴ or mm⁴). Mass I is used in dynamics (F = ma, M = Iα). Area I is used in mechanics of materials (beam bending σ = My/I). Don't mix them up!
+
+## 1.5 Angular Impulse and Angular Momentum
+
+**Angular momentum:** H = Iω (about fixed axis or mass center)
+**Angular impulse-momentum:** ΣM·Δt = I·Δω = I(ω₂ − ω₁)
+
+If no external torques: **Iω = constant** (conservation of angular momentum). This explains why figure skaters spin faster when they pull their arms in (I decreases, ω increases).`,
+      examTip: 'For rigid body problems, use ΣF = ma_G for translation and ΣM_G = I_G·α for rotation simultaneously. For rotation about a fixed point O, simplify to ΣM_O = I_O·α. The key decision on the FE exam: F = ma when you have forces and need acceleration (or vice versa). Use impulse-momentum when the problem involves time and velocity changes. Use work-energy when the problem involves forces and displacements.',
+      importantNote: 'Mass moment of inertia (kg·m²) is fundamentally different from area moment of inertia (m⁴). Mass I is used in dynamics for rotation (ΣM = Iα). Area I is used in mechanics of materials for bending (σ = My/I). The formulas look similar but the physical meaning and units are completely different.',
+    },
+    {
+      id: 'kinetics-practice',
+      title: 'Kinetics Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A 5 kg block on a frictionless horizontal surface is pushed with a horizontal force of 20 N. Its acceleration is:`,
+          options: ["4.0 m/s²", "100 m/s²", "0.25 m/s²", "2.0 m/s²"],
+          correctIndex: 0,
+          explanation: `ΣF = ma → 20 = 5a → a = 4.0 m/s². Since the surface is frictionless and the force is horizontal, no other forces contribute to horizontal acceleration. The normal force (mg = 49 N) and weight cancel vertically. This is the simplest application of Newton's second law — one force, one mass, one equation.`,
+        },
+        {
+          question: `Two masses (4 kg and 6 kg) are connected by a rope over an ideal pulley. The acceleration of the system is:`,
+          options: ["1.96 m/s²", "9.81 m/s²", "4.91 m/s²", "0.98 m/s²"],
+          correctIndex: 0,
+          explanation: `a = (m₁ − m₂)g/(m₁ + m₂) = (6 − 4)(9.81)/(6 + 4) = 2(9.81)/10 = 1.96 m/s². The 6 kg mass accelerates down, the 4 kg mass accelerates up, both at 1.96 m/s². The tension: T = 2m₁m₂g/(m₁+m₂) = 2(4)(6)(9.81)/10 = 47.1 N. Note: T is between 4g = 39.2 N and 6g = 58.9 N — it must be between the two weights.`,
+        },
+        {
+          question: `A 1500 kg car rounds a flat (unbanked) curve of radius 100 m at 20 m/s. The required friction force is:`,
+          options: ["6000 N", "3000 N", "300 N", "600 N"],
+          correctIndex: 0,
+          explanation: `Centripetal force = mv²/r = 1500(20²)/100 = 1500(400)/100 = 6000 N. This force is provided entirely by friction (unbanked curve). The required friction coefficient: μ = v²/(rg) = 400/(100 × 9.81) = 0.41. If the available μ is less than 0.41, the car skids. Banking the curve reduces the friction demand.`,
+        },
+        {
+          question: `A 0.5 kg ball hits a wall at 12 m/s and rebounds at 8 m/s. The contact time is 0.01 s. The average impact force is:`,
+          options: ["1000 N", "200 N", "2000 N", "500 N"],
+          correctIndex: 0,
+          explanation: `Impulse = change in momentum. Taking rightward as positive, v₁ = −12 m/s (toward wall), v₂ = +8 m/s (rebound). Δp = m(v₂ − v₁) = 0.5(8 − (−12)) = 0.5(20) = 10 N·s. F = Δp/Δt = 10/0.01 = 1000 N. ⚠️ Common trap: forgetting the sign change at rebound. The velocity REVERSES direction, so Δv = 8 − (−12) = 20, NOT 8 − 12 = −4.`,
+        },
+        {
+          question: `A solid disk (mass 10 kg, radius 0.5 m) has a torque of 8 N·m applied to its axle. Its angular acceleration is:`,
+          options: ["6.4 rad/s²", "3.2 rad/s²", "16 rad/s²", "1.6 rad/s²"],
+          correctIndex: 0,
+          explanation: `I = ½mr² = ½(10)(0.5²) = ½(10)(0.25) = 1.25 kg·m². α = T/I = 8/1.25 = 6.4 rad/s². Note: the solid disk/cylinder formula is I = ½mr², not mr². Using I = mr² (hollow cylinder formula) would give α = 3.2, which is wrong for a solid disk. Know which formula to use.`,
+        },
+        {
+          question: `A 3 kg ball moving at 6 m/s collides perfectly plastically (e = 0) with a 2 kg ball at rest. The velocity after collision is:`,
+          options: ["3.6 m/s", "6 m/s", "2 m/s", "5 m/s"],
+          correctIndex: 0,
+          explanation: `Perfectly plastic: objects stick together. Conservation of momentum: m₁v₁ + m₂v₂ = (m₁ + m₂)v'. 3(6) + 2(0) = (3 + 2)v' → 18 = 5v' → v' = 3.6 m/s. KE lost = ½(3)(6²) − ½(5)(3.6²) = 54 − 32.4 = 21.6 J (40% of initial KE is lost). In plastic collisions, maximum kinetic energy is lost while momentum is conserved.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
-    'Newton\'s second law: ΣF = ma for translation, ΣM = Iα for rotation.',
-    'Mass moment of inertia: solid cylinder = mr²/2, slender rod = mL²/12.',
-    'Parallel axis theorem: I_O = I_G + md².',
-    'Centripetal acceleration: a_n = v²/r = rω² directed toward center.',
-    'For pulleys, draw separate FBDs and use constraint equations for accelerations.',
+    'Newton\'s second law: ΣF = ma (translation), ΣM_G = I_G·α (rotation). Apply both simultaneously for rigid bodies.',
+    'Mass moment of inertia: solid cylinder = mr²/2, slender rod = mL²/12, solid sphere = 2mr²/5. Parallel axis: I_O = I_G + md².',
+    'Impulse-momentum: F·Δt = m·Δv. Use when the problem involves forces over time intervals.',
+    'Conservation of momentum: m₁v₁ + m₂v₂ = m₁v₁\' + m₂v₂\' — valid when external forces are zero/negligible.',
+    'Coefficient of restitution: e = 1 (elastic), e = 0 (plastic, objects stick), 0 < e < 1 (real).',
+    'Centripetal force: ΣF_n = mv²/r toward center. Banked curve without friction: tanθ = v²/(rg).',
+    'Angular momentum H = Iω. Conserved when no external torques act.',
+    '⚠️ Mass moment of inertia (kg·m²) ≠ area moment of inertia (m⁴). Don\'t confuse them!',
   ],
 },
 
