@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useResumeStore } from "@/stores/resume";
 import { ResumeBuilderShell } from "@/components/resume-builder/ResumeBuilderShell";
 import { ImportDialog } from "@/components/resume-builder/export/ImportDialog";
+import { OnboardingWizard } from "@/components/resume-builder/OnboardingWizard";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -24,6 +25,7 @@ export default function ResumeBuilderPage() {
   const duplicateDocument = useResumeStore((s) => s.duplicateDocument);
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
   const [showImport, setShowImport] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
 
   const docList = Object.values(documents);
   const hasActive = activeDocumentId && documents[activeDocumentId];
@@ -52,15 +54,15 @@ export default function ResumeBuilderPage() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card
           className="p-6 border-2 border-dashed hover:border-primary/50 cursor-pointer transition-all hover:shadow-md group"
-          onClick={() => createDocument("My Resume")}
+          onClick={() => setShowWizard(true)}
         >
           <div className="flex flex-col items-center text-center gap-3">
             <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
               <Plus className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold">Blank Resume</h3>
-              <p className="text-sm text-muted-foreground">Start from scratch</p>
+              <h3 className="font-semibold">New Resume</h3>
+              <p className="text-sm text-muted-foreground">5-step guided wizard</p>
             </div>
           </div>
         </Card>
@@ -98,6 +100,14 @@ export default function ResumeBuilderPage() {
 
       {/* Import Dialog */}
       <ImportDialog open={showImport} onClose={() => setShowImport(false)} />
+
+      {/* Onboarding Wizard */}
+      {showWizard && (
+        <OnboardingWizard
+          onComplete={(id) => { setShowWizard(false); setActiveDocument(id); }}
+          onCancel={() => setShowWizard(false)}
+        />
+      )}
 
       {/* Existing Resumes */}
       {docList.length > 0 && (
