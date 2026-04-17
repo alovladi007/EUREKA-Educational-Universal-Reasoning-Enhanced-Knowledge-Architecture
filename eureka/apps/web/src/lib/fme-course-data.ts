@@ -840,6 +840,10 @@ Spreadsheets can perform iterative solving:
 - **Circular references with iteration**: Enable for convergent iterative formulas`,
       examTip: 'The FE exam may show a spreadsheet screenshot and ask what a formula produces. Trace through cell references carefully — absolute references ($) are the key to getting the right answer.',
     },
+    { id: 'ss-practice', title: 'Spreadsheet Practice', content: ``, quiz: [
+      { question: `In Excel, $A$1 is called:`, options: ["Absolute reference — doesn't change when copied", "Relative reference", "Mixed reference", "Named range"], correctIndex: 0, explanation: `$A$1 = absolute (both column and row locked). A1 = relative (changes when copied). $A1 = column locked. A$1 = row locked. Absolute references are essential when a formula references a fixed constant (like a conversion factor) that shouldn't change as you copy the formula to other cells.` },
+      { question: `Goal Seek in a spreadsheet is used to:`, options: ["Find the input value needed to achieve a desired output", "Sort data", "Create charts", "Merge cells"], correctIndex: 0, explanation: `Goal Seek is a 'what-if' tool: set the target cell to a value by changing one input cell. Example: what interest rate makes NPV = 0? (This finds IRR.) Solver is the more powerful version: optimize an objective by changing multiple variables subject to constraints. Both are tested on the FE exam.` },
+    ] },
   ],
   keyTakeaways: [
     'Absolute references ($A$1) stay fixed when copying formulas.',
@@ -889,6 +893,10 @@ Key concepts:
       examTip: 'Verification checks computational correctness (mesh convergence studies); validation checks physical correctness (comparison to experimental data). The FE exam distinguishes between these.',
       importantNote: 'On the FE exam, FEM questions typically focus on conceptual understanding rather than computation: when to use FEM, what boundary conditions mean, and how mesh refinement affects accuracy.',
     },
+    { id: 'mod-practice', title: 'Modeling Practice', content: ``, quiz: [
+      { question: `In FEA, increasing mesh density generally:`, options: ["Improves accuracy but increases computation time", "Decreases accuracy", "Has no effect", "Speeds up the solution"], correctIndex: 0, explanation: `Finer mesh = more elements = better approximation of the continuous domain. But more elements mean more equations to solve → longer computation time and more memory. The goal is mesh CONVERGENCE: refine until results stabilize. Stress singularities (sharp corners) never converge — use fillets or St. Venant's principle.` },
+      { question: `The difference between verification and validation in modeling is:`, options: ["Verification: solving equations correctly. Validation: solving the RIGHT equations (matching reality)", "They are the same thing", "Verification uses experiments; validation uses math", "Validation comes before verification"], correctIndex: 0, explanation: `Verification: 'Am I solving the equations right?' (code correctness, mesh convergence, benchmark tests). Validation: 'Am I solving the right equations?' (comparing model predictions to experimental measurements). Both are needed. A perfectly coded wrong model passes verification but fails validation.` },
+    ] },
   ],
   keyTakeaways: [
     'Analytical models give exact solutions; numerical models approximate complex geometries.',
@@ -1002,6 +1010,10 @@ Most states require **continuing professional development (CPD)** to maintain li
 - May include courses, seminars, publications, patents, teaching`,
       examTip: 'The FE exam pathway: ABET degree → FE exam → 4 years experience → PE exam. Remember that ABET accreditation of the degree program is a key requirement.',
     },
+    { id: 'lic-practice', title: 'Licensure Practice', content: ``, quiz: [
+      { question: `The standard path to PE licensure requires:`, options: ["ABET degree + FE exam + 4 years experience + PE exam", "Any degree + 10 years experience", "FE exam only", "Master's degree + PE exam"], correctIndex: 0, explanation: `The standard PE pathway: (1) ABET-accredited bachelor's degree, (2) pass FE exam → become EIT/EI, (3) 4 years of progressive engineering experience under a PE, (4) pass PE exam → licensed PE. Some states allow alternative pathways (more experience, non-ABET degree) but this is the standard. The FE exam itself tests this pathway.` },
+      { question: `Practicing engineering without a PE license is:`, options: ["Illegal — may result in fines or criminal penalties", "Allowed for all degreed engineers", "Only restricted in government", "Encouraged for new graduates"], correctIndex: 0, explanation: `Offering engineering services to the public without a PE license is illegal in all US states. Exceptions: industrial exemption (working for a company, not offering public services), and engineers working under a PE's supervision. Violations can result in fines, cease-and-desist orders, and criminal penalties.` },
+    ] },
   ],
   keyTakeaways: [
     'Licensure pathway: ABET degree → FE exam → experience → PE exam.',
@@ -1049,6 +1061,10 @@ Engineers manage liability through:
 - **Adherence to codes and standards**`,
       examTip: 'On the FE exam, negligence requires ALL four elements: duty, breach, causation, and damages. If any one is missing, negligence is not established.',
     },
+    { id: 'liab-practice', title: 'Liability Practice', content: ``, quiz: [
+      { question: `Strict liability differs from negligence in that:`, options: ["The plaintiff need not prove the defendant was careless — only that the product was defective", "The plaintiff must prove intent", "It only applies to PEs", "It requires higher damages"], correctIndex: 0, explanation: `Strict liability: manufacturer is liable for defective products regardless of fault or carelessness. Focus is on the PRODUCT defect, not the engineer's conduct. Negligence: must prove duty, breach, causation, AND damages — all four elements. Strict liability is a lower bar for plaintiffs in product liability cases.` },
+      { question: `A PE stamps drawings they haven't personally reviewed. This is:`, options: ["'Plan stamping' — unethical and can result in license revocation", "Acceptable if the work looks reasonable", "Required for efficiency", "Only wrong if errors are found"], correctIndex: 0, explanation: `'Plan stamping' is certifying work you haven't thoroughly reviewed — a serious ethics violation. The PE stamp signifies personal review and professional responsibility. It can result in: license revocation, civil liability, criminal charges (in some jurisdictions). The PE must personally review and understand all work before stamping.` },
+    ] },
   ],
   keyTakeaways: [
     'Negligence requires duty, breach, causation, and damages — all four elements.',
@@ -3400,6 +3416,10 @@ From the engineering stress-strain curve:
       examTip: 'Toughness = total area under the stress-strain curve; resilience = area under the elastic portion only. A material can be strong but not tough if it lacks ductility.',
       importantNote: 'BCC metals (carbon steel) exhibit a ductile-to-brittle transition with decreasing temperature. FCC metals (aluminum, stainless steel) do not. This is critical for low-temperature applications.',
     },
+    { id: 'mechprop-practice', title: 'Mechanical Properties Practice', content: ``, quiz: [
+      { question: `A material has σ_y = 300 MPa, σ_ut = 500 MPa, elongation = 25%. It is:`, options: ["Ductile — high elongation and σ_ut > σ_y indicates significant strain hardening", "Brittle", "Neither ductile nor brittle", "Elastic only"], correctIndex: 0, explanation: `25% elongation is very ductile (>5% is generally considered ductile). The ratio σ_ut/σ_y = 500/300 = 1.67 shows significant strain hardening between yield and fracture. Brittle materials have <5% elongation and σ_ut ≈ σ_y (fracture occurs near yield with little plastic deformation). Cast iron and ceramics are brittle; mild steel and aluminum are ductile.` },
+      { question: `The Charpy impact test primarily measures:`, options: ["Energy absorbed during fracture (toughness) at a given temperature", "Hardness", "Yield strength", "Elastic modulus"], correctIndex: 0, explanation: `The Charpy V-notch test swings a pendulum into a notched specimen and measures the energy absorbed (in Joules or ft-lb). The test is performed at various temperatures to determine the DBTT. Below DBTT: brittle fracture (low energy). Above DBTT: ductile fracture (high energy). This test is critical for selecting steels for cold-weather or cryogenic applications.` },
+    ] },
   ],
   keyTakeaways: [
     'Young\'s modulus = slope of elastic stress-strain region; measures stiffness.',
@@ -3539,6 +3559,10 @@ All strengthening mechanisms work by **impeding dislocation motion**:
       examTip: 'Strengthening mechanisms all impede dislocation motion. Strain hardening increases strength but decreases ductility. Annealing reverses cold work, restoring ductility by recrystallization.',
       importantNote: 'Galvanic corrosion: the more ANODIC (active) metal corrodes preferentially. Check the galvanic series — metals farther apart on the series corrode faster when coupled.',
     },
+    { id: 'matsel-practice', title: 'Material Selection Practice', content: ``, quiz: [
+      { question: `For a stiffness-limited, minimum weight tie rod, the material performance index is:`, options: ["E/ρ (Young's modulus divided by density)", "σ_y/ρ", "E×ρ", "KIC/ρ"], correctIndex: 0, explanation: `For a tie rod under tensile stiffness constraint: the deflection δ = PL/(AE), and weight W = ρAL. Minimizing W for a given stiffness → maximize E/ρ. For beams: E^(1/2)/ρ. For plates: E^(1/3)/ρ. These indices are derived from structural equations + weight minimization and plotted on Ashby materials selection charts.` },
+      { question: `Which material class generally has the best combination of strength and corrosion resistance for marine environments?`, options: ["Stainless steels (316SS) and titanium alloys", "Carbon steels", "Cast iron", "Copper"], correctIndex: 0, explanation: `316 stainless steel (Mo addition for pitting resistance) and titanium alloys excel in marine/saltwater environments. Carbon steel corrodes rapidly without protection. Aluminum alloys are good but pitting can occur. For the FE exam, know that material selection involves balancing strength, cost, weight, corrosion resistance, and manufacturability.` },
+    ] },
   ],
   keyTakeaways: [
     'All strengthening mechanisms impede dislocation motion.',
@@ -3861,6 +3885,10 @@ Where C_L = lift coefficient, A = planform area (for airfoils).
 | Streamlined body | 0.04–0.1 |`,
       examTip: 'The dynamic pressure ½ρV² appears in both drag and lift equations. On the FE exam, given velocity, density, area, and C_D or C_L, the calculation is straightforward multiplication. Watch units carefully.',
     },
+    { id: 'extflow-practice', title: 'External Flow Practice', content: ``, quiz: [
+      { question: `A car (frontal area 2 m², C_D = 0.3) travels at 30 m/s in air (ρ = 1.2 kg/m³). The drag force is:`, options: ["324 N", "648 N", "162 N", "1,080 N"], correctIndex: 0, explanation: `F_D = C_D·½ρV²·A = 0.3 × ½(1.2)(30²)(2) = 0.3 × 0.6 × 900 × 2 = 0.3 × 1080 = 324 N. Note that drag ∝ V² — doubling speed quadruples drag force (and cubes the power needed: P = F_D × V ∝ V³). This is why fuel economy drops significantly at highway speeds.` },
+      { question: `A boundary layer transitions from laminar to turbulent at approximately:`, options: ["Re_x ≈ 5 × 10⁵ for a flat plate", "Re_x ≈ 2,300", "Re_x ≈ 100", "Re_x ≈ 10⁸"], correctIndex: 0, explanation: `For external flow over a flat plate: transition at Re_x ≈ 5 × 10⁵. For internal pipe flow: Re ≈ 2,300. Different characteristic lengths and geometries give different critical Re values. After transition, the turbulent BL has higher skin friction but delays separation (lower pressure drag for bluff bodies).` },
+    ] },
   ],
   keyTakeaways: [
     'Drag: F_D = C_D·½ρV²·A; Lift: F_L = C_L·½ρV²·A.',
@@ -3923,6 +3951,10 @@ For same pump (D₁ = D₂): Q ∝ N, H ∝ N², P ∝ N³
       examTip: 'Affinity laws for same pump: Q ∝ N, H ∝ N², P ∝ N³. If speed doubles, flow doubles, head quadruples, and power octuples. These ratios are directly tested on the FE exam.',
       importantNote: 'Cavitation is avoided by ensuring NPSH Available exceeds NPSH Required. To increase NPSH_A: raise the reservoir, lower the pump, increase suction pressure, or reduce suction pipe losses.',
     },
+    { id: 'turbo-practice', title: 'Turbomachinery Practice', content: ``, quiz: [
+      { question: `A pump operates at 1800 rpm with Q = 0.1 m³/s, H = 20 m. If speed increases to 3600 rpm, the new Q and H are:`, options: ["Q = 0.2 m³/s, H = 80 m", "Q = 0.2, H = 40", "Q = 0.4, H = 20", "Q = 0.1, H = 20"], correctIndex: 0, explanation: `Affinity laws: Q ∝ N → Q₂ = Q₁(N₂/N₁) = 0.1(3600/1800) = 0.2 m³/s. H ∝ N² → H₂ = H₁(N₂/N₁)² = 20(2)² = 80 m. P ∝ N³ → P₂ = P₁(2)³ = 8P₁. Doubling speed: doubles flow, quadruples head, octuples power. These are the most commonly tested pump relationships on the FE exam.` },
+      { question: `Two identical pumps in parallel provide:`, options: ["Double flow at the same head", "Double head at the same flow", "Same flow and head", "Quadruple power"], correctIndex: 0, explanation: `Parallel: same head (H), flows add (Q_total = 2Q). Series: same flow (Q), heads add (H_total = 2H). Use parallel when you need more flow at the existing head. Use series when you need more head at the existing flow. The actual operating point depends on the system curve intersection.` },
+    ] },
   ],
   keyTakeaways: [
     'Pump power: P = ρgQH/η; operating point where pump curve meets system curve.',
@@ -4264,6 +4296,9 @@ Key properties:
 | Adiabatic saturation | Along T_wb line | Increases | Decreases | Increases |`,
       examTip: 'On the psychrometric chart: horizontal movement = sensible heating/cooling (ω constant). Vertical movement changes humidity ratio. The dew point is found by moving left at constant ω to the saturation curve.',
     },
+    { id: 'mix-practice', title: 'Mixtures & Psychrometrics Practice', content: ``, quiz: [
+      { question: `Air at 50% RH has a dry-bulb temperature of 30°C. The wet-bulb temperature is:`, options: ["Less than 30°C (always T_wb ≤ T_db)", "30°C", "Greater than 30°C", "Cannot determine"], correctIndex: 0, explanation: `The wet-bulb temperature is ALWAYS ≤ dry-bulb temperature. At 100% RH: T_wb = T_db = T_dp. At lower humidity, evaporative cooling makes T_wb < T_db. The difference (T_db − T_wb) is called the wet-bulb depression — larger depression means drier air. At 50% RH, 30°C, T_wb ≈ 22°C approximately.` },
+    ] },
   ],
   keyTakeaways: [
     'Dalton\'s law: P_total = Σp_i; mole fraction y_i = p_i/P_total.',
@@ -4317,6 +4352,10 @@ Maximum temperature achieved when all chemical energy heats the products (no hea
 Solve iteratively or by interpolation from enthalpy tables.`,
       examTip: 'For combustion problems on the FE exam, always balance C first, then H, then O, then N. The stoichiometric air includes 3.76 moles of N₂ for every mole of O₂.',
     },
+    { id: 'comb-practice', title: 'Combustion Practice', content: ``, quiz: [
+      { question: `Complete combustion of CH₄ requires how many moles of O₂?`, options: ["2 moles (CH₄ + 2O₂ → CO₂ + 2H₂O)", "1 mole", "4 moles", "3 moles"], correctIndex: 0, explanation: `Balance: CH₄ + ?O₂ → CO₂ + 2H₂O. Carbon: 1C → 1CO₂ ✓. Hydrogen: 4H → 2H₂O ✓. Oxygen: CO₂ needs 2O, 2H₂O needs 2O → total 4O atoms → 2O₂ molecules. So CH₄ + 2O₂ → CO₂ + 2H₂O. With air: 2O₂ × (1 + 3.76) = 2(4.76) = 9.52 mol air per mol CH₄. AF_mass = 9.52(29)/16 = 17.2.` },
+      { question: `20% excess air means the actual air supplied is:`, options: ["1.20 × stoichiometric air", "20% of stoichiometric", "80% of stoichiometric", "120% of fuel"], correctIndex: 0, explanation: `Excess air is ABOVE stoichiometric. 20% excess → actual air = 1.20 × theoretical air. The extra O₂ appears in the products (doesn't react). More excess air ensures complete combustion but cools the flame temperature. Equivalence ratio Φ = 1/1.20 = 0.833 < 1 (lean mixture).` },
+    ] },
   ],
   keyTakeaways: [
     'Stoichiometric combustion: balance C, H, O, N in that order.',
@@ -4615,6 +4654,10 @@ Where C_r = C_min/C_max.
       examTip: 'Use LMTD method when all four temperatures are known. Use ε-NTU when you know inlet temperatures but NOT outlet temperatures. The FE reference handbook has ε-NTU charts for common configurations.',
       importantNote: 'Counterflow heat exchangers are always more effective than parallel flow for the same UA and flow rates. The counterflow LMTD is always greater than or equal to the parallel flow LMTD.',
     },
+    { id: 'hx-practice', title: 'Heat Exchanger Practice', content: ``, quiz: [
+      { question: `Counterflow HX: T_h,in=150°C, T_h,out=90°C, T_c,in=30°C, T_c,out=70°C. LMTD is:`, options: ["69.1°C", "60°C", "80°C", "50°C"], correctIndex: 0, explanation: `Counterflow: ΔT₁ = T_h,in − T_c,out = 150−70 = 80°C. ΔT₂ = T_h,out − T_c,in = 90−30 = 60°C. LMTD = (80−60)/ln(80/60) = 20/ln(1.333) = 20/0.2877 = 69.5°C ≈ 69.1°C. For parallel flow with same temps: ΔT₁ = 150−30 = 120, ΔT₂ = 90−70 = 20. LMTD_PF = 100/ln(6) = 55.8°C — lower than counterflow (69.1°C). Counterflow is always more efficient.` },
+      { question: `The maximum heat transfer in a heat exchanger is q_max =:`, options: ["C_min × (T_h,in − T_c,in)", "C_max × (T_h,in − T_c,in)", "UA × LMTD", "ṁ × c_p × ΔT"], correctIndex: 0, explanation: `q_max = C_min(T_h,in − T_c,in). C_min = smaller of ṁ_h·c_ph and ṁ_c·c_pc. This maximum occurs in an infinitely long counterflow exchanger where the fluid with smaller C reaches the inlet temperature of the other fluid. Effectiveness ε = q_actual/q_max. NTU = UA/C_min.` },
+    ] },
   ],
   keyTakeaways: [
     'LMTD method: q = UA·ΔT_lm; use when all temperatures are known (design problem).',
@@ -4831,6 +4874,10 @@ Example: 10V range, 8-bit ADC: resolution = 10/256 = 0.039 V
 - **Signal-to-noise ratio (SNR)**: Higher = better; SNR(dB) = 20·log₁₀(V_signal/V_noise)`,
       examTip: 'Nyquist: sample at least 2× the highest frequency in the signal, or aliasing occurs. This is one of the most commonly tested signal processing concepts on the FE exam.',
     },
+    { id: 'sig-practice', title: 'Signal Processing Practice', content: ``, quiz: [
+      { question: `A signal contains frequencies up to 500 Hz. The minimum sampling rate to avoid aliasing is:`, options: ["1000 Hz (samples/second)", "500 Hz", "250 Hz", "2000 Hz"], correctIndex: 0, explanation: `Nyquist: f_s ≥ 2f_max = 2(500) = 1000 Hz minimum. Below this: aliasing (high frequencies appear as low frequencies — indistinguishable from lower-frequency signals). In practice, sample at 5-10× f_max for good signal reproduction. An anti-aliasing filter (low-pass at f_max) before the ADC prevents aliased signals from entering.` },
+      { question: `A 12-bit ADC with 0-10V range has a resolution of:`, options: ["2.44 mV", "0.83 V", "10 mV", "24.4 mV"], correctIndex: 0, explanation: `Resolution = range/2^n = 10/2^12 = 10/4096 = 0.00244 V = 2.44 mV. More bits = finer resolution: 8-bit → 39.1 mV, 10-bit → 9.77 mV, 12-bit → 2.44 mV, 16-bit → 0.153 mV. Each additional bit halves the resolution (doubles the precision). 12-bit is common in engineering data acquisition.` },
+    ] },
   ],
   keyTakeaways: [
     'ADC resolution = range/2^n; more bits = finer resolution.',
