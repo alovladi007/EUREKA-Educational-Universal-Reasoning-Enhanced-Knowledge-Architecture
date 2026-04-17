@@ -1723,80 +1723,241 @@ fme_kinematics: {
   topicId: 'fme_kinematics',
   title: 'Kinematics of Particles & Rigid Bodies',
   domainWeight: 'Dynamics, Kinematics & Vibrations · 9–14%',
-  overview: 'Kinematics describes motion without considering forces. The FE exam tests rectilinear and curvilinear motion, relative motion, and rigid body kinematics including rotation and mechanisms.',
+  overview: 'Kinematics describes motion without considering the forces that cause it — it answers "where, how fast, and how does the acceleration change?" The FE exam tests rectilinear motion (straight-line), curvilinear motion (projectiles, circular paths), relative motion between points on rigid bodies, and the instantaneous center of zero velocity. This topic carries 9–14% of the exam, making it one of the most heavily tested areas. Expect 10–15 questions on kinematics and dynamics combined.',
   sections: [
     {
       id: 'kin-particle',
       title: '1. Particle Kinematics',
       content: `## 1.1 Rectilinear Motion (Straight Line)
 
-**Position**: s(t)
-**Velocity**: v = ds/dt
-**Acceleration**: a = dv/dt = d²s/dt²
+Rectilinear motion is motion along a straight line. The fundamental relationships are:
 
-For **constant acceleration**:
-- v = v₀ + at
-- s = s₀ + v₀t + ½at²
-- v² = v₀² + 2a(s - s₀)
+**Position**: s(t) — location of the particle at time t
+**Velocity**: v = ds/dt — rate of change of position (m/s)
+**Acceleration**: a = dv/dt = d²s/dt² — rate of change of velocity (m/s²)
+
+These are connected: if you know one as a function of time, you can differentiate to find the others or integrate to go the opposite way.
+
+### Constant Acceleration Equations
+
+When acceleration is constant (gravity, uniform braking, etc.), three equations relate the five variables (s₀, v₀, s, v, a, t):
+
+| Equation | Variables Involved | Missing Variable |
+|---|---|---|
+| **v = v₀ + at** | v₀, v, a, t | s |
+| **s = s₀ + v₀t + ½at²** | s₀, s, v₀, a, t | v (final) |
+| **v² = v₀² + 2a(s − s₀)** | v₀, v, a, s₀, s | t |
+
+**Strategy:** Identify which three variables you know and which one you need. Pick the equation that contains your three knowns and the one unknown.
+
+### Worked Example: Braking Distance
+
+A car travels at 30 m/s and brakes uniformly to a stop. If the deceleration is 6 m/s², find the stopping distance.
+
+**Known:** v₀ = 30 m/s, v = 0, a = −6 m/s². **Find:** s − s₀.
+
+Use v² = v₀² + 2a(s − s₀):
+0 = 900 + 2(−6)(s − s₀) → 12(s − s₀) = 900 → **s − s₀ = 75 m**
+
+### Variable Acceleration
+
+When a is not constant, you must integrate or use the relationship **a ds = v dv** (derived from a = dv/dt and v = ds/dt):
+
+∫v₁^v₂ v dv = ∫s₁^s₂ a(s) ds — useful when a is given as a function of position.
 
 ## 1.2 Curvilinear Motion
 
-**Normal-Tangential (n-t) components**:
-- a_t = dv/dt (tangential — changes speed)
-- a_n = v²/ρ (normal — changes direction, ρ = radius of curvature)
+When a particle follows a curved path, you need two or three components to describe the motion. Three coordinate systems are commonly used:
 
-**Projectile motion** (constant g, no drag):
-- x = v₀·cosθ·t
-- y = v₀·sinθ·t - ½gt²
-- v_x = v₀·cosθ (constant)
-- v_y = v₀·sinθ - gt
+### Rectangular (x, y) Components — Best for Projectile Motion
 
-| Coordinate System | Best For |
+**Projectile motion** (constant g, no air resistance):
+- Horizontal: **x = x₀ + v₀·cosθ·t**, **vₓ = v₀·cosθ** (constant — no horizontal acceleration)
+- Vertical: **y = y₀ + v₀·sinθ·t − ½gt²**, **vᵧ = v₀·sinθ − gt**
+
+| Projectile Quantity | Formula |
 |---|---|
-| Rectangular (x, y) | Projectile motion |
-| Normal-tangential (n, t) | Curved paths with known ρ |
-| Polar (r, θ) | Orbits, rotating mechanisms |`,
-      examTip: 'The three constant-acceleration equations are the most tested kinematics formulas. When you know three of the five variables (s₀, v₀, v, a, t), pick the equation containing the three knowns and the one unknown.',
+| Maximum height | h = v₀²sin²θ / (2g) |
+| Range (level ground) | R = v₀²sin(2θ) / g |
+| Time of flight | T = 2v₀sinθ / g |
+| Maximum range angle | θ = 45° |
+
+### Worked Example: Projectile
+
+A ball is launched at 20 m/s at 60° above horizontal. Find the maximum height and range.
+
+h = (20)²sin²(60°) / (2 × 9.81) = 400 × 0.75 / 19.62 = **15.3 m**
+R = (20)²sin(120°) / 9.81 = 400 × 0.866 / 9.81 = **35.3 m**
+
+### Normal-Tangential (n-t) Components — Best for Curved Paths
+
+At any point on a curved path:
+- **a_t = dv/dt** (tangential) — changes the **speed** (magnitude of velocity)
+- **a_n = v²/ρ** (normal/centripetal) — changes the **direction** of velocity, always points toward the center of curvature
+- ρ = radius of curvature at that point
+
+**Total acceleration:** a = √(a_t² + a_n²)
+
+**Special case — circular motion at constant speed:** a_t = 0, so a = a_n = v²/r (centripetal acceleration only).
+
+### Polar (r, θ) Components — Best for Rotating Mechanisms
+
+For a particle in polar coordinates:
+- **v_r = dr/dt** (radial velocity)
+- **v_θ = r·dθ/dt = rω** (transverse velocity)
+- **a_r = d²r/dt² − rω²** (radial acceleration)
+- **a_θ = rα + 2(dr/dt)ω** (transverse acceleration — note the Coriolis term 2ṙω)
+
+| Coordinate System | Best For | Key Feature |
+|---|---|---|
+| Rectangular (x, y) | Projectile motion, linear motion | Fixed reference directions |
+| Normal-tangential (n, t) | Curved paths with known ρ | Moves with the particle |
+| Polar (r, θ) | Orbits, rotating arms, cams | Rotation-based |
+
+## 1.3 Relative Motion
+
+The velocity of particle B as observed from particle A:
+
+**v_B = v_A + v_{B/A}** (vector addition)
+
+This is used for problems involving two moving vehicles, rain falling on a moving car, boats crossing rivers, etc. Draw a vector diagram (velocity triangle) to solve graphically or resolve into components.`,
+      examTip: 'The three constant-acceleration equations are the most tested kinematics formulas. Strategy: identify which variable is missing from the problem, then use the equation that doesn\'t contain that variable. For projectiles: horizontal motion is constant velocity (no acceleration), vertical is constant acceleration (g). Never mix horizontal and vertical — solve them independently and connect through time t.',
+      importantNote: 'Normal acceleration a_n = v²/ρ is ALWAYS directed toward the center of curvature. It changes direction, not speed. Tangential acceleration a_t = dv/dt changes speed, not direction. At constant speed on a curve, a_t = 0 but a_n ≠ 0 — the particle is still accelerating (changing direction).',
     },
     {
       id: 'kin-rigid',
       title: '2. Rigid Body Kinematics',
       content: `## 2.1 Rotation About a Fixed Axis
 
-**Angular position**: θ
-**Angular velocity**: ω = dθ/dt
-**Angular acceleration**: α = dω/dt
+For a rigid body rotating about a fixed axis, every point undergoes circular motion. Angular quantities describe the rotation:
 
-For **constant angular acceleration**:
-- ω = ω₀ + αt
-- θ = θ₀ + ω₀t + ½αt²
-- ω² = ω₀² + 2α(θ - θ₀)
+**Angular position**: θ (radians)
+**Angular velocity**: ω = dθ/dt (rad/s)
+**Angular acceleration**: α = dω/dt = d²θ/dt² (rad/s²)
 
-**Relationship to linear quantities** (point at distance r):
-- v = rω, a_t = rα, a_n = rω² = v²/r
+### Constant Angular Acceleration
 
-## 2.2 Relative Motion
+The rotational analogs of the linear kinematic equations:
 
-For point B on a rigid body relative to point A:
+| Linear | Angular |
+|---|---|
+| v = v₀ + at | **ω = ω₀ + αt** |
+| s = s₀ + v₀t + ½at² | **θ = θ₀ + ω₀t + ½αt²** |
+| v² = v₀² + 2a(s−s₀) | **ω² = ω₀² + 2α(θ−θ₀)** |
+
+### Relationship to Linear Quantities
+
+For a point at distance r from the rotation axis:
+- **v = rω** (tangential velocity)
+- **a_t = rα** (tangential acceleration)
+- **a_n = rω² = v²/r** (centripetal acceleration)
+
+### Unit Conversions
+
+**rpm to rad/s:** ω = N × 2π/60, where N is in rpm
+
+**Worked example:** A flywheel at 1800 rpm → ω = 1800 × 2π/60 = **188.5 rad/s**
+
+⚠️ **Common exam trap:** Forgetting the 2π or the /60. Double-check units: rpm × (2π rad/rev) × (1 min/60 s) = rad/s.
+
+## 2.2 General Plane Motion — Relative Velocity
+
+General plane motion = translation + rotation. For any two points A and B on the same rigid body:
 
 **v_B = v_A + ω × r_{B/A}**
 
-**a_B = a_A + α × r_{B/A} + ω × (ω × r_{B/A})**
+Where ω × r_{B/A} is the velocity of B relative to A due to rotation. The magnitude of this term is ω·|r_{B/A}|, directed perpendicular to the line AB.
+
+**Acceleration:**
+**a_B = a_A + α × r_{B/A} − ω²·r_{B/A}**
+
+The last term (−ω²·r_{B/A}) is the centripetal component directed from B toward A.
 
 ## 2.3 Instantaneous Center of Zero Velocity (IC)
 
-The IC is the point about which a rigid body appears to rotate at a given instant:
-- All velocities are perpendicular to the line from the IC
-- v = ω·d (where d = distance from IC)`,
-      examTip: 'For rolling without slipping: v_center = Rω and a_center = Rα. The contact point has zero velocity (it is the instantaneous center). This constraint appears frequently on the FE exam.',
+The IC is a powerful tool for velocity analysis. At any instant, there exists a point about which the rigid body appears to undergo pure rotation:
+
+**Finding the IC:**
+1. If the velocity directions of two points are known (and not parallel): draw perpendiculars to each velocity vector — the IC is where they intersect
+2. If velocities of two points are parallel: the IC lies along the line connecting the points (or at infinity if they're equal and in the same direction → pure translation)
+3. **For rolling without slipping:** The contact point IS the IC
+
+**Using the IC:**
+- v = ω × d, where d = distance from the IC to the point
+- ω = v/d for any point with known velocity
+
+### Rolling Without Slipping
+
+For a wheel of radius R rolling on a surface:
+- **v_center = Rω** (constraint equation)
+- **a_center = Rα**
+- The contact point has **zero velocity** (it is the IC)
+- The top of the wheel has velocity **2·v_center = 2Rω** (fastest point)
+
+### Worked Example: Rolling Wheel
+
+A wheel of radius 0.3 m rolls without slipping at v_center = 6 m/s. Find ω and the velocity of the topmost point.
+
+ω = v/R = 6/0.3 = **20 rad/s**
+v_top = 2·v_center = 2 × 6 = **12 m/s** (forward)
+
+The contact point has v = 0 (IC). Each point's velocity = ω × (distance from contact point). The top is 2R from the contact point: v = 20 × 0.6 = 12 m/s ✓`,
+      examTip: 'For rolling without slipping: v_center = Rω and a_center = Rα. The contact point has zero velocity (it is the instantaneous center). This constraint appears frequently on the FE exam. Also remember: rpm to rad/s conversion is N × 2π/60 — don\'t forget the 2π! 1000 rpm = 104.7 rad/s, not 16.7.',
+      importantNote: 'The instantaneous center is for VELOCITY analysis only — you cannot use it directly for acceleration analysis. Acceleration of the IC is generally NOT zero (even though its velocity is zero at that instant). For acceleration, use the relative acceleration equation instead.',
+    },
+    {
+      id: 'kin-practice',
+      title: 'Kinematics Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A car accelerates from rest at 3 m/s². How far does it travel in 8 seconds?`,
+          options: ["96 m", "24 m", "192 m", "48 m"],
+          correctIndex: 0,
+          explanation: `s = s₀ + v₀t + ½at² = 0 + 0 + ½(3)(8²) = ½(3)(64) = 96 m. Starting from rest means v₀ = 0, which simplifies to s = ½at². This is a direct application of constant-acceleration kinematics — the most commonly tested formula on the FE exam.`,
+        },
+        {
+          question: `A projectile is launched at 30 m/s at 45° above horizontal. The maximum height reached is closest to:`,
+          options: ["23.0 m", "45.9 m", "11.5 m", "30.6 m"],
+          correctIndex: 0,
+          explanation: `h_max = v₀²sin²θ/(2g) = (30)²(sin45°)²/(2×9.81) = 900(0.5)/19.62 = 450/19.62 = 22.9 m ≈ 23.0 m. Note: sin²(45°) = (√2/2)² = 0.5. At 45°, the range is maximized but height is half of what it would be at 90° launch angle.`,
+        },
+        {
+          question: `A wheel rotating at 600 rpm decelerates uniformly to rest in 30 seconds. The number of revolutions during deceleration is:`,
+          options: ["150 rev", "300 rev", "75 rev", "600 rev"],
+          correctIndex: 0,
+          explanation: `ω₀ = 600 rpm. Average ω = (600 + 0)/2 = 300 rpm. Revolutions = ω_avg × time = 300 rev/min × 0.5 min = 150 rev. Alternatively: ω₀ = 600 × 2π/60 = 20π rad/s. α = (0 − 20π)/30 = −2π/3 rad/s². θ = ω₀t + ½αt² = 20π(30) − ½(2π/3)(900) = 600π − 300π = 300π rad = 300π/(2π) = 150 rev.`,
+        },
+        {
+          question: `A particle moves along a circular path of radius 5 m at a constant speed of 10 m/s. Its centripetal acceleration is:`,
+          options: ["20 m/s²", "2 m/s²", "50 m/s²", "0 m/s²"],
+          correctIndex: 0,
+          explanation: `a_n = v²/r = (10)²/5 = 100/5 = 20 m/s², directed toward the center. Since speed is constant, a_t = 0. Total acceleration = a_n = 20 m/s². The particle IS accelerating even though its speed doesn't change — acceleration means any change in velocity, including direction changes.`,
+        },
+        {
+          question: `A cylinder of radius 0.5 m rolls without slipping on a flat surface. If the center moves at 3 m/s, what is the velocity of the point at the very top of the cylinder?`,
+          options: ["6 m/s", "3 m/s", "0 m/s", "4.5 m/s"],
+          correctIndex: 0,
+          explanation: `For rolling without slip: ω = v_center/R = 3/0.5 = 6 rad/s. The contact point is the IC (v = 0). The top is 2R = 1.0 m from the IC. v_top = ω × 2R = 6 × 1.0 = 6 m/s. Alternatively: v_top = v_center + v_rotation = 3 + ωR = 3 + 3 = 6 m/s. The top always moves at twice the center velocity for rolling without slip.`,
+        },
+        {
+          question: `Using v² = v₀² + 2a(s − s₀), a bullet decelerates from 400 m/s to 0 while penetrating 0.2 m of material. The deceleration magnitude is:`,
+          options: ["4 × 10⁵ m/s²", "4 × 10⁶ m/s²", "800 m/s²", "8 × 10⁴ m/s²"],
+          correctIndex: 0,
+          explanation: `0² = 400² + 2a(0.2). −160,000 = 0.4a. a = −400,000 m/s² → |a| = 4 × 10⁵ m/s². This equation is ideal when time is not given and not needed — it directly relates velocities, acceleration, and distance. The extreme deceleration illustrates why bullet-resistant materials must be very strong.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
-    'Constant acceleration: v = v₀ + at, s = s₀ + v₀t + ½at², v² = v₀² + 2a(s-s₀).',
-    'Normal acceleration a_n = v²/ρ changes direction; tangential a_t = dv/dt changes speed.',
-    'Angular motion mirrors linear: ω = dθ/dt, α = dω/dt, v = rω.',
-    'Rolling without slip: v = Rω at the center; contact point has v = 0.',
-    'Instantaneous center: all velocities perpendicular to line from IC.',
+    'Constant acceleration: v = v₀ + at, s = s₀ + v₀t + ½at², v² = v₀² + 2a(s−s₀). Know all three.',
+    'Projectile motion: horizontal = constant velocity, vertical = constant acceleration g. Solve independently, connect through time.',
+    'Normal acceleration a_n = v²/ρ changes direction (toward center); tangential a_t = dv/dt changes speed.',
+    'Angular motion mirrors linear: ω = dθ/dt, α = dω/dt. Converting rpm to rad/s: multiply by 2π/60.',
+    'Rolling without slip: v_center = Rω. Contact point has v = 0 (it is the IC). Top point has v = 2·v_center.',
+    'Relative velocity: v_B = v_A + ω × r_{B/A}. Velocity of B = translation of A + rotation about A.',
+    'Instantaneous center: all velocities perpendicular to lines drawn from IC. v = ω × distance from IC.',
+    'IC is for velocity only — do NOT use it for acceleration analysis.',
   ],
 },
 
