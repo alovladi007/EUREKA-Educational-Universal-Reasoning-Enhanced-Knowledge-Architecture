@@ -1620,6 +1620,13 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   const [patentAiaEra, setPatentAiaEra] = useState<string>('');
   const [patentContentTypes, setPatentContentTypes] = useState<string[]>([]);
 
+  // Question bank sizes per exam (actual number of questions in the static bank)
+  const QBANK_SIZES: Record<string, number> = {
+    MCAT: 500, CISSP: 400, PE_EE: 400, FE_EE: 400, FE_ME: 555,
+    PATENT_BAR: 400, SECURITY_PLUS: 400, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
+  };
+  const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
+
   useEffect(() => {
     apiClient.getQBankStats(examType).then(setStats).catch(() => {});
   }, [examType]);
@@ -2027,14 +2034,14 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             <input
               type="range"
               min={5}
-              max={Math.min(config.totalQuestions || 230, 500)}
+              max={qbankMax}
               step={5}
               value={questionCount}
               onChange={(e) => setQuestionCount(Number(e.target.value))}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
-              <span>5</span><span>{Math.round((config.totalQuestions || 230) / 2)}</span><span>{Math.min(config.totalQuestions || 230, 500)}</span>
+              <span>5</span><span>{Math.round(qbankMax / 2)}</span><span>{qbankMax}</span>
             </div>
           </div>
 
