@@ -45,7 +45,13 @@ export const FME_FORMULA_SHEETS: FormulaSheet[] = [
       { name: "Simpson's 1/3 Rule", formula: "∫f dx ≈ (h/3)[f₀ + 4f₁ + 2f₂ + 4f₃ + ... + f_n]", notes: "Error O(h⁴); requires even number of intervals" },
       { name: "Euler's Method", formula: "y_{n+1} = y_n + h·f(x_n, y_n)", notes: "First-order ODE solver; error O(h) per step" },
       { name: "Quadratic Formula", formula: "x = (-b ± √(b²-4ac)) / (2a)", notes: "Solves ax²+bx+c=0; discriminant determines root type" },
-      { name: "Divergence Theorem", formula: "∯_S F·dA = ∭_V (∇·F) dV", notes: "Relates surface flux to volume integral of divergence" }
+      { name: "Divergence Theorem", formula: "∯_S F·dA = ∭_V (∇·F) dV", notes: "Relates surface flux to volume integral of divergence" },
+      { name: "Stokes' Theorem", formula: "∮_C F·dr = ∬_S (∇×F)·dA", notes: "Relates line integral to surface integral of curl" },
+      { name: "L'Hôpital's Rule", formula: "lim f/g = lim f'/g' (if 0/0 or ∞/∞)", notes: "Evaluate indeterminate limits by differentiating top and bottom" },
+      { name: "Taylor Series (e^x)", formula: "e^x = 1 + x + x²/2! + x³/3! + ...", notes: "Converges for all x; useful for approximations" },
+      { name: "Laplace: Derivative", formula: "L{f'(t)} = sF(s) - f(0)", notes: "Converts derivatives to algebra in s-domain" },
+      { name: "Laplace: Second Derivative", formula: "L{f''(t)} = s²F(s) - sf(0) - f'(0)", notes: "Essential for solving second-order ODEs via Laplace" },
+      { name: "Integrating Factor (1st Order)", formula: "μ = e^(∫P(x)dx) for dy/dx + Py = Q", notes: "Solution: y = (1/μ)∫μQ dx" }
     ]
   },
   {
@@ -198,7 +204,12 @@ export const FME_FORMULA_SHEETS: FormulaSheet[] = [
       { name: "Springs in Parallel", formula: "k_eq = k₁ + k₂", notes: "Same deflection, forces add" },
       { name: "Springs in Series", formula: "1/k_eq = 1/k₁ + 1/k₂", notes: "Same force, deflections add" },
       { name: "Transmissibility", formula: "TR = √[1+(2ζr)²]/√[(1-r²)²+(2ζr)²]", notes: "r = ω/ω_n; TR<1 when r>√2 (isolation)" },
-      { name: "Rolling Without Slip", formula: "v_G = Rω; a_G = Rα", notes: "Constraint for rolling motion; contact point has v=0" }
+      { name: "Rolling Without Slip", formula: "v_G = Rω; a_G = Rα", notes: "Constraint for rolling motion; contact point has v=0" },
+      { name: "Conservation of Momentum", formula: "m₁v₁ + m₂v₂ = m₁v₁' + m₂v₂'", notes: "When no external impulses act on the system" },
+      { name: "Angular Impulse-Momentum", formula: "Iω₁ + Σ∫M dt = Iω₂", notes: "Rotational analogue of linear impulse-momentum" },
+      { name: "Projectile Range", formula: "R = v₀²sin(2θ)/g", notes: "Maximum range at θ=45°; level ground, no drag" },
+      { name: "Period of Pendulum", formula: "T = 2π√(L/g)", notes: "Simple pendulum; small angle approximation" },
+      { name: "Gravitational PE", formula: "V = mgh", notes: "Potential energy relative to datum; h = height above datum" }
     ]
   },
   {
@@ -285,7 +296,10 @@ export const FME_FORMULA_SHEETS: FormulaSheet[] = [
       { name: "Affinity Law: Power", formula: "P₂/P₁ = (N₂/N₁)³", notes: "Power scales with speed cubed" },
       { name: "NPSH Requirement", formula: "NPSH_A > NPSH_R", notes: "Avoid cavitation; increase reservoir height or reduce losses" },
       { name: "Specific Speed", formula: "N_s = N√Q/H^(3/4)", notes: "Low Ns = centrifugal; high Ns = axial pump" },
-      { name: "Hagen-Poiseuille (Laminar)", formula: "Q = πΔpD⁴/(128μL)", notes: "Volumetric flow for laminar pipe flow" }
+      { name: "Hagen-Poiseuille (Laminar)", formula: "Q = πΔpD⁴/(128μL)", notes: "Volumetric flow for laminar pipe flow" },
+      { name: "Dynamic Pressure", formula: "q = ½ρV²", notes: "Appears in drag, lift, and Bernoulli equations" },
+      { name: "Pipe Series Flow", formula: "Q = constant; h_L = Σh_L,i", notes: "Same flow through all pipes; losses add" },
+      { name: "Pipe Parallel Flow", formula: "h_L = constant; Q = ΣQ_i", notes: "Same head loss; flows add" }
     ]
   },
   {
@@ -314,7 +328,9 @@ export const FME_FORMULA_SHEETS: FormulaSheet[] = [
       { name: "Humidity Ratio", formula: "ω = 0.622·p_v/(P-p_v)", notes: "Mass of water vapor per mass of dry air" },
       { name: "Air-Fuel Ratio", formula: "AF = m_air/m_fuel", notes: "Stoichiometric AF uses balanced equation" },
       { name: "Equivalence Ratio", formula: "Φ = AF_stoich/AF_actual", notes: "Φ<1 lean; Φ=1 stoichiometric; Φ>1 rich" },
-      { name: "Stoichiometric Air", formula: "O₂ + 3.76N₂ per mole of O₂", notes: "Air is 21% O₂, 79% N₂ by volume" }
+      { name: "Stoichiometric Air", formula: "O₂ + 3.76N₂ per mole of O₂", notes: "Air is 21% O₂, 79% N₂ by volume" },
+      { name: "Isobaric Work", formula: "W = P(V₂-V₁)", notes: "Constant pressure; also W = mR(T₂-T₁) for ideal gas" },
+      { name: "Diesel Efficiency", formula: "η = 1 - [1/(γr^(γ-1))]·[(r_c^γ-1)/(r_c-1)]", notes: "r = compression ratio; r_c = cutoff ratio" }
     ]
   },
   {

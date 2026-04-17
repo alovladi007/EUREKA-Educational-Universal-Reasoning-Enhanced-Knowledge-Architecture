@@ -479,46 +479,60 @@ const FE_ME: ExamCurriculum = [
 // PE
 // ═══════════════════════════════════════════════════════════════
 
-const PE: ExamCurriculum = [
-  { sectionId: 'project_planning', sectionName: 'Project Planning', topics: [
-    t('pe_scheduling', 'Project Scheduling', 'CPM, PERT, Gantt charts, and resource leveling.'),
-    t('pe_estimating', 'Cost Estimating', 'Quantity takeoff, unit cost, and construction cost estimation.'),
+const PE_EE: ExamCurriculum = [
+  { sectionId: 'pee_general', sectionName: 'General Power Engineering (9%)', topics: [
+    t('pee_power_concepts', 'Power System Fundamentals', 'Single-phase and three-phase power, per-unit system, phasor diagrams, power triangle.', 15),
+    t('pee_eng_economics', 'Engineering Economics for Power', 'Life-cycle cost analysis, present worth, benefit-cost ratio for utility projects.'),
+    t('pee_reliability', 'System Reliability & Planning', 'SAIDI, SAIFI, CAIDI, LOLP, generation adequacy, capacity planning.'),
   ]},
-  { sectionId: 'means_methods', sectionName: 'Means & Methods', topics: [
-    t('pe_construction', 'Construction Methods', 'Earthwork, dewatering, formwork, and temporary structures.'),
-    t('pe_safety', 'Construction Safety', 'OSHA regulations, excavation safety, and fall protection.'),
+  { sectionId: 'pee_measurement', sectionName: 'Measurement & Instrumentation (8%)', topics: [
+    t('pee_instrument_xformers', 'Instrument Transformers', 'CTs and PTs: burden, accuracy class, ratio correction, polarity, saturation.'),
+    t('pee_metering', 'Metering & Power Measurement', 'Wattmeters, VAR meters, demand meters, revenue metering, Blondel theorem.'),
+    t('pee_transducers', 'Transducers & Data Acquisition', 'RTDs, thermocouples, strain gauges, SCADA, remote terminal units, PMUs.'),
   ]},
-  { sectionId: 'soil_mechanics', sectionName: 'Soil Mechanics', topics: [
-    t('pe_soil_class', 'Soil Classification', 'USCS and AASHTO classification, grain-size distribution, and Atterberg limits.'),
-    t('pe_soil_props', 'Soil Properties', 'Permeability, compaction, consolidation, and effective stress.'),
-    t('pe_foundations', 'Shallow & Deep Foundations', 'Bearing capacity, settlement, and pile design.'),
+  { sectionId: 'pee_circuits', sectionName: 'Circuit Analysis (10%)', topics: [
+    t('pee_dc_ac', 'DC & AC Circuit Analysis', 'KVL, KCL, mesh/nodal analysis, Thevenin/Norton, superposition, phasor methods.', 15),
+    t('pee_three_phase', 'Three-Phase Circuit Analysis', 'Balanced and unbalanced systems, Y-Delta, symmetrical components, sequence networks.', 15),
+    t('pee_transients', 'Transient Analysis', 'RL, RC, RLC transients, switching surges, TRV, inrush current, time constants.'),
   ]},
-  { sectionId: 'structural_analysis', sectionName: 'Structural Analysis', topics: [
-    t('pe_loads', 'Loads & Load Combinations', 'Dead, live, wind, seismic, and snow loads per ASCE 7.'),
-    t('pe_analysis_methods', 'Analysis Methods', 'Moment distribution, stiffness method, and influence lines.'),
+  { sectionId: 'pee_rotating', sectionName: 'Rotating Machines & Drives (12%)', topics: [
+    t('pee_sync_machines', 'Synchronous Machines', 'Generator operation, excitation, power-angle curve, V-curve, stability limits, parallel operation.', 15),
+    t('pee_induction', 'Induction Motors', 'Equivalent circuit, torque-speed curve, slip, efficiency, starting methods, VFD applications.', 15),
+    t('pee_dc_machines', 'DC Machines', 'Shunt, series, compound motors/generators, speed control, armature reaction.'),
+    t('pee_drives', 'Electric Drives & Motor Control', 'VFDs, soft starters, motor protection, NEC Article 430, duty cycle, service factor.'),
   ]},
-  { sectionId: 'structural_design', sectionName: 'Structural Design', topics: [
-    t('pe_concrete', 'Reinforced Concrete Design', 'Flexure, shear, columns, and slabs per ACI 318.'),
-    t('pe_steel', 'Steel Design', 'Tension, compression, beams, and connections per AISC.'),
-    t('pe_timber', 'Timber Design', 'Bending, compression, and connections per NDS.'),
+  { sectionId: 'pee_electromagnetics', sectionName: 'Electromagnetic Devices (9%)', topics: [
+    t('pee_transformers', 'Power Transformers', 'Equivalent circuit, voltage regulation, efficiency, tap changers, connections (Y, Delta, Zigzag).', 15),
+    t('pee_special_xformers', 'Special Transformers & Reactors', 'Autotransformers, instrument transformers, current-limiting reactors, grounding transformers.'),
+    t('pee_magnetics', 'Magnetic Circuits & Inductors', 'B-H curves, core losses, saturation, air gaps, mutual inductance, energy storage.'),
   ]},
-  { sectionId: 'hydraulics_hydrology', sectionName: 'Hydraulics & Hydrology', topics: [
-    t('pe_open_channel', 'Open Channel Flow', 'Manning equation, specific energy, and hydraulic jump.'),
-    t('pe_hydrology', 'Hydrology', 'Rainfall-runoff, rational method, SCS curve number, and unit hydrograph.'),
-    t('pe_stormwater', 'Stormwater Management', 'Detention, retention, and best management practices.'),
+  { sectionId: 'pee_transmission', sectionName: 'Transmission & Distribution (12%)', topics: [
+    t('pee_overhead', 'Overhead Transmission Lines', 'Line parameters (R, L, C), ABCD parameters, short/medium/long models, surge impedance loading.', 15),
+    t('pee_underground', 'Underground & Cable Systems', 'Cable construction, ampacity (Neher-McGrath), sheath currents, thermal resistance.'),
+    t('pee_voltage_reg', 'Voltage Regulation', 'Regulators, LTCs, capacitor banks, Ferranti effect, voltage profiles, VAR compensation.'),
+    t('pee_grounding', 'System Grounding', 'Solidly grounded, resistance grounded, ungrounded, reactance grounded, ground fault current.'),
   ]},
-  { sectionId: 'geometrics', sectionName: 'Geometrics', topics: [
-    t('pe_horizontal', 'Horizontal Alignment', 'Curve design, superelevation, and sight distance.'),
-    t('pe_vertical', 'Vertical Alignment', 'Vertical curves, grades, and stopping sight distance.'),
-    t('pe_traffic', 'Traffic Engineering', 'Signal timing, capacity analysis, and level of service.'),
+  { sectionId: 'pee_protection', sectionName: 'Protection (12%)', topics: [
+    t('pee_overcurrent', 'Overcurrent Protection', 'Time-current curves, relay coordination, fuses, reclosers, sectionalizers, pickup/time-dial settings.', 15),
+    t('pee_diff_protection', 'Differential Protection', 'Transformer differential, bus differential, generator differential, percentage restraint, slope.'),
+    t('pee_distance', 'Distance & Pilot Protection', 'Impedance relays, mho circles, zones, pilot wire, POTT, DCB, transfer trip.'),
+    t('pee_fault_analysis', 'Fault Analysis', 'Symmetrical components, three-phase/SLG/LLG/LL faults, fault current calculations, X/R ratio.', 15),
   ]},
-  { sectionId: 'materials', sectionName: 'Materials', topics: [
-    t('pe_asphalt', 'Asphalt & Pavement Design', 'Mix design, Superpave, and flexible pavement design.'),
-    t('pe_concrete_mat', 'Concrete Materials', 'Mix design, admixtures, and quality control testing.'),
+  { sectionId: 'pee_power_quality', sectionName: 'Power Quality & Reliability (8%)', topics: [
+    t('pee_harmonics', 'Harmonics', 'THD, harmonic sources, IEEE 519 limits, filters (passive/active), K-factor transformers.'),
+    t('pee_sags_swells', 'Voltage Sags, Swells & Flicker', 'Causes, magnitude/duration, ITIC curve, mitigation (UPS, DVR, STATCOM).'),
+    t('pee_pf_correction', 'Power Factor Correction', 'Capacitor bank sizing, switching transients, harmonic resonance, automatic PF controllers.'),
   ]},
-  { sectionId: 'site_development', sectionName: 'Site Development', topics: [
-    t('pe_grading', 'Grading & Earthwork', 'Cut-fill calculations, grading plans, and erosion control.'),
-    t('pe_utilities', 'Utilities & Drainage', 'Water distribution, wastewater, and storm drainage design.'),
+  { sectionId: 'pee_codes', sectionName: 'Codes & Standards (10%)', topics: [
+    t('pee_nec', 'National Electrical Code (NEC)', 'Article 210-240 branch circuits, Article 430 motors, Article 450 transformers, Article 480 batteries, grounding (Art 250).', 15),
+    t('pee_nesc', 'National Electrical Safety Code (NESC)', 'Clearances, loading districts, strength/loading requirements, supply station rules.'),
+    t('pee_ieee_standards', 'IEEE & NFPA Standards', 'IEEE C57 (transformers), IEEE 141/142 (Red/Green book), IEEE 242 (Buff book), NFPA 70E arc flash.'),
+  ]},
+  { sectionId: 'pee_power_system', sectionName: 'Power System Analysis (10%)', topics: [
+    t('pee_load_flow', 'Load Flow Analysis', 'Bus types (slack, PV, PQ), Gauss-Seidel, Newton-Raphson, fast decoupled, contingency analysis.', 15),
+    t('pee_stability', 'Power System Stability', 'Transient, steady-state, voltage stability, equal-area criterion, swing equation, PSS.'),
+    t('pee_short_circuit', 'Short-Circuit Studies', 'ANSI/IEEE method, momentary vs. interrupting duty, equipment ratings, symmetrical components application.', 15),
+    t('pee_economic_dispatch', 'Economic Dispatch & Generation', 'Incremental cost, lambda dispatch, loss coefficients, unit commitment, renewable integration.'),
   ]},
 ];
 
@@ -802,7 +816,7 @@ const FE_EE: ExamCurriculum = [
 // ═══════════════════════════════════════════════════════════════
 
 export const EXAM_CURRICULA: Record<string, ExamCurriculum> = {
-  SAT, GRE, GMAT, LSAT, PATENT_BAR, MCAT, FE_ME, FE_EE, PE, SECURITY_PLUS, CISSP,
+  SAT, GRE, GMAT, LSAT, PATENT_BAR, MCAT, FE_ME, FE_EE, PE_EE, SECURITY_PLUS, CISSP,
 };
 
 export function getCurriculum(examType: string): ExamCurriculum {
