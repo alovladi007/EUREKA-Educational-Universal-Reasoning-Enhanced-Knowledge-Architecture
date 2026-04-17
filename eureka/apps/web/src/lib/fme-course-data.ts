@@ -102,6 +102,37 @@ Integration reverses differentiation. Key formulas:
       examTip: 'For definite integrals, always evaluate the antiderivative at the upper limit minus the lower limit: F(b) - F(a). Many FE problems test whether you handle the limits correctly.',
       importantNote: 'Integration by parts is especially useful for ∫x·e^x dx or ∫x·sin(x) dx type problems. Use the LIATE rule to pick u: choose the function type that appears earliest in the LIATE list.',
     },
+    {
+      id: 'calc-practice',
+      title: 'Calculus Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `What is the derivative of f(x) = 3x⁴ − 2x² + 5x − 7?`,
+          options: ["12x³ − 4x + 5", "12x³ − 4x", "3x³ − 2x + 5", "12x⁴ − 4x² + 5x"],
+          correctIndex: 0,
+          explanation: `Apply the power rule term by term: d/dx(3x⁴) = 12x³, d/dx(−2x²) = −4x, d/dx(5x) = 5, d/dx(−7) = 0. Sum: f'(x) = 12x³ − 4x + 5. The constant term always differentiates to zero. This is the most basic calculus operation on the FE exam — fast and reliable.`,
+        },
+        {
+          question: `Evaluate ∫₀¹ (2x + 1) dx.`,
+          options: ["2", "1", "3", "1.5"],
+          correctIndex: 0,
+          explanation: `Antiderivative: F(x) = x² + x + C. Evaluate: F(1) − F(0) = (1 + 1) − (0 + 0) = 2. Always evaluate at upper limit minus lower limit. The constant C cancels in definite integrals. This represents the area under the line y = 2x + 1 from x = 0 to x = 1.`,
+        },
+        {
+          question: `Find dy/dx if y = e^(3x²).`,
+          options: ["6x·e^(3x²)", "e^(3x²)", "3x²·e^(3x²)", "6x²·e^(3x²)"],
+          correctIndex: 0,
+          explanation: `Chain rule: d/dx[e^u] = e^u · du/dx where u = 3x². du/dx = 6x. So dy/dx = e^(3x²) · 6x = 6x·e^(3x²). ⚠️ The most common chain rule error is forgetting the du/dx factor. Always ask: 'what's inside, and what's its derivative?'`,
+        },
+        {
+          question: `The volume of revolution for y = x² rotated about the x-axis from x = 0 to x = 2 is:`,
+          options: ["32π/5", "8π", "4π", "16π/3"],
+          correctIndex: 0,
+          explanation: `Disk method: V = π∫₀² [f(x)]² dx = π∫₀² x⁴ dx = π[x⁵/5]₀² = π(32/5) = 32π/5 ≈ 20.1. Note: [f(x)]² = (x²)² = x⁴, not x². Square the function first, then integrate. This is a common FE exam error — squaring x² gives x⁴, not 2x².`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Power rule d/dx(x^n) = n·x^(n-1) is the most frequently used derivative rule.',
@@ -2345,6 +2376,43 @@ Where r = ω/ω_n (frequency ratio).
       examTip: 'Resonance: ω ≈ ω_n causes maximum amplitude. Vibration isolation requires ω/ω_n > √2 ≈ 1.414. These are key numbers for the FE exam.',
       importantNote: 'In machine design, resonance must be avoided. Either design the system so that operating frequency is far from natural frequency, or add damping to limit amplitude at resonance.',
     },
+    {
+      id: 'vib-practice',
+      title: 'Vibrations Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A 10 kg mass is attached to a spring with k = 2500 N/m. The natural frequency is:`,
+          options: ["15.8 rad/s (2.52 Hz)", "250 rad/s", "50 rad/s", "5 rad/s"],
+          correctIndex: 0,
+          explanation: `ω_n = √(k/m) = √(2500/10) = √250 = 15.81 rad/s. f_n = ω_n/(2π) = 15.81/6.283 = 2.52 Hz. Period T = 1/f_n = 0.40 s. This is the most fundamental vibration formula — memorize ω_n = √(k/m). Double the mass → ω_n drops by √2. Double the stiffness → ω_n increases by √2.`,
+        },
+        {
+          question: `A system has ω_n = 20 rad/s and ζ = 0.3. The damped natural frequency ω_d is:`,
+          options: ["19.1 rad/s", "20 rad/s", "14 rad/s", "6 rad/s"],
+          correctIndex: 0,
+          explanation: `ω_d = ω_n√(1 − ζ²) = 20√(1 − 0.09) = 20√0.91 = 20 × 0.954 = 19.1 rad/s. Note: ω_d is ALWAYS less than ω_n. For small damping (ζ < 0.2), ω_d ≈ ω_n (less than 2% difference). The formula only applies for underdamped systems (ζ < 1). At ζ = 0.3, the difference is about 4.6%.`,
+        },
+        {
+          question: `Two springs in series have k₁ = 1000 N/m and k₂ = 3000 N/m. The equivalent stiffness is:`,
+          options: ["750 N/m", "4000 N/m", "2000 N/m", "1500 N/m"],
+          correctIndex: 0,
+          explanation: `Series: 1/k_eq = 1/k₁ + 1/k₂ = 1/1000 + 1/3000 = 3/3000 + 1/3000 = 4/3000. k_eq = 3000/4 = 750 N/m. Series springs are SOFTER than either individual spring (k_eq < min(k₁,k₂)). ⚠️ This is OPPOSITE to electrical resistors in series (which add). Springs in PARALLEL add directly: k_eq = k₁ + k₂ = 4000 N/m. Don't mix them up!`,
+        },
+        {
+          question: `A machine operates at 3000 rpm on mounts with ω_n = 100 rad/s. Is vibration isolation achieved?`,
+          options: ["Yes — ω/ω_n = 3.14 > √2, so TR < 1", "No — the frequency ratio is too low", "Cannot determine without damping ratio", "Yes — but only with high damping"],
+          correctIndex: 0,
+          explanation: `ω = 3000 × 2π/60 = 314.2 rad/s. r = ω/ω_n = 314.2/100 = 3.14. Since r > √2 ≈ 1.414, vibration isolation occurs (TR < 1). The transmitted force is LESS than the applied force. At r = 3.14, TR ≈ 0.11 for ζ = 0.1 (89% isolation). Higher damping slightly worsens isolation at this ratio but provides better behavior near resonance during startup/shutdown.`,
+        },
+        {
+          question: `A system with ω_n = 50 rad/s is forced at ω = 50 rad/s with ζ = 0.05. The magnification factor is approximately:`,
+          options: ["10 (very large — near resonance!)", "1", "0.1", "50"],
+          correctIndex: 0,
+          explanation: `At resonance (ω = ω_n, r = 1): Magnification ≈ 1/(2ζ) = 1/(2 × 0.05) = 10. The steady-state amplitude is 10× the static deflection. This is why resonance is dangerous — even small forces create large responses. With ζ = 0.01 (very light damping): magnification = 50. With ζ = 0.5 (heavy damping): magnification = 1. Damping is the ONLY thing limiting amplitude at resonance.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Natural frequency: ω_n = √(k/m); period T = 2π/ω_n.',
@@ -2354,6 +2422,7 @@ Where r = ω/ω_n (frequency ratio).
     'Springs in parallel add; springs in series: 1/k_eq = 1/k₁ + 1/k₂.',
     'Transmissibility < 1 when frequency ratio r = ω/ω_n > √2 — this is vibration isolation.',
     'Logarithmic decrement δ = ln(x₁/x₂) = 2πζ/√(1−ζ²) — measures how fast oscillations decay.',
+    'For a 2-DOF system: 2 natural frequencies and 2 mode shapes.',
   ],
 },
 
@@ -3359,6 +3428,31 @@ Or: **h_m = f · (L_e/D) · V²/(2g)** (equivalent length method)
 - **Pump selection**: h_p = h_L + Δz + Δ(V²/2g) + Δp/(ρg)`,
       examTip: 'For laminar flow, f = 64/Re — no chart needed. For turbulent flow, use the Moody chart in the FE reference handbook. You need Re and relative roughness ε/D to read the chart.',
     },
+    {
+      id: 'pipe-practice',
+      title: 'Pipe Flow Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `Water flows at 2 m/s in a 0.1 m diameter pipe (f = 0.02, L = 50 m). The friction head loss is:`,
+          options: ["2.04 m", "0.204 m", "20.4 m", "1.02 m"],
+          correctIndex: 0,
+          explanation: `h_f = f(L/D)(V²/2g) = 0.02(50/0.1)(2²/[2×9.81]) = 0.02(500)(0.2039) = 2.04 m. This is the Darcy-Weisbach equation — the primary pipe loss formula. Always double-check that V²/(2g) term: 4/19.62 = 0.204 m of velocity head. The pipe is 500 diameters long × friction factor × velocity head.`,
+        },
+        {
+          question: `For laminar flow at Re = 1500 in a pipe, the Darcy friction factor is:`,
+          options: ["0.0427", "0.02", "0.005", "0.064"],
+          correctIndex: 0,
+          explanation: `For laminar flow: f = 64/Re = 64/1500 = 0.0427. No Moody chart needed for laminar flow! This formula is exact for fully developed laminar flow in a circular pipe. Key: laminar exists only for Re < 2300. Above 4000 → turbulent → must use Moody chart with both Re and ε/D.`,
+        },
+        {
+          question: `A pipe system has a sharp entrance (K=0.5), 90° elbow (K=0.9), and exit (K=1.0). If V = 3 m/s, total minor losses are:`,
+          options: ["1.10 m", "2.40 m", "0.46 m", "3.60 m"],
+          correctIndex: 0,
+          explanation: `h_m = ΣK × V²/(2g) = (0.5 + 0.9 + 1.0) × 3²/(2×9.81) = 2.4 × 0.459 = 1.10 m. Total K = 2.4. These are added to the major (friction) losses to get total head loss: h_L = h_f + h_m. Minor loss coefficients K are typically given in the FE reference handbook or problem statement.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Darcy-Weisbach: h_f = f(L/D)(V²/2g); primary pipe friction formula.',
@@ -3540,6 +3634,37 @@ Maximum possible efficiency for a heat engine operating between T_H and T_L:
 **COP (refrigerator)**: COP_R = T_L/(T_H - T_L)`,
       examTip: 'Carnot efficiency η = 1 - T_L/T_H uses ABSOLUTE temperatures (Kelvin or Rankine). Converting to absolute is the #1 source of errors. Always check: T(K) = T(°C) + 273.15.',
       importantNote: 'The Carnot cycle sets the MAXIMUM efficiency for any heat engine between two temperatures. Real engines always have lower efficiency due to irreversibilities.',
+    },
+    {
+      id: 'thermo-practice',
+      title: 'Thermodynamics Laws Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A closed system receives 500 kJ of heat and does 200 kJ of work. The change in internal energy is:`,
+          options: ["300 kJ", "700 kJ", "−300 kJ", "500 kJ"],
+          correctIndex: 0,
+          explanation: `First law (closed): Q − W = ΔU → 500 − 200 = 300 kJ. Internal energy increases by 300 kJ. The system gained more energy from heat than it gave away as work, so the difference is stored as internal energy. If W were negative (work done ON the system), ΔU would be even larger.`,
+        },
+        {
+          question: `An adiabatic turbine receives steam at h₁ = 3200 kJ/kg and exhausts at h₂ = 2400 kJ/kg. The specific work output is:`,
+          options: ["800 kJ/kg", "5600 kJ/kg", "400 kJ/kg", "0 kJ/kg"],
+          correctIndex: 0,
+          explanation: `For a steady-flow adiabatic device (Q = 0), neglecting KE and PE: w = h₁ − h₂ = 3200 − 2400 = 800 kJ/kg. This is the steady-flow energy equation simplified. For turbines, h₁ > h₂ (enthalpy decreases through turbine). For compressors, h₂ > h₁ (enthalpy increases). The enthalpy change directly gives work for adiabatic steady-flow devices.`,
+        },
+        {
+          question: `For an isothermal expansion of an ideal gas, what happens to internal energy?`,
+          options: ["ΔU = 0 (for ideal gas, U depends only on T)", "ΔU increases", "ΔU decreases", "Cannot determine"],
+          correctIndex: 0,
+          explanation: `For an ideal gas, internal energy depends ONLY on temperature: U = U(T). If T is constant (isothermal), ΔU = 0 regardless of pressure or volume changes. From first law: Q − W = 0 → Q = W. All heat added is converted to work. This is a key ideal gas property that simplifies many thermodynamic calculations.`,
+        },
+        {
+          question: `What is the Carnot COP for a refrigerator operating between −10°C and 35°C?`,
+          options: ["5.84", "3.50", "0.17", "1.0"],
+          correctIndex: 0,
+          explanation: `Convert to Kelvin: T_L = −10 + 273 = 263 K, T_H = 35 + 273 = 308 K. COP_R = T_L/(T_H − T_L) = 263/(308 − 263) = 263/45 = 5.84. ⚠️ Must use KELVIN! Using °C: −10/(35−(−10)) = −10/45 = negative → obviously wrong. This is the maximum possible COP — real refrigerators achieve 2-4 typically.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -3885,6 +4010,31 @@ For a cylinder: **r_cr = k_insulation / h_outside**
 - Adding insulation when r > r_cr DECREASES heat loss`,
       examTip: 'Thermal resistance is analogous to electrical resistance: q = ΔT/R, like I = V/R. Series resistances add directly. This analogy makes composite wall problems straightforward on the FE exam.',
       importantNote: 'Critical radius of insulation: for small-diameter pipes, adding insulation may initially INCREASE heat loss because the increased surface area dominates over the increased resistance. This is a common FE exam concept.',
+    },
+    {
+      id: 'cond-practice',
+      title: 'Conduction Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A wall (k = 0.5 W/(m·K), L = 0.2 m, A = 10 m²) has T_inside = 25°C and T_outside = 5°C. The heat flow is:`,
+          options: ["500 W", "50 W", "5000 W", "100 W"],
+          correctIndex: 0,
+          explanation: `q = kA(ΔT/L) = 0.5 × 10 × (25−5)/0.2 = 0.5 × 10 × 100 = 500 W. Using resistance: R = L/(kA) = 0.2/(0.5×10) = 0.04 K/W. q = ΔT/R = 20/0.04 = 500 W. Both methods give the same answer — use whichever is more convenient for the problem.`,
+        },
+        {
+          question: `A composite wall has R₁ = 0.1 K/W and R₂ = 0.3 K/W in series. With ΔT = 80°C, the heat flow is:`,
+          options: ["200 W", "800 W", "267 W", "80 W"],
+          correctIndex: 0,
+          explanation: `Series: R_total = R₁ + R₂ = 0.1 + 0.3 = 0.4 K/W. q = ΔT/R_total = 80/0.4 = 200 W. The same heat flows through both layers (series circuit analog). The temperature drop across each layer: ΔT₁ = qR₁ = 200×0.1 = 20°C, ΔT₂ = qR₂ = 200×0.3 = 60°C. Check: 20+60 = 80°C ✓. Higher R → larger temperature drop.`,
+        },
+        {
+          question: `A steel sphere (ρ=7800, c_p=500, k=50 W/(m·K), D=0.05m) is quenched in oil (h=200). The Biot number is:`,
+          options: ["0.033 — lumped capacitance is valid (Bi < 0.1)", "3.33 — lumped is NOT valid", "0.33", "33.3"],
+          correctIndex: 0,
+          explanation: `L_c = V/A_s = (πD³/6)/(πD²) = D/6 = 0.05/6 = 0.00833 m. Bi = hL_c/k = 200 × 0.00833/50 = 0.033. Since Bi < 0.1, lumped capacitance is valid — temperature is approximately uniform inside the sphere. Time constant τ = ρVc_p/(hA) = ρ(D/6)c_p/h = 7800×0.00833×500/200 = 162.5 s ≈ 2.7 min.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -4403,6 +4553,31 @@ For spur gears:
 - **Transmitted power**: P = W_t · v (v = pitch line velocity)`,
       examTip: 'Gear ratio is inversely proportional to tooth count: the smaller gear (pinion) spins faster. Each external mesh pair reverses direction. Idler gears change direction but not speed ratio.',
     },
+    {
+      id: 'gear-practice',
+      title: 'Gear Systems Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A pinion with 20 teeth drives a gear with 60 teeth. If the pinion rotates at 1800 rpm, the gear speed is:`,
+          options: ["600 rpm", "5400 rpm", "1800 rpm", "900 rpm"],
+          correctIndex: 0,
+          explanation: `Speed ratio: ω_gear/ω_pinion = N_pinion/N_gear = 20/60 = 1/3. ω_gear = 1800/3 = 600 rpm. The larger gear (more teeth) rotates slower. Torque increases by the same ratio: T_gear = 3 × T_pinion (power is conserved: P = T₁ω₁ = T₂ω₂). This is how gears trade speed for torque.`,
+        },
+        {
+          question: `A gear transmits 15 kW at 600 rpm. The pitch diameter is 200 mm. The tangential force W_t is:`,
+          options: ["2,387 N", "4,775 N", "1,194 N", "75 N"],
+          correctIndex: 0,
+          explanation: `T = P/ω = 15,000/(600×2π/60) = 15,000/62.83 = 238.7 N·m. W_t = 2T/d = 2(238.7)/0.2 = 2,387 N. This tangential force transmits the power. The radial force W_r = W_t·tan(φ) = 2,387×tan(20°) = 869 N (for standard 20° pressure angle). Both forces load the shaft and bearings.`,
+        },
+        {
+          question: `An idler gear is placed between a driver (20 teeth) and driven gear (80 teeth). The overall speed ratio is:`,
+          options: ["4:1 (same as without the idler)", "8:1", "2:1", "1:1"],
+          correctIndex: 0,
+          explanation: `The idler gear reverses direction but does NOT affect the speed ratio. Ratio = N_driven/N_driver = 80/20 = 4:1. The idler meshes with both gears, but its tooth count cancels out: (N_idler/N_driver) × (N_driven/N_idler) = N_driven/N_driver. Idlers are used only for direction control or to span a gap between shafts.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Speed ratio: ω₂/ω₁ = N₁/N₂; larger gear rotates slower.',
@@ -4586,6 +4761,31 @@ Where K_t = theoretical stress concentration factor, q = notch sensitivity (0 to
 Apply K_f to the **alternating** stress component: σ_a,effective = K_f · σ_a`,
       examTip: 'Modified Goodman: σ_a/S_e + σ_m/S_ut = 1/n. Apply K_f to alternating stress only (not mean stress for the Goodman criterion). The endurance limit S_e must include all modification factors.',
       importantNote: 'Non-ferrous metals (aluminum, copper) do NOT have a true endurance limit — the S-N curve keeps decreasing. For aluminum, specify "fatigue strength at N cycles" rather than an endurance limit.',
+    },
+    {
+      id: 'fatigue-practice',
+      title: 'Fatigue Analysis Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A steel has S_ut = 600 MPa. The approximate endurance limit S_e' (before modification factors) is:`,
+          options: ["300 MPa", "600 MPa", "200 MPa", "400 MPa"],
+          correctIndex: 0,
+          explanation: `For steels with S_ut < 1400 MPa: S_e' ≈ 0.5 × S_ut = 0.5 × 600 = 300 MPa. This is the UNMODIFIED endurance limit from the rotating beam test specimen. The actual endurance limit S_e = k_a·k_b·k_c·k_d·k_e·S_e' will be LOWER after applying surface finish, size, loading, temperature, and reliability factors.`,
+        },
+        {
+          question: `Using the Goodman criterion with S_e = 200 MPa, S_ut = 500 MPa, σ_a = 100 MPa, σ_m = 150 MPa. The safety factor n is:`,
+          options: ["1.25", "2.0", "0.80", "1.54"],
+          correctIndex: 0,
+          explanation: `Goodman: σ_a/S_e + σ_m/S_ut = 1/n → 100/200 + 150/500 = 0.5 + 0.3 = 0.8 = 1/n → n = 1/0.8 = 1.25. Since n > 1, the design is safe (barely). The alternating stress uses 50% of the endurance limit, and the mean stress uses 30% of ultimate. Their combined effect = 80% of the Goodman limit. If K_f were applied to σ_a, the factor would decrease further.`,
+        },
+        {
+          question: `A component is subjected to two stress levels: 10,000 cycles at σ₁ (N₁ = 50,000) and then loaded at σ₂ (N₂ = 100,000). By Miner's rule, remaining life at σ₂ is:`,
+          options: ["80,000 cycles", "90,000 cycles", "100,000 cycles", "50,000 cycles"],
+          correctIndex: 0,
+          explanation: `Miner's rule: Σ(n_i/N_i) = 1 at failure. After first loading: n₁/N₁ = 10,000/50,000 = 0.2 (20% of life consumed). Remaining fraction = 1 − 0.2 = 0.8. Remaining life at σ₂: 0.8 × N₂ = 0.8 × 100,000 = 80,000 cycles. Miner's rule assumes linear damage accumulation and doesn't account for sequence effects — it's approximate but widely used.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
