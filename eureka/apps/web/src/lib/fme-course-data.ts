@@ -3049,6 +3049,31 @@ Family of directions: <uvw>; Family of planes: {hkl}
 **Dislocations** are the primary mechanism of plastic deformation in metals. Movement of dislocations along slip planes allows permanent shape change.`,
       examTip: 'BCC has 2 atoms/cell, FCC has 4, HCP has 6. APF for FCC = HCP = 0.74 (close-packed), BCC = 0.68. These numbers appear directly on the FE exam.',
     },
+    {
+      id: 'crystal-practice',
+      title: 'Crystal Structure Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `How many atoms per unit cell does an FCC structure have?`,
+          options: ["4", "2", "1", "8"],
+          correctIndex: 0,
+          explanation: `FCC: 8 corner atoms × (1/8 per cell) + 6 face atoms × (1/2 per cell) = 1 + 3 = 4 atoms. BCC: 8 × 1/8 + 1 center = 2 atoms. Simple cubic: 8 × 1/8 = 1 atom. These counts are directly tested — memorize BCC=2, FCC=4, HCP=6.`,
+        },
+        {
+          question: `Which crystal structure is most ductile and why?`,
+          options: ["FCC — it has the most slip systems (12)", "BCC — it has 2 atoms per cell", "HCP — it is close-packed", "Simple cubic — it has the most open space"],
+          correctIndex: 0,
+          explanation: `FCC has 12 slip systems ({111}<110>) — the most of any crystal structure. More slip systems means more ways for dislocations to move, enabling extensive plastic deformation (ductility). BCC has 12 slip systems too but requires higher stress. HCP has only 3 primary slip systems → limited ductility. This is why FCC metals (Al, Cu, Au, Ni) are typically the most ductile and formable.`,
+        },
+        {
+          question: `An edge dislocation is:`,
+          options: ["An extra half-plane of atoms inserted into the lattice", "A missing atom from a lattice site", "A substitutional impurity atom", "A crack in the crystal"],
+          correctIndex: 0,
+          explanation: `An edge dislocation is an extra half-plane of atoms wedged into the crystal lattice. The dislocation line is the edge of this half-plane. When stress is applied, the dislocation moves (glides) through the crystal — this is how metals deform plastically. Strengthening mechanisms (grain boundaries, precipitates, cold work) all work by impeding dislocation motion.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'BCC: 2 atoms/cell, APF 0.68 (Fe, Cr, W); FCC: 4 atoms/cell, APF 0.74 (Al, Cu, Ni).',
@@ -3159,6 +3184,31 @@ Key temperatures and compositions:
 | Case hardening | Harden surface only | Hard surface, tough core |`,
       examTip: 'The eutectoid point (727°C, 0.76% C) is the most tested point on the Fe-C diagram. Steel with <0.76% C is hypoeutectoid (ferrite + pearlite); >0.76% C is hypereutectoid (cementite + pearlite).',
       importantNote: 'Martensite forms by rapid quenching — it is a metastable BCT (body-centered tetragonal) phase that is very hard but brittle. Tempering after quenching is essential to restore some ductility.',
+    },
+    {
+      id: 'phase-practice',
+      title: 'Phase Diagrams Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `At the eutectoid point in the Fe-C diagram (727°C, 0.76% C), what transformation occurs?`,
+          options: ["Austenite (γ) → ferrite (α) + cementite (Fe₃C) = pearlite", "Liquid → austenite + cementite", "Ferrite → liquid", "Martensite → bainite"],
+          correctIndex: 0,
+          explanation: `The eutectoid reaction is a SOLID-STATE transformation: austenite (FCC) transforms to pearlite (lamellar α + Fe₃C) upon slow cooling through 727°C. This is the most important reaction in steel metallurgy. The eutectic (4.3% C, 1148°C) is LIQUID → solid — don't confuse them. Eutectoid = solid → two solids. Eutectic = liquid → two solids.`,
+        },
+        {
+          question: `A steel with 0.4% C cooled slowly from 900°C is classified as:`,
+          options: ["Hypoeutectoid (ferrite + pearlite at room temperature)", "Hypereutectoid", "Eutectoid", "Cast iron"],
+          correctIndex: 0,
+          explanation: `0.4% C < 0.76% C (eutectoid) → hypoeutectoid steel. On slow cooling: proeutectoid ferrite forms first (between A₃ and 727°C), then remaining austenite transforms to pearlite at 727°C. Final microstructure: ferrite + pearlite. More ferrite than pearlite since it's well below 0.76%. If it were >0.76% C: hypereutectoid, with proeutectoid cementite + pearlite.`,
+        },
+        {
+          question: `Rapid quenching of austenite produces:`,
+          options: ["Martensite (hard, brittle BCT structure)", "Pearlite", "Ferrite", "Bainite"],
+          correctIndex: 0,
+          explanation: `Quenching prevents the diffusion-controlled eutectoid transformation. Carbon is trapped in a body-centered tetragonal (BCT) structure — martensite. It's the hardest microstructure but very brittle. Tempering (reheating to 200-600°C) allows some carbon to precipitate as fine carbides, reducing hardness slightly but greatly improving toughness. The quench-and-temper sequence is the most common heat treatment for high-strength steels.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -3276,6 +3326,31 @@ The center of pressure is always **below** the centroid (for non-horizontal surf
 - Object floats when F_B ≥ W (buoyant force ≥ weight)
 - For a floating object: ρ_object/ρ_fluid = V_submerged/V_total`,
       examTip: 'For hydrostatic force on a submerged surface, the resultant force equals pressure at the centroid times the area: F = ρg·h_c·A. The center of pressure formula y_R = y_c + I/(y_c·A) tells you where the force acts — always below the centroid.',
+    },
+    {
+      id: 'fs-practice',
+      title: 'Fluid Statics Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `What is the gauge pressure at 5 m depth in water (ρ = 1000 kg/m³)?`,
+          options: ["49.05 kPa", "490.5 kPa", "9.81 kPa", "98.1 kPa"],
+          correctIndex: 0,
+          explanation: `P_gauge = ρgh = 1000 × 9.81 × 5 = 49,050 Pa = 49.05 kPa. Note this is GAUGE pressure (relative to atmosphere). Absolute pressure = P_atm + ρgh = 101.325 + 49.05 = 150.4 kPa. Quick reference: every 10 m of water depth ≈ 1 atmosphere ≈ 98.1 kPa of gauge pressure.`,
+        },
+        {
+          question: `A rectangular gate (2 m wide × 3 m tall) has its top edge at the water surface. The total hydrostatic force on the gate is:`,
+          options: ["88.3 kN", "176.6 kN", "29.4 kN", "58.9 kN"],
+          correctIndex: 0,
+          explanation: `F = ρg·h̄_c·A. Centroid of rectangular gate at h̄_c = 3/2 = 1.5 m below surface. A = 2 × 3 = 6 m². F = 1000 × 9.81 × 1.5 × 6 = 88,290 N = 88.3 kN. The center of pressure is at y_cp = h̄_c + I_c/(h̄_c·A) = 1.5 + (2×3³/12)/(1.5×6) = 1.5 + 4.5/9 = 2.0 m below the surface (below centroid, as always).`,
+        },
+        {
+          question: `A cube of wood (SG = 0.6, side = 0.3 m) floats in water. What fraction is submerged?`,
+          options: ["60%", "40%", "100%", "30%"],
+          correctIndex: 0,
+          explanation: `For a floating body: fraction submerged = ρ_object/ρ_fluid = SG = 0.6 = 60%. The buoyant force equals the weight: ρ_water·g·V_sub = ρ_wood·g·V_total → V_sub/V_total = ρ_wood/ρ_water = 0.6. This is a direct application of Archimedes' principle. If SG > 1, the object sinks. If SG < 1, it floats with (SG × 100)% submerged.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -4330,6 +4405,31 @@ Where G(s) = forward path, H(s) = feedback path.
       examTip: 'The closed-loop transfer function T(s) = G/(1+GH) is the most important control system formula for the FE exam. For unity feedback (H=1): T(s) = G/(1+G).',
       importantNote: 'PID tuning: P reduces error, I eliminates steady-state error, D reduces overshoot. Adding I can cause instability if gain is too high. The FE exam tests the qualitative effects of each term.',
     },
+    {
+      id: 'ctrl-practice',
+      title: 'Controls Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `For a unity feedback system with G(s) = 10/(s+2), the closed-loop transfer function is:`,
+          options: ["10/(s + 12)", "10/(s + 2)", "10s/(s + 12)", "(s+2)/10"],
+          correctIndex: 0,
+          explanation: `T(s) = G/(1+G) = [10/(s+2)] / [1 + 10/(s+2)] = [10/(s+2)] / [(s+2+10)/(s+2)] = 10/(s+12). The closed-loop pole is at s = -12 (stable, since negative). The open-loop pole was at s = -2. Feedback moved the pole further left → faster response. This is the most fundamental control systems calculation on the FE exam.`,
+        },
+        {
+          question: `A first-order system G(s) = 5/(3s+1) has a time constant of:`,
+          options: ["3 seconds", "5 seconds", "1/3 seconds", "15 seconds"],
+          correctIndex: 0,
+          explanation: `Standard form: G(s) = K/(τs+1). Comparing: τ = 3 s, K = 5 (DC gain). Step response: y(t) = 5(1 − e^{−t/3}). At t = 3s: y = 5(1−0.368) = 3.16 (63.2% of final value 5). At t = 15s (5τ): y ≈ 4.97 (99.3%). The time constant τ determines response speed. Smaller τ → faster response.`,
+        },
+        {
+          question: `Adding integral action (I term) to a PID controller primarily:`,
+          options: ["Eliminates steady-state error", "Reduces overshoot", "Increases bandwidth", "Reduces settling time"],
+          correctIndex: 0,
+          explanation: `The integral term accumulates error over time: K_i∫e dt. Even a tiny persistent error causes the integral to grow indefinitely, driving the output until the error reaches zero. This eliminates steady-state error (offset). However, I action can increase overshoot and settling time, and may cause instability if K_i is too large. The derivative (D) term reduces overshoot. The proportional (P) term reduces error magnitude but can't eliminate offset alone.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Closed-loop TF: T(s) = G(s)/[1+G(s)H(s)] for negative feedback. Unity: G/(1+G).',
@@ -4856,6 +4956,31 @@ Higher n → tool life less sensitive to speed changes.
 | CBN | Very high | Low | Very high (hardened steel) |
 | Diamond (PCD) | Highest | Very low | Highest (non-ferrous) |`,
       examTip: 'Taylor tool life equation VT^n = C: if you double the cutting speed, tool life decreases dramatically. For HSS (n≈0.125), doubling speed reduces life by a factor of ~256. Choose cutting speed carefully.',
+    },
+    {
+      id: 'mach-practice',
+      title: 'Machining Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A lathe turns a 100 mm diameter workpiece at 500 rpm. The cutting speed is:`,
+          options: ["157 m/min", "50 m/min", "500 m/min", "314 m/min"],
+          correctIndex: 0,
+          explanation: `V = πDN = π(0.1 m)(500 rev/min) = 157.1 m/min. This is the surface speed at the workpiece-tool interface. If the problem gives diameter in mm: V = πDN/1000 (to get m/min). Cutting speed determines tool life (Taylor equation) and surface finish. Higher V → better finish but shorter tool life.`,
+        },
+        {
+          question: `Using Taylor's equation VT^n = C with n = 0.25 and C = 300 (V in m/min, T in min): if V = 150 m/min, tool life T is:`,
+          options: ["16 min", "2 min", "256 min", "4 min"],
+          correctIndex: 0,
+          explanation: `VT^n = C → 150·T^0.25 = 300 → T^0.25 = 2 → T = 2^(1/0.25) = 2^4 = 16 min. For carbide (n=0.25), doubling speed → T_new = (C/2V)^(1/n) = (1/2)^4·T = T/16. Tool life drops by a factor of 16 when speed doubles. For HSS (n=0.125): T drops by 2^8 = 256 — much more sensitive!`,
+        },
+        {
+          question: `The MRR (material removal rate) in turning with V = 100 m/min, f = 0.2 mm/rev, d = 2 mm is:`,
+          options: ["40,000 mm³/min = 40 cm³/min", "400 mm³/min", "4000 mm³/min", "200 mm³/min"],
+          correctIndex: 0,
+          explanation: `MRR = V × f × d = 100,000 mm/min × 0.2 mm × 2 mm = 40,000 mm³/min = 40 cm³/min. Convert V to mm/min: 100 m/min = 100,000 mm/min. MRR determines machining time and power requirement: P = specific energy × MRR. Higher MRR = faster but requires more power and accelerates tool wear.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
