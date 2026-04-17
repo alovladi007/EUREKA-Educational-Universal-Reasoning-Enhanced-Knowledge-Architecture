@@ -1558,58 +1558,160 @@ fme_friction: {
   topicId: 'fme_friction',
   title: 'Friction',
   domainWeight: 'Statics · 7–11%',
-  overview: 'Friction is the resistance to sliding motion between surfaces. The FE exam tests dry (Coulomb) friction, wedge and belt friction, and the concepts of impending motion and static vs. kinetic friction.',
+  overview: 'Friction is the resistance to sliding between surfaces in contact. It is essential for analyzing brakes, clutches, belt drives, wedges, and any system where objects rest on inclined surfaces. The FE exam tests dry (Coulomb) friction extensively — expect 1–3 questions on inclined planes, belt friction, and whether a system is in equilibrium or sliding. Understanding the difference between static and kinetic friction, and knowing when "impending motion" applies, is key to scoring well.',
   sections: [
     {
       id: 'fric-coulomb',
       title: '1. Coulomb Friction and Applications',
-      content: `## 1.1 Coulomb Friction Model
+      content: `## 1.1 Coulomb (Dry) Friction Model
 
-**Static friction**: F_s ≤ μ_s · N (maximum before sliding begins)
-**Kinetic friction**: F_k = μ_k · N (during sliding)
+The Coulomb friction model describes friction between dry, unlubricated surfaces. It is the most commonly tested friction model on the FE exam.
 
-Where N = normal force, μ = coefficient of friction.
+**Static friction** (before motion begins):
+- F_s ≤ μ_s · N
+- The friction force can take ANY value from zero up to μ_s·N
+- At **impending motion** (about to slide): F_s = μ_s · N (equality)
 
-**Key relationships**:
-- μ_s > μ_k (static coefficient exceeds kinetic)
-- Friction force acts **tangent to the contact surface**, opposing motion or impending motion
-- At impending motion: F = μ_s · N (equality holds)
+**Kinetic friction** (during sliding):
+- F_k = μ_k · N (constant during motion)
+- μ_k < μ_s always (less force needed to keep moving than to start)
 
-## 1.2 Inclined Plane
+| Property | Static (μ_s) | Kinetic (μ_k) |
+|---|---|---|
+| When it acts | Before sliding begins | During sliding |
+| Magnitude | 0 ≤ F ≤ μ_s·N (variable) | F = μ_k·N (constant) |
+| Direction | Opposes impending motion | Opposes actual motion |
+| Typical values (steel/steel) | 0.6 | 0.4 |
 
-For a block on an incline at angle θ:
-- **N = W·cosθ**
-- **Friction force** = W·sinθ (for equilibrium)
-- **Impending motion** when tanθ = μ_s → **θ_slip = arctan(μ_s)**
+**Critical concept:** Friction force is NOT always equal to μ·N! It equals μ_s·N ONLY at impending motion. For a stationary object not about to slide, friction equals whatever value is needed for equilibrium — which could be less than μ_s·N.
+
+**The angle of friction** φ = arctan(μ). This is the angle the resultant reaction (N + F) makes with the normal. At impending motion, the resultant makes angle φ with the normal.
+
+## 1.2 Inclined Plane Problems
+
+The inclined plane is the most commonly tested friction configuration on the FE exam. For a block of weight W on a plane inclined at angle θ:
+
+**Free body diagram components:**
+- Weight component along the incline: **W·sinθ** (pulls block down)
+- Weight component perpendicular to incline: **W·cosθ** (pushes into surface)
+- Normal force: **N = W·cosθ** (perpendicular to surface)
+- Friction force: **F** (along surface, opposing motion)
+
+**Three scenarios:**
+1. **Equilibrium (no impending motion):** F = W·sinθ, where F < μ_s·N
+2. **Impending motion downward:** F = μ_s·N = μ_s·W·cosθ = W·sinθ → **tanθ = μ_s** → **θ_slip = arctan(μ_s)**
+3. **Sliding:** F_k = μ_k·W·cosθ, net force = W·sinθ − μ_k·W·cosθ = ma
+
+### Worked Example: Block on an Incline
+
+A 50 kg block sits on a 30° incline with μ_s = 0.4. Will it slide?
+
+**Step 1:** Gravity component along incline = mg·sinθ = 50(9.81)(sin30°) = 50(9.81)(0.5) = **245.3 N**
+**Step 2:** Maximum friction = μ_s·mg·cosθ = 0.4(50)(9.81)(cos30°) = 0.4(50)(9.81)(0.866) = **170.0 N**
+**Step 3:** Compare: 245.3 N > 170.0 N → The driving force exceeds maximum friction → **YES, the block slides!**
+
+The acceleration of the sliding block (using μ_k = 0.3): a = g(sinθ − μ_k·cosθ) = 9.81(0.5 − 0.3 × 0.866) = 9.81(0.5 − 0.260) = **2.35 m/s²** down the incline.
 
 ## 1.3 Wedge Friction
 
-Wedges amplify force through friction:
-- Draw FBD for each body separately
-- Apply equilibrium to each body
-- At impending motion, friction = μ·N on each surface
+Wedges convert a small horizontal force into a large vertical force through friction. They appear on the FE exam as force-amplification problems.
 
-## 1.4 Belt Friction
+**Analysis procedure:**
+1. Draw separate FBDs for the wedge AND the block it's pushing
+2. At impending motion, friction = μ·N on EVERY contact surface (friction acts on both sides of each interface)
+3. Apply equilibrium to each body (ΣFx = 0, ΣFy = 0)
+4. Solve the system of equations
 
-For a flat belt over a drum:
+**Self-locking condition:** A wedge is self-locking (stays in place without holding force) when:
+- **2φ ≥ α** (twice the friction angle ≥ wedge angle)
+- This means friction is strong enough to prevent the wedge from being pushed back out
+
+## 1.4 Belt and Rope Friction
+
+For a flat belt wrapped over a cylindrical drum (or a rope over a post), the tension ratio between the tight and slack sides follows an exponential relationship:
 
 **T₂ = T₁ · e^(μβ)**
 
-Where T₂ = tight side tension, T₁ = slack side tension, β = wrap angle in **radians**.
+Where:
+- T₂ = tight-side tension (larger)
+- T₁ = slack-side tension (smaller)
+- μ = coefficient of friction
+- β = **wrap angle in RADIANS** (⚠️ NOT degrees!)
 
 | Condition | Formula |
 |---|---|
 | Impending slip | T₂/T₁ = e^(μ_s·β) |
-| Belt power | P = (T₂ - T₁)·v |`,
-      examTip: 'Belt friction: T₂ = T₁·e^(μβ) — the wrap angle β MUST be in radians. This is a very common FE exam question. Also remember that T₂ is always the tight (larger tension) side.',
+| Power transmitted | P = (T₂ − T₁) · v |
+| Torque on drum | T_drum = (T₂ − T₁) · r |
+
+### Worked Example: Capstan (Rope on Post)
+
+A sailor wraps a rope 2 full turns around a post (β = 2 × 2π = 4π rad). If μ = 0.3 and the boat pulls with T₂ = 10,000 N, what holding force T₁ is needed?
+
+T₁ = T₂ / e^(μβ) = 10,000 / e^(0.3 × 4π) = 10,000 / e^(3.77) = 10,000 / 43.4 = **230 N**
+
+The sailor only needs to hold 230 N to resist 10,000 N! This exponential amplification is why capstans and bollards are so effective.
+
+## 1.5 Screw Friction (Square Threads)
+
+A screw converts rotational motion to linear force. For a square-threaded screw (lead L, mean radius r):
+
+**Torque to raise a load W:** T = Wr · tan(α + φ)
+**Torque to lower a load W:** T = Wr · tan(α − φ) (if α > φ) or T = Wr · tan(φ − α) (to prevent lowering if α < φ)
+
+Where α = lead angle = arctan(L / 2πr) and φ = friction angle = arctan(μ).
+
+**Self-locking:** The screw stays in place under load when **α < φ** (lead angle < friction angle). Standard fastener threads are self-locking. Ball screws and ACME screws with lubrication may not be.`,
+      examTip: 'Belt friction: T₂ = T₁·e^(μβ) — the wrap angle β MUST be in radians. Convert degrees to radians first! Also, friction force is NOT always μ·N — it equals μ_s·N ONLY at impending motion. For a stationary object in equilibrium, friction is whatever value is needed for equilibrium (which may be much less than μ_s·N). The FE exam tests this distinction frequently.',
+      importantNote: 'On incline problems, the critical angle is θ_slip = arctan(μ_s). If the incline angle exceeds this, the block will slide regardless of its weight. If the angle is less, the block stays put. Weight cancels out of the comparison — the slip angle depends ONLY on μ_s.',
+    },
+    {
+      id: 'fric-practice',
+      title: 'Friction Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `A 100 kg block sits on a horizontal surface with μ_s = 0.3. A horizontal force of 200 N is applied. The friction force is:`,
+          options: ["200 N (equal to applied force — the block is in equilibrium)", "294 N (= μ_s·N = 0.3 × 981)", "0 N", "981 N"],
+          correctIndex: 0,
+          explanation: `First check: can friction resist the applied force? Maximum friction = μ_s·N = 0.3 × 100 × 9.81 = 294.3 N. Since 200 N < 294.3 N, the block does NOT slide. Friction = 200 N (whatever is needed for equilibrium). This is the #1 friction exam trap — friction is NOT always μ·N. It equals μ·N only when the block is about to slide or already sliding. Here, friction matches the applied force exactly.`,
+        },
+        {
+          question: `A flat belt wraps 180° (π radians) around a pulley with μ = 0.25. If the slack-side tension is 200 N, the tight-side tension is:`,
+          options: ["437 N", "200 N", "628 N", "314 N"],
+          correctIndex: 0,
+          explanation: `T₂ = T₁·e^(μβ) = 200·e^(0.25 × π) = 200·e^(0.785) = 200 × 2.19 = 437 N. Key steps: (1) Convert wrap angle to radians: 180° = π rad. (2) Apply the exponential formula. Common errors: using degrees instead of radians, or confusing which side is T₁ vs T₂. T₂ is always the larger (tight/driven) side.`,
+        },
+        {
+          question: `At what incline angle will a block begin to slide if μ_s = 0.577?`,
+          options: ["30°", "45°", "60°", "90°"],
+          correctIndex: 0,
+          explanation: `θ_slip = arctan(μ_s) = arctan(0.577) = 30°. Note: tan(30°) = 1/√3 ≈ 0.577. This is a standard trig value worth remembering. At exactly 30°, the block is at impending motion. Above 30°, it slides. Below 30°, it stays put. The weight of the block doesn't matter — the critical angle depends only on μ_s.`,
+        },
+        {
+          question: `A screw jack has a lead angle of 5° and friction angle of 8°. Is the screw self-locking?`,
+          options: ["Yes — lead angle < friction angle, so the screw won't unwind under load", "No — the screw will unwind", "Cannot determine without the load", "Self-locking only if lubricated"],
+          correctIndex: 0,
+          explanation: `Self-locking condition: α < φ (lead angle < friction angle). Here: 5° < 8° → YES, self-locking. The screw stays in place under load without an external holding torque. If the lead angle exceeded the friction angle (α > φ), the screw would back-drive (lower the load on its own). Standard fastener threads are designed to be self-locking. Ball screws are typically NOT self-locking.`,
+        },
+        {
+          question: `Two blocks are stacked: A (20 kg) on top of B (30 kg) on the floor. μ between A and B = 0.4; μ between B and floor = 0.3. A horizontal force P is applied to B. What is the maximum P before any sliding occurs?`,
+          options: ["147 N (limited by floor friction on the combined weight)", "78.5 N", "196 N", "245 N"],
+          correctIndex: 0,
+          explanation: `Check both interfaces. If A and B move together: friction at floor = μ_floor × (m_A + m_B)g = 0.3 × 50 × 9.81 = 147.2 N. If B slides under A: friction at floor + friction between A and B on B's FBD. But first check if A slides on B: friction on A from B = μ_AB × m_A × g = 0.4 × 20 × 9.81 = 78.5 N (this accelerates A). For A and B to move together, B's net force equation must give the same acceleration. The floor friction (147 N) is the limiting factor for combined motion. Maximum P = 147 N before the system begins to slide.`,
+        },
+      ],
     },
   ],
   keyTakeaways: [
-    'Static friction: F ≤ μ_s·N; kinetic friction: F = μ_k·N.',
-    'At impending motion on an incline: θ_slip = arctan(μ_s).',
-    'Belt friction: T₂ = T₁·e^(μβ) with β in radians.',
-    'μ_s > μ_k: it takes more force to start motion than to maintain it.',
+    'Static friction F ≤ μ_s·N — friction equals μ_s·N ONLY at impending motion, not always.',
+    'Kinetic friction F = μ_k·N — constant during sliding, always less than maximum static friction.',
+    'Incline critical angle: θ_slip = arctan(μ_s) — independent of weight.',
+    'Belt friction: T₂ = T₁·e^(μβ) — wrap angle β must be in RADIANS.',
+    'Wedge self-locking: 2φ ≥ α (twice friction angle ≥ wedge angle).',
+    'Screw self-locking: α < φ (lead angle < friction angle).',
     'Friction always opposes the direction of motion or impending motion.',
+    'On stacked-block problems, check BOTH contact surfaces for which one slips first.',
   ],
 },
 
