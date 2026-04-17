@@ -3,7 +3,9 @@
  * Communicates with the FastAPI backend for resume CRUD, sharing, and versioning.
  */
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000/api/v1";
+const _url = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const _prefix = process.env.NEXT_PUBLIC_API_PREFIX || "/api/v1";
+const API_BASE = `${_url}${_prefix}`;
 
 function getHeaders(): HeadersInit {
   const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
