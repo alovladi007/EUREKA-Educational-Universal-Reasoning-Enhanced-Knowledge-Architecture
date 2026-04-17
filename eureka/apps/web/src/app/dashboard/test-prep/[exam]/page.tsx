@@ -29,6 +29,8 @@ import { getMCATCourseContent, hasMCATCourseContent } from '@/lib/mcat-course-da
 import { FME_QUESTIONS } from '@/lib/fme-qbank-data';
 import { PE_EE_QUESTIONS } from '@/lib/pe-ee-qbank-data';
 import { MCAT_QUESTIONS } from '@/lib/mcat-qbank-data';
+import { SECPLUS_QUESTIONS } from '@/lib/security-plus-qbank-data';
+import { PATENT_BAR_QUESTIONS } from '@/lib/patent-bar-qbank-data';
 import { getFMEFlashcards, FME_FLASHCARD_DOMAINS, FME_FLASHCARD_COUNT } from '@/lib/fme-flashcard-data';
 import { getPEEEFlashcards, PEEE_FLASHCARD_DOMAINS, PEEE_FLASHCARD_COUNT } from '@/lib/pe-ee-flashcard-data';
 import { getMCATFlashcards, MCAT_FLASHCARD_DOMAINS, MCAT_FLASHCARD_COUNT } from '@/lib/mcat-flashcard-data';
@@ -1623,7 +1625,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 500, CISSP: 400, PE_EE: 400, FE_EE: 605, FE_ME: 555,
-    PATENT_BAR: 300, SECURITY_PLUS: 300, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
+    PATENT_BAR: 400, SECURITY_PLUS: 400, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
 
@@ -1825,6 +1827,51 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         } else {
           alert('No questions available for the selected sections.');
         }
+      } else if (examType === 'SECURITY_PLUS') {
+        let spQuestions = [...SECPLUS_QUESTIONS];
+        if (selectedSections.length > 0) {
+          const sectionToTopic: Record<string, number> = {
+            threats_attacks: 0, architecture: 1, implementation: 2, operations: 3, governance: 4,
+          };
+          const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
+          spQuestions = spQuestions.filter(q => topicIds.includes(q.topicId));
+        }
+        spQuestions = spQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        if (spQuestions.length > 0) {
+          const normalized = spQuestions.map((q: any, i: number) => ({
+            ...q, question_text: q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct, explanation_text: q.explanation,
+            section_id: `sp_topic${q.topicId}`, _idx: i,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
+          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
+        } else { alert('No questions available for the selected sections.'); }
+      } else if (examType === 'PATENT_BAR') {
+        let pbQuestions = [...PATENT_BAR_QUESTIONS];
+        if (selectedSections.length > 0) {
+          const sectionToTopic: Record<string, number> = {
+            patentability: 0, application_prep: 1, filing_prosecution: 2, office_responses: 3,
+            pct_international: 4, post_issuance: 5, design_plant: 6, ethics_conduct: 7,
+          };
+          const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
+          pbQuestions = pbQuestions.filter(q => topicIds.includes(q.topicId));
+        }
+        pbQuestions = pbQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        if (pbQuestions.length > 0) {
+          const normalized = pbQuestions.map((q: any, i: number) => ({
+            ...q, question_text: q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct, explanation_text: q.explanation,
+            section_id: `pb_topic${q.topicId}`, _idx: i,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
+          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
+        } else { alert('No questions available for the selected sections.'); }
       } else {
         alert('No questions available for this exam yet. Questions are being added.');
       }
