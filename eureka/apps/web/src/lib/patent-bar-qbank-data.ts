@@ -3759,5 +3759,2769 @@ export const PATENT_BAR_QUESTIONS: PatentBarQuestion[] = [
       'If the PTAB affirms the rejection and the applicant does not take further action (rehearing, Federal Circuit appeal, amendment under §41.50(b) if new ground, or RCE), the application prosecution is terminated and the application becomes abandoned after the time for seeking review expires. See MPEP §1215.',
   },
 
-  // TOPICS 4-7 CONTINUE BELOW
+  // =============================================
+  // TOPIC 4 — PCT & INTERNATIONAL FILING (40 Qs)
+  // =============================================
+
+  // --- PCT Overview (10 questions) ---
+  {
+    id: 'pb_t4_001',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 1,
+    question: 'What does the abbreviation "PCT" stand for in the context of international patent filing?',
+    options: [
+      'Patent Cooperation Treaty',
+      'Patent Classification Taxonomy',
+      'Priority Claim Transmission',
+      'Patentability Compliance Test',
+    ],
+    correct: 0,
+    explanation:
+      'PCT stands for Patent Cooperation Treaty, an international treaty administered by WIPO that provides a unified procedure for filing patent applications in its member states. See MPEP §1801.',
+  },
+  {
+    id: 'pb_t4_002',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 1,
+    question: 'The Receiving Office (RO) in a PCT application is responsible for:',
+    options: [
+      'Conducting the international search',
+      'Receiving and processing the international application at filing',
+      'Publishing the international application',
+      'Granting the international patent',
+    ],
+    correct: 1,
+    explanation:
+      'The Receiving Office (RO) is the national or regional office or WIPO (as RO/IB) where the PCT application is filed. It checks formalities, collects fees, and transmits copies to the International Bureau and International Searching Authority. See MPEP §1804 and PCT Article 10.',
+  },
+  {
+    id: 'pb_t4_003',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 2,
+    question: 'The International Bureau (IB) of WIPO performs which of the following functions in the PCT system?',
+    options: [
+      'Conducts the international search and issues the ISR',
+      'Examines the application on the merits and grants patents',
+      'Publishes the international application, maintains the PCT record, and transmits documents to designated offices',
+      'Decides patentability under the laws of each designated state',
+    ],
+    correct: 2,
+    explanation:
+      'The International Bureau (IB) is the WIPO secretariat. It publishes the international application at 18 months from the priority date, maintains official PCT records, and transmits documents to designated/elected offices. It does not conduct searches or make patentability determinations. See PCT Article 12 and MPEP §1801.',
+  },
+  {
+    id: 'pb_t4_004',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 1,
+    question: 'Which entity conducts the international search and issues the International Search Report (ISR) in the PCT process?',
+    options: [
+      'The Receiving Office',
+      'The International Searching Authority (ISA)',
+      'The International Bureau',
+      'The designated national office',
+    ],
+    correct: 1,
+    explanation:
+      'The International Searching Authority (ISA) is a patent office appointed under the PCT to carry out the international search and prepare the ISR and written opinion. For U.S. applicants, the USPTO typically serves as ISA. See PCT Article 16 and MPEP §1808.',
+  },
+  {
+    id: 'pb_t4_005',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 2,
+    question: 'An international application filed under the PCT must contain which of the following elements at the time of filing to receive a filing date?',
+    options: [
+      'Claims, abstract, description, drawings, and oath/declaration',
+      'A request, an indication that it is intended as an international application, identification of the applicant, a description, and at least one claim',
+      'A specification, formal drawings, and payment of all national fees',
+      'An abstract, search fee, and designation of at least one country',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Rule 11 and Article 11(1), to receive an international filing date, the application must contain: a request form, an indication it is intended as a PCT application, designation of at least one Contracting State (automatic under Rule 4.9(a)), identification of the applicant, a description, and at least one claim. See MPEP §1810.',
+  },
+  {
+    id: 'pb_t4_006',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 2,
+    question: 'Under the PCT, the "international phase" ends and the "national phase" begins when:',
+    options: [
+      'The international search report is issued',
+      'The applicant enters one or more designated offices, typically at 30 months from the priority date',
+      'The international application is published',
+      'The Chapter II demand is filed',
+    ],
+    correct: 1,
+    explanation:
+      'The international phase encompasses filing, search, and optional preliminary examination. The national phase begins when the applicant takes steps to enter designated/elected offices (typically by 30 months from the earliest priority date). See PCT Article 22 and MPEP §1893.',
+  },
+  {
+    id: 'pb_t4_007',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 1,
+    question: 'A PCT international application automatically designates:',
+    options: [
+      'Only the countries selected by the applicant on the request form',
+      'All PCT Contracting States that are bound by the Treaty on the international filing date',
+      'Only the home country of the applicant',
+      'A maximum of 10 countries chosen at filing',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Rule 4.9(a), the filing of a request constitutes the designation of all Contracting States bound by the PCT on the international filing date. The applicant may later elect which states to actually enter during the national phase. See MPEP §1802.',
+  },
+  {
+    id: 'pb_t4_008',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 3,
+    question: 'An applicant files a PCT international application on March 1, 2024, claiming priority to a U.S. provisional filed March 15, 2023. The priority date for purposes of the 30-month national phase entry deadline is:',
+    options: [
+      'March 1, 2024 (the international filing date)',
+      'March 15, 2023 (the earliest priority date)',
+      'September 15, 2023 (6 months after the priority date)',
+      'March 15, 2025 (2 years after the priority date)',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Article 22, the 30-month period for national phase entry runs from the earliest priority date, not the international filing date. Here the priority date is March 15, 2023, so the 30-month deadline would be September 15, 2025. See MPEP §1893.01(a).',
+  },
+  {
+    id: 'pb_t4_009',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 2,
+    question: 'Which of the following is NOT a function of the Receiving Office (RO) under the PCT?',
+    options: [
+      'According the international filing date',
+      'Checking compliance with physical and formal requirements',
+      'Conducting the international preliminary examination',
+      'Collecting and transmitting the search fee to the ISA',
+    ],
+    correct: 2,
+    explanation:
+      'The International Preliminary Examining Authority (IPEA), not the RO, conducts the international preliminary examination (Chapter II). The RO accords the filing date, checks formalities, and collects/transmits fees. See PCT Articles 10-14 and MPEP §1805.',
+  },
+  {
+    id: 'pb_t4_010',
+    topicId: 4,
+    subtopic: 'pct_overview',
+    difficulty: 3,
+    question: 'Under the PCT, a priority claim to an earlier application must be made within what time period from the filing date of the earlier application?',
+    options: [
+      '6 months',
+      '12 months (with the possibility of restoration of right of priority under Rule 26bis.3)',
+      '18 months',
+      '30 months',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Rule 4.10 and the Paris Convention Article 4, the priority period is 12 months from the filing date of the earlier application. PCT Rule 26bis.3 provides a mechanism for restoration of the right of priority if the international application is filed within 14 months of the earlier filing date. See MPEP §1828.',
+  },
+
+  // --- International Phase (10 questions) ---
+  {
+    id: 'pb_t4_011',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 1,
+    question: 'The International Search Report (ISR) is typically established within what time frame from the priority date or filing date?',
+    options: [
+      '3 months from filing',
+      '9 months from the priority date or 3 months from receipt by the ISA, whichever is later',
+      '18 months from filing',
+      '30 months from the priority date',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Article 18 and Rule 42, the ISR is typically established within 3 months from receipt of the search copy by the ISA, or 9 months from the priority date, whichever expires later. See MPEP §1843.',
+  },
+  {
+    id: 'pb_t4_012',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 2,
+    question: 'The written opinion of the International Searching Authority (WO/ISA) addresses:',
+    options: [
+      'Only formal defects in the application',
+      'Novelty, inventive step, and industrial applicability of the claimed invention',
+      'The market value of the invention',
+      'Only whether the claims are clearly drafted',
+    ],
+    correct: 1,
+    explanation:
+      'The written opinion of the ISA provides a preliminary and non-binding opinion on novelty (Article 33(2)), inventive step (Article 33(3)), and industrial applicability (Article 33(4)). It serves as a basis for the Chapter II preliminary examination if demanded. See PCT Rule 43bis and MPEP §1844.',
+  },
+  {
+    id: 'pb_t4_013',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 1,
+    question: 'An international application under the PCT is published by the International Bureau at:',
+    options: [
+      '12 months from the priority date',
+      '18 months from the earliest priority date',
+      '30 months from the priority date',
+      'Upon issuance of the ISR only',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Article 21, the International Bureau publishes the international application promptly after the expiration of 18 months from the priority date. The applicant may request earlier publication. See MPEP §1857.',
+  },
+  {
+    id: 'pb_t4_014',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 2,
+    question: 'A Chapter II demand for international preliminary examination must be filed before the later of:',
+    options: [
+      '18 months from the priority date or 3 months from ISR transmittal',
+      '22 months from the priority date or 3 months from ISR/WO transmittal, whichever expires later',
+      '30 months from the priority date',
+      '12 months from the international filing date',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Rule 54bis, the demand must be filed before the expiration of whichever is later: 22 months from the priority date, or 3 months from the date of transmittal of the ISR and written opinion. See MPEP §1860.',
+  },
+  {
+    id: 'pb_t4_015',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 2,
+    question: 'The International Preliminary Examining Authority (IPEA) conducts its examination under Chapter II of the PCT. The IPEA issues a document called the:',
+    options: [
+      'International Search Report',
+      'International Preliminary Report on Patentability (Chapter II) (IPRP)',
+      'Notice of Allowance',
+      'Office Action',
+    ],
+    correct: 1,
+    explanation:
+      'The IPEA issues the International Preliminary Report on Patentability (Chapter II), formerly called the International Preliminary Examination Report (IPER). This non-binding opinion addresses novelty, inventive step, and industrial applicability. See PCT Article 35 and MPEP §1878.',
+  },
+  {
+    id: 'pb_t4_016',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 3,
+    question: 'During Chapter II examination before the IPEA, the applicant may amend which parts of the international application?',
+    options: [
+      'Only the claims',
+      'The claims, description, and drawings under PCT Article 34',
+      'Only the abstract',
+      'No amendments are permitted until national phase',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Article 34(2)(b), the applicant may amend the claims, description, and drawings before the IPEA during Chapter II examination. Amendments must not go beyond the disclosure in the international application as filed. This is broader than Article 19 amendments (claims only before the IB). See MPEP §1875.',
+  },
+  {
+    id: 'pb_t4_017',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 1,
+    question: 'Under PCT Article 19, amendments to the claims may be filed with the International Bureau within what time period after transmittal of the ISR?',
+    options: [
+      '1 month',
+      '2 months from the date of transmittal of the ISR, or 16 months from the priority date, whichever expires later',
+      '6 months from the priority date',
+      '30 months from the priority date',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Article 19 and Rule 46, the applicant may file amendments to the claims with the International Bureau within 2 months from the date of transmittal of the ISR, or 16 months from the priority date, whichever is later. Only the claims may be amended under Article 19. See MPEP §1853.',
+  },
+  {
+    id: 'pb_t4_018',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 2,
+    question: 'If the ISA finds that the international application relates to multiple inventions and the applicant does not pay additional search fees, the ISR will:',
+    options: [
+      'Be established for all inventions without additional fees',
+      'Cover only the invention first mentioned in the claims (unity of invention requirement)',
+      'Be cancelled entirely',
+      'Be delayed until the applicant pays all fees',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Article 17(3)(a) and Rule 13, if the ISA considers that the international application does not comply with the requirement of unity of invention (Rule 13), and the applicant does not pay additional fees, the ISR is established for the invention first mentioned in the claims. See MPEP §1850.',
+  },
+  {
+    id: 'pb_t4_019',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 3,
+    question: 'The written opinion of the ISA is NOT communicated to designated offices until:',
+    options: [
+      'Immediately upon completion',
+      'At the time of international publication',
+      'After the expiration of 30 months from the priority date (as part of the IPRP Chapter I)',
+      'Only if Chapter II is not demanded',
+    ],
+    correct: 2,
+    explanation:
+      'The WO/ISA is not communicated to designated offices during the international phase. Under PCT Rule 44ter, if no Chapter II demand is filed, the WO/ISA becomes the International Preliminary Report on Patentability (Chapter I) and is communicated to designated offices after 30 months from the priority date. See MPEP §1844.',
+  },
+  {
+    id: 'pb_t4_020',
+    topicId: 4,
+    subtopic: 'international_phase',
+    difficulty: 2,
+    question: 'The International Bureau publishes the international application in which language if the application was filed in a language other than the publication language?',
+    options: [
+      'Only in the language of filing',
+      'In the language of the translation furnished for the purpose of international search, or in the publication language if a translation is available',
+      'In all official UN languages',
+      'Publication does not occur for non-English applications',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Rule 48.3, if the international application was filed in a language that is not a language of publication, the IB publishes it in the language of the translation furnished under Rule 12.3 or 12.4. The languages of publication include Arabic, Chinese, English, French, German, Japanese, Korean, Portuguese, Russian, and Spanish. See MPEP §1857.',
+  },
+
+  // --- National Phase Entry (10 questions) ---
+  {
+    id: 'pb_t4_021',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 1,
+    question: 'Under 35 U.S.C. §371, national phase entry into the United States from a PCT application requires completion of the national stage by what deadline?',
+    options: [
+      '12 months from the priority date',
+      '20 months from the priority date',
+      '30 months from the priority date',
+      '42 months from the priority date',
+    ],
+    correct: 2,
+    explanation:
+      'Under 35 U.S.C. §371(a) and PCT Article 22, the basic time limit for entering the national phase in the U.S. is 30 months from the priority date. The applicant must satisfy the requirements of §371(c) by this deadline. See MPEP §1893.01(a).',
+  },
+  {
+    id: 'pb_t4_022',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 2,
+    question: 'To enter the national phase in the United States under 35 U.S.C. §371(c), the applicant must submit all of the following EXCEPT:',
+    options: [
+      'The basic national fee under 37 CFR 1.492',
+      'A copy of the international application (if not communicated by the IB)',
+      'An English translation of the international application (if not in English)',
+      'A formal protest of prior art cited in the ISR',
+    ],
+    correct: 3,
+    explanation:
+      'Under 35 U.S.C. §371(c), the requirements for national phase entry include: (1) payment of the national fee, (2) a copy of the international application if not communicated by the IB, (3) an English translation if the application was not filed/published in English, (4) the search fee and examination fee, and (5) an oath or declaration (if not already filed). A protest of ISR-cited prior art is not required. See MPEP §1893.01(c).',
+  },
+  {
+    id: 'pb_t4_023',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 2,
+    question: 'If an applicant misses the 30-month deadline for entering the national phase in the United States, what remedy is available?',
+    options: [
+      'The applicant may file a petition to revive under 37 CFR 1.137 upon a showing of unintentional delay',
+      'No remedy is available; the application is irrevocably abandoned',
+      'The applicant may request a 6-month automatic extension',
+      'The applicant must file an entirely new application with a surcharge',
+    ],
+    correct: 0,
+    explanation:
+      'If the 30-month deadline is missed, the applicant may file a petition to revive under 37 CFR 1.137(a), establishing that the delay was unintentional. The petition requires the petition fee, completion of §371(c) requirements, and a statement that the delay was unintentional. See MPEP §1893.01(a)(1).',
+  },
+  {
+    id: 'pb_t4_024',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 1,
+    question: 'When a PCT application enters the national phase in the United States, it is treated as:',
+    options: [
+      'A provisional application',
+      'A national application having the international filing date as its U.S. filing date',
+      'A design patent application',
+      'A reissue application',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §363, an international application designating the United States is considered a national application having the international filing date as its filing date in the United States. It receives substantive examination by the USPTO just like a directly filed application. See MPEP §1893.03.',
+  },
+  {
+    id: 'pb_t4_025',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 2,
+    question: 'An English translation of the international application for §371 national phase entry must be a translation of:',
+    options: [
+      'Only the claims',
+      'The entire application as filed (description, claims, abstract, and text of drawings)',
+      'Only the abstract and claims',
+      'Only the description',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.495(c), if the international application was not filed in English, the applicant must furnish a translation of the entire international application, including the description, claims, any text matter in the drawings, and the abstract. See MPEP §1893.01(c).',
+  },
+  {
+    id: 'pb_t4_026',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 3,
+    question: 'Under 37 CFR 1.495(c), if an applicant files an inaccurate English translation during §371 national stage entry, what is the consequence?',
+    options: [
+      'The application is automatically abandoned',
+      'The translation is accepted as filed; however, a later-filed corrected translation must be verified by a statement that it is accurate',
+      'The USPTO will translate the application itself at the applicant\'s expense',
+      'No consequence; translations are never checked',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.495(c), if a corrected or replacement translation is later filed, the applicant must verify it with a statement that the corrected translation is accurate. New matter may not be added via a corrected translation. Any discrepancy may require comparison with the original filing language. See MPEP §1893.01(c).',
+  },
+  {
+    id: 'pb_t4_027',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 1,
+    question: 'The oath or declaration requirement under 35 U.S.C. §371(c)(4) for national phase entry:',
+    options: [
+      'Must be filed at the time of national phase entry or the application will be abandoned',
+      'May be submitted later in response to a notice from the USPTO, subject to surcharge',
+      'Is not required if the applicant is a large entity',
+      'May only be filed after the first office action',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.495(d), if the oath/declaration is not filed with the national phase entry documents, the USPTO will send a notice requiring it. The applicant may submit it later with a surcharge. Failure to respond to the notice can result in abandonment. See MPEP §1893.01(c).',
+  },
+  {
+    id: 'pb_t4_028',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 2,
+    question: 'An international application filed in Japanese designating the United States enters the national phase. Which of the following is true regarding the search and examination fees?',
+    options: [
+      'No search or examination fees are required because the ISR was already done',
+      'The search fee under 37 CFR 1.492(b) may be reduced if an international search was conducted by an ISA recognized by the USPTO',
+      'The examination fee is waived for all PCT national phase applications',
+      'The applicant must pay double the normal fees',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.492(b), the national phase search fee may be reduced if an international search was conducted by an ISA whose search report is accepted by the USPTO. The degree of reduction depends on which authority performed the search. The examination fee under 37 CFR 1.492(c) is still required. See MPEP §1893.01(c).',
+  },
+  {
+    id: 'pb_t4_029',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 3,
+    question: 'Under 35 U.S.C. §371(d), expressly amended claims submitted during national phase entry must:',
+    options: [
+      'Be in the same language as the original filing',
+      'Comply with §112 and not introduce new matter beyond the original international application as filed',
+      'Receive prior approval from the International Bureau',
+      'Be limited to 20 claims total',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §371(d) and 37 CFR 1.495(c), amendments made under Article 19 or Article 34 that are submitted during national phase entry become part of the application. However, they must comply with 35 U.S.C. §112 and cannot introduce new matter beyond the disclosure in the international application as filed. See MPEP §1893.03(b).',
+  },
+  {
+    id: 'pb_t4_030',
+    topicId: 4,
+    subtopic: 'national_phase_entry',
+    difficulty: 2,
+    question: 'An applicant who enters the national phase in the U.S. may also file a continuation, divisional, or CIP based on the PCT application under:',
+    options: [
+      '35 U.S.C. §111(a) only, not §371',
+      '35 U.S.C. §120, using the international filing date as the benefit date',
+      '35 U.S.C. §119 only',
+      'This is not permitted for PCT-based applications',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §365(c) and §120, a §111(a) application may claim the benefit of a prior international application that designated the United States. The international filing date serves as the benefit date under §120, allowing continuations, divisionals, or CIPs. See MPEP §1895.',
+  },
+
+  // --- Strategy (10 questions) ---
+  {
+    id: 'pb_t4_031',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 1,
+    question: 'A key advantage of filing a PCT application rather than filing separate national applications directly is:',
+    options: [
+      'The PCT grants an enforceable international patent',
+      'The PCT delays the requirement to file in individual countries, allowing up to 30 months from the priority date to decide where to seek protection',
+      'The PCT eliminates all national filing fees',
+      'The PCT guarantees grant in all designated countries',
+    ],
+    correct: 1,
+    explanation:
+      'The primary strategic advantage of the PCT is that it delays the expensive national phase entry (including translation costs and national fees) up to 30 months from the priority date. There is no "international patent"—the applicant must still enter individual countries. See MPEP §1801.',
+  },
+  {
+    id: 'pb_t4_032',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 2,
+    question: 'An applicant only wants protection in the United States and Canada. Filing a PCT application rather than directly in both countries would:',
+    options: [
+      'Always be more cost-effective',
+      'Likely be more expensive due to PCT filing fees, search fees, and processing fees for only two countries',
+      'Be required under international law',
+      'Eliminate the need for any national fees',
+    ],
+    correct: 1,
+    explanation:
+      'When protection is sought in only a few countries, direct national filings are typically more cost-effective than using the PCT route, which involves PCT filing fees, search fees, and processing time. The PCT route is most advantageous when seeking protection in many countries or when the applicant needs additional time to decide. See MPEP §1801.',
+  },
+  {
+    id: 'pb_t4_033',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 2,
+    question: 'Choosing the USPTO as the International Searching Authority (ISA) has which advantage for a U.S. applicant?',
+    options: [
+      'The ISR is guaranteed to be favorable',
+      'The ISR may be used to reduce the U.S. national phase search fee, and the examiner\'s work product may carry over to national phase examination',
+      'No search fee is charged when the USPTO is the ISA',
+      'The applicant automatically receives a patent',
+    ],
+    correct: 1,
+    explanation:
+      'When the USPTO serves as ISA, the national phase search fee may be reduced under 37 CFR 1.492(b), and the USPTO examiner may build upon the ISA\'s work product during national phase examination, potentially leading to faster prosecution. See MPEP §1808.',
+  },
+  {
+    id: 'pb_t4_034',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 1,
+    question: 'The PCT Patent Prosecution Highway (PCT-PPH) allows applicants to:',
+    options: [
+      'Skip the international search',
+      'Request accelerated examination in the national phase based on favorable findings by the ISA or IPEA',
+      'Automatically receive a patent in all designated countries',
+      'Avoid paying national phase fees',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT-PPH programs, if the ISA or IPEA has indicated that at least one claim has novelty, inventive step, and industrial applicability, the applicant may request accelerated examination in participating national/regional offices during the national phase. See MPEP §1893.',
+  },
+  {
+    id: 'pb_t4_035',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 3,
+    question: 'An applicant files a U.S. provisional on January 15, 2024. To preserve priority and use the PCT route, the PCT application must be filed by:',
+    options: [
+      'January 15, 2025 (12 months from the provisional filing date)',
+      'July 15, 2024 (6 months from the provisional filing date)',
+      'January 15, 2026 (2 years from the provisional filing date)',
+      'There is no deadline if a provisional was filed',
+    ],
+    correct: 0,
+    explanation:
+      'Under the Paris Convention and PCT Rule 4.10, the priority period for patent applications is 12 months from the earliest filing date. The PCT application must be filed within 12 months of the provisional application (January 15, 2025) to claim priority. See MPEP §1828.',
+  },
+  {
+    id: 'pb_t4_036',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 2,
+    question: 'Filing a Chapter II demand for international preliminary examination is strategically useful because:',
+    options: [
+      'It is mandatory for all PCT applications',
+      'It provides an opportunity to amend the claims, description, and drawings before the IPEA and obtain a second opinion on patentability before entering the national phase',
+      'It extends the national phase entry deadline to 42 months',
+      'It eliminates the need for national phase examination',
+    ],
+    correct: 1,
+    explanation:
+      'Chapter II is optional but strategically useful because it allows the applicant to amend all parts of the application (not just claims) and engage in dialogue with the IPEA to improve the claims before costly national phase entry. The IPRP Chapter II may favorably influence national phase examination. See MPEP §1860.',
+  },
+  {
+    id: 'pb_t4_037',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 1,
+    question: 'Under the PCT, requesting early publication before 18 months from the priority date:',
+    options: [
+      'Is not possible under any circumstance',
+      'May be requested by the applicant and can be strategically used to establish a prior art date earlier',
+      'Automatically occurs if the ISR is completed early',
+      'Requires payment of triple the publication fee',
+    ],
+    correct: 1,
+    explanation:
+      'Under PCT Article 21(2)(b), the applicant may request publication at any time before the normal 18-month publication date. This can be strategically useful to establish an earlier prior art effective date or to begin collecting provisional rights earlier. See MPEP §1857.',
+  },
+  {
+    id: 'pb_t4_038',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 3,
+    question: 'An applicant has a PCT application and wishes to file a bypass continuation in the United States under §111(a) rather than entering via §371. A bypass continuation:',
+    options: [
+      'Is not permitted under U.S. law',
+      'Allows the applicant to avoid certain §371 requirements and claim benefit under §120, but may forfeit the search fee reduction available under §371',
+      'Grants automatic allowance of all claims',
+      'Must be filed before the PCT application is published',
+    ],
+    correct: 1,
+    explanation:
+      'A bypass continuation is a §111(a) application filed under 35 U.S.C. §120 claiming benefit of the PCT international application. It allows more flexibility than §371 entry (e.g., preliminary amendment at filing) but the search fee reduction under 37 CFR 1.492(b) is not available. See MPEP §1895.',
+  },
+  {
+    id: 'pb_t4_039',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 2,
+    question: 'Which of the following is a disadvantage of the PCT route compared to direct national filings?',
+    options: [
+      'Less time to prepare national filings',
+      'Higher upfront costs (PCT filing fee, search fee, transmittal fee) with no guarantee of eventual patent grant',
+      'Fewer countries available for protection',
+      'No possibility of claiming priority',
+    ],
+    correct: 1,
+    explanation:
+      'The PCT route involves upfront costs including the transmittal fee, international filing fee, and search fee that are in addition to eventual national phase fees. If the applicant ultimately decides not to pursue the patent in many countries, these costs may not be justified. However, the PCT provides valuable time and information. See MPEP §1801.',
+  },
+  {
+    id: 'pb_t4_040',
+    topicId: 4,
+    subtopic: 'strategy',
+    difficulty: 1,
+    question: 'The ISR and written opinion received during the international phase are useful for national phase strategy because they:',
+    options: [
+      'Are binding on all national offices',
+      'Provide an early indication of potential patentability issues, allowing the applicant to amend claims or decide against entering expensive jurisdictions',
+      'Automatically result in allowance in all countries',
+      'Replace the need for national examination',
+    ],
+    correct: 1,
+    explanation:
+      'While not binding on national offices, the ISR and written opinion provide an early assessment of novelty, inventive step, and industrial applicability. This information helps applicants make informed decisions about whether and where to pursue national phase entry, potentially saving significant costs. See MPEP §1843.',
+  },
+
+  // =============================================
+  // TOPIC 5 — APPEALS & POST-GRANT (50 Qs)
+  // =============================================
+
+  // --- PTAB Appeals (15 questions) ---
+  {
+    id: 'pb_t5_001',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 1,
+    question: 'An applicant who is dissatisfied with the examiner\'s final rejection may seek review by filing:',
+    options: [
+      'A petition to the Director',
+      'A notice of appeal to the Patent Trial and Appeal Board (PTAB)',
+      'A request for continued examination (RCE) only',
+      'A writ of certiorari to the Supreme Court',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §134(a) and 37 CFR 41.31, an applicant dissatisfied with the examiner\'s rejection may appeal to the PTAB by filing a notice of appeal. This is the first step in the appeal process. See MPEP §1204.',
+  },
+  {
+    id: 'pb_t5_002',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 1,
+    question: 'The notice of appeal under 37 CFR 41.31 must be filed within what time period after the final rejection?',
+    options: [
+      '1 month, non-extendable',
+      '3 months from the date of the final rejection (extendable under §1.136(a))',
+      '6 months from the date of the final rejection, no extensions',
+      '30 days from the date of the final rejection',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.31(a), a notice of appeal must be filed within the time period for reply set in the final rejection, typically 3 months, which may be extended up to the 6-month statutory period under 37 CFR 1.136(a). See MPEP §1204.01.',
+  },
+  {
+    id: 'pb_t5_003',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 2,
+    question: 'After filing a notice of appeal, the applicant must file an appeal brief within:',
+    options: [
+      '1 month from the notice of appeal',
+      '2 months from the date of the notice of appeal (extendable under §1.136(a))',
+      '6 months from the date of the final rejection',
+      '30 days from the notice of appeal, non-extendable',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.37(a), the appeal brief must be filed within 2 months from the date of filing the notice of appeal. Extensions of time are available under 37 CFR 1.136(a). Failure to timely file the brief results in dismissal of the appeal. See MPEP §1205.01.',
+  },
+  {
+    id: 'pb_t5_004',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 2,
+    question: 'The appeal brief under 37 CFR 41.37 must include all of the following EXCEPT:',
+    options: [
+      'A statement of the real party in interest',
+      'A statement of related cases',
+      'An argument section presenting the applicant\'s contentions for each rejection',
+      'A certified translation of all foreign-language prior art cited in the rejection',
+    ],
+    correct: 3,
+    explanation:
+      'Under 37 CFR 41.37(c), the appeal brief must contain: (i) statement of real party in interest, (ii) related cases, (iii) summary of claimed subject matter, (iv) argument, and (v) claims appendix. A certified translation of foreign-language prior art is not a required element of the appeal brief. See MPEP §1205.02.',
+  },
+  {
+    id: 'pb_t5_005',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 2,
+    question: 'After the appeal brief is filed, the examiner prepares and files the:',
+    options: [
+      'Notice of allowance',
+      'Examiner\'s answer, which may include a new ground of rejection',
+      'Request for continued examination',
+      'Certificate of correction',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.39, after the appeal brief is filed, the examiner prepares an examiner\'s answer that responds to the applicant\'s arguments and may include a new ground of rejection. The applicant then has the opportunity to file a reply brief. See MPEP §1207.',
+  },
+  {
+    id: 'pb_t5_006',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 1,
+    question: 'If the examiner\'s answer includes a new ground of rejection, the applicant must, within 2 months:',
+    options: [
+      'File a petition to the Director',
+      'File a reply brief that addresses the new ground, or request that prosecution be reopened',
+      'File a new application',
+      'Accept the rejection without further recourse',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.39(b), if the examiner\'s answer contains a new ground of rejection, the applicant has 2 months to file a reply brief or request that prosecution be reopened to respond to the new ground. See MPEP §1207.03.',
+  },
+  {
+    id: 'pb_t5_007',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 2,
+    question: 'A reply brief under 37 CFR 41.41 may be filed within:',
+    options: [
+      '2 months from the examiner\'s answer (extendable)',
+      '1 month from the examiner\'s answer (non-extendable unless new ground of rejection)',
+      '3 months from the examiner\'s answer',
+      'Any time before the PTAB decision',
+    ],
+    correct: 0,
+    explanation:
+      'Under 37 CFR 41.41(a), a reply brief may be filed within 2 months from the date of the examiner\'s answer. Extensions of time are available under 37 CFR 1.136(a). The reply brief is limited to responding to points raised in the examiner\'s answer. See MPEP §1208.',
+  },
+  {
+    id: 'pb_t5_008',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 3,
+    question: 'An oral hearing before the PTAB in an ex parte appeal:',
+    options: [
+      'Is automatic in every appeal',
+      'Must be requested by the applicant under 37 CFR 41.47, with payment of the oral hearing fee, and is scheduled at the Board\'s discretion',
+      'Is only available in inter partes proceedings',
+      'Replaces the need for an appeal brief',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.47, an oral hearing before the PTAB must be requested by the appellant and the oral hearing fee must be paid. The Board sets the date. Oral arguments are generally limited to the issues raised in the briefs. See MPEP §1209.',
+  },
+  {
+    id: 'pb_t5_009',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 1,
+    question: 'The PTAB decision in an ex parte appeal may:',
+    options: [
+      'Only affirm the examiner\'s rejection',
+      'Affirm, reverse, or affirm-in-part the rejection, and may also enter a new ground of rejection',
+      'Only reverse the examiner\'s rejection',
+      'Grant the patent immediately without further action',
+    ],
+    correct: 1,
+    explanation:
+      'The PTAB may affirm, reverse, or affirm-in-part the examiner\'s rejection. Under 37 CFR 41.50(b), the Board may also designate a new ground of rejection. If a new ground is entered, the applicant has options under 41.50(b). See MPEP §1213.',
+  },
+  {
+    id: 'pb_t5_010',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 2,
+    question: 'If the PTAB enters a new ground of rejection under 37 CFR 41.50(b), the applicant may, within 2 months:',
+    options: [
+      'Only appeal to the Federal Circuit',
+      'Request rehearing, submit an amendment, or request that prosecution be reopened',
+      'File a new provisional application',
+      'Do nothing, and the application issues automatically',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.50(b), when the Board enters a new ground of rejection, the applicant has 2 months to: (1) submit an appropriate amendment with a showing under §41.50(b)(1) to reopen prosecution, or (2) request rehearing under §41.52. See MPEP §1214.01.',
+  },
+  {
+    id: 'pb_t5_011',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 3,
+    question: 'After the PTAB affirms a rejection, the applicant seeks further review. The applicant may appeal to:',
+    options: [
+      'The U.S. Supreme Court directly',
+      'The U.S. Court of Appeals for the Federal Circuit under 35 U.S.C. §141, or file a civil action in the U.S. District Court for the Eastern District of Virginia under 35 U.S.C. §145',
+      'Any U.S. District Court of the applicant\'s choosing',
+      'The International Trade Commission',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §141, an applicant may appeal a PTAB decision to the U.S. Court of Appeals for the Federal Circuit. Alternatively, under §145, the applicant may file a civil action in the U.S. District Court for the Eastern District of Virginia. See MPEP §1216.',
+  },
+  {
+    id: 'pb_t5_012',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 2,
+    question: 'A request for rehearing of a PTAB decision under 37 CFR 41.52 must be filed within:',
+    options: [
+      '30 days of the decision',
+      '2 months from the date of the decision',
+      '6 months from the date of the decision',
+      '1 year from the date of the decision',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.52(a), a request for rehearing must be filed within 2 months from the date of the PTAB decision. The request must state with particularity the points believed to have been misapprehended or overlooked by the Board. See MPEP §1214.03.',
+  },
+  {
+    id: 'pb_t5_013',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 1,
+    question: 'Filing a notice of appeal requires payment of:',
+    options: [
+      'No fee',
+      'The appeal filing fee under 37 CFR 41.20(b)(1)',
+      'The issue fee',
+      'The search fee',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.20(b)(1), a notice of appeal must be accompanied by the appeal filing fee. Additional fees apply for forwarding the appeal (appeal forwarding fee with the appeal brief). See MPEP §1204.01.',
+  },
+  {
+    id: 'pb_t5_014',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 3,
+    question: 'During an ex parte appeal, the applicant files an RCE under 37 CFR 1.114. What happens to the appeal?',
+    options: [
+      'The appeal continues alongside the RCE examination',
+      'The appeal is dismissed and prosecution is reopened; the RCE effectively withdraws the appeal',
+      'The RCE is refused because an appeal is pending',
+      'The RCE and appeal are consolidated before the PTAB',
+    ],
+    correct: 1,
+    explanation:
+      'Filing an RCE under 37 CFR 1.114 is considered a request to reopen prosecution. If filed while an appeal is pending, the RCE results in withdrawal of the appeal and prosecution is reopened with the examiner. See MPEP §1215.01 and §706.07(h).',
+  },
+  {
+    id: 'pb_t5_015',
+    topicId: 5,
+    subtopic: 'ptab_appeals',
+    difficulty: 2,
+    question: 'In the appeal brief, claims must be argued individually or as a group. If an applicant does not separately argue the patentability of dependent claims:',
+    options: [
+      'The dependent claims are automatically cancelled',
+      'The dependent claims stand or fall with the independent claim from which they depend',
+      'The examiner must argue each dependent claim separately',
+      'The PTAB will reverse the rejection of all dependent claims',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 41.37(c)(1)(iv), if an applicant\'s argument does not separately address the patentability of dependent claims, those claims are treated as standing or falling with the independent claim from which they depend. See MPEP §1205.02.',
+  },
+
+  // --- Reissue (10 questions) ---
+  {
+    id: 'pb_t5_016',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 1,
+    question: 'Under 35 U.S.C. §251, a reissue application may be filed when the patent is deemed:',
+    options: [
+      'Too expensive to maintain',
+      'Wholly or partly inoperative or invalid by reason of a defective specification or drawing, or by reason of the patentee claiming more or less than the right to which they are entitled',
+      'Not commercially successful',
+      'Infringing another patent',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §251, a reissue may be filed when the patent is wholly or partly inoperative or invalid by reason of a defective specification or drawing, or because the patentee claimed more or less than the right to which they were entitled, provided the error arose without deceptive intent. See MPEP §1402.',
+  },
+  {
+    id: 'pb_t5_017',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 2,
+    question: 'A broadening reissue application (one that enlarges the scope of the claims) must be filed within:',
+    options: [
+      '1 year from the grant date of the original patent',
+      '2 years from the grant date of the original patent',
+      '6 months from the grant date',
+      'Any time during the patent term',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §251(d), no reissued patent shall be granted enlarging the scope of the claims of the original patent unless applied for within 2 years from the grant of the original patent. Narrowing reissues may be filed at any time during the patent term. See MPEP §1412.03.',
+  },
+  {
+    id: 'pb_t5_018',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 2,
+    question: 'The recapture doctrine in reissue proceedings prevents the patentee from:',
+    options: [
+      'Filing any continuation applications',
+      'Recapturing through reissue claims subject matter that was surrendered during prosecution of the original patent to obtain allowance',
+      'Maintaining the patent beyond its original term',
+      'Assigning the patent to another entity',
+    ],
+    correct: 1,
+    explanation:
+      'The recapture doctrine prevents a patentee from using reissue to reclaim subject matter that was surrendered during the original prosecution to overcome prior art rejections. If claims were narrowed to obtain allowance, the patentee cannot broaden them back through reissue to recapture the surrendered scope. See MPEP §1412.02.',
+  },
+  {
+    id: 'pb_t5_019',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 1,
+    question: 'A reissue application requires the filing of:',
+    options: [
+      'A new provisional application',
+      'A reissue oath or declaration identifying at least one error in the original patent',
+      'A petition for extension of patent term',
+      'A request for inter partes review',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.175, a reissue application must include a reissue oath or declaration by the inventor or patent owner stating that the patent is believed to be wholly or partly inoperative or invalid and identifying at least one error being corrected. See MPEP §1414.',
+  },
+  {
+    id: 'pb_t5_020',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 2,
+    question: 'During examination of a reissue application, the examiner will examine:',
+    options: [
+      'Only the newly added claims',
+      'All claims, both original and amended/new, as in an original application',
+      'Only the claims that were in the original patent',
+      'No claims; reissue examination is limited to formalities',
+    ],
+    correct: 1,
+    explanation:
+      'In reissue examination, the examiner examines all claims (original, amended, and new) on the merits, just as in an original application. All claims must meet the requirements of §§101, 102, 103, 112, and the reissue-specific requirements. See MPEP §1440.',
+  },
+  {
+    id: 'pb_t5_021',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 3,
+    question: 'Under the duty of disclosure in reissue, the applicant must disclose:',
+    options: [
+      'Only prior art that was not before the examiner during original prosecution',
+      'All information material to patentability, including art not previously cited and art previously considered, because the reissue reopens prosecution entirely',
+      'Only the specific error being corrected',
+      'Nothing beyond the original file history',
+    ],
+    correct: 1,
+    explanation:
+      'In a reissue proceeding, the duty of disclosure under 37 CFR 1.56 applies to all information material to patentability of the reissue claims. Since all claims are reexamined, the duty extends to all material information, including art that may not have been before the examiner during the original prosecution. See MPEP §1404.01.',
+  },
+  {
+    id: 'pb_t5_022',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 2,
+    question: 'After a reissue patent is granted, the original patent:',
+    options: [
+      'Continues to exist alongside the reissue patent',
+      'Is surrendered and replaced by the reissue patent',
+      'Becomes a provisional application',
+      'Is converted to a defensive publication',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §251, the reissue patent replaces the original patent. The original patent is surrendered upon grant of the reissue patent, and the reissue patent has the same term as the original. See MPEP §1460.',
+  },
+  {
+    id: 'pb_t5_023',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 1,
+    question: 'In a reissue application, new claims that are broader than the original patent claims are indicated by:',
+    options: [
+      'No special marking',
+      'Underlining for added matter and brackets for deleted matter relative to the original patent claims',
+      'Italics only',
+      'Bold text only',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.173(d), in reissue applications, amendments to the claims must show added text by underlining and deleted text by enclosing in brackets. This allows the examiner and the public to see how the reissue claims differ from the original patent. See MPEP §1453.',
+  },
+  {
+    id: 'pb_t5_024',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 3,
+    question: 'The "error" correctable by reissue under §251 includes all of the following EXCEPT:',
+    options: [
+      'Claiming more than entitled',
+      'Claiming less than entitled',
+      'Defective specification',
+      'Failure to timely pay the issue fee',
+    ],
+    correct: 3,
+    explanation:
+      'Reissue under §251 corrects errors that make the patent wholly or partly inoperative or invalid, such as claiming more or less than entitled, or defective specification/drawings. Failure to pay the issue fee is a procedural matter, not a defect correctable by reissue. See MPEP §1402.',
+  },
+  {
+    id: 'pb_t5_025',
+    topicId: 5,
+    subtopic: 'reissue',
+    difficulty: 2,
+    question: 'An intervening rights defense under 35 U.S.C. §252 may be available when:',
+    options: [
+      'A patent is originally granted',
+      'A reissue patent issues with claims that are different from the original, allowing parties who made, used, or sold items before reissue to have certain rights to continue',
+      'A patent is abandoned',
+      'A continuation application is filed',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §252, intervening rights may apply when a reissue patent issues. Absolute intervening rights protect activities occurring before the reissue grant. Equitable intervening rights may protect substantial preparations made before the reissue. See MPEP §1460.',
+  },
+
+  // --- Reexamination (10 questions) ---
+  {
+    id: 'pb_t5_026',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 1,
+    question: 'Ex parte reexamination under 35 U.S.C. §302 may be requested by:',
+    options: [
+      'Only the patent owner',
+      'Any person, including the patent owner or a third party',
+      'Only the USPTO Director',
+      'Only a party who has been sued for infringement',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §302, any person at any time may file a request for ex parte reexamination. This includes the patent owner, third parties, or even the USPTO Director. The requester must cite prior art patents or printed publications. See MPEP §2209.',
+  },
+  {
+    id: 'pb_t5_027',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 2,
+    question: 'The threshold for granting ex parte reexamination is that the request must raise:',
+    options: [
+      'A reasonable likelihood that the requester would prevail',
+      'A substantial new question of patentability (SNQ) based on prior art patents or printed publications',
+      'A preponderance of evidence of invalidity',
+      'Clear and convincing evidence of fraud',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §303(a), the Director determines whether a substantial new question of patentability (SNQ) affecting any claim of the patent is raised. The SNQ must be based on prior art patents or printed publications. See MPEP §2216.',
+  },
+  {
+    id: 'pb_t5_028',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 2,
+    question: 'In ex parte reexamination, after the reexamination is ordered, the third-party requester:',
+    options: [
+      'Participates fully throughout the proceedings',
+      'Has no further participation except the right to file a reply to the patent owner\'s statement under §304',
+      'May attend all interviews with the examiner',
+      'May file additional prior art at any time',
+    ],
+    correct: 1,
+    explanation:
+      'In ex parte reexamination, the third-party requester\'s participation is very limited. Under 35 U.S.C. §304, the requester may file one reply to the patent owner\'s statement filed under §304, but thereafter has no further role. The proceedings continue between the patent owner and the examiner. See MPEP §2256.',
+  },
+  {
+    id: 'pb_t5_029',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 1,
+    question: 'Ex parte reexamination may be based on which types of prior art?',
+    options: [
+      'Any evidence of invalidity, including public use and on-sale bar',
+      'Only prior art patents and printed publications',
+      'Only U.S. patents',
+      'Only patents and publications dated within 1 year of the patent grant',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §301 and §302, ex parte reexamination is limited to prior art consisting of patents and printed publications. Other grounds such as public use, on-sale bar, or inequitable conduct cannot form the basis of a reexamination request. See MPEP §2209.',
+  },
+  {
+    id: 'pb_t5_030',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 3,
+    question: 'Inter partes reexamination (under pre-AIA 35 U.S.C. §§311-318) differs from ex parte reexamination primarily in that:',
+    options: [
+      'It may be requested only by the patent owner',
+      'The third-party requester may participate throughout the proceedings, including filing written comments on each office action response by the patent owner',
+      'It does not require a substantial new question of patentability',
+      'It is available only for design patents',
+    ],
+    correct: 1,
+    explanation:
+      'In inter partes reexamination (now largely replaced by IPR for patents with post-AIA effective filing dates), the third-party requester has ongoing participation rights, including the ability to comment on each patent owner response. This is the key distinction from ex parte reexamination. See MPEP §2609.',
+  },
+  {
+    id: 'pb_t5_031',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 2,
+    question: 'A reexamination certificate is issued at the conclusion of ex parte reexamination. It may:',
+    options: [
+      'Only confirm the existing claims',
+      'Confirm, cancel, or amend the claims of the patent',
+      'Extend the patent term',
+      'Convert the patent into a provisional application',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §307, at the conclusion of ex parte reexamination, a certificate is issued cancelling unpatentable claims, confirming patentable claims, and incorporating any amended or new claims determined to be patentable. See MPEP §2288.',
+  },
+  {
+    id: 'pb_t5_032',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 1,
+    question: 'A request for ex parte reexamination must include:',
+    options: [
+      'Only a letter requesting reexamination',
+      'The reexamination fee, a statement of the SNQ, and copies of all patents and publications relied upon',
+      'A complaint for patent infringement',
+      'A declaration by the inventor',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.510, a request for ex parte reexamination must include: the fee, identification of the patent, a statement pointing out each substantial new question of patentability, and copies of every patent or printed publication relied upon. See MPEP §2214.',
+  },
+  {
+    id: 'pb_t5_033',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 2,
+    question: 'During ex parte reexamination, the patent owner may narrow or cancel claims but may NOT:',
+    options: [
+      'Add dependent claims',
+      'Enlarge the scope of any claim beyond that of the original patent',
+      'Submit an IDS',
+      'Respond to office actions',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §305, in any reexamination proceeding, no proposed amended or new claim enlarging the scope of a claim of the patent will be permitted. The patent owner may narrow claims or add narrower claims but cannot broaden them. See MPEP §2250.',
+  },
+  {
+    id: 'pb_t5_034',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 3,
+    question: 'The estoppel effect of inter partes reexamination under pre-AIA 35 U.S.C. §315(c) prevents the third-party requester from asserting in a subsequent civil action:',
+    options: [
+      'Any invalidity defense whatsoever',
+      'The invalidity of any claim determined to be valid on any ground that the requester raised or could have raised during the reexamination',
+      'Only claims that were cancelled during reexamination',
+      'Only the same prior art references cited in the request',
+    ],
+    correct: 1,
+    explanation:
+      'Under pre-AIA 35 U.S.C. §315(c), a third-party requester in inter partes reexamination is estopped from asserting invalidity of any claim confirmed or amended during the reexamination on any ground the requester raised or could have raised. This broad estoppel is a significant consideration. See MPEP §2686.',
+  },
+  {
+    id: 'pb_t5_035',
+    topicId: 5,
+    subtopic: 'reexamination',
+    difficulty: 2,
+    question: 'If the USPTO determines that no substantial new question of patentability exists, the request for ex parte reexamination is:',
+    options: [
+      'Granted anyway',
+      'Denied, and a portion of the reexamination fee is refunded to the requester',
+      'Converted into an inter partes review',
+      'Held in abeyance for 6 months',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §303(c), if the Director determines that no SNQ has been raised, the request is denied and a portion of the fee is returned to the requester. The determination is not appealable. See MPEP §2246.',
+  },
+
+  // --- Inter Partes Review (10 questions) ---
+  {
+    id: 'pb_t5_036',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 1,
+    question: 'Inter partes review (IPR) under 35 U.S.C. §§311-319 may be instituted on which grounds?',
+    options: [
+      'Any ground of invalidity including §101, §112, and §102',
+      'Only §102 (novelty) and §103 (obviousness) based on prior art consisting of patents or printed publications',
+      'Only §112 (written description and enablement)',
+      'Only §101 (patent-eligible subject matter)',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §311(b), an IPR may be requested only on grounds of novelty (§102) or obviousness (§103), and only on the basis of prior art consisting of patents or printed publications. Other grounds (§101, §112) are not available in IPR. See MPEP §2612.',
+  },
+  {
+    id: 'pb_t5_037',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 2,
+    question: 'A petition for IPR must be filed no later than:',
+    options: [
+      '6 months after the patent grant',
+      '1 year after the date the petitioner, real party in interest, or privy is served with a complaint alleging infringement',
+      '9 months after the patent grant (same as PGR)',
+      '3 years after the patent grant',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §315(b), an IPR petition may not be filed more than 1 year after the date on which the petitioner, real party in interest, or privy of the petitioner is served with a complaint alleging infringement. See MPEP §2620.',
+  },
+  {
+    id: 'pb_t5_038',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 2,
+    question: 'The standard for institution of IPR is that the petitioner must demonstrate:',
+    options: [
+      'A substantial new question of patentability',
+      'A reasonable likelihood that the petitioner would prevail with respect to at least one of the claims challenged',
+      'Clear and convincing evidence of invalidity',
+      'A preponderance of evidence that all claims are invalid',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §314(a), the Director may institute an IPR only if the petition demonstrates a reasonable likelihood that the petitioner would prevail with respect to at least one of the claims challenged. This is a higher threshold than the SNQ standard in reexamination. See MPEP §2621.',
+  },
+  {
+    id: 'pb_t5_039',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 2,
+    question: 'The claim construction standard applied by the PTAB in IPR proceedings is:',
+    options: [
+      'Broadest reasonable interpretation (BRI)',
+      'The same standard used in federal court under Phillips v. AWH Corp.',
+      'The narrowest reasonable interpretation',
+      'Plain meaning only, without reference to the specification',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 42.100(b), as amended in 2018, the PTAB applies the same claim construction standard used in federal district courts under Phillips v. AWH Corp. (previously the BRI standard was used). See MPEP §2622.',
+  },
+  {
+    id: 'pb_t5_040',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 1,
+    question: 'An IPR trial must be completed (final written decision issued) within:',
+    options: [
+      '6 months from institution',
+      '12 months from institution, with a possible 6-month extension for good cause',
+      '18 months from filing the petition',
+      '24 months from institution',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §316(a)(11), the PTAB must issue a final written decision within 1 year of institution. Under §316(a)(11), this may be extended by up to 6 months for good cause. See MPEP §2638.',
+  },
+  {
+    id: 'pb_t5_041',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 3,
+    question: 'The estoppel effect of IPR under 35 U.S.C. §315(e) prevents the petitioner from asserting in a subsequent proceeding:',
+    options: [
+      'Only the exact prior art references cited in the petition',
+      'Any ground that the petitioner raised or reasonably could have raised during the IPR',
+      'Only the grounds actually decided by the PTAB',
+      'No estoppel applies to IPR petitioners',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §315(e), the petitioner is estopped from raising in a subsequent USPTO proceeding, ITC proceeding, or civil action any ground the petitioner raised or reasonably could have raised during the IPR. This broad "reasonably could have raised" language makes IPR estoppel quite significant. See MPEP §2683.',
+  },
+  {
+    id: 'pb_t5_042',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 2,
+    question: 'In an IPR, the patent owner may file a response to the petition and may also file:',
+    options: [
+      'A motion to amend claims by adding unlimited new claims',
+      'A motion to amend claims, but as a practical matter, amendments are limited to a reasonable number of substitute claims for each challenged claim',
+      'A cross-petition challenging the petitioner\'s patents',
+      'A motion for preliminary injunction',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §316(d), the patent owner may file a motion to amend by proposing a reasonable number of substitute claims for each claim challenged. In practice, the PTAB has interpreted this as typically one substitute claim per challenged claim. See MPEP §2637.',
+  },
+  {
+    id: 'pb_t5_043',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 1,
+    question: 'The IPR petition must include all of the following EXCEPT:',
+    options: [
+      'Identification of each claim challenged and the grounds for challenge',
+      'The fee set forth in 37 CFR 42.15',
+      'An identification of the real party in interest',
+      'A declaration by the named inventor of the challenged patent',
+    ],
+    correct: 3,
+    explanation:
+      'Under 35 U.S.C. §312 and 37 CFR 42.104, the petition must include: the fee, identification of the real party in interest, identification of each claim challenged, and the grounds on which the challenge is based (with supporting evidence). A declaration by the named inventor is not required. See MPEP §2622.',
+  },
+  {
+    id: 'pb_t5_044',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 3,
+    question: 'Under SAS Institute Inc. v. Iancu (2018), the Supreme Court held that when the PTAB institutes IPR:',
+    options: [
+      'It may select only certain claims to review',
+      'It must decide the patentability of all claims challenged in the petition, not just those on which it found a reasonable likelihood of prevailing',
+      'It must also review unchallenged claims',
+      'It may institute on grounds not raised by the petitioner',
+    ],
+    correct: 1,
+    explanation:
+      'In SAS Institute Inc. v. Iancu (2018), the Supreme Court held that 35 U.S.C. §318(a) requires the PTAB to issue a final written decision on all claims challenged in the petition if IPR is instituted. Partial institution is not permitted. See MPEP §2621.',
+  },
+  {
+    id: 'pb_t5_045',
+    topicId: 5,
+    subtopic: 'ipr',
+    difficulty: 2,
+    question: 'The burden of proof in an IPR proceeding is on the petitioner to prove unpatentability by:',
+    options: [
+      'Clear and convincing evidence',
+      'A preponderance of the evidence',
+      'Beyond a reasonable doubt',
+      'Substantial evidence',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §316(e), the petitioner in an IPR has the burden of proving unpatentability by a preponderance of the evidence. This is a lower standard than the clear-and-convincing standard applied in federal court. See MPEP §2641.',
+  },
+
+  // --- Post-Grant Review (5 questions) ---
+  {
+    id: 'pb_t5_046',
+    topicId: 5,
+    subtopic: 'pgr',
+    difficulty: 1,
+    question: 'A petition for post-grant review (PGR) under 35 U.S.C. §§321-329 must be filed within:',
+    options: [
+      '1 year of the patent grant',
+      '9 months after the date of the grant of the patent or issuance of a reissue patent',
+      '6 months after being served with an infringement complaint',
+      '3 years after the patent grant',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §321(c), a PGR petition must be filed no later than 9 months after the grant of the patent or issuance of a reissue patent. This is the key timing distinction from IPR, which has no such filing window. See MPEP §2624.',
+  },
+  {
+    id: 'pb_t5_047',
+    topicId: 5,
+    subtopic: 'pgr',
+    difficulty: 2,
+    question: 'PGR may be brought on which grounds of invalidity?',
+    options: [
+      'Only §102 and §103',
+      'Any ground of invalidity under Title 35, including §§101, 102, 103, and 112',
+      'Only §101',
+      'Only §112',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §321(b), PGR may challenge claims on any ground that could be raised as invalidity under §282(b)(2) or (3), including §101, §102, §103, and §112. This is broader than IPR, which is limited to §102 and §103 based on patents and printed publications. See MPEP §2624.',
+  },
+  {
+    id: 'pb_t5_048',
+    topicId: 5,
+    subtopic: 'pgr',
+    difficulty: 2,
+    question: 'The threshold for institution of PGR requires the petitioner to demonstrate that:',
+    options: [
+      'A substantial new question of patentability exists',
+      'It is more likely than not that at least one of the claims challenged is unpatentable',
+      'A reasonable likelihood of prevailing on at least one claim',
+      'Clear and convincing evidence of invalidity of all claims',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §324(a), PGR may be instituted if the petition demonstrates that it is more likely than not that at least one claim challenged is unpatentable. Alternatively, the petition may raise a novel or unsettled legal question important to other patents. This is a higher threshold than the IPR standard. See MPEP §2625.',
+  },
+  {
+    id: 'pb_t5_049',
+    topicId: 5,
+    subtopic: 'pgr',
+    difficulty: 3,
+    question: 'PGR is available only for patents with an effective filing date on or after:',
+    options: [
+      'November 29, 1999',
+      'March 16, 2013 (the AIA first-inventor-to-file date)',
+      'September 16, 2012',
+      'January 1, 2000',
+    ],
+    correct: 1,
+    explanation:
+      'PGR is available only for patents that contain at least one claim with an effective filing date on or after March 16, 2013, when the AIA\'s first-inventor-to-file provisions took effect. For patents with earlier effective filing dates, only IPR (or ex parte reexamination) is available. See MPEP §2624.',
+  },
+  {
+    id: 'pb_t5_050',
+    topicId: 5,
+    subtopic: 'pgr',
+    difficulty: 2,
+    question: 'The estoppel provisions of PGR under 35 U.S.C. §325(e) are:',
+    options: [
+      'Narrower than IPR estoppel',
+      'Similar to IPR estoppel—the petitioner may not assert in subsequent proceedings any ground that was raised or reasonably could have been raised during the PGR',
+      'Non-existent; PGR has no estoppel',
+      'Limited to the exact references cited in the petition',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §325(e), PGR estoppel is similar to IPR estoppel under §315(e). The petitioner is barred from raising any ground that was raised or reasonably could have been raised in the PGR in subsequent proceedings before the USPTO, ITC, or federal courts. See MPEP §2683.',
+  },
+
+  // =============================================
+  // TOPIC 6 — DESIGN & PLANT PATENTS (30 Qs)
+  // =============================================
+
+  // --- Design Patents (20 questions) ---
+  {
+    id: 'pb_t6_001',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 1,
+    question: 'Design patents are granted under 35 U.S.C. §171 for:',
+    options: [
+      'A new, useful, and non-obvious process',
+      'A new, original, and ornamental design for an article of manufacture',
+      'A new variety of plant',
+      'A new chemical composition',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §171, a design patent may be obtained for any new, original, and ornamental design for an article of manufacture. The design must be primarily ornamental rather than functional. See MPEP §1502.',
+  },
+  {
+    id: 'pb_t6_002',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 1,
+    question: 'The term of a design patent filed on or after May 13, 2015 is:',
+    options: [
+      '20 years from the filing date',
+      '15 years from the date of grant',
+      '14 years from the date of grant',
+      '10 years from the filing date',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §173, as amended, design patents filed on or after May 13, 2015 have a term of 15 years from the date of grant. No maintenance fees are required. Design patents filed before that date have a 14-year term. See MPEP §1505.',
+  },
+  {
+    id: 'pb_t6_003',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'A design patent application contains how many claims?',
+    options: [
+      'As many claims as needed to cover different embodiments',
+      'Exactly one claim, directed to the ornamental design as shown (and described) in the drawings',
+      'A minimum of three independent claims',
+      'Twenty claims before excess claim fees apply',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.153, a design patent application may contain only a single claim. The claim is directed to "the ornamental design for [article] as shown and described." The drawings are the primary disclosure in a design patent. See MPEP §1503.01.',
+  },
+  {
+    id: 'pb_t6_004',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'The primary distinction between design and utility patents is:',
+    options: [
+      'Design patents protect function; utility patents protect appearance',
+      'Design patents protect the ornamental appearance of an article; utility patents protect the functional aspects',
+      'There is no distinction; they are interchangeable',
+      'Design patents can only be filed by corporations',
+    ],
+    correct: 1,
+    explanation:
+      'Design patents protect the ornamental (visual) appearance of an article of manufacture, while utility patents protect the functional aspects of an invention. If a design is primarily functional, it is not eligible for design patent protection. See MPEP §1502.01.',
+  },
+  {
+    id: 'pb_t6_005',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'In determining whether a design is primarily ornamental or functional, the examiner considers:',
+    options: [
+      'Only whether the article is aesthetically pleasing',
+      'Whether the overall appearance of the design is dictated by its function; if alternative designs could achieve the same function, the design is likely ornamental',
+      'Only the number of design features',
+      'Whether the design has been commercially successful',
+    ],
+    correct: 1,
+    explanation:
+      'The test for ornamentality considers whether the design is dictated primarily by function. If the overall appearance is not dictated by function and alternative designs exist that perform the same function, the design is likely ornamental rather than functional. See MPEP §1504.01(c).',
+  },
+  {
+    id: 'pb_t6_006',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 1,
+    question: 'In a design patent application, the most critical component is:',
+    options: [
+      'The written specification',
+      'The drawings, which define the scope of the claimed design',
+      'The abstract',
+      'The inventor\'s oath regarding functionality',
+    ],
+    correct: 1,
+    explanation:
+      'In design patent applications, the drawings are the most important element because they define the scope of the design claim. The drawings must clearly and accurately depict the design, showing all features of the ornamental appearance. See MPEP §1503.02.',
+  },
+  {
+    id: 'pb_t6_007',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'Broken lines (dashed lines) in design patent drawings indicate:',
+    options: [
+      'The most important features of the design',
+      'Unclaimed portions of the article shown for environmental context or to define the claimed design\'s boundaries',
+      'Hidden surfaces that are part of the claimed design',
+      'Manufacturing tolerances',
+    ],
+    correct: 1,
+    explanation:
+      'In design patent drawings, broken lines (dashed lines) represent unclaimed subject matter—portions of the article that are not part of the claimed design but are shown for illustrative purposes or to define the environment. Solid lines define the claimed ornamental features. See MPEP §1503.02.',
+  },
+  {
+    id: 'pb_t6_008',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 3,
+    question: 'The test for design patent infringement established in Egyptian Goddess, Inc. v. Swisa, Inc. (2008) is:',
+    options: [
+      'The point of novelty test',
+      'The ordinary observer test—whether an ordinary observer, giving such attention as a purchaser usually gives, would be deceived into thinking the accused design is substantially the same as the patented design, with the prior art informing the analysis',
+      'A strict identity test requiring exact copying',
+      'A functionality test examining mechanical equivalents',
+    ],
+    correct: 1,
+    explanation:
+      'In Egyptian Goddess, Inc. v. Swisa, Inc. (Fed. Cir. 2008), the Federal Circuit adopted the ordinary observer test as the sole test for design patent infringement, eliminating the separate "point of novelty" test. The ordinary observer compares the patented and accused designs in the context of the prior art. See MPEP §1504.02.',
+  },
+  {
+    id: 'pb_t6_009',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 1,
+    question: 'Design patent applications do NOT require:',
+    options: [
+      'Drawings',
+      'A single claim',
+      'An abstract or lengthy written description of the functional aspects of the invention',
+      'An oath or declaration',
+    ],
+    correct: 2,
+    explanation:
+      'Design patent applications do not require an abstract (37 CFR 1.72(b) exempts design applications) and the description is minimal—typically just a brief description of the figures and a single claim. The focus is on the drawings. Utility-style detailed written descriptions of function are not required. See MPEP §1503.01.',
+  },
+  {
+    id: 'pb_t6_010',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'The Hague Agreement Concerning International Registration of Industrial Designs allows applicants to:',
+    options: [
+      'Obtain a single international design patent enforceable in all member countries',
+      'File a single international design application designating multiple contracting parties, obtaining design protection in each designated jurisdiction subject to their examination',
+      'Bypass all national design patent examination requirements',
+      'Extend design patent terms to 25 years',
+    ],
+    correct: 1,
+    explanation:
+      'The Hague Agreement allows applicants to file a single international design application with WIPO designating multiple contracting parties. Each designated office then examines (or registers) the design under its own law. The U.S. joined the Hague system effective May 13, 2015. See MPEP §2900.',
+  },
+  {
+    id: 'pb_t6_011',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 1,
+    question: 'Maintenance fees are required for design patents:',
+    options: [
+      'At 3.5, 7.5, and 11.5 years after grant',
+      'They are not required; design patents have no maintenance fee obligations',
+      'Annually for the entire term',
+      'Only at the midpoint of the term',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §41(b), maintenance fees are required only for utility patents. Design patents do not require maintenance fees. The design patent remains in force for its full term without any additional fee payments. See MPEP §1505.',
+  },
+  {
+    id: 'pb_t6_012',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 3,
+    question: 'A design patent application claims a surface ornamentation pattern applied to a smartphone case. Which of the following would be a valid rejection?',
+    options: [
+      '§101 rejection for claiming a law of nature',
+      '§171 rejection if the surface ornamentation is inseparable from the article and purely functional',
+      '§112(f) means-plus-function rejection',
+      '§103 double-patenting rejection with a method claim',
+    ],
+    correct: 1,
+    explanation:
+      'Under §171, if the design is dictated solely by function and is not ornamental, it may be rejected. Surface ornamentation applied to an article can be the subject of a design patent, but if the pattern is purely functional (e.g., a tread pattern dictated by grip requirements with no ornamental alternatives), it may be rejected under §171. See MPEP §1504.01(c).',
+  },
+  {
+    id: 'pb_t6_013',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'Under 35 U.S.C. §289, the remedy for design patent infringement includes:',
+    options: [
+      'Only injunctive relief',
+      'Recovery of the infringer\'s total profit from the sale of the article of manufacture bearing the infringing design, but not less than $250',
+      'Only reasonable royalty damages',
+      'Criminal penalties including imprisonment',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §289, a design patent owner may recover the total profit the infringer made from selling articles bearing the patented design, with a minimum recovery of $250. This is in addition to remedies available under §284. See MPEP §1504.02.',
+  },
+  {
+    id: 'pb_t6_014',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 1,
+    question: 'A design patent application must include drawings showing the design from:',
+    options: [
+      'Only one perspective view',
+      'Sufficient views to completely disclose the appearance of the claimed design (typically front, rear, top, bottom, left, and right sides, plus a perspective view)',
+      'Only a front view and a side view',
+      'No specific number of views is required',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.152, the drawings must contain a sufficient number of views to constitute a complete disclosure of the appearance of the design. Typically this includes six orthographic views (front, rear, right, left, top, bottom) and a perspective view. See MPEP §1503.02.',
+  },
+  {
+    id: 'pb_t6_015',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'Obviousness of a design patent claim under §103 is evaluated using the standard from:',
+    options: [
+      'KSR International Co. v. Teleflex Inc. only',
+      'In re Rosen and Durling v. Spectrum Furniture Co.—identifying a primary reference with design characteristics basically the same as the claimed design, then considering secondary references',
+      'Alice Corp. v. CLS Bank International',
+      'Graham v. John Deere Co. without modification for designs',
+    ],
+    correct: 1,
+    explanation:
+      'Design patent obviousness uses the Rosen-Durling framework: (1) find a primary reference whose design characteristics are basically the same as the claimed design, and (2) determine whether secondary references or other factors would have suggested modifying the primary reference to create the claimed design. See MPEP §1504.03.',
+  },
+  {
+    id: 'pb_t6_016',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 3,
+    question: 'A continuation or divisional of a design patent application:',
+    options: [
+      'Is not permitted',
+      'May be filed under 35 U.S.C. §120 and must claim a single embodiment; if the original showed multiple embodiments, a restriction requirement may lead to divisional filings',
+      'Automatically extends the parent design patent term',
+      'May only be filed as a continuation-in-part',
+    ],
+    correct: 1,
+    explanation:
+      'Design patent applications may have continuations and divisionals under §120. Because each design application may contain only one claim, if multiple distinct designs are disclosed, a restriction requirement under §121 may necessitate divisional filings. Each divisional contains a single claim to one embodiment. See MPEP §1504.20.',
+  },
+  {
+    id: 'pb_t6_017',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'Photographs may be used in place of drawings in a design patent application when:',
+    options: [
+      'Never; only formal line drawings are permitted',
+      'When the subject matter is not capable of being illustrated by a drawing (e.g., intricate surface patterns), with a petition and showing that photographs are the only practicable medium',
+      'Always, at the applicant\'s discretion',
+      'Only for provisional design applications',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.152 and 1.84(b), photographs may be accepted in design applications where the design cannot be adequately illustrated by drawings. The applicant must file a petition explaining why photographs are necessary. Color photographs require a petition under 37 CFR 1.84(a)(2). See MPEP §1503.02.',
+  },
+  {
+    id: 'pb_t6_018',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 1,
+    question: 'A provisional application can be filed for a design patent:',
+    options: [
+      'Yes, just as with utility patents',
+      'No, 35 U.S.C. §111(b) provisional applications are not available for design patents',
+      'Only if the applicant is a micro entity',
+      'Only in combination with a utility application',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §172, provisional applications under §111(b) are not available for design patent applications. Design applications may only be filed as nonprovisional applications. However, a design application may claim priority to a foreign application under §119. See MPEP §1502.01.',
+  },
+  {
+    id: 'pb_t6_019',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 2,
+    question: 'A design patent applicant may claim foreign priority under 35 U.S.C. §119(a) with a priority period of:',
+    options: [
+      '12 months, same as utility patents',
+      '6 months from the earliest foreign filing date',
+      '3 months from the earliest foreign filing date',
+      '18 months from the earliest foreign filing date',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §172 and the Paris Convention, the foreign priority period for design applications is 6 months from the earliest foreign filing date, which is shorter than the 12-month period for utility patents. See MPEP §1504.10.',
+  },
+  {
+    id: 'pb_t6_020',
+    topicId: 6,
+    subtopic: 'design_patents',
+    difficulty: 3,
+    question: 'Under the Hague Agreement, a U.S. applicant files an international design application designating the United States. The USPTO will:',
+    options: [
+      'Automatically register the design without examination',
+      'Examine the application for compliance with U.S. design patent requirements (§§171, 102, 103, 112) and may issue a refusal if requirements are not met',
+      'Only check for formal compliance',
+      'Issue a design patent within 30 days',
+    ],
+    correct: 1,
+    explanation:
+      'When the United States is designated in a Hague international design application, the USPTO conducts a substantive examination just as it would for a directly filed design application, including §171 (ornamentality), §102 (novelty), §103 (obviousness), and §112 requirements. See MPEP §2920.',
+  },
+
+  // --- Plant Patents (10 questions) ---
+  {
+    id: 'pb_t6_021',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 1,
+    question: 'Under 35 U.S.C. §161, a plant patent may be granted to anyone who:',
+    options: [
+      'Discovers a new mineral in its natural state',
+      'Invents or discovers and asexually reproduces any distinct and new variety of plant',
+      'Creates a new genetically modified organism regardless of reproduction method',
+      'Cultivates any existing plant species',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §161, a plant patent may be granted to whoever invents or discovers and asexually reproduces any distinct and new variety of plant, including cultivated sports, mutants, hybrids, and newly found seedlings, other than a tuber-propagated plant or a plant found in an uncultivated state. See MPEP §1601.',
+  },
+  {
+    id: 'pb_t6_022',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 1,
+    question: 'The requirement of asexual reproduction for plant patent eligibility exists because:',
+    options: [
+      'It is easier to grow plants asexually',
+      'Asexual reproduction demonstrates that the applicant can reproduce the plant true to type and that the plant\'s characteristics are stable',
+      'Sexual reproduction produces superior plants',
+      'The statute was written before sexual reproduction techniques existed',
+    ],
+    correct: 1,
+    explanation:
+      'Asexual reproduction (e.g., grafting, budding, cutting) is required because it produces an exact genetic copy, demonstrating that the claimed plant\'s distinctive characteristics are stable and reproducible. This ensures the plant variety is fixed and not merely a seedling variation. See MPEP §1601.',
+  },
+  {
+    id: 'pb_t6_023',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 2,
+    question: 'Which of the following is explicitly excluded from plant patent protection under §161?',
+    options: [
+      'Roses',
+      'Tuber-propagated plants (e.g., potatoes, Jerusalem artichokes)',
+      'Fruit trees',
+      'Ornamental grasses',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §161, tuber-propagated plants are explicitly excluded from plant patent protection. This exclusion exists because tubers are the plant part sold as food, and allowing a patent could restrict the food supply. Potatoes and Jerusalem artichokes are common tuber-propagated plants. See MPEP §1601.',
+  },
+  {
+    id: 'pb_t6_024',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 2,
+    question: 'A plant patent application must include:',
+    options: [
+      'Only a written description',
+      'A specification including a complete botanical description, a single claim, and a drawing (which may be in color)',
+      'Multiple independent claims covering different growth stages',
+      'A deposit of seeds in a recognized depository',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.163-1.167, a plant patent application requires a specification with a complete botanical description distinguishing the new variety, a single claim, and at least one drawing of the plant. Color drawings or photographs are permitted and often necessary to show distinctive characteristics. See MPEP §1605.',
+  },
+  {
+    id: 'pb_t6_025',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 1,
+    question: 'A plant patent contains how many claims?',
+    options: [
+      'As many as needed',
+      'Exactly one claim',
+      'At least three claims',
+      'No claims are required',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.164, a plant patent application is limited to a single claim directed to the plant described and shown in the specification and drawings. Like design patents, plant patents have only one claim. See MPEP §1605.',
+  },
+  {
+    id: 'pb_t6_026',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 2,
+    question: 'The scope of a plant patent under 35 U.S.C. §163 grants the right to exclude others from:',
+    options: [
+      'Growing the plant only in the United States',
+      'Asexually reproducing the plant, and using, offering for sale, or selling the plant so reproduced, or importing the plant so reproduced into the United States',
+      'Only selling the plant',
+      'Growing any plant of the same genus',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §163, a plant patent grants the right to exclude others from asexually reproducing the plant, using, selling, or offering to sell the plant so reproduced, or importing the plant so reproduced. Notably, the exclusionary right extends only to asexual reproduction. See MPEP §1601.',
+  },
+  {
+    id: 'pb_t6_027',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 3,
+    question: 'A plant found in the wild (uncultivated state) is:',
+    options: [
+      'Eligible for a plant patent if it is distinct and new',
+      'Not eligible for a plant patent under §161 because plants found in an uncultivated state are excluded',
+      'Eligible only if it is a tree species',
+      'Eligible if it has been asexually reproduced within 1 year',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §161, a plant found in an uncultivated state is excluded from plant patent eligibility. Only plants found in a cultivated area (cultivated sports, mutants, hybrids, and newly found seedlings in cultivated areas) are eligible. See MPEP §1601.',
+  },
+  {
+    id: 'pb_t6_028',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 1,
+    question: 'The term of a plant patent is:',
+    options: [
+      '15 years from grant, like a design patent',
+      '20 years from the filing date, like a utility patent',
+      '10 years from grant',
+      '25 years from filing',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §154, plant patents have the same term as utility patents: 20 years from the earliest effective U.S. filing date. Maintenance fees, however, are not required for plant patents. See MPEP §1601.',
+  },
+  {
+    id: 'pb_t6_029',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 2,
+    question: 'Color drawings in a plant patent application:',
+    options: [
+      'Are never permitted',
+      'Are permitted without petition and are commonly used to show the distinctive color characteristics of the new plant variety',
+      'Require a petition under 37 CFR 1.84(a)(2) with fee, as in utility applications',
+      'Are required only for flowering plants',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.165(b), color drawings or photographs are permitted in plant patent applications without a petition (unlike utility applications). Color is often essential to show the distinctive characteristics of the plant variety. See MPEP §1606.',
+  },
+  {
+    id: 'pb_t6_030',
+    topicId: 6,
+    subtopic: 'plant_patents',
+    difficulty: 3,
+    question: 'Unlike utility patents, the enablement requirement for plant patents under 35 U.S.C. §162:',
+    options: [
+      'Is identical to the utility patent enablement standard',
+      'Is relaxed—the applicant is not required to provide a written description enabling reproduction of the plant because plants are living organisms that cannot always be reproduced from a written description alone',
+      'Requires deposit of a specimen in a public repository',
+      'Requires disclosure of the full genome sequence',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §162, the description requirement for plant patents does not require that the specification enable one skilled in the art to reproduce the plant. This is because plants, as living organisms, may not be reproducible from a written description. The description need only be as complete as reasonably possible. See MPEP §1605.',
+  },
+
+  // =============================================
+  // TOPIC 7 — ETHICS & PROFESSIONAL CONDUCT (50 Qs)
+  // =============================================
+
+  // --- Duty of Candor (15 questions) ---
+  {
+    id: 'pb_t7_001',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 1,
+    question: 'The duty of candor and good faith under 37 CFR 1.56 requires each individual associated with the filing and prosecution of a patent application to:',
+    options: [
+      'Disclose only prior art that is more relevant than art already of record',
+      'Disclose to the USPTO all information known to be material to patentability',
+      'Conduct an exhaustive worldwide prior art search',
+      'Disclose only information that the applicant\'s attorney deems material',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.56(a), each individual associated with the filing and prosecution (inventor, attorney, assignee) has a duty to disclose to the Office all information known to that individual to be material to patentability. There is no duty to conduct a search, but known material information must be disclosed. See MPEP §2001.',
+  },
+  {
+    id: 'pb_t7_002',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 2,
+    question: 'Under the "but-for" materiality standard established by the Federal Circuit in Therasense, Inc. v. Becton, Dickinson & Co. (2011), information is material if:',
+    options: [
+      'It would be of interest to a reasonable examiner',
+      'But for the failure to disclose it, the USPTO would not have allowed a claim (except for affirmative egregious misconduct, which is always material)',
+      'It relates to any prior art in the same field of invention',
+      'It was published before the filing date of the application',
+    ],
+    correct: 1,
+    explanation:
+      'In Therasense (2011), the Federal Circuit held that the materiality standard for inequitable conduct is "but-for" materiality: the withheld information must be such that the USPTO would not have allowed the claim had it been aware of the information. An exception exists for affirmative egregious misconduct (e.g., filing a false affidavit). See MPEP §2001.04.',
+  },
+  {
+    id: 'pb_t7_003',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 1,
+    question: 'Information is disclosed to the USPTO through an Information Disclosure Statement (IDS) filed under:',
+    options: [
+      '37 CFR 1.97 and 1.98',
+      '37 CFR 1.56 only',
+      '35 U.S.C. §112',
+      '37 CFR 11.18',
+    ],
+    correct: 0,
+    explanation:
+      'The rules governing the filing of an IDS are found in 37 CFR 1.97 (timing and requirements) and 37 CFR 1.98 (content requirements). While §1.56 establishes the duty of candor, the IDS is the mechanism for satisfying that duty. See MPEP §609.',
+  },
+  {
+    id: 'pb_t7_004',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 2,
+    question: 'The individuals who owe the duty of candor under 37 CFR 1.56 include all of the following EXCEPT:',
+    options: [
+      'Each named inventor',
+      'The patent practitioner (attorney or agent) who prepares or prosecutes the application',
+      'Every person who is substantively involved in the preparation or prosecution of the application',
+      'Members of the general public who happen to know about relevant prior art',
+    ],
+    correct: 3,
+    explanation:
+      'Under 37 CFR 1.56(c), the duty extends to each inventor, each attorney or agent, and every other person substantively involved in the preparation or prosecution. The general public has no duty to disclose information to the USPTO regarding a particular application. See MPEP §2001.01.',
+  },
+  {
+    id: 'pb_t7_005',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 2,
+    question: 'An IDS filed within 3 months of the filing date of a nonprovisional application or before the first office action, whichever is later:',
+    options: [
+      'Requires both a fee and a certification statement',
+      'May be filed without a fee or certification statement under 37 CFR 1.97(b)',
+      'Is automatically rejected by the USPTO',
+      'Must include an examiner\'s signature',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.97(b), an IDS filed within the early window (before the first OA on the merits, or within 3 months of filing, whichever is later) does not require a fee or certification statement. Later-filed IDS submissions may require one or both. See MPEP §609.04(b).',
+  },
+  {
+    id: 'pb_t7_006',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 3,
+    question: 'Inequitable conduct, if proven in litigation, renders:',
+    options: [
+      'Only the specific claims affected by the misconduct unenforceable',
+      'The entire patent unenforceable',
+      'Only the specification invalid',
+      'The patent valid but with reduced damages',
+    ],
+    correct: 1,
+    explanation:
+      'Inequitable conduct is an equitable defense to patent infringement. If proven (requiring both materiality and specific intent to deceive), the entire patent is rendered unenforceable, not just the claims directly affected. This is the "atomic bomb" of patent litigation defenses. See MPEP §2016.',
+  },
+  {
+    id: 'pb_t7_007',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 1,
+    question: 'An IDS filed after the mailing of a final office action but before payment of the issue fee requires:',
+    options: [
+      'Nothing beyond the IDS itself',
+      'A certification under §1.97(e) AND the fee under §1.97(c)',
+      'Only the fee',
+      'Only the certification',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.97(d), an IDS filed after a final OA or notice of allowance but before the issue fee payment requires both the certification statement under §1.97(e) and the fee set forth in §1.17(p). See MPEP §609.04(b).',
+  },
+  {
+    id: 'pb_t7_008',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 2,
+    question: 'The duty of candor under 37 CFR 1.56 continues until:',
+    options: [
+      'The first office action is mailed',
+      'The application is published',
+      'The patent is granted (claims issue) or the application is abandoned',
+      'One year after filing',
+    ],
+    correct: 2,
+    explanation:
+      'Under 37 CFR 1.56(a), the duty of candor continues throughout the prosecution of the application, including appeals, until the application is abandoned or the patent issues. See MPEP §2001.04.',
+  },
+  {
+    id: 'pb_t7_009',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 2,
+    question: 'Under 37 CFR 1.56, an individual complies with the duty of disclosure by:',
+    options: [
+      'Filing a declaration that no material art exists',
+      'Disclosing the information in an IDS, or ensuring it is made of record by other means (e.g., examiner citation)',
+      'Submitting a search report from a professional search firm',
+      'Filing a petition requesting the examiner to conduct a search',
+    ],
+    correct: 1,
+    explanation:
+      'The primary method of compliance is filing an IDS under 37 CFR 1.97 and 1.98. However, the duty is satisfied if the material information is of record by any means. The key requirement is that the information is disclosed to the USPTO. See MPEP §2004.',
+  },
+  {
+    id: 'pb_t7_010',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 3,
+    question: 'Under the Therasense standard, to establish inequitable conduct in litigation, the accused infringer must prove both materiality and intent to deceive by:',
+    options: [
+      'A preponderance of the evidence for materiality and specific intent to deceive as the single most reasonable inference from the evidence',
+      'Clear and convincing evidence for both elements',
+      'Beyond a reasonable doubt',
+      'Substantial evidence only',
+    ],
+    correct: 0,
+    explanation:
+      'Under Therasense, the challenger must prove "but-for" materiality by a preponderance of the evidence and must show specific intent to deceive as the single most reasonable inference to be drawn from the evidence. Intent and materiality are separate requirements and cannot be balanced against each other using a sliding scale. See MPEP §2016.',
+  },
+  {
+    id: 'pb_t7_011',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 1,
+    question: 'The filing of an IDS:',
+    options: [
+      'Constitutes an admission that the cited references are prior art',
+      'Does not constitute an admission that the cited information is prior art or is material to patentability',
+      'Automatically triggers a rejection based on the cited references',
+      'Waives the applicant\'s right to argue over the references',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.97(h), the filing of an IDS does not constitute an admission that the information is material to patentability or that it constitutes prior art under §102. It simply places the information before the examiner. See MPEP §609.04(a)(2).',
+  },
+  {
+    id: 'pb_t7_012',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 2,
+    question: 'An IDS submitted after the issue fee has been paid requires:',
+    options: [
+      'Only the IDS and fee',
+      'A petition to withdraw the application from issue under 37 CFR 1.313 (or filing an RCE), along with the IDS',
+      'Nothing; it is automatically accepted',
+      'Filing an entirely new application',
+    ],
+    correct: 1,
+    explanation:
+      'After the issue fee has been paid, an IDS cannot be filed under §1.97. The applicant must file a petition to withdraw from issue under 37 CFR 1.313, or file an RCE or continuation, to have the new information considered. See MPEP §609.04(b).',
+  },
+  {
+    id: 'pb_t7_013',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 1,
+    question: 'Which form is commonly used to submit an IDS to the USPTO?',
+    options: [
+      'PTO/SB/01',
+      'PTO/SB/08 (or equivalent listing of references)',
+      'PTO/AIA/01',
+      'PTO/SB/44',
+    ],
+    correct: 1,
+    explanation:
+      'Form PTO/SB/08 (or PTO/SB/08a and 08b) is the standard Information Disclosure Statement form used to list U.S. patents, foreign patents, and non-patent literature being submitted. See MPEP §609.04(a).',
+  },
+  {
+    id: 'pb_t7_014',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 3,
+    question: 'A practitioner discovers highly material prior art after filing the application but before the first office action. The inventor instructs the practitioner not to disclose it. The practitioner should:',
+    options: [
+      'Follow the inventor\'s instructions since the inventor is the client',
+      'Refuse to comply, explain the legal and ethical obligations, and if the inventor persists, consider withdrawal from representation without disclosing the reason to the USPTO',
+      'File the IDS over the inventor\'s objection',
+      'Report the inventor to the OED immediately',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.116 (withdrawal from representation), if the client insists on conduct the practitioner considers repugnant or contrary to the duty of candor, the practitioner should counsel the client about obligations and, if the client persists, may withdraw without violating confidentiality. The practitioner cannot simply comply with the instruction to withhold material information. See MPEP §2001.',
+  },
+  {
+    id: 'pb_t7_015',
+    topicId: 7,
+    subtopic: 'duty_of_candor',
+    difficulty: 2,
+    question: 'Non-English language references cited in an IDS must be accompanied by:',
+    options: [
+      'Nothing; the USPTO will translate them',
+      'A concise explanation of relevance of the non-English reference, or an English-language translation',
+      'A certified translation by a government-approved translator',
+      'A declaration by the inventor that the reference is material',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.98(a)(3), for non-English language references, the applicant must provide either a concise explanation of the relevance of the reference or a complete English-language translation accompanied by a statement that the translation is accurate. See MPEP §609.04(a)(3).',
+  },
+
+  // --- OED Discipline (15 questions) ---
+  {
+    id: 'pb_t7_016',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 1,
+    question: 'The Office of Enrollment and Discipline (OED) is responsible for:',
+    options: [
+      'Examining patent applications',
+      'Regulating the conduct of patent practitioners (agents and attorneys) registered to practice before the USPTO',
+      'Granting patents',
+      'Conducting inter partes reviews',
+    ],
+    correct: 1,
+    explanation:
+      'The OED administers the registration examination (patent bar), maintains the register of patent practitioners, and investigates and prosecutes disciplinary matters involving registered practitioners and those authorized to practice. See 37 CFR Part 11 and MPEP §1700.',
+  },
+  {
+    id: 'pb_t7_017',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 2,
+    question: 'Disciplinary sanctions that may be imposed on a registered practitioner include all of the following EXCEPT:',
+    options: [
+      'Private reprimand',
+      'Suspension from practice before the USPTO',
+      'Exclusion (permanent disbarment) from practice before the USPTO',
+      'Criminal imprisonment ordered by the OED Director',
+    ],
+    correct: 3,
+    explanation:
+      'Under 37 CFR 11.24, sanctions include: reprimand (public or private), suspension, and exclusion from practice. The OED cannot impose criminal sanctions such as imprisonment—that is within the jurisdiction of the criminal justice system. See 37 CFR §11.24.',
+  },
+  {
+    id: 'pb_t7_018',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 2,
+    question: 'A complaint against a registered patent practitioner alleging misconduct is investigated by:',
+    options: [
+      'The patent examiner assigned to the practitioner\'s cases',
+      'The OED Director, who may investigate and file a complaint with the USPTO Director initiating disciplinary proceedings',
+      'The Federal Circuit',
+      'The state bar association exclusively',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.22, the OED Director investigates allegations of practitioner misconduct. If the investigation reveals probable cause, the OED Director may file a disciplinary complaint. Proceedings are then heard before an administrative law judge. See 37 CFR §11.32.',
+  },
+  {
+    id: 'pb_t7_019',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 1,
+    question: 'Unauthorized practice of patent law before the USPTO by an unregistered individual:',
+    options: [
+      'Is permitted for simple applications',
+      'Is prohibited and may result in criminal penalties under 35 U.S.C. §33 and OED investigation',
+      'Is allowed if supervised by a registered attorney',
+      'Is permitted for pro se inventors only',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §33 and 37 CFR 11.14, only registered patent practitioners may represent others before the USPTO in patent matters. Unauthorized practice is a violation that may result in criminal prosecution and OED enforcement action. Pro se inventors may represent themselves. See MPEP §1700.',
+  },
+  {
+    id: 'pb_t7_020',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 2,
+    question: 'Reciprocal discipline under 37 CFR 11.24(d) allows the USPTO to impose discipline on a practitioner based on:',
+    options: [
+      'A complaint from a client only',
+      'Discipline imposed by another jurisdiction (e.g., a state bar or other federal agency) for the same or related misconduct',
+      'An examiner\'s recommendation',
+      'The practitioner\'s failure to pass the patent bar on the first attempt',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.24(d), if a practitioner has been disciplined by another jurisdiction (state bar, federal court, etc.), the USPTO may impose reciprocal discipline. The practitioner bears the burden of showing why the same discipline should not be imposed. See 37 CFR §11.24(d).',
+  },
+  {
+    id: 'pb_t7_021',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 3,
+    question: 'Under 37 CFR 11.22, a grievance against a practitioner may be filed by:',
+    options: [
+      'Only the OED Director',
+      'Any person, including clients, other practitioners, or USPTO employees',
+      'Only the practitioner\'s clients',
+      'Only federal judges',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.22(a), any person may file a grievance with the OED Director. The OED Director then determines whether to investigate. Grievances may come from clients, opposing parties, other practitioners, USPTO employees, or members of the public. See 37 CFR §11.22.',
+  },
+  {
+    id: 'pb_t7_022',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 1,
+    question: 'A practitioner suspended from practice before the USPTO:',
+    options: [
+      'May continue to represent existing clients until their cases conclude',
+      'Must immediately cease practicing before the USPTO and comply with the terms of the suspension order, including notifying clients',
+      'May practice under the supervision of another registered practitioner',
+      'Is automatically reinstated after 1 year',
+    ],
+    correct: 1,
+    explanation:
+      'A suspended practitioner must cease practice before the USPTO immediately upon the effective date of the suspension. Under 37 CFR 11.58, the practitioner must also take steps to protect clients\' interests, including notifying clients and returning files and property. See 37 CFR §11.58.',
+  },
+  {
+    id: 'pb_t7_023',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 2,
+    question: 'Grounds for discipline of a registered practitioner include all of the following EXCEPT:',
+    options: [
+      'Violation of the USPTO Rules of Professional Conduct (37 CFR Part 11, Subpart D)',
+      'Criminal conduct that reflects adversely on the practitioner\'s fitness to practice',
+      'Conviction of a felony in any jurisdiction',
+      'Filing too many patent applications in a single year',
+    ],
+    correct: 3,
+    explanation:
+      'Grounds for discipline under 37 CFR 11.804 include: violation of the Rules of Professional Conduct, criminal conduct reflecting on fitness, and conviction of a serious crime. Filing a high volume of applications is not misconduct. See 37 CFR §11.804.',
+  },
+  {
+    id: 'pb_t7_024',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 3,
+    question: 'Under 37 CFR 11.28, a practitioner who is the subject of a disciplinary investigation has:',
+    options: [
+      'No right to respond during the investigation phase',
+      'The right to be notified of the investigation and to respond to the allegations before formal charges are filed',
+      'The right to demand a jury trial',
+      'The right to appeal directly to the Supreme Court',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.28, during the investigation, the OED Director typically provides notice and an opportunity for the practitioner to respond to the allegations. This is part of the due process afforded before formal disciplinary proceedings are initiated. See 37 CFR §11.28.',
+  },
+  {
+    id: 'pb_t7_025',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 2,
+    question: 'A practitioner excluded from practice before the USPTO:',
+    options: [
+      'Is permanently barred with no possibility of reinstatement',
+      'May petition for reinstatement after a period of not less than 5 years from the effective date of exclusion',
+      'Is automatically reinstated after 3 years',
+      'May continue to practice in state court',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.60, a practitioner who has been excluded may petition for reinstatement no earlier than 5 years after the effective date of the exclusion. The petitioner must demonstrate by clear and convincing evidence that reinstatement is warranted. See 37 CFR §11.60.',
+  },
+  {
+    id: 'pb_t7_026',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 1,
+    question: 'To become a registered patent agent, an individual must:',
+    options: [
+      'Hold a law degree (J.D.) and pass a state bar examination',
+      'Demonstrate the required scientific and technical qualifications and pass the USPTO registration examination (patent bar)',
+      'Complete a 3-year apprenticeship at a patent law firm',
+      'Be a named inventor on at least one patent',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.7, to register as a patent agent, an individual must have the required scientific and technical qualifications (typically a bachelor\'s degree in a qualifying technical field) and pass the registration examination. A law degree is not required for agents (but is for attorneys). See 37 CFR §11.7.',
+  },
+  {
+    id: 'pb_t7_027',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 2,
+    question: 'A registered patent attorney differs from a registered patent agent in that:',
+    options: [
+      'Only attorneys may file patent applications',
+      'An attorney is also a member of a state bar and may provide legal advice beyond patent prosecution, while an agent may only practice before the USPTO in patent matters',
+      'An agent has more rights before the USPTO than an attorney',
+      'There is no practical difference',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.6, both attorneys and agents may represent clients before the USPTO in patent matters. However, patent attorneys are also members of a state bar, allowing them to provide broader legal advice (e.g., infringement opinions, licensing, litigation). Patent agents are limited to practice before the USPTO. See 37 CFR §11.6.',
+  },
+  {
+    id: 'pb_t7_028',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 3,
+    question: 'Under 37 CFR 11.804(b), "misconduct" for which a practitioner may be disciplined includes:',
+    options: [
+      'Only acts committed in the course of practicing before the USPTO',
+      'Any violation of the USPTO Rules of Professional Conduct, whether or not committed in the course of practice before the USPTO, if relevant to the practitioner\'s fitness',
+      'Only felony convictions',
+      'Only acts committed within the last 2 years',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.804, misconduct includes any violation of the Rules of Professional Conduct in Subpart D, whether or not it occurred in connection with practice before the USPTO, as well as conduct in other jurisdictions that constitutes a ground for discipline. See 37 CFR §11.804.',
+  },
+  {
+    id: 'pb_t7_029',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 1,
+    question: 'A practitioner who receives a public reprimand:',
+    options: [
+      'Is suspended from practice',
+      'Remains authorized to practice but the reprimand is published and available to the public',
+      'Must retake the patent bar examination',
+      'Loses all current client files',
+    ],
+    correct: 1,
+    explanation:
+      'A public reprimand is a disciplinary sanction that does not prevent the practitioner from continuing to practice, but the fact of the reprimand is publicly available. It serves as a formal warning. Private reprimands, by contrast, are not published. See 37 CFR §11.24.',
+  },
+  {
+    id: 'pb_t7_030',
+    topicId: 7,
+    subtopic: 'oed_discipline',
+    difficulty: 2,
+    question: 'Under 37 CFR 11.24(b), interim suspension of a practitioner may be imposed when:',
+    options: [
+      'Any grievance is filed',
+      'The practitioner has been convicted of a serious crime (felony or certain misdemeanors) or poses a substantial threat of irreparable harm to clients or the public',
+      'The practitioner fails to respond to an office action',
+      'The practitioner changes firms',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.24(b) and 11.25, interim suspension may be imposed when a practitioner has been convicted of a serious crime or when there is evidence of conduct posing an immediate threat to the public or clients. This is an expedited procedure pending full disciplinary proceedings. See 37 CFR §11.25.',
+  },
+
+  // --- Signatures & Certifications (10 questions) ---
+  {
+    id: 'pb_t7_031',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 1,
+    question: 'Under 37 CFR 1.4(d), an electronic signature (S-signature) on a document filed with the USPTO consists of:',
+    options: [
+      'A scanned image of a handwritten signature',
+      'Any letters, characters, or symbols placed between forward slashes (e.g., /John Smith/)',
+      'A digital certificate issued by the USPTO',
+      'A thumbprint scan',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.4(d)(2), an S-signature is a signature consisting of letters, numbers, or characters inserted between forward slashes (e.g., /John Smith/). It has the same force and effect as a handwritten signature when used on documents filed electronically with the USPTO. See MPEP §502.02.',
+  },
+  {
+    id: 'pb_t7_032',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 2,
+    question: 'The certification under 37 CFR 11.18(b) requires that every paper filed in a USPTO proceeding by a registered practitioner certifies that:',
+    options: [
+      'All prior art relevant to the claims has been cited',
+      'To the best of the practitioner\'s knowledge, the paper is not presented for an improper purpose, the legal contentions are warranted, and the factual contentions have evidentiary support',
+      'The practitioner has personally verified every fact stated',
+      'The practitioner guarantees the patentability of the claims',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.18(b), by presenting a paper, the practitioner certifies: (1) it is not filed for an improper purpose (harassment, delay), (2) legal contentions are warranted by existing law or a good faith argument, (3) factual allegations have evidentiary support, and (4) denials of factual contentions are warranted. See MPEP §407.',
+  },
+  {
+    id: 'pb_t7_033',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 1,
+    question: 'A power of attorney (POA) in a patent application:',
+    options: [
+      'Automatically expires after 1 year',
+      'Authorizes a registered practitioner or firm to act on behalf of the applicant before the USPTO',
+      'Is only required for foreign applicants',
+      'Must be notarized to be valid',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.32, a power of attorney appoints one or more registered practitioners to represent the applicant before the USPTO. It authorizes the practitioner to sign papers, respond to office actions, and otherwise act on behalf of the applicant. See MPEP §402.',
+  },
+  {
+    id: 'pb_t7_034',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 2,
+    question: 'Under 37 CFR 1.33(a), a power of attorney may be signed by:',
+    options: [
+      'Only the inventor',
+      'The applicant (inventor, assignee who is the applicant, or person filing under §1.46)',
+      'The registered practitioner themselves',
+      'Any employee of the assignee company',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.32(b), the power of attorney must be signed by the applicant. The applicant may be the inventor, an assignee who has taken over prosecution, or a party filing under §1.46. The POA identifies the practitioner(s) authorized to act. See MPEP §402.02.',
+  },
+  {
+    id: 'pb_t7_035',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 2,
+    question: 'If a paper filed with the USPTO contains a forged signature:',
+    options: [
+      'It is treated as properly filed',
+      'The paper is treated as unsigned, and the action taken in response may be void; further, the forger may face disciplinary action or criminal penalties',
+      'Only a warning is issued',
+      'The paper is accepted but annotated',
+    ],
+    correct: 1,
+    explanation:
+      'A forged signature renders the paper unsigned and any action based on it potentially voidable. The person who forged the signature may face discipline under 37 CFR Part 11 (if a registered practitioner) and potential criminal penalties under 18 U.S.C. §1001 for false statements to a government agency. See MPEP §502.02.',
+  },
+  {
+    id: 'pb_t7_036',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 1,
+    question: 'Under 37 CFR 1.4(d), who may sign a response to an office action filed in a patent application?',
+    options: [
+      'Any person',
+      'The registered practitioner of record, or the applicant if pro se',
+      'Only the inventor',
+      'Only a U.S. citizen',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.33(b), correspondence with the USPTO must be signed by the practitioner of record, or by the applicant if no practitioner is of record (pro se). Unsigned papers may be given a time period for correction. See MPEP §502.03.',
+  },
+  {
+    id: 'pb_t7_037',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 3,
+    question: 'A violation of the certification requirement under 37 CFR 11.18 may result in:',
+    options: [
+      'No consequences',
+      'Sanctions including striking the offending paper, holding the practitioner personally responsible for expenses, and referral to the OED for discipline',
+      'Automatic grant of the patent',
+      'Criminal prosecution by the DOJ',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.18(c), violations of the certification requirement may result in sanctions: the offending paper may be stricken, expenses including attorney fees may be assessed against the signer, and the matter may be referred to the OED for potential disciplinary proceedings. See MPEP §407.',
+  },
+  {
+    id: 'pb_t7_038',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 2,
+    question: 'A customer number practice under 37 CFR 1.36 allows:',
+    options: [
+      'Inventors to remain anonymous',
+      'A registered practitioner or firm to associate a customer number with correspondence and power of attorney, simplifying changes in representation and communication',
+      'Filing applications without paying fees',
+      'Automatically extending response deadlines',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.36, the customer number practice allows practitioners to link a customer number to a correspondence address and set of authorized practitioners. This simplifies changes to representation and ensures correspondence is directed to the correct party. See MPEP §403.',
+  },
+  {
+    id: 'pb_t7_039',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 1,
+    question: 'Under 37 CFR 1.10, the certificate of mailing procedure applies to:',
+    options: [
+      'All papers filed with the USPTO',
+      'Papers sent by U.S. mail to the USPTO with a properly signed certificate stating the date of deposit, which is treated as the date of receipt',
+      'Only international applications',
+      'Only fee payments',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 1.8, a certificate of mailing establishes the date of deposit as the date of receipt by the USPTO for papers mailed via USPS. Under 37 CFR 1.10, papers may also be filed by Express Mail (Priority Mail Express) with the date of deposit treated as the filing date. See MPEP §512.',
+  },
+  {
+    id: 'pb_t7_040',
+    topicId: 7,
+    subtopic: 'signatures_certifications',
+    difficulty: 2,
+    question: 'The oath or declaration required under 35 U.S.C. §115 must state that:',
+    options: [
+      'The application was prepared by a registered practitioner',
+      'The inventor believes himself or herself to be the original inventor of the claimed invention and the application was made or authorized by the inventor',
+      'The invention has been reduced to practice',
+      'No prior art exists for the claimed invention',
+    ],
+    correct: 1,
+    explanation:
+      'Under 35 U.S.C. §115(b), the oath or declaration must state that the application was made or authorized by the affiant/declarant and that the individual believes himself or herself to be the original inventor or an original joint inventor of the claimed invention. See MPEP §602.',
+  },
+
+  // --- Client Representation (10 questions) ---
+  {
+    id: 'pb_t7_041',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 1,
+    question: 'Under 37 CFR 11.106 (based on ABA Model Rule 1.6), a registered practitioner\'s duty of confidentiality:',
+    options: [
+      'Applies only to information disclosed in formal meetings',
+      'Prohibits revealing information relating to the representation of a client unless the client gives informed consent or disclosure is impliedly authorized to carry out the representation',
+      'Ends when the practitioner-client relationship terminates',
+      'Does not apply to patent agents, only patent attorneys',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.106(a), a practitioner shall not reveal information relating to the representation of a client unless the client gives informed consent, the disclosure is impliedly authorized, or an exception applies (e.g., preventing certain crimes or complying with law). See 37 CFR §11.106.',
+  },
+  {
+    id: 'pb_t7_042',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 2,
+    question: 'A conflict of interest under 37 CFR 11.107 exists when:',
+    options: [
+      'The practitioner represents two clients in completely unrelated matters',
+      'The representation of one client will be directly adverse to another client, or there is a significant risk that the representation will be materially limited by responsibilities to another client, a former client, a third person, or the practitioner\'s own interests',
+      'The practitioner charges different rates to different clients',
+      'Two clients are in the same industry',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.107(a), a conflict of interest exists when: (1) representation of one client is directly adverse to another, or (2) there is a significant risk that representation will be materially limited by responsibilities to another client, former client, third person, or the practitioner\'s own interests. See 37 CFR §11.107.',
+  },
+  {
+    id: 'pb_t7_043',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 2,
+    question: 'If a conflict of interest exists, a practitioner may still represent the affected clients if:',
+    options: [
+      'The practitioner believes they can handle it without informing the clients',
+      'The practitioner reasonably believes competent and diligent representation is possible, the representation is not prohibited by law, the clients are not directly adverse in the same proceeding, and each affected client gives informed consent confirmed in writing',
+      'Only one client consents',
+      'The conflict is minor',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.107(b), a conflict may be waived if: (1) the practitioner reasonably believes competent representation is possible, (2) representation is not prohibited by law, (3) the clients are not opposing parties in the same proceeding, and (4) each affected client gives informed consent, confirmed in writing. See 37 CFR §11.107(b).',
+  },
+  {
+    id: 'pb_t7_044',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 1,
+    question: 'Under 37 CFR 11.116, a practitioner must withdraw from representation if:',
+    options: [
+      'The client disagrees with the practitioner\'s strategy',
+      'Continued representation will result in violation of the Rules of Professional Conduct or other law',
+      'The case is taking longer than expected',
+      'The client is located in another state',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.116(a), a practitioner shall withdraw if the representation will result in a violation of the Rules of Professional Conduct or other law, if the practitioner\'s mental or physical condition materially impairs ability to represent, or if the practitioner is discharged. See 37 CFR §11.116.',
+  },
+  {
+    id: 'pb_t7_045',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 2,
+    question: 'The duty of competence under 37 CFR 11.101 requires a practitioner to:',
+    options: [
+      'Only handle cases in their area of undergraduate study',
+      'Provide competent representation, requiring the legal knowledge, skill, thoroughness, and preparation reasonably necessary for the representation',
+      'Guarantee a favorable outcome',
+      'Hold a Ph.D. in the relevant technical field',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.101, a practitioner must provide competent representation. Competence requires the legal knowledge, skill, thoroughness, and preparation reasonably necessary. A practitioner may acquire competence in a new field through study and preparation. See 37 CFR §11.101.',
+  },
+  {
+    id: 'pb_t7_046',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 1,
+    question: 'Under 37 CFR 11.104, the duty of communication requires a practitioner to:',
+    options: [
+      'Send weekly status reports regardless of case activity',
+      'Keep the client reasonably informed about the status of the matter and promptly comply with reasonable requests for information',
+      'Communicate only in writing',
+      'Provide daily updates on all pending applications',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.104(a), a practitioner must promptly inform the client of decisions or circumstances requiring informed consent, reasonably consult about means of achieving objectives, keep the client reasonably informed, and promptly comply with reasonable requests for information. See 37 CFR §11.104.',
+  },
+  {
+    id: 'pb_t7_047',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 3,
+    question: 'A practitioner has represented Client A in obtaining a patent. Client B approaches the practitioner to file a reexamination request against Client A\'s patent. Under 37 CFR 11.109 (duties to former clients):',
+    options: [
+      'The practitioner may freely represent Client B because the representation of Client A has ended',
+      'The practitioner may not represent Client B in a matter that is the same or substantially related unless Client A gives informed consent confirmed in writing',
+      'The practitioner may represent Client B if Client B pays a higher fee',
+      'There is no restriction because reexamination is a different proceeding',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.109(a), a practitioner who formerly represented a client may not represent another person in the same or a substantially related matter in which the new client\'s interests are materially adverse to the former client, unless the former client gives informed consent confirmed in writing. See 37 CFR §11.109.',
+  },
+  {
+    id: 'pb_t7_048',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 2,
+    question: 'When a practitioner withdraws from representation, 37 CFR 11.116(d) requires the practitioner to:',
+    options: [
+      'Immediately destroy all client files',
+      'Take steps to the extent reasonably practicable to protect the client\'s interests, including giving reasonable notice, allowing time for new counsel, and surrendering papers and property',
+      'Continue prosecuting all pending applications until they issue',
+      'Notify the OED Director',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.116(d), upon withdrawal, the practitioner must take reasonable steps to protect the client\'s interests: give reasonable notice, allow time to employ other counsel, surrender papers and property, and refund any advance payment of fees not yet earned. See 37 CFR §11.116(d).',
+  },
+  {
+    id: 'pb_t7_049',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 2,
+    question: 'Under 37 CFR 11.115, a practitioner must hold client funds (such as advance fees):',
+    options: [
+      'In the practitioner\'s personal bank account',
+      'In a client trust account separate from the practitioner\'s own funds',
+      'In a joint account with the client',
+      'In cash in the office safe',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.115(a), a practitioner must hold client property (including funds) separate from the practitioner\'s own property. Funds must be kept in a separate trust account. Commingling of client funds with the practitioner\'s own funds is a serious violation. See 37 CFR §11.115.',
+  },
+  {
+    id: 'pb_t7_050',
+    topicId: 7,
+    subtopic: 'client_representation',
+    difficulty: 3,
+    question: 'Under 37 CFR 11.103, the duty of diligence requires a practitioner to:',
+    options: [
+      'File all applications within 24 hours of receiving instructions',
+      'Act with reasonable diligence and promptness in representing a client, which includes meeting USPTO deadlines and avoiding neglect of client matters',
+      'Work exclusively on one client\'s matters at a time',
+      'Guarantee prosecution will be completed within 6 months',
+    ],
+    correct: 1,
+    explanation:
+      'Under 37 CFR 11.103, a practitioner must act with reasonable diligence and promptness. This includes meeting statutory and regulatory deadlines (e.g., responding to office actions within the set period), avoiding procrastination, and carrying through to completion all matters undertaken. Missing a deadline due to neglect can constitute a violation. See 37 CFR §11.103.',
+  },
 ];
