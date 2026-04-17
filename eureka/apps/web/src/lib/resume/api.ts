@@ -131,3 +131,61 @@ export async function apiATSScore(data: { resume_data: Record<string, unknown>; 
   });
   return handleResponse(res);
 }
+
+export async function apiGenerateBullets(data: { action?: string; bullet?: string; title?: string; company?: string; context?: string }) {
+  const res = await fetch(`${API_BASE}/resumes/ai/generate-bullets`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<{ bullets: string[] }>(res);
+}
+
+export async function apiTailorResume(data: { resume_data: Record<string, unknown>; job_description: string }) {
+  const res = await fetch(`${API_BASE}/resumes/ai/tailor`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse(res);
+}
+
+export async function apiSuggestSkills(data: { title: string; experience?: unknown[]; education?: unknown[] }) {
+  const res = await fetch(`${API_BASE}/resumes/ai/suggest-skills`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<{ suggested_skills: Array<{ skill: string; category: string; relevance: string }> }>(res);
+}
+
+export async function apiCheckTone(data: { text: string }) {
+  const res = await fetch(`${API_BASE}/resumes/ai/check-tone`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<{ issues: Array<{ original: string; suggestion: string; reason: string }>; tone_score: number }>(res);
+}
+
+// ── Export endpoints ─────────────────────────────────────────
+
+export async function apiExportPDF(data: { resume_id: string; template_id?: string; paper_size?: string }) {
+  const res = await fetch(`${API_BASE}/exports/pdf`, {
+    method: "POST",
+    headers: getHeaders(),
+    body: JSON.stringify(data),
+  });
+  return handleResponse<{ job_id: string; status: string }>(res);
+}
+
+export async function apiExportStatus(jobId: string) {
+  const res = await fetch(`${API_BASE}/exports/status/${jobId}`, { headers: getHeaders() });
+  return handleResponse<{ job_id: string; status: string; file_url?: string }>(res);
+}
+
+export async function apiListTemplates() {
+  const res = await fetch(`${API_BASE}/exports/templates`);
+  return handleResponse<Array<{ id: string; name: string; description: string; best_for: string }>>(res);
+}
+
