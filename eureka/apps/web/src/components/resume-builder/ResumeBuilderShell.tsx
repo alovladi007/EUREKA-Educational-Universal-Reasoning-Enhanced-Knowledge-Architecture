@@ -1,15 +1,31 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useCallback } from "react";
 import { useResumeStore } from "@/stores/resume";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+  arrayMove,
+} from "@dnd-kit/sortable";
 import {
   FileEdit,
   Download,
   ZoomIn,
   ZoomOut,
   ChevronLeft,
+  Sparkles,
+  Target,
 } from "lucide-react";
 import { MeridianTemplate } from "./templates/MeridianTemplate";
 import { AtlasTemplate } from "./templates/AtlasTemplate";
@@ -28,8 +44,11 @@ import { ProjectsPanel } from "./editor/ProjectsPanel";
 import { CertificationsPanel } from "./editor/CertificationsPanel";
 import { LanguagesPanel } from "./editor/LanguagesPanel";
 import { EditorSidebar } from "./editor/EditorSidebar";
+import { DraggableSection } from "./editor/DraggableSection";
 import { TemplateCustomizer } from "./customization/TemplateCustomizer";
 import { ExportDialog } from "./export/ExportDialog";
+import { AIAssistantPanel } from "./ai/AIAssistantPanel";
+import { ATSScorePanel } from "./ats/ATSScorePanel";
 import { TEMPLATES } from "@/lib/resume/template-registry";
 import type { TemplateId, TemplateProps } from "@/types/resume";
 
@@ -48,10 +67,32 @@ export function ResumeBuilderShell() {
   const doc = useResumeStore((s) => s.activeDocument());
   const setTemplate = useResumeStore((s) => s.setTemplate);
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
+  const reorderSections = useResumeStore((s) => s.reorderSections);
   const [previewScale, setPreviewScale] = useState(0.55);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [showExport, setShowExport] = useState(false);
+  const [showAI, setShowAI] = useState(false);
+  const [showATS, setShowATS] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor),
+  );
+
+  const sectionOrder = doc?.data.meta.sectionOrder ?? [];
+
+  const handleDragEnd = useCallback((event: DragEndEvent) => {
+    const { active, over } = event;
+    if (over && active.id !== over.id) {
+      const oldIndex = sectionOrder.indexOf(active.id as (typeof sectionOrder)[number]);
+      const newIndex = sectionOrder.indexOf(over.id as (typeof sectionOrder)[number]);
+      if (oldIndex !== -1 && newIndex !== -1) {
+        const newOrder = arrayMove([...sectionOrder], oldIndex, newIndex);
+        reorderSections(newOrder as typeof sectionOrder);
+      }
+    }
+  }, [sectionOrder, reorderSections]);
 
   if (!doc) return null;
 
@@ -100,6 +141,28 @@ export function ResumeBuilderShell() {
 
           <div className="w-px h-5 bg-border mx-1 hidden md:block" />
 
+          {/* AI Assistant */}
+          <Button
+            variant={showAI ? "default" : "outline"}
+            size="sm"
+            className={`h-7 text-xs ${showAI ? "bg-violet-500 hover:bg-violet-600" : ""}`}
+            onClick={() => { setShowAI(!showAI); setShowATS(false); }}
+          >
+            <Sparkles className="w-3.5 h-3.5 mr-1" />
+            AI
+          </Button>
+
+          {/* ATS Score */}
+          <Button
+            variant={showATS ? "default" : "outline"}
+            size="sm"
+            className={`h-7 text-xs ${showATS ? "bg-blue-500 hover:bg-blue-600" : ""}`}
+            onClick={() => { setShowATS(!showATS); setShowAI(false); }}
+          >
+            <Target className="w-3.5 h-3.5 mr-1" />
+            ATS
+          </Button>
+
           {/* Export */}
           <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowExport(true)}>
             <Download className="w-3.5 h-3.5 mr-1" />
@@ -138,14 +201,32 @@ export function ResumeBuilderShell() {
             <EditorSidebar />
             <TemplateCustomizer />
 
-            <ContactInfoPanel />
-            <SummaryPanel />
-            <ExperiencePanel />
-            <EducationPanel />
-            <SkillsPanel />
-            <ProjectsPanel />
-            <CertificationsPanel />
-            <LanguagesPanel />
+            <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+              <SortableContext items={sectionOrder} strategy={verticalListSortingStrategy}>
+                {sectionOrder.map((sectionId) => {
+                  const renderPanel = () => {
+                    switch (sectionId) {
+                      case "header": return <ContactInfoPanel />;
+                      case "summary": return <SummaryPanel />;
+                      case "experience": return <ExperiencePanel />;
+                      case "education": return <EducationPanel />;
+                      case "skills": return <SkillsPanel />;
+                      case "projects": return <ProjectsPanel />;
+                      case "certifications": return <CertificationsPanel />;
+                      case "languages": return <LanguagesPanel />;
+                      default: return null;
+                    }
+                  };
+                  const panel = renderPanel();
+                  if (!panel) return null;
+                  return (
+                    <DraggableSection key={sectionId} id={sectionId}>
+                      {panel}
+                    </DraggableSection>
+                  );
+                })}
+              </SortableContext>
+            </DndContext>
           </div>
         </div>
 
@@ -169,6 +250,12 @@ export function ResumeBuilderShell() {
           </div>
         </div>
       </div>
+
+      {/* AI Assistant Panel */}
+      <AIAssistantPanel open={showAI} onClose={() => setShowAI(false)} />
+
+      {/* ATS Score Panel */}
+      <ATSScorePanel open={showATS} onClose={() => setShowATS(false)} />
 
       {/* Export Dialog */}
       <ExportDialog open={showExport} onClose={() => setShowExport(false)} />
