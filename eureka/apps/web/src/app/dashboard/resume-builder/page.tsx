@@ -1,8 +1,9 @@
 "use client";
 
-import { useEffect } from "react";
+import { useState } from "react";
 import { useResumeStore } from "@/stores/resume";
 import { ResumeBuilderShell } from "@/components/resume-builder/ResumeBuilderShell";
+import { ImportDialog } from "@/components/resume-builder/export/ImportDialog";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -12,6 +13,7 @@ import {
   Copy,
   Clock,
   Layout,
+  Upload,
 } from "lucide-react";
 
 export default function ResumeBuilderPage() {
@@ -21,6 +23,7 @@ export default function ResumeBuilderPage() {
   const deleteDocument = useResumeStore((s) => s.deleteDocument);
   const duplicateDocument = useResumeStore((s) => s.duplicateDocument);
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
+  const [showImport, setShowImport] = useState(false);
 
   const docList = Object.values(documents);
   const hasActive = activeDocumentId && documents[activeDocumentId];
@@ -46,7 +49,7 @@ export default function ResumeBuilderPage() {
       </div>
 
       {/* Create Options */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <Card
           className="p-6 border-2 border-dashed hover:border-primary/50 cursor-pointer transition-all hover:shadow-md group"
           onClick={() => createDocument("My Resume")}
@@ -76,7 +79,25 @@ export default function ResumeBuilderPage() {
             </div>
           </div>
         </Card>
+
+        <Card
+          className="p-6 border-2 border-dashed hover:border-primary/50 cursor-pointer transition-all hover:shadow-md group"
+          onClick={() => setShowImport(true)}
+        >
+          <div className="flex flex-col items-center text-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-violet-500/10 flex items-center justify-center group-hover:bg-violet-500/20 transition-colors">
+              <Upload className="w-6 h-6 text-violet-500" />
+            </div>
+            <div>
+              <h3 className="font-semibold">Import Resume</h3>
+              <p className="text-sm text-muted-foreground">Upload JSON or PDF</p>
+            </div>
+          </div>
+        </Card>
       </div>
+
+      {/* Import Dialog */}
+      <ImportDialog open={showImport} onClose={() => setShowImport(false)} />
 
       {/* Existing Resumes */}
       {docList.length > 0 && (

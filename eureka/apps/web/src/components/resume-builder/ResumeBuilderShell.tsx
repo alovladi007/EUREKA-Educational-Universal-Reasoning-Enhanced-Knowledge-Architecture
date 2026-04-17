@@ -26,6 +26,9 @@ import {
   ChevronLeft,
   Sparkles,
   Target,
+  Share2,
+  History,
+  Upload,
 } from "lucide-react";
 import { MeridianTemplate } from "./templates/MeridianTemplate";
 import { AtlasTemplate } from "./templates/AtlasTemplate";
@@ -49,6 +52,9 @@ import { TemplateCustomizer } from "./customization/TemplateCustomizer";
 import { ExportDialog } from "./export/ExportDialog";
 import { AIAssistantPanel } from "./ai/AIAssistantPanel";
 import { ATSScorePanel } from "./ats/ATSScorePanel";
+import { ShareDialog } from "./export/ShareDialog";
+import { ImportDialog } from "./export/ImportDialog";
+import { VersionHistoryPanel } from "./history/VersionHistoryPanel";
 import { TEMPLATES } from "@/lib/resume/template-registry";
 import type { TemplateId, TemplateProps } from "@/types/resume";
 
@@ -71,8 +77,11 @@ export function ResumeBuilderShell() {
   const [previewScale, setPreviewScale] = useState(0.55);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
   const [showExport, setShowExport] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const [showAI, setShowAI] = useState(false);
   const [showATS, setShowATS] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const sensors = useSensors(
@@ -161,6 +170,23 @@ export function ResumeBuilderShell() {
           >
             <Target className="w-3.5 h-3.5 mr-1" />
             ATS
+          </Button>
+
+          {/* History */}
+          <Button
+            variant={showHistory ? "default" : "ghost"}
+            size="icon"
+            className="h-7 w-7"
+            onClick={() => { setShowHistory(!showHistory); setShowAI(false); setShowATS(false); }}
+            title="Version History"
+          >
+            <History className="w-3.5 h-3.5" />
+          </Button>
+
+          {/* Share */}
+          <Button variant="outline" size="sm" className="h-7 text-xs" onClick={() => setShowShare(true)}>
+            <Share2 className="w-3.5 h-3.5 mr-1" />
+            Share
           </Button>
 
           {/* Export */}
@@ -257,8 +283,17 @@ export function ResumeBuilderShell() {
       {/* ATS Score Panel */}
       <ATSScorePanel open={showATS} onClose={() => setShowATS(false)} />
 
+      {/* Version History Panel */}
+      <VersionHistoryPanel open={showHistory} onClose={() => setShowHistory(false)} />
+
       {/* Export Dialog */}
       <ExportDialog open={showExport} onClose={() => setShowExport(false)} />
+
+      {/* Import Dialog */}
+      <ImportDialog open={showImport} onClose={() => setShowImport(false)} />
+
+      {/* Share Dialog */}
+      <ShareDialog open={showShare} onClose={() => setShowShare(false)} />
     </div>
   );
 }
