@@ -12,6 +12,12 @@ import {
 } from "lucide-react";
 import { MeridianTemplate } from "./templates/MeridianTemplate";
 import { AtlasTemplate } from "./templates/AtlasTemplate";
+import { PrismTemplate } from "./templates/PrismTemplate";
+import { ScholarTemplate } from "./templates/ScholarTemplate";
+import { CartaTemplate } from "./templates/CartaTemplate";
+import { VertexTemplate } from "./templates/VertexTemplate";
+import { FoundryTemplate } from "./templates/FoundryTemplate";
+import { PulseTemplate } from "./templates/PulseTemplate";
 import { ContactInfoPanel } from "./editor/ContactInfoPanel";
 import { SummaryPanel } from "./editor/SummaryPanel";
 import { ExperiencePanel } from "./editor/ExperiencePanel";
@@ -27,7 +33,12 @@ import type { TemplateId, TemplateProps } from "@/types/resume";
 const TEMPLATE_COMPONENTS: Record<string, React.ComponentType<TemplateProps>> = {
   meridian: MeridianTemplate,
   atlas: AtlasTemplate,
-  // Phase 2: prism, scholar, carta, vertex, foundry, pulse
+  prism: PrismTemplate,
+  scholar: ScholarTemplate,
+  carta: CartaTemplate,
+  vertex: VertexTemplate,
+  foundry: FoundryTemplate,
+  pulse: PulseTemplate,
 };
 
 export function ResumeBuilderShell() {
