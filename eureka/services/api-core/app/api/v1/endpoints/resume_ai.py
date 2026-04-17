@@ -1,11 +1,94 @@
-"""Resume AI endpoints — summary generation, bullet improvement, ATS scoring."""
+"""Resume AI endpoints — real Claude API integration for resume writing assistance."""
+
+import json
+import re
+import logging
+from typing import List, Optional
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from typing import List, Optional
 from app.auth.dependencies import get_current_user
+from app.core.config import settings
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/resumes/ai", tags=["resume-ai"])
+
+# ── AI Client Setup ──────────────────────────────────────────
+
+_anthropic_client = None
+
+
+def get_ai_client():
+    """Lazy-initialize the Anthropic client."""
+    global _anthropic_client
+    if _anthropic_client is None:
+        if not settings.ANTHROPIC_API_KEY:
+            raise HTTPException(
+                status_code=503,
+                detail="AI service not configured. Set ANTHROPIC_API_KEY in environment.",
+            )
+        try:
+            from anthropic import AsyncAnthropic
+            _anthropic_client = AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
+        except ImportError:
+            raise HTTPException(
+                status_code=503,
+                detail="anthropic package not installed. Run: pip install anthropic",
+            )
+    return _anthropic_client
+
+
+SYSTEM_PROMPT = """You are a professional resume writer with 20+ years of experience helping candidates land jobs at top companies. You write concise, quantified, impact-driven resume content.
+
+Rules:
+- Always use strong action verbs (Led, Built, Designed, Optimized, etc.)
+- Never use first-person pronouns (I, me, my)
+- Quantify achievements wherever possible (percentages, dollar amounts, counts)
+- Follow the XYZ format: "Accomplished [X] as measured by [Y], by doing [Z]"
+- Keep bullet points to 1-2 lines max
+- Focus on impact and results, not responsibilities
+- Output MUST be valid JSON matching the specified schema exactly
+- Never include markdown formatting, code blocks, or backticks in the JSON output"""
+
+
+async def call_claude(prompt: str, system: str = SYSTEM_PROMPT, max_tokens: int = None) -> str:
+    """Call Claude API and return the text response."""
+    client = get_ai_client()
+    try:
+        response = await client.messages.create(
+            model=settings.AI_MODEL,
+            max_tokens=max_tokens or settings.AI_MAX_TOKENS,
+            temperature=settings.AI_TEMPERATURE,
+            system=system,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        return response.content[0].text
+    except Exception as e:
+        logger.error(f"Claude API error: {e}")
+        raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+
+
+def parse_json_response(text: str) -> dict:
+    """Extract JSON from Claude's response, handling markdown code blocks."""
+    # Try direct parse first
+    text = text.strip()
+    if text.startswith("```"):
+        # Remove markdown code blocks
+        text = re.sub(r"^```(?:json)?\s*\n?", "", text)
+        text = re.sub(r"\n?```\s*$", "", text)
+        text = text.strip()
+    try:
+        return json.loads(text)
+    except json.JSONDecodeError:
+        # Try to find JSON object/array in the text
+        match = re.search(r'(\{[\s\S]*\}|\[[\s\S]*\])', text)
+        if match:
+            try:
+                return json.loads(match.group(1))
+            except json.JSONDecodeError:
+                pass
+        raise HTTPException(status_code=502, detail="AI returned invalid JSON response")
 
 
 # ── Request/Response Schemas ─────────────────────────────────
@@ -24,7 +107,7 @@ class SummaryResponse(BaseModel):
 
 class BulletRequest(BaseModel):
     action: str = "generate"  # "generate" | "improve"
-    bullet: Optional[str] = None  # for improve
+    bullet: Optional[str] = None
     title: Optional[str] = None
     company: Optional[str] = None
     context: Optional[str] = None
@@ -40,9 +123,11 @@ class TailorRequest(BaseModel):
 
 
 class TailorResponse(BaseModel):
-    suggestions: List[dict]  # {section, original, suggested, reason}
     summary_rewrite: Optional[str] = None
-    missing_keywords: List[str]
+    bullet_suggestions: List[dict] = []
+    missing_keywords: List[str] = []
+    skill_gaps: List[str] = []
+    overall_match_score: int = 0
 
 
 class SkillsRequest(BaseModel):
@@ -52,7 +137,7 @@ class SkillsRequest(BaseModel):
 
 
 class SkillsResponse(BaseModel):
-    suggested_skills: List[dict]  # {skill, category, relevance}
+    suggested_skills: List[dict]
 
 
 class ATSScoreRequest(BaseModel):
@@ -75,8 +160,9 @@ class ToneCheckRequest(BaseModel):
 
 
 class ToneCheckResponse(BaseModel):
-    issues: List[dict]  # {original, suggestion, reason}
-    tone_score: int  # 0-100
+    issues: List[dict]
+    tone_score: int
+    rewritten: Optional[str] = None
 
 
 # ── AI Endpoints ─────────────────────────────────────────────
@@ -87,23 +173,41 @@ async def generate_summary(
     request: SummaryRequest,
     current_user=Depends(get_current_user),
 ):
-    """Generate 3 professional summary variants using AI."""
-    # TODO: Replace with actual Claude/GPT API call
-    # System prompt: professional resume writer, 20+ years experience
-    # Input: title, years, experience entries, target role
-    # Output: 3 distinct summary variants, 2-4 sentences each
+    """Generate 3 professional summary variants using Claude."""
+    exp_context = ""
+    if request.experience:
+        exp_lines = []
+        for exp in request.experience[:3]:  # Limit context
+            if isinstance(exp, dict):
+                exp_lines.append(f"- {exp.get('title', '')} at {exp.get('company', '')} ({exp.get('startDate', '')} - {exp.get('endDate', 'Present')})")
+                for b in exp.get('bullets', [])[:3]:
+                    if isinstance(b, dict) and b.get('content'):
+                        exp_lines.append(f"  • {b['content']}")
+                    elif isinstance(b, str) and b:
+                        exp_lines.append(f"  • {b}")
+        exp_context = f"\n\nRelevant experience:\n" + "\n".join(exp_lines)
 
-    title = request.title
-    years = request.years
-    target = request.target_role or title
+    target = request.target_role or request.title
 
-    variants = [
-        f"Results-driven {title} with {years}+ years of experience delivering high-impact solutions across diverse environments. Proven track record of leading cross-functional teams and driving measurable business outcomes. Passionate about leveraging deep technical expertise to excel as a {target}.",
-        f"Dynamic {title} with {years} years of progressive experience building scalable systems and mentoring engineering teams. Expert in translating complex business requirements into elegant technical solutions. Seeking to bring a data-driven, impact-focused approach to a {target} role.",
-        f"Accomplished {title} with {years}+ years spanning the full software development lifecycle. Demonstrated ability to architect robust systems, optimize performance by 40%+, and deliver products used by millions. Committed to engineering excellence and continuous improvement as a {target}.",
-    ]
+    prompt = f"""Generate exactly 3 professional resume summary variants for this person:
 
-    return SummaryResponse(variants=variants)
+Job Title: {request.title}
+Years of Experience: {request.years}
+Target Role: {target}
+{exp_context}
+
+Requirements:
+- Each summary should be 2-4 sentences
+- Use third person (no "I" or "my")
+- Include quantified achievements where possible
+- Each variant should have a different tone: (1) results-driven, (2) leadership-focused, (3) innovation-focused
+- Tailor to the target role
+
+Return as JSON: {{"variants": ["summary1", "summary2", "summary3"]}}"""
+
+    text = await call_claude(prompt)
+    data = parse_json_response(text)
+    return SummaryResponse(variants=data.get("variants", [text]))
 
 
 @router.post("/generate-bullets", response_model=BulletResponse)
@@ -111,30 +215,45 @@ async def generate_bullets(
     request: BulletRequest,
     current_user=Depends(get_current_user),
 ):
-    """Generate or improve resume bullet points using AI."""
-    # TODO: Replace with actual Claude/GPT API call
+    """Generate or improve resume bullet points using Claude."""
 
     if request.action == "improve" and request.bullet:
-        # Improve existing bullet with power verbs + metrics
-        original = request.bullet
-        improved = [
-            original.replace("worked on", "Architected and delivered").replace("responsible for", "Led").replace("helped", "Drove") + " resulting in 25% improvement in key metrics",
-            f"Spearheaded {original.lower().strip().rstrip('.')}, exceeding targets by 20% and reducing costs by $100K annually",
-            f"Led initiative to {original.lower().strip().rstrip('.')}, leveraging best practices to achieve measurable impact across the organization",
-        ]
-        return BulletResponse(bullets=improved)
+        prompt = f"""Improve this resume bullet point. Make it stronger with:
+- A power verb at the start (Led, Built, Designed, Optimized, etc.)
+- Quantified results (percentages, dollar amounts, counts)
+- Clear impact statement
+- XYZ format: "Accomplished [X] as measured by [Y], by doing [Z]"
+
+Original bullet: "{request.bullet}"
+
+Context (if available): {request.title or ''} at {request.company or ''}
+
+Generate exactly 3 improved versions, each with a different emphasis (impact, scope, technical depth).
+
+Return as JSON: {{"bullets": ["improved1", "improved2", "improved3"]}}"""
+
     else:
-        # Generate new bullets from context
         company = request.company or "the organization"
-        context = request.context or "engineering projects"
-        bullets = [
-            f"Led cross-functional initiative at {company} resulting in 30% improvement in key performance metrics and $500K+ in annual cost savings",
-            f"Architected and deployed scalable {context} serving 100K+ users with 99.9% uptime and sub-200ms response times",
-            f"Spearheaded adoption of modern engineering practices at {company}, reducing deployment time by 60% and increasing team velocity by 25%",
-            f"Mentored 5+ junior team members through structured development programs, resulting in 3 promotions within 18 months",
-            f"Designed and implemented automated testing framework achieving 95%+ code coverage, reducing production incidents by 40%",
-        ]
-        return BulletResponse(bullets=bullets)
+        context = request.context or "various projects and initiatives"
+
+        prompt = f"""Generate 5 strong resume bullet points for this role:
+
+Job Title: {request.title or 'Professional'}
+Company: {company}
+Responsibilities/Context: {context}
+
+Requirements for each bullet:
+- Start with a strong action verb
+- Include at least one quantified metric (%, $, count)
+- Follow XYZ format: "Accomplished [X] as measured by [Y], by doing [Z]"
+- Keep to 1-2 lines max
+- Make each bullet cover a different achievement area (leadership, technical, process, collaboration, innovation)
+
+Return as JSON: {{"bullets": ["bullet1", "bullet2", "bullet3", "bullet4", "bullet5"]}}"""
+
+    text = await call_claude(prompt)
+    data = parse_json_response(text)
+    return BulletResponse(bullets=data.get("bullets", []))
 
 
 @router.post("/tailor", response_model=TailorResponse)
@@ -142,23 +261,66 @@ async def tailor_resume(
     request: TailorRequest,
     current_user=Depends(get_current_user),
 ):
-    """Tailor a resume to a specific job description using AI."""
-    # TODO: Replace with actual Claude/GPT API call
-    # Compare resume keywords vs JD keywords
-    # Suggest rewrites for summary and bullets
-    # Identify missing skills/keywords
+    """Tailor a resume to a specific job description using Claude."""
+    resume = request.resume_data
+    jd = request.job_description
+
+    # Extract key resume text
+    summary = resume.get("summary", {}).get("content", "")
+    experience_text = ""
+    for exp in resume.get("experience", [])[:3]:
+        experience_text += f"\n{exp.get('title', '')} at {exp.get('company', '')}:\n"
+        for b in exp.get("bullets", []):
+            content = b.get("content", "") if isinstance(b, dict) else b
+            if content:
+                experience_text += f"- {content}\n"
+
+    skills_text = ", ".join(
+        skill
+        for group in resume.get("skills", {}).get("groups", [])
+        for skill in group.get("skills", [])
+    )
+
+    prompt = f"""Analyze this resume against the job description and provide tailoring suggestions.
+
+CURRENT RESUME SUMMARY:
+{summary}
+
+CURRENT EXPERIENCE:
+{experience_text}
+
+CURRENT SKILLS: {skills_text}
+
+JOB DESCRIPTION:
+{jd}
+
+Provide:
+1. A rewritten summary tailored to this specific job (2-4 sentences)
+2. 3-5 specific bullet point suggestions that better match the JD
+3. Keywords from the JD that are missing from the resume
+4. Skills mentioned in the JD but not in the resume
+5. An overall match score (0-100)
+
+Return as JSON:
+{{
+  "summary_rewrite": "tailored summary text",
+  "bullet_suggestions": [
+    {{"original": "existing bullet or empty", "suggested": "new/improved bullet", "reason": "why this change helps"}}
+  ],
+  "missing_keywords": ["keyword1", "keyword2"],
+  "skill_gaps": ["skill1", "skill2"],
+  "overall_match_score": 75
+}}"""
+
+    text = await call_claude(prompt, max_tokens=3000)
+    data = parse_json_response(text)
 
     return TailorResponse(
-        suggestions=[
-            {
-                "section": "summary",
-                "original": "Current summary text",
-                "suggested": "AI-tailored summary matching job description keywords",
-                "reason": "Align summary with target role requirements",
-            }
-        ],
-        summary_rewrite="Tailored summary will be generated by AI based on the job description.",
-        missing_keywords=["keyword1", "keyword2", "keyword3"],
+        summary_rewrite=data.get("summary_rewrite"),
+        bullet_suggestions=data.get("bullet_suggestions", []),
+        missing_keywords=data.get("missing_keywords", []),
+        skill_gaps=data.get("skill_gaps", []),
+        overall_match_score=data.get("overall_match_score", 0),
     )
 
 
@@ -167,35 +329,36 @@ async def suggest_skills(
     request: SkillsRequest,
     current_user=Depends(get_current_user),
 ):
-    """Suggest relevant skills based on job title and experience."""
-    # TODO: Replace with actual Claude/GPT API call
+    """Suggest relevant skills based on job title and experience using Claude."""
 
-    title_lower = request.title.lower()
-    skills = []
+    exp_context = ""
+    if request.experience:
+        for exp in request.experience[:3]:
+            if isinstance(exp, dict):
+                exp_context += f"- {exp.get('title', '')} at {exp.get('company', '')}\n"
 
-    if "software" in title_lower or "engineer" in title_lower or "developer" in title_lower:
-        skills = [
-            {"skill": "Python", "category": "Languages", "relevance": "high"},
-            {"skill": "TypeScript", "category": "Languages", "relevance": "high"},
-            {"skill": "React", "category": "Frameworks", "relevance": "high"},
-            {"skill": "Node.js", "category": "Frameworks", "relevance": "high"},
-            {"skill": "PostgreSQL", "category": "Databases", "relevance": "medium"},
-            {"skill": "Docker", "category": "DevOps", "relevance": "medium"},
-            {"skill": "AWS", "category": "Cloud", "relevance": "high"},
-            {"skill": "Git", "category": "Tools", "relevance": "high"},
-            {"skill": "CI/CD", "category": "DevOps", "relevance": "medium"},
-            {"skill": "Agile/Scrum", "category": "Methodologies", "relevance": "medium"},
-        ]
-    else:
-        skills = [
-            {"skill": "Microsoft Office", "category": "Software", "relevance": "medium"},
-            {"skill": "Data Analysis", "category": "Skills", "relevance": "high"},
-            {"skill": "Project Management", "category": "Skills", "relevance": "high"},
-            {"skill": "Communication", "category": "Soft Skills", "relevance": "high"},
-            {"skill": "Leadership", "category": "Soft Skills", "relevance": "medium"},
-        ]
+    prompt = f"""Suggest 15 relevant skills for this professional profile:
 
-    return SkillsResponse(suggested_skills=skills)
+Job Title: {request.title}
+Experience:
+{exp_context or 'Not provided'}
+
+Categorize skills into groups. Include a mix of:
+- Technical/hard skills (tools, languages, frameworks)
+- Domain skills (industry-specific knowledge)
+- Soft skills (leadership, communication)
+
+Rate each skill's relevance as "high", "medium", or "low" based on the job title.
+
+Return as JSON:
+{{"suggested_skills": [
+  {{"skill": "Python", "category": "Languages", "relevance": "high"}},
+  {{"skill": "Leadership", "category": "Soft Skills", "relevance": "medium"}}
+]}}"""
+
+    text = await call_claude(prompt)
+    data = parse_json_response(text)
+    return SkillsResponse(suggested_skills=data.get("suggested_skills", []))
 
 
 @router.post("/ats-score", response_model=ATSScoreResponse)
@@ -203,122 +366,88 @@ async def ats_score(
     request: ATSScoreRequest,
     current_user=Depends(get_current_user),
 ):
-    """Analyze resume against ATS scoring criteria, optionally with a job description."""
-    # TODO: Replace with actual Claude/GPT API call for JD-based analysis
+    """Full ATS analysis using Claude — optionally against a job description."""
+    resume = request.resume_data
 
-    data = request.resume_data
-    score = 0
-    issues = []
-    recommendations = []
-    missing_keywords = []
-    present_keywords = []
+    # Build resume text representation
+    header = resume.get("header", {})
+    resume_text = f"""Name: {header.get('firstName', '')} {header.get('lastName', '')}
+Title: {header.get('headline', '')}
 
-    # Section completeness (20%)
-    header = data.get("header", {})
-    has_summary = bool(data.get("summary", {}).get("content"))
-    has_experience = len(data.get("experience", [])) > 0
-    has_education = len(data.get("education", [])) > 0
-    has_skills = any(len(g.get("skills", [])) > 0 for g in data.get("skills", {}).get("groups", []))
-    has_contact = bool(header.get("email") and header.get("phone"))
+Summary: {resume.get('summary', {}).get('content', '')}
 
-    sections_present = sum([has_summary, has_experience, has_education, has_skills, has_contact])
-    score += int((sections_present / 5) * 20)
-
-    if not has_summary:
-        recommendations.append({"title": "Add Professional Summary", "description": "A 2-4 sentence summary improves ATS parsing and recruiter engagement.", "impact": "high"})
-    if not has_contact:
-        issues.append({"issue": "Missing contact info", "severity": "high", "fix": "Add email and phone number"})
-
-    # Bullet quality (20%)
-    all_bullets = []
-    for exp in data.get("experience", []):
+Experience:
+"""
+    for exp in resume.get("experience", []):
+        resume_text += f"\n{exp.get('title', '')} at {exp.get('company', '')} ({exp.get('startDate', '')} - {'Present' if exp.get('current') else exp.get('endDate', '')})\n"
         for b in exp.get("bullets", []):
-            if b.get("content"):
-                all_bullets.append(b["content"])
+            content = b.get("content", "") if isinstance(b, dict) else b
+            if content:
+                resume_text += f"  - {content}\n"
 
-    avg_bullets = len(all_bullets) / max(len(data.get("experience", [])), 1)
-    if avg_bullets >= 3:
-        score += 20
-    elif avg_bullets >= 2:
-        score += 15
-    elif avg_bullets >= 1:
-        score += 10
-    else:
-        score += 5
+    resume_text += "\nEducation:\n"
+    for edu in resume.get("education", []):
+        resume_text += f"  {edu.get('degree', '')} in {edu.get('field', '')} from {edu.get('institution', '')}\n"
 
-    if avg_bullets < 3:
-        recommendations.append({"title": "Add More Bullet Points", "description": f"Average {avg_bullets:.1f} bullets/role. Aim for 3-5.", "impact": "high"})
-
-    # Quantified achievements (20%)
-    import re
-    quantified = sum(1 for b in all_bullets if re.search(r'\d+[%+]?|\$[\d,]+', b))
-    q_ratio = quantified / max(len(all_bullets), 1)
-    score += int(q_ratio * 20)
-
-    if q_ratio < 0.5:
-        recommendations.append({"title": "Add Metrics", "description": f"Only {int(q_ratio*100)}% of bullets have numbers. Add percentages, dollar amounts, counts.", "impact": "high"})
-
-    # Action verbs (10%)
-    action_verbs = ["led", "built", "designed", "managed", "created", "developed", "implemented", "improved", "increased", "reduced", "delivered", "launched", "spearheaded", "architected", "optimized", "automated", "mentored"]
-    verbs_used = sum(1 for b in all_bullets if any(b.lower().startswith(v) for v in action_verbs))
-    v_ratio = verbs_used / max(len(all_bullets), 1)
-    score += int(v_ratio * 10)
-
-    weak = [b for b in all_bullets if re.match(r'^(responsible for|worked on|helped|assisted)', b, re.I)]
-    if weak:
-        issues.append({"issue": f"{len(weak)} bullet(s) use weak verbs", "severity": "medium", "fix": "Replace with action verbs: Led, Built, Delivered"})
-
-    # Skills count (15%)
-    total_skills = sum(len(g.get("skills", [])) for g in data.get("skills", {}).get("groups", []))
-    if total_skills >= 10:
-        score += 15
-    elif total_skills >= 5:
-        score += 10
-    elif total_skills > 0:
-        score += 5
-
-    if total_skills < 8:
-        recommendations.append({"title": "Expand Skills", "description": f"{total_skills} skills listed. Aim for 10-15+.", "impact": "medium"})
-
-    # Format (15%)
-    score += 10  # Base for using our builder
-    if header.get("firstName") and header.get("lastName"):
-        score += 5
-    else:
-        issues.append({"issue": "Missing name", "severity": "high", "fix": "Add full name"})
-
-    score = min(100, max(0, score))
-    grade = "A" if score >= 90 else "B" if score >= 80 else "C" if score >= 70 else "D" if score >= 60 else "F"
-    summary_text = (
-        "Your resume is well-optimized for ATS." if score >= 80
-        else "Solid foundation with room for improvement." if score >= 60
-        else "Significant improvements needed for ATS compatibility."
+    resume_text += "\nSkills: "
+    resume_text += ", ".join(
+        skill
+        for group in resume.get("skills", {}).get("groups", [])
+        for skill in group.get("skills", [])
     )
 
-    # JD keyword analysis (if provided)
+    jd_section = ""
     if request.job_description:
-        jd_words = set(request.job_description.lower().split())
-        resume_text = " ".join(all_bullets).lower()
-        for word in jd_words:
-            if len(word) > 4:  # Skip short words
-                count = resume_text.count(word)
-                if count > 0:
-                    present_keywords.append({"keyword": word, "count": count})
-                else:
-                    missing_keywords.append({"keyword": word, "importance": "important", "suggestedSection": "skills"})
+        jd_section = f"""
 
-        # Limit to top keywords
-        missing_keywords = sorted(missing_keywords, key=lambda x: len(x["keyword"]), reverse=True)[:10]
-        present_keywords = sorted(present_keywords, key=lambda x: x["count"], reverse=True)[:10]
+JOB DESCRIPTION TO SCORE AGAINST:
+{request.job_description}
+
+When scoring, weight keyword overlap with the JD heavily (40% of score)."""
+
+    prompt = f"""Perform a comprehensive ATS (Applicant Tracking System) compatibility analysis on this resume.
+
+RESUME:
+{resume_text}
+{jd_section}
+
+Score the resume on these criteria:
+- Keyword relevance (40%): {"Match with job description keywords" if request.job_description else "Relevant industry keywords present"}
+- Section completeness (20%): Has summary, experience, education, skills, contact info
+- Quantified achievements (20%): Numbers, percentages, dollar amounts in bullets
+- Format cleanliness (10%): No tables, clean text, proper structure
+- Action verb usage (10%): Strong action verbs starting each bullet
+
+Return as JSON:
+{{
+  "score": 85,
+  "grade": "A",
+  "summary": "Brief 1-2 sentence assessment",
+  "missing_keywords": [
+    {{"keyword": "kubernetes", "importance": "critical", "suggestedSection": "skills"}}
+  ],
+  "present_keywords": [
+    {{"keyword": "python", "count": 3}}
+  ],
+  "format_issues": [
+    {{"issue": "description of issue", "severity": "high", "fix": "how to fix"}}
+  ],
+  "recommendations": [
+    {{"title": "Add more metrics", "description": "detailed suggestion", "impact": "high"}}
+  ]
+}}"""
+
+    text = await call_claude(prompt, max_tokens=3000)
+    data = parse_json_response(text)
 
     return ATSScoreResponse(
-        score=score,
-        grade=grade,
-        summary=summary_text,
-        missing_keywords=missing_keywords,
-        present_keywords=present_keywords,
-        format_issues=issues,
-        recommendations=recommendations,
+        score=data.get("score", 50),
+        grade=data.get("grade", "C"),
+        summary=data.get("summary", "Analysis complete"),
+        missing_keywords=data.get("missing_keywords", []),
+        present_keywords=data.get("present_keywords", []),
+        format_issues=data.get("format_issues", []),
+        recommendations=data.get("recommendations", []),
     )
 
 
@@ -327,31 +456,35 @@ async def check_tone(
     request: ToneCheckRequest,
     current_user=Depends(get_current_user),
 ):
-    """Analyze text for weak language and suggest improvements."""
-    # TODO: Replace with actual Claude/GPT API call
+    """Analyze resume text for weak language and suggest power verb replacements."""
+    prompt = f"""Analyze this resume text for weak, vague, or passive language. Identify every instance of:
+- Passive voice ("was responsible for", "was involved in")
+- Weak verbs ("helped", "worked on", "assisted with", "participated in")
+- Vague language ("various", "several", "many", "things")
+- Filler words ("successfully", "effectively")
+- First-person pronouns ("I", "my", "me")
 
-    import re
-    text = request.text
-    issues = []
-    weak_patterns = [
-        (r'\bresponsible for\b', "Led", "Passive voice — use active action verb"),
-        (r'\bworked on\b', "Built / Developed", "Vague — specify what you built or delivered"),
-        (r'\bhelped\b', "Enabled / Facilitated", "Undermines your contribution — own the achievement"),
-        (r'\bassisted\b', "Supported / Partnered with", "Minimizes your role"),
-        (r'\binvolved in\b', "Contributed to / Drove", "Vague participation — show agency"),
-        (r'\bvarious\b', "specific count (e.g., '5 projects')", "Vague — quantify instead"),
-        (r'\bsuccessfully\b', "[remove — show success through results]", "Filler word — results speak louder"),
-    ]
+Text to analyze:
+"{request.text}"
 
-    for pattern, suggestion, reason in weak_patterns:
-        matches = re.findall(pattern, text, re.IGNORECASE)
-        if matches:
-            issues.append({
-                "original": matches[0],
-                "suggestion": suggestion,
-                "reason": reason,
-            })
+For each issue, provide the original phrase, a stronger replacement, and why the change helps.
+Also provide a rewritten version of the entire text with all improvements applied.
+Score the tone from 0-100 (100 = perfect professional resume tone).
 
-    tone_score = max(0, 100 - len(issues) * 15)
+Return as JSON:
+{{
+  "issues": [
+    {{"original": "was responsible for", "suggestion": "Led / Managed", "reason": "Passive voice — use active action verb"}}
+  ],
+  "tone_score": 65,
+  "rewritten": "The full text rewritten with all improvements"
+}}"""
 
-    return ToneCheckResponse(issues=issues, tone_score=tone_score)
+    text = await call_claude(prompt)
+    data = parse_json_response(text)
+
+    return ToneCheckResponse(
+        issues=data.get("issues", []),
+        tone_score=data.get("tone_score", 50),
+        rewritten=data.get("rewritten"),
+    )

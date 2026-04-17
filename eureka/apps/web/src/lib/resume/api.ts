@@ -105,7 +105,7 @@ export async function apiListVersions(resumeId: string) {
 
 // ── AI (placeholder for Phase 5 backend integration) ─────────
 
-export async function apiGenerateSummary(data: { title: string; years: string; experience?: unknown[] }) {
+export async function apiGenerateSummary(data: { title: string; years: string; experience?: unknown[]; target_role?: string }) {
   const res = await fetch(`${API_BASE}/resumes/ai/generate-summary`, {
     method: "POST",
     headers: getHeaders(),

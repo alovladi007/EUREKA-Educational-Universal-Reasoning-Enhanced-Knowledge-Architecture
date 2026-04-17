@@ -99,6 +99,13 @@ class Settings(BaseSettings):
     RATE_LIMIT_PER_MINUTE: int = Field(default=60, env="RATE_LIMIT_PER_MINUTE")
     RATE_LIMIT_PER_HOUR: int = Field(default=1000, env="RATE_LIMIT_PER_HOUR")
     
+    # AI / LLM
+    ANTHROPIC_API_KEY: Optional[str] = Field(default=None, env="ANTHROPIC_API_KEY")
+    OPENAI_API_KEY: Optional[str] = Field(default=None, env="OPENAI_API_KEY")
+    AI_MODEL: str = Field(default="claude-sonnet-4-20250514", env="AI_MODEL")
+    AI_MAX_TOKENS: int = Field(default=2000, env="AI_MAX_TOKENS")
+    AI_TEMPERATURE: float = Field(default=0.7, env="AI_TEMPERATURE")
+
     # Monitoring
     SENTRY_DSN: Optional[str] = Field(default=None, env="SENTRY_DSN")
     
