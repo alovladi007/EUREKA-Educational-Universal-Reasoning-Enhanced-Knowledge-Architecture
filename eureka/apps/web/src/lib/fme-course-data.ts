@@ -939,6 +939,25 @@ Key rules under the canons:
       examTip: 'Canon #1 — public safety is ALWAYS the top priority. On the FE exam, when in doubt, choose the answer that prioritizes public safety over client wishes, employer demands, or cost savings.',
       importantNote: 'The NSPE Code applies to ALL engineers, not just PEs. FE exam ethics questions often present scenarios where an engineer must choose between employer loyalty and public safety — public safety always wins.',
     },
+    {
+      id: 'ethics-practice',
+      title: 'Ethics Practice Questions',
+      content: ``,
+      quiz: [
+        {
+          question: `An engineer discovers a safety defect in a product. Management says it's "acceptable risk." The engineer should:`,
+          options: ["Document concerns in writing and escalate if management doesn't act — public safety is paramount", "Accept management's decision without question", "Resign immediately", "Fix it secretly without authorization"],
+          correctIndex: 0,
+          explanation: `NSPE Canon #1: public safety is paramount. The engineer must: (1) document concerns in writing, (2) report to appropriate management, (3) if unresolved, escalate (to regulatory authorities if necessary). Resignation alone doesn't protect the public. Accepting without action violates the engineer's duty. Written documentation creates a record and protects the engineer.`,
+        },
+        {
+          question: `An engineer is offered a gift from a contractor bidding on a project they evaluate. They should:`,
+          options: ["Decline — accepting could create a conflict of interest or appearance of impropriety", "Accept if under $50", "Accept and disclose later", "Accept as normal practice"],
+          correctIndex: 0,
+          explanation: `NSPE Canon: engineers must avoid conflicts of interest and not accept gifts from parties with interests in their professional decisions. Even the APPEARANCE of impropriety matters. The amount doesn't matter — the principle is that gifts could influence (or appear to influence) professional judgment. Always decline or disclose to all parties.`,
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Canon #1: Public safety, health, and welfare are paramount — always the top priority.',
