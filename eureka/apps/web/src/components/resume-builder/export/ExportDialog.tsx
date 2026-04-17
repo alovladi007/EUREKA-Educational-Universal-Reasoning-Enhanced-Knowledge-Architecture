@@ -20,64 +20,49 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
     if (!doc) return;
     setExporting("pdf");
     try {
-      // Dynamic import to avoid SSR issues
-      const html2canvas = (await import("html2canvas")).default;
-      const { jsPDF } = await import("jspdf");
-
-      // Find the preview element
+      // Use browser print dialog for PDF export
+      // This produces the best quality and works across all browsers
       const previewEl = document.querySelector("[data-resume-preview]") as HTMLElement;
       if (!previewEl) {
-        alert("Preview not found. Please ensure the preview is visible.");
+        window.print();
         return;
       }
 
-      // Capture at high resolution
-      const canvas = await html2canvas(previewEl, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff",
-      });
-
-      const imgWidth = doc.data.meta.paperSize === "a4" ? 210 : 215.9; // mm
-      const imgHeight = doc.data.meta.paperSize === "a4" ? 297 : 279.4; // mm
-
-      const pdf = new jsPDF({
-        orientation: "portrait",
-        unit: "mm",
-        format: doc.data.meta.paperSize === "a4" ? "a4" : "letter",
-      });
-
-      const canvasWidth = canvas.width;
-      const canvasHeight = canvas.height;
-      const ratio = canvasWidth / canvasHeight;
-      const pdfRatio = imgWidth / imgHeight;
-
-      let finalWidth = imgWidth;
-      let finalHeight = imgHeight;
-
-      if (ratio > pdfRatio) {
-        finalHeight = imgWidth / ratio;
-      } else {
-        finalWidth = imgHeight * ratio;
+      // Create a print-only window with the resume content
+      const printWindow = window.open("", "_blank");
+      if (!printWindow) {
+        // Fallback if popup blocked
+        window.print();
+        return;
       }
 
-      pdf.addImage(
-        canvas.toDataURL("image/png"),
-        "PNG",
-        0,
-        0,
-        finalWidth,
-        finalHeight,
-        undefined,
-        "FAST"
-      );
+      const fontFamily = doc.data.meta.fontFamily || "Inter";
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>${doc.data.header.firstName || "Resume"} ${doc.data.header.lastName || ""} - Resume</title>
+            <link href="https://fonts.googleapis.com/css2?family=${fontFamily.replace(/ /g, "+")}:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+            <style>
+              * { margin: 0; padding: 0; box-sizing: border-box; }
+              body { display: flex; justify-content: center; }
+              @media print { body { margin: 0; } }
+              @page { margin: 0; size: ${doc.data.meta.paperSize === "a4" ? "A4" : "letter"}; }
+            </style>
+          </head>
+          <body>${previewEl.innerHTML}</body>
+        </html>
+      `);
+      printWindow.document.close();
 
-      const fileName = `${doc.data.header.firstName || "Resume"}-${doc.data.header.lastName || "Builder"}-Resume.pdf`;
-      pdf.save(fileName);
+      // Wait for fonts to load then print
+      setTimeout(() => {
+        printWindow.print();
+        printWindow.close();
+      }, 500);
     } catch (err) {
       console.error("PDF export failed:", err);
-      alert("PDF export failed. Try using the browser print (Ctrl+P) as a fallback.");
+      window.print();
     } finally {
       setExporting(null);
     }
@@ -87,76 +72,63 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
     if (!doc) return;
     setExporting("docx");
     try {
-      const docx = await import("docx");
-      const { Document, Packer, Paragraph, TextRun, HeadingLevel, AlignmentType } = docx;
-
-      const children: InstanceType<typeof Paragraph>[] = [];
-
-      // Header
-      children.push(
-        new Paragraph({
-          alignment: AlignmentType.CENTER,
-          children: [new TextRun({ text: `${doc.data.header.firstName} ${doc.data.header.lastName}`, bold: true, size: 32 })],
-        }),
-      );
-      if (doc.data.header.headline) {
-        children.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: doc.data.header.headline, size: 22, color: "666666" })] }));
+      // Build a plain-text version for DOCX (ATS-friendly)
+      const lines: string[] = [];
+      const h = doc.data.header;
+      lines.push(`${h.firstName} ${h.lastName}`);
+      if (h.headline) lines.push(h.headline);
+      lines.push([h.email, h.phone, h.location].filter(Boolean).join(" | "));
+      if (h.linkedin || h.github || h.website) {
+        lines.push([h.linkedin, h.github, h.website].filter(Boolean).join(" | "));
       }
-      const contactLine = [doc.data.header.email, doc.data.header.phone, doc.data.header.location].filter(Boolean).join(" | ");
-      if (contactLine) {
-        children.push(new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ text: contactLine, size: 18, color: "888888" })] }));
-      }
+      lines.push("");
 
-      // Summary
       if (doc.data.summary.content) {
-        children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: "PROFESSIONAL SUMMARY", bold: true })] }));
-        children.push(new Paragraph({ children: [new TextRun({ text: doc.data.summary.content, size: 20 })] }));
+        lines.push("PROFESSIONAL SUMMARY");
+        lines.push(doc.data.summary.content);
+        lines.push("");
       }
 
-      // Experience
       if (doc.data.experience.length > 0) {
-        children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: "EXPERIENCE", bold: true })] }));
+        lines.push("EXPERIENCE");
         for (const exp of doc.data.experience) {
-          children.push(new Paragraph({ children: [new TextRun({ text: exp.title, bold: true, size: 22 }), new TextRun({ text: ` — ${exp.company}`, italics: true, size: 22 })] }));
-          children.push(new Paragraph({ children: [new TextRun({ text: `${exp.startDate} — ${exp.current ? "Present" : exp.endDate || ""}`, size: 18, color: "888888" })] }));
-          for (const bullet of exp.bullets) {
-            if (bullet.content) {
-              children.push(new Paragraph({ bullet: { level: 0 }, children: [new TextRun({ text: bullet.content, size: 20, bold: bullet.highlighted })] }));
-            }
+          lines.push(`${exp.title} — ${exp.company}`);
+          lines.push(`${exp.startDate} — ${exp.current ? "Present" : exp.endDate || ""} | ${exp.location || ""}`);
+          for (const b of exp.bullets) {
+            if (b.content) lines.push(`• ${b.content}`);
           }
+          lines.push("");
         }
       }
 
-      // Education
       if (doc.data.education.length > 0) {
-        children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: "EDUCATION", bold: true })] }));
+        lines.push("EDUCATION");
         for (const edu of doc.data.education) {
-          children.push(new Paragraph({ children: [new TextRun({ text: `${edu.degree}${edu.field ? ` in ${edu.field}` : ""}`, bold: true, size: 22 })] }));
-          children.push(new Paragraph({ children: [new TextRun({ text: `${edu.institution} — ${edu.endDate}`, italics: true, size: 20, color: "666666" })] }));
+          lines.push(`${edu.degree}${edu.field ? ` in ${edu.field}` : ""}`);
+          lines.push(`${edu.institution} — ${edu.endDate}${edu.gpa ? ` | GPA: ${edu.gpa}` : ""}`);
+          lines.push("");
         }
       }
 
-      // Skills
       if (doc.data.skills.groups.some(g => g.skills.length > 0)) {
-        children.push(new Paragraph({ heading: HeadingLevel.HEADING_2, children: [new TextRun({ text: "SKILLS", bold: true })] }));
-        for (const group of doc.data.skills.groups) {
-          if (group.skills.length > 0) {
-            children.push(new Paragraph({ children: [new TextRun({ text: `${group.label}: `, bold: true, size: 20 }), new TextRun({ text: group.skills.join(", "), size: 20 })] }));
-          }
+        lines.push("SKILLS");
+        for (const g of doc.data.skills.groups) {
+          if (g.skills.length > 0) lines.push(`${g.label}: ${g.skills.join(", ")}`);
         }
+        lines.push("");
       }
 
-      const wordDoc = new Document({ sections: [{ children }] });
-      const blob = await Packer.toBlob(wordDoc);
+      // Download as plain text (most ATS-compatible format)
+      const blob = new Blob([lines.join("\n")], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `${doc.data.header.firstName || "Resume"}-${doc.data.header.lastName || "Builder"}-Resume.docx`;
+      a.download = `${h.firstName || "Resume"}-${h.lastName || "Builder"}-Resume.txt`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {
-      console.error("DOCX export failed:", err);
-      alert("DOCX export failed.");
+      console.error("Text export failed:", err);
+      alert("Export failed.");
     } finally {
       setExporting(null);
     }
@@ -212,8 +184,8 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
           >
             {exporting === "docx" ? <Loader2 className="w-5 h-5 animate-spin" /> : <File className="w-5 h-5 text-blue-500" />}
             <div className="text-left">
-              <p className="font-medium">DOCX (Word)</p>
-              <p className="text-xs text-muted-foreground">ATS-friendly, editable</p>
+              <p className="font-medium">Plain Text</p>
+              <p className="text-xs text-muted-foreground">ATS-friendly, no formatting</p>
             </div>
           </Button>
 
