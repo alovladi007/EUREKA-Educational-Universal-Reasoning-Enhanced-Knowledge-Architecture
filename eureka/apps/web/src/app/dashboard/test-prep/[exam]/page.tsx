@@ -2027,14 +2027,14 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             <input
               type="range"
               min={5}
-              max={80}
+              max={Math.min(config.totalQuestions || 230, 500)}
               step={5}
               value={questionCount}
               onChange={(e) => setQuestionCount(Number(e.target.value))}
               className="w-full"
             />
             <div className="flex justify-between text-xs text-muted-foreground mt-1">
-              <span>5</span><span>40</span><span>80</span>
+              <span>5</span><span>{Math.round((config.totalQuestions || 230) / 2)}</span><span>{Math.min(config.totalQuestions || 230, 500)}</span>
             </div>
           </div>
 
