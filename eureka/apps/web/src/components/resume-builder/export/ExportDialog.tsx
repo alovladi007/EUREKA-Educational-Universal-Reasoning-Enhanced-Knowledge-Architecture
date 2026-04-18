@@ -72,53 +72,36 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
     if (!doc) return;
     setExporting("docx");
     try {
-      // Build a plain-text version for DOCX (ATS-friendly)
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${process.env.NEXT_PUBLIC_API_PREFIX || "/api/v1"}`;
+      const res = await fetch(`${apiUrl}/exports/docx`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ resume_data: doc.data, template_id: doc.templateId }),
+      });
+
+      if (!res.ok) throw new Error("DOCX generation failed");
+
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      const h = doc.data.header;
+      a.download = `${h.firstName || "Resume"}-${h.lastName || "Builder"}-Resume.docx`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("DOCX export failed:", err);
+      // Fallback to plain text if backend unavailable
       const lines: string[] = [];
       const h = doc.data.header;
       lines.push(`${h.firstName} ${h.lastName}`);
       if (h.headline) lines.push(h.headline);
       lines.push([h.email, h.phone, h.location].filter(Boolean).join(" | "));
-      if (h.linkedin || h.github || h.website) {
-        lines.push([h.linkedin, h.github, h.website].filter(Boolean).join(" | "));
-      }
       lines.push("");
-
-      if (doc.data.summary.content) {
-        lines.push("PROFESSIONAL SUMMARY");
-        lines.push(doc.data.summary.content);
-        lines.push("");
-      }
-
-      if (doc.data.experience.length > 0) {
-        lines.push("EXPERIENCE");
-        for (const exp of doc.data.experience) {
-          lines.push(`${exp.title} — ${exp.company}`);
-          lines.push(`${exp.startDate} — ${exp.current ? "Present" : exp.endDate || ""} | ${exp.location || ""}`);
-          for (const b of exp.bullets) {
-            if (b.content) lines.push(`• ${b.content}`);
-          }
-          lines.push("");
-        }
-      }
-
-      if (doc.data.education.length > 0) {
-        lines.push("EDUCATION");
-        for (const edu of doc.data.education) {
-          lines.push(`${edu.degree}${edu.field ? ` in ${edu.field}` : ""}`);
-          lines.push(`${edu.institution} — ${edu.endDate}${edu.gpa ? ` | GPA: ${edu.gpa}` : ""}`);
-          lines.push("");
-        }
-      }
-
-      if (doc.data.skills.groups.some(g => g.skills.length > 0)) {
-        lines.push("SKILLS");
-        for (const g of doc.data.skills.groups) {
-          if (g.skills.length > 0) lines.push(`${g.label}: ${g.skills.join(", ")}`);
-        }
-        lines.push("");
-      }
-
-      // Download as plain text (most ATS-compatible format)
+      if (doc.data.summary.content) { lines.push("PROFESSIONAL SUMMARY"); lines.push(doc.data.summary.content); lines.push(""); }
+      for (const exp of doc.data.experience) { lines.push(`${exp.title} — ${exp.company}`); for (const b of exp.bullets) { if (b.content) lines.push(`• ${b.content}`); } lines.push(""); }
+      for (const edu of doc.data.education) { lines.push(`${edu.degree}${edu.field ? ` in ${edu.field}` : ""} — ${edu.institution}`); lines.push(""); }
+      for (const g of doc.data.skills.groups) { if (g.skills.length > 0) lines.push(`${g.label}: ${g.skills.join(", ")}`); }
       const blob = new Blob([lines.join("\n")], { type: "text/plain" });
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
@@ -126,9 +109,6 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
       a.download = `${h.firstName || "Resume"}-${h.lastName || "Builder"}-Resume.txt`;
       a.click();
       URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error("Text export failed:", err);
-      alert("Export failed.");
     } finally {
       setExporting(null);
     }
@@ -184,8 +164,8 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
           >
             {exporting === "docx" ? <Loader2 className="w-5 h-5 animate-spin" /> : <File className="w-5 h-5 text-blue-500" />}
             <div className="text-left">
-              <p className="font-medium">Plain Text</p>
-              <p className="text-xs text-muted-foreground">ATS-friendly, no formatting</p>
+              <p className="font-medium">DOCX (Word)</p>
+              <p className="text-xs text-muted-foreground">ATS-friendly, editable in Word</p>
             </div>
           </Button>
 

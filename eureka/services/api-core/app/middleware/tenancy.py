@@ -29,7 +29,7 @@ class TenancyMiddleware(BaseHTTPMiddleware):
         "/api/v1/auth/refresh",
         "/api/v1/resumes/ai",
         "/api/v1/resumes/shared",
-        "/api/v1/exports/templates",
+        "/api/v1/exports",
     ]
     
     async def dispatch(self, request: Request, call_next):
