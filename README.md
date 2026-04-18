@@ -253,6 +253,116 @@ EUREKA/
 
 ---
 
+## 📝 Resume Builder — World-Class SaaS Feature
+
+A full-featured, AI-powered resume builder integrated into the EUREKA platform. Designed to compete with Overleaf, Resume.io, Zety, and Kickresume.
+
+**56 files | 9,006 lines of code | Frontend + Backend**
+
+### Core Features
+
+| Feature | Description |
+|---------|-------------|
+| **Split-Pane Editor** | Real-time WYSIWYG editing with live preview (< 100ms updates) |
+| **8 Premium Templates** | Meridian, Atlas, Prism, Scholar, Carta, Vertex, Foundry, Pulse |
+| **AI Writing Assistant** | 6 AI modes powered by Claude: Summary, Bullets, Improve, Tailor, Skills, Tone |
+| **ATS Score Checker** | AI-powered scoring against job descriptions with keyword gap analysis |
+| **Drag-Drop Reordering** | Native HTML5 drag-drop for sections and bullets |
+| **Multi-Format Export** | PDF (browser print), DOCX (python-docx), JSON |
+| **Public Sharing** | Shareable links with password protection and custom slugs |
+| **Version History** | Save/restore named versions with undo/redo (Ctrl+Z/Y) |
+| **Template Customization** | 10 color presets, 10 fonts, 3 sizes, A4/Letter paper |
+| **5-Step Onboarding** | Guided wizard: Info → Role → Target → Template → Create |
+| **LinkedIn Import** | Parse LinkedIn data export CSV files |
+| **PDF Import** | AI-powered text extraction and resume parsing |
+| **Freemium Model** | Free (5 AI/mo, 3 exports) → Pro ($9/mo unlimited) → Team ($29/mo) |
+
+### AI Writing Assistant (6 Modes)
+
+All modes call real **Claude API** for professional resume content:
+
+| Mode | What It Does |
+|------|-------------|
+| **Summary** | Generates 3 professional summary variants from job title + experience |
+| **Bullets** | Creates 5 XYZ-format achievement bullets from role context |
+| **Improve** | Transforms weak bullets into power-verb versions with metrics |
+| **Tailor** | Analyzes resume vs job description → match score, missing keywords, rewrites |
+| **Skills** | Suggests 15 categorized skills with relevance ratings |
+| **Tone** | Detects weak language → per-issue fixes + rewritten version with score |
+
+### Backend API (30+ Endpoints)
+
+```
+# Resume CRUD
+POST/GET/PATCH/DELETE  /api/v1/resumes
+POST                   /api/v1/resumes/:id/duplicate
+POST/GET               /api/v1/resumes/:id/versions
+
+# AI Writing
+POST  /api/v1/resumes/ai/generate-summary
+POST  /api/v1/resumes/ai/generate-bullets
+POST  /api/v1/resumes/ai/tailor
+POST  /api/v1/resumes/ai/suggest-skills
+POST  /api/v1/resumes/ai/ats-score
+POST  /api/v1/resumes/ai/check-tone
+POST  /api/v1/resumes/ai/stream
+
+# Import
+POST  /api/v1/resumes/import/pdf
+POST  /api/v1/resumes/import/text
+
+# Export
+POST  /api/v1/exports/pdf
+POST  /api/v1/exports/docx
+GET   /api/v1/exports/templates
+
+# Billing
+POST  /api/v1/billing/checkout
+POST  /api/v1/billing/webhook
+GET   /api/v1/billing/plans
+
+# Sharing & Notifications
+GET   /api/v1/resumes/shared/:slug
+POST  /api/v1/resumes/notifications/email
+POST  /api/v1/resumes/notifications/og-image
+```
+
+### Quick Start
+
+```bash
+# Start services
+cd eureka
+docker compose up -d
+
+# Access resume builder
+open http://localhost:3000/dashboard/resume-builder
+
+# API docs
+open http://localhost:8000/docs
+```
+
+Set `ANTHROPIC_API_KEY` in `eureka/services/api-core/.env` for AI features.
+
+---
+
+## 📚 FE Mechanical Engineering Exam Prep
+
+Comprehensive exam preparation content for the NCEES FE Mechanical Engineering exam.
+
+| Component | Count | Description |
+|-----------|-------|-------------|
+| **Question Bank** | 555 questions | All 16 topics, difficulty 1-3, detailed explanations |
+| **Embedded Quizzes** | 187 questions | In-course quizzes across all 62 curriculum topics |
+| **Flashcards** | 800+ cards | 446 hand-crafted + 351 formula-derived |
+| **Course Content** | 5,800+ lines | Deep lessons with worked examples and exam traps |
+| **Formula Sheets** | 351 formulas | Organized by topic with notes |
+
+### 16 Exam Topics Covered
+
+Mathematics (6-9%) · Probability & Statistics (4-6%) · Computational Tools (3-5%) · Ethics (4-6%) · Engineering Economics (3-5%) · Statics (7-11%) · Dynamics & Vibrations (9-14%) · Mechanics of Materials (7-11%) · Material Science (6-9%) · Fluid Mechanics (7-11%) · Thermodynamics (7-11%) · Heat Transfer (7-11%) · Measurements & Controls (5-8%) · Mechanical Design (7-11%) · Manufacturing (3-5%) · Engineering Management (3-5%)
+
+---
+
 ## 🆕 What's New - Complete Backend Implementation
 
 ### Production-Ready Database Schema (45 Tables) ✅
