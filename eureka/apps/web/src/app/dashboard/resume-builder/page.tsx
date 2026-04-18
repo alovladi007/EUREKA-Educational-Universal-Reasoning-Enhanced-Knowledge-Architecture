@@ -6,6 +6,7 @@ import { ResumeBuilderShell } from "@/components/resume-builder/ResumeBuilderShe
 import { ImportDialog } from "@/components/resume-builder/export/ImportDialog";
 import { OnboardingWizard } from "@/components/resume-builder/OnboardingWizard";
 import { ConfirmDialog } from "@/components/resume-builder/ConfirmDialog";
+import { UsageBar } from "@/components/resume-builder/UsageBar";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -120,6 +121,9 @@ export default function ResumeBuilderPage() {
         onConfirm={() => { if (deleteTarget) deleteDocument(deleteTarget); setDeleteTarget(null); }}
         onCancel={() => setDeleteTarget(null)}
       />
+
+      {/* Usage Bar */}
+      <UsageBar />
 
       {/* Existing Resumes */}
       {docList.length > 0 && (

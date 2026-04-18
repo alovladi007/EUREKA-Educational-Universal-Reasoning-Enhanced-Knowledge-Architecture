@@ -6,6 +6,7 @@ import logging
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from app.core.config import settings
 
@@ -66,6 +67,24 @@ async def call_claude(prompt: str, system: str = SYSTEM_PROMPT, max_tokens: int 
     except Exception as e:
         logger.error(f"Claude API error: {e}")
         raise HTTPException(status_code=502, detail=f"AI service error: {str(e)}")
+
+
+async def call_claude_stream(prompt: str, system: str = SYSTEM_PROMPT, max_tokens: int = None):
+    """Call Claude API with streaming — yields text chunks."""
+    client = get_ai_client()
+    try:
+        async with client.messages.stream(
+            model=settings.AI_MODEL,
+            max_tokens=max_tokens or settings.AI_MAX_TOKENS,
+            temperature=settings.AI_TEMPERATURE,
+            system=system,
+            messages=[{"role": "user", "content": prompt}],
+        ) as stream:
+            async for text in stream.text_stream:
+                yield text
+    except Exception as e:
+        logger.error(f"Claude streaming error: {e}")
+        yield f'{{"error": "{str(e)}"}}'
 
 
 def parse_json_response(text: str) -> dict:
@@ -481,3 +500,41 @@ Return as JSON:
         tone_score=data.get("tone_score", 50),
         rewritten=data.get("rewritten"),
     )
+
+
+# ── Streaming Endpoint ───────────────────────────────────────
+
+
+class StreamRequest(BaseModel):
+    prompt_type: str = "improve"  # "improve" | "summary" | "bullets"
+    text: str = ""
+    title: Optional[str] = None
+    company: Optional[str] = None
+    years: Optional[str] = None
+
+
+@router.post("/stream")
+async def stream_ai(request: StreamRequest):
+    """Stream AI response token-by-token for perceived speed."""
+    if request.prompt_type == "improve":
+        prompt = f"""Improve this resume bullet point to be stronger, more impactful, and quantified.
+Start with a power verb. Use XYZ format. Return ONLY the improved bullet, nothing else.
+
+Original: "{request.text}"
+"""
+    elif request.prompt_type == "summary":
+        prompt = f"""Write a 2-3 sentence professional resume summary for a {request.title or 'professional'} with {request.years or '5'}+ years of experience.
+Use third person. Include quantified achievements. Return ONLY the summary text, nothing else."""
+    elif request.prompt_type == "bullets":
+        prompt = f"""Generate one strong resume bullet point for a {request.title or 'professional'} at {request.company or 'a company'}.
+Start with a power verb. Include metrics. Use XYZ format. Return ONLY the bullet, nothing else.
+
+Context: {request.text}"""
+    else:
+        prompt = request.text
+
+    async def generate():
+        async for chunk in call_claude_stream(prompt, max_tokens=500):
+            yield chunk
+
+    return StreamingResponse(generate(), media_type="text/plain")

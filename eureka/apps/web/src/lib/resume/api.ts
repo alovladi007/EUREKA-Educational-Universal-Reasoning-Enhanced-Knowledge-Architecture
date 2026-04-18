@@ -186,6 +186,26 @@ export async function apiExportStatus(jobId: string) {
   return handleResponse<{ job_id: string; status: string; file_url?: string }>(res);
 }
 
+export async function apiStreamAI(
+  data: { prompt_type: string; text: string; title?: string; company?: string; years?: string },
+  onChunk: (text: string) => void,
+): Promise<void> {
+  const res = await fetch(`${API_BASE}/resumes/ai/stream`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error("Streaming failed");
+  const reader = res.body?.getReader();
+  if (!reader) throw new Error("No stream reader");
+  const decoder = new TextDecoder();
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    onChunk(decoder.decode(value, { stream: true }));
+  }
+}
+
 export async function apiListTemplates() {
   const res = await fetch(`${API_BASE}/exports/templates`);
   return handleResponse<Array<{ id: string; name: string; description: string; best_for: string }>>(res);

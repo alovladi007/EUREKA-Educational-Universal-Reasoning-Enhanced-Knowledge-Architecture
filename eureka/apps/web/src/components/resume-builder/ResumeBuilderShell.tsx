@@ -84,6 +84,42 @@ export function ResumeBuilderShell() {
 
   const sectionOrder = doc?.data.meta.sectionOrder ?? [];
 
+  // Click preview section → scroll editor to that section
+  const handlePreviewClick = (e: React.MouseEvent) => {
+    const target = e.target as HTMLElement;
+    // Walk up to find a section heading (h2 elements in templates)
+    let el: HTMLElement | null = target;
+    while (el && el !== e.currentTarget) {
+      const text = el.textContent?.toLowerCase() ?? "";
+      const sectionMap: Record<string, string> = {
+        "experience": "experience", "work experience": "experience", "professional experience": "experience",
+        "education": "education",
+        "skills": "skills", "technical skills": "skills",
+        "projects": "projects", "key projects": "projects",
+        "certifications": "certifications", "awards": "certifications",
+        "languages": "languages",
+        "summary": "summary", "professional summary": "summary", "about me": "summary", "profile": "summary",
+        "contact": "header",
+      };
+      if (el.tagName === "H2" || el.tagName === "H1") {
+        for (const [key, sectionId] of Object.entries(sectionMap)) {
+          if (text.includes(key)) {
+            const editorEl = document.getElementById(`editor-${sectionId}`);
+            if (editorEl) {
+              editorEl.scrollIntoView({ behavior: "smooth", block: "start" });
+              // Brief highlight
+              editorEl.style.transition = "background-color 0.3s";
+              editorEl.style.backgroundColor = "rgba(99, 102, 241, 0.1)";
+              setTimeout(() => { editorEl.style.backgroundColor = ""; }, 1500);
+            }
+            return;
+          }
+        }
+      }
+      el = el.parentElement;
+    }
+  };
+
   // Keyboard shortcuts
   const shortcuts = useMemo(() => ({
     "ctrl+z": undo,
@@ -243,7 +279,7 @@ export function ResumeBuilderShell() {
                   default: return null;
                 }
               };
-              return <div key={sectionId}>{renderPanel()}</div>;
+              return <div key={sectionId} id={`editor-${sectionId}`}>{renderPanel()}</div>;
             })}
           </div>
         </div>
@@ -257,7 +293,9 @@ export function ResumeBuilderShell() {
             <div
               ref={previewRef}
               data-resume-preview
-              className="shadow-xl"
+              className="shadow-xl cursor-pointer"
+              onClick={handlePreviewClick}
+              title="Click a section to jump to editor"
               style={{
                 transform: `scale(${previewScale})`,
                 transformOrigin: "top center",
