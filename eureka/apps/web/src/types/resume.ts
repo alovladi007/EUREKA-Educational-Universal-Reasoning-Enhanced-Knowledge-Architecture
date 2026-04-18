@@ -179,6 +179,7 @@ export interface ResumeDocument {
   isPublic: boolean;
   shareSlug?: string;
   deletedAt?: string; // Soft delete — recoverable for 30 days
+  sharePassword?: string; // Optional password protection for shared links
 }
 
 // ═══════════════════════════════════════════════════════════════

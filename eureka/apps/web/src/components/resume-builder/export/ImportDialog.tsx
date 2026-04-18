@@ -50,6 +50,56 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
     }
   }, [createDocument, setActiveDocument, onClose]);
 
+  const handlePDFImport = useCallback(async (file: File) => {
+    setImporting(true);
+    setError(null);
+    try {
+      const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${process.env.NEXT_PUBLIC_API_PREFIX || "/api/v1"}`;
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch(`${apiUrl}/resumes/import/pdf`, { method: "POST", body: formData });
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.detail || "PDF import failed");
+      }
+      const result = await res.json();
+      if (result.success && result.data) {
+        const id = createDocument(result.data.header?.firstName ? `${result.data.header.firstName}'s Resume` : "Imported Resume");
+        const store = useResumeStore.getState();
+        if (store.documents[id]) {
+          store.documents[id].data = { ...store.documents[id].data, ...result.data };
+        }
+        setSuccess(true);
+        setTimeout(() => { setActiveDocument(id); onClose(); }, 1000);
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "PDF import failed");
+    } finally {
+      setImporting(false);
+    }
+  }, [createDocument, setActiveDocument, onClose]);
+
+  const handleLinkedInZipImport = useCallback(async (file: File) => {
+    setImporting(true);
+    setError(null);
+    try {
+      const { parseLinkedInZip } = await import("@/lib/resume/import-linkedin");
+      const data = await parseLinkedInZip(file);
+      const name = data.header?.firstName ? `${data.header.firstName}'s Resume` : "LinkedIn Import";
+      const id = createDocument(name);
+      const store = useResumeStore.getState();
+      if (store.documents[id] && data) {
+        store.documents[id].data = { ...store.documents[id].data, ...data } as typeof store.documents[string]["data"];
+      }
+      setSuccess(true);
+      setTimeout(() => { setActiveDocument(id); onClose(); }, 1000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "LinkedIn import failed. Make sure it's a valid LinkedIn data export ZIP.");
+    } finally {
+      setImporting(false);
+    }
+  }, [createDocument, setActiveDocument, onClose]);
+
   const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -57,9 +107,11 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
     if (file.name.endsWith(".json")) {
       handleJSONImport(file);
     } else if (file.name.endsWith(".pdf")) {
-      setError("PDF import requires AI text extraction. This feature will use the backend AI service to parse your PDF resume into structured data. Coming soon!");
+      handlePDFImport(file);
+    } else if (file.name.endsWith(".zip")) {
+      handleLinkedInZipImport(file);
     } else {
-      setError("Unsupported file format. Please upload a .json or .pdf file.");
+      setError("Supported formats: .json, .pdf, .zip (LinkedIn export)");
     }
   }, [handleJSONImport]);
 
@@ -107,7 +159,7 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
               <input
                 ref={fileRef}
                 type="file"
-                accept=".json,.pdf"
+                accept=".json,.pdf,.zip"
                 className="hidden"
                 onChange={handleFileSelect}
               />
@@ -153,13 +205,14 @@ export function ImportDialog({ open, onClose }: ImportDialogProps) {
 
               <Button
                 variant="outline"
-                className="w-full justify-start gap-3 h-14"
-                disabled
+                className="w-full justify-start gap-3 h-14 border-dashed border-2"
+                onClick={() => fileRef.current?.click()}
+                disabled={importing}
               >
                 <Linkedin className="w-5 h-5 text-blue-600" />
                 <div className="text-left">
-                  <p className="font-medium">Import from LinkedIn</p>
-                  <p className="text-xs text-muted-foreground">Auto-populate from your LinkedIn profile (Coming soon)</p>
+                  <p className="font-medium">Import LinkedIn Data Export</p>
+                  <p className="text-xs text-muted-foreground">Upload your LinkedIn ZIP (Settings → Data Privacy → Get a copy)</p>
                 </div>
               </Button>
             </div>

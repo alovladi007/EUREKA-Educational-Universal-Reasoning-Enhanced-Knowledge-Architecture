@@ -30,6 +30,9 @@ class TenancyMiddleware(BaseHTTPMiddleware):
         "/api/v1/resumes/ai",
         "/api/v1/resumes/shared",
         "/api/v1/exports",
+        "/api/v1/resumes/import",
+        "/api/v1/billing",
+        "/api/v1/resumes/notifications",
     ]
     
     async def dispatch(self, request: Request, call_next):

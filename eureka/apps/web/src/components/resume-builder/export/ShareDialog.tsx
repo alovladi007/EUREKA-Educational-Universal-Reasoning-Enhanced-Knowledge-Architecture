@@ -122,6 +122,48 @@ export function ShareDialog({ open, onClose }: ShareDialogProps) {
               </Button>
             </div>
 
+            {/* Password Protection */}
+            <div className="space-y-1">
+              <Label className="text-xs flex items-center gap-1">
+                <Lock className="w-3 h-3" /> Password Protection
+                <span className="text-muted-foreground">(optional, Pro)</span>
+              </Label>
+              <Input
+                className="h-8 text-sm"
+                type="password"
+                placeholder="Leave empty for no password"
+                value={doc.sharePassword || ""}
+                onChange={(e) => {
+                  if (!activeId) return;
+                  useResumeStore.setState((state) => {
+                    const d = state.documents[activeId];
+                    if (d) d.sharePassword = e.target.value || undefined;
+                  });
+                }}
+              />
+            </div>
+
+            {/* Custom Slug */}
+            <div className="space-y-1">
+              <Label className="text-xs">Custom URL Slug (Pro)</Label>
+              <div className="flex gap-1">
+                <span className="text-xs text-muted-foreground flex items-center">{`${typeof window !== "undefined" ? window.location.origin : ""}/r/`}</span>
+                <Input
+                  className="h-8 text-sm flex-1"
+                  value={doc.shareSlug || ""}
+                  onChange={(e) => {
+                    if (!activeId) return;
+                    const slug = e.target.value.replace(/[^a-zA-Z0-9-]/g, "").slice(0, 30);
+                    useResumeStore.setState((state) => {
+                      const d = state.documents[activeId];
+                      if (d) d.shareSlug = slug;
+                    });
+                  }}
+                  placeholder="my-resume"
+                />
+              </div>
+            </div>
+
             {/* Analytics placeholder */}
             <Card className="p-3 bg-muted/50">
               <div className="flex items-center gap-2 mb-2">

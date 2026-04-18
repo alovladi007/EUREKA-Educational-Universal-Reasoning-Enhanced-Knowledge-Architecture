@@ -41,6 +41,7 @@ import { CertificationsPanel } from "./editor/CertificationsPanel";
 import { LanguagesPanel } from "./editor/LanguagesPanel";
 import { CustomSectionPanel } from "./editor/CustomSectionPanel";
 import { EditorSidebar } from "./editor/EditorSidebar";
+import { SortableList } from "./editor/SortableList";
 import { PageOverflowIndicator } from "./preview/PageOverflowIndicator";
 import { TemplateCustomizer } from "./customization/TemplateCustomizer";
 import { ExportDialog } from "./export/ExportDialog";
@@ -71,6 +72,8 @@ export function ResumeBuilderShell() {
   const redo = useResumeStore((s) => s.redo);
   const canUndo = useResumeStore((s) => s.canUndo());
   const canRedo = useResumeStore((s) => s.canRedo());
+  const pushHistory = useResumeStore((s) => s.pushHistory);
+  const reorderSections = useResumeStore((s) => s.reorderSections);
   const { status: saveStatus, lastSavedAt } = useAutoSave(30000);
   const [previewScale, setPreviewScale] = useState(0.55);
   const [mobileTab, setMobileTab] = useState<"edit" | "preview">("edit");
@@ -264,23 +267,31 @@ export function ResumeBuilderShell() {
             <EditorSidebar />
             <TemplateCustomizer />
 
-            {sectionOrder.map((sectionId) => {
-              const renderPanel = () => {
-                switch (sectionId) {
-                  case "header": return <ContactInfoPanel />;
-                  case "summary": return <SummaryPanel />;
-                  case "experience": return <ExperiencePanel />;
-                  case "education": return <EducationPanel />;
-                  case "skills": return <SkillsPanel />;
-                  case "projects": return <ProjectsPanel />;
-                  case "certifications": return <CertificationsPanel />;
-                  case "languages": return <LanguagesPanel />;
-                  case "custom": return <CustomSectionPanel />;
-                  default: return null;
-                }
-              };
-              return <div key={sectionId} id={`editor-${sectionId}`}>{renderPanel()}</div>;
-            })}
+            <SortableList
+              items={sectionOrder}
+              getKey={(id) => id}
+              onReorder={(newOrder) => {
+                pushHistory();
+                reorderSections(newOrder as typeof sectionOrder);
+              }}
+              renderItem={(sectionId) => {
+                const renderPanel = () => {
+                  switch (sectionId) {
+                    case "header": return <ContactInfoPanel />;
+                    case "summary": return <SummaryPanel />;
+                    case "experience": return <ExperiencePanel />;
+                    case "education": return <EducationPanel />;
+                    case "skills": return <SkillsPanel />;
+                    case "projects": return <ProjectsPanel />;
+                    case "certifications": return <CertificationsPanel />;
+                    case "languages": return <LanguagesPanel />;
+                    case "custom": return <CustomSectionPanel />;
+                    default: return null;
+                  }
+                };
+                return <div id={`editor-${sectionId}`}>{renderPanel()}</div>;
+              }}
+            />
           </div>
         </div>
 
