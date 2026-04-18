@@ -33,40 +33,54 @@ function parseCSV(text: string): ParsedCSV {
 }
 
 export async function parseLinkedInZip(file: File): Promise<Partial<ResumeData>> {
-  // Dynamic import JSZip only when needed
-  const JSZip = (await import("jszip")).default;
-  const zip = await JSZip.loadAsync(file);
+  // Use the backend to parse the ZIP, or parse CSV files directly if user uploads individual CSVs
+  // For ZIP files, we send to backend. For CSV files, parse client-side.
 
-  const data: Partial<ResumeData> = {
-    ...structuredClone(DEFAULT_RESUME_DATA),
-  };
-
-  // Parse Profile.csv
-  const profileFile = zip.file("Profile.csv") || zip.file("profile.csv");
-  if (profileFile) {
-    const text = await profileFile.async("text");
-    const { rows } = parseCSV(text);
-    if (rows[0]) {
-      const p = rows[0];
-      data.header = {
-        ...DEFAULT_RESUME_DATA.header,
-        firstName: p["First Name"] || p["first_name"] || "",
-        lastName: p["Last Name"] || p["last_name"] || "",
-        headline: p["Headline"] || p["headline"] || "",
-        location: p["Geo Location"] || p["geo_location"] || p["Location"] || "",
-        email: p["Email Address"] || p["email"] || "",
-      };
-      if (p["Summary"] || p["summary"]) {
-        data.summary = { content: p["Summary"] || p["summary"] || "" };
-      }
-    }
+  if (file.name.endsWith(".csv")) {
+    return parseLinkedInCSV(file);
   }
 
-  // Parse Positions.csv
-  const posFile = zip.file("Positions.csv") || zip.file("positions.csv");
-  if (posFile) {
-    const text = await posFile.async("text");
-    const { rows } = parseCSV(text);
+  // For ZIP: send to backend for processing, or try client-side extraction
+  // Since JSZip has monorepo issues, upload to backend instead
+  const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${process.env.NEXT_PUBLIC_API_PREFIX || "/api/v1"}`;
+  const formData = new FormData();
+  formData.append("file", file);
+
+  try {
+    const res = await fetch(`${apiUrl}/resumes/import/pdf`, { method: "POST", body: formData });
+    if (res.ok) {
+      const result = await res.json();
+      if (result.success) return result.data;
+    }
+  } catch {
+    // Backend unavailable — fall through to CSV parsing hint
+  }
+
+  throw new Error("LinkedIn ZIP import requires the backend service. Alternatively, extract the CSV files from the ZIP and upload them individually (Profile.csv, Positions.csv, Education.csv, Skills.csv).");
+}
+
+async function parseLinkedInCSV(file: File): Promise<Partial<ResumeData>> {
+  const text = await file.text();
+  const { rows } = parseCSV(text);
+  const data: Partial<ResumeData> = { ...structuredClone(DEFAULT_RESUME_DATA) };
+
+  // Detect which CSV based on columns
+  const headers = Object.keys(rows[0] || {});
+  const headersLower = headers.map((h) => h.toLowerCase());
+
+  if (headersLower.some((h) => h.includes("first name") || h.includes("first_name"))) {
+    // Profile.csv
+    const p = rows[0];
+    data.header = {
+      ...DEFAULT_RESUME_DATA.header,
+      firstName: p["First Name"] || p["first_name"] || "",
+      lastName: p["Last Name"] || p["last_name"] || "",
+      headline: p["Headline"] || p["headline"] || "",
+      location: p["Geo Location"] || p["geo_location"] || p["Location"] || "",
+      email: p["Email Address"] || p["email"] || "",
+    };
+  } else if (headersLower.some((h) => h.includes("company") || h.includes("title"))) {
+    // Positions.csv
     data.experience = rows.map((r): ExperienceItem => ({
       id: generateId("exp"),
       title: r["Title"] || r["title"] || "",
@@ -81,13 +95,8 @@ export async function parseLinkedInZip(file: File): Promise<Partial<ResumeData>>
         .slice(0, 5)
         .map((s) => ({ id: generateId("b"), content: s.trim(), highlighted: false })),
     }));
-  }
-
-  // Parse Education.csv
-  const eduFile = zip.file("Education.csv") || zip.file("education.csv");
-  if (eduFile) {
-    const text = await eduFile.async("text");
-    const { rows } = parseCSV(text);
+  } else if (headersLower.some((h) => h.includes("school") || h.includes("degree"))) {
+    // Education.csv
     data.education = rows.map((r): EducationItem => ({
       id: generateId("edu"),
       institution: r["School Name"] || r["school_name"] || "",
@@ -96,20 +105,12 @@ export async function parseLinkedInZip(file: File): Promise<Partial<ResumeData>>
       location: "",
       startDate: r["Start Date"] || r["start_date"] || "",
       endDate: r["End Date"] || r["end_date"] || "",
-      highlights: (r["Activities and Societies"] || r["activities_and_societies"] || "").split(",").filter(Boolean).map((s) => s.trim()),
+      highlights: [],
     }));
-  }
-
-  // Parse Skills.csv
-  const skillFile = zip.file("Skills.csv") || zip.file("skills.csv");
-  if (skillFile) {
-    const text = await skillFile.async("text");
-    const { rows } = parseCSV(text);
-    const skills = rows.map((r) => r["Name"] || r["name"] || "").filter(Boolean);
-    data.skills = {
-      display: "grouped",
-      groups: [{ id: generateId("sg"), label: "Skills", skills }],
-    };
+  } else {
+    // Skills.csv or unknown
+    const skills = rows.map((r) => r["Name"] || r["name"] || Object.values(r)[0] || "").filter(Boolean);
+    data.skills = { display: "grouped", groups: [{ id: generateId("sg"), label: "Skills", skills }] };
   }
 
   return data;
