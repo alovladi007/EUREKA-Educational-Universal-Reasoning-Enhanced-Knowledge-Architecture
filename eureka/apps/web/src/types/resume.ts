@@ -178,6 +178,7 @@ export interface ResumeDocument {
   updatedAt: string;
   isPublic: boolean;
   shareSlug?: string;
+  deletedAt?: string; // Soft delete — recoverable for 30 days
 }
 
 // ═══════════════════════════════════════════════════════════════

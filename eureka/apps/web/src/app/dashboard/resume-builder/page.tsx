@@ -17,6 +17,7 @@ import {
   Clock,
   Layout,
   Upload,
+  Pencil,
 } from "lucide-react";
 
 export default function ResumeBuilderPage() {
@@ -26,12 +27,17 @@ export default function ResumeBuilderPage() {
   const deleteDocument = useResumeStore((s) => s.deleteDocument);
   const duplicateDocument = useResumeStore((s) => s.duplicateDocument);
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
+  const renameDocument = useResumeStore((s) => s.renameDocument);
   const [showImport, setShowImport] = useState(false);
   const [showWizard, setShowWizard] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
 
-  const docList = Object.values(documents);
-  const hasActive = activeDocumentId && documents[activeDocumentId];
+  const recoverDocument = useResumeStore((s) => s.recoverDocument);
+  const permanentlyDeleteDocument = useResumeStore((s) => s.permanentlyDeleteDocument);
+
+  const docList = Object.values(documents).filter((d) => !d.deletedAt);
+  const deletedList = Object.values(documents).filter((d) => !!d.deletedAt);
+  const hasActive = activeDocumentId && documents[activeDocumentId] && !documents[activeDocumentId]?.deletedAt;
 
   // If there's an active document, show the editor
   if (hasActive) {
@@ -130,36 +136,110 @@ export default function ResumeBuilderPage() {
         <div className="space-y-3">
           <h2 className="text-lg font-semibold">Your Resumes</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {docList.map((doc) => (
-              <Card
-                key={doc.id}
-                className="p-4 hover:shadow-md transition-shadow cursor-pointer group"
-                onClick={() => setActiveDocument(doc.id)}
-              >
-                {/* Mini preview placeholder */}
-                <div className="h-32 bg-muted rounded-md mb-3 flex items-center justify-center border">
-                  <FileEdit className="w-8 h-8 text-muted-foreground/40" />
+            {docList.map((doc) => {
+              const fullName = `${doc.data.header.firstName} ${doc.data.header.lastName}`.trim();
+              const hasContent = !!(doc.data.header.firstName || doc.data.summary.content || doc.data.experience.length);
+              return (
+                <Card
+                  key={doc.id}
+                  className="p-4 hover:shadow-md transition-shadow cursor-pointer group relative"
+                  onClick={() => setActiveDocument(doc.id)}
+                >
+                  {/* Mini preview with content hint */}
+                  <div className="h-36 bg-white dark:bg-gray-900 rounded-md mb-3 border overflow-hidden p-3 text-[6px] leading-tight pointer-events-none" style={{ color: doc.data.meta.colorScheme || "#333" }}>
+                    {hasContent ? (
+                      <>
+                        <div className="font-bold text-[8px] text-center mb-0.5" style={{ color: doc.data.meta.colorScheme }}>
+                          {fullName || "Your Name"}
+                        </div>
+                        {doc.data.header.headline && <div className="text-center text-[5px] text-gray-500 mb-1">{doc.data.header.headline}</div>}
+                        {doc.data.summary.content && <div className="text-gray-600 text-[4.5px] mb-1 line-clamp-2">{doc.data.summary.content.slice(0, 120)}</div>}
+                        {doc.data.experience.slice(0, 2).map((exp) => (
+                          <div key={exp.id} className="mb-0.5">
+                            <div className="font-semibold text-[5px]">{exp.title}</div>
+                            <div className="text-gray-400 text-[4px]">{exp.company}</div>
+                          </div>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="h-full flex items-center justify-center">
+                        <FileEdit className="w-6 h-6 text-muted-foreground/30" />
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Template badge */}
+                  <div className="absolute top-2 right-2">
+                    <span className="text-[9px] px-1.5 py-0.5 rounded bg-muted text-muted-foreground capitalize">
+                      {doc.templateId}
+                    </span>
+                  </div>
+
+                  {/* Title with inline rename */}
+                  <h3 className="font-semibold text-sm truncate">{doc.title}</h3>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                    <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{new Date(doc.updatedAt).toLocaleDateString()}</span>
+                    {fullName && <span className="truncate">· {fullName}</span>}
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Button
+                      variant="ghost" size="sm" className="h-6 text-[10px] px-1.5"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        const name = prompt("Rename resume:", doc.title);
+                        if (name) renameDocument(doc.id, name);
+                      }}
+                    >
+                      <Pencil className="w-3 h-3 mr-0.5" /> Rename
+                    </Button>
+                    <Button
+                      variant="ghost" size="sm" className="h-6 text-[10px] px-1.5"
+                      onClick={(e) => { e.stopPropagation(); duplicateDocument(doc.id); }}
+                    >
+                      <Copy className="w-3 h-3 mr-0.5" /> Copy
+                    </Button>
+                    <Button
+                      variant="ghost" size="sm" className="h-6 text-[10px] px-1.5 text-destructive"
+                      onClick={(e) => { e.stopPropagation(); setDeleteTarget(doc.id); }}
+                    >
+                      <Trash2 className="w-3 h-3 mr-0.5" /> Delete
+                    </Button>
+                  </div>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Recently Deleted */}
+      {deletedList.length > 0 && (
+        <div className="space-y-3">
+          <h2 className="text-sm font-semibold text-muted-foreground flex items-center gap-2">
+            <Trash2 className="w-4 h-4" />
+            Recently Deleted ({deletedList.length})
+          </h2>
+          <div className="space-y-1">
+            {deletedList.map((doc) => (
+              <div key={doc.id} className="flex items-center justify-between p-2 rounded border bg-muted/30 text-sm">
+                <div className="flex items-center gap-2">
+                  <FileEdit className="w-4 h-4 text-muted-foreground/50" />
+                  <span className="line-through text-muted-foreground">{doc.title}</span>
+                  <span className="text-[10px] text-muted-foreground">
+                    deleted {doc.deletedAt ? new Date(doc.deletedAt).toLocaleDateString() : ""}
+                  </span>
                 </div>
-                <h3 className="font-semibold text-sm truncate">{doc.title}</h3>
-                <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1">
-                  <Clock className="w-3 h-3" />
-                  {new Date(doc.updatedAt).toLocaleDateString()}
-                </div>
-                <div className="flex gap-1 mt-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <Button
-                    variant="ghost" size="sm" className="h-7 text-xs"
-                    onClick={(e) => { e.stopPropagation(); duplicateDocument(doc.id); }}
-                  >
-                    <Copy className="w-3 h-3 mr-1" /> Duplicate
+                <div className="flex gap-1">
+                  <Button variant="ghost" size="sm" className="h-6 text-[10px]" onClick={() => recoverDocument(doc.id)}>
+                    Recover
                   </Button>
-                  <Button
-                    variant="ghost" size="sm" className="h-7 text-xs text-destructive"
-                    onClick={(e) => { e.stopPropagation(); setDeleteTarget(doc.id); }}
-                  >
-                    <Trash2 className="w-3 h-3 mr-1" /> Delete
+                  <Button variant="ghost" size="sm" className="h-6 text-[10px] text-destructive" onClick={() => permanentlyDeleteDocument(doc.id)}>
+                    Delete Forever
                   </Button>
                 </div>
-              </Card>
+              </div>
             ))}
           </div>
         </div>

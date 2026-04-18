@@ -65,6 +65,9 @@ interface ResumeStore {
   // Document management
   createDocument: (title: string, useSample?: boolean) => string;
   deleteDocument: (id: string) => void;
+  recoverDocument: (id: string) => void;
+  permanentlyDeleteDocument: (id: string) => void;
+  getDeletedDocuments: () => ResumeDocument[];
   duplicateDocument: (id: string) => string;
   setActiveDocument: (id: string | null) => void;
   renameDocument: (id: string, title: string) => void;
@@ -260,13 +263,36 @@ export const useResumeStore = create<ResumeStore>()(
       },
 
       deleteDocument: (id) => {
+        // Soft delete — mark as deleted, recoverable for 30 days
         set((state) => {
-          delete state.documents[id];
+          if (state.documents[id]) {
+            state.documents[id].deletedAt = new Date().toISOString();
+          }
           if (state.activeDocumentId === id) {
-            const remaining = Object.keys(state.documents);
+            const remaining = Object.keys(state.documents).filter(
+              (k) => !state.documents[k].deletedAt
+            );
             state.activeDocumentId = remaining.length > 0 ? remaining[0] : null;
           }
         });
+      },
+
+      recoverDocument: (id) => {
+        set((state) => {
+          if (state.documents[id]) {
+            delete state.documents[id].deletedAt;
+          }
+        });
+      },
+
+      permanentlyDeleteDocument: (id) => {
+        set((state) => {
+          delete state.documents[id];
+        });
+      },
+
+      getDeletedDocuments: () => {
+        return Object.values(get().documents).filter((d) => !!d.deletedAt);
       },
 
       duplicateDocument: (id) => {
