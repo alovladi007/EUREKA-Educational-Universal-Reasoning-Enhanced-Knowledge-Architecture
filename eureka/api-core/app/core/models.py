@@ -97,7 +97,7 @@ class User(Base):
     # Authentication
     email = Column(String(255), nullable=False, index=True)
     hashed_password = Column(String(255))
-    email_verified = Column(Boolean, default=False)
+    is_email_verified = Column(Boolean, default=False)
     
     # Profile
     first_name = Column(String(100))

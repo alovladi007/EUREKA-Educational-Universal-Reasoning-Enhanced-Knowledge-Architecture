@@ -41,7 +41,7 @@ class User(Base):
 
     # Status Flags
     is_active = Column(Boolean, nullable=False, default=True, index=True)
-    email_verified = Column(Boolean, nullable=False, default=False)
+    is_email_verified = Column(Boolean, nullable=False, default=False)
 
     # Security Fields
     is_banned = Column(Boolean, nullable=False, default=False)
@@ -112,7 +112,7 @@ class User(Base):
             "locale": self.locale,
             "timezone": self.timezone,
             "is_active": self.is_active,
-            "email_verified": self.email_verified,
+            "is_email_verified": self.is_email_verified,
             "created_at": self.created_at.isoformat() if self.created_at else None,
             "last_login_at": self.last_login_at.isoformat() if self.last_login_at else None,
         }

@@ -78,7 +78,7 @@ async def register(
     token_data = {
         "sub": str(user.id),
         "org_id": str(user.org_id),
-        "role": user.role.value,
+        "role": (user.role.value if hasattr(user.role, "value") else user.role),
         "email": user.email
     }
     
@@ -171,7 +171,7 @@ async def login(
     token_data = {
         "sub": str(user.id),
         "org_id": str(user.org_id),
-        "role": user.role.value,
+        "role": (user.role.value if hasattr(user.role, "value") else user.role),
         "email": user.email
     }
     
@@ -229,7 +229,7 @@ async def refresh_token(
     token_data = {
         "sub": str(user.id),
         "org_id": str(user.org_id),
-        "role": user.role.value,
+        "role": (user.role.value if hasattr(user.role, "value") else user.role),
         "email": user.email
     }
     

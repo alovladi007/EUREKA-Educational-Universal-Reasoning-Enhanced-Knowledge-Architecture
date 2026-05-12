@@ -230,7 +230,7 @@ async def require_email_verified(
     Raises:
         HTTPException: If email is not verified
     """
-    if not current_user.email_verified:
+    if not current_user.is_email_verified:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Email verification required. Please verify your email address."

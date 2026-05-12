@@ -90,7 +90,7 @@ def upgrade() -> None:
         sa.Column('is_active', sa.Boolean(), nullable=False, server_default='true'),
         sa.Column('is_banned', sa.Boolean(), nullable=False, server_default='false'),
         sa.Column('ban_reason', sa.Text(), nullable=True),
-        sa.Column('email_verified', sa.Boolean(), nullable=False, server_default='false'),
+        sa.Column('is_email_verified', sa.Boolean(), nullable=False, server_default='false'),
         sa.Column('last_login_at', sa.DateTime(), nullable=True),
         sa.Column('failed_login_attempts', sa.Integer(), nullable=False, server_default='0'),
         sa.Column('locked_until', sa.DateTime(), nullable=True),

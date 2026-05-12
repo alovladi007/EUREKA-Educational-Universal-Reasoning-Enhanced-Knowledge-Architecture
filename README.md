@@ -25,7 +25,7 @@ docker compose --profile full up -d
 
 Web app: <http://localhost:3000>  ·  Admin: <http://localhost:3001>  ·  API: <http://localhost:8000>  ·  MinIO console: <http://localhost:9005>
 
-Demo login (seeded): `demo@example.com` / `Admin123!`
+Demo login (seeded): `admin@demo.edu` / `Admin123!`
 
 See [docs/PORTS.md](docs/PORTS.md) for the full port map.
 

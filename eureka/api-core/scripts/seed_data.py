@@ -131,7 +131,7 @@ async def seed_users(db: AsyncSession):
             last_name="Administrator",
             display_name="Admin",
             role=UserRole.SUPER_ADMIN,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True
         ),
         
@@ -145,7 +145,7 @@ async def seed_users(db: AsyncSession):
             last_name="Johnson",
             display_name="Ms. Johnson",
             role=UserRole.TEACHER,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True
         ),
         User(
@@ -157,7 +157,7 @@ async def seed_users(db: AsyncSession):
             last_name="Martinez",
             display_name="Alex M.",
             role=UserRole.STUDENT,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True,
             date_of_birth=datetime.now() - timedelta(days=365*16)
         ),
@@ -172,7 +172,7 @@ async def seed_users(db: AsyncSession):
             last_name="Wilson",
             display_name="Dean Wilson",
             role=UserRole.ORG_ADMIN,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True
         ),
         User(
@@ -184,7 +184,7 @@ async def seed_users(db: AsyncSession):
             last_name="Smith",
             display_name="Prof. Smith",
             role=UserRole.TEACHER,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True
         ),
         User(
@@ -196,7 +196,7 @@ async def seed_users(db: AsyncSession):
             last_name="Lee",
             display_name="Jordan L.",
             role=UserRole.STUDENT,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True
         ),
         
@@ -210,7 +210,7 @@ async def seed_users(db: AsyncSession):
             last_name="Anderson",
             display_name="Dr. Anderson",
             role=UserRole.TEACHER,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True
         ),
         User(
@@ -222,7 +222,7 @@ async def seed_users(db: AsyncSession):
             last_name="Patel",
             display_name="Maya P.",
             role=UserRole.STUDENT,
-            email_verified=True,
+            is_email_verified=True,
             is_active=True
         )
     ]

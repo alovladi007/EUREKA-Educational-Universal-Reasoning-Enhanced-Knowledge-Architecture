@@ -64,6 +64,12 @@ CREATE TABLE IF NOT EXISTS users (
     last_failed_login TIMESTAMP,
     locked_until TIMESTAMP,
     last_login_at TIMESTAMP,
+    ban_reason TEXT,
+    date_of_birth TIMESTAMP,
+    parent_email VARCHAR(255),
+    parental_consent_given BOOLEAN NOT NULL DEFAULT FALSE,
+    parental_consent_date TIMESTAMP,
+    deleted_at TIMESTAMP,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     CONSTRAINT unique_email_per_org UNIQUE (org_id, email)
@@ -1224,7 +1230,7 @@ VALUES (
     '550e8400-e29b-41d4-a716-446655440001',
     '550e8400-e29b-41d4-a716-446655440000',
     'admin@demo.edu',
-    '$2b$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewY5jtJ3qKQEKKVW',  -- Admin123!
+    '$2b$12$BPwGcsXv2Mr/4dXwKs5ZNuikK3DfSUVMoegIzZzZYQ3ljAUNt3N4q',  -- Admin123! (bcrypt 12 rounds, verified)
     'Admin',
     'User',
     'org_admin',

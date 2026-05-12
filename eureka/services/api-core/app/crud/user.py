@@ -41,7 +41,7 @@ async def create_user(
         role=user_data.role,
         date_of_birth=user_data.date_of_birth,
         parent_email=user_data.parent_email,
-        email_verified=False
+        is_email_verified=False
     )
     
     db.add(user)
@@ -225,7 +225,7 @@ async def verify_user_email(
     Returns:
         Updated user object
     """
-    user.email_verified = True
+    user.is_email_verified = True
     user.updated_at = datetime.utcnow()
     
     await db.commit()
