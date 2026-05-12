@@ -1,10 +1,69 @@
+# Misc
 alovladi007-EUREKA-Educational-Universal-Reasoning-Enhanced-Knowledge-Architecture/
 temp_integration/
 eureka/ops/db.backup.*/
 
-# Python (services outside eureka/)
+# Python
 __pycache__/
 *.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+.venv/
+venv/
+env/
 
-# Local dev SQLite for test-prep service
+# Node
+node_modules/
+.next/
+.turbo/
+dist/
+build/
+out/
+*.tsbuildinfo
+.npm/
+.yarn/
+.pnp.*
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+logs/
+
+# Env files (allow .env.example, .env.template)
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+!.env.example
+!.env.template
+!.env.*.example
+
+# Local DBs
+*.sqlite
+*.sqlite3
+*.db
 services/test-prep/*.db
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Coverage
+coverage/
+.coverage
+htmlcov/
+.nyc_output/
+
+# Build artifacts
+*.egg
+*.whl
+target/
