@@ -59,8 +59,8 @@ modules:
     services:
       - api-core
       - assessment-engine
-      - ai-tutor
-    
+      - tutor-llm
+
     features:
       - Case Law Database
       - Legal Writing Feedback

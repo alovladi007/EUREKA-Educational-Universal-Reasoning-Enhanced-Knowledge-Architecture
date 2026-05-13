@@ -88,9 +88,9 @@ serviceRegistry.registerMultiple([
     healthEndpoint: `${process.env.TEST_PREP_SERVICE_URL || 'http://localhost:3002'}/health`,
   },
   {
-    name: 'ai-tutor-service',
-    url: process.env.AI_TUTOR_SERVICE_URL || 'http://localhost:3003',
-    healthEndpoint: `${process.env.AI_TUTOR_SERVICE_URL || 'http://localhost:3003'}/health`,
+    name: 'tutor-llm',
+    url: process.env.TUTOR_LLM_URL || 'http://localhost:8001',
+    healthEndpoint: `${process.env.TUTOR_LLM_URL || 'http://localhost:8001'}/health`,
   },
   {
     name: 'xr-labs-service',

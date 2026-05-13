@@ -305,27 +305,9 @@ services:
   # Professional Tier Services
   # ==========================================
 
-  pro-med:
-    profiles:
-      - full
-    build:
-      context: ./services/pro-med
-      dockerfile: Dockerfile
-    container_name: eureka-pro-med
-    environment:
-      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
-      REDIS_URL: redis://redis:6379/8
-      API_CORE_URL: http://api-core:8000
-      TUTOR_LLM_URL: http://tutor-llm:8000
-      HIPAA_MODE: "true"
-      ENVIRONMENT: development
-    ports:
-      - "8025:8000"
-    depends_on:
-      - api-core
-      - tutor-llm
-    volumes:
-      - ./services/pro-med:/app
+  # pro-med removed 2026-05: was a 25-line stub. Real medical-school logic
+  # (USMLE, OSCE, clinical cases, AI tutor, 30+ endpoints, 10 DB tables, 4.7k LOC)
+  # lives in the medical-school service defined below.
 
   pro-law:
     profiles:

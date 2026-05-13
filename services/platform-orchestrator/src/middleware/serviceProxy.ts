@@ -110,11 +110,11 @@ export const proxyRoutes: ProxyRoute[] = [
     rewritePath: (path) => path.replace('/api/test-prep', '/api'),
   },
 
-  // AI Tutor
+  // AI Tutor (Python tutor-llm; ai-tutor TS service was deleted 2026-05)
   {
     path: '/api/ai-tutor',
-    serviceName: 'ai-tutor-service',
-    rewritePath: (path) => path.replace('/api/ai-tutor', '/api'),
+    serviceName: 'tutor-llm',
+    rewritePath: (path) => path.replace('/api/ai-tutor', '/api/v1/tutor'),
   },
 
   // XR Learning Labs
