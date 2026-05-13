@@ -56,7 +56,7 @@ Each phase is independently shippable. You can pause, ship the user-facing chang
 |---|---|---|
 | 3.1 Reconcile service duplication | ✅ done 2026-05 | 3 overlap pairs + 1 dup api-core dir resolved. -8,152 LOC. See commit `2bfec9ec`. |
 | 3.2 Test + CI baseline | ✅ done 2026-05 | Matrix CI for all 20 Python + 4 Node services; gitleaks; schema-drift check; Makefile `test-all`. Found + fixed 2 real bugs (analytics datetime, assess models). See commits `241282c4`, `736c0b45`. |
-| 3.3 Auth + tenancy hardening | pending | |
+| 3.3 Auth + tenancy hardening | ✅ done 2026-05 | argon2id (with bcrypt→argon2 transparent rehash on login); TOTP MFA full enrolment + step-up + recovery codes (Fernet-encrypted at rest); 5-test cross-tenant isolation integration test (passing live); security-headers middleware (HSTS prod-only, nosniff, frame DENY, Referrer-Policy, Permissions-Policy, CSP); JWT/MFA-key fail-loud boot check in prod; SECURITY.md runbook. Caught 3 more schema-drift bugs along the way. |
 | 3.4 Observability | pending | |
 | 3.5 Secrets + config | pending | |
 | 3.6 Frontend cleanup + design system | pending | |

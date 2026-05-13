@@ -18,7 +18,7 @@ from app.schemas.auth import (
 from app.crud import user as user_crud
 from app.crud import organization as org_crud
 from app.utils.auth import (
-    hash_password, verify_password, create_access_token,
+    hash_password, verify_password, verify_and_upgrade_hash, create_access_token,
     create_refresh_token, verify_token, create_email_verification_token,
     verify_email_token, create_password_reset_token, verify_password_reset_token
 )
@@ -141,15 +141,50 @@ async def login(
             detail=f"Account is locked due to too many failed login attempts. Try again later."
         )
     
-    # Verify password
-    if not verify_password(login_data.password, user.hashed_password):
-        # Increment failed attempts
+    # Verify password and transparently upgrade the stored hash if it's
+    # using a legacy scheme (e.g. bcrypt under the argon2id-preferred config).
+    ok, upgraded_hash = verify_and_upgrade_hash(login_data.password, user.hashed_password)
+    if not ok:
         await user_crud.increment_failed_login_attempts(db, user)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect email or password"
         )
-    
+    if upgraded_hash is not None:
+        user.hashed_password = upgraded_hash
+        # Will be committed by update_last_login below, which already
+        # touches `user` and flushes.
+
+    # MFA second factor.
+    if user.mfa_enabled:
+        from app.utils.mfa import consume_recovery_code, decrypt, verify_totp
+
+        submitted = (login_data.mfa_code or "").strip()
+        if not submitted:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="MFA code required",
+                headers={"X-MFA-Required": "true"},
+            )
+
+        mfa_ok = False
+        if submitted.replace(" ", "").isdigit():
+            mfa_ok = verify_totp(decrypt(user.mfa_secret), submitted)
+        else:
+            used, remaining = consume_recovery_code(
+                user.mfa_recovery_codes or [], submitted
+            )
+            if used:
+                user.mfa_recovery_codes = remaining
+                mfa_ok = True
+
+        if not mfa_ok:
+            await user_crud.increment_failed_login_attempts(db, user)
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid MFA code",
+            )
+
     # Check if user is active
     if not user.is_active:
         raise HTTPException(

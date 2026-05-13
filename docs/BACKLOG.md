@@ -37,9 +37,17 @@ These were three Next.js scaffolds with only README + package.json. Real tier UI
 
 ---
 
+## Items from Session 3.3 (auth + tenancy hardening)
+
+- [ ] **Move tenancy enforcement INTO middleware**: today the middleware injects `org_id` and every endpoint manually compares it. A developer who forgets the check can leak data. Use SQLAlchemy `with_loader_criteria` to filter every query session-wide on `org_id == request.state.org_id`. Endpoint checks become defence-in-depth, not the primary gate. Tracked: SECURITY.md "Follow-up needed".
+- [ ] **Force-enrol MFA for required roles**: settings flag `MFA_REQUIRED_ROLES = ["org_admin", "super_admin", "instructor"]` is defined but not yet enforced. Today, an admin who hasn't enrolled can still log in. Need a "MFA setup required" wedge on first login for those roles.
+- [ ] **Multi-key JWT verification** for zero-downtime rotation. Today rotating `JWT_SECRET` invalidates all access tokens. Phase 3.3 follow-up: try the current secret first, fall back to the previous one for a grace window.
+- [ ] **CORS allow_origins=["*"] in dev**: fine for now, but add a CI check that production deployments cannot ship with the wildcard. Phase 3.5.
+- [ ] **TenancyMiddleware excluded_paths list**: hardcoded in `app/middleware/tenancy.py`. Several `resume_*` endpoints bypass tenancy entirely. Audit each one in Phase 3.3b to make sure they apply their own org_id check.
+
 ## Items found while running the stack end-to-end
 
-- [ ] **Schema drift detection**: `eureka/ops/db/00_init_complete.sql` and `eureka/services/api-core/app/models/user.py` drifted (6 columns missing in SQL). Add a CI step that brings up the DB from init SQL, then runs `alembic check` (or equivalent) to catch drift before merge. Phase 3.2.
+- [x] **Schema drift detection**: shipped in Session 3.2 as the `schema-drift` CI job + `scripts/check_schema_drift.py`. Currently non-gating; flip to gating in Phase 3.6 once the known drift is fully cleaned. Session 3.3 cleared `organizations.email/phone/website/address_*`, `courses.tier/is_published/is_archived/settings/syllabus/learning_objectives/standards/subject`, and `users.mfa_*`.
 - [x] **The two `api-core` copies**: deleted the dead `eureka/api-core/` 2026-05; compose builds from `eureka/services/api-core/` which is canonical.
 - [ ] **Seed hashes**: bcrypt hashes for demo users in SQL should be generated at first boot, not hardcoded, so they can't drift from the password the README documents. Migrate to a runtime seed script.
 - [ ] **Empty `mobile/` app**: `eureka/apps/mobile/` has only a README. Decide: delete now (Phase 8 will add React Native fresh) or keep as a placeholder.

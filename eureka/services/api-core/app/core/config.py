@@ -42,9 +42,29 @@ class Settings(BaseSettings):
     JWT_EXPIRATION_MINUTES: int = Field(default=60, env="JWT_EXPIRATION_MINUTES")
     REFRESH_TOKEN_EXPIRATION_DAYS: int = Field(default=30, env="REFRESH_TOKEN_EXPIRATION_DAYS")
     
-    # Password hashing
-    PWD_CONTEXT_SCHEMES: List[str] = ["bcrypt"]
+    # Password hashing.
+    # argon2id is the active scheme; bcrypt is kept for verifying legacy
+    # hashes seeded in 2026-05 and earlier. The "deprecated=auto" plus
+    # CryptContext.needs_update() machinery in app/utils/auth.py:verify_password
+    # will transparently rehash a successful bcrypt login to argon2id.
+    PWD_CONTEXT_SCHEMES: List[str] = ["argon2", "bcrypt"]
     PWD_CONTEXT_DEPRECATED: str = "auto"
+
+    # MFA (TOTP)
+    # Used to encrypt the per-user TOTP secret at rest (Fernet envelope).
+    # In dev this is generated at boot; production must set MFA_ENVELOPE_KEY
+    # explicitly so the key survives container restarts. See docs/SECURITY.md.
+    MFA_ENVELOPE_KEY: str = Field(
+        default_factory=lambda: __import__("base64").urlsafe_b64encode(
+            __import__("secrets").token_bytes(32)
+        ).decode(),
+        env="MFA_ENVELOPE_KEY",
+    )
+    MFA_ISSUER: str = Field(default="EUREKA", env="MFA_ISSUER")
+    MFA_REQUIRED_ROLES: List[str] = Field(
+        default=["org_admin", "super_admin", "instructor"],
+        env="MFA_REQUIRED_ROLES",
+    )
     
     # CORS
     CORS_ORIGINS: List[str] = Field(

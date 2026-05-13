@@ -49,6 +49,15 @@ class User(Base):
     failed_login_attempts = Column(Integer, nullable=False, default=0)
     locked_until = Column(DateTime, nullable=True)
 
+    # MFA / TOTP (Session 3.3, 2026-05).
+    # `mfa_secret` is stored as Fernet-encrypted ciphertext keyed by
+    # settings.MFA_ENVELOPE_KEY. Never store the plaintext TOTP secret.
+    # `mfa_enabled` flips to True only after the user successfully verifies
+    # a TOTP from their authenticator app (proves enrollment, not just setup).
+    mfa_enabled = Column(Boolean, nullable=False, default=False)
+    mfa_secret = Column(String(255), nullable=True)
+    mfa_recovery_codes = Column(JSONB, nullable=True)  # list of Fernet-encrypted single-use codes
+
     # COPPA Compliance (Children's Online Privacy Protection Act)
     date_of_birth = Column(DateTime, nullable=True)
     parent_email = Column(String(255), nullable=True)

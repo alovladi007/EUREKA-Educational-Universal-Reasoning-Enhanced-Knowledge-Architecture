@@ -22,11 +22,11 @@ pwd_context = CryptContext(
 
 def hash_password(password: str) -> str:
     """
-    Hash a password using bcrypt.
-    
+    Hash a password with the active scheme (argon2id per PWD_CONTEXT_SCHEMES).
+
     Args:
         password: Plain text password
-        
+
     Returns:
         Hashed password
     """
@@ -35,16 +35,52 @@ def hash_password(password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     """
-    Verify a password against a hash.
-    
+    Verify a password against a hash. Works for any scheme in
+    PWD_CONTEXT_SCHEMES (so a bcrypt hash from the seed SQL still
+    verifies after we move the active scheme to argon2id).
+
     Args:
         plain_password: Plain text password to verify
         hashed_password: Hashed password from database
-        
+
     Returns:
         True if password matches, False otherwise
     """
-    return pwd_context.verify(plain_password, hashed_password)
+    try:
+        return pwd_context.verify(plain_password, hashed_password)
+    except Exception:
+        # Malformed hash, unknown scheme, etc. — treat as a verification
+        # failure rather than 500ing the login.
+        return False
+
+
+def verify_and_upgrade_hash(
+    plain_password: str, hashed_password: str
+) -> tuple[bool, Optional[str]]:
+    """
+    Verify a password and, if the stored hash uses a deprecated scheme
+    (e.g. bcrypt while argon2id is now active), return a fresh hash so
+    the caller can transparently upgrade the user's stored credential.
+
+    The login endpoint should:
+      ok, new_hash = verify_and_upgrade_hash(pw, user.hashed_password)
+      if ok and new_hash is not None:
+          user.hashed_password = new_hash
+          # commit on the existing session
+
+    Returns:
+        (verified, new_hash_or_None). If verified is False, new_hash is None.
+        If verified is True and the current hash is up-to-date, new_hash is None.
+        If verified is True and a rehash is needed, new_hash is a freshly-hashed
+        credential using the active scheme.
+    """
+    try:
+        verified, new_hash = pwd_context.verify_and_update(
+            plain_password, hashed_password
+        )
+    except Exception:
+        return False, None
+    return verified, new_hash
 
 
 def create_access_token(

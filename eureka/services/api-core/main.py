@@ -22,6 +22,7 @@ from app import models  # noqa: F401  - Import for side effects (model registrat
 from app.api.v1 import api_router
 from app.middleware.tenancy import TenancyMiddleware
 from app.middleware.audit import AuditMiddleware
+from app.middleware.security_headers import SecurityHeadersMiddleware
 
 # Configure logging
 logging.basicConfig(
@@ -38,15 +39,44 @@ async def lifespan(app: FastAPI):
     logger.info("Starting EUREKA API Core Service")
     logger.info(f"Environment: {settings.ENVIRONMENT}")
     logger.info(f"Debug mode: {settings.DEBUG}")
-    
+
+    # Security boot checks (Session 3.3, 2026-05).
+    # If the operator didn't pin JWT_SECRET via env, settings generated a
+    # fresh random one at process start. In dev that's fine — every restart
+    # invalidates all outstanding JWTs, which is the desired behaviour.
+    # In production it would be catastrophic (every user logged out on each
+    # rolling-deploy pod). Fail loud so the misconfiguration is impossible
+    # to miss. See docs/SECURITY.md for the prod rotation runbook.
+    import os
+    jwt_from_env = os.environ.get("JWT_SECRET")
+    if not jwt_from_env:
+        if settings.ENVIRONMENT in ("production", "staging"):
+            raise RuntimeError(
+                "JWT_SECRET is not set in environment. In %s a fresh random "
+                "secret per process would log every user out on every restart. "
+                "Set JWT_SECRET via your secrets manager. See docs/SECURITY.md."
+                % settings.ENVIRONMENT
+            )
+        logger.warning(
+            "JWT_SECRET not set in env; using a freshly-generated random "
+            "value (dev only). All JWTs will become invalid when this process "
+            "restarts. To persist across restarts, set JWT_SECRET in .env."
+        )
+    similarly_mfa_from_env = os.environ.get("MFA_ENVELOPE_KEY")
+    if not similarly_mfa_from_env and settings.ENVIRONMENT in ("production", "staging"):
+        raise RuntimeError(
+            "MFA_ENVELOPE_KEY is not set. Without a stable value, all stored "
+            "MFA secrets become unreadable on restart. See docs/SECURITY.md."
+        )
+
     # Create database tables (in production, use Alembic migrations)
     if settings.ENVIRONMENT == "development":
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
             logger.info("Database tables created")
-    
+
     yield
-    
+
     # Shutdown
     logger.info("Shutting down EUREKA API Core Service")
     await engine.dispose()
@@ -63,6 +93,7 @@ app = FastAPI(
 )
 
 # Custom middleware (added first so they run after CORS)
+app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(TenancyMiddleware)
 app.add_middleware(AuditMiddleware)
 

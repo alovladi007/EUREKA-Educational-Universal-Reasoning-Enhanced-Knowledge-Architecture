@@ -25,6 +25,16 @@ CREATE TABLE IF NOT EXISTS organizations (
     subscription_status VARCHAR(50) DEFAULT 'trial',
     subscription_expires_at TIMESTAMP,
     settings JSONB DEFAULT '{}',
+    -- Contact + address (added Session 3.3 to match ORM model)
+    email VARCHAR(255),
+    phone VARCHAR(50),
+    website VARCHAR(500),
+    address_line1 VARCHAR(255),
+    address_line2 VARCHAR(255),
+    city VARCHAR(100),
+    state VARCHAR(100),
+    postal_code VARCHAR(20),
+    country VARCHAR(2) NOT NULL DEFAULT 'US',
     ferpa_compliant BOOLEAN DEFAULT TRUE,
     coppa_compliant BOOLEAN DEFAULT FALSE,
     hipaa_compliant BOOLEAN DEFAULT FALSE,
@@ -70,6 +80,10 @@ CREATE TABLE IF NOT EXISTS users (
     parental_consent_given BOOLEAN NOT NULL DEFAULT FALSE,
     parental_consent_date TIMESTAMP,
     deleted_at TIMESTAMP,
+    -- MFA / TOTP (Session 3.3). mfa_secret is Fernet-encrypted ciphertext.
+    mfa_enabled BOOLEAN NOT NULL DEFAULT FALSE,
+    mfa_secret VARCHAR(255),
+    mfa_recovery_codes JSONB,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     CONSTRAINT unique_email_per_org UNIQUE (org_id, email)
@@ -99,6 +113,15 @@ CREATE TABLE IF NOT EXISTS courses (
     end_date DATE,
     metadata JSONB DEFAULT '{}',
     is_active BOOLEAN DEFAULT TRUE,
+    -- Added Session 3.3 to match ORM model
+    tier VARCHAR(50) NOT NULL DEFAULT 'undergraduate',
+    syllabus JSONB,
+    learning_objectives TEXT[],
+    standards JSONB,
+    subject VARCHAR(100),
+    settings JSONB NOT NULL DEFAULT '{}',
+    is_archived BOOLEAN NOT NULL DEFAULT FALSE,
+    is_published BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP,
     CONSTRAINT unique_course_code_per_org UNIQUE (org_id, code)

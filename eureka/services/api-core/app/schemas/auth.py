@@ -52,6 +52,15 @@ class UserLoginRequest(BaseModel):
     email: EmailStr
     password: str
     org_slug: Optional[str] = Field(None, description="Organization slug (optional)")
+    mfa_code: Optional[str] = Field(
+        None,
+        description=(
+            "6-digit TOTP code (or single-use recovery code) — required when "
+            "the user has MFA enabled. Submit alongside email + password on "
+            "the same /login call. If omitted and MFA is required, the response "
+            "is 401 with detail='MFA code required'."
+        ),
+    )
 
 
 class TokenResponse(BaseModel):
