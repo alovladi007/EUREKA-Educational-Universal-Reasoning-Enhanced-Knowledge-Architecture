@@ -1,0 +1,45 @@
+# gitleaks config (Session 3.5, 2026-05).
+#
+# We rely on the default rules (Anthropic API keys, OpenAI, Stripe, AWS,
+# GitHub tokens, JWTs, generic high-entropy strings, etc.) and add only
+# the EUREKA-specific allowlist / overrides below.
+#
+# Run locally:  gitleaks detect --redact -v
+# Run in CI:    .github/workflows/ci.yml job `gitleaks`
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allowlist of EUREKA-known placeholder strings"
+
+# These are documentation placeholders, never real keys.
+regexes = [
+  # generic obvious placeholders
+  "your[_-]?(api[_-]?)?(key|secret|password|token)[_-]?here",
+  "<paste[- ]your[- ]key>",
+  "sk-ant-your-",
+  "sk-proj-your_",
+  "sk-ant-api03-your-key",
+  "sk-your-openai-key-here",
+  "whsec_your_secret_here",
+  "sk_test_your_key_here",
+  "your-aws-secret-key",
+  "your-super-secret-jwt-key-change-this-in-production",
+  "dev[_-]jwt[_-]secret[_-]change[_-]in[_-]production",
+  "your-secret-key-minimum-32-characters-long-change-in-production",
+  "your-app-password-here",
+  "your-jwt-secret-here-change-in-production-use-openssl-rand-hex-32",
+  "your-secret-key-here-change-in-production-use-openssl-rand-hex-32",
+  "dev[_-]secret[_-]key[_-]change[_-]in[_-]production",
+]
+
+paths = [
+  # docs/archive contains historical session reports with example payloads.
+  '''docs/archive/.*''',
+  # gitleaks reads itself; ignore.
+  '''.gitleaks.toml''',
+  # SOPS encrypted files — gitleaks will see ciphertext that looks high-entropy.
+  '''secrets/.*\.enc\.(yaml|json)''',
+  '''secrets/.*\.sops\.(yaml|json)''',
+]

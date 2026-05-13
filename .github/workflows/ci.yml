@@ -30,6 +30,8 @@ jobs:
       - uses: gitleaks/gitleaks-action@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Use the project's allowlist + default rules. See .gitleaks.toml.
+          GITLEAKS_CONFIG: .gitleaks.toml
 
   # -------------------------------------------------------------------------
   # Python services — fan out over every FastAPI service with main.py

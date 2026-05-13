@@ -1,0 +1,31 @@
+# SOPS configuration (Session 3.5, 2026-05).
+#
+# SOPS encrypts in place: secrets/{dev,staging,prod}.enc.yaml stay readable
+# in git but values are encrypted under an age public key. The private key
+# is held by humans (and CI, via env) — never committed.
+#
+# This file maps which secrets go to which age recipients. Add the project's
+# real age public key in place of the placeholder below before first use.
+#
+# To generate the keypair:
+#   age-keygen -o ~/.config/sops/age/keys.txt
+#   # public key prints to stderr; copy it into the `age:` field below.
+#   # Store the private key (~/.config/sops/age/keys.txt) somewhere safe —
+#   # 1Password, Vault, etc. CI reads it via $SOPS_AGE_KEY env var.
+#
+# To encrypt a new secrets file:
+#   cp secrets/dev.enc.yaml.template secrets/dev.enc.yaml
+#   sops -e -i secrets/dev.enc.yaml
+#
+# To edit:
+#   sops secrets/dev.enc.yaml
+#
+# Full runbook: docs/SECRETS.md
+
+creation_rules:
+  - path_regex: secrets/dev\.enc\.yaml$
+    age: "REPLACE_WITH_AGE_PUBLIC_KEY_FROM_age-keygen"
+  - path_regex: secrets/staging\.enc\.yaml$
+    age: "REPLACE_WITH_AGE_PUBLIC_KEY_FROM_age-keygen"
+  - path_regex: secrets/prod\.enc\.yaml$
+    age: "REPLACE_WITH_AGE_PUBLIC_KEY_FROM_age-keygen"
