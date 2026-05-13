@@ -37,6 +37,13 @@ These were three Next.js scaffolds with only README + package.json. Real tier UI
 
 ---
 
+## Items from Session 3.6 (frontend cleanup — deferred)
+
+- [ ] **Pre-existing TS errors** outside the ai-tutor/test-prep pages: Three.js imports (`three/examples/jsm/...`) and several tier pages have type issues. `next.config.js` sets `typescript.ignoreBuildErrors: true` and `eslint.ignoreDuringBuilds: true` so the build ships; the errors don't block CI. Fix incrementally and flip the flag back to false.
+- [ ] **Storybook** for the ~30 most-used components. Roadmap Session 3.6 called for it; deferred to keep the session bounded — the build-gate work was the immediate blocker for everything downstream.
+- [ ] **Lighthouse CI** with score ≥ 90 on home + dashboard. Same reason as Storybook.
+- [ ] **Design tokens file** (`src/styles/tokens.css`) — the dirs are already shadcn'd; consolidating the colour/spacing/type scale into tokens is a separate small task.
+
 ## Items from Session 3.3 (auth + tenancy hardening)
 
 - [ ] **Move tenancy enforcement INTO middleware**: today the middleware injects `org_id` and every endpoint manually compares it. A developer who forgets the check can leak data. Use SQLAlchemy `with_loader_criteria` to filter every query session-wide on `org_id == request.state.org_id`. Endpoint checks become defence-in-depth, not the primary gate. Tracked: SECURITY.md "Follow-up needed".

@@ -1,5 +1,6 @@
 'use client';
 
+
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -56,7 +57,7 @@ interface UserProgress {
   accuracy_percentage: number;
 }
 
-export default function TestPrepDashboard() {
+function TestPrepDashboardInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -405,5 +406,17 @@ export default function TestPrepDashboard() {
         </TabsContent>
       </Tabs>
     </div>
+  );
+}
+
+
+// Wrap the page that calls useSearchParams() in a Suspense boundary
+// so Next 14 static export doesn't bail out. (Session 3.6, 2026-05.)
+import { Suspense } from 'react';
+export default function TestPrepDashboard() {
+  return (
+    <Suspense fallback={null}>
+      <TestPrepDashboardInner />
+    </Suspense>
   );
 }

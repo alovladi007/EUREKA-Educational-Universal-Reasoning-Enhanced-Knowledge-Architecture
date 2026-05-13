@@ -1,15 +1,33 @@
 import { ButtonHTMLAttributes, forwardRef } from 'react';
+import { Slot } from '@radix-ui/react-slot';
 import { cn } from '@/lib/utils';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link';
   size?: 'default' | 'sm' | 'lg' | 'icon';
   isLoading?: boolean;
+  // Render the children directly via Radix `Slot` instead of wrapping
+  // them in a <button>. Lets callers do <Button asChild><Link href="…"/></Button>
+  // and have the Link render with the button styling. (Session 3.6, 2026-05.)
+  asChild?: boolean;
 }
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant = 'default', size = 'default', isLoading, children, disabled, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
+  (
+    {
+      className,
+      variant = 'default',
+      size = 'default',
+      isLoading,
+      asChild = false,
+      children,
+      disabled,
+      ...props
+    },
+    ref
+  ) => {
+    const baseStyles =
+      'inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50';
 
     const variants = {
       default: 'bg-primary text-primary-foreground hover:bg-primary/90',
@@ -27,21 +45,54 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       icon: 'h-10 w-10',
     };
 
+    const Comp = asChild ? Slot : 'button';
+
+    // Slot can only have a single child, so we collapse the loading
+    // spinner + children when asChild is true and isLoading is set.
+    const content =
+      isLoading && !asChild ? (
+        <>
+          <svg
+            className="animate-spin -ml-1 mr-2 h-4 w-4"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            />
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
+          </svg>
+          {children}
+        </>
+      ) : (
+        children
+      );
+
     return (
-      <button
+      <Comp
         ref={ref}
-        className={cn(baseStyles, variants[variant], sizes[size], isLoading && 'cursor-wait', className)}
-        disabled={disabled || isLoading}
+        className={cn(
+          baseStyles,
+          variants[variant],
+          sizes[size],
+          isLoading && 'cursor-wait',
+          className
+        )}
+        disabled={!asChild && (disabled || isLoading)}
         {...props}
       >
-        {isLoading && (
-          <svg className="animate-spin -ml-1 mr-2 h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-          </svg>
-        )}
-        {children}
-      </button>
+        {content}
+      </Comp>
     );
   }
 );

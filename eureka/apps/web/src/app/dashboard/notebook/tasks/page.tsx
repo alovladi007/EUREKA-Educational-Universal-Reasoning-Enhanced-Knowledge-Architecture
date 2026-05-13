@@ -1,5 +1,6 @@
 'use client';
 
+
 import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card } from '@/components/ui/card';
@@ -28,7 +29,7 @@ interface Task {
   created_at: string;
 }
 
-export default function TasksPage() {
+function TasksPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const projectId = searchParams.get('project');
@@ -250,5 +251,17 @@ export default function TasksPage() {
         </div>
       )}
     </div>
+  );
+}
+
+
+// Wrap the page that calls useSearchParams() in a Suspense boundary
+// so Next 14 static export doesn't bail out. (Session 3.6, 2026-05.)
+import { Suspense } from 'react';
+export default function TasksPage() {
+  return (
+    <Suspense fallback={null}>
+      <TasksPageInner />
+    </Suspense>
   );
 }

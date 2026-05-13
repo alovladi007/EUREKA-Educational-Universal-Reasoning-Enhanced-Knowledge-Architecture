@@ -1,5 +1,6 @@
 'use client';
 
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
@@ -49,7 +50,7 @@ interface ExamType {
   questions: number;
 }
 
-export default function ExamSimulatorPage() {
+function ExamSimulatorPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialExam = searchParams.get('exam') || '';
@@ -507,5 +508,17 @@ export default function ExamSimulatorPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+// Wrap the page that calls useSearchParams() in a Suspense boundary
+// so Next 14 static export doesn't bail out. (Session 3.6, 2026-05.)
+import { Suspense } from 'react';
+export default function ExamSimulatorPage() {
+  return (
+    <Suspense fallback={null}>
+      <ExamSimulatorPageInner />
+    </Suspense>
   );
 }

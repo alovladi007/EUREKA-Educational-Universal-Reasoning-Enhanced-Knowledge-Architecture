@@ -391,11 +391,16 @@ export default function AITutorPage() {
                     <div className="prose prose-sm max-w-none dark:prose-invert">
                       <ReactMarkdown
                         components={{
-                          code({ node, inline, className, children, ...props }) {
+                          code({ className, children, ...props }) {
+                            // react-markdown 10 dropped the `inline` prop; the
+                            // canonical replacement is to detect a `language-*`
+                            // class on the element — block code blocks always
+                            // carry it, inline `code` spans don't.
                             const match = /language-(\w+)/.exec(className || '');
                             const code = String(children).replace(/\n$/, '');
+                            const isBlock = Boolean(match);
 
-                            return !inline && match ? (
+                            return isBlock ? (
                               <div className="relative">
                                 <button
                                   onClick={() => copyCode(code)}
@@ -408,10 +413,13 @@ export default function AITutorPage() {
                                   )}
                                 </button>
                                 <SyntaxHighlighter
-                                  style={vscDarkPlus}
-                                  language={match[1]}
+                                  // react-syntax-highlighter's TS types
+                                  // declare `style` as Record<string, CSSProperties>
+                                  // but the imported prism theme is exported as
+                                  // a CSSProperties literal. Known typing gap.
+                                  style={vscDarkPlus as unknown as Record<string, React.CSSProperties>}
+                                  language={match![1]}
                                   PreTag="div"
-                                  {...props}
                                 >
                                   {code}
                                 </SyntaxHighlighter>

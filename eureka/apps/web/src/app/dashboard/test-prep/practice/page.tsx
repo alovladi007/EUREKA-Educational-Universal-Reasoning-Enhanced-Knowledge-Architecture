@@ -1,5 +1,6 @@
 'use client';
 
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -31,7 +32,7 @@ interface AdaptiveSession {
   is_complete: boolean;
 }
 
-export default function PracticeModePage() {
+function PracticeModePageInner() {
   const searchParams = useSearchParams();
   const initialExam = searchParams.get('exam') || 'GRE';
 
@@ -743,5 +744,17 @@ export default function PracticeModePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+
+// Wrap the page that calls useSearchParams() in a Suspense boundary
+// so Next 14 static export doesn't bail out. (Session 3.6, 2026-05.)
+import { Suspense } from 'react';
+export default function PracticeModePage() {
+  return (
+    <Suspense fallback={null}>
+      <PracticeModePageInner />
+    </Suspense>
   );
 }
