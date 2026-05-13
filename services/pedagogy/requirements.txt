@@ -49,3 +49,4 @@ structlog==23.2.0
 # Shared module dependencies
 python-jose[cryptography]==3.3.0
 aiokafka==0.8.1
+kafka-python<2.1.0  # aiokafka 0.8.1 imports `collect_hosts` from kafka.conn which was removed in kafka-python 2.1
