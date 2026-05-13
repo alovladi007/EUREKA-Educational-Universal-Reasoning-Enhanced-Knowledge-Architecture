@@ -50,6 +50,17 @@ Each phase is independently shippable. You can pause, ship the user-facing chang
 
 **Goal**: Make what already exists actually rock-solid before piling on features. Pass tests, fix duplication, secure the perimeter, get CI green, get observability in place.
 
+## Progress
+
+| Session | Status | Notes |
+|---|---|---|
+| 3.1 Reconcile service duplication | ✅ done 2026-05 | 3 overlap pairs + 1 dup api-core dir resolved. -8,152 LOC. See commit `2bfec9ec`. |
+| 3.2 Test + CI baseline | ✅ done 2026-05 | Matrix CI for all 20 Python + 4 Node services; gitleaks; schema-drift check; Makefile `test-all`. Found + fixed 2 real bugs (analytics datetime, assess models). See commits `241282c4`, `736c0b45`. |
+| 3.3 Auth + tenancy hardening | pending | |
+| 3.4 Observability | pending | |
+| 3.5 Secrets + config | pending | |
+| 3.6 Frontend cleanup + design system | pending | |
+
 ## Session 3.1 — Reconcile service duplication
 
 **Problem**: `services/ai-tutor` (TS) and `eureka/services/tutor-llm` (Python) overlap. `eureka/services/medical-school` (NestJS) and `pro-med` (FastAPI) overlap. `web-hs`, `web-ug`, `web-grad` stubs duplicate `web`.

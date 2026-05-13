@@ -120,8 +120,14 @@ jobs:
           # The health test is the minimum bar: every service must at
           # least import its main module and register /health. Anything
           # below this is a regression.
+          # -p no:cacheprovider keeps the cache out of the workspace.
+          # --override-ini=addopts= ignores any service-local pytest.ini
+          # addopts (e.g. marketplace's --cov-fail-under=80) so a strict
+          # coverage rule on the wider suite doesn't make the health
+          # test alone fail just because it doesn't reach 80% coverage.
           if [ -f tests/test_health.py ]; then
-            pytest tests/test_health.py -v --tb=short
+            pytest tests/test_health.py -v --tb=short \
+              --override-ini=addopts=
           else
             echo "No tests/test_health.py — skipping"
           fi
@@ -255,7 +261,17 @@ jobs:
         run: |
           sudo apt-get update -y
           sudo apt-get install -y postgresql-client
-          pip install "sqlalchemy[asyncio]>=2" psycopg2-binary asyncpg
+          # Install requirements of every service the drift checker
+          # introspects, plus the core deps. Service models depend on
+          # pydantic-settings, alembic, etc. that aren't otherwise here.
+          pip install "sqlalchemy[asyncio]>=2" psycopg2-binary asyncpg \
+                      pydantic pydantic-settings python-jose passlib bcrypt \
+                      "fastapi>=0.109" "redis>=5"
+          # Also install the services' own requirements so any imports
+          # in their models work.
+          for svc in eureka/services/api-core eureka/services/assess eureka/services/analytics; do
+            pip install -r "$svc/requirements.txt" || true
+          done
 
       - name: Apply init SQL
         env:
@@ -267,6 +283,8 @@ jobs:
           done
 
       - name: Run drift check
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/eureka_test
         run: python scripts/check_schema_drift.py
 
   # -------------------------------------------------------------------------
