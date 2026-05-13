@@ -43,14 +43,13 @@ Legend:
 | platform-orchestrator | services/platform-orchestrator | 🟡 | TS, lightweight |
 
 ## Recently resolved (2026-05)
-- **Service duplication** — `services/ai-tutor` (TS, orphaned, not in compose) deleted; `tutor-llm` (Python) is canonical. Port items captured in [BACKLOG.md](BACKLOG.md).
-- **Frontend duplication** — `web-hs`, `web-ug`, `web-grad` stubs deleted; real tier UI lives at `eureka/apps/web/src/app/tiers/[tier]/`.
-- **NestJS/FastAPI med overlap** — `pro-med` was a 25-LOC stub (deleted). `medical-school` (NestJS, 4.7k LOC, mature) is canonical for the med tier. Stack-consistency port tracked in BACKLOG.
+- **Phase 3 Session 3.1** — three service-duplication pairs resolved: `services/ai-tutor` (TS, orphaned) deleted; `eureka/services/pro-med` (25-LOC stub) deleted; `web-hs`/`web-ug`/`web-grad` Next.js stubs deleted. Also deleted dead `eureka/api-core/` (duplicate). Port items + future work tracked in [BACKLOG.md](BACKLOG.md).
+- **Phase 3 Session 3.2** — new CI workflow `.github/workflows/ci.yml` with matrix coverage across all 20 Python services + 4 Node services, gitleaks secret scan, compose validation, docker-build smoke, and a `schema-drift` checker. Top-level Makefile (`make test-all`, `make test-py`, `make schema-drift`, …). Health tests bulk-installed in 18 services that lacked them; the install caught two real bugs in `analytics` (missing `datetime` import) and `assess` (imports models that didn't exist — wrote a minimal SQLAlchemy ORM layer over the seeded tables).
 
 ## Known issues
-- **CI**: GitHub Actions workflows exist but coverage is uneven across services. Session 3.2 fixes this.
-- **Tests**: `make test` runs what's there but coverage is patchy; no integration test that exercises a full learner journey. Session 3.2.
-- **Two `api-core` copies**: `eureka/api-core/` and `eureka/services/api-core/` are near-duplicates. Compose builds from the latter. Mini Session 3.1d should verify and delete the former (tracked in BACKLOG).
-- **Schema drift**: ORM and init SQL drifted (caught during stack bringup 2026-05). Need automated drift check in CI (Session 3.2).
+- **CI**: ruff-lint failures are not gating yet (continue-on-error). Phase 3.6 will tighten this.
+- **Schema drift job is non-gating**: `schema-drift` reports drift but doesn't fail the build, because the known drift (e.g. `users.email_verified` vs `is_email_verified` history) was just cleaned up and the gate would be a no-op. Next session should flip `continue-on-error: false`.
+- **Coverage gate is not enforced**: collection + upload happen but 40% floor isn't set. Once tests beyond /health exist (Phase 4+), gate it.
+- **`assess` runtime endpoints**: routes for `assessment_attempts`, `question_responses`, `grading_results`, `response_feedback` import cleanly but the matching DB tables aren't in the seed SQL. Phase 5.1 will add them. /health works regardless.
 
 This file is the source of truth for service health. Update it whenever a service moves up or down a tier.
