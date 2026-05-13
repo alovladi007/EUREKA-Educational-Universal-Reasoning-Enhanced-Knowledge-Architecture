@@ -4,10 +4,13 @@ AI Tutor (LLM) Service - Main Application
 Port: 8050
 Purpose: AI-powered tutoring with RAG, conversation management, and knowledge tracking
 """
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import router as api_router
 from app.core.config import get_settings
+from app.core.observability import init_observability
 
 settings = get_settings()
 
@@ -18,6 +21,14 @@ app = FastAPI(
     version=settings.VERSION,
     docs_url="/docs",
     redoc_url="/redoc"
+)
+
+# Observability (Session 3.4): structlog + OTel. Picks up
+# OTEL_EXPORTER_OTLP_ENDPOINT from env; no-op exporter if unset.
+init_observability(
+    app,
+    service_name=getattr(settings, "SERVICE_NAME", "tutor-llm"),
+    environment=os.environ.get("ENVIRONMENT", "development"),
 )
 
 # CORS middleware

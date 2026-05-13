@@ -20,16 +20,19 @@ from app.core.config import settings
 from app.core.database import engine, Base
 from app import models  # noqa: F401  - Import for side effects (model registration)
 from app.api.v1 import api_router
+from app.core.observability import init_observability, get_logger
 from app.middleware.tenancy import TenancyMiddleware
 from app.middleware.audit import AuditMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
 
-# Configure logging
+# Stdlib logging stays configured so libraries that haven't been ported
+# to structlog (uvicorn, sqlalchemy, etc.) still get formatted output.
+# structlog itself is wired separately by init_observability below.
 logging.basicConfig(
     level=getattr(logging, settings.LOG_LEVEL),
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
 )
-logger = logging.getLogger(__name__)
+logger = get_logger(__name__)
 
 
 @asynccontextmanager
@@ -91,6 +94,13 @@ app = FastAPI(
     redoc_url="/redoc" if settings.DEBUG else None,
     lifespan=lifespan
 )
+
+# Observability: structlog + OpenTelemetry instrumentation. Wires
+# RequestContextMiddleware which we want to run EARLY so request_id is
+# in scope before tenancy/audit log anything. Add it before the other
+# custom middleware so it runs last in the response pipeline but first
+# in the request pipeline (Starlette adds in LIFO order).
+init_observability(app, service_name="api-core", environment=settings.ENVIRONMENT)
 
 # Custom middleware (added first so they run after CORS)
 app.add_middleware(SecurityHeadersMiddleware)

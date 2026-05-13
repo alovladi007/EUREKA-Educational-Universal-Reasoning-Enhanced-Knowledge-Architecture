@@ -97,6 +97,30 @@ services:
       - kafka_data:/var/lib/redpanda/data
 
   # ==========================================
+  # Observability (Session 3.4, 2026-05). Behind `--profile dev-obs`
+  # so the dev stack stays small unless you opt in.
+  #   docker compose --profile dev-obs up -d jaeger
+  # ==========================================
+
+  jaeger:
+    profiles:
+      - dev-obs
+      - full
+    image: jaegertracing/all-in-one:latest
+    container_name: eureka-jaeger
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    ports:
+      - "16686:16686"   # Jaeger UI
+      - "4317:4317"     # OTLP gRPC
+      - "4318:4318"     # OTLP HTTP
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:16686"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ==========================================
   # Core Services
   # ==========================================
 
@@ -117,6 +141,11 @@ services:
       S3_SECRET_KEY: eureka_minio_password
       JWT_SECRET: dev_jwt_secret_change_in_production
       ENVIRONMENT: development
+      # OpenTelemetry — leave blank to disable. Jaeger lives behind
+      # `--profile dev-obs`; container DNS resolves `jaeger` when both
+      # are on the same compose network.
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
+      OTEL_SERVICE_NAME: api-core
     ports:
       - "8000:8000"
     depends_on:
