@@ -1,11 +1,16 @@
 name: CD - Deploy to Kubernetes
 
+# Manual-only until Phase 11 (go-to-market). This workflow tries to push
+# images to ghcr.io and deploy them to a Kubernetes cluster — neither is
+# wired up today. Triggering on `push: main` made it fail on every commit
+# and drown the actual CI signal in red notifications.
+#
+# When you DO have a registry + cluster + secrets configured, re-add:
+#   push:
+#     branches: [main]
+#     tags: ['v*']
+# to this `on:` block.
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*'
   workflow_dispatch:
     inputs:
       environment:
