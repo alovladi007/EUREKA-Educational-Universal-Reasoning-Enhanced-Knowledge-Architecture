@@ -67,3 +67,8 @@ htmlcov/
 *.egg
 *.whl
 target/
+
+# Workspace-member lockfiles: npm hoists them to the workspace root
+# (eureka/package-lock.json). Keeping per-app lockfiles in sync with
+# the root is a footgun. (Session 3.6, 2026-05.)
+eureka/apps/*/package-lock.json

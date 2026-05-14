@@ -187,12 +187,18 @@ jobs:
           # so services missing package-lock.json don't fail setup-node.
 
       - name: Install
-        working-directory: ${{ matrix.service.path }}
+        # eureka/apps/* are members of an npm workspace declared in
+        # eureka/package.json. Their lockfiles are managed at the
+        # workspace root; running `npm ci` inside the member dir fails
+        # with EUSAGE. Detect that case and install from the root.
         run: |
-          if [ -f package-lock.json ]; then
-            npm ci
+          if [ -f ${{ matrix.service.path }}/package-lock.json ]; then
+            cd ${{ matrix.service.path }} && npm ci
+          elif [ "${{ matrix.service.path }}" = "eureka/apps/web" ] || [ "${{ matrix.service.path }}" = "eureka/apps/admin" ]; then
+            # Workspace member; install everything from the eureka/ root.
+            cd eureka && npm ci || npm install --no-audit --no-fund
           else
-            npm install --no-audit --no-fund
+            cd ${{ matrix.service.path }} && npm install --no-audit --no-fund
           fi
 
       - name: Lint
