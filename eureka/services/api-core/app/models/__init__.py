@@ -23,6 +23,15 @@ from app.models.learner import (
     TierKind,
     TierEnrollmentStatus,
 )
+from app.models.skill import (
+    Skill,
+    SkillPrerequisite,
+    ContentSkill,
+    LearnerSkillMastery,
+    SkillFramework,
+    BloomLevel,
+    ContentKind,
+)
 
 __all__ = [
     "Base",
@@ -43,4 +52,11 @@ __all__ = [
     "TierEnrollment",
     "TierKind",
     "TierEnrollmentStatus",
+    "Skill",
+    "SkillPrerequisite",
+    "ContentSkill",
+    "LearnerSkillMastery",
+    "SkillFramework",
+    "BloomLevel",
+    "ContentKind",
 ]

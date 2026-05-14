@@ -501,9 +501,18 @@ Lighthouse passes in CI. Push to main.
   GET/POST/PATCH/DELETE `/tier-enrollments/me`. 9 integration tests pass.
   Verified live with one user holding 4 concurrent enrollments
   (undergraduate + USMLE Step 1 + USMLE Step 2 + FE Electrical).
-- **4.2** Seed skill graph from CCSS + NGSS + ABET + USMLE blueprint
-  + MBE outline + MBA core + FE/PE outline. Use Postgres ltree or
-  recursive CTE. Build skill-tagging API for content + questions.
+- **4.2** ✅ done 2026-05. Schema: `skills` (forest, framework+code unique),
+  `skill_prerequisites` (directed DAG, strength 0–1, free-form rationale),
+  `content_skills` (M2M tag), `learner_skill_mastery` (denormalized
+  projection of `learner_profiles.knowledge_state`). 8 frameworks seeded:
+  CCSS, NGSS, AP Calc BC, ABET, USMLE Step 1 (cardiology block), MBE, FE
+  Electrical + Civil, MBA core — ~77 skills, ~8 cross-framework prereq
+  edges. API: `/skills`, `/skills/{id}`, `/skills/{id}/relations`,
+  `/skills/{id}/prereq-tree` (recursive CTE), `/skills/by-code/{fw}/{code}`,
+  `/content-skills`, `/skills/me/mastery`. Verified live: STEP1.CARD.HF
+  (medical tier) returns 6 transitive prerequisites including AP Calc
+  (high-school tier) — the cross-tier moat is now navigable in one query.
+  8 integration tests pass.
 - **4.3** Universal Transcript service. Sign with Ed25519. Emit Open
   Badges 3.0 JSON-LD. Provide `/transcript/{user_id}.json` and
   `/transcript/{user_id}.verify`.
