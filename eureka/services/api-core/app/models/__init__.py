@@ -17,6 +17,12 @@ from app.models.audit_log import AuditLog
 from app.models.file_upload import FileUpload
 from app.models.notification import Notification
 from app.models.resume import Resume, ResumeVersion
+from app.models.learner import (
+    LearnerProfile,
+    TierEnrollment,
+    TierKind,
+    TierEnrollmentStatus,
+)
 
 __all__ = [
     "Base",
@@ -33,4 +39,8 @@ __all__ = [
     "Notification",
     "Resume",
     "ResumeVersion",
+    "LearnerProfile",
+    "TierEnrollment",
+    "TierKind",
+    "TierEnrollmentStatus",
 ]

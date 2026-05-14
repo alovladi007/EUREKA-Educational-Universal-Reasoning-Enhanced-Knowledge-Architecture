@@ -493,8 +493,14 @@ Lighthouse passes in CI. Push to main.
 > Each will be expanded into a self-contained prompt at the start of Phase 4,
 > when we know the actual schema choices made during Phase 3.
 
-- **4.1** Define `learner_profile`, `tier_enrollment`, `learner_consent`
-  schemas in a fresh Alembic migration. Build CRUD in api-core.
+- **4.1** ✅ done 2026-05. `learner_profiles` (1:1) + `tier_enrollments` (N
+  per user) live in `eureka/ops/db/05_learner_spine.sql`. SQLAlchemy ORM
+  in `app/models/learner.py`, schemas in `app/schemas/learner.py`, API
+  in `app/api/v1/endpoints/learner.py` mounted under `/api/v1`. Endpoints:
+  GET/PATCH `/learner-profile/me`, GET `/learner-profile/{user_id}` (admin),
+  GET/POST/PATCH/DELETE `/tier-enrollments/me`. 9 integration tests pass.
+  Verified live with one user holding 4 concurrent enrollments
+  (undergraduate + USMLE Step 1 + USMLE Step 2 + FE Electrical).
 - **4.2** Seed skill graph from CCSS + NGSS + ABET + USMLE blueprint
   + MBE outline + MBA core + FE/PE outline. Use Postgres ltree or
   recursive CTE. Build skill-tagging API for content + questions.

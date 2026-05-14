@@ -168,13 +168,18 @@ tmp/
 !datasets/samples/
 
 # ==========================================
-# AI & ML Models
+# AI & ML Models — weight files only.
+# The bare `models/` pattern was catching the SOURCE-code `app/models/`
+# directory in every Python service (a real bug — caught when adding the
+# learner-spine ORM in Phase 4 Session 4.1, 2026-05). Restrict to weight
+# files and an explicit `weights/` dir; never blanket-ignore models/.
 # ==========================================
-models/
 *.pt
 *.pth
 *.onnx
 *.h5
+**/model_weights/
+**/weights/
 *.pkl
 *.joblib
 embeddings_cache/
