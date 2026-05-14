@@ -7,6 +7,10 @@
     "services/*",
     "apps/*"
   ],
+  "overrides": {
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  },
   "scripts": {
     "dev": "concurrently \"npm run dev:hs\" \"npm run dev:ug\" \"npm run dev:grad\"",
     "dev:hs": "cd services/tier-hs && npm run dev",
