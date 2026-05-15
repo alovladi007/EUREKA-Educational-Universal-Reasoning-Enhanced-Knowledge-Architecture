@@ -48,6 +48,19 @@ from app.models.item_bank import (
     ItemReviewStatus,
     ItemSourceKind,
 )
+from app.models.agent import (
+    KnowledgeChunk,
+    AgentSession,
+    AgentMessage,
+    AgentTrace,
+    FlaggedResponse,
+    ChunkSourceKind,
+    AgentSessionStatus,
+    AgentMode,
+    AgentRole,
+    FlagKind,
+    FlagStatus,
+)
 
 __all__ = [
     "Base",
@@ -87,4 +100,15 @@ __all__ = [
     "ItemKind",
     "ItemReviewStatus",
     "ItemSourceKind",
+    "KnowledgeChunk",
+    "AgentSession",
+    "AgentMessage",
+    "AgentTrace",
+    "FlaggedResponse",
+    "ChunkSourceKind",
+    "AgentSessionStatus",
+    "AgentMode",
+    "AgentRole",
+    "FlagKind",
+    "FlagStatus",
 ]

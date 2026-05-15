@@ -590,17 +590,35 @@ Lighthouse passes in CI. Push to main.
 
 ## Sessions 6.x — AI tutor depth
 
-- **6.1** RAG infra: indexing pipeline + retrieval API + reranker
-  (Cohere Rerank or BGE-rerank locally) + citation enforcement.
-- **6.2** Tool-use tutor: define the 6+ tools listed in Phase 6.
-  Tutor is a Claude tool-use loop with explicit termination conditions.
-- **6.3** Socratic mode: hint ladder controlled by a learner-state
-  prompt, plus instrumentation on which hint level was needed.
-- **6.4** Anti-hallucination: groundedness checker (NLI-style),
-  contradiction detector, learner report queue → SME triage.
-- **6.5** Voice via OpenAI Realtime (or Anthropic when GA), live
-  translation via Claude's multilingual capability or a dedicated
-  translation pass.
+- **6.1** ✅ done 2026-05. `knowledge_chunks` table (1024-dim pgvector
+  HNSW + GIN tsvector). `app/services/rag.py`:
+  `ingest_item_bank()`, `ingest_skill_graph()`, `retrieve()` (hybrid
+  keyword + semantic + skill-tag boost via RRF), `groundedness()`
+  (shingle-overlap stand-in until 6.4b plugs in NLI). 269 chunks
+  ingested live (192 item + 77 skill).
+- **6.2** ✅ done 2026-05. `app/services/tutor_agent.py`:
+  Claude tool-use loop with **6 tools** (`lookup_skill_state`,
+  `retrieve_content`, `get_question`, `grade_attempt`,
+  `recommend_next`, `update_mastery`). Persists conversation in
+  `agent_sessions` + `agent_messages` (append-only, with citations
+  and groundedness_score per assistant turn) + `agent_traces`
+  (tool-call audit so the UI can render "show your work"). 8
+  endpoints under `/agent/*`. Stub mode produces a Socratic-shaped
+  reply when no `ANTHROPIC_API_KEY`.
+- **6.3** ✅ done 2026-05. Hint-ladder state machine baked into
+  `agent_sessions.hint_level` (0=ask leading question, 1=nudge,
+  2=partial worked example, 3=full reveal). Bumps automatically on
+  learner cues like "I don't know" / "stuck" / "give me a hint".
+  System prompt is recomputed each turn so updates take immediate
+  effect. Verified live: a 3-turn session ratcheted 0→1→2.
+- **6.4** ✅ done 2026-05. Groundedness score (0..1) computed on every
+  assistant turn from sentence-level claims vs cited chunks (shingle
+  overlap; NLI swap in 6.4b). Stored on `agent_messages.groundedness_score`.
+  Learner-facing `POST /agent/messages/{id}/flag` with kind enum
+  (hallucination, incorrect_explanation, biased, off_topic, unsafe,
+  low_groundedness, other) → `flagged_responses` SME triage queue
+  (status: open → triaged → confirmed | rejected | fixed).
+- **6.5** Voice / live translation — deferred. Phase 11.x.
 
 ## Sessions 7.x — Exam realism + analytics
 
