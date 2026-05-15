@@ -72,3 +72,11 @@ target/
 # (eureka/package-lock.json). Keeping per-app lockfiles in sync with
 # the root is a footgun. (Session 3.6, 2026-05.)
 eureka/apps/*/package-lock.json
+
+# macOS Finder copy-on-duplicate files ("foo 2.json", "bar 2.tsx", etc.)
+# They show up whenever you drag-duplicate something in Finder. Caught
+# during Phase 4 commit (Session 4.5, 2026-05).
+* 2.*
+* 2
+* 3.*
+* 3

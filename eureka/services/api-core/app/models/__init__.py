@@ -32,6 +32,12 @@ from app.models.skill import (
     BloomLevel,
     ContentKind,
 )
+from app.models.transcript import (
+    LearnerAchievement,
+    TranscriptIssuerKey,
+    TranscriptIssuance,
+    AchievementKind,
+)
 
 __all__ = [
     "Base",
@@ -59,4 +65,8 @@ __all__ = [
     "SkillFramework",
     "BloomLevel",
     "ContentKind",
+    "LearnerAchievement",
+    "TranscriptIssuerKey",
+    "TranscriptIssuance",
+    "AchievementKind",
 ]

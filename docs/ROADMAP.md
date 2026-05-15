@@ -513,14 +513,32 @@ Lighthouse passes in CI. Push to main.
   (medical tier) returns 6 transitive prerequisites including AP Calc
   (high-school tier) — the cross-tier moat is now navigable in one query.
   8 integration tests pass.
-- **4.3** Universal Transcript service. Sign with Ed25519. Emit Open
-  Badges 3.0 JSON-LD. Provide `/transcript/{user_id}.json` and
-  `/transcript/{user_id}.verify`.
-- **4.4** Recommender. Hybrid: matrix factorization on completion data
-  + graph-aware scoring against the skill graph + LLM rerank for
-  "explain why this is next".
-- **4.5** Reshape `apps/web` so the root is the unified dashboard;
-  tier UI is a contextual switcher.
+- **4.3** ✅ done 2026-05. Schema: `learner_achievements`,
+  `transcript_issuer_keys` (Ed25519 pubkey registry),
+  `transcript_issuances` (signed payloads with supersede pointer).
+  Service: `app/services/transcript.py` — Open Badges 3.0 JSON-LD
+  builder, canonical serialization, Ed25519 sign + verify. Endpoints:
+  `POST /achievements`, `GET /achievements/me`, `POST /transcript/me/issue`,
+  `GET /transcript/me`, `GET /transcript/{id}`, `GET /transcript/{id}/verify`.
+  Verified live: signature 86 chars (base64url), tamper-detection
+  passes (mutating payload JSON in DB causes verify→false). 6
+  integration tests pass.
+- **4.4** ✅ done 2026-05. Service: `app/services/recommender.py` —
+  5-signal scorer (active-tier fit, prereq readiness, mastery gap,
+  goal alignment, spaced-repetition). Cross-tier moat: `test_prep`
+  enrolment with `exam=USMLE_Step_1` derives `framework=usmle` so
+  medical-tier USMLE skills surface even though the enrolment is in
+  `tier=test_prep`. Endpoint: `GET /recommendations/me`. Returns
+  per-signal breakdown + human-readable notes. 4 integration tests pass.
+- **4.5** ✅ done 2026-05. New pages in `apps/web`:
+    - `/learner` — single dashboard with profile + tier enrolments +
+      cross-tier recommendations + skill mastery, all from the api-core
+      endpoints landed in 4.1–4.4.
+    - `/transcript` — signed-transcript viewer with verify badge,
+      re-issue button, "Download JSON" of the raw Open Badges 3.0
+      payload. Re-issues supersede prior current.
+  Both ship in the Next 14 build (verified: `npm run build` produces
+  /learner 6.53 kB, /transcript 5.02 kB, both static-prerendered).
 
 ## Sessions 5.x — Content & question bank
 
