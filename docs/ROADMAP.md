@@ -542,14 +542,31 @@ Lighthouse passes in CI. Push to main.
 
 ## Sessions 5.x — Content & question bank
 
-- **5.1** Question bank schema (Postgres + S3 for media) and importers
-  for OpenStax, LibreTexts, OER Commons, NCEES sample.
-- **5.2** Variant generator: a pipeline with three stages —
-  (a) Claude generates N variants from a base question + skill spec;
-  (b) Cross-grader pass (Claude + GPT-4) for each variant grades the
-  variant against the same skill rubric;
-  (c) IRT calibration after first 200 learner attempts; outliers go
-  to human SME queue.
+- **5.1** ✅ done 2026-05. Five tables in `eureka/ops/db/08_item_bank.sql`:
+  `item_banks`, `items` (with IRT params, variant family_id, JSONB
+  content, GIN full-text index, review status), `item_variants`,
+  `item_sources` (license + provenance), `item_embeddings` (pgvector
+  1024-dim with HNSW cosine index). 7 endpoints under `/api/v1` for
+  banks + items CRUD. 3 banks + 78 items seeded:
+  `usmle-step-1-cardio` (cardiology block, real-style stems),
+  `ap-calc-bc-2027` (mock items across units), `fe-elec-circuits`
+  (circuits + math + signals + probability). Every seed item tagged
+  into the skill graph (Phase 4.2) via `content_skills` and embedded
+  with the stub hash-embedding for the search path.
+- **5.2** ✅ done 2026-05. `app/services/variant_generator.py` with
+  two stages: Claude-driven `generate_variants(base, count)` returning
+  structured JSON drafts; optional `cross_grade(base, variant)` pass
+  that flags variants where a second Claude call doesn't agree the
+  variant tests the same skill. Falls back to deterministic stubs
+  when ANTHROPIC_API_KEY is unset (CI / dev). Endpoint:
+  `POST /api/v1/items/{id}/variants` which:
+    * creates N new `items` rows in the same `family_id`,
+    * inherits the base's skill tags into `content_skills`,
+    * records lineage in `item_variants` (with cross-grader fields when run),
+    * stamps `item_sources` as `ai_generated` with attribution back to base,
+    * routes failed cross-grader variants to `review_status='flagged'`.
+  Verified live: 3 stub variants generated from a USMLE base item,
+  family linkage correct, tags inherited.
 - **5.3** Content authoring app at `eureka/apps/web/src/app/author/`
   (admin role only). Notion-style editor (use TipTap), AI fact-check
   inline, source citations enforced.
@@ -558,8 +575,18 @@ Lighthouse passes in CI. Push to main.
   Saylor + LibreTexts initially for cost).
 - **5.6** USMLE seed (license, e.g., AMBOSS-style partner, + AI
   variants) and FE seed (commission + NCEES sample + AI variants).
-- **5.7** Search service: OpenSearch index over content + pgvector
-  index over the same. Hybrid retrieval.
+- **5.7** ✅ done 2026-05. `app/services/item_search.py` with hybrid
+  retrieval: Postgres FTS keyword channel (uses the GIN index on
+  stem+vignette+explanation) + pgvector cosine semantic channel
+  (HNSW index on `item_embeddings.embedding`) + skill-tag boost when
+  a `skill_id` filter is supplied. Fused with parameter-free
+  Reciprocal Rank Fusion (RRF, k=60). Embedding function is
+  pluggable (`embed_fn` callable); default is a deterministic
+  sha256→1024-dim stub so the path runs end-to-end in CI; Phase 6.1
+  swaps it for a real embedding backend. Endpoint:
+  `GET /api/v1/item-search?q=…&framework=…&skill_id=…&bank_slug=…`.
+  Verified live: "resonance" + framework=fe_pe returns the RLC
+  resonance items in the top slot.
 
 ## Sessions 6.x — AI tutor depth
 

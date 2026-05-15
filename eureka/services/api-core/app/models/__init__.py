@@ -38,6 +38,16 @@ from app.models.transcript import (
     TranscriptIssuance,
     AchievementKind,
 )
+from app.models.item_bank import (
+    ItemBank,
+    Item,
+    ItemVariant,
+    ItemSource,
+    ItemEmbedding,
+    ItemKind,
+    ItemReviewStatus,
+    ItemSourceKind,
+)
 
 __all__ = [
     "Base",
@@ -69,4 +79,12 @@ __all__ = [
     "TranscriptIssuerKey",
     "TranscriptIssuance",
     "AchievementKind",
+    "ItemBank",
+    "Item",
+    "ItemVariant",
+    "ItemSource",
+    "ItemEmbedding",
+    "ItemKind",
+    "ItemReviewStatus",
+    "ItemSourceKind",
 ]
