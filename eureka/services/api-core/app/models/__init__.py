@@ -61,6 +61,13 @@ from app.models.agent import (
     FlagKind,
     FlagStatus,
 )
+from app.models.exam import (
+    AttemptLog,
+    ExamBlueprint,
+    MockAttempt,
+    MockAttemptItem,
+    MockAttemptStatus,
+)
 
 __all__ = [
     "Base",
@@ -111,4 +118,9 @@ __all__ = [
     "AgentRole",
     "FlagKind",
     "FlagStatus",
+    "AttemptLog",
+    "ExamBlueprint",
+    "MockAttempt",
+    "MockAttemptItem",
+    "MockAttemptStatus",
 ]

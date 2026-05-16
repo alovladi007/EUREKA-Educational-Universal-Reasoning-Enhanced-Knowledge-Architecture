@@ -622,15 +622,38 @@ Lighthouse passes in CI. Push to main.
 
 ## Sessions 7.x — Exam realism + analytics
 
-- **7.1** Per-exam shell components in `apps/web/src/app/exam/[exam_type]/`.
-  Replicate keyboard shortcuts, timer behaviour, flag/strike tools.
-- **7.2** 2-PL IRT fit via `py-irt` or `mirt`; calibrate ability
-  estimates against published pass thresholds.
-- **7.3** Analytics dashboard: per-skill mastery, time-per-q, percentile,
-  "most-missed by passers".
-- **7.4** Mock exam generator that balances item difficulty by IRT.
-- **7.5** Spaced repetition: FSRS or SM-2 scheduler in a dedicated
-  service, called from the dashboard's "due today" widget.
+- **7.1** Per-exam shell components in `apps/web/src/app/exam/[exam_type]/`
+  — deferred. Per-tier UI is bounded follow-up frontend work.
+- **7.2** ✅ done 2026-05. `app/services/irt.py` — 2-PL EM in pure Python
+  (no external IRT package). Fits items.irt_{difficulty, discrimination,
+  guessing} from `attempt_logs`. `estimate_theta_and_se()` for mock
+  scoring; `scaled_score()` for piecewise-linear theta→exam-score
+  mapping; `pass_probability()` from a Gaussian on the scaled scale.
+  Endpoint: `POST /api/v1/irt/calibrate`. Verified live: 6 items
+  calibrated, params written back.
+- **7.3** ✅ done 2026-05. `app/services/analytics.py`. `per_skill()`
+  returns per-(user, skill) aggregates (attempts, correct_pct, median
+  + p90 time_taken_ms, mastery). `strengths_weaknesses()` buckets and
+  returns top-k strongest / weakest. **`most_missed_by_passers()`** —
+  the UWorld feature: rank skills by miss rate among learners who
+  passed a blueprint, optionally cross-referenced with the current
+  learner's own miss rate. Endpoints: `/analytics/me/skills`,
+  `/analytics/me/strengths-weaknesses`, `/analytics/missed-by-passers`.
+- **7.4** ✅ done 2026-05. `app/services/mock_exam.py`. Skill-weighted
+  + IRT-difficulty-windowed item picker. `start_attempt()` creates an
+  attempt + populates `mock_attempt_items` with positions. `submit_answer()`
+  grades + writes to both `mock_attempt_items` and `attempt_logs` (so
+  analytics + IRT pick up mock data). `score_submitted()` fits theta
+  + maps to scaled score + computes pass probability + persists summary.
+  5 endpoints: blueprints CRUD, mock start/items/answer/submit, list.
+  Correct answers hidden until submission. Verified live: 5-item mock
+  produces a scaled_score and predicted_pass.
+- **7.5** ✅ done 2026-05. FSRS-lite scheduler in `app/services/analytics.py`:
+  4-state (again/hard/good/easy) multiplicative interval updates,
+  mastery delta per rating. `due_today()` returns the next item per
+  due skill. Endpoints: `GET /spaced-repetition/me/due`,
+  `POST /spaced-repetition/me/rate`. Verified live: `good` → interval
+  ×2.5, mastery +0.05; `again` → interval ×0.5, mastery −0.15.
 
 ## Sessions 8.x – 11.x
 
