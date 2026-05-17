@@ -68,6 +68,17 @@ from app.models.exam import (
     MockAttemptItem,
     MockAttemptStatus,
 )
+from app.models.institutional import (
+    Cohort,
+    CohortMembership,
+    CohortBlueprint,
+    SsoIdpConfig,
+    LtiPlatform,
+    LtiKey,
+    CohortStatus,
+    CohortRole,
+    SsoProtocol,
+)
 
 __all__ = [
     "Base",
@@ -123,4 +134,13 @@ __all__ = [
     "MockAttempt",
     "MockAttemptItem",
     "MockAttemptStatus",
+    "Cohort",
+    "CohortMembership",
+    "CohortBlueprint",
+    "SsoIdpConfig",
+    "LtiPlatform",
+    "LtiKey",
+    "CohortStatus",
+    "CohortRole",
+    "SsoProtocol",
 ]

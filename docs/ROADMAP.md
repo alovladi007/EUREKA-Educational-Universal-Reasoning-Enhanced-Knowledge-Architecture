@@ -263,12 +263,26 @@ Anki-style scheduler tuned per learner via the mastery model. Pushes missed-and-
 
 ---
 
-# Phase 9 — Institutional / B2B
+# Phase 9 — Institutional / B2B  ✅ done (sessions 9.1–9.4)
 
-## Session 9.1 — Institution admin console
-## Session 9.2 — LTI 1.3 + SCORM/xAPI export (sell into existing LMSs)
-## Session 9.3 — Cohort analytics + at-risk early-warning
-## Session 9.4 — SSO (SAML, OIDC, Google Workspace for Education)
+## Session 9.1 — Institution admin console ✅
+Cohorts + memberships + cohort↔blueprint links (6 tables in `11_institutional.sql`);
+20 REST endpoints under `/api/v1/cohorts/*`; role-gated to org_admin/super_admin/teacher.
+
+## Session 9.2 — LTI 1.3 + xAPI export ✅
+Full LTI 1.3 Tool implementation: 2048-bit RSA keypair (private PEM Fernet-encrypted in `lti_keys`);
+public `/api/v1/lti/.well-known/jwks.json`; OIDC initiation; launch JWT verified against platform JWKS
+with state+nonce; AGS grade passback via JWT-bearer client_credentials; attempt → xAPI Tin Can statement export.
+
+## Session 9.3 — Cohort analytics + at-risk early-warning ✅
+`/cohorts/{id}/analytics` aggregates over Phase 7 attempts + mocks + mastery.
+`/cohorts/{id}/at-risk` ranks learners by `combined = 0.35·mastery + 0.20·engagement + 0.20·trajectory + 0.25·mock`;
+each row carries explanation notes (e.g. "only 0/3 target skills at threshold (0.85)").
+
+## Session 9.4 — SSO (OIDC) ✅
+Per-org OIDC config CRUD (client_secret Fernet-encrypted at rest, never returned in API responses);
+`/sso/{id}/authorize` → IdP with state+nonce; `/sso/{id}/callback` validates id_token vs JWKS,
+JIT-provisions the user, optional auto-cohort enroll, then issues the same TokenResponse as `/auth/login`.
 
 ---
 
