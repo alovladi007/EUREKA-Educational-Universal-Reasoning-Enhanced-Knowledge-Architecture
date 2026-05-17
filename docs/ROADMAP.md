@@ -286,13 +286,50 @@ JIT-provisions the user, optional auto-cohort enroll, then issues the same Token
 
 ---
 
-# Phase 10 — Marketplace + creator economy
+# Phase 10 — Marketplace + creator economy  ✅ done (sessions 10.1–10.5)
 
-## Session 10.1 — Instructor signup, KYC, payout
-## Session 10.2 — Course authoring v2 with revenue-share previews
-## Session 10.3 — Recommendation + ranking algorithm
-## Session 10.4 — Promotional engine (coupons, cohort discounts)
-## Session 10.5 — Trust + safety (content moderation, takedown flow)
+## Session 10.1 — Instructor signup, KYC, payout ledger ✅
+`instructor_profiles` + `instructor_kyc_events` + `instructor_payouts` in
+`12_marketplace.sql`. Stripe Connect Express onboarding wired via
+`POST /api/v1/instructors/me/onboard` — falls back to a self-contained stub
+when `STRIPE_SECRET_KEY` is unset, so dev/CI/tests run end-to-end without
+hitting Stripe. Weekly payout accrual (`accrue_period`) walks paid purchases
+and computes gross/platform_fee/payment_fee/net per period.
+
+## Session 10.2 — Course authoring v2 + revenue-share previews ✅
+`course_listings` (slug, hero, tags, language, level, status,
+denormalised review/enrolment/rank signals) + `course_pricing`
+(list / sale / sale window / is_free / bulk_tiers). Authoring lifecycle:
+draft → pending_review → published / rejected / unlisted with admin gating.
+`GET /courses/{id}/price-quote` returns the full split (list, sale, coupon,
+final, platform_fee, instructor_net) — the revenue-share preview the
+creator sees before pricing decisions.
+
+## Session 10.3 — Recommendation + ranking algorithm ✅
+`marketplace_ranking.recompute_listing()` writes a `rank_score` per published
+listing from a 6-signal formula:
+`rank = 0.35·log(sales_30d) + 0.25·rating + 0.15·completion + 0.10·freshness + 0.10·log(enrolled) − 0.15·refund_rate`.
+`POST /admin/marketplace/recompute-ranks` runs the batch; `GET /marketplace/courses`
+serves the ranked feed (with optional `?q=` text + `?tag=` filter).
+
+## Session 10.4 — Promotional engine (coupons, cohort discounts) ✅
+`coupons` + `coupon_redemptions` with 5 scopes (global/org/course/cohort/category)
+and 2 kinds (percent / amount_off). Validation enforces time window, max
+redemptions, per-user limit, and scope match. `GET /coupons/{code}/preview?course_id=`
+returns a full `PriceQuote` showing exactly what the learner would pay,
+including which constraint blocked an invalid coupon ("expired", "already used",
+"cap reached"). Atomic at checkout: a `coupon_redemptions` row is written
+inside the same transaction that confirms the purchase.
+
+## Session 10.5 — Trust + safety (moderation queue + takedown flow) ✅
+`content_reports` + `moderation_actions` with 11 reasons including
+`medical_misinformation` + `safety_critical` for the clinical content surface.
+Admins triage via `GET /admin/reports?status=open` (sorted by severity asc, then
+created_at). 7 action kinds: `unlist` (drop from marketplace),
+`takedown` (also flip `course.is_active=false`), `shadow_ban`
+(force `rank_score=-999`), `redact` (flag a review), `restore`, `notify_creator`,
+`suspend_instructor`. Every action emits a row in `moderation_actions` for
+audit.
 
 ---
 
