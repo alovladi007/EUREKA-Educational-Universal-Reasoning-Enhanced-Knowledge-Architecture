@@ -463,7 +463,7 @@ granted_scopes + hashed refresh_token + revoked_at). Admin
 public exposure. Only approved apps are visible at
 `GET /oauth-apps/{client_id}/public`.
 
-## Session 13.5 — Compliance: audit + GDPR/FERPA export + deletion ✅
+## Session 13.5 — Compliance: audit + GDPR/FERPA export + deletion ✅ (see below for Phase 14)
 `audit_events` records every security-relevant action (`api_key.create`,
 `api_key.revoke`, `compliance.export.request`, `compliance.delete.request`,
 `compliance.delete.cancel`) with actor + subject + org + IP + UA +
@@ -475,6 +475,51 @@ so a failure in one doesn't poison the rest. `compliance_deletions` is a
 delayed-execution scheduler: `POST /me/compliance/delete` schedules
 deletion 30 days out (configurable), `POST /me/compliance/delete/{id}/cancel`
 reverses it, only one pending deletion per user.
+
+---
+
+# Phase 14 — Production scale + operability  ✅ done (sessions 14.1–14.5)
+
+## Session 14.1 — Redis cache layer ✅
+`services/cache.py` is a tiny facade with `get/set/delete/delete_pattern/health/cached`.
+Backs onto async Redis when `REDIS_URL` is set; otherwise falls through to an
+in-process dict with TTL eviction and hit/miss counters so dev/CI run with
+zero infra. JSON serialisation is implicit; `cached(key, ttl, builder)` is the
+preferred call site for memoised reads.
+
+## Session 14.2 — Background job queue ✅
+`background_jobs` Postgres table + `services/jobs.py` worker. Pull-based via
+`SELECT ... FOR UPDATE SKIP LOCKED` so multiple workers can run side by side
+without trampling. Retry ladder identical to webhook deliveries
+(`1m → 5m → 30m → 2h → 12h → dead`). Per-job `dedupe_key` enforces "one
+queued/running row per key" via a partial unique index. Handler registry
+via `@jobs.register("kind")` decorator; built-in handlers for `noop`,
+`webhook.deliver`, `email.send`, `rank.recompute`. `POST /admin/jobs/run-once`
+supports targeted execution via `?job_id=` for tests.
+
+## Session 14.3 — Prometheus metrics ✅
+`services/metrics.py` exposes counters / gauges / histograms in the
+Prometheus text-exposition format with no external dependency. The HTTP
+middleware in `main.py` records `eureka_http_requests_total` (method +
+path-prefix + status) and `eureka_http_request_duration_seconds` histogram
+(Prometheus default buckets). Plus `eureka_jobs_executed_total`,
+`eureka_jobs_queue_depth`, `eureka_cache_hits_total`, `eureka_cache_misses_total`.
+Scraped at `GET /api/v1/metrics`.
+
+## Session 14.4 — Autocomplete (search-as-you-type) ✅
+pg_trgm GIN indexes on `skills(name, code)`, `courses(title)`,
+`course_listings(headline, slug)`, `instructor_profiles(display_name)`,
+`kb_articles(title)`. `GET /search/suggest?q=&kinds=&limit_per_kind=` uses a
+combined `ILIKE %q%` + `similarity()` ranking so misspellings and short
+prefixes both surface. Returns a flat list with `kind`, `id`, `label`,
+`sub_label`, `href`, and `score`.
+
+## Session 14.5 — Health + readiness probes ✅
+`GET /healthz` is the cheap liveness check (always 200 if the process can
+respond). `GET /readyz` checks db (`SELECT 1`), cache backend, and queue
+depth — returns 503 with structured `checks` if any dependency is degraded
+or `dead` job count exceeds 100. Mirrors Kubernetes liveness/readiness
+semantics so the deployment manifest can target them directly.
 
 ---
 

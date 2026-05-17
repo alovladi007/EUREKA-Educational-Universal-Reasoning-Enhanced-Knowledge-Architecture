@@ -79,6 +79,10 @@ from app.models.institutional import (
     CohortRole,
     SsoProtocol,
 )
+from app.models.ops import (
+    BackgroundJob,
+    JobStatus,
+)
 from app.models.integrations import (
     ApiKey,
     ApiKeyUsageLog,
@@ -317,4 +321,6 @@ __all__ = [
     "ComplianceExportStatus",
     "ComplianceDeleteStatus",
     "AuditSeverity",
+    "BackgroundJob",
+    "JobStatus",
 ]
