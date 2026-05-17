@@ -428,6 +428,56 @@ serves the public catalog of upcoming sessions.
 
 ---
 
+# Phase 13 — Platform integrations + extensibility  ✅ done (sessions 13.1–13.5)
+
+## Session 13.1 — API keys ✅
+`api_keys` (key_id + hashed secret, scopes[], per-key rate limit,
+expires_at, status) + `api_key_usage_log`. Mint endpoint returns the secret
+half exactly once in the form `<key_id>.<secret>`. Either user-owned or
+org-owned (admin only). `verify_api_key()` parses presented token, looks up
+by key_id, argon2-verifies secret, auto-expires if past `expires_at`,
+stamps `last_used_at`. Revocation flips status to `revoked`.
+
+## Session 13.2 — Webhook system ✅
+`webhook_endpoints` (subscribed_events[] with `*` wildcard, HMAC-SHA256
+signing_secret returned once at create) + `webhook_deliveries` with
+exponential retry schedule `[1m, 5m, 30m, 2h, 12h]` then `abandoned`.
+`enqueue_webhook(event, payload)` fans out one delivery per matching
+endpoint, signing with `HMAC-SHA256(secret, canonical_json(payload))`.
+`mark_delivery_outcome()` records success/failure, schedules next retry,
+updates endpoint's `consecutive_failures` counter for circuit-breaker logic.
+
+## Session 13.3 — Embed SDK (signed embed tokens) ✅
+`embed_tokens` for iframe widgets. Mint endpoint returns a signed JWT
+once, persists only `sha256(token)` + the params + allowed_origins for
+revocation. Public `POST /embed/verify?token=` decodes + verifies the
+JWT, returning claims (widget_kind, params, allowed_origins, sub, org, exp).
+Invalid/expired tokens return 401.
+
+## Session 13.4 — OAuth 2.0 third-party app registry ✅
+`oauth_apps` (developer-registered apps with hashed_client_secret,
+redirect_uris[], allowed_scopes[], status pending→approved→suspended,
+grant_count) + `oauth_grants` (user grants of access to apps with
+granted_scopes + hashed refresh_token + revoked_at). Admin
+`POST /admin/oauth-apps/{id}/review {action: approve|suspend}` gates
+public exposure. Only approved apps are visible at
+`GET /oauth-apps/{client_id}/public`.
+
+## Session 13.5 — Compliance: audit + GDPR/FERPA export + deletion ✅
+`audit_events` records every security-relevant action (`api_key.create`,
+`api_key.revoke`, `compliance.export.request`, `compliance.delete.request`,
+`compliance.delete.cancel`) with actor + subject + org + IP + UA +
+severity (info/warn/critical). `compliance_exports` builds a per-user
+JSON dump across 11 sections (profile, attempts, engagement, achievements,
+study_plans, mock_attempts, tickets, invoices, purchases, reviews,
+notifications) using parameterised SQL — each section runs in isolation
+so a failure in one doesn't poison the rest. `compliance_deletions` is a
+delayed-execution scheduler: `POST /me/compliance/delete` schedules
+deletion 30 days out (configurable), `POST /me/compliance/delete/{id}/cancel`
+reverses it, only one pending deletion per user.
+
+---
+
 # Concrete agent prompts (one per session)
 
 Each prompt below is **self-contained** — you can paste it into a fresh agent and it will have what it needs.
