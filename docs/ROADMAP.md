@@ -378,6 +378,56 @@ view_count, `POST /kb/{slug}/feedback`.
 
 ---
 
+# Phase 12 — Engagement + adaptive learning  ✅ done (sessions 12.1–12.5)
+
+## Session 12.1 — Streaks + XP + achievements ✅
+`engagement_states` (per-user current_streak_days / longest / xp / level) +
+`xp_events` audit log + `achievements` catalog + `user_achievements`.
+`services/engagement.record_activity(source)` is the single entry point:
+updates daily streak (continue if last_active = yesterday, reset if older,
+no-op if today), awards XP per `XP_RULES`, adds first-of-day streak bonus,
+evaluates achievement triggers (`streak_at_least`, `xp_at_least`, `level_at_least`,
+`source_count`) and returns `{xp_awarded, new_total_xp, new_level, leveled_up,
+streak_days, streak_started_or_continued, streak_broken, new_achievements[]}`.
+Public `/leaderboard?period_days=N&limit=` for global or trailing-window XP.
+
+## Session 12.2 — Push notifications ✅
+`notification_devices` + `push_notifications`. `services/push_notify.enqueue()`
+fans out one row per active device, respecting per-kind opt-out in
+`device.preferences`. Delivery wires up to APNs / FCM / WebPush when the
+relevant env keys are set; otherwise rows stay `queued` (dev / CI mode).
+12 notification kinds covering streaks, study-plan, mastery, live sessions,
+support replies. `/me/devices` register / list / revoke; `/me/notifications`
+history; `/me/notifications/{id}/mark-opened` to track open rate.
+
+## Session 12.3 — Adaptive study plan ✅
+`study_plans` + `study_plan_weeks`. Generator
+(`services/study_plan.generate`) scores each framework skill by
+`mastery_gap × (0.5 + prereq_readiness)` (uses Phase 4.2 graph), spreads
+them round-robin across the weeks between today and `target_date`, marks
+week 0 as diagnostic, every 4th and the final as mock, the penultimate
+as review. Each week gets pre-picked `recommended_item_ids[]` from the
+Phase 5 item bank tagged to that week's skills. Regenerating a plan
+archives any prior `active` plan for the same (user, framework).
+
+## Session 12.4 — Offline sync ✅
+`offline_bundles` (etag = sha256 of canonical JSON payload) +
+`offline_sync_receipts` (replay log when device comes back online).
+`GET /me/offline-pack` returns 200 + ETag header on a new pack, 304 when
+`If-None-Match` matches the current pack. `POST /me/offline-pack/replay`
+accepts a batch of attempts the device captured offline. Pack content
+is the learner's weakest-skill items first, falling back to most-recent.
+
+## Session 12.5 — Live tutoring marketplace ✅
+`live_sessions` (instructor-led video sessions, capacity + booked_count +
+target_skill_codes) + `live_session_bookings` (status, seat_number,
+cancel_reason). Free sessions auto-confirm; paid ones stay `pending`
+until tied to a marketplace purchase. Instructor `POST /live-sessions/{id}/cancel`
+cancels every open booking with a single rationale. `GET /live-sessions?skill_code=&limit=`
+serves the public catalog of upcoming sessions.
+
+---
+
 # Concrete agent prompts (one per session)
 
 Each prompt below is **self-contained** — you can paste it into a fresh agent and it will have what it needs.
