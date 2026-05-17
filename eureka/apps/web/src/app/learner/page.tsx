@@ -19,6 +19,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { EurekaNav } from '@/components/eureka-nav';
+import { EngagementBanner } from '@/components/engagement-banner';
 
 const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
@@ -146,13 +148,17 @@ export default function LearnerDashboardPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <header>
-        <h1 className="text-3xl font-bold">Your learner spine</h1>
-        <p className="text-muted-foreground mt-1">
-          One identity, every tier — Phase 4 in action.
-        </p>
-      </header>
+    <>
+      <EurekaNav />
+      <div className="container mx-auto p-6 space-y-6">
+        <header>
+          <h1 className="text-3xl font-bold">Your learner spine</h1>
+          <p className="text-muted-foreground mt-1">
+            One identity, every tier — Phase 4 in action.
+          </p>
+        </header>
+
+        <EngagementBanner />
 
       {/* Profile */}
       <Card>
@@ -345,5 +351,6 @@ export default function LearnerDashboardPage() {
         </Button>
       </div>
     </div>
+    </>
   );
 }
