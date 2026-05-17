@@ -333,13 +333,48 @@ audit.
 
 ---
 
-# Phase 11 — Go-to-market readiness
+# Phase 11 — Go-to-market readiness  ✅ done (sessions 11.1–11.5)
 
-## Session 11.1 — Stripe + billing maturity (subs, refunds, tax, dunning, proration)
-## Session 11.2 — Landing pages + SEO (programmatic per skill)
-## Session 11.3 — Email lifecycle (welcome, mastery, win-back) via Resend/Customer.io
-## Session 11.4 — Onboarding wizard + first-15-minute experience
-## Session 11.5 — Customer support (in-app help, knowledge base, ticketing)
+## Session 11.1 — Billing maturity ✅
+`subscription_plans`, `subscriptions`, `payment_methods`, `invoices`,
+`refunds`, `dunning_attempts`, `tax_rates` in `13_gtm.sql`. `services/billing.py`
+covers proration math (credit + new charge + net), tax lookup with region
+precedence, and an exponential dunning schedule (1d → 3d → 7d → 14d → abandon).
+Endpoints: `/plans`, `/me/subscription` lifecycle, `/me/subscription/change`
+returns a `ProrationResponse`, `/admin/tax-rates`, `/tax-quote`,
+`/me/refunds` + `/admin/refunds/{id}/approve`, `/admin/invoices/{id}/dunning`.
+
+## Session 11.2 — Programmatic SEO ✅
+`skill_landing_pages` with one row per (skill_code, framework, locale).
+`services/seo_landing.generate_or_refresh(skill)` writes H1, meta title/desc,
+FAQ array, schema.org Course + FAQPage JSON-LD, body_md, related published
+listings. Admin draft → publish via `POST /admin/seo/skill-pages/generate`;
+public `GET /seo/skill-pages/{slug}`.
+
+## Session 11.3 — Email lifecycle ✅
+`email_templates` + `email_campaigns` + `email_sends` + `email_unsubscribes`.
+`services/email_lifecycle.dispatch(event, user_id, payload)` looks up active
+campaigns, renders `{{ user.first_name }}` mustache merges, respects
+`all`/`marketing`/per-campaign unsubscribes, queues a send, and (when
+`RESEND_API_KEY` is set) delivers via Resend; otherwise stays in `queued`
+state for the dev/test harness.
+
+## Session 11.4 — Onboarding wizard + first-15-min experience ✅
+`onboarding_states` (one row per user, current_step, step_history, the four
+key timestamps: started/first_recommendation/first_attempt/first_session) +
+`onboarding_events` (audit trail). Linear state machine: created → tier_selected
+→ goal_set → placement_taken → first_recommendation_shown →
+first_question_attempted → first_session_complete → fully_onboarded.
+`/me/onboarding`, `/goal`, `/advance`, and admin funnel
+`/admin/onboarding/funnel` (avg time-to-first-value).
+
+## Session 11.5 — Customer support + knowledge base ✅
+`support_tickets` + `support_messages` (with `is_internal_note` flag) +
+`kb_articles` with a Postgres tsvector + trigger keeping it refreshed on
+title/summary/body change. Tickets: create / list / thread (internal notes
+hidden from end-users) / reply (auto-flips status awaiting_user ↔ awaiting_team) /
+admin patch. KB: `GET /kb?q=` full-text search, `GET /kb/{slug}` increments
+view_count, `POST /kb/{slug}/feedback`.
 
 ---
 
