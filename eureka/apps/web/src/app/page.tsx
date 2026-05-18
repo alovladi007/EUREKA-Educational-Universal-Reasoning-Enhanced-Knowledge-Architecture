@@ -137,8 +137,40 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100">
+      {/* Phase 9-14 quick-access strip — links to the new platform surfaces */}
+      <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-900 text-white text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-between">
+          <div className="flex items-center gap-1 overflow-x-auto whitespace-nowrap">
+            <span className="hidden sm:inline text-slate-400 mr-2">Platform:</span>
+            <Link href="/learner" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
+              Learner
+            </Link>
+            <Link href="/marketplace" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
+              Marketplace
+            </Link>
+            <Link href="/training" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
+              My training
+            </Link>
+            <Link href="/transcript" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
+              Transcript
+            </Link>
+            <Link href="/settings" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
+              Settings
+            </Link>
+            <Link href="/admin" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
+              Admin
+            </Link>
+          </div>
+          <Link
+            href="/auth/login"
+            className="px-2 py-1 rounded bg-amber-600 hover:bg-amber-500 transition-colors font-medium"
+          >
+            Sign in
+          </Link>
+        </div>
+      </div>
       {/* Sticky Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+      <nav className={`fixed top-8 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled ? 'bg-white shadow-xl backdrop-blur-lg' : 'bg-white/95 backdrop-blur-md shadow-md'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -237,7 +269,7 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-28 sm:pt-32 pb-12">
+      <main className="pt-36 sm:pt-40 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Content - Using Flexbox for centering */}
           <div className="text-center mb-16 space-y-6 animate-fade-in-up">

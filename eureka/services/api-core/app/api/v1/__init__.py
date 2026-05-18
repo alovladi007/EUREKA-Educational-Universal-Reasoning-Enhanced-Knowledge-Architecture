@@ -6,7 +6,7 @@ Aggregates all v1 API endpoints.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications
 
 api_router = APIRouter()
 
@@ -26,6 +26,7 @@ api_router.include_router(gtm.router, tags=["gtm"])
 api_router.include_router(engagement.router, tags=["engagement"])
 api_router.include_router(integrations.router, tags=["integrations"])
 api_router.include_router(ops.router, tags=["ops"])
+api_router.include_router(workforce.router, tags=["workforce"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(organizations.router, prefix="/organizations", tags=["organizations"])
 api_router.include_router(courses.router, prefix="/courses", tags=["courses"])

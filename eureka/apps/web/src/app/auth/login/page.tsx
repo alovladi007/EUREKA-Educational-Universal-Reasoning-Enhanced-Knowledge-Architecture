@@ -24,10 +24,47 @@ export default function LoginPage() {
 
     setLoading(true);
     try {
-      // Simulate login API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Real auth against api-core (Phase 3.3 + 13.5)
+      const apiUrl =
+        process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      const apiPrefix =
+        process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1';
+      const res = await fetch(`${apiUrl}${apiPrefix}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.username,
+          password: formData.password,
+        }),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const detail =
+          typeof body.detail === 'string'
+            ? body.detail
+            : Array.isArray(body.detail)
+              ? body.detail.map((d: { msg?: string }) => d.msg).join(', ')
+              : `HTTP ${res.status}`;
+        toast.error(`Login failed: ${detail}`);
+        return;
+      }
+      if (!body.access_token) {
+        toast.error('Login response missing token');
+        return;
+      }
+      // The new Phase 9-14 pages read this key (lib/eureka-api.ts).
+      window.localStorage.setItem('access_token', body.access_token);
+      if (body.refresh_token) {
+        window.localStorage.setItem('refresh_token', body.refresh_token);
+      }
       toast.success('Login successful!');
-      router.push('/dashboard/test-prep');
+      // Send admins to the admin console, learners to the learner hub.
+      const role = body.user?.role || body.role;
+      if (role === 'org_admin' || role === 'super_admin') {
+        router.push('/admin');
+      } else {
+        router.push('/learner');
+      }
     } catch (error) {
       console.error('Login failed:', error);
       toast.error('Login failed. Please try again.');
@@ -54,17 +91,18 @@ export default function LoginPage() {
           <div className="space-y-4">
             <div>
               <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
-                Username or Email
+                Email
               </label>
               <input
                 id="username"
                 name="username"
-                type="text"
+                type="email"
+                autoComplete="email"
                 required
                 value={formData.username}
                 onChange={(e) => setFormData({...formData, username: e.target.value})}
                 className="appearance-none relative block w-full px-4 py-3 border border-gray-300 rounded-lg placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                placeholder="Enter your username or email"
+                placeholder="you@example.com"
               />
             </div>
 

@@ -523,7 +523,49 @@ semantics so the deployment manifest can target them directly.
 
 ---
 
-# Concrete agent prompts (one per session)
+# Phase 15 — Workforce training affiliate platform  ✅ done (sessions 15.1–15.5)
+
+## Session 15.1 — Institution partnerships + seat licensing ✅
+`institution_partnerships` (1:1 with `organizations`, with contracted_seats,
+seat_renewal_at, billing_anchor_subscription_id, status) + `seat_assignments`
+(partial-unique on `(partnership, user) WHERE released_at IS NULL`). Bulk
+seat assignment via CSV-shaped JSON; JIT-creates users when emails are new
+to the org; rejects rows past `contracted_seats` (returns `over_capacity` count).
+Endpoints: POST/GET `/partnerships`, `/partnerships/{id}/action` (activate/
+pause/expire), `/partnerships/{id}/seat-utilisation` (with by_team + by_role
+breakdowns), `/partnerships/{id}/seats/bulk-assign`, `/partnerships/{id}/
+seats/{user_id}/release`.
+
+## Session 15.2 — Workforce programs (role-based curricula) ✅
+`workforce_programs` (slug, target_role, target_skill_codes[], duration_weeks,
+target_mastery, is_mandatory, optional cohort link) + `program_assignments`
+(unique `(program, user)`) + `program_milestones` (week_index × skill_code →
+target_mastery). Bulk-assign endpoint auto-spawns a Phase 12.3 study plan
+per worker scoped to the program's skills + due date. Admin manual-complete
+endpoint cascades to compliance_due_dates that point at the program.
+
+## Session 15.3 — Compliance + required training cadence ✅
+`compliance_requirements` (regulation enum: HIPAA, OSHA, SOC2, GDPR, PCI-DSS,
+ISO_27001, SOX, FERPA, sector_specific, internal) + `compliance_due_dates`
+(unique per `(requirement, user)`) + `training_attestations` (immutable
+audit row with IP + UA + statement + evidence_hash). `evaluate_compliance(user)`
+recomputes status as compliant / due_soon / overdue / expired (overdue → expired
+after 90 days). Attestation flow records the attestation row and pushes the
+due_date forward by `recurrence_months`.
+
+## Session 15.4 — L&D admin workforce analytics ✅
+`/partnerships/{id}/analytics` aggregates active_seats, contracted_seats,
+programs_active, assignments_total/overdue, compliance_overdue/due_soon,
+plus per-team and per-role funnels (seats × in_progress × completed × overdue).
+No new tables — pure SQL aggregation over Phase 15.1–15.3 + Phase 9
+(`cohorts`) data.
+
+## Session 15.5 — Worker portal + manager handoff ✅
+`GET /me/training` returns the worker's assigned programs (with due dates +
+progress + linked study_plan_id) and compliance items (with due_at + status).
+`GET /me/training/team` is the manager view — assignments for direct reports
+(seats where `manager_user_id = me`). Worker can self-attest via
+`POST /me/compliance/{id}/attest` when status is due_soon/overdue/expired.
 
 Each prompt below is **self-contained** — you can paste it into a fresh agent and it will have what it needs.
 

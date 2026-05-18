@@ -7,6 +7,7 @@ import { EurekaNav } from "@/components/eureka-nav";
 const TABS = [
   { href: "/admin", label: "Overview" },
   { href: "/admin/cohorts", label: "Cohorts" },
+  { href: "/admin/workforce", label: "Workforce" },
   { href: "/admin/jobs", label: "Background jobs" },
   { href: "/admin/audit", label: "Audit log" },
 ];
