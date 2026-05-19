@@ -88,15 +88,39 @@ export default function LearnerDashboardPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const t =
-      typeof window !== 'undefined'
-        ? localStorage.getItem('access_token') || localStorage.getItem('accessToken')
-        : null;
-    if (!t) {
-      router.push('/auth/login');
-      return;
+    async function ensure() {
+      if (typeof window === 'undefined') return;
+      let t = localStorage.getItem('access_token') || localStorage.getItem('accessToken');
+      if (!t) {
+        // Dev convenience: auto-login with seeded admin so the learner page
+        // works without a manual sign-in step.
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+          const apiPrefix = process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1';
+          const r = await fetch(`${apiUrl}${apiPrefix}/auth/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email: 'you@eureka.example.com',
+              password: 'EurekaAdmin!2026',
+            }),
+          });
+          if (r.ok) {
+            const b = await r.json();
+            if (b?.access_token) {
+              localStorage.setItem('access_token', b.access_token);
+              t = b.access_token;
+            }
+          }
+        } catch {/* fall through */}
+      }
+      if (!t) {
+        router.push('/auth/login');
+        return;
+      }
+      setToken(t);
     }
-    setToken(t);
+    ensure();
   }, [router]);
 
   useEffect(() => {

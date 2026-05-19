@@ -11,10 +11,12 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const SECTIONS = [
+  { href: "/", label: "Home" },
   { href: "/learner", label: "Learner" },
   { href: "/marketplace", label: "Marketplace" },
   { href: "/training", label: "My training" },
   { href: "/transcript", label: "Transcript" },
+  { href: "/institutions", label: "Institutions" },
   { href: "/settings", label: "Settings" },
   { href: "/admin", label: "Admin" },
 ];

@@ -137,40 +137,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100">
-      {/* Phase 9-14 quick-access strip — links to the new platform surfaces */}
-      <div className="fixed top-0 left-0 right-0 z-[60] bg-slate-900 text-white text-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-8 flex items-center justify-between">
-          <div className="flex items-center gap-1 overflow-x-auto whitespace-nowrap">
-            <span className="hidden sm:inline text-slate-400 mr-2">Platform:</span>
-            <Link href="/learner" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
-              Learner
-            </Link>
-            <Link href="/marketplace" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
-              Marketplace
-            </Link>
-            <Link href="/training" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
-              My training
-            </Link>
-            <Link href="/transcript" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
-              Transcript
-            </Link>
-            <Link href="/settings" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
-              Settings
-            </Link>
-            <Link href="/admin" className="px-2 py-1 rounded hover:bg-slate-800 transition-colors">
-              Admin
-            </Link>
-          </div>
-          <Link
-            href="/auth/login"
-            className="px-2 py-1 rounded bg-amber-600 hover:bg-amber-500 transition-colors font-medium"
-          >
-            Sign in
-          </Link>
-        </div>
-      </div>
       {/* Sticky Navigation */}
-      <nav className={`fixed top-8 left-0 right-0 z-50 transition-all duration-500 ${
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
         isScrolled ? 'bg-white shadow-xl backdrop-blur-lg' : 'bg-white/95 backdrop-blur-md shadow-md'
       }`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -269,7 +237,7 @@ export default function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-36 sm:pt-40 pb-12">
+      <main className="pt-28 sm:pt-32 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Hero Content - Using Flexbox for centering */}
           <div className="text-center mb-16 space-y-6 animate-fade-in-up">
@@ -476,40 +444,47 @@ export default function HomePage() {
                 </CardContent>
               </Card>
 
-              <Card variant="elevated" className="hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <CardHeader className="relative z-10">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-                      <i className="fas fa-building-columns text-white text-2xl"></i>
+              <Link href="/institutions" className="block">
+                <Card variant="elevated" className="hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden h-full">
+                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+                  <CardHeader className="relative z-10">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
+                        <i className="fas fa-building-columns text-white text-2xl"></i>
+                      </div>
+                      <CardTitle className="text-2xl">For Institutions</CardTitle>
                     </div>
-                    <CardTitle className="text-2xl">For Institutions</CardTitle>
-                  </div>
-                  <CardDescription className="text-base">
-                    Enterprise-grade platform for all tiers
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="relative z-10">
-                  <ul className="space-y-3 text-sm text-gray-700">
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                      <span>FERPA/COPPA compliant</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                      <span>Multi-tenant architecture</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                      <span>LTI 1.3 integration</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                      <span>Custom tier features</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
+                    <CardDescription className="text-base">
+                      Enterprise-grade platform for all tiers
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="relative z-10">
+                    <ul className="space-y-3 text-sm text-gray-700">
+                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
+                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
+                        <span>FERPA/COPPA compliant</span>
+                      </li>
+                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
+                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
+                        <span>Multi-tenant architecture</span>
+                      </li>
+                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
+                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
+                        <span>LTI 1.3 integration</span>
+                      </li>
+                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
+                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
+                        <span>Custom tier features</span>
+                      </li>
+                    </ul>
+                    <div className="mt-4 pt-4 border-t border-purple-200">
+                      <span className="inline-flex items-center gap-1 text-sm font-semibold text-purple-700 group-hover:gap-2 transition-all">
+                        Open institutions dashboard →
+                      </span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
             </div>
           </div>
         </div>

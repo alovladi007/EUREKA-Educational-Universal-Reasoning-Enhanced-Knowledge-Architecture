@@ -11,7 +11,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { EurekaNav } from "@/components/eureka-nav";
 import { EngagementBanner } from "@/components/engagement-banner";
@@ -175,7 +174,14 @@ export default function MyTrainingPage() {
                           <span>Progress</span>
                           <span>{Number(assignment.progress_pct).toFixed(0)}%</span>
                         </div>
-                        <Progress value={Number(assignment.progress_pct)} />
+                        <div className="h-2 bg-slate-200 rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-amber-600 transition-all"
+                            style={{
+                              width: `${Math.max(0, Math.min(100, Number(assignment.progress_pct)))}%`,
+                            }}
+                          />
+                        </div>
                       </div>
                       <div className="flex items-center gap-3 text-xs text-slate-500">
                         <span>Assigned {formatDate(assignment.assigned_at)}</span>

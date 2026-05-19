@@ -20,19 +20,23 @@ import {
   School,
   Shield,
   Lightbulb,
-  ShoppingCart,
   Sparkles,
   Glasses,
   Lock,
   Database,
-  Building2,
   Rocket,
   FolderKanban,
   Trophy,
   BookCheck,
   FileEdit,
+  Home,
 } from "lucide-react";
 
+// /dashboard sidebar = ORIGINAL learner-oriented surface only.
+// Institutions, Marketplace, My training, Settings (subscription), and the new
+// Admin console all live under their own routes (/institutions, /marketplace,
+// /training, /settings, /admin) with their own shells — accessible from the
+// home page (/), NOT cross-linked here.
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "High School", href: "/dashboard/high-school", icon: School },
@@ -53,10 +57,8 @@ const navigation = [
   { name: "Resume Builder", href: "/dashboard/resume-builder", icon: FileEdit },
   { name: "Resources", href: "/dashboard/resources", icon: FileText },
   { name: "Community", href: "/dashboard/community", icon: Users },
-  { name: "Marketplace", href: "/dashboard/marketplace", icon: ShoppingCart },
   { name: "Ethics & Security", href: "/dashboard/ethics-security", icon: Lock },
   { name: "Data Fabric", href: "/dashboard/data-fabric", icon: Database },
-  { name: "Institutions", href: "/dashboard/institutions", icon: Building2 },
   { name: "Futures", href: "/dashboard/futures", icon: Rocket },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
   { name: "Admin", href: "/dashboard/admin", icon: Shield },
@@ -75,27 +77,34 @@ export function Sidebar() {
       </div>
       <div className="flex-1 overflow-y-scroll min-h-0">
         <nav className="p-4 space-y-1">
-        {navigation.map((item) => {
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
-                isActive
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
-              )}
-            >
-              <item.icon className="h-5 w-5" />
-              {item.name}
-            </Link>
-          );
-        })}
+          {navigation.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                  isActive
+                    ? "bg-primary text-primary-foreground"
+                    : "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                )}
+              >
+                <item.icon className="h-5 w-5" />
+                {item.name}
+              </Link>
+            );
+          })}
         </nav>
       </div>
-      <div className="shrink-0 border-t p-4">
+      <div className="shrink-0 border-t p-4 space-y-2">
+        <Link
+          href="/"
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-muted-foreground hover:bg-accent hover:text-accent-foreground transition-colors"
+        >
+          <Home className="h-3.5 w-3.5" />
+          Back to home
+        </Link>
         <Link
           href="/dashboard/profile"
           className="flex items-center gap-3 rounded-lg p-2 -m-2 hover:bg-accent transition-colors"

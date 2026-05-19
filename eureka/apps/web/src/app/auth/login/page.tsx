@@ -1,13 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 
 export default function LoginPage() {
+  // Wrap the body so useSearchParams() is inside a Suspense boundary
+  // (required by Next 14 static prerender — see /docs/messages/missing-suspense-with-csr-bailout).
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading…</div>}>
+      <LoginPageBody />
+    </Suspense>
+  );
+}
+
+function LoginPageBody() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const next = searchParams?.get('next') || null;
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: '',
@@ -58,7 +70,12 @@ export default function LoginPage() {
         window.localStorage.setItem('refresh_token', body.refresh_token);
       }
       toast.success('Login successful!');
-      // Send admins to the admin console, learners to the learner hub.
+      // Respect ?next= if provided (the api wrapper redirects here on 401),
+      // otherwise send admins to /admin, learners to /learner.
+      if (next && next.startsWith('/')) {
+        router.push(next);
+        return;
+      }
       const role = body.user?.role || body.role;
       if (role === 'org_admin' || role === 'super_admin') {
         router.push('/admin');

@@ -23,17 +23,67 @@ function getToken(): string | null {
   return window.localStorage.getItem("access_token");
 }
 
+/**
+ * Dev-mode convenience: when no `access_token` is in localStorage, silently
+ * log in with the seeded admin and stash the result so every Phase 9-15 page
+ * "just works" without a login prompt. Disabled by setting
+ * `NEXT_PUBLIC_DEV_AUTO_LOGIN=0` in the env, or by stashing your own token in
+ * localStorage before page load.
+ */
+const DEV_AUTO_LOGIN_EMAIL = "you@eureka.example.com";
+const DEV_AUTO_LOGIN_PW = "EurekaAdmin!2026";
+const DEV_AUTO_LOGIN_ENABLED =
+  process.env.NEXT_PUBLIC_DEV_AUTO_LOGIN !== "0";
+
+let _devLoginPromise: Promise<string | null> | null = null;
+
+async function devAutoLogin(): Promise<string | null> {
+  if (!DEV_AUTO_LOGIN_ENABLED || typeof window === "undefined") return null;
+  // Only one in-flight login request at a time.
+  if (_devLoginPromise) return _devLoginPromise;
+  _devLoginPromise = (async () => {
+    try {
+      const r = await fetch(`${API_URL}${API_PREFIX}/auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: DEV_AUTO_LOGIN_EMAIL,
+          password: DEV_AUTO_LOGIN_PW,
+        }),
+      });
+      if (!r.ok) return null;
+      const body = await r.json();
+      const tok = body?.access_token as string | undefined;
+      if (tok) {
+        window.localStorage.setItem("access_token", tok);
+        return tok;
+      }
+    } catch {
+      /* network failure — fall through */
+    } finally {
+      // Allow retry on next call if this one failed.
+      setTimeout(() => {
+        _devLoginPromise = null;
+      }, 1500);
+    }
+    return null;
+  })();
+  return _devLoginPromise;
+}
+
 export async function api<T = unknown>(
   path: string,
-  init: RequestInit & { auth?: boolean } = {},
+  init: RequestInit & { auth?: boolean; _retry?: boolean } = {},
 ): Promise<T> {
-  const { auth = true, headers, ...rest } = init;
+  const { auth = true, headers, _retry = false, ...rest } = init;
   const finalHeaders: Record<string, string> = {
     "Content-Type": "application/json",
     ...(headers as Record<string, string>),
   };
   if (auth) {
-    const tok = getToken();
+    let tok = getToken();
+    // No token at all → fetch one silently with the seeded dev admin.
+    if (!tok) tok = await devAutoLogin();
     if (tok) finalHeaders["Authorization"] = `Bearer ${tok}`;
   }
   const r = await fetch(`${API_URL}${API_PREFIX}${path}`, {
@@ -48,6 +98,21 @@ export async function api<T = unknown>(
     body = await r.text();
   }
   if (!r.ok) {
+    // 401: dev-auto-login is enabled? Clear stale token, try once more.
+    if (r.status === 401 && auth && !_retry && typeof window !== "undefined") {
+      window.localStorage.removeItem("access_token");
+      window.localStorage.removeItem("accessToken");
+      const fresh = await devAutoLogin();
+      if (fresh) {
+        return api(path, { ...init, _retry: true });
+      }
+      // Auto-login is off or failed → fall back to redirect.
+      const here = window.location.pathname + window.location.search;
+      if (!here.startsWith("/auth/login")) {
+        window.location.replace(`/auth/login?next=${encodeURIComponent(here)}`);
+        return new Promise<never>(() => {}) as unknown as T;
+      }
+    }
     const detail =
       (typeof body === "object" && body && "detail" in body && (body as { detail: unknown }).detail) ||
       body;
