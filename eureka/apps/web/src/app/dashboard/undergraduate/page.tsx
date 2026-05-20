@@ -1,272 +1,266 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
-  BookOpen,
-  GraduationCap,
-  Briefcase,
-  TrendingUp,
-  Award,
-  Users,
-  CheckCircle,
-  Activity,
-  Target,
-} from 'lucide-react';
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { api } from "@/lib/eureka-api";
+import { GraduationCap } from "lucide-react";
 
-const TIER_UG_API = process.env.NEXT_PUBLIC_TIER_UG_URL || 'http://localhost:8011';
+type LearnerProfile = {
+  user_id: string;
+  primary_tier: string | null;
+  goals: string[];
+  knowledge_state: Record<string, number>;
+};
+type TierEnrollment = {
+  id: string;
+  user_id: string;
+  tier: string;
+  framework: string | null;
+  target_date: string | null;
+  status: string;
+  created_at: string;
+};
+type Recommendation = {
+  id?: string;
+  title?: string;
+  reason?: string;
+  skill_code?: string;
+  framework?: string;
+  score?: number;
+} & Record<string, unknown>;
+type SkillMastery = {
+  skill_code: string;
+  mastery: number;
+  attempts: number;
+  correct_rate?: number;
+  p50_time_ms?: number;
+};
 
-export default function UndergraduatePage() {
-  const [loading, setLoading] = useState(true);
-  const [courses, setCourses] = useState<any[]>([]);
-  const [statistics, setStatistics] = useState<any>(null);
+const TIER = "undergraduate";
+const TITLE = "Undergraduate";
+const SUBHEAD =
+  "Real-time view of your undergraduate tier — courses, recommendations, and skill mastery, all driven by the live API.";
+const FRAMEWORKS = ["ABET"];
+
+export default function Page() {
+  const [, setProfile] = useState<LearnerProfile | null>(null);
+  const [enrollments, setEnrollments] = useState<TierEnrollment[]>([]);
+  const [recs, setRecs] = useState<Recommendation[]>([]);
+  const [skills, setSkills] = useState<SkillMastery[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    loadUndergraduateData();
+    (async () => {
+      try {
+        const [p, es, rs, ms] = await Promise.all([
+          api<LearnerProfile>("/learner-profile/me").catch(() => null),
+          api<TierEnrollment[]>("/tier-enrollments/me").catch(() => []),
+          api<Recommendation[]>("/recommendations/me").catch(() => []),
+          api<SkillMastery[]>("/analytics/me/skills").catch(() => []),
+        ]);
+        setProfile(p);
+        setEnrollments((es ?? []).filter((e) => e.tier === TIER));
+        setRecs(rs ?? []);
+        setSkills(ms ?? []);
+      } catch (e) {
+        setError(String((e as Error).message));
+      }
+    })();
   }, []);
 
-  const loadUndergraduateData = async () => {
-    try {
-      setLoading(true);
-
-      // Fetch from undergraduate tier service
-      const response = await fetch(`${TIER_UG_API}/api/v1/courses`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setCourses(data.courses || []);
-        setStatistics(data.statistics || {
-          total_courses: 0,
-          completed_courses: 0,
-          current_gpa: 0,
-          credits_earned: 0
-        });
-      } else {
-        throw new Error('Failed to fetch undergraduate data');
-      }
-    } catch (error) {
-      console.error('Error loading undergraduate data:', error);
-      setCourses([]);
-      setStatistics({
-        total_courses: 32,
-        completed_courses: 24,
-        current_gpa: 3.65,
-        credits_earned: 96
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const topSkills = [...skills].sort((a, b) => b.mastery - a.mastery).slice(0, 5);
+  const bottomSkills = [...skills].sort((a, b) => a.mastery - b.mastery).slice(0, 5);
 
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold mb-2">Undergraduate Education</h1>
-        <p className="text-muted-foreground">
-          Bachelor's degree programs, major coursework, and career preparation
-        </p>
-      </div>
-
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Total Courses</p>
-              <p className="text-2xl font-bold">{statistics?.total_courses || 0}</p>
-            </div>
-            <BookOpen className="w-8 h-8 text-blue-500" />
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Completed</p>
-              <p className="text-2xl font-bold">{statistics?.completed_courses || 0}</p>
-            </div>
-            <CheckCircle className="w-8 h-8 text-green-500" />
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Current GPA</p>
-              <p className="text-2xl font-bold">{statistics?.current_gpa?.toFixed(2) || '0.00'}</p>
-            </div>
-            <TrendingUp className="w-8 h-8 text-emerald-500" />
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Credits Earned</p>
-              <p className="text-2xl font-bold">{statistics?.credits_earned || 0}</p>
-            </div>
-            <Award className="w-8 h-8 text-orange-500" />
-          </div>
-        </Card>
-      </div>
-
-      {/* Current Courses Section */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <BookOpen className="w-6 h-6" />
-            Current Semester Courses
-          </h2>
-          <Button>
-            <BookOpen className="w-4 h-4 mr-2" />
-            Register for Courses
-          </Button>
+    <div className="container mx-auto max-w-5xl space-y-6 p-6">
+      <header className="flex items-center gap-3">
+        <GraduationCap className="h-7 w-7 text-primary" />
+        <div>
+          <h1 className="text-2xl font-bold">{TITLE}</h1>
+          <p className="text-sm text-muted-foreground">{SUBHEAD}</p>
         </div>
+      </header>
 
-        {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading courses...</p>
-          </div>
-        ) : courses.length === 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { name: 'Data Structures & Algorithms', code: 'CS 201', credits: 4, grade: 'A' },
-              { name: 'Advanced Calculus', code: 'MATH 301', credits: 3, grade: 'A-' },
-              { name: 'Modern American Literature', code: 'ENG 250', credits: 3, grade: 'B+' },
-              { name: 'Organic Chemistry I', code: 'CHEM 341', credits: 4, grade: 'B' },
-              { name: 'Microeconomics', code: 'ECON 201', credits: 3, grade: 'A' },
-              { name: 'World History', code: 'HIST 102', credits: 3, grade: 'A-' },
-            ].map((course, index) => (
-              <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold">{course.name}</h3>
-                      <div className="flex gap-2 mt-1">
-                        <span className="text-sm text-muted-foreground">{course.code}</span>
-                        <span className="text-sm text-muted-foreground">•</span>
-                        <span className="text-sm text-muted-foreground">{course.credits} credits</span>
-                      </div>
-                    </div>
-                    <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-700">
-                      {course.grade}
-                    </span>
-                  </div>
-                  <Button variant="outline" className="w-full">View Course</Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {courses.map((course) => (
-              <Card key={course.id} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold">{course.name}</h3>
-                      <div className="flex gap-2 mt-1">
-                        <span className="text-sm text-muted-foreground">{course.code}</span>
-                        <span className="text-sm text-muted-foreground">•</span>
-                        <span className="text-sm text-muted-foreground">{course.credits} credits</span>
-                      </div>
-                    </div>
-                    <span className="px-3 py-1 text-sm font-semibold rounded-full bg-blue-100 text-blue-700">
-                      {course.grade}
-                    </span>
-                  </div>
-                  <Button variant="outline" className="w-full">View Course</Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+      {error && (
+        <Alert>
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-      {/* Major Requirements Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <GraduationCap className="w-6 h-6" />
-          Major Requirements
-        </h2>
-        <Card className="p-6">
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h3 className="text-lg font-semibold">Computer Science Major</h3>
-              <span className="text-sm text-muted-foreground">75% Complete</span>
-            </div>
-            <div className="w-full bg-gray-200 rounded-full h-3">
-              <div
-                className="bg-blue-600 h-3 rounded-full transition-all"
-                style={{ width: '75%' }}
-              />
-            </div>
-            <div className="grid grid-cols-3 gap-4 text-center">
-              <div>
-                <p className="text-2xl font-bold text-green-600">18</p>
-                <p className="text-sm text-muted-foreground">Completed</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-orange-600">4</p>
-                <p className="text-sm text-muted-foreground">In Progress</p>
-              </div>
-              <div>
-                <p className="text-2xl font-bold text-gray-600">6</p>
-                <p className="text-sm text-muted-foreground">Remaining</p>
-              </div>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Career Development Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <Briefcase className="w-6 h-6" />
-          Career Development
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <Target className="w-12 h-12 text-blue-500 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Internships</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Find and apply for internship opportunities
+      <Card>
+        <CardHeader>
+          <CardTitle>Your enrollments in this tier</CardTitle>
+          <CardDescription>
+            Frameworks tracked here: {FRAMEWORKS.join(", ")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {enrollments.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              You are not enrolled in this tier yet.{" "}
+              <Link href="/learner" className="text-primary underline">
+                Enroll →
+              </Link>
             </p>
-            <Button className="w-full">Browse Internships</Button>
-          </Card>
+          ) : (
+            <ul className="space-y-2">
+              {enrollments.map((e) => (
+                <li
+                  key={e.id}
+                  className="flex items-center justify-between rounded-md border p-3"
+                >
+                  <div>
+                    <div className="font-medium">
+                      {e.framework ?? "General"}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      Status: {e.status}
+                      {e.target_date ? ` • Target ${e.target_date}` : ""}
+                    </div>
+                  </div>
+                  <Badge variant="secondary">{e.tier}</Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <Users className="w-12 h-12 text-green-500 mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Career Counseling</h3>
-            <p className="text-sm text-muted-foreground mb-4">
-              Schedule a meeting with a career advisor
+      <Card>
+        <CardHeader>
+          <CardTitle>Top recommendations</CardTitle>
+          <CardDescription>
+            Personalized next steps from the recommender service.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {recs.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No recommendations yet. Practice a few questions and they will
+              show up here.
             </p>
-            <Button className="w-full">Book Appointment</Button>
-          </Card>
-        </div>
-      </div>
+          ) : (
+            <ul className="space-y-2">
+              {recs.slice(0, 6).map((r, i) => (
+                <li
+                  key={r.id ?? `${r.skill_code ?? "rec"}-${i}`}
+                  className="flex items-start justify-between gap-3 rounded-md border p-3"
+                >
+                  <div className="min-w-0">
+                    <div className="font-medium">
+                      {r.title ?? r.skill_code ?? "Untitled"}
+                    </div>
+                    {r.reason && (
+                      <div className="text-xs text-muted-foreground">
+                        {r.reason}
+                      </div>
+                    )}
+                  </div>
+                  <Badge variant="outline">
+                    {r.framework ?? r.skill_code ?? "rec"}
+                  </Badge>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Research Opportunities Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <Award className="w-6 h-6" />
-          Research Opportunities
-        </h2>
-        <Card className="p-12 text-center">
-          <Award className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Undergraduate Research Programs</h3>
-          <p className="text-muted-foreground mb-4">
-            Get involved in cutting-edge research projects with faculty mentors
-          </p>
-          <Button>Explore Research Projects</Button>
-        </Card>
-      </div>
+      <Card>
+        <CardHeader>
+          <CardTitle>Skill mastery snapshot</CardTitle>
+          <CardDescription>
+            Top 5 strongest and 5 weakest skills, from your live analytics.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-6 md:grid-cols-2">
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+              Strongest
+            </h3>
+            {topSkills.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No data yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {topSkills.map((s) => (
+                  <li key={`top-${s.skill_code}`}>
+                    <div className="flex justify-between text-xs">
+                      <span className="font-medium">{s.skill_code}</span>
+                      <span className="text-muted-foreground">
+                        {Math.round(s.mastery * 100)}%
+                      </span>
+                    </div>
+                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-emerald-500"
+                        style={{
+                          width: `${Math.round(s.mastery * 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+              Needs work
+            </h3>
+            {bottomSkills.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No data yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {bottomSkills.map((s) => (
+                  <li key={`bot-${s.skill_code}`}>
+                    <div className="flex justify-between text-xs">
+                      <span className="font-medium">{s.skill_code}</span>
+                      <span className="text-muted-foreground">
+                        {Math.round(s.mastery * 100)}%
+                      </span>
+                    </div>
+                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className="h-full rounded-full bg-amber-500"
+                        style={{
+                          width: `${Math.round(s.mastery * 100)}%`,
+                        }}
+                      />
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Keep going</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-col gap-2 text-sm">
+          <Link href="/dashboard/tutor" className="text-primary underline">
+            Ask the AI tutor about a topic →
+          </Link>
+          <Link
+            href="/dashboard/assessments"
+            className="text-primary underline"
+          >
+            Practice a question now →
+          </Link>
+        </CardContent>
+      </Card>
     </div>
   );
 }

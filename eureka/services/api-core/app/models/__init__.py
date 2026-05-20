@@ -99,6 +99,14 @@ from app.models.workforce import (
     ComplianceStatusEnum,
     RegulationKind,
 )
+from app.models.user_content import (
+    ActivityEvent,
+    UserCollection,
+    CollectionItem,
+    ActivityKind,
+    CollectionKind,
+    CollectionItemKind,
+)
 from app.models.graduate import (
     GraduateProgram,
     GraduateEnrollment,
@@ -373,4 +381,10 @@ __all__ = [
     "GradEnrollmentStatus",
     "MilestoneKind",
     "MilestoneStatus",
+    "ActivityEvent",
+    "UserCollection",
+    "CollectionItem",
+    "ActivityKind",
+    "CollectionKind",
+    "CollectionItemKind",
 ]
