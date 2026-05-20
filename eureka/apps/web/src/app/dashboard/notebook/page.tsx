@@ -1,421 +1,409 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { notebookAPI } from '@/lib/notebook/api-client';
-import { notebookSocket } from '@/lib/notebook/socket-client';
-import { useAuthStore } from '@/stores/auth';
+/**
+ * Phase 19.2 — Notebook landing, rewired to api-core.
+ *
+ * Previously called notebookAPI on a defunct :8120 microservice and
+ * fell back to nothing — page hung with "Failed to load notebook data".
+ *
+ * Now wired to the real Phase 17 user_collections backend:
+ *   /me/collections?kind=notebook    list my notebooks
+ *   POST /me/collections             create a notebook
+ *   GET /me/collections/{id}         drill into items
+ *   POST /me/collections/{id}/items  add a note
+ *
+ * The subroutes under /dashboard/notebook/{projects,tasks,search,payments}
+ * still talk to the legacy :8120 service; they're left in place but the
+ * landing page works standalone against the real api-core.
+ */
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { api, ApiError, formatDate } from "@/lib/eureka-api";
 import {
-  FolderKanban,
-  CheckSquare,
-  Plus,
-  Clock,
-  AlertCircle,
-  TrendingUp,
-  FileText,
-  MessageSquare,
-} from 'lucide-react';
+  FolderKanban, Plus, FileText, ArrowLeft, Trash2, Edit3, Tag,
+} from "lucide-react";
 
-interface Project {
-  id: number;
-  name: string;
-  description: string;
-  status: 'active' | 'completed' | 'archived' | 'on_hold';
-  start_date?: string;
-  end_date?: string;
-  created_at: string;
-}
-
-interface Task {
-  id: number;
-  project_id: number;
+type Notebook = {
+  id: string;
+  kind: string;
   title: string;
-  description?: string;
-  status: 'todo' | 'in_progress' | 'review' | 'completed' | 'blocked';
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  due_date?: string;
+  description_md: string | null;
+  tags: string[];
+  skill_code: string | null;
+  is_pinned: boolean;
+  is_public: boolean;
+  item_count: number;
   created_at: string;
-}
+  updated_at: string;
+};
 
-interface Stats {
-  projects: {
-    total_projects: number;
-    active_projects: number;
-    completed_projects: number;
-  };
-  tasks: {
-    total_tasks: number;
-    todo_tasks: number;
-    in_progress_tasks: number;
-    completed_tasks: number;
-    overdue_tasks: number;
-  };
-}
+type Note = {
+  id: string;
+  collection_id: string;
+  kind: string;
+  title: string | null;
+  body_md: string | null;
+  url: string | null;
+  sort_index: number;
+  created_at: string;
+  updated_at: string;
+};
+
+type NotebookDetail = {
+  collection: Notebook;
+  items: Note[];
+};
 
 export default function NotebookPage() {
-  const router = useRouter();
-  const { user } = useAuthStore();
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [stats, setStats] = useState<Stats>({
-    projects: {
-      total_projects: 0,
-      active_projects: 0,
-      completed_projects: 0,
-    },
-    tasks: {
-      total_tasks: 0,
-      todo_tasks: 0,
-      in_progress_tasks: 0,
-      completed_tasks: 0,
-      overdue_tasks: 0,
-    },
-  });
+  const [notebooks, setNotebooks] = useState<Notebook[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [newNb, setNewNb] = useState({ title: "", description_md: "", tags: "", skill_code: "" });
+  const [creating, setCreating] = useState(false);
 
-  useEffect(() => {
-    loadNotebookData();
+  // Notebook detail state
+  const [openId, setOpenId] = useState<string | null>(null);
+  const [detail, setDetail] = useState<NotebookDetail | null>(null);
+  const [noteForm, setNoteForm] = useState({ title: "", body_md: "" });
+  const [noteBusy, setNoteBusy] = useState(false);
 
-    // Connect WebSocket for real-time updates
-    const token = localStorage.getItem('token');
-    if (token) {
-      notebookSocket.connect(token);
-
-      // Listen for real-time updates
-      notebookSocket.onTaskUpdated(() => {
-        loadNotebookData();
-      });
-
-      notebookSocket.onNotificationReceived(() => {
-        loadNotebookData();
-      });
-    }
-
-    return () => {
-      notebookSocket.disconnect();
-    };
-  }, [user]);
-
-  const loadNotebookData = async () => {
+  async function refresh() {
+    setLoading(true);
     try {
-      setLoading(true);
-
-      // Load dashboard stats
-      const statsResponse = await notebookAPI.dashboard.getStats();
-      setStats(statsResponse.data);
-
-      // Load projects
-      const projectsResponse = await notebookAPI.projects.getAll();
-      const projectsData = projectsResponse.data.projects || [];
-      setProjects(projectsData.slice(0, 6)); // Show only 6 projects
-
-      // Load recent tasks
-      const tasksResponse = await notebookAPI.tasks.getAll();
-      const tasksData = tasksResponse.data.tasks || [];
-      setTasks(tasksData.slice(0, 10)); // Show only recent 10 tasks
-    } catch (error) {
-      console.error('Failed to load notebook data:', error);
+      const rows = await api<Notebook[]>("/me/collections?kind=notebook");
+      setNotebooks(Array.isArray(rows) ? rows : []);
+      setError(null);
+    } catch (e) {
+      setError(String((e as Error).message));
     } finally {
       setLoading(false);
     }
-  };
+  }
 
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      active: 'bg-green-100 text-green-800',
-      completed: 'bg-blue-100 text-blue-800',
-      archived: 'bg-gray-100 text-gray-800',
-      on_hold: 'bg-yellow-100 text-yellow-800',
-      todo: 'bg-gray-100 text-gray-800',
-      in_progress: 'bg-blue-100 text-blue-800',
-      review: 'bg-purple-100 text-purple-800',
-      blocked: 'bg-red-100 text-red-800',
-    };
-    return colors[status] || 'bg-gray-100 text-gray-800';
-  };
+  useEffect(() => { refresh(); }, []);
 
-  const getPriorityColor = (priority: string) => {
-    const colors: Record<string, string> = {
-      low: 'bg-green-100 text-green-800',
-      medium: 'bg-yellow-100 text-yellow-800',
-      high: 'bg-orange-100 text-orange-800',
-      urgent: 'bg-red-100 text-red-800',
-    };
-    return colors[priority] || 'bg-gray-100 text-gray-800';
-  };
+  async function createNotebook(e: React.FormEvent) {
+    e.preventDefault();
+    setCreating(true);
+    try {
+      const tags = newNb.tags.split(",").map((s) => s.trim()).filter(Boolean);
+      const created = await api<Notebook>("/me/collections", {
+        method: "POST",
+        body: JSON.stringify({
+          kind: "notebook",
+          title: newNb.title.trim(),
+          description_md: newNb.description_md.trim() || null,
+          tags,
+          skill_code: newNb.skill_code.trim() || null,
+        }),
+      });
+      setShowForm(false);
+      setNewNb({ title: "", description_md: "", tags: "", skill_code: "" });
+      await refresh();
+      await loadDetail(created.id);
+    } catch (e) {
+      const msg = e instanceof ApiError ? `${e.status} — ${JSON.stringify(e.detail)}` : (e as Error).message;
+      alert(msg);
+    } finally {
+      setCreating(false);
+    }
+  }
 
-  if (loading) {
+  async function loadDetail(id: string) {
+    setOpenId(id);
+    setDetail(null);
+    try {
+      const d = await api<NotebookDetail>(`/me/collections/${id}`);
+      setDetail(d);
+    } catch (e) {
+      setError(String((e as Error).message));
+    }
+  }
+
+  async function addNote() {
+    if (!openId || !noteForm.body_md.trim()) return;
+    setNoteBusy(true);
+    try {
+      await api(`/me/collections/${openId}/items`, {
+        method: "POST",
+        body: JSON.stringify({
+          kind: "note",
+          title: noteForm.title.trim() || null,
+          body_md: noteForm.body_md.trim(),
+        }),
+      });
+      setNoteForm({ title: "", body_md: "" });
+      await loadDetail(openId);
+      await refresh();
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setNoteBusy(false);
+    }
+  }
+
+  async function deleteNote(itemId: string) {
+    if (!openId) return;
+    if (!window.confirm("Delete this note?")) return;
+    try {
+      await api(`/me/collections/${openId}/items/${itemId}`, { method: "DELETE" });
+      await loadDetail(openId);
+      await refresh();
+    } catch (e) {
+      alert(String((e as Error).message));
+    }
+  }
+
+  async function deleteNotebook(id: string) {
+    if (!window.confirm("Delete this notebook and all its notes?")) return;
+    try {
+      await api(`/me/collections/${id}`, { method: "DELETE" });
+      if (openId === id) { setOpenId(null); setDetail(null); }
+      await refresh();
+    } catch (e) {
+      alert(String((e as Error).message));
+    }
+  }
+
+  // Detail view
+  if (openId && detail) {
     return (
-      <div className="flex items-center justify-center h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600" />
+      <div className="space-y-4 max-w-4xl">
+        <button
+          onClick={() => { setOpenId(null); setDetail(null); }}
+          className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
+        >
+          <ArrowLeft className="h-3.5 w-3.5" /> All notebooks
+        </button>
+
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <FolderKanban className="h-6 w-6 text-primary" />
+              {detail.collection.title}
+            </h1>
+            <div className="flex flex-wrap items-center gap-2 mt-1 text-xs text-muted-foreground">
+              <Badge variant="outline">{detail.items.length} note{detail.items.length === 1 ? "" : "s"}</Badge>
+              {detail.collection.skill_code && (
+                <span className="font-mono">{detail.collection.skill_code}</span>
+              )}
+              {(detail.collection.tags ?? []).map((t) => (
+                <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
+              ))}
+            </div>
+            {detail.collection.description_md && (
+              <p className="mt-2 text-sm text-muted-foreground">{detail.collection.description_md}</p>
+            )}
+          </div>
+          <Button variant="outline" size="sm" onClick={() => deleteNotebook(detail.collection.id)}>
+            <Trash2 className="h-3.5 w-3.5 mr-1" /> Delete notebook
+          </Button>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Add a note</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            <Input
+              placeholder="Title (optional)"
+              value={noteForm.title}
+              onChange={(e) => setNoteForm({ ...noteForm, title: e.target.value })}
+            />
+            <Textarea
+              placeholder="Note body (markdown ok)"
+              rows={5}
+              value={noteForm.body_md}
+              onChange={(e) => setNoteForm({ ...noteForm, body_md: e.target.value })}
+            />
+            <div className="flex justify-end">
+              <Button onClick={addNote} disabled={noteBusy || !noteForm.body_md.trim()}>
+                <Plus className="h-3.5 w-3.5 mr-1" /> Add
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="space-y-2">
+          <h3 className="text-sm font-semibold text-muted-foreground">Notes</h3>
+          {detail.items.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No notes yet — add the first above.</p>
+          ) : (
+            detail.items.map((n) => (
+              <Card key={n.id}>
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0 flex-1">
+                      {n.title && <div className="font-medium mb-1">{n.title}</div>}
+                      {n.body_md && (
+                        <p className="text-sm whitespace-pre-wrap text-muted-foreground">{n.body_md}</p>
+                      )}
+                      <div className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
+                        <FileText className="h-3 w-3" />
+                        {formatDate(n.created_at)}
+                      </div>
+                    </div>
+                    <Button variant="ghost" size="sm" onClick={() => deleteNote(n.id)}>
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
       </div>
     );
   }
 
+  // List view
   return (
-    <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 max-w-5xl">
+      <div className="flex items-start justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Notebook</h1>
-          <p className="mt-2 text-sm text-gray-600">
-            Manage your projects and tasks
+          <h1 className="flex items-center gap-2 text-3xl font-bold">
+            <FolderKanban className="h-7 w-7 text-primary" />
+            Notebook
+          </h1>
+          <p className="text-muted-foreground mt-1">
+            Real notebooks backed by{" "}
+            <span className="font-mono text-xs">/me/collections?kind=notebook</span>.
+            Each notebook holds notes (markdown), bookmarks, references.
           </p>
         </div>
-        <button
-          className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500"
-          onClick={() => router.push('/dashboard/notebook/projects')}
-        >
-          <Plus className="h-4 w-4 mr-2" />
-          New Project
-        </button>
+        <Button onClick={() => setShowForm(!showForm)}>
+          <Plus className="h-4 w-4 mr-1" /> {showForm ? "Cancel" : "New notebook"}
+        </Button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-        <Card className="p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <FolderKanban className="h-8 w-8 text-primary-600" />
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
-                  Active Projects
-                </dt>
-                <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
-                    {stats.projects.active_projects}
-                  </div>
-                  <div className="ml-2 text-sm text-gray-500">
-                    of {stats.projects.total_projects}
-                  </div>
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </Card>
+      {error && (
+        <Alert variant="destructive">
+          <AlertTitle>Error</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
 
-        <Card className="p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <CheckSquare className="h-8 w-8 text-green-600" />
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
-                  Tasks Completed
-                </dt>
-                <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
-                    {stats.tasks.completed_tasks}
-                  </div>
-                  <div className="ml-2 text-sm text-gray-500">
-                    of {stats.tasks.total_tasks}
-                  </div>
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <Clock className="h-8 w-8 text-blue-600" />
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
-                  In Progress
-                </dt>
-                <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
-                    {stats.tasks.in_progress_tasks}
-                  </div>
-                  <div className="ml-2 text-sm text-gray-500">tasks</div>
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <AlertCircle className="h-8 w-8 text-red-600" />
-            </div>
-            <div className="ml-5 w-0 flex-1">
-              <dl>
-                <dt className="text-sm font-medium text-gray-500 truncate">
-                  Overdue
-                </dt>
-                <dd className="flex items-baseline">
-                  <div className="text-2xl font-semibold text-gray-900">
-                    {stats.tasks.overdue_tasks}
-                  </div>
-                  <div className="ml-2 text-sm text-gray-500">tasks</div>
-                </dd>
-              </dl>
-            </div>
-          </div>
-        </Card>
-      </div>
-
-      {/* Projects & Tasks Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Projects List */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Projects</h2>
-            <button
-              className="text-sm text-primary-600 hover:text-primary-700"
-              onClick={() => router.push('/dashboard/notebook/projects')}
-            >
-              View All
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {projects.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <FolderKanban className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                <p>No projects yet</p>
-                <button
-                  className="mt-2 text-sm text-primary-600 hover:text-primary-700"
-                  onClick={() => router.push('/dashboard/notebook/projects')}
-                >
-                  Create your first project
-                </button>
+      {showForm && (
+        <Card>
+          <CardHeader><CardTitle className="text-base">New notebook</CardTitle></CardHeader>
+          <CardContent>
+            <form onSubmit={createNotebook} className="space-y-3">
+              <Input
+                placeholder="Notebook title"
+                value={newNb.title}
+                onChange={(e) => setNewNb({ ...newNb, title: e.target.value })}
+                required minLength={1} maxLength={200}
+              />
+              <Textarea
+                placeholder="Description (optional, markdown ok)"
+                value={newNb.description_md}
+                onChange={(e) => setNewNb({ ...newNb, description_md: e.target.value })}
+                rows={3}
+              />
+              <div className="grid grid-cols-2 gap-2">
+                <Input
+                  placeholder="Tags (comma-separated)"
+                  value={newNb.tags}
+                  onChange={(e) => setNewNb({ ...newNb, tags: e.target.value })}
+                />
+                <Input
+                  placeholder="Skill code (optional)"
+                  value={newNb.skill_code}
+                  onChange={(e) => setNewNb({ ...newNb, skill_code: e.target.value })}
+                />
               </div>
-            ) : (
-              projects.map((project) => (
-                <div
-                  key={project.id}
-                  className="p-4 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer transition-colors"
-                  onClick={() =>
-                    router.push(`/dashboard/notebook/projects/${project.id}`)
-                  }
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">
-                        {project.name}
-                      </h3>
-                      {project.description && (
-                        <p className="mt-1 text-sm text-gray-500 line-clamp-2">
-                          {project.description}
-                        </p>
-                      )}
-                    </div>
-                    <span
-                      className={`ml-2 px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(
-                        project.status
-                      )}`}
-                    >
-                      {project.status.replace('_', ' ')}
-                    </span>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
-        </Card>
-
-        {/* Recent Tasks */}
-        <Card className="p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold text-gray-900">Recent Tasks</h2>
-            <button
-              className="text-sm text-primary-600 hover:text-primary-700"
-              onClick={() => router.push('/dashboard/notebook/tasks')}
-            >
-              View All
-            </button>
-          </div>
-
-          <div className="space-y-3">
-            {tasks.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                <CheckSquare className="h-12 w-12 mx-auto mb-3 text-gray-300" />
-                <p>No tasks yet</p>
+              <div className="flex justify-end">
+                <Button type="submit" disabled={creating || !newNb.title.trim()}>
+                  {creating ? "Creating…" : "Create"}
+                </Button>
               </div>
-            ) : (
-              tasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="p-4 border border-gray-200 rounded-lg hover:border-primary-300 cursor-pointer transition-colors"
-                  onClick={() =>
-                    router.push(`/dashboard/notebook/tasks/${task.id}`)
-                  }
-                >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <h3 className="font-medium text-gray-900">{task.title}</h3>
-                      {task.description && (
-                        <p className="mt-1 text-sm text-gray-500 line-clamp-1">
-                          {task.description}
-                        </p>
-                      )}
-                      <div className="mt-2 flex items-center space-x-2">
-                        <span
-                          className={`px-2 py-0.5 text-xs font-medium rounded-full ${getStatusColor(
-                            task.status
-                          )}`}
-                        >
-                          {task.status.replace('_', ' ')}
-                        </span>
-                        <span
-                          className={`px-2 py-0.5 text-xs font-medium rounded-full ${getPriorityColor(
-                            task.priority
-                          )}`}
-                        >
-                          {task.priority}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
-            )}
-          </div>
+            </form>
+          </CardContent>
         </Card>
+      )}
+
+      {loading && <p className="text-muted-foreground">Loading…</p>}
+
+      {!loading && notebooks.length === 0 && (
+        <Card>
+          <CardContent className="py-10 text-center text-muted-foreground">
+            No notebooks yet. Create your first one above.
+          </CardContent>
+        </Card>
+      )}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {notebooks.map((n) => (
+          <Card
+            key={n.id}
+            className="cursor-pointer hover:border-primary/40 transition-colors"
+            onClick={() => loadDetail(n.id)}
+          >
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2 min-w-0">
+                <FolderKanban className="h-4 w-4 text-primary shrink-0" />
+                <span className="truncate">{n.title}</span>
+              </CardTitle>
+              <CardDescription>
+                {n.item_count} item{n.item_count === 1 ? "" : "s"} ·
+                updated {formatDate(n.updated_at)}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {n.description_md && (
+                <p className="text-xs text-muted-foreground line-clamp-2 mb-2">
+                  {n.description_md}
+                </p>
+              )}
+              {(n.tags?.length ?? 0) > 0 && (
+                <div className="flex flex-wrap gap-1">
+                  {(n.tags ?? []).slice(0, 4).map((t) => (
+                    <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
+                  ))}
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      {/* Quick Actions */}
-      <Card className="p-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <button
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
-            onClick={() => router.push('/dashboard/notebook/projects')}
-          >
-            <Plus className="h-5 w-5 mr-2 text-primary-600" />
-            <span className="text-sm font-medium">New Project</span>
-          </button>
-          <button
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
-            onClick={() => router.push('/dashboard/notebook/tasks')}
-          >
-            <CheckSquare className="h-5 w-5 mr-2 text-primary-600" />
-            <span className="text-sm font-medium">New Task</span>
-          </button>
-          <button
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
-            onClick={() => router.push('/dashboard/notebook/projects')}
-          >
-            <FileText className="h-5 w-5 mr-2 text-primary-600" />
-            <span className="text-sm font-medium">Upload File</span>
-          </button>
-          <button
-            className="flex items-center justify-center px-4 py-3 border border-gray-300 rounded-lg hover:border-primary-300 hover:bg-primary-50 transition-colors"
-            onClick={() => router.push('/dashboard/notebook/search')}
-          >
-            <TrendingUp className="h-5 w-5 mr-2 text-primary-600" />
-            <span className="text-sm font-medium">Search</span>
-          </button>
-        </div>
+      {/* Legacy subroutes — these still call the old notebook microservice */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Other notebook tools</CardTitle>
+          <CardDescription>
+            These subroutes were built against an older notebook microservice
+            (port 8120). They may show empty state if that service isn&apos;t
+            running.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          {[
+            { href: "/dashboard/notebook/projects", label: "Projects" },
+            { href: "/dashboard/notebook/tasks", label: "Tasks" },
+            { href: "/dashboard/notebook/search", label: "Search" },
+            { href: "/dashboard/notebook/payments", label: "Payments" },
+          ].map((s) => (
+            <Link key={s.href} href={s.href}>
+              <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer">
+                <CardContent className="p-4">
+                  <div className="font-medium text-sm flex items-center gap-2">
+                    <Edit3 className="h-3.5 w-3.5 text-primary" />
+                    {s.label}
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          ))}
+        </CardContent>
       </Card>
     </div>
   );
