@@ -99,6 +99,17 @@ from app.models.workforce import (
     ComplianceStatusEnum,
     RegulationKind,
 )
+from app.models.graduate import (
+    GraduateProgram,
+    GraduateEnrollment,
+    DegreeMilestone,
+    ProgramSkillTarget,
+    DegreeKind,
+    GradProgramStatus,
+    GradEnrollmentStatus,
+    MilestoneKind,
+    MilestoneStatus,
+)
 from app.models.integrations import (
     ApiKey,
     ApiKeyUsageLog,
@@ -353,4 +364,13 @@ __all__ = [
     "AssignmentStatus",
     "ComplianceStatusEnum",
     "RegulationKind",
+    "GraduateProgram",
+    "GraduateEnrollment",
+    "DegreeMilestone",
+    "ProgramSkillTarget",
+    "DegreeKind",
+    "GradProgramStatus",
+    "GradEnrollmentStatus",
+    "MilestoneKind",
+    "MilestoneStatus",
 ]

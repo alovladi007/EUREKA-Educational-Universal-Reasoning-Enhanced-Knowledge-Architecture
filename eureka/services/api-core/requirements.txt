@@ -77,3 +77,18 @@ celery[redis]==5.3.6
 pyyaml==6.0.1
 anthropic
 python-docx
+
+# Phase 16 — Graduate-school research tools (Sessions 16.6 + 16.7)
+# Symbolic + numeric math, stats, plotting, units, chem, bio.
+sympy>=1.12,<2          # 16.6 symbolic_math backend (algebra, calc, ODE, linear)
+numpy>=1.26,<3          # 16.6 numeric_math + plotting + stats foundation
+scipy>=1.11,<2          # 16.6 numeric_math (integrate, optimize, linalg, fft)
+statsmodels>=0.14,<1    # 16.6 statistics backend (regression, ANOVA, GLM)
+matplotlib>=3.8,<4      # 16.6 plotting backend (renders PNG to MinIO)
+pint>=0.23,<1           # 16.7 units backend (dimensional analysis)
+biopython>=1.83,<2      # 16.7 biology backend (sequence I/O, BLAST helpers)
+# RDKit is heavy and pip-fragile on some platforms.
+# We import lazily inside the chemistry backend; if it's missing, the backend
+# falls back to a PubChem REST lookup. Comment in when ready to ship.
+# rdkit-pypi>=2022.9.5
+

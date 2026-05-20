@@ -19,6 +19,7 @@ import {
   ScrollText,
   Settings,
   ArrowLeft,
+  BookMarked,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -27,6 +28,7 @@ const SECTIONS = [
   { href: "/institutions/partnerships", label: "Partnerships", icon: Building2 },
   { href: "/institutions/cohorts", label: "Cohorts", icon: GraduationCap },
   { href: "/institutions/programs", label: "Programs", icon: ClipboardList },
+  { href: "/institutions/graduate-programs", label: "Graduate programs", icon: BookMarked },
   { href: "/institutions/compliance", label: "Compliance", icon: ShieldCheck },
   { href: "/institutions/workers", label: "Workers (seats)", icon: Users },
   { href: "/institutions/analytics", label: "Analytics", icon: LineChart },

@@ -567,6 +567,90 @@ progress + linked study_plan_id) and compliance items (with due_at + status).
 (seats where `manager_user_id = me`). Worker can self-attest via
 `POST /me/compliance/{id}/attest` when status is due_soon/overdue/expired.
 
+---
+
+# Phase 16 — Graduate school tier  ⬜ in progress (16.1 ✅; 16.2–16.7 pending)
+
+**Design constraint (2026-05, per user request):** this tier deliberately
+omits advisors / committees / committee_meetings. Each enrollment has a
+single optional `supervisor_user_id` and that's the entire faculty
+surface. The competitive moat is the **Research Tools suite** in
+Sessions 16.6 + 16.7 — open-access Wolfram-Alpha-class capabilities
+(symbolic math, stats, plotting, units, chemistry, biology, citation-aware
+Q&A) baked into the platform, integrated with the Phase 4.2 skill graph
+and Phase 6 tutor.
+
+## Session 16.1 — Programs + enrollments + milestones (no advisors/committees) ✅
+4 tables in `18_graduate.sql`: `graduate_programs`, `program_skill_targets`,
+`graduate_enrollments` (with `supervisor_user_id` — no committees),
+`degree_milestones` (workflow: not_started → in_progress → submitted →
+approved/changes_requested/failed/waived). 5 enums: `degree_kind`
+(masters_thesis/coursework/professional, phd, doctoral_professional, postdoc,
+certificate), `grad_program_status`, `grad_enrollment_status` (applied →
+admitted → enrolled → on_leave/withdrawn/graduated/dismissed), `milestone_kind`
+(coursework, qualifying_exam, proposal, irb, data_collection, manuscript,
+thesis_draft, thesis_defense, teaching, publication, custom), `milestone_status`.
+On `graduate`: optional Open Badges 3.0 credential via Phase 4.3 transcript
+service if `completion_cert_code` is set. 11 endpoints under
+`/api/v1/graduate/*` + `/api/v1/me/graduate` rollup. Frontend: `/graduate`
+(learner) + `/institutions/graduate-programs` (admin list + create) +
+`/institutions/graduate-programs/[id]` (program detail + enroll). Sidebar
+entry added to institutions shell. 6/6 integration tests pass.
+**Tool deps pre-installed**: SymPy, NumPy, SciPy, statsmodels, matplotlib,
+Pint, Biopython added to `requirements.txt` ahead of 16.6/16.7.
+
+## Session 16.2 — Research workspace + lit review ⬜
+3 tables: `research_workspaces`, `lit_review_entries`, `workspace_drafts`.
+CrossRef + arXiv lookup endpoints; BibTeX export; per-workspace notes
++ tags; auto-linking to a learner's `graduate_enrollments` row.
+
+## Session 16.3 — Thesis lifecycle + IRB (no committees) ⬜
+3 tables: `thesis_projects`, `thesis_drafts`, `irb_protocols`.
+Workflow: proposed → drafting → revising → defending → defended.
+**Single approver per protocol — no committee structure.** On `defended`,
+auto-mint Ed25519-signed credential via Phase 4.3 transcript_service.
+
+## Session 16.4 — Grants + fellowships ⬜
+2 tables: `funding_opportunities`, `funding_applications`.
+Eligibility filter (degree_kind + skill_codes + region); deadline
+reminders pushed through Phase 11.3 email_lifecycle + Phase 12.2
+push_notify.
+
+## Session 16.5 — Publications + scholarly profile + TA/RA + career ⬜
+6 tables: `publications`, `publication_authors`, `peer_reviews`,
+`citation_metrics`, `assistantships`, `job_market_records`.
+Public scholarly profile at `/scholars/[slug]` (publications, h-index,
+i10-index, fields of study). TA/RA service hours roll up into the
+relevant `degree_milestones` row (kind=`teaching`).
+
+## Session 16.6 — Research Tools I: math + stats + plotting ⬜
+3 tables: `research_tools` (registry), `research_workbooks`
+(saved notebooks), `tool_invocations` (per-call ledger).
+**Backends**: `symbolic_math` (SymPy: solve, simplify, differentiate,
+integrate, dsolve, linsolve, taylor, matrices), `numeric_math`
+(NumPy/SciPy: integrate.quad, optimize.minimize, linalg, fft),
+`statistics` (statsmodels: OLS/GLS/GLM, ANOVA, chi-square, t-tests,
+PCA, time-series), `plotting` (matplotlib: line/scatter/hist/heatmap,
+PNG + SVG rendered to MinIO with 24h signed URLs).
+**The Wolfram Alpha competitor surface.**
+
+## Session 16.7 — Research Tools II: physics + chemistry + biology + citation-aware Q&A ⬜
+**Backends**: `units` (Pint: dimensional analysis, unit conversion),
+`physics_calc` (kinematics, energy, EM, thermo — all dimensionally
+checked through Pint), `chemistry` (RDKit when installed for molecule
+parsing + descriptors; PubChem REST fallback when not), `biology`
+(Biopython: sequence I/O, GC content, transcription/translation,
+BLAST helpers), `literature_search` (CrossRef + arXiv + Semantic
+Scholar parallel fan-out + dedup), `citation_qa` (Claude with
+ANTHROPIC_API_KEY orchestrates literature_search results into
+answers that cite every claim; falls back to raw results without
+narrative wrap when no API key). Plots / molecule images / sequence
+viewers saved to MinIO and re-renderable from a saved workbook.
+
+---
+
+# Old session prompts (Phase 3 onward, kept for context)
+
 Each prompt below is **self-contained** — you can paste it into a fresh agent and it will have what it needs.
 
 ## Session 3.1 — Reconcile service duplication
