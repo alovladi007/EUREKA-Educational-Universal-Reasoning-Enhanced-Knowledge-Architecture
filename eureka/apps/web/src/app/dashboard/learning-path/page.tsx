@@ -88,7 +88,18 @@ export default function LearningPathPage() {
                     {r.title ?? r.skill_code ?? "Untitled"}
                   </CardTitle>
                   {r.reason && (
-                    <CardDescription>{r.reason}</CardDescription>
+                    <CardDescription>
+                      {typeof r.reason === "string"
+                        ? r.reason
+                        : (() => {
+                            const notes = (r.reason as Record<string, unknown>)?.notes;
+                            if (Array.isArray(notes) && notes.length > 0) return notes.join(" · ");
+                            const ent = Object.entries(r.reason as Record<string, unknown>)
+                              .filter(([, v]) => typeof v === "number" && (v as number) > 0)
+                              .map(([k, v]) => `${k.replace(/_/g, " ")}: ${(v as number).toFixed(2)}`);
+                            return ent.length > 0 ? ent.join(" · ") : "";
+                          })()}
+                    </CardDescription>
                   )}
                 </CardHeader>
                 <CardContent className="flex items-center justify-between">

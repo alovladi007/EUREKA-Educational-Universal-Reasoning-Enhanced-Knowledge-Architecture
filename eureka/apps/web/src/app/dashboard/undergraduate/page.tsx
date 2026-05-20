@@ -162,7 +162,16 @@ export default function Page() {
                     </div>
                     {r.reason && (
                       <div className="text-xs text-muted-foreground">
-                        {r.reason}
+                        {typeof r.reason === "string"
+                          ? r.reason
+                          : (() => {
+                              const notes = (r.reason as any)?.notes;
+                              if (Array.isArray(notes) && notes.length > 0) return notes.join(" · ");
+                              const ent = Object.entries(r.reason as Record<string, unknown>)
+                                .filter(([, v]) => typeof v === "number" && (v as number) > 0)
+                                .map(([k, v]) => `${k.replace(/_/g, " ")}: ${(v as number).toFixed(2)}`);
+                              return ent.length > 0 ? ent.join(" · ") : "";
+                            })()}
                       </div>
                     )}
                   </div>

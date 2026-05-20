@@ -142,9 +142,9 @@ export default function NotebookPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                {c.tags.length > 0 && (
+                {(c.tags?.length ?? 0) > 0 && (
                   <div className="flex flex-wrap gap-1.5">
-                    {c.tags.map((t) => (
+                    {(c.tags ?? []).map((t) => (
                       <Badge key={t} variant="secondary">
                         {t}
                       </Badge>

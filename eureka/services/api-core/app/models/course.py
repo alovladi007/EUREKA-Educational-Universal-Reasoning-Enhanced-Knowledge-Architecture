@@ -130,6 +130,21 @@ class Course(Base):
         return self.start_date <= now
 
     @property
-    def enrollment_count(self) -> int:
-        """Get count of active enrollments"""
-        return len([e for e in self.enrollments if e.status == 'active'])
+    def enrollment_count(self):
+        """Get count of active enrollments.
+
+        Only returns a number when the `enrollments` relationship is
+        already loaded (eager via selectinload, or after refresh). When
+        accessed inside an async session without a loaded relationship,
+        SQLAlchemy would otherwise raise `MissingGreenlet` trying to
+        lazy-load mid-Pydantic-serialization. Returns None in that case
+        so `CourseResponse.enrollment_count` (Optional) stays valid.
+        """
+        from sqlalchemy import inspect as sa_inspect
+        try:
+            state = sa_inspect(self)
+            if "enrollments" in state.unloaded:
+                return None
+            return len([e for e in self.enrollments if e.status == 'active'])
+        except Exception:
+            return None

@@ -1,13 +1,15 @@
-"""Resume CRUD operations."""
+"""Resume CRUD operations — async (was sync, broke on AsyncSession)."""
 
-from sqlalchemy.orm import Session
-from sqlalchemy import desc
 from typing import Optional, List
+
+from sqlalchemy import desc, func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
 from app.models.resume import Resume, ResumeVersion
 from app.schemas.resume import ResumeCreate, ResumeUpdate, ResumeVersionCreate
 
 
-def create_resume(db: Session, user_id: str, resume_in: ResumeCreate) -> Resume:
+async def create_resume(db: AsyncSession, user_id: str, resume_in: ResumeCreate) -> Resume:
     resume = Resume(
         user_id=user_id,
         title=resume_in.title,
@@ -16,54 +18,61 @@ def create_resume(db: Session, user_id: str, resume_in: ResumeCreate) -> Resume:
         template_config=resume_in.template_config,
     )
     db.add(resume)
-    db.commit()
-    db.refresh(resume)
+    await db.commit()
+    await db.refresh(resume)
     return resume
 
 
-def get_resume(db: Session, resume_id: str, user_id: str) -> Optional[Resume]:
-    return db.query(Resume).filter(
-        Resume.id == resume_id,
-        Resume.user_id == user_id,
-    ).first()
+async def get_resume(db: AsyncSession, resume_id: str, user_id: str) -> Optional[Resume]:
+    q = await db.execute(
+        select(Resume).where(Resume.id == resume_id, Resume.user_id == user_id)
+    )
+    return q.scalar_one_or_none()
 
 
-def get_resume_by_slug(db: Session, slug: str) -> Optional[Resume]:
-    return db.query(Resume).filter(
-        Resume.slug == slug,
-        Resume.is_public == True,
-    ).first()
+async def get_resume_by_slug(db: AsyncSession, slug: str) -> Optional[Resume]:
+    q = await db.execute(
+        select(Resume).where(Resume.slug == slug, Resume.is_public.is_(True))
+    )
+    return q.scalar_one_or_none()
 
 
-def list_resumes(db: Session, user_id: str) -> List[Resume]:
-    return db.query(Resume).filter(
-        Resume.user_id == user_id,
-    ).order_by(desc(Resume.updated_at)).all()
+async def list_resumes(db: AsyncSession, user_id: str) -> List[Resume]:
+    q = await db.execute(
+        select(Resume)
+        .where(Resume.user_id == user_id)
+        .order_by(desc(Resume.updated_at))
+    )
+    return list(q.scalars().all())
 
 
-def update_resume(db: Session, resume_id: str, user_id: str, resume_in: ResumeUpdate) -> Optional[Resume]:
-    resume = get_resume(db, resume_id, user_id)
+async def update_resume(
+    db: AsyncSession, resume_id: str, user_id: str, resume_in: ResumeUpdate
+) -> Optional[Resume]:
+    resume = await get_resume(db, resume_id, user_id)
     if not resume:
         return None
     update_data = resume_in.model_dump(exclude_unset=True)
     for key, value in update_data.items():
         setattr(resume, key, value)
-    db.commit()
-    db.refresh(resume)
+    await db.commit()
+    await db.refresh(resume)
     return resume
 
 
-def delete_resume(db: Session, resume_id: str, user_id: str) -> bool:
-    resume = get_resume(db, resume_id, user_id)
+async def delete_resume(db: AsyncSession, resume_id: str, user_id: str) -> bool:
+    resume = await get_resume(db, resume_id, user_id)
     if not resume:
         return False
-    db.delete(resume)
-    db.commit()
+    await db.delete(resume)
+    await db.commit()
     return True
 
 
-def duplicate_resume(db: Session, resume_id: str, user_id: str) -> Optional[Resume]:
-    original = get_resume(db, resume_id, user_id)
+async def duplicate_resume(
+    db: AsyncSession, resume_id: str, user_id: str
+) -> Optional[Resume]:
+    original = await get_resume(db, resume_id, user_id)
     if not original:
         return None
     new_resume = Resume(
@@ -74,19 +83,30 @@ def duplicate_resume(db: Session, resume_id: str, user_id: str) -> Optional[Resu
         template_config=original.template_config,
     )
     db.add(new_resume)
-    db.commit()
-    db.refresh(new_resume)
+    await db.commit()
+    await db.refresh(new_resume)
     return new_resume
 
 
-def create_version(db: Session, resume_id: str, user_id: str, version_in: ResumeVersionCreate) -> Optional[ResumeVersion]:
-    resume = get_resume(db, resume_id, user_id)
+async def create_version(
+    db: AsyncSession,
+    resume_id: str,
+    user_id: str,
+    version_in: ResumeVersionCreate,
+) -> Optional[ResumeVersion]:
+    resume = await get_resume(db, resume_id, user_id)
     if not resume:
         return None
-    # Get next version number
-    max_version = db.query(ResumeVersion).filter(
-        ResumeVersion.resume_id == resume_id
-    ).count()
+    max_version = int(
+        (
+            await db.execute(
+                select(func.count(ResumeVersion.id)).where(
+                    ResumeVersion.resume_id == resume_id
+                )
+            )
+        ).scalar_one()
+        or 0
+    )
     version = ResumeVersion(
         resume_id=resume_id,
         version_number=max_version + 1,
@@ -94,22 +114,27 @@ def create_version(db: Session, resume_id: str, user_id: str, version_in: Resume
         data=version_in.data,
     )
     db.add(version)
-    db.commit()
-    db.refresh(version)
+    await db.commit()
+    await db.refresh(version)
     return version
 
 
-def list_versions(db: Session, resume_id: str, user_id: str) -> List[ResumeVersion]:
-    resume = get_resume(db, resume_id, user_id)
+async def list_versions(
+    db: AsyncSession, resume_id: str, user_id: str
+) -> List[ResumeVersion]:
+    resume = await get_resume(db, resume_id, user_id)
     if not resume:
         return []
-    return db.query(ResumeVersion).filter(
-        ResumeVersion.resume_id == resume_id
-    ).order_by(desc(ResumeVersion.created_at)).all()
+    q = await db.execute(
+        select(ResumeVersion)
+        .where(ResumeVersion.resume_id == resume_id)
+        .order_by(desc(ResumeVersion.created_at))
+    )
+    return list(q.scalars().all())
 
 
-def increment_view_count(db: Session, slug: str) -> None:
-    resume = db.query(Resume).filter(Resume.slug == slug, Resume.is_public == True).first()
+async def increment_view_count(db: AsyncSession, slug: str) -> None:
+    resume = await get_resume_by_slug(db, slug)
     if resume:
         resume.view_count = (resume.view_count or 0) + 1
-        db.commit()
+        await db.commit()

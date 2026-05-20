@@ -21,8 +21,10 @@ type SkillRow = {
 };
 
 type StrengthsWeaknesses = {
-  strengths: SkillRow[];
-  weaknesses: SkillRow[];
+  // /analytics/me/strengths-weaknesses returns "strongest" + "weakest"
+  // (Phase 7.3 contract). Keep aliases for older agent-written code.
+  strongest: SkillRow[];
+  weakest: SkillRow[];
 };
 
 type SortKey = "skill_code" | "mastery" | "attempts" | "correct_rate";
@@ -55,7 +57,7 @@ export default function AnalyticsPage() {
           api<StrengthsWeaknesses>("/analytics/me/strengths-weaknesses"),
         ]);
         setSkills(Array.isArray(s) ? s : []);
-        setSw(w ?? { strengths: [], weaknesses: [] });
+        setSw(w ?? { strongest: [], weakest: [] });
       } catch (e) {
         setError(String((e as Error).message));
       } finally {
@@ -96,8 +98,8 @@ export default function AnalyticsPage() {
       : (bv as number) - (av as number);
   });
 
-  const strengths = (sw?.strengths ?? []).slice(0, 5);
-  const weaknesses = (sw?.weaknesses ?? []).slice(0, 5);
+  const strengths = (sw?.strongest ?? []).slice(0, 5);
+  const weaknesses = (sw?.weakest ?? []).slice(0, 5);
 
   return (
     <div className="space-y-6">
