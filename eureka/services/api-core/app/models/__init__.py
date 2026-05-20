@@ -99,6 +99,16 @@ from app.models.workforce import (
     ComplianceStatusEnum,
     RegulationKind,
 )
+from app.models.community import (
+    CommunityThread,
+    CommunityPost,
+    CommunityReaction,
+    LearningResource,
+    LearningResourceVote,
+    CommunityTargetKind,
+    CommunityReactionKind,
+    ResourceKind,
+)
 from app.models.user_content import (
     ActivityEvent,
     UserCollection,
@@ -381,6 +391,14 @@ __all__ = [
     "GradEnrollmentStatus",
     "MilestoneKind",
     "MilestoneStatus",
+    "CommunityThread",
+    "CommunityPost",
+    "CommunityReaction",
+    "LearningResource",
+    "LearningResourceVote",
+    "CommunityTargetKind",
+    "CommunityReactionKind",
+    "ResourceKind",
     "ActivityEvent",
     "UserCollection",
     "CollectionItem",

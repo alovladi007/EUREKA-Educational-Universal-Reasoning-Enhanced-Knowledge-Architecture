@@ -1,338 +1,349 @@
-"use client"
+"use client";
 
-import Link from "next/link"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Progress } from "@/components/ui/progress"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
-  BookOpen,
-  Brain,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { api } from "@/lib/eureka-api";
+import {
+  Activity,
   Trophy,
-  Clock,
-  TrendingUp,
-  Play,
-  CheckCircle2,
-  AlertCircle,
+  FolderOpen,
+  GraduationCap,
+  Flame,
+  Brain,
   Target,
-  BarChart3,
-  FileCheck,
-  Sparkles,
-  Activity
-} from "lucide-react"
+  Compass,
+  CalendarClock,
+} from "lucide-react";
+
+type DashboardSummary = {
+  activity_count_7d?: number;
+  achievement_count?: number;
+  collection_count?: number;
+  enrollment_count?: number;
+  next_due_milestone_title?: string | null;
+  next_due_milestone_at?: string | null;
+  recent_activity?: Array<{
+    id: string;
+    kind: string;
+    summary: string;
+    created_at: string;
+  }>;
+};
+type Engagement = {
+  streak_days?: number;
+  level?: number;
+  xp_total?: number;
+  longest_streak_days?: number;
+} | null;
+type TierEnrollment = {
+  id: string;
+  tier: string;
+  framework: string | null;
+  target_date: string | null;
+  status: string;
+  created_at: string;
+};
+
+function relTime(iso: string): string {
+  try {
+    const t = new Date(iso).getTime();
+    if (!t) return iso;
+    const diff = Date.now() - t;
+    const sec = Math.floor(diff / 1000);
+    if (sec < 60) return `${sec}s ago`;
+    const min = Math.floor(sec / 60);
+    if (min < 60) return `${min}m ago`;
+    const hr = Math.floor(min / 60);
+    if (hr < 24) return `${hr}h ago`;
+    const d = Math.floor(hr / 24);
+    if (d < 30) return `${d}d ago`;
+    return new Date(iso).toLocaleDateString();
+  } catch {
+    return iso;
+  }
+}
 
 export default function DashboardPage() {
-  // Mock data - would come from API
-  const stats = {
-    coursesInProgress: 4,
-    completedAssignments: 23,
-    averageScore: 87,
-    timeSpent: "42h 15m",
-  }
+  const [summary, setSummary] = useState<DashboardSummary>({});
+  const [engagement, setEngagement] = useState<Engagement>(null);
+  const [enrollments, setEnrollments] = useState<TierEnrollment[]>([]);
+  const [error, setError] = useState<string | null>(null);
 
-  const recentCourses = [
-    {
-      id: "1",
-      title: "Advanced Calculus",
-      progress: 67,
-      nextLesson: "Integration Techniques",
-      dueDate: "Tomorrow",
-    },
-    {
-      id: "2",
-      title: "Data Structures & Algorithms",
-      progress: 45,
-      nextLesson: "Binary Search Trees",
-      dueDate: "In 3 days",
-    },
-    {
-      id: "3",
-      title: "Organic Chemistry",
-      progress: 82,
-      nextLesson: "Reaction Mechanisms",
-      dueDate: "Today",
-    },
-  ]
+  useEffect(() => {
+    (async () => {
+      try {
+        const [s, e, es] = await Promise.all([
+          api<DashboardSummary>("/me/dashboard").catch(() => ({} as DashboardSummary)),
+          api<Engagement>("/me/engagement").catch(() => null),
+          api<TierEnrollment[]>("/tier-enrollments/me").catch(() => []),
+        ]);
+        setSummary(s ?? {});
+        setEngagement(e ?? null);
+        setEnrollments(Array.isArray(es) ? es : []);
+      } catch (err) {
+        setError(String((err as Error)?.message ?? err));
+      }
+    })();
+  }, []);
 
-  const upcomingAssessments = [
-    {
-      id: "1",
-      title: "Calculus Midterm Exam",
-      course: "Advanced Calculus",
-      date: "Nov 15, 2024",
-      type: "Exam",
-    },
-    {
-      id: "2",
-      title: "Algorithm Analysis Quiz",
-      course: "Data Structures",
-      date: "Nov 12, 2024",
-      type: "Quiz",
-    },
-  ]
-
-  const recentActivity = [
-    { id: "1", action: "Completed", item: "Lecture 12: Linear Algebra", time: "2 hours ago" },
-    { id: "2", action: "Scored 92%", item: "Quiz: Chemistry Fundamentals", time: "Yesterday" },
-    { id: "3", action: "Started", item: "Lab: Binary Trees Implementation", time: "2 days ago" },
-  ]
-
-  const services = [
-    {
-      name: "AI Tutor",
-      description: "Chat with AI for personalized help",
-      icon: Brain,
-      href: "/dashboard/tutor",
-      color: "text-blue-600",
-      bgColor: "bg-blue-50",
-    },
-    {
-      name: "Test Prep",
-      description: "Adaptive exam preparation (GRE, GMAT, SAT)",
-      icon: Target,
-      href: "/dashboard/test-prep",
-      color: "text-emerald-600",
-      bgColor: "bg-emerald-50",
-    },
-    {
-      name: "My Courses",
-      description: "Browse and manage your courses",
-      icon: BookOpen,
-      href: "/dashboard/courses",
-      color: "text-green-600",
-      bgColor: "bg-green-50",
-    },
-    {
-      name: "Analytics",
-      description: "View performance insights",
-      icon: BarChart3,
-      href: "/dashboard/analytics",
-      color: "text-purple-600",
-      bgColor: "bg-purple-50",
-    },
-    {
-      name: "Assessments",
-      description: "Tests, quizzes, and assignments",
-      icon: FileCheck,
-      href: "/dashboard/assessments",
-      color: "text-orange-600",
-      bgColor: "bg-orange-50",
-    },
-    {
-      name: "Learning Path",
-      description: "Adaptive learning recommendations",
-      icon: Target,
-      href: "/dashboard/learning-path",
-      color: "text-pink-600",
-      bgColor: "bg-pink-50",
-    },
-    {
-      name: "System Status",
-      description: "View all services status",
-      icon: Activity,
-      href: "/system-status",
-      color: "text-indigo-600",
-      bgColor: "bg-indigo-50",
-    },
-    {
-      name: "Profile",
-      description: "Manage your settings",
-      icon: Trophy,
-      href: "/dashboard/profile",
-      color: "text-yellow-600",
-      bgColor: "bg-yellow-50",
-    },
-    {
-      name: "Teacher Tools",
-      description: "Course creation and management",
-      icon: Sparkles,
-      href: "/dashboard/teacher",
-      color: "text-red-600",
-      bgColor: "bg-red-50",
-    },
-  ]
+  const recent = Array.isArray(summary.recent_activity)
+    ? summary.recent_activity
+    : [];
+  const streak = engagement?.streak_days ?? null;
 
   return (
     <div className="space-y-6">
-      {/* Welcome Section */}
       <div>
-        <h1 className="text-3xl font-bold">Welcome back!</h1>
-        <p className="text-muted-foreground">Here's what's happening with your learning journey</p>
+        <h1 className="text-3xl font-bold">Dashboard</h1>
+        <p className="text-muted-foreground">
+          Live snapshot of your activity, enrollments, and next milestones —
+          straight from the EUREKA API.
+        </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {error && (
+        <Alert>
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Counter grid (5 cards) */}
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Courses in Progress</CardTitle>
-            <BookOpen className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Activity (7d)</CardTitle>
+            <Activity className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.coursesInProgress}</div>
-            <p className="text-xs text-muted-foreground">+1 from last month</p>
+            <div className="text-2xl font-bold">
+              {summary.activity_count_7d ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">last 7 days</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Assignments Completed</CardTitle>
-            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{stats.completedAssignments}</div>
-            <p className="text-xs text-muted-foreground">12% more than average</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Average Score</CardTitle>
+            <CardTitle className="text-sm font-medium">Achievements</CardTitle>
             <Trophy className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.averageScore}%</div>
-            <p className="text-xs text-muted-foreground">+5% from last week</p>
+            <div className="text-2xl font-bold">
+              {summary.achievement_count ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">earned</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Time Spent Learning</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-sm font-medium">Collections</CardTitle>
+            <FolderOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.timeSpent}</div>
-            <p className="text-xs text-muted-foreground">This month</p>
+            <div className="text-2xl font-bold">
+              {summary.collection_count ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">curated sets</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Enrollments</CardTitle>
+            <GraduationCap className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {summary.enrollment_count ?? enrollments.length ?? 0}
+            </div>
+            <p className="text-xs text-muted-foreground">active tiers</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Streak</CardTitle>
+            <Flame className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">
+              {streak == null ? "—" : `${streak}d`}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {engagement?.longest_streak_days != null
+                ? `longest ${engagement.longest_streak_days}d`
+                : "consecutive days"}
+            </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* EUREKA Services Grid */}
-      <Card>
-        <CardHeader>
-          <CardTitle>EUREKA Services</CardTitle>
-          <CardDescription>Access all platform features</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {services.map((service) => (
-              <Link key={service.name} href={service.href}>
-                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary">
-                  <CardContent className="pt-6">
-                    <div className="flex flex-col items-center text-center space-y-3">
-                      <div className={`${service.bgColor} p-3 rounded-lg`}>
-                        <service.icon className={`h-6 w-6 ${service.color}`} />
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Tier enrollments */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Your tier enrollments</CardTitle>
+            <CardDescription>
+              Live from <code>/tier-enrollments/me</code>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {enrollments.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No enrollments yet.{" "}
+                <Link href="/learner" className="text-primary underline">
+                  Enroll →
+                </Link>
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {enrollments.map((e) => (
+                  <li
+                    key={e.id}
+                    className="flex items-center justify-between rounded-md border p-3"
+                  >
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <Badge variant="secondary">{e.tier}</Badge>
+                        <span className="text-sm font-medium">
+                          {e.framework ?? "General"}
+                        </span>
                       </div>
-                      <div>
-                        <h3 className="font-semibold">{service.name}</h3>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          {service.description}
-                        </p>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        Status: {e.status}
+                        {e.target_date ? ` • Target ${e.target_date}` : ""}
                       </div>
                     </div>
-                  </CardContent>
-                </Card>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Next graduate milestone */}
+        {summary.next_due_milestone_title && (
+          <Card>
+            <CardHeader>
+              <CardTitle>Next graduate milestone</CardTitle>
+              <CardDescription>From your graduate program plan</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              <div className="flex items-start gap-3">
+                <CalendarClock className="mt-0.5 h-5 w-5 text-primary" />
+                <div className="min-w-0">
+                  <div className="font-medium">
+                    {summary.next_due_milestone_title}
+                  </div>
+                  {summary.next_due_milestone_at && (
+                    <div className="text-xs text-muted-foreground">
+                      Due {new Date(summary.next_due_milestone_at).toLocaleDateString()}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <Link
+                href="/dashboard/graduate"
+                className="text-sm text-primary underline"
+              >
+                Open graduate plan →
               </Link>
-            ))}
-          </div>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+
+      {/* Recent activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent activity</CardTitle>
+          <CardDescription>Your latest events on the platform</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {recent.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No recent activity yet. Practice a question or start a course to
+              see events here.
+            </p>
+          ) : (
+            <ul className="space-y-3">
+              {recent.map((a) => (
+                <li key={a.id} className="flex items-start gap-3">
+                  <Badge variant="outline" className="text-xs">
+                    {a.kind}
+                  </Badge>
+                  <div className="min-w-0 flex-1">
+                    <div className="text-sm">{a.summary}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {relTime(a.created_at)}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
         </CardContent>
       </Card>
 
-      <div className="grid gap-6 lg:grid-cols-2">
-        {/* Recent Courses */}
-        <Card className="lg:col-span-2">
-          <CardHeader>
-            <CardTitle>Continue Learning</CardTitle>
-            <CardDescription>Pick up where you left off</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {recentCourses.map((course) => (
-                <div
-                  key={course.id}
-                  className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent transition-colors"
-                >
-                  <div className="flex-1 space-y-2">
-                    <div className="flex items-center gap-2">
-                      <h4 className="font-semibold">{course.title}</h4>
-                      <Badge variant="outline" className="text-xs">
-                        {course.dueDate}
-                      </Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground">
-                      Next: {course.nextLesson}
-                    </p>
-                    <div className="flex items-center gap-2">
-                      <Progress value={course.progress} className="h-2" />
-                      <span className="text-sm font-medium">{course.progress}%</span>
-                    </div>
-                  </div>
-                  <Button size="sm" className="ml-4">
-                    <Play className="h-4 w-4 mr-2" />
-                    Continue
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Upcoming Assessments */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Upcoming Assessments</CardTitle>
-            <CardDescription>Don't miss these deadlines</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {upcomingAssessments.map((assessment) => (
-                <div
-                  key={assessment.id}
-                  className="flex items-start gap-3 rounded-lg border p-3"
-                >
-                  <AlertCircle className="h-5 w-5 text-orange-500 mt-0.5" />
-                  <div className="flex-1 space-y-1">
-                    <h4 className="text-sm font-semibold">{assessment.title}</h4>
-                    <p className="text-xs text-muted-foreground">{assessment.course}</p>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary" className="text-xs">
-                        {assessment.type}
-                      </Badge>
-                      <span className="text-xs">{assessment.date}</span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent Activity */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
-            <CardDescription>Your latest achievements</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {recentActivity.map((activity) => (
-                <div key={activity.id} className="flex gap-3">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                    <TrendingUp className="h-4 w-4 text-primary" />
-                  </div>
-                  <div className="flex-1 space-y-1">
-                    <p className="text-sm">
-                      <span className="font-medium">{activity.action}</span>{" "}
-                      {activity.item}
-                    </p>
-                    <p className="text-xs text-muted-foreground">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
+      {/* Quick links */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Link href="/dashboard/tutor">
+          <Card className="h-full cursor-pointer border-2 transition-shadow hover:border-primary hover:shadow-lg">
+            <CardContent className="flex items-center gap-4 pt-6">
+              <div className="rounded-lg bg-blue-50 p-3">
+                <Brain className="h-6 w-6 text-blue-600" />
+              </div>
+              <div>
+                <div className="font-semibold">AI Tutor</div>
+                <p className="text-xs text-muted-foreground">
+                  Chat with the tutor for personalized help
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/assessments">
+          <Card className="h-full cursor-pointer border-2 transition-shadow hover:border-primary hover:shadow-lg">
+            <CardContent className="flex items-center gap-4 pt-6">
+              <div className="rounded-lg bg-orange-50 p-3">
+                <Target className="h-6 w-6 text-orange-600" />
+              </div>
+              <div>
+                <div className="font-semibold">Practice</div>
+                <p className="text-xs text-muted-foreground">
+                  Adaptive quizzes and tests
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
+        <Link href="/dashboard/learning-path">
+          <Card className="h-full cursor-pointer border-2 transition-shadow hover:border-primary hover:shadow-lg">
+            <CardContent className="flex items-center gap-4 pt-6">
+              <div className="rounded-lg bg-pink-50 p-3">
+                <Compass className="h-6 w-6 text-pink-600" />
+              </div>
+              <div>
+                <div className="font-semibold">Learning Path</div>
+                <p className="text-xs text-muted-foreground">
+                  Adaptive recommendations for you
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
       </div>
     </div>
-  )
+  );
 }

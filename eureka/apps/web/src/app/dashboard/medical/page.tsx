@@ -1,461 +1,621 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { apiClient } from '@/lib/api-client';
-// Tabs component not needed - using simple sections
+import { useEffect, useState } from "react";
+import Link from "next/link";
 import {
-  BookOpen,
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
+import { api } from "@/lib/eureka-api";
+import {
   Stethoscope,
-  ClipboardList,
-  Activity,
-  TrendingUp,
-  Award,
-  Clock,
-  CheckCircle,
-  Bot,
-  MessageCircle,
-  Brain,
-  FileText,
-  PenTool,
-} from 'lucide-react';
+  BookOpen,
+  Sparkles,
+  MessageSquare,
+  Folder,
+  Search,
+  GraduationCap,
+  Target,
+} from "lucide-react";
 
-export default function MedicalEducationPage() {
-  const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [usmleQuestions, setUsmleQuestions] = useState<any[]>([]);
-  const [clinicalCases, setClinicalCases] = useState<any[]>([]);
-  const [statistics, setStatistics] = useState<any>(null);
+const TIER = "medical";
+const TITLE = "Medical Education";
+const FRAMEWORKS = ["usmle", "usmle_step_1", "mbe"];
+
+type TierEnrollment = {
+  id: string;
+  tier: string;
+  framework: string | null;
+  target_date: string | null;
+  status: string;
+  created_at: string;
+};
+type Course = {
+  id: string;
+  title: string;
+  description?: string | null;
+  tier?: string | null;
+  level?: string | null;
+  instructor_id?: string | null;
+  created_at?: string;
+};
+type CoursePage = {
+  items?: Course[];
+  total?: number;
+  page?: number;
+  pages?: number;
+};
+type Recommendation = {
+  skill_id?: string;
+  framework?: string;
+  code?: string;
+  name?: string;
+  tier?: string;
+  score?: number;
+  reason?: unknown;
+};
+type SkillMastery = {
+  skill_code: string;
+  mastery: number;
+  attempts?: number;
+  correct_rate?: number;
+};
+type Thread = {
+  id: string;
+  title?: string;
+  body?: string;
+  author_id?: string;
+  tier?: string | null;
+  created_at?: string;
+  reply_count?: number;
+};
+type Resource = {
+  id: string;
+  title?: string;
+  url?: string | null;
+  description?: string | null;
+  tier?: string | null;
+  kind?: string | null;
+};
+
+function renderReason(reason: unknown): string {
+  if (typeof reason === "string") return reason;
+  if (!reason || typeof reason !== "object") return "";
+  const obj = reason as Record<string, unknown>;
+  const notes = obj.notes;
+  if (Array.isArray(notes) && notes.length > 0)
+    return (notes as unknown[]).join(" · ");
+  const ent = Object.entries(obj)
+    .filter(([, v]) => typeof v === "number" && (v as number) > 0)
+    .map(([k, v]) => `${k.replace(/_/g, " ")}: ${(v as number).toFixed(2)}`);
+  return ent.length > 0 ? ent.join(" · ") : "";
+}
+
+export default function MedicalPage() {
+  const [enrollments, setEnrollments] = useState<TierEnrollment[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [recs, setRecs] = useState<Recommendation[]>([]);
+  const [skills, setSkills] = useState<SkillMastery[]>([]);
+  const [threads, setThreads] = useState<Thread[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
+  const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
-    loadMedicalData();
+    (async () => {
+      try {
+        const [es, cs, rs, ms, ts, rsx] = await Promise.all([
+          api<TierEnrollment[]>("/tier-enrollments/me").catch(() => []),
+          api<CoursePage | Course[]>(`/courses/?limit=50&tier=${TIER}`).catch(
+            () => ({ items: [] }),
+          ),
+          api<Recommendation[]>("/recommendations/me").catch(() => []),
+          api<SkillMastery[]>("/analytics/me/skills").catch(() => []),
+          api<Thread[]>(`/community/threads?tier=${TIER}&limit=10`).catch(
+            () => [],
+          ),
+          api<Resource[]>(`/resources?tier=${TIER}&limit=10`).catch(() => []),
+        ]);
+        setEnrollments(
+          (Array.isArray(es) ? es : []).filter((e) => e.tier === TIER),
+        );
+        const items = Array.isArray(cs)
+          ? (cs as Course[])
+          : Array.isArray((cs as CoursePage)?.items)
+            ? ((cs as CoursePage).items as Course[])
+            : [];
+        setCourses(items);
+        const recList = Array.isArray(rs) ? rs : [];
+        setRecs(
+          recList.filter(
+            (r) =>
+              !r.framework ||
+              FRAMEWORKS.includes(String(r.framework).toLowerCase()),
+          ),
+        );
+        setSkills(Array.isArray(ms) ? ms : []);
+        setThreads(Array.isArray(ts) ? ts : []);
+        setResources(Array.isArray(rsx) ? rsx : []);
+      } catch (e) {
+        setError(String((e as Error)?.message ?? e));
+      }
+    })();
   }, []);
 
-  const loadMedicalData = async () => {
-    try {
-      setLoading(true);
-
-      // Fetch USMLE questions - medical service is on port 8030
-      const questions = await apiClient.getUSMLEQuestions({ limit: 10 });
-      setUsmleQuestions(questions || []);
-
-      // Fetch clinical cases
-      const cases = await apiClient.getClinicalCases({ limit: 10 });
-      setClinicalCases(cases || []);
-
-      // Fetch statistics
-      const stats = await apiClient.getUSMLEStatistics();
-      setStatistics(stats || {
-        total_questions_attempted: 0,
-        correct_answers: 0,
-        accuracy_rate: 0,
-        average_time_per_question: 0
-      });
-    } catch (error) {
-      console.error('Error loading medical data:', error);
-      // Set empty defaults on error
-      setUsmleQuestions([]);
-      setClinicalCases([]);
-      setStatistics({
-        total_questions_attempted: 0,
-        correct_answers: 0,
-        accuracy_rate: 0,
-        average_time_per_question: 0
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const filteredCourses = courses.filter((c) =>
+    search.trim().length === 0
+      ? true
+      : (c.title ?? "").toLowerCase().includes(search.toLowerCase()) ||
+        (c.description ?? "").toLowerCase().includes(search.toLowerCase()),
+  );
+  const topSkills = [...skills].sort((a, b) => b.mastery - a.mastery).slice(0, 5);
+  const bottomSkills = [...skills]
+    .sort((a, b) => a.mastery - b.mastery)
+    .slice(0, 5);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-          <div>
-            <h1 className="text-3xl font-bold mb-2">Medical Education</h1>
-            <p className="text-muted-foreground">
-              USMLE preparation, clinical cases, and medical assessments
-            </p>
-          </div>
-
-          {/* Statistics Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <Card className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Questions Completed</p>
-                  <p className="text-2xl font-bold">{statistics?.total_questions_attempted || 0}</p>
-                </div>
-                <BookOpen className="w-8 h-8 text-blue-500" />
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Accuracy Rate</p>
-                  <p className="text-2xl font-bold">
-                    {statistics?.accuracy_rate
-                      ? `${(statistics.accuracy_rate * 100).toFixed(1)}%`
-                      : '0%'}
-                  </p>
-                </div>
-                <TrendingUp className="w-8 h-8 text-green-500" />
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Correct Answers</p>
-                  <p className="text-2xl font-bold">{statistics?.correct_answers || 0}</p>
-                </div>
-                <CheckCircle className="w-8 h-8 text-emerald-500" />
-              </div>
-            </Card>
-
-            <Card className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">Avg Time/Question</p>
-                  <p className="text-2xl font-bold">
-                    {statistics?.average_time_per_question
-                      ? `${Math.round(statistics.average_time_per_question)}s`
-                      : '0s'}
-                  </p>
-                </div>
-                <Clock className="w-8 h-8 text-orange-500" />
-              </div>
-            </Card>
-          </div>
-
-          {/* Content Studio Section */}
-          <div className="space-y-4">
-            <Card className="p-8 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-full bg-purple-500/10">
-                    <PenTool className="w-8 h-8 text-purple-600" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
-                      Content Studio
-                    </h2>
-                    <p className="text-muted-foreground max-w-2xl">
-                      Create and manage educational content with rich formatting, citations, and version control.
-                      Author modules, lessons, and learning objectives with a professional editor.
-                    </p>
-                    <div className="flex gap-3 mt-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <FileText className="w-4 h-4 text-purple-600" />
-                        <span>Rich Text Editor</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <BookOpen className="w-4 h-4 text-purple-600" />
-                        <span>Citations & Media</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <TrendingUp className="w-4 h-4 text-purple-600" />
-                        <span>Version Control</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Link href="/dashboard/medical/content-studio">
-                  <Button size="lg" className="bg-purple-600 hover:bg-purple-700">
-                    <PenTool className="w-4 h-4 mr-2" />
-                    Create Content
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          </div>
-
-          {/* AI Tutor Section */}
-          <div className="space-y-4">
-            <Card className="p-8 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border-primary/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-full bg-primary/10">
-                    <Bot className="w-8 h-8 text-primary" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
-                      AI Medical Tutor
-                    </h2>
-                    <p className="text-muted-foreground max-w-2xl">
-                      Get personalized help with medical concepts, clinical reasoning, and exam preparation.
-                      Ask questions, receive evidence-based explanations, and learn with the Socratic method.
-                    </p>
-                    <div className="flex gap-3 mt-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <MessageCircle className="w-4 h-4 text-primary" />
-                        <span>Interactive Chat</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Stethoscope className="w-4 h-4 text-primary" />
-                        <span>Clinical Focus</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <TrendingUp className="w-4 h-4 text-primary" />
-                        <span>Adaptive Learning</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Link href="/dashboard/medical/ai-tutor">
-                  <Button size="lg">
-                    <MessageCircle className="w-4 h-4 mr-2" />
-                    Start Conversation
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          </div>
-
-          {/* USMLE Questions Section */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold flex items-center gap-2">
-                <BookOpen className="w-6 h-6" />
-                USMLE Question Bank
-              </h2>
-              <Button onClick={() => router.push('/dashboard/medical/qbank')}>
-                <BookOpen className="w-4 h-4 mr-2" />
-                Start Practice Session
-              </Button>
+      {/* Welcome */}
+      <Card className="border-rose-500/20 bg-gradient-to-br from-rose-500/10 via-rose-500/5 to-transparent">
+        <CardContent className="flex items-start justify-between gap-4 pt-6">
+          <div className="flex items-start gap-4">
+            <div className="rounded-full bg-rose-500/10 p-3">
+              <Stethoscope className="h-8 w-8 text-rose-600" />
             </div>
-
-            {loading ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">Loading questions...</p>
-              </div>
-            ) : usmleQuestions.length === 0 ? (
-              <Card className="p-12 text-center">
-                <BookOpen className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Questions Available</h3>
-                <p className="text-muted-foreground mb-4">
-                  Start by adding USMLE questions to your question bank
-                </p>
-                <Button>Add Questions</Button>
-              </Card>
-            ) : (
-              <div className="grid gap-4">
-                {usmleQuestions.map((question) => (
-                  <Card key={question.id} className="p-6 hover:shadow-lg transition-shadow">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <span className="inline-block px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700 mr-2">
-                            {question.difficulty_level}
-                          </span>
-                          <span className="inline-block px-2 py-1 text-xs rounded-full bg-purple-100 text-purple-700">
-                            {question.subject}
-                          </span>
-                        </div>
-                        <Button variant="outline" size="sm">Practice</Button>
-                      </div>
-                      <p className="font-medium">{question.question_text}</p>
-                      {question.vignette && (
-                        <p className="text-sm text-muted-foreground">{question.vignette}</p>
-                      )}
-                      <div className="flex gap-4 text-sm text-muted-foreground">
-                        <span>Topic: {question.topic}</span>
-                      </div>
-                    </div>
-                  </Card>
+            <div>
+              <h1 className="mb-1 text-3xl font-bold">{TITLE}</h1>
+              <p className="text-muted-foreground">
+                Real-time view of your medical tier — live courses,
+                recommendations, skill mastery, discussions, and resources from
+                the EUREKA API.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {FRAMEWORKS.map((f) => (
+                  <Badge key={f} variant="secondary" className="uppercase">
+                    {f}
+                  </Badge>
                 ))}
               </div>
-            )}
+            </div>
           </div>
+        </CardContent>
+      </Card>
 
-          {/* Clinical Cases Section */}
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-2xl font-semibold flex items-center gap-2">
-                <Stethoscope className="w-6 h-6" />
-                Clinical Case Studies
-              </h2>
-              <Link href="/dashboard/medical/cases">
-                <Button>
-                  <Stethoscope className="w-4 h-4 mr-2" />
-                  Browse All Cases
-                </Button>
+      {error && (
+        <Alert>
+          <AlertTitle>Something went wrong</AlertTitle>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Courses</p>
+                <p className="text-2xl font-bold">{courses.length}</p>
+              </div>
+              <BookOpen className="h-6 w-6 text-rose-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Enrollments</p>
+                <p className="text-2xl font-bold">{enrollments.length}</p>
+              </div>
+              <GraduationCap className="h-6 w-6 text-blue-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Recommendations</p>
+                <p className="text-2xl font-bold">{recs.length}</p>
+              </div>
+              <Sparkles className="h-6 w-6 text-purple-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Skills tracked</p>
+                <p className="text-2xl font-bold">{skills.length}</p>
+              </div>
+              <Target className="h-6 w-6 text-orange-500" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Enrollments */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Your enrollments in this tier</CardTitle>
+          <CardDescription>
+            Live from <code>/tier-enrollments/me</code>
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {enrollments.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              You are not enrolled in this tier yet.{" "}
+              <Link href="/learner" className="text-primary underline">
+                Enroll →
               </Link>
-            </div>
-
-            {loading ? (
-              <div className="text-center py-12">
-                <p className="text-muted-foreground">Loading cases...</p>
-              </div>
-            ) : clinicalCases.length === 0 ? (
-              <Card className="p-12 text-center">
-                <Stethoscope className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-                <h3 className="text-lg font-semibold mb-2">No Clinical Cases Available</h3>
-                <p className="text-muted-foreground mb-4">
-                  Clinical cases help you practice diagnostic reasoning
-                </p>
-                <Link href="/dashboard/medical/cases">
-                  <Button>Browse Cases</Button>
-                </Link>
-              </Card>
-            ) : (
-              <div className="grid gap-4">
-                {clinicalCases.map((clinicalCase) => (
-                  <Card key={clinicalCase.id} className="p-6 hover:shadow-lg transition-shadow">
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-start">
-                        <h3 className="text-lg font-semibold">{clinicalCase.title}</h3>
-                        <Link href={`/dashboard/medical/cases/${clinicalCase.id}`}>
-                          <Button variant="outline" size="sm">Start Case</Button>
-                        </Link>
-                      </div>
-                      <p className="text-muted-foreground">{clinicalCase.description}</p>
-                      <div className="flex gap-4 text-sm">
-                        <span className="px-2 py-1 rounded-full bg-green-100 text-green-700">
-                          {clinicalCase.specialty}
-                        </span>
-                        <span className="px-2 py-1 rounded-full bg-orange-100 text-orange-700">
-                          {clinicalCase.complexity}
-                        </span>
-                      </div>
-                      <p className="text-sm text-muted-foreground">
-                        Patient: {clinicalCase.patient_age}y {clinicalCase.patient_sex}
-                      </p>
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {enrollments.map((e) => (
+                <li
+                  key={e.id}
+                  className="flex items-center justify-between rounded-md border p-3"
+                >
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">{e.tier}</Badge>
+                      <span className="font-medium">
+                        {e.framework ?? "General"}
+                      </span>
                     </div>
-                  </Card>
-                ))}
-              </div>
+                    <div className="mt-1 text-xs text-muted-foreground">
+                      Status: {e.status}
+                      {e.target_date ? ` • Target ${e.target_date}` : ""}
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Courses */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <CardTitle>Courses</CardTitle>
+              <CardDescription>
+                Live from <code>/courses?tier={TIER}</code>
+              </CardDescription>
+            </div>
+            <div className="relative w-64 max-w-full">
+              <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search courses…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {filteredCourses.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No courses found for this tier yet.
+            </p>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2">
+              {filteredCourses.map((c) => (
+                <div
+                  key={c.id}
+                  className="rounded-md border p-3 transition-colors hover:bg-accent"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="font-semibold">{c.title}</h4>
+                    {c.level && (
+                      <Badge variant="outline" className="text-xs">
+                        {c.level}
+                      </Badge>
+                    )}
+                  </div>
+                  {c.description && (
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                      {c.description}
+                    </p>
+                  )}
+                  <div className="mt-2">
+                    <Link
+                      href={`/dashboard/courses/${c.id}`}
+                      className="text-xs text-primary underline"
+                    >
+                      Open course →
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Recommendations */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Top recommendations</CardTitle>
+          <CardDescription>
+            From <code>/recommendations/me</code> filtered to{" "}
+            {FRAMEWORKS.join(", ")}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {recs.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No recommendations yet. Practice a few questions and they will
+              show up here.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {recs.slice(0, 8).map((r, i) => (
+                <li
+                  key={`${r.skill_id ?? r.code ?? "rec"}-${i}`}
+                  className="flex items-start justify-between gap-3 rounded-md border p-3"
+                >
+                  <div className="min-w-0">
+                    <div className="font-medium">
+                      {r.name ?? r.code ?? r.skill_id ?? "Untitled"}
+                    </div>
+                    {r.reason !== undefined && (
+                      <div className="text-xs text-muted-foreground">
+                        {renderReason(r.reason)}
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {typeof r.score === "number" && (
+                      <span className="text-xs text-muted-foreground">
+                        {r.score.toFixed(2)}
+                      </span>
+                    )}
+                    <Badge variant="outline" className="uppercase">
+                      {r.framework ?? "rec"}
+                    </Badge>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Skill mastery */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Skill mastery snapshot</CardTitle>
+          <CardDescription>
+            From <code>/analytics/me/skills</code>
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid gap-6 md:grid-cols-2">
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+              Strongest
+            </h3>
+            {topSkills.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No data yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {topSkills.map((s) => {
+                  const pct = Math.round((s.mastery ?? 0) * 100);
+                  return (
+                    <li key={`top-${s.skill_code}`}>
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium">{s.skill_code}</span>
+                        <span className="text-muted-foreground">{pct}%</span>
+                      </div>
+                      <div className="mt-1 h-2 rounded bg-secondary">
+                        <div
+                          className="h-full rounded bg-emerald-500"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
+              </ul>
             )}
           </div>
-
-          {/* OSCE Section */}
-          <div className="space-y-4">
-            <Card className="p-8 bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent border-blue-500/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-full bg-blue-500/10">
-                    <ClipboardList className="w-8 h-8 text-blue-500" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
-                      OSCE Practice Stations
-                    </h2>
-                    <p className="text-muted-foreground max-w-2xl">
-                      Practice clinical skills with standardized OSCE scenarios. Comprehensive checklists,
-                      timed examinations, and detailed feedback on history taking, physical exam, and communication skills.
-                    </p>
-                    <div className="flex gap-3 mt-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Stethoscope className="w-4 h-4 text-blue-500" />
-                        <span>Multiple Domains</span>
+          <div>
+            <h3 className="mb-2 text-sm font-semibold text-muted-foreground">
+              Needs work
+            </h3>
+            {bottomSkills.length === 0 ? (
+              <p className="text-sm text-muted-foreground">No data yet.</p>
+            ) : (
+              <ul className="space-y-2">
+                {bottomSkills.map((s) => {
+                  const pct = Math.round((s.mastery ?? 0) * 100);
+                  return (
+                    <li key={`bot-${s.skill_code}`}>
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium">{s.skill_code}</span>
+                        <span className="text-muted-foreground">{pct}%</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Clock className="w-4 h-4 text-blue-500" />
-                        <span>Timed Exams</span>
+                      <div className="mt-1 h-2 rounded bg-secondary">
+                        <div
+                          className="h-full rounded bg-amber-500"
+                          style={{ width: `${pct}%` }}
+                        />
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Award className="w-4 h-4 text-blue-500" />
-                        <span>Performance Tracking</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Link href="/dashboard/medical/osce">
-                  <Button size="lg" className="bg-blue-500 hover:bg-blue-600">
-                    <ClipboardList className="w-4 h-4 mr-2" />
-                    Browse Stations
-                  </Button>
-                </Link>
-              </div>
-            </Card>
+                    </li>
+                  );
+                })}
+              </ul>
+            )}
           </div>
+        </CardContent>
+      </Card>
 
-          {/* 3D Anatomy Section */}
-          <div className="space-y-4">
-            <Card className="p-8 bg-gradient-to-br from-purple-500/10 via-purple-500/5 to-transparent border-purple-500/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-full bg-purple-500/10">
-                    <Activity className="w-8 h-8 text-purple-500" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
-                      3D Anatomy Viewer
-                    </h2>
-                    <p className="text-muted-foreground max-w-2xl">
-                      Interactive 3D visualization of human anatomy. Explore skeletal, cardiovascular, nervous, and organ systems
-                      with real-time layer controls and multiple viewing angles.
-                    </p>
-                    <div className="flex gap-3 mt-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Activity className="w-4 h-4 text-purple-500" />
-                        <span>Interactive 3D</span>
+      {/* Community + Resources */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" /> Discussions on this tier
+            </CardTitle>
+            <CardDescription>
+              Live from <code>/community/threads?tier={TIER}</code>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {threads.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No discussions yet. Be the first to start one.
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {threads.map((t) => (
+                  <li
+                    key={t.id}
+                    className="rounded-md border p-3 hover:bg-accent"
+                  >
+                    <Link
+                      href={`/dashboard/community/${t.id}`}
+                      className="block"
+                    >
+                      <div className="font-medium">
+                        {t.title ?? "Untitled thread"}
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <BookOpen className="w-4 h-4 text-purple-500" />
-                        <span>Multiple Systems</span>
+                      {t.body && (
+                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                          {t.body}
+                        </p>
+                      )}
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        {typeof t.reply_count === "number"
+                          ? `${t.reply_count} replies`
+                          : "Open thread"}
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Award className="w-4 h-4 text-purple-500" />
-                        <span>Layer Controls</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <Link href="/dashboard/medical/anatomy">
-                  <Button size="lg" className="bg-purple-500 hover:bg-purple-600">
-                    <Activity className="w-4 h-4 mr-2" />
-                    Open Viewer
-                  </Button>
-                </Link>
-              </div>
-            </Card>
-          </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
 
-          {/* ML Demos Section */}
-          <div className="space-y-4">
-            <Card className="p-8 bg-gradient-to-br from-green-500/10 via-green-500/5 to-transparent border-green-500/20">
-              <div className="flex items-center justify-between">
-                <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-full bg-green-500/10">
-                    <Brain className="w-8 h-8 text-green-500" />
-                  </div>
-                  <div>
-                    <h2 className="text-2xl font-semibold flex items-center gap-2 mb-2">
-                      AI/ML Model Demos
-                    </h2>
-                    <p className="text-muted-foreground max-w-2xl">
-                      Explore state-of-the-art machine learning models for medical image analysis. Try ECG interpretation,
-                      chest X-ray classification, and dermatology lesion detection with real-time predictions.
-                    </p>
-                    <div className="flex gap-3 mt-4">
-                      <div className="flex items-center gap-2 text-sm">
-                        <Brain className="w-4 h-4 text-green-500" />
-                        <span>Deep Learning</span>
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Folder className="h-5 w-5" /> Resources
+            </CardTitle>
+            <CardDescription>
+              Live from <code>/resources?tier={TIER}</code>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {resources.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No resources tagged for this tier yet.
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {resources.map((r) => (
+                  <li key={r.id} className="rounded-md border p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="font-medium">
+                          {r.url ? (
+                            <a
+                              href={r.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-primary underline"
+                            >
+                              {r.title ?? r.url}
+                            </a>
+                          ) : (
+                            r.title ?? "Untitled"
+                          )}
+                        </div>
+                        {r.description && (
+                          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                            {r.description}
+                          </p>
+                        )}
                       </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <Activity className="w-4 h-4 text-green-500" />
-                        <span>Real-time Analysis</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm">
-                        <TrendingUp className="w-4 h-4 text-green-500" />
-                        <span>3 Specialties</span>
-                      </div>
+                      {r.kind && (
+                        <Badge variant="outline" className="text-xs">
+                          {r.kind}
+                        </Badge>
+                      )}
                     </div>
-                  </div>
-                </div>
-                <Link href="/dashboard/medical/ml-demos">
-                  <Button size="lg" className="bg-green-500 hover:bg-green-600">
-                    <Brain className="w-4 h-4 mr-2" />
-                    Try Demos
-                  </Button>
-                </Link>
-              </div>
-            </Card>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Specialized medical modules — the rich pre-existing subroutes */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Specialized medical modules</CardTitle>
+          <CardDescription>
+            Each is a self-contained module under{" "}
+            <span className="font-mono text-xs">/dashboard/medical/*</span>.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {[
+              { href: "/dashboard/medical/qbank", title: "USMLE QBank", hint: "Practice questions with IRT difficulty + detailed explanations." },
+              { href: "/dashboard/medical/qbank/analytics", title: "QBank Analytics", hint: "Performance breakdown by system, skill, and time-on-question." },
+              { href: "/dashboard/medical/cases", title: "Clinical Cases", hint: "Multi-step cases — history, exam, labs, differential, plan." },
+              { href: "/dashboard/medical/osce", title: "OSCE Stations", hint: "Scripted patient encounters with rubric-graded performance." },
+              { href: "/dashboard/medical/anatomy", title: "3D Anatomy", hint: "Browse systems, organs, regional anatomy with labels." },
+              { href: "/dashboard/medical/ai-tutor", title: "Medical AI Tutor", hint: "Phase 6 Claude agent with clinical-reasoning system prompt." },
+              { href: "/dashboard/medical/ml-demos", title: "ML Demos", hint: "In-browser demos of medical AI models (imaging, NLP, etc.)." },
+              { href: "/dashboard/medical/content-studio", title: "Content Studio", hint: "Author + edit USMLE-style items with AI variant generation." },
+            ].map((m) => (
+              <Link key={m.href} href={m.href}>
+                <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer">
+                  <CardContent className="p-4">
+                    <div className="font-semibold">{m.title}</div>
+                    <p className="text-xs text-muted-foreground mt-1">{m.hint}</p>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Keep going */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Keep going</CardTitle>
+        </CardHeader>
+        <CardContent className="flex flex-wrap gap-3">
+          <Link href="/dashboard/tutor">
+            <Button variant="outline">Ask the AI tutor</Button>
+          </Link>
+          <Link href="/dashboard/assessments">
+            <Button variant="outline">Practice a question</Button>
+          </Link>
+          <Link href="/dashboard/learning-path">
+            <Button variant="outline">Open learning path</Button>
+          </Link>
+        </CardContent>
+      </Card>
     </div>
   );
 }

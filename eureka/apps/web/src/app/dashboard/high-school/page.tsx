@@ -10,85 +10,183 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Input } from "@/components/ui/input";
 import { api } from "@/lib/eureka-api";
-import { School } from "lucide-react";
+import {
+  School,
+  BookOpen,
+  Sparkles,
+  MessageSquare,
+  Folder,
+  Search,
+  GraduationCap,
+  Target,
+} from "lucide-react";
 
-type LearnerProfile = {
-  user_id: string;
-  primary_tier: string | null;
-  goals: string[];
-  knowledge_state: Record<string, number>;
-};
+const TIER = "high_school";
+const TITLE = "High School";
+const FRAMEWORKS = ["ngss", "ccss", "ap"];
+
 type TierEnrollment = {
   id: string;
-  user_id: string;
   tier: string;
   framework: string | null;
   target_date: string | null;
   status: string;
   created_at: string;
 };
+type Course = {
+  id: string;
+  title: string;
+  description?: string | null;
+  tier?: string | null;
+  level?: string | null;
+  instructor_id?: string | null;
+  created_at?: string;
+};
+type CoursePage = {
+  items?: Course[];
+  total?: number;
+  page?: number;
+  pages?: number;
+};
 type Recommendation = {
-  id?: string;
-  title?: string;
-  reason?: string;
-  skill_code?: string;
+  skill_id?: string;
   framework?: string;
+  code?: string;
+  name?: string;
+  tier?: string;
   score?: number;
-} & Record<string, unknown>;
+  reason?: unknown;
+};
 type SkillMastery = {
   skill_code: string;
   mastery: number;
-  attempts: number;
+  attempts?: number;
   correct_rate?: number;
-  p50_time_ms?: number;
+};
+type Thread = {
+  id: string;
+  title?: string;
+  body?: string;
+  author_id?: string;
+  tier?: string | null;
+  created_at?: string;
+  reply_count?: number;
+};
+type Resource = {
+  id: string;
+  title?: string;
+  url?: string | null;
+  description?: string | null;
+  tier?: string | null;
+  kind?: string | null;
 };
 
-const TIER = "high_school";
-const TITLE = "High School";
-const SUBHEAD =
-  "Real-time view of your high school tier — courses, recommendations, and skill mastery, all driven by the live API.";
-const FRAMEWORKS = ["CCSS", "NGSS", "AP"];
+function renderReason(reason: unknown): string {
+  if (typeof reason === "string") return reason;
+  if (!reason || typeof reason !== "object") return "";
+  const obj = reason as Record<string, unknown>;
+  const notes = obj.notes;
+  if (Array.isArray(notes) && notes.length > 0)
+    return (notes as unknown[]).join(" · ");
+  const ent = Object.entries(obj)
+    .filter(([, v]) => typeof v === "number" && (v as number) > 0)
+    .map(([k, v]) => `${k.replace(/_/g, " ")}: ${(v as number).toFixed(2)}`);
+  return ent.length > 0 ? ent.join(" · ") : "";
+}
 
-export default function Page() {
-  const [, setProfile] = useState<LearnerProfile | null>(null);
+export default function HighSchoolPage() {
   const [enrollments, setEnrollments] = useState<TierEnrollment[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [recs, setRecs] = useState<Recommendation[]>([]);
   const [skills, setSkills] = useState<SkillMastery[]>([]);
+  const [threads, setThreads] = useState<Thread[]>([]);
+  const [resources, setResources] = useState<Resource[]>([]);
   const [error, setError] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     (async () => {
       try {
-        const [p, es, rs, ms] = await Promise.all([
-          api<LearnerProfile>("/learner-profile/me").catch(() => null),
+        const [es, cs, rs, ms, ts, rsx] = await Promise.all([
           api<TierEnrollment[]>("/tier-enrollments/me").catch(() => []),
+          api<CoursePage | Course[]>(`/courses/?limit=50&tier=${TIER}`).catch(
+            () => ({ items: [] }),
+          ),
           api<Recommendation[]>("/recommendations/me").catch(() => []),
           api<SkillMastery[]>("/analytics/me/skills").catch(() => []),
+          api<Thread[]>(`/community/threads?tier=${TIER}&limit=10`).catch(
+            () => [],
+          ),
+          api<Resource[]>(`/resources?tier=${TIER}&limit=10`).catch(() => []),
         ]);
-        setProfile(p);
-        setEnrollments((es ?? []).filter((e) => e.tier === TIER));
-        setRecs(rs ?? []);
-        setSkills(ms ?? []);
+        setEnrollments(
+          (Array.isArray(es) ? es : []).filter((e) => e.tier === TIER),
+        );
+        const items = Array.isArray(cs)
+          ? (cs as Course[])
+          : Array.isArray((cs as CoursePage)?.items)
+            ? ((cs as CoursePage).items as Course[])
+            : [];
+        setCourses(items);
+        const recList = Array.isArray(rs) ? rs : [];
+        setRecs(
+          recList.filter(
+            (r) =>
+              !r.framework ||
+              FRAMEWORKS.includes(String(r.framework).toLowerCase()),
+          ),
+        );
+        setSkills(Array.isArray(ms) ? ms : []);
+        setThreads(Array.isArray(ts) ? ts : []);
+        setResources(Array.isArray(rsx) ? rsx : []);
       } catch (e) {
-        setError(String((e as Error).message));
+        setError(String((e as Error)?.message ?? e));
       }
     })();
   }, []);
 
+  const filteredCourses = courses.filter((c) =>
+    search.trim().length === 0
+      ? true
+      : (c.title ?? "").toLowerCase().includes(search.toLowerCase()) ||
+        (c.description ?? "").toLowerCase().includes(search.toLowerCase()),
+  );
   const topSkills = [...skills].sort((a, b) => b.mastery - a.mastery).slice(0, 5);
-  const bottomSkills = [...skills].sort((a, b) => a.mastery - b.mastery).slice(0, 5);
+  const bottomSkills = [...skills]
+    .sort((a, b) => a.mastery - b.mastery)
+    .slice(0, 5);
 
   return (
-    <div className="container mx-auto max-w-5xl space-y-6 p-6">
-      <header className="flex items-center gap-3">
-        <School className="h-7 w-7 text-primary" />
-        <div>
-          <h1 className="text-2xl font-bold">{TITLE}</h1>
-          <p className="text-sm text-muted-foreground">{SUBHEAD}</p>
-        </div>
-      </header>
+    <div className="space-y-6">
+      {/* Welcome */}
+      <Card className="border-blue-500/20 bg-gradient-to-br from-blue-500/10 via-blue-500/5 to-transparent">
+        <CardContent className="flex items-start justify-between gap-4 pt-6">
+          <div className="flex items-start gap-4">
+            <div className="rounded-full bg-blue-500/10 p-3">
+              <School className="h-8 w-8 text-blue-600" />
+            </div>
+            <div>
+              <h1 className="mb-1 text-3xl font-bold">{TITLE}</h1>
+              <p className="text-muted-foreground">
+                Real-time view of your {TITLE.toLowerCase()} tier — live courses,
+                recommendations, skill mastery, discussion, and resources from
+                the EUREKA API.
+              </p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {FRAMEWORKS.map((f) => (
+                  <Badge key={f} variant="secondary" className="uppercase">
+                    {f}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
 
       {error && (
         <Alert>
@@ -97,11 +195,60 @@ export default function Page() {
         </Alert>
       )}
 
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Courses</p>
+                <p className="text-2xl font-bold">{courses.length}</p>
+              </div>
+              <BookOpen className="h-6 w-6 text-blue-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Enrollments</p>
+                <p className="text-2xl font-bold">{enrollments.length}</p>
+              </div>
+              <GraduationCap className="h-6 w-6 text-emerald-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Recommendations</p>
+                <p className="text-2xl font-bold">{recs.length}</p>
+              </div>
+              <Sparkles className="h-6 w-6 text-purple-500" />
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardContent className="pt-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Skills tracked</p>
+                <p className="text-2xl font-bold">{skills.length}</p>
+              </div>
+              <Target className="h-6 w-6 text-orange-500" />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Enrollments */}
       <Card>
         <CardHeader>
           <CardTitle>Your enrollments in this tier</CardTitle>
           <CardDescription>
-            Frameworks tracked here: {FRAMEWORKS.join(", ")}
+            Live from <code>/tier-enrollments/me</code>
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -120,15 +267,17 @@ export default function Page() {
                   className="flex items-center justify-between rounded-md border p-3"
                 >
                   <div>
-                    <div className="font-medium">
-                      {e.framework ?? "General"}
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary">{e.tier}</Badge>
+                      <span className="font-medium">
+                        {e.framework ?? "General"}
+                      </span>
                     </div>
-                    <div className="text-xs text-muted-foreground">
+                    <div className="mt-1 text-xs text-muted-foreground">
                       Status: {e.status}
                       {e.target_date ? ` • Target ${e.target_date}` : ""}
                     </div>
                   </div>
-                  <Badge variant="secondary">{e.tier}</Badge>
                 </li>
               ))}
             </ul>
@@ -136,11 +285,74 @@ export default function Page() {
         </CardContent>
       </Card>
 
+      {/* Courses */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <CardTitle>Courses</CardTitle>
+              <CardDescription>
+                Live from <code>/courses?tier={TIER}</code>
+              </CardDescription>
+            </div>
+            <div className="relative w-64 max-w-full">
+              <Search className="pointer-events-none absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Search courses…"
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="pl-8"
+              />
+            </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {filteredCourses.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No courses found for this tier yet.
+            </p>
+          ) : (
+            <div className="grid gap-3 md:grid-cols-2">
+              {filteredCourses.map((c) => (
+                <div
+                  key={c.id}
+                  className="rounded-md border p-3 transition-colors hover:bg-accent"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <h4 className="font-semibold">{c.title}</h4>
+                    {c.level && (
+                      <Badge variant="outline" className="text-xs">
+                        {c.level}
+                      </Badge>
+                    )}
+                  </div>
+                  {c.description && (
+                    <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                      {c.description}
+                    </p>
+                  )}
+                  <div className="mt-2">
+                    <Link
+                      href={`/dashboard/courses/${c.id}`}
+                      className="text-xs text-primary underline"
+                    >
+                      Open course →
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Recommendations */}
       <Card>
         <CardHeader>
           <CardTitle>Top recommendations</CardTitle>
           <CardDescription>
-            Personalized next steps from the recommender service.
+            From <code>/recommendations/me</code> filtered to{" "}
+            {FRAMEWORKS.join(", ")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -151,33 +363,31 @@ export default function Page() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {recs.slice(0, 6).map((r, i) => (
+              {recs.slice(0, 8).map((r, i) => (
                 <li
-                  key={r.id ?? `${r.skill_code ?? "rec"}-${i}`}
+                  key={`${r.skill_id ?? r.code ?? "rec"}-${i}`}
                   className="flex items-start justify-between gap-3 rounded-md border p-3"
                 >
                   <div className="min-w-0">
                     <div className="font-medium">
-                      {r.title ?? r.skill_code ?? "Untitled"}
+                      {r.name ?? r.code ?? r.skill_id ?? "Untitled"}
                     </div>
-                    {r.reason && (
+                    {r.reason !== undefined && (
                       <div className="text-xs text-muted-foreground">
-                        {typeof r.reason === "string"
-                          ? r.reason
-                          : (() => {
-                              const notes = (r.reason as any)?.notes;
-                              if (Array.isArray(notes) && notes.length > 0) return notes.join(" · ");
-                              const ent = Object.entries(r.reason as Record<string, unknown>)
-                                .filter(([, v]) => typeof v === "number" && (v as number) > 0)
-                                .map(([k, v]) => `${k.replace(/_/g, " ")}: ${(v as number).toFixed(2)}`);
-                              return ent.length > 0 ? ent.join(" · ") : "";
-                            })()}
+                        {renderReason(r.reason)}
                       </div>
                     )}
                   </div>
-                  <Badge variant="outline">
-                    {r.framework ?? r.skill_code ?? "rec"}
-                  </Badge>
+                  <div className="flex items-center gap-2">
+                    {typeof r.score === "number" && (
+                      <span className="text-xs text-muted-foreground">
+                        {r.score.toFixed(2)}
+                      </span>
+                    )}
+                    <Badge variant="outline" className="uppercase">
+                      {r.framework ?? "rec"}
+                    </Badge>
+                  </div>
                 </li>
               ))}
             </ul>
@@ -185,11 +395,12 @@ export default function Page() {
         </CardContent>
       </Card>
 
+      {/* Skill mastery */}
       <Card>
         <CardHeader>
           <CardTitle>Skill mastery snapshot</CardTitle>
           <CardDescription>
-            Top 5 strongest and 5 weakest skills, from your live analytics.
+            From <code>/analytics/me/skills</code>
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-6 md:grid-cols-2">
@@ -201,24 +412,23 @@ export default function Page() {
               <p className="text-sm text-muted-foreground">No data yet.</p>
             ) : (
               <ul className="space-y-2">
-                {topSkills.map((s) => (
-                  <li key={`top-${s.skill_code}`}>
-                    <div className="flex justify-between text-xs">
-                      <span className="font-medium">{s.skill_code}</span>
-                      <span className="text-muted-foreground">
-                        {Math.round(s.mastery * 100)}%
-                      </span>
-                    </div>
-                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-emerald-500"
-                        style={{
-                          width: `${Math.round(s.mastery * 100)}%`,
-                        }}
-                      />
-                    </div>
-                  </li>
-                ))}
+                {topSkills.map((s) => {
+                  const pct = Math.round((s.mastery ?? 0) * 100);
+                  return (
+                    <li key={`top-${s.skill_code}`}>
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium">{s.skill_code}</span>
+                        <span className="text-muted-foreground">{pct}%</span>
+                      </div>
+                      <div className="mt-1 h-2 rounded bg-secondary">
+                        <div
+                          className="h-full rounded bg-emerald-500"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
@@ -230,43 +440,145 @@ export default function Page() {
               <p className="text-sm text-muted-foreground">No data yet.</p>
             ) : (
               <ul className="space-y-2">
-                {bottomSkills.map((s) => (
-                  <li key={`bot-${s.skill_code}`}>
-                    <div className="flex justify-between text-xs">
-                      <span className="font-medium">{s.skill_code}</span>
-                      <span className="text-muted-foreground">
-                        {Math.round(s.mastery * 100)}%
-                      </span>
-                    </div>
-                    <div className="mt-1 h-2 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className="h-full rounded-full bg-amber-500"
-                        style={{
-                          width: `${Math.round(s.mastery * 100)}%`,
-                        }}
-                      />
-                    </div>
-                  </li>
-                ))}
+                {bottomSkills.map((s) => {
+                  const pct = Math.round((s.mastery ?? 0) * 100);
+                  return (
+                    <li key={`bot-${s.skill_code}`}>
+                      <div className="flex justify-between text-xs">
+                        <span className="font-medium">{s.skill_code}</span>
+                        <span className="text-muted-foreground">{pct}%</span>
+                      </div>
+                      <div className="mt-1 h-2 rounded bg-secondary">
+                        <div
+                          className="h-full rounded bg-amber-500"
+                          style={{ width: `${pct}%` }}
+                        />
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
             )}
           </div>
         </CardContent>
       </Card>
 
+      {/* Community + Resources */}
+      <div className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5" /> Discussions on this tier
+            </CardTitle>
+            <CardDescription>
+              Live from <code>/community/threads?tier={TIER}</code>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {threads.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No discussions yet. Be the first to start one.
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {threads.map((t) => (
+                  <li
+                    key={t.id}
+                    className="rounded-md border p-3 hover:bg-accent"
+                  >
+                    <Link
+                      href={`/dashboard/community/${t.id}`}
+                      className="block"
+                    >
+                      <div className="font-medium">
+                        {t.title ?? "Untitled thread"}
+                      </div>
+                      {t.body && (
+                        <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                          {t.body}
+                        </p>
+                      )}
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        {typeof t.reply_count === "number"
+                          ? `${t.reply_count} replies`
+                          : "Open thread"}
+                      </div>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Folder className="h-5 w-5" /> Resources
+            </CardTitle>
+            <CardDescription>
+              Live from <code>/resources?tier={TIER}</code>
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {resources.length === 0 ? (
+              <p className="text-sm text-muted-foreground">
+                No resources tagged for this tier yet.
+              </p>
+            ) : (
+              <ul className="space-y-2">
+                {resources.map((r) => (
+                  <li key={r.id} className="rounded-md border p-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="min-w-0">
+                        <div className="font-medium">
+                          {r.url ? (
+                            <a
+                              href={r.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="text-primary underline"
+                            >
+                              {r.title ?? r.url}
+                            </a>
+                          ) : (
+                            r.title ?? "Untitled"
+                          )}
+                        </div>
+                        {r.description && (
+                          <p className="mt-1 text-xs text-muted-foreground line-clamp-2">
+                            {r.description}
+                          </p>
+                        )}
+                      </div>
+                      {r.kind && (
+                        <Badge variant="outline" className="text-xs">
+                          {r.kind}
+                        </Badge>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Keep going */}
       <Card>
         <CardHeader>
           <CardTitle>Keep going</CardTitle>
         </CardHeader>
-        <CardContent className="flex flex-col gap-2 text-sm">
-          <Link href="/dashboard/tutor" className="text-primary underline">
-            Ask the AI tutor about a topic →
+        <CardContent className="flex flex-wrap gap-3">
+          <Link href="/dashboard/tutor">
+            <Button variant="outline">Ask the AI tutor</Button>
           </Link>
-          <Link
-            href="/dashboard/assessments"
-            className="text-primary underline"
-          >
-            Practice a question now →
+          <Link href="/dashboard/assessments">
+            <Button variant="outline">Practice a question</Button>
+          </Link>
+          <Link href="/dashboard/learning-path">
+            <Button variant="outline">Open learning path</Button>
           </Link>
         </CardContent>
       </Card>
