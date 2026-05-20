@@ -60,7 +60,7 @@ export default function XRLabsPage() {
     setLoading(true);
     try {
       const [res, cols] = await Promise.all([
-        api<Resource[]>("/resources?q=xr").catch(() => [] as Resource[]),
+        api<Resource[]>("/resources?tag=xr").catch(() => [] as Resource[]),
         api<Collection[]>("/me/collections?kind=study_set").catch(() => [] as Collection[]),
       ]);
       setResources(Array.isArray(res) ? res : []);
@@ -214,7 +214,7 @@ export default function XRLabsPage() {
           <CardTitle className="text-base">XR resources ({resources.length})</CardTitle>
           <CardDescription>
             Curated resources tagged with "xr" / "vr" / "ar". Wired to{" "}
-            <span className="font-mono text-[11px]">/resources?q=xr</span>. Add new
+            <span className="font-mono text-[11px]">/resources?tag=xr</span>. Add new
             entries from{" "}
             <Link href="/dashboard/resources" className="text-primary hover:underline">
               /dashboard/resources

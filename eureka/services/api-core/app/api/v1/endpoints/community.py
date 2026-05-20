@@ -30,7 +30,7 @@ from typing import Optional
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import or_, select
+from sqlalchemy import func, literal, or_, select
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -351,6 +351,7 @@ async def list_resources(
     skill_code: Optional[str] = None,
     kind: Optional[str] = None,
     q: Optional[str] = Query(None, max_length=120),
+    tag: Optional[str] = Query(None, max_length=60),
     limit: int = Query(100, ge=1, le=500),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -368,11 +369,18 @@ async def list_resources(
     if kind:
         qry = qry.where(LearningResource.kind == kind)
     if q:
+        # q searches title + description + tags membership (Postgres ANY()
+        # on the TEXT[] column) so a query like q=xr surfaces resources
+        # whose title doesn't contain "xr" but that are tagged xr/vr/ar/etc.
         pat = f"%{q.lower()}%"
         qry = qry.where(or_(
             LearningResource.title.ilike(pat),
             LearningResource.description_md.ilike(pat),
+            literal(q.lower()) == func.any(LearningResource.tags),
         ))
+    if tag:
+        # Exact-tag filter on the tags[] array.
+        qry = qry.where(literal(tag.lower()) == func.any(LearningResource.tags))
     qry = qry.order_by(
         LearningResource.sme_endorsed.desc(),
         LearningResource.upvote_count.desc(),
