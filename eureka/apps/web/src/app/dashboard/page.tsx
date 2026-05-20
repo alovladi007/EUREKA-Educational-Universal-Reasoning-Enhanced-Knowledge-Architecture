@@ -1,237 +1,338 @@
-"use client";
+"use client"
 
-/**
- * Phase 17 — Dashboard home, rebuilt on real APIs.
- *
- * Single GET /me/dashboard powers the four counters + recent activity.
- * Counters: 7-day activity, achievements, collections, tier enrollments.
- * Plus next-due graduate milestone and most-recent activity rows. No
- * more hardcoded "Advanced Calculus 67%" mocks.
- */
-
-import { useEffect, useState } from "react";
-import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { api, formatDate } from "@/lib/eureka-api";
+import Link from "next/link"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Progress } from "@/components/ui/progress"
+import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
 import {
-  Activity, Trophy, FolderKanban, GraduationCap, Target, BookOpen,
-  Sparkles, FileText, Clock,
-} from "lucide-react";
+  BookOpen,
+  Brain,
+  Trophy,
+  Clock,
+  TrendingUp,
+  Play,
+  CheckCircle2,
+  AlertCircle,
+  Target,
+  BarChart3,
+  FileCheck,
+  Sparkles,
+  Activity
+} from "lucide-react"
 
-type ActivityRow = {
-  id: string;
-  kind: string;
-  summary: string;
-  ref_table: string | null;
-  ref_id: string | null;
-  created_at: string;
-};
+export default function DashboardPage() {
+  // Mock data - would come from API
+  const stats = {
+    coursesInProgress: 4,
+    completedAssignments: 23,
+    averageScore: 87,
+    timeSpent: "42h 15m",
+  }
 
-type DashboardSummary = {
-  user_id: string;
-  org_id: string;
-  activity_count_7d: number;
-  achievement_count: number;
-  collection_count: number;
-  enrollment_count: number;
-  next_due_milestone_title: string | null;
-  next_due_milestone_at: string | null;
-  recent_activity: ActivityRow[];
-};
+  const recentCourses = [
+    {
+      id: "1",
+      title: "Advanced Calculus",
+      progress: 67,
+      nextLesson: "Integration Techniques",
+      dueDate: "Tomorrow",
+    },
+    {
+      id: "2",
+      title: "Data Structures & Algorithms",
+      progress: 45,
+      nextLesson: "Binary Search Trees",
+      dueDate: "In 3 days",
+    },
+    {
+      id: "3",
+      title: "Organic Chemistry",
+      progress: 82,
+      nextLesson: "Reaction Mechanisms",
+      dueDate: "Today",
+    },
+  ]
 
-const KIND_ICON: Record<string, React.ComponentType<{ className?: string }>> = {
-  attempt_completed: Target,
-  mock_completed: FileText,
-  skill_mastered: Sparkles,
-  course_enrolled: BookOpen,
-  course_completed: BookOpen,
-  note_created: FolderKanban,
-  collection_created: FolderKanban,
-  collection_item_added: FolderKanban,
-  community_posted: Activity,
-  community_replied: Activity,
-  achievement_earned: Trophy,
-  streak_milestone: Sparkles,
-  tutor_session: Sparkles,
-  resource_bookmarked: BookOpen,
-  profile_updated: Activity,
-  system: Activity,
-};
+  const upcomingAssessments = [
+    {
+      id: "1",
+      title: "Calculus Midterm Exam",
+      course: "Advanced Calculus",
+      date: "Nov 15, 2024",
+      type: "Exam",
+    },
+    {
+      id: "2",
+      title: "Algorithm Analysis Quiz",
+      course: "Data Structures",
+      date: "Nov 12, 2024",
+      type: "Quiz",
+    },
+  ]
 
-export default function DashboardHomePage() {
-  const [data, setData] = useState<DashboardSummary | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const recentActivity = [
+    { id: "1", action: "Completed", item: "Lecture 12: Linear Algebra", time: "2 hours ago" },
+    { id: "2", action: "Scored 92%", item: "Quiz: Chemistry Fundamentals", time: "Yesterday" },
+    { id: "3", action: "Started", item: "Lab: Binary Trees Implementation", time: "2 days ago" },
+  ]
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const d = await api<DashboardSummary>("/me/dashboard");
-        setData(d);
-      } catch (e) {
-        setError(String((e as Error).message));
-      }
-    })();
-  }, []);
+  const services = [
+    {
+      name: "AI Tutor",
+      description: "Chat with AI for personalized help",
+      icon: Brain,
+      href: "/dashboard/tutor",
+      color: "text-blue-600",
+      bgColor: "bg-blue-50",
+    },
+    {
+      name: "Test Prep",
+      description: "Adaptive exam preparation (GRE, GMAT, SAT)",
+      icon: Target,
+      href: "/dashboard/test-prep",
+      color: "text-emerald-600",
+      bgColor: "bg-emerald-50",
+    },
+    {
+      name: "My Courses",
+      description: "Browse and manage your courses",
+      icon: BookOpen,
+      href: "/dashboard/courses",
+      color: "text-green-600",
+      bgColor: "bg-green-50",
+    },
+    {
+      name: "Analytics",
+      description: "View performance insights",
+      icon: BarChart3,
+      href: "/dashboard/analytics",
+      color: "text-purple-600",
+      bgColor: "bg-purple-50",
+    },
+    {
+      name: "Assessments",
+      description: "Tests, quizzes, and assignments",
+      icon: FileCheck,
+      href: "/dashboard/assessments",
+      color: "text-orange-600",
+      bgColor: "bg-orange-50",
+    },
+    {
+      name: "Learning Path",
+      description: "Adaptive learning recommendations",
+      icon: Target,
+      href: "/dashboard/learning-path",
+      color: "text-pink-600",
+      bgColor: "bg-pink-50",
+    },
+    {
+      name: "System Status",
+      description: "View all services status",
+      icon: Activity,
+      href: "/system-status",
+      color: "text-indigo-600",
+      bgColor: "bg-indigo-50",
+    },
+    {
+      name: "Profile",
+      description: "Manage your settings",
+      icon: Trophy,
+      href: "/dashboard/profile",
+      color: "text-yellow-600",
+      bgColor: "bg-yellow-50",
+    },
+    {
+      name: "Teacher Tools",
+      description: "Course creation and management",
+      icon: Sparkles,
+      href: "/dashboard/teacher",
+      color: "text-red-600",
+      bgColor: "bg-red-50",
+    },
+  ]
 
   return (
     <div className="space-y-6">
+      {/* Welcome Section */}
       <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-slate-600 mt-1">
-          Live snapshot of your learning. Everything below is fetched from the
-          API — no mock data.
-        </p>
+        <h1 className="text-3xl font-bold">Welcome back!</h1>
+        <p className="text-muted-foreground">Here's what's happening with your learning journey</p>
       </div>
 
-      {error && (
-        <Alert variant="destructive">
-          <AlertTitle>Could not load dashboard</AlertTitle>
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        <CounterCard
-          icon={Activity}
-          label="Activity (last 7d)"
-          value={data?.activity_count_7d ?? "—"}
-          href="/dashboard/community"
-        />
-        <CounterCard
-          icon={Trophy}
-          label="Achievements"
-          value={data?.achievement_count ?? "—"}
-          href="/learner"
-        />
-        <CounterCard
-          icon={FolderKanban}
-          label="Collections"
-          value={data?.collection_count ?? "—"}
-          href="/dashboard/notebook"
-        />
-        <CounterCard
-          icon={GraduationCap}
-          label="Tier enrollments"
-          value={data?.enrollment_count ?? "—"}
-          href="/learner"
-        />
-      </div>
-
-      {data?.next_due_milestone_title && (
+      {/* Stats Grid */}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
         <Card>
-          <CardHeader>
-            <CardTitle className="text-base flex items-center gap-2">
-              <Clock className="h-5 w-5 text-amber-600" /> Next graduate milestone
-            </CardTitle>
-            <CardDescription>
-              {data.next_due_milestone_title}
-              {data.next_due_milestone_at && (
-                <> · due {formatDate(data.next_due_milestone_at)}</>
-              )}
-            </CardDescription>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Courses in Progress</CardTitle>
+            <BookOpen className="h-4 w-4 text-muted-foreground" />
           </CardHeader>
           <CardContent>
-            <Link href="/graduate" className="text-sm text-primary hover:underline">
-              Open my graduate work →
-            </Link>
+            <div className="text-2xl font-bold">{stats.coursesInProgress}</div>
+            <p className="text-xs text-muted-foreground">+1 from last month</p>
           </CardContent>
         </Card>
-      )}
 
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Assignments Completed</CardTitle>
+            <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.completedAssignments}</div>
+            <p className="text-xs text-muted-foreground">12% more than average</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Average Score</CardTitle>
+            <Trophy className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.averageScore}%</div>
+            <p className="text-xs text-muted-foreground">+5% from last week</p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <CardTitle className="text-sm font-medium">Time Spent Learning</CardTitle>
+            <Clock className="h-4 w-4 text-muted-foreground" />
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">{stats.timeSpent}</div>
+            <p className="text-xs text-muted-foreground">This month</p>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* EUREKA Services Grid */}
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Recent activity</CardTitle>
-          <CardDescription>
-            Your last 7 days. Comes from <span className="font-mono text-[11px]">/me/activity</span>.
-          </CardDescription>
+          <CardTitle>EUREKA Services</CardTitle>
+          <CardDescription>Access all platform features</CardDescription>
         </CardHeader>
         <CardContent>
-          {data === null && !error && <p className="text-slate-500 text-sm">Loading…</p>}
-          {data && data.recent_activity.length === 0 && (
-            <p className="text-slate-500 text-sm">
-              No activity yet. Try a question on{" "}
-              <Link href="/dashboard/assessments" className="text-primary hover:underline">Assessments</Link>{" "}
-              or start a session with the{" "}
-              <Link href="/dashboard/tutor" className="text-primary hover:underline">AI Tutor</Link>.
-            </p>
-          )}
-          {data && data.recent_activity.length > 0 && (
-            <ul className="divide-y">
-              {data.recent_activity.map((e) => {
-                const Icon = KIND_ICON[e.kind] ?? Activity;
-                return (
-                  <li key={e.id} className="py-3 flex items-start gap-3">
-                    <div className="rounded-md bg-slate-100 p-2">
-                      <Icon className="h-4 w-4 text-slate-700" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm text-slate-900 truncate">{e.summary}</div>
-                      <div className="text-xs text-slate-500 mt-0.5">
-                        <Badge variant="outline" className="mr-2 text-[10px]">
-                          {e.kind.replace(/_/g, " ")}
-                        </Badge>
-                        {formatDate(e.created_at)}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service) => (
+              <Link key={service.name} href={service.href}>
+                <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer border-2 hover:border-primary">
+                  <CardContent className="pt-6">
+                    <div className="flex flex-col items-center text-center space-y-3">
+                      <div className={`${service.bgColor} p-3 rounded-lg`}>
+                        <service.icon className={`h-6 w-6 ${service.color}`} />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold">{service.name}</h3>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {service.description}
+                        </p>
                       </div>
                     </div>
-                  </li>
-                );
-              })}
-            </ul>
-          )}
-        </CardContent>
-      </Card>
-
-      <div className="grid gap-4 sm:grid-cols-3">
-        <QuickLink href="/dashboard/tutor" icon={Sparkles} label="Open AI Tutor" hint="Phase 6 Claude agent with RAG" />
-        <QuickLink href="/dashboard/assessments" icon={Target} label="Practice questions" hint="Phase 5 item bank + hybrid search" />
-        <QuickLink href="/dashboard/learning-path" icon={GraduationCap} label="What to study next" hint="Phase 4.5 recommender" />
-      </div>
-    </div>
-  );
-}
-
-function CounterCard({
-  icon: Icon, label, value, href,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  value: number | string;
-  href: string;
-}) {
-  return (
-    <Link href={href}>
-      <Card className="hover:border-primary/40 transition-colors h-full">
-        <CardHeader className="pb-2 flex flex-row items-center justify-between space-y-0">
-          <CardDescription>{label}</CardDescription>
-          <Icon className="h-4 w-4 text-slate-400" />
-        </CardHeader>
-        <CardContent className="text-3xl font-bold tabular-nums">{value}</CardContent>
-      </Card>
-    </Link>
-  );
-}
-
-function QuickLink({
-  href, icon: Icon, label, hint,
-}: {
-  href: string;
-  icon: React.ComponentType<{ className?: string }>;
-  label: string;
-  hint: string;
-}) {
-  return (
-    <Link href={href}>
-      <Card className="hover:border-primary/40 transition-colors h-full">
-        <CardContent className="p-4 flex items-start gap-3">
-          <Icon className="h-5 w-5 text-primary mt-0.5" />
-          <div className="min-w-0">
-            <div className="font-medium">{label}</div>
-            <div className="text-xs text-slate-500 mt-0.5">{hint}</div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
           </div>
         </CardContent>
       </Card>
-    </Link>
-  );
+
+      <div className="grid gap-6 lg:grid-cols-2">
+        {/* Recent Courses */}
+        <Card className="lg:col-span-2">
+          <CardHeader>
+            <CardTitle>Continue Learning</CardTitle>
+            <CardDescription>Pick up where you left off</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              {recentCourses.map((course) => (
+                <div
+                  key={course.id}
+                  className="flex items-center justify-between rounded-lg border p-4 hover:bg-accent transition-colors"
+                >
+                  <div className="flex-1 space-y-2">
+                    <div className="flex items-center gap-2">
+                      <h4 className="font-semibold">{course.title}</h4>
+                      <Badge variant="outline" className="text-xs">
+                        {course.dueDate}
+                      </Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground">
+                      Next: {course.nextLesson}
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <Progress value={course.progress} className="h-2" />
+                      <span className="text-sm font-medium">{course.progress}%</span>
+                    </div>
+                  </div>
+                  <Button size="sm" className="ml-4">
+                    <Play className="h-4 w-4 mr-2" />
+                    Continue
+                  </Button>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Upcoming Assessments */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Upcoming Assessments</CardTitle>
+            <CardDescription>Don't miss these deadlines</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {upcomingAssessments.map((assessment) => (
+                <div
+                  key={assessment.id}
+                  className="flex items-start gap-3 rounded-lg border p-3"
+                >
+                  <AlertCircle className="h-5 w-5 text-orange-500 mt-0.5" />
+                  <div className="flex-1 space-y-1">
+                    <h4 className="text-sm font-semibold">{assessment.title}</h4>
+                    <p className="text-xs text-muted-foreground">{assessment.course}</p>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="secondary" className="text-xs">
+                        {assessment.type}
+                      </Badge>
+                      <span className="text-xs">{assessment.date}</span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Recent Activity */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Recent Activity</CardTitle>
+            <CardDescription>Your latest achievements</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {recentActivity.map((activity) => (
+                <div key={activity.id} className="flex gap-3">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                    <TrendingUp className="h-4 w-4 text-primary" />
+                  </div>
+                  <div className="flex-1 space-y-1">
+                    <p className="text-sm">
+                      <span className="font-medium">{activity.action}</span>{" "}
+                      {activity.item}
+                    </p>
+                    <p className="text-xs text-muted-foreground">{activity.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
+  )
 }
