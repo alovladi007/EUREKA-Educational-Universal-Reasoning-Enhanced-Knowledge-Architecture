@@ -114,9 +114,14 @@ export default function DashboardAIResearchPage() {
     setStarting(true);
     setStartErr(null);
     try {
+      // /agent/sessions SessionCreate accepts {skill_id?, item_id?, mode}
+      // where mode ∈ socratic|direct|practice. "research" isn't a valid
+      // AgentMode and `role` isn't a field — passing them returns 422.
+      // We use socratic (the default Phase 6 mode) and the /dashboard/tutor
+      // page handles the conversation.
       const body = await api<{ id?: string }>("/agent/sessions", {
         method: "POST",
-        body: JSON.stringify({ mode: "research", role: "research_assistant" }),
+        body: JSON.stringify({ mode: "socratic" }),
       });
       const sid = body?.id;
       router.push(sid ? `/dashboard/tutor?session=${encodeURIComponent(sid)}` : "/dashboard/tutor");

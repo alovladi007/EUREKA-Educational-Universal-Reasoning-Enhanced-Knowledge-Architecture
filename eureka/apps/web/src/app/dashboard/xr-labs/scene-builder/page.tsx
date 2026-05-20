@@ -18,7 +18,10 @@
  */
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { Card } from '@/components/ui/card';
+import { Wrench } from 'lucide-react';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
@@ -81,6 +84,55 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_XR_API_URL || 'http://localhost:300
 // =====================================================
 
 export default function SceneBuilderPage() {
+  // Microservice health gate: if services/xr-labs/ isn't running on :3005,
+  // every API call here returns ERR_CONNECTION_REFUSED and Three.js
+  // crashes trying to add(undefined) objects to the scene. Show a clean
+  // "start the microservice" page in that case instead of mounting.
+  const [msHealthy, setMsHealthy] = useState<boolean | null>(null);
+  useEffect(() => {
+    const ctl = new AbortController();
+    fetch(`${API_BASE_URL}/scene-builder/templates`, { signal: ctl.signal })
+      .then((r) => setMsHealthy(r.ok))
+      .catch(() => setMsHealthy(false));
+    return () => ctl.abort();
+  }, []);
+
+  if (msHealthy === false) {
+    return (
+      <div className="max-w-2xl mx-auto p-8">
+        <Card className="p-6 space-y-3">
+          <h1 className="text-2xl font-bold flex items-center gap-2">
+            <Wrench className="h-6 w-6 text-amber-600" />
+            XR microservice not running
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            The Scene Builder is a full Three.js editor wired to the
+            separate <code className="font-mono text-xs">services/xr-labs/</code> Node
+            microservice on <code className="font-mono text-xs">:3005</code>. That
+            service isn&apos;t reachable right now, so we can&apos;t load
+            assets, templates, or save scenes.
+          </p>
+          <div className="rounded-md bg-muted p-3 font-mono text-xs">
+            cd services/xr-labs && npm install && npm run dev
+          </div>
+          <p className="text-xs text-muted-foreground">
+            Or set <code className="font-mono text-[11px]">NEXT_PUBLIC_XR_API_URL</code> to
+            point at a remote XR API. Until then, use
+            <Link href="/dashboard/xr-labs" className="text-primary hover:underline ml-1">XR Labs</Link>
+            (real EUREKA study sets + resources) which doesn&apos;t need this microservice.
+          </p>
+        </Card>
+      </div>
+    );
+  }
+  if (msHealthy === null) {
+    return <div className="p-8 text-muted-foreground text-sm">Connecting to XR microservice…</div>;
+  }
+
+  return <SceneBuilderEditor />;
+}
+
+function SceneBuilderEditor() {
   const router = useRouter();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 

@@ -98,6 +98,10 @@ export default function LearningPathPage() {
 
   // generate form
   const [genFramework, setGenFramework] = useState<string>("ABET");
+  // /me/study-plan StudyPlanGenerateRequest requires {tier, framework,
+  // target_date} — `tier` was missing before, causing a 422. Defaulting
+  // to "undergraduate" which is the right pairing for ABET.
+  const [genTier, setGenTier] = useState<string>("undergraduate");
   const [genDate, setGenDate] = useState<string>(todayPlus(56));
   const [generating, setGenerating] = useState(false);
 
@@ -143,6 +147,7 @@ export default function LearningPathPage() {
       const created = await api<StudyPlan>("/me/study-plan", {
         method: "POST",
         body: JSON.stringify({
+          tier: genTier,
           framework: genFramework,
           target_date: genDate,
         }),
@@ -375,7 +380,23 @@ export default function LearningPathPage() {
                     <p className="text-sm text-muted-foreground">
                       No active plan yet. Generate one below.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                      <div>
+                        <label className="text-xs font-medium mb-1 block">
+                          Tier
+                        </label>
+                        <select
+                          className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"
+                          value={genTier}
+                          onChange={(e) => setGenTier(e.target.value)}
+                        >
+                          <option value="high_school">High school</option>
+                          <option value="undergraduate">Undergraduate</option>
+                          <option value="graduate">Graduate</option>
+                          <option value="medical">Medical</option>
+                          <option value="test_prep">Test prep</option>
+                        </select>
+                      </div>
                       <div>
                         <label className="text-xs font-medium mb-1 block">
                           Framework
@@ -386,9 +407,7 @@ export default function LearningPathPage() {
                           onChange={(e) => setGenFramework(e.target.value)}
                         >
                           {FRAMEWORK_OPTIONS.map((f) => (
-                            <option key={f} value={f}>
-                              {f}
-                            </option>
+                            <option key={f} value={f}>{f}</option>
                           ))}
                         </select>
                       </div>
