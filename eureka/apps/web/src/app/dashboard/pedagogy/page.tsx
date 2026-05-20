@@ -1,282 +1,254 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+/**
+ * Dashboard Pedagogy — explains how EUREKA actually teaches.
+ *
+ * Wired to the real api-core (via @/lib/eureka-api):
+ *   GET /skills?limit=100  → first 100 skills from the Phase 4.2 skill graph
+ *
+ * Replaces the old defunct :8040 microservice page. No mock "active models"
+ * stats, no fabricated learner counts.
+ */
+
+import { useEffect, useState } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { api } from "@/lib/eureka-api";
 import {
-  BookOpen,
-  Brain,
-  TrendingUp,
-  Users,
-  Target,
-  CheckCircle,
-  BarChart,
-  Lightbulb,
-  Award,
-  Activity,
-} from 'lucide-react';
+  BookOpen, Network, Layers, GitBranch, AlertCircle, ExternalLink,
+} from "lucide-react";
 
-const PEDAGOGY_API = process.env.NEXT_PUBLIC_PEDAGOGY_URL || 'http://localhost:8040';
+type Skill = {
+  id: string;
+  framework?: string;
+  code?: string;
+  name?: string;
+  bloom_level?: string | null;
+  description?: string | null;
+};
 
-export default function PedagogyPage() {
+function toText(x: unknown): string {
+  if (x == null) return "";
+  if (typeof x === "string") return x;
+  try { return JSON.stringify(x); } catch { return String(x); }
+}
+
+const GITHUB_BASE = "https://github.com/alovladi007/EUREKA/blob/main";
+
+export default function DashboardPedagogyPage() {
+  const [skills, setSkills] = useState<Skill[]>([]);
   const [loading, setLoading] = useState(true);
-  const [statistics, setStatistics] = useState<any>(null);
-  const [models, setModels] = useState<any[]>([]);
+  const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
-    loadPedagogyData();
+    (async () => {
+      try {
+        const body = await api<Skill[]>("/skills?limit=100").catch(() => [] as Skill[]);
+        setSkills(Array.isArray(body) ? body : []);
+      } catch (e) {
+        setErr(toText((e as Error).message));
+        setSkills([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
   }, []);
 
-  const loadPedagogyData = async () => {
-    try {
-      setLoading(true);
+  const frameworks = Array.from(
+    new Set(skills.map((s) => s.framework).filter(Boolean) as string[]),
+  );
+  const blooms = Array.from(
+    new Set(skills.map((s) => s.bloom_level).filter(Boolean) as string[]),
+  );
 
-      // Fetch from pedagogy service
-      const response = await fetch(`${PEDAGOGY_API}/api/v1/models`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setModels(data.models || []);
-        setStatistics(data.statistics || {
-          active_models: 0,
-          total_learners: 0,
-          avg_performance: 0,
-          compliance_score: 0
-        });
-      } else {
-        throw new Error('Failed to fetch pedagogy data');
-      }
-    } catch (error) {
-      console.error('Error loading pedagogy data:', error);
-      setStatistics({
-        active_models: 12,
-        total_learners: 8543,
-        avg_performance: 87.5,
-        compliance_score: 98.2
-      });
-      setModels([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  const frameworkCounts = frameworks
+    .map((fw) => ({
+      framework: fw,
+      count: skills.filter((s) => s.framework === fw).length,
+    }))
+    .sort((a, b) => b.count - a.count);
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">Adaptive Pedagogy</h1>
-        <p className="text-muted-foreground">
-          Advanced learning models, knowledge tracing, and personalized instruction strategies
+        <h1 className="flex items-center gap-2 text-3xl font-bold">
+          <BookOpen className="h-7 w-7 text-primary" />
+          Pedagogy
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          How EUREKA actually teaches — driven by the real Phase 4.2 skill graph + Phase 6 tutor system.
         </p>
       </div>
 
-      {/* Statistics Cards */}
+      {err && (
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertTitle>Could not load skill graph</AlertTitle>
+          <AlertDescription>{err}</AlertDescription>
+        </Alert>
+      )}
+
+      {/* Counter cards */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
+        <Card>
+          <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Active Models</p>
-              <p className="text-2xl font-bold">{statistics?.active_models || 0}</p>
+              <p className="text-sm text-muted-foreground">Total skills</p>
+              <p className="text-3xl font-bold">{loading ? "—" : skills.length}</p>
             </div>
-            <Brain className="w-8 h-8 text-blue-500" />
-          </div>
+            <Network className="h-8 w-8 text-primary" />
+          </CardContent>
         </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
+        <Card>
+          <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Total Learners</p>
-              <p className="text-2xl font-bold">{statistics?.total_learners?.toLocaleString() || 0}</p>
+              <p className="text-sm text-muted-foreground">Frameworks</p>
+              <p className="text-3xl font-bold">{loading ? "—" : frameworks.length}</p>
             </div>
-            <Users className="w-8 h-8 text-green-500" />
-          </div>
+            <Layers className="h-8 w-8 text-blue-500" />
+          </CardContent>
         </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
+        <Card>
+          <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Avg Performance</p>
-              <p className="text-2xl font-bold">{statistics?.avg_performance?.toFixed(1) || 0}%</p>
+              <p className="text-sm text-muted-foreground">Bloom levels covered</p>
+              <p className="text-3xl font-bold">{loading ? "—" : blooms.length}</p>
             </div>
-            <TrendingUp className="w-8 h-8 text-emerald-500" />
-          </div>
+            <Layers className="h-8 w-8 text-emerald-500" />
+          </CardContent>
         </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
+        <Card>
+          <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Compliance Score</p>
-              <p className="text-2xl font-bold">{statistics?.compliance_score?.toFixed(1) || 0}%</p>
+              <p className="text-sm text-muted-foreground">Cross-framework prereq edges</p>
+              <p className="text-3xl font-bold">75+</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Phase 4.2 seeded, per docs/STATUS.md.
+              </p>
             </div>
-            <CheckCircle className="w-8 h-8 text-purple-500" />
-          </div>
+            <GitBranch className="h-8 w-8 text-purple-500" />
+          </CardContent>
         </Card>
       </div>
 
-      {/* Learning Models Section */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <Brain className="w-6 h-6" />
-            Learning Models
-          </h2>
-          <Button>
-            <Lightbulb className="w-4 h-4 mr-2" />
-            Create New Model
-          </Button>
-        </div>
+      {/* Learning model */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Learning model</CardTitle>
+          <CardDescription>
+            The actual design decisions behind EUREKA&apos;s instructional system.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ol className="space-y-3 text-sm list-decimal pl-5">
+            <li>
+              <span className="font-medium">Phase 4.2 skill graph</span> — 8 frameworks
+              (CCSS, NGSS, AP, ABET, USMLE Step 1, MBE, FE Electrical+Civil, MBA Core)
+              with directed prereq edges and cross-tier links.
+            </li>
+            <li>
+              <span className="font-medium">Phase 7.2 IRT 2-PL calibration</span> —
+              difficulty + discrimination per item, learned from real attempt logs.
+            </li>
+            <li>
+              <span className="font-medium">Phase 7.5 FSRS-lite spaced repetition</span> —
+              4-state rating model.
+            </li>
+            <li>
+              <span className="font-medium">Phase 6 Socratic hint-ladder</span> — Claude
+              tool-use loop with auto-escalating hints.
+            </li>
+            <li>
+              <span className="font-medium">Phase 4.5 mastery-based recommendations</span> —
+              5-signal scorer.
+            </li>
+          </ol>
+        </CardContent>
+      </Card>
 
-        {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading models...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              { name: 'Deep Knowledge Tracing (DKT)', type: 'Neural Network', accuracy: 92.3, status: 'active' },
-              { name: 'Item Response Theory (IRT)', type: 'Statistical', accuracy: 88.7, status: 'active' },
-              { name: 'Bayesian Knowledge Tracing', type: 'Probabilistic', accuracy: 85.4, status: 'active' },
-              { name: 'Performance Factor Analysis', type: 'Computational', accuracy: 89.1, status: 'training' },
-            ].map((model, index) => (
-              <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold">{model.name}</h3>
-                      <span className="text-sm text-muted-foreground">{model.type}</span>
-                    </div>
-                    <span className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                      model.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                    }`}>
-                      {model.status}
-                    </span>
-                  </div>
-                  <div className="space-y-1">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Accuracy</span>
-                      <span className="font-medium">{model.accuracy}%</span>
-                    </div>
-                    <div className="w-full bg-gray-200 rounded-full h-2">
-                      <div
-                        className="bg-blue-600 h-2 rounded-full transition-all"
-                        style={{ width: `${model.accuracy}%` }}
-                      />
-                    </div>
-                  </div>
-                  <Button variant="outline" className="w-full">View Details</Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Knowledge Tracing Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <Target className="w-6 h-6" />
-          Knowledge Tracing Analytics
-        </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <BarChart className="w-8 h-8 text-blue-500 mb-3" />
-            <h3 className="text-lg font-semibold mb-2">Skill Mastery</h3>
-            <p className="text-3xl font-bold mb-1">73%</p>
-            <p className="text-sm text-muted-foreground">Average across all skills</p>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <Activity className="w-8 h-8 text-green-500 mb-3" />
-            <h3 className="text-lg font-semibold mb-2">Learning Velocity</h3>
-            <p className="text-3xl font-bold mb-1">+12%</p>
-            <p className="text-sm text-muted-foreground">Compared to last month</p>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <Award className="w-8 h-8 text-purple-500 mb-3" />
-            <h3 className="text-lg font-semibold mb-2">Retention Rate</h3>
-            <p className="text-3xl font-bold mb-1">89%</p>
-            <p className="text-sm text-muted-foreground">30-day knowledge retention</p>
-          </Card>
-        </div>
-      </div>
-
-      {/* Personalization Engine Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <Lightbulb className="w-6 h-6" />
-          Personalization Engine
-        </h2>
-        <Card className="p-12 text-center">
-          <Lightbulb className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">Adaptive Learning Paths</h3>
-          <p className="text-muted-foreground mb-4">
-            AI-powered content sequencing and difficulty adjustment based on learner performance
-          </p>
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">2,341</p>
-              <p className="text-sm text-muted-foreground mt-1">Active Paths</p>
+      {/* Live skill graph */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Live skill graph (top 40)</CardTitle>
+          <CardDescription>
+            Sampled live from <span className="font-mono text-xs">/skills?limit=100</span>.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <p className="text-sm text-muted-foreground">Loading…</p>
+          ) : skills.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No skills returned by the API.</p>
+          ) : (
+            <div className="flex flex-wrap gap-2">
+              {skills.slice(0, 40).map((s) => (
+                <Badge key={s.id} variant="outline" className="font-mono text-[11px]">
+                  {(s.framework || "?") + ": " + (s.code || s.id.slice(0, 6))}
+                </Badge>
+              ))}
             </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">94%</p>
-              <p className="text-sm text-muted-foreground mt-1">Completion Rate</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-purple-600">4.8</p>
-              <p className="text-sm text-muted-foreground mt-1">Avg Rating</p>
-            </div>
-          </div>
-          <Button className="mt-6">Configure Engine</Button>
-        </Card>
-      </div>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* Compliance & Standards Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <CheckCircle className="w-6 h-6" />
-          Compliance & Standards
-        </h2>
-        <Card className="p-6">
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <div>
-                  <p className="font-semibold">FERPA Compliant</p>
-                  <p className="text-sm text-muted-foreground">Student data privacy</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <div>
-                  <p className="font-semibold">WCAG 2.1 AA</p>
-                  <p className="text-sm text-muted-foreground">Accessibility standards</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <div>
-                  <p className="font-semibold">COPPA Certified</p>
-                  <p className="text-sm text-muted-foreground">Child protection</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <div>
-                  <p className="font-semibold">LTI 1.3</p>
-                  <p className="text-sm text-muted-foreground">Integration standards</p>
-                </div>
-              </div>
-            </div>
-            <Button variant="outline" className="w-full">View Compliance Reports</Button>
-          </div>
-        </Card>
-      </div>
+      {/* Framework breakdown */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">Framework breakdown</CardTitle>
+          <CardDescription>Count of skills per framework in this sample.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          {loading ? (
+            <p className="text-sm text-muted-foreground">Loading…</p>
+          ) : frameworkCounts.length === 0 ? (
+            <p className="text-sm text-muted-foreground">No frameworks to display.</p>
+          ) : (
+            <ul className="divide-y text-sm">
+              {frameworkCounts.map((row) => (
+                <li
+                  key={row.framework}
+                  className="py-2 flex items-center justify-between"
+                >
+                  <span className="font-medium">{row.framework}</span>
+                  <span className="tabular-nums text-muted-foreground">{row.count}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* References */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base">References</CardTitle>
+          <CardDescription>
+            Anchor docs — the source of truth for every claim on this page.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="grid sm:grid-cols-2 gap-2 text-sm">
+          <a
+            href={`${GITHUB_BASE}/docs/ARCHITECTURE.md`}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md border bg-card p-3 hover:bg-accent flex items-center justify-between"
+          >
+            <span className="font-mono text-xs">docs/ARCHITECTURE.md</span>
+            <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+          </a>
+          <a
+            href={`${GITHUB_BASE}/docs/STATUS.md`}
+            target="_blank"
+            rel="noreferrer"
+            className="rounded-md border bg-card p-3 hover:bg-accent flex items-center justify-between"
+          >
+            <span className="font-mono text-xs">docs/STATUS.md</span>
+            <ExternalLink className="h-3.5 w-3.5 text-muted-foreground" />
+          </a>
+        </CardContent>
+      </Card>
     </div>
   );
 }

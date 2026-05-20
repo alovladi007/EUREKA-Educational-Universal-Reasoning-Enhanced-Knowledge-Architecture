@@ -1,373 +1,351 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+/**
+ * Dashboard AI Research — Phase 6 research agent shell.
+ *
+ * Wired to the real api-core (NEXT_PUBLIC_API_URL via @/lib/eureka-api):
+ *   GET  /agent/sessions/me                     → my sessions
+ *   POST /agent/sessions                        → start a new session
+ *   GET  /agent/rag/retrieve?q=...&top_k=8      → top-k chunks
+ *
+ * Replaces the old defunct :8060 microservice page. No mock GPT-4-Turbo
+ * agents, no fabricated accuracy/paper counts.
+ */
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { api, formatDate } from "@/lib/eureka-api";
 import {
-  Brain,
-  FileText,
-  Sparkles,
-  Database,
-  TrendingUp,
-  Users,
-  Zap,
-  BookOpen,
-  Search,
-  Cpu,
-} from 'lucide-react';
+  Brain, MessageSquare, Database, Search, Play, ArrowRight,
+  BookOpen, Sparkles, AlertCircle,
+} from "lucide-react";
 
-const AI_RESEARCH_API = process.env.NEXT_PUBLIC_AI_RESEARCH_URL || 'http://localhost:8060';
+type Session = {
+  id: string;
+  user_id?: string;
+  mode?: string;
+  role?: string;
+  status?: string;
+  created_at?: string;
+  ended_at?: string | null;
+  messages_count?: number;
+};
 
-export default function AIResearchPage() {
-  const [loading, setLoading] = useState(true);
-  const [statistics, setStatistics] = useState<any>(null);
-  const [agents, setAgents] = useState<any[]>([]);
+type RagHit = {
+  chunk_id?: string;
+  source_uri?: string;
+  text?: string;
+  score?: number;
+};
+
+function toText(x: unknown): string {
+  if (x == null) return "";
+  if (typeof x === "string") return x;
+  try { return JSON.stringify(x); } catch { return String(x); }
+}
+
+function StatusBadge({ status }: { status?: string }) {
+  const s = (status || "unknown").toLowerCase();
+  const tone =
+    s === "active" ? "default" :
+    s === "ended" || s === "closed" ? "secondary" :
+    s === "error" || s === "failed" ? "destructive" :
+    "outline";
+  return <Badge variant={tone as never}>{s}</Badge>;
+}
+
+export default function DashboardAIResearchPage() {
+  const router = useRouter();
+
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [loadingSessions, setLoadingSessions] = useState(true);
+  const [sessionsErr, setSessionsErr] = useState<string | null>(null);
+
+  const [query, setQuery] = useState("");
+  const [hits, setHits] = useState<RagHit[]>([]);
+  const [searching, setSearching] = useState(false);
+  const [searchErr, setSearchErr] = useState<string | null>(null);
+  const [searched, setSearched] = useState(false);
+
+  const [starting, setStarting] = useState(false);
+  const [startErr, setStartErr] = useState<string | null>(null);
 
   useEffect(() => {
-    loadAIResearchData();
+    (async () => {
+      try {
+        const body = await api<Session[]>("/agent/sessions/me").catch(() => [] as Session[]);
+        setSessions(Array.isArray(body) ? body : []);
+      } catch (e) {
+        setSessionsErr(toText((e as Error).message));
+        setSessions([]);
+      } finally {
+        setLoadingSessions(false);
+      }
+    })();
   }, []);
 
-  const loadAIResearchData = async () => {
+  async function runSearch() {
+    const q = query.trim();
+    if (!q) return;
+    setSearching(true);
+    setSearchErr(null);
+    setSearched(true);
     try {
-      setLoading(true);
-
-      // Fetch from ai-research service
-      const response = await fetch(`${AI_RESEARCH_API}/api/v1/agents`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-        },
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        setAgents(data.agents || []);
-        setStatistics(data.statistics || {
-          active_agents: 0,
-          papers_analyzed: 0,
-          research_projects: 0,
-          avg_accuracy: 0
-        });
-      } else {
-        throw new Error('Failed to fetch AI research data');
-      }
-    } catch (error) {
-      console.error('Error loading AI research data:', error);
-      setStatistics({
-        active_agents: 8,
-        papers_analyzed: 15234,
-        research_projects: 234,
-        avg_accuracy: 94.3
-      });
-      setAgents([]);
+      const body = await api<{ hits: RagHit[] }>(
+        `/agent/rag/retrieve?q=${encodeURIComponent(q)}&top_k=8`,
+      ).catch(() => ({ hits: [] as RagHit[] }));
+      const list = body && Array.isArray(body.hits) ? body.hits : [];
+      setHits(list);
+    } catch (e) {
+      setSearchErr(toText((e as Error).message));
+      setHits([]);
     } finally {
-      setLoading(false);
+      setSearching(false);
     }
-  };
+  }
+
+  async function startSession() {
+    setStarting(true);
+    setStartErr(null);
+    try {
+      const body = await api<{ id?: string }>("/agent/sessions", {
+        method: "POST",
+        body: JSON.stringify({ mode: "research", role: "research_assistant" }),
+      });
+      const sid = body?.id;
+      router.push(sid ? `/dashboard/tutor?session=${encodeURIComponent(sid)}` : "/dashboard/tutor");
+    } catch (e) {
+      setStartErr(toText((e as Error).message));
+    } finally {
+      setStarting(false);
+    }
+  }
+
+  const open = sessions.filter((s) => (s.status || "").toLowerCase() === "active").length;
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold mb-2">AI Research Lab</h1>
-        <p className="text-muted-foreground">
-          Intelligent research agents, paper analysis, and automated literature review
+        <h1 className="flex items-center gap-2 text-3xl font-bold">
+          <Brain className="h-7 w-7 text-primary" />
+          AI Research
+        </h1>
+        <p className="text-muted-foreground mt-1">
+          Sessions, traces, and RAG retrieval from the real Phase 6 agent. No mock GPT-4-Turbo agents.
         </p>
       </div>
 
-      {/* Statistics Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
+      {/* Counter cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card>
+          <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Active Agents</p>
-              <p className="text-2xl font-bold">{statistics?.active_agents || 0}</p>
+              <p className="text-sm text-muted-foreground">My sessions</p>
+              <p className="text-3xl font-bold">{sessions.length}</p>
             </div>
-            <Brain className="w-8 h-8 text-blue-500" />
-          </div>
+            <MessageSquare className="h-8 w-8 text-primary" />
+          </CardContent>
         </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
+        <Card>
+          <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Papers Analyzed</p>
-              <p className="text-2xl font-bold">{statistics?.papers_analyzed?.toLocaleString() || 0}</p>
+              <p className="text-sm text-muted-foreground">Open sessions</p>
+              <p className="text-3xl font-bold">{open}</p>
             </div>
-            <FileText className="w-8 h-8 text-green-500" />
-          </div>
+            <Sparkles className="h-8 w-8 text-emerald-500" />
+          </CardContent>
         </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
+        <Card>
+          <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Research Projects</p>
-              <p className="text-2xl font-bold">{statistics?.research_projects || 0}</p>
+              <p className="text-sm text-muted-foreground">Knowledge chunks</p>
+              <p className="text-3xl font-bold">269</p>
+              <p className="text-xs text-muted-foreground mt-1">
+                Phase 6.1 corpus (item bank + skill graph), per docs/STATUS.md.
+              </p>
             </div>
-            <Database className="w-8 h-8 text-purple-500" />
-          </div>
-        </Card>
-
-        <Card className="p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm text-muted-foreground">Avg Accuracy</p>
-              <p className="text-2xl font-bold">{statistics?.avg_accuracy?.toFixed(1) || 0}%</p>
-            </div>
-            <TrendingUp className="w-8 h-8 text-emerald-500" />
-          </div>
+            <Database className="h-8 w-8 text-purple-500" />
+          </CardContent>
         </Card>
       </div>
 
-      {/* Research Agents Section */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <Cpu className="w-6 h-6" />
-            AI Research Agents
-          </h2>
-          <Button>
-            <Sparkles className="w-4 h-4 mr-2" />
-            Create New Agent
+      {/* Start a session */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Play className="h-5 w-5 text-primary" />
+            Start a research session
+          </CardTitle>
+          <CardDescription>
+            Spins up a Phase 6 agent session in <span className="font-mono text-xs">research</span> mode
+            and drops you into the tutor UI for the chat thread.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <Button onClick={startSession} disabled={starting}>
+            {starting ? "Starting…" : "Start session"}
+            {!starting && <ArrowRight className="h-4 w-4 ml-2" />}
           </Button>
-        </div>
+          {startErr && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Could not start session</AlertTitle>
+              <AlertDescription>{startErr}</AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
 
-        {loading ? (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">Loading agents...</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {[
-              {
-                name: 'Literature Review Agent',
-                model: 'GPT-4 Turbo',
-                status: 'active',
-                tasks: 45,
-                accuracy: 96.2
-              },
-              {
-                name: 'Paper Summarization Agent',
-                model: 'Claude Sonnet',
-                status: 'active',
-                tasks: 128,
-                accuracy: 94.8
-              },
-              {
-                name: 'Citation Analysis Agent',
-                model: 'GPT-4',
-                status: 'active',
-                tasks: 67,
-                accuracy: 92.5
-              },
-              {
-                name: 'Methodology Extractor',
-                model: 'Claude Opus',
-                status: 'training',
-                tasks: 23,
-                accuracy: 89.3
-              },
-            ].map((agent, index) => (
-              <Card key={index} className="p-6 hover:shadow-lg transition-shadow">
-                <div className="space-y-3">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <h3 className="text-lg font-semibold">{agent.name}</h3>
-                      <span className="text-sm text-muted-foreground">{agent.model}</span>
+      {/* RAG retrieval */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <Search className="h-5 w-5 text-primary" />
+            RAG retrieval
+          </CardTitle>
+          <CardDescription>
+            Hits come directly from <span className="font-mono text-xs">/agent/rag/retrieve</span>{" "}
+            (top 8 chunks, with source URI and similarity score).
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <form
+            className="flex gap-2"
+            onSubmit={(e) => {
+              e.preventDefault();
+              runSearch();
+            }}
+          >
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Ask the corpus, e.g. “Beer-Lambert law applications”"
+            />
+            <Button type="submit" disabled={searching || !query.trim()}>
+              {searching ? "Searching…" : "Retrieve"}
+            </Button>
+          </form>
+          {searchErr && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Retrieval failed</AlertTitle>
+              <AlertDescription>{searchErr}</AlertDescription>
+            </Alert>
+          )}
+          {searched && !searching && hits.length === 0 && !searchErr && (
+            <p className="text-sm text-muted-foreground">No hits for that query.</p>
+          )}
+          {hits.length > 0 && (
+            <ul className="space-y-2">
+              {hits.map((h, i) => (
+                <li key={h.chunk_id || i} className="rounded-md border bg-card p-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="text-xs text-muted-foreground font-mono truncate">
+                      {h.source_uri || "(no source uri)"}
                     </div>
-                    <span className={`px-3 py-1 text-sm font-semibold rounded-full ${
-                      agent.status === 'active' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
-                    }`}>
-                      {agent.status}
-                    </span>
+                    {typeof h.score === "number" && (
+                      <Badge variant="outline" className="shrink-0">
+                        score {h.score.toFixed(3)}
+                      </Badge>
+                    )}
                   </div>
+                  <p className="mt-2 text-sm whitespace-pre-wrap">{toText(h.text)}</p>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <p className="text-sm text-muted-foreground">Tasks Completed</p>
-                      <p className="text-xl font-bold">{agent.tasks}</p>
+      {/* My sessions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <MessageSquare className="h-5 w-5 text-primary" />
+            My sessions
+          </CardTitle>
+          <CardDescription>
+            From <span className="font-mono text-xs">/agent/sessions/me</span>.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {sessionsErr && (
+            <Alert variant="destructive" className="mb-3">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Could not load sessions</AlertTitle>
+              <AlertDescription>{sessionsErr}</AlertDescription>
+            </Alert>
+          )}
+          {loadingSessions ? (
+            <p className="text-sm text-muted-foreground">Loading…</p>
+          ) : sessions.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No sessions yet. Hit “Start session” above to create one.
+            </p>
+          ) : (
+            <ul className="divide-y">
+              {sessions.map((s) => (
+                <li
+                  key={s.id}
+                  className="py-3 flex items-center justify-between gap-3"
+                >
+                  <div className="min-w-0">
+                    <div className="font-mono text-xs text-muted-foreground">
+                      {s.id ? s.id.slice(0, 8) : "—"}…
                     </div>
-                    <div>
-                      <p className="text-sm text-muted-foreground">Accuracy</p>
-                      <p className="text-xl font-bold">{agent.accuracy}%</p>
-                    </div>
-                  </div>
-
-                  <Button variant="outline" className="w-full">Configure Agent</Button>
-                </div>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Paper Analysis Section */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <Search className="w-6 h-6" />
-            Paper Analysis
-          </h2>
-          <Button>
-            <FileText className="w-4 h-4 mr-2" />
-            Analyze New Paper
-          </Button>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <BookOpen className="w-8 h-8 text-blue-500 mb-3" />
-            <h3 className="text-lg font-semibold mb-2">Recent Papers</h3>
-            <p className="text-3xl font-bold mb-1">342</p>
-            <p className="text-sm text-muted-foreground">Analyzed this month</p>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <Zap className="w-8 h-8 text-yellow-500 mb-3" />
-            <h3 className="text-lg font-semibold mb-2">Processing Speed</h3>
-            <p className="text-3xl font-bold mb-1">45s</p>
-            <p className="text-sm text-muted-foreground">Avg. time per paper</p>
-          </Card>
-
-          <Card className="p-6 hover:shadow-lg transition-shadow">
-            <Database className="w-8 h-8 text-purple-500 mb-3" />
-            <h3 className="text-lg font-semibold mb-2">Knowledge Base</h3>
-            <p className="text-3xl font-bold mb-1">15K</p>
-            <p className="text-sm text-muted-foreground">Papers in database</p>
-          </Card>
-        </div>
-      </div>
-
-      {/* Research Projects Section */}
-      <div className="space-y-4">
-        <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-semibold flex items-center gap-2">
-            <Database className="w-6 h-6" />
-            Active Research Projects
-          </h2>
-          <Button>
-            <Sparkles className="w-4 h-4 mr-2" />
-            Start New Project
-          </Button>
-        </div>
-
-        <Card className="p-6">
-          <div className="space-y-4">
-            {[
-              {
-                title: 'Deep Learning in Medical Imaging',
-                papers: 145,
-                collaborators: 5,
-                progress: 67
-              },
-              {
-                title: 'Natural Language Processing for Education',
-                papers: 89,
-                collaborators: 3,
-                progress: 45
-              },
-              {
-                title: 'Reinforcement Learning Applications',
-                papers: 123,
-                collaborators: 7,
-                progress: 82
-              },
-            ].map((project, index) => (
-              <div key={index} className="space-y-2 p-4 border rounded-lg">
-                <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-semibold">{project.title}</h3>
-                    <div className="flex gap-4 text-sm text-muted-foreground mt-1">
-                      <span className="flex items-center gap-1">
-                        <FileText className="w-3 h-3" />
-                        {project.papers} papers
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Users className="w-3 h-3" />
-                        {project.collaborators} collaborators
+                    <div className="flex flex-wrap items-center gap-2 mt-1 text-sm">
+                      {s.mode && <Badge variant="outline">{s.mode}</Badge>}
+                      {s.role && (
+                        <span className="text-muted-foreground">{s.role}</span>
+                      )}
+                      <StatusBadge status={s.status} />
+                      <span className="text-xs text-muted-foreground">
+                        {formatDate(s.created_at)}
                       </span>
                     </div>
                   </div>
-                  <Button variant="outline" size="sm">View</Button>
-                </div>
-                <div className="space-y-1">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-muted-foreground">Progress</span>
-                    <span className="font-medium">{project.progress}%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div
-                      className="bg-blue-600 h-2 rounded-full transition-all"
-                      style={{ width: `${project.progress}%` }}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </Card>
-      </div>
+                  <Link
+                    href={`/dashboard/tutor?session=${encodeURIComponent(s.id)}`}
+                    className="text-sm text-primary hover:underline shrink-0"
+                  >
+                    Open →
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
+        </CardContent>
+      </Card>
 
-      {/* ChromaDB Vector Store Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <Database className="w-6 h-6" />
-          Vector Knowledge Base
-        </h2>
-        <Card className="p-12 text-center">
-          <Database className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
-          <h3 className="text-lg font-semibold mb-2">ChromaDB Integration</h3>
-          <p className="text-muted-foreground mb-4">
-            Semantic search across 15,000+ research papers with vector embeddings
+      {/* What this is */}
+      <Card className="border-primary/20 bg-primary/5">
+        <CardHeader>
+          <CardTitle className="text-base flex items-center gap-2">
+            <BookOpen className="h-5 w-5 text-primary" />
+            What this is
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="text-sm space-y-2">
+          <p>
+            EUREKA&apos;s research agent uses the Phase 6 RAG pipeline (269 knowledge
+            chunks across the item bank + skill graph) to answer with{" "}
+            <span className="font-mono text-xs">[ref:source_uri]</span>{" "}
+            citations and a groundedness score per message.
           </p>
-          <div className="grid grid-cols-3 gap-4 mt-6">
-            <div className="text-center">
-              <p className="text-2xl font-bold text-blue-600">15,234</p>
-              <p className="text-sm text-muted-foreground mt-1">Embedded Papers</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-green-600">98.2%</p>
-              <p className="text-sm text-muted-foreground mt-1">Search Accuracy</p>
-            </div>
-            <div className="text-center">
-              <p className="text-2xl font-bold text-purple-600">250ms</p>
-              <p className="text-sm text-muted-foreground mt-1">Avg. Query Time</p>
-            </div>
-          </div>
-          <Button className="mt-6">Manage Vector Store</Button>
-        </Card>
-      </div>
-
-      {/* AI Models Section */}
-      <div className="space-y-4">
-        <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <Cpu className="w-6 h-6" />
-          LLM Configuration
-        </h2>
-        <Card className="p-6">
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Brain className="w-8 h-8 text-blue-500" />
-                  <div>
-                    <p className="font-semibold">GPT-4 Turbo</p>
-                    <p className="text-sm text-muted-foreground">Primary model</p>
-                  </div>
-                </div>
-              </div>
-              <div className="p-4 border rounded-lg">
-                <div className="flex items-center gap-3">
-                  <Brain className="w-8 h-8 text-purple-500" />
-                  <div>
-                    <p className="font-semibold">Claude Sonnet 4.5</p>
-                    <p className="text-sm text-muted-foreground">Secondary model</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <Button variant="outline" className="w-full">Configure Models</Button>
-          </div>
-        </Card>
-      </div>
+          <p className="text-muted-foreground">
+            Sessions live under <span className="font-mono text-xs">/agent/sessions/*</span>,
+            messages stream from <span className="font-mono text-xs">/agent/messages/*</span>,
+            and retrieval traces are stored alongside each message for auditability.
+          </p>
+        </CardContent>
+      </Card>
     </div>
   );
 }
