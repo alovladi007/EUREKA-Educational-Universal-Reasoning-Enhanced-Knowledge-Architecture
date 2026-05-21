@@ -36,16 +36,16 @@ class ApiClient {
       (error) => Promise.reject(error)
     );
 
-    // Response interceptor - handle token refresh
+    // Response interceptor — handle token refresh + dev auto-login
     this.client.interceptors.response.use(
       (response) => response,
       async (error) => {
         const originalRequest = error.config;
 
-        // If 401 and not already retried, try to refresh token
         if (error.response?.status === 401 && !originalRequest._retry) {
           originalRequest._retry = true;
 
+          // 1. Try refresh_token if we have one (normal session refresh)
           try {
             const refreshToken = this.getRefreshToken();
             if (refreshToken) {
@@ -53,17 +53,31 @@ class ApiClient {
                 `${API_URL}${API_PREFIX}/auth/refresh`,
                 { refresh_token: refreshToken }
               );
-              
               const { access_token } = response.data;
               this.setToken(access_token);
-              
               originalRequest.headers.Authorization = `Bearer ${access_token}`;
               return this.client(originalRequest);
             }
-          } catch (refreshError) {
-            this.clearTokens();
-            window.location.href = '/auth/login';
-            return Promise.reject(refreshError);
+          } catch {
+            /* fall through to dev auto-login */
+          }
+
+          // 2. Dev auto-login fallback — same pattern as eureka-api.ts's
+          //    `devAutoLogin()`. Without this, a stale or missing token in
+          //    localStorage never recovers and every page does a hard
+          //    redirect to /auth/login.
+          const fresh = await this.devAutoLogin();
+          if (fresh) {
+            this.setToken(fresh);
+            originalRequest.headers.Authorization = `Bearer ${fresh}`;
+            return this.client(originalRequest);
+          }
+
+          // 3. Last resort: clear + redirect (only if dev auto-login is off)
+          this.clearTokens();
+          if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/auth/login')) {
+            const here = window.location.pathname + window.location.search;
+            window.location.href = `/auth/login?next=${encodeURIComponent(here)}`;
           }
         }
 
@@ -87,6 +101,39 @@ class ApiClient {
     if (typeof window !== 'undefined') {
       localStorage.setItem('access_token', token);
     }
+  }
+
+  // -----------------------------------------------------------------
+  // Dev auto-login — mirrors `eureka-api.ts`'s wrapper so a stale or
+  // missing token in localStorage silently re-authenticates with the
+  // seeded `you@eureka.example.com / EurekaAdmin!2026` admin account
+  // instead of bouncing the user to /auth/login. Disabled by setting
+  // NEXT_PUBLIC_DEV_AUTO_LOGIN=0 (parity with the fetch wrapper).
+  // -----------------------------------------------------------------
+  private _devLoginPromise: Promise<string | null> | null = null;
+  private async devAutoLogin(): Promise<string | null> {
+    if (process.env.NEXT_PUBLIC_DEV_AUTO_LOGIN === '0') return null;
+    if (typeof window === 'undefined') return null;
+    if (this._devLoginPromise) return this._devLoginPromise;
+    this._devLoginPromise = (async () => {
+      try {
+        const r = await axios.post(`${API_URL}${API_PREFIX}/auth/login`, {
+          email: 'you@eureka.example.com',
+          password: 'EurekaAdmin!2026',
+        });
+        const tok = r.data?.access_token as string | undefined;
+        if (tok) {
+          localStorage.setItem('access_token', tok);
+          return tok;
+        }
+      } catch {
+        /* network/credential failure — leave token unchanged */
+      } finally {
+        setTimeout(() => { this._devLoginPromise = null; }, 1500);
+      }
+      return null;
+    })();
+    return this._devLoginPromise;
   }
 
   setRefreshToken(token: string) {
