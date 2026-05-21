@@ -248,6 +248,20 @@ async def list_enrollments(
     return list((await db.execute(q)).scalars().all())
 
 
+@router.get(
+    "/graduate/enrollments/{enrollment_id}",
+    response_model=EnrollmentResponse,
+)
+async def get_enrollment(
+    enrollment_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """GET-by-id for an enrollment. Returns full row incl. lifecycle stamps.
+    Auth: learner-self, supervisor, or in-org admin."""
+    return await _get_enrollment_or_404(db, enrollment_id, current_user)
+
+
 @router.post(
     "/graduate/enrollments/{enrollment_id}/action",
     response_model=EnrollmentResponse,
@@ -397,6 +411,58 @@ async def decide_milestone_endpoint(
 # ---------------------------------------------------------------------------
 # Learner-side rollup
 # ---------------------------------------------------------------------------
+
+
+@router.get("/me/graduate/available-programs", response_model=list[ProgramResponse])
+async def list_available_programs(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Programs in the learner's org that are active + not already-enrolled."""
+    enrolled_ids = set(map(str, (await db.execute(
+        select(GraduateEnrollment.program_id).where(GraduateEnrollment.user_id == current_user.id)
+    )).scalars().all()))
+    q = (
+        select(GraduateProgram)
+        .where(
+            GraduateProgram.org_id == current_user.org_id,
+            GraduateProgram.status == "active",
+        )
+        .order_by(GraduateProgram.created_at.desc())
+    )
+    rows = (await db.execute(q)).scalars().all()
+    return [r for r in rows if str(r.id) not in enrolled_ids]
+
+
+@router.post(
+    "/me/graduate/programs/{program_id}/enroll",
+    response_model=EnrollmentResponse,
+    status_code=201,
+)
+async def self_enroll(
+    program_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Learner self-enrolls in an org-wide active program. Idempotent —
+    if already enrolled, returns the existing row."""
+    program = await db.get(GraduateProgram, program_id)
+    if program is None:
+        raise HTTPException(status_code=404, detail="program not found")
+    if program.org_id != current_user.org_id:
+        raise HTTPException(status_code=403, detail="program not in your org")
+    if program.status != "active":
+        raise HTTPException(status_code=409, detail="program is not active")
+    result = await grad_svc.enroll_in_program(
+        db,
+        program=program,
+        user_id=current_user.id,
+        supervisor_user_id=None,
+        expected_graduation_year=None,
+    )
+    await db.commit()
+    await db.refresh(result.enrollment)
+    return result.enrollment
 
 
 @router.get("/me/graduate", response_model=MyGraduateResponse)
