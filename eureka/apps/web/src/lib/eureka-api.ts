@@ -35,13 +35,21 @@ const DEV_AUTO_LOGIN_PW = "EurekaAdmin!2026";
 const DEV_AUTO_LOGIN_ENABLED =
   process.env.NEXT_PUBLIC_DEV_AUTO_LOGIN !== "0";
 
-let _devLoginPromise: Promise<string | null> | null = null;
+// Share the in-flight dev-login promise GLOBALLY (across both this fetch
+// wrapper and the axios apiClient in src/lib/api-client.ts). Without
+// this, two clients firing in parallel each kick off their own
+// POST /auth/login and you get double-logins on every page load.
+declare global {
+  interface Window {
+    __eurekaDevLoginPromise?: Promise<string | null> | null;
+  }
+}
 
-async function devAutoLogin(): Promise<string | null> {
+export async function devAutoLogin(): Promise<string | null> {
   if (!DEV_AUTO_LOGIN_ENABLED || typeof window === "undefined") return null;
-  // Only one in-flight login request at a time.
-  if (_devLoginPromise) return _devLoginPromise;
-  _devLoginPromise = (async () => {
+  // Only one in-flight login request at a time, shared across all clients.
+  if (window.__eurekaDevLoginPromise) return window.__eurekaDevLoginPromise;
+  window.__eurekaDevLoginPromise = (async () => {
     try {
       const r = await fetch(`${API_URL}${API_PREFIX}/auth/login`, {
         method: "POST",
@@ -63,12 +71,14 @@ async function devAutoLogin(): Promise<string | null> {
     } finally {
       // Allow retry on next call if this one failed.
       setTimeout(() => {
-        _devLoginPromise = null;
+        if (typeof window !== "undefined") {
+          window.__eurekaDevLoginPromise = null;
+        }
       }, 1500);
     }
     return null;
   })();
-  return _devLoginPromise;
+  return window.__eurekaDevLoginPromise;
 }
 
 export async function api<T = unknown>(

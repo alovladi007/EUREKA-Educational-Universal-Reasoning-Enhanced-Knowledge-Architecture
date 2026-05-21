@@ -24,10 +24,19 @@ class ApiClient {
       },
     });
 
-    // Request interceptor - add auth token
+    // Request interceptor — add auth token PROACTIVELY.
+    // If there's no token in localStorage, kick off dev auto-login
+    // BEFORE sending the request so the very first call doesn't 401.
+    // Without this, the dashboard layout's GET /auth/me always logs a
+    // 401 in the browser console before the response interceptor's
+    // retry kicks in. Same pattern as eureka-api.ts's `api()` helper.
     this.client.interceptors.request.use(
-      (config) => {
-        const token = this.getToken();
+      async (config) => {
+        let token = this.getToken();
+        if (!token) {
+          const fresh = await this.devAutoLogin();
+          if (fresh) token = fresh;
+        }
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -104,36 +113,15 @@ class ApiClient {
   }
 
   // -----------------------------------------------------------------
-  // Dev auto-login — mirrors `eureka-api.ts`'s wrapper so a stale or
-  // missing token in localStorage silently re-authenticates with the
-  // seeded `you@eureka.example.com / EurekaAdmin!2026` admin account
-  // instead of bouncing the user to /auth/login. Disabled by setting
-  // NEXT_PUBLIC_DEV_AUTO_LOGIN=0 (parity with the fetch wrapper).
+  // Dev auto-login — delegates to the SAME shared promise that
+  // eureka-api.ts uses, so this axios client + that fetch wrapper
+  // don't both fire POST /auth/login in parallel on first page load.
+  // Disabled by setting NEXT_PUBLIC_DEV_AUTO_LOGIN=0.
   // -----------------------------------------------------------------
-  private _devLoginPromise: Promise<string | null> | null = null;
   private async devAutoLogin(): Promise<string | null> {
-    if (process.env.NEXT_PUBLIC_DEV_AUTO_LOGIN === '0') return null;
-    if (typeof window === 'undefined') return null;
-    if (this._devLoginPromise) return this._devLoginPromise;
-    this._devLoginPromise = (async () => {
-      try {
-        const r = await axios.post(`${API_URL}${API_PREFIX}/auth/login`, {
-          email: 'you@eureka.example.com',
-          password: 'EurekaAdmin!2026',
-        });
-        const tok = r.data?.access_token as string | undefined;
-        if (tok) {
-          localStorage.setItem('access_token', tok);
-          return tok;
-        }
-      } catch {
-        /* network/credential failure — leave token unchanged */
-      } finally {
-        setTimeout(() => { this._devLoginPromise = null; }, 1500);
-      }
-      return null;
-    })();
-    return this._devLoginPromise;
+    // Lazy import keeps the module graph simple (no top-level cycle).
+    const { devAutoLogin } = await import('./eureka-api');
+    return devAutoLogin();
   }
 
   setRefreshToken(token: string) {
