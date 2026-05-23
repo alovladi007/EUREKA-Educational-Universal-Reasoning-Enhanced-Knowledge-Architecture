@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Providers } from '@/components/providers';
+import { CookieConsentBanner } from '@/components/cookie-consent';
 import './globals.css';
 
 // Avoid next/font/google (downloads at build/request time) — breaks offline/Docker/firewalls
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning>
       <body className="font-sans antialiased">
         <Providers>{children}</Providers>
+        <CookieConsentBanner />
       </body>
     </html>
   );

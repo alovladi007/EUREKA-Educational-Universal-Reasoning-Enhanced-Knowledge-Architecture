@@ -24,6 +24,7 @@ from app.core.observability import init_observability, get_logger
 from app.middleware.tenancy import TenancyMiddleware
 from app.middleware.audit import AuditMiddleware
 from app.middleware.security_headers import SecurityHeadersMiddleware
+from app.middleware.rate_limit import RateLimitMiddleware
 
 # Stdlib logging stays configured so libraries that haven't been ported
 # to structlog (uvicorn, sqlalchemy, etc.) still get formatted output.
@@ -106,6 +107,13 @@ init_observability(app, service_name="api-core", environment=settings.ENVIRONMEN
 app.add_middleware(SecurityHeadersMiddleware)
 app.add_middleware(TenancyMiddleware)
 app.add_middleware(AuditMiddleware)
+
+# Rate limiting — Phase 21.4. Opt-in via RATE_LIMIT_ENABLED=1 so dev
+# stays unrestricted. In prod (ENVIRONMENT=production), default on.
+import os as _os
+_rl_default = "1" if settings.ENVIRONMENT == "production" else "0"
+if _os.environ.get("RATE_LIMIT_ENABLED", _rl_default) == "1":
+    app.add_middleware(RateLimitMiddleware)
 
 # CORS middleware (added LAST so it runs FIRST — ensures CORS headers on ALL responses including errors)
 app.add_middleware(

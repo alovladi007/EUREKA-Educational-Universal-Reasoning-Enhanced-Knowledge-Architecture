@@ -1035,3 +1035,151 @@ the closer we get, the more accurate the prompts will be.
 5. **Get one tier shipping real value to real users by end of Phase 7.**
    Recommend MCAT or FE/PE as the beachhead — narrow, high-willingness-
    to-pay, AI advantage is most defensible there.
+
+
+---
+
+# Phases 20–27 — Path to production *(May 2026 baseline)*
+
+After 19 shipped phases (1–7, 9–15, 16.1, 17, 18, 19), the architectural skeleton is in place: 23 dashboard surfaces, 100+ endpoints, 20+ DB tables, real AI tutor with RAG, real IRT, real Stripe Connect marketplace, real workforce platform, real community + curated resources, no remaining mock fallbacks.
+
+These 8 phases close the gap from "ambitious scaffold + a few real users" to "production platform serving paying customers."
+
+---
+
+# Phase 20 — Production deployment   *(2–4 weeks of agent + human work)*
+
+The single biggest gap. Nothing currently runs anywhere but `localhost`. Helm + K8s manifests exist in `eureka/helm/` + `eureka/k8s/` but have never been deployed.
+
+## Sessions
+
+| # | Scope | Done-when |
+|---|---|---|
+| 20.1 | Pick cloud target + provision foundation | AWS EKS / GCP GKE / DigitalOcean Apps account; VPC; managed Postgres (RDS or Cloud SQL) with `pgvector`+`pg_trgm`+`tsvector`; managed Redis; S3/GCS bucket; ECR/GAR registry. Terraform / Pulumi for it all. |
+| 20.2 | Helm chart audit + missing pieces | All env vars wired; secrets via ExternalSecrets / Secrets Manager; cert-manager + Let's Encrypt; readiness/liveness probes (Phase 14.5 already exists); horizontal pod autoscaler; resource limits. |
+| 20.3 | CD pipeline | `.github/workflows/cd-deploy.yml`: on merge to `main`, build images, push to registry, `helm upgrade --install` against the cluster. Slack notify on failure. |
+| 20.4 | Custom domain + TLS | DNS records; ACM/Let's Encrypt certs; HSTS on; CSP tightened from dev wildcard. |
+| 20.5 | Backups + DR | Postgres automated daily snapshots; off-region copy; documented restore-from-snapshot drill that's been actually executed. |
+| 20.6 | Observability hosted | Honeycomb/Grafana Cloud/Datadog; alerts on p95 latency, error rate, dead-letter queue depth. |
+| 20.7 | Status page | statuspage.io or self-hosted Cachet wired to Prometheus alerts. |
+
+**Code deliverables in this repo**: `cd-deploy.yml`, `docs/DEPLOYMENT.md`, `docs/RUNBOOK.md`, `scripts/backup-restore.sh`, expanded Helm values for prod overrides.
+
+---
+
+# Phase 21 — Trust & security hardening   *(3–6 weeks, gates compliance review)*
+
+| # | Scope | Done-when |
+|---|---|---|
+| 21.1 | External pen test | OWASP Top 10 + auth/session/RBAC abuse. Budget $8k–$20k. Findings tracked in BACKLOG with severity SLAs. |
+| 21.2 | Dependency CI gating | `pip-audit`, `npm audit`, `gitleaks` all gating in CI (currently warn-only). |
+| 21.3 | SAST/DAST | Snyk or GitHub Advanced Security on every PR. |
+| 21.4 | Rate limiting | Redis-backed sliding window. Per-IP + per-API-key. Phase 13.1's `rate_limit_per_min` field actually enforced. |
+| 21.5 | Tenancy isolation expansion | Phase 3.3 has 5 isolation tests; expand to cover every multi-tenant table (Phase 9 cohorts, Phase 10 marketplace, Phase 15 partnerships, Phase 16.1 graduate programs). |
+| 21.6 | Postgres row-level security | RLS policies on every org-scoped table — defence in depth so a buggy query can't cross orgs. |
+| 21.7 | MFA enforcement in prod | `MFA_REQUIRED_ROLES=org_admin,super_admin` set in prod; UI nag screen on first login. |
+| 21.8 | Audit log retention | S3 cold-storage policy for 7-year retention (FERPA / SOX). Audit query API for compliance officers. |
+| 21.9 | SOC 2 Type I prep | Documentation + access controls + change management evidence. ~6 months kickoff → report. |
+
+**Code deliverables**: rate-limit middleware, RLS migration template, expanded isolation test, `docs/SECURITY_HARDENING.md` checklist, `docs/SOC2_PREP.md` evidence-collection guide.
+
+---
+
+# Phase 22 — Compliance per-region   *(legal-led, 4–12 weeks)*
+
+| # | Scope | Done-when |
+|---|---|---|
+| 22.1 | FERPA legal review | External counsel signs off on data flows + parent/student rights. Required before any K-12 / higher-ed contract. |
+| 22.2 | HIPAA BAA chain | If selling to med schools with patient case data — BAA with hosting + email + Anthropic + Stripe. |
+| 22.3 | COPPA flow | Under-13 verifiable parental consent flow (UI + email + ID verification). |
+| 22.4 | GDPR | Cookie consent banner (UI), DPA template, EU data residency option, breach-notification runbook. |
+| 22.5 | WCAG 2.1 AA audit | External audit + remediation. Radix gives us a good baseline but every page needs review. |
+| 22.6 | Privacy + ToS | Jurisdiction-specific reviews. The `/privacy` and `/terms` pages exist with reasonable text — need lawyer pass + state-specific addenda. |
+| 22.7 | Right-to-be-forgotten end-to-end | Phase 13.5 schedules deletion in 30 days; verify it actually cascades and nothing leaks via audit_events. |
+
+**Code deliverables**: cookie consent banner, `docs/COMPLIANCE_FERPA.md`, `docs/COMPLIANCE_HIPAA.md`, `docs/COMPLIANCE_COPPA.md`, `docs/COMPLIANCE_GDPR.md`, `docs/COMPLIANCE_WCAG.md`, DSAR-fulfillment script.
+
+---
+
+# Phase 23 — Finish Phase 16: Graduate Research Tools   *(6–10 weeks)*
+
+The differentiator for graduate-tier sales — **Wolfram Alpha + Mathematica competitor surface, integrated with the skill graph + tutor**. Tool deps already in `requirements.txt` from Phase 16.1.
+
+## Sessions (from Phase 16 plan)
+
+| # | Scope |
+|---|---|
+| 16.2 | Research workspace + lit review: `research_workspaces`, `lit_review_entries`, `workspace_drafts`. CrossRef + arXiv lookup, BibTeX export, auto-link to enrollment. |
+| 16.3 | Thesis lifecycle + IRB: `thesis_projects`, `thesis_drafts`, `irb_protocols`. Single approver (no committees, per 2026-05 design). On `defended`: auto-mint Ed25519 credential via Phase 4.3. |
+| 16.4 | Grants + fellowships: `funding_opportunities`, `funding_applications`. Eligibility filter, deadline reminders via Phase 11.3 email_lifecycle + Phase 12.2 push. |
+| 16.5 | Publications + scholarly profile + TA/RA + career: `publications`, `publication_authors`, `peer_reviews`, `citation_metrics`, `assistantships`, `job_market_records`. Public `/scholars/[slug]`. |
+| **16.6** | **Research Tools I — math + stats + plotting.** Backends: `symbolic_math` (SymPy), `numeric_math` (NumPy/SciPy), `statistics` (statsmodels), `plotting` (matplotlib → PNG/SVG to MinIO with 24h signed URLs). |
+| **16.7** | **Research Tools II — physics + chemistry + biology + citation Q&A.** Backends: `units` (Pint), `physics_calc`, `chemistry` (RDKit / PubChem fallback), `biology` (Biopython), `literature_search` (CrossRef + arXiv + Semantic Scholar), `citation_qa` (Claude orchestration with `[ref:...]` citations). |
+
+---
+
+# Phase 24 — Real content   *(SME contractors, ongoing)*
+
+| Domain | Target | Budget |
+|---|---|---|
+| USMLE Step 1 + 2 | 5,000 IRT-calibrated items, board-certified MD authors | $400k–$1M |
+| FE Electrical / Mechanical / Civil | 1,000+ items per discipline, NCEES-aligned | $150k–$300k per discipline |
+| MCAT / GRE / LSAT / GMAT | Full-length mock blueprints (Phase 7.4 supports them) | $200k–$500k |
+| AP Calc BC / Bio / Chem / CS | Full course content + 500 items each | $100k–$300k per AP course |
+| HS NGSS / CCSS | K–12 SME network | depends on coverage |
+| MBA core | Quant / FRA / strategy banks | $150k–$300k |
+
+**Code deliverables**: SME contracting templates (`docs/SME_CONTRACT.md`), authoring guide (`docs/AUTHORING_GUIDE.md`), content review workflow in admin UI.
+
+---
+
+# Phase 25 — Mobile + offline   *(8–12 weeks)*
+
+Phase 8 is the lowest-progress section. `eureka/apps/mobile` is scaffold.
+
+| # | Scope |
+|---|---|
+| 25.1 | React Native shell: auth, tier pages, courses, tutor, practice, study plans |
+| 25.2 | Offline sync UI: Phase 12.4 sync receipts exist server-side; needs conflict-resolution UI client-side |
+| 25.3 | Push notifications: APNS + FCM credentials wired (Phase 12.2 backend ready) |
+| 25.4 | App Store + Play Store submission |
+
+---
+
+# Phase 26 — GTM execution   *(parallel from Phase 22)*
+
+| # | Scope |
+|---|---|
+| 26.1 | Stripe Connect production onboarding (W-9 collection, payout schedule, KYC). Phase 10 is in stub mode. |
+| 26.2 | Email provider (Resend / Postmark / SendGrid) configured + warmed up |
+| 26.3 | SMS provider (Twilio) for 2FA + reminders |
+| 26.4 | Customer support staffed: Phase 11.5 ticket system + SLA + KB-content seeding |
+| 26.5 | Marketing site polish: designer pass + SEO content per Phase 11.2 (programmatic skill landing pages) |
+| 26.6 | Product analytics (PostHog OSS recommended) |
+| 26.7 | Beta cohort: 50–200 paying beta users on 50% discount; collect testimonials |
+
+---
+
+# Phase 27 — XR microservice reconciliation   *(2–3 weeks)*
+
+Small but real gap caught during Phase 19:
+- `/dashboard/xr-labs/scene-builder` + `experience/[id]` are Three.js editors built against a Node prototype on `:3005`
+- The real `services/xr-labs/` is **Python FastAPI on `:8070`** with completely different endpoint shapes
+- They don't match; the microservice-down gate from Phase 19 currently always triggers
+
+**Decision required**: Port the Python service to match the frontend OR rewrite the frontend to match the Python service. Pick one and execute. Documented in `docs/PHASE_27_XR_RECONCILIATION.md`.
+
+---
+
+## Recommended sequencing
+
+| Quarter | Phases | Outcome |
+|---|---|---|
+| **Q1 (Months 1–3)** | 20, 21 (start), 23 (16.2–16.4), 27 | Deployed to cloud, basic security hardening, graduate research workspace + thesis lifecycle live, XR working |
+| **Q2 (Months 4–6)** | 21 (finish), 22 (start), 23 (16.5–16.6), 24 (start) | Pen-tested, GDPR-compliant, scholarly profiles + Research Tools math/stats live, first 500 SME items |
+| **Q3 (Months 7–9)** | 22 (finish), 23 (16.7), 24, 26 (start) | FERPA/HIPAA reviewed, Research Tools chemistry/biology/Q&A live, 2,000+ SME items, Stripe + email + analytics in prod |
+| **Q4 (Months 10–12)** | 25, 26 (finish), 21 SOC 2 audit | Mobile apps in stores, beta cohort live, SOC 2 Type I report → institutional-sales-ready |
+
+**6-month plan**: Phases 20 + 23 (16.2–16.6) + 24 (start) + 21 (in progress) = **beta-launch-ready**
+**12-month plan**: + 22 + 25 + 26 = **paid-launch-ready**
+**18-month plan**: + 21 SOC 2 Type I = **institutional-sales-ready**

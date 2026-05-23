@@ -128,6 +128,15 @@ from app.models.graduate import (
     MilestoneKind,
     MilestoneStatus,
 )
+from app.models.research import (
+    ResearchWorkspace,
+    LitReviewEntry,
+    WorkspaceDraft,
+    WorkspaceKind,
+    WorkspaceStatus,
+    ReferenceSource,
+    DraftKind,
+)
 from app.models.integrations import (
     ApiKey,
     ApiKeyUsageLog,
@@ -391,6 +400,13 @@ __all__ = [
     "GradEnrollmentStatus",
     "MilestoneKind",
     "MilestoneStatus",
+    "ResearchWorkspace",
+    "LitReviewEntry",
+    "WorkspaceDraft",
+    "WorkspaceKind",
+    "WorkspaceStatus",
+    "ReferenceSource",
+    "DraftKind",
     "CommunityThread",
     "CommunityPost",
     "CommunityReaction",

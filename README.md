@@ -2,7 +2,12 @@
 
 **Educational Universal Reasoning & Enhanced Knowledge Architecture** — an AI-powered learning platform spanning high school through professional schools (Medical, Law, MBA, Engineering), plus AI-driven test prep, resume building, and XR labs.
 
-> Status: active development. **Phases 1–15 are live**: academic + professional tiers, AI tutor with RAG, exam realism + analytics, B2B / institutional (cohorts, SSO, LTI 1.3), marketplace + creator economy, GTM (subscriptions / SEO / email / onboarding / support), engagement (streaks / study plans / live sessions), platform integrations (API keys / webhooks / embed SDK / OAuth / compliance exports), production scale (cache / job queue / metrics / autocomplete / health probes), and the workforce-training affiliate platform (partnerships / programs / compliance / analytics / worker portal). Many services are wired but not all are production-hardened. See [docs/STATUS.md](docs/STATUS.md) for the honest per-phase status and [docs/ROADMAP.md](docs/ROADMAP.md) for what's next.
+> **Status (May 2026): Phases 1–19 live, plus 16.1.**
+> Academic + professional tiers (Phase 1) · horizontal microservices (Phase 2) · auth + observability + secrets (Phase 3) · cross-tier learner spine + skill graph + Ed25519-signed transcripts + recommender (Phase 4) · item bank with AI variant generator + hybrid skill+vector search (Phase 5) · AI tutor with Claude tool-use + RAG + groundedness scoring (Phase 6) · IRT 2-PL calibration + FSRS-lite spaced repetition + mock exams (Phase 7) · institutional / B2B with cohorts + SSO + LTI 1.3 (Phase 9) · marketplace + creator economy with Stripe Connect (Phase 10) · GTM (subscriptions / SEO / email / onboarding / KB / support) (Phase 11) · engagement (streaks / push / study plans / live sessions / offline) (Phase 12) · platform integrations (API keys / webhooks / embed SDK / OAuth / GDPR export+delete) (Phase 13) · production scale (Redis cache / Postgres job queue / Prometheus metrics / autocomplete / health probes) (Phase 14) · workforce training affiliate platform (Phase 15) · graduate school tier (Phase 16.1) · real activity feed + user collections + no-mocks dashboard (Phase 17) · real community + curated resources catalog (Phase 18) · last mocks ripped + 7 public footer pages + dev-auto-login parity (Phase 19).
+>
+> **Path to production (Phases 20–27) is documented in [docs/ROADMAP.md](docs/ROADMAP.md):** deployment to cloud (20) · security hardening + SOC 2 prep (21) · compliance per region (22) · finish Phase 16 Research Tools — the Wolfram-Alpha competitor (23) · real SME content (24) · mobile + offline (25) · GTM execution (26) · XR microservice reconciliation (27).
+>
+> See [docs/STATUS.md](docs/STATUS.md) for the honest per-phase status and the production-readiness gap list.
 
 ---
 
@@ -179,16 +184,34 @@ docker compose down -v && docker compose up -d db
 - **[docs/OBSERVABILITY.md](docs/OBSERVABILITY.md)** — OpenTelemetry + structlog drop-in pattern
 - **[docs/archive/](docs/archive)** — historical session/phase reports (kept for context; not current)
 
-### Phase 9-15 surfaces at a glance
+### Phase 9–19 surfaces at a glance
 | Phase | What it added | Lives at |
 |---|---|---|
 | 9 — institutional / B2B | cohorts, SSO, LTI 1.3, at-risk early-warning | `/admin/cohorts` |
 | 10 — marketplace + creator economy | instructor onboarding, listings, pricing, coupons, reviews, moderation | `/marketplace`, `/marketplace/[slug]` |
-| 11 — GTM readiness | subscriptions + proration, programmatic SEO, email lifecycle, onboarding wizard, support tickets + KB | `/settings/subscription`, `/settings/support` |
-| 12 — engagement + adaptive learning | streaks + XP + achievements, push notifications, study plans, offline sync, live tutoring | `/learner` (banner), `/training`, `/settings/devices` |
+| 11 — GTM readiness | subscriptions + proration, programmatic SEO, email lifecycle, onboarding wizard, support tickets + KB | `/settings/subscription`, `/settings/support`, `/help` |
+| 12 — engagement + adaptive learning | streaks + XP + achievements, push notifications, study plans, offline sync, live tutoring | `/learner`, `/training`, `/settings/devices` |
 | 13 — platform integrations | API keys, webhooks, embed SDK, OAuth apps, audit log, GDPR/FERPA export + deletion | `/settings/api-keys`, `/settings/webhooks`, `/admin/audit` |
 | 14 — production scale | Redis cache, background job queue, Prometheus metrics, autocomplete, health probes | `/admin/jobs`, `GET /api/v1/metrics` |
 | 15 — workforce training affiliate platform | partnerships, programs, compliance (HIPAA / OSHA / SOC2 / GDPR), workforce analytics | `/institutions/*` (own L&D admin shell) |
+| **16.1** — graduate school tier | graduate programs + enrollments + milestones (no advisors/committees per 2026-05 design); learner self-enroll | `/dashboard/graduate` (sub-nav: Overview / Programs / Enrollments / Research), `/institutions/graduate-programs` |
+| **17** — no-mocks dashboard | `activity_events` + `user_collections` + `collection_items`; `/me/dashboard` rollup; 24 sidebar pages all wired to real api-core | `/dashboard/*` |
+| **18** — real community + resources | `community_threads/posts/reactions` (real forum, real upvotes, accepted answers) + `learning_resources/votes` (curated catalog with tag/tier/skill filters); 15 seeded XR resources | `/dashboard/community`, `/dashboard/resources` |
+| **19** — last mocks ripped + footer pages | 6 pages still calling defunct microservices rewritten ground-up; 7 missing public footer routes (`/help` wired to Phase 11.5 KB, `/blog` real changelog, `/api-docs`, `/privacy`, `/terms`, `/contact`); dev-auto-login proactive for both fetch + axios clients; shared login promise | `/help`, `/community`, `/blog`, `/api-docs`, `/privacy`, `/terms`, `/contact` |
+
+### What's next — Phases 20–27 (path to production)
+Full detail in [docs/ROADMAP.md](docs/ROADMAP.md). Each is gated and tracked:
+
+| Phase | Block | Effort |
+|---|---|---|
+| **20** Deployment | Helm/K8s exists but never deployed; pick cloud, wire CD, managed Postgres/Redis/S3, custom domain + TLS, backups | 2–4 weeks |
+| **21** Security | External pen test, SAST/DAST gating, rate limiting, Postgres row-level security, MFA enforcement in prod, SOC 2 Type I prep | 3–6 weeks |
+| **22** Compliance | FERPA/HIPAA/COPPA/GDPR legal review, cookie consent banner, WCAG 2.1 AA audit, DSAR runbook | 4–12 weeks |
+| **23** Finish Phase 16 | Graduate Research Tools (16.2–16.7): research workspace, thesis lifecycle, grants, publications, **math+stats+plotting (Wolfram-Alpha competitor)**, chemistry+biology+citation-aware Q&A | 6–10 weeks |
+| **24** Real content | SME-authored items: USMLE / FE / MCAT / AP / NGSS / MBA | $400k–$3M, ongoing |
+| **25** Mobile | React Native shell, offline sync UI, APNS+FCM wired, App Store + Play Store | 8–12 weeks |
+| **26** GTM | Stripe Connect production onboarding, real email + SMS providers, support staffing, marketing site polish, beta cohort | parallel with 22 |
+| **27** XR reconciliation | Three.js frontends point at a Node prototype on `:3005`; real service is Python on `:8070` — reconcile | 2–3 weeks |
 
 ---
 

@@ -71,3 +71,24 @@ Legend:
 - **`assess` runtime endpoints**: routes for `assessment_attempts`, `question_responses`, `grading_results`, `response_feedback` import cleanly but the matching DB tables aren't in the seed SQL. Phase 5.1 will add them. /health works regardless.
 
 This file is the source of truth for service health. Update it whenever a service moves up or down a tier.
+
+## Recently resolved (2026-05, late May push)
+- **Phase 16.1 Graduate tier shipped** — 4 tables + 5 enums + 11 endpoints; learner-side `/dashboard/graduate` with sub-nav (Overview / Programs / Enrollments / Research) + admin `/institutions/graduate-programs`; backend self-enroll endpoint `POST /me/graduate/programs/{id}/enroll`; 6/6 integration tests pass.
+- **Phase 17 No-mocks dashboard** — 3 tables (`activity_events`, `user_collections`, `collection_items`) + 11 endpoints; dashboard home, 4 tier pages, analytics, learning-path, courses, settings, admin, ai-research, data-fabric, ethics-security, futures, pedagogy, community, notebook, resume-builder, resources, xr-labs all rewired to real api-core endpoints — no more hardcoded mocks.
+- **Phase 18 Real community + curated resources** — 5 tables (community_threads/posts/reactions + learning_resources/votes) + 19 endpoints; real forum with upvotes + accepted-answer + lock; real curated resource catalog with tag/tier/skill/kind filters; 15 seeded XR resources + 3 sample study sets.
+- **Phase 19 Last mocks ripped** — 6 pages still calling defunct microservices (:8009/:8040/:8050/:8060/:8110) rewritten ground-up on real api-core. Audit grep returns zero defunct refs. 7 missing public footer routes (/help, /community, /blog, /api-docs, /privacy, /terms, /contact) built with real content (KB-wired, real changelog, real endpoint family index, real privacy/ToS text). Resume `Pydantic` `id: str` vs `UUID` 500 bug fixed. Notebook page rewired from defunct :8120 to `/me/collections`. Course detail page built (`/dashboard/courses/[id]`). XR subroutes gracefully degrade when xr-labs microservice is down. Proactive dev-auto-login on first request for BOTH the fetch wrapper and axios apiClient; shared `window.__eurekaDevLoginPromise` to avoid double-login.
+
+## Production-readiness gap (the path from 19 → 27)
+
+After 19 shipped phases, the architectural skeleton is complete. The remaining gap is operational, not architectural. See `docs/ROADMAP.md` Phases 20–27 for the detailed plan.
+
+| Phase | Block | Effort |
+|---|---|---|
+| **20** Production deployment | Helm + K8s manifests exist but never deployed; no managed Postgres / Redis / object storage; no CD pipeline; no custom domain | 2–4 weeks |
+| **21** Trust & security | No external pen test; rate limiting not enforced; row-level security missing; SOC 2 evidence not collected | 3–6 weeks |
+| **22** Compliance | FERPA / HIPAA / COPPA / GDPR scaffolding exists in code; legal review hasn't happened; cookie consent banner missing; WCAG 2.1 audit not done | 4–12 weeks (legal-led) |
+| **23** Finish Phase 16 | Graduate Research Tools (16.2 → 16.7) — the Wolfram-Alpha competitor. Tool deps already in `requirements.txt`; backends + frontends unbuilt | 6–10 weeks |
+| **24** Real content | Seeded items are demo-grade. Need SME-authored content per discipline | $400k–$3M, ongoing |
+| **25** Mobile + offline | `apps/mobile` is scaffold. Phase 12.2 push backend + Phase 12.4 sync receipts ready server-side; client-side work missing | 8–12 weeks |
+| **26** GTM execution | Stripe Connect in stub mode, no real email provider configured, no customer support staffing, marketing site is dev-tier | parallel with 22 |
+| **27** XR reconciliation | `/dashboard/xr-labs/{scene-builder,experience/[id]}` Three.js frontends built against a Node prototype on `:3005`; real `services/xr-labs/` is Python FastAPI on `:8070`. They don't match | 2–3 weeks |
