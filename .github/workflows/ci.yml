@@ -11,21 +11,16 @@ on:
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
-      - '.github/workflows/INDEX.md'
-      - '.github/workflows/QUICK_REFERENCE.md'
-      - '.github/workflows/README.md'
-      - '.github/workflows/WORKFLOW_DIAGRAM.md'
-      - 'scripts/**'
       - 'LICENSE'
       - '.gitignore'
-      - '.gitleaks.toml'
-      - '.sops.yaml'
+    # NOTE: do NOT add scripts/**, .gitleaks.toml, .sops.yaml, or anything
+    # under .github/ here — those ARE CI configuration and changing them
+    # must re-run CI to verify the new config actually works.
   pull_request:
     branches: [main]
     paths-ignore:
       - 'docs/**'
       - '**/*.md'
-      - 'scripts/**'
       - 'LICENSE'
       - '.gitignore'
   workflow_dispatch:
