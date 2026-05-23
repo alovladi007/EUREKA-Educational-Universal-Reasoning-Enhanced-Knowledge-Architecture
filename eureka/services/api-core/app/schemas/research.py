@@ -6,13 +6,42 @@ from datetime import datetime
 from typing import Any, Optional, Union
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 
 # Phase 19 lesson: Pydantic v2 doesn't auto-coerce UUID → str at serialization
 # when from_attributes=True. Accept Union[UUID, str] on response ID fields so
 # either form serializes cleanly through JSON.
 IdField = Union[UUID, str]
+
+
+# Phase-23 verification fix: prevent invalid enum values from leaking past
+# Pydantic and blowing up at the asyncpg layer with a 500. The DB enums
+# are workspace_kind / workspace_status / reference_source / draft_kind
+# (plus a read_status CHECK constraint). Whitelist each one here and the
+# input is rejected with a clean 422 before SQL ever runs.
+
+_WORKSPACE_KINDS = {
+    "thesis", "paper", "grant_application", "literature_review",
+    "meta_analysis", "replication_study", "class_project", "misc",
+}
+_WORKSPACE_STATUSES = {"active", "paused", "completed", "archived"}
+_REFERENCE_SOURCES = {
+    "crossref", "arxiv", "pubmed", "semantic_scholar", "manual", "doi", "isbn",
+}
+_DRAFT_KINDS = {
+    "thesis_chapter", "paper_section", "grant_section",
+    "lit_review_summary", "talk_outline", "misc",
+}
+_READ_STATUSES = {"unread", "reading", "read", "dismissed"}
+
+
+def _check_enum(value: Optional[str], allowed: set[str], name: str) -> Optional[str]:
+    if value is None:
+        return value
+    if value not in allowed:
+        raise ValueError(f"{name} must be one of {sorted(allowed)} (got {value!r})")
+    return value
 
 
 # -- workspaces ---------------------------------------------------------------
@@ -27,6 +56,14 @@ class WorkspaceCreate(BaseModel):
     is_public: bool = False
     enrollment_id: Optional[UUID] = None
 
+    @field_validator("kind")
+    @classmethod
+    def _v_kind(cls, v): return _check_enum(v, _WORKSPACE_KINDS, "kind")
+
+    @field_validator("status")
+    @classmethod
+    def _v_status(cls, v): return _check_enum(v, _WORKSPACE_STATUSES, "status")
+
 
 class WorkspaceUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=280)
@@ -36,6 +73,14 @@ class WorkspaceUpdate(BaseModel):
     tags: Optional[list[str]] = Field(None, max_length=64)
     skill_code: Optional[str] = Field(None, max_length=120)
     is_public: Optional[bool] = None
+
+    @field_validator("kind")
+    @classmethod
+    def _v_kind(cls, v): return _check_enum(v, _WORKSPACE_KINDS, "kind")
+
+    @field_validator("status")
+    @classmethod
+    def _v_status(cls, v): return _check_enum(v, _WORKSPACE_STATUSES, "status")
 
 
 class WorkspaceResponse(BaseModel):
@@ -78,6 +123,14 @@ class LitReviewEntryCreate(BaseModel):
     bibtex: Optional[str] = None
     raw_metadata: dict[str, Any] = Field(default_factory=dict)
 
+    @field_validator("source")
+    @classmethod
+    def _v_source(cls, v): return _check_enum(v, _REFERENCE_SOURCES, "source")
+
+    @field_validator("read_status")
+    @classmethod
+    def _v_read_status(cls, v): return _check_enum(v, _READ_STATUSES, "read_status")
+
 
 class LitReviewEntryUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=500)
@@ -90,6 +143,10 @@ class LitReviewEntryUpdate(BaseModel):
     read_status: Optional[str] = Field(None, max_length=20)
     rating: Optional[int] = Field(None, ge=1, le=5)
     bibtex: Optional[str] = None
+
+    @field_validator("read_status")
+    @classmethod
+    def _v_read_status(cls, v): return _check_enum(v, _READ_STATUSES, "read_status")
 
 
 class LitReviewEntryResponse(BaseModel):
@@ -126,6 +183,10 @@ class DraftCreate(BaseModel):
     body_md: str = ""
     tags: list[str] = Field(default_factory=list, max_length=64)
 
+    @field_validator("kind")
+    @classmethod
+    def _v_kind(cls, v): return _check_enum(v, _DRAFT_KINDS, "kind")
+
 
 class DraftUpdate(BaseModel):
     title: Optional[str] = Field(None, min_length=1, max_length=280)
@@ -133,6 +194,10 @@ class DraftUpdate(BaseModel):
     sort_index: Optional[int] = Field(None, ge=0, le=10000)
     body_md: Optional[str] = None
     tags: Optional[list[str]] = Field(None, max_length=64)
+
+    @field_validator("kind")
+    @classmethod
+    def _v_kind(cls, v): return _check_enum(v, _DRAFT_KINDS, "kind")
 
 
 class DraftResponse(BaseModel):
