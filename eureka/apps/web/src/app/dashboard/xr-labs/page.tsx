@@ -23,7 +23,18 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, formatDate } from "@/lib/eureka-api";
-import { Glasses, Box, Layers, Plus, ExternalLink, Wrench } from "lucide-react";
+import {
+  Glasses,
+  Box,
+  Layers,
+  Plus,
+  ExternalLink,
+  Wrench,
+  Orbit,
+  Atom,
+  Activity,
+  Sparkles,
+} from "lucide-react";
 
 type Resource = {
   id: string;
@@ -115,6 +126,85 @@ export default function XRLabsPage() {
         </Alert>
       )}
 
+      {/* ───────────── Built-in portals ─────────────
+          Self-contained Three.js / R3F experiences we ship in-shell — no
+          external scene service or external assets. The first one is the
+          Solar System Explorer (Phase 19+ extension); Organic Chemistry
+          and Anatomy 3D are next on the roadmap (cards below link to
+          coming-soon placeholders for now).
+      */}
+      <div>
+        <h2 className="text-base font-semibold mb-3 flex items-center gap-2">
+          <Sparkles className="h-4 w-4 text-primary" />
+          Built-in portals
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <Link href="/dashboard/xr-labs/solar-system">
+            <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer bg-gradient-to-br from-indigo-950/50 via-purple-950/30 to-transparent border-primary/20">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Orbit className="h-5 w-5 text-amber-400" />
+                  Solar System Explorer
+                </CardTitle>
+                <CardDescription>
+                  Real-time orbital mechanics for all 8 planets + Moon,
+                  with click-for-facts on every body. Inspired by NASA Eyes
+                  but built from scratch — no external assets.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="secondary" className="text-[10px]">
+                    Astronomy
+                  </Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    Three.js
+                  </Badge>
+                  <Badge variant="secondary" className="text-[10px]">
+                    Interactive
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Card className="h-full opacity-70">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Atom className="h-5 w-5 text-emerald-500" />
+                Organic Chemistry 3D
+              </CardTitle>
+              <CardDescription>
+                Interactive 3D molecules — rotate, measure bond angles, see
+                hybridization. Coming up next in this build pass.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Badge variant="outline" className="text-[10px]">
+                Coming next
+              </Badge>
+            </CardContent>
+          </Card>
+          <Card className="h-full opacity-70">
+            <CardHeader>
+              <CardTitle className="text-base flex items-center gap-2">
+                <Activity className="h-5 w-5 text-rose-500" />
+                Anatomy 3D
+              </CardTitle>
+              <CardDescription>
+                Layer-by-layer human anatomy walkthrough (skeletal →
+                muscular → nervous → vascular). Wired to the medical tier.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Badge variant="outline" className="text-[10px]">
+                Planned
+              </Badge>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      {/* ───────────── Authoring tools ───────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link href="/dashboard/xr-labs/scene-builder">
           <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer">
