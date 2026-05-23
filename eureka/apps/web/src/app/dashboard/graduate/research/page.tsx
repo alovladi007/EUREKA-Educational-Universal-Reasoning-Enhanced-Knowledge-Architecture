@@ -1,205 +1,318 @@
 "use client";
 
 /**
- * /dashboard/graduate/research — research workspace for graduate learners.
- * Phase 16.2's research_workspaces table doesn't ship until later, so we
- * use the Phase 17 user_collections backend as a real placeholder:
- *  - notebook collections = research notebooks
- *  - reading_list collections = lit-review reading lists
- *  - bookmark_set collections = citation bookmarks
+ * /dashboard/graduate/research — Research workspace LIST.
  *
- * All real DB rows via /me/collections. When 16.2 lands we'll add
- * graduate-specific schema (research_workspaces, lit_review_entries,
- * workspace_drafts) — but this surface is already useful today.
+ * Wired to the Phase 16.2 backend that landed in commit 27bc233f:
+ *   GET  /me/research/workspaces         list mine
+ *   POST /me/research/workspaces         create
+ *
+ * The detail page (refs + drafts + CrossRef/arXiv lookup + BibTeX export)
+ * lives at /dashboard/graduate/research/[id].
+ *
+ * Replaces the prior Phase 17 user_collections placeholder. The legacy
+ * /me/collections-backed surfaces remain at /dashboard/notebook +
+ * /dashboard/resources for non-research collections.
  */
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
-import { FolderKanban, BookOpen, Bookmark, Plus, Sigma } from "lucide-react";
+import { FolderKanban, Plus, BookText, FileText, ArrowRight, Sigma } from "lucide-react";
 
-type Collection = {
+type Workspace = {
   id: string;
-  kind: string;
+  user_id: string;
+  enrollment_id: string | null;
   title: string;
   description_md: string | null;
+  kind: string;
+  status: string;
   tags: string[];
-  item_count: number;
+  skill_code: string | null;
+  is_public: boolean;
+  reference_count: number;
+  draft_count: number;
+  last_activity_at: string;
+  created_at: string;
   updated_at: string;
 };
 
-const KINDS = [
-  { value: "notebook", label: "Research notebook", icon: FolderKanban },
-  { value: "reading_list", label: "Reading list", icon: BookOpen },
-  { value: "bookmark_set", label: "Citation bookmarks", icon: Bookmark },
-] as const;
+const KIND_OPTIONS = [
+  { value: "paper", label: "Paper" },
+  { value: "thesis", label: "Thesis" },
+  { value: "grant_application", label: "Grant application" },
+  { value: "literature_review", label: "Literature review" },
+  { value: "meta_analysis", label: "Meta-analysis" },
+  { value: "replication_study", label: "Replication study" },
+  { value: "class_project", label: "Class project" },
+  { value: "misc", label: "Other" },
+];
 
-export default function ResearchPage() {
-  const [collections, setCollections] = useState<Record<string, Collection[]>>({});
+const STATUS_OPTIONS = [
+  { value: "active", label: "Active", tone: "default" as const },
+  { value: "paused", label: "Paused", tone: "secondary" as const },
+  { value: "completed", label: "Completed", tone: "default" as const },
+  { value: "archived", label: "Archived", tone: "outline" as const },
+];
+
+function statusTone(s: string) {
+  return STATUS_OPTIONS.find((x) => x.value === s)?.tone ?? "outline";
+}
+
+export default function ResearchWorkspacesListPage() {
+  const router = useRouter();
+  const [rows, setRows] = useState<Workspace[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [newTitle, setNewTitle] = useState("");
-  const [newKind, setNewKind] = useState<string>("notebook");
+  const [filterStatus, setFilterStatus] = useState<string>("");
+  const [filterKind, setFilterKind] = useState<string>("");
+
+  const [showForm, setShowForm] = useState(false);
+  const [form, setForm] = useState({
+    title: "",
+    description_md: "",
+    kind: "paper",
+    tags: "",
+    skill_code: "",
+  });
   const [creating, setCreating] = useState(false);
 
   async function refresh() {
     setLoading(true);
     try {
-      const results = await Promise.all(KINDS.map(async (k) => {
-        const rows = await api<Collection[]>(`/me/collections?kind=${k.value}`).catch(() => [] as Collection[]);
-        // Add research tag-affinity: only show collections tagged with "research" or skill_code starting with grad / phd
-        return [k.value, Array.isArray(rows) ? rows : []] as const;
-      }));
-      const map: Record<string, Collection[]> = {};
-      for (const [k, v] of results) map[k] = v;
-      setCollections(map);
+      const qs = new URLSearchParams();
+      if (filterStatus) qs.set("status", filterStatus);
+      if (filterKind) qs.set("kind", filterKind);
+      const url = `/me/research/workspaces${qs.toString() ? `?${qs}` : ""}`;
+      const data = await api<Workspace[]>(url);
+      setRows(Array.isArray(data) ? data : []);
       setError(null);
     } catch (e) {
       setError(String((e as Error).message));
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   }
 
-  useEffect(() => { refresh(); }, []);
+  useEffect(() => {
+    refresh();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filterStatus, filterKind]);
 
   async function create(e: React.FormEvent) {
     e.preventDefault();
-    if (!newTitle.trim()) return;
+    if (!form.title.trim()) return;
     setCreating(true);
     try {
-      await api("/me/collections", {
+      const tags = form.tags.split(",").map((s) => s.trim()).filter(Boolean);
+      const created = await api<Workspace>("/me/research/workspaces", {
         method: "POST",
         body: JSON.stringify({
-          kind: newKind,
-          title: newTitle.trim(),
-          tags: ["research", "graduate"],
+          title: form.title.trim(),
+          description_md: form.description_md.trim() || null,
+          kind: form.kind,
+          tags,
+          skill_code: form.skill_code.trim() || null,
         }),
       });
-      setNewTitle("");
-      await refresh();
+      setShowForm(false);
+      setForm({ title: "", description_md: "", kind: "paper", tags: "", skill_code: "" });
+      router.push(`/dashboard/graduate/research/${created.id}`);
     } catch (e) {
       const msg = e instanceof ApiError ? `${e.status} — ${JSON.stringify(e.detail)}` : (e as Error).message;
       alert(msg);
-    } finally { setCreating(false); }
+    } finally {
+      setCreating(false);
+    }
   }
 
   return (
     <div className="space-y-6">
-      <div>
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <FolderKanban className="h-6 w-6 text-primary" />
-          Research workspace
-        </h2>
-        <p className="text-muted-foreground text-sm mt-1">
-          Research notebooks, reading lists, and citation bookmarks. Real
-          collections backed by{" "}
-          <span className="font-mono text-xs">/me/collections</span> (Phase 17).
-          A dedicated <code className="font-mono text-xs">research_workspaces</code> schema
-          lands in Phase 16.2 with CrossRef + arXiv lookup and BibTeX export.
-        </p>
+      <div className="flex items-start justify-between gap-3 flex-wrap">
+        <div>
+          <h2 className="flex items-center gap-2 text-2xl font-bold">
+            <FolderKanban className="h-6 w-6 text-primary" />
+            Research workspaces
+          </h2>
+          <p className="text-muted-foreground text-sm mt-1">
+            Real Phase 16.2 research workspaces backed by{" "}
+            <span className="font-mono text-xs">/me/research/workspaces</span>.
+            Each one holds references (CrossRef + arXiv lookup), drafts, and
+            BibTeX export.
+          </p>
+        </div>
+        <Button onClick={() => setShowForm(!showForm)}>
+          <Plus className="h-4 w-4 mr-1" /> {showForm ? "Cancel" : "New workspace"}
+        </Button>
+      </div>
+
+      {/* Filters */}
+      <div className="flex gap-2 flex-wrap items-end">
+        <div>
+          <label className="text-xs text-muted-foreground">Status</label>
+          <select
+            value={filterStatus}
+            onChange={(e) => setFilterStatus(e.target.value)}
+            className="block rounded-md border border-input bg-background px-3 h-9 text-sm"
+          >
+            <option value="">All</option>
+            {STATUS_OPTIONS.map((s) => (
+              <option key={s.value} value={s.value}>{s.label}</option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="text-xs text-muted-foreground">Kind</label>
+          <select
+            value={filterKind}
+            onChange={(e) => setFilterKind(e.target.value)}
+            className="block rounded-md border border-input bg-background px-3 h-9 text-sm"
+          >
+            <option value="">All</option>
+            {KIND_OPTIONS.map((k) => (
+              <option key={k.value} value={k.value}>{k.label}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
       {error && (
         <Alert variant="destructive">
-          <AlertTitle>Error</AlertTitle>
+          <AlertTitle>Could not load workspaces</AlertTitle>
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
 
-      <Card>
-        <CardHeader><CardTitle className="text-base">New research collection</CardTitle></CardHeader>
-        <CardContent>
-          <form onSubmit={create} className="flex gap-2 flex-wrap items-end">
-            <div className="flex-1 min-w-[200px]">
-              <label className="text-xs text-muted-foreground">Title</label>
+      {showForm && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">New research workspace</CardTitle>
+            <CardDescription>
+              Pick a kind that matches your project (you can change it later).
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={create} className="space-y-3">
               <Input
-                placeholder="e.g. 'Cardiac MI mechanisms — literature'"
-                value={newTitle}
-                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Workspace title (e.g. 'PhD chapter 4 — MI infarct territories')"
+                value={form.title}
+                onChange={(e) => setForm({ ...form, title: e.target.value })}
+                required minLength={1} maxLength={280}
               />
-            </div>
-            <div>
-              <label className="text-xs text-muted-foreground">Kind</label>
-              <select
-                value={newKind}
-                onChange={(e) => setNewKind(e.target.value)}
-                className="block w-full rounded-md border border-input bg-background px-3 h-10 text-sm"
-              >
-                {KINDS.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}
-              </select>
-            </div>
-            <Button type="submit" disabled={creating || !newTitle.trim()}>
-              <Plus className="h-3.5 w-3.5 mr-1" /> Create
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+              <Textarea
+                placeholder="Brief description (markdown ok)"
+                value={form.description_md}
+                onChange={(e) => setForm({ ...form, description_md: e.target.value })}
+                rows={3}
+              />
+              <div className="grid grid-cols-3 gap-2">
+                <select
+                  value={form.kind}
+                  onChange={(e) => setForm({ ...form, kind: e.target.value })}
+                  className="rounded-md border border-input bg-background px-3 h-10 text-sm"
+                >
+                  {KIND_OPTIONS.map((k) => <option key={k.value} value={k.value}>{k.label}</option>)}
+                </select>
+                <Input
+                  placeholder="Tags (comma-separated)"
+                  value={form.tags}
+                  onChange={(e) => setForm({ ...form, tags: e.target.value })}
+                />
+                <Input
+                  placeholder="Skill code (optional)"
+                  value={form.skill_code}
+                  onChange={(e) => setForm({ ...form, skill_code: e.target.value })}
+                />
+              </div>
+              <div className="flex justify-end">
+                <Button type="submit" disabled={creating || !form.title.trim()}>
+                  {creating ? "Creating…" : "Create + open"}
+                </Button>
+              </div>
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
       {loading && <p className="text-muted-foreground text-sm">Loading…</p>}
 
-      {KINDS.map((k) => {
-        const list = collections[k.value] ?? [];
-        return (
-          <Card key={k.value}>
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <k.icon className="h-5 w-5 text-primary" />
-                {k.label}s
-                <span className="text-xs font-normal text-muted-foreground">({list.length})</span>
-              </CardTitle>
-              <CardDescription>
-                Wired to <span className="font-mono text-[11px]">/me/collections?kind={k.value}</span>
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              {list.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  None yet. Use the form above to create one with kind = <code className="font-mono text-xs">{k.value}</code>.
-                </p>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                  {list.map((c) => (
-                    <Link key={c.id} href={`/dashboard/notebook?open=${c.id}`}>
-                      <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer">
-                        <CardContent className="p-3">
-                          <div className="font-medium text-sm truncate">{c.title}</div>
-                          <div className="text-xs text-muted-foreground mt-1">
-                            {c.item_count} item{c.item_count === 1 ? "" : "s"} · updated {formatDate(c.updated_at)}
-                          </div>
-                          {(c.tags?.length ?? 0) > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-1.5">
-                              {(c.tags ?? []).slice(0, 4).map((t) => (
-                                <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
-                              ))}
-                            </div>
-                          )}
-                        </CardContent>
-                      </Card>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </CardContent>
-          </Card>
-        );
-      })}
+      {!loading && rows.length === 0 && (
+        <Card>
+          <CardContent className="py-10 text-center text-muted-foreground space-y-2">
+            <p>No research workspaces yet.</p>
+            <p className="text-sm">
+              Create your first one above. Each workspace can hold dozens of
+              references (auto-fetched from CrossRef + arXiv), markdown drafts
+              with auto word-count, and exports cleanly to BibTeX.
+            </p>
+          </CardContent>
+        </Card>
+      )}
 
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {rows.map((w) => (
+          <Link key={w.id} href={`/dashboard/graduate/research/${w.id}`}>
+            <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer">
+              <CardHeader>
+                <div className="flex items-start justify-between gap-2">
+                  <CardTitle className="text-base flex items-center gap-2 min-w-0">
+                    <FolderKanban className="h-4 w-4 text-primary shrink-0" />
+                    <span className="truncate">{w.title}</span>
+                  </CardTitle>
+                  <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
+                </div>
+                <CardDescription className="flex flex-wrap items-center gap-1 text-xs mt-1">
+                  <Badge variant="outline">{w.kind.replace(/_/g, " ")}</Badge>
+                  <Badge variant={statusTone(w.status)}>{w.status}</Badge>
+                  {w.skill_code && <span className="font-mono">{w.skill_code}</span>}
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-2 text-xs">
+                {w.description_md && (
+                  <p className="text-muted-foreground line-clamp-2">{w.description_md}</p>
+                )}
+                <div className="flex items-center gap-3 text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <BookText className="h-3.5 w-3.5" /> {w.reference_count} refs
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <FileText className="h-3.5 w-3.5" /> {w.draft_count} drafts
+                  </span>
+                  <span>· {formatDate(w.last_activity_at)}</span>
+                </div>
+                {(w.tags?.length ?? 0) > 0 && (
+                  <div className="flex flex-wrap gap-1 pt-1">
+                    {(w.tags ?? []).slice(0, 4).map((t) => (
+                      <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </Link>
+        ))}
+      </div>
+
+      {/* Footer pointer to 16.6 / 16.7 (still pending) */}
       <Card className="border-primary/20 bg-primary/5">
         <CardHeader>
           <CardTitle className="text-base flex items-center gap-2">
             <Sigma className="h-5 w-5 text-primary" />
-            Coming in 16.2 + 16.6 + 16.7
+            Coming next: Research Tools (Sessions 16.6 + 16.7)
           </CardTitle>
           <CardDescription>
-            CrossRef + arXiv lookup with BibTeX export · symbolic math (SymPy) ·
-            stats + plotting (statsmodels + matplotlib) · chemistry (RDKit /
-            PubChem) · biology (Biopython) · citation-aware Q&A (Claude over
-            CrossRef + arXiv + Semantic Scholar). The Wolfram-Alpha competitor
-            surface for graduate research, native in EUREKA.
+            Symbolic math (SymPy) · stats + plotting (statsmodels + matplotlib) ·
+            chemistry (RDKit / PubChem) · biology (Biopython) · citation-aware
+            Q&A (Claude over CrossRef + arXiv + Semantic Scholar). Wolfram-Alpha
+            competitor, native in EUREKA.
           </CardDescription>
         </CardHeader>
       </Card>
