@@ -24,6 +24,26 @@ function getToken(): string | null {
 }
 
 /**
+ * Decode-only check (no signature verify — the server does that). Returns
+ * true when the token is malformed or `exp` is past (with 30s skew).
+ * Used to pre-emptively drop stale tokens before they cause a 401.
+ */
+function jwtIsExpiredOrInvalid(token: string): boolean {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return true;
+    const b64 = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    const padded = b64 + "=".repeat((4 - (b64.length % 4)) % 4);
+    const payload = JSON.parse(atob(padded)) as { exp?: number };
+    if (typeof payload.exp !== "number") return true;
+    const nowSec = Math.floor(Date.now() / 1000);
+    return payload.exp - 30 <= nowSec;
+  } catch {
+    return true;
+  }
+}
+
+/**
  * Dev-mode convenience: when no `access_token` is in localStorage, silently
  * log in with the seeded admin and stash the result so every Phase 9-15 page
  * "just works" without a login prompt. Disabled by setting
@@ -92,6 +112,15 @@ export async function api<T = unknown>(
   };
   if (auth) {
     let tok = getToken();
+    // Stale-token check: if the cached JWT is already expired (or
+    // malformed), drop it + force a fresh dev auto-login. Prevents the
+    // 401-noise-then-recover pattern on page load.
+    if (tok && jwtIsExpiredOrInvalid(tok)) {
+      if (typeof window !== "undefined") {
+        window.localStorage.removeItem("access_token");
+      }
+      tok = null;
+    }
     // No token at all → fetch one silently with the seeded dev admin.
     if (!tok) tok = await devAutoLogin();
     if (tok) finalHeaders["Authorization"] = `Bearer ${tok}`;

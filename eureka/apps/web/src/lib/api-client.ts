@@ -25,14 +25,22 @@ class ApiClient {
     });
 
     // Request interceptor — add auth token PROACTIVELY.
-    // If there's no token in localStorage, kick off dev auto-login
-    // BEFORE sending the request so the very first call doesn't 401.
-    // Without this, the dashboard layout's GET /auth/me always logs a
-    // 401 in the browser console before the response interceptor's
-    // retry kicks in. Same pattern as eureka-api.ts's `api()` helper.
+    // If there's no token in localStorage, or the cached token is expired,
+    // kick off dev auto-login BEFORE sending the request so the first call
+    // doesn't 401. Stale tokens (from a previous session where JWT_SECRET
+    // rotated, or simply expired) would otherwise produce a 401 noise
+    // even though the response interceptor's retry would recover.
     this.client.interceptors.request.use(
       async (config) => {
         let token = this.getToken();
+        // Stale-token check: decode the JWT exp claim. If absent or
+        // already past, treat as no-token and trigger dev auto-login.
+        if (token && this.jwtIsExpiredOrInvalid(token)) {
+          if (typeof window !== 'undefined') {
+            window.localStorage.removeItem('access_token');
+          }
+          token = null;
+        }
         if (!token) {
           const fresh = await this.devAutoLogin();
           if (fresh) token = fresh;
@@ -122,6 +130,29 @@ class ApiClient {
     // Lazy import keeps the module graph simple (no top-level cycle).
     const { devAutoLogin } = await import('./eureka-api');
     return devAutoLogin();
+  }
+
+  /**
+   * Decode the JWT payload (NOT verify the signature — server still does
+   * that). Returns true when the token is malformed OR `exp` is in the
+   * past (with a 30s clock-skew buffer so we never use a token that's
+   * about to expire mid-flight). Used to pre-emptively trigger
+   * devAutoLogin in the request interceptor before we 401.
+   */
+  private jwtIsExpiredOrInvalid(token: string): boolean {
+    try {
+      const parts = token.split('.');
+      if (parts.length !== 3) return true;
+      // base64url → base64
+      const b64 = parts[1].replace(/-/g, '+').replace(/_/g, '/');
+      const payload = JSON.parse(atob(b64 + '='.repeat((4 - (b64.length % 4)) % 4)));
+      const exp = payload?.exp;
+      if (typeof exp !== 'number') return true;
+      const nowSec = Math.floor(Date.now() / 1000);
+      return exp - 30 <= nowSec;
+    } catch {
+      return true;
+    }
   }
 
   setRefreshToken(token: string) {
@@ -333,15 +364,16 @@ class ApiClient {
   // ==================== Medical School Service (NestJS) ====================
 
   private medicalSchoolClient!: AxiosInstance;
+  private medicalWarned = false;
 
   private getMedicalClient(): AxiosInstance {
     if (!this.medicalSchoolClient) {
       this.medicalSchoolClient = axios.create({
         baseURL: process.env.NEXT_PUBLIC_MEDICAL_SCHOOL_URL || 'http://localhost:8030',
         headers: { 'Content-Type': 'application/json' },
+        timeout: 5000,
       });
 
-      // Add auth token interceptor for medical school service
       this.medicalSchoolClient.interceptors.request.use(
         (config) => {
           const token = this.getToken();
@@ -350,7 +382,38 @@ class ApiClient {
           }
           return config;
         },
-        (error) => Promise.reject(error)
+        (error) => Promise.reject(error),
+      );
+
+      // Same graceful-degrade as test-prep — see getTestPrepClient().
+      this.medicalSchoolClient.interceptors.response.use(
+        (r) => r,
+        (error) => {
+          const offline =
+            error?.code === 'ERR_NETWORK' ||
+            error?.code === 'ECONNREFUSED' ||
+            error?.code === 'ECONNABORTED' ||
+            !error?.response;
+          if (offline) {
+            if (!this.medicalWarned) {
+              this.medicalWarned = true;
+              // eslint-disable-next-line no-console
+              console.info(
+                '[apiClient] medical-school microservice (:8030) is unreachable — ' +
+                'returning empty results. To start it: ' +
+                '`docker compose --profile full up -d medical-school`',
+              );
+            }
+            return Promise.resolve({
+              data: {},
+              status: 0,
+              statusText: 'medical-school service unavailable',
+              headers: {},
+              config: error?.config,
+            });
+          }
+          return Promise.reject(error);
+        },
       );
     }
     return this.medicalSchoolClient;
@@ -505,14 +568,22 @@ class ApiClient {
 
   private testPrepClient!: AxiosInstance;
 
+  // Cache the "microservice is down" warning so we only log it once
+  // per session (instead of per-request firehose).
+  private testPrepWarned = false;
+
   private getTestPrepClient(): AxiosInstance {
     if (!this.testPrepClient) {
       this.testPrepClient = axios.create({
         baseURL: process.env.NEXT_PUBLIC_TEST_PREP_URL || 'http://localhost:8200',
         headers: { 'Content-Type': 'application/json' },
+        // Cap requests at 5s — the legacy services/test-prep microservice
+        // on :8200 may not be running. Without a timeout the page sits in
+        // a pending-network state for 30s+.
+        timeout: 5000,
       });
 
-      // Add auth token interceptor for test prep service
+      // Auth token (same shape as the main apiClient).
       this.testPrepClient.interceptors.request.use(
         (config) => {
           const token = this.getToken();
@@ -521,7 +592,50 @@ class ApiClient {
           }
           return config;
         },
-        (error) => Promise.reject(error)
+        (error) => Promise.reject(error),
+      );
+
+      // Graceful-degrade response interceptor: when the legacy test-prep
+      // microservice on :8200 isn't running (almost always in dev — it's
+      // behind --profile full), return an empty-shaped response instead
+      // of a thrown ERR_CONNECTION_REFUSED that spams the console + alerts
+      // the user. Logs one warning per session so debuggers still see it.
+      this.testPrepClient.interceptors.response.use(
+        (r) => r,
+        (error) => {
+          const offline =
+            error?.code === 'ERR_NETWORK' ||
+            error?.code === 'ECONNREFUSED' ||
+            error?.code === 'ECONNABORTED' ||
+            !error?.response;
+          if (offline) {
+            if (!this.testPrepWarned) {
+              this.testPrepWarned = true;
+              // eslint-disable-next-line no-console
+              console.info(
+                '[apiClient] test-prep microservice (:8200) is unreachable — ' +
+                'returning empty results. To start it: ' +
+                '`docker compose --profile full up -d test-prep`',
+              );
+            }
+            const url = error?.config?.url || '';
+            // Best-effort shape match per endpoint
+            let data: unknown = {};
+            if (url.includes('/history')) data = { history: [], total: 0 };
+            else if (url.includes('/stats')) data = { stats: null };
+            else if (url.includes('/sessions')) data = null;
+            else data = {};
+            // Resolve instead of reject — page UIs treat empty as "nothing yet"
+            return Promise.resolve({
+              data,
+              status: 0,
+              statusText: 'test-prep service unavailable',
+              headers: {},
+              config: error?.config,
+            });
+          }
+          return Promise.reject(error);
+        },
       );
     }
     return this.testPrepClient;
