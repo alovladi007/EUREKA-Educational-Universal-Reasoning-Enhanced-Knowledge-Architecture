@@ -81,6 +81,21 @@ type Moon = {
   inclination?: number; // radians
 };
 
+// Artificial satellites — ISS, Hubble, JWST, Voyagers etc. Same idea as
+// a Moon but drawn as a tiny emissive marker (a small octahedron) with a
+// fast orbit. Scaling is symbolic, not real (ISS at true scale would be
+// invisible at any zoom).
+type Satellite = {
+  id: string;
+  name: string;
+  orbit: number; // distance from parent in scene units (compressed)
+  period: number; // orbital period in Earth days (NOT minutes)
+  size?: number; // size of the marker (default 0.04)
+  color?: number; // color of emissive marker
+  inclination?: number;
+  description?: string;
+};
+
 type Body = {
   id: string;
   name: string;
@@ -90,8 +105,10 @@ type Body = {
   period: number;
   day: number;
   tilt: number;
+  trailColor?: number; // color-coded orbital trail (one per planet for visual ID)
   rings?: { inner: number; outer: number };
   moons?: Moon[];
+  satellites?: Satellite[]; // artificial satellites orbiting this body
   facts: {
     type: string;
     diameter: string;
@@ -113,6 +130,7 @@ const SUN: Body = {
   period: 0,
   day: 25.05,
   tilt: 0.127,
+  trailColor: 0xffd070,
   facts: {
     type: "G-type main-sequence star",
     diameter: "1,392,700 km (≈109 × Earth)",
@@ -131,11 +149,12 @@ const PLANETS: Body[] = [
     id: "mercury",
     name: "Mercury",
     textureKey: "mercury",
-    size: 0.42,
-    orbit: 7,
+    size: 0.48,
+    orbit: 8,
     period: 0.241,
     day: 58.6,
     tilt: 0.0006,
+    trailColor: 0xa9a9a9, // grey
     facts: {
       type: "Terrestrial (rocky)",
       diameter: "4,879 km",
@@ -152,11 +171,12 @@ const PLANETS: Body[] = [
     id: "venus",
     name: "Venus",
     textureKey: "venusSurface",
-    size: 0.58,
-    orbit: 10.5,
+    size: 0.62,
+    orbit: 12,
     period: 0.615,
     day: -243.02,
     tilt: 3.0962,
+    trailColor: 0xddc97a, // pale yellow
     facts: {
       type: "Terrestrial (rocky)",
       diameter: "12,104 km",
@@ -173,19 +193,56 @@ const PLANETS: Body[] = [
     id: "earth",
     name: "Earth",
     textureKey: "earthDay",
-    size: 0.6,
-    orbit: 15,
+    size: 0.64,
+    orbit: 17,
     period: 1,
     day: 1,
     tilt: 0.4091,
+    trailColor: 0x6090f0, // blue
     moons: [
       {
         id: "luna",
         name: "Moon",
-        size: 0.16,
-        orbit: 1.4,
+        size: 0.22,
+        orbit: 1.5,
         period: 27.32,
         color: 0xffffff,
+      },
+    ],
+    satellites: [
+      {
+        // Real ISS period = 92 min = 0.064 days = 0.000175 years. At sim
+        // 1× that's 0.021 sec per orbit — an invisible blur. Slowed to
+        // ~5 sec per orbit at 1× for visibility (period 0.04 sim years).
+        id: "iss",
+        name: "ISS",
+        orbit: 0.85,
+        period: 14.6, // sim-days; real ISS is 92 min — slowed ~250× to be visible
+        size: 0.05,
+        color: 0x88ccff,
+        description:
+          "International Space Station — real orbit altitude 408 km, real period 92 minutes, 51.6° inclination, crewed since Nov 2000. Marker is enlarged ~5000× and orbit is slowed ~250× for visibility in this view.",
+      },
+      {
+        id: "hubble",
+        name: "Hubble",
+        orbit: 0.92,
+        period: 15.1, // 95 min real, slowed for visibility
+        size: 0.04,
+        color: 0xffdd88,
+        inclination: 0.49,
+        description:
+          "Hubble Space Telescope — launched 1990, real orbit 535 km, period 95 min, 28.5° inclination. Still operational, ~600 papers/year cite Hubble observations.",
+      },
+      {
+        id: "jwst",
+        name: "JWST",
+        orbit: 3.0,
+        period: 182, // L2 halo orbit ~6 months
+        size: 0.06,
+        color: 0xfff0c0,
+        description:
+          "James Webb Space Telescope — orbits the Sun–Earth L2 Lagrange point ~1.5 million km from Earth on a 6-month halo orbit. Launched Dec 2021. Operating in mid-infrared at ~50 K with a 6.5 m primary mirror.",
       },
     ],
     facts: {
@@ -204,14 +261,31 @@ const PLANETS: Body[] = [
     id: "mars",
     name: "Mars",
     textureKey: "mars",
-    size: 0.48,
-    orbit: 21,
+    size: 0.55,
+    orbit: 24,
     period: 1.881,
     day: 1.026,
     tilt: 0.4396,
+    trailColor: 0xd47030, // red-orange
     moons: [
-      { id: "phobos", name: "Phobos", size: 0.04, orbit: 1.0, period: 0.319, color: 0xa08070 },
-      { id: "deimos", name: "Deimos", size: 0.025, orbit: 1.5, period: 1.262, color: 0xa08070 },
+      { id: "phobos", name: "Phobos", size: 0.09, orbit: 1.1, period: 0.319, color: 0xa08070 },
+      { id: "deimos", name: "Deimos", size: 0.07, orbit: 1.7, period: 1.262, color: 0xa08070 },
+    ],
+    satellites: [
+      {
+        // MAVEN orbits Mars (the Curiosity rover is on the surface so
+        // visualization-wise it'd track Mars's rotation; we use MAVEN
+        // instead since it's a real orbiter we can show flying around).
+        id: "maven",
+        name: "MAVEN",
+        orbit: 0.78,
+        period: 13.5,
+        size: 0.04,
+        color: 0xffaa66,
+        inclination: 0.13,
+        description:
+          "MAVEN — Mars Atmosphere and Volatile EvolutioN. Orbiting Mars since Sept 2014 in a 4.5-h elliptical orbit, studying upper-atmosphere escape to space.",
+      },
     ],
     facts: {
       type: "Terrestrial (rocky)",
@@ -229,16 +303,17 @@ const PLANETS: Body[] = [
     id: "jupiter",
     name: "Jupiter",
     textureKey: "jupiter",
-    size: 1.8,
-    orbit: 34,
+    size: 1.9,
+    orbit: 40,
     period: 11.862,
     day: 0.413,
     tilt: 0.0546,
+    trailColor: 0xddb88a, // tan
     moons: [
-      { id: "io", name: "Io", size: 0.15, orbit: 2.5, period: 1.769, color: 0xeed060 }, // sulphuric yellow
-      { id: "europa", name: "Europa", size: 0.13, orbit: 3.1, period: 3.551, color: 0xefe6cf }, // ice white
-      { id: "ganymede", name: "Ganymede", size: 0.22, orbit: 4.0, period: 7.155, color: 0xc8b89a }, // largest moon in solar system
-      { id: "callisto", name: "Callisto", size: 0.2, orbit: 5.2, period: 16.689, color: 0x8a7e6c }, // dark cratered
+      { id: "io", name: "Io", size: 0.22, orbit: 3.0, period: 1.769, color: 0xeed060 },
+      { id: "europa", name: "Europa", size: 0.20, orbit: 3.7, period: 3.551, color: 0xefe6cf },
+      { id: "ganymede", name: "Ganymede", size: 0.30, orbit: 4.6, period: 7.155, color: 0xc8b89a },
+      { id: "callisto", name: "Callisto", size: 0.28, orbit: 5.7, period: 16.689, color: 0x8a7e6c },
     ],
     facts: {
       type: "Gas giant",
@@ -256,16 +331,17 @@ const PLANETS: Body[] = [
     id: "saturn",
     name: "Saturn",
     textureKey: "saturn",
-    size: 1.55,
-    orbit: 48,
+    size: 1.65,
+    orbit: 58,
     period: 29.457,
     day: 0.444,
     tilt: 0.4665,
     rings: { inner: 2.1, outer: 3.7 },
+    trailColor: 0xe8d3a0, // cream
     moons: [
-      { id: "enceladus", name: "Enceladus", size: 0.05, orbit: 4.5, period: 1.37, color: 0xffffff }, // pure white ice
-      { id: "titan", name: "Titan", size: 0.21, orbit: 5.8, period: 15.95, color: 0xe89858 }, // orange atmosphere
-      { id: "iapetus", name: "Iapetus", size: 0.08, orbit: 7.5, period: 79.32, color: 0xa08c70, inclination: 0.27 },
+      { id: "enceladus", name: "Enceladus", size: 0.10, orbit: 4.8, period: 1.37, color: 0xffffff },
+      { id: "titan", name: "Titan", size: 0.30, orbit: 6.3, period: 15.95, color: 0xe89858 },
+      { id: "iapetus", name: "Iapetus", size: 0.13, orbit: 8.0, period: 79.32, color: 0xa08c70, inclination: 0.27 },
     ],
     facts: {
       type: "Gas giant",
@@ -283,14 +359,15 @@ const PLANETS: Body[] = [
     id: "uranus",
     name: "Uranus",
     textureKey: "uranus",
-    size: 1.1,
-    orbit: 60,
+    size: 1.18,
+    orbit: 73,
     period: 84.011,
     day: -0.718,
-    tilt: 1.7064, // 97.77° — rolls on its side
+    tilt: 1.7064,
+    trailColor: 0x9ad9d9, // cyan
     moons: [
-      { id: "titania", name: "Titania", size: 0.08, orbit: 2.6, period: 8.706, color: 0xa89890 },
-      { id: "oberon", name: "Oberon", size: 0.08, orbit: 3.3, period: 13.46, color: 0x988878 },
+      { id: "titania", name: "Titania", size: 0.13, orbit: 3.0, period: 8.706, color: 0xa89890 },
+      { id: "oberon", name: "Oberon", size: 0.13, orbit: 3.8, period: 13.46, color: 0x988878 },
     ],
     facts: {
       type: "Ice giant",
@@ -308,14 +385,15 @@ const PLANETS: Body[] = [
     id: "neptune",
     name: "Neptune",
     textureKey: "neptune",
-    size: 1.07,
-    orbit: 70,
+    size: 1.15,
+    orbit: 88,
     period: 164.79,
     day: 0.671,
     tilt: 0.4943,
+    trailColor: 0x4a7af5, // deep blue
     moons: [
       // Triton orbits retrograde — only large moon in the Solar System to do so
-      { id: "triton", name: "Triton", size: 0.13, orbit: 2.2, period: -5.877, color: 0xe6c8d8 }, // pinkish nitrogen ice
+      { id: "triton", name: "Triton", size: 0.18, orbit: 2.6, period: -5.877, color: 0xe6c8d8 },
     ],
     facts: {
       type: "Ice giant",
@@ -335,10 +413,13 @@ const PLANETS: Body[] = [
 const ALL_BODIES: Body[] = [SUN, ...PLANETS];
 
 // ────────────────────────────────────────────────────────────────────────
-// Sim clock — 1 Earth year = 30 wall-clock seconds at speed=1x
+// Sim clock — 1 Earth year = 120 wall-clock seconds at speed=1×
+// (was 30 in v3 — too fast, motion looked like a glitch. At 120 s/year
+// Mercury still completes an orbit in ~29 s which is comfortable.)
 // ────────────────────────────────────────────────────────────────────────
 
-const EARTH_YEAR_SECONDS = 30;
+const EARTH_YEAR_SECONDS = 120;
+const BUILD_TAG = "v4 · 2026-05-23"; // bump to verify you're on the latest
 
 function SimulationClock({
   paused,
@@ -388,12 +469,16 @@ function FlyToController({
     // Where the body actually is right now
     ft.meshRef.current.getWorldPosition(tempVec.current);
 
-    // Slerp OrbitControls' look target toward the body
-    ctrl.target.lerp(tempVec.current, 0.08);
+    // Slerp OrbitControls' look target toward the body. Higher coefficient
+    // so the transition completes within ~1s instead of dragging out.
+    ctrl.target.lerp(tempVec.current, 0.14);
 
-    // Desired camera distance based on body size
+    // Desired camera distance based on body size — pulled closer than v3
+    // (size×6 → size×3.5) so the user actually sees surface features
+    // (Earth night lights, Jupiter's bands, Saturn's rings). Sun gets a
+    // slightly looser frame so its corona doesn't fill the entire view.
     const desiredDist =
-      ft.body.id === "sun" ? ft.body.size * 4 : ft.body.size * 6;
+      ft.body.id === "sun" ? ft.body.size * 3 : ft.body.size * 3.5;
 
     // Maintain camera DIRECTION relative to target while moving distance
     const camOffset = camera.position
@@ -403,7 +488,7 @@ function FlyToController({
       .multiplyScalar(desiredDist);
     desiredCamPos.current.copy(tempVec.current).add(camOffset);
 
-    camera.position.lerp(desiredCamPos.current, 0.05);
+    camera.position.lerp(desiredCamPos.current, 0.1);
 
     ctrl.update();
   });
@@ -417,7 +502,7 @@ function FlyToController({
 function OrbitTrail({
   radius,
   color = 0x8090a0,
-  opacity = 0.45,
+  opacity = 0.55,
 }: {
   radius: number;
   color?: number;
@@ -753,8 +838,13 @@ function Planet({
               simTimeRef={simTimeRef}
             />
           ))}
+
+        {/* Artificial satellites */}
+        {body.satellites?.map((s) => (
+          <SatelliteBody key={s.id} sat={s} simTimeRef={simTimeRef} />
+        ))}
       </group>
-      <OrbitTrail radius={body.orbit} />
+      <OrbitTrail radius={body.orbit} color={body.trailColor} />
     </group>
   );
 }
@@ -896,8 +986,17 @@ function Earth({
             simTimeRef={simTimeRef}
           />
         ))}
+
+        {/* ISS / Hubble / JWST */}
+        {body.satellites?.map((s) => (
+          <SatelliteBody key={s.id} sat={s} simTimeRef={simTimeRef} />
+        ))}
       </group>
-      <OrbitTrail radius={body.orbit} color={0x80a0e0} opacity={0.5} />
+      <OrbitTrail
+        radius={body.orbit}
+        color={body.trailColor ?? 0x6090f0}
+        opacity={0.6}
+      />
     </group>
   );
 }
@@ -987,8 +1086,81 @@ function Venus({
           yOffset={body.size + 0.4}
           highlighted={focusedId === body.id}
         />
+
+        {/* Any artificial satellites of Venus (none yet, but the slot is here for consistency) */}
+        {body.satellites?.map((s) => (
+          <SatelliteBody key={s.id} sat={s} simTimeRef={simTimeRef} />
+        ))}
       </group>
-      <OrbitTrail radius={body.orbit} />
+      <OrbitTrail radius={body.orbit} color={body.trailColor} />
+    </group>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Artificial satellite — small emissive marker orbiting a parent body
+// (ISS, Hubble, JWST, etc.). Same shape as MoonBody but uses a bright
+// octahedron instead of a textured sphere — the marker is symbolic.
+// ────────────────────────────────────────────────────────────────────────
+
+function SatelliteBody({
+  sat,
+  simTimeRef,
+}: {
+  sat: Satellite;
+  simTimeRef: React.MutableRefObject<number>;
+}) {
+  const orbitRef = useRef<THREE.Group>(null);
+
+  useFrame(() => {
+    if (orbitRef.current) {
+      const periodInYears = Math.abs(sat.period) / 365.25;
+      const sign = Math.sign(sat.period) || 1;
+      orbitRef.current.rotation.y =
+        (simTimeRef.current * Math.PI * 2 * sign) / periodInYears;
+    }
+  });
+
+  const size = sat.size ?? 0.04;
+  const color = sat.color ?? 0xffffff;
+
+  return (
+    <group rotation={[sat.inclination ?? 0, 0, 0]}>
+      <group ref={orbitRef}>
+        <mesh position={[sat.orbit, 0, 0]}>
+          <octahedronGeometry args={[size, 0]} />
+          <meshBasicMaterial color={color} toneMapped={false} />
+        </mesh>
+        {/* A small additive glow to make the marker pop */}
+        <mesh position={[sat.orbit, 0, 0]}>
+          <sphereGeometry args={[size * 2.2, 8, 8]} />
+          <meshBasicMaterial
+            color={color}
+            transparent
+            opacity={0.18}
+            blending={THREE.AdditiveBlending}
+            depthWrite={false}
+          />
+        </mesh>
+        <group position={[sat.orbit, size + 0.08, 0]}>
+          <Html center distanceFactor={12} style={{ pointerEvents: "none" }}>
+            <div className="whitespace-nowrap text-[10px] font-semibold tracking-wide px-1 py-px rounded-sm bg-cyan-500/30 ring-1 ring-cyan-300/40 backdrop-blur-sm text-white select-none">
+              {sat.name}
+            </div>
+          </Html>
+        </group>
+      </group>
+      {/* Faint orbit trail */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <ringGeometry args={[sat.orbit - 0.005, sat.orbit + 0.005, 96]} />
+        <meshBasicMaterial
+          color={color}
+          transparent
+          opacity={0.25}
+          side={THREE.DoubleSide}
+          depthWrite={false}
+        />
+      </mesh>
     </group>
   );
 }
@@ -1007,9 +1179,9 @@ function AsteroidBelt() {
     const tempObj = new THREE.Object3D();
     for (let i = 0; i < ASTEROID_COUNT; i++) {
       const angle = Math.random() * Math.PI * 2;
-      // Mars sits at 21, Jupiter at 34 — belt between
-      const radius = 24 + Math.random() * 7;
-      const height = (Math.random() - 0.5) * 0.7;
+      // Mars sits at 24, Jupiter at 40 — belt at 28–36 fills the gap
+      const radius = 28 + Math.random() * 8;
+      const height = (Math.random() - 0.5) * 0.8;
       tempObj.position.set(
         Math.cos(angle) * radius,
         height,
@@ -1230,8 +1402,10 @@ export default function SolarSystemPage() {
   const [selected, setSelected] = useState<Body | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
 
-  // Default camera: high & wide enough to see all 8 planets (Neptune sits at orbit=70)
-  const DEFAULT_CAM: [number, number, number] = [0, 70, 150];
+  // Default camera: high & wide enough to see all 8 planets (Neptune sits
+  // at orbit=88 in v4). Up to maxDistance=800 in OrbitControls so users
+  // can zoom further out too.
+  const DEFAULT_CAM: [number, number, number] = [0, 95, 215];
 
   const flyToBody = (b: Body) => {
     const ref = bodyRefs.current[b.id];
@@ -1300,8 +1474,8 @@ export default function SolarSystemPage() {
             }
             enableDamping
             dampingFactor={0.08}
-            minDistance={2}
-            maxDistance={700}
+            minDistance={0.3}
+            maxDistance={800}
             makeDefault
           />
         </Suspense>
@@ -1319,7 +1493,7 @@ export default function SolarSystemPage() {
 
         <div className="pointer-events-auto bg-black/50 backdrop-blur-md rounded-md px-4 py-2 text-center border border-white/10">
           <div className="text-[10px] uppercase tracking-wider text-white/60">
-            Built-in portal · Phase 19
+            Built-in portal · {BUILD_TAG}
           </div>
           <div className="text-base font-semibold">Solar System Explorer</div>
         </div>
@@ -1338,11 +1512,12 @@ export default function SolarSystemPage() {
             className="bg-transparent text-sm px-2 py-1 rounded border border-white/20 hover:border-white/40 outline-none cursor-pointer"
             title="Time multiplier"
           >
+            <option value={0.1} className="bg-black">0.1×</option>
             <option value={0.5} className="bg-black">0.5×</option>
-            <option value={1} className="bg-black">1× (1 yr / 30s)</option>
+            <option value={1} className="bg-black">1× (1 yr / 120s)</option>
             <option value={5} className="bg-black">5×</option>
-            <option value={50} className="bg-black">50×</option>
-            <option value={500} className="bg-black">500×</option>
+            <option value={25} className="bg-black">25×</option>
+            <option value={200} className="bg-black">200×</option>
           </select>
           <button
             onClick={flyToWholeSystem}
