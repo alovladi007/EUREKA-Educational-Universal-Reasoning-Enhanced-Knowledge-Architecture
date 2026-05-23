@@ -58,3 +58,17 @@ These were three Next.js scaffolds with only README + package.json. Real tier UI
 - [x] **The two `api-core` copies**: deleted the dead `eureka/api-core/` 2026-05; compose builds from `eureka/services/api-core/` which is canonical.
 - [ ] **Seed hashes**: bcrypt hashes for demo users in SQL should be generated at first boot, not hardcoded, so they can't drift from the password the README documents. Migrate to a runtime seed script.
 - [ ] **Empty `mobile/` app**: `eureka/apps/mobile/` has only a README. Decide: delete now (Phase 8 will add React Native fresh) or keep as a placeholder.
+
+## CI quota management (2026-05-22)
+
+- [x] **GitHub Actions free-tier quota exhaustion** — diagnosed `2026-05-22`. After heavy pushing (Phases 16.1 → 19 + the Phases 20-27 plan-doc push), all 33 jobs in every CI run failed with `runner_id=0`, `steps=[]`, and ~15-25s duration — exact pattern of "runner never allocated due to monthly free-tier exhaustion (2000 min for private repos)." Last successful run was 2026-05-17.
+  - **Mitigation shipped**: `paths-ignore` added to `.github/workflows/ci.yml` for `docs/**`, `**/*.md`, `scripts/**`, repo-meta files. About 50% of recent pushes were doc-only — those will now skip CI entirely.
+- [ ] **Further CI tightening if quota still tight after reset** (in priority order):
+  - Per-service path-filter matrix: only test changed Python services on a push. Use `dorny/paths-filter@v3`. Could drop 33 jobs/push to ~5-10 on most changes.
+  - More aggressive `actions/cache`: pip wheel cache + node_modules cache + Docker BuildKit layer cache. Each saves ~30-60s per job.
+  - Drop `docker build` matrix from "all 5 services" to "only the ones that touched their Dockerfile or service code."
+  - Self-hosted runner: free unlimited minutes; cost is op load + 1 small VM.
+- [ ] **Long-term decision** — pick one:
+  - **Make repo public** → unlimited free CI; commercial-sensitive content already minimal (mostly schema + scaffolding).
+  - **Upgrade billing** → 3,000 min for Team plan ($4/user/mo), then $0.008/min after. ~$10–30/mo at current pace.
+  - **Self-host** → spin up a small DigitalOcean droplet ($6/mo) as the GitHub Actions runner.

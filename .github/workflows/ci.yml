@@ -3,8 +3,31 @@ name: CI
 on:
   push:
     branches: [main]
+    # Skip CI for doc-only / script-only changes — they don't affect
+    # service behavior and burn the GitHub Actions free quota fast
+    # (~3 min × 33 jobs ≈ 99 min/push). 2,000 free min/month means
+    # only ~20 pushes/month before quota exhaustion locks out all
+    # runners (manifests as runner_id=0 + 0 steps failures).
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - '.github/workflows/INDEX.md'
+      - '.github/workflows/QUICK_REFERENCE.md'
+      - '.github/workflows/README.md'
+      - '.github/workflows/WORKFLOW_DIAGRAM.md'
+      - 'scripts/**'
+      - 'LICENSE'
+      - '.gitignore'
+      - '.gitleaks.toml'
+      - '.sops.yaml'
   pull_request:
     branches: [main]
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
+      - 'scripts/**'
+      - 'LICENSE'
+      - '.gitignore'
   workflow_dispatch:
 
 env:
