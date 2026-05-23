@@ -1,17 +1,21 @@
 'use client';
 
 /**
- * XR Experience Viewer
+ * XR Experience Viewer (Phase 19 — WebXR launch)
  *
- * Individual experience page with WebXR launch capability
- * Displays experience details, reviews, and launch options
+ * Migrated from (dashboard)/xr-labs/experience/[id]/page.tsx — that
+ * route's parent /(dashboard)/xr-labs/ is being collapsed into a
+ * redirect to /dashboard/xr-labs/ (the sidebar-canonical location).
+ * This route was the only one missing from /dashboard/xr-labs/, so it
+ * moves over verbatim. Internal "Back to XR Labs" buttons updated to
+ * push to /dashboard/xr-labs.
+ *
+ * Individual experience page with WebXR launch capability — displays
+ * experience details, reviews, and launch options.
  */
 
 import React, { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { useParams, useRouter } from 'next/navigation';
-import { Card } from '@/components/ui/card';
-import { Wrench } from 'lucide-react';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
@@ -42,50 +46,6 @@ interface XRExperience {
 const API_BASE_URL = process.env.NEXT_PUBLIC_XR_API_URL || 'http://localhost:3005/api/xr';
 
 export default function ExperienceViewerPage() {
-  // Microservice health gate — see scene-builder/page.tsx for rationale.
-  const [msHealthy, setMsHealthy] = useState<boolean | null>(null);
-  useEffect(() => {
-    const ctl = new AbortController();
-    fetch(`${API_BASE_URL}/experiences`, { signal: ctl.signal })
-      .then((r) => setMsHealthy(r.ok))
-      .catch(() => setMsHealthy(false));
-    return () => ctl.abort();
-  }, []);
-
-  if (msHealthy === false) {
-    return (
-      <div className="max-w-2xl mx-auto p-8">
-        <Card className="p-6 space-y-3">
-          <h1 className="text-2xl font-bold flex items-center gap-2">
-            <Wrench className="h-6 w-6 text-amber-600" />
-            XR microservice not running
-          </h1>
-          <p className="text-muted-foreground text-sm">
-            The Experience Viewer fetches scenes from the separate{" "}
-            <code className="font-mono text-xs">services/xr-labs/</code> Node
-            microservice on <code className="font-mono text-xs">:3005</code>.
-            That service isn&apos;t reachable right now.
-          </p>
-          <div className="rounded-md bg-muted p-3 font-mono text-xs">
-            cd services/xr-labs && npm install && npm run dev
-          </div>
-          <p className="text-xs text-muted-foreground">
-            Until then, use{" "}
-            <Link href="/dashboard/xr-labs" className="text-primary hover:underline">XR Labs</Link>{" "}
-            (real EUREKA study sets + resources) which works without the microservice.
-          </p>
-        </Card>
-      </div>
-    );
-  }
-  if (msHealthy === null) {
-    return <div className="p-8 text-muted-foreground text-sm">Connecting to XR microservice…</div>;
-  }
-
-  return <ExperienceViewerInner />;
-}
-
-function ExperienceViewerInner() {
   const params = useParams();
   const router = useRouter();
   const experienceId = params.id as string;
@@ -333,7 +293,7 @@ function ExperienceViewerInner() {
           <div className="text-6xl mb-4">❌</div>
           <p className="text-xl">Experience not found</p>
           <button
-            onClick={() => router.push('/xr-labs')}
+            onClick={() => router.push('/dashboard/xr-labs')}
             className="mt-6 px-6 py-3 bg-white/20 rounded-lg hover:bg-white/30 transition-all"
           >
             ← Back to XR Labs
@@ -349,7 +309,7 @@ function ExperienceViewerInner() {
       <div className="bg-black/30 backdrop-blur-sm border-b border-white/10 p-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
-            onClick={() => router.push('/xr-labs')}
+            onClick={() => router.push('/dashboard/xr-labs')}
             className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all"
           >
             ← Back to XR Labs

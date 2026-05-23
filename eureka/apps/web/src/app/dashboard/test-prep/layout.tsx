@@ -28,6 +28,7 @@ import {
   BarChart3,
   Target,
   User,
+  Video,
   ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -38,6 +39,10 @@ const SECTIONS = [
   { href: "/dashboard/test-prep/study-plan", label: "Study plan", icon: Calendar, exact: false },
   { href: "/dashboard/test-prep/analytics", label: "Analytics", icon: BarChart3, exact: false },
   { href: "/dashboard/test-prep/exam", label: "Exam", icon: Target, exact: false },
+  // Videos = the subscription-gated course portal that used to live at
+  // /test-prep (route-group collision with this very dashboard). Pulled
+  // in here so test-prep is one tree with one sub-nav.
+  { href: "/dashboard/test-prep/videos", label: "Videos", icon: Video, exact: false },
   { href: "/dashboard/test-prep/profile", label: "Profile", icon: User, exact: false },
 ];
 
