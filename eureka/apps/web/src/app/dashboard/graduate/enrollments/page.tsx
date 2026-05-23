@@ -9,6 +9,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api } from "@/lib/eureka-api";
 import { Layers, Clock, ArrowRight } from "lucide-react";
@@ -76,15 +77,16 @@ export default function MyEnrollmentsPage() {
 
       {!loading && rows.length === 0 && (
         <Card>
-          <CardContent className="py-10 text-center text-muted-foreground space-y-2">
-            <p>You&apos;re not enrolled in any graduate programs.</p>
-            <p className="text-sm">
-              Browse{" "}
-              <Link href="/dashboard/graduate/programs" className="text-primary hover:underline">
-                /dashboard/graduate/programs
-              </Link>{" "}
-              to find a program to enroll in.
+          <CardContent className="py-8 text-center space-y-3">
+            <p className="text-base">You&apos;re not enrolled in a graduate program yet.</p>
+            <p className="text-sm text-muted-foreground">
+              Browse what your organization offers and enroll in one click.
             </p>
+            <div className="pt-2">
+              <Link href="/dashboard/graduate/programs">
+                <Button>Browse programs <ArrowRight className="h-3.5 w-3.5 ml-1" /></Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       )}

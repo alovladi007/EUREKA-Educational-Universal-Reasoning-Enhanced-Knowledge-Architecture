@@ -13,7 +13,7 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { api } from "@/lib/eureka-api";
-import { GraduationCap, Clock, BookMarked, FolderKanban, Sigma, Layers } from "lucide-react";
+import { GraduationCap, Clock, BookMarked, FolderKanban, Sigma, Layers, ArrowRight } from "lucide-react";
 
 type MyEnrol = {
   enrollment_id: string;
@@ -129,22 +129,47 @@ export default function GraduateOverviewPage() {
 
       {loading && <p className="text-muted-foreground">Loading…</p>}
 
+      {!loading && rows.length === 0 && available.length > 0 && (
+        <Card>
+          <CardContent className="py-8 text-center space-y-3">
+            <p className="text-base">
+              You&apos;re not enrolled in a graduate program yet.
+            </p>
+            <p className="text-sm text-muted-foreground">
+              Your organization has {available.length}{" "}
+              {available.length === 1 ? "active program" : "active programs"} you can join.
+            </p>
+            <div className="pt-2">
+              <Link href="/dashboard/graduate/programs">
+                <Button>
+                  Browse programs <ArrowRight className="h-3.5 w-3.5 ml-1" />
+                </Button>
+              </Link>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {!loading && rows.length === 0 && available.length === 0 && (
         <Card>
-          <CardContent className="py-10 text-center text-muted-foreground space-y-2">
-            <p>You&apos;re not enrolled in any graduate programs and your org has no active programs yet.</p>
-            <p className="text-sm">
-              An org admin creates programs at{" "}
+          <CardContent className="py-8 text-center space-y-3">
+            <p className="text-base">No graduate programs yet.</p>
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+              Your org admin authors programs at{" "}
               <Link href="/institutions/graduate-programs" className="text-primary hover:underline">
-                /institutions/graduate-programs
+                Institutions → Graduate programs
               </Link>
-              . Once a program is set to <code className="font-mono text-xs">status=active</code>,
-              it shows up at{" "}
-              <Link href="/dashboard/graduate/programs" className="text-primary hover:underline">
-                /dashboard/graduate/programs
-              </Link>{" "}
-              for any learner in the org to enroll in.
+              . Once a program is set to active, it shows up here for any
+              learner in the org to enroll in.
             </p>
+            <div className="pt-2 flex justify-center gap-2">
+              <Link href="/institutions/graduate-programs">
+                <Button variant="outline">Open admin shell</Button>
+              </Link>
+              <Link href="/dashboard/graduate/research">
+                <Button>Start a research workspace</Button>
+              </Link>
+            </div>
           </CardContent>
         </Card>
       )}
