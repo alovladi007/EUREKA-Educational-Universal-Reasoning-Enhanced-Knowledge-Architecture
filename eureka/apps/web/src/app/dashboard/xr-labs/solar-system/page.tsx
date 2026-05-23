@@ -419,7 +419,16 @@ const ALL_BODIES: Body[] = [SUN, ...PLANETS];
 // ────────────────────────────────────────────────────────────────────────
 
 const EARTH_YEAR_SECONDS = 300; // 1 Earth year = 5 wall-clock minutes at 1×
-const BUILD_TAG = "v5 · 2026-05-23"; // bump to verify you're on the latest
+
+// Visualization slowdowns — physics says Earth spins 365× per year, but at
+// our sim scale that's ~1.6s/rotation = motion blur. We slow self-rotation
+// independently from orbits so features (day/night terminator, Great Red
+// Spot, ring shadow) are observable. The ratios between bodies stay
+// proportional, only the absolute spin rate is dilated.
+const SPIN_SLOWDOWN = 30; // planet + Sun + Earth-clouds + Venus-atmosphere
+const MOON_ORBIT_SLOWDOWN = 5; // moon orbital periods
+
+const BUILD_TAG = "v6 · 2026-05-23"; // bump to verify you're on the latest
 
 function SimulationClock({
   paused,
@@ -492,32 +501,50 @@ function FlyToController({
 
       ft.meshRef.current.getWorldPosition(tempVec.current);
 
+      // Pull in tighter than v5 — size × 3 (was 4.5) puts the planet at
+      // ~65% of viewport height, close enough to read continents on Earth
+      // and bands on Jupiter.
       const desiredDist =
-        ft.body.id === "sun" ? ft.body.size * 3.5 : ft.body.size * 4.5;
+        ft.body.id === "sun" ? ft.body.size * 3 : ft.body.size * 3;
 
-      // Compute a sensible incoming direction. If camera-to-current-target
-      // is degenerate (NaN-risk), default to a slightly-above-and-behind
-      // angle. Otherwise reuse the current direction so the user keeps
-      // their bearings.
       const dir = camera.position.clone().sub(ctrl.target);
       if (dir.lengthSq() < 1e-6) {
         dir.set(0, 0.3, 1);
       }
       dir.normalize().multiplyScalar(desiredDist);
 
-      // SNAP camera and target.
       ctrl.target.copy(tempVec.current);
       camera.position.copy(tempVec.current).add(dir);
       ctrl.update();
       return;
     }
 
-    // Case 2: tracking — keep target locked to the moving body.
+    // Case 2: tracking — KEY FIX (v6). v5 lerped only ctrl.target toward
+    // the moving body. OrbitControls only ROTATES the camera to look at
+    // a moved target; it doesn't TRANSLATE the camera. Result: target
+    // tracked Earth as Earth orbited the Sun, camera stayed pinned in
+    // world space, Earth slid out of view, user saw the Sun again.
+    //
+    // Fix: compute the delta between the body's current position and our
+    // current target, and apply the SAME delta to both target AND
+    // camera.position. Now the camera rides with the planet through its
+    // orbit, OrbitControls' offset stays constant, user keeps seeing
+    // their planet centered.
     if (ft && ft.meshRef.current) {
       ft.meshRef.current.getWorldPosition(tempVec.current);
-      // Use small smoothing so the camera doesn't visibly stutter when
-      // the body moves between frames, but stays locked overall.
-      ctrl.target.lerp(tempVec.current, 0.4);
+      const delta = tempVec.current.clone().sub(ctrl.target);
+      // Apply a tiny smoothing factor for very small deltas to avoid
+      // micro-jitter; for large deltas (e.g. user just clicked a new
+      // body and we're catching up) snap.
+      if (delta.lengthSq() > 1) {
+        ctrl.target.add(delta);
+        camera.position.add(delta);
+      } else {
+        const lerpAmt = 0.5;
+        const partial = delta.multiplyScalar(lerpAmt);
+        ctrl.target.add(partial);
+        camera.position.add(partial);
+      }
       ctrl.update();
     }
   });
@@ -619,7 +646,8 @@ function Sun({
     if (meshRef.current) {
       const dayPeriodInYears = Math.abs(body.day) / 365.25;
       meshRef.current.rotation.y =
-        (simTimeRef.current * Math.PI * 2) / dayPeriodInYears;
+        (simTimeRef.current * Math.PI * 2) /
+        (dayPeriodInYears * SPIN_SLOWDOWN);
     }
   });
 
@@ -712,15 +740,17 @@ function MoonBody({
 
   useFrame(() => {
     const t = simTimeRef.current;
-    // Moon period in Earth days, convert to Earth years for sim consistency
-    const periodInYears = Math.abs(moon.period) / 365.25;
+    // Moon period in Earth days, convert to Earth years AND apply the
+    // visualization slowdown so moons orbit at a watchable pace (real
+    // ratios would have Io at ~3 s/orbit, Phobos at ~0.5 s/orbit).
+    const periodInYears = (Math.abs(moon.period) / 365.25) * MOON_ORBIT_SLOWDOWN;
     const sign = Math.sign(moon.period) || 1;
     if (orbitRef.current) {
       orbitRef.current.rotation.y =
         (t * Math.PI * 2 * sign) / periodInYears;
     }
     if (meshRef.current) {
-      // Tidally locked — face always toward parent
+      // Tidally locked — face always toward parent (same period as orbit)
       meshRef.current.rotation.y =
         (t * Math.PI * 2 * sign) / periodInYears;
     }
@@ -802,7 +832,8 @@ function Planet({
       const dayPeriodInYears = Math.abs(body.day) / 365.25;
       const sign = Math.sign(body.day) || 1;
       meshRef.current.rotation.y =
-        (t * Math.PI * 2 * sign) / dayPeriodInYears;
+        (t * Math.PI * 2 * sign) /
+        (dayPeriodInYears * SPIN_SLOWDOWN);
     }
   });
 
@@ -918,16 +949,18 @@ function Earth({
     if (surfaceRef.current) {
       const dayPeriodInYears = Math.abs(body.day) / 365.25;
       surfaceRef.current.rotation.y =
-        (t * Math.PI * 2) / dayPeriodInYears;
+        (t * Math.PI * 2) /
+        (dayPeriodInYears * SPIN_SLOWDOWN);
     }
     if (nightRef.current) {
       // Night layer rotates with the surface (both are tied to Earth's spin)
       nightRef.current.rotation.y = surfaceRef.current?.rotation.y ?? 0;
     }
     if (cloudsRef.current) {
-      // Clouds rotate slightly faster for parallax depth
+      // Clouds rotate slightly faster for parallax depth (1.08× surface)
       cloudsRef.current.rotation.y =
-        (t * Math.PI * 2 * 1.08) / (Math.abs(body.day) / 365.25);
+        (t * Math.PI * 2 * 1.08) /
+        ((Math.abs(body.day) / 365.25) * SPIN_SLOWDOWN);
     }
   });
 
@@ -1064,12 +1097,15 @@ function Venus({
       const dayPeriodInYears = Math.abs(body.day) / 365.25;
       const sign = Math.sign(body.day) || 1;
       surfaceRef.current.rotation.y =
-        (t * Math.PI * 2 * sign) / dayPeriodInYears;
+        (t * Math.PI * 2 * sign) /
+        (dayPeriodInYears * SPIN_SLOWDOWN);
     }
     if (atmRef.current) {
-      // Venus' upper atmosphere super-rotates ~60× faster than the surface
+      // Venus' upper atmosphere super-rotates ~60× faster than the
+      // surface — ratio preserved with the slowdown applied to both.
       atmRef.current.rotation.y =
-        (t * Math.PI * 2 * -60) / (Math.abs(body.day) / 365.25);
+        (t * Math.PI * 2 * -60) /
+        ((Math.abs(body.day) / 365.25) * SPIN_SLOWDOWN);
     }
   });
 
