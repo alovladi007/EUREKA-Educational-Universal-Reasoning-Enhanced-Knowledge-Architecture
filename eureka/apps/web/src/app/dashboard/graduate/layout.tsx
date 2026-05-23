@@ -11,47 +11,78 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
-  GraduationCap, BookMarked, FolderKanban, Layers, ChevronRight,
+  GraduationCap, BookMarked, FolderKanban, Layers, ChevronRight, Settings,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/eureka-api";
+import { useAuthStore } from "@/stores/auth";
 
 type Counts = {
   enrollments: number;
   availablePrograms: number;
   workspaces: number;
+  totalPrograms: number;
 };
 
-const SECTIONS = [
+const LEARNER_SECTIONS = [
   { href: "/dashboard/graduate", label: "Overview", icon: GraduationCap, exact: true, countKey: null as null | keyof Counts },
   { href: "/dashboard/graduate/programs", label: "Programs", icon: BookMarked, exact: false, countKey: "availablePrograms" as const },
   { href: "/dashboard/graduate/enrollments", label: "My enrollments", icon: Layers, exact: false, countKey: "enrollments" as const },
   { href: "/dashboard/graduate/research", label: "Research", icon: FolderKanban, exact: false, countKey: "workspaces" as const },
 ];
 
+// Visible only to org_admin / super_admin — replaces the old jump
+// to /institutions/graduate-programs.
+const ADMIN_SECTIONS = [
+  { href: "/dashboard/graduate/admin", label: "Manage", icon: Settings, exact: false, countKey: "totalPrograms" as const },
+];
+
 export default function GraduateLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "";
-  const [counts, setCounts] = useState<Counts>({ enrollments: 0, availablePrograms: 0, workspaces: 0 });
+  const user = useAuthStore((s) => s.user);
+  const role = user?.role || "";
+  const isAdmin = role === "org_admin" || role === "super_admin";
+
+  const [counts, setCounts] = useState<Counts>({
+    enrollments: 0, availablePrograms: 0, workspaces: 0, totalPrograms: 0,
+  });
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const [me, avail, ws] = await Promise.all([
+        const calls: Promise<unknown>[] = [
           api<{ enrollments: unknown[] }>("/me/graduate").catch(() => ({ enrollments: [] })),
           api<unknown[]>("/me/graduate/available-programs").catch(() => []),
           api<unknown[]>("/me/research/workspaces").catch(() => []),
-        ]);
+        ];
+        if (isAdmin) {
+          calls.push(api<unknown[]>("/graduate/programs").catch(() => []));
+        }
+        const results = await Promise.all(calls);
         if (cancelled) return;
+        const me = results[0] as { enrollments: unknown[] };
+        const avail = results[1] as unknown[];
+        const ws = results[2] as unknown[];
+        const allPrograms = (isAdmin ? (results[3] as { status?: string }[]) : []) || [];
         setCounts({
-          enrollments: Array.isArray(me?.enrollments) ? me.enrollments.length : 0,
+          enrollments: Array.isArray(me?.enrollments) ? me.enrollments.filter((e: unknown) => {
+            const status = (e as { status?: string })?.status;
+            return status !== "withdrawn" && status !== "dismissed";
+          }).length : 0,
           availablePrograms: Array.isArray(avail) ? avail.length : 0,
           workspaces: Array.isArray(ws) ? ws.length : 0,
+          totalPrograms: Array.isArray(allPrograms)
+            ? allPrograms.filter((p) => p.status !== "archived").length
+            : 0,
         });
       } catch { /* keep zeros */ }
     })();
     return () => { cancelled = true; };
-  }, [pathname]); // re-fetch when navigating (cheap; all 3 are tiny endpoints)
+  }, [pathname, isAdmin]);
+
+  // Sections to show — learner sections always, admin section only if admin
+  const SECTIONS = isAdmin ? [...LEARNER_SECTIONS, ...ADMIN_SECTIONS] : LEARNER_SECTIONS;
 
   // Breadcrumb-ish active label for the page title in the sub-nav row
   const activeLabel = SECTIONS.find((s) =>

@@ -53,7 +53,12 @@ export default function GraduateOverviewPage() {
           api<{ enrollments: MyEnrol[] }>("/me/graduate").catch(() => ({ enrollments: [] as MyEnrol[] })),
           api<Program[]>("/me/graduate/available-programs").catch(() => [] as Program[]),
         ]);
-        setRows(Array.isArray(me?.enrollments) ? me.enrollments : []);
+        // Filter out withdrawn/dismissed — those clutter the overview and
+        // belong on a separate "past enrollments" view, not the live dash.
+        const live = (Array.isArray(me?.enrollments) ? me.enrollments : []).filter(
+          (e) => e.status !== "withdrawn" && e.status !== "dismissed",
+        );
+        setRows(live);
         setAvailable(Array.isArray(avail) ? avail : []);
       } catch (e) {
         setError(String((e as Error).message));
@@ -84,6 +89,36 @@ export default function GraduateOverviewPage() {
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
+
+      {/* Next-milestone hero — prominent CTA when the user has an actionable
+          milestone. Same info that's on /dashboard home so the two surfaces
+          stay consistent. */}
+      {(() => {
+        const next = rows.find((r) => r.next_milestone_title);
+        if (!next) return null;
+        return (
+          <Card className="border-primary/30 bg-primary/5">
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between gap-3 flex-wrap">
+                <div className="min-w-0">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Clock className="h-5 w-5 text-primary" />
+                    Next up: {next.next_milestone_title}
+                  </CardTitle>
+                  <CardDescription className="mt-1">
+                    in <span className="font-medium">{next.program_name}</span>
+                    {next.next_milestone_due_at && <> · due <span className="font-medium">{next.next_milestone_due_at}</span></>}
+                    {" · "}{next.milestones_done}/{next.milestones_total} milestones complete
+                  </CardDescription>
+                </div>
+                <Link href={`/dashboard/graduate/enrollments/${next.enrollment_id}`}>
+                  <Button>Open enrollment <ArrowRight className="h-3.5 w-3.5 ml-1" /></Button>
+                </Link>
+              </div>
+            </CardHeader>
+          </Card>
+        );
+      })()}
 
       <div className="grid gap-4 sm:grid-cols-3">
         <Link href="/dashboard/graduate/programs">

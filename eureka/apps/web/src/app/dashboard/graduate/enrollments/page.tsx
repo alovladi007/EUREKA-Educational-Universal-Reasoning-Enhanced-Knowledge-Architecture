@@ -45,7 +45,10 @@ export default function MyEnrollmentsPage() {
     (async () => {
       try {
         const body = await api<{ enrollments: MyEnrol[] }>("/me/graduate");
-        setRows(Array.isArray(body?.enrollments) ? body.enrollments : []);
+        const all = Array.isArray(body?.enrollments) ? body.enrollments : [];
+        // Hide withdrawn/dismissed by default — "My enrollments" should be
+        // about what you're actively doing, not historical record.
+        setRows(all.filter((e) => e.status !== "withdrawn" && e.status !== "dismissed"));
       } catch (e) {
         setError(String((e as Error).message));
       } finally {
