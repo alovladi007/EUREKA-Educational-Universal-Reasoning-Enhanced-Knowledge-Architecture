@@ -5,47 +5,54 @@
  *
  * Visual quality target: as close to NASA "Eyes on the Solar System" as
  * we can get with self-contained Three.js + a single set of static
- * texture assets. The previous version used solid colors and looked
- * cartoonish; this version uses real NASA-derived equirectangular
- * planetary maps (Solar System Scope, CC BY 4.0).
+ * texture assets.
  *
  * Asset attribution:
- *   - All planetary textures + Milky Way background are from
- *     https://www.solarsystemscope.com/textures/ (CC BY 4.0)
- *   - Underlying imagery is NASA mission data (Voyager, Cassini,
- *     Magellan, MESSENGER, MRO, LRO, Galileo, SDO/SOHO, etc.) which is
- *     in the U.S. public domain.
- *   - Solar System Scope's contribution is the equirectangular
- *     processing + consistent visual styling.
+ *   - Planetary surface / cloud / atmosphere / ring / Milky Way textures
+ *     from Solar System Scope (https://www.solarsystemscope.com/textures/),
+ *     CC BY 4.0 — derived from NASA mission imagery (Voyager, Cassini,
+ *     Magellan, MESSENGER, MRO, LRO, Galileo, SDO/SOHO).
+ *   - NASA underlying data is U.S. public domain. CC BY 4.0 attaches to
+ *     Solar System Scope's equirectangular processing on top.
  *   - Attribution is satisfied by the visible credit line in the
- *     bottom-left HUD (CC BY 4.0 requirement).
+ *     bottom-right HUD.
  *
- * Visual upgrades over the v1 (procedural-only) version:
- *   - Real photographic textures on every body
- *   - Earth: composite material — day map + cloud layer + atmosphere halo
- *   - Venus: surface + thick atmosphere overlay (twin layers)
- *   - Sun: textured surface + additive-blend outer corona glow
- *   - Saturn: textured surface + properly-textured ring (alpha channel)
- *   - Background: Milky Way skybox (inverted-normal sphere) instead of
- *     point-cloud stars
- *   - Asteroid belt: 2,000 instanced asteroids between Mars and Jupiter
- *   - ACESFilmic tone mapping for cinematic lighting
+ * Visual upgrades over v2 (NASA-Eyes parity push):
+ *   - 8K textures (8192×4096) for the bodies that get zoomed to most:
+ *     Sun, Mercury, Venus, Earth day/clouds/night, Mars, Jupiter,
+ *     Saturn, Moon, Milky Way, Saturn ring alpha. 2K kept for
+ *     Venus atmosphere overlay + Uranus + Neptune where 8K isn't
+ *     available from the source.
+ *   - Earth NIGHT side: city-lights composite (Black Marble / VIIRS)
+ *     blended in the dark hemisphere via additive material.
+ *   - Major moon systems: Phobos + Deimos (Mars), Io + Europa +
+ *     Ganymede + Callisto (Jupiter Galilean), Enceladus + Titan +
+ *     Iapetus (Saturn), Titania + Oberon (Uranus), Triton (Neptune,
+ *     retrograde). Each moon has its own correct orbital period
+ *     proportionally accurate to its real value.
+ *   - Persistent name labels on every body (drei <Html>) at all zoom
+ *     levels — they fade and scale gracefully.
+ *   - Fly-to-planet camera: nav panel on the left with one button per
+ *     body. Click → camera + OrbitControls target smoothly lerp to a
+ *     close-up of that body. Click "Whole system" to zoom back out.
+ *   - Default camera framed to show the entire system out to Neptune.
+ *   - Brighter, more prominent orbital trails (opacity 0.45, line
+ *     thickness improvements).
  *
- * Scaling caveats (same as v1 — necessary for visibility):
+ * Scaling caveats (necessary for visibility):
  *   - Planet sizes are inflated ~1000× and orbital distances are
- *     compressed. True scale would put Mercury at sub-pixel and Neptune
- *     off-screen by default.
- *   - Orbital periods are proportional (Earth = 1.0, Mercury 0.241,
- *     Jupiter 11.86, Neptune 164.79). Only wall-clock time is stretched
- *     via the speed control.
- *   - Retrograde rotation on Venus and Uranus is preserved (negative
- *     day values flip the spin direction).
+ *     compressed. True scale would put Mercury at sub-pixel and
+ *     Neptune at frustum-cull distance.
+ *   - Moon orbits are also compressed; they sit at 2-5× the parent
+ *     planet's visual size, NOT at true scale.
+ *   - Orbital periods are proportional to real values (Earth = 1.0).
+ *     Only wall-clock time is stretched via the speed control.
  */
 
 import { Suspense, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { Canvas, useFrame, type ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, useTexture } from "@react-three/drei";
+import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
+import { Html, OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import {
   ArrowLeft,
@@ -55,22 +62,35 @@ import {
   Info,
   X,
   ExternalLink,
+  Maximize,
+  Locate,
 } from "lucide-react";
 
 // ────────────────────────────────────────────────────────────────────────
-// Real planetary data — scientific facts (not copyrightable).
+// Data — bodies with their real (or proportionally accurate) parameters
 // ────────────────────────────────────────────────────────────────────────
+
+type Moon = {
+  id: string;
+  name: string;
+  size: number; // visual scene units, relative to parent
+  orbit: number; // visual scene units from parent center
+  period: number; // orbital period in Earth days (positive prograde, negative retrograde)
+  color: number; // tint multiplied with moon base texture
+  inclination?: number; // radians
+};
 
 type Body = {
   id: string;
   name: string;
   textureKey: string;
-  size: number; // visual scene units
-  orbit: number; // visual scene units from Sun center
-  period: number; // orbital period in Earth years (Earth = 1.0)
-  day: number; // sidereal rotation in Earth days (negative = retrograde)
-  tilt: number; // axial tilt in radians
+  size: number;
+  orbit: number;
+  period: number;
+  day: number;
+  tilt: number;
   rings?: { inner: number; outer: number };
+  moons?: Moon[];
   facts: {
     type: string;
     diameter: string;
@@ -87,13 +107,13 @@ const SUN: Body = {
   id: "sun",
   name: "Sun",
   textureKey: "sun",
-  size: 2.8,
+  size: 3.2,
   orbit: 0,
   period: 0,
   day: 25.05,
   tilt: 0.127,
   facts: {
-    type: "G-type main-sequence star (yellow dwarf)",
+    type: "G-type main-sequence star",
     diameter: "1,392,700 km (≈109 × Earth)",
     mass: "1.989 × 10³⁰ kg (333,000 × Earth)",
     distance: "—",
@@ -101,7 +121,7 @@ const SUN: Body = {
     day: "25.05 days at equator (differential rotation)",
     moons: "—",
     description:
-      "The Sun contains 99.86% of the Solar System's mass. Its core fuses ~4 million tonnes of hydrogen to helium per second, releasing energy as photons that take ~170,000 years to random-walk from core to surface, then 8.3 minutes to reach Earth.",
+      "The Sun contains 99.86% of the Solar System's mass. Its core fuses ~4 million tonnes of hydrogen to helium per second; photons take ~170,000 years to random-walk from core to surface, then 8.3 minutes to reach Earth.",
   },
 };
 
@@ -111,7 +131,7 @@ const PLANETS: Body[] = [
     name: "Mercury",
     textureKey: "mercury",
     size: 0.42,
-    orbit: 6.5,
+    orbit: 7,
     period: 0.241,
     day: 58.6,
     tilt: 0.0006,
@@ -124,15 +144,15 @@ const PLANETS: Body[] = [
       day: "58.6 Earth days (3:2 spin-orbit resonance)",
       moons: "0",
       description:
-        "The smallest planet and closest to the Sun. Surface temperatures swing from −173°C at night to +427°C in sunlight. Mercury has no atmosphere to retain heat. Imagery here is from the MESSENGER orbital mission (2011–2015).",
+        "The smallest planet and closest to the Sun. Surface swings −173°C to +427°C. Imagery from MESSENGER (2011–2015).",
     },
   },
   {
     id: "venus",
     name: "Venus",
-    textureKey: "venusSurface", // surface beneath the cloud layer
+    textureKey: "venusSurface",
     size: 0.58,
-    orbit: 9.5,
+    orbit: 10.5,
     period: 0.615,
     day: -243.02,
     tilt: 3.0962,
@@ -145,7 +165,7 @@ const PLANETS: Body[] = [
       day: "243 Earth days (retrograde — rotates backwards)",
       moons: "0",
       description:
-        "Venus rotates backwards. Its CO₂ atmosphere is 92× denser than Earth's, producing a runaway greenhouse effect with surface temperatures of 462°C — hot enough to melt lead. The surface here is from Magellan radar (1990–1994); the swirling cloud layer rendered above is from Galileo and Mariner UV imagery.",
+        "Rotates backwards. CO₂ atmosphere 92× denser than Earth's; surface 462°C. Surface from Magellan radar (1990–94); cloud layer from Galileo + Mariner UV.",
     },
   },
   {
@@ -153,10 +173,20 @@ const PLANETS: Body[] = [
     name: "Earth",
     textureKey: "earthDay",
     size: 0.6,
-    orbit: 13.5,
+    orbit: 15,
     period: 1,
     day: 1,
     tilt: 0.4091,
+    moons: [
+      {
+        id: "luna",
+        name: "Moon",
+        size: 0.16,
+        orbit: 1.4,
+        period: 27.32,
+        color: 0xffffff,
+      },
+    ],
     facts: {
       type: "Terrestrial (rocky), inhabited",
       diameter: "12,756 km",
@@ -164,9 +194,9 @@ const PLANETS: Body[] = [
       distance: "149.6 million km (1.00 AU, by definition)",
       period: "365.25 days",
       day: "23.93 hours (sidereal)",
-      moons: "1 (Luna — visible orbiting Earth in this view)",
+      moons: "1 (Luna)",
       description:
-        "Day map from the NASA Blue Marble Next Generation composite. Cloud layer is a separate NASA composite mesh rendered above the surface (visible as it rotates independently). Atmospheric glow is a Fresnel-style outer shell. 23.4° axial tilt drives the seasons.",
+        "Blue Marble day map + Black Marble night composite + cloud layer rotating 8% faster. 23.4° axial tilt drives the seasons. Magnetic field shields the atmosphere from solar wind.",
     },
   },
   {
@@ -174,31 +204,41 @@ const PLANETS: Body[] = [
     name: "Mars",
     textureKey: "mars",
     size: 0.48,
-    orbit: 18,
+    orbit: 21,
     period: 1.881,
     day: 1.026,
     tilt: 0.4396,
+    moons: [
+      { id: "phobos", name: "Phobos", size: 0.04, orbit: 1.0, period: 0.319, color: 0xa08070 },
+      { id: "deimos", name: "Deimos", size: 0.025, orbit: 1.5, period: 1.262, color: 0xa08070 },
+    ],
     facts: {
       type: "Terrestrial (rocky)",
       diameter: "6,792 km",
       mass: "6.39 × 10²³ kg (0.107 × Earth)",
       distance: "227.9 million km (1.52 AU)",
-      period: "687 Earth days (1.88 Earth years)",
-      day: "24.6 hours — almost identical to Earth",
+      period: "687 Earth days",
+      day: "24.6 hours",
       moons: "2 (Phobos, Deimos)",
       description:
-        "Iron oxide (rust) gives the surface its red color. Hosts the tallest volcano in the Solar System (Olympus Mons, 21.9 km) and the longest canyon (Valles Marineris, 4,000 km). Surface texture combines MOLA elevation with MRO color imagery.",
+        "Olympus Mons (21.9 km) — tallest volcano in the Solar System. Valles Marineris (4,000 km) — longest canyon. Surface combines MOLA elevation with MRO color.",
     },
   },
   {
     id: "jupiter",
     name: "Jupiter",
     textureKey: "jupiter",
-    size: 1.7,
-    orbit: 28,
+    size: 1.8,
+    orbit: 34,
     period: 11.862,
     day: 0.413,
     tilt: 0.0546,
+    moons: [
+      { id: "io", name: "Io", size: 0.15, orbit: 2.5, period: 1.769, color: 0xeed060 }, // sulphuric yellow
+      { id: "europa", name: "Europa", size: 0.13, orbit: 3.1, period: 3.551, color: 0xefe6cf }, // ice white
+      { id: "ganymede", name: "Ganymede", size: 0.22, orbit: 4.0, period: 7.155, color: 0xc8b89a }, // largest moon in solar system
+      { id: "callisto", name: "Callisto", size: 0.2, orbit: 5.2, period: 16.689, color: 0x8a7e6c }, // dark cratered
+    ],
     facts: {
       type: "Gas giant",
       diameter: "142,984 km (11.2 × Earth)",
@@ -206,21 +246,26 @@ const PLANETS: Body[] = [
       distance: "778.5 million km (5.20 AU)",
       period: "11.86 Earth years",
       day: "9.93 hours — fastest rotation in the Solar System",
-      moons: "95 confirmed (Io, Europa, Ganymede, Callisto — the four Galilean moons)",
+      moons: "95 confirmed (4 Galilean shown: Io, Europa, Ganymede, Callisto)",
       description:
-        "Mostly hydrogen and helium. The Great Red Spot is visible in the texture — a storm at least 350 years old, ~1.3× Earth's diameter. Composite imagery from Voyager, Cassini, and JunoCam.",
+        "Mostly H/He. Great Red Spot is a centuries-old storm ~1.3× Earth-diameter. Imagery: Voyager + Cassini + JunoCam composite.",
     },
   },
   {
     id: "saturn",
     name: "Saturn",
     textureKey: "saturn",
-    size: 1.45,
-    orbit: 40,
+    size: 1.55,
+    orbit: 48,
     period: 29.457,
     day: 0.444,
     tilt: 0.4665,
-    rings: { inner: 1.9, outer: 3.4 },
+    rings: { inner: 2.1, outer: 3.7 },
+    moons: [
+      { id: "enceladus", name: "Enceladus", size: 0.05, orbit: 4.5, period: 1.37, color: 0xffffff }, // pure white ice
+      { id: "titan", name: "Titan", size: 0.21, orbit: 5.8, period: 15.95, color: 0xe89858 }, // orange atmosphere
+      { id: "iapetus", name: "Iapetus", size: 0.08, orbit: 7.5, period: 79.32, color: 0xa08c70, inclination: 0.27 },
+    ],
     facts: {
       type: "Gas giant",
       diameter: "120,536 km (9.45 × Earth)",
@@ -228,20 +273,24 @@ const PLANETS: Body[] = [
       distance: "1.434 billion km (9.58 AU)",
       period: "29.46 Earth years",
       day: "10.66 hours",
-      moons: "146 confirmed (Titan has a denser atmosphere than Earth)",
+      moons: "146 confirmed (Titan, Enceladus, Iapetus shown)",
       description:
-        "The least dense planet (0.687 g/cm³ — would float on water). Ring system rendered here uses the Cassini-imaged ring alpha map — particles are mostly water ice, ~10–100 m thick across ~282,000 km.",
+        "Density 0.687 g/cm³ — would float on water. Ring system uses the Cassini-imaged alpha map. Particles mostly water ice, ~10–100 m thick across ~282,000 km.",
     },
   },
   {
     id: "uranus",
     name: "Uranus",
     textureKey: "uranus",
-    size: 1.0,
-    orbit: 50,
+    size: 1.1,
+    orbit: 60,
     period: 84.011,
     day: -0.718,
-    tilt: 1.7064,
+    tilt: 1.7064, // 97.77° — rolls on its side
+    moons: [
+      { id: "titania", name: "Titania", size: 0.08, orbit: 2.6, period: 8.706, color: 0xa89890 },
+      { id: "oberon", name: "Oberon", size: 0.08, orbit: 3.3, period: 13.46, color: 0x988878 },
+    ],
     facts: {
       type: "Ice giant",
       diameter: "51,118 km (4.0 × Earth)",
@@ -249,36 +298,43 @@ const PLANETS: Body[] = [
       distance: "2.871 billion km (19.22 AU)",
       period: "84.01 Earth years",
       day: "17.24 hours (retrograde)",
-      moons: "28",
+      moons: "28 (Titania, Oberon shown)",
       description:
-        "Rotates on its side — 97.77° axial tilt (geometrically visible here as the body 'rolls' rather than spinning upright). Cyan color from atmospheric methane absorbing red light. Imagery from Voyager 2's 1986 flyby (still the only spacecraft visit).",
+        "97.77° axial tilt — rolls around the Sun on its side. Cyan from atmospheric methane. Voyager 2 (1986) remains the only spacecraft visit.",
     },
   },
   {
     id: "neptune",
     name: "Neptune",
     textureKey: "neptune",
-    size: 0.97,
-    orbit: 60,
+    size: 1.07,
+    orbit: 70,
     period: 164.79,
     day: 0.671,
     tilt: 0.4943,
+    moons: [
+      // Triton orbits retrograde — only large moon in the Solar System to do so
+      { id: "triton", name: "Triton", size: 0.13, orbit: 2.2, period: -5.877, color: 0xe6c8d8 }, // pinkish nitrogen ice
+    ],
     facts: {
       type: "Ice giant",
       diameter: "49,528 km (3.88 × Earth)",
       mass: "1.024 × 10²⁶ kg (17.1 × Earth)",
       distance: "4.495 billion km (30.05 AU)",
-      period: "164.79 Earth years (has not completed one full orbit since 1846 discovery)",
+      period: "164.79 Earth years (no full orbit since 1846 discovery)",
       day: "16.11 hours",
-      moons: "16 (Triton orbits retrograde — likely a captured Kuiper-belt object)",
+      moons: "16 (Triton — retrograde orbit — shown)",
       description:
-        "The windiest planet — supersonic winds reach 2,100 km/h. Deep blue color is methane + an unknown chromophore. Imagery from Voyager 2's 1989 flyby.",
+        "Windiest planet — supersonic winds reach 2,100 km/h. Triton orbits backwards and is likely a captured Kuiper-belt object. Voyager 2 (1989).",
     },
   },
 ];
 
+// All bodies indexed by id for the nav panel & fly-to lookup
+const ALL_BODIES: Body[] = [SUN, ...PLANETS];
+
 // ────────────────────────────────────────────────────────────────────────
-// Simulation clock — one Earth year = 30 simulated seconds at speed=1x.
+// Sim clock — 1 Earth year = 30 wall-clock seconds at speed=1x
 // ────────────────────────────────────────────────────────────────────────
 
 const EARTH_YEAR_SECONDS = 30;
@@ -301,13 +357,74 @@ function SimulationClock({
 }
 
 // ────────────────────────────────────────────────────────────────────────
+// Fly-to-body camera animation
+// ────────────────────────────────────────────────────────────────────────
+
+type FlyTarget = {
+  body: Body;
+  meshRef: React.MutableRefObject<THREE.Object3D | null>;
+} | null;
+
+function FlyToController({
+  flyTargetRef,
+  orbitControlsRef,
+}: {
+  flyTargetRef: React.MutableRefObject<FlyTarget>;
+  orbitControlsRef: React.MutableRefObject<{
+    target: THREE.Vector3;
+    update: () => void;
+  } | null>;
+}) {
+  const { camera } = useThree();
+  const tempVec = useRef(new THREE.Vector3());
+  const desiredCamPos = useRef(new THREE.Vector3());
+
+  useFrame(() => {
+    const ft = flyTargetRef.current;
+    const ctrl = orbitControlsRef.current;
+    if (!ft || !ctrl || !ft.meshRef.current) return;
+
+    // Where the body actually is right now
+    ft.meshRef.current.getWorldPosition(tempVec.current);
+
+    // Slerp OrbitControls' look target toward the body
+    ctrl.target.lerp(tempVec.current, 0.08);
+
+    // Desired camera distance based on body size
+    const desiredDist =
+      ft.body.id === "sun" ? ft.body.size * 4 : ft.body.size * 6;
+
+    // Maintain camera DIRECTION relative to target while moving distance
+    const camOffset = camera.position
+      .clone()
+      .sub(ctrl.target)
+      .normalize()
+      .multiplyScalar(desiredDist);
+    desiredCamPos.current.copy(tempVec.current).add(camOffset);
+
+    camera.position.lerp(desiredCamPos.current, 0.05);
+
+    ctrl.update();
+  });
+  return null;
+}
+
+// ────────────────────────────────────────────────────────────────────────
 // Orbit trail
 // ────────────────────────────────────────────────────────────────────────
 
-function OrbitTrail({ radius }: { radius: number }) {
+function OrbitTrail({
+  radius,
+  color = 0x8090a0,
+  opacity = 0.45,
+}: {
+  radius: number;
+  color?: number;
+  opacity?: number;
+}) {
   const geometry = useMemo(() => {
     const pts: THREE.Vector3[] = [];
-    const segments = 192;
+    const segments = 256;
     for (let i = 0; i <= segments; i++) {
       const a = (i / segments) * Math.PI * 2;
       pts.push(new THREE.Vector3(Math.cos(a) * radius, 0, Math.sin(a) * radius));
@@ -321,9 +438,9 @@ function OrbitTrail({ radius }: { radius: number }) {
         new THREE.Line(
           geometry,
           new THREE.LineBasicMaterial({
-            color: 0x555566,
+            color,
             transparent: true,
-            opacity: 0.25,
+            opacity,
           }),
         )
       }
@@ -332,7 +449,38 @@ function OrbitTrail({ radius }: { radius: number }) {
 }
 
 // ────────────────────────────────────────────────────────────────────────
-// Sun — surface texture + additive-blend outer corona glow
+// Persistent body label (drei Html)
+// ────────────────────────────────────────────────────────────────────────
+
+function BodyLabel({
+  name,
+  yOffset,
+  highlighted = false,
+}: {
+  name: string;
+  yOffset: number;
+  highlighted?: boolean;
+}) {
+  return (
+    <Html
+      position={[0, yOffset, 0]}
+      center
+      distanceFactor={18}
+      style={{ pointerEvents: "none" }}
+    >
+      <div
+        className={`whitespace-nowrap text-white text-[11px] font-semibold tracking-wide px-1.5 py-0.5 rounded-sm backdrop-blur-sm select-none ${
+          highlighted ? "bg-primary/40 ring-1 ring-primary/50" : "bg-black/35"
+        }`}
+      >
+        {name}
+      </div>
+    </Html>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Sun
 // ────────────────────────────────────────────────────────────────────────
 
 function Sun({
@@ -340,11 +488,15 @@ function Sun({
   texture,
   simTimeRef,
   onSelect,
+  meshOutRef,
+  focusedId,
 }: {
   body: Body;
   texture: THREE.Texture;
   simTimeRef: React.MutableRefObject<number>;
   onSelect: (b: Body) => void;
+  meshOutRef: React.MutableRefObject<THREE.Object3D | null>;
+  focusedId: string | null;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
 
@@ -357,8 +509,11 @@ function Sun({
   });
 
   return (
-    <group>
-      {/* The surface itself — emissive so it lights itself */}
+    <group
+      ref={(el) => {
+        if (meshOutRef) meshOutRef.current = el;
+      }}
+    >
       <mesh
         ref={meshRef}
         onClick={(e: ThreeEvent<MouseEvent>) => {
@@ -374,11 +529,11 @@ function Sun({
         }}
         rotation={[0, 0, body.tilt]}
       >
-        <sphereGeometry args={[body.size, 96, 96]} />
+        <sphereGeometry args={[body.size, 128, 128]} />
         <meshBasicMaterial map={texture} toneMapped={false} />
       </mesh>
 
-      {/* Inner glow */}
+      {/* Inner corona */}
       <mesh>
         <sphereGeometry args={[body.size * 1.15, 32, 32]} />
         <meshBasicMaterial
@@ -389,8 +544,7 @@ function Sun({
           depthWrite={false}
         />
       </mesh>
-
-      {/* Outer corona — bigger, redder, more transparent */}
+      {/* Outer corona */}
       <mesh>
         <sphereGeometry args={[body.size * 1.4, 32, 32]} />
         <meshBasicMaterial
@@ -402,30 +556,112 @@ function Sun({
         />
       </mesh>
 
-      {/* The Sun is the scene's only light source */}
+      <BodyLabel
+        name={body.name}
+        yOffset={body.size + 1.5}
+        highlighted={focusedId === body.id}
+      />
+
       <pointLight intensity={3} distance={500} decay={0.5} color={0xfff5e0} />
     </group>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────────
-// Generic textured planet (orbiting body without special composites)
+// One moon — orbits its parent
+// ────────────────────────────────────────────────────────────────────────
+
+function MoonBody({
+  moon,
+  baseTexture,
+  simTimeRef,
+}: {
+  moon: Moon;
+  baseTexture: THREE.Texture;
+  simTimeRef: React.MutableRefObject<number>;
+}) {
+  const orbitRef = useRef<THREE.Group>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
+
+  useFrame(() => {
+    const t = simTimeRef.current;
+    // Moon period in Earth days, convert to Earth years for sim consistency
+    const periodInYears = Math.abs(moon.period) / 365.25;
+    const sign = Math.sign(moon.period) || 1;
+    if (orbitRef.current) {
+      orbitRef.current.rotation.y =
+        (t * Math.PI * 2 * sign) / periodInYears;
+    }
+    if (meshRef.current) {
+      // Tidally locked — face always toward parent
+      meshRef.current.rotation.y =
+        (t * Math.PI * 2 * sign) / periodInYears;
+    }
+  });
+
+  return (
+    <group rotation={[moon.inclination ?? 0, 0, 0]}>
+      <group ref={orbitRef}>
+        <mesh ref={meshRef} position={[moon.orbit, 0, 0]}>
+          <sphereGeometry args={[moon.size, 48, 48]} />
+          <meshStandardMaterial
+            map={baseTexture}
+            color={moon.color}
+            roughness={1}
+          />
+          <BodyLabel name={moon.name} yOffset={moon.size + 0.18} />
+        </mesh>
+      </group>
+      {/* Faint moon orbit trail */}
+      <line>
+        <bufferGeometry
+          attach="geometry"
+          ref={(el) => {
+            if (!el) return;
+            const segments = 96;
+            const arr = new Float32Array((segments + 1) * 3);
+            for (let i = 0; i <= segments; i++) {
+              const a = (i / segments) * Math.PI * 2;
+              arr[i * 3] = Math.cos(a) * moon.orbit;
+              arr[i * 3 + 1] = 0;
+              arr[i * 3 + 2] = Math.sin(a) * moon.orbit;
+            }
+            el.setAttribute("position", new THREE.BufferAttribute(arr, 3));
+          }}
+        />
+        <lineBasicMaterial
+          color={0xaaaaaa}
+          transparent
+          opacity={0.18}
+          attach="material"
+        />
+      </line>
+    </group>
+  );
+}
+
+// ────────────────────────────────────────────────────────────────────────
+// Generic textured planet — handles rings + moon children
 // ────────────────────────────────────────────────────────────────────────
 
 function Planet({
   body,
   texture,
   ringTexture,
+  moonTexture,
   simTimeRef,
   onSelect,
   meshOutRef,
+  focusedId,
 }: {
   body: Body;
   texture: THREE.Texture;
   ringTexture?: THREE.Texture;
+  moonTexture?: THREE.Texture;
   simTimeRef: React.MutableRefObject<number>;
   onSelect: (b: Body) => void;
-  meshOutRef?: React.MutableRefObject<THREE.Object3D | null>;
+  meshOutRef: React.MutableRefObject<THREE.Object3D | null>;
+  focusedId: string | null;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
@@ -445,12 +681,15 @@ function Planet({
 
   return (
     <group ref={orbitRef}>
-      <group position={[body.orbit, 0, 0]} rotation={[0, 0, body.tilt]}>
+      <group
+        position={[body.orbit, 0, 0]}
+        rotation={[0, 0, body.tilt]}
+        ref={(el) => {
+          if (meshOutRef) meshOutRef.current = el;
+        }}
+      >
         <mesh
-          ref={(el) => {
-            meshRef.current = el;
-            if (meshOutRef && el) meshOutRef.current = el;
-          }}
+          ref={meshRef}
           onClick={(e: ThreeEvent<MouseEvent>) => {
             e.stopPropagation();
             onSelect(body);
@@ -467,23 +706,40 @@ function Planet({
           <meshStandardMaterial
             map={texture}
             roughness={0.95}
-            metalness={0.0}
+            metalness={0}
           />
         </mesh>
+
         {body.rings && ringTexture && (
           <mesh rotation={[-Math.PI / 2, 0, 0]}>
-            <ringGeometry
-              args={[body.rings.inner, body.rings.outer, 128]}
-            />
+            <ringGeometry args={[body.rings.inner, body.rings.outer, 192]} />
             <meshBasicMaterial
               map={ringTexture}
               side={THREE.DoubleSide}
               transparent
-              opacity={0.85}
+              opacity={0.92}
               depthWrite={false}
             />
           </mesh>
         )}
+
+        <BodyLabel
+          name={body.name}
+          yOffset={body.size + 0.4}
+          highlighted={focusedId === body.id}
+        />
+
+        {/* Moons orbit the planet — they're parented to this tilted group */}
+        {body.moons &&
+          moonTexture &&
+          body.moons.map((m) => (
+            <MoonBody
+              key={m.id}
+              moon={m}
+              baseTexture={moonTexture}
+              simTimeRef={simTimeRef}
+            />
+          ))}
       </group>
       <OrbitTrail radius={body.orbit} />
     </group>
@@ -491,27 +747,36 @@ function Planet({
 }
 
 // ────────────────────────────────────────────────────────────────────────
-// Earth — composite: day map + cloud layer + atmospheric halo
+// Earth — composite: day map + night lights blend + cloud layer + halo
 // ────────────────────────────────────────────────────────────────────────
 
 function Earth({
   body,
   dayMap,
+  nightMap,
   cloudsMap,
+  moonTexture,
   simTimeRef,
   onSelect,
   meshOutRef,
+  focusedId,
+  sunPos,
 }: {
   body: Body;
   dayMap: THREE.Texture;
+  nightMap: THREE.Texture;
   cloudsMap: THREE.Texture;
+  moonTexture: THREE.Texture;
   simTimeRef: React.MutableRefObject<number>;
   onSelect: (b: Body) => void;
   meshOutRef: React.MutableRefObject<THREE.Object3D | null>;
+  focusedId: string | null;
+  sunPos: THREE.Vector3;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const surfaceRef = useRef<THREE.Mesh>(null);
   const cloudsRef = useRef<THREE.Mesh>(null);
+  const nightRef = useRef<THREE.Mesh>(null);
 
   useFrame(() => {
     const t = simTimeRef.current;
@@ -523,10 +788,14 @@ function Earth({
       surfaceRef.current.rotation.y =
         (t * Math.PI * 2) / dayPeriodInYears;
     }
-    // Clouds rotate slightly faster than the surface for parallax
+    if (nightRef.current) {
+      // Night layer rotates with the surface (both are tied to Earth's spin)
+      nightRef.current.rotation.y = surfaceRef.current?.rotation.y ?? 0;
+    }
     if (cloudsRef.current) {
+      // Clouds rotate slightly faster for parallax depth
       cloudsRef.current.rotation.y =
-        (t * Math.PI * 2) / (Math.abs(body.day) / 365.25) * 1.08;
+        (t * Math.PI * 2 * 1.08) / (Math.abs(body.day) / 365.25);
     }
   });
 
@@ -539,7 +808,7 @@ function Earth({
           if (meshOutRef) meshOutRef.current = el;
         }}
       >
-        {/* Surface */}
+        {/* Day-side surface */}
         <mesh
           ref={surfaceRef}
           onClick={(e: ThreeEvent<MouseEvent>) => {
@@ -554,7 +823,7 @@ function Earth({
             document.body.style.cursor = "auto";
           }}
         >
-          <sphereGeometry args={[body.size, 96, 96]} />
+          <sphereGeometry args={[body.size, 128, 128]} />
           <meshStandardMaterial
             map={dayMap}
             roughness={0.92}
@@ -562,9 +831,21 @@ function Earth({
           />
         </mesh>
 
-        {/* Cloud layer — slightly larger, transparent, rotates faster */}
+        {/* Night-side city lights — additive blending shows only on dark side */}
+        <mesh ref={nightRef}>
+          <sphereGeometry args={[body.size * 1.001, 128, 128]} />
+          <meshBasicMaterial
+            map={nightMap}
+            blending={THREE.AdditiveBlending}
+            transparent
+            opacity={0.9}
+            depthWrite={false}
+          />
+        </mesh>
+
+        {/* Clouds */}
         <mesh ref={cloudsRef}>
-          <sphereGeometry args={[body.size * 1.012, 96, 96]} />
+          <sphereGeometry args={[body.size * 1.015, 128, 128]} />
           <meshStandardMaterial
             map={cloudsMap}
             transparent
@@ -574,26 +855,42 @@ function Earth({
           />
         </mesh>
 
-        {/* Atmosphere halo — Fresnel-style outer shell, BackSide */}
+        {/* Atmospheric halo */}
         <mesh>
-          <sphereGeometry args={[body.size * 1.05, 64, 64]} />
+          <sphereGeometry args={[body.size * 1.06, 64, 64]} />
           <meshBasicMaterial
-            color={0x4a90e2}
+            color={0x6ab4ff}
             transparent
-            opacity={0.18}
+            opacity={0.2}
             side={THREE.BackSide}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
         </mesh>
+
+        <BodyLabel
+          name={body.name}
+          yOffset={body.size + 0.4}
+          highlighted={focusedId === body.id}
+        />
+
+        {/* Earth's moon */}
+        {body.moons?.map((m) => (
+          <MoonBody
+            key={m.id}
+            moon={m}
+            baseTexture={moonTexture}
+            simTimeRef={simTimeRef}
+          />
+        ))}
       </group>
-      <OrbitTrail radius={body.orbit} />
+      <OrbitTrail radius={body.orbit} color={0x80a0e0} opacity={0.5} />
     </group>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────────
-// Venus — surface + thick atmospheric cloud overlay
+// Venus — surface + super-rotating cloud atmosphere
 // ────────────────────────────────────────────────────────────────────────
 
 function Venus({
@@ -602,16 +899,20 @@ function Venus({
   atmosphereMap,
   simTimeRef,
   onSelect,
+  meshOutRef,
+  focusedId,
 }: {
   body: Body;
   surfaceMap: THREE.Texture;
   atmosphereMap: THREE.Texture;
   simTimeRef: React.MutableRefObject<number>;
   onSelect: (b: Body) => void;
+  meshOutRef: React.MutableRefObject<THREE.Object3D | null>;
+  focusedId: string | null;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const surfaceRef = useRef<THREE.Mesh>(null);
-  const atmosphereRef = useRef<THREE.Mesh>(null);
+  const atmRef = useRef<THREE.Mesh>(null);
 
   useFrame(() => {
     const t = simTimeRef.current;
@@ -624,16 +925,22 @@ function Venus({
       surfaceRef.current.rotation.y =
         (t * Math.PI * 2 * sign) / dayPeriodInYears;
     }
-    // Venus' upper atmosphere super-rotates ~60× faster than the surface
-    if (atmosphereRef.current) {
-      atmosphereRef.current.rotation.y =
-        (t * Math.PI * 2 * -1 * 60) / (Math.abs(body.day) / 365.25);
+    if (atmRef.current) {
+      // Venus' upper atmosphere super-rotates ~60× faster than the surface
+      atmRef.current.rotation.y =
+        (t * Math.PI * 2 * -60) / (Math.abs(body.day) / 365.25);
     }
   });
 
   return (
     <group ref={orbitRef}>
-      <group position={[body.orbit, 0, 0]} rotation={[0, 0, body.tilt]}>
+      <group
+        position={[body.orbit, 0, 0]}
+        rotation={[0, 0, body.tilt]}
+        ref={(el) => {
+          if (meshOutRef) meshOutRef.current = el;
+        }}
+      >
         <mesh
           ref={surfaceRef}
           onClick={(e: ThreeEvent<MouseEvent>) => {
@@ -649,21 +956,24 @@ function Venus({
           }}
         >
           <sphereGeometry args={[body.size, 96, 96]} />
-          <meshStandardMaterial
-            map={surfaceMap}
-            roughness={0.95}
-          />
+          <meshStandardMaterial map={surfaceMap} roughness={0.95} />
         </mesh>
-        <mesh ref={atmosphereRef}>
-          <sphereGeometry args={[body.size * 1.02, 64, 64]} />
+        <mesh ref={atmRef}>
+          <sphereGeometry args={[body.size * 1.025, 64, 64]} />
           <meshStandardMaterial
             map={atmosphereMap}
             transparent
-            opacity={0.65}
+            opacity={0.7}
             depthWrite={false}
             roughness={1}
           />
         </mesh>
+
+        <BodyLabel
+          name={body.name}
+          yOffset={body.size + 0.4}
+          highlighted={focusedId === body.id}
+        />
       </group>
       <OrbitTrail radius={body.orbit} />
     </group>
@@ -671,54 +981,10 @@ function Venus({
 }
 
 // ────────────────────────────────────────────────────────────────────────
-// Earth's Moon — tethered to Earth's world position
+// Asteroid belt — 3,500 instanced rocks between Mars and Jupiter
 // ────────────────────────────────────────────────────────────────────────
 
-function Moon({
-  earthRef,
-  texture,
-  simTimeRef,
-}: {
-  earthRef: React.MutableRefObject<THREE.Object3D | null>;
-  texture: THREE.Texture;
-  simTimeRef: React.MutableRefObject<number>;
-}) {
-  const orbitRef = useRef<THREE.Group>(null);
-  const meshRef = useRef<THREE.Mesh>(null);
-  const tetheredRef = useRef<THREE.Group>(null);
-
-  useFrame(() => {
-    if (orbitRef.current) {
-      orbitRef.current.rotation.y =
-        (simTimeRef.current * Math.PI * 2) / 0.0748;
-    }
-    if (meshRef.current) {
-      // Tidal lock — Moon's day = Moon's year (always same face to Earth)
-      meshRef.current.rotation.y =
-        (simTimeRef.current * Math.PI * 2) / 0.0748;
-    }
-    if (tetheredRef.current && earthRef.current) {
-      earthRef.current.getWorldPosition(tetheredRef.current.position);
-    }
-  });
-
-  return (
-    <group ref={tetheredRef}>
-      <group ref={orbitRef}>
-        <mesh ref={meshRef} position={[1.05, 0, 0]}>
-          <sphereGeometry args={[0.17, 48, 48]} />
-          <meshStandardMaterial map={texture} roughness={1} />
-        </mesh>
-      </group>
-    </group>
-  );
-}
-
-// ────────────────────────────────────────────────────────────────────────
-// Asteroid belt — instanced rocks between Mars and Jupiter orbits
-// ────────────────────────────────────────────────────────────────────────
-
-const ASTEROID_COUNT = 2000;
+const ASTEROID_COUNT = 3500;
 
 function AsteroidBelt() {
   const meshRef = useRef<THREE.InstancedMesh>(null);
@@ -728,10 +994,9 @@ function AsteroidBelt() {
     const tempObj = new THREE.Object3D();
     for (let i = 0; i < ASTEROID_COUNT; i++) {
       const angle = Math.random() * Math.PI * 2;
-      // Between Mars (orbit=18) and Jupiter (orbit=28), with some spread.
-      // Real asteroid belt: 2.2–3.2 AU which roughly fits this band.
-      const radius = 20 + Math.random() * 5.5;
-      const height = (Math.random() - 0.5) * 0.5;
+      // Mars sits at 21, Jupiter at 34 — belt between
+      const radius = 24 + Math.random() * 7;
+      const height = (Math.random() - 0.5) * 0.7;
       tempObj.position.set(
         Math.cos(angle) * radius,
         height,
@@ -742,7 +1007,7 @@ function AsteroidBelt() {
         Math.random() * Math.PI,
         Math.random() * Math.PI,
       );
-      const scale = 0.015 + Math.random() * 0.045;
+      const scale = 0.018 + Math.random() * 0.05;
       tempObj.scale.set(scale, scale, scale);
       tempObj.updateMatrix();
       meshRef.current.setMatrixAt(i, tempObj.matrix);
@@ -750,11 +1015,8 @@ function AsteroidBelt() {
     meshRef.current.instanceMatrix.needsUpdate = true;
   }, []);
 
-  // Slowly rotate the whole belt
   useFrame((_, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.y += delta * 0.005;
-    }
+    if (meshRef.current) meshRef.current.rotation.y += delta * 0.005;
   });
 
   return (
@@ -764,90 +1026,95 @@ function AsteroidBelt() {
       frustumCulled={false}
     >
       <icosahedronGeometry args={[1, 0]} />
-      <meshStandardMaterial
-        color={0x807060}
-        roughness={1}
-        metalness={0}
-      />
+      <meshStandardMaterial color={0x807060} roughness={1} metalness={0} />
     </instancedMesh>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────────
-// Milky Way background — inverted-normal giant sphere with texture
+// Milky Way skybox
 // ────────────────────────────────────────────────────────────────────────
 
 function MilkyWayBackground({ texture }: { texture: THREE.Texture }) {
   return (
     <mesh>
-      <sphereGeometry args={[2500, 64, 64]} />
-      <meshBasicMaterial
-        map={texture}
-        side={THREE.BackSide}
-        toneMapped={false}
-      />
+      <sphereGeometry args={[3500, 64, 64]} />
+      <meshBasicMaterial map={texture} side={THREE.BackSide} toneMapped={false} />
     </mesh>
   );
 }
 
 // ────────────────────────────────────────────────────────────────────────
-// Scene root — loads all textures + composes the bodies
+// Scene root — loads textures, renders all bodies
 // ────────────────────────────────────────────────────────────────────────
 
 function SolarSystemScene({
   simTimeRef,
   onSelect,
+  bodyRefs,
+  focusedId,
 }: {
   simTimeRef: React.MutableRefObject<number>;
   onSelect: (b: Body) => void;
+  bodyRefs: React.MutableRefObject<Record<string, React.MutableRefObject<THREE.Object3D | null>>>;
+  focusedId: string | null;
 }) {
-  // useTexture (drei) suspends until all are loaded.
   const t = useTexture({
-    sun: "/textures/solar-system/2k_sun.jpg",
-    mercury: "/textures/solar-system/2k_mercury.jpg",
-    venusSurface: "/textures/solar-system/2k_venus_surface.jpg",
+    sun: "/textures/solar-system/8k_sun.jpg",
+    mercury: "/textures/solar-system/8k_mercury.jpg",
+    venusSurface: "/textures/solar-system/8k_venus_surface.jpg",
     venusAtmosphere: "/textures/solar-system/2k_venus_atmosphere.jpg",
-    earthDay: "/textures/solar-system/2k_earth_daymap.jpg",
-    earthClouds: "/textures/solar-system/2k_earth_clouds.jpg",
-    mars: "/textures/solar-system/2k_mars.jpg",
-    jupiter: "/textures/solar-system/2k_jupiter.jpg",
-    saturn: "/textures/solar-system/2k_saturn.jpg",
-    saturnRing: "/textures/solar-system/2k_saturn_ring_alpha.png",
+    earthDay: "/textures/solar-system/8k_earth_daymap.jpg",
+    earthNight: "/textures/solar-system/8k_earth_nightmap.jpg",
+    earthClouds: "/textures/solar-system/8k_earth_clouds.jpg",
+    mars: "/textures/solar-system/8k_mars.jpg",
+    jupiter: "/textures/solar-system/8k_jupiter.jpg",
+    saturn: "/textures/solar-system/8k_saturn.jpg",
+    saturnRing: "/textures/solar-system/8k_saturn_ring_alpha.png",
     uranus: "/textures/solar-system/2k_uranus.jpg",
     neptune: "/textures/solar-system/2k_neptune.jpg",
-    moon: "/textures/solar-system/2k_moon.jpg",
-    stars: "/textures/solar-system/2k_stars_milky_way.jpg",
+    moon: "/textures/solar-system/8k_moon.jpg",
+    stars: "/textures/solar-system/8k_stars_milky_way.jpg",
   });
 
-  // Set proper color space on all sRGB textures (Three r152+)
   useEffect(() => {
     Object.values(t).forEach((tex) => {
-      (tex as THREE.Texture).colorSpace = THREE.SRGBColorSpace;
-      (tex as THREE.Texture).anisotropy = 8;
+      const tt = tex as THREE.Texture;
+      tt.colorSpace = THREE.SRGBColorSpace;
+      tt.anisotropy = 16;
     });
   }, [t]);
 
-  const earthRef = useRef<THREE.Object3D | null>(null);
+  // Make ref objects for each body (used by FlyToController to look up world position)
+  if (!bodyRefs.current.sun) {
+    ALL_BODIES.forEach((b) => {
+      bodyRefs.current[b.id] = { current: null };
+    });
+  }
+
+  const sunWorldPos = useMemo(() => new THREE.Vector3(0, 0, 0), []);
 
   return (
     <>
       <MilkyWayBackground texture={t.stars} />
-
-      {/* Very dim ambient so the night sides aren't pure black */}
-      <ambientLight intensity={0.04} />
+      <ambientLight intensity={0.05} />
 
       <Sun
         body={SUN}
         texture={t.sun}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.sun}
+        focusedId={focusedId}
       />
 
       <Planet
-        body={PLANETS[0]}
+        body={PLANETS[0]} // Mercury
         texture={t.mercury}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.mercury}
+        focusedId={focusedId}
       />
 
       <Venus
@@ -856,54 +1123,74 @@ function SolarSystemScene({
         atmosphereMap={t.venusAtmosphere}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.venus}
+        focusedId={focusedId}
       />
 
       <Earth
         body={PLANETS[2]}
         dayMap={t.earthDay}
+        nightMap={t.earthNight}
         cloudsMap={t.earthClouds}
+        moonTexture={t.moon}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
-        meshOutRef={earthRef}
+        meshOutRef={bodyRefs.current.earth}
+        focusedId={focusedId}
+        sunPos={sunWorldPos}
       />
-      <Moon earthRef={earthRef} texture={t.moon} simTimeRef={simTimeRef} />
 
       <Planet
-        body={PLANETS[3]}
+        body={PLANETS[3]} // Mars
         texture={t.mars}
+        moonTexture={t.moon}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.mars}
+        focusedId={focusedId}
       />
 
       <AsteroidBelt />
 
       <Planet
-        body={PLANETS[4]}
+        body={PLANETS[4]} // Jupiter
         texture={t.jupiter}
+        moonTexture={t.moon}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.jupiter}
+        focusedId={focusedId}
       />
 
       <Planet
-        body={PLANETS[5]}
+        body={PLANETS[5]} // Saturn
         texture={t.saturn}
         ringTexture={t.saturnRing}
+        moonTexture={t.moon}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.saturn}
+        focusedId={focusedId}
       />
 
       <Planet
-        body={PLANETS[6]}
+        body={PLANETS[6]} // Uranus
         texture={t.uranus}
+        moonTexture={t.moon}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.uranus}
+        focusedId={focusedId}
       />
 
       <Planet
-        body={PLANETS[7]}
+        body={PLANETS[7]} // Neptune
         texture={t.neptune}
+        moonTexture={t.moon}
         simTimeRef={simTimeRef}
         onSelect={onSelect}
+        meshOutRef={bodyRefs.current.neptune}
+        focusedId={focusedId}
       />
     </>
   );
@@ -915,12 +1202,40 @@ function SolarSystemScene({
 
 export default function SolarSystemPage() {
   const simTimeRef = useRef(0);
-  const orbitControlsRef = useRef<unknown>(null);
+  const orbitControlsRef = useRef<{
+    target: THREE.Vector3;
+    update: () => void;
+    reset: () => void;
+  } | null>(null);
+  const bodyRefs = useRef<
+    Record<string, React.MutableRefObject<THREE.Object3D | null>>
+  >({});
+  const flyTargetRef = useRef<FlyTarget>(null);
 
   const [paused, setPaused] = useState(false);
   const [speed, setSpeed] = useState(1);
   const [selected, setSelected] = useState<Body | null>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [focusedId, setFocusedId] = useState<string | null>(null);
+
+  // Default camera: high & wide enough to see all 8 planets (Neptune sits at orbit=70)
+  const DEFAULT_CAM: [number, number, number] = [0, 70, 150];
+
+  const flyToBody = (b: Body) => {
+    const ref = bodyRefs.current[b.id];
+    if (!ref) return;
+    flyTargetRef.current = { body: b, meshRef: ref };
+    setFocusedId(b.id);
+    setSelected(b);
+  };
+
+  const flyToWholeSystem = () => {
+    flyTargetRef.current = null;
+    setFocusedId(null);
+    const c = orbitControlsRef.current;
+    if (c) {
+      c.reset();
+    }
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -928,8 +1243,7 @@ export default function SolarSystemPage() {
         e.preventDefault();
         setPaused((p) => !p);
       } else if (e.code === "KeyR") {
-        const c = orbitControlsRef.current as { reset?: () => void } | null;
-        c?.reset?.();
+        flyToWholeSystem();
       } else if (e.code === "Escape") {
         setSelected(null);
       }
@@ -941,7 +1255,7 @@ export default function SolarSystemPage() {
   return (
     <div className="fixed inset-0 bg-black z-50 text-white">
       <Canvas
-        camera={{ position: [0, 30, 75], fov: 50, near: 0.1, far: 8000 }}
+        camera={{ position: DEFAULT_CAM, fov: 55, near: 0.1, far: 10000 }}
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
@@ -957,10 +1271,13 @@ export default function SolarSystemPage() {
           />
           <SolarSystemScene
             simTimeRef={simTimeRef}
-            onSelect={(b) => {
-              setSelected(b);
-              if (!loaded) setLoaded(true);
-            }}
+            onSelect={(b) => setSelected(b)}
+            bodyRefs={bodyRefs}
+            focusedId={focusedId}
+          />
+          <FlyToController
+            flyTargetRef={flyTargetRef}
+            orbitControlsRef={orbitControlsRef}
           />
           <OrbitControls
             ref={
@@ -970,19 +1287,14 @@ export default function SolarSystemPage() {
             }
             enableDamping
             dampingFactor={0.08}
-            minDistance={4}
-            maxDistance={500}
+            minDistance={2}
+            maxDistance={700}
             makeDefault
           />
         </Suspense>
       </Canvas>
 
-      {/* ──────────────── Loading overlay ──────────────── */}
-      <Suspense fallback={null}>
-        <LoadingHint />
-      </Suspense>
-
-      {/* ──────────────── Top bar ──────────────── */}
+      {/* ──────────── Top bar ──────────── */}
       <div className="absolute top-0 left-0 right-0 p-4 flex items-center justify-between gap-3 z-10 pointer-events-none">
         <Link
           href="/dashboard/xr-labs"
@@ -1005,11 +1317,7 @@ export default function SolarSystemPage() {
             className="p-2 hover:bg-white/10 rounded-md transition-colors"
             title={paused ? "Play (Space)" : "Pause (Space)"}
           >
-            {paused ? (
-              <Play className="h-4 w-4" />
-            ) : (
-              <Pause className="h-4 w-4" />
-            )}
+            {paused ? <Play className="h-4 w-4" /> : <Pause className="h-4 w-4" />}
           </button>
           <select
             value={speed}
@@ -1024,21 +1332,48 @@ export default function SolarSystemPage() {
             <option value={500} className="bg-black">500×</option>
           </select>
           <button
-            onClick={() => {
-              const c = orbitControlsRef.current as {
-                reset?: () => void;
-              } | null;
-              c?.reset?.();
-            }}
+            onClick={flyToWholeSystem}
             className="p-2 hover:bg-white/10 rounded-md transition-colors"
-            title="Reset camera (R)"
+            title="Reset view (R)"
           >
             <RotateCcw className="h-4 w-4" />
           </button>
         </div>
       </div>
 
-      {/* ──────────────── Info panel ──────────────── */}
+      {/* ──────────── Left rail: Fly-to navigation ──────────── */}
+      <div className="absolute top-24 left-4 z-10 pointer-events-auto bg-black/55 backdrop-blur-md rounded-lg p-2 border border-white/10 flex flex-col gap-1">
+        <button
+          onClick={flyToWholeSystem}
+          className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors ${
+            focusedId === null
+              ? "bg-primary text-primary-foreground"
+              : "hover:bg-white/10"
+          }`}
+          title="See the whole system"
+        >
+          <Maximize className="h-3.5 w-3.5" />
+          <span>Whole system</span>
+        </button>
+        <div className="h-px bg-white/10 my-1" />
+        {ALL_BODIES.map((b) => (
+          <button
+            key={b.id}
+            onClick={() => flyToBody(b)}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded text-sm transition-colors ${
+              focusedId === b.id
+                ? "bg-primary text-primary-foreground"
+                : "hover:bg-white/10"
+            }`}
+            title={`Fly to ${b.name}`}
+          >
+            <Locate className="h-3.5 w-3.5 opacity-50" />
+            <span>{b.name}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* ──────────── Info panel ──────────── */}
       {selected && (
         <div className="absolute top-24 right-4 w-96 max-w-[90vw] max-h-[calc(100vh-9rem)] overflow-y-auto bg-black/70 backdrop-blur-lg border border-white/15 rounded-lg p-5 z-10 pointer-events-auto">
           <div className="flex items-start justify-between gap-3 mb-3">
@@ -1063,20 +1398,29 @@ export default function SolarSystemPage() {
           <p className="text-sm text-white/80 mt-4 leading-relaxed">
             {selected.facts.description}
           </p>
+          {focusedId !== selected.id && (
+            <button
+              onClick={() => flyToBody(selected)}
+              className="mt-4 w-full px-3 py-2 bg-primary hover:bg-primary/90 text-primary-foreground text-sm font-medium rounded transition-colors flex items-center justify-center gap-2"
+            >
+              <Locate className="h-3.5 w-3.5" /> Fly to {selected.name}
+            </button>
+          )}
         </div>
       )}
 
-      {/* ──────────────── Footer: controls hint + attribution ──────────────── */}
+      {/* ──────────── Help / hint footer ──────────── */}
       <div className="absolute bottom-4 left-4 z-10 pointer-events-auto text-xs text-white/50 bg-black/40 backdrop-blur-md rounded-md px-3 py-2 border border-white/10">
         <Info className="h-3 w-3 inline mr-1" />
-        Drag to rotate · scroll to zoom · click a body for facts ·{" "}
+        Drag rotate · scroll zoom · click a body for facts · use left rail to
+        fly to any body ·{" "}
         <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px]">Space</kbd>{" "}
         pause ·{" "}
         <kbd className="bg-white/10 px-1.5 py-0.5 rounded text-[10px]">R</kbd>{" "}
-        reset camera
+        whole system
       </div>
 
-      {/* CC BY 4.0 attribution — required by the texture license */}
+      {/* CC BY 4.0 attribution */}
       <div className="absolute bottom-4 right-4 z-10 pointer-events-auto text-[10px] text-white/40 bg-black/30 backdrop-blur-md rounded px-2.5 py-1.5 border border-white/10">
         Textures:{" "}
         <a
@@ -1107,23 +1451,6 @@ function Fact({ label, value }: { label: string; value: string }) {
     <div className="grid grid-cols-[8.5rem_1fr] gap-2 text-xs">
       <dt className="text-white/50">{label}</dt>
       <dd className="text-white/90">{value}</dd>
-    </div>
-  );
-}
-
-// Renders briefly while textures stream in (~5-10MB on first load)
-function LoadingHint() {
-  const [show, setShow] = useState(true);
-  useEffect(() => {
-    const t = setTimeout(() => setShow(false), 1500);
-    return () => clearTimeout(t);
-  }, []);
-  if (!show) return null;
-  return (
-    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-      <div className="text-white/40 text-xs animate-pulse">
-        Loading planetary textures…
-      </div>
     </div>
   );
 }
