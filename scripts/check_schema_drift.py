@@ -92,18 +92,39 @@ def _harvest_tables() -> list[tuple[str, set[str]]]:
     for mod_name, mod in list(sys.modules.items()):
         if mod is None:
             continue
+        # Every getattr can fail with non-standard exceptions when Pydantic v2
+        # ModelMetaclass / Annotated descriptors are introspected — wrap each
+        # access. Previously only the first getattr was guarded; the second +
+        # third weren't, and a Pydantic-managed `metadata` field on some
+        # imported class raised "Operator 'getitem' is not supported on this
+        # expression" which short-circuited the whole drift check.
         for attr_name in dir(mod):
             try:
                 attr = getattr(mod, attr_name)
             except Exception:
                 continue
-            md = getattr(attr, "metadata", None)
+            try:
+                md = getattr(attr, "metadata", None)
+            except Exception:
+                continue
             if md is None:
                 continue
-            for table in getattr(md, "tables", {}).values():
-                if table.name in seen:
+            try:
+                tables_dict = getattr(md, "tables", {})
+                table_iter = list(tables_dict.values()) if hasattr(tables_dict, "values") else []
+            except Exception:
+                continue
+            for table in table_iter:
+                try:
+                    tname = table.name
+                except Exception:
                     continue
-                seen[table.name] = {c.name for c in table.columns}
+                if tname in seen:
+                    continue
+                try:
+                    seen[tname] = {c.name for c in table.columns}
+                except Exception:
+                    continue
     return list(seen.items())
 
 

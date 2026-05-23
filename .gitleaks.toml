@@ -37,9 +37,20 @@ regexes = [
 paths = [
   # docs/archive contains historical session reports with example payloads.
   '''docs/archive/.*''',
+  # Historical SESSION_*.md drop files (live in eureka/ + sibling dirs).
+  # These contain example curl invocations with demo/expired JWT tokens
+  # from localhost-only dev sessions — not real secrets. The
+  # `curl-auth-header` rule flags them because the token strings have
+  # high entropy. Path-allowlist all of them.
+  '''eureka/SESSION_.*\.md''',
+  '''EUREKA Session.*\.md''',
+  '''Eureka session.*\.md''',
+  '''(?i).*[/_-]session[ _-]?\d[_ -].*\.md''',
+  '''(?i).*session[ _-](complete|summary|download|guide|all).*\.md''',
   # gitleaks reads itself; ignore.
   '''.gitleaks.toml''',
   # SOPS encrypted files — gitleaks will see ciphertext that looks high-entropy.
   '''secrets/.*\.enc\.(yaml|json)''',
   '''secrets/.*\.sops\.(yaml|json)''',
 ]
+
