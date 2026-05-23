@@ -26,14 +26,25 @@ import {
 
 const TIER = "undergraduate";
 const TITLE = "Undergraduate";
-const FRAMEWORKS = ["abet"];
+// Undergrad accreditation frameworks. Originally just ABET (engineering)
+// which excluded huge undergrad majors (CS / Lib Arts / Pre-Med / Business).
+// ACM/IEEE = computing; AACSB = business; LCME-prep = pre-health; "liberal_arts"
+// is a catch-all for non-accredited general-ed programs. Keep this list in sync
+// with what the recommender / resources tag courses with.
+const FRAMEWORKS = ["abet", "acm", "ieee", "aacsb", "liberal_arts"];
 
+// Matches TierEnrollmentResponse in services/api-core/app/schemas/learner.py.
+// Earlier copy of this type had `framework: string | null` and `target_date:
+// string | null` at the top level, but the API stores framework inside
+// tier_context and uses target_completion_at. The mismatch made every
+// enrolment render as "General" with no target — fixed by aligning here.
 type TierEnrollment = {
   id: string;
   tier: string;
-  framework: string | null;
-  target_date: string | null;
+  tier_context: { framework?: string; major?: string; minor?: string } & Record<string, unknown>;
   status: string;
+  target_completion_at: string | null;
+  progress_pct?: string | number;
   created_at: string;
 };
 type Course = {
@@ -112,7 +123,10 @@ export default function UndergraduatePage() {
       try {
         const [es, cs, rs, ms, ts, rsx] = await Promise.all([
           api<TierEnrollment[]>("/tier-enrollments/me").catch(() => []),
-          api<CoursePage | Course[]>(`/courses/?limit=50&tier=${TIER}`).catch(
+          // is_published=true: the DB carries auto-generated test fixtures
+          // (e.g. "P10-NO-PRICE-…") with is_published=false; only show real
+          // published courses to learners.
+          api<CoursePage | Course[]>(`/courses/?limit=50&tier=${TIER}&is_published=true`).catch(
             () => ({ items: [] }),
           ),
           api<Recommendation[]>("/recommendations/me").catch(() => []),
@@ -260,25 +274,42 @@ export default function UndergraduatePage() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {enrollments.map((e) => (
-                <li
-                  key={e.id}
-                  className="flex items-center justify-between rounded-md border p-3"
-                >
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <Badge variant="secondary">{e.tier}</Badge>
-                      <span className="font-medium">
-                        {e.framework ?? "General"}
-                      </span>
+              {enrollments.map((e) => {
+                const ctx = (e.tier_context ?? {}) as Record<string, unknown>;
+                const framework = typeof ctx.framework === "string" ? ctx.framework : null;
+                const major = typeof ctx.major === "string" ? ctx.major : null;
+                const minor = typeof ctx.minor === "string" ? ctx.minor : null;
+                const target = e.target_completion_at
+                  ? new Date(e.target_completion_at).toLocaleDateString()
+                  : null;
+                return (
+                  <li
+                    key={e.id}
+                    className="flex items-center justify-between rounded-md border p-3"
+                  >
+                    <div>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <Badge variant="secondary">{e.tier}</Badge>
+                        {framework && (
+                          <Badge variant="outline" className="uppercase">
+                            {framework}
+                          </Badge>
+                        )}
+                        {major && <span className="font-medium">{major}</span>}
+                        {minor && (
+                          <span className="text-xs text-muted-foreground">
+                            (minor: {minor})
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        Status: {e.status}
+                        {target ? ` • Target ${target}` : ""}
+                      </div>
                     </div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      Status: {e.status}
-                      {e.target_date ? ` • Target ${e.target_date}` : ""}
-                    </div>
-                  </div>
-                </li>
-              ))}
+                  </li>
+                );
+              })}
             </ul>
           )}
         </CardContent>

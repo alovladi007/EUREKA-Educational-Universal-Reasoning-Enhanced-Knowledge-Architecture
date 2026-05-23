@@ -42,7 +42,7 @@ const navigation = [
   { name: "High School", href: "/dashboard/high-school", icon: School },
   { name: "Test Prep", href: "/dashboard/test-prep", icon: Trophy },
   { name: "Undergraduate", href: "/dashboard/undergraduate", icon: GraduationCap },
-  { name: "Graduate", href: "/graduate", icon: GraduationCap },
+  { name: "Graduate", href: "/dashboard/graduate", icon: GraduationCap },
   { name: "Medical Education", href: "/dashboard/medical", icon: Stethoscope },
   { name: "My Courses", href: "/dashboard/courses", icon: BookOpen },
   { name: "Teacher Tools", href: "/dashboard/teacher", icon: BookCheck },
