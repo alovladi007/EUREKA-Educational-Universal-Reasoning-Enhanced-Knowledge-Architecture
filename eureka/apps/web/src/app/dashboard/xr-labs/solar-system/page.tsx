@@ -418,8 +418,8 @@ const ALL_BODIES: Body[] = [SUN, ...PLANETS];
 // Mercury still completes an orbit in ~29 s which is comfortable.)
 // ────────────────────────────────────────────────────────────────────────
 
-const EARTH_YEAR_SECONDS = 120;
-const BUILD_TAG = "v4 · 2026-05-23"; // bump to verify you're on the latest
+const EARTH_YEAR_SECONDS = 300; // 1 Earth year = 5 wall-clock minutes at 1×
+const BUILD_TAG = "v5 · 2026-05-23"; // bump to verify you're on the latest
 
 function SimulationClock({
   paused,
@@ -447,11 +447,31 @@ type FlyTarget = {
   meshRef: React.MutableRefObject<THREE.Object3D | null>;
 } | null;
 
+// Fly-to controller — v5 redesign.
+//
+// v4 used a per-frame lerp that fought OrbitControls' own update() and
+// often left the camera centered on the Sun rather than the target body.
+// v5 separates two operations:
+//
+//   1) JUST-FLIPPED — when flyTargetRef changes (new body selected), do
+//      an INSTANT TELEPORT to the right offset distance from the new
+//      body's current world position. This guarantees the camera ends
+//      up adjacent to the right body, no race with OrbitControls.
+//
+//   2) TRACKING — once teleported, on every subsequent frame just keep
+//      ctrl.target locked to the body's live world position. The
+//      planet orbits the Sun, and target follows; OrbitControls then
+//      moves the camera the same delta so it stays at a constant
+//      relative offset (i.e. you orbit the planet as it orbits the Sun).
+//      User scroll/drag is still free — they're operating in the
+//      body's local frame.
 function FlyToController({
   flyTargetRef,
+  flyTargetVersionRef,
   orbitControlsRef,
 }: {
   flyTargetRef: React.MutableRefObject<FlyTarget>;
+  flyTargetVersionRef: React.MutableRefObject<number>;
   orbitControlsRef: React.MutableRefObject<{
     target: THREE.Vector3;
     update: () => void;
@@ -459,38 +479,47 @@ function FlyToController({
 }) {
   const { camera } = useThree();
   const tempVec = useRef(new THREE.Vector3());
-  const desiredCamPos = useRef(new THREE.Vector3());
+  const lastVersion = useRef(0);
 
   useFrame(() => {
     const ft = flyTargetRef.current;
     const ctrl = orbitControlsRef.current;
-    if (!ft || !ctrl || !ft.meshRef.current) return;
+    if (!ctrl) return;
 
-    // Where the body actually is right now
-    ft.meshRef.current.getWorldPosition(tempVec.current);
+    // Case 1: just-flipped — teleport.
+    if (ft && ft.meshRef.current && flyTargetVersionRef.current !== lastVersion.current) {
+      lastVersion.current = flyTargetVersionRef.current;
 
-    // Slerp OrbitControls' look target toward the body. Higher coefficient
-    // so the transition completes within ~1s instead of dragging out.
-    ctrl.target.lerp(tempVec.current, 0.14);
+      ft.meshRef.current.getWorldPosition(tempVec.current);
 
-    // Desired camera distance based on body size — pulled closer than v3
-    // (size×6 → size×3.5) so the user actually sees surface features
-    // (Earth night lights, Jupiter's bands, Saturn's rings). Sun gets a
-    // slightly looser frame so its corona doesn't fill the entire view.
-    const desiredDist =
-      ft.body.id === "sun" ? ft.body.size * 3 : ft.body.size * 3.5;
+      const desiredDist =
+        ft.body.id === "sun" ? ft.body.size * 3.5 : ft.body.size * 4.5;
 
-    // Maintain camera DIRECTION relative to target while moving distance
-    const camOffset = camera.position
-      .clone()
-      .sub(ctrl.target)
-      .normalize()
-      .multiplyScalar(desiredDist);
-    desiredCamPos.current.copy(tempVec.current).add(camOffset);
+      // Compute a sensible incoming direction. If camera-to-current-target
+      // is degenerate (NaN-risk), default to a slightly-above-and-behind
+      // angle. Otherwise reuse the current direction so the user keeps
+      // their bearings.
+      const dir = camera.position.clone().sub(ctrl.target);
+      if (dir.lengthSq() < 1e-6) {
+        dir.set(0, 0.3, 1);
+      }
+      dir.normalize().multiplyScalar(desiredDist);
 
-    camera.position.lerp(desiredCamPos.current, 0.1);
+      // SNAP camera and target.
+      ctrl.target.copy(tempVec.current);
+      camera.position.copy(tempVec.current).add(dir);
+      ctrl.update();
+      return;
+    }
 
-    ctrl.update();
+    // Case 2: tracking — keep target locked to the moving body.
+    if (ft && ft.meshRef.current) {
+      ft.meshRef.current.getWorldPosition(tempVec.current);
+      // Use small smoothing so the camera doesn't visibly stutter when
+      // the body moves between frames, but stays locked overall.
+      ctrl.target.lerp(tempVec.current, 0.4);
+      ctrl.update();
+    }
   });
   return null;
 }
@@ -1396,9 +1425,13 @@ export default function SolarSystemPage() {
     Record<string, React.MutableRefObject<THREE.Object3D | null>>
   >({});
   const flyTargetRef = useRef<FlyTarget>(null);
+  // Incremented each time the user picks a new fly-to target. The
+  // controller detects the change and does an instant teleport (vs.
+  // continuous tracking the rest of the time).
+  const flyTargetVersionRef = useRef(0);
 
   const [paused, setPaused] = useState(false);
-  const [speed, setSpeed] = useState(1);
+  const [speed, setSpeed] = useState(0.5); // v5 default — gentle pace
   const [selected, setSelected] = useState<Body | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
 
@@ -1409,8 +1442,9 @@ export default function SolarSystemPage() {
 
   const flyToBody = (b: Body) => {
     const ref = bodyRefs.current[b.id];
-    if (!ref) return;
+    if (!ref || !ref.current) return;
     flyTargetRef.current = { body: b, meshRef: ref };
+    flyTargetVersionRef.current += 1; // signal: do a fresh teleport
     setFocusedId(b.id);
     setSelected(b);
   };
@@ -1464,6 +1498,7 @@ export default function SolarSystemPage() {
           />
           <FlyToController
             flyTargetRef={flyTargetRef}
+            flyTargetVersionRef={flyTargetVersionRef}
             orbitControlsRef={orbitControlsRef}
           />
           <OrbitControls
@@ -1512,9 +1547,9 @@ export default function SolarSystemPage() {
             className="bg-transparent text-sm px-2 py-1 rounded border border-white/20 hover:border-white/40 outline-none cursor-pointer"
             title="Time multiplier"
           >
-            <option value={0.1} className="bg-black">0.1×</option>
-            <option value={0.5} className="bg-black">0.5×</option>
-            <option value={1} className="bg-black">1× (1 yr / 120s)</option>
+            <option value={0.1} className="bg-black">0.1× (very slow)</option>
+            <option value={0.5} className="bg-black">0.5× (default)</option>
+            <option value={1} className="bg-black">1× (1 yr / 5 min)</option>
             <option value={5} className="bg-black">5×</option>
             <option value={25} className="bg-black">25×</option>
             <option value={200} className="bg-black">200×</option>
