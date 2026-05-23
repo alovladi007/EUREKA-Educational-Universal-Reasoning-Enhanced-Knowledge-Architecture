@@ -54,6 +54,7 @@ import Link from "next/link";
 import { Canvas, useFrame, useThree, type ThreeEvent } from "@react-three/fiber";
 import { Html, OrbitControls, useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import { generateMoonTexture } from "./moonTextures";
 import {
   ArrowLeft,
   Pause,
@@ -583,6 +584,18 @@ function MoonBody({
   const orbitRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
 
+  // Per-moon procedural texture (Io's sulphur, Europa's ice cracks,
+  // Iapetus's two-tone, Triton's cantaloupe, etc.) generated from the
+  // moon's real surface characteristics. Falls back to the supplied
+  // baseTexture (LRO Moon map) for any moon we haven't defined a
+  // procedural generator for — currently only Earth's Moon.
+  const proc = useMemo(() => generateMoonTexture(moon.id), [moon.id]);
+  const texture = proc ?? baseTexture;
+  // If the procedural texture supplies the color (which it does for
+  // every moon in moonTextures.ts), don't apply moon.color as a
+  // multiplier — that would tint already-correctly-colored maps.
+  const tintColor = proc ? 0xffffff : moon.color;
+
   useFrame(() => {
     const t = simTimeRef.current;
     // Moon period in Earth days, convert to Earth years for sim consistency
@@ -605,8 +618,8 @@ function MoonBody({
         <mesh ref={meshRef} position={[moon.orbit, 0, 0]}>
           <sphereGeometry args={[moon.size, 48, 48]} />
           <meshStandardMaterial
-            map={baseTexture}
-            color={moon.color}
+            map={texture}
+            color={tintColor}
             roughness={1}
           />
           <BodyLabel name={moon.name} yOffset={moon.size + 0.18} />
