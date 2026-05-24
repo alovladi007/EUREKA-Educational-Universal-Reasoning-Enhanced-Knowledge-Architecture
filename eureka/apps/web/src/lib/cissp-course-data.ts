@@ -6674,6 +6674,2114 @@ GraphQL APIs have unique attack surface beyond traditional REST:
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// CBK GAP FIX (2026-05-24) — 7 new topics covering ISC2 CISSP
+// Common Body of Knowledge gaps identified in audit:
+//   D2: data lifecycle + sanitization
+//   D3: security models deep dive, advanced crypto, evaluation criteria
+//   D6: testing tool taxonomy
+//   D7: forensics legal standards
+//   D8: OWASP Top 10 patterns
+// ═══════════════════════════════════════════════════════════════
+
+cissp_data_lifecycle: {
+  topicId: 'cissp_data_lifecycle',
+  title: `Data States & Lifecycle Management`,
+  domainWeight: '10%',
+  overview: `Domain 2 of the CISSP CBK (Asset Security) tests deep understanding of the data lifecycle — from creation through destruction — and the security controls appropriate at each state. CISSP candidates must distinguish between data at rest, in transit, and in use, and select the correct sanitization method based on the media type and sensitivity. This topic covers the three data states, lifecycle phases, retention policies, and media sanitization standards (NIST 800-88, DoD 5220.22-M) that appear consistently on the exam.`,
+  sections: [
+    {
+      id: 'data-states',
+      title: `1. Three Data States and Their Controls`,
+      content: `## 1.1 Data at rest
+
+Data stored persistently on disk, tape, SSD, cloud storage, mobile device, or backup media. Not currently being accessed or transmitted.
+
+Threats: unauthorized disk access (lost laptop, decommissioned drive, insider browsing files), physical theft, ransomware encryption, backup tampering.
+
+Primary controls:
+
+- **Full-disk encryption (FDE)** — entire volume encrypted. BitLocker (Windows), FileVault (macOS), LUKS (Linux), self-encrypting drives (SEDs) with Opal standard. Protects against physical theft of powered-off devices.
+- **File-level encryption** — protects individual files; useful for selective protection or when FDE isn't available.
+- **Database encryption** — TDE (Transparent Data Encryption) in Oracle/SQL Server, column-level encryption for specific PII fields.
+- **Access controls** — OS-level permissions, RBAC at storage layer.
+- **Tokenization or pseudonymization** — replace sensitive values with tokens; original stored in secure vault.
+- **Backup encryption** — backups inherit at-rest protection; cloud backup services typically encrypt by default.
+
+Key management is the hard part. Encryption is only as strong as where the key is stored. CISSP exam pattern: an encrypted laptop is stolen — is data confidentiality preserved? Yes, IF the key isn't on the laptop (TPM-bound) and the disk is encrypted while powered off.
+
+## 1.2 Data in transit (in motion)
+
+Data moving across a network — between servers, to a browser, between cloud regions, across the internet.
+
+Threats: passive eavesdropping (packet capture), active interception (MITM), TLS downgrade, certificate spoofing, replay attacks.
+
+Primary controls:
+
+- **TLS 1.2+ (1.3 preferred)** — encrypts and authenticates HTTP/SMTP/IMAP/etc. Deprecated: SSL all versions, TLS 1.0/1.1.
+- **IPSec** — network-layer encryption; AH provides authentication/integrity only, ESP provides confidentiality + authentication. Modes: Transport (encrypts payload), Tunnel (encrypts entire packet including header).
+- **SSH** — secure remote shell, also used for SFTP, tunneling.
+- **VPN** — IPSec or TLS-based (OpenVPN, WireGuard). Site-to-site or remote-access.
+- **Application-layer encryption** — sometimes used in addition to TLS for end-to-end (e.g., PGP for email, Signal protocol for messaging).
+- **Mutual TLS (mTLS)** — both sides authenticate via certificates; common in zero-trust and service mesh.
+
+Pitfall: TLS protects browser-to-load-balancer; inside the data center traffic may be cleartext unless service mesh or IPSec is in place. CISSP expects awareness that "encrypted in transit" must be true end-to-end.
+
+## 1.3 Data in use
+
+Data actively being processed in memory by an application — decrypted, accessible, vulnerable to memory scraping, debugger access, side-channel attacks.
+
+This is the hardest state to protect because data MUST be readable for the application to use it.
+
+Primary controls:
+
+- **Memory protection** — OS isolation (ASLR, DEP, SMEP), hypervisor isolation, hardware memory protection.
+- **Trusted Execution Environments (TEEs)** — Intel SGX, AMD SEV, ARM TrustZone, AWS Nitro Enclaves. Provide hardware-enforced enclaves where data can be processed without the host OS having access.
+- **Homomorphic encryption** — perform computation directly on encrypted data without decrypting. Active research area; FHE is too slow for general use but specialized schemes (PSI, ML inference) are deployable.
+- **Confidential computing** — broader umbrella covering TEE-based services in the major clouds (Azure Confidential Computing, Google Confidential VMs, AWS Nitro).
+- **Memory wiping** — explicit zeroing of sensitive buffers (passwords, keys) after use to limit memory-scrape exposure window.
+
+CISSP trap: "AES-256 encryption protects data in all three states." False — encryption only protects at-rest and in-transit. In-use, the data must be decrypted to be usable. TEEs and homomorphic encryption are the special cases.`,
+      examTip: `Memorize the three states + their primary controls. CISSP exam loves "which state is hardest to protect?" — answer: in use. And "which control protects data in use?" — answer: TEE / confidential computing / homomorphic encryption.`,
+      importantNote: `TLS 1.0 and 1.1 are DEPRECATED (RFC 8996, 2021). Always select TLS 1.2 minimum, 1.3 preferred on CISSP questions. Similarly SSL all versions are deprecated.`,
+    },
+    {
+      id: 'data-lifecycle',
+      title: `2. Data Lifecycle Phases`,
+      content: `## 2.1 The lifecycle model
+
+Most CISSP texts use a 6-phase model:
+
+1. **Create** — data generated by users, sensors, applications
+2. **Store** — written to persistent storage (at-rest controls apply)
+3. **Use** — processed by applications (in-use controls apply)
+4. **Share** — transmitted to other systems or people (in-transit controls apply)
+5. **Archive** — moved to long-term storage when no longer actively used
+6. **Destroy** — securely removed when retention period expires
+
+A risk control framework should address each phase:
+
+| Phase | Key Controls |
+|---|---|
+| Create | Classification at creation, labeling, ownership assignment, encryption keys provisioned |
+| Store | At-rest encryption, access controls, integrity monitoring, backups |
+| Use | RBAC enforcement, audit logging, TEE for high-value data, DLP for exfiltration prevention |
+| Share | TLS, DLP egress filters, recipient authentication, watermarking |
+| Archive | Encryption with long-term key management, immutable storage (WORM), retention metadata |
+| Destroy | Sanitization per media type + classification |
+
+## 2.2 Data ownership roles
+
+CISSP exam tests these role distinctions explicitly:
+
+- **Data owner** — typically a business executive or business unit head. Accountable for the data. Decides classification, who can access, retention. Cannot be delegated.
+- **Data custodian** — typically IT or security staff. Implements the controls the owner specifies. Day-to-day operations of access, backups, encryption.
+- **Data steward** — quality-focused role; ensures data accuracy, completeness, and adherence to data governance policies.
+- **Data user** — end users authorized to access and use data for their job function.
+- **Data processor** — under GDPR, a party processing data on behalf of the controller. The controller (similar to owner) determines purposes/means; the processor implements.
+
+CISSP-style question: "The CFO wants to grant the finance team access to a new financial dataset. Who authorizes the access?" Answer: the data owner (who may BE the CFO or the head of accounting, depending on org). Not the IT custodian.
+
+## 2.3 Classification levels
+
+Government model (commonly tested):
+
+- Top Secret → Secret → Confidential → Sensitive But Unclassified (SBU) → Unclassified
+
+Commercial model:
+
+- Confidential → Private → Sensitive → Public
+
+Classifications drive control selection. Higher classification = more rigorous controls (encryption at rest required, MFA required, audit logging mandatory, longer retention, stricter destruction).
+
+Always classify at creation. Reclassification (upgrading or downgrading) happens via formal review.
+
+## 2.4 Labeling and handling
+
+Once classified, data needs labels (digital metadata, physical document headers/footers, watermarks). Handling procedures define how the data may be:
+
+- Stored (which media, which systems, encrypted or not)
+- Transmitted (which channels, encrypted or not)
+- Printed (which printers, whether copies retained)
+- Discussed (which meeting rooms, which conferences)
+- Disposed of (which sanitization method)
+
+## 2.5 Retention
+
+The default mistake is to keep data forever "just in case." This is RISK ACCUMULATION:
+
+- More data = more breach exposure when systems are compromised
+- More data = more eDiscovery cost in litigation
+- Some regulations REQUIRE deletion after a period (GDPR right to be forgotten, sectoral retention limits)
+
+Retention policy defines:
+
+- How long each data category is kept (driven by legal/regulatory + business need + risk)
+- Where it's stored (active vs archive)
+- When and how it's destroyed
+- Exceptions (litigation hold)
+
+Records management is a specialty within data lifecycle for records that have legal/regulatory significance (financial records, employment records, medical records).
+
+## 2.6 Legal hold (litigation hold)
+
+When litigation is reasonably anticipated, the organization MUST suspend normal destruction for relevant data — even if retention policy would otherwise delete it. Failure = spoliation = sanctions.
+
+Process:
+
+1. General counsel issues legal hold notice
+2. IT suspends auto-delete for identified data categories
+3. Custodians of relevant data notified, instructed to preserve
+4. Periodic re-issuance/confirmation
+5. Release of hold when litigation concludes
+
+CISSP expects awareness that legal hold OVERRIDES retention policy.`,
+      examTip: `Data owner = business executive who is ACCOUNTABLE. Data custodian = IT staff who IMPLEMENTS. The owner classifies and authorizes; the custodian operates. Don't confuse these on the exam.`,
+    },
+    {
+      id: 'sanitization-destruction',
+      title: `3. Sanitization, Destruction, and Media Disposal`,
+      content: `When data reaches end of life, it must be made UNRECOVERABLE. The method depends on the MEDIA TYPE and the data CLASSIFICATION.
+
+## 3.1 NIST SP 800-88 Rev 1 — the authoritative reference
+
+The CISSP exam frequently cites NIST 800-88 (Guidelines for Media Sanitization). Three sanitization levels:
+
+- **Clear** — logical sanitization using standard read/write commands. Defeats casual recovery (next user can't see prior data). May NOT defeat forensic recovery. Suitable for media that will be reused within the organization at the same or lower classification.
+- **Purge** — physical or logical sanitization that makes data infeasible to recover, even with state-of-the-art lab techniques. Cryptographic erase (delete the encryption key), block erase (whole-disk overwrite with multiple patterns), degaussing for magnetic media. Suitable for media leaving the organization or moving to lower-classification environments.
+- **Destroy** — physical destruction making the media itself unusable. Shredding, incinerating, disintegrating, pulverizing. The ONLY appropriate method for highly classified data or when uncertainty about purge effectiveness exists.
+
+The choice depends on:
+
+- **Confidentiality level** of the data
+- **Media type** — different media respond differently to each method
+- **Future use** of the media — same org, sold/donated, returned to vendor, recycled
+- **Cost** — destruction is most expensive but most assured
+
+## 3.2 Media-specific guidance
+
+| Media | Clear | Purge | Destroy |
+|---|---|---|---|
+| **Magnetic HDD** | OS-level delete + overwrite (one pass sufficient on modern drives per NIST) | Degaussing (strong magnetic field), multi-pass overwrite, cryptographic erase if FDE was in place | Shredding, incinerating, disintegrating |
+| **SSD** | OS-level secure erase (ATA Secure Erase) | Cryptographic erase (FDE key deletion), manufacturer's purge command | Shredding (mandatory for highly classified — SSDs have over-provisioning blocks that aren't reachable by overwrite) |
+| **Optical (CD/DVD)** | Not really applicable (write-once) | N/A | Shredding, incinerating |
+| **Flash drives, mobile devices** | Factory reset (often insufficient — wear-leveling preserves old data in unmapped blocks) | Cryptographic erase if FDE, manufacturer purge | Shredding |
+| **Tape** | Logical overwrite | Degaussing | Shredding, incinerating |
+| **Paper** | N/A | Cross-cut shredding (high security: 1mm × 5mm or smaller) | Incinerating, pulping |
+
+CISSP trap: a single-pass overwrite is sufficient for modern magnetic drives per NIST 800-88. Older guidance (3-pass, 7-pass, 35-pass Gutmann) was developed for older media densities and is now obsolete. EXAM expects NIST 800-88 single-pass for purge on modern HDDs.
+
+## 3.3 DoD 5220.22-M
+
+Older U.S. Department of Defense standard. Specified 3-pass overwrite (with verification). Superseded by NIST 800-88 for federal systems, but still appears in exam questions and procurement specs. Know that:
+
+- DoD 5220.22-M is the legacy standard
+- NIST 800-88 is current
+- 3-pass and 7-pass overwrites are unnecessary for modern media but not harmful
+
+## 3.4 Cryptographic erase (CE)
+
+If a disk was fully encrypted from initialization, you can sanitize by deleting the encryption key — the ciphertext on disk becomes unrecoverable noise. Fast (seconds), reliable, applicable to any media that supports FDE.
+
+CE is the preferred purge method for:
+
+- Encrypted SSDs (avoids over-provisioning issues)
+- Cloud storage (vendor's KMS deletes key)
+- BYOD device wipes (corporate container erased without touching personal data)
+- Decommissioning encrypted backups
+
+For CE to be valid:
+
+- Encryption must have been in place for the ENTIRE life of the data on the media
+- Key destruction must be verified
+- No backup of the key exists outside the secure destruction process
+
+## 3.5 Degaussing
+
+Strong magnetic field disrupts magnetic patterns on disks/tape. Effective for:
+
+- Magnetic HDDs
+- Magnetic tape
+- NOT effective for SSDs (no magnetic media), optical, flash
+
+Modern HDDs require very strong fields (higher coercivity). Use NSA-approved degaussers; verify with the manufacturer's spec.
+
+After degaussing, drive is typically UNUSABLE (also wipes servo tracks) — effectively combines purge with partial destroy.
+
+## 3.6 Physical destruction methods
+
+- **Shredding** — most common; reduces media to small fragments. Shred size matters: smaller = more secure. NSA-approved shredders specify max fragment size.
+- **Pulverizing** — reduces to powder. Maximum security.
+- **Disintegrating** — combined shred + pulverize.
+- **Incinerating** — burns to ash. Requires high-temperature furnace.
+- **Melting** — for metal media; melts at very high temperature.
+
+For highly classified data, witnesses and chain-of-custody documentation are required throughout destruction. Many orgs use certified destruction vendors who provide Certificates of Destruction (CoD).
+
+## 3.7 Data remanence
+
+The residual representation of data that may persist after sanitization attempts. Concerns:
+
+- Failed sanitization (clear was insufficient when purge was needed)
+- Bad sectors not addressable by overwrite
+- SSD over-provisioning blocks
+- Cached data (browser cache, swap files, hibernation files)
+- Print-job spool files
+- Backup tapes in offsite vaults
+
+A complete sanitization program addresses ALL locations data has been replicated.
+
+## 3.8 Decommissioning process
+
+A formal media decommissioning process:
+
+1. **Identify** — what media is being decommissioned, what data is on it, what classification
+2. **Authorize** — data owner approves disposal
+3. **Sanitize** — apply appropriate clear/purge/destroy method
+4. **Verify** — confirm method was successful (audit logs, third-party verification, physical inspection)
+5. **Document** — Certificate of Destruction or sanitization record, retained per audit retention policy
+6. **Dispose** — recycle or destroy the physical media per environmental regulations`,
+      examTip: `NIST 800-88 Rev 1 is the current authoritative reference. Three levels: Clear (low confidentiality, reuse internally), Purge (medium, reuse outside or sell), Destroy (highest classification, no recovery possible). Match the level to the data sensitivity AND the future use of the media.`,
+      importantNote: `For SSDs, only cryptographic erase or physical destruction is reliable. Single overwrite cannot reach over-provisioning blocks. Multi-pass overwrite is OBSOLETE for modern magnetic HDDs (NIST says one pass suffices) but appears as a wrong-answer trap on the exam.`,
+    },
+  ],
+  keyTakeaways: [
+    'Three data states: at rest (FDE, DBE), in transit (TLS 1.2+, IPSec), in use (TEE, homomorphic encryption — hardest to protect)',
+    '6-phase lifecycle: Create, Store, Use, Share, Archive, Destroy — each phase has appropriate controls',
+    'Data owner = business executive, ACCOUNTABLE, classifies + authorizes. Data custodian = IT staff, IMPLEMENTS. Do not confuse these CISSP roles.',
+    'NIST SP 800-88 Rev 1 is the current sanitization authority — Clear / Purge / Destroy by data sensitivity + media reuse path',
+    'Single-pass overwrite is sufficient for modern HDDs per NIST; multi-pass (DoD 5220.22-M) is legacy/obsolete but appears as a trap option',
+    'SSDs: cryptographic erase (best) or physical destruction. Overwrite cannot reach over-provisioning blocks.',
+    'Legal hold OVERRIDES retention policy — failure to preserve relevant data when litigation is reasonably anticipated = spoliation',
+  ],
+},
+
+cissp_security_models_deep: {
+  topicId: 'cissp_security_models_deep',
+  title: `Security Models In-Depth`,
+  domainWeight: '13%',
+  overview: `Domain 3 (Security Architecture and Engineering) tests deep understanding of formal security models — the abstract frameworks that define what a "secure" system means and how to reason about access. CISSP candidates must be able to identify which model applies to a given scenario (confidentiality vs integrity vs conflict-of-interest), state the model's properties precisely, and explain the implications of those properties. This topic provides the mathematical and operational depth that the existing platform's cissp_models topic only outlines.`,
+  sections: [
+    {
+      id: 'bell-lapadula',
+      title: `1. Bell-LaPadula: Confidentiality (MAC, Multi-Level Security)`,
+      content: `Developed in 1973 by David Bell and Leonard LaPadula for the U.S. Department of Defense. The first mathematical model of computer security. Designed to enforce CONFIDENTIALITY in multi-level secure (MLS) systems handling classified information.
+
+## 1.1 The model
+
+Bell-LaPadula (BLP) is a STATE MACHINE model based on a lattice of security labels. Each subject (user, process) and each object (file, resource) is assigned a sensitivity label. The model defines rules about how subjects can access objects without leaking information from higher to lower classifications.
+
+Lattice example (US government):
+\`\`\`
+Top Secret
+  ↑
+Secret
+  ↑
+Confidential
+  ↑
+Unclassified
+\`\`\`
+
+## 1.2 The three security properties
+
+BLP has THREE properties (memorize):
+
+1. **Simple Security Property (ss-property)**: "no read up." A subject at a given level cannot READ an object at a higher level. A Confidential-cleared analyst cannot read a Secret document.
+
+2. **\\*-property (star property)**: "no write down." A subject at a given level cannot WRITE to an object at a LOWER level. A Secret-cleared analyst cannot write Secret information to a Confidential file (preventing the analyst from leaking secrets by writing them somewhere less protected).
+
+3. **Discretionary Security Property (ds-property)**: in addition to the mandatory rules above, an access matrix can grant specific discretionary permissions (compatible with the mandatory model).
+
+## 1.3 Why these rules
+
+The model's goal is to PREVENT information flow from high to low classifications:
+
+- "No read up" prevents a low-clearance user from reading high-classification data (an obvious protection)
+- "No write down" prevents a HIGH-cleared user (perhaps malicious or compromised) from WRITING high-classification data to a low-classification file where a low-cleared user could then read it (a Trojan horse scenario)
+
+## 1.4 What BLP does NOT protect
+
+BLP is a CONFIDENTIALITY-only model. It does NOT address:
+
+- **Integrity** — a low-cleared user can WRITE UP (write to a higher-classification file) under BLP. This is allowed because no information leaks downward. But the high-clearance user might now be reading a low-quality (or maliciously corrupted) file. Use Biba for integrity protection.
+- **Availability** — BLP says nothing about denial of service.
+- **Covert channels** — clever ways to leak information through timing, resource exhaustion, etc.
+
+## 1.5 Tranquility principle
+
+A security label, once assigned, should not change while the subject/object is active.
+
+- **Strong tranquility** — labels never change during operation.
+- **Weak tranquility** — labels can change as long as it doesn't violate BLP properties.
+
+CISSP-style trap: "A user with Top Secret clearance is reading a Secret document. Can they edit it and save back to its original location?" In strict BLP, NO — saving back would be a write at the current subject's level (TS) writing to a Secret object, which is write-down. The user would need to "downgrade" their session to Secret first (which raises its own concerns).`,
+      examTip: `Memorize: BLP simple = "no read up," star = "no write down." Confidentiality-only. Bell-LaPadula = government / military. Don't confuse with Biba (integrity, opposite directions).`,
+      importantNote: `The "*-property" is pronounced "star property" — and on the CISSP exam, you'll see it written both as "*-property" and "star property" interchangeably. They mean the same thing.`,
+    },
+    {
+      id: 'biba',
+      title: `2. Biba: Integrity (Opposite Directions from BLP)`,
+      content: `Developed in 1977 by Kenneth Biba. Addresses the gap BLP leaves open: data INTEGRITY. The exam loves contrasting Biba with BLP because they share structure but operate in opposite directions.
+
+## 2.1 The model
+
+Like BLP, Biba is a state-machine model over a lattice. But the labels represent INTEGRITY level, not confidentiality. Higher integrity level = data more trustworthy / authoritative.
+
+Lattice example:
+\`\`\`
+High integrity (trusted source)
+  ↑
+Medium integrity
+  ↑
+Low integrity (user-generated, untrusted)
+\`\`\`
+
+## 2.2 The three integrity properties
+
+1. **Simple Integrity Property**: "no read down." A subject at a given integrity level cannot READ an object at a LOWER integrity level. (Prevents the subject from being contaminated by low-quality / untrusted data.)
+
+2. **\\*-Integrity Property (Integrity star)**: "no write up." A subject at a given integrity level cannot WRITE to an object at a HIGHER integrity level. (Prevents low-trust subjects from corrupting high-trust data.)
+
+3. **Invocation Property**: a subject cannot invoke (request services from) a subject of HIGHER integrity. (Prevents low-integrity processes from manipulating high-integrity processes.)
+
+## 2.3 BLP vs Biba — the mnemonic
+
+| Model | Concern | Read | Write |
+|---|---|---|---|
+| **BLP** | Confidentiality | No read UP | No write DOWN |
+| **Biba** | Integrity | No read DOWN | No write UP |
+
+The directions are OPPOSITE because the goals are opposite:
+
+- BLP wants to prevent INFORMATION from flowing DOWN (a high-clearance secret shouldn't leak to a low-clearance person)
+- Biba wants to prevent CONTAMINATION from flowing UP (a low-integrity input shouldn't corrupt a high-integrity output)
+
+## 2.4 Practical application
+
+Biba inspired the integrity levels in Windows User Account Control (UAC):
+
+- System
+- High
+- Medium (default user)
+- Low (Internet Explorer / Edge Protected Mode runs here)
+- Untrusted
+
+A Low-integrity process (a browser process) cannot write to High-integrity files or registry keys — this is Biba's no-write-up in action.
+
+## 2.5 What Biba doesn't address
+
+Biba is INTEGRITY-only. It doesn't address:
+
+- Confidentiality (use BLP for that)
+- Availability
+- Specific transaction semantics (use Clark-Wilson for transactional integrity)`,
+      examTip: `BLP and Biba are OPPOSITES. Confidentiality + secrets = BLP. Integrity + trust = Biba. The exam will give you a scenario; identify which property is at stake and pick the matching model. Memorize the directional asymmetry: BLP "no read UP / no write DOWN"; Biba "no read DOWN / no write UP."`,
+    },
+    {
+      id: 'clark-wilson-brewer-nash',
+      title: `3. Clark-Wilson, Brewer-Nash, and Other Models`,
+      content: `## 3.1 Clark-Wilson — Commercial Integrity via Well-Formed Transactions
+
+Developed in 1987 by David Clark and David Wilson. Designed for COMMERCIAL integrity needs (e.g., banking), where Biba's military-style integrity is overkill.
+
+Core concepts:
+
+- **Constrained Data Items (CDIs)** — data that needs integrity protection (bank account balances, financial records)
+- **Unconstrained Data Items (UDIs)** — data not protected by the model (e.g., free-form text)
+- **Integrity Verification Procedures (IVPs)** — verify that CDIs are in a valid state
+- **Transformation Procedures (TPs)** — the ONLY way CDIs can be modified; they enforce that valid CDIs transition to other valid CDIs
+
+The model enforces:
+
+1. **Well-formed transactions** — CDIs can only be modified via certified TPs (not via direct write)
+2. **Separation of duties** — different people authorize the TP, run the TP, and audit the results
+3. **Auditing** — all modifications logged with who, when, what
+
+Classic example: a bank account balance (CDI) can only be modified by certified TPs (debit, credit, transfer). A bank teller cannot just write a new balance directly; they must invoke one of the approved TPs, which preserves valid state (balance ≥ 0 if account terms require, audit trail recorded, etc.).
+
+Subject-Transformation-Object triple: each user is authorized for SPECIFIC TPs on SPECIFIC CDIs. Not a blanket access matrix.
+
+## 3.2 Brewer-Nash — Chinese Wall (Conflict of Interest)
+
+Developed in 1989 by David Brewer and Michael Nash. Designed for environments where preventing CONFLICTS OF INTEREST matters — most famously, a financial consulting firm with clients in competing industries.
+
+Core concept: a user's access is DYNAMICALLY restricted based on their access history.
+
+Model structure:
+
+- Objects organized into "company datasets" (CDs) — all data related to one company
+- CDs grouped into "conflict of interest classes" (CoIs) — e.g., all major oil companies are in one CoI class
+- A subject who accesses any CD in a CoI class is then BLOCKED from accessing any other CD in the same CoI class
+
+Practical example: an analyst at a consulting firm reviews documents for Oil Company A. The model then blocks them from accessing documents for Oil Company B, C, or D (all in the "Oil Companies" CoI class), because doing so would create a conflict of interest. They CAN still access documents for Bank X (different CoI class).
+
+Brewer-Nash is dynamic — initial access permissions are open; they tighten as the user accesses data.
+
+## 3.3 State Machine model
+
+Generic model where:
+
+- The system is always in some STATE (defined by all current variable values)
+- Each operation transitions the system from one state to another
+- A SECURE state is one where security properties hold (e.g., access matrix is consistent)
+- The model is SECURE if every state reachable from a secure initial state is itself secure
+
+Both BLP and Biba are state-machine models. This concept appears on the exam as background.
+
+## 3.4 Lattice-based models
+
+Both BLP and Biba use LATTICES — partially ordered sets of security labels with a least upper bound and greatest lower bound for any pair. The lattice provides the structure for "higher" and "lower" comparisons.
+
+Examples:
+
+- BLP government lattice: TS > S > C > U
+- Biba integrity lattice: High > Medium > Low
+
+## 3.5 Non-interference and information flow models
+
+Goldwasser, Goguen, and Meseguer's work on information flow:
+
+- **Non-interference** — high-level actions should not be observable by low-level subjects. Prevents covert channels.
+- **Information flow models** — formally analyze which information CAN flow to which subjects.
+
+These are mostly theoretical for CISSP — know the names.
+
+## 3.6 Access matrix models (Lampson, HRU)
+
+The general formalism for representing who can do what to which object:
+
+- Rows = subjects
+- Columns = objects
+- Cells = allowed operations
+
+Most implementations are partial (ACLs are column-slices; capabilities are row-slices). Pure access matrices don't scale and aren't used directly but form the theoretical basis for DAC.
+
+## 3.7 Take-Grant model
+
+A model for analyzing how access rights can be PROPAGATED through a system. Subjects can take rights from others (under certain conditions) or grant rights to others. Used to prove that certain rights cannot leak to certain subjects.
+
+Mostly theoretical — appears on the exam as recognition only.
+
+## 3.8 Graham-Denning model
+
+Defines a set of PRIMITIVE OPERATIONS for managing subjects, objects, and rights (create subject, create object, delete subject, delete object, take/grant/transfer rights). Provides building blocks for richer access control models.
+
+Recognition-level knowledge for the exam.
+
+## 3.9 Mapping models to scenarios — the CISSP exam pattern
+
+When the exam describes a scenario, identify:
+
+| Concern in the scenario | Model to choose |
+|---|---|
+| Multi-level classified info, prevent leaks downward | Bell-LaPadula |
+| Trust hierarchy, prevent contamination upward | Biba |
+| Commercial integrity, certified transactions, audit trail | Clark-Wilson |
+| Consulting firm, prevent conflict of interest | Brewer-Nash |
+| Generic state-based security reasoning | State Machine |
+| Lattice ordering of security labels | Lattice-based |
+
+Memorize this table — exam questions are often pure model identification.`,
+      examTip: `When the scenario mentions BANKING, ACCOUNTING, or anything about CERTIFIED TRANSACTIONS, the answer is Clark-Wilson. When it mentions CONFLICT OF INTEREST, CONSULTING FIRM, or COMPETING CLIENTS, the answer is Brewer-Nash. Memorize the keyword-to-model mapping.`,
+      importantNote: `Bell-LaPadula was developed for MILITARY/GOVERNMENT confidentiality. Biba added INTEGRITY. Clark-Wilson is COMMERCIAL integrity. Brewer-Nash addresses CONFLICT OF INTEREST. Each addresses a different gap.`,
+    },
+  ],
+  keyTakeaways: [
+    'Bell-LaPadula: CONFIDENTIALITY, no read up, no write down. Military/government MLS.',
+    'Biba: INTEGRITY, no read down, no write up. Opposite directions from BLP.',
+    'Clark-Wilson: COMMERCIAL integrity via well-formed transactions (TPs operating on CDIs), separation of duties, audit',
+    'Brewer-Nash (Chinese Wall): CONFLICT OF INTEREST. Access dynamically restricted by history within Conflict-of-Interest classes.',
+    'State Machine + Lattice are structural concepts underpinning BLP and Biba — both are state machines over security label lattices',
+    'Tranquility principle: labels don\'t change during operation (strong) or only in safe ways (weak)',
+    'CISSP scenario decoder: banking/audit → Clark-Wilson; competing clients → Brewer-Nash; military secrets → BLP; data trust → Biba',
+  ],
+},
+
+cissp_crypto_advanced: {
+  topicId: 'cissp_crypto_advanced',
+  title: `Advanced Cryptography & Key Management`,
+  domainWeight: '13%',
+  overview: `Beyond the basics covered in cissp_crypto, the CISSP CBK expects familiarity with several advanced cryptographic constructions and key-management concepts. This topic addresses the Kerberos 5-step exchange, X.509 certificate anatomy, ECDSA + ECC, post-quantum cryptography (PQC) readiness, hardware security modules (HSMs), key escrow vs key recovery, M-of-N split-knowledge constructions, and the operational disciplines that turn crypto from a math problem into a working enterprise control.`,
+  sections: [
+    {
+      id: 'kerberos',
+      title: `1. Kerberos: The 5-Step Authentication Exchange`,
+      content: `Kerberos is a NETWORK AUTHENTICATION protocol developed at MIT (Project Athena, 1980s). It enables strong authentication over an untrusted network using symmetric-key cryptography and a TRUSTED THIRD PARTY (the Key Distribution Center, KDC).
+
+## 1.1 Why Kerberos matters on the CISSP
+
+Kerberos is the foundation of Windows Active Directory authentication, Linux Heimdal / MIT Kerberos, and many enterprise SSO systems. CISSP candidates must understand:
+
+- The five-step exchange
+- The role of tickets vs session keys
+- Threats (replay, ticket theft) and mitigations
+- Weaknesses (single point of failure, time synchronization requirement)
+
+## 1.2 The components
+
+- **KDC (Key Distribution Center)** — trusted server. Contains two services:
+  - **AS (Authentication Service)** — proves the user's identity initially
+  - **TGS (Ticket Granting Service)** — issues tickets for specific application services
+- **Principal** — any entity in the realm with a secret (user, service, host)
+- **Realm** — the administrative boundary; analogous to a domain
+- **Tickets**:
+  - **TGT (Ticket Granting Ticket)** — proves the user was authenticated to the AS. Used to request service tickets.
+  - **ST (Service Ticket)** — proves the user is authorized to access a specific service.
+- **Session key** — symmetric key generated by the KDC and shared between two parties for that session
+
+## 1.3 The five-step exchange
+
+\`\`\`
+USER (Alice)               KDC (AS + TGS)              SERVICE (Bob)
+
+Step 1: AS_REQ
+Alice → AS:  "I am Alice; encrypt response with my key"
+                         [Pre-auth: encrypted timestamp]
+
+Step 2: AS_REP
+                AS → Alice: {Session_Key_TGS}_KAlice  +  TGT
+                            (TGT = {Alice's ID, Session_Key_TGS, expiry}_KTGS)
+
+Step 3: TGS_REQ (when accessing Bob's service)
+Alice → TGS: {Authenticator: Alice, timestamp}_Session_Key_TGS  +  TGT  +  "I want a ticket for Bob"
+
+Step 4: TGS_REP
+                TGS → Alice: {Session_Key_Bob}_Session_Key_TGS  +  ST
+                             (ST = {Alice's ID, Session_Key_Bob, expiry}_KBob)
+
+Step 5: AP_REQ
+Alice → Bob: {Authenticator: Alice, timestamp}_Session_Key_Bob  +  ST
+
+(Optional step 6: AP_REP — Bob proves to Alice that he too has the session key)
+\`\`\`
+
+## 1.4 Why this is secure (and why it can fail)
+
+- The user's password NEVER traverses the network — only data encrypted with the user's password-derived key
+- The KDC mints fresh session keys per session — no reuse
+- Authenticators include a TIMESTAMP — replay attacks limited to a small clock-skew window (5 minutes default)
+- Tickets are EXPIRED — limit damage if stolen
+
+Weaknesses:
+
+- **Single point of failure** — if the KDC is down, NO authentication anywhere
+- **Single point of compromise** — if the KDC is breached, every credential is compromised
+- **Time synchronization** — clocks across the realm must be within ~5 minutes. NTP is a hard dependency.
+- **Password-equivalent key** — the user's long-term key (derived from password) is held by both user and KDC. Offline brute force is possible if attacker captures an AS_REP with weak preauth.
+
+## 1.5 CISSP exam patterns
+
+- "What does the KDC issue when the user first authenticates?" → TGT
+- "What allows the user to access a specific application?" → Service Ticket (ST)
+- "What is the weakness of a centralized authentication system like Kerberos?" → Single point of failure / compromise
+- "What attack does the timestamp in the authenticator prevent?" → Replay attack
+- "What synchronization requirement does Kerberos have?" → Clock sync across realm (NTP)
+
+## 1.6 Kerberoasting
+
+An attack technique where an attacker requests Service Tickets for service accounts (which the KDC issues without verifying the requester actually has access to the service). The ticket is encrypted with the service account's password-derived key — attacker takes it offline and brute-forces the password.
+
+Defenses:
+
+- Strong service account passwords (long, random — preferably managed by gMSA / MSA)
+- Monitor for anomalous Service Ticket requests
+- Use AES-only ciphers (deprecate RC4)
+- Modern hardening: Active Directory protected accounts, AES encryption for all tickets`,
+      examTip: `Memorize the Kerberos flow: User → AS gets TGT; user → TGS gets ST; user → Service uses ST. Three round trips. KDC = AS + TGS. The user's password never traverses the network.`,
+    },
+    {
+      id: 'x509-certs',
+      title: `2. X.509 Certificate Anatomy and PKI`,
+      content: `X.509 is the international standard for public-key certificates used in TLS, S/MIME, code signing, and most modern PKI. CISSP expects you to know the standard fields and the validation chain.
+
+## 2.1 X.509 v3 certificate fields
+
+Memorize this list:
+
+- **Version** — typically v3 (current; v1 and v2 are legacy)
+- **Serial number** — unique within the issuing CA. Must be globally unique for an issuer.
+- **Signature algorithm** — the algorithm used by the issuer to sign this certificate (e.g., sha256WithRSAEncryption, ecdsa-with-SHA256)
+- **Issuer** — Distinguished Name (DN) of the Certificate Authority (CA) that signed this cert
+- **Validity period** — Not Before (issued date) + Not After (expiration date)
+- **Subject** — DN of the entity the cert is issued to (the certificate's owner)
+- **Subject Public Key Info** — algorithm and the public key itself
+- **Extensions** (v3 additions):
+  - **Subject Alternative Name (SAN)** — additional names the cert covers (most important extension today; modern browsers ignore the CN, use SAN exclusively)
+  - **Key Usage** — what the key may be used for (digitalSignature, keyEncipherment, certSign, cRLSign, etc.)
+  - **Extended Key Usage (EKU)** — finer-grained usage (TLS Server Auth, TLS Client Auth, Code Signing, S/MIME)
+  - **Basic Constraints** — is this a CA cert (cA=true) or end-entity?
+  - **Authority Information Access (AIA)** — URL to retrieve issuer's cert and OCSP responder
+  - **CRL Distribution Points** — URLs of the CRL listing this cert if revoked
+- **Signature** — the issuer's signature over all the above fields
+
+## 2.2 Distinguished Name (DN) components
+
+A DN is a structured hierarchical identifier. Common attributes:
+
+- **CN (Common Name)** — primary name (historically the FQDN for TLS server certs; now use SAN)
+- **OU (Organizational Unit)** — department within an organization
+- **O (Organization)** — the company
+- **L (Locality)** — city
+- **ST (State/Province)**
+- **C (Country)** — 2-letter ISO code
+
+Example: \`CN=secure.example.com, OU=Web Services, O=Example Corp, L=San Francisco, ST=California, C=US\`
+
+## 2.3 The certificate validation chain
+
+When a client receives a certificate, it validates:
+
+1. **Signature** — does the issuer's signature on this cert verify with the issuer's public key?
+2. **Issuer chain** — recursively walk up the chain (this cert's issuer → that issuer's issuer → ... → trusted root CA in the client's trust store)
+3. **Validity period** — current time is within Not Before / Not After
+4. **Revocation** — check CRL or OCSP to confirm not revoked
+5. **Hostname match** — for TLS, server name matches a SAN entry
+6. **Key Usage / EKU** — cert is authorized for this purpose (TLS Server Auth, etc.)
+7. **Constraints** — name constraints, path length constraints satisfied
+
+If ANY check fails, the certificate is INVALID.
+
+## 2.4 Revocation: CRL vs OCSP vs OCSP Stapling
+
+Once a certificate is issued, it might need to be revoked (key compromise, owner change, etc.) before its expiration. Three mechanisms:
+
+- **CRL (Certificate Revocation List)** — the CA publishes a list of revoked cert serial numbers. Clients download the CRL and check. Pros: simple. Cons: stale (CRLs published periodically, e.g., every 24 hours); CRLs grow large for major CAs.
+- **OCSP (Online Certificate Status Protocol)** — client queries the CA's OCSP responder in real time for a specific cert's status. Pros: fresh; small responses. Cons: privacy concerns (CA sees who's checking which cert), responder availability becomes critical, OCSP failures historically failed open.
+- **OCSP Stapling** — server fetches an OCSP response from the CA and INCLUDES it in the TLS handshake. Client gets the status without contacting the CA. Pros: solves the privacy and availability problems. Cons: server must keep the stapled response fresh.
+
+Modern best practice: OCSP stapling with mandatory stapling (Must-Staple flag in the cert) so clients reject if the stapled response is missing.
+
+## 2.5 Certificate Transparency (CT)
+
+Public, append-only logs of every certificate issued by participating CAs. Anyone can monitor logs for unauthorized certs for their domain. Modern browsers REQUIRE that certs include SCTs (Signed Certificate Timestamps) proving inclusion in CT logs. Defends against rogue CA issuance.
+
+## 2.6 The PKI hierarchy
+
+\`\`\`
+Root CA (offline; self-signed; trust anchor in client trust stores)
+   ↓ signs
+Intermediate CA (online; issues end-entity certs)
+   ↓ signs
+End-entity certificate (server, user, code-signing)
+\`\`\`
+
+Best practice: Root CA is kept OFFLINE in a hardware security module, with strict ceremony procedures for any signing operation. Intermediate CAs are online and can be revoked if compromised without invalidating the root.
+
+## 2.7 Certificate authority operations
+
+- **Registration Authority (RA)** — verifies the identity of the requester before the CA issues a cert
+- **CA** — issues, manages, revokes certs
+- **VA (Validation Authority)** — OCSP responder
+- **Subscriber** — the entity to whom the cert is issued
+- **Relying party** — anyone who validates and trusts the cert
+
+The CA's Certificate Policy (CP) and Certification Practice Statement (CPS) document operational details. The exam may name these — CPS is the "how we operate" document.`,
+      examTip: `For TLS server certs, the SUBJECT ALTERNATIVE NAME (SAN) extension is the field that lists the hostnames the cert is valid for. Modern browsers IGNORE the CN field; SAN is required. CRL is the LIST of revoked certs; OCSP is REAL-TIME checking; OCSP STAPLING combines both with the server pre-fetching the response.`,
+    },
+    {
+      id: 'pqc-hsm-keymgmt',
+      title: `3. ECC, Post-Quantum Cryptography, HSMs, and Key Management`,
+      content: `## 3.1 Elliptic Curve Cryptography (ECC)
+
+An alternative to RSA based on elliptic curve discrete logarithm. Provides equivalent security with MUCH smaller key sizes:
+
+| Symmetric strength | RSA | ECC |
+|---|---|---|
+| 80 bits | 1024 | 160 |
+| 112 bits | 2048 | 224 |
+| 128 bits | 3072 | 256 |
+| 192 bits | 7680 | 384 |
+| 256 bits | 15360 | 521 |
+
+ECC variants used in practice:
+
+- **ECDH (Elliptic Curve Diffie-Hellman)** — key exchange
+- **ECDSA (Elliptic Curve Digital Signature Algorithm)** — signing, the EC analogue of DSA
+- **EdDSA (Edwards-curve DSA)** — modern alternative using Edwards curves; Ed25519 (security strength ~128 bits) is widely deployed
+
+Standard curves: NIST P-256, P-384, P-521 (some controversy due to opaque parameter generation); Curve25519 / Ed25519 (modern, transparent).
+
+ECC is preferred for resource-constrained environments (mobile, IoT) and increasingly for TLS in general (smaller keys = faster handshakes).
+
+## 3.2 Post-Quantum Cryptography (PQC)
+
+Sufficiently large quantum computers could break:
+
+- RSA (Shor's algorithm breaks integer factorization)
+- ECC (Shor's algorithm breaks discrete log)
+- Diffie-Hellman (same)
+
+Symmetric algorithms are LESS affected (Grover's algorithm only halves the effective key length; AES-256 still has ~128 bits of post-quantum strength).
+
+NIST began standardizing PQC in 2016. As of 2024-2025:
+
+- **CRYSTALS-Kyber (ML-KEM)** — key encapsulation (replaces RSA/DH key exchange). Standardized as FIPS 203.
+- **CRYSTALS-Dilithium (ML-DSA)** — digital signatures (replaces RSA-PSS, ECDSA). Standardized as FIPS 204.
+- **SPHINCS+ (SLH-DSA)** — stateless hash-based signatures (alternative signature). Standardized as FIPS 205.
+- **Falcon** — lattice-based signatures, standardization in progress.
+
+CISSP candidates should know:
+
+- The QUANTUM THREAT exists (eventually) and motivates current PQC standardization
+- Symmetric algorithms (AES-256) remain reasonably safe (use larger keys)
+- "Harvest now, decrypt later" — adversaries are reportedly archiving encrypted traffic NOW to decrypt when quantum capability arrives. Forward-secret data (long-lived secrets) is at most risk.
+- Hybrid deployments combine classical + PQC algorithms during the transition
+
+## 3.3 Hardware Security Modules (HSMs)
+
+Dedicated hardware devices for cryptographic operations and key storage. Keys are generated, stored, and used INSIDE the HSM and never leave in plaintext.
+
+Common forms:
+
+- Network HSM (rack-mounted, accessed via API)
+- USB / smart card HSM (personal use, code signing)
+- Cloud HSM (AWS CloudHSM, Azure Dedicated HSM, GCP Cloud HSM)
+- Embedded HSM (TPM in laptops, secure enclaves in mobile)
+
+Why HSMs:
+
+- Tamper resistance (physical + logical)
+- Hardware-accelerated crypto (faster than software)
+- Certified random number generation
+- Compliance — FIPS 140-3 validation required for many regulated environments
+
+## 3.4 FIPS 140-3
+
+Federal Information Processing Standard for cryptographic modules. CISSP frequently tests FIPS 140 awareness.
+
+- **FIPS 140-2** — old standard (2001). Many existing products still validated under 140-2 but new validations transitioning to 140-3.
+- **FIPS 140-3** — current standard (2019). Aligns with ISO/IEC 19790.
+- Four security levels:
+  - **Level 1** — basic security requirements; no physical security mechanisms beyond standard production-grade components
+  - **Level 2** — adds tamper-evident requirements; role-based authentication
+  - **Level 3** — adds tamper-resistance (physical detection + response); identity-based authentication
+  - **Level 4** — highest; tamper-detection envelope around the module; key zeroization on tamper detection
+
+For US federal sale, FIPS 140-3 Level 3 validation is increasingly the bar for crypto modules.
+
+## 3.5 Key escrow vs key recovery
+
+CISSP exam frequently asks about these often-confused concepts:
+
+- **Key escrow** — a TRUSTED THIRD PARTY holds a copy of the private key (or component) so it can be recovered later. Controversial: gives the third party (often government) the ability to decrypt. The 1990s Clipper Chip proposal is the famous example.
+- **Key recovery** — the broader category. The organization itself maintains the ability to recover keys (backup, M-of-N split, recovery agents). Doesn't require external escrow.
+
+A balanced policy: keys for ENCRYPTED data must be recoverable (or you lose the data); keys for DIGITAL SIGNATURES should NOT be (recoverability undermines non-repudiation — if anyone other than the signer could sign, the signature isn't proof the signer signed it).
+
+## 3.6 M-of-N split knowledge (Shamir's Secret Sharing)
+
+A key is split into N shares such that any M shares can reconstruct it (M ≤ N), but fewer than M shares reveal NOTHING about the key.
+
+Use cases:
+
+- Root CA private key — split among 5 trustees, any 3 needed to sign (5-of-3? formally written N=5, M=3 or "3-of-5")
+- Backup encryption keys — split across geographically separated facilities
+- Crypto-currency wallet recovery — multi-party signing
+
+Operational: key ceremonies for split-knowledge operations are formal events with logged attendance, video recording, and verified destruction of intermediate materials.
+
+## 3.7 Key lifecycle
+
+Like data, keys have a lifecycle:
+
+1. **Generation** — using a certified RNG, ideally inside an HSM
+2. **Distribution** — secure delivery to entities that need the key (out-of-band, key wrapping, key agreement protocols)
+3. **Storage** — in an HSM, KMS, or other protected vault. Encryption of the key with a higher-level key (key encryption key, KEK)
+4. **Use** — within scope and authorized operations
+5. **Rotation** — periodic replacement to limit blast radius if compromised
+6. **Backup** — for keys that protect data (without backup, lose key = lose data)
+7. **Revocation/destruction** — when the key is no longer needed or compromised
+
+## 3.8 Key Management Systems (KMS)
+
+Centralized services for the above lifecycle:
+
+- AWS KMS, GCP Cloud KMS, Azure Key Vault — cloud-native
+- HashiCorp Vault — open source, multi-cloud
+- Thales CipherTrust, Entrust nShield — enterprise
+- Smartcards / YubiHSM — personal / small-scale
+
+KMS APIs let applications request "encrypt this data" or "sign this digest" without ever handling the key directly. The key stays inside the KMS / HSM. This is the modern best practice for application crypto.`,
+      examTip: `ECC: 256-bit ECC ≈ 3072-bit RSA in security. Preferred for mobile/IoT. PQC: CRYSTALS-Kyber for KEM (FIPS 203), CRYSTALS-Dilithium for signatures (FIPS 204). FIPS 140-3: 4 levels, Level 3 is the common bar for federal crypto modules. Key escrow ≠ key recovery: escrow involves a third party, recovery is internal.`,
+      importantNote: `For digital SIGNATURE keys, key recovery should NOT exist — non-repudiation depends on only the signer having the private key. For ENCRYPTION keys, recovery IS needed or you lose access to encrypted data when keys are unavailable.`,
+    },
+  ],
+  keyTakeaways: [
+    'Kerberos 5-step: AS_REQ → AS_REP (TGT) → TGS_REQ → TGS_REP (ST) → AP_REQ. KDC = AS + TGS. Password never traverses network. Single point of failure.',
+    'X.509 v3: Subject Alternative Name (SAN) is the modern field for TLS hostnames (CN is ignored). CRL = list; OCSP = real-time; OCSP Stapling = pre-fetched in handshake',
+    'ECC gives RSA-equivalent security with much smaller keys (256-bit ECC ≈ 3072-bit RSA). Ed25519 is the modern preferred curve.',
+    'Post-quantum: CRYSTALS-Kyber (FIPS 203 KEM) and CRYSTALS-Dilithium (FIPS 204 signatures) standardized. AES-256 stays quantum-safe.',
+    'FIPS 140-3: 4 security levels; Level 3 is the typical bar for federal cryptographic modules',
+    'Key escrow = third party holds a copy. Key recovery = internal capability. For signing keys, recovery is INAPPROPRIATE (breaks non-repudiation).',
+    'M-of-N split knowledge (Shamir secret sharing) protects high-value keys via threshold cryptography',
+  ],
+},
+
+cissp_evaluation: {
+  topicId: 'cissp_evaluation',
+  title: `Evaluation Criteria & Assurance Frameworks`,
+  domainWeight: '13%',
+  overview: `CISSP Domain 3 tests understanding of how security products and systems are formally EVALUATED for trustworthiness — different from auditing an organization. This topic covers Common Criteria (the international standard), legacy frameworks (TCSEC Orange Book, ITSEC), FIPS 140-3 for cryptographic modules, and the concepts of Protection Profiles, Security Targets, and Evaluation Assurance Levels (EALs). These are recognition-level CISSP topics that appear regularly on the exam.`,
+  sections: [
+    {
+      id: 'common-criteria',
+      title: `1. Common Criteria (ISO/IEC 15408)`,
+      content: `Common Criteria (CC) is the international standard for evaluating security PRODUCTS — operating systems, firewalls, smart cards, network devices, databases. It replaced the regional standards (TCSEC, ITSEC, CTCPEC) in 1999. It is jointly maintained by participants in the Common Criteria Recognition Arrangement (CCRA).
+
+## 1.1 Core concepts
+
+- **Target of Evaluation (TOE)** — the product being evaluated
+- **Security Target (ST)** — document the VENDOR writes describing the TOE's security claims, the environment it operates in, and the security functions it implements
+- **Protection Profile (PP)** — TEMPLATE security requirements for a category of products (e.g., a PP for firewalls, a PP for network devices, a PP for smart cards). Often written by user communities (governments, industry groups). Vendors can claim conformance to a PP.
+- **Evaluation Assurance Level (EAL)** — graded rigor of evaluation (EAL1 lowest, EAL7 highest)
+- **Common Criteria Recognition Arrangement (CCRA)** — mutual recognition of evaluations among participating countries; certifications issued in one country are recognized in others up to EAL2 (or EAL4 for some technology categories under a Common Criteria Recognition Arrangement profile)
+
+## 1.2 Evaluation Assurance Levels
+
+EALs grade EVALUATION RIGOR, NOT product security. A product with high EAL was evaluated rigorously; it doesn't mean its security FUNCTIONS are inherently better than a product with low EAL.
+
+| EAL | Description | Typical Use |
+|---|---|---|
+| **EAL 1** | Functionally tested | Lowest rigor; sufficient where security is not the primary requirement |
+| **EAL 2** | Structurally tested | Most COTS products with security claims |
+| **EAL 3** | Methodically tested and checked | Adds developer evidence and testing |
+| **EAL 4** | Methodically designed, tested, and reviewed | The HIGHEST level CCRA recognizes between all member states; common for commercial security products |
+| **EAL 5** | Semi-formally designed and tested | Specialty products; requires national scheme |
+| **EAL 6** | Semi-formally verified design and tested | High-risk environments (military, government) |
+| **EAL 7** | Formally verified design and tested | Highest; mathematically proven security model; extremely costly and rare |
+
+CISSP exam pattern: "A product evaluated at EAL 4 means..." → its security functions were methodically designed, tested, and reviewed at that level of rigor. NOT that EAL4 = "secure."
+
+## 1.3 The evaluation process
+
+1. **Vendor** writes the Security Target (ST), describing the TOE's claims
+2. **Lab (Common Criteria Testing Laboratory)** evaluates the TOE against the ST per the methodology defined for the claimed EAL
+3. **Certification body** (national scheme, e.g., NIAP in the US, BSI in Germany) reviews the lab's work
+4. **Certificate** issued, listed in the CC Portal
+
+The evaluation produces an Evaluation Technical Report (ETR) and the public Certification Report.
+
+## 1.4 Protection Profiles in practice
+
+PPs constrain "what does it mean for this category of product to be secure?" — written by communities so that products can compete on conformance to a common bar rather than each vendor writing their own ST from scratch.
+
+Examples of well-known PPs:
+
+- **NIAP-approved PPs** — US government use; very specific PPs per product category (firewall, mobile device fundamentals, IPS, OS)
+- **Common Criteria PPs** for smart cards, cryptographic modules, biometric verification, etc.
+
+A vendor product can claim "EAL 2 conformance to the Network Device PP" — this is more useful than just "EAL 2" because it specifies what the bar is.
+
+## 1.5 Strengths and limitations
+
+Strengths:
+- International standard, broadly recognized
+- Formal documentation requirements force vendors to specify their security claims clearly
+- Multiple countries' labs can evaluate
+
+Limitations:
+- EXPENSIVE — typically $1-3M USD for an EAL 4+ evaluation
+- SLOW — evaluations take 6-24 months, often longer than the product's release cycle
+- Tests CLAIMED security functions, not all functions — vendor controls scope via the ST
+- Evaluation is point-in-time — a patched/updated product is no longer the evaluated TOE`,
+      examTip: `EAL grades evaluation RIGOR, not security itself. EAL 4 is the highest mutually recognized level under the CCRA. PP = template requirements; ST = vendor's specific claims; TOE = product being evaluated.`,
+    },
+    {
+      id: 'legacy-frameworks',
+      title: `2. Legacy Frameworks: TCSEC (Orange Book) and ITSEC`,
+      content: `## 2.1 TCSEC — Trusted Computer System Evaluation Criteria
+
+The "Orange Book" — published by the US Department of Defense in 1985, formally retired and superseded by Common Criteria in 2000. Still appears on the CISSP exam as a recognition topic.
+
+Four divisions, each subdivided:
+
+| Division | Subdivision | Description |
+|---|---|---|
+| **D** | (Single class) | Minimal protection (failed evaluation) |
+| **C** | C1 | Discretionary protection |
+| | C2 | Controlled access protection |
+| **B** | B1 | Labeled security protection |
+| | B2 | Structured protection |
+| | B3 | Security domains |
+| **A** | A1 | Verified design |
+| | Beyond A1 | (Theoretical) |
+
+Key features by class:
+
+- **C1** — early Unix-style DAC with separation of users from data
+- **C2** — adds individual accountability, audit trails. Windows NT 3.5/4 was evaluated C2.
+- **B1** — adds Mandatory Access Control (MAC) via labels. Bell-LaPadula model implementation.
+- **B2** — formal security model, covert channel analysis
+- **B3** — minimal TCB, security administrator role
+- **A1** — mathematical proof of security design
+
+CISSP exam pattern: "Which TCSEC class first introduces mandatory access controls?" → B1.
+
+## 2.2 ITSEC — Information Technology Security Evaluation Criteria
+
+European equivalent of TCSEC, published in 1991. Separated FUNCTIONALITY from ASSURANCE:
+
+- **Functionality classes (F-C1 through F-B3)** — analogous to TCSEC classes
+- **Assurance levels (E0–E6)** — graded rigor independent of functionality
+
+E0 = inadequate, E6 = highest formal verification.
+
+This separation was an innovation: a product could have rich functionality but low assurance (or vice versa). Common Criteria continued this idea via separate Security Target (functionality) and EAL (assurance).
+
+ITSEC was used in Europe; Canada had CTCPEC (Canadian Trusted Computer Product Evaluation Criteria). All converged into Common Criteria.
+
+## 2.3 Why TCSEC/ITSEC still appear on the CISSP exam
+
+These frameworks are HISTORICAL, but:
+
+- Many existing systems (especially government, military) still reference them
+- The concepts they introduced (mandatory access controls, formal verification levels) live on in Common Criteria
+- Exam questions sometimes ask "what was the predecessor to Common Criteria?" or test recognition of "Orange Book" terminology
+
+## 2.4 Rainbow Series
+
+The TCSEC was the "Orange Book"; companion publications had different colored covers:
+
+- **Red Book** — Trusted Network Interpretation (network applications of TCSEC)
+- **Yellow Book** — Guidance for applying TCSEC in specific environments
+- **Green Book** — Password Management Guideline
+- (Many others)
+
+Collectively called the "Rainbow Series." Recognition-level for the exam.`,
+      examTip: `Memorize key TCSEC milestones: C1 = early DAC, C2 = audit trails (Windows NT), B1 = first to introduce Mandatory Access Control (labels). Common Criteria replaced TCSEC, ITSEC, and CTCPEC in 1999.`,
+    },
+    {
+      id: 'fips-140-and-others',
+      title: `3. FIPS 140-3 and Other Crypto Module Validations`,
+      content: `## 3.1 FIPS 140 series
+
+Federal Information Processing Standard for CRYPTOGRAPHIC MODULES. Distinct from Common Criteria (which evaluates whole products) — FIPS 140 specifically evaluates the cryptographic implementation.
+
+Required for cryptographic modules used in:
+- US federal systems
+- Many regulated sectors (healthcare, financial)
+- Often required in vendor contracts
+
+## 3.2 FIPS 140-3 vs 140-2
+
+- **FIPS 140-2** (2001) — long-standing standard. Many existing products still valid. New validations transitioned to 140-3 starting 2020.
+- **FIPS 140-3** (2019) — current standard. Aligned with ISO/IEC 19790 (international). NIST is sunsetting 140-2 validations.
+
+## 3.3 Four security levels
+
+| Level | Requirements |
+|---|---|
+| **Level 1** | Basic; no physical security beyond production-grade components. Algorithms must be FIPS-approved. |
+| **Level 2** | Adds tamper-evident requirements (seals, coatings) and role-based authentication. |
+| **Level 3** | Adds tamper RESISTANCE (physical detection + response — module zeroizes keys on detected tamper). Identity-based authentication. Separation of cryptographic boundaries. |
+| **Level 4** | Highest. Tamper detection covers all sides; module zeroizes on any envelope breach. Withstands environmental attacks (voltage, temperature). |
+
+Cloud HSMs and hardware HSMs typically validate at Level 3. Smart cards at Level 2 or 3. Common Level for general-purpose crypto in software: Level 1 (validates only the algorithms, not physical security).
+
+## 3.4 FIPS-approved algorithms
+
+A FIPS 140 validated module can only use APPROVED algorithms:
+
+- AES (all key sizes)
+- SHA-2, SHA-3
+- RSA (≥2048 bits)
+- ECDSA with NIST curves
+- HMAC
+- DRBG (Deterministic Random Bit Generator) — specific approved generators
+
+NOT approved (or only legacy use):
+
+- DES, 3DES (deprecated)
+- MD5
+- SHA-1 (deprecated for new signatures)
+- RC4
+
+A FIPS-validated module typically runs in "FIPS mode" that disables non-approved algorithms.
+
+## 3.5 CMVP (Cryptographic Module Validation Program)
+
+The joint NIST/CCCS (Canadian) program that operates FIPS 140 validation. Maintains the public list of validated modules at NIST's CMVP website.
+
+For procurement: many federal contracts require "FIPS 140-3 Level X validated." Check the CMVP list to confirm a product's actual validation (vendors sometimes claim "FIPS compliant" without validation — different).
+
+## 3.6 Other notable evaluations and accreditations
+
+CISSP candidates should recognize:
+
+- **NIAP (National Information Assurance Partnership)** — US CC scheme; lists US-government-acceptable products via the NIAP Product Compliant List
+- **Commercial Solutions for Classified (CSfC)** — NSA program allowing commercial products for classified use IF used in specific configurations layered together
+- **FedRAMP** — for cloud SERVICES (covered in audits topic) rather than products
+- **DoD UC APL** — Department of Defense Unified Capabilities Approved Products List for communications products
+- **SCAP (Security Content Automation Protocol)** — not a product evaluation but a NIST framework for automating security configuration verification
+
+## 3.7 Putting it together — product evaluation vs system accreditation
+
+CISSP distinguishes:
+
+- **Certification** — technical evaluation of a product/system against criteria. Common Criteria evaluates products; FIPS 140 evaluates crypto modules.
+- **Accreditation** — management's formal acceptance of a system for use, including ALL the controls (technical, managerial, operational). The Authorizing Official says "given this evaluated product PLUS our processes PLUS the residual risks, we accept the system for use."
+
+The exam tests this distinction:
+
+- "What does the AO do at the end of certification?" → Accredit (formally accept for use)
+- "Who performs Certification & Accreditation in a federal context?" → C&A roles per NIST RMF (now called Assessment & Authorization, A&A)
+
+Modern terminology under NIST RMF is "Assessment & Authorization" — same idea: assess controls, then formally authorize the system for use.
+
+## 3.8 CISSP exam patterns
+
+Watch for these classic patterns:
+
+- "EAL" and "Common Criteria" → product evaluation framework, replaced TCSEC/ITSEC
+- "FIPS 140" → CRYPTOGRAPHIC MODULE specifically (not whole products)
+- "Orange Book" → TCSEC (legacy DoD framework)
+- "Protection Profile" → template requirements for a CC product category
+- "Security Target" → vendor's specific claims for their TOE
+- "EAL 4" → highest mutually recognized level under CCRA
+- "Mandatory Access Controls first appeared in..." → B1 (TCSEC) or equivalent
+- "Accreditation" vs "Certification" → mgmt acceptance vs technical evaluation`,
+      examTip: `FIPS 140-3 is the CURRENT standard for crypto modules. Four levels; Level 3 typical for HSMs. Common Criteria is for whole products with EALs 1-7. CCRA recognizes up to EAL 4 globally. Accreditation is MANAGEMENT acceptance; Certification is TECHNICAL evaluation.`,
+    },
+  ],
+  keyTakeaways: [
+    'Common Criteria (ISO/IEC 15408): EALs 1-7 grade evaluation rigor (not security itself); CCRA recognizes up to EAL 4 globally',
+    'Target of Evaluation (TOE), Security Target (ST = vendor claims), Protection Profile (PP = template)',
+    'TCSEC ("Orange Book") and ITSEC are LEGACY frameworks replaced by Common Criteria in 1999 — exam still tests recognition',
+    'TCSEC C2 = Windows NT 3.5/4 evaluation; B1 = first class introducing Mandatory Access Controls (labels)',
+    'FIPS 140-3 (current; replaces 140-2) for cryptographic MODULES specifically — 4 levels, Level 3 typical for HSMs',
+    'FIPS approves AES, SHA-2/3, RSA-2048+, ECDSA, HMAC. DES, MD5, SHA-1, RC4 are NOT approved.',
+    'Certification = technical evaluation (CC, FIPS). Accreditation = management formal acceptance of system for use.',
+  ],
+},
+
+cissp_testing_taxonomy: {
+  topicId: 'cissp_testing_taxonomy',
+  title: `Testing Tool Taxonomy & Assessment Strategies`,
+  domainWeight: '12%',
+  overview: `Domain 6 (Security Assessment and Testing) is the most underrepresented domain in the existing platform content (only 111 flashcards vs 330+ for Domain 7). The CBK requires precise distinctions between SAST/DAST/IAST/SCA and other testing approaches (misuse case testing, synthetic transactions, interface testing, fuzz testing), each with specific use cases, strengths, and limitations. This topic gives CISSP candidates the precise terminology and decision criteria the exam tests.`,
+  sections: [
+    {
+      id: 'sast-dast-iast-sca',
+      title: `1. SAST, DAST, IAST, SCA — The Four Pillars of Code Testing`,
+      content: `## 1.1 SAST (Static Application Security Testing)
+
+Analyzes SOURCE CODE (or compiled bytecode) WITHOUT executing it. Pattern-matching, taint analysis, control-flow analysis.
+
+What SAST finds:
+
+- Insecure API usage (SQL string concatenation, weak crypto, deprecated functions)
+- Missing input validation
+- Hardcoded secrets
+- Buffer overflow patterns
+- Use of forbidden libraries
+
+When to run: pre-commit hook, pull request check, CI build. The earlier the better.
+
+Strengths:
+- Full code coverage — sees every path
+- Pinpoints exact line
+- Cheap once configured
+- Language-aware
+
+Weaknesses:
+- High FALSE POSITIVE rate (without runtime context, the analyzer can't always tell if a pattern is exploited)
+- Misses logic flaws and runtime-only issues (race conditions, environment-dependent behavior)
+- Requires source code access
+
+Tools: SonarQube, Checkmarx CxSAST, Veracode SAST, Semgrep (open source), CodeQL (GitHub Advanced Security), Fortify.
+
+## 1.2 DAST (Dynamic Application Security Testing)
+
+Tests a RUNNING application from the outside, like an external attacker. Crafted HTTP requests, observed responses.
+
+What DAST finds:
+
+- Runtime configuration issues (insecure headers, debug pages exposed)
+- Authentication and session flaws
+- SQL injection that actually executes (vs SAST finding the pattern)
+- XSS that actually fires
+- Server-side misconfigurations
+
+When to run: CI test stage against staging deployment; periodic against production.
+
+Strengths:
+- Fewer false positives than SAST (verified runtime behavior)
+- Catches runtime-only issues
+- No source code needed
+
+Weaknesses:
+- Only finds bugs in code paths the scanner reaches
+- Requires running deployment with appropriate test data
+- Slow (HTTP-by-HTTP)
+- Can damage production data if pointed at production
+
+Tools: OWASP ZAP (free), Burp Suite Pro, Acunetix, Veracode DAST, Qualys WAS, Tenable WAS.
+
+## 1.3 IAST (Interactive Application Security Testing)
+
+Combines SAST + DAST via runtime instrumentation. An agent runs INSIDE the application and observes data flow during dynamic testing.
+
+What IAST finds: everything DAST finds, but with code-level pinpointing like SAST.
+
+When to run: CI test stage with agent attached; sometimes in QA / staging continuously.
+
+Strengths:
+- Very low false positive rate (verified runtime behavior + code path)
+- Pinpoints exact code line
+- Catches flaws other techniques miss (visibility into internal data flow)
+
+Weaknesses:
+- Requires agent installation
+- Performance overhead (typically 10-30%)
+- Language-specific (Java/.NET well supported; less mature for others)
+- More expensive licensing
+
+Tools: Contrast Security, Checkmarx CxIAST, Veracode IAST, Hdiv (open source).
+
+## 1.4 SCA (Software Composition Analysis)
+
+Specifically scans DEPENDENCIES for known vulnerabilities. Reads manifests (package.json, requirements.txt, pom.xml, go.mod, etc.) and matches against vulnerability databases (NVD, GitHub Advisory, OSV).
+
+What SCA finds:
+
+- Direct dependencies with known CVEs
+- Transitive dependencies with known CVEs
+- License compliance issues
+- Vulnerable container base images
+
+When to run: pre-commit, PR check, CI build, continuous monitoring (new CVEs disclosed daily).
+
+Strengths:
+- Highly accurate (CVEs are concrete)
+- Fast
+- Provides upgrade guidance
+- Critical because dependency CVEs FAR outnumber first-party code bugs in modern apps
+
+Weaknesses:
+- Only finds KNOWN vulnerabilities
+- Some false positives (CVE applies to a code path your app doesn't use)
+- Quality varies by vulnerability database
+
+Tools: Snyk, Dependabot, Renovate, OWASP Dependency-Check, npm audit, pip-audit, GitHub Advanced Security.
+
+## 1.5 Decision matrix
+
+| Need to find | Use |
+|---|---|
+| Insecure code patterns in your own code | SAST |
+| Runtime exploitability of your own code | DAST or IAST |
+| Pinpoint exact code line of runtime bug | IAST (or SAST + DAST correlation) |
+| Vulnerable third-party libraries | SCA |
+| Container image vulnerabilities | Container scan (Trivy, Grype) — often called "SCA for containers" |
+| IaC misconfigurations | IaC scanning (Checkov, tfsec, kube-linter) |
+| Secrets accidentally committed | Secrets scanning (gitleaks, TruffleHog) |
+
+A mature program uses ALL of these in CI/CD.`,
+      examTip: `Decode each tool by what it ANALYZES: SAST = source code (no execution), DAST = running app from outside, IAST = running app with internal agent, SCA = dependencies. CISSP exam loves "which tool would you use to find X?" — pick by what's being tested.`,
+    },
+    {
+      id: 'other-test-techniques',
+      title: `2. Misuse Case, Synthetic Transaction, Interface Testing, Fuzzing`,
+      content: `## 2.1 Misuse case testing
+
+A USE CASE describes how a user achieves a goal with the system. A MISUSE CASE describes how a MALICIOUS actor achieves a malicious goal. Misuse cases drive negative-path testing.
+
+Process:
+
+1. Identify use cases (normal user goals)
+2. For each use case, identify misuse cases (how could an attacker subvert this?)
+3. Identify "mitigation use cases" — what the system does to prevent or detect the misuse
+4. Write test cases that exercise the misuse cases to confirm mitigations work
+
+Example:
+
+- USE CASE: Customer transfers funds between their accounts
+- MISUSE CASES: Attacker transfers from someone else's account; Attacker transfers more than balance; Attacker reuses a request (replay); Attacker manipulates amount in transit
+- MITIGATIONS: AuthN + AuthZ, balance check, nonce + signature, TLS + integrity
+- TESTS: attempt each misuse case, verify mitigation triggers
+
+Misuse case testing is a STRUCTURED way to ensure NEGATIVE TESTING happens (positive tests confirm "it works"; misuse case tests confirm "it doesn't break when attacked").
+
+## 2.2 Synthetic transactions
+
+Automated, simulated user transactions executed against a live system to verify it's working correctly. Often used for monitoring (does the login still work? can I add to cart and check out?).
+
+Synthetic transactions for security:
+
+- Verify access controls (a non-privileged synthetic user attempts privileged actions; should be denied)
+- Verify session expiration (synthetic session waits, then attempts an action; should be re-authenticated)
+- Verify rate limiting (synthetic user generates high rate; should be throttled)
+- Verify alerting (synthetic attack triggers, verify SOC receives the alert)
+
+Catches REGRESSIONS — a recent change broke an existing control.
+
+## 2.3 Interface testing
+
+Tests the interfaces between components — APIs, message queues, file imports/exports, third-party integrations.
+
+Why interfaces are special:
+
+- Most security bugs occur at TRUST BOUNDARIES (where components communicate)
+- Each component may have been individually tested but their INTERACTION may not have been
+- Versioning mismatches at interfaces are common
+
+Interface tests:
+
+- Each API endpoint tested with valid + invalid + malicious inputs
+- Schema validation (does the API accept malformed payloads?)
+- Authentication at the interface (can unauthenticated callers reach internal interfaces?)
+- Rate limiting (do interface-level rate limits work?)
+- Error handling (does an error from one component crash the other?)
+
+## 2.4 Fuzz testing (fuzzing)
+
+Sends RANDOM or SEMI-RANDOM inputs to find crashes, hangs, or unexpected behavior. Especially valuable for parsers, file format handlers, protocol implementations, and any code that processes untrusted input.
+
+Two main variants:
+
+- **Dumb fuzzing** — purely random inputs. Easy to set up, useful for catching obvious crashes.
+- **Smart fuzzing (coverage-guided)** — modern approach. Fuzzer instruments the target, observes which code paths each input exercises, and mutates inputs to explore new paths. Examples: AFL++, libFuzzer, jazzer.
+
+Modern compilers support SANITIZERS (AddressSanitizer / UBSan / MemorySanitizer / ThreadSanitizer) that DETECT BUGS at runtime during fuzzing — even bugs that don't crash. Without sanitizers, fuzzers only find bugs that cause observable failure.
+
+Google's OSS-Fuzz runs continuous fuzzing for major open-source projects (Linux kernel, libssh, ImageMagick, etc.) — has found tens of thousands of bugs.
+
+Use cases:
+
+- New code that handles untrusted input (file parsers, protocol handlers, deserialization)
+- Before releasing a library that others will use with arbitrary inputs
+- Periodically for established codebases that have changed
+
+## 2.5 Negative testing
+
+Broader category: testing that the system handles INVALID inputs and ABNORMAL conditions correctly.
+
+Examples:
+
+- Null inputs, empty strings, very long strings
+- Unicode, special characters, encoded inputs
+- Boundary values (0, MAX_INT, MIN_INT, negative numbers where unexpected)
+- Out-of-order operations (POST before login, finish before start)
+- Concurrent requests producing race conditions
+- Network failures mid-transaction
+
+Often overlooked because developers focus on positive paths. Misuse case testing is a structured form of negative testing.
+
+## 2.6 Test coverage analysis
+
+Tools (JaCoCo, Istanbul, coverage.py, gcov) report what fraction of code was exercised by tests. Coverage flavors:
+
+- **Statement coverage** — % of statements executed
+- **Branch coverage** — % of branch decisions tested (both true and false sides)
+- **Path coverage** — % of unique execution paths (combinatorially explosive; usually approximated)
+
+Higher coverage ≠ better security. 100% coverage can still miss bugs if the tests don't EXERCISE the buggy condition. Use coverage as a FLOOR (anything below 80% is suspicious) but don't claim "100% covered" means "100% secure."
+
+## 2.7 Mutation testing
+
+Tests the TESTS by intentionally inserting small bugs ("mutants") into the code and checking whether tests catch them. If a mutant survives (tests still pass), the tests are incomplete.
+
+Tools: Stryker (JS), Pitest (Java), mutmut (Python). Less commonly tested on the CISSP exam but a sign of mature testing practice.
+
+## 2.8 Penetration testing categories
+
+Beyond automated scanning, humans actively attempt to compromise the application:
+
+- **Black box** — tester has no inside info (simulates external attacker)
+- **Gray box** — tester has limited info (credentials, basic architecture)
+- **White box (crystal box)** — full source + design + credentials
+- **Internal** — tests from inside the network (insider threat simulation)
+- **External** — tests from the internet (external threat simulation)
+
+Methodologies (recognition for exam): PTES (Penetration Testing Execution Standard), OSSTMM (Open Source Security Testing Methodology Manual), OWASP Testing Guide.
+
+Engagement structure:
+
+1. Scoping + Rules of Engagement (ROE)
+2. Reconnaissance + discovery
+3. Vulnerability identification
+4. Exploitation (within ROE bounds)
+5. Post-exploitation (lateral movement, privilege escalation)
+6. Reporting
+7. Remediation verification
+
+Rules of Engagement document: scope, exclusions, allowed techniques, escalation path for in-scope critical findings, communications channel, emergency contact, evidence handling. ALWAYS in writing.`,
+      examTip: `Memorize the four pillars: SAST (source), DAST (running app from outside), IAST (running app with internal agent), SCA (dependencies). Misuse case testing is STRUCTURED NEGATIVE TESTING — defines attacker goals as test cases.`,
+    },
+    {
+      id: 'assessment-strategy',
+      title: `3. Assessment Strategy, Vulnerability Management, and Audit`,
+      content: `## 3.1 Vulnerability scan vs penetration test
+
+CISSP exam classic distinction:
+
+- **Vulnerability assessment / scan** — AUTOMATED identification of known vulnerabilities. Output: a list of issues with severity and remediation. Examples: Nessus, Qualys, Rapid7 InsightVM, OpenVAS.
+- **Penetration test** — HUMAN tester actively attempts to compromise systems, chains vulnerabilities, demonstrates real impact, abuses business logic. Output: a narrative report of attack chains executed, with evidence and recommendations.
+
+Vuln scan: broad + automated + frequent. Pen test: deep + manual + periodic.
+
+Both have value; a mature program uses both. Common pattern: continuous vulnerability scanning + annual external pen test + ongoing internal red team.
+
+## 3.2 Vulnerability management lifecycle
+
+1. **Discovery** — scan systems to identify vulnerabilities
+2. **Prioritization** — rank by severity (CVSS), exploitability, asset criticality, exposure
+3. **Remediation** — patch, configure, compensate
+4. **Verification** — re-scan to confirm fix
+5. **Reporting** — track to closure, metrics
+
+CVSS (Common Vulnerability Scoring System):
+
+- **Base** score (0-10) — intrinsic characteristics (attack vector, complexity, privileges required, user interaction, scope, CIA impact)
+- **Temporal** score — exploit code maturity, remediation availability
+- **Environmental** score — modified by deployment-specific factors
+
+Common organizations use Base + Temporal for prioritization, then layer their own context (Internet-facing? Holds PII? Recent threat intel of active exploitation?) for true priority.
+
+EPSS (Exploit Prediction Scoring System) supplements CVSS — predicts likelihood of exploitation in next 30 days based on observed exploit activity. Often used in combination with CVSS for triage.
+
+## 3.3 Service Level Objectives (SLOs) for vulnerability remediation
+
+Typical mature program:
+
+| Severity | Patch SLA |
+|---|---|
+| Critical (CVSS 9-10, known active exploitation) | 7 days |
+| High (CVSS 7-8.9) | 30 days |
+| Medium (CVSS 4-6.9) | 90 days |
+| Low (CVSS 0.1-3.9) | 180 days or risk-accept |
+
+SLOs vary by exposure (Internet-facing systems patched faster) and asset criticality.
+
+## 3.4 Red Team / Blue Team / Purple Team
+
+- **Red Team** — offensive; emulates real adversary tactics (TTPs from MITRE ATT&CK), attempts to achieve specific objectives without detection
+- **Blue Team** — defensive; detects, responds, hardens; the SOC + incident response + threat hunting
+- **Purple Team** — collaborative red + blue; red explains what they did, blue verifies they could have detected it, both improve together
+
+Red team exercises typically:
+
+- Goal-oriented (e.g., "exfiltrate the customer database without being caught")
+- Longer than pen tests (weeks to months)
+- More realistic (full social engineering, physical access, custom tools)
+- Output: AAR (after-action report) covering attack chain + blue team performance + recommendations
+
+Purple team is becoming the dominant model — adversarial fidelity of red team + immediate learning of joint analysis.
+
+## 3.5 Audit logs and log review
+
+Domain 6 includes review of security PROCESS DATA — logs, audit trails, monitoring outputs.
+
+Categories of process data:
+
+- Account access / authentication logs
+- Authorization logs
+- Configuration change logs
+- File access logs
+- Network connection logs
+- Application-specific logs (transactions, errors, business events)
+
+Log review as detective control:
+
+- Real-time SIEM correlation alerts on suspicious patterns
+- Periodic human review of high-risk activities (privileged actions, sensitive data access)
+- Compliance review for audit trail completeness
+- Forensic review during investigations
+
+CISSP expects awareness that LOGS ALONE aren't enough — logs must be:
+
+- **Centralized** (otherwise an attacker who compromises a host can delete local logs)
+- **Tamper-resistant** (write-once, cryptographically chained, sent to immutable storage)
+- **Synchronized** (NTP for correlation across systems)
+- **Retained** (per regulatory and forensic needs — often 1 year minimum for security logs)
+- **Reviewed** (logs not reviewed = no detective value)
+
+## 3.6 Audit types
+
+Within Domain 6, audit refers to:
+
+- **Internal audit** — org's own audit function reporting to audit committee
+- **External audit** — third party, independent
+- **Compliance audit** — verify conformance to specific regulation/framework (PCI-DSS, HIPAA, SOC 2)
+- **Security audit** — verify security controls operating effectively
+- **Operational audit** — efficiency + effectiveness of processes
+
+CISSP exam pattern: "Who should conduct an audit of the security operations team?" → not someone within the team (independence); ideally internal audit (reporting to audit committee, independent of operational management) or external auditor.
+
+## 3.7 Assessment strategy = combining the techniques
+
+A mature security testing program combines:
+
+| Frequency | Techniques |
+|---|---|
+| Per commit | SAST, secrets scan, SCA on changed deps |
+| Per PR | Full SAST, full SCA, IaC scan, container image scan |
+| Per CI build | DAST or IAST against staging, fuzz tests for parsers |
+| Continuous | Vulnerability scanning of production, log monitoring, SIEM correlation |
+| Quarterly | Internal penetration test or red team exercise |
+| Annually | External penetration test, audit, possibly C&A re-authorization |
+| Always-on | Bug bounty program, vulnerability disclosure program |
+
+No single technique catches everything. Coverage gaps are the security manager's responsibility to identify and close.`,
+      examTip: `Vulnerability scan = AUTOMATED + broad + frequent. Penetration test = HUMAN + deep + periodic. The exam will give scenarios; pick the right tool for the situation. CVSS scores 0-10; patch SLOs typically 7 days (critical), 30 (high), 90 (medium).`,
+    },
+  ],
+  keyTakeaways: [
+    'SAST = source code without executing. DAST = running app from outside. IAST = running app with internal agent. SCA = dependencies.',
+    'IAST has the best false-positive rate but requires agent installation; SCA is critical because dependency CVEs vastly outnumber first-party bugs',
+    'Misuse case testing = structured negative testing; misuse cases define attacker goals as test cases',
+    'Fuzz testing finds crashes via random or semi-random inputs; coverage-guided fuzzing (AFL++, libFuzzer) is the modern standard',
+    'Vulnerability scan ≠ Penetration test. Scan = automated + broad. Pen test = human + deep + chains vulnerabilities + demonstrates impact.',
+    'CVSS: Base + Temporal + Environmental. Use CVSS + EPSS + asset criticality for true triage priority.',
+    'Red team = offensive emulation. Blue team = defensive. Purple team = collaborative red+blue. Purple is the modern dominant model.',
+  ],
+},
+
+cissp_owasp_patterns: {
+  topicId: 'cissp_owasp_patterns',
+  title: `OWASP Top 10 Patterns & Secure Coding Defenses`,
+  domainWeight: '10%',
+  overview: `Domain 8 (Software Development Security) expects familiarity with the OWASP Top 10 — the most widely referenced taxonomy of web application risks. CISSP candidates must know the categories, give concrete examples for each, and identify the appropriate defense. This topic walks through the OWASP Top 10 (2021 release; 2024 in progress) with attack patterns and prevention controls. Each item maps to common exam scenarios.`,
+  sections: [
+    {
+      id: 'owasp-a01-a04',
+      title: `1. OWASP Top 10 — A01 through A04`,
+      content: `## A01:2021 — Broken Access Control
+
+The #1 risk in the 2021 update (moved up from #5 in 2017). Authenticated users gaining access they shouldn't have.
+
+Common patterns:
+
+- **Vertical privilege escalation** — regular user accesses admin functionality. Example: admin endpoint exists but no role check; user discovers URL.
+- **Horizontal privilege escalation** — user A accesses user B's data. Often via direct object reference (Insecure Direct Object Reference, IDOR). Example: \`GET /api/users/42/profile\` works, attacker tries \`/users/43/profile\` and gets B's profile.
+- **Force browsing** — accessing URLs that aren't linked in the UI but aren't authorization-checked
+- **JWT token manipulation** — changing claims (e.g., role) and the server doesn't validate
+- **CORS too permissive** — \`Access-Control-Allow-Origin: *\` on authenticated endpoints allows cross-site requests
+- **Missing function-level access control**
+
+Defenses:
+
+- Deny by default
+- Server-side authorization on EVERY request that accesses or modifies protected resources
+- Authorization checks at both vertical (role) AND object (ownership) level
+- Don't rely on UI hiding to enforce permissions
+- Centralized access-control logic (don't sprinkle ad-hoc checks)
+- Rate limit failed auth attempts (defends credential stuffing)
+
+CISSP-style exam: "An API authenticates a user but doesn't verify that the requested object belongs to the user. What OWASP risk is this?" → Broken Access Control (specifically IDOR).
+
+## A02:2021 — Cryptographic Failures
+
+Was "Sensitive Data Exposure" in 2017; rename emphasizes ROOT CAUSE (crypto mistakes) over SYMPTOM (data exposure).
+
+Common patterns:
+
+- Sensitive data transmitted in cleartext (HTTP instead of HTTPS internally)
+- Use of OLD or WEAK algorithms (MD5, SHA-1, DES, 3DES, RC4)
+- Default crypto keys, weak keys, hardcoded keys
+- Use of ECB mode (reveals patterns)
+- No encryption at rest for sensitive data
+- Password storage with weak hashing (or no hashing at all)
+- TLS 1.0/1.1 still enabled
+- Cert validation disabled
+
+Defenses:
+
+- Classify data; require encryption for sensitive categories
+- Modern algorithms: AES-256-GCM, RSA-2048+ or ECC P-256+, SHA-256+ or SHA-3
+- Password storage: Argon2id (preferred), bcrypt, scrypt
+- TLS 1.2 minimum (1.3 preferred); HSTS for browsers
+- Centralized key management (KMS, HSM)
+- Validate certificates; do not disable validation
+
+## A03:2021 — Injection
+
+Was #1 for a long time; moved to #3 in 2021. Includes SQL injection (SQLi), NoSQL injection, OS command injection, LDAP injection, XSS (XSS was its own category before; now classified as a kind of injection).
+
+Common patterns:
+
+- **SQL injection** — \`' OR '1'='1' --\` in a login form; \`'; DROP TABLE users; --\` if mishandled
+- **OS command injection** — application uses user input in shell exec without escaping
+- **LDAP injection** — special characters in user-supplied LDAP filter
+- **XML/XPath injection** — same idea against XML processors
+- **Header injection** — CRLF in user input that becomes HTTP response headers
+- **XSS (Cross-Site Scripting)** — user input rendered in HTML/JavaScript without encoding; attacker runs JS in victim's browser
+
+Defenses:
+
+- **Parameterized queries / prepared statements** for SQL (data ≠ code)
+- ORMs that handle parameterization correctly
+- For OS commands: use language-native APIs (e.g., subprocess with argument array, not shell=True)
+- **Output encoding** for the OUTPUT CONTEXT — HTML, JavaScript, URL, CSS each have different escape rules
+- Modern frameworks (React, Vue, Angular) auto-encode in templates by default; danger when developers explicitly bypass (\`dangerouslySetInnerHTML\`)
+- Content Security Policy (CSP) as XSS defense in depth
+- Input validation as defense in depth (not primary defense)
+
+CISSP exam pattern: "Best defense against SQL injection?" → Parameterized queries. (NOT input validation alone; not WAF alone.)
+
+## A04:2021 — Insecure Design
+
+NEW category in 2021. Addresses design-level flaws that no amount of secure coding can fix. Highlights the importance of THREAT MODELING in the SDLC.
+
+Examples:
+
+- A password reset flow that asks for the user's email then sends a "click here to reset" link without rate-limiting → attacker enumerates emails AND DoSes inboxes
+- A money-transfer flow without dual-control on large amounts
+- A signup flow that doesn't verify the email belongs to the requester → account takeover via typosquatted email
+- An e-commerce site without limits on coupon stacking → fraud
+
+Defenses:
+
+- THREAT MODEL during design (STRIDE, attack trees)
+- Use reference architectures with proven security patterns
+- Secure design principles: least privilege, defense in depth, fail securely, secure defaults
+- Plausibility checks on business flows (e.g., "no user transfers $1M before they ever sent $10")
+- Limit by design (rate limits, daily caps, anomaly detection built in)
+
+A04 is the design-level prevention against the more concrete vulnerabilities tested elsewhere in the Top 10.`,
+      examTip: `Memorize the move-ups in 2021: Broken Access Control (#5 → #1), Cryptographic Failures (was Sensitive Data Exposure, #3 → #2), Injection (#1 → #3 — now includes XSS). Insecure Design (new) emphasizes threat modeling.`,
+    },
+    {
+      id: 'owasp-a05-a08',
+      title: `2. OWASP Top 10 — A05 through A08`,
+      content: `## A05:2021 — Security Misconfiguration
+
+Default credentials, verbose error messages leaking internals, overly permissive CORS, missing security headers, exposed admin/debug endpoints, mismanaged cloud storage permissions.
+
+Common patterns:
+
+- Cloud storage (S3 bucket, GCS, Azure blob) accidentally PUBLIC
+- Default admin credentials never changed
+- Verbose stack traces returned to clients (reveal framework + version)
+- Directory listing enabled on web servers
+- HTTP security headers missing (HSTS, CSP, X-Frame-Options, X-Content-Type-Options)
+- Unnecessary features enabled (sample applications, debug endpoints)
+- Software/components out of date (overlaps with A06)
+- Authentication enabled for the app but admin console exposed without auth
+
+Defenses:
+
+- HARDENING BASELINES (CIS Benchmarks, vendor guides) — apply systematically
+- Automated CONFIG SCANNING (AWS Config, Azure Policy, OpenSCAP)
+- Security headers via reverse proxy / WAF / framework defaults
+- Remove sample / debug / development artifacts before production
+- "Secure defaults" — frameworks should require explicit opt-in for risky features
+- Periodic configuration audits
+- Cloud-native scanning (Prisma Cloud, Wiz, Lacework) for cloud misconfigurations
+
+## A06:2021 — Vulnerable and Outdated Components
+
+Using libraries/frameworks/components with known CVEs. The MOVEit zero-day, Log4Shell (Log4j), Spring4Shell, and many other massive incidents fall under A06.
+
+Common patterns:
+
+- Direct dependency with known CVE
+- TRANSITIVE dependency (your direct dep brings in a vulnerable transitive dep)
+- Outdated framework (e.g., Spring 4.x with known RCE)
+- End-of-life software (PHP 5, Python 2)
+- Embedded components in COTS products
+
+Defenses:
+
+- **SCA tools** (Snyk, Dependabot, Renovate, OWASP Dependency-Check) — continuous scanning
+- **SBOM (Software Bill of Materials)** — inventory of all components; required by EO 14028 for federal software
+- Rapid patching SLAs
+- Component upgrade automation (PR bots that auto-create upgrade PRs)
+- Sunset / replace end-of-life components
+- Vendor patching cadence in third-party risk assessment
+
+CISSP exam pattern: "What is the PRIMARY tool for managing vulnerable third-party dependencies?" → SCA (Software Composition Analysis).
+
+## A07:2021 — Identification and Authentication Failures
+
+Was "Broken Authentication" — renamed to emphasize identification (proving identity) is part of auth.
+
+Common patterns:
+
+- Allowing weak passwords (no complexity, no length minimum)
+- Brute force allowed (no rate limiting on login)
+- Credential stuffing allowed (no detection of attempts using known-leaked credential pairs)
+- Predictable session tokens or password reset tokens
+- Session not invalidated after logout
+- Session not regenerated after authentication (session fixation)
+- Cleartext passwords in storage / logs
+- Insecure password recovery (security questions; SMS as a sole second factor)
+- Lack of MFA for high-risk operations
+
+Defenses:
+
+- Password storage: Argon2id (preferred), bcrypt, scrypt
+- Check candidate passwords against leaked-password databases (Have I Been Pwned API, password commons list)
+- Multi-factor authentication, preferring phishing-resistant (FIDO2/WebAuthn/passkeys)
+- Rate limiting + account lockout (with care to avoid DoS)
+- Strong session token generation (cryptographically random, ≥128 bits of entropy)
+- HttpOnly + Secure + SameSite cookies
+- Regenerate session ID after authentication
+- Idle + absolute session timeouts
+
+## A08:2021 — Software and Data Integrity Failures
+
+NEW in 2021. Addresses CI/CD pipeline integrity, software updates, and untrusted data deserialization. Directly motivated by SolarWinds-style supply chain attacks.
+
+Common patterns:
+
+- Auto-update mechanisms without integrity verification (an attacker who controls the update server can push malicious code)
+- CI/CD pipelines using untrusted dependencies or build tools
+- Insecure deserialization of untrusted data (Java, .NET, Python pickle, Ruby Marshal can execute code on deserialize)
+- Object injection
+- Build pipelines without provenance (no way to verify what code went into the artifact)
+
+Defenses:
+
+- **Code signing** — verify cryptographic signatures on dependencies, updates, packages
+- **Build provenance** — SLSA framework (Supply-chain Levels for Software Artifacts), in-toto, sigstore. Provides graded levels of guarantee about what built the artifact.
+- **Subresource Integrity (SRI)** for browser-loaded scripts — \`<script integrity="sha384-...">\` so a tampered CDN-hosted script fails
+- **Don't deserialize untrusted data** — or use safe serialization formats (JSON, MessagePack) that don't execute code on parse
+- Pinned dependency versions in lockfiles with checksum verification
+- Reproducible builds where feasible
+
+CISSP-style exam pattern: "Which defense addresses the class of attacks exemplified by SolarWinds?" → Code signing + build provenance / SLSA.`,
+      examTip: `A07 (Auth Failures): Argon2id for password hashing, FIDO2/passkeys for phishing-resistant MFA, regenerate session ID after login. A08 (Integrity Failures): code signing + build provenance addresses supply chain attacks; insecure deserialization is the most-tested code-level instance.`,
+      importantNote: `OWASP Top 10 lists are about prevalence + impact, not just severity. A new attack class isn't on the Top 10 until enough orgs are getting bitten. The 2021 version is current; CISSP exam may reference 2017 if the official material hasn't updated.`,
+    },
+    {
+      id: 'owasp-a09-a10-and-rasp',
+      title: `3. OWASP A09-A10, Runtime Defenses, and Putting It Together`,
+      content: `## A09:2021 — Security Logging and Monitoring Failures
+
+Was "Insufficient Logging & Monitoring" in 2017. Failure to log security-relevant events, or failure to monitor logs that ARE captured.
+
+Common patterns:
+
+- Authentication failures not logged
+- High-value transactions not logged
+- Logs without correlation IDs (can't trace a request through services)
+- Logs containing sensitive data (passwords, full PAN, session tokens)
+- Logs only stored locally (attacker who compromises the host deletes them)
+- Logs centralized but not monitored (no alerting on attack patterns)
+- Insufficient retention (only 30 days; needed 1 year for forensic investigation)
+- No alerting on suspicious patterns
+
+Defenses:
+
+- Define what SHOULD be logged (auth, authz failures, validation failures, security events)
+- Centralize logs (SIEM, log aggregator like Splunk, Elastic, Datadog, Sumo Logic)
+- Sanitize logs (no secrets, PII, tokens)
+- Tamper-resistant storage (write-once, cryptographically chained, sent to immutable storage)
+- Correlation IDs across services
+- Retention per regulatory + forensic needs
+- ACTIVE MONITORING — alerts that fire on attack patterns, not just dashboards no one looks at
+- Detection engineering — rules that pattern-match real attacker TTPs (MITRE ATT&CK)
+
+The CISSP exam pattern: "What's worse than not having logs?" → having logs no one reviews. The detective control has zero value if the alerts don't reach someone who acts on them.
+
+## A10:2021 — Server-Side Request Forgery (SSRF)
+
+NEW as a standalone category in 2021. The application takes a URL as input and fetches it SERVER-SIDE. An attacker provides URLs pointing to internal resources, cloud metadata, etc.
+
+Common patterns:
+
+- Image proxy / thumbnail generator fetches user-supplied URLs
+- Webhook handler accepts target URLs
+- Profile picture from URL
+- Document fetcher / link preview generator
+
+Most famous SSRF targets:
+
+- \`http://169.254.169.254/\` — AWS EC2 instance metadata (leaks IAM credentials)
+- \`http://metadata.google.internal/\` — GCP equivalent
+- \`http://169.254.169.254/metadata/instance?api-version=2021-02-01\` — Azure
+- Internal services on private IP ranges (10.x, 172.16-31.x, 192.168.x, 127.x)
+
+Defenses:
+
+- URL allow-list — only specific domains/paths can be fetched
+- Block private IP ranges, link-local (169.254.x), localhost (127.x), broadcast addresses
+- Use a dedicated egress proxy that enforces the allow-list
+- Disable URL REDIRECTS (or follow them carefully — attacker can supply allowed URL that redirects to internal)
+- For metadata endpoints specifically: IMDSv2 (AWS) requires a session token, defeating naive SSRF
+
+## 3.1 RASP — Runtime Application Self-Protection
+
+Software embedded INSIDE the application that monitors execution and BLOCKS attacks at runtime. Different from WAF (which sits OUTSIDE):
+
+- WAF inspects HTTP requests; can be bypassed by traffic that doesn't look like an attack until processed
+- RASP has visibility into actual code execution — sees, e.g., SQL queries about to execute and can block based on context (this query is reading a system table for a user with no business reason)
+
+RASP can defend against:
+
+- SQL injection (sees the actual query)
+- Command injection (sees the actual command)
+- XSS (sees the actual response generation)
+- Deserialization attacks (sees the deserialize call)
+- Path traversal (sees file system access)
+
+Tools: Contrast Security, Imperva RASP, Signal Sciences (Fastly).
+
+Trade-offs: performance overhead (5-20%), language-specific (Java/.NET well supported), tuning required to avoid false positives.
+
+## 3.2 WAF (Web Application Firewall)
+
+External device or service that inspects HTTP traffic and blocks attacks. Common WAFs: AWS WAF, Cloudflare WAF, Imperva, F5 BIG-IP ASM, ModSecurity (open source) with OWASP Core Rule Set.
+
+Detects: SQL injection patterns, XSS patterns, path traversal, known-bad user agents, geographic anomalies, bot traffic.
+
+Strengths: easy to deploy in front of any app; can virtual-patch a known vuln while real patch is developed.
+
+Weaknesses: false positives, bypassable by clever encoding, doesn't see post-decryption content unless terminating TLS, doesn't fix the underlying vulnerability.
+
+## 3.3 Putting it together — defense in depth for app security
+
+A mature app security program layers controls:
+
+| Layer | Controls |
+|---|---|
+| Network perimeter | Firewall, DDoS protection, WAF |
+| Transport | TLS 1.2+, HSTS, certificate pinning where appropriate |
+| Authentication | MFA (phishing-resistant), strong password policy, brute-force protection |
+| Authorization | Server-side checks on every action, RBAC + ABAC, principle of least privilege |
+| Application | Input validation, output encoding, parameterized queries, secure session handling |
+| Runtime | RASP (where deployed), error handling without info disclosure |
+| Data | Encryption at rest, field-level encryption for PII, tokenization for PAN |
+| Logging + Monitoring | Centralized logging, SIEM correlation, alerting on attack patterns |
+| Pipeline | SAST + DAST + IAST + SCA, code signing, build provenance |
+| Operations | Patch management, vulnerability scanning, incident response, audit |
+
+If ONE layer is bypassed, others remain. CISSP candidates should be able to identify which layer addresses each Top 10 risk and recommend layered defenses.
+
+## 3.4 CWE and CAPEC
+
+- **CWE (Common Weakness Enumeration)** — a comprehensive taxonomy of software weaknesses (CWE-79 = XSS, CWE-89 = SQLi, CWE-352 = CSRF, etc.). OWASP Top 10 items map to multiple CWEs each.
+- **CAPEC (Common Attack Pattern Enumeration and Classification)** — taxonomy of ATTACK patterns. CAPEC-66 = SQL injection. Maps weaknesses (CWEs) to the attacks that exploit them.
+
+Recognition-level for CISSP exam — know that these are MITRE-maintained taxonomies and that CVEs reference CWEs to categorize root cause.`,
+      examTip: `Memorize SSRF defenses: URL allow-list, BLOCK private IP ranges (169.254.x, 10.x, 172.16-31.x, 192.168.x, 127.x), dedicated egress proxy, disable URL redirects. Cloud metadata endpoints (169.254.169.254) are the canonical SSRF target.`,
+    },
+  ],
+  keyTakeaways: [
+    'OWASP Top 10 2021 reordering: A01 Broken Access Control (was #5), A02 Cryptographic Failures (was Sensitive Data), A03 Injection (was #1), A04 Insecure Design (NEW), A08 Software & Data Integrity Failures (NEW), A10 SSRF (NEW standalone)',
+    'A01 defense: server-side authorization on EVERY action, both vertical (role) and object (ownership) checks',
+    'A02 defense: Argon2id passwords, AES-256-GCM, RSA-2048+ or ECC P-256+, TLS 1.2+ (1.3 preferred), KMS/HSM key management',
+    'A03 defense: parameterized queries (NOT input validation alone), output encoding per context, CSP for XSS depth',
+    'A06 (Vulnerable Components) — most-tested defense is SCA scanning; SBOM enables rapid "are we affected?" answers',
+    'A08 (Integrity Failures) — code signing + build provenance (SLSA, in-toto, sigstore) defend against SolarWinds-class attacks; don\'t deserialize untrusted data',
+    'A10 (SSRF) — block private IP ranges and link-local addresses; AWS IMDSv2 requires session tokens, defeats naive SSRF',
+  ],
+},
+
+cissp_forensics_legal: {
+  topicId: 'cissp_forensics_legal',
+  title: `Forensics & Legal Evidence Standards`,
+  domainWeight: '13%',
+  overview: `Domain 7 (Security Operations) includes investigations and digital forensics. The existing platform covers chain of custody and basic eDiscovery; the audit identified gaps in LEGAL ADMISSIBILITY standards (Daubert, Frye, Federal Rules of Evidence), regulatory investigation procedures, and the operational discipline that turns "we collected logs" into "we have evidence that holds up in court." This topic addresses those gaps so CISSP candidates can answer the management-level questions the exam loves on this topic.`,
+  sections: [
+    {
+      id: 'evidence-types-rules',
+      title: `1. Evidence Types, Rules, and Admissibility`,
+      content: `## 1.1 Evidence categories
+
+CISSP exam tests these distinctions:
+
+- **Direct evidence** — proves a fact without inference (eyewitness testimony of the event)
+- **Circumstantial evidence** — supports an inference but doesn't directly prove the fact (server access logs showing user A's account active at the time of breach)
+- **Documentary evidence** — written documents, records, logs
+- **Real (physical) evidence** — tangible items (a hard drive, a phone, a USB stick)
+- **Demonstrative evidence** — visualizations created to illustrate other evidence (network diagram, attack timeline graphic)
+- **Expert testimony** — opinions from qualified experts (a forensic analyst explaining what the artifacts mean)
+
+## 1.2 Best evidence rule
+
+The original (or best available copy of) evidence is preferred. Duplicates are admissible if the original is unavailable AND the duplicate is verifiably accurate. For digital evidence: a forensic image (bit-for-bit copy) of the original media is the standard "best evidence" — original is preserved in chain of custody, analysis is performed on the image.
+
+## 1.3 Hearsay and exceptions
+
+Hearsay = out-of-court statements offered for the truth of the matter asserted. Generally INADMISSIBLE in court. However, business records (logs, transaction records) routinely kept in the ordinary course of business have an EXCEPTION (Federal Rules of Evidence 803(6), business records exception).
+
+For digital evidence to qualify under business records:
+
+- Made at or near the time of the event
+- Made by (or from information transmitted by) someone with knowledge
+- Kept in the regular course of business
+- Making the record was a regular practice
+- Custodian or other qualified witness testifies to the foundation
+
+This is WHY centralized logging with documented procedures matters for legal defensibility — it qualifies your logs as business records.
+
+## 1.4 Chain of custody
+
+The CHRONOLOGICAL DOCUMENTATION of who handled the evidence, when, where, why, and what was done. Any break in the chain undermines admissibility.
+
+Required elements:
+
+- Description of evidence (serial numbers, photographs)
+- Date/time of collection
+- Location of collection
+- Person collecting
+- Hash values at collection (proves nothing changed)
+- Every transfer logged (date, time, persons, hash re-verified)
+- Storage conditions (sealed evidence bag, secure cabinet, who has access)
+- Final disposition
+
+Modern tools (FTK, EnCase) generate hash values at each step automatically.
+
+## 1.5 Acquisition methods
+
+How forensic images are acquired:
+
+- **Static acquisition** — system is powered OFF; disk imaged via write-blocker. Standard for desktop / server forensics.
+- **Live acquisition** — system is powered ON; capture VOLATILE data (RAM, network connections, running processes) BEFORE shutting down. RAM contains decryption keys, attacker tools loaded but not on disk, network state.
+- **Order of volatility** — capture most volatile first:
+  1. CPU registers + cache
+  2. Memory (RAM)
+  3. Network state, kernel statistics
+  4. Running processes
+  5. Disk and removable media
+  6. Remote logging + backups
+  7. Physical configuration, network topology
+  8. Archival media
+
+If the system is encrypted with FDE, you LOSE the data if you power off before capturing keys from RAM. Modern incident response includes live RAM capture for this reason.
+
+## 1.6 Write blockers
+
+Hardware (preferred) or software devices that allow reading from a storage device WITHOUT writing to it. Essential for preserving the original — even mounting a drive read-only via the OS can write timestamps and trigger anti-virus scans that modify the disk.
+
+## 1.7 Hashing for integrity
+
+When evidence is acquired:
+
+1. Hash the original (MD5 + SHA-256 typically)
+2. Create the forensic image
+3. Hash the image
+4. Verify hashes match
+5. Re-verify hashes at each chain-of-custody transfer
+6. Final report includes hash values
+
+If hashes differ between original and image (or between two checks of the image), evidence is COMPROMISED — admissibility is at risk.
+
+Although MD5 has cryptographic weaknesses (collision attacks), it's still used IN ADDITION to SHA-256 because legacy tools support it and forensic use doesn't require collision resistance against adversarial inputs.`,
+      examTip: `Evidence types: direct/circumstantial/documentary/real/demonstrative/expert testimony. Best evidence rule: original preferred, forensic image is acceptable substitute with hash verification. Hearsay exception for business records is why centralized logging matters legally.`,
+    },
+    {
+      id: 'admissibility-standards',
+      title: `2. Daubert, Frye, and Admissibility of Expert Evidence`,
+      content: `Digital forensics relies on EXPERT TESTIMONY. The court decides whether the expert (and their methodology) is admissible. Two standards govern this in US courts.
+
+## 2.1 Frye standard (older)
+
+Established in Frye v. United States (1923). Expert testimony based on a scientific technique is admissible if the technique is "GENERALLY ACCEPTED" in the relevant scientific community.
+
+- Used in some state courts
+- Has been largely superseded by Daubert in federal courts and many state courts
+- Simpler test (just: is this technique accepted by peers?)
+- But "generally accepted" is hard to define and can lag scientific consensus
+
+## 2.2 Daubert standard (current federal)
+
+Established in Daubert v. Merrell Dow Pharmaceuticals (1993). The Federal Rules of Evidence 702 incorporates the Daubert standard. The judge acts as a "gatekeeper" assessing the reliability and relevance of expert testimony.
+
+The Daubert factors (memorize for CISSP):
+
+1. **Testable** — has the theory or technique been TESTED?
+2. **Peer review** — has it been published in peer-reviewed literature?
+3. **Known or potential error rate** — what's the technique's error rate? Is it acceptable?
+4. **Standards** — are there standards controlling the technique's operation? Are they followed?
+5. **General acceptance** — is the technique generally accepted in the relevant community?
+
+Notice that "general acceptance" is just ONE of five factors under Daubert (it was the SOLE factor under Frye). Daubert is broader and more rigorous.
+
+The Daubert test is applied as a PRE-TRIAL motion ("Daubert challenge") — the judge holds a hearing to decide if the expert can testify at all.
+
+## 2.3 Kumho Tire (1999)
+
+Extended Daubert beyond pure scientific testimony to ALL expert testimony (technical, specialized, including digital forensics). Closed a loophole where parties argued Daubert didn't apply to non-science experts.
+
+## 2.4 Why this matters for digital forensics
+
+The forensic analyst will be called as an expert witness. The DEFENSE will challenge the analyst's methodology:
+
+- "What tool did you use?"
+- "Is this tool peer-reviewed?"
+- "What's its error rate?"
+- "Did you follow established procedures?"
+- "Are these procedures accepted in the forensic community?"
+
+This is WHY forensic tools (EnCase, FTK, Autopsy, X-Ways) emphasize peer-reviewed methodology, validated against known datasets (NIST CFTT — Computer Forensic Tool Testing project provides these test datasets).
+
+Custom tools and novel techniques face HIGH bar — must establish acceptance via:
+
+- Publication in peer-reviewed forensic journals
+- Validation against known test data
+- Use by other forensic examiners
+- Defensible chain of methodology
+
+CISSP exam pattern: "An expert wants to introduce a novel forensic technique. What standard governs admissibility in federal court?" → Daubert. "What are the factors?" → testable, peer-reviewed, known error rate, standards, generally accepted.
+
+## 2.5 Federal Rules of Evidence (FRE) selected highlights
+
+- **FRE 401** — Relevance: evidence must have any tendency to make a fact more or less probable
+- **FRE 403** — Probative value vs prejudicial effect: judge may exclude relevant evidence if its prejudice substantially outweighs its value
+- **FRE 702** — Expert testimony (incorporates Daubert)
+- **FRE 803(6)** — Business records exception to hearsay
+- **FRE 901** — Authentication: party must provide evidence sufficient to support that the item IS what it's claimed to be
+- **FRE 902(13), 902(14)** — Self-authentication of electronic records (added 2017): records produced by an electronic process or system shown to produce accurate results are self-authenticating. Hash-based verification.
+
+## 2.6 The four-part admissibility test
+
+To be admissible, evidence must be:
+
+1. **Relevant** (FRE 401) — to a fact at issue
+2. **Material** — substantive enough to matter to the case
+3. **Competent** — meets standards for evidence type (Daubert for experts, business records for logs, etc.)
+4. **Authentic** — IS what the proponent claims it to be (FRE 901)
+
+All four must be present. Forensic procedures focus heavily on AUTHENTICITY (chain of custody + hash verification) and COMPETENCE (Daubert-compliant methodology).`,
+      examTip: `Daubert factors (memorize): Testable, Peer-reviewed, Error rate known, Standards/procedures followed, Generally accepted. Replaced Frye in federal courts. Kumho Tire extended to ALL experts including digital forensics. Four-part admissibility test: relevant, material, competent, authentic.`,
+    },
+    {
+      id: 'investigation-types-procedures',
+      title: `3. Investigation Types, eDiscovery, and Regulatory Procedures`,
+      content: `## 3.1 Five investigation types (per CISSP CBK)
+
+The CBK distinguishes investigations by their purpose and standard of proof:
+
+1. **Operational investigation** — internal; troubleshooting an issue. Lowest standard. May not even produce a formal report. Purpose: fix the problem.
+2. **Criminal investigation** — pursued by law enforcement. Highest standard: BEYOND A REASONABLE DOUBT. Strict chain of custody, Daubert-compliant methods, search warrants.
+3. **Civil investigation** — for civil litigation (lawsuits between parties). Standard: PREPONDERANCE OF EVIDENCE (more likely than not). Slightly less rigid than criminal but still formal evidence handling.
+4. **Regulatory investigation** — by a regulatory body (SEC, FBI, OCR, EU DPA). Standards vary; subpoena power, may lead to civil or criminal referral.
+5. **Industry standards investigation** — for compliance with industry frameworks (PCI Forensic Investigator after a card breach; SWIFT investigations for financial messaging). Driven by industry rules.
+
+CISSP exam pattern: "What standard of proof applies to a criminal investigation?" → beyond a reasonable doubt. "Civil?" → preponderance of evidence.
+
+## 3.2 Standards of proof — the hierarchy
+
+| Standard | Approximate Certainty | Applies To |
+|---|---|---|
+| Reasonable suspicion | ~25% | Stop and inquire |
+| Probable cause | ~50%+ | Search warrant; arrest |
+| Preponderance of evidence | >50% | Civil cases |
+| Clear and convincing | ~70-75% | Some civil cases (e.g., fraud allegations) |
+| Beyond a reasonable doubt | ~95%+ | Criminal conviction |
+
+Higher standards require more rigorous evidence handling.
+
+## 3.3 Search and seizure
+
+For criminal investigations, evidence collection typically requires legal authority:
+
+- **Search warrant** — judge-authorized, based on probable cause. Specifies place to search + items to seize.
+- **Consent** — voluntary permission from someone with authority to consent
+- **Exigent circumstances** — exception when evidence would be destroyed before warrant could be obtained
+- **Plain view** — evidence visible without a search
+- **Border search exception** — at international borders, fewer Fourth Amendment protections
+
+Failing to obtain proper authority = evidence excluded under EXCLUSIONARY RULE (fruit of the poisonous tree doctrine).
+
+For corporate internal investigations, the legal basis is usually the EMPLOYMENT AGREEMENT (employee consents in handbook acceptance to monitoring + searches of company resources). State laws vary — some require explicit notice (banners).
+
+## 3.4 eDiscovery (Electronic Discovery)
+
+The process of identifying, preserving, collecting, processing, reviewing, analyzing, and producing electronically stored information (ESI) in response to litigation or investigation.
+
+The Electronic Discovery Reference Model (EDRM) has 9 phases:
+
+1. **Information Governance** — proactive: knowing where data is and how it's managed
+2. **Identification** — finding potentially responsive ESI
+3. **Preservation** — legal hold to prevent destruction
+4. **Collection** — gathering the ESI
+5. **Processing** — filtering, deduplication, format normalization
+6. **Review** — attorneys assess for relevance and privilege
+7. **Analysis** — pattern, network, timeline analysis
+8. **Production** — providing the ESI to opposing counsel in agreed format
+9. **Presentation** — using in deposition or trial
+
+For most CISSP-relevant questions:
+
+- **Legal hold** is critical — when litigation is "reasonably anticipated," normal destruction must STOP for relevant data. Failure = spoliation = sanctions.
+- **Information governance** (knowing where data is) makes eDiscovery feasible. Bad governance = expensive, late, error-prone eDiscovery.
+- **ESI scope** is broad — emails, instant messages, documents, databases, system logs, mobile device data, cloud apps. Social media posts. Voicemails.
+
+## 3.5 Federal Rules of Civil Procedure 26(f) conference
+
+In federal civil litigation, the parties meet to discuss ESI:
+
+- Sources of ESI
+- Preservation requirements
+- Format of production (native vs PDF vs TIFF + load file)
+- Privilege protection (claw-back provisions for inadvertent disclosure)
+- Cost allocation
+
+CISSP candidates working on the security side should be involved in these discussions to scope ESI collection responsibly.
+
+## 3.6 Regulatory investigations — common scenarios
+
+| Regulator | Trigger | Typical Authority |
+|---|---|---|
+| SEC | Disclosure issues, insider trading, fraud (public companies) | Subpoena power, Civil Action; refers criminal to DOJ |
+| FBI | Federal crimes including computer fraud (CFAA), espionage, IP theft | Search warrant, grand jury subpoena |
+| OCR (HHS) | HIPAA violations (covered entities + business associates) | Audit power, civil monetary penalties up to ~$2M/year per violation type |
+| FTC | Privacy/unfair-deceptive practices | Investigation, consent decree, civil penalties |
+| EU DPA | GDPR violations (any org with EU data subjects) | Audit power, fines up to 4% of global turnover |
+| FINRA | Financial industry (broker-dealers) | Examination, enforcement, fines |
+
+Common operational requirements for investigation cooperation:
+
+- Designate an investigation point-of-contact (usually general counsel)
+- Preserve relevant data immediately on notice
+- Respond to subpoenas / document requests on time
+- Don't notify employees who are subjects (in some investigations)
+- Privilege log for documents withheld for attorney-client privilege
+
+## 3.7 Forensic readiness — pre-incident preparation
+
+The mature security org is FORENSICALLY READY before an incident:
+
+- Logging configured to capture forensically-useful data (auth, file access, network connections, privileged actions)
+- Logs centralized with tamper resistance
+- Time synchronized across all hosts (NTP — critical for timeline reconstruction)
+- Documented incident response procedures
+- Pre-positioned forensic tools and trained personnel
+- Pre-negotiated relationships with forensic firms (you don't want to start the procurement process during a breach)
+- Pre-defined LEGAL HOLD process
+- Tabletop exercises that include investigation scenarios
+
+Forensic readiness is the difference between "we can rebuild and move on" and "we have defensible evidence for civil or criminal proceedings, regulatory disclosure, insurance claim, and internal accountability."
+
+## 3.8 Privacy and employee monitoring tensions
+
+When investigating an employee, the org must balance:
+
+- Investigation need
+- Employee privacy expectations (ECPA, state laws, GDPR for EU employees)
+- Union contracts where applicable
+- Acceptable Use Policy (AUP) consent
+- Banner notices on logon
+
+The EMPLOYEE PRIVACY question often comes up: what's the employee's reasonable expectation of privacy on a corporate laptop using corporate email? Courts generally say LOW expectation if the AUP/policies clearly state monitoring occurs, but the boundary isn't bright.
+
+Best practice for digital investigations involving employees:
+
+- Have written, acknowledged AUP that explicitly permits monitoring + searches
+- Involve HR + legal counsel from the start
+- Document business justification for the investigation
+- Minimize collection to what's necessary
+- Restrict access to investigation data
+- For EU employees, additional GDPR considerations (data minimization, legitimate interest balancing)`,
+      examTip: `Five investigation types: operational (internal), criminal (beyond reasonable doubt), civil (preponderance of evidence), regulatory (subpoena power), industry standards. CISSP loves "which standard of proof applies?" — match it to the investigation type.`,
+      importantNote: `Legal hold OVERRIDES retention policy. The moment litigation is "reasonably anticipated," normal destruction stops for relevant data. Failure = spoliation = sanctions. This is one of the most-tested concepts in Domain 7.`,
+    },
+  ],
+  keyTakeaways: [
+    'Evidence types: direct/circumstantial/documentary/real/demonstrative/expert. Best evidence rule prefers original (forensic image acceptable with hash verification)',
+    'Hearsay exception for business records (FRE 803(6)) makes centralized logging legally valuable — log MUST be regular practice + made at/near event time',
+    'Daubert standard (federal): testable, peer-reviewed, known error rate, standards followed, generally accepted. Replaced Frye in 1993.',
+    'Order of volatility for live acquisition: CPU/cache → RAM → network state → processes → disk → backups → archives',
+    'Five investigation types: operational, criminal (beyond reasonable doubt), civil (preponderance), regulatory, industry standards. Different standards of proof.',
+    'eDiscovery EDRM: Info Governance → Identification → Preservation → Collection → Processing → Review → Analysis → Production → Presentation',
+    'Legal hold OVERRIDES retention policy; failure to preserve when litigation is reasonably anticipated = spoliation = sanctions',
+  ],
+},
+
 };
 
 export function getCISSPCourseContent(topicId: string): TopicLesson | null {

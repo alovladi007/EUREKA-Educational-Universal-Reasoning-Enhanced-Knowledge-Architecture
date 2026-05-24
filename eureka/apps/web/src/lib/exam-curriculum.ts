@@ -599,10 +599,14 @@ const CISSP: ExamCurriculum = [
   { sectionId: 'asset_security', sectionName: 'Asset Security', topics: [
     t('cissp_data_class', 'Data Classification & Handling', 'Classification levels, labeling, retention, and destruction.'),
     t('cissp_privacy', 'Privacy Protection', 'Data ownership, privacy controls, and data lifecycle management.'),
+    t('cissp_data_lifecycle', 'Data States & Lifecycle', 'Data states (rest/transit/use), sanitization (DoD 5220.22-M, NIST 800-88), retention, secure deletion, media destruction. CBK D2 gap fix.'),
   ]},
   { sectionId: 'security_architecture', sectionName: 'Security Architecture & Engineering', topics: [
     t('cissp_models', 'Security Models & Frameworks', 'Bell-LaPadula, Biba, Clark-Wilson, and Brewer-Nash models.'),
+    t('cissp_security_models_deep', 'Security Models In-Depth', 'Bell-LaPadula (no-read-up, no-write-down), Biba (no-read-down, no-write-up), Clark-Wilson (well-formed transactions), Brewer-Nash (Chinese Wall). State machine, lattice, access matrix. CBK D3 expansion.'),
     t('cissp_crypto', 'Cryptography', 'Symmetric, asymmetric, hashing, PKI, digital signatures, and key management.', 18),
+    t('cissp_crypto_advanced', 'Advanced Cryptography & Key Management', 'Kerberos 5-step exchange, X.509 cert fields, ECDSA, post-quantum readiness, HSMs, key escrow vs key recovery, M-of-N. CBK D3 expansion.'),
+    t('cissp_evaluation', 'Evaluation Criteria & Assurance', 'Common Criteria (EAL1-7), Protection Profiles, Security Targets, TCSEC (Orange Book), ITSEC, FIPS 140-3. CBK D3 gap fix.'),
     t('cissp_physical', 'Physical Security', 'Site selection, perimeter, surveillance, environmental controls, and fire suppression.'),
     t('cissp_secure_design', 'Secure Design Principles', 'Defense in depth, least privilege, separation of duties, and fail-safe defaults.'),
   ]},
@@ -622,16 +626,19 @@ const CISSP: ExamCurriculum = [
     t('cissp_vuln', 'Vulnerability Assessment', 'Scanning, penetration testing, and red/blue/purple team exercises.'),
     t('cissp_audit', 'Security Auditing', 'Audit types, log review, SOC reports, and compliance testing.'),
     t('cissp_testing', 'Software Testing', 'SAST, DAST, fuzzing, code review, and security test planning.'),
+    t('cissp_testing_taxonomy', 'Testing Tool Taxonomy & Strategies', 'SAST vs DAST vs IAST vs SCA distinctions, misuse case testing, synthetic transactions, interface testing, test coverage analysis, fuzzing strategies. CBK D6 gap fix.'),
   ]},
   { sectionId: 'security_operations', sectionName: 'Security Operations', topics: [
     t('cissp_ir', 'Incident Management', 'Detection, response, containment, recovery, and post-incident review.', 15),
     t('cissp_investigations', 'Investigations & Evidence', 'Forensics, chain of custody, e-discovery, and evidence handling.'),
+    t('cissp_forensics_legal', 'Forensics & Legal Evidence Standards', 'Daubert standard, Frye test, Federal Rules of Evidence, regulatory investigations (SEC/FINRA/FBI), eDiscovery ESI requirements, sworn affidavits. CBK D7 gap fix.'),
     t('cissp_operations', 'Operational Security', 'Patch management, change management, configuration management, and monitoring.'),
     t('cissp_disaster', 'Disaster Recovery Operations', 'Recovery sites, backup strategies, and recovery testing.'),
   ]},
   { sectionId: 'software_security', sectionName: 'Software Development Security', topics: [
     t('cissp_sdlc', 'Secure SDLC', 'Security in requirements, design, implementation, testing, and deployment.'),
     t('cissp_app_vuln', 'Application Vulnerabilities', 'OWASP Top 10, injection, XSS, insecure deserialization, and API security.'),
+    t('cissp_owasp_patterns', 'OWASP Top 10 Patterns & Defenses', 'OWASP Top 10 (2021/2024) per-item attack patterns and prevention. CWE/CVSS mapping, injection/XSS/deserialization defenses, secure coding patterns. CBK D8 expansion.'),
     t('cissp_devops', 'DevSecOps', 'CI/CD security, infrastructure as code, container security, and supply chain.'),
   ]},
 ];
