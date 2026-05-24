@@ -747,10 +747,13 @@ services:
     container_name: eureka-test-prep
     environment:
       SECRET_KEY: eureka_test_prep_secret_key_change_in_production
-      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
-      REDIS_URL: redis://redis:6379/23
-      CELERY_BROKER_URL: redis://redis:6379/24
-      CELERY_RESULT_BACKEND: redis://redis:6379/25
+      # NOTE: test-prep uses its OWN database (not the shared `eureka` db) because
+      # api-core's `users.id` is UUID while test-prep models declare user_id as
+      # VARCHAR — sharing causes FK type-mismatch on table creation.
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka_test_prep
+      REDIS_URL: redis://redis:6379/15
+      CELERY_BROKER_URL: redis://redis:6379/14
+      CELERY_RESULT_BACKEND: redis://redis:6379/13
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000

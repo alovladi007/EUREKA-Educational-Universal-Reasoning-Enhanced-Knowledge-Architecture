@@ -26,6 +26,7 @@ python-decouple==3.8
 # Utils
 pydantic==2.5.0
 pydantic-settings==2.0.3
+email-validator==2.1.0
 httpx==0.25.2
 celery==5.3.4
 flower==2.0.1
