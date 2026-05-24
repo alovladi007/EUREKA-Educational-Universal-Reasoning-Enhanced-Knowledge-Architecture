@@ -242,6 +242,23 @@ class ApiClient {
     return response.data;
   }
 
+  // ==================== User Settings ====================
+  // Persisted in users.preferences JSONB on the api-core User row. The
+  // backend treats the payload as opaque so we can add new sections client-
+  // side (study-mode prefs, integrations, etc.) without a backend deploy.
+
+  async getMySettings(): Promise<Record<string, unknown>> {
+    const response = await this.client.get<Record<string, unknown>>('/users/me/settings');
+    return response.data || {};
+  }
+
+  async updateMySettings(
+    patch: Partial<Record<string, unknown>>,
+  ): Promise<Record<string, unknown>> {
+    const response = await this.client.patch<Record<string, unknown>>('/users/me/settings', patch);
+    return response.data || {};
+  }
+
   // ==================== Organizations ====================
 
   async getOrganizations(params?: { 

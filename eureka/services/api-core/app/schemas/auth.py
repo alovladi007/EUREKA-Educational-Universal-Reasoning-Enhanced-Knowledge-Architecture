@@ -136,7 +136,25 @@ class UserUpdate(BaseModel):
     avatar_url: Optional[str] = Field(None, max_length=500)
     locale: Optional[str] = Field(None, max_length=10)
     timezone: Optional[str] = Field(None, max_length=50)
-    
+    # Phone is informally captured for SMS notifications. Stored on the
+    # user row via the preferences JSONB blob — kept here for convenience
+    # so PATCH /me can touch it.
+    phone: Optional[str] = Field(None, max_length=32)
+
     class Config:
         # Allow partial updates
         extra = 'ignore'
+
+
+class UserSettings(BaseModel):
+    """Catch-all user-settings shape persisted in users.preferences JSONB.
+    Mirrors the /dashboard/settings page sections. Backend treats this as
+    an opaque dict — no schema enforcement past the top-level keys so the
+    frontend can iterate without backend deploys."""
+    notifications: Optional[dict] = None
+    privacy: Optional[dict] = None
+    appearance: Optional[dict] = None
+    accessibility: Optional[dict] = None
+
+    class Config:
+        extra = 'allow'

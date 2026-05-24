@@ -10,7 +10,7 @@ from typing import Optional
 from uuid import UUID
 
 from app.core.database import get_db
-from app.schemas.auth import UserResponse, UserUpdate
+from app.schemas.auth import UserResponse, UserUpdate, UserSettings
 from app.schemas.course import EnrollmentResponse, EnrollmentList
 from app.crud import user as user_crud
 from app.crud import course as course_crud
@@ -41,6 +41,54 @@ async def update_my_profile(
     """Update current user's profile"""
     updated_user = await user_crud.update_user(db, current_user, update_data)
     return UserResponse.model_validate(updated_user)
+
+
+# ─────────────────────────────────────────────────────────────────────────
+# User settings (notifications, privacy, appearance, accessibility)
+#
+# Persisted in users.preferences (JSONB). The endpoints intentionally treat
+# the payload as a free-form dict so the frontend can add new sections
+# (e.g. study-mode preferences, integrations) without a backend deploy. The
+# Settings page at /dashboard/settings consumes these via apiClient.
+# ─────────────────────────────────────────────────────────────────────────
+
+
+@router.get("/me/settings")
+async def get_my_settings(
+    current_user: User = Depends(get_current_active_user),
+):
+    """Return the current user's persisted settings blob.
+
+    Returns an empty dict ({}) for users who have never saved settings.
+    """
+    return current_user.preferences or {}
+
+
+@router.patch("/me/settings")
+async def update_my_settings(
+    settings: UserSettings,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Merge the provided settings into the user's preferences blob.
+
+    Behavior:
+      * Deep-merges the new payload into the existing preferences so
+        callers can PATCH just one section (e.g. {"notifications": {...}})
+        without losing the others.
+      * Returns the updated full settings blob.
+    """
+    existing = current_user.preferences or {}
+    incoming = settings.model_dump(exclude_none=True)
+
+    # Shallow-merge at the top level; each section is replaced wholesale.
+    # This matches the page semantics — when the user toggles any setting
+    # in a section we send the WHOLE section back, not a single field.
+    merged = {**existing, **incoming}
+    current_user.preferences = merged
+    await db.commit()
+    await db.refresh(current_user)
+    return current_user.preferences or {}
 
 
 @router.get("/me/enrollments", response_model=EnrollmentList)

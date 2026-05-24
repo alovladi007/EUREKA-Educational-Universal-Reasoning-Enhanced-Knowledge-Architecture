@@ -1,10 +1,20 @@
 "use client";
 /**
  * EUREKA - Settings Page
- * User preferences, notifications, privacy, and account settings
+ * User preferences, notifications, privacy, and account settings.
+ *
+ * Data flow (P0-4):
+ *   • Mount  → GET /users/me + GET /users/me/settings, seed local state
+ *   • Change → debounce 800ms, then PATCH /users/me/settings (settings
+ *              sections) and PATCH /users/me (profile fields).
+ *   • UI     → toast on success/error, "Saved" indicator with last-saved
+ *              timestamp.
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { toast } from 'react-hot-toast';
+import { apiClient } from '@/lib/api-client';
+import { useAuthStore } from '@/stores/auth';
 import {
   User,
   Bell,
@@ -58,61 +68,133 @@ interface Settings {
   };
 }
 
+// Defaults applied when the API returns no persisted settings yet (new user).
+const DEFAULT_SETTINGS: Settings = {
+  profile: {
+    email: '',
+    emailVerified: false,
+    phone: '',
+    language: 'en',
+    timezone: 'America/New_York',
+  },
+  notifications: {
+    email: true,
+    push: true,
+    sms: false,
+    assignmentReminders: true,
+    gradeUpdates: true,
+    discussionReplies: true,
+    studyGroupInvites: true,
+    weeklyDigest: false,
+  },
+  privacy: {
+    profileVisibility: 'friends',
+    showEmail: false,
+    showProgress: true,
+    allowMessages: true,
+    dataSharing: false,
+  },
+  appearance: { theme: 'light', fontSize: 'medium', compactMode: false },
+  accessibility: { highContrast: false, screenReader: false, captions: true, keyboardNav: false },
+};
+
 const SettingsPage: React.FC = () => {
   const [activeSection, setActiveSection] = useState<string>('profile');
-  const [settings, setSettings] = useState<Settings>({
-    profile: {
-      email: 'student@example.com',
-      emailVerified: true,
-      phone: '+1 (555) 123-4567',
-      language: 'en',
-      timezone: 'America/New_York'
-    },
-    notifications: {
-      email: true,
-      push: true,
-      sms: false,
-      assignmentReminders: true,
-      gradeUpdates: true,
-      discussionReplies: true,
-      studyGroupInvites: true,
-      weeklyDigest: false
-    },
-    privacy: {
-      profileVisibility: 'friends',
-      showEmail: false,
-      showProgress: true,
-      allowMessages: true,
-      dataSharing: false
-    },
-    appearance: {
-      theme: 'light',
-      fontSize: 'medium',
-      compactMode: false
-    },
-    accessibility: {
-      highContrast: false,
-      screenReader: false,
-      captions: true,
-      keyboardNav: false
-    }
-  });
-
+  const [settings, setSettings] = useState<Settings>(DEFAULT_SETTINGS);
+  const [loading, setLoading] = useState(true);
   const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
+  const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+  const refreshUser = useAuthStore((s) => s.refreshUser);
 
-  const handleSave = async () => {
+  // ─── Load on mount ────────────────────────────────────────────────────
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        // Profile data lives on the User row (email/phone/locale/timezone);
+        // freeform UI prefs live in users.preferences.
+        const [profile, prefs] = await Promise.all([
+          apiClient.getMyProfile().catch(() => null),
+          apiClient.getMySettings().catch(() => ({} as Record<string, unknown>)),
+        ]);
+        if (cancelled) return;
+        setSettings((prev) => ({
+          ...prev,
+          profile: {
+            email: profile?.email ?? prev.profile.email,
+            emailVerified: (profile as { is_email_verified?: boolean })?.is_email_verified ?? prev.profile.emailVerified,
+            phone: (prefs.phone as string) ?? (profile as { phone?: string })?.phone ?? prev.profile.phone,
+            language: (profile as { locale?: string })?.locale?.split('-')[0] ?? prev.profile.language,
+            timezone: (profile as { timezone?: string })?.timezone ?? prev.profile.timezone,
+          },
+          notifications: { ...prev.notifications, ...(prefs.notifications as object || {}) },
+          privacy: { ...prev.privacy, ...(prefs.privacy as object || {}) },
+          appearance: { ...prev.appearance, ...(prefs.appearance as object || {}) },
+          accessibility: { ...prev.accessibility, ...(prefs.accessibility as object || {}) },
+        }));
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Settings load failed:', err);
+        toast.error('Could not load your settings — using defaults.');
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  // ─── Debounced save ───────────────────────────────────────────────────
+  // We split the persisted payload into two requests because profile
+  // fields (locale, timezone, etc.) live on the User row while the rest
+  // lives in users.preferences (JSONB).
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const persist = useCallback(async (next: Settings) => {
     setSaveStatus('saving');
-    
     try {
-      // In production: await fetch('/api/v1/users/settings', { method: 'PUT', body: JSON.stringify(settings) });
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-      
+      await Promise.all([
+        apiClient.updateMyProfile({
+          locale: next.profile.language,
+          timezone: next.profile.timezone,
+        } as Partial<unknown> as never),
+        apiClient.updateMySettings({
+          notifications: next.notifications,
+          privacy: next.privacy,
+          appearance: next.appearance,
+          accessibility: next.accessibility,
+          phone: next.profile.phone,
+        }),
+      ]);
       setSaveStatus('saved');
-      setTimeout(() => setSaveStatus('idle'), 2000);
-    } catch (error) {
-      console.error('Failed to save settings:', error);
+      setLastSavedAt(new Date());
+      // refresh auth store so header/sidebar pick up locale/timezone changes
+      void refreshUser().catch(() => {});
+      setTimeout(() => setSaveStatus('idle'), 1500);
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error('Settings save failed:', err);
+      toast.error('Could not save your settings — try again.');
       setSaveStatus('idle');
     }
+  }, [refreshUser]);
+
+  // Schedule a debounced save whenever `settings` changes after the
+  // initial load. Cancel any in-flight timer first.
+  useEffect(() => {
+    if (loading) return;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => persist(settings), 800);
+    return () => {
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [settings, loading, persist]);
+
+  // Manual save button still available (calls persist immediately).
+  const handleSave = async () => {
+    if (saveTimerRef.current) {
+      clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = null;
+    }
+    await persist(settings);
   };
 
   const sections = [
@@ -485,6 +567,24 @@ const SettingsPage: React.FC = () => {
     }
   };
 
+  // Initial-load skeleton — avoid flashing the seeded defaults to the user.
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-8">
+            <div className="h-9 w-48 bg-gray-200 rounded animate-pulse mb-2" />
+            <div className="h-4 w-72 bg-gray-100 rounded animate-pulse" />
+          </div>
+          <div className="grid grid-cols-12 gap-6">
+            <div className="col-span-3 h-96 bg-white rounded-lg shadow-sm animate-pulse" />
+            <div className="col-span-9 h-96 bg-white rounded-lg shadow-sm animate-pulse" />
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 p-6">
       <div className="max-w-7xl mx-auto">
@@ -524,11 +624,22 @@ const SettingsPage: React.FC = () => {
             <div className="bg-white rounded-lg shadow-sm p-8">
               {renderSection()}
 
-              {/* Save Button */}
+              {/* Save status — autosaves on every change (debounced 800ms).
+                  The button below is kept for a manual flush. */}
               <div className="mt-8 pt-6 border-t border-gray-200 flex items-center justify-between">
-                <div>
+                <div className="text-sm">
+                  {saveStatus === 'saving' && (
+                    <p className="text-blue-600">Saving…</p>
+                  )}
                   {saveStatus === 'saved' && (
-                    <p className="text-sm text-green-600">✓ Settings saved successfully</p>
+                    <p className="text-green-600">
+                      ✓ Saved{lastSavedAt && ` at ${lastSavedAt.toLocaleTimeString()}`}
+                    </p>
+                  )}
+                  {saveStatus === 'idle' && lastSavedAt && (
+                    <p className="text-gray-500">
+                      Last saved at {lastSavedAt.toLocaleTimeString()}
+                    </p>
                   )}
                 </div>
                 <button
