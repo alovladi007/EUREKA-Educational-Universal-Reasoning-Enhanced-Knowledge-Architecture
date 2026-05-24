@@ -22,6 +22,7 @@ import {
   BookMarked,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 const SECTIONS = [
   { href: "/institutions", label: "Overview", icon: LayoutDashboard },
@@ -40,7 +41,9 @@ const SECTIONS = [
 
 export default function InstitutionsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "";
+  // /institutions/* is L&D admin console — gate behind org_admin / super_admin.
   return (
+    <ProtectedRoute allowedRoles={["org_admin", "super_admin"]}>
     <div className="flex h-screen overflow-hidden bg-slate-50">
       <aside className="flex h-screen w-64 shrink-0 flex-col border-r bg-white">
         <div className="flex h-16 shrink-0 items-center gap-2 border-b px-6">
@@ -86,5 +89,6 @@ export default function InstitutionsLayout({ children }: { children: React.React
       </aside>
       <main className="flex-1 overflow-y-auto p-6">{children}</main>
     </div>
+    </ProtectedRoute>
   );
 }

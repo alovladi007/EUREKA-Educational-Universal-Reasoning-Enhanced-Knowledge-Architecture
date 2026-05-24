@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { EurekaNav } from "@/components/eureka-nav";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 const TABS = [
   { href: "/admin", label: "Overview" },
@@ -14,8 +15,11 @@ const TABS = [
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "";
+  // /admin/* is the most sensitive surface (cohorts, audit log, background
+  // jobs). Restrict to org_admin and super_admin roles — non-admin users
+  // get redirected to /dashboard by ProtectedRoute.
   return (
-    <>
+    <ProtectedRoute allowedRoles={["org_admin", "super_admin"]}>
       <EurekaNav />
       <div className="max-w-6xl mx-auto px-4 py-6 grid md:grid-cols-[200px_1fr] gap-6">
         <aside className="border rounded-md p-2 h-fit">
@@ -43,6 +47,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </aside>
         <main className="space-y-6">{children}</main>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { EurekaNav } from "@/components/eureka-nav";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 const TABS = [
   { href: "/settings", label: "Overview" },
@@ -15,8 +16,9 @@ const TABS = [
 
 export default function SettingsLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() || "";
+  // /settings/* holds API keys, billing, devices — auth required for every page.
   return (
-    <>
+    <ProtectedRoute>
       <EurekaNav />
       <div className="max-w-6xl mx-auto px-4 py-6 grid md:grid-cols-[200px_1fr] gap-6">
         <aside className="border rounded-md p-2 h-fit">
@@ -44,6 +46,6 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
         </aside>
         <main className="space-y-6">{children}</main>
       </div>
-    </>
+    </ProtectedRoute>
   );
 }

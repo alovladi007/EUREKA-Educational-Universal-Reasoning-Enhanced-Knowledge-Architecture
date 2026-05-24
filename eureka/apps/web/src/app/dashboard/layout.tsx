@@ -2,6 +2,7 @@
 
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
+import ProtectedRoute from "@/components/auth/ProtectedRoute"
 import { useEffect } from "react"
 import { useAuthStore } from "@/stores/auth"
 
@@ -26,15 +27,19 @@ export default function DashboardLayout({
     }
   }, [user])
 
+  // /dashboard/* is privileged surface — gate every page behind authentication.
+  // ProtectedRoute handles the loading skeleton + redirect-to-login flow.
   return (
-    <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <div className="flex flex-1 flex-col overflow-hidden">
-        <Header user={user || undefined} />
-        <main className="flex-1 overflow-y-auto bg-secondary/20 p-6">
-          {children}
-        </main>
+    <ProtectedRoute>
+      <div className="flex h-screen overflow-hidden">
+        <Sidebar />
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <Header user={user || undefined} />
+          <main className="flex-1 overflow-y-auto bg-secondary/20 p-6">
+            {children}
+          </main>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }
