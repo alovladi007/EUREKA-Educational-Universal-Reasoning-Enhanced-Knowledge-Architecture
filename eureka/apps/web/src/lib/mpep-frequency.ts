@@ -92,13 +92,46 @@ export const MPEP_CHAPTER_FREQUENCY: MpepChapterFrequency[] = [
     frequency: 22, tier: 'low', topics: 'Hague Agreement · § 1.1066 international design · WIPO routing' },
 ];
 
-/** Tailwind color classes for each tier, in roughly equal increments. */
-export const TIER_COLORS: Record<FrequencyTier, { bg: string; text: string; ring: string; label: string }> = {
-  'very-high': { bg: 'bg-red-500',    text: 'text-white',     ring: 'ring-red-600',    label: 'Very high · core exam content' },
-  'high':      { bg: 'bg-orange-400', text: 'text-white',     ring: 'ring-orange-500', label: 'High · regularly tested' },
-  'medium':    { bg: 'bg-amber-300',  text: 'text-amber-950', ring: 'ring-amber-400',  label: 'Medium · expect a few questions' },
-  'low':       { bg: 'bg-emerald-200',text: 'text-emerald-900', ring: 'ring-emerald-300', label: 'Low · occasional appearance' },
-  'minimal':   { bg: 'bg-slate-100',  text: 'text-slate-600', ring: 'ring-slate-300',  label: 'Minimal · rarely tested' },
+/**
+ * Inline color values for each tier. We use hex/HSL strings (not Tailwind
+ * utility classes) because Tailwind's JIT can't follow indirection through
+ * object lookups in a .ts file — only `bg-red-500` would be detected, so
+ * the other tiers were getting purged and rendering transparent.
+ */
+export const TIER_COLORS: Record<
+  FrequencyTier,
+  { bg: string; text: string; ring: string; label: string }
+> = {
+  'very-high': {
+    bg: '#ef4444',   // tailwind red-500
+    text: '#ffffff',
+    ring: '#b91c1c', // red-700
+    label: 'Very high · core exam content',
+  },
+  high: {
+    bg: '#fb923c',   // orange-400
+    text: '#ffffff',
+    ring: '#ea580c', // orange-600
+    label: 'High · regularly tested',
+  },
+  medium: {
+    bg: '#fcd34d',   // amber-300
+    text: '#451a03', // amber-950
+    ring: '#f59e0b', // amber-500
+    label: 'Medium · expect a few questions',
+  },
+  low: {
+    bg: '#a7f3d0',   // emerald-200
+    text: '#064e3b', // emerald-900
+    ring: '#10b981', // emerald-500
+    label: 'Low · occasional appearance',
+  },
+  minimal: {
+    bg: '#f1f5f9',   // slate-100
+    text: '#475569', // slate-600
+    ring: '#94a3b8', // slate-400
+    label: 'Minimal · rarely tested',
+  },
 };
 
 /** Sum of frequency scores — useful for "what % of the exam does this chapter represent?" */

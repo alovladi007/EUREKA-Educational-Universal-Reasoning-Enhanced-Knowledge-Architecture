@@ -50,7 +50,10 @@ export function MpepFrequencyHeatmap() {
         </Badge>
       </div>
 
-      {/* Heatmap grid */}
+      {/* Heatmap grid — inline styles (not Tailwind classes) because the
+          per-tier color strings live in an object lookup that Tailwind's
+          JIT can't follow, so dynamic Tailwind classes get purged. Using
+          inline hex values guarantees every tier renders correctly. */}
       <div className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-7 lg:grid-cols-10 gap-1.5 mb-4">
         {MPEP_CHAPTER_FREQUENCY.map((ch) => {
           const color = TIER_COLORS[ch.tier];
@@ -65,12 +68,14 @@ export function MpepFrequencyHeatmap() {
               onFocus={() => setActive(ch)}
               onMouseLeave={() => setActive(null)}
               onBlur={() => setActive(null)}
-              className={cn(
-                'group relative aspect-square rounded-md flex flex-col items-center justify-center font-mono text-xs font-bold transition-all hover:scale-105 hover:z-10 hover:shadow-lg cursor-pointer',
-                color.bg,
-                color.text,
-                isActive && `ring-2 ring-offset-2 ring-offset-background ${color.ring}`,
-              )}
+              style={{
+                backgroundColor: color.bg,
+                color: color.text,
+                boxShadow: isActive
+                  ? `0 0 0 2px var(--background, #fff), 0 0 0 4px ${color.ring}`
+                  : undefined,
+              }}
+              className="group relative aspect-square rounded-md flex flex-col items-center justify-center font-mono text-xs font-bold transition-transform hover:scale-110 hover:z-10 cursor-pointer"
               title={`Ch. ${ch.num} — ${ch.title} (frequency: ${ch.frequency}/100)`}
             >
               <span className="text-sm leading-none">{ch.num}</span>
@@ -98,7 +103,13 @@ export function MpepFrequencyHeatmap() {
               </Link>
             </div>
             <div className="flex flex-wrap items-center gap-2 text-xs">
-              <Badge className={cn(TIER_COLORS[active.tier].bg, TIER_COLORS[active.tier].text, 'border-0')}>
+              <Badge
+                className="border-0"
+                style={{
+                  backgroundColor: TIER_COLORS[active.tier].bg,
+                  color: TIER_COLORS[active.tier].text,
+                }}
+              >
                 {active.tier.replace('-', ' ')} · {active.frequency}/100
               </Badge>
               <span className="text-muted-foreground">
@@ -122,7 +133,10 @@ export function MpepFrequencyHeatmap() {
           const color = TIER_COLORS[tier];
           return (
             <span key={tier} className="inline-flex items-center gap-1.5">
-              <span className={cn('h-3 w-3 rounded-sm', color.bg)} />
+              <span
+                className="h-3 w-3 rounded-sm"
+                style={{ backgroundColor: color.bg }}
+              />
               <span className="text-muted-foreground">{color.label}</span>
             </span>
           );
