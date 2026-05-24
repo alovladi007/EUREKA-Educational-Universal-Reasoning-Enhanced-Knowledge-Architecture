@@ -16,6 +16,7 @@ from app.core.database import get_db
 from app.models import User
 from app.core.models import UserRole
 from app.utils.auth import verify_token
+from app.utils.token_blacklist import is_token_valid
 from app.schemas.auth import UserResponse
 
 # Security scheme
@@ -46,14 +47,23 @@ async def get_current_user(
     )
     
     try:
-        # Verify token
+        # Verify token signature + expiration
         token = credentials.credentials
         payload = verify_token(token, token_type="access")
         user_id: str = payload.get("sub")
-        
+
         if user_id is None:
             raise credentials_exception
-            
+
+        # P0-8: blacklist check (Redis-backed). Rejects tokens that have
+        # been individually revoked via /auth/logout or wholesale revoked
+        # via /auth/logout-all-devices. Fails open if Redis is unreachable
+        # so an outage doesn't lock everyone out.
+        jti = payload.get("jti")
+        iat = payload.get("iat")
+        if not await is_token_valid(jti, iat, user_id):
+            raise credentials_exception
+
     except JWTError:
         raise credentials_exception
     

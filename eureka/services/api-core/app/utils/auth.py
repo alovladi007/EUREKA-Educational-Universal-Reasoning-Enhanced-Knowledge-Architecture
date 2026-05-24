@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 from typing import Optional, Dict, Any
 import secrets
 import hashlib
+import uuid
 
 from app.core.config import settings
 
@@ -104,18 +105,23 @@ def create_access_token(
     else:
         expire = datetime.utcnow() + timedelta(minutes=settings.JWT_EXPIRATION_MINUTES)
     
+    # P0-8: every token gets a unique jti so it can be individually
+    # revoked via the Redis blacklist. iat is required so that
+    # logout-all-devices can compare against the user's "revoked-at"
+    # marker and invalidate older tokens.
     to_encode.update({
         "exp": expire,
         "iat": datetime.utcnow(),
-        "type": "access"
+        "type": "access",
+        "jti": str(uuid.uuid4()),
     })
-    
+
     encoded_jwt = jwt.encode(
         to_encode,
         settings.JWT_SECRET,
         algorithm=settings.JWT_ALGORITHM
     )
-    
+
     return encoded_jwt
 
 
@@ -140,18 +146,21 @@ def create_refresh_token(
     else:
         expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRATION_DAYS)
     
+    # P0-8: refresh tokens also carry a jti so logout can revoke the
+    # specific refresh token alongside the access token.
     to_encode.update({
         "exp": expire,
         "iat": datetime.utcnow(),
-        "type": "refresh"
+        "type": "refresh",
+        "jti": str(uuid.uuid4()),
     })
-    
+
     encoded_jwt = jwt.encode(
         to_encode,
         settings.JWT_SECRET,
         algorithm=settings.JWT_ALGORITHM
     )
-    
+
     return encoded_jwt
 
 

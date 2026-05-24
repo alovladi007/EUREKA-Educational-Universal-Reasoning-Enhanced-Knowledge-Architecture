@@ -20,11 +20,14 @@ from app.crud import organization as org_crud
 from app.utils.auth import (
     hash_password, verify_password, verify_and_upgrade_hash, create_access_token,
     create_refresh_token, verify_token, create_email_verification_token,
-    verify_email_token, create_password_reset_token, verify_password_reset_token
+    verify_email_token, create_password_reset_token, verify_password_reset_token,
+    decode_token,
 )
-from app.utils.dependencies import get_current_user
+from app.utils.dependencies import get_current_user, security
+from app.utils.token_blacklist import revoke_jti, revoke_user_tokens
 from app.models import User
 from app.services.email import email_service
+from fastapi.security import HTTPAuthorizationCredentials
 
 router = APIRouter()
 
@@ -405,18 +408,58 @@ async def confirm_password_reset(
 
 @router.post("/logout", response_model=dict)
 async def logout(
-    current_user: User = Depends(get_current_user)
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    current_user: User = Depends(get_current_user),
 ):
     """
-    Logout current user.
-    
-    Note: With JWT tokens, logout is typically handled client-side by
-    removing the tokens. This endpoint can be used for audit logging.
+    Log the current user out by revoking the access token (P0-8).
+
+    Implementation: extract the jti + exp claims from the supplied
+    Bearer token and add them to the Redis blacklist with TTL equal to
+    the token's remaining life. Subsequent requests with the same
+    token will fail get_current_user()'s blacklist check and return
+    401.
+
+    Note: a sibling refresh token (if any) is NOT revoked here — the
+    client must drop it from local storage. Use /auth/logout-all-devices
+    if you need to invalidate every token issued for this user.
     """
-    # TODO: Add token to blacklist if implementing token revocation
-    # TODO: Log logout event in audit log
-    
+    try:
+        payload = decode_token(credentials.credentials)
+        jti = payload.get("jti")
+        exp = payload.get("exp")
+        await revoke_jti(jti, exp)
+    except Exception:
+        # Never fail logout — if blacklist write fails the worst case
+        # is that the token remains valid until exp anyway. Still
+        # return 200 so the client clears local state.
+        pass
+
     return {"message": "Logged out successfully"}
+
+
+@router.post("/logout-all-devices", response_model=dict)
+async def logout_all_devices(
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Revoke every access and refresh token currently issued for this
+    user (P0-8).
+
+    Implementation: write the current Unix timestamp into the
+    "jwt:revoked-user:<user_id>" Redis key. get_current_user() compares
+    that against each incoming token's iat claim and rejects anything
+    issued before this call.
+
+    The TTL on the blacklist key equals the longest possible refresh
+    token life so the entry survives until the very last legitimate
+    token would have expired anyway.
+
+    Use cases: password change, suspected account compromise, manual
+    sign-out from every device after a security event.
+    """
+    await revoke_user_tokens(str(current_user.id))
+    return {"message": "All sessions revoked"}
 
 
 @router.get("/me", response_model=UserResponse)
