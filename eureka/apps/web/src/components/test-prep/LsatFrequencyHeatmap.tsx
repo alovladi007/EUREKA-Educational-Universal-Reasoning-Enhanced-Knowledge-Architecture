@@ -23,7 +23,12 @@ import {
   LSAT_TIER_COLORS,
   LSAC_QUESTION_TYPES,
   LSAC_PRACTICE,
-  lsatPracticeUrl,
+  LAWHUB_BASE,
+  LAWHUB_PREPTESTS,
+  LAWHUB_FREE,
+  lsatOfficialUrl,
+  lsatInternalQbankUrl,
+  lsacReferenceUrl,
   type LsatQuestionType,
   type LsatTier,
 } from '@/lib/lsat-frequency';
@@ -54,11 +59,13 @@ function Section({
           const color = LSAT_TIER_COLORS[q.tier];
           const isActive = active?.id === q.id;
           return (
-            <Link
+            <a
               key={q.id}
-              // Primary click → your own QBank pre-filtered to this section.
-              // The LSAC official-reference link is in the detail panel below.
-              href={lsatPracticeUrl(q, 20)}
+              // Primary click → LawHub, LSAC's OFFICIAL QBank platform.
+              // Same pattern as Patent Bar (eMPEP) and MCAT (AAMC store).
+              href={lsatOfficialUrl(q)}
+              target="_blank"
+              rel="noopener noreferrer"
               onMouseEnter={() => setActive(q)}
               onFocus={() => setActive(q)}
               onMouseLeave={() => setActive(null)}
@@ -71,11 +78,11 @@ function Section({
                   : undefined,
               }}
               className="group relative rounded-md p-2 flex flex-col gap-1 text-left transition-transform hover:scale-105 hover:z-10 cursor-pointer min-h-[64px]"
-              title={`${q.name} — practice ${q.section} questions (${q.frequency}% of section)`}
+              title={`${q.name} — open LawHub (LSAC's official ${q.section} PrepTest library)`}
             >
               <span className="text-[10px] font-mono opacity-80">{q.frequency}%</span>
               <span className="text-xs font-semibold leading-tight">{q.name}</span>
-            </Link>
+            </a>
           );
         })}
       </div>
@@ -98,27 +105,35 @@ export function LsatFrequencyHeatmap() {
           </h2>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
             Empirical frequency of each LSAT question type in the current format (post-Aug 2024:
-            2× Logical Reasoning + 1× Reading Comprehension; Logic Games removed). Frequencies are
-            % SHARE within each section.{' '}
-            <strong className="text-foreground">Click any cell to open LSAC&apos;s official content reference</strong>.
+            2× Logical Reasoning + 1× Reading Comprehension; Logic Games removed).{' '}
+            <strong className="text-foreground">Click any cell to open LawHub</strong>{' '}
+            — LSAC&apos;s official PrepTest library and QBank platform.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <a
+            href={LAWHUB_PREPTESTS}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+          >
+            LawHub PrepTests <ExternalLink className="h-3 w-3" />
+          </a>
+          <a
+            href={LAWHUB_FREE}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+          >
+            LawHub Free <ExternalLink className="h-3 w-3" />
+          </a>
+          <a
             href={LSAC_QUESTION_TYPES}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground hover:underline"
           >
-            LSAC content reference <ExternalLink className="h-3 w-3" />
-          </a>
-          <a
-            href={LSAC_PRACTICE}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-          >
-            Official practice tests <ExternalLink className="h-3 w-3" />
+            LSAC reference <ExternalLink className="h-3 w-3" />
           </a>
         </div>
       </div>
@@ -149,15 +164,23 @@ export function LsatFrequencyHeatmap() {
                 {active.name}{' '}
                 <span className="text-xs font-normal text-muted-foreground">· {active.section} · {active.frequency}%</span>
               </p>
-              <div className="flex gap-3 text-xs">
-                <Link
-                  href={lsatPracticeUrl(active, 20)}
+              <div className="flex flex-wrap gap-3 text-xs">
+                <a
+                  href={lsatOfficialUrl(active)}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="text-primary hover:underline inline-flex items-center gap-1 font-medium"
                 >
-                  <Target className="h-3 w-3" /> Practice {active.section} questions
+                  <ExternalLink className="h-3 w-3" /> Open LawHub for {active.section}
+                </a>
+                <Link
+                  href={lsatInternalQbankUrl(active, 20)}
+                  className="text-muted-foreground hover:text-foreground hover:underline inline-flex items-center gap-1"
+                >
+                  <Target className="h-3 w-3" /> Or practice on Eureka
                 </Link>
                 <a
-                  href={active.url || LSAC_QUESTION_TYPES}
+                  href={lsacReferenceUrl(active)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-muted-foreground hover:text-foreground hover:underline inline-flex items-center gap-1"
@@ -182,7 +205,9 @@ export function LsatFrequencyHeatmap() {
         ) : (
           <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
             <Info className="h-3.5 w-3.5" />
-            Hover a cell to preview a question type. <strong className="text-foreground">Click any cell to start a 20-question QBank session</strong> on that section.
+            Hover a cell to preview a question type.{' '}
+            <strong className="text-foreground">Click any cell to open LawHub</strong>{' '}
+            — LSAC&apos;s official QBank with full PrepTest content for that section.
           </p>
         )}
       </div>

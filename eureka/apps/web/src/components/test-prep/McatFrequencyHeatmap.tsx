@@ -22,7 +22,10 @@ import {
   AAMC_MCAT_BASE,
   AAMC_OUTLINE_PDF,
   AAMC_PREP_LANDING,
-  mcatPracticeUrl,
+  AAMC_PRODUCT_LANDING,
+  AAMC_MRS,
+  mcatOfficialUrl,
+  mcatInternalQbankUrl,
   type McatTopic,
   type McatTier,
   type McatSection,
@@ -44,26 +47,35 @@ export function McatFrequencyHeatmap() {
           </h2>
           <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
             How AAMC distributes the 230-question MCAT across the four sections and ten foundational
-            concepts (FC1–FC10) plus CARS. Percentages are share of the WHOLE exam.{' '}
-            <strong className="text-foreground">Click any cell to open AAMC&apos;s official content outline</strong>.
+            concepts (FC1–FC10) plus CARS.{' '}
+            <strong className="text-foreground">Click any cell to open AAMC&apos;s official QBank</strong>{' '}
+            for that topic — Section Bank, Biology / Chemistry / Physics / CARS Question Packs.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
           <a
+            href={AAMC_PRODUCT_LANDING}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+          >
+            AAMC QBanks <ExternalLink className="h-3 w-3" />
+          </a>
+          <a
+            href={AAMC_MRS}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+          >
+            Launch MRS <ExternalLink className="h-3 w-3" />
+          </a>
+          <a
             href={AAMC_OUTLINE_PDF}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground hover:underline"
           >
-            <FileText className="h-3 w-3" /> AAMC content outline (PDF)
-          </a>
-          <a
-            href={AAMC_PREP_LANDING}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
-          >
-            AAMC prep <ExternalLink className="h-3 w-3" />
+            <FileText className="h-3 w-3" /> Outline (PDF)
           </a>
         </div>
       </div>
@@ -102,11 +114,14 @@ export function McatFrequencyHeatmap() {
                   const color = MCAT_TIER_COLORS[t.tier];
                   const isActive = active?.id === t.id;
                   return (
-                    <Link
+                    <a
                       key={t.id}
-                      // Primary click → MCAT QBank pre-filtered to this section.
-                      // AAMC outline PDF link lives in the detail panel below.
-                      href={mcatPracticeUrl(t, 20)}
+                      // Primary click → AAMC's OFFICIAL QBank product page for
+                      // this topic (Section Bank / Question Pack). Same pattern
+                      // as Patent Bar heatmap → USPTO eMPEP.
+                      href={mcatOfficialUrl(t)}
+                      target="_blank"
+                      rel="noopener noreferrer"
                       onMouseEnter={() => setActive(t)}
                       onFocus={() => setActive(t)}
                       onMouseLeave={() => setActive(null)}
@@ -119,13 +134,13 @@ export function McatFrequencyHeatmap() {
                           : undefined,
                       }}
                       className="group relative rounded-md p-3 transition-transform hover:scale-105 hover:z-10 cursor-pointer min-h-[64px]"
-                      title={`${t.name} — practice ${t.sectionLabel} questions (${t.frequency}% of exam)`}
+                      title={`${t.name} — open the AAMC QBank product covering this topic`}
                     >
                       <div className="flex items-baseline justify-between gap-2 mb-1">
                         <span className="text-xs font-semibold leading-tight">{t.name}</span>
                         <span className="text-[11px] font-mono opacity-80 shrink-0">{t.frequency}%</span>
                       </div>
-                    </Link>
+                    </a>
                   );
                 })}
               </div>
@@ -143,21 +158,21 @@ export function McatFrequencyHeatmap() {
                 {active.name}{' '}
                 <span className="text-xs font-normal text-muted-foreground">· {active.sectionLabel}</span>
               </p>
-              <div className="flex gap-3 text-xs">
-                <Link
-                  href={mcatPracticeUrl(active, 20)}
-                  className="text-primary hover:underline inline-flex items-center gap-1 font-medium"
-                >
-                  <Target className="h-3 w-3" /> Practice {active.sectionLabel} questions
-                </Link>
+              <div className="flex flex-wrap gap-3 text-xs">
                 <a
-                  href={active.url || AAMC_OUTLINE_PDF}
+                  href={mcatOfficialUrl(active)}
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="text-primary hover:underline inline-flex items-center gap-1 font-medium"
+                >
+                  <ExternalLink className="h-3 w-3" /> Open AAMC QBank for this topic
+                </a>
+                <Link
+                  href={mcatInternalQbankUrl(active, 20)}
                   className="text-muted-foreground hover:text-foreground hover:underline inline-flex items-center gap-1"
                 >
-                  AAMC outline <ExternalLink className="h-3 w-3" />
-                </a>
+                  <Target className="h-3 w-3" /> Or practice on Eureka
+                </Link>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
@@ -179,7 +194,9 @@ export function McatFrequencyHeatmap() {
         ) : (
           <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
             <Info className="h-3.5 w-3.5" />
-            Hover a Foundational Concept to preview it. <strong className="text-foreground">Click any cell to start a 20-question QBank session</strong> on that section.
+            Hover a Foundational Concept to preview it.{' '}
+            <strong className="text-foreground">Click any cell to open the official AAMC QBank product</strong>{' '}
+            (Section Bank / Question Pack) covering that topic.
           </p>
         )}
       </div>
