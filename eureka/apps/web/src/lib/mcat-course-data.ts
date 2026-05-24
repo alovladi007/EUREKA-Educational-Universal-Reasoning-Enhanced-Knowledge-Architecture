@@ -4178,6 +4178,1858 @@ The ability to understand, respect, and effectively interact with patients from 
       'Historical abuses (Tuskegee, Nuremberg) created modern research ethics frameworks. Understanding this history is essential.',
     ],
   },
+
+  /* =========================================================================
+   * AAMC GAP-FIX TOPICS (added 2026-05-24) — 10 high-yield topics to lift
+   * pass rate to ≥80%. Each topic targets a content area where the baseline
+   * coverage was thin per the AAMC blueprint.
+   * ========================================================================= */
+
+  // ── Gap-fix 1: Acid-Base Equilibria & Titration Curves (Chem/Phys) ───────
+  cp_acid_base_titration: {
+    topicId: 'cp_acid_base_titration',
+    title: 'Acid-Base Equilibria & Titration Curves',
+    domainWeight: '~6% of Chem/Phys',
+    overview: `Acid-base chemistry is the single most-tested General Chemistry area on the MCAT. Beyond memorizing pKa values, the exam expects you to (1) read titration curves like a graph, (2) compute buffer pH using Henderson-Hasselbalch in your head, (3) recognize equivalence and half-equivalence points, and (4) handle polyprotic acids (carbonic, phosphoric) that have multiple titration plateaus. Mastery here also pays off in Biochemistry (amino acid pI), Physiology (blood pH regulation), and Organic Chemistry (acid-catalyzed mechanisms).`,
+    sections: [
+      {
+        id: 'abt-fundamentals',
+        title: '1. Brønsted-Lowry Acids, Ka, and pKa',
+        content: `## 1.1 Brønsted-Lowry definition
+
+An **acid** donates a proton (H⁺); a **base** accepts a proton. Every acid-base reaction is a proton-transfer between a conjugate acid-base pair:
+
+  HA + B ⇌ A⁻ + HB⁺
+
+The species HA and A⁻ are a **conjugate pair**; so are B and HB⁺. The stronger the acid, the WEAKER its conjugate base — these properties are inversely linked.
+
+## 1.2 Acid dissociation constant Ka
+
+For HA + H₂O ⇌ A⁻ + H₃O⁺:
+
+  Ka = [A⁻][H₃O⁺] / [HA]
+
+Larger Ka → stronger acid → more dissociation at equilibrium.
+
+**pKa = −log₁₀(Ka).** Smaller (or more negative) pKa = stronger acid. The MCAT expects you to know these benchmarks:
+
+| Acid | pKa | Conjugate base |
+|------|-----|----------------|
+| HCl (strong) | ~−7 | Cl⁻ (very weak) |
+| H₂SO₄ (1st) | ~−3 | HSO₄⁻ |
+| H₃O⁺ | ~−1.7 | H₂O |
+| HF | 3.2 | F⁻ |
+| Acetic acid (CH₃COOH) | 4.76 | acetate |
+| Carbonic acid (H₂CO₃, 1st) | 6.35 | HCO₃⁻ |
+| H₂PO₄⁻ | 7.20 | HPO₄²⁻ |
+| NH₄⁺ | 9.25 | NH₃ |
+| HCO₃⁻ (carbonic, 2nd) | 10.33 | CO₃²⁻ |
+| H₂O | 15.7 | OH⁻ |
+
+## 1.3 Strong vs weak — the cutoff
+
+A **strong acid** fully dissociates in water (pKa ≲ 0). Common strong acids: HCl, HBr, HI, HNO₃, H₂SO₄ (first proton), HClO₄. Everything else is weak.
+
+For a **weak acid**, [H⁺] at equilibrium ≪ initial [HA] and you cannot assume full dissociation. Use the equilibrium expression or, for buffer problems, the Henderson-Hasselbalch shortcut (next section).
+
+## 1.4 pH of water and the autoionization constant Kw
+
+At 25 °C: Kw = [H⁺][OH⁻] = 1.0 × 10⁻¹⁴, so pH + pOH = 14.
+
+Pure water has pH 7 (neutral). pH < 7 = acidic, pH > 7 = basic. The MCAT loves to ask **how pH changes with temperature** — Kw INCREASES with T (autoionization is endothermic), so neutral pH < 7 at body temperature (~6.8 at 37 °C). Pure water at 37 °C is still neutral, but its pH is not exactly 7.`,
+        examTip: `Memorize the pKa benchmarks for acetic (4.76), carbonic (6.35 & 10.33), phosphate (2.15, 7.20, 12.35), NH₄⁺ (9.25). These appear in buffer and physiology questions constantly.`,
+        importantNote: `pKa is the pH at which an acid is HALF dissociated ([HA] = [A⁻]). If pH < pKa, the protonated form HA dominates. If pH > pKa, the deprotonated form A⁻ dominates. This single rule answers most amino-acid charge questions.`,
+      },
+      {
+        id: 'abt-buffers',
+        title: '2. Henderson-Hasselbalch & Buffer Capacity',
+        content: `## 2.1 The Henderson-Hasselbalch equation
+
+  pH = pKa + log₁₀([A⁻] / [HA])
+
+This single equation solves nearly every weak-acid buffer problem. Memorize and PRACTICE it.
+
+**Key observations:**
+
+- If [A⁻] = [HA], the log term = 0 and pH = pKa. This is the **half-equivalence point**.
+- If [A⁻]/[HA] = 10, pH = pKa + 1.
+- If [A⁻]/[HA] = 0.1, pH = pKa − 1.
+
+The MCAT will not give you a calculator, so you must compute small log ratios mentally. Useful: log(2) ≈ 0.3, log(3) ≈ 0.48, log(5) ≈ 0.7.
+
+## 2.2 What is a buffer?
+
+A **buffer** is a solution of a weak acid and its conjugate base (or weak base and its conjugate acid) in comparable amounts. It RESISTS pH change upon addition of small amounts of strong acid or base, because the weak acid/base soaks up the added H⁺ or OH⁻ by shifting the equilibrium.
+
+Examples:
+- Acetic acid + sodium acetate (pH ~4.76)
+- NH₃ + NH₄Cl (pH ~9.25)
+- Bicarbonate buffer: H₂CO₃ / HCO₃⁻ (blood, pH ~7.4)
+- Phosphate buffer: H₂PO₄⁻ / HPO₄²⁻ (intracellular, pH ~7.2)
+
+## 2.3 Buffer capacity & effective range
+
+A buffer is most effective within ±1 pH unit of its pKa — outside this range, one form dominates and the buffer loses its resistance to pH change. **Choose a buffer whose pKa is within 1 unit of your target pH.** Example: to buffer at pH 7.4 (blood), bicarbonate (pKa 6.35) or phosphate (pKa 7.20) are both reasonable; phosphate is closer.
+
+**Capacity** also scales with total concentration: a 1 M acetate buffer can absorb 10× more strong acid than a 0.1 M acetate buffer at the same pH.
+
+## 2.4 Worked example — buffer pH after adding strong acid
+
+A buffer contains 0.5 mol acetic acid and 0.5 mol acetate (pKa 4.76) in 1 L. What is the pH after adding 0.1 mol HCl?
+
+The HCl converts 0.1 mol acetate → 0.1 mol acetic acid:
+- [HA] = 0.5 + 0.1 = 0.6 M
+- [A⁻] = 0.5 − 0.1 = 0.4 M
+- pH = 4.76 + log(0.4/0.6) = 4.76 + log(0.67) ≈ 4.76 − 0.18 = 4.58
+
+The pH dropped only ~0.18 units despite adding 0.1 mol HCl. In pure water, that much HCl would crash pH to ~1.
+
+## 2.5 Bicarbonate buffer in the body
+
+Blood pH is maintained at 7.35–7.45 by the bicarbonate system:
+
+  H₂O + CO₂ ⇌ H₂CO₃ ⇌ HCO₃⁻ + H⁺
+
+Per Henderson-Hasselbalch:
+
+  pH = 6.1 + log([HCO₃⁻] / (0.03 × pCO₂))
+
+Normal: [HCO₃⁻] ≈ 24 mM, pCO₂ ≈ 40 mmHg → pH ≈ 7.40.
+
+**Acidosis** (pH < 7.35): respiratory (high CO₂) or metabolic (low HCO₃⁻).
+**Alkalosis** (pH > 7.45): respiratory (low CO₂) or metabolic (high HCO₃⁻).
+Compensation: respiratory tweaks pCO₂ in minutes; renal tweaks HCO₃⁻ in days.`,
+        examTip: `When asked "what buffer should I use to maintain pH X?", pick the one whose pKa is closest to X. Within ±1 unit is the working range.`,
+      },
+      {
+        id: 'abt-titration-curves',
+        title: '3. Titration Curves: Reading & Interpreting',
+        content: `## 3.1 The basic curve (monoprotic weak acid titrated with strong base)
+
+A titration curve plots pH (y-axis) vs volume of titrant added (x-axis). Four critical regions:
+
+1. **Initial point** — pH set by the weak acid alone (low pH, but not as low as a strong acid at the same concentration)
+2. **Buffer region** — half-equivalence at the midpoint; pH = pKa here. The curve is nearly FLAT through this region (high buffer capacity)
+3. **Equivalence point** — moles of OH⁻ added = moles of HA initially present. ALL the acid is now conjugate base. pH > 7 (basic) for weak acid + strong base titration
+4. **Past equivalence** — excess strong base; pH rises rapidly toward the pH of the strong base
+
+The CURVE TYPE identifies the acid:
+- **Strong acid + strong base** → equivalence at pH = 7; vertical jump near equivalence
+- **Weak acid + strong base** → equivalence at pH > 7 (8–10 typical); shallower buffer region
+- **Strong acid + weak base** → equivalence at pH < 7
+- **Weak acid + weak base** → no sharp equivalence; rarely tested
+
+## 3.2 Identifying pKa from a curve
+
+The pKa = pH at the half-equivalence volume. If the curve shows equivalence at 50 mL and a half-equivalence at 25 mL with pH = 4.7, then the acid's pKa = 4.7 (probably acetic acid). The MCAT loves this question.
+
+## 3.3 Polyprotic acid titration
+
+A diprotic acid (e.g., H₂CO₃ pKa₁ = 6.35, pKa₂ = 10.33) shows TWO plateaus and TWO equivalence points. For triprotic phosphoric acid (pKa₁ = 2.15, pKa₂ = 7.20, pKa₃ = 12.35) you can see three.
+
+Each plateau corresponds to a specific protonation state:
+- Phosphoric: H₃PO₄ → H₂PO₄⁻ → HPO₄²⁻ → PO₄³⁻
+- At pH = average of two adjacent pKas, the intermediate form is at its maximum concentration
+- Example: at pH = (7.20 + 12.35)/2 = 9.8, HPO₄²⁻ is the dominant species
+
+## 3.4 Amino acid titration (the MCAT favorite)
+
+Glycine, an amino acid with no charged side chain, has TWO ionizable groups:
+- α-carboxyl, pKa₁ ≈ 2.3
+- α-amino, pKa₂ ≈ 9.6
+
+At very low pH: H₃N⁺-CH₂-COOH (charge +1)
+Between pKa₁ and pKa₂: H₃N⁺-CH₂-COO⁻ (zwitterion, NET charge 0)
+At very high pH: H₂N-CH₂-COO⁻ (charge −1)
+
+The **isoelectric point (pI)** is the pH at which NET charge = 0. For an amino acid with no ionizable side chain: pI = (pKa₁ + pKa₂)/2 = (2.3 + 9.6)/2 ≈ 5.95 for glycine.
+
+For acidic side chains (Asp, Glu): pI = (pKa₁ + pKa-R)/2 — average of the two MOST ACIDIC pKas (because losing the third proton makes net charge negative).
+For basic side chains (Lys, Arg, His): pI = (pKa-R + pKa₂)/2 — average of the two MOST BASIC pKas.
+
+## 3.5 Calculating equivalence-point pH for weak acid + strong base
+
+At equivalence, you have a solution of pure A⁻ (the conjugate base of the original HA), which is a weak base:
+
+  A⁻ + H₂O ⇌ HA + OH⁻       Kb = Kw / Ka = 10⁻¹⁴ / Ka
+
+Compute [OH⁻] from x² / [A⁻] = Kb, then pOH, then pH.
+
+For 0.1 M sodium acetate (after titrating 0.1 M acetic acid to equivalence):
+- Kb = 10⁻¹⁴ / (1.8 × 10⁻⁵) = 5.6 × 10⁻¹⁰
+- x² / 0.1 = 5.6 × 10⁻¹⁰ → x = 7.5 × 10⁻⁶
+- pOH = 5.1, pH = 8.9 (typical weak-acid equivalence point)`,
+        examTip: `On a titration curve, count buffer regions to identify polyprotic acids. Each plateau = one ionizable proton. The pKa equals the pH at the FLATTEST point of each plateau.`,
+        importantNote: `Equivalence ≠ neutralization. Equivalence means stoichiometric mole-for-mole reaction. For weak acid + strong base, pH at equivalence is ABOVE 7 because the resulting conjugate base hydrolyzes.`,
+      },
+    ],
+    keyTakeaways: [
+      'pKa is the pH at which an acid is half-dissociated. If pH < pKa, the protonated form dominates; if pH > pKa, the deprotonated form dominates.',
+      'Henderson-Hasselbalch: pH = pKa + log([A⁻]/[HA]). At half-equivalence, pH = pKa.',
+      'A buffer works within ±1 pH unit of its pKa. Pick the pKa closest to your target pH.',
+      'Blood is buffered by bicarbonate (pH 7.4). Respiratory and renal compensation correct acid-base disorders on different time scales.',
+      'On a titration curve: midpoint of a plateau = pKa; steep vertical region = equivalence; polyprotic acids show multiple plateaus.',
+      'Isoelectric point (pI) = average of the two pKa values that flank the zero-charge species. For neutral amino acids: pI = (pKa_COOH + pKa_NH3+)/2.',
+    ],
+  },
+
+  // ── Gap-fix 2: Thermodynamics Applied (Chem/Phys) ────────────────────────
+  cp_thermodynamics_deep: {
+    topicId: 'cp_thermodynamics_deep',
+    title: 'Thermodynamics: ΔG, ΔH, ΔS Applied',
+    domainWeight: '~5% of Chem/Phys',
+    overview: `MCAT thermodynamics goes beyond memorizing equations. You must predict spontaneity from sign analysis, link ΔG to equilibrium constants, recognize coupled-reaction strategies (ATP hydrolysis driving uphill biochemistry), and distinguish thermodynamic vs kinetic control. The exam tests applied scenarios — protein folding stability, ligand binding, metabolic energy charge — far more often than raw calorimetry.`,
+    sections: [
+      {
+        id: 'thermo-laws',
+        title: '1. The Three State Functions: ΔH, ΔS, ΔG',
+        content: `## 1.1 Enthalpy (ΔH) — heat exchanged at constant pressure
+
+ΔH < 0 = **exothermic** (releases heat) — bond formation favored
+ΔH > 0 = **endothermic** (absorbs heat) — bond breaking dominant
+
+Bond energies are positive: breaking a bond REQUIRES energy. Forming a bond RELEASES energy. For a reaction:
+
+  ΔH_rxn ≈ Σ (bond energies broken) − Σ (bond energies formed)
+
+## 1.2 Entropy (ΔS) — disorder of the system
+
+ΔS > 0 = entropy INCREASES (more disorder, more microstates)
+ΔS < 0 = entropy DECREASES (more order)
+
+Sources of entropy increase:
+- More moles of GAS on the product side
+- Solid → liquid → gas phase transitions
+- Dissolution of a solid into solution (usually)
+- Higher temperature (always increases entropy)
+- More complex molecules from simpler ones (mixing)
+
+**Second law of thermodynamics:** total entropy of the universe always increases. ΔS_universe = ΔS_system + ΔS_surroundings > 0 for spontaneous processes.
+
+## 1.3 Gibbs free energy (ΔG) — the spontaneity criterion
+
+  **ΔG = ΔH − TΔS** (at constant T and P)
+
+| ΔH | ΔS | Spontaneous? |
+|----|----|--------------|
+| − | + | Always spontaneous (ΔG always negative) |
+| + | − | Never spontaneous (ΔG always positive) |
+| − | − | Spontaneous at LOW temperature |
+| + | + | Spontaneous at HIGH temperature |
+
+The crossover temperature for the conditional cases: T_crossover = ΔH/ΔS.
+
+**Example:** Ice melting has ΔH > 0 (energy in) and ΔS > 0 (more disorder). It's spontaneous above the melting point (T_crossover = 273 K for water).`,
+        examTip: `Always check signs first. The MCAT loves to ask "does this reaction become spontaneous at higher T?" without numbers — the answer is YES if both ΔH and ΔS are positive (or both negative — then it becomes LESS spontaneous at higher T).`,
+      },
+      {
+        id: 'thermo-equilibrium',
+        title: '2. ΔG, K, and Reaction Quotient',
+        content: `## 2.1 ΔG° and the equilibrium constant K
+
+At standard conditions (1 M concentrations, 1 atm partial pressures, 25 °C):
+
+  **ΔG° = −RT · ln(K)**
+
+where R = 8.314 J/(mol·K) and T in Kelvin. At T = 298 K, RT = 2.48 kJ/mol.
+
+Quick conversions:
+- K = 1 → ΔG° = 0 (equilibrium concentrations equal stoichiometric ratios)
+- K = 10 → ΔG° ≈ −5.7 kJ/mol (slightly product-favored)
+- K = 1000 → ΔG° ≈ −17 kJ/mol (strongly product-favored)
+- K = 10⁻³ → ΔG° ≈ +17 kJ/mol (strongly reactant-favored)
+- K = 10⁶ → ΔG° ≈ −34 kJ/mol
+
+**Rule of thumb:** ΔG° = −2.3 RT × log₁₀(K) ≈ −5.7 kJ/mol × log₁₀(K) at room temperature.
+
+## 2.2 ΔG (non-standard) vs ΔG°
+
+Under non-standard conditions:
+
+  **ΔG = ΔG° + RT · ln(Q)**
+
+where Q = reaction quotient = [products]^x / [reactants]^y at the current (not equilibrium) state.
+
+- Q < K → ΔG < 0 → reaction proceeds FORWARD (toward products)
+- Q = K → ΔG = 0 → at equilibrium
+- Q > K → ΔG > 0 → reaction proceeds in REVERSE
+
+This is why "spontaneity is direction-dependent" — a reaction with ΔG° > 0 can still proceed forward if Q ≪ K (i.e., you start far enough from equilibrium).
+
+## 2.3 Le Chatelier and ΔG
+
+Le Chatelier's principle is just the qualitative statement of the ΔG = ΔG° + RT·ln(Q) equation. Perturbing the system (add reactant, remove product, change T or P) changes Q, makes ΔG temporarily ≠ 0, and the reaction shifts until Q = K again.
+
+For a TEMPERATURE change, K itself changes (via van't Hoff equation):
+
+  d(ln K)/dT = ΔH° / (RT²)
+
+Exothermic reactions (ΔH < 0) have K that DECREASES with T. Endothermic reactions have K that increases with T. This is why heating a Haber-process N₂ + 3H₂ ⇌ 2NH₃ reaction REDUCES ammonia yield — it's exothermic.`,
+        examTip: `Memorize ΔG° ≈ −5.7 × log(K) kJ/mol at body temperature. Most MCAT thermo questions can be solved in seconds with this shortcut.`,
+        importantNote: `ΔG° tells you the equilibrium POSITION; it does NOT tell you the RATE. A reaction with very negative ΔG° can still be slow (kinetically blocked, like diamond → graphite at room temperature).`,
+      },
+      {
+        id: 'thermo-coupling',
+        title: '3. Coupled Reactions & Biological Energetics',
+        content: `## 3.1 Why coupling matters
+
+Many essential biological reactions are **endergonic** (ΔG > 0) — they wouldn't happen spontaneously. Cells solve this by COUPLING them to highly exergonic reactions, most often ATP hydrolysis (ΔG° ≈ −30.5 kJ/mol).
+
+For two coupled reactions sharing a common intermediate:
+
+  Reaction A: X → Y    ΔG° = +15 kJ/mol (endergonic, won't occur alone)
+  Reaction B: ATP + H₂O → ADP + Pi    ΔG° = −30.5 kJ/mol
+
+If we couple them (e.g., phosphorylation of X to X-P which then converts to Y):
+
+  Net: X + ATP → Y + ADP + Pi    ΔG° = +15 + (−30.5) = −15.5 kJ/mol
+
+Now the net process is spontaneous. ATP hydrolysis "drives" the uphill step. This is the central trick of metabolism.
+
+## 3.2 ATP hydrolysis details
+
+  ATP + H₂O → ADP + Pi    ΔG°' = −30.5 kJ/mol (at pH 7)
+  ATP + H₂O → AMP + PPi   ΔG°' = −45.6 kJ/mol (when more energy needed)
+
+The actual ΔG inside a cell is closer to **−50 to −60 kJ/mol** because cellular [ATP]/[ADP] ≈ 100:1 (Q is far from K), pulling ΔG more negative via the RT·ln(Q) term.
+
+**Energy charge of a cell:**
+  EC = ([ATP] + 0.5[ADP]) / ([ATP] + [ADP] + [AMP])
+
+Normal EC ≈ 0.85–0.95. Low EC (<0.5) triggers ATP-generating pathways (glycolysis, OxPhos); high EC inhibits them.
+
+## 3.3 Other "high-energy" molecules (more negative ΔG of hydrolysis than ATP)
+
+- PEP (phosphoenolpyruvate): ΔG°' = −61.9 kJ/mol → drives ATP synthesis in glycolysis (substrate-level phosphorylation)
+- 1,3-bisphosphoglycerate: −49.4 kJ/mol → drives ATP synthesis
+- Creatine phosphate: −43.1 kJ/mol → reservoir in muscle, donates Pi back to ADP
+
+ATP sits in the MIDDLE of the energy ladder, which is why it can both receive Pi from very high-energy donors AND donate Pi to lower-energy acceptors.
+
+## 3.4 Thermodynamic vs kinetic control
+
+These are SEPARATE concepts often confused:
+
+- **Thermodynamic control** = the product distribution at equilibrium is determined by ΔG° (most stable product wins, given enough time)
+- **Kinetic control** = the product distribution is determined by the reaction RATES (lowest activation energy product wins, before equilibrium is reached)
+
+At LOW temperature or SHORT reaction times → kinetic control. At HIGH temperature or LONG times → thermodynamic control.
+
+Classic example: 1,2-addition (kinetic) vs 1,4-addition (thermodynamic) to a conjugated diene with HBr. At −78 °C, the 1,2 product dominates; at 40 °C, the 1,4 (more stable) product dominates.
+
+## 3.5 Enthalpy vs entropy in protein folding
+
+Folded proteins look "more ordered" than unfolded, which suggests ΔS < 0 should oppose folding. The trick: folding is driven by the **HYDROPHOBIC EFFECT** — water molecules organized around exposed nonpolar side chains in the unfolded state become FREE when those side chains bury themselves. ΔS_water dominates and is POSITIVE for folding.
+
+  ΔG_folding = ΔH_folding − T·ΔS_water + (small ΔS_protein term)
+
+At very LOW temperature, T·ΔS_water shrinks and proteins can COLD-DENATURE. At very HIGH temperature, the protein's own entropy dominates and it heat-denatures. Stability is greatest at some intermediate "T_max stability" (often ~25–40 °C for mesophilic proteins).`,
+        examTip: `Coupling problems: add the ΔG° values of the coupled reactions. If the net ΔG° is negative, the coupling works. ATP hydrolysis can drive any reaction with ΔG° between 0 and ~+30 kJ/mol.`,
+      },
+    ],
+    keyTakeaways: [
+      'ΔG = ΔH − TΔS. Negative ΔG = spontaneous. Sign analysis alone solves many MCAT thermo questions without numbers.',
+      'ΔG° = −RT·ln(K). At 298 K, ΔG° ≈ −5.7 kJ/mol × log(K).',
+      'Q < K → forward reaction. Q = K → equilibrium. Q > K → reverse.',
+      'Coupled reactions add their ΔG° values. ATP hydrolysis (−30.5 kJ/mol) drives most endergonic biochemistry.',
+      'Exothermic reactions (ΔH < 0) have K that DECREASES with rising T (van\'t Hoff). Endothermic have K that increases.',
+      'Thermodynamic vs kinetic control: high T / long time = most stable product; low T / short time = fastest-formed product.',
+      'Protein folding is driven by hydrophobic effect (water entropy gain), not by enthalpy alone. Cold denaturation is a real phenomenon.',
+    ],
+  },
+
+  // ── Gap-fix 3: Kinematics Full (Chem/Phys) ───────────────────────────────
+  cp_kinematics_full: {
+    topicId: 'cp_kinematics_full',
+    title: 'Kinematics: Projectile, Circular & Relative Motion',
+    domainWeight: '~5% of Chem/Phys',
+    overview: `Beyond 1-D kinematics, the MCAT tests 2-D projectile motion (independent x and y components), uniform circular motion (centripetal acceleration), and relative motion between reference frames. These problems look hard but reduce to the same five kinematic equations applied separately to each axis. Master the decomposition and you'll solve them in 30 seconds.`,
+    sections: [
+      {
+        id: 'kin-projectile',
+        title: '1. Projectile Motion: Decomposing into x and y',
+        content: `## 1.1 The fundamental trick
+
+In 2-D projectile motion (no air resistance), the horizontal (x) and vertical (y) motions are **INDEPENDENT** and described by separate kinematic equations sharing only time (t):
+
+**Horizontal (constant velocity, no acceleration):**
+- x = v₀ₓ · t
+- vₓ = v₀ₓ (unchanging)
+
+**Vertical (constant acceleration g downward):**
+- y = v₀ᵧ · t − ½ · g · t²
+- vᵧ = v₀ᵧ − g · t
+- vᵧ² = v₀ᵧ² − 2g · y
+
+## 1.2 Initial velocity decomposition
+
+If an object is launched with speed v₀ at angle θ above horizontal:
+- v₀ₓ = v₀ · cos(θ)
+- v₀ᵧ = v₀ · sin(θ)
+
+## 1.3 Key derived results
+
+For a projectile launched from ground level at angle θ on level ground:
+
+**Time of flight:** t_total = 2·v₀·sin(θ)/g
+**Maximum height:** H = v₀²·sin²(θ)/(2g)
+**Range:** R = v₀²·sin(2θ)/g
+
+**Maximum range** occurs at **θ = 45°** (where sin(2θ) = 1). Complementary angles (e.g., 30° and 60°) give the SAME range.
+
+## 1.4 Worked example
+
+A ball is thrown at 20 m/s, angle 30° above horizontal. How long until it lands? How far?
+- v₀ₓ = 20·cos(30°) ≈ 20·0.87 ≈ 17.3 m/s
+- v₀ᵧ = 20·sin(30°) = 10 m/s
+- Time of flight: 2·10/10 = 2.0 s
+- Range: 17.3 · 2.0 ≈ 34.6 m
+
+## 1.5 Common pitfalls
+
+- At the **peak** of the trajectory, vᵧ = 0 but vₓ ≠ 0. The object is still MOVING, just not accelerating in the vertical direction.
+- **Speed** (not velocity) at any moment is √(vₓ² + vᵧ²).
+- Don't forget that at the LANDING (back to launch height), vᵧ = −v₀ᵧ (same magnitude, opposite sign), so total speed = launch speed.`,
+        examTip: `For a horizontal throw from a cliff: time-to-ground depends ONLY on cliff height (h = ½gt²), NOT on launch speed. Higher launch speed just gives a longer horizontal distance.`,
+      },
+      {
+        id: 'kin-circular',
+        title: '2. Uniform Circular Motion & Centripetal Force',
+        content: `## 2.1 Why circular motion is acceleration
+
+An object moving in a circle at CONSTANT SPEED is STILL ACCELERATING — its velocity vector (which includes direction) is constantly changing. The acceleration always points TOWARD THE CENTER and is called **centripetal acceleration**:
+
+  **a_c = v² / r**
+
+where v = speed, r = radius. Units: m/s².
+
+By Newton's 2nd law, this requires a net inward (centripetal) FORCE:
+
+  **F_c = m · v² / r = m · ω² · r**
+
+where ω = angular velocity in rad/s = v/r = 2π·f.
+
+## 2.2 Centripetal force is NEVER a new force
+
+This is the #1 MCAT trap. Centripetal force is whatever EXISTING force happens to point toward the center:
+
+| Situation | What provides F_c |
+|-----------|-------------------|
+| Car turning on flat road | Friction between tires and road |
+| Car on banked curve | Component of normal force (and friction) |
+| Satellite orbit | Gravity |
+| Ball on string swung horizontally | Tension in string |
+| Loop-the-loop (top of loop) | Normal force from track + gravity |
+| Electron in atomic orbit (Bohr model) | Coulomb attraction to nucleus |
+
+If you ever see "centripetal force" listed as an answer choice for "what force acts on this object," IT'S A TRAP — find the real underlying force.
+
+## 2.3 Banked curves (no friction)
+
+For a car on a banked curve of angle θ, the inward component of NORMAL force provides centripetal force:
+
+  N · sin(θ) = m · v² / r
+  N · cos(θ) = m · g
+
+Dividing: **tan(θ) = v² / (r·g)** — the ONE speed for which no friction is needed on a curve of given r and θ.
+
+## 2.4 Period & frequency
+
+  Period T = 2πr / v = 2π / ω
+  Frequency f = 1/T = ω / (2π)
+
+## 2.5 Centripetal vs centrifugal — physics vs everyday language
+
+**Centripetal** = real, inward force in the inertial frame
+**Centrifugal** = fictitious "outward" force perceived in a ROTATING reference frame
+
+When you feel "pushed outward" in a turning car, you're not actually pushed — your body is INERTIA tending to go straight while the car turns under you. The MCAT uses the inertial-frame description, so always think CENTRIPETAL (inward).`,
+        examTip: `For loop-the-loop problems: at the TOP of the loop, gravity points down (toward center), so it ADDS to whatever else provides centripetal force. Minimum speed at top: m·g = m·v²/r → v_min = √(g·r).`,
+        importantNote: `In uniform circular motion, SPEED is constant but VELOCITY is not (direction changes). KE is constant; momentum is not.`,
+      },
+      {
+        id: 'kin-relative',
+        title: '3. Relative Motion & Reference Frames',
+        content: `## 3.1 Velocity addition in 1-D
+
+If reference frame B moves at velocity v_BA relative to frame A, and object X has velocity v_XB relative to B, then:
+
+  **v_XA = v_XB + v_BA**
+
+Example: a passenger walks at 1 m/s forward inside a train moving 30 m/s. Their velocity relative to ground = 30 + 1 = 31 m/s.
+
+If the passenger walks backward at 1 m/s: 30 + (−1) = 29 m/s.
+
+## 3.2 2-D relative velocity (vector addition)
+
+A boat is heading north at 4 m/s relative to water. The river flows east at 3 m/s relative to ground. The boat's velocity relative to ground:
+
+- v_boat,ground = v_boat,water + v_water,ground
+- = (0, 4) + (3, 0) = (3, 4) m/s
+
+Magnitude = 5 m/s (3-4-5 triangle), heading = arctan(4/3) ≈ 53° N of E.
+
+## 3.3 Where will the boat land?
+
+If the river is 200 m wide (east-west banks), the boat takes 200/4 = 50 s to cross. In that time, the river carries it 3 · 50 = 150 m downstream. The boat lands 150 m downstream of where it started.
+
+To land directly across, the boat must aim UPSTREAM by angle θ such that v_boat·sin(θ) = v_current → sin(θ) = 3/4 → θ ≈ 49° upstream from due-north heading.
+
+## 3.4 Closing speed problems
+
+Two cars approach head-on at 30 m/s and 20 m/s. Their CLOSING speed (rate at which separation decreases) is 30 + 20 = 50 m/s. In car A's frame, car B approaches at 50 m/s.
+
+If they're 500 m apart, they collide in 500/50 = 10 s.
+
+## 3.5 Special relativity caveat (not MCAT-tested but worth noting)
+
+The above velocity-addition is the **Galilean** approximation, valid when v ≪ c (speed of light). For relativistic speeds, the correct formula is:
+
+  v_XA = (v_XB + v_BA) / (1 + v_XB · v_BA / c²)
+
+The MCAT does NOT test special relativity. Always use simple Galilean addition.`,
+        examTip: `For projectile motion in a moving frame (e.g., ball dropped from a moving truck), the ball has the truck's horizontal velocity at release. Relative to the truck, it falls STRAIGHT DOWN. Relative to the ground, it follows a parabola.`,
+      },
+    ],
+    keyTakeaways: [
+      'In 2-D projectile motion, x and y are independent — solve them separately, sharing only time t.',
+      'Range = v₀²·sin(2θ)/g is maximized at θ = 45°. Complementary angles give equal ranges.',
+      'Centripetal acceleration a_c = v²/r points to the center. The centripetal FORCE is always an existing force (gravity, friction, tension) — never a new one.',
+      'Banked-curve no-friction speed: tan(θ) = v²/(r·g). At the top of a loop, minimum speed = √(g·r).',
+      'Velocity addition is vector addition: v_XA = v_XB + v_BA.',
+      'Speed is constant in uniform circular motion, but velocity is NOT (direction changes). Acceleration is non-zero.',
+    ],
+  },
+
+  // ── Gap-fix 4: Electrostatics, Ohm's Law, RC Circuits (Chem/Phys) ────────
+  cp_electrostatics_circuits: {
+    topicId: 'cp_electrostatics_circuits',
+    title: 'Electrostatics, Ohm\'s Law & RC Circuits',
+    domainWeight: '~5% of Chem/Phys',
+    overview: `Electrostatics and circuits appear in roughly 4–6 questions per Chem/Phys section. The MCAT focuses on conceptual mastery (field direction, equivalent capacitance, energy storage, transient RC behavior) and short numerical calculations. Master Coulomb's law, the series/parallel rules for resistors and capacitors, Kirchhoff's loop and node rules, and the exponential charging/discharging of an RC circuit.`,
+    sections: [
+      {
+        id: 'esc-coulomb',
+        title: '1. Coulomb\'s Law, Electric Field & Potential',
+        content: `## 1.1 Coulomb's law
+
+Force between two point charges q₁ and q₂ separated by distance r:
+
+  **F = k · q₁q₂ / r²**     where k = 8.99 × 10⁹ N·m²/C²
+
+Like charges repel, opposite charges attract. Force vector along the line connecting the charges. Force is mutual (Newton's 3rd law).
+
+## 1.2 Electric field E
+
+Field at point P due to charge q at distance r:
+
+  **E = k·q / r²**     (vector, pointing AWAY from + charge, TOWARD − charge)
+
+Force on a test charge q in field E: **F = q·E**
+
+Electric field lines visualize E:
+- Start on positive charges, end on negative charges
+- Never cross
+- Density indicates field strength
+- Tangent to a line gives field direction at that point
+
+## 1.3 Electric potential V (scalar!)
+
+Potential at point P relative to infinity due to charge q at distance r:
+
+  **V = k·q / r**
+
+Note V is SCALAR (no direction), unlike E. Potentials from multiple charges add directly:
+
+  V_total = Σ k·qᵢ / rᵢ
+
+**Potential energy** of a charge q at potential V: U = q·V
+
+**Potential difference** between points: ΔV = V_B − V_A. Work done by an external force to move charge q from A to B: W = q·ΔV.
+
+## 1.4 Field-potential relationship
+
+  **E = −dV/dx** (E points from high V to low V; magnitude = slope)
+
+In a uniform field (parallel plate capacitor): V = E · d, where d is the separation. Useful: between parallel plates of voltage V and separation d, the field E = V/d everywhere between them.
+
+## 1.5 Conductors at equilibrium
+
+In a conductor in electrostatic equilibrium:
+- E = 0 inside the conductor (otherwise charges would still be moving)
+- All excess charge resides on the SURFACE
+- Surface is an equipotential (V = constant on the conductor)
+- E just outside the surface is perpendicular to the surface, magnitude σ/ε₀ where σ is surface charge density
+
+This is the basis of a Faraday cage.`,
+        examTip: `When asked to compare forces or fields with different distances, USE THE RATIO. Doubling r reduces F or E by factor of 4 (inverse square). Doubling r reduces V by factor of 2 (inverse).`,
+      },
+      {
+        id: 'esc-circuits',
+        title: '2. Ohm\'s Law, Resistors & Kirchhoff\'s Rules',
+        content: `## 2.1 Ohm's law
+
+  **V = I · R**
+
+where V = voltage (volts), I = current (amperes), R = resistance (ohms). Holds for OHMIC resistors (most components at moderate voltage). For NON-ohmic devices (diodes, light bulbs at high T), the relationship is non-linear.
+
+**Power dissipated:**
+
+  **P = I·V = I²·R = V²/R**
+
+Units: watts.
+
+## 2.2 Resistors in series and parallel
+
+**Series:** R_total = R₁ + R₂ + R₃ + ... (resistances add)
+
+Current is the SAME through all series resistors. Voltage DIVIDES proportional to R.
+
+**Parallel:** 1/R_total = 1/R₁ + 1/R₂ + 1/R₃ + ... (reciprocals add)
+
+Voltage is the SAME across all parallel resistors. Current DIVIDES inversely proportional to R.
+
+For just TWO parallel resistors: R_total = R₁·R₂ / (R₁ + R₂).
+
+**Shortcut for n identical parallel resistors of value R:** R_total = R/n.
+
+## 2.3 Kirchhoff's rules
+
+**Junction (node) rule** — conservation of charge:
+  Σ I_in = Σ I_out at every junction
+
+**Loop (mesh) rule** — conservation of energy:
+  Σ ΔV around any closed loop = 0
+
+Sign conventions:
+- Cross a resistor in the direction of conventional current → ΔV = −IR (drop)
+- Cross a battery from − to + → ΔV = +ε (gain)
+- Cross a battery from + to − → ΔV = −ε (drop)
+
+## 2.4 Worked example — voltage divider
+
+Two resistors R₁ and R₂ in series across a battery of voltage V_battery. Voltage across R₂:
+
+  V₂ = V_battery × R₂ / (R₁ + R₂)
+
+This is the "voltage divider" formula — appears constantly on MCAT circuit questions.
+
+## 2.5 Internal resistance of a battery
+
+Real batteries have internal resistance r. Terminal voltage:
+
+  V_terminal = ε − I·r
+
+where ε is the EMF and I is the current. When no current flows (open circuit), V_terminal = ε. Under load, V_terminal drops by I·r.`,
+        examTip: `For series circuits, the LARGER resistor drops more voltage. For parallel circuits, the SMALLER resistor carries more current. Use this to sanity-check answers.`,
+      },
+      {
+        id: 'esc-capacitors-rc',
+        title: '3. Capacitors and RC Circuits',
+        content: `## 3.1 Capacitance
+
+A **capacitor** stores charge Q on plates with voltage V across them:
+
+  **Q = C · V**
+
+C = capacitance (farads). For parallel-plate: C = ε₀ · A / d, where A = plate area, d = separation, ε₀ = 8.85 × 10⁻¹² F/m.
+
+**Dielectric** (insulating material between plates) INCREASES C by a factor κ (dielectric constant): C_with_dielectric = κ · C_vacuum. Common values: vacuum 1, air ≈ 1, paper 3.7, water 80.
+
+## 3.2 Energy stored in a capacitor
+
+  **U = ½ C·V² = Q·V/2 = Q²/(2C)**
+
+The factor of ½ comes from integrating (charging starts at 0 voltage, ends at V). This energy can be released suddenly (camera flash) or slowly.
+
+## 3.3 Capacitors in series and parallel (OPPOSITE of resistors)
+
+**Series:** 1/C_total = 1/C₁ + 1/C₂ + 1/C₃ + ... (reciprocals add)
+
+Charge is the SAME on all series capacitors. Voltage DIVIDES inversely proportional to C.
+
+**Parallel:** C_total = C₁ + C₂ + C₃ + ... (capacitances add)
+
+Voltage is the SAME across all parallel capacitors. Charge DIVIDES proportional to C.
+
+## 3.4 RC charging and discharging
+
+When a capacitor C is charged through a resistor R from a battery of voltage V₀:
+
+  V(t) = V₀ · (1 − e^(−t/τ))    where **τ = R·C** (time constant in seconds)
+
+After one time constant (t = τ), V has reached ~63% of V₀. After 5τ, V ≈ 99% of V₀ (essentially fully charged).
+
+When DISCHARGING (battery removed, capacitor connected through R):
+
+  V(t) = V₀ · e^(−t/τ)
+
+After τ: V has dropped to ~37% of initial. After 5τ: ~0.7%.
+
+## 3.5 MCAT trap: instantaneous vs steady-state
+
+**At t = 0+** (just after closing a switch):
+- Capacitor acts like a WIRE (zero voltage, but maximum current can flow into it)
+- Inductor acts like an OPEN CIRCUIT (no current can suddenly start)
+
+**At t → ∞** (steady state):
+- Capacitor acts like an OPEN CIRCUIT (no current flows because it's fully charged)
+- Inductor acts like a WIRE (no resistance to steady current)
+
+MCAT questions love to test this. For a circuit with a battery, resistor, and capacitor in series, the current is initially I = V/R but decays to ZERO as the capacitor charges.`,
+        examTip: `Remember the "5τ rule" — after 5 time constants, an RC circuit is essentially at steady state (>99% charged or <1% remaining).`,
+        importantNote: `Capacitors series/parallel rules are the REVERSE of resistors. This is a common source of error.`,
+      },
+    ],
+    keyTakeaways: [
+      'Coulomb\'s law: F = k·q₁q₂/r². Like charges repel, opposite attract. Inverse-square.',
+      'Electric field E (vector) and potential V (scalar) related by E = −dV/dx. Work to move charge: W = q·ΔV.',
+      'Resistors: series adds (R_total = R₁+R₂); parallel inverses add (1/R = 1/R₁+1/R₂).',
+      'Capacitors: OPPOSITE of resistors — parallel adds, series inverses add.',
+      'RC time constant τ = R·C. Charging: V(t) = V₀(1−e^(−t/τ)). After 5τ, circuit is at steady state.',
+      'At t=0+: capacitor = wire; at t→∞: capacitor = open circuit (no current).',
+      'Power dissipated: P = IV = I²R = V²/R. Energy stored in capacitor: U = ½CV².',
+    ],
+  },
+
+  // ── Gap-fix 5: Enzyme Kinetics (Bio/Biochem) ─────────────────────────────
+  bb_enzyme_kinetics: {
+    topicId: 'bb_enzyme_kinetics',
+    title: 'Enzyme Kinetics: Michaelis-Menten & Inhibition',
+    domainWeight: '~7% of Bio/Biochem',
+    overview: `Enzyme kinetics is the highest-yield biochemistry topic on the MCAT. Test-makers love it because it combines quantitative reasoning (Vmax, Km), graph interpretation (Lineweaver-Burk), and mechanism comparison (4 inhibition types). You must know the algebra, the graph shapes, and the conceptual implications cold.`,
+    sections: [
+      {
+        id: 'ek-mm',
+        title: '1. The Michaelis-Menten Equation',
+        content: `## 1.1 The model
+
+Enzyme E binds substrate S to form ES complex, which converts to product:
+
+  E + S ⇌ ES → E + P
+       k₁/k₋₁    k₂
+
+Assuming **steady state** ([ES] constant, k₁[E][S] = (k₋₁ + k₂)[ES]):
+
+  **v = Vmax · [S] / (Km + [S])**
+
+where:
+- **v** = initial reaction velocity (μmol·min⁻¹)
+- **Vmax** = maximum velocity when [S] → ∞ (all E saturated with S)
+- **Km** (Michaelis constant) = (k₋₁ + k₂)/k₁, has units of concentration (mol/L)
+
+Vmax = k₂ · [E_total]   (k₂ = kcat, the "turnover number" = max substrates per enzyme per second)
+
+## 1.2 Key features of the M-M curve
+
+Plot of v vs [S]:
+- **Hyperbolic** (not sigmoidal — that's a different model, allosteric enzymes)
+- At low [S]: v ≈ (Vmax/Km) · [S] — linear, first-order in [S]
+- At [S] = Km: v = Vmax/2 (this is the OPERATIONAL DEFINITION of Km)
+- At high [S]: v → Vmax (asymptote)
+
+## 1.3 What Km means
+
+Km is the substrate concentration at which v = Vmax/2. It's a measure of enzyme-substrate AFFINITY:
+
+- **LOW Km** = HIGH affinity (the enzyme reaches half-max at very low [S])
+- **HIGH Km** = LOW affinity (the enzyme needs lots of substrate to get going)
+
+Typical Km values: 10⁻⁶ M (high affinity, e.g., hexokinase for glucose) to 10⁻² M (low affinity, e.g., glucokinase). Km does NOT depend on enzyme concentration.
+
+## 1.4 Catalytic efficiency
+
+  k_cat / Km
+
+This ratio quantifies how efficiently an enzyme processes substrate at LOW concentrations. The maximum possible value is ~10⁸–10⁹ M⁻¹s⁻¹ — the **diffusion limit**. Enzymes that achieve this (catalase, triose phosphate isomerase) are called "kinetically perfect."
+
+## 1.5 Lineweaver-Burk (double-reciprocal) plot
+
+Taking the reciprocal of the M-M equation:
+
+  **1/v = (Km/Vmax) · (1/[S]) + 1/Vmax**
+
+This is a LINE with:
+- y-intercept = 1/Vmax
+- x-intercept = −1/Km
+- slope = Km/Vmax
+
+Lineweaver-Burk LINEARIZES the M-M data, making it easier to compare two conditions (with vs without an inhibitor) by examining how the line moves.`,
+        examTip: `If a question gives you Km and you need [S] for half-max velocity, the answer is just Km. Half-max velocity occurs AT [S] = Km by definition.`,
+      },
+      {
+        id: 'ek-inhibition',
+        title: '2. The Four Types of Reversible Inhibition',
+        content: `## 2.1 Competitive inhibition
+
+Inhibitor competes with substrate for the ACTIVE SITE. Often resembles substrate structurally.
+
+**Effect:** APPARENT Km INCREASES (you need more S to outcompete the inhibitor), Vmax UNCHANGED (at very high [S], substrate wins).
+
+**Lineweaver-Burk:** lines INTERSECT on the y-AXIS (same 1/Vmax intercept), different slopes.
+
+**Example:** methanol metabolism — methanol competes with ethanol for alcohol dehydrogenase. Treatment for methanol poisoning: give ethanol, which outcompetes methanol and prevents toxic formaldehyde production.
+
+## 2.2 Noncompetitive inhibition
+
+Inhibitor binds at a different site (allosteric), changes enzyme shape so it can't catalyze efficiently. Binds EQUALLY WELL to E or ES.
+
+**Effect:** Vmax DECREASES (some enzyme is "out of commission"), Km UNCHANGED (those enzymes still working bind substrate normally).
+
+**Lineweaver-Burk:** lines INTERSECT on the x-AXIS (same −1/Km intercept), different slopes and y-intercepts.
+
+## 2.3 Uncompetitive inhibition
+
+Inhibitor binds ONLY to the ES complex (not to free E). Locks the substrate in.
+
+**Effect:** Vmax DECREASES AND apparent Km DECREASES (uncoupling because the inhibitor "pulls" S into ES via Le Chatelier).
+
+**Lineweaver-Burk:** lines are PARALLEL (same slope, different intercepts).
+
+## 2.4 Mixed (noncompetitive variant) inhibition
+
+Inhibitor binds to both E and ES but with DIFFERENT affinities. Vmax decreases. Km can increase or decrease depending on which form is preferred.
+
+**Lineweaver-Burk:** lines intersect OFF BOTH AXES.
+
+## 2.5 Summary table
+
+| Type | Vmax | Km | Lineweaver-Burk intersection |
+|------|------|----|------------------------------|
+| Competitive | Same | ↑ | On y-axis |
+| Noncompetitive (pure) | ↓ | Same | On x-axis |
+| Uncompetitive | ↓ | ↓ | Parallel lines |
+| Mixed | ↓ | ↑ or ↓ | Off both axes |
+
+## 2.6 Irreversible inhibition
+
+Inhibitor forms a covalent bond with the enzyme (often at active site Ser, Cys, or Lys). Permanently inactivates the enzyme; only recovery is new enzyme synthesis.
+
+**Effect:** behaves like noncompetitive — Vmax ↓ (enzyme killed), Km unchanged (surviving enzyme works normally).
+
+**Examples:** aspirin (covalently acetylates COX), penicillin (acylates transpeptidase), DFP (organophosphate nerve agents on acetylcholinesterase).`,
+        examTip: `Mnemonic for inhibitor effects on Km: Competitive starts with C (↑ Km). Uncompetitive starts with U (↓ Km). Noncompetitive is in between (no change).`,
+        importantNote: `On the Lineweaver-Burk plot, the y-intercept = 1/Vmax and the x-intercept = −1/Km. If you forget which inhibition does what, REDERIVE from the algebra rather than memorizing the picture.`,
+      },
+      {
+        id: 'ek-regulation',
+        title: '3. Allosteric Regulation & Cooperativity',
+        content: `## 3.1 Allosteric enzymes don't follow Michaelis-Menten
+
+Many regulatory enzymes have MULTIPLE substrate-binding sites and show **cooperativity** — binding at one site changes affinity at other sites. Their kinetic curve is **sigmoidal** (S-shaped), not hyperbolic.
+
+The Hill equation describes this:
+
+  v = Vmax · [S]^n / (K^n + [S]^n)
+
+where n = Hill coefficient.
+- n = 1 → no cooperativity (back to M-M)
+- n > 1 → POSITIVE cooperativity (binding helps further binding)
+- n < 1 → NEGATIVE cooperativity (rare)
+
+**Hemoglobin** has n ≈ 2.8 (4 binding sites with strong positive cooperativity). The sigmoidal O₂ binding curve enables efficient O₂ pickup in lungs (high pO₂, near saturation) and release in tissues (low pO₂, steep drop in saturation).
+
+## 3.2 T and R states
+
+Allosteric enzymes interconvert between two conformations:
+- **T (tense)** state — low substrate affinity, low activity
+- **R (relaxed)** state — high substrate affinity, high activity
+
+Substrate binding shifts the equilibrium toward R. Allosteric ACTIVATORS stabilize R. Allosteric INHIBITORS stabilize T.
+
+## 3.3 Feedback inhibition
+
+The END PRODUCT of a metabolic pathway inhibits the FIRST committed step. Common allosteric pattern. Examples:
+
+- ATP inhibits phosphofructokinase (PFK-1) — slows glycolysis when energy is plentiful
+- Isoleucine inhibits threonine deaminase (its own biosynthetic pathway)
+- CTP inhibits aspartate transcarbamoylase (ATCase) — slows pyrimidine synthesis
+
+This prevents wasteful overproduction.
+
+## 3.4 Covalent modification
+
+**Phosphorylation** (by kinases, removed by phosphatases) is the most common covalent regulation. Adds a phosphoryl group to Ser, Thr, or Tyr residues. Can activate OR inactivate depending on the enzyme.
+
+Examples:
+- Glycogen phosphorylase: phosphorylation ACTIVATES it (breakdown of glycogen)
+- Glycogen synthase: phosphorylation INACTIVATES it (stops glycogen synthesis)
+
+These reciprocal effects let one signal (epinephrine → cAMP → PKA → phosphorylation) simultaneously trigger glycogen breakdown AND halt glycogen synthesis.
+
+## 3.5 Effect of pH and temperature on enzymes
+
+**pH:** each enzyme has an OPTIMAL pH (often 6–8 for cytosolic enzymes, 1.5–2 for pepsin in stomach, 8 for trypsin in intestine). Departures from optimum disrupt ionization of active-site residues and reduce activity. Extreme pH denatures the protein.
+
+**Temperature:** activity increases with T (Arrhenius — every 10 °C roughly doubles rate) UNTIL the enzyme denatures (typically 40–60 °C for most human enzymes). Above the denaturation T, activity drops to zero.`,
+        examTip: `If the kinetic curve is SIGMOIDAL, suspect allosteric regulation. M-M (hyperbolic) is for simple enzymes only.`,
+      },
+    ],
+    keyTakeaways: [
+      'M-M equation: v = Vmax·[S]/(Km+[S]). Km = [S] at which v = Vmax/2. Low Km = high affinity.',
+      'Lineweaver-Burk: 1/v = (Km/Vmax)(1/[S]) + 1/Vmax. y-intercept = 1/Vmax, x-intercept = −1/Km.',
+      'Competitive inhibition: ↑Km, Vmax unchanged (lines meet on y-axis).',
+      'Pure noncompetitive: Vmax ↓, Km unchanged (lines meet on x-axis).',
+      'Uncompetitive: BOTH Vmax and Km ↓ (parallel L-B lines).',
+      'Allosteric enzymes show SIGMOIDAL kinetics due to cooperativity (e.g., hemoglobin, n ≈ 2.8).',
+      'Feedback inhibition: end product of pathway inhibits first committed step (e.g., ATP → PFK-1).',
+    ],
+  },
+
+  // ── Gap-fix 6: Neurons & Action Potentials (Bio/Biochem) ─────────────────
+  bb_neuron_action_potential: {
+    topicId: 'bb_neuron_action_potential',
+    title: 'Neurons, Action Potentials & Synaptic Transmission',
+    domainWeight: '~6% of Bio/Biochem',
+    overview: `Neuronal signaling is tested across multiple MCAT sections (Bio/Biochem, Psych/Soc). You must master the ionic basis of resting and action potentials, the all-or-none firing rule, refractory periods, conduction velocity (myelination, saltatory conduction), and synaptic transmission including EPSPs/IPSPs and neurotransmitter classes.`,
+    sections: [
+      {
+        id: 'nap-resting',
+        title: '1. Resting Membrane Potential',
+        content: `## 1.1 Setting up the gradient
+
+Neurons maintain a resting membrane potential of approximately **−70 mV** (inside negative relative to outside). This is established by:
+
+1. **Na⁺/K⁺ ATPase pump** — uses 1 ATP to pump 3 Na⁺ OUT and 2 K⁺ IN per cycle. This is electrogenic (net charge moved per cycle) but contributes only ~5 mV to the resting potential.
+2. **Differential ion permeability** at rest — the membrane is much more permeable to K⁺ than to Na⁺ (via K⁺ leak channels). K⁺ tends to leak OUT down its concentration gradient, leaving the inside negative.
+
+## 1.2 Equilibrium potentials (Nernst equation)
+
+The equilibrium potential E_X for ion X is the voltage at which net flux of X = 0:
+
+  **E_X = (RT/zF) · ln([X]_out / [X]_in)**
+
+At 37 °C with z = +1: E_X = 61.5 mV · log₁₀([X]_out / [X]_in).
+
+For physiological gradients:
+- **E_K ≈ −90 mV** (high K⁺ inside; K⁺ wants to leave)
+- **E_Na ≈ +60 mV** (high Na⁺ outside; Na⁺ wants to enter)
+- **E_Cl ≈ −65 mV**
+- **E_Ca ≈ +120 mV**
+
+The actual membrane potential is closer to E_K than E_Na because resting permeability favors K⁺.
+
+## 1.3 Goldman-Hodgkin-Katz equation
+
+A weighted sum of equilibrium potentials:
+
+  V_m = (RT/F) · ln[(P_K[K]_o + P_Na[Na]_o + P_Cl[Cl]_i) / (P_K[K]_i + P_Na[Na]_i + P_Cl[Cl]_o)]
+
+At rest, P_K ≫ P_Na, P_Cl, so V_m ≈ E_K ≈ −70 mV. During an action potential, P_Na becomes dominant briefly and V_m shoots toward E_Na (+60 mV).
+
+## 1.4 Why −70 mV, not exactly E_K?
+
+If only K⁺ could move, V_m would equal E_K (−90 mV). But the membrane has SMALL Na⁺ permeability too, and Na⁺ wants to depolarize the cell. The compromise is −70 mV — closer to E_K because P_K ≫ P_Na, but not at E_K itself.`,
+        examTip: `Remember: the ion with the HIGHEST permeability dominates V_m. At rest, that's K⁺. During an AP upstroke, it's briefly Na⁺.`,
+      },
+      {
+        id: 'nap-ap',
+        title: '2. The Action Potential: All-or-Nothing',
+        content: `## 2.1 The five phases
+
+When a depolarizing stimulus brings V_m to the **threshold** (~−55 mV), voltage-gated Na⁺ channels open in a rapid cascade:
+
+1. **Resting** (−70 mV): Na⁺ channels closed (m-gates closed), K⁺ leak only
+2. **Rapid depolarization** (−55 mV → +40 mV): Na⁺ channels open, massive Na⁺ influx, V_m rockets toward E_Na
+3. **Peak/Repolarization** (~+40 mV): Na⁺ channels INACTIVATE (h-gates close); voltage-gated K⁺ channels open with delay; K⁺ flows OUT
+4. **Hyperpolarization** (down to ~−90 mV): K⁺ channels stay open too long; V_m undershoots E_K
+5. **Return to rest** (back to −70 mV): K⁺ channels close, Na⁺/K⁺ pump restores gradients
+
+## 2.2 All-or-nothing principle
+
+If the stimulus is BELOW threshold, no AP. If AT OR ABOVE threshold, a FULL AP — same amplitude, same shape, regardless of stimulus strength. Strength of the signal is encoded by **frequency** of APs, not amplitude.
+
+## 2.3 Refractory periods
+
+**Absolute refractory period:** Na⁺ channels are inactivated; another AP is IMPOSSIBLE no matter how strong the stimulus. Lasts ~1–2 ms.
+
+**Relative refractory period:** Some Na⁺ channels have recovered, but the membrane is hyperpolarized; a STRONGER-than-normal stimulus is needed. Lasts ~2–5 ms.
+
+The refractory period:
+- Limits maximum firing rate (~500 Hz for fast neurons)
+- Ensures UNIDIRECTIONAL propagation (AP can't go backward because the just-fired region is refractory)
+
+## 2.4 Propagation along the axon
+
+**Unmyelinated:** AP propagates continuously, slow (~1 m/s).
+
+**Myelinated:** Saltatory conduction — APs "jump" from one Node of Ranvier to the next; much faster (50–100 m/s). Myelin (Schwann cells in PNS, oligodendrocytes in CNS) acts as an insulator, preventing ionic leakage between nodes.
+
+**Demyelinating diseases** (multiple sclerosis, Guillain-Barré) slow or block conduction.
+
+## 2.5 Conduction velocity factors
+
+- **Axon diameter:** larger → faster (lower resistance, more current per unit time)
+- **Myelination:** myelinated → much faster
+- **Temperature:** higher T → faster (within physiological range)`,
+        examTip: `If a question asks what happens when extracellular [K⁺] increases: E_K becomes LESS negative, the membrane DEPOLARIZES at rest, which can either trigger APs (low increase) or cause prolonged refractoriness (high increase, like in cardiac arrest from hyperkalemia).`,
+        importantNote: `The "all-or-nothing" principle applies only to ACTION POTENTIALS (axon firing). Graded potentials (EPSPs, IPSPs, sensory receptor potentials, end-plate potentials) ARE proportional to stimulus strength and can sum.`,
+      },
+      {
+        id: 'nap-synapse',
+        title: '3. Synaptic Transmission',
+        content: `## 3.1 The chemical synapse cascade
+
+When an AP reaches the axon terminal:
+
+1. **Voltage-gated Ca²⁺ channels open** (terminal depolarized)
+2. Ca²⁺ flows in (E_Ca ≈ +120 mV → strong drive)
+3. Ca²⁺ triggers **synaptic vesicle fusion** with presynaptic membrane (SNARE proteins)
+4. Neurotransmitter (NT) **released into synaptic cleft** by exocytosis
+5. NT diffuses across cleft (~20 nm) and **binds postsynaptic receptors**
+6. Receptors open ion channels (directly, if ionotropic; via second messengers, if metabotropic)
+7. Postsynaptic potential generated (EPSP or IPSP)
+8. NT is REMOVED (degraded, reuptake, or diffusion away)
+
+## 3.2 EPSPs vs IPSPs
+
+**EPSP (excitatory postsynaptic potential):** depolarizing — usually Na⁺ in OR K⁺ stays in OR Ca²⁺ in. Brings V_m toward threshold.
+
+**IPSP (inhibitory postsynaptic potential):** hyperpolarizing — usually Cl⁻ in OR K⁺ out. Pushes V_m AWAY from threshold.
+
+**Summation:**
+- **Temporal:** rapid sequence of EPSPs from the same synapse add up
+- **Spatial:** simultaneous EPSPs from different synapses add up
+
+If summed potential reaches threshold at the axon hillock, an AP fires. The hillock is the "decision-making" zone.
+
+## 3.3 Major neurotransmitter classes
+
+| NT | Class | Main effect | Receptor types |
+|----|-------|-------------|----------------|
+| Acetylcholine (ACh) | Choline-derived | Excitatory (mostly) | Nicotinic (ionotropic), Muscarinic (metabotropic) |
+| Glutamate | Amino acid | Excitatory (major CNS) | AMPA, NMDA (both ionotropic), mGluR (metabotropic) |
+| GABA | Amino acid | Inhibitory (major CNS) | GABA_A (Cl⁻ ionotropic), GABA_B (K⁺ metabotropic) |
+| Glycine | Amino acid | Inhibitory (spinal cord) | GlyR (Cl⁻ ionotropic) |
+| Dopamine | Monoamine | Mixed; reward, motor control | D₁–D₅ (all metabotropic) |
+| Serotonin (5-HT) | Monoamine | Mood, sleep, appetite | 5-HT₁ to 5-HT₇ |
+| Norepinephrine (NE) | Monoamine | Arousal, fight-or-flight | α, β adrenergic (metabotropic) |
+| Epinephrine | Monoamine | Adrenal/sympathetic | α, β adrenergic |
+
+## 3.4 Removal mechanisms
+
+- **ACh:** degraded by acetylcholinesterase (AChE) in the cleft
+- **Glutamate, GABA:** reuptake by transporters on neurons and glia
+- **Dopamine, Serotonin, NE:** reuptake by DAT, SERT, NET — pharmacologically important (SSRIs, SNRIs, cocaine)
+
+## 3.5 Common drug actions on synapses
+
+- **SSRIs** (fluoxetine): block serotonin reuptake → more 5-HT in cleft → mood elevation
+- **Benzodiazepines** (diazepam): allosterically enhance GABA_A → more Cl⁻ in → inhibition → sedation/anxiolysis
+- **Acetylcholinesterase inhibitors** (donepezil, organophosphates): prevent ACh breakdown → prolonged ACh action
+- **Botulinum toxin:** prevents ACh release from motor neurons → paralysis
+- **Curare:** competitive antagonist at nicotinic receptors → blocks neuromuscular transmission`,
+        examTip: `When asked which NT/receptor is involved in a clinical scenario, map: motor neuron → ACh on nicotinic; CNS excitation → glutamate; CNS inhibition → GABA; autonomic post-ganglionic sympathetic → NE; parasympathetic → ACh on muscarinic.`,
+      },
+    ],
+    keyTakeaways: [
+      'Resting V_m ≈ −70 mV, dominated by K⁺ permeability (close to E_K = −90 mV).',
+      'Nernst: E_ion = 61.5·log([out]/[in]) mV at 37 °C. Membrane potential dominated by the most-permeable ion.',
+      'Action potential: depolarization → Na⁺ in → peak → Na⁺ inactivation + K⁺ out → hyperpolarization → reset.',
+      'All-or-nothing: subthreshold = nothing, suprathreshold = full AP. Signal strength encoded by frequency.',
+      'Refractory period (Na⁺ channel inactivation) limits firing rate and forces unidirectional propagation.',
+      'Myelination → saltatory conduction → 50–100× faster than unmyelinated.',
+      'Synaptic transmission: AP → Ca²⁺ in → vesicle fusion → NT release → postsynaptic receptors → EPSP/IPSP → summation at axon hillock.',
+    ],
+  },
+
+  // ── Gap-fix 7: Cardiovascular Physiology (Bio/Biochem) ───────────────────
+  bb_cardio_physiology: {
+    topicId: 'bb_cardio_physiology',
+    title: 'Cardiovascular Physiology: Output, Preload, Afterload',
+    domainWeight: '~5% of Bio/Biochem',
+    overview: `Cardiovascular physiology is heavily tested because it integrates cellular biology (ion channels, gap junctions), organ physiology (cardiac cycle, pressure-volume loops), and homeostatic regulation (baroreceptor reflex). You should know how cardiac output is calculated, how preload/afterload/contractility independently affect stroke volume, and how the body autoregulates blood pressure.`,
+    sections: [
+      {
+        id: 'cv-output',
+        title: '1. Cardiac Output and Its Determinants',
+        content: `## 1.1 The fundamental equation
+
+  **Cardiac Output (CO) = Heart Rate (HR) × Stroke Volume (SV)**
+
+Typical resting values: HR ~70 bpm, SV ~70 mL → CO ≈ 5 L/min.
+
+During exercise, CO can rise to 25 L/min via both HR (up to ~200 bpm) and SV (up to ~120 mL).
+
+## 1.2 What changes HR?
+
+HR is set by the SA node and modulated by autonomic input:
+
+- **Sympathetic** (NE on β₁ receptors) → ↑HR (positive chronotropy)
+- **Parasympathetic** (ACh on muscarinic) → ↓HR (negative chronotropy via vagal tone)
+
+At rest, parasympathetic tone dominates; without it, intrinsic SA rate is ~100 bpm.
+
+## 1.3 What changes SV?
+
+Three independent factors:
+
+1. **Preload** (end-diastolic volume) — how full the ventricle is before contraction
+2. **Afterload** (aortic pressure / TPR) — what the ventricle pumps against
+3. **Contractility** (inotropy) — intrinsic strength of contraction at a given preload
+
+  **SV = EDV − ESV**
+
+Where EDV = end-diastolic volume, ESV = end-systolic volume.
+
+## 1.4 The Frank-Starling law
+
+"The heart pumps what it receives." Increasing **preload** (more venous return → larger EDV → more stretch on sarcomeres) → stronger contraction → larger SV. This is the SAME mechanism by which skeletal muscle force depends on initial sarcomere length.
+
+Importance: balances output of left and right ventricles automatically. If right ventricle pumps more, left receives more, stretches more, pumps more. Equilibrium maintained without nervous control.
+
+## 1.5 Preload determinants
+
+Preload = EDV, determined by:
+- **Venous return** (volume status, body position, skeletal muscle pump, breathing)
+- **Atrial contraction** ("atrial kick" adds ~10–20% to EDV)
+- **Ventricular compliance** (stiffer ventricle fills less for same atrial pressure)
+
+## 1.6 Afterload
+
+Afterload = pressure the ventricle must overcome to eject blood. Roughly equals arterial systolic pressure (for left ventricle) or pulmonary systolic (for right ventricle).
+
+**Increased afterload** (hypertension, aortic stenosis) → ↓SV at any given preload and contractility → ESV rises.
+
+## 1.7 Contractility (inotropy)
+
+INDEPENDENT of preload — describes the strength of contraction at a given EDV. Modulated by:
+
+- **Sympathetic stimulation** (β₁ receptors, NE) → ↑ contractility
+- **Drugs:** digoxin, dobutamine increase; β-blockers, Ca²⁺ blockers decrease
+- **Metabolic state:** acidosis, hypoxia decrease
+
+On the pressure-volume loop, increased contractility steepens the ESPVR (end-systolic pressure-volume relationship) line.`,
+        examTip: `When asked which factor changed: if SV changes with no change in EDV → contractility (or afterload). If SV changes WITH a change in EDV at constant contractility → preload (Frank-Starling).`,
+      },
+      {
+        id: 'cv-cycle',
+        title: '2. The Cardiac Cycle & Pressure-Volume Loops',
+        content: `## 2.1 The four phases (left ventricle perspective)
+
+1. **Isovolumetric contraction** — both valves closed; pressure rises rapidly, volume CONSTANT
+2. **Ventricular ejection** — aortic valve opens (when LV pressure > aortic pressure); blood ejected; volume drops from EDV to ESV
+3. **Isovolumetric relaxation** — both valves closed; pressure drops; volume constant at ESV
+4. **Ventricular filling** — mitral valve opens (when LV pressure < atrial pressure); volume rises from ESV to EDV
+
+## 2.2 Pressure-volume (PV) loop landmarks
+
+The PV loop is a closed counterclockwise loop with four corners:
+- **Point A** (lower right): end-diastole, valve about to close. Volume = EDV, pressure = low (~5–10 mmHg)
+- **Point B** (upper right): aortic valve opens. Volume = EDV, pressure = diastolic aortic (~80 mmHg)
+- **Point C** (upper left): end-systole, aortic valve closes. Volume = ESV, pressure = low end of systolic
+- **Point D** (lower left): mitral valve opens. Volume = ESV, pressure = very low
+
+**Stroke work** = area enclosed by the PV loop ≈ SV × MAP.
+
+## 2.3 Effects on the PV loop
+
+| Change | EDV | ESV | SV | Loop shape |
+|--------|-----|-----|----|----|
+| ↑ preload | ↑ | ~ | ↑ | Loop shifts RIGHT |
+| ↑ afterload | ~ | ↑ | ↓ | Loop taller, narrower |
+| ↑ contractility | ~ | ↓ | ↑ | Loop wider, ESV decreases |
+
+## 2.4 The two heart sounds
+
+- **S1** ("lub") — closure of MITRAL and TRICUSPID valves at start of systole
+- **S2** ("dub") — closure of AORTIC and PULMONIC valves at start of diastole
+
+**Splitting of S2** during inspiration is normal (decreased intrathoracic pressure → increased venous return → right ventricle ejection lasts longer → pulmonic valve closes later than aortic).
+
+**S3** — early diastolic; rapid filling sound; normal in young, pathological (heart failure) in older adults.
+**S4** — late diastolic; atrial kick into stiff ventricle; usually pathological.
+
+## 2.5 The ECG and the cardiac cycle
+
+- **P wave** — atrial depolarization (atrial contraction follows ~50 ms later)
+- **QRS complex** — ventricular depolarization (atrial repolarization buried inside)
+- **T wave** — ventricular repolarization
+- **PR interval** — AV conduction delay (~120–200 ms)
+- **QT interval** — total ventricular electrical activity
+
+Cardiac cycle timing:
+- QRS → ventricular contraction begins
+- T wave end → ventricular relaxation begins
+- The whole cycle at 75 bpm takes ~0.8 s (systole ~0.3 s + diastole ~0.5 s)`,
+        examTip: `On a PV loop, identify the change by looking at which corner moves. EDV change = right corners shift; ESV change = upper-left corner shifts; afterload change = upper plateau height shifts.`,
+      },
+      {
+        id: 'cv-regulation',
+        title: '3. Blood Pressure Regulation: Baroreceptor & RAAS',
+        content: `## 3.1 Mean arterial pressure (MAP)
+
+  **MAP = CO × TPR**
+
+where TPR = total peripheral resistance (mainly arteriolar tone). Normal MAP ≈ 90 mmHg.
+
+Approximation: **MAP ≈ DBP + ⅓(SBP − DBP)** — diastolic plus one-third of pulse pressure. For 120/80: MAP ≈ 80 + 13 = 93 mmHg.
+
+## 3.2 Baroreceptor reflex (the FAST, neural response)
+
+Stretch receptors in the **carotid sinus** and **aortic arch** sense arterial wall tension (∝ pressure):
+
+- **↑ BP** → ↑ baroreceptor firing → brainstem (NTS) → ↑ parasympathetic, ↓ sympathetic → ↓ HR, ↓ contractility, ↓ TPR → ↓ BP
+- **↓ BP** → ↓ baroreceptor firing → ↓ parasympathetic, ↑ sympathetic → ↑ HR, ↑ contractility, ↑ TPR → ↑ BP
+
+This loop operates in SECONDS — corrects acute BP changes (e.g., standing up).
+
+**Orthostatic hypotension** = failure of this reflex; dizzy on standing.
+
+## 3.3 The RAAS (slow, hormonal)
+
+When kidney perfusion drops (sensed at the juxtaglomerular cells):
+
+1. **Renin** secreted by juxtaglomerular cells
+2. Renin converts angiotensinogen (liver) → **angiotensin I**
+3. **ACE** (lung) converts angiotensin I → **angiotensin II**
+4. Angiotensin II effects:
+   - Vasoconstriction → ↑ TPR → ↑ BP
+   - Aldosterone release (adrenal cortex) → ↑ Na⁺ and water retention (kidney) → ↑ blood volume → ↑ BP
+   - ADH release (posterior pituitary) → ↑ water retention
+   - Thirst (hypothalamus)
+
+Time scale: minutes to hours.
+
+## 3.4 ADH (vasopressin)
+
+Released by posterior pituitary in response to:
+- ↑ Plasma osmolality (osmoreceptors in hypothalamus) — primary stimulus
+- ↓ Blood volume / pressure (baroreceptors) — secondary stimulus
+
+Effect: inserts aquaporins in renal collecting duct → ↑ water reabsorption → concentrated urine, retained water.
+
+## 3.5 Atrial natriuretic peptide (ANP) — the BP-LOWERING hormone
+
+Released by ATRIAL myocytes when stretched (high blood volume). Effects:
+- Promotes Na⁺ excretion (natriuresis)
+- Inhibits renin, aldosterone, ADH
+- Vasodilates
+
+Net effect: lowers blood volume and BP. Opposite of RAAS.
+
+## 3.6 Antihypertensive drug classes (USMLE/MCAT crossover)
+
+- **ACE inhibitors** (lisinopril): block AT I → AT II conversion
+- **ARBs** (losartan): block angiotensin II receptors
+- **Diuretics** (HCTZ, furosemide): reduce blood volume
+- **β-blockers** (metoprolol): block β₁ → ↓HR, ↓contractility, ↓renin
+- **Ca²⁺-channel blockers** (amlodipine): vasodilate arterioles → ↓TPR`,
+        examTip: `If asked which mechanism corrects acute BP drop: BAROCEPTOR REFLEX (seconds). If asked which mechanism corrects chronic low volume: RAAS (hours-days).`,
+      },
+    ],
+    keyTakeaways: [
+      'Cardiac output = HR × SV. Normal CO ≈ 5 L/min. Stroke volume = EDV − ESV.',
+      'Stroke volume affected by preload (Frank-Starling), afterload, and contractility — three independent variables.',
+      'PV loop: counterclockwise, four corners. Area = stroke work. Changes in EDV/ESV/peak pressure tell you which factor changed.',
+      'S1 = AV valve closure (mitral, tricuspid). S2 = semilunar valve closure (aortic, pulmonic). Splitting of S2 during inspiration is normal.',
+      'MAP = CO × TPR ≈ DBP + ⅓(SBP−DBP).',
+      'Baroreceptor reflex (carotid/aortic) corrects BP in SECONDS. RAAS corrects in hours.',
+      'RAAS: low renal perfusion → renin → angiotensin II → vasoconstriction + aldosterone → Na/water retention → higher BP.',
+    ],
+  },
+
+  // ── Gap-fix 8: Hardy-Weinberg & Population Genetics (Bio/Biochem) ────────
+  bb_hardy_weinberg: {
+    topicId: 'bb_hardy_weinberg',
+    title: 'Population Genetics & Hardy-Weinberg Equilibrium',
+    domainWeight: '~3% of Bio/Biochem',
+    overview: `Hardy-Weinberg is the foundation of population genetics on the MCAT. Problems typically give you allele or genotype frequencies in a population and ask you to compute the others, or to predict whether the population is evolving. You must know the assumptions, the algebra (p²+2pq+q²=1), and chi-square testing for HWE compliance.`,
+    sections: [
+      {
+        id: 'hw-equation',
+        title: '1. The Hardy-Weinberg Equations',
+        content: `## 1.1 Allele frequencies
+
+For a gene with two alleles A and a:
+- p = frequency of allele A
+- q = frequency of allele a
+- **p + q = 1** (all allele frequencies sum to 1)
+
+## 1.2 Genotype frequencies under HWE
+
+If the population is in Hardy-Weinberg equilibrium:
+- AA frequency = p²
+- Aa frequency = 2pq
+- aa frequency = q²
+- **p² + 2pq + q² = 1**
+
+The factor of 2 on 2pq is because heterozygotes can be formed in two ways (A from mother + a from father, OR a from mother + A from father).
+
+## 1.3 Five assumptions of HWE
+
+For a population to remain in HWE, ALL of the following must hold:
+
+1. **No mutation** at the locus
+2. **No migration** (no gene flow in or out)
+3. **No selection** (all genotypes have equal fitness)
+4. **Random mating** (no assortative mating, no inbreeding)
+5. **Large population** (no genetic drift from small sample effects)
+
+If any assumption is violated, the population is EVOLVING at that locus. The MCAT often asks "which assumption is violated?" given a scenario.
+
+## 1.4 Worked example — autosomal recessive disease
+
+Cystic fibrosis affects ~1 in 2500 white Americans (autosomal recessive). What fraction of the population are carriers?
+
+- Disease frequency = aa = q² = 1/2500
+- q = √(1/2500) = 1/50 = 0.02
+- p = 1 − q = 0.98
+- Carrier frequency = 2pq = 2 × 0.98 × 0.02 ≈ 0.04 = 1 in 25
+
+So about 4% of the population is heterozygous carriers, even though only 0.04% have the disease. This 100-fold difference (carriers >> affected) is a key insight for rare recessive conditions.
+
+## 1.5 X-linked allele frequencies
+
+For X-linked traits, males have only one X allele, so:
+- Male frequency of trait = q (allele frequency)
+- Female frequency of trait = q² (homozygous for the X-linked allele)
+
+For color blindness (q ≈ 0.08):
+- Affected males: ~8%
+- Affected females: q² ≈ 0.6%
+
+This is why X-linked recessive diseases (hemophilia A, color blindness, Duchenne muscular dystrophy) are much more common in males.`,
+        examTip: `If a problem gives you the DISEASE frequency for an autosomal recessive condition, that's q² — take the SQUARE ROOT to get q (the allele frequency). Common error: confusing disease frequency with allele frequency.`,
+      },
+      {
+        id: 'hw-evolution',
+        title: '2. Forces that Change Allele Frequencies (Microevolution)',
+        content: `## 2.1 Natural selection
+
+Different genotypes have different fitness (reproductive success). Allele frequencies shift over generations toward whichever alleles have higher fitness.
+
+**Types of selection:**
+
+- **Directional:** one extreme is favored (e.g., long peppered moths during industrial revolution)
+- **Stabilizing:** intermediate phenotype favored, both extremes selected against (e.g., human birth weight)
+- **Disruptive:** both extremes favored, intermediate selected against (e.g., bimodal beak size in Darwin's finches during droughts)
+
+## 2.2 Heterozygote advantage (balanced polymorphism)
+
+Sometimes Aa has HIGHER fitness than either AA or aa. This MAINTAINS both alleles in the population at predictable frequencies.
+
+**Classic example: sickle cell anemia.** In malaria-endemic regions:
+- HbAA — fully susceptible to malaria
+- HbAS (carrier) — partial malaria resistance, no sickle cell disease
+- HbSS — severe sickle cell anemia, malaria resistant
+
+The heterozygote advantage in malaria zones maintains the HbS allele at relatively high frequency despite the deadly homozygous form.
+
+## 2.3 Genetic drift
+
+RANDOM changes in allele frequencies due to chance, especially in small populations. Two important special cases:
+
+- **Bottleneck effect:** a catastrophe drastically reduces population size; surviving allele frequencies may differ from original (e.g., cheetahs have extremely low genetic diversity)
+- **Founder effect:** a small group founds a new population; their allele frequencies (which may differ from the source population by chance) become the new baseline (e.g., elevated Tay-Sachs in Ashkenazi Jews, elevated polydactyly in Amish)
+
+Drift is most powerful in SMALL populations. In very large populations, drift is negligible.
+
+## 2.4 Gene flow (migration)
+
+Movement of alleles between populations homogenizes them. Increases genetic variation WITHIN a population, decreases variation BETWEEN populations.
+
+## 2.5 Mutation
+
+New allele creation. Usually a slow, weak force compared to selection or drift. But mutation is the ULTIMATE source of all genetic variation.
+
+## 2.6 Non-random mating (assortative mating)
+
+- **Positive assortative:** like with like (e.g., similar height) → ↑ homozygotes, ↓ heterozygotes
+- **Inbreeding:** mating with relatives → ↑ homozygotes, especially of rare deleterious alleles → "inbreeding depression"
+
+Inbreeding does NOT change allele frequencies (p and q), but it DOES change GENOTYPE frequencies (more homozygotes than HWE predicts).`,
+        examTip: `If the OBSERVED genotype frequencies match HWE predictions (within statistical noise), the population is at equilibrium for THAT locus. It doesn't mean evolution isn't happening at OTHER loci.`,
+      },
+      {
+        id: 'hw-chi-square',
+        title: '3. Chi-Square Testing & Other Concepts',
+        content: `## 3.1 Chi-square test for HWE
+
+To test whether observed genotype frequencies match HWE expectations:
+
+  **χ² = Σ (O − E)² / E**
+
+where O = observed counts, E = expected counts (calculated from p, q under HWE).
+
+Degrees of freedom = (number of genotypes) − (number of allele frequencies estimated) − 1.
+For a 3-genotype, 2-allele case: df = 3 − 1 − 1 = 1.
+
+Compare χ² to critical value (3.84 for df=1, p=0.05). If χ² > 3.84, REJECT HWE (population is evolving).
+
+## 3.2 Example chi-square calculation
+
+Survey of 1000 people for a gene with two alleles:
+- Observed: 360 AA, 480 Aa, 160 aa
+- Allele frequencies from observation: p = (2·360 + 480)/2000 = 1200/2000 = 0.6
+- Expected if HWE: p² = 0.36 → 360 AA, 2pq = 0.48 → 480 Aa, q² = 0.16 → 160 aa
+- χ² = (360−360)²/360 + (480−480)²/480 + (160−160)²/160 = 0
+- df = 1, χ² = 0 → cannot reject HWE; observed = expected exactly
+
+(Real surveys would show some deviation; the question is whether it exceeds chance.)
+
+## 3.3 Linkage and recombination
+
+Two genes on the SAME chromosome are LINKED — they tend to be inherited together rather than independently (violation of Mendel's Independent Assortment).
+
+**Recombination frequency** between two loci = fraction of offspring showing recombinant phenotypes. Used as a map distance unit:
+
+- 1 cM (centimorgan) = 1% recombination frequency
+- Unlinked genes (different chromosomes OR very far apart on same chromosome): 50% recombination
+
+Closer genes → less recombination → tighter linkage.
+
+## 3.4 Pedigree analysis
+
+Pedigree symbols:
+- Squares = males, circles = females
+- Filled = affected, empty = unaffected, half-filled = carrier
+- Horizontal line connecting = mating, vertical line down = offspring
+
+**Inheritance patterns to recognize:**
+
+| Pattern | Clue |
+|---------|------|
+| Autosomal dominant | Affected in every generation; M = F affected; affected child needs affected parent |
+| Autosomal recessive | Skip generations; M = F affected; unaffected parents → affected child = carriers |
+| X-linked recessive | Males > Females; no male-to-male transmission; affected daughters need affected father AND carrier mother |
+| X-linked dominant | All daughters of affected fathers affected; no male-to-male |
+| Mitochondrial | ONLY mothers transmit; ALL children of affected mother are affected |
+
+## 3.5 Heritability (h²)
+
+h² = proportion of phenotypic variance explained by genetic variance:
+
+  h² = Var_genetic / Var_phenotypic
+
+- h² = 1 → 100% genetic, no environmental effect
+- h² = 0 → entirely environmental
+- Typical h² for human traits: height ~0.8, IQ ~0.5, weight ~0.7, schizophrenia ~0.8
+
+Note: heritability is a POPULATION statistic, not an individual one. It doesn't say what fraction of YOUR height is genetic — it says how much of the VARIATION between people is genetic.`,
+        examTip: `If a chi-square question gives you data, compute expected counts FIRST from allele frequencies, then plug into χ² = Σ(O−E)²/E. Don't try to compute χ² from genotype frequencies directly.`,
+        importantNote: `HWE is a NULL HYPOTHESIS — populations don't HAVE to be in HWE. The test tells you whether the null can be rejected. Most natural populations are CLOSE to HWE for most loci because the 5 assumptions are approximately met.`,
+      },
+    ],
+    keyTakeaways: [
+      'HWE equations: p+q=1, p²+2pq+q²=1. Use disease frequency q² to find q = √q²; carriers = 2pq.',
+      'Five HWE assumptions: no mutation, no migration, no selection, random mating, large population.',
+      'For autosomal recessive rare diseases, carriers (2pq) ≫ affected (q²). 1 in 2500 affected ≈ 1 in 25 carriers.',
+      'X-linked recessive: males affected at rate q, females at rate q². Males are much more commonly affected.',
+      'Heterozygote advantage maintains balanced polymorphism (sickle cell + malaria is the classic example).',
+      'Genetic drift dominates in small populations: bottleneck and founder effects.',
+      'Chi-square test: χ² = Σ(O−E)²/E. df = 1 for 3-genotype, 2-allele HWE. Critical value 3.84 at p=0.05.',
+    ],
+  },
+
+  // ── Gap-fix 9: Social Psych Advanced (Psych/Soc) ─────────────────────────
+  ps_social_psych_advanced: {
+    topicId: 'ps_social_psych_advanced',
+    title: 'Attribution, Conformity & Bystander Effect',
+    domainWeight: '~6% of Psych/Soc',
+    overview: `Advanced social psychology is heavily tested because it ties cleanly to clinical scenarios. You must know the major attribution biases, the classic conformity and obedience studies (Asch, Milgram), and the social factors that suppress prosocial behavior (bystander effect, diffusion of responsibility). MCAT questions present a vignette and ask you to name the concept.`,
+    sections: [
+      {
+        id: 'ssp-attribution',
+        title: '1. Attribution Theory & Biases',
+        content: `## 1.1 Attribution = explaining behavior
+
+When we observe someone's behavior, we attribute it to either:
+- **Dispositional (internal) causes** — personality, character, ability
+- **Situational (external) causes** — environment, circumstances, luck
+
+## 1.2 The fundamental attribution error (FAE)
+
+When explaining OTHERS' behavior, we OVER-attribute to disposition and UNDER-attribute to situation.
+
+**Example:** someone cuts in front of you in traffic. You think "what a rude person!" (dispositional). You don't consider that they might be rushing to the ER (situational).
+
+The FAE is REDUCED in:
+- Eastern (collectivist) cultures, which weigh situation more heavily
+- When you have personal experience with the situation
+- When you are explicitly reminded of situational factors
+
+## 1.3 Actor-observer bias
+
+For OTHERS we use dispositional attribution; for OURSELVES we use situational attribution.
+
+**Example:** "I was late because of traffic" (situational, self) vs "She was late because she's irresponsible" (dispositional, other).
+
+This bias arises because we have more information about our own constraints than about others'.
+
+## 1.4 Self-serving bias
+
+Attributing OUR successes to disposition (skill, intelligence) but OUR failures to situation (bad luck, unfair test). Protects self-esteem.
+
+## 1.5 Just-world hypothesis
+
+Belief that people get what they deserve and deserve what they get. Leads to victim-blaming (rape victims, poor people, disease patients) as a way of preserving the comforting belief that bad things only happen to bad people.
+
+## 1.6 Stereotyping and stigma
+
+**Stereotype:** generalized belief about a group's characteristics. Can be positive or negative, but always overgeneralizes.
+
+**Prejudice:** negative attitude toward a group.
+
+**Discrimination:** behavior — unequal treatment based on group membership.
+
+The three are CONCEPTUALLY DISTINCT: a person can hold a stereotype without prejudice, prejudice without discriminating, etc. (Though they often co-occur.)
+
+**Stigma** (Goffman): a label that discredits the person bearing it. Three types:
+- Physical (visible deformity, scars)
+- Tribal (race, ethnicity, religion)
+- Moral (substance use, mental illness, criminal record)
+
+## 1.7 In-group / out-group dynamics
+
+**In-group bias:** favorable evaluation of one's own group; tendency to attribute group success to disposition and group failure to situation.
+**Out-group homogeneity:** perceiving out-group members as "all the same" while seeing one's own group as diverse.`,
+        examTip: `On the MCAT, a vignette describing someone judging a stranger's character based on a single behavior = fundamental attribution error. A vignette describing different explanations for self vs others = actor-observer bias.`,
+      },
+      {
+        id: 'ssp-conformity',
+        title: '2. Conformity, Obedience, & Group Influence',
+        content: `## 2.1 Asch conformity studies (1951)
+
+Participants asked to identify which of three lines matched a standard line. The answer was obvious. But when planted confederates gave a WRONG answer first, ~75% of real participants conformed to the wrong answer at least once.
+
+Conformity INCREASES when:
+- Group size is 3–5 (saturates after that)
+- Unanimous (one dissenter dramatically reduces conformity)
+- Public response (less when private)
+- Lower status of subject relative to group
+- More ambiguous task
+
+## 2.2 Types of conformity (Kelman)
+
+- **Compliance:** going along to get along; private opinion unchanged. (Strongest in surface behavior.)
+- **Identification:** changing behavior to be like a respected/liked person/group. (Moderate, depends on relationship.)
+- **Internalization:** genuinely adopting the group's beliefs as your own. (Deepest, lasts even after group is gone.)
+
+## 2.3 Milgram obedience experiments (1961)
+
+Participants instructed to deliver electric shocks of increasing voltage to a "learner" (actually a confederate). Despite hearing protests and (apparent) silence at high voltages, **~65% delivered the maximum 450 V shock**.
+
+Obedience was HIGHER when:
+- Authority figure was physically present
+- Authority figure had prestige (lab coat, university affiliation)
+- Subject didn't see/hear victim
+- Victim was depersonalized
+
+Obedience was LOWER when:
+- Multiple authority figures disagreed
+- Other "teachers" refused
+- Subject had to physically place victim's hand on shock plate
+
+Modern interpretation: ordinary people will commit harmful acts under authority, NOT due to character flaws.
+
+## 2.4 Group decision-making phenomena
+
+**Group polarization:** group discussion AMPLIFIES the average pre-discussion opinion — risky groups become riskier, cautious groups more cautious.
+
+**Groupthink** (Janis): pressure for consensus suppresses dissent and critical evaluation. Symptoms: illusion of invulnerability, rationalization, stereotyping outsiders, self-censorship. Classic case: Bay of Pigs invasion.
+
+Prevention: appoint a "devil's advocate," seek outside opinions, encourage dissent.
+
+**Social facilitation** (Zajonc): presence of others IMPROVES performance on WELL-LEARNED tasks but IMPAIRS performance on novel/difficult tasks.
+
+**Social loafing:** individuals exert LESS effort in a group than alone (especially when contributions can't be individually assessed).
+
+**Deindividuation:** in large or anonymous groups, individuals lose self-awareness and personal responsibility, leading to behavior they wouldn't perform alone (mob violence, online trolling).`,
+        examTip: `Asch = informational/normative influence with line judgments. Milgram = obedience to authority with shocks. Don't confuse them.`,
+      },
+      {
+        id: 'ssp-bystander',
+        title: '3. Bystander Effect & Prosocial Behavior',
+        content: `## 3.1 The Kitty Genovese case and Darley-Latané studies
+
+In 1964, Kitty Genovese was murdered in NYC. Reports (later contested) claimed 38 witnesses heard her screams and did nothing. This inspired Latané and Darley to study the **bystander effect**: the more people present at an emergency, the LESS likely any one person is to help.
+
+## 3.2 The five-step Latané-Darley model
+
+A bystander must complete ALL of these steps to help:
+
+1. **Notice** the event
+2. **Interpret** it as an emergency
+3. **Take responsibility** for helping
+4. **Know what to do** (assess what kind of help is needed)
+5. **Act** (overcome personal cost concerns)
+
+Each step is a potential failure point.
+
+## 3.3 Diffusion of responsibility
+
+In a group, each individual feels LESS personal responsibility — "someone else will help." With one bystander, that person feels 100% responsible. With 10 bystanders, each feels only 10% responsible.
+
+## 3.4 Pluralistic ignorance
+
+In ambiguous situations, individuals look to OTHERS to determine whether action is needed. If everyone else looks calm, each person concludes "it must not be an emergency." Smoke-in-room experiments show subjects ignore filling smoke if other (confederate) bystanders ignore it.
+
+## 3.5 When does the bystander effect DECREASE?
+
+- Clear, unambiguous emergency (e.g., obvious violence vs. ambiguous illness)
+- Bystander has SPECIAL competence (e.g., a doctor at an accident)
+- Bystander knows the victim
+- Victim makes EYE CONTACT or directly addresses one person ("YOU, in the red shirt, call 911!")
+- Bystander is alone
+
+## 3.6 Altruism and prosocial behavior
+
+**Altruism:** behavior that benefits others at a cost to self. Several explanations:
+
+- **Kin selection** (Hamilton): inclusive fitness — helping relatives propagates shared genes
+- **Reciprocal altruism** (Trivers): helping non-relatives with expectation of future reciprocation
+- **Empathy-altruism hypothesis** (Batson): empathy for the victim motivates helping without expected return
+- **Negative-state relief:** helping reduces our own discomfort at witnessing suffering
+
+**Foot-in-the-door technique:** start with a small request to increase compliance with a larger later request.
+**Door-in-the-face technique:** start with an outrageously large request that's refused; the smaller actual request seems reasonable by contrast.
+
+## 3.7 Aggression — biological and social factors
+
+**Biological:** testosterone, amygdala activation, low serotonin, frontal lobe damage.
+
+**Social:** frustration-aggression hypothesis (frustration leads to aggression), social learning (Bandura's Bobo doll — children imitate aggressive models), cognitive scripts.
+
+**Reducing aggression:**
+- Contact hypothesis (Allport): meaningful contact between groups, under conditions of equal status, cooperation, and authority support, reduces prejudice
+- Superordinate goals: shared objectives that require cooperation between groups`,
+        examTip: `If a vignette describes someone failing to help with many others present = bystander effect/diffusion of responsibility. If the vignette describes everyone looking at each other unsure if it's an emergency = pluralistic ignorance.`,
+      },
+    ],
+    keyTakeaways: [
+      'Fundamental attribution error: over-attribute OTHERS\' behavior to disposition. Self-serving bias: take credit for successes, blame failures on situation.',
+      'Asch (line judgments) demonstrated normative conformity; Milgram (electric shocks) demonstrated obedience to authority.',
+      'Conformity types (Kelman): Compliance (surface), Identification (relational), Internalization (deepest).',
+      'Group dynamics: polarization (amplifies pre-existing leanings), groupthink (suppresses dissent), social loafing (less effort in groups).',
+      'Bystander effect: more bystanders → less likely any one will help (diffusion of responsibility + pluralistic ignorance).',
+      'Latané-Darley 5 steps to help: notice → interpret as emergency → take responsibility → know what to do → act.',
+      'Reducing bystander effect: make personal eye contact, call out individuals ("YOU in red — call 911!"), make emergency unambiguous.',
+    ],
+  },
+
+  // ── Gap-fix 10: Research Methods & Statistics (Psych/Soc) ────────────────
+  ps_research_methods: {
+    topicId: 'ps_research_methods',
+    title: 'Research Methods, Statistics & Experimental Design',
+    domainWeight: '~5% of Psych/Soc + cross-section',
+    overview: `Research methodology questions appear on EVERY MCAT section because the exam tests scientific reasoning, not just facts. You'll be asked to identify confounders, distinguish correlation from causation, evaluate a study design, interpret p-values, and understand effect sizes. This topic also informs the experimental passages in Bio/Biochem and Psych/Soc.`,
+    sections: [
+      {
+        id: 'rm-design',
+        title: '1. Experimental Design Fundamentals',
+        content: `## 1.1 Variables
+
+- **Independent variable (IV):** the variable the researcher MANIPULATES
+- **Dependent variable (DV):** the variable MEASURED to assess effect of IV
+- **Control variable:** held constant to prevent influence on results
+- **Confounder:** an UNCONTROLLED variable that correlates with both IV and DV, potentially explaining the observed effect
+
+The goal of experimental design: isolate the IV-DV relationship from confounders.
+
+## 1.2 Study types
+
+| Type | Manipulation? | Causality? |
+|------|--------------|------------|
+| Experimental (RCT) | Yes (randomized) | Can establish causation |
+| Quasi-experimental | Yes (not randomized) | Suggests, doesn't prove |
+| Correlational/observational | No | Only association, no causation |
+| Case study | No | Hypothesis-generating only |
+| Cross-sectional | Snapshot in time | No temporal causation |
+| Longitudinal | Multiple time points | Stronger temporal claims |
+
+**Randomized controlled trial (RCT):** the gold standard. Randomly assign subjects to treatment vs control. Randomization SPREADS confounders equally across groups, so any difference in outcome can be attributed to the IV.
+
+## 1.3 Control groups
+
+- **Placebo:** inert substance, controls for placebo effect (expectation)
+- **Active control:** comparison treatment (e.g., new drug vs current standard)
+- **Wait-list control:** receive treatment after study ends (ethical compromise)
+- **No-treatment control:** controls for natural recovery
+
+## 1.4 Blinding
+
+- **Single-blind:** participants don't know their group; reduces placebo and demand characteristics
+- **Double-blind:** neither participants nor researchers know; reduces experimenter bias (most rigorous)
+- **Triple-blind:** data analysts also don't know
+
+## 1.5 Sources of bias
+
+- **Selection bias:** non-random sampling produces unrepresentative group
+- **Sampling bias:** specific subgroup over- or under-represented
+- **Confirmation bias:** seeking/interpreting data to support a hypothesis
+- **Hawthorne effect:** subjects change behavior when they know they're being observed
+- **Demand characteristics:** subjects infer the hypothesis and try to "help"
+- **Publication bias:** positive results published more than negative
+- **Recall bias:** retrospective studies — subjects with the outcome remember exposures differently
+
+## 1.6 Internal vs external validity
+
+- **Internal validity:** does the study correctly identify the IV-DV relationship (free of confounders)? Strengthened by controls, randomization, blinding.
+- **External validity (generalizability):** do the results apply outside the study (other populations, settings)? Strengthened by representative samples and naturalistic conditions.
+
+These often TRADE OFF: lab studies have high internal validity but low external; field studies the reverse.`,
+        examTip: `When asked to identify a confounder, look for a third variable that correlates with both the IV and the DV. If a study finds "coffee drinkers have more lung cancer," the confounder is SMOKING (correlated with both coffee drinking and lung cancer).`,
+      },
+      {
+        id: 'rm-statistics',
+        title: '2. Statistical Tests, p-values & Effect Sizes',
+        content: `## 2.1 Descriptive statistics
+
+- **Mean:** sum / n (arithmetic average; sensitive to outliers)
+- **Median:** middle value (robust to outliers; used when distribution skewed)
+- **Mode:** most frequent value
+- **Standard deviation (SD):** average deviation from mean. SD² = variance.
+- **Standard error (SE):** SD/√n; how much the SAMPLE MEAN varies from sample to sample
+
+In a normal distribution: 68% within ±1 SD, 95% within ±2 SD, 99.7% within ±3 SD.
+
+## 2.2 Hypothesis testing
+
+- **Null hypothesis (H₀):** the default assumption that there's NO effect or NO difference
+- **Alternative hypothesis (H₁):** there IS an effect
+
+A statistical test computes a **p-value:** the probability of observing your data (or more extreme) IF the null hypothesis is true.
+
+- **p < 0.05** → reject the null; "statistically significant"
+- **p ≥ 0.05** → fail to reject the null; "not significant"
+
+CRITICAL: failing to reject does NOT prove H₀ is true. It means insufficient evidence to reject it.
+
+## 2.3 Type I and Type II errors
+
+|  | H₀ true | H₀ false |
+|--|---------|----------|
+| Reject H₀ | **Type I error (α)** — false positive | Correct (power = 1−β) |
+| Fail to reject | Correct | **Type II error (β)** — false negative |
+
+α is the significance level you choose (usually 0.05). β depends on sample size, effect size, and α.
+
+**Power = 1 − β** = probability of detecting a true effect. Increased by: larger sample, larger true effect, less measurement noise, more lenient α.
+
+## 2.4 Common statistical tests
+
+| Test | When to use |
+|------|------------|
+| t-test (one-sample) | Compare sample mean to a known value |
+| t-test (independent) | Compare means of TWO unrelated groups |
+| t-test (paired) | Compare TWO measurements on the SAME subjects |
+| ANOVA (one-way) | Compare means of THREE OR MORE groups |
+| ANOVA (two-way) | Two independent variables; tests interactions |
+| Chi-square | Test categorical data (e.g., HWE) |
+| Pearson correlation | Linear association between TWO continuous variables |
+| Spearman correlation | Monotonic association (rank-based, non-normal data) |
+| Linear regression | Predict one continuous variable from another |
+| Logistic regression | Predict a binary outcome from continuous predictors |
+
+**Post-hoc tests** (Tukey, Bonferroni) follow a significant ANOVA to find WHICH groups differ. Bonferroni correction (divide α by number of comparisons) controls family-wise error rate.
+
+## 2.5 Effect size — what p-value can't tell you
+
+A p-value tells you IF an effect is real, not how BIG it is. Effect size measures magnitude:
+
+- **Cohen's d** (mean difference): 0.2 small, 0.5 medium, 0.8 large
+- **Pearson r** (correlation): ±0.1 small, ±0.3 medium, ±0.5 large
+- **R²** (variance explained): proportion of DV variance explained by IV
+- **Odds ratio, risk ratio** (epidemiology)
+
+With huge sample sizes (n = 10,000), even tiny meaningless effects achieve p < 0.05. Always report and consider effect size alongside p-value.
+
+## 2.6 Correlation vs causation
+
+A correlation between X and Y can arise from:
+1. X causes Y
+2. Y causes X (reverse causation)
+3. Z causes both X and Y (common cause / confounding)
+4. Coincidence (random chance)
+
+Only an EXPERIMENT can definitively distinguish. Observational studies CAN suggest causation via Bradford-Hill criteria (strength, consistency, specificity, temporality, dose-response, plausibility, coherence, experiment, analogy) but never prove it.`,
+        examTip: `A p-value of 0.04 means there's a 4% chance of getting this data IF the null hypothesis is true. It does NOT mean a 4% chance the null is true (that's a Bayesian quantity).`,
+        importantNote: `"Significant" in statistics ≠ "important" in real-world terms. Always look at effect size. Conversely, "not significant" doesn't mean "no effect" — could be a small or underpowered study.`,
+      },
+      {
+        id: 'rm-epi-validity',
+        title: '3. Epidemiology, Validity, and MCAT Passage Strategy',
+        content: `## 3.1 Epidemiology basics
+
+- **Prevalence:** PROPORTION of population with a disease at a moment (= existing cases / total population)
+- **Incidence:** RATE of NEW cases per unit time (= new cases / person-time at risk)
+- **Mortality rate:** deaths per population per time
+- **Case-fatality rate:** deaths AMONG those with the disease
+
+For a chronic disease, prevalence ≈ incidence × average duration.
+
+## 3.2 Study designs in epidemiology
+
+| Design | What it does | Key measure |
+|--------|--------------|------------|
+| Case-control | Compare diseased vs healthy; look back at exposures | Odds ratio |
+| Cohort | Follow exposed vs unexposed forward; look for disease | Risk ratio (relative risk) |
+| Cross-sectional | Snapshot of population for disease and exposures | Prevalence |
+| Ecological | Compare populations (not individuals) | Correlation |
+| Case series | Describe cases; no comparison group | None (hypothesis-generating) |
+
+**Case-control:** efficient for RARE diseases (start with cases, find controls). Cannot compute incidence — only odds ratios.
+**Cohort:** efficient for COMMON outcomes or rare exposures. Can compute incidence and risk ratio. Time- and cost-intensive.
+
+## 3.3 Measures of association
+
+**Risk ratio (RR):** Risk_exposed / Risk_unexposed.
+- RR = 1 → no association
+- RR > 1 → exposure increases risk
+- RR < 1 → exposure protective
+
+**Odds ratio (OR):** Odds_exposed / Odds_unexposed (used for case-control studies).
+For rare diseases (incidence < 10%), OR ≈ RR.
+
+**Number needed to treat (NNT):** how many people must receive the treatment for ONE to benefit. NNT = 1 / (Risk_control − Risk_treatment). Lower = more impactful treatment.
+
+## 3.4 Test validity — sensitivity and specificity
+
+For a diagnostic test:
+
+- **Sensitivity** = True Positive / (True Positive + False Negative)
+  - "Of those who HAVE the disease, what fraction does the test catch?"
+  - HIGH sensitivity → good RULE-OUT test (SnNOUT: a negative result on a high-Sn test rules out)
+- **Specificity** = True Negative / (True Negative + False Positive)
+  - "Of those WITHOUT the disease, what fraction does the test correctly clear?"
+  - HIGH specificity → good RULE-IN test (SpPIN: a positive result on a high-Sp test rules in)
+
+- **Positive predictive value (PPV)** = True Positive / (True Positive + False Positive) — depends on PREVALENCE
+- **Negative predictive value (NPV)** = True Negative / (True Negative + False Negative)
+
+In LOW-PREVALENCE populations, even highly specific tests have low PPV (most positives are false positives) — Bayesian reasoning. This is why screening tests for rare diseases are often followed by confirmatory tests.
+
+## 3.5 MCAT passage strategy for research articles
+
+The MCAT presents real (or realistic) experimental passages, especially in Bio/Biochem and Psych/Soc. Approach:
+
+1. **Read intro briefly** for the research question — DON'T memorize details
+2. **Skim methods** — note what's measured, what's manipulated
+3. **Examine figures and tables CAREFULLY** — most questions come from these
+4. **Note any unusual design features** — control groups, blinding, sample size
+5. **Read questions FIRST** for some passages — saves time when questions are specific
+
+When a question asks about a confounder: scan methods for unmeasured/uncontrolled factors that could correlate with both IV and DV.
+
+When a question asks about generalizability: examine the SAMPLE (size, recruitment, demographics) and SETTING (lab vs natural).
+
+When a question asks "what does Figure X show?": describe ONLY what the data show, NOT what the authors conclude. Stick to data.`,
+        examTip: `For test validity questions: high SENSITIVITY tests are good for SCREENING (don't miss anything). High SPECIFICITY tests are good for CONFIRMATION (don't falsely diagnose).`,
+      },
+    ],
+    keyTakeaways: [
+      'Confounders correlate with BOTH IV and DV, creating spurious associations. Randomization spreads confounders equally.',
+      'Internal validity (no confounders, isolated IV-DV link) often trades off with external validity (generalizability).',
+      'Double-blind RCT = gold standard. Eliminates expectancy effects on both sides.',
+      'p < 0.05 = reject null (statistically significant). Doesn\'t prove H₁; doesn\'t measure effect size.',
+      'Type I (α): false positive (reject true null). Type II (β): false negative. Power = 1 − β.',
+      'Correlation ≠ causation. Possible explanations: X→Y, Y→X, Z→both (confounding), coincidence.',
+      'Case-control for rare diseases (uses odds ratio). Cohort for common outcomes (uses risk ratio). Rare disease: OR ≈ RR.',
+      'Sensitivity: catches true cases (good rule-out). Specificity: clears true negatives (good rule-in). PPV/NPV depend on prevalence.',
+    ],
+  },
+
 };
 
 export function getMCATCourseContent(topicId: string): TopicLesson | null {
