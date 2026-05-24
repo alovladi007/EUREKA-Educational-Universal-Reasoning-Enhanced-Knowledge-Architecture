@@ -145,10 +145,11 @@ export default function MpepWorkbenchPage() {
       <div className="rounded-lg border border-amber-200/80 bg-amber-50/60 dark:bg-amber-950/25 text-sm p-3 flex flex-wrap gap-2 items-start">
         <ShieldAlert className="h-4 w-4 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
         <p className="text-muted-foreground flex-1 min-w-[200px]">
-          <strong className="text-foreground">USPTO does not allow other sites to embed eMPEP in an iframe</strong> (browser shows
-          &quot;refused to connect&quot;). This workbench keeps TOC, bookmarks, and your target URL here; use{' '}
-          <strong className="text-foreground">Open official eMPEP</strong> to read the live manual in a new tab — same as side-by-side
-          prep with the real exam. Use <kbd className="px-1 rounded bg-muted text-xs">Ctrl/Cmd+F</kbd> in that tab to search.
+          <strong className="text-foreground">Chapter links open the USPTO static MPEP mirror</strong>{' '}
+          (<span className="font-mono text-[11px]">uspto.gov/web/offices/pac/mpep/…</span>) — these load instantly. The official
+          eMPEP SPA (<span className="font-mono text-[11px]">mpep.uspto.gov/RDMS</span>) is heavier and sometimes hangs; we only use
+          it for full-text search where it&apos;s the only option. Either way, USPTO blocks iframe embedding, so chapters open in a
+          new tab. Use <kbd className="px-1 rounded bg-muted text-xs">Ctrl/Cmd+F</kbd> in that tab for in-page find.
         </p>
       </div>
 

@@ -289,7 +289,10 @@ function MPEPTab() {
           {MPEP_HIGH_YIELD.map((item) => (
             <a
               key={item.chapter}
-              href={`https://mpep.uspto.gov/RDMS/MPEP/current#/current/d0e17.html`}
+              // Per-chapter static URL (mpep-0700.html, mpep-2100.html, …) — fast,
+              // reliable. The prior hardcoded link pointed every card at the same
+              // SPA fragment which hangs for many users. See mpep-chapters.ts.
+              href={`https://www.uspto.gov/web/offices/pac/mpep/mpep-${item.chapter.padStart(4, '0')}.html`}
               target="_blank"
               rel="noopener noreferrer"
             >

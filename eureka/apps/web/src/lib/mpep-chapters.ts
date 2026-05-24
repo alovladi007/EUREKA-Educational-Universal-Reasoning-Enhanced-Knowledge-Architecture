@@ -35,20 +35,41 @@ export const MPEP_CHAPTER_LIST = [
   { num: '2900', title: 'International Design Applications' },
 ] as const;
 
-const EMPEP_BASE = 'https://mpep.uspto.gov/RDMS/MPEP/current';
+// USPTO offers TWO portals for the MPEP:
+//   1. The SPA reader: https://mpep.uspto.gov/RDMS/MPEP/current#/current/ch700.html
+//      — this is the "official eMPEP" but it's a heavy JS app that frequently
+//      hangs ("loading and never stops") for many users / network conditions.
+//   2. The static HTML mirror: https://www.uspto.gov/web/offices/pac/mpep/mpep-0700.html
+//      — same content, loads instantly, no SPA. This is what we link to for
+//      chapter/index navigation. Search still uses the SPA (it's the only one
+//      with full-text search), and we keep eMpepReaderUrl() as an escape hatch
+//      for users who want the SPA reader.
+const EMPEP_STATIC_BASE = 'https://www.uspto.gov/web/offices/pac/mpep';
+const EMPEP_SPA_BASE = 'https://mpep.uspto.gov/RDMS/MPEP/current';
 
-/** Hash route used by USPTO eMPEP for a chapter HTML file (e.g. ch2100.html). */
+/** Static HTML mirror URL for a chapter (preferred — loads instantly). */
 export function eMpepChapterUrl(chapterNum: string): string {
-  const digits = chapterNum.replace(/\D/g, '') || 'index';
-  return `${EMPEP_BASE}#/current/ch${digits}.html`;
+  const digits = chapterNum.replace(/\D/g, '');
+  if (!digits) return eMpepIndexUrl();
+  // USPTO static files are 4-digit zero-padded: mpep-0100.html, mpep-2100.html.
+  const padded = digits.padStart(4, '0');
+  return `${EMPEP_STATIC_BASE}/mpep-${padded}.html`;
 }
 
+/** Static MPEP table-of-contents page. */
 export function eMpepIndexUrl(): string {
-  return `${EMPEP_BASE}#/current/index.html`;
+  return `${EMPEP_STATIC_BASE}/mpep.html`;
 }
 
-/** Opens USPTO search in a new tab (full search matches the live exam search experience). */
+/** SPA reader URL — kept as escape hatch for users who prefer the official eMPEP. */
+export function eMpepReaderUrl(chapterNum?: string): string {
+  if (!chapterNum) return `${EMPEP_SPA_BASE}#/current/index.html`;
+  const digits = chapterNum.replace(/\D/g, '') || 'index';
+  return `${EMPEP_SPA_BASE}#/current/ch${digits}.html`;
+}
+
+/** Full-text search across the eMPEP SPA (search only exists on the SPA portal). */
 export function eMpepSearchUrl(query: string): string {
   const q = encodeURIComponent(query.trim());
-  return `${EMPEP_BASE}#/search?q=${q}`;
+  return `${EMPEP_SPA_BASE}#/search?q=${q}`;
 }
