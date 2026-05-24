@@ -10095,6 +10095,3081 @@ Patent practitioners should:
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════════════════
+// USPTO GAP-FIX TOPICS (added 2026-05-24) — 18 high-yield Patent Bar topics
+// targeting the deepest content gaps per the MPEP/AIA blueprint. Pattern
+// follows Security+/CISSP/FE EE/MCAT gap-fix commits.
+// ═══════════════════════════════════════════════════════════════════════════
+
+pa_aia_effective_filing_date: {
+  topicId: 'pa_aia_effective_filing_date',
+  title: 'AIA Effective Filing Date & §102(a)(1) Grace Period',
+  domainWeight: 'Patentability · MPEP 2152',
+  overview: `The Effective Filing Date (EFD) is the gateway concept under the America Invents Act (AIA). The EFD determines (1) what prior art applies under 35 U.S.C. §102(a)(1), and (2) whether the inventor's own pre-filing disclosures qualify for the one-year grace-period exceptions under §102(b)(1). Getting the EFD right — and tracking the inventor's own activities in the year preceding it — is among the most heavily tested concepts on the patent bar.`,
+  sections: [
+    {
+      id: 'aia-efd-determination',
+      title: '1. Determining the Effective Filing Date',
+      content: `## 1.1 Statutory definition (35 U.S.C. §100(i))
+
+The EFD of a claimed invention is the EARLIEST of:
+
+1. The actual filing date of the application that discloses the claim, OR
+2. The filing date of the earliest application to which the application is entitled to claim PRIORITY or BENEFIT under §§119, 120, 121, 365(a)/(c), or 386(a)/(c) — provided the earlier application DISCLOSES the claimed invention (satisfies §112(a) written description).
+
+Critical: each CLAIM has its OWN EFD. A continuation-in-part can have some claims with the parent's EFD and others with the CIP filing date, depending on which claims are supported by the parent's disclosure.
+
+## 1.2 The §112(a) support requirement
+
+To claim benefit of an earlier filing, the earlier disclosure MUST satisfy 35 U.S.C. §112(a) for the claimed invention — i.e., describe it in sufficient detail that one of ordinary skill in the art could (a) recognize that the inventor possessed the invention (written description), AND (b) make and use it without undue experimentation (enablement).
+
+If the earlier filing fails §112(a) for a particular claim, that CLAIM does not get the benefit even though other claims in the same application might.
+
+## 1.3 Worked example
+
+Inventor files:
+- May 1, 2022: provisional disclosing compound X for treating diabetes
+- Apr 15, 2023: nonprovisional with claim 1 (compound X for diabetes) and claim 2 (compound X for cancer)
+
+EFD of claim 1 = May 1, 2022 (provisional supports it).
+EFD of claim 2 = April 15, 2023 (provisional did NOT mention cancer use).
+
+Prior art for claim 2 is evaluated as of April 15, 2023.`,
+      examTip: `Each claim gets its own EFD. CIP applications are notorious for split EFDs — always check whether the parent disclosure supports each individual claim under §112(a).`,
+      importantNote: `Filing date alone doesn't set EFD — you must claim priority/benefit under §§119/120/365 AND comply with timing (4 months from filing or 16 months from priority).`,
+    },
+    {
+      id: 'aia-102a1-prior-art',
+      title: '2. §102(a)(1) Prior Art — Worldwide Categories',
+      content: `## 2.1 The §102(a)(1) categories
+
+A person is NOT entitled to a patent if the claimed invention was, before the EFD: patented, described in a printed publication, in public use, on sale, or otherwise available to the public — ANYWHERE IN THE WORLD.
+
+Post-AIA, public use and on-sale activities are no longer limited to "in this country." This is a major change from pre-AIA practice.
+
+## 2.2 "Otherwise available to the public"
+
+A catch-all covering disclosures that don't fit enumerated categories: oral presentations at conferences, posters, demonstrations, beta releases. Confidential disclosures (e.g., to a single NDA partner) generally do NOT trigger §102(a)(1).
+
+## 2.3 The on-sale bar after Helsinn
+
+Helsinn v. Teva (Supreme Court 2019) confirmed that under AIA, an invention can be "on sale" even if the sale was confidential. The product of the sale does NOT need to publicly disclose the invention — a commercial offer for sale of the claimed subject matter is sufficient.
+
+This is a TRAP — many practitioners assume AIA changed the on-sale rule to require public availability. It did not.`,
+      examTip: `Post-AIA, public use and on-sale anywhere in the world count. Pre-AIA, these were limited to "in this country."`,
+    },
+    {
+      id: 'aia-grace-period',
+      title: '3. The One-Year Grace Period — §102(b)(1) Exceptions',
+      content: `## 3.1 The two exceptions
+
+**§102(b)(1)(A) — Inventor's Own Disclosure:** A disclosure within 1 year before EFD is NOT prior art if made by the inventor, joint inventor, or someone who obtained the subject matter from the inventor.
+
+**§102(b)(1)(B) — Prior Public Disclosure Shield:** A third-party disclosure is NOT prior art if, before that disclosure, the inventor had already publicly disclosed the same subject matter.
+
+## 3.2 The §102(b)(1)(B) shield strategy
+
+If the inventor publicly discloses BEFORE filing, that disclosure (1) starts the 1-year clock, AND (2) shields against intervening third-party disclosures of the same subject matter.
+
+Example:
+- Jan 1: Inventor publishes paper describing widget
+- Mar 1: Third party publishes paper describing same widget
+- Aug 1: Inventor files
+
+The March third-party reference would normally be §102(a)(1) prior art, but §102(b)(1)(B) shields it because the inventor's January disclosure preceded it.
+
+## 3.3 Limits of the shield
+
+The shield ONLY covers the SAME subject matter the inventor disclosed. A third-party reference disclosing additional or different features may still be prior art for those additional features. USPTO requires substantial identity.
+
+## 3.4 Foreign filing trade-off
+
+The grace period is US-specific. Most foreign jurisdictions (EPO, China, Japan) have no general grace period — any pre-filing public disclosure destroys foreign patentability. For inventors seeking worldwide protection: FILE BEFORE PUBLIC DISCLOSURE.
+
+## 3.5 §1.130 declaration
+
+To invoke either exception during prosecution, file a §1.130 declaration attesting to:
+- Disclosure was by inventor or one who obtained from inventor, OR
+- A prior public disclosure by the inventor preceded the third-party reference
+
+Declaration must establish chain of disclosure and timing.`,
+      examTip: `§102(b)(1)(A) covers inventor's OWN pre-filing disclosure within 1 year. §102(b)(1)(B) shields against THIRD-PARTY disclosures after inventor's prior public disclosure.`,
+      importantNote: `The grace period is US-only. Inventors planning foreign filings should treat any pre-filing disclosure as catastrophic in most other jurisdictions.`,
+    },
+  ],
+  keyTakeaways: [
+    'EFD is the earliest date claimable for the specific claim, requiring §112(a) support in the earlier filing.',
+    'Each claim has its own EFD — CIPs often have mixed EFDs across claims.',
+    '§102(a)(1) prior art: patents/publications/public use/on sale/otherwise available — worldwide post-AIA.',
+    'Helsinn (2019): a confidential sale still triggers the on-sale bar.',
+    '§102(b)(1)(A): Inventor\'s own disclosure within 1 yr of EFD is NOT prior art.',
+    '§102(b)(1)(B): Inventor\'s prior public disclosure shields against later third-party disclosures of same subject matter.',
+    'Grace period is US-only — most foreign jurisdictions destroy patentability with any pre-filing disclosure.',
+    '§1.130 declaration is the prosecution tool to invoke either exception.',
+  ],
+},
+
+pa_aia_102a2_secret_prior_art: {
+  topicId: 'pa_aia_102a2_secret_prior_art',
+  title: '§102(a)(2) Prior Art (Secret Prior Art)',
+  domainWeight: 'Patentability · MPEP 2154',
+  overview: `35 U.S.C. §102(a)(2) creates "secret prior art" — patents and published applications that name a different inventor and have an earlier effective filing date, but were unpublished as of the applicant's EFD. This is one of the most counterintuitive parts of patent law: a reference that didn't exist publicly when you filed can still anticipate or render your claims obvious. Mastery of §102(a)(2) and the §102(b)(2) exceptions is essential exam material.`,
+  sections: [
+    {
+      id: 'secret-pa-definition',
+      title: '1. What §102(a)(2) Covers',
+      content: `## 1.1 The statute
+
+A claimed invention is not patentable if it "was described in a patent issued under §151, or in an application for patent published or deemed published under §122(b), in which the patent or application, as the case may be, names another inventor and was effectively filed before the effective filing date of the claimed invention."
+
+Translation: a US patent or published US/PCT-designating-US application filed BEFORE your EFD by a DIFFERENT inventor becomes prior art as of ITS effective filing date — even though it wasn't publicly available when you filed.
+
+## 1.2 Why "secret"?
+
+The other-inventor application was secret while pending. Once it publishes (18 months after its earliest priority) or issues, it retroactively becomes prior art as of its OWN filing date — which could be before YOURS.
+
+This means you can file, prosecute, and have your application allowed only to find later that someone else's then-secret earlier filing is now prior art under §102(a)(2).
+
+## 1.3 Prior art date: effective filing date of the OTHER application
+
+§102(a)(2) prior art applies as of the prior application's EFD (including any priority/benefit claims it makes). NOT as of its publication or issue date.
+
+Example:
+- Inventor A files US application Jan 1, 2022, claiming foreign priority to Mar 1, 2021
+- Inventor A's application publishes July 2023
+- Inventor B files US application June 1, 2022 (their EFD)
+- Inventor A's application is prior art against Inventor B as of MARCH 1, 2021 (A's EFD)
+
+If Inventor A's pre-publication application discloses what B claims, B's claim is anticipated even though A's application was secret on June 1, 2022.
+
+## 1.4 PCT applications and §102(a)(2)
+
+A PCT application designating the US is "deemed published" under §122(b) and becomes §102(a)(2) prior art as of its international filing date (or its priority date if it claims priority).
+
+This was a CHANGE under AIA — pre-AIA, only US-filed applications (or PCTs entering the US national stage) were Hilmer prior art. Post-AIA, the Hilmer doctrine is GONE.`,
+      examTip: `§102(a)(2) prior art applies as of the OTHER application's EFD, NOT its publication date. The exam loves to test this — read the dates carefully.`,
+      importantNote: `Pre-AIA §102(e) had the Hilmer rule limiting foreign priority dates. Post-AIA, foreign priority dates fully count for §102(a)(2). Major substantive change.`,
+    },
+    {
+      id: 'secret-pa-exceptions',
+      title: '2. §102(b)(2) Exceptions to Secret Prior Art',
+      content: `## 2.1 The three exceptions
+
+§102(b)(2) disqualifies certain §102(a)(2) references from prior art status:
+
+**§102(b)(2)(A) — Same Inventive Entity:** Not prior art if the subject matter disclosed was obtained directly or indirectly from the inventor or joint inventor.
+
+**§102(b)(2)(B) — Prior Inventor Disclosure:** Not prior art if, before the other application was effectively filed, the subject matter had been publicly disclosed by the inventor (or one who got it from the inventor). Same shield as §102(b)(1)(B) but applies against secret prior art.
+
+**§102(b)(2)(C) — Common Ownership (CREATE Act):** Not prior art if, not later than the EFD of the claimed invention, the subject matter and the claimed invention were OWNED BY THE SAME PERSON OR SUBJECT TO an obligation of assignment to the same person.
+
+## 2.2 The CREATE Act expansion (§102(b)(2)(C) and §102(c))
+
+§102(c) extends common-ownership disqualification to subject matter developed under a JOINT RESEARCH AGREEMENT (JRA):
+
+- The disqualified subject matter was developed under a JRA in effect on or before the EFD,
+- The claimed invention was made as a result of activities under the agreement,
+- The application discloses or is amended to disclose the names of the parties to the JRA.
+
+This lets collaborating entities (e.g., university + company) avoid 102(a)(2) problems from each other's filings.
+
+## 2.3 §1.130 declaration applies
+
+Like §102(b)(1) exceptions, §102(b)(2) exceptions are invoked via §1.130 declaration during prosecution. The declaration must establish the basis (derivation, prior public disclosure, common ownership, or JRA).
+
+## 2.4 What §102(b)(2) does NOT do
+
+§102(b)(2) only removes a reference from §102(a)(2) (secret prior art). It does NOT remove the reference from:
+- §102(a)(1) prior art (publication, public use, on sale, etc.)
+- §103 obviousness analysis (if the reference is otherwise prior art under §102(a)(1))
+
+A reference can be §102(a)(1) prior art (after publication) AND §102(a)(2) prior art (as of its EFD). The exceptions only address the §102(a)(2) prong.`,
+      examTip: `§102(b)(2)(C) common-ownership disqualification is timed to the EFD of the claimed invention — assignment must exist by then. Later assignments don't cure §102(a)(2) issues.`,
+    },
+    {
+      id: 'secret-pa-practice',
+      title: '3. Practical Implications & Strategic Use',
+      content: `## 3.1 Prosecution traps
+
+§102(a)(2) creates several common prosecution pitfalls:
+
+- An examiner may cite a recently-published application as §102(a)(2) prior art against your pending application. If the reference's EFD predates yours, it's prior art.
+- The reference may have been UNAVAILABLE at the time you drafted your application. You couldn't have known.
+- The fix may require amending claims to distinguish, abandoning, or invoking §102(b)(2) if applicable.
+
+## 3.2 Common-ownership strategy
+
+If your client is a corporation filing multiple related applications, ensure proper assignments are in place BEFORE the EFD of the second application to leverage §102(b)(2)(C).
+
+For collaborative research, establish a JRA in writing BEFORE the parties begin work, and ensure the application discloses the JRA (or amend it to disclose) to invoke §102(c).
+
+## 3.3 Continuation strategy and §102(a)(2)
+
+A continuation or divisional under §120 inherits the parent's EFD. Therefore §102(a)(2) prior art that postdates the parent's EFD is NOT prior art against the continuation either.
+
+This is why continuation chains are strategically important: locking in an EFD before competitors file similar applications.
+
+## 3.4 Comparison to §102(a)(1)
+
+| Feature | §102(a)(1) | §102(a)(2) |
+|---|---|---|
+| Reference type | Patents, publications, public use, on sale | US patents and US-designating-published applications only |
+| Prior art date | Publication/availability date | OTHER application's EFD |
+| "Secret" status | Must be publicly available | Can be unpublished at YOUR EFD |
+| Geographic scope | Worldwide | US patent system reach |
+| Inventor of reference | Anyone | MUST be different inventor |
+
+## 3.5 Removing a §102(a)(2) reference — checklist
+
+1. Is the reference type covered (US patent or US-designating published app)? YES → continue
+2. Is it by a different inventor? YES → continue
+3. Is its EFD before yours? YES → continue
+4. Does §102(b)(2)(A)/(B)/(C) or §102(c) JRA apply? If yes, file §1.130 declaration.
+5. Otherwise: amend claims to avoid, or abandon.`,
+      examTip: `The exam often presents a fact pattern with TWO applicants and tests whether you can identify which is prior art against which under §102(a)(2). Always check: (a) reference type, (b) different inventor, (c) EFD comparison, (d) any §102(b)(2) exception.`,
+    },
+  ],
+  keyTakeaways: [
+    '§102(a)(2) prior art: US patents and US-designating-published applications by a DIFFERENT inventor with earlier EFD.',
+    'Prior art date = OTHER application\'s EFD (not publication date).',
+    'Post-AIA, foreign priority dates fully count (Hilmer doctrine eliminated).',
+    '§102(b)(2)(A): derivation exception — got subject matter from inventor.',
+    '§102(b)(2)(B): inventor\'s prior public disclosure shields against later filings.',
+    '§102(b)(2)(C): common ownership at the EFD disqualifies the reference.',
+    '§102(c) Joint Research Agreement extends common-ownership exception to JRA collaborators.',
+    '§1.130 declaration is the prosecution mechanism; common-ownership timing is critical (must exist by claimed invention\'s EFD).',
+  ],
+},
+
+pa_112f_means_plus_function: {
+  topicId: 'pa_112f_means_plus_function',
+  title: '§112(f) Means-Plus-Function Deep Dive',
+  domainWeight: 'Patentability · MPEP 2181-2187',
+  overview: `35 U.S.C. §112(f) — formerly §112 ¶ 6 — allows a claim element to be drafted in functional terms ("means for X-ing") while limiting the claim to corresponding structure disclosed in the specification plus equivalents. This permissive draft style creates a TRADE-OFF: narrower interpretation than the broad language suggests, and a §112(b) indefiniteness death penalty if no corresponding structure is disclosed. Software claims are particularly affected by Aristocrat/Williamson — failure to disclose an algorithm renders MPF claims invalid.`,
+  sections: [
+    {
+      id: 'mpf-triggering',
+      title: '1. Triggering §112(f) — Words and Presumptions',
+      content: `## 1.1 The presumption framework
+
+The Federal Circuit (Williamson v. Citrix, 2015) eliminated the strong presumption AGAINST §112(f) interpretation for non-"means" language. Now:
+
+- **"Means for..."** language: STRONG presumption §112(f) applies (rebuttable only if claim recites sufficient structure)
+- **Non-"means" functional language** ("module for", "device for", "unit configured to"): no strong presumption either way; courts look at whether the term has a generally understood structural meaning
+
+Williamson held that "distributed learning control module" did NOT have a generally understood structural meaning and triggered §112(f), invalidating the claim for lack of disclosed algorithm.
+
+## 1.2 The three-part test (MPEP 2181)
+
+A claim limitation invokes §112(f) when ALL three apply:
+
+1. The limitation uses "means" or "step for" (or non-structural nonce word)
+2. The "means" or nonce word is modified by FUNCTIONAL language (typically beginning with "for")
+3. The "means" or nonce word is NOT modified by sufficient STRUCTURE for performing the function
+
+Example: "means for storing data" — likely §112(f) (no structure)
+Counter-example: "circuit means for storing data, comprising a non-volatile flash memory" — likely NOT §112(f) (specific structure named)
+
+## 1.3 Common §112(f) triggers in practice
+
+| Likely trigger | Likely not §112(f) |
+|---|---|
+| means for | circuit comprising |
+| module configured to | processor executing instructions for |
+| mechanism for | gear assembly comprising |
+| device for | filter having |
+| unit configured to | logic gate |
+| component for | resistor connected to |
+
+Note: "module," "mechanism," "device," and "unit" are common NONCE words that the Federal Circuit treats as functional-language triggers.`,
+      examTip: `Post-Williamson (2015), the question is whether the term has a generally understood STRUCTURAL meaning, not whether it uses the word "means." Nonce words like "module," "mechanism," "device" routinely trigger §112(f).`,
+    },
+    {
+      id: 'mpf-construction',
+      title: '2. Claim Construction Under §112(f)',
+      content: `## 2.1 The construction rule
+
+A §112(f) limitation is construed to cover the CORRESPONDING STRUCTURE disclosed in the specification AND equivalents thereof.
+
+Step 1: Identify the claimed function. What is the "means" supposed to do?
+Step 2: Identify the corresponding structure in the specification that performs that function.
+Step 3: Determine the scope (disclosed structure + equivalents).
+
+This NARROWS the claim significantly compared to literal language. "Means for storing data" doesn't cover ALL data storage — only what the spec describes (e.g., a SRAM, hard drive, flash memory) plus equivalents.
+
+## 2.2 Computer-implemented §112(f) — the Aristocrat/Williamson rule
+
+For computer-implemented functions, the corresponding structure is the ALGORITHM in the specification, not the general-purpose computer.
+
+Aristocrat Technologies v. International Game Technology (Fed. Cir. 2008): a general-purpose computer alone is INSUFFICIENT corresponding structure. The specification must disclose the algorithm (in flowchart, prose, or pseudocode) that the computer performs to carry out the claimed function.
+
+Without an algorithm, the §112(f) limitation is INDEFINITE under §112(b) and the claim is INVALID.
+
+## 2.3 Equivalents under §112(f)
+
+Equivalents = structures that:
+- Perform the IDENTICAL function (claim language)
+- In substantially the same way
+- To achieve substantially the same result
+
+Equivalents are evaluated at the time of FILING (unlike the doctrine of equivalents for infringement, which is at the time of infringement).
+
+## 2.4 Mixed claim drafting strategy
+
+Practitioners often draft claims as:
+- One independent claim using §112(f) (broader functional language, courts construe to disclosed structure + equivalents)
+- One independent claim WITHOUT §112(f) (specific structural language, narrower but no algorithm risk)
+
+This hedges against unfavorable §112(f) construction and §112(b) indefiniteness invalidation.`,
+      examTip: `For computer-implemented MPF claims, the specification MUST disclose the ALGORITHM. A bare "general-purpose computer programmed to..." is fatal under Aristocrat/Williamson.`,
+      importantNote: `§112(f) does not give claims broader scope — it gives them defined scope tied to disclosed structure. Drafting "means for X" without spec support is a malpractice trap.`,
+    },
+    {
+      id: 'mpf-rejections',
+      title: '3. §112(f) Rejections During Prosecution',
+      content: `## 3.1 Examiner identification (MPEP 2181)
+
+The examiner must identify each §112(f) limitation and the corresponding structure. The examiner cites:
+
+- The functional language triggering §112(f)
+- The corresponding structure in the specification (with column/line or paragraph cites)
+- Whether the structure is sufficient for §112(b) definiteness
+
+## 3.2 Indefiniteness rejection if structure missing
+
+If the specification does NOT disclose corresponding structure (or sufficient algorithm for computer-implemented claims), the examiner rejects the claim under §112(b) as indefinite.
+
+The applicant can:
+1. Amend the claim to recite specific structure (escapes §112(f), narrows claim)
+2. Amend the specification to add structure (NOT permitted if it adds new matter)
+3. Argue that the original specification implicitly discloses the structure
+4. Argue that the term has a generally understood structural meaning (escapes §112(f))
+
+## 3.3 Adding structure to the specification
+
+You CANNOT add new matter to the specification under §132 to cure a §112(f) indefiniteness rejection. The structure must be in the AS-FILED disclosure (including drawings).
+
+For applications filed before the algorithm requirement was clear (pre-2008), this often results in unfixable §112(b) rejections.
+
+## 3.4 Strategic drafting checklist
+
+Before filing an application with potential §112(f) claims:
+
+- [ ] Identify every functional limitation that may trigger §112(f)
+- [ ] Ensure the specification discloses corresponding structure for EACH function
+- [ ] For computer-implemented functions, include a clear algorithm (flowchart or step-by-step text)
+- [ ] Consider drafting parallel structural claims that don't invoke §112(f)
+- [ ] Use specific structural terms ("processor," "memory," "ASIC") rather than nonce words ("module," "unit")
+
+## 3.5 §112(f) vs §101 software eligibility
+
+Software claims face dual hurdles: §101 (abstract idea / Alice-Mayo) AND §112(f) (algorithm disclosure). Drafting the specification with detailed algorithms BOTH:
+- Provides structure for §112(f), AND
+- Provides "significantly more" for §101 step 2B
+
+So the algorithm disclosure serves two important purposes for software inventions.`,
+      examTip: `If a software claim uses functional language with no disclosed algorithm, the examiner WILL reject under §112(b) post-Aristocrat/Williamson. The algorithm must be in the as-filed spec — cannot be added later as new matter.`,
+    },
+  ],
+  keyTakeaways: [
+    '§112(f) replaces "means" or nonce-word functional language with the corresponding structure in the spec + equivalents.',
+    'Williamson (2015) eliminated the strong presumption that non-"means" language avoids §112(f) — nonce words ("module", "unit") routinely trigger it.',
+    'Computer-implemented MPF requires algorithm disclosure (Aristocrat/Williamson). A general-purpose computer alone is insufficient.',
+    'Missing structure → §112(b) indefiniteness invalidation. Cannot fix by adding new matter to spec.',
+    'Equivalents under §112(f) evaluated at time of FILING (not infringement).',
+    'Practical strategy: pair §112(f) claims with parallel structural claims to hedge against unfavorable construction.',
+  ],
+},
+
+pa_terminal_disclaimer_odp: {
+  topicId: 'pa_terminal_disclaimer_odp',
+  title: 'Terminal Disclaimer Practice & ODP Strategy',
+  domainWeight: 'Patentability · MPEP 1490, 804',
+  overview: `Obviousness-type double patenting (ODP) is a judicially created doctrine preventing an inventor from extending patent term by obtaining a second patent on a non-distinct invention. The terminal disclaimer (TD) under 37 CFR §1.321 cures ODP by aligning the expiration dates of the two patents and ensuring common ownership. Mastery of when TD is mandatory, when it's optional, the two-way test, and the recapture/broadening interactions is essential exam material.`,
+  sections: [
+    {
+      id: 'tdodp-types',
+      title: '1. Types of Double Patenting — Statutory vs Obviousness',
+      content: `## 1.1 Statutory double patenting (35 USC §101)
+
+Two patents claiming the SAME invention. Triggered when claims are identical in scope. Rejection: 35 USC §101 (one inventor, one patent per invention).
+
+CANNOT be cured by terminal disclaimer. Must amend or cancel claims to make them non-identical.
+
+## 1.2 Obviousness-type double patenting (ODP)
+
+Judicially created. Two patents (or applications) claiming inventions that are not patentably distinct from each other. Even if claims aren't identical, ODP applies if the second claim is OBVIOUS over the first.
+
+CAN be cured by terminal disclaimer (assuming common ownership).
+
+## 1.3 The one-way and two-way tests
+
+**One-way test:** Is the LATER claim obvious over the EARLIER claim? Applied in the ordinary case.
+
+**Two-way test:** Required when the USPTO caused the delay in examining the EARLIER application. Apply one-way AND its reverse (is the earlier claim obvious over the later?). Both must be true to find ODP.
+
+The two-way test is more demanding (harder to establish ODP) and protects applicants from USPTO-caused delay.
+
+## 1.4 Common-ownership requirement
+
+ODP applies between patents/applications having at least one common inventor OR common assignee.
+
+If common ownership doesn't exist at the time of the second application's filing AND continues through the patenting, ODP doesn't apply between the two.`,
+      examTip: `Statutory DP (identical claims) cannot be cured by TD. ODP (non-distinct but not identical) can be cured by TD.`,
+    },
+    {
+      id: 'tdodp-disclaimer',
+      title: '2. Terminal Disclaimer Practice (37 CFR §1.321)',
+      content: `## 2.1 What the TD does
+
+A terminal disclaimer disclaims any portion of the later patent's term that would extend beyond the earlier patent's expiration, AND it includes a common-ownership requirement that the two patents remain commonly owned for enforceability.
+
+Effect:
+- Term of later patent ends on the earlier patent's expiration (no extension)
+- Both patents must remain commonly owned/enforced together
+- If common ownership is broken (e.g., one patent assigned away), neither patent can be enforced separately
+
+## 2.2 When TD is mandatory
+
+If an ODP rejection is sustained and the applicant cannot or does not amend out, the only path to allowance is filing a TD.
+
+If the applicant disagrees with the ODP rejection, options:
+- Argue the claims are patentably distinct (overcome rejection)
+- Amend the second claim to be patentably distinct
+- File a TD to overcome the rejection (preserves the second patent but ties it to the first)
+
+## 2.3 TD requirements (§1.321)
+
+A TD must:
+- Be signed by an authorized party (inventor, assignee, or attorney)
+- Identify both patents/applications
+- Recite the disclaim of term extending beyond the earlier
+- Include the common-ownership undertaking
+- Be filed on the appropriate USPTO form
+
+## 2.4 TD between an application and an issued patent
+
+The reference patent (the "earlier") can be already-issued OR pending. If pending, the TD aligns the expirations of the two pending applications. If issued, the TD trims the pending application to expire when the issued patent expires.
+
+## 2.5 Effect on patent term
+
+A TD does NOT reduce the statutory 20-year term measured from the EFD. It just disclaims any term extending beyond the EARLIER patent's expiration.
+
+If both patents have the same EFD (common in continuation chains), the TD has no practical term effect — both already expire on the same date.
+
+If the second patent has a LATER EFD (rare in TD cases), the TD trims its term significantly.`,
+      examTip: `The common-ownership requirement in a TD means: if you assign one patent to a third party without the other, NEITHER patent can be enforced (estoppel-style consequence).`,
+      importantNote: `Filing a TD is the standard cure for ODP. The applicant gives up nothing in most cases (both patents already expire on the same date), but accepts the common-ownership constraint.`,
+    },
+    {
+      id: 'tdodp-interactions',
+      title: '3. ODP/TD Interactions: Reissue, Recapture, and Strategy',
+      content: `## 3.1 Broadening reissue and ODP
+
+A broadening reissue (§251, within 2 years of issue) can RAISE ODP issues if the broadened claims are now obvious over a related patent.
+
+If a TD was filed during original prosecution, the broadening reissue may need a new TD if the broadened claims trigger ODP against new references.
+
+## 3.2 Recapture doctrine in reissue
+
+The reissue applicant cannot RECAPTURE subject matter surrendered during prosecution of the original patent. If a claim was narrowed to avoid prior art during original prosecution, the broadening reissue cannot un-narrow it.
+
+This interacts with ODP: if narrowing was done to avoid ODP, the broadening reissue cannot un-narrow without re-raising ODP.
+
+## 3.3 ODP in continuation chains
+
+Continuation chains routinely trigger ODP between siblings (continuations from a common parent). Each continuation that's allowed requires a TD against the parent and any earlier-issued siblings.
+
+A common scenario: parent + 5 continuations. The patent practitioner files 5 TDs (one in each continuation against the others).
+
+## 3.4 Restriction practice and ODP safe harbor
+
+35 USC §121 provides a SAFE HARBOR: claims that were properly elected/divided in response to a restriction requirement cannot be cited against each other under ODP.
+
+If the parent is restricted and a divisional is filed for the non-elected claims, ODP does not apply between the parent and divisional (assuming proper election + divisional).
+
+This is a STATUTORY exception to ODP — no TD needed for properly restricted divisionals.
+
+## 3.5 Strategic considerations
+
+- Always check ODP between filed applications with overlapping disclosures
+- Consider whether to file a divisional (safe harbor) vs continuation (TD risk)
+- Maintain common ownership of all patents in a chain to preserve TD enforceability
+- Document common-ownership chain meticulously for litigation defense
+
+## 3.6 Two-way test trigger (USPTO-caused delay)
+
+If application X was filed before application Y, but the USPTO delayed examination of X so that Y issued first, the courts may require the two-way test when X comes up against Y for ODP. The applicant in X is not penalized for USPTO-caused delay.
+
+USPTO Examination Guidelines provide that the two-way test applies when:
+- The earlier application's prosecution was unduly delayed by the USPTO, AND
+- The earlier application was filed BEFORE the later (now-issued) application`,
+      examTip: `§121 restriction safe-harbor: claims that were properly restricted and divided cannot be cited against each other under ODP. This is a free pass — no TD needed.`,
+    },
+  ],
+  keyTakeaways: [
+    'Statutory DP (identical claims, §101): cannot be cured by TD — must amend.',
+    'ODP (non-distinct claims): can be cured by TD plus common ownership.',
+    'One-way test: is later claim obvious over earlier? Two-way test required if USPTO-caused delay in earlier prosecution.',
+    'TD under §1.321 aligns expirations AND requires common ownership for enforceability.',
+    '§121 restriction safe harbor: properly elected/divided claims immune from ODP.',
+    'Continuation chains: each continuation typically needs a TD against parent and siblings.',
+    'Broadening reissue: must re-evaluate ODP; cannot recapture surrendered subject matter.',
+  ],
+},
+
+pp_claim_antecedent_basis: {
+  topicId: 'pp_claim_antecedent_basis',
+  title: 'Claim Antecedent Basis & Drafting Pitfalls',
+  domainWeight: 'Application Prep · MPEP 2173',
+  overview: `Claim antecedent basis is the foundation of claim definiteness under §112(b). Every claim element introduced with "the" or "said" must have a prior introduction with an indefinite article ("a" or "an"). Antecedent basis errors are among the most common §112(b) rejections and easily preventable with careful drafting.`,
+  sections: [
+    {
+      id: 'antecedent-basis-rule',
+      title: '1. The Antecedent Basis Rule',
+      content: `## 1.1 The fundamental rule
+
+When introducing a new claim element, use "a" or "an." When referring back to that same element later in the claim (or in a dependent claim), use "the" or "said."
+
+Examples:
+- "A widget comprising: a body; a handle attached to the body; and the handle further comprising a grip."
+  - "a body" — first introduction (indefinite article)
+  - "the body" — reference back (definite article — has antecedent basis)
+  - "the handle" — reference back to the previously introduced handle
+
+## 1.2 Antecedent basis problems
+
+A §112(b) antecedent basis rejection arises when:
+- An element is referenced with "the" or "said" without a prior "a/an" introduction
+- An element is referenced ambiguously (multiple potential antecedents)
+- A dependent claim refers to an element not in the parent claim chain
+
+Example (BAD): "A widget comprising a body, wherein the handle is attached to the body."
+Problem: "the handle" has no antecedent — never introduced.
+
+Fix: "A widget comprising a body and a handle, wherein the handle is attached to the body."
+
+## 1.3 The single antecedent basis rule (Packard)
+
+Each "the X" reference must point to a single, unambiguous antecedent. If the claim introduces multiple elements that could be "the X," the reference is ambiguous.
+
+In re Packard (Fed. Cir. 2014): the USPTO can reject claims for indefiniteness when one of ordinary skill cannot reasonably ascertain the metes and bounds of the invention. Multiple ambiguous antecedents trigger this.
+
+Example (BAD): "A widget comprising a first body and a second body. The body comprises..."
+Problem: "the body" — which body? First or second?
+
+Fix: Use distinguishing references like "the first body" or "the second body" throughout.`,
+      examTip: `Every "the X" or "said X" in a claim MUST have an unambiguous earlier "a X" or "an X" in the same claim chain. Otherwise = §112(b) rejection.`,
+    },
+    {
+      id: 'drafting-pitfalls',
+      title: '2. Common Drafting Pitfalls',
+      content: `## 2.1 Implicit antecedent basis
+
+Some terms have implicit antecedent basis (rare exception). E.g., "wherein the surface of the body" — "the surface" can be implied to exist on any body.
+
+USPTO allows implicit antecedent basis when the element MUST exist as a feature of an already-introduced element. But better practice is to be explicit.
+
+## 2.2 Multiple references creating ambiguity
+
+If a claim introduces "a first widget," "a second widget," and a later reference is just "the widget," that's ambiguous.
+
+Fix: always disambiguate using "first" and "second" or use unique descriptors.
+
+## 2.3 Dependent claim antecedent basis
+
+A dependent claim must reference elements from the parent claim chain. If dependent claim 3 depends on claim 2, which depends on claim 1, the dependent claim 3 can reference any element introduced in claims 1 or 2 (the chain).
+
+A dependent claim CANNOT reference an element only introduced in a SIBLING claim (one not in its chain).
+
+Example:
+- Claim 1: "A widget comprising a body."
+- Claim 2 (independent): "A gadget comprising a handle."
+- Claim 3 (depends from 1): "The widget of claim 1, wherein the handle is attached to the body."
+
+Problem: claim 3 references "the handle" but the chain doesn't include "a handle." Rejection: claim 3 lacks antecedent basis for "the handle."
+
+## 2.4 "Comprising" vs "consisting of" vs "consisting essentially of"
+
+- **Comprising** (most common): open-ended. The claim covers structures with AT LEAST the named elements (plus potentially more).
+- **Consisting of**: closed. The claim covers ONLY the named elements (nothing else).
+- **Consisting essentially of**: middle ground. Closed except for elements that don't materially affect the basic and novel characteristics.
+
+These transitional phrases affect claim scope AND infringement analysis. The MCAT/Patent Bar tests recognition of these.
+
+## 2.5 Extraneous matter and embellishments
+
+Avoid adding embellishments to claims that lack technical meaning:
+- "wherein the widget is improved" — vague, unhelpful
+- "wherein the widget performs better" — relative, indefinite
+
+Limit claim language to objective, measurable structural and functional elements.`,
+      examTip: `"Comprising" = open. "Consisting of" = closed. "Consisting essentially of" = closed except for non-material additions.`,
+    },
+    {
+      id: 'claim-differentiation',
+      title: '3. Claim Differentiation & Multiplicity',
+      content: `## 3.1 The presumption of claim differentiation
+
+Different claims should be interpreted to have different scope (presumption). If dependent claim 2 adds element X to claim 1, claim 1 is presumed NOT to require element X (otherwise claim 2 would be redundant).
+
+This presumption helps in claim construction during litigation. Drafting practitioners should EXPLICITLY rely on this to broaden parent claims.
+
+## 3.2 Strategic claim drafting layers
+
+A well-drafted set of claims has multiple layers:
+- Broadest independent claim (often the "money claim")
+- Successive narrowing dependent claims (claim X comprising Y; claim X further comprising Y, wherein Z; etc.)
+- Specific implementation claims (claim X further comprising Y, wherein Z is implemented as Q)
+
+Layered claims provide multiple "fallback" positions if a broader claim is invalidated.
+
+## 3.3 Multiplicity and undue multiplicity
+
+37 CFR §1.75 allows multiple claims per application but bars "undue multiplicity" of claims. The examiner can reject under §1.75 if the claims are excessive in number relative to the disclosed invention.
+
+Common practice: 3-5 independent claims, 15-20 dependent claims. Beyond this, USPTO fees increase substantially:
+- First 3 independent claims: included in base fee
+- Each additional independent claim: extra fee
+- First 20 total claims: included
+- Each additional claim: extra fee
+
+## 3.4 Multiple dependent claims
+
+A multiple dependent claim depends on more than one other claim alternatively. Format:
+"The widget of any one of claims 1-5, wherein..."
+
+USPTO charges PER ALTERNATIVE depended-from claim (i.e., a multi-dependent claim from claims 1-5 counts as 5 claims for fees).
+
+## 3.5 Markush groups
+
+A Markush group is a closed list of alternative elements in a claim:
+"A composition comprising X selected from the group consisting of: A, B, C, and D."
+
+The Markush form is closed (only those alternatives) but allows reasonable claim breadth. Common in chemistry and biotech.
+
+## 3.6 Claim format rules
+
+- One independent claim followed by its dependents, then next independent
+- Number claims sequentially
+- Each claim is one sentence (one period)
+- Capitalize first word; use semicolons or commas for list elements
+- Standard form: preamble, transition (comprising/consisting), body`,
+      examTip: `Markush groups must use "selected from the group consisting of" to be closed. "Selected from" alone is ambiguous.`,
+    },
+  ],
+  keyTakeaways: [
+    'Every "the X" or "said X" needs a prior "a/an X" introduction. Otherwise = §112(b) antecedent basis rejection.',
+    'Each "the X" must point to a single unambiguous antecedent (Packard).',
+    'Dependent claims can only reference elements from the parent CHAIN, not from sibling claims.',
+    'Comprising = open. Consisting of = closed. Consisting essentially of = closed except non-material additions.',
+    'Claim differentiation presumption: dependent claim adds limitation NOT present in parent.',
+    'Multiple dependent claims count per-alternative for fees.',
+    'Markush groups: "selected from the group consisting of: A, B, C" — closed list.',
+  ],
+},
+
+pp_ids_therasense_materiality: {
+  topicId: 'pp_ids_therasense_materiality',
+  title: 'IDS Timing, Rule 56 & Therasense Materiality',
+  domainWeight: 'Application Prep · MPEP 2000',
+  overview: `Every patent applicant has a duty under 37 CFR §1.56 to disclose information material to patentability. The Information Disclosure Statement (IDS) under §§1.97-1.98 is the procedural vehicle. Therasense v. Becton Dickinson (Fed. Cir. 2011 en banc) tightened the standard for inequitable conduct: a "but-for" materiality test plus specific intent to deceive. Understanding the timing windows, materiality standard, and intent requirement is essential.`,
+  sections: [
+    {
+      id: 'ids-timing',
+      title: '1. IDS Timing Windows (37 CFR §1.97)',
+      content: `## 1.1 The three timing windows
+
+§1.97 establishes THREE windows for filing an IDS:
+
+**Window 1: Within 3 months of filing date (or before first action on the merits, whichever is later)**
+- No fee required
+- No certifications needed
+- Always allowed
+
+**Window 2: After Window 1, but before final action / notice of allowance**
+- Either:
+  - Certification under §1.97(e): each item was first cited by foreign office within 3 months, OR
+  - Fee (§1.17(p)): currently $260 (or $130 small entity)
+
+**Window 3: After final action / notice of allowance but before issue fee paid**
+- BOTH §1.97(e) certification AND fee required
+
+**After issue fee paid:** Cannot file IDS in this application. Must file in continuation or use supplemental examination.
+
+## 1.2 The §1.97(e) certification
+
+The certification states either:
+- Each item was first cited in a foreign office communication received within the last 3 months, OR
+- After conducting a reasonable inquiry, none of the items was known to anyone with a duty under §1.56 more than 3 months before the IDS submission
+
+## 1.3 Compliance requirements (§1.98)
+
+The IDS must include:
+- A list of each item being disclosed (citations)
+- Legible copies of each non-patent item
+- Concise explanation of relevance for non-English items
+- Form PTO/SB/08 (or equivalent listing format)
+
+For US patents and published applications: only the citation is needed (no copy required).
+
+## 1.4 Late-filed IDS consequences
+
+If filed after the relevant window without proper certification + fee:
+- The IDS will be CONSIDERED (placed in file wrapper)
+- But the cited items will NOT be CONSIDERED by the examiner unless properly filed in an earlier window
+
+Practical effect: failure to comply means the cited items are "non-considered" — they're in the file but didn't get examined. This can support an inequitable conduct argument later.`,
+      examTip: `Memorize the three windows: (1) 3 months from filing → free, (2) before final/allowance → cert OR fee, (3) after final/before issue fee → cert AND fee. After issue fee = use continuation or supplemental exam.`,
+    },
+    {
+      id: 'rule-56-duty',
+      title: '2. The Rule 56 Duty of Candor',
+      content: `## 2.1 Who has the duty (§1.56(c))
+
+Duty extends to:
+- Each inventor named in the application
+- Each attorney/agent prosecuting the application
+- Every other person substantively involved in the preparation or prosecution who is associated with the inventor, the assignee, or anyone to whom there is an obligation to assign
+
+The duty applies until the patent issues OR the application is abandoned.
+
+## 2.2 What must be disclosed (§1.56(b))
+
+Information is "material" if NOT cumulative and EITHER:
+- (1) It establishes, by itself or in combination with other information, a prima facie case of unpatentability of a claim; OR
+- (2) It refutes or is inconsistent with a position the applicant takes in (a) opposing an argument of unpatentability or (b) asserting an argument of patentability.
+
+This is the USPTO regulatory definition. Therasense imposes a HIGHER bar for inequitable conduct (covered next), but the §1.56 duty itself is met by the broader regulatory standard.
+
+## 2.3 Sources of material information
+
+- Prior art known to inventors, attorneys, or assignees
+- Foreign office actions citing prior art
+- Litigation in which any related patent is involved
+- Internal documents discussing prior art
+- Co-pending applications (related applications must cross-cite)
+- Sales/offers for sale involving the invention
+
+## 2.4 The cumulative reference exception
+
+A reference is NOT material if it's CUMULATIVE — i.e., it adds nothing not already disclosed by another reference. Cumulative references need not be disclosed.
+
+However, what counts as cumulative is fact-intensive. Better practice: disclose closely-related references rather than risk inequitable conduct accusation.
+
+## 2.5 The 30-day rule for foreign office citations
+
+If a foreign patent office cites a prior art reference (typically in a search report or office action), the applicant has 3 MONTHS from receiving the foreign communication to file an IDS in the US application disclosing those references.
+
+If filed within 3 months: qualifies for Window 2 §1.97(e) certification (no fee).
+
+If filed after 3 months: requires both certification AND fee.`,
+      examTip: `The Rule 56 duty extends to anyone "substantively involved" — including in-house counsel, R&D managers, etc. Make sure clients understand the breadth of who is bound.`,
+      importantNote: `The duty is to disclose, not to opine on materiality. When in doubt, disclose. Failure to disclose can support inequitable conduct findings even decades later.`,
+    },
+    {
+      id: 'therasense-standard',
+      title: '3. Therasense — But-For Materiality and Specific Intent',
+      content: `## 3.1 The Therasense framework
+
+Therasense v. Becton Dickinson (Fed. Cir. 2011 en banc) tightened the standard for inequitable conduct as a defense in litigation. To prove inequitable conduct, the accuser must show:
+
+1. **But-for materiality:** The undisclosed reference (or other misconduct) would have prevented the patent from issuing had it been disclosed. The court asks: "would the examiner have allowed the claims had the reference been before them?"
+
+2. **Specific intent to deceive:** The accused party knew of the reference, knew it was material, and made a deliberate decision to withhold it. Negligence or gross negligence is NOT enough.
+
+Both must be PROVED by clear and convincing evidence.
+
+## 3.2 The single most reasonable inference
+
+Specific intent to deceive must be the "single most reasonable inference" drawn from the evidence. If equally reasonable inferences (e.g., the attorney forgot, or thought it was cumulative) exist, the accuser fails.
+
+This is a HIGH bar. Most withheld references at most show negligence — not the deliberate concealment required for inequitable conduct.
+
+## 3.3 The "exception" for egregious misconduct
+
+Therasense identified one exception to but-for materiality: AFFIRMATIVELY EGREGIOUS misconduct (e.g., forging documents). For such conduct, the court need not find but-for materiality — the conduct itself supports inequitable conduct.
+
+## 3.4 Inequitable conduct as defense
+
+If proven, inequitable conduct renders the ENTIRE PATENT (not just the affected claims) UNENFORCEABLE. This is a severe remedy — far worse than just losing a claim to invalidity.
+
+The patent owner can also face SANCTIONS, attorneys' fees, and antitrust risk.
+
+## 3.5 Comparison: §1.56 standard vs Therasense standard
+
+| Issue | §1.56 (regulatory) | Therasense (litigation defense) |
+|---|---|---|
+| Materiality | Prima facie case OR refutes applicant's position | But-for materiality |
+| Intent | Subjective negligence sufficient | Specific intent to deceive (single most reasonable inference) |
+| Standard of proof | Preponderance | Clear and convincing |
+| Consequence | IDS non-consideration; possible §132 abuse | Patent unenforceability |
+
+The §1.56 duty is BROADER than Therasense. An applicant must comply with §1.56 even when Therasense would not find inequitable conduct.
+
+## 3.6 Practical IDS strategy post-Therasense
+
+- Disclose ALL known references, including cumulative ones, to eliminate inequitable conduct risk
+- Maintain detailed records of who knew what when
+- Train clients/inventors on disclosure obligations
+- File IDS within Window 1 when possible (no certification, no fee)
+- For closely-related applications, cross-cite references in each`,
+      examTip: `Therasense requires (1) but-for materiality AND (2) specific intent to deceive — both by clear and convincing evidence. Negligence alone is NOT inequitable conduct.`,
+      importantNote: `The patent bar tests both standards: the §1.56 regulatory duty (broader) and Therasense (litigation defense). Don't confuse them.`,
+    },
+  ],
+  keyTakeaways: [
+    'IDS windows: (1) 3 mo from filing or before first action → free, (2) before final/allowance → cert OR fee, (3) after final/before issue fee → cert AND fee.',
+    'Rule 56 duty extends to inventors, attorneys, and any substantively-involved person.',
+    '§1.56 materiality: prima facie unpatentability OR refutes applicant\'s position.',
+    'Therasense materiality: BUT-FOR (would the examiner have allowed had the reference been before them).',
+    'Therasense intent: specific intent to deceive, single most reasonable inference, clear and convincing.',
+    'Inequitable conduct renders the entire patent unenforceable — severe remedy.',
+    'Best practice: over-disclose (include cumulative references) to eliminate Therasense risk.',
+    'Foreign office citation 30-day rule: 3 months from receipt to disclose to USPTO.',
+  ],
+},
+
+pp_inventorship_correction: {
+  topicId: 'pp_inventorship_correction',
+  title: 'Inventorship Correction (§256) & Derivation',
+  domainWeight: 'Application Prep · MPEP 602.01, 1481',
+  overview: `Correct inventorship is essential to a valid patent. 35 USC §256 allows correction of inventorship in an issued patent. 35 USC §116 (during pendency) and §1.48 (administrative) cover pre-issue corrections. The AIA replaced the pre-AIA interference proceeding with derivation proceedings under §135. This topic covers all four mechanisms and their procedural pathways.`,
+  sections: [
+    {
+      id: 'inventorship-basics',
+      title: '1. Who is an Inventor?',
+      content: `## 1.1 The legal standard
+
+An inventor is one who CONCEIVED the invention. Conception is the formation in the inventor's mind of "a definite and permanent idea of the complete and operative invention" (Burroughs Wellcome v. Barr).
+
+Mere reduction to practice does NOT make someone an inventor. The actual constructor, technician, or implementer who carries out the inventor's design is NOT an inventor unless they contributed to conception.
+
+## 1.2 Joint inventorship
+
+35 USC §116(a): two or more persons may apply jointly even if:
+- They did not physically work together or at the same time
+- Each did not make the same type or amount of contribution
+- Each did not contribute to every claim
+
+JOINT INVENTORS must each contribute to at least ONE CLAIM. A person who contributes to no claim is not an inventor (and the application is improper if they're named).
+
+## 1.3 Inventor naming requirements
+
+§115 requires an oath/declaration naming each inventor. The application must:
+- Name each inventor who contributed to at least one claim
+- Each inventor signs an oath/declaration under §115(b) and §1.63
+- If an inventor refuses or cannot sign, a substitute statement under §1.64 may be used
+
+## 1.4 Consequences of incorrect inventorship
+
+Naming wrong inventors (too many or too few) without correction:
+- Patent may be UNENFORCEABLE in litigation
+- Subject to derivation challenge (AIA §135) within 1 year of patent issue claiming the invention
+- Subject to ownership disputes (assignment chain breaks if inventor is wrong)
+
+This is why correction mechanisms exist and are heavily tested.`,
+      examTip: `An inventor must contribute to CONCEPTION of at least ONE CLAIM. A technician who just builds what's designed is NOT an inventor.`,
+    },
+    {
+      id: 'pre-issue-correction',
+      title: '2. Pre-Issue Correction: §116 and §1.48',
+      content: `## 2.1 §116(b) and §116(c) — adding/removing inventors
+
+§116(b): An inventor may be added if, during prosecution, it appears that an inventor was OMITTED through error (without deceptive intent).
+
+§116(c): An inventor may be deleted if, during prosecution, it appears that someone was incorrectly named as an inventor through error (without deceptive intent).
+
+Procedure: file a request under §1.48(a) with:
+- Identification of each inventor to be added or removed
+- Statement that the error occurred WITHOUT DECEPTIVE INTENT
+- Required fee
+- Signatures of inventors being added (oath/declaration) or proof that the new inventor consents
+- Notification to all current inventors
+
+## 2.2 §1.48 administrative correction
+
+§1.48(a) covers the procedural rules for §116 inventorship corrections during prosecution. The request can be filed at any time during the pendency of the application.
+
+If the application has been allowed, the request must include a petition under §1.182 (for review of action affecting issuance) or correction must wait until after issue (under §256).
+
+## 2.3 Joint research agreement and naming
+
+If the invention was made under a joint research agreement under §102(c) (AIA) or its pre-AIA analog, the names of the parties to the JRA must be disclosed in the application — but this does NOT change who the inventors are.
+
+Inventors are individuals; JRA parties may be entities.
+
+## 2.4 Correction during continuation
+
+Inventorship can be different in a continuation, divisional, or CIP than in the parent. A continuation can have:
+- A SUBSET of parent's inventors (if some claims were removed and those inventors had no contribution to remaining claims)
+- A SUPERSET (CIP only) if new matter was added by additional inventors
+
+The continuation's filing receipt reflects the current inventorship; the parent retains its own.`,
+      examTip: `§116 + §1.48 correction requires statement of error WITHOUT DECEPTIVE INTENT. The bar is low — innocent or even negligent errors qualify, but deliberate misnaming does not.`,
+    },
+    {
+      id: 'post-issue-derivation',
+      title: '3. Post-Issue Correction (§256) and Derivation Proceedings',
+      content: `## 3.1 §256 — Correction of named inventor after issue
+
+After a patent issues, inventorship can be corrected under §256 if:
+- The error in naming was without deceptive intent
+- The inventor to be added or removed agrees (added inventor must sign; removed inventor must be notified)
+- Application is made to USPTO Director
+
+If the Director finds no deceptive intent, the patent is corrected (without affecting validity).
+
+§256 corrections require either:
+- (a) Court order (if there's a dispute), or
+- (b) Direct application to USPTO (no dispute)
+
+## 3.2 §256 standard
+
+The Federal Circuit applies the "without deceptive intent" standard. Even when discovered decades after issue, §256 correction is available if the original error was innocent.
+
+If correction is denied (e.g., for failure to demonstrate lack of deceptive intent), the patent remains unenforceable for inventorship problem.
+
+## 3.3 AIA Derivation Proceedings (§135)
+
+The AIA replaced pre-AIA interference with DERIVATION PROCEEDINGS. A derivation proceeding determines whether an earlier-filed inventor's invention was DERIVED from a later-filed inventor (and unauthorized).
+
+Eligibility:
+- Petitioner must be an applicant or patentee
+- Petition filed within 1 year of FIRST PUBLICATION of the claim by the alleged deriver
+- Petition must specify the claim derived and how derivation occurred
+
+The PTAB conducts the proceeding. If derivation is proven, the proper inventor's filing prevails.
+
+## 3.4 Derivation evidence
+
+Derivation requires:
+- Conception by the petitioner (the true inventor)
+- Communication of the conception to the alleged deriver
+- Filing by the deriver of an application claiming the same invention
+
+The petitioner must establish prior conception AND that the respondent had the opportunity to derive (i.e., the conception was communicated).
+
+## 3.5 Effect of derivation finding
+
+If the PTAB finds derivation:
+- The alleged deriver's claim(s) are CANCELLED
+- The true inventor's patent or application is upheld
+- Filing dates are NOT swapped (no first-to-invent reversal under AIA)
+
+This differs from pre-AIA interference, which DID swap dates of invention.
+
+## 3.6 Comparison: §256 vs Derivation
+
+| Mechanism | §256 Correction | §135 Derivation |
+|---|---|---|
+| Trigger | Misnamed inventor in issued patent | Alleged deriver beat true inventor to filing |
+| Petitioner | Patentee or court | Applicant/patentee |
+| Timing | Anytime post-issue | Within 1 year of first publication |
+| Forum | USPTO Director or court | PTAB |
+| Standard | Without deceptive intent | Communication + opportunity to derive |
+| Effect | Patent corrected, not invalidated | Deriver's claims cancelled |`,
+      examTip: `§256 covers innocent misnaming corrections. Derivation §135 covers cases where a competitor STOLE the invention. Different remedies, different procedures.`,
+      importantNote: `Post-AIA, interference proceedings are eliminated. Derivation replaces interference but is much narrower in application.`,
+    },
+  ],
+  keyTakeaways: [
+    'Inventorship = contribution to CONCEPTION of at least one claim. Technicians and implementers are NOT inventors.',
+    'Joint inventors (§116): may apply jointly even if did not work together; each must contribute to at least one claim.',
+    'Pre-issue correction: §116/§1.48 with statement of error without deceptive intent.',
+    'Post-issue correction: §256 — without deceptive intent, with all inventor consents.',
+    'AIA Derivation §135: 1-year window from first publication; proves theft of invention.',
+    'Derivation requires conception + communication + opportunity to derive; deriver\'s claims cancelled if proven.',
+    'JRA party disclosure is separate from inventor naming — JRA disclosure does NOT change inventorship.',
+  ],
+},
+
+pf_priority_paris_120: {
+  topicId: 'pf_priority_paris_120',
+  title: 'Foreign Priority (§119) & Domestic Benefit (§120) Deep Dive',
+  domainWeight: 'Filing & Prosecution · MPEP 213-215',
+  overview: `Priority and benefit claims set the effective filing date for prior art purposes. 35 USC §119(a) covers foreign priority under the Paris Convention. §119(e) covers provisional applications. §120 covers continuations, divisionals, and CIPs. Each has strict timing rules: 12 months from foreign filing, 16 months from earliest priority date to amend the claim, certified copy submission requirements, and the consequences of missing each deadline.`,
+  sections: [
+    {
+      id: 'paris-priority-119a',
+      title: '1. Paris Convention Priority (§119(a))',
+      content: `## 1.1 The 12-month rule
+
+§119(a) implements the Paris Convention right of priority. A US application filed within 12 MONTHS of a foreign-filed application in a Paris Convention country may claim the foreign filing date as the PRIORITY DATE.
+
+The 12 months runs from the FIRST regularly-filed foreign application disclosing the invention. Subsequent foreign filings do NOT restart the clock.
+
+## 1.2 Required formalities
+
+To claim Paris priority:
+- File the US application within 12 months of the priority application
+- Identify the priority application in the US application by country, filing date, and serial number (in the application data sheet, ADS)
+- File a CERTIFIED COPY of the priority document
+  - Within 4 months of US filing date, OR
+  - Within 16 months of priority date,
+  - Whichever is later
+- Pay the priority fee (if any)
+
+## 1.3 The 16-month rule for amendments adding priority
+
+If the priority claim was NOT made in the original ADS, an amendment can ADD a priority claim, but only within 16 months of the priority date OR 4 months of the US filing date (whichever is later).
+
+After this deadline, an amendment requires a PETITION under §1.55(c) to restore the priority right with showing of unintentional delay.
+
+## 1.4 Restoration of right of priority (§1.55(c))
+
+If the 12-month deadline is missed by NO MORE THAN 2 MONTHS (so up to 14 months from foreign filing), the priority right may be restored on a showing that the delay was UNINTENTIONAL.
+
+Petition fee + showing of unintentional delay + certified copy required.
+
+After 14 months: priority is generally lost. PCT national stage filings have similar restoration provisions.
+
+## 1.5 Priority effect on prior art
+
+A valid priority claim:
+- Sets the EFD as the priority date for prior art purposes under §102(a)(1) and (a)(2)
+- Does NOT extend the patent term (which is 20 years from US filing date, not priority date)
+- Allows the US application to overcome intervening prior art that postdates the priority date`,
+      examTip: `Paris priority 12-month deadline is strict. Missing it forfeits priority UNLESS restored within 2 months on showing of unintentional delay.`,
+      importantNote: `Patent term is measured from US filing date (or §120 parent filing date), NOT priority date. Priority only affects prior art evaluation, not term.`,
+    },
+    {
+      id: 'provisional-119e',
+      title: '2. Provisional Benefit (§119(e))',
+      content: `## 2.1 Provisional applications
+
+A provisional application is a low-cost placeholder that establishes a priority date. Filed under §111(b), it:
+- Requires only a specification (no claims required)
+- Provides 12 months to file a nonprovisional claiming benefit
+- Does NOT itself mature into a patent (must be converted via nonprovisional)
+- Reasonable filing fees and no examination
+
+## 2.2 §119(e) benefit claim
+
+A nonprovisional under §111(a) may claim benefit of a provisional if:
+- Filed within 12 MONTHS of the provisional filing date
+- Names at least one common inventor
+- Specifically references the provisional in the ADS
+
+## 2.3 §112(a) support requirement
+
+The benefit claim is valid only for claims that are SUPPORTED in the provisional disclosure under §112(a) (written description and enablement).
+
+A common error: the provisional discloses concept X; the nonprovisional adds claims directed to a different aspect Y. The Y claims do NOT get the provisional's filing date — they get only the nonprovisional's date.
+
+## 2.4 Tactical use of provisionals
+
+Provisionals are commonly used to:
+- Lock in an early priority date while continuing development
+- Provide a 12-month window for refining the invention before formal claim drafting
+- Bridge IDF filings to satisfy initial disclosure obligations
+
+Pitfall: a poorly drafted provisional with vague disclosure may not support later claims. Treat the provisional like a "soft nonprovisional" — fully disclose what's claimable.
+
+## 2.5 Multiple provisional claim
+
+A nonprovisional can claim benefit of MULTIPLE provisionals (within 12 months of each):
+- Provisional 1: filed Jan 1
+- Provisional 2: filed Apr 1
+- Nonprovisional filed Dec 30 (within 12 months of both)
+
+Each claim of the nonprovisional gets the priority date corresponding to the earliest provisional that supports it under §112(a).`,
+      examTip: `Provisional must support each claim under §112(a) to give priority. A provisional that just lists topics with insufficient detail provides no priority benefit.`,
+    },
+    {
+      id: 'domestic-benefit-120',
+      title: '3. Domestic Benefit (§120) — Continuation Chains',
+      content: `## 3.1 §120 requirements
+
+A US application filed by the SAME INVENTOR(S) and within the PENDENCY of an earlier US application may claim benefit of the earlier under §120 if:
+- The earlier was filed in the US (or designating the US)
+- The later is filed during the pendency of the earlier (before earlier abandons or issues)
+- The later names at least one common inventor
+- The later contains a SPECIFIC REFERENCE to the earlier (in ADS)
+- The earlier supports the claim under §112(a) for each claim
+
+## 3.2 Pendency requirement
+
+The later application must be filed BEFORE the earlier application is abandoned, withdrawn, or issued. This creates a strict deadline.
+
+If the earlier issues, the later (continuation) must be filed BEFORE the issue date. After issue, no continuation is possible (must file a new application without §120 benefit).
+
+## 3.3 Continuation types
+
+| Type | What it does | Claim scope |
+|---|---|---|
+| Continuation (§120) | New claims in same application | Any claim supported by parent spec |
+| Divisional (§121) | Claims from restricted invention | Limited to non-elected invention from parent |
+| Continuation-in-part (CIP) | Adds new matter | Mixed: parent EFD for parent-supported claims; new EFD for new-matter claims |
+
+A pure continuation cannot add new matter. Only a CIP can.
+
+## 3.4 The 16-month rule for §120 priority claims
+
+Like §119(a), §120 priority must be CLAIMED in the ADS. If not in the original ADS, an amendment must be filed within:
+- 4 months of US filing date, OR
+- 16 months of earliest priority/benefit date,
+- Whichever is LATER.
+
+After this, §120 priority requires petition under §1.78(c) for unintentional delay.
+
+## 3.5 Continuation chains and EFD
+
+A continuation gets the parent's EFD (provided §112(a) support). A continuation of a continuation gets the grandparent's EFD (if §112(a) support throughout the chain).
+
+Long continuation chains allow inventors to maintain an early EFD while continuously claiming new aspects of their disclosure. Each continuation provides 20-year-from-EFD term protection.
+
+## 3.6 Strategic continuation use
+
+- Lock in priority date with provisional or nonprovisional + continuations
+- File continuations as siblings to capture multiple inventive aspects
+- Pendency MUST be maintained — file continuation BEFORE parent issues
+- If parent issues unexpectedly, immediately consider RCE or CIP to maintain pendency
+
+## 3.7 Comparison: §119(a), §119(e), §120
+
+| Feature | §119(a) Paris Convention | §119(e) Provisional | §120 Domestic Benefit |
+|---|---|---|---|
+| Source application | Foreign filing | US provisional | US nonprovisional |
+| Time window | 12 months | 12 months | Pendency |
+| Application requirements | Specifically claim priority | Claim benefit in ADS | Specific reference in ADS |
+| Certified copy | Required (4mo/16mo) | N/A (US-internal) | N/A (US-internal) |
+| §112(a) support | Required | Required | Required |
+| Restoration available | Yes (unintentional, +2mo) | No | Yes (unintentional) |
+| Effect on patent term | None | None | None (20 yrs from EFD) |`,
+      examTip: `Each priority/benefit type (§119(a), §119(e), §120) has its own timing rules. §120 requires PENDENCY — file continuation before parent issues.`,
+    },
+  ],
+  keyTakeaways: [
+    'Paris priority §119(a): 12 months from foreign filing; certified copy required; 16-month rule for amendments.',
+    'Restoration of right of priority: +2 months on showing of unintentional delay.',
+    'Provisional §119(e): 12 months to nonprovisional; provisional must support claim under §112(a).',
+    '§120 domestic benefit: requires PENDENCY (parent not yet abandoned or issued); must specifically reference parent in ADS.',
+    'Each claim gets its own EFD; CIPs have mixed EFDs for parent-supported vs new-matter claims.',
+    'Patent term measured from US filing date of earliest application in chain (not priority date).',
+    'Restoration of §120 benefit: petition for unintentional delay if late.',
+  ],
+},
+
+pf_rce_vs_continuation_strategy: {
+  topicId: 'pf_rce_vs_continuation_strategy',
+  title: 'RCE vs Continuation vs Divisional vs CIP — Strategic Use',
+  domainWeight: 'Filing & Prosecution · MPEP 201, 706',
+  overview: `When prosecution stalls, the practitioner has four primary tools to restart or expand examination: Request for Continued Examination (RCE), continuation, divisional, and continuation-in-part (CIP). Each has different timing, cost, and strategic implications. Choosing wrong wastes time and money; choosing right preserves priority and claim scope.`,
+  sections: [
+    {
+      id: 'rce-mechanics',
+      title: '1. Request for Continued Examination (RCE)',
+      content: `## 1.1 What an RCE does
+
+An RCE under 37 CFR §1.114 reopens prosecution in the SAME application after a final office action or notice of allowance. The same application continues with the same serial number, filing date, and inventorship.
+
+## 1.2 Timing requirements
+
+RCE must be filed:
+- Before abandonment (after final action: within statutory response period as extended)
+- Before issue fee payment (after notice of allowance: practically before the patent issues)
+
+After issue fee paid: RCE is no longer available — must file continuation instead.
+
+## 1.3 Requirements
+
+An RCE requires:
+- §1.114 RCE request form
+- A submission (amendment, IDS, declaration, etc.)
+- The RCE fee under §1.17(e) (currently $1,360 for first RCE, more for subsequent)
+- For RCEs after final, must include a response to the outstanding rejection
+
+## 1.4 Strategic uses
+
+- After final office action when you have a meaningful response to make
+- After notice of allowance to file an IDS or correct minor issues
+- When you want to PRESERVE the application's serial number and family lineage
+
+## 1.5 PTA consequences
+
+RCEs CONSUME some of the patent's PTA. Each RCE may add to applicant delay (B-delay), reducing the final PTA.
+
+This is a key strategic consideration: an RCE preserves the application but may cost significant patent term.`,
+      examTip: `RCE preserves the application's identity but consumes PTA. After notice of allowance, RCE is the only option before payment — continuation requires abandoning to switch.`,
+    },
+    {
+      id: 'continuation-mechanics',
+      title: '2. Continuation, Divisional, and CIP',
+      content: `## 2.1 Continuation
+
+A continuation under §120 is a NEW application that:
+- Has its own serial number and filing date
+- Claims benefit of the parent under §120
+- Discloses the same subject matter (NO new matter)
+- Can claim DIFFERENT subject matter or scope from the parent (any claim supported by parent spec)
+- Names at least one common inventor
+
+The continuation gets the parent's EFD for any claim supported by the parent's disclosure.
+
+## 2.2 Divisional
+
+A divisional under §121 is a special continuation filed in response to a RESTRICTION REQUIREMENT. It contains claims directed to the NON-ELECTED invention from the parent.
+
+§121 SAFE HARBOR: claims in the divisional cannot be cited against the parent under ODP, and vice versa. This is a STATUTORY exception unique to properly-restricted divisionals.
+
+A divisional has the same EFD as the parent.
+
+## 2.3 Continuation-in-part (CIP)
+
+A CIP adds NEW MATTER to the disclosure of the parent. Claims supported by parent disclosure → parent EFD. Claims requiring new matter → CIP filing date.
+
+CIPs are useful when an invention develops further during the patent process. But they create MIXED EFDs — claims may be challenged separately.
+
+## 2.4 Pendency requirement (§120)
+
+All three (continuation, divisional, CIP) require PENDENCY of the parent — the new application must be filed BEFORE the parent abandons or issues.
+
+If the parent issues, no continuation is possible. Must file new application without §120 benefit.
+
+## 2.5 Comparison table
+
+| Feature | RCE | Continuation | Divisional | CIP |
+|---|---|---|---|---|
+| Same application? | YES | NO | NO | NO |
+| New filing date? | NO | YES | YES | YES |
+| New serial number? | NO | YES | YES | YES |
+| Adds new matter? | NO | NO | NO | YES |
+| §112(a) parent support? | N/A | Required | Required | Required for parent EFD claims |
+| Triggered by restriction? | No | No | YES (typical) | No |
+| §121 safe harbor (ODP)? | N/A | NO | YES | NO |
+| EFD effect | No change | Parent | Parent | Mixed |
+| Pendency needed? | Yes | Yes | Yes | Yes |
+| Cost | $1,360 RCE fee | New filing fee | New filing fee | New filing fee |`,
+      examTip: `§121 safe harbor ONLY applies to PROPERLY RESTRICTED divisionals. The parent must have had a restriction requirement issued, and the divisional must contain claims to the non-elected invention.`,
+    },
+    {
+      id: 'decision-tree',
+      title: '3. Decision Tree: Which Mechanism to Use',
+      content: `## 3.1 Scenario: examiner issued final office action
+
+Options:
+1. **Respond + RCE** — if you have meaningful new arguments or amendments and want to preserve the application's identity
+2. **File continuation** — if you want to start fresh with new claim scope; can abandon parent (or let it abandon)
+3. **Appeal to PTAB** — if you believe examiner's rejection is wrong on the merits
+4. **Pre-appeal brief request** — informal review before formal appeal
+
+Trade-off: RCE preserves serial number but consumes PTA; continuation starts fresh but loses PTA earned in parent.
+
+## 3.2 Scenario: claims allowed but want broader scope
+
+After notice of allowance, you can:
+1. **File continuation with broader claims** — preserves the allowed parent and pursues broader claims separately
+2. **Withdraw allowance with RCE** — risky; could lose allowance if examiner re-rejects
+3. **File divisional if there was a restriction** — captures unrestricted subject matter from parent
+
+Best practice: file continuation with broader claims while accepting the narrow allowance.
+
+## 3.3 Scenario: invention has new improvement
+
+Options:
+1. **File CIP** — preserves parent EFD for original claims; new matter gets CIP date
+2. **File new application with §119(e) benefit of new provisional** — if newer invention is sufficiently distinct
+3. **File new standalone application** — no benefit claim
+
+CIPs are tempting but create mixed EFDs that complicate validity. Often a separate new application is cleaner.
+
+## 3.4 Scenario: restriction required, you elect Invention A
+
+After prosecution of Invention A completes:
+1. **File divisional with Invention B's claims** — uses §121 safe harbor against parent
+2. **File continuation with different scope** — works but doesn't get safe harbor
+
+If you intend to pursue both, file the divisional WHILE THE PARENT IS PENDING. After parent issues, you can still file but the safe harbor analysis becomes more complex.
+
+## 3.5 Cost comparison
+
+| Option | Base fee (large entity) | PTA impact |
+|---|---|---|
+| RCE | $1,360 | Reduces PTA |
+| Continuation | ~$1,820 (filing + search + exam) | New PTA clock |
+| Divisional | ~$1,820 | New PTA clock |
+| CIP | ~$1,820 | New PTA clock; mixed EFDs |
+
+Small entity: 50% reduction. Micro entity: 75% reduction.
+
+## 3.6 Strategic principles
+
+1. **Preserve EFD aggressively.** A long continuation chain protects against intervening prior art.
+2. **Use RCE for minor cleanup, continuation for major new directions.**
+3. **CIP only when absolutely necessary** — the mixed-EFD complications often outweigh benefits.
+4. **Track PTA carefully** — RCEs consume term, continuations restart the clock with their own PTA.
+5. **File divisionals from restrictions** — §121 safe harbor is invaluable.`,
+      examTip: `Decision framework: RCE = same application, minor changes; continuation = new application, new claim direction; divisional = restriction response, §121 safe harbor; CIP = adds new matter, mixed EFDs.`,
+    },
+  ],
+  keyTakeaways: [
+    'RCE (§1.114) reopens same application after final action; consumes PTA; cannot use after issue fee paid.',
+    'Continuation (§120): new application, same disclosure, parent EFD if §112(a) supported.',
+    'Divisional (§121): special continuation for non-elected restriction claims; §121 SAFE HARBOR exempts from ODP.',
+    'CIP: adds new matter; mixed EFDs (parent for old claims, CIP for new-matter claims).',
+    'All §120 mechanisms require PENDENCY of parent (not yet abandoned or issued).',
+    'Choose RCE for minor cleanup, continuation for major redirection, divisional for restriction response, CIP only when necessary.',
+    'RCE consumes PTA. Continuation/divisional/CIP start fresh PTA clock for their term.',
+  ],
+},
+
+pf_restriction_elections_detailed: {
+  topicId: 'pf_restriction_elections_detailed',
+  title: 'Restriction Practice & Elections (Deep Dive)',
+  domainWeight: 'Filing & Prosecution · MPEP 800',
+  overview: `Restriction is the examiner's tool to limit examination to ONE invention per application. 35 USC §121 and MPEP Chapter 800 govern when restriction is proper and how the applicant elects. Understanding the two-part test, election with and without traverse, election by original presentation, and the §121 safe harbor protects clients from inadvertent loss of inventions.`,
+  sections: [
+    {
+      id: 'restriction-basics',
+      title: '1. The Restriction Requirement — Two-Part Test',
+      content: `## 1.1 When is restriction proper?
+
+Per MPEP 802 and §121, restriction is proper when the application claims TWO OR MORE INDEPENDENT AND DISTINCT INVENTIONS that would require a serious search burden if examined together.
+
+The examiner must establish both prongs:
+
+**Independent:** The inventions are unrelated — different products, processes, machines, or compositions.
+
+**Distinct:** The inventions are related but separately patentable — i.e., the claims to one invention would not anticipate or render obvious the other.
+
+If only one prong is satisfied, restriction is improper.
+
+## 1.2 The serious search burden
+
+Even if independent and distinct, restriction requires that EXAMINING TOGETHER would impose a SERIOUS BURDEN. The examiner must explain:
+- The search fields would be different (separate classes/subclasses)
+- The patentability inquiries differ (different prior art)
+- The applicant would have to make different arguments for each
+
+Without serious burden, restriction is not justified.
+
+## 1.3 Common restriction scenarios
+
+| Scenario | Restriction proper? |
+|---|---|
+| Product + process for making it | Often yes (independent and distinct) |
+| Composition + method of using it | Often yes |
+| Composition + method of making it + intermediate | Often yes |
+| Generic + species claims | Yes (species election may be required) |
+| Multiple species without generic | Yes |
+| Apparatus + method using apparatus | Often yes |
+
+## 1.4 Species elections
+
+When claims cover a GENUS and multiple SPECIES within the genus, the examiner may require:
+- Election of one species, or
+- Showing of "lack of unity" — that the genus is not adequately disclosed in the spec
+
+If a generic claim is allowed, all elected species claims may be examined together.
+
+## 1.5 Markush groups
+
+Markush claim format ("selected from the group consisting of A, B, C") is generally NOT a restriction issue — the claim is one invention, and the alternatives are part of the same inventive concept.
+
+But if alternatives are very different (e.g., totally unrelated chemical scaffolds), the examiner may require election of one.`,
+      examTip: `Restriction requires BOTH independent/distinct AND serious search burden. Failure of either prong = improper restriction (subject to traverse).`,
+    },
+    {
+      id: 'election-mechanics',
+      title: '2. Election Procedure',
+      content: `## 2.1 Receiving a restriction requirement
+
+The examiner issues a restriction requirement either:
+- In a first office action, OR
+- In a stand-alone communication BEFORE first action on the merits
+
+The requirement identifies each group of claims and indicates the inventions/species.
+
+## 2.2 Time limit
+
+Applicant must respond within 1 MONTH (or up to 6 months with extensions under §1.136). After this, the application can go abandoned.
+
+## 2.3 Election with traverse
+
+Election WITH traverse means: "I elect Group A but I do not agree the restriction is proper."
+
+Election WITH TRAVERSE preserves:
+- The right to challenge the restriction (request reconsideration or petition under §1.144)
+- The §121 safe harbor for divisional filings on non-elected claims
+
+Election WITHOUT traverse accepts the restriction and prosecutes the elected invention.
+
+## 2.4 Election by original presentation
+
+Important rule: If the applicant amends the original claims to include claims that DIRECTLY READ on previously-non-elected subject matter, the applicant has "elected by original presentation" of the new claims.
+
+This means: an applicant who elected Group A but later amends to add claims that overlap with Group B has effectively elected Group B too (within the limits of the restriction).
+
+This can also undo a restriction — if the amended claims now cover originally-restricted subject matter, the examiner may withdraw restriction.
+
+## 2.5 Provisional election
+
+If the applicant fails to specifically elect within the response period, the application is treated as if the FIRST GROUP listed is elected. This is "provisional election" and applies if the applicant did not specifically respond.
+
+## 2.6 Withdrawal of restriction
+
+The examiner may WITHDRAW the restriction requirement if:
+- Applicant traverses successfully
+- The serious search burden disappears (e.g., applicant cancels overlapping claims)
+- Applicant's amendments cure the restriction issue
+
+If restriction is withdrawn, all originally-presented claims are examined together.
+
+## 2.7 Non-elected claims
+
+After election, non-elected claims are WITHDRAWN from consideration. They remain in the application but are not examined.
+
+To pursue non-elected claims, the applicant files a DIVISIONAL APPLICATION under §121 (with §121 safe harbor against ODP).`,
+      examTip: `Election WITH TRAVERSE preserves the right to challenge restriction. Election WITHOUT traverse waives this. Always elect with traverse unless restriction is clearly proper.`,
+    },
+    {
+      id: 'safe-harbor-strategy',
+      title: '3. The §121 Safe Harbor & Strategic Use',
+      content: `## 3.1 The §121 statutory safe harbor
+
+§121 (last paragraph): "A patent issuing on an application with respect to which a requirement for restriction under this section has been made, or on an application filed as a result of such a requirement, shall not be used as a reference either in the Patent and Trademark Office or in the courts against a divisional application or against the original application or any patent issued on either of them, if the divisional application is filed before the issuance of the patent on the other application."
+
+In plain English: a patent issuing from the elected invention cannot be cited as prior art against the divisional containing non-elected claims (and vice versa) for OBVIOUSNESS-TYPE DOUBLE PATENTING (ODP).
+
+## 3.2 Conditions for safe harbor
+
+The safe harbor applies only when:
+- The original restriction was PROPER under §121 (the requirement was valid)
+- The applicant ELECTED with TRAVERSE (preserved the right to file divisional)
+- The divisional was FILED BEFORE THE PARENT ISSUED
+- The divisional CONTAINS CLAIMS to the non-elected invention(s)
+
+## 3.3 What the safe harbor does NOT cover
+
+The safe harbor only addresses ODP. It does NOT protect against:
+- §102 anticipation (the parent patent could still be prior art if it discloses the divisional's invention)
+- §103 obviousness (the parent could be prior art against the divisional)
+- §112(a) lack of support (each application is judged separately)
+
+So the safe harbor's value is narrow — protecting against ODP only.
+
+## 3.4 Strategic implications
+
+For multi-invention applications:
+1. **Accept restriction with traverse.** Preserve the safe harbor option.
+2. **File divisional BEFORE parent issues.** This is the key timing requirement.
+3. **Pursue elected invention to allowance.** Get the parent allowed first.
+4. **File divisional for non-elected invention.** Start fresh prosecution there.
+5. **Both patents enforceable independently.** Different patents, different products, different licensees.
+
+## 3.5 Strategic considerations for non-restricting
+
+Sometimes applicant prefers to AVOID restriction and prosecute multiple inventions together. Tactics:
+- Cancel claims that span multiple inventions to focus on one
+- Amend claims to consolidate the inventive concepts
+- Provide arguments why claims are NOT independent and distinct
+
+If the examiner withdraws restriction, all claims proceed together.
+
+## 3.6 Common traps
+
+- **Election without traverse:** Loses the §121 safe harbor protection
+- **Divisional filed after parent issues:** Loses safe harbor (parent could be cited as prior art for ODP)
+- **Including elected invention claims in divisional:** Defeats §121 — divisional must contain only non-elected claims (or limit to non-elected)
+- **Improper restriction not traversed:** Cannot challenge later if not traversed initially
+
+## 3.7 PTAB review of restriction
+
+If the examiner refuses to withdraw restriction after traverse, the applicant can:
+- File a petition under §1.144 to the Director (within 2 months)
+- Appeal to PTAB if examiner persists
+
+The PTAB will review whether the restriction was proper under §121.`,
+      examTip: `§121 safe harbor requires: proper restriction + election WITH TRAVERSE + divisional filed BEFORE parent issues. Missing any element = no safe harbor.`,
+    },
+  ],
+  keyTakeaways: [
+    'Restriction requires (1) independent and distinct inventions AND (2) serious search burden. Both prongs must be met.',
+    'Election with traverse preserves right to challenge AND §121 safe harbor for divisional filings.',
+    'Election by original presentation: amending to add claims reading on non-elected subject matter implicitly elects that subject matter.',
+    '§121 safe harbor: divisional cannot be cited against parent (or vice versa) for ODP if properly elected and divisional filed before parent issues.',
+    'Safe harbor covers ODP only — does NOT protect against §102/§103 prior art.',
+    'Non-elected claims are withdrawn from consideration; pursue via divisional under §121.',
+    'Petition under §1.144 to challenge restriction; appeal to PTAB if examiner persists.',
+  ],
+},
+
+po_ptab_appeal_practice: {
+  topicId: 'po_ptab_appeal_practice',
+  title: 'PTAB Appeal Practice — Briefs, Oral Hearing & BRI',
+  domainWeight: 'Office Responses · MPEP 1200',
+  overview: `When an examiner refuses to allow claims, the applicant can appeal to the Patent Trial and Appeal Board (PTAB). PTAB appeal practice is governed by 37 CFR Part 41 and is procedurally specific: notice of appeal, appeal brief, examiner's answer, reply brief, oral hearing. Mastery of timing, brief content under §41.37, claim mapping, and the broadest reasonable interpretation (BRI) standard is essential.`,
+  sections: [
+    {
+      id: 'ptab-procedure',
+      title: '1. Notice of Appeal and Appeal Brief',
+      content: `## 1.1 When can you appeal?
+
+After TWO OR MORE rejections in the same application (typically: non-final + final, or final + further rejection), the applicant may appeal under §134(a) to the PTAB.
+
+The applicant CANNOT appeal:
+- A first non-final office action (must respond first)
+- An ex parte (post-grant) reexamination (must go through reexam procedure)
+
+## 1.2 Notice of Appeal (§1.191)
+
+Filed within the response period of the final office action (or extended period). Requires:
+- Form (37 CFR §1.191)
+- Notice of Appeal fee (currently $640 large entity)
+- Identifies the appealed claims
+
+After filing the Notice of Appeal, the applicant has 2 MONTHS (extendable up to 5) to file the appeal brief.
+
+## 1.3 Appeal Brief content (§41.37)
+
+The Appeal Brief must contain (in this order):
+1. **Identification of appellant** (real party in interest)
+2. **Related appeals and judicial proceedings**
+3. **Status of claims** (which claims are pending, which appealed)
+4. **Status of amendments** (which amendments after final have been entered)
+5. **Summary of claimed subject matter** (with cites to spec)
+6. **Grounds of rejection** to be reviewed
+7. **Argument** — for each ground, why the rejection is wrong
+8. **Claim mapping** to spec — for each claim, identify spec support
+9. **Evidence appendix** (if any new evidence)
+10. **Claims appendix** — the appealed claims
+
+Failure to comply: brief returned, may be deemed non-compliant.
+
+## 1.4 The Examiner's Answer (§41.39)
+
+After the appeal brief is filed, the examiner has time to file an EXAMINER'S ANSWER. This document:
+- Responds to each argument in the appeal brief
+- May designate a "new ground of rejection" (which would allow applicant to amend or file a new appeal)
+- Restates the rejection in light of applicant's arguments
+
+If the examiner designates a NEW ground of rejection, applicant must respond within 2 months by:
+- Filing a reply brief addressing the new ground, or
+- Reopening prosecution by amending claims
+
+## 1.5 Reply Brief (§41.41)
+
+Optional. The applicant may file a reply brief within 2 months of receiving the examiner's answer. Limited to addressing:
+- New grounds of rejection in the examiner's answer
+- New positions taken by the examiner
+
+A reply brief is NOT a second-chance to argue the original grounds.`,
+      examTip: `Appeal brief content under §41.37 is strict. Omitting required sections can result in the brief being deemed non-compliant and the appeal dismissed.`,
+    },
+    {
+      id: 'bri-vs-phillips',
+      title: '2. Broadest Reasonable Interpretation (BRI)',
+      content: `## 2.1 The two claim construction standards
+
+During USPTO PROSECUTION (including PTAB appeal), claims are given their BROADEST REASONABLE INTERPRETATION (BRI) consistent with the specification (MPEP 2111).
+
+During LITIGATION (district court, Federal Circuit), claims are given the PHILLIPS construction — the meaning a person of ordinary skill in the art would give them, viewed in context of intrinsic evidence (spec, file history).
+
+## 2.2 Why BRI?
+
+BRI is justified by the USPTO's interest in efficient examination — examiners apply a broader reading to test the limits of the claim. The applicant has the chance to amend if the broader reading captures prior art.
+
+## 2.3 BRI in PTAB
+
+PTAB appeals apply BRI (same as the examiner). So the question becomes: under the broadest reasonable interpretation consistent with the spec, do the prior art references read on the claim?
+
+This means: if the examiner's broader reading captures the prior art, the rejection is sustained UNLESS the applicant successfully argues that the broader reading is unreasonable in view of the specification.
+
+## 2.4 The "consistent with the specification" limit
+
+BRI is bounded by what the SPECIFICATION teaches. The PTAB cannot adopt an interpretation that:
+- Conflicts with the spec's definitions
+- Ignores the spec's context
+- Imports unreasonable limitations
+
+Practitioners can argue that an examiner's BRI is too broad because it conflicts with spec disclosures.
+
+## 2.5 Cuozzo Speed Technologies (Supreme Court 2016)
+
+In Cuozzo, the Supreme Court UPHELD the USPTO's use of BRI in IPR proceedings (despite arguments that IPRs should use Phillips). This solidified BRI as the standard for PTAB-conducted proceedings.
+
+However, post-Cuozzo, the USPTO changed its rules for IPRs (after the Phillips Industries v. Apple decision) to use a Phillips-like standard for IPR/PGR proceedings. EX PARTE PTAB APPEALS still use BRI.
+
+## 2.6 Strategic implications
+
+For applicants:
+- Draft specs with CLEAR definitions to constrain BRI
+- Use precise claim language to limit broadest interpretations
+- Argue BRI is unreasonable when it ignores spec context
+- Consider amendments to NARROW claim scope to avoid prior art under BRI`,
+      examTip: `PTAB ex parte appeals use BRI (broadest reasonable interpretation consistent with spec). District court litigation uses Phillips (ordinary meaning to POSITA). Different standards, different scopes.`,
+      importantNote: `Post-2018, IPR/PGR proceedings use Phillips standard (per USPTO rule change), but ex parte PTAB appeals retain BRI. The exam tests recognition of this distinction.`,
+    },
+    {
+      id: 'oral-hearing-decision',
+      title: '3. Oral Hearing and PTAB Decision',
+      content: `## 3.1 Requesting oral hearing (§41.47)
+
+The applicant may request an oral hearing by filing a request within 2 months of the examiner's answer (or within 2 months of the reply brief if filed).
+
+Oral hearings are NOT mandatory. The applicant can choose to have the appeal decided on the briefs alone.
+
+If requested, the hearing is held before a panel of administrative patent judges (typically 3).
+
+## 3.2 Hearing format
+
+Oral hearings are typically 20 minutes per side. The applicant's representative (registered attorney or agent) presents arguments. The panel may ask questions.
+
+The hearing is NOT a re-do of prosecution — it's an oral supplement to the written briefs.
+
+## 3.3 PTAB decision
+
+The PTAB issues a written decision after the appeal. Possible outcomes:
+
+1. **AFFIRMED:** The examiner's rejection is sustained. The claims remain rejected. Applicant may:
+   - Request rehearing (within 2 months)
+   - Reopen prosecution with amendments
+   - Appeal to Federal Circuit (within 2 months)
+
+2. **REVERSED:** The examiner's rejection is reversed. Claims are deemed allowable as appealed (or remand for further consideration).
+
+3. **AFFIRMED IN PART, REVERSED IN PART:** Some grounds affirmed, others reversed.
+
+4. **NEW GROUND OF REJECTION:** PTAB introduces a new basis for rejection. Applicant has 2 months to respond by:
+   - Reopening prosecution with amendments, or
+   - Requesting rehearing arguing the new ground is wrong
+
+## 3.4 Request for rehearing (§41.52)
+
+A request for rehearing must be filed within 2 months of the PTAB decision. It identifies specific points the applicant believes were misapplied or overlooked.
+
+Rehearing is NARROWLY DEFINED — not a chance to re-argue the case. The applicant must show:
+- The PTAB misapprehended a point of law or fact, or
+- Overlooked a key argument
+
+The PTAB rarely grants rehearing.
+
+## 3.5 Federal Circuit appeal (§141)
+
+After a final PTAB decision (or denial of rehearing), the applicant may appeal to the Federal Circuit within 2 MONTHS. Alternatively, the applicant may file a civil action in district court under §145.
+
+The Federal Circuit reviews the PTAB's legal conclusions de novo and its factual findings for substantial evidence.
+
+## 3.6 Strategic considerations
+
+- Notice of appeal is relatively cheap; appeal brief is expensive in time
+- Consider RCE + amendment as alternative — sometimes cheaper to amend than to appeal
+- Pre-appeal brief request (§41.31) — informal review by panel before formal appeal; if successful, saves appeal brief work
+- Appeal is most useful when:
+  - The examiner's claim interpretation is unreasonable
+  - The prior art is materially distinguishable
+  - Amendments would unduly narrow claim scope
+
+## 3.7 PTAB statistics (general guidance)
+
+PTAB grants reversal in roughly 50% of ex parte appeals (rate varies by tech area and year). Affirmance is common when:
+- Prior art clearly anticipates claims under BRI
+- Specification fails to provide unambiguous support for narrow interpretation
+
+Strong appeal candidates:
+- Clear examiner factual error
+- Claim construction dispute resolved by spec
+- New prior art interpretation argument`,
+      examTip: `Notice of Appeal triggers a 2-month deadline (extendable to 7 with fees) for the appeal brief. Failure = appeal dismissed. After examiner's answer, optional reply brief within 2 months.`,
+    },
+  ],
+  keyTakeaways: [
+    'Notice of Appeal under §1.191 after two or more rejections; 2 months to file appeal brief.',
+    'Appeal brief (§41.37): 10 required sections including claim mapping to spec and full argument.',
+    'PTAB applies broadest reasonable interpretation (BRI) consistent with spec. District court uses Phillips.',
+    'Cuozzo upheld BRI for IPR (later changed to Phillips for IPR by USPTO rule); ex parte PTAB appeals retain BRI.',
+    'Examiner\'s answer: may designate new grounds; applicant must respond (reply brief or reopen prosecution).',
+    'PTAB decision options: affirmed, reversed, affirmed-in-part, new ground; applicant can request rehearing or appeal to Federal Circuit.',
+    'Pre-appeal brief request (§41.31): cheaper informal review before formal appeal.',
+  ],
+},
+
+pi_ipr_pgr_cbm_distinctions: {
+  topicId: 'pi_ipr_pgr_cbm_distinctions',
+  title: 'IPR vs PGR vs CBM — Scope, Timing & Estoppel',
+  domainWeight: 'Post-Issuance · MPEP 2900',
+  overview: `The AIA created three post-grant trial proceedings at the PTAB: Inter Partes Review (IPR), Post-Grant Review (PGR), and Covered Business Method (CBM) Review (sunset 2020). Each has different grounds, timing, petitioners, and estoppel consequences under §315(e) and §325(e). Mastering the distinctions is essential exam material — wrong proceeding = denied petition.`,
+  sections: [
+    {
+      id: 'ipr-mechanics',
+      title: '1. Inter Partes Review (IPR) — §§311-319',
+      content: `## 1.1 What IPR challenges
+
+IPR challenges patent claim VALIDITY on the following grounds ONLY:
+- 35 USC §102 (anticipation)
+- 35 USC §103 (obviousness)
+
+The prior art evidence is limited to:
+- PATENTS (US or foreign)
+- PRINTED PUBLICATIONS
+
+Critically, IPR does NOT allow challenges based on:
+- §101 (subject matter eligibility)
+- §112 (written description, enablement, definiteness)
+- Public use, on sale, or other prior art forms
+- Inventorship disputes
+
+## 1.2 Timing
+
+IPR can be filed:
+- For AIA patents: 9 MONTHS AFTER ISSUE (after PGR window closes)
+- For pre-AIA patents: anytime after issue
+
+The 9-month delay for AIA patents ensures PGR has priority.
+
+## 1.3 Petitioner
+
+Any party can file IPR EXCEPT the patent owner. The petitioner does NOT need to demonstrate standing (unlike federal courts).
+
+## 1.4 Procedure
+
+1. Petition filed with PTAB
+2. Patent owner has 3 months to file a preliminary response
+3. PTAB issues an institution decision (must determine "reasonable likelihood" that petitioner would prevail on at least one claim) within 3 months of preliminary response (or 3 months of petition if no preliminary response)
+4. If instituted, trial proceeds with discovery, depositions, briefs, oral hearing
+5. Final written decision within 12 months of institution (can be extended to 18 months for good cause)
+
+Total: ~18 months from petition to decision.
+
+## 1.5 Standard of proof
+
+PETITIONER must prove unpatentability by PREPONDERANCE OF THE EVIDENCE (lower than litigation's clear and convincing).
+
+This is one of IPR's main attractions: easier to prove invalidity than in district court.
+
+## 1.6 Outcome
+
+PTAB issues a final written decision either:
+- Upholding the claim (valid)
+- Cancelling the claim (invalid)
+- Mixed (some claims valid, some invalid)
+
+A patent owner may amend claims during IPR (motion to amend), but rarely granted.
+
+## 1.7 Estoppel — §315(e)
+
+After a final IPR decision on the MERITS, the petitioner is ESTOPPED in any subsequent USPTO or court proceeding from raising ANY GROUND that:
+- Was raised in the IPR, OR
+- COULD HAVE BEEN RAISED with reasonable diligence
+
+This is "use it or lose it" — petitioner must include all viable §102/§103 grounds in the initial IPR petition or forfeit them.`,
+      examTip: `IPR is limited to §102/§103 grounds based on patents and printed publications ONLY. No §101, no §112, no public use.`,
+    },
+    {
+      id: 'pgr-mechanics',
+      title: '2. Post-Grant Review (PGR) — §§321-329',
+      content: `## 2.1 What PGR challenges
+
+PGR is BROADER than IPR. Claims can be challenged on ANY ground of patentability:
+- §101 (subject matter eligibility)
+- §102 (anticipation, including public use, on sale, etc.)
+- §103 (obviousness)
+- §112 (written description, enablement, definiteness — except best mode)
+- Improper inventorship
+- Double patenting
+
+PGR can use ANY EVIDENCE — not limited to patents and printed publications. Documents, products, declarations all admissible.
+
+## 2.2 Timing — the 9-month window
+
+PGR can ONLY be filed within 9 MONTHS of patent issue. After 9 months: PGR is no longer available; only IPR (with its narrower scope) remains.
+
+This 9-month window applies to AIA patents only. Pre-AIA patents are not subject to PGR (only ex parte reexam or interference).
+
+## 2.3 Petitioner
+
+Any party EXCEPT the patent owner. Petitioner does not need standing.
+
+## 2.4 Threshold for institution
+
+Higher than IPR: petitioner must show that it is MORE LIKELY THAN NOT that at least one claim is unpatentable, OR that the petition raises a NOVEL OR UNSETTLED legal question important to the patent system.
+
+## 2.5 Procedure and standard of proof
+
+Procedure mirrors IPR (3-month preliminary response, 12-month trial, 18-month total).
+
+Standard of proof: preponderance of the evidence (same as IPR).
+
+## 2.6 Estoppel — §325(e)
+
+Like IPR, PGR estoppel under §325(e) prevents the petitioner from later raising:
+- ANY GROUND that was raised in the PGR, OR
+- ANY GROUND THAT COULD HAVE BEEN RAISED
+
+The "could have been raised" is broader for PGR because PGR allows any §101/§102/§103/§112 ground — petitioner must include all possible grounds or lose them.`,
+      examTip: `PGR has a HARD 9-MONTH WINDOW. After 9 months from issue, PGR is unavailable. Only IPR (with narrower scope) remains.`,
+      importantNote: `PGR estoppel is broader than IPR estoppel because PGR allows more grounds. Carefully select what to include — anything left out is lost.`,
+    },
+    {
+      id: 'cbm-and-estoppel',
+      title: '3. CBM (Sunset 2020) and Estoppel Comparison',
+      content: `## 3.1 Covered Business Method Review (CBM)
+
+CBM was a transitional AIA proceeding for patents directed to FINANCIAL PRODUCTS OR SERVICES (financial business method patents). Petitioner could be any party with a real-world stake (more standing-like than IPR/PGR).
+
+CBM allowed challenges on ANY ground (similar to PGR) but was specific to financial business method patents.
+
+CBM EXPIRED on September 16, 2020 (per AIA §18(a)(3) sunset). It is NO LONGER AVAILABLE for petitions filed after that date.
+
+For exam purposes:
+- CBM petitions filed before 9/16/2020 may still be pending or completed
+- The estoppel provisions of CBM (§18(b)(1)) still bind petitioners
+- No new CBM petitions can be filed
+
+## 3.2 Standing requirement for CBM
+
+CBM required the petitioner to have been:
+- SUED for infringement of the patent, OR
+- CHARGED with infringement (e.g., received a demand letter)
+
+This is unlike IPR/PGR which have no standing requirement.
+
+## 3.3 Estoppel comparison
+
+| Feature | IPR §315(e) | PGR §325(e) | CBM §18(b)(1) |
+|---|---|---|---|
+| Triggering event | Final written decision | Final written decision | Final written decision |
+| Grounds raised | Estopped | Estopped | Estopped |
+| Could have raised | Estopped | Estopped | NOT estopped (broader allowed) |
+| Forums affected | USPTO + courts | USPTO + courts | USPTO + courts |
+
+CBM had less expansive estoppel than IPR or PGR — petitioners could raise grounds in courts that they had not raised in the CBM (only literal raises were estopped).
+
+## 3.4 Strategic comparison
+
+| Decision factor | IPR | PGR | CBM (historical) |
+|---|---|---|---|
+| Available for | Any patent (9mo+ post-issue if AIA) | AIA patents within 9 months | Financial business method patents (pre-2020) |
+| Grounds | §102/§103 only | Any patentability ground | Any patentability ground |
+| Evidence | Patents/pubs only | Any | Any |
+| Estoppel scope | Raised + could have raised | Raised + could have raised | Raised only |
+| Standing | None required | None required | Sued or charged |
+| Typical use | Narrow §103 attacks | Broad early challenges | Financial method invalidations |
+
+## 3.5 Strategic decision tree
+
+1. **Is it an AIA patent within 9 months of issue?** → PGR (broadest scope)
+2. **Is it any patent after 9 months from AIA issue, or any pre-AIA patent?** → IPR (limited scope)
+3. **Is it a pre-2020 financial business method patent challenge?** → CBM (now sunset)
+
+## 3.6 PTAB practice tips
+
+For petitioners:
+- Frame the petition narrowly to fit IPR if no PGR window available
+- Include ALL viable grounds — estoppel forecloses later use
+- Strong factual evidence (declarations, expert testimony) often decides cases
+- Preliminary response is patent owner's main defense — make it count
+
+For patent owners:
+- File preliminary response with strong substantive arguments
+- Argue petition's deficiencies (e.g., redundant grounds, lack of motivation to combine)
+- Prepare for trial — if instituted, the patent claim is at high risk`,
+      examTip: `IPR = narrower scope, broader timing. PGR = broader scope, narrow 9-month window. CBM = sunset, historical only. Pick the proceeding by timing and grounds.`,
+    },
+  ],
+  keyTakeaways: [
+    'IPR (§§311-319): challenges §102/§103 only, prior art = patents/pubs only, 9-month delay for AIA patents.',
+    'PGR (§§321-329): challenges any §101/§102/§103/§112 ground, any evidence, 9-MONTH WINDOW from issue.',
+    'CBM (§18, sunset 9/16/2020): financial business method patents only, broader grounds but standing required.',
+    'IPR/PGR have no standing requirement. CBM required suit or charge of infringement.',
+    'Estoppel §315(e)/§325(e): petitioner barred from raising grounds RAISED or that COULD HAVE BEEN RAISED in subsequent proceedings.',
+    'CBM estoppel narrower — only literally raised grounds.',
+    'Standard of proof: preponderance for all three (vs clear and convincing in district court).',
+  ],
+},
+
+pi_reissue_reexam_supplemental: {
+  topicId: 'pi_reissue_reexam_supplemental',
+  title: 'Reissue vs Reexamination vs Supplemental Examination',
+  domainWeight: 'Post-Issuance · MPEP 1400, 2200, 2600',
+  overview: `Reissue, ex parte reexamination, and supplemental examination are three post-grant correction mechanisms with distinct purposes. Reissue corrects errors in the patent. Reexamination revisits patentability over new prior art. Supplemental examination cures potential inequitable conduct issues before they become litigation defenses. Mastery of when each is available — and what each accomplishes — is essential.`,
+  sections: [
+    {
+      id: 'reissue-mechanics',
+      title: '1. Reissue (§251) — Correcting Errors',
+      content: `## 1.1 Purpose
+
+Reissue under 35 USC §251 corrects an error in a patent that arose without deceptive intent. Errors include:
+- Defective specification
+- Defective drawing
+- Claiming TOO MUCH (overbroad) — must NARROW claims
+- Claiming TOO LITTLE (overnarrow) — can BROADEN claims (only within 2 years of original issue)
+
+## 1.2 Broadening reissue limit
+
+Broadening reissue is only available within 2 YEARS of the original patent's issue date. After 2 years, only NARROWING reissue (claim or specification fix) is permitted.
+
+Broadening reissue may:
+- Expand claim scope
+- Add NEW CLAIMS (within original disclosure)
+- Correct mistakes that resulted in narrower-than-intended claims
+
+## 1.3 Recapture rule
+
+A reissue applicant CANNOT recapture subject matter SURRENDERED during the original prosecution. If a claim was narrowed during examination to avoid prior art, the reissue cannot un-narrow it.
+
+The court applies the THREE-STEP recapture test:
+1. Does the reissue claim cover surrendered subject matter?
+2. If yes, was the surrender deliberate?
+3. If yes, is the surrender related to overcoming prior art?
+
+All three "yes" → reissue claim invalid under recapture.
+
+## 1.4 Required showing
+
+The reissue applicant must:
+- File reissue application with required documents
+- Identify the error in the original patent
+- Show error occurred without deceptive intent (declaration)
+- Submit claims as proposed in reissue
+
+## 1.5 Effect
+
+A reissued patent has a NEW PATENT NUMBER (with prefix "RE"). Original patent is surrendered. The reissue patent has the SAME TERM as the original.
+
+Intervening rights (§252): third parties who acted before reissue cannot be sued for past activities; their rights are preserved.`,
+      examTip: `Broadening reissue is allowed only within 2 YEARS of original issue. After 2 years, only narrowing reissue is available.`,
+    },
+    {
+      id: 'reexam-mechanics',
+      title: '2. Ex Parte Reexamination (§§302-307)',
+      content: `## 2.1 Purpose
+
+Reexamination revisits an issued patent's patentability based on NEW prior art (patents and printed publications). Triggered by:
+- Patent owner (any time)
+- Third party (any time)
+- Director's own initiative
+
+## 2.2 Grounds limited to §102 and §103
+
+Like IPR, ex parte reexamination is limited to:
+- §102 (anticipation) based on patents and printed publications
+- §103 (obviousness) based on patents and printed publications
+
+CANNOT raise §101, §112, public use, on sale, or other grounds.
+
+## 2.3 Initiation process
+
+Third party files request with:
+- Identification of the patent and claims
+- Prior art being asserted
+- Statement of patentability questions
+- Required fee
+
+USPTO has 3 months to determine whether a SUBSTANTIAL NEW QUESTION OF PATENTABILITY (SNQ) is raised. If yes, reexamination is ordered.
+
+## 2.4 Ex parte procedure
+
+Once ordered, the patent owner has 2 months to file a statement (optional). Then the requester gets a chance to reply.
+
+Then prosecution restarts with the examiner — like a normal application, examiner issues office actions, applicant responds. Appeal to PTAB is available.
+
+## 2.5 Third-party participation
+
+In EX PARTE reexamination, the third party requester does NOT participate in the prosecution after initial filing. The owner and examiner go through prosecution without the requester.
+
+(Inter partes reexamination, which allowed third-party participation, was REPLACED by IPR/PGR for petitions filed after 9/16/2012.)
+
+## 2.6 Outcome
+
+Reexamination certificate issued at conclusion. Possible outcomes:
+- All claims confirmed (no change)
+- Claims amended (narrower)
+- Claims cancelled
+
+If amended, intervening rights apply (similar to reissue).
+
+## 2.7 Use cases for ex parte reexam
+
+- Patent owner wants to PROACTIVELY validate claims before litigation
+- Third party (not in litigation) wants to challenge a patent cheaply
+- Found new prior art post-issuance, want it considered`,
+      examTip: `Ex parte reexamination is limited to §102/§103 over patents and printed publications. SNQ standard is the threshold for ordering reexamination.`,
+    },
+    {
+      id: 'supplemental-exam',
+      title: '3. Supplemental Examination (§257)',
+      content: `## 3.1 Purpose
+
+35 USC §257 supplemental examination allows a PATENT OWNER to submit information that may be relevant to patentability and potentially CURE inequitable conduct.
+
+If supplemental exam clears the patent, that information CANNOT later be the basis for inequitable conduct in litigation.
+
+## 3.2 Who can file?
+
+Only the PATENT OWNER. Third parties cannot file supplemental exam petitions.
+
+## 3.3 What can be submitted?
+
+Almost anything that might bear on patentability:
+- Newly-discovered prior art
+- Previously-overlooked references
+- Information about prior public uses
+- Other facts the owner believes might be material
+
+## 3.4 SNQ determination
+
+USPTO determines whether the submitted information raises a SUBSTANTIAL NEW QUESTION OF PATENTABILITY (SNQ). If:
+- NO SNQ: Supplemental exam certificate issued; no further action needed
+- YES SNQ: USPTO orders REEXAMINATION (typically ex parte) to address the issue
+
+If supplemental exam leads to reexamination and the claims are CONFIRMED, the patent is cured of inequitable conduct issues related to that information.
+
+## 3.5 The §257 immunity
+
+After successful supplemental exam (no SNQ, or SNQ leading to confirmed claims):
+- Information submitted CANNOT be used as basis for inequitable conduct claim
+- This protects against later litigation defenses
+- Statutory immunity is significant
+
+## 3.6 Limitations
+
+Supplemental exam DOES NOT cure:
+- Inequitable conduct already pending in litigation
+- Egregious misconduct (e.g., forged documents)
+- Information related to crimes (e.g., fraud)
+
+If the patent owner is already accused of inequitable conduct in litigation, supplemental exam is not a path to immunity.
+
+## 3.7 Strategic use
+
+- Patent owner discovers POTENTIALLY material information not previously disclosed
+- Owner wants to cure before competitors raise inequitable conduct
+- Disclose via supplemental exam before any litigation accusations
+
+This is a defensive measure rather than offensive one.
+
+## 3.8 Comparison: reissue vs reexam vs supplemental
+
+| Feature | Reissue | Ex Parte Reexam | Supplemental Exam |
+|---|---|---|---|
+| Who can file | Patent owner | Owner, 3rd party, or Director | Only patent owner |
+| Grounds | Error in patent (broad) | §102/§103 over patents/pubs | Anything potentially material |
+| Required showing | Error without deceptive intent | Substantial New Question | Information relevance |
+| Claim changes | Allowed (narrow/broad if within 2yr) | Allowed (typically narrow) | None directly; via subsequent reexam |
+| Intervening rights | Yes | Yes | Yes (if reexam ordered) |
+| Confers immunity? | No (could still face IC challenges) | No | YES (if successful) |
+| Public participation | None | Limited (ex parte only) | None |
+| Patent owner participation | Full | Full | Full |
+
+## 3.9 Decision framework
+
+- **Need to broaden claims (within 2 years)?** → Reissue
+- **Found new §102/§103 prior art?** → Reexamination
+- **Want to cure potential IC issue?** → Supplemental examination
+- **Have a §112 problem?** → Reissue (reexam can't address it)`,
+      examTip: `Supplemental examination provides IMMUNITY from inequitable conduct defenses for the information submitted. Reissue and reexam do NOT.`,
+    },
+  ],
+  keyTakeaways: [
+    'Reissue (§251): corrects errors in a patent (specification, drawings, claims). Broadening reissue limited to 2 years post-issue.',
+    'Recapture rule: cannot recapture subject matter surrendered during original prosecution.',
+    'Reexamination (§§302-307): challenges §102/§103 over patents and pubs only. SNQ standard.',
+    'Inter partes reexam replaced by IPR/PGR after 9/16/2012.',
+    'Supplemental examination (§257): patent owner only; broad scope of submittable info; confers IMMUNITY from inequitable conduct on submitted info if successful.',
+    'Intervening rights (§252) protect third parties for activities prior to reissue/reexam/supplemental.',
+    'Decision framework: error → reissue; new §102/§103 art → reexam; potential IC issue → supplemental exam.',
+  ],
+},
+
+pct_chapter_ii_preliminary: {
+  topicId: 'pct_chapter_ii_preliminary',
+  title: 'PCT Chapter II Preliminary Examination (Deep Dive)',
+  domainWeight: 'PCT International · MPEP 1820-1850',
+  overview: `Chapter II of the PCT provides an OPTIONAL second tier of international examination beyond the basic Chapter I search and publication. By filing a Demand and entering Chapter II, the applicant can amend claims (Article 34), receive an International Preliminary Examination Report (IPER), and use this report to negotiate with national offices during national-stage prosecution. Understanding Chapter II's strategic value and procedural requirements is essential.`,
+  sections: [
+    {
+      id: 'pct-c2-overview',
+      title: '1. Chapter II Demand and Timing',
+      content: `## 1.1 What Chapter II adds
+
+Chapter I provides:
+- International Search Report (ISR) and Written Opinion (WO/ISA) from the International Searching Authority
+- International Publication of the application (18 months from priority)
+
+Chapter II adds:
+- Filing of a DEMAND for international preliminary examination
+- Opportunity for Article 34 amendments
+- International Preliminary Examination Report (IPER) reflecting the examiner's view on patentability
+
+## 1.2 Timing for Demand
+
+The Demand must be filed by the LATER of:
+- 22 months from priority date, OR
+- 3 months from transmittal of the ISR and WO/ISA
+
+If neither deadline is met, Chapter II is unavailable. The application proceeds with only Chapter I.
+
+## 1.3 Choice of IPEA
+
+The applicant can choose the International Preliminary Examining Authority (IPEA) from those competent for the application. For US applicants filing at USPTO as RO:
+- USPTO can serve as IPEA
+- EPO can serve as IPEA (often selected for European-focused strategies)
+- Other national offices can also serve
+
+The choice affects exam quality, fees, and language requirements.
+
+## 1.4 Demand requirements (Rule 53)
+
+The Demand must include:
+- Identification of the international application
+- Identification of the elected states (those for which international preliminary examination is requested)
+- Statement of the basis for examination (the application as originally filed, or as amended under Article 19)
+- Signature of the applicant or representative
+
+## 1.5 The Demand fee
+
+Chapter II requires payment of the:
+- Handling Fee (to IB) — covers IPEA administrative costs
+- IPEA Fee — varies by IPEA selected
+
+For USPTO-as-IPEA: roughly several hundred USD. For EPO-as-IPEA: more expensive but often justified for European-focused applications.`,
+      examTip: `The 22-month/3-month-from-ISR Demand deadline is strict. Missing it eliminates Chapter II for that application. Plan early.`,
+    },
+    {
+      id: 'pct-c2-amendments',
+      title: '2. Article 19 vs Article 34 Amendments',
+      content: `## 2.1 Article 19 amendments — Chapter I
+
+Under Article 19, the applicant can file ONE TIME amendments to the CLAIMS within 2 months of transmittal of the ISR (or by 16 months from priority, whichever is later).
+
+Article 19 amendments are LIMITED:
+- Only CLAIMS can be amended
+- Must be supported by the original disclosure
+- Filed with the IB
+- Become part of the publication
+
+If the applicant has nothing to amend, Article 19 is optional.
+
+## 2.2 Article 34 amendments — Chapter II only
+
+Under Article 34, after filing the Demand, the applicant can file amendments to:
+- The CLAIMS
+- The DESCRIPTION
+- The DRAWINGS
+
+This is BROADER than Article 19 (which limits to claims).
+
+Article 34 amendments must:
+- Be supported by the original disclosure (no new matter)
+- Be filed with the IPEA
+- Reflect the applicant's substantive response to the ISR/Written Opinion
+
+## 2.3 Strategic comparison
+
+| Feature | Article 19 | Article 34 |
+|---|---|---|
+| Available when? | Chapter I, after ISR | Chapter II, after Demand |
+| What can be amended? | Claims only | Claims, description, drawings |
+| Timing | 2 months from ISR or 16 months from priority | During Chapter II |
+| Filed with | IB | IPEA |
+| Becomes part of publication? | Yes | No |
+| Multiple amendments? | One opportunity | Multiple iterations possible |
+
+## 2.4 Practical use
+
+Article 19: Single optional opportunity to refine claims based on ISR cited art. If no claims need amendment, skip Article 19.
+
+Article 34: Continuing dialogue with IPEA. Used when:
+- ISR cited substantial prior art requiring claim amendment
+- Specification has clarity issues
+- Applicant wants to demonstrate patentability to influence IPER`,
+      examTip: `Article 19 = claims only, one shot, Chapter I. Article 34 = claims/description/drawings, multiple opportunities, Chapter II only.`,
+    },
+    {
+      id: 'pct-c2-iper-strategy',
+      title: '3. International Preliminary Examination Report (IPER) & Strategy',
+      content: `## 3.1 The IPER
+
+The IPER (or "International Preliminary Report on Patentability — Chapter II", IPRP-CII) is issued by the IPEA:
+- Within 28 months from priority (typically)
+- Reflects examiner's view on novelty, inventive step, and industrial applicability
+- Considers any Article 34 amendments
+
+The IPER is NOT BINDING on national offices. It is advisory only.
+
+## 3.2 Comparison: IPER vs International Preliminary Report on Patentability (IPRP)
+
+| Document | Source | Timing |
+|---|---|---|
+| Written Opinion of the ISA (WO/ISA) | Chapter I, with ISR | 16 months from priority |
+| International Preliminary Examination Report (IPER) | Chapter II, after Demand | 28 months from priority |
+| International Preliminary Report on Patentability (IPRP) | "Chapter I IPRP" = WO/ISA published as Chapter I report; "Chapter II IPRP" = the IPER | 30 months from priority |
+
+For applicants in Chapter I (no Demand): the WO/ISA becomes the IPRP at 30 months.
+For applicants in Chapter II: the IPER becomes the Chapter II IPRP.
+
+## 3.3 Strategic value
+
+Chapter II is valuable when:
+- The ISR cited substantial prior art and you want to refine claims before national stage
+- You want a more developed examination record to use during national stage prosecution
+- Multiple national offices will be involved and a positive IPER strengthens your position
+- You want flexibility to amend the description/drawings beyond Article 19's claim-only limit
+
+Chapter II is LESS valuable when:
+- ISR/WO/ISA was favorable (no need to amend)
+- Strategy is to file only one or two national stages where you'll directly respond
+- Budget is constrained (Chapter II adds fees)
+
+## 3.4 Practical workflow
+
+1. File PCT application with priority claim
+2. Receive ISR and WO/ISA (typically 16 months)
+3. Decide: file Article 19 amendments? Skip if WO is favorable
+4. Decide: file Demand for Chapter II?
+   - If WO is unfavorable and you can respond → YES, file Demand
+   - If WO is favorable → optional, may skip
+5. If Chapter II:
+   a. File Demand by 22 months or 3 months from ISR
+   b. File Article 34 amendments as needed
+   c. Possibly receive a "second Written Opinion" if examiner disagrees with amendments
+   d. Receive IPER by 28 months
+6. Enter national stage (30 months) with stronger record
+
+## 3.5 Choice of IPEA strategy
+
+For US-RO applicants:
+- USPTO as IPEA: domestic, English, lower fees, examiner familiar with US standards
+- EPO as IPEA: stricter standards, EPO opinion may have weight in EPO national stage entry
+- KIPO/JPO/etc.: relevant if Korea/Japan are important markets
+
+EPO IPER carries weight in European national stage entry but is expensive.
+
+## 3.6 Common Chapter II mistakes
+
+- Missing the Demand deadline (22 months or 3 months from ISR)
+- Filing amendments that introduce new matter
+- Forgetting that IPER is advisory only — national offices independently examine
+- Over-relying on positive IPER — still need to navigate national stage substantively`,
+      examTip: `Article 19 (claims, Ch I, 1 amendment) vs Article 34 (claims/spec/drawings, Ch II, multiple amendments). The Demand must be filed by 22 months or 3 months from ISR — strict deadline.`,
+    },
+  ],
+  keyTakeaways: [
+    'Chapter II: optional second tier of PCT examination, triggered by filing a Demand.',
+    'Demand deadline: 22 months from priority OR 3 months from ISR transmittal (whichever later).',
+    'Article 19 amendments: claims only, Chapter I, one shot, filed with IB, becomes part of publication.',
+    'Article 34 amendments: claims/description/drawings, Chapter II only, multiple amendments possible, filed with IPEA.',
+    'IPER (Chapter II IPRP): advisory examination report issued by IPEA at ~28 months from priority.',
+    'IPER is NOT binding on national offices — they independently examine.',
+    'Strategic value of Chapter II: refining claims before national stage, especially when ISR cited substantial prior art.',
+  ],
+},
+
+pct_national_stage_371: {
+  topicId: 'pct_national_stage_371',
+  title: 'PCT National Stage Entry (§371) — Deep Dive',
+  domainWeight: 'PCT International · MPEP 1893',
+  overview: `Entry into the US national stage under 35 USC §371 has STRICT requirements: a 30-month deadline from earliest priority, payment of the national fee, English translation if needed, and specific oath/declaration requirements. The §365(c) bypass continuation provides an alternative path. Mastery of timing rules, restoration provisions, and the bypass option is essential.`,
+  sections: [
+    {
+      id: 'pct-ns-deadline',
+      title: '1. The 30-Month Deadline and Required Filings',
+      content: `## 1.1 The 30-month rule (PCT Article 22)
+
+The national stage entry must be effected by 30 MONTHS FROM EARLIEST PRIORITY DATE.
+
+This deadline applies for:
+- Filing a copy of the application with the national office
+- Paying the national fee
+- Providing a translation (if needed)
+- Designating inventors
+
+If priority is claimed from a foreign filing, "earliest priority date" is the foreign priority date. If priority is from an earlier US application, "earliest priority date" is the US application's filing date.
+
+## 1.2 Required filings for US §371
+
+For US national stage entry:
+- Copy of the international application (if not already on file with USPTO)
+- National fee (currently several hundred USD)
+- English translation of the application (if it wasn't filed in English)
+- Oath or declaration of inventorship under §115 (if not already submitted)
+- Application Data Sheet (ADS) with US-specific information
+
+## 1.3 English translation requirement
+
+If the international application was not filed in English, a verified English translation must be filed by 30 months.
+
+The translation must be:
+- Complete (entire description, claims, abstract)
+- Verified by translator or representative
+- Filed in standard format
+
+Late translation: subject to restoration with petition + fee.
+
+## 1.4 Oath/declaration timing
+
+The §115 oath/declaration of inventorship must be filed:
+- By the 30-month deadline, OR
+- Within 4 months of US entry (whichever later)
+
+If not timely, abandonment results. Petition for revival with showing of unintentional or unavoidable delay can restore.
+
+## 1.5 PCT-specific fees
+
+National stage fee for US §371: generally less than direct nonprovisional filing.
+Plus per-claim and excess-claim fees if applicable.
+
+Small entity and micro entity reductions apply.`,
+      examTip: `The 30-month deadline is from EARLIEST PRIORITY DATE — including any priority claims made in the PCT application. Calculate carefully.`,
+    },
+    {
+      id: 'pct-bypass-365c',
+      title: '2. The §365(c) Bypass Continuation',
+      content: `## 2.1 What is the §365(c) bypass?
+
+Under 35 USC §365(c), an applicant who has a pending PCT application designating the US can file a US BYPASS CONTINUATION instead of a regular §371 national stage entry.
+
+The bypass continuation is filed as a regular US nonprovisional application under §111(a) that claims §365(c) priority to the PCT.
+
+## 2.2 Why use the bypass?
+
+The bypass continuation OFFERS ADVANTAGES:
+- **Patent term:** PTA starts from US continuation filing, not PCT filing (which counts toward patent term but doesn't earn PTA)
+- **Claim flexibility:** Continuation allows new claim scope without the constraints of PCT amendments
+- **Inventor changes:** Can update inventors more easily
+- **Independent prosecution:** Not tied to PCT's progress
+
+## 2.3 Bypass timing
+
+The bypass continuation must be filed:
+- DURING THE PENDENCY of the PCT (i.e., before national stage entry deadline or before the PCT lapses)
+- Before the 30-month deadline (otherwise national stage is the only option)
+
+In practice, the bypass is typically filed around the 30-month mark.
+
+## 2.4 Bypass procedure
+
+The bypass continuation is filed as a US nonprovisional with:
+- Standard §111(a) requirements
+- Specific reference to the PCT application in the ADS (claiming §365(c) benefit)
+- Inventor oath/declaration under §115
+- New fees as a separate US application
+
+## 2.5 Comparison: §371 vs §365(c) bypass
+
+| Feature | §371 National Stage | §365(c) Bypass Continuation |
+|---|---|---|
+| Filing path | Direct entry from PCT | New US application |
+| Filing date | International filing date | Continuation filing date |
+| PTA start | International filing date | Continuation filing date (later, but accumulates B-delay) |
+| Patent term | 20 yrs from international filing date | 20 yrs from earliest US filing date in chain (could be PCT or earlier) |
+| Inventorship updates | Limited by PCT inventors | Flexible |
+| Claim amendments | PCT Article 19/34 rules | Standard US prosecution |
+| Examination start | Begins at national stage | Begins at continuation filing |
+| Fees | National stage fee | Filing fee + per-claim fees |
+
+## 2.6 Strategic decision
+
+Bypass typically PREFERRED when:
+- Inventor changes are needed
+- Different claim strategy than PCT
+- Want flexibility of US prosecution
+- Want PTA earned from continuation date
+
+Direct §371 typically PREFERRED when:
+- Examination has been favorable in PCT
+- Want to preserve early filing date for term
+- Cost savings (lower fees)
+- Inventorship and claims are stable`,
+      examTip: `§365(c) bypass continuation = treated as a US continuation. Patent term is from PCT filing (or earlier priority), but PTA earned from continuation date.`,
+      importantNote: `Patent term is 20 years from filing date of earliest application in the chain. For PCT, that's the international filing date. Both §371 and §365(c) routes use the same patent term calculation.`,
+    },
+    {
+      id: 'pct-ns-restoration',
+      title: '3. Restoration of Right and Late Entry',
+      content: `## 3.1 Restoration of right of priority for national stage
+
+If the 30-month deadline is missed for US national stage, the applicant may petition for restoration of the right of priority under §1.55(c) or §1.78(c) with:
+- Showing of UNINTENTIONAL DELAY in failing to enter on time
+- Required fee
+- Translation and other required documents
+
+The restoration is available within 2 months of the missed deadline (i.e., by 32 months from priority).
+
+## 3.2 Late entry consequences
+
+If restoration is granted: the application proceeds as if filed timely.
+
+If restoration is denied: the international application loses its effect in the US. The applicant must file a new application under §111(a) without benefit of the PCT priority (subject to grace-period analysis).
+
+## 3.3 USPTO discretion
+
+The USPTO exercises discretion in restoration cases. Common grounds for granting:
+- Counsel error or oversight
+- Inventor unavailability for signing oath
+- Late receipt of translations
+
+Common grounds for denying:
+- Deliberate strategic delay
+- Repeated failures to comply
+- Bad faith
+
+## 3.4 Other late-entry options
+
+If restoration fails:
+- File a new US application (§111(a)) without §365(c) benefit
+- May still claim foreign priority under §119(a) if within 12 months of foreign filing (subject to its own restoration rules)
+- May lose foreign priority entirely if 12-month deadline missed
+
+## 3.5 Conversion option
+
+In some cases, a PCT application that didn't enter US national stage can be "converted" to a new US application via continuation under §365(c). This requires:
+- PCT still pending (not abandoned at IB)
+- Continuation filed before PCT lapses
+- All US requirements met for continuation
+
+## 3.6 Practical workflow checklist
+
+For PCT national stage entry:
+- [ ] Confirm 30-month deadline date
+- [ ] Verify all priority claims and earliest priority date
+- [ ] Prepare/verify English translation if needed
+- [ ] Compile inventor information for oath/declaration
+- [ ] Calculate national stage fees (including any required claim fees)
+- [ ] Confirm ADS reflects all relevant priority/benefit claims
+- [ ] File at least 1 week before deadline (buffer for technical issues)
+- [ ] Consider §365(c) bypass continuation if strategy favors it
+
+## 3.7 Tax patent and biotech sample deposits
+
+PCT applications involving:
+- Biotech (sample deposits): may need to confirm sample deposit accessibility
+- Tax patents: post-AIA, tax strategies are not patentable subject matter; ensure claims don't claim tax strategies
+
+These specialty considerations affect national stage filing requirements.`,
+      examTip: `30-month deadline can be restored within 2 months on showing of unintentional delay. Beyond that, must file new application without PCT benefit.`,
+    },
+  ],
+  keyTakeaways: [
+    'PCT national stage entry: 30 months from earliest priority date.',
+    'Required: national fee, English translation if needed, oath/declaration, ADS.',
+    '§365(c) bypass continuation: alternative to §371 entry, filed as US §111(a) application claiming PCT benefit.',
+    'Bypass advantages: separate PTA clock, claim flexibility, inventor updates.',
+    'Patent term: 20 years from international filing date (same for §371 and §365(c) routes).',
+    'Restoration of right: within 2 months of missed deadline on showing of unintentional delay.',
+    'After restoration window: must file new application without PCT benefit; consider §119(a) Paris priority instead.',
+  ],
+},
+
+st_pta_calculation_abc: {
+  topicId: 'st_pta_calculation_abc',
+  title: 'Patent Term Adjustment (A/B/C Delays) — Calculation',
+  domainWeight: 'Special Topics · MPEP 2730-2733',
+  overview: `Patent Term Adjustment (PTA) under 35 USC §154(b) extends a patent's term to compensate for USPTO delays during examination. PTA has three delay categories — A, B, and C — each with different triggers, calculations, and limits. Applicant delay offsets PTA. Understanding the calculation methodology is critical because PTA can extend term by years, with significant commercial value.`,
+  sections: [
+    {
+      id: 'pta-categories',
+      title: '1. The Three PTA Delay Categories',
+      content: `## 1.1 Category A — USPTO Response Delays (§154(b)(1)(A))
+
+A-delay: USPTO failed to perform specific actions within prescribed time periods:
+- (i) First office action not issued within 14 MONTHS of filing/initial entry
+- (ii) Response to applicant's reply not issued within 4 MONTHS
+- (iii) Decision after notice of appeal not issued within 4 MONTHS
+- (iv) Patent not issued within 4 months of issue fee payment
+
+Each day past the deadline = 1 day of A-delay.
+
+## 1.2 Category B — Pendency Delay (§154(b)(1)(B))
+
+B-delay: USPTO failed to issue the patent within 3 YEARS of filing/initial entry, excluding:
+- Time for applicant-requested suspension
+- Time for interferences/derivation proceedings
+- Time for secrecy orders
+- Time consumed by appeals
+
+Each day past 3-year benchmark = 1 day of B-delay.
+
+## 1.3 Category C — Interference/Appeal Delays (§154(b)(1)(C))
+
+C-delay: USPTO time spent on:
+- (i) Interferences or derivation proceedings (post-AIA)
+- (ii) Secrecy orders
+- (iii) Appellate review (decision after appeal but before patent issue)
+
+Each day = 1 day of C-delay.
+
+## 1.4 Applicant Delay Offset
+
+Applicant delay (§154(b)(2)(C)) REDUCES PTA. Applicant delay includes:
+- Each day filing a paper or response that fails to comply with §1.111 (improper response)
+- Each day in a §1.704 listing of designated activities (incomplete response, lack of proper signatures, etc.)
+- Days for which applicant requested suspension or extension under §1.704
+
+Applicant delay is subtracted from gross PTA.
+
+## 1.5 The overlap rule
+
+A/B/C delays may overlap on the same day. Per §154(b)(2)(A), each day of overlap is counted ONCE.
+
+Example: USPTO took 5 months for first action (5 months past 14-month deadline) AND patent took 3.5 years to issue (6 months past 3-year B-delay benchmark). If these delays overlapped (same calendar days), the overlapping days are counted once, not twice.
+
+## 1.6 PTA cap
+
+PTA cannot exceed the day count between the application's filing date and the actual issue date, minus any disclaimers. It's effectively bounded by reality.`,
+      examTip: `A-delay = USPTO response delays. B-delay = >3-year pendency. C-delay = interferences/appeals. Overlap rule prevents double-counting.`,
+    },
+    {
+      id: 'pta-calculation',
+      title: '2. Step-by-Step PTA Calculation',
+      content: `## 2.1 The basic formula
+
+  **PTA = (A-delay + B-delay + C-delay) - (Applicant-delay) - (Overlap)**
+
+Result: Days of patent term extension beyond the normal 20-year term.
+
+## 2.2 Worked example
+
+Application filed: January 1, 2018
+First office action: April 1, 2019 (15 months from filing)
+Applicant response: October 1, 2019 (6 months, normal time)
+Examiner response: April 1, 2020 (6 months past 4-month deadline)
+Notice of allowance: October 1, 2021
+Issue fee paid: November 1, 2021
+Patent issued: January 1, 2024
+
+Calculations:
+
+**A-delay:**
+- First action: 15-14 = 1 month late = 30 days
+- Examiner response: 6 months from applicant reply, 4-month deadline → 2 months late = 60 days
+- Issue: 2 months from issue fee payment, 4-month deadline → ON TIME
+- Total A-delay: 30 + 60 = 90 days
+
+**B-delay:**
+- Patent issued: January 1, 2024 → 6 years from filing date
+- 3-year benchmark: January 1, 2021
+- B-delay: ~3 years = ~1095 days
+- Reduce by applicant delay: 1 year (let's say 365 days)
+- Reduce by C-delay overlap: 90 days overlap → counted once
+- Net B-delay: ~640 days
+
+**C-delay:**
+- No interference, no appeal → 0 days
+
+**Applicant delay:**
+- Various excuses + extensions: 365 days
+
+**PTA:**
+- A + B - Applicant = 90 + 640 - 365 = 365 days
+- Patent term: 20 years + 365 days = approximately 21 years from filing
+
+## 2.3 The supplemental notice of PTA
+
+The USPTO issues a NOTICE OF PTA in the issue notice or after issuance. If the applicant disagrees with the calculation, they can:
+- Request reconsideration under §1.705 within 2 MONTHS of patent issuance
+- Appeal to the USPTO and ultimately the Federal Circuit if reconsideration denied
+
+## 2.4 Filed-as-corrected provisions
+
+For complex cases, applicants often need to recalculate PTA. Tools and software are available, and patent counsel routinely audits the calculation.
+
+## 2.5 RCEs and PTA
+
+EACH RCE consumes some PTA. Specifically, RCEs are treated as Category B delay reductions — they extend the 3-year pendency calculation but ALSO count as applicant delay.
+
+Tactical implication: every RCE means a meaningful PTA reduction. Consider continuations instead when possible.
+
+## 2.6 Common PTA calculation traps
+
+- Forgetting the 4-month examiner response deadline (often missed)
+- Failing to claim all valid delays
+- Not accounting for overlap rule
+- Miscounting applicant delay (technical errors are forgiveable; substantive delays count)
+- Not requesting reconsideration within 2-month window after issue`,
+      examTip: `PTA = A+B+C - Applicant - Overlap. Each RCE costs PTA — major strategic consideration.`,
+    },
+    {
+      id: 'pta-strategy',
+      title: '3. Strategic PTA Considerations',
+      content: `## 3.1 Pre-filing strategy
+
+PTA value depends on:
+- Length of patent prosecution (longer = more potential PTA, but also more applicant delay)
+- Patent's market value (commercial significance amplifies PTA value)
+- Industry (pharmaceuticals especially benefit from PTA + PTE combinations)
+
+For high-value patents, factor expected prosecution length into filing strategy.
+
+## 3.2 Prosecution strategy for maximizing PTA
+
+DO:
+- Respond promptly (within statutory periods, not at extension deadlines)
+- File responses with all required elements (avoid §1.704 deficiencies)
+- Use telephone interviews to address issues without formal responses
+- Avoid unnecessary RCEs
+
+DON'T:
+- File late responses with maximum extensions (this is applicant delay)
+- File incomplete or improper papers
+- Request extensions that aren't necessary
+- File RCEs casually
+
+## 3.3 Continuation vs RCE PTA implications
+
+Continuation: New application, fresh PTA clock from its filing date. PTA accumulates from continuation date.
+
+RCE: Same application, but RCE counts as applicant delay AND contributes to B-delay reduction.
+
+Strategic choice: For active prosecution restarts, continuation often better preserves PTA than RCE.
+
+## 3.4 PTA and patent term extension (PTE)
+
+PTA and PTE under §156 are INDEPENDENT extensions:
+- PTA: compensates for USPTO delays during examination
+- PTE: compensates for FDA regulatory delays before market entry (for drug patents)
+
+A patent can receive BOTH. PTA + PTE can extend a pharmaceutical patent significantly.
+
+Cap: Term cannot exceed 14 years from FDA approval of the drug product.
+
+## 3.5 Recapture of PTA after Federal Circuit reversal
+
+If a PTAB or Federal Circuit decision determines additional delay should have been counted as USPTO delay, the patent owner can:
+- File a reconsideration request
+- File a civil action to challenge PTA calculation
+
+The patent term certificate is then re-issued with corrected PTA.
+
+## 3.6 PTA in continuation chains
+
+PTA earned in a parent application does NOT transfer to a continuation. Each application earns its OWN PTA.
+
+A continuation's PTA is calculated based on its own filing-to-issue timeline. Long continuation chains can accumulate substantial total term, but each link is calculated separately.
+
+## 3.7 Patent term measured from earliest US filing date in chain
+
+For continuations: patent term = 20 years from EARLIEST US APPLICATION'S FILING DATE in the §120 chain. NOT from continuation's own filing date.
+
+This is why early provisionals or nonprovisionals are valuable: they set the 20-year clock.
+
+PTA extends beyond this 20-year term.
+
+## 3.8 Maximum PTA in practice
+
+Most patents earn 0-500 days of PTA. High-PTA patents (>500 days) typically involve:
+- Multiple appeals
+- Long examination delays
+- Few applicant errors
+- Complex prosecution
+
+The current single-application PTA record exceeds 5,000 days (>13 years extension), though such cases are rare.`,
+      examTip: `Strategic prosecution can maximize PTA. The 4-month examiner response deadline is heavily tested — exam expects you to recognize that 6 months from applicant reply = 2 months of A-delay.`,
+    },
+  ],
+  keyTakeaways: [
+    'A-delay: USPTO response delays beyond statutory deadlines (14mo for first action, 4mo for subsequent).',
+    'B-delay: pendency >3 years, excluding interference/appeal time and applicant delays.',
+    'C-delay: time consumed by interferences, derivations, secrecy orders, appeals.',
+    'Applicant delay (§1.704) offsets PTA (improper responses, extensions, delays).',
+    'Overlap rule: same day cannot count twice toward A+B+C delays.',
+    'PTA formula: A + B + C - Applicant - Overlap.',
+    'Each RCE consumes PTA. Continuations often preferred for term preservation.',
+    'PTA reconsideration: 2 months from patent issue to request review.',
+  ],
+},
+
+st_pte_hatch_waxman: {
+  topicId: 'st_pte_hatch_waxman',
+  title: 'Patent Term Extension (PTE) — Hatch-Waxman §156',
+  domainWeight: 'Special Topics · MPEP 2750',
+  overview: `35 USC §156, the Hatch-Waxman Act provision, allows pharmaceutical and certain other regulated patents to receive Patent Term Extension (PTE) to compensate for FDA regulatory review delays. PTE is critically valuable for drug developers: it can add up to 5 years of patent life and bridge the gap between patent expiration and FDA approval. Mastery of eligibility, calculation, and limitations is essential for biotech/pharma patent practitioners.`,
+  sections: [
+    {
+      id: 'pte-eligibility',
+      title: '1. PTE Eligibility Requirements',
+      content: `## 1.1 What patents are eligible
+
+A patent is eligible for PTE if:
+- It claims a DRUG PRODUCT, METHOD OF USING IT, or METHOD OF MAKING IT
+- The product is subject to FDA regulatory review
+- The product is approved for commercial marketing under specific FDA pathways (§505, §351, etc.)
+
+Eligible categories:
+- Human drugs (NDA/BLA)
+- Veterinary drugs (NADA/ANADA)
+- Medical devices (under §515)
+- Color additives
+- Food additives
+
+## 1.2 Single PTE per product
+
+§156(a) limits PTE to ONE PRODUCT per patent. If a patent covers multiple products, the applicant must select WHICH product the PTE applies to.
+
+If a product has multiple patents, only ONE patent can receive PTE for that product.
+
+The applicant selects which patent-product combination to use.
+
+## 1.3 First commercial marketing requirement
+
+PTE is available only for the FIRST COMMERCIAL MARKETING of the product. Subsequent approvals (e.g., new indications, formulations) generally do not generate additional PTE for the patent.
+
+## 1.4 Filing the PTE application
+
+Application for PTE must be filed within 60 DAYS of FDA approval. Filed with USPTO, not FDA.
+
+PTE application includes:
+- Identification of the patent and product
+- Information about the regulatory review period
+- Statement of approval
+- Required fee
+
+If the 60-day deadline is missed, PTE is GENERALLY LOST.`,
+      examTip: `60-day deadline from FDA approval to file PTE application. Strict — missed deadline = lost PTE.`,
+    },
+    {
+      id: 'pte-calculation',
+      title: '2. PTE Length Calculation',
+      content: `## 2.1 The regulatory review period
+
+The "regulatory review period" is divided into:
+
+**Testing phase:** Period from when the IND/IDE became effective to when the NDA/BLA was submitted to FDA.
+
+**Approval phase:** Period from NDA/BLA submission to FDA approval.
+
+## 2.2 Half-day rule
+
+For the TESTING PHASE only, ONLY HALF of the testing period counts toward PTE.
+
+For the APPROVAL PHASE, the FULL period counts.
+
+Formula: PTE = (Approval phase) + (Testing phase / 2) - (Applicant delays during regulatory review)
+
+## 2.3 Caps and limits
+
+PTE is subject to caps:
+- **5-year cap**: PTE cannot exceed 5 years
+- **14-year cap**: Total patent term (original + PTE) cannot exceed 14 years from FDA approval date
+- **No 0-day patents**: PTE cannot reduce term below the original patent term
+
+These caps interact:
+- If product is approved late in patent life, PTE may be limited to keep term under 14 years from approval
+- If approval is very early in patent life, full 5 years of PTE may apply
+
+## 2.4 Worked example
+
+Patent issued: January 1, 2015
+Patent expires: January 1, 2035 (20 years)
+IND filed: January 1, 2010
+NDA submitted: January 1, 2020 (testing phase = 10 years)
+FDA approval: January 1, 2025 (approval phase = 5 years)
+
+Calculations:
+- Testing phase contribution: 10/2 = 5 years (but applicant delays may reduce)
+- Approval phase contribution: 5 years (capped)
+- Gross PTE: 5 + 5 = 10 years, but 5-year cap applies → PTE = 5 years
+- New expiration: January 1, 2035 + 5 = January 1, 2040
+- 14-year cap from approval: January 1, 2025 + 14 = January 1, 2039
+- Final PTE: limited by 14-year cap → patent expires January 1, 2039
+
+Net PTE granted: about 4 years (not the full 5).
+
+## 2.5 Applicant delays
+
+Applicant-caused delays during regulatory review REDUCE PTE. Examples:
+- Failure to timely submit required information
+- Failure to respond to FDA requests
+- Delays in completing trials
+
+The applicant must DEMONSTRATE diligence during regulatory review to claim full PTE.
+
+## 2.6 PTE plus PTA
+
+PTE and PTA are INDEPENDENT extensions. A patent can receive both:
+- PTA first extends term for USPTO delays
+- PTE then extends further for FDA delays
+
+Both are subject to their own caps and interact with the 14-year-from-approval cap for PTE.`,
+      examTip: `PTE formula: (Approval phase) + (Testing phase / 2) - Applicant delays. Caps: 5 years and 14 years from FDA approval.`,
+    },
+    {
+      id: 'pte-strategy',
+      title: '3. Strategic PTE Considerations',
+      content: `## 3.1 Which patent to extend?
+
+If multiple patents cover one product, select the patent with:
+- LATEST EXPIRATION (extending the latest-expiring patent gives the longest commercial exclusivity)
+- BROADEST CLAIMS covering the product (maximizes coverage)
+- COMPOSITION OF MATTER claims (typically most valuable)
+
+Consult with patent and regulatory counsel to make this selection.
+
+## 3.2 Interim PTE applications
+
+Before FDA approval, applicants can file INTERIM PTE applications to preserve eligibility:
+- File interim PTE during regulatory review
+- Pay required fees
+- Update with approval information when approval issued
+
+This protects against missing the 60-day deadline if approval comes suddenly.
+
+## 3.3 PTE for biologics (BLA)
+
+Biologics under the BLA pathway (§351 of PHSA) are eligible for PTE. The PTE rules apply similarly to NDA-approved drugs.
+
+For biosimilars: the originator's patent receives PTE; biosimilar manufacturers must wait until expiration of the extended term.
+
+## 3.4 Multiple-product strategies
+
+For products approved with multiple indications:
+- Only FIRST commercial marketing generates PTE
+- Subsequent indications do NOT generate additional PTE for the patent
+- Cannot "stack" PTE for the same patent
+
+However, different patents covering different indications might EACH receive their own PTE (one per patent).
+
+## 3.5 PTE versus pediatric exclusivity
+
+PTE (§156): up to 5 years for FDA regulatory delays.
+Pediatric exclusivity (§505A): 6 months added to existing patent term and 6 months of marketing exclusivity for pediatric studies.
+
+These are CUMULATIVE. A pharmaceutical patent can have:
+- Original 20-year term
+- Plus PTA (USPTO delay compensation)
+- Plus PTE (FDA delay compensation)
+- Plus 6 months pediatric exclusivity (study completion)
+
+Total can exceed 25 years from filing.
+
+## 3.6 §271(e) safe harbor and PTE
+
+§271(e)(1) provides a safe harbor for activities reasonably related to FDA submissions. This protects generic competitors from infringement during their ANDA preparation.
+
+But the safe harbor does NOT eliminate the PTE itself — once granted, PTE applies to the patent term.
+
+## 3.7 PTE in litigation
+
+Patent term extension is enforceable like any other patent term:
+- Infringement during PTE period gives rise to damages
+- Generic competitors cannot launch until expiration of extended term
+- Hatch-Waxman litigation often involves PTE timing
+
+The 30-month "stay" in ANDA litigation interacts with PTE expectations.
+
+## 3.8 International considerations
+
+PTE-like mechanisms exist internationally:
+- EU: Supplementary Protection Certificate (SPC) for drugs and plant protection products
+- Japan: Patent term extension under Article 67-2
+
+These have different rules but similar policy goals (compensating for regulatory delay).
+
+Cross-border patent extensions are coordinated with each jurisdiction's rules.`,
+      examTip: `PTE applies to PHARMACEUTICAL and certain other regulated products. The 14-year-from-approval cap often limits PTE in practice. Apply within 60 days of FDA approval.`,
+    },
+  ],
+  keyTakeaways: [
+    'PTE under §156 extends patent term for FDA regulatory review delays.',
+    'Eligible: drugs (NDA/BLA), veterinary drugs, medical devices, food/color additives.',
+    'One PTE per product per patent. Multiple-patent products: applicant selects which patent.',
+    '60-day filing deadline from FDA approval — strict.',
+    'PTE = (Approval phase) + (Testing phase / 2) - Applicant delays.',
+    'Caps: 5 years maximum extension; 14 years from FDA approval maximum total term.',
+    'PTA + PTE + Pediatric exclusivity can stack — total term may exceed 25 years.',
+    'Interim PTE applications protect against late filing if approval timing is uncertain.',
+  ],
+},
+
+st_maintenance_fees: {
+  topicId: 'st_maintenance_fees',
+  title: 'Maintenance Fees & Late Payment Surcharge',
+  domainWeight: 'Special Topics · MPEP 2500',
+  overview: `Maintenance fees must be paid at 3.5, 7.5, and 11.5 years from issue to keep a US utility patent in force. Missing a deadline causes the patent to lapse — but a 6-month grace period with surcharge, and reinstatement procedures, can sometimes revive lapsed patents. This is heavily tested.`,
+  sections: [
+    {
+      id: 'maintenance-schedule',
+      title: '1. Fee Schedule and Deadlines',
+      content: `## 1.1 The three-fee schedule
+
+Utility patents require maintenance fees at three intervals from the date of issue:
+- **3.5 years (3 years, 6 months)**: 1st maintenance fee
+- **7.5 years (7 years, 6 months)**: 2nd maintenance fee
+- **11.5 years (11 years, 6 months)**: 3rd maintenance fee
+
+Failure to pay any installment causes the patent to LAPSE.
+
+Plant and design patents do NOT have maintenance fees (only utility patents).
+
+## 1.2 Fee amounts (current, large entity)
+
+- 3.5-year maintenance fee: ~$2,000
+- 7.5-year maintenance fee: ~$3,760
+- 11.5-year maintenance fee: ~$7,700
+
+Small entity status: 50% reduction. Micro entity status: 75% reduction.
+
+## 1.3 The 6-month window
+
+The fee must be paid within a 6-MONTH WINDOW:
+- Starts: 6 months before the deadline (window opens)
+- Ends: at the deadline (window closes)
+
+Example: For 3.5-year fee with deadline of January 1, 2027, the window opens July 1, 2026 and closes January 1, 2027.
+
+## 1.4 The grace period
+
+If the fee is not paid by the deadline, the patent enters a GRACE PERIOD of 6 MONTHS during which the fee plus a SURCHARGE can still be paid:
+
+- 1st grace period after 3.5 years: surcharge ~$160 small entity, ~$320 large entity
+- 2nd grace period after 7.5 years: similar surcharge
+- 3rd grace period after 11.5 years: similar surcharge
+
+If paid during grace period (with surcharge): patent continues in force as if paid timely.
+
+## 1.5 Patent lapse
+
+If neither fee nor grace-period fee is paid: PATENT LAPSES. Patent term is shortened to the lapse date (instead of the full 20 years from filing).
+
+A lapsed patent is generally UNENFORCEABLE for activities after the lapse date.`,
+      examTip: `Three fees at 3.5, 7.5, 11.5 years. Window opens 6 months before deadline. Grace period of 6 months after deadline with surcharge.`,
+    },
+    {
+      id: 'reinstatement',
+      title: '2. Reinstatement of Lapsed Patents',
+      content: `## 2.1 Reinstatement under §41(c)(1) for unintentional delay
+
+A lapsed patent can be REINSTATED if the failure to pay was UNINTENTIONAL. The patent owner files a petition for reinstatement within REASONABLE TIME after discovering the lapse.
+
+Procedure:
+- File petition for reinstatement
+- Pay the unpaid maintenance fee
+- Pay the surcharge fee
+- Pay a separate REINSTATEMENT FEE (substantial — currently ~$1,700 for small/micro, more for large entity)
+- Provide a statement that the delay was unintentional
+
+The USPTO will reinstate if satisfied that:
+- The failure to pay was unintentional
+- Reasonable diligence was exercised once the delay was discovered
+
+## 2.2 Reinstatement under §41(c)(1) for unavoidable delay (pre-2013)
+
+Before December 18, 2013, reinstatement required showing UNAVOIDABLE delay — a stricter standard requiring proof that the delay was beyond the patentee's control.
+
+This standard NO LONGER APPLIES to maintenance fees as of late 2013. Now only unintentional standard applies.
+
+## 2.3 Effect of reinstatement
+
+A reinstated patent is treated as if the fee had been paid on time. The patent has its FULL TERM (no reduction for lapsed period).
+
+However, INTERVENING RIGHTS (§41(c)(2)) protect third parties who acted between the lapse and reinstatement. Their activities cannot be subject to infringement claims for that period.
+
+## 2.4 Reinstatement timing
+
+No statutory time limit for reinstatement applications, but the USPTO interprets "reasonable time" to require prompt action upon discovering the lapse. Long delays may justify denying reinstatement.
+
+In practice: reinstatement requests are typically filed within 1-2 years of discovery of the lapse.
+
+## 2.5 Intervening rights (§41(c)(2))
+
+If a patent lapsed and was reinstated, third parties who:
+- Made the patented invention
+- Used the patented invention
+- Sold or imported the patented invention
+
+DURING THE LAPSE PERIOD are protected from infringement for those activities. The court determines the scope of protection on a case-by-case basis.
+
+This is similar to intervening rights for reissue and reexamination.`,
+      examTip: `Reinstatement: unintentional delay standard (post-2013). Reinstatement fee + maintenance fee + surcharge. Intervening rights protect third-party activities during lapse period.`,
+    },
+    {
+      id: 'small-micro-entity',
+      title: '3. Small and Micro Entity Status',
+      content: `## 3.1 Small entity status
+
+A small entity (37 CFR §1.27) is:
+- An individual inventor
+- A small business with fewer than 500 employees
+- A nonprofit organization
+
+Small entities pay 50% of standard fees, including maintenance fees.
+
+## 3.2 Micro entity status
+
+A micro entity (37 CFR §1.29) is:
+- A small entity AND
+- Meets four additional requirements:
+  - Has not been named as an inventor on more than 4 previously-filed nonprovisional applications
+  - Had gross income for the preceding year less than 3X the median household income (currently ~$220,000+)
+  - Has not assigned, granted, or licensed an ownership interest to an entity with income exceeding the cap
+  - Is not licensed to or having an obligation to license to an entity exceeding the income cap
+
+Micro entities pay 25% of standard fees (or 75% reduction).
+
+## 3.3 Verification of status
+
+Status must be VERIFIED at filing AND at each maintenance fee payment. If status changes (e.g., business grows beyond small entity threshold), the higher fee schedule applies.
+
+If status is misrepresented, fees may be retroactively due plus the patent could be subject to challenges.
+
+## 3.4 Strategic considerations
+
+For startups and inventors:
+- Maintain small/micro entity status while eligible
+- Track entity size carefully
+- Update USPTO if status changes
+
+For mature companies:
+- Standard entity fees apply
+- Budget for maintenance fees as part of patent portfolio management
+
+## 3.5 Practical maintenance fee tracking
+
+Many patent attorneys use docketing systems to track maintenance fee deadlines. Common practices:
+- 12-month advance reminder
+- 6-month critical reminder
+- 1-month emergency reminder
+- Multiple staff oversight to prevent missed deadlines
+
+Patent term losses from missed maintenance fees are entirely avoidable with proper tracking.
+
+## 3.6 Patent abandonment by choice
+
+Sometimes patent owners deliberately allow patents to lapse:
+- Patent's commercial value has diminished
+- New technology obsoletes the patent
+- Costs of maintenance exceed expected returns
+- Tax/financial considerations
+
+This is a strategic choice — not all patents are worth keeping.
+
+## 3.7 Maintenance fee international comparison
+
+International equivalents:
+- EU: Renewal fees annually (each member state has its own schedule)
+- Japan: Renewal fees at year 3, 7, and beyond
+- China: Annual renewal fees
+
+Multi-jurisdictional patent owners must track maintenance fees in each country independently.
+
+## 3.8 Recovery from lapse
+
+Steps to recover a lapsed patent:
+1. Verify the lapse and determine date of lapse
+2. Calculate fees due (back maintenance + surcharge + reinstatement fee)
+3. Prepare petition for reinstatement with unintentional delay statement
+4. File petition with USPTO
+5. Document third-party activities during lapse for intervening rights analysis
+6. Track patent term — reinstated patent has full original term
+
+Total reinstatement costs: typically $5,000-$10,000+ depending on entity size and fees due.`,
+      examTip: `Small entity = 50% fee reduction. Micro entity = 75% fee reduction (additional criteria apply). Status must be verified at each maintenance fee payment.`,
+    },
+  ],
+  keyTakeaways: [
+    'Maintenance fees: 3.5, 7.5, 11.5 years from issue. Window opens 6 months before deadline.',
+    'Grace period: 6 months after deadline with surcharge.',
+    'Patent lapses if not paid by end of grace period.',
+    'Reinstatement (post-2013): unintentional delay standard, reinstatement fee + maintenance fee + surcharge.',
+    'Intervening rights (§41(c)(2)) protect third-party activities during lapse period.',
+    'Small entity: 50% reduction. Micro entity: 75% reduction. Status verified at each payment.',
+    'Plant and design patents do NOT have maintenance fees — only utility patents.',
+    'Tracking systems essential; missed deadlines avoidable with proper docketing.',
+  ],
+},
+
 }; // end PATENT_BAR_COURSE
 
 export function hasPatentBarCourseContent(topicId: string): boolean {
