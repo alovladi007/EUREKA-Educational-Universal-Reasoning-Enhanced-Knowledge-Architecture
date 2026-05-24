@@ -13,9 +13,14 @@ interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  
+  /** Set true once the persisted state from localStorage has been merged into the store.
+   * Consumers that render auth-dependent UI MUST gate on this to avoid SSR hydration
+   * mismatches (React error #418 / #423). See useAuthHasHydrated() helper. */
+  _hasHydrated: boolean;
+
   // Actions
   setUser: (user: User | null) => void;
+  setHasHydrated: (v: boolean) => void;
   login: (email: string, password: string) => Promise<void>;
   register: (data: any) => Promise<void>;
   logout: () => Promise<void>;
@@ -29,6 +34,9 @@ export const useAuthStore = create<AuthState>()(
       user: null,
       isAuthenticated: false,
       isLoading: false,
+      _hasHydrated: false,
+
+      setHasHydrated: (v) => set({ _hasHydrated: v }),
 
       setUser: (user) => {
         set({ 
@@ -105,10 +113,28 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'eureka-auth',
-      partialize: (state) => ({ 
+      partialize: (state) => ({
         user: state.user,
-        isAuthenticated: state.isAuthenticated
+        isAuthenticated: state.isAuthenticated,
       }),
+      onRehydrateStorage: () => (state) => {
+        // Mark as hydrated AFTER persisted state is applied. Components gate on
+        // _hasHydrated so server (no localStorage) and client (with localStorage)
+        // render the same initial UI, avoiding React #418/#423 hydration errors.
+        state?.setHasHydrated(true);
+      },
     }
   )
 );
+
+/**
+ * Returns true once the persisted auth state has been merged from localStorage.
+ * Use this to gate auth-dependent rendering and avoid SSR hydration mismatches.
+ *
+ * Example:
+ *   const hydrated = useAuthHasHydrated();
+ *   const user = useAuthStore((s) => s.user);
+ *   if (!hydrated) return null; // or a skeleton
+ *   // safe to render user-dependent UI
+ */
+export const useAuthHasHydrated = () => useAuthStore((s) => s._hasHydrated);

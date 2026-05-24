@@ -756,7 +756,8 @@ services:
       CELERY_RESULT_BACKEND: redis://redis:6379/13
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
-      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:8000
+      # Include all dev ports the Next.js app might run on (3000 dev, 4040 prod-restart-script).
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:3001,http://localhost:4040,http://localhost:8000,http://127.0.0.1:3000,http://127.0.0.1:4040
       ENVIRONMENT: development
     ports:
       - "8200:8200"

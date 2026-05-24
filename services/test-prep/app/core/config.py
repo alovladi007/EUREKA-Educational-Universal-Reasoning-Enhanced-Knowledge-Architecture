@@ -34,7 +34,7 @@ class Settings(BaseSettings):
     REDIS_URL: str = os.getenv("REDIS_URL", "redis://localhost:6379/0")
 
     # CORS — stored as comma-separated string to avoid pydantic-settings parsing issues
-    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:8000,https://eureka-test-prep.com"
+    ALLOWED_ORIGINS: str = "http://localhost:3000,http://localhost:3001,http://localhost:4040,http://localhost:8000,http://127.0.0.1:3000,http://127.0.0.1:4040,https://eureka-test-prep.com"
 
     @property
     def allowed_origins_list(self) -> List[str]:

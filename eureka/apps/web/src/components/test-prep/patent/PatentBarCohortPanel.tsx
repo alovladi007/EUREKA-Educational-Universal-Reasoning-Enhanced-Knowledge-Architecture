@@ -18,7 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Users, MessageCircle, Layers, Loader2, Send, UserPlus } from 'lucide-react';
 import { apiClient } from '@/lib/api-client';
 import { getInitials, getUserDisplayName, getUserInitials } from '@/lib/utils';
-import { useAuthStore } from '@/stores/auth';
+import { useAuthStore, useAuthHasHydrated } from '@/stores/auth';
 
 const EXAM = 'PATENT_BAR';
 
@@ -46,7 +46,13 @@ type Msg = {
 };
 
 export function PatentBarCohortPanel() {
-  const authUser = useAuthStore((s) => s.user);
+  const hydrated = useAuthHasHydrated();
+  // Until the zustand persist middleware has merged localStorage state into the
+  // store, treat authUser as null on BOTH server and client. This makes the
+  // initial render deterministic and avoids React error #418/#423 hydration
+  // mismatch when the persisted auth state arrives a tick later.
+  const authUserRaw = useAuthStore((s) => s.user);
+  const authUser = hydrated ? authUserRaw : null;
   const [loading, setLoading] = useState(true);
   const [learners, setLearners] = useState<Learner[]>([]);
   const [groups, setGroups] = useState<GroupRow[]>([]);
