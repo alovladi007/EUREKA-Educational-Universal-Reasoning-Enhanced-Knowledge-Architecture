@@ -523,7 +523,7 @@ const MOON_EXTRA_SLOWDOWN: Record<string, number> = {
   phobos: 3,
 };
 
-const BUILD_TAG = "v10 · 2026-05-23"; // bump to verify you're on the latest
+const BUILD_TAG = "v11 · 2026-05-23"; // bump to verify you're on the latest
 
 // NASA GIBS Earth — using BlueMarble_NextGeneration (BMNG) MONTHLY
 // composite instead of MODIS Terra DAILY (v9 default).
@@ -760,11 +760,15 @@ function BodyLabel({
   yOffset: number;
   highlighted?: boolean;
 }) {
+  // v11: removed `distanceFactor` — it scaled labels by (factor/distance),
+  // which meant when you flew close to a body (distance ~2) and the factor
+  // was 18, labels became 9× their intended size. Without it, the label
+  // renders as a fixed-size HTML overlay at the projected 3D position,
+  // staying at the same CSS pixel size regardless of zoom level.
   return (
     <Html
       position={[0, yOffset, 0]}
       center
-      distanceFactor={18}
       style={{ pointerEvents: "none" }}
     >
       <div
@@ -1622,7 +1626,7 @@ function SatelliteBody({
           </mesh>
         </group>
         <group position={[sat.orbit, size * 2.4, 0]}>
-          <Html center distanceFactor={10} style={{ pointerEvents: "none" }}>
+          <Html center style={{ pointerEvents: "none" }}>
             <div className="whitespace-nowrap text-[10px] font-semibold tracking-wide px-1 py-px rounded-sm bg-cyan-500/30 ring-1 ring-cyan-300/40 backdrop-blur-sm text-white select-none">
               {sat.name}
             </div>
@@ -1955,6 +1959,8 @@ export default function SolarSystemPage() {
     target: THREE.Vector3;
     update: () => void;
     reset: () => void;
+    minDistance: number;
+    maxDistance: number;
   } | null>(null);
   const bodyRefs = useRef<
     Record<string, React.MutableRefObject<THREE.Object3D | null>>
@@ -1984,6 +1990,16 @@ export default function SolarSystemPage() {
     flyTargetVersionRef.current += 1; // signal: do a fresh teleport
     setFocusedId(b.id);
     setSelected(b);
+
+    // v11: dynamic minDistance so the user can scroll-zoom close but
+    // can't go INSIDE the planet (where FrontSide culling would make
+    // the planet invisible). Set min to just outside the surface
+    // (size × 1.05 = 5% margin). Max stays at 800 for safe wide views.
+    const ctrl = orbitControlsRef.current;
+    if (ctrl) {
+      ctrl.minDistance = b.size * 1.05;
+      ctrl.update();
+    }
   };
 
   const flyToWholeSystem = () => {
@@ -1991,6 +2007,9 @@ export default function SolarSystemPage() {
     setFocusedId(null);
     const c = orbitControlsRef.current;
     if (c) {
+      // Reset minDistance to "system" mode so user can scroll out to
+      // see everything; reset the camera to default framing.
+      c.minDistance = 1;
       c.reset();
     }
   };
@@ -2013,7 +2032,11 @@ export default function SolarSystemPage() {
   return (
     <div className="fixed inset-0 bg-black z-50 text-white">
       <Canvas
-        camera={{ position: DEFAULT_CAM, fov: 55, near: 0.1, far: 10000 }}
+        // v11: near 0.1 → 0.001 so the camera can get extremely close to
+        // surfaces without clipping through them. With 0.1, the planet
+        // surface would clip away once camera got within 0.1 units of it,
+        // making the planet appear to "disappear" when zoomed in.
+        camera={{ position: DEFAULT_CAM, fov: 55, near: 0.001, far: 10000 }}
         // legacy=true → useLegacyLights=true → intensity values stay in
         // the pre-r155 "natural" range (1-3 reads bright). Without this,
         // physical lighting units require intensity ~50-200 for the
@@ -2054,7 +2077,11 @@ export default function SolarSystemPage() {
             }
             enableDamping
             dampingFactor={0.08}
-            minDistance={0.05}
+            // Default minDistance — overridden dynamically by flyToBody
+            // based on the focused body's size (so the camera can never
+            // go inside any planet, where it would render as invisible
+            // due to FrontSide culling).
+            minDistance={1}
             maxDistance={800}
             makeDefault
           />
