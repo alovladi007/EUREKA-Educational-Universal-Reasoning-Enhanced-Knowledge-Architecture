@@ -770,6 +770,69 @@ services:
       - ../services/test-prep:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8200 --reload
 
+  # ─────────────────────────────────────────────────────────────────────
+  # Celery worker for test-prep background tasks
+  # ─────────────────────────────────────────────────────────────────────
+  # The test-prep service configures Celery (see app/core/celery_app.py:
+  # `calibrate-questions` hourly, `generate-daily-reports` daily,
+  # `cleanup-old-sessions` hourly) but no worker container was running so
+  # those tasks never fired. This service runs the worker; the beat
+  # service below runs the scheduler that enqueues periodic jobs.
+  #
+  # Shares the same image and source mount as test-prep (rebuilt by the
+  # `test-prep` service above; docker compose caches the build).
+  test-prep-worker:
+    profiles:
+      - full
+    build:
+      context: ../services/test-prep
+      dockerfile: Dockerfile
+    container_name: eureka-test-prep-worker
+    environment:
+      SECRET_KEY: eureka_test_prep_secret_key_change_in_production
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka_test_prep
+      REDIS_URL: redis://redis:6379/15
+      CELERY_BROKER_URL: redis://redis:6379/14
+      CELERY_RESULT_BACKEND: redis://redis:6379/13
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ENVIRONMENT: development
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../services/test-prep:/app
+    # All three task queues (analytics, email, ml) plus the default queue.
+    # See task_routes in core/celery_app.py.
+    command: celery -A app.core.celery_app worker --loglevel=info -Q analytics,email,ml,celery
+    restart: unless-stopped
+
+  test-prep-beat:
+    profiles:
+      - full
+    build:
+      context: ../services/test-prep
+      dockerfile: Dockerfile
+    container_name: eureka-test-prep-beat
+    environment:
+      SECRET_KEY: eureka_test_prep_secret_key_change_in_production
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka_test_prep
+      REDIS_URL: redis://redis:6379/15
+      CELERY_BROKER_URL: redis://redis:6379/14
+      CELERY_RESULT_BACKEND: redis://redis:6379/13
+      ENVIRONMENT: development
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ../services/test-prep:/app
+    command: celery -A app.core.celery_app beat --loglevel=info
+    restart: unless-stopped
+
   # Supporting infrastructure for Phase-2
   neo4j:
     profiles:
