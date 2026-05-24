@@ -18,6 +18,7 @@ import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
 import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
+import { eMpepChapterUrl } from '@/lib/mpep-chapters';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
 import { getCISSPCourseContent, hasCISSPCourseContent, type TopicLesson } from '@/lib/cissp-course-data';
 import { getSecurityPlusCourseContent, hasSecurityPlusCourseContent } from '@/lib/security-plus-course-data';
@@ -289,11 +290,10 @@ function MPEPTab() {
           {MPEP_HIGH_YIELD.map((item) => (
             <a
               key={item.chapter}
-              // Per-chapter eMPEP SPA URL (#/current/ch700.html, ch2100.html, …)
-              // — matches what the live Patent Bar exam uses. The prior hardcoded
-              // link pointed every card at the same fragment; this passes the
-              // correct chapter number into the SPA route.
-              href={`https://mpep.uspto.gov/RDMS/MPEP/current#/current/ch${item.chapter}.html`}
+              // eMpepChapterUrl maps the chapter number to the SPA's actual d0e####
+              // anchor (the only URL pattern the SPA recognises). chXXX.html spins
+              // forever because it isn't a real eMPEP route.
+              href={eMpepChapterUrl(item.chapter)}
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -330,7 +330,9 @@ function MPEPTab() {
           {filteredChapters.map((ch) => (
             <a
               key={ch.num}
-              href={`https://www.uspto.gov/web/offices/pac/mpep/mpep-${ch.num.padStart(4, '0')}.html`}
+              // Same helper as the high-yield cards — maps chapter # → SPA d0e
+              // anchor with static-mirror fallback for chapters without one.
+              href={eMpepChapterUrl(ch.num)}
               target="_blank"
               rel="noopener noreferrer"
             >
