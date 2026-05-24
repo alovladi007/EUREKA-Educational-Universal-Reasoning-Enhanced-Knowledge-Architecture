@@ -523,7 +523,43 @@ const MOON_EXTRA_SLOWDOWN: Record<string, number> = {
   phobos: 3,
 };
 
-const BUILD_TAG = "v8 · 2026-05-23"; // bump to verify you're on the latest
+const BUILD_TAG = "v9 · 2026-05-23"; // bump to verify you're on the latest
+
+// NASA GIBS (Global Imagery Browse Services) — daily Earth composite from
+// MODIS Terra. We fetch yesterday's date in UTC (GIBS imagery typically
+// becomes available 24-48 hours after capture). Returns a full
+// equirectangular JPEG suitable for sphere UV mapping, no tile stitching.
+//
+// Endpoint: https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi
+// Layer:    MODIS_Terra_CorrectedReflectance_TrueColor — daily true color
+//           with clouds baked in (so we hide the separate clouds layer
+//           when GIBS is active to avoid double-imaging).
+//
+// CORS:     `access-control-allow-origin: *` on responses — works directly
+//           from the browser, no proxy needed.
+//
+// Public domain: NASA imagery is in the U.S. public domain.
+function buildGIBSEarthURL(date: string, w = 4096, h = 2048): string {
+  const params = new URLSearchParams({
+    SERVICE: "WMS",
+    REQUEST: "GetMap",
+    VERSION: "1.3.0",
+    LAYERS: "MODIS_Terra_CorrectedReflectance_TrueColor",
+    CRS: "EPSG:4326",
+    BBOX: "-90,-180,90,180",
+    WIDTH: String(w),
+    HEIGHT: String(h),
+    FORMAT: "image/jpeg",
+    TIME: date,
+  });
+  return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params}`;
+}
+
+function gibsDateFor(daysAgo: number): string {
+  const d = new Date();
+  d.setUTCDate(d.getUTCDate() - daysAgo);
+  return d.toISOString().slice(0, 10);
+}
 
 function SimulationClock({
   paused,
@@ -1108,6 +1144,7 @@ function Earth({
   sunPos,
   showOrbit,
   registerMoonRef,
+  hideCloudsLayer,
 }: {
   body: Body;
   dayMap: THREE.Texture;
@@ -1124,6 +1161,9 @@ function Earth({
     id: string,
     ref: React.MutableRefObject<THREE.Object3D | null>,
   ) => void;
+  // When the day map is from GIBS (which already has clouds baked in),
+  // hide the separate cloud layer to avoid double-imaging.
+  hideCloudsLayer?: boolean;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const surfaceRef = useRef<THREE.Mesh>(null);
@@ -1197,17 +1237,19 @@ function Earth({
           />
         </mesh>
 
-        {/* Clouds */}
-        <mesh ref={cloudsRef}>
-          <sphereGeometry args={[body.size * 1.015, 128, 128]} />
-          <meshStandardMaterial
-            map={cloudsMap}
-            transparent
-            opacity={0.55}
-            depthWrite={false}
-            roughness={1}
-          />
-        </mesh>
+        {/* Clouds — hidden when the day map already has clouds (GIBS) */}
+        {!hideCloudsLayer && (
+          <mesh ref={cloudsRef}>
+            <sphereGeometry args={[body.size * 1.015, 128, 128]} />
+            <meshStandardMaterial
+              map={cloudsMap}
+              transparent
+              opacity={0.55}
+              depthWrite={false}
+              roughness={1}
+            />
+          </mesh>
+        )}
 
         {/* Atmospheric halo */}
         <mesh>
@@ -1656,12 +1698,16 @@ function SolarSystemScene({
   bodyRefs,
   focusedId,
   showOrbits,
+  onGibsState,
 }: {
   simTimeRef: React.MutableRefObject<number>;
   onSelect: (b: Body) => void;
   bodyRefs: React.MutableRefObject<Record<string, React.MutableRefObject<THREE.Object3D | null>>>;
   focusedId: string | null;
   showOrbits: boolean;
+  // Notifies the top-level page when GIBS texture loads / fails — so the
+  // HUD can show "Live Earth · MODIS Terra · {date}" or fall-through state.
+  onGibsState: (state: { date: string; loaded: boolean } | null) => void;
 }) {
   // Moons register themselves into bodyRefs under composite keys (e.g.
   // "earth.luna", "jupiter.io"). This lets the fly-to system work for
@@ -1694,6 +1740,62 @@ function SolarSystemScene({
       tt.anisotropy = 16;
     });
   }, [t]);
+
+  // ────────────────────────────────────────────────────────────────────
+  // NASA GIBS daily Earth — fetch the latest MODIS Terra true-color
+  // composite and use it as Earth's day texture. Falls back to the
+  // static 8K Blue Marble on any failure. Tries up to 7 days back if
+  // recent dates aren't yet available in GIBS.
+  // ────────────────────────────────────────────────────────────────────
+  const [gibsTexture, setGibsTexture] = useState<THREE.Texture | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    const loader = new THREE.TextureLoader();
+    loader.setCrossOrigin("anonymous");
+
+    const tryDay = (daysAgo: number) => {
+      if (cancelled || daysAgo > 7) {
+        if (!cancelled) {
+          onGibsState(null);
+          // eslint-disable-next-line no-console
+          console.warn("[solar-system] GIBS fallback exhausted; using static Blue Marble");
+        }
+        return;
+      }
+      const date = gibsDateFor(daysAgo);
+      const url = buildGIBSEarthURL(date, 4096, 2048);
+      onGibsState({ date, loaded: false });
+      loader.load(
+        url,
+        (tex) => {
+          if (cancelled) return;
+          tex.colorSpace = THREE.SRGBColorSpace;
+          tex.anisotropy = 16;
+          tex.needsUpdate = true;
+          setGibsTexture(tex);
+          onGibsState({ date, loaded: true });
+          // eslint-disable-next-line no-console
+          console.log(`[solar-system] GIBS Earth loaded: ${date}`);
+        },
+        undefined,
+        () => {
+          if (cancelled) return;
+          // eslint-disable-next-line no-console
+          console.warn(`[solar-system] GIBS ${date} unavailable, trying earlier`);
+          tryDay(daysAgo + 1);
+        },
+      );
+    };
+
+    tryDay(1);
+    return () => {
+      cancelled = true;
+    };
+  }, [onGibsState]);
+
+  const effectiveEarthDayMap = gibsTexture ?? t.earthDay;
+  const earthCloudsHidden = gibsTexture !== null;
 
   // Make ref objects for each body (used by FlyToController to look up world position)
   if (!bodyRefs.current.sun) {
@@ -1743,7 +1845,7 @@ function SolarSystemScene({
 
       <Earth
         body={PLANETS[2]}
-        dayMap={t.earthDay}
+        dayMap={effectiveEarthDayMap}
         nightMap={t.earthNight}
         cloudsMap={t.earthClouds}
         moonTexture={t.moon}
@@ -1754,6 +1856,7 @@ function SolarSystemScene({
         sunPos={sunWorldPos}
         showOrbit={showOrbits}
         registerMoonRef={registerMoonRef}
+        hideCloudsLayer={earthCloudsHidden}
       />
 
       <Planet
@@ -1846,6 +1949,8 @@ export default function SolarSystemPage() {
   const [speed, setSpeed] = useState(0.5); // v5 default — gentle pace
   const [selected, setSelected] = useState<Body | null>(null);
   const [focusedId, setFocusedId] = useState<string | null>(null);
+  // GIBS state: null = trying, {loaded:false} = fetching, {loaded:true} = live
+  const [gibsState, setGibsState] = useState<{ date: string; loaded: boolean } | null>(null);
 
   // Default camera: high & wide enough to see all 8 planets (Neptune sits
   // at orbit=88 in v4). Up to maxDistance=800 in OrbitControls so users
@@ -1914,6 +2019,7 @@ export default function SolarSystemPage() {
             bodyRefs={bodyRefs}
             focusedId={focusedId}
             showOrbits={focusedId === null}
+            onGibsState={setGibsState}
           />
           <FlyToController
             flyTargetRef={flyTargetRef}
@@ -2062,9 +2168,36 @@ export default function SolarSystemPage() {
         whole system
       </div>
 
-      {/* CC BY 4.0 attribution */}
-      <div className="absolute bottom-4 right-4 z-10 pointer-events-auto text-[10px] text-white/40 bg-black/30 backdrop-blur-md rounded px-2.5 py-1.5 border border-white/10">
-        Textures:{" "}
+      {/* ──────────── Live Earth status badge (top-center-ish) ──────────── */}
+      {gibsState && (
+        <div
+          className={`absolute top-24 left-1/2 -translate-x-1/2 z-10 pointer-events-auto text-[11px] backdrop-blur-md rounded-full px-3 py-1.5 border flex items-center gap-2 ${
+            gibsState.loaded
+              ? "bg-emerald-500/15 border-emerald-400/30 text-emerald-100"
+              : "bg-amber-500/15 border-amber-400/30 text-amber-100"
+          }`}
+        >
+          <span
+            className={`h-1.5 w-1.5 rounded-full ${
+              gibsState.loaded ? "bg-emerald-400 animate-pulse" : "bg-amber-400 animate-pulse"
+            }`}
+          />
+          {gibsState.loaded ? (
+            <span>
+              <span className="font-semibold">Live Earth</span> · MODIS Terra ·{" "}
+              {gibsState.date} · NASA GIBS
+            </span>
+          ) : (
+            <span>
+              Loading live Earth (MODIS Terra · {gibsState.date})…
+            </span>
+          )}
+        </div>
+      )}
+
+      {/* Attribution — CC BY 4.0 for static textures, NASA GIBS public domain for live Earth */}
+      <div className="absolute bottom-4 right-4 z-10 pointer-events-auto text-[10px] text-white/40 bg-black/30 backdrop-blur-md rounded px-2.5 py-1.5 border border-white/10 max-w-sm">
+        Static textures:{" "}
         <a
           href="https://www.solarsystemscope.com/textures/"
           target="_blank"
@@ -2073,7 +2206,7 @@ export default function SolarSystemPage() {
         >
           Solar System Scope <ExternalLink className="h-2.5 w-2.5" />
         </a>{" "}
-        ·{" "}
+        (
         <a
           href="https://creativecommons.org/licenses/by/4.0/"
           target="_blank"
@@ -2081,8 +2214,17 @@ export default function SolarSystemPage() {
           className="text-white/60 hover:text-white/90 underline"
         >
           CC BY 4.0
+        </a>
+        ). Live Earth:{" "}
+        <a
+          href="https://gibs.earthdata.nasa.gov/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-white/60 hover:text-white/90 underline inline-flex items-center gap-0.5"
+        >
+          NASA GIBS MODIS Terra <ExternalLink className="h-2.5 w-2.5" />
         </a>{" "}
-        · derived from NASA mission data
+        (U.S. public domain).
       </div>
     </div>
   );
