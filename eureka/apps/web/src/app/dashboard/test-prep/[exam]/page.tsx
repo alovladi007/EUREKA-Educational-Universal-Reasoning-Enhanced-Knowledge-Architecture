@@ -48,8 +48,9 @@ import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
 import { LsatFrequencyHeatmap } from '@/components/test-prep/LsatFrequencyHeatmap';
 import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatmap';
+import { LSAT_QUESTION_TYPES } from '@/lib/lsat-frequency';
 
-type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep' | 'exam' | 'analytics';
+type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep' | 'lsat' | 'exam' | 'analytics';
 
 export default function ExamPage() {
   const params = useParams();
@@ -71,6 +72,7 @@ export default function ExamPage() {
     { id: 'notes', label: 'My Notes', icon: <StickyNote className="h-4 w-4" /> },
     { id: 'qbank', label: 'QBank', icon: <BrainCircuit className="h-4 w-4" /> },
     ...(isPatentBar ? [{ id: 'mpep' as Tab, label: 'MPEP', icon: <Library className="h-4 w-4" /> }] : []),
+    ...(isLSAT ? [{ id: 'lsat' as Tab, label: 'Question Types', icon: <Library className="h-4 w-4" /> }] : []),
     ...((isFEEE || isFEME || isPEEE || isMCAT) ? [
       { id: 'exam' as Tab, label: 'Full Exam', icon: <Trophy className="h-4 w-4" /> },
       { id: 'analytics' as Tab, label: 'Analytics', icon: <BarChart3 className="h-4 w-4" /> },
@@ -124,10 +126,46 @@ export default function ExamPage() {
 
       {isPatentBar && <PatentBarCohortPanel />}
 
+      {isLSAT && (
+        <Card className="p-4 bg-purple-50/70 dark:bg-purple-950/30 border-purple-200 dark:border-purple-900">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold text-sm">LSAT command center</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Question-type weakness analytics, LR vs RC pacing, and a LawHub-style workbench (TOC,
+                bookmarks, question-type heatmap, official LSAC reference).
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lsat-live`}>
+                <Button size="sm" variant="default" className="gap-1.5">
+                  <Video className="h-3.5 w-3.5" /> Live instruction
+                </Button>
+              </Link>
+              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lsat-program`}>
+                <Button size="sm" variant="secondary" className="gap-1.5">
+                  <BookOpen className="h-3.5 w-3.5" /> Full program
+                </Button>
+              </Link>
+              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lsat-analytics`}>
+                <Button size="sm" variant="secondary" className="gap-1.5">
+                  <BarChart3 className="h-3.5 w-3.5" /> Analytics &amp; SRS
+                </Button>
+              </Link>
+              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lawhub-workbench`}>
+                <Button size="sm" variant="outline" className="gap-1.5">
+                  <Library className="h-3.5 w-3.5" /> LawHub workbench
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </Card>
+      )}
+
       {/* Exam-specific frequency heatmaps with official-site deep links.
           Same pattern as the MPEP workbench heatmap but for non-Patent-Bar
           exams: shows what's most-tested + clicks open the official content
-          reference (LSAC for LSAT, AAMC for MCAT). */}
+          reference (LSAC LawHub for LSAT, AAMC store for MCAT). */}
       {isLSAT && <LsatFrequencyHeatmap />}
       {isMCAT && <McatFrequencyHeatmap />}
 
@@ -156,6 +194,7 @@ export default function ExamPage() {
       {activeTab === 'notes' && <NotesTab examType={examId} sections={sections} />}
       {activeTab === 'qbank' && <QBankTab examType={examId} config={config} sections={sections} />}
       {activeTab === 'mpep' && isPatentBar && <MPEPTab />}
+      {activeTab === 'lsat' && isLSAT && <LSATTab />}
       {activeTab === 'exam' && isFEEE && <FEEEExamTab />}
       {activeTab === 'analytics' && isFEEE && <FEEEAnalyticsTab />}
       {activeTab === 'exam' && isFEME && <FMEExamTab />}
@@ -442,6 +481,188 @@ function MPEPTab() {
               <Badge variant="outline" className="font-mono text-[10px] flex-shrink-0 mt-0.5">{r.rule}</Badge>
               <span className="text-sm">{r.desc}</span>
             </div>
+          ))}
+        </div>
+      </Card>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// LSAT TAB — analogue of MPEPTab. High-yield question types,
+// complete question-type directory, format reference, study tips.
+// ═══════════════════════════════════════════════════════════════
+
+const LSAT_HIGH_YIELD_LR = [
+  { id: 'lr_strengthen', name: 'Strengthen', why: 'Most-tested LR type. ~12% per section — 6+ questions per LR test on average.' },
+  { id: 'lr_weaken', name: 'Weaken', why: 'Mirror of Strengthen; same skill in reverse. ~10% per section.' },
+  { id: 'lr_necessary_assumption', name: 'Necessary Assumption', why: '~10%. Use the negation test — if negating the answer destroys the argument, it\'s necessary.' },
+  { id: 'lr_inference', name: 'Inference / Must Be True', why: '~10%. Stay inside the four corners of the stimulus; do not import outside knowledge.' },
+  { id: 'lr_flaw', name: 'Flaw', why: '~10%. Memorise the standard flaw types (correlation/causation, equivocation, sampling, etc.).' },
+  { id: 'lr_principle', name: 'Principle', why: '~7%. Bridge an abstract rule to a specific case in either direction.' },
+];
+
+const LSAT_HIGH_YIELD_RC = [
+  { id: 'rc_detail', name: 'Detail / Specific Reference', why: 'Highest-frequency RC type (~25%). Send-back to the line cited — don\'t paraphrase from memory.' },
+  { id: 'rc_inference', name: 'Inference', why: '~20%. The correct answer is one short step from the text — not a leap, but not a paraphrase.' },
+  { id: 'rc_function', name: 'Function / Purpose / Role', why: '~15%. Why was X included? Examples support claims; quotations illustrate views; concessions soften.' },
+];
+
+const LSAT_STUDY_TIPS = [
+  { tip: 'Time pressure is the exam.', detail: 'The content isn\'t hard in the abstract — it\'s hard at 1:25 per LR question and 1:20 per RC question. Drill timing relentlessly.' },
+  { tip: 'Skip & flag, return later.', detail: 'No partial credit. If a Parallel Reasoning question is eating 4 minutes, flag and move on — you can come back if time permits.' },
+  { tip: 'Diagram conditionals.', detail: 'A → B and its contrapositive (¬B → ¬A) are essential. Practice translating "only," "unless," "no" into conditionals automatically.' },
+  { tip: 'For RC, read for structure first.', detail: 'Identify the main point, the author\'s attitude, and the role of each paragraph BEFORE attempting questions. The questions reward structural readers.' },
+  { tip: 'Master the wrong-answer types.', detail: 'Out-of-scope, too-strong, half-right, opposite, irrelevant comparison — naming the wrong-answer pattern is faster than verifying the right one.' },
+  { tip: 'Use LawHub PrepTests.', detail: 'LSAC PrepTests are the gold standard. The interface in LawHub matches the real exam — practise there for muscle memory.' },
+  { tip: 'Track your error log.', detail: 'For every miss, write: question type, your wrong answer, the trap that hooked you, and the rule you\'ll use next time. Review weekly.' },
+  { tip: 'Don\'t ignore Argumentative Writing.', detail: 'It\'s separate and unscored on 120–180 but law schools see it. Spend a few hours on the prompt format and rubric before test day.' },
+];
+
+const LSAT_FORMAT_REFERENCE = [
+  { item: 'Scored sections', value: '3', detail: '2× Logical Reasoning (≈25 Qs / 35 min each) + 1× Reading Comprehension (≈27 Qs / 35 min)' },
+  { item: 'Experimental section', value: '1', detail: 'Unscored, indistinguishable from a real LR or RC section. Treat every section as real.' },
+  { item: 'Total test time', value: '~2h 20m', detail: '4 × 35-min sections + 10-min intermission after section 2' },
+  { item: 'Score range', value: '120 – 180', detail: 'Median ~152, top 1% ≥175. Most T14 medians are 170+' },
+  { item: 'Logic Games', value: 'REMOVED', detail: 'Analytical Reasoning eliminated August 2024. Don\'t spend time on it for the current LSAT.' },
+  { item: 'Argumentative Writing', value: 'Separate', detail: 'Take-at-home, unscored on 120–180. Required at least once before reports issue.' },
+  { item: 'Retakes', value: '3 / cycle', detail: 'Maximum 3 LSAT attempts in a single testing cycle (Aug–Jun); 7 in a lifetime; 5 in 5 years' },
+];
+
+function LSATTab() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const allTypes = LSAT_QUESTION_TYPES;
+  const filteredTypes = searchQuery.trim()
+    ? allTypes.filter(
+        (q) =>
+          q.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          q.section.toLowerCase().includes(searchQuery.toLowerCase()),
+      )
+    : allTypes;
+
+  return (
+    <div className="space-y-6">
+      {/* Header / LawHub access card */}
+      <Card className="p-6 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/40 dark:to-indigo-950/40 border-purple-200 dark:border-purple-900">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="text-xl font-bold flex items-center gap-2">
+              <Library className="h-5 w-5 text-purple-600" />
+              LSAT Question Type Reference
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1 max-w-2xl">
+              Current LSAT format (post-Aug 2024): 2× Logical Reasoning + 1× Reading Comprehension.
+              Logic Games is REMOVED. The LSAT is &quot;open-LawHub&quot; only for practice — at the real
+              exam you have no reference material, so practice the patterns until they&apos;re automatic.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <a href="https://lawhub.lsac.org/preptests" target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="default" className="gap-1.5">
+                <ExternalLink className="h-3.5 w-3.5" /> LawHub PrepTests
+              </Button>
+            </a>
+            <a href="https://lawhub.lsac.org/free" target="_blank" rel="noopener noreferrer">
+              <Button size="sm" variant="outline" className="gap-1.5">
+                <ExternalLink className="h-3.5 w-3.5" /> LawHub Free
+              </Button>
+            </a>
+          </div>
+        </div>
+      </Card>
+
+      {/* LSAT Format Reference */}
+      <Card className="p-5">
+        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <Hash className="h-5 w-5 text-purple-500" /> LSAT Format Reference (R-2024+)
+        </h3>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {LSAT_FORMAT_REFERENCE.map((r) => (
+            <div key={r.item} className="flex items-start gap-3 p-3 rounded-lg border bg-muted/30">
+              <Badge variant="outline" className="font-mono text-[10px] flex-shrink-0 mt-0.5">{r.value}</Badge>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium">{r.item}</p>
+                <p className="text-xs text-muted-foreground mt-0.5">{r.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </Card>
+
+      {/* High-Yield Question Types — LR */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <Zap className="h-5 w-5 text-amber-500" /> High-Yield Logical Reasoning Types
+        </h3>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {LSAT_HIGH_YIELD_LR.map((item) => (
+            <a key={item.id} href="https://www.lsac.org/lsat/prepare/types-lsat-questions" target="_blank" rel="noopener noreferrer">
+              <Card className="p-4 hover:shadow-md transition-all cursor-pointer border-l-4 border-l-amber-400 h-full">
+                <p className="font-medium text-sm">{item.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">{item.why}</p>
+              </Card>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* High-Yield RC Types */}
+      <div>
+        <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+          <Zap className="h-5 w-5 text-orange-500" /> High-Yield Reading Comprehension Types
+        </h3>
+        <div className="grid gap-3 sm:grid-cols-3">
+          {LSAT_HIGH_YIELD_RC.map((item) => (
+            <a key={item.id} href="https://www.lsac.org/lsat/prepare/types-lsat-questions/reading-comprehension" target="_blank" rel="noopener noreferrer">
+              <Card className="p-4 hover:shadow-md transition-all cursor-pointer border-l-4 border-l-orange-400 h-full">
+                <p className="font-medium text-sm">{item.name}</p>
+                <p className="text-xs text-muted-foreground mt-1">{item.why}</p>
+              </Card>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Complete Question Type Directory */}
+      <div>
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-lg font-semibold">Complete Question Type Directory</h3>
+          <div className="relative">
+            <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search types..."
+              className="pl-9 pr-3 py-1.5 border rounded-lg text-sm w-64 focus:outline-none focus:ring-2 focus:ring-primary"
+            />
+          </div>
+        </div>
+        <div className="space-y-1">
+          {filteredTypes.map((q) => (
+            <a key={q.id} href={q.url || 'https://lawhub.lsac.org/preptests'} target="_blank" rel="noopener noreferrer">
+              <Card className="p-3 hover:bg-accent/50 transition-colors cursor-pointer flex items-center gap-3">
+                <div className="flex-shrink-0 w-16 text-center">
+                  <Badge variant="outline" className="font-mono text-xs">{q.section} · {q.frequency}%</Badge>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{q.name}</p>
+                  <p className="text-xs text-muted-foreground line-clamp-1">{q.description}</p>
+                </div>
+                <ExternalLink className="h-3.5 w-3.5 text-muted-foreground flex-shrink-0" />
+              </Card>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      {/* Study Tips */}
+      <Card className="p-6 bg-purple-50 dark:bg-purple-950 border-purple-200 dark:border-purple-800">
+        <h3 className="font-semibold mb-3 flex items-center gap-2">
+          <Lightbulb className="h-5 w-5 text-purple-600" /> LSAT Study Tips
+        </h3>
+        <div className="space-y-2 text-sm">
+          {LSAT_STUDY_TIPS.map((s, i) => (
+            <p key={s.tip}><strong>{i + 1}. {s.tip}</strong> {s.detail}</p>
           ))}
         </div>
       </Card>
