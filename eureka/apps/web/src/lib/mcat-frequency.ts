@@ -42,6 +42,17 @@ export interface McatTopic {
   url?: string;
 }
 
+/**
+ * Deep-link helpers — make heatmap clicks land on actual practice questions
+ * (your own QBank), not on a generic AAMC marketing page. The Practice page
+ * honors ?exam= and ?section= and opens the setup modal pre-filled.
+ */
+export function mcatPracticeUrl(topic: McatTopic, questionCount = 20): string {
+  return `/dashboard/test-prep/practice?exam=MCAT&section=${topic.section}&q=${questionCount}`;
+}
+export const mcatLessonsUrl = `/dashboard/test-prep/MCAT?tab=read`;
+export const mcatFlashcardsUrl = `/dashboard/test-prep/MCAT?tab=flashcards`;
+
 // AAMC URL helpers (verified 2026-05-24)
 export const AAMC_MCAT_BASE = 'https://www.aamc.org/mcat';
 export const AAMC_OUTLINE_PDF = 'https://students-residents.aamc.org/prepare-mcat-exam/whats-mcat-exam-pdf-outline';

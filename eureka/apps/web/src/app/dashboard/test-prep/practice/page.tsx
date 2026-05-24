@@ -61,10 +61,22 @@ function PracticeModePageInner() {
   const [hintUsed, setHintUsed] = useState(false);
   const [showHint, setShowHint] = useState(false);
   const [showSetup, setShowSetup] = useState(true);
+  // Honor ?section= on first mount so deep links (e.g. from the LSAT/MCAT
+  // frequency heatmap cells) land directly on the correct topic.
+  const initialSectionFromUrl = (() => {
+    const raw = searchParams.get('section') || '';
+    if (!raw) return '';
+    return getSectionsForExam(activeExam).some((s) => s.id === raw) ? raw : '';
+  })();
+  const initialQuestionsFromUrl = (() => {
+    const raw = Number(searchParams.get('q'));
+    if (!raw || Number.isNaN(raw)) return 20;
+    return Math.max(10, Math.min(50, Math.round(raw)));
+  })();
   const [sessionConfig, setSessionConfig] = useState({
     examType: activeExam,
-    section: getSectionsForExam(activeExam)[0]?.id || '',
-    targetQuestions: 20,
+    section: initialSectionFromUrl || getSectionsForExam(activeExam)[0]?.id || '',
+    targetQuestions: initialQuestionsFromUrl,
   });
 
   // Resync session config when the active exam changes (e.g. user picks a new

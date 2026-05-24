@@ -14,7 +14,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, TrendingUp, Info, FileText } from 'lucide-react';
+import { ExternalLink, TrendingUp, Info, FileText, Target } from 'lucide-react';
 import {
   MCAT_FOUNDATIONAL_CONCEPTS,
   MCAT_TIER_COLORS,
@@ -22,6 +22,7 @@ import {
   AAMC_MCAT_BASE,
   AAMC_OUTLINE_PDF,
   AAMC_PREP_LANDING,
+  mcatPracticeUrl,
   type McatTopic,
   type McatTier,
   type McatSection,
@@ -101,11 +102,11 @@ export function McatFrequencyHeatmap() {
                   const color = MCAT_TIER_COLORS[t.tier];
                   const isActive = active?.id === t.id;
                   return (
-                    <a
+                    <Link
                       key={t.id}
-                      href={t.url || AAMC_OUTLINE_PDF}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      // Primary click → MCAT QBank pre-filtered to this section.
+                      // AAMC outline PDF link lives in the detail panel below.
+                      href={mcatPracticeUrl(t, 20)}
                       onMouseEnter={() => setActive(t)}
                       onFocus={() => setActive(t)}
                       onMouseLeave={() => setActive(null)}
@@ -118,13 +119,13 @@ export function McatFrequencyHeatmap() {
                           : undefined,
                       }}
                       className="group relative rounded-md p-3 transition-transform hover:scale-105 hover:z-10 cursor-pointer min-h-[64px]"
-                      title={`${t.name} — ${t.frequency}% of exam`}
+                      title={`${t.name} — practice ${t.sectionLabel} questions (${t.frequency}% of exam)`}
                     >
                       <div className="flex items-baseline justify-between gap-2 mb-1">
                         <span className="text-xs font-semibold leading-tight">{t.name}</span>
                         <span className="text-[11px] font-mono opacity-80 shrink-0">{t.frequency}%</span>
                       </div>
-                    </a>
+                    </Link>
                   );
                 })}
               </div>
@@ -134,7 +135,7 @@ export function McatFrequencyHeatmap() {
       </div>
 
       {/* Active topic detail */}
-      <div className="rounded-md border bg-muted/30 p-3 min-h-[80px] text-sm">
+      <div className="rounded-md border bg-muted/30 p-3 min-h-[96px] text-sm">
         {active ? (
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -142,14 +143,22 @@ export function McatFrequencyHeatmap() {
                 {active.name}{' '}
                 <span className="text-xs font-normal text-muted-foreground">· {active.sectionLabel}</span>
               </p>
-              <Link
-                href={active.url || AAMC_OUTLINE_PDF}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-primary hover:underline inline-flex items-center gap-1"
-              >
-                Open AAMC outline <ExternalLink className="h-3 w-3" />
-              </Link>
+              <div className="flex gap-3 text-xs">
+                <Link
+                  href={mcatPracticeUrl(active, 20)}
+                  className="text-primary hover:underline inline-flex items-center gap-1 font-medium"
+                >
+                  <Target className="h-3 w-3" /> Practice {active.sectionLabel} questions
+                </Link>
+                <a
+                  href={active.url || AAMC_OUTLINE_PDF}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground hover:underline inline-flex items-center gap-1"
+                >
+                  AAMC outline <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
             </div>
             <div className="flex flex-wrap items-center gap-2">
               <Badge
@@ -170,7 +179,7 @@ export function McatFrequencyHeatmap() {
         ) : (
           <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
             <Info className="h-3.5 w-3.5" />
-            Hover a Foundational Concept to preview it. Click to open AAMC&apos;s official content outline.
+            Hover a Foundational Concept to preview it. <strong className="text-foreground">Click any cell to start a 20-question QBank session</strong> on that section.
           </p>
         )}
       </div>

@@ -17,12 +17,13 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, TrendingUp, Info } from 'lucide-react';
+import { ExternalLink, TrendingUp, Info, Target } from 'lucide-react';
 import {
   LSAT_QUESTION_TYPES,
   LSAT_TIER_COLORS,
   LSAC_QUESTION_TYPES,
   LSAC_PRACTICE,
+  lsatPracticeUrl,
   type LsatQuestionType,
   type LsatTier,
 } from '@/lib/lsat-frequency';
@@ -53,11 +54,11 @@ function Section({
           const color = LSAT_TIER_COLORS[q.tier];
           const isActive = active?.id === q.id;
           return (
-            <a
+            <Link
               key={q.id}
-              href={q.url || LSAC_QUESTION_TYPES}
-              target="_blank"
-              rel="noopener noreferrer"
+              // Primary click → your own QBank pre-filtered to this section.
+              // The LSAC official-reference link is in the detail panel below.
+              href={lsatPracticeUrl(q, 20)}
               onMouseEnter={() => setActive(q)}
               onFocus={() => setActive(q)}
               onMouseLeave={() => setActive(null)}
@@ -70,11 +71,11 @@ function Section({
                   : undefined,
               }}
               className="group relative rounded-md p-2 flex flex-col gap-1 text-left transition-transform hover:scale-105 hover:z-10 cursor-pointer min-h-[64px]"
-              title={`${q.name} — ${q.frequency}% of ${q.section}`}
+              title={`${q.name} — practice ${q.section} questions (${q.frequency}% of section)`}
             >
               <span className="text-[10px] font-mono opacity-80">{q.frequency}%</span>
               <span className="text-xs font-semibold leading-tight">{q.name}</span>
-            </a>
+            </Link>
           );
         })}
       </div>
@@ -140,7 +141,7 @@ export function LsatFrequencyHeatmap() {
       </div>
 
       {/* Active question-type detail */}
-      <div className="rounded-md border bg-muted/30 p-3 min-h-[72px] text-sm">
+      <div className="rounded-md border bg-muted/30 p-3 min-h-[88px] text-sm">
         {active ? (
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -148,14 +149,22 @@ export function LsatFrequencyHeatmap() {
                 {active.name}{' '}
                 <span className="text-xs font-normal text-muted-foreground">· {active.section} · {active.frequency}%</span>
               </p>
-              <Link
-                href={active.url || LSAC_QUESTION_TYPES}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs text-primary hover:underline inline-flex items-center gap-1"
-              >
-                Open LSAC reference <ExternalLink className="h-3 w-3" />
-              </Link>
+              <div className="flex gap-3 text-xs">
+                <Link
+                  href={lsatPracticeUrl(active, 20)}
+                  className="text-primary hover:underline inline-flex items-center gap-1 font-medium"
+                >
+                  <Target className="h-3 w-3" /> Practice {active.section} questions
+                </Link>
+                <a
+                  href={active.url || LSAC_QUESTION_TYPES}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-muted-foreground hover:text-foreground hover:underline inline-flex items-center gap-1"
+                >
+                  LSAC reference <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
             </div>
             <div>
               <Badge
@@ -173,7 +182,7 @@ export function LsatFrequencyHeatmap() {
         ) : (
           <p className="text-xs text-muted-foreground inline-flex items-center gap-1.5">
             <Info className="h-3.5 w-3.5" />
-            Hover a cell to preview a question type. Click to open LSAC&apos;s description in a new tab.
+            Hover a cell to preview a question type. <strong className="text-foreground">Click any cell to start a 20-question QBank session</strong> on that section.
           </p>
         )}
       </div>

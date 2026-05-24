@@ -36,6 +36,24 @@ export interface LsatQuestionType {
   url?: string;
 }
 
+/** Map LR/RC section to the corresponding exam-config sectionId. */
+const SECTION_TO_QBANK_ID: Record<'LR' | 'RC', string> = {
+  LR: 'logical_reasoning',
+  RC: 'reading_comprehension',
+};
+
+/**
+ * Deep-link helpers — clicking a cell opens YOUR OWN QBank pre-filtered to
+ * that section, so the user lands on actual practice questions. The LSAC
+ * official reference is demoted to a small secondary link in the detail
+ * panel (LSAC's question-types page has no inline questions).
+ */
+export function lsatPracticeUrl(q: LsatQuestionType, questionCount = 20): string {
+  return `/dashboard/test-prep/practice?exam=LSAT&section=${SECTION_TO_QBANK_ID[q.section]}&q=${questionCount}`;
+}
+export const lsatLessonsUrl = `/dashboard/test-prep/LSAT?tab=read`;
+export const lsatFlashcardsUrl = `/dashboard/test-prep/LSAT?tab=flashcards`;
+
 // LSAC URL helpers (verified 2026-05-24)
 export const LSAC_BASE = 'https://www.lsac.org/lsat';
 export const LSAC_QUESTION_TYPES = `${LSAC_BASE}/prepare/types-lsat-questions`;
