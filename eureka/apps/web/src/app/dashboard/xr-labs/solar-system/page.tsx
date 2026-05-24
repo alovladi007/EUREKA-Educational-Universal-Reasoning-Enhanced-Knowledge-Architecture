@@ -79,6 +79,11 @@ type Moon = {
   period: number; // orbital period in Earth days (positive prograde, negative retrograde)
   color: number; // tint multiplied with moon base texture
   inclination?: number; // radians
+  facts?: {
+    diameter: string;
+    discovered?: string;
+    description: string;
+  };
 };
 
 // Artificial satellites — ISS, Hubble, JWST, Voyagers etc. Same idea as
@@ -207,6 +212,11 @@ const PLANETS: Body[] = [
         orbit: 1.5,
         period: 27.32,
         color: 0xffffff,
+        facts: {
+          diameter: "3,474 km (1/4 of Earth)",
+          discovered: "Prehistoric — visible to the naked eye",
+          description: "The fifth-largest moon in the Solar System. Tidally locked — same face always points at Earth. Apollo missions returned 382 kg of rock samples between 1969–72. Surface gravity 1/6 of Earth's.",
+        },
       },
     ],
     satellites: [
@@ -268,8 +278,22 @@ const PLANETS: Body[] = [
     tilt: 0.4396,
     trailColor: 0xd47030, // red-orange
     moons: [
-      { id: "phobos", name: "Phobos", size: 0.09, orbit: 1.1, period: 0.319, color: 0xa08070 },
-      { id: "deimos", name: "Deimos", size: 0.07, orbit: 1.7, period: 1.262, color: 0xa08070 },
+      {
+        id: "phobos", name: "Phobos", size: 0.09, orbit: 1.1, period: 0.319, color: 0xa08070,
+        facts: {
+          diameter: "22.4 km (irregular potato shape)",
+          discovered: "1877 by Asaph Hall",
+          description: "Inner moon, orbits Mars every 7 h 39 min — faster than Mars rotates. Stickney crater is ~9 km across, nearly half Phobos's diameter. Spiraling inward; will crash into Mars or break up into a ring in ~50 M years.",
+        },
+      },
+      {
+        id: "deimos", name: "Deimos", size: 0.07, orbit: 1.7, period: 1.262, color: 0xa08070,
+        facts: {
+          diameter: "12.4 km (smaller, smoother)",
+          discovered: "1877 by Asaph Hall",
+          description: "Outer Martian moon, regolith-covered (less prominent craters than Phobos). Slowly spiraling outward and will eventually escape Mars's gravity.",
+        },
+      },
     ],
     satellites: [
       {
@@ -310,10 +334,35 @@ const PLANETS: Body[] = [
     tilt: 0.0546,
     trailColor: 0xddb88a, // tan
     moons: [
-      { id: "io", name: "Io", size: 0.22, orbit: 3.0, period: 1.769, color: 0xeed060 },
-      { id: "europa", name: "Europa", size: 0.20, orbit: 3.7, period: 3.551, color: 0xefe6cf },
-      { id: "ganymede", name: "Ganymede", size: 0.30, orbit: 4.6, period: 7.155, color: 0xc8b89a },
-      { id: "callisto", name: "Callisto", size: 0.28, orbit: 5.7, period: 16.689, color: 0x8a7e6c },
+      {
+        id: "io", name: "Io", size: 0.22, orbit: 3.0, period: 1.769, color: 0xeed060,
+        facts: {
+          diameter: "3,643 km", discovered: "1610 by Galileo",
+          description: "The most volcanically active body in the Solar System — over 400 active volcanoes, driven by tidal heating from Jupiter. Sulphur and sulphur-dioxide deposits give the yellow/red/white coloration. No impact craters survive — the surface is constantly resurfaced.",
+        },
+      },
+      {
+        id: "europa", name: "Europa", size: 0.20, orbit: 3.7, period: 3.551, color: 0xefe6cf,
+        facts: {
+          diameter: "3,122 km", discovered: "1610 by Galileo",
+          description: "Smooth icy crust covering a subsurface liquid-water ocean estimated at twice Earth's total ocean volume. Lineae (the brown linear streaks) are fractures filled with reddish material. NASA's Europa Clipper mission launched 2024 to study habitability.",
+        },
+      },
+      {
+        id: "ganymede", name: "Ganymede", size: 0.30, orbit: 4.6, period: 7.155, color: 0xc8b89a,
+        facts: {
+          diameter: "5,268 km (largest moon in the Solar System — bigger than Mercury)",
+          discovered: "1610 by Galileo",
+          description: "Only moon with its own magnetic field. Two terrain types: dark cratered terrain (older) and bright grooved terrain (younger). Has a subsurface saltwater ocean. ESA's JUICE mission arriving 2031.",
+        },
+      },
+      {
+        id: "callisto", name: "Callisto", size: 0.28, orbit: 5.7, period: 16.689, color: 0x8a7e6c,
+        facts: {
+          diameter: "4,821 km", discovered: "1610 by Galileo",
+          description: "The most heavily cratered body in the Solar System — surface is geologically dead, preserving 4 billion years of impacts. Outermost Galilean moon, outside Jupiter's intense radiation belt, considered a candidate for future crewed missions.",
+        },
+      },
     ],
     facts: {
       type: "Gas giant",
@@ -339,9 +388,28 @@ const PLANETS: Body[] = [
     rings: { inner: 2.1, outer: 3.7 },
     trailColor: 0xe8d3a0, // cream
     moons: [
-      { id: "enceladus", name: "Enceladus", size: 0.10, orbit: 4.8, period: 1.37, color: 0xffffff },
-      { id: "titan", name: "Titan", size: 0.30, orbit: 6.3, period: 15.95, color: 0xe89858 },
-      { id: "iapetus", name: "Iapetus", size: 0.13, orbit: 8.0, period: 79.32, color: 0xa08c70, inclination: 0.27 },
+      {
+        id: "enceladus", name: "Enceladus", size: 0.10, orbit: 4.8, period: 1.37, color: 0xffffff,
+        facts: {
+          diameter: "504 km", discovered: "1789 by William Herschel",
+          description: "Brightest body in the Solar System (95% of sunlight reflected). South-pole 'tiger stripe' fractures spew geysers of liquid water into space — a subsurface global ocean. Cassini flew through the plumes; one of the top candidates for extraterrestrial life.",
+        },
+      },
+      {
+        id: "titan", name: "Titan", size: 0.30, orbit: 6.3, period: 15.95, color: 0xe89858,
+        facts: {
+          diameter: "5,150 km (2nd-largest moon, larger than Mercury)",
+          discovered: "1655 by Christiaan Huygens",
+          description: "The only moon with a thick atmosphere — denser than Earth's, mostly nitrogen + methane. Lakes and rivers of liquid methane/ethane on the surface. Huygens probe landed January 2005. NASA's Dragonfly rotorcraft launches 2028.",
+        },
+      },
+      {
+        id: "iapetus", name: "Iapetus", size: 0.13, orbit: 8.0, period: 79.32, color: 0xa08c70, inclination: 0.27,
+        facts: {
+          diameter: "1,469 km", discovered: "1671 by Giovanni Cassini",
+          description: "The two-tone moon — leading hemisphere coated in dark organic material from Phoebe, trailing hemisphere is bright water ice. Equatorial ridge 13 km tall, 1,300 km long — origin still debated. Cassini predicted its appearance 300+ years before it was confirmed.",
+        },
+      },
     ],
     facts: {
       type: "Gas giant",
@@ -366,8 +434,21 @@ const PLANETS: Body[] = [
     tilt: 1.7064,
     trailColor: 0x9ad9d9, // cyan
     moons: [
-      { id: "titania", name: "Titania", size: 0.13, orbit: 3.0, period: 8.706, color: 0xa89890 },
-      { id: "oberon", name: "Oberon", size: 0.13, orbit: 3.8, period: 13.46, color: 0x988878 },
+      {
+        id: "titania", name: "Titania", size: 0.13, orbit: 3.0, period: 8.706, color: 0xa89890,
+        facts: {
+          diameter: "1,578 km (largest moon of Uranus)",
+          discovered: "1787 by William Herschel",
+          description: "Half rock, half ice. Hosts Messina Chasmata — a canyon system 1,500 km long. Voyager 2 imaged it during its 1986 flyby, the only spacecraft visit.",
+        },
+      },
+      {
+        id: "oberon", name: "Oberon", size: 0.13, orbit: 3.8, period: 13.46, color: 0x988878,
+        facts: {
+          diameter: "1,523 km", discovered: "1787 by William Herschel",
+          description: "Outermost large moon of Uranus. Heavily cratered, mountainous — Mt. Bishop visible on Voyager 2 imagery as a 6-km peak. Surface reddish-brown from radiation-darkened organics.",
+        },
+      },
     ],
     facts: {
       type: "Ice giant",
@@ -393,7 +474,14 @@ const PLANETS: Body[] = [
     trailColor: 0x4a7af5, // deep blue
     moons: [
       // Triton orbits retrograde — only large moon in the Solar System to do so
-      { id: "triton", name: "Triton", size: 0.18, orbit: 2.6, period: -5.877, color: 0xe6c8d8 },
+      {
+        id: "triton", name: "Triton", size: 0.18, orbit: 2.6, period: -5.877, color: 0xe6c8d8,
+        facts: {
+          diameter: "2,707 km",
+          discovered: "1846 by William Lassell (17 days after Neptune itself)",
+          description: "Orbits backwards relative to Neptune's rotation — strong evidence Triton is a captured Kuiper-belt object. Active nitrogen geysers, surface temperature −235 °C. Will eventually be torn apart by tidal forces and form a Saturn-like ring system.",
+        },
+      },
     ],
     facts: {
       type: "Ice giant",
@@ -426,9 +514,16 @@ const EARTH_YEAR_SECONDS = 300; // 1 Earth year = 5 wall-clock minutes at 1×
 // Spot, ring shadow) are observable. The ratios between bodies stay
 // proportional, only the absolute spin rate is dilated.
 const SPIN_SLOWDOWN = 30; // planet + Sun + Earth-clouds + Venus-atmosphere
-const MOON_ORBIT_SLOWDOWN = 5; // moon orbital periods
+const MOON_ORBIT_SLOWDOWN = 10; // baseline for moon orbits (v8: was 5)
 
-const BUILD_TAG = "v7 · 2026-05-23"; // bump to verify you're on the latest
+// Per-moon extra slowdown for the very fastest real moons that even at
+// 10× still blur. Phobos real period is 7.66 h — applied with 30× total
+// it lands at a comfortable ~8 s/orbit at default speed.
+const MOON_EXTRA_SLOWDOWN: Record<string, number> = {
+  phobos: 3,
+};
+
+const BUILD_TAG = "v8 · 2026-05-23"; // bump to verify you're on the latest
 
 function SimulationClock({
   paused,
@@ -730,17 +825,60 @@ function Sun({
 // One moon — orbits its parent
 // ────────────────────────────────────────────────────────────────────────
 
+// Convert a Moon + its parent Body into a synthesized Body shape so the
+// fly-to system and the info panel can treat moons uniformly with planets.
+function moonAsBody(moon: Moon, parent: Body): Body {
+  return {
+    id: `${parent.id}.${moon.id}`,
+    name: moon.name,
+    textureKey: "",
+    size: moon.size,
+    orbit: 0, // not orbiting the Sun directly
+    period: 0,
+    day: moon.period, // tidally locked — day = orbit period
+    tilt: 0,
+    trailColor: 0xcccccc,
+    facts: {
+      type: `Moon of ${parent.name}`,
+      diameter: moon.facts?.diameter ?? "—",
+      mass: "—",
+      distance: `${(Math.abs(moon.orbit)).toFixed(2)} scene units from ${parent.name}`,
+      period: `${Math.abs(moon.period).toFixed(2)} Earth days${moon.period < 0 ? " (retrograde)" : ""}`,
+      day: "Tidally locked (day = orbit period)",
+      moons: moon.facts?.discovered ?? "—",
+      description: moon.facts?.description ?? `${moon.name} — moon of ${parent.name}.`,
+    },
+  };
+}
+
 function MoonBody({
   moon,
+  parentBody,
   baseTexture,
   simTimeRef,
+  onSelect,
+  registerRef,
 }: {
   moon: Moon;
+  parentBody: Body;
   baseTexture: THREE.Texture;
   simTimeRef: React.MutableRefObject<number>;
+  onSelect?: (b: Body) => void;
+  registerRef?: (
+    id: string,
+    ref: React.MutableRefObject<THREE.Object3D | null>,
+  ) => void;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
+
+  // Register this moon's mesh with the parent's body-registry so it can
+  // be a fly-to target. Use a composite key like "earth.luna".
+  useEffect(() => {
+    if (registerRef && meshRef.current) {
+      registerRef(`${parentBody.id}.${moon.id}`, meshRef as React.MutableRefObject<THREE.Object3D | null>);
+    }
+  }, [registerRef, parentBody.id, moon.id]);
 
   // Per-moon procedural texture (Io's sulphur, Europa's ice cracks,
   // Iapetus's two-tone, Triton's cantaloupe, etc.) generated from the
@@ -759,7 +897,9 @@ function MoonBody({
     // Moon period in Earth days, convert to Earth years AND apply the
     // visualization slowdown so moons orbit at a watchable pace (real
     // ratios would have Io at ~3 s/orbit, Phobos at ~0.5 s/orbit).
-    const periodInYears = (Math.abs(moon.period) / 365.25) * MOON_ORBIT_SLOWDOWN;
+    const extra = MOON_EXTRA_SLOWDOWN[moon.id] ?? 1;
+    const periodInYears =
+      (Math.abs(moon.period) / 365.25) * MOON_ORBIT_SLOWDOWN * extra;
     const sign = Math.sign(moon.period) || 1;
     if (orbitRef.current) {
       orbitRef.current.rotation.y =
@@ -775,7 +915,21 @@ function MoonBody({
   return (
     <group rotation={[moon.inclination ?? 0, 0, 0]}>
       <group ref={orbitRef}>
-        <mesh ref={meshRef} position={[moon.orbit, 0, 0]}>
+        <mesh
+          ref={meshRef}
+          position={[moon.orbit, 0, 0]}
+          onClick={(e: ThreeEvent<MouseEvent>) => {
+            e.stopPropagation();
+            onSelect?.(moonAsBody(moon, parentBody));
+          }}
+          onPointerOver={(e) => {
+            e.stopPropagation();
+            document.body.style.cursor = "pointer";
+          }}
+          onPointerOut={() => {
+            document.body.style.cursor = "auto";
+          }}
+        >
           <sphereGeometry args={[moon.size, 48, 48]} />
           <meshStandardMaterial
             map={texture}
@@ -826,6 +980,8 @@ function Planet({
   onSelect,
   meshOutRef,
   focusedId,
+  showOrbit,
+  registerMoonRef,
 }: {
   body: Body;
   texture: THREE.Texture;
@@ -835,6 +991,11 @@ function Planet({
   onSelect: (b: Body) => void;
   meshOutRef: React.MutableRefObject<THREE.Object3D | null>;
   focusedId: string | null;
+  showOrbit?: boolean;
+  registerMoonRef?: (
+    id: string,
+    ref: React.MutableRefObject<THREE.Object3D | null>,
+  ) => void;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const meshRef = useRef<THREE.Mesh>(null);
@@ -910,8 +1071,11 @@ function Planet({
             <MoonBody
               key={m.id}
               moon={m}
+              parentBody={body}
               baseTexture={moonTexture}
               simTimeRef={simTimeRef}
+              onSelect={onSelect}
+              registerRef={registerMoonRef}
             />
           ))}
 
@@ -920,7 +1084,9 @@ function Planet({
           <SatelliteBody key={s.id} sat={s} simTimeRef={simTimeRef} />
         ))}
       </group>
-      <OrbitTrail radius={body.orbit} color={body.trailColor} />
+      {(showOrbit ?? true) && (
+        <OrbitTrail radius={body.orbit} color={body.trailColor} />
+      )}
     </group>
   );
 }
@@ -940,6 +1106,8 @@ function Earth({
   meshOutRef,
   focusedId,
   sunPos,
+  showOrbit,
+  registerMoonRef,
 }: {
   body: Body;
   dayMap: THREE.Texture;
@@ -951,6 +1119,11 @@ function Earth({
   meshOutRef: React.MutableRefObject<THREE.Object3D | null>;
   focusedId: string | null;
   sunPos: THREE.Vector3;
+  showOrbit?: boolean;
+  registerMoonRef?: (
+    id: string,
+    ref: React.MutableRefObject<THREE.Object3D | null>,
+  ) => void;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const surfaceRef = useRef<THREE.Mesh>(null);
@@ -1060,8 +1233,11 @@ function Earth({
           <MoonBody
             key={m.id}
             moon={m}
+            parentBody={body}
             baseTexture={moonTexture}
             simTimeRef={simTimeRef}
+            onSelect={onSelect}
+            registerRef={registerMoonRef}
           />
         ))}
 
@@ -1070,11 +1246,13 @@ function Earth({
           <SatelliteBody key={s.id} sat={s} simTimeRef={simTimeRef} />
         ))}
       </group>
-      <OrbitTrail
-        radius={body.orbit}
-        color={body.trailColor ?? 0x6090f0}
-        opacity={0.6}
-      />
+      {(showOrbit ?? true) && (
+        <OrbitTrail
+          radius={body.orbit}
+          color={body.trailColor ?? 0x6090f0}
+          opacity={0.6}
+        />
+      )}
     </group>
   );
 }
@@ -1091,6 +1269,7 @@ function Venus({
   onSelect,
   meshOutRef,
   focusedId,
+  showOrbit,
 }: {
   body: Body;
   surfaceMap: THREE.Texture;
@@ -1099,6 +1278,7 @@ function Venus({
   onSelect: (b: Body) => void;
   meshOutRef: React.MutableRefObject<THREE.Object3D | null>;
   focusedId: string | null;
+  showOrbit?: boolean;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
   const surfaceRef = useRef<THREE.Mesh>(null);
@@ -1173,7 +1353,9 @@ function Venus({
           <SatelliteBody key={s.id} sat={s} simTimeRef={simTimeRef} />
         ))}
       </group>
-      <OrbitTrail radius={body.orbit} color={body.trailColor} />
+      {(showOrbit ?? true) && (
+        <OrbitTrail radius={body.orbit} color={body.trailColor} />
+      )}
     </group>
   );
 }
@@ -1184,6 +1366,153 @@ function Venus({
 // octahedron instead of a textured sphere — the marker is symbolic.
 // ────────────────────────────────────────────────────────────────────────
 
+// Procedural satellite models — recognizable silhouettes built from
+// Three.js primitives. No external GLTF assets needed.
+function ISSModel({ size }: { size: number }) {
+  // Scale all dimensions relative to the marker size, so it stays
+  // proportional to the rest of the scene.
+  const s = size * 4; // ISS visible scale
+  return (
+    <group>
+      {/* Long horizontal truss */}
+      <mesh>
+        <boxGeometry args={[s * 1.5, s * 0.06, s * 0.06]} />
+        <meshStandardMaterial color={0xc8c8c8} metalness={0.5} roughness={0.35} />
+      </mesh>
+      {/* Central modules (3 small cylinders along the truss) */}
+      {[-0.15, 0, 0.15].map((dx) => (
+        <mesh key={dx} position={[s * dx, 0, 0]}>
+          <cylinderGeometry args={[s * 0.08, s * 0.08, s * 0.18, 12]} />
+          <meshStandardMaterial color={0xffffff} metalness={0.3} roughness={0.5} />
+        </mesh>
+      ))}
+      {/* Solar panel pair — large flat rectangles fore and aft */}
+      <mesh position={[0, 0, -s * 0.9]}>
+        <boxGeometry args={[s * 1.6, s * 0.005, s * 0.5]} />
+        <meshStandardMaterial color={0x182852} metalness={0.7} roughness={0.25} />
+      </mesh>
+      <mesh position={[0, 0, s * 0.9]}>
+        <boxGeometry args={[s * 1.6, s * 0.005, s * 0.5]} />
+        <meshStandardMaterial color={0x182852} metalness={0.7} roughness={0.25} />
+      </mesh>
+      {/* Radiator panel (smaller, perpendicular) */}
+      <mesh position={[s * 0.6, -s * 0.25, 0]}>
+        <boxGeometry args={[s * 0.18, s * 0.005, s * 0.3]} />
+        <meshStandardMaterial color={0xe0e0e0} metalness={0.4} roughness={0.3} />
+      </mesh>
+    </group>
+  );
+}
+
+function HubbleModel({ size }: { size: number }) {
+  const s = size * 3.5;
+  return (
+    <group rotation={[0, 0, Math.PI / 2]}>
+      {/* Main telescope tube — long cylinder */}
+      <mesh>
+        <cylinderGeometry args={[s * 0.18, s * 0.18, s * 1.1, 24]} />
+        <meshStandardMaterial color={0xc4c0b0} metalness={0.6} roughness={0.4} />
+      </mesh>
+      {/* Aperture cap (lighter color on one end) */}
+      <mesh position={[0, s * 0.6, 0]}>
+        <cylinderGeometry args={[s * 0.2, s * 0.2, s * 0.1, 24]} />
+        <meshStandardMaterial color={0xeeeae0} metalness={0.4} roughness={0.5} />
+      </mesh>
+      {/* Two solar panel wings */}
+      <mesh position={[-s * 0.5, 0, 0]}>
+        <boxGeometry args={[s * 0.7, s * 0.005, s * 0.35]} />
+        <meshStandardMaterial color={0x2a3878} metalness={0.7} roughness={0.3} />
+      </mesh>
+      <mesh position={[s * 0.5, 0, 0]}>
+        <boxGeometry args={[s * 0.7, s * 0.005, s * 0.35]} />
+        <meshStandardMaterial color={0x2a3878} metalness={0.7} roughness={0.3} />
+      </mesh>
+    </group>
+  );
+}
+
+function JWSTModel({ size }: { size: number }) {
+  // Iconic shape: large kite-shaped sunshield + golden hexagonal mirror.
+  const s = size * 5;
+  return (
+    <group>
+      {/* Sunshield — flat plane (5 layers in reality, simplified to one) */}
+      <mesh rotation={[Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[s * 1.8, s * 1.2]} />
+        <meshStandardMaterial
+          color={0xb8a070}
+          metalness={0.8}
+          roughness={0.35}
+          side={THREE.DoubleSide}
+        />
+      </mesh>
+      {/* Mirror disc (golden hexagonal honeycomb, simplified) */}
+      <mesh position={[0, s * 0.1, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[s * 0.4, s * 0.4, s * 0.025, 6]} />
+        <meshStandardMaterial
+          color={0xffc850}
+          metalness={0.95}
+          roughness={0.1}
+        />
+      </mesh>
+      {/* Secondary mirror tripod (small marker) */}
+      <mesh position={[0, s * 0.25, 0]}>
+        <sphereGeometry args={[s * 0.05, 8, 8]} />
+        <meshStandardMaterial color={0xffc850} metalness={0.9} roughness={0.2} />
+      </mesh>
+    </group>
+  );
+}
+
+function MAVENModel({ size }: { size: number }) {
+  const s = size * 3;
+  return (
+    <group>
+      {/* Central body (box) */}
+      <mesh>
+        <boxGeometry args={[s * 0.18, s * 0.18, s * 0.22]} />
+        <meshStandardMaterial color={0xd8d8d8} metalness={0.5} roughness={0.4} />
+      </mesh>
+      {/* Two solar panels extended outward */}
+      <mesh position={[-s * 0.6, 0, 0]}>
+        <boxGeometry args={[s * 1.0, s * 0.005, s * 0.35]} />
+        <meshStandardMaterial color={0x2a3878} metalness={0.7} roughness={0.3} />
+      </mesh>
+      <mesh position={[s * 0.6, 0, 0]}>
+        <boxGeometry args={[s * 1.0, s * 0.005, s * 0.35]} />
+        <meshStandardMaterial color={0x2a3878} metalness={0.7} roughness={0.3} />
+      </mesh>
+      {/* High-gain antenna dish */}
+      <mesh position={[0, s * 0.15, 0]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[s * 0.12, s * 0.12, s * 0.02, 16]} />
+        <meshStandardMaterial color={0xeeeeee} metalness={0.3} roughness={0.5} />
+      </mesh>
+    </group>
+  );
+}
+
+function SatelliteGeometry({
+  id,
+  size,
+  color,
+}: {
+  id: string;
+  size: number;
+  color: number;
+}) {
+  if (id === "iss") return <ISSModel size={size} />;
+  if (id === "hubble") return <HubbleModel size={size} />;
+  if (id === "jwst") return <JWSTModel size={size} />;
+  if (id === "maven") return <MAVENModel size={size} />;
+  // Fallback for any future satellite without a model
+  return (
+    <mesh>
+      <octahedronGeometry args={[size, 0]} />
+      <meshBasicMaterial color={color} toneMapped={false} />
+    </mesh>
+  );
+}
+
 function SatelliteBody({
   sat,
   simTimeRef,
@@ -1192,6 +1521,7 @@ function SatelliteBody({
   simTimeRef: React.MutableRefObject<number>;
 }) {
   const orbitRef = useRef<THREE.Group>(null);
+  const spinRef = useRef<THREE.Group>(null);
 
   useFrame(() => {
     if (orbitRef.current) {
@@ -1199,6 +1529,10 @@ function SatelliteBody({
       const sign = Math.sign(sat.period) || 1;
       orbitRef.current.rotation.y =
         (simTimeRef.current * Math.PI * 2 * sign) / periodInYears;
+    }
+    // Slow self-rotation so the satellite tumbles slightly (more lifelike)
+    if (spinRef.current) {
+      spinRef.current.rotation.y = simTimeRef.current * 0.3;
     }
   });
 
@@ -1208,23 +1542,25 @@ function SatelliteBody({
   return (
     <group rotation={[sat.inclination ?? 0, 0, 0]}>
       <group ref={orbitRef}>
-        <mesh position={[sat.orbit, 0, 0]}>
-          <octahedronGeometry args={[size, 0]} />
-          <meshBasicMaterial color={color} toneMapped={false} />
-        </mesh>
-        {/* A small additive glow to make the marker pop */}
-        <mesh position={[sat.orbit, 0, 0]}>
-          <sphereGeometry args={[size * 2.2, 8, 8]} />
-          <meshBasicMaterial
-            color={color}
-            transparent
-            opacity={0.18}
-            blending={THREE.AdditiveBlending}
-            depthWrite={false}
-          />
-        </mesh>
-        <group position={[sat.orbit, size + 0.08, 0]}>
-          <Html center distanceFactor={12} style={{ pointerEvents: "none" }}>
+        <group position={[sat.orbit, 0, 0]}>
+          <group ref={spinRef}>
+            <SatelliteGeometry id={sat.id} size={size} color={color} />
+          </group>
+          {/* Small additive glow halo so the satellite remains visible
+              against dark space at distance */}
+          <mesh>
+            <sphereGeometry args={[size * 2, 12, 12]} />
+            <meshBasicMaterial
+              color={color}
+              transparent
+              opacity={0.12}
+              blending={THREE.AdditiveBlending}
+              depthWrite={false}
+            />
+          </mesh>
+        </group>
+        <group position={[sat.orbit, size * 2.4, 0]}>
+          <Html center distanceFactor={10} style={{ pointerEvents: "none" }}>
             <div className="whitespace-nowrap text-[10px] font-semibold tracking-wide px-1 py-px rounded-sm bg-cyan-500/30 ring-1 ring-cyan-300/40 backdrop-blur-sm text-white select-none">
               {sat.name}
             </div>
@@ -1319,12 +1655,20 @@ function SolarSystemScene({
   onSelect,
   bodyRefs,
   focusedId,
+  showOrbits,
 }: {
   simTimeRef: React.MutableRefObject<number>;
   onSelect: (b: Body) => void;
   bodyRefs: React.MutableRefObject<Record<string, React.MutableRefObject<THREE.Object3D | null>>>;
   focusedId: string | null;
+  showOrbits: boolean;
 }) {
+  // Moons register themselves into bodyRefs under composite keys (e.g.
+  // "earth.luna", "jupiter.io"). This lets the fly-to system work for
+  // moons the same way it does for planets.
+  const registerMoonRef = (id: string, ref: React.MutableRefObject<THREE.Object3D | null>) => {
+    bodyRefs.current[id] = ref;
+  };
   const t = useTexture({
     sun: "/textures/solar-system/8k_sun.jpg",
     mercury: "/textures/solar-system/8k_mercury.jpg",
@@ -1382,6 +1726,8 @@ function SolarSystemScene({
         onSelect={onSelect}
         meshOutRef={bodyRefs.current.mercury}
         focusedId={focusedId}
+        showOrbit={showOrbits}
+        registerMoonRef={registerMoonRef}
       />
 
       <Venus
@@ -1392,6 +1738,7 @@ function SolarSystemScene({
         onSelect={onSelect}
         meshOutRef={bodyRefs.current.venus}
         focusedId={focusedId}
+        showOrbit={showOrbits}
       />
 
       <Earth
@@ -1405,6 +1752,8 @@ function SolarSystemScene({
         meshOutRef={bodyRefs.current.earth}
         focusedId={focusedId}
         sunPos={sunWorldPos}
+        showOrbit={showOrbits}
+        registerMoonRef={registerMoonRef}
       />
 
       <Planet
@@ -1415,6 +1764,8 @@ function SolarSystemScene({
         onSelect={onSelect}
         meshOutRef={bodyRefs.current.mars}
         focusedId={focusedId}
+        showOrbit={showOrbits}
+        registerMoonRef={registerMoonRef}
       />
 
       <AsteroidBelt />
@@ -1427,6 +1778,8 @@ function SolarSystemScene({
         onSelect={onSelect}
         meshOutRef={bodyRefs.current.jupiter}
         focusedId={focusedId}
+        showOrbit={showOrbits}
+        registerMoonRef={registerMoonRef}
       />
 
       <Planet
@@ -1438,6 +1791,8 @@ function SolarSystemScene({
         onSelect={onSelect}
         meshOutRef={bodyRefs.current.saturn}
         focusedId={focusedId}
+        showOrbit={showOrbits}
+        registerMoonRef={registerMoonRef}
       />
 
       <Planet
@@ -1448,6 +1803,8 @@ function SolarSystemScene({
         onSelect={onSelect}
         meshOutRef={bodyRefs.current.uranus}
         focusedId={focusedId}
+        showOrbit={showOrbits}
+        registerMoonRef={registerMoonRef}
       />
 
       <Planet
@@ -1458,6 +1815,8 @@ function SolarSystemScene({
         onSelect={onSelect}
         meshOutRef={bodyRefs.current.neptune}
         focusedId={focusedId}
+        showOrbit={showOrbits}
+        registerMoonRef={registerMoonRef}
       />
     </>
   );
@@ -1554,6 +1913,7 @@ export default function SolarSystemPage() {
             onSelect={(b) => setSelected(b)}
             bodyRefs={bodyRefs}
             focusedId={focusedId}
+            showOrbits={focusedId === null}
           />
           <FlyToController
             flyTargetRef={flyTargetRef}
@@ -1568,7 +1928,7 @@ export default function SolarSystemPage() {
             }
             enableDamping
             dampingFactor={0.08}
-            minDistance={0.3}
+            minDistance={0.05}
             maxDistance={800}
             makeDefault
           />
