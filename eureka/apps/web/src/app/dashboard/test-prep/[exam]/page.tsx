@@ -46,6 +46,8 @@ import { FE_EE_QUESTIONS, type FEEEQuestion } from '@/lib/fe-ee-qbank-data';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
+import { LsatFrequencyHeatmap } from '@/components/test-prep/LsatFrequencyHeatmap';
+import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatmap';
 
 type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep' | 'exam' | 'analytics';
 
@@ -59,6 +61,7 @@ export default function ExamPage() {
   const isFEME = examId === 'FE_ME';
   const isPEEE = examId === 'PE_EE';
   const isMCAT = examId === 'MCAT';
+  const isLSAT = examId === 'LSAT';
   const [activeTab, setActiveTab] = useState<Tab>('read');
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
@@ -121,6 +124,12 @@ export default function ExamPage() {
 
       {isPatentBar && <PatentBarCohortPanel />}
 
+      {/* Exam-specific frequency heatmaps with official-site deep links.
+          Same pattern as the MPEP workbench heatmap but for non-Patent-Bar
+          exams: shows what's most-tested + clicks open the official content
+          reference (LSAC for LSAT, AAMC for MCAT). */}
+      {isLSAT && <LsatFrequencyHeatmap />}
+      {isMCAT && <McatFrequencyHeatmap />}
 
       {/* Tabs */}
       <div className="flex flex-wrap gap-1 bg-muted p-1 rounded-lg w-fit">
