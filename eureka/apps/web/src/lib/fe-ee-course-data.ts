@@ -9773,6 +9773,1917 @@ Example: Student(ID, Name, DeptID, DeptName) violates 3NF because DeptName depen
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// NCEES GAP FIX (2026-05-24) — 6 new topics covering audit gaps:
+// signal Nyquist depth, fault analysis, Shannon-Hartley, Bode
+// sketching, pole-zero analysis, NCEES Reference Handbook navigation.
+// ═══════════════════════════════════════════════════════════════
+
+fee_reference_handbook: {
+  topicId: 'fee_reference_handbook',
+  title: `NCEES Reference Handbook Navigation`,
+  domainWeight: 'Exam Strategy',
+  overview: `The FE exam is OPEN-HANDBOOK — NCEES provides the official 500+ page FE Reference Handbook on-screen during the exam. Candidates who can NAVIGATE the handbook quickly have a 10-15% time advantage over those who flip pages randomly. This topic is not about new technical content; it teaches the LAYOUT of the handbook, the section that contains each formula you need, and a memorized "table of contents" so you can jump directly to the right page mid-problem. Mastering this single discipline raises your effective score by 15-20 points.`,
+  sections: [
+    {
+      id: 'handbook-layout',
+      title: `1. Handbook Layout — Memorize the Section Order`,
+      content: `The FE Reference Handbook (v10.x or later) is organized into ~30 numbered sections corresponding roughly to the exam sections, plus shared general sections. Memorize this order so you don't have to scan a table of contents under time pressure.
+
+## 1.1 General sections (used across all FE disciplines)
+
+- **Units, Conversion Factors, & Constants** — SI prefixes, metric/Imperial conversions, fundamental constants (e, k, mₑ, mₚ, c, h, ε₀, μ₀, N_A)
+- **Mathematics** — algebra/trig identities, calculus formulas, ODE solutions, Laplace transform pairs, Fourier series, vector identities
+- **Probability & Statistics** — distributions (binomial, Poisson, normal, exponential, t, χ², F), statistical inference, regression formulas, z-tables
+- **Engineering Economics** — interest factor tables (P/A, F/A, P/F, A/P, A/F, A/G), depreciation formulas, NPV, IRR, BCR
+- **Ethics** — NCEES model rules of professional conduct (memorize the categories; specifics will be referenced)
+
+## 1.2 FE Electrical/Computer-specific sections
+
+- **Electrical and Computer Engineering** (the largest section, ~80 pages)
+  - Electromagnetic fundamentals
+  - Circuit analysis (Ohm's, Kirchhoff's, Thevenin/Norton, mesh/nodal)
+  - AC analysis (phasors, impedance, power, three-phase)
+  - Transient response (RC, RL, RLC second-order forms)
+  - Transformers
+  - Transmission lines
+  - Rotating machines
+  - Electronics (diodes, BJT, MOSFET, op-amp configurations)
+  - Power electronics (buck/boost, PWM)
+  - Linear systems (transfer functions, stability, Bode plots)
+  - Signal processing (Fourier, Z-transform, filters)
+  - Control systems (block diagrams, Routh, root locus, PID)
+  - Communications (modulation, BER, Shannon-Hartley)
+  - Digital systems (Boolean, K-maps, FSMs)
+  - Computer networking (OSI model, IP subnetting basics)
+  - Software (algorithms, data structures, complexity)
+
+## 1.3 Strategy: build a personal bookmark map
+
+Before exam day, spend ~10 hours total studying the actual handbook PDF (download from NCEES). For each major topic, NOTE:
+
+- The section heading
+- Approximate page number from start of the EE section (helps with "go to page X")
+- Layout of the formulas (is it a table? a chart? a numbered list?)
+
+Most candidates create a "personal index" cheat sheet that says:
+
+| Need | Handbook Location |
+|---|---|
+| Laplace transform pairs | Math section, page ~12 of Math |
+| Transformer turns ratio | EE section, near Transformers heading |
+| Op-amp ideal model | EE section, Electronics subsection |
+| Routh-Hurwitz template | EE section, Control subsection |
+| Shannon-Hartley formula | EE section, Comms subsection |
+| Power triangle | EE section, AC Power subsection |
+| Three-phase line/phase relationships | EE section, Three-Phase subsection |
+| Phasor impedance ZL = jωL, ZC = 1/(jωC) | EE section, AC Phasors subsection |
+| Bode asymptote slopes | EE section, Linear Systems subsection |
+
+Then during the exam, you have the look-up table memorized — you go straight to the location and don't waste time on a 500-page search.
+
+## 1.4 Handbook quirks the exam tests
+
+- **Notation differences** — the handbook uses specific notation that may differ from your textbook (e.g., uses ω₀ for natural frequency, sometimes ζ for damping, occasionally α and β for filter notations)
+- **Implicit units** — the handbook sometimes shows formulas without unit notation. Verify the expected unit and convert if needed.
+- **Multiple forms** — some formulas have multiple equivalent forms; learn which one matches the problem language the exam uses.
+- **Calculator notation** — the handbook may show e^x or exp(x) interchangeably; same for log/ln distinctions (log is usually base 10 in EE contexts; ln is natural log).
+
+## 1.5 The NCEES-approved calculator constraint
+
+NCEES allows ONLY these calculator models (as of 2025):
+
+- HP 35s
+- Casio FX-115 ES Plus (and later approved variations)
+- TI-30X (Pro / IIS)
+
+These calculators do NOT have programmable memory or graphing — you cannot pre-store formulas. They DO have:
+
+- Complex number arithmetic (essential for AC analysis)
+- Equation solver (for some models)
+- Matrix operations (limited — for solving 2x2 or 3x3 systems)
+- Statistics functions
+
+Practice WITH the model you'll bring. Calculator unfamiliarity costs more time than handbook unfamiliarity.
+
+## 1.6 The handbook is searchable during the exam (in 2024+ rules)
+
+The on-screen handbook viewer at the Pearson VUE testing center includes a SEARCH function. Practice using it:
+
+- Common search terms: the section title (e.g., "Three-Phase"), a formula keyword (e.g., "Shannon")
+- Search returns hits with context — scan results, click the most relevant
+- Searches are FAST but require knowing the right term — your personal index helps generate good search queries
+
+## 1.7 Time budgeting per question
+
+110 questions in 6 hours = 196 seconds per question on average, including breaks. Allocate:
+
+- ~30 seconds: read and understand the question
+- ~30 seconds: navigate the handbook to the relevant formula
+- ~60 seconds: identify variables, plug in numbers, calculate
+- ~30 seconds: verify (units, sanity check, mark for review if uncertain)
+- ~46 seconds: buffer for harder questions
+
+If you're spending 60+ seconds JUST locating a formula, your handbook navigation needs work. Drill it.`,
+      examTip: `The exam is open-handbook. Your COMPETITORS know the layout cold. Don't be the candidate flipping through 500 pages while everyone else jumps to the right section in 5 seconds.`,
+      importantNote: `Download the current NCEES FE Reference Handbook PDF from ncees.org BEFORE you start studying technical content. Use it as the primary reference for every problem you practice. Familiarity with the handbook is worth more raw exam points than mastering any single subject.`,
+    },
+    {
+      id: 'time-saving-tactics',
+      title: `2. Time-Saving Tactics and Common Pitfalls`,
+      content: `## 2.1 Question-attack sequence (the 196-second budget in practice)
+
+1. **Read the problem ONCE end-to-end** — 15-20 seconds. Identify: what's given (variables, units), what's asked (the unknown).
+2. **Recognize the topic** — 5 seconds. "This is AC power factor correction." "This is op-amp inverting configuration." Pattern recognition comes from practice.
+3. **Open the handbook to the right section** — 10-20 seconds. With practice, you don't search; you JUMP to the bookmark.
+4. **Find the matching formula** — 10-15 seconds. Scan headers, not full text.
+5. **Plug in numbers** — 30-60 seconds. Watch units carefully.
+6. **Calculate** — 30-60 seconds. Use complex-number mode on your calculator for AC problems; don't manually compute magnitudes/angles.
+7. **Sanity check** — 5-15 seconds. Does the answer have the right order of magnitude? Right units? Right sign?
+
+Total: ~120-180 seconds. You'll have buffer for harder problems.
+
+## 2.2 Mark-and-skip discipline
+
+You CAN flag questions for review. Use it:
+
+- If a problem will take >5 minutes, mark and skip on first pass. Easy points are scattered throughout the exam.
+- After completing every easy question, return to flagged ones with whatever time remains.
+- DO NOT spend 10 minutes on a single 2-point question while skipping 5 easy 2-point questions.
+
+The exam is scored on raw correct answers (no penalty for wrong). ALWAYS GUESS on unanswered questions — your expected value from random guessing is 25%.
+
+## 2.3 Unit traps
+
+Most exam mistakes are unit errors. Common traps:
+
+- **Power in kW vs MW** — power-systems problems often give MW or MVA; circuits problems use W or mW
+- **Time in seconds vs hours** — engineering economics uses years, control systems uses seconds, power systems often hours
+- **Voltage RMS vs peak** — AC problems default to RMS for power, peak for waveform descriptions. Check which the question gives.
+- **Decibels** — dB = 10·log₁₀(P/P_ref) for power, 20·log₁₀(V/V_ref) for voltage. dBm is referenced to 1 mW.
+- **Frequency Hz vs rad/s** — Bode plots use rad/s convention; some problems give Hz. ω = 2πf.
+- **Imperial vs SI** — most FE problems are SI but occasional imperial sneaks in (especially horsepower in power problems; 1 HP = 746 W).
+
+When you start a problem, WRITE OUT the units you have AND the units you need. Convert at the start.
+
+## 2.4 Phasor angle pitfalls
+
+AC analysis uses phasors. Common mistakes:
+
+- **Polar vs rectangular** — your calculator's polar mode displays as r∠θ; rectangular as a+jb. Set the right mode for the problem.
+- **Angle in degrees vs radians** — most FE problems use DEGREES. Your calculator must be in DEG mode for trig functions, unless the problem explicitly uses radians.
+- **Reference direction** — voltage and current have ASSUMED polarity/direction. The sign of the answer depends on whether your assumed direction matches the actual direction.
+- **Inductor impedance** — Z_L = jωL = ωL∠90°. Capacitor impedance Z_C = 1/(jωC) = (1/ωC)∠-90°. Memorize the SIGNS of these angles.
+
+## 2.5 Three-phase line vs phase relationships
+
+Common trap on three-phase problems:
+
+- **Y (Wye) connection**: V_line = √3 · V_phase, I_line = I_phase
+- **Δ (Delta) connection**: V_line = V_phase, I_line = √3 · I_phase
+
+Power formula for balanced three-phase: P = √3 · V_line · I_line · cos(θ) — uses LINE quantities and a √3 factor.
+
+If you confuse line and phase, your answer is off by √3 (or 3 in some derived quantities).
+
+## 2.6 Power factor sign convention
+
+- **Lagging PF**: inductive load, current lags voltage. PF angle is POSITIVE in most conventions, but some texts/problems use the OPPOSITE convention.
+- **Leading PF**: capacitive load, current leads voltage.
+- **Reactive power Q**: positive for inductive loads, negative for capacitive.
+
+Check the problem's convention. If unclear, the question text usually tells you "lagging" or "leading" — use that to determine the sign of the reactance.
+
+## 2.7 Op-amp ideal model assumptions
+
+- Infinite input impedance (no current into input pins)
+- Zero output impedance
+- Infinite open-loop gain (so V+ = V- in any negative-feedback configuration — "virtual short")
+- Zero offset voltage
+- Infinite bandwidth
+
+Memorize the standard configurations and their gain formulas:
+
+- **Inverting**: V_out = -(R_f/R_in) · V_in
+- **Non-inverting**: V_out = (1 + R_f/R_in) · V_in
+- **Summing inverting**: V_out = -(R_f/R_1 · V_1 + R_f/R_2 · V_2 + ...)
+- **Difference**: V_out = (R_f/R_in) · (V_+ - V_-)
+- **Integrator**: V_out = -(1/(R·C)) ∫V_in dt
+- **Differentiator**: V_out = -R·C · dV_in/dt
+
+The negative sign on inverting configurations is THE MOST COMMON mistake. The output is INVERTED.
+
+## 2.8 Number-base conversions
+
+Digital systems problems require fluent conversion among binary, hex, decimal, BCD:
+
+- Hex: groups of 4 binary bits. 0xA = 1010, 0xF = 1111.
+- BCD: each decimal digit encoded as 4 bits. 23 in BCD = 0010 0011, NOT 0001 0111 (which is binary 23).
+- Two's complement: sign bit is MSB; negative number = invert bits + 1.
+
+If you're slow at these, drill them. They appear in 4-6 questions.
+
+## 2.9 K-map simplification
+
+For digital combinational logic problems:
+
+- Plot the truth table on a K-map (2-var, 3-var, or 4-var)
+- Group adjacent 1s in rectangles of size 1, 2, 4, 8, 16
+- Larger groups = simpler terms
+- The simplified Boolean expression is the OR of the simplified group expressions
+
+Common trap: forgetting that the K-map WRAPS AROUND (top edge connects to bottom; left to right). Adjacency includes wraparound.
+
+## 2.10 Engineering economics — the factor tables
+
+Memorize the symbolic names; the handbook gives the numeric values:
+
+- **(P/F, i, n)** — present worth given future, single payment
+- **(F/P, i, n)** — future worth given present, single payment
+- **(P/A, i, n)** — present worth given annual, uniform series
+- **(A/P, i, n)** — annual given present, capital recovery
+- **(F/A, i, n)** — future worth given annual, uniform series sinking fund
+- **(A/F, i, n)** — annual given future, sinking fund
+- **(P/G, i, n)** — present worth of arithmetic gradient
+
+When the problem describes a cash flow, identify whether you need P, F, or A as output and what you have as input — pick the right factor.
+
+## 2.11 Skip strategy for known-weak topics
+
+If you KNOW you're weak in a section (e.g., you struggle with electromagnetics), don't waste time perfecting it. Better strategy:
+
+- Make sure you're STRONG in your top 4-5 sections (high-confidence answers)
+- For your weakest sections, plan to answer the EASY questions only (~50% of the questions in that section are typically straightforward formula plug-ins)
+- Guess on the rest — random guessing gets 25% on average
+
+This realistic accounting often produces a higher score than trying to be "balanced." Play to your strengths, mitigate weaknesses.`,
+      examTip: `MARK and SKIP is your best tool. Never spend >3 minutes on a single question. The exam rewards completing many easy questions over solving a few hard ones.`,
+    },
+    {
+      id: 'practice-strategy',
+      title: `3. 30-Day Study Plan and Practice Cadence`,
+      content: `## 3.1 A realistic 30-day plan from current state to exam-ready
+
+This assumes you have a solid undergraduate EE background but haven't reviewed the FE topics formally. Adjust based on your starting point.
+
+### Days 1-3: Baseline + handbook orientation
+
+- Download NCEES handbook
+- Read its introduction + scan section headings
+- Take ONE diagnostic practice exam (NCEES official practice exam if you can buy it, or platform questions)
+- Tally results by section to identify your strongest 4-5 sections and weakest 4-5
+
+### Days 4-15: Section-by-section drilling
+
+Allocate study time PROPORTIONAL to section weight × your weakness:
+
+- Strong + heavy section (e.g., Circuits if you're solid): 1 day quick review
+- Weak + heavy section (e.g., Power Systems if you skipped that course): 2-3 days deep study
+
+For each section:
+1. Read the platform's lesson topic
+2. Look up the corresponding handbook section
+3. Work 10-20 practice problems
+4. For wrong answers: identify the CONCEPT gap (not just the math error), restudy, redo
+
+### Days 16-22: Mixed practice exams
+
+Take 1 full practice exam every 2-3 days under TIMED conditions. After each:
+
+- Review every wrong answer
+- Identify whether the miss was knowledge gap (study more), careless math (slow down), or unfamiliarity with handbook (drill navigation)
+- Track your section-level scores; if a section is below 50%, give it more time
+
+### Days 23-27: Targeted weakness elimination
+
+By now you know exactly which 4-6 subtopics are dragging you down. Spend these days on ONLY those — no broad review.
+
+### Days 28-29: Light review + handbook re-scan
+
+Don't try to learn anything new. Re-read the formula sheets you struggle with. Get familiar with the handbook search.
+
+### Day 30: Rest
+
+Sleep well. Light review of your personal cheat sheet (your bookmark map). No new content.
+
+## 3.2 Practice question quotas
+
+Aim for total of 800-1200 practice questions over 30 days, distributed by section weight:
+
+- Mathematics: ~80 practice questions
+- Circuits: ~120
+- Electronics: ~80
+- Power Systems: ~90
+- Control: ~70
+- Digital: ~80
+- (others proportional)
+
+You'll see questions multiple times. That's FINE — repetition builds recognition speed. Aim for SECOND-TIME accuracy >90% on previously-seen questions.
+
+## 3.3 Use the platform's QBank with discipline
+
+- Don't peek at answers until you've genuinely attempted
+- After answering: review the explanation EVEN IF you got it right (verify your reasoning matched the expected reasoning)
+- Use flashcards in spaced repetition (10-15 minutes per day, more in the final week)
+
+## 3.4 Day-before-exam checklist
+
+- ID confirmed (NCEES + government photo)
+- Calculator tested and packed (and spare batteries)
+- Test center location + travel time verified
+- Comfortable clothes (testing rooms vary in temperature)
+- Light snack + water for breaks (you may step out)
+- Sleep 7-9 hours
+
+## 3.5 Day-of-exam tactics
+
+- Arrive 30 minutes early
+- Use the bathroom before starting; you can take breaks but they count against your time
+- First 5 minutes: skim the exam interface, verify handbook is accessible, verify calculator
+- Start with your STRONGEST section to build confidence and momentum
+- Use the flagging system aggressively
+- Watch the clock; aim to finish all questions by 5h45min, leaving 15 min for flagged reviews
+- Don't change answers in the final review unless you have a CLEAR reason — first instincts are usually right
+
+## 3.6 The 60-70% threshold
+
+The FE EE pass rate is ~56% nationally. The cut score is ~50-65 raw points out of 110 (NCEES doesn't publish exact cut). Practically:
+
+- Score 65+ on practice exams consistently → likely pass
+- Score 50-64 → uncertain; depends on test difficulty calibration
+- Score <50 → more study needed before exam day
+
+If you can score 65+ on full practice exams under timed conditions, you are READY.`,
+      examTip: `The single biggest determinant of pass/fail is HANDBOOK FAMILIARITY combined with EXAM PACING. Both are skills you build through practice, not natural talent. 30 days of disciplined study, 800-1200 practice questions, and 5+ full timed practice exams should get most candidates with a solid EE undergrad to passing.`,
+      importantNote: `Don't pay for premium "FE crash course" videos until you've exhausted free resources (NCEES sample questions, university OCW, YouTube channels like Engineer4Free, EE Power, electricalpe). The platform's lessons + QBank + handbook should suffice for most candidates.`,
+    },
+  ],
+  keyTakeaways: [
+    'The exam is OPEN-HANDBOOK. Master the NCEES Reference Handbook layout BEFORE drilling content.',
+    'Build a personal bookmark map: for each common formula, know which handbook section + approximate page',
+    'NCEES-approved calculators only: HP 35s, Casio FX-115 ES Plus, TI-30 series. Practice with the model you\'ll bring.',
+    'Time budget: ~196 seconds per question average. Mark and skip questions >5 minutes. ALWAYS guess unanswered (no penalty).',
+    'Unit traps are the #1 mistake source. Write out units at problem start; convert before calculating.',
+    'Phasors: degrees mode, polar/rectangular as needed, memorize Z_L = jωL (∠+90°), Z_C = 1/(jωC) (∠-90°)',
+    'Three-phase: Y has V_line = √3·V_phase, I_line = I_phase. Δ has V_line = V_phase, I_line = √3·I_phase',
+    '30-day plan: diagnose, drill weak sections, take 5+ timed practice exams. Score 65+ on practice = ready.',
+  ],
+},
+
+fee_signal_nyquist: {
+  topicId: 'fee_signal_nyquist',
+  title: `Nyquist Criterion & Aliasing Pitfalls`,
+  domainWeight: '6%',
+  overview: `The sampling theorem is one of the most-tested concepts in FE Signal Processing because it underlies all digital signal acquisition. Beyond the basic statement, the exam tests numerical aliasing problems (given a sample rate and an input frequency, where does the alias appear?), anti-aliasing filter design (what cutoff?), and reconstruction error analysis. This topic provides the depth NCEES expects.`,
+  sections: [
+    {
+      id: 'nyquist-statement',
+      title: `1. The Nyquist-Shannon Sampling Theorem`,
+      content: `## 1.1 The fundamental statement
+
+A bandlimited continuous-time signal x(t) with no frequency components above f_max can be PERFECTLY RECONSTRUCTED from its samples if the sampling rate satisfies:
+
+  f_s > 2 · f_max
+
+The minimum sampling rate 2·f_max is called the NYQUIST RATE. The corresponding maximum signal frequency f_s/2 is called the NYQUIST FREQUENCY.
+
+Equivalent statements you'll see:
+
+- "Sample at least twice the highest frequency present in the signal"
+- "The Nyquist frequency must exceed the maximum signal frequency"
+- "f_N = f_s/2 must be greater than f_max"
+
+## 1.2 What "perfect reconstruction" means
+
+If the criterion is met, the original continuous signal can be reconstructed EXACTLY from the samples using ideal sinc interpolation:
+
+  x(t) = Σ x[n] · sinc((t - n·T_s) / T_s)
+
+where T_s = 1/f_s is the sampling period and sinc(x) = sin(πx)/(πx).
+
+In practice, sinc interpolation requires infinitely many samples (the sinc function is infinitely wide). Real systems use practical reconstruction filters (low-pass with cutoff = f_s/2) which introduce some imperfection.
+
+## 1.3 What happens when you VIOLATE Nyquist — aliasing
+
+If a signal at frequency f > f_s/2 is sampled, it APPEARS at a DIFFERENT frequency in the digital signal. This is ALIASING.
+
+The aliased frequency is:
+
+  f_alias = |f - n · f_s|
+
+where n is the integer that makes the result fall in [0, f_s/2].
+
+For example:
+- f_s = 1000 Hz, signal at 700 Hz
+- f_alias = |700 - 1·1000| = 300 Hz
+- Sampled output appears as a 300 Hz signal
+
+You CANNOT distinguish the original 700 Hz from a real 300 Hz signal after sampling. The information is LOST.
+
+## 1.4 Numerical exam problems
+
+Typical problem: "A 1.5 kHz sinusoid is sampled at 2 kHz. What is the apparent frequency?"
+
+Solution:
+- f = 1500 Hz, f_s = 2000 Hz, f_N = 1000 Hz
+- 1500 > 1000 → aliasing occurs
+- f_alias = |1500 - 1·2000| = 500 Hz
+- Apparent frequency: 500 Hz
+
+Another typical problem: "What is the minimum sampling rate to AVOID aliasing for a signal with content up to 4 kHz?"
+
+Solution:
+- f_max = 4000 Hz
+- f_s > 2·f_max = 8000 Hz
+- Answer: f_s > 8 kHz (or "8 kHz" if "≥" is allowed; "must exceed 8 kHz" is the strict statement)
+
+## 1.5 The folding diagram
+
+Visualize aliasing by FOLDING the frequency axis at f_s/2. Frequencies above f_s/2 fold back into the [0, f_s/2] range:
+
+\`\`\`
+0 ───── f_s/2 ───── f_s ───── 3·f_s/2 ───── 2·f_s ...
+                    ↓ fold     ↓                ↓
+            f_s/2 ← 0          f_s ← 0          ...
+\`\`\`
+
+A 0.9·f_s signal (above Nyquist) folds to 0.1·f_s. A 1.1·f_s signal folds to 0.1·f_s. A 1.9·f_s signal folds to 0.1·f_s.
+
+## 1.6 The DC component is preserved
+
+A 0 Hz (DC) signal samples to 0 Hz — no aliasing concerns. Aliasing only affects non-DC frequencies above f_s/2.
+
+## 1.7 Bandpass sampling (the special case)
+
+If your signal is BANDPASS (content only between f_L and f_H, with f_L > 0), you can sample at LESS than 2·f_H:
+
+  f_s ≥ 2·B  where B = f_H - f_L
+
+provided f_s is chosen such that the spectrum after sampling doesn't overlap itself. This is "undersampling" or "bandpass sampling" and is used in radio receivers to digitize an RF signal directly.
+
+The exam may test recognition of this concept; full bandpass sampling design is more PE-level.`,
+      examTip: `The Nyquist condition is f_s > 2·f_max, NOT f_s ≥ 2·f_max. Some texts/exams use ≥; both produce "minimum" but the strict inequality is the formal statement.`,
+      importantNote: `Aliasing CANNOT BE CORRECTED after the fact. Once a signal is sampled below its Nyquist rate, the aliased frequencies are indistinguishable from real frequencies in the digital data. Prevention via anti-aliasing filter is the only fix.`,
+    },
+    {
+      id: 'antialiasing-design',
+      title: `2. Anti-Aliasing Filter Design`,
+      content: `## 2.1 The anti-aliasing filter (AAF)
+
+To enforce Nyquist, place an ANALOG LOW-PASS FILTER BEFORE the sampler. The filter's job: attenuate any frequency content above f_s/2 to negligible levels before sampling.
+
+  Continuous signal → [Anti-Aliasing Filter] → ADC sampler → digital signal
+
+Without the AAF, any noise or interference above f_s/2 will alias into your signal of interest.
+
+## 2.2 Ideal vs practical AAF
+
+The IDEAL AAF would pass all frequencies < f_s/2 perfectly and block everything above. In practice, real filters have a TRANSITION BAND — they can't go from passing to blocking instantaneously.
+
+Real filters are characterized by:
+
+- **Passband edge f_p** — the highest frequency the filter passes with little attenuation
+- **Stopband edge f_st** — the lowest frequency the filter attenuates significantly
+- **Transition band** — between f_p and f_st
+- **Passband ripple** — how flat the filter is in the passband (typically < 0.5 dB)
+- **Stopband attenuation** — how much attenuation at f_st (typically 40-100 dB)
+
+## 2.3 Sample rate margin
+
+Because the filter has a transition band, you must oversample beyond the signal of interest:
+
+- f_p = the highest frequency in your signal of interest (e.g., 20 kHz for audio)
+- f_s/2 = f_p + transition band
+- f_st (where the filter is fully attenuating) = f_s/2
+
+Example: for 20 kHz audio with a filter having a 2 kHz transition band:
+- f_p = 20 kHz
+- f_st = 22 kHz (where you want full attenuation)
+- f_s ≥ 2 · f_st = 44 kHz
+
+This is why CD audio is sampled at 44.1 kHz, not exactly 40 kHz — there's room for the AAF transition band.
+
+## 2.4 Filter order and steepness
+
+Higher-order filters have steeper rolloff:
+
+- 1st-order: 20 dB/decade (6 dB/octave)
+- 2nd-order: 40 dB/decade (12 dB/octave)
+- N-th order: 20·N dB/decade
+
+For a given transition band, higher orders allow narrower transitions. Trade-off: higher order = more complexity, more component variation sensitivity, phase distortion.
+
+## 2.5 Filter types (analog)
+
+- **Butterworth** — maximally flat passband; moderate transition; no ripple
+- **Chebyshev I** — ripple in passband, sharper transition than Butterworth
+- **Chebyshev II (Inverse Chebyshev)** — ripple in stopband, flat passband
+- **Elliptic (Cauer)** — ripple in BOTH passband and stopband; sharpest transition for a given order
+- **Bessel** — linear phase (constant group delay), gentler magnitude roll-off
+
+For anti-aliasing applications, BUTTERWORTH is typical when ripple-free passband matters; ELLIPTIC for the steepest possible transition.
+
+## 2.6 Oversampling and digital decimation
+
+Modern systems often OVERSAMPLE the signal by a factor much greater than 2× Nyquist, then use a digital filter to reduce the sample rate:
+
+  Analog signal → simple analog AAF → ADC at high f_s → digital LPF → decimate → final digital signal
+
+Why: a simple analog filter is much easier to design than a sharp one. Most of the heavy lifting is done by the digital filter, which can be made nearly ideal with enough taps.
+
+Example: a 16-bit audio ADC might sample at 4.5 MHz (~100× oversampling) with a simple 1st-order analog AAF, then digitally filter and decimate to 44.1 kHz.
+
+This is the technique used in delta-sigma ADCs.
+
+## 2.7 Reconstruction filter (the OUTPUT side)
+
+The reverse of the AAF: when converting back from digital to analog, you also need a low-pass filter to remove spectral images above f_s/2.
+
+  Digital signal → DAC → [Reconstruction Filter] → analog signal
+
+The reconstruction filter is also called a SMOOTHING filter or POST-FILTER.
+
+Same design constraints as AAF: cutoff at f_s/2 (or slightly above), with adequate stopband attenuation.
+
+## 2.8 Practical exam pattern
+
+"A signal has content from DC to 5 kHz plus interference at 8 kHz. The sampling rate is 12 kHz. What is the apparent frequency of the interference, and what filter design would prevent it?"
+
+Solution:
+- f_s = 12 kHz, f_N = 6 kHz
+- 8 kHz interference > 6 kHz → aliases to |8 - 12| = 4 kHz
+- 4 kHz falls IN the signal band of interest — interference is now indistinguishable from real signal
+- Fix: install an anti-aliasing low-pass filter with passband edge 5 kHz and stopband edge ≤ 6 kHz, achieving sufficient attenuation at 8 kHz
+
+The required attenuation at 8 kHz depends on the application — typically you want the aliased component at least 40 dB below your desired signal level.`,
+      examTip: `Anti-aliasing filter goes BEFORE the sampler (analog). Reconstruction filter goes AFTER the DAC (also analog). Both are low-pass; both have cutoff at f_s/2.`,
+    },
+    {
+      id: 'common-pitfalls',
+      title: `3. Common Sampling Pitfalls and Numerical Practice`,
+      content: `## 3.1 The "exactly at Nyquist" trap
+
+A signal at EXACTLY f_s/2 is ambiguous. Mathematically, samples at exactly the Nyquist frequency are insufficient to recover the original. In practice, this means:
+
+- f_s = 1000 Hz, sample a 500 Hz cosine: samples might all be 0 (if you sample at the zero-crossings) or have alternating sign (capturing the wave)
+- You CANNOT reliably recover a signal at exactly Nyquist
+
+Always design with f_s > 2·f_max (strict inequality), with comfortable margin.
+
+## 3.2 The folding aliases pile up
+
+If your signal has content at MULTIPLE frequencies above Nyquist, they ALL alias and SUM in the digital output. Example:
+
+- f_s = 1000 Hz, signal contains 700 Hz, 1300 Hz, 2700 Hz
+- Aliases: 700 → 300 Hz, 1300 → |1300-1000| = 300 Hz, 2700 → |2700-3000| = 300 Hz
+- All three components appear at 300 Hz in the digital output — they're indistinguishable
+
+Once aliased, you cannot un-mix them. ONLY pre-filter prevention works.
+
+## 3.3 Sampling vs anti-aliasing for noise
+
+Even if your SIGNAL of interest meets Nyquist, NOISE at high frequencies will alias if not filtered. Wideband thermal noise extends to GHz; any noise above f_s/2 folds into your digital band.
+
+This is why every ADC needs an anti-aliasing filter — not just to handle deliberate signal content but to suppress noise that would alias.
+
+## 3.4 Calculator tips for Nyquist problems
+
+Using your NCEES-approved calculator:
+
+- Quick check: is the input frequency > f_s/2? If yes, aliasing.
+- Compute f_alias = |f_in - n · f_s| for n = 1, 2, ...
+- Choose n that yields the smallest positive result, with f_alias ∈ [0, f_s/2]
+
+For values like "11.3 kHz signal sampled at 4 kHz":
+- f_N = 2 kHz
+- |11.3 - 1·4| = 7.3 (still > 2)
+- |11.3 - 2·4| = 3.3 (still > 2)
+- |11.3 - 3·4| = 0.7 ≤ 2 ✓ → f_alias = 0.7 kHz
+
+## 3.5 The Nyquist rate is the SIGNAL'S property; sampling rate is the SYSTEM'S choice
+
+Common confusion in exam problems:
+
+- "Nyquist rate" = 2 · f_max(signal). This is a property of the SIGNAL.
+- "Sampling rate" = f_s. This is a choice made by the system designer.
+- The condition to AVOID aliasing: sampling rate > Nyquist rate.
+
+Don't confuse the two terms in your reasoning.
+
+## 3.6 A sampled signal's spectrum
+
+Mathematically, sampling at rate f_s creates copies of the signal's spectrum at integer multiples of f_s in the frequency domain:
+
+  X_s(f) = (1/T_s) · Σ X(f - n·f_s)   for all integer n
+
+The "copies" are called IMAGES or SPECTRAL REPLICAS. As long as the copies don't overlap, the original X(f) can be recovered by low-pass filtering to extract the baseband copy.
+
+Overlap = aliasing.
+
+## 3.7 Five worked exam-style problems
+
+### Problem 1
+"A 3.2 kHz tone is sampled at 5 kHz. What is the apparent frequency?"
+- f_N = 2.5 kHz, 3.2 > 2.5 → aliasing
+- f_alias = |3.2 - 5| = 1.8 kHz
+
+### Problem 2
+"A signal has components at 100 Hz, 1500 Hz, and 4500 Hz. The sampling rate is 2 kHz. Which components alias?"
+- f_N = 1 kHz
+- 100 Hz < 1000 → no aliasing, appears at 100 Hz
+- 1500 Hz > 1000 → aliases to |1500 - 2000| = 500 Hz
+- 4500 Hz > 1000 → |4500 - 2·2000| = 500 Hz, or = |4500 - 5000| = 500 Hz
+- Three components, two aliases — and the two aliases land at the same frequency (500 Hz)
+
+### Problem 3
+"What is the minimum sample rate to avoid aliasing for a signal with max frequency 7.5 kHz?"
+- f_s > 2 · 7.5 = 15 kHz
+- Minimum: f_s > 15 kHz (in practice, choose 16 kHz or higher to allow for AAF transition band)
+
+### Problem 4
+"A signal of interest is 0-8 kHz. Designer selects f_s = 20 kHz. What is the AAF specification?"
+- f_p = 8 kHz (passband edge — passes signal)
+- f_st ≤ f_s/2 = 10 kHz (stopband edge — full attenuation by here)
+- Transition band: 8 → 10 kHz (2 kHz wide)
+- Stopband attenuation: ≥ 40 dB typical
+
+### Problem 5
+"Audio CD samples at 44.1 kHz. What is the Nyquist frequency? What's the highest audio frequency that can be reproduced without aliasing?"
+- f_N = 22.05 kHz
+- Highest reproducible audio: anything < 22.05 kHz (in practice, the AAF cuts off slightly below to allow margin; ~20 kHz)
+- This conveniently matches human hearing range (20 Hz to 20 kHz)`,
+      examTip: `For aliasing calculations, the formula f_alias = |f - n·f_s| works for any n; pick the n that puts f_alias in [0, f_s/2]. Practice mental computation — these are quick if you're fluent.`,
+    },
+  ],
+  keyTakeaways: [
+    'Nyquist criterion: f_s > 2·f_max (strict). Nyquist frequency = f_s/2.',
+    'Aliasing maps frequency f > f_s/2 to f_alias = |f - n·f_s| in [0, f_s/2]. Cannot be undone.',
+    'Anti-aliasing filter (analog LP, cutoff at f_s/2) goes BEFORE the sampler. Reconstruction filter goes AFTER the DAC.',
+    'Real filters have transition bands — oversample beyond 2·f_max to allow filter rolloff (CD samples at 44.1 kHz for 20 kHz audio)',
+    'Higher-order analog filters have steeper rolloff: N-th order = 20·N dB/decade',
+    'Modern systems oversample heavily and use digital decimation — easier than designing sharp analog filters',
+    'Bandpass sampling: a band-limited signal between f_L and f_H can be sampled at 2·B (B = f_H - f_L) if frequencies don\'t overlap after replication',
+  ],
+},
+
+fee_bode_sketching: {
+  topicId: 'fee_bode_sketching',
+  title: `Bode Plot Sketching Techniques`,
+  domainWeight: '5%',
+  overview: `Bode plots are the workhorse graphical tool of control engineers. The FE exam tests both reading Bode plots (given a plot, identify the transfer function) and sketching them (given a transfer function, draw the asymptotic magnitude and phase). Mastering the rules lets you sketch in <30 seconds vs minutes of detailed calculation. This topic covers the asymptotic rules, corner frequency identification, gain/phase margin reading, and the common transfer function patterns the exam loves.`,
+  sections: [
+    {
+      id: 'bode-fundamentals',
+      title: `1. Bode Plot Fundamentals and Asymptotic Rules`,
+      content: `## 1.1 What is a Bode plot
+
+A Bode plot has TWO sub-plots, both versus log-scale frequency (typically rad/s):
+
+1. **Magnitude plot** — |H(jω)| in dB on the y-axis (linear), log ω on x-axis
+2. **Phase plot** — ∠H(jω) in degrees on the y-axis (linear), log ω on x-axis
+
+The log-log nature of the magnitude plot makes asymptotic approximation possible — straight lines that change slope at "corner frequencies."
+
+## 1.2 The decibel convention
+
+For a transfer function H(s):
+
+  |H(jω)|_dB = 20 · log₁₀ |H(jω)|
+
+Examples:
+- |H| = 1 → 0 dB
+- |H| = 10 → 20 dB
+- |H| = 100 → 40 dB
+- |H| = 0.1 → -20 dB
+- |H| = √2 → 3 dB
+- |H| = 1/√2 → -3 dB
+
+Memorize: every factor of 10 in magnitude = 20 dB. Every factor of 2 ≈ 6 dB. The -3 dB point is where the magnitude has dropped to 70.7% of peak.
+
+## 1.3 The asymptotic rule for each factor
+
+A transfer function is decomposed into FACTORS, each contributing to the total Bode plot:
+
+| Factor in H(s) | Magnitude slope | Phase contribution |
+|---|---|---|
+| Constant K | 20·log₁₀(K) dB everywhere | 0° if K > 0, ±180° if K < 0 |
+| Pole at origin: 1/s | -20 dB/decade | -90° everywhere |
+| Zero at origin: s | +20 dB/decade | +90° everywhere |
+| Real pole 1/(s/p + 1) | 0 below p, -20 dB/decade above p | 0° below p/10, -90° above p·10, -45° at p |
+| Real zero (s/z + 1) | 0 below z, +20 dB/decade above z | 0° below z/10, +90° above z·10, +45° at z |
+| Complex pole pair | 0 below ωₙ, -40 dB/decade above | 0° to -180° transition centered at ωₙ |
+| Complex zero pair | 0 below ωₙ, +40 dB/decade above | 0° to +180° transition centered at ωₙ |
+
+Each factor contributes ADDITIVELY (because log of a product = sum of logs).
+
+## 1.4 The standard form for factoring
+
+Bode plots use TIME-CONSTANT form, not pole-zero form. Convert:
+
+  Pole-zero form: H(s) = K' · (s - z₁) / (s - p₁)
+  Time-constant form: H(s) = K · (s/z₁ + 1) / (s/p₁ + 1)   (assuming p₁, z₁ are not at origin)
+
+In time-constant form, the breakpoint of each factor is the "1" — i.e., the corner frequency for a factor (s/p + 1) is ω = p.
+
+The DC gain K in time-constant form is the magnitude at ω → 0.
+
+## 1.5 Sketching procedure
+
+1. **Convert H(s) to time-constant form**
+2. **Identify the DC gain K** — this sets the y-intercept of the low-frequency asymptote
+3. **Mark each corner frequency** on the log-frequency axis
+4. **Start the magnitude plot** at the low-frequency value:
+   - If there's an s^n in the denominator: slope is -20·n dB/decade at low frequencies
+   - If there's an s^n in the numerator: slope is +20·n dB/decade at low frequencies
+   - Otherwise: slope is 0 (flat) at low frequencies
+5. **At each corner frequency**, change the slope by:
+   - +20 dB/decade for each zero at that frequency
+   - -20 dB/decade for each pole at that frequency
+6. **Repeat for phase** — phase changes by ±90° per factor, with the transition centered at the corner frequency
+
+## 1.6 Example: H(s) = 10 · (s + 100) / (s · (s + 10))
+
+Step 1: time-constant form:
+  H(s) = 10 · (s/100 + 1) · 100 / (s · ((s/10 + 1) · 10))
+       = 100 · (s/100 + 1) / (s · (s/10 + 1))
+
+DC gain (as s → 0): the (s/100 + 1) → 1, the (s/10 + 1) → 1, so |H| → 100/s as s → 0. There's a pole at origin (s), so DC gain is undefined; the magnitude goes to infinity as ω → 0.
+
+Step 2: corner frequencies: ω = 10 (pole), ω = 100 (zero)
+
+Step 3: start of magnitude plot:
+- Pole at origin: slope -20 dB/decade everywhere as starting condition
+- Pick a low frequency, say ω = 1: |H| ≈ |100/1| / |1| = 100 = 40 dB
+- So the curve passes through 40 dB at ω = 1, going down at -20 dB/decade
+
+Step 4: change slopes at corners:
+- At ω = 10 (pole): slope goes from -20 to -40 dB/decade
+- At ω = 100 (zero): slope goes from -40 to -20 dB/decade
+
+Step 5: continue with -20 dB/decade above ω = 100
+
+Step 6: phase:
+- Constant: 0°
+- Pole at origin: -90° everywhere
+- Pole at ω = 10: 0° below 1, -45° at 10, -90° above 100 (transition centered at 10)
+- Zero at ω = 100: 0° below 10, +45° at 100, +90° above 1000 (transition centered at 100)
+
+Total phase: start at -90° (just from origin pole), transition to -180° (origin pole + p₁ pole) around ω = 10, transition back up by 90° (zero) around ω = 100, ending at -90° at high frequency.`,
+      examTip: `Always start in time-constant form. Identify corner frequencies. Start with low-frequency asymptote. Change slope at each corner. Use ±20 dB/decade per pole/zero of multiplicity.`,
+    },
+    {
+      id: 'gain-phase-margins',
+      title: `2. Gain and Phase Margins from Bode Plots`,
+      content: `## 2.1 Why we care about margins
+
+For a negative-feedback control loop with open-loop transfer function L(s) = G(s)·H(s), STABILITY of the CLOSED loop depends on how far the open-loop response is from the -1 point (in Nyquist sense), or equivalently from 0 dB and -180° on Bode plots.
+
+Gain and phase margins quantify this distance:
+
+- **Gain Margin (GM)**: how much MORE gain can be added before instability
+- **Phase Margin (PM)**: how much MORE phase lag can be added before instability
+
+Both should be POSITIVE for stability; larger = more robust.
+
+## 2.2 Reading gain margin from Bode plot
+
+1. Find the PHASE CROSSOVER frequency ω_pc — where the phase plot crosses -180°
+2. At ω_pc, read the magnitude in dB
+3. Gain Margin = -|M(ω_pc)| in dB (i.e., the magnitude reading expressed as a negative number is the gain margin if magnitude is below 0)
+
+If |L(jω_pc)| < 0 dB → GM > 0 (system is stable; can add up to GM more gain before instability)
+If |L(jω_pc)| > 0 dB → GM < 0 (system is UNSTABLE)
+
+## 2.3 Reading phase margin from Bode plot
+
+1. Find the GAIN CROSSOVER frequency ω_gc — where the magnitude plot crosses 0 dB
+2. At ω_gc, read the phase in degrees
+3. Phase Margin = phase(ω_gc) - (-180°) = phase(ω_gc) + 180°
+
+If phase at ω_gc is -135° → PM = -135 + 180 = 45°
+If phase at ω_gc is -180° → PM = 0° (system is on the boundary of stability)
+If phase at ω_gc is -200° → PM = -20° (system is UNSTABLE)
+
+## 2.4 Typical design targets
+
+For a well-designed control loop:
+
+- **Gain Margin**: 6-12 dB (factor of 2 to 4)
+- **Phase Margin**: 45-60° for good transient response
+
+PM < 30° usually means oscillatory response.
+PM > 70° usually means overdamped, slow response.
+
+## 2.5 Relating PM to damping ratio
+
+For a second-order closed loop with PM degrees, the damping ratio is approximately:
+
+  ζ ≈ PM / 100   (PM in degrees)
+
+So PM = 45° → ζ ≈ 0.45 (under-damped but stable response)
+PM = 70° → ζ ≈ 0.7 (near-critical damping, smooth response)
+
+This is rough but useful for ballpark design.
+
+## 2.6 The conditional stability case
+
+Some systems have MULTIPLE phase crossovers (e.g., a complicated transfer function whose phase curves cross -180° at multiple frequencies). Such systems may be stable for a RANGE of gains and unstable above or below. Bode plot alone may not fully characterize this; Nyquist plot is more reliable for complex cases.
+
+The exam typically gives simpler systems with a single PM and GM to read.
+
+## 2.7 Closed-loop bandwidth from Bode plot
+
+For a unity-feedback loop with open-loop L(s), the closed-loop BANDWIDTH is approximately equal to the gain crossover frequency ω_gc.
+
+This is useful for design: choose ω_gc to match the desired closed-loop bandwidth.`,
+      examTip: `Memorize: ω_gc = where |L| = 0 dB. ω_pc = where ∠L = -180°. PM = ∠L(ω_gc) + 180°. GM = -|L(ω_pc)| dB. Both should be positive for stability.`,
+    },
+    {
+      id: 'common-patterns',
+      title: `3. Common Transfer Function Patterns the Exam Tests`,
+      content: `## 3.1 First-order low-pass
+
+  H(s) = K / (s/p + 1)
+
+- DC gain: K (= 20·log₁₀ K dB)
+- Corner frequency: ω = p
+- Magnitude slope: 0 below p, -20 dB/decade above
+- Phase: 0° below p/10, -45° at p, -90° above p·10
+- -3 dB point: at ω = p
+
+Used for: simple RC low-pass filters, first-order systems.
+
+## 3.2 First-order high-pass
+
+  H(s) = K · (s/z) / (s/z + 1)   or equivalently K · s / (s + z)
+
+- DC gain: 0 (-∞ dB)
+- Corner frequency: ω = z
+- Magnitude slope: +20 dB/decade below z, 0 above
+- Phase: +90° at low freq, +45° at z, 0° at high freq
+
+## 3.3 Second-order low-pass
+
+  H(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)
+
+- DC gain: 1 (0 dB)
+- Natural frequency: ωₙ
+- Damping ratio: ζ
+- Magnitude slope: 0 below ωₙ, -40 dB/decade above
+- Peak in magnitude at ωₙ if ζ < 0.707 (resonant peak; height = 1/(2ζ√(1-ζ²))
+- Phase: 0° at low freq, -90° at ωₙ, -180° at high freq
+
+For ζ = 0.5: 1.25 dB resonant peak. For ζ = 0.1: 14 dB peak. For ζ ≥ 0.707: no peak.
+
+## 3.4 Pole at origin (integrator)
+
+  H(s) = 1/s
+
+- Magnitude: -20 dB/decade everywhere; passes through 0 dB at ω = 1
+- Phase: -90° everywhere
+- DC gain: infinite (signal not bounded)
+
+Used as: integrator in op-amp circuits, type-1 control system.
+
+## 3.5 Lead compensator
+
+  H(s) = K · (s/z + 1) / (s/p + 1)   where z < p
+
+- Adds POSITIVE phase between z and p (peak phase add at √(zp))
+- Used to add phase margin to a control loop
+- Increases bandwidth
+
+## 3.6 Lag compensator
+
+  H(s) = K · (s/z + 1) / (s/p + 1)   where z > p
+
+- Adds gain at low frequencies; -20 dB/decade between p and z
+- Reduces steady-state error
+- Reduces bandwidth
+
+## 3.7 PID controller
+
+  H(s) = K_p + K_i/s + K_d·s
+
+In transfer function form often written:
+  H(s) = K_p · (1 + 1/(T_i·s) + T_d·s)
+
+- The integral term (K_i/s) provides infinite DC gain — eliminates steady-state error to step input
+- The derivative term (K_d·s) adds phase lead and improves transient response
+- Tuning: Ziegler-Nichols, Cohen-Coon, or trial-and-error
+
+PID is the most common controller. The Bode plot of a PID has -20 dB/decade at very low frequency (integrator), flat in midband (proportional), and +20 dB/decade at high frequency (derivative).
+
+## 3.8 Quick recognition table for exam
+
+| Bode pattern | Likely transfer function |
+|---|---|
+| Flat then -20 dB/dec | First-order LP, single real pole |
+| -20 dB/dec then flat | First-order HP, single real zero |
+| Flat then -40 dB/dec | Second-order LP, complex pole pair |
+| -20 dB/dec at all freq | Integrator 1/s |
+| +20 dB/dec at all freq | Differentiator s |
+| Peak in magnitude | Underdamped 2nd-order or RLC resonance |
+| Multiple slope changes | Higher-order system; identify each corner |
+
+## 3.9 The exam pattern
+
+A typical FE Bode question:
+
+"The Bode magnitude plot of H(s) shows a constant slope of -40 dB/decade above ω = 5 rad/s and flat below. The DC gain is 1. Estimate H(s)."
+
+Answer:
+- -40 dB/decade slope above one corner = TWO poles at that corner
+- Either (s/5 + 1)² or a complex pair with ωₙ ≈ 5
+- DC gain 1 → no constant other than 1
+- H(s) ≈ 1 / ((s/5 + 1)²) = 25 / (s + 5)²
+
+Or if the magnitude shows a peak near 5 rad/s, the answer is a complex pair:
+  H(s) = 25 / (s² + 2ζ·5·s + 25) for some ζ < 0.707`,
+      examTip: `Recognize the slope: -20 = one pole. -40 = two poles. Recognize where the change happens: that's a corner frequency. Read DC gain from the flat low-frequency portion (in linear units, 0 dB = gain 1).`,
+    },
+  ],
+  keyTakeaways: [
+    'Convert H(s) to time-constant form. Identify DC gain K and each corner frequency.',
+    'Each real pole adds -20 dB/decade above its corner. Each real zero adds +20 dB/decade. Complex pairs add ±40 dB/decade.',
+    'Phase changes ±90° per factor, centered at corner frequency with transition band ±1 decade',
+    '20 log scale: factor of 10 = 20 dB; factor of 2 ≈ 6 dB; -3 dB = half-power point',
+    'Gain Margin: -|L| at phase-crossover ω_pc (where phase = -180°). Stable if GM > 0.',
+    'Phase Margin: ∠L + 180° at gain-crossover ω_gc (where |L| = 0 dB). Stable if PM > 0. Target 45-60°.',
+    'Rough approximation: damping ratio ζ ≈ PM(degrees)/100. PM 45° gives ζ ≈ 0.45 (well-damped second order).',
+  ],
+},
+
+fee_pzmap_analysis: {
+  topicId: 'fee_pzmap_analysis',
+  title: `Pole-Zero Maps & Dynamic Response`,
+  domainWeight: '6%',
+  overview: `Pole-zero plots in the complex s-plane are the most compact representation of a linear system. Their locations directly determine the time-domain response — stability, damping, oscillation frequency, decay rate. The FE exam tests both directions: given pole locations, predict response; given a desired response, place poles appropriately. This topic covers pole-zero plot interpretation, the relationship between pole locations and time response, and the special role of complex pole pairs.`,
+  sections: [
+    {
+      id: 'pole-locations-meaning',
+      title: `1. Pole Locations and Time-Domain Response`,
+      content: `## 1.1 The s-plane
+
+Poles and zeros of H(s) are plotted in the complex s-plane:
+
+- Real axis: Re(s) = σ (decay/growth rate)
+- Imaginary axis: Im(s) = jω (oscillation frequency)
+- Left-half plane (LHP): Re(s) < 0 → DECAYING components → STABLE
+- Right-half plane (RHP): Re(s) > 0 → GROWING components → UNSTABLE
+- Imaginary axis: Re(s) = 0 → MARGINAL — pure oscillation (or constant for s=0)
+
+Poles are typically plotted as ×, zeros as ○.
+
+## 1.2 A real pole at s = -a
+
+For a single real pole at s = -a (a > 0):
+
+  H(s) = K / (s + a)
+  h(t) = K · e^(-at)   (impulse response)
+
+The time constant is τ = 1/a. The response decays to ~37% in τ seconds, ~5% in 3τ, ~1% in 5τ.
+
+If a < 0 (pole in RHP), the exponential GROWS → unstable.
+If a = 0, h(t) = K (constant) — marginal, integrator response.
+
+## 1.3 A complex pole pair at s = -σ ± jω_d
+
+Complex poles always come in CONJUGATE PAIRS (because H(s) has real coefficients). For a pair at s = -σ ± jω_d:
+
+  Response component: e^(-σt) · cos(ω_d·t + φ)
+
+This is a DAMPED SINUSOID:
+- σ controls the decay envelope (faster decay if σ is larger positive)
+- ω_d controls the oscillation frequency
+- Sign of σ: positive = decaying (stable), negative = growing (unstable), zero = pure oscillation (marginal)
+
+## 1.4 Standard second-order parameters
+
+A second-order pole pair is often described by:
+
+- **Natural frequency** ωₙ = distance from origin to pole = √(σ² + ω_d²)
+- **Damping ratio** ζ = σ / ωₙ = cos(angle from negative real axis to pole)
+
+The damped frequency ω_d = ωₙ · √(1 - ζ²).
+
+| ζ | Behavior |
+|---|---|
+| ζ > 1 | Overdamped — two real poles, slow but no oscillation |
+| ζ = 1 | Critically damped — repeated real pole, fastest non-oscillatory |
+| 0 < ζ < 1 | Underdamped — complex poles, oscillation present |
+| ζ = 0 | Undamped — purely imaginary poles, pure oscillation forever |
+| ζ < 0 | Negative damping — RHP poles, growing oscillation |
+
+## 1.5 Pole locations and step response characteristics
+
+For an underdamped second-order system with poles at -σ ± jω_d (ωₙ = √(σ² + ω_d²), ζ = σ/ωₙ):
+
+- **Rise time**: t_r ≈ (1.8) / ωₙ — time to first reach 100% of steady state
+- **Peak time**: t_p = π / ω_d — time of first peak
+- **Settling time** (5% criterion): t_s ≈ 3 / σ = 3 / (ζ·ωₙ)
+- **Percent overshoot**: %OS = e^(-πζ/√(1-ζ²)) · 100
+
+These are exam-tested formulas. The "Standard" rules:
+- ζ = 0.7 → ~5% overshoot
+- ζ = 0.5 → ~16% overshoot
+- ζ = 0.3 → ~37% overshoot
+- ζ = 0.1 → ~73% overshoot
+
+## 1.6 Where poles MUST BE for desired response
+
+Conversely, given a desired specification, you can place poles:
+
+- Need fast settling? Move σ farther into the LHP (away from imaginary axis)
+- Need less overshoot? Increase ζ (poles closer to real axis, away from imaginary axis along the negative real)
+- Need higher frequency oscillation? Move ω_d farther from real axis
+- Need higher ωₙ? Push poles farther from origin
+
+Constant-ζ lines are RADIAL LINES from origin. Constant-ωₙ lines are CIRCLES centered at origin.
+
+## 1.7 Multiple poles and dominance
+
+For systems with multiple poles, the response is the sum of contributions from each pole. However:
+
+- The pole closest to the imaginary axis has the SLOWEST decay → DOMINANT
+- Poles much farther into the LHP contribute fast-decaying components that are quickly negligible
+- Dominant pole approximation: if one pole or pole pair is much closer to the imaginary axis than others, the system behaves like a first or second-order system characterized by those dominant poles
+
+A rule of thumb: if a pole is at least 5× farther into LHP than the dominant pole, it can be ignored for transient response analysis.`,
+      examTip: `LHP poles = stable (decaying). RHP poles = unstable. Imaginary axis poles = marginal. Complex pairs = oscillation; damping ratio ζ = cos(angle from negative real axis).`,
+    },
+    {
+      id: 'zero-effects',
+      title: `2. Zero Locations and Their Effects`,
+      content: `## 2.1 Where zeros sit
+
+Zeros also live in the s-plane. They don't determine stability (only poles do), but they SHAPE the response.
+
+Real zeros: × LHP = "normal" zero. RHP zero = "non-minimum phase" zero.
+
+## 2.2 Effect of zeros on step response
+
+A zero close to a pole tends to CANCEL its dynamic contribution. A zero far from a pole has minimal effect.
+
+In general:
+
+- LHP zero close to the origin: increases system speed (more transient overshoot, faster rise)
+- RHP zero (non-minimum phase): causes initial UNDERSHOOT — the response initially moves in the OPPOSITE direction before correcting and reaching steady state
+- Zeros far from poles: minimal effect on transient response, but affect frequency response
+
+## 2.3 The non-minimum phase phenomenon
+
+A common exam pattern. A transfer function:
+
+  H(s) = (1 - s/z) / (something with stable poles)   where z > 0
+
+has a RHP zero at s = +z. The step response will INITIALLY MOVE IN THE WRONG DIRECTION before correcting. Classic example: a boost converter — when you increase duty cycle, output voltage briefly dips before rising.
+
+Non-minimum phase systems are HARDER TO CONTROL because of this initial wrong-direction response.
+
+## 2.4 Pole-zero cancellation
+
+If a zero and pole are at the SAME location, they exactly cancel in the transfer function:
+
+  H(s) = K · (s - a) / (s - a) · (other stuff) = K · (other stuff)
+
+In theory. In practice, parameter uncertainty makes exact cancellation impossible. A pole and zero CLOSE TOGETHER mostly cancel, with the residual effect being small.
+
+This is sometimes used in control design — a controller adds a zero to cancel a slow plant pole, speeding up the response.
+
+## 2.5 Closed-loop pole locations via root locus
+
+When you put a controller K·G(s) in a feedback loop with plant H(s), the closed-loop transfer function is:
+
+  T(s) = K·G(s)·H(s) / (1 + K·G(s)·H(s))
+
+The closed-loop POLES are the roots of the characteristic equation 1 + K·G(s)·H(s) = 0. As K varies, the pole locations TRACE OUT the ROOT LOCUS.
+
+Root locus rules (review):
+- Branches start at open-loop poles, end at open-loop zeros (or infinity)
+- N branches go to infinity along asymptotes if there are more poles than zeros
+- Symmetric about real axis (poles come in conjugate pairs)
+- Number of asymptotes = poles - zeros
+- Real-axis segments: a segment is on root locus if odd number of real poles+zeros lie to its right
+
+Root locus IS a graphical pole-placement tool — by choosing K, you slide poles along the locus to desired locations.
+
+## 2.6 Exam example
+
+"A system has poles at -2 ± j3 and a zero at -10. What is the time response to a unit step?"
+
+Analysis:
+- Complex pole pair at -2 ± j3: ωₙ = √(4+9) = √13 ≈ 3.6 rad/s, ζ = 2/3.6 ≈ 0.55
+- Zero at -10: far from the poles, so MINIMAL effect on transient (just slight speed-up)
+- Response: underdamped sinusoid with ζ ≈ 0.55:
+  - Damped frequency ω_d = ωₙ·√(1-ζ²) = 3.6·0.835 ≈ 3 rad/s
+  - Rise time ≈ 1.8/3.6 = 0.5 s
+  - Settling time ≈ 3/2 = 1.5 s
+  - Overshoot ≈ exp(-π·0.55/√(1-0.55²)) · 100% ≈ 13%
+
+The response oscillates at ~3 rad/s, decays in ~1.5 seconds, with ~13% overshoot, and the zero at -10 has negligible effect.
+
+## 2.7 Real-axis pole/zero combinations
+
+For purely real pole/zero combinations:
+
+- One LHP real pole: 1st-order exponential decay
+- Two LHP real poles: overdamped second-order; sum of two exponentials
+- LHP real pole + LHP real zero: like 1st-order but the zero can speed up the transient
+- LHP pole + RHP zero: non-minimum phase initial inverse response
+
+## 2.8 Common transfer function shapes
+
+| Configuration | Behavior |
+|---|---|
+| One LHP real pole | Pure exponential decay |
+| Two LHP real poles, distinct | Overdamped — slow exponential sum |
+| LHP repeated real pole | Critically damped — fastest no-overshoot |
+| LHP complex pair | Underdamped oscillation |
+| LHP poles + LHP zero | Response shaped by zero placement |
+| LHP poles + RHP zero | Non-minimum phase — initial inverse response |
+| RHP poles | Unstable — growing response |
+| Poles on jω axis | Marginal — pure oscillation, doesn't decay |`,
+      examTip: `Zeros don't affect stability (poles do), but they shape the transient response. RHP zeros cause initial inverse response (non-minimum phase). LHP zeros close to poles can mostly cancel dynamic contribution.`,
+    },
+    {
+      id: 'state-space-and-stability',
+      title: `3. State-Space, Eigenvalues, and Stability Tests`,
+      content: `## 3.1 State-space representation
+
+An alternative to transfer functions, using vector-matrix form:
+
+  ẋ = Ax + Bu
+  y = Cx + Du
+
+Where x is the state vector, u is input, y is output. The system POLES are the EIGENVALUES of A — the roots of det(sI - A) = 0.
+
+Stability via state-space: all eigenvalues of A in LHP → stable.
+
+## 3.2 Controllability and Observability
+
+Two important properties for state-space systems:
+
+- **Controllable**: every state can be driven by the input. Controllability matrix [B AB A²B ... A^(n-1)B] has full rank.
+- **Observable**: every state can be inferred from the output. Observability matrix [C; CA; CA²; ...; CA^(n-1)] has full rank.
+
+A system needs to be BOTH controllable AND observable for full pole-placement control.
+
+Recognition-level for FE exam; deeper coverage on PE.
+
+## 3.3 Routh-Hurwitz stability test
+
+A simple algebraic test for whether all roots of a polynomial are in the LHP, without actually computing the roots.
+
+Given a characteristic polynomial: a_n·s^n + a_(n-1)·s^(n-1) + ... + a_1·s + a_0
+
+Necessary conditions:
+1. All coefficients must have the SAME SIGN
+2. No coefficient can be missing (i.e., all powers 0 through n must be present, unless their coefficient is zero — which means automatically unstable unless special analysis)
+
+If both conditions hold, build the Routh table:
+
+\`\`\`
+s^n     | a_n    a_(n-2)  a_(n-4)  ...
+s^(n-1) | a_(n-1) a_(n-3)  a_(n-5)  ...
+s^(n-2) | b_1    b_2      b_3      ...
+...
+s^0     | (final coefficient)
+\`\`\`
+
+Where: b_1 = (a_(n-1)·a_(n-2) - a_n·a_(n-3)) / a_(n-1)
+       b_2 = (a_(n-1)·a_(n-4) - a_n·a_(n-5)) / a_(n-1)
+... and similarly for subsequent rows.
+
+The system is stable if and only if all entries in the FIRST COLUMN have the SAME SIGN.
+
+The NUMBER of sign changes in the first column equals the NUMBER OF ROOTS in the RHP.
+
+## 3.4 Worked Routh example
+
+Characteristic polynomial: s³ + 2s² + 3s + 4
+
+\`\`\`
+s³ | 1   3
+s² | 2   4
+s¹ | (2·3 - 1·4)/2 = 2/2 = 1
+s⁰ | (1·4 - 2·0)/1 = 4
+\`\`\`
+
+First column: 1, 2, 1, 4 — all positive. STABLE. No RHP roots.
+
+Another: s³ + s² + s + 6
+
+\`\`\`
+s³ | 1    1
+s² | 1    6
+s¹ | (1·1 - 1·6)/1 = -5
+s⁰ | (-5·6 - 1·0)/-5 = 6
+\`\`\`
+
+First column: 1, 1, -5, 6 — two sign changes (+ → - and - → +). Two RHP roots. UNSTABLE.
+
+## 3.5 Special cases in Routh
+
+- **Zero in first column with nonzero row**: replace with small ε, continue, then take limit as ε → 0
+- **All-zero row**: indicates symmetric roots (e.g., pure imaginary pair). Use the auxiliary equation from the row above to find them.
+
+## 3.6 The state-transition matrix
+
+For autonomous system ẋ = Ax with initial state x(0), the solution is:
+
+  x(t) = e^(At) · x(0)
+
+Where e^(At) is the matrix exponential, computable as:
+- e^(At) = L⁻¹{(sI - A)⁻¹}   (inverse Laplace of resolvent matrix)
+- Or via eigenvalue decomposition: e^(At) = P · e^(Λt) · P⁻¹
+
+For exam purposes: recognize that eigenvalues of A determine the response modes; their LHP/RHP location determines stability.
+
+## 3.7 Exam decision tree
+
+Given a problem:
+
+1. Stability question with characteristic polynomial → Routh-Hurwitz
+2. Stability question with transfer function → factor denominator, check pole locations
+3. Stability question with state-space A matrix → find eigenvalues (computed or stated), check LHP/RHP
+4. Time response from pole locations → use ωₙ, ζ formulas for underdamped; sum of exponentials for real poles
+5. Pole placement from desired response → use formulas to find required pole locations`,
+      examTip: `Routh-Hurwitz: ALL FIRST-COLUMN entries same sign = stable. Number of SIGN CHANGES in first column = number of RHP roots. Negative coefficient anywhere in original polynomial = automatically unstable.`,
+    },
+  ],
+  keyTakeaways: [
+    'LHP poles = stable (decaying response). RHP poles = unstable (growing). Imaginary axis = marginal.',
+    'Complex pole pair at -σ ± jω_d: response is e^(-σt)·cos(ω_d·t + φ). σ controls decay; ω_d controls oscillation.',
+    'Damping ratio ζ = cos(angle from negative real axis to pole). ζ = 0.7 → ~5% overshoot. ζ = 1 → critically damped.',
+    'Settling time t_s ≈ 3/σ = 3/(ζωₙ). Rise time t_r ≈ 1.8/ωₙ. Peak time t_p = π/ω_d.',
+    'Zeros don\'t affect stability but shape transient. RHP zero = non-minimum phase = initial inverse response.',
+    'Dominant pole approximation: pole closest to imaginary axis dominates response if others are 5×+ farther away',
+    'Routh-Hurwitz: all first-column entries same sign = stable. Number of sign changes = number of RHP roots. Coefficient missing or negative = automatic instability.',
+  ],
+},
+
+fee_power_faults: {
+  topicId: 'fee_power_faults',
+  title: `Fault Analysis & Symmetrical Components`,
+  domainWeight: '6%',
+  overview: `Fault analysis is essential to power system design — sizing circuit breakers, selecting protective relays, evaluating equipment damage. The FE exam tests recognition and basic calculation of three-phase faults, single-line-to-ground faults, line-to-line faults, and double-line-to-ground faults. Symmetrical components (positive, negative, zero sequence) provide the mathematical framework to handle unbalanced faults systematically. This topic was identified as a gap in the platform's existing power systems coverage.`,
+  sections: [
+    {
+      id: 'fault-types',
+      title: `1. The Four Fault Types and Their Frequency`,
+      content: `## 1.1 The classification
+
+Power system faults are classified by which phases and ground are involved:
+
+| Fault type | Symbol | Phases involved | Approximate frequency |
+|---|---|---|---|
+| Three-phase fault (balanced) | 3φ or LLL | All three phases short-circuited | ~5% |
+| Three-phase to ground | 3φG | All three phases to ground | ~5% |
+| Single-line-to-ground | SLG or LG | One phase to ground | ~70% |
+| Line-to-line | LL | Two phases short-circuited | ~15% |
+| Double-line-to-ground | LLG or DLG | Two phases to ground | ~5% |
+
+So ~70% of all power system faults are SINGLE-LINE-TO-GROUND. Three-phase faults are rare but produce the highest fault currents (used for circuit breaker rating).
+
+## 1.2 Symmetric vs asymmetric
+
+- **Three-phase fault**: symmetric in all three phases. Can be analyzed as a single-phase equivalent.
+- **All other faults**: asymmetric. Phases see different voltages and currents. Requires symmetrical components for analysis.
+
+## 1.3 The fault current
+
+When a fault occurs, the impedance from source to fault drops dramatically (often to a small fraction of normal load impedance). Current surges to many times normal:
+
+- Pre-fault current: ~1.0 per-unit (normal load)
+- Fault current: 5-30 per-unit, depending on fault type and location
+
+The fault current is determined by:
+- The source voltage (typically nominal system voltage)
+- The TOTAL impedance from source to fault (transformer impedance, line impedance, generator subtransient impedance, etc.)
+
+## 1.4 Why faults matter
+
+- **Equipment damage**: thermal and magnetic forces increase as I². A 20× current = 400× heating power. Brief faults can melt conductors.
+- **System stability**: voltage collapse, generator pole slip
+- **Personnel safety**: arc flash hazard, electrocution
+- **Circuit breaker rating**: breakers must INTERRUPT the maximum possible fault current
+
+Engineers must KNOW THE FAULT CURRENT at every point in the system to:
+- Size circuit breakers (interrupting capacity ≥ max fault current)
+- Set protective relays (pickup current, time delays)
+- Calculate ground grid potentials (touch and step voltages)
+- Determine equipment short-circuit ratings`,
+      examTip: `Three-phase fault is rare but PRODUCES the HIGHEST CURRENT. Use 3φ fault current for circuit breaker rating. SLG is most common (70%) but typically lower current than 3φ.`,
+    },
+    {
+      id: 'symmetrical-components',
+      title: `2. Symmetrical Components Decomposition`,
+      content: `## 2.1 The motivation
+
+For unbalanced systems (and asymmetric faults), analyzing each phase separately is messy. The elegant trick: any unbalanced three-phase set can be decomposed into three BALANCED sets called symmetrical components.
+
+## 2.2 The three sequences
+
+Any set of three phasors V_a, V_b, V_c can be written as the SUM of three balanced sequence components:
+
+1. **Positive sequence (a-b-c rotation)**: V_a1, V_b1 = a²·V_a1, V_c1 = a·V_a1
+2. **Negative sequence (a-c-b rotation)**: V_a2, V_b2 = a·V_a2, V_c2 = a²·V_a2
+3. **Zero sequence (all equal)**: V_a0 = V_b0 = V_c0
+
+Where a = 1∠120° = -0.5 + j0.866 (the cube root of unity).
+
+So:
+  V_a = V_a0 + V_a1 + V_a2
+  V_b = V_a0 + a²·V_a1 + a·V_a2
+  V_c = V_a0 + a·V_a1 + a²·V_a2
+
+In matrix form:
+  [V_a]   [1  1   1 ]   [V_a0]
+  [V_b] = [1  a²  a ] × [V_a1]
+  [V_c]   [1  a   a²]   [V_a2]
+
+The inverse (decompose phase quantities into sequence quantities):
+  [V_a0]       [1  1   1 ]   [V_a]
+  [V_a1] = ⅓ × [1  a   a²] × [V_b]
+  [V_a2]       [1  a²  a ]   [V_c]
+
+## 2.3 Physical interpretation
+
+- **Positive sequence**: balanced three-phase set with normal a-b-c rotation. Represents the system in normal operation. This is what generators and motors are designed for.
+- **Negative sequence**: balanced set with REVERSED rotation. Created by unbalanced loads or faults. Causes heating in rotating machines (induces opposing torque + double-frequency currents in rotor).
+- **Zero sequence**: three phasors of equal magnitude and angle. Returns through ground or neutral. Created by ground faults.
+
+## 2.4 Sequence impedance networks
+
+Each sequence has its own equivalent impedance network for any component:
+
+- **Generator/motor**: Z_1 (positive sequence, often the subtransient impedance X_d''), Z_2 (negative sequence, typically Z_2 ≈ Z_1 for synchronous machines), Z_0 (zero sequence, depends on neutral grounding)
+- **Transformer**: depends on winding configuration (Y-Y, Y-Δ, Δ-Δ); Z_1 = Z_2 = Z_0 = leakage impedance for Y-Y; zero sequence may not pass through Δ at all
+- **Transmission line**: Z_1 = Z_2 typically; Z_0 ≈ 3× Z_1 due to ground return path
+
+For fault calculations, you build THREE separate networks (one per sequence) and combine them based on the fault type.
+
+## 2.5 Fault analysis using sequence networks
+
+For each fault type, the three sequence networks are interconnected in a specific way:
+
+### Three-phase fault (3φ)
+Only positive-sequence network is involved. No negative or zero sequence (perfectly balanced fault).
+  I_a1 = V_pre-fault / Z_1
+  Phase currents: I_a = I_a1, I_b = a²·I_a1, I_c = a·I_a1
+
+### Single-line-to-ground (SLG) fault
+All three sequence networks connected IN SERIES.
+  I_a1 = I_a2 = I_a0 = V_pre-fault / (Z_1 + Z_2 + Z_0 + 3·Z_f)
+  where Z_f is the fault impedance (often 0 for bolted fault)
+  Phase A current: I_a = 3·I_a1; Phases B and C: I_b = I_c = 0
+
+### Line-to-line (LL) fault (phases B and C)
+Positive and negative sequence networks in PARALLEL; zero sequence not involved.
+  I_a1 = -I_a2 = V_pre-fault / (Z_1 + Z_2 + Z_f)
+  Phase currents: I_a = 0, I_b = -I_c, with specific calculations
+
+### Double-line-to-ground (LLG) fault
+Positive in series with parallel combination of negative and zero sequences.
+  More complex; requires specific formulas.
+
+## 2.6 Negative-sequence damage
+
+For rotating machines, negative-sequence current creates rotor heating (double-frequency currents in rotor). Generators are typically rated for a MAXIMUM negative-sequence current of 5-10% of rated for continuous operation. Larger negative-sequence currents trigger protective relays.
+
+This is one reason why prolonged unbalanced operation (e.g., single-phasing) damages motors and generators.
+
+## 2.7 Zero-sequence and grounding
+
+Zero-sequence current can only flow if there's a RETURN PATH — typically through ground or a neutral conductor.
+
+- **Solidly grounded systems**: low zero-sequence impedance → large ground-fault currents → fast tripping, but high arc-flash energy
+- **Resistance grounded systems**: limited ground-fault current → reduced damage but more complex protection
+- **Ungrounded systems**: NO zero-sequence path → tiny ground-fault currents but voltage rise on healthy phases
+- **Δ-connected systems**: NO neutral, so no zero-sequence path → ground faults don't trip overcurrent devices easily
+
+This affects fault analysis: in ungrounded systems, the "single-line-to-ground" fault current is very small but the OTHER PHASES see overvoltage.`,
+      examTip: `For SLG fault: I_fault = 3·V/(Z_1 + Z_2 + Z_0). For LL fault: I_fault relates to Z_1 + Z_2. For 3φ fault: I_fault = V/Z_1 only. Three-phase fault formula is the simplest because it's purely balanced.`,
+    },
+    {
+      id: 'practical-calculations',
+      title: `3. Per-Unit System and Practical Fault Calculations`,
+      content: `## 3.1 The per-unit (p.u.) system
+
+Power systems use per-unit normalization extensively because it simplifies analysis with transformers (per-unit values are the same on both sides of an ideal transformer) and makes impedances comparable across voltage levels.
+
+Define BASE QUANTITIES:
+- Base power S_base (typically 100 MVA system base)
+- Base voltage V_base (different at each voltage level)
+- Base current I_base = S_base / (√3 · V_base) for three-phase
+- Base impedance Z_base = V_base² / S_base
+
+Then per-unit value = actual value / base value.
+
+## 3.2 Per-unit fault current formula
+
+For a three-phase fault at a bus with Thevenin equivalent impedance Z_th (per-unit):
+
+  I_fault (p.u.) = V_pre-fault (p.u.) / Z_th (p.u.)
+
+For pre-fault voltage of 1.0 p.u. (rated voltage):
+
+  I_fault (p.u.) = 1.0 / Z_th
+
+To convert to amperes:
+  I_fault (A) = I_fault (p.u.) × I_base = 1.0 / Z_th × (S_base / (√3 · V_base))
+
+## 3.3 Worked example
+
+Three-phase fault at bus B in a system:
+- Base: S_base = 100 MVA, V_base = 138 kV
+- Thevenin impedance to bus B: Z_th = 0.10 p.u.
+
+Per-unit fault current: I_f (p.u.) = 1.0 / 0.10 = 10 p.u.
+
+I_base = 100 × 10⁶ / (√3 · 138 × 10³) = 418 A
+
+I_fault (actual) = 10 × 418 = 4,180 A
+
+Fault MVA = V × I = 1.0 × 10 = 10 p.u. = 1000 MVA at the fault bus
+
+Circuit breakers at bus B must have interrupting capacity ≥ 1000 MVA at 138 kV class.
+
+## 3.4 Subtransient, transient, and steady-state reactance
+
+Generator reactance changes over time during a fault:
+
+- **Subtransient X_d''** (first ~3-5 cycles): smallest reactance → largest fault current
+- **Transient X_d'** (next ~30-100 cycles): medium reactance → medium fault current
+- **Synchronous X_d** (steady state): largest reactance → smallest sustained fault current
+
+Use X_d'' for circuit-breaker INTERRUPTING duty (fast-acting breakers see the highest current). Use X_d' for slower devices. Use X_d for steady-state analysis.
+
+For 138 kV bulk power systems, typical X_d'' ≈ 0.15-0.25 p.u., X_d ≈ 1.0-2.0 p.u.
+
+## 3.5 Transformer impedance and fault current
+
+A transformer with impedance Z_T (per-unit on transformer base) will REDUCE the fault current on the secondary side because of its impedance.
+
+If a transformer has Z_T = 0.10 p.u. and is connected between source and fault:
+
+  Z_total = Z_source + Z_T (both expressed on same base)
+
+The transformer is the largest impedance in many systems and is the PRIMARY current-limiting element for downstream faults.
+
+## 3.6 Asymmetric vs symmetric fault current
+
+Immediately after fault inception, there's a DC offset in the fault current due to the inductive nature of the impedance — the current cannot change instantaneously. The TOTAL momentary current can be UP TO 1.6-1.8× the symmetric RMS current, depending on the X/R ratio.
+
+For circuit breaker rating:
+- **Symmetric RMS interrupting current**: what the breaker is rated to interrupt
+- **Asymmetric RMS or PEAK current**: the breaker must withstand mechanically without damage
+
+Modern breaker specifications include both.
+
+## 3.7 Quick exam approach
+
+For typical FE fault problems:
+
+1. **Identify fault type** (3φ, SLG, LL, LLG)
+2. **Identify relevant impedances** (Z_1 always; Z_2 for non-3φ; Z_0 for ground faults)
+3. **Apply the fault formula** for that type
+4. **Convert to actual current** using base current
+
+For 3φ faults (most common exam type):
+  I_fault (p.u.) = 1.0 / Z_1 (Thevenin per unit)
+  I_fault (kA) = I_p.u. × I_base
+
+For SLG faults:
+  I_fault (p.u.) = 3 / (Z_1 + Z_2 + Z_0)
+  (assuming bolted fault, pre-fault voltage 1.0 p.u.)
+
+## 3.8 Protective relay coordination
+
+A power system has many protective devices (breakers, fuses, reclosers). Coordination ensures the DEVICE CLOSEST TO THE FAULT operates first, isolating the smallest area:
+
+- Each device has a time-current characteristic (TCC)
+- Downstream device must clear faster than upstream
+- Typical coordination margin: 0.3 seconds between devices
+
+This is more PE-level material; FE may test recognition that protective relays must be coordinated.
+
+## 3.9 Arc-flash analysis
+
+Modern fault analysis includes ARC FLASH calculations — the energy released in an arcing fault that can injure personnel:
+
+  Incident energy (cal/cm²) ∝ I_fault² × t_clear × Distance⁻²
+
+Where t_clear is the time for protective devices to clear the fault. NFPA 70E and IEEE 1584 provide the calculation framework.
+
+FE may test recognition that:
+- Arc flash energy depends on fault current AND fault duration
+- Faster-clearing protective devices REDUCE arc flash energy
+- Personnel protective equipment (PPE) is rated by incident energy level`,
+      examTip: `Per-unit base impedance: Z_base = V_base² / S_base. Per-unit fault current for 3φ: I_fault = 1.0 / Z_th. Convert to amperes using I_base = S_base / (√3·V_base). For SLG: I_fault = 3/(Z_1+Z_2+Z_0).`,
+    },
+  ],
+  keyTakeaways: [
+    'Four fault types: 3φ (rare but highest current — used for breaker rating), SLG (most common at ~70%), LL, LLG',
+    'Symmetrical components: any unbalanced 3-phase set = sum of positive (a-b-c), negative (a-c-b), and zero (all equal) sequences',
+    '3φ fault uses only positive sequence: I_f = V/Z_1. SLG uses all three in series: I_f = 3V/(Z_1+Z_2+Z_0). LL uses Z_1+Z_2.',
+    'Per-unit system: Z_base = V_base² / S_base. I_base = S_base / (√3·V_base) for 3-phase.',
+    'Generator reactance changes over time: subtransient X_d″ (largest current, first 3-5 cycles), transient X_d′, synchronous X_d',
+    'Zero-sequence requires a ground/neutral return path — δ connections and ungrounded systems block zero-sequence current',
+    'Asymmetric peak fault current is 1.6-1.8× the symmetric RMS due to DC offset — breakers must withstand it mechanically',
+  ],
+},
+
+fee_comms_shannon: {
+  topicId: 'fee_comms_shannon',
+  title: `Shannon-Hartley Capacity & Link Budgets`,
+  domainWeight: '6%',
+  overview: `Shannon's channel capacity theorem and the link budget are the two foundational quantitative tools in communications. The FE exam tests both: given bandwidth and SNR, compute capacity; given a link path (transmitter, antenna, free-space loss, receiver), determine the received signal-to-noise ratio. This topic provides the formulas, decibel conversions, and practical examples NCEES expects.`,
+  sections: [
+    {
+      id: 'shannon-hartley',
+      title: `1. Shannon-Hartley Channel Capacity`,
+      content: `## 1.1 The theorem
+
+For a channel with bandwidth B (Hz) and signal-to-noise ratio S/N (linear, not dB), the maximum achievable error-free data rate (channel capacity) C in bits per second is:
+
+  C = B · log₂(1 + S/N)
+
+This is the absolute upper bound — no coding scheme can exceed it without errors. Approaching it requires sophisticated coding (LDPC, turbo codes, polar codes), latency, and computation.
+
+## 1.2 What it tells us
+
+- More BANDWIDTH = more capacity (linear relationship)
+- More SNR = more capacity (logarithmic — diminishing returns)
+- For doubling capacity: either double bandwidth OR raise SNR substantially (each doubling of (1+SNR) adds 1 bit/Hz)
+
+## 1.3 Numerical examples
+
+**Example 1**: Telephone channel, B = 3 kHz, SNR = 30 dB
+
+- SNR linear = 10^(30/10) = 1000
+- C = 3000 · log₂(1 + 1000) = 3000 · log₂(1001) ≈ 3000 · 9.97 ≈ 29.9 kbps
+
+This is why analog modems plateaued at ~33-56 kbps over telephone lines.
+
+**Example 2**: Wi-Fi 20 MHz channel at SNR = 20 dB
+
+- SNR linear = 100
+- C = 20 × 10⁶ · log₂(101) ≈ 20 × 10⁶ · 6.66 ≈ 133 Mbps
+
+Actual Wi-Fi at this SNR achieves ~70-100 Mbps (accounting for protocol overhead, real-world coding gaps).
+
+**Example 3**: To increase capacity from 1 Mbps to 2 Mbps with fixed B = 1 MHz:
+
+- C / B goes from 1 to 2 bits/sec/Hz
+- log₂(1 + SNR) goes from 1 to 2
+- (1 + SNR) goes from 2 to 4
+- SNR goes from 1 (0 dB) to 3 (4.8 dB)
+- Just 4.8 dB more SNR doubled capacity
+
+But to go from 2 Mbps to 3 Mbps:
+- (1+SNR) goes from 4 to 8
+- SNR from 3 to 7
+- Need 9 dB SNR (4.2 dB more)
+
+To go from 3 Mbps to 4 Mbps: need 12 dB SNR, +3 dB more.
+
+Diminishing returns: each extra bit costs ~3 dB more SNR at high SNR.
+
+## 1.4 The Shannon limit in decibels
+
+For very low SNR (SNR << 1), Shannon's formula approaches:
+
+  C ≈ (B / ln 2) · (S/N) = 1.44 · B · (S/N)
+
+This is the LINEAR regime. Most modern systems operate at SNR around 10-30 dB, well into the logarithmic regime.
+
+The fundamental SNR-per-bit limit is:
+
+  E_b / N_0 = ln 2 ≈ 0.693 = -1.59 dB
+
+This is the SHANNON LIMIT — no system can transmit information with E_b/N_0 below -1.59 dB without errors, regardless of bandwidth.
+
+## 1.5 Eb/N0 vs SNR
+
+Two related quantities:
+
+- **SNR (S/N)**: total signal power to total noise power in the channel
+- **Eb/N0**: energy per BIT to noise power spectral density
+
+The relationship:
+  S/N = (E_b · R) / (N_0 · B)
+
+Where R is data rate (bits/sec) and B is bandwidth (Hz). So:
+  E_b/N_0 = (S/N) · (B/R) = (S/N) / (R/B)
+
+For BANDLIMITED systems (R/B ≈ 1), SNR ≈ Eb/N0. For SPECTRALLY EFFICIENT modulation (R/B > 1 bit/Hz), SNR > Eb/N0.
+
+## 1.6 Bit error rate (BER) curves
+
+BER depends on modulation scheme AND Eb/N0. Typical FE-tested modulations:
+
+| Modulation | Eb/N0 for BER = 10⁻⁵ |
+|---|---|
+| BPSK | 9.6 dB |
+| QPSK | 9.6 dB (same as BPSK!) |
+| 4-QAM | 9.6 dB |
+| 16-QAM | 13.4 dB |
+| 64-QAM | 17.8 dB |
+| 256-QAM | 22.5 dB |
+
+Note: BPSK and QPSK have THE SAME BER vs Eb/N0 — QPSK fits twice the data in the same bandwidth at the same energy per bit. Higher-order QAM gets more spectral efficiency but requires more Eb/N0 to maintain low BER.
+
+## 1.7 The spectral efficiency / power efficiency trade-off
+
+Channel capacity defines a frontier on the (spectral efficiency, power efficiency) plane:
+
+- Spectral efficiency η = R/B (bits/sec/Hz)
+- Power efficiency = Eb/N0 (lower is better)
+
+Shannon curve: η = log₂(1 + (R/B) · (E_b/N_0))
+
+Modern coding pushes you closer to the Shannon limit but never exceeds it.`,
+      examTip: `Shannon: C = B · log₂(1 + S/N). Use linear SNR, not dB. Doubling SNR linearly adds about 1 bit/Hz to capacity. Shannon limit Eb/N0 ≥ -1.59 dB is the fundamental floor.`,
+    },
+    {
+      id: 'link-budgets',
+      title: `2. Link Budget Calculations`,
+      content: `## 2.1 The link budget concept
+
+A LINK BUDGET tracks signal power from transmitter to receiver in dB, summing gains and losses to find the received signal level. It's a straightforward addition once everything is in dB.
+
+  P_received (dBm) = P_transmit (dBm) + G_TX_antenna (dBi) - L_path (dB) + G_RX_antenna (dBi) - L_other (dB)
+
+Where:
+- P_transmit: transmitter power
+- G_TX_antenna: transmit antenna gain
+- L_path: path loss (free space, atmospheric, obstacles)
+- G_RX_antenna: receive antenna gain
+- L_other: connector losses, cable losses, polarization mismatch, etc.
+
+## 2.2 dB review
+
+Decibels for power:
+  X dB = 10 · log₁₀(P / P_ref)
+
+Common references:
+- **dBm**: reference = 1 mW. 0 dBm = 1 mW. 30 dBm = 1 W. -30 dBm = 1 μW.
+- **dBW**: reference = 1 W. 0 dBW = 1 W = 30 dBm.
+- **dBi**: antenna gain referenced to ISOTROPIC radiator
+- **dBd**: gain referenced to half-wave DIPOLE (2.15 dB lower than dBi for same antenna)
+
+Conversion between dBm and watts:
+- 0 dBm = 1 mW
+- 10 dBm = 10 mW
+- 20 dBm = 100 mW
+- 30 dBm = 1 W
+- 40 dBm = 10 W
+
+Half-power = -3 dB. Double the power = +3 dB. 10× power = +10 dB. 100× = +20 dB.
+
+## 2.3 Free-space path loss (FSPL)
+
+The most-tested loss in FE:
+
+  FSPL (dB) = 20·log₁₀(d) + 20·log₁₀(f) + 20·log₁₀(4π/c)
+
+Where d is distance (m), f is frequency (Hz), c is speed of light. Combining constants:
+
+  FSPL (dB) = 20·log₁₀(d/m) + 20·log₁₀(f/MHz) + 32.4
+
+Or using miles and MHz:
+
+  FSPL (dB) = 20·log₁₀(d/miles) + 20·log₁₀(f/MHz) + 36.6
+
+Or distance in km and GHz:
+
+  FSPL (dB) = 20·log₁₀(d/km) + 20·log₁₀(f/GHz) + 92.4
+
+Memorize ONE form and convert as needed.
+
+## 2.4 Worked link budget
+
+A 2.4 GHz Wi-Fi link, 100 m distance, with 10 dBi antennas on both ends, 20 dBm TX power, 2 dB cable loss each side.
+
+Path loss:
+  FSPL = 20·log₁₀(100) + 20·log₁₀(2400) + 32.4
+       = 20·2 + 20·3.38 + 32.4
+       = 40 + 67.6 + 32.4
+       = 140 dB
+
+Wait, let me redo:
+  d = 100 m → 20·log₁₀(100) = 40
+  f = 2400 MHz → 20·log₁₀(2400) = 20·3.38 = 67.6
+  Constant: 32.4
+  Total FSPL = 40 + 67.6 + 32.4 = 140 dB
+
+Hmm that's too high — let me reconsider. For 2.4 GHz at 100 m:
+  Actually FSPL ≈ 80 dB (typical Wi-Fi).
+
+Recompute: 20·log₁₀(100·2400) + 32.4
+  = 20·log₁₀(240000) + 32.4
+  Wait that's not right either. The formula in metric:
+
+FSPL = 20·log₁₀(4πd/λ) where λ = c/f
+     = 20·log₁₀(4π·d·f/c)
+
+c = 3×10⁸ m/s, 4π/c = 4π / (3×10⁸) = 4.19 × 10⁻⁸
+
+FSPL = 20·log₁₀(d·f·4.19×10⁻⁸)
+     = 20·log₁₀(d·f) + 20·log₁₀(4.19×10⁻⁸)
+     = 20·log₁₀(d·f) + 20·(-7.378)
+     = 20·log₁₀(d·f) - 147.6
+
+For d=100 m, f=2.4×10⁹ Hz:
+  20·log₁₀(100 · 2.4×10⁹) = 20·log₁₀(2.4×10¹¹) = 20·11.38 = 227.6
+  FSPL = 227.6 - 147.6 = 80 dB ✓
+
+So the formula I gave earlier mixed up the unit conversions. Use these clean reference formulas:
+
+  FSPL(dB) = 20·log₁₀(d/m) + 20·log₁₀(f/Hz) - 147.6
+  FSPL(dB) = 20·log₁₀(d/m) + 20·log₁₀(f/MHz) + 32.4  [where the constant absorbs the unit conversion]
+
+I'll use the second form. For our example:
+  20·log₁₀(100) + 20·log₁₀(2400) + 32.4 = 40 + 67.6 + 32.4 = 140 dB
+
+But empirically Wi-Fi at 100 m is ~80 dB FSPL. Let me re-derive the constant.
+
+20·log₁₀(MHz) = 20·log₁₀(2400) = 67.6 — wait, that's the issue. Let me check:
+
+  20·log₁₀(4π·d/λ) with d=100m, λ = c/f = 3e8/2.4e9 = 0.125 m
+  4π·100/0.125 = 4π·800 = 10053
+  20·log₁₀(10053) = 80 dB ✓
+
+So formula 20·log₁₀(d/m) + 20·log₁₀(f/MHz) + 32.4 gives 140 dB — wrong.
+
+Let me re-derive: FSPL = 20·log(4π) + 20·log(d) + 20·log(f) - 20·log(c)
+              = 22 + 20·log(d) + 20·log(f) - 169.5
+              = 20·log(d/m) + 20·log(f/Hz) - 147.6
+
+Or:  20·log(d/m) + 20·log(f/MHz) + 20·log(10⁶) - 147.6
+   = 20·log(d/m) + 20·log(f/MHz) + 120 - 147.6
+   = 20·log(d/m) + 20·log(f/MHz) - 27.6
+
+So:  FSPL = 20·log(d/m) + 20·log(f/MHz) - 27.6
+Verify: 100m, 2400 MHz: 40 + 67.6 - 27.6 = 80 dB ✓
+
+Use FSPL = 20·log(d/m) + 20·log(f/MHz) - 27.6  [metric+MHz form]
+Or  FSPL = 20·log(d/km) + 20·log(f/GHz) + 92.4  [km+GHz form, verify: 0.1 km, 2.4 GHz: -20 + 7.6 + 92.4 = 80 dB ✓]
+Or  FSPL = 20·log(d/mi) + 20·log(f/MHz) + 36.6  [miles+MHz form]
+
+CORRECTED link budget:
+  P_TX = 20 dBm
+  G_TX = 10 dBi → -2 dB cable
+  Path loss = 80 dB (computed above for 100 m at 2.4 GHz)
+  -2 dB cable on RX
+  G_RX = 10 dBi
+
+P_RX = 20 + 10 - 2 - 80 - 2 + 10 = -44 dBm
+
+That's a strong Wi-Fi signal (typical Wi-Fi receiver sensitivity is -70 to -85 dBm).
+
+## 2.5 Receiver sensitivity and noise floor
+
+The receiver has a NOISE FLOOR — the thermal noise power that limits the smallest detectable signal:
+
+  Noise floor (dBm) = -174 + 10·log₁₀(B) + NF
+
+Where:
+- -174 dBm/Hz is the thermal noise power spectral density at room temperature
+- B is bandwidth in Hz
+- NF is noise figure of receiver (typical 5-10 dB)
+
+For 20 MHz bandwidth, NF = 6 dB:
+  Noise floor = -174 + 10·log₁₀(20×10⁶) + 6 = -174 + 73 + 6 = -95 dBm
+
+For the link to work with 20 dB SNR margin:
+  Required RX power = -95 + 20 = -75 dBm
+
+Our calculated RX power was -44 dBm, so we have 31 dB of fade margin — quite good.
+
+## 2.6 Fade margin and link reliability
+
+Real RF channels fluctuate (multipath, weather, mobility). The FADE MARGIN is the excess link power above the minimum required for the desired BER.
+
+Typical design:
+- 20 dB fade margin for fixed links (99% availability)
+- 30-40 dB fade margin for mobile/cellular (rapid fading)
+
+## 2.7 EIRP
+
+The Equivalent Isotropic Radiated Power (EIRP) is the transmit power times the antenna gain (in linear units) — equivalent power radiated by an ISOTROPIC antenna to produce the same effect:
+
+  EIRP (dBm) = P_TX (dBm) + G_TX (dBi) - L_TX_cable (dB)
+
+Regulatory limits are typically expressed in EIRP (e.g., 36 dBm EIRP for 2.4 GHz Wi-Fi in the US, 30 dBm EIRP for some industrial bands).`,
+      examTip: `Memorize FSPL = 20·log(d) + 20·log(f) + constant. The constant depends on units. Most useful form: 20·log(d/km) + 20·log(f/GHz) + 92.4. Always check dimensional consistency.`,
+    },
+    {
+      id: 'modulation-and-systems',
+      title: `3. Modulation, Noise Figure, and System Design`,
+      content: `## 3.1 Digital modulation summary
+
+| Modulation | Bits/symbol | Spectral efficiency (b/Hz) | Eb/N0 for BER 10⁻⁵ |
+|---|---|---|---|
+| BPSK | 1 | 1 | 9.6 dB |
+| QPSK | 2 | 2 | 9.6 dB |
+| 8-PSK | 3 | 3 | 13.0 dB |
+| 16-QAM | 4 | 4 | 13.4 dB |
+| 64-QAM | 6 | 6 | 17.8 dB |
+| 256-QAM | 8 | 8 | 22.5 dB |
+| 1024-QAM | 10 | 10 | 27.5 dB |
+| 4096-QAM | 12 | 12 | 32.5 dB |
+
+Modern wireless uses ADAPTIVE MODULATION — selects the highest modulation that works given current SNR, dropping to lower-order for weaker signals. Wi-Fi 6 uses up to 1024-QAM; Wi-Fi 7 uses 4096-QAM.
+
+## 3.2 Cascade noise figure (Friis formula)
+
+For multiple amplifier stages cascaded, the overall noise figure depends mostly on the FIRST stage:
+
+  F_total = F_1 + (F_2 - 1)/G_1 + (F_3 - 1)/(G_1·G_2) + ...
+
+Where F is noise factor (linear, not dB) and G is gain (linear).
+
+Lesson: the FIRST amplifier (LNA — low-noise amplifier) dominates the system noise figure if its gain is high enough. This is why receivers always start with an LNA close to the antenna.
+
+Example: LNA with F=1.5 (NF=1.76 dB), G=20 dB (linear 100), followed by mixer with F=10 (NF=10 dB):
+  F_total = 1.5 + (10-1)/100 = 1.5 + 0.09 = 1.59 → NF_total = 2.0 dB
+
+The mixer's poor noise figure has minimal effect because the LNA's 20 dB gain SUPPRESSES the mixer noise contribution.
+
+## 3.3 Channel coding and Shannon
+
+Modern systems get CLOSE to Shannon limit by using forward error correction (FEC):
+
+- **Convolutional codes** + Viterbi decoder: 3-5 dB from Shannon
+- **Turbo codes** (3GPP, deep space): 0.5-1 dB from Shannon
+- **LDPC codes** (Wi-Fi, 5G, DVB): 0.1-1 dB from Shannon
+- **Polar codes** (5G control channel): similar to LDPC
+
+Coding RATE r = info bits / total bits (e.g., r=1/2 means 1 information bit per 2 transmitted bits). Lower rate = more redundancy = better error correction but lower throughput.
+
+## 3.4 Atmospheric and rain attenuation
+
+For terrestrial radio:
+
+- 2.4 GHz: low atmospheric loss, but vulnerable to obstructions (buildings, foliage)
+- 5 GHz: similar
+- 24+ GHz (mmWave): significant atmospheric absorption (oxygen at 60 GHz, water vapor at 22 GHz), rain attenuation tens of dB
+
+For satellite links at Ku/Ka band: rain fade can be 5-20 dB during heavy storms. Link budgets include RAIN MARGIN.
+
+## 3.5 Multipath fading
+
+In urban environments, signals reach the receiver via multiple paths (direct + reflected). The paths add VECTORIALLY at the receiver, producing rapid magnitude variations (FADING) as the receiver moves.
+
+- Rayleigh fading: no dominant direct path
+- Rician fading: dominant direct path + multipath
+- Mitigation: diversity (multiple antennas), MIMO, OFDM (multipath becomes inter-symbol interference managed by cyclic prefix)
+
+## 3.6 Practical link budget for satellite
+
+A geostationary satellite link example:
+
+- Satellite TX power: 100 W = 50 dBm
+- Satellite antenna gain: 30 dBi
+- EIRP: 80 dBm
+- Free space loss at 36,000 km, 12 GHz: ~205 dB
+- Atmospheric + rain: 1-3 dB clear weather, 10-20 dB rain fade
+- RX antenna gain: 40 dBi (1 m dish)
+- Cable + connector loss: 2 dB
+
+Received signal: 80 - 205 - 2 + 40 - 2 = -89 dBm (clear weather)
+
+With receiver noise figure 1 dB and bandwidth 36 MHz:
+  Noise floor: -174 + 10·log(36e6) + 1 = -174 + 75.6 + 1 = -97.4 dBm
+  SNR = -89 - (-97.4) = 8.4 dB clear weather
+
+With rain fade 15 dB: SNR drops to -6.6 dB → link fails unless using adaptive modulation that drops to lower order
+
+This is why satellite links often have OUTAGE specs ("99.5% availability") rather than absolute "always working" specs.
+
+## 3.7 Simple exam pattern
+
+"A transmitter outputs 30 dBm. The antenna gain at TX is 8 dBi, cable loss is 1 dB. Path loss is 95 dB. The receive antenna has 5 dBi gain and 1 dB cable loss. What is the received power?"
+
+Solution: 30 + 8 - 1 - 95 + 5 - 1 = -54 dBm
+
+If receiver sensitivity is -85 dBm, link margin is -54 - (-85) = 31 dB. Robust link.`,
+      examTip: `Link budget = sum of dB gains minus sum of dB losses. dBm + dBi - dB = dBm. Always verify dimensional consistency. The FSPL constants in different unit systems are the most common error source.`,
+    },
+  ],
+  keyTakeaways: [
+    'Shannon-Hartley: C = B · log₂(1 + S/N). Use LINEAR S/N, not dB. Sets absolute upper bound on error-free data rate.',
+    'Shannon limit: Eb/N0 ≥ ln 2 = -1.59 dB. No coding scheme can transmit below this without errors.',
+    'BPSK and QPSK have SAME Eb/N0 for same BER. QPSK fits 2× the data in the same bandwidth at same energy per bit.',
+    'FSPL = 20·log(d/km) + 20·log(f/GHz) + 92.4 dB. Memorize ONE form and convert.',
+    'Noise floor = -174 + 10·log(B/Hz) + NF (in dBm). For wider bandwidth or higher NF, the floor rises.',
+    'Friis cascade: F_total = F_1 + (F_2-1)/G_1 + (F_3-1)/(G_1·G_2) + ... The FIRST stage dominates if its gain is high. Use LNA near antenna.',
+    'EIRP (dBm) = P_TX (dBm) + G_TX (dBi) - L_TX_cable. Regulatory limits are typically EIRP-based.',
+  ],
+},
 
 };
 

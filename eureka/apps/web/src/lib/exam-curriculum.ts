@@ -651,6 +651,7 @@ const FE_EE: ExamCurriculum = [
   {
     sectionId: 'fee_math', sectionName: 'Mathematics (7%)',
     topics: [
+      t('fee_reference_handbook', 'NCEES Reference Handbook Navigation', 'Layout of the official FE Reference Handbook, where to find formula sheets quickly, common pages bookmarked by section, time-saving navigation strategy. NCEES gap fix (exam strategy, not content).'),
       t('fee_algebra_trig', 'Algebra & Trigonometry', 'Quadratic formula, trig identities, polar/rectangular conversion, unit circle.'),
       t('fee_complex', 'Complex Numbers', 'Euler formula, magnitude, phasor representation, conjugate operations.'),
       t('fee_discrete_math', 'Discrete Math', 'Combinations, permutations, counting principles.'),
@@ -721,6 +722,7 @@ const FE_EE: ExamCurriculum = [
     topics: [
       t('fee_time_domain', 'Time Domain Analysis', 'Impulse/step response, convolution, causality, LTI systems.'),
       t('fee_freq_domain', 'Frequency Domain Analysis', 'Fourier/Laplace transforms, Bode magnitude/phase, frequency response.'),
+      t('fee_bode_sketching', 'Bode Plot Sketching Techniques', 'Asymptotic magnitude/phase rules, decade/octave slopes, corner frequencies, gain/phase margins. NCEES gap fix.'),
       t('fee_transfer_func', 'Transfer Functions & Stability', 'Poles, zeros, BIBO stability, partial fractions, DC gain.'),
       t('fee_z_transforms', 'Z-Transforms & Discrete Systems', 'Z-transform pairs, discrete stability (unit circle), sampling.'),
     ],
@@ -730,6 +732,7 @@ const FE_EE: ExamCurriculum = [
     topics: [
       t('fee_fourier', 'Fourier Series & Transform', 'Periodic decomposition, continuous spectrum, Parseval theorem.'),
       t('fee_sampling', 'Sampling Theorem & Aliasing', 'Nyquist rate, anti-aliasing filters, reconstruction.'),
+      t('fee_signal_nyquist', 'Nyquist Criterion & Aliasing Pitfalls', 'Nyquist rate vs frequency, aliasing math, anti-aliasing filter design, reconstruction error, oversampling. NCEES gap fix.'),
       t('fee_filters', 'Analog Filters', 'LP, HP, BP, BS; Butterworth, Chebyshev; roll-off, cutoff frequency.'),
       t('fee_dft_fft', 'DFT, FFT & Windowing', 'Discrete Fourier transform, FFT algorithm, spectral leakage, window functions.'),
     ],
@@ -752,6 +755,7 @@ const FE_EE: ExamCurriculum = [
       t('fee_per_unit', 'Per-Unit System', 'Base values, impedance normalization, fault calculations.'),
       t('fee_tx_lines', 'Transmission Lines', 'Short/medium/long models, surge impedance, voltage drop.'),
       t('fee_pf_correction', 'Power Factor Correction', 'Capacitor sizing, reactive power compensation.'),
+      t('fee_power_faults', 'Fault Analysis & Symmetrical Components', 'Three-phase / single-line-to-ground / line-to-line / double-line-to-ground faults, positive/negative/zero sequence components, fault current calculation. NCEES gap fix.'),
       t('fee_motors', 'Rotating Machines', 'Induction motors (slip, torque), synchronous machines, DC motors.'),
     ],
   },
@@ -771,6 +775,7 @@ const FE_EE: ExamCurriculum = [
       t('fee_block_diagrams', 'Block Diagrams & Transfer Functions', 'Series/parallel/feedback reduction, Mason gain formula.'),
       t('fee_stability', 'Stability Analysis', 'Routh-Hurwitz criterion, characteristic equation, BIBO stability.'),
       t('fee_root_locus', 'Root Locus', 'Plotting rules, asymptotes, breakaway points, gain selection.'),
+      t('fee_pzmap_analysis', 'Pole-Zero Maps & Dynamic Response', 'Pole locations vs time response (damping/oscillation/decay), zero effects, pole-zero cancellation, second-order system characterization (ωn, ζ). NCEES gap fix.'),
       t('fee_bode_nyquist', 'Bode & Nyquist Plots', 'Gain/phase margins, crossover frequencies, Nyquist stability.'),
       t('fee_pid', 'PID Controllers', 'P, I, D actions, Ziegler-Nichols tuning, anti-windup.'),
       t('fee_time_specs', 'Time Domain Specifications', 'Overshoot, settling time, rise time, steady-state error, system type.'),
@@ -783,6 +788,7 @@ const FE_EE: ExamCurriculum = [
       t('fee_digital_mod', 'Digital Modulation', 'ASK, FSK, PSK, QPSK, QAM, spectral efficiency, BER.'),
       t('fee_noise_snr', 'Noise & SNR', 'Thermal noise, noise figure, cascade formula, signal-to-noise ratio.'),
       t('fee_channel_cap', 'Channel Capacity', 'Shannon-Hartley theorem, bandwidth, Eb/N0.'),
+      t('fee_comms_shannon', 'Shannon-Hartley Capacity & Link Budgets', 'Shannon limit C = B log₂(1+S/N), Eb/N0 vs BER curves, link budget (TX power, path loss, RX sensitivity), free-space path loss, fade margin. NCEES gap fix.'),
       t('fee_multiplexing', 'Multiplexing', 'FDM, TDM, CDM/CDMA, WDM; guard bands, time slots, spreading codes.'),
     ],
   },

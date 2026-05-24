@@ -6131,6 +6131,445 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     options: ["5 states", "6 states", "4 states", "3 states"],
     correct: 0,
     explanation: "If 3 pairs are equivalent and all pairs are disjoint (no state appears in more than one pair), then 6 states merge into 3, leaving 3 + 2 remaining = 5 states. In the best case the minimized machine has 5 states. If pairs overlap, fewer states result, so 'at most 5' is correct."
+  },
+
+  // ═══════════════════════════════════════════════════════════════════════════
+  // GAP-FILL QUESTIONS (g-series) — 50 questions targeting the 6 newly added
+  // course topics: fee_reference_handbook (mixed), fee_signal_nyquist (t8),
+  // fee_bode_sketching (t7), fee_pzmap_analysis (t12), fee_power_faults (t10),
+  // fee_comms_shannon (t13). Designed to lift pass rate to ≥80%.
+  // ═══════════════════════════════════════════════════════════════════════════
+
+  // ── Linear Systems / Bode Plot Sketching (topic 7) ──────────────────────────
+  {
+    id: "topic7_g01",
+    topicId: 7,
+    subtopic: "Bode Magnitude Slope",
+    difficulty: 2,
+    question: "A transfer function has a single real pole at ω = 100 rad/s and no other singularities. The high-frequency asymptotic magnitude slope is:",
+    options: ["−20 dB/decade", "−40 dB/decade", "−6 dB/octave above the pole, +20 dB/decade below", "0 dB/decade — DC gain is preserved"],
+    correct: 0,
+    explanation: "Each real pole contributes −20 dB/decade (≡ −6 dB/octave) above its corner frequency. Below the corner, the slope contribution is 0. With one pole only, the high-frequency asymptote is exactly −20 dB/decade."
+  },
+  {
+    id: "topic7_g02",
+    topicId: 7,
+    subtopic: "Bode Corner Frequency",
+    difficulty: 2,
+    question: "G(s) = 100 / [s(s+10)(s+100)]. The corner frequencies on the Bode plot occur at:",
+    options: ["ω = 10 and 100 rad/s (the integrator contributes no corner)", "ω = 0, 10, 100 rad/s", "ω = 100 rad/s only", "ω = 1, 10, 100 rad/s"],
+    correct: 0,
+    explanation: "Corner (break) frequencies are at the magnitudes of finite poles/zeros: |−10| = 10 and |−100| = 100. The pure integrator 1/s has its 'corner' at 0 and is shown as a constant −20 dB/decade line passing through 0 dB at ω = 1 (after the gain shift)."
+  },
+  {
+    id: "topic7_g03",
+    topicId: 7,
+    subtopic: "Bode Phase at Pole",
+    difficulty: 2,
+    question: "At the corner frequency of a single real pole, the actual phase contribution of that pole is:",
+    options: ["−45°", "−90°", "0°", "−20° (per the straight-line asymptote)"],
+    correct: 0,
+    explanation: "Phase of 1/(1+jω/ωₙ) at ω = ωₙ is arctan(−1) = −45°. The straight-line approximation transitions from 0° to −90° over one decade below to one decade above the pole; the midpoint is exactly −45°."
+  },
+  {
+    id: "topic7_g04",
+    topicId: 7,
+    subtopic: "Bode Initial Slope",
+    difficulty: 1,
+    question: "G(s) = K/s². At low frequencies the Bode magnitude slope is:",
+    options: ["−40 dB/decade", "−20 dB/decade", "0 dB/decade", "+40 dB/decade"],
+    correct: 0,
+    explanation: "Two integrators give −20 dB/decade each, summing to −40 dB/decade. This slope persists from DC up to the first non-integrator corner frequency."
+  },
+  {
+    id: "topic7_g05",
+    topicId: 7,
+    subtopic: "Bode Resonant Peak",
+    difficulty: 3,
+    question: "A second-order underdamped system 1/(s² + 2ζωₙs + ωₙ²) with ζ = 0.1 has approximate peak magnitude (Mr) of:",
+    options: ["≈ 14 dB (1/(2ζ√(1−ζ²)) ≈ 5.03)", "≈ 0 dB — no resonance for ζ < 0.5", "≈ 20 dB (factor of 10)", "≈ −14 dB (anti-resonance)"],
+    correct: 0,
+    explanation: "Mr = 1/(2ζ√(1−ζ²)) ≈ 1/(2·0.1·0.995) ≈ 5.03 → 20·log₁₀(5.03) ≈ 14 dB. A sharp peak at the resonant frequency ωr = ωₙ√(1−2ζ²) is characteristic of lightly damped systems."
+  },
+  {
+    id: "topic7_g06",
+    topicId: 7,
+    subtopic: "Bode Zero Slope",
+    difficulty: 1,
+    question: "A real left-half-plane zero at s = −ω₀ contributes which slope above its corner frequency?",
+    options: ["+20 dB/decade", "−20 dB/decade", "0 dB/decade", "+40 dB/decade"],
+    correct: 0,
+    explanation: "Zeros add +20 dB/decade per zero above their corner. Phase contribution rises from 0° to +90°, passing through +45° at the corner frequency."
+  },
+  {
+    id: "topic7_g07",
+    topicId: 7,
+    subtopic: "Bode Low-Frequency Gain",
+    difficulty: 2,
+    question: "G(s) = 500 / [(s+10)(s+50)]. The DC (low-frequency) magnitude in dB is:",
+    options: ["20·log₁₀(1) = 0 dB", "20·log₁₀(500) ≈ 54 dB", "20·log₁₀(0.5) ≈ −6 dB", "Indeterminate without ω"],
+    correct: 0,
+    explanation: "G(0) = 500/(10·50) = 500/500 = 1, so 20·log₁₀(1) = 0 dB. Common trap: students forget to evaluate the DC numerator/denominator product and just take 20·log(K) of the leading constant."
+  },
+  {
+    id: "topic7_g08",
+    topicId: 7,
+    subtopic: "Right-Half-Plane Zero (Non-min Phase)",
+    difficulty: 3,
+    question: "A right-half-plane zero at s = +ω₀ on a Bode plot contributes:",
+    options: ["+20 dB/decade magnitude slope but −90° phase shift (non-minimum phase)", "+20 dB/decade and +90° phase — same as LHP zero", "−20 dB/decade and +90° phase", "0 dB/decade — RHP zeros are invisible on Bode plots"],
+    correct: 0,
+    explanation: "RHP zeros add gain like LHP zeros (+20 dB/decade) but reduce phase by 90° instead of adding. This 'non-minimum phase' behavior limits achievable closed-loop bandwidth and causes inverse-response."
+  },
+
+  // ── Signal Processing / Nyquist & Aliasing (topic 8) ─────────────────────────
+  {
+    id: "topic8_g01",
+    topicId: 8,
+    subtopic: "Nyquist Rate",
+    difficulty: 1,
+    question: "A signal contains components from 0 to 8 kHz. The minimum sampling rate to avoid aliasing is:",
+    options: ["16 kHz (2 × highest frequency)", "8 kHz (equal to highest frequency)", "4 kHz (half the highest frequency)", "32 kHz (Shannon's rule)"],
+    correct: 0,
+    explanation: "Nyquist criterion: fs > 2·fmax. With fmax = 8 kHz, the strict minimum is 16 kHz. In practice, an anti-alias filter and guard band require fs ≈ 2.2× to 2.5× fmax (e.g., 44.1 kHz CD audio for ≤ 20 kHz)."
+  },
+  {
+    id: "topic8_g02",
+    topicId: 8,
+    subtopic: "Aliasing",
+    difficulty: 2,
+    question: "A 7 kHz sinusoid is sampled at fs = 10 kHz. The alias appears at:",
+    options: ["3 kHz", "7 kHz (no aliasing — it's below fs)", "13 kHz", "5 kHz (Nyquist frequency)"],
+    correct: 0,
+    explanation: "For undersampled signals, the alias is |f − k·fs| where k is the nearest integer multiple. |7 − 10| = 3 kHz (within 0 to fs/2). The 7 kHz tone is reconstructed as a 3 kHz tone — irretrievable distortion."
+  },
+  {
+    id: "topic8_g03",
+    topicId: 8,
+    subtopic: "Anti-Alias Filter",
+    difficulty: 2,
+    question: "An anti-aliasing filter must be placed:",
+    options: ["Before the ADC, with cutoff ≤ fs/2", "After the ADC in the digital domain", "Either before or after the ADC — placement doesn't matter", "After the DAC at the output stage"],
+    correct: 0,
+    explanation: "Aliasing happens at the moment of sampling. Once high-frequency content folds into the baseband, it cannot be separated from legitimate signal. The anti-alias filter MUST be analog, before the ADC, with cutoff well below fs/2."
+  },
+  {
+    id: "topic8_g04",
+    topicId: 8,
+    subtopic: "Folding Frequency",
+    difficulty: 2,
+    question: "The folding (Nyquist) frequency for a sampling system at fs = 48 kHz is:",
+    options: ["24 kHz", "48 kHz", "96 kHz", "12 kHz"],
+    correct: 0,
+    explanation: "Folding frequency = fs/2 = 24 kHz. Any signal energy above 24 kHz will be aliased (folded) back into the 0 to 24 kHz baseband. This is why 48 kHz sample rate suffices for audio (human hearing limit ≈ 20 kHz)."
+  },
+  {
+    id: "topic8_g05",
+    topicId: 8,
+    subtopic: "Reconstruction",
+    difficulty: 3,
+    question: "Perfect reconstruction of a band-limited signal from its samples (per Shannon's theorem) requires:",
+    options: ["Ideal sinc interpolation: x(t) = Σ x(nT)·sinc[(t−nT)/T]", "Zero-order hold followed by analog filtering", "Linear interpolation between samples", "First-order hold with overshoot compensation"],
+    correct: 0,
+    explanation: "Shannon's reconstruction formula uses sinc functions of infinite extent. Practical DACs use zero-order hold + analog reconstruction filter, which introduces sinc(πf/fs) droop that must be compensated digitally or with a slight high-frequency boost."
+  },
+  {
+    id: "topic8_g06",
+    topicId: 8,
+    subtopic: "Aliased Frequency",
+    difficulty: 2,
+    question: "An analog signal contains tones at 1, 5, 9, and 15 kHz. It is sampled at 10 kHz with no anti-alias filter. After sampling, which tones appear in 0–5 kHz?",
+    options: ["1 kHz, 5 kHz, 1 kHz (from 9 kHz), 5 kHz (from 15 kHz)", "Only the 1 kHz tone is preserved correctly", "All four tones at their original frequencies", "Only 5 kHz appears — the rest are filtered out"],
+    correct: 0,
+    explanation: "Below Nyquist (5 kHz): 1 and 5 kHz pass through. Above: 9 kHz aliases to |9−10| = 1 kHz (overlapping the original 1 kHz tone!). 15 kHz aliases to |15−10| = 5 kHz. Result: corruption that cannot be undone."
+  },
+  {
+    id: "topic8_g07",
+    topicId: 8,
+    subtopic: "Bandpass Sampling",
+    difficulty: 3,
+    question: "A bandpass signal from 90 to 100 MHz (bandwidth 10 MHz) can theoretically be sampled at as low as:",
+    options: ["20 MHz (2 × bandwidth, not 2 × fmax)", "200 MHz (2 × fmax)", "100 MHz (= fmax)", "10 MHz (= bandwidth)"],
+    correct: 0,
+    explanation: "Bandpass (or sub-Nyquist) sampling allows fs ≥ 2·BW provided fs is chosen so that the aliased spectrum doesn't overlap. This is exploited in software-defined radio. The fmax = 2·BW rule applies; the 2·fmax rule is only required for baseband signals."
+  },
+  {
+    id: "topic8_g08",
+    topicId: 8,
+    subtopic: "ADC Quantization SNR",
+    difficulty: 2,
+    question: "An ideal N-bit ADC has signal-to-quantization-noise ratio (full-scale sinusoidal input) of:",
+    options: ["SQNR ≈ 6.02·N + 1.76 dB", "SQNR ≈ 3·N dB", "SQNR ≈ 20·N dB", "SQNR ≈ N²·log₂(2) dB"],
+    correct: 0,
+    explanation: "Standard formula. A 16-bit ADC achieves ≈ 98 dB SQNR; a 12-bit ADC ≈ 74 dB. Each added bit improves SQNR by ~6 dB. Real ADCs include INL/DNL errors and thermal noise that reduce effective number of bits (ENOB)."
+  },
+
+  // ── Power Systems / Fault Analysis & Symmetrical Components (topic 10) ─────
+  {
+    id: "topic10_g01",
+    topicId: 10,
+    subtopic: "Symmetrical Component Definition",
+    difficulty: 1,
+    question: "An unbalanced three-phase set of phasors can be decomposed into:",
+    options: ["Positive-sequence, negative-sequence, and zero-sequence components", "Real, imaginary, and DC components", "Forward, reverse, and standing-wave components", "Magnetic, electric, and grounding components"],
+    correct: 0,
+    explanation: "Fortescue's theorem (1918): any unbalanced 3-phase phasor set = sum of three balanced sets — positive sequence (ABC), negative sequence (ACB), and zero sequence (all in phase). Symmetrical components turn coupled fault networks into three decoupled per-phase networks."
+  },
+  {
+    id: "topic10_g02",
+    topicId: 10,
+    subtopic: "Three-Phase Fault",
+    difficulty: 2,
+    question: "A bolted (zero-impedance) three-phase fault on a balanced system involves only:",
+    options: ["The positive-sequence network", "All three sequence networks in series", "Negative and zero sequences only", "Zero-sequence network with grounding"],
+    correct: 0,
+    explanation: "A symmetric 3-phase fault preserves balance — only positive-sequence currents flow. I_fault = Vpre / Z₁. This is the most severe fault for symmetrical equipment and sets switchgear interrupting ratings."
+  },
+  {
+    id: "topic10_g03",
+    topicId: 10,
+    subtopic: "Single Line-to-Ground Fault",
+    difficulty: 3,
+    question: "For a single line-to-ground (SLG) fault on phase A with fault impedance Zf, the sequence networks are connected:",
+    options: ["In series, with 3·Zf included", "In parallel, with Zf in each branch", "Positive-only, with Zf added", "Negative and zero in parallel, positive isolated"],
+    correct: 0,
+    explanation: "SLG: Ia1 = Ia2 = Ia0 = Vpre / (Z₁ + Z₂ + Z₀ + 3·Zf). The three sequence networks connect in series; the factor of 3 on Zf comes from the relationship between line current and zero-sequence current in the fault loop."
+  },
+  {
+    id: "topic10_g04",
+    topicId: 10,
+    subtopic: "Line-to-Line Fault",
+    difficulty: 3,
+    question: "A line-to-line (LL) fault between phases B and C couples which sequence networks?",
+    options: ["Positive and negative in parallel; zero is isolated", "Positive and zero in series; negative is isolated", "All three in series", "Only negative-sequence network"],
+    correct: 0,
+    explanation: "LL fault: Ia0 = 0 (no path to ground), Ia1 = −Ia2 = Vpre/(Z₁ + Z₂ + Zf). Equivalent circuit is Z₁ and Z₂ in parallel through Zf. The LL fault current magnitude is √3/2 ≈ 0.866 of the three-phase fault current at the same location."
+  },
+  {
+    id: "topic10_g05",
+    topicId: 10,
+    subtopic: "Operator 'a'",
+    difficulty: 2,
+    question: "The complex operator a in symmetrical component analysis equals:",
+    options: ["1∠120° = −0.5 + j(√3/2)", "1∠90° = j", "1∠60° = 0.5 + j(√3/2)", "−1 = 1∠180°"],
+    correct: 0,
+    explanation: "a = e^(j2π/3) = 1∠120°. Properties: a² = 1∠240° = 1∠−120°, a³ = 1, and 1 + a + a² = 0. The transformation matrix uses a and a² to rotate the symmetrical components into phase quantities."
+  },
+  {
+    id: "topic10_g06",
+    topicId: 10,
+    subtopic: "Per-Unit System",
+    difficulty: 2,
+    question: "A 100 MVA, 13.8 kV generator has X″d = 0.20 per-unit on its nameplate base. The actual ohmic subtransient reactance is:",
+    options: ["X″d = 0.20 × (13.8²/100) = 0.381 Ω per phase", "X″d = 0.20 × 13.8 = 2.76 Ω", "X″d = 0.20 × 100 = 20 Ω", "X″d = 0.20 × 13.8 × 100 / √3 = 159.4 Ω"],
+    correct: 0,
+    explanation: "Z_actual = Z_pu × Z_base, where Z_base = (kV_LL)² / MVA = 13.8² / 100 = 1.9044 Ω. Then X″d = 0.20 × 1.9044 = 0.381 Ω. Always verify which voltage base (line-to-line vs line-to-neutral) the problem uses."
+  },
+  {
+    id: "topic10_g07",
+    topicId: 10,
+    subtopic: "Fault MVA",
+    difficulty: 2,
+    question: "A bus has 1.0 per-unit pre-fault voltage and Thevenin equivalent X₁ = 0.05 per-unit on a 100 MVA base. Three-phase fault MVA at this bus is:",
+    options: ["MVAsc = 100 / 0.05 = 2000 MVA", "MVAsc = 100 × 0.05 = 5 MVA", "MVAsc = √3 × 100 / 0.05 = 3464 MVA", "MVAsc = 100 / 0.05² = 40,000 MVA"],
+    correct: 0,
+    explanation: "Short-circuit MVA = Base MVA / X_pu (when V_pf = 1.0 pu). High fault MVA = stiff bus, requires larger circuit breakers. The interrupting rating must exceed this value with a safety margin."
+  },
+  {
+    id: "topic10_g08",
+    topicId: 10,
+    subtopic: "Zero-Sequence Path",
+    difficulty: 3,
+    question: "A delta-wye transformer with the wye grounded provides:",
+    options: ["A zero-sequence current path on the wye side; isolation on the delta side", "Zero-sequence currents flow freely through both windings", "Zero-sequence is blocked on both sides", "Only positive-sequence transfers; both negative and zero are blocked"],
+    correct: 0,
+    explanation: "Zero-sequence currents on the grounded-wye side circulate in the delta as a closed loop but do not transfer to the line side. This is why Δ-Yg transformers are commonly used as 'grounding transformers' to provide an SLG fault current path."
+  },
+
+  // ── Control Systems / Pole-Zero Maps (topic 12) ─────────────────────────────
+  {
+    id: "topic12_g01",
+    topicId: 12,
+    subtopic: "Stability from Pole Location",
+    difficulty: 1,
+    question: "A continuous-time linear system is BIBO stable if and only if all poles of its transfer function lie:",
+    options: ["Strictly in the open left half of the s-plane (Re{s} < 0)", "On the unit circle of the z-plane", "On the imaginary axis", "Anywhere except the origin"],
+    correct: 0,
+    explanation: "For continuous-time LTI systems, stability requires all poles to have negative real parts. Poles on the jω-axis give marginal stability (sustained oscillation); poles in the right half plane give unbounded growth."
+  },
+  {
+    id: "topic12_g02",
+    topicId: 12,
+    subtopic: "Damping Ratio from Pole",
+    difficulty: 2,
+    question: "A complex pole pair is located at s = −2 ± j2√3. The damping ratio ζ and natural frequency ωₙ are:",
+    options: ["ζ = 0.5, ωₙ = 4 rad/s", "ζ = 0.707, ωₙ = 2√3 rad/s", "ζ = 1.0, ωₙ = 4 rad/s", "ζ = 0.5, ωₙ = 2 rad/s"],
+    correct: 0,
+    explanation: "ωₙ = √((−2)² + (2√3)²) = √(4 + 12) = √16 = 4 rad/s. ζ = −Re/ωₙ = 2/4 = 0.5. Underdamped (0 < ζ < 1) → oscillatory step response with overshoot ≈ exp(−ζπ/√(1−ζ²)) ≈ 16.3%."
+  },
+  {
+    id: "topic12_g03",
+    topicId: 12,
+    subtopic: "Step Response Settling Time",
+    difficulty: 2,
+    question: "An underdamped second-order system has dominant poles at s = −1 ± j2. The 2% settling time is approximately:",
+    options: ["ts ≈ 4/ζωₙ = 4/1 = 4 seconds", "ts ≈ 4/ωₙ = 4/√5 ≈ 1.79 seconds", "ts ≈ π/ωd = π/2 ≈ 1.57 seconds", "ts ≈ 2/ζ = ∞ (undamped)"],
+    correct: 0,
+    explanation: "ts (2%) ≈ 4/(ζωₙ) = 4/|Re{pole}| = 4/1 = 4 s. The real part of the dominant pole directly sets the exponential envelope decay rate; the imaginary part sets the oscillation frequency."
+  },
+  {
+    id: "topic12_g04",
+    topicId: 12,
+    subtopic: "Pole-Zero Cancellation",
+    difficulty: 3,
+    question: "A plant G(s) = (s+3)/[(s+3)(s+5)] is sometimes simplified to G(s) = 1/(s+5). The hidden danger of this 'cancellation' is:",
+    options: ["The mode at s = −3 is uncontrollable/unobservable but still exists internally", "The simplification is always exact and lossless", "It introduces a delay of 3 seconds", "It causes instability"],
+    correct: 0,
+    explanation: "Exact pole-zero cancellation in real hardware is impossible — small parameter mismatches leave the mode partially excited. If a RHP pole is 'cancelled' by a RHP zero, the internal mode is still unstable even though it doesn't appear in the I/O transfer function."
+  },
+  {
+    id: "topic12_g05",
+    topicId: 12,
+    subtopic: "Dominant Pole Approximation",
+    difficulty: 2,
+    question: "A system has poles at s = −1, −2, −10, −50. The dominant pole(s) for transient response are:",
+    options: ["s = −1 (closest to jω axis)", "s = −50 (furthest into LHP)", "All four contribute equally", "s = −10 (geometric mean)"],
+    correct: 0,
+    explanation: "The pole(s) closest to the imaginary axis dominate because their exponential e^(σt) decays slowest. As a rule of thumb, poles at least 5× further left contribute negligibly to settling time and can be neglected in design."
+  },
+  {
+    id: "topic12_g06",
+    topicId: 12,
+    subtopic: "Routh-Hurwitz",
+    difficulty: 3,
+    question: "The characteristic polynomial is s³ + 4s² + Ks + 10 = 0. Routh-Hurwitz stability requires K to satisfy:",
+    options: ["K > 2.5", "K > 0", "K > 10", "Any K — coefficients are all positive"],
+    correct: 0,
+    explanation: "Routh array: row s³: [1, K], row s²: [4, 10], row s¹: [(4K−10)/4, 0], row s⁰: [10]. For stability, (4K−10)/4 > 0 → K > 2.5. All sign-change-free first column = stable."
+  },
+  {
+    id: "topic12_g07",
+    topicId: 12,
+    subtopic: "Root Locus Departure",
+    difficulty: 3,
+    question: "For a unity-feedback system with open-loop poles at 0, −2, −4 and a zero at −1, the root locus on the real axis exists in the segments:",
+    options: ["[−1, 0] and [−4, −2]", "[0, ∞) and [−4, −2]", "[−2, −1] only", "(−∞, −4] and [−1, 0]"],
+    correct: 0,
+    explanation: "Root locus rule: a real-axis segment is part of the locus if the total count of real poles + zeros to its right is odd. Right of [−1,0]: pole at 0 → 1 (odd ✓). Right of [−4,−2]: pole at 0, zero at −1, pole at −2 → 3 (odd ✓)."
+  },
+  {
+    id: "topic12_g08",
+    topicId: 12,
+    subtopic: "Discrete-Time Stability",
+    difficulty: 2,
+    question: "A discrete-time system is stable if and only if all poles of H(z) lie:",
+    options: ["Strictly inside the unit circle (|z| < 1)", "Strictly in the left half of the z-plane", "On the unit circle", "Anywhere in the z-plane"],
+    correct: 0,
+    explanation: "Bilinear mapping: s-plane LHP ↔ inside unit circle of z-plane. Poles on |z|=1 give marginal stability (oscillation); outside the unit circle give unbounded growth. The pole at z = 1 corresponds to a pure integrator (s = 0)."
+  },
+
+  // ── Communications / Shannon-Hartley & Link Budgets (topic 13) ─────────────
+  {
+    id: "topic13_g01",
+    topicId: 13,
+    subtopic: "Shannon Capacity",
+    difficulty: 1,
+    question: "Shannon-Hartley capacity for an AWGN channel of bandwidth B and SNR is given by:",
+    options: ["C = B·log₂(1 + SNR) bits/second", "C = B·SNR bits/second", "C = 2·B·log₂(SNR) bits/second", "C = B/SNR bits/second"],
+    correct: 0,
+    explanation: "Shannon-Hartley: C = B·log₂(1 + S/N). For SNR = 7 (8.45 dB) and B = 1 MHz, C = 10⁶·log₂(8) = 3 Mbps. SNR here is a linear ratio, not dB — common student trap."
+  },
+  {
+    id: "topic13_g02",
+    topicId: 13,
+    subtopic: "Shannon Limit",
+    difficulty: 2,
+    question: "As bandwidth B → ∞ with fixed signal power S and noise PSD N₀, the Shannon capacity approaches:",
+    options: ["C∞ = (S/N₀)·log₂(e) ≈ 1.44·S/N₀", "C∞ → ∞", "C∞ = S/N₀", "C∞ = 0"],
+    correct: 0,
+    explanation: "Substituting N = N₀·B: C = B·log₂(1 + S/(N₀·B)). Taking B → ∞ gives C∞ = (S/N₀)·log₂(e) = (S/N₀)/ln(2). Sets the absolute Eb/N₀ lower bound for reliable communication: Eb/N₀ ≥ −1.59 dB (the Shannon limit)."
+  },
+  {
+    id: "topic13_g03",
+    topicId: 13,
+    subtopic: "Eb/N0 Conversion",
+    difficulty: 2,
+    question: "A QPSK system operates at SNR = 9.1 dB in a bandwidth equal to its symbol rate (Rs = B). With 2 bits/symbol, the equivalent Eb/N₀ is:",
+    options: ["Eb/N₀ = SNR − 10·log₁₀(2) ≈ 9.1 − 3.0 = 6.1 dB", "Eb/N₀ = SNR + 10·log₁₀(2) ≈ 12.1 dB", "Eb/N₀ = SNR ≈ 9.1 dB (always equal)", "Eb/N₀ = 2 × SNR ≈ 18.2 dB"],
+    correct: 0,
+    explanation: "Eb/N₀ = (S/N) · (B/Rb). For QPSK with Rb = 2·Rs and B = Rs: Eb/N₀ = SNR/2 in linear → SNR − 3 dB. Higher-order modulations need higher Eb/N₀ for the same BER but achieve higher spectral efficiency."
+  },
+  {
+    id: "topic13_g04",
+    topicId: 13,
+    subtopic: "Free-Space Path Loss",
+    difficulty: 2,
+    question: "Free-space path loss for a 2.4 GHz signal over 1 km is approximately:",
+    options: ["FSPL ≈ 100 dB (using 20·log(d/km) + 20·log(f/GHz) + 92.4)", "FSPL ≈ 20 dB", "FSPL ≈ 60 dB", "FSPL ≈ 140 dB"],
+    correct: 0,
+    explanation: "FSPL(dB) = 20·log₁₀(d_km) + 20·log₁₀(f_GHz) + 92.4 = 0 + 7.6 + 92.4 = 100 dB. Memorize the 92.4 constant for km/GHz; use 32.4 for km/MHz, or −27.6 for m/MHz. FSPL grows 6 dB per doubling of distance OR frequency."
+  },
+  {
+    id: "topic13_g05",
+    topicId: 13,
+    subtopic: "Link Budget",
+    difficulty: 3,
+    question: "A radio link has Pt = 30 dBm, Gt = 12 dBi, Gr = 6 dBi, FSPL = 95 dB, and miscellaneous losses 4 dB. The received power Pr is:",
+    options: ["Pr = 30 + 12 + 6 − 95 − 4 = −51 dBm", "Pr = 30 − 12 − 6 + 95 − 4 = 103 dBm", "Pr = 30 + 12 + 6 + 95 + 4 = 147 dBm", "Pr = 30 × (12 + 6) / (95 + 4) ≈ 5.5 dBm"],
+    correct: 0,
+    explanation: "Link budget (all dB): Pr = Pt + Gt + Gr − Lpath − Lother = 30 + 12 + 6 − 95 − 4 = −51 dBm. Compare to receiver sensitivity (e.g., −85 dBm) to compute link margin = sensitivity threshold − Pr."
+  },
+  {
+    id: "topic13_g06",
+    topicId: 13,
+    subtopic: "Noise Floor",
+    difficulty: 2,
+    question: "The thermal noise floor at T = 290 K in a 1 MHz bandwidth is:",
+    options: ["N = kTB ≈ −114 dBm (kT = −174 dBm/Hz + 10·log(10⁶))", "N = kT ≈ −174 dBm", "N = TB ≈ +50 dBm", "N = B ≈ −60 dBm"],
+    correct: 0,
+    explanation: "kT₂₉₀ = 1.38e−23 × 290 = 4.0e−21 W/Hz = −174 dBm/Hz. In 1 MHz: −174 + 10·log(10⁶) = −174 + 60 = −114 dBm. This is the absolute minimum noise — receiver NF adds to it. Memorize −174 dBm/Hz."
+  },
+  {
+    id: "topic13_g07",
+    topicId: 13,
+    subtopic: "Noise Figure",
+    difficulty: 3,
+    question: "A receiver chain has LNA (NF = 1 dB, gain = 20 dB) followed by a mixer (NF = 8 dB). Total cascaded NF is approximately:",
+    options: ["NF_total ≈ 1.07 dB (LNA dominates per Friis' formula)", "NF_total ≈ 8 dB (worst stage dominates)", "NF_total = 1 + 8 = 9 dB", "NF_total = √(1² + 8²) ≈ 8.1 dB"],
+    correct: 0,
+    explanation: "Friis: F_total = F1 + (F2−1)/G1. F1 = 10^0.1 = 1.26, F2 = 10^0.8 = 6.31, G1 = 100. F_total = 1.26 + 5.31/100 = 1.31 → NF = 1.18 dB. The LNA gain 'protects' subsequent stages; a high-gain low-NF first stage sets system noise figure."
+  },
+  {
+    id: "topic13_g08",
+    topicId: 13,
+    subtopic: "Spectral Efficiency",
+    difficulty: 2,
+    question: "A 16-QAM system with raised-cosine roll-off α = 0.25 and symbol rate Rs achieves spectral efficiency η of:",
+    options: ["η = log₂(16) / (1 + α) = 4 / 1.25 = 3.2 bits/s/Hz", "η = log₂(16) = 4 bits/s/Hz (regardless of α)", "η = 16 / 1.25 = 12.8 bits/s/Hz", "η = 4 × 1.25 = 5 bits/s/Hz"],
+    correct: 0,
+    explanation: "Raised-cosine pulse occupies B = Rs·(1 + α). Bits per symbol = log₂(M). η = log₂(M)/(1+α) bits/s/Hz. Trade-off: smaller α gives higher η but requires longer (sinc-like) pulse shape and tighter timing — practical α is 0.2–0.35."
+  },
+
+  // ── Reference Handbook Navigation (topic 0 — Math placeholder) ─────────────
+  {
+    id: "topic0_g01",
+    topicId: 0,
+    subtopic: "NCEES Handbook Navigation",
+    difficulty: 1,
+    question: "On exam day, the NCEES FE Reference Handbook is available as:",
+    options: ["A searchable PDF on the test workstation, no personal copy allowed", "A printed booklet you bring to the exam", "An online resource accessible during breaks only", "A choice of PDF or printed copy"],
+    correct: 0,
+    explanation: "NCEES provides the Reference Handbook as a searchable PDF within the Pearson VUE testing software. Personal copies — printed or electronic — are NOT allowed. Practicing with the official PDF (downloadable from NCEES.org) is essential."
+  },
+  {
+    id: "topic0_g02",
+    topicId: 0,
+    subtopic: "Handbook Search Strategy",
+    difficulty: 2,
+    question: "Best practice for finding a formula in the NCEES FE Reference Handbook during the exam is:",
+    options: ["Use Ctrl-F search with a distinctive term from the formula or variable name", "Page sequentially from the front", "Memorize section numbers for every domain", "Skip the handbook entirely — rely on memorization"],
+    correct: 0,
+    explanation: "The handbook is hundreds of pages. Ctrl-F (or the search box in the Pearson PDF reader) is the fastest path. Search for unusual variable names (e.g., 'Norton equivalent' rather than 'I_N'), section titles, or key constants."
   }
 ];
 
