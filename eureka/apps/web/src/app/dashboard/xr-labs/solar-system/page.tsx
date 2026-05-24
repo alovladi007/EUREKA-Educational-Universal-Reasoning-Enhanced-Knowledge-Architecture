@@ -428,7 +428,7 @@ const EARTH_YEAR_SECONDS = 300; // 1 Earth year = 5 wall-clock minutes at 1×
 const SPIN_SLOWDOWN = 30; // planet + Sun + Earth-clouds + Venus-atmosphere
 const MOON_ORBIT_SLOWDOWN = 5; // moon orbital periods
 
-const BUILD_TAG = "v6 · 2026-05-23"; // bump to verify you're on the latest
+const BUILD_TAG = "v7 · 2026-05-23"; // bump to verify you're on the latest
 
 function SimulationClock({
   paused,
@@ -495,23 +495,34 @@ function FlyToController({
     const ctrl = orbitControlsRef.current;
     if (!ctrl) return;
 
-    // Case 1: just-flipped — teleport.
+    // Case 1: just-flipped — teleport to LIT SIDE of the body.
     if (ft && ft.meshRef.current && flyTargetVersionRef.current !== lastVersion.current) {
       lastVersion.current = flyTargetVersionRef.current;
 
       ft.meshRef.current.getWorldPosition(tempVec.current);
 
-      // Pull in tighter than v5 — size × 3 (was 4.5) puts the planet at
-      // ~65% of viewport height, close enough to read continents on Earth
-      // and bands on Jupiter.
-      const desiredDist =
-        ft.body.id === "sun" ? ft.body.size * 3 : ft.body.size * 3;
-
-      const dir = camera.position.clone().sub(ctrl.target);
-      if (dir.lengthSq() < 1e-6) {
-        dir.set(0, 0.3, 1);
+      // v7 fix: instead of preserving the user's previous viewing
+      // direction (which often landed on the planet's night side), we
+      // compute a direction that puts the camera on the SUN-FACING side
+      // of the body. Camera ends up between the Sun and the planet,
+      // looking outward at the planet → planet's lit hemisphere fills
+      // the view.
+      //
+      // Geometry: toSun = direction from body toward the Sun (origin).
+      // Camera offset = toSun + 0.6 × up (so we're not perfectly on the
+      // Sun-body line but slightly above, giving a nice 3/4 lit view).
+      // For the Sun itself (toSun is undefined), use a fixed angle.
+      const desiredDist = ft.body.size * 3;
+      const dir = new THREE.Vector3();
+      if (ft.body.id === "sun") {
+        dir.set(0, 0.3, 1).normalize();
+      } else {
+        // toSun: from planet position back toward the origin
+        dir.copy(tempVec.current).multiplyScalar(-1).normalize();
+        // Add an upward component so the view is 3/4 instead of dead-on
+        dir.add(new THREE.Vector3(0, 0.55, 0)).normalize();
       }
-      dir.normalize().multiplyScalar(desiredDist);
+      dir.multiplyScalar(desiredDist);
 
       ctrl.target.copy(tempVec.current);
       camera.position.copy(tempVec.current).add(dir);
@@ -705,7 +716,12 @@ function Sun({
         highlighted={focusedId === body.id}
       />
 
-      <pointLight intensity={3} distance={500} decay={0.5} color={0xfff5e0} />
+      {/* The Sun is the scene's only light source.
+          v7 fix: decay=0 + distance=0 = NO attenuation, all planets get
+          full intensity regardless of distance from the Sun. With
+          <Canvas legacy> active (= useLegacyLights), intensity ~2 reads
+          "well-lit" on every planet from Mercury to Neptune. */}
+      <pointLight intensity={2} distance={0} decay={0} color={0xfff5e0} />
     </group>
   );
 }
@@ -1347,7 +1363,8 @@ function SolarSystemScene({
   return (
     <>
       <MilkyWayBackground texture={t.stars} />
-      <ambientLight intensity={0.05} />
+      {/* Faint ambient so night hemispheres aren't pure black */}
+      <ambientLight intensity={0.18} />
 
       <Sun
         body={SUN}
@@ -1513,10 +1530,16 @@ export default function SolarSystemPage() {
     <div className="fixed inset-0 bg-black z-50 text-white">
       <Canvas
         camera={{ position: DEFAULT_CAM, fov: 55, near: 0.1, far: 10000 }}
+        // legacy=true → useLegacyLights=true → intensity values stay in
+        // the pre-r155 "natural" range (1-3 reads bright). Without this,
+        // physical lighting units require intensity ~50-200 for the
+        // same effect, which was the root cause of v6's dim-planet
+        // appearance.
+        legacy
         gl={{
           antialias: true,
           toneMapping: THREE.ACESFilmicToneMapping,
-          toneMappingExposure: 1.1,
+          toneMappingExposure: 1.3,
         }}
         dpr={[1, 2]}
       >
