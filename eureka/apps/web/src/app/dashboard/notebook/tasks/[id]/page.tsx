@@ -202,7 +202,12 @@ export default function TaskDetailsPage({ params }: { params: Promise<{ id: stri
 
   const handleCommentTyping = () => {
     if (task?.project_id) {
-      notebookSocket.emitTyping(task.project_id, taskId);
+      // The socket client exposes startTyping({ projectId, taskId }) — not
+      // emitTyping(projectId, taskId). Use the real method.
+      notebookSocket.startTyping({
+        projectId: Number(task.project_id),
+        taskId: Number(taskId),
+      });
     }
   };
 

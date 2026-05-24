@@ -582,7 +582,10 @@ function PracticeModePageInner() {
                       </>
                     ) : (
                       <button
-                        onClick={loadNextQuestion}
+                        // Wrap loadNextQuestion in an arrow — the function
+                        // expects an optional sid string, but the button's
+                        // onClick passes a MouseEvent.
+                        onClick={() => loadNextQuestion()}
                         disabled={loading}
                         className="ml-auto px-8 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center"
                       >

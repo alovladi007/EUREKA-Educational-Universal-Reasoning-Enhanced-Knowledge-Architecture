@@ -27,6 +27,9 @@ export interface ResumeMeta {
   fontSize: "sm" | "md" | "lg";
   sectionOrder: SectionId[];
   paperSize: "a4" | "letter";
+  /** Optional template id selected from the template gallery. Some callers
+   *  surface this on the resume-builder dashboard. */
+  template?: string;
 }
 
 export interface ResumeHeader {

@@ -10,14 +10,31 @@ interface TabsContextValue {
 
 const TabsContext = React.createContext<TabsContextValue | undefined>(undefined)
 
-interface TabsProps extends React.HTMLAttributes<HTMLDivElement> {
-  defaultValue: string
+interface TabsProps extends Omit<React.HTMLAttributes<HTMLDivElement>, "defaultValue"> {
+  /** Controlled value. When provided, `onValueChange` should also be passed. */
+  value?: string
+  /** Initial value for uncontrolled mode. */
+  defaultValue?: string
+  /** Notified when the active tab changes. Required for controlled mode. */
+  onValueChange?: (value: string) => void
   children: React.ReactNode
 }
 
 const Tabs = React.forwardRef<HTMLDivElement, TabsProps>(
-  ({ className, defaultValue, children, ...props }, ref) => {
-    const [value, setValue] = React.useState(defaultValue)
+  ({ className, value: controlledValue, defaultValue, onValueChange, children, ...props }, ref) => {
+    // Tabs supports both controlled (value + onValueChange) and uncontrolled
+    // (defaultValue) modes. When controlled, the caller owns state and every
+    // change is forwarded; when uncontrolled, we track it internally.
+    const [internalValue, setInternalValue] = React.useState(defaultValue ?? "")
+    const isControlled = controlledValue !== undefined
+    const value = isControlled ? (controlledValue as string) : internalValue
+    const setValue = React.useCallback(
+      (next: string) => {
+        if (!isControlled) setInternalValue(next)
+        onValueChange?.(next)
+      },
+      [isControlled, onValueChange],
+    )
 
     return (
       <TabsContext.Provider value={{ value, onValueChange: setValue }}>

@@ -172,7 +172,11 @@ function ExamSimulatorPageInner() {
 
     // Save exam result to backend
     try {
-      await apiClient.submitExam('temp-exam-id', answers);
+      // submitExam expects an array of answer rows; `answers` here is a
+      // Record<questionIdx, optionIdx>. Flatten it before sending.
+      await apiClient.submitExam('temp-exam-id', Object.entries(answers).map(
+        ([question_idx, option_idx]) => ({ question_idx: Number(question_idx), option_idx }),
+      ));
     } catch (error) {
       console.error('Failed to save exam results:', error);
     }

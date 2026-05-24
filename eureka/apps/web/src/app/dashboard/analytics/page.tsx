@@ -176,8 +176,11 @@ export default function AnalyticsPage() {
   const sortedSkills = useMemo(() => {
     const copy = [...safeSkills];
     copy.sort((a, b) => {
-      const av = (a as Record<string, unknown>)[sortKey];
-      const bv = (b as Record<string, unknown>)[sortKey];
+      // Cast through unknown first — TS won't allow direct narrowing from
+      // SkillRow to a string-indexed record because the two shapes don't
+      // overlap structurally.
+      const av = (a as unknown as Record<string, unknown>)[sortKey];
+      const bv = (b as unknown as Record<string, unknown>)[sortKey];
       if (typeof av === "string" && typeof bv === "string") {
         return sortDir === "asc"
           ? av.localeCompare(bv)

@@ -627,7 +627,11 @@ export default function TestPrepDashboard() {
             </p>
           ) : (
             <ul className="space-y-2">
-              {liveRecs.map((r, i) => (
+              {liveRecs.map((r, i) => {
+                // Pre-compute reasonText so TS knows the JSX is a string,
+                // not `unknown | string` (r.reason itself is unknown).
+                const reasonText = renderReason(r.reason);
+                return (
                 <li
                   key={r.skill_id ?? `${r.code ?? "rec"}-${i}`}
                   className="rounded-md border p-2.5"
@@ -637,9 +641,9 @@ export default function TestPrepDashboard() {
                       <div className="text-sm font-medium truncate">
                         {r.name ?? r.code ?? "Untitled"}
                       </div>
-                      {r.reason && renderReason(r.reason) && (
+                      {reasonText && (
                         <div className="text-[11px] text-muted-foreground mt-0.5">
-                          {renderReason(r.reason)}
+                          {reasonText}
                         </div>
                       )}
                     </div>
@@ -648,7 +652,8 @@ export default function TestPrepDashboard() {
                     </span>
                   </div>
                 </li>
-              ))}
+                );
+              })}
             </ul>
           )}
         </Card>

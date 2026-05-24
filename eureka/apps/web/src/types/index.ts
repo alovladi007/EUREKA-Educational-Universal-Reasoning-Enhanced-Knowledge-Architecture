@@ -11,6 +11,25 @@ export interface User {
   is_active: boolean;
   email_verified: boolean;
   created_at: string;
+  /** ISO timestamp of the user's most recent successful login, when surfaced
+   *  by api-core. Optional because not all endpoints include it. */
+  last_login_at?: string | null;
+}
+
+/** AI tutor chat-message wire shape — produced by api-core's /tutor endpoint
+ *  and consumed by the /dashboard/tutor page. Kept here so the page doesn't
+ *  re-declare a local type. */
+export interface TutorMessage {
+  id: string;
+  role: 'user' | 'assistant' | 'system';
+  content: string;
+  /** ISO timestamp. The api-core canonical field; both server-rendered
+   *  messages and locally-instantiated ones use this. */
+  timestamp: string;
+  /** Alias retained for callers that still read `created_at`. */
+  created_at?: string;
+  /** Optional list of source IDs referenced when role === 'assistant'. */
+  sources?: string[];
 }
 
 export interface Organization {

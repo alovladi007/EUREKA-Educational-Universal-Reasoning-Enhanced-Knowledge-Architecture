@@ -116,7 +116,10 @@ export default function ExperienceViewerPage() {
 
     // Load scene
     const loader = new GLTFLoader();
-    loader.load(experience.scene_file_url, (gltf) => {
+    // GLTFLoader is typed as any (see src/types/three-modules.d.ts).
+    // Explicitly annotate the callback to satisfy strict implicit-any.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    loader.load(experience.scene_file_url, (gltf: any) => {
       scene.add(gltf.scene);
     });
 
@@ -202,7 +205,10 @@ export default function ExperienceViewerPage() {
 
         // Load scene
         const loader = new GLTFLoader();
-        loader.load(experience.scene_file_url, (gltf) => {
+        // GLTFLoader is typed as any (see src/types/three-modules.d.ts).
+    // Explicitly annotate the callback to satisfy strict implicit-any.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    loader.load(experience.scene_file_url, (gltf: any) => {
           scene.add(gltf.scene);
         });
 

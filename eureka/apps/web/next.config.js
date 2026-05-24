@@ -5,15 +5,16 @@ const nextConfig = {
     NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000',
     NEXT_PUBLIC_API_PREFIX: process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1',
   },
-  // Phase 3.6 baseline (Session 3.6, 2026-05): Next 14 fails the build on
-  // any type-check or lint error. The codebase has accumulated pre-existing
-  // issues that aren't this session's scope (Three.js typing, untyped
-  // tier pages, etc.). We keep `npm run type-check` and `npm run lint`
-  // as separate gating commands in CI; `npm run build` should still ship
-  // a binary. As the type errors get cleaned up in follow-ups, flip these
-  // back to false.
-  typescript: { ignoreBuildErrors: true },
-  eslint: { ignoreDuringBuilds: true },
+  // P0-2 (Session 26): the codebase now type-checks cleanly under
+  // `npx tsc --noEmit`. Build failures on type errors are again surfaced,
+  // so production builds catch regressions before they ship. Two large
+  // legacy pages (fe-ee-course/page.tsx, xr-labs/scene-builder/page.tsx)
+  // carry @ts-nocheck headers with TODO markers for follow-up refactors.
+  // Three.js JSX + example-jsm modules are typed via src/types/three-*.d.ts
+  // shims. If you need to bypass build errors during a refactor, prefer a
+  // narrowly-scoped @ts-expect-error over flipping these flags back on.
+  typescript: { ignoreBuildErrors: false },
+  eslint: { ignoreDuringBuilds: false },
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
   webpack: (config, { isServer }) => {
     // Handle Three.js and related packages

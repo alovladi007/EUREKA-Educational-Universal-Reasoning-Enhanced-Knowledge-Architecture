@@ -43,13 +43,14 @@ const Select = ({ value, onValueChange, defaultValue, children }: SelectProps) =
 
 Select.displayName = 'Select';
 
-interface SelectTriggerProps {
-  className?: string;
+// Accept all standard <button> HTML attributes (id, aria-*, data-*, etc.)
+// so callers can wire labels, form integrations, and analytics.
+interface SelectTriggerProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children?: React.ReactNode;
 }
 
 const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
-  ({ className, children }, ref) => {
+  ({ className, children, onClick, ...props }, ref) => {
     const context = useContext(SelectContext);
 
     if (!context) {
@@ -60,7 +61,10 @@ const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
       <button
         ref={ref}
         type="button"
-        onClick={() => context.setOpen(!context.open)}
+        onClick={(e) => {
+          context.setOpen(!context.open);
+          onClick?.(e);
+        }}
         className={cn(
           'flex h-10 w-full items-center justify-between rounded-md border border-input',
           'bg-background px-3 py-2 text-sm ring-offset-background',
@@ -69,6 +73,7 @@ const SelectTrigger = forwardRef<HTMLButtonElement, SelectTriggerProps>(
           'disabled:cursor-not-allowed disabled:opacity-50',
           className
         )}
+        {...props}
       >
         {children}
         <ChevronDown className="h-4 w-4 opacity-50" />
