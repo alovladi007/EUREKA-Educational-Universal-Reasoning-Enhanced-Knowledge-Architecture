@@ -34,6 +34,29 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"Database connection failed (will retry on first request): {e}")
 
+    # Seed the `demo_user` row so endpoints that fall back to user_id='demo_user'
+    # (notes, flashcards, qbank sessions) don't fail FK constraints on a fresh DB.
+    # Idempotent: ON CONFLICT DO NOTHING.
+    try:
+        from sqlalchemy import text
+        with engine.begin() as conn:
+            conn.execute(
+                text(
+                    """
+                    INSERT INTO users
+                        (id, email, username, hashed_password, full_name,
+                         is_active, is_verified)
+                    VALUES
+                        ('demo_user', 'demo@eureka.local', 'demo',
+                         '!disabled', 'Demo User', true, true)
+                    ON CONFLICT (id) DO NOTHING
+                    """
+                )
+            )
+        logger.info("demo_user seed: present")
+    except Exception as e:
+        logger.warning(f"demo_user seed skipped: {e}")
+
     # Initialize adaptive engine
     global adaptive_engine
     adaptive_engine = AdaptiveEngine()
