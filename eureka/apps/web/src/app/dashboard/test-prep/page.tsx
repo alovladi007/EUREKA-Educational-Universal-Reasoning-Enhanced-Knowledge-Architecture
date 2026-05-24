@@ -26,6 +26,8 @@ import { apiClient } from '@/lib/api-client';
 import { api as eurekaApi } from '@/lib/eureka-api';
 import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
+import { useActiveExam } from '@/hooks/use-active-exam';
+import { ExamSelector } from '@/components/test-prep/ExamSelector';
 
 interface UserStats {
   total_questions: number;
@@ -63,6 +65,11 @@ interface Recommendation {
 }
 
 export default function TestPrepDashboard() {
+  // Use the platform-wide active exam (URL ?exam= → localStorage → 'GRE').
+  // The legacy local useState here defaulted to 'GRE' independently of the
+  // layout selector, which caused the Overview welcome card to show one exam
+  // while the layout pill showed another. See useActiveExam JSDoc.
+  const { examType, examConfig } = useActiveExam();
   const [user, setUser] = useState<any>(null);
   const [stats, setStats] = useState<UserStats | null>(null);
   const [recentActivity, setRecentActivity] = useState<Activity[]>([]);
@@ -72,7 +79,6 @@ export default function TestPrepDashboard() {
   const [readinessScore, setReadinessScore] = useState<any>(null);
   const [predictions, setPredictions] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [examType, setExamType] = useState('GRE');
 
   // Phase 17 — additive: live skill mastery + Phase 4.5 recommendations
   // for the test-prep tier, pulled straight from api-core. Doesn't replace
@@ -233,25 +239,15 @@ export default function TestPrepDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold mb-2">
-            Test Prep Dashboard
-          </h1>
-          <p className="text-muted-foreground">
-            Track your progress and optimize your study plan
-          </p>
-        </div>
-        <select
-          value={examType}
-          onChange={(e) => setExamType(e.target.value)}
-          className="px-4 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-primary"
-        >
-          {EXAM_TYPE_LIST.map((exam) => (
-            <option key={exam.id} value={exam.id}>{exam.shortName}</option>
-          ))}
-        </select>
+      {/* Header — exam selection lives in the layout pill (top-right), so we
+          don't duplicate it here. The page title reflects the active exam. */}
+      <div>
+        <h1 className="text-3xl font-bold mb-2">
+          {examConfig.shortName} Dashboard
+        </h1>
+        <p className="text-muted-foreground">
+          {examConfig.name} · Track your progress and optimize your {examConfig.shortName} study plan
+        </p>
       </div>
 
       {/* Welcome Card */}
@@ -259,7 +255,7 @@ export default function TestPrepDashboard() {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h2 className="text-2xl font-bold mb-2">
-              {getExamConfig(examType).name} Prep
+              {examConfig.name} Prep
             </h2>
             <p className="text-muted-foreground">
               {(stats?.total_questions || 0) > 0
