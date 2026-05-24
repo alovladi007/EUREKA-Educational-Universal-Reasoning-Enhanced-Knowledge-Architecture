@@ -17,6 +17,8 @@ import toast, { Toaster } from 'react-hot-toast';
 import { useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
 import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
+import { useActiveExam } from '@/hooks/use-active-exam';
+import { ExamSelector } from '@/components/test-prep/ExamSelector';
 
 interface ExamConfig {
   examType: string;
@@ -53,7 +55,9 @@ interface ExamType {
 function ExamSimulatorPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialExam = searchParams.get('exam') || '';
+  // Active-exam wins over the raw search param (it already merges URL + localStorage).
+  const { examType: activeExam, setActiveExam } = useActiveExam();
+  const initialExam = activeExam || searchParams.get('exam') || '';
 
   const [examConfig, setExamConfig] = useState<ExamConfig>(() => {
     if (initialExam) {
@@ -67,6 +71,21 @@ function ExamSimulatorPageInner() {
     }
     return { examType: '', duration: 180, questionCount: 50, sections: [] };
   });
+
+  // Resync when the active exam changes (e.g. user picks one in the layout pill).
+  useEffect(() => {
+    if (!activeExam) return;
+    setExamConfig((prev) => {
+      if (prev.examType === activeExam) return prev;
+      const cfg = getExamConfig(activeExam);
+      return {
+        examType: cfg.id,
+        duration: cfg.totalDuration,
+        questionCount: cfg.totalQuestions,
+        sections: cfg.sections.map((s) => s.id),
+      };
+    });
+  }, [activeExam]);
   const [examStarted, setExamStarted] = useState(false);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [questions, setQuestions] = useState<Question[]>([]);
@@ -254,7 +273,8 @@ function ExamSimulatorPageInner() {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
         <Toaster position="top-right" />
-        <div className="max-w-4xl mx-auto px-4">
+        <div className="max-w-4xl mx-auto px-4 space-y-6">
+          <ExamSelector variant="card" />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -279,6 +299,7 @@ function ExamSimulatorPageInner() {
                           questionCount: exam.questions,
                           sections: cfg.sections.map(s => s.id),
                         });
+                        setActiveExam(exam.id);
                       }}
                       className={`p-4 rounded-lg border-2 text-left transition-all ${
                         examConfig.examType === exam.id

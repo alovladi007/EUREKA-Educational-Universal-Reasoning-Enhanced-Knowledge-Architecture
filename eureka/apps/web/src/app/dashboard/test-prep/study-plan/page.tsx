@@ -16,6 +16,9 @@ import {
 } from '@heroicons/react/24/outline';
 import toast, { Toaster } from 'react-hot-toast';
 import { apiClient } from '@/lib/api-client';
+import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
+import { useActiveExam } from '@/hooks/use-active-exam';
+import { ExamSelector } from '@/components/test-prep/ExamSelector';
 
 interface Task {
   time: string;
@@ -65,6 +68,7 @@ interface StudyPlan {
 }
 
 export default function StudyPlanPage() {
+  const { examType, examConfig, setActiveExam } = useActiveExam();
   const [studyPlan, setStudyPlan] = useState<StudyPlan | null>(null);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [weeklySchedule, setWeeklySchedule] = useState<DaySchedule[]>([]);
@@ -72,7 +76,6 @@ export default function StudyPlanPage() {
   const [showCreatePlan, setShowCreatePlan] = useState(false);
   const [aiInsights, setAiInsights] = useState<any[]>([]);
   const [predictions, setPredictions] = useState<any>(null);
-  const [examType, setExamType] = useState('GRE');
   const [newPlan, setNewPlan] = useState<NewPlan>({
     examType: '',
     targetDate: '',
@@ -81,8 +84,25 @@ export default function StudyPlanPage() {
     studyDaysPerWeek: 5
   });
 
+  /**
+   * Exam-specific fallback recommendations. When the adaptive learning API is
+   * unavailable, we surface sensible defaults drawn from the official exam
+   * blueprint (EXAM_CONFIGS.sections) instead of always-GRE topics.
+   */
+  const fallbackRecommendations = (): Recommendation[] => {
+    const cfg = getExamConfig(examType);
+    return cfg.sections.slice(0, 4).map((sec, idx) => ({
+      topic: sec.name,
+      priority: idx < 2 ? 'high' : 'medium',
+      recommended_questions: sec.questionCount && sec.questionCount > 0
+        ? Math.max(15, Math.min(40, sec.questionCount * 2))
+        : 25,
+    }));
+  };
+
   useEffect(() => {
     fetchStudyPlan();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [examType]);
 
   const fetchStudyPlan = async () => {
@@ -133,11 +153,8 @@ export default function StudyPlanPage() {
           recommended_questions: area.recommended_questions || 20
         })));
       } else {
-        setRecommendations([
-          { topic: 'Quantitative Reasoning', priority: 'high', recommended_questions: 30 },
-          { topic: 'Verbal Reasoning', priority: 'high', recommended_questions: 25 },
-          { topic: 'Analytical Writing', priority: 'medium', recommended_questions: 15 }
-        ]);
+        // Fall back to the active exam's actual sections instead of always-GRE topics.
+        setRecommendations(fallbackRecommendations());
       }
 
       // Try to get predictions for estimated score
@@ -145,25 +162,34 @@ export default function StudyPlanPage() {
         const predRes = await apiClient.getPredictions(examType);
         setPredictions(predRes);
 
+        // Default target = 85% of the exam's max scaled score (sensible aspirational target).
+        const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
+        const accuracyAsScore = statsRes.overall_accuracy
+          ? Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * (statsRes.overall_accuracy / 100))
+          : Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.5);
         setStudyPlan({
           exam_type: examType,
           target_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-          target_score: 320,
-          current_score: statsRes.overall_accuracy ? Math.round(statsRes.overall_accuracy * 340) : 300,
+          target_score: targetScore,
+          current_score: accuracyAsScore,
           days_until_exam: 45,
           progress: progressRes.data?.overall_progress || 32,
-          estimated_score: predRes.exam_score?.expected || 315
+          estimated_score: predRes.exam_score?.expected || accuracyAsScore,
         });
       } catch (error) {
         console.log('Predictions not available, using defaults');
+        const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
+        const accuracyAsScore = statsRes.overall_accuracy
+          ? Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * (statsRes.overall_accuracy / 100))
+          : Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.5);
         setStudyPlan({
           exam_type: examType,
           target_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-          target_score: 320,
-          current_score: statsRes.overall_accuracy ? Math.round(statsRes.overall_accuracy * 340) : 300,
+          target_score: targetScore,
+          current_score: accuracyAsScore,
           days_until_exam: 45,
           progress: progressRes.data?.overall_progress || 32,
-          estimated_score: 315
+          estimated_score: accuracyAsScore,
         });
       }
 
@@ -180,21 +206,21 @@ export default function StudyPlanPage() {
     } catch (error) {
       console.error('Failed to fetch study plan:', error);
 
-      // Set default values on error
+      // Set default values on error — scale targets to the active exam's
+      // actual score range so non-GRE users see numbers that make sense.
+      const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
+      const baselineScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.5);
       setStudyPlan({
         exam_type: examType,
         target_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
-        target_score: 320,
-        current_score: 300,
+        target_score: targetScore,
+        current_score: baselineScore,
         days_until_exam: 45,
         progress: 0,
-        estimated_score: 300
+        estimated_score: baselineScore,
       });
 
-      setRecommendations([
-        { topic: 'Quantitative Reasoning', priority: 'high', recommended_questions: 30 },
-        { topic: 'Verbal Reasoning', priority: 'high', recommended_questions: 25 }
-      ]);
+      setRecommendations(fallbackRecommendations());
 
       generateAIWeeklySchedule([]);
     } finally {
@@ -285,7 +311,8 @@ export default function StudyPlanPage() {
 
       toast.success('AI study plan created successfully!', { id: toastId });
       setShowCreatePlan(false);
-      setExamType(newPlan.examType);
+      // Sync into the global active-exam state so all tabs follow this exam.
+      setActiveExam(newPlan.examType);
       fetchStudyPlan();
     } catch (error) {
       console.error('Failed to create study plan:', error);
@@ -339,15 +366,18 @@ export default function StudyPlanPage() {
     <div className="space-y-6">
       <Toaster position="top-right" />
 
+      {/* Exam selector — single source of truth for which exam this plan targets */}
+      <ExamSelector variant="card" />
+
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 to-blue-600 rounded-2xl p-8 text-white">
         <div className="flex items-center justify-between">
           <div>
             <div className="flex items-center gap-3 mb-2">
-              <h1 className="text-3xl font-bold">Your AI Study Plan</h1>
+              <h1 className="text-3xl font-bold">Your {examConfig.shortName} Study Plan</h1>
               <SparklesIcon className="h-8 w-8 text-yellow-300" />
             </div>
-            <p className="text-indigo-100">AI-powered personalized learning path to achieve your goals</p>
+            <p className="text-indigo-100">AI-powered personalized learning path · target {examConfig.scoreRange.label}</p>
           </div>
           <button
             onClick={() => setShowCreatePlan(true)}
@@ -724,9 +754,9 @@ export default function StudyPlanPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
                   <option value="">Select exam</option>
-                  <option value="GRE">GRE</option>
-                  <option value="GMAT">GMAT</option>
-                  <option value="SAT">SAT</option>
+                  {EXAM_TYPE_LIST.map((e) => (
+                    <option key={e.id} value={e.id}>{e.name}</option>
+                  ))}
                 </select>
               </div>
 

@@ -19,7 +19,9 @@ import toast, { Toaster } from 'react-hot-toast';
 import Confetti from 'react-confetti';
 import { useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
-import { EXAM_TYPE_LIST, getSectionsForExam } from '@/lib/exam-config';
+import { EXAM_TYPE_LIST, getSectionsForExam, getExamConfig } from '@/lib/exam-config';
+import { useActiveExam } from '@/hooks/use-active-exam';
+import { ExamSelector } from '@/components/test-prep/ExamSelector';
 
 interface AdaptiveSession {
   session_id: string;
@@ -33,8 +35,11 @@ interface AdaptiveSession {
 }
 
 function PracticeModePageInner() {
+  // The active-exam hook unifies the source of truth (URL > localStorage > default).
+  // The Practice page used to read `?exam=` directly and fall back to GRE, which
+  // ignored the user's persisted selection across navigation.
+  const { examType: activeExam, examConfig: activeExamConfig, setActiveExam } = useActiveExam();
   const searchParams = useSearchParams();
-  const initialExam = searchParams.get('exam') || 'GRE';
 
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [sessionData, setSessionData] = useState<AdaptiveSession | null>(null);
@@ -57,10 +62,23 @@ function PracticeModePageInner() {
   const [showHint, setShowHint] = useState(false);
   const [showSetup, setShowSetup] = useState(true);
   const [sessionConfig, setSessionConfig] = useState({
-    examType: initialExam,
-    section: getSectionsForExam(initialExam)[0]?.id || '',
-    targetQuestions: 20
+    examType: activeExam,
+    section: getSectionsForExam(activeExam)[0]?.id || '',
+    targetQuestions: 20,
   });
+
+  // Resync session config when the active exam changes (e.g. user picks a new
+  // exam in the layout pill or on another page, then navigates here).
+  useEffect(() => {
+    setSessionConfig((prev) => {
+      if (prev.examType === activeExam) return prev;
+      return {
+        ...prev,
+        examType: activeExam,
+        section: getSectionsForExam(activeExam)[0]?.id || '',
+      };
+    });
+  }, [activeExam]);
 
   const currentSections = getSectionsForExam(sessionConfig.examType);
 
@@ -291,6 +309,8 @@ function PracticeModePageInner() {
                       examType: newExam,
                       section: newSections[0]?.id || '',
                     });
+                    // Sync into the global active-exam state so other tabs see it.
+                    setActiveExam(newExam);
                   }}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 >
@@ -360,7 +380,10 @@ function PracticeModePageInner() {
         </div>
       )}
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        {/* Active exam card — visible behind the modal too */}
+        <ExamSelector variant="card" />
+
         {/* Header Stats */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}

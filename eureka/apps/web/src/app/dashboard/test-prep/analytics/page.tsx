@@ -21,6 +21,8 @@ import {
   UserGroupIcon
 } from '@heroicons/react/24/outline';
 import { apiClient } from '@/lib/api-client';
+import { useActiveExam } from '@/hooks/use-active-exam';
+import { ExamSelector } from '@/components/test-prep/ExamSelector';
 
 interface Stats {
   total_questions: number;
@@ -32,7 +34,7 @@ interface Stats {
 }
 
 export default function AnalyticsPage() {
-  const [examType, setExamType] = useState('GRE');
+  const { examType, examConfig } = useActiveExam();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<Stats | null>(null);
   const [comprehensiveData, setComprehensiveData] = useState<any>(null);
@@ -156,25 +158,20 @@ export default function AnalyticsPage() {
 
   return (
     <div className="space-y-6">
+      {/* Exam selector + workspace deep link */}
+      <ExamSelector variant="card" />
+
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-3">
           <div>
-            <h1 className="text-3xl font-bold mb-2">Comprehensive Analytics</h1>
-            <p className="text-purple-100">Advanced insights powered by AI and psychometric models</p>
+            <h1 className="text-3xl font-bold mb-2">{examConfig.shortName} Analytics</h1>
+            <p className="text-purple-100">Advanced insights powered by AI and psychometric models · {examConfig.sections.length} sections · {examConfig.totalQuestions} questions · {Math.floor(examConfig.totalDuration / 60)}h {examConfig.totalDuration % 60}m</p>
           </div>
-          <select
-            value={examType}
-            onChange={(e) => setExamType(e.target.value)}
-            className="px-4 py-2 bg-white text-gray-800 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-300"
-          >
-            <option value="GRE">GRE</option>
-            <option value="GMAT">GMAT</option>
-            <option value="LSAT">LSAT</option>
-            <option value="MCAT">MCAT</option>
-            <option value="TOEFL">TOEFL</option>
-            <option value="FE">FE Exam</option>
-          </select>
+          <div className="text-right text-xs text-purple-100/80">
+            <p className="font-mono">{examConfig.scoreRange.label}</p>
+            {examConfig.passingInfo && <p className="mt-1 max-w-xs">{examConfig.passingInfo}</p>}
+          </div>
         </div>
       </div>
 
@@ -603,6 +600,58 @@ export default function AnalyticsPage() {
         ) : (
           <p className="text-center text-gray-500 py-8">No topic data available yet. Start practicing to build your profile!</p>
         )}
+      </motion.div>
+
+      {/* Exam Blueprint — exam-specific section breakdown from EXAM_CONFIGS */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-xl shadow-lg p-6"
+      >
+        <div className="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <div>
+            <h2 className="text-xl font-bold text-gray-900">{examConfig.shortName} Exam Blueprint</h2>
+            <p className="text-sm text-gray-500">
+              Official section breakdown — your readiness should be tracked against THIS exact distribution.
+            </p>
+          </div>
+          <div className="text-right">
+            <p className="text-2xl font-bold text-indigo-600">{examConfig.totalQuestions}</p>
+            <p className="text-xs text-gray-500">total questions</p>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-gray-200">
+                <th className="text-left py-2 px-3 font-medium text-gray-700">Section</th>
+                <th className="text-center py-2 px-3 font-medium text-gray-700">Questions</th>
+                <th className="text-center py-2 px-3 font-medium text-gray-700">Time</th>
+                <th className="text-right py-2 px-3 font-medium text-gray-700">% of exam</th>
+              </tr>
+            </thead>
+            <tbody>
+              {examConfig.sections.map((s) => (
+                <tr key={s.id} className="border-b border-gray-100">
+                  <td className="py-2 px-3 text-gray-900">{s.name}</td>
+                  <td className="py-2 px-3 text-center text-gray-600">{s.questionCount ?? '—'}</td>
+                  <td className="py-2 px-3 text-center text-gray-600">
+                    {s.timeMinutes ? `${s.timeMinutes} min` : '—'}
+                  </td>
+                  <td className="py-2 px-3 text-right text-gray-600">
+                    {s.questionCount
+                      ? `${((s.questionCount / examConfig.totalQuestions) * 100).toFixed(1)}%`
+                      : '—'}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p className="text-xs text-gray-500 mt-3">
+          Score range: <span className="font-mono">{examConfig.scoreRange.label}</span>
+          {examConfig.passingInfo ? ` · ${examConfig.passingInfo}` : ''}
+        </p>
       </motion.div>
     </div>
   );
