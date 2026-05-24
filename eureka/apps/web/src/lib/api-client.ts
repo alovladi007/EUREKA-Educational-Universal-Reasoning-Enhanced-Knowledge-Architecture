@@ -259,6 +259,75 @@ class ApiClient {
     return response.data || {};
   }
 
+  // ==================== User Progress (P0-5) ====================
+  // Cross-exam per-topic mastery tracking. Backend stores one row per
+  // (user, exam_type, topic_id); upserts run via POST /me/progress
+  // after every answered question. Used by the per-exam Analytics pages
+  // and the Study Plan recommendation engine.
+
+  async getUserProgress(examType: string): Promise<Array<{
+    id: string;
+    user_id: string;
+    exam_type: string;
+    topic_id: string;
+    attempts: number;
+    correct: number;
+    avg_seconds: number;
+    mastery_level: number;
+    last_seen_at: string;
+    created_at: string;
+  }>> {
+    const response = await this.client.get('/me/progress', {
+      params: { exam_type: examType },
+    });
+    return response.data || [];
+  }
+
+  async recordProgress(payload: {
+    exam_type: string;
+    topic_id: string;
+    is_correct: boolean;
+    seconds?: number;
+  }): Promise<{
+    id: string;
+    user_id: string;
+    exam_type: string;
+    topic_id: string;
+    attempts: number;
+    correct: number;
+    avg_seconds: number;
+    mastery_level: number;
+    last_seen_at: string;
+    created_at: string;
+  }> {
+    const response = await this.client.post('/me/progress', payload);
+    return response.data;
+  }
+
+  async getProgressSummary(examType: string): Promise<{
+    exam_type: string;
+    total_topics: number;
+    topics_attempted: number;
+    total_attempts: number;
+    total_correct: number;
+    accuracy: number;
+    average_mastery: number;
+    average_seconds_per_question: number;
+    weakest_topics: Array<{
+      id: string;
+      topic_id: string;
+      attempts: number;
+      correct: number;
+      mastery_level: number;
+      avg_seconds: number;
+    }>;
+  }> {
+    const response = await this.client.get('/me/progress/summary', {
+      params: { exam_type: examType },
+    });
+    return response.data;
+  }
+
   // ==================== Organizations ====================
 
   async getOrganizations(params?: { 
@@ -747,8 +816,12 @@ class ApiClient {
     return response.data;
   }
 
-  // User Progress API
-  async getUserProgress(): Promise<any> {
+  // Test-prep microservice user-progress + achievements stubs.
+  // Renamed from getUserProgress() to avoid colliding with the canonical
+  // api-core implementation above (P0-5). The test-prep service hosts its
+  // own per-question_attempts table that's distinct from the api-core
+  // user_progress topic-level rollup.
+  async getTestPrepUserProgress(): Promise<any> {
     const response = await this.getTestPrepClient().get('/api/v1/users/me/progress');
     return response.data;
   }

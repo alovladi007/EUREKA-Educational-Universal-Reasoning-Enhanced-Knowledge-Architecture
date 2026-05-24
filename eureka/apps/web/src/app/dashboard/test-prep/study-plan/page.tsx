@@ -118,7 +118,11 @@ export default function StudyPlanPage() {
           console.error('Stats error:', e);
           return {};
         }),
-        apiClient.getUserProgress().catch(e => {
+        // Test-prep microservice stub — was getUserProgress(); renamed to
+        // disambiguate from the canonical api-core getUserProgress(examType)
+        // added in P0-5. The study-plan page just uses this as a fallback
+        // signal alongside getRecommendations / getUserStats.
+        apiClient.getTestPrepUserProgress().catch(e => {
           console.error('Progress error:', e);
           return { data: {} };
         })

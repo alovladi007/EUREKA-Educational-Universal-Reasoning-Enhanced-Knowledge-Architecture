@@ -117,6 +117,7 @@ from app.models.user_content import (
     CollectionKind,
     CollectionItemKind,
 )
+from app.models.user_progress import UserProgress, ExamTypeKind
 from app.models.graduate import (
     GraduateProgram,
     GraduateEnrollment,
@@ -421,4 +422,6 @@ __all__ = [
     "ActivityKind",
     "CollectionKind",
     "CollectionItemKind",
+    "UserProgress",
+    "ExamTypeKind",
 ]
