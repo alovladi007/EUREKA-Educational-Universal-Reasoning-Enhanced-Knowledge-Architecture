@@ -195,14 +195,23 @@ const MPEP_CHAPTERS = [
 ];
 
 const MPEP_HIGH_YIELD = [
-  { chapter: '700', topic: 'Examination of Applications', why: 'Core prosecution procedures — most heavily tested chapter.' },
-  { chapter: '2100', topic: 'Patentability (35 USC 101, 102, 103, 112)', why: 'Novelty, obviousness, and subject matter eligibility are the most tested topics.' },
-  { chapter: '600', topic: 'Parts, Form, and Content of Application', why: 'Specification, claims, drawings, and oath/declaration requirements.' },
-  { chapter: '1200', topic: 'Appeal', why: 'Appeal procedures before the PTAB.' },
-  { chapter: '2000', topic: 'Duty of Disclosure', why: 'Rule 56 duty of candor and inequitable conduct.' },
-  { chapter: '1800', topic: 'Patent Cooperation Treaty (PCT)', why: 'International filing, ISA/IPEA, and national phase entry.' },
-  { chapter: '200', topic: 'Types and Status of Application', why: 'Provisional, non-provisional, continuation, CIP, and divisional.' },
-  { chapter: '1500', topic: 'Design Patents', why: 'Design patent prosecution rules differ from utility patents.' },
+  { chapter: '700', topic: 'Examination of Applications', why: 'Core prosecution procedures — most heavily tested chapter on the exam.' },
+  { chapter: '2100', topic: 'Patentability (35 USC 101, 102, 103, 112)', why: 'Novelty, obviousness, eligibility, written description — single most tested area.' },
+  { chapter: '600', topic: 'Parts, Form, and Content of Application', why: 'Specification structure, claim drafting, drawings, oath/declaration.' },
+  { chapter: '1200', topic: 'Appeal to PTAB', why: '§41.37 brief content, examiner answer, oral hearing, BRI vs Phillips.' },
+  { chapter: '2000', topic: 'Duty of Disclosure', why: 'Rule 56 duty, IDS timing windows, Therasense inequitable conduct.' },
+  { chapter: '1800', topic: 'Patent Cooperation Treaty (PCT)', why: 'International filing, ISR/IPEA, 30-month national stage, §365(c) bypass.' },
+  { chapter: '200', topic: 'Types and Status of Application', why: 'Provisional, continuation, divisional, CIP, RCE, priority/benefit claims.' },
+  { chapter: '1500', topic: 'Design Patents', why: 'Design rules differ — ornamentality, single claim, 15-year term.' },
+  // ─── Expanded high-yield chapters (gap-fix 2026-05-24) ──────────────────
+  { chapter: '1400', topic: 'Correction of Patents', why: 'Reissue (§251) 2-yr broadening, recapture, certificate of correction.' },
+  { chapter: '2200', topic: 'Citation of Prior Art & Ex Parte Reexam', why: 'SNQ standard, ex parte reexam scope, third-party requesters.' },
+  { chapter: '2700', topic: 'Patent Terms and Extensions', why: 'PTA A/B/C delays, §156 PTE for FDA review, term calculations.' },
+  { chapter: '2500', topic: 'Maintenance Fees', why: '3.5/7.5/11.5-year schedule, 6-mo grace, reinstatement for unintentional delay.' },
+  { chapter: '2900', topic: 'IPR / PGR Proceedings', why: 'IPR (§102/103 + patents/pubs) vs PGR (9-mo window, any ground).' },
+  { chapter: '400', topic: 'Representative of Inventor or Owner', why: 'POA, foreign representation, signatures, withdrawal of representation.' },
+  { chapter: '2800', topic: 'Supplemental Examination', why: '§257 immunity from inequitable conduct; SNQ → reexam pathway.' },
+  { chapter: '800', topic: 'Restriction & Double Patenting', why: 'Two-part test, election with traverse, §121 safe harbor, ODP.' },
 ];
 
 function MPEPTab() {
@@ -348,6 +357,10 @@ function MPEPTab() {
           <p><strong>4. Understand flowcharts and timelines.</strong> Prosecution timelines, appeal procedures, and PCT deadlines come up repeatedly.</p>
           <p><strong>5. Practice with the actual MPEP interface.</strong> The exam uses the searchable MPEP — get comfortable navigating it before test day.</p>
           <p><strong>6. Track section revisions.</strong> Sections marked with [R-01.2024] have been recently updated and may be more likely to appear on the exam.</p>
+          <p><strong>7. Memorize key deadlines.</strong> Paris 12-month, PCT 30-month, IDS 3-month, broadening reissue 2-year, PTE 60-day, maintenance 3.5/7.5/11.5-year. Mistakes here are common &amp; costly.</p>
+          <p><strong>8. Know post-AIA vs pre-AIA distinctions.</strong> Effective filing date (EFD) on/after March 16, 2013 → AIA §102/§103. Earlier filings → pre-AIA. The exam tests both.</p>
+          <p><strong>9. Distinguish PTAB proceedings.</strong> IPR (§102/§103 + patents/pubs only), PGR (any ground, 9-mo window), CBM (sunset 2020), ex parte appeal (§134(a)). Estoppel rules differ.</p>
+          <p><strong>10. Practice MPEP cross-references.</strong> Many sections cite each other (e.g., MPEP 2100 ↔ MPEP 700). Follow the cross-references to understand context.</p>
         </div>
       </Card>
 
@@ -358,21 +371,57 @@ function MPEPTab() {
         </h3>
         <div className="grid gap-2 sm:grid-cols-2">
           {[
+            // ── Rule 56 family (duty of disclosure) ────────────────────────
             { rule: '37 CFR 1.56', desc: 'Duty to disclose material information (Rule 56)' },
+            { rule: '37 CFR 1.97', desc: 'IDS timing windows (three filing windows)' },
+            { rule: '37 CFR 1.98', desc: 'IDS content requirements (citation format, copies)' },
+            // ── Response & amendment practice ──────────────────────────────
             { rule: '37 CFR 1.111', desc: 'Reply to non-final Office action' },
             { rule: '37 CFR 1.113', desc: 'Final rejection' },
+            { rule: '37 CFR 1.114', desc: 'Request for Continued Examination (RCE)' },
             { rule: '37 CFR 1.116', desc: 'Amendments after final rejection' },
+            { rule: '37 CFR 1.130', desc: 'Declarations to overcome AIA §102 prior art' },
             { rule: '37 CFR 1.131', desc: 'Affidavit to antedate prior art (pre-AIA)' },
             { rule: '37 CFR 1.132', desc: 'Declaration of evidence (secondary considerations)' },
             { rule: '37 CFR 1.136', desc: 'Extensions of time' },
-            { rule: '37 CFR 1.321', desc: 'Terminal disclaimers' },
-            { rule: '35 USC 101', desc: 'Patent-eligible subject matter' },
-            { rule: '35 USC 102', desc: 'Novelty / Prior art' },
-            { rule: '35 USC 103', desc: 'Obviousness' },
-            { rule: '35 USC 112', desc: 'Specification requirements (written description, enablement, claims)' },
-            { rule: '35 USC 119', desc: 'Foreign priority' },
-            { rule: '35 USC 120', desc: 'Domestic benefit' },
-            { rule: '35 USC 371', desc: 'National stage of PCT applications' },
+            { rule: '37 CFR 1.142', desc: 'Requirement for restriction; election with traverse' },
+            { rule: '37 CFR 1.144', desc: 'Petition to challenge restriction requirement' },
+            { rule: '37 CFR 1.181', desc: 'Petition to the Director (general)' },
+            // ── PTAB appeal practice ───────────────────────────────────────
+            { rule: '37 CFR 41.31', desc: 'Pre-appeal brief request' },
+            { rule: '37 CFR 41.37', desc: 'Appeal brief content (10 required sections)' },
+            { rule: '37 CFR 41.39', desc: 'Examiner answer (may designate new ground)' },
+            { rule: '37 CFR 41.41', desc: 'Reply brief (limited to new grounds)' },
+            { rule: '37 CFR 41.47', desc: 'Oral hearing request' },
+            { rule: '37 CFR 41.52', desc: 'Request for rehearing of PTAB decision' },
+            // ── Term & maintenance ─────────────────────────────────────────
+            { rule: '37 CFR 1.321', desc: 'Terminal disclaimers (TD)' },
+            { rule: '37 CFR 1.362', desc: 'Maintenance fee schedule & grace period' },
+            { rule: '37 CFR 1.378', desc: 'Reinstatement of expired patents (unintentional)' },
+            { rule: '37 CFR 1.705', desc: 'PTA reconsideration (2-mo window)' },
+            // ── 35 USC core patentability ─────────────────────────────────
+            { rule: '35 USC 101', desc: 'Patent-eligible subject matter (Alice/Mayo)' },
+            { rule: '35 USC 102', desc: 'Novelty / Prior art (AIA §102(a)(1), (a)(2))' },
+            { rule: '35 USC 103', desc: 'Obviousness (Graham factors, KSR)' },
+            { rule: '35 USC 112', desc: 'Spec. requirements: (a) written description/enablement, (b) definiteness, (f) MPF' },
+            // ── Priority & benefit ────────────────────────────────────────
+            { rule: '35 USC 119', desc: 'Foreign priority (Paris 12-month) and provisional §119(e)' },
+            { rule: '35 USC 120', desc: 'Domestic benefit (continuation chain)' },
+            { rule: '35 USC 121', desc: 'Restriction; divisional §121 safe harbor' },
+            { rule: '35 USC 135', desc: 'AIA derivation proceedings' },
+            { rule: '35 USC 141', desc: 'Appeals to Federal Circuit from PTAB' },
+            // ── Post-grant ────────────────────────────────────────────────
+            { rule: '35 USC 154', desc: 'Patent term (20 yrs from filing) + PTA (§154(b))' },
+            { rule: '35 USC 156', desc: 'Patent Term Extension (PTE) — Hatch-Waxman' },
+            { rule: '35 USC 251', desc: 'Reissue — broadening allowed within 2 years' },
+            { rule: '35 USC 252', desc: 'Intervening rights (reissue/reexam)' },
+            { rule: '35 USC 256', desc: 'Post-issue inventorship correction' },
+            { rule: '35 USC 257', desc: 'Supplemental examination (immunity from IC)' },
+            { rule: '35 USC 271', desc: 'Infringement (incl. §271(e) safe harbor for FDA)' },
+            { rule: '35 USC 311–319', desc: 'Inter Partes Review (IPR); §315(e) estoppel' },
+            { rule: '35 USC 321–329', desc: 'Post-Grant Review (PGR); §325(e) estoppel' },
+            { rule: '35 USC 365', desc: 'PCT priority (§365(c) bypass continuation)' },
+            { rule: '35 USC 371', desc: 'National stage of PCT applications (30-month)' },
           ].map((r) => (
             <div key={r.rule} className="flex items-start gap-2 p-2 rounded-lg hover:bg-muted/50">
               <Badge variant="outline" className="font-mono text-[10px] flex-shrink-0 mt-0.5">{r.rule}</Badge>

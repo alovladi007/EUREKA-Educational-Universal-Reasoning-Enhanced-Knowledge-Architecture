@@ -285,4 +285,96 @@ export const PATENT_TOPIC_ANCHORS: Record<string, PatentTopicAnchor> = {
     statutes: ['35 U.S.C. §§ 100(f), 115'],
     drillHint: 'Natural-person inventors; human contribution to conception.',
   },
+
+  // ── USPTO Gap-Fix anchors (added 2026-05-24) for the 18 new topics ─────
+  pa_aia_effective_filing_date: {
+    mpepChapters: ['2152', '2154', '2100'],
+    statutes: ['35 U.S.C. §§ 100(i), 102(a)(1), 102(b)(1)'],
+    drillHint: 'EFD per claim; one-year grace; Helsinn confidential-sale trap.',
+  },
+  pa_aia_102a2_secret_prior_art: {
+    mpepChapters: ['2154', '2100'],
+    statutes: ['35 U.S.C. §§ 102(a)(2), 102(b)(2), 102(c)'],
+    drillHint: 'Secret prior art; Hilmer eliminated; CREATE Act JRA exception.',
+  },
+  pa_112f_means_plus_function: {
+    mpepChapters: ['2181', '2182', '2183', '2184', '2185', '2186', '2187'],
+    statutes: ['35 U.S.C. § 112(f), § 112(b)'],
+    drillHint: 'Williamson nonce words; Aristocrat algorithm requirement.',
+  },
+  pa_terminal_disclaimer_odp: {
+    mpepChapters: ['804', '1490', '1400'],
+    statutes: ['35 U.S.C. § 121; 37 CFR § 1.321'],
+    drillHint: 'One-way vs two-way ODP; §121 safe harbor; recapture rule.',
+  },
+  pp_claim_antecedent_basis: {
+    mpepChapters: ['2173', '608', '600'],
+    statutes: ['35 U.S.C. § 112(b)'],
+    drillHint: 'Packard single-antecedent rule; comprising vs consisting; Markush.',
+  },
+  pp_ids_therasense_materiality: {
+    mpepChapters: ['2000', '2001'],
+    statutes: ['37 CFR §§ 1.56, 1.97, 1.98'],
+    drillHint: 'Three IDS windows; Therasense but-for materiality; foreign 30-day rule.',
+  },
+  pp_inventorship_correction: {
+    mpepChapters: ['602', '1481', '400'],
+    statutes: ['35 U.S.C. §§ 116, 135, 256; 37 CFR § 1.48'],
+    drillHint: 'Pre-issue (§116/§1.48) vs post-issue (§256) vs AIA derivation (§135).',
+  },
+  pf_priority_paris_120: {
+    mpepChapters: ['213', '214', '215', '200'],
+    statutes: ['35 U.S.C. §§ 119(a), 119(e), 120, 365; 37 CFR §§ 1.55, 1.78'],
+    drillHint: 'Paris 12-month; certified copy 4mo/16mo; restoration with unintentional delay.',
+  },
+  pf_rce_vs_continuation_strategy: {
+    mpepChapters: ['706', '201', '200'],
+    statutes: ['35 U.S.C. §§ 120, 121; 37 CFR § 1.114'],
+    drillHint: 'RCE vs continuation vs divisional vs CIP; PTA consumption.',
+  },
+  pf_restriction_elections_detailed: {
+    mpepChapters: ['800', '802', '803', '804', '806', '808'],
+    statutes: ['35 U.S.C. § 121; 37 CFR § 1.142'],
+    drillHint: 'Two-part test; election with traverse; election by original presentation.',
+  },
+  po_ptab_appeal_practice: {
+    mpepChapters: ['1200', '1204', '1205', '1207', '1208'],
+    statutes: ['35 U.S.C. §§ 134, 141, 145; 37 CFR §§ 41.37, 41.39, 41.41, 41.47, 41.52'],
+    drillHint: '§41.37 brief requirements; BRI vs Phillips; new ground response.',
+  },
+  pi_ipr_pgr_cbm_distinctions: {
+    mpepChapters: ['2200', '2900'],
+    statutes: ['35 U.S.C. §§ 311–319, 321–329, 315(e), 325(e)'],
+    drillHint: 'IPR (§102/103 + patents/pubs) vs PGR (any ground, 9-mo) vs CBM (sunset).',
+  },
+  pi_reissue_reexam_supplemental: {
+    mpepChapters: ['1400', '1410', '2200', '2800'],
+    statutes: ['35 U.S.C. §§ 251, 252, 257, 302–307'],
+    drillHint: 'Broadening reissue 2-yr; recapture rule; SNQ; §257 immunity.',
+  },
+  pct_chapter_ii_preliminary: {
+    mpepChapters: ['1800', '1820', '1830', '1840', '1850'],
+    statutes: ['PCT Articles 19, 31, 34; 37 CFR §§ 1.480'],
+    drillHint: 'Demand 22mo/3mo-from-ISR; Article 19 (claims) vs Article 34 (claims/spec/drawings).',
+  },
+  pct_national_stage_371: {
+    mpepChapters: ['1893', '1895', '1800'],
+    statutes: ['35 U.S.C. §§ 371, 365(c)'],
+    drillHint: '30-month deadline; §365(c) bypass continuation; restoration of priority.',
+  },
+  st_pta_calculation_abc: {
+    mpepChapters: ['2730', '2731', '2732', '2733', '2700'],
+    statutes: ['35 U.S.C. § 154(b); 37 CFR §§ 1.702–1.705'],
+    drillHint: 'A/B/C delays; overlap rule; applicant delay offset; 2-mo reconsideration.',
+  },
+  st_pte_hatch_waxman: {
+    mpepChapters: ['2750', '2700'],
+    statutes: ['35 U.S.C. § 156'],
+    drillHint: 'FDA delay PTE; 60-day filing; 5yr/14yr caps; PTA+PTE stacking.',
+  },
+  st_maintenance_fees: {
+    mpepChapters: ['2500', '2540', '2550', '2580', '2590'],
+    statutes: ['35 U.S.C. § 41(b); 37 CFR §§ 1.20(g)-(i), 1.362, 1.378'],
+    drillHint: '3.5/7.5/11.5-year schedule; 6-mo grace; reinstatement (unintentional).',
+  },
 };
