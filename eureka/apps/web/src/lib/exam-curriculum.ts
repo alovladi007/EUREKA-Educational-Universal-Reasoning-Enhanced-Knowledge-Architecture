@@ -542,6 +542,10 @@ const PE_EE: ExamCurriculum = [
 
 const SECURITY_PLUS: ExamCurriculum = [
   { sectionId: 'threats_attacks', sectionName: 'Threats, Vulnerabilities & Attacks', topics: [
+    // sp_controls is foundational — placed first so learners build a mental
+    // model of WHAT defenses exist before studying what they defend against.
+    t('sp_controls', 'Security Control Types & Foundational Concepts', 'Preventive/detective/corrective controls, CIA triad, defense in depth, zero trust, least privilege, separation of duties. SY0-701 objectives 1.1, 1.2.'),
+    t('sp_change_mgmt', 'Change & Configuration Management', 'Change advisory board (CAB), RFC, impact analysis, rollback, baselines, configuration drift, version control. SY0-701 objective 1.3.'),
     t('sp_malware', 'Malware Types & Indicators', 'Viruses, worms, trojans, ransomware, rootkits, and fileless malware.'),
     t('sp_social_eng', 'Social Engineering Attacks', 'Phishing, spear phishing, vishing, smishing, pretexting, and watering hole.'),
     t('sp_app_attacks', 'Application Attacks', 'SQL injection, XSS, CSRF, buffer overflow, and directory traversal.'),
@@ -554,6 +558,7 @@ const SECURITY_PLUS: ExamCurriculum = [
     t('sp_network_design', 'Secure Network Design', 'Segmentation, DMZ, VLANs, micro-segmentation, and SD-WAN.'),
     t('sp_cloud', 'Cloud Security', 'IaaS/PaaS/SaaS security, shared responsibility, CASB, and cloud-native controls.'),
     t('sp_virtualization', 'Virtualization & Containerization', 'Hypervisor security, container security, and serverless risks.'),
+    t('sp_api_security', 'API Security & Modern Integrations', 'REST, OAuth 2.0, JWT, OWASP API Top 10, API gateways, rate limiting, BOLA/IDOR. SY0-701 objective 3.3.'),
   ]},
   { sectionId: 'implementation', sectionName: 'Security Implementation', topics: [
     t('sp_crypto', 'Cryptography', 'Symmetric/asymmetric encryption, hashing, PKI, certificates, and TLS.'),
@@ -563,6 +568,7 @@ const SECURITY_PLUS: ExamCurriculum = [
     t('sp_hardening', 'System Hardening', 'Patch management, baseline configurations, and least privilege.'),
   ]},
   { sectionId: 'operations', sectionName: 'Security Operations', topics: [
+    t('sp_sdlc', 'Secure SDLC & Development Practices', 'SDLC models, secure coding (input validation, parameterized queries, output encoding), SAST/DAST/IAST/SCA, DevSecOps, CI/CD security. SY0-701 objectives 4.4-4.6.'),
     t('sp_incident', 'Incident Response', 'IR process, containment, eradication, recovery, and lessons learned.'),
     t('sp_forensics', 'Digital Forensics', 'Evidence collection, chain of custody, imaging, and analysis tools.'),
     t('sp_logging', 'Logging & Monitoring', 'SIEM, log aggregation, alerting, and continuous monitoring.'),
@@ -571,7 +577,10 @@ const SECURITY_PLUS: ExamCurriculum = [
   { sectionId: 'governance', sectionName: 'Security Program Management & Oversight', topics: [
     t('sp_policies', 'Policies & Procedures', 'AUPs, change management, separation of duties, and data classification.'),
     t('sp_risk', 'Risk Management', 'Risk assessment, risk register, quantitative/qualitative analysis, and risk treatment.'),
+    t('sp_third_party', 'Third-Party Risk Management', 'Vendor risk assessment, SOC 2 reports, SLAs/MSAs/MOUs, right-to-audit, supply chain security, SBOM. SY0-701 objective 5.3.'),
     t('sp_compliance', 'Compliance & Regulations', 'GDPR, HIPAA, PCI-DSS, SOX, and FISMA.'),
+    t('sp_audit', 'Audits, Assessments & Compliance Validation', 'Audit types (internal/external/compliance/attestation), SOC 1/2, ISO 27001 certification, PCI-DSS QSA, HIPAA OCR audits, audit lifecycle. SY0-701 objective 5.5.'),
+    t('sp_awareness', 'Security Awareness & Training Programs', 'Program design, phishing simulation, role-based training, KPIs, insider threat awareness, building security culture. SY0-701 objective 5.6.'),
   ]},
 ];
 

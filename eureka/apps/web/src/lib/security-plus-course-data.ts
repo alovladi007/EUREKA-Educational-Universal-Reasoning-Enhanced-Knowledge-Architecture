@@ -3496,6 +3496,1990 @@ SOC reports provide independent assurance about a service organization's control
   ],
 },
 
+// ═══════════════════════════════════════════════════════════════
+// AUDIT GAP FIX (2026-05-24) — 7 new topics covering SY0-701
+// objectives 1.1, 1.2, 1.3, 3.3, 4.4-4.6, 5.3, 5.5, 5.6 that were
+// missing or shallow in the original curriculum.
+// ═══════════════════════════════════════════════════════════════
+
+sp_controls: {
+  topicId: 'sp_controls',
+  title: `Security Control Types & Foundational Concepts`,
+  domainWeight: '12%',
+  overview: `Security controls are the safeguards organizations deploy to protect assets, detect adversaries, and recover from incidents. SY0-701 objective 1.1 expects you to classify any given control by both its FUNCTIONAL TYPE (what it does — prevent, detect, correct, deter, compensate, direct) and its CATEGORY (where it sits — technical, managerial, operational, physical). Objective 1.2 then layers on the foundational design principles every Security+ professional applies daily: CIA, AAA, defense in depth, zero trust, least privilege, separation of duties, and need-to-know. Mastering this taxonomy is the single highest-leverage thing you can do for the exam — most questions across all five domains can be solved faster if you can quickly identify "this is a detective technical control" or "this violates least privilege."`,
+  sections: [
+    {
+      id: 'control-functional-types',
+      title: `1. Control Functional Types`,
+      content: `CompTIA classifies controls by FUNCTION — what the control DOES when it operates. Memorize all six; questions love to ask you to classify a real-world scenario.
+
+## 1.1 Preventive controls
+
+A preventive control STOPS a security event from happening at all. The event is blocked before it can cause harm.
+
+- **Examples**: firewalls dropping malicious packets, multi-factor authentication blocking credential-stuffing logins, full-disk encryption preventing data theft from stolen laptops, door locks preventing physical intrusion, security training preventing users from clicking phishing links.
+- **Trade-off**: prevention is the strongest position but usually has friction (extra login steps, slower throughput). Never assume prevention is 100% effective — pair with detection.
+
+## 1.2 Detective controls
+
+A detective control IDENTIFIES that a security event happened, ideally in real time. It does not stop the event but provides the information needed to respond.
+
+- **Examples**: intrusion detection systems (IDS), security information and event management (SIEM), audit logs, motion sensors, file integrity monitoring (FIM), antivirus alerts, video surveillance.
+- **Detection-only without response is theater.** Detective controls only have value when paired with an incident response process that acts on what they find.
+
+## 1.3 Corrective controls
+
+A corrective control RESTORES systems to a known-good state after a security event has occurred. It is what you reach for AFTER detection.
+
+- **Examples**: backups + restore, patching a newly-discovered vulnerability, removing malware via re-imaging, revoking compromised credentials, applying a fix to a misconfigured firewall rule.
+- Some sources distinguish "corrective" from "recovery": corrective fixes the immediate issue; recovery returns the business to normal operations. SY0-701 lumps them under one heading.
+
+## 1.4 Deterrent controls
+
+A deterrent control DISCOURAGES an attacker from attempting an attack in the first place. It works through visibility and the threat of consequence — not by physically blocking anything.
+
+- **Examples**: warning banners on login screens ("Unauthorized access is prohibited and will be prosecuted"), visible CCTV cameras, security guards at entrances, prosecution notices, signs announcing penalties.
+- The same physical device can be both deterrent AND detective: a visible camera deters (you see it and decide not to attempt) AND detects (it records you if you do attempt).
+
+## 1.5 Compensating controls
+
+A compensating control is a SECONDARY control used when the PRIMARY control isn't feasible. It satisfies the same security requirement through a different mechanism.
+
+- **PCI-DSS context**: if you can't apply the latest patches to a legacy system that processes cardholder data (primary control: keep patched), you must implement compensating controls — typically a combination of network segmentation, enhanced monitoring, IPS, and tighter access controls.
+- **Other examples**: if a database can't enforce password complexity natively, putting it behind an application gateway that enforces complexity is compensating. If hardware MFA tokens can't be issued in time, requiring SMS OTP plus a secondary verification call is compensating.
+- The exam pattern: a question describes why the obvious control can't be used → the right answer is the compensating one that achieves the same security outcome.
+
+## 1.6 Directive controls
+
+A directive control TELLS people what to do via policy, procedure, or instruction. They are written guidance.
+
+- **Examples**: acceptable use policies (AUP), security standards documents, posted procedures (e.g., "lock workstation when leaving"), regulatory requirements telling staff how to handle PHI.
+- Directive controls only work when humans are aware of them and motivated to follow them — that is why directive controls are always paired with awareness training (a different type of control entirely).`,
+      examTip: `Exam shortcut: the WORDS in the scenario tell you the type. "blocks" / "prevents" → preventive. "alerts" / "logs" / "detects" → detective. "restores" / "fixes" / "patches" → corrective. "warns" / "discourages" → deterrent. "because we can't do X, we did Y instead" → compensating. "policy says..." / "documented procedure" → directive.`,
+      importantNote: `One control can fit multiple types. A SIEM is primarily DETECTIVE but its alert that triggers an automated firewall block becomes PREVENTIVE for the next attempt. When the exam asks for the "best" classification, choose the control's PRIMARY function in that scenario.`,
+    },
+    {
+      id: 'control-categories',
+      title: `2. Control Categories (Technical, Managerial, Operational, Physical)`,
+      content: `In addition to FUNCTIONAL type (preventive/detective/etc.), every control has a CATEGORY — the domain in which it lives. Objective 1.1 expects you to use BOTH classifications on the same control: "MFA is a preventive technical control."
+
+## 2.1 Technical (logical) controls
+
+Implemented in hardware, software, or firmware. Operate without human intervention once deployed.
+
+- **Examples**: firewalls, IDS/IPS, antivirus, EDR, encryption (full-disk, in-transit, at-rest), MFA, ACLs, RBAC, VLANs, automatic patching, biometric authentication.
+- **Strength**: scale and consistency — a technical control enforces the same way for every user, every transaction.
+- **Weakness**: bypass risk if misconfigured; needs ongoing maintenance and tuning.
+
+## 2.2 Managerial (administrative) controls
+
+Set the direction of the security program. People-driven, policy-driven, decisions about what to do.
+
+- **Examples**: security policies, risk assessments, hiring + background-check procedures, security awareness program design, vendor risk assessments, organizational structure (who reports to whom), security strategy documents.
+- These set the FRAMEWORK in which technical and operational controls operate. A great firewall (technical) is undermined by a policy that lets anyone change firewall rules (no managerial control).
+
+## 2.3 Operational controls
+
+Day-to-day procedures executed by people to operate the security program.
+
+- **Examples**: incident response procedures, change management process, account provisioning/de-provisioning, log review, security training delivery, configuration management, backup operations, vulnerability scanning execution.
+- The line between MANAGERIAL and OPERATIONAL: managerial is the policy ("we will respond to all critical incidents within 1 hour"); operational is the procedure people execute when it happens.
+
+## 2.4 Physical controls
+
+Tangible measures protecting the physical environment.
+
+- **Examples**: door locks, security guards, fences, mantraps, badge readers, CCTV, lighting, bollards, server cage locks, biometric door scanners, fire suppression, environmental monitoring (temperature, humidity).
+- Often overlooked in pure-software contexts but heavily tested: "an attacker tailgated into the data center" → physical control failure.
+
+## 2.5 Combining classifications
+
+Every control should be classifiable on both axes. Practice with these:
+
+| Control | Functional Type | Category |
+|---|---|---|
+| Firewall blocking port 22 | Preventive | Technical |
+| SIEM alerting on failed logins | Detective | Technical |
+| Security awareness training | Preventive | Managerial |
+| Backup tape restore process | Corrective | Operational |
+| Sign on data center door | Deterrent | Physical |
+| Mantrap | Preventive | Physical |
+| Quarterly access review | Detective | Operational |
+| AUP requiring users to lock workstations | Directive | Managerial |
+| Visible CCTV camera | Deterrent + Detective | Physical |
+| Acceptable Use Policy enforcement via log review | Detective | Operational |
+
+Exam tip — when a question gives you a control and asks for one classification, look at the answer choices: if they're all functional types (preventive, detective, etc.), classify by FUNCTION. If they're all categories (technical, managerial, etc.), classify by WHERE the control lives.`,
+      examTip: `Easiest decoder: TECHNICAL = code/hardware does the work. MANAGERIAL = policy/decision/oversight. OPERATIONAL = a human follows a procedure. PHYSICAL = tangible object you can touch.`,
+    },
+    {
+      id: 'foundational-principles',
+      title: `3. Foundational Security Principles (CIA, AAA, Defense in Depth, Zero Trust, Least Privilege, Separation of Duties)`,
+      content: `Objective 1.2 establishes the conceptual foundation every other domain builds on. These principles appear in dozens of exam questions — not always by name, but as the reason one answer is "more secure" than another.
+
+## 3.1 The CIA Triad
+
+The three properties every security control should preserve:
+
+- **Confidentiality** — only authorized parties can READ the data. Enforced by encryption, access controls, classification. Loss = data breach.
+- **Integrity** — data has not been tampered with or corrupted. Enforced by hashing, digital signatures, version control, write-protected media. Loss = data manipulation, fraud.
+- **Availability** — data + systems are accessible when needed. Enforced by redundancy, backups, DDoS protection, fault tolerance, business continuity. Loss = outage, ransomware lockout, DDoS.
+
+Each control should map to one or more CIA goals. When the exam asks "which goal was violated?" decode the attack: data leak = C, modified records = I, system unreachable = A.
+
+## 3.2 AAA — Authentication, Authorization, Accounting
+
+The control flow for every access request:
+
+1. **Authentication** — proving you are who you claim to be. Implemented via passwords, MFA, biometrics, certificates.
+2. **Authorization** — once authenticated, which resources can you access? Implemented via RBAC, ABAC, ACLs, group memberships.
+3. **Accounting (auditing)** — recording WHAT authenticated users actually did. Implemented via logs, audit trails, SIEM.
+
+A common exam trap: "the user logged in successfully but couldn't access the file" is an AUTHORIZATION failure, not an authentication failure.
+
+## 3.3 Non-repudiation
+
+A separate property frequently grouped with CIA: the system can PROVE that a specific party performed a specific action — they cannot credibly deny it later. Provided by digital signatures (the signer's private key is presumed to be only in their possession) and audit logs paired with strong authentication.
+
+## 3.4 Defense in Depth (layered security)
+
+No single control is sufficient. Stack multiple independent controls so the attacker must defeat ALL of them. If one layer is bypassed, others remain. Classic stack for a web app:
+
+1. Perimeter firewall blocks unsolicited inbound
+2. WAF inspects HTTP for application attacks (SQLi, XSS)
+3. TLS encrypts in transit
+4. Authentication + MFA at the app
+5. Authorization enforces what the user can do
+6. Input validation prevents malformed data reaching the database
+7. Database encryption at rest
+8. Audit logging records actions
+9. EDR on the server detects anomalous behavior
+
+If the WAF misses an attack, the input validation catches it. If both miss, the audit logs flag the suspicious behavior. Each layer is INDEPENDENT — defeating one does not automatically defeat the next.
+
+## 3.5 Zero Trust
+
+A modern architecture model: NEVER TRUST, ALWAYS VERIFY. Traditional perimeter security assumed "inside the firewall = trusted." Zero trust assumes the network is already compromised — every request must be authenticated and authorized regardless of source.
+
+Core zero-trust principles:
+
+- **Explicit verification** — authenticate and authorize on every access, not once per session
+- **Least-privilege access** — give the minimum permission needed for the task
+- **Assume breach** — design as if an attacker is already inside
+- **Micro-segmentation** — separate workloads so a breach in one cannot pivot to another
+- **Continuous monitoring** — re-evaluate access decisions based on real-time signals (user behavior, device posture, location)
+
+Practical implementation: identity-aware proxies (Google BeyondCorp, Cloudflare Access, Zscaler), micro-perimeter firewalls per workload, device-posture checks before granting access, conditional access policies (e.g., block access if device is jailbroken).
+
+## 3.6 Least Privilege
+
+Grant users (and systems) the MINIMUM permissions required to perform their function — nothing more. Limits blast radius if an account is compromised.
+
+- Implementation: RBAC with granular roles, just-in-time (JIT) elevation for sensitive actions, time-bounded access, periodic access reviews to revoke creep.
+- Counter-example: shared admin accounts where everyone has full domain admin "just in case."
+
+## 3.7 Separation of Duties (SoD)
+
+No single person should have end-to-end control over a sensitive process. Splits authority across multiple people so collusion is required to commit fraud or cause damage.
+
+- Classic example: in finance, the person who CREATES a vendor in the AP system is not the person who APPROVES payments to that vendor.
+- In tech: the developer who writes code is not the person who deploys it to production.
+
+## 3.8 Need-to-Know
+
+Even users with the appropriate clearance/role should only see data they NEED for their current task. A "Secret"-cleared analyst doesn't see every Secret document — only those relevant to their assignment. Implemented via compartmentalization, RBAC + ABAC combinations, and data labeling.
+
+## 3.9 Job Rotation, Mandatory Vacation, Dual Control
+
+Operational controls layered on top of the principles above:
+
+- **Job rotation** — periodically rotating staff through different roles. Detects fraud (a successor in the role spots irregularities) AND prevents single-person dependency on critical skills.
+- **Mandatory vacation** — requiring an employee to take a continuous absence (typically a week or more) so fraud that requires their ongoing maintenance is exposed.
+- **Dual control / two-person integrity** — sensitive operations require two people simultaneously (e.g., crypto key ceremonies, vault access, nuclear missile launch keys).
+
+## 3.10 Fail-Safe / Fail-Secure / Fail-Open
+
+What does a control do when it BREAKS? Choose deliberately:
+
+- **Fail-safe (fail-open)** — system reverts to a state that's safe for PEOPLE. Building doors unlock during fire alarm = people can escape. Sacrifices security for safety.
+- **Fail-secure (fail-closed)** — system reverts to a state that's safe for DATA. A firewall that loses its rule database blocks ALL traffic = no leaks. Sacrifices availability for confidentiality.
+
+Exam pattern: "the data center's badge reader system crashes — what should happen to the door?" Answer depends on whether life safety (fail-safe) or asset protection (fail-secure) is the priority for that door.`,
+      examTip: `CIA is tested constantly. Memorize: read access = Confidentiality, modify = Integrity, reach the system = Availability. Defense in Depth ≠ Zero Trust. Defense in Depth is "many layers"; Zero Trust is "never trust the network." You can have one without the other, but modern security uses both.`,
+      importantNote: `Separation of Duties and Least Privilege are related but distinct. Least Privilege: each individual gets the minimum. Separation of Duties: split a process across multiple individuals. You can violate one without violating the other.`,
+    },
+  ],
+  keyTakeaways: [
+    'Six functional control types: Preventive (block), Detective (alert), Corrective (fix), Deterrent (discourage), Compensating (alternative), Directive (policy)',
+    'Four control categories: Technical (code/hardware), Managerial (policy/decision), Operational (procedure people execute), Physical (tangible)',
+    'CIA triad: Confidentiality, Integrity, Availability — every control maps to one or more',
+    'AAA flow: Authentication (who) → Authorization (what) → Accounting (audit)',
+    'Defense in Depth: many independent layers. Zero Trust: never trust the network, verify every request.',
+    'Least Privilege ≠ Separation of Duties — both are needed independently',
+    'Fail-safe protects PEOPLE (fail open); Fail-secure protects DATA (fail closed). Pick deliberately per-control.',
+  ],
+},
+
+sp_change_mgmt: {
+  topicId: 'sp_change_mgmt',
+  title: `Change & Configuration Management`,
+  domainWeight: '12%',
+  overview: `Most production outages and a non-trivial fraction of breaches are caused by changes — patches that broke something, a firewall rule modified without review, a server provisioned with default credentials. SY0-701 objective 1.3 makes change management a first-class exam topic because the security implications of poor change control are enormous. This topic covers the formal change-management process (CAB, RFC, impact analysis, rollback), configuration management (baselines, drift detection, CMDB), and how the two combine to keep systems in a known-good, auditable state.`,
+  sections: [
+    {
+      id: 'change-management-process',
+      title: `1. The Formal Change-Management Process`,
+      content: `Change management is the structured workflow for evaluating, approving, implementing, and reviewing any modification to a production system. It exists to prevent the most common security incident pattern: "we made a change last night and now [bad thing]."
+
+## 1.1 The standard change-management lifecycle
+
+Every formal change-management process has roughly these stages, often abbreviated by frameworks like ITIL:
+
+1. **Request** — someone submits a Request for Change (RFC) describing what they want to change and why
+2. **Assessment / impact analysis** — what could go wrong? What systems depend on the thing being changed? Security review.
+3. **Approval** — a Change Advisory Board (CAB) reviews and approves, defers, or rejects
+4. **Scheduling** — when will the change occur? During a maintenance window? With what notice to users?
+5. **Implementation** — perform the change per the documented plan
+6. **Verification** — test that the change worked and didn't break anything else
+7. **Closure & post-implementation review (PIR)** — document the outcome, lessons learned, update baselines
+
+Each stage produces an artifact (the RFC, the impact analysis, the CAB decision, the implementation log, the PIR) that becomes part of the audit trail. Auditors will trace a sampled change end-to-end.
+
+## 1.2 Change Advisory Board (CAB)
+
+A committee that reviews and approves changes. Typical members:
+
+- Change manager (chair)
+- Affected system owners
+- Security representative
+- Operations / on-call lead
+- Sometimes: legal, compliance, business stakeholders
+
+The CAB exists to catch second-order effects the requester might not see. Example: a developer's patch RFC seems innocuous, but the security rep notes it bumps a dependency that breaks compliance with a regulatory requirement.
+
+CAB cadence varies — weekly for most orgs, daily for fast-moving organizations, ad-hoc emergency CAB (eCAB) for urgent changes.
+
+## 1.3 Change types
+
+Most frameworks classify changes into three tiers, each with different approval requirements:
+
+- **Standard changes** — pre-approved low-risk changes (e.g., patching a workstation, adding a user to a standard group). Don't need CAB review each time; covered by a standing approval.
+- **Normal changes** — go through full CAB review. Most production changes.
+- **Emergency changes** — required to resolve an active incident or imminent risk. Use the eCAB and abbreviated process, with FULL retroactive documentation.
+
+The exam tests whether you know that "we needed to patch the zero-day on the public web server tonight" is an emergency change, not an excuse to skip change management entirely.
+
+## 1.4 Impact analysis
+
+For every non-standard change:
+
+- **Affected systems** — what runs on the target? What does the target depend on?
+- **Affected users** — who will lose access during the change window? Who needs to be notified?
+- **Risk assessment** — what's the probability and impact of the change failing or causing unintended consequences?
+- **Rollback plan** — exactly how do we revert if it goes wrong? Tested?
+- **Security review** — does this change open new attack surface? Change a security boundary? Modify access controls?
+
+A change RFC without a rollback plan should be rejected.
+
+## 1.5 Approval, scheduling, and notification
+
+After approval, the change is scheduled — typically during a maintenance window when impact is minimized. Stakeholders are notified via the agreed channel (email, ticket system, status page). Users get advance notice for changes that affect them. Maintenance windows are sized to include implementation + verification + rollback time.
+
+## 1.6 Implementation, verification, post-implementation review
+
+The implementer follows the documented plan exactly — no improvisation. After the change, the verification step confirms:
+
+- The intended outcome was achieved
+- No related systems broke
+- Monitoring shows normal behavior
+- Logs from the change are preserved
+
+The PIR (a few days later) asks: did the change have any second-order effects we missed? What did we learn? Update the runbook / baseline / RFC template accordingly.
+
+## 1.7 The unauthorized change problem
+
+The biggest risk to a change-management program is the unauthorized change — someone modifying production WITHOUT going through the process. Detection mechanisms:
+
+- **Configuration drift detection** — automated comparison of current config against the approved baseline (see §2)
+- **File integrity monitoring (FIM)** — alerts when system files change unexpectedly
+- **Privileged access logging** — every admin action is logged and reviewed
+- **Tripwire-style audits** — periodic comparisons of running config against the CMDB
+
+When an unauthorized change is detected: investigate (was it a mistake, malice, or a process failure?), correct, and follow up with the responsible party.`,
+      examTip: `Memorize the change types: STANDARD (pre-approved, no CAB), NORMAL (full CAB review), EMERGENCY (eCAB, abbreviated process, full retroactive docs). The exam asks you to classify scenarios.`,
+      importantNote: `Patching is the most common source of "I didn't go through change management" violations. Establish standard-change templates for routine patching so the team has a fast path that's STILL within the process.`,
+    },
+    {
+      id: 'configuration-management',
+      title: `2. Configuration Management, Baselines, and Drift Detection`,
+      content: `Configuration management complements change management: change management governs HOW you modify systems; configuration management tracks WHAT state systems are in at any given time.
+
+## 2.1 The configuration baseline
+
+A baseline is the documented, approved state of a system or category of systems. Three common types:
+
+- **Security baseline** — minimum security configuration every system of a given class must meet (e.g., disable telnet, enforce password complexity, enable audit logging)
+- **Functional baseline** — the approved software versions, configuration files, dependencies for a system
+- **Hardware baseline** — approved hardware models, firmware versions, BIOS settings
+
+Baselines are CONCRETE — usually checklist artifacts (CIS Benchmarks, DISA STIGs) or scripts that codify the standard.
+
+## 2.2 Baseline sources
+
+You typically don't write baselines from scratch. Common starting points:
+
+- **CIS Benchmarks** — Center for Internet Security publishes consensus-based baselines for every common OS, database, cloud platform, and application. Two levels: L1 (essential, low impact) and L2 (advanced, may affect functionality).
+- **DISA STIGs** — Defense Information Systems Agency Security Technical Implementation Guides; mandatory for DoD systems but widely used elsewhere.
+- **Vendor hardening guides** — Microsoft, Cisco, AWS, etc. publish their own.
+- **Internal customization** — most orgs take a CIS or STIG baseline and ADD organization-specific requirements (e.g., specific logging endpoint, corporate certificate store).
+
+## 2.3 Configuration drift
+
+Over time, systems diverge from their baselines — admins make changes, hot-fixes get applied, undocumented modifications accumulate. This is "drift." Drift creates two problems:
+
+1. **Inconsistency** — two servers labeled identically may behave differently because one drifted
+2. **Security regression** — a hardening setting that gets disabled "because it was breaking something" stays disabled
+
+Drift-detection tools continuously compare actual configuration to the baseline and report deltas. Examples: AWS Config Rules, Ansible drift detection, Chef InSpec, Puppet PE Compliance, OpenSCAP for Linux.
+
+## 2.4 Configuration as code (IaC)
+
+Modern best practice: express configuration as code (Terraform, CloudFormation, Ansible, Puppet, Chef) stored in version control. Benefits:
+
+- Every change is reviewable in a pull request
+- History is preserved (git log)
+- Rollback = revert commit
+- Reproducibility — a destroyed system can be rebuilt exactly
+- Drift becomes detectable by comparing live state to declared code
+
+This collapses change management AND configuration management into ONE workflow: change to the IaC repo → PR review (your CAB review) → CI/CD pipeline applies it → drift detection ensures the live state matches the code.
+
+## 2.5 Configuration Management Database (CMDB)
+
+The CMDB is the system of record for "what we have and how it's configured." It stores Configuration Items (CIs) — every asset, application, service, dependency — and the relationships between them.
+
+- Used to answer "if I patch this library, what apps break?" or "if this server goes down, what business services are affected?"
+- Populated and kept current via discovery scans, agent reports, and integration with change management
+- Required by many frameworks (ITIL, ISO 20000) and useful for incident response, asset management, and compliance audits
+
+## 2.6 Version control for security artifacts
+
+Every security artifact should be version-controlled:
+
+- Firewall rule sets
+- IDS/IPS signatures
+- Detection rules (SIEM correlation, EDR custom queries)
+- Security policies and procedures
+- IaC for infrastructure
+
+Version control gives you: blame (who changed what when), diff (what exactly changed), rollback (revert a bad change), and approval gates (require review before merge).`,
+      examTip: `Configuration baseline questions tend to focus on CIS Benchmarks (the most-named source in CompTIA materials). Know that CIS has L1 (basic) and L2 (advanced) profiles, and that DISA STIGs are the DoD equivalent.`,
+    },
+    {
+      id: 'change-mgmt-failures',
+      title: `3. Common Failure Modes and the Security Connection`,
+      content: `Change management is a frequent exam topic precisely because its failures are so visible and so often security incidents.
+
+## 3.1 The unapproved-change scenario
+
+An admin pushes a change without RFC, breaks production OR opens a vulnerability. Controls that prevent it:
+
+- Privileged Access Management (PAM) tools that GATE production access behind a ticket-approval workflow
+- IaC pipelines where the only path to production is through reviewed code
+- Detective: drift detection alerts on config that diverges from approved baseline
+- Detective: audit log review flags admin actions without a corresponding RFC
+
+## 3.2 The "I just applied the patch" scenario
+
+A patch was applied without impact analysis; it broke a dependent system or introduced its own vulnerability. Controls:
+
+- Patch deployment goes to a TEST environment first
+- Standard-change templates for routine patches still include rollback steps and verification
+- Patches are validated against compatibility matrices
+
+## 3.3 The rollback that didn't work
+
+A bad change is rolled back per the plan — but the rollback itself fails because no one tested it. Controls:
+
+- The RFC requires the rollback plan to have been tested in non-production
+- Backups are taken IMMEDIATELY before the change (not "we have last night's backup")
+- Database changes use migrations with verified down-migrations
+
+## 3.4 The change that violated the security baseline
+
+A developer "temporarily" disabled a hardening setting to debug an issue, then never restored it. Controls:
+
+- Configuration drift detection alerts within minutes of the baseline deviation
+- Automated remediation reverts the change (with notification)
+- PIR captures the deviation as a "do not let this happen again" lesson
+
+## 3.5 The undocumented dependency
+
+A change to System A broke System B because no one knew System B depended on System A. Controls:
+
+- CMDB accurately models dependencies
+- Impact analysis as a mandatory step in the RFC
+- Service ownership clarity (every service has a known owner)
+
+## 3.6 Emergency change abuse
+
+Every change gets declared "emergency" to skip the CAB. Controls:
+
+- Strict criteria for what qualifies as emergency (active incident, imminent compliance deadline, security vulnerability being actively exploited)
+- Emergency changes are reviewed retroactively — abuse is visible in metrics
+- The CAB tracks emergency-change rate and challenges teams whose rate is anomalously high
+
+## 3.7 Putting it all together
+
+A mature change-management program combines:
+
+- Documented process (managerial control)
+- CAB / eCAB (operational control)
+- Change-management ticketing system (technical control)
+- Configuration baselines + drift detection (technical detective)
+- PIR feedback loop into baseline updates (managerial)
+- Logging + monitoring of all admin actions (technical detective)
+
+When the exam asks "what control would have prevented this incident?" and the incident was an unreviewed change, the answer is almost always either "formal change management" or "configuration drift detection" — both are correct depending on whether the question emphasizes the process gap or the detective gap.`,
+      examTip: `When the exam describes an outage or incident caused by a misconfiguration, the right answer often involves a change-management or configuration-management control — even if you don't see those exact words in the options. Look for "approval workflow," "baseline," "version control," "drift detection."`,
+    },
+  ],
+  keyTakeaways: [
+    'Three change types: Standard (pre-approved), Normal (CAB review), Emergency (eCAB, retroactive docs)',
+    'The CAB exists to catch second-order effects the requester might not see',
+    'Every RFC needs an impact analysis AND a tested rollback plan',
+    'Configuration baselines (CIS Benchmarks, DISA STIGs) define the known-good state',
+    'Configuration drift = systems diverging from baseline over time; detect with tools like AWS Config, OpenSCAP, Chef InSpec',
+    'Infrastructure as Code collapses change + config management into one reviewable workflow (PR = RFC)',
+    'CMDB models dependencies so impact analysis can answer "what else does this affect?"',
+  ],
+},
+
+sp_api_security: {
+  topicId: 'sp_api_security',
+  title: `API Security & Modern Integrations`,
+  domainWeight: '18%',
+  overview: `Every modern application is a collection of APIs talking to other APIs. The mobile app talks to a REST backend, which calls a payments API, which calls a fraud-scoring API, which calls a third-party identity API. SY0-701 objective 3.3 makes API security a discrete exam topic because the attack surface is now overwhelmingly API-shaped. This topic covers REST/SOAP fundamentals, authentication (API keys, OAuth 2.0, JWT), the OWASP API Top 10 threats, and the controls (API gateways, rate limiting, schema validation) that secure them.`,
+  sections: [
+    {
+      id: 'api-fundamentals',
+      title: `1. API Fundamentals and Authentication`,
+      content: `## 1.1 API styles
+
+The exam mentions these by name:
+
+- **REST (Representational State Transfer)** — by far the most common. Resources are URIs (\`/users/42\`), operations are HTTP verbs (GET, POST, PUT, PATCH, DELETE). Stateless, JSON payloads.
+- **SOAP (Simple Object Access Protocol)** — XML-based, formal contracts via WSDL, heavyweight. Still common in financial services and legacy enterprise. Built-in WS-Security for message-level signing/encryption.
+- **GraphQL** — single endpoint, clients specify exactly what fields they need. Powerful but introduces new attack patterns (query depth abuse, introspection leakage).
+- **gRPC** — Google's binary RPC protocol over HTTP/2, schema-defined with Protocol Buffers. Used heavily in microservices.
+
+## 1.2 API key authentication
+
+The simplest API auth — a shared static secret the client sends in a header (\`X-API-Key: abc123\`) or query parameter. Pros: trivial to implement. Cons:
+
+- Static secrets leak (committed to git, screenshotted, stored in URLs which get logged)
+- No expiration or rotation built-in
+- No identity beyond "the key holder"
+
+Best practice: use API keys ONLY for server-to-server, never expose to browsers or mobile apps, rotate frequently, scope to specific operations.
+
+## 1.3 OAuth 2.0
+
+The dominant standard for DELEGATED authorization — letting App A access Service B's data on behalf of User C, WITHOUT sharing User C's password with App A.
+
+Core concepts:
+
+- **Resource Owner** — the user
+- **Client** — the app requesting access
+- **Authorization Server** — the OAuth provider (Auth0, Okta, Google, Microsoft Entra)
+- **Resource Server** — the API holding the protected data
+- **Access Token** — short-lived credential the client presents to the resource server
+- **Refresh Token** — longer-lived credential the client uses to get a new access token
+
+The four standard grant types you must know:
+
+| Grant Type | Use Case |
+|---|---|
+| **Authorization Code (+ PKCE)** | Web apps, mobile apps. User redirected to auth server, returns with a code that the client exchanges for tokens. PKCE (Proof Key for Code Exchange) extension prevents code interception attacks; now mandatory for public clients. |
+| **Client Credentials** | Server-to-server with no user. The client (a backend service) authenticates with its own credentials. |
+| **Resource Owner Password Credentials** | LEGACY — user gives password directly to the client. Deprecated. Do not use for new systems. |
+| **Implicit** | DEPRECATED — tokens returned directly in URL fragment. Replaced by Authorization Code + PKCE. |
+
+When the exam asks "which grant type for a single-page web app?" the answer is **Authorization Code with PKCE**.
+
+## 1.4 OpenID Connect (OIDC)
+
+OAuth 2.0 is AUTHORIZATION. OIDC is AUTHENTICATION layered on top of OAuth 2.0 — it adds an \`id_token\` (a JWT containing the user's identity claims) so the client knows WHO the user is, not just THAT they granted access. "Sign in with Google" is OIDC.
+
+## 1.5 JWT (JSON Web Token)
+
+A compact, signed token format used heavily by OAuth/OIDC. Three Base64URL-encoded parts joined by dots: \`header.payload.signature\`.
+
+- **Header**: algorithm + token type (e.g., \`{"alg":"RS256","typ":"JWT"}\`)
+- **Payload**: claims (e.g., \`{"sub":"user-42","iat":1716595200,"exp":1716598800,"role":"admin"}\`)
+- **Signature**: HMAC or asymmetric signature over header+payload
+
+Critical security properties:
+
+- JWTs are SIGNED but NOT encrypted by default — anyone who intercepts one can read the claims (Base64 decode)
+- Tampering invalidates the signature, so claims can't be modified without detection (IF the verifier checks)
+- Common attack: \`{"alg":"none"}\` attack — old JWT libraries accepted unsigned tokens. Always validate the \`alg\` field server-side against a whitelist.
+- Common attack: algorithm confusion — submitting an HS256 token to a server expecting RS256, using the public key as the HMAC secret. Always pin the expected algorithm.
+
+## 1.6 mTLS (Mutual TLS)
+
+Both client and server present certificates. Common in zero-trust and machine-to-machine scenarios where you want to authenticate the calling SERVICE, not just a user token. Strong but operationally heavy (cert provisioning, rotation, revocation).`,
+      examTip: `Memorize the OAuth grant types: Authorization Code + PKCE = the right answer for browser/mobile apps. Client Credentials = the right answer for backend-to-backend. Implicit and Resource Owner Password are DEPRECATED.`,
+      importantNote: `JWTs are signed, not encrypted. Don't put secrets in JWT payloads — anyone who intercepts the token can decode them. If you need confidentiality, use JWE (JSON Web Encryption) instead of plain JWT.`,
+    },
+    {
+      id: 'owasp-api-top-10',
+      title: `2. OWASP API Security Top 10 (2023)`,
+      content: `OWASP maintains a separate Top 10 just for API risks because API attacks differ structurally from traditional web-app attacks. SY0-701 expects familiarity with at least the most common items.
+
+## 2.1 API1 — Broken Object Level Authorization (BOLA / IDOR)
+
+The #1 API risk. The API has authentication but doesn't check whether the AUTHENTICATED user is authorized to access THIS specific object.
+
+\`\`\`
+GET /api/v1/users/42/profile  → returns user 42's profile
+GET /api/v1/users/43/profile  → also returns it! (bug: no check)
+\`\`\`
+
+Fix: every endpoint that takes an object ID checks that the requesting user owns or has access to that object. Don't rely on the client to send only valid IDs — clients are attackers.
+
+## 2.2 API2 — Broken Authentication
+
+Weak auth implementations: predictable tokens, missing token validation, weak password policies, missing brute-force protection, accepting expired tokens. Includes the JWT pitfalls above.
+
+## 2.3 API3 — Broken Object Property Level Authorization
+
+Subdivides into:
+
+- **Excessive data exposure**: the API returns ALL fields of an object, including ones the client shouldn't see. Filtering left to the client = insecure.
+- **Mass assignment**: client sends extra fields and the server blindly assigns them. \`PATCH /users/42\` with \`{"role":"admin"}\` makes the user an admin if the API auto-binds payload to model.
+
+Fix: explicit allow-list of fields per endpoint, per user role. DTOs that don't include sensitive fields.
+
+## 2.4 API4 — Unrestricted Resource Consumption
+
+Without rate limits or quotas, an attacker can:
+
+- Cause DoS by sending many requests
+- Run up cloud bills (the "denial of wallet" attack)
+- Exhaust resources (CPU, memory, database connections, third-party API quotas)
+
+Fix: rate limiting per client, per endpoint, per resource. Quotas. Request size limits. Timeouts on long-running operations.
+
+## 2.5 API5 — Broken Function Level Authorization
+
+Admin endpoints accessible to regular users because authorization isn't enforced consistently. Often happens when admin functionality is "hidden" by client UI but not protected server-side.
+
+Example: \`/admin/users/delete\` is hidden from the regular UI but a curious user discovers it and finds there's no role check.
+
+Fix: deny-by-default, explicit role checks on every endpoint.
+
+## 2.6 API6 — Unrestricted Access to Sensitive Business Flows
+
+Attacker abuses a legitimate business flow at scale: bulk-purchasing limited inventory, brute-forcing promo codes, scraping a public-but-rate-limited dataset. The individual requests are legal; the volume is the attack.
+
+Fix: bot detection (CAPTCHA, behavioral analysis), business-logic rate limits, anomaly detection.
+
+## 2.7 API7 — Server-Side Request Forgery (SSRF)
+
+The API takes a URL as input and fetches it server-side. Attacker provides a URL pointing to internal services (\`http://169.254.169.254/\` — AWS instance metadata) → API leaks internal info or makes the server perform actions the attacker can't.
+
+Fix: validate URLs against an allow-list, block private IP ranges, disable URL redirects, use a dedicated egress proxy.
+
+## 2.8 API8 — Security Misconfiguration
+
+Default credentials, verbose error messages leaking internals, CORS too permissive (\`Access-Control-Allow-Origin: *\` on authenticated endpoints), missing security headers, exposed admin/debug endpoints.
+
+Fix: hardening baselines, automated config scanning, security headers (HSTS, CSP, X-Frame-Options).
+
+## 2.9 API9 — Improper Inventory Management
+
+The org has APIs in production it forgot about. Old API versions still respond. Staging APIs are publicly reachable. Documentation says "we removed v1" but v1 still answers.
+
+Fix: API inventory tooling, API gateway showing all routes, periodic discovery scans, formal sunset process for old versions.
+
+## 2.10 API10 — Unsafe Consumption of APIs
+
+Trusting data from a third-party API without validating it. Insecure deserialization of upstream JSON, blind eval of returned values. Treat upstream APIs as untrusted input just like client requests.`,
+      examTip: `BOLA/IDOR is the single most-tested API attack. Memorize the pattern: API authenticates the user but doesn't check object ownership. Sequential or guessable IDs make this trivially exploitable.`,
+    },
+    {
+      id: 'api-controls',
+      title: `3. API Gateways, Rate Limiting, and Schema Validation`,
+      content: `Putting the right controls at the right layer is what separates a secure API from a leaky one.
+
+## 3.1 API gateway
+
+A single front door for all API traffic. Common implementations: AWS API Gateway, Azure API Management, Kong, Apigee, Tyk. Responsibilities:
+
+- **Authentication / authorization** — token validation, API-key checks, mTLS enforcement
+- **Rate limiting + quotas** — per-client, per-endpoint
+- **Request validation** — payload size, content type, schema conformance
+- **TLS termination** — handles certificates, allows internal mTLS or plaintext as the backend prefers
+- **Routing** — directs requests to the appropriate backend service
+- **Logging + metrics** — every request observed
+- **WAF integration** — runs request through web-app firewall rules
+
+The gateway is where you centralize controls so the backend services don't each have to reinvent them.
+
+## 3.2 Rate limiting strategies
+
+| Strategy | What it does |
+|---|---|
+| **Fixed window** | "100 requests per minute starting at :00." Simple but bursty at window boundaries. |
+| **Sliding window** | Smooths the boundary effect by averaging over a moving window. |
+| **Token bucket** | Each client has a bucket that refills at a steady rate; requests consume tokens. Allows bursts up to the bucket size. |
+| **Leaky bucket** | Requests queue and drain at a steady rate. Bursts get queued or dropped. |
+
+Apply rate limits at MULTIPLE LAYERS: per-IP (to slow bots that haven't authenticated), per-user (to limit a single account's impact), per-API-key, per-endpoint (writes more limited than reads), per-resource (e.g., "max 10 OTP requests per phone number per hour").
+
+When the limit is hit, return HTTP 429 (Too Many Requests) with a \`Retry-After\` header.
+
+## 3.3 Schema validation
+
+Every API request/response should conform to a SCHEMA — OpenAPI/Swagger for REST, GraphQL SDL for GraphQL, .proto for gRPC, WSDL for SOAP.
+
+Server-side validation rejects malformed requests EARLY:
+
+- Wrong field types
+- Missing required fields
+- Extra unexpected fields (catches mass-assignment attempts)
+- Out-of-range values (e.g., a "quantity" field receiving negative numbers)
+
+Many API gateways enforce OpenAPI schemas declaratively — you don't have to write per-field checks in your service code.
+
+## 3.4 Web Application Firewall (WAF) for APIs
+
+Traditional WAF rules (SQL injection patterns, XSS patterns) help on APIs too. Modern WAFs have API-specific rule sets that understand JSON, validate against OpenAPI schemas, and detect API-specific abuse like enumeration or scraping.
+
+Notable open source: ModSecurity with OWASP Core Rule Set (CRS). Commercial: AWS WAF, Cloudflare WAF, Imperva.
+
+## 3.5 Authentication architecture choices
+
+- **Token validation at the gateway** vs **token validation at the service** — gateway validation is faster (single place) but services can't independently verify (e.g., for sensitive operations needing additional checks). Best practice: BOTH — gateway does primary validation, services do business-context authorization.
+- **Sticky vs stateless sessions** — stateless JWT/OAuth scales horizontally; session cookies require sticky load balancing or shared session store.
+- **API keys** for server-to-server, **OAuth 2.0 access tokens** for user-delegated, **mTLS** for high-assurance machine-to-machine.
+
+## 3.6 Audit + monitoring specific to APIs
+
+- Log every request (method, path, user, IP, response code, latency)
+- Detect anomalies: spike in 4xx (attacker probing), unusual user-agent, geographic anomalies, sequential ID enumeration
+- Alert on auth failures clusters (credential stuffing), high error rates from a single client, sudden bandwidth spikes
+- Forward all API logs to SIEM for correlation with the rest of the environment
+
+## 3.7 Versioning and deprecation
+
+APIs evolve. The wrong way: silently break old clients. The right way:
+
+- Version URLs or headers (\`/api/v1/\` vs \`/api/v2/\`)
+- Announce deprecation well in advance
+- Sunset old versions on a published schedule
+- Log usage of deprecated versions so you know who'll break
+
+API1 vulnerabilities in old versions are a frequent attack vector — if v1 is still responding, attackers will hunt it for bugs that were fixed in v2.`,
+      examTip: `Two patterns to memorize: (1) Rate limiting goes at MULTIPLE layers — per-IP, per-user, per-endpoint. (2) Schema validation REJECTS requests with unexpected fields — this is the primary defense against mass assignment (API3).`,
+    },
+  ],
+  keyTakeaways: [
+    'OAuth 2.0 is for AUTHORIZATION; OIDC adds AUTHENTICATION on top. JWT is the token format both commonly use.',
+    'Authorization Code + PKCE is the modern grant type for browser/mobile apps. Implicit and Resource Owner Password are DEPRECATED.',
+    'BOLA/IDOR (#1 API risk): auth without object-level access checks. Always verify the authenticated user owns or can access the requested object.',
+    'JWTs are signed, NOT encrypted. Anyone who captures one can read the claims. Use JWE for confidentiality.',
+    'API gateway centralizes auth, rate limiting, schema validation, logging — so backend services don\'t reinvent each control',
+    'Apply rate limits at multiple layers (per-IP, per-user, per-API-key, per-endpoint) using token-bucket or sliding-window',
+    'Schema validation rejects requests with unexpected fields — primary defense against mass-assignment attacks',
+  ],
+},
+
+sp_sdlc: {
+  topicId: 'sp_sdlc',
+  title: `Secure SDLC & Development Practices`,
+  domainWeight: '28%',
+  overview: `The Security Operations domain (28% of the exam) includes major objectives on secure software development that the platform previously covered only obliquely through application-attack topics. SY0-701 objectives 4.4–4.6 expect you to know SDLC models, secure coding practices, the testing tool stack (SAST/DAST/IAST/SCA), and how security integrates into modern CI/CD pipelines. This topic addresses the development side of the equation — building software that doesn't have the vulnerabilities the threat-modeling topics teach you to look for.`,
+  sections: [
+    {
+      id: 'sdlc-models',
+      title: `1. SDLC Models & Secure-by-Design Integration`,
+      content: `## 1.1 The classic SDLC phases
+
+Every software development lifecycle has roughly these phases:
+
+1. **Requirements** — what should the software do?
+2. **Design** — how should it be built?
+3. **Implementation (coding)** — building it
+4. **Testing** — verifying it works correctly
+5. **Deployment** — releasing it to production
+6. **Maintenance** — fixing bugs, applying patches, retiring it
+
+Each phase has security activities:
+
+| Phase | Security Activity |
+|---|---|
+| Requirements | Identify security + compliance requirements alongside functional ones |
+| Design | Threat modeling, attack surface review, security architecture review |
+| Implementation | Secure coding standards, code review, static analysis (SAST) |
+| Testing | Penetration testing, dynamic analysis (DAST), security regression tests |
+| Deployment | Infrastructure hardening, secrets management, security configuration review |
+| Maintenance | Patch management, vulnerability scanning, sunset process |
+
+## 1.2 Waterfall
+
+The original SDLC model — phases happen sequentially, each completed before the next starts. Heavy upfront design, formal sign-off between phases.
+
+- Pros: predictable, well-documented, suits regulated environments (medical devices, aerospace) where rework is expensive.
+- Cons: slow to deliver, late discovery of design problems is expensive.
+- Security implication: threat modeling happens once at design and may not be revisited. Vulnerabilities discovered late require expensive rework.
+
+## 1.3 Agile
+
+Iterative and incremental. Software is built in short cycles (sprints, typically 2 weeks). Each cycle produces working software that stakeholders review.
+
+- Pros: fast feedback, adaptable to change, continuous delivery
+- Cons: requires discipline to avoid accumulating tech debt; documentation is often lighter
+- Security implication: traditional "do all the security work upfront" doesn't fit. Security must be EMBEDDED in each sprint — threat modeling deltas per feature, security tests in the definition of done.
+
+## 1.4 DevOps
+
+A culture + practice combining Development and Operations. Goals: faster delivery, fewer incidents, tight feedback loops. Built on CI/CD pipelines that automate build → test → deploy.
+
+## 1.5 DevSecOps
+
+DevOps with security as a first-class concern, NOT a final-stage gate. Core principle: **shift left** — find and fix security issues as early in the SDLC as possible, where they're cheapest to fix.
+
+Practical DevSecOps activities:
+
+- **Pre-commit**: SAST hooks, secrets scanning (block commits containing API keys)
+- **Pull request**: peer code review (security-aware), SAST scan as a check, dependency vulnerability scan (SCA)
+- **CI build**: SAST + SCA + license scan + container image scan
+- **CI test**: DAST against the running app, fuzz testing, security regression tests
+- **CI deploy**: infrastructure-as-code security scan (Checkov, tfsec), policy-as-code (OPA)
+- **Production**: WAF, runtime application self-protection (RASP), continuous vulnerability scanning, incident response integration
+
+The key DevSecOps insight: every security check that runs LATER costs more to remediate. A bug caught in the IDE costs ~$1; the same bug in production costs ~$10,000.
+
+## 1.6 Threat modeling
+
+A structured approach to identifying threats during design. Methodologies the exam may name:
+
+- **STRIDE** (Microsoft) — categorizes threats: Spoofing, Tampering, Repudiation, Information disclosure, Denial of service, Elevation of privilege.
+- **DREAD** — used to score threats: Damage potential, Reproducibility, Exploitability, Affected users, Discoverability. Largely fallen out of favor.
+- **PASTA** (Process for Attack Simulation and Threat Analysis) — risk-centric, 7 stages.
+- **ATT&CK** (MITRE) — adversary-tactic-focused; mostly used post-design for detection planning.
+
+For a new feature: enumerate components, draw data flows, apply STRIDE to each flow → list of threats → design mitigations.
+
+## 1.7 Secure-by-design principles
+
+Concepts from objective 1.2 (covered fully in sp_controls) that apply during design:
+
+- **Least privilege** for the application itself (database user with minimum needed grants, file permissions tight)
+- **Defense in depth** — multiple layers; don't rely on the WAF as the only XSS defense
+- **Fail securely** — error paths default to safe state (deny access on auth failure, not allow)
+- **Secure defaults** — out-of-the-box configuration is the SECURE configuration; insecure options require explicit opt-in
+- **Don't trust input** — validate everything from anywhere
+- **Don't trust the client** — server-side enforces all rules; client validation is UX, not security`,
+      examTip: `"Shift left" is the DevSecOps slogan — finding bugs earlier in the SDLC is cheaper to fix. STRIDE is the most commonly tested threat-modeling methodology.`,
+    },
+    {
+      id: 'secure-coding',
+      title: `2. Secure Coding Practices`,
+      content: `Specific coding techniques that prevent the application vulnerabilities tested across the exam.
+
+## 2.1 Input validation
+
+The foundational defense. Every input from outside the trust boundary is hostile until proven otherwise.
+
+- **Allow-list, not block-list** — define what IS valid, reject everything else. Block-listing is brittle (attackers find ways around it).
+- **Validate at the SERVER** — client-side validation is UX, not security. The client can be modified or bypassed.
+- **Validate type, length, format, range, encoding** — a "username" should match \`^[a-zA-Z0-9_]{3,32}$\`, not just "non-empty."
+- **Canonicalize first** — decode/normalize input before validation. \`%2e%2e%2f\` becomes \`../\` after URL decoding; validate after that.
+- **Validate at the trust boundary** — once, completely, at the edge. Don't sprinkle ad-hoc checks throughout the code.
+
+## 2.2 Parameterized queries (preventing SQL injection)
+
+Never build SQL by string concatenation. Use parameterized queries / prepared statements:
+
+\`\`\`python
+# WRONG — vulnerable
+cursor.execute(f"SELECT * FROM users WHERE id = '{user_id}'")
+
+# RIGHT — parameterized
+cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+\`\`\`
+
+The database engine treats the parameter as DATA, not as SQL syntax. \`'; DROP TABLE users; --\` becomes a literal string searched for in the id column, not code that runs. Use an ORM or query builder for additional safety.
+
+## 2.3 Output encoding (preventing XSS)
+
+When inserting user data into HTML, JavaScript, CSS, or URLs, ENCODE for the OUTPUT CONTEXT:
+
+- HTML context: \`<\` → \`&lt;\`, \`>\` → \`&gt;\`, \`"\` → \`&quot;\`
+- JavaScript context: stricter — escape backslashes, quotes, control characters
+- URL parameter: percent-encode
+- CSS context: hex-encode
+
+Modern frameworks (React, Vue, Angular) auto-encode by default in their template syntax. The danger is when developers explicitly bypass that (\`dangerouslySetInnerHTML\`, \`v-html\`).
+
+## 2.4 Authentication + session handling
+
+- Hash passwords with a memory-hard adaptive function: **bcrypt**, **scrypt**, **Argon2id** (preferred). NEVER MD5 or SHA-256 (too fast).
+- Use cryptographically random session tokens (≥128 bits of entropy)
+- Set session cookies as \`HttpOnly\` (no JS access), \`Secure\` (HTTPS only), \`SameSite=Lax\` or \`Strict\` (CSRF defense)
+- Idle and absolute session timeouts
+- Regenerate the session ID after authentication (prevents session fixation)
+- Logout invalidates the session server-side
+
+## 2.5 Authorization checks
+
+Every action that accesses or modifies a protected resource needs an explicit authorization check IN THE SERVER CODE:
+
+- Don't rely on UI hiding to enforce permissions
+- Check both that the user has the right role AND that the user owns/can-access the SPECIFIC object
+- Deny by default — explicit allows
+
+## 2.6 Cryptography — use, don't roll
+
+Use vetted libraries: OpenSSL/BoringSSL, libsodium, JCE, .NET Crypto, Python cryptography library. Never:
+
+- Implement your own crypto algorithms
+- Use deprecated algorithms (MD5, SHA-1, DES, RC4) for new code
+- Use ECB mode block cipher
+- Use a static IV with a stream cipher
+- Hard-code keys in source
+
+Always:
+
+- AES-256-GCM for symmetric (provides authenticated encryption)
+- RSA-2048+ or ECC-P256+ for asymmetric
+- SHA-256 or SHA-3 for hashing
+- Argon2id/bcrypt for password hashing
+- TLS 1.2+ for transport (1.3 preferred)
+- Rotate keys per policy; use a key management service (KMS) — AWS KMS, Azure Key Vault, HashiCorp Vault
+
+## 2.7 Secrets management
+
+- No secrets in source code (use a secrets manager: Vault, AWS Secrets Manager, doppler.com)
+- No secrets in environment files committed to git
+- Use \`gitleaks\` or similar to scan history for accidentally-committed secrets
+- Rotate secrets that have been exposed, even briefly
+- Service-to-service auth uses workload identity (IAM roles, service accounts) where possible, not static keys
+
+## 2.8 Error handling and logging
+
+- Catch exceptions but DON'T return them to the client — generic "Internal Server Error" with a correlation ID
+- Log the full stack trace SERVER-SIDE with the correlation ID for debugging
+- Don't log secrets, PII, full credit card numbers, or session tokens — sanitize before logging
+- Log security-relevant events: auth failures, authorization denials, validation failures
+- Send logs to a centralized SIEM with tamper-resistant storage
+
+## 2.9 Dependency management
+
+- Track all third-party dependencies (SBOM — Software Bill of Materials)
+- Scan for known vulnerabilities continuously (SCA tools — see §3)
+- Patch promptly — known CVEs in deps are the most common exploit vector in 2024-25
+- Pin versions in lockfiles for reproducible builds
+- Verify checksums of downloaded packages where supported
+
+## 2.10 The OWASP Top 10 mapped to coding defenses
+
+| OWASP Top 10 (2021) | Primary defense |
+|---|---|
+| A01 Broken Access Control | Server-side authorization checks on every action |
+| A02 Cryptographic Failures | Use vetted libraries, modern algorithms, manage keys properly |
+| A03 Injection (SQLi etc.) | Parameterized queries; allow-list input validation |
+| A04 Insecure Design | Threat modeling; secure-by-design principles |
+| A05 Security Misconfiguration | Hardening baselines; automated config scans |
+| A06 Vulnerable and Outdated Components | SCA tools; rapid patching |
+| A07 Identification & Auth Failures | bcrypt/Argon2id, MFA, session hardening |
+| A08 Software and Data Integrity Failures | Signed packages, supply-chain controls (SLSA, in-toto), code signing |
+| A09 Security Logging & Monitoring Failures | Centralized logging, alerting, SIEM |
+| A10 Server-Side Request Forgery | URL allow-lists, block private IP ranges, dedicated egress proxy |`,
+      examTip: `For password hashing in 2026, the correct answers are Argon2id (preferred), bcrypt, or scrypt. PBKDF2 with high iteration count is acceptable. NEVER pick MD5, SHA-1, SHA-256 alone, or "encrypt the password" — these are all wrong.`,
+      importantNote: `Input validation alone is not enough. You also need output encoding for XSS, parameterized queries for SQLi, etc. Different bug classes need different defenses.`,
+    },
+    {
+      id: 'security-testing-tools',
+      title: `3. Security Testing Tools — SAST, DAST, IAST, SCA, Fuzzing, Pen Testing`,
+      content: `Each testing tool catches a different class of bug. A mature program uses all of them.
+
+## 3.1 SAST — Static Application Security Testing
+
+Analyzes SOURCE CODE without executing it. Looks for vulnerable patterns: unsafe API calls, SQL string concatenation, hardcoded secrets, missing input validation.
+
+- **When**: pre-commit hook, pull request check, CI build
+- **Pros**: catches bugs early; coverage of all code paths; can pinpoint exact line
+- **Cons**: false positives common (without runtime context, the analyzer can't always tell if a pattern is actually exploited); doesn't catch logic flaws or runtime-only issues
+- **Examples**: SonarQube, Checkmarx, Veracode SAST, Semgrep (open source), CodeQL
+
+## 3.2 DAST — Dynamic Application Security Testing
+
+Tests a RUNNING application from the outside, like an attacker would. Sends crafted requests, observes responses.
+
+- **When**: CI test stage against staging deployment; periodic scans of production
+- **Pros**: finds runtime-only bugs (misconfiguration, auth flaws, server-side issues); fewer false positives than SAST
+- **Cons**: only finds bugs in code paths the scanner reaches; requires a running deployment; slow
+- **Examples**: OWASP ZAP (free), Burp Suite Pro, Acunetix, Veracode DAST
+
+## 3.3 IAST — Interactive Application Security Testing
+
+Combines SAST + DAST. An instrumented agent runs INSIDE the app and observes data flow during dynamic testing.
+
+- **When**: CI test stage with agent attached
+- **Pros**: high accuracy (very few false positives), pinpoints exact code line of runtime bugs
+- **Cons**: requires agent installation; some performance overhead; language-specific
+- **Examples**: Contrast Security, Checkmarx CxIAST
+
+## 3.4 SCA — Software Composition Analysis
+
+Specifically scans DEPENDENCIES for known vulnerabilities (CVEs). Reads package manifests (\`package.json\`, \`requirements.txt\`, \`pom.xml\`), looks up each dep in vulnerability databases (NVD, GitHub Advisory).
+
+- **When**: pre-commit, PR check, CI build, continuous monitoring
+- **Output**: list of vulnerable dependencies with CVE IDs, severity, suggested upgrade
+- **Examples**: Snyk, Dependabot, Renovate, OWASP Dependency-Check, npm audit, pip-audit
+
+In 2024-25, SCA findings outnumber SAST findings 10:1 — your code probably has few injection bugs but your 500 transitive dependencies have CVEs constantly.
+
+## 3.5 Container image scanning
+
+Containers ship application code + OS layers + dependencies. Each layer can have vulnerabilities.
+
+- Scan images during build (CI)
+- Scan registry images periodically (new CVEs are disclosed daily)
+- Tools: Trivy (free), Snyk Container, Aqua, Prisma Cloud, AWS ECR scan
+
+## 3.6 Secrets scanning
+
+Detect API keys, passwords, tokens accidentally committed to repos.
+
+- Tools: gitleaks (free), TruffleHog, GitHub Secret Scanning (auto), gitGuardian
+
+## 3.7 IaC scanning
+
+Scan Terraform / CloudFormation / Kubernetes manifests for misconfigurations.
+
+- Tools: Checkov, tfsec, kube-linter, OPA Conftest
+
+## 3.8 Fuzz testing
+
+Sends random or semi-random inputs to find crashes or unexpected behavior. Especially valuable for parsers, file format handlers, protocol implementations.
+
+- Tools: AFL++, libFuzzer, jazzer, OSS-Fuzz (Google runs continuous fuzzing for open source)
+- Modern compilers support sanitizers (AddressSanitizer, UBSan, MemorySanitizer) that detect bugs at runtime during fuzzing
+
+## 3.9 Penetration testing
+
+Authorized humans actively attempt to compromise the application. Goes beyond automated scanners by chaining low-severity findings, abusing business logic, demonstrating real impact.
+
+Pen test types:
+
+- **Black box** — tester has no inside info; simulates external attacker
+- **Gray box** — tester has limited info (credentials, architecture diagrams)
+- **White box (a.k.a. crystal box)** — tester has full source code and design docs
+
+Engagement structure:
+
+1. Scoping + Rules of Engagement
+2. Reconnaissance + discovery
+3. Vulnerability identification
+4. Exploitation (with explicit boundaries)
+5. Post-exploitation (lateral movement, privilege escalation)
+6. Reporting
+7. Remediation verification (often a follow-up engagement)
+
+The exam may name **PTES** (Penetration Testing Execution Standard) and **OSSTMM** (Open Source Security Testing Methodology Manual) as methodology frameworks.
+
+## 3.10 Bug bounty programs
+
+Continuous, crowd-sourced testing. Researchers find bugs and report via a coordinated disclosure platform (HackerOne, Bugcrowd, Intigriti). Triaged, deduplicated, paid based on severity.
+
+- Complements (does not replace) internal testing
+- Needs clear scope, ROE, safe-harbor language, and a triage capacity
+- Vulnerability Disclosure Programs (VDP) are similar but unpaid — just a "tell us about bugs without legal risk" promise
+
+## 3.11 Combining the tools
+
+A mature pipeline:
+
+1. **Pre-commit**: secrets scan + light SAST
+2. **PR**: SAST + SCA + license check + diff-only DAST
+3. **CI build**: full SAST + SCA + container image scan + IaC scan
+4. **CI test**: DAST + IAST + integration tests with security assertions
+5. **Pre-deploy**: policy-as-code gate (e.g., "no known critical CVEs in production")
+6. **Post-deploy**: continuous DAST + RASP + vuln scanning
+7. **Quarterly / annually**: external penetration test
+8. **Always-on**: bug bounty / VDP`,
+      examTip: `Decode the tool by what it analyzes: SAST = source code (static), DAST = running app from outside, IAST = running app with internal agent (combines both), SCA = dependencies. The exam loves to ask you to pick the right tool for a given goal.`,
+      importantNote: `SAST is famous for false positives. A mature program TUNES the tool over time, marks accepted findings, and focuses on high-confidence true positives. Otherwise developers learn to ignore the noise — which defeats the whole purpose.`,
+    },
+  ],
+  keyTakeaways: [
+    'DevSecOps shifts security LEFT in the SDLC — fixing bugs at the IDE costs ~$1, in production ~$10,000',
+    'STRIDE is the most commonly tested threat-modeling methodology (Spoofing, Tampering, Repudiation, Info disclosure, DoS, Elevation of privilege)',
+    'For passwords use Argon2id (preferred), bcrypt, or scrypt — NEVER MD5/SHA-1/SHA-256',
+    'Parameterized queries prevent SQLi; output encoding prevents XSS; allow-list input validation is foundational',
+    'SAST = source code; DAST = running app from outside; IAST = combined with internal agent; SCA = dependency CVEs',
+    'SCA findings vastly outnumber SAST findings in modern codebases — vulnerable dependencies are the #1 vector',
+    'Defense in depth: a mature pipeline runs SAST + SCA + IaC scan + DAST + secrets scan + container scan + annual pen test + always-on bug bounty',
+  ],
+},
+
+sp_third_party: {
+  topicId: 'sp_third_party',
+  title: `Third-Party Risk Management`,
+  domainWeight: '20%',
+  overview: `Modern enterprises are a constellation of third-party services — SaaS apps, IaaS providers, payment processors, identity providers, analytics, support tooling. Each is a potential breach vector (the SolarWinds, MOVEit, Okta, and Snowflake incidents in recent years all came through trusted vendors). SY0-701 objective 5.3 is explicit: you must understand vendor risk assessment, SLAs/MSAs/MOUs, right-to-audit, supply chain security, and the SBOM/SCRM controls that limit blast radius. This topic covers the lifecycle: due diligence before engagement, contractual controls during, monitoring throughout, and offboarding when the relationship ends.`,
+  sections: [
+    {
+      id: 'vendor-due-diligence',
+      title: `1. Vendor Risk Assessment & Due Diligence`,
+      content: `Before you trust a vendor with data or system access, you need to know what they're doing to protect it.
+
+## 1.1 The vendor risk lifecycle
+
+1. **Identification + tiering** — categorize vendors by risk (volume of data, criticality, regulatory exposure)
+2. **Pre-engagement due diligence** — assess controls before signing
+3. **Contractual** — write the right protections into the contract
+4. **Onboarding** — integrate securely (federation, network controls, monitoring)
+5. **Ongoing monitoring** — re-assess at intervals; monitor for incidents
+6. **Offboarding** — revoke access, recover data, certify destruction
+
+## 1.2 Vendor tiering
+
+Not every vendor warrants the same scrutiny. Common tiering scheme:
+
+- **Tier 1 (Critical / High)** — vendors processing sensitive data, mission-critical SaaS, or with broad system access. Examples: identity providers (Okta), payment processors (Stripe), core SaaS (Salesforce), cloud IaaS (AWS).
+- **Tier 2 (Moderate)** — vendors with some sensitive data access but not critical to operations. Examples: marketing tools with customer email lists, support tools with case data.
+- **Tier 3 (Low)** — vendors with no sensitive data and minimal operational impact. Examples: company-branded merchandise vendor, office coffee service.
+
+Tier determines the rigor of due diligence and the frequency of re-assessment (Tier 1 annually, Tier 3 maybe never beyond initial).
+
+## 1.3 Due diligence artifacts
+
+The standard set of evidence you ask a vendor to provide:
+
+- **SOC 2 Type II report** — independent attestation of operating effectiveness of controls over a period (usually 6-12 months). The single most-requested document. Read the report — the "exceptions" section lists controls that DIDN'T operate effectively.
+- **SOC 1 Type II** — for financial reporting controls (less relevant unless you rely on the vendor for SOX compliance)
+- **ISO 27001 certificate** — certification of an Information Security Management System (ISMS). Indicates the vendor has a documented, audited program.
+- **ISO 27017 / 27018** — cloud-specific extensions covering cloud controls and personal data in the cloud
+- **PCI-DSS Attestation of Compliance (AOC)** — for vendors handling payment card data
+- **HITRUST CSF certification** — common in healthcare
+- **FedRAMP authorization** — for cloud services serving US federal government
+- **Penetration test summary** — recent (within 12 months) external pen test results
+- **Security policy summaries** — incident response, business continuity, encryption, access management
+
+## 1.4 The vendor security questionnaire
+
+Standardized questionnaires let you compare vendors on the same scale:
+
+- **SIG (Standardized Information Gathering)** — Shared Assessments' questionnaire, very comprehensive
+- **CAIQ (Consensus Assessments Initiative Questionnaire)** — Cloud Security Alliance's questionnaire for cloud providers
+- **CIS RAM** — risk-assessment-focused questionnaire
+- Industry-specific: HECVAT for higher ed, MQS for some sectors
+
+Common questions: architecture overview, encryption (at rest, in transit, key management), access controls, vulnerability management cadence, incident response, business continuity, sub-processors (who do THEY use?), data location, data retention/destruction, breach notification timeline.
+
+Don't accept "we have it" answers — ask for evidence.
+
+## 1.5 Inherited risk and sub-processors
+
+The vendor's vendors are YOUR vendors too. SolarWinds compromised customers via a single vendor's compromised build pipeline. Snowflake customers were breached via stolen credentials in a downstream processor.
+
+Due diligence questions:
+
+- Who are your sub-processors / third parties for X?
+- How do you assess their security?
+- What contractual right do we have to be notified of changes?
+- What's your supply chain risk management (SCRM) program?
+
+For Tier 1 vendors, list their critical sub-processors in your own vendor inventory and treat them as adjacent risk.
+
+## 1.6 Financial + operational viability
+
+Security isn't the only third-party risk. Also assess:
+
+- **Financial health** — is the vendor likely to go out of business?
+- **Geographic concentration** — single data center? Single region? Single country?
+- **Concentration risk** — would loss of this vendor be catastrophic, with no realistic backup?
+- **Insurance** — does the vendor carry cyber liability insurance? At what limits?
+
+A great-security vendor that goes bankrupt is still a problem.
+
+## 1.7 Recurring re-assessment
+
+Tier 1 vendors: annual re-assessment with full questionnaire + updated SOC 2 + updated pen test.
+Tier 2: every 18-24 months.
+Tier 3: ad hoc.
+
+Always re-assess when:
+- The vendor has a publicly-disclosed incident
+- Your usage materially expands (more data, more critical workflows)
+- The vendor changes ownership / merges
+- Regulations change`,
+      examTip: `SOC 2 Type II is the most-tested third-party assurance artifact. Type I is "controls are designed correctly" at a point in time. Type II is "controls operated effectively" over a period. Type II is what you want.`,
+    },
+    {
+      id: 'contractual-controls',
+      title: `2. Contractual Controls — MSA, SLA, MOU, NDA, DPA, BAA`,
+      content: `Contracts are how you ENFORCE security expectations. The exam tests your knowledge of the standard contract types and what each does.
+
+## 2.1 The hierarchy
+
+For a typical SaaS relationship, you'll likely have multiple agreements:
+
+1. **MSA (Master Services Agreement)** — the umbrella commercial contract: pricing, payment terms, IP ownership, liability, governing law, dispute resolution. Long-lived; signed once and amended as needed.
+2. **SOW (Statement of Work)** — under the MSA, the specifics of a particular engagement: scope, deliverables, timeline, fees for THIS work.
+3. **SLA (Service Level Agreement)** — measurable commitments: uptime, response times, performance, with credits/penalties for breaches.
+4. **DPA (Data Processing Agreement)** — GDPR-required when the vendor processes personal data on your behalf. Defines processor/controller roles, security obligations, sub-processor management, data subject rights handling.
+5. **BAA (Business Associate Agreement)** — HIPAA-required when the vendor handles PHI. Imposes specific obligations including breach notification timelines.
+6. **NDA (Non-Disclosure Agreement)** — confidentiality of information shared. Can be one-way or mutual.
+
+## 2.2 MOU vs MOA
+
+- **MOU (Memorandum of Understanding)** — non-binding statement of intent. "We intend to collaborate on X." Used between organizations exploring a relationship without yet committing.
+- **MOA (Memorandum of Agreement)** — more formal than MOU but typically less than a full contract. Defines roles and responsibilities for a joint effort.
+
+Neither is enforceable like a contract; both are common in government and academia.
+
+## 2.3 SLA components
+
+A good SLA defines:
+
+- **Metrics** — what will be measured (uptime %, response time for critical issues, RTO/RPO)
+- **Targets** — specific values (99.9% uptime monthly, P1 response within 1 hour)
+- **Measurement methodology** — how is the metric calculated? Who collects the data?
+- **Reporting cadence** — when do you receive SLA reports?
+- **Penalties** — service credits or other remedies for missed SLAs
+- **Exclusions** — what doesn't count (planned maintenance windows, force majeure)
+
+99.9% uptime sounds high but allows ~43 minutes/month of downtime. 99.99% = ~4 minutes/month. 99.999% ("five nines") = ~26 seconds/month. Know the math.
+
+## 2.4 Critical security clauses for any vendor contract
+
+The exam may not name these by clause, but knowing they exist is important:
+
+- **Data ownership** — the customer owns customer data. Vendor has license only as needed to provide the service.
+- **Data location restrictions** — where data may be stored and processed (often required for GDPR, sovereign clouds)
+- **Encryption requirements** — at rest, in transit, key management responsibilities
+- **Right to audit** — customer (or their auditor) can audit vendor controls. May be triggered by specific events (incident) or periodic. Vendors prefer SOC 2 in lieu of customer audits — usually fine for Tier 2 but Tier 1 should retain audit rights.
+- **Breach notification** — vendor must notify customer of suspected breach within a defined window (24-72 hours typical; 24 hours for GDPR, 60 days for HIPAA, but DPA/BAA pin specifics)
+- **Sub-processor approval** — customer's right to approve (or at least be notified of) sub-processors
+- **Data return + destruction at termination** — vendor returns all customer data and certifies destruction within a defined timeframe
+- **Indemnification** — who pays for what if things go wrong
+- **Insurance** — minimum cyber liability and E&O coverage
+- **Compliance with applicable laws** — vendor warrants compliance with relevant regulations
+- **Background checks** — for vendor personnel with access to sensitive data
+- **Survival** — which clauses survive termination (confidentiality, indemnification, data destruction)
+
+## 2.5 Specific regulatory contracts
+
+| Regulation | Required Contract | Key Provisions |
+|---|---|---|
+| GDPR | DPA (Data Processing Agreement) | Processor obligations, sub-processor management, data subject request handling, 72-hour breach notice to controller |
+| HIPAA | BAA (Business Associate Agreement) | HIPAA security/privacy compliance, 60-day breach notification, restrictions on use/disclosure of PHI |
+| PCI-DSS | Service provider agreement | Vendor in PCI scope, compliance attestation, responsibilities matrix |
+| SOX | Often built into MSA | Controls relevant to financial reporting, SOC 1 access |
+| GLBA | Specific provisions in MSA | Safeguards for nonpublic personal information |
+
+## 2.6 Liability + indemnification
+
+Most vendor contracts cap the vendor's total liability — often at 12 months of fees paid. That's a serious risk: a breach that costs you $50M may give you a $500K recovery from the vendor.
+
+What to negotiate:
+- **Carve-outs from the cap** — data breach, IP infringement, gross negligence, willful misconduct should be EXCLUDED from the cap
+- **Higher caps** for Tier 1 vendors
+- **Indemnification** for third-party claims arising from vendor's breach
+- **Insurance proof** — minimum cyber liability per occurrence and aggregate
+
+## 2.7 Termination provisions
+
+- **Termination for convenience** — customer's right to walk away (with notice)
+- **Termination for cause** — material breach, insolvency, change of control
+- **Data return** — format, timeline, certification of destruction
+- **Transition assistance** — vendor's obligation to help migrate to a successor
+
+Vendor lock-in is a non-trivial third-party risk. Negotiate transition assistance + data portability up front; once you're locked in, your leverage is minimal.`,
+      examTip: `Match the contract to the relationship: MSA = umbrella commercial, SLA = measurable service commitments, DPA = GDPR processor agreement, BAA = HIPAA processor agreement, NDA = confidentiality, MOU/MOA = non-binding intent.`,
+    },
+    {
+      id: 'supply-chain-security',
+      title: `3. Supply Chain Security, SBOM, and Ongoing Monitoring`,
+      content: `The software supply chain is now the most-attacked surface in technology. Defenses here are immature relative to the threat.
+
+## 3.1 Recent supply chain incidents
+
+Patterns the exam may reference:
+
+- **SolarWinds (2020)** — attacker compromised the build pipeline of network-monitoring software, injecting malicious code into legitimate updates signed with valid certificates. ~18,000 customers downloaded the trojanized update; ~100 were exploited in the next stage.
+- **Codecov (2021)** — bash uploader script modified to exfiltrate environment variables (secrets) from victim CI builds.
+- **Log4j / Log4Shell (2021)** — critical RCE in a ubiquitous Java logging library. Every enterprise scrambled to find where Log4j was used (often deep in transitive deps).
+- **3CX (2023)** — supply chain compromise of a desktop softphone client, cascaded from a different supply chain compromise (Trading Technologies).
+- **MOVEit (2023)** — zero-day in a file-transfer product exploited by Cl0p; thousands of organizations whose vendors used MOVEit had data stolen.
+
+The lesson: even with strong internal security, your software dependencies can be the breach.
+
+## 3.2 SBOM (Software Bill of Materials)
+
+A formal inventory of all components in a software product — direct dependencies, transitive dependencies, versions, licenses, source URLs.
+
+Formats:
+- **SPDX (Software Package Data Exchange)** — open standard, often XML or JSON
+- **CycloneDX** — OWASP-stewarded, often JSON
+- **SWID (Software Identification)** — ISO standard, used for vulnerability matching
+
+What an SBOM enables:
+
+- When a new CVE drops, you can answer "are we affected?" in minutes by searching SBOMs for the vulnerable component
+- Vendor SBOMs let you assess YOUR exposure to THEIR dependencies
+- Regulatory direction: US Executive Order 14028 requires SBOMs for software sold to the federal government
+- Tools: Syft (generates SBOMs), Grype (queries SBOMs for vulnerabilities), Dependency-Track (SBOM management)
+
+## 3.3 Code signing + provenance
+
+Cryptographic guarantees that software came from the claimed publisher and wasn't tampered with in transit.
+
+- Vendors sign releases with their private key
+- Customers verify with the published public key
+- Modern extensions: SLSA (Supply-chain Levels for Software Artifacts) provides graded levels of build provenance assurance; in-toto provides supply chain attestation
+- Sigstore (free, Linux Foundation) provides keyless signing using OIDC identity + transparency log
+
+## 3.4 Reproducible builds
+
+If the build of a given source produces a bit-identical artifact across machines, you can verify that a published binary was built from the published source. Defends against compromised build pipelines (which is how SolarWinds and 3CX both happened).
+
+Hard to achieve in practice — requires careful management of timestamps, build paths, dependencies. Active research project (reproducible-builds.org).
+
+## 3.5 Hardware supply chain
+
+Less covered on the exam but worth knowing:
+
+- **Counterfeit components** — fake parts that fail in service or contain hidden functionality
+- **Hardware implants** — modifications during manufacturing or transit (the alleged "Big Hack" reporting around Supermicro)
+- **Firmware tampering** — modified BIOS/UEFI, network device firmware
+- Defenses: trusted suppliers, certified components, hardware integrity monitoring, secure boot chains (UEFI Secure Boot, AMD PSP, Intel BootGuard), TPM-anchored measurements
+
+## 3.6 Ongoing monitoring
+
+Vendor risk doesn't stop at the contract. Continuous monitoring:
+
+- **Vendor security ratings** — services (BitSight, SecurityScorecard, Black Kit) scan public-facing posture of vendors and produce a rating. Alerts on degradation, expired certificates, vulnerable services exposed.
+- **Threat intel feeds** — subscribe to feeds of disclosed vendor incidents, breach notifications
+- **News + alert monitoring** — track major-vendor news (set up news alerts for Tier 1 vendor names)
+- **Vendor incident notifications** — track vendors' status pages, security advisory feeds, RSS
+
+## 3.7 The vendor risk register
+
+Maintain a single source of truth listing every vendor, their tier, the data/systems they access, contract dates, last review date, current findings, and risk ratings. Tools: ServiceNow GRC, Archer, Diligent, or a well-maintained spreadsheet.
+
+The register feeds:
+- Re-assessment scheduling
+- Incident response (when a vendor has an incident, you instantly know your exposure)
+- Compliance reporting (auditors will ask)
+- Strategic decisions (concentration risk, sunset planning)
+
+## 3.8 Offboarding
+
+When a vendor relationship ends:
+
+- Revoke ALL access (federated identity, API keys, mTLS certs, VPN access, badges)
+- Recover all customer data per contract
+- Get certification of data destruction (per contract timeline)
+- Update the CMDB / asset inventory
+- Notify affected internal teams
+- Document the decommissioning in the vendor risk register
+
+Failed offboarding is a frequent breach root cause — a contractor's access stayed enabled, became orphaned, was eventually compromised, and the original organization had no record of who was responsible.`,
+      examTip: `SBOM is increasingly tested. Know that it's an INVENTORY of software components (not a vulnerability scan), in formats like SPDX or CycloneDX, used to answer "are we affected by CVE-X?" in minutes.`,
+      importantNote: `The vendor's vendors are your vendors too. Tier 1 due diligence asks about SUB-PROCESSORS and how the vendor assesses them. SolarWinds-class compromise can cascade through multiple supply-chain hops.`,
+    },
+  ],
+  keyTakeaways: [
+    'Tier vendors by risk; rigor of due diligence and re-assessment frequency follow the tier',
+    'SOC 2 Type II = controls operating effectively over a PERIOD (vs Type I = designed correctly at a point in time)',
+    'Match the contract: MSA (umbrella), SLA (service commitments), DPA (GDPR), BAA (HIPAA), NDA (confidentiality)',
+    'Right-to-audit, breach notification windows, sub-processor approval, data destruction at termination — non-negotiable for Tier 1',
+    'SBOM lists all software components in a product (SPDX or CycloneDX); enables rapid "are we affected by this CVE?" lookups',
+    'Code signing + build provenance (SLSA, sigstore) defend against compromised build pipelines (the SolarWinds attack class)',
+    'Failed offboarding is a frequent breach vector — revoke all access, recover data, certify destruction, update inventory',
+  ],
+},
+
+sp_audit: {
+  topicId: 'sp_audit',
+  title: `Audits, Assessments & Compliance Validation`,
+  domainWeight: '20%',
+  overview: `Audits are the mechanism by which security claims become verifiable. SY0-701 objective 5.5 expects you to distinguish audit types (internal vs external, compliance vs operational), name common certification frameworks (SOC 1/2, ISO 27001, PCI-DSS QSA assessment, HIPAA OCR investigation), and understand the lifecycle from planning through remediation. This is distinct from vulnerability assessment (which finds technical bugs) — audits validate whether your CONTROLS are designed and operating as policy claims.`,
+  sections: [
+    {
+      id: 'audit-types',
+      title: `1. Audit Types and When Each Is Used`,
+      content: `## 1.1 Internal audit
+
+Performed by the organization's own audit function — typically a team reporting to the audit committee of the board (not to the CIO/CISO, which would create independence issues).
+
+- **Scope**: any process, control, or system the audit charter covers
+- **Frequency**: per the annual internal audit plan; high-risk areas more often
+- **Output**: report to management + audit committee with findings, recommendations, management responses
+- **Independence**: from operational management but not from the organization itself
+- **Standard**: IIA (Institute of Internal Auditors) standards
+
+Internal audit is the FIRST LINE of formal assurance — catches issues before external auditors do.
+
+## 1.2 External audit
+
+Performed by an independent third party. Typically a CPA firm for financial/compliance audits, a security firm for technical audits.
+
+- **Scope**: defined by the engagement letter
+- **Output**: independent attestation, often required by regulators, customers, or boards
+- **Independence**: independent of the organization
+- **Trust**: external auditors carry professional liability and reputational risk for incorrect conclusions
+
+Common external audits:
+
+- **Financial statement audit** (annual) — required for public companies (SOX), often required for private companies with debt covenants
+- **SOC 1 / SOC 2** — service organization control reports
+- **ISO 27001 certification audit** — by an accredited certification body
+- **PCI-DSS Report on Compliance (ROC)** — by a Qualified Security Assessor (QSA) for Level 1 merchants
+- **HITRUST CSF assessment** — by an authorized assessor
+- **FedRAMP** — by a 3PAO (Third Party Assessment Organization)
+
+## 1.3 Compliance audit
+
+Validates conformance to a specific regulation or framework.
+
+- **HIPAA**: OCR (Office for Civil Rights) audits randomly + after breach reports. Looks at compliance with HIPAA Security and Privacy Rules.
+- **PCI-DSS**: annual ROC (Report on Compliance) for Level 1 merchants; quarterly ASV scans for vulnerability validation.
+- **GDPR**: data protection authorities can audit at will, often triggered by complaints or breach notifications.
+- **SOX**: external audit of internal controls over financial reporting (ICFR), required annually for public companies.
+- **FISMA / FedRAMP**: annual assessment of federal information systems.
+
+## 1.4 Operational audit
+
+Examines efficiency and effectiveness of operations — broader than compliance.
+
+- Are processes working as intended?
+- Are resources used efficiently?
+- Are controls adequate for the risks?
+- Are policies followed?
+
+Less standardized than compliance audits, often internal.
+
+## 1.5 IT general controls (ITGC) audit
+
+A specific category looking at the controls that EVERY system relies on:
+
+- Logical access (who can access what, periodic access reviews)
+- Change management (changes follow process)
+- Backup + recovery (regular, tested)
+- Computer operations (job scheduling, monitoring)
+- Physical + environmental controls
+
+ITGCs underpin application controls — auditors test ITGCs first, then test application-specific controls in systems that depend on the ITGCs.
+
+## 1.6 Attestation engagements
+
+Under AICPA standards (SSAE 18), an attestation is a formal opinion by an auditor on subject matter. SOC reports are attestation engagements.
+
+Two types of opinion:
+
+- **Type I** — the auditor opines on whether the controls were DESIGNED appropriately at a point in time
+- **Type II** — opines on whether the controls were DESIGNED AND OPERATING EFFECTIVELY over a period (usually 6-12 months)
+
+Type II is the gold standard — anyone can have well-designed controls on paper; Type II proves they actually ran.
+
+## 1.7 Certification vs attestation
+
+Subtle but exam-relevant:
+
+- **Attestation** (SOC 2): an auditor opines that controls met criteria. No certificate; a report.
+- **Certification** (ISO 27001): a certification body certifies conformance. There IS a certificate.
+
+The difference matters for vendor management — you might receive a SOC 2 report (review the actual findings) OR an ISO 27001 certificate (verify it's current, by an accredited body).`,
+      examTip: `SOC 2 Type I = design only, point in time. Type II = operating effectiveness over a period. Type II is what you want for vendor due diligence.`,
+    },
+    {
+      id: 'audit-frameworks',
+      title: `2. Common Frameworks and Their Audits`,
+      content: `## 2.1 SOC reports (SSAE 18 / ISAE 3402)
+
+SOC stands for "System and Organization Controls." Three flavors:
+
+- **SOC 1** — focuses on controls relevant to user organizations' FINANCIAL REPORTING. Used when your vendor's controls affect your SOX compliance (e.g., payroll processor).
+- **SOC 2** — focuses on controls relevant to the Trust Services Criteria (TSC):
+    - Security (mandatory)
+    - Availability
+    - Processing Integrity
+    - Confidentiality
+    - Privacy
+  - Vendors choose which TSCs to include based on their service.
+- **SOC 3** — a public-facing summary of a SOC 2, suitable for marketing. Much less detail.
+
+When you ask a SaaS vendor for "their SOC 2," ask specifically for the SOC 2 TYPE II report (not Type I, not SOC 3). Read the report — pay attention to:
+
+- Which TSCs are in scope (was Privacy assessed?)
+- The audit period (recent? at least 6 months?)
+- The sub-service organizations (carved out — the vendor's own vendors not in scope of THIS report)
+- The "Description of the System" section
+- THE EXCEPTIONS — controls that didn't operate effectively. Critical reading.
+
+## 2.2 ISO 27001 + 27002
+
+- **ISO/IEC 27001** — specification for an Information Security Management System (ISMS). Auditable, certifiable.
+- **ISO/IEC 27002** — code of practice for information security controls. Not certifiable directly; provides the implementation guidance for the 27001 Annex A controls.
+
+Certification process:
+
+1. Implement the ISMS (define scope, policies, risk assessment, controls)
+2. Internal audit
+3. Management review
+4. Stage 1 external audit (documentation review)
+5. Stage 2 external audit (operational verification)
+6. Certification granted (3-year cycle with annual surveillance audits)
+
+Related: ISO 27017 (cloud-specific), ISO 27018 (personal data in the cloud), ISO 27701 (privacy extension), ISO 27005 (risk management).
+
+## 2.3 PCI-DSS validation
+
+Validation method depends on merchant level (transaction volume):
+
+- **Level 1** (>6M Visa+MC txns/yr): annual Report on Compliance (ROC) by a Qualified Security Assessor (QSA), quarterly ASV scans
+- **Level 2** (1-6M): annual Self-Assessment Questionnaire (SAQ) + ASV scans (some require ROC)
+- **Level 3** (20K-1M e-commerce): SAQ + ASV scans
+- **Level 4** (<20K e-commerce or <1M total): SAQ + ASV scans
+
+ASV = Approved Scanning Vendor — external company that runs vulnerability scans on cardholder data environment from outside.
+
+PCI-DSS v4.0 (current as of 2024) added a "customized approach" allowing alternative implementations validated to meet the same objective — moving toward outcome-based rather than prescriptive.
+
+## 2.4 HIPAA enforcement
+
+OCR (Office for Civil Rights) is the enforcement arm. Triggers for audit/investigation:
+
+- **Breach reports** — breaches affecting >500 individuals trigger OCR investigation
+- **Complaints** — individuals can complain about HIPAA violations
+- **Random audits** — OCR audit program (currently focused but historically random)
+
+Penalties (per violation, tiered by culpability):
+
+- Did not know: $137-$68K
+- Reasonable cause: $1,379-$68K
+- Willful neglect (corrected): $13,785-$68K
+- Willful neglect (not corrected): $68,928 minimum
+- Annual cap: $2,067,813 per violation type
+
+(Numbers are HHS's 2024 adjusted figures, change with inflation.)
+
+## 2.5 GDPR supervisory authority audits
+
+Each EU member state has a Data Protection Authority (DPA) with audit powers. Triggers:
+
+- Complaint from a data subject
+- Breach notification
+- Sectoral investigation
+- Cross-border investigations coordinated through the EDPB (European Data Protection Board)
+
+Penalties:
+
+- Up to €10M or 2% of global annual turnover (whichever higher) for lesser infringements
+- Up to €20M or 4% of global annual turnover for serious infringements
+- Article 30 (records of processing), Article 32 (security), Article 33-34 (breach notification) are heavily enforced
+
+## 2.6 FedRAMP
+
+Federal Risk and Authorization Management Program — single security framework for cloud services used by US federal agencies.
+
+- Three impact levels: Low, Moderate, High (based on FIPS 199 categorization)
+- Authorization by an agency (P-ATO from the JAB or ATO from individual agency)
+- Annual assessment by a 3PAO (Third Party Assessment Organization)
+- StateRAMP, TX-RAMP, etc. are state-level analogues
+
+## 2.7 NIST frameworks (commonly assessed against)
+
+NIST itself doesn't certify, but third parties assess against its frameworks:
+
+- **NIST CSF (Cybersecurity Framework)** — 2.0 released 2024. Six functions: Govern (NEW), Identify, Protect, Detect, Respond, Recover.
+- **NIST 800-53** — comprehensive controls catalog used in federal systems and as the basis for FedRAMP
+- **NIST 800-171** — for federal contractors handling CUI (Controlled Unclassified Information). Self-assessed; CMMC adds third-party assessment.
+- **CMMC (Cybersecurity Maturity Model Certification)** — DoD contractor certification, 3 levels, third-party assessed for Level 2+, will be required for DoD contracts going forward.
+
+## 2.8 Industry-specific certifications
+
+- **HITRUST CSF** — healthcare; combines HIPAA, ISO, PCI, NIST. Validated assessment (i1) or certified (r2) levels.
+- **SOC 2 + HIPAA combined** — common bundled assessment
+- **ISO 13485** — medical device quality (not infosec but related)
+- **NERC CIP** — utilities (electric grid)
+- **FIPS 140-3** — cryptographic modules`,
+      examTip: `SOC 2 is for vendors. PCI-DSS is for payment cards. HIPAA is for healthcare. ISO 27001 is general-purpose ISMS certification. Know the mapping cold.`,
+    },
+    {
+      id: 'audit-lifecycle',
+      title: `3. The Audit Lifecycle: Planning, Fieldwork, Reporting, Remediation`,
+      content: `Whether internal or external, audits follow a similar arc. Knowing each stage helps you plan, cooperate, and respond.
+
+## 3.1 Planning
+
+- **Scope definition** — which systems, processes, controls, time period
+- **Risk-based selection** — which controls warrant more testing based on risk
+- **Sampling methodology** — how many transactions, how chosen (random, judgmental, statistical)
+- **Resource scheduling** — auditors, system owners, evidence custodians
+- **Pre-audit walkthrough** — auditors interview process owners to understand the design
+
+The "audit charter" or "engagement letter" formalizes scope, timeline, and access.
+
+## 3.2 Fieldwork
+
+The hands-on testing phase. Auditors collect evidence and test controls. Common techniques:
+
+- **Inquiry** — interview process owners ("how does this work?")
+- **Observation** — watch processes execute (auditor sits with operator)
+- **Inspection** — examine documents, configurations, evidence ("show me the change ticket for this push")
+- **Re-performance** — auditor reproduces the control to verify it works ("run the access review report yourself")
+
+Evidence quality matters:
+
+- **Direct + independent** (auditor's own observation, system-generated reports the auditee can't manipulate) — highest
+- **Documentary** (signed approval, dated ticket) — strong
+- **Verbal** (interview testimony) — weakest, used for context
+
+## 3.3 Sampling
+
+Auditors can't test every transaction; they sample.
+
+- **Random sampling** — every item has equal probability
+- **Stratified sampling** — divide population, sample from each stratum (e.g., test more high-dollar transactions)
+- **Judgmental sampling** — auditor picks based on judgment (high-risk transactions, anomalies)
+- **Statistical sampling** — sample size determined by formulas for desired confidence level
+
+Sample sizes typically 25-60 items per control test, depending on risk.
+
+## 3.4 Findings classification
+
+Auditors classify findings by severity:
+
+- **Significant deficiency** — control weakness less severe than material weakness, but still warranting attention
+- **Material weakness** — reasonable possibility that a material misstatement / breach won't be prevented or detected
+- **Control deficiency** — control was missing or didn't operate as designed
+- **Observation / opportunity for improvement** — not a deficiency but suggested enhancement
+
+For SOC 2: "exception" is the term used in the report when a control test failed.
+
+## 3.5 Management response
+
+For each finding, management provides:
+
+- **Response** — agree / disagree (with rationale)
+- **Remediation plan** — what will be done
+- **Owner** — who is responsible
+- **Target date** — when will remediation complete
+
+A finding without a remediation plan + owner + date is incomplete.
+
+## 3.6 Reporting
+
+Final audit report includes:
+
+- Executive summary
+- Scope + methodology
+- Findings + management responses
+- Auditor's overall opinion (for attestation engagements)
+- Distribution list (often limited — many SOC 2 reports go only to direct customers under NDA)
+
+For SOC 2:
+
+- **Unqualified opinion** — controls operate as described, no exceptions material
+- **Qualified opinion** — most controls work but one or more areas have material exceptions
+- **Adverse opinion** — controls don't operate as described (very rare; usually the org wouldn't publish such a report)
+- **Disclaimer** — auditor unable to obtain sufficient evidence to form an opinion
+
+## 3.7 Remediation tracking
+
+After the report, remediation work begins. Mature programs track every finding to closure:
+
+- Centralized issue tracker (Jira, GRC tool)
+- Periodic status reviews
+- Evidence collection as remediations complete
+- Re-test by auditors (often as part of next audit cycle)
+- Closure documented
+
+## 3.8 Continuous controls monitoring
+
+A mature alternative to point-in-time audits: automated continuous monitoring of control operating effectiveness, with auditors sampling from the automated evidence.
+
+- Configuration baselines monitored automatically
+- Access reviews triggered by user lifecycle events
+- Change approvals enforced by tooling
+- Logs sent to immutable storage
+
+This is the direction the industry is heading; SOC 2 auditors increasingly accept automated evidence in lieu of manual sampling.
+
+## 3.9 Common pitfalls during an audit
+
+- **Defensive responses** — fighting findings rather than understanding them; auditors will dig deeper
+- **Inability to produce evidence** — control may have worked but if you can't show it, the auditor concludes it didn't
+- **Stale documentation** — policy says X, system does Y, neither matches what people actually do
+- **Walking back commitments** — saying you'll do something in your management response then not doing it; auditors notice in the next cycle
+
+## 3.10 The audit committee
+
+For public companies and many private organizations, an audit committee of the board provides oversight independent of management. Audit committee responsibilities:
+
+- Approves the annual internal audit plan
+- Reviews external audit results
+- Holds management accountable for remediation
+- Has authority to hire/fire the external auditor
+- Provides a "speak up" channel independent of management
+
+For security: the audit committee often receives cybersecurity briefings, particularly post-breach or for major program changes.`,
+      examTip: `Know the steps: Planning → Fieldwork (inquiry, observation, inspection, re-performance) → Reporting → Remediation. SOC 2 specifically: unqualified > qualified > adverse > disclaimer (best to worst opinion).`,
+    },
+  ],
+  keyTakeaways: [
+    'Internal audit reports to the audit committee (independent of operational management); external audit is fully independent',
+    'SOC 2 Type II is the most-tested vendor assurance artifact — covers operating effectiveness over a 6-12 month period',
+    'ISO 27001 = ISMS certification (3-year cycle with annual surveillance). PCI-DSS Level 1 = annual ROC by a QSA + quarterly ASV scans',
+    'HIPAA OCR audits triggered by breaches >500 individuals or complaints; penalties up to ~$2M/year per violation type',
+    'GDPR DPA audits triggered by complaints or breach notifications; penalties up to €20M or 4% of global turnover',
+    'FedRAMP for cloud services to US federal government; three impact levels (Low/Moderate/High) assessed by 3PAOs',
+    'Audit findings classified: significant deficiency, material weakness, control deficiency, observation. Every finding needs owner + remediation plan + date.',
+  ],
+},
+
+sp_awareness: {
+  topicId: 'sp_awareness',
+  title: `Security Awareness & Training Programs`,
+  domainWeight: '20%',
+  overview: `The most-exploited vulnerability in 2025 is still the human being. Phishing remains the #1 initial access vector; credential reuse, oversharing of sensitive info, and procedural shortcuts cause more breaches than zero-days. SY0-701 objective 5.6 requires you to know how to BUILD effective awareness programs, not just deliver training. This topic covers program design, role-based curriculum, phishing simulation, measurement, and the deeper goal of building security culture.`,
+  sections: [
+    {
+      id: 'awareness-program-design',
+      title: `1. Designing an Awareness Program`,
+      content: `## 1.1 Why "annual mandatory training" is not enough
+
+A 30-minute click-through compliance video that everyone takes once a year doesn't change behavior. People forget within weeks. The decision they make in the moment — clicking the link, sharing the password, plugging in the USB — is what matters.
+
+An effective awareness program is:
+
+- **Continuous** — multiple touchpoints across the year (not once-and-done)
+- **Targeted** — different content for different audiences
+- **Engaging** — interactive, story-based, relevant to the audience
+- **Measured** — leading indicators (training completion) AND lagging indicators (incidents caused by user error)
+- **Reinforced** — short reminders close in time to relevant events
+- **Tied to consequences** — celebrated when done well, addressed when not
+
+## 1.2 Audience segmentation
+
+Different audiences need different content:
+
+- **All staff** — foundational topics: phishing recognition, password hygiene, MFA, reporting suspicious activity, acceptable use, data classification basics
+- **Executives + high-value targets** — additional content on whaling, business email compromise (BEC), CEO fraud, deepfake voice/video, executive impersonation, travel security, social media OPSEC
+- **Engineers / developers** — secure coding, sensitive data handling, secrets management, OWASP Top 10, threat modeling basics, secure SDLC
+- **Customer service / sales** — social engineering tactics, customer data protection, NDAs, ethics
+- **Finance / AP / payroll** — invoice fraud, BEC patterns, wire fraud, dual authorization requirements
+- **HR** — PII handling, background check protocols, termination access removal
+- **System administrators** — privileged access risks, password vault use, change management discipline
+- **New hires** — onboarding-focused with first-30-day fundamentals
+- **Contractors / temporary** — abbreviated but mandatory; often have less context
+
+## 1.3 Delivery channels
+
+Mix media to fit how people learn:
+
+- **Computer-based training (CBT) modules** — for compliance baseline (15-30 min)
+- **Short videos** (3-5 min) on specific topics
+- **Live workshops or webinars** for high-impact topics
+- **Microlearning** (1-2 minute bursts) — frequent, easy to consume
+- **Posters + screen savers** — passive reinforcement
+- **Newsletters** — monthly digest of relevant news + tips
+- **Lunch-and-learns** — informal, voluntary
+- **Capture-the-flag (CTF)** events — gamified hands-on
+- **Simulated phishing** — see §2
+- **Just-in-time training** — triggered by an event (a user clicked a sim → instant micro-training)
+
+## 1.4 Topic cadence — a sample annual plan
+
+A mature program might cover:
+
+| Month | Focus |
+|---|---|
+| Jan | New year reset — password hygiene + MFA |
+| Feb | Phishing recognition |
+| Mar | Privacy + data handling |
+| Apr | Insider threats |
+| May | Mobile + travel security |
+| Jun | Social engineering (vishing, smishing) |
+| Jul | Working safely from home / public Wi-Fi |
+| Aug | Physical security + tailgating |
+| Sep | Incident reporting — "what to do if..." |
+| Oct | National Cybersecurity Awareness Month — themed events |
+| Nov | Holiday season threats (charity scams, package delivery phishing) |
+| Dec | End-of-year wrap; refresher of full year |
+
+Plus simulated phishing year-round and just-in-time micro-content when triggered.
+
+## 1.5 Mandatory vs voluntary
+
+The baseline (compliance-required content) is mandatory — completion tracked, escalated for missed deadlines, often blocking access if overdue.
+
+Enrichment content (workshops, CTFs, deep dives) is voluntary. Voluntary programs work better when they're high-quality and rewarded (recognition, swag, leaderboards, career development).
+
+## 1.6 Program governance
+
+- **Owner** — typically the CISO or security awareness lead, with executive sponsorship
+- **Content review** — content is updated annually (or as threats evolve) and reviewed for accuracy
+- **Vendor selection** — most orgs use a commercial platform (KnowBe4, Proofpoint Security Awareness, Curricula, Living Security, etc.) for content + delivery; some build in-house
+- **Compliance mapping** — content mapped to specific regulatory requirements (HIPAA, PCI-DSS, SOX, state laws)
+- **Budget** — typical large-org budget is $5-25/user/year for the platform plus events`,
+      examTip: `For the exam: "annual training only" is the WRONG answer. The right answer involves continuous, role-based, measured programs with simulated phishing and just-in-time reinforcement.`,
+    },
+    {
+      id: 'phishing-simulation',
+      title: `2. Phishing Simulation and Behavioral Measurement`,
+      content: `## 2.1 The simulated phishing program
+
+Periodic, organization-wide test emails designed to look like real phishing. Users who click are directed to a teachable moment (landing page explaining what they clicked and what to look for next time) and recorded for measurement.
+
+Mature programs run continuously, escalating sophistication and tailoring to user behavior over time.
+
+## 2.2 Sim design
+
+Effective campaigns include:
+
+- **Multiple difficulty levels** — easy (clear lures with obvious red flags) to hard (target-specific, credible)
+- **Topical variety** — package delivery, IT password reset, HR document, vendor invoice, brand spoof (Microsoft, Google, Adobe)
+- **Different vectors** — email (most common), SMS (smishing), voice (vishing), QR codes (quishing)
+- **Targeted segments** — spear phishing of finance, whaling of executives
+- **Seasonal relevance** — tax-time scams in spring, holiday-shipping in November
+
+## 2.3 What to measure
+
+- **Click-through rate** — % who clicked the link (the headline number, but oversimplified)
+- **Credential entry rate** — % who actually submitted credentials on the fake login page (higher-fidelity signal)
+- **Attachment open rate** — for sim campaigns testing macro execution
+- **Reporting rate** — % who reported the sim using the "Report Phishing" button (the GOOD metric)
+- **Repeat clicker rate** — % who click in multiple campaigns (the at-risk population)
+- **Time-to-report** — how fast the first user reports the sim
+- **Mean time from delivery to first report** — measures detection speed
+
+Critical: TRACK BOTH click rate AND reporting rate. A 5% click rate is bad in isolation, but with a 60% reporting rate the org is actually well-defended (real attacks would be caught and reported quickly).
+
+## 2.4 What good looks like
+
+Industry benchmarks (rough):
+
+- Baseline click rate (no training): 25-40%
+- After 12 months of mature program: 5-10%
+- Reporting rate: at least 20% (mature programs reach 40-60%)
+- Repeat clickers: <5%
+
+Aim to drive click rates down AND reporting rates up simultaneously. Don't optimize click rate alone — users get smarter at distinguishing sims from real attacks, which is not the goal.
+
+## 2.5 Handling clickers
+
+Punitive responses backfire — they discourage reporting (people who think they'll be punished hide their mistakes).
+
+Better approach:
+
+- **First click**: instant micro-training, no other consequence
+- **Repeated clicks**: additional training, conversation with manager
+- **Persistent high-risk behavior**: additional controls (mandatory longer training, removal of certain privileges, more frequent re-testing)
+- **Always**: focus on systemic improvement (was the lure unfairly hard? Did training not cover this pattern?)
+
+## 2.6 The reporting culture
+
+Make reporting suspicious activity:
+
+- **Easy** — one-click "Report Phishing" button in email client (Outlook, Gmail add-in)
+- **Recognized** — thank-you messages for reports, public recognition for first reporters of sophisticated lures
+- **Acted on** — visible feedback that reports led to blocking/quarantine, not just a black hole
+
+If reporting feels useless, people stop doing it.
+
+## 2.7 Just-in-time training
+
+Trigger micro-training based on observed behavior:
+
+- User clicks a sim → instant landing page with the specific lessons for that lure type
+- User reports a real phishing → "thank you" with tip on what made it suspicious
+- User receives a high-risk action (password reset request) → embedded reminder of verification steps
+- New employee → first-30-days curriculum delivered weekly
+
+The closer the training is to the moment of decision, the better it sticks.
+
+## 2.8 Phishing-resistant authentication
+
+A complementary control to training: deploy phishing-RESISTANT authentication (FIDO2/WebAuthn, hardware tokens, passkeys). Even if a user is fooled into clicking a phishing link, they cannot give the attacker credentials that work elsewhere.
+
+This is the long-term solution. Training reduces click rate; phishing-resistant auth makes clicks consequence-free.`,
+      examTip: `When the exam describes a metric to measure phishing-program effectiveness, the BEST answer is usually NOT click rate alone — it's a combination including REPORTING RATE.`,
+      importantNote: `Punitive responses to phishing-sim clicks make the program WORSE because they suppress reporting of real attacks. Coaching + training + improved systems beat punishment.`,
+    },
+    {
+      id: 'role-based-and-culture',
+      title: `3. Role-Based Training, Insider Threats, and Building Culture`,
+      content: `## 3.1 Role-based training depth
+
+Beyond awareness baseline, technical roles need DEEPER training:
+
+### Developers
+
+- Secure coding practices (parameterized queries, input validation, output encoding, secret management)
+- OWASP Top 10 with hands-on labs
+- Threat modeling fundamentals
+- Their part in SDLC + DevSecOps
+- Cryptography basics — what to use, what NOT to use
+- Common languages' security pitfalls
+
+### System administrators
+
+- Privileged access best practices (use a vault, never reuse, rotate)
+- Principle of least privilege applied to their own accounts
+- Change management discipline
+- Configuration hardening
+- Log review skills
+
+### Network engineers
+
+- Network segmentation principles
+- Encryption protocols (deprecated vs current)
+- Wireless security
+- Cloud network security models
+
+### Security team itself
+
+- Continuous education: conferences (BSides, DEFCON, RSA), professional certifications (Security+, CySA+, CISSP, OSCP), hands-on labs
+- Tabletop exercises
+- Red team / purple team rotations
+- Threat intelligence consumption
+
+### Executives + board
+
+- Cybersecurity risk in business terms
+- Recent industry incidents + lessons
+- Their personal threat profile (whaling, deepfakes, executive impersonation)
+- Crisis communication
+- Regulatory + fiduciary implications of breach
+
+### Finance / AP
+
+- Business email compromise (BEC) — the most expensive scam category
+- Verification requirements for wire transfers (out-of-band confirmation via known phone number, not the one in the email)
+- Vendor invoice verification — match to PO, confirm payment-detail changes via phone
+- Internal authority chains for unusual requests
+
+### HR
+
+- PII protection in recruiting + onboarding
+- Background check protocols
+- Discipline + termination access-removal coordination with IT (offboarding day, badge revocation, account deactivation)
+- Whistleblower / ethics line management
+
+## 3.2 Insider threat awareness
+
+A specialized awareness topic:
+
+- **Malicious insider** — disgruntled employee, espionage, fraud
+- **Negligent insider** — well-meaning but careless (clicks links, shares data inappropriately)
+- **Compromised insider** — credentials stolen, used by external attacker (looks like insider activity)
+
+Awareness elements:
+
+- "If you see something, say something" — encourage reporting concerning behavior (downloaded large data sets unrelated to role, expressed grievances about company, exhibited financial stress)
+- Use of UBA/UEBA tools to flag anomalous behavior
+- Background checks at hiring, periodic re-checks for sensitive roles
+- Separation of duties and least privilege limit insider damage potential
+- Strong offboarding — especially for departing employees who knew they were leaving
+
+Common patterns to recognize:
+
+- Sudden interest in data outside role
+- Working unusual hours
+- Bypassing controls
+- Resistance to vacation (covering up ongoing fraud)
+- Significant lifestyle changes (financial stress or sudden wealth)
+
+## 3.3 Insider Threat Programs (ITP)
+
+Formal program (required for some classified contractors, increasingly common elsewhere):
+
+- Cross-functional team: security, HR, legal, IT
+- Documented procedures for assessment + intervention
+- Privacy-preserving monitoring (clear policies, legal review)
+- "Hub" model: indicators feed a central team that connects dots
+- Reporting channels for concerned coworkers
+
+## 3.4 Measuring culture
+
+Awareness training is INPUT. Culture is OUTCOME. Measure both:
+
+**Leading indicators (inputs)**
+
+- Training completion rate
+- Sim click + reporting rates
+- Tabletop participation
+- Self-reported security knowledge
+
+**Lagging indicators (outcomes)**
+
+- Number of real phishing reports received from users
+- Time-to-report for real attacks
+- User-caused incident rate
+- Employee survey results ("do you feel safe reporting a mistake?")
+- Number of policy exceptions requested
+- Compliance audit findings related to user behavior
+
+The best metric for security culture maturity: are users PROUD to report mistakes and concerns? In a healthy culture, yes. In a punitive one, mistakes are hidden until they explode.
+
+## 3.5 Executive sponsorship
+
+The CISO can run a great program, but if the CEO downplays a security ask in a leadership meeting, the program is doomed. Cultural change requires visible support from the top:
+
+- Executives complete the same training as everyone (and publicize their results)
+- Security is on the board agenda (not just after incidents)
+- Security ROI is communicated alongside other operational investments
+- Rewards and recognition come from leadership, not just security
+
+## 3.6 The "security champion" model
+
+Embed volunteer security advocates within product / engineering teams:
+
+- Trained more deeply than average users
+- First responders for team security questions
+- Connect security to local context
+- Feedback channel back to the security team
+- Career development: champion programs often lead to security roles
+
+Champions multiply the security team's reach without requiring growth proportional to the rest of the org.
+
+## 3.7 The exam takeaway
+
+When the exam asks about security awareness, look for the answer that combines:
+
+- Continuous (not annual)
+- Role-based (not one-size-fits-all)
+- Measured (with both leading and lagging indicators)
+- Reinforced (just-in-time micro-content)
+- Reported (easy and rewarded reporting)
+- Cultural (executive sponsorship, champion model)
+
+That answer beats "annual mandatory video" every time.`,
+      examTip: `Three things separate a mature security awareness program from a checkbox exercise: ROLE-BASED content, MEASURED outcomes (both clicks AND reporting), and CONTINUOUS reinforcement (just-in-time, not just annually).`,
+    },
+  ],
+  keyTakeaways: [
+    'Annual mandatory training alone is not enough — programs must be continuous, role-based, measured, and reinforced',
+    'Phishing simulation: track BOTH click rate AND reporting rate. Aim to drive clicks DOWN and reports UP simultaneously',
+    'Punitive responses to phishing clicks backfire — they suppress reporting of real attacks',
+    'Role-based depth: developers get secure coding; finance gets BEC; executives get whaling + deepfake; sysadmins get privileged-access discipline',
+    'Insider threats: malicious, negligent, compromised. Awareness includes recognizing concerning behavior + reporting via designated channels',
+    'Just-in-time training (triggered by an action) sticks better than scheduled training disconnected from real moments',
+    'Phishing-resistant auth (FIDO2/WebAuthn/passkeys) makes clicks consequence-free — the long-term solution beyond training',
+  ],
+},
+
 };
 
 export function getSecurityPlusCourseContent(topicId: string): TopicLesson | null {
