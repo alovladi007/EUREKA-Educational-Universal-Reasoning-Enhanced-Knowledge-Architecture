@@ -35,40 +35,55 @@ export const MPEP_CHAPTER_LIST = [
   { num: '2900', title: 'International Design Applications' },
 ] as const;
 
-// USPTO offers TWO portals for the MPEP:
-//   1. The SPA reader: https://mpep.uspto.gov/RDMS/MPEP/current#/current/ch700.html
-//      — this is the "official eMPEP" but it's a heavy JS app that frequently
-//      hangs ("loading and never stops") for many users / network conditions.
+// USPTO portals:
+//   1. The SPA reader (PRIMARY): https://mpep.uspto.gov/RDMS/MPEP/current#/current/ch700.html
+//      The official eMPEP. The actual Patent Bar exam uses this app, so
+//      practicing with it is the most realistic preparation. Also the only
+//      portal with deep section anchors (e.g. .../d0e34301.html for an
+//      individual numbered section).
 //   2. The static HTML mirror: https://www.uspto.gov/web/offices/pac/mpep/mpep-0700.html
-//      — same content, loads instantly, no SPA. This is what we link to for
-//      chapter/index navigation. Search still uses the SPA (it's the only one
-//      with full-text search), and we keep eMpepReaderUrl() as an escape hatch
-//      for users who want the SPA reader.
+//      Loads instantly, no JS. Kept as a fallback when the SPA is slow.
 const EMPEP_STATIC_BASE = 'https://www.uspto.gov/web/offices/pac/mpep';
 const EMPEP_SPA_BASE = 'https://mpep.uspto.gov/RDMS/MPEP/current';
 
-/** Static HTML mirror URL for a chapter (preferred — loads instantly). */
+/**
+ * Official eMPEP SPA URL for a chapter. Matches what the live Patent Bar exam
+ * uses, so candidates practice with the real interface.
+ *   Input  '700'  -> .../#/current/ch700.html
+ *   Input  '2100' -> .../#/current/ch2100.html
+ *   Input  ''     -> index
+ */
 export function eMpepChapterUrl(chapterNum: string): string {
   const digits = chapterNum.replace(/\D/g, '');
   if (!digits) return eMpepIndexUrl();
-  // USPTO static files are 4-digit zero-padded: mpep-0100.html, mpep-2100.html.
-  const padded = digits.padStart(4, '0');
-  return `${EMPEP_STATIC_BASE}/mpep-${padded}.html`;
-}
-
-/** Static MPEP table-of-contents page. */
-export function eMpepIndexUrl(): string {
-  return `${EMPEP_STATIC_BASE}/mpep.html`;
-}
-
-/** SPA reader URL — kept as escape hatch for users who prefer the official eMPEP. */
-export function eMpepReaderUrl(chapterNum?: string): string {
-  if (!chapterNum) return `${EMPEP_SPA_BASE}#/current/index.html`;
-  const digits = chapterNum.replace(/\D/g, '') || 'index';
   return `${EMPEP_SPA_BASE}#/current/ch${digits}.html`;
 }
 
-/** Full-text search across the eMPEP SPA (search only exists on the SPA portal). */
+/**
+ * Official eMPEP SPA URL for a deep section anchor.
+ * The MPEP SPA assigns each numbered section a `d0e####` id (e.g. the
+ * URL ../#/current/d0e34301.html jumps directly to one specific subsection).
+ * Pass the bare id ("d0e34301") or the full ".html" form; both work.
+ */
+export function eMpepSectionUrl(anchor: string): string {
+  const a = anchor.replace(/\.html$/i, '').trim();
+  if (!a) return eMpepIndexUrl();
+  return `${EMPEP_SPA_BASE}#/current/${a}.html`;
+}
+
+/** eMPEP SPA index. */
+export function eMpepIndexUrl(): string {
+  return `${EMPEP_SPA_BASE}#/current/index.html`;
+}
+
+/** Static HTML mirror URL — fast fallback when the SPA is slow or unavailable. */
+export function eMpepStaticChapterUrl(chapterNum: string): string {
+  const digits = chapterNum.replace(/\D/g, '');
+  if (!digits) return `${EMPEP_STATIC_BASE}/mpep.html`;
+  return `${EMPEP_STATIC_BASE}/mpep-${digits.padStart(4, '0')}.html`;
+}
+
+/** Full-text search on the eMPEP SPA (search exists only on the SPA portal). */
 export function eMpepSearchUrl(query: string): string {
   const q = encodeURIComponent(query.trim());
   return `${EMPEP_SPA_BASE}#/search?q=${q}`;

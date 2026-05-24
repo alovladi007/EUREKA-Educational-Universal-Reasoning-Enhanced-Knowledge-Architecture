@@ -289,10 +289,11 @@ function MPEPTab() {
           {MPEP_HIGH_YIELD.map((item) => (
             <a
               key={item.chapter}
-              // Per-chapter static URL (mpep-0700.html, mpep-2100.html, …) — fast,
-              // reliable. The prior hardcoded link pointed every card at the same
-              // SPA fragment which hangs for many users. See mpep-chapters.ts.
-              href={`https://www.uspto.gov/web/offices/pac/mpep/mpep-${item.chapter.padStart(4, '0')}.html`}
+              // Per-chapter eMPEP SPA URL (#/current/ch700.html, ch2100.html, …)
+              // — matches what the live Patent Bar exam uses. The prior hardcoded
+              // link pointed every card at the same fragment; this passes the
+              // correct chapter number into the SPA route.
+              href={`https://mpep.uspto.gov/RDMS/MPEP/current#/current/ch${item.chapter}.html`}
               target="_blank"
               rel="noopener noreferrer"
             >

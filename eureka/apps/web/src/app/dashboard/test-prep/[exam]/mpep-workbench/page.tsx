@@ -21,6 +21,7 @@ import {
 } from 'lucide-react';
 import { MPEP_CHAPTER_LIST, eMpepChapterUrl, eMpepIndexUrl, eMpepSearchUrl } from '@/lib/mpep-chapters';
 import { apiClient } from '@/lib/api-client';
+import { MpepFrequencyHeatmap } from '@/components/test-prep/patent/MpepFrequencyHeatmap';
 
 const EXAM = 'PATENT_BAR';
 
@@ -145,13 +146,15 @@ export default function MpepWorkbenchPage() {
       <div className="rounded-lg border border-amber-200/80 bg-amber-50/60 dark:bg-amber-950/25 text-sm p-3 flex flex-wrap gap-2 items-start">
         <ShieldAlert className="h-4 w-4 text-amber-700 dark:text-amber-400 shrink-0 mt-0.5" />
         <p className="text-muted-foreground flex-1 min-w-[200px]">
-          <strong className="text-foreground">Chapter links open the USPTO static MPEP mirror</strong>{' '}
-          (<span className="font-mono text-[11px]">uspto.gov/web/offices/pac/mpep/…</span>) — these load instantly. The official
-          eMPEP SPA (<span className="font-mono text-[11px]">mpep.uspto.gov/RDMS</span>) is heavier and sometimes hangs; we only use
-          it for full-text search where it&apos;s the only option. Either way, USPTO blocks iframe embedding, so chapters open in a
-          new tab. Use <kbd className="px-1 rounded bg-muted text-xs">Ctrl/Cmd+F</kbd> in that tab for in-page find.
+          <strong className="text-foreground">Chapter links open the official eMPEP reader</strong>{' '}
+          (<span className="font-mono text-[11px]">mpep.uspto.gov/RDMS/MPEP/current#/current/chXXX.html</span>) — the same app the
+          live Patent Bar exam uses, so practice mirrors the real interface. USPTO blocks iframe embedding, so links open in a new
+          tab. Use <kbd className="px-1 rounded bg-muted text-xs">Ctrl/Cmd+F</kbd> or the eMPEP search box in that tab.
         </p>
       </div>
+
+      {/* Frequency heatmap — answers "which chapters do I drill first?" */}
+      <MpepFrequencyHeatmap />
 
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(280px,340px)_1fr] gap-3 flex-1 min-h-[560px]">
         <Card className="flex flex-col overflow-hidden p-0">
