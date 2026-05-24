@@ -523,28 +523,39 @@ const MOON_EXTRA_SLOWDOWN: Record<string, number> = {
   phobos: 3,
 };
 
-const BUILD_TAG = "v9 · 2026-05-23"; // bump to verify you're on the latest
+const BUILD_TAG = "v10 · 2026-05-23"; // bump to verify you're on the latest
 
-// NASA GIBS (Global Imagery Browse Services) — daily Earth composite from
-// MODIS Terra. We fetch yesterday's date in UTC (GIBS imagery typically
-// becomes available 24-48 hours after capture). Returns a full
-// equirectangular JPEG suitable for sphere UV mapping, no tile stitching.
+// NASA GIBS Earth — using BlueMarble_NextGeneration (BMNG) MONTHLY
+// composite instead of MODIS Terra DAILY (v9 default).
 //
-// Endpoint: https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi
-// Layer:    MODIS_Terra_CorrectedReflectance_TrueColor — daily true color
-//           with clouds baked in (so we hide the separate clouds layer
-//           when GIBS is active to avoid double-imaging).
+// Why the switch: MODIS Terra is a polar-orbiting satellite that captures
+// narrow swaths as it passes. The daily true-color composite shows that
+// day's swaths concatenated, but BETWEEN swaths there are visible BLACK
+// STRIPES where the satellite hasn't passed in 24 hours. Polar night
+// areas (winter pole) are also pure black. These stripes were the v9
+// complaint.
 //
-// CORS:     `access-control-allow-origin: *` on responses — works directly
-//           from the browser, no proxy needed.
+// BlueMarble_NextGeneration is the monthly cloud-free composite at 500m
+// resolution per pixel, covering the FULL globe with no gaps. Updates
+// once per month. We pick the first-of-current-month as the dataset key
+// (BMNG always uses YYYY-MM-01).
 //
-// Public domain: NASA imagery is in the U.S. public domain.
+// Trade-off: monthly cadence instead of daily. But the user's primary
+// complaint is the stripes, and BMNG matches current snow/sea-ice
+// extent for the current month, which is the more useful "live" data
+// for visualization (today's weather only changes individual cloud
+// patterns; today's coastline / ice extent / land cover doesn't).
+//
+// Endpoint:  https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi
+// Layer:     BlueMarble_NextGeneration
+// CORS:      open (access-control-allow-origin: *)
+// License:   U.S. public domain (NASA imagery)
 function buildGIBSEarthURL(date: string, w = 4096, h = 2048): string {
   const params = new URLSearchParams({
     SERVICE: "WMS",
     REQUEST: "GetMap",
     VERSION: "1.3.0",
-    LAYERS: "MODIS_Terra_CorrectedReflectance_TrueColor",
+    LAYERS: "BlueMarble_NextGeneration",
     CRS: "EPSG:4326",
     BBOX: "-90,-180,90,180",
     WIDTH: String(w),
@@ -555,9 +566,13 @@ function buildGIBSEarthURL(date: string, w = 4096, h = 2048): string {
   return `https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi?${params}`;
 }
 
-function gibsDateFor(daysAgo: number): string {
+// BMNG uses first-of-month (YYYY-MM-01) as the time index. `monthsAgo=0`
+// is current month; if that's not available yet (early in month), the
+// retry loop walks back to previous months.
+function gibsDateFor(monthsAgo: number): string {
   const d = new Date();
-  d.setUTCDate(d.getUTCDate() - daysAgo);
+  d.setUTCDate(1);
+  d.setUTCMonth(d.getUTCMonth() - monthsAgo);
   return d.toISOString().slice(0, 10);
 }
 
@@ -1251,13 +1266,18 @@ function Earth({
           </mesh>
         )}
 
-        {/* Atmospheric halo */}
+        {/* Atmospheric halo — v10 fix: was 1.06× radius with 0.2 opacity,
+            which made the planet visibly sit inside a blue bubble when the
+            user zoomed close (minDistance 0.05 → camera could be inside
+            the halo sphere). Tightened to 1.02× and lowered opacity so
+            it reads as a thin atmospheric ring at the limb rather than a
+            surrounding sphere. */}
         <mesh>
-          <sphereGeometry args={[body.size * 1.06, 64, 64]} />
+          <sphereGeometry args={[body.size * 1.02, 64, 64]} />
           <meshBasicMaterial
             color={0x6ab4ff}
             transparent
-            opacity={0.2}
+            opacity={0.13}
             side={THREE.BackSide}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
@@ -1754,8 +1774,8 @@ function SolarSystemScene({
     const loader = new THREE.TextureLoader();
     loader.setCrossOrigin("anonymous");
 
-    const tryDay = (daysAgo: number) => {
-      if (cancelled || daysAgo > 7) {
+    const tryDay = (monthsAgo: number) => {
+      if (cancelled || monthsAgo > 12) {
         if (!cancelled) {
           onGibsState(null);
           // eslint-disable-next-line no-console
@@ -1763,7 +1783,7 @@ function SolarSystemScene({
         }
         return;
       }
-      const date = gibsDateFor(daysAgo);
+      const date = gibsDateFor(monthsAgo);
       const url = buildGIBSEarthURL(date, 4096, 2048);
       onGibsState({ date, loaded: false });
       loader.load(
@@ -1783,12 +1803,12 @@ function SolarSystemScene({
           if (cancelled) return;
           // eslint-disable-next-line no-console
           console.warn(`[solar-system] GIBS ${date} unavailable, trying earlier`);
-          tryDay(daysAgo + 1);
+          tryDay(monthsAgo + 1);
         },
       );
     };
 
-    tryDay(1);
+    tryDay(0);
     return () => {
       cancelled = true;
     };
@@ -2184,12 +2204,12 @@ export default function SolarSystemPage() {
           />
           {gibsState.loaded ? (
             <span>
-              <span className="font-semibold">Live Earth</span> · MODIS Terra ·{" "}
-              {gibsState.date} · NASA GIBS
+              <span className="font-semibold">Live Earth</span> · Blue Marble
+              Next Gen · {gibsState.date} · NASA GIBS
             </span>
           ) : (
             <span>
-              Loading live Earth (MODIS Terra · {gibsState.date})…
+              Loading live Earth (BMNG · {gibsState.date})…
             </span>
           )}
         </div>
@@ -2222,7 +2242,7 @@ export default function SolarSystemPage() {
           rel="noopener noreferrer"
           className="text-white/60 hover:text-white/90 underline inline-flex items-center gap-0.5"
         >
-          NASA GIBS MODIS Terra <ExternalLink className="h-2.5 w-2.5" />
+          NASA GIBS · Blue Marble Next Gen <ExternalLink className="h-2.5 w-2.5" />
         </a>{" "}
         (U.S. public domain).
       </div>
