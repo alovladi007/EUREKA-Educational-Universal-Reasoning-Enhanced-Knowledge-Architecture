@@ -80,21 +80,83 @@ def create_refresh_token(data: dict):
 
 
 async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
-    """Get current user from JWT token"""
+    """Get current user from JWT token.
+
+    Accepts BOTH:
+      1) api-core-issued JWTs (preferred) — signed with settings.JWT_SECRET,
+         payload `sub` = user UUID. test-prep has its own users table
+         (separate database), so the first time we see a given UUID we
+         auto-upsert a minimal placeholder row keyed by that id. This is
+         the cross-service auth bridge (task #51) that lets a user signed
+         into api-core hit test-prep endpoints without a separate
+         test-prep registration.
+      2) Legacy test-prep-issued JWTs — signed with settings.SECRET_KEY,
+         payload `sub` = username. Kept working so any currently-active
+         test-prep session continues to function and the existing
+         /api/v1/auth/{login,register} flow stays valid.
+    """
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
+
+    # 1) api-core bridge — only attempt if JWT_SECRET is configured.
+    if getattr(settings, "JWT_SECRET", None):
+        try:
+            payload = jwt.decode(
+                token,
+                settings.JWT_SECRET,
+                algorithms=[settings.ALGORITHM],
+            )
+            sub = payload.get("sub")
+            if sub:
+                # api-core uses sub = UUID string. Look up by id; if not
+                # present, INSERT a placeholder row so downstream callers
+                # that only need current_user.id can proceed.
+                user = db.query(User).filter(User.id == str(sub)).first()
+                if user is None:
+                    placeholder_email = f"{sub}@api-core.bridged"
+                    placeholder_username = f"bridge-{sub}"[:100]
+                    user = User(
+                        id=str(sub),
+                        email=placeholder_email,
+                        username=placeholder_username,
+                        full_name="api-core bridged user",
+                        # hashed_password isn't usable for login here —
+                        # this user can only authenticate via api-core's
+                        # JWT (which is exactly what we just verified).
+                        hashed_password="!disabled-bridged",
+                        is_active=True,
+                        is_verified=True,
+                    )
+                    try:
+                        db.add(user)
+                        db.commit()
+                        db.refresh(user)
+                    except Exception:
+                        # Race: another concurrent request inserted the
+                        # row first. Reload and continue.
+                        db.rollback()
+                        user = db.query(User).filter(User.id == str(sub)).first()
+                if user is not None:
+                    return user
+        except JWTError:
+            # Not an api-core token; fall through to legacy path.
+            pass
+
+    # 2) Legacy test-prep path — sub = username, signed with SECRET_KEY.
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
         token_data = TokenData(username=username)
     except JWTError:
         raise credentials_exception
-    
+
     user = db.query(User).filter(User.username == token_data.username).first()
     if user is None:
         raise credentials_exception

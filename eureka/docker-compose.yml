@@ -751,6 +751,12 @@ services:
     container_name: eureka-test-prep
     environment:
       SECRET_KEY: eureka_test_prep_secret_key_change_in_production
+      # task #51 / P1-2: api-core JWT bridge. Setting this lets
+      # test-prep's get_current_user accept api-core-issued tokens
+      # (sub=UUID) in addition to its own legacy tokens (sub=username).
+      # Must match the JWT_SECRET configured on all api-core/web/admin
+      # services above so the same signed token verifies across the stack.
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
       # NOTE: test-prep uses its OWN database (not the shared `eureka` db) because
       # api-core's `users.id` is UUID while test-prep models declare user_id as
       # VARCHAR — sharing causes FK type-mismatch on table creation.
@@ -794,6 +800,12 @@ services:
     container_name: eureka-test-prep-worker
     environment:
       SECRET_KEY: eureka_test_prep_secret_key_change_in_production
+      # task #51 / P1-2: api-core JWT bridge. Setting this lets
+      # test-prep's get_current_user accept api-core-issued tokens
+      # (sub=UUID) in addition to its own legacy tokens (sub=username).
+      # Must match the JWT_SECRET configured on all api-core/web/admin
+      # services above so the same signed token verifies across the stack.
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
       DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka_test_prep
       REDIS_URL: redis://redis:6379/15
       CELERY_BROKER_URL: redis://redis:6379/14
@@ -822,6 +834,12 @@ services:
     container_name: eureka-test-prep-beat
     environment:
       SECRET_KEY: eureka_test_prep_secret_key_change_in_production
+      # task #51 / P1-2: api-core JWT bridge. Setting this lets
+      # test-prep's get_current_user accept api-core-issued tokens
+      # (sub=UUID) in addition to its own legacy tokens (sub=username).
+      # Must match the JWT_SECRET configured on all api-core/web/admin
+      # services above so the same signed token verifies across the stack.
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
       DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka_test_prep
       REDIS_URL: redis://redis:6379/15
       CELERY_BROKER_URL: redis://redis:6379/14

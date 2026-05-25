@@ -24,6 +24,16 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    # api-core JWT bridge (task #51 / P1-2 follow-up).
+    # When set, test-prep's get_current_user will ALSO try decoding the
+    # bearer token with this secret — that's how authenticated users
+    # signed into api-core can hit test-prep endpoints without test-prep
+    # issuing its own token. api-core's payload uses sub=<user UUID>;
+    # we auto-upsert a placeholder row in test-prep.users keyed by that
+    # UUID so the downstream `current_user.id` works for callers that
+    # only need an id (analytics, /me/* endpoints).
+    JWT_SECRET: Optional[str] = os.getenv("JWT_SECRET")
+
     # Database
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL",
