@@ -6,7 +6,7 @@ Aggregates all v1 API endpoints.
 
 from fastapi import APIRouter
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs
 
 api_router = APIRouter()
 
@@ -42,6 +42,7 @@ api_router.include_router(resume_billing.router, tags=["billing"])
 api_router.include_router(resume_notifications.router, tags=["notifications"])
 api_router.include_router(user_progress.router, tags=["progress"])
 api_router.include_router(patent_bar.router, tags=["patent-bar-analytics"])
+api_router.include_router(srs.router, tags=["srs"])
 
 @api_router.get("/")
 async def api_root():

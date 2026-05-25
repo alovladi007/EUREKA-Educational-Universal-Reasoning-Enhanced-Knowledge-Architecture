@@ -5,9 +5,10 @@
  */
 
 import axios, { AxiosInstance, AxiosRequestConfig } from 'axios';
-import type { 
+import type {
   User, Organization, Course, Enrollment, Badge,
-  LoginRequest, RegisterRequest, AuthResponse
+  LoginRequest, RegisterRequest, AuthResponse,
+  SrsCard, SrsStats,
 } from '@/types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8009';
@@ -301,6 +302,72 @@ class ApiClient {
     created_at: string;
   }> {
     const response = await this.client.post('/me/progress', payload);
+    return response.data;
+  }
+
+  // ==================== SRS (Spaced-Repetition flashcards, P1-4) ====================
+  // Backed by the api-core srs_cards table + SM-2 algorithm. Each card
+  // carries its own ease_factor / interval / repetitions / next_review
+  // state; the /review endpoint applies the canonical SM-2 update.
+
+  async listSrsCards(params?: { deck?: string; limit?: number; offset?: number }): Promise<{
+    cards: SrsCard[];
+    total: number;
+  }> {
+    const response = await this.client.get('/me/srs/cards', { params });
+    return response.data;
+  }
+
+  async listDueSrsCards(params?: { deck?: string; limit?: number }): Promise<{
+    cards: SrsCard[];
+    total: number;
+  }> {
+    const response = await this.client.get('/me/srs/cards/due', { params });
+    return response.data;
+  }
+
+  async getSrsStats(deck?: string): Promise<SrsStats> {
+    const response = await this.client.get('/me/srs/stats', {
+      params: deck ? { deck } : undefined,
+    });
+    return response.data;
+  }
+
+  async createSrsCard(payload: {
+    deck?: string;
+    front: string;
+    back: string;
+    tags?: Record<string, unknown>;
+  }): Promise<SrsCard> {
+    const response = await this.client.post('/me/srs/cards', payload);
+    return response.data;
+  }
+
+  async updateSrsCard(cardId: string, payload: {
+    front?: string;
+    back?: string;
+    deck?: string;
+    tags?: Record<string, unknown>;
+  }): Promise<SrsCard> {
+    const response = await this.client.patch(`/me/srs/cards/${cardId}`, payload);
+    return response.data;
+  }
+
+  async deleteSrsCard(cardId: string): Promise<void> {
+    await this.client.delete(`/me/srs/cards/${cardId}`);
+  }
+
+  /**
+   * Grade a card review. `quality` is the SM-2 scale (0-5):
+   *   0 — total blackout / wrong answer
+   *   3 — correct but required serious effort  (≥3 = "pass")
+   *   4 — correct with hesitation
+   *   5 — perfect recall
+   * Simple-UI mapping: Again=0, Hard=3, Good=4, Easy=5.
+   * Returns the post-update card so the client can refresh next_review.
+   */
+  async reviewSrsCard(cardId: string, quality: 0 | 1 | 2 | 3 | 4 | 5): Promise<SrsCard> {
+    const response = await this.client.post(`/me/srs/cards/${cardId}/review`, { quality });
     return response.data;
   }
 

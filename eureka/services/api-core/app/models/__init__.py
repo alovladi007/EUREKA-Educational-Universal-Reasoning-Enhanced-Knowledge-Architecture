@@ -118,6 +118,7 @@ from app.models.user_content import (
     CollectionItemKind,
 )
 from app.models.user_progress import UserProgress, ExamTypeKind
+from app.models.srs_card import SrsCard
 from app.models.graduate import (
     GraduateProgram,
     GraduateEnrollment,

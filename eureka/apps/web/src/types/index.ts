@@ -109,3 +109,36 @@ export interface AuthResponse {
 export interface ApiError {
   detail: string;
 }
+
+// ── SRS (Spaced-Repetition flashcards, P1-4) ──────────────────────
+// Mirrors the api-core SrsCardOut / SrsStats Pydantic schemas. The
+// SRS endpoints live under /api/v1/me/srs/* and use the SM-2 algorithm
+// for scheduling (see services/api-core/app/models/srs_card.py).
+
+export interface SrsCard {
+  id: string;
+  user_id: string;
+  deck: string;
+  front: string;
+  back: string;
+  tags: Record<string, unknown> | null;
+  ease_factor: number;
+  interval_days: number;
+  repetitions: number;
+  next_review: string;       // ISO timestamp
+  last_review: string | null;
+  total_reviews: number;
+  total_correct: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface SrsStats {
+  deck: string | null;
+  total_cards: number;
+  due_now: number;
+  learning: number;          // repetitions < 2
+  mature: number;            // interval_days ≥ 21
+  reviews_today: number;
+  average_ease: number;
+}
