@@ -3,6 +3,7 @@
 import { ReactNode, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/stores/auth';
 import {
   Home,
@@ -66,6 +67,20 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Single global Toaster — replaces the per-page <Toaster /> the
+          test-prep auth pages used to mount. Each toast.success/.error
+          call from any page inside DashboardLayout funnels through this
+          one instance, so no stacked/duplicate toasters. */}
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3500,
+          style: { fontSize: '14px' },
+          success: { iconTheme: { primary: '#10b981', secondary: '#fff' } },
+          error: { iconTheme: { primary: '#ef4444', secondary: '#fff' } },
+        }}
+      />
+
       {/* Mobile sidebar backdrop */}
       {sidebarOpen && (
         <div

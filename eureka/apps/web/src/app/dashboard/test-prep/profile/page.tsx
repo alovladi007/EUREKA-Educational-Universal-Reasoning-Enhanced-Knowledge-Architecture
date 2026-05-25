@@ -13,7 +13,7 @@ import {
   TrophyIcon,
   CheckIcon
 } from '@heroicons/react/24/outline';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 interface ProfileData {
   fullName: string;
@@ -121,7 +121,7 @@ export default function ProfilePage() {
 
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <Toaster position="top-right" />
+      {/* Toaster removed — DashboardLayout mounts a single global one */}
 
       {/* Header */}
       <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 text-white">

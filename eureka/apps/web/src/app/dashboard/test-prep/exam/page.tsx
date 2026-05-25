@@ -13,7 +13,7 @@ import {
   PauseIcon,
   PlayIcon
 } from '@heroicons/react/24/outline';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 import { useSearchParams } from 'next/navigation';
 import { apiClient } from '@/lib/api-client';
 import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
@@ -220,7 +220,7 @@ function ExamSimulatorPageInner() {
   if (examCompleted && results) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
-        <Toaster position="top-right" />
+        {/* Toaster removed — DashboardLayout mounts a single global one */}
         <div className="max-w-4xl mx-auto px-4">
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
@@ -276,7 +276,7 @@ function ExamSimulatorPageInner() {
   if (!examStarted) {
     return (
       <div className="min-h-screen bg-gray-50 py-8">
-        <Toaster position="top-right" />
+        {/* Toaster removed — DashboardLayout mounts a single global one */}
         <div className="max-w-4xl mx-auto px-4 space-y-6">
           <ExamSelector variant="card" />
           <motion.div
@@ -381,7 +381,7 @@ function ExamSimulatorPageInner() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Toaster position="top-right" />
+      {/* Toaster removed — DashboardLayout mounts a single global one */}
 
       {/* Exam Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">

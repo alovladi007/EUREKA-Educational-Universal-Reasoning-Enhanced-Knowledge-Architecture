@@ -28,6 +28,8 @@ import {
   Legend,
 } from 'recharts';
 import { apiClient } from '@/lib/api-client';
+import toast from 'react-hot-toast';
+import { Brain } from 'lucide-react';
 
 const EXAM = 'PATENT_BAR';
 
@@ -84,12 +86,19 @@ export default function PatentBarCommandCenterPage() {
     setMissBusy(true);
     try {
       const res = await apiClient.createFlashcardsFromMisses(30);
-      alert(`Created ${res?.created ?? 0} flashcards from missed questions (tagged with MPEP/statute).`);
+      const n = res?.created ?? 0;
+      if (n > 0) {
+        toast.success(`Created ${n} flashcards from missed questions.`);
+      } else {
+        toast('No new misses to convert — try more QBank sessions first.', { icon: 'ℹ️' });
+      }
     } catch {
-      alert('Could not create flashcards. Complete some QBank sessions first.');
+      toast.error('Could not create flashcards. Complete some QBank sessions first.');
     }
     setMissBusy(false);
   };
+
+  const hasAttempts = (data?.total_answered ?? 0) > 0;
 
   return (
     <div className="space-y-8 max-w-6xl">
@@ -135,6 +144,38 @@ export default function PatentBarCommandCenterPage() {
         <div className="flex justify-center py-24">
           <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
+      ) : !hasAttempts ? (
+        // Empty state — no QBank attempts yet. Direct the user to the
+        // three actions that fill this page with data: practice the QBank,
+        // start an SRS deck, or open the MPEP workbench.
+        <Card className="p-8 text-center bg-gradient-to-br from-indigo-50/40 to-purple-50/40 dark:from-indigo-950/20 dark:to-purple-950/20 border-indigo-100 dark:border-indigo-900/40">
+          <Target className="h-12 w-12 text-indigo-400 dark:text-indigo-500 mx-auto mb-3" />
+          <h2 className="text-xl font-semibold mb-1">No attempts yet</h2>
+          <p className="text-sm text-muted-foreground max-w-md mx-auto mb-5">
+            The Command Center fills in once you start answering QBank questions. Every
+            attempt feeds weakness-by-chapter, time-vs-accuracy, and the SRS review queue.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}?tab=qbank`}>
+              <Button className="gap-2">
+                <BrainCircuit className="h-4 w-4" />
+                Start a QBank session
+              </Button>
+            </Link>
+            <Link href="/dashboard/srs/review?deck=PATENT_BAR">
+              <Button variant="outline" className="gap-2">
+                <Brain className="h-4 w-4" />
+                Open SRS deck
+              </Button>
+            </Link>
+            <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/mpep-workbench`}>
+              <Button variant="ghost" className="gap-2">
+                <Library className="h-4 w-4" />
+                MPEP workbench
+              </Button>
+            </Link>
+          </div>
+        </Card>
       ) : (
         <>
           <div className="grid gap-4 sm:grid-cols-3">
@@ -156,13 +197,21 @@ export default function PatentBarCommandCenterPage() {
               </p>
               <p className="text-xs text-muted-foreground mt-2">&gt;120s avg and &lt;55% accuracy (2+ attempts)</p>
             </Card>
-            <Card className="p-5">
-              <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
-                <Sparkles className="h-4 w-4" /> Anchored reviews due
-              </div>
-              <p className="text-3xl font-bold">{review?.total ?? 0}</p>
-              <p className="text-xs text-muted-foreground mt-1">Flashcards with MPEP/statute tags (incl. misses)</p>
-            </Card>
+            <Link
+              href="/dashboard/srs/review?deck=PATENT_BAR"
+              className="block"
+              title="Open the Patent Bar SRS deck"
+            >
+              <Card className="p-5 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors cursor-pointer">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground mb-1">
+                  <Sparkles className="h-4 w-4" /> Anchored reviews due
+                </div>
+                <p className="text-3xl font-bold">{review?.total ?? 0}</p>
+                <p className="text-xs text-muted-foreground mt-1">
+                  Click to open the SRS deck (MPEP/statute-tagged misses)
+                </p>
+              </Card>
+            </Link>
           </div>
 
           <Card className="p-6">

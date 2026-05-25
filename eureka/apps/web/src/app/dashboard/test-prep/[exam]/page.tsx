@@ -18,6 +18,7 @@ import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
 import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
+import toast from 'react-hot-toast';
 import { eMpepChapterUrl } from '@/lib/mpep-chapters';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
 import { getCISSPCourseContent, hasCISSPCourseContent, type TopicLesson } from '@/lib/cissp-course-data';
@@ -172,22 +173,27 @@ export default function ExamPage() {
       {isLSAT && <LsatFrequencyHeatmap />}
       {isMCAT && <McatFrequencyHeatmap />}
 
-      {/* Tabs */}
-      <div className="flex flex-wrap gap-1 bg-muted p-1 rounded-lg w-fit">
-        {tabs.map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-              activeTab === tab.id
-                ? 'bg-background text-foreground shadow-sm'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            {tab.icon}
-            {tab.label}
-          </button>
-        ))}
+      {/* Tabs — scroll horizontally on mobile (Patent Bar has 9 tabs;
+          flex-wrap wraps awkwardly on narrow screens). overflow-x-auto
+          keeps tabs in a single row, scrollbar-thin trims the visual
+          weight. w-fit on a parent inline-flex preserves desktop look. */}
+      <div className="overflow-x-auto -mx-4 sm:mx-0">
+        <div className="inline-flex gap-1 bg-muted p-1 rounded-lg w-fit min-w-full sm:min-w-0 mx-4 sm:mx-0">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-md text-sm font-medium transition-colors whitespace-nowrap ${
+                activeTab === tab.id
+                  ? 'bg-background text-foreground shadow-sm'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {tab.icon}
+              {tab.label}
+            </button>
+          ))}
+        </div>
       </div>
 
       {/* Tab Content */}
@@ -1900,6 +1906,92 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
 // QBANK TAB
 // ═══════════════════════════════════════════════════════════════
 
+/**
+ * "Add to SRS" button shown in the answer-revealed panel.
+ * Auto-fills the card from the current question/explanation:
+ *   - front: the question text (truncated to keep card scannable)
+ *   - back:  the correct answer + explanation
+ *   - deck:  the exam_type so /dashboard/srs groups by exam
+ *   - tags:  question_id, topic_id, source: "qbank_miss"
+ * Disables itself after a successful save so users don't dupe the card.
+ */
+function AddToSrsButton({
+  question,
+  answerResult,
+  examType,
+  resolveTopicId,
+}: {
+  question: any;
+  answerResult: any;
+  examType: string;
+  resolveTopicId: (q: any) => string;
+}) {
+  const [adding, setAdding] = React.useState(false);
+  const [added, setAdded] = React.useState(false);
+
+  const handleAdd = async () => {
+    if (added || adding || !question) return;
+    setAdding(true);
+    try {
+      const correctIdx = Number(
+        answerResult?.correct_index ?? question?.correct_index ?? 0,
+      );
+      const correctText =
+        (Array.isArray(question?.options) && question.options[correctIdx]?.text) ||
+        (Array.isArray(question?.options) && question.options[correctIdx]) ||
+        '';
+      const front =
+        (question?.question_text || question?.question || '').toString().slice(0, 1000);
+      const explanation =
+        (answerResult?.explanation || question?.explanation || '').toString();
+      const back =
+        (correctText ? `**Correct:** ${correctText}\n\n` : '') +
+        (explanation || 'No explanation provided.');
+
+      await apiClient.createSrsCard({
+        deck: examType,
+        front,
+        back,
+        tags: {
+          source: 'qbank_miss',
+          exam_type: examType,
+          topic_id: resolveTopicId(question),
+          question_id: question?.id ?? null,
+        },
+      });
+      setAdded(true);
+      toast.success('Added to SRS — review in /dashboard/srs');
+    } catch {
+      toast.error('Could not save card. Try again.');
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  return (
+    <Button
+      size="sm"
+      variant={added ? 'outline' : 'ghost'}
+      onClick={handleAdd}
+      disabled={added || adding}
+      className="gap-1.5"
+      title={added ? 'Card already added' : 'Save this question to your SRS deck for spaced review'}
+    >
+      {added ? (
+        <>
+          <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+          Added to SRS
+        </>
+      ) : (
+        <>
+          <BrainCircuit className="h-4 w-4" />
+          {adding ? 'Saving…' : 'Add to SRS'}
+        </>
+      )}
+    </Button>
+  );
+}
+
 function QBankTab({ examType, config, sections }: { examType: string; config: any; sections: any[] }) {
   const [view, setView] = useState<'setup' | 'session' | 'results'>('setup');
   const [stats, setStats] = useState<any>(null);
@@ -1986,7 +2078,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setTimer(0);
           setView('session');
         } else {
-          alert('No questions available for the selected sections.');
+          toast.error('No questions available for the selected sections.');
         }
       } else if (examType === 'FE_EE') {
         // Static fallback for FE EE using local question bank
@@ -2028,7 +2120,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setTimer(0);
           setView('session');
         } else {
-          alert('No questions available for the selected sections.');
+          toast.error('No questions available for the selected sections.');
         }
       } else if (examType === 'FE_ME') {
         let meQuestions = [...FME_QUESTIONS];
@@ -2061,7 +2153,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setTimer(0);
           setView('session');
         } else {
-          alert('No questions available for the selected sections.');
+          toast.error('No questions available for the selected sections.');
         }
       } else if (examType === 'PE_EE') {
         let peeQuestions = [...PE_EE_QUESTIONS];
@@ -2093,7 +2185,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setTimer(0);
           setView('session');
         } else {
-          alert('No questions available for the selected sections.');
+          toast.error('No questions available for the selected sections.');
         }
       } else if (examType === 'MCAT') {
         let mcatQuestions = [...MCAT_QUESTIONS];
@@ -2123,7 +2215,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setTimer(0);
           setView('session');
         } else {
-          alert('No questions available for the selected sections.');
+          toast.error('No questions available for the selected sections.');
         }
       } else if (examType === 'SECURITY_PLUS') {
         let spQuestions = [...SECPLUS_QUESTIONS];
@@ -2146,7 +2238,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setSessionId(fakeSessionId);
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
-        } else { alert('No questions available for the selected sections.'); }
+        } else { toast.error('No questions available for the selected sections.'); }
       } else if (examType === 'PATENT_BAR') {
         let pbQuestions = [...PATENT_BAR_QUESTIONS];
         if (selectedSections.length > 0) {
@@ -2169,7 +2261,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setSessionId(fakeSessionId);
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
-        } else { alert('No questions available for the selected sections.'); }
+        } else { toast.error('No questions available for the selected sections.'); }
       } else if (examType === 'LSAT') {
         // LSAT QBank: 200 original questions, topicId 0=LR, 1=RC. Section
         // filter maps the curriculum sectionIds to those numeric topic ids.
@@ -2203,7 +2295,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { alert('No LSAT questions available for the selected sections.'); }
       } else {
-        alert('No questions available for this exam yet. Questions are being added.');
+        toast('No questions available for this exam yet. Questions are being added.', { icon: 'ℹ️' });
       }
     }
     setLoading(false);
@@ -2588,7 +2680,15 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           )}
 
           {/* Actions */}
-          <div className="flex justify-between mt-6">
+          <div className="flex justify-between items-center gap-2 mt-6 flex-wrap">
+            {answerResult && (
+              <AddToSrsButton
+                question={currentQ}
+                answerResult={answerResult}
+                examType={examType}
+                resolveTopicId={resolveTopicId}
+              />
+            )}
             {!answerResult ? (
               <Button onClick={submitAnswer} disabled={selectedAnswer === null || loading} className="ml-auto">
                 Submit Answer
