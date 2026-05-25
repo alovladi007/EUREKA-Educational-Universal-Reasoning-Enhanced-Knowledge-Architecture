@@ -1487,7 +1487,31 @@ class ApiClient {
 
   // ==================== Patent Bar (MPEP analytics & bookmarks) ====================
 
+  /**
+   * Patent Bar Command Center analytics.
+   *
+   * Prefers the api-core auth-protected endpoint (P1-3,
+   * `/api/v1/me/patent-bar/analytics`) which reads from user_progress
+   * and works without the test-prep microservice. Falls back to the
+   * test-prep `/api/v1/patent-bar/analytics?user_id=…` endpoint when
+   * api-core returns nothing useful — test-prep has richer per-question
+   * detail (MPEP chapter, statute, trap_type buckets) that api-core
+   * can't compute from rolled-up progress data.
+   */
   async getPatentBarAnalytics(userId?: string): Promise<any> {
+    // 1) Try api-core (auth-protected).
+    try {
+      const r = await this.client.get('/api/v1/me/patent-bar/analytics');
+      const data = r.data || {};
+      // Only short-circuit if api-core actually has data. Otherwise fall
+      // through to test-prep for the richer buckets.
+      if ((data.weakness_by_topic?.length ?? 0) > 0 || (data.total_answered ?? 0) > 0) {
+        return data;
+      }
+    } catch {
+      // api-core unreachable or 4xx — fall through.
+    }
+    // 2) Fall back to test-prep (no auth bridge — see task #51).
     const response = await this.getTestPrepClient().get('/api/v1/patent-bar/analytics', {
       params: { user_id: userId || 'demo_user' },
     });
@@ -1528,7 +1552,24 @@ class ApiClient {
     return response.data;
   }
 
+  /**
+   * Patent Bar review queue. Same provider preference as analytics
+   * above — api-core (P1-3) first, test-prep fallback. api-core's
+   * version returns weak topics from user_progress; test-prep's
+   * returns SRS flashcards anchored to missed questions.
+   */
   async getPatentBarReviewQueue(limit?: number, userId?: string): Promise<any> {
+    try {
+      const r = await this.client.get('/api/v1/me/patent-bar/review-queue', {
+        params: { limit: limit ?? 30 },
+      });
+      const data = r.data || {};
+      if ((data.cards?.length ?? 0) > 0) {
+        return data;
+      }
+    } catch {
+      // fall through
+    }
     const response = await this.getTestPrepClient().get('/api/v1/patent-bar/review-queue', {
       params: { user_id: userId || 'demo_user', limit: limit ?? 30 },
     });
