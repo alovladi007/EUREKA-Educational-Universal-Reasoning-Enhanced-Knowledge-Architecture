@@ -683,39 +683,58 @@ class ApiClient {
 
       // Graceful-degrade response interceptor: when the legacy test-prep
       // microservice on :8200 isn't running (almost always in dev — it's
-      // behind --profile full), return an empty-shaped response instead
-      // of a thrown ERR_CONNECTION_REFUSED that spams the console + alerts
-      // the user. Logs one warning per session so debuggers still see it.
+      // behind --profile full), or when it CAN'T authenticate us (it has
+      // its own SECRET_KEY ≠ api-core's JWT_SECRET, and looks up users by
+      // username not UUID — see P1-2 follow-up for the proper auth
+      // bridge), return an empty-shaped response instead of a thrown
+      // error that spams the console + alerts the user. Logs one warning
+      // per session so debuggers still see it.
       this.testPrepClient.interceptors.response.use(
         (r) => r,
         (error) => {
+          const status = error?.response?.status;
           const offline =
             error?.code === 'ERR_NETWORK' ||
             error?.code === 'ECONNREFUSED' ||
             error?.code === 'ECONNABORTED' ||
             !error?.response;
-          if (offline) {
+          // 401/403 = service responded but can't authenticate the api-core
+          // JWT (different SECRET_KEY + username-vs-UUID mismatch). Treat
+          // like offline for UI purposes so the page renders empty-state
+          // rather than firehosing console errors.
+          const unauthenticated = status === 401 || status === 403;
+          if (offline || unauthenticated) {
             if (!this.testPrepWarned) {
               this.testPrepWarned = true;
+              const reason = offline
+                ? 'unreachable — to start it: `docker compose --profile full up -d test-prep`'
+                : `returned ${status} (auth bridge not yet wired between api-core and test-prep; see P1-2)`;
               // eslint-disable-next-line no-console
               console.info(
-                '[apiClient] test-prep microservice (:8200) is unreachable — ' +
-                'returning empty results. To start it: ' +
-                '`docker compose --profile full up -d test-prep`',
+                `[apiClient] test-prep microservice (:8200) ${reason}. Returning empty results.`,
               );
             }
             const url = error?.config?.url || '';
-            // Best-effort shape match per endpoint
-            let data: unknown = {};
+            // Best-effort shape match per endpoint so callers can `?.` chain.
+            let data: any = {};
             if (url.includes('/history')) data = { history: [], total: 0 };
-            else if (url.includes('/stats')) data = { stats: null };
             else if (url.includes('/sessions')) data = null;
-            else data = {};
+            else if (url.includes('/analytics/comprehensive')) data = { metrics: null, insights: [], trends: [], topic_mastery: [] };
+            else if (url.includes('/analytics/insights')) data = { insights: [] };
+            else if (url.includes('/analytics/predictions')) data = { predicted_score: null, confidence: null, factors: [] };
+            else if (url.includes('/analytics/trends')) data = { trends: [] };
+            else if (url.includes('/analytics/topic-mastery')) data = { topics: [] };
+            else if (url.includes('/analytics/peer-comparison')) data = { percentile: null, peer_avg: null, your_avg: null };
+            else if (url.includes('/analytics/performance-trends')) data = { trends: [] };
+            else if (url.includes('/analytics/recent-activity')) data = { activities: [] };
+            else if (url.includes('/analytics/readiness')) data = { score: null, level: null, breakdown: {} };
+            else if (url.includes('/analytics/user-stats') || url.includes('/stats')) data = { stats: null };
+            else if (url.includes('/analytics/recommendations')) data = { recommendations: [] };
             // Resolve instead of reject — page UIs treat empty as "nothing yet"
             return Promise.resolve({
               data,
               status: 0,
-              statusText: 'test-prep service unavailable',
+              statusText: offline ? 'test-prep service unavailable' : 'test-prep auth not bridged',
               headers: {},
               config: error?.config,
             });
