@@ -2221,6 +2221,11 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         is_correct: isCorrect,
         explanation: currentQ.explanation,
       });
+      // Persist to api-core /me/progress so Command Center analytics
+      // (P0-5 / P1-3) fill in for the current user. Best-effort —
+      // failures (offline, 401, unsupported exam) must not block the
+      // UI.
+      void recordCurrentAttempt(isCorrect);
       setLoading(false);
       return;
     }
@@ -2233,8 +2238,51 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
       });
       setAnswerResult(result);
       setSessionData((prev: any) => ({ ...prev, ...result }));
+      void recordCurrentAttempt(Boolean(result?.is_correct));
     } catch { /* ignore */ }
     setLoading(false);
+  };
+
+  // Resolve the stable topic_id to send to /me/progress. Each exam's
+  // question shape carries a granular bucket in `subtopic` (LSAT:
+  // 'lr_strengthen', Patent Bar: '101_subject_matter', MCAT: 'Gen Chem
+  // — Atomic Structure', etc.). Fall back to `topic` if no subtopic
+  // (CISSP / Security+ / FE-EE store domain there) and finally to the
+  // numeric topicId stringified.
+  const resolveTopicId = (q: any): string => {
+    const sub = (q?.subtopic ?? '').toString().trim();
+    if (sub) return sub;
+    const topic = (q?.topic ?? '').toString().trim();
+    if (topic) return topic;
+    const tid = q?.topicId;
+    return tid !== undefined && tid !== null ? `t${tid}` : 'unknown';
+  };
+
+  // Map UI exam id → ExamTypeKind enum value the backend accepts.
+  // Anything outside this set is silently skipped (the backend would
+  // 422 on an unknown enum). Keep in sync with
+  // services/api-core/app/models/user_progress.py:ExamTypeKind.
+  const PROGRESS_SUPPORTED_EXAMS = new Set([
+    'PATENT_BAR', 'MCAT', 'LSAT', 'CISSP', 'SECURITY_PLUS',
+    'FE_EE', 'FE_ME', 'PE_EE', 'SAT', 'GRE', 'GMAT',
+  ]);
+
+  const recordCurrentAttempt = async (isCorrect: boolean): Promise<void> => {
+    if (!currentQ) return;
+    if (!PROGRESS_SUPPORTED_EXAMS.has(examType)) return;
+    try {
+      await apiClient.recordProgress({
+        exam_type: examType,
+        topic_id: resolveTopicId(currentQ),
+        is_correct: isCorrect,
+        seconds: timer || 0,
+      });
+    } catch {
+      // Silent: progress recording is best-effort. Common reasons it
+      // fails in dev: anonymous user (no JWT yet), api-core down, or a
+      // brand-new topic_id the upsert hasn't seen — none should
+      // disrupt the practice UI.
+    }
   };
 
   const nextQuestion = async () => {
