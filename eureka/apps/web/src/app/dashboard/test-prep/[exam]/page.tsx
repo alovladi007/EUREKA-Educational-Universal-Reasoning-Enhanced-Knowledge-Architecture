@@ -27,14 +27,17 @@ import { getFEEECourseContent, hasFEEECourseContent } from '@/lib/fe-ee-course-d
 import { getFMECourseContent, hasFMECourseContent } from '@/lib/fme-course-data';
 import { getPEEECourseContent, hasPEEECourseContent } from '@/lib/pe-ee-course-data';
 import { getMCATCourseContent, hasMCATCourseContent } from '@/lib/mcat-course-data';
+import { getLsatCourseContent, hasLsatCourseContent } from '@/lib/lsat-course-data';
 import { FME_QUESTIONS } from '@/lib/fme-qbank-data';
 import { PE_EE_QUESTIONS } from '@/lib/pe-ee-qbank-data';
 import { MCAT_QUESTIONS } from '@/lib/mcat-qbank-data';
 import { SECPLUS_QUESTIONS } from '@/lib/security-plus-qbank-data';
 import { PATENT_BAR_QUESTIONS } from '@/lib/patent-bar-qbank-data';
+import { LSAT_QUESTIONS } from '@/lib/lsat-qbank-data';
 import { getFMEFlashcards, FME_FLASHCARD_DOMAINS, FME_FLASHCARD_COUNT } from '@/lib/fme-flashcard-data';
 import { getPEEEFlashcards, PEEE_FLASHCARD_DOMAINS, PEEE_FLASHCARD_COUNT } from '@/lib/pe-ee-flashcard-data';
 import { getMCATFlashcards, MCAT_FLASHCARD_DOMAINS, MCAT_FLASHCARD_COUNT } from '@/lib/mcat-flashcard-data';
+import { LSAT_FLASHCARDS, LSAT_FLASHCARD_DOMAINS } from '@/lib/lsat-flashcard-data';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
@@ -764,6 +767,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                 if (hasFMECourseContent(activeTopic.id)) return getFMECourseContent(activeTopic.id);
                 if (hasPEEECourseContent(activeTopic.id)) return getPEEECourseContent(activeTopic.id);
                 if (hasMCATCourseContent(activeTopic.id)) return getMCATCourseContent(activeTopic.id);
+                if (hasLsatCourseContent(activeTopic.id)) return getLsatCourseContent(activeTopic.id);
                 return null;
               })();
 
@@ -1131,7 +1135,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                   <div className="border-t border-gray-100 dark:border-gray-800">
                     {section.topics.map((topic, i) => {
                       const done = completedTopics.has(topic.id);
-                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id) || hasPatentBarCourseContent(topic.id) || hasFEEECourseContent(topic.id) || hasFMECourseContent(topic.id) || hasPEEECourseContent(topic.id) || hasMCATCourseContent(topic.id);
+                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id) || hasPatentBarCourseContent(topic.id) || hasFEEECourseContent(topic.id) || hasFMECourseContent(topic.id) || hasPEEECourseContent(topic.id) || hasMCATCourseContent(topic.id) || hasLsatCourseContent(topic.id);
                       return (
                         <div
                           key={topic.id}
@@ -1494,7 +1498,8 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const isFEME = examType === 'FE_ME';
   const isPEEE = examType === 'PE_EE';
   const isMCAT = examType === 'MCAT';
-  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT;
+  const isLSAT = examType === 'LSAT';
+  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT || isLSAT;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1523,7 +1528,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
               ? getPEEEFlashcards(activeDomain || undefined)
               : isMCAT
                 ? getMCATFlashcards(activeDomain || undefined)
-                : [];
+                : isLSAT
+                  ? (activeDomain ? LSAT_FLASHCARDS.filter((c) => c.domain === activeDomain) : LSAT_FLASHCARDS)
+                  : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1547,7 +1554,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
               ? PEEE_FLASHCARD_DOMAINS
               : isMCAT
                 ? MCAT_FLASHCARD_DOMAINS
-                : [];
+                : isLSAT
+                  ? LSAT_FLASHCARD_DOMAINS
+                  : [];
   const flashcardCount = isCISSP
     ? CISSP_FLASHCARD_COUNT
     : isSecPlus
@@ -1562,7 +1571,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
               ? PEEE_FLASHCARD_COUNT
               : isMCAT
                 ? MCAT_FLASHCARD_COUNT
-                : 0;
+                : isLSAT
+                  ? LSAT_FLASHCARDS.length
+                  : 0;
   const flashcardTitle = isCISSP
     ? 'CISSP Flashcard Deck'
     : isSecPlus
@@ -1577,7 +1588,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
               ? 'PE Electrical & Computer (Power) Flashcard Deck'
               : isMCAT
                 ? 'MCAT Flashcard Deck'
-                : 'Flashcard Deck';
+                : isLSAT
+                  ? 'LSAT Flashcard Deck'
+                  : 'Flashcard Deck';
   const flashcardSubtitle = isCISSP
     ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
     : isSecPlus
@@ -2157,6 +2170,38 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { alert('No questions available for the selected sections.'); }
+      } else if (examType === 'LSAT') {
+        // LSAT QBank: 200 original questions, topicId 0=LR, 1=RC. Section
+        // filter maps the curriculum sectionIds to those numeric topic ids.
+        let lsatQuestions = [...LSAT_QUESTIONS];
+        if (selectedSections.length > 0) {
+          const sectionToTopic: Record<string, number> = {
+            logical_reasoning: 0,
+            reading_comprehension: 1,
+          };
+          const topicIds = selectedSections
+            .map((s) => sectionToTopic[s])
+            .filter((n) => n !== undefined);
+          if (topicIds.length > 0) {
+            lsatQuestions = lsatQuestions.filter((q) => topicIds.includes(q.topicId));
+          }
+        }
+        lsatQuestions = lsatQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        if (lsatQuestions.length > 0) {
+          const normalized = lsatQuestions.map((q: any, i: number) => ({
+            ...q,
+            question_text: q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct,
+            explanation_text: q.explanation,
+            section_id: q.topicId === 0 ? 'logical_reasoning' : 'reading_comprehension',
+            _idx: i,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
+          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
+        } else { alert('No LSAT questions available for the selected sections.'); }
       } else {
         alert('No questions available for this exam yet. Questions are being added.');
       }

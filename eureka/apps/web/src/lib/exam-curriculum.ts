@@ -137,44 +137,43 @@ const GMAT: ExamCurriculum = [
 // LSAT
 // ═══════════════════════════════════════════════════════════════
 
+// LSAT curriculum — current post-Aug-2024 format (2× LR + 1× RC; Analytical
+// Reasoning / Logic Games REMOVED Aug 2024). Topic IDs match LSAT_COURSE keys
+// in `lsat-course-data.ts` and the frequency heatmap in `lsat-frequency.ts`.
 const LSAT: ExamCurriculum = [
   {
     sectionId: 'logical_reasoning', sectionName: 'Logical Reasoning',
     topics: [
-      t('lr_arguments', 'Argument Structure', 'Identify premises, conclusions, assumptions, and intermediate conclusions.'),
-      t('lr_strengthen_weaken', 'Strengthen & Weaken', 'Evaluate answer choices that make arguments more or less convincing.'),
-      t('lr_assumptions', 'Necessary & Sufficient Assumptions', 'Find the unstated assumption required for an argument to hold.'),
-      t('lr_flaws', 'Flaw Questions', 'Identify logical fallacies: ad hominem, false dichotomy, circular reasoning, etc.'),
-      t('lr_inferences', 'Inferences & Must Be True', 'Determine what can be logically concluded from a set of statements.'),
-      t('lr_parallel', 'Parallel Reasoning', 'Match the logical structure of an argument to a similar argument.'),
-      t('lr_method', 'Method of Reasoning', 'Describe the role of a claim in an argument structure.'),
-      t('lr_resolve', 'Resolve the Paradox', 'Find the explanation that reconciles two seemingly contradictory facts.'),
-      t('lr_principle', 'Principle Questions', 'Apply general principles to specific situations and vice versa.'),
-    ],
-  },
-  {
-    sectionId: 'analytical_reasoning', sectionName: 'Analytical Reasoning (Logic Games)',
-    topics: [
-      t('ar_sequencing', 'Sequencing Games', 'Order elements in a line; basic and advanced linear ordering.'),
-      t('ar_grouping', 'Grouping Games', 'Assign elements to groups with inclusion/exclusion constraints.'),
-      t('ar_matching', 'Matching & Distribution', 'Match attributes to elements or distribute items into categories.'),
-      t('ar_hybrid', 'Hybrid Games', 'Combine sequencing and grouping in a single game.'),
-      t('ar_diagramming', 'Diagramming & Notation', 'Create efficient diagrams and use shorthand notation for constraints.'),
-      t('ar_conditional', 'Conditional Logic', 'If-then statements, contrapositives, and chains of conditionals.'),
-      t('ar_advanced', 'Advanced Deductions', 'Make inferences by combining multiple rules to derive must-be-true facts.'),
+      t('lr_strengthen', 'Strengthen', 'Find the answer that most supports / makes the conclusion more likely. Tier: Very High (~12% of LR).'),
+      t('lr_weaken', 'Weaken', 'Find the answer that undermines / makes the conclusion less likely. Tier: Very High (~10%).'),
+      t('lr_necessary_assumption', 'Necessary Assumption', 'Identify a premise the argument MUST rely on; test via the negation technique.'),
+      t('lr_inference', 'Inference / Must Be True', 'What conclusion is supported by the stimulus? Stay strictly within the text.'),
+      t('lr_flaw', 'Flaw', 'Identify the LOGICAL flaw in the argument (cause/correlation, equivocation, etc.).'),
+      t('lr_principle', 'Principle (apply / strengthen)', 'Connect an abstract principle to a specific situation, in either direction.'),
+      t('lr_main_point', 'Main Point / Main Conclusion', `Identify the author's primary conclusion; distinguish from subsidiary conclusions.`),
+      t('lr_role', 'Role / Function in Argument', 'How does a bolded statement function — premise, sub-conclusion, evidence rejected, etc.'),
+      t('lr_resolve_paradox', 'Resolve the Paradox', 'Find what RECONCILES two seemingly contradictory facts; look for a missing piece.'),
+      t('lr_method', 'Method of Reasoning', 'Describe HOW the argument proceeds (analogy, generalization, eliminating alternatives).'),
+      t('lr_sufficient_assumption', 'Sufficient Assumption', 'What assumption, if true, would GUARANTEE the conclusion? Look for conditional patterns.'),
+      t('lr_parallel', 'Parallel Reasoning', 'Which answer matches the LOGICAL STRUCTURE of the stimulus argument?'),
+      t('lr_parallel_flaw', 'Parallel Flaw', 'Which answer matches the FLAWED logical structure of the stimulus argument?'),
+      t('lr_point_at_issue', 'Point at Issue / Disagreement', 'What do two speakers DISAGREE about? Look for direct contradiction.'),
+      t('lr_eval_argument', 'Argument Evaluation', 'What information would help DETERMINE whether the argument is sound?'),
+      t('lr_complete', 'Complete the Argument', 'Fill in a missing premise or conclusion that follows naturally.'),
+      t('lr_necessary_sufficient', 'Conditional / Necessary-Sufficient', 'Manipulate conditional statements (contrapositive, contraposition errors).'),
     ],
   },
   {
     sectionId: 'reading_comprehension', sectionName: 'Reading Comprehension',
     topics: [
-      t('rc_main_point', 'Main Point & Primary Purpose', 'Identify the central argument and the author purpose.'),
-      t('rc_structure', 'Passage Structure', 'Map how the passage is organized: compare/contrast, cause/effect, etc.'),
-      t('rc_inference', 'Inference Questions', 'Determine what is implied or supported by the passage.'),
-      t('rc_detail', 'Specific Detail Questions', 'Locate and verify factual claims in the passage.'),
-      t('rc_author_attitude', 'Author Attitude & Tone', 'Assess the author perspective, bias, and rhetorical stance.'),
-      t('rc_comparative', 'Comparative Reading', 'Analyze paired passages: agreement, disagreement, and relationship.'),
-      t('rc_law_passages', 'Law-Related Passages', 'Approach passages about legal principles, cases, and constitutional issues.'),
-      t('rc_science', 'Science & Social Science Passages', 'Navigate technical passages with unfamiliar subject matter.'),
+      t('rc_detail', 'Specific Reference / Detail', 'What did the passage SAY about X? Send-back to a specific line or paragraph.'),
+      t('rc_inference', 'Inference (RC)', 'What can be reasonably concluded from the passage? Stay close to the text.'),
+      t('rc_function', 'Function / Purpose / Role', 'Why did the author include X? Function of a paragraph, sentence, or example.'),
+      t('rc_main_point', 'Main Point / Main Idea (RC)', 'Identify the CENTRAL claim of the passage.'),
+      t('rc_comparative', 'Comparative Passage Relationship', 'How do the two passages relate? Agreement, disagreement, scope. (1 comparative set per test.)'),
+      t('rc_structure', 'Structure / Organization', 'How is the passage organized? Compare-contrast, chronological, problem-solution, etc.'),
+      t('rc_application', 'Application / Extrapolation', `Apply the passage's logic to a new scenario. Like LR Principle questions.`),
+      t('rc_attitude', `Author's Attitude / Tone`, 'How does the author FEEL about the topic? Skeptical, supportive, ambivalent, etc.'),
     ],
   },
 ];
