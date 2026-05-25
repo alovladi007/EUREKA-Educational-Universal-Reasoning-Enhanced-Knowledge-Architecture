@@ -21,6 +21,7 @@ import {
   Library,
   MessageSquare,
   Stethoscope,
+  Brain,
 } from 'lucide-react';
 
 interface DashboardLayoutProps {
@@ -40,6 +41,7 @@ const navigation: NavItem[] = [
   { name: 'Resources', href: '/dashboard/resources', icon: Library },
   { name: 'Community', href: '/dashboard/community', icon: MessageSquare },
   { name: 'Medical Education', href: '/dashboard/medical', icon: Stethoscope },
+  { name: 'SRS Review', href: '/dashboard/srs', icon: Brain },
   { name: 'My Classes', href: '/dashboard/classes', icon: GraduationCap, roles: ['teacher', 'admin'] },
   { name: 'Students', href: '/dashboard/students', icon: Users, roles: ['teacher', 'admin'] },
   { name: 'Analytics', href: '/dashboard/analytics', icon: BarChart3, roles: ['teacher', 'admin'] },
