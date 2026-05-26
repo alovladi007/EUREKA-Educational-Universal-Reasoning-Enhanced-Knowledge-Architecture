@@ -31,6 +31,7 @@ import {
   ArrowLeft, FolderKanban, Plus, Trash2, Download, Search, ExternalLink,
   Star, BookText, FileText, Edit3, Save,
 } from "lucide-react";
+import toast from 'react-hot-toast';
 
 type Workspace = {
   id: string;
@@ -164,7 +165,7 @@ export default function ResearchWorkspaceDetailPage() {
       setRefForm({ title: "", authors: "", year: "", doi: "", venue: "" });
       await refresh();
     } catch (e) {
-      alert(String((e as Error).message));
+      toast.error(String((e as Error).message));
     } finally { setBusy(false); }
   }
 
@@ -211,7 +212,7 @@ export default function ResearchWorkspaceDetailPage() {
       await refresh();
     } catch (e) {
       const msg = e instanceof ApiError ? `${e.status} — ${JSON.stringify(e.detail)}` : (e as Error).message;
-      alert(msg);
+      toast.error(msg);
     } finally { setBusy(false); }
   }
 
@@ -222,7 +223,7 @@ export default function ResearchWorkspaceDetailPage() {
         body: JSON.stringify({ rating }),
       });
       await refresh();
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
   }
 
   async function cycleReadStatus(refId: string, current: string) {
@@ -234,7 +235,7 @@ export default function ResearchWorkspaceDetailPage() {
         body: JSON.stringify({ read_status: next }),
       });
       await refresh();
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
   }
 
   async function deleteRef(refId: string) {
@@ -242,7 +243,7 @@ export default function ResearchWorkspaceDetailPage() {
     try {
       await api(`/me/research/references/${refId}`, { method: "DELETE" });
       await refresh();
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
   }
 
   async function addDraft(e: React.FormEvent) {
@@ -261,7 +262,7 @@ export default function ResearchWorkspaceDetailPage() {
       });
       setDraftForm({ title: "", kind: "paper_section", body_md: "" });
       await refresh();
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
     finally { setBusy(false); }
   }
 
@@ -274,7 +275,7 @@ export default function ResearchWorkspaceDetailPage() {
       setEditingDraft(null);
       setEditBody("");
       await refresh();
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
   }
 
   async function deleteDraft(draftId: string) {
@@ -282,7 +283,7 @@ export default function ResearchWorkspaceDetailPage() {
     try {
       await api(`/me/research/drafts/${draftId}`, { method: "DELETE" });
       await refresh();
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
   }
 
   async function exportBibtex() {
@@ -300,7 +301,7 @@ export default function ResearchWorkspaceDetailPage() {
       a.click();
       document.body.removeChild(a);
       URL.revokeObjectURL(url);
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
   }
 
   async function deleteWorkspace() {
@@ -309,7 +310,7 @@ export default function ResearchWorkspaceDetailPage() {
     try {
       await api(`/me/research/workspaces/${id}`, { method: "DELETE" });
       router.push("/dashboard/graduate/research");
-    } catch (e) { alert(String((e as Error).message)); }
+    } catch (e) { toast.error(String((e as Error).message)); }
   }
 
   if (error) {

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
 import { ArrowLeft, GraduationCap, Clock, FileText, MessageSquare, LogOut } from "lucide-react";
+import toast from 'react-hot-toast';
 
 type Enrollment = {
   id: string;
@@ -128,7 +129,7 @@ export default function EnrollmentDetailPage() {
       await refresh();
     } catch (e) {
       const msg = e instanceof ApiError ? `${e.status} — ${JSON.stringify(e.detail)}` : (e as Error).message;
-      alert(msg);
+      toast.error(msg);
     } finally { setBusy(false); }
   }
 
@@ -145,7 +146,7 @@ export default function EnrollmentDetailPage() {
       await refresh();
     } catch (e) {
       const msg = e instanceof ApiError ? `${e.status} — ${JSON.stringify(e.detail)}` : (e as Error).message;
-      alert(msg);
+      toast.error(msg);
     } finally { setBusy(false); }
   }
 

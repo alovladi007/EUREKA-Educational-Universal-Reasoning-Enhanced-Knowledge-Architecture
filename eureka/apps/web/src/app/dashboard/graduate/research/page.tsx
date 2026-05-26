@@ -26,6 +26,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
 import { FolderKanban, Plus, BookText, FileText, ArrowRight, Sigma } from "lucide-react";
+import toast from 'react-hot-toast';
 
 type Workspace = {
   id: string;
@@ -128,7 +129,7 @@ export default function ResearchWorkspacesListPage() {
       router.push(`/dashboard/graduate/research/${created.id}`);
     } catch (e) {
       const msg = e instanceof ApiError ? `${e.status} — ${JSON.stringify(e.detail)}` : (e as Error).message;
-      alert(msg);
+      toast.error(msg);
     } finally {
       setCreating(false);
     }

@@ -35,6 +35,7 @@ import {
   Activity,
   Sparkles,
 } from "lucide-react";
+import toast from 'react-hot-toast';
 
 type Resource = {
   id: string;
@@ -98,7 +99,7 @@ export default function XRLabsPage() {
       setNewTitle("");
       await refresh();
     } catch (e) {
-      alert(String((e as Error).message));
+      toast.error(String((e as Error).message));
     } finally {
       setBusy(false);
     }

@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
 import { ArrowLeft, BookMarked, CheckCircle2 } from "lucide-react";
+import toast from 'react-hot-toast';
 
 type SkillTarget = {
   id: string;
@@ -81,7 +82,7 @@ export default function LearnerProgramDetailPage() {
       router.push(`/dashboard/graduate/enrollments/${e.id}`);
     } catch (err) {
       const msg = err instanceof ApiError ? `${err.status} — ${JSON.stringify(err.detail)}` : (err as Error).message;
-      alert(msg);
+      toast.error(msg);
     } finally {
       setEnrolling(false);
     }

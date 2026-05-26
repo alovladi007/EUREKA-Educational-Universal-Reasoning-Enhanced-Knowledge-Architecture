@@ -34,6 +34,7 @@ import * as THREE from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import toast from 'react-hot-toast';
 
 // =====================================================
 // TYPES
@@ -427,7 +428,7 @@ function SceneBuilderEditor() {
       });
     } catch (error) {
       console.error('Error loading asset:', error);
-      alert('Failed to load 3D asset');
+      toast.error('Failed to load 3D asset');
     }
   };
 
@@ -450,7 +451,7 @@ function SceneBuilderEditor() {
     });
 
     setShowTemplates(false);
-    alert('Template loaded! Start customizing your scene.');
+    toast.success('Template loaded! Start customizing your scene.');
   };
 
   const selectObject = (obj: SceneObject) => {
@@ -545,14 +546,14 @@ function SceneBuilderEditor() {
 
       if (response.ok) {
         setProject({ ...project, id: data.project.id });
-        alert('Project saved successfully!');
+        toast.success('Project saved successfully!');
         setShowSaveDialog(false);
       } else {
-        alert('Failed to save project: ' + data.error);
+        toast.error('Failed to save project: ' + data.error);
       }
     } catch (error) {
       console.error('Error saving project:', error);
-      alert('Failed to save project');
+      toast.error('Failed to save project');
     } finally {
       setIsSaving(false);
     }
@@ -560,7 +561,7 @@ function SceneBuilderEditor() {
 
   const publishProject = async () => {
     if (!project.id) {
-      alert('Please save your project first before publishing');
+      toast('Please save your project first before publishing', { icon: 'ℹ️' });
       return;
     }
 
@@ -584,15 +585,15 @@ function SceneBuilderEditor() {
       const data = await response.json();
 
       if (response.ok) {
-        alert('Project published successfully!');
+        toast.success('Project published successfully!');
         setShowPublishDialog(false);
         router.push(`/xr-labs/experience/${data.experienceId}`);
       } else {
-        alert('Failed to publish: ' + data.error);
+        toast.error('Failed to publish: ' + data.error);
       }
     } catch (error) {
       console.error('Error publishing project:', error);
-      alert('Failed to publish project');
+      toast.error('Failed to publish project');
     }
   };
 

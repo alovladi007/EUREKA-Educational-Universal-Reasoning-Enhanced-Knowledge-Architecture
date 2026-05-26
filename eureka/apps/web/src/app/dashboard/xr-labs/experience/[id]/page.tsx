@@ -19,6 +19,7 @@ import { useParams, useRouter } from 'next/navigation';
 import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import toast from 'react-hot-toast';
 
 interface XRExperience {
   id: string;
@@ -158,7 +159,7 @@ export default function ExperienceViewerPage() {
 
   const launchWebXR = async () => {
     if (!navigator.xr) {
-      alert('WebXR is not supported in your browser. Try Chrome or Edge on desktop/mobile, or use a VR headset browser.');
+      toast.error('WebXR is not supported in your browser. Try Chrome or Edge on desktop/mobile, or use a VR headset browser.');
       return;
     }
 
@@ -166,7 +167,7 @@ export default function ExperienceViewerPage() {
       const isVRSupported = await navigator.xr.isSessionSupported('immersive-vr');
 
       if (!isVRSupported) {
-        alert('VR mode is not available. Make sure you have a VR headset connected.');
+        toast.error('VR mode is not available. Make sure you have a VR headset connected.');
         return;
       }
 
@@ -248,14 +249,14 @@ export default function ExperienceViewerPage() {
       }
     } catch (err: any) {
       console.error('Error launching WebXR:', err);
-      alert('Failed to launch VR: ' + err.message);
+      toast.error('Failed to launch VR: ' + err.message);
       setIsInVR(false);
     }
   };
 
   const launchAR = async () => {
     if (!navigator.xr) {
-      alert('WebXR is not supported in your browser.');
+      toast.error('WebXR is not supported in your browser.');
       return;
     }
 
@@ -263,7 +264,7 @@ export default function ExperienceViewerPage() {
       const isARSupported = await navigator.xr.isSessionSupported('immersive-ar');
 
       if (!isARSupported) {
-        alert('AR mode is not supported on this device.');
+        toast.error('AR mode is not supported on this device.');
         return;
       }
 
@@ -274,10 +275,10 @@ export default function ExperienceViewerPage() {
         optionalFeatures: ['dom-overlay'],
       });
 
-      alert('AR session started!');
+      toast.success('AR session started!');
     } catch (err: any) {
       console.error('Error launching AR:', err);
-      alert('Failed to launch AR: ' + err.message);
+      toast.error('Failed to launch AR: ' + err.message);
     }
   };
 

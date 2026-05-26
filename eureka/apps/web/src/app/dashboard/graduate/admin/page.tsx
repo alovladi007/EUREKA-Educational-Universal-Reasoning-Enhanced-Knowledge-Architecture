@@ -24,6 +24,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
 import { Settings, PlusCircle, Archive } from "lucide-react";
 import { useAuthStore } from "@/stores/auth";
+import toast from 'react-hot-toast';
 
 type Program = {
   id: string;
@@ -109,7 +110,7 @@ export default function GraduateAdminPage() {
       router.push(`/dashboard/graduate/admin/${created.id}`);
     } catch (e) {
       const msg = e instanceof ApiError ? `${e.status} — ${JSON.stringify(e.detail)}` : (e as Error).message;
-      alert(msg);
+      toast.error(msg);
     } finally {
       setSubmitting(false);
     }
@@ -121,7 +122,7 @@ export default function GraduateAdminPage() {
       await api(`/graduate/programs/${id}`, { method: "PATCH", body: JSON.stringify({ status: "archived" }) });
       await refresh();
     } catch (e) {
-      alert(String((e as Error).message));
+      toast.error(String((e as Error).message));
     }
   }
 

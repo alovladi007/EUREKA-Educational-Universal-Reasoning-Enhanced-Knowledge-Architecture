@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, formatDate } from "@/lib/eureka-api";
 import { ArrowLeft, BookMarked, Archive, RotateCcw } from "lucide-react";
+import toast from 'react-hot-toast';
 
 type SkillTarget = {
   id: string;
@@ -88,7 +89,7 @@ export default function GraduateAdminDetailPage() {
       });
       await refresh();
     } catch (e) {
-      alert(String((e as Error).message));
+      toast.error(String((e as Error).message));
     } finally {
       setBusy(false);
     }
