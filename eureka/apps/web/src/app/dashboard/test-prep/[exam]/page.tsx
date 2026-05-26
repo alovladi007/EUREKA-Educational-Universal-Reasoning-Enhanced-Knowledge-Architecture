@@ -2335,6 +2335,40 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     setLoading(false);
   };
 
+  // Keyboard shortcuts inside the QBank session view: 1-9 picks the
+  // matching answer option, Enter submits (or advances to next when
+  // an answer is already revealed). Ignored when the user is typing
+  // in an input/textarea or when the answer has been revealed (option
+  // buttons disable themselves at that point).
+  useEffect(() => {
+    if (view !== 'session') return;
+    const handler = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement | null;
+      if (target && (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA')) return;
+      // Number keys → pick that option index (1-based UI → 0-based state).
+      if (/^[1-9]$/.test(e.key)) {
+        const idx = parseInt(e.key, 10) - 1;
+        const optionCount = currentQ?.options?.length ?? 0;
+        if (idx >= 0 && idx < optionCount && !answerResult) {
+          e.preventDefault();
+          setSelectedAnswer(idx);
+        }
+      }
+      // Enter submits or advances depending on phase.
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        if (!answerResult && selectedAnswer !== null && !loading) {
+          submitAnswer();
+        } else if (answerResult && !loading) {
+          nextQuestion();
+        }
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [view, currentQ, answerResult, selectedAnswer, loading]);
+
   // Resolve the stable topic_id to send to /me/progress. Each exam's
   // question shape carries a granular bucket in `subtopic` (LSAT:
   // 'lr_strengthen', Patent Bar: '101_subject_matter', MCAT: 'Gen Chem
@@ -2625,22 +2659,42 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
               )}
             </div>
           )}
-          <p className="text-lg font-medium mb-6">{currentQ.question_text}</p>
+          <p className="text-lg font-medium mb-3">{currentQ.question_text}</p>
+          <p className="text-[11px] text-muted-foreground mb-4">
+            Tip: press{' '}
+            <kbd className="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-800">1</kbd>–
+            <kbd className="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-800">5</kbd>{' '}
+            to pick, <kbd className="px-1.5 py-0.5 rounded text-[10px] bg-gray-100 dark:bg-gray-800">Enter</kbd>{' '}
+            to {answerResult ? 'go to the next question' : 'submit'}.
+          </p>
 
-          <div className="space-y-2">
+          {/* Answer options. Treated as a radio group for screen readers
+              (aria-radiogroup + role=radio on each option) so SR users
+              hear "1 of 5, Option A, selected" instead of "button". */}
+          <div
+            className="space-y-2"
+            role="radiogroup"
+            aria-label="Answer choices — press 1 to 5 to select, Enter to submit"
+          >
             {currentQ.options?.map((opt: any) => {
               const idx = opt.index;
               const isSelected = selectedAnswer === idx;
               const showResult = answerResult !== null;
               const isCorrect = showResult && idx === answerResult.correct_index;
               const isWrong = showResult && isSelected && !answerResult.is_correct;
+              const letter = String.fromCharCode(65 + idx);
+              const shortcut = String(idx + 1);
 
               return (
                 <button
                   key={idx}
                   disabled={showResult}
                   onClick={() => setSelectedAnswer(idx)}
-                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                  role="radio"
+                  aria-checked={isSelected}
+                  aria-keyshortcuts={shortcut}
+                  aria-label={`Option ${letter}${isSelected ? ', selected' : ''}: ${opt.text}`}
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-offset-gray-950 ${
                     showResult
                       ? isCorrect ? 'border-green-500 bg-green-50 dark:bg-green-950'
                         : isWrong ? 'border-red-500 bg-red-50 dark:bg-red-950'
@@ -2649,12 +2703,15 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold">
-                      {String.fromCharCode(65 + idx)}
+                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-muted flex items-center justify-center text-xs font-bold" aria-hidden="true">
+                      {letter}
                     </span>
                     <span className="text-sm">{opt.text}</span>
-                    {showResult && isCorrect && <CheckCircle2 className="h-5 w-5 text-green-600 ml-auto" />}
-                    {showResult && isWrong && <X className="h-5 w-5 text-red-600 ml-auto" />}
+                    <kbd className="ml-auto px-1.5 py-0.5 rounded text-[10px] font-mono bg-black/5 dark:bg-white/10 text-muted-foreground" aria-hidden="true">
+                      {shortcut}
+                    </kbd>
+                    {showResult && isCorrect && <CheckCircle2 className="h-5 w-5 text-green-600" aria-hidden="true" />}
+                    {showResult && isWrong && <X className="h-5 w-5 text-red-600" aria-hidden="true" />}
                   </div>
                 </button>
               );

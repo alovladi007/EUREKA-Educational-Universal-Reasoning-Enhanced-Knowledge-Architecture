@@ -52,12 +52,16 @@ const DUE_BATCH_LIMIT = 50;
 // SM-2 grade buttons. Quality follows the canonical SuperMemo 2 scale:
 //   0 = total blackout, 3 = correct with serious effort,
 //   4 = correct with hesitation, 5 = perfect recall.
+// `shortcut` mirrors the keyboard mapping (1=Again, 2=Hard, 3=Good,
+// 4=Easy) so we can render both an aria-keyshortcuts attribute and
+// a visible <kbd> badge.
 const GRADE_BUTTONS: Array<{
   quality: 0 | 3 | 4 | 5;
   label: string;
   helper: string;
   classes: string;
   icon: React.ReactNode;
+  shortcut: '1' | '2' | '3' | '4';
 }> = [
   {
     quality: 0,
@@ -65,7 +69,8 @@ const GRADE_BUTTONS: Array<{
     helper: 'See tomorrow',
     classes:
       'bg-rose-100 text-rose-800 hover:bg-rose-200 dark:bg-rose-900/40 dark:text-rose-200 dark:hover:bg-rose-900/60 border-rose-200 dark:border-rose-800',
-    icon: <X className="h-4 w-4" />,
+    icon: <X className="h-4 w-4" aria-hidden="true" />,
+    shortcut: '1',
   },
   {
     quality: 3,
@@ -73,7 +78,8 @@ const GRADE_BUTTONS: Array<{
     helper: 'Shorter interval',
     classes:
       'bg-amber-100 text-amber-800 hover:bg-amber-200 dark:bg-amber-900/40 dark:text-amber-200 dark:hover:bg-amber-900/60 border-amber-200 dark:border-amber-800',
-    icon: <RotateCcw className="h-4 w-4" />,
+    icon: <RotateCcw className="h-4 w-4" aria-hidden="true" />,
+    shortcut: '2',
   },
   {
     quality: 4,
@@ -81,7 +87,8 @@ const GRADE_BUTTONS: Array<{
     helper: 'Normal step',
     classes:
       'bg-emerald-100 text-emerald-800 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-200 dark:hover:bg-emerald-900/60 border-emerald-200 dark:border-emerald-800',
-    icon: <Check className="h-4 w-4" />,
+    icon: <Check className="h-4 w-4" aria-hidden="true" />,
+    shortcut: '3',
   },
   {
     quality: 5,
@@ -89,7 +96,8 @@ const GRADE_BUTTONS: Array<{
     helper: 'Push out aggressively',
     classes:
       'bg-blue-100 text-blue-800 hover:bg-blue-200 dark:bg-blue-900/40 dark:text-blue-200 dark:hover:bg-blue-900/60 border-blue-200 dark:border-blue-800',
-    icon: <Sparkles className="h-4 w-4" />,
+    icon: <Sparkles className="h-4 w-4" aria-hidden="true" />,
+    shortcut: '4',
   },
 ];
 
@@ -326,8 +334,9 @@ function ReviewCard({
           onClick={onDelete}
           disabled={grading}
           title="Delete this card"
+          aria-label="Delete this card permanently"
         >
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
 
@@ -362,17 +371,26 @@ function ReviewCard({
 
       {/* Grade buttons */}
       {revealed && (
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+        <div
+          className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+          role="group"
+          aria-label="Grade this card"
+        >
           {GRADE_BUTTONS.map((b) => (
             <button
               key={b.quality}
               onClick={() => onGrade(b.quality)}
               disabled={grading}
-              className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed ${b.classes}`}
+              aria-label={`Grade card ${b.label} — ${b.helper}. Keyboard shortcut ${b.shortcut}.`}
+              aria-keyshortcuts={b.shortcut}
+              className={`flex flex-col items-center justify-center p-3 rounded-xl border-2 font-medium text-sm transition-all disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-indigo-500 dark:focus-visible:ring-offset-gray-950 ${b.classes}`}
             >
               <span className="flex items-center gap-1.5">
                 {b.icon}
                 {b.label}
+                <kbd className="ml-0.5 px-1 py-0.5 rounded text-[9px] font-mono bg-black/10 dark:bg-white/15">
+                  {b.shortcut}
+                </kbd>
               </span>
               <span className="text-[10px] opacity-80 mt-0.5 font-normal">
                 {b.helper}
@@ -480,8 +498,13 @@ function AuthorCardForm({
           <Plus className="h-4 w-4 text-indigo-500" />
           New card
         </h2>
-        <Button size="sm" variant="ghost" onClick={onCancel}>
-          <X className="h-4 w-4" />
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={onCancel}
+          aria-label="Close the new-card form"
+        >
+          <X className="h-4 w-4" aria-hidden="true" />
         </Button>
       </div>
       <div className="space-y-3">
