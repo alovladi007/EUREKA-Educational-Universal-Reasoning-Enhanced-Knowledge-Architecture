@@ -21,14 +21,12 @@ import { apiClient } from '@/lib/api-client';
 import toast from 'react-hot-toast';
 import { eMpepChapterUrl } from '@/lib/mpep-chapters';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
-import { getCISSPCourseContent, hasCISSPCourseContent, type TopicLesson } from '@/lib/cissp-course-data';
-import { getSecurityPlusCourseContent, hasSecurityPlusCourseContent } from '@/lib/security-plus-course-data';
-import { getPatentBarCourseContent, hasPatentBarCourseContent } from '@/lib/patent-bar-course-data';
-import { getFEEECourseContent, hasFEEECourseContent } from '@/lib/fe-ee-course-data';
-import { getFMECourseContent, hasFMECourseContent } from '@/lib/fme-course-data';
-import { getPEEECourseContent, hasPEEECourseContent } from '@/lib/pe-ee-course-data';
-import { getMCATCourseContent, hasMCATCourseContent } from '@/lib/mcat-course-data';
-import { getLsatCourseContent, hasLsatCourseContent } from '@/lib/lsat-course-data';
+// Course-data modules are now lazy-loaded via exam-course-loader so a
+// student picking PATENT_BAR doesn't ship MCAT/LSAT/CISSP/etc. chunks
+// (P3-C / task #62). Keep TopicLesson as a TYPE-ONLY import so the
+// inferred-type chain still works at zero runtime cost.
+import type { TopicLesson } from '@/lib/cissp-course-data';
+import { loadExamCourse, type CoursePack } from '@/lib/exam-course-loader';
 import { FME_QUESTIONS } from '@/lib/fme-qbank-data';
 import { PE_EE_QUESTIONS } from '@/lib/pe-ee-qbank-data';
 import { MCAT_QUESTIONS } from '@/lib/mcat-qbank-data';
@@ -692,6 +690,22 @@ function ReadLessonsTab({ examType }: { examType: string }) {
   const [expandedLessonSections, setExpandedLessonSections] = useState<Set<string>>(new Set());
   const [readSections, setReadSections] = useState<Set<string>>(new Set());
 
+  // Lazy-loaded course content for the active exam (P3-C / task #62).
+  // Until the dynamic import resolves the pack returns nulls so the
+  // lesson reader shows the generic placeholder; once loaded the
+  // syllabus badge ("has content") and the rich lesson body switch on.
+  const [coursePack, setCoursePack] = useState<CoursePack>({
+    get: () => null,
+    has: () => false,
+  });
+  useEffect(() => {
+    let cancelled = false;
+    loadExamCourse(examType).then((pack) => {
+      if (!cancelled) setCoursePack(pack);
+    });
+    return () => { cancelled = true; };
+  }, [examType]);
+
   const toggleLessonSection = (sectionId: string) => {
     setExpandedLessonSections(prev => {
       const next = new Set(prev);
@@ -764,18 +778,10 @@ function ReadLessonsTab({ examType }: { examType: string }) {
           )}
 
           {(() => {
-              // Try rich course data first (structured with sections + quizzes)
-              const courseData = (() => {
-                if (hasCISSPCourseContent(activeTopic.id)) return getCISSPCourseContent(activeTopic.id);
-                if (hasSecurityPlusCourseContent(activeTopic.id)) return getSecurityPlusCourseContent(activeTopic.id);
-                if (hasPatentBarCourseContent(activeTopic.id)) return getPatentBarCourseContent(activeTopic.id);
-                if (hasFEEECourseContent(activeTopic.id)) return getFEEECourseContent(activeTopic.id);
-                if (hasFMECourseContent(activeTopic.id)) return getFMECourseContent(activeTopic.id);
-                if (hasPEEECourseContent(activeTopic.id)) return getPEEECourseContent(activeTopic.id);
-                if (hasMCATCourseContent(activeTopic.id)) return getMCATCourseContent(activeTopic.id);
-                if (hasLsatCourseContent(activeTopic.id)) return getLsatCourseContent(activeTopic.id);
-                return null;
-              })();
+              // Rich course data via the lazy per-exam pack. The page
+              // renders one exam at a time so a single .get() suffices —
+              // no need to walk all 8 modules like the old eager chain.
+              const courseData = coursePack.get(activeTopic.id);
 
               // Custom ReactMarkdown components for beautiful table + content rendering
               const mdComponents = {
@@ -1141,7 +1147,7 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                   <div className="border-t border-gray-100 dark:border-gray-800">
                     {section.topics.map((topic, i) => {
                       const done = completedTopics.has(topic.id);
-                      const hasContent = hasCISSPCourseContent(topic.id) || hasSecurityPlusCourseContent(topic.id) || hasPatentBarCourseContent(topic.id) || hasFEEECourseContent(topic.id) || hasFMECourseContent(topic.id) || hasPEEECourseContent(topic.id) || hasMCATCourseContent(topic.id) || hasLsatCourseContent(topic.id);
+                      const hasContent = coursePack.has(topic.id);
                       return (
                         <div
                           key={topic.id}
