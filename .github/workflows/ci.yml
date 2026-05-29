@@ -182,6 +182,73 @@ jobs:
           retention-days: 7
 
   # -------------------------------------------------------------------------
+  # api-core unit + self-contained integration tests
+  #
+  # The matrix above runs tests/test_health.py (gating) and tests/ minus
+  # tests/integration (non-gating). That excludes the SRS/progress/
+  # patent-bar test files added in P3-2 / P3-7 because they live under
+  # tests/integration. THIS job picks them up:
+  #   - tests/unit/test_srs_sm2.py — pure unit, no fixtures beyond model
+  #   - tests/integration/test_srs_endpoints.py — local async fixtures
+  #     (aiosqlite in-memory + httpx.AsyncClient), no real DB needed
+  #   - tests/integration/test_user_progress_endpoints.py — same shape
+  #   - tests/integration/test_patent_bar_endpoints.py — same shape
+  # Gated so regressions in the SM-2 math or the endpoint contracts
+  # break the build immediately rather than rotting in the non-gating
+  # bucket.
+  # -------------------------------------------------------------------------
+  api-core-tests:
+    name: api-core tests (SRS, progress, patent-bar)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+
+      - name: Install dependencies
+        working-directory: eureka/services/api-core
+        run: |
+          python -m pip install --upgrade pip
+          # requirements.txt pins aiosqlite (added with P3-2) so the
+          # in-memory async engine works without postgres.
+          pip install -r requirements.txt
+
+      - name: Run unit tests
+        working-directory: eureka/services/api-core
+        env:
+          # In-memory tests don't need these, but the app config layer
+          # complains on import if they're unset.
+          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
+          REDIS_URL: redis://localhost:6379/0
+          JWT_SECRET: test_jwt_secret_for_ci_testing_only
+          ENVIRONMENT: testing
+        run: |
+          pytest tests/unit/test_srs_sm2.py -v --tb=short \
+            --override-ini=addopts= \
+            -p no:cacheprovider
+
+      - name: Run self-contained integration tests
+        working-directory: eureka/services/api-core
+        env:
+          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
+          REDIS_URL: redis://localhost:6379/0
+          JWT_SECRET: test_jwt_secret_for_ci_testing_only
+          ENVIRONMENT: testing
+        run: |
+          # These three files use local async fixtures (see top of
+          # test_srs_endpoints.py) and don't touch the global conftest's
+          # sync sqlite — they bring their own aiosqlite engine.
+          pytest \
+            tests/integration/test_srs_endpoints.py \
+            tests/integration/test_user_progress_endpoints.py \
+            tests/integration/test_patent_bar_endpoints.py \
+            -v --tb=short \
+            --override-ini=addopts= \
+            -p no:cacheprovider
+
+  # -------------------------------------------------------------------------
   # Node services — TS/JS
   # -------------------------------------------------------------------------
   node-services:
@@ -349,12 +416,12 @@ jobs:
   ci-gate:
     name: CI gate (all required green)
     runs-on: ubuntu-latest
-    needs: [gitleaks, python-services, node-services, compose-validate, docker-build]
+    needs: [gitleaks, python-services, api-core-tests, node-services, compose-validate, docker-build]
     if: always()
     steps:
       - name: Fail if any required job failed
         run: |
-          for r in '${{ needs.gitleaks.result }}' '${{ needs.python-services.result }}' '${{ needs.node-services.result }}' '${{ needs.compose-validate.result }}' '${{ needs.docker-build.result }}'; do
+          for r in '${{ needs.gitleaks.result }}' '${{ needs.python-services.result }}' '${{ needs.api-core-tests.result }}' '${{ needs.node-services.result }}' '${{ needs.compose-validate.result }}' '${{ needs.docker-build.result }}'; do
             echo "Result: $r"
             if [ "$r" != "success" ] && [ "$r" != "skipped" ]; then
               echo "::error::Required job result was: $r"
