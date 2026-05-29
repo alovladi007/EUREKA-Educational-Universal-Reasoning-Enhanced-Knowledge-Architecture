@@ -220,7 +220,12 @@ jobs:
         env:
           # In-memory tests don't need these, but the app config layer
           # complains on import if they're unset.
-          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
+          # SA's URL parser chokes on `sqlite+aiosqlite:///:memory:`
+          # (trailing colon after "memory" gets parsed as port="").
+          # Use a file path the parser likes — the tests don't actually
+          # read from this URL; they build their own aiosqlite engine
+          # in local fixtures.
+          DATABASE_URL: "sqlite+aiosqlite:////tmp/ci-noop.db"
           REDIS_URL: redis://localhost:6379/0
           JWT_SECRET: test_jwt_secret_for_ci_testing_only
           ENVIRONMENT: testing
@@ -232,7 +237,12 @@ jobs:
       - name: Run self-contained integration tests
         working-directory: eureka/services/api-core
         env:
-          DATABASE_URL: "sqlite+aiosqlite:///:memory:"
+          # SA's URL parser chokes on `sqlite+aiosqlite:///:memory:`
+          # (trailing colon after "memory" gets parsed as port="").
+          # Use a file path the parser likes — the tests don't actually
+          # read from this URL; they build their own aiosqlite engine
+          # in local fixtures.
+          DATABASE_URL: "sqlite+aiosqlite:////tmp/ci-noop.db"
           REDIS_URL: redis://localhost:6379/0
           JWT_SECRET: test_jwt_secret_for_ci_testing_only
           ENVIRONMENT: testing
