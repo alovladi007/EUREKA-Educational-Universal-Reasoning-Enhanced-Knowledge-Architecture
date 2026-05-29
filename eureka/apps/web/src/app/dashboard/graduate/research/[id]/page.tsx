@@ -516,13 +516,14 @@ export default function ResearchWorkspaceDetailPage() {
                     <div className="flex">
                       {[1, 2, 3, 4, 5].map((n) => (
                         <button key={n} onClick={() => rateRef(r.id, n)}
+                          aria-label={`Rate ${n} star${n === 1 ? '' : 's'}`}
                           className={(r.rating ?? 0) >= n ? "text-yellow-500" : "text-muted-foreground/30"}>
-                          <Star className="h-3.5 w-3.5" fill={(r.rating ?? 0) >= n ? "currentColor" : "none"} />
+                          <Star className="h-3.5 w-3.5" fill={(r.rating ?? 0) >= n ? "currentColor" : "none"} aria-hidden="true" />
                         </button>
                       ))}
                     </div>
-                    <Button size="sm" variant="ghost" onClick={() => deleteRef(r.id)}>
-                      <Trash2 className="h-3.5 w-3.5" />
+                    <Button size="sm" variant="ghost" onClick={() => deleteRef(r.id)} aria-label="Delete this reference">
+                      <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                     </Button>
                   </div>
                 </li>
@@ -589,12 +590,12 @@ export default function ResearchWorkspaceDetailPage() {
                           <Save className="h-3.5 w-3.5 mr-1" /> Save
                         </Button>
                       ) : (
-                        <Button size="sm" variant="ghost" onClick={() => { setEditingDraft(d.id); setEditBody(d.body_md); }}>
-                          <Edit3 className="h-3.5 w-3.5" />
+                        <Button size="sm" variant="ghost" onClick={() => { setEditingDraft(d.id); setEditBody(d.body_md); }} aria-label="Edit this draft">
+                          <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
                         </Button>
                       )}
-                      <Button size="sm" variant="ghost" onClick={() => deleteDraft(d.id)}>
-                        <Trash2 className="h-3.5 w-3.5" />
+                      <Button size="sm" variant="ghost" onClick={() => deleteDraft(d.id)} aria-label="Delete this draft">
+                        <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                       </Button>
                     </div>
                   </div>

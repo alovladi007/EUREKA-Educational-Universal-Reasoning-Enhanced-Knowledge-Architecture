@@ -765,9 +765,10 @@ function SceneBuilderEditor() {
                         e.stopPropagation();
                         deleteObject(obj);
                       }}
+                      aria-label={`Delete ${obj.name}`}
                       className="text-red-400 hover:text-red-300 ml-2"
                     >
-                      🗑️
+                      <span aria-hidden="true">🗑️</span>
                     </button>
                   </div>
                 </div>
@@ -962,7 +963,7 @@ function AssetLibraryModal({ assets, search, onSearchChange, onSelectAsset, onCl
             <h2 className="text-2xl font-bold">Asset Library</h2>
             <p className="text-sm text-gray-400">10,000+ 3D models and textures</p>
           </div>
-          <button onClick={onClose} className="text-3xl hover:text-gray-400">×</button>
+          <button onClick={onClose} aria-label="Close asset library" className="text-3xl hover:text-gray-400"><span aria-hidden="true">×</span></button>
         </div>
 
         {/* Search */}
@@ -1014,7 +1015,7 @@ function TemplatesModal({ templates, onSelectTemplate, onClose }: any) {
       <div className="bg-gray-800 rounded-xl w-full max-w-5xl h-[80vh] flex flex-col">
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <h2 className="text-2xl font-bold">Scene Templates</h2>
-          <button onClick={onClose} className="text-3xl hover:text-gray-400">×</button>
+          <button onClick={onClose} aria-label="Close templates" className="text-3xl hover:text-gray-400"><span aria-hidden="true">×</span></button>
         </div>
 
         <div className="flex-1 overflow-y-auto p-6">

@@ -1150,13 +1150,14 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                         >
                           <button
                             onClick={(e) => { e.stopPropagation(); toggleComplete(topic.id); }}
+                            aria-label={done ? `Mark ${topic.title} as incomplete` : `Mark ${topic.title} as complete`}
                             className={`flex-shrink-0 h-8 w-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
                               done
                                 ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-sm'
                                 : 'border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500'
                             }`}
                           >
-                            {done && <CheckCircle2 className="h-4 w-4" />}
+                            {done && <CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
                             {!done && <span className="text-xs font-bold text-gray-400 dark:text-gray-500">{i + 1}</span>}
                           </button>
                           <div className="flex-1 min-w-0">
@@ -1437,6 +1438,7 @@ function NotesTab({ examType, sections }: { examType: string; sections: any[] })
                 <button
                   key={c}
                   onClick={() => setForm({ ...form, color_label: c })}
+                  aria-label={`${c} color label`}
                   className={`w-6 h-6 rounded-full border-2 ${form.color_label === c ? 'border-foreground scale-110' : 'border-transparent'}`}
                   style={{ backgroundColor: c === 'yellow' ? '#fef08a' : c === 'blue' ? '#bfdbfe' : c === 'green' ? '#bbf7d0' : c === 'red' ? '#fecaca' : '#e9d5ff' }}
                 />
@@ -1471,14 +1473,14 @@ function NotesTab({ examType, sections }: { examType: string; sections: any[] })
                   {note.section_id && <p className="text-xs text-muted-foreground">{note.section_id}</p>}
                 </div>
                 <div className="flex gap-1 ml-2">
-                  <button onClick={() => togglePin(note)} className={`p-1 rounded ${note.is_pinned ? 'text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}>
-                    <Pin className="h-3.5 w-3.5" />
+                  <button onClick={() => togglePin(note)} aria-label={note.is_pinned ? 'Unpin this note' : 'Pin this note'} className={`p-1 rounded ${note.is_pinned ? 'text-primary' : 'text-muted-foreground/40 hover:text-muted-foreground'}`}>
+                    <Pin className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
-                  <button onClick={() => { setEditingId(note.id); setForm({ title: note.title || '', content: note.content, section_id: note.section_id || '', topic: note.topic || '', color_label: note.color_label || 'yellow' }); setShowCreate(true); }} className="p-1 text-muted-foreground/40 hover:text-muted-foreground">
-                    <Edit3 className="h-3.5 w-3.5" />
+                  <button onClick={() => { setEditingId(note.id); setForm({ title: note.title || '', content: note.content, section_id: note.section_id || '', topic: note.topic || '', color_label: note.color_label || 'yellow' }); setShowCreate(true); }} aria-label="Edit this note" className="p-1 text-muted-foreground/40 hover:text-muted-foreground">
+                    <Edit3 className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
-                  <button onClick={() => deleteNote(note.id)} className="p-1 text-muted-foreground/40 hover:text-red-500">
-                    <Trash2 className="h-3.5 w-3.5" />
+                  <button onClick={() => deleteNote(note.id)} aria-label="Delete this note" className="p-1 text-muted-foreground/40 hover:text-red-500">
+                    <Trash2 className="h-3.5 w-3.5" aria-hidden="true" />
                   </button>
                 </div>
               </div>
