@@ -27,18 +27,22 @@ import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
 // inferred-type chain still works at zero runtime cost.
 import type { TopicLesson } from '@/lib/cissp-course-data';
 import { loadExamCourse, type CoursePack } from '@/lib/exam-course-loader';
+// FME / PE-EE / MCAT QUESTIONS stay eager because the per-exam
+// FMEExamTab / PEEEExamTab / MCATExamTab components further down the
+// page also reference them in sync code paths. The QBank-only modules
+// (SECPLUS / PATENT_BAR / LSAT) are now lazy-loaded inside
+// QBankTab.startSession via inline `await import()` (P3-9 stage 2).
 import { FME_QUESTIONS } from '@/lib/fme-qbank-data';
 import { PE_EE_QUESTIONS } from '@/lib/pe-ee-qbank-data';
 import { MCAT_QUESTIONS } from '@/lib/mcat-qbank-data';
-import { SECPLUS_QUESTIONS } from '@/lib/security-plus-qbank-data';
-import { PATENT_BAR_QUESTIONS } from '@/lib/patent-bar-qbank-data';
-import { LSAT_QUESTIONS } from '@/lib/lsat-qbank-data';
 import { getFMEFlashcards, FME_FLASHCARD_DOMAINS, FME_FLASHCARD_COUNT } from '@/lib/fme-flashcard-data';
 import { getPEEEFlashcards, PEEE_FLASHCARD_DOMAINS, PEEE_FLASHCARD_COUNT } from '@/lib/pe-ee-flashcard-data';
 import { getMCATFlashcards, MCAT_FLASHCARD_DOMAINS, MCAT_FLASHCARD_COUNT } from '@/lib/mcat-flashcard-data';
 import { LSAT_FLASHCARDS, LSAT_FLASHCARD_DOMAINS } from '@/lib/lsat-flashcard-data';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
-import { getCISSPQuestions, type CISSPQuestion } from '@/lib/cissp-qbank-data';
+// getCISSPQuestions lazy-loaded inside QBankTab.startSession (P3-9
+// stage 2). Type-only import keeps Question typing without runtime cost.
+import type { CISSPQuestion } from '@/lib/cissp-qbank-data';
 import { getCISSPVideoLessons } from '@/lib/cissp-video-lessons';
 import { getCISSPFlashcards, CISSP_FLASHCARD_DOMAINS, CISSP_FLASHCARD_COUNT } from '@/lib/cissp-flashcard-data';
 import { getSecurityPlusFlashcards, SECPLUS_FLASHCARD_DOMAINS, SECPLUS_FLASHCARD_COUNT } from '@/lib/security-plus-flashcard-data';
@@ -2069,6 +2073,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     } catch {
       // Fallback: use static CISSP questions if API is unavailable
       if (examType === 'CISSP') {
+        const { getCISSPQuestions } = await import('@/lib/cissp-qbank-data');
         const staticQs = getCISSPQuestions({
           sectionIds: selectedSections.length > 0 ? selectedSections : undefined,
           count: questionCount,
@@ -2226,6 +2231,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           toast.error('No questions available for the selected sections.');
         }
       } else if (examType === 'SECURITY_PLUS') {
+        const { SECPLUS_QUESTIONS } = await import('@/lib/security-plus-qbank-data');
         let spQuestions = [...SECPLUS_QUESTIONS];
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
@@ -2248,6 +2254,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { toast.error('No questions available for the selected sections.'); }
       } else if (examType === 'PATENT_BAR') {
+        const { PATENT_BAR_QUESTIONS } = await import('@/lib/patent-bar-qbank-data');
         let pbQuestions = [...PATENT_BAR_QUESTIONS];
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
@@ -2273,6 +2280,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
       } else if (examType === 'LSAT') {
         // LSAT QBank: 200 original questions, topicId 0=LR, 1=RC. Section
         // filter maps the curriculum sectionIds to those numeric topic ids.
+        const { LSAT_QUESTIONS } = await import('@/lib/lsat-qbank-data');
         let lsatQuestions = [...LSAT_QUESTIONS];
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
