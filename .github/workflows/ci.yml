@@ -193,6 +193,9 @@ jobs:
   #     (aiosqlite in-memory + httpx.AsyncClient), no real DB needed
   #   - tests/integration/test_user_progress_endpoints.py — same shape
   #   - tests/integration/test_patent_bar_endpoints.py — same shape
+  #   - tests/integration/test_auth_flow.py — same shape
+  #   - tests/integration/test_settings_endpoints.py — same shape
+  #   - tests/integration/test_srs_review_streaks.py — same shape
   # Gated so regressions in the SM-2 math or the endpoint contracts
   # break the build immediately rather than rotting in the non-gating
   # bucket.
@@ -259,6 +262,9 @@ jobs:
             tests/integration/test_srs_endpoints.py \
             tests/integration/test_user_progress_endpoints.py \
             tests/integration/test_patent_bar_endpoints.py \
+            tests/integration/test_auth_flow.py \
+            tests/integration/test_settings_endpoints.py \
+            tests/integration/test_srs_review_streaks.py \
             -v --tb=short \
             --override-ini=addopts= \
             -p no:cacheprovider \
