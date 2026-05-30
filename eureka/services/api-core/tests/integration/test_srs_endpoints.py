@@ -38,11 +38,10 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.pool import StaticPool
 
 from app.core.database import Base, get_db
-from app.core.security import create_access_token
 from app.models.organization import Organization
 from app.models.srs_card import SM2_INITIAL_EASE_FACTOR, SrsCard
 from app.models.user import User
-from app.utils.auth import hash_password
+from app.utils.auth import create_access_token, hash_password
 from main import app
 
 

@@ -234,7 +234,8 @@ jobs:
         run: |
           pytest tests/unit/test_srs_sm2.py -v --tb=short \
             --override-ini=addopts= \
-            -p no:cacheprovider
+            -p no:cacheprovider \
+            --noconftest
 
       - name: Run self-contained integration tests
         working-directory: eureka/services/api-core
@@ -260,7 +261,8 @@ jobs:
             tests/integration/test_patent_bar_endpoints.py \
             -v --tb=short \
             --override-ini=addopts= \
-            -p no:cacheprovider
+            -p no:cacheprovider \
+            --noconftest
 
   # -------------------------------------------------------------------------
   # Node services — TS/JS
