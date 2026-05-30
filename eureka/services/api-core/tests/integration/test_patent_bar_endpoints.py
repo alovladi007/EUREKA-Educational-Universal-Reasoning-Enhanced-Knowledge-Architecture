@@ -46,6 +46,15 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import StaticPool
 
+# SQLite has no native UUID type — map postgres UUID → CHAR(36) when
+# the active dialect is sqlite. See test_srs_endpoints.py for rationale.
+from sqlalchemy.dialects.postgresql import UUID as _PGUUID
+from sqlalchemy.ext.compiler import compiles as _sa_compiles
+
+@_sa_compiles(_PGUUID, "sqlite")
+def _compile_uuid_sqlite(element, compiler, **kw):  # noqa: D401
+    return "CHAR(36)"
+
 from app.core.database import Base, get_db
 from app.models.organization import Organization
 from app.models.user import User

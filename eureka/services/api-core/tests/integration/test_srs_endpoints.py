@@ -37,6 +37,17 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import StaticPool
 
+# SQLite doesn't have a native UUID type. Map the postgres UUID column
+# the User/Organization/Progress models use to CHAR(36) when the
+# active dialect is sqlite. Postgres path is untouched. Must run
+# before Base.metadata.create_all(), so it sits at module import.
+from sqlalchemy.dialects.postgresql import UUID as _PGUUID
+from sqlalchemy.ext.compiler import compiles as _sa_compiles
+
+@_sa_compiles(_PGUUID, "sqlite")
+def _compile_uuid_sqlite(element, compiler, **kw):  # noqa: D401
+    return "CHAR(36)"
+
 from app.core.database import Base, get_db
 from app.models.organization import Organization
 from app.models.srs_card import SM2_INITIAL_EASE_FACTOR, SrsCard
