@@ -90,6 +90,27 @@ for _t in Base.metadata.tables.values():
         _t.constraints.discard(_c)
 
 
+# Reattach UTC tzinfo on SQLite datetime reads — see
+# test_srs_endpoints.py for rationale.
+from sqlalchemy import DateTime as _SADateTime
+from datetime import datetime as _builtin_dt
+
+_original_dt_processor = _SADateTime.result_processor
+
+def _patched_dt_result_processor(self, dialect, coltype):
+    base = _original_dt_processor(self, dialect, coltype)
+    if dialect.name != "sqlite":
+        return base
+    def _wrap(value):
+        v = base(value) if base else value
+        if isinstance(v, _builtin_dt) and v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
+    return _wrap
+
+_SADateTime.result_processor = _patched_dt_result_processor
+
+
 pytestmark = [pytest.mark.integration, pytest.mark.asyncio]
 
 
@@ -619,14 +640,17 @@ class TestProgressSummary:
 
 class TestProgressAuth:
     async def test_endpoints_require_auth(self, async_client: AsyncClient):
-        # No Authorization header for either GET path.
+        # No Authorization header for either GET path. FastAPI's
+        # HTTPBearer raises 403 for missing creds (auto_error default)
+        # and 401 only when a malformed/expired token is supplied. Both
+        # indicate auth was enforced — accept either.
         for path, params in [
             (f"{API}/me/progress", {"exam_type": "PATENT_BAR"}),
             (f"{API}/me/progress/summary", {"exam_type": "PATENT_BAR"}),
         ]:
             r = await async_client.get(path, params=params)
-            assert r.status_code == 401, (
-                f"expected 401 on GET {path}, got {r.status_code}"
+            assert r.status_code in (401, 403), (
+                f"expected 401/403 on GET {path}, got {r.status_code}"
             )
 
     async def test_post_requires_auth(self, async_client: AsyncClient):
@@ -639,7 +663,7 @@ class TestProgressAuth:
                 "seconds": 30,
             },
         )
-        assert r.status_code == 401
+        assert r.status_code in (401, 403)
 
 
 # ═══════════════════════════════════════════════════════════════════

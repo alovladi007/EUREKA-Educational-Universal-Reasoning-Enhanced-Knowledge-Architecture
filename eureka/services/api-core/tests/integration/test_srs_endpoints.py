@@ -99,6 +99,31 @@ for _t in Base.metadata.tables.values():
         _t.constraints.discard(_c)
 
 
+# SQLite drops tzinfo on storage of DateTime(timezone=True). Endpoint
+# code compares datetime.now(timezone.utc) against the value read
+# back, which raises "can't compare offset-naive and offset-aware
+# datetimes" on every datetime-bearing test. Monkey-patch SA's
+# DateTime.result_processor at module load to reattach UTC tzinfo
+# when the dialect is sqlite; postgres path is unchanged.
+from sqlalchemy import DateTime as _SADateTime
+from datetime import datetime as _builtin_dt
+
+_original_dt_processor = _SADateTime.result_processor
+
+def _patched_dt_result_processor(self, dialect, coltype):
+    base = _original_dt_processor(self, dialect, coltype)
+    if dialect.name != "sqlite":
+        return base
+    def _wrap(value):
+        v = base(value) if base else value
+        if isinstance(v, _builtin_dt) and v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
+    return _wrap
+
+_SADateTime.result_processor = _patched_dt_result_processor
+
+
 pytestmark = [pytest.mark.integration, pytest.mark.asyncio]
 
 
@@ -111,6 +136,13 @@ async def async_engine():
 
     StaticPool keeps the same connection across the lifetime of the
     test so the in-memory DB persists between session opens.
+
+    Datetime tz-awareness: SQLite drops tzinfo on storage of
+    `DateTime(timezone=True)` columns, but endpoint code compares
+    `datetime.now(timezone.utc)` against the value read back, which
+    raises TypeError. The module-level monkey-patch above (see
+    `_patched_dt_result_processor`) reattaches UTC on read for the
+    sqlite dialect; postgres path is untouched.
     """
     engine = create_async_engine(
         "sqlite+aiosqlite:///:memory:",
@@ -385,14 +417,19 @@ class TestSrsCardCrud:
 
 class TestSrsAuth:
     async def test_endpoints_require_auth(self, async_client: AsyncClient):
-        # No Authorization header anywhere.
+        # No Authorization header anywhere. FastAPI's HTTPBearer raises
+        # 403 for missing creds (auto_error default) and 401 only when a
+        # malformed/expired token is supplied. Either indicates the auth
+        # was enforced — accept both.
         for path in [
             f"{API}/me/srs/cards",
             f"{API}/me/srs/cards/due",
             f"{API}/me/srs/stats",
         ]:
             r = await async_client.get(path)
-            assert r.status_code == 401, f"expected 401 on {path}, got {r.status_code}"
+            assert r.status_code in (401, 403), (
+                f"expected 401/403 on {path}, got {r.status_code}"
+            )
 
     async def test_cannot_review_another_users_card(
         self,

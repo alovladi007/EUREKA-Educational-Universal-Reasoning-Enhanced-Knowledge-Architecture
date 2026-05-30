@@ -98,6 +98,27 @@ for _t in Base.metadata.tables.values():
             if isinstance(c, _SACheckConstraint) and "~" in str(c.sqltext)]
     for _c in _bad:
         _t.constraints.discard(_c)
+
+
+# Reattach UTC tzinfo on SQLite datetime reads — see
+# test_srs_endpoints.py for rationale.
+from sqlalchemy import DateTime as _SADateTime
+from datetime import datetime as _builtin_dt
+
+_original_dt_processor = _SADateTime.result_processor
+
+def _patched_dt_result_processor(self, dialect, coltype):
+    base = _original_dt_processor(self, dialect, coltype)
+    if dialect.name != "sqlite":
+        return base
+    def _wrap(value):
+        v = base(value) if base else value
+        if isinstance(v, _builtin_dt) and v.tzinfo is None:
+            return v.replace(tzinfo=timezone.utc)
+        return v
+    return _wrap
+
+_SADateTime.result_processor = _patched_dt_result_processor
 from main import app
 
 
@@ -862,10 +883,15 @@ class TestPatentBarReviewQueue:
 
 class TestPatentBarAuth:
     async def test_endpoints_require_auth(self, async_client: AsyncClient):
-        # No Authorization header on either endpoint → 401.
+        # No Authorization header on either endpoint. FastAPI's
+        # HTTPBearer raises 403 for missing creds (auto_error default)
+        # and 401 only when a malformed/expired token is supplied.
+        # Both indicate auth was enforced — accept either.
         for path in [
             f"{API}/me/patent-bar/analytics",
             f"{API}/me/patent-bar/review-queue",
         ]:
             r = await async_client.get(path)
-            assert r.status_code == 401, f"expected 401 on {path}, got {r.status_code}"
+            assert r.status_code in (401, 403), (
+                f"expected 401/403 on {path}, got {r.status_code}"
+            )
