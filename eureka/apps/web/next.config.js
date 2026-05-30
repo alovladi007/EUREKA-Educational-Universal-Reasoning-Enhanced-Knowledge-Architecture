@@ -1,3 +1,12 @@
+// Bundle analyzer hookup — `ANALYZE=true npm run build` (or pnpm)
+// emits HTML reports under .next/analyze/ so we can verify the chunk
+// splits shipped in P3-9 stages 1-3 (per-exam course/qbank data lazy
+// loading). No-op when ANALYZE is unset, so prod builds are
+// unaffected.
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+});
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -30,4 +39,4 @@ const nextConfig = {
   },
 }
 
-module.exports = nextConfig
+module.exports = withBundleAnalyzer(nextConfig);
