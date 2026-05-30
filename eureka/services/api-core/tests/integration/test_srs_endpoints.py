@@ -85,6 +85,19 @@ from app.models.user import User
 from app.utils.auth import create_access_token, hash_password
 from main import app
 
+# Some production models declare CHECK constraints that use postgres's
+# `~` regex operator (e.g. organizations.slug, country). SQLite parses
+# `~` as a unary bitwise-NOT and chokes on the syntax. Walk
+# Base.metadata once at import time and drop the regex CHECK
+# constraints — they only run on the test in-memory engine; production
+# postgres path keeps them via Alembic-generated DDL.
+from sqlalchemy.schema import CheckConstraint as _SACheckConstraint
+for _t in Base.metadata.tables.values():
+    _bad = [c for c in list(_t.constraints)
+            if isinstance(c, _SACheckConstraint) and "~" in str(c.sqltext)]
+    for _c in _bad:
+        _t.constraints.discard(_c)
+
 
 pytestmark = [pytest.mark.integration, pytest.mark.asyncio]
 

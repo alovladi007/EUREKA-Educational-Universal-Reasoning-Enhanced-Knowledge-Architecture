@@ -89,6 +89,15 @@ from app.models.organization import Organization
 from app.models.user import User
 from app.models.user_progress import UserProgress
 from app.utils.auth import create_access_token, hash_password
+
+# Drop CHECK constraints that use postgres's `~` regex operator —
+# SQLite chokes on the syntax. See test_srs_endpoints.py for rationale.
+from sqlalchemy.schema import CheckConstraint as _SACheckConstraint
+for _t in Base.metadata.tables.values():
+    _bad = [c for c in list(_t.constraints)
+            if isinstance(c, _SACheckConstraint) and "~" in str(c.sqltext)]
+    for _c in _bad:
+        _t.constraints.discard(_c)
 from main import app
 
 
