@@ -35,14 +35,43 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import StaticPool
 
-# SQLite has no native UUID type — map postgres UUID → CHAR(36) when
-# the active dialect is sqlite. See test_srs_endpoints.py for rationale.
-from sqlalchemy.dialects.postgresql import UUID as _PGUUID
+# Map every postgres-native column type the production models declare
+# (UUID, JSONB, ARRAY, ENUM, TSVECTOR, INET) to a SQLite-renderable
+# fallback for the in-memory test engine. See test_srs_endpoints.py
+# for the canonical block + rationale.
+from sqlalchemy.dialects.postgresql import (
+    ARRAY as _PGARRAY,
+    ENUM as _PGENUM,
+    INET as _PGINET,
+    JSONB as _PGJSONB,
+    TSVECTOR as _PGTSVECTOR,
+    UUID as _PGUUID,
+)
 from sqlalchemy.ext.compiler import compiles as _sa_compiles
 
 @_sa_compiles(_PGUUID, "sqlite")
 def _compile_uuid_sqlite(element, compiler, **kw):  # noqa: D401
     return "CHAR(36)"
+
+@_sa_compiles(_PGJSONB, "sqlite")
+def _compile_jsonb_sqlite(element, compiler, **kw):  # noqa: D401
+    return "TEXT"
+
+@_sa_compiles(_PGARRAY, "sqlite")
+def _compile_array_sqlite(element, compiler, **kw):  # noqa: D401
+    return "TEXT"
+
+@_sa_compiles(_PGENUM, "sqlite")
+def _compile_enum_sqlite(element, compiler, **kw):  # noqa: D401
+    return "VARCHAR"
+
+@_sa_compiles(_PGTSVECTOR, "sqlite")
+def _compile_tsvector_sqlite(element, compiler, **kw):  # noqa: D401
+    return "TEXT"
+
+@_sa_compiles(_PGINET, "sqlite")
+def _compile_inet_sqlite(element, compiler, **kw):  # noqa: D401
+    return "VARCHAR"
 
 from app.core.database import Base, get_db
 from app.models.organization import Organization
