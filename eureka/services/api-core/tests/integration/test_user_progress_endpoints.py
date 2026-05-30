@@ -80,33 +80,9 @@ from app.models.user_progress import UserProgress
 from app.utils.auth import create_access_token, hash_password
 from main import app
 
-# Drop CHECK constraints that use postgres's `~` regex operator —
-# SQLite chokes on the syntax. See test_srs_endpoints.py for rationale.
-from sqlalchemy.schema import CheckConstraint as _SACheckConstraint
-for _t in Base.metadata.tables.values():
-    _bad = [c for c in list(_t.constraints)
-            if isinstance(c, _SACheckConstraint) and "~" in str(c.sqltext)]
-    for _c in _bad:
-        _t.constraints.discard(_c)
-
-
-# Reattach UTC tzinfo on SQLite datetime reads — see
-# test_srs_endpoints.py for rationale.
-from sqlalchemy.dialects.sqlite.base import DATETIME as _SQLiteDATETIME
-from datetime import datetime as _builtin_dt
-
-_original_sqlite_dt_processor = _SQLiteDATETIME.result_processor
-
-def _patched_sqlite_dt_processor(self, dialect, coltype):
-    base = _original_sqlite_dt_processor(self, dialect, coltype)
-    def _wrap(value):
-        v = base(value) if base else value
-        if isinstance(v, _builtin_dt) and v.tzinfo is None:
-            return v.replace(tzinfo=timezone.utc)
-        return v
-    return _wrap
-
-_SQLiteDATETIME.result_processor = _patched_sqlite_dt_processor
+# Install the SQLite-compatibility shims. See helper docstring.
+from tests.integration._sqlite_compat import install_all as _install_sqlite_compat
+_install_sqlite_compat(Base)
 
 
 pytestmark = [pytest.mark.integration, pytest.mark.asyncio]

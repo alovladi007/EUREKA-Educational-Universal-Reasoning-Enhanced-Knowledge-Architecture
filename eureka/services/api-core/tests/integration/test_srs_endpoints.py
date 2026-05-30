@@ -85,43 +85,11 @@ from app.models.user import User
 from app.utils.auth import create_access_token, hash_password
 from main import app
 
-# Some production models declare CHECK constraints that use postgres's
-# `~` regex operator (e.g. organizations.slug, country). SQLite parses
-# `~` as a unary bitwise-NOT and chokes on the syntax. Walk
-# Base.metadata once at import time and drop the regex CHECK
-# constraints — they only run on the test in-memory engine; production
-# postgres path keeps them via Alembic-generated DDL.
-from sqlalchemy.schema import CheckConstraint as _SACheckConstraint
-for _t in Base.metadata.tables.values():
-    _bad = [c for c in list(_t.constraints)
-            if isinstance(c, _SACheckConstraint) and "~" in str(c.sqltext)]
-    for _c in _bad:
-        _t.constraints.discard(_c)
-
-
-# SQLite drops tzinfo on storage of DateTime(timezone=True). Endpoint
-# code compares datetime.now(timezone.utc) against the value read
-# back, which raises "can't compare offset-naive and offset-aware
-# datetimes". The fix patches SA's SQLite-specific DATETIME type
-# (which is what actually binds to DateTime columns when the dialect
-# is sqlite); a previous attempt to patch the generic DateTime class
-# missed because SA 2.0 binds the dialect-specific subclass first.
-# Postgres path is untouched (it never imports this type).
-from sqlalchemy.dialects.sqlite.base import DATETIME as _SQLiteDATETIME
-from datetime import datetime as _builtin_dt
-
-_original_sqlite_dt_processor = _SQLiteDATETIME.result_processor
-
-def _patched_sqlite_dt_processor(self, dialect, coltype):
-    base = _original_sqlite_dt_processor(self, dialect, coltype)
-    def _wrap(value):
-        v = base(value) if base else value
-        if isinstance(v, _builtin_dt) and v.tzinfo is None:
-            return v.replace(tzinfo=timezone.utc)
-        return v
-    return _wrap
-
-_SQLiteDATETIME.result_processor = _patched_sqlite_dt_processor
+# Install the SQLite-compatibility shims (PG type compile rules, regex
+# CHECK-constraint stripping, DATETIME tzinfo reattachment). See the
+# helper's docstring for the full rationale + history.
+from tests.integration._sqlite_compat import install_all as _install_sqlite_compat
+_install_sqlite_compat(Base)
 
 
 pytestmark = [pytest.mark.integration, pytest.mark.asyncio]
