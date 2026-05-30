@@ -136,24 +136,33 @@ async def async_session(async_engine) -> AsyncGenerator[AsyncSession, None]:
 
 @pytest_asyncio.fixture
 async def seeded_user(async_session: AsyncSession) -> User:
-    """Persist an org + user we can issue an access_token for."""
+    """Persist an org + user we can issue an access_token for.
+
+    Field names must match the real models — Organization uses
+    {name, slug, tier, country, settings, tier_config} and User uses
+    {org_id (NOT organization_id), email, hashed_password, first_name,
+    last_name, role, is_email_verified (NOT is_verified)}.
+    """
     org = Organization(
         id=uuid4(),
         name="Test Org",
-        domain="test.example",
+        slug="test-srs",
+        tier="undergraduate",
+        country="US",
         settings={},
+        tier_config={},
         is_active=True,
     )
     user = User(
         id=uuid4(),
         email="srs-test@example.com",
-        username="srs_test",
-        full_name="SRS Tester",
+        first_name="SRS",
+        last_name="Tester",
         hashed_password=hash_password("not-used"),
-        organization_id=org.id,
+        org_id=org.id,
         role="student",
         is_active=True,
-        is_verified=True,
+        is_email_verified=True,
     )
     async_session.add(org)
     async_session.add(user)
@@ -164,25 +173,27 @@ async def seeded_user(async_session: AsyncSession) -> User:
 
 @pytest_asyncio.fixture
 async def other_user(async_session: AsyncSession) -> User:
-    """A second user under the same org — used to verify scoping."""
-    # Reuse the seeded_user's org if it exists; else create one.
+    """A second user — used to verify per-user scoping."""
     org = Organization(
         id=uuid4(),
         name="Test Org B",
-        domain="test-b.example",
+        slug="test-srs-b",
+        tier="undergraduate",
+        country="US",
         settings={},
+        tier_config={},
         is_active=True,
     )
     user = User(
         id=uuid4(),
         email="srs-other@example.com",
-        username="srs_other",
-        full_name="Other SRS Tester",
+        first_name="Other",
+        last_name="Tester",
         hashed_password=hash_password("not-used"),
-        organization_id=org.id,
+        org_id=org.id,
         role="student",
         is_active=True,
-        is_verified=True,
+        is_email_verified=True,
     )
     async_session.add(org)
     async_session.add(user)
@@ -193,12 +204,13 @@ async def other_user(async_session: AsyncSession) -> User:
 
 def _auth_headers(user: User) -> dict:
     """Mint a Bearer token for the given user. Mirrors what /auth/login
-    returns (sub=user.id, plus standard claims)."""
+    returns (sub=user.id, plus standard claims). User.org_id (NOT
+    .organization_id) per the real schema."""
     token = create_access_token(
         data={
             "sub": str(user.id),
             "email": user.email,
-            "org_id": str(user.organization_id),
+            "org_id": str(user.org_id),
             "role": user.role,
         }
     )

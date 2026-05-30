@@ -127,24 +127,28 @@ async def async_session(async_engine) -> AsyncGenerator[AsyncSession, None]:
 
 @pytest_asyncio.fixture
 async def seeded_user(async_session: AsyncSession) -> User:
-    """Persist an org + user we can issue an access_token for."""
+    """Persist an org + user we can issue an access_token for. Field
+    names follow the real schema — see test_srs_endpoints.py."""
     org = Organization(
         id=uuid4(),
         name="Test Org",
-        domain="test.example",
+        slug="test-progress",
+        tier="undergraduate",
+        country="US",
         settings={},
+        tier_config={},
         is_active=True,
     )
     user = User(
         id=uuid4(),
         email="progress-test@example.com",
-        username="progress_test",
-        full_name="Progress Tester",
+        first_name="Progress",
+        last_name="Tester",
         hashed_password=hash_password("not-used"),
-        organization_id=org.id,
+        org_id=org.id,
         role="student",
         is_active=True,
-        is_verified=True,
+        is_email_verified=True,
     )
     async_session.add(org)
     async_session.add(user)
@@ -155,24 +159,27 @@ async def seeded_user(async_session: AsyncSession) -> User:
 
 @pytest_asyncio.fixture
 async def other_user(async_session: AsyncSession) -> User:
-    """A second user under a separate org — used to verify scoping."""
+    """A second user — used to verify per-user scoping."""
     org = Organization(
         id=uuid4(),
         name="Test Org B",
-        domain="test-b.example",
+        slug="test-progress-b",
+        tier="undergraduate",
+        country="US",
         settings={},
+        tier_config={},
         is_active=True,
     )
     user = User(
         id=uuid4(),
         email="progress-other@example.com",
-        username="progress_other",
-        full_name="Other Progress Tester",
+        first_name="Other",
+        last_name="Tester",
         hashed_password=hash_password("not-used"),
-        organization_id=org.id,
+        org_id=org.id,
         role="student",
         is_active=True,
-        is_verified=True,
+        is_email_verified=True,
     )
     async_session.add(org)
     async_session.add(user)
@@ -188,7 +195,7 @@ def _auth_headers(user: User) -> dict:
         data={
             "sub": str(user.id),
             "email": user.email,
-            "org_id": str(user.organization_id),
+            "org_id": str(user.org_id),
             "role": user.role,
         }
     )
