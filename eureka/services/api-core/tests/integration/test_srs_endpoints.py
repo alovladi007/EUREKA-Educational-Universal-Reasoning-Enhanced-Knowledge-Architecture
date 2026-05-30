@@ -102,18 +102,18 @@ for _t in Base.metadata.tables.values():
 # SQLite drops tzinfo on storage of DateTime(timezone=True). Endpoint
 # code compares datetime.now(timezone.utc) against the value read
 # back, which raises "can't compare offset-naive and offset-aware
-# datetimes" on every datetime-bearing test. Monkey-patch SA's
-# DateTime.result_processor at module load to reattach UTC tzinfo
-# when the dialect is sqlite; postgres path is unchanged.
-from sqlalchemy import DateTime as _SADateTime
+# datetimes". The fix patches SA's SQLite-specific DATETIME type
+# (which is what actually binds to DateTime columns when the dialect
+# is sqlite); a previous attempt to patch the generic DateTime class
+# missed because SA 2.0 binds the dialect-specific subclass first.
+# Postgres path is untouched (it never imports this type).
+from sqlalchemy.dialects.sqlite.base import DATETIME as _SQLiteDATETIME
 from datetime import datetime as _builtin_dt
 
-_original_dt_processor = _SADateTime.result_processor
+_original_sqlite_dt_processor = _SQLiteDATETIME.result_processor
 
-def _patched_dt_result_processor(self, dialect, coltype):
-    base = _original_dt_processor(self, dialect, coltype)
-    if dialect.name != "sqlite":
-        return base
+def _patched_sqlite_dt_processor(self, dialect, coltype):
+    base = _original_sqlite_dt_processor(self, dialect, coltype)
     def _wrap(value):
         v = base(value) if base else value
         if isinstance(v, _builtin_dt) and v.tzinfo is None:
@@ -121,7 +121,7 @@ def _patched_dt_result_processor(self, dialect, coltype):
         return v
     return _wrap
 
-_SADateTime.result_processor = _patched_dt_result_processor
+_SQLiteDATETIME.result_processor = _patched_sqlite_dt_processor
 
 
 pytestmark = [pytest.mark.integration, pytest.mark.asyncio]

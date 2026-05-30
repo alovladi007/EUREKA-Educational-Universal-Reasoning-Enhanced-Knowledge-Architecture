@@ -102,15 +102,13 @@ for _t in Base.metadata.tables.values():
 
 # Reattach UTC tzinfo on SQLite datetime reads — see
 # test_srs_endpoints.py for rationale.
-from sqlalchemy import DateTime as _SADateTime
+from sqlalchemy.dialects.sqlite.base import DATETIME as _SQLiteDATETIME
 from datetime import datetime as _builtin_dt
 
-_original_dt_processor = _SADateTime.result_processor
+_original_sqlite_dt_processor = _SQLiteDATETIME.result_processor
 
-def _patched_dt_result_processor(self, dialect, coltype):
-    base = _original_dt_processor(self, dialect, coltype)
-    if dialect.name != "sqlite":
-        return base
+def _patched_sqlite_dt_processor(self, dialect, coltype):
+    base = _original_sqlite_dt_processor(self, dialect, coltype)
     def _wrap(value):
         v = base(value) if base else value
         if isinstance(v, _builtin_dt) and v.tzinfo is None:
@@ -118,7 +116,7 @@ def _patched_dt_result_processor(self, dialect, coltype):
         return v
     return _wrap
 
-_SADateTime.result_processor = _patched_dt_result_processor
+_SQLiteDATETIME.result_processor = _patched_sqlite_dt_processor
 from main import app
 
 
