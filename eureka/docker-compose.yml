@@ -168,6 +168,15 @@ services:
     volumes:
       - ./services/api-core:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    # P0.8: explicit healthcheck so dependents (web, admin, tiers) can
+    # gate on `condition: service_healthy` instead of racing api-core's
+    # ~uvicorn boot. stdlib-only probe — no curl in the slim image.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health',timeout=5).status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 5
 
   # P0.6: file-storage was a real service (FE uploads/downloads target
   # NEXT_PUBLIC_FILE_STORAGE_URL = :8300) but had no container — so every
@@ -458,8 +467,11 @@ services:
     # Host port is configurable via eureka/.env (WEB_HOST_PORT) if 3000 is taken by another project
     ports:
       - "${WEB_HOST_PORT:-3000}:3000"
+    # P0.8: gate on api-core being healthy (not just started) so the FE
+    # doesn't boot against an api-core that's still running migrations.
     depends_on:
-      - api-core
+      api-core:
+        condition: service_healthy
     volumes:
       - ./apps/web:/app
       - /app/node_modules
@@ -486,8 +498,10 @@ services:
       NEXT_PUBLIC_API_URL: http://localhost:8000
     ports:
       - "${ADMIN_HOST_PORT:-3001}:3000"
+    # P0.8: gate on api-core health (see web).
     depends_on:
-      - api-core
+      api-core:
+        condition: service_healthy
     volumes:
       - ./apps/admin:/app
       - /app/node_modules
