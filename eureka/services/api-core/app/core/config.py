@@ -158,7 +158,36 @@ class Settings(BaseSettings):
         if isinstance(v, str):
             return [locale.strip() for locale in v.split(",")]
         return v
-    
+
+    @validator("JWT_SECRET")
+    def _require_strong_jwt_secret_in_prod(cls, v, values):
+        """P1.3c: refuse to boot in production with a weak/unset JWT secret.
+
+        JWT_SECRET defaults to a random per-boot value when the env var is
+        unset — fine for local dev, but in production that invalidates
+        every token on restart and gives multi-replica deploys
+        inconsistent secrets (tokens minted by one replica fail on
+        another). It's also a footgun to ship a known dev secret. In
+        `ENVIRONMENT=production` we require the env var to be explicitly
+        set to a strong, non-default value; dev/test are unaffected.
+        """
+        if values.get("ENVIRONMENT") == "production":
+            import os
+            raw = os.environ.get("JWT_SECRET")
+            weak = {
+                "",
+                "dev_jwt_secret_change_in_production",
+                "eureka_dev_secret_key_change_in_production",
+                "your-secret-key-here-change-in-production",
+            }
+            if not raw or raw in weak or len(v) < 32:
+                raise ValueError(
+                    "JWT_SECRET must be explicitly set to a strong (>=32 char), "
+                    "non-default value when ENVIRONMENT=production. The env var "
+                    "is missing or set to a known dev placeholder."
+                )
+        return v
+
     class Config:
         env_file = ".env"
         env_file_encoding = "utf-8"

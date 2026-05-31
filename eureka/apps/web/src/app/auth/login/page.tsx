@@ -154,9 +154,9 @@ function LoginPageBody() {
             </div>
 
             <div className="text-sm">
-              <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+              <Link href="/auth/forgot-password" className="font-medium text-indigo-600 hover:text-indigo-500">
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -178,13 +178,6 @@ function LoginPageBody() {
               Sign up
             </Link>
           </span>
-        </div>
-
-        {/* Demo credentials */}
-        <div className="bg-blue-50 p-4 rounded-lg">
-          <p className="text-sm text-blue-800 font-medium mb-2">Demo Credentials:</p>
-          <p className="text-xs text-blue-700">Username: student</p>
-          <p className="text-xs text-blue-700">Password: student123</p>
         </div>
       </motion.div>
     </div>

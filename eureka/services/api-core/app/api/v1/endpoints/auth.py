@@ -256,13 +256,25 @@ async def refresh_token(
     # Get user
     from uuid import UUID
     user = await user_crud.get_user_by_id(db, UUID(user_id))
-    
+
     if not user or not user.is_active:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="User not found or inactive"
         )
-    
+
+    # P1.3c: revoke the OLD refresh token's jti now that we've validated
+    # it and are about to issue a replacement. Previously rotation minted
+    # a new refresh token but left the old one valid until its natural
+    # expiry, so a leaked/stolen refresh token stayed usable even after
+    # the legitimate client rotated. Blacklisting the consumed jti closes
+    # that window (TTL = the old token's remaining life). Fails open if
+    # Redis is down — same posture as the rest of the blacklist.
+    old_jti = payload.get("jti")
+    old_exp = payload.get("exp")
+    if old_jti:
+        await revoke_jti(old_jti, old_exp)
+
     # Generate new tokens (token rotation)
     token_data = {
         "sub": str(user.id),

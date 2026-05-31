@@ -52,7 +52,14 @@ function jwtIsExpiredOrInvalid(token: string): boolean {
  */
 const DEV_AUTO_LOGIN_EMAIL = "you@eureka.example.com";
 const DEV_AUTO_LOGIN_PW = "EurekaAdmin!2026";
+// P1.3a: hard-gate to non-production. Previously on by default in EVERY
+// build (only NEXT_PUBLIC_DEV_AUTO_LOGIN=0 disabled it), so a production
+// bundle would silently self-login as the seeded admin on any 401 — a
+// real auth-bypass. NODE_ENV is inlined at build time, so `next build`
+// (NODE_ENV=production) hard-disables this regardless of the public env
+// var; the explicit opt-out still works in dev/test.
 const DEV_AUTO_LOGIN_ENABLED =
+  process.env.NODE_ENV !== "production" &&
   process.env.NEXT_PUBLIC_DEV_AUTO_LOGIN !== "0";
 
 // Share the in-flight dev-login promise GLOBALLY (across both this fetch

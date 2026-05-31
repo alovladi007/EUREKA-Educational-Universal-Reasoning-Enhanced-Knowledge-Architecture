@@ -39,6 +39,47 @@ interface ProtectedRouteProps {
   allowedRoles?: string[];
 }
 
+/**
+ * P1.3b: client-side token validity gate.
+ *
+ * Previously the route trusted the mere PRESENCE of an `access_token`
+ * string, so an expired or malformed token passed the render gate (the
+ * server would later 401, but protected content had already mounted).
+ * We can't verify the HS256 signature in the browser (no secret), but
+ * we CAN decode the JWT payload and reject anything past `exp` or
+ * structurally broken. The server still fully verifies every API call;
+ * this just stops dead tokens from rendering the protected shell.
+ *
+ * Returns false (and clears the dead token) when the token is missing,
+ * unparseable, or expired.
+ */
+function hasValidAccessToken(): boolean {
+  try {
+    const token = window.localStorage.getItem('access_token');
+    if (!token) return false;
+    const parts = token.split('.');
+    if (parts.length !== 3) {
+      window.localStorage.removeItem('access_token');
+      return false;
+    }
+    // base64url → JSON payload.
+    const json = JSON.parse(
+      atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')),
+    );
+    const exp = typeof json.exp === 'number' ? json.exp : 0;
+    // 30s skew guard, matching the fetch-wrapper's expiry check.
+    if (!exp || exp - 30 <= Math.floor(Date.now() / 1000)) {
+      window.localStorage.removeItem('access_token');
+      return false;
+    }
+    return true;
+  } catch {
+    // Malformed token → clear it so the next render redirects cleanly.
+    try { window.localStorage.removeItem('access_token'); } catch { /* ignore */ }
+    return false;
+  }
+}
+
 function AuthCheckSkeleton({ label }: { label: string }) {
   return (
     <div
@@ -75,7 +116,8 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
 
   useEffect(() => {
     setMounted(true);
-    setTokenPresent(!!window.localStorage.getItem('access_token'));
+    // P1.3b: validate the token (structure + expiry), not just presence.
+    setTokenPresent(hasValidAccessToken());
   }, []);
 
   useEffect(() => {
