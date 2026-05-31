@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Toaster } from 'react-hot-toast';
 import { useAuthStore } from '@/stores/auth';
+import ServiceHealthBanner from '@/components/ServiceHealthBanner';
 import {
   Home,
   BookOpen,
@@ -180,6 +181,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             <span className="absolute top-1 right-1 h-2 w-2 bg-red-500 rounded-full" />
           </button>
         </div>
+
+        {/* P1.4: visible notice when test-prep / medical-school / analytics
+            degrade, so a down service isn't mistaken for an empty page. */}
+        <ServiceHealthBanner />
 
         {/* Page content */}
         <main className="p-4 sm:p-6 lg:p-8">

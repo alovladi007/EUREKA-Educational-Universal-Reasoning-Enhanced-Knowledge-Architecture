@@ -10,6 +10,9 @@ import type {
   LoginRequest, RegisterRequest, AuthResponse,
   SrsCard, SrsStats,
 } from '@/types';
+// P1.4: announce backend degradation so the dashboard can show a visible
+// offline banner instead of a silently-empty page.
+import { markServiceDegraded } from '@/lib/service-health';
 
 // P0.3: api-core's host port is 8000 (docker-compose `8000:8000`), and
 // both eureka-api.ts and next.config.js already default to :8000. This
@@ -553,6 +556,8 @@ class ApiClient {
             error?.code === 'ECONNABORTED' ||
             !error?.response;
           if (offline) {
+            // P1.4: visible banner, not just a console line.
+            markServiceDegraded('medical-school', 'offline');
             if (!this.medicalWarned) {
               this.medicalWarned = true;
               // eslint-disable-next-line no-console
@@ -776,6 +781,9 @@ class ApiClient {
           // rather than firehosing console errors.
           const unauthenticated = status === 401 || status === 403;
           if (offline || unauthenticated) {
+            // P1.4: surface a visible banner (once) instead of only a
+            // console line the user never sees.
+            markServiceDegraded('test-prep', offline ? 'offline' : 'auth');
             if (!this.testPrepWarned) {
               this.testPrepWarned = true;
               const reason = offline
