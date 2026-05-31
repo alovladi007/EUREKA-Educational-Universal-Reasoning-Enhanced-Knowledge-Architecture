@@ -1,171 +1,122 @@
-# EUREKA Platform - Port Mapping
+# EUREKA Platform — Port Mapping
 
-This document lists all ports used by the EUREKA platform to avoid conflicts with other running services.
+Authoritative list of host ports, **reconciled against `docker-compose.yml`**
+(P0.3). The previous revision documented an aspirational 8100-series scheme
+that never matched the running stack; this version reflects what the compose
+file actually binds.
+
+> Source of truth: `eureka/docker-compose.yml`. If you change a port there,
+> update this file in the same commit.
 
 ## Infrastructure Services
 
-| Service | Internal Port | External Port | Description |
-|---------|--------------|---------------|-------------|
-| PostgreSQL (pgvector) | 5432 | **5436** | Database with vector support |
-| Redis | 6379 | **6380** | Cache and session store |
-| MinIO | 9000 | **9010** | Object storage (S3-compatible) |
-| MinIO Console | 9001 | **9011** | MinIO admin console |
-| OpenSearch | 9200 | **9200** | Search engine |
-| Kafka (Redpanda) | 9092 | **9092** | Message broker |
-| Kafka Internal | 29092 | **29092** | Internal broker port |
+| Service | Internal Port | Host Port | Notes |
+|---------|--------------|-----------|-------|
+| PostgreSQL (pgvector pg16) | 5432 | **5434** | Primary DB `eureka` + secondary DBs (test_prep, pedagogy, marketplace, institutions) |
+| Redis | 6379 | **6381** | Cache, sessions, JWT blacklist (per-service logical DBs /0../15) |
+| MinIO (S3) | 9000 | **9004** | Object storage |
+| MinIO Console | 9001 | **9005** | Admin console |
+| OpenSearch | 9200 | **9200** | Search (profile: `full`) |
+| Kafka (Redpanda) | 9092 | **9092** | Message broker (profile: `full`) |
+| Neo4j | 7474/7687 | **7474/7687** | Graph (profile: `full`) |
+| Qdrant | 6333 | **6333** | Vector DB (profile: `full`) |
+| Jaeger | 16686 | **16686** | Tracing UI (profile: `dev-obs`) |
 
-## Core Services
+## Core Services (host port → container 8000)
 
-All core services run internally on port 8000, mapped to different external ports:
+| Service | Host Port | Profile | Description |
+|---------|-----------|---------|-------------|
+| api-core | **8000** | default | Core API (auth, users, orgs, courses, exam, srs, …) |
+| tutor-llm | **8001** | full | AI tutoring with RAG |
+| assess | **8002** | full | Assessment & autograding |
+| adaptive | **8003** | full | Adaptive learning engine |
+| content | **8004** | full | Content management |
+| analytics | **8005** | full | Analytics & reporting (FE `NEXT_PUBLIC_ANALYTICS_URL` default) |
 
-| Service | External Port | Description |
-|---------|--------------|-------------|
-| api-core | **8100** | Core API (users, orgs, courses) |
-| tutor-llm | **8101** | AI tutoring service with RAG |
-| assess | **8102** | Assessment and autograding |
-| adaptive | **8103** | Adaptive learning engine |
-| content | **8104** | Content management |
-| analytics | **8105** | Analytics and reporting |
+## Academic Tier Services (host port → container 8000)
 
-## Academic Tier Services
+| Service | Host Port | Profile | Description |
+|---------|-----------|---------|-------------|
+| tier-hs | **8010** | full | High School tier (skeleton) |
+| tier-ug | **8011** | full | Undergraduate tier |
+| tier-grad | **8012** | full | Graduate tier |
 
-| Service | External Port | Description |
-|---------|--------------|-------------|
-| tier-hs | **8110** | High School tier |
-| tier-ug | **8111** | Undergraduate tier |
-| tier-grad | **8112** | Graduate tier |
+## Professional School Services (host port → container 8000)
 
-## Professional School Services
+| Service | Host Port | Profile | Status |
+|---------|-----------|---------|--------|
+| pro-law | **8021** | full | Placeholder |
+| pro-mba | **8022** | full | Placeholder |
+| pro-eng | **8023** | full | Placeholder |
 
-| Service | External Port | Description |
-|---------|--------------|-------------|
-| pro-med | **8120** | Medical school (HIPAA mode) |
-| pro-law | **8121** | Law school (ABA compliance) |
-| pro-mba | **8122** | MBA programs |
-| pro-eng | **8123** | Engineering programs (FE/PE prep) |
+## Domain / Phase-2 Services (host port == container port)
+
+| Service | Host Port | Profile | DB | Status |
+|---------|-----------|---------|----|--------|
+| medical-school | **8030** | full | eureka | REAL (NestJS) |
+| pedagogy | **8040** | full | eureka_pedagogy | REAL |
+| marketplace | **8050** | full | eureka_marketplace | REAL |
+| ai-research | **8060** | full | — | REAL |
+| xr-labs | **8070** | full | — | Skeleton |
+| ethics-security | **8080** | full | — | Skeleton |
+| data-fabric | **8090** | full | neo4j/qdrant | Skeleton |
+| institutions | **8100** | full | eureka_institutions | Skeleton |
+| futures | **8110** | full | — | Skeleton |
+| notebook | **8120** | full | eureka | REAL (Node/Express) |
+| test-prep | **8200** | full | eureka_test_prep | REAL (+ worker, beat) |
 
 ## Frontend Applications
 
-| Application | External Port | Description |
-|------------|--------------|-------------|
-| web | **4500** | Main web frontend (Next.js) |
-| admin | **4501** | Admin dashboard |
+| Application | Host Port | Profile | Description |
+|------------|-----------|---------|-------------|
+| web | **3000** | default | Main web frontend (Next.js) |
+| admin | **3001** | default | Admin dashboard |
 
-## Quick Reference
+> Note: some local dev runs the web app on **4040** (see `.env.local.example`
+> `NEXTAUTH_URL`). The compose container binds **3000**.
 
-### Access Points
+## Frontend → backend URL defaults (`apps/web/src/lib/api-client.ts`)
 
-**Infrastructure:**
-- Database: `postgresql://eureka:eureka_dev_password@localhost:5436/eureka`
-- Redis: `redis://localhost:6380`
-- MinIO Console: http://localhost:9011
-- MinIO API: http://localhost:9010
-- OpenSearch: http://localhost:9200
-- Kafka: `localhost:9092`
+| Env var | Default | Target service |
+|---------|---------|----------------|
+| `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | api-core |
+| `NEXT_PUBLIC_ANALYTICS_URL` | `http://localhost:8005` | analytics |
+| `NEXT_PUBLIC_MEDICAL_SCHOOL_URL` | `http://localhost:8030` | medical-school |
+| `NEXT_PUBLIC_TEST_PREP_URL` | `http://localhost:8200` | test-prep |
+| `NEXT_PUBLIC_FILE_STORAGE_URL` | `http://localhost:8300` | file-storage |
+| `NEXT_PUBLIC_NOTEBOOK_URL` | `http://localhost:8120` | notebook |
 
-**Core APIs:**
-- Core API: http://localhost:8100
-- Tutor LLM: http://localhost:8101
-- Assessment: http://localhost:8102
-- Adaptive Learning: http://localhost:8103
-- Content: http://localhost:8104
-- Analytics: http://localhost:8105
+## In-network (container→container) addressing
 
-**Academic Tiers:**
-- High School: http://localhost:8110
-- Undergraduate: http://localhost:8111
-- Graduate: http://localhost:8112
+Services talk to each other over the `eureka-network` bridge using **internal**
+names/ports, NOT the host ports above:
 
-**Professional Schools:**
-- Medical: http://localhost:8120
-- Law: http://localhost:8121
-- MBA: http://localhost:8122
-- Engineering: http://localhost:8123
+- Postgres: `db:5432`
+- Redis: `redis:6379`
+- MinIO: `http://minio:9000`
+- api-core: `http://api-core:8000`
 
-**Frontend:**
-- Main Web App: http://localhost:4500
-- Admin Dashboard: http://localhost:4501
-
-## Port Conflict Resolution
-
-These ports were chosen to avoid conflicts with commonly used services:
-- **5432** (PostgreSQL) → **5436** (conflicts with other databases)
-- **6379** (Redis) → **6380** (conflicts with other Redis instances)
-- **8000-8005** → **8100-8105** (conflicts with other APIs)
-- **8010-8012** → **8110-8112** (better organization)
-- **8020-8023** → **8120-8123** (better organization)
-- **3000-3001** → **4500-4501** (conflicts with other Next.js apps)
-- **9000-9001** (MinIO) → **9010-9011** (conflicts with other storage)
-
-## Development Notes
-
-- All services use containerized networking for inter-service communication
-- External ports are only needed for accessing services from the host machine
-- Services communicate with each other using internal Docker network (eureka-network)
-- Database connections from services use `db:5432` (internal)
-- Redis connections from services use `redis:6379` (internal)
-
-## Starting Services
+## Starting services
 
 ```bash
-# Start all services
-docker-compose up -d
+# Default stack (db, redis, minio, api-core, web, admin)
+docker compose up -d
 
-# Start specific service
-docker-compose up -d api-core
+# Full platform (all services + opensearch/kafka/neo4j/qdrant)
+docker compose --profile full up -d
 
-# Start infrastructure only
-docker-compose up -d db redis minio opensearch kafka
-
-# Start core services only
-docker-compose up -d api-core tutor-llm assess adaptive content analytics
-
-# Start academic tiers only
-docker-compose up -d tier-hs tier-ug tier-grad
-
-# Start professional schools only
-docker-compose up -d pro-med pro-law pro-mba pro-eng
-
-# Start frontend only
-docker-compose up -d web admin
+# Tracing UI
+docker compose --profile dev-obs up -d jaeger
 ```
 
-## Checking Port Usage
+## Health checks
 
 ```bash
-# Check if ports are in use
-lsof -i :5436  # PostgreSQL
-lsof -i :6380  # Redis
-lsof -i :8100  # API Core
-lsof -i :4500  # Web Frontend
-
-# Check all EUREKA ports
-lsof -i -P | grep -E ":(5436|6380|8100|8101|8102|8103|8104|8105|8110|8111|8112|8120|8121|8122|8123|4500|4501|9010|9011)"
-```
-
-## Health Checks
-
-All services expose health check endpoints (where applicable):
-
-```bash
-# Core services
-curl http://localhost:8100/health
-curl http://localhost:8101/health
-curl http://localhost:8102/health
-
-# Academic tiers
-curl http://localhost:8110/health
-curl http://localhost:8111/health
-curl http://localhost:8112/health
-
-# Professional schools
-curl http://localhost:8120/health
-curl http://localhost:8121/health
-curl http://localhost:8122/health
-curl http://localhost:8123/health
+curl http://localhost:8000/health   # api-core
+curl http://localhost:8200/health   # test-prep
+curl http://localhost:8030/health   # medical-school
 ```
 
 ---
 
-**Last Updated:** 2025-10-28
-**Platform Version:** Session 2 Integration
+**Last reconciled:** Phase 0 remediation — against `docker-compose.yml`.

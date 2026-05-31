@@ -134,16 +134,24 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      DATABASE_URL: postgresql://eureka:eureka_dev_password@host.docker.internal:5434/eureka
+      # P0.4: use the in-network `db` hostname (port 5432) instead of
+      # host.docker.internal:5434. The host-loopback form was Mac-only
+      # and broke on Linux/CI; every other service already uses db:5432.
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
       # P0-8: Switched to the in-network `redis` hostname so the JWT
       # blacklist (jwt:revoked:* / jwt:revoked-user:*) actually has a
       # reachable Redis. host.docker.internal:6380 doesn't resolve to
       # anything; the blacklist module was failing open on every call.
       REDIS_URL: redis://redis:6379/0
-      S3_ENDPOINT: http://host.docker.internal:9000
+      # P0.4: in-network minio hostname (matches every other service).
+      S3_ENDPOINT: http://minio:9000
       S3_ACCESS_KEY: eureka
       S3_SECRET_KEY: eureka_minio_password
-      JWT_SECRET: dev_jwt_secret_change_in_production
+      # P0.1: unified JWT secret. api-core was the lone outlier signing
+      # with `dev_jwt_secret_change_in_production` while every other
+      # service (incl. test-prep's bridge) verified with the value
+      # below, so cross-service auth silently failed. One secret now.
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
       ENVIRONMENT: development
       # OpenTelemetry — leave blank to disable. Jaeger lives behind
       # `--profile dev-obs`; container DNS resolves `jaeger` when both
@@ -159,6 +167,32 @@ services:
         condition: service_healthy
     volumes:
       - ./services/api-core:/app
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # P0.6: file-storage was a real service (FE uploads/downloads target
+  # NEXT_PUBLIC_FILE_STORAGE_URL = :8300) but had no container — so every
+  # upload silently failed. Added here with a Dockerfile + requirements
+  # created alongside. Default profile because the FE depends on it.
+  file-storage:
+    build:
+      context: ./services/file-storage
+      dockerfile: Dockerfile
+    container_name: eureka-file-storage
+    environment:
+      # minio python client wants host:port (no scheme) + S3_SECURE flag.
+      S3_ENDPOINT: minio:9000
+      S3_ACCESS_KEY: eureka
+      S3_SECRET_KEY: eureka_minio_password
+      S3_BUCKET_NAME: eureka-files
+      S3_SECURE: "false"
+      ENVIRONMENT: development
+    ports:
+      - "8300:8000"
+    depends_on:
+      minio:
+        condition: service_healthy
+    volumes:
+      - ./services/file-storage:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   tutor-llm:
@@ -259,7 +293,10 @@ services:
       REDIS_URL: redis://redis:6379/4
       ENVIRONMENT: development
     ports:
-      - "8006:8000"
+      # P0.7: was 8006 — the frontend's NEXT_PUBLIC_ANALYTICS_URL default
+      # is :8005 (and 8005 is the natural slot after content=8004), so the
+      # analytics dashboard was calling a port nothing listened on. Aligned.
+      - "8005:8000"
     depends_on:
       - db
       - kafka
@@ -469,7 +506,9 @@ services:
       PORT: 8030
       DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
       REDIS_URL: redis://redis:6379/15
-      JWT_SECRET: dev_jwt_secret_change_in_production
+      # P0.1: unified JWT secret (was the second outlier alongside
+      # api-core). medical-school now verifies api-core-issued tokens.
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
       JWT_EXPIRES_IN: 15m
       REFRESH_TOKEN_EXPIRES_IN: 7d
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}

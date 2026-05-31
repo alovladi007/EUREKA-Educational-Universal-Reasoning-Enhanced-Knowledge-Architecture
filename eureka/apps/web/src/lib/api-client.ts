@@ -11,7 +11,12 @@ import type {
   SrsCard, SrsStats,
 } from '@/types';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8009';
+// P0.3: api-core's host port is 8000 (docker-compose `8000:8000`), and
+// both eureka-api.ts and next.config.js already default to :8000. This
+// axios client was the lone outlier defaulting to :8009 (nothing listens
+// there), so with NEXT_PUBLIC_API_URL unset the axios client and the
+// fetch wrapper pointed at different ports. Unified on :8000.
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 const API_PREFIX = process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1';
 
 class ApiClient {
