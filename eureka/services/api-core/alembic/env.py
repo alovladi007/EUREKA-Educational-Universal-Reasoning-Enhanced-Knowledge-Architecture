@@ -1,8 +1,6 @@
 from logging.config import fileConfig
-import asyncio
-from sqlalchemy import pool
+from sqlalchemy import pool, create_engine
 from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
 
 from alembic import context
 
@@ -14,18 +12,33 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 from app.core.config import settings
 from app.core.database import Base
 
-# Import all models so they're registered with Base.metadata
-from app.models import (  # noqa: F401
-    Organization, User, Course, Enrollment,
-    Assignment, Submission, Grade, RefreshToken,
-    AuditLog, FileUpload, Notification
-)
+# P1.1: import the models PACKAGE (not a hand-picked subset). Importing
+# app.models runs its __init__, which imports every model module and
+# therefore registers all ~118 tables on Base.metadata — so
+# `--autogenerate` and `upgrade head` see the COMPLETE schema, not just
+# the original 11 tables this file used to import.
+import app.models  # noqa: F401
+
+
+def _sync_db_url() -> str:
+    """P1.1: Alembic runs migrations synchronously, so coerce the app's
+    DATABASE_URL to a SYNC driver (psycopg2). The previous env.py fed the
+    URL straight into create_async_engine, which crashed every alembic
+    command with 'The asyncio extension requires an async driver' — the
+    reason migrations were never actually runnable. We strip the
+    `+asyncpg` (or bare `postgresql://`, which psycopg2 handles) here.
+    """
+    url = str(settings.DATABASE_URL)
+    if url.startswith("postgresql+asyncpg://"):
+        url = url.replace("postgresql+asyncpg://", "postgresql://", 1)
+    return url
+
 
 # this is the Alembic Config object
 config = context.config
 
-# Override sqlalchemy.url with our settings
-config.set_main_option('sqlalchemy.url', settings.DATABASE_URL)
+# Override sqlalchemy.url with the sync-coerced URL
+config.set_main_option('sqlalchemy.url', _sync_db_url())
 
 # Interpret the config file for Python logging
 if config.config_file_name is not None:
@@ -56,26 +69,22 @@ def do_run_migrations(connection: Connection) -> None:
         context.run_migrations()
 
 
-async def run_async_migrations() -> None:
-    """Run migrations in 'online' mode with async support."""
-    configuration = config.get_section(config.config_ini_section)
-    configuration["sqlalchemy.url"] = settings.DATABASE_URL
-    
-    connectable = async_engine_from_config(
-        configuration,
-        prefix="sqlalchemy.",
+def run_migrations_online() -> None:
+    """Run migrations in 'online' mode with a SYNC engine (P1.1).
+
+    Migrations are inherently synchronous; using a plain sync engine
+    (psycopg2 via the coerced URL) is the conventional, robust setup and
+    avoids the asyncio-driver crash the old async env produced.
+    """
+    connectable = create_engine(
+        config.get_main_option("sqlalchemy.url"),
         poolclass=pool.NullPool,
     )
 
-    async with connectable.connect() as connection:
-        await connection.run_sync(do_run_migrations)
+    with connectable.connect() as connection:
+        do_run_migrations(connection)
 
-    await connectable.dispose()
-
-
-def run_migrations_online() -> None:
-    """Run migrations in 'online' mode."""
-    asyncio.run(run_async_migrations())
+    connectable.dispose()
 
 
 if context.is_offline_mode():
