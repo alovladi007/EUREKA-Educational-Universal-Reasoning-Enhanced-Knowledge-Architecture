@@ -18,10 +18,15 @@ depends_on = None
 
 def upgrade() -> None:
     # Create resumes table
+    # P1.1-followup: id/user_id are UUID in the Resume model (see
+    # app/models/resume.py). The migration declared them as String, so
+    # the resumes.user_id → users.id (UUID) FK failed with
+    # "DatatypeMismatch: foreign key constraint cannot be implemented"
+    # on a fresh Postgres. Aligned to UUID to match the model.
     op.create_table(
         'resumes',
-        sa.Column('id', sa.String(), nullable=False),
-        sa.Column('user_id', sa.String(), sa.ForeignKey('users.id'), nullable=True),
+        sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('user_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('users.id'), nullable=True),
         sa.Column('title', sa.String(), server_default='My Resume', nullable=False),
         sa.Column('slug', sa.String(), nullable=False),
         sa.Column('is_public', sa.Boolean(), server_default='false', nullable=False),
@@ -41,8 +46,8 @@ def upgrade() -> None:
     # Create resume_versions table
     op.create_table(
         'resume_versions',
-        sa.Column('id', sa.String(), nullable=False),
-        sa.Column('resume_id', sa.String(), sa.ForeignKey('resumes.id', ondelete='CASCADE'), nullable=False),
+        sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
+        sa.Column('resume_id', postgresql.UUID(as_uuid=True), sa.ForeignKey('resumes.id', ondelete='CASCADE'), nullable=False),
         sa.Column('version_number', sa.Integer(), nullable=False),
         sa.Column('label', sa.String(), nullable=True),
         sa.Column('data', postgresql.JSON(), nullable=False),

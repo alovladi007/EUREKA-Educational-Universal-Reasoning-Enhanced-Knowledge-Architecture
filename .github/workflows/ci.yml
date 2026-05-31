@@ -271,24 +271,26 @@ jobs:
             --noconftest
 
   # -------------------------------------------------------------------------
-  # api-core Alembic migration smoke test (P1.2)
+  # api-core Alembic migration smoke test (P1.2 + P1.1-followup)
   #
   # Runs `alembic upgrade head` against a FRESH Postgres so migration DDL
   # bugs surface — exactly the drift the SQLite-create_all integration
-  # tests can't see. This already caught real bugs the moment alembic
-  # became runnable (P1.1 fixed the async-driver crash + merged the two
-  # heads): a postgresql.ENUM double-create in 001 (fixed) and an
-  # audit_logs table that both 001 and 002 create (001/002 overlap, open).
-  #
-  # NON-GATING for now (continue-on-error) — it reports the remaining
-  # migration-chain conflicts on every push without blocking the build
-  # on that pre-existing debt. Flip `continue-on-error` to false once the
-  # chain applies clean (tracked as the P1.1-followup ORM↔SQL convergence).
+  # tests can't see. The moment alembic became runnable (P1.1 fixed the
+  # async-driver crash + merged the two heads) this caught three real,
+  # long-latent migration bugs, all now FIXED and verified end-to-end on
+  # a live Postgres:
+  #   1. 001 double-created the tiertype/userrole enums (explicit
+  #      CREATE TYPE + sa.Enum auto-emit) → postgresql.ENUM(create_type=False).
+  #   2. 001 and 002 both created audit_logs (001/002 overlap) → removed
+  #      from 001; 002 is the owner.
+  #   3. resume_001 declared id/user_id as String while the model uses
+  #      UUID → the user_id→users.id FK was unbuildable → aligned to UUID.
+  # `upgrade head` is now clean (18 tables, reaches the merge head) and
+  # reversible (downgrade base → re-upgrade, both exit 0). GATING.
   # -------------------------------------------------------------------------
   migrations:
-    name: alembic upgrade head (fresh Postgres) [non-gating]
+    name: alembic upgrade head (fresh Postgres)
     runs-on: ubuntu-latest
-    continue-on-error: true
     services:
       postgres:
         image: pgvector/pgvector:pg16
@@ -491,7 +493,7 @@ jobs:
   ci-gate:
     name: CI gate (all required green)
     runs-on: ubuntu-latest
-    needs: [gitleaks, python-services, api-core-tests, node-services, compose-validate, docker-build]
+    needs: [gitleaks, python-services, api-core-tests, migrations, node-services, compose-validate, docker-build]
     if: always()
     steps:
       - name: Fail if any required job failed

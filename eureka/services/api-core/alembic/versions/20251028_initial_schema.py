@@ -180,34 +180,15 @@ def upgrade() -> None:
     op.create_index(op.f('ix_enrollments_course_id'), 'enrollments', ['course_id'], unique=False)
     op.create_index(op.f('ix_enrollments_user_id'), 'enrollments', ['user_id'], unique=False)
     
-    # Create audit_logs table
-    op.create_table(
-        'audit_logs',
-        sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('org_id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column('action', sa.String(length=100), nullable=False),
-        sa.Column('resource_type', sa.String(length=100), nullable=False),
-        sa.Column('resource_id', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column('changes', postgresql.JSONB(astext_type=sa.Text()), nullable=True),
-        sa.Column('ip_address', sa.String(length=45), nullable=True),
-        sa.Column('user_agent', sa.String(length=500), nullable=True),
-        sa.Column('timestamp', sa.DateTime(), nullable=False, server_default=sa.text('now()')),
-        sa.ForeignKeyConstraint(['org_id'], ['organizations.id'], ),
-        sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
-        sa.PrimaryKeyConstraint('id')
-    )
-    op.create_index(op.f('ix_audit_logs_org_id'), 'audit_logs', ['org_id'], unique=False)
-    op.create_index(op.f('ix_audit_logs_timestamp'), 'audit_logs', ['timestamp'], unique=False)
-    op.create_index(op.f('ix_audit_logs_user_id'), 'audit_logs', ['user_id'], unique=False)
+    # P1.1-followup: audit_logs is created by 002_remaining_models (its
+    # stated owner — "Add ... AuditLog ..."). 001 also created it, so
+    # `alembic upgrade head` hit DuplicateTable at 002 on a fresh DB.
+    # Removed here; 002 remains the single creator.
 
 
 def downgrade() -> None:
     # Drop tables
-    op.drop_index(op.f('ix_audit_logs_user_id'), table_name='audit_logs')
-    op.drop_index(op.f('ix_audit_logs_timestamp'), table_name='audit_logs')
-    op.drop_index(op.f('ix_audit_logs_org_id'), table_name='audit_logs')
-    op.drop_table('audit_logs')
+    # (audit_logs drop removed — 002_remaining_models owns it; see upgrade.)
     op.drop_index(op.f('ix_enrollments_user_id'), table_name='enrollments')
     op.drop_index(op.f('ix_enrollments_course_id'), table_name='enrollments')
     op.drop_table('enrollments')
