@@ -71,8 +71,9 @@ def _role(user: User) -> str:
     return user.role.value if hasattr(user.role, "value") else (user.role or "")
 
 
-def _is_admin(user: User) -> bool:
-    return _role(user) in ("org_admin", "super_admin")
+# P1.5: _is_admin centralized in app/utils/rbac.py. _role + _is_faculty
+# stay local (_is_faculty includes "teacher" and _role is still used by it).
+from app.utils.rbac import is_admin as _is_admin  # noqa: E402
 
 
 def _is_faculty(user: User) -> bool:

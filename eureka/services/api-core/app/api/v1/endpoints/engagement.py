@@ -101,9 +101,9 @@ from app.utils.dependencies import get_current_user
 router = APIRouter()
 
 
-def _is_admin(user: User) -> bool:
-    role = user.role.value if hasattr(user.role, "value") else user.role
-    return role in ("org_admin", "super_admin")
+# P1.5: centralized — was a local duplicate of `role in ("org_admin",
+# "super_admin")`. Single source of truth now in app/utils/rbac.py.
+from app.utils.rbac import is_admin as _is_admin  # noqa: E402
 
 
 def _require_admin(user: User) -> None:

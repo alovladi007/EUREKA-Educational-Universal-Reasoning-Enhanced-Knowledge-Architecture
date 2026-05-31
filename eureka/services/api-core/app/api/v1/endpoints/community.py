@@ -63,12 +63,9 @@ from app.utils.dependencies import get_current_user
 router = APIRouter()
 
 
-def _role(u: User) -> str:
-    return u.role.value if hasattr(u.role, "value") else (u.role or "")
-
-
-def _is_admin(u: User) -> bool:
-    return _role(u) in ("org_admin", "super_admin")
+# P1.5: centralized in app/utils/rbac.py. The local _role helper only
+# fed _is_admin, so both are replaced by the shared import.
+from app.utils.rbac import is_admin as _is_admin  # noqa: E402
 
 
 # ---------------------------------------------------------------------------
