@@ -271,6 +271,59 @@ jobs:
             --noconftest
 
   # -------------------------------------------------------------------------
+  # api-core Alembic migration smoke test (P1.2)
+  #
+  # Runs `alembic upgrade head` against a FRESH Postgres so migration DDL
+  # bugs surface — exactly the drift the SQLite-create_all integration
+  # tests can't see. This already caught real bugs the moment alembic
+  # became runnable (P1.1 fixed the async-driver crash + merged the two
+  # heads): a postgresql.ENUM double-create in 001 (fixed) and an
+  # audit_logs table that both 001 and 002 create (001/002 overlap, open).
+  #
+  # NON-GATING for now (continue-on-error) — it reports the remaining
+  # migration-chain conflicts on every push without blocking the build
+  # on that pre-existing debt. Flip `continue-on-error` to false once the
+  # chain applies clean (tracked as the P1.1-followup ORM↔SQL convergence).
+  # -------------------------------------------------------------------------
+  migrations:
+    name: alembic upgrade head (fresh Postgres) [non-gating]
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    services:
+      postgres:
+        image: pgvector/pgvector:pg16
+        env:
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_USER: postgres
+          POSTGRES_DB: eureka_mig
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: Install dependencies
+        working-directory: eureka/services/api-core
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: alembic upgrade head
+        working-directory: eureka/services/api-core
+        env:
+          # env.py coerces +asyncpg → psycopg2 for the sync migration run.
+          DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/eureka_mig"
+          JWT_SECRET: test_jwt_secret_for_ci_testing_only
+          ENVIRONMENT: testing
+        run: |
+          alembic upgrade head
+          alembic current
+
+  # -------------------------------------------------------------------------
   # Node services — TS/JS
   # -------------------------------------------------------------------------
   node-services:
