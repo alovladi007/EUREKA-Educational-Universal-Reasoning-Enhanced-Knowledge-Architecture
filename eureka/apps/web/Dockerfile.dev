@@ -2,8 +2,11 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies
-COPY package*.json ./
+# Install dependencies. .npmrc carries legacy-peer-deps=true so the
+# vitest@4 → vite@8 → @vitejs/plugin-react@6 peer chain resolves
+# against @types/node@20 (added with the P3-13 test scaffolding).
+# Without it `npm install` dies on ERESOLVE in the Docker build.
+COPY package*.json .npmrc ./
 RUN npm install
 
 # Copy source code
