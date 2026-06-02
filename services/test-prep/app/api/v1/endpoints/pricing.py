@@ -7,6 +7,8 @@ from fastapi import APIRouter, HTTPException, Depends, Query
 from typing import List, Optional
 from pydantic import BaseModel
 from datetime import datetime
+from app.models import User
+from app.api.v1.endpoints.auth import get_current_user
 
 router = APIRouter()
 
@@ -254,13 +256,22 @@ async def create_subscription(
 
 
 @router.get("/my-subscription")
-async def get_my_subscription():
-    """Get current user's subscription details"""
-    # Mock response - would query database in production
+async def get_my_subscription(
+    current_user: User = Depends(get_current_user),
+):
+    """Current user's subscription state (P3 mock→real).
+
+    Was a fixed `has_subscription: False / inactive` for everyone,
+    ignoring the user entirely. Now reflects the real `User.is_premium`
+    flag. (There's no dedicated subscription table yet — plan dates /
+    Stripe customer id would live there — so plan detail is coarse:
+    premium vs free. Wire the table + Stripe webhooks for full detail.)
+    """
+    is_premium = bool(getattr(current_user, "is_premium", False))
     return {
         "success": True,
-        "has_subscription": False,
-        "plan": None,
-        "status": "inactive",
-        "trial_available": True
+        "has_subscription": is_premium,
+        "plan": "premium" if is_premium else None,
+        "status": "active" if is_premium else "inactive",
+        "trial_available": not is_premium,
     }
