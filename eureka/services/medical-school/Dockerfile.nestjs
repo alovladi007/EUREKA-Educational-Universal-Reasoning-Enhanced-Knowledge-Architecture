@@ -3,7 +3,11 @@ WORKDIR /app
 COPY package*.json ./
 
 FROM base AS dependencies
-RUN npm ci
+# P2: `npm ci` requires a committed package-lock.json, which this service
+# doesn't have — so the build failed with EUSAGE. Use `npm install`, which
+# resolves from package.json and generates the lockfile in-build. (Switch
+# back to `npm ci` if/when a package-lock.json is committed for repro.)
+RUN npm install
 
 FROM base AS build
 COPY --from=dependencies /app/node_modules ./node_modules

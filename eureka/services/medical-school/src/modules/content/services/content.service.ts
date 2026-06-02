@@ -527,7 +527,12 @@ export class ContentService {
 
     try {
       const page = await browser.newPage();
-      await page.setContent(htmlTemplate, { waitUntil: 'networkidle0' });
+      // P2: the installed puppeteer typings only accept 'load' |
+      // 'domcontentloaded' for setContent's waitUntil (the older
+      // 'networkidle0' value broke `nest build` with TS2322). 'load'
+      // waits for the load event, which is the right fit for static
+      // HTML rendered to PDF (no ongoing network).
+      await page.setContent(htmlTemplate, { waitUntil: 'load' });
 
       const pdfBuffer = await page.pdf({
         format: 'A4',
