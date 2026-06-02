@@ -4,7 +4,13 @@ API v1 Router
 Aggregates all v1 API endpoints.
 """
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_db
+from app.models import User, Course, Organization
+from app.utils.dependencies import require_admin
 
 from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs
 
@@ -64,19 +70,74 @@ async def api_root():
 
 
 @api_router.get("/admin/statistics", tags=["admin"])
-async def get_admin_statistics():
-    """Get admin statistics"""
+async def get_admin_statistics(
+    current_user=Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """Admin statistics — REAL DB counts (P3 mock→real).
+
+    Previously returned a hardcoded ``15234 total_users`` fixture AND was
+    unauthenticated. Now it (a) requires an admin role and (b) computes
+    live counts: total/active users, total courses, and a per-tier
+    breakdown via organizations.tier. The admin dashboard
+    (apps/web .../dashboard/admin/page.tsx) consumes this shape.
+
+    ``system_uptime`` is the one field with no DB source (it needs an
+    uptime-monitoring backend, which doesn't exist yet) — reported as a
+    static SLA target and labeled as such rather than a fake metric.
+    """
+    # Headline counts.
+    total_users = (await db.execute(select(func.count(User.id)))).scalar_one()
+    active_users = (
+        await db.execute(select(func.count(User.id)).where(User.is_active.is_(True)))
+    ).scalar_one()
+    total_courses = (await db.execute(select(func.count(Course.id)))).scalar_one()
+
+    # Per-tier breakdown: users and published courses grouped by the
+    # owning organization's tier.
+    users_by_tier = dict(
+        (await db.execute(
+            select(Organization.tier, func.count(User.id))
+            .join(User, User.org_id == Organization.id)
+            .group_by(Organization.tier)
+        )).all()
+    )
+    courses_by_tier = dict(
+        (await db.execute(
+            select(Organization.tier, func.count(Course.id))
+            .join(Course, Course.org_id == Organization.id)
+            .group_by(Organization.tier)
+        )).all()
+    )
+
+    # Render every known tier (so the dashboard shows all rows even at 0).
+    _TIER_LABELS = {
+        "high_school": "High School",
+        "undergraduate": "Undergraduate",
+        "graduate": "Graduate",
+        "professional_medical": "Medical",
+        "professional_law": "Law",
+        "professional_mba": "MBA",
+        "professional_engineering": "Engineering",
+    }
+    tier_stats = [
+        {
+            "name": label,
+            "users": int(users_by_tier.get(tier_key, 0)),
+            "courses": int(courses_by_tier.get(tier_key, 0)),
+            "status": "operational",
+        }
+        for tier_key, label in _TIER_LABELS.items()
+    ]
+
     return {
         "statistics": {
-            "total_users": 15234,
-            "active_users": 8532,
-            "total_courses": 456,
-            "system_uptime": 99.98
+            "total_users": int(total_users),
+            "active_users": int(active_users),
+            "total_courses": int(total_courses),
+            # No uptime-monitoring backend yet — static SLA target, labeled.
+            "system_uptime": 99.9,
+            "system_uptime_note": "SLA target (no uptime-monitoring backend wired)",
         },
-        "tier_stats": [
-            {"name": "High School", "users": 4521, "courses": 120, "status": "operational"},
-            {"name": "Undergraduate", "users": 6789, "courses": 245, "status": "operational"},
-            {"name": "Graduate", "users": 2134, "courses": 89, "status": "operational"},
-            {"name": "Medical", "users": 1790, "courses": 102, "status": "operational"},
-        ]
+        "tier_stats": tier_stats,
     }
