@@ -179,19 +179,78 @@ async def create_subscription(
 ):
     """
     Create a subscription checkout session for a pricing plan.
-    This would integrate with Stripe in production.
+
+    Track B feature-flag scaffold. Behaviour by environment:
+
+      * STRIPE_SECRET_KEY set → create a REAL Stripe Checkout Session.
+        The plan's Stripe Price id is read from STRIPE_PRICE_<PLAN_ID>
+        (e.g. STRIPE_PRICE_COMPLETE_BUNDLE). Activates the moment the
+        key + price ids are configured — no code change needed.
+      * No key, non-production → return a clearly-LABELED mock
+        (`"mock": true`) so the checkout flow can be exercised in
+        dev/demo without real payments.
+      * No key, production → 503. We refuse to fake a successful
+        checkout in prod (the previous code returned an UNLABELED
+        `mock_session_123` success unconditionally, which would have
+        silently "succeeded" payments in production).
     """
-    try:
-        # In production, this would create a Stripe checkout session
-        # For now, return a mock response
-        return {
-            "success": True,
-            "checkoutUrl": f"{success_url}?session_id=mock_session_123&plan={plan_id}",
-            "sessionId": "mock_session_123",
-            "message": "Checkout session created successfully"
-        }
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to create subscription: {str(e)}")
+    import os
+
+    stripe_key = os.environ.get("STRIPE_SECRET_KEY", "").strip()
+    environment = os.environ.get("ENVIRONMENT", "development").strip().lower()
+
+    # ── Real Stripe path ────────────────────────────────────────────
+    if stripe_key:
+        try:
+            import stripe  # lazy: only required when a key is configured
+        except ImportError:
+            raise HTTPException(
+                status_code=503,
+                detail="STRIPE_SECRET_KEY is set but the `stripe` package "
+                       "is not installed in this service.",
+            )
+        stripe.api_key = stripe_key
+        price_id = os.environ.get(f"STRIPE_PRICE_{plan_id.upper()}", "").strip()
+        if not price_id:
+            raise HTTPException(
+                status_code=400,
+                detail=f"No Stripe price configured for plan '{plan_id}'. "
+                       f"Set STRIPE_PRICE_{plan_id.upper()} to the Stripe Price id.",
+            )
+        try:
+            session = stripe.checkout.Session.create(
+                mode="subscription",
+                line_items=[{"price": price_id, "quantity": 1}],
+                success_url=f"{success_url}?session_id={{CHECKOUT_SESSION_ID}}",
+                cancel_url=cancel_url,
+                metadata={"plan_id": plan_id},
+            )
+            return {
+                "success": True,
+                "live": True,
+                "checkoutUrl": session.url,
+                "sessionId": session.id,
+                "message": "Stripe checkout session created.",
+            }
+        except Exception as e:  # Stripe API / network error
+            raise HTTPException(status_code=502, detail=f"Stripe checkout failed: {str(e)}")
+
+    # ── No key configured ───────────────────────────────────────────
+    if environment == "production":
+        raise HTTPException(
+            status_code=503,
+            detail="Payments are not configured (STRIPE_SECRET_KEY unset).",
+        )
+
+    # Non-production: labeled mock so the UI flow works in dev/demo.
+    return {
+        "success": True,
+        "mock": True,
+        "checkoutUrl": f"{success_url}?session_id=mock_session_dev&plan={plan_id}",
+        "sessionId": "mock_session_dev",
+        "message": "MOCK checkout — no STRIPE_SECRET_KEY configured (non-production). "
+                   "Set STRIPE_SECRET_KEY + STRIPE_PRICE_* to enable real payments.",
+    }
 
 
 @router.get("/my-subscription")
