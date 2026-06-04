@@ -20,6 +20,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import toast from 'react-hot-toast';
+import { api } from '@/lib/eureka-api';
 
 interface XRExperience {
   id: string;
@@ -44,7 +45,9 @@ interface XRExperience {
   created_at: string;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_XR_API_URL || 'http://localhost:3005/api/xr';
+// XR data is served by api-core (/api/v1/xr/*) via the shared `api()` client,
+// which targets NEXT_PUBLIC_API_URL and attaches the access_token. The old
+// standalone :3005/api/xr service never existed.
 
 export default function ExperienceViewerPage() {
   const params = useParams();
@@ -64,8 +67,9 @@ export default function ExperienceViewerPage() {
     const fetchExperience = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${API_BASE_URL}/experiences/${experienceId}`);
-        const data = await response.json();
+        const data = await api<{ experience: XRExperience }>(
+          `/xr/experiences/${experienceId}`,
+        );
         setExperience(data.experience);
       } catch (err: any) {
         setError(err.message);
@@ -135,20 +139,18 @@ export default function ExperienceViewerPage() {
 
   const startSession = async (deviceType: string) => {
     try {
-      const token = localStorage.getItem('auth_token');
-      const response = await fetch(`${API_BASE_URL}/sessions/start`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+      // api() attaches the access_token automatically (the old code read a
+      // non-existent 'auth_token' localStorage key, so this always 401'd).
+      const data = await api<{ session: { id: string } }>(
+        '/xr/sessions/start',
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            experience_id: experienceId,
+            device_type: deviceType,
+          }),
         },
-        body: JSON.stringify({
-          experience_id: experienceId,
-          device_type: deviceType,
-        }),
-      });
-
-      const data = await response.json();
+      );
       setSessionId(data.session.id);
       return data.session.id;
     } catch (err) {
@@ -230,20 +232,15 @@ export default function ExperienceViewerPage() {
           setIsInVR(false);
           renderer.setAnimationLoop(null);
 
-          // End session tracking
+          // End session tracking (api() attaches the access_token).
           if (sessId) {
-            const token = localStorage.getItem('auth_token');
-            await fetch(`${API_BASE_URL}/sessions/${sessId}/end`, {
+            await api(`/xr/sessions/${sessId}/end`, {
               method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-              },
               body: JSON.stringify({
                 completion_percentage: 100,
                 user_rating: 5,
               }),
-            });
+            }).catch((err) => console.error('Error ending session:', err));
           }
         });
       }
