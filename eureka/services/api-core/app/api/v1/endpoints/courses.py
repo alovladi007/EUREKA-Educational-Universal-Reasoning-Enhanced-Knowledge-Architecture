@@ -393,9 +393,33 @@ async def list_my_enrollments(
     enrollments, total = await course_crud.get_user_enrollments(
         db, current_user.id, skip, limit, status
     )
+
+    # Build items WITHOUT the nested `user`. For a "my enrollments" view the
+    # user is always the caller, so it's redundant — and serializing it is a
+    # trap: UserResponse.email is a strict EmailStr, and SQLAlchemy's identity
+    # map populates Enrollment.user from the already-loaded current_user, so a
+    # demo account on a reserved TLD (e.g. you@local.test) would 500 the whole
+    # list. We DO keep the eager-loaded course. (model_validate(e) would pull
+    # `user` via from_attributes and hit that landmine.)
+    items = [
+        EnrollmentResponse(
+            id=e.id,
+            user_id=e.user_id,
+            course_id=e.course_id,
+            status=e.status,
+            progress_percent=float(e.progress_percent) if e.progress_percent is not None else 0.0,
+            final_grade=float(e.final_grade) if e.final_grade is not None else None,
+            enrolled_at=e.enrolled_at,
+            completed_at=e.completed_at,
+            last_accessed_at=e.last_accessed_at,
+            user=None,
+            course=CourseResponse.model_validate(e.course) if e.course else None,
+        )
+        for e in enrollments
+    ]
     pages = (total + limit - 1) // limit if total else 0
     return EnrollmentList(
-        items=[EnrollmentResponse.model_validate(e) for e in enrollments],
+        items=items,
         total=total,
         page=skip // limit + 1,
         page_size=limit,
