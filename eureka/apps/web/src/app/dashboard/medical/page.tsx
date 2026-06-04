@@ -142,7 +142,11 @@ export default function MedicalOverview() {
                   <Layers className="h-5 w-5 text-primary" />
                   Active enrolment
                 </CardTitle>
-                <CardDescription className="mt-1 flex flex-wrap items-center gap-2">
+                {/* Not <CardDescription>: it renders a <p>, and the <Badge>
+                    below renders a <div> — a div inside a p is invalid HTML
+                    (validateDOMNesting warning). Use a div with the same
+                    muted-description styling instead. */}
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
                   {framework && (
                     <Badge variant="outline" className="uppercase">
                       {framework}
@@ -157,7 +161,7 @@ export default function MedicalOverview() {
                   <span className="capitalize">{enrolment.status}</span>
                   {specialty && <span>· {specialty}</span>}
                   {target && <span>· target {target}</span>}
-                </CardDescription>
+                </div>
               </div>
               <Link href="/dashboard/medical/enrollment">
                 <Button variant="outline" size="sm">

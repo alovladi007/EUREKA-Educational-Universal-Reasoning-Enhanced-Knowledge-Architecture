@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Brain, Send, Sparkles, BookOpen, FileText, Code, Calculator } from "lucide-react"
-import { tutorApi } from "@/lib/api"
+import { api } from "@/lib/eureka-api"
 import { toast } from "sonner"
 import type { TutorMessage } from "@/types"
 
@@ -21,6 +21,8 @@ export default function AITutorPage() {
   ])
   const [input, setInput] = useState("")
   const [loading, setLoading] = useState(false)
+  // Lazily-created api-core agent session id (persists across turns).
+  const [sessionId, setSessionId] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -46,17 +48,31 @@ export default function AITutorPage() {
     setLoading(true)
 
     try {
-      const response = await tutorApi.post('/chat', {
-        message: input,
-        context: {
-          previousMessages: messages.slice(-5),
-        },
-      })
+      // The old code POSTed to a dead :8001 /chat microservice route that
+      // never existed. The real tutoring agent lives in api-core: create a
+      // session once, then post each turn. It runs a real Claude agent when
+      // ANTHROPIC_API_KEY is set, and a deterministic Socratic stub
+      // otherwise — either way it returns valid turns.
+      let sid = sessionId
+      if (!sid) {
+        const created = await api<{ id?: string }>("/agent/sessions", {
+          method: "POST",
+          body: JSON.stringify({ mode: "socratic" }),
+        })
+        sid = created?.id ?? null
+        if (sid) setSessionId(sid)
+      }
+      if (!sid) throw new Error("Could not start a tutor session")
+
+      const turn = await api<{ message?: { content?: string } }>(
+        `/agent/sessions/${sid}/turn`,
+        { method: "POST", body: JSON.stringify({ message: input }) },
+      )
 
       const assistantMessage: TutorMessage = {
         id: (Date.now() + 1).toString(),
         role: "assistant",
-        content: response.data.response,
+        content: turn?.message?.content || "(no response)",
         timestamp: new Date().toISOString(),
       }
 

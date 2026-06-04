@@ -97,10 +97,14 @@ export default function DashboardAIResearchPage() {
     setSearchErr(null);
     setSearched(true);
     try {
-      const body = await api<{ hits: RagHit[] }>(
-        `/agent/rag/retrieve?q=${encodeURIComponent(q)}&top_k=8`,
-      ).catch(() => ({ hits: [] as RagHit[] }));
-      const list = body && Array.isArray(body.hits) ? body.hits : [];
+      // /agent/rag/retrieve returns a BARE list (response_model=list[dict])
+      // and the query param is `limit`, not `top_k`. The old code typed it
+      // as { hits } and read body.hits (always undefined → 0 results) and
+      // sent top_k (ignored by the backend). Treat the body as the array.
+      const body = await api<RagHit[]>(
+        `/agent/rag/retrieve?q=${encodeURIComponent(q)}&limit=8`,
+      ).catch(() => [] as RagHit[]);
+      const list = Array.isArray(body) ? body : [];
       setHits(list);
     } catch (e) {
       setSearchErr(toText((e as Error).message));

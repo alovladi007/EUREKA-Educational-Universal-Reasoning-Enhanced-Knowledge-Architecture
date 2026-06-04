@@ -57,7 +57,10 @@ export default function TeacherDashboard() {
           limit: 10,
         },
       });
-      const coursesData = coursesResponse.data.data || [];
+      // api-core GET /courses returns CourseList = { items, total, page, pages }.
+      // The old `.data.data` key never existed, so this was always [] and the
+      // teacher dashboard showed 0 courses / 0 students regardless of reality.
+      const coursesData = coursesResponse.data.items || [];
       setCourses(coursesData);
 
       // Calculate stats
