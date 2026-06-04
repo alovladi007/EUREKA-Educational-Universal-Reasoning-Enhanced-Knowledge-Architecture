@@ -370,6 +370,39 @@ async def enroll_in_course(
     return EnrollmentResponse.model_validate(enrollment)
 
 
+@router.get("/me/enrollments", response_model=EnrollmentList)
+async def list_my_enrollments(
+    skip: int = Query(0, ge=0),
+    limit: int = Query(50, ge=1, le=100),
+    status: Optional[str] = None,
+    current_user: User = Depends(get_current_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """List the CALLER'S OWN course enrollments (real LMS enrollments).
+
+    The get_user_enrollments data layer already existed but had no HTTP
+    surface, so a user's real enrollments were stranded (nothing in the FE
+    could show them). This exposes them, scoped to current_user. Each item
+    carries the nested course (title, instructor_id, etc.) via the CRUD's
+    selectinload, plus progress_percent — enough for a "My enrolled courses"
+    section on /dashboard/courses without an N+1 fetch per course.
+
+    Declared BEFORE /{course_id}/enrollments so the literal "me" segment
+    can't be parsed as a {course_id} UUID path param.
+    """
+    enrollments, total = await course_crud.get_user_enrollments(
+        db, current_user.id, skip, limit, status
+    )
+    pages = (total + limit - 1) // limit if total else 0
+    return EnrollmentList(
+        items=[EnrollmentResponse.model_validate(e) for e in enrollments],
+        total=total,
+        page=skip // limit + 1,
+        page_size=limit,
+        pages=pages,
+    )
+
+
 @router.get("/{course_id}/enrollments", response_model=EnrollmentList)
 async def list_course_enrollments(
     course_id: UUID,

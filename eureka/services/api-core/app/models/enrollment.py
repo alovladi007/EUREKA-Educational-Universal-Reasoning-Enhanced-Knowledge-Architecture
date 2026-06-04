@@ -4,7 +4,7 @@ Enrollment database model for EUREKA API Core
 SQLAlchemy ORM model for enrollments table (user-course relationships).
 """
 
-from sqlalchemy import Column, String, Integer, DateTime, ForeignKey, Index, CheckConstraint, UniqueConstraint
+from sqlalchemy import Column, String, DateTime, Numeric, ForeignKey, Index, CheckConstraint, UniqueConstraint
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -14,7 +14,18 @@ from app.core.database import Base
 
 
 class Enrollment(Base):
-    """Enrollment model - represents student enrollment in courses"""
+    """Enrollment model — a student's enrollment in a course.
+
+    Columns mirror the canonical DB table (ops/db/00_init_complete.sql, the
+    de-facto source of truth). The ORM had drifted badly: it declared
+    `progress_percent` (Integer), `mastery_level` and `withdrawn_at`, but the
+    real table has `progress_percentage` (numeric), `final_grade`,
+    `last_accessed_at` and `metadata`, and has NO mastery_level / withdrawn_at
+    columns. That drift made *every* query selecting this model 500 against
+    Postgres ("column enrollments.progress_percent does not exist"). The
+    Python attribute `progress_percent` is kept (FE/API contract) but bound
+    explicitly to the real `progress_percentage` column.
+    """
     __tablename__ = "enrollments"
 
     # Primary Key
@@ -24,50 +35,30 @@ class Enrollment(Base):
     user_id = Column(UUID(as_uuid=True), ForeignKey("users.id", ondelete="CASCADE"), nullable=False, index=True)
     course_id = Column(UUID(as_uuid=True), ForeignKey("courses.id", ondelete="CASCADE"), nullable=False, index=True)
 
-    # Enrollment Status
+    # Status — DB enrollment_status enum: active | completed | dropped | failed
     status = Column(String(50), nullable=False, default="active", index=True)
 
-    # Progress Tracking
-    progress_percent = Column(Integer, nullable=False, default=0)
-    mastery_level = Column(Integer, nullable=False, default=0)
+    # Progress: attr name stays `progress_percent`, real column is
+    # `progress_percentage` numeric(5,2).
+    progress_percent = Column("progress_percentage", Numeric(5, 2), nullable=False, default=0)
+    final_grade = Column(Numeric, nullable=True)
 
     # Timestamps
     enrolled_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     completed_at = Column(DateTime, nullable=True, index=True)
-    withdrawn_at = Column(DateTime, nullable=True)
+    last_accessed_at = Column(DateTime, nullable=True)
 
     # Relationships
     user = relationship("User", back_populates="enrollments")
     course = relationship("Course", back_populates="enrollments")
 
-    # Constraints and Indexes
+    # Constraints and Indexes (only those whose columns actually exist).
     __table_args__ = (
-        # Unique constraint - user can only enroll once per course
         UniqueConstraint('user_id', 'course_id', name='uq_enrollments_user_course'),
-
-        # Check constraints for data validation
-        CheckConstraint(
-            "status IN ('active', 'completed', 'withdrawn', 'dropped')",
-            name='ck_enrollments_status'
-        ),
-        CheckConstraint(
-            "progress_percent >= 0 AND progress_percent <= 100",
-            name='ck_enrollments_progress_valid'
-        ),
-        CheckConstraint(
-            "mastery_level >= 0 AND mastery_level <= 100",
-            name='ck_enrollments_mastery_valid'
-        ),
         CheckConstraint(
             "completed_at IS NULL OR completed_at >= enrolled_at",
             name='ck_enrollments_completed_after_enrolled'
         ),
-        CheckConstraint(
-            "withdrawn_at IS NULL OR withdrawn_at >= enrolled_at",
-            name='ck_enrollments_withdrawn_after_enrolled'
-        ),
-
-        # Indexes for performance
         Index('ix_enrollments_user_status', 'user_id', 'status'),
         Index('ix_enrollments_course_status', 'course_id', 'status'),
         Index('ix_enrollments_enrolled_at', 'enrolled_at'),
@@ -83,11 +74,11 @@ class Enrollment(Base):
             "user_id": str(self.user_id),
             "course_id": str(self.course_id),
             "status": self.status,
-            "progress_percent": self.progress_percent,
-            "mastery_level": self.mastery_level,
+            "progress_percent": float(self.progress_percent) if self.progress_percent is not None else 0.0,
+            "final_grade": float(self.final_grade) if self.final_grade is not None else None,
             "enrolled_at": self.enrolled_at.isoformat() if self.enrolled_at else None,
             "completed_at": self.completed_at.isoformat() if self.completed_at else None,
-            "withdrawn_at": self.withdrawn_at.isoformat() if self.withdrawn_at else None,
+            "last_accessed_at": self.last_accessed_at.isoformat() if self.last_accessed_at else None,
         }
 
     @property
@@ -103,7 +94,7 @@ class Enrollment(Base):
     @property
     def days_enrolled(self) -> int:
         """Calculate number of days enrolled"""
-        end_date = self.completed_at or self.withdrawn_at or datetime.utcnow()
+        end_date = self.completed_at or datetime.utcnow()
         return (end_date - self.enrolled_at).days
 
     def complete(self):
@@ -111,8 +102,3 @@ class Enrollment(Base):
         self.status = 'completed'
         self.completed_at = datetime.utcnow()
         self.progress_percent = 100
-
-    def withdraw(self):
-        """Mark enrollment as withdrawn"""
-        self.status = 'withdrawn'
-        self.withdrawn_at = datetime.utcnow()

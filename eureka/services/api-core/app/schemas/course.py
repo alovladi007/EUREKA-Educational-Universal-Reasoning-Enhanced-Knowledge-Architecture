@@ -137,14 +137,15 @@ class EnrollmentCreate(BaseModel):
 class EnrollmentUpdate(BaseModel):
     """Enrollment update request"""
     status: Optional[str] = Field(None, description="Enrollment status")
-    progress_percent: Optional[int] = Field(None, ge=0, le=100)
-    mastery_level: Optional[int] = Field(None, ge=0, le=100)
-    
+    progress_percent: Optional[float] = Field(None, ge=0, le=100)
+
     @validator('status')
     def validate_status(cls, v):
-        """Validate status is valid"""
+        """Validate status against the DB enrollment_status enum."""
         if v:
-            valid_statuses = ['active', 'completed', 'withdrawn', 'dropped']
+            # Matches the canonical DB enum (active/completed/dropped/failed).
+            # There is no 'withdrawn' value — that was ORM-only drift.
+            valid_statuses = ['active', 'completed', 'dropped', 'failed']
             if v not in valid_statuses:
                 raise ValueError(f'Status must be one of: {", ".join(valid_statuses)}')
         return v
@@ -156,16 +157,22 @@ class EnrollmentResponse(BaseModel):
     user_id: UUID
     course_id: UUID
     status: str
-    progress_percent: int
-    mastery_level: int
+    # progress is numeric(5,2) in the DB → float (was int, which raised on
+    # non-whole values).
+    progress_percent: float
+    # mastery_level has no DB column (ORM-only drift). Kept as a synthetic
+    # field defaulting to 0 so the existing FE type (types/index.ts) still
+    # type-checks; revisit if/when a real mastery signal is persisted.
+    mastery_level: int = 0
+    final_grade: Optional[float] = None
     enrolled_at: datetime
-    completed_at: Optional[datetime]
-    withdrawn_at: Optional[datetime]
-    
+    completed_at: Optional[datetime] = None
+    last_accessed_at: Optional[datetime] = None
+
     # Include related user info
     user: Optional["UserResponse"] = None
     course: Optional[CourseResponse] = None
-    
+
     class Config:
         from_attributes = True
 

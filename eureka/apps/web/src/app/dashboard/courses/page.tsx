@@ -6,12 +6,28 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Search, Filter, BookOpen, Clock, Star, Play, Layers, BrainCircuit, Trophy } from "lucide-react"
+import { Search, Filter, BookOpen, Clock, Star, Play, Layers, BrainCircuit, Trophy, GraduationCap } from "lucide-react"
 import { EXAM_CONFIGS, EXAM_TYPE_LIST } from "@/lib/exam-config"
 import { getCurriculum, getTotalTopics } from "@/lib/exam-curriculum"
+import { api } from "@/lib/eureka-api"
 
 interface ExamHistory {
   date: string; score: number; passed: boolean; correct: number; total: number; timeSpent: number;
+}
+
+/** A real LMS enrollment from api-core GET /courses/me/enrollments. */
+interface LmsEnrollment {
+  id: string;
+  course_id: string;
+  status: string;
+  progress_percent: number;
+  enrolled_at?: string;
+  course?: { id: string; title?: string; description?: string; subject?: string } | null;
+}
+
+interface LmsEnrollmentList {
+  items: LmsEnrollment[];
+  total: number;
 }
 
 const STORAGE_KEYS: Record<string, string> = {
@@ -46,7 +62,28 @@ export default function CoursesPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [mounted, setMounted] = useState(false);
 
+  // Real LMS course enrollments (instructor-authored courses), distinct from
+  // the test-prep exam catalog above. Sourced from api-core; empty for users
+  // who only do exam prep — the section hides itself when there are none.
+  const [lmsEnrollments, setLmsEnrollments] = useState<LmsEnrollment[]>([]);
+  const [lmsLoading, setLmsLoading] = useState(true);
+
   useEffect(() => { setMounted(true); }, []);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await api<LmsEnrollmentList>("/courses/me/enrollments");
+        setLmsEnrollments(Array.isArray(res?.items) ? res.items : []);
+      } catch {
+        // Non-fatal: the exam catalog below still renders. Banner handled
+        // globally by ServiceHealthBanner if api-core is down.
+        setLmsEnrollments([]);
+      } finally {
+        setLmsLoading(false);
+      }
+    })();
+  }, []);
 
   const allExams = EXAM_TYPE_LIST.map(config => {
     const curriculum = getCurriculum(config.id);
@@ -90,6 +127,57 @@ export default function CoursesPage() {
           </div>
         </CardContent>
       </Card>
+
+      {/* Real LMS enrollments (instructor-authored courses). Hidden entirely
+          when the user has none, so exam-prep-only users see no empty box. */}
+      {!lmsLoading && lmsEnrollments.length > 0 && (
+        <div>
+          <div className="mb-3 flex items-center gap-2">
+            <GraduationCap className="h-5 w-5 text-primary" />
+            <h2 className="text-lg font-semibold">My enrolled courses</h2>
+            <Badge variant="secondary">{lmsEnrollments.length}</Badge>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {lmsEnrollments.map((e) => {
+              const pct = Math.max(0, Math.min(100, Math.round(e.progress_percent || 0)));
+              return (
+                <Card key={e.id} className="flex flex-col">
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <CardTitle className="line-clamp-2 text-base">
+                        {e.course?.title || "Untitled course"}
+                      </CardTitle>
+                      <Badge variant={e.status === "completed" ? "default" : "outline"} className="capitalize shrink-0">
+                        {e.status}
+                      </Badge>
+                    </div>
+                    {e.course?.description && (
+                      <CardDescription className="line-clamp-2">{e.course.description}</CardDescription>
+                    )}
+                  </CardHeader>
+                  <CardContent className="flex-1 space-y-3">
+                    <div className="space-y-1.5">
+                      <div className="flex justify-between text-sm">
+                        <span className="text-muted-foreground">Progress</span>
+                        <span className="font-medium">{pct}%</span>
+                      </div>
+                      <div className="h-2 w-full rounded-full bg-gray-200 dark:bg-gray-800">
+                        <div className="h-2 rounded-full bg-primary transition-all" style={{ width: `${pct}%` }} />
+                      </div>
+                    </div>
+                    <Link href={`/dashboard/courses/${e.course_id}`}>
+                      <Button className="w-full gap-2" variant={e.status === "completed" ? "outline" : "default"}>
+                        <Play className="h-4 w-4" />
+                        {e.status === "completed" ? "Review" : "Continue"}
+                      </Button>
+                    </Link>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
 
       <div className="flex gap-2 border-b">
         <button onClick={() => setActiveTab("enrolled")} className={`px-4 py-2 font-medium transition-colors ${activeTab === "enrolled" ? "border-b-2 border-primary text-primary" : "text-muted-foreground hover:text-foreground"}`}>

@@ -304,19 +304,13 @@ async def get_course_stats(
             )
         )
     )
-    average_progress = avg_progress_result.scalar() or 0.0
-    
-    # Calculate average mastery
-    avg_mastery_result = await db.execute(
-        select(func.avg(Enrollment.mastery_level)).where(
-            and_(
-                Enrollment.course_id == course_id,
-                Enrollment.status == 'active'
-            )
-        )
-    )
-    average_mastery = avg_mastery_result.scalar() or 0.0
-    
+    average_progress = float(avg_progress_result.scalar() or 0.0)
+
+    # There is no `mastery_level` column in the enrollments table (it was
+    # ORM-only drift). Report 0.0 until a real per-enrollment mastery signal
+    # is persisted, rather than querying a non-existent column (which 500'd).
+    average_mastery = 0.0
+
     return CourseStats(
         course_id=course_id,
         total_enrollments=total_enrollments,
@@ -364,7 +358,6 @@ async def create_enrollment(
         course_id=enrollment_data.course_id,
         status='active',
         progress_percent=0,
-        mastery_level=0
     )
     
     db.add(enrollment)
@@ -535,11 +528,10 @@ async def update_enrollment(
     # Set completed_at if status changed to completed
     if update_data.status == 'completed' and not enrollment.completed_at:
         enrollment.completed_at = datetime.utcnow()
-    
-    # Set withdrawn_at if status changed to withdrawn
-    if update_data.status == 'withdrawn' and not enrollment.withdrawn_at:
-        enrollment.withdrawn_at = datetime.utcnow()
-    
+
+    # (No withdrawn_at handling: that column doesn't exist in the DB and
+    # 'withdrawn' isn't in the enrollment_status enum — both were ORM drift.)
+
     await db.commit()
     await db.refresh(enrollment)
     
