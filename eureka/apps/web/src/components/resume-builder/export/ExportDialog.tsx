@@ -73,9 +73,15 @@ export function ExportDialog({ open, onClose }: ExportDialogProps) {
     setExporting("docx");
     try {
       const apiUrl = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000"}${process.env.NEXT_PUBLIC_API_PREFIX || "/api/v1"}`;
+      // /exports/docx now requires auth (it was an open render endpoint).
+      // Attach the bearer token the same way lib/resume/api.ts does.
+      const token = typeof window !== "undefined" ? localStorage.getItem("access_token") : null;
       const res = await fetch(`${apiUrl}/exports/docx`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
         body: JSON.stringify({ resume_data: doc.data, template_id: doc.templateId }),
       });
 

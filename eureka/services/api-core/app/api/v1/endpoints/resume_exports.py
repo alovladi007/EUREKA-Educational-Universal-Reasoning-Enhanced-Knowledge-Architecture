@@ -1,10 +1,16 @@
 """Resume export endpoints — PDF, DOCX, JSON generation."""
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, Depends
 from fastapi.responses import JSONResponse, StreamingResponse
 from pydantic import BaseModel
 from typing import Optional
 import io
+
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.database import get_db
+from app.crud.resume import get_resume
+from app.utils.dependencies import get_current_user
 
 try:
     from docx import Document as DocxDocument
@@ -13,8 +19,6 @@ try:
     HAS_DOCX = True
 except ImportError:
     HAS_DOCX = False
-# Auth disabled for dev mode — will be enabled in production
-# from app.utils.dependencies import get_current_user
 
 router = APIRouter(prefix="/exports", tags=["resume-exports"])
 
@@ -57,16 +61,24 @@ class TemplateInfo(BaseModel):
 @router.post("/pdf", response_model=PDFExportResponse)
 async def export_pdf(
     request: PDFExportRequest,
-    # current_user=Depends(get_current_user),  # Disabled for dev
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
-    """Queue a PDF export job. Returns a job ID for polling."""
-    # TODO: Implement with BullMQ + Puppeteer worker
-    # 1. Fetch resume data from database
-    # 2. Enqueue job to BullMQ queue
-    # 3. Worker renders HTML template with Puppeteer
-    # 4. Save PDF to S3, update job status
-    # 5. Return signed S3 URL
+    """Queue a PDF export job for one of the caller's OWN resumes.
 
+    Auth is REQUIRED (it was commented out "for dev"). We also verify the
+    resume belongs to the caller before queueing, so an authenticated user
+    can't enqueue exports of someone else's resume by guessing IDs.
+    """
+    # Ownership gate: get_resume returns None unless the resume exists AND
+    # belongs to current_user.
+    resume = await get_resume(db, request.resume_id, current_user.id)
+    if not resume:
+        raise HTTPException(status_code=404, detail="Resume not found")
+
+    # NOTE: the BullMQ + Puppeteer render worker is a future integration not
+    # yet part of this Python service — the job is accepted but no worker
+    # completes it. /exports/docx is a fully-working real download today.
     import uuid
     job_id = str(uuid.uuid4())
 
@@ -80,12 +92,14 @@ async def export_pdf(
 @router.get("/status/{job_id}", response_model=ExportStatusResponse)
 async def export_status(
     job_id: str,
-    # current_user=Depends(get_current_user),  # Disabled for dev
+    current_user=Depends(get_current_user),
 ):
-    """Poll the status of a PDF export job."""
-    # TODO: Check BullMQ job status
-    # Return file_url when completed
+    """Poll the status of a PDF export job. Auth REQUIRED (was disabled).
 
+    STUB: there's no BullMQ jobs table to look the id up in yet, so this
+    returns a placeholder. Wire the worker + a jobs table to make it real
+    (and to scope job lookups to current_user.id).
+    """
     return ExportStatusResponse(
         job_id=job_id,
         status="completed",
@@ -97,8 +111,16 @@ async def export_status(
 
 
 @router.post("/docx")
-async def export_docx(request: DOCXExportRequest):
-    """Generate and return a DOCX file from resume data."""
+async def export_docx(
+    request: DOCXExportRequest,
+    current_user=Depends(get_current_user),
+):
+    """Generate and return a DOCX file from resume data (auth REQUIRED).
+
+    The caller supplies the resume_data in the body, so there's no ID to
+    ownership-check — but it must not be an open, unauthenticated render
+    service.
+    """
     if not HAS_DOCX:
         raise HTTPException(status_code=503, detail="python-docx not installed. Run: pip install python-docx")
 
@@ -259,18 +281,30 @@ async def export_docx(request: DOCXExportRequest):
 @router.get("/json/{resume_id}")
 async def export_json(
     resume_id: str,
-    # current_user=Depends(get_current_user),  # Disabled for dev
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
 ):
-    """Download resume data as JSON."""
-    # TODO: Fetch from database and return as JSON file
-    from app.core.database import get_db
-    from app.crud.resume import get_resume
-    from sqlalchemy.orm import Session
+    """Download one of the caller's OWN resumes as a JSON file.
 
-    # For now return placeholder
+    Auth REQUIRED + ownership-enforced (was commented out, and the body was
+    a placeholder — had the DB fetch been wired in without auth, this would
+    have let anyone download any resume by ID). get_resume only returns the
+    row when it belongs to current_user, so a non-owner gets a 404.
+    """
+    resume = await get_resume(db, resume_id, current_user.id)
+    if not resume:
+        raise HTTPException(status_code=404, detail="Resume not found")
+
+    payload = {
+        "id": str(resume.id),
+        "title": resume.title,
+        "template_id": resume.template_id,
+        "data": resume.data,
+    }
+    filename = f"{(resume.title or 'resume').replace(' ', '-')}.json"
     return JSONResponse(
-        content={"message": "JSON export endpoint ready. Database integration pending."},
-        status_code=200,
+        content=payload,
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'},
     )
 
 
