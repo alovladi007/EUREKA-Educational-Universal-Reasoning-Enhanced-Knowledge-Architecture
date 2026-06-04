@@ -49,7 +49,12 @@ class UserRegisterRequest(BaseModel):
 
 class UserLoginRequest(BaseModel):
     """User login request"""
-    email: EmailStr
+    # Plain str, not EmailStr: login matches against EXISTING accounts, so it
+    # must accept whatever address is on file — including reserved-TLD demo
+    # emails (e.g. you@local.test) that email-validator rejects. Format
+    # strictness belongs on registration, not login (where it just locks
+    # valid existing users out before the password is even checked).
+    email: str
     password: str
     org_slug: Optional[str] = Field(None, description="Organization slug (optional)")
     mfa_code: Optional[str] = Field(
@@ -111,7 +116,12 @@ class UserResponse(BaseModel):
     """User response model"""
     id: UUID
     org_id: UUID
-    email: EmailStr
+    # Plain str, not EmailStr: this is an OUTPUT model echoing data already in
+    # the DB. Serialization must never 500 because email-validator dislikes a
+    # stored address (e.g. reserved TLDs like you@local.test). Input models
+    # (UserRegisterRequest, PasswordResetRequest) keep EmailStr to guard NEW
+    # data at the door.
+    email: str
     first_name: str
     last_name: str
     display_name: Optional[str]
