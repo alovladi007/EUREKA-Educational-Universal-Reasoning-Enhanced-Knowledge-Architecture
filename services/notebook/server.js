@@ -21,9 +21,19 @@ const notificationRoutes = require('./routes/notifications');
 
 const app = express();
 const server = http.createServer(app);
+
+// Allowed browser origins. FRONTEND_URL may be a comma-separated list; default
+// to both common dev ports (the Next app runs on :4040 in this stack, :3000 is
+// the framework default). Previously this was a single value defaulting to
+// :3000, so the browser on :4040 was blocked by CORS even with a valid token.
+const ALLOWED_ORIGINS = (process.env.FRONTEND_URL || 'http://localhost:3000,http://localhost:4040')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
 const io = socketIo(server, {
   cors: {
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: ALLOWED_ORIGINS,
     methods: ['GET', 'POST'],
     credentials: true
   }
@@ -34,7 +44,7 @@ app.set('io', io);
 
 app.use(helmet());
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+  origin: ALLOWED_ORIGINS,
   credentials: true
 }));
 

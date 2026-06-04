@@ -8,9 +8,17 @@ const notebookClient = axios.create({
   },
 });
 
-// Add auth token to requests
+// Add auth token to requests.
+// The platform persists the access token under `access_token` everywhere
+// (login, eureka-api, api-client, api.ts). This client was reading the wrong
+// key (`token`), so it sent NO Authorization header → the notebook service
+// (which is healthy and shares the unified JWT_SECRET + the `eureka` users
+// table, and already accepts api-core's `sub` claim) replied 401 and every
+// notebook projects/tasks page rendered empty. Read the correct key so the
+// api-core SSO token is forwarded.
 notebookClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
+  const token =
+    typeof window !== 'undefined' ? localStorage.getItem('access_token') : null;
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }

@@ -128,16 +128,23 @@ router.post('/',
 
       const project = result.rows[0];
 
-      await pool.query(
-        'INSERT INTO activity_logs (action, entity_type, entity_id, user_id, metadata) VALUES ($1, $2, $3, $4, $5)',
-        ['project_created', 'project', project.id, req.user.id, JSON.stringify({ project_name: name })]
-      );
-
-      await pool.query(
-        `INSERT INTO notifications (type, title, message, user_id, related_id, related_type)
-         VALUES ($1, $2, $3, $4, $5, $6)`,
-        ['project', 'New Project Created', `You created project: ${name}`, req.user.id, project.id, 'project']
-      );
+      // Activity-log + notification are best-effort side effects. This service
+      // shares the `eureka` DB with api-core, whose `notifications` table has a
+      // different shape (no `type` column), so these inserts can fail — which
+      // must NOT 500 a project that was already created. Log and continue.
+      try {
+        await pool.query(
+          'INSERT INTO activity_logs (action, entity_type, entity_id, user_id, metadata) VALUES ($1, $2, $3, $4, $5)',
+          ['project_created', 'project', project.id, req.user.id, JSON.stringify({ project_name: name })]
+        );
+        await pool.query(
+          `INSERT INTO notifications (type, title, message, user_id, related_id, related_type)
+           VALUES ($1, $2, $3, $4, $5, $6)`,
+          ['project', 'New Project Created', `You created project: ${name}`, req.user.id, project.id, 'project']
+        );
+      } catch (sideEffectErr) {
+        console.warn('Project created but side-effect (activity/notification) failed:', sideEffectErr.message);
+      }
 
       res.status(201).json({
         message: 'Project created successfully',
