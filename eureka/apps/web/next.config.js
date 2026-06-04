@@ -25,6 +25,17 @@ const nextConfig = {
   typescript: { ignoreBuildErrors: false },
   eslint: { ignoreDuringBuilds: false },
   transpilePackages: ['three', '@react-three/fiber', '@react-three/drei'],
+  // lucide-react ships a ~1k-icon barrel. Importing named icons from it
+  // pulls the whole barrel, which under Fast Refresh can desync and leave an
+  // icon reference as a module object instead of the component — surfacing as
+  // a client-only "Element type is invalid ... got: object" crash on pages
+  // like Teacher (<Plus>) and Notebook. optimizePackageImports rewrites
+  // `import { Plus } from 'lucide-react'` to the direct icon path, which both
+  // fixes the HMR desync and trims the dev/prod bundle. (Next 14's documented
+  // remedy for exactly this barrel.)
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
   webpack: (config, { isServer }) => {
     // Handle Three.js and related packages
     if (!isServer) {
