@@ -16,7 +16,21 @@ from app.core.database import Base, get_db
 from app.core.config import get_settings
 from app.models.user import User
 from app.models.organization import Organization
-from app.core.security import get_password_hash, create_access_token
+# app.core.security does not exist — the canonical auth utilities live in
+# app.utils.auth (what the login endpoint + get_current_user use). The real
+# hashing fn is `hash_password`; alias it so the fixtures below read naturally.
+# Importing from the same module the app uses guarantees test-created hashes
+# verify and test tokens validate.
+from app.utils.auth import hash_password as get_password_hash, create_access_token
+
+# Register the SQLite shims (UUID/JSONB/ARRAY/ENUM/INET/TSVECTOR compile rules,
+# PG-only CHECK-constraint stripping, tz handling) BEFORE any create_all below.
+# The models use Postgres-native column types the in-memory SQLite test engine
+# can't render on its own, so without this create_all dies with
+# "SQLiteTypeCompiler has no attribute 'visit_UUID'". install_all is idempotent.
+from tests.integration._sqlite_compat import install_all as _install_sqlite_compat
+
+_install_sqlite_compat(Base)
 
 # Initialize Faker
 fake = Faker()
@@ -84,9 +98,10 @@ def client(db_session: Session) -> Generator[TestClient, None, None]:
 def test_organization(db_session: Session) -> Organization:
     """Create a test organization."""
     org = Organization(
-        id=fake.uuid4(),
         name=fake.company(),
-        domain=fake.domain_name(),
+        # Model has `slug` (unique) + required `tier`; there is no `domain`.
+        slug=f"org-{fake.uuid4()[:8]}",
+        tier="high_school",
         settings={
             "theme": "default",
             "features": ["ai_tutor", "assessments"]
@@ -103,15 +118,16 @@ def test_organization(db_session: Session) -> Organization:
 def test_user(db_session: Session, test_organization: Organization) -> User:
     """Create a test user."""
     user = User(
-        id=fake.uuid4(),
-        email=fake.email(),
-        username=fake.user_name(),
-        full_name=fake.name(),
+        email=fake.unique.email(),
+        # Model uses first_name/last_name (no username/full_name), org_id (not
+        # organization_id), and is_email_verified (not is_verified).
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
         hashed_password=get_password_hash("testpassword123"),
-        organization_id=test_organization.id,
+        org_id=test_organization.id,
         role="student",
         is_active=True,
-        is_verified=True
+        is_email_verified=True
     )
     db_session.add(user)
     db_session.commit()
@@ -123,16 +139,15 @@ def test_user(db_session: Session, test_organization: Organization) -> User:
 def test_admin_user(db_session: Session, test_organization: Organization) -> User:
     """Create a test admin user."""
     admin = User(
-        id=fake.uuid4(),
-        email=fake.email(),
-        username=fake.user_name(),
-        full_name=fake.name(),
+        email=fake.unique.email(),
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
         hashed_password=get_password_hash("adminpassword123"),
-        organization_id=test_organization.id,
-        role="admin",
+        org_id=test_organization.id,
+        # No is_superuser column — admin is role-based (UserRole.SUPER_ADMIN).
+        role="super_admin",
         is_active=True,
-        is_verified=True,
-        is_superuser=True
+        is_email_verified=True
     )
     db_session.add(admin)
     db_session.commit()
@@ -144,15 +159,14 @@ def test_admin_user(db_session: Session, test_organization: Organization) -> Use
 def test_teacher_user(db_session: Session, test_organization: Organization) -> User:
     """Create a test teacher user."""
     teacher = User(
-        id=fake.uuid4(),
-        email=fake.email(),
-        username=fake.user_name(),
-        full_name=fake.name(),
+        email=fake.unique.email(),
+        first_name=fake.first_name(),
+        last_name=fake.last_name(),
         hashed_password=get_password_hash("teacherpassword123"),
-        organization_id=test_organization.id,
+        org_id=test_organization.id,
         role="teacher",
         is_active=True,
-        is_verified=True
+        is_email_verified=True
     )
     db_session.add(teacher)
     db_session.commit()
@@ -167,7 +181,7 @@ def auth_headers(test_user: User) -> dict:
         data={
             "sub": str(test_user.id),
             "email": test_user.email,
-            "org_id": str(test_user.organization_id),
+            "org_id": str(test_user.org_id),
             "role": test_user.role
         }
     )
@@ -181,7 +195,7 @@ def admin_auth_headers(test_admin_user: User) -> dict:
         data={
             "sub": str(test_admin_user.id),
             "email": test_admin_user.email,
-            "org_id": str(test_admin_user.organization_id),
+            "org_id": str(test_admin_user.org_id),
             "role": test_admin_user.role
         }
     )
@@ -195,7 +209,7 @@ def teacher_auth_headers(test_teacher_user: User) -> dict:
         data={
             "sub": str(test_teacher_user.id),
             "email": test_teacher_user.email,
-            "org_id": str(test_teacher_user.organization_id),
+            "org_id": str(test_teacher_user.org_id),
             "role": test_teacher_user.role
         }
     )
