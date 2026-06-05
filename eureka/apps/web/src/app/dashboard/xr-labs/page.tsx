@@ -60,9 +60,22 @@ type Collection = {
   updated_at: string;
 };
 
+type XRExperience = {
+  id: string;
+  title: string;
+  description: string;
+  experience_type: string;
+  difficulty_level: string;
+  duration_minutes: number;
+  tags: string[];
+  total_sessions: number;
+  avg_rating: number | null;
+};
+
 export default function XRLabsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
+  const [experiences, setExperiences] = useState<XRExperience[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
@@ -71,12 +84,14 @@ export default function XRLabsPage() {
   async function refresh() {
     setLoading(true);
     try {
-      const [res, cols] = await Promise.all([
+      const [res, cols, exps] = await Promise.all([
         api<Resource[]>("/resources?tag=xr").catch(() => [] as Resource[]),
         api<Collection[]>("/me/collections?kind=study_set").catch(() => [] as Collection[]),
+        api<{ experiences: XRExperience[] }>("/xr/experiences").catch(() => ({ experiences: [] })),
       ]);
       setResources(Array.isArray(res) ? res : []);
       setCollections(Array.isArray(cols) ? cols : []);
+      setExperiences(Array.isArray(exps?.experiences) ? exps.experiences : []);
       setError(null);
     } catch (e) {
       setError(String((e as Error).message));
@@ -205,6 +220,55 @@ export default function XRLabsPage() {
         </div>
       </div>
 
+      {/* ───────────── XR Experiences (real, from api-core /xr) ─────────────
+          Live experiences served by api-core (/api/v1/xr/experiences). Each
+          card opens the WebXR viewer (/dashboard/xr-labs/experience/<id>),
+          which tracks a session and loads the scene's glTF model.
+      */}
+      <div>
+        <h2 className="text-base font-semibold mb-3 flex items-center gap-2">
+          <Box className="h-4 w-4 text-primary" />
+          Experiences ({experiences.length})
+        </h2>
+        {loading && <p className="text-muted-foreground text-sm">Loading…</p>}
+        {!loading && experiences.length === 0 && (
+          <p className="text-muted-foreground text-sm">
+            No XR experiences published yet.
+          </p>
+        )}
+        {experiences.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {experiences.map((x) => (
+              <Link key={x.id} href={`/dashboard/xr-labs/experience/${x.id}`}>
+                <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer">
+                  <CardHeader>
+                    <CardTitle className="text-base flex items-center gap-2">
+                      <Glasses className="h-4 w-4 text-primary" />
+                      {x.title}
+                    </CardTitle>
+                    <CardDescription className="line-clamp-2">
+                      {x.description}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap items-center gap-1 text-[10px]">
+                      <Badge variant="secondary">{x.experience_type}</Badge>
+                      <Badge variant="outline">{x.difficulty_level}</Badge>
+                      <Badge variant="outline">{x.duration_minutes} min</Badge>
+                      {typeof x.avg_rating === "number" && (
+                        <span className="text-muted-foreground ml-1">
+                          {x.avg_rating.toFixed(1)} ★
+                        </span>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* ───────────── Authoring tools ───────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Link href="/dashboard/xr-labs/scene-builder">
@@ -243,7 +307,8 @@ export default function XRLabsPage() {
           </CardHeader>
           <CardContent>
             <p className="text-xs text-muted-foreground">
-              Built scenes from the scene-builder show up here.
+              Pick one from <span className="font-medium text-foreground">Experiences</span>{" "}
+              above, or open any experience by ID directly.
             </p>
           </CardContent>
         </Card>
