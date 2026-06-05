@@ -12,6 +12,7 @@ the (profile-gated) xr-labs service, so we read/write them without registering
 parallel ORM models in api-core's metadata.
 """
 
+import json
 import uuid
 from typing import Optional
 
@@ -186,3 +187,233 @@ async def end_session(
             "ended_at": row["ended_at"].isoformat() if row["ended_at"] else None,
         }
     }
+
+
+# ── Scene Builder: templates ────────────────────────────────────────────────
+
+
+@router.get("/scene-builder/templates")
+async def list_scene_templates(db: AsyncSession = Depends(get_db)):
+    """Scene templates (public). The FE also health-gates the editor on this."""
+    rows = (
+        await db.execute(
+            text("SELECT * FROM xr_scene_templates ORDER BY template_name")
+        )
+    ).mappings().all()
+    return {
+        "templates": [
+            {
+                "id": str(r["id"]),
+                "template_name": r["template_name"],
+                "description": r["description"] or "",
+                # FE field is template_type; the table column is `category`.
+                "template_type": r["category"] or "general",
+                "thumbnail_url": r["thumbnail_url"],
+                "scene_data": r["scene_data"]
+                or {"objects": [], "lights": [], "cameras": []},
+            }
+            for r in rows
+        ]
+    }
+
+
+# ── Asset library ───────────────────────────────────────────────────────────
+
+
+@router.get("/asset-library/search")
+async def search_assets(
+    limit: int = 100,
+    q: Optional[str] = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Search the 3D asset library (public). Joins the category for its name."""
+    sql = (
+        "SELECT a.id, a.asset_name, a.file_url, a.thumbnail_url, a.file_format, "
+        "a.is_animated, c.category_name "
+        "FROM xr_3d_assets a "
+        "LEFT JOIN xr_asset_library_categories c ON a.category_id = c.id "
+    )
+    params = {"limit": max(1, min(limit, 500))}
+    if q:
+        sql += "WHERE a.asset_name ILIKE :q "
+        params["q"] = f"%{q}%"
+    sql += "ORDER BY a.asset_name LIMIT :limit"
+    rows = (await db.execute(text(sql), params)).mappings().all()
+    return {
+        "assets": [
+            {
+                "id": str(r["id"]),
+                "asset_name": r["asset_name"],
+                "category_name": r["category_name"],
+                "file_url": r["file_url"],
+                "thumbnail_url": r["thumbnail_url"],
+                "file_format": r["file_format"],
+                # FE field is has_animations; the column is is_animated.
+                "has_animations": bool(r["is_animated"]),
+            }
+            for r in rows
+        ]
+    }
+
+
+@router.post("/asset-library/assets/{asset_id}/use")
+async def use_asset(
+    asset_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Track that an asset was dropped into a scene (bumps usage_count)."""
+    aid = _as_uuid(asset_id)
+    if aid is None:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    row = (
+        await db.execute(
+            text(
+                "UPDATE xr_3d_assets SET usage_count = COALESCE(usage_count, 0) + 1 "
+                "WHERE id = :id RETURNING id, usage_count"
+            ),
+            {"id": aid},
+        )
+    ).mappings().first()
+    if not row:
+        raise HTTPException(status_code=404, detail="Asset not found")
+    await db.commit()
+    return {"ok": True, "usage_count": row["usage_count"]}
+
+
+# ── Scene Builder: projects (save / update / publish) ───────────────────────
+
+
+class ProjectBody(BaseModel):
+    projectName: str
+    description: Optional[str] = ""
+    category: Optional[str] = "general"
+    sceneData: dict = {}
+
+
+@router.post("/scene-builder/projects")
+async def create_project(
+    body: ProjectBody,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Save a new scene project for the caller."""
+    row = (
+        await db.execute(
+            text(
+                "INSERT INTO xr_scene_projects "
+                "(project_name, description, category, scene_data, created_by) "
+                "VALUES (:name, :desc, :cat, CAST(:scene AS jsonb), :uid) "
+                "RETURNING id, project_name"
+            ),
+            {
+                "name": body.projectName,
+                "desc": body.description,
+                "cat": body.category,
+                "scene": json.dumps(body.sceneData or {}),
+                "uid": current_user.id,
+            },
+        )
+    ).mappings().first()
+    await db.commit()
+    return {"project": {"id": str(row["id"]), "projectName": row["project_name"]}}
+
+
+@router.put("/scene-builder/projects/{project_id}")
+async def update_project(
+    project_id: str,
+    body: ProjectBody,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Update one of the caller's own scene projects (ownership-scoped)."""
+    pid = _as_uuid(project_id)
+    if pid is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    row = (
+        await db.execute(
+            text(
+                "UPDATE xr_scene_projects SET project_name = :name, "
+                "description = :desc, category = :cat, "
+                "scene_data = CAST(:scene AS jsonb), updated_at = now(), "
+                "last_edited = now() "
+                "WHERE id = :id AND created_by = :uid "
+                "RETURNING id, project_name"
+            ),
+            {
+                "id": pid,
+                "uid": current_user.id,
+                "name": body.projectName,
+                "desc": body.description,
+                "cat": body.category,
+                "scene": json.dumps(body.sceneData or {}),
+            },
+        )
+    ).mappings().first()
+    if not row:
+        raise HTTPException(status_code=404, detail="Project not found")
+    await db.commit()
+    return {"project": {"id": str(row["id"]), "projectName": row["project_name"]}}
+
+
+class PublishBody(BaseModel):
+    experience_type: Optional[str] = "vr_lab"
+    difficulty_level: Optional[str] = "beginner"
+    duration_minutes: Optional[int] = 30
+    supported_devices: Optional[list] = None
+    tags: Optional[list] = None
+
+
+@router.post("/scene-builder/projects/{project_id}/publish")
+async def publish_project(
+    project_id: str,
+    body: PublishBody,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Publish a project as a real, browsable xr_experiences row.
+
+    Scene-builder projects are JSON scene graphs (scene_data), not a single
+    glTF, so scene_url is left empty — the viewer renders an empty lit scene
+    until a renderer that consumes scene_data is wired. The experience IS
+    browsable/launchable and shows up in the XR Labs experiences list.
+    """
+    pid = _as_uuid(project_id)
+    if pid is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    proj = (
+        await db.execute(
+            text("SELECT * FROM xr_scene_projects WHERE id = :id AND created_by = :uid"),
+            {"id": pid, "uid": current_user.id},
+        )
+    ).mappings().first()
+    if not proj:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    exp = (
+        await db.execute(
+            text(
+                "INSERT INTO xr_experiences "
+                "(title, description, category, difficulty, duration_minutes, "
+                " scene_url, tags, is_published, created_by) "
+                "VALUES (:title, :desc, :cat, :diff, :mins, '', :tags, true, :uid) "
+                "RETURNING id"
+            ),
+            {
+                "title": proj["project_name"],
+                "desc": proj["description"],
+                "cat": body.experience_type or proj["category"],
+                "diff": body.difficulty_level,
+                "mins": body.duration_minutes,
+                "tags": body.tags or [],
+                "uid": current_user.id,
+            },
+        )
+    ).mappings().first()
+    await db.execute(
+        text("UPDATE xr_scene_projects SET is_public = true WHERE id = :id"),
+        {"id": pid},
+    )
+    await db.commit()
+    eid = str(exp["id"])
+    return {"experienceId": eid, "experience_id": eid}

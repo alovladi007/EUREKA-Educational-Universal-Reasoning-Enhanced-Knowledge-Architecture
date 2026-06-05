@@ -86,7 +86,10 @@ interface Template {
 // CONSTANTS
 // =====================================================
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_XR_API_URL || 'http://localhost:3005/api/xr';
+// Scene-builder data is served by api-core under /api/v1/xr/* (templates,
+// asset-library, scene-builder projects + publish). The old standalone
+// :3005/api/xr service never existed.
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1'}/xr`;
 
 // =====================================================
 // MAIN COMPONENT
@@ -112,23 +115,20 @@ export default function SceneBuilderPage() {
         <Card className="p-6 space-y-3">
           <h1 className="text-2xl font-bold flex items-center gap-2">
             <Wrench className="h-6 w-6 text-amber-600" />
-            XR microservice not running
+            XR API unavailable
           </h1>
           <p className="text-muted-foreground text-sm">
-            The Scene Builder is a full Three.js editor wired to the
-            separate <code className="font-mono text-xs">services/xr-labs/</code> Node
-            microservice on <code className="font-mono text-xs">:3005</code>. That
-            service isn&apos;t reachable right now, so we can&apos;t load
-            assets, templates, or save scenes.
+            The Scene Builder is a full Three.js editor backed by api-core&apos;s
+            XR endpoints (<code className="font-mono text-xs">/api/v1/xr/*</code> —
+            templates, asset library, scene projects). The API isn&apos;t
+            reachable right now, so we can&apos;t load assets, templates, or save
+            scenes. Check that api-core is running and{" "}
+            <code className="font-mono text-[11px]">NEXT_PUBLIC_API_URL</code> points at it.
           </p>
-          <div className="rounded-md bg-muted p-3 font-mono text-xs">
-            cd services/xr-labs && npm install && npm run dev
-          </div>
           <p className="text-xs text-muted-foreground">
-            Or set <code className="font-mono text-[11px]">NEXT_PUBLIC_XR_API_URL</code> to
-            point at a remote XR API. Until then, use
-            <Link href="/dashboard/xr-labs" className="text-primary hover:underline ml-1">XR Labs</Link>
-            (real EUREKA study sets + resources) which doesn&apos;t need this microservice.
+            In the meantime,{" "}
+            <Link href="/dashboard/xr-labs" className="text-primary hover:underline">XR Labs</Link>{" "}
+            (experiences, study sets + resources) works independently.
           </p>
         </Card>
       </div>
@@ -423,7 +423,7 @@ function SceneBuilderEditor() {
       await fetch(`${API_BASE_URL}/asset-library/assets/${asset.id}/use`, {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`
         }
       });
     } catch (error) {
@@ -521,7 +521,7 @@ function SceneBuilderEditor() {
         cameras: []
       };
 
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('access_token');
       const url = project.id
         ? `${API_BASE_URL}/scene-builder/projects/${project.id}`
         : `${API_BASE_URL}/scene-builder/projects`;
@@ -566,7 +566,7 @@ function SceneBuilderEditor() {
     }
 
     try {
-      const token = localStorage.getItem('auth_token');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`${API_BASE_URL}/scene-builder/projects/${project.id}/publish`, {
         method: 'POST',
         headers: {
@@ -587,7 +587,7 @@ function SceneBuilderEditor() {
       if (response.ok) {
         toast.success('Project published successfully!');
         setShowPublishDialog(false);
-        router.push(`/xr-labs/experience/${data.experienceId}`);
+        router.push(`/dashboard/xr-labs/experience/${data.experienceId}`);
       } else {
         toast.error('Failed to publish: ' + data.error);
       }
