@@ -80,9 +80,14 @@ class User(Base):
         # Unique constraint on email per organization
         Index('ix_users_org_email', 'org_id', 'email', unique=True),
 
-        # Check constraints for data validation
+        # Check constraints for data validation. Values MUST match the
+        # UserRole enum (app/core/models.py) the app actually assigns — the
+        # old list ('admin','staff') was stale and excluded the real roles
+        # ('super_admin','org_admin','researcher'), so a super_admin (the
+        # role ADMIN_ROLES grants) couldn't be inserted at all.
         CheckConstraint(
-            "role IN ('student', 'teacher', 'admin', 'parent', 'staff')",
+            "role IN ('student', 'teacher', 'super_admin', 'org_admin', "
+            "'parent', 'researcher')",
             name='ck_users_role'
         ),
         CheckConstraint(

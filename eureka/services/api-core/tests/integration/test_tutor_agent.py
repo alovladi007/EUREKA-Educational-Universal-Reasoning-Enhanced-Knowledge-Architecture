@@ -54,12 +54,23 @@ def learner():
         timeout=10,
     ).json()["access_token"]
     yield {"user_id": user_id, "token": tok}
-    with _conn() as c, c.cursor() as cur:
-        cur.execute("UPDATE agent_sessions SET user_id = NULL WHERE user_id = %s", (user_id,))
-        try:
-            cur.execute("DELETE FROM users WHERE id = %s", (user_id,))
-        except Exception:
-            pass
+    # Best-effort cleanup. agent_sessions.user_id is NOT NULL, so we DELETE the
+    # sessions (the old code tried to NULL them, which raised NotNullViolation
+    # and failed the teardown). autocommit + per-statement try/except keeps a
+    # single failure from aborting the rest of the cleanup.
+    with _conn() as c:
+        c.autocommit = True
+        with c.cursor() as cur:
+            for stmt in (
+                "DELETE FROM agent_messages WHERE session_id IN "
+                "(SELECT id FROM agent_sessions WHERE user_id = %s)",
+                "DELETE FROM agent_sessions WHERE user_id = %s",
+                "DELETE FROM users WHERE id = %s",
+            ):
+                try:
+                    cur.execute(stmt, (user_id,))
+                except Exception:
+                    pass
 
 
 def _hdr(t):
