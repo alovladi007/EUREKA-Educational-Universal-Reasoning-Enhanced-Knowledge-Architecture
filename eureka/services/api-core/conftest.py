@@ -2,6 +2,17 @@
 Pytest configuration and fixtures for API Core tests
 """
 
+import os
+
+# Disable the OpenTelemetry OTLP exporter for the whole test session BEFORE the
+# app is imported (init_observability runs at import and only wires the exporter
+# when OTEL_EXPORTER_OTLP_ENDPOINT is set). In docker the api-core env points it
+# at jaeger:4317, which isn't up during tests — so every request blocked on a
+# gRPC export retry/timeout, making the suite ~50x slower (a single file took
+# ~3.5 min instead of ~4s). Clearing it here keeps tests fast and offline.
+os.environ.pop("OTEL_EXPORTER_OTLP_ENDPOINT", None)
+os.environ.setdefault("OTEL_SDK_DISABLED", "true")
+
 import asyncio
 import pytest
 from typing import AsyncGenerator, Generator
