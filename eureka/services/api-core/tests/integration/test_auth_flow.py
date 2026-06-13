@@ -588,3 +588,76 @@ class TestAuthMe:
             headers={"Authorization": f"Bearer {token}"},
         )
         assert r.status_code == 401
+
+
+class TestEmailVerification:
+    """Email verification. Re-added after the legacy sync test_auth.py was
+    deleted — mints a real verify token via the same util the app issues."""
+
+    async def test_verify_email_success(
+        self, async_client: AsyncClient, seeded_user: User
+    ):
+        from app.utils.auth import create_email_verification_token
+
+        token = create_email_verification_token(str(seeded_user.id), seeded_user.email)
+        r = await async_client.post(f"{API}/auth/verify-email", json={"token": token})
+        assert r.status_code == 200
+
+    async def test_verify_email_invalid_token_returns_400(
+        self, async_client: AsyncClient
+    ):
+        r = await async_client.post(
+            f"{API}/auth/verify-email", json={"token": "not-a-valid-token"}
+        )
+        assert r.status_code == 400
+
+
+class TestPasswordReset:
+    """Password-reset request + confirm. Re-added from the deleted file; the
+    full flow is exercised by minting a real reset token (no email backend)."""
+
+    async def test_request_reset_unknown_email_is_nonrevealing(
+        self, async_client: AsyncClient
+    ):
+        # Unknown email still returns 200 (don't reveal account existence) and
+        # skips the email send, so no mail backend is required.
+        r = await async_client.post(
+            f"{API}/auth/password-reset",
+            json={"email": "definitely-nobody@example.com"},
+        )
+        assert r.status_code == 200
+
+    async def test_confirm_reset_invalid_token_returns_400(
+        self, async_client: AsyncClient
+    ):
+        r = await async_client.post(
+            f"{API}/auth/password-reset/confirm",
+            json={"token": "bad-token", "new_password": "BrandNewPass123"},
+        )
+        assert r.status_code == 400
+
+    async def test_reset_confirm_changes_password(
+        self, async_client: AsyncClient, seeded_user: User
+    ):
+        from app.utils.auth import create_password_reset_token
+
+        new_password = "BrandNewPass123"
+        token = create_password_reset_token(str(seeded_user.id), seeded_user.email)
+        r = await async_client.post(
+            f"{API}/auth/password-reset/confirm",
+            json={"token": token, "new_password": new_password},
+        )
+        assert r.status_code == 200
+
+        # The new password now logs in...
+        ok = await async_client.post(
+            f"{API}/auth/login",
+            json={"email": seeded_user.email, "password": new_password},
+        )
+        assert ok.status_code == 200
+        # ...and the old one no longer does.
+        bad = await async_client.post(
+            f"{API}/auth/login",
+            json={"email": seeded_user.email, "password": _FIXTURE_PASSWORD},
+        )
+        assert bad.status_code in (401, 403)

@@ -112,9 +112,15 @@ def create_access_token(
     to_encode.update({
         "exp": expire,
         "iat": datetime.utcnow(),
-        "type": "access",
         "jti": str(uuid.uuid4()),
     })
+    # Preserve a caller-supplied token type. create_password_reset_token /
+    # create_email_verification_token pass type="password_reset" /
+    # "email_verification" in `data`; clobbering it to "access" made
+    # verify_password_reset_token / verify_email_token reject every valid
+    # token (-> 400 on the real reset + verify flows). Only default to
+    # "access" when the caller didn't set one.
+    to_encode.setdefault("type", "access")
 
     encoded_jwt = jwt.encode(
         to_encode,

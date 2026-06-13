@@ -265,6 +265,7 @@ jobs:
             tests/integration/test_auth_flow.py \
             tests/integration/test_settings_endpoints.py \
             tests/integration/test_srs_review_streaks.py \
+            tests/integration/test_rbac.py \
             -v --tb=short \
             --override-ini=addopts= \
             -p no:cacheprovider \
