@@ -13,6 +13,7 @@ import {
   BookMarked, Video, StickyNote, BrainCircuit, Trophy, AlertCircle,
   RotateCcw, Eye, EyeOff, Layers, Zap, ThumbsUp, ThumbsDown,
   Library, ExternalLink, Search as SearchIcon, Hash, Sparkles, XCircle,
+  Puzzle,
 } from 'lucide-react';
 import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
@@ -54,10 +55,11 @@ import remarkGfm from 'remark-gfm';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
 import { LsatFrequencyHeatmap } from '@/components/test-prep/LsatFrequencyHeatmap';
 import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatmap';
+import { SecurityPlusPBQTab } from '@/components/test-prep/SecurityPlusPBQ';
 import { LSAT_QUESTION_TYPES } from '@/lib/lsat-frequency';
 import { recordExamAttempt, getExamAttempts, mergeExamHistory } from '@/lib/exam-attempts';
 
-type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep' | 'lsat' | 'exam' | 'analytics';
+type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep' | 'lsat' | 'exam' | 'analytics' | 'pbq';
 
 export default function ExamPage() {
   const params = useParams();
@@ -85,6 +87,7 @@ export default function ExamPage() {
       { id: 'exam' as Tab, label: 'Full Exam', icon: <Trophy className="h-4 w-4" /> },
       { id: 'analytics' as Tab, label: 'Analytics', icon: <BarChart3 className="h-4 w-4" /> },
     ] : []),
+    ...(isSecPlus ? [{ id: 'pbq' as Tab, label: 'PBQ Sims', icon: <Puzzle className="h-4 w-4" /> }] : []),
   ];
 
   return (
@@ -218,6 +221,7 @@ export default function ExamPage() {
       {activeTab === 'analytics' && isMCAT && <MCATAnalyticsTab />}
       {activeTab === 'exam' && isSecPlus && <SECPLUSExamTab />}
       {activeTab === 'analytics' && isSecPlus && <SECPLUSAnalyticsTab />}
+      {activeTab === 'pbq' && isSecPlus && <SecurityPlusPBQTab />}
     </div>
   );
 }
