@@ -2030,7 +2030,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 400, FE_EE: 647, FE_ME: 555,
-    PATENT_BAR: 536, SECURITY_PLUS: 452, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
+    PATENT_BAR: 536, SECURITY_PLUS: 472, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
 
@@ -3297,7 +3297,7 @@ const SECPLUS_PASS_PCT = 75;    // practice benchmark (labeled "Est. Pass")
 function SECPLUSExamTab() {
   const [phase, setPhase] = useState<'intro' | 'exam' | 'results'>('intro');
   const [questions, setQuestions] = useState<any[]>([]);
-  const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [answers, setAnswers] = useState<Record<number, number | number[]>>({});
   const [flagged, setFlagged] = useState<Set<number>>(new Set());
   const [currentIdx, setCurrentIdx] = useState(0);
   const [timeLeft, setTimeLeft] = useState(SECPLUS_EXAM_TIME);
@@ -3306,10 +3306,11 @@ function SECPLUSExamTab() {
 
   // Lazy-load the Security+ question pool (same pattern as the FE EE tab).
   const [questionPool, setQuestionPool] = useState<any[]>([]);
+  const [pbqPool, setPbqPool] = useState<any[]>([]);
   React.useEffect(() => {
     let cancelled = false;
     import('@/lib/security-plus-qbank-data').then((m) => {
-      if (!cancelled) setQuestionPool(m.SECPLUS_QUESTIONS);
+      if (!cancelled) { setQuestionPool(m.SECPLUS_QUESTIONS); setPbqPool(m.SECPLUS_PBQ_QUESTIONS); }
     });
     return () => { cancelled = true; };
   }, []);
@@ -3346,6 +3347,8 @@ function SECPLUSExamTab() {
       const shuffled = [...topicQs].sort(() => Math.random() - 0.5).slice(0, count);
       shuffled.forEach(q => { examQs.push({ ...q, examIdx: idx }); idx++; });
     }
+    // Append the multi-select / performance-based items after the 90 MCQ.
+    pbqPool.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; });
     setQuestions(examQs);
     setAnswers({});
     setFlagged(new Set());
@@ -3360,11 +3363,26 @@ function SECPLUSExamTab() {
     questions.forEach(q => {
       if (!res.byTopic[q.topicId]) res.byTopic[q.topicId] = { correct: 0, total: 0 };
       res.byTopic[q.topicId].total++;
-      if (answers[q.examIdx] === q.correct) {
+      const a = answers[q.examIdx];
+      let isCorrect: boolean;
+      if (q.type === 'multi') {
+        const sel = Array.isArray(a) ? [...a].sort((x, y) => x - y) : [];
+        const want = [...(q.correctAnswers || [])].sort((x: number, y: number) => x - y);
+        isCorrect = sel.length === want.length && sel.every((v, i) => v === want[i]);
+      } else {
+        isCorrect = a === q.correct;
+      }
+      if (isCorrect) {
         res.correct++;
         res.byTopic[q.topicId].correct++;
       } else {
-        res.incorrect.push({ question: q, userAnswer: answers[q.examIdx] !== undefined ? q.options[answers[q.examIdx]] : 'Not answered', correctAnswer: q.options[q.correct], explanation: q.explanation });
+        const userAnswer = q.type === 'multi'
+          ? (Array.isArray(a) && a.length ? a.map((i: number) => q.options[i]).join('; ') : 'Not answered')
+          : (a !== undefined ? q.options[a as number] : 'Not answered');
+        const correctAnswer = q.type === 'multi'
+          ? (q.correctAnswers || []).map((i: number) => q.options[i]).join('; ')
+          : q.options[q.correct];
+        res.incorrect.push({ question: q, userAnswer, correctAnswer, explanation: q.explanation });
       }
     });
     res.percentage = Math.round((res.correct / res.total) * 100);
@@ -3387,7 +3405,7 @@ function SECPLUSExamTab() {
           <div className="bg-gradient-to-r from-blue-600 to-indigo-800 p-8 text-white text-center">
             <Trophy className="h-12 w-12 mx-auto mb-4" />
             <h2 className="text-3xl font-bold mb-2">CompTIA Security+ — Full Practice Exam</h2>
-            <p className="text-blue-100 text-lg">90 Questions &middot; 90 Minutes</p>
+            <p className="text-blue-100 text-lg">90 Multiple-Choice + 6 Multi-Select &middot; 90 Minutes</p>
           </div>
           <div className="p-6 space-y-4">
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
@@ -3453,20 +3471,34 @@ function SECPLUSExamTab() {
           <div className="flex items-center gap-2 mb-4">
             <Badge variant="secondary" className="text-xs">{SECPLUS_TOPIC_NAMES[q.topicId]}</Badge>
             <Badge variant="outline" className="text-xs">{q.subtopic}</Badge>
+            {q.type === 'multi' && <Badge className="text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">Select all that apply</Badge>}
           </div>
           <h3 className="text-lg font-semibold mb-6">{q.question}</h3>
           <div className="space-y-3">
-            {q.options.map((opt: string, i: number) => (
-              <button key={i} onClick={() => setAnswers(prev => ({ ...prev, [currentIdx]: i }))}
-                className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
-                  answers[currentIdx] === i
-                    ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
-                    : 'border-gray-200 dark:border-gray-700 hover:border-gray-400'
-                }`}>
-                <span className="font-mono text-sm mr-3 text-muted-foreground">{String.fromCharCode(65 + i)}</span>
-                {opt}
-              </button>
-            ))}
+            {q.options.map((opt: string, i: number) => {
+              const cur = answers[currentIdx];
+              const selected = q.type === 'multi' ? (Array.isArray(cur) && cur.includes(i)) : cur === i;
+              const toggle = () => setAnswers(prev => {
+                if (q.type === 'multi') {
+                  const arr = Array.isArray(prev[currentIdx]) ? [...(prev[currentIdx] as number[])] : [];
+                  const at = arr.indexOf(i);
+                  if (at >= 0) arr.splice(at, 1); else arr.push(i);
+                  return { ...prev, [currentIdx]: arr };
+                }
+                return { ...prev, [currentIdx]: i };
+              });
+              return (
+                <button key={i} onClick={toggle}
+                  className={`w-full text-left p-4 rounded-lg border-2 transition-all ${
+                    selected
+                      ? 'border-blue-500 bg-blue-50 dark:bg-blue-950/30'
+                      : 'border-gray-200 dark:border-gray-700 hover:border-gray-400'
+                  }`}>
+                  <span className="font-mono text-sm mr-3 text-muted-foreground">{q.type === 'multi' ? (selected ? '☑' : '☐') : String.fromCharCode(65 + i)}</span>
+                  {opt}
+                </button>
+              );
+            })}
           </div>
           <div className="flex items-center justify-between mt-6">
             <button onClick={() => { const nf = new Set(flagged); isFlagged ? nf.delete(currentIdx) : nf.add(currentIdx); setFlagged(nf); }}
