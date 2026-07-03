@@ -21,6 +21,7 @@ import { apiClient } from '@/lib/api-client';
 import toast from 'react-hot-toast';
 import { eMpepChapterUrl } from '@/lib/mpep-chapters';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
+import { getSecurityPlusLessonContent } from '@/lib/security-plus-lesson-content';
 // Course-data modules are now lazy-loaded via exam-course-loader so a
 // student picking PATENT_BAR doesn't ship MCAT/LSAT/CISSP/etc. chunks
 // (P3-C / task #62). Keep TopicLesson as a TYPE-ONLY import so the
@@ -1012,6 +1013,25 @@ function ReadLessonsTab({ examType }: { examType: string }) {
                         </ul>
                       </div>
                     )}
+
+                    {/* Supplementary SY0-701 deep-dive notes (Security+ only; */}
+                    {/* renders beneath the structured course-data lesson).    */}
+                    {(() => {
+                      const deep = getSecurityPlusLessonContent(activeTopic.id);
+                      if (!deep) return null;
+                      return (
+                        <details className="mt-6 rounded-2xl border-2 border-indigo-200 dark:border-indigo-900 bg-indigo-50/40 dark:bg-indigo-950/20 overflow-hidden">
+                          <summary className="cursor-pointer select-none px-5 py-4 font-semibold text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
+                            <BookOpen className="h-4 w-4" /> In-Depth Notes — SY0-701 deep dive
+                          </summary>
+                          <div className="px-5 pb-5 prose prose-sm dark:prose-invert max-w-none">
+                            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                              {deep}
+                            </ReactMarkdown>
+                          </div>
+                        </details>
+                      );
+                    })()}
                   </div>
                 );
               }
