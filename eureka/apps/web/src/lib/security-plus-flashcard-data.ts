@@ -14,12 +14,12 @@ export interface SecurityPlusFlashcard {
 }
 
 export const SECPLUS_FLASHCARD_DOMAINS = [
-  { id: 'domain1', label: 'D1', name: 'Threats, Vulnerabilities & Attacks', count: 180 },
-  { id: 'domain2', label: 'D2', name: 'Security Architecture', count: 120 },
-  { id: 'domain3', label: 'D3', name: 'Security Implementation', count: 200 },
-  { id: 'domain4', label: 'D4', name: 'Security Operations', count: 130 },
-  { id: 'domain5', label: 'D5', name: 'Security Program Management & Oversight', count: 90 },
-  { id: 'exam', label: 'Exam Prep', name: 'Exam Strategy & Tips', count: 30 },
+  { id: 'domain1', label: 'D1', name: 'Threats, Vulnerabilities & Attacks', count: 78 },
+  { id: 'domain2', label: 'D2', name: 'Security Architecture', count: 32 },
+  { id: 'domain3', label: 'D3', name: 'Security Implementation', count: 40 },
+  { id: 'domain4', label: 'D4', name: 'Security Operations', count: 31 },
+  { id: 'domain5', label: 'D5', name: 'Security Program Management & Oversight', count: 42 },
+  { id: 'exam', label: 'Exam Prep', name: 'Exam Strategy & Tips', count: 7 },
 ] as const;
 
 export const SECPLUS_FLASHCARD_CATEGORIES = ["comparison", "concept", "definition", "question", "tip"] as const;

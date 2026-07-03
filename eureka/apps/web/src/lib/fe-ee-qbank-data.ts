@@ -1,6 +1,6 @@
 /**
  * FE Electrical & Computer Engineering — Question Bank
- * 545 questions across 18 topics, with difficulty levels 1-3.
+ * 647 questions across 18 topics, with difficulty levels 1-3.
  * Extracted from standalone FE-Electrical-Computer-Course.jsx.
  */
 

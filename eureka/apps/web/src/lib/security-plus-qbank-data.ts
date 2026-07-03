@@ -1,6 +1,6 @@
 /**
  * CompTIA Security+ (SY0-701) — Question Bank
- * 400 questions across 5 domains.
+ * 452 questions across 5 domains.
  * AI-generated. Requires SME review.
  */
 

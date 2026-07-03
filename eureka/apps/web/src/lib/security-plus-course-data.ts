@@ -1,6 +1,6 @@
 /**
  * Complete CompTIA Security+ (SY0-701) course content.
- * 22 topics across 5 domains, with detailed sections, exam tips, and quiz questions.
+ * 29 topics across 5 domains, with detailed sections, exam tips, and quiz questions.
  */
 
 import type { QuizQuestion } from '@/components/test-prep/cissp/LessonQuiz';

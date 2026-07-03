@@ -2030,7 +2030,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 400, FE_EE: 647, FE_ME: 555,
-    PATENT_BAR: 536, SECURITY_PLUS: 400, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
+    PATENT_BAR: 536, SECURITY_PLUS: 452, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
 
@@ -2843,7 +2843,10 @@ const FE_EE_TOPIC_NAMES = [
   'Software Development',
 ];
 
-const FE_EE_TOPIC_DISTRIBUTION = [8, 4, 4, 4, 4, 4, 11, 6, 6, 7, 7, 6, 7, 6, 6, 7, 5, 4];
+// Sums to 110 (the real NCEES FE Electrical & Computer length). Math (topic 0)
+// and Power (topic 10) were below the NCEES minimums (11 and 8); bumped to their
+// floors, which also brings the total from 106 up to the correct 110.
+const FE_EE_TOPIC_DISTRIBUTION = [11, 4, 4, 4, 4, 4, 11, 6, 6, 7, 8, 6, 7, 6, 6, 7, 5, 4];
 const FE_EE_EXAM_TIME = 19200; // 5 hours 20 minutes
 
 function FEEEExamTab() {
