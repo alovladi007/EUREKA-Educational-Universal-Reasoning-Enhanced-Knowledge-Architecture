@@ -41,6 +41,7 @@ export default function TeacherDashboard() {
     avg_completion: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     loadDashboardData();
@@ -49,6 +50,7 @@ export default function TeacherDashboard() {
   const loadDashboardData = async () => {
     try {
       setLoading(true);
+      setError(null);
 
       // Load courses taught by this teacher
       const coursesResponse = await apiClient.get('/courses', {
@@ -81,6 +83,10 @@ export default function TeacherDashboard() {
       });
     } catch (error) {
       console.error('Failed to load dashboard data:', error);
+      // Surface the failure instead of silently showing "0 courses / 0 students"
+      // (which reads as "you have no courses" rather than "the load failed").
+      setError('Could not load your courses right now — the API may be unavailable. Please retry.');
+      setCourses([]);
     } finally {
       setLoading(false);
     }
@@ -109,6 +115,22 @@ export default function TeacherDashboard() {
               Create Course
             </button>
           </div>
+
+          {/* Load error — don't let a failed fetch masquerade as "0 courses" */}
+          {error && (
+            <div className="flex items-center justify-between gap-3 rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-800">
+              <span className="flex items-center gap-2">
+                <AlertCircle className="h-5 w-5 shrink-0" />
+                {error}
+              </span>
+              <button
+                onClick={loadDashboardData}
+                className="shrink-0 rounded-md border border-amber-400 px-3 py-1 font-medium hover:bg-amber-100"
+              >
+                Retry
+              </button>
+            </div>
+          )}
 
           {/* Stats Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
