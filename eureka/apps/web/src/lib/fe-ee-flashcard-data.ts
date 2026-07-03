@@ -20,7 +20,7 @@ export interface FEEEFlashcard {
 export const FEEE_FLASHCARD_DOMAINS = [
   { id: 'topic0', label: 'T0', name: 'Mathematics', count: 61 },
   { id: 'topic1', label: 'T1', name: 'Probability & Statistics', count: 42 },
-  { id: 'topic2', label: 'T2', name: 'Ethics & Professional Practice', count: 16 },
+  { id: 'topic2', label: 'T2', name: 'Ethics & Professional Practice', count: 30 },
   { id: 'topic3', label: 'T3', name: 'Engineering Economics', count: 43 },
   { id: 'topic4', label: 'T4', name: 'Electrical Materials', count: 29 },
   { id: 'topic5', label: 'T5', name: 'Engineering Sciences', count: 33 },
@@ -444,6 +444,20 @@ export const FEEE_FLASHCARDS: FEEEFlashcard[] = [
   // flashcards are generated programmatically from the question
   // bank and formula data at build time. See the build helper.
   // ═══════════════════════════════════════════════════════════════
+  { id: 755, front: "What is the first and paramount fundamental canon of the NSPE Code of Ethics?", back: "Hold paramount the safety, health, and welfare of the public — this canon overrides all other obligations, including duties to clients and employers.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "definition", topics: ["Codes of Ethics"] },
+  { id: 756, front: "An employer directs an engineer to approve a design the engineer believes is unsafe. What must the engineer do?", back: "Refuse to approve it and, if necessary, notify the client, employer, or appropriate authority — public safety is paramount and takes precedence over obligations to an employer.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Public Welfare"] },
+  { id: 757, front: "May a licensed civil engineer stamp electrical engineering drawings they did not prepare or supervise?", back: "No — engineers must perform services only in their areas of competence and may seal only work prepared by them or under their responsible charge.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Competence"] },
+  { id: 758, front: "What does it mean to sign and seal (stamp) an engineering document?", back: "It certifies the engineer prepared the work or supervised it under responsible charge and takes professional responsibility for it. Sealing work you did not supervise (plan stamping) is unethical and illegal.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "definition", topics: ["Licensure"] },
+  { id: 759, front: "May an engineer disclose a former client's confidential information to a competitor?", back: "No — engineers must not disclose confidential facts, data, or business affairs of a client or employer without consent, except as authorized or required by law.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Confidentiality"] },
+  { id: 760, front: "An engineer is offered paid consulting by a supplier whose products they specify at work. What is required?", back: "Disclose the conflict to all affected parties and avoid it if objectivity would be compromised — undisclosed conflicts of interest violate the duty of faithful agency to the employer or client.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Conflict of Interest"] },
+  { id: 761, front: "Can an engineer accept valuable gifts from contractors bidding on their project?", back: "No — engineers must not solicit or accept gifts or other valuable consideration that could influence or appear to influence professional judgment.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "tip", topics: ["Professional Conduct"] },
+  { id: 762, front: "What does the NSPE code require regarding an engineer's public statements?", back: "They must be objective and truthful, issued only when founded on adequate knowledge, and must disclose any interest in the matter. Engineers must not issue misleading statements.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Professional Conduct"] },
+  { id: 763, front: "How should an engineer handle credit for engineering work performed by others?", back: "Give proper credit and not take credit for others' work — engineers must name the person(s) responsible for designs and must not misappropriate others' contributions.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Professional Conduct"] },
+  { id: 764, front: "How does the NSPE code address sustainable development?", back: "Engineers are encouraged to adhere to principles of sustainable development to protect the environment for future generations, as part of holding public welfare paramount.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Sustainability"] },
+  { id: 765, front: "Who typically takes the FE (Fundamentals of Engineering) exam?", back: "Recent graduates or students near completion of an ABET-accredited engineering program. Passing the FE is the first step toward PE licensure and earns the Engineer Intern (EI/EIT) designation.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "definition", topics: ["Licensure"] },
+  { id: 766, front: "What is the difference between an Engineer Intern (EIT) and a Professional Engineer (PE)?", back: "An EIT has passed the FE exam but lacks the required experience and PE exam. A PE has completed the experience requirement (typically 4 years) and passed the PE exam, and may legally seal work and offer services to the public.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "comparison", topics: ["Licensure"] },
+  { id: 767, front: "How can a PE licensed in one state become licensed to practice in another?", back: "Through comity (reciprocity) — the engineer applies to the new state's licensing board, which may grant a license based on the existing credential when requirements are equivalent.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Licensure"] },
+  { id: 768, front: "Why must engineers pursue continuing professional development?", back: "To maintain competence as technology and codes evolve. Many state boards require continuing education (PDHs) for license renewal, and the code requires engineers to keep skills current and to mentor those under their supervision.", domain: "topic2", domainName: "Ethics & Professional Practice", category: "concept", topics: ["Competence"] },
 ];
 
 // Runtime generator that builds flashcards from the qbank and formula imports
@@ -461,7 +475,7 @@ function difficultyToCategory(d: number): string {
 }
 
 // Build remaining flashcards for topics 8-17
-let nextId = FEEE_FLASHCARDS.length + 1;
+let nextId = FEEE_FLASHCARDS.reduce((m, c) => Math.max(m, c.id), 0) + 1; // above all static ids (ids are non-contiguous)
 
 // Add question-based flashcards for topics 8-17
 for (const q of FE_EE_QUESTIONS) {
