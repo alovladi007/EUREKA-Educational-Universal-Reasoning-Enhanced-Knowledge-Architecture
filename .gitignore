@@ -80,3 +80,7 @@ eureka/apps/*/package-lock.json
 * 2
 * 3.*
 * 3
+
+# Celery beat runtime state
+celerybeat-schedule
+celerybeat.pid
