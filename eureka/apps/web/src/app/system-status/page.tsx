@@ -11,155 +11,80 @@ import {
   XCircle,
   Clock,
   Database,
-  Cpu,
   ArrowLeft,
   ExternalLink,
 } from 'lucide-react';
 
 interface Service {
   name: string;
-  url: string;
+  url: string; // host-facing URL (for the open-in-tab link)
   port: number;
   description: string;
   status: 'online' | 'offline' | 'checking';
-  category: 'core' | 'tier' | 'ai' | 'data';
+  category: 'core' | 'service';
 }
 
+// The real, current architecture: api-core + web, plus the 5 backend services
+// the FE calls. (The old list referenced long-orphaned tier/ai/data services on
+// dead ports and always showed the platform "down".) Health is probed
+// server-side by /api/system-status using in-network hostnames; this list is
+// name-matched to those results, and the URLs/ports here are host-facing.
 const services: Service[] = [
-  // Core Services
   {
     name: 'API Core',
     url: 'http://localhost:8000',
     port: 8000,
-    description: 'Main API Gateway & Authentication',
+    description: 'Main API + auth + all dashboard domains (FastAPI)',
     status: 'checking',
     category: 'core',
   },
   {
     name: 'Web Portal',
-    url: 'http://localhost:4500',
-    port: 4500,
-    description: 'Next.js Frontend Application',
+    url: 'http://localhost:4040',
+    port: 4040,
+    description: 'Next.js frontend application',
     status: 'checking',
     category: 'core',
   },
-
-  // Tier Services
   {
-    name: 'High School Tier API',
-    url: 'http://localhost:8001',
-    port: 8001,
-    description: 'HS-specific features: Badges, Game Points, Leaderboards',
+    name: 'Test Prep',
+    url: 'http://localhost:8200',
+    port: 8200,
+    description: 'QBank, mock exams, exam analytics (FastAPI)',
     status: 'checking',
-    category: 'tier',
+    category: 'service',
   },
   {
-    name: 'Undergraduate Tier API',
-    url: 'http://localhost:8010',
-    port: 8010,
-    description: 'UG-specific features: Labs, Projects, Peer Review',
+    name: 'Notebook',
+    url: 'http://localhost:8120',
+    port: 8120,
+    description: 'Projects, tasks, files (Node/Express)',
     status: 'checking',
-    category: 'tier',
+    category: 'service',
   },
   {
-    name: 'Graduate Tier API',
-    url: 'http://localhost:8011',
-    port: 8011,
-    description: 'Grad-specific features: Research, Thesis, Publications',
+    name: 'Medical School',
+    url: 'http://localhost:8030',
+    port: 8030,
+    description: 'Clinical cases, USMLE, OSCE (NestJS)',
     status: 'checking',
-    category: 'tier',
+    category: 'service',
   },
   {
-    name: 'Medical School API',
-    url: 'http://localhost:8012',
-    port: 8012,
-    description: 'Medical education: Clinical cases, USMLE prep',
+    name: 'File Storage',
+    url: 'http://localhost:8300',
+    port: 8300,
+    description: 'Uploads/downloads backed by MinIO (FastAPI)',
     status: 'checking',
-    category: 'tier',
+    category: 'service',
   },
   {
-    name: 'Law School API',
-    url: 'http://localhost:8013',
-    port: 8013,
-    description: 'Legal education: Case analysis, Bar exam prep',
+    name: 'Analytics',
+    url: 'http://localhost:8005',
+    port: 8005,
+    description: 'Learning analytics + event ingestion (FastAPI)',
     status: 'checking',
-    category: 'tier',
-  },
-  {
-    name: 'MBA API',
-    url: 'http://localhost:8014',
-    port: 8014,
-    description: 'Business education: Case studies, Simulations',
-    status: 'checking',
-    category: 'tier',
-  },
-  {
-    name: 'Engineering API',
-    url: 'http://localhost:8015',
-    port: 8015,
-    description: 'Engineering education: FE/PE exam prep',
-    status: 'checking',
-    category: 'tier',
-  },
-
-  // AI Services (Session 6)
-  {
-    name: 'AI Tutor (LLM)',
-    url: 'http://localhost:8050',
-    port: 8050,
-    description: 'AI tutoring with RAG, Socratic method (Session 6 Part I)',
-    status: 'checking',
-    category: 'ai',
-  },
-  {
-    name: 'Assessment Engine',
-    url: 'http://localhost:8051',
-    port: 8051,
-    description: 'Auto-grading, AI essay grading, rubrics (Session 6 Part I)',
-    status: 'checking',
-    category: 'ai',
-  },
-  {
-    name: 'Adaptive Learning',
-    url: 'http://localhost:8052',
-    port: 8052,
-    description: 'Knowledge graphs, personalized learning paths (Session 6 Part II)',
-    status: 'checking',
-    category: 'ai',
-  },
-  {
-    name: 'Analytics Dashboard',
-    url: 'http://localhost:8053',
-    port: 8053,
-    description: 'Student analytics, at-risk identification (Session 6 Part II)',
-    status: 'checking',
-    category: 'ai',
-  },
-
-  // Data Services
-  {
-    name: 'Content Service',
-    url: 'http://localhost:8201',
-    port: 8201,
-    description: 'Course content management',
-    status: 'checking',
-    category: 'data',
-  },
-  {
-    name: 'Analytics Service',
-    url: 'http://localhost:8202',
-    port: 8202,
-    description: 'Learning analytics & insights',
-    status: 'checking',
-    category: 'data',
-  },
-  {
-    name: 'Ingestion Service',
-    url: 'http://localhost:8203',
-    port: 8203,
-    description: 'External content ingestion',
-    status: 'checking',
-    category: 'data',
+    category: 'service',
   },
 ];
 
@@ -171,87 +96,78 @@ export default function SystemStatusPage() {
   useEffect(() => {
     setMounted(true);
     checkAllServices();
-    const interval = setInterval(() => {
-      checkAllServices();
-    }, 30000); // Check every 30 seconds
-
+    const interval = setInterval(checkAllServices, 30000); // every 30s
     return () => clearInterval(interval);
   }, []);
 
   const checkAllServices = async () => {
     try {
-      // Use server-side API to avoid CORS issues
       const response = await fetch('/api/system-status');
       const data = await response.json();
-
-      // Merge the status results with our service definitions
-      const updatedServices = services.map((service) => {
-        const statusResult = data.services.find((s: any) => s.name === service.name);
-        return {
-          ...service,
-          status: statusResult?.status || 'offline',
-        } as Service;
-      });
-
-      setServiceStatuses(updatedServices);
+      setServiceStatuses(
+        services.map((service) => {
+          const result = data.services.find((s: { name: string }) => s.name === service.name);
+          return { ...service, status: result?.status || 'offline' } as Service;
+        }),
+      );
       setLastCheck(new Date());
     } catch (error) {
       console.error('Failed to check service status:', error);
-      // Mark all as offline if check fails
-      setServiceStatuses(services.map(s => ({ ...s, status: 'offline' as const })));
+      setServiceStatuses(services.map((s) => ({ ...s, status: 'offline' as const })));
     }
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case 'online':
-        return 'bg-green-500';
-      case 'offline':
-        return 'bg-red-500';
-      default:
-        return 'bg-yellow-500';
-    }
-  };
+  const getStatusColor = (status: string) =>
+    status === 'online' ? 'bg-green-500' : status === 'offline' ? 'bg-red-500' : 'bg-yellow-500';
 
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case 'online':
-        return <CheckCircle className="h-5 w-5 text-green-500" />;
-      case 'offline':
-        return <XCircle className="h-5 w-5 text-red-500" />;
-      default:
-        return <Clock className="h-5 w-5 text-yellow-500 animate-spin" />;
-    }
-  };
-
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'core':
-        return <Server className="h-5 w-5" />;
-      case 'tier':
-        return <Database className="h-5 w-5" />;
-      case 'ai':
-        return <Cpu className="h-5 w-5" />;
-      case 'data':
-        return <Database className="h-5 w-5" />;
-      default:
-        return <Server className="h-5 w-5" />;
-    }
-  };
+  const getStatusIcon = (status: string) =>
+    status === 'online' ? (
+      <CheckCircle className="h-5 w-5 text-green-500" />
+    ) : status === 'offline' ? (
+      <XCircle className="h-5 w-5 text-red-500" />
+    ) : (
+      <Clock className="h-5 w-5 text-yellow-500 animate-spin" />
+    );
 
   const onlineCount = serviceStatuses.filter((s) => s.status === 'online').length;
   const offlineCount = serviceStatuses.filter((s) => s.status === 'offline').length;
 
-  const servicesByCategory = {
+  const byCategory = {
     core: serviceStatuses.filter((s) => s.category === 'core'),
-    tier: serviceStatuses.filter((s) => s.category === 'tier'),
-    ai: serviceStatuses.filter((s) => s.category === 'ai'),
-    data: serviceStatuses.filter((s) => s.category === 'data'),
+    service: serviceStatuses.filter((s) => s.category === 'service'),
   };
+
+  const renderRow = (service: Service) => (
+    <div
+      key={service.name}
+      className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
+    >
+      <div className="flex items-center gap-4 flex-1">
+        <div className={`w-2 h-2 rounded-full ${getStatusColor(service.status)}`} />
+        <div className="flex-1">
+          <h4 className="font-semibold text-gray-900">{service.name}</h4>
+          <p className="text-sm text-gray-500">{service.description}</p>
+          <p className="text-xs text-gray-400 mt-1">
+            {service.url} • Port {service.port}
+          </p>
+        </div>
+      </div>
+      <div className="flex items-center gap-3">
+        {getStatusIcon(service.status)}
+        <a
+          href={service.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-indigo-600 hover:text-indigo-700"
+        >
+          <ExternalLink className="h-4 w-4" />
+        </a>
+      </div>
+    </div>
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-      {/* Header */}
       <nav className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
@@ -277,247 +193,92 @@ export default function SystemStatusPage() {
       </nav>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Overview Stats */}
+        {/* Overview */}
         <div className="grid md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Total Services
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Total Services</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">{serviceStatuses.length}</div>
             </CardContent>
           </Card>
-
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Online
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Online</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-green-600">{onlineCount}</div>
             </CardContent>
           </Card>
-
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Offline
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Offline</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold text-red-600">{offlineCount}</div>
             </CardContent>
           </Card>
-
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-sm font-medium text-gray-600">
-                Last Check
-              </CardTitle>
+              <CardTitle className="text-sm font-medium text-gray-600">Last Check</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="text-sm font-medium">
                 {mounted ? lastCheck.toLocaleTimeString() : '--:--:--'}
               </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={checkAllServices}
-                className="mt-2 w-full"
-              >
+              <Button variant="ghost" size="sm" onClick={checkAllServices} className="mt-2 w-full">
                 Refresh Now
               </Button>
             </CardContent>
           </Card>
         </div>
 
-        {/* Core Services */}
+        {/* Core */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Server className="h-5 w-5" />
-              Core Services
+              Core
             </CardTitle>
-            <CardDescription>Essential platform infrastructure</CardDescription>
+            <CardDescription>API gateway + web frontend</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              {servicesByCategory.core.map((service) => (
-                <div
-                  key={service.name}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(service.status)}`} />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{service.name}</h4>
-                      <p className="text-sm text-gray-500">{service.description}</p>
-                      <p className="text-xs text-gray-400 mt-1">
-                        {service.url} • Port {service.port}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {getStatusIcon(service.status)}
-                    <a
-                      href={service.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-700"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div className="space-y-3">{byCategory.core.map(renderRow)}</div>
           </CardContent>
         </Card>
 
-        {/* Tier Services */}
+        {/* Backend services */}
         <Card className="mb-6">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Database className="h-5 w-5" />
-              Educational Tier Services
+              Backend Services
             </CardTitle>
-            <CardDescription>Tier-specific APIs for each educational level</CardDescription>
+            <CardDescription>The specialized services the dashboard calls</CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid md:grid-cols-2 gap-3">
-              {servicesByCategory.tier.map((service) => (
-                <div
-                  key={service.name}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(service.status)}`} />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{service.name}</h4>
-                      <p className="text-sm text-gray-500">{service.description}</p>
-                      <p className="text-xs text-gray-400 mt-1">Port {service.port}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {getStatusIcon(service.status)}
-                    <a
-                      href={`${service.url}/docs`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-700"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
+            <div className="grid md:grid-cols-2 gap-3">{byCategory.service.map(renderRow)}</div>
           </CardContent>
         </Card>
 
-        {/* AI Services */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Cpu className="h-5 w-5" />
-              AI & ML Services
-            </CardTitle>
-            <CardDescription>Intelligent tutoring and adaptive learning</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {servicesByCategory.ai.map((service) => (
-                <div
-                  key={service.name}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(service.status)}`} />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{service.name}</h4>
-                      <p className="text-sm text-gray-500">{service.description}</p>
-                      <p className="text-xs text-gray-400 mt-1">Port {service.port}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {getStatusIcon(service.status)}
-                    <a
-                      href={`${service.url}/docs`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-700"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Data Services */}
-        <Card className="mb-6">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Database className="h-5 w-5" />
-              Data Services
-            </CardTitle>
-            <CardDescription>Content management and analytics</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {servicesByCategory.data.map((service) => (
-                <div
-                  key={service.name}
-                  className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-4 flex-1">
-                    <div className={`w-2 h-2 rounded-full ${getStatusColor(service.status)}`} />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-gray-900">{service.name}</h4>
-                      <p className="text-sm text-gray-500">{service.description}</p>
-                      <p className="text-xs text-gray-400 mt-1">Port {service.port}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {getStatusIcon(service.status)}
-                    <a
-                      href={`${service.url}/docs`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-indigo-600 hover:text-indigo-700"
-                    >
-                      <ExternalLink className="h-4 w-4" />
-                    </a>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Info Box */}
+        {/* Info */}
         <Card className="bg-blue-50 border-blue-200">
           <CardHeader>
-            <CardTitle className="text-blue-900">Getting Started</CardTitle>
+            <CardTitle className="text-blue-900">About this page</CardTitle>
           </CardHeader>
           <CardContent className="text-sm text-blue-800">
             <p className="mb-2">
-              <strong>Note:</strong> Most services are not yet running. This is expected as EUREKA is being built incrementally across sessions.
+              Status is probed every 30s server-side (via{' '}
+              <code className="font-mono text-xs">/api/system-status</code>) using in-network
+              hostnames, so there are no CORS issues. All 7 should read{' '}
+              <strong>online</strong> when the stack is up
+              (<code className="font-mono text-xs">docker compose up -d</code>).
             </p>
-            <p className="mb-2">
-              <strong>Currently Active (Session 5):</strong>
-            </p>
-            <ul className="list-disc list-inside space-y-1 ml-4">
-              <li>Web Portal (Port 4500) - ✓ Running</li>
-              <li>High School Tier API (Port 8001) - Backend ready, needs startup</li>
-            </ul>
-            <p className="mt-4">
-              <strong>Coming in Future Sessions:</strong> AI Tutor, Assessment Engine, Adaptive Learning, and other tier-specific APIs.
+            <p>
+              Most dashboard domains (tutor, research, pedagogy, XR, community, ethics, etc.) are
+              served by <strong>API Core</strong> — the earlier standalone tier/AI/data
+              microservices were consolidated into it.
             </p>
           </CardContent>
         </Card>

@@ -33,7 +33,10 @@ export const API_ENDPOINTS = {
   PRO_ENG: process.env.NEXT_PUBLIC_PRO_ENG_URL || 'http://localhost:8023',
 
   // Phase 2 Advanced Services
-  MEDICAL_SCHOOL: process.env.NEXT_PUBLIC_MEDICAL_SCHOOL_URL || 'http://localhost:8020',
+  // medical-school runs on :8030 (NestJS). The old default :8020 was a dead
+  // port, so the medical subpages (cases/OSCE/AI-tutor/content-studio/qbank
+  // analytics) hit nothing whenever NEXT_PUBLIC_MEDICAL_SCHOOL_URL wasn't set.
+  MEDICAL_SCHOOL: process.env.NEXT_PUBLIC_MEDICAL_SCHOOL_URL || 'http://localhost:8030',
   PEDAGOGY: process.env.NEXT_PUBLIC_PEDAGOGY_URL || 'http://localhost:8040',
   MARKETPLACE: process.env.NEXT_PUBLIC_MARKETPLACE_URL || 'http://localhost:8050',
   AI_RESEARCH: process.env.NEXT_PUBLIC_AI_RESEARCH_URL || 'http://localhost:8060',
