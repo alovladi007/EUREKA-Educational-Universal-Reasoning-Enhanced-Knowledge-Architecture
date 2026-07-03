@@ -7,6 +7,7 @@ services:
   # ==========================================
   
   db:
+    restart: unless-stopped
     image: pgvector/pgvector:pg16
     container_name: eureka-db
     environment:
@@ -26,6 +27,7 @@ services:
       retries: 5
 
   redis:
+    restart: unless-stopped
     image: redis:7-alpine
     container_name: eureka-redis
     ports:
@@ -39,6 +41,7 @@ services:
       retries: 5
 
   minio:
+    restart: unless-stopped
     image: minio/minio:latest
     container_name: eureka-minio
     command: server /data --console-address ":9001"
@@ -57,6 +60,7 @@ services:
       retries: 3
 
   opensearch:
+    restart: unless-stopped
     profiles:
       - full
     image: opensearchproject/opensearch:2
@@ -76,6 +80,7 @@ services:
       retries: 5
 
   kafka:
+    restart: unless-stopped
     profiles:
       - full
     image: docker.redpanda.com/redpandadata/redpanda:latest
@@ -103,6 +108,7 @@ services:
   # ==========================================
 
   jaeger:
+    restart: unless-stopped
     profiles:
       - dev-obs
       - full
@@ -125,6 +131,7 @@ services:
   # ==========================================
 
   api-core:
+    restart: unless-stopped
     build:
       context: ./services/api-core
       dockerfile: Dockerfile
@@ -183,6 +190,7 @@ services:
   # upload silently failed. Added here with a Dockerfile + requirements
   # created alongside. Default profile because the FE depends on it.
   file-storage:
+    restart: unless-stopped
     build:
       context: ./services/file-storage
       dockerfile: Dockerfile
@@ -205,6 +213,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 
   tutor-llm:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -228,6 +237,7 @@ services:
       - ./services/tutor-llm:/app
 
   assess:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -250,6 +260,7 @@ services:
       - ./services/assess:/app
 
   adaptive:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -269,6 +280,7 @@ services:
       - ./services/adaptive:/app
 
   content:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -290,6 +302,7 @@ services:
       - ./services/content:/app
 
   analytics:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -318,6 +331,7 @@ services:
   # ==========================================
 
   tier-hs:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -339,6 +353,7 @@ services:
       - ./services/tier-hs:/app
 
   tier-ug:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -360,6 +375,7 @@ services:
       - ./services/tier-ug:/app
 
   tier-grad:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -389,6 +405,7 @@ services:
   # lives in the medical-school service defined below.
 
   pro-law:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -411,6 +428,7 @@ services:
       - ./services/pro-law:/app
 
   pro-mba:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -432,6 +450,7 @@ services:
       - ./services/pro-mba:/app
 
   pro-eng:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -457,6 +476,7 @@ services:
   # ==========================================
 
   web:
+    restart: unless-stopped
     build:
       context: ./apps/web
       dockerfile: Dockerfile.dev
@@ -490,6 +510,7 @@ services:
       start_period: 120s
 
   admin:
+    restart: unless-stopped
     build:
       context: ./apps/admin
       dockerfile: Dockerfile.dev
@@ -508,6 +529,7 @@ services:
       - /app/.next
 
   medical-school:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -546,6 +568,7 @@ services:
   # ==========================================
 
   pedagogy:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -578,6 +601,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8040 --reload
 
   marketplace:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -611,6 +635,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8050 --reload
 
   ai-research:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -640,6 +665,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8060 --reload
 
   xr-labs:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -663,6 +689,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8070 --reload
 
   ethics-security:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -685,6 +712,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8080 --reload
 
   data-fabric:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -711,6 +739,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8090 --reload
 
   institutions:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -739,6 +768,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8100 --reload
 
   futures:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -761,6 +791,7 @@ services:
     command: uvicorn main:app --host 0.0.0.0 --port 8110 --reload
 
   notebook:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -798,6 +829,7 @@ services:
   # ==========================================
 
   test-prep:
+    restart: unless-stopped
     profiles:
       - full
     build:
@@ -912,6 +944,7 @@ services:
 
   # Supporting infrastructure for Phase-2
   neo4j:
+    restart: unless-stopped
     profiles:
       - full
     image: neo4j:5
@@ -926,6 +959,7 @@ services:
       - neo4j_data:/data
 
   qdrant:
+    restart: unless-stopped
     profiles:
       - full
     image: qdrant/qdrant:latest
