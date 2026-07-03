@@ -211,6 +211,12 @@ services:
     volumes:
       - ./services/file-storage:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health',timeout=5).status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 5
 
   tutor-llm:
     restart: unless-stopped
@@ -303,8 +309,6 @@ services:
 
   analytics:
     restart: unless-stopped
-    profiles:
-      - full
     build:
       context: ./services/analytics
       dockerfile: Dockerfile
@@ -321,7 +325,6 @@ services:
       - "8005:8000"
     depends_on:
       - db
-      - kafka
       - redis
     volumes:
       - ./services/analytics:/app
@@ -330,6 +333,12 @@ services:
   # Academic Tier Services
   # ==========================================
 
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8000/health',timeout=5).status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 5
   tier-hs:
     restart: unless-stopped
     profiles:
@@ -530,8 +539,6 @@ services:
 
   medical-school:
     restart: unless-stopped
-    profiles:
-      - full
     build:
       context: ./services/medical-school
       dockerfile: Dockerfile.nestjs
@@ -550,7 +557,7 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ANTHROPIC_MODEL: claude-sonnet-4-20250514
       ANTHROPIC_MAX_TOKENS: 4096
-      CORS_ORIGIN: http://localhost:3000,http://localhost:4500
+      CORS_ORIGIN: http://localhost:3000,http://localhost:4040,http://localhost:4500
     ports:
       - "8030:8030"
     depends_on:
@@ -562,6 +569,12 @@ services:
       - ./services/medical-school:/app
       - /app/node_modules
     command: npm run start:dev
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8030/api/v1/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 5
 
   # ==========================================
   # Phase-2 Advanced Services
@@ -792,8 +805,6 @@ services:
 
   notebook:
     restart: unless-stopped
-    profiles:
-      - full
     build:
       context: ../services/notebook
       dockerfile: Dockerfile
@@ -823,6 +834,12 @@ services:
       - ../services/notebook:/app
       - notebook_uploads:/app/uploads
     command: sh -c "npm install && node server.js"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:8120/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 60s
+      retries: 5
 
   # ==========================================
   # Test Prep Service (Adaptive Learning Platform)
@@ -830,8 +847,6 @@ services:
 
   test-prep:
     restart: unless-stopped
-    profiles:
-      - full
     build:
       context: ../services/test-prep
       dockerfile: Dockerfile
@@ -866,6 +881,12 @@ services:
     volumes:
       - ../services/test-prep:/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8200 --reload
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://localhost:8200/health',timeout=5).status==200 else 1)"]
+      interval: 30s
+      timeout: 10s
+      start_period: 40s
+      retries: 5
 
   # ─────────────────────────────────────────────────────────────────────
   # Celery worker for test-prep background tasks
