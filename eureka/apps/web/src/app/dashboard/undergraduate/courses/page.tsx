@@ -140,7 +140,7 @@ export default function UndergradCoursesPage() {
                   <div className="flex items-start justify-between gap-2">
                     <div className="min-w-0">
                       <CardTitle className="text-base">{c.title}</CardTitle>
-                      <CardDescription className="flex flex-wrap items-center gap-2 mt-1">
+                      <div className="flex flex-wrap items-center gap-2 mt-1 text-muted-foreground text-sm">
                         {c.code && (
                           <Badge variant="outline" className="text-xs">
                             {c.code}
@@ -157,7 +157,7 @@ export default function UndergradCoursesPage() {
                         {typeof c.credits === "number" && (
                           <span className="text-xs">· {c.credits} cr</span>
                         )}
-                      </CardDescription>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>

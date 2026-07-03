@@ -155,7 +155,7 @@ export default function UndergraduateOverview() {
                   <Layers className="h-5 w-5 text-primary" />
                   Active enrolment
                 </CardTitle>
-                <CardDescription className="mt-1 flex flex-wrap items-center gap-2">
+                <div className="mt-1 flex flex-wrap items-center gap-2 text-muted-foreground text-sm">
                   {framework && (
                     <Badge variant="outline" className="uppercase">
                       {framework}
@@ -166,7 +166,7 @@ export default function UndergraduateOverview() {
                   )}
                   <span className="capitalize">{enrolment.status}</span>
                   {target && <span>· target {target}</span>}
-                </CardDescription>
+                </div>
               </div>
               <Link href="/dashboard/undergraduate/enrollment">
                 <Button variant="outline" size="sm">

@@ -7,7 +7,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -102,11 +102,11 @@ export default function MyEnrollmentsPage() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <CardTitle className="text-base">{e.program_name}</CardTitle>
-                    <CardDescription className="flex flex-wrap items-center gap-2 mt-1">
+                    <div className="flex flex-wrap items-center gap-2 mt-1 text-muted-foreground text-sm">
                       <Badge variant="outline">{e.degree_kind}</Badge>
                       <span className="capitalize">{e.status}</span>
                       {e.expected_graduation && <span>· expected {e.expected_graduation}</span>}
-                    </CardDescription>
+                    </div>
                   </div>
                   <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
                 </div>

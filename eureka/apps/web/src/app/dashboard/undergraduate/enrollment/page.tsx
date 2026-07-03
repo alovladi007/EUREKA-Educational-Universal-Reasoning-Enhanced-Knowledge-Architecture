@@ -169,7 +169,7 @@ function EnrolmentCard({
                 </Badge>
               )}
             </CardTitle>
-            <CardDescription className="mt-1 flex flex-wrap items-center gap-2">
+            <div className="mt-1 flex flex-wrap items-center gap-2 text-muted-foreground text-sm">
               <Badge variant="secondary" className="capitalize">
                 {e.status}
               </Badge>
@@ -178,7 +178,7 @@ function EnrolmentCard({
                 <span className="text-xs">· {expected} cr expected</span>
               )}
               {target && <span className="text-xs">· target {target}</span>}
-            </CardDescription>
+            </div>
           </div>
         </div>
       </CardHeader>

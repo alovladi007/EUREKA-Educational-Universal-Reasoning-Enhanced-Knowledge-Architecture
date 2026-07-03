@@ -11,7 +11,7 @@
  */
 
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -212,7 +212,7 @@ export default function CommunityPage() {
                   {detail.thread.locked && <Lock className="h-4 w-4 text-muted-foreground" />}
                   {detail.thread.title}
                 </CardTitle>
-                <CardDescription className="flex flex-wrap items-center gap-2 mt-2">
+                <div className="flex flex-wrap items-center gap-2 mt-2 text-muted-foreground text-sm">
                   {detail.thread.tier && <Badge variant="outline">{detail.thread.tier}</Badge>}
                   {detail.thread.skill_code && (
                     <span className="font-mono text-[11px]">{detail.thread.skill_code}</span>
@@ -221,7 +221,7 @@ export default function CommunityPage() {
                     <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
                   ))}
                   <span className="text-muted-foreground">· {formatDate(detail.thread.created_at)}</span>
-                </CardDescription>
+                </div>
               </div>
               <Button variant="outline" size="sm" onClick={() => upvoteThread(detail.thread.id)} className="shrink-0">
                 <ThumbsUp className="h-3.5 w-3.5 mr-1" />

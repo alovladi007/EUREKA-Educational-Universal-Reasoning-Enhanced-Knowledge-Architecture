@@ -270,11 +270,11 @@ export default function ResearchWorkspacesListPage() {
                   </CardTitle>
                   <ArrowRight className="h-4 w-4 text-muted-foreground shrink-0 mt-1" />
                 </div>
-                <CardDescription className="flex flex-wrap items-center gap-1 text-xs mt-1">
+                <div className="flex flex-wrap items-center gap-1 text-xs mt-1 text-muted-foreground">
                   <Badge variant="outline">{w.kind.replace(/_/g, " ")}</Badge>
                   <Badge variant={statusTone(w.status)}>{w.status}</Badge>
                   {w.skill_code && <span className="font-mono">{w.skill_code}</span>}
-                </CardDescription>
+                </div>
               </CardHeader>
               <CardContent className="space-y-2 text-xs">
                 {w.description_md && (
