@@ -15,16 +15,17 @@ export interface SecurityPlusQuestion {
   explanation: string;
 }
 
+// SY0-701 domains (topicId 0–4). Weights: D1 12% / D2 22% / D3 18% / D4 28% / D5 20%.
 const TOPIC_ID_MAP: Record<number, string> = {
-  0: 'threats_attacks',
-  1: 'architecture',
-  2: 'implementation',
+  0: 'general_concepts',
+  1: 'threats_vuln',
+  2: 'architecture',
   3: 'operations',
-  4: 'governance',
+  4: 'program_mgmt',
 };
 
 export function getSecPlusTopicSectionId(numericId: number): string {
-  return TOPIC_ID_MAP[numericId] || 'threats_attacks';
+  return TOPIC_ID_MAP[numericId] || 'general_concepts';
 }
 
 export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
@@ -35,7 +36,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Malware (15 questions) ──
   {
     id: 'sp_t0_001',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 1,
     question: 'Which type of malware replicates itself across a network without requiring user interaction?',
@@ -45,7 +46,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_002',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 1,
     question: 'What type of malware disguises itself as legitimate software to trick users into installing it?',
@@ -55,7 +56,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_003',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 2,
     question: 'An organization discovers that all file shares have been encrypted and a Bitcoin payment is demanded. What type of attack is this?',
@@ -65,7 +66,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_004',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 2,
     question: 'Which malware type operates entirely in memory and leaves no files on disk, making it difficult for traditional antivirus to detect?',
@@ -75,7 +76,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_005',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 3,
     question: 'A security analyst discovers that a kernel-level driver has been modified to hide running processes from the task manager. What type of malware is MOST likely responsible?',
@@ -85,7 +86,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_006',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 1,
     question: 'What distinguishes a virus from a worm?',
@@ -100,7 +101,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_007',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 2,
     question: 'An employee\'s workstation is consuming 100% CPU even when idle. Investigation reveals a process mining cryptocurrency. What is this type of malware called?',
@@ -110,7 +111,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_008',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 2,
     question: 'A disgruntled developer embedded code that deletes the database if their account is removed from Active Directory. What is this malware called?',
@@ -120,7 +121,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_009',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 3,
     question: 'Which malware technique modifies its own code each time it replicates to evade signature-based detection?',
@@ -130,7 +131,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_010',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 1,
     question: 'Which type of malware typically spreads through infected macros in office documents?',
@@ -140,7 +141,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_011',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 2,
     question: 'A remote access Trojan (RAT) has been discovered on a workstation. What is the PRIMARY risk?',
@@ -155,7 +156,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_012',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 2,
     question: 'What is a key characteristic of polymorphic malware?',
@@ -170,7 +171,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_013',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 3,
     question: 'An analyst finds that malware is using the Windows Management Instrumentation (WMI) event subscription for persistence and PowerShell for execution, with no malicious files on disk. Which classification BEST describes this threat?',
@@ -185,7 +186,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_014',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 1,
     question: 'Which of the following is a PRIMARY indicator that a system may be infected with spyware?',
@@ -200,7 +201,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_015',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Malware',
     difficulty: 2,
     question: 'Which malware type infects both the boot sector and executable files simultaneously?',
@@ -212,7 +213,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Social Engineering (15 questions) ──
   {
     id: 'sp_t0_016',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 1,
     question: 'What type of social engineering attack sends fraudulent emails that appear to come from a reputable source to steal credentials?',
@@ -222,7 +223,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_017',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 1,
     question: 'An attacker follows an authorized employee through a secured door without badging in. What is this called?',
@@ -232,7 +233,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_018',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 2,
     question: 'A CEO receives a highly targeted email referencing a recent board meeting, asking them to wire funds. What type of attack is this?',
@@ -242,7 +243,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_019',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 2,
     question: 'An attacker calls an employee pretending to be IT support and asks for their password to "fix an issue." What technique is this?',
@@ -252,7 +253,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_020',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 1,
     question: 'Which social engineering attack uses text messages (SMS) to trick victims into clicking malicious links?',
@@ -262,7 +263,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_021',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 2,
     question: 'An attacker creates a fake scenario (e.g., posing as a vendor needing account verification) to extract information. What is this technique?',
@@ -272,7 +273,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_022',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 3,
     question: 'Attackers compromise a website frequently visited by employees of a target organization and inject malware. What is this attack called?',
@@ -282,7 +283,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_023',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 2,
     question: 'An employee observes someone looking over their shoulder to read their password as they type it. What attack is this?',
@@ -292,7 +293,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_024',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 1,
     question: 'Which social engineering technique involves searching through an organization\'s trash for sensitive information?',
@@ -302,7 +303,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_025',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 2,
     question: 'A phishing email is sent to a specific department within an organization, using details about an ongoing project. What is this called?',
@@ -312,7 +313,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_026',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 3,
     question: 'An attacker sets up a rogue Wi-Fi hotspot at a coffee shop near the target company and names it after the company\'s guest network. Employees connect and their traffic is intercepted. Which attack combines social engineering with a technical exploit?',
@@ -327,7 +328,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_027',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 2,
     question: 'What is the BEST technical control to prevent phishing emails from reaching users?',
@@ -342,7 +343,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_028',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 1,
     question: 'Which of the following is the MOST effective non-technical defense against social engineering?',
@@ -357,7 +358,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_029',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 2,
     question: 'An attacker registers a domain similar to a legitimate one (e.g., g00gle.com) to collect credentials. What is this technique?',
@@ -367,7 +368,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_030',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Social Engineering',
     difficulty: 3,
     question: 'An attacker calls the help desk claiming to be a new executive, provides publicly available information to pass verification, and requests a password reset for another account. Which social engineering principles are PRIMARILY being exploited?',
@@ -384,7 +385,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Application Attacks (15 questions) ──
   {
     id: 'sp_t0_031',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 1,
     question: 'An attacker enters \' OR 1=1 -- into a login form to bypass authentication. What type of attack is this?',
@@ -394,7 +395,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_032',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'A web application reflects user input directly in the page without sanitization, allowing an attacker to inject a <script> tag. What type of XSS is this?',
@@ -404,7 +405,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_033',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'An attacker posts a malicious script in a forum comment that executes when other users view the post. What type of XSS is this?',
@@ -414,7 +415,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_034',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'A malicious website causes a logged-in user\'s browser to submit unauthorized requests to a banking site. What is this attack?',
@@ -424,7 +425,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_035',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 3,
     question: 'A C application copies user input into a fixed-size buffer without bounds checking, allowing an attacker to overwrite the return address on the stack. What type of attack is this?',
@@ -434,7 +435,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_036',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'An attacker manipulates a URL parameter to access files outside the web root using ../../etc/passwd. What is this attack?',
@@ -444,7 +445,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_037',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'Which of the following is the MOST effective defense against SQL injection?',
@@ -459,7 +460,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_038',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 1,
     question: 'What is the PRIMARY purpose of input validation in web applications?',
@@ -474,7 +475,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_039',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 3,
     question: 'An attacker injects malicious LDAP queries through a web form that queries an LDAP directory. What type of attack is this?',
@@ -484,7 +485,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_040',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'Which XSS type manipulates the Document Object Model in the browser without the payload being sent to the server?',
@@ -494,7 +495,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_041',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 1,
     question: 'Which HTTP header helps prevent XSS attacks by restricting the sources from which content can be loaded?',
@@ -504,7 +505,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_042',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'An attacker crafts a malicious XML document with an entity that references an internal file, causing the server to disclose its contents. What is this attack?',
@@ -514,7 +515,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_043',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 3,
     question: 'An attacker exploits a race condition between a security check and the use of a resource. What is this class of vulnerability called?',
@@ -524,7 +525,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_044',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 2,
     question: 'Which defense mechanism randomizes memory addresses to make buffer overflow exploitation more difficult?',
@@ -534,7 +535,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_045',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Application Attacks',
     difficulty: 1,
     question: 'What type of attack tricks a user into clicking a hidden button on a transparent overlay?',
@@ -546,7 +547,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Network Attacks (15 questions) ──
   {
     id: 'sp_t0_046',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 1,
     question: 'Which attack floods a target with SYN packets without completing the TCP three-way handshake?',
@@ -556,7 +557,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_047',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'An attacker uses a large number of compromised IoT devices to overwhelm a target website. What type of attack is this?',
@@ -566,7 +567,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_048',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'An attacker intercepts communication between two parties and can read and modify the traffic in real time. What type of attack is this?',
@@ -576,7 +577,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_049',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'An attacker sends fake ARP replies to associate their MAC address with the default gateway\'s IP. What attack is this?',
@@ -586,7 +587,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_050',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'An attacker modifies DNS cache entries to redirect users to a malicious website. What is this attack called?',
@@ -596,7 +597,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_051',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 1,
     question: 'Which attack captures authentication packets and retransmits them later to gain unauthorized access?',
@@ -606,7 +607,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_052',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 3,
     question: 'An attacker sends DNS queries with a spoofed source IP to open DNS resolvers, which send amplified responses to the victim. What type of DDoS attack is this?',
@@ -616,7 +617,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_053',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 1,
     question: 'What is the PRIMARY purpose of a firewall?',
@@ -631,7 +632,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_054',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'Which attack floods a switch\'s MAC address table to force it to operate like a hub, broadcasting all traffic?',
@@ -641,7 +642,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_055',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 3,
     question: 'An attacker exploits the automatic trunking negotiation on a switch port to access VLANs they should not be on. What attack is this?',
@@ -651,7 +652,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_056',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'Which protocol should be used instead of HTTP to protect against on-path (MITM) attacks on web traffic?',
@@ -661,7 +662,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_057',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 1,
     question: 'What distinguishes a DoS attack from a DDoS attack?',
@@ -676,7 +677,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_058',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'An attacker sends carefully crafted, slow HTTP requests to keep connections open and exhaust web server resources. What attack is this?',
@@ -686,7 +687,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_059',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 2,
     question: 'Which feature on a managed switch limits the number of MAC addresses per port to prevent MAC flooding?',
@@ -696,7 +697,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_060',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Network Attacks',
     difficulty: 3,
     question: 'A network analyst notices NTP traffic with an unusually large response-to-request ratio being directed at a single host. What type of attack is MOST likely occurring?',
@@ -713,7 +714,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Vulnerability Scanning (15 questions) ──
   {
     id: 'sp_t0_061',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 1,
     question: 'What does CVE stand for in vulnerability management?',
@@ -728,7 +729,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_062',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'A vulnerability scanner reports a critical finding, but upon investigation the finding is invalid. What is this called?',
@@ -738,7 +739,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_063',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'What scoring system rates vulnerabilities on a scale of 0.0 to 10.0 based on exploitability and impact?',
@@ -748,7 +749,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_064',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 1,
     question: 'Which of the following is a popular commercial vulnerability scanner?',
@@ -758,7 +759,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_065',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'What is the difference between a vulnerability scan and a penetration test?',
@@ -773,7 +774,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_066',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 1,
     question: 'Which team simulates real-world attacks to test an organization\'s defenses?',
@@ -783,7 +784,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_067',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'Which team is responsible for defending the network and responding to simulated attacks during an exercise?',
@@ -793,7 +794,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_068',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'What is the role of a purple team in security testing?',
@@ -808,7 +809,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_069',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 3,
     question: 'A CVSS base score is calculated from which two main metric groups?',
@@ -823,7 +824,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_070',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 1,
     question: 'Which open-source vulnerability scanner is an alternative to Nessus?',
@@ -833,7 +834,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_071',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'What type of vulnerability scan uses credentials to log into systems and perform deeper analysis?',
@@ -843,7 +844,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_072',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'During a penetration test, the tester has no prior knowledge of the target environment. What type of test is this?',
@@ -853,7 +854,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_073',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 3,
     question: 'Which penetration testing methodology phase involves gathering information about the target without directly interacting with it?',
@@ -863,7 +864,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_074',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 2,
     question: 'A vulnerability scan reveals that a system is missing a critical patch from 6 months ago. What should the security team do FIRST?',
@@ -878,7 +879,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_075',
-    topicId: 0,
+    topicId: 3,
     subtopic: 'Vulnerability Scanning',
     difficulty: 1,
     question: 'What does a false negative in vulnerability scanning mean?',
@@ -895,7 +896,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Threat Intelligence (15 questions) ──
   {
     id: 'sp_t0_076',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 1,
     question: 'What does IOC stand for in threat intelligence?',
@@ -910,7 +911,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_077',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'Which standard format is used to represent structured threat intelligence information?',
@@ -920,7 +921,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_078',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'What protocol is used to transport and exchange STIX threat intelligence data between organizations?',
@@ -930,7 +931,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_079',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'Which framework provides a knowledge base of adversary tactics and techniques based on real-world observations?',
@@ -940,7 +941,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_080',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 1,
     question: 'What is a threat feed?',
@@ -955,7 +956,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_081',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'What is the PRIMARY goal of threat hunting?',
@@ -970,7 +971,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_082',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 3,
     question: 'The Diamond Model of intrusion analysis identifies four core features of an intrusion event. What are they?',
@@ -985,7 +986,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_083',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 1,
     question: 'Which of the following is an example of an IOC?',
@@ -1000,7 +1001,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_084',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'What type of threat intelligence is MOST useful for security operations center (SOC) analysts for day-to-day detection?',
@@ -1010,7 +1011,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_085',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'Which phase of the Lockheed Martin Cyber Kill Chain involves the attacker creating a weaponized deliverable (e.g., malicious PDF)?',
@@ -1020,7 +1021,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_086',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 3,
     question: 'An analyst correlates threat intelligence with internal logs and discovers that several internal systems are beaconing to a C2 server identified in a recent STIX report. What should be the NEXT step?',
@@ -1035,7 +1036,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_087',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 1,
     question: 'What is OSINT in the context of threat intelligence?',
@@ -1050,7 +1051,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_088',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'Which threat intelligence sharing organization operates sector-specific ISACs?',
@@ -1065,7 +1066,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_089',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 3,
     question: 'A threat hunter hypothesizes that an APT group is using living-off-the-land techniques in the environment. Which data source would be MOST valuable for this investigation?',
@@ -1080,7 +1081,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t0_090',
-    topicId: 0,
+    topicId: 1,
     subtopic: 'Threat Intelligence',
     difficulty: 2,
     question: 'What is the PRIMARY difference between strategic and tactical threat intelligence?',
@@ -1101,7 +1102,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Frameworks (15 questions) ──
   {
     id: 'sp_t1_001',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 1,
     question: 'Which NIST framework provides guidance for managing cybersecurity risk through five core functions: Identify, Protect, Detect, Respond, and Recover?',
@@ -1111,7 +1112,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_002',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 1,
     question: 'Which international standard specifies requirements for establishing, implementing, maintaining, and improving an Information Security Management System (ISMS)?',
@@ -1121,7 +1122,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_003',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 2,
     question: 'What is the core principle of Zero Trust Architecture?',
@@ -1136,7 +1137,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_004',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 2,
     question: 'Which security principle uses multiple layers of security controls so that if one fails, others still provide protection?',
@@ -1146,7 +1147,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_005',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 1,
     question: 'The CIS Controls are a prioritized set of actions to protect organizations from known cyber-attack vectors. What does CIS stand for?',
@@ -1161,7 +1162,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_006',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 2,
     question: 'In Zero Trust Architecture, what technology continuously evaluates trust based on user identity, device health, and context?',
@@ -1176,7 +1177,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_007',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 3,
     question: 'An organization wants to align with NIST CSF. During the "Identify" function, which activity is MOST critical?',
@@ -1191,7 +1192,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_008',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 2,
     question: 'Which security model mandates that a subject cannot read data at a higher classification level (no read up)?',
@@ -1201,7 +1202,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_009',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 1,
     question: 'What is the principle of least privilege?',
@@ -1216,7 +1217,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_010',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 2,
     question: 'Which framework is specifically designed for protecting critical infrastructure in the United States?',
@@ -1226,7 +1227,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_011',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 3,
     question: 'In the context of Zero Trust, what does the concept of "micro-perimeters" refer to?',
@@ -1241,7 +1242,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_012',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 2,
     question: 'Which of the following BEST describes separation of duties?',
@@ -1256,7 +1257,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_013',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 1,
     question: 'What security principle ensures that actions can be traced back to the individual who performed them?',
@@ -1266,7 +1267,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_014',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 2,
     question: 'An organization implements mandatory vacations for employees with financial responsibilities. What security principle does this support?',
@@ -1276,7 +1277,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_015',
-    topicId: 1,
+    topicId: 4,
     subtopic: 'Frameworks',
     difficulty: 3,
     question: 'Which NIST publication provides a catalog of security and privacy controls for federal information systems?',
@@ -1288,7 +1289,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Network Design (15 questions) ──
   {
     id: 'sp_t1_016',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 1,
     question: 'What is a DMZ (demilitarized zone) in network security?',
@@ -1303,7 +1304,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_017',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 1,
     question: 'What is the PRIMARY purpose of network segmentation?',
@@ -1318,7 +1319,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_018',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'Which technology logically separates broadcast domains within a single physical switch?',
@@ -1328,7 +1329,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_019',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'What is micro-segmentation?',
@@ -1343,7 +1344,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_020',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'What is a jump server (jump box)?',
@@ -1358,7 +1359,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_021',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 1,
     question: 'What does NAC stand for in network security?',
@@ -1373,7 +1374,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_022',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'Which network architecture technology centralizes network management and uses software-defined policies to route traffic across wide-area networks?',
@@ -1383,7 +1384,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_023',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 3,
     question: 'An organization implements 802.1X authentication on all switch ports. What does this achieve?',
@@ -1398,7 +1399,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_024',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'Which device sits at the network perimeter and filters traffic based on predefined security rules?',
@@ -1408,7 +1409,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_025',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 1,
     question: 'What is the main advantage of placing a web server in a DMZ rather than the internal network?',
@@ -1423,7 +1424,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_026',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'What type of firewall inspects traffic at the application layer and understands protocols like HTTP and FTP?',
@@ -1438,7 +1439,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_027',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 3,
     question: 'An organization uses an air-gapped network for its SCADA/ICS environment. What does "air-gapped" mean?',
@@ -1453,7 +1454,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_028',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 1,
     question: 'Which device distributes incoming network traffic across multiple servers to ensure availability?',
@@ -1463,7 +1464,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_029',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'What is the purpose of a reverse proxy?',
@@ -1478,7 +1479,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_030',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Network Design',
     difficulty: 2,
     question: 'Which network monitoring approach copies traffic to a monitoring port for analysis without affecting the original traffic flow?',
@@ -1490,7 +1491,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Cloud Security (15 questions) ──
   {
     id: 'sp_t1_031',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 1,
     question: 'In the shared responsibility model, who is responsible for patching the guest operating system in IaaS?',
@@ -1505,7 +1506,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_032',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 1,
     question: 'Which cloud service model provides the MOST control over the underlying infrastructure?',
@@ -1515,7 +1516,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_033',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'What is a CASB (Cloud Access Security Broker)?',
@@ -1530,7 +1531,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_034',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'Which cloud deployment model is shared by several organizations with common requirements (e.g., a government community)?',
@@ -1540,7 +1541,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_035',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'In the shared responsibility model for SaaS, what is the customer PRIMARILY responsible for?',
@@ -1555,7 +1556,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_036',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 3,
     question: 'An organization is concerned about data sovereignty — their data must remain within a specific country. Which cloud consideration addresses this?',
@@ -1570,7 +1571,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_037',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'What is a key security risk specific to serverless computing (FaaS)?',
@@ -1585,7 +1586,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_038',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 1,
     question: 'What does "multi-tenancy" mean in cloud computing?',
@@ -1600,7 +1601,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_039',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'Which tool helps organizations discover and manage unauthorized cloud services used by employees (shadow IT)?',
@@ -1610,7 +1611,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_040',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 3,
     question: 'A container image is found to contain a known vulnerability. What is the BEST practice for remediation?',
@@ -1625,7 +1626,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_041',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'What is the PRIMARY risk of misconfigured cloud storage buckets (e.g., S3)?',
@@ -1640,7 +1641,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_042',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 1,
     question: 'Which cloud service model provides ready-to-use applications accessed via a web browser?',
@@ -1650,7 +1651,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_043',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'What is the purpose of a Cloud Security Posture Management (CSPM) tool?',
@@ -1665,7 +1666,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_044',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 3,
     question: 'An organization uses multiple cloud providers. Which approach BEST manages consistent security policies across all environments?',
@@ -1680,7 +1681,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_045',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Cloud Security',
     difficulty: 2,
     question: 'What is the PRIMARY benefit of using Infrastructure as Code (IaC) for cloud deployments from a security perspective?',
@@ -1697,7 +1698,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Virtualization (15 questions) ──
   {
     id: 'sp_t1_046',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 1,
     question: 'What is a Type 1 hypervisor?',
@@ -1712,7 +1713,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_047',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 1,
     question: 'Which hypervisor type runs on top of an existing operating system?',
@@ -1722,7 +1723,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_048',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'What is a VM escape attack?',
@@ -1737,7 +1738,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_049',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'How do containers differ from virtual machines in terms of isolation?',
@@ -1752,7 +1753,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_050',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'What is the purpose of a sandbox in security?',
@@ -1767,7 +1768,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_051',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 1,
     question: 'Which technology allows running multiple operating systems simultaneously on a single physical server?',
@@ -1777,7 +1778,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_052',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'What is VM sprawl?',
@@ -1792,7 +1793,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_053',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 3,
     question: 'An organization uses Docker containers in production. Which practice BEST secures the container environment?',
@@ -1807,7 +1808,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_054',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'What is Infrastructure as Code (IaC)?',
@@ -1822,7 +1823,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_055',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 1,
     question: 'What is a VM snapshot?',
@@ -1837,7 +1838,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_056',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'What security concern arises when a VM snapshot is taken while the VM contains sensitive data in memory?',
@@ -1852,7 +1853,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_057',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 3,
     question: 'An organization wants to prevent container images with known critical vulnerabilities from being deployed. What should they implement?',
@@ -1867,7 +1868,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_058',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'What is the risk of using a container image from an untrusted public registry?',
@@ -1882,7 +1883,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_059',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 2,
     question: 'Which Kubernetes feature controls what actions containers can perform and what resources they can access?',
@@ -1897,7 +1898,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_060',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Virtualization',
     difficulty: 1,
     question: 'What is the PRIMARY security advantage of using containers over traditional VMs for microservices?',
@@ -1914,7 +1915,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Resilience (15 questions) ──
   {
     id: 'sp_t1_061',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 1,
     question: 'What does "high availability" (HA) mean in IT infrastructure?',
@@ -1929,7 +1930,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_062',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'Which RAID level mirrors data across two disks for redundancy?',
@@ -1939,7 +1940,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_063',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'Which RAID level stripes data with distributed parity, tolerating one disk failure?',
@@ -1949,7 +1950,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_064',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 1,
     question: 'What type of backup copies ALL data regardless of whether it has changed since the last backup?',
@@ -1959,7 +1960,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_065',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'What type of backup copies only data that has changed since the LAST FULL backup?',
@@ -1969,7 +1970,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_066',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'What type of backup copies only data that has changed since the LAST BACKUP OF ANY TYPE?',
@@ -1979,7 +1980,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_067',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 1,
     question: 'What is geographic dispersal in the context of disaster recovery?',
@@ -1994,7 +1995,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_068',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'What is the difference between RPO and RTO?',
@@ -2009,7 +2010,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_069',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 3,
     question: 'An organization requires near-zero RPO and near-zero RTO for its critical database. Which solution BEST meets this requirement?',
@@ -2024,7 +2025,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_070',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 1,
     question: 'What is a hot site in disaster recovery?',
@@ -2039,7 +2040,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_071',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'What is the difference between a warm site and a cold site?',
@@ -2054,7 +2055,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_072',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'What load balancing algorithm distributes requests equally to each server in turn?',
@@ -2064,7 +2065,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_073',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 3,
     question: 'An organization\'s backup strategy uses a full backup on Sunday and incremental backups Monday through Saturday. A failure occurs on Thursday. What is needed to restore?',
@@ -2079,7 +2080,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_074',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'What is the 3-2-1 backup rule?',
@@ -2094,7 +2095,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t1_075',
-    topicId: 1,
+    topicId: 2,
     subtopic: 'Resilience',
     difficulty: 2,
     question: 'Which RAID level provides NO redundancy and uses striping only for performance?',
@@ -2110,7 +2111,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Cryptography (20 questions) ──
   {
     id: 'sp_t2_001',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 1,
     question: 'Which type of encryption uses the same key for both encryption and decryption?',
@@ -2120,7 +2121,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_002',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 1,
     question: 'Which symmetric encryption algorithm is the current standard recommended by NIST?',
@@ -2130,7 +2131,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_003',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'Which asymmetric algorithm is based on the difficulty of factoring large prime numbers?',
@@ -2140,7 +2141,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_004',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'What is the PRIMARY purpose of a hash function in cryptography?',
@@ -2155,7 +2156,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_005',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 1,
     question: 'Which hashing algorithm produces a 256-bit digest and is widely used for integrity verification?',
@@ -2165,7 +2166,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_006',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'What is a digital signature?',
@@ -2180,7 +2181,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_007',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'What does PKI stand for, and what is its purpose?',
@@ -2195,7 +2196,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_008',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 3,
     question: 'Which key exchange protocol allows two parties to establish a shared secret over an insecure channel without prior key exchange?',
@@ -2205,7 +2206,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_009',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'What is Perfect Forward Secrecy (PFS)?',
@@ -2220,7 +2221,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_010',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'Which version of TLS is the current recommended standard?',
@@ -2230,7 +2231,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_011',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 1,
     question: 'What is the purpose of a Certificate Authority (CA) in PKI?',
@@ -2245,7 +2246,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_012',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'Why is MD5 no longer recommended for security purposes?',
@@ -2260,7 +2261,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_013',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 3,
     question: 'An organization needs to encrypt large volumes of data quickly. Which encryption approach should they use?',
@@ -2275,7 +2276,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_014',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'What is the purpose of a Certificate Revocation List (CRL)?',
@@ -2290,7 +2291,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_015',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'What is OCSP and how does it improve upon CRLs?',
@@ -2305,7 +2306,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_016',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 3,
     question: 'Which asymmetric algorithm achieves equivalent security to RSA with significantly smaller key sizes?',
@@ -2315,7 +2316,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_017',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 1,
     question: 'What is the key difference between encryption and hashing?',
@@ -2330,7 +2331,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_018',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'A self-signed certificate is used on an internal web server. What is the PRIMARY risk?',
@@ -2345,7 +2346,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_019',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 3,
     question: 'Which attack exploits weaknesses in the random number generator used for key generation?',
@@ -2360,7 +2361,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_020',
-    topicId: 2,
+    topicId: 0,
     subtopic: 'Cryptography',
     difficulty: 2,
     question: 'What cryptographic concept ensures that a sender cannot deny having sent a message?',
@@ -2372,7 +2373,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Authentication (20 questions) ──
   {
     id: 'sp_t2_021',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 1,
     question: 'What are the three factors of multi-factor authentication (MFA)?',
@@ -2387,7 +2388,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_022',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 1,
     question: 'Which authentication technology allows users to access multiple applications with a single set of credentials?',
@@ -2397,7 +2398,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_023',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'Which protocol is commonly used for SSO in web applications and uses XML-based assertions?',
@@ -2407,7 +2408,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_024',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'What is OAuth 2.0 primarily designed for?',
@@ -2422,7 +2423,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_025',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'Which protocol adds an identity layer on top of OAuth 2.0 to provide authentication?',
@@ -2432,7 +2433,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_026',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 1,
     question: 'Which directory service protocol is commonly used for centralized authentication in enterprise environments?',
@@ -2442,7 +2443,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_027',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'Which authentication protocol uses tickets issued by a Key Distribution Center (KDC) for SSO in Windows environments?',
@@ -2452,7 +2453,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_028',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'Which AAA protocol is commonly used for network device authentication and encrypts the entire payload?',
@@ -2462,7 +2463,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_029',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 1,
     question: 'Which AAA protocol is commonly used for wireless and VPN authentication and only encrypts the password?',
@@ -2472,7 +2473,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_030',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'What is FIDO2 / WebAuthn?',
@@ -2487,7 +2488,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_031',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 3,
     question: 'In Kerberos authentication, what is the role of the Ticket Granting Service (TGS)?',
@@ -2502,7 +2503,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_032',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'What is the primary risk of using SMS-based one-time passwords (OTP) for MFA?',
@@ -2517,7 +2518,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_033',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 1,
     question: 'Which of the following is an example of "something you are" in MFA?',
@@ -2527,7 +2528,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_034',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'What is the difference between authentication and authorization?',
@@ -2542,7 +2543,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_035',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 3,
     question: 'An organization implements conditional access policies that require MFA only when users log in from untrusted locations or devices. What security concept does this implement?',
@@ -2557,7 +2558,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_036',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'What is the purpose of password salting?',
@@ -2572,7 +2573,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_037',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'Which biometric measure has the LOWEST false acceptance rate (FAR)?',
@@ -2582,7 +2583,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_038',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 1,
     question: 'What is the Crossover Error Rate (CER) in biometric systems?',
@@ -2597,7 +2598,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_039',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 3,
     question: 'A Kerberos ticket is captured on the network. An attacker attempts to use it to authenticate. What attack is this, and what mitigates it?',
@@ -2612,7 +2613,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_040',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Authentication',
     difficulty: 2,
     question: 'What is the advantage of TACACS+ over RADIUS for managing network device access?',
@@ -2629,7 +2630,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Endpoint Security (15 questions) ──
   {
     id: 'sp_t2_041',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 1,
     question: 'What does EDR stand for?',
@@ -2644,7 +2645,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_042',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'How does EDR differ from traditional antivirus?',
@@ -2659,7 +2660,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_043',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'What is the purpose of Data Loss Prevention (DLP) software?',
@@ -2674,7 +2675,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_044',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 1,
     question: 'What is application whitelisting?',
@@ -2689,7 +2690,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_045',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'What is the purpose of a host-based firewall?',
@@ -2704,7 +2705,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_046',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'What does MDM (Mobile Device Management) provide?',
@@ -2719,7 +2720,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_047',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 1,
     question: 'What is the PRIMARY security concern with BYOD (Bring Your Own Device) policies?',
@@ -2734,7 +2735,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_048',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'What is the purpose of full-disk encryption (FDE)?',
@@ -2749,7 +2750,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_049',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 3,
     question: 'An organization wants to allow employees to use personal phones for work email while ensuring corporate data can be wiped independently of personal data. What solution should they implement?',
@@ -2764,7 +2765,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_050',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'What is the role of patch management in endpoint security?',
@@ -2779,7 +2780,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_051',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 1,
     question: 'Which Windows feature controls which applications can run based on file path, publisher, or hash rules?',
@@ -2789,7 +2790,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_052',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'What is a host-based intrusion detection system (HIDS)?',
@@ -2804,7 +2805,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_053',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 3,
     question: 'An XDR (Extended Detection and Response) platform integrates data from which sources?',
@@ -2819,7 +2820,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_054',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'What is the function of file integrity monitoring (FIM)?',
@@ -2834,7 +2835,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_055',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Endpoint Security',
     difficulty: 2,
     question: 'A laptop is stolen from an employee. The laptop has full-disk encryption enabled with a strong password. What is the MOST likely outcome regarding data exposure?',
@@ -2851,7 +2852,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Wireless Security (15 questions) ──
   {
     id: 'sp_t2_056',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 1,
     question: 'Which wireless security protocol is the current standard providing the strongest protection?',
@@ -2861,7 +2862,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_057',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 1,
     question: 'Why is WEP considered insecure?',
@@ -2876,7 +2877,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_058',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'What is the advantage of WPA2-Enterprise over WPA2-Personal?',
@@ -2891,7 +2892,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_059',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'Which EAP method uses client and server certificates for mutual authentication and is considered the most secure?',
@@ -2901,7 +2902,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_060',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'What EAP method uses a server certificate to create a TLS tunnel and then authenticates the user with credentials inside the tunnel?',
@@ -2911,7 +2912,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_061',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'What is an evil twin attack in wireless security?',
@@ -2926,7 +2927,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_062',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 1,
     question: 'What is a rogue access point?',
@@ -2941,7 +2942,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_063',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 3,
     question: 'An attacker sends deauthentication frames to disconnect clients from a legitimate AP, forcing them to reconnect (potentially to an evil twin). What is this attack?',
@@ -2956,7 +2957,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_064',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'Which WPA3 improvement protects against offline dictionary attacks on the Wi-Fi password?',
@@ -2971,7 +2972,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_065',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 1,
     question: 'Does hiding the SSID significantly improve wireless security?',
@@ -2986,7 +2987,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_066',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'What is a Bluetooth bluesnarfing attack?',
@@ -3001,7 +3002,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_067',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'What is the BEST way to detect rogue access points on a network?',
@@ -3016,7 +3017,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_068',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 3,
     question: 'A KRACK (Key Reinstallation Attack) exploits a vulnerability in which wireless protocol?',
@@ -3026,7 +3027,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_069',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 2,
     question: 'What wireless security practice should be applied to a guest Wi-Fi network?',
@@ -3041,7 +3042,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_070',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'Wireless Security',
     difficulty: 1,
     question: 'What encryption protocol does WPA2 use?',
@@ -3053,7 +3054,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── System Hardening (20 questions) ──
   {
     id: 'sp_t2_071',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 1,
     question: 'What is the FIRST step in system hardening?',
@@ -3068,7 +3069,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_072',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 1,
     question: 'What is a security baseline?',
@@ -3083,7 +3084,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_073',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'Which Windows feature centrally manages security settings such as password policies and account lockout across domain-joined computers?',
@@ -3093,7 +3094,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_074',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What is the purpose of disabling unnecessary network ports and services on a server?',
@@ -3108,7 +3109,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_075',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What Linux security module provides mandatory access control (MAC) by labeling processes and files with security contexts?',
@@ -3118,7 +3119,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_076',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 1,
     question: 'What does the principle of "default deny" mean for firewall configuration?',
@@ -3133,7 +3134,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_077',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'Why should default credentials on network devices and applications be changed immediately?',
@@ -3148,7 +3149,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_078',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 3,
     question: 'An organization deploys CIS Benchmarks across their servers. What does this accomplish?',
@@ -3163,7 +3164,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_079',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What is the purpose of account lockout policies?',
@@ -3178,7 +3179,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_080',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What hardening step should be taken with SNMP on network devices?',
@@ -3193,7 +3194,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_081',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 1,
     question: 'Which protocol should replace Telnet for secure remote administration?',
@@ -3203,7 +3204,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_082',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What is the purpose of file integrity monitoring (FIM) in system hardening?',
@@ -3218,7 +3219,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_083',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 3,
     question: 'An administrator is hardening a Linux web server. Which combination of steps is MOST comprehensive?',
@@ -3233,7 +3234,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_084',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What is the security risk of running services as the root/administrator account?',
@@ -3248,7 +3249,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_085',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 1,
     question: 'What should be done with unused user accounts on a system?',
@@ -3263,7 +3264,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_086',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What is a secure boot process?',
@@ -3278,7 +3279,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_087',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 3,
     question: 'An organization implements configuration management using Ansible/Chef/Puppet to enforce hardening standards. What is the PRIMARY security benefit?',
@@ -3293,7 +3294,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_088',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What is the purpose of an account password complexity policy?',
@@ -3308,7 +3309,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_089',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 2,
     question: 'What does disabling USB ports on a workstation prevent?',
@@ -3323,7 +3324,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t2_090',
-    topicId: 2,
+    topicId: 3,
     subtopic: 'System Hardening',
     difficulty: 3,
     question: 'An organization needs to harden its database servers. Which practice addresses both authentication and data protection?',
@@ -4090,7 +4091,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   // ── Backup & Disaster Recovery (20 questions) ──
   {
     id: 'sp_t3_056',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 1,
     question: 'Which backup type copies ALL data regardless of whether it has changed since the last backup?',
@@ -4100,7 +4101,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_057',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What is the key difference between incremental and differential backups?',
@@ -4115,7 +4116,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_058',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What is a snapshot backup?',
@@ -4130,7 +4131,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_059',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 1,
     question: 'What does RTO (Recovery Time Objective) define?',
@@ -4145,7 +4146,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_060',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 1,
     question: 'What does RPO (Recovery Point Objective) define?',
@@ -4160,7 +4161,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_061',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'A company requires near-zero downtime for its e-commerce platform. Which type of disaster recovery site is MOST appropriate?',
@@ -4170,7 +4171,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_062',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What is a cold site?',
@@ -4185,7 +4186,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_063',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What is the difference between a BCP (Business Continuity Plan) and a DRP (Disaster Recovery Plan)?',
@@ -4200,7 +4201,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_064',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'Which disaster recovery test type involves talking through the plan without actually activating recovery systems?',
@@ -4210,7 +4211,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_065',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 3,
     question: 'During a parallel test of a disaster recovery plan, what happens?',
@@ -4225,7 +4226,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_066',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What does MTBF (Mean Time Between Failures) measure?',
@@ -4240,7 +4241,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_067',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What does MTTR (Mean Time to Repair) measure?',
@@ -4255,7 +4256,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_068',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 3,
     question: 'An organization has an RPO of 4 hours and performs daily full backups at midnight. A disaster strikes at 10 PM. How much data is at risk of being lost?',
@@ -4265,7 +4266,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_069',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What is the 3-2-1 backup rule?',
@@ -4280,7 +4281,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_070',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 3,
     question: 'What is the primary advantage of immutable backups in protecting against ransomware?',
@@ -4295,7 +4296,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_071',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'A warm site typically provides which of the following?',
@@ -4310,7 +4311,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_072',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 3,
     question: 'Which type of DRP test carries the HIGHEST risk to the organization?',
@@ -4320,7 +4321,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_073',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'What is the purpose of a Business Impact Analysis (BIA)?',
@@ -4335,7 +4336,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_074',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 3,
     question: 'An organization uses replication to maintain a synchronized copy of its database at a secondary site with less than 1 second of lag. What type of replication is this?',
@@ -4345,7 +4346,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t3_075',
-    topicId: 3,
+    topicId: 2,
     subtopic: 'Backup & DR',
     difficulty: 2,
     question: 'Which backup strategy provides the FASTEST restore time?',
@@ -4546,7 +4547,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
   },
   {
     id: 'sp_t4_014',
-    topicId: 3,
+    topicId: 4,
     subtopic: 'Policies',
     difficulty: 2,
     question: 'What is the purpose of a clean desk policy?',
@@ -5445,17 +5446,17 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     explanation: 'Automated configuration drift detection continuously compares actual state against the baseline and alerts within minutes/hours. Quarterly audits and annual pen tests catch drift too late.' },
 
   // ── API Security (sp_api_security, obj 3.3) — topicId 1 ──
-  { id: 'sp_t1_076', topicId: 1, subtopic: 'API Security', difficulty: 2,
+  { id: 'sp_t1_076', topicId: 2, subtopic: 'API Security', difficulty: 2,
     question: 'A web application allows authenticated user A to view their own profile at /api/v1/users/A/profile. By changing the URL to /api/v1/users/B/profile, user A can view user B\'s profile. Which OWASP API Top 10 risk is this?',
     options: ['Broken Authentication', 'Broken Object Level Authorization (BOLA/IDOR)', 'Rate Limiting Failure', 'Mass Assignment'],
     correct: 1,
     explanation: 'BOLA (Broken Object Level Authorization) — also called IDOR — is the #1 API risk. The API authenticated the user but failed to verify they had access to the SPECIFIC object being requested.' },
-  { id: 'sp_t1_077', topicId: 1, subtopic: 'API Security', difficulty: 2,
+  { id: 'sp_t1_077', topicId: 2, subtopic: 'API Security', difficulty: 2,
     question: 'A modern single-page web application needs OAuth 2.0 authentication. Which grant type should it use?',
     options: ['Implicit', 'Resource Owner Password Credentials', 'Authorization Code with PKCE', 'Client Credentials'],
     correct: 2,
     explanation: 'Authorization Code with PKCE (Proof Key for Code Exchange) is the modern standard for browser/mobile public clients. Implicit and Resource Owner Password are DEPRECATED. Client Credentials is for backend-to-backend with no user.' },
-  { id: 'sp_t1_078', topicId: 1, subtopic: 'API Security', difficulty: 2,
+  { id: 'sp_t1_078', topicId: 2, subtopic: 'API Security', difficulty: 2,
     question: 'A developer puts a user\'s email and account number in a JWT payload that the browser holds. What is the security concern?',
     options: [
       'The JWT signature can be forged easily',
@@ -5465,7 +5466,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     ],
     correct: 1,
     explanation: 'JWTs are SIGNED but not encrypted by default. Anyone who captures the token can Base64-decode the payload and read all claims. For confidentiality, use JWE (JSON Web Encryption) instead of plain JWT, or avoid putting sensitive data in the payload.' },
-  { id: 'sp_t1_079', topicId: 1, subtopic: 'API Security', difficulty: 2,
+  { id: 'sp_t1_079', topicId: 2, subtopic: 'API Security', difficulty: 2,
     question: 'An API endpoint PATCH /users/42 accepts a JSON body and updates the user record. An attacker sends {"role":"admin","email":"new@example.com"} and elevates their privileges. What OWASP API risk is this?',
     options: [
       'BOLA',
@@ -5475,17 +5476,17 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     ],
     correct: 2,
     explanation: 'Mass assignment occurs when the server blindly binds the request body to the data model, allowing fields the user shouldn\'t be able to set (like "role"). The fix: explicit allow-list of fields per endpoint.' },
-  { id: 'sp_t1_080', topicId: 1, subtopic: 'API Security', difficulty: 1,
+  { id: 'sp_t1_080', topicId: 2, subtopic: 'API Security', difficulty: 1,
     question: 'Which control is the BEST defense against API enumeration and brute-force attacks?',
     options: ['Disable HTTPS', 'Rate limiting at multiple layers (per-IP, per-user, per-endpoint)', 'Remove authentication', 'Use only the GET method'],
     correct: 1,
     explanation: 'Rate limiting at multiple layers throttles attackers attempting bulk enumeration or brute-force. Per-IP, per-user, and per-endpoint limits each defend a different scenario.' },
-  { id: 'sp_t1_081', topicId: 1, subtopic: 'API Security', difficulty: 3,
+  { id: 'sp_t1_081', topicId: 2, subtopic: 'API Security', difficulty: 3,
     question: 'An API accepts a URL parameter and fetches that URL server-side. An attacker provides http://169.254.169.254/ — the AWS instance metadata endpoint. Which attack is this?',
     options: ['Cross-Site Request Forgery', 'Server-Side Request Forgery (SSRF)', 'XML External Entity', 'Cross-Site Scripting'],
     correct: 1,
     explanation: 'SSRF — the attacker tricks the server into making a request to an internal resource (the cloud instance metadata endpoint, which can leak credentials). Defenses: URL allow-list, block private/link-local IP ranges, dedicated egress proxy.' },
-  { id: 'sp_t1_082', topicId: 1, subtopic: 'API Security', difficulty: 2,
+  { id: 'sp_t1_082', topicId: 2, subtopic: 'API Security', difficulty: 2,
     question: 'An API gateway provides which capabilities? (Choose the BEST list.)',
     options: [
       'Code compilation only',
@@ -5497,7 +5498,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     explanation: 'API gateways centralize cross-cutting concerns (auth, rate limiting, schema validation, routing, logging) so each backend service doesn\'t have to reinvent them. AWS API Gateway, Kong, Apigee are common implementations.' },
 
   // ── SDLC & Secure Development (sp_sdlc, obj 4.4-4.6) — topicId 3 ──
-  { id: 'sp_t3_077', topicId: 3, subtopic: 'Secure SDLC', difficulty: 1,
+  { id: 'sp_t3_077', topicId: 2, subtopic: 'Secure SDLC', difficulty: 1,
     question: '"Shift left" in DevSecOps means:',
     options: [
       'Move security review to the end of the development cycle',
@@ -5507,12 +5508,12 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     ],
     correct: 1,
     explanation: 'Shift left moves security activities (threat modeling, SAST, dependency scans, peer review) earlier in the development cycle. A bug caught in the IDE costs ~$1; the same bug in production costs ~$10,000.' },
-  { id: 'sp_t3_078', topicId: 3, subtopic: 'Threat Modeling', difficulty: 2,
+  { id: 'sp_t3_078', topicId: 2, subtopic: 'Threat Modeling', difficulty: 2,
     question: 'In the STRIDE threat-modeling framework, what does the "R" stand for?',
     options: ['Resource exhaustion', 'Repudiation', 'Reverse engineering', 'Rate-limit bypass'],
     correct: 1,
     explanation: 'STRIDE: Spoofing, Tampering, REPUDIATION, Information disclosure, Denial of service, Elevation of privilege. Repudiation is when a user can deny having performed an action.' },
-  { id: 'sp_t3_079', topicId: 3, subtopic: 'Secure Coding', difficulty: 1,
+  { id: 'sp_t3_079', topicId: 2, subtopic: 'Secure Coding', difficulty: 1,
     question: 'Which is the CORRECT defense against SQL injection?',
     options: [
       'String concatenation with input sanitization',
@@ -5522,7 +5523,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     ],
     correct: 1,
     explanation: 'Parameterized queries (prepared statements) keep DATA separate from CODE — the database treats the parameter as a value, not as SQL syntax. String concatenation with sanitization is brittle; client-side validation can be bypassed.' },
-  { id: 'sp_t3_080', topicId: 3, subtopic: 'Secure Coding', difficulty: 2,
+  { id: 'sp_t3_080', topicId: 2, subtopic: 'Secure Coding', difficulty: 2,
     question: 'A developer stores user passwords by hashing with SHA-256. What is wrong with this approach?',
     options: [
       'SHA-256 is not a cryptographic hash function',
@@ -5532,7 +5533,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     ],
     correct: 1,
     explanation: 'SHA-256 is fast — exactly what you DON\'T want for password storage. Use a memory-hard adaptive function: Argon2id (preferred), bcrypt, or scrypt. PBKDF2 with high iteration count is acceptable.' },
-  { id: 'sp_t3_081', topicId: 3, subtopic: 'Secure Coding', difficulty: 2,
+  { id: 'sp_t3_081', topicId: 2, subtopic: 'Secure Coding', difficulty: 2,
     question: 'Which input validation strategy is MOST secure?',
     options: [
       'Block-list known attack patterns',
@@ -5567,7 +5568,7 @@ export const SECPLUS_QUESTIONS: SecurityPlusQuestion[] = [
     ],
     correct: 1,
     explanation: 'White-box (crystal-box) testing gives the tester full information. Black-box gives no inside info (simulates external attacker). Gray-box is in between (limited info like credentials).' },
-  { id: 'sp_t3_086', topicId: 3, subtopic: 'Secure SDLC', difficulty: 3,
+  { id: 'sp_t3_086', topicId: 2, subtopic: 'Secure SDLC', difficulty: 3,
     question: 'A CI/CD pipeline runs SAST, SCA, secrets scanning, and IaC scanning. Which is the SINGLE most important addition for production deployment safety?',
     options: [
       'Add unit tests only',

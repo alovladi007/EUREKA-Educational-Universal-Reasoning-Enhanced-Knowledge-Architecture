@@ -568,40 +568,41 @@ const PE_EE: ExamCurriculum = [
 // ═══════════════════════════════════════════════════════════════
 
 const SECURITY_PLUS: ExamCurriculum = [
-  { sectionId: 'threats_attacks', sectionName: 'Threats, Vulnerabilities & Attacks', topics: [
+  // Regrouped to the SY0-701 five-domain blueprint.
+  { sectionId: 'general_concepts', sectionName: 'General Security Concepts (12%)', topics: [
     // sp_controls is foundational — placed first so learners build a mental
     // model of WHAT defenses exist before studying what they defend against.
     t('sp_controls', 'Security Control Types & Foundational Concepts', 'Preventive/detective/corrective controls, CIA triad, defense in depth, zero trust, least privilege, separation of duties. SY0-701 objectives 1.1, 1.2.'),
     t('sp_change_mgmt', 'Change & Configuration Management', 'Change advisory board (CAB), RFC, impact analysis, rollback, baselines, configuration drift, version control. SY0-701 objective 1.3.'),
+    t('sp_crypto', 'Cryptographic Solutions', 'Symmetric/asymmetric encryption, hashing, PKI, certificates, digital signatures, and TLS. SY0-701 objective 1.4.'),
+  ]},
+  { sectionId: 'threats_vuln', sectionName: 'Threats, Vulnerabilities & Mitigations (22%)', topics: [
     t('sp_malware', 'Malware Types & Indicators', 'Viruses, worms, trojans, ransomware, rootkits, and fileless malware.'),
     t('sp_social_eng', 'Social Engineering Attacks', 'Phishing, spear phishing, vishing, smishing, pretexting, and watering hole.'),
     t('sp_app_attacks', 'Application Attacks', 'SQL injection, XSS, CSRF, buffer overflow, and directory traversal.'),
     t('sp_network_attacks', 'Network Attacks', 'DoS/DDoS, man-in-the-middle, ARP poisoning, DNS spoofing, and replay attacks.'),
-    t('sp_vuln_scanning', 'Vulnerability Scanning & Assessment', 'Vulnerability scanners, CVE, CVSS, penetration testing methodologies.'),
     t('sp_threat_intel', 'Threat Intelligence & Indicators', 'IOCs, threat feeds, STIX/TAXII, and threat hunting.'),
   ]},
-  { sectionId: 'architecture', sectionName: 'Security Architecture', topics: [
-    t('sp_frameworks', 'Security Frameworks & Models', 'NIST, ISO 27001, CIS Controls, and zero trust architecture.'),
+  { sectionId: 'architecture', sectionName: 'Security Architecture (18%)', topics: [
     t('sp_network_design', 'Secure Network Design', 'Segmentation, DMZ, VLANs, micro-segmentation, and SD-WAN.'),
     t('sp_cloud', 'Cloud Security', 'IaaS/PaaS/SaaS security, shared responsibility, CASB, and cloud-native controls.'),
     t('sp_virtualization', 'Virtualization & Containerization', 'Hypervisor security, container security, and serverless risks.'),
     t('sp_api_security', 'API Security & Modern Integrations', 'REST, OAuth 2.0, JWT, OWASP API Top 10, API gateways, rate limiting, BOLA/IDOR. SY0-701 objective 3.3.'),
+    t('sp_sdlc', 'Secure SDLC & Development Practices', 'SDLC models, secure coding (input validation, parameterized queries, output encoding), SAST/DAST/IAST/SCA, DevSecOps, CI/CD security.'),
+    t('sp_backup', 'Resilience, Backup & Disaster Recovery', 'Backup types, RTO, RPO, high availability, and business continuity planning. SY0-701 objective 3.4.'),
   ]},
-  { sectionId: 'implementation', sectionName: 'Security Implementation', topics: [
-    t('sp_crypto', 'Cryptography', 'Symmetric/asymmetric encryption, hashing, PKI, certificates, and TLS.'),
-    t('sp_authentication', 'Authentication & Authorization', 'MFA, SSO, OAuth, SAML, LDAP, Kerberos, and RADIUS.'),
+  { sectionId: 'operations', sectionName: 'Security Operations (28%)', topics: [
+    t('sp_hardening', 'System Hardening & Secure Baselines', 'Patch management, baseline configurations, and least privilege.'),
+    t('sp_vuln_scanning', 'Vulnerability Management', 'Vulnerability scanners, CVE, CVSS, penetration testing methodologies, and remediation.'),
+    t('sp_authentication', 'Identity & Access Management', 'MFA, SSO, OAuth, SAML, LDAP, Kerberos, and RADIUS.'),
     t('sp_endpoint', 'Endpoint Security', 'EDR, antivirus, DLP, application whitelisting, and mobile device management.'),
     t('sp_wireless', 'Wireless Security', 'WPA3, EAP types, evil twin, rogue access points, and Bluetooth attacks.'),
-    t('sp_hardening', 'System Hardening', 'Patch management, baseline configurations, and least privilege.'),
-  ]},
-  { sectionId: 'operations', sectionName: 'Security Operations', topics: [
-    t('sp_sdlc', 'Secure SDLC & Development Practices', 'SDLC models, secure coding (input validation, parameterized queries, output encoding), SAST/DAST/IAST/SCA, DevSecOps, CI/CD security. SY0-701 objectives 4.4-4.6.'),
+    t('sp_logging', 'Logging & Monitoring', 'SIEM, log aggregation, alerting, and continuous monitoring.'),
     t('sp_incident', 'Incident Response', 'IR process, containment, eradication, recovery, and lessons learned.'),
     t('sp_forensics', 'Digital Forensics', 'Evidence collection, chain of custody, imaging, and analysis tools.'),
-    t('sp_logging', 'Logging & Monitoring', 'SIEM, log aggregation, alerting, and continuous monitoring.'),
-    t('sp_backup', 'Backup & Disaster Recovery', 'Backup types, RTO, RPO, and business continuity planning.'),
   ]},
-  { sectionId: 'governance', sectionName: 'Security Program Management & Oversight', topics: [
+  { sectionId: 'program_mgmt', sectionName: 'Security Program Management & Oversight (20%)', topics: [
+    t('sp_frameworks', 'Security Frameworks & Governance', 'NIST CSF/RMF, ISO 27001, CIS Controls, and governance structures.'),
     t('sp_policies', 'Policies & Procedures', 'AUPs, change management, separation of duties, and data classification.'),
     t('sp_risk', 'Risk Management', 'Risk assessment, risk register, quantitative/qualitative analysis, and risk treatment.'),
     t('sp_third_party', 'Third-Party Risk Management', 'Vendor risk assessment, SOC 2 reports, SLAs/MSAs/MOUs, right-to-audit, supply chain security, SBOM. SY0-701 objective 5.3.'),

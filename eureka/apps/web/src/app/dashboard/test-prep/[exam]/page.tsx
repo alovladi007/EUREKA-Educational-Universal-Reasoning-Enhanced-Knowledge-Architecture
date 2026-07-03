@@ -2242,7 +2242,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         let spQuestions = [...SECPLUS_QUESTIONS];
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
-            threats_attacks: 0, architecture: 1, implementation: 2, operations: 3, governance: 4,
+            general_concepts: 0, threats_vuln: 1, architecture: 2, operations: 3, program_mgmt: 4,
           };
           const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
           spQuestions = spQuestions.filter(q => topicIds.includes(q.topicId));
@@ -3276,21 +3276,21 @@ function FEEEAnalyticsTab() {
 // ═══════════════════════════════════════════════════════════════
 // COMPTIA SECURITY+ — FULL PRACTICE EXAM + ANALYTICS
 // ═══════════════════════════════════════════════════════════════
-// 90-question timed mock mirroring the FE EE simulator. Domains follow
-// the existing SECURITY_PLUS_COURSE / qbank taxonomy (5 buckets, topicId
-// 0–4). The distribution is weighted by the course domainWeights
-// (24/21/25/20/10) and sums to 90. Question supply per domain
-// (105/82/90/86/89) comfortably sustains a full-length draw with variety.
+// 90-question timed mock mirroring the FE EE simulator. Domains follow the
+// SY0-701 taxonomy (5 domains, topicId 0–4). The distribution matches the
+// official SY0-701 exam weights (GSC 12% / Threats 22% / Arch 18% / Ops 28% /
+// Mgmt 20%) and sums to 90. Question supply per domain (35/75/93/144/105)
+// comfortably sustains a full-length draw with variety.
 const SECPLUS_TOPIC_NAMES = [
-  'Threats, Vulnerabilities & Attacks',
+  'General Security Concepts',
+  'Threats, Vulnerabilities & Mitigations',
   'Security Architecture',
-  'Security Implementation',
   'Security Operations',
   'Security Program Management',
 ];
-// Matches the per-section questionCounts declared in exam-config.ts
-// (SECURITY_PLUS.sections), by topicId order 0–4. Sums to 90.
-const SECPLUS_TOPIC_DISTRIBUTION = [22, 18, 22, 18, 10]; // = 90 questions
+// SY0-701 exam weights, matching exam-config.ts SECURITY_PLUS.sections by
+// topicId order 0–4. Sums to 90.
+const SECPLUS_TOPIC_DISTRIBUTION = [11, 20, 16, 25, 18]; // = 90 questions
 const SECPLUS_EXAM_TIME = 5400; // 90 minutes
 const SECPLUS_PASS_PCT = 75;    // practice benchmark (labeled "Est. Pass")
 

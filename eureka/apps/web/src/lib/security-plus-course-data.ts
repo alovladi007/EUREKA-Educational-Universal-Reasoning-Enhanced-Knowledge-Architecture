@@ -26,13 +26,16 @@ export interface TopicLesson {
 export const SECURITY_PLUS_COURSE: Record<string, TopicLesson> = {
 
 // ═══════════════════════════════════════════════════════════════
-// DOMAIN 1 — Threats, Vulnerabilities & Attacks (24%)
+// SY0-701 taxonomy — authoritative domain grouping is in exam-curriculum.ts
+// (SECURITY_PLUS) and each topic's own domainWeight. Topic blocks below keep
+// their original file order; the DOMAIN markers are legacy section dividers.
+// SY0-701 D1 — General Security Concepts (12%)
 // ═══════════════════════════════════════════════════════════════
 
 sp_malware: {
   topicId: 'sp_malware',
   title: `Malware Types & Indicators`,
-  domainWeight: '24%',
+  domainWeight: '22%',
   overview: `Malware is any software intentionally designed to cause damage, steal data, or gain unauthorized access to systems. Understanding malware types, propagation methods, and indicators of compromise is essential for both the Security+ exam and real-world defense. This topic covers the full spectrum of malicious software, from traditional viruses to modern fileless and polymorphic threats.`,
   sections: [
     {
@@ -194,7 +197,7 @@ Detection requires behavioral analysis, memory forensics, and monitoring of scri
 sp_social_eng: {
   topicId: 'sp_social_eng',
   title: `Social Engineering Attacks`,
-  domainWeight: '24%',
+  domainWeight: '22%',
   overview: `Social engineering exploits human psychology rather than technical vulnerabilities. These attacks manipulate people into divulging confidential information, granting access, or performing actions that compromise security. Social engineering is consistently the most successful initial attack vector because it targets the weakest link in security — humans.`,
   sections: [
     {
@@ -343,7 +346,7 @@ Watering holes are effective against security-conscious organizations because th
 sp_app_attacks: {
   topicId: 'sp_app_attacks',
   title: `Application Attacks`,
-  domainWeight: '24%',
+  domainWeight: '22%',
   overview: `Application attacks exploit vulnerabilities in software to gain unauthorized access, steal data, or disrupt services. These attacks target web applications, APIs, databases, and compiled software. Understanding injection attacks, cross-site attacks, and input validation failures is critical for the Security+ exam.`,
   sections: [
     {
@@ -520,7 +523,7 @@ Prevention: Session tokens with expiration, nonces (numbers used once), timestam
 sp_network_attacks: {
   topicId: 'sp_network_attacks',
   title: `Network Attacks`,
-  domainWeight: '24%',
+  domainWeight: '22%',
   overview: `Network attacks target the communication infrastructure that connects systems. These attacks can intercept, modify, disrupt, or redirect network traffic. Understanding common network attack types, their mechanisms, and countermeasures is essential for Security+ candidates.`,
   sections: [
     {
@@ -631,7 +634,7 @@ Once successful, traffic intended for the gateway flows through the attacker, wh
 sp_vuln_scanning: {
   topicId: 'sp_vuln_scanning',
   title: `Vulnerability Scanning & Assessment`,
-  domainWeight: '24%',
+  domainWeight: '28%',
   overview: `Vulnerability scanning and assessment is the systematic process of identifying, classifying, and prioritizing security weaknesses in systems, networks, and applications. This topic covers scanning tools, methodologies, vulnerability databases, and the relationship between vulnerability scanning and penetration testing.`,
   sections: [
     {
@@ -773,7 +776,7 @@ Organizations offer rewards to security researchers who discover and responsibly
 sp_threat_intel: {
   topicId: 'sp_threat_intel',
   title: `Threat Intelligence & Indicators`,
-  domainWeight: '24%',
+  domainWeight: '22%',
   overview: `Threat intelligence is evidence-based knowledge about existing or emerging threats that informs security decisions. It transforms raw data about threats into actionable intelligence that helps organizations prevent, detect, and respond to attacks. This topic covers indicators of compromise, threat intelligence sources, sharing frameworks, and threat hunting.`,
   sections: [
     {
@@ -930,13 +933,13 @@ Effective threat hunting requires: skilled analysts, comprehensive logging and t
 },
 
 // ═══════════════════════════════════════════════════════════════
-// DOMAIN 2 — Security Architecture (21%)
+// SY0-701 D2 — Threats, Vulnerabilities & Mitigations (22%)
 // ═══════════════════════════════════════════════════════════════
 
 sp_frameworks: {
   topicId: 'sp_frameworks',
   title: `Security Frameworks & Models`,
-  domainWeight: '21%',
+  domainWeight: '20%',
   overview: `Security frameworks provide structured approaches to implementing, managing, and improving an organization's security posture. Understanding major frameworks, their purposes, and when to apply them is essential for Security+ certification and real-world security architecture.`,
   sections: [
     {
@@ -1108,7 +1111,7 @@ Controls are classified by their function:
 sp_network_design: {
   topicId: 'sp_network_design',
   title: `Secure Network Design`,
-  domainWeight: '21%',
+  domainWeight: '18%',
   overview: `Secure network design implements architecture patterns that protect data, control access, and limit the impact of security incidents. This topic covers network segmentation, perimeter defense, secure protocols, and modern network architectures including software-defined networking.`,
   sections: [
     {
@@ -1272,7 +1275,7 @@ Distribute traffic across multiple servers for performance and availability. Sec
 sp_cloud: {
   topicId: 'sp_cloud',
   title: `Cloud Security`,
-  domainWeight: '21%',
+  domainWeight: '18%',
   overview: `Cloud computing introduces unique security challenges around shared responsibility, data sovereignty, multi-tenancy, and visibility. Understanding cloud service models, deployment models, and cloud-native security controls is essential for protecting modern infrastructure.`,
   sections: [
     {
@@ -1429,7 +1432,7 @@ Serverless functions (AWS Lambda, Azure Functions) shift more responsibility to 
 sp_virtualization: {
   topicId: 'sp_virtualization',
   title: `Virtualization & Containerization`,
-  domainWeight: '21%',
+  domainWeight: '18%',
   overview: `Virtualization and containerization are foundational technologies for modern IT infrastructure. Understanding their security implications — including hypervisor attacks, container escape, and serverless risks — is essential for Security+ candidates.`,
   sections: [
     {
@@ -1569,13 +1572,13 @@ IaC tools manage infrastructure through code definitions rather than manual conf
 },
 
 // ═══════════════════════════════════════════════════════════════
-// DOMAIN 3 — Security Implementation (25%)
+// SY0-701 D3 — Security Architecture (18%)
 // ═══════════════════════════════════════════════════════════════
 
 sp_crypto: {
   topicId: 'sp_crypto',
   title: `Cryptography`,
-  domainWeight: '25%',
+  domainWeight: '12%',
   overview: `Cryptography is the foundation of data confidentiality, integrity, authentication, and non-repudiation. This topic covers symmetric and asymmetric encryption, hashing, digital signatures, PKI, and their practical applications in securing data at rest and in transit.`,
   sections: [
     {
@@ -1757,7 +1760,7 @@ Certificate pinning associates a host with its expected public key or certificat
 sp_authentication: {
   topicId: 'sp_authentication',
   title: `Authentication & Authorization`,
-  domainWeight: '25%',
+  domainWeight: '28%',
   overview: `Authentication verifies identity; authorization determines permissions. This topic covers multi-factor authentication, single sign-on, identity federation, access control models, and authentication protocols. These concepts are central to the Security+ exam and to securing modern systems.`,
   sections: [
     {
@@ -1915,7 +1918,7 @@ PAM controls and monitors privileged accounts (admin, root, service accounts):
 sp_endpoint: {
   topicId: 'sp_endpoint',
   title: `Endpoint Security`,
-  domainWeight: '25%',
+  domainWeight: '28%',
   overview: `Endpoint security protects individual devices (workstations, laptops, mobile devices, servers) that connect to the network. This topic covers endpoint detection and response, data loss prevention, mobile device management, and application control technologies.`,
   sections: [
     {
@@ -2072,7 +2075,7 @@ MAM focuses specifically on managing and securing applications rather than the e
 sp_wireless: {
   topicId: 'sp_wireless',
   title: `Wireless Security`,
-  domainWeight: '25%',
+  domainWeight: '28%',
   overview: `Wireless networks introduce unique security challenges because radio signals extend beyond physical boundaries. Understanding wireless security protocols, authentication methods, and common wireless attacks is essential for the Security+ exam.`,
   sections: [
     {
@@ -2191,7 +2194,7 @@ sp_wireless: {
 sp_hardening: {
   topicId: 'sp_hardening',
   title: `System Hardening`,
-  domainWeight: '25%',
+  domainWeight: '28%',
   overview: `System hardening reduces the attack surface by removing unnecessary services, applying patches, configuring security settings, and implementing the principle of least functionality. This topic covers hardening techniques for operating systems, applications, and network devices.`,
   sections: [
     {
@@ -2352,13 +2355,13 @@ NIST SP 800-88 provides guidelines for media sanitization. The appropriate metho
 },
 
 // ═══════════════════════════════════════════════════════════════
-// DOMAIN 4 — Security Operations (20%)
+// SY0-701 D4 — Security Operations (28%)
 // ═══════════════════════════════════════════════════════════════
 
 sp_incident: {
   topicId: 'sp_incident',
   title: `Incident Response`,
-  domainWeight: '20%',
+  domainWeight: '28%',
   overview: `Incident response (IR) is the organized approach to addressing and managing security incidents. A well-prepared IR process minimizes damage, reduces recovery time, and prevents recurrence. This topic covers IR planning, phases, team roles, and communication.`,
   sections: [
     {
@@ -2525,7 +2528,7 @@ Precursors enable proactive defense; indicators trigger reactive response.`,
 sp_forensics: {
   topicId: 'sp_forensics',
   title: `Digital Forensics`,
-  domainWeight: '20%',
+  domainWeight: '28%',
   overview: `Digital forensics is the process of identifying, preserving, collecting, analyzing, and reporting digital evidence. Proper forensic procedures ensure evidence integrity and admissibility in legal proceedings. This topic covers evidence handling, forensic tools, and the chain of custody.`,
   sections: [
     {
@@ -2691,7 +2694,7 @@ Techniques attackers use to hinder forensic investigation:
 sp_logging: {
   topicId: 'sp_logging',
   title: `Logging & Monitoring`,
-  domainWeight: '20%',
+  domainWeight: '28%',
   overview: `Logging and monitoring provide visibility into security events across the enterprise. A robust logging infrastructure enables threat detection, incident investigation, compliance, and forensic analysis. This topic covers SIEM, log management, continuous monitoring, and alerting.`,
   sections: [
     {
@@ -2845,7 +2848,7 @@ Integrating threat intelligence feeds into monitoring tools enhances detection:
 sp_backup: {
   topicId: 'sp_backup',
   title: `Backup & Disaster Recovery`,
-  domainWeight: '20%',
+  domainWeight: '18%',
   overview: `Backup and disaster recovery ensure business continuity by protecting data and enabling system restoration after disruptions. This topic covers backup types, disaster recovery planning, business continuity, high availability, and key recovery metrics.`,
   sections: [
     {
@@ -2994,13 +2997,13 @@ Test DR plans at least annually. Many organizations discover their DR plans don'
 },
 
 // ═══════════════════════════════════════════════════════════════
-// DOMAIN 5 — Security Program Management & Oversight (10%)
+// SY0-701 D5 — Security Program Management & Oversight (20%)
 // ═══════════════════════════════════════════════════════════════
 
 sp_policies: {
   topicId: 'sp_policies',
   title: `Policies & Procedures`,
-  domainWeight: '10%',
+  domainWeight: '20%',
   overview: `Security policies, procedures, standards, and guidelines form the governance foundation for an organization's security program. They define what is required, how it should be done, and provide the authority for security activities. This topic covers policy types, change management, data classification, and personnel security.`,
   sections: [
     {
@@ -3158,7 +3161,7 @@ Effectiveness should be measured by behavior change (reduced phishing click rate
 sp_risk: {
   topicId: 'sp_risk',
   title: `Risk Management`,
-  domainWeight: '10%',
+  domainWeight: '20%',
   overview: `Risk management is the systematic process of identifying, analyzing, evaluating, and treating risks to an organization's information assets. It provides the foundation for making informed security investment decisions and is a core component of the Security+ exam.`,
   sections: [
     {
@@ -3331,7 +3334,7 @@ Metrics that signal increasing risk levels:
 sp_compliance: {
   topicId: 'sp_compliance',
   title: `Compliance & Regulations`,
-  domainWeight: '10%',
+  domainWeight: '20%',
   overview: `Compliance ensures that organizations adhere to laws, regulations, standards, and contractual obligations. Understanding major regulations, their requirements, and their applicability is essential for the Security+ exam and for any security professional.`,
   sections: [
     {
@@ -4199,7 +4202,7 @@ API1 vulnerabilities in old versions are a frequent attack vector — if v1 is s
 sp_sdlc: {
   topicId: 'sp_sdlc',
   title: `Secure SDLC & Development Practices`,
-  domainWeight: '28%',
+  domainWeight: '18%',
   overview: `The Security Operations domain (28% of the exam) includes major objectives on secure software development that the platform previously covered only obliquely through application-attack topics. SY0-701 objectives 4.4–4.6 expect you to know SDLC models, secure coding practices, the testing tool stack (SAST/DAST/IAST/SCA), and how security integrates into modern CI/CD pipelines. This topic addresses the development side of the equation — building software that doesn't have the vulnerabilities the threat-modeling topics teach you to look for.`,
   sections: [
     {
