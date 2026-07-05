@@ -76,11 +76,19 @@ export default function DashboardAIResearchPage() {
   const [starting, setStarting] = useState(false);
   const [startErr, setStartErr] = useState<string | null>(null);
 
+  const [chunkCount, setChunkCount] = useState<number | null>(null);
+
   useEffect(() => {
     (async () => {
       try {
-        const body = await api<Session[]>("/agent/sessions/me").catch(() => [] as Session[]);
+        const [body, stats] = await Promise.all([
+          api<Session[]>("/agent/sessions/me").catch(() => [] as Session[]),
+          api<{ knowledge_chunks?: number }>("/agent/rag/stats").catch(() => null),
+        ]);
         setSessions(Array.isArray(body) ? body : []);
+        if (stats && typeof stats.knowledge_chunks === "number") {
+          setChunkCount(stats.knowledge_chunks);
+        }
       } catch (e) {
         setSessionsErr(toText((e as Error).message));
         setSessions([]);
@@ -175,9 +183,11 @@ export default function DashboardAIResearchPage() {
           <CardContent className="p-6 flex items-center justify-between">
             <div>
               <p className="text-sm text-muted-foreground">Knowledge chunks</p>
-              <p className="text-3xl font-bold">269</p>
+              <p className="text-3xl font-bold">
+                {chunkCount == null ? "—" : chunkCount.toLocaleString()}
+              </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Phase 6.1 corpus (item bank + skill graph), per docs/STATUS.md.
+                Live corpus size (item bank + skill graph) via /agent/rag/stats.
               </p>
             </div>
             <Database className="h-8 w-8 text-purple-500" />
@@ -343,7 +353,8 @@ export default function DashboardAIResearchPage() {
         </CardHeader>
         <CardContent className="text-sm space-y-2">
           <p>
-            EUREKA&apos;s research agent uses the Phase 6 RAG pipeline (269 knowledge
+            EUREKA&apos;s research agent uses the Phase 6 RAG pipeline{" "}
+            ({chunkCount == null ? "the" : chunkCount.toLocaleString()} knowledge
             chunks across the item bank + skill graph) to answer with{" "}
             <span className="font-mono text-xs">[ref:source_uri]</span>{" "}
             citations and a groundedness score per message.

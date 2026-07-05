@@ -103,6 +103,44 @@ async def list_skills(
     return list(result.scalars().all())
 
 
+@router.get("/skills/graph/stats", response_model=dict)
+async def skill_graph_stats(
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(get_current_user),
+) -> dict:
+    """Live counts for the skill graph.
+
+    Feeds the Pedagogy dashboard so its headline numbers reflect the real
+    graph instead of a hand-written estimate. `cross_framework_edges` counts
+    prerequisite edges whose two endpoints sit in different frameworks.
+    Registered before /skills/{skill_id} so "graph" is never parsed as an id.
+    """
+    skills = await db.execute(
+        text("SELECT count(*) FROM skills WHERE is_active = true")
+    )
+    edges = await db.execute(text("SELECT count(*) FROM skill_prerequisites"))
+    frameworks = await db.execute(
+        text("SELECT count(DISTINCT framework) FROM skills WHERE is_active = true")
+    )
+    cross = await db.execute(
+        text(
+            """
+            SELECT count(*)
+            FROM skill_prerequisites sp
+            JOIN skills a ON a.id = sp.prerequisite_id
+            JOIN skills b ON b.id = sp.successor_id
+            WHERE a.framework IS DISTINCT FROM b.framework
+            """
+        )
+    )
+    return {
+        "skills": int(skills.scalar() or 0),
+        "prerequisites": int(edges.scalar() or 0),
+        "frameworks": int(frameworks.scalar() or 0),
+        "cross_framework_edges": int(cross.scalar() or 0),
+    }
+
+
 @router.get("/skills/by-code/{framework}/{code:path}", response_model=SkillResponse)
 async def get_skill_by_code(
     framework: SkillFramework,

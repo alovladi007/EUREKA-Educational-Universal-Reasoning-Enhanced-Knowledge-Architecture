@@ -30,7 +30,7 @@ from __future__ import annotations
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import select
+from sqlalchemy import select, text
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -266,3 +266,18 @@ async def rag_retrieve_probe(
     return [c.to_citation() | {"score": round(c.score, 4),
                                  "keyword_rank": c.keyword_rank,
                                  "semantic_rank": c.semantic_rank} for c in chunks]
+
+
+@router.get("/agent/rag/stats", response_model=dict)
+async def rag_stats(
+    db: AsyncSession = Depends(get_db),
+    _: User = Depends(get_current_user),
+) -> dict:
+    """Live size of the RAG knowledge base.
+
+    The AI Research dashboard used to hard-code this from a docs snapshot;
+    this returns the real row count so the UI can never drift from the
+    corpus that /agent/rag/retrieve actually searches.
+    """
+    r = await db.execute(text("SELECT count(*) FROM knowledge_chunks"))
+    return {"knowledge_chunks": int(r.scalar() or 0)}

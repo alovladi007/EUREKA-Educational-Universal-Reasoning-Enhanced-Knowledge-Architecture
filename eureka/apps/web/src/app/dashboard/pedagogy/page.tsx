@@ -36,16 +36,28 @@ function toText(x: unknown): string {
 
 const GITHUB_BASE = "https://github.com/alovladi007/EUREKA/blob/main";
 
+type GraphStats = {
+  skills?: number;
+  prerequisites?: number;
+  frameworks?: number;
+  cross_framework_edges?: number;
+};
+
 export default function DashboardPedagogyPage() {
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [graphStats, setGraphStats] = useState<GraphStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
       try {
-        const body = await api<Skill[]>("/skills?limit=100").catch(() => [] as Skill[]);
+        const [body, stats] = await Promise.all([
+          api<Skill[]>("/skills?limit=100").catch(() => [] as Skill[]),
+          api<GraphStats>("/skills/graph/stats").catch(() => null),
+        ]);
         setSkills(Array.isArray(body) ? body : []);
+        setGraphStats(stats);
       } catch (e) {
         setErr(toText((e as Error).message));
         setSkills([]);
@@ -122,10 +134,14 @@ export default function DashboardPedagogyPage() {
         <Card>
           <CardContent className="p-6 flex items-center justify-between">
             <div>
-              <p className="text-sm text-muted-foreground">Cross-framework prereq edges</p>
-              <p className="text-3xl font-bold">75+</p>
+              <p className="text-sm text-muted-foreground">Prerequisite edges</p>
+              <p className="text-3xl font-bold">
+                {loading ? "—" : (graphStats?.prerequisites ?? 0)}
+              </p>
               <p className="text-xs text-muted-foreground mt-1">
-                Phase 4.2 seeded, per docs/STATUS.md.
+                {loading
+                  ? " "
+                  : `${graphStats?.cross_framework_edges ?? 0} cross-framework · live from the skill graph`}
               </p>
             </div>
             <GitBranch className="h-8 w-8 text-purple-500" />
