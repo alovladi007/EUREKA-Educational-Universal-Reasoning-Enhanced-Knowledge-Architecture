@@ -126,6 +126,10 @@ class UserResponse(BaseModel):
     last_name: str
     display_name: Optional[str]
     avatar_url: Optional[str]
+    phone: Optional[str] = None
+    bio: Optional[str] = None
+    location: Optional[str] = None
+    date_of_birth: Optional[datetime] = None
     role: str
     locale: str
     timezone: str
@@ -146,10 +150,11 @@ class UserUpdate(BaseModel):
     avatar_url: Optional[str] = Field(None, max_length=500)
     locale: Optional[str] = Field(None, max_length=10)
     timezone: Optional[str] = Field(None, max_length=50)
-    # Phone is informally captured for SMS notifications. Stored on the
-    # user row via the preferences JSONB blob — kept here for convenience
-    # so PATCH /me can touch it.
+    # Profile fields — real nullable columns on the users table.
     phone: Optional[str] = Field(None, max_length=32)
+    bio: Optional[str] = Field(None, max_length=2000)
+    location: Optional[str] = Field(None, max_length=200)
+    date_of_birth: Optional[datetime] = None
 
     class Config:
         # Allow partial updates

@@ -39,6 +39,8 @@ export interface Organization {
   tier: string;
   email?: string;
   phone?: string;
+  bio?: string;
+  location?: string;
   website?: string;
   is_active: boolean;
   is_verified: boolean;

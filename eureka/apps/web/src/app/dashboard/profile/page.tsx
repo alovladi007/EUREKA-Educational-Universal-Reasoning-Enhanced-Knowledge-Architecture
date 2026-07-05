@@ -67,6 +67,10 @@ export default function ProfilePage() {
         last_name: profileData.last_name,
         display_name: profileData.display_name?.trim() || undefined,
         avatar_url: profileData.avatar_url?.trim() || undefined,
+        phone: profileData.phone?.trim() || undefined,
+        bio: profileData.bio?.trim() || undefined,
+        location: profileData.location?.trim() || undefined,
+        date_of_birth: profileData.date_of_birth || undefined,
       });
       setUser(updated);
       if (typeof window !== 'undefined') {

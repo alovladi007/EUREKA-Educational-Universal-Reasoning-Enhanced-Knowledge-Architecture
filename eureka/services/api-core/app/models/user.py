@@ -32,6 +32,9 @@ class User(Base):
     last_name = Column(String(100), nullable=False)
     display_name = Column(String(200), nullable=True)
     avatar_url = Column(String(500), nullable=True)
+    phone = Column(String(50), nullable=True)
+    bio = Column(String(2000), nullable=True)
+    location = Column(String(200), nullable=True)
 
     # User Metadata
     role = Column(String(50), nullable=False, default="student", index=True)
