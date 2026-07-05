@@ -2054,7 +2054,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 400, FE_EE: 647, FE_ME: 555,
-    PATENT_BAR: 536, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 200, LSAT: 200,
+    PATENT_BAR: 536, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
 
@@ -2396,6 +2396,31 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { toast.error('No GRE questions available for the selected sections.'); }
+      } else if (examType === 'GMAT') {
+        // GMAT Focus QBank: topicId 0=Quantitative, 1=Verbal, 2=Data Insights.
+        const { GMAT_QUESTIONS } = await import('@/lib/gmat-qbank-data');
+        let gmatQuestions = [...GMAT_QUESTIONS];
+        if (selectedSections.length > 0) {
+          const sectionToTopic: Record<string, number> = { quantitative: 0, verbal: 1, data_insights: 2 };
+          const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
+          if (topicIds.length > 0) gmatQuestions = gmatQuestions.filter((q) => topicIds.includes(q.topicId));
+        }
+        gmatQuestions = gmatQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        if (gmatQuestions.length > 0) {
+          const normalized = gmatQuestions.map((q: any, i: number) => ({
+            ...q,
+            question_text: q.passage ? `${q.passage}\n\n${q.question}` : q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct,
+            explanation_text: q.explanation,
+            section_id: q.topicId === 0 ? 'quantitative' : q.topicId === 1 ? 'verbal' : 'data_insights',
+            _idx: i,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
+          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
+        } else { toast.error('No GMAT questions available for the selected sections.'); }
       } else {
         toast('No questions available for this exam yet. Questions are being added.', { icon: 'ℹ️' });
       }
