@@ -1,9 +1,13 @@
 """Test fixtures.
 
 The suite runs fully offline: an in-memory SQLite database (shared via a static
-pool so every connection sees the same schema) and the mock identity provider,
-so no Postgres or EUREKA is required. The FastAPI dependency for the database
-session is overridden to use the test engine.
+pool so every connection sees the same schema) seeded with the Phase 1 algebra
+skill graph, plus the mock identity provider. No Postgres or EUREKA is required.
+
+Fixtures:
+  engine      - the seeded test engine (function scoped).
+  client      - an httpx client against the app, using the test engine.
+  db_session  - a raw AsyncSession on the same engine for service-level tests.
 """
 
 from __future__ import annotations
@@ -20,41 +24,65 @@ from sqlalchemy.pool import StaticPool  # noqa: E402
 
 
 @pytest_asyncio.fixture
-async def client():
+async def engine():
     from app.core import db as db_mod
     from app.core.config import get_settings
-    from app.core.db import Base, get_session
+    from app.core.db import Base
     from app.core.security import get_identity
-    from app.domains.identity import models  # noqa: F401 - register tables
+
+    # Import every model module so all tables register on the metadata.
+    from app.domains.adaptive import models as _a  # noqa: F401
+    from app.domains.assessment import models as _s  # noqa: F401
+    from app.domains.attempts import models as _t  # noqa: F401
+    from app.domains.content import models as _c  # noqa: F401
+    from app.domains.curriculum import models as _cur  # noqa: F401
+    from app.domains.identity import models as _i  # noqa: F401
+    from app.seed import seed
 
     get_settings.cache_clear()
     get_identity.cache_clear()
 
-    engine = create_async_engine(
+    eng = create_async_engine(
         "sqlite+aiosqlite://",
         poolclass=StaticPool,
         connect_args={"check_same_thread": False},
     )
-    async with engine.begin() as conn:
+    async with eng.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
-    # Point the readiness probe at the test engine too.
-    db_mod._engine = engine
+    maker = async_sessionmaker(eng, expire_on_commit=False)
+    async with maker() as session:
+        await seed(session)
 
-    TestSession = async_sessionmaker(engine, expire_on_commit=False)
+    db_mod._engine = eng
+    yield eng
+    await eng.dispose()
+    db_mod._engine = None
+
+
+@pytest_asyncio.fixture
+async def client(engine):
+    from app.core.db import get_session
+    from app.main import create_app
+
+    maker = async_sessionmaker(engine, expire_on_commit=False)
 
     async def override_get_session():
-        async with TestSession() as session:
+        async with maker() as session:
             yield session
-
-    from app.main import create_app
 
     app = create_app()
     app.dependency_overrides[get_session] = override_get_session
-
     transport = ASGITransport(app=app)
     async with AsyncClient(transport=transport, base_url="http://test") as http_client:
         yield http_client
 
-    await engine.dispose()
-    db_mod._engine = None
+
+@pytest_asyncio.fixture
+async def db_session(engine):
+    maker = async_sessionmaker(engine, expire_on_commit=False)
+    async with maker() as session:
+        yield session
+
+
+AUTH = {"Authorization": "Bearer devtoken"}

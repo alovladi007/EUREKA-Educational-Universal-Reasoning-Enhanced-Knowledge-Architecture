@@ -69,30 +69,22 @@ def test_parse_error_is_not_raised() -> None:
 
 
 def test_require_form_factored_accepts_factored() -> None:
-    res = grade_expression(
-        "(x-1)*(x+1)", "x**2-1", require_form="factored"
-    )
+    res = grade_expression("(x-1)*(x+1)", "x**2-1", require_form="factored")
     assert res.is_correct is True, res.detail
     assert res.score == 1.0
 
 
 def test_require_form_factored_rejects_expanded() -> None:
-    res = grade_expression(
-        "x**2-1", "x**2-1", require_form="factored"
-    )
+    res = grade_expression("x**2-1", "x**2-1", require_form="factored")
     assert res.is_correct is False, res.detail
     assert "form" in res.detail.lower()
 
 
 def test_require_form_expanded() -> None:
-    ok = grade_expression(
-        "x**2 + 2*x + 1", "(x+1)**2", require_form="expanded"
-    )
+    ok = grade_expression("x**2 + 2*x + 1", "(x+1)**2", require_form="expanded")
     assert ok.is_correct is True, ok.detail
 
-    bad = grade_expression(
-        "(x+1)**2", "(x+1)**2", require_form="expanded"
-    )
+    bad = grade_expression("(x+1)**2", "(x+1)**2", require_form="expanded")
     assert bad.is_correct is False, bad.detail
 
 

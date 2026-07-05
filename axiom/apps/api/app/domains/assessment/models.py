@@ -1,0 +1,174 @@
+"""Assessment ORM models.
+
+Two kinds of source content produce a question a student sees:
+  Item         - a static question (used for selection types like mcq_single).
+  ItemTemplate - a parameterized source with variables, constraints, and an
+                 answer expression. resolve seeds a deterministic ItemVariant
+                 per student, so no two students get identical numbers while
+                 analytics still aggregate at the template level.
+
+An Assessment has one or more AssessmentForms; a form lists AssessmentItems,
+each pointing at an Item or an ItemTemplate. AssignmentTarget assigns an
+assessment to a user.
+"""
+
+from __future__ import annotations
+
+import uuid
+from datetime import UTC, datetime
+
+from sqlalchemy import Float, ForeignKey, Integer, String, Text, Uuid
+from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.types import JSON
+
+from app.core.db import Base
+
+# Question kinds supported in Phase 1.
+ITEM_KINDS = ("mcq_single", "numeric", "math_expression", "equation")
+
+
+def _uuid() -> uuid.UUID:
+    return uuid.uuid4()
+
+
+def _now() -> datetime:
+    return datetime.now(UTC)
+
+
+class ItemBank(Base):
+    __tablename__ = "item_banks"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(String(500), nullable=False, default="")
+
+
+class Item(Base):
+    """A static, non-parameterized question."""
+
+    __tablename__ = "items"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    bank_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("item_banks.id", ondelete="CASCADE"), index=True
+    )
+    node_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("knowledge_nodes.id", ondelete="CASCADE"), index=True
+    )
+    kind: Mapped[str] = mapped_column(String(24), nullable=False)
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    # options: list[str] for mcq_single; null otherwise.
+    options: Mapped[list | None] = mapped_column(JSON, nullable=True)
+    # correct: int index for mcq_single; string expression or number for the rest.
+    correct: Mapped[str] = mapped_column(String(500), nullable=False)
+    explanation: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    difficulty: Mapped[float] = mapped_column(Float, nullable=False, default=0.5)
+    tolerance: Mapped[float | None] = mapped_column(Float, nullable=True)
+
+
+class ItemTemplate(Base):
+    """A parameterized question source (numeric or math expression)."""
+
+    __tablename__ = "item_templates"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    bank_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("item_banks.id", ondelete="CASCADE"), index=True
+    )
+    node_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("knowledge_nodes.id", ondelete="CASCADE"), index=True
+    )
+    kind: Mapped[str] = mapped_column(String(24), nullable=False)
+    stem: Mapped[str] = mapped_column(Text, nullable=False)
+    # variables: list of VarSpec dicts (see math_core.templates.VarSpec).
+    variables: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    constraints: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    answer_expr: Mapped[str] = mapped_column(String(500), nullable=False)
+    explanation: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    difficulty: Mapped[float] = mapped_column(Float, nullable=False, default=0.5)
+    tolerance: Mapped[float | None] = mapped_column(Float, nullable=True)
+
+    variants: Mapped[list[ItemVariant]] = relationship(back_populates="template")
+
+
+class ItemVariant(Base):
+    """A resolved instance of an ItemTemplate for a specific seed."""
+
+    __tablename__ = "item_variants"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    template_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("item_templates.id", ondelete="CASCADE"), index=True
+    )
+    seed: Mapped[int] = mapped_column(Integer, nullable=False)
+    values: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+    prompt: Mapped[str] = mapped_column(Text, nullable=False)
+    answer: Mapped[str] = mapped_column(String(500), nullable=False)
+    created_at: Mapped[datetime] = mapped_column(default=_now)
+
+    template: Mapped[ItemTemplate] = relationship(back_populates="variants")
+
+
+class Assessment(Base):
+    __tablename__ = "assessments"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    title: Mapped[str] = mapped_column(String(200), nullable=False)
+    kind: Mapped[str] = mapped_column(String(24), nullable=False, default="quiz")
+    created_by: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(default=_now)
+
+    forms: Mapped[list[AssessmentForm]] = relationship(
+        back_populates="assessment", cascade="all, delete-orphan"
+    )
+
+
+class AssessmentForm(Base):
+    __tablename__ = "assessment_forms"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    assessment_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("assessments.id", ondelete="CASCADE"), index=True
+    )
+    name: Mapped[str] = mapped_column(String(120), nullable=False, default="Form A")
+    config: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
+
+    assessment: Mapped[Assessment] = relationship(back_populates="forms")
+    items: Mapped[list[AssessmentItem]] = relationship(
+        back_populates="form", cascade="all, delete-orphan", order_by="AssessmentItem.position"
+    )
+
+
+class AssessmentItem(Base):
+    """A slot on a form pointing at either an Item or an ItemTemplate."""
+
+    __tablename__ = "assessment_items"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    form_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("assessment_forms.id", ondelete="CASCADE"), index=True
+    )
+    position: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    item_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("items.id", ondelete="CASCADE"), nullable=True
+    )
+    template_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("item_templates.id", ondelete="CASCADE"), nullable=True
+    )
+
+    form: Mapped[AssessmentForm] = relationship(back_populates="items")
+
+
+class AssignmentTarget(Base):
+    __tablename__ = "assignment_targets"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    assessment_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("assessments.id", ondelete="CASCADE"), index=True
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    created_at: Mapped[datetime] = mapped_column(default=_now)

@@ -202,9 +202,7 @@ def _check_form(expr: sympy.Expr, require_form: RequireForm) -> tuple[bool, str]
                 # A truly factored form differs from its expansion when the
                 # expression is factorable; if factor() cannot reduce it, the
                 # expanded and factored forms coincide and we accept.
-                factorable = sympy.srepr(factored) != sympy.srepr(
-                    sympy.expand(expr)
-                )
+                factorable = sympy.srepr(factored) != sympy.srepr(sympy.expand(expr))
                 if factorable:
                     ok = (
                         sympy.srepr(expr) == sympy.srepr(factored)
@@ -345,11 +343,13 @@ def grade_numeric(
     norm_expected = repr(exp_val)
 
     if sig_figs is not None:
+
         def _round_sig(z: complex, figs: int) -> complex:
             def _r(x: float) -> float:
                 if x == 0.0:
                     return 0.0
                 return float(f"%.{figs}g" % x)
+
             return complex(_r(z.real), _r(z.imag))
 
         s = _round_sig(stu_val, sig_figs)

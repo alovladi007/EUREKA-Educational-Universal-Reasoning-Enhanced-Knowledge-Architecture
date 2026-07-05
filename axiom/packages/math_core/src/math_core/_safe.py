@@ -31,9 +31,7 @@ from sympy.parsing.sympy_parser import (
 # implicit multiplication and function application (so that "2x" and "sin x"
 # parse the way a student would expect). We deliberately do NOT enable any
 # transformation that could broaden parsing into unsafe territory.
-SAFE_TRANSFORMATIONS = standard_transformations + (
-    implicit_multiplication_application,
-)
+SAFE_TRANSFORMATIONS = standard_transformations + (implicit_multiplication_application,)
 
 # Default wall-clock timeout (seconds) for a single sympy evaluation.
 DEFAULT_TIMEOUT_SECONDS: float = 5.0
@@ -56,9 +54,8 @@ def time_limit(seconds: float) -> Iterator[None]:
     Celery worker), this becomes a no-op and relies on the surrounding sandbox
     for isolation. See the module docstring for the safety rationale.
     """
-    can_use_signal = (
-        threading.current_thread() is threading.main_thread()
-        and hasattr(signal, "SIGALRM")
+    can_use_signal = threading.current_thread() is threading.main_thread() and hasattr(
+        signal, "SIGALRM"
     )
     if not can_use_signal:
         # No-op guard. The caller (Celery worker) provides the real bound.
@@ -110,12 +107,35 @@ def _extract_symbol_names(text: str) -> set[str]:
     # Drop names that sympy resolves itself (functions and constants). Leaving
     # them out of the local table lets sympy bind them to its safe built-ins.
     reserved = {
-        "sin", "cos", "tan", "cot", "sec", "csc",
-        "asin", "acos", "atan", "atan2",
-        "sinh", "cosh", "tanh",
-        "exp", "log", "ln", "sqrt", "Abs", "abs",
-        "pi", "E", "I", "oo", "gamma", "factorial",
-        "Eq", "Rational", "Integer", "Float",
+        "sin",
+        "cos",
+        "tan",
+        "cot",
+        "sec",
+        "csc",
+        "asin",
+        "acos",
+        "atan",
+        "atan2",
+        "sinh",
+        "cosh",
+        "tanh",
+        "exp",
+        "log",
+        "ln",
+        "sqrt",
+        "Abs",
+        "abs",
+        "pi",
+        "E",
+        "I",
+        "oo",
+        "gamma",
+        "factorial",
+        "Eq",
+        "Rational",
+        "Integer",
+        "Float",
     }
     return {n for n in names if n not in reserved}
 

@@ -116,9 +116,7 @@ class Enrollment(Base):
     Phase 4; Phase 0 keeps the table so the shape is stable."""
 
     __tablename__ = "enrollments"
-    __table_args__ = (
-        UniqueConstraint("user_id", "course_ref", name="uq_enrollment_user_course"),
-    )
+    __table_args__ = (UniqueConstraint("user_id", "course_ref", name="uq_enrollment_user_course"),)
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
     user_id: Mapped[uuid.UUID] = mapped_column(
@@ -133,9 +131,7 @@ class ParentLink(Base):
     """Links a parent user to a child user for the read-only parent dashboard."""
 
     __tablename__ = "parent_links"
-    __table_args__ = (
-        UniqueConstraint("parent_user_id", "child_user_id", name="uq_parent_child"),
-    )
+    __table_args__ = (UniqueConstraint("parent_user_id", "child_user_id", name="uq_parent_child"),)
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
     parent_user_id: Mapped[uuid.UUID] = mapped_column(

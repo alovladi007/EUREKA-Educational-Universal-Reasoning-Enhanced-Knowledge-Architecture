@@ -103,9 +103,7 @@ def _sample_one(spec: VarSpec, rng: random.Random) -> float | str:
         high = int(spec.high)
         n_steps = (high - low) // step
         if n_steps < 0:
-            raise TemplateError(
-                f"variable {spec.name!r} has an empty integer range"
-            )
+            raise TemplateError(f"variable {spec.name!r} has an empty integer range")
         k = rng.randint(0, n_steps)
         return float(low + k * step)
 
@@ -113,9 +111,7 @@ def _sample_one(spec: VarSpec, rng: random.Random) -> float | str:
     if spec.step:
         n_steps = int(round((spec.high - spec.low) / spec.step))
         if n_steps < 0:
-            raise TemplateError(
-                f"variable {spec.name!r} has an empty float range"
-            )
+            raise TemplateError(f"variable {spec.name!r} has an empty float range")
         k = rng.randint(0, n_steps)
         return float(spec.low + k * spec.step)
     return float(rng.uniform(spec.low, spec.high))
@@ -170,7 +166,7 @@ def _evaluate_constraint(
         if idx == -1:
             continue
         lhs_text = raw[:idx].strip()
-        rhs_text = raw[idx + len(token):].strip()
+        rhs_text = raw[idx + len(token) :].strip()
         if not lhs_text or not rhs_text:
             raise TemplateError(f"malformed constraint: {raw!r}")
         try:
@@ -196,9 +192,7 @@ def _evaluate_constraint(
         # Undetermined (still symbolic): treat as not satisfied so the sampler
         # keeps drawing concrete values.
         return False
-    raise TemplateError(
-        f"constraint has no recognized relational operator: {raw!r}"
-    )
+    raise TemplateError(f"constraint has no recognized relational operator: {raw!r}")
 
 
 def _constraints_hold(
@@ -248,9 +242,7 @@ def resolve_template(template: ItemTemplate, seed: int) -> ItemVariant:
         candidate: dict[str, float | str] = {
             spec.name: _sample_one(spec, rng) for spec in template.variables
         }
-        subs = {
-            local[name]: _to_sympy_value(val) for name, val in candidate.items()
-        }
+        subs = {local[name]: _to_sympy_value(val) for name, val in candidate.items()}
         if not template.constraints or _constraints_hold(
             template.constraints, subs, local
         ):
@@ -268,10 +260,7 @@ def resolve_template(template: ItemTemplate, seed: int) -> ItemVariant:
     try:
         with time_limit(6.0):
             answer_expr = safe_parse(template.answer_expr, local_symbols=local)
-            subs = {
-                local[name]: _to_sympy_value(val)
-                for name, val in values.items()
-            }
+            subs = {local[name]: _to_sympy_value(val) for name, val in values.items()}
             answer_val = sympy.simplify(answer_expr.subs(subs))
             answer_str = str(answer_val)
     except (MathParseError, MathTimeoutError) as exc:
