@@ -1,0 +1,122 @@
+# AXIOM local development stack.
+#
+# Default up brings the core services online: Postgres (with pgvector), Redis,
+# the API, the web app, and the Celery worker and beat. The observability
+# profile adds Prometheus and Grafana.
+#
+# Ports are chosen to avoid clashing with an EUREKA stack on the same machine
+# (EUREKA uses 4040, 4041, 8000, 5434, 6381, and others).
+#   api 8400, web 4100, postgres 5440, redis 6390, prometheus 9100, grafana 3100
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: axiom
+      POSTGRES_PASSWORD: axiom
+      POSTGRES_DB: axiom
+    ports:
+      - "5440:5432"
+    volumes:
+      - axiom_pg:/var/lib/postgresql/data
+      - ./db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U axiom -d axiom"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6390:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      AXIOM_ENV: development
+      AXIOM_DATABASE_URL: postgresql+asyncpg://axiom:axiom@postgres:5432/axiom
+      AXIOM_REDIS_URL: redis://redis:6379/0
+      AXIOM_IDENTITY_PROVIDER: hmac
+      AXIOM_EUREKA_JWT_SECRET: eureka_dev_secret_key_change_in_production
+      AXIOM_EUREKA_JWT_ALGORITHM: HS256
+    command: >
+      sh -c "alembic upgrade head &&
+             uvicorn app.main:app --host 0.0.0.0 --port 8400"
+    ports:
+      - "8400:8400"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8400/health')\""]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  worker:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      AXIOM_ENV: development
+      AXIOM_DATABASE_URL: postgresql+asyncpg://axiom:axiom@postgres:5432/axiom
+      AXIOM_REDIS_URL: redis://redis:6379/0
+    command: celery -A app.worker.celery_app.celery_app worker --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  beat:
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile
+    environment:
+      AXIOM_ENV: development
+      AXIOM_REDIS_URL: redis://redis:6379/0
+    command: celery -A app.worker.celery_app.celery_app beat --loglevel=info
+    depends_on:
+      redis:
+        condition: service_healthy
+
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    environment:
+      NEXT_PUBLIC_AXIOM_API_URL: http://localhost:8400
+      NEXT_PUBLIC_EUREKA_LOGIN_URL: http://localhost:4040/auth/login
+    ports:
+      - "4100:4100"
+    depends_on:
+      - api
+
+  prometheus:
+    image: prom/prometheus:latest
+    profiles: ["observability"]
+    volumes:
+      - ./infra/observability/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - "9100:9090"
+
+  grafana:
+    image: grafana/grafana:latest
+    profiles: ["observability"]
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: admin
+    ports:
+      - "3100:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  axiom_pg:
