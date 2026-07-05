@@ -112,6 +112,37 @@ class PasswordResetConfirm(BaseModel):
         return v
 
 
+class ChangePasswordRequest(BaseModel):
+    """Authenticated in-app password change.
+
+    Requires the CURRENT password (proves the session isn't a hijacked token)
+    plus a new one that meets the same strength policy as registration.
+    """
+    current_password: str
+    new_password: str
+
+    @validator('new_password')
+    def validate_password_strength(cls, v):
+        if len(v) < 8:
+            raise ValueError('Password must be at least 8 characters')
+        if not any(c.isupper() for c in v):
+            raise ValueError('Password must contain at least one uppercase letter')
+        if not any(c.islower() for c in v):
+            raise ValueError('Password must contain at least one lowercase letter')
+        if not any(c.isdigit() for c in v):
+            raise ValueError('Password must contain at least one digit')
+        return v
+
+
+class DeleteAccountRequest(BaseModel):
+    """Authenticated self-service account deactivation (soft delete).
+
+    Requires the current password as a confirmation gate so a stolen/forgotten
+    open session can't nuke the account with one click.
+    """
+    password: str
+
+
 class UserResponse(BaseModel):
     """User response model"""
     id: UUID

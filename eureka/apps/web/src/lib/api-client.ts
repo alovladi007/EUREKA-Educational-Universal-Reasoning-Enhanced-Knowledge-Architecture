@@ -223,6 +223,30 @@ class ApiClient {
     }
   }
 
+  /**
+   * Change the signed-in user's password. The backend revokes all sessions
+   * on success, so the caller must send the user back through login.
+   */
+  async changePassword(currentPassword: string, newPassword: string): Promise<{ message: string }> {
+    const response = await this.client.post('/auth/change-password', {
+      current_password: currentPassword,
+      new_password: newPassword,
+    });
+    return response.data;
+  }
+
+  /**
+   * Deactivate (soft-delete) the signed-in account. Requires the current
+   * password as confirmation. Tokens are cleared locally afterwards.
+   */
+  async deactivateAccount(password: string): Promise<{ message: string }> {
+    const response = await this.client.post('/auth/deactivate', { password });
+    // Only drop local tokens once the server confirms — a wrong-password 400
+    // throws before this line and leaves the session intact.
+    this.clearTokens();
+    return response.data;
+  }
+
   async getCurrentUser(): Promise<User> {
     const response = await this.client.get<User>('/auth/me');
     return response.data;

@@ -13,7 +13,8 @@ from app.core.config import settings
 from app.schemas.auth import (
     UserRegisterRequest, UserLoginRequest, TokenResponse,
     RefreshTokenRequest, VerifyEmailRequest, UserResponse,
-    PasswordResetRequest, PasswordResetConfirm
+    PasswordResetRequest, PasswordResetConfirm,
+    ChangePasswordRequest, DeleteAccountRequest,
 )
 from app.crud import user as user_crud
 from app.crud import organization as org_crud
@@ -472,6 +473,67 @@ async def logout_all_devices(
     """
     await revoke_user_tokens(str(current_user.id))
     return {"message": "All sessions revoked"}
+
+
+@router.post("/change-password", response_model=dict)
+async def change_password(
+    payload: ChangePasswordRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Change the signed-in user's password (authenticated, in-app).
+
+    Distinct from /password-reset, which is the forgot-password email flow.
+    Here the user proves knowledge of the CURRENT password, then supplies a
+    new one meeting the registration strength policy.
+
+    On success every existing session is revoked (revoke_user_tokens) so a
+    previously-leaked token can't outlive the rotation — the client must
+    re-authenticate with the new password.
+    """
+    if not verify_password(payload.current_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Current password is incorrect",
+        )
+    if verify_password(payload.new_password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="New password must be different from the current one",
+        )
+
+    await user_crud.update_user_password(db, current_user, payload.new_password)
+    # Force re-login everywhere after a credential change.
+    await revoke_user_tokens(str(current_user.id))
+    return {"message": "Password changed successfully. Please sign in again."}
+
+
+@router.post("/deactivate", response_model=dict)
+async def deactivate_account(
+    payload: DeleteAccountRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Self-service account deletion (SOFT delete).
+
+    This does NOT hard-delete rows — user_crud.delete_user flips is_active to
+    False, stamps deleted_at, and anonymizes the email. That preserves
+    referential integrity (enrollments, attempts, audit trail) and keeps the
+    action reversible by an administrator, while removing the account from
+    normal use. The current password is required as a confirmation gate, and
+    all sessions are revoked so the account can no longer authenticate.
+    """
+    if not verify_password(payload.password, current_user.hashed_password):
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password is incorrect",
+        )
+
+    await user_crud.delete_user(db, current_user)
+    await revoke_user_tokens(str(current_user.id))
+    return {"message": "Your account has been deactivated."}
 
 
 @router.get("/me", response_model=UserResponse)
