@@ -136,6 +136,7 @@ export default function AnalyticsPage() {
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/teacher">Teacher</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/copilot">Copilot</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-4xl px-6 py-10">

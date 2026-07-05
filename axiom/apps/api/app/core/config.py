@@ -54,6 +54,15 @@ class Settings(BaseSettings):
     # being reachable during local development.
     eureka_directory_enrichment: bool = False
 
+    # Copilot reasoning (Phase 3). reasoning_provider selects the backend the
+    # copilot calls, behind a swappable interface (ADR 0001):
+    #   "mock"   - deterministic, curriculum-grounded responses. Local and tests.
+    #   "eureka" - call EUREKA's reasoning core over HTTP. Falls back to the mock
+    #              on any error so development never hard-depends on it.
+    reasoning_provider: Literal["mock", "eureka"] = "mock"
+    eureka_reasoning_base_url: str = "http://localhost:8000"
+    reasoning_timeout_seconds: float = 8.0
+
     # Observability
     log_level: str = "INFO"
     otel_exporter_otlp_endpoint: str | None = None

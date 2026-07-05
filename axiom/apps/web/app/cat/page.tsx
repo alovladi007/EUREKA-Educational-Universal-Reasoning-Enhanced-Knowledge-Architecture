@@ -153,6 +153,7 @@ export default function CatPage() {
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/practice">Practice</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/copilot">Copilot</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-2xl px-6 py-10">

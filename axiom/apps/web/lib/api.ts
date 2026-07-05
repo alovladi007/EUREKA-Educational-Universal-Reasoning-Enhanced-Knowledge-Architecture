@@ -723,3 +723,102 @@ export async function downloadAuthed(
   anchor.remove();
   window.URL.revokeObjectURL(objectUrl);
 }
+
+// -------------------------------------------------------------------------
+// Phase 3 types (AI Copilot).
+//
+// The copilot is AI-assisted, not authoritative. Every reply is tagged
+// ai_generated:true, names the provider that produced it, and carries the
+// sources it was grounded in. When grounded is false the reply was produced
+// without matching lesson context and the UI should say so. The consuming UI
+// must always present these results as AI-assisted and teacher-overridable.
+// -------------------------------------------------------------------------
+
+// One citation attached to a copilot reply, hint, or explanation.
+export interface CopilotSource {
+  source: string;
+  kind: string;
+  text: string;
+}
+
+// The result of POST /api/v1/copilot/chat.
+export interface CopilotChatResult {
+  session_id: string;
+  ai_generated: true;
+  provider: string;
+  grounded: boolean;
+  reply: string;
+  sources: CopilotSource[];
+}
+
+// The result of POST /api/v1/copilot/hint.
+export interface CopilotHintResult {
+  ai_generated: true;
+  provider: string;
+  grounded: boolean;
+  hint: string;
+  node_code: string | null;
+  sources: CopilotSource[];
+}
+
+// The result of POST /api/v1/copilot/explain.
+export interface CopilotExplainResult {
+  ai_generated: true;
+  provider: string;
+  grounded: boolean;
+  explanation: string;
+  node_code: string;
+  sources: CopilotSource[];
+}
+
+// One stored turn from a copilot session's history.
+export interface CopilotMessage {
+  role: 'user' | 'assistant';
+  content: string;
+  provider: string;
+  sources: CopilotSource[];
+  created_at: string;
+}
+
+// A full session transcript from GET /api/v1/copilot/sessions/{id}.
+export interface CopilotSessionHistory {
+  session_id: string;
+  node_id: string | null;
+  title: string;
+  messages: CopilotMessage[];
+}
+
+// -------------------------------------------------------------------------
+// Phase 3 helpers (AI Copilot).
+// -------------------------------------------------------------------------
+
+export function copilotChat(input: {
+  message: string;
+  session_id?: string;
+  node?: string;
+}): Promise<CopilotChatResult> {
+  return apiPost<CopilotChatResult>('/api/v1/copilot/chat', input);
+}
+
+export function copilotHint(input: {
+  response_token?: string;
+  node?: string;
+  question?: string;
+}): Promise<CopilotHintResult> {
+  return apiPost<CopilotHintResult>('/api/v1/copilot/hint', input);
+}
+
+export function copilotExplain(input: {
+  node: string;
+  question?: string;
+}): Promise<CopilotExplainResult> {
+  return apiPost<CopilotExplainResult>('/api/v1/copilot/explain', input);
+}
+
+export function fetchCopilotSession(
+  id: string,
+): Promise<CopilotSessionHistory> {
+  return apiGet<CopilotSessionHistory>(
+    `/api/v1/copilot/sessions/${encodeURIComponent(id)}`,
+  );
+}

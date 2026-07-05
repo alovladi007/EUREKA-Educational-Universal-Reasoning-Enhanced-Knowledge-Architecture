@@ -3,11 +3,13 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
+  copilotHint,
   getToken,
   isPracticeDone,
   practiceAnswer,
   practiceNext,
   type AnswerResult,
+  type CopilotHintResult,
   type PracticeDone,
   type PracticeQuestion,
 } from '@/lib/api';
@@ -50,12 +52,20 @@ function PracticeInner() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AnswerResult | null>(null);
 
+  // AI hint state. The hint is guidance, not the answer, and is fetched on
+  // demand for the currently served question via its response_token.
+  const [hint, setHint] = useState<CopilotHintResult | null>(null);
+  const [hintLoading, setHintLoading] = useState(false);
+  const [hintError, setHintError] = useState('');
+
   const loadNext = useCallback(async () => {
     setPhase('loading');
     setResult(null);
     setAnswer('');
     setSelectedIndices([]);
     setErrorMessage('');
+    setHint(null);
+    setHintError('');
     try {
       const next = await practiceNext(nodeParam);
       if (isPracticeDone(next)) {
@@ -138,6 +148,30 @@ function PracticeInner() {
     }
   }
 
+  // Ask the AI copilot for a hint on the current question. The hint is
+  // grounding-aware guidance keyed off the served response_token, presented as
+  // help rather than the answer. Failures are shown inline and do not disturb
+  // the practice flow.
+  async function getHint() {
+    if (!question || hintLoading) {
+      return;
+    }
+    setHintLoading(true);
+    setHintError('');
+    try {
+      const result = await copilotHint({
+        response_token: question.response_token,
+      });
+      setHint(result);
+    } catch (err) {
+      setHintError(
+        err instanceof Error ? err.message : 'Failed to load a hint.',
+      );
+    } finally {
+      setHintLoading(false);
+    }
+  }
+
   if (phase === 'checking') {
     return (
       <main className="flex min-h-screen items-center justify-center">
@@ -158,6 +192,7 @@ function PracticeInner() {
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/learn">Learn</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/copilot">Copilot</HeaderLink>
         <HeaderLink href="/cat">Adaptive Test</HeaderLink>
         <HeaderLink href="/achievements">Achievements</HeaderLink>
         <HeaderLink href="/analytics">Analytics</HeaderLink>
@@ -211,6 +246,80 @@ function PracticeInner() {
             <p className="mt-3 whitespace-pre-wrap text-base leading-relaxed text-card-foreground">
               {question.prompt}
             </p>
+
+            <div className="mt-4">
+              <button
+                type="button"
+                onClick={() => void getHint()}
+                disabled={hintLoading}
+                className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {hintLoading ? 'Getting a hint.' : 'Get a hint'}
+              </button>
+
+              {hintError && (
+                <p className="mt-2 text-sm text-red-700 dark:text-red-300">
+                  {hintError}
+                </p>
+              )}
+
+              {hint && (
+                <div
+                  className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950"
+                  aria-live="polite"
+                >
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="text-xs font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-200">
+                      AI hint
+                    </span>
+                    <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                      AI - via {hint.provider || 'copilot'}
+                    </span>
+                    {hint.grounded === false && (
+                      <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                        Not grounded
+                      </span>
+                    )}
+                  </div>
+                  <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+                    AI-assisted guidance, not the answer. It points you in the
+                    right direction - work the problem yourself.
+                  </p>
+                  <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-amber-900 dark:text-amber-100">
+                    {hint.hint}
+                  </p>
+                  {hint.sources.length > 0 && (
+                    <div className="mt-3">
+                      <p className="text-xs font-medium uppercase tracking-wide text-amber-800 dark:text-amber-200">
+                        Sources
+                      </p>
+                      <ul className="mt-2 space-y-2">
+                        {hint.sources.map((src, index) => (
+                          <li
+                            key={`${src.source}-${index}`}
+                            className="rounded-lg border border-amber-200 bg-amber-100/50 p-3 dark:border-amber-900 dark:bg-amber-900/40"
+                          >
+                            <div className="flex flex-wrap items-baseline gap-2">
+                              <span className="text-xs font-semibold text-amber-900 dark:text-amber-100">
+                                {src.source}
+                              </span>
+                              <span className="inline-flex items-center rounded-full bg-amber-200 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-amber-800 dark:bg-amber-800 dark:text-amber-200">
+                                {src.kind}
+                              </span>
+                            </div>
+                            {src.text && (
+                              <p className="mt-1 text-xs leading-relaxed text-amber-800 dark:text-amber-200">
+                                {src.text}
+                              </p>
+                            )}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
 
             {kind === 'mcq_single' && question.options ? (
               <fieldset className="mt-5" disabled={phase === 'answered'}>

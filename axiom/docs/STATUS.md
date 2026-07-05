@@ -1,6 +1,6 @@
 # AXIOM Status
 
-This is the honest, calibrated status of AXIOM. AXIOM has completed Phase 0 (foundation) and Phase 1 (the learning-and-assessment core, the true MVP). Later-phase modules are placeholders. Nothing planned is described here as done.
+This is the honest, calibrated status of AXIOM. AXIOM has completed Phase 0 (foundation), Phase 1 (the learning-and-assessment core), Phase 2 (adaptive testing, analytics, gamification, richer item types, QTI), and the Copilot core of Phase 3. Later-phase modules are placeholders. Nothing planned is described here as done.
 
 Legend:
 - **done**: implemented and tested at the level this phase requires.
@@ -9,27 +9,32 @@ Legend:
 
 ## What works today
 
-A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practice CAS-graded items, and watch mastery move with the evidence recorded. A teacher can author an assessment from skill nodes, assign it, and read per-student results. Concretely:
+A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practice CAS-graded items across a wide range of question types, take an adaptive test, earn XP and badges, and ask an AI-assisted copilot for hints and explanations grounded in their lessons. A teacher can author an assessment, assign it, read per-student results, mine item analytics, and export them. Concretely:
 
-- A signed-in EUREKA user reaches the AXIOM dashboard. The web app reads the EUREKA-issued JWT from the browser and sends it to the AXIOM API; with no valid token it points the user at EUREKA login.
+- A signed-in EUREKA user reaches the AXIOM dashboard. The web app reads the EUREKA-issued JWT from the browser and sends it to the AXIOM API; with no valid token it points the user at EUREKA login. A gated dev-login allows direct local access.
 - A real algebra skill graph (six nodes with prerequisites), a lesson per node, and an item bank of static items plus parameterized templates are seeded.
 - Practice loop: the adaptive engine recommends the next node by prerequisites and mastery, serves a question (resolving a per-student variant for templates), grades it, and updates mastery.
-- Grading uses SymPy symbolic equivalence, numeric tolerance, and equation equivalence, not string matching. Several equivalent correct forms all grade correct.
-- Mastery is Bayesian Knowledge Tracing with an append-only evidence trail, so every change is explainable (which response moved it, and the probability before and after).
-- Teacher flow: create an assessment from nodes, assign to students, deliver it (per-student variants), and view aggregated results.
+- Grading uses SymPy symbolic equivalence, numeric tolerance, and equation equivalence, not string matching. Question types include selection, numeric, math expression, equation, multi-select, true/false, short text, plot-points, and show-your-work with per-milestone step credit.
+- Mastery is Bayesian Knowledge Tracing with an append-only evidence trail, so every change is explainable.
+- Computerized adaptive testing on an IRT (3PL) backbone: EAP ability estimation, maximum-information item selection, and a standard-error stopping rule, plus classical-test-theory item calibration into IRT parameters.
+- Analytics: per-item classical statistics with IRT parameters, a cohort standards heatmap, per-learner growth, and CSV and PDF exports.
+- Gamification: XP, levels, streaks, and badges awarded strictly for genuine progress (correct responses and mastery gains), never idle time.
+- Copilot: an AI-assisted tutor that gives hints, explanations, and grounded chat. Reasoning sits behind a swappable provider (EUREKA reasoning client with a deterministic mock fallback per ADR 0001). Every reply is labeled AI-assisted, carries the curriculum sources it was grounded in, and is teacher-overridable. Hints for an active item withhold the answer.
+- QTI 3.0 import and export of items and item banks.
+- Teacher flow: create an assessment from nodes, assign to students, deliver it, and view aggregated results.
 - Health and readiness probes, Prometheus metrics, structured JSON logs, and OpenAPI are served.
-- Database migrations run under Alembic (`alembic upgrade head`), verified up and down on SQLite and Postgres.
+- Database migrations run under Alembic (`alembic upgrade head`), verified up and down on SQLite and Postgres, with a schema-drift check that comes back clean.
 
 ## Not built yet
 
-These are explicitly not implemented after Phase 1:
+These are explicitly not implemented:
 
-- Computerized adaptive testing on an IRT backbone and item calibration (Phase 2).
-- Analytics: item difficulty and discrimination, standards heatmaps, growth reports, exports (Phase 2).
-- The full technology-enhanced question-type set beyond selection and math (graphing, drag-drop, show-your-work step credit) and QTI import and export (Phase 2).
-- Gamification, the AI copilot, live tutoring, handwritten and free-response AI grading (Phase 3).
-- Proctoring, LTI, OneRoster, LMS grade passback, district analytics (Phase 4).
-- The Celery worker still ships only the sample task; grading in Phase 1 runs inline in the request path. Moving heavy grading and generation onto the worker is a later step.
+- Live tutoring with shared whiteboard, video, and recording (Phase 3). This needs a real-time media server (WebRTC/SFU) that is out of scope for the current build; the copilot ships without it.
+- AI grading of handwritten and free-response work (Phase 3). The copilot reasons over text; vision and free-response scoring are not built.
+- Proctoring, LTI 1.3, OneRoster, LMS grade passback, and district analytics (Phase 4).
+- Notifications: email, in-app messaging, assignment reminders (Phase 2 roadmap item, not yet built).
+- The Celery worker still ships only the sample task; grading runs inline in the request path. Moving heavy grading and generation onto the worker is a later step.
+- Semantic (pgvector) retrieval for the copilot. Grounding today is deterministic lexical retrieval; vector embeddings are a future upgrade behind the same retriever interface.
 
 ## Per-module status
 
@@ -38,26 +43,26 @@ These are explicitly not implemented after Phase 1:
 | api-gateway | done | Phase 0 | FastAPI app factory, health and readiness, metrics, OpenAPI, tracing hook, versioned routers. |
 | identity_eureka | done | Phase 0 | Verifies EUREKA JWTs (HS256 dev, JWKS-ready interface); syncs the user and roles on first touch. |
 | math_core (package) | done | Phase 0 | SymPy symbolic equivalence, safe parsing (no eval), wall-clock timeout, deterministic parameterized-item resolver, tests. |
-| curriculum | done | Phase 1 | Standards framework, skill graph (nodes, prerequisite and related edges), objectives. Seeded algebra graph. |
-| content | done | Phase 1 | Lessons and content steps per node. Seeded one lesson per node. |
-| assessment | done | Phase 1 | Item bank, static items, parameterized templates and resolved variants, assessments, forms, assignment, delivery. |
-| grading | done | Phase 1 | Selection, numeric (tolerance), math expression and equation (SymPy). Writes grader plus confidence and a reasoning trace. Runs inline; worker offload is later. |
-| adaptive | done (BKT) | Phase 1, CAT in Phase 2 | BKT mastery with append-only evidence, prerequisite-aware path planning, review-schedule table. IRT and computerized adaptive testing are Phase 2. |
-| analytics | planned | Phase 2 | Mastery rollups, item statistics, standards heatmaps, exports. Event schema (packages/events) exists. |
-| tutoring | planned | Phase 3 | Shared whiteboard, video, recording. |
-| copilot | planned | Phase 3 | Calls EUREKA reasoning first via a swappable interface, mock fallback in dev (see ADR 0001). AI features labeled and human-overridable. |
-| gamification | planned | Phase 2 | Streaks, XP, badges, live game-show mode. |
+| curriculum | done | Phase 1 | Standards framework, skill graph, objectives. Seeded algebra graph. |
+| content | done | Phase 1 | Lessons and content steps per node. |
+| assessment | done | Phase 1, richer kinds and QTI in Phase 2 | Item bank, static items, parameterized templates and variants, assessments, forms, assignment, delivery. Phase 2 adds richer item kinds, item.meta, and QTI 3.0 import and export. |
+| grading | done | Phase 1, extended in Phase 2 | Selection, numeric, math expression and equation (SymPy), plus multi-select, true/false, short text, plot-points, and show-your-work step credit. Writes grader plus confidence and a reasoning trace. Runs inline. |
+| adaptive | done | Phase 1 (BKT), Phase 2 (IRT/CAT) | BKT mastery with evidence and prerequisite-aware path planning; IRT 3PL model, computerized adaptive testing, and item calibration. |
+| analytics | done | Phase 2 | Item statistics with IRT, standards heatmap, growth, CSV and PDF exports. |
+| gamification | done | Phase 2 | XP, levels, streaks, badges tied to real progress. Live game-show mode is not built. |
+| copilot | done (core) | Phase 3 | AI-assisted hints, explanations, and grounded chat behind a swappable reasoning provider with a mock fallback (ADR 0001). Labeled and teacher-overridable. Handwritten and free-response AI grading are not built. |
+| tutoring | planned | Phase 3 | Shared whiteboard, video, recording. Needs a media server; not built. |
 | proctoring | planned | Phase 4 | Lockdown, integrity signals, review workflow. |
-| integrations | planned | Phase 4 | LTI 1.3, OneRoster, QTI, gradebook passback. |
-| notifications | planned | Phase 2 | Email, in-app messaging, assignment reminders. |
+| integrations | planned | Phase 4 | LTI 1.3, OneRoster, gradebook passback. QTI item exchange is done in Phase 2. |
+| notifications | planned | Phase 2 roadmap | Email, in-app messaging, assignment reminders. |
 
 ## Frontend and infra
 
 | Item | Status | Notes |
 |---|---|---|
-| Web dashboard (Next.js 14) | done (Phase 1) | Dashboard plus Learn, Practice, Mastery, Path, and Teacher pages against the live API. |
-| Docker Compose | done | api (8400), web (4100), Postgres with pgvector (5440), Redis (6390), worker, beat, observability profile. |
-| Alembic migrations | done | Two migrations, verified up and down on SQLite and Postgres. |
+| Web dashboard (Next.js 14) | done | Dashboard plus Learn, Practice, Mastery, Path, Teacher, Adaptive Test, Achievements, Analytics, and Copilot pages against the live API. |
+| Docker Compose | done | api (8400), web (4100), Postgres with pgvector (5441), Redis (6392), worker, beat, observability profile. |
+| Alembic migrations | done | Five migrations, verified up and down on Postgres with a clean schema-drift check. |
 | OpenAPI | done | Generated and served at /docs and /openapi.json. |
 | CI | done | ruff, math_core and api pytest, Alembic up and down on Postgres, frontend tsc and build. |
 
