@@ -8,6 +8,10 @@ export interface User {
   role: 'super_admin' | 'org_admin' | 'teacher' | 'student' | 'parent';
   org_id: string;
   avatar_url?: string;
+  phone?: string;
+  bio?: string;
+  location?: string;
+  date_of_birth?: string;
   is_active: boolean;
   email_verified: boolean;
   created_at: string;
@@ -39,8 +43,6 @@ export interface Organization {
   tier: string;
   email?: string;
   phone?: string;
-  bio?: string;
-  location?: string;
   website?: string;
   is_active: boolean;
   is_verified: boolean;
