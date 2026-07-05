@@ -3835,7 +3835,10 @@ function SECPLUSAnalyticsTab() {
 // ═══════════════════════════════════════════════════════════════
 
 const FME_TOPIC_NAMES = ['Mathematics','Probability & Statistics','Computational Tools','Ethics & Professional Practice','Engineering Economics','Statics','Dynamics, Kinematics & Vibrations','Mechanics of Materials','Material Science','Fluid Mechanics','Thermodynamics','Heat Transfer','Measurements & Controls','Mechanical Design & Analysis','Manufacturing Processes','Engineering Management'];
-const FME_TOPIC_DISTRIBUTION = [7,4,3,4,4,9,10,9,6,9,9,8,6,10,4,3];
+// Sums to 110 (the real NCEES FE Mechanical length). The five largest
+// knowledge areas each took +1 to lift the total from 105 to 110 while
+// keeping the draw proportional to NCEES weighting.
+const FME_TOPIC_DISTRIBUTION = [7,4,3,4,4,10,11,10,6,10,9,8,6,11,4,3];
 const FME_EXAM_TIME = 19200;
 
 function FMEExamTab() {
