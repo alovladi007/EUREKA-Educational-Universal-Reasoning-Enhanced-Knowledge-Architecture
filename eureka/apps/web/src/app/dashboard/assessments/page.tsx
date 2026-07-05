@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useMemo, useState } from "react";
 import { api, formatDate } from "@/lib/eureka-api";
 import {
   Card,
@@ -33,10 +34,13 @@ type Blueprint = {
 type Attempt = {
   id?: string;
   created_at?: string;
+  started_at?: string;
+  blueprint_id?: string;
   blueprint_slug?: string;
   blueprint?: { slug?: string } | null;
   status?: string;
   score_scaled?: number | null;
+  scaled_score?: string | number | null;
   [k: string]: unknown;
 };
 
@@ -49,11 +53,22 @@ function asArray<T>(v: unknown): T[] {
 }
 
 export default function AssessmentsPage() {
+  const router = useRouter();
   const [banks, setBanks] = useState<ItemBank[]>([]);
   const [blueprints, setBlueprints] = useState<Blueprint[]>([]);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+
+  // blueprint_id → slug, so the attempts table can label rows (the
+  // MockAttemptResponse payload carries blueprint_id, not the slug).
+  const slugByBpId = useMemo(() => {
+    const m: Record<string, string> = {};
+    for (const bp of blueprints) {
+      if (bp.id && bp.slug) m[String(bp.id)] = bp.slug;
+    }
+    return m;
+  }, [blueprints]);
 
   useEffect(() => {
     (async () => {
@@ -71,6 +86,33 @@ export default function AssessmentsPage() {
       }
     })();
   }, []);
+
+  const [startingSlug, setStartingSlug] = useState<string | null>(null);
+
+  const startMock = async (slug?: string) => {
+    if (!slug || startingSlug) return;
+    setStartingSlug(slug);
+    setToast("Starting mock…");
+    try {
+      // POST /mock-attempts?blueprint_slug=… generates a fresh adaptive item
+      // set and returns the attempt, then jump straight into the runner.
+      const attempt = await api<{ id?: string }>(
+        `/mock-attempts?blueprint_slug=${encodeURIComponent(slug)}`,
+        { method: "POST" },
+      );
+      if (attempt.id) {
+        router.push(`/dashboard/assessments/mock/${attempt.id}`);
+        return;
+      }
+      // No id came back (shouldn't happen) — refresh the list as a fallback.
+      const a = await api<unknown>("/mock-attempts/me");
+      setAttempts(asArray<Attempt>(a));
+      setToast("Mock created. See “Recent attempts” below.");
+    } catch (e) {
+      setToast(`Could not start the mock: ${(e as Error).message}`);
+      setStartingSlug(null);
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -154,14 +196,11 @@ export default function AssessmentsPage() {
                 <CardContent>
                   <button
                     type="button"
-                    onClick={() =>
-                      setToast(
-                        `TODO: start mock ${bp.slug ?? bp.name ?? "blueprint"}`,
-                      )
-                    }
-                    className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent"
+                    onClick={() => startMock(bp.slug)}
+                    disabled={!bp.slug || startingSlug !== null}
+                    className="inline-flex items-center justify-center rounded-md border border-input bg-background px-3 py-1.5 text-sm font-medium hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Start mock
+                    {startingSlug === bp.slug ? "Starting…" : "Start mock"}
                   </button>
                 </CardContent>
               </Card>
@@ -183,10 +222,11 @@ export default function AssessmentsPage() {
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b text-left text-xs uppercase text-muted-foreground">
-                      <th className="py-2 px-3">Created</th>
+                      <th className="py-2 px-3">Started</th>
                       <th className="py-2 px-3">Blueprint</th>
                       <th className="py-2 px-3">Status</th>
                       <th className="py-2 px-3">Score</th>
+                      <th className="py-2 px-3"></th>
                     </tr>
                   </thead>
                   <tbody>
@@ -194,14 +234,23 @@ export default function AssessmentsPage() {
                       const bpSlug =
                         a.blueprint_slug ??
                         a.blueprint?.slug ??
+                        (a.blueprint_id
+                          ? slugByBpId[String(a.blueprint_id)]
+                          : undefined) ??
                         "—";
+                      const score =
+                        a.scaled_score ??
+                        (typeof a.score_scaled === "number"
+                          ? a.score_scaled
+                          : undefined);
+                      const inProgress = a.status === "in_progress";
                       return (
                         <tr
                           key={(a.id ?? i).toString()}
                           className="border-b last:border-b-0"
                         >
                           <td className="py-2 px-3">
-                            {formatDate(a.created_at)}
+                            {formatDate(a.started_at ?? a.created_at)}
                           </td>
                           <td className="py-2 px-3 font-mono text-xs">
                             {bpSlug}
@@ -214,9 +263,17 @@ export default function AssessmentsPage() {
                             )}
                           </td>
                           <td className="py-2 px-3">
-                            {typeof a.score_scaled === "number"
-                              ? a.score_scaled
-                              : "—"}
+                            {score != null ? score : "—"}
+                          </td>
+                          <td className="py-2 px-3 text-right">
+                            {a.id ? (
+                              <Link
+                                href={`/dashboard/assessments/mock/${a.id}`}
+                                className="text-primary underline whitespace-nowrap"
+                              >
+                                {inProgress ? "Resume →" : "Review →"}
+                              </Link>
+                            ) : null}
                           </td>
                         </tr>
                       );
