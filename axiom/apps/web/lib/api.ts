@@ -71,6 +71,26 @@ export function getToken(): string | null {
     return null;
   }
   try {
+    // SSO handoff from EUREKA. EUREKA links to AXIOM with the JWT in the URL
+    // hash (#access_token=...). The hash is client-only (it is never sent to a
+    // server and is not logged), which is why the token travels in the fragment
+    // rather than a query string. Capture it into localStorage, then strip it
+    // from the address bar so it does not linger.
+    const hash = window.location.hash;
+    if (hash && hash.includes('access_token=')) {
+      const params = new URLSearchParams(hash.replace(/^#/, ''));
+      const handed = params.get('access_token');
+      if (handed) {
+        window.localStorage.setItem(TOKEN_STORAGE_KEY, handed);
+        params.delete('access_token');
+        const rest = params.toString();
+        const cleaned =
+          window.location.pathname +
+          window.location.search +
+          (rest ? `#${rest}` : '');
+        window.history.replaceState(null, '', cleaned);
+      }
+    }
     return window.localStorage.getItem(TOKEN_STORAGE_KEY);
   } catch {
     return null;

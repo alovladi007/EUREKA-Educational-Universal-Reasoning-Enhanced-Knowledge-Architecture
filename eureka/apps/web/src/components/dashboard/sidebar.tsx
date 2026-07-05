@@ -30,6 +30,7 @@ import {
   BookCheck,
   FileEdit,
   Home,
+  Calculator,
 } from "lucide-react";
 
 // /dashboard sidebar = ORIGINAL learner-oriented surface only.
@@ -44,6 +45,9 @@ const navigation = [
   { name: "Undergraduate", href: "/dashboard/undergraduate", icon: GraduationCap },
   { name: "Graduate", href: "/dashboard/graduate", icon: GraduationCap },
   { name: "Medical Education", href: "/dashboard/medical", icon: Stethoscope },
+  // AXIOM, the mathematics vertical, runs as its own app. This entry opens it
+  // with the current EUREKA token handed over so the user arrives signed in.
+  { name: "Mathematics", href: "axiom://open", icon: Calculator },
   { name: "My Courses", href: "/dashboard/courses", icon: BookOpen },
   { name: "Teacher Tools", href: "/dashboard/teacher", icon: BookCheck },
   { name: "AI Tutor", href: "/dashboard/tutor", icon: Brain },
@@ -69,6 +73,27 @@ export function Sidebar() {
   const user = useAuthStore((s) => s.user);
   const display = user ? getUserDisplayName(user) : "Account";
 
+  // Open AXIOM (the mathematics vertical) in a new tab, handing over the
+  // current EUREKA JWT in the URL hash so the user lands signed in. The hash
+  // is client-only (never sent to a server), and AXIOM strips it on arrival.
+  const AXIOM_WEB_URL =
+    process.env.NEXT_PUBLIC_AXIOM_WEB_URL || "http://localhost:4100";
+  const openAxiom = () => {
+    try {
+      const token =
+        typeof window !== "undefined"
+          ? window.localStorage.getItem("access_token")
+          : null;
+      const base = `${AXIOM_WEB_URL}/dashboard`;
+      const url = token
+        ? `${base}#access_token=${encodeURIComponent(token)}`
+        : base;
+      window.open(url, "_blank", "noopener");
+    } catch {
+      window.open(AXIOM_WEB_URL, "_blank", "noopener");
+    }
+  };
+
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-card">
       <div className="flex h-16 shrink-0 items-center gap-2 border-b px-6 bg-card">
@@ -78,6 +103,27 @@ export function Sidebar() {
       <div className="flex-1 overflow-y-scroll min-h-0">
         <nav className="p-4 space-y-1">
           {navigation.map((item) => {
+            // The Mathematics entry opens the separate AXIOM app with a token
+            // handoff, so it is a button rather than an in-app Link.
+            if (item.href === "axiom://open") {
+              return (
+                <button
+                  key={item.name}
+                  type="button"
+                  onClick={openAxiom}
+                  className={cn(
+                    "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span>{item.name}</span>
+                  <span className="ml-auto rounded bg-primary/10 px-1.5 py-0.5 text-[10px] font-semibold uppercase text-primary">
+                    New
+                  </span>
+                </button>
+              );
+            }
             const isActive = pathname === item.href;
             return (
               <Link
