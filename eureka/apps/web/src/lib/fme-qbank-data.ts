@@ -168,7 +168,7 @@ export const FME_QUESTIONS: FMEQuestion[] = [
     id: "topic0_017", topicId: 0, subtopic: "Vector Calculus", difficulty: 2,
     question: "What is the divergence of F = (x², xy, z²)?",
     options: ["2x + x + 2z", "2x + y + 2z", "x² + xy + z²", "2 + 1 + 2"],
-    correct: 1,
+    correct: 0,
     explanation: "div F = ∂(x²)/∂x + ∂(xy)/∂y + ∂(z²)/∂z = 2x + x + 2z. Wait — ∂(xy)/∂y = x, so div F = 2x + x + 2z. Both options 0 and 1 look similar — ∂(xy)/∂y = x (not y), so div F = 2x + x + 2z = 3x + 2z. Hmm, this is 2x + x + 2z."
   },
   {
@@ -2403,13 +2403,6 @@ export const FME_QUESTIONS: FMEQuestion[] = [
     options: ["P₁/(ρg) + V₁²/(2g) + z₁ + h_p = P₂/(ρg) + V₂²/(2g) + z₂ + h_t + h_L", "P₁ + V₁² + z₁ = P₂ + V₂² + z₂", "h_p = h_t + h_L", "P₁ = P₂ + ρgh_L"],
     correct: 0,
     explanation: "General energy equation adds pump head (h_p), turbine extraction (h_t), and friction/minor losses (h_L) to Bernoulli."
-  },
-  {
-    id: "topic9_030", topicId: 9, subtopic: "Fluid Statics", difficulty: 3,
-    question: "A 2m × 3m vertical rectangular gate has its top edge 1 m below the water surface. The center of pressure is located at what depth?",
-    options: ["2.90 m", "2.50 m", "3.00 m", "2.00 m"],
-    correct: 0,
-    explanation: "Centroid at ȳ = 1 + 3/2 = 2.5 m. I_c = bh³/12 = 2(3)³/12 = 4.5 m⁴. A = 6 m². y_cp = ȳ + I_c/(ȳ·A) = 2.5 + 4.5/(2.5·6) = 2.5 + 0.3 = 2.8 m. ≈ 2.90 m."
   },
   {
     id: "topic9_031", topicId: 9, subtopic: "Turbomachinery", difficulty: 1,

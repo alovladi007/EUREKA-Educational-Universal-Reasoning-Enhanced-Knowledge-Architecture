@@ -2053,7 +2053,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
 
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
-    MCAT: 580, CISSP: 400, PE_EE: 400, FE_EE: 647, FE_ME: 555,
+    MCAT: 580, CISSP: 400, PE_EE: 399, FE_EE: 610, FE_ME: 554,
     PATENT_BAR: 536, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;

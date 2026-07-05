@@ -6696,7 +6696,7 @@ export const PATENT_BAR_QUESTIONS: PatentBarQuestion[] = [
     id: 'pb_t0_g22', topicId: 0, subtopic: 'mpf_112f', difficulty: 3,
     question: 'Equivalents under §112(f) are evaluated as of:',
     options: ['The time of infringement', 'The time of filing the application', 'The time of patent issuance', 'The time of license execution'],
-    correct: 1,
+    correct: 2,
     explanation: 'Unlike the doctrine of equivalents for infringement (evaluated at time of infringement), §112(f) equivalents are evaluated at the TIME OF FILING. This is a key distinction from common-law equivalents.',
   },
   {
@@ -7067,7 +7067,7 @@ export const PATENT_BAR_QUESTIONS: PatentBarQuestion[] = [
     id: 'pb_t2_g19', topicId: 2, subtopic: 'restriction_elections', difficulty: 3,
     question: 'After electing Group A, the applicant later amends to add claims that directly read on previously-non-elected Group B subject matter. What happens?',
     options: ['The new claims must be filed in a divisional', 'The applicant has effectively elected Group B by ORIGINAL PRESENTATION', 'The amendment is automatically rejected', 'The restriction is automatically withdrawn'],
-    correct: 1,
+    correct: 0,
     explanation: 'Election by original presentation: if the applicant adds claims that directly read on non-elected subject matter, they\'ve effectively elected that subject matter too. This can also undo the restriction if the amended claims cover originally-restricted material.',
   },
   {

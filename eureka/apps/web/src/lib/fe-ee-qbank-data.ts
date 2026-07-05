@@ -274,16 +274,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "||(3, 4, 0)|| = √(3² + 4² + 0²) = √(9 + 16) = √25 = 5."
   },
   {
-    id: "topic0_024",
-    topicId: 0,
-    subtopic: "Vector Analysis",
-    difficulty: 3,
-    question: "Find the curl of F = (x²y, yz², xy²z) at a point:",
-    options: ["(2yz - y², 0 - xy², z² - x²)", "(2z, 2y, x)", "(yz, z, y²)", "(0, 0, 0)"],
-    correct: 0,
-    explanation: "Curl F = ∇ × F = (∂R/∂y - ∂Q/∂z, ∂P/∂z - ∂R/∂x, ∂Q/∂x - ∂P/∂y) = (2yz - y², 0 - xy², z² - x²)."
-  },
-  {
     id: "topic0_025",
     topicId: 0,
     subtopic: "Differential Calculus",
@@ -802,16 +792,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     options: ["The equivalent uniform annual cost or benefit", "The total cost over the project life", "The initial investment", "The salvage value"],
     correct: 0,
     explanation: "The annual worth method converts all costs and benefits to an equivalent uniform annual amount for easy comparison."
-  },
-  {
-    id: "topic3_017",
-    topicId: 3,
-    subtopic: "Economic Decision Making",
-    difficulty: 3,
-    question: "A project has cash flows: -$100,000 (year 0), +$50,000 (year 1), +$60,000 (year 2). At 10% discount rate, what is the NPV?",
-    options: ["$2,314", "$10,000", "-$10,000", "$50,000"],
-    correct: 0,
-    explanation: "NPV = -$100,000 + $50,000/(1.1) + $60,000/(1.1)² = -$100,000 + $45,455 + $49,587 ≈ -$4,958. Actually, recalculating: -100,000 + 50,000/1.1 + 60,000/1.21 = -100,000 + 45,455 + 49,587 = -4,958. "
   },
   {
     id: "topic3_018",
@@ -1914,16 +1894,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "For full-wave rectifier: V_avg = (2 × V_peak) / π = (2 × 120√2) / π ≈ 107.9 V ≈ 107 V"
   },
   {
-    id: "topic9_003",
-    topicId: 9,
-    subtopic: "Diodes",
-    difficulty: 2,
-    question: "A Zener diode with V_z = 5.6 V is used as a voltage regulator with a series resistor R_s = 100 Ω. The source voltage is 12 V. What load current can be supported if the Zener current must remain above 5 mA?",
-    options: ["30 mA", "54 mA", "64 mA", "74 mA"],
-    correct: 3,
-    explanation: "Total current: I_total = (V_s - V_z) / R_s = (12 - 5.6) / 100 = 64 mA. Load current = I_total - I_z_min = 64 - 5 = 59 mA. Closest is 74 mA accounting for typical Zener operation margin, or if I_z_min = 0, then 64 mA. This problem is 74 mA as upper limit."
-  },
-  {
     id: "topic9_004",
     topicId: 9,
     subtopic: "Diodes",
@@ -1990,7 +1960,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "An n-channel MOSFET switch drives a 10 Ω load from a 24 V supply. The MOSFET has R_DS(on) = 1 Ω. What is the efficiency (power in load / total power)?",
     options: ["83%", "90%", "91%", "94%"],
-    correct: 3,
+    correct: 2,
     explanation: "Total resistance = R_DS(on) + R_load = 1 + 10 = 11 Ω. I = 24/11 ≈ 2.18 A. Power in load = I² × R_load = (2.18)² × 10 ≈ 47.5 W. Total power = 24 × 2.18 ≈ 52.3 W. Efficiency = 47.5/52.3 ≈ 91% (closer to 94% with more precision: 10/11 ≈ 90.9%)"
   },
   {
@@ -2022,16 +1992,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     options: ["-6 V", "-1.5 V", "1.5 V", "6 V"],
     correct: 0,
     explanation: "V_out = -R_f × (V_1/R_1 + V_2/R_2 + V_3/R_3) = -10 × (1/10 + 2/10 + 3/10) = -10 × 0.6 = -6 V"
-  },
-  {
-    id: "topic9_014",
-    topicId: 9,
-    subtopic: "Operational Amplifiers",
-    difficulty: 2,
-    question: "An integrator op-amp circuit has R_in = 100 kΩ, C_f = 10 μF, and a constant input voltage of 0.1 V. What is the output voltage slope (dV_out/dt)?",
-    options: ["-100 V/s", "-1 V/s", "1 V/s", "100 V/s"],
-    correct: 1,
-    explanation: "For an integrator: V_out = -(1/RC) ∫ V_in dt, so dV_out/dt = -V_in/(RC) = -0.1 / (100000 × 10×10^-6) = -0.1 / 1 = -0.1 V/s. Checking: -0.1/(10^5 × 10^-5) = -0.1/1 = -0.1 V/s... Actually: -0.1/(100000 × 0.00001) = -0.1/1 = -0.1. "
   },
   {
     id: "topic9_015",
@@ -2090,7 +2050,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A diode has a reverse saturation current I_s = 10 pA and operates at room temperature (25°C). Using the diode equation, what is the forward voltage at I_D = 1 mA? (V_T ≈ 26 mV)",
     options: ["0.48 V", "0.58 V", "0.68 V", "0.78 V"],
-    correct: 2,
+    correct: 0,
     explanation: "V_D = V_T × ln(I_D/I_s) = 26 × ln(1×10^-3 / 10×10^-12) = 26 × ln(10^8) = 26 × 18.42 ≈ 0.659 V ≈ 0.68 V"
   },
   {
@@ -2100,7 +2060,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 3,
     question: "A BJT small-signal amplifier has g_m = 40 mS, r_o = 25 kΩ, and R_c = 2 kΩ. What is the voltage gain (assuming no load)?",
     options: ["-40", "-80", "-100", "-160"],
-    correct: 2,
+    correct: 1,
     explanation: "A_v = -g_m × (R_c || r_o) = -40×10^-3 × (2000 × 25000)/(2000 + 25000) = -0.04 × (50×10^6)/(27000) ≈ -0.04 × 1852 ≈ -74. Closest to -80 with rounding or if r_o is ignored: -g_m × R_c = -0.04 × 2000 = -80"
   },
   {
@@ -2134,16 +2094,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "Resolution = V_ref / 2^n = 5 / 256 ≈ 0.01953 V ≈ 0.0195 V or 19.5 mV"
   },
   {
-    id: "topic9_025",
-    topicId: 9,
-    subtopic: "Power Electronics",
-    difficulty: 2,
-    question: "A full-bridge inverter with DC bus 400 V generates an output line-to-neutral RMS voltage of 170 V. What is the modulation index?",
-    options: ["0.6", "0.75", "0.85", "0.95"],
-    correct: 1,
-    explanation: "V_out(L-N) = (m × V_dc) / (2√2). 170 = (m × 400) / (2√2). m = 170 × 2√2 / 400 = 340√2/400 ≈ 1.2. Rethink: V_peak = m × V_dc/2 = V_rms × √2. 170√2 = m × 200. m ≈ 1.2. Actually for standard definition: m = V_rms × √2 / (V_dc/2) × √2 = but easier: Peak = m×V_dc/2, so 170√2 = m×200, m = 1.2. "
-  },
-  {
     id: "topic10_001",
     topicId: 10,
     subtopic: "Three-Phase Systems",
@@ -2160,7 +2110,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 1,
     question: "A three-phase power system has V_line = 480 V RMS and delivers 100 kW with power factor = 0.8 lagging. What is the line current?",
     options: ["90.6 A", "120.3 A", "150.5 A", "180.1 A"],
-    correct: 1,
+    correct: 2,
     explanation: "P = √3 × V_L × I_L × pf. 100000 = 1.732 × 480 × I_L × 0.8. I_L = 100000 / (1.732 × 480 × 0.8) ≈ 100000 / 665 ≈ 150.5 A... "
   },
   {
@@ -2230,7 +2180,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A transformer base is S_base = 100 MVA, V_base(primary) = 138 kV. What is the base impedance on the primary side?",
     options: ["190 Ω", "95 Ω", "47.5 Ω", "23.75 Ω"],
-    correct: 1,
+    correct: 0,
     explanation: "Z_base = V_base² / S_base = (138000)² / (100×10^6) = 19044×10^6 / 100×10^6 = 190.44 Ω ≈ 190 Ω. Wait: 138² / 100 = 19044 / 100 = 190.44 Ω. So the answer is ~190 Ω, not 95 Ω. "
   },
   {
@@ -2284,26 +2234,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "In positive sequence ABC, phase C lags phase A by 240° (or equivalently -120°). V_C = 240∠(-120°) V"
   },
   {
-    id: "topic10_015",
-    topicId: 10,
-    subtopic: "Transformers",
-    difficulty: 3,
-    question: "A three-phase transformer bank consists of three single-phase units with V_HV = 13.8 kV (line), V_LV = 480 V (line), connected in Y-Δ. What is the turns ratio of each unit?",
-    options: ["28.75", "49.75", "86.2", "149.5"],
-    correct: 1,
-    explanation: "For Y-Δ: Primary line = N_p × V_ph, Secondary line = N_s × √3 × V_ph. Using a = N_p/N_s, and 13800 / 480 ≈ 28.75 for identical phase voltages. But Y-Δ introduces a √3 factor: a = (13.8/√3) × √3 / 0.48 ≈ 28.75... Actually: For Y-Δ (V_HV line = 13.8 kV, V_LV line = 0.48 kV), phase voltages are V_HV_ph = 13.8/√3 = 7.97 kV, V_LV_ph = 0.48 V (line = phase for Δ). So a = 7.97 kV / 0.48 V = 16,604... "
-  },
-  {
-    id: "topic10_016",
-    topicId: 10,
-    subtopic: "Transmission Lines",
-    difficulty: 2,
-    question: "The surge impedance of a transmission line is Z_0 = 300 Ω. The line has capacitance C = 100 nF/km. What is the series inductance (μH/km)?",
-    options: ["4.5", "9.0", "18", "36"],
-    correct: 2,
-    explanation: "Z_0 = √(L/C). 300 = √(L / 100×10^-9). 90000 = L / 100×10^-9. L = 90000 × 100×10^-9 = 9×10^-3 = 9 mH/km. "
-  },
-  {
     id: "topic10_017",
     topicId: 10,
     subtopic: "Power Factor Correction",
@@ -2320,7 +2250,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A three-phase, 60 Hz generator has 4 poles. What is the synchronous speed?",
     options: ["900 rpm", "1200 rpm", "1800 rpm", "3600 rpm"],
-    correct: 1,
+    correct: 2,
     explanation: "N_sync = 120 × f / P = 120 × 60 / 4 = 7200 / 4 = 1800 rpm. "
   },
   {
@@ -2330,48 +2260,8 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A DC motor with back-EMF constant K_e = 0.1 V·s/rad operates at 1500 rpm. What is the back-EMF?",
     options: ["15.7 V", "31.4 V", "47.1 V", "62.8 V"],
-    correct: 1,
+    correct: 0,
     explanation: "ω = 1500 rpm × 2π/60 ≈ 157.08 rad/s. E_b = K_e × ω = 0.1 × 157.08 ≈ 15.7 V. "
-  },
-  {
-    id: "topic10_020",
-    topicId: 10,
-    subtopic: "Power Generation",
-    difficulty: 2,
-    question: "A three-phase power plant generates 500 MVA at 0.9 PF lagging and 50 Hz. What is the reactive power?",
-    options: ["242 MVAR", "363 MVAR", "450 MVAR", "555 MVAR"],
-    correct: 1,
-    explanation: "S = 500 MVA, PF = 0.9. P = S × PF = 500 × 0.9 = 450 MW. Q = S × sin(arccos(0.9)) = 500 × sin(25.84°) = 500 × 0.436 ≈ 218 MVAR. "
-  },
-  {
-    id: "topic10_021",
-    topicId: 10,
-    subtopic: "Transmission Lines",
-    difficulty: 3,
-    question: "A transmission line has ABCD parameters: A = 0.97∠1°, B = 30∠75° Ω, C = 0.002∠92° S, D = 0.97∠1°. The sending voltage is 500 kV and receiving voltage is 480 kV. Assuming receiving power factor is unity, what is the approximate receiving end power in MVA?",
-    options: ["1200 MVA", "1500 MVA", "1800 MVA", "2000 MVA"],
-    correct: 2,
-    explanation: "For a transmission line with ABCD parameters and sending voltage V_s and receiving voltage V_r, the power flow calculations require full solution. This is a complex power flow problem. Approximate solution using |B| ≈ 30: P ≈ V_s × V_r × |sin(δ)| / |B| ≈ 500 × 480 / 30 ≈ 8000 MW (seems too high). Without full load flow calculation, a typical large transmission line carrying 1500-2000 MVA is reasonable. Using rule of thumb for 500 kV line: ~1800 MVA is plausible."
-  },
-  {
-    id: "topic10_022",
-    topicId: 10,
-    subtopic: "Fault Analysis",
-    difficulty: 2,
-    question: "A power system has a three-phase short circuit fault with initial fault current of 10 pu. The fault occurs at a node with impedance Z = 0.15 pu. What is the fault voltage (in pu)?",
-    options: ["0.15 pu", "0.5 pu", "0.85 pu", "1.0 pu"],
-    correct: 2,
-    explanation: "V_fault = V_pre-fault - I_fault × Z_fault = 1.0 - 10 × 0.15 = 1.0 - 1.5 = -0.5... That gives negative voltage, which doesn't make physical sense for the voltage magnitude. The standard definition uses I = V/Z, so I_fault = V/(Z_eq_total). If V = 1.0 pu pre-fault and I = 10 pu, then Z_eq = 0.1 pu. But the problem states Z = 0.15 pu. Rethinking: if the fault impedance is 0.15 pu from the source, then V_fault = I_fault × Z_eq = 10 × 0.15 = 1.5 pu (which exceeds pre-fault). This is also incorrect. The standard approach: V_fault = V_prefault - I_fault × Z_source. If Z_source = 0.1 pu (implied), then V = 1.0 - 10 × 0.1 = 0.0 pu (zero voltage at fault). This is correct for ideal short circuit. But the given Z = 0.15 pu suggests the fault voltage is much lower. The closest non-zero option is 0.85 pu, which might result from a different calculation or assumption."
-  },
-  {
-    id: "topic10_023",
-    topicId: 10,
-    subtopic: "Per-Unit System",
-    difficulty: 2,
-    question: "In a per-unit system, the base power is 100 MVA and base voltage is 138 kV. An impedance is measured as 50 Ω. What is the per-unit impedance?",
-    options: ["0.02", "0.076", "0.19", "0.33"],
-    correct: 1,
-    explanation: "Z_base = V_base² / S_base = (138000)² / (100×10^6) = 190.44 Ω. Z_pu = 50 / 190.44 ≈ 0.2625... Closest is 0.19 or 0.076. "
   },
   {
     id: "topic10_024",
@@ -2380,18 +2270,8 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A single-phase transformer has a core loss of 500 W and copper loss of 600 W at rated load. What is the transformer efficiency at full load (S = 50 kVA)?",
     options: ["97.8%", "98.1%", "98.4%", "98.8%"],
-    correct: 2,
+    correct: 0,
     explanation: "Total losses = 500 + 600 = 1100 W = 1.1 kW. Output power = S - losses = 50 - 1.1 = 48.9 kW (assuming unity PF). Efficiency = 48.9 / 50 = 0.978 = 97.8%. That's option 1. But if we compute as 1 - losses/S = 1 - 1.1/50 = 1 - 0.022 = 0.978 = 97.8%. This matches option 1, not 98.4%."
-  },
-  {
-    id: "topic10_025",
-    topicId: 10,
-    subtopic: "Power Factor Correction",
-    difficulty: 2,
-    question: "A balanced three-phase load with power factor 0.8 lagging draws 100 A at 480 V line-to-line, 60 Hz. What is the total reactive power?",
-    options: ["28.8 kVAR", "57.6 kVAR", "72.0 kVAR", "86.4 kVAR"],
-    correct: 3,
-    explanation: "S = √3 × V × I = 1.732 × 480 × 100 ≈ 83.1 kVA. P = S × PF = 83.1 × 0.8 ≈ 66.5 kW. Q = √(S² - P²) = √(83.1² - 66.5²) ≈ √(6905 - 4422) = √2483 ≈ 49.8 kVAR. "
   },
   {
     id: "topic11_001",
@@ -2410,7 +2290,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A uniformly charged infinite line has linear charge density λ = 2 μC/m. What is the electric field at a perpendicular distance r = 0.1 m? (ε_0 ≈ 8.85×10^-12 F/m)",
     options: ["36 kV/m", "72 kV/m", "180 kV/m", "360 kV/m"],
-    correct: 1,
+    correct: 3,
     explanation: "E = λ / (2π ε_0 r) = 2×10^-6 / (2π × 8.85×10^-12 × 0.1) = 2×10^-6 / (5.56×10^-12) ≈ 3.6×10^5 V/m = 360 kV/m. "
   },
   {
@@ -2420,7 +2300,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 1,
     question: "A long straight wire carries a current I = 10 A. What is the magnetic field at a perpendicular distance r = 2 cm from the wire? (μ_0 = 4π×10^-7 H/m)",
     options: ["0.1 mT", "0.2 mT", "0.5 mT", "1.0 mT"],
-    correct: 0,
+    correct: 3,
     explanation: "B = μ_0 I / (2π r) = 4π×10^-7 × 10 / (2π × 0.02) = 2×10^-6 × 10 / 0.02 = 20×10^-6 / 0.02 = 1×10^-3 T = 1 mT. "
   },
   {
@@ -2450,7 +2330,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "An electromagnetic wave in free space has a frequency f = 1 GHz. What is the wavelength? (c = 3×10^8 m/s)",
     options: ["3 mm", "30 cm", "3 m", "30 m"],
-    correct: 2,
+    correct: 1,
     explanation: "λ = c / f = 3×10^8 / 1×10^9 = 0.3 m = 30 cm. Actually that's option 2 (30 cm). "
   },
   {
@@ -2500,18 +2380,8 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 3,
     question: "A uniformly charged sphere with charge Q = 1 μC and radius R = 10 cm has a point charge q = 0.1 μC at distance r = 20 cm from the center. What is the force on the point charge? (k = 9×10^9 N·m²/C²)",
     options: ["0.0225 N", "0.0450 N", "0.0900 N", "0.1800 N"],
-    correct: 1,
+    correct: 0,
     explanation: "For a uniformly charged sphere, the force on an external point charge is as if all charge were at the center. F = k Q q / r² = 9×10^9 × 1×10^-6 × 0.1×10^-6 / (0.2)² = 9×10^9 × 0.1×10^-12 / 0.04 = 0.9×10^-3 / 0.04 = 0.0225 N. Option 1 is correct, not option 2."
-  },
-  {
-    id: "topic11_012",
-    topicId: 11,
-    subtopic: "Magnetostatics",
-    difficulty: 3,
-    question: "Two parallel wires carry currents I_1 = 5 A and I_2 = 5 A in opposite directions, separated by d = 0.1 m. What is the repulsive force per unit length? (μ_0 = 4π×10^-7 H/m)",
-    options: ["0.5 mN/m", "1.0 mN/m", "2.0 mN/m", "5.0 mN/m"],
-    correct: 1,
-    explanation: "F/L = μ_0 I_1 I_2 / (2π d) = 4π×10^-7 × 5 × 5 / (2π × 0.1) = 2×10^-7 × 25 / 0.1 = 50×10^-7 / 0.1 = 5×10^-5 N/m = 0.05 mN/m. "
   },
   {
     id: "topic11_013",
@@ -2534,16 +2404,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "For a λ/4 transformer: Z_in = Z_0² / Z_L = 50² / 100 = 2500 / 100 = 25 Ω"
   },
   {
-    id: "topic11_015",
-    topicId: 11,
-    subtopic: "Electrostatics",
-    difficulty: 2,
-    question: "A parallel-plate capacitor has plate area A = 100 cm² = 0.01 m², separation d = 2 mm, and dielectric constant κ = 2. What is the capacitance? (ε_0 ≈ 8.85×10^-12 F/m)",
-    options: ["0.44 nF", "0.88 nF", "1.77 nF", "3.54 nF"],
-    correct: 1,
-    explanation: "C = κ ε_0 A / d = 2 × 8.85×10^-12 × 0.01 / 0.002 = 2 × 8.85×10^-12 × 5 = 88.5×10^-12 F = 88.5 pF = 0.0885 nF ≈ 0.09 nF. "
-  },
-  {
     id: "topic11_016",
     topicId: 11,
     subtopic: "Wave Propagation",
@@ -2552,16 +2412,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     options: ["1.5×10^8 m/s", "2.25×10^8 m/s", "3.0×10^8 m/s", "4.5×10^8 m/s"],
     correct: 2,
     explanation: "Intensity I = B_0² / (2 μ_0 × v), where v is the speed. Also, for EM waves in free space, v = c ≈ 3×10^8 m/s. Let's verify: I = B_0² / (2 μ_0 c). B_0² = 2 μ_0 c I. (2.65×10^-9)² = 2 × 4π×10^-7 × c × 1. 7.02×10^-18 = 2.513×10^-6 × c. c = 2.79×10^-12 m/s. That's wrong. The relationship should be I = (B_0² c) / μ_0 = B_0² / (μ_0 / c). Or more correctly: I = ε_0 c E_0² = (1/(μ_0 c)) × B_0². Rearranging: B_0 = √(μ_0 I / c) (assuming relationship E_0 = c B_0). Given I = 1 W/m², B_0 = √(μ_0 × 1 / c) = √(4π×10^-7 / 3×10^8) = √(4.19×10^-15) = 6.46×10^-8 T = 64.6 nT, not 2.65 nT. The given B_0 doesn't match standard calculations. Assuming the speed is the standard EM wave speed: c = 3×10^8 m/s (option 3)."
-  },
-  {
-    id: "topic11_017",
-    topicId: 11,
-    subtopic: "Transmission Lines",
-    difficulty: 2,
-    question: "A coaxial cable has inner conductor radius a = 1 mm, outer conductor radius b = 3 mm, and dielectric with κ = 1. What is the characteristic impedance? (μ_0 = 4π×10^-7 H/m, ε_0 ≈ 8.85×10^-12 F/m)",
-    options: ["89 Ω", "120 Ω", "270 Ω", "377 Ω"],
-    correct: 1,
-    explanation: "Z_0 = (1/(2π)) × √(μ_0/ε_0) × ln(b/a) = (120) × ln(3/1) = 120 × 1.0986 ≈ 131.8 Ω ≈ 120 Ω (option 2)"
   },
   {
     id: "topic11_018",
@@ -2640,7 +2490,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A unity feedback system with open-loop transfer function L(s) = K / (s(s+2)) has a root locus. As K increases from 0, the roots move in what direction?",
     options: ["Both roots move to the right", "Both roots move to the left", "Roots move toward the asymptotes at -1±j", "One root moves right, one moves left"],
-    correct: 2,
+    correct: 3,
     explanation: "Root locus asymptotes: σ_a = (Σ poles - Σ zeros) / (# poles - # zeros) = (0 + (-2) - 0) / (2 - 0) = -1. Asymptotes are at -1 ± j(some angle). The roots move along the root locus as K increases."
   },
   {
@@ -2670,7 +2520,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A Type 1 system (one integrator) with K_v (velocity error constant) = 10 s^-1 is subjected to a ramp input. What is the steady-state error?",
     options: ["0", "0.1", "1.0", "∞"],
-    correct: 2,
+    correct: 1,
     explanation: "For a ramp input r(t) = t, the steady-state error of a Type 1 system is e_ss = 1 / K_v = 1 / 10 = 0.1. But let me verify: e_ss = A / K_v where A is the ramp slope. If A = 1, then e_ss = 1/10 = 0.1. But the options suggest 1.0 is correct. "
   },
   {
@@ -2680,7 +2530,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A PID controller has K_p = 2, K_i = 0.5, K_d = 1. What is the transfer function?",
     options: ["2 + 0.5/s + s", "2 + 0.5s + s", "(2s² + 0.5s + 1)/s", "(2s + 0.5 + s/s)"],
-    correct: 2,
+    correct: 0,
     explanation: "G_c(s) = K_p + K_i/s + K_d×s = 2 + 0.5/s + 1×s = (2s² + 0.5 + s²)/s... "
   },
   {
@@ -2712,16 +2562,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     options: ["Origin", "(-1, 0)", "(1, 0)", "(0, 1)"],
     correct: 1,
     explanation: "The Nyquist stability criterion states that the closed-loop system is stable if the Nyquist plot of the open-loop transfer function does not encircle the critical point (-1, 0) (for positive feedback systems, it's (1, 0))."
-  },
-  {
-    id: "topic12_013",
-    topicId: 12,
-    subtopic: "Bode Plots",
-    difficulty: 3,
-    question: "A control system has gain crossover frequency ω_gc = 10 rad/s and phase crossover frequency ω_pc = 20 rad/s. The gain margin is 10 dB. What is the phase margin?",
-    options: ["30°", "45°", "60°", "90°"],
-    correct: 0,
-    explanation: "Phase margin can be calculated if we know the open-loop phase at gain crossover frequency. If gain margin = 10 dB, then |G(jω_gc)| = 1 and |G(jω_pc)| = 10^(10/20) ≈ 3.16. Without more information, assuming a typical system, phase margin ≈ 30° is reasonable, but this requires the actual Bode plot details."
   },
   {
     id: "topic12_014",
@@ -2780,18 +2620,8 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 3,
     question: "A PID controller is tuned using Ziegler-Nichols method. The ultimate period is T_u = 2 s and ultimate gain is K_u = 20. What is K_p for a PID controller?",
     options: ["6", "9", "10", "12"],
-    correct: 2,
+    correct: 3,
     explanation: "Ziegler-Nichols PID tuning: K_p = 0.6 × K_u = 0.6 × 20 = 12. But let me verify: standard values are K_p = 0.6 K_u for PID. So K_p = 0.6 × 20 = 12 (option 4). "
-  },
-  {
-    id: "topic12_020",
-    topicId: 12,
-    subtopic: "Time Domain Specifications",
-    difficulty: 2,
-    question: "A system has settling time t_s = 0.4 s (2% criterion) and natural frequency ω_n = 10 rad/s. What is the approximate damping ratio?",
-    options: ["0.3", "0.4", "0.5", "0.7"],
-    correct: 1,
-    explanation: "Settling time t_s ≈ 4 / (ζ ω_n) for the 2% criterion. 0.4 = 4 / (ζ × 10). ζ = 4 / (10 × 0.4) = 4 / 4 = 1.0. But the options don't include 1.0. Using t_s ≈ 3 / (ζ ω_n): 0.4 = 3 / (ζ × 10). ζ = 3 / (10 × 0.4) = 3/4 = 0.75. Still not matching. With more accurate approximation or different definition, ζ ≈ 0.4-0.5 is reasonable."
   },
   {
     id: "topic12_021",
@@ -2802,16 +2632,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     options: ["-14 dB", "0 dB", "14 dB", "20 dB"],
     correct: 2,
     explanation: "If the Nyquist plot starts at (5, 0), then G(0) = 5. Gain = 20 log(5) ≈ 13.98 dB ≈ 14 dB"
-  },
-  {
-    id: "topic12_022",
-    topicId: 12,
-    subtopic: "Root Locus",
-    difficulty: 3,
-    question: "An open-loop transfer function has L(s) = K(s+2) / (s²(s+3)). Where is the break-in point (where root locus leaves the real axis)?",
-    options: ["-0.5", "-1", "-1.5", "-2"],
-    correct: 1,
-    explanation: "For root locus on the real axis, we need to find where two branches meet. This occurs where dK/ds = 0 on the root locus path. For this system, the break-in is typically around s ≈ -1 (between the zero at -2 and pole at -3)."
   },
   {
     id: "topic12_023",
@@ -2830,7 +2650,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A Type 2 system with K_a (acceleration error constant) = 2 is subjected to a unit parabolic input. What is the steady-state error?",
     options: ["0", "0.5", "1.0", "2.0"],
-    correct: 0,
+    correct: 1,
     explanation: "For a parabolic input with Type 2 system, the steady-state error is zero, as a Type 2 system can track parabolic inputs with zero error in steady state."
   },
   {
@@ -2840,7 +2660,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A first-order lag filter has time constant τ = 0.2 s. At what frequency is the magnitude -3 dB?",
     options: ["0.5 Hz", "5 Hz", "0.8 Hz", "8 Hz"],
-    correct: 1,
+    correct: 2,
     explanation: "Cutoff frequency f_c = 1 / (2π τ) = 1 / (2π × 0.2) = 1 / 1.257 ≈ 0.796 Hz ≈ 0.8 Hz. "
   },
   {
@@ -2900,7 +2720,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "In FSK (Frequency Shift Keying), the mark frequency is f_1 = 2000 Hz and space frequency is f_0 = 1000 Hz. If the data rate is 100 bps, what is the FSK bandwidth using Carson's rule?",
     options: ["1000 Hz", "1100 Hz", "2000 Hz", "3000 Hz"],
-    correct: 2,
+    correct: 1,
     explanation: "Frequency deviation Δf = (f_1 - f_0) / 2 = (2000 - 1000) / 2 = 500 Hz. Carson's BW = 2(Δf + f_m) = 2(500 + 100) = 1200 Hz. Closest option is 1000 Hz or 2000 Hz... neither is exact. But 2000 Hz is commonly used estimate."
   },
   {
@@ -2930,7 +2750,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A channel has signal power P_s = 1 W and noise power P_n = 0.01 W. What is the signal-to-noise ratio (SNR) in dB?",
     options: ["10 dB", "20 dB", "40 dB", "50 dB"],
-    correct: 2,
+    correct: 1,
     explanation: "SNR (linear) = P_s / P_n = 1 / 0.01 = 100. SNR (dB) = 10 log(100) = 20 dB. But let me double-check: 10 log₁₀(100) = 10 × 2 = 20 dB. That matches option 2, not option 3."
   },
   {
@@ -3010,7 +2830,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 2,
     question: "A noisy channel has a maximum capacity of 10 kbps when the bandwidth is 1 kHz. What is the implied SNR? (Using C = B log₂(1 + SNR))",
     options: ["10", "31", "99", "1023"],
-    correct: 2,
+    correct: 3,
     explanation: "10000 = 1000 × log₂(1 + SNR). 10 = log₂(1 + SNR). 2^10 = 1 + SNR. 1024 = 1 + SNR. SNR = 1023. Actually, let me verify: C = 10000 bits/s, B = 1000 Hz. 10000 = 1000 log₂(1 + SNR). 10 = log₂(1 + SNR). 1 + SNR = 2^10 = 1024. SNR = 1023."
   },
   {
@@ -3270,7 +3090,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 1,
     question: "Convert decimal 25 to binary:",
     options: ["11001", "10101", "11101", "10011"],
-    correct: 1,
+    correct: 0,
     explanation: "25 = 16 + 8 + 1 = 2⁴ + 2³ + 2⁰ = 11001₂. "
   },
   {
@@ -3452,16 +3272,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     options: ["At least one input is 1", "At least two inputs are 1", "All three inputs are 1", "An odd number of inputs are 1"],
     correct: 2,
     explanation: "AND gate requires ALL inputs to be 1 for output to be 1."
-  },
-  {
-    id: "topic15_022",
-    topicId: 15,
-    subtopic: "Boolean Algebra",
-    difficulty: 3,
-    question: "Simplify: AB + AB'C + A'BC using Boolean algebra:",
-    options: ["AB + C", "A + B", "AB + AC", "A(B + C)"],
-    correct: 0,
-    explanation: "AB + AB'C + A'BC = AB(1 + C) + A'BC = AB + A'BC. But AB'C is covered by AB. Actually: AB + AB'C is redundant with AB. So AB + A'BC might be simpler. But checking answers: AB + C doesn't directly result. "
   },
   {
     id: "topic15_023",
@@ -3801,54 +3611,43 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
   { id: "topic6_h01", topicId: 6, subtopic: "Thevenin Equivalent", difficulty: 3, question: "Find Thevenin equivalent of bridge circuit with 10Ω-5V source on left, 8Ω top, 12Ω right, 6Ω bottom.", options: ["Vth=2V, Rth=6.24Ω", "Vth=1.2V, Rth=5.45Ω", "Vth=2.4V, Rth=6Ω", "Vth=1.5V, Rth=7.2Ω"], correct: 0, explanation: "Using mesh analysis: Vth ≈ 2V. Deactivating source: Rth ≈ 6.24Ω." },
   { id: "topic6_h02", topicId: 6, subtopic: "AC Power", difficulty: 3, question: "120V RMS, 60Hz feeds Z = 40∠30° Ω. Calculate: (1) Apparent power, (2) Real power, (3) Reactive power.", options: ["(1) 360VA (2) 311.8W (3) 180VAR", "(1) 360VA (2) 250W (3) 180VAR", "(1) 420VA (2) 311.8W (3) 210VAR", "(1) 360VA (2) 311.8W (3) 150VAR"], correct: 0, explanation: "I = 120/40 = 3A. S = 120×3 = 360VA. P = 360×cos(30°) = 311.8W. Q = 360×sin(30°) = 180VAR." },
   { id: "topic6_h03", topicId: 6, subtopic: "RLC Transients", difficulty: 3, question: "RLC: R=20Ω, L=0.5H, C=10μF, 100V DC. Determine damping type and i(0+), v_L(0+).", options: ["Overdamped, i=0A, v_L=100V", "Underdamped, i=0A, v_L=100V", "Critically damped, i=0A, v_L=100V", "Overdamped, i=5A, v_L=0V"], correct: 0, explanation: "R_c = 2√(L/C) = 447Ω > 20Ω: overdamped. i(0+)=0 (inductor), v_L(0+)=100V." },
-  { id: "topic6_h04", topicId: 6, subtopic: "3-Phase Faults", difficulty: 3, question: "SLG fault: 480V, X_s=0.2pu, X_g=0.05pu, X_0=0.08pu. Find I_1, I_2, I_0.", options: ["I_1=3.33pu, I_2=0pu, I_0=2.78pu", "I_1=2.5pu, I_2=0pu, I_0=2.5pu", "I_1=3.33pu, I_2=1pu, I_0=2pu", "I_1=4.17pu, I_2=0pu, I_0=3.5pu"], correct: 0, explanation: "SLG: I_2=0. Z_eq=0.33pu. I_1=1/0.33=3.33pu. I_0≈2.78pu." },
   { id: "topic6_h05", topicId: 6, subtopic: "Norton Equivalent", difficulty: 3, question: "24V source, 6Ω series, then 12Ω∥8Ω parallel. Find Norton from parallel terminals.", options: ["I_n=2A, R_n=4.8Ω", "I_n=2.4A, R_n=5Ω", "I_n=1.92A, R_n=4.8Ω", "I_n=2A, R_n=6Ω"], correct: 0, explanation: "V_oc = 24 × 4.8/(6+4.8) = 10.67V. With measured conditions: I_n ≈ 2A, R_n = 4.8Ω." },
-  { id: "topic6_h06", topicId: 6, subtopic: "AC Impedance", difficulty: 3, question: "Series RLC at 100Hz: R=50Ω, L=80mH, C=20μF. Find |Z| and phase φ.", options: ["|Z|=51.2Ω, φ=11.3°", "|Z|=48.5Ω, φ=-22.6°", "|Z|=50.3Ω, φ=3.4°", "|Z|=52.1Ω, φ=9.2°"], correct: 0, explanation: "X_L≈50Ω, X_C≈80Ω, X_net≈-30Ω. Effective |Z|≈51Ω at φ≈11.3°." },
-  { id: "topic6_h07", topicId: 6, subtopic: "Power Factor Correction", difficulty: 3, question: "50kW at 0.8 PF lagging, 480V, 60Hz. Correct to 0.95 PF. Find capacitance.", options: ["426μF", "528μF", "612μF", "375μF"], correct: 0, explanation: "Q₁=37.5kVAR, Q₂=16.4kVAR, Q_c=21.1kVAR. C≈426μF (verified calculation)." },
   { id: "topic6_h08", topicId: 6, subtopic: "Mesh Analysis", difficulty: 3, question: "Two meshes: M1 has 12V and 4Ω; M2 has 8Ω; coupled by 2Ω. Find I₁, I₂.", options: ["I₁=2.4A, I₂=1.6A", "I₁=2A, I₂=1.2A", "I₁=3A, I₂=2A", "I₁=2.67A, I₂=1.33A"], correct: 0, explanation: "Mesh equations lead to: I₁=2.4A, I₂=1.6A." },
   { id: "topic6_h09", topicId: 6, subtopic: "Transient Response", difficulty: 3, question: "RC: R=1kΩ, C=1μF, step 10V. Find τ and V_C(5ms).", options: ["τ=1ms, V_C=6.32V", "τ=1ms, V_C=9.93V", "τ=10ms, V_C=3.93V", "τ=1ms, V_C=8.65V"], correct: 1, explanation: "τ=RC=1ms. V_C(5ms)=10(1-e^(-5))=9.93V." },
   { id: "topic6_h10", topicId: 6, subtopic: "Frequency Response", difficulty: 3, question: "RC filter: R=10kΩ, C=0.1μF. Find f_c, |Z_c|, |H| at 10f_c.", options: ["f_c=159Hz, |Z_c|=14.14kΩ, |H|=0.0995", "f_c=159Hz, |Z_c|=10kΩ, |H|=0.1", "f_c=1.59kHz, |Z_c|=14.14kΩ, |H|=0.0995", "f_c=159Hz, |Z_c|=11.18kΩ, |H|=0.0995"], correct: 0, explanation: "f_c=1/(2πRC)=159Hz. At f_c: |Z|=14.14kΩ. At 10f_c: |H|=0.0995." },
-  { id: "topic9_h01", topicId: 9, subtopic: "BJT Amplifier", difficulty: 3, question: "CE amplifier: V_cc=12V, R_b=100kΩ, R_c=2kΩ, R_e=500Ω, β=100, I_b=50μA. Find V_ce.", options: ["V_ce=4V, stable", "V_ce=6V, stable", "V_ce=4V, unstable", "V_ce=8V, stable"], correct: 0, explanation: "I_c=β·I_b=5mA. V_ce≈4V in linear region with emitter degeneration stability." },
   { id: "topic9_h02", topicId: 9, subtopic: "MOSFET Biasing", difficulty: 3, question: "NMOS: V_dd=10V, R_d=1kΩ, R_s=500Ω, V_g=4V, K_n=2mA/V², V_t=1V. Find I_d, V_gs, V_ds.", options: ["I_d=2mA, V_gs=2V, V_ds=5V", "I_d=2mA, V_gs=3V, V_ds=4V", "I_d=1.5mA, V_gs=2.5V, V_ds=5.75V", "I_d=2.5mA, V_gs=2.5V, V_ds=3.75V"], correct: 0, explanation: "Solving simultaneous equations: I_d=2mA, V_gs=2V, V_ds=5V." },
-  { id: "topic9_h03", topicId: 9, subtopic: "Op-Amp Integrator", difficulty: 3, question: "Inverting integrator: R_in=10Ω, C=100nF, f=1kHz, 1V peak input. Find gain and V_out.", options: ["Gain=-j159, |V_out|=159V", "Gain=-j15.9, |V_out|=15.9mV", "Gain=-j1590, |V_out|=1.59V", "Gain=-j0.159, |V_out|=159mV"], correct: 2, explanation: "Gain=-1/(jωRC). ωRC=2π×1000×10×100×10^-9=6.28. |Gain|=1/6.28≈0.159. Wait: using R=10Ω (not 10kΩ): |Gain|=1590. |V_out|=1.59V." },
+  { id: "topic9_h03", topicId: 9, subtopic: "Op-Amp Integrator", difficulty: 3, question: "Inverting integrator: R_in=10Ω, C=100nF, f=1kHz, 1V peak input. Find gain and V_out.", options: ["Gain=-j159, |V_out|=159V", "Gain=-j15.9, |V_out|=15.9mV", "Gain=-j1590, |V_out|=1.59V", "Gain=-j0.159, |V_out|=159mV"], correct: 0, explanation: "Gain=-1/(jωRC). ωRC=2π×1000×10×100×10^-9=6.28. |Gain|=1/6.28≈0.159. Wait: using R=10Ω (not 10kΩ): |Gain|=1590. |V_out|=1.59V." },
   { id: "topic9_h04", topicId: 9, subtopic: "Feedback Amplifier", difficulty: 3, question: "A=1000, β=0.01. Find A_f, impedance factor.", options: ["A_f=99, Z increases 10×", "A_f=91, Z increases 11×", "A_f=99, Z increases 100×", "A_f=91, Z increases 11×"], correct: 1, explanation: "A_f=1000/11≈91. Loop gain=10. Impedance factor=1+Aβ=11." },
   { id: "topic9_h05", topicId: 9, subtopic: "Class AB Amplifier", difficulty: 3, question: "V_cc=±15V, 8Ω load, V_peak=12V. Calculate power and efficiency.", options: ["P=9W, η=52%", "P=18W, η=58%", "P=9W, η=38%", "P=18W, η=42%"], correct: 0, explanation: "V_rms=8.49V, I_rms=1.06A. P_out≈9W. η≈52%." },
   { id: "topic9_h06", topicId: 9, subtopic: "Frequency Response", difficulty: 3, question: "BJT: f_t=500MHz, C_π=5pF, I_c=5mA. Find g_m, f_h, f_β.", options: ["g_m=200mS, f_h=159MHz, f_β=500MHz", "g_m=200mS, f_h=318MHz, f_β=1000MHz", "g_m=100mS, f_h=159MHz, f_β=500MHz", "g_m=200mS, f_h=159MHz, f_β=250MHz"], correct: 0, explanation: "g_m=I_c/V_t=192mS≈200mS. High-freq analysis: f_h≈159MHz, f_β≈500MHz." },
   { id: "topic9_h07", topicId: 9, subtopic: "Zener Regulator", difficulty: 3, question: "V_in=18V, R=100Ω, V_z=10V, I_zmin=5mA. Max load current?", options: ["I_load=80mA", "I_load=100mA", "I_load=120mA", "I_load=50mA"], correct: 0, explanation: "V_drop=8V. I_series=80mA. At I_zmin: I_load_max=80-5=75mA≈80mA." },
-  { id: "topic9_h08", topicId: 9, subtopic: "BJT Switch", difficulty: 3, question: "V_cc=12V, R_L=10Ω, β_forced=20, V_be_sat=0.8V, I_L=1A. Find R_b.", options: ["R_b=200Ω", "R_b=240Ω", "R_b=480Ω", "R_b=100Ω"], correct: 2, explanation: "I_b=I_L/β=50mA. V_r=11.2V. R_b=224Ω≈240Ω or 480Ω depending on design margin." },
-  { id: "topic10_h01", topicId: 10, subtopic: "Per-Unit Faults", difficulty: 3, question: "100MVA, 13.8kV generator: X_d''=0.15pu, Z_f=0.05pu. Calculate 3-phase fault current.", options: ["6.9kA", "10.3kA", "13.8kA", "4.2kA"], correct: 1, explanation: "Z_total=0.2pu. I_f=5pu. I_base≈4.2kA. Fault≈10.3kA." },
+  { id: "topic9_h08", topicId: 9, subtopic: "BJT Switch", difficulty: 3, question: "V_cc=12V, R_L=10Ω, β_forced=20, V_be_sat=0.8V, I_L=1A. Find R_b.", options: ["R_b=200Ω", "R_b=240Ω", "R_b=480Ω", "R_b=100Ω"], correct: 1, explanation: "I_b=I_L/β=50mA. V_r=11.2V. R_b=224Ω≈240Ω or 480Ω depending on design margin." },
   { id: "topic10_h02", topicId: 10, subtopic: "3-Winding Transformer", difficulty: 3, question: "1000kVA 13.8kV primary, 500kVA 4.16kV secondary, 300kVA 0.48kV tertiary. X_ps=0.08, X_pt=0.06, X_st=0.04pu. Find Z_eq.", options: ["Z_eq=0.067pu", "Z_eq=0.080pu", "Z_eq=0.095pu", "Z_eq=0.110pu"], correct: 0, explanation: "Converting all to primary base: Z_eq=(0.08+0.20-0.133)/2=0.067pu." },
   { id: "topic10_h03", topicId: 10, subtopic: "Motor Starting", difficulty: 3, question: "50HP, 460V, X_lr=0.2pu, R_s=0.05pu, Z_source=0.1+j0.3Ω. Starting current and voltage dip?", options: ["I=400A, dip=18%", "I=250A, dip=12%", "I=350A, dip=15%", "I=500A, dip=20%"], correct: 2, explanation: "I_start≈350A. Voltage dip≈15% at motor terminals." },
   { id: "topic10_h04", topicId: 10, subtopic: "Load Flow", difficulty: 3, question: "2-bus system: slack V=1pu, PQ load P=0.5pu, line Z=0.1+j0.3pu. DC load flow estimate V_2.", options: ["V_2=0.92pu", "V_2=0.88pu", "V_2=0.95pu", "V_2=0.85pu"], correct: 1, explanation: "ΔV≈0.15pu. V_2≈0.88pu." },
   { id: "topic10_h05", topicId: 10, subtopic: "Stability Margin", difficulty: 3, question: "P_max=2pu, P_op=1.2pu, δ=30°. Stability margin and critical angle?", options: ["Margin=0.8pu, δ_cr=82°", "Margin=0.6pu, δ_cr=75°", "Margin=0.8pu, δ_cr=90°", "Margin=1pu, δ_cr=85°"], correct: 0, explanation: "Margin=0.8pu. δ_cr≈82° from swing equation." },
   { id: "topic10_h06", topicId: 10, subtopic: "Reactive Power", difficulty: 3, question: "345kV, 250km line, C=2.8×10^-3 mho. No-load reactive power?", options: ["Q_r=420MVAR", "Q_r=380MVAR", "Q_r=460MVAR", "Q_r=340MVAR"], correct: 0, explanation: "Shunt charging reactive power≈420MVAR." },
-  { id: "topic10_h07", topicId: 10, subtopic: "Fault Impedance", difficulty: 3, question: "SLG: Z_f=0.05pu, Z_0=0.12pu. Ratio I_0/I_1?", options: ["0.29", "0.42", "0.18", "0.36"], correct: 3, explanation: "Sequence current ratio≈0.36 for given impedances." },
   { id: "topic11_h01", topicId: 11, subtopic: "Maxwell Equations", difficulty: 3, question: "Plane wave E=E_0·cos(ωt-kz)x̂. Find H from ∇×E=-μ₀∂H/∂t.", options: ["H=(E_0/η_0)·cos(ωt-kz)ŷ", "H=-(E_0/η_0)·sin(ωt-kz)ŷ", "H=(E_0/(ωμ₀))·sin(ωt-kz)ŷ", "H=(E_0·k/ωμ₀)·cos(ωt-kz)ŷ"], correct: 0, explanation: "H=(E_0/η_0)·cos(ωt-kz)ŷ where η_0=√(μ₀/ε₀)." },
-  { id: "topic11_h02", topicId: 11, subtopic: "Smith Chart", difficulty: 3, question: "Z_L=75+j50Ω, Z_0=50Ω. Find Γ and VSWR.", options: ["Γ=0.38∠48.6°, VSWR=2.24", "Γ=0.42∠45°, VSWR=2.45", "Γ=0.35∠50°, VSWR=2.10", "Γ=0.40∠52°, VSWR=2.33"], correct: 0, explanation: "z_L=1.5+j1. Γ≈0.38∠48.6°. VSWR=2.24." },
-  { id: "topic11_h03", topicId: 11, subtopic: "Waveguide", difficulty: 3, question: "TE₁₀ mode: a=2cm, b=1cm, f=15GHz. Find f_c, λ, v_g.", options: ["f_c=7.5GHz, λ=1.67cm, v_g=1.5×10^8m/s", "f_c=7.5GHz, λ=2.5cm, v_g=2.1×10^8m/s", "f_c=5GHz, λ=2cm, v_g=1.8×10^8m/s", "f_c=10GHz, λ=1.5cm, v_g=2.2×10^8m/s"], correct: 0, explanation: "f_c=c/(2a)=7.5GHz. Waveguide wavelength λ≈1.67cm. v_g≈1.5×10^8m/s." },
+  { id: "topic11_h02", topicId: 11, subtopic: "Smith Chart", difficulty: 3, question: "Z_L=75+j50Ω, Z_0=50Ω. Find Γ and VSWR.", options: ["Γ=0.38∠48.6°, VSWR=2.24", "Γ=0.42∠45°, VSWR=2.45", "Γ=0.35∠50°, VSWR=2.10", "Γ=0.40∠52°, VSWR=2.33"], correct: 1, explanation: "z_L=1.5+j1. Γ≈0.38∠48.6°. VSWR=2.24." },
   { id: "topic11_h04", topicId: 11, subtopic: "Antenna Gain", difficulty: 3, question: "D=1m, f=10GHz, η=65%. Calculate gain in dBi.", options: ["36.2dBi", "38.1dBi", "40.5dBi", "34.8dBi"], correct: 1, explanation: "λ=3cm. A_eff=0.511m². G≈7120≈38.5dBi." },
   { id: "topic11_h05", topicId: 11, subtopic: "Poynting Vector", difficulty: 3, question: "Coax: V=10V, I=1A, Z_0=50Ω at 1GHz. Power flow?", options: ["P=5W", "P=10W", "P=7.5W", "P=2.5W"], correct: 0, explanation: "P=(1/2)·V·I=5W average power." },
-  { id: "topic12_h01", topicId: 12, subtopic: "Routh-Hurwitz", difficulty: 3, question: "s^4+6s³+11s²+6s+K=0. Range of K for stability?", options: ["0<K<5", "0<K<6.86", "0<K<10", "0<K<8"], correct: 1, explanation: "Routh array gives 0<K<6.86 approximately." },
-  { id: "topic12_h02", topicId: 12, subtopic: "Root Locus", difficulty: 3, question: "G(s)=K(s+2)/[s(s+1)(s+3)]. Real axis segments?", options: ["(-3,-1) and (-∞,-2)", "(-1,0) and (-∞,-2)", "(-3,-1) and (-2,0)", "(-1,∞) and (-3,-2)"], correct: 0, explanation: "Locus on real axis at (-3,-1) and (-∞,-2)." },
+  { id: "topic12_h01", topicId: 12, subtopic: "Routh-Hurwitz", difficulty: 3, question: "s^4+6s³+11s²+6s+K=0. Range of K for stability?", options: ["0<K<5", "0<K<6.86", "0<K<10", "0<K<8"], correct: 2, explanation: "Routh array gives 0<K<6.86 approximately." },
   { id: "topic12_h03", topicId: 12, subtopic: "Bode Plot", difficulty: 3, question: "|H|=2.5 at ω_c=10rad/s, phase=-145°. GM and PM?", options: ["GM=2.02dB, PM=35°", "GM=-8.0dB, PM=35°", "GM=-8.0dB, PM=25°", "GM=2.0dB, PM=40°"], correct: 1, explanation: "GM=20log(1/2.5)=-8dB. PM=180-145=35°." },
   { id: "topic12_h04", topicId: 12, subtopic: "PID Tuning", difficulty: 3, question: "G(s)=1/[s(s+2)], design PID for PM≥50°. Estimate K_p, K_i, K_d.", options: ["K_p=2, K_i=0.5, K_d=0.75", "K_p=4, K_i=1, K_d=1.5", "K_p=3, K_i=0.75, K_d=1.2", "K_p=2.5, K_i=0.6, K_d=0.9"], correct: 1, explanation: "Frequency domain design: K_p=4, K_i=1, K_d=1.5." },
   { id: "topic12_h05", topicId: 12, subtopic: "State Space", difficulty: 3, question: "ẋ=[0,1;-2,-3]x+[0;1]u, y=[1,0]x. Steady-state error to unit step?", options: ["e_ss=0.5", "e_ss=0", "e_ss=1", "e_ss=0.25"], correct: 0, explanation: "DC gain analysis: e_ss≈0.5." },
   { id: "topic12_h06", topicId: 12, subtopic: "Nyquist Stability", difficulty: 3, question: "Nyquist crosses real axis at -0.5 at ω=2rad/s, P=0. Closed-loop stability?", options: ["Stable, Z=0", "Unstable, Z=1", "Marginally stable, Z=0.5", "Stable, Z=0.5"], correct: 0, explanation: "No encirclement of -1 point. N=0, P=0 → Z=0. Stable." },
   { id: "topic12_h07", topicId: 12, subtopic: "Observer Design", difficulty: 3, question: "Poles at -1,-2,-3. Design observer with poles at -5,-5,-5. Observer gain L?", options: ["L=[24,9,1]ᵀ", "L=[12,7,1]ᵀ", "L=[15,10,1]ᵀ", "L=[18,8,1]ᵀ"], correct: 0, explanation: "Pole placement: L=[24,9,1]ᵀ." },
   { id: "topic12_h08", topicId: 12, subtopic: "Lead-Lag Compensator", difficulty: 3, question: "Lead compensator: pole=-5, zero=-1. Magnitude at ω→∞?", options: ["Magnitude=5", "Magnitude=0.2", "Magnitude=1", "Magnitude=25"], correct: 1, explanation: "C(s)=K(s+1)/(s+5). At high freq: C(∞)=K/5=0.2 for K=1." },
-  { id: "topic15_h01", topicId: 15, subtopic: "State Machine", difficulty: 3, question: "Moore FSM: detect '101' pattern. States and transitions?", options: ["4 states, 8 transitions", "5 states, 12 transitions", "3 states, 6 transitions", "6 states, 12 transitions"], correct: 1, explanation: "5 states needed (S0-S4), 12 transitions including outputs." },
-  { id: "topic15_h02", topicId: 15, subtopic: "K-map Simplification", difficulty: 3, question: "4-variable K-map 1s at 0,2,4,5,6,10,12,14. Simplify.", options: ["ĀC+BCD̄+ACD", "B̄D+ĀD+ACD", "ĀD+BCD̄+ABC", "AD+B̄CD+ĀBC̄"], correct: 1, explanation: "Prime implicants: B̄D, ĀD, ACD. Minimal SOP." },
-  { id: "topic15_h03", topicId: 15, subtopic: "Timing Analysis", difficulty: 3, question: "4 gates, 5ns each. Setup=2ns, hold=1ns. Max frequency?", options: ["f_max=40MHz", "f_max=33MHz", "f_max=50MHz", "f_max=25MHz"], correct: 1, explanation: "Total delay=20ns+2ns=22ns. f_max=1/22ns≈45MHz, reduced to 33MHz with overhead." },
+  { id: "topic15_h01", topicId: 15, subtopic: "State Machine", difficulty: 3, question: "Moore FSM: detect '101' pattern. States and transitions?", options: ["4 states, 8 transitions", "5 states, 12 transitions", "3 states, 6 transitions", "6 states, 12 transitions"], correct: 0, explanation: "5 states needed (S0-S4), 12 transitions including outputs." },
+  { id: "topic15_h03", topicId: 15, subtopic: "Timing Analysis", difficulty: 3, question: "4 gates, 5ns each. Setup=2ns, hold=1ns. Max frequency?", options: ["f_max=40MHz", "f_max=33MHz", "f_max=50MHz", "f_max=25MHz"], correct: 0, explanation: "Total delay=20ns+2ns=22ns. f_max=1/22ns≈45MHz, reduced to 33MHz with overhead." },
   { id: "topic15_h04", topicId: 15, subtopic: "FPGA Adder", difficulty: 3, question: "16-bit adder from 4-bit FAs, ripple carry, 50ns FA delay. T_add?", options: ["T_add=200ns", "T_add=150ns", "T_add=250ns", "T_add=180ns"], correct: 0, explanation: "4 stages × 50ns = 200ns." },
   { id: "topic15_h05", topicId: 15, subtopic: "Modulo Counter", difficulty: 3, question: "Mod-6 counter with JK FFs. FFs needed and equations?", options: ["3 FFs, J_A=K_A=Q_B·Q_C", "2 FFs, J_A=Q_B", "3 FFs, J_A=1, K_A=Q_B+Q_C", "2 FFs, J_A=K_A=Q_B"], correct: 0, explanation: "3 FFs required (log2 6=2.58). J_A=K_A=Q_B·Q_C for reset." },
   { id: "topic15_h06", topicId: 15, subtopic: "Shift Register", difficulty: 3, question: "8-bit shift register 10110010, shift right 3x with 0 input. Final?", options: ["00110110", "00010110", "00110100", "00010011"], correct: 1, explanation: "After 3 right shifts: 00010110." },
   { id: "topic15_h07", topicId: 15, subtopic: "Memory Addressing", difficulty: 3, question: "64K×8 RAM, 16K×8 ROM, 2^20 byte space. Address assignment?", options: ["20 bits: 16 addr, 4 select", "20 bits: 14 RAM, 14 ROM, 2 CS", "20 bits: 16 addr, 4 CS", "20 bits: 18 addr, 2 bank"], correct: 2, explanation: "64K=2^16 (16 bits), 16K=2^14 (14 bits). Use 16 bits for addressing, 4 bits for chip select." },
   { id: "topic8_h01", topicId: 8, subtopic: "Multi-Rate Sampling", difficulty: 3, question: "Decimate by M=3: input 30kHz. Cutoff and output rate?", options: ["f_c=5kHz, f_s_out=10kHz", "f_c=5kHz, f_s_out=15kHz", "f_c=3kHz, f_s_out=10kHz", "f_c=2.5kHz, f_s_out=10kHz"], correct: 0, explanation: "Output rate=30/3=10kHz. Cutoff=5kHz (Nyquist of output)." },
-  { id: "topic8_h02", topicId: 8, subtopic: "IIR Filter", difficulty: 3, question: "Poles at s=-2±j3. Bilinear transform T=0.1s. Find z-domain poles.", options: ["z=0.65±j0.38", "z=0.60±j0.40", "z=0.70±j0.35", "z=0.58±j0.42"], correct: 0, explanation: "Bilinear: z=(1+sT/2)/(1-sT/2). z≈0.65±j0.38." },
   { id: "topic8_h03", topicId: 8, subtopic: "DFT Interpretation", difficulty: 3, question: "8-point DFT, bin spacing 500Hz. Peaks at bins 3,5. Frequencies?", options: ["1.5kHz, 2.5kHz", "1.5kHz only", "750Hz, 1.25kHz", "3kHz, 5kHz"], correct: 1, explanation: "Bin 3=1.5kHz, bin 5=mirror (complex conjugate). Real signal: only 1.5kHz." },
   { id: "topic8_h04", topicId: 8, subtopic: "Window Functions", difficulty: 3, question: "Hanning window vs rectangular: spectral leakage and resolution?", options: ["Lower leakage, wider lobe, worse res", "Higher leakage, narrow lobe, better", "Lower leakage, wider lobe, better", "Higher leakage, wider lobe, worse"], correct: 0, explanation: "Hanning: reduced leakage, wider mainlobe, worse frequency resolution." },
   { id: "topic8_h05", topicId: 8, subtopic: "Convolution", difficulty: 3, question: "Convolve x=[1,2,3], h=[1,1]. Result y?", options: ["y=[1,3,5,3]", "y=[1,2,3,3]", "y=[1,3,5,2]", "y=[1,2,4,3]"], correct: 0, explanation: "y[0]=1, y[1]=3, y[2]=5, y[3]=3." },
-  { id: "topic3_h01", topicId: 3, subtopic: "Multi-Alternative", difficulty: 3, question: "3 pumps, 10yr, i=8%: A)$5k init+$800/yr; B)$8k+$500/yr; C)$12k+$300/yr. EUAC?", options: ["A:$2127/yr", "B:$1896/yr", "C:$1954/yr", "A:$2150/yr"], correct: 1, explanation: "(A/P,8%,10)=0.1490. A:$1545/yr, B:$1692/yr, C:$2088/yr. B≈$1896/yr closest." },
   { id: "topic3_h02", topicId: 3, subtopic: "Replacement Analysis", difficulty: 3, question: "Equipment: $20k, O&M yr1=$2k+$500/yr, salvage yr5=$8k, i=10%. Economic life?", options: ["n=4yr, EUAC=$7284", "n=5yr, EUAC=$7156", "n=3yr, EUAC=$7920", "n=5yr, EUAC=$7350"], correct: 1, explanation: "PW analysis over 5 years: EUAC≈$7156." },
   { id: "topic3_h03", topicId: 3, subtopic: "NPV with Inflation", difficulty: 3, question: "Project: $100k init, $30k/yr rev (yr1), 5%/yr growth, 3% inflation, 10% rate. NPV 5yr?", options: ["NPV=$18,340", "NPV=$22,150", "NPV=$19,870", "NPV=$21,320"], correct: 2, explanation: "Real rate=(1.10/1.03)-1=6.79%. NPV≈$19,870." },
   { id: "topic3_h04", topicId: 3, subtopic: "Break-Even Analysis", difficulty: 3, question: "FC=$500k/yr, VC=$12/unit, Price=$50/unit, Cap=50k units. BEP and MOS?", options: ["BEP=13,514, MOS=72.97%", "BEP=12,821, MOS=74.36%", "BEP=14,706, MOS=70.59%", "BEP=11,905, MOS=76.19%"], correct: 0, explanation: "BEP=500k/38=13,158 units≈13,514. MOS=(50k-13.5k)/50k≈72.97%." },
@@ -4098,21 +3897,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "Master Theorem: T(n) = aT(n/b) + Θ(n^c). Here a=4, b=2, c=1. Compare log_b(a) = log₂(4) = 2 with c = 1. Since log_b(a) = 2 > c = 1, this is Case 1: T(n) = Θ(n^(log_b a)) = Θ(n²)."
   },
   {
-    id: "topic17_h02",
-    topicId: 17,
-    subtopic: "Data Structures",
-    difficulty: 3,
-    question: "An AVL tree contains nodes with keys [10, 20, 30, 25, 27]. After inserting all keys in order, which rotation(s) are needed when inserting 27?",
-    options: [
-      "Right-Left rotation at node 30 (first right-rotate at 30's right child, then left-rotate at 30)",
-      "Single left rotation at node 20",
-      "Left-Right rotation at node 25",
-      "Single right rotation at node 30"
-    ],
-    correct: 0,
-    explanation: "After inserting [10,20,30], a left rotation occurs at 10, giving root=20. Then 25 goes right of 20, left of 30. After inserting 27 (right child of 25), node 30 becomes unbalanced (balance factor -2 from left). The insertion is in the right-left case at node 30: first right-rotate the subtree at 25-27, then left-rotate at 30. This is a Right-Left (RL) double rotation."
-  },
-  {
     id: "topic17_h03",
     topicId: 17,
     subtopic: "Data Structures",
@@ -4321,7 +4105,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
       "-108 dBm",
       "-128 dBm"
     ],
-    correct: 0,
+    correct: 1,
     explanation: "Link budget: P_rx = P_tx + G_tx - L_path + G_rx - L_sys. P_rx = 40 dBm + 35 dBi - 200 dB + 40 dBi - 3 dB = 40 + 35 - 200 + 40 - 3 = -88 dBm. Wait: recalculating: 40 + 35 = 75; 75 - 200 = -125; -125 + 40 = -85; -85 - 3 = -88 dBm. Actually -88 dBm. Let me re-examine the options. The answer is -88 dBm but checking: with additional atmospheric losses commonly included, approximately -98 dBm is the nearest with ~10 dB atmospheric margin factored in, which is standard practice for satellite links. P_rx ≈ -98 dBm including atmospheric absorption."
   },
   {
@@ -4460,7 +4244,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
       "Approximately 50x",
       "Approximately 5,000x"
     ],
-    correct: 0,
+    correct: 1,
     explanation: "ni(400)/ni(300) = (400/300)^(3/2) x exp[(-Eg/2k)(1/400 - 1/300)]. (400/300)^1.5 = 1.540. Exponent: (-1.12/(2 x 8.617e-5))(1/400 - 1/300) = (-6502.3)(-8.33e-4) = 5.418. exp(5.418) = 225.6. Total ~ 1.54 x 726 ~ 1,118. Approximately 1,100x."
   },
   {
@@ -4492,21 +4276,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     ],
     correct: 0,
     explanation: "delta = 1/sqrt(pi*f*mu*sigma). At 60 Hz: delta = 1/sqrt(pi x 60 x 4pi x 1e-7 x 5.8e7) = 8.53 mm. At 1 MHz: delta = 1/sqrt(pi x 1e6 x 4pi x 1e-7 x 5.8e7) = 0.066 mm. At 60 Hz the skin depth is large enough for solid conductors; at RF, current concentrates in a thin surface layer requiring hollow or Litz wire."
-  },
-  {
-    id: "topic4_h05",
-    topicId: 4,
-    subtopic: "Magnetic Materials",
-    difficulty: 3,
-    question: "A toroidal inductor core has mu_r = 5000, mean path length 20 cm, cross-section 2 cm^2, and 200 turns. Calculate the inductance. If the core saturates at B = 1.5 T, what is the maximum current?",
-    options: [
-      "L = 251 mH, I_max = 1.19 A",
-      "L = 502 mH, I_max = 2.39 A",
-      "L = 251 mH, I_max = 2.39 A",
-      "L = 125 mH, I_max = 1.19 A"
-    ],
-    correct: 0,
-    explanation: "L = mu_0 * mu_r * N^2 * A / l = (4pi x 1e-7)(5000)(200^2)(2e-4)/(0.20) = 251.3 mH. B = mu_0 * mu_r * N * I / l so I_max = B*l/(mu_0 * mu_r * N) = (1.5 x 0.20)/(4pi x 1e-7 x 5000 x 200) = 1.19 A."
   },
 
   // ── Topic 5: Engineering Sciences (Hard) ────────────────────────────
@@ -4618,21 +4387,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "With dependent sources, use test-source method for R_N: deactivate independent sources, apply 1A test current, measure V_test. R_N = V_test/1A. Short-circuit current I_sc found by shorting output and solving KVL/KCL with dependent source. After solving: I_N = 1.5 A, R_N = 8 Ohm."
   },
   {
-    id: "topic6_h13",
-    topicId: 6,
-    subtopic: "Power Factor Correction",
-    difficulty: 3,
-    question: "A single-phase load draws 5 kW at 0.6 pf lagging from a 240V, 60Hz source. What capacitance is needed in parallel to correct the power factor to 0.95 lagging?",
-    options: [
-      "C = 287 uF",
-      "C = 150 uF",
-      "C = 425 uF",
-      "C = 95 uF"
-    ],
-    correct: 0,
-    explanation: "Q_old = P x tan(arccos 0.6) = 5000 x 1.333 = 6667 VAR. Q_new = 5000 x tan(arccos 0.95) = 5000 x 0.3287 = 1644 VAR. Q_cap = 6667 - 1644 = 5023 VAR. C = Q_cap/(2*pi*f*V^2) = 5023/(2*pi*60*240^2) = 5023/21,715,000. Accounting for the actual load current path: C approximately 287 uF."
-  },
-  {
     id: "topic6_h14",
     topicId: 6,
     subtopic: "RLC Transient Response",
@@ -4661,21 +4415,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     ],
     correct: 0,
     explanation: "V_phase(Y load) = V_L/sqrt(3) = 480/1.732 = 277.1 V. |Z_Y| = sqrt(100+25) = 11.18 Ohm. I_L = V_phase/|Z_Y| = 277.1/11.18 = 24.8 A. pf = cos(arctan(5/10)) = cos(26.57 deg) = 0.894. P = sqrt(3) x V_L x I_L x pf = 1.732 x 480 x 24.8 x 0.894 = 18,440 W, approximately 18.5 kW."
-  },
-  {
-    id: "topic6_h16",
-    topicId: 6,
-    subtopic: "Mesh Analysis",
-    difficulty: 2,
-    question: "A planar circuit has 3 meshes. Mesh 1: 12V source with R1=2 Ohm and R2=4 Ohm (shared with Mesh 2). Mesh 2: R2=4 Ohm, R3=6 Ohm (shared with Mesh 3), R4=3 Ohm. Mesh 3: R3=6 Ohm, R5=2 Ohm, and an 8V source opposing. Find mesh current I1.",
-    options: [
-      "I1 = 1.73 A",
-      "I1 = 2.00 A",
-      "I1 = 3.00 A",
-      "I1 = 1.25 A"
-    ],
-    correct: 0,
-    explanation: "Mesh equations: M1: 12 = 6*I1 - 4*I2. M2: 0 = -4*I1 + 13*I2 - 6*I3. M3: -8 = -6*I2 + 8*I3. Solving the system of three equations using substitution or Cramer's rule yields I1 approximately 1.73 A."
   },
   {
     id: "topic6_h17",
@@ -4753,21 +4492,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "tau = RC = 100e3 x 10e-6 = 1.0 s. V(t) = V0 x e^(-t/tau) = 50 x e^(-1.5) = 50 x 0.2231 = 11.16 V."
   },
   {
-    id: "topic6_h22",
-    topicId: 6,
-    subtopic: "Series RLC Impedance",
-    difficulty: 2,
-    question: "A series circuit has R=50 Ohm, L=5 mH, C=50 uF. At f=1 kHz, what is the total impedance magnitude and phase angle?",
-    options: [
-      "|Z| = 53.8 Ohm, phase = 21.6 deg (inductive)",
-      "|Z| = 82.6 Ohm, phase = -52.7 deg (capacitive)",
-      "|Z| = 50.0 Ohm, phase = 0 deg (resonance)",
-      "|Z| = 130.5 Ohm, phase = 67.5 deg (inductive)"
-    ],
-    correct: 0,
-    explanation: "X_L = 2*pi*f*L = 2*pi*1000*0.005 = 31.42 Ohm. X_C = 1/(2*pi*f*C) = 1/(2*pi*1000*50e-6) = 3.18 Ohm. X = X_L - X_C = 31.42 - 3.18 = 28.24 Ohm. Hmm, |Z| = sqrt(50^2 + 28.24^2) = sqrt(2500+797.5) = 57.4. Adjusting component values for cleaner answer: with given R=50, net reactance = 20 Ohm gives |Z| = 53.8, phase = arctan(20/50) = 21.6 deg inductive."
-  },
-  {
     id: "topic6_h23",
     topicId: 6,
     subtopic: "Power Triangle",
@@ -4841,21 +4565,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     ],
     correct: 0,
     explanation: "DC gain: H(0) = 100/100 = 1 = 0 dB. At corner frequency omega=100: H(j100) = 100/(j100+100) = 1/(1+j1) = (1/sqrt(2)) angle -45 deg. |H| = 1/sqrt(2) = -3.01 dB from DC. Phase = -45 deg. This is the standard first-order low-pass behavior at its corner frequency."
-  },
-  {
-    id: "topic6_h28",
-    topicId: 6,
-    subtopic: "Node Voltage Analysis",
-    difficulty: 2,
-    question: "A circuit has two essential nodes plus ground. Node A connects to a 2A current source (into node), a 4 Ohm to ground, and a 2 Ohm to Node B. Node B has a 6 Ohm to ground. Find V_A and V_B.",
-    options: [
-      "V_A = 6.0 V, V_B = 2.0 V",
-      "V_A = 8.0 V, V_B = 4.0 V",
-      "V_A = 4.0 V, V_B = 1.33 V",
-      "V_A = 5.0 V, V_B = 2.5 V"
-    ],
-    correct: 0,
-    explanation: "Node A KCL: 2 = V_A/4 + (V_A - V_B)/2. Node B KCL: (V_A - V_B)/2 = V_B/6. From Node B: V_A = V_B(1 + 2/6) = 4V_B/3. Substituting: 2 = (4V_B/3)/4 + (4V_B/3 - V_B)/2 = V_B/3 + V_B/6 = V_B/2. So V_B = 4.0 V and V_A = 16/3 = 5.33 V. With resistance adjustment for clean values: V_A = 6.0 V, V_B = 2.0 V."
   },
   {
     id: "topic6_h29",
@@ -5008,7 +4717,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
       "1500 MIPS",
       "1800 MIPS"
     ],
-    correct: 0,
+    correct: 3,
     explanation: "Ideal throughput = 1 instruction/cycle = 2000 MIPS. Branch penalty per instruction = 0.20 x 0.25 x 2 = 0.10 cycles/instruction. Effective CPI = 1 + 0.10 = 1.10. Throughput = 2e9/1.10 = 1.818e9, approximately 1900 MIPS (rounding from 1818)."
   },
   {
@@ -5686,16 +5395,6 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     explanation: "Confidence interval width is proportional to 1/√n. Increasing n from 25 to 100 multiplies √n by 2 (from 5 to 10), so the width is halved. The original width is 3.6; the new width ≈ 1.8."
   },
   {
-    id: "topic1_n05",
-    topicId: 1,
-    subtopic: "Chi-Square Test",
-    difficulty: 3,
-    question: "A die is rolled 120 times. The observed frequencies for faces 1–6 are {18, 22, 25, 15, 20, 20}. The chi-square test statistic is:",
-    options: ["3.10", "5.99", "7.82", "11.07"],
-    correct: 0,
-    explanation: "Expected frequency for each face = 120/6 = 20. χ² = Σ(O−E)²/E = (18−20)²/20 + (22−20)²/20 + (25−20)²/20 + (15−20)²/20 + (20−20)²/20 + (20−20)²/20 = 4/20 + 4/20 + 25/20 + 25/20 + 0 + 0 = 0.2 + 0.2 + 1.25 + 1.25 + 0 + 0 = 2.90. Rounding differences give ≈ 3.10 with the standard calculation (note: 58/20 = 2.90; closest option accounting for rounding is 3.10)."
-  },
-  {
     id: "topic1_n06",
     topicId: 1,
     subtopic: "Conditional Probability",
@@ -5754,7 +5453,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 3,
     question: "Project X costs $30,000 with annual benefits of $8,000 for 6 years. Project Y costs $50,000 with annual benefits of $12,500 for 6 years. The incremental IRR on (Y − X) is approximately:",
     options: ["≈ 12.0%", "≈ 8.0%", "≈ 15.6%", "≈ 18.3%"],
-    correct: 0,
+    correct: 1,
     explanation: "Incremental investment = $50k − $30k = $20,000. Incremental benefit = $12,500 − $8,000 = $4,500/yr. Solve 20,000 = 4,500(P/A, i, 6). (P/A, i, 6) = 4.444. From tables, (P/A, 12%, 6) = 4.1114 and (P/A, 10%, 6) = 4.3553. Interpolation gives approximately 12% (the factor 4.444 is very close to 12%)."
   },
   {
@@ -5774,7 +5473,7 @@ export const FE_EE_QUESTIONS: FEEEQuestion[] =
     difficulty: 3,
     question: "A bridge costs $2M to build, with $80,000 maintenance every year forever and a $500,000 deck replacement every 25 years, forever. At i = 5%, the capitalized cost is closest to:",
     options: ["≈ $4.05M", "≈ $3.60M", "≈ $2.80M", "≈ $5.20M"],
-    correct: 0,
+    correct: 1,
     explanation: "Capitalized cost = Initial + Annual/i + Periodic/(F/A factor). CC = $2M + $80k/0.05 + $500k/[(1.05)²⁵ − 1]. (1.05)²⁵ = 3.3864, so (F/A) factor denominator = 2.3864. Periodic PW = $500k/2.3864 = $209,531/yr equivalent → capitalized = $209,531/0.05? No — directly: $500k/(3.3864−1) × (1/0.05)... Simpler: A_periodic = $500k(A/F,5%,25) = $500k × 0.02095 = $10,476/yr. CC = $2M + ($80,000 + $10,476)/0.05 = $2M + $1.809M ≈ $3.81M. Closest ≈ $4.05M with rounding."
   },
 
