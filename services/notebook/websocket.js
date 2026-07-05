@@ -10,7 +10,7 @@ const initializeWebSocket = (io) => {
         return next(new Error('Authentication error'));
       }
 
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
       const result = await pool.query(
         'SELECT id, email, first_name, last_name, role FROM users WHERE id = $1 AND is_active = true',
         [decoded.userId]

@@ -50,7 +50,15 @@ const io = new SocketIOServer(httpServer, {
 });
 
 const PORT = process.env.PORT || 3005;
-const JWT_SECRET = process.env.JWT_SECRET || 'xr-labs-secret-key';
+const JWT_SECRET = ((): string => {
+  const s = process.env.JWT_SECRET;
+  // Refuse the weak dev fallback in production — the stack shares one HMAC
+  // secret for cross-service SSO, so a known secret forges tokens everywhere.
+  if (process.env.NODE_ENV === 'production' && (!s || s === 'xr-labs-secret-key')) {
+    throw new Error('JWT_SECRET must be set to a strong, non-default value in production');
+  }
+  return s || 'xr-labs-secret-key';
+})();
 
 // Database Connection Pool
 const pool = new Pool({
@@ -298,7 +306,7 @@ const authenticateToken = (req: AuthRequest, res: Response, next: NextFunction) 
     return res.status(401).json({ error: 'Access token required' });
   }
 
-  jwt.verify(token, JWT_SECRET, (err: any, user: any) => {
+  jwt.verify(token, JWT_SECRET, { algorithms: ['HS256'] }, (err: any, user: any) => {
     if (err) {
       return res.status(403).json({ error: 'Invalid or expired token' });
     }

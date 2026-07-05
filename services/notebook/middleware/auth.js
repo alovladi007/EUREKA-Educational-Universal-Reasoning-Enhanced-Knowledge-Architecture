@@ -9,7 +9,7 @@ const auth = async (req, res, next) => {
       return res.status(401).json({ error: 'Authentication required' });
     }
     
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
     // P2: accept both token shapes. Notebook's own /api/auth tokens put
     // the user id in `userId`; api-core (the platform SSO) uses the
     // standard `sub` claim. Notebook shares the `eureka` DB with
@@ -44,7 +44,7 @@ const optionalAuth = async (req, res, next) => {
     const token = req.header('Authorization')?.replace('Bearer ', '');
     
     if (token) {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      const decoded = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] });
       const userId = decoded.userId || decoded.sub;  // P2: api-core uses `sub`
       const result = await pool.query(
         'SELECT id, email, first_name, last_name, role FROM users WHERE id = $1 AND is_active = true',

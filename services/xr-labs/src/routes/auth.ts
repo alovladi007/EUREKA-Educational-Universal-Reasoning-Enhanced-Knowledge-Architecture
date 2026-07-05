@@ -241,7 +241,7 @@ function authenticateTokenMiddleware(jwtSecret: string) {
     }
 
     try {
-      const user = jwt.verify(token, jwtSecret);
+      const user = jwt.verify(token, jwtSecret, { algorithms: ['HS256'] });
       (req as any).user = user;
       next();
     } catch (error) {

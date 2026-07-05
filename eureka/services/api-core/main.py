@@ -118,7 +118,11 @@ if _os.environ.get("RATE_LIMIT_ENABLED", _rl_default) == "1":
 # CORS middleware (added LAST so it runs FIRST — ensures CORS headers on ALL responses including errors)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"] if settings.ENVIRONMENT == "development" else settings.CORS_ORIGINS,
+    # Always an explicit allowlist — never `*`. `allow_origins=["*"]` combined
+    # with `allow_credentials=True` is rejected by browsers and signals intent
+    # to trust any origin. CORS_ORIGINS defaults include the local dev origins
+    # (:4040 web, :4041 admin) and is overridden per-env in production.
+    allow_origins=settings.CORS_ORIGINS,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

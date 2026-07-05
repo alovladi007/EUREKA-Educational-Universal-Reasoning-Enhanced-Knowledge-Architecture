@@ -14,8 +14,20 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# JWT Configuration (should match api-core settings)
-JWT_SECRET = os.getenv("JWT_SECRET", "eureka_dev_secret_key_change_in_production")
+# JWT Configuration (should match api-core settings).
+# The whole stack shares one HMAC secret for cross-service SSO, so a leaked
+# dev secret lets an attacker forge tokens every service accepts. In
+# production we REQUIRE a strong JWT_SECRET and refuse to fall back to the
+# well-known dev value; dev/test keep the convenient default.
+_DEV_JWT_SECRET = "eureka_dev_secret_key_change_in_production"
+JWT_SECRET = os.getenv("JWT_SECRET")
+if str(os.getenv("ENVIRONMENT", "development")).lower() == "production":
+    if not JWT_SECRET or JWT_SECRET == _DEV_JWT_SECRET:
+        raise RuntimeError(
+            "JWT_SECRET must be set to a strong, non-default value in production"
+        )
+else:
+    JWT_SECRET = JWT_SECRET or _DEV_JWT_SECRET
 JWT_ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
 # Security scheme

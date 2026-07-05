@@ -68,7 +68,10 @@ class Settings(BaseSettings):
     
     # CORS
     CORS_ORIGINS: List[str] = Field(
-        default=["http://localhost:3000", "http://localhost:3001"],
+        default=[
+            "http://localhost:3000", "http://localhost:3001",
+            "http://localhost:4040", "http://localhost:4041",
+        ],
         env="CORS_ORIGINS"
     )
     
@@ -150,6 +153,20 @@ class Settings(BaseSettings):
         """Parse CORS origins from string or list"""
         if isinstance(v, str):
             return [origin.strip() for origin in v.split(",")]
+        return v
+
+    @validator("DEBUG")
+    def _force_debug_off_in_prod(cls, v, values):
+        """Never run with DEBUG on in production, even if the env var says so.
+
+        DEBUG=True exposes /docs + /redoc and returns raw exception strings
+        on 500s (see main.py). Its default is True for local dev, so a
+        deploy that forgets DEBUG=false would leak internals — this hard
+        override closes that gap. ENVIRONMENT is validated first (defined
+        earlier), so it's available in `values`.
+        """
+        if str(values.get("ENVIRONMENT", "development")).lower() == "production":
+            return False
         return v
     
     @validator("SUPPORTED_LOCALES", pre=True)

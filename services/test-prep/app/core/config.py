@@ -109,3 +109,12 @@ class Settings(BaseSettings):
 
 # Create settings instance
 settings = Settings()
+
+# Production safety: refuse to boot with weak/default secrets. In prod the
+# cross-service JWT_SECRET (used to accept api-core-issued tokens) must be set,
+# and SECRET_KEY must not be the well-known default. Dev/test are unaffected.
+if str(os.getenv("ENVIRONMENT", "development")).lower() == "production":
+    if not settings.JWT_SECRET:
+        raise RuntimeError("JWT_SECRET must be set in production (api-core token bridge)")
+    if not settings.SECRET_KEY or settings.SECRET_KEY == "your-secret-key-here-change-in-production":
+        raise RuntimeError("SECRET_KEY must be set to a strong, non-default value in production")
