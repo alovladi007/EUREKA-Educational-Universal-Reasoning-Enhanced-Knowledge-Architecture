@@ -112,6 +112,29 @@ class StepCredit(Base):
     note: Mapped[str] = mapped_column(String(500), nullable=False, default="")
 
 
+class GradeOverride(Base):
+    """A teacher's override of an AI-produced grade (Phase 3).
+
+    AI grading of free-response work is always human-overridable. One override
+    per response supersedes the automatic score of record; the automatic grade
+    stays visible in the GradingRecord and ReasoningTrace for the audit trail.
+    """
+
+    __tablename__ = "grade_overrides"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    response_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("responses.id", ondelete="CASCADE"), unique=True, index=True
+    )
+    score: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    is_correct: Mapped[bool] = mapped_column(Boolean, nullable=False, default=False)
+    note: Mapped[str] = mapped_column(String(500), nullable=False, default="")
+    overridden_by: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(default=_now)
+
+
 class GradingRecord(Base):
     __tablename__ = "grading_records"
 

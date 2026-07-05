@@ -288,7 +288,8 @@ export type PracticeKind =
   | 'true_false'
   | 'short_text'
   | 'plot_points'
-  | 'show_work';
+  | 'show_work'
+  | 'free_response';
 
 // A served practice question.
 export interface PracticeQuestion {
@@ -322,10 +323,16 @@ export interface MasteryDelta {
   level: string;
 }
 
-// A per-step credit awarded for a milestone within a multi-step answer.
+// A per-step credit awarded for a milestone within a multi-step answer. For
+// show_work items only milestone/awarded are present. For AI-graded
+// free_response items the entry also carries a rationale note and the points
+// available/awarded for that criterion, so both shapes must be handled.
 export interface StepCredit {
   milestone: string;
   awarded: boolean;
+  note?: string;
+  points?: number;
+  awarded_points?: number;
 }
 
 // The gamification delta returned alongside a graded answer.
@@ -337,7 +344,10 @@ export interface AnswerGamification {
 }
 
 // The graded result of POST /api/v1/practice/answer. The step_credits and
-// gamification fields are optional so older items keep working unchanged.
+// gamification fields are optional so older items keep working unchanged. For
+// AI-graded free_response items the response also carries ai_graded/overridable
+// flags and a confidence, which the UI uses to label the grade as AI-produced
+// and teacher-overridable rather than authoritative.
 export interface AnswerResult {
   is_correct: boolean;
   score: number;
@@ -347,6 +357,9 @@ export interface AnswerResult {
   mastery: MasteryDelta;
   step_credits?: StepCredit[];
   gamification?: AnswerGamification;
+  ai_graded?: boolean;
+  overridable?: boolean;
+  confidence?: number;
 }
 
 // One mastery state row from GET /api/v1/mastery/me.
@@ -820,5 +833,60 @@ export function fetchCopilotSession(
 ): Promise<CopilotSessionHistory> {
   return apiGet<CopilotSessionHistory>(
     `/api/v1/copilot/sessions/${encodeURIComponent(id)}`,
+  );
+}
+
+// -------------------------------------------------------------------------
+// Free-response AI grading (teacher review).
+//
+// Free-response answers are graded by AI. The AI score is never final: a
+// teacher can review each one and override it. The review surface and the
+// override endpoint below are teacher-only; a student receives 403.
+// -------------------------------------------------------------------------
+
+// One AI-graded free response awaiting teacher review, from
+// GET /api/v1/grading/free-response/review. override_score is the teacher's
+// grade of record when overridden is true.
+export interface FreeResponseGradeRow {
+  response_id: string;
+  student: string;
+  prompt: string;
+  answer: string;
+  ai_score: number;
+  ai_is_correct: boolean;
+  confidence: number | null;
+  overridden: boolean;
+  override_score: number | null;
+  override_note: string;
+}
+
+// The result of POST /api/v1/grading/{response_id}/override. overrode_ai_score
+// is the AI score that the teacher's grade replaced.
+export interface OverrideGradeResult {
+  response_id: string;
+  score: number;
+  is_correct: boolean;
+  note: string;
+  overrode_ai_score: number;
+}
+
+// Teacher-only. Throws ApiError with status 403 for a student.
+export function fetchGradingReview(): Promise<{
+  items: FreeResponseGradeRow[];
+}> {
+  return apiGet<{ items: FreeResponseGradeRow[] }>(
+    '/api/v1/grading/free-response/review',
+  );
+}
+
+// Teacher-only. Records a teacher override for one AI-graded response. Throws
+// ApiError with status 403 for a student.
+export function overrideGrade(
+  responseId: string,
+  input: { score: number; is_correct: boolean; note: string },
+): Promise<OverrideGradeResult> {
+  return apiPost<OverrideGradeResult>(
+    `/api/v1/grading/${encodeURIComponent(responseId)}/override`,
+    input,
   );
 }

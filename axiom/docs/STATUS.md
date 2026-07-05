@@ -20,6 +20,7 @@ A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practic
 - Analytics: per-item classical statistics with IRT parameters, a cohort standards heatmap, per-learner growth, and CSV and PDF exports.
 - Gamification: XP, levels, streaks, and badges awarded strictly for genuine progress (correct responses and mastery gains), never idle time.
 - Copilot: an AI-assisted tutor that gives hints, explanations, and grounded chat. Reasoning sits behind a swappable provider (EUREKA reasoning client with a deterministic mock fallback per ADR 0001). Every reply is labeled AI-assisted, carries the curriculum sources it was grounded in, and is teacher-overridable. Hints for an active item withhold the answer.
+- Free-response AI grading: constructed text answers are graded against a rubric by the same swappable reasoning provider, with per-criterion partial credit and a confidence. Every AI grade is labeled and human-overridable; a teacher can review the queue of AI-graded responses and override any grade of record.
 - QTI 3.0 import and export of items and item banks.
 - Teacher flow: create an assessment from nodes, assign to students, deliver it, and view aggregated results.
 - Health and readiness probes, Prometheus metrics, structured JSON logs, and OpenAPI are served.
@@ -30,7 +31,7 @@ A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practic
 These are explicitly not implemented:
 
 - Live tutoring with shared whiteboard, video, and recording (Phase 3). This needs a real-time media server (WebRTC/SFU) that is out of scope for the current build; the copilot ships without it.
-- AI grading of handwritten and free-response work (Phase 3). The copilot reasons over text; vision and free-response scoring are not built.
+- AI grading of handwritten and image responses (Phase 3). Free-response text grading against a rubric is built (labeled and teacher-overridable); handwritten and image work needs a vision model and is not built.
 - Proctoring, LTI 1.3, OneRoster, LMS grade passback, and district analytics (Phase 4).
 - Notifications: email, in-app messaging, assignment reminders (Phase 2 roadmap item, not yet built).
 - The Celery worker still ships only the sample task; grading runs inline in the request path. Moving heavy grading and generation onto the worker is a later step.
@@ -46,11 +47,11 @@ These are explicitly not implemented:
 | curriculum | done | Phase 1 | Standards framework, skill graph, objectives. Seeded algebra graph. |
 | content | done | Phase 1 | Lessons and content steps per node. |
 | assessment | done | Phase 1, richer kinds and QTI in Phase 2 | Item bank, static items, parameterized templates and variants, assessments, forms, assignment, delivery. Phase 2 adds richer item kinds, item.meta, and QTI 3.0 import and export. |
-| grading | done | Phase 1, extended in Phase 2 | Selection, numeric, math expression and equation (SymPy), plus multi-select, true/false, short text, plot-points, and show-your-work step credit. Writes grader plus confidence and a reasoning trace. Runs inline. |
+| grading | done | Phase 1, extended in Phase 2 and 3 | Selection, numeric, math expression and equation (SymPy), plus multi-select, true/false, short text, plot-points, and show-your-work step credit. Phase 3 adds rubric-based AI grading of free-response text (via the reasoning provider) with a teacher override queue. Writes grader plus confidence and a reasoning trace. Runs inline. |
 | adaptive | done | Phase 1 (BKT), Phase 2 (IRT/CAT) | BKT mastery with evidence and prerequisite-aware path planning; IRT 3PL model, computerized adaptive testing, and item calibration. |
 | analytics | done | Phase 2 | Item statistics with IRT, standards heatmap, growth, CSV and PDF exports. |
 | gamification | done | Phase 2 | XP, levels, streaks, badges tied to real progress. Live game-show mode is not built. |
-| copilot | done (core) | Phase 3 | AI-assisted hints, explanations, and grounded chat behind a swappable reasoning provider with a mock fallback (ADR 0001). Labeled and teacher-overridable. Handwritten and free-response AI grading are not built. |
+| copilot | done (core) | Phase 3 | AI-assisted hints, explanations, and grounded chat behind a swappable reasoning provider with a mock fallback (ADR 0001). Labeled and teacher-overridable. The same provider grades free-response text against a rubric. Handwritten and image grading are not built. |
 | tutoring | planned | Phase 3 | Shared whiteboard, video, recording. Needs a media server; not built. |
 | proctoring | planned | Phase 4 | Lockdown, integrity signals, review workflow. |
 | integrations | planned | Phase 4 | LTI 1.3, OneRoster, gradebook passback. QTI item exchange is done in Phase 2. |
@@ -62,7 +63,7 @@ These are explicitly not implemented:
 |---|---|---|
 | Web dashboard (Next.js 14) | done | Dashboard plus Learn, Practice, Mastery, Path, Teacher, Adaptive Test, Achievements, Analytics, and Copilot pages against the live API. |
 | Docker Compose | done | api (8400), web (4100), Postgres with pgvector (5441), Redis (6392), worker, beat, observability profile. |
-| Alembic migrations | done | Five migrations, verified up and down on Postgres with a clean schema-drift check. |
+| Alembic migrations | done | Six migrations, verified up and down on Postgres with a clean schema-drift check. |
 | OpenAPI | done | Generated and served at /docs and /openapi.json. |
 | CI | done | ruff, math_core and api pytest, Alembic up and down on Postgres, frontend tsc and build. |
 

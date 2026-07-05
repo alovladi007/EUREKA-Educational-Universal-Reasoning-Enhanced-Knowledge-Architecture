@@ -82,6 +82,7 @@ export default function PathPage() {
         <HeaderLink href="/cat">Adaptive Test</HeaderLink>
         <HeaderLink href="/achievements">Achievements</HeaderLink>
         <HeaderLink href="/analytics">Analytics</HeaderLink>
+        <HeaderLink href="/grading-review">Grading</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-3xl px-6 py-10">

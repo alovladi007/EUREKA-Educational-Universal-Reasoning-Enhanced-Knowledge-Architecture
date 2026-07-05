@@ -205,6 +205,7 @@ export default function CopilotPage() {
         <HeaderLink href="/cat">Adaptive Test</HeaderLink>
         <HeaderLink href="/achievements">Achievements</HeaderLink>
         <HeaderLink href="/analytics">Analytics</HeaderLink>
+        <HeaderLink href="/grading-review">Grading</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-2xl px-6 py-10">

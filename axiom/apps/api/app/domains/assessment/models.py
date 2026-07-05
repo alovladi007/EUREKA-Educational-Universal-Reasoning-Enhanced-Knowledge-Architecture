@@ -35,6 +35,7 @@ ITEM_KINDS = (
     "short_text",
     "plot_points",
     "show_work",
+    "free_response",
 )
 
 

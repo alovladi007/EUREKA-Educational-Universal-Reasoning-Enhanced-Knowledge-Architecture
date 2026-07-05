@@ -196,6 +196,7 @@ function PracticeInner() {
         <HeaderLink href="/cat">Adaptive Test</HeaderLink>
         <HeaderLink href="/achievements">Achievements</HeaderLink>
         <HeaderLink href="/analytics">Analytics</HeaderLink>
+        <HeaderLink href="/grading-review">Grading</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-2xl px-6 py-10">
@@ -423,6 +424,28 @@ function PracticeInner() {
                   placeholder="One step per line"
                 />
               </div>
+            ) : kind === 'free_response' ? (
+              <div className="mt-5">
+                <label
+                  htmlFor="answer-textarea"
+                  className="mb-1 block text-sm font-medium text-card-foreground"
+                >
+                  Your written response
+                </label>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  Answer in your own words. An AI grader scores your response,
+                  and a teacher can review and adjust the grade.
+                </p>
+                <textarea
+                  id="answer-textarea"
+                  value={answer}
+                  rows={8}
+                  disabled={phase === 'answered'}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
+                  placeholder="Write your response"
+                />
+              </div>
             ) : (
               <div className="mt-5">
                 <label
@@ -498,34 +521,100 @@ function PracticeInner() {
                   {result.mastery.level}).
                 </p>
 
-                {result.step_credits && result.step_credits.length > 0 && (
-                  <div className="mt-4">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                      Step credit
+                {result.ai_graded && (
+                  <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                        AI-graded
+                      </span>
+                      {typeof result.confidence === 'number' && (
+                        <span className="text-xs font-medium text-amber-800 dark:text-amber-200">
+                          confidence {result.confidence.toFixed(2)}
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1 text-xs text-amber-700 dark:text-amber-300">
+                      This response was scored by AI. A teacher can review and
+                      adjust this grade.
                     </p>
-                    <ul className="mt-2 space-y-1.5">
-                      {result.step_credits.map((credit, index) => (
-                        <li
-                          key={`${credit.milestone}-${index}`}
-                          className="flex flex-wrap items-center gap-2 text-sm"
-                        >
-                          <span
-                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
-                              credit.awarded
-                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
-                                : 'bg-muted text-muted-foreground'
-                            }`}
-                          >
-                            {credit.awarded ? 'Awarded' : 'Not yet'}
-                          </span>
-                          <span className="text-card-foreground">
-                            {credit.milestone}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
+
+                    {result.step_credits &&
+                      result.step_credits.length > 0 && (
+                        <div className="mt-3">
+                          <p className="text-xs font-medium uppercase tracking-wide text-amber-800 dark:text-amber-200">
+                            Criteria
+                          </p>
+                          <ul className="mt-2 space-y-2">
+                            {result.step_credits.map((credit, index) => (
+                              <li
+                                key={`${credit.milestone}-${index}`}
+                                className="rounded-lg border border-amber-200 bg-amber-100/50 p-3 dark:border-amber-900 dark:bg-amber-900/40"
+                              >
+                                <div className="flex flex-wrap items-center gap-2 text-sm">
+                                  <span
+                                    className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                                      credit.awarded
+                                        ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                        : 'bg-muted text-muted-foreground'
+                                    }`}
+                                  >
+                                    {credit.awarded
+                                      ? 'Awarded'
+                                      : 'Not awarded'}
+                                  </span>
+                                  <span className="font-medium text-amber-900 dark:text-amber-100">
+                                    {credit.milestone}
+                                  </span>
+                                  {typeof credit.points === 'number' && (
+                                    <span className="text-xs text-amber-800 dark:text-amber-200">
+                                      {(credit.awarded_points ?? 0)} /{' '}
+                                      {credit.points} pts
+                                    </span>
+                                  )}
+                                </div>
+                                {credit.note && (
+                                  <p className="mt-1 text-xs leading-relaxed text-amber-800 dark:text-amber-200">
+                                    {credit.note}
+                                  </p>
+                                )}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
                   </div>
                 )}
+
+                {!result.ai_graded &&
+                  result.step_credits &&
+                  result.step_credits.length > 0 && (
+                    <div className="mt-4">
+                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                        Step credit
+                      </p>
+                      <ul className="mt-2 space-y-1.5">
+                        {result.step_credits.map((credit, index) => (
+                          <li
+                            key={`${credit.milestone}-${index}`}
+                            className="flex flex-wrap items-center gap-2 text-sm"
+                          >
+                            <span
+                              className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                                credit.awarded
+                                  ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                  : 'bg-muted text-muted-foreground'
+                              }`}
+                            >
+                              {credit.awarded ? 'Awarded' : 'Not yet'}
+                            </span>
+                            <span className="text-card-foreground">
+                              {credit.milestone}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
 
                 {result.gamification && (
                   <p

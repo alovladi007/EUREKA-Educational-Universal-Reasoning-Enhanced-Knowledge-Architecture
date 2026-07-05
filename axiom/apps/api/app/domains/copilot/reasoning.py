@@ -17,6 +17,7 @@ Two honesty properties are built in:
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass, field
 from functools import lru_cache
 from typing import Protocol
@@ -56,8 +57,42 @@ class ReasoningResult:
     grounded: bool  # True when at least one passage informed the reply
 
 
+@dataclass
+class RubricCriterion:
+    criterion: str
+    points: float
+    keywords: list[str] = field(default_factory=list)
+
+
+@dataclass
+class RubricScoreRequest:
+    response_text: str
+    criteria: list[RubricCriterion] = field(default_factory=list)
+    reference: str = ""
+
+
+@dataclass
+class CriterionResult:
+    criterion: str
+    points: float
+    awarded_points: float
+    met: bool
+    rationale: str
+
+
+@dataclass
+class RubricScoreResult:
+    criteria: list[CriterionResult]
+    total_awarded: float
+    total_possible: float
+    confidence: float
+    provider: str
+
+
 class ReasoningProvider(Protocol):
     async def generate(self, request: ReasoningRequest) -> ReasoningResult: ...
+
+    async def score_rubric(self, request: RubricScoreRequest) -> RubricScoreResult: ...
 
 
 def _trim(text: str, limit: int = 320) -> str:
@@ -65,6 +100,25 @@ def _trim(text: str, limit: int = 320) -> str:
     if len(text) <= limit:
         return text
     return text[: limit - 3].rstrip() + "..."
+
+
+def _normalize(text: str) -> str:
+    """Lowercase and strip punctuation, collapsing whitespace, for matching."""
+    return " ".join(re.sub(r"[^a-z0-9 ]+", " ", (text or "").lower()).split())
+
+
+def _keyword_hit(keyword: str, normalized_response: str) -> bool:
+    """True when a rubric keyword (word or phrase) appears in the response.
+
+    Phrase keywords match as a normalized substring; single words match on a
+    whitespace boundary so 'sum' does not match 'summary'.
+    """
+    key = _normalize(keyword)
+    if not key:
+        return False
+    if " " in key:
+        return key in normalized_response
+    return key in normalized_response.split()
 
 
 class MockReasoningProvider:
@@ -108,6 +162,63 @@ class MockReasoningProvider:
             )
 
         return ReasoningResult(text=body, provider="mock", grounded=True)
+
+    async def score_rubric(self, request: RubricScoreRequest) -> RubricScoreResult:
+        """Score a free-response answer against a rubric, deterministically.
+
+        Each criterion awards partial credit by the fraction of its expected
+        keywords the response covers, so the score is explainable and cannot
+        hallucinate. A criterion with no keywords cannot be auto-assessed; it is
+        awarded nothing, flagged in its rationale, and lowers confidence so a
+        teacher knows to review. Confidence is the fraction of criteria that
+        carried enough signal to judge automatically.
+        """
+        normalized = _normalize(request.response_text)
+        results: list[CriterionResult] = []
+        total_awarded = 0.0
+        total_possible = 0.0
+        assessable = 0
+
+        for crit in request.criteria:
+            total_possible += crit.points
+            keywords = [k for k in crit.keywords if k and k.strip()]
+            if not keywords:
+                results.append(
+                    CriterionResult(
+                        crit.criterion,
+                        crit.points,
+                        0.0,
+                        False,
+                        "No auto-check keywords for this criterion; needs teacher review.",
+                    )
+                )
+                continue
+
+            assessable += 1
+            matched = [k for k in keywords if _keyword_hit(k, normalized)]
+            fraction = len(matched) / len(keywords)
+            awarded = round(crit.points * fraction, 3)
+            total_awarded += awarded
+            met = fraction >= 0.5
+            if matched:
+                rationale = (
+                    f"Covers {len(matched)} of {len(keywords)} expected ideas: "
+                    f"{', '.join(matched)}."
+                )
+            else:
+                rationale = "Does not mention the expected ideas for this criterion."
+            results.append(
+                CriterionResult(crit.criterion, crit.points, awarded, met, rationale)
+            )
+
+        confidence = round(assessable / len(request.criteria), 3) if request.criteria else 0.0
+        return RubricScoreResult(
+            criteria=results,
+            total_awarded=round(total_awarded, 3),
+            total_possible=round(total_possible, 3),
+            confidence=confidence,
+            provider="mock",
+        )
 
 
 class EurekaReasoningProvider:
@@ -154,6 +265,45 @@ class EurekaReasoningProvider:
             # Fail soft to the deterministic mock. The reply is still grounded
             # and clearly AI-assisted; only the backend differs.
             return await self._fallback.generate(request)
+
+    async def score_rubric(self, request: RubricScoreRequest) -> RubricScoreResult:
+        import httpx
+
+        payload = {
+            "response_text": request.response_text,
+            "reference": request.reference,
+            "criteria": [
+                {"criterion": c.criterion, "points": c.points, "keywords": c.keywords}
+                for c in request.criteria
+            ],
+        }
+        try:
+            async with httpx.AsyncClient(timeout=self._timeout) as client:
+                resp = await client.post(
+                    f"{self._base}/api/v1/reasoning/score-rubric", json=payload
+                )
+                resp.raise_for_status()
+                data = resp.json()
+                criteria = [
+                    CriterionResult(
+                        c["criterion"],
+                        float(c["points"]),
+                        float(c["awarded_points"]),
+                        bool(c["met"]),
+                        str(c.get("rationale", "")),
+                    )
+                    for c in data["criteria"]
+                ]
+                return RubricScoreResult(
+                    criteria=criteria,
+                    total_awarded=float(data["total_awarded"]),
+                    total_possible=float(data["total_possible"]),
+                    confidence=float(data.get("confidence", 0.0)),
+                    provider="eureka",
+                )
+        except Exception:
+            # Fail soft to the deterministic rubric scorer.
+            return await self._fallback.score_rubric(request)
 
 
 @lru_cache

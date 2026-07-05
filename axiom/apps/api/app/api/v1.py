@@ -12,6 +12,7 @@ from app.domains.copilot.router import router as copilot_router
 from app.domains.curriculum.router import router as curriculum_router
 from app.domains.dashboard.router import router as dashboard_router
 from app.domains.gamification.router import router as gamification_router
+from app.domains.grading.router import router as grading_router
 from app.domains.identity.router import auth_router
 from app.domains.identity.router import router as identity_router
 from app.domains.practice.router import router as practice_router
@@ -28,3 +29,4 @@ api_v1.include_router(assessment_router)
 api_v1.include_router(analytics_router)
 api_v1.include_router(gamification_router)
 api_v1.include_router(copilot_router)
+api_v1.include_router(grading_router)

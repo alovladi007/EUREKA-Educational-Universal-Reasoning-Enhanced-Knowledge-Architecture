@@ -35,6 +35,7 @@ from app.domains.attempts.models import (
 )
 from app.domains.curriculum.models import KnowledgeNode
 from app.domains.gamification.service import record_practice_result
+from app.domains.grading.free_response import grade_free_response
 from app.domains.grading.service import grade
 
 # Ordered mastery bands, used to detect a level increase from one response so
@@ -205,19 +206,24 @@ async def answer(
         tolerance, explanation = template.tolerance, template.explanation
         meta = {}
 
-    # show_work items carry the expected milestones in their meta so partial
-    # credit is graded against the same key that authored the item.
-    milestones = meta.get("milestones") if kind == "show_work" else None
-
-    outcome = grade(
-        kind,
-        str(correct),
-        student_answer,
-        options=options,
-        tolerance=tolerance,
-        explanation=explanation,
-        milestones=milestones,
-    )
+    # free_response items are AI-graded against a rubric (async, via the
+    # reasoning provider); every other kind grades synchronously. show_work
+    # items carry their expected milestones in meta for partial credit.
+    if kind == "free_response":
+        outcome = await grade_free_response(
+            str(correct), student_answer, meta.get("rubric") or [], explanation=explanation
+        )
+    else:
+        milestones = meta.get("milestones") if kind == "show_work" else None
+        outcome = grade(
+            kind,
+            str(correct),
+            student_answer,
+            options=options,
+            tolerance=tolerance,
+            explanation=explanation,
+            milestones=milestones,
+        )
 
     now = datetime.now(UTC).replace(tzinfo=None)
     response.answer = {"raw": student_answer}
@@ -246,14 +252,16 @@ async def answer(
         )
     )
 
-    # Persist per-milestone partial credit for show-your-work items so a teacher
-    # can see which steps a student reached, not just the final verdict.
+    # Persist per-milestone partial credit for show-your-work and per-criterion
+    # results for AI-graded free response, so a teacher sees which parts a
+    # student reached (and the AI grader's rationale), not just the verdict.
     for credit in outcome.step_credits:
         session.add(
             StepCredit(
                 response_id=response.id,
                 milestone=credit["milestone"],
                 awarded=credit["awarded"],
+                note=credit.get("note", ""),
             )
         )
 
@@ -289,6 +297,11 @@ async def answer(
         "is_correct": outcome.is_correct,
         "score": outcome.score,
         "grader": outcome.grader,
+        # AI-graded responses (free response) are clearly flagged and can be
+        # adjusted by a teacher through the grading override endpoint.
+        "ai_graded": outcome.grader == "ai",
+        "overridable": outcome.grader == "ai",
+        "confidence": outcome.confidence,
         "correct_answer": outcome.correct_display,
         "explanation": outcome.explanation,
         "step_credits": outcome.step_credits,

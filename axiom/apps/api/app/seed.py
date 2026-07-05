@@ -255,8 +255,44 @@ PHASE2_ITEMS: dict[str, list] = {
 }
 
 
-async def seed_phase2_items(session: AsyncSession) -> int:
-    """Add the Phase 2 richer-kind demo items if they are missing.
+# Phase 3 free-response item, AI-graded against a rubric and human-overridable.
+# Same 7-tuple shape as PHASE2_ITEMS; meta carries the rubric (criterion, points,
+# keywords) the reasoning provider scores the answer against.
+PHASE3_ITEMS: dict[str, list] = {
+    "ALG.4": [
+        (
+            "free_response",
+            "In your own words, explain how to solve x + 4 = 9, and state the solution.",
+            None,
+            "Subtract 4 from both sides to undo the addition, which gives x = 5.",
+            "A full answer names the inverse, applies it to both sides, and states x = 5.",
+            None,
+            {
+                "rubric": [
+                    {
+                        "criterion": "Names the inverse operation",
+                        "points": 1,
+                        "keywords": ["subtract", "inverse", "undo", "opposite"],
+                    },
+                    {
+                        "criterion": "Applies it to both sides",
+                        "points": 1,
+                        "keywords": ["both sides", "each side"],
+                    },
+                    {
+                        "criterion": "States the correct solution",
+                        "points": 1,
+                        "keywords": ["x = 5", "x equals 5", "equals 5", "five"],
+                    },
+                ]
+            },
+        ),
+    ],
+}
+
+
+async def seed_extra_items(session: AsyncSession) -> int:
+    """Add the Phase 2 and Phase 3 demo items if they are missing.
 
     Idempotent and self-contained so a database seeded before these kinds
     existed still gets them on the next startup, keeping the live demo complete
@@ -276,7 +312,8 @@ async def seed_phase2_items(session: AsyncSession) -> int:
     }
 
     added = 0
-    for code, rows in PHASE2_ITEMS.items():
+    extra = list(PHASE2_ITEMS.items()) + list(PHASE3_ITEMS.items())
+    for code, rows in extra:
         node = nodes.get(code)
         if node is None:
             continue
@@ -321,7 +358,7 @@ async def seed(session: AsyncSession) -> bool:
         await session.execute(select(StandardsFramework).where(StandardsFramework.code == "AAF"))
     ).scalar_one_or_none()
     if existing is not None:
-        await seed_phase2_items(session)
+        await seed_extra_items(session)
         await session.commit()
         return False
 
@@ -397,7 +434,7 @@ async def seed(session: AsyncSession) -> bool:
                 )
             )
 
-    for code, rows in PHASE2_ITEMS.items():
+    for code, rows in list(PHASE2_ITEMS.items()) + list(PHASE3_ITEMS.items()):
         for kind, prompt, options, correct, explanation, tolerance, meta in rows:
             session.add(
                 Item(

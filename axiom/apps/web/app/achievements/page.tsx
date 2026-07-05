@@ -103,6 +103,7 @@ export default function AchievementsPage() {
         <HeaderLink href="/practice">Practice</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
         <HeaderLink href="/copilot">Copilot</HeaderLink>
+        <HeaderLink href="/grading-review">Grading</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-3xl px-6 py-10">

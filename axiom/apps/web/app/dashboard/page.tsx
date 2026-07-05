@@ -41,6 +41,12 @@ const EXPLORE_TILES: { href: string; name: string; description: string }[] = [
     description:
       'Item analysis, standards mastery, and growth. For teachers and admins.',
   },
+  {
+    href: '/grading-review',
+    name: 'Grading review',
+    description:
+      'Review AI-graded free responses and override the grade. For teachers and admins.',
+  },
 ];
 
 function ExploreTile({
