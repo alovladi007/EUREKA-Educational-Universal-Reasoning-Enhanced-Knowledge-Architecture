@@ -35,7 +35,11 @@ export default function DashboardLayout({
         <Sidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
           <Header user={user || undefined} />
-          <main className="flex-1 overflow-y-auto bg-secondary/20 p-6">
+          {/* pb-28 reserves space for fixed bottom-docked bars (cookie
+              consent, offline banner) so they never cover the last
+              interactive control — e.g. the QBank "Start"/"Submit" buttons,
+              which otherwise sit under the bar and can't be clicked. */}
+          <main className="flex-1 overflow-y-auto bg-secondary/20 p-6 pb-28">
             {children}
           </main>
         </div>

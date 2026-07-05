@@ -2127,6 +2127,15 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         if (Object.keys(pf).length > 0) payload.patent_filters = pf;
       }
       const data = await apiClient.createQBankSession(payload);
+      // The test-prep microservice returns 404 ("no questions") for exams whose
+      // banks live client-side (SAT/GRE/GMAT and the other static exams), and
+      // the graceful-degrade interceptor can resolve a null/empty body when the
+      // service is offline or can't auth. In either case there's no usable
+      // question — throw so we fall through to the static bank below instead of
+      // entering the session view with an undefined question ("not answering").
+      if (!data || !data.session_id || !data.question) {
+        throw new Error('no usable backend session — using static bank');
+      }
       setSessionId(data.session_id);
       setSessionData(data);
       setCurrentQ(data.question);

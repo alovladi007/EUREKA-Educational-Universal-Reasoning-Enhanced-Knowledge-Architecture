@@ -97,8 +97,8 @@ export function CookieConsentBanner() {
   };
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-50 border-t bg-background shadow-lg">
-      <div className="mx-auto max-w-5xl p-4 sm:p-6">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50">
+      <div className="pointer-events-auto mx-auto max-w-5xl border-t bg-background p-4 shadow-lg sm:rounded-t-xl sm:border sm:p-6">
         {mode === "banner" ? (
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
             <div className="min-w-0">
