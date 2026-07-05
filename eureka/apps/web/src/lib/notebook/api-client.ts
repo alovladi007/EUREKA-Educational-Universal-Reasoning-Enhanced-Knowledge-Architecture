@@ -87,13 +87,13 @@ export const notebookAPI = {
   // Payments
   payments: {
     getAll: (params?: Record<string, any>) =>
-      notebookClient.get('/api/payments', { params }),
+      notebookClient.get('/api/payments/history', { params }),
     createPayment: (data: any) =>
-      notebookClient.post('/api/payments/create', data),
+      notebookClient.post('/api/payments/create-payment-intent', data),
     getHistory: () =>
       notebookClient.get('/api/payments/history'),
     getStats: () =>
-      notebookClient.get('/api/payments/stats'),
+      notebookClient.get('/api/payments/stats/overview'),
   },
 
   // Search

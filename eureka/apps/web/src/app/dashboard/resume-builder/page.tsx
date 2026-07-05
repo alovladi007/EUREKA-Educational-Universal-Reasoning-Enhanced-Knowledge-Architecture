@@ -82,7 +82,7 @@ export default function ResumeBuilderPage() {
         method: "POST",
         body: JSON.stringify({
           title,
-          template_id: doc.data.meta?.template ?? null,
+          template_id: doc.templateId,
           data: doc.data,
           template_config: doc.data.meta ?? null,
         }),
