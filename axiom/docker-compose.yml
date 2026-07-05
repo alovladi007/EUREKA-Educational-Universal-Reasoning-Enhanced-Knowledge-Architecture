@@ -16,7 +16,9 @@ services:
       POSTGRES_PASSWORD: axiom
       POSTGRES_DB: axiom
     ports:
-      - "5440:5432"
+      # Host port 5441 (5440 is taken by an unrelated project on this machine).
+      # Internal services still reach Postgres at postgres:5432 on the network.
+      - "5441:5432"
     volumes:
       - axiom_pg:/var/lib/postgresql/data
       - ./db/init:/docker-entrypoint-initdb.d:ro
@@ -29,7 +31,9 @@ services:
   redis:
     image: redis:7-alpine
     ports:
-      - "6390:6379"
+      # Host port 6392 (6390 is taken by an unrelated project on this machine).
+      # Internal services still reach Redis at redis:6379 on the network.
+      - "6392:6379"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 5s
