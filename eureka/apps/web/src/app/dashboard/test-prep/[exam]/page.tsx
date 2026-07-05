@@ -2054,7 +2054,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 400, FE_EE: 647, FE_ME: 555,
-    PATENT_BAR: 536, SECURITY_PLUS: 472, SAT: 200, GRE: 200, GMAT: 200, LSAT: 200,
+    PATENT_BAR: 536, SECURITY_PLUS: 472, SAT: 139, GRE: 200, GMAT: 200, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
 
@@ -2341,6 +2341,36 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { alert('No LSAT questions available for the selected sections.'); }
+      } else if (examType === 'SAT') {
+        // Digital SAT QBank: original audited questions, topicId 0=Reading&Writing, 1=Math.
+        const { SAT_QUESTIONS } = await import('@/lib/sat-qbank-data');
+        let satQuestions = [...SAT_QUESTIONS];
+        if (selectedSections.length > 0) {
+          const sectionToTopic: Record<string, number> = {
+            reading_writing: 0,
+            math: 1,
+          };
+          const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
+          if (topicIds.length > 0) {
+            satQuestions = satQuestions.filter((q) => topicIds.includes(q.topicId));
+          }
+        }
+        satQuestions = satQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        if (satQuestions.length > 0) {
+          const normalized = satQuestions.map((q: any, i: number) => ({
+            ...q,
+            question_text: q.passage ? `${q.passage}\n\n${q.question}` : q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct,
+            explanation_text: q.explanation,
+            section_id: q.topicId === 0 ? 'reading_writing' : 'math',
+            _idx: i,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
+          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
+        } else { toast.error('No SAT questions available for the selected sections.'); }
       } else {
         toast('No questions available for this exam yet. Questions are being added.', { icon: 'ℹ️' });
       }
