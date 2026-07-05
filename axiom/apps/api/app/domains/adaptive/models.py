@@ -23,7 +23,8 @@ def _uuid() -> uuid.UUID:
 
 
 def _now() -> datetime:
-    return datetime.now(UTC)
+    # Naive UTC to match the TIMESTAMP (without time zone) columns.
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class MasteryState(Base):

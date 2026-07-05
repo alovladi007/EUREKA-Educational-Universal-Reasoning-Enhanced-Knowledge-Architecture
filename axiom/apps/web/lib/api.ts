@@ -97,6 +97,52 @@ export function getToken(): string | null {
   }
 }
 
+// Request a development session from the API. This is a local convenience so
+// AXIOM can be opened directly (without the EUREKA round trip). The endpoint is
+// disabled in production, in which case this returns null and the sign-in
+// screen is shown instead.
+export async function devLogin(): Promise<string | null> {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  try {
+    const res = await fetch(`${AXIOM_API_URL}/api/v1/auth/dev-login`, {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      cache: 'no-store',
+    });
+    if (!res.ok) {
+      return null;
+    }
+    const data = (await res.json()) as { access_token?: string };
+    if (data.access_token) {
+      window.localStorage.setItem(TOKEN_STORAGE_KEY, data.access_token);
+      return data.access_token;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+// Ensure a usable session exists and return the token. Order of preference:
+//   1. a token already in storage (including one just handed over from EUREKA
+//      in the URL hash, which getToken captures)
+//   2. a fresh development session from the API
+// Returns null only when there is no token and dev-login is unavailable (for
+// example in production), which is the one case that still shows the sign-in
+// screen.
+export async function ensureSession(): Promise<string | null> {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+  const existing = getToken();
+  if (existing) {
+    return existing;
+  }
+  return devLogin();
+}
+
 // Perform an authenticated GET against the AXIOM API and parse the JSON
 // body as T. Throws ApiError on any non-2xx response.
 export async function apiGet<T>(path: string): Promise<T> {

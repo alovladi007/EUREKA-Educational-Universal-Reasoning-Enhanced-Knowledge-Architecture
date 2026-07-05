@@ -56,7 +56,7 @@ async def apply_mastery(
     after = bkt_update(before, correct)
     state.p_known = after
     state.level = level_for(after)
-    state.updated_at = datetime.now(UTC)
+    state.updated_at = datetime.now(UTC).replace(tzinfo=None)
     session.add(
         MasteryEvent(
             user_id=user_id,
@@ -199,7 +199,7 @@ async def plan_path(session: AsyncSession, user_id: uuid.UUID) -> dict:
         session.add(path)
     path.current_node_id = recommended
     path.plan = plan
-    path.updated_at = datetime.now(UTC)
+    path.updated_at = datetime.now(UTC).replace(tzinfo=None)
     await session.flush()
 
     return {"plan": plan, "recommended_node_id": str(recommended) if recommended else None}

@@ -205,7 +205,7 @@ async def answer(
         explanation=explanation,
     )
 
-    now = datetime.now(UTC)
+    now = datetime.now(UTC).replace(tzinfo=None)
     response.answer = {"raw": student_answer}
     response.submitted_at = now
     session.add(Score(response_id=response.id, is_correct=outcome.is_correct, score=outcome.score))

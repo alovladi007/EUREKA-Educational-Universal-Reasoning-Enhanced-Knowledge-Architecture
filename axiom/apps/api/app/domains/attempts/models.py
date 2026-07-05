@@ -24,7 +24,9 @@ def _uuid() -> uuid.UUID:
 
 
 def _now() -> datetime:
-    return datetime.now(UTC)
+    # Naive UTC to match the TIMESTAMP (without time zone) columns. Passing an
+    # aware datetime to a naive column makes asyncpg raise on Postgres.
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class Attempt(Base):
