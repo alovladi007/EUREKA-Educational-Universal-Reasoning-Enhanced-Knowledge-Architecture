@@ -27,7 +27,8 @@ export const API_ENDPOINTS = {
   TIER_GRAD: process.env.NEXT_PUBLIC_TIER_GRAD_URL || 'http://localhost:8012',
 
   // Professional Services
-  PRO_MED: process.env.NEXT_PUBLIC_PRO_MED_URL || 'http://localhost:8020',
+  // (PRO_MED removed — the pro-med service was retired and replaced by the
+  //  medical-school service on :8030; MEDICAL_SCHOOL below is the live one.)
   PRO_LAW: process.env.NEXT_PUBLIC_PRO_LAW_URL || 'http://localhost:8021',
   PRO_MBA: process.env.NEXT_PUBLIC_PRO_MBA_URL || 'http://localhost:8022',
   PRO_ENG: process.env.NEXT_PUBLIC_PRO_ENG_URL || 'http://localhost:8023',
