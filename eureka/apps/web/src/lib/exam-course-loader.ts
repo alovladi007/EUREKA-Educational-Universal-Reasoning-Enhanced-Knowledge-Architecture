@@ -39,7 +39,7 @@ const EMPTY_PACK: CoursePack = {
 
 /**
  * Resolve the per-exam course bundle. Returns the EMPTY pack for
- * exams without a course-data module yet (SAT, GRE, GMAT today).
+ * exams without a course-data module yet.
  *
  * Each branch dynamically imports a SINGLE module so webpack/Next
  * emits one chunk per exam. The branches that exist mirror the eight
@@ -84,6 +84,18 @@ export async function loadExamCourse(examType: string): Promise<CoursePack> {
     case 'LSAT': {
       const m = await import('@/lib/lsat-course-data');
       return { get: m.getLsatCourseContent, has: m.hasLsatCourseContent };
+    }
+    case 'GRE': {
+      const m = await import('@/lib/gre-course-data');
+      return { get: m.getGRECourseContent, has: m.hasGRECourseContent };
+    }
+    case 'SAT': {
+      const m = await import('@/lib/sat-course-data');
+      return { get: m.getSATCourseContent, has: m.hasSATCourseContent };
+    }
+    case 'GMAT': {
+      const m = await import('@/lib/gmat-course-data');
+      return { get: m.getGMATCourseContent, has: m.hasGMATCourseContent };
     }
     default:
       return EMPTY_PACK;

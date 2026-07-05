@@ -47,6 +47,9 @@ import { getCISSPFlashcards, CISSP_FLASHCARD_DOMAINS, CISSP_FLASHCARD_COUNT } fr
 import { getSecurityPlusFlashcards, SECPLUS_FLASHCARD_DOMAINS, SECPLUS_FLASHCARD_COUNT } from '@/lib/security-plus-flashcard-data';
 import { getPatentBarFlashcards, PATENT_BAR_FLASHCARD_DOMAINS, PATENT_BAR_FLASHCARD_COUNT } from '@/lib/patent-bar-flashcard-data';
 import { getFEEEFlashcards, FEEE_FLASHCARD_DOMAINS, FEEE_FLASHCARD_COUNT } from '@/lib/fe-ee-flashcard-data';
+import { getGREFlashcards, GRE_FLASHCARD_DOMAINS, GRE_FLASHCARD_COUNT } from '@/lib/gre-flashcard-data';
+import { getSATFlashcards, SAT_FLASHCARD_DOMAINS, SAT_FLASHCARD_COUNT } from '@/lib/sat-flashcard-data';
+import { getGMATFlashcards, GMAT_FLASHCARD_DOMAINS, GMAT_FLASHCARD_COUNT } from '@/lib/gmat-flashcard-data';
 // FE_EE_QUESTIONS lazy-loaded in QBankTab + FEEEExamTab (P3-9 stage 3).
 // Type-only import keeps Question typing without runtime cost.
 import type { FEEEQuestion } from '@/lib/fe-ee-qbank-data';
@@ -1544,7 +1547,10 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const isPEEE = examType === 'PE_EE';
   const isMCAT = examType === 'MCAT';
   const isLSAT = examType === 'LSAT';
-  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT || isLSAT;
+  const isGRE = examType === 'GRE';
+  const isSAT = examType === 'SAT';
+  const isGMAT = examType === 'GMAT';
+  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT || isLSAT || isGRE || isSAT || isGMAT;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1575,7 +1581,13 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                 ? getMCATFlashcards(activeDomain || undefined)
                 : isLSAT
                   ? (activeDomain ? LSAT_FLASHCARDS.filter((c) => c.domain === activeDomain) : LSAT_FLASHCARDS)
-                  : [];
+                  : isGRE
+                    ? getGREFlashcards(activeDomain || undefined)
+                    : isSAT
+                      ? getSATFlashcards(activeDomain || undefined)
+                      : isGMAT
+                        ? getGMATFlashcards(activeDomain || undefined)
+                        : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1601,7 +1613,13 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                 ? MCAT_FLASHCARD_DOMAINS
                 : isLSAT
                   ? LSAT_FLASHCARD_DOMAINS
-                  : [];
+                  : isGRE
+                    ? GRE_FLASHCARD_DOMAINS
+                    : isSAT
+                      ? SAT_FLASHCARD_DOMAINS
+                      : isGMAT
+                        ? GMAT_FLASHCARD_DOMAINS
+                        : [];
   const flashcardCount = isCISSP
     ? CISSP_FLASHCARD_COUNT
     : isSecPlus
@@ -1618,7 +1636,13 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                 ? MCAT_FLASHCARD_COUNT
                 : isLSAT
                   ? LSAT_FLASHCARDS.length
-                  : 0;
+                  : isGRE
+                    ? GRE_FLASHCARD_COUNT
+                    : isSAT
+                      ? SAT_FLASHCARD_COUNT
+                      : isGMAT
+                        ? GMAT_FLASHCARD_COUNT
+                        : 0;
   const flashcardTitle = isCISSP
     ? 'CISSP Flashcard Deck'
     : isSecPlus
@@ -1635,7 +1659,13 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                 ? 'MCAT Flashcard Deck'
                 : isLSAT
                   ? 'LSAT Flashcard Deck'
-                  : 'Flashcard Deck';
+                  : isGRE
+                    ? 'GRE Flashcard Deck'
+                    : isSAT
+                      ? 'SAT Flashcard Deck'
+                      : isGMAT
+                        ? 'GMAT Flashcard Deck'
+                        : 'Flashcard Deck';
   const flashcardSubtitle = isCISSP
     ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
     : isSecPlus
@@ -1650,7 +1680,13 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
               ? `${PEEE_FLASHCARD_COUNT.toLocaleString()} cards across all 10 power sections + formulas`
               : isMCAT
                 ? `${MCAT_FLASHCARD_COUNT.toLocaleString()} cards across all 4 MCAT sections + formulas`
-                : '';
+                : isGRE
+                  ? `${GRE_FLASHCARD_COUNT.toLocaleString()} cards across Quant, Verbal, Vocab & Writing`
+                  : isSAT
+                    ? `${SAT_FLASHCARD_COUNT.toLocaleString()} cards across Reading & Writing and Math`
+                    : isGMAT
+                      ? `${GMAT_FLASHCARD_COUNT.toLocaleString()} cards across Quant, Verbal & Data Insights`
+                      : '';
 
   const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
