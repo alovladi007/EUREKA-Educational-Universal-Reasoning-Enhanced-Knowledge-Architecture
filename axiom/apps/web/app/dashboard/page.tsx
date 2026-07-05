@@ -10,8 +10,59 @@ import {
   type DashboardSummary,
   type Me,
 } from '@/lib/api';
+import Link from 'next/link';
 import { ModuleCard } from '@/components/ModuleCard';
 import { StatusPill, type ApiHealthState } from '@/components/StatusPill';
+
+// Static tiles for the Phase 2 pages that are not part of the API module list.
+// Each links directly to its route, matching the ModuleCard visual style.
+const EXPLORE_TILES: { href: string; name: string; description: string }[] = [
+  {
+    href: '/achievements',
+    name: 'Achievements',
+    description:
+      'Your XP, level, streak, earned badges, and the leaderboard.',
+  },
+  {
+    href: '/cat',
+    name: 'Adaptive test',
+    description:
+      'A short test that adapts to your answers to estimate your ability.',
+  },
+  {
+    href: '/analytics',
+    name: 'Analytics',
+    description:
+      'Item analysis, standards mastery, and growth. For teachers and admins.',
+  },
+];
+
+function ExploreTile({
+  href,
+  name,
+  description,
+}: {
+  href: string;
+  name: string;
+  description: string;
+}) {
+  return (
+    <Link
+      href={href}
+      className="flex flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+    >
+      <h3 className="mb-2 text-base font-semibold text-card-foreground">
+        {name}
+      </h3>
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        {description}
+      </p>
+      <span className="mt-3 text-sm font-medium text-brand-600 dark:text-brand-300">
+        Open {name}
+      </span>
+    </Link>
+  );
+}
 
 // The dashboard is the whole app for Phase 0. It:
 //   1. checks for the EUREKA token in localStorage
@@ -208,6 +259,22 @@ export default function DashboardPage() {
                   ))}
                 </div>
               )}
+            </section>
+
+            <section className="mt-10">
+              <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                Explore
+              </h2>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {EXPLORE_TILES.map((tile) => (
+                  <ExploreTile
+                    key={tile.href}
+                    href={tile.href}
+                    name={tile.name}
+                    description={tile.description}
+                  />
+                ))}
+              </div>
             </section>
           </>
         )}

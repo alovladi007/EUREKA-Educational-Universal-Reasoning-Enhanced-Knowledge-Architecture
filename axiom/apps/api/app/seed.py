@@ -23,6 +23,7 @@ from app.domains.curriculum.models import (
     Standard,
     StandardsFramework,
 )
+from app.domains.gamification.service import seed_badges
 
 # (code, title, description, [prerequisite codes])
 NODES = [
@@ -195,12 +196,133 @@ TEMPLATES: dict[str, list] = {
 }
 
 
+# Phase 2 richer item kinds, demonstrating the selection and constructed-response
+# variety the grader now supports. code -> list of
+# (kind, prompt, options, correct, explanation, tolerance, meta).
+# For show_work, meta carries the expected milestones graded for partial credit.
+PHASE2_ITEMS: dict[str, list] = {
+    "ALG.3": [
+        (
+            "true_false",
+            "True or False: 3x + 2x simplifies to 5x.",
+            None,
+            "true",
+            "Like terms add by their coefficients: 3 + 2 = 5.",
+            None,
+            None,
+        ),
+        (
+            "mcq_multi",
+            "Select all expressions equal to 6x.",
+            ["2x + 4x", "3x + 3", "6 * x", "5x + x"],
+            "[0, 2, 3]",
+            "2x + 4x, 6 * x, and 5x + x each equal 6x; 3x + 3 does not.",
+            None,
+            None,
+        ),
+    ],
+    "ALG.5": [
+        (
+            "show_work",
+            "Show your work solving 2x + 3 = 11. Put each step on its own line.",
+            None,
+            "4",
+            "Subtract 3 to get 2x = 8, then divide by 2 to get x = 4.",
+            None,
+            {"milestones": ["2*x = 8", "x = 4"]},
+        ),
+    ],
+    "ALG.6": [
+        (
+            "short_text",
+            "Name the property that lets you expand a(b + c).",
+            None,
+            "distributive|distributive property|the distributive property",
+            "The distributive property multiplies a across each term of the sum.",
+            None,
+            None,
+        ),
+        (
+            "plot_points",
+            "Plot two points on the line y = 2x + 3 at x = 1 and x = 2.",
+            None,
+            "[[1, 5], [2, 7]]",
+            "At x = 1, y = 5; at x = 2, y = 7.",
+            None,
+            None,
+        ),
+    ],
+}
+
+
+async def seed_phase2_items(session: AsyncSession) -> int:
+    """Add the Phase 2 richer-kind demo items if they are missing.
+
+    Idempotent and self-contained so a database seeded before these kinds
+    existed still gets them on the next startup, keeping the live demo complete
+    without a full reseed. Keyed on (node, prompt), so re-running adds nothing.
+    """
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Algebra Foundations Bank")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        return 0
+
+    nodes = {
+        node.code: node
+        for node in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+
+    added = 0
+    for code, rows in PHASE2_ITEMS.items():
+        node = nodes.get(code)
+        if node is None:
+            continue
+        for kind, prompt, options, correct, explanation, tolerance, meta in rows:
+            exists = (
+                await session.execute(
+                    select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+                )
+            ).scalar_one_or_none()
+            if exists is not None:
+                continue
+            session.add(
+                Item(
+                    bank_id=bank.id,
+                    node_id=node.id,
+                    kind=kind,
+                    prompt=prompt,
+                    options=options,
+                    correct=correct,
+                    explanation=explanation,
+                    difficulty=0.5,
+                    tolerance=tolerance,
+                    meta=meta,
+                )
+            )
+            added += 1
+    if added:
+        await session.flush()
+    return added
+
+
 async def seed(session: AsyncSession) -> bool:
-    """Seed the graph. Returns True if it seeded, False if already present."""
+    """Seed the graph. Returns True if it seeded, False if already present.
+
+    Badge definitions and the Phase 2 demo items are seeded on every run
+    (idempotently) so a database created before those features existed still
+    gets them without a full reseed.
+    """
+    await seed_badges(session)
+
     existing = (
         await session.execute(select(StandardsFramework).where(StandardsFramework.code == "AAF"))
     ).scalar_one_or_none()
     if existing is not None:
+        await seed_phase2_items(session)
+        await session.commit()
         return False
 
     bank = ItemBank(name="Algebra Foundations Bank", description="Original Phase 1 items.")
@@ -272,6 +394,23 @@ async def seed(session: AsyncSession) -> bool:
                     explanation=explanation,
                     difficulty=0.5,
                     tolerance=tolerance,
+                )
+            )
+
+    for code, rows in PHASE2_ITEMS.items():
+        for kind, prompt, options, correct, explanation, tolerance, meta in rows:
+            session.add(
+                Item(
+                    bank_id=bank.id,
+                    node_id=nodes[code].id,
+                    kind=kind,
+                    prompt=prompt,
+                    options=options,
+                    correct=correct,
+                    explanation=explanation,
+                    difficulty=0.5,
+                    tolerance=tolerance,
+                    meta=meta,
                 )
             )
 

@@ -114,3 +114,26 @@ class ReviewSchedule(Base):
     interval_days: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     reps: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     due_at: Mapped[datetime] = mapped_column(default=_now)
+
+
+class CatSession(Base):
+    """A computerized adaptive test session. theta is the running ability
+    estimate, standard_error its posterior SD; administered records the items
+    seen with their outcome so theta can be re-estimated after each response."""
+
+    __tablename__ = "cat_sessions"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    status: Mapped[str] = mapped_column(String(24), nullable=False, default="in_progress")
+    theta: Mapped[float] = mapped_column(Float, nullable=False, default=0.0)
+    standard_error: Mapped[float] = mapped_column(Float, nullable=False, default=1.0)
+    item_count: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
+    administered: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
+    pending_item_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("items.id", ondelete="SET NULL"), nullable=True
+    )
+    created_at: Mapped[datetime] = mapped_column(default=_now)
+    updated_at: Mapped[datetime] = mapped_column(default=_now)

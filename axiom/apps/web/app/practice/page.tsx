@@ -45,6 +45,8 @@ function PracticeInner() {
   const [errorMessage, setErrorMessage] = useState('');
 
   const [answer, setAnswer] = useState('');
+  // Selected option indices for mcq_multi, submitted as a JSON array string.
+  const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AnswerResult | null>(null);
 
@@ -52,6 +54,7 @@ function PracticeInner() {
     setPhase('loading');
     setResult(null);
     setAnswer('');
+    setSelectedIndices([]);
     setErrorMessage('');
     try {
       const next = await practiceNext(nodeParam);
@@ -78,18 +81,51 @@ function PracticeInner() {
     void loadNext();
   }, [loadNext]);
 
-  async function submit() {
+  // Build the answer payload string for the current item kind. mcq_multi is
+  // submitted as a JSON array of the selected option indices, e.g. "[0,2]".
+  // Every other kind submits the trimmed text/selection as-is.
+  function buildPayload(): string {
     if (!question) {
+      return '';
+    }
+    if (question.kind === 'mcq_multi') {
+      const sorted = [...selectedIndices].sort((a, b) => a - b);
+      return JSON.stringify(sorted);
+    }
+    return answer.trim();
+  }
+
+  // Whether the current input has enough to submit.
+  function canSubmit(): boolean {
+    if (!question) {
+      return false;
+    }
+    if (question.kind === 'mcq_multi') {
+      return selectedIndices.length > 0;
+    }
+    return answer.trim() !== '';
+  }
+
+  function toggleIndex(index: number) {
+    setSelectedIndices((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index],
+    );
+  }
+
+  async function submit() {
+    if (!question || !canSubmit()) {
       return;
     }
-    const trimmed = answer.trim();
-    if (!trimmed) {
+    const payload = buildPayload();
+    if (!payload) {
       return;
     }
     setSubmitting(true);
     setErrorMessage('');
     try {
-      const graded = await practiceAnswer(question.response_token, trimmed);
+      const graded = await practiceAnswer(question.response_token, payload);
       setResult(graded);
       setPhase('answered');
     } catch (err) {
@@ -114,7 +150,7 @@ function PracticeInner() {
     return <SignInScreen />;
   }
 
-  const isMcq = question?.kind === 'mcq_single';
+  const kind = question?.kind;
 
   return (
     <div className="min-h-screen">
@@ -122,6 +158,9 @@ function PracticeInner() {
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/learn">Learn</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
+        <HeaderLink href="/achievements">Achievements</HeaderLink>
+        <HeaderLink href="/analytics">Analytics</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-2xl px-6 py-10">
@@ -173,7 +212,7 @@ function PracticeInner() {
               {question.prompt}
             </p>
 
-            {isMcq && question.options ? (
+            {kind === 'mcq_single' && question.options ? (
               <fieldset className="mt-5" disabled={phase === 'answered'}>
                 <legend className="sr-only">Choose an answer</legend>
                 <div className="space-y-2">
@@ -197,6 +236,84 @@ function PracticeInner() {
                   })}
                 </div>
               </fieldset>
+            ) : kind === 'mcq_multi' && question.options ? (
+              <fieldset className="mt-5" disabled={phase === 'answered'}>
+                <legend className="mb-2 block text-sm font-medium text-card-foreground">
+                  Select all that apply
+                </legend>
+                <div className="space-y-2">
+                  {question.options.map((option, index) => {
+                    const checked = selectedIndices.includes(index);
+                    return (
+                      <label
+                        key={option}
+                        className={`flex cursor-pointer items-start gap-2 rounded-lg border p-3 text-sm transition-colors ${
+                          checked
+                            ? 'border-brand-500 bg-brand-50 dark:bg-brand-950'
+                            : 'border-border bg-background hover:border-brand-300'
+                        } ${phase === 'answered' ? 'opacity-70' : ''}`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          disabled={phase === 'answered'}
+                          onChange={() => toggleIndex(index)}
+                          className="mt-0.5"
+                        />
+                        <span className="text-card-foreground">{option}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            ) : kind === 'true_false' ? (
+              <fieldset className="mt-5" disabled={phase === 'answered'}>
+                <legend className="sr-only">Choose true or false</legend>
+                <div className="flex gap-2">
+                  {[
+                    { label: 'True', value: 'true' },
+                    { label: 'False', value: 'false' },
+                  ].map((choice) => {
+                    const selected = answer === choice.value;
+                    return (
+                      <button
+                        key={choice.value}
+                        type="button"
+                        onClick={() => setAnswer(choice.value)}
+                        aria-pressed={selected}
+                        className={`flex-1 rounded-lg border p-3 text-center text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 ${
+                          selected
+                            ? 'border-brand-500 bg-brand-50 dark:bg-brand-950'
+                            : 'border-border bg-background hover:border-brand-300'
+                        } ${phase === 'answered' ? 'opacity-70' : ''}`}
+                      >
+                        {choice.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            ) : kind === 'show_work' ? (
+              <div className="mt-5">
+                <label
+                  htmlFor="answer-textarea"
+                  className="mb-1 block text-sm font-medium text-card-foreground"
+                >
+                  Your work
+                </label>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  Show each step on its own line.
+                </p>
+                <textarea
+                  id="answer-textarea"
+                  value={answer}
+                  rows={6}
+                  disabled={phase === 'answered'}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
+                  placeholder="One step per line"
+                />
+              </div>
             ) : (
               <div className="mt-5">
                 <label
@@ -205,6 +322,12 @@ function PracticeInner() {
                 >
                   Your answer
                 </label>
+                {kind === 'plot_points' && (
+                  <p className="mb-2 text-xs text-muted-foreground">
+                    Enter a JSON list of [x, y] pairs, for example
+                    [[1,5],[2,7]].
+                  </p>
+                )}
                 <input
                   id="answer-input"
                   type="text"
@@ -218,7 +341,11 @@ function PracticeInner() {
                   }}
                   autoComplete="off"
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
-                  placeholder="Type your answer"
+                  placeholder={
+                    kind === 'plot_points'
+                      ? '[[1,5],[2,7]]'
+                      : 'Type your answer'
+                  }
                 />
               </div>
             )}
@@ -228,7 +355,7 @@ function PracticeInner() {
                 <button
                   type="button"
                   onClick={() => void submit()}
-                  disabled={submitting || answer.trim() === ''}
+                  disabled={submitting || !canSubmit()}
                   className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {submitting ? 'Checking.' : 'Submit answer'}
@@ -261,6 +388,48 @@ function PracticeInner() {
                   to {toPercent(result.mastery.p_known_after)}% (
                   {result.mastery.level}).
                 </p>
+
+                {result.step_credits && result.step_credits.length > 0 && (
+                  <div className="mt-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Step credit
+                    </p>
+                    <ul className="mt-2 space-y-1.5">
+                      {result.step_credits.map((credit, index) => (
+                        <li
+                          key={`${credit.milestone}-${index}`}
+                          className="flex flex-wrap items-center gap-2 text-sm"
+                        >
+                          <span
+                            className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${
+                              credit.awarded
+                                ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300'
+                                : 'bg-muted text-muted-foreground'
+                            }`}
+                          >
+                            {credit.awarded ? 'Awarded' : 'Not yet'}
+                          </span>
+                          <span className="text-card-foreground">
+                            {credit.milestone}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {result.gamification && (
+                  <p
+                    className="mt-4 text-sm font-medium text-brand-600 dark:text-brand-300"
+                    aria-live="polite"
+                  >
+                    {`+XP to ${result.gamification.xp_total} total (level ${result.gamification.level}, streak ${result.gamification.streak_days} ${
+                      result.gamification.streak_days === 1 ? 'day' : 'days'
+                    }).`}
+                    {result.gamification.new_badges.length > 0 &&
+                      ` New badge: ${result.gamification.new_badges.join(', ')}.`}
+                  </p>
+                )}
 
                 <div className="mt-6">
                   <button

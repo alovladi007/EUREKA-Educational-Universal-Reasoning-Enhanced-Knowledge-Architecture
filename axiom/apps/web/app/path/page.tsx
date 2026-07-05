@@ -78,6 +78,9 @@ export default function PathPage() {
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/practice">Practice</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
+        <HeaderLink href="/achievements">Achievements</HeaderLink>
+        <HeaderLink href="/analytics">Analytics</HeaderLink>
       </PageHeader>
 
       <main className="mx-auto max-w-3xl px-6 py-10">

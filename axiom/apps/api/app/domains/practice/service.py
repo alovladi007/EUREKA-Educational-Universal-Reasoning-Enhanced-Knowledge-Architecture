@@ -22,6 +22,7 @@ from math_core import resolve_template
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.domains.adaptive.bkt import level_for
 from app.domains.adaptive.service import apply_mastery, plan_path
 from app.domains.assessment.models import Item, ItemTemplate, ItemVariant
 from app.domains.attempts.models import (
@@ -30,9 +31,15 @@ from app.domains.attempts.models import (
     ReasoningTrace,
     Response,
     Score,
+    StepCredit,
 )
 from app.domains.curriculum.models import KnowledgeNode
+from app.domains.gamification.service import record_practice_result
 from app.domains.grading.service import grade
+
+# Ordered mastery bands, used to detect a level increase from one response so
+# gamification can reward genuine advancement (not raw answer count).
+_LEVEL_RANK = {"novice": 0, "developing": 1, "proficient": 2, "mastered": 3}
 
 
 def _variant_seed(user_id: uuid.UUID, template_id: uuid.UUID, count: int) -> int:
@@ -184,6 +191,7 @@ async def answer(
         item = (await session.execute(select(Item).where(Item.id == response.item_id))).scalar_one()
         kind, correct, options = item.kind, item.correct, item.options
         tolerance, explanation = item.tolerance, item.explanation
+        meta = item.meta or {}
     else:
         variant = (
             await session.execute(select(ItemVariant).where(ItemVariant.id == response.variant_id))
@@ -195,6 +203,11 @@ async def answer(
         ).scalar_one()
         kind, correct, options = template.kind, variant.answer, None
         tolerance, explanation = template.tolerance, template.explanation
+        meta = {}
+
+    # show_work items carry the expected milestones in their meta so partial
+    # credit is graded against the same key that authored the item.
+    milestones = meta.get("milestones") if kind == "show_work" else None
 
     outcome = grade(
         kind,
@@ -203,6 +216,7 @@ async def answer(
         options=options,
         tolerance=tolerance,
         explanation=explanation,
+        milestones=milestones,
     )
 
     now = datetime.now(UTC).replace(tzinfo=None)
@@ -232,6 +246,17 @@ async def answer(
         )
     )
 
+    # Persist per-milestone partial credit for show-your-work items so a teacher
+    # can see which steps a student reached, not just the final verdict.
+    for credit in outcome.step_credits:
+        session.add(
+            StepCredit(
+                response_id=response.id,
+                milestone=credit["milestone"],
+                awarded=credit["awarded"],
+            )
+        )
+
     attempt = (
         await session.execute(select(Attempt).where(Attempt.id == response.attempt_id))
     ).scalar_one()
@@ -243,6 +268,21 @@ async def answer(
         session, user_id, response.node_id, outcome.is_correct, response.id
     )
 
+    # Reward genuine advancement: XP for a correct answer, a bonus when the
+    # response pushed the learner into a higher mastery band, and a mastery
+    # bonus the moment the top band is reached.
+    level_before = level_for(mastery["p_known_before"])
+    level_after = mastery["level"]
+    leveled_up = _LEVEL_RANK.get(level_after, 0) > _LEVEL_RANK.get(level_before, 0)
+    mastered = level_after == "mastered" and level_before != "mastered"
+    gamification = await record_practice_result(
+        session,
+        user_id,
+        correct=outcome.is_correct,
+        leveled_up=leveled_up,
+        mastered=mastered,
+    )
+
     await session.commit()
 
     return {
@@ -251,5 +291,7 @@ async def answer(
         "grader": outcome.grader,
         "correct_answer": outcome.correct_display,
         "explanation": outcome.explanation,
+        "step_credits": outcome.step_credits,
         "mastery": mastery,
+        "gamification": gamification,
     }

@@ -36,6 +36,7 @@ async def engine():
     from app.domains.attempts import models as _t  # noqa: F401
     from app.domains.content import models as _c  # noqa: F401
     from app.domains.curriculum import models as _cur  # noqa: F401
+    from app.domains.gamification import models as _g  # noqa: F401
     from app.domains.identity import models as _i  # noqa: F401
     from app.seed import seed
 

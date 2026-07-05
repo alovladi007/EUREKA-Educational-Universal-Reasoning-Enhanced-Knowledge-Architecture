@@ -23,8 +23,19 @@ from sqlalchemy.types import JSON
 
 from app.core.db import Base
 
-# Question kinds supported in Phase 1.
-ITEM_KINDS = ("mcq_single", "numeric", "math_expression", "equation")
+# Supported question kinds. Phase 1: mcq_single, numeric, math_expression,
+# equation. Phase 2 adds selection and constructed-response variety.
+ITEM_KINDS = (
+    "mcq_single",
+    "numeric",
+    "math_expression",
+    "equation",
+    "mcq_multi",
+    "true_false",
+    "short_text",
+    "plot_points",
+    "show_work",
+)
 
 
 def _uuid() -> uuid.UUID:
@@ -65,6 +76,9 @@ class Item(Base):
     explanation: Mapped[str] = mapped_column(Text, nullable=False, default="")
     difficulty: Mapped[float] = mapped_column(Float, nullable=False, default=0.5)
     tolerance: Mapped[float | None] = mapped_column(Float, nullable=True)
+    # Kind-specific extras: step-credit milestones for show_work, expected point
+    # set for plot_points, etc. Keeps new item kinds from needing new columns.
+    meta: Mapped[dict | None] = mapped_column(JSON, nullable=True)
 
 
 class ItemTemplate(Base):

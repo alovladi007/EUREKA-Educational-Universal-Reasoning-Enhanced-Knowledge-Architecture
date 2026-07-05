@@ -5,10 +5,12 @@ from __future__ import annotations
 from fastapi import APIRouter
 
 from app.domains.adaptive.router import router as adaptive_router
+from app.domains.analytics.router import router as analytics_router
 from app.domains.assessment.router import router as assessment_router
 from app.domains.content.router import router as content_router
 from app.domains.curriculum.router import router as curriculum_router
 from app.domains.dashboard.router import router as dashboard_router
+from app.domains.gamification.router import router as gamification_router
 from app.domains.identity.router import auth_router
 from app.domains.identity.router import router as identity_router
 from app.domains.practice.router import router as practice_router
@@ -22,3 +24,5 @@ api_v1.include_router(content_router)
 api_v1.include_router(practice_router)
 api_v1.include_router(adaptive_router)
 api_v1.include_router(assessment_router)
+api_v1.include_router(analytics_router)
+api_v1.include_router(gamification_router)

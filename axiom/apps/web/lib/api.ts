@@ -283,7 +283,12 @@ export type PracticeKind =
   | 'mcq_single'
   | 'numeric'
   | 'math_expression'
-  | 'equation';
+  | 'equation'
+  | 'mcq_multi'
+  | 'true_false'
+  | 'short_text'
+  | 'plot_points'
+  | 'show_work';
 
 // A served practice question.
 export interface PracticeQuestion {
@@ -317,7 +322,22 @@ export interface MasteryDelta {
   level: string;
 }
 
-// The graded result of POST /api/v1/practice/answer.
+// A per-step credit awarded for a milestone within a multi-step answer.
+export interface StepCredit {
+  milestone: string;
+  awarded: boolean;
+}
+
+// The gamification delta returned alongside a graded answer.
+export interface AnswerGamification {
+  xp_total: number;
+  level: number;
+  streak_days: number;
+  new_badges: string[];
+}
+
+// The graded result of POST /api/v1/practice/answer. The step_credits and
+// gamification fields are optional so older items keep working unchanged.
 export interface AnswerResult {
   is_correct: boolean;
   score: number;
@@ -325,6 +345,8 @@ export interface AnswerResult {
   correct_answer: string;
   explanation: string;
   mastery: MasteryDelta;
+  step_credits?: StepCredit[];
+  gamification?: AnswerGamification;
 }
 
 // One mastery state row from GET /api/v1/mastery/me.
@@ -467,4 +489,237 @@ export function fetchAssessmentResults(
   return apiGet<AssessmentResults>(
     `/api/v1/assessments/${encodeURIComponent(assessmentId)}/results`,
   );
+}
+
+// -------------------------------------------------------------------------
+// Phase 2 types.
+// -------------------------------------------------------------------------
+
+// A badge the learner has earned, from GET /api/v1/gamification/me.
+export interface Badge {
+  code: string;
+  name: string;
+  description: string;
+  awarded_at: string;
+}
+
+// The learner's gamification profile from GET /api/v1/gamification/me.
+export interface GamificationProfile {
+  xp_total: number;
+  level: number;
+  streak_days: number;
+  last_active_on: string | null;
+  badges: Badge[];
+}
+
+// One row of the leaderboard from GET /api/v1/gamification/leaderboard.
+export interface LeaderboardEntry {
+  user_id: string;
+  name: string;
+  xp_total: number;
+  level: number;
+}
+
+export interface LeaderboardResponse {
+  leaderboard: LeaderboardEntry[];
+}
+
+// A served adaptive-test item. options is null for free-response kinds.
+export interface CatItem {
+  item_id: string;
+  kind: string;
+  prompt: string;
+  options: string[] | null;
+}
+
+// The in-progress state of an adaptive test session.
+export interface CatActive {
+  session_id: string;
+  done: false;
+  theta: number;
+  standard_error: number;
+  item_count: number;
+  item: CatItem;
+}
+
+// The terminal state of an adaptive test session.
+export interface CatDone {
+  done: true;
+  message: string;
+}
+
+export type CatStartResponse = CatActive | CatDone;
+
+// Narrowing helper for the done state of POST /api/v1/cat/start.
+export function isCatDone(res: CatStartResponse): res is CatDone {
+  return res.done === true;
+}
+
+// The result of answering an adaptive-test item. item is present only when the
+// test continues (done is false).
+export interface CatAnswerResponse {
+  done: boolean;
+  session_id: string;
+  theta: number;
+  standard_error: number;
+  item_count: number;
+  is_correct: boolean;
+  item?: CatItem;
+}
+
+// The state of an adaptive-test session from GET /api/v1/cat/{session_id}.
+export interface CatStateResponse {
+  session_id: string;
+  status: string;
+  theta: number;
+  standard_error: number;
+  item_count: number;
+  done: boolean;
+  item?: CatItem;
+}
+
+// The IRT parameters for an item, when calibrated.
+export interface ItemIrt {
+  a: number;
+  b: number;
+  c: number;
+}
+
+// One row of item analysis from GET /api/v1/analytics/items.
+export interface AnalyticsItem {
+  item_id: string;
+  node_code: string;
+  node_title: string;
+  kind: string;
+  prompt_preview: string;
+  n_responses: number;
+  p_value: number;
+  avg_score: number;
+  irt: ItemIrt | null;
+}
+
+export interface AnalyticsItemsResponse {
+  items: AnalyticsItem[];
+}
+
+// One standard (node) row from GET /api/v1/analytics/standards.
+export interface StandardNode {
+  code: string;
+  title: string;
+  n_learners: number;
+  avg_p_known: number;
+  levels: Record<string, number>;
+}
+
+export interface StandardsResponse {
+  nodes: StandardNode[];
+}
+
+// One growth event from GET /api/v1/analytics/growth/me.
+export interface GrowthEvent {
+  t: string;
+  node_id: string;
+  correct: boolean;
+  p_known_after: number;
+}
+
+export interface GrowthResponse {
+  events: GrowthEvent[];
+  avg_p_known_now: number;
+  n_events: number;
+}
+
+// -------------------------------------------------------------------------
+// Phase 2 helpers.
+// -------------------------------------------------------------------------
+
+export function fetchGamification(): Promise<GamificationProfile> {
+  return apiGet<GamificationProfile>('/api/v1/gamification/me');
+}
+
+export function fetchLeaderboard(): Promise<LeaderboardResponse> {
+  return apiGet<LeaderboardResponse>('/api/v1/gamification/leaderboard');
+}
+
+export function catStart(): Promise<CatStartResponse> {
+  return apiPost<CatStartResponse>('/api/v1/cat/start', {});
+}
+
+export function catAnswer(
+  sessionId: string,
+  answer: string,
+): Promise<CatAnswerResponse> {
+  return apiPost<CatAnswerResponse>(
+    `/api/v1/cat/${encodeURIComponent(sessionId)}/answer`,
+    { answer },
+  );
+}
+
+export function catState(sessionId: string): Promise<CatStateResponse> {
+  return apiGet<CatStateResponse>(
+    `/api/v1/cat/${encodeURIComponent(sessionId)}`,
+  );
+}
+
+export function fetchAnalyticsItems(): Promise<AnalyticsItemsResponse> {
+  return apiGet<AnalyticsItemsResponse>('/api/v1/analytics/items');
+}
+
+export function fetchStandards(): Promise<StandardsResponse> {
+  return apiGet<StandardsResponse>('/api/v1/analytics/standards');
+}
+
+export function fetchGrowth(): Promise<GrowthResponse> {
+  return apiGet<GrowthResponse>('/api/v1/analytics/growth/me');
+}
+
+// Fetch a file from the API with the bearer token and trigger a browser
+// download. Used by the analytics CSV/PDF export buttons, where a plain anchor
+// cannot attach the Authorization header. Throws ApiError on a non-2xx
+// response, matching apiGet/apiPost.
+export async function downloadAuthed(
+  path: string,
+  filename: string,
+): Promise<void> {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  const token = getToken();
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+
+  const url = `${AXIOM_API_URL}${path}`;
+  let res: Response;
+  try {
+    res = await fetch(url, { headers, cache: 'no-store' });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'network error';
+    throw new ApiError(0, `Request to ${path} failed: ${message}`, '');
+  }
+
+  if (!res.ok) {
+    let body = '';
+    try {
+      body = await res.text();
+    } catch {
+      body = '';
+    }
+    throw new ApiError(
+      res.status,
+      `Request to ${path} returned ${res.status}`,
+      body,
+    );
+  }
+
+  const blob = await res.blob();
+  const objectUrl = window.URL.createObjectURL(blob);
+  const anchor = document.createElement('a');
+  anchor.href = objectUrl;
+  anchor.download = filename;
+  document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.URL.revokeObjectURL(objectUrl);
 }

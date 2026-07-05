@@ -6,14 +6,18 @@ Score, and ReasoningTrace. Math grading delegates to math_core, which uses
 SymPy symbolic equivalence rather than string matching, so several equivalent
 correct forms all grade correct.
 
+Supported kinds: mcq_single, numeric, math_expression, equation, mcq_multi,
+true_false, short_text, plot_points, show_work (with milestone step credit).
+
 grader values: exact (selection), numeric (tolerance), cas (symbolic).
 """
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import json
+from dataclasses import dataclass, field
 
-from math_core import grade_equation, grade_expression, grade_numeric
+from math_core import grade_equation, grade_expression, grade_numeric, symbolic_equal
 
 
 @dataclass
@@ -25,6 +29,79 @@ class GradeOutcome:
     detail: str
     correct_display: str
     explanation: str = ""
+    # For show_work: [{"milestone": str, "awarded": bool}, ...].
+    step_credits: list[dict] = field(default_factory=list)
+
+
+def _parse_index_set(raw: str) -> set[int]:
+    raw = raw.strip()
+    try:
+        parsed = json.loads(raw)
+        if isinstance(parsed, list):
+            return {int(x) for x in parsed}
+    except (ValueError, TypeError):
+        pass
+    tokens = raw.replace(";", ",").split(",")
+    return {int(tok) for tok in tokens if tok.strip().lstrip("-").isdigit()}
+
+
+def _parse_points(raw: str) -> set[tuple[float, float]]:
+    try:
+        parsed = json.loads(raw)
+    except (ValueError, TypeError):
+        return set()
+    out: set[tuple[float, float]] = set()
+    if isinstance(parsed, list):
+        for pt in parsed:
+            if isinstance(pt, (list, tuple)) and len(pt) == 2:
+                out.add((round(float(pt[0]), 4), round(float(pt[1]), 4)))
+    return out
+
+
+def _to_zero_form(text: str) -> str:
+    """Rewrite an equation 'lhs = rhs' as the expression 'lhs - (rhs)'.
+
+    symbolic_equal compares expressions, not equations, so equation-shaped
+    milestones and student lines are moved to a single side first. Plain
+    expressions (no '=') are returned unchanged.
+    """
+    if "=" in text:
+        lhs, _, rhs = text.partition("=")
+        return f"({lhs}) - ({rhs})"
+    return text
+
+
+def _milestone_hit(line: str, milestone: str) -> bool:
+    """True when a student line matches a milestone, expression or equation.
+
+    A direct expression match is tried first. When either side is an equation,
+    both are normalized to zero-form and compared symbolically, so 'x = 4'
+    matches a milestone authored as 'x = 4' regardless of spacing or notation.
+    """
+    if symbolic_equal(line, milestone):
+        return True
+    if "=" in line or "=" in milestone:
+        return symbolic_equal(_to_zero_form(line), _to_zero_form(milestone))
+    return False
+
+
+def grade_step_credit(milestones: list[str], student_work: str) -> tuple[list[dict], float]:
+    """Award partial credit for a show-your-work response.
+
+    Each milestone is an expected expression or equation. A milestone is awarded
+    when any non-empty line of the student work matches it (see _milestone_hit).
+    Returns the per-milestone results and the fraction awarded.
+    """
+    lines = [ln.strip() for ln in (student_work or "").splitlines() if ln.strip()]
+    results: list[dict] = []
+    awarded = 0
+    for milestone in milestones:
+        hit = any(_milestone_hit(line, milestone) for line in lines)
+        results.append({"milestone": milestone, "awarded": hit})
+        if hit:
+            awarded += 1
+    fraction = awarded / len(milestones) if milestones else 0.0
+    return results, fraction
 
 
 def grade(
@@ -35,18 +112,12 @@ def grade(
     options: list[str] | None = None,
     tolerance: float | None = None,
     explanation: str = "",
+    milestones: list[str] | None = None,
 ) -> GradeOutcome:
-    """Grade a single response.
-
-    kind is one of mcq_single, numeric, math_expression, equation. correct is
-    the stored answer key (an index for mcq_single, else an expression or
-    number as text). student_answer is the raw submission as text.
-    """
+    """Grade a single response. correct is the stored answer key for the kind."""
     student = (student_answer or "").strip()
 
     if kind == "mcq_single":
-        # correct is the option index. Accept either the index or the option
-        # text as the submission so the frontend can send whichever it has.
         chosen_index: int | None = None
         if student.isdigit():
             chosen_index = int(student)
@@ -60,58 +131,79 @@ def grade(
             except (ValueError, IndexError):
                 correct_display = str(correct)
         return GradeOutcome(
-            is_correct=is_correct,
-            score=1.0 if is_correct else 0.0,
-            grader="exact",
-            confidence=1.0,
-            detail=f"selected index {chosen_index}, key {correct}",
-            correct_display=correct_display,
-            explanation=explanation,
+            is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
+            f"selected index {chosen_index}, key {correct}", correct_display, explanation,
+        )
+
+    if kind == "mcq_multi":
+        chosen = _parse_index_set(student)
+        key = _parse_index_set(str(correct))
+        is_correct = chosen == key and len(key) > 0
+        return GradeOutcome(
+            is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
+            f"selected {sorted(chosen)}, key {sorted(key)}", str(sorted(key)), explanation,
+        )
+
+    if kind == "true_false":
+        norm = {
+            "true": "true", "t": "true", "1": "true",
+            "false": "false", "f": "false", "0": "false",
+        }
+        s = norm.get(student.lower(), student.lower())
+        k = norm.get(str(correct).strip().lower(), str(correct).strip().lower())
+        is_correct = s == k
+        return GradeOutcome(
+            is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
+            f"answered {s}, key {k}", k, explanation,
+        )
+
+    if kind == "short_text":
+        accepted = [a.strip().lower() for a in str(correct).split("|") if a.strip()]
+        is_correct = student.lower() in accepted
+        return GradeOutcome(
+            is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
+            f"text match against {len(accepted)} accepted forms", str(correct), explanation,
+        )
+
+    if kind == "plot_points":
+        chosen_pts = _parse_points(student)
+        key_pts = _parse_points(str(correct))
+        is_correct = chosen_pts == key_pts and len(key_pts) > 0
+        return GradeOutcome(
+            is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
+            f"plotted {len(chosen_pts)} of {len(key_pts)} points", str(correct), explanation,
+        )
+
+    if kind == "show_work":
+        results, fraction = grade_step_credit(milestones or [], student)
+        return GradeOutcome(
+            fraction >= 1.0, round(fraction, 4), "cas", 0.9,
+            f"{sum(r['awarded'] for r in results)}/{len(results)} milestones",
+            str(correct), explanation, results,
         )
 
     if kind == "numeric":
         atol = tolerance if tolerance is not None else 1e-9
         res = grade_numeric(student, str(correct), atol=atol)
         return GradeOutcome(
-            is_correct=res.is_correct,
-            score=res.score,
-            grader="numeric",
-            confidence=res.confidence,
-            detail=res.detail,
-            correct_display=str(correct),
-            explanation=explanation,
+            res.is_correct, res.score, "numeric", res.confidence, res.detail,
+            str(correct), explanation,
         )
 
     if kind == "math_expression":
         res = grade_expression(student, str(correct))
         return GradeOutcome(
-            is_correct=res.is_correct,
-            score=res.score,
-            grader="cas",
-            confidence=res.confidence,
-            detail=res.detail,
-            correct_display=str(correct),
-            explanation=explanation,
+            res.is_correct, res.score, "cas", res.confidence, res.detail,
+            str(correct), explanation,
         )
 
     if kind == "equation":
         res = grade_equation(student, str(correct))
         return GradeOutcome(
-            is_correct=res.is_correct,
-            score=res.score,
-            grader="cas",
-            confidence=res.confidence,
-            detail=res.detail,
-            correct_display=str(correct),
-            explanation=explanation,
+            res.is_correct, res.score, "cas", res.confidence, res.detail,
+            str(correct), explanation,
         )
 
     return GradeOutcome(
-        is_correct=False,
-        score=0.0,
-        grader="exact",
-        confidence=0.0,
-        detail=f"unsupported item kind: {kind}",
-        correct_display=str(correct),
-        explanation=explanation,
+        False, 0.0, "exact", 0.0, f"unsupported item kind: {kind}", str(correct), explanation,
     )
