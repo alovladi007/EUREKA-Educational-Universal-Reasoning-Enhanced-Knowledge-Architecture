@@ -6,6 +6,7 @@ import {
   fetchDashboardSummary,
   fetchHealth,
   fetchMe,
+  fetchUnreadCount,
   getToken,
   type DashboardSummary,
   type Me,
@@ -48,6 +49,36 @@ const EXPLORE_TILES: { href: string; name: string; description: string }[] = [
       'Review AI-graded free responses and override the grade. For teachers and admins.',
   },
 ];
+
+// A dedicated tile for the notifications inbox. It renders like an ExploreTile
+// but shows the live unread count as a badge when there is one to show.
+function NotificationsTile({ unreadCount }: { unreadCount: number }) {
+  return (
+    <Link
+      href="/notifications"
+      className="flex flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+    >
+      <div className="mb-2 flex items-center gap-2">
+        <h3 className="text-base font-semibold text-card-foreground">
+          Notifications
+        </h3>
+        {unreadCount > 0 && (
+          <span className="inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-brand-600 px-1.5 py-0.5 text-xs font-medium text-white">
+            {unreadCount}
+          </span>
+        )}
+      </div>
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        Assignments, grades, badges, and system messages. Your unread inbox.
+      </p>
+      <span className="mt-3 text-sm font-medium text-brand-600 dark:text-brand-300">
+        {unreadCount > 0
+          ? `Open Notifications (${unreadCount} unread)`
+          : 'Open Notifications'}
+      </span>
+    </Link>
+  );
+}
 
 function ExploreTile({
   href,
@@ -127,6 +158,7 @@ export default function DashboardPage() {
   const [health, setHealth] = useState<ApiHealthState>('checking');
   const [me, setMe] = useState<Me | null>(null);
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [unreadCount, setUnreadCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
   // Load /me and /dashboard/summary once we know a token exists.
@@ -160,6 +192,20 @@ export default function DashboardPage() {
           err instanceof Error ? err.message : 'Failed to load dashboard.';
         setErrorMessage(message);
         setState('error');
+      }
+    })();
+
+    // Load the unread notification count for the Notifications tile. This is
+    // best-effort: a failure here must not affect the dashboard, so it is kept
+    // separate and its errors are swallowed.
+    (async () => {
+      try {
+        const result = await fetchUnreadCount();
+        if (!cancelled) {
+          setUnreadCount(result.count);
+        }
+      } catch {
+        // Ignore; the tile just shows no badge.
       }
     })();
 
@@ -278,6 +324,7 @@ export default function DashboardPage() {
                 Explore
               </h2>
               <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <NotificationsTile unreadCount={unreadCount} />
                 {EXPLORE_TILES.map((tile) => (
                   <ExploreTile
                     key={tile.href}

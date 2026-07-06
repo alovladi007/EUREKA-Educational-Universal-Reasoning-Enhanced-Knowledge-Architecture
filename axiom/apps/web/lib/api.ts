@@ -890,3 +890,54 @@ export function overrideGrade(
     input,
   );
 }
+
+// -------------------------------------------------------------------------
+// Notifications (in-app inbox).
+// -------------------------------------------------------------------------
+
+// One notification from GET /api/v1/notifications. kind selects the small
+// coloured badge shown in the inbox. link is a relative route the row navigates
+// to when opened; it may be empty.
+export interface NotificationItem {
+  id: string;
+  kind: 'assignment' | 'badge' | 'grade' | 'system';
+  title: string;
+  body: string;
+  link: string;
+  read: boolean;
+  created_at: string;
+}
+
+// The inbox payload from GET /api/v1/notifications. unread_count counts the
+// unread items regardless of the unread_only filter.
+export interface NotificationsResponse {
+  items: NotificationItem[];
+  unread_count: number;
+}
+
+// Fetch the notification inbox. Pass unreadOnly to limit the items to unread
+// notifications; the unread count is always the full unread total.
+export function fetchNotifications(
+  unreadOnly = false,
+): Promise<NotificationsResponse> {
+  const query = unreadOnly ? '?unread_only=true' : '';
+  return apiGet<NotificationsResponse>(`/api/v1/notifications${query}`);
+}
+
+// Fetch just the unread notification count, for the nav indicator.
+export function fetchUnreadCount(): Promise<{ count: number }> {
+  return apiGet<{ count: number }>('/api/v1/notifications/unread-count');
+}
+
+// Mark one notification as read.
+export function markNotificationRead(id: string): Promise<{ ok: boolean }> {
+  return apiPost<{ ok: boolean }>(
+    `/api/v1/notifications/${encodeURIComponent(id)}/read`,
+    {},
+  );
+}
+
+// Mark every notification as read. Returns how many were newly marked.
+export function markAllNotificationsRead(): Promise<{ marked: number }> {
+  return apiPost<{ marked: number }>('/api/v1/notifications/read-all', {});
+}

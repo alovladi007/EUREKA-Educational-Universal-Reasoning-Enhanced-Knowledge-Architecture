@@ -33,7 +33,7 @@ These are explicitly not implemented:
 - Live tutoring with shared whiteboard, video, and recording (Phase 3). This needs a real-time media server (WebRTC/SFU) that is out of scope for the current build; the copilot ships without it.
 - AI grading of handwritten and image responses (Phase 3). Free-response text grading against a rubric is built (labeled and teacher-overridable); handwritten and image work needs a vision model and is not built.
 - Proctoring, LTI 1.3, OneRoster, LMS grade passback, and district analytics (Phase 4).
-- Notifications: email, in-app messaging, assignment reminders (Phase 2 roadmap item, not yet built).
+- Email and push notification delivery. In-app notifications are built (inbox, unread badge, emitted on assignment, badge, and grade override); sending them over email or push is not built.
 - The Celery worker still ships only the sample task; grading runs inline in the request path. Moving heavy grading and generation onto the worker is a later step.
 - Semantic (pgvector) retrieval for the copilot. Grounding today is deterministic lexical retrieval; vector embeddings are a future upgrade behind the same retriever interface.
 
@@ -55,7 +55,7 @@ These are explicitly not implemented:
 | tutoring | planned | Phase 3 | Shared whiteboard, video, recording. Needs a media server; not built. |
 | proctoring | planned | Phase 4 | Lockdown, integrity signals, review workflow. |
 | integrations | planned | Phase 4 | LTI 1.3, OneRoster, gradebook passback. QTI item exchange is done in Phase 2. |
-| notifications | planned | Phase 2 roadmap | Email, in-app messaging, assignment reminders. |
+| notifications | done (in-app) | Phase 2 roadmap | In-app inbox and unread badge, emitted on assignment, badge earned, and AI-grade override. Email delivery is not built. |
 
 ## Frontend and infra
 

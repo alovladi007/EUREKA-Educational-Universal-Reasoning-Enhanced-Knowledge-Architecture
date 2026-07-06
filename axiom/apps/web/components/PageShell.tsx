@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { EUREKA_LOGIN_URL, getToken } from '@/lib/api';
+import { useEffect, useState } from 'react';
+import { EUREKA_LOGIN_URL, fetchUnreadCount, getToken } from '@/lib/api';
 
 // Shared chrome for the Phase 1 pages. It renders the AXIOM wordmark, a link
 // back to the dashboard, and a slot for the page content. It does not fetch
@@ -63,9 +64,59 @@ export function PageHeader({ children }: { children?: React.ReactNode }) {
         >
           <Wordmark />
         </Link>
-        <nav className="flex items-center gap-3 text-sm">{children}</nav>
+        <nav className="flex items-center gap-3 text-sm">
+          {children}
+          <NotificationsBell />
+        </nav>
       </div>
     </header>
+  );
+}
+
+// A lightweight nav indicator rendered inside every PageHeader. On mount it
+// makes a single unread-count request and, when the count is positive, shows it
+// as a small badge beside a "Notifications" link. Failures are tolerated
+// silently so the header never breaks, and it renders nothing when there is no
+// token (so it is safe on the server and when signed out).
+export function NotificationsBell() {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!getToken()) {
+      return;
+    }
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await fetchUnreadCount();
+        if (!cancelled) {
+          setCount(result.count);
+        }
+      } catch {
+        // Tolerate failure silently; the link still works without a badge.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  if (!getToken()) {
+    return null;
+  }
+
+  return (
+    <Link
+      href="/notifications"
+      className="inline-flex items-center gap-1.5 rounded px-2 py-1 text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+    >
+      Notifications
+      {count > 0 && (
+        <span className="inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-brand-600 px-1.5 py-0.5 text-xs font-medium text-white">
+          {count}
+        </span>
+      )}
+    </Link>
   );
 }
 

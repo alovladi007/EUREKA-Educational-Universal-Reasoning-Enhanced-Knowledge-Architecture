@@ -15,6 +15,7 @@ from app.domains.gamification.router import router as gamification_router
 from app.domains.grading.router import router as grading_router
 from app.domains.identity.router import auth_router
 from app.domains.identity.router import router as identity_router
+from app.domains.notifications.router import router as notifications_router
 from app.domains.practice.router import router as practice_router
 
 api_v1 = APIRouter(prefix="/api/v1")
@@ -30,3 +31,4 @@ api_v1.include_router(analytics_router)
 api_v1.include_router(gamification_router)
 api_v1.include_router(copilot_router)
 api_v1.include_router(grading_router)
+api_v1.include_router(notifications_router)

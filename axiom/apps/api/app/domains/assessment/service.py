@@ -27,6 +27,7 @@ from app.domains.assessment.models import (
 )
 from app.domains.attempts.models import Attempt, Response
 from app.domains.identity.models import User
+from app.domains.notifications.service import notify
 from app.domains.practice.service import _variant_seed
 
 
@@ -70,6 +71,11 @@ async def create_assessment(
 
 
 async def assign(session: AsyncSession, assessment_id: uuid.UUID, user_ids: list[uuid.UUID]) -> int:
+    assessment = (
+        await session.execute(select(Assessment).where(Assessment.id == assessment_id))
+    ).scalar_one_or_none()
+    title = assessment.title if assessment is not None else "an assessment"
+
     existing = {
         row.user_id
         for row in (
@@ -84,6 +90,15 @@ async def assign(session: AsyncSession, assessment_id: uuid.UUID, user_ids: list
     for uid in user_ids:
         if uid not in existing:
             session.add(AssignmentTarget(assessment_id=assessment_id, user_id=uid))
+            # Alert each newly assigned student in their in-app inbox.
+            await notify(
+                session,
+                uid,
+                "assignment",
+                "New assignment",
+                f"You were assigned: {title}.",
+                link="/practice",
+            )
             added += 1
     await session.flush()
     return added

@@ -39,6 +39,7 @@ async def engine():
     from app.domains.curriculum import models as _cur  # noqa: F401
     from app.domains.gamification import models as _g  # noqa: F401
     from app.domains.identity import models as _i  # noqa: F401
+    from app.domains.notifications import models as _n  # noqa: F401
     from app.seed import seed
 
     get_settings.cache_clear()

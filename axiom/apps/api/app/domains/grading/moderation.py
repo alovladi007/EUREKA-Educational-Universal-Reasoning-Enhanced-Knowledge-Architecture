@@ -23,6 +23,7 @@ from app.domains.attempts.models import (
     Score,
 )
 from app.domains.identity.models import User
+from app.domains.notifications.service import notify
 
 _PROMPT_PREVIEW = 140
 
@@ -77,6 +78,21 @@ async def override_grade(
             },
         )
     )
+
+    # Let the student know their response was reviewed by a teacher.
+    response = (
+        await session.execute(select(Response).where(Response.id == response_id))
+    ).scalar_one_or_none()
+    if response is not None:
+        await notify(
+            session,
+            response.user_id,
+            "grade",
+            "Your response was reviewed",
+            f"A teacher set your score to {score}.",
+            link="/practice",
+        )
+
     await session.flush()
     return {
         "response_id": str(response_id),

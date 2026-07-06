@@ -27,6 +27,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.domains.attempts.models import Response, Score
 from app.domains.gamification.models import Badge, BadgeAward, GameProfile, XpLedger
 from app.domains.identity.models import User
+from app.domains.notifications.service import notify
 
 # Badge catalogue seeded once per environment. Codes are stable identifiers the
 # award logic keys on; names and descriptions are display strings.
@@ -67,6 +68,9 @@ DEFAULT_BADGES: list[dict] = [
         "description": "Mastered your first skill.",
     },
 ]
+
+# Badge code to display name, used for notification copy.
+_BADGE_NAMES = {badge["code"]: badge["name"] for badge in DEFAULT_BADGES}
 
 
 def _now() -> datetime:
@@ -231,6 +235,17 @@ async def record_practice_result(
 
     if mastered and await _award_badge(session, user_id, "first_mastery"):
         new_badges.append("first_mastery")
+
+    # Alert the learner in their in-app inbox for each freshly earned badge.
+    for code in new_badges:
+        await notify(
+            session,
+            user_id,
+            "badge",
+            "Badge earned",
+            _BADGE_NAMES.get(code, code),
+            link="/achievements",
+        )
 
     await session.flush()
     return {
