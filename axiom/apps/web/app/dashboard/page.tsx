@@ -3,122 +3,22 @@
 import { useEffect, useState } from 'react';
 import {
   EUREKA_LOGIN_URL,
-  fetchDashboardSummary,
+  fetchGamification,
   fetchHealth,
+  fetchMastery,
   fetchMe,
   fetchUnreadCount,
   getToken,
-  type DashboardSummary,
+  type GamificationProfile,
   type Me,
 } from '@/lib/api';
-import Link from 'next/link';
-import { ModuleCard } from '@/components/ModuleCard';
 import { StatusPill, type ApiHealthState } from '@/components/StatusPill';
 import { AppShell } from '@/components/AppShell';
 
-// Static tiles for the Phase 2 pages that are not part of the API module list.
-// Each links directly to its route, matching the ModuleCard visual style.
-const EXPLORE_TILES: { href: string; name: string; description: string }[] = [
-  {
-    href: '/assessments',
-    name: 'Assessments',
-    description:
-      'The assessments assigned to you. Start one while it is open and take it here.',
-  },
-  {
-    href: '/review',
-    name: 'Review mistakes',
-    description:
-      'Revisit your recent incorrect answers with the correct answer and an explanation.',
-  },
-  {
-    href: '/copilot',
-    name: 'Copilot',
-    description:
-      'An AI-assisted tutor grounded in your lessons. Every reply shows its sources.',
-  },
-  {
-    href: '/achievements',
-    name: 'Achievements',
-    description:
-      'Your XP, level, streak, earned badges, and the leaderboard.',
-  },
-  {
-    href: '/cat',
-    name: 'Adaptive test',
-    description:
-      'A short test that adapts to your answers to estimate your ability.',
-  },
-  {
-    href: '/grading-review',
-    name: 'Grading review',
-    description:
-      'Review AI-graded free responses and override the grade. For teachers and admins.',
-  },
-];
-
-// A dedicated tile for the notifications inbox. It renders like an ExploreTile
-// but shows the live unread count as a badge when there is one to show.
-function NotificationsTile({ unreadCount }: { unreadCount: number }) {
-  return (
-    <Link
-      href="/notifications"
-      className="flex flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-    >
-      <div className="mb-2 flex items-center gap-2">
-        <h3 className="text-base font-semibold text-card-foreground">
-          Notifications
-        </h3>
-        {unreadCount > 0 && (
-          <span className="inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-brand-600 px-1.5 py-0.5 text-xs font-medium text-white">
-            {unreadCount}
-          </span>
-        )}
-      </div>
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        Assignments, grades, badges, and system messages. Your unread inbox.
-      </p>
-      <span className="mt-3 text-sm font-medium text-brand-600 dark:text-brand-300">
-        {unreadCount > 0
-          ? `Open Notifications (${unreadCount} unread)`
-          : 'Open Notifications'}
-      </span>
-    </Link>
-  );
-}
-
-function ExploreTile({
-  href,
-  name,
-  description,
-}: {
-  href: string;
-  name: string;
-  description: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="flex flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-    >
-      <h3 className="mb-2 text-base font-semibold text-card-foreground">
-        {name}
-      </h3>
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        {description}
-      </p>
-      <span className="mt-3 text-sm font-medium text-brand-600 dark:text-brand-300">
-        Open {name}
-      </span>
-    </Link>
-  );
-}
-
-// The dashboard is the whole app for Phase 0. It:
-//   1. checks for the EUREKA token in localStorage
-//   2. if absent, shows a "Sign in through EUREKA" screen
-//   3. if present, loads /me and /dashboard/summary and renders the modules
-//   4. polls /health for a live API status pill
+// The dashboard is the landing view inside the sidebar shell. Navigation lives
+// entirely in the left sidebar (AppShell), so the dashboard does NOT repeat the
+// module list. It shows a welcome, the live API status, and an at-a-glance view
+// of the learner's own progress (level, streak, skills tracked, unread).
 
 type LoadState = 'checking' | 'signed-out' | 'loading' | 'ready' | 'error';
 
@@ -160,15 +60,37 @@ function SignInScreen() {
   );
 }
 
+// A single at-a-glance metric. Informational only (no navigation), so it does
+// not duplicate the sidebar.
+function StatCard({
+  label,
+  value,
+  sub,
+}: {
+  label: string;
+  value: string;
+  sub?: string;
+}) {
+  return (
+    <div className="flex flex-col rounded-lg border border-border bg-card p-5">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+        {label}
+      </p>
+      <p className="mt-1 text-2xl font-semibold text-foreground">{value}</p>
+      {sub && <p className="mt-0.5 text-sm text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
+
 export default function DashboardPage() {
   const [state, setState] = useState<LoadState>('checking');
   const [health, setHealth] = useState<ApiHealthState>('checking');
   const [me, setMe] = useState<Me | null>(null);
-  const [summary, setSummary] = useState<DashboardSummary | null>(null);
+  const [profile, setProfile] = useState<GamificationProfile | null>(null);
+  const [skills, setSkills] = useState(0);
   const [unreadCount, setUnreadCount] = useState(0);
   const [errorMessage, setErrorMessage] = useState<string>('');
 
-  // Load /me and /dashboard/summary once we know a token exists.
   useEffect(() => {
     const token = getToken();
     if (!token) {
@@ -179,40 +101,51 @@ export default function DashboardPage() {
     setState('loading');
     let cancelled = false;
 
+    // The signed-in user is the only load-critical call; if it fails the
+    // dashboard shows an error. The progress stats below are best-effort.
     (async () => {
       try {
-        const [meResult, summaryResult] = await Promise.all([
-          fetchMe(),
-          fetchDashboardSummary(),
-        ]);
+        const meResult = await fetchMe();
         if (cancelled) {
           return;
         }
         setMe(meResult);
-        setSummary(summaryResult);
         setState('ready');
       } catch (err) {
         if (cancelled) {
           return;
         }
-        const message =
-          err instanceof Error ? err.message : 'Failed to load dashboard.';
-        setErrorMessage(message);
+        setErrorMessage(
+          err instanceof Error ? err.message : 'Failed to load dashboard.',
+        );
         setState('error');
       }
     })();
 
-    // Load the unread notification count for the Notifications tile. This is
-    // best-effort: a failure here must not affect the dashboard, so it is kept
-    // separate and its errors are swallowed.
+    // Best-effort at-a-glance stats. Each failure is swallowed so a missing or
+    // empty metric never breaks the dashboard.
+    (async () => {
+      try {
+        const gp = await fetchGamification();
+        if (!cancelled) setProfile(gp);
+      } catch {
+        // Ignore.
+      }
+    })();
+    (async () => {
+      try {
+        const mastery = await fetchMastery();
+        if (!cancelled) setSkills(mastery.states.length);
+      } catch {
+        // Ignore.
+      }
+    })();
     (async () => {
       try {
         const result = await fetchUnreadCount();
-        if (!cancelled) {
-          setUnreadCount(result.count);
-        }
+        if (!cancelled) setUnreadCount(result.count);
       } catch {
-        // Ignore; the tile just shows no badge.
+        // Ignore.
       }
     })();
 
@@ -226,9 +159,7 @@ export default function DashboardPage() {
     if (state === 'checking' || state === 'signed-out') {
       return;
     }
-
     let cancelled = false;
-
     const probe = async () => {
       try {
         const result = await fetchHealth();
@@ -241,10 +172,8 @@ export default function DashboardPage() {
         }
       }
     };
-
     probe();
     const interval = setInterval(probe, 15000);
-
     return () => {
       cancelled = true;
       clearInterval(interval);
@@ -263,31 +192,22 @@ export default function DashboardPage() {
     return <SignInScreen />;
   }
 
-  const greetingName = me?.display_name || summary?.user.display_name || '';
+  const greetingName = me?.display_name || '';
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-6xl px-6 py-10">
+      <main className="mx-auto max-w-5xl px-6 py-10">
         <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold text-foreground">
-              {greetingName
-                ? `Welcome back, ${greetingName}.`
-                : 'Welcome back.'}
+              {greetingName ? `Welcome back, ${greetingName}.` : 'Welcome back.'}
             </h1>
             <p className="mt-1 text-sm text-muted-foreground">
-              This is your AXIOM workspace. Modules will light up as they become
-              available.
+              Your AXIOM workspace. Pick a module from the sidebar to get going.
             </p>
           </div>
           <StatusPill state={health} />
         </div>
-
-        {state === 'loading' && (
-          <p className="text-sm text-muted-foreground">
-            Loading your dashboard.
-          </p>
-        )}
 
         {state === 'error' && (
           <div className="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-950">
@@ -303,42 +223,38 @@ export default function DashboardPage() {
           </div>
         )}
 
-        {state === 'ready' && summary && (
-          <>
-            <section>
-              <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Modules
-              </h2>
-              {summary.modules.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No modules yet. Check back soon.
-                </p>
-              ) : (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {summary.modules.map((module) => (
-                    <ModuleCard key={module.key} module={module} />
-                  ))}
-                </div>
-              )}
-            </section>
-
-            <section className="mt-10">
-              <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Explore
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <NotificationsTile unreadCount={unreadCount} />
-                {EXPLORE_TILES.map((tile) => (
-                  <ExploreTile
-                    key={tile.href}
-                    href={tile.href}
-                    name={tile.name}
-                    description={tile.description}
-                  />
-                ))}
-              </div>
-            </section>
-          </>
+        {state === 'ready' && (
+          <section>
+            <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              At a glance
+            </h2>
+            <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+              <StatCard
+                label="Level"
+                value={profile ? `Level ${profile.level}` : '-'}
+                sub={profile ? `${profile.xp_total} XP total` : 'Start practicing'}
+              />
+              <StatCard
+                label="Streak"
+                value={profile ? `${profile.streak_days}` : '0'}
+                sub={
+                  profile && profile.streak_days === 1
+                    ? 'day in a row'
+                    : 'days in a row'
+                }
+              />
+              <StatCard
+                label="Skills tracked"
+                value={`${skills}`}
+                sub="in your mastery map"
+              />
+              <StatCard
+                label="Unread"
+                value={`${unreadCount}`}
+                sub={unreadCount === 1 ? 'notification' : 'notifications'}
+              />
+            </div>
+          </section>
         )}
       </main>
     </AppShell>

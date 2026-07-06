@@ -10,10 +10,11 @@ import { Wordmark } from '@/components/PageShell';
 // with the page content rendered on the right. It replaces the old per-page
 // top-bar navigation so the same nav is present on every page.
 //
-// The shell owns only the chrome (navigation and layout). It fetches the unread
-// notification count once on mount for the Notifications badge; that request is
-// best-effort and its failures are swallowed. Every page still owns its own
-// data loading, load-state machine, and error handling.
+// Layout: the shell is exactly the viewport height and hides its own overflow;
+// the sidebar and the content each have their own vertical scroll. This keeps
+// every sidebar link reachable and clickable no matter how tall the nav or the
+// page content is (the earlier sticky-plus-viewport-height approach could leave
+// the lowest links unclickable on short screens).
 
 // A single navigation group: a small uppercase heading and its links.
 interface NavGroup {
@@ -104,10 +105,10 @@ function NavLink({
   );
 }
 
-// The sidebar body: the wordmark and the grouped navigation. It is rendered
-// both in the persistent md+ column and inside the mobile drawer, so the
-// navigation markup lives here once. onNavigate is called when a link is
-// followed, which the mobile drawer uses to close itself.
+// The sidebar body: the wordmark and the grouped navigation. Rendered both in
+// the persistent md+ column and inside the mobile drawer, so the navigation
+// markup lives here once. onNavigate is called when a link is followed, which
+// the mobile drawer uses to close itself.
 function SidebarNav({
   pathname,
   unreadCount,
@@ -118,7 +119,7 @@ function SidebarNav({
   onNavigate?: () => void;
 }) {
   return (
-    <div className="flex h-full flex-col gap-6 p-4">
+    <div className="flex flex-col gap-6 p-4">
       <Link
         href="/dashboard"
         onClick={onNavigate}
@@ -186,15 +187,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   }, [pathname]);
 
   return (
-    <div className="flex min-h-screen">
-      {/* Persistent sidebar, md and up. */}
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 overflow-y-auto border-r border-border bg-card md:block">
+    <div className="flex h-screen overflow-hidden bg-background">
+      {/* Persistent sidebar (md and up): its own scroll region, always
+          clickable regardless of viewport height. */}
+      <aside className="hidden w-60 shrink-0 overflow-y-auto border-r border-border bg-card md:block">
         <SidebarNav pathname={pathname} unreadCount={unreadCount} />
       </aside>
 
-      {/* Mobile top bar with a Menu toggle, below md. */}
-      <div className="flex min-w-0 flex-1 flex-col overflow-x-hidden">
-        <div className="sticky top-0 z-20 flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 md:hidden">
+      {/* Main column: mobile top bar plus the scrollable content region. */}
+      <div className="flex min-w-0 flex-1 flex-col overflow-hidden">
+        <div className="flex items-center justify-between gap-3 border-b border-border bg-card px-4 py-3 md:hidden">
           <Link
             href="/dashboard"
             className="rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
@@ -213,10 +215,10 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </button>
         </div>
 
-        <div className="min-w-0 flex-1">{children}</div>
+        <div className="min-w-0 flex-1 overflow-y-auto">{children}</div>
       </div>
 
-      {/* Mobile drawer overlay, below md. */}
+      {/* Mobile drawer overlay (below md). */}
       {open && (
         <div className="fixed inset-0 z-30 md:hidden">
           <button
