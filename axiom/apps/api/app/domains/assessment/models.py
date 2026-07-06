@@ -188,3 +188,7 @@ class AssignmentTarget(Base):
         Uuid, ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
     created_at: Mapped[datetime] = mapped_column(default=_now)
+    # Optional due date and the time a due-soon reminder was sent, so the beat
+    # scheduler reminds each assignment exactly once.
+    due_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    reminded_at: Mapped[datetime | None] = mapped_column(nullable=True)

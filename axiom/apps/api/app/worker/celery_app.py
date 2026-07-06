@@ -26,6 +26,14 @@ celery_app.conf.update(
     enable_utc=True,
 )
 
+# The beat scheduler runs the assignment due-date reminder scan on an interval.
+celery_app.conf.beat_schedule = {
+    "assignment-due-reminders": {
+        "task": "axiom.due_reminders",
+        "schedule": settings.reminder_interval_seconds,
+    },
+}
+
 
 @celery_app.task(name="axiom.ping")
 def ping() -> str:
@@ -33,6 +41,20 @@ def ping() -> str:
     return "pong"
 
 
-# Import task modules so their @celery_app.task jobs register on the app. Kept at
-# the bottom because tasks import celery_app; the app object already exists here.
+# Register every ORM model on Base.metadata so a task's own engine can resolve
+# cross-domain foreign keys (for example notifications.user_id -> users.id)
+# regardless of which task's import chain runs. Kept at the bottom, after the app
+# object exists.
+from app.domains.adaptive import models as _adaptive_models  # noqa: E402, F401
+from app.domains.assessment import models as _assessment_models  # noqa: E402, F401
+from app.domains.attempts import models as _attempts_models  # noqa: E402, F401
+from app.domains.content import models as _content_models  # noqa: E402, F401
+from app.domains.copilot import models as _copilot_models  # noqa: E402, F401
+from app.domains.curriculum import models as _curriculum_models  # noqa: E402, F401
+from app.domains.gamification import models as _gamification_models  # noqa: E402, F401
+from app.domains.identity import models as _identity_models  # noqa: E402, F401
+from app.domains.notifications import models as _notifications_models  # noqa: E402, F401
+
+# Import task modules so their @celery_app.task jobs register on the app. tasks
+# import celery_app, which already exists here.
 from app.worker import tasks as _tasks  # noqa: E402, F401

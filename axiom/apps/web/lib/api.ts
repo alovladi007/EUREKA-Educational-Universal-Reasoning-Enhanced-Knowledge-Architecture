@@ -534,10 +534,11 @@ export function createAssessment(input: {
 
 export function assignToAllStudents(
   assessmentId: string,
+  dueAt?: string,
 ): Promise<{ assigned: number }> {
   return apiPost<{ assigned: number }>(
     `/api/v1/assessments/${encodeURIComponent(assessmentId)}/assign`,
-    { all_students: true },
+    { all_students: true, due_at: dueAt || null },
   );
 }
 

@@ -10,6 +10,7 @@ through the shared practice grading path. Results aggregate per assigned user.
 from __future__ import annotations
 
 import uuid
+from datetime import datetime
 
 from math_core import ItemTemplate as McItemTemplate
 from math_core import resolve_template
@@ -70,7 +71,12 @@ async def create_assessment(
     return assessment
 
 
-async def assign(session: AsyncSession, assessment_id: uuid.UUID, user_ids: list[uuid.UUID]) -> int:
+async def assign(
+    session: AsyncSession,
+    assessment_id: uuid.UUID,
+    user_ids: list[uuid.UUID],
+    due_at: datetime | None = None,
+) -> int:
     assessment = (
         await session.execute(select(Assessment).where(Assessment.id == assessment_id))
     ).scalar_one_or_none()
@@ -86,17 +92,20 @@ async def assign(session: AsyncSession, assessment_id: uuid.UUID, user_ids: list
         .scalars()
         .all()
     }
+    due_suffix = f" (due {due_at.strftime('%Y-%m-%d %H:%M UTC')})" if due_at is not None else ""
     added = 0
     for uid in user_ids:
         if uid not in existing:
-            session.add(AssignmentTarget(assessment_id=assessment_id, user_id=uid))
+            session.add(
+                AssignmentTarget(assessment_id=assessment_id, user_id=uid, due_at=due_at)
+            )
             # Alert each newly assigned student in their in-app inbox.
             await notify(
                 session,
                 uid,
                 "assignment",
                 "New assignment",
-                f"You were assigned: {title}.",
+                f"You were assigned: {title}{due_suffix}.",
                 link="/practice",
             )
             added += 1

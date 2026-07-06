@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import uuid
+from datetime import UTC, datetime
 
 from fastapi import APIRouter, Depends, HTTPException, Response
 from pydantic import BaseModel
@@ -60,6 +61,20 @@ class CreateAssessment(BaseModel):
 class AssignBody(BaseModel):
     user_ids: list[str] | None = None
     all_students: bool = False
+    # Optional ISO 8601 due date; interpreted as UTC and stored naive.
+    due_at: str | None = None
+
+
+def _parse_due(value: str | None) -> datetime | None:
+    if not value:
+        return None
+    try:
+        parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is not None:
+        parsed = parsed.astimezone(UTC).replace(tzinfo=None)
+    return parsed
 
 
 async def _resolve_nodes(session: AsyncSession, refs: list[str]) -> list[uuid.UUID]:
@@ -137,7 +152,7 @@ async def assign(
         user_ids = [r[0] for r in rows]
     elif body.user_ids:
         user_ids = [uuid.UUID(u) for u in body.user_ids]
-    added = await svc.assign(session, aid, user_ids)
+    added = await svc.assign(session, aid, user_ids, due_at=_parse_due(body.due_at))
     await session.commit()
     return {"assigned": added}
 

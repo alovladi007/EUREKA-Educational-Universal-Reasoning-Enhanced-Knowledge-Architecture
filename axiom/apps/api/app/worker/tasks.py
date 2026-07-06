@@ -45,3 +45,28 @@ def grade_response_task(response_id: str) -> str:
 def enqueue_grade(response_id: uuid.UUID) -> None:
     """Hand a response to the worker for grading."""
     grade_response_task.delay(str(response_id))
+
+
+async def _remind() -> None:
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.core.config import get_settings
+    from app.domains.notifications.reminders import send_due_reminders
+
+    engine = create_async_engine(get_settings().database_url, pool_pre_ping=True)
+    try:
+        maker = async_sessionmaker(engine, expire_on_commit=False)
+        async with maker() as session:
+            sent = await send_due_reminders(session)
+            if sent:
+                await session.commit()
+    finally:
+        await engine.dispose()
+
+
+@celery_app.task(name="axiom.due_reminders")
+def send_due_reminders_task() -> str:
+    """Beat-driven: remind students of assignments coming due. Idempotent per
+    assignment via reminded_at, so repeated runs never re-notify."""
+    asyncio.run(_remind())
+    return "reminders_sent"

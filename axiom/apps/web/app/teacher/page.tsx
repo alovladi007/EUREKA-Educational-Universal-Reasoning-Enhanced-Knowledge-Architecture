@@ -60,6 +60,7 @@ export default function TeacherPage() {
   const [formError, setFormError] = useState('');
 
   // Per-assessment action state.
+  const [dueDate, setDueDate] = useState<Record<string, string>>({});
   const [assignNote, setAssignNote] = useState<Record<string, string>>({});
   const [results, setResults] = useState<Record<string, AssessmentResults>>({});
   const [resultsError, setResultsError] = useState<Record<string, string>>({});
@@ -147,12 +148,14 @@ export default function TeacherPage() {
     setBusy((prev) => ({ ...prev, [id]: true }));
     setAssignNote((prev) => ({ ...prev, [id]: '' }));
     try {
-      const res = await assignToAllStudents(id);
+      const due = dueDate[id]?.trim() || undefined;
+      const res = await assignToAllStudents(id, due);
+      const dueNote = due ? ' Students will be reminded when it is due.' : '';
       setAssignNote((prev) => ({
         ...prev,
         [id]: `Assigned to ${res.assigned} student${
           res.assigned === 1 ? '' : 's'
-        }.`,
+        }.${dueNote}`,
       }));
     } catch (err) {
       if (isForbidden(err)) {
@@ -372,7 +375,21 @@ export default function TeacherPage() {
                               {formatWhen(assessment.created_at)}
                             </p>
                           </div>
-                          <div className="flex flex-wrap gap-2">
+                          <div className="flex flex-wrap items-center gap-2">
+                            <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                              <span>Due</span>
+                              <input
+                                type="datetime-local"
+                                value={dueDate[assessment.id] ?? ''}
+                                onChange={(e) =>
+                                  setDueDate((prev) => ({
+                                    ...prev,
+                                    [assessment.id]: e.target.value,
+                                  }))
+                                }
+                                className="rounded-lg border border-border bg-background px-2 py-1 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                              />
+                            </label>
                             <button
                               type="button"
                               onClick={() => assign(assessment.id)}

@@ -69,6 +69,12 @@ class Settings(BaseSettings):
     # is never lost. Tests set this false to keep grading synchronous.
     async_grading: bool = True
 
+    # Assignment due-date reminders. The beat scheduler runs the reminder scan
+    # every reminder_interval_seconds; a student is reminded once when an
+    # assignment falls due within reminder_window_hours.
+    reminder_interval_seconds: float = 3600.0
+    reminder_window_hours: float = 24.0
+
     # Observability
     log_level: str = "INFO"
     otel_exporter_otlp_endpoint: str | None = None
