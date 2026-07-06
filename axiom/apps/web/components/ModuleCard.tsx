@@ -10,6 +10,7 @@ const ROUTE_BY_KEY: Record<string, string> = {
   assess: '/teacher',
   remediate: '/path',
   mastery: '/mastery',
+  analytics: '/analytics',
 };
 
 // A single module tile on the dashboard. Planned modules are visibly labeled

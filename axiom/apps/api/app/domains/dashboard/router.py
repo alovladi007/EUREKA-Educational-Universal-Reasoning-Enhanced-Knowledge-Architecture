@@ -16,8 +16,9 @@ from app.core.security import get_current_user
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
 
-# The module map. status reflects the real Phase 0 state. This is the single
-# place that declares what a student sees on the landing page.
+# The module map. status reflects the real, current state of each module. This
+# is the single place that declares what a student sees on the landing page;
+# planned modules are labeled as such so the dashboard never fakes readiness.
 _MODULES: list[ModuleInfo] = [
     ModuleInfo(
         key="learn",
@@ -52,8 +53,8 @@ _MODULES: list[ModuleInfo] = [
     ModuleInfo(
         key="analytics",
         name="Analytics",
-        status="planned",
-        description="Standards heatmaps, growth reports, and exports. Phase 2.",
+        status="available",
+        description="Item analysis, standards mastery, growth, and exports. Teachers and admins.",
     ),
 ]
 

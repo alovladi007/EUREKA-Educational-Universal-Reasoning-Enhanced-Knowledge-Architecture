@@ -37,12 +37,6 @@ const EXPLORE_TILES: { href: string; name: string; description: string }[] = [
       'A short test that adapts to your answers to estimate your ability.',
   },
   {
-    href: '/analytics',
-    name: 'Analytics',
-    description:
-      'Item analysis, standards mastery, and growth. For teachers and admins.',
-  },
-  {
     href: '/grading-review',
     name: 'Grading review',
     description:

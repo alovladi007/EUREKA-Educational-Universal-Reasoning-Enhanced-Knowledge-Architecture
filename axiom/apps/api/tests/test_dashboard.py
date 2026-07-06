@@ -17,6 +17,10 @@ async def test_dashboard_summary_shape(client):
     assert body["user"]["display_name"] == "Dev Student"
     assert isinstance(body["modules"], list)
     assert len(body["modules"]) >= 1
-    # Phase 0 is honest: nothing is faked, mastery is empty, modules are planned.
+    # Honest by construction: mastery is not faked here, and every module
+    # carries a real readiness status (available or planned), never a guess.
     assert body["mastery_summary"] is None
     assert all(m["status"] in ("available", "planned") for m in body["modules"])
+    # Analytics shipped in Phase 2, so it must no longer be advertised as planned.
+    analytics = next(m for m in body["modules"] if m["key"] == "analytics")
+    assert analytics["status"] == "available"
