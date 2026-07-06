@@ -27,6 +27,12 @@ from app.domains.notifications.service import notify
 
 _PROMPT_PREVIEW = 140
 
+# Item kinds whose grades go to the teacher review queue: AI-graded free
+# responses, and the proof kinds that are either AI-assisted (free_form_proof)
+# or could not be machine-verified (formal_proof pending). Deterministic graders
+# never need review.
+REVIEW_KINDS = ("free_response", "free_form_proof", "formal_proof")
+
 
 async def override_grade(
     session: AsyncSession,
@@ -113,7 +119,7 @@ async def list_free_response_grades(session: AsyncSession, limit: int = 100) -> 
             .join(User, User.id == Response.user_id)
             .outerjoin(GradingRecord, GradingRecord.response_id == Response.id)
             .outerjoin(GradeOverride, GradeOverride.response_id == Response.id)
-            .where(Item.kind == "free_response")
+            .where(Item.kind.in_(REVIEW_KINDS))
             .order_by(Response.submitted_at.desc())
             .limit(limit)
         )

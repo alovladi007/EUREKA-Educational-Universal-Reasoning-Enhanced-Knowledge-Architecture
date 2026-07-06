@@ -395,6 +395,19 @@ PROOF_ITEMS: dict[str, list] = {
             {"predicate": "n**2 <= n", "var": "n"},
         ),
     ],
+    "NUMTHEORY": [
+        (
+            "formal_proof",
+            "Formal track (opt-in): prove in Lean 4 that 2 + 2 = 4. Your proof is "
+            "checked by the Lean kernel, not by AI.",
+            None,
+            "",  # No textual key: the kernel is the sole judge of a formal proof.
+            "A formal proof is accepted only when the kernel type-checks it. With "
+            "no toolchain configured it is queued for manual review, never "
+            "auto-passed.",
+            {"prelude": "", "language": "lean4"},
+        ),
+    ],
     "PT.INDUCTION": [
         (
             "justification_matching",

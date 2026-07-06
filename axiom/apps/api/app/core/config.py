@@ -104,6 +104,18 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_use_tls: bool = True
 
+    # Formal proof verification (Curriculum & Proof Extension, Section 4.1).
+    # formal_verifier selects the proof-assistant backend for formal-track items:
+    #   "none" - no toolchain; formal proofs are routed to manual review and
+    #            never auto-passed (the honest default for a fresh install).
+    #   "lean" - verify with a Lean 4 toolchain via a resource-limited
+    #            subprocess. lean_binary is the executable to run.
+    # A pass is only ever produced by a real kernel; there is no heuristic
+    # stand-in for verification.
+    formal_verifier: Literal["none", "lean"] = "none"
+    lean_binary: str = "lean"
+    formal_timeout_seconds: float = 20.0
+
     # Observability
     log_level: str = "INFO"
     otel_exporter_otlp_endpoint: str | None = None

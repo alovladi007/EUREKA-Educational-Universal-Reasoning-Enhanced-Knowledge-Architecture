@@ -342,7 +342,10 @@ export type PracticeKind =
   | 'find_the_error'
   | 'counterexample'
   | 'state_definition'
-  | 'state_theorem';
+  | 'state_theorem'
+  // Formal verification (4.1) and free-form proof (4.3).
+  | 'formal_proof'
+  | 'free_form_proof';
 
 // Answer-free UI hints for the structured proof kinds (see the API's
 // _presentation): the justification bank to choose from, and the gap count.
@@ -566,6 +569,28 @@ export function practiceAnswer(
   return apiPost<AnswerResult>('/api/v1/practice/answer', {
     response_token: responseToken,
     answer,
+  });
+}
+
+// The verdict from the formal proof verifier (Curriculum & Proof Extension 4.1).
+// verified is true only when a real kernel accepted the proof; available is
+// false when no toolchain could run (the proof then goes to manual review).
+export interface FormalVerdict {
+  verified: boolean;
+  available: boolean;
+  backend: string;
+  detail: string;
+}
+
+// Run the formal proof verifier on a Lean proof (powers the editor's Check
+// button). Never fabricates a pass; a pass means a kernel accepted the proof.
+export function verifyFormalProof(
+  proof: string,
+  prelude = '',
+): Promise<FormalVerdict> {
+  return apiPost<FormalVerdict>('/api/v1/grading/formal/verify', {
+    proof,
+    prelude,
   });
 }
 

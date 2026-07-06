@@ -36,6 +36,7 @@ from app.domains.attempts.models import (
 )
 from app.domains.curriculum.models import KnowledgeNode
 from app.domains.gamification.service import record_practice_result
+from app.domains.grading.formal import grade_formal_proof
 from app.domains.grading.free_response import grade_free_response
 from app.domains.grading.service import grade
 
@@ -231,6 +232,8 @@ async def finalize_response_grade(
         outcome = await grade_free_response(
             str(correct), student_answer, meta.get("rubric") or [], explanation=explanation
         )
+    elif kind == "formal_proof":
+        outcome = await grade_formal_proof(student_answer, meta, explanation=explanation)
     else:
         milestones = meta.get("milestones") if kind == "show_work" else None
         outcome = grade(
@@ -286,30 +289,50 @@ async def finalize_response_grade(
     if outcome.is_correct:
         attempt.correct_count += 1
 
-    mastery = await apply_mastery(
-        session, user_id, response.node_id, outcome.is_correct, response.id
-    )
-    # Spaced repetition: once a node is mastered, keep it on an SM-2 schedule so
-    # it resurfaces at growing intervals (and sooner after a lapse).
-    review = await schedule_review(
-        session,
-        user_id,
-        response.node_id,
-        is_correct=outcome.is_correct,
-        score=outcome.score,
-        mastery_level=mastery["level"],
-    )
-    level_before = level_for(mastery["p_known_before"])
-    level_after = mastery["level"]
-    leveled_up = _LEVEL_RANK.get(level_after, 0) > _LEVEL_RANK.get(level_before, 0)
-    mastered = level_after == "mastered" and level_before != "mastered"
-    gamification = await record_practice_result(
-        session,
-        user_id,
-        correct=outcome.is_correct,
-        leveled_up=leveled_up,
-        mastered=mastered,
-    )
+    # A formal proof that could not be machine-checked (no toolchain) is pending
+    # manual review: it produces no mastery evidence, since it is neither a
+    # verified pass nor a checked failure. Every other outcome updates mastery.
+    pending_review = outcome.grader == "formal" and outcome.confidence == 0.0
+
+    mastery: dict | None = None
+    review: dict | None = None
+    gamification: dict | None = None
+    if not pending_review:
+        # Weight the evidence by grader trust and route proof kinds to the
+        # "prove" signal (Extension Section 8): a formally verified proof is
+        # full-strength evidence of being able to prove the result.
+        signal = "prove" if kind in ("formal_proof", "free_form_proof") else "apply"
+        mastery = await apply_mastery(
+            session,
+            user_id,
+            response.node_id,
+            outcome.is_correct,
+            response.id,
+            signal=signal,
+            grader=outcome.grader,
+            grader_confidence=outcome.confidence,
+        )
+        # Spaced repetition: once a node is mastered, keep it on an SM-2 schedule
+        # so it resurfaces at growing intervals (and sooner after a lapse).
+        review = await schedule_review(
+            session,
+            user_id,
+            response.node_id,
+            is_correct=outcome.is_correct,
+            score=outcome.score,
+            mastery_level=mastery["level"],
+        )
+        level_before = level_for(mastery["p_known_before"])
+        level_after = mastery["level"]
+        leveled_up = _LEVEL_RANK.get(level_after, 0) > _LEVEL_RANK.get(level_before, 0)
+        mastered = level_after == "mastered" and level_before != "mastered"
+        gamification = await record_practice_result(
+            session,
+            user_id,
+            correct=outcome.is_correct,
+            leveled_up=leveled_up,
+            mastered=mastered,
+        )
 
     # A worked solution attached to the item (meta.worked_solution) is shown
     # after the answer, but only after every step is re-verified against the CAS,
@@ -326,7 +349,9 @@ async def finalize_response_grade(
         "score": outcome.score,
         "grader": outcome.grader,
         "ai_graded": outcome.grader == "ai",
-        "overridable": outcome.grader == "ai",
+        # AI and pending-formal grades are the ones a teacher can override.
+        "overridable": outcome.grader in ("ai", "formal"),
+        "pending_review": pending_review,
         "confidence": outcome.confidence,
         "correct_answer": outcome.correct_display,
         "explanation": outcome.explanation,

@@ -9,8 +9,10 @@ import {
   isPracticeDone,
   practiceAnswer,
   practiceNext,
+  verifyFormalProof,
   type AnswerResult,
   type CopilotHintResult,
+  type FormalVerdict,
   type PracticeDone,
   type PracticeQuestion,
   type ResponseResult,
@@ -89,6 +91,9 @@ function PracticeInner() {
   const [matchAssign, setMatchAssign] = useState<Record<number, string>>({});
   // proof_gap_fill: one string per gap, submitted as a JSON array of fills.
   const [gapFills, setGapFills] = useState<string[]>([]);
+  // formal_proof: the last kernel verdict from the Check button, if any.
+  const [formalVerdict, setFormalVerdict] = useState<FormalVerdict | null>(null);
+  const [formalChecking, setFormalChecking] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AnswerResult | null>(null);
 
@@ -118,6 +123,8 @@ function PracticeInner() {
     setOrdered([]);
     setMatchAssign({});
     setGapFills([]);
+    setFormalVerdict(null);
+    setFormalChecking(false);
     setErrorMessage('');
     setHint(null);
     setHintError('');
@@ -838,6 +845,63 @@ function PracticeInner() {
                   className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
                   placeholder="Write it in your own words."
                 />
+              </div>
+            ) : kind === 'formal_proof' ? (
+              <div className="mt-5">
+                <label
+                  htmlFor="formal-input"
+                  className="mb-1 block text-sm font-medium text-card-foreground"
+                >
+                  Lean 4 proof
+                </label>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  Your proof is checked by the Lean kernel, not by AI. Use Check
+                  to run the verifier; submitting records the result. If no
+                  toolchain is configured, the proof is sent for manual review.
+                </p>
+                <textarea
+                  id="formal-input"
+                  rows={8}
+                  value={answer}
+                  disabled={inputsLocked}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  className="w-full rounded border border-border bg-background px-3 py-2 font-mono text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="theorem my_proof : 2 + 2 = 4 := by decide"
+                />
+                <div className="mt-2 flex items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={inputsLocked || formalChecking || answer.trim() === ''}
+                    onClick={async () => {
+                      setFormalChecking(true);
+                      try {
+                        setFormalVerdict(await verifyFormalProof(answer));
+                      } catch {
+                        setFormalVerdict(null);
+                      } finally {
+                        setFormalChecking(false);
+                      }
+                    }}
+                    className="rounded border border-border px-3 py-1 text-sm text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40"
+                  >
+                    {formalChecking ? 'Checking...' : 'Check proof'}
+                  </button>
+                  {formalVerdict ? (
+                    <span
+                      className={`text-sm ${
+                        formalVerdict.verified
+                          ? 'text-emerald-600'
+                          : 'text-muted-foreground'
+                      }`}
+                    >
+                      {formalVerdict.verified
+                        ? `Kernel verified (${formalVerdict.backend}).`
+                        : formalVerdict.available
+                          ? 'Kernel rejected the proof.'
+                          : 'No toolchain configured; will be sent for review.'}
+                    </span>
+                  ) : null}
+                </div>
               </div>
             ) : kind === 'plot_points' ? (
               <div className="mt-5">
