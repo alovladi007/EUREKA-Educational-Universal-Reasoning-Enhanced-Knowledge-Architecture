@@ -251,6 +251,24 @@ PHASE2_ITEMS: dict[str, list] = {
             None,
             None,
         ),
+        (
+            "draw_line",
+            "Draw the line y = 2x - 1 by dragging the two points onto it.",
+            None,
+            "y = 2*x - 1",
+            "The line has slope 2 and passes through (0, -1), for example (1, 1).",
+            None,
+            None,
+        ),
+        (
+            "plot_function",
+            "Enter and graph the parabola f(x) = x^2 - 4.",
+            None,
+            "x^2 - 4",
+            "It is an upward parabola with roots at x = -2 and x = 2 and vertex (0, -4).",
+            None,
+            None,
+        ),
     ],
 }
 

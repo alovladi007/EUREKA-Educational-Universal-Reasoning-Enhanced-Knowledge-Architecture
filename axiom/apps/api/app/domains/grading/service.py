@@ -7,7 +7,8 @@ SymPy symbolic equivalence rather than string matching, so several equivalent
 correct forms all grade correct.
 
 Supported kinds: mcq_single, numeric, math_expression, equation, mcq_multi,
-true_false, short_text, plot_points, show_work (with milestone step credit).
+true_false, short_text, plot_points, plot_function, draw_line, show_work (with
+milestone step credit).
 
 grader values: exact (selection), numeric (tolerance), cas (symbolic).
 """
@@ -56,6 +57,43 @@ def _parse_points(raw: str) -> set[tuple[float, float]]:
             if isinstance(pt, (list, tuple)) and len(pt) == 2:
                 out.add((round(float(pt[0]), 4), round(float(pt[1]), 4)))
     return out
+
+
+def _parse_point_list(raw: str) -> list[tuple[float, float]]:
+    """Parse an ordered JSON list of [x, y] pairs (order and duplicates kept)."""
+    try:
+        parsed = json.loads(raw)
+    except (ValueError, TypeError):
+        return []
+    out: list[tuple[float, float]] = []
+    if isinstance(parsed, list):
+        for pt in parsed:
+            if isinstance(pt, (list, tuple)) and len(pt) == 2:
+                try:
+                    out.append((float(pt[0]), float(pt[1])))
+                except (ValueError, TypeError):
+                    continue
+    return out
+
+
+def _line_equation_from_points(
+    p1: tuple[float, float], p2: tuple[float, float]
+) -> str | None:
+    """Build a line equation string from two distinct points.
+
+    Vertical lines become 'x = c'; every other line becomes 'y = m*x + b'. The
+    resulting string is graded against the reference line with grade_equation,
+    so a student line and the answer key match when they are the same line
+    (equal up to a nonzero scalar). Returns None when the points coincide.
+    """
+    (x1, y1), (x2, y2) = p1, p2
+    if abs(x1 - x2) < 1e-9 and abs(y1 - y2) < 1e-9:
+        return None
+    if abs(x1 - x2) < 1e-9:
+        return f"x = {x1}"
+    slope = (y2 - y1) / (x2 - x1)
+    intercept = y1 - slope * x1
+    return f"y = {slope}*x + ({intercept})"
 
 
 def _to_zero_form(text: str) -> str:
@@ -172,6 +210,39 @@ def grade(
         return GradeOutcome(
             is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
             f"plotted {len(chosen_pts)} of {len(key_pts)} points", str(correct), explanation,
+        )
+
+    if kind == "plot_function":
+        # "Plot a function": the student defines a function (typed and shown on
+        # an interactive plane); the captured answer is that function. Graded by
+        # CAS symbolic equivalence against the reference function, so any
+        # equivalent form of the same graph is correct.
+        res = grade_expression(student, str(correct))
+        return GradeOutcome(
+            res.is_correct, res.score, "cas", res.confidence, res.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "draw_line":
+        # "Draw a line": the student drags two points on the plane; the answer is
+        # the ordered pair of points. Build the line through them and grade it as
+        # an equation against the reference line (equal up to a nonzero scalar).
+        pts = _parse_point_list(student)
+        if len(pts) < 2:
+            return GradeOutcome(
+                False, 0.0, "cas", 1.0,
+                "need two points to define a line", str(correct), explanation,
+            )
+        student_eq = _line_equation_from_points(pts[0], pts[1])
+        if student_eq is None:
+            return GradeOutcome(
+                False, 0.0, "cas", 1.0,
+                "the two points coincide", str(correct), explanation,
+            )
+        res = grade_equation(student_eq, str(correct))
+        return GradeOutcome(
+            res.is_correct, res.score, "cas", res.confidence,
+            f"line {student_eq}: {res.detail}", str(correct), explanation,
         )
 
     if kind == "show_work":

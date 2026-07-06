@@ -288,6 +288,8 @@ export type PracticeKind =
   | 'true_false'
   | 'short_text'
   | 'plot_points'
+  | 'plot_function'
+  | 'draw_line'
   | 'show_work'
   | 'free_response';
 

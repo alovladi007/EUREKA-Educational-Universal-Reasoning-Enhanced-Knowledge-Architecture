@@ -59,6 +59,31 @@ def test_show_work_grade_sets_step_credits_and_score():
     assert len(outcome.step_credits) == 2
 
 
+def test_plot_function_grades_by_cas_equivalence():
+    # Any equivalent form of the same function graphs identically and is correct.
+    assert grade("plot_function", "(x-1)*(x+1)", "x^2 - 1").is_correct
+    assert grade("plot_function", "2*x + 3", "3 + 2*x").is_correct
+    # A different function is not correct.
+    assert not grade("plot_function", "x^2", "x^3").is_correct
+
+
+def test_draw_line_matches_line_through_the_two_points():
+    # Points (0,1) and (1,3) lie on y = 2x + 1.
+    assert grade("draw_line", "y = 2*x + 1", "[[0, 1], [1, 3]]").is_correct
+    # A shallower line does not match.
+    assert not grade("draw_line", "y = 2*x + 1", "[[0, 0], [1, 1]]").is_correct
+
+
+def test_draw_line_handles_vertical_and_degenerate():
+    assert grade("draw_line", "x = 3", "[[3, 0], [3, 5]]").is_correct
+    # A single point cannot define a line.
+    one = grade("draw_line", "y = x", "[[0, 0]]")
+    assert not one.is_correct
+    # Two identical points cannot define a line.
+    same = grade("draw_line", "y = x", "[[2, 2], [2, 2]]")
+    assert not same.is_correct
+
+
 def test_unsupported_kind_is_not_correct():
     outcome = grade("does_not_exist", "1", "1")
     assert not outcome.is_correct

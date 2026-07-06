@@ -18,8 +18,18 @@ import {
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
 import { toPercent } from '@/components/ProgressBar';
+import dynamic from 'next/dynamic';
 import { RichMath } from '@/components/Math';
 import { MathField } from '@/components/MathField';
+
+// Mafs is a browser-only graphing library, so the coordinate-plane inputs load
+// client-side only (no SSR) with a skeleton placeholder while they hydrate.
+const GraphInput = dynamic(() => import('@/components/CoordinatePlane'), {
+  ssr: false,
+  loading: () => (
+    <div className="h-[340px] w-full animate-pulse rounded-lg border border-border bg-muted" />
+  ),
+});
 
 // The item kinds whose answer is a math expression, equation, or numeric value.
 // These get the MathLive editor (real fractions/exponents) instead of a plain
@@ -570,6 +580,54 @@ function PracticeInner() {
                   placeholder="Write your response"
                 />
               </div>
+            ) : kind === 'plot_points' ? (
+              <div className="mt-5">
+                <label className="mb-1 block text-sm font-medium text-card-foreground">
+                  Plot the points
+                </label>
+                <GraphInput
+                  key={question.response_token}
+                  mode="points"
+                  readOnly={inputsLocked}
+                  onChange={(payload) => setAnswer(payload)}
+                />
+              </div>
+            ) : kind === 'draw_line' ? (
+              <div className="mt-5">
+                <label className="mb-1 block text-sm font-medium text-card-foreground">
+                  Draw the line
+                </label>
+                <GraphInput
+                  key={question.response_token}
+                  mode="line"
+                  readOnly={inputsLocked}
+                  onChange={(payload) => setAnswer(payload)}
+                />
+              </div>
+            ) : kind === 'plot_function' ? (
+              <div className="mt-5">
+                <label className="mb-1 block text-sm font-medium text-card-foreground">
+                  Enter and graph the function
+                </label>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  Type f(x) using ^ for powers. The graph updates as you type.
+                </p>
+                <MathField
+                  key={question.response_token}
+                  readOnly={inputsLocked}
+                  ariaLabel="Function of x"
+                  placeholder="f(x), for example x^2 - 1"
+                  onChange={(ascii) => setAnswer(ascii)}
+                  onEnter={() => {
+                    if (phase === 'question') {
+                      void submit();
+                    }
+                  }}
+                />
+                <div className="mt-3">
+                  <GraphInput mode="function" expression={answer} />
+                </div>
+              </div>
             ) : kind && MATH_INPUT_KINDS.has(kind) ? (
               <div className="mt-5">
                 <label className="mb-1 block text-sm font-medium text-card-foreground">
@@ -599,12 +657,6 @@ function PracticeInner() {
                 >
                   Your answer
                 </label>
-                {kind === 'plot_points' && (
-                  <p className="mb-2 text-xs text-muted-foreground">
-                    Enter a JSON list of [x, y] pairs, for example
-                    [[1,5],[2,7]].
-                  </p>
-                )}
                 <input
                   id="answer-input"
                   type="text"
@@ -618,11 +670,7 @@ function PracticeInner() {
                   }}
                   autoComplete="off"
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
-                  placeholder={
-                    kind === 'plot_points'
-                      ? '[[1,5],[2,7]]'
-                      : 'Type your answer'
-                  }
+                  placeholder="Type your answer"
                 />
               </div>
             )}
