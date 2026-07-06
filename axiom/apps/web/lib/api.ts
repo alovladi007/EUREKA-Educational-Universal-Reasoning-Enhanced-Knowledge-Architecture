@@ -1217,3 +1217,55 @@ export function authoringGenerateSolution(
     { equation },
   );
 }
+
+// -------------------------------------------------------------------------
+// Copilot item generation (human-review queue) and teacher assistant.
+
+export interface GeneratedCandidate {
+  id: string;
+  node_id: string;
+  kind: string;
+  prompt: string;
+  options: string[] | null;
+  correct: string;
+  explanation: string;
+  difficulty: number;
+  source: string;
+  validated: boolean;
+  status: string;
+}
+
+export function copilotGenerateItems(
+  node: string,
+  count: number,
+): Promise<{ generated: number; candidates: GeneratedCandidate[] }> {
+  return apiPost('/api/v1/copilot/generate-items', { node, count });
+}
+
+export function copilotGeneratedQueue(): Promise<{ candidates: GeneratedCandidate[] }> {
+  return apiGet('/api/v1/copilot/generated');
+}
+
+export function copilotReviewGenerated(
+  id: string,
+  action: 'approve' | 'reject',
+): Promise<{ status: string; item_id?: string }> {
+  return apiPost(`/api/v1/copilot/generated/${id}/review`, { action });
+}
+
+export interface TeacherAssistResult {
+  task: string;
+  provider: string;
+  grounded: boolean;
+  response: string;
+  suggested_items: { id: string; kind: string; prompt: string }[];
+  sources: CopilotSource[];
+}
+
+export function copilotTeacherAssist(body: {
+  task: string;
+  node: string;
+  notes: string;
+}): Promise<TeacherAssistResult> {
+  return apiPost('/api/v1/copilot/teacher-assist', body);
+}

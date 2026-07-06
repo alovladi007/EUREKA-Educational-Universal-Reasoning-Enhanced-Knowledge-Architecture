@@ -268,6 +268,84 @@ async def chat(
     }
 
 
+_TEACHER_TASKS = {
+    "draft_quiz": (
+        "Draft a short quiz for {title}. Suggest 3 to 5 questions that cover the "
+        "key skills of this topic, referencing the lesson material."
+    ),
+    "explain_errors": (
+        "Several students made these errors on {title}: {notes}. Explain the "
+        "likely misconception and how to address it in class."
+    ),
+    "suggest_intervention": (
+        "Students are struggling with {title}. Suggest a targeted intervention "
+        "and the next practice to assign, grounded in the lesson material."
+    ),
+}
+
+
+async def teacher_assist(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    *,
+    task: str,
+    node_ref: str,
+    notes: str = "",
+) -> dict:
+    """A teacher-facing assistant: draft a quiz, explain a class-wide error, or
+    suggest an intervention, grounded in the node's material and labeled
+    AI-assisted. For draft_quiz it also returns the node's real items as concrete
+    suggestions, so the teacher gets ready-to-use questions, not only prose.
+    """
+    if task not in _TEACHER_TASKS:
+        return {"error": f"unknown task: {task}"}
+    node = await _resolve_node(session, node_ref)
+    if node is None:
+        return {"error": "node not found"}
+
+    question = _TEACHER_TASKS[task].format(title=node.title, notes=notes or "(none given)")
+    passages = await retrieve(session, question, node_id=node.id, limit=4, include_items=True)
+    provider = get_reasoning_provider()
+    result = await provider.generate(
+        ReasoningRequest(
+            task="explain", question=question, passages=passages, reveal_answer=True
+        )
+    )
+
+    suggested_items: list[dict] = []
+    if task == "draft_quiz":
+        items = (
+            (
+                await session.execute(
+                    select(Item).where(Item.node_id == node.id).limit(5)
+                )
+            )
+            .scalars()
+            .all()
+        )
+        suggested_items = [
+            {"id": str(i.id), "kind": i.kind, "prompt": i.prompt} for i in items
+        ]
+
+    await _trace(
+        session,
+        uuid.uuid4(),
+        "teacher_assist",
+        {"provider": result.provider, "node": node.code, "task": task},
+    )
+    await session.commit()
+    return {
+        "ai_generated": True,
+        "task": task,
+        "provider": result.provider,
+        "grounded": result.grounded,
+        "response": result.text,
+        "node_code": node.code,
+        "suggested_items": suggested_items,
+        "sources": _sources_payload(passages),
+    }
+
+
 async def get_session_history(
     session: AsyncSession, user_id: uuid.UUID, session_id: str
 ) -> dict:

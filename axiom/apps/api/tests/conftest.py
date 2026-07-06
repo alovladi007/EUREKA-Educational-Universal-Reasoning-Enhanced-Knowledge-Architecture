@@ -95,3 +95,29 @@ async def db_session(engine):
 
 
 AUTH = {"Authorization": "Bearer devtoken"}
+
+
+import pytest  # noqa: E402
+
+
+@pytest.fixture
+def as_teacher(monkeypatch):
+    """Make the mock identity return a teaching principal for this test.
+
+    The default mock principal is a student; role-gated endpoints (authoring,
+    item generation, teacher assistant) need a teaching role. Patching the fixed
+    principal is the least-invasive way to exercise them through the client.
+    """
+    from shared_schemas.identity import Principal
+
+    from app.core.security import MockEurekaIdentity
+
+    teacher = Principal(
+        sub="00000000-0000-0000-0000-000000000009",
+        email="teacher@axiom.local",
+        display_name="Dev Teacher",
+        roles=["teacher"],
+        tenant_id=None,
+    )
+    monkeypatch.setattr(MockEurekaIdentity, "_FIXED", teacher)
+    yield

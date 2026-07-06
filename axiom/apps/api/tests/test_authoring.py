@@ -11,26 +11,11 @@ Two layers:
 from __future__ import annotations
 
 import pytest
-from shared_schemas.identity import Principal
 
-from app.core.security import MockEurekaIdentity
 from app.domains.authoring import service as svc
 from tests.conftest import AUTH
 
-TEACHER = Principal(
-    sub="00000000-0000-0000-0000-000000000009",
-    email="teacher@axiom.local",
-    display_name="Dev Teacher",
-    roles=["teacher"],
-    tenant_id=None,
-)
-
-
-@pytest.fixture
-def as_teacher(monkeypatch):
-    """Make the mock identity return a teaching principal for this test."""
-    monkeypatch.setattr(MockEurekaIdentity, "_FIXED", TEACHER)
-    yield
+# The as_teacher fixture is provided by conftest.
 
 
 # --- service level -------------------------------------------------------

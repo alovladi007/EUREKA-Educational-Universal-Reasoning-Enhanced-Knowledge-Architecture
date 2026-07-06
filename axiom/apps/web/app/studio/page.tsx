@@ -10,13 +10,19 @@ import {
   authoringPreviewGrade,
   authoringUpdateItem,
   authoringVerifySolution,
+  copilotGenerateItems,
+  copilotGeneratedQueue,
+  copilotReviewGenerated,
+  copilotTeacherAssist,
   fetchMe,
   getToken,
   type AuthoredItem,
   type AuthoringNode,
+  type GeneratedCandidate,
   type ItemDraft,
   type PreviewGradeResult,
   type SolutionCheck,
+  type TeacherAssistResult,
 } from '@/lib/api';
 import { AppShell } from '@/components/AppShell';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
@@ -126,6 +132,21 @@ export default function StudioPage() {
   const [solution, setSolution] = useState<SolutionCheck | null>(null);
   const [solutionBusy, setSolutionBusy] = useState(false);
 
+  // Item generation (AI-assisted) and its review queue.
+  const [genItemNode, setGenItemNode] = useState('');
+  const [genItemCount, setGenItemCount] = useState(3);
+  const [genBusy, setGenBusy] = useState(false);
+  const [genError, setGenError] = useState('');
+  const [queue, setQueue] = useState<GeneratedCandidate[]>([]);
+
+  // Teacher assistant.
+  const [taTask, setTaTask] = useState('draft_quiz');
+  const [taNode, setTaNode] = useState('');
+  const [taNotes, setTaNotes] = useState('');
+  const [taBusy, setTaBusy] = useState(false);
+  const [taResult, setTaResult] = useState<TeacherAssistResult | null>(null);
+  const [taError, setTaError] = useState('');
+
   // Map node id -> code so an item (which carries node_id) can be shown and
   // edited by code.
   const nodeCodeById = useMemo(() => {
@@ -161,6 +182,14 @@ export default function StudioPage() {
           return;
         }
         setItems(itemResult.items);
+        try {
+          const q = await copilotGeneratedQueue();
+          if (!cancelled) {
+            setQueue(q.candidates);
+          }
+        } catch {
+          // The review queue is best-effort; ignore a failure here.
+        }
         setGate('ready');
       } catch (err) {
         if (cancelled) {
@@ -182,6 +211,62 @@ export default function StudioPage() {
       setItems(result.items);
     } catch (err) {
       setListError(err instanceof Error ? err.message : 'Failed to load items.');
+    }
+  }
+
+  async function loadQueue() {
+    try {
+      const q = await copilotGeneratedQueue();
+      setQueue(q.candidates);
+    } catch {
+      // Best-effort; the queue panel just stays empty on failure.
+    }
+  }
+
+  async function generateItems() {
+    const node = genItemNode || filterNode || nodes[0]?.code || '';
+    if (!node) {
+      return;
+    }
+    setGenBusy(true);
+    setGenError('');
+    try {
+      await copilotGenerateItems(node, genItemCount);
+      await loadQueue();
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : 'Failed to generate items.');
+    } finally {
+      setGenBusy(false);
+    }
+  }
+
+  async function reviewCandidate(id: string, action: 'approve' | 'reject') {
+    setGenError('');
+    try {
+      await copilotReviewGenerated(id, action);
+      await loadQueue();
+      if (action === 'approve') {
+        await reloadItems(filterNode);
+      }
+    } catch (err) {
+      setGenError(err instanceof Error ? err.message : 'Failed to review the candidate.');
+    }
+  }
+
+  async function runTeacherAssist() {
+    const node = taNode || filterNode || nodes[0]?.code || '';
+    if (!node) {
+      return;
+    }
+    setTaBusy(true);
+    setTaError('');
+    setTaResult(null);
+    try {
+      setTaResult(await copilotTeacherAssist({ task: taTask, node, notes: taNotes }));
+    } catch (err) {
+      setTaError(err instanceof Error ? err.message : 'Failed to reach the assistant.');
+    } finally {
+      setTaBusy(false);
     }
   }
 
@@ -367,6 +452,197 @@ export default function StudioPage() {
         )}
 
         {gate === 'ready' && (
+          <>
+          <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            {/* Generate items + review queue */}
+            <section
+              aria-label="Generate items"
+              className="rounded-lg border border-border bg-card p-5"
+            >
+              <h2 className="text-base font-semibold text-card-foreground">
+                Generate items (AI-assisted)
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Candidates are CAS-verified and land in a review queue. Nothing
+                enters the bank until you approve it.
+              </p>
+              <div className="mt-3 flex flex-wrap items-end gap-2">
+                <div className="flex-1">
+                  <label className="mb-1 block text-xs font-medium text-card-foreground">
+                    Node
+                  </label>
+                  <select
+                    value={genItemNode}
+                    onChange={(e) => setGenItemNode(e.target.value)}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    <option value="">{filterNode || nodes[0]?.code || 'Select'}</option>
+                    {nodes.map((n) => (
+                      <option key={n.id} value={n.code}>
+                        {n.code} - {n.title}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="w-20">
+                  <label className="mb-1 block text-xs font-medium text-card-foreground">
+                    Count
+                  </label>
+                  <input
+                    type="number"
+                    min={1}
+                    max={10}
+                    value={genItemCount}
+                    onChange={(e) => setGenItemCount(Number(e.target.value))}
+                    className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => void generateItems()}
+                  disabled={genBusy}
+                  className="rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                >
+                  {genBusy ? 'Generating.' : 'Generate'}
+                </button>
+              </div>
+              {genError && (
+                <p className="mt-2 text-sm text-red-700 dark:text-red-300">{genError}</p>
+              )}
+
+              <div className="mt-4">
+                <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                  Review queue ({queue.length})
+                </p>
+                {queue.length === 0 ? (
+                  <p className="mt-2 text-sm text-muted-foreground">
+                    No pending candidates. Generate some above.
+                  </p>
+                ) : (
+                  <ul className="mt-2 space-y-2">
+                    {queue.map((c) => (
+                      <li
+                        key={c.id}
+                        className="rounded-lg border border-border bg-background p-3"
+                      >
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="min-w-0">
+                            <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
+                              {c.kind}
+                            </span>
+                            {c.validated && (
+                              <span className="ml-1 inline-flex items-center rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                                CAS-verified
+                              </span>
+                            )}
+                            <p className="mt-1 text-sm text-card-foreground">{c.prompt}</p>
+                            <p className="mt-0.5 font-mono text-xs text-muted-foreground">
+                              answer: {c.correct}
+                            </p>
+                          </div>
+                          <div className="flex shrink-0 flex-col gap-1">
+                            <button
+                              type="button"
+                              onClick={() => void reviewCandidate(c.id, 'approve')}
+                              className="rounded border border-border px-2 py-1 text-xs text-emerald-700 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 dark:text-emerald-300"
+                            >
+                              Approve
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => void reviewCandidate(c.id, 'reject')}
+                              className="rounded border border-border px-2 py-1 text-xs text-red-700 hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 dark:text-red-300"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </section>
+
+            {/* Teacher assistant */}
+            <section
+              aria-label="Teacher assistant"
+              className="rounded-lg border border-border bg-card p-5"
+            >
+              <h2 className="text-base font-semibold text-card-foreground">
+                Teacher assistant
+              </h2>
+              <p className="mt-1 text-xs text-muted-foreground">
+                AI-assisted and grounded in the lesson. Review before using in class.
+              </p>
+              <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                <select
+                  value={taTask}
+                  onChange={(e) => setTaTask(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                >
+                  <option value="draft_quiz">Draft a quiz</option>
+                  <option value="explain_errors">Explain an error pattern</option>
+                  <option value="suggest_intervention">Suggest an intervention</option>
+                </select>
+                <select
+                  value={taNode}
+                  onChange={(e) => setTaNode(e.target.value)}
+                  className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                >
+                  <option value="">{filterNode || nodes[0]?.code || 'Select node'}</option>
+                  {nodes.map((n) => (
+                    <option key={n.id} value={n.code}>
+                      {n.code} - {n.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <textarea
+                value={taNotes}
+                rows={2}
+                onChange={(e) => setTaNotes(e.target.value)}
+                placeholder="Optional notes (for example, the errors students made)"
+                className="mt-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+              />
+              <button
+                type="button"
+                onClick={() => void runTeacherAssist()}
+                disabled={taBusy}
+                className="mt-2 rounded-lg bg-brand-600 px-3 py-2 text-sm font-medium text-white hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+              >
+                {taBusy ? 'Working.' : 'Ask the assistant'}
+              </button>
+              {taError && (
+                <p className="mt-2 text-sm text-red-700 dark:text-red-300">{taError}</p>
+              )}
+              {taResult && (
+                <div className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950">
+                  <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                    AI - via {taResult.provider || 'copilot'}
+                  </span>
+                  <div className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-amber-900 dark:text-amber-100">
+                    {taResult.response}
+                  </div>
+                  {taResult.suggested_items.length > 0 && (
+                    <div className="mt-2">
+                      <p className="text-xs font-medium uppercase tracking-wide text-amber-800 dark:text-amber-200">
+                        Suggested items
+                      </p>
+                      <ul className="mt-1 space-y-1">
+                        {taResult.suggested_items.map((it) => (
+                          <li key={it.id} className="text-xs text-amber-900 dark:text-amber-100">
+                            [{it.kind}] {it.prompt}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </section>
+          </div>
+
           <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[1fr_1.2fr]">
             {/* Item list */}
             <section aria-label="Items">
@@ -779,6 +1055,7 @@ export default function StudioPage() {
               )}
             </section>
           </div>
+          </>
         )}
       </main>
     </AppShell>
