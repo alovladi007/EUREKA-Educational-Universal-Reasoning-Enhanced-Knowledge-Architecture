@@ -4,12 +4,14 @@
   "version": "0.1.0",
   "description": "AXIOM - Adaptive eXpert Instruction and Outcome Measurement. The mathematics vertical of EUREKA.",
   "workspaces": [
-    "apps/web"
+    "apps/web",
+    "packages/ui"
   ],
   "scripts": {
     "dev:web": "npm run dev --workspace apps/web",
     "build:web": "npm run build --workspace apps/web",
     "typecheck:web": "npm run typecheck --workspace apps/web",
+    "typecheck:ui": "npm run typecheck --workspace packages/ui",
     "compose:up": "docker compose up --build",
     "compose:down": "docker compose down"
   }

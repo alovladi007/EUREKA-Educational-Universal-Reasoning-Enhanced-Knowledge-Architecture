@@ -1,10 +1,5 @@
 'use client';
 
-// Canonical source: packages/ui/src/Math.tsx (@axiom/ui). This file is vendored
-// here because the web container's Docker build context is apps/web and cannot
-// resolve the sibling workspace package at image-build time. Keep the two in
-// sync until apps/web moves to a repo-root build context (see packages/ui).
-
 import katex from 'katex';
 import { useMemo } from 'react';
 

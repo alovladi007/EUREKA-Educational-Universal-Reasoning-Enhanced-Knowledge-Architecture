@@ -1,6 +1,6 @@
 # AXIOM Status
 
-This is the honest, calibrated status of AXIOM. AXIOM has completed Phase 0 (foundation), Phase 1 (the learning-and-assessment core), Phase 2 (adaptive testing, analytics, gamification, richer item types, QTI), and most of Phase 3 (copilot hints/explanations/chat, free-response AI grading, item generation with a human-review queue, and a teacher assistant). A base-platform completion pass then closed the biggest gaps against the build prompt: a real math UI (MathLive input, KaTeX rendering), an interactive graphing toolkit, a Content Studio for authoring, SymPy-verified worked solutions, more question types, SM-2 spaced repetition, and semantic/hybrid grounding retrieval. Phase 4 (proctoring, LTI/OneRoster), live tutoring, and handwritten grading remain. Nothing planned is described here as done.
+This is the honest, calibrated status of AXIOM. AXIOM has completed Phase 0 (foundation), Phase 1 (the learning-and-assessment core), Phase 2 (adaptive testing, analytics, gamification, richer item types, QTI), most of Phase 3 (copilot hints/explanations/chat, free-response AI grading, item generation with a human-review queue, a teacher assistant, and a live-tutoring shared whiteboard), and Phase 4 (proctoring and integrity, LTI 1.3, OneRoster). A base-platform completion pass closed the biggest gaps against the build prompt across every phase. What genuinely remains needs external infrastructure or is a deliberate follow-up: real-time video/audio for tutoring (a WebRTC media server), AI grading of handwritten/image responses (a vision model), web/mobile push delivery, a pgvector-backed store with a hosted embedding model, and the long tail of the 60-plus question types. Nothing planned is described here as done.
 
 ### Base-platform completion waves (delivered)
 
@@ -13,6 +13,10 @@ This is the honest, calibrated status of AXIOM. AXIOM has completed Phase 0 (fou
 - **Teacher assistant.** Draft a quiz, explain a class-wide error pattern, or suggest an intervention, grounded in the node's material and labeled AI-assisted.
 - **Spaced repetition.** SM-2 wired to the ReviewSchedule: mastered nodes are scheduled at growing intervals (sooner after a lapse); the learning-path page surfaces due reviews.
 - **Semantic retrieval.** Copilot grounding is now configurable lexical / semantic / hybrid (default hybrid) over deterministic local embeddings, so related word forms surface without a hosted model (ADR 0006).
+- **Proctoring and integrity (Phase 4).** A proctoring session per exam attempt with a transparent weighted anomaly score, browser-observable integrity events (tab-hidden, blur, copy, paste, right-click), a teacher review queue with the event timeline, and a clear student disclosure. It flags for a human; it never accuses. No webcam or screen capture.
+- **Integrations (Phase 4).** LTI 1.3 tool provider: OIDC login, replay-proof launch with RS256 id_token verification (pinned key or JWKS), the tool JWKS endpoint, user provisioning with LTI-role mapping, and AGS grade passback (fail-soft). OneRoster roster/enrollment sync. An admin Integrations page exposes the tool endpoints, platform registration, and a sync box.
+- **Live tutoring.** A real-time shared whiteboard, chat, and pushed problems over a WebSocket relay hub, with a join-code session model. Video/audio are out of scope (they need a WebRTC media server) and clearly labeled as such.
+- **Shared UI, tests, and accessibility.** `packages/ui` holds the canonical shared math renderer; Playwright e2e covers the dashboard, practice, and the completed-platform navigation; a Locust load test drives the practice hot path; a WCAG pass adds a skip-to-content link and honors reduced-motion.
 
 Legend:
 - **done**: implemented and tested at the level this phase requires.
@@ -43,9 +47,10 @@ A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practic
 
 These are explicitly not implemented:
 
-- Live tutoring with shared whiteboard, video, and recording (Phase 3). Video/audio needs a real-time media server (WebRTC/SFU) that is out of scope for the current build. A whiteboard shared-state channel is a candidate next step; video is not built.
+- Video and audio for live tutoring. The shared whiteboard, chat, and pushed problems ARE built over a WebSocket relay; real-time video/audio needs a WebRTC media server (LiveKit/mediasoup) and is not built. Session recording is not built. The relay hub is per-process; multi-instance scale needs Redis pub/sub behind the same interface.
 - AI grading of handwritten and image responses (Phase 3). Free-response text grading against a rubric is built (labeled and teacher-overridable); handwritten and image work needs a vision model and is not built.
-- Proctoring (lockdown, integrity events, anomaly scoring), LTI 1.3, OneRoster, LMS grade passback, and district analytics (Phase 4) are not built yet.
+- Live LMS/SIS round-trips. LTI 1.3 launch (with RS256 verification) and OneRoster sync ARE built and tested offline; AGS grade passback to a real LMS and a live OneRoster pull from a real SIS need those external systems to exercise end to end, so they are implemented but not verified against a production platform. District-level analytics is not built.
+- Consolidating `apps/web` onto `@axiom/ui`. The shared math renderer lives in `packages/ui`; the web app still vendors the same components because its container build context is `apps/web`. Moving the web image to a repo-root build context to import `@axiom/ui` directly is a follow-up (see packages/ui/README).
 - Push notification delivery is not built. In-app notifications are built (inbox, unread badge, emitted on assignment, badge, grade override, and due-date reminders), and email delivery runs on the worker behind a swappable sender (console backend in development, SMTP behind configuration); web and mobile push are not built.
 - Worker-side analytics rollups are not built. Item generation is built (copilot-generated, CAS-verified, human-reviewed) but runs inline, not on the worker. The Celery worker grades AI free-response answers off the request path, and the beat scheduler sends assignment due-date reminders; other grading runs inline because it is fast.
 - A pgvector-backed vector store with a hosted embedding model. Semantic and hybrid grounding retrieval IS built, over deterministic local embeddings computed in memory (ADR 0006); swapping in pgvector plus a real embedding model behind the same interface is the production scaling path and is not required for correctness at the current corpus size.
@@ -67,9 +72,9 @@ These are explicitly not implemented:
 | analytics | done | Phase 2 | Item statistics with IRT, standards heatmap, growth, CSV and PDF exports. |
 | gamification | done | Phase 2 | XP, levels, streaks, badges tied to real progress. Live game-show mode is not built. |
 | copilot | done (core) | Phase 3 | AI-assisted hints, explanations, and grounded chat behind a swappable reasoning provider with a mock fallback (ADR 0001). Labeled and teacher-overridable. The same provider grades free-response text against a rubric. Handwritten and image grading are not built. |
-| tutoring | planned | Phase 3 | Shared whiteboard, video, recording. Needs a media server; not built. |
-| proctoring | planned | Phase 4 | Lockdown, integrity signals, review workflow. |
-| integrations | planned | Phase 4 | LTI 1.3, OneRoster, gradebook passback. QTI item exchange is done in Phase 2. |
+| tutoring | done (whiteboard) | Phase 3 | Real-time shared whiteboard, chat, and pushed problems over a WebSocket relay hub, with a join-code session model. Video/audio and recording need a media server and are not built. |
+| proctoring | done | Phase 4 | Session per attempt, weighted anomaly score, browser-observable integrity events, teacher review queue with timeline, student disclosure. No webcam/screen capture; flags for a human, never accuses. |
+| integrations | done | Phase 4 | LTI 1.3 tool provider (OIDC login, RS256 launch verification, JWKS, AGS passback) and OneRoster roster sync. QTI item exchange done in Phase 2. AGS/OneRoster live round-trips need a real LMS/SIS. |
 | notifications | done | Phase 2 roadmap | In-app inbox and unread badge, emitted on assignment, badge earned, and AI-grade override, plus beat-scheduled due-date reminders. Email delivery runs on the worker behind a swappable sender (console in dev, SMTP behind config). Push delivery is not built. |
 
 ## Frontend and infra
@@ -78,7 +83,10 @@ These are explicitly not implemented:
 |---|---|---|
 | Web dashboard (Next.js 14) | done | Dashboard plus Learn, Practice, Mastery, Path, Teacher, Adaptive Test, Achievements, Analytics, and Copilot pages against the live API. |
 | Docker Compose | done | api (8400), web (4100), Postgres with pgvector (5441), Redis (6392), worker, beat, observability profile. |
-| Alembic migrations | done | Migrations through 0010 (generated-items review queue), verified up on Postgres with a clean autogenerate schema-drift check. |
+| Alembic migrations | done | Migrations through 0013 (generated-items queue, proctoring, LTI, tutoring), each verified up on Postgres with a clean autogenerate schema-drift check. |
+| packages/ui | done (unwired) | Shared math renderer extracted to @axiom/ui; apps/web still vendors it pending a repo-root web build (see packages/ui/README). |
+| Tests: e2e and load | done | Playwright e2e (dashboard, practice, navigation) under apps/web/tests/e2e; a Locust load test under tests/load drives the practice hot path. |
+| Accessibility | pass | KaTeX MathML for screen readers, focus rings and aria labels on interactive controls, a skip-to-content link, and reduced-motion honored. A full WCAG 2.2 AA audit across every surface is ongoing. |
 | OpenAPI | done | Generated and served at /docs and /openapi.json. |
 | CI | done | ruff, math_core and api pytest, Alembic up and down on Postgres, frontend tsc and build. |
 

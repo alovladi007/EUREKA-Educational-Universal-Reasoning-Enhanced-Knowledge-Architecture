@@ -42,3 +42,38 @@ body {
     Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
 }
+
+/* Accessibility (WCAG 2.2). Honor a reduced-motion preference by neutralizing
+   animations and transitions (the practice/dashboard skeletons pulse, the mobile
+   drawer transitions, etc.). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Skip-to-content link: visually hidden until focused, so a keyboard user can
+   jump past the sidebar to the page content. */
+.skip-link {
+  position: absolute;
+  left: 0.75rem;
+  top: -3rem;
+  z-index: 50;
+  border-radius: 0.5rem;
+  background-color: hsl(var(--card));
+  color: hsl(var(--foreground));
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid hsl(var(--border));
+  transition: top 0.15s ease;
+}
+.skip-link:focus {
+  top: 0.75rem;
+  outline: 2px solid hsl(221 83% 53%);
+}
