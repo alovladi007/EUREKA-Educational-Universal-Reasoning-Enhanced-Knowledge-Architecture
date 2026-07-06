@@ -118,11 +118,18 @@ async def due_reviews(session: AsyncSession, user_id: uuid.UUID) -> list[dict]:
     ]
 
 
-async def _get_state(session: AsyncSession, user_id: uuid.UUID, node_id: uuid.UUID) -> MasteryState:
+async def _get_state(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    node_id: uuid.UUID,
+    signal: str = "apply",
+) -> MasteryState:
     state = (
         await session.execute(
             select(MasteryState).where(
-                MasteryState.user_id == user_id, MasteryState.node_id == node_id
+                MasteryState.user_id == user_id,
+                MasteryState.node_id == node_id,
+                MasteryState.signal == signal,
             )
         )
     ).scalar_one_or_none()
@@ -130,6 +137,7 @@ async def _get_state(session: AsyncSession, user_id: uuid.UUID, node_id: uuid.UU
         state = MasteryState(
             user_id=user_id,
             node_id=node_id,
+            signal=signal,
             p_known=DEFAULT_PARAMS.p_l0,
             level=level_for(DEFAULT_PARAMS.p_l0),
         )
@@ -144,11 +152,26 @@ async def apply_mastery(
     node_id: uuid.UUID,
     correct: bool,
     response_id: uuid.UUID | None,
+    *,
+    signal: str = "apply",
+    grader: str | None = None,
+    grader_confidence: float = 1.0,
 ) -> dict:
-    """Update mastery for one response and record the evidence."""
-    state = await _get_state(session, user_id, node_id)
+    """Update mastery for one response and record the evidence.
+
+    Evidence is weighted by grader trust (Extension Section 8): the raw BKT
+    posterior is what a fully trusted grader would produce, and the applied
+    move is scaled toward it by grader_confidence in [0, 1]. So a formally
+    verified proof (confidence 1.0) moves mastery the full BKT step, while an
+    AI-assisted provisional pass (confidence 0.6) moves it only partway. The
+    grader, its confidence, and the signal (apply vs prove) are recorded on the
+    event so the estimate stays fully explainable.
+    """
+    conf = min(1.0, max(0.0, grader_confidence))
+    state = await _get_state(session, user_id, node_id, signal)
     before = state.p_known
-    after = bkt_update(before, correct)
+    full = bkt_update(before, correct)
+    after = before + conf * (full - before)
     state.p_known = after
     state.level = level_for(after)
     state.updated_at = datetime.now(UTC).replace(tzinfo=None)
@@ -160,31 +183,45 @@ async def apply_mastery(
             correct=correct,
             p_known_before=before,
             p_known_after=after,
+            signal=signal,
+            grader=grader,
+            grader_confidence=conf,
         )
     )
     await session.flush()
     return {
         "node_id": str(node_id),
+        "signal": signal,
         "p_known_before": round(before, 4),
         "p_known_after": round(after, 4),
         "level": state.level,
     }
 
 
-async def list_mastery(session: AsyncSession, user_id: uuid.UUID) -> list[dict]:
-    rows = (
-        await session.execute(
-            select(MasteryState, KnowledgeNode)
-            .join(KnowledgeNode, KnowledgeNode.id == MasteryState.node_id)
-            .where(MasteryState.user_id == user_id)
-            .order_by(KnowledgeNode.code)
-        )
-    ).all()
+async def list_mastery(
+    session: AsyncSession, user_id: uuid.UUID, signal: str | None = "apply"
+) -> list[dict]:
+    """List mastery states for a user.
+
+    signal defaults to "apply" so the existing mastery view is unchanged; pass
+    "prove" for the proof-competence view or None to include both signals.
+    """
+    query = (
+        select(MasteryState, KnowledgeNode)
+        .join(KnowledgeNode, KnowledgeNode.id == MasteryState.node_id)
+        .where(MasteryState.user_id == user_id)
+        .order_by(KnowledgeNode.code)
+    )
+    if signal is not None:
+        query = query.where(MasteryState.signal == signal)
+    rows = (await session.execute(query)).all()
     return [
         {
             "node_id": str(state.node_id),
             "code": node.code,
             "title": node.title,
+            "kind": node.kind,
+            "signal": state.signal,
             "p_known": round(state.p_known, 4),
             "level": state.level,
             "updated_at": state.updated_at,
@@ -213,6 +250,9 @@ async def list_evidence(
             "correct": ev.correct,
             "p_known_before": round(ev.p_known_before, 4),
             "p_known_after": round(ev.p_known_after, 4),
+            "signal": ev.signal,
+            "grader": ev.grader,
+            "grader_confidence": round(ev.grader_confidence, 4),
             "response_id": str(ev.response_id) if ev.response_id else None,
         }
         for ev in rows
@@ -245,8 +285,17 @@ async def plan_path(session: AsyncSession, user_id: uuid.UUID) -> dict:
         (await session.execute(select(KnowledgeNode).order_by(KnowledgeNode.code))).scalars().all()
     )
     edges = (await session.execute(select(KnowledgeEdge))).scalars().all()
+    # Prerequisite gating is about being able to USE a skill, so it reads the
+    # "apply" signal only. Proof competence ("prove") is tracked separately and
+    # does not unlock downstream nodes on its own.
     states = (
-        (await session.execute(select(MasteryState).where(MasteryState.user_id == user_id)))
+        (
+            await session.execute(
+                select(MasteryState).where(
+                    MasteryState.user_id == user_id, MasteryState.signal == "apply"
+                )
+            )
+        )
         .scalars()
         .all()
     )

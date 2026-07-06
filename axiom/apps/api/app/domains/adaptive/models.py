@@ -27,9 +27,18 @@ def _now() -> datetime:
     return datetime.now(UTC).replace(tzinfo=None)
 
 
+# Mastery signals (Extension Section 8). For proof-based nodes AXIOM tracks two
+# independent competences per node: can APPLY the result, and can PROVE it. They
+# are different skills; a learner can have one without the other. Computational
+# nodes only ever use "apply".
+MASTERY_SIGNALS = ("apply", "prove")
+
+
 class MasteryState(Base):
     __tablename__ = "mastery_states"
-    __table_args__ = (UniqueConstraint("user_id", "node_id", name="uq_mastery_user_node"),)
+    __table_args__ = (
+        UniqueConstraint("user_id", "node_id", "signal", name="uq_mastery_user_node_signal"),
+    )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
     user_id: Mapped[uuid.UUID] = mapped_column(
@@ -38,13 +47,24 @@ class MasteryState(Base):
     node_id: Mapped[uuid.UUID] = mapped_column(
         Uuid, ForeignKey("knowledge_nodes.id", ondelete="CASCADE"), index=True
     )
+    # "apply" or "prove" (see MASTERY_SIGNALS). Defaults to "apply" so every
+    # pre-existing row keeps its meaning.
+    signal: Mapped[str] = mapped_column(
+        String(8), nullable=False, default="apply", server_default="apply"
+    )
     p_known: Mapped[float] = mapped_column(Float, nullable=False, default=0.2)
     level: Mapped[str] = mapped_column(String(16), nullable=False, default="novice")
     updated_at: Mapped[datetime] = mapped_column(default=_now)
 
 
 class MasteryEvent(Base):
-    """Append-only evidence for every mastery change."""
+    """Append-only evidence for every mastery change.
+
+    grader and grader_confidence record which grader produced the evidence and
+    how much to trust it (Extension Section 8: a formally verified proof is
+    stronger evidence than an AI-assisted provisional pass). signal records
+    whether this evidence bears on applying or proving the node.
+    """
 
     __tablename__ = "mastery_events"
 
@@ -61,6 +81,13 @@ class MasteryEvent(Base):
     correct: Mapped[bool] = mapped_column(Boolean, nullable=False)
     p_known_before: Mapped[float] = mapped_column(Float, nullable=False)
     p_known_after: Mapped[float] = mapped_column(Float, nullable=False)
+    signal: Mapped[str] = mapped_column(
+        String(8), nullable=False, default="apply", server_default="apply"
+    )
+    grader: Mapped[str | None] = mapped_column(String(16), nullable=True)
+    grader_confidence: Mapped[float] = mapped_column(
+        Float, nullable=False, default=1.0, server_default="1.0"
+    )
     created_at: Mapped[datetime] = mapped_column(default=_now)
 
 
