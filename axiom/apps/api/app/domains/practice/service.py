@@ -18,7 +18,7 @@ import uuid
 from datetime import UTC, datetime
 
 from math_core import ItemTemplate as McItemTemplate
-from math_core import resolve_template
+from math_core import resolve_template, verify_steps
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -282,6 +282,16 @@ async def finalize_response_grade(
         mastered=mastered,
     )
 
+    # A worked solution attached to the item (meta.worked_solution) is shown
+    # after the answer, but only after every step is re-verified against the CAS,
+    # so a stored solution that has drifted out of correctness is withheld.
+    worked_solution: list[str] | None = None
+    raw_solution = meta.get("worked_solution") if isinstance(meta, dict) else None
+    if isinstance(raw_solution, list) and raw_solution:
+        check = verify_steps([str(step) for step in raw_solution])
+        if check.ok:
+            worked_solution = [step.text for step in check.steps]
+
     return {
         "is_correct": outcome.is_correct,
         "score": outcome.score,
@@ -292,6 +302,7 @@ async def finalize_response_grade(
         "correct_answer": outcome.correct_display,
         "explanation": outcome.explanation,
         "step_credits": outcome.step_credits,
+        "worked_solution": worked_solution,
         "mastery": mastery,
         "gamification": gamification,
     }

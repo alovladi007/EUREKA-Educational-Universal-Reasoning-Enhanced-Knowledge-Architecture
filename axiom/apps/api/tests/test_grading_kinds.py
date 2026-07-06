@@ -84,6 +84,22 @@ def test_draw_line_handles_vertical_and_degenerate():
     assert not same.is_correct
 
 
+def test_ordering_requires_exact_sequence():
+    key = '["a", "b", "c"]'
+    assert grade("ordering", key, '["a", "b", "c"]').is_correct
+    # A wrong order is incorrect.
+    assert not grade("ordering", key, '["b", "a", "c"]').is_correct
+    # A missing element is incorrect.
+    assert not grade("ordering", key, '["a", "b"]').is_correct
+
+
+def test_matching_is_order_independent_but_pairing_exact():
+    key = '[["A", "1"], ["B", "2"]]'
+    assert grade("matching", key, '[["B", "2"], ["A", "1"]]').is_correct
+    # A wrong pairing is incorrect.
+    assert not grade("matching", key, '[["A", "2"], ["B", "1"]]').is_correct
+
+
 def test_unsupported_kind_is_not_correct():
     outcome = grade("does_not_exist", "1", "1")
     assert not outcome.is_correct

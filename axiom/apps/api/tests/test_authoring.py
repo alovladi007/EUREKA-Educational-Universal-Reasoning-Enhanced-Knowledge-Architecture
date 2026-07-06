@@ -141,3 +141,39 @@ async def test_preview_grade_uses_the_real_grader(as_teacher, client):
         headers=AUTH,
     )
     assert wrong.status_code == 200 and wrong.json()["is_correct"] is False
+
+
+@pytest.mark.asyncio
+async def test_verify_solution_endpoint(as_teacher, client):
+    good = await client.post(
+        "/api/v1/authoring/verify-solution",
+        json={"steps": ["2*x + 3 = 11", "2*x = 8", "x = 4"]},
+        headers=AUTH,
+    )
+    assert good.status_code == 200 and good.json()["ok"] is True
+
+    bad = await client.post(
+        "/api/v1/authoring/verify-solution",
+        json={"steps": ["2*x + 3 = 11", "2*x = 9", "x = 4"]},
+        headers=AUTH,
+    )
+    assert bad.status_code == 200 and bad.json()["ok"] is False
+
+
+@pytest.mark.asyncio
+async def test_generate_solution_endpoint(as_teacher, client):
+    ok = await client.post(
+        "/api/v1/authoring/generate-solution",
+        json={"equation": "2*x + 3 = 11"},
+        headers=AUTH,
+    )
+    assert ok.status_code == 200
+    body = ok.json()
+    assert body["ok"] is True and body["steps"][-1].replace(" ", "") == "x=4"
+
+    nope = await client.post(
+        "/api/v1/authoring/generate-solution",
+        json={"equation": "x^2 = 4"},
+        headers=AUTH,
+    )
+    assert nope.status_code == 200 and nope.json()["ok"] is False

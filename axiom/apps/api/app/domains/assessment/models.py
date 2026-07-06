@@ -36,6 +36,8 @@ ITEM_KINDS = (
     "plot_points",
     "plot_function",
     "draw_line",
+    "ordering",
+    "matching",
     "show_work",
     "free_response",
 )

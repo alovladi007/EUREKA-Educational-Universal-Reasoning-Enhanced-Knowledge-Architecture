@@ -7,8 +7,8 @@ SymPy symbolic equivalence rather than string matching, so several equivalent
 correct forms all grade correct.
 
 Supported kinds: mcq_single, numeric, math_expression, equation, mcq_multi,
-true_false, short_text, plot_points, plot_function, draw_line, show_work (with
-milestone step credit).
+true_false, short_text, plot_points, plot_function, draw_line, ordering,
+matching, show_work (with milestone step credit).
 
 grader values: exact (selection), numeric (tolerance), cas (symbolic).
 """
@@ -210,6 +210,55 @@ def grade(
         return GradeOutcome(
             is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
             f"plotted {len(chosen_pts)} of {len(key_pts)} points", str(correct), explanation,
+        )
+
+    if kind == "ordering":
+        # The student submits the items as a JSON list in their chosen order.
+        # Correct only when the order matches the key exactly.
+        try:
+            chosen = json.loads(student) if student else []
+            key = json.loads(str(correct))
+        except (ValueError, TypeError):
+            chosen, key = None, None
+        is_correct = (
+            isinstance(chosen, list)
+            and isinstance(key, list)
+            and [str(x) for x in chosen] == [str(x) for x in key]
+        )
+        return GradeOutcome(
+            is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
+            "ordered sequence match", str(correct), explanation,
+        )
+
+    if kind == "matching":
+        # Student and key are JSON lists of [left, right] pairs. Order of the
+        # pairs does not matter; each pairing must match.
+        def _pairs(raw: str) -> set[tuple[str, str]] | None:
+            try:
+                parsed = json.loads(raw)
+            except (ValueError, TypeError):
+                return None
+            if not isinstance(parsed, list):
+                return None
+            out: set[tuple[str, str]] = set()
+            for pair in parsed:
+                if isinstance(pair, (list, tuple)) and len(pair) == 2:
+                    out.add((str(pair[0]), str(pair[1])))
+                else:
+                    return None
+            return out
+
+        chosen_pairs = _pairs(student)
+        key_pairs = _pairs(str(correct))
+        is_correct = (
+            chosen_pairs is not None
+            and key_pairs is not None
+            and chosen_pairs == key_pairs
+            and len(key_pairs) > 0
+        )
+        return GradeOutcome(
+            is_correct, 1.0 if is_correct else 0.0, "exact", 1.0,
+            "matching pairs", str(correct), explanation,
         )
 
     if kind == "plot_function":

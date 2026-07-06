@@ -82,6 +82,9 @@ function PracticeInner() {
   const [answer, setAnswer] = useState('');
   // Selected option indices for mcq_multi, submitted as a JSON array string.
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
+  // The learner's current ordering for the `ordering` kind (the option strings
+  // in their chosen order), submitted as a JSON array.
+  const [ordered, setOrdered] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AnswerResult | null>(null);
 
@@ -108,6 +111,7 @@ function PracticeInner() {
     setGradingError('');
     setAnswer('');
     setSelectedIndices([]);
+    setOrdered([]);
     setErrorMessage('');
     setHint(null);
     setHintError('');
@@ -118,7 +122,11 @@ function PracticeInner() {
         setPhase('done');
         return;
       }
-      setQuestion(next as PracticeQuestion);
+      const question = next as PracticeQuestion;
+      setQuestion(question);
+      if (question.kind === 'ordering') {
+        setOrdered(question.options ?? []);
+      }
       setPhase('question');
     } catch (err) {
       setErrorMessage(
@@ -147,6 +155,9 @@ function PracticeInner() {
       const sorted = [...selectedIndices].sort((a, b) => a - b);
       return JSON.stringify(sorted);
     }
+    if (question.kind === 'ordering') {
+      return JSON.stringify(ordered);
+    }
     return answer.trim();
   }
 
@@ -158,7 +169,23 @@ function PracticeInner() {
     if (question.kind === 'mcq_multi') {
       return selectedIndices.length > 0;
     }
+    if (question.kind === 'ordering') {
+      return ordered.length > 0;
+    }
     return answer.trim() !== '';
+  }
+
+  // Move an item in the ordering up or down by one position.
+  function moveOrdered(index: number, delta: number) {
+    setOrdered((prev) => {
+      const next = [...prev];
+      const target = index + delta;
+      if (target < 0 || target >= next.length) {
+        return prev;
+      }
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
   }
 
   function toggleIndex(index: number) {
@@ -580,6 +607,43 @@ function PracticeInner() {
                   placeholder="Write your response"
                 />
               </div>
+            ) : kind === 'ordering' ? (
+              <fieldset className="mt-5" disabled={inputsLocked}>
+                <legend className="mb-2 block text-sm font-medium text-card-foreground">
+                  Put the steps in order
+                </legend>
+                <ol className="space-y-2">
+                  {ordered.map((item, index) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2 rounded-lg border border-border bg-background p-2"
+                    >
+                      <span className="w-6 text-center text-xs text-muted-foreground">
+                        {index + 1}
+                      </span>
+                      <span className="flex-1 text-sm text-card-foreground">{item}</span>
+                      <button
+                        type="button"
+                        onClick={() => moveOrdered(index, -1)}
+                        disabled={inputsLocked || index === 0}
+                        aria-label={`Move "${item}" up`}
+                        className="rounded border border-border px-2 py-1 text-xs text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40"
+                      >
+                        Up
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveOrdered(index, 1)}
+                        disabled={inputsLocked || index === ordered.length - 1}
+                        aria-label={`Move "${item}" down`}
+                        className="rounded border border-border px-2 py-1 text-xs text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40"
+                      >
+                        Down
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </fieldset>
             ) : kind === 'plot_points' ? (
               <div className="mt-5">
                 <label className="mb-1 block text-sm font-medium text-card-foreground">
@@ -741,6 +805,26 @@ function PracticeInner() {
                 {graded.explanation && (
                   <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
                     <RichMath text={graded.explanation} />
+                  </div>
+                )}
+                {graded.worked_solution && graded.worked_solution.length > 0 && (
+                  <div className="mt-4 rounded-lg border border-border bg-background p-4">
+                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      Worked solution
+                    </p>
+                    <ol className="mt-2 space-y-1">
+                      {graded.worked_solution.map((step, index) => (
+                        <li
+                          key={index}
+                          className="flex items-baseline gap-2 text-sm text-card-foreground"
+                        >
+                          <span className="text-xs text-muted-foreground">
+                            {index + 1}.
+                          </span>
+                          <span className="font-mono">{step}</span>
+                        </li>
+                      ))}
+                    </ol>
                   </div>
                 )}
                 {graded.mastery && (

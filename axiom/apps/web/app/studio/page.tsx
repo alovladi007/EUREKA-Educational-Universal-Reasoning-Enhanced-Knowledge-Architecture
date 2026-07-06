@@ -4,16 +4,19 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   authoringCreateItem,
   authoringDeleteItem,
+  authoringGenerateSolution,
   authoringItems,
   authoringNodes,
   authoringPreviewGrade,
   authoringUpdateItem,
+  authoringVerifySolution,
   fetchMe,
   getToken,
   type AuthoredItem,
   type AuthoringNode,
   type ItemDraft,
   type PreviewGradeResult,
+  type SolutionCheck,
 } from '@/lib/api';
 import { AppShell } from '@/components/AppShell';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
@@ -59,6 +62,7 @@ interface DraftState {
   explanation: string;
   difficulty: number;
   milestonesText: string;
+  workedText: string;
 }
 
 function blankDraft(node: string): DraftState {
@@ -72,14 +76,18 @@ function blankDraft(node: string): DraftState {
     explanation: '',
     difficulty: 0.5,
     milestonesText: '',
+    workedText: '',
   };
 }
 
+function metaList(meta: Record<string, unknown> | null, key: string): string[] {
+  if (meta && Array.isArray(meta[key])) {
+    return (meta[key] as unknown[]).map((x) => String(x));
+  }
+  return [];
+}
+
 function draftFromItem(item: AuthoredItem, nodeCode: string): DraftState {
-  const milestones =
-    (item.meta && Array.isArray(item.meta.milestones)
-      ? (item.meta.milestones as string[])
-      : []) ?? [];
   return {
     id: item.id,
     node: nodeCode,
@@ -89,7 +97,8 @@ function draftFromItem(item: AuthoredItem, nodeCode: string): DraftState {
     correct: item.correct,
     explanation: item.explanation,
     difficulty: item.difficulty,
-    milestonesText: milestones.join('\n'),
+    milestonesText: metaList(item.meta, 'milestones').join('\n'),
+    workedText: metaList(item.meta, 'worked_solution').join('\n'),
   };
 }
 
@@ -110,6 +119,12 @@ export default function StudioPage() {
   const [preview, setPreview] = useState<PreviewGradeResult | null>(null);
   const [previewError, setPreviewError] = useState('');
   const [previewing, setPreviewing] = useState(false);
+
+  // Worked-solution authoring: an equation to generate steps from, the last
+  // verification result, and a busy flag shared by generate and verify.
+  const [genEquation, setGenEquation] = useState('');
+  const [solution, setSolution] = useState<SolutionCheck | null>(null);
+  const [solutionBusy, setSolutionBusy] = useState(false);
 
   // Map node id -> code so an item (which carries node_id) can be shown and
   // edited by code.
@@ -172,15 +187,20 @@ export default function StudioPage() {
 
   function buildDraftPayload(state: DraftState): ItemDraft {
     const isMcq = MCQ_KINDS.has(state.kind);
-    const meta: Record<string, unknown> | null =
-      state.kind === 'show_work'
-        ? {
-            milestones: state.milestonesText
-              .split('\n')
-              .map((line) => line.trim())
-              .filter(Boolean),
-          }
-        : null;
+    const meta: Record<string, unknown> = {};
+    if (state.kind === 'show_work') {
+      meta.milestones = state.milestonesText
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean);
+    }
+    const workedLines = state.workedText
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (workedLines.length > 0) {
+      meta.worked_solution = workedLines;
+    }
     return {
       node: state.node,
       kind: state.kind,
@@ -190,7 +210,7 @@ export default function StudioPage() {
       explanation: state.explanation,
       difficulty: state.difficulty,
       tolerance: null,
-      meta,
+      meta: Object.keys(meta).length > 0 ? meta : null,
     };
   }
 
@@ -231,6 +251,52 @@ export default function StudioPage() {
       }
     } catch (err) {
       setListError(err instanceof Error ? err.message : 'Failed to delete the item.');
+    }
+  }
+
+  async function verifyWorked() {
+    if (!draft) {
+      return;
+    }
+    const lines = draft.workedText
+      .split('\n')
+      .map((line) => line.trim())
+      .filter(Boolean);
+    if (lines.length === 0) {
+      return;
+    }
+    setSolutionBusy(true);
+    setSolution(null);
+    try {
+      setSolution(await authoringVerifySolution(lines));
+    } catch {
+      setSolution({ ok: false, detail: 'Failed to verify the solution.' });
+    } finally {
+      setSolutionBusy(false);
+    }
+  }
+
+  async function generateWorked() {
+    if (!draft || !genEquation.trim()) {
+      return;
+    }
+    setSolutionBusy(true);
+    setSolution(null);
+    try {
+      const res = await authoringGenerateSolution(genEquation.trim());
+      if (res.ok) {
+        setDraft({ ...draft, workedText: res.steps.join('\n') });
+        setSolution({
+          ok: true,
+          steps: res.steps.map((s) => ({ text: s, verified: true, detail: '' })),
+        });
+      } else {
+        setSolution({ ok: false, detail: res.detail });
+      }
+    } catch {
+      setSolution({ ok: false, detail: 'Failed to generate the solution.' });
+    } finally {
+      setSolutionBusy(false);
     }
   }
 
@@ -538,6 +604,75 @@ export default function StudioPage() {
                       />
                     </div>
                   )}
+
+                  {/* Worked solution (DeltaMath-style), verified against the CAS */}
+                  <div className="rounded-lg border border-border bg-background p-3">
+                    <p className="text-sm font-medium text-card-foreground">
+                      Worked solution
+                    </p>
+                    <p className="mb-2 text-xs text-muted-foreground">
+                      One step per line. Verify checks each step follows from the
+                      previous one; shown to the student after they answer.
+                    </p>
+                    <textarea
+                      value={draft.workedText}
+                      rows={3}
+                      onChange={(e) => setDraft({ ...draft, workedText: e.target.value })}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      placeholder={'2*x + 3 = 11\n2*x = 8\nx = 4'}
+                    />
+                    <div className="mt-2 flex flex-wrap items-center gap-2">
+                      <button
+                        type="button"
+                        onClick={() => void verifyWorked()}
+                        disabled={solutionBusy}
+                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                      >
+                        Verify
+                      </button>
+                      <input
+                        type="text"
+                        value={genEquation}
+                        onChange={(e) => setGenEquation(e.target.value)}
+                        placeholder="Equation to solve, e.g. 2x + 3 = 11"
+                        className="flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => void generateWorked()}
+                        disabled={solutionBusy}
+                        className="rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                      >
+                        Generate
+                      </button>
+                    </div>
+                    {solution && (
+                      <div className="mt-2 text-xs">
+                        <span
+                          className={
+                            solution.ok
+                              ? 'font-semibold text-emerald-700 dark:text-emerald-300'
+                              : 'font-semibold text-red-700 dark:text-red-300'
+                          }
+                        >
+                          {solution.ok ? 'Verified' : 'Not verified'}
+                        </span>{' '}
+                        {solution.detail && (
+                          <span className="text-muted-foreground">{solution.detail}</span>
+                        )}
+                        {solution.steps && solution.steps.length > 0 && (
+                          <ul className="mt-1 space-y-0.5">
+                            {solution.steps.map((s, i) => (
+                              <li key={i} className="font-mono text-muted-foreground">
+                                {s.verified ? 'ok ' : 'x  '}
+                                {s.text}
+                              </li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
                   <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
                     <div>

@@ -331,6 +331,8 @@ export type PracticeKind =
   | 'plot_points'
   | 'plot_function'
   | 'draw_line'
+  | 'ordering'
+  | 'matching'
   | 'show_work'
   | 'free_response';
 
@@ -415,6 +417,8 @@ export interface AnswerResult {
   ai_graded?: boolean;
   overridable?: boolean;
   confidence?: number;
+  // A CAS-verified worked solution, shown after answering when the item has one.
+  worked_solution?: string[] | null;
 }
 
 // The result of GET /api/v1/practice/response/{response_token}, the endpoint
@@ -1193,4 +1197,23 @@ export function authoringPreviewGrade(body: {
   meta: Record<string, unknown> | null;
 }): Promise<PreviewGradeResult> {
   return apiPost<PreviewGradeResult>('/api/v1/authoring/preview-grade', body);
+}
+
+export interface SolutionCheck {
+  ok: boolean;
+  steps?: { text: string; verified: boolean; detail: string }[];
+  detail?: string;
+}
+
+export function authoringVerifySolution(steps: string[]): Promise<SolutionCheck> {
+  return apiPost<SolutionCheck>('/api/v1/authoring/verify-solution', { steps });
+}
+
+export function authoringGenerateSolution(
+  equation: string,
+): Promise<{ ok: boolean; steps: string[]; detail: string }> {
+  return apiPost<{ ok: boolean; steps: string[]; detail: string }>(
+    '/api/v1/authoring/generate-solution',
+    { equation },
+  );
 }

@@ -11,6 +11,7 @@ from __future__ import annotations
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query
+from math_core import linear_equation_steps, verify_steps
 from pydantic import BaseModel
 from shared_schemas.identity import UserOut
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -58,6 +59,14 @@ class PreviewGrade(BaseModel):
     tolerance: float | None = None
     explanation: str = ""
     meta: dict | None = None
+
+
+class VerifySolution(BaseModel):
+    steps: list[str]
+
+
+class GenerateSolution(BaseModel):
+    equation: str
 
 
 @router.get("/banks", summary="List item banks (author)")
@@ -182,3 +191,39 @@ async def preview_grade(
         "correct_display": outcome.correct_display,
         "step_credits": outcome.step_credits,
     }
+
+
+@router.post("/verify-solution", summary="Verify a worked solution against the CAS (author)")
+async def verify_solution(
+    body: VerifySolution,
+    author: UserOut = Depends(author_only),
+) -> dict:
+    """Check that each line of a worked solution follows from the previous one.
+
+    This is the guardrail from the build prompt: a worked solution is only shown
+    or stored once every step is verified against SymPy.
+    """
+    check = verify_steps(body.steps)
+    return {
+        "ok": check.ok,
+        "steps": [
+            {"text": s.text, "verified": s.verified, "detail": s.detail}
+            for s in check.steps
+        ],
+    }
+
+
+@router.post("/generate-solution", summary="Generate a verified worked solution (author)")
+async def generate_solution(
+    body: GenerateSolution,
+    author: UserOut = Depends(author_only),
+) -> dict:
+    """Generate a step-by-step solution for a linear equation in one variable.
+
+    Returns the verified steps, or ok=false with an empty list when the input is
+    not a single-variable linear equation (the only form generated for now).
+    """
+    steps = linear_equation_steps(body.equation)
+    if steps is None:
+        return {"ok": False, "steps": [], "detail": "not a single-variable linear equation"}
+    return {"ok": True, "steps": steps, "detail": "generated and verified"}

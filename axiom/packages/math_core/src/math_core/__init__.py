@@ -20,6 +20,12 @@ from .grading import (
     grade_numeric,
     symbolic_equal,
 )
+from .solutions import (
+    SolutionCheck,
+    SolutionStep,
+    linear_equation_steps,
+    verify_steps,
+)
 from .templates import ItemTemplate, ItemVariant, VarSpec, resolve_template
 
 __version__ = "0.1.0"
@@ -34,5 +40,9 @@ __all__ = [
     "ItemVariant",
     "VarSpec",
     "GradeResult",
+    "verify_steps",
+    "linear_equation_steps",
+    "SolutionStep",
+    "SolutionCheck",
     "__version__",
 ]

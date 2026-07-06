@@ -229,7 +229,29 @@ PHASE2_ITEMS: dict[str, list] = {
             "4",
             "Subtract 3 to get 2x = 8, then divide by 2 to get x = 4.",
             None,
-            {"milestones": ["2*x = 8", "x = 4"]},
+            {
+                "milestones": ["2*x = 8", "x = 4"],
+                # A CAS-verified worked solution, shown after the answer.
+                "worked_solution": ["2*x + 3 = 11", "2*x = 8", "x = 4"],
+            },
+        ),
+        (
+            "ordering",
+            "Put the steps in order to solve 3x - 5 = 7.",
+            # Shown shuffled; the learner reorders them.
+            [
+                "Divide both sides by 3 to get x = 4",
+                "Start from 3x - 5 = 7",
+                "Add 5 to both sides to get 3x = 12",
+            ],
+            (
+                '["Start from 3x - 5 = 7", '
+                '"Add 5 to both sides to get 3x = 12", '
+                '"Divide both sides by 3 to get x = 4"]'
+            ),
+            "First undo the subtraction, then undo the multiplication.",
+            None,
+            None,
         ),
     ],
     "ALG.6": [
