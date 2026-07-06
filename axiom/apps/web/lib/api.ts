@@ -1123,6 +1123,63 @@ export function fetchDueReviews(): Promise<{ reviews: DueReview[] }> {
 }
 
 // -------------------------------------------------------------------------
+// Proctoring (exam integrity).
+
+export interface ProctoringPolicy {
+  block_copy?: boolean;
+  block_paste?: boolean;
+  block_context_menu?: boolean;
+  detect_focus_loss?: boolean;
+}
+
+export function proctoringStart(body: {
+  assessment_id?: string | null;
+  attempt_id?: string | null;
+  policy?: ProctoringPolicy;
+}): Promise<{ session_id: string; status: string }> {
+  return apiPost('/api/v1/proctoring/sessions', body);
+}
+
+export function proctoringEvent(
+  sessionId: string,
+  kind: string,
+  detail = '',
+): Promise<{ anomaly_score: number; flagged: boolean }> {
+  return apiPost(`/api/v1/proctoring/sessions/${sessionId}/events`, { kind, detail });
+}
+
+export function proctoringEnd(
+  sessionId: string,
+): Promise<{ status: string; anomaly_score: number; flagged: boolean }> {
+  return apiPost(`/api/v1/proctoring/sessions/${sessionId}/end`, {});
+}
+
+export interface ProctoringSummary {
+  session_id: string;
+  user_id: string;
+  assessment_id: string | null;
+  anomaly_score: number;
+  status: string;
+  event_count: number;
+  started_at: string;
+}
+
+export function proctoringReview(): Promise<{ sessions: ProctoringSummary[] }> {
+  return apiGet('/api/v1/proctoring/review');
+}
+
+export interface ProctoringDetail extends ProctoringSummary {
+  flagged: boolean;
+  policy: ProctoringPolicy | null;
+  ended_at: string | null;
+  events: { kind: string; detail: string; weight: number; occurred_at: string }[];
+}
+
+export function proctoringDetail(sessionId: string): Promise<ProctoringDetail> {
+  return apiGet(`/api/v1/proctoring/sessions/${sessionId}`);
+}
+
+// -------------------------------------------------------------------------
 // Content Studio authoring (teacher and author roles).
 
 export interface AuthoringNode {

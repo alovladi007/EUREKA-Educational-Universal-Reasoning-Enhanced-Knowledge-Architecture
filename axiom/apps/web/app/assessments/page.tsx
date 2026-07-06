@@ -12,6 +12,7 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import { useProctoring } from '@/lib/useProctoring';
 
 // The student "assigned assessments" surface. It lists the assessments assigned
 // to the signed-in student with an availability status derived from the
@@ -130,6 +131,21 @@ export default function AssessmentsPage() {
   const [gradingToken, setGradingToken] = useState<string | null>(null);
   const [gradingError, setGradingError] = useState('');
   const [answerError, setAnswerError] = useState('');
+
+  // Proctoring runs for the duration of an active attempt: it records the
+  // browser-observable integrity signals (tab switches, copy/paste) and blocks
+  // copy/paste/right-click. It is non-invasive - no camera, no screen capture -
+  // and clearly disclosed to the student below.
+  const proctor = useProctoring({
+    enabled: takingId !== null && !complete,
+    assessmentId: takingId,
+    policy: {
+      block_copy: true,
+      block_paste: true,
+      block_context_menu: true,
+      detect_focus_loss: true,
+    },
+  });
 
   useEffect(() => {
     if (!getToken()) {
@@ -495,6 +511,24 @@ export default function AssessmentsPage() {
                 Back to assessments
               </button>
             </div>
+
+            {!complete && proctor.active && (
+              <div
+                className="mb-4 rounded-lg border border-border bg-muted/50 px-4 py-3"
+                role="note"
+              >
+                <p className="text-sm font-medium text-foreground">
+                  Proctored exam - integrity monitoring is on.
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  Tab switches, copy, paste, and right-click are recorded, and
+                  copy/paste are blocked. There is no camera and no screen
+                  capture. Your teacher can review the integrity log.
+                  {proctor.flagged &&
+                    ' Note: this session has crossed the review threshold.'}
+                </p>
+              </div>
+            )}
 
             {complete || items.length === 0 ? (
               <div className="rounded-lg border border-border bg-card p-8 text-center">
