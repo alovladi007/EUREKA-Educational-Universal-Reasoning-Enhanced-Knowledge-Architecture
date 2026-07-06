@@ -20,6 +20,7 @@ from app.domains.integrations.router import router as integrations_router
 from app.domains.notifications.router import router as notifications_router
 from app.domains.practice.router import router as practice_router
 from app.domains.proctoring.router import router as proctoring_router
+from app.domains.tutoring.router import router as tutoring_router
 
 api_v1 = APIRouter(prefix="/api/v1")
 api_v1.include_router(identity_router)
@@ -38,3 +39,4 @@ api_v1.include_router(grading_router)
 api_v1.include_router(notifications_router)
 api_v1.include_router(proctoring_router)
 api_v1.include_router(integrations_router)
+api_v1.include_router(tutoring_router)

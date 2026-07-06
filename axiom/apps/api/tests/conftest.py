@@ -48,6 +48,7 @@ async def engine():
     from app.domains.integrations import models as _int  # noqa: F401
     from app.domains.notifications import models as _n  # noqa: F401
     from app.domains.proctoring import models as _p  # noqa: F401
+    from app.domains.tutoring import models as _tut  # noqa: F401
     from app.seed import seed
 
     get_settings.cache_clear()

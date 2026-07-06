@@ -31,6 +31,7 @@ from app.domains.identity import models as _identity_models  # noqa: F401
 from app.domains.integrations import models as _integrations_models  # noqa: F401
 from app.domains.notifications import models as _notifications_models  # noqa: F401
 from app.domains.proctoring import models as _proctoring_models  # noqa: F401
+from app.domains.tutoring import models as _tutoring_models  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

@@ -1206,6 +1206,26 @@ export function oneRosterSync(
 }
 
 // -------------------------------------------------------------------------
+// Live tutoring (shared whiteboard sessions).
+
+export interface TutoringSession {
+  id: string;
+  title: string;
+  join_code: string;
+  status: string;
+  tutor_id: string;
+  peers?: number;
+}
+
+export function createTutoringSession(title: string): Promise<TutoringSession> {
+  return apiPost('/api/v1/tutoring/sessions', { title });
+}
+
+export function getTutoringSession(code: string): Promise<TutoringSession> {
+  return apiGet(`/api/v1/tutoring/sessions/${encodeURIComponent(code)}`);
+}
+
+// -------------------------------------------------------------------------
 // Content Studio authoring (teacher and author roles).
 
 export interface AuthoringNode {
