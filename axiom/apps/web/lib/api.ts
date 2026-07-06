@@ -987,3 +987,27 @@ export function markNotificationRead(id: string): Promise<{ ok: boolean }> {
 export function markAllNotificationsRead(): Promise<{ marked: number }> {
   return apiPost<{ marked: number }>('/api/v1/notifications/read-all', {});
 }
+
+// -------------------------------------------------------------------------
+// Review mistakes.
+// -------------------------------------------------------------------------
+
+// One incorrect answer from GET /api/v1/practice/mistakes. kind is the practice
+// item kind (mcq_single, numeric, and so on). your_answer is what the learner
+// submitted; correct_answer is the expected answer; explanation is the graded
+// rationale. submitted_at is an ISO timestamp.
+export interface MistakeItem {
+  response_id: string;
+  node_title: string;
+  kind: string;
+  prompt: string;
+  your_answer: string;
+  correct_answer: string;
+  explanation: string;
+  submitted_at: string;
+}
+
+// Fetch the signed-in learner's recent incorrect answers, most recent first.
+export function fetchMistakes(): Promise<{ items: MistakeItem[] }> {
+  return apiGet<{ items: MistakeItem[] }>('/api/v1/practice/mistakes');
+}

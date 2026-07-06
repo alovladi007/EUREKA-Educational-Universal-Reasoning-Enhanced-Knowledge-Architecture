@@ -156,6 +156,7 @@ export default function NotificationsPage() {
         <HeaderLink href="/practice">Practice</HeaderLink>
         <HeaderLink href="/path">Path</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/review">Review</HeaderLink>
         <HeaderLink href="/achievements">Achievements</HeaderLink>
       </PageHeader>
 

@@ -14,7 +14,7 @@ from app.core.db import get_session
 from app.core.security import get_current_user
 from app.domains.curriculum.models import KnowledgeNode
 from app.domains.practice.service import answer as answer_service
-from app.domains.practice.service import response_result, serve_next
+from app.domains.practice.service import response_result, review_mistakes, serve_next
 
 router = APIRouter(tags=["practice"])
 
@@ -58,6 +58,15 @@ async def practice_answer(
     user: UserOut = Depends(get_current_user),
 ) -> dict:
     return await answer_service(session, uuid.UUID(user.id), body.response_token, body.answer)
+
+
+@router.get("/practice/mistakes", summary="My recent incorrect answers to review")
+async def practice_mistakes(
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> dict:
+    items = await review_mistakes(session, uuid.UUID(user.id))
+    return {"items": items}
 
 
 @router.get("/practice/response/{response_token}", summary="Grading status and result")

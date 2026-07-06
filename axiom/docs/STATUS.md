@@ -16,6 +16,7 @@ A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practic
 - Practice loop: the adaptive engine recommends the next node by prerequisites and mastery, serves a question (resolving a per-student variant for templates), grades it, and updates mastery.
 - Grading uses SymPy symbolic equivalence, numeric tolerance, and equation equivalence, not string matching. Question types include selection, numeric, math expression, equation, multi-select, true/false, short text, plot-points, and show-your-work with per-milestone step credit.
 - Mastery is Bayesian Knowledge Tracing with an append-only evidence trail, so every change is explainable.
+- Review: a learner can review their recent incorrect answers with the correct answer and the explanation, closing the loop from practice back into study.
 - Computerized adaptive testing on an IRT (3PL) backbone: EAP ability estimation, maximum-information item selection, and a standard-error stopping rule, plus classical-test-theory item calibration into IRT parameters.
 - Analytics: per-item classical statistics with IRT parameters, a cohort standards heatmap, per-learner growth, and CSV and PDF exports.
 - Gamification: XP, levels, streaks, and badges awarded strictly for genuine progress (correct responses and mastery gains), never idle time.

@@ -99,6 +99,7 @@ export default function LearnPage() {
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/practice">Practice</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/review">Review</HeaderLink>
         <HeaderLink href="/copilot">Copilot</HeaderLink>
         <HeaderLink href="/cat">Adaptive Test</HeaderLink>
         <HeaderLink href="/achievements">Achievements</HeaderLink>

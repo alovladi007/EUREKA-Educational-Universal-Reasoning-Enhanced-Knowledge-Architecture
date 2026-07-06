@@ -424,3 +424,88 @@ async def response_result(
             {"milestone": c.milestone, "awarded": c.awarded, "note": c.note} for c in credits
         ],
     }
+
+
+def _correct_display(kind: str, correct: str, options: list | None) -> str:
+    """Render the answer key for a human. mcq_single stores an option index, so
+    map it back to the option text; every other kind shows the stored value."""
+    if kind == "mcq_single" and options:
+        try:
+            return options[int(correct)]
+        except (ValueError, IndexError):
+            return str(correct)
+    return str(correct)
+
+
+async def review_mistakes(
+    session: AsyncSession, user_id: uuid.UUID, limit: int = 20
+) -> list[dict]:
+    """The learner's recent incorrect answers, with the correct answer and the
+    explanation, so practice closes the loop into review."""
+    rows = (
+        await session.execute(
+            select(Response, Score)
+            .join(Score, Score.response_id == Response.id)
+            .where(Response.user_id == user_id, Score.is_correct.is_(False))
+            .order_by(Response.submitted_at.desc())
+            .limit(limit)
+        )
+    ).all()
+
+    out: list[dict] = []
+    for response, _score in rows:
+        if response.item_id is not None:
+            item = (
+                await session.execute(select(Item).where(Item.id == response.item_id))
+            ).scalar_one_or_none()
+            if item is None:
+                continue
+            prompt, kind, correct, options, explanation = (
+                item.prompt,
+                item.kind,
+                item.correct,
+                item.options,
+                item.explanation,
+            )
+        else:
+            variant = (
+                await session.execute(
+                    select(ItemVariant).where(ItemVariant.id == response.variant_id)
+                )
+            ).scalar_one_or_none()
+            template = (
+                await session.execute(
+                    select(ItemTemplate).where(ItemTemplate.id == response.template_id)
+                )
+            ).scalar_one_or_none()
+            if variant is None or template is None:
+                continue
+            prompt, kind, correct, options, explanation = (
+                variant.prompt,
+                template.kind,
+                variant.answer,
+                None,
+                template.explanation,
+            )
+
+        node = (
+            await session.execute(
+                select(KnowledgeNode).where(KnowledgeNode.id == response.node_id)
+            )
+        ).scalar_one_or_none()
+        your_answer = (
+            response.answer.get("raw", "") if isinstance(response.answer, dict) else ""
+        )
+        out.append(
+            {
+                "response_id": str(response.id),
+                "node_title": node.title if node is not None else "",
+                "kind": kind,
+                "prompt": prompt,
+                "your_answer": your_answer,
+                "correct_answer": _correct_display(kind, str(correct), options),
+                "explanation": explanation,
+                "submitted_at": response.submitted_at,
+            }
+        )
+    return out

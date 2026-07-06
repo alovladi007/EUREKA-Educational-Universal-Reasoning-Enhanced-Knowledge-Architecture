@@ -19,6 +19,12 @@ import { StatusPill, type ApiHealthState } from '@/components/StatusPill';
 // Each links directly to its route, matching the ModuleCard visual style.
 const EXPLORE_TILES: { href: string; name: string; description: string }[] = [
   {
+    href: '/review',
+    name: 'Review mistakes',
+    description:
+      'Revisit your recent incorrect answers with the correct answer and an explanation.',
+  },
+  {
     href: '/copilot',
     name: 'Copilot',
     description:

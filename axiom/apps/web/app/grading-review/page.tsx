@@ -180,6 +180,7 @@ export default function GradingReviewPage() {
         <HeaderLink href="/teacher">Teacher</HeaderLink>
         <HeaderLink href="/analytics">Analytics</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
+        <HeaderLink href="/review">Review</HeaderLink>
         <HeaderLink href="/copilot">Copilot</HeaderLink>
       </PageHeader>
 
