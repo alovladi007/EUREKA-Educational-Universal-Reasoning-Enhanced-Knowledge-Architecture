@@ -45,6 +45,7 @@ async def engine():
     from app.domains.curriculum import models as _cur  # noqa: F401
     from app.domains.gamification import models as _g  # noqa: F401
     from app.domains.identity import models as _i  # noqa: F401
+    from app.domains.integrations import models as _int  # noqa: F401
     from app.domains.notifications import models as _n  # noqa: F401
     from app.domains.proctoring import models as _p  # noqa: F401
     from app.seed import seed
@@ -121,4 +122,22 @@ def as_teacher(monkeypatch):
         tenant_id=None,
     )
     monkeypatch.setattr(MockEurekaIdentity, "_FIXED", teacher)
+    yield
+
+
+@pytest.fixture
+def as_admin(monkeypatch):
+    """Make the mock identity return an org_admin principal for this test."""
+    from shared_schemas.identity import Principal
+
+    from app.core.security import MockEurekaIdentity
+
+    admin = Principal(
+        sub="00000000-0000-0000-0000-00000000000a",
+        email="admin@axiom.local",
+        display_name="Dev Admin",
+        roles=["org_admin"],
+        tenant_id=None,
+    )
+    monkeypatch.setattr(MockEurekaIdentity, "_FIXED", admin)
     yield

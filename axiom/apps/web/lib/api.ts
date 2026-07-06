@@ -1180,6 +1180,32 @@ export function proctoringDetail(sessionId: string): Promise<ProctoringDetail> {
 }
 
 // -------------------------------------------------------------------------
+// Integrations (LTI 1.3 + OneRoster), admin.
+
+export interface LtiPlatformInput {
+  issuer: string;
+  client_id: string;
+  auth_login_url: string;
+  auth_token_url: string;
+  deployment_id?: string | null;
+  name?: string;
+  jwks_url?: string | null;
+  public_key_pem?: string | null;
+}
+
+export function registerLtiPlatform(
+  body: LtiPlatformInput,
+): Promise<{ id: string; issuer: string }> {
+  return apiPost('/api/v1/integrations/lti/platforms', body);
+}
+
+export function oneRosterSync(
+  payload: unknown,
+): Promise<{ users_synced: number; enrollments_synced: number }> {
+  return apiPost('/api/v1/integrations/oneroster/sync', payload);
+}
+
+// -------------------------------------------------------------------------
 // Content Studio authoring (teacher and author roles).
 
 export interface AuthoringNode {

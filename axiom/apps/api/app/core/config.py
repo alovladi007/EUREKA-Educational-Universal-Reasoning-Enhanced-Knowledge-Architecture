@@ -70,6 +70,14 @@ class Settings(BaseSettings):
     #                exact match misses. This is the default.
     retrieval_mode: Literal["lexical", "semantic", "hybrid"] = "hybrid"
 
+    # Integrations (Phase 4).
+    # Where the web app lives, used to redirect an LTI launch into AXIOM.
+    web_base_url: str = "http://localhost:4100"
+    # The tool's RSA private key (PEM) for the LTI JWKS and AGS/token assertions.
+    # Empty in development generates an ephemeral key at first use; production
+    # must supply a stable key so the JWKS kid does not change across restarts.
+    lti_tool_private_key: str = ""
+
     # When true, slow AI free-response grading is handed to the Celery worker and
     # the client polls for the result; other kinds always grade inline. If the
     # broker is unreachable the request grades inline as a fallback, so an answer

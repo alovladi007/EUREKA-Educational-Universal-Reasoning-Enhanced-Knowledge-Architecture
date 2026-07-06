@@ -28,6 +28,7 @@ from app.domains.copilot import models as _copilot_models  # noqa: F401
 from app.domains.curriculum import models as _curriculum_models  # noqa: F401
 from app.domains.gamification import models as _gamification_models  # noqa: F401
 from app.domains.identity import models as _identity_models  # noqa: F401
+from app.domains.integrations import models as _integrations_models  # noqa: F401
 from app.domains.notifications import models as _notifications_models  # noqa: F401
 from app.domains.proctoring import models as _proctoring_models  # noqa: F401
 
