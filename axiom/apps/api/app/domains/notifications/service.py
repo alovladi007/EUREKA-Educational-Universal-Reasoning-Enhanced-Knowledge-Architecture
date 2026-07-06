@@ -13,11 +13,35 @@ from datetime import UTC, datetime
 from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
+from app.domains.identity.models import User
 from app.domains.notifications.models import Notification
+
+# Kinds worth an email. Badges and system notes stay in-app only.
+_EMAILABLE_KINDS = frozenset({"assignment", "reminder", "grade"})
 
 
 def _now() -> datetime:
     return datetime.now(UTC).replace(tzinfo=None)
+
+
+async def _maybe_email(
+    session: AsyncSession, user_id: uuid.UUID, subject: str, body: str
+) -> None:
+    """Enqueue a notification email if the user has an address. Fails soft: a
+    missing broker or address never affects the in-app notification."""
+    email = (
+        await session.execute(select(User.email).where(User.id == user_id))
+    ).scalar_one_or_none()
+    if not email:
+        return
+    try:
+        from app.worker.tasks import enqueue_email
+
+        enqueue_email(email, subject, body)
+    except Exception:
+        # Broker unreachable or enqueue error: the in-app notification stands.
+        pass
 
 
 async def notify(
@@ -28,12 +52,21 @@ async def notify(
     body: str = "",
     link: str = "",
 ) -> Notification:
-    """Create one notification for a user. Flushes but does not commit."""
+    """Create one notification for a user, and email it for important kinds.
+
+    Flushes but does not commit. Email delivery is handed to the worker and is
+    best effort, so it never blocks or fails the caller's transaction.
+    """
     notification = Notification(
         user_id=user_id, kind=kind, title=title, body=body, link=link
     )
     session.add(notification)
     await session.flush()
+
+    settings = get_settings()
+    if settings.email_enabled and kind in _EMAILABLE_KINDS:
+        await _maybe_email(session, user_id, title, body)
+
     return notification
 
 

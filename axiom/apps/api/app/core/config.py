@@ -75,6 +75,20 @@ class Settings(BaseSettings):
     reminder_interval_seconds: float = 3600.0
     reminder_window_hours: float = 24.0
 
+    # Email delivery for notifications. email_provider selects the backend:
+    # "console" logs the message (dev and tests), "smtp" sends over SMTP.
+    # Delivery runs on the worker and fails soft, so the in-app notification is
+    # never blocked by email. Only assignment, reminder, and grade kinds email.
+    # SMTP credentials come from the environment in production; never commit them.
+    email_enabled: bool = True
+    email_provider: Literal["console", "smtp"] = "console"
+    email_from: str = "axiom@localhost"
+    smtp_host: str = "localhost"
+    smtp_port: int = 25
+    smtp_user: str = ""
+    smtp_password: str = ""
+    smtp_use_tls: bool = True
+
     # Observability
     log_level: str = "INFO"
     otel_exporter_otlp_endpoint: str | None = None

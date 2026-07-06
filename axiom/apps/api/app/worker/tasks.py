@@ -70,3 +70,18 @@ def send_due_reminders_task() -> str:
     assignment via reminded_at, so repeated runs never re-notify."""
     asyncio.run(_remind())
     return "reminders_sent"
+
+
+@celery_app.task(name="axiom.send_email")
+def send_email_task(to: str, subject: str, body: str) -> str:
+    """Deliver one notification email through the configured sender. Fails soft:
+    a delivery error returns "failed" rather than raising, so it never cascades."""
+    from app.domains.notifications.email import get_email_sender
+
+    ok = get_email_sender().send(to, subject, body)
+    return "sent" if ok else "failed"
+
+
+def enqueue_email(to: str, subject: str, body: str) -> None:
+    """Hand a notification email to the worker for delivery."""
+    send_email_task.delay(to, subject, body)
