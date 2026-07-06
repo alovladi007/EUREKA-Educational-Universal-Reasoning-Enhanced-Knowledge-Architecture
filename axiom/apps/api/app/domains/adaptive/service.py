@@ -9,18 +9,113 @@ gates each node on its prerequisites, and recommends the next node to work.
 from __future__ import annotations
 
 import uuid
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domains.adaptive.bkt import DEFAULT_PARAMS, bkt_update, level_for
-from app.domains.adaptive.models import LearningPathState, MasteryEvent, MasteryState
+from app.domains.adaptive.models import (
+    LearningPathState,
+    MasteryEvent,
+    MasteryState,
+    ReviewSchedule,
+)
+from app.domains.adaptive.sm2 import Sm2State, quality_from_correct, sm2_update
 from app.domains.curriculum.models import KnowledgeEdge, KnowledgeNode
 
 # A prerequisite is considered satisfied when its mastery reaches this bar.
 PREREQ_BAR = 0.7
 MASTERED_BAR = 0.9
+
+
+def _now() -> datetime:
+    return datetime.now(UTC).replace(tzinfo=None)
+
+
+async def schedule_review(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    node_id: uuid.UUID,
+    *,
+    is_correct: bool,
+    score: float | None,
+    mastery_level: str,
+) -> dict | None:
+    """Advance (or create) the SM-2 review schedule for a graded node.
+
+    A schedule is created once a node is mastered, and updated on every graded
+    response thereafter, so a learner keeps seeing a mastered node at growing
+    intervals (and sooner again after a lapse). Returns the new schedule summary,
+    or None when the node is not yet mastered and has no schedule (nothing to do).
+    """
+    existing = (
+        await session.execute(
+            select(ReviewSchedule).where(
+                ReviewSchedule.user_id == user_id, ReviewSchedule.node_id == node_id
+            )
+        )
+    ).scalar_one_or_none()
+
+    if existing is None and mastery_level != "mastered":
+        return None
+
+    current = (
+        Sm2State(existing.ease, existing.interval_days, existing.reps)
+        if existing is not None
+        else Sm2State(ease=2.5, interval_days=0, reps=0)
+    )
+    quality = quality_from_correct(is_correct, score)
+    updated = sm2_update(current, quality)
+    due = _now() + timedelta(days=updated.interval_days)
+
+    if existing is None:
+        existing = ReviewSchedule(
+            user_id=user_id,
+            node_id=node_id,
+            ease=updated.ease,
+            interval_days=updated.interval_days,
+            reps=updated.reps,
+            due_at=due,
+        )
+        session.add(existing)
+    else:
+        existing.ease = updated.ease
+        existing.interval_days = updated.interval_days
+        existing.reps = updated.reps
+        existing.due_at = due
+    await session.flush()
+    return {
+        "node_id": str(node_id),
+        "ease": round(updated.ease, 3),
+        "interval_days": updated.interval_days,
+        "reps": updated.reps,
+        "due_at": due.isoformat(),
+    }
+
+
+async def due_reviews(session: AsyncSession, user_id: uuid.UUID) -> list[dict]:
+    """Nodes whose spaced-repetition review is due now, soonest first."""
+    now = _now()
+    rows = (
+        await session.execute(
+            select(ReviewSchedule, KnowledgeNode)
+            .join(KnowledgeNode, KnowledgeNode.id == ReviewSchedule.node_id)
+            .where(ReviewSchedule.user_id == user_id, ReviewSchedule.due_at <= now)
+            .order_by(ReviewSchedule.due_at)
+        )
+    ).all()
+    return [
+        {
+            "node_id": str(sched.node_id),
+            "code": node.code,
+            "title": node.title,
+            "due_at": sched.due_at.isoformat(),
+            "interval_days": sched.interval_days,
+            "reps": sched.reps,
+        }
+        for sched, node in rows
+    ]
 
 
 async def _get_state(session: AsyncSession, user_id: uuid.UUID, node_id: uuid.UUID) -> MasteryState:

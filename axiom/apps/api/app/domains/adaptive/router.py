@@ -14,7 +14,12 @@ from app.core.db import get_session
 from app.core.security import get_current_user, require_roles
 from app.domains.adaptive.calibration import calibrate_all
 from app.domains.adaptive.cat_service import answer_cat, get_cat, start_cat
-from app.domains.adaptive.service import list_evidence, list_mastery, plan_path
+from app.domains.adaptive.service import (
+    due_reviews,
+    list_evidence,
+    list_mastery,
+    plan_path,
+)
 from app.domains.curriculum.models import KnowledgeNode
 
 router = APIRouter(tags=["adaptive"])
@@ -31,6 +36,15 @@ async def my_mastery(
 ) -> dict:
     states = await list_mastery(session, uuid.UUID(user.id))
     return {"states": states}
+
+
+@router.get("/reviews/due", summary="My spaced-repetition reviews that are due")
+async def my_due_reviews(
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> dict:
+    reviews = await due_reviews(session, uuid.UUID(user.id))
+    return {"reviews": reviews}
 
 
 @router.get("/mastery/me/evidence/{node_ref}", summary="The evidence behind a mastery value")

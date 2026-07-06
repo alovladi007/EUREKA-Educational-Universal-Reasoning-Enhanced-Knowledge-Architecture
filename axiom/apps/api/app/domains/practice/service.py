@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.domains.adaptive.bkt import level_for
-from app.domains.adaptive.service import apply_mastery, plan_path
+from app.domains.adaptive.service import apply_mastery, plan_path, schedule_review
 from app.domains.assessment.models import Item, ItemTemplate, ItemVariant
 from app.domains.attempts.models import (
     Attempt,
@@ -270,6 +270,16 @@ async def finalize_response_grade(
     mastery = await apply_mastery(
         session, user_id, response.node_id, outcome.is_correct, response.id
     )
+    # Spaced repetition: once a node is mastered, keep it on an SM-2 schedule so
+    # it resurfaces at growing intervals (and sooner after a lapse).
+    review = await schedule_review(
+        session,
+        user_id,
+        response.node_id,
+        is_correct=outcome.is_correct,
+        score=outcome.score,
+        mastery_level=mastery["level"],
+    )
     level_before = level_for(mastery["p_known_before"])
     level_after = mastery["level"]
     leveled_up = _LEVEL_RANK.get(level_after, 0) > _LEVEL_RANK.get(level_before, 0)
@@ -304,6 +314,7 @@ async def finalize_response_grade(
         "step_credits": outcome.step_credits,
         "worked_solution": worked_solution,
         "mastery": mastery,
+        "review": review,
         "gamification": gamification,
     }
 

@@ -1106,6 +1106,21 @@ export function fetchMistakes(): Promise<{ items: MistakeItem[] }> {
   return apiGet<{ items: MistakeItem[] }>('/api/v1/practice/mistakes');
 }
 
+// One node whose spaced-repetition (SM-2) review is due.
+export interface DueReview {
+  node_id: string;
+  code: string;
+  title: string;
+  due_at: string;
+  interval_days: number;
+  reps: number;
+}
+
+// The learner's spaced-repetition reviews that are due now.
+export function fetchDueReviews(): Promise<{ reviews: DueReview[] }> {
+  return apiGet<{ reviews: DueReview[] }>('/api/v1/adaptive/reviews/due');
+}
+
 // -------------------------------------------------------------------------
 // Content Studio authoring (teacher and author roles).
 

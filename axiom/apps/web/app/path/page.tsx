@@ -3,8 +3,10 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
+  fetchDueReviews,
   fetchLearningPath,
   getToken,
+  type DueReview,
   type LearningPath,
   type PathNode,
 } from '@/lib/api';
@@ -22,6 +24,7 @@ type LoadState = 'checking' | 'signed-out' | 'loading' | 'ready' | 'error';
 export default function PathPage() {
   const [state, setState] = useState<LoadState>('checking');
   const [path, setPath] = useState<LearningPath | null>(null);
+  const [due, setDue] = useState<DueReview[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
@@ -38,6 +41,16 @@ export default function PathPage() {
           return;
         }
         setPath(result);
+        // Spaced-repetition reviews are best-effort; a failure must not block
+        // the path from rendering.
+        try {
+          const reviews = await fetchDueReviews();
+          if (!cancelled) {
+            setDue(reviews.reviews);
+          }
+        } catch {
+          // ignore
+        }
         setState('ready');
       } catch (err) {
         if (cancelled) {
@@ -89,6 +102,36 @@ export default function PathPage() {
           <div className="mt-8">
             <ErrorPanel message={errorMessage} />
           </div>
+        )}
+
+        {state === 'ready' && due.length > 0 && (
+          <section className="mt-6 rounded-lg border border-brand-200 bg-brand-50 p-4 dark:border-brand-900 dark:bg-brand-950">
+            <h2 className="text-sm font-semibold text-brand-800 dark:text-brand-200">
+              Spaced-repetition reviews due ({due.length})
+            </h2>
+            <p className="mt-1 text-xs text-brand-700 dark:text-brand-300">
+              You have mastered these skills. A quick review now keeps them from
+              fading.
+            </p>
+            <ul className="mt-3 space-y-2">
+              {due.map((review) => (
+                <li
+                  key={review.node_id}
+                  className="flex items-center justify-between gap-3 rounded-lg border border-brand-200 bg-background p-3 dark:border-brand-900"
+                >
+                  <span className="text-sm font-medium text-card-foreground">
+                    {review.title}
+                  </span>
+                  <Link
+                    href={`/practice?node=${encodeURIComponent(review.code)}`}
+                    className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-3 py-1.5 text-xs font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    Review now
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
 
         {state === 'ready' && path && (
