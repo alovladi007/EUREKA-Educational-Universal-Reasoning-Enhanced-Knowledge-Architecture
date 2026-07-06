@@ -1,6 +1,18 @@
 # AXIOM Status
 
-This is the honest, calibrated status of AXIOM. AXIOM has completed Phase 0 (foundation), Phase 1 (the learning-and-assessment core), Phase 2 (adaptive testing, analytics, gamification, richer item types, QTI), and the Copilot core of Phase 3. Later-phase modules are placeholders. Nothing planned is described here as done.
+This is the honest, calibrated status of AXIOM. AXIOM has completed Phase 0 (foundation), Phase 1 (the learning-and-assessment core), Phase 2 (adaptive testing, analytics, gamification, richer item types, QTI), and most of Phase 3 (copilot hints/explanations/chat, free-response AI grading, item generation with a human-review queue, and a teacher assistant). A base-platform completion pass then closed the biggest gaps against the build prompt: a real math UI (MathLive input, KaTeX rendering), an interactive graphing toolkit, a Content Studio for authoring, SymPy-verified worked solutions, more question types, SM-2 spaced repetition, and semantic/hybrid grounding retrieval. Phase 4 (proctoring, LTI/OneRoster), live tutoring, and handwritten grading remain. Nothing planned is described here as done.
+
+### Base-platform completion waves (delivered)
+
+- **Real math UI.** MathLive equation input and KaTeX rendering across practice, learn, copilot, review, and the adaptive test. Math is no longer plain text; prompts render, and math/equation/numeric answers use a real editor. The grader now reads `^` as exponentiation. Accessible math (MathML alongside the visual render).
+- **Interactive graphing.** A Mafs coordinate plane: click-to-plot points, a two-point line drawer, and a live function-graph preview driven by a safe local expression evaluator. New gradable kinds `plot_function` (CAS) and `draw_line` (line-through-points vs a reference line).
+- **Content Studio.** Teachers author and edit items from the UI (kind-aware editor, options editor, live KaTeX prompt preview, difficulty, standards node) with a Test-grade panel that runs the production grader on a sample answer. Backed by a role-gated authoring API.
+- **Worked solutions.** `math_core.solutions` verifies each line of a worked solution against the CAS and generates verified steps for a linear equation. Shown to students after answering (re-verified), and available in the Studio (generate/verify).
+- **More question types.** `ordering` (reorder shuffled steps, with an accessible up/down input) and `matching` (exact pairing), both deterministic.
+- **Item generation + review queue.** The copilot generates CAS-verified candidate items (parameterized linear/sum/factoring). They land in a pending review queue; approval creates a real Item, rejection discards. Nothing enters a bank without human sign-off.
+- **Teacher assistant.** Draft a quiz, explain a class-wide error pattern, or suggest an intervention, grounded in the node's material and labeled AI-assisted.
+- **Spaced repetition.** SM-2 wired to the ReviewSchedule: mastered nodes are scheduled at growing intervals (sooner after a lapse); the learning-path page surfaces due reviews.
+- **Semantic retrieval.** Copilot grounding is now configurable lexical / semantic / hybrid (default hybrid) over deterministic local embeddings, so related word forms surface without a hosted model (ADR 0006).
 
 Legend:
 - **done**: implemented and tested at the level this phase requires.
@@ -31,12 +43,14 @@ A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practic
 
 These are explicitly not implemented:
 
-- Live tutoring with shared whiteboard, video, and recording (Phase 3). This needs a real-time media server (WebRTC/SFU) that is out of scope for the current build; the copilot ships without it.
+- Live tutoring with shared whiteboard, video, and recording (Phase 3). Video/audio needs a real-time media server (WebRTC/SFU) that is out of scope for the current build. A whiteboard shared-state channel is a candidate next step; video is not built.
 - AI grading of handwritten and image responses (Phase 3). Free-response text grading against a rubric is built (labeled and teacher-overridable); handwritten and image work needs a vision model and is not built.
-- Proctoring, LTI 1.3, OneRoster, LMS grade passback, and district analytics (Phase 4).
+- Proctoring (lockdown, integrity events, anomaly scoring), LTI 1.3, OneRoster, LMS grade passback, and district analytics (Phase 4) are not built yet.
 - Push notification delivery is not built. In-app notifications are built (inbox, unread badge, emitted on assignment, badge, grade override, and due-date reminders), and email delivery runs on the worker behind a swappable sender (console backend in development, SMTP behind configuration); web and mobile push are not built.
-- Item and variant generation on the worker, and worker-side analytics rollups, are not built. The Celery worker does now grade AI free-response answers off the request path, and the beat scheduler sends assignment due-date reminders (see below); other grading runs inline because it is fast.
-- Semantic (pgvector) retrieval for the copilot. Grounding today is deterministic lexical retrieval; vector embeddings are a future upgrade behind the same retriever interface.
+- Worker-side analytics rollups are not built. Item generation is built (copilot-generated, CAS-verified, human-reviewed) but runs inline, not on the worker. The Celery worker grades AI free-response answers off the request path, and the beat scheduler sends assignment due-date reminders; other grading runs inline because it is fast.
+- A pgvector-backed vector store with a hosted embedding model. Semantic and hybrid grounding retrieval IS built, over deterministic local embeddings computed in memory (ADR 0006); swapping in pgvector plus a real embedding model behind the same interface is the production scaling path and is not required for correctness at the current corpus size.
+- The full 60-plus technology-enhanced question-type set. The gradable core is broad (selection, numeric, math expression, equation, multi-select, true/false, short text, plot-points, plot-function, draw-line, ordering, matching, show-your-work, free-response); the long tail (hotspot, image labeling, categorize/sort, cloze-with-math, table completion, drag-token, transform-a-figure, and more) is not built. `matching` grades and authors but has no dedicated practice input yet.
+- A shared `packages/ui`, Playwright `tests/e2e`, and load tests (`tests/load`) are not built; the frontend components live in `apps/web/components`.
 
 ## Per-module status
 
@@ -64,7 +78,7 @@ These are explicitly not implemented:
 |---|---|---|
 | Web dashboard (Next.js 14) | done | Dashboard plus Learn, Practice, Mastery, Path, Teacher, Adaptive Test, Achievements, Analytics, and Copilot pages against the live API. |
 | Docker Compose | done | api (8400), web (4100), Postgres with pgvector (5441), Redis (6392), worker, beat, observability profile. |
-| Alembic migrations | done | Six migrations, verified up and down on Postgres with a clean schema-drift check. |
+| Alembic migrations | done | Migrations through 0010 (generated-items review queue), verified up on Postgres with a clean autogenerate schema-drift check. |
 | OpenAPI | done | Generated and served at /docs and /openapi.json. |
 | CI | done | ruff, math_core and api pytest, Alembic up and down on Postgres, frontend tsc and build. |
 
