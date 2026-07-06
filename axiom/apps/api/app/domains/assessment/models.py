@@ -24,7 +24,10 @@ from sqlalchemy.types import JSON
 from app.core.db import Base
 
 # Supported question kinds. Phase 1: mcq_single, numeric, math_expression,
-# equation. Phase 2 adds selection and constructed-response variety.
+# equation. Phase 2 adds selection and constructed-response variety. The
+# Curriculum & Proof Extension adds the structured proof kinds (4.2), the formal
+# proof kind (4.1), and the free-form proof kind (4.3). kind is a plain String
+# column (no DB enum), so adding a kind here needs no migration.
 ITEM_KINDS = (
     "mcq_single",
     "numeric",
@@ -40,6 +43,19 @@ ITEM_KINDS = (
     "matching",
     "show_work",
     "free_response",
+    # Structured / scaffolded proof (Extension Section 4.2).
+    "proof_assembly",
+    "justification_matching",
+    "proof_gap_fill",
+    "find_the_error",
+    "counterexample",
+    "state_definition",
+    "state_theorem",
+    # Formal verification (4.1) and free-form proof (4.3).
+    "formal_proof",
+    "free_form_proof",
+    # Multi-part mixed compute-then-prove (Section 5).
+    "mixed",
 )
 
 

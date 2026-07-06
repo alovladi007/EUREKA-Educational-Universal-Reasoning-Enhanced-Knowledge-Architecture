@@ -334,7 +334,22 @@ export type PracticeKind =
   | 'ordering'
   | 'matching'
   | 'show_work'
-  | 'free_response';
+  | 'free_response'
+  // Structured / scaffolded proof kinds (Curriculum & Proof Extension, 4.2).
+  | 'proof_assembly'
+  | 'justification_matching'
+  | 'proof_gap_fill'
+  | 'find_the_error'
+  | 'counterexample'
+  | 'state_definition'
+  | 'state_theorem';
+
+// Answer-free UI hints for the structured proof kinds (see the API's
+// _presentation): the justification bank to choose from, and the gap count.
+export interface PracticePresentation {
+  justification_bank?: string[];
+  gap_count?: number;
+}
 
 // A served practice question.
 export interface PracticeQuestion {
@@ -345,6 +360,7 @@ export interface PracticeQuestion {
   kind: PracticeKind;
   prompt: string;
   options: string[] | null;
+  presentation?: PracticePresentation;
 }
 
 // The "nothing to practice" terminal state.

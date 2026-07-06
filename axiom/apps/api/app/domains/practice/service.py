@@ -166,7 +166,25 @@ async def serve_next(
         "kind": item.kind,
         "prompt": item.prompt,
         "options": item.options,
+        # Non-answer UI data for the structured proof kinds (never leaks the key).
+        "presentation": _presentation(item.kind, item.meta),
     }
+
+
+def _presentation(kind: str, meta: dict | None) -> dict:
+    """Safe, answer-free UI hints for the structured proof kinds.
+
+    Only presentation data crosses to the client: the justification bank a
+    learner picks from, and the number of gaps to render. Accepted forms,
+    predicates, and correct pairings stay server-side.
+    """
+    meta = meta or {}
+    if kind == "justification_matching":
+        return {"justification_bank": list(meta.get("justification_bank") or [])}
+    if kind == "proof_gap_fill":
+        gaps = meta.get("gaps")
+        return {"gap_count": len(gaps) if isinstance(gaps, list) else 1}
+    return {}
 
 
 def _now() -> datetime:
@@ -223,6 +241,7 @@ async def finalize_response_grade(
             tolerance=tolerance,
             explanation=explanation,
             milestones=milestones,
+            meta=meta,
         )
 
     response.answer = {"raw": student_answer}

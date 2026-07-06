@@ -9,6 +9,7 @@ Run it:  AXIOM_DATABASE_URL=... python -m app.seed
 from __future__ import annotations
 
 import asyncio
+import json
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -332,6 +333,154 @@ PHASE3_ITEMS: dict[str, list] = {
 }
 
 
+# Structured proof demo items (Curriculum & Proof Extension, Section 4.2),
+# attached to the proof-transition course and technique nodes seeded by the
+# ladder graph. code -> list of (kind, prompt, options, correct, explanation,
+# meta). All are deterministic and auto-gradable.
+PROOF_ITEMS: dict[str, list] = {
+    "INTROPROOF": [
+        (
+            "proof_assembly",
+            "Order these steps into a valid proof that the square of an even "
+            "integer is even.",
+            [
+                "Then n^2 = (2k)^2 = 4k^2.",
+                "Assume n is even, so n = 2k for some integer k.",
+                "Therefore n^2 is even.",
+                "So n^2 = 2(2k^2), a multiple of 2.",
+            ],
+            json.dumps([
+                "Assume n is even, so n = 2k for some integer k.",
+                "Then n^2 = (2k)^2 = 4k^2.",
+                "So n^2 = 2(2k^2), a multiple of 2.",
+                "Therefore n^2 is even.",
+            ]),
+            "Start from the hypothesis, expand, factor out 2, then conclude.",
+            None,
+        ),
+        (
+            "find_the_error",
+            "One step in this 'proof' that 2 = 1 is invalid. Select the invalid "
+            "step.",
+            [
+                "Let a = b.",
+                "Multiply both sides by a: a^2 = ab.",
+                "Subtract b^2: a^2 - b^2 = ab - b^2.",
+                "Factor: (a - b)(a + b) = b(a - b).",
+                "Divide both sides by (a - b): a + b = b.",
+                "With a = b this gives 2b = b, so 2 = 1.",
+            ],
+            "4",
+            "Dividing by (a - b) divides by zero, since a = b. That step is invalid.",
+            None,
+        ),
+        (
+            "state_definition",
+            "State the definition of an even integer.",
+            None,
+            "an integer that is a multiple of 2|an integer of the form 2k|"
+            "an integer divisible by 2",
+            "An even integer is one that can be written as 2k for some integer k.",
+            {"keywords": ["integer", "2"]},
+        ),
+    ],
+    "PT.COUNTEREXAMPLE": [
+        (
+            "counterexample",
+            "Give a counterexample to the false claim: for every real number n, "
+            "n^2 > n. Enter a value of n that breaks it.",
+            None,
+            "1/2",
+            "Any n in (0, 1) works: for n = 1/2, n^2 = 1/4 which is not > 1/2.",
+            {"predicate": "n**2 <= n", "var": "n"},
+        ),
+    ],
+    "PT.INDUCTION": [
+        (
+            "justification_matching",
+            "Match each step of the induction proof that 1 + 2 + ... + n = "
+            "n(n+1)/2 to the rule that justifies it.",
+            None,
+            json.dumps([
+                ["Check n = 1: 1 = 1(2)/2.", "base case"],
+                ["Assume 1 + ... + k = k(k+1)/2.", "inductive hypothesis"],
+                ["Add (k+1) to both sides.", "inductive step"],
+                ["Conclude the formula holds for all n.", "principle of induction"],
+            ]),
+            "An induction proof has a base case, a hypothesis, a step, and the "
+            "conclusion by the induction principle.",
+            {
+                "justification_bank": [
+                    "base case",
+                    "inductive hypothesis",
+                    "inductive step",
+                    "principle of induction",
+                ]
+            },
+        ),
+    ],
+}
+
+
+async def seed_proof_items(session: AsyncSession) -> int:
+    """Add the structured proof demo items if missing (idempotent, by prompt).
+
+    Attaches to the ladder's proof-transition and technique nodes, in a dedicated
+    Proof Foundations bank, so the new proof kinds are demonstrable end to end.
+    """
+    nodes = {
+        node.code: node
+        for node in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    if "INTROPROOF" not in nodes:
+        return 0
+
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Proof Foundations Bank")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        bank = ItemBank(
+            name="Proof Foundations Bank",
+            description="Structured proof demo items (Curriculum & Proof Extension).",
+        )
+        session.add(bank)
+        await session.flush()
+
+    added = 0
+    for code, rows in PROOF_ITEMS.items():
+        node = nodes.get(code)
+        if node is None:
+            continue
+        for kind, prompt, options, correct, explanation, meta in rows:
+            exists = (
+                await session.execute(
+                    select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+                )
+            ).scalar_one_or_none()
+            if exists is not None:
+                continue
+            session.add(
+                Item(
+                    bank_id=bank.id,
+                    node_id=node.id,
+                    kind=kind,
+                    prompt=prompt,
+                    options=options,
+                    correct=correct,
+                    explanation=explanation,
+                    difficulty=0.5,
+                    tolerance=None,
+                    meta=meta,
+                )
+            )
+            added += 1
+    if added:
+        await session.flush()
+    return added
+
+
 async def seed_extra_items(session: AsyncSession) -> int:
     """Add the Phase 2 and Phase 3 demo items if they are missing.
 
@@ -396,8 +545,10 @@ async def seed(session: AsyncSession) -> bool:
     await seed_badges(session)
     # The full tier 0-6 curriculum backbone (Curriculum & Proof Extension). It is
     # idempotent and independent of the algebra demo below, so it seeds on every
-    # startup, old databases included.
+    # startup, old databases included. The structured proof demo items attach to
+    # its proof-transition and technique nodes.
     await seed_curriculum_graph(session)
+    await seed_proof_items(session)
 
     existing = (
         await session.execute(select(StandardsFramework).where(StandardsFramework.code == "AAF"))

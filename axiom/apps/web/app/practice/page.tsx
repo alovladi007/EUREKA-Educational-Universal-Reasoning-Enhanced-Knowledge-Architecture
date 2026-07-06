@@ -82,9 +82,13 @@ function PracticeInner() {
   const [answer, setAnswer] = useState('');
   // Selected option indices for mcq_multi, submitted as a JSON array string.
   const [selectedIndices, setSelectedIndices] = useState<number[]>([]);
-  // The learner's current ordering for the `ordering` kind (the option strings
-  // in their chosen order), submitted as a JSON array.
+  // The learner's current ordering for the `ordering` and `proof_assembly`
+  // kinds (the option strings in their chosen order), submitted as a JSON array.
   const [ordered, setOrdered] = useState<string[]>([]);
+  // justification_matching: step index -> chosen justification from the bank.
+  const [matchAssign, setMatchAssign] = useState<Record<number, string>>({});
+  // proof_gap_fill: one string per gap, submitted as a JSON array of fills.
+  const [gapFills, setGapFills] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AnswerResult | null>(null);
 
@@ -112,6 +116,8 @@ function PracticeInner() {
     setAnswer('');
     setSelectedIndices([]);
     setOrdered([]);
+    setMatchAssign({});
+    setGapFills([]);
     setErrorMessage('');
     setHint(null);
     setHintError('');
@@ -124,8 +130,12 @@ function PracticeInner() {
       }
       const question = next as PracticeQuestion;
       setQuestion(question);
-      if (question.kind === 'ordering') {
+      if (question.kind === 'ordering' || question.kind === 'proof_assembly') {
         setOrdered(question.options ?? []);
+      }
+      if (question.kind === 'proof_gap_fill') {
+        const gapCount = question.presentation?.gap_count ?? 1;
+        setGapFills(Array.from({ length: gapCount }, () => ''));
       }
       setPhase('question');
     } catch (err) {
@@ -155,8 +165,18 @@ function PracticeInner() {
       const sorted = [...selectedIndices].sort((a, b) => a - b);
       return JSON.stringify(sorted);
     }
-    if (question.kind === 'ordering') {
+    if (question.kind === 'ordering' || question.kind === 'proof_assembly') {
       return JSON.stringify(ordered);
+    }
+    if (question.kind === 'justification_matching') {
+      const pairs = (question.options ?? []).map((step, i) => [
+        step,
+        matchAssign[i] ?? '',
+      ]);
+      return JSON.stringify(pairs);
+    }
+    if (question.kind === 'proof_gap_fill') {
+      return JSON.stringify(gapFills);
     }
     return answer.trim();
   }
@@ -169,8 +189,15 @@ function PracticeInner() {
     if (question.kind === 'mcq_multi') {
       return selectedIndices.length > 0;
     }
-    if (question.kind === 'ordering') {
+    if (question.kind === 'ordering' || question.kind === 'proof_assembly') {
       return ordered.length > 0;
+    }
+    if (question.kind === 'justification_matching') {
+      const steps = question.options ?? [];
+      return steps.length > 0 && steps.every((_, i) => (matchAssign[i] ?? '') !== '');
+    }
+    if (question.kind === 'proof_gap_fill') {
+      return gapFills.length > 0 && gapFills.every((g) => g.trim() !== '');
     }
     return answer.trim() !== '';
   }
@@ -644,6 +671,174 @@ function PracticeInner() {
                   ))}
                 </ol>
               </fieldset>
+            ) : kind === 'proof_assembly' ? (
+              <fieldset className="mt-5" disabled={inputsLocked}>
+                <legend className="mb-2 block text-sm font-medium text-card-foreground">
+                  Assemble the proof in order
+                </legend>
+                <ol className="space-y-2">
+                  {ordered.map((item, index) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2 rounded-lg border border-border bg-background p-2"
+                    >
+                      <span className="w-6 text-center text-xs text-muted-foreground">
+                        {index + 1}
+                      </span>
+                      <span className="flex-1 text-sm text-card-foreground">{item}</span>
+                      <button
+                        type="button"
+                        onClick={() => moveOrdered(index, -1)}
+                        disabled={inputsLocked || index === 0}
+                        aria-label={`Move "${item}" up`}
+                        className="rounded border border-border px-2 py-1 text-xs text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40"
+                      >
+                        Up
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => moveOrdered(index, 1)}
+                        disabled={inputsLocked || index === ordered.length - 1}
+                        aria-label={`Move "${item}" down`}
+                        className="rounded border border-border px-2 py-1 text-xs text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40"
+                      >
+                        Down
+                      </button>
+                    </li>
+                  ))}
+                </ol>
+              </fieldset>
+            ) : kind === 'find_the_error' ? (
+              <fieldset className="mt-5" disabled={inputsLocked}>
+                <legend className="mb-2 block text-sm font-medium text-card-foreground">
+                  Select the invalid step
+                </legend>
+                <div className="space-y-2">
+                  {(question.options ?? []).map((step, index) => (
+                    <label
+                      key={index}
+                      className="flex items-start gap-2 rounded-lg border border-border bg-background p-2 text-sm text-card-foreground"
+                    >
+                      <input
+                        type="radio"
+                        name="find-the-error"
+                        className="mt-1"
+                        checked={answer === String(index)}
+                        disabled={inputsLocked}
+                        onChange={() => setAnswer(String(index))}
+                      />
+                      <span>
+                        <span className="mr-2 text-xs text-muted-foreground">
+                          Step {index + 1}
+                        </span>
+                        {step}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ) : kind === 'justification_matching' ? (
+              <fieldset className="mt-5" disabled={inputsLocked}>
+                <legend className="mb-2 block text-sm font-medium text-card-foreground">
+                  Match each step to its justification
+                </legend>
+                <div className="space-y-2">
+                  {(question.options ?? []).map((step, index) => (
+                    <div
+                      key={index}
+                      className="flex flex-col gap-2 rounded-lg border border-border bg-background p-2 sm:flex-row sm:items-center"
+                    >
+                      <span className="flex-1 text-sm text-card-foreground">{step}</span>
+                      <select
+                        aria-label={`Justification for "${step}"`}
+                        value={matchAssign[index] ?? ''}
+                        disabled={inputsLocked}
+                        onChange={(e) =>
+                          setMatchAssign((prev) => ({ ...prev, [index]: e.target.value }))
+                        }
+                        className="rounded border border-border bg-card px-2 py-1 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      >
+                        <option value="">Choose a justification</option>
+                        {(question.presentation?.justification_bank ?? []).map((j) => (
+                          <option key={j} value={j}>
+                            {j}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+            ) : kind === 'proof_gap_fill' ? (
+              <fieldset className="mt-5" disabled={inputsLocked}>
+                <legend className="mb-2 block text-sm font-medium text-card-foreground">
+                  Fill each gap in the proof
+                </legend>
+                <div className="space-y-2">
+                  {gapFills.map((fill, index) => (
+                    <div key={index} className="flex items-center gap-2">
+                      <span className="w-16 text-xs text-muted-foreground">
+                        Gap {index + 1}
+                      </span>
+                      <input
+                        type="text"
+                        value={fill}
+                        disabled={inputsLocked}
+                        aria-label={`Fill for gap ${index + 1}`}
+                        onChange={(e) =>
+                          setGapFills((prev) => {
+                            const next = [...prev];
+                            next[index] = e.target.value;
+                            return next;
+                          })
+                        }
+                        className="flex-1 rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </fieldset>
+            ) : kind === 'counterexample' ? (
+              <div className="mt-5">
+                <label className="mb-1 block text-sm font-medium text-card-foreground">
+                  Your counterexample
+                </label>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  Enter a value that breaks the claim. Use ^ for powers.
+                </p>
+                <MathField
+                  key={question.response_token}
+                  readOnly={inputsLocked}
+                  ariaLabel="Counterexample value"
+                  placeholder="for example 1/2"
+                  onChange={(ascii) => setAnswer(ascii)}
+                  onEnter={() => {
+                    if (phase === 'question') {
+                      void submit();
+                    }
+                  }}
+                />
+              </div>
+            ) : kind === 'state_definition' || kind === 'state_theorem' ? (
+              <div className="mt-5">
+                <label
+                  htmlFor="state-input"
+                  className="mb-1 block text-sm font-medium text-card-foreground"
+                >
+                  {kind === 'state_definition'
+                    ? 'State the definition'
+                    : 'State the theorem'}
+                </label>
+                <textarea
+                  id="state-input"
+                  rows={3}
+                  value={answer}
+                  disabled={inputsLocked}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="Write it in your own words."
+                />
+              </div>
             ) : kind === 'plot_points' ? (
               <div className="mt-5">
                 <label className="mb-1 block text-sm font-medium text-card-foreground">

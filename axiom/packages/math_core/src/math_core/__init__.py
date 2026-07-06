@@ -9,6 +9,8 @@ Public API:
     ItemTemplate      -- parameterized item definition.
     ItemVariant       -- a concrete rendered item for one seed.
     GradeResult       -- structured verdict returned by every grader.
+    check_counterexample -- deterministic test of a counterexample against a
+                            property predicate (Curriculum & Proof Extension).
 """
 
 from __future__ import annotations
@@ -20,6 +22,7 @@ from .grading import (
     grade_numeric,
     symbolic_equal,
 )
+from .proof import check_counterexample
 from .solutions import (
     SolutionCheck,
     SolutionStep,
@@ -35,6 +38,7 @@ __all__ = [
     "grade_numeric",
     "grade_equation",
     "symbolic_equal",
+    "check_counterexample",
     "resolve_template",
     "ItemTemplate",
     "ItemVariant",

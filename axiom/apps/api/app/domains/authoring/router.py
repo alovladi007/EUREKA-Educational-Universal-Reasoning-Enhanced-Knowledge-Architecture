@@ -181,6 +181,7 @@ async def preview_grade(
         tolerance=body.tolerance,
         explanation=body.explanation,
         milestones=milestones,
+        meta=body.meta,
     )
     return {
         "is_correct": outcome.is_correct,
