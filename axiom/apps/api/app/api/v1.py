@@ -7,6 +7,7 @@ from fastapi import APIRouter
 from app.domains.adaptive.router import router as adaptive_router
 from app.domains.analytics.router import router as analytics_router
 from app.domains.assessment.router import router as assessment_router
+from app.domains.authoring.router import router as authoring_router
 from app.domains.content.router import router as content_router
 from app.domains.copilot.router import router as copilot_router
 from app.domains.curriculum.router import router as curriculum_router
@@ -27,6 +28,7 @@ api_v1.include_router(content_router)
 api_v1.include_router(practice_router)
 api_v1.include_router(adaptive_router)
 api_v1.include_router(assessment_router)
+api_v1.include_router(authoring_router)
 api_v1.include_router(analytics_router)
 api_v1.include_router(gamification_router)
 api_v1.include_router(copilot_router)

@@ -54,6 +54,7 @@ const NAV_GROUPS: NavGroup[] = [
     heading: 'Teaching',
     links: [
       { href: '/teacher', label: 'Teacher console' },
+      { href: '/studio', label: 'Content Studio' },
       { href: '/analytics', label: 'Analytics' },
       { href: '/grading-review', label: 'Grading review' },
     ],

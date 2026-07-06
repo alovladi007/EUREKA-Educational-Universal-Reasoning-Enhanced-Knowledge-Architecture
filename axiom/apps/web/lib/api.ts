@@ -224,6 +224,47 @@ export async function apiPost<T>(path: string, body: unknown): Promise<T> {
   return (await res.json()) as T;
 }
 
+// Authenticated request with an arbitrary method and optional JSON body, for
+// the PUT and DELETE endpoints the Content Studio uses. Throws ApiError on any
+// non-2xx response, mirroring apiGet/apiPost.
+export async function apiSend<T>(
+  path: string,
+  method: 'PUT' | 'DELETE' | 'PATCH',
+  body?: unknown,
+): Promise<T> {
+  const token = getToken();
+  const headers: Record<string, string> = {
+    Accept: 'application/json',
+    'Content-Type': 'application/json',
+  };
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  const url = `${AXIOM_API_URL}${path}`;
+  let res: Response;
+  try {
+    res = await fetch(url, {
+      method,
+      headers,
+      cache: 'no-store',
+      body: body === undefined ? undefined : JSON.stringify(body),
+    });
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'network error';
+    throw new ApiError(0, `Request to ${path} failed: ${message}`, '');
+  }
+  if (!res.ok) {
+    let text = '';
+    try {
+      text = await res.text();
+    } catch {
+      text = '';
+    }
+    throw new ApiError(res.status, `Request to ${path} returned ${res.status}`, text);
+  }
+  return (await res.json()) as T;
+}
+
 // Convenience helpers for the three endpoints the dashboard uses.
 export function fetchMe(): Promise<Me> {
   return apiGet<Me>('/api/v1/me');
@@ -1059,4 +1100,97 @@ export interface MistakeItem {
 // Fetch the signed-in learner's recent incorrect answers, most recent first.
 export function fetchMistakes(): Promise<{ items: MistakeItem[] }> {
   return apiGet<{ items: MistakeItem[] }>('/api/v1/practice/mistakes');
+}
+
+// -------------------------------------------------------------------------
+// Content Studio authoring (teacher and author roles).
+
+export interface AuthoringNode {
+  id: string;
+  code: string;
+  title: string;
+}
+
+export interface AuthoringBank {
+  id: string;
+  name: string;
+  description: string;
+}
+
+export interface AuthoredItem {
+  id: string;
+  bank_id: string;
+  node_id: string;
+  kind: string;
+  prompt: string;
+  options: string[] | null;
+  correct: string;
+  explanation: string;
+  difficulty: number;
+  tolerance: number | null;
+  meta: Record<string, unknown> | null;
+}
+
+// A draft sent to create or update an item. node is a node code or id.
+export interface ItemDraft {
+  node: string;
+  kind: string;
+  prompt: string;
+  correct: string;
+  options: string[] | null;
+  explanation: string;
+  difficulty: number;
+  tolerance: number | null;
+  meta: Record<string, unknown> | null;
+  bank_id?: string | null;
+}
+
+export interface PreviewGradeResult {
+  is_correct: boolean;
+  score: number;
+  grader: string;
+  confidence: number;
+  detail: string;
+  correct_display: string;
+  step_credits: { milestone: string; awarded: boolean }[];
+}
+
+export function authoringNodes(): Promise<{ nodes: AuthoringNode[] }> {
+  return apiGet<{ nodes: AuthoringNode[] }>('/api/v1/authoring/nodes');
+}
+
+export function authoringBanks(): Promise<{ banks: AuthoringBank[] }> {
+  return apiGet<{ banks: AuthoringBank[] }>('/api/v1/authoring/banks');
+}
+
+export function authoringItems(node?: string): Promise<{ items: AuthoredItem[] }> {
+  const query = node ? `?node=${encodeURIComponent(node)}` : '';
+  return apiGet<{ items: AuthoredItem[] }>(`/api/v1/authoring/items${query}`);
+}
+
+export function authoringCreateItem(draft: ItemDraft): Promise<AuthoredItem> {
+  return apiPost<AuthoredItem>('/api/v1/authoring/items', draft);
+}
+
+export function authoringUpdateItem(
+  id: string,
+  draft: Partial<ItemDraft>,
+): Promise<AuthoredItem> {
+  return apiSend<AuthoredItem>(`/api/v1/authoring/items/${id}`, 'PUT', draft);
+}
+
+export function authoringDeleteItem(id: string): Promise<{ deleted: boolean }> {
+  return apiSend<{ deleted: boolean }>(`/api/v1/authoring/items/${id}`, 'DELETE');
+}
+
+export function authoringPreviewGrade(body: {
+  kind: string;
+  correct: string;
+  sample_answer: string;
+  options: string[] | null;
+  tolerance: number | null;
+  explanation: string;
+  meta: Record<string, unknown> | null;
+}): Promise<PreviewGradeResult> {
+  return apiPost<PreviewGradeResult>('/api/v1/authoring/preview-grade', body);
 }
