@@ -200,6 +200,7 @@ export default function CopilotPage() {
       <PageHeader>
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/practice">Practice</HeaderLink>
+        <HeaderLink href="/assessments">Assessments</HeaderLink>
         <HeaderLink href="/learn">Learn</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
         <HeaderLink href="/review">Review</HeaderLink>

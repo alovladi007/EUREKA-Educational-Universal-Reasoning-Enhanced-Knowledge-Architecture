@@ -56,6 +56,10 @@ export default function TeacherPage() {
   const [title, setTitle] = useState('');
   const [selectedCodes, setSelectedCodes] = useState<string[]>([]);
   const [itemCount, setItemCount] = useState(5);
+  // Optional availability window. Each is a datetime-local value
+  // ("YYYY-MM-DDTHH:MM"), converted to ISO before sending and omitted when empty.
+  const [openAt, setOpenAt] = useState('');
+  const [closeAt, setCloseAt] = useState('');
   const [creating, setCreating] = useState(false);
   const [formError, setFormError] = useState('');
 
@@ -119,16 +123,23 @@ export default function TeacherPage() {
       setFormError('The number of items must be at least 1.');
       return;
     }
+    // Convert the datetime-local values to ISO 8601, omitting empty ones.
+    const openIso = openAt ? new Date(openAt).toISOString() : undefined;
+    const closeIso = closeAt ? new Date(closeAt).toISOString() : undefined;
     setCreating(true);
     try {
       await createAssessment({
         title: title.trim(),
         node_ids: selectedCodes,
         item_count: Math.floor(itemCount),
+        ...(openIso ? { open_at: openIso } : {}),
+        ...(closeIso ? { close_at: closeIso } : {}),
       });
       setTitle('');
       setSelectedCodes([]);
       setItemCount(5);
+      setOpenAt('');
+      setCloseAt('');
       const mine = await fetchMyAssessments();
       setAssessments(mine);
     } catch (err) {
@@ -209,6 +220,7 @@ export default function TeacherPage() {
       <PageHeader>
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/practice">Practice</HeaderLink>
+        <HeaderLink href="/assessments">Assessments</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
         <HeaderLink href="/review">Review</HeaderLink>
         <HeaderLink href="/copilot">Copilot</HeaderLink>
@@ -328,6 +340,45 @@ export default function TeacherPage() {
                     onChange={(e) => setItemCount(Number(e.target.value))}
                     className="w-28 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
                   />
+                </div>
+
+                <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+                  <div>
+                    <label
+                      htmlFor="assessment-open-at"
+                      className="mb-1 block text-sm font-medium text-card-foreground"
+                    >
+                      Opens
+                    </label>
+                    <input
+                      id="assessment-open-at"
+                      type="datetime-local"
+                      value={openAt}
+                      onChange={(e) => setOpenAt(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Optional. Students cannot start before this time.
+                    </p>
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="assessment-close-at"
+                      className="mb-1 block text-sm font-medium text-card-foreground"
+                    >
+                      Closes
+                    </label>
+                    <input
+                      id="assessment-close-at"
+                      type="datetime-local"
+                      value={closeAt}
+                      onChange={(e) => setCloseAt(e.target.value)}
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    />
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      Optional. Students cannot start after this time.
+                    </p>
+                  </div>
                 </div>
 
                 {formError && (

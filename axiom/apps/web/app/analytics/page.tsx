@@ -135,6 +135,7 @@ export default function AnalyticsPage() {
       <PageHeader>
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/teacher">Teacher</HeaderLink>
+        <HeaderLink href="/assessments">Assessments</HeaderLink>
         <HeaderLink href="/grading-review">Grading</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
         <HeaderLink href="/review">Review</HeaderLink>

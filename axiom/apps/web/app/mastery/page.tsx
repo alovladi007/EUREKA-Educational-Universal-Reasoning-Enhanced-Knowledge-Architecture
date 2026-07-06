@@ -112,6 +112,7 @@ export default function MasteryPage() {
       <PageHeader>
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/practice">Practice</HeaderLink>
+        <HeaderLink href="/assessments">Assessments</HeaderLink>
         <HeaderLink href="/path">Path</HeaderLink>
         <HeaderLink href="/review">Review</HeaderLink>
         <HeaderLink href="/copilot">Copilot</HeaderLink>

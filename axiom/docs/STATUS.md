@@ -47,7 +47,7 @@ These are explicitly not implemented:
 | math_core (package) | done | Phase 0 | SymPy symbolic equivalence, safe parsing (no eval), wall-clock timeout, deterministic parameterized-item resolver, tests. |
 | curriculum | done | Phase 1 | Standards framework, skill graph, objectives. Seeded algebra graph. |
 | content | done | Phase 1 | Lessons and content steps per node. |
-| assessment | done | Phase 1, richer kinds and QTI in Phase 2 | Item bank, static items, parameterized templates and variants, assessments, forms, assignment, delivery. Phase 2 adds richer item kinds, item.meta, and QTI 3.0 import and export. |
+| assessment | done | Phase 1, richer kinds and QTI in Phase 2 | Item bank, static items, parameterized templates and variants, assessments, forms, assignment, delivery. Phase 2 adds richer item kinds, item.meta, and QTI 3.0 import and export. Assignments carry a due date, and assessments a server-enforced availability window (open_at/close_at). |
 | grading | done | Phase 1, extended in Phase 2 and 3 | Selection, numeric, math expression and equation (SymPy), plus multi-select, true/false, short text, plot-points, and show-your-work step credit. Phase 3 adds rubric-based AI grading of free-response text (via the reasoning provider) with a teacher override queue. Writes grader plus confidence and a reasoning trace. Runs inline. |
 | adaptive | done | Phase 1 (BKT), Phase 2 (IRT/CAT) | BKT mastery with evidence and prerequisite-aware path planning; IRT 3PL model, computerized adaptive testing, and item calibration. |
 | analytics | done | Phase 2 | Item statistics with IRT, standards heatmap, growth, CSV and PDF exports. |

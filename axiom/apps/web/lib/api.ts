@@ -440,12 +440,27 @@ export interface LearningPath {
   recommended_node_id: string | null;
 }
 
-// A teacher assessment as listed by GET /api/v1/assessments/mine.
+// A teacher assessment as listed by GET /api/v1/assessments/mine. The optional
+// availability window (open_at/close_at) bounds when students may start it; a
+// null bound is open-ended on that side.
 export interface AssessmentSummary {
   id: string;
   title: string;
   kind: string;
   created_at: string;
+  open_at?: string | null;
+  close_at?: string | null;
+}
+
+// One assessment assigned to the signed-in student, from
+// GET /api/v1/assessments/assigned. open_at/close_at bound when it can be
+// started (a null bound is open-ended); due_at is the assignment's due date.
+export interface AssignedAssessment {
+  id: string;
+  title: string;
+  open_at: string | null;
+  close_at: string | null;
+  due_at: string | null;
 }
 
 // One row of results for an assessment.
@@ -525,11 +540,43 @@ export function createAssessment(input: {
   title: string;
   node_ids: string[];
   item_count: number;
+  open_at?: string;
+  close_at?: string;
 }): Promise<{ id: string; title: string }> {
   return apiPost<{ id: string; title: string }>(
     '/api/v1/assessments',
     input,
   );
+}
+
+// The signed-in student's assigned assessments, most recent first.
+export function fetchAssignedAssessments(): Promise<AssignedAssessment[]> {
+  return apiGet<AssignedAssessment[]>('/api/v1/assessments/assigned');
+}
+
+// Start an assigned assessment, returning the attempt id and its served items.
+// Throws ApiError with status 403 when outside the availability window; the
+// JSON body carries a { detail } message the caller can surface.
+export function startAssessment(id: string): Promise<{
+  attempt_id: string;
+  items: {
+    response_token: string;
+    kind: string;
+    prompt: string;
+    options: string[] | null;
+  }[];
+  count: number;
+}> {
+  return apiPost<{
+    attempt_id: string;
+    items: {
+      response_token: string;
+      kind: string;
+      prompt: string;
+      options: string[] | null;
+    }[];
+    count: number;
+  }>(`/api/v1/assessments/${encodeURIComponent(id)}/start`, {});
 }
 
 export function assignToAllStudents(

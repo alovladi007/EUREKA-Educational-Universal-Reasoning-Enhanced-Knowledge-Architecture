@@ -122,6 +122,7 @@ export default function ReviewPage() {
       <PageHeader>
         <HeaderLink href="/dashboard">Dashboard</HeaderLink>
         <HeaderLink href="/practice">Practice</HeaderLink>
+        <HeaderLink href="/assessments">Assessments</HeaderLink>
         <HeaderLink href="/mastery">Mastery</HeaderLink>
         <HeaderLink href="/copilot">Copilot</HeaderLink>
         <HeaderLink href="/cat">Adaptive Test</HeaderLink>

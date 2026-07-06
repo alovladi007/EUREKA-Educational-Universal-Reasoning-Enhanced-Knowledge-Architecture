@@ -56,6 +56,9 @@ class CreateAssessment(BaseModel):
     title: str
     node_ids: list[str]
     item_count: int = 5
+    # Optional ISO 8601 availability window; interpreted as UTC, stored naive.
+    open_at: str | None = None
+    close_at: str | None = None
 
 
 class AssignBody(BaseModel):
@@ -103,7 +106,13 @@ async def create(
     if not node_ids:
         raise HTTPException(status_code=400, detail="no valid nodes")
     assessment = await svc.create_assessment(
-        session, uuid.UUID(teacher.id), body.title, node_ids, body.item_count
+        session,
+        uuid.UUID(teacher.id),
+        body.title,
+        node_ids,
+        body.item_count,
+        open_at=_parse_due(body.open_at),
+        close_at=_parse_due(body.close_at),
     )
     await session.commit()
     return {"id": str(assessment.id), "title": assessment.title}
@@ -126,7 +135,14 @@ async def mine(
         .all()
     )
     return [
-        {"id": str(a.id), "title": a.title, "kind": a.kind, "created_at": a.created_at}
+        {
+            "id": str(a.id),
+            "title": a.title,
+            "kind": a.kind,
+            "created_at": a.created_at,
+            "open_at": a.open_at,
+            "close_at": a.close_at,
+        }
         for a in rows
     ]
 
@@ -172,18 +188,23 @@ async def assigned(
     user: UserOut = Depends(get_current_user),
 ) -> list[dict]:
     rows = (
-        (
-            await session.execute(
-                select(Assessment)
-                .join(AssignmentTarget, AssignmentTarget.assessment_id == Assessment.id)
-                .where(AssignmentTarget.user_id == uuid.UUID(user.id))
-                .order_by(Assessment.created_at.desc())
-            )
+        await session.execute(
+            select(Assessment, AssignmentTarget)
+            .join(AssignmentTarget, AssignmentTarget.assessment_id == Assessment.id)
+            .where(AssignmentTarget.user_id == uuid.UUID(user.id))
+            .order_by(Assessment.created_at.desc())
         )
-        .scalars()
-        .all()
-    )
-    return [{"id": str(a.id), "title": a.title} for a in rows]
+    ).all()
+    return [
+        {
+            "id": str(a.id),
+            "title": a.title,
+            "open_at": a.open_at,
+            "close_at": a.close_at,
+            "due_at": t.due_at,
+        }
+        for a, t in rows
+    ]
 
 
 @router.post("/{assessment_id}/start", summary="Start an assigned assessment (student)")
@@ -193,6 +214,12 @@ async def start(
     user: UserOut = Depends(get_current_user),
 ) -> dict:
     result = await svc.start_attempt(session, uuid.UUID(assessment_id), uuid.UUID(user.id))
+    if "error" in result:
+        status_by_reason = {"not_found": 404, "not_open": 403, "closed": 403}
+        raise HTTPException(
+            status_code=status_by_reason.get(result.get("reason"), 400),
+            detail=result["error"],
+        )
     await session.commit()
     return result
 

@@ -10,7 +10,7 @@ through the shared practice grading path. Results aggregate per assigned user.
 from __future__ import annotations
 
 import uuid
-from datetime import datetime
+from datetime import UTC, datetime
 
 from math_core import ItemTemplate as McItemTemplate
 from math_core import resolve_template
@@ -38,8 +38,12 @@ async def create_assessment(
     title: str,
     node_ids: list[uuid.UUID],
     item_count: int,
+    open_at: datetime | None = None,
+    close_at: datetime | None = None,
 ) -> Assessment:
-    assessment = Assessment(title=title, kind="quiz", created_by=teacher_id)
+    assessment = Assessment(
+        title=title, kind="quiz", created_by=teacher_id, open_at=open_at, close_at=close_at
+    )
     session.add(assessment)
     await session.flush()
     form = AssessmentForm(assessment_id=assessment.id, name="Form A")
@@ -116,7 +120,30 @@ async def assign(
 async def start_attempt(
     session: AsyncSession, assessment_id: uuid.UUID, user_id: uuid.UUID
 ) -> dict:
-    """Serve the assessment form to a student as Responses on a new attempt."""
+    """Serve the assessment form to a student as Responses on a new attempt.
+
+    Enforces the availability window: a student may only start between open_at
+    and close_at when either is set.
+    """
+    assessment = (
+        await session.execute(select(Assessment).where(Assessment.id == assessment_id))
+    ).scalar_one_or_none()
+    if assessment is None:
+        return {"error": "assessment not found", "reason": "not_found"}
+    now = datetime.now(UTC).replace(tzinfo=None)
+    if assessment.open_at is not None and now < assessment.open_at:
+        return {
+            "error": "This assessment is not open yet.",
+            "reason": "not_open",
+            "open_at": assessment.open_at.isoformat(),
+        }
+    if assessment.close_at is not None and now > assessment.close_at:
+        return {
+            "error": "This assessment has closed.",
+            "reason": "closed",
+            "close_at": assessment.close_at.isoformat(),
+        }
+
     form = (
         (
             await session.execute(

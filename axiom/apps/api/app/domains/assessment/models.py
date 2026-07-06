@@ -135,6 +135,10 @@ class Assessment(Base):
         Uuid, ForeignKey("users.id", ondelete="CASCADE"), index=True
     )
     created_at: Mapped[datetime] = mapped_column(default=_now)
+    # Optional availability window. A student may only start the assessment
+    # between open_at and close_at; null on either side means unbounded.
+    open_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    close_at: Mapped[datetime | None] = mapped_column(nullable=True)
 
     forms: Mapped[list[AssessmentForm]] = relationship(
         back_populates="assessment", cascade="all, delete-orphan"
