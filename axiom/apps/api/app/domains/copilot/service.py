@@ -151,6 +151,118 @@ async def hint(
     }
 
 
+async def proof_tutor(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    *,
+    node_ref: str | None = None,
+    response_token: str | None = None,
+    draft: str = "",
+    level: int = 0,
+) -> dict:
+    """Proof-tutor mode (Extension Section 7): graduated Socratic hints that
+    never hand over the proof, plus gap detection on the student's draft.
+
+    Grounded in the course's lessons, definitions, and theorems through the
+    retriever. The graduated hint level controls how far the copilot goes -- a
+    nudge toward the technique, then the first step, then the next step -- but it
+    never reveals the answer. Gap detection is server-side: it compares the draft
+    against the active item's required milestones and names the first step the
+    argument has not yet established, without revealing the rest of the proof.
+    """
+    from app.domains.grading.service import _milestone_hit, _norm_text
+
+    node: KnowledgeNode | None = None
+    milestones: list[str] = []
+    if response_token:
+        try:
+            response_id = uuid.UUID(response_token)
+        except ValueError:
+            return {"error": "invalid response token"}
+        response = (
+            await session.execute(
+                select(Response).where(
+                    Response.id == response_id, Response.user_id == user_id
+                )
+            )
+        ).scalar_one_or_none()
+        if response is None:
+            return {"error": "response not found"}
+        node = (
+            await session.execute(
+                select(KnowledgeNode).where(KnowledgeNode.id == response.node_id)
+            )
+        ).scalar_one_or_none()
+        if response.item_id is not None:
+            item = (
+                await session.execute(select(Item).where(Item.id == response.item_id))
+            ).scalar_one_or_none()
+            if item is not None and isinstance(item.meta, dict):
+                milestones = [str(m) for m in (item.meta.get("milestones") or [])]
+    else:
+        node = await _resolve_node(session, node_ref)
+
+    node_id = node.id if node is not None else None
+    query = node.title if node is not None else "this proof"
+    passages = await retrieve(session, query, node_id=node_id, limit=3, include_items=False)
+
+    # Graduated Socratic hint. The level shapes how far the copilot goes but it
+    # never reveals the answer (reveal_answer=False).
+    level = max(0, min(2, int(level)))
+    ladder = [
+        "Point me toward the right proof technique, without any steps.",
+        "Give only the first step of the proof.",
+        "Given my current progress, suggest just the next step.",
+    ]
+    provider = get_reasoning_provider()
+    result = await provider.generate(
+        ReasoningRequest(
+            task="hint",
+            question=f"{ladder[level]} ({query})",
+            passages=passages,
+            reveal_answer=False,
+        )
+    )
+
+    # Gap detection: the first required milestone the draft has not established.
+    # A prose milestone is established when its normalized text appears in the
+    # draft; an algebraic milestone when a line matches it symbolically.
+    gap: str | None = None
+    established = 0
+    draft_norm = _norm_text(draft)
+    draft_lines = [ln for ln in (draft or "").splitlines() if ln.strip()]
+    for milestone in milestones:
+        m_norm = _norm_text(milestone)
+        hit = (bool(m_norm) and m_norm in draft_norm) or any(
+            _milestone_hit(line, milestone) for line in draft_lines
+        )
+        if hit:
+            established += 1
+        elif gap is None:
+            gap = milestone
+
+    trace_id = uuid.uuid4()
+    await _trace(
+        session,
+        trace_id,
+        "proof_tutor",
+        {"provider": result.provider, "node": node.code if node else None, "level": level},
+    )
+    await session.commit()
+    return {
+        "ai_generated": True,
+        "provider": result.provider,
+        "grounded": result.grounded,
+        "level": level,
+        "hint": result.text,
+        "gap": gap,
+        "established": established,
+        "milestone_count": len(milestones),
+        "node_code": node.code if node is not None else None,
+        "sources": _sources_payload(passages),
+    }
+
+
 async def explain(
     session: AsyncSession,
     user_id: uuid.UUID,

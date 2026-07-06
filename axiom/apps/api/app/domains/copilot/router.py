@@ -30,6 +30,13 @@ class HintRequest(BaseModel):
     question: str = ""
 
 
+class ProofTutorRequest(BaseModel):
+    node: str | None = None
+    response_token: str | None = None
+    draft: str = ""
+    level: int = 0
+
+
 class ExplainRequest(BaseModel):
     node: str
     question: str = ""
@@ -53,6 +60,25 @@ async def hint(
         node_ref=body.node,
         response_token=body.response_token,
         question=body.question,
+    )
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result
+
+
+@router.post("/proof-tutor", summary="Graduated Socratic proof hints and gap detection")
+async def proof_tutor(
+    body: ProofTutorRequest,
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> dict:
+    result = await svc.proof_tutor(
+        session,
+        uuid.UUID(user.id),
+        node_ref=body.node,
+        response_token=body.response_token,
+        draft=body.draft,
+        level=body.level,
     )
     if "error" in result:
         raise HTTPException(status_code=404, detail=result["error"])

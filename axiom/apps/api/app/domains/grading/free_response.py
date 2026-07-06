@@ -80,3 +80,37 @@ async def grade_free_response(
         explanation=explanation,
         step_credits=step_credits,
     )
+
+
+async def grade_free_form_proof(
+    reference: str,
+    proof_text: str,
+    rubric: list[dict],
+    explanation: str = "",
+) -> GradeOutcome:
+    """AI-assisted first pass on a free-form proof (Extension Section 4.3).
+
+    The reasoning provider compares the proof against a reference proof and a
+    rubric of required milestones, producing a provisional score, line-level gap
+    feedback (the milestones the argument does not establish), and targeted
+    notes. This is a first pass, never a verdict: the grader is recorded as "ai"
+    and the caller always routes a proof to the human-override queue. The AI
+    never finalizes a high-stakes proof grade on its own.
+    """
+    outcome = await grade_free_response(reference, proof_text, rubric, explanation)
+
+    # Suspected gaps are the required milestones the argument did not establish.
+    gaps = [c["milestone"] for c in outcome.step_credits if not c["awarded"]]
+    gap_note = (
+        f"suspected gaps: {'; '.join(gaps)}" if gaps else "no gaps flagged in the rubric"
+    )
+    return GradeOutcome(
+        is_correct=outcome.is_correct,
+        score=outcome.score,
+        grader="ai",
+        confidence=outcome.confidence,
+        detail=f"AI-assisted proof review ({gap_note}). Pending human sign-off.",
+        correct_display=reference or "",
+        explanation=explanation,
+        step_credits=outcome.step_credits,
+    )

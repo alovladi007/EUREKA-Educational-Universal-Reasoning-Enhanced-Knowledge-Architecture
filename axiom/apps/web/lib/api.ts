@@ -594,6 +594,32 @@ export function verifyFormalProof(
   });
 }
 
+// The proof tutor's graduated Socratic guidance (Extension Section 7): a hint
+// that does not reveal the answer, plus the first gap in the current draft.
+export interface ProofTutorResult {
+  ai_generated: boolean;
+  provider: string;
+  level: number;
+  hint: string;
+  gap: string | null;
+  established: number;
+  milestone_count: number;
+  node_code: string | null;
+}
+
+// Ask the proof tutor for a level-graduated hint and gap detection on a draft.
+export function proofTutor(
+  responseToken: string,
+  draft: string,
+  level: number,
+): Promise<ProofTutorResult> {
+  return apiPost<ProofTutorResult>('/api/v1/copilot/proof-tutor', {
+    response_token: responseToken,
+    draft,
+    level,
+  });
+}
+
 // Poll the grading status/result for a response. Used for async free_response
 // grading: after practiceAnswer returns status "grading", the client calls this
 // on an interval until status is "graded" (or gives up after a max number of

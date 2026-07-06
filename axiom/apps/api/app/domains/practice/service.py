@@ -37,7 +37,7 @@ from app.domains.attempts.models import (
 from app.domains.curriculum.models import KnowledgeNode
 from app.domains.gamification.service import record_practice_result
 from app.domains.grading.formal import grade_formal_proof
-from app.domains.grading.free_response import grade_free_response
+from app.domains.grading.free_response import grade_free_form_proof, grade_free_response
 from app.domains.grading.service import grade
 
 # Ordered mastery bands, used to detect a level increase from one response so
@@ -234,6 +234,10 @@ async def finalize_response_grade(
         )
     elif kind == "formal_proof":
         outcome = await grade_formal_proof(student_answer, meta, explanation=explanation)
+    elif kind == "free_form_proof":
+        outcome = await grade_free_form_proof(
+            str(correct), student_answer, meta.get("rubric") or [], explanation=explanation
+        )
     else:
         milestones = meta.get("milestones") if kind == "show_work" else None
         outcome = grade(
@@ -334,6 +338,33 @@ async def finalize_response_grade(
             mastered=mastered,
         )
 
+    # Proof-technique transfer (Extension Section 8): a graded proof that uses a
+    # technique is evidence toward that technique's mastery, in whatever course
+    # it appears -- so competence transfers across courses. The item declares the
+    # techniques it exercises in meta.techniques (technique-node codes). Pending
+    # (unverified formal) proofs produce no evidence, here as elsewhere.
+    technique_updates: list[dict] = []
+    if not pending_review:
+        for code in meta.get("techniques") or []:
+            tech = (
+                await session.execute(
+                    select(KnowledgeNode).where(KnowledgeNode.code == str(code))
+                )
+            ).scalar_one_or_none()
+            if tech is None:
+                continue
+            upd = await apply_mastery(
+                session,
+                user_id,
+                tech.id,
+                outcome.is_correct,
+                response.id,
+                signal="apply",
+                grader=outcome.grader,
+                grader_confidence=outcome.confidence,
+            )
+            technique_updates.append({"code": str(code), **upd})
+
     # A worked solution attached to the item (meta.worked_solution) is shown
     # after the answer, but only after every step is re-verified against the CAS,
     # so a stored solution that has drifted out of correctness is withheld.
@@ -360,6 +391,7 @@ async def finalize_response_grade(
         "mastery": mastery,
         "review": review,
         "gamification": gamification,
+        "technique_transfer": technique_updates,
     }
 
 

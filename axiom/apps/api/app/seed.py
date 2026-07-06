@@ -383,6 +383,38 @@ PROOF_ITEMS: dict[str, list] = {
             "An even integer is one that can be written as 2k for some integer k.",
             {"keywords": ["integer", "2"]},
         ),
+        (
+            "free_form_proof",
+            "Prove that the sum of two even integers is even. Write your proof; "
+            "it gets an AI-assisted first pass and always goes to an instructor "
+            "for final sign-off.",
+            None,
+            "Let a = 2m and b = 2n for integers m, n. Then a + b = 2(m + n), "
+            "which is even.",
+            "A full proof names the definition of even, adds, factors out 2, and "
+            "concludes the sum is even.",
+            {
+                "rubric": [
+                    {
+                        "criterion": "defines both integers as even",
+                        "points": 1,
+                        "keywords": ["2m", "2n", "definition", "even"],
+                    },
+                    {
+                        "criterion": "adds and factors out 2",
+                        "points": 1,
+                        "keywords": ["2(m + n)", "factor", "m + n"],
+                    },
+                    {
+                        "criterion": "concludes the sum is even",
+                        "points": 1,
+                        "keywords": ["is even", "therefore even", "hence even"],
+                    },
+                ],
+                "milestones": ["a = 2m", "b = 2n", "a + b = 2(m + n)", "a + b is even"],
+                "techniques": ["PT.DIRECT"],
+            },
+        ),
     ],
     "PT.COUNTEREXAMPLE": [
         (

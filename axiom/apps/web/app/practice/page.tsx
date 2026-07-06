@@ -9,12 +9,14 @@ import {
   isPracticeDone,
   practiceAnswer,
   practiceNext,
+  proofTutor,
   verifyFormalProof,
   type AnswerResult,
   type CopilotHintResult,
   type FormalVerdict,
   type PracticeDone,
   type PracticeQuestion,
+  type ProofTutorResult,
   type ResponseResult,
 } from '@/lib/api';
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
@@ -94,6 +96,10 @@ function PracticeInner() {
   // formal_proof: the last kernel verdict from the Check button, if any.
   const [formalVerdict, setFormalVerdict] = useState<FormalVerdict | null>(null);
   const [formalChecking, setFormalChecking] = useState(false);
+  // free_form_proof: proof-tutor guidance (graduated hint + first gap).
+  const [tutorResult, setTutorResult] = useState<ProofTutorResult | null>(null);
+  const [tutorLevel, setTutorLevel] = useState(0);
+  const [tutorLoading, setTutorLoading] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AnswerResult | null>(null);
 
@@ -125,6 +131,9 @@ function PracticeInner() {
     setGapFills([]);
     setFormalVerdict(null);
     setFormalChecking(false);
+    setTutorResult(null);
+    setTutorLevel(0);
+    setTutorLoading(false);
     setErrorMessage('');
     setHint(null);
     setHintError('');
@@ -845,6 +854,74 @@ function PracticeInner() {
                   className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
                   placeholder="Write it in your own words."
                 />
+              </div>
+            ) : kind === 'free_form_proof' ? (
+              <div className="mt-5">
+                <label
+                  htmlFor="proof-input"
+                  className="mb-1 block text-sm font-medium text-card-foreground"
+                >
+                  Your proof
+                </label>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  Write your proof. It gets an AI-assisted first pass and always
+                  goes to an instructor for final sign-off. Use the proof tutor
+                  for a nudge (it never hands over the proof).
+                </p>
+                <textarea
+                  id="proof-input"
+                  rows={8}
+                  value={answer}
+                  disabled={inputsLocked}
+                  onChange={(e) => setAnswer(e.target.value)}
+                  className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  placeholder="Assume ... Then ... Therefore ..."
+                />
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  <button
+                    type="button"
+                    disabled={inputsLocked || tutorLoading}
+                    onClick={async () => {
+                      setTutorLoading(true);
+                      try {
+                        const level = tutorResult ? Math.min(2, tutorLevel + 1) : 0;
+                        const res = await proofTutor(
+                          question.response_token,
+                          answer,
+                          level,
+                        );
+                        setTutorResult(res);
+                        setTutorLevel(res.level);
+                      } catch {
+                        setTutorResult(null);
+                      } finally {
+                        setTutorLoading(false);
+                      }
+                    }}
+                    className="rounded border border-border px-3 py-1 text-sm text-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-40"
+                  >
+                    {tutorLoading
+                      ? 'Thinking...'
+                      : tutorResult
+                        ? 'More help'
+                        : 'Proof tutor'}
+                  </button>
+                </div>
+                {tutorResult ? (
+                  <div className="mt-3 rounded-lg border border-border bg-muted/40 p-3 text-sm">
+                    <p className="text-card-foreground">{tutorResult.hint}</p>
+                    {tutorResult.gap ? (
+                      <p className="mt-2 text-xs text-muted-foreground">
+                        Next gap to address: {tutorResult.gap} (
+                        {tutorResult.established} of {tutorResult.milestone_count}{' '}
+                        steps established).
+                      </p>
+                    ) : null}
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      AI-assisted guidance, not the answer.
+                    </p>
+                  </div>
+                ) : null}
               </div>
             ) : kind === 'formal_proof' ? (
               <div className="mt-5">
