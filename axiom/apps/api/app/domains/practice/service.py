@@ -22,6 +22,7 @@ from math_core import resolve_template
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.domains.adaptive.bkt import level_for
 from app.domains.adaptive.service import apply_mastery, plan_path
 from app.domains.assessment.models import Item, ItemTemplate, ItemVariant
@@ -168,47 +169,46 @@ async def serve_next(
     }
 
 
-async def answer(
-    session: AsyncSession, user_id: uuid.UUID, response_token: str, student_answer: str
-) -> dict:
-    """Grade a served question and update mastery."""
-    try:
-        response_id = uuid.UUID(response_token)
-    except ValueError:
-        return {"error": "invalid response token"}
+def _now() -> datetime:
+    return datetime.now(UTC).replace(tzinfo=None)
 
-    response = (
-        await session.execute(
-            select(Response).where(Response.id == response_id, Response.user_id == user_id)
-        )
-    ).scalar_one_or_none()
-    if response is None:
-        return {"error": "response not found"}
-    if response.submitted_at is not None:
-        return {"error": "already answered"}
 
-    # Resolve the answer key and metadata from the source (item or variant).
+async def _resolve_source(
+    session: AsyncSession, response: Response
+) -> tuple[str, str, list | None, float | None, str, dict]:
+    """Return (kind, correct, options, tolerance, explanation, meta) for a response."""
     if response.item_id is not None:
         item = (await session.execute(select(Item).where(Item.id == response.item_id))).scalar_one()
-        kind, correct, options = item.kind, item.correct, item.options
-        tolerance, explanation = item.tolerance, item.explanation
-        meta = item.meta or {}
-    else:
-        variant = (
-            await session.execute(select(ItemVariant).where(ItemVariant.id == response.variant_id))
-        ).scalar_one()
-        template = (
-            await session.execute(
-                select(ItemTemplate).where(ItemTemplate.id == response.template_id)
-            )
-        ).scalar_one()
-        kind, correct, options = template.kind, variant.answer, None
-        tolerance, explanation = template.tolerance, template.explanation
-        meta = {}
+        return (
+            item.kind,
+            item.correct,
+            item.options,
+            item.tolerance,
+            item.explanation,
+            item.meta or {},
+        )
+    variant = (
+        await session.execute(select(ItemVariant).where(ItemVariant.id == response.variant_id))
+    ).scalar_one()
+    template = (
+        await session.execute(select(ItemTemplate).where(ItemTemplate.id == response.template_id))
+    ).scalar_one()
+    return template.kind, variant.answer, None, template.tolerance, template.explanation, {}
 
-    # free_response items are AI-graded against a rubric (async, via the
-    # reasoning provider); every other kind grades synchronously. show_work
-    # items carry their expected milestones in meta for partial credit.
+
+async def finalize_response_grade(
+    session: AsyncSession, user_id: uuid.UUID, response: Response, student_answer: str
+) -> dict:
+    """Grade a response, persist the result, and update mastery and rewards.
+
+    Shared by the inline path and the worker: it resolves the answer key, grades
+    (free_response through the reasoning provider, everything else synchronously),
+    writes the Score, grading record, reasoning trace, and step credits, advances
+    the attempt, and applies mastery and gamification. It flushes; the caller
+    commits, so it composes in either transaction.
+    """
+    kind, correct, options, tolerance, explanation, meta = await _resolve_source(session, response)
+
     if kind == "free_response":
         outcome = await grade_free_response(
             str(correct), student_answer, meta.get("rubric") or [], explanation=explanation
@@ -225,9 +225,8 @@ async def answer(
             milestones=milestones,
         )
 
-    now = datetime.now(UTC).replace(tzinfo=None)
     response.answer = {"raw": student_answer}
-    response.submitted_at = now
+    response.submitted_at = _now()
     session.add(Score(response_id=response.id, is_correct=outcome.is_correct, score=outcome.score))
     session.add(
         GradingRecord(
@@ -251,10 +250,6 @@ async def answer(
             },
         )
     )
-
-    # Persist per-milestone partial credit for show-your-work and per-criterion
-    # results for AI-graded free response, so a teacher sees which parts a
-    # student reached (and the AI grader's rationale), not just the verdict.
     for credit in outcome.step_credits:
         session.add(
             StepCredit(
@@ -275,10 +270,6 @@ async def answer(
     mastery = await apply_mastery(
         session, user_id, response.node_id, outcome.is_correct, response.id
     )
-
-    # Reward genuine advancement: XP for a correct answer, a bonus when the
-    # response pushed the learner into a higher mastery band, and a mastery
-    # bonus the moment the top band is reached.
     level_before = level_for(mastery["p_known_before"])
     level_after = mastery["level"]
     leveled_up = _LEVEL_RANK.get(level_after, 0) > _LEVEL_RANK.get(level_before, 0)
@@ -291,14 +282,10 @@ async def answer(
         mastered=mastered,
     )
 
-    await session.commit()
-
     return {
         "is_correct": outcome.is_correct,
         "score": outcome.score,
         "grader": outcome.grader,
-        # AI-graded responses (free response) are clearly flagged and can be
-        # adjusted by a teacher through the grading override endpoint.
         "ai_graded": outcome.grader == "ai",
         "overridable": outcome.grader == "ai",
         "confidence": outcome.confidence,
@@ -307,4 +294,133 @@ async def answer(
         "step_credits": outcome.step_credits,
         "mastery": mastery,
         "gamification": gamification,
+    }
+
+
+async def grade_pending_response(session: AsyncSession, response_id: uuid.UUID) -> bool:
+    """Grade a response that was queued for async grading. Idempotent.
+
+    The worker calls this. It returns False (doing nothing) if the response is
+    missing or already scored, so a re-delivered task never double-grades.
+    """
+    response = (
+        await session.execute(select(Response).where(Response.id == response_id))
+    ).scalar_one_or_none()
+    if response is None:
+        return False
+    already = (
+        await session.execute(select(Score).where(Score.response_id == response_id))
+    ).scalar_one_or_none()
+    if already is not None:
+        return False
+    raw = response.answer.get("raw", "") if isinstance(response.answer, dict) else ""
+    await finalize_response_grade(session, response.user_id, response, raw)
+    return True
+
+
+async def answer(
+    session: AsyncSession, user_id: uuid.UUID, response_token: str, student_answer: str
+) -> dict:
+    """Grade a served question and update mastery.
+
+    Fast kinds grade inline and return the full result. free_response is AI
+    graded, which can be slow with a real reasoning backend, so when async
+    grading is enabled it is recorded and handed to the worker; the client then
+    polls response_result. If the broker is unreachable it grades inline so an
+    answer is never lost.
+    """
+    try:
+        response_id = uuid.UUID(response_token)
+    except ValueError:
+        return {"error": "invalid response token"}
+
+    response = (
+        await session.execute(
+            select(Response).where(Response.id == response_id, Response.user_id == user_id)
+        )
+    ).scalar_one_or_none()
+    if response is None:
+        return {"error": "response not found"}
+    if response.submitted_at is not None:
+        return {"error": "already answered"}
+
+    kind, *_rest = await _resolve_source(session, response)
+
+    if kind == "free_response" and get_settings().async_grading:
+        response.answer = {"raw": student_answer}
+        response.submitted_at = _now()
+        await session.commit()
+        try:
+            from app.worker.tasks import enqueue_grade
+
+            enqueue_grade(response.id)
+        except Exception:
+            # Broker unavailable: grade inline so the answer is never lost.
+            result = await finalize_response_grade(session, user_id, response, student_answer)
+            await session.commit()
+            result["status"] = "graded"
+            return result
+        return {
+            "status": "grading",
+            "response_token": str(response.id),
+            "ai_graded": True,
+            "message": "Your response is being graded.",
+        }
+
+    result = await finalize_response_grade(session, user_id, response, student_answer)
+    await session.commit()
+    result["status"] = "graded"
+    return result
+
+
+async def response_result(
+    session: AsyncSession, user_id: uuid.UUID, response_token: str
+) -> dict:
+    """The grading status and result for one response, for polling async grades."""
+    try:
+        response_id = uuid.UUID(response_token)
+    except ValueError:
+        return {"error": "invalid response token"}
+
+    response = (
+        await session.execute(
+            select(Response).where(Response.id == response_id, Response.user_id == user_id)
+        )
+    ).scalar_one_or_none()
+    if response is None:
+        return {"error": "response not found"}
+    if response.submitted_at is None:
+        return {"status": "unanswered"}
+
+    score = (
+        await session.execute(select(Score).where(Score.response_id == response_id))
+    ).scalar_one_or_none()
+    if score is None:
+        return {"status": "grading", "response_token": str(response_id)}
+
+    grading = (
+        await session.execute(
+            select(GradingRecord).where(GradingRecord.response_id == response_id)
+        )
+    ).scalar_one_or_none()
+    credits = (
+        (await session.execute(select(StepCredit).where(StepCredit.response_id == response_id)))
+        .scalars()
+        .all()
+    )
+    kind, correct, _options, _tol, explanation, _meta = await _resolve_source(session, response)
+    grader = grading.grader if grading is not None else "exact"
+    return {
+        "status": "graded",
+        "is_correct": score.is_correct,
+        "score": score.score,
+        "grader": grader,
+        "ai_graded": grader == "ai",
+        "overridable": grader == "ai",
+        "confidence": grading.confidence if grading is not None else 1.0,
+        "correct_answer": str(correct) if kind == "free_response" else "",
+        "explanation": explanation,
+        "step_credits": [
+            {"milestone": c.milestone, "awarded": c.awarded, "note": c.note} for c in credits
+        ],
     }

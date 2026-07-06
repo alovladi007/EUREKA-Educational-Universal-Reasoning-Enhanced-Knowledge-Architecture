@@ -31,3 +31,8 @@ celery_app.conf.update(
 def ping() -> str:
     """A trivial task used by the smoke check to prove the worker runs."""
     return "pong"
+
+
+# Import task modules so their @celery_app.task jobs register on the app. Kept at
+# the bottom because tasks import celery_app; the app object already exists here.
+from app.worker import tasks as _tasks  # noqa: E402, F401

@@ -343,23 +343,56 @@ export interface AnswerGamification {
   new_badges: string[];
 }
 
-// The graded result of POST /api/v1/practice/answer. The step_credits and
-// gamification fields are optional so older items keep working unchanged. For
-// AI-graded free_response items the response also carries ai_graded/overridable
-// flags and a confidence, which the UI uses to label the grade as AI-produced
-// and teacher-overridable rather than authoritative.
+// The result of POST /api/v1/practice/answer.
+//
+// For fast kinds the full grade is returned immediately (status is "graded" or
+// absent) and the graded fields below are present. For free_response items
+// grading now runs asynchronously on a worker: the POST returns a "grading"
+// state ({status, response_token, ai_graded, message}) and the client must poll
+// fetchResponseResult(response_token) until the grade is ready. Because the
+// grading state omits the graded fields, those fields are optional here; a
+// caller should confirm status !== "grading" (or that is_correct is present)
+// before reading them. The step_credits and gamification fields are optional so
+// older items keep working unchanged. For AI-graded free_response items the
+// response also carries ai_graded/overridable flags and a confidence, which the
+// UI uses to label the grade as AI-produced and teacher-overridable rather than
+// authoritative.
 export interface AnswerResult {
-  is_correct: boolean;
-  score: number;
-  grader: string;
-  correct_answer: string;
-  explanation: string;
-  mastery: MasteryDelta;
+  status?: 'graded' | 'grading' | 'unanswered';
+  response_token?: string;
+  message?: string;
+  is_correct?: boolean;
+  score?: number;
+  grader?: string;
+  correct_answer?: string;
+  explanation?: string;
+  mastery?: MasteryDelta;
   step_credits?: StepCredit[];
   gamification?: AnswerGamification;
   ai_graded?: boolean;
   overridable?: boolean;
   confidence?: number;
+}
+
+// The result of GET /api/v1/practice/response/{response_token}, the endpoint
+// polled while an async free_response grade is produced. status selects the
+// shape: "unanswered" and "grading" carry no grade; "graded" carries the full
+// AI grade (the same fields the answered card renders, including per-criterion
+// step_credits). This is a distinct shape from AnswerResult: it never carries a
+// mastery delta or gamification, so it is mapped into the card rather than
+// reusing AnswerResult directly.
+export interface ResponseResult {
+  status: 'unanswered' | 'grading' | 'graded';
+  response_token?: string;
+  is_correct?: boolean;
+  score?: number;
+  grader?: string;
+  ai_graded?: boolean;
+  overridable?: boolean;
+  confidence?: number;
+  correct_answer?: string;
+  explanation?: string;
+  step_credits?: StepCredit[];
 }
 
 // One mastery state row from GET /api/v1/mastery/me.
@@ -456,6 +489,18 @@ export function practiceAnswer(
     response_token: responseToken,
     answer,
   });
+}
+
+// Poll the grading status/result for a response. Used for async free_response
+// grading: after practiceAnswer returns status "grading", the client calls this
+// on an interval until status is "graded" (or gives up after a max number of
+// attempts).
+export function fetchResponseResult(
+  responseToken: string,
+): Promise<ResponseResult> {
+  return apiGet<ResponseResult>(
+    `/api/v1/practice/response/${encodeURIComponent(responseToken)}`,
+  );
 }
 
 export function fetchMastery(): Promise<MasteryResponse> {

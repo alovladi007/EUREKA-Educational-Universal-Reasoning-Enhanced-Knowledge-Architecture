@@ -20,7 +20,7 @@ A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practic
 - Analytics: per-item classical statistics with IRT parameters, a cohort standards heatmap, per-learner growth, and CSV and PDF exports.
 - Gamification: XP, levels, streaks, and badges awarded strictly for genuine progress (correct responses and mastery gains), never idle time.
 - Copilot: an AI-assisted tutor that gives hints, explanations, and grounded chat. Reasoning sits behind a swappable provider (EUREKA reasoning client with a deterministic mock fallback per ADR 0001). Every reply is labeled AI-assisted, carries the curriculum sources it was grounded in, and is teacher-overridable. Hints for an active item withhold the answer.
-- Free-response AI grading: constructed text answers are graded against a rubric by the same swappable reasoning provider, with per-criterion partial credit and a confidence. Every AI grade is labeled and human-overridable; a teacher can review the queue of AI-graded responses and override any grade of record.
+- Free-response AI grading: constructed text answers are graded against a rubric by the same swappable reasoning provider, with per-criterion partial credit and a confidence. Every AI grade is labeled and human-overridable; a teacher can review the queue of AI-graded responses and override any grade of record. This grading runs on the Celery worker off the request path (the client polls for the result), with an inline fallback if the broker is unavailable so an answer is never lost.
 - QTI 3.0 import and export of items and item banks.
 - Teacher flow: create an assessment from nodes, assign to students, deliver it, and view aggregated results.
 - Health and readiness probes, Prometheus metrics, structured JSON logs, and OpenAPI are served.
@@ -34,7 +34,7 @@ These are explicitly not implemented:
 - AI grading of handwritten and image responses (Phase 3). Free-response text grading against a rubric is built (labeled and teacher-overridable); handwritten and image work needs a vision model and is not built.
 - Proctoring, LTI 1.3, OneRoster, LMS grade passback, and district analytics (Phase 4).
 - Email and push notification delivery. In-app notifications are built (inbox, unread badge, emitted on assignment, badge, and grade override); sending them over email or push is not built.
-- The Celery worker still ships only the sample task; grading runs inline in the request path. Moving heavy grading and generation onto the worker is a later step.
+- Item and variant generation on the worker, and worker-side analytics rollups, are not built. The Celery worker does now grade AI free-response answers off the request path (see below); other grading runs inline because it is fast.
 - Semantic (pgvector) retrieval for the copilot. Grounding today is deterministic lexical retrieval; vector embeddings are a future upgrade behind the same retriever interface.
 
 ## Per-module status

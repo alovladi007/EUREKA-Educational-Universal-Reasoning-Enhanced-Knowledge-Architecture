@@ -63,6 +63,12 @@ class Settings(BaseSettings):
     eureka_reasoning_base_url: str = "http://localhost:8000"
     reasoning_timeout_seconds: float = 8.0
 
+    # When true, slow AI free-response grading is handed to the Celery worker and
+    # the client polls for the result; other kinds always grade inline. If the
+    # broker is unreachable the request grades inline as a fallback, so an answer
+    # is never lost. Tests set this false to keep grading synchronous.
+    async_grading: bool = True
+
     # Observability
     log_level: str = "INFO"
     otel_exporter_otlp_endpoint: str | None = None

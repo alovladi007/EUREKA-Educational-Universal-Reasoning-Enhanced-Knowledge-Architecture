@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import {
   copilotHint,
+  fetchResponseResult,
   getToken,
   isPracticeDone,
   practiceAnswer,
@@ -12,6 +13,7 @@ import {
   type CopilotHintResult,
   type PracticeDone,
   type PracticeQuestion,
+  type ResponseResult,
 } from '@/lib/api';
 import {
   ErrorPanel,
@@ -27,15 +29,26 @@ import { toPercent } from '@/components/ProgressBar';
 //   3. POST /practice/answer to grade it and show the mastery delta
 //   4. offer a "Next question" button that starts the loop again
 // A "done" response shows an encouraging empty state.
+//
+// Free_response items are graded asynchronously: POST /practice/answer returns
+// a "grading" state instead of the grade, and the client polls
+// GET /practice/response/{token} until the grade is ready. That poll is driven
+// by the "grading" phase and the effect below. Every other kind is graded
+// synchronously and lands directly in "answered" as before.
 
 type Phase =
   | 'checking'
   | 'signed-out'
   | 'loading'
   | 'question'
+  | 'grading'
   | 'answered'
   | 'done'
   | 'error';
+
+// How often to poll for an async grade, and how many attempts before giving up.
+const GRADING_POLL_MS = 1200;
+const GRADING_MAX_ATTEMPTS = 25;
 
 function PracticeInner() {
   const searchParams = useSearchParams();
@@ -52,6 +65,15 @@ function PracticeInner() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<AnswerResult | null>(null);
 
+  // Async free_response grading. When the answer POST returns a "grading"
+  // state, the response_token is held here and the effect below polls until the
+  // grade lands (mapped into gradedResponse) or an error/timeout is reported.
+  const [gradingToken, setGradingToken] = useState<string | null>(null);
+  const [gradedResponse, setGradedResponse] = useState<ResponseResult | null>(
+    null,
+  );
+  const [gradingError, setGradingError] = useState('');
+
   // AI hint state. The hint is guidance, not the answer, and is fetched on
   // demand for the currently served question via its response_token.
   const [hint, setHint] = useState<CopilotHintResult | null>(null);
@@ -61,6 +83,9 @@ function PracticeInner() {
   const loadNext = useCallback(async () => {
     setPhase('loading');
     setResult(null);
+    setGradingToken(null);
+    setGradedResponse(null);
+    setGradingError('');
     setAnswer('');
     setSelectedIndices([]);
     setErrorMessage('');
@@ -134,8 +159,20 @@ function PracticeInner() {
     }
     setSubmitting(true);
     setErrorMessage('');
+    setGradingError('');
+    setGradedResponse(null);
     try {
       const graded = await practiceAnswer(question.response_token, payload);
+      // Async free_response grading: the grade is not ready yet. Hold the token
+      // and enter the "grading" phase; the polling effect takes it from here.
+      if (graded.status === 'grading') {
+        setResult(graded);
+        setGradingToken(graded.response_token ?? question.response_token);
+        setPhase('grading');
+        return;
+      }
+      // Synchronous path (fast kinds): the full grade is present and renders
+      // immediately, exactly as before.
       setResult(graded);
       setPhase('answered');
     } catch (err) {
@@ -172,6 +209,65 @@ function PracticeInner() {
     }
   }
 
+  // Poll the grading status for an async free_response answer. Runs only while a
+  // gradingToken is held (set when the answer POST returned status "grading").
+  // A recursive setTimeout keeps ~GRADING_POLL_MS between attempts regardless of
+  // request latency. Stops on graded (renders the result card), on error (shows
+  // a message), on unmount (cancelled flag + cleared timer), and after
+  // GRADING_MAX_ATTEMPTS (shows a "taking longer" message).
+  useEffect(() => {
+    if (!gradingToken) {
+      return;
+    }
+    let cancelled = false;
+    let timer: ReturnType<typeof setTimeout> | null = null;
+    let attempts = 0;
+
+    const poll = async () => {
+      attempts += 1;
+      try {
+        const res = await fetchResponseResult(gradingToken);
+        if (cancelled) {
+          return;
+        }
+        if (res.status === 'graded') {
+          setGradedResponse(res);
+          setPhase('answered');
+          return;
+        }
+        // Still "grading" (or "unanswered", transiently): keep polling until the
+        // attempt budget is exhausted.
+        if (attempts >= GRADING_MAX_ATTEMPTS) {
+          setGradingError(
+            'Grading is taking longer than expected - check back shortly.',
+          );
+          return;
+        }
+        timer = setTimeout(() => {
+          void poll();
+        }, GRADING_POLL_MS);
+      } catch (err) {
+        if (cancelled) {
+          return;
+        }
+        setGradingError(
+          err instanceof Error
+            ? err.message
+            : 'Failed to load your grade. Check back shortly.',
+        );
+      }
+    };
+
+    void poll();
+
+    return () => {
+      cancelled = true;
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  }, [gradingToken]);
+
   if (phase === 'checking') {
     return (
       <main className="flex min-h-screen items-center justify-center">
@@ -185,6 +281,32 @@ function PracticeInner() {
   }
 
   const kind = question?.kind;
+
+  // The answered card consumes a single normalized shape regardless of how the
+  // grade arrived: synchronously in `result` (an AnswerResult, which also
+  // carries a mastery delta and gamification) or asynchronously in
+  // `gradedResponse` (a ResponseResult from polling, which carries neither).
+  // Preferring the polled grade lets the async free_response path render the
+  // very same card as the fast kinds. The mastery/gamification lines are only
+  // rendered when present, so their absence on the async path is handled.
+  const graded: AnswerResult | null = gradedResponse
+    ? {
+        status: 'graded',
+        is_correct: gradedResponse.is_correct,
+        score: gradedResponse.score,
+        grader: gradedResponse.grader,
+        correct_answer: gradedResponse.correct_answer,
+        explanation: gradedResponse.explanation,
+        step_credits: gradedResponse.step_credits,
+        ai_graded: gradedResponse.ai_graded,
+        overridable: gradedResponse.overridable,
+        confidence: gradedResponse.confidence,
+      }
+    : result;
+
+  // Inputs are locked once the answer is submitted: while an async grade is
+  // being polled ("grading") and after any grade lands ("answered").
+  const inputsLocked = phase === 'answered' || phase === 'grading';
 
   return (
     <div className="min-h-screen">
@@ -239,7 +361,10 @@ function PracticeInner() {
           </div>
         )}
 
-        {(phase === 'question' || phase === 'answered') && question && (
+        {(phase === 'question' ||
+          phase === 'grading' ||
+          phase === 'answered') &&
+          question && (
           <section className="mt-8 rounded-lg border border-border bg-card p-6">
             <p className="text-xs font-medium uppercase tracking-wide text-brand-600 dark:text-brand-300">
               {question.node_title}
@@ -323,7 +448,7 @@ function PracticeInner() {
             </div>
 
             {kind === 'mcq_single' && question.options ? (
-              <fieldset className="mt-5" disabled={phase === 'answered'}>
+              <fieldset className="mt-5" disabled={inputsLocked}>
                 <legend className="sr-only">Choose an answer</legend>
                 <div className="space-y-2">
                   {question.options.map((option) => {
@@ -338,7 +463,7 @@ function PracticeInner() {
                           selected
                             ? 'border-brand-500 bg-brand-50 dark:bg-brand-950'
                             : 'border-border bg-background hover:border-brand-300'
-                        } ${phase === 'answered' ? 'opacity-70' : ''}`}
+                        } ${inputsLocked ? 'opacity-70' : ''}`}
                       >
                         {option}
                       </button>
@@ -347,7 +472,7 @@ function PracticeInner() {
                 </div>
               </fieldset>
             ) : kind === 'mcq_multi' && question.options ? (
-              <fieldset className="mt-5" disabled={phase === 'answered'}>
+              <fieldset className="mt-5" disabled={inputsLocked}>
                 <legend className="mb-2 block text-sm font-medium text-card-foreground">
                   Select all that apply
                 </legend>
@@ -361,12 +486,12 @@ function PracticeInner() {
                           checked
                             ? 'border-brand-500 bg-brand-50 dark:bg-brand-950'
                             : 'border-border bg-background hover:border-brand-300'
-                        } ${phase === 'answered' ? 'opacity-70' : ''}`}
+                        } ${inputsLocked ? 'opacity-70' : ''}`}
                       >
                         <input
                           type="checkbox"
                           checked={checked}
-                          disabled={phase === 'answered'}
+                          disabled={inputsLocked}
                           onChange={() => toggleIndex(index)}
                           className="mt-0.5"
                         />
@@ -377,7 +502,7 @@ function PracticeInner() {
                 </div>
               </fieldset>
             ) : kind === 'true_false' ? (
-              <fieldset className="mt-5" disabled={phase === 'answered'}>
+              <fieldset className="mt-5" disabled={inputsLocked}>
                 <legend className="sr-only">Choose true or false</legend>
                 <div className="flex gap-2">
                   {[
@@ -395,7 +520,7 @@ function PracticeInner() {
                           selected
                             ? 'border-brand-500 bg-brand-50 dark:bg-brand-950'
                             : 'border-border bg-background hover:border-brand-300'
-                        } ${phase === 'answered' ? 'opacity-70' : ''}`}
+                        } ${inputsLocked ? 'opacity-70' : ''}`}
                       >
                         {choice.label}
                       </button>
@@ -418,7 +543,7 @@ function PracticeInner() {
                   id="answer-textarea"
                   value={answer}
                   rows={6}
-                  disabled={phase === 'answered'}
+                  disabled={inputsLocked}
                   onChange={(e) => setAnswer(e.target.value)}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
                   placeholder="One step per line"
@@ -440,7 +565,7 @@ function PracticeInner() {
                   id="answer-textarea"
                   value={answer}
                   rows={8}
-                  disabled={phase === 'answered'}
+                  disabled={inputsLocked}
                   onChange={(e) => setAnswer(e.target.value)}
                   className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
                   placeholder="Write your response"
@@ -464,7 +589,7 @@ function PracticeInner() {
                   id="answer-input"
                   type="text"
                   value={answer}
-                  disabled={phase === 'answered'}
+                  disabled={inputsLocked}
                   onChange={(e) => setAnswer(e.target.value)}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && phase === 'question') {
@@ -495,41 +620,79 @@ function PracticeInner() {
               </div>
             )}
 
-            {phase === 'answered' && result && (
+            {phase === 'grading' && (
+              <div
+                className="mt-6 border-t border-border pt-6"
+                aria-live="polite"
+                aria-busy={!gradingError}
+              >
+                {gradingError ? (
+                  <div className="space-y-4">
+                    <p className="text-sm text-red-700 dark:text-red-300">
+                      {gradingError}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => void loadNext()}
+                      className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    >
+                      Next question
+                    </button>
+                  </div>
+                ) : (
+                  <>
+                    <p className="text-sm font-semibold text-card-foreground">
+                      Grading your response.
+                    </p>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      An AI grader is scoring your response. This can take a few
+                      seconds - hang tight.
+                    </p>
+                  </>
+                )}
+              </div>
+            )}
+
+            {phase === 'answered' && graded && (
               <div className="mt-6 border-t border-border pt-6" aria-live="polite">
                 <p
                   className={`text-sm font-semibold ${
-                    result.is_correct
+                    graded.is_correct
                       ? 'text-emerald-700 dark:text-emerald-300'
                       : 'text-red-700 dark:text-red-300'
                   }`}
                 >
-                  {result.is_correct ? 'Correct' : 'Incorrect'}
+                  {graded.is_correct ? 'Correct' : 'Incorrect'}
                 </p>
-                <p className="mt-2 text-sm text-card-foreground">
-                  <span className="font-medium">Correct answer:</span>{' '}
-                  {result.correct_answer}
-                </p>
-                {result.explanation && (
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {result.explanation}
+                {graded.correct_answer && (
+                  <p className="mt-2 text-sm text-card-foreground">
+                    <span className="font-medium">Correct answer:</span>{' '}
+                    {graded.correct_answer}
                   </p>
                 )}
-                <p className="mt-3 text-sm text-muted-foreground">
-                  Mastery moved from {toPercent(result.mastery.p_known_before)}%
-                  to {toPercent(result.mastery.p_known_after)}% (
-                  {result.mastery.level}).
-                </p>
+                {graded.explanation && (
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    {graded.explanation}
+                  </p>
+                )}
+                {graded.mastery && (
+                  <p className="mt-3 text-sm text-muted-foreground">
+                    Mastery moved from{' '}
+                    {toPercent(graded.mastery.p_known_before)}% to{' '}
+                    {toPercent(graded.mastery.p_known_after)}% (
+                    {graded.mastery.level}).
+                  </p>
+                )}
 
-                {result.ai_graded && (
+                {graded.ai_graded && (
                   <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="inline-flex items-center rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-amber-800 dark:bg-amber-900 dark:text-amber-200">
                         AI-graded
                       </span>
-                      {typeof result.confidence === 'number' && (
+                      {typeof graded.confidence === 'number' && (
                         <span className="text-xs font-medium text-amber-800 dark:text-amber-200">
-                          confidence {result.confidence.toFixed(2)}
+                          confidence {graded.confidence.toFixed(2)}
                         </span>
                       )}
                     </div>
@@ -538,14 +701,14 @@ function PracticeInner() {
                       adjust this grade.
                     </p>
 
-                    {result.step_credits &&
-                      result.step_credits.length > 0 && (
+                    {graded.step_credits &&
+                      graded.step_credits.length > 0 && (
                         <div className="mt-3">
                           <p className="text-xs font-medium uppercase tracking-wide text-amber-800 dark:text-amber-200">
                             Criteria
                           </p>
                           <ul className="mt-2 space-y-2">
-                            {result.step_credits.map((credit, index) => (
+                            {graded.step_credits.map((credit, index) => (
                               <li
                                 key={`${credit.milestone}-${index}`}
                                 className="rounded-lg border border-amber-200 bg-amber-100/50 p-3 dark:border-amber-900 dark:bg-amber-900/40"
@@ -585,15 +748,15 @@ function PracticeInner() {
                   </div>
                 )}
 
-                {!result.ai_graded &&
-                  result.step_credits &&
-                  result.step_credits.length > 0 && (
+                {!graded.ai_graded &&
+                  graded.step_credits &&
+                  graded.step_credits.length > 0 && (
                     <div className="mt-4">
                       <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
                         Step credit
                       </p>
                       <ul className="mt-2 space-y-1.5">
-                        {result.step_credits.map((credit, index) => (
+                        {graded.step_credits.map((credit, index) => (
                           <li
                             key={`${credit.milestone}-${index}`}
                             className="flex flex-wrap items-center gap-2 text-sm"
@@ -616,16 +779,16 @@ function PracticeInner() {
                     </div>
                   )}
 
-                {result.gamification && (
+                {graded.gamification && (
                   <p
                     className="mt-4 text-sm font-medium text-brand-600 dark:text-brand-300"
                     aria-live="polite"
                   >
-                    {`+XP to ${result.gamification.xp_total} total (level ${result.gamification.level}, streak ${result.gamification.streak_days} ${
-                      result.gamification.streak_days === 1 ? 'day' : 'days'
+                    {`+XP to ${graded.gamification.xp_total} total (level ${graded.gamification.level}, streak ${graded.gamification.streak_days} ${
+                      graded.gamification.streak_days === 1 ? 'day' : 'days'
                     }).`}
-                    {result.gamification.new_badges.length > 0 &&
-                      ` New badge: ${result.gamification.new_badges.join(', ')}.`}
+                    {graded.gamification.new_badges.length > 0 &&
+                      ` New badge: ${graded.gamification.new_badges.join(', ')}.`}
                   </p>
                 )}
 

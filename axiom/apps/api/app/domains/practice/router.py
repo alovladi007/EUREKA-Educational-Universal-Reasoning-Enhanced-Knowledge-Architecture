@@ -14,7 +14,7 @@ from app.core.db import get_session
 from app.core.security import get_current_user
 from app.domains.curriculum.models import KnowledgeNode
 from app.domains.practice.service import answer as answer_service
-from app.domains.practice.service import serve_next
+from app.domains.practice.service import response_result, serve_next
 
 router = APIRouter(tags=["practice"])
 
@@ -58,6 +58,18 @@ async def practice_answer(
     user: UserOut = Depends(get_current_user),
 ) -> dict:
     return await answer_service(session, uuid.UUID(user.id), body.response_token, body.answer)
+
+
+@router.get("/practice/response/{response_token}", summary="Grading status and result")
+async def practice_response_result(
+    response_token: str,
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> dict:
+    """Poll a response's grading status. Used for AI free-response grades that
+    are handed to the worker; returns status grading until the worker finishes,
+    then the graded result."""
+    return await response_result(session, uuid.UUID(user.id), response_token)
 
 
 @router.post("/diagnostic/start", summary="Start a placement diagnostic")
