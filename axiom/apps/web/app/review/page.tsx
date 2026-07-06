@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { fetchMistakes, getToken, type MistakeItem } from '@/lib/api';
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import { RichMath } from '@/components/Math';
 
 // The "Review your mistakes" view. It lists the learner's recent incorrect
 // answers, most recent first, so each mistake can be revisited: the prompt, the
@@ -36,7 +37,9 @@ function MistakeCard({ item }: { item: MistakeItem }) {
         </span>
       </div>
 
-      <p className="mt-3 text-sm text-card-foreground">{item.prompt}</p>
+      <div className="mt-3 text-sm text-card-foreground">
+        <RichMath text={item.prompt} />
+      </div>
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div className="rounded-lg border border-rose-200 bg-rose-50 p-3 dark:border-rose-900 dark:bg-rose-950">
@@ -58,7 +61,9 @@ function MistakeCard({ item }: { item: MistakeItem }) {
       </div>
 
       {item.explanation && (
-        <p className="mt-4 text-sm text-muted-foreground">{item.explanation}</p>
+        <div className="mt-4 text-sm text-muted-foreground">
+          <RichMath text={item.explanation} />
+        </div>
       )}
     </li>
   );

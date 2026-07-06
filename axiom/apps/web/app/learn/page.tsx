@@ -11,6 +11,7 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import { RichMath } from '@/components/Math';
 
 // The Learn page lists the skill-graph nodes in the order the API returns
 // them. Selecting a node loads its lesson and shows the ordered steps, plus a
@@ -202,9 +203,9 @@ export default function LearnPage() {
                           <h3 className="mt-1 text-sm font-semibold text-card-foreground">
                             {step.title}
                           </h3>
-                          <p className="mt-1 whitespace-pre-wrap text-sm leading-relaxed text-muted-foreground">
-                            {step.body}
-                          </p>
+                          <div className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                            <RichMath text={step.body} />
+                          </div>
                         </li>
                       ))}
                     </ol>

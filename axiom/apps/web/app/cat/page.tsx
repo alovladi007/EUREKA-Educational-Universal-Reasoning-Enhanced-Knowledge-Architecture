@@ -10,12 +10,22 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import { RichMath } from '@/components/Math';
+import { MathField } from '@/components/MathField';
 
 // The adaptive-test runner. It does not auto-start: the learner presses "Start
 // adaptive test", then answers one served item at a time. Selection kinds render
-// as option buttons; everything else is a text input. After each answer the
-// current ability estimate (theta), its standard error, and the item count are
-// shown, then the next item loads. A "done" response shows a completion card.
+// as option buttons; math kinds render in the MathLive editor; everything else
+// is a text input. After each answer the current ability estimate (theta), its
+// standard error, and the item count are shown, then the next item loads. A
+// "done" response shows a completion card.
+
+// Item kinds whose answer is a math expression, equation, or numeric value.
+const MATH_INPUT_KINDS = ['math_expression', 'equation', 'numeric'];
+
+function isMathKind(kind: string): boolean {
+  return MATH_INPUT_KINDS.includes(kind);
+}
 
 type Phase =
   | 'checking'
@@ -265,9 +275,9 @@ export default function CatPage() {
               </p>
             )}
 
-            <p className="mt-3 whitespace-pre-wrap text-base leading-relaxed text-card-foreground">
-              {item.prompt}
-            </p>
+            <div className="mt-3 text-base leading-relaxed text-card-foreground">
+              <RichMath text={item.prompt} />
+            </div>
 
             {isSelectionKind(item.kind) && item.options ? (
               <fieldset className="mt-5" disabled={submitting}>
@@ -293,6 +303,24 @@ export default function CatPage() {
                   })}
                 </div>
               </fieldset>
+            ) : isMathKind(item.kind) ? (
+              <div className="mt-5">
+                <label className="mb-1 block text-sm font-medium text-card-foreground">
+                  Your answer
+                </label>
+                <MathField
+                  key={item.item_id}
+                  readOnly={submitting}
+                  ariaLabel="Math answer"
+                  placeholder="Enter your answer"
+                  onChange={(ascii) => setAnswer(ascii)}
+                  onEnter={() => {
+                    if (!submitting) {
+                      void submit();
+                    }
+                  }}
+                />
+              </div>
             ) : (
               <div className="mt-5">
                 <label

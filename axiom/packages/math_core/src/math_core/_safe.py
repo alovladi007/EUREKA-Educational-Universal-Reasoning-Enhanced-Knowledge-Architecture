@@ -22,16 +22,24 @@ from typing import Iterator
 
 import sympy
 from sympy.parsing.sympy_parser import (
+    convert_xor,
     implicit_multiplication_application,
     parse_expr,
     standard_transformations,
 )
 
-# Restricted transformation set. We allow the standard transformations plus
-# implicit multiplication and function application (so that "2x" and "sin x"
-# parse the way a student would expect). We deliberately do NOT enable any
-# transformation that could broaden parsing into unsafe territory.
-SAFE_TRANSFORMATIONS = standard_transformations + (implicit_multiplication_application,)
+# Restricted transformation set. We allow the standard transformations plus:
+#   - convert_xor: read "^" as exponentiation, so a student (or the MathLive
+#     editor's ASCII-math output) can write "x^2" and mean a power, not a
+#     bitwise XOR. This is the near-universal convention in math input.
+#   - implicit multiplication and function application, so "2x" and "sin x"
+#     parse the way a student would expect.
+# We deliberately do NOT enable any transformation that could broaden parsing
+# into unsafe territory; parse_expr still never reaches Python builtins.
+SAFE_TRANSFORMATIONS = standard_transformations + (
+    convert_xor,
+    implicit_multiplication_application,
+)
 
 # Default wall-clock timeout (seconds) for a single sympy evaluation.
 DEFAULT_TIMEOUT_SECONDS: float = 5.0

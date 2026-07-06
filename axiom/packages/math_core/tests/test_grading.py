@@ -45,6 +45,35 @@ def test_equivalent_forms_grade_correct(student: str, expected: str) -> None:
 @pytest.mark.parametrize(
     "student,expected",
     [
+        # "^" must read as exponentiation (the near-universal input convention,
+        # and what the MathLive editor emits as ASCII-math), never bitwise XOR.
+        ("x^2", "x**2"),
+        ("(x+1)^2", "x**2 + 2*x + 1"),
+        ("2^3", "8"),
+        ("x^2 + x^1 + x^0", "x**2 + x + 1"),
+    ],
+)
+def test_caret_is_exponent(student: str, expected: str) -> None:
+    res = grade_expression(student, expected)
+    assert res.is_correct is True, res.detail
+
+
+def test_caret_not_confused_with_xor() -> None:
+    # If "^" were parsed as XOR, x^2 would not equal x**2 and this would pass a
+    # wrong answer. Guard the negative direction too.
+    assert grade_expression("x^2", "x^3").is_correct is False
+    assert grade_numeric("2^3", "6").is_correct is False
+
+
+def test_caret_in_equation() -> None:
+    res = grade_equation("y = x^2 + 1", "y = x**2 + 1")
+    assert res.is_correct is True, res.detail
+    assert res.score == 1.0
+
+
+@pytest.mark.parametrize(
+    "student,expected",
+    [
         ("2*x + 3", "2*(x+1)"),
         ("1/3", "0.5"),
         ("sin(x)**2 - cos(x)**2", "1"),

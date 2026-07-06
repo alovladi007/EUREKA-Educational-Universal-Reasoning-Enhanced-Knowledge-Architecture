@@ -11,6 +11,7 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import { RichMath } from '@/components/Math';
 
 // The AI Copilot: an AI-assisted tutor chat grounded in the learner's lessons.
 //
@@ -283,9 +284,9 @@ export default function CopilotPage() {
                         </span>
                       )}
                     </div>
-                    <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed text-card-foreground">
-                      {turn.content}
-                    </p>
+                    <div className="mt-2 text-sm leading-relaxed text-card-foreground">
+                      <RichMath text={turn.content} />
+                    </div>
                     {turn.grounded === false && (
                       <p className="mt-2 text-xs text-muted-foreground">
                         This reply was not grounded in a matching lesson, so it

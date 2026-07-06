@@ -18,6 +18,20 @@ import {
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
 import { toPercent } from '@/components/ProgressBar';
+import { RichMath } from '@/components/Math';
+import { MathField } from '@/components/MathField';
+
+// The item kinds whose answer is a math expression, equation, or numeric value.
+// These get the MathLive editor (real fractions/exponents) instead of a plain
+// text box, and submit ASCII-math that the SymPy grader parses.
+const MATH_INPUT_KINDS = new Set(['math_expression', 'equation', 'numeric']);
+
+// Per-kind helper text shown under the math editor.
+const MATH_INPUT_HELP: Record<string, string> = {
+  math_expression: 'Enter an expression. Use ^ for powers (x^2) and / for fractions.',
+  equation: 'Enter an equation, for example y = 2x + 3.',
+  numeric: 'Enter a number or exact value, for example 3/4 or sqrt(2).',
+};
 
 // The practice loop:
 //   1. POST /practice/next to serve a question (optionally scoped to ?node=)
@@ -354,9 +368,9 @@ function PracticeInner() {
             <p className="text-xs font-medium uppercase tracking-wide text-brand-600 dark:text-brand-300">
               {question.node_title}
             </p>
-            <p className="mt-3 whitespace-pre-wrap text-base leading-relaxed text-card-foreground">
-              {question.prompt}
-            </p>
+            <div className="mt-3 text-base leading-relaxed text-card-foreground">
+              <RichMath text={question.prompt} />
+            </div>
 
             <div className="mt-4">
               <button
@@ -556,6 +570,27 @@ function PracticeInner() {
                   placeholder="Write your response"
                 />
               </div>
+            ) : kind && MATH_INPUT_KINDS.has(kind) ? (
+              <div className="mt-5">
+                <label className="mb-1 block text-sm font-medium text-card-foreground">
+                  Your answer
+                </label>
+                <p className="mb-2 text-xs text-muted-foreground">
+                  {MATH_INPUT_HELP[kind]}
+                </p>
+                <MathField
+                  key={question.response_token}
+                  readOnly={inputsLocked}
+                  ariaLabel="Math answer"
+                  placeholder="Enter your answer"
+                  onChange={(ascii) => setAnswer(ascii)}
+                  onEnter={() => {
+                    if (phase === 'question') {
+                      void submit();
+                    }
+                  }}
+                />
+              </div>
             ) : (
               <div className="mt-5">
                 <label
@@ -656,9 +691,9 @@ function PracticeInner() {
                   </p>
                 )}
                 {graded.explanation && (
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                    {graded.explanation}
-                  </p>
+                  <div className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                    <RichMath text={graded.explanation} />
+                  </div>
                 )}
                 {graded.mastery && (
                   <p className="mt-3 text-sm text-muted-foreground">
