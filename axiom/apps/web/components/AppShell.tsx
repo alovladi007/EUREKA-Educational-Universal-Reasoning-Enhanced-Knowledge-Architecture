@@ -22,14 +22,16 @@ interface NavGroup {
   links: { href: string; label: string }[];
 }
 
-// The module groups shown in the sidebar, top to bottom.
+// Dashboard sits on its own at the top of the sidebar, above the grouped
+// modules (no "Overview" heading, so nothing is labeled twice).
+const DASHBOARD_LINK = { href: '/dashboard', label: 'Dashboard' };
+
+// The module groups shown in the sidebar, top to bottom. The first group is
+// named "Study" rather than "Learn" so it does not collide with the "Learn"
+// module link inside it.
 const NAV_GROUPS: NavGroup[] = [
   {
-    heading: 'Overview',
-    links: [{ href: '/dashboard', label: 'Dashboard' }],
-  },
-  {
-    heading: 'Learn',
+    heading: 'Study',
     links: [
       { href: '/learn', label: 'Learn' },
       { href: '/practice', label: 'Practice' },
@@ -130,6 +132,15 @@ function SidebarNav({
       </Link>
 
       <nav className="flex flex-col gap-5" aria-label="Modules">
+        <div className="flex flex-col gap-0.5">
+          <NavLink
+            href={DASHBOARD_LINK.href}
+            label={DASHBOARD_LINK.label}
+            active={pathname === DASHBOARD_LINK.href}
+            unreadCount={unreadCount}
+            onNavigate={onNavigate}
+          />
+        </div>
         {NAV_GROUPS.map((group) => (
           <div key={group.heading}>
             <p className="mb-1.5 px-3 text-xs font-medium uppercase tracking-wide text-muted-foreground">
