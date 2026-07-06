@@ -43,6 +43,14 @@ const HEALTH = { status: 'ok', service: 'axiom-api', version: '0.1.0' };
 
 // Register API stubs so the app never hits a real backend.
 async function stubApi(page: Page) {
+  // Dev auto-login is disabled in the stubbed world, so the no-token path lands
+  // on the sign-in screen instead of provisioning a session.
+  await page.route('**/api/v1/auth/dev-login', (route) =>
+    route.fulfill({ status: 404, contentType: 'application/json', body: '{}' }),
+  );
+  await page.route('**/api/v1/notifications/unread-count', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{"count":0}' }),
+  );
   await page.route('**/api/v1/me', (route) =>
     route.fulfill({
       status: 200,
@@ -85,8 +93,9 @@ test('signed-in user sees the AXIOM dashboard with modules', async ({
     page.getByText('Welcome back, Ada Lovelace.'),
   ).toBeVisible();
 
-  // At least one module card renders, and it is labeled Planned.
-  await expect(page.getByText('Learn')).toBeVisible();
+  // At least one module card renders (the heading, distinct from the sidebar's
+  // "Learn" nav link), and it is labeled Planned.
+  await expect(page.getByRole('heading', { name: 'Learn' })).toBeVisible();
   await expect(page.getByText('Planned').first()).toBeVisible();
 });
 

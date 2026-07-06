@@ -7,13 +7,14 @@ const DUMMY_JWT =
   'eyJzdWIiOiJ1c2VyLTEiLCJlbWFpbCI6ImFkYUBleGFtcGxlLmNvbSJ9.' +
   'c2lnbmF0dXJlLXBsYWNlaG9sZGVy';
 
-// A served numeric question.
+// A served short-text question. (numeric/math kinds now render the MathLive
+// editor, which has no fillable text label; short_text keeps a plain input.)
 const NEXT_QUESTION = {
   done: false,
   response_token: 'resp-1',
   node_id: 'node-1',
   node_title: 'Linear equations',
-  kind: 'numeric',
+  kind: 'short_text',
   prompt: 'What is 2 plus 2?',
   options: null,
 };
@@ -35,6 +36,9 @@ const ANSWER_RESULT = {
 
 // Stub the two practice endpoints. No real backend is involved.
 async function stubPractice(page: Page) {
+  await page.route('**/api/v1/notifications/unread-count', (route) =>
+    route.fulfill({ status: 200, contentType: 'application/json', body: '{"count":0}' }),
+  );
   await page.route('**/api/v1/practice/next', (route) =>
     route.fulfill({
       status: 200,
