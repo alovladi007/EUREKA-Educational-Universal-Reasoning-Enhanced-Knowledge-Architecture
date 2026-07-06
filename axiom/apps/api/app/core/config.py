@@ -63,6 +63,13 @@ class Settings(BaseSettings):
     eureka_reasoning_base_url: str = "http://localhost:8000"
     reasoning_timeout_seconds: float = 8.0
 
+    # How the copilot ranks grounding passages (ADR 0006):
+    #   "lexical"  - exact token overlap (the original ranker).
+    #   "semantic" - cosine over deterministic local embeddings (offline).
+    #   "hybrid"   - lexical plus semantic, which catches related word forms an
+    #                exact match misses. This is the default.
+    retrieval_mode: Literal["lexical", "semantic", "hybrid"] = "hybrid"
+
     # When true, slow AI free-response grading is handed to the Celery worker and
     # the client polls for the result; other kinds always grade inline. If the
     # broker is unreachable the request grades inline as a fallback, so an answer

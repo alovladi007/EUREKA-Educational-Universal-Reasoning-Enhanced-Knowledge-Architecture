@@ -5,11 +5,14 @@ curriculum passages: node descriptions, lesson summaries, lesson steps, and item
 worked-explanations. The copilot is grounded in these so its replies cite real
 lesson material.
 
-Scoring is a deterministic lexical overlap (query terms present in a passage,
-with a boost for terms in the citation title). This needs no external embedding
-model, so it runs offline and in tests. Semantic (pgvector) retrieval is a
-future upgrade behind this same function signature: callers only see Passage
-lists, not how they were ranked.
+Ranking is configurable (settings.retrieval_mode, ADR 0006):
+  - lexical:  deterministic token overlap, with a boost for title terms.
+  - semantic: cosine over deterministic local embeddings (see embeddings.py),
+              which catches related word forms an exact match misses.
+  - hybrid:   lexical plus a scaled semantic score (the default).
+All modes run offline and in tests. Callers only ever see Passage lists, not how
+they were ranked, so the store can later become pgvector-backed with a real
+embedding model behind embed()/cosine() without touching callers.
 """
 
 from __future__ import annotations
@@ -20,10 +23,16 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.config import get_settings
 from app.domains.assessment.models import Item
 from app.domains.content.models import ContentStep, Lesson
+from app.domains.copilot.embeddings import cosine, embed
 from app.domains.copilot.reasoning import Passage
 from app.domains.curriculum.models import KnowledgeNode
+
+# How much a semantic (0..1) score is worth relative to a lexical term match in
+# the hybrid ranker: comparable to a few exact-term hits.
+_SEMANTIC_WEIGHT = 4.0
 
 # Common words carry no topical signal, so they are ignored when scoring.
 _STOP = frozenset(
@@ -120,11 +129,25 @@ async def retrieve(
     if not candidates:
         return []
 
+    mode = get_settings().retrieval_mode
     query_terms = set(_tokens(query))
-    scored = [
-        (_score(query_terms, title, body), i, p)
-        for i, (title, body, p) in enumerate(candidates)
-    ]
+    query_vec = embed(query) if mode in ("semantic", "hybrid") else None
+
+    scored: list[tuple[float, int, Passage]] = []
+    for i, (title, body, p) in enumerate(candidates):
+        lexical = float(_score(query_terms, title, body))
+        if query_vec is not None:
+            semantic = cosine(query_vec, embed(f"{title} {body}"))
+        else:
+            semantic = 0.0
+        if mode == "lexical":
+            total = lexical
+        elif mode == "semantic":
+            total = semantic
+        else:  # hybrid
+            total = lexical + _SEMANTIC_WEIGHT * semantic
+        scored.append((total, i, p))
+
     scored.sort(key=lambda row: (-row[0], row[1]))
 
     top = [p for s, _i, p in scored if s > 0][:limit]

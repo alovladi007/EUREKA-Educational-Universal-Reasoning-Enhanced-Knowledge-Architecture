@@ -1116,9 +1116,10 @@ export interface DueReview {
   reps: number;
 }
 
-// The learner's spaced-repetition reviews that are due now.
+// The learner's spaced-repetition reviews that are due now. The adaptive router
+// mounts at the api_v1 root (no /adaptive prefix), matching /mastery/me etc.
 export function fetchDueReviews(): Promise<{ reviews: DueReview[] }> {
-  return apiGet<{ reviews: DueReview[] }>('/api/v1/adaptive/reviews/due');
+  return apiGet<{ reviews: DueReview[] }>('/api/v1/reviews/due');
 }
 
 // -------------------------------------------------------------------------
