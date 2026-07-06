@@ -2,12 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import { fetchMistakes, getToken, type MistakeItem } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 
 // The "Review your mistakes" view. It lists the learner's recent incorrect
 // answers, most recent first, so each mistake can be revisited: the prompt, the
@@ -118,19 +114,7 @@ export default function ReviewPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
-        <HeaderLink href="/achievements">Achievements</HeaderLink>
-        <HeaderLink href="/analytics">Analytics</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-3xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">
           Review your mistakes
@@ -177,6 +161,6 @@ export default function ReviewPage() {
           </>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

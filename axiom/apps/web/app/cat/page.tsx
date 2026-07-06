@@ -8,12 +8,8 @@ import {
   isCatDone,
   type CatItem,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 
 // The adaptive-test runner. It does not auto-start: the learner presses "Start
 // adaptive test", then answers one served item at a time. Selection kinds render
@@ -148,17 +144,7 @@ export default function CatPage() {
   const submitting = phase === 'submitting';
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-2xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">Adaptive test</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -346,6 +332,6 @@ export default function CatPage() {
           </section>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

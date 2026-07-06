@@ -8,12 +8,8 @@ import {
   type LearningPath,
   type PathNode,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 import { ProgressBar, toPercent } from '@/components/ProgressBar';
 import { StatusBadge } from '@/components/StatusBadge';
 
@@ -73,20 +69,7 @@ export default function PathPage() {
   const recommendedId = path?.recommended_node_id ?? null;
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
-        <HeaderLink href="/achievements">Achievements</HeaderLink>
-        <HeaderLink href="/analytics">Analytics</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-3xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">
           Your learning path
@@ -182,6 +165,6 @@ export default function PathPage() {
           </>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

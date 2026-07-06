@@ -13,12 +13,8 @@ import {
   type AssessmentSummary,
   type GraphNode,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 
 // The teacher console. Every teacher-only call can return 403 for a student;
 // when that happens we show a clear "Teacher role required" message rather than
@@ -216,20 +212,7 @@ export default function TeacherPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
-        <HeaderLink href="/achievements">Achievements</HeaderLink>
-        <HeaderLink href="/analytics">Analytics</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-4xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">
           Teacher console
@@ -537,6 +520,6 @@ export default function TeacherPage() {
           </div>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

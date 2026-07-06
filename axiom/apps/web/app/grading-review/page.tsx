@@ -8,12 +8,8 @@ import {
   overrideGrade,
   type FreeResponseGradeRow,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 
 // The teacher grading-review surface. AI grades a free-response answer, but the
 // AI score is never final: a teacher reviews each one here and can override it.
@@ -174,17 +170,7 @@ export default function GradingReviewPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/teacher">Teacher</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/analytics">Analytics</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-4xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">
           Grading review
@@ -384,6 +370,6 @@ export default function GradingReviewPage() {
           </>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

@@ -9,12 +9,8 @@ import {
   type GraphNode,
   type Lesson,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 
 // The Learn page lists the skill-graph nodes in the order the API returns
 // them. Selecting a node loads its lesson and shows the ordered steps, plus a
@@ -94,20 +90,7 @@ export default function LearnPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
-        <HeaderLink href="/achievements">Achievements</HeaderLink>
-        <HeaderLink href="/analytics">Analytics</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-5xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">Learn</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -243,6 +226,6 @@ export default function LearnPage() {
           </div>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

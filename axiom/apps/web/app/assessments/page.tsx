@@ -10,12 +10,8 @@ import {
   startAssessment,
   type AssignedAssessment,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 
 // The student "assigned assessments" surface. It lists the assessments assigned
 // to the signed-in student with an availability status derived from the
@@ -380,18 +376,7 @@ export default function AssessmentsPage() {
   const inputsLocked = grade !== null || isGrading;
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
-        <HeaderLink href="/achievements">Achievements</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-2xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">Assessments</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -763,6 +748,6 @@ export default function AssessmentsPage() {
           </section>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

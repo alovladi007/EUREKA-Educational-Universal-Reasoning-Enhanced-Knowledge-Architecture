@@ -13,12 +13,8 @@ import {
   type GrowthResponse,
   type StandardNode,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 import { ProgressBar, toPercent } from '@/components/ProgressBar';
 
 // The teacher-facing analytics view. Item analysis, a standards heatmap, and the
@@ -131,17 +127,7 @@ export default function AnalyticsPage() {
   const recentEvents: GrowthEvent[] = growth ? growth.events.slice(-12) : [];
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/teacher">Teacher</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-4xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">Analytics</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -360,6 +346,6 @@ export default function AnalyticsPage() {
           </div>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

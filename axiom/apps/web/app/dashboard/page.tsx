@@ -14,6 +14,7 @@ import {
 import Link from 'next/link';
 import { ModuleCard } from '@/components/ModuleCard';
 import { StatusPill, type ApiHealthState } from '@/components/StatusPill';
+import { AppShell } from '@/components/AppShell';
 
 // Static tiles for the Phase 2 pages that are not part of the API module list.
 // Each links directly to its route, matching the ModuleCard visual style.
@@ -265,15 +266,23 @@ export default function DashboardPage() {
   const greetingName = me?.display_name || summary?.user.display_name || '';
 
   return (
-    <div className="min-h-screen">
-      <header className="border-b border-border">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-4 px-6 py-5">
-          <Wordmark />
+    <AppShell>
+      <main className="mx-auto max-w-6xl px-6 py-10">
+        <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <h1 className="text-xl font-semibold text-foreground">
+              {greetingName
+                ? `Welcome back, ${greetingName}.`
+                : 'Welcome back.'}
+            </h1>
+            <p className="mt-1 text-sm text-muted-foreground">
+              This is your AXIOM workspace. Modules will light up as they become
+              available.
+            </p>
+          </div>
           <StatusPill state={health} />
         </div>
-      </header>
 
-      <main className="mx-auto max-w-6xl px-6 py-10">
         {state === 'loading' && (
           <p className="text-sm text-muted-foreground">
             Loading your dashboard.
@@ -296,18 +305,6 @@ export default function DashboardPage() {
 
         {state === 'ready' && summary && (
           <>
-            <section className="mb-8">
-              <h1 className="text-xl font-semibold text-foreground">
-                {greetingName
-                  ? `Welcome back, ${greetingName}.`
-                  : 'Welcome back.'}
-              </h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                This is your AXIOM workspace. Modules will light up as they
-                become available.
-              </p>
-            </section>
-
             <section>
               <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
                 Modules
@@ -344,6 +341,6 @@ export default function DashboardPage() {
           </>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

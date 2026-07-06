@@ -9,12 +9,8 @@ import {
   type GamificationProfile,
   type LeaderboardEntry,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 import { ProgressBar } from '@/components/ProgressBar';
 
 // The achievements view. It shows the learner's XP total, level, and current
@@ -97,17 +93,7 @@ export default function AchievementsPage() {
   const topTen = leaderboard.slice(0, 10);
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-3xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">Achievements</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -269,6 +255,6 @@ export default function AchievementsPage() {
           </div>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

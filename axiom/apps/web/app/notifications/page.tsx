@@ -10,12 +10,8 @@ import {
   markNotificationRead,
   type NotificationItem,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 
 // The in-app notifications inbox. It lists every notification with a small
 // kind badge, the title, the body, and a timestamp. Unread rows are visually
@@ -150,17 +146,7 @@ export default function NotificationsPage() {
   }
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/practice">Practice</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/path">Path</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/achievements">Achievements</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-3xl px-6 py-10">
         <div className="flex items-start justify-between gap-4">
           <div>
@@ -246,6 +232,6 @@ export default function NotificationsPage() {
           </>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }

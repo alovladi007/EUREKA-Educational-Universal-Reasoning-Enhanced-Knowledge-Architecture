@@ -15,12 +15,8 @@ import {
   type PracticeQuestion,
   type ResponseResult,
 } from '@/lib/api';
-import {
-  ErrorPanel,
-  HeaderLink,
-  PageHeader,
-  SignInScreen,
-} from '@/components/PageShell';
+import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
+import { AppShell } from '@/components/AppShell';
 import { toPercent } from '@/components/ProgressBar';
 
 // The practice loop:
@@ -309,20 +305,7 @@ function PracticeInner() {
   const inputsLocked = phase === 'answered' || phase === 'grading';
 
   return (
-    <div className="min-h-screen">
-      <PageHeader>
-        <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-        <HeaderLink href="/learn">Learn</HeaderLink>
-        <HeaderLink href="/assessments">Assessments</HeaderLink>
-        <HeaderLink href="/mastery">Mastery</HeaderLink>
-        <HeaderLink href="/review">Review</HeaderLink>
-        <HeaderLink href="/copilot">Copilot</HeaderLink>
-        <HeaderLink href="/cat">Adaptive Test</HeaderLink>
-        <HeaderLink href="/achievements">Achievements</HeaderLink>
-        <HeaderLink href="/analytics">Analytics</HeaderLink>
-        <HeaderLink href="/grading-review">Grading</HeaderLink>
-      </PageHeader>
-
+    <AppShell>
       <main className="mx-auto max-w-2xl px-6 py-10">
         <h1 className="text-xl font-semibold text-foreground">Practice</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -808,7 +791,7 @@ function PracticeInner() {
           </section>
         )}
       </main>
-    </div>
+    </AppShell>
   );
 }
 
