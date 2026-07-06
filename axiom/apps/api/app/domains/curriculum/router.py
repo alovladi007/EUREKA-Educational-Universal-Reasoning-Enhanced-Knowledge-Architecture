@@ -41,7 +41,15 @@ async def graph(
     edges = (await session.execute(select(KnowledgeEdge))).scalars().all()
     return {
         "nodes": [
-            {"id": str(n.id), "code": n.code, "title": n.title, "description": n.description}
+            {
+                "id": str(n.id),
+                "code": n.code,
+                "title": n.title,
+                "description": n.description,
+                "kind": n.kind,
+                "tier": n.tier,
+                "track": n.track,
+            }
             for n in nodes
         ],
         "edges": [
@@ -73,4 +81,12 @@ async def node(
             n = None
     if n is None:
         raise HTTPException(status_code=404, detail="node not found")
-    return {"id": str(n.id), "code": n.code, "title": n.title, "description": n.description}
+    return {
+        "id": str(n.id),
+        "code": n.code,
+        "title": n.title,
+        "description": n.description,
+        "kind": n.kind,
+        "tier": n.tier,
+        "track": n.track,
+    }

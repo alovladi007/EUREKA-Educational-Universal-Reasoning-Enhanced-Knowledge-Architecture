@@ -16,6 +16,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_sessionmaker
 from app.domains.assessment.models import Item, ItemBank, ItemTemplate
 from app.domains.content.models import ContentStep, Lesson
+from app.domains.curriculum.graph import seed_curriculum_graph
 from app.domains.curriculum.models import (
     KnowledgeEdge,
     KnowledgeNode,
@@ -388,11 +389,15 @@ async def seed_extra_items(session: AsyncSession) -> int:
 async def seed(session: AsyncSession) -> bool:
     """Seed the graph. Returns True if it seeded, False if already present.
 
-    Badge definitions and the Phase 2 demo items are seeded on every run
-    (idempotently) so a database created before those features existed still
-    gets them without a full reseed.
+    Badge definitions, the full mathematics-ladder graph, and the Phase 2 demo
+    items are seeded on every run (idempotently) so a database created before
+    those features existed still gets them without a full reseed.
     """
     await seed_badges(session)
+    # The full tier 0-6 curriculum backbone (Curriculum & Proof Extension). It is
+    # idempotent and independent of the algebra demo below, so it seeds on every
+    # startup, old databases included.
+    await seed_curriculum_graph(session)
 
     existing = (
         await session.execute(select(StandardsFramework).where(StandardsFramework.code == "AAF"))
