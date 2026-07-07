@@ -87,3 +87,10 @@ async def test_tier5_locked_until_proof_techniques_mastered(db_session):
 
     plan = await plan_path(db_session, user.id)
     assert status_of(plan, "REALAN") == "available"
+
+    # The plan carries the node taxonomy so the UI can group by tier and badge
+    # the proof kinds.
+    realan = next(row for row in plan["plan"] if row["code"] == "REALAN")
+    assert realan["tier"] == 5 and realan["kind"] == "concept" and realan["track"] == "pure"
+    induction = next(row for row in plan["plan"] if row["code"] == "PT.INDUCTION")
+    assert induction["kind"] == "proof_technique" and induction["tier"] == 4

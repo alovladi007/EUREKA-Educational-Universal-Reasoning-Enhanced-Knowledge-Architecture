@@ -535,6 +535,11 @@ export interface PathNode {
   node_id: string;
   code: string;
   title: string;
+  // Curriculum & Proof Extension taxonomy: node kind, tier (0-6), and the
+  // applied/pure track. tier/track are null for unclassified nodes.
+  kind?: string;
+  tier?: number | null;
+  track?: string | null;
   p_known: number;
   level: string;
   status: PathStatus;
