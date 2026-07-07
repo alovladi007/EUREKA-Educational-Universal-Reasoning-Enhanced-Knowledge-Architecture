@@ -97,6 +97,24 @@ export function getToken(): string | null {
   }
 }
 
+// Remove the stored token. Called when the API rejects it (401) so a stale or
+// expired token cannot be resent forever.
+export function clearToken(): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+  try {
+    window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+  } catch {
+    // Ignore storage errors (private mode, disabled storage).
+  }
+}
+
+// Guards against a thundering herd: the dashboard fires several requests at
+// once, so a shared 401 recovery would otherwise trigger several parallel
+// dev-logins. In-flight callers share one promise.
+let _devLoginInFlight: Promise<string | null> | null = null;
+
 // Request a development session from the API. This is a local convenience so
 // AXIOM can be opened directly (without the EUREKA round trip). The endpoint is
 // disabled in production, in which case this returns null and the sign-in
@@ -105,24 +123,59 @@ export async function devLogin(): Promise<string | null> {
   if (typeof window === 'undefined') {
     return null;
   }
-  try {
-    const res = await fetch(`${AXIOM_API_URL}/api/v1/auth/dev-login`, {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      cache: 'no-store',
-    });
-    if (!res.ok) {
+  if (_devLoginInFlight) {
+    return _devLoginInFlight;
+  }
+  _devLoginInFlight = (async () => {
+    try {
+      const res = await fetch(`${AXIOM_API_URL}/api/v1/auth/dev-login`, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        cache: 'no-store',
+      });
+      if (!res.ok) {
+        return null;
+      }
+      const data = (await res.json()) as { access_token?: string };
+      if (data.access_token) {
+        window.localStorage.setItem(TOKEN_STORAGE_KEY, data.access_token);
+        return data.access_token;
+      }
+      return null;
+    } catch {
       return null;
     }
-    const data = (await res.json()) as { access_token?: string };
-    if (data.access_token) {
-      window.localStorage.setItem(TOKEN_STORAGE_KEY, data.access_token);
-      return data.access_token;
-    }
-    return null;
-  } catch {
-    return null;
+  })();
+  try {
+    return await _devLoginInFlight;
+  } finally {
+    _devLoginInFlight = null;
   }
+}
+
+// Fetch with the bearer token attached, recovering transparently from an
+// expired or invalid token. On a 401 the stale token is cleared, a fresh dev
+// session is requested, and the request is retried once with the new token. In
+// production dev-login is disabled, so the 401 propagates and the caller shows
+// the sign-in screen. The retry runs at most once, so there is no loop.
+async function authedFetch(url: string, init: RequestInit): Promise<Response> {
+  const withAuth = (token: string | null): RequestInit => {
+    const headers = new Headers(init.headers as HeadersInit | undefined);
+    if (token) {
+      headers.set('Authorization', `Bearer ${token}`);
+    }
+    return { ...init, headers, cache: 'no-store' };
+  };
+
+  let res = await fetch(url, withAuth(getToken()));
+  if (res.status === 401 && typeof window !== 'undefined') {
+    clearToken();
+    const fresh = await devLogin();
+    if (fresh) {
+      res = await fetch(url, withAuth(fresh));
+    }
+  }
+  return res;
 }
 
 // Ensure a usable session exists and return the token. Order of preference:
@@ -146,18 +199,13 @@ export async function ensureSession(): Promise<string | null> {
 // Perform an authenticated GET against the AXIOM API and parse the JSON
 // body as T. Throws ApiError on any non-2xx response.
 export async function apiGet<T>(path: string): Promise<T> {
-  const token = getToken();
-  const headers: Record<string, string> = {
-    Accept: 'application/json',
-  };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
   const url = `${AXIOM_API_URL}${path}`;
   let res: Response;
   try {
-    res = await fetch(url, { headers, cache: 'no-store' });
+    res = await authedFetch(url, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+    });
   } catch (err) {
     // Network-level failure (server down, CORS, DNS, etc.).
     const message = err instanceof Error ? err.message : 'network error';
@@ -184,22 +232,15 @@ export async function apiGet<T>(path: string): Promise<T> {
 // Perform an authenticated POST against the AXIOM API with a JSON body and
 // parse the JSON response as T. Same error semantics as apiGet.
 export async function apiPost<T>(path: string, body: unknown): Promise<T> {
-  const token = getToken();
-  const headers: Record<string, string> = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
-
   const url = `${AXIOM_API_URL}${path}`;
   let res: Response;
   try {
-    res = await fetch(url, {
+    res = await authedFetch(url, {
       method: 'POST',
-      headers,
-      cache: 'no-store',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
       body: JSON.stringify(body ?? {}),
     });
   } catch (err) {
@@ -232,21 +273,15 @@ export async function apiSend<T>(
   method: 'PUT' | 'DELETE' | 'PATCH',
   body?: unknown,
 ): Promise<T> {
-  const token = getToken();
-  const headers: Record<string, string> = {
-    Accept: 'application/json',
-    'Content-Type': 'application/json',
-  };
-  if (token) {
-    headers.Authorization = `Bearer ${token}`;
-  }
   const url = `${AXIOM_API_URL}${path}`;
   let res: Response;
   try {
-    res = await fetch(url, {
+    res = await authedFetch(url, {
       method,
-      headers,
-      cache: 'no-store',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
       body: body === undefined ? undefined : JSON.stringify(body),
     });
   } catch (err) {
