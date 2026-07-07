@@ -19,11 +19,13 @@ from app.domains.assessment.models import Item, ItemBank, ItemTemplate
 from app.domains.content.models import ContentStep, Lesson
 from app.domains.curriculum.graph import seed_curriculum_graph
 from app.domains.curriculum.models import (
+    Definition,
     KnowledgeEdge,
     KnowledgeNode,
     Objective,
     Standard,
     StandardsFramework,
+    Theorem,
 )
 from app.domains.gamification.service import seed_badges
 
@@ -427,6 +429,47 @@ PROOF_ITEMS: dict[str, list] = {
             {"predicate": "n**2 <= n", "var": "n"},
         ),
     ],
+    "CALC1": [
+        (
+            "mixed",
+            "Part A: compute the derivative of f(x) = x^2. Part B: prove that f "
+            "is increasing for x > 0.",
+            None,
+            "",  # The parts (in meta.parts) carry their own answer keys.
+            "Part A is 2x. Part B: f'(x) = 2x > 0 for x > 0, so f is increasing.",
+            {
+                "parts": [
+                    {
+                        "label": "Part A: f'(x)",
+                        "kind": "math_expression",
+                        "correct": "2*x",
+                    },
+                    {
+                        "label": "Part B: prove f is increasing on x > 0",
+                        "kind": "free_form_proof",
+                        "correct": "f'(x) = 2x, and 2x > 0 for x > 0, so f is increasing.",
+                        "rubric": [
+                            {
+                                "criterion": "computes the derivative",
+                                "points": 1,
+                                "keywords": ["2x", "2 x", "derivative"],
+                            },
+                            {
+                                "criterion": "argues the derivative is positive",
+                                "points": 1,
+                                "keywords": ["positive", "greater than 0", "2x > 0"],
+                            },
+                            {
+                                "criterion": "concludes increasing",
+                                "points": 1,
+                                "keywords": ["increasing"],
+                            },
+                        ],
+                    },
+                ]
+            },
+        ),
+    ],
     "NUMTHEORY": [
         (
             "formal_proof",
@@ -526,6 +569,129 @@ async def seed_proof_items(session: AsyncSession) -> int:
     return added
 
 
+# Per-course definition and theorem reference library (Extension Section 6),
+# seeded on the tier 5 nodes so the library is not empty and the proof content
+# and copilot have consistent conventions to retrieve from.
+# (node_code, term, statement, notation)
+DEFINITIONS: list[tuple[str, str, str, str]] = [
+    (
+        "REALAN", "Cauchy sequence",
+        "A sequence whose terms become arbitrarily close for large indices: for "
+        "every eps > 0 there is N with |a_m - a_n| < eps for all m, n >= N.",
+        "for all eps>0 exists N ...",
+    ),
+    (
+        "REALAN", "Continuous at a point",
+        "f is continuous at c if for every eps > 0 there is delta > 0 such that "
+        "|x - c| < delta implies |f(x) - f(c)| < eps.",
+        "eps-delta",
+    ),
+    (
+        "ABSALG", "Group",
+        "A set with an associative binary operation, an identity element, and an "
+        "inverse for every element.",
+        "(G, *)",
+    ),
+    (
+        "TOPO", "Open set",
+        "In a metric space, a set U is open if every point of U has a ball "
+        "contained in U.",
+        "",
+    ),
+]
+
+# (node_code, name, statement, proof_sketch, techniques, depends_on)
+THEOREMS: list[tuple[str, str, str, str, list[str], list[str]]] = [
+    (
+        "REALAN", "Monotone Convergence Theorem",
+        "A bounded, monotone sequence of real numbers converges.",
+        "Take the supremum of the range and show the sequence converges to it "
+        "using the least upper bound property.",
+        ["PT.EPSILONDELTA", "PT.EXISTUNIQ"],
+        ["Completeness of the reals"],
+    ),
+    (
+        "REALAN", "Intermediate Value Theorem",
+        "A continuous function on [a, b] attains every value between f(a) and "
+        "f(b).",
+        "Apply completeness to the set of points where f stays below the target "
+        "value; the supremum is the crossing point.",
+        ["PT.CONTRADICTION", "PT.EPSILONDELTA"],
+        ["Continuous at a point"],
+    ),
+    (
+        "ABSALG", "Lagrange's Theorem",
+        "The order of a subgroup divides the order of a finite group.",
+        "Partition the group into cosets of the subgroup; all cosets have equal "
+        "size.",
+        ["PT.DIRECT", "PT.CASES"],
+        ["Group"],
+    ),
+]
+
+
+async def seed_reference_library(session: AsyncSession) -> int:
+    """Seed the definition and theorem reference library (idempotent).
+
+    Keyed on (course_code, term/name), so re-running adds only what is missing.
+    Links each entry to its knowledge node when the node exists.
+    """
+    nodes = {
+        node.code: node
+        for node in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    added = 0
+    for code, term, statement, notation in DEFINITIONS:
+        node = nodes.get(code)
+        course = code.lower()
+        exists = (
+            await session.execute(
+                select(Definition.id).where(
+                    Definition.course_code == course, Definition.term == term
+                )
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Definition(
+                course_code=course,
+                node_id=node.id if node is not None else None,
+                term=term,
+                statement=statement,
+                notation=notation,
+            )
+        )
+        added += 1
+    for code, name, statement, sketch, techniques, depends_on in THEOREMS:
+        node = nodes.get(code)
+        course = code.lower()
+        exists = (
+            await session.execute(
+                select(Theorem.id).where(
+                    Theorem.course_code == course, Theorem.name == name
+                )
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Theorem(
+                course_code=course,
+                node_id=node.id if node is not None else None,
+                name=name,
+                statement=statement,
+                proof_sketch=sketch,
+                techniques=techniques,
+                depends_on=depends_on,
+            )
+        )
+        added += 1
+    if added:
+        await session.flush()
+    return added
+
+
 async def seed_extra_items(session: AsyncSession) -> int:
     """Add the Phase 2 and Phase 3 demo items if they are missing.
 
@@ -594,6 +760,7 @@ async def seed(session: AsyncSession) -> bool:
     # its proof-transition and technique nodes.
     await seed_curriculum_graph(session)
     await seed_proof_items(session)
+    await seed_reference_library(session)
 
     existing = (
         await session.execute(select(StandardsFramework).where(StandardsFramework.code == "AAF"))

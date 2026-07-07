@@ -93,6 +93,8 @@ function PracticeInner() {
   const [matchAssign, setMatchAssign] = useState<Record<number, string>>({});
   // proof_gap_fill: one string per gap, submitted as a JSON array of fills.
   const [gapFills, setGapFills] = useState<string[]>([]);
+  // mixed: one answer per part, submitted as a JSON array in part order.
+  const [mixedAnswers, setMixedAnswers] = useState<string[]>([]);
   // formal_proof: the last kernel verdict from the Check button, if any.
   const [formalVerdict, setFormalVerdict] = useState<FormalVerdict | null>(null);
   const [formalChecking, setFormalChecking] = useState(false);
@@ -129,6 +131,7 @@ function PracticeInner() {
     setOrdered([]);
     setMatchAssign({});
     setGapFills([]);
+    setMixedAnswers([]);
     setFormalVerdict(null);
     setFormalChecking(false);
     setTutorResult(null);
@@ -152,6 +155,10 @@ function PracticeInner() {
       if (question.kind === 'proof_gap_fill') {
         const gapCount = question.presentation?.gap_count ?? 1;
         setGapFills(Array.from({ length: gapCount }, () => ''));
+      }
+      if (question.kind === 'mixed') {
+        const partCount = question.presentation?.parts?.length ?? 0;
+        setMixedAnswers(Array.from({ length: partCount }, () => ''));
       }
       setPhase('question');
     } catch (err) {
@@ -194,6 +201,9 @@ function PracticeInner() {
     if (question.kind === 'proof_gap_fill') {
       return JSON.stringify(gapFills);
     }
+    if (question.kind === 'mixed') {
+      return JSON.stringify(mixedAnswers);
+    }
     return answer.trim();
   }
 
@@ -214,6 +224,9 @@ function PracticeInner() {
     }
     if (question.kind === 'proof_gap_fill') {
       return gapFills.length > 0 && gapFills.every((g) => g.trim() !== '');
+    }
+    if (question.kind === 'mixed') {
+      return mixedAnswers.length > 0 && mixedAnswers.every((a) => a.trim() !== '');
     }
     return answer.trim() !== '';
   }
@@ -854,6 +867,62 @@ function PracticeInner() {
                   className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
                   placeholder="Write it in your own words."
                 />
+              </div>
+            ) : kind === 'mixed' ? (
+              <div className="mt-5 space-y-4">
+                <p className="text-xs text-muted-foreground">
+                  Answer each part. Computation parts are graded by the CAS; proof
+                  parts get an AI-assisted first pass and instructor sign-off.
+                </p>
+                {(question.presentation?.parts ?? []).map((part, index) => {
+                  const isProof =
+                    part.kind === 'free_form_proof' ||
+                    part.kind === 'free_response' ||
+                    part.kind === 'formal_proof';
+                  return (
+                    <div key={index}>
+                      <label
+                        htmlFor={`mixed-part-${index}`}
+                        className="mb-1 block text-sm font-medium text-card-foreground"
+                      >
+                        {part.label}
+                      </label>
+                      {isProof ? (
+                        <textarea
+                          id={`mixed-part-${index}`}
+                          rows={5}
+                          value={mixedAnswers[index] ?? ''}
+                          disabled={inputsLocked}
+                          onChange={(e) =>
+                            setMixedAnswers((prev) => {
+                              const next = [...prev];
+                              next[index] = e.target.value;
+                              return next;
+                            })
+                          }
+                          className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                          placeholder="Write your argument."
+                        />
+                      ) : (
+                        <input
+                          id={`mixed-part-${index}`}
+                          type="text"
+                          value={mixedAnswers[index] ?? ''}
+                          disabled={inputsLocked}
+                          onChange={(e) =>
+                            setMixedAnswers((prev) => {
+                              const next = [...prev];
+                              next[index] = e.target.value;
+                              return next;
+                            })
+                          }
+                          className="w-full rounded border border-border bg-background px-3 py-2 text-sm text-card-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                          placeholder="Your answer (use ^ for powers)"
+                        />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             ) : kind === 'free_form_proof' ? (
               <div className="mt-5">

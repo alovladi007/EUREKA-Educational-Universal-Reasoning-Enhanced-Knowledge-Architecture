@@ -38,6 +38,7 @@ from app.domains.curriculum.models import KnowledgeNode
 from app.domains.gamification.service import record_practice_result
 from app.domains.grading.formal import grade_formal_proof
 from app.domains.grading.free_response import grade_free_form_proof, grade_free_response
+from app.domains.grading.mixed import grade_mixed
 from app.domains.grading.service import grade
 
 # Ordered mastery bands, used to detect a level increase from one response so
@@ -185,6 +186,17 @@ def _presentation(kind: str, meta: dict | None) -> dict:
     if kind == "proof_gap_fill":
         gaps = meta.get("gaps")
         return {"gap_count": len(gaps) if isinstance(gaps, list) else 1}
+    if kind == "mixed":
+        # Only each part's label and kind cross to the client; the per-part
+        # answer keys and rubrics stay server-side.
+        parts = meta.get("parts") or []
+        return {
+            "parts": [
+                {"label": str(p.get("label", f"Part {i + 1}")), "kind": str(p.get("kind", ""))}
+                for i, p in enumerate(parts)
+                if isinstance(p, dict)
+            ]
+        }
     return {}
 
 
@@ -238,6 +250,8 @@ async def finalize_response_grade(
         outcome = await grade_free_form_proof(
             str(correct), student_answer, meta.get("rubric") or [], explanation=explanation
         )
+    elif kind == "mixed":
+        outcome = await grade_mixed(meta, student_answer, explanation=explanation)
     else:
         milestones = meta.get("milestones") if kind == "show_work" else None
         outcome = grade(

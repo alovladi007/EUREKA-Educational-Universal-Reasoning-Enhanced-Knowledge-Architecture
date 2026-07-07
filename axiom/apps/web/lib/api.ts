@@ -345,13 +345,17 @@ export type PracticeKind =
   | 'state_theorem'
   // Formal verification (4.1) and free-form proof (4.3).
   | 'formal_proof'
-  | 'free_form_proof';
+  | 'free_form_proof'
+  // Multi-part mixed compute-then-prove.
+  | 'mixed';
 
 // Answer-free UI hints for the structured proof kinds (see the API's
-// _presentation): the justification bank to choose from, and the gap count.
+// _presentation): the justification bank to choose from, the gap count, and (for
+// mixed items) each part's label and kind.
 export interface PracticePresentation {
   justification_bank?: string[];
   gap_count?: number;
+  parts?: { label: string; kind: string }[];
 }
 
 // A served practice question.

@@ -43,6 +43,19 @@ A signed-in EUREKA user can be placed, follow a prerequisite-aware path, practic
 - Health and readiness probes, Prometheus metrics, structured JSON logs, and OpenAPI are served.
 - Database migrations run under Alembic (`alembic upgrade head`), verified up and down on SQLite and Postgres, with a schema-drift check that comes back clean.
 
+### Curriculum & Proof Extension
+
+The platform now spans the full mathematics ladder and adds proof grading (see the companion `AXIOM_Curriculum_and_Proof_Extension.md` and ADR 0007):
+
+- The full tier 0-6 curriculum graph is seeded: pre-algebra through PDE theory (35 course nodes) plus nine first-class, transferable proof-technique nodes, wired with the Section-2 prerequisite backbone (55 edges). Nodes carry a kind (computational_skill / concept / proof_technique / theorem_with_proof), a tier, and an applied/pure track tag. The path planner enforces the long chains and refuses to route a learner into a Tier 5 proof course until the required Tier 4 techniques show mastery.
+- Structured, deterministic proof grading (Section 4.2): proof assembly, justification matching, proof gap-fill, find-the-error, counterexample (checked by evaluating the object against a property predicate in the CAS), and state-definition/theorem with keyword coverage. All auto-gradable, no AI in the loop.
+- Formal verification (Section 4.1) behind a swappable verifier interface: a Lean 4 subprocess backend (resource-limited) and an honest "unavailable" default that routes a formal proof to review rather than passing it on a guess. A pass is only ever produced by a real kernel.
+- Free-form proof grading (Section 4.3): an AI-assisted first pass against a reference proof and a milestone rubric, with line-level gap feedback, always routed to the instructor review queue and never auto-finalized.
+- A copilot proof-tutor mode: graduated Socratic hints that never hand over the proof, plus server-side gap detection that names the first unestablished step.
+- Mastery model: proof-technique mastery transfers across courses, evidence is weighted by grader trust (a formally verified proof outweighs an AI provisional pass), and proof nodes track can-apply and can-prove as separate signals.
+- Multi-part mixed compute-then-prove items split grading across the CAS and the proof graders, recording both on the attempt.
+- A per-course definition and theorem reference library, seeded for the Tier 5 courses.
+
 ## Not built yet
 
 These are explicitly not implemented:
@@ -56,6 +69,10 @@ These are explicitly not implemented:
 - A pgvector-backed vector store with a hosted embedding model. Semantic and hybrid grounding retrieval IS built, over deterministic local embeddings computed in memory (ADR 0006); swapping in pgvector plus a real embedding model behind the same interface is the production scaling path and is not required for correctness at the current corpus size.
 - The full 60-plus technology-enhanced question-type set. The gradable core is broad (selection, numeric, math expression, equation, multi-select, true/false, short text, plot-points, plot-function, draw-line, ordering, matching, show-your-work, free-response); the long tail (hotspot, image labeling, categorize/sort, cloze-with-math, table completion, drag-token, transform-a-figure, and more) is not built. `matching` grades and authors but has no dedicated practice input yet.
 - A shared `packages/ui`, Playwright `tests/e2e`, and load tests (`tests/load`) are not built; the frontend components live in `apps/web/components`.
+- A bundled Lean 4 + Mathlib toolchain. The formal verification track (Section 4.1) is built behind a swappable verifier interface with a resource-limited Lean subprocess backend, but no toolchain is bundled; the default install runs the "unavailable" verifier, which routes formal proofs to human review rather than passing them. Installing Lean and setting `AXIOM_FORMAL_VERIFIER=lean` enables real kernel grading. The subprocess sandbox (temp dir, timeout, rlimits) should be hardened to a jailed worker/container in production.
+- Autoformalization (Section 4.4) is not built. Translating an informal proof to Lean and verifying it is research-grade and deliberately omitted; nothing lowers a grade on a formalization attempt.
+- Autonomous free-form proof grading. Free-form proof grading is an AI-assisted first pass only (against a reference proof and rubric, over the swappable reasoning provider), always routed to instructor sign-off. Fully autonomous grading of graduate-level proofs is not a goal and not built; expert review in the loop for Tier 5 and 6 is a feature, not a gap. The deterministic mock provider grades by rubric-keyword coverage; a hosted model behind the same interface is the production upgrade.
+- Deep Tier 5-6 course content. The tier 0-6 graph, technique nodes, structured/formal/free-form proof kinds, and a seed reference library are built; full lesson-by-lesson content and large item banks for the advanced tiers are seed-level, not a finished curriculum.
 
 ## Per-module status
 
@@ -64,14 +81,14 @@ These are explicitly not implemented:
 | api-gateway | done | Phase 0 | FastAPI app factory, health and readiness, metrics, OpenAPI, tracing hook, versioned routers. |
 | identity_eureka | done | Phase 0 | Verifies EUREKA JWTs (HS256 dev, JWKS-ready interface); syncs the user and roles on first touch. |
 | math_core (package) | done | Phase 0 | SymPy symbolic equivalence, safe parsing (no eval), wall-clock timeout, deterministic parameterized-item resolver, tests. |
-| curriculum | done | Phase 1 | Standards framework, skill graph, objectives. Seeded algebra graph. |
+| curriculum | done | Phase 1, extended by the Proof Extension | Standards framework, skill graph, objectives. Seeded algebra graph, plus the full tier 0-6 mathematics ladder (35 course nodes + 9 proof-technique nodes, 55 prerequisite edges) with node kind/tier/track, and a per-course definition/theorem reference library. |
 | content | done | Phase 1 | Lessons and content steps per node. |
 | assessment | done | Phase 1, richer kinds and QTI in Phase 2 | Item bank, static items, parameterized templates and variants, assessments, forms, assignment, delivery. Phase 2 adds richer item kinds, item.meta, and QTI 3.0 import and export. Assignments carry a due date, and assessments a server-enforced availability window (open_at/close_at). |
-| grading | done | Phase 1, extended in Phase 2 and 3 | Selection, numeric, math expression and equation (SymPy), plus multi-select, true/false, short text, plot-points, and show-your-work step credit. Phase 3 adds rubric-based AI grading of free-response text (via the reasoning provider) with a teacher override queue. Writes grader plus confidence and a reasoning trace. Runs inline. |
+| grading | done | Phase 1, extended in Phase 2/3 and the Proof Extension | Selection, numeric, math expression and equation (SymPy), plus multi-select, true/false, short text, plot-points, and show-your-work step credit. Phase 3 adds rubric-based AI grading of free-response text with a teacher override queue. The Proof Extension adds deterministic structured proof kinds (assembly, justification matching, gap-fill, find-the-error, counterexample, state-definition/theorem), formal verification behind a swappable Lean verifier (ADR 0007), AI-assisted free-form proof grading with mandatory human sign-off, and multi-part mixed compute-then-prove items. Writes grader, confidence, and a reasoning trace. |
 | adaptive | done | Phase 1 (BKT), Phase 2 (IRT/CAT) | BKT mastery with evidence and prerequisite-aware path planning; IRT 3PL model, computerized adaptive testing, and item calibration. |
 | analytics | done | Phase 2 | Item statistics with IRT, standards heatmap, growth, CSV and PDF exports. |
 | gamification | done | Phase 2 | XP, levels, streaks, badges tied to real progress. Live game-show mode is not built. |
-| copilot | done (core) | Phase 3 | AI-assisted hints, explanations, and grounded chat behind a swappable reasoning provider with a mock fallback (ADR 0001). Labeled and teacher-overridable. The same provider grades free-response text against a rubric. Handwritten and image grading are not built. |
+| copilot | done (core) | Phase 3, extended by the Proof Extension | AI-assisted hints, explanations, and grounded chat behind a swappable reasoning provider with a mock fallback (ADR 0001). Labeled and teacher-overridable. The same provider grades free-response text and free-form proofs against a rubric. Adds a proof-tutor mode: graduated Socratic hints that never reveal the answer, plus server-side gap detection on a draft. Handwritten and image grading are not built. |
 | tutoring | done (whiteboard) | Phase 3 | Real-time shared whiteboard, chat, and pushed problems over a WebSocket relay hub, with a join-code session model. Video/audio and recording need a media server and are not built. |
 | proctoring | done | Phase 4 | Session per attempt, weighted anomaly score, browser-observable integrity events, teacher review queue with timeline, student disclosure. No webcam/screen capture; flags for a human, never accuses. |
 | integrations | done | Phase 4 | LTI 1.3 tool provider (OIDC login, RS256 launch verification, JWKS, AGS passback) and OneRoster roster sync. QTI item exchange done in Phase 2. AGS/OneRoster live round-trips need a real LMS/SIS. |
@@ -83,7 +100,7 @@ These are explicitly not implemented:
 |---|---|---|
 | Web dashboard (Next.js 14) | done | Dashboard plus Learn, Practice, Mastery, Path, Teacher, Adaptive Test, Achievements, Analytics, and Copilot pages against the live API. |
 | Docker Compose | done | api (8400), web (4100), Postgres with pgvector (5441), Redis (6392), worker, beat, observability profile. |
-| Alembic migrations | done | Migrations through 0013 (generated-items queue, proctoring, LTI, tutoring), each verified up on Postgres with a clean autogenerate schema-drift check. |
+| Alembic migrations | done | Migrations through 0014 (generated-items queue, proctoring, LTI, tutoring, and the Curriculum & Proof Extension foundation: node taxonomy, mastery signals + grader trust, definition/theorem library), each verified up on Postgres with a clean autogenerate schema-drift check. |
 | packages/ui | done (unwired) | Shared math renderer extracted to @axiom/ui; apps/web still vendors it pending a repo-root web build (see packages/ui/README). |
 | Tests: e2e and load | done | Playwright e2e (dashboard, practice, navigation) under apps/web/tests/e2e; a Locust load test under tests/load drives the practice hot path. |
 | Accessibility | pass | KaTeX MathML for screen readers, focus rings and aria labels on interactive controls, a skip-to-content link, and reduced-motion honored. A full WCAG 2.2 AA audit across every surface is ongoing. |

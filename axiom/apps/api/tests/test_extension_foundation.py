@@ -134,12 +134,20 @@ async def test_definition_and_theorem_library_round_trip(db_session):
     await db_session.flush()
 
     d = (
-        await db_session.execute(select(Definition).where(Definition.term == "Cauchy sequence"))
+        await db_session.execute(
+            select(Definition).where(
+                Definition.term == "Cauchy sequence",
+                Definition.course_code == "real-analysis",
+            )
+        )
     ).scalar_one()
     assert d.course_code == "real-analysis"
     t = (
         await db_session.execute(
-            select(Theorem).where(Theorem.name == "Monotone Convergence Theorem")
+            select(Theorem).where(
+                Theorem.name == "Monotone Convergence Theorem",
+                Theorem.course_code == "real-analysis",
+            )
         )
     ).scalar_one()
     assert t.techniques == ["epsilon_delta", "completeness"]
