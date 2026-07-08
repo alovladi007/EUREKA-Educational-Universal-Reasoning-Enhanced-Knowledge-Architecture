@@ -95,6 +95,14 @@ function PracticeInner() {
   const [gapFills, setGapFills] = useState<string[]>([]);
   // mixed: one answer per part, submitted as a JSON array in part order.
   const [mixedAnswers, setMixedAnswers] = useState<string[]>([]);
+  // cloze_math: one string per blank, submitted as a JSON array.
+  const [clozeBlanks, setClozeBlanks] = useState<string[]>([]);
+  // categorize_sort: item -> chosen category, submitted as a JSON object.
+  const [categorize, setCategorize] = useState<Record<string, string>>({});
+  // drag_tokens: the chosen tokens in order, submitted as a JSON array.
+  const [tokenOrder, setTokenOrder] = useState<string[]>([]);
+  // table_completion: a 2D array of cell strings, submitted as JSON.
+  const [tableCells, setTableCells] = useState<string[][]>([]);
   // formal_proof: the last kernel verdict from the Check button, if any.
   const [formalVerdict, setFormalVerdict] = useState<FormalVerdict | null>(null);
   const [formalChecking, setFormalChecking] = useState(false);
@@ -132,6 +140,10 @@ function PracticeInner() {
     setMatchAssign({});
     setGapFills([]);
     setMixedAnswers([]);
+    setClozeBlanks([]);
+    setCategorize({});
+    setTokenOrder([]);
+    setTableCells([]);
     setFormalVerdict(null);
     setFormalChecking(false);
     setTutorResult(null);
@@ -159,6 +171,21 @@ function PracticeInner() {
       if (question.kind === 'mixed') {
         const partCount = question.presentation?.parts?.length ?? 0;
         setMixedAnswers(Array.from({ length: partCount }, () => ''));
+      }
+      if (question.kind === 'cloze_math') {
+        const segments = question.presentation?.segments;
+        const blankCount = Array.isArray(segments)
+          ? segments.filter((s) => s === '').length
+          : question.presentation?.blank_count ?? 1;
+        setClozeBlanks(Array.from({ length: Math.max(1, blankCount) }, () => ''));
+      }
+      if (question.kind === 'drag_tokens') {
+        setTokenOrder([]);
+      }
+      if (question.kind === 'table_completion') {
+        const display = question.presentation?.display ?? [];
+        // Pre-filled cells stay fixed; blank cells (empty string) become inputs.
+        setTableCells(display.map((row) => row.map((cell) => String(cell ?? ''))));
       }
       setPhase('question');
     } catch (err) {
@@ -204,6 +231,18 @@ function PracticeInner() {
     if (question.kind === 'mixed') {
       return JSON.stringify(mixedAnswers);
     }
+    if (question.kind === 'cloze_math') {
+      return JSON.stringify(clozeBlanks);
+    }
+    if (question.kind === 'categorize_sort') {
+      return JSON.stringify(categorize);
+    }
+    if (question.kind === 'drag_tokens') {
+      return JSON.stringify(tokenOrder);
+    }
+    if (question.kind === 'table_completion') {
+      return JSON.stringify(tableCells);
+    }
     return answer.trim();
   }
 
@@ -227,6 +266,19 @@ function PracticeInner() {
     }
     if (question.kind === 'mixed') {
       return mixedAnswers.length > 0 && mixedAnswers.every((a) => a.trim() !== '');
+    }
+    if (question.kind === 'cloze_math') {
+      return clozeBlanks.length > 0 && clozeBlanks.every((b) => b.trim() !== '');
+    }
+    if (question.kind === 'categorize_sort') {
+      const items = question.presentation?.items ?? [];
+      return items.length > 0 && items.every((it) => (categorize[it] ?? '') !== '');
+    }
+    if (question.kind === 'drag_tokens') {
+      return tokenOrder.length > 0;
+    }
+    if (question.kind === 'table_completion') {
+      return tableCells.some((row) => row.some((cell) => cell.trim() !== ''));
     }
     return answer.trim() !== '';
   }
@@ -1096,6 +1148,209 @@ function PracticeInner() {
                 <div className="mt-3">
                   <GraphInput mode="function" expression={answer} />
                 </div>
+              </div>
+            ) : kind === 'number_line' ? (
+              <div className="mt-5">
+                <label className="mb-1 block text-sm font-medium text-card-foreground">
+                  Drag to place your value on the number line
+                </label>
+                {(() => {
+                  const min = question.presentation?.min ?? -10;
+                  const max = question.presentation?.max ?? 10;
+                  const step = question.presentation?.step ?? 1;
+                  const current = answer === '' ? (min + max) / 2 : Number(answer);
+                  return (
+                    <div>
+                      <input
+                        type="range"
+                        min={min}
+                        max={max}
+                        step={step}
+                        value={current}
+                        disabled={inputsLocked}
+                        aria-label="Value on the number line"
+                        onChange={(e) => setAnswer(e.target.value)}
+                        className="w-full"
+                      />
+                      <div className="mt-1 flex justify-between text-xs text-muted-foreground">
+                        <span>{min}</span>
+                        <span className="font-mono text-sm text-foreground">
+                          {answer === '' ? '(drag to choose)' : answer}
+                        </span>
+                        <span>{max}</span>
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            ) : kind === 'cloze_math' ? (
+              <div className="mt-5">
+                <label className="mb-2 block text-sm font-medium text-card-foreground">
+                  Fill in the blanks
+                </label>
+                <div className="flex flex-wrap items-center gap-2 text-sm text-card-foreground">
+                  {(() => {
+                    const segments = question.presentation?.segments;
+                    const blankInput = (bi: number) => (
+                      <input
+                        key={`blank-${bi}`}
+                        type="text"
+                        value={clozeBlanks[bi] ?? ''}
+                        disabled={inputsLocked}
+                        aria-label={`Blank ${bi + 1}`}
+                        onChange={(e) =>
+                          setClozeBlanks((prev) => {
+                            const next = [...prev];
+                            next[bi] = e.target.value;
+                            return next;
+                          })
+                        }
+                        className="w-24 rounded border border-border bg-background px-2 py-1 font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
+                      />
+                    );
+                    if (Array.isArray(segments)) {
+                      let blankIdx = -1;
+                      return segments.map((seg, i) => {
+                        if (seg === '') {
+                          blankIdx += 1;
+                          return blankInput(blankIdx);
+                        }
+                        return <span key={`seg-${i}`}>{seg}</span>;
+                      });
+                    }
+                    return clozeBlanks.map((_, bi) => blankInput(bi));
+                  })()}
+                </div>
+              </div>
+            ) : kind === 'categorize_sort' ? (
+              <div className="mt-5 space-y-2">
+                <label className="block text-sm font-medium text-card-foreground">
+                  Sort each item into a category
+                </label>
+                {(question.presentation?.items ?? []).map((item) => (
+                  <div
+                    key={item}
+                    className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-2"
+                  >
+                    <span className="text-sm font-medium text-card-foreground">{item}</span>
+                    <select
+                      value={categorize[item] ?? ''}
+                      disabled={inputsLocked}
+                      aria-label={`Category for ${item}`}
+                      onChange={(e) =>
+                        setCategorize((prev) => ({ ...prev, [item]: e.target.value }))
+                      }
+                      className="rounded border border-border bg-background px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
+                    >
+                      <option value="">Choose...</option>
+                      {(question.presentation?.categories ?? []).map((cat) => (
+                        <option key={cat} value={cat}>
+                          {cat}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+            ) : kind === 'drag_tokens' ? (
+              <div className="mt-5 space-y-3">
+                <label className="block text-sm font-medium text-card-foreground">
+                  Tap tokens in order to build the expression
+                </label>
+                <div className="min-h-[2.5rem] rounded-lg border border-border bg-card p-2 font-mono text-sm text-foreground">
+                  {tokenOrder.length === 0 ? (
+                    <span className="text-muted-foreground">Your expression appears here</span>
+                  ) : (
+                    tokenOrder.join(' ')
+                  )}
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {(question.presentation?.tokens ?? []).map((tok, i) => (
+                    <button
+                      key={`${tok}-${i}`}
+                      type="button"
+                      disabled={inputsLocked}
+                      onClick={() => setTokenOrder((prev) => [...prev, tok])}
+                      className="rounded border border-border bg-background px-3 py-1 font-mono text-sm transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
+                    >
+                      {tok}
+                    </button>
+                  ))}
+                </div>
+                {tokenOrder.length > 0 && (
+                  <button
+                    type="button"
+                    disabled={inputsLocked}
+                    onClick={() => setTokenOrder([])}
+                    className="text-xs text-muted-foreground underline"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            ) : kind === 'table_completion' ? (
+              <div className="mt-5 overflow-x-auto">
+                <label className="mb-2 block text-sm font-medium text-card-foreground">
+                  Complete the table
+                </label>
+                <table className="border-collapse text-sm">
+                  {(question.presentation?.col_headers?.length ?? 0) > 0 && (
+                    <thead>
+                      <tr>
+                        {(question.presentation?.row_headers?.length ?? 0) > 0 && (
+                          <th className="border border-border px-2 py-1" />
+                        )}
+                        {(question.presentation?.col_headers ?? []).map((h, i) => (
+                          <th
+                            key={`col-${i}`}
+                            className="border border-border px-2 py-1 text-card-foreground"
+                          >
+                            {h}
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                  )}
+                  <tbody>
+                    {tableCells.map((row, r) => (
+                      <tr key={`row-${r}`}>
+                        {question.presentation?.row_headers?.[r] !== undefined && (
+                          <th className="border border-border px-2 py-1 text-card-foreground">
+                            {question.presentation?.row_headers?.[r]}
+                          </th>
+                        )}
+                        {row.map((cell, c) => {
+                          const given =
+                            (question.presentation?.display?.[r]?.[c] ?? '') !== '';
+                          return (
+                            <td key={`cell-${r}-${c}`} className="border border-border px-1 py-1">
+                              {given ? (
+                                <span className="px-2 font-mono text-card-foreground">{cell}</span>
+                              ) : (
+                                <input
+                                  type="text"
+                                  value={cell}
+                                  disabled={inputsLocked}
+                                  aria-label={`Row ${r + 1} column ${c + 1}`}
+                                  onChange={(e) =>
+                                    setTableCells((prev) =>
+                                      prev.map((rr, ri) =>
+                                        ri === r
+                                          ? rr.map((cc, ci) => (ci === c ? e.target.value : cc))
+                                          : rr,
+                                      ),
+                                    )
+                                  }
+                                  className="w-16 rounded border border-border bg-background px-2 py-1 font-mono focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-70"
+                                />
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             ) : kind && MATH_INPUT_KINDS.has(kind) ? (
               <div className="mt-5">

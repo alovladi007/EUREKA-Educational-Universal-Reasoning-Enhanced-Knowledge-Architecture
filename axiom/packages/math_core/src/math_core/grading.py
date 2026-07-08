@@ -484,3 +484,82 @@ def grade_equation(student: str, expected: str) -> GradeResult:
         normalized_student=norm_student,
         normalized_expected=norm_expected,
     )
+
+
+# Two-character operators are checked before one-character ones so "<=" is not
+# mistaken for "<". Each maps to the SymPy relational constructor it denotes.
+_INEQUALITY_OPS: list[tuple[str, type[sympy.core.relational.Relational]]] = [
+    ("<=", sympy.Le),
+    (">=", sympy.Ge),
+    ("<", sympy.Lt),
+    (">", sympy.Gt),
+]
+
+
+def _parse_inequality(
+    text: str, local: dict[str, sympy.Symbol]
+) -> sympy.core.relational.Relational:
+    """Parse 'lhs OP rhs' into a SymPy relational, OP in < <= > >=."""
+    for token, ctor in _INEQUALITY_OPS:
+        if token in text:
+            lhs, _, rhs = text.partition(token)
+            return ctor(
+                safe_parse(lhs, local_symbols=local),
+                safe_parse(rhs, local_symbols=local),
+            )
+    raise MathParseError("no inequality operator (<, <=, >, >=) found")
+
+
+def grade_inequality(student: str, expected: str) -> GradeResult:
+    """Grade an inequality of the form 'lhs OP rhs', OP in < <= > >=.
+
+    Two inequalities are equivalent when they define the same solution set, so
+    'x > 2', '2 < x', and '2*x > 4' all grade equal, while 'x > 2' and 'x >= 2'
+    do not (the boundary point differs). Solution sets are compared with SymPy's
+    as_set(); a strict-vs-nonstrict or direction difference changes the set and
+    so grades incorrect. Multivariate relations, for which as_set() is not
+    defined, fall back to canonical-form equality.
+    """
+    grader: GraderName = "cas"
+    try:
+        local = _combined_symbols(student, expected)
+        s_rel = _parse_inequality(student, local)
+        e_rel = _parse_inequality(expected, local)
+    except MathTimeoutError:
+        return GradeResult(
+            is_correct=False, score=0.0, grader=grader, confidence=1.0,
+            detail="evaluation timed out while parsing inequality",
+        )
+    except (MathParseError, TypeError, ValueError) as exc:
+        return GradeResult(
+            is_correct=False, score=0.0, grader=grader, confidence=1.0,
+            detail=f"parse error: {exc}",
+        )
+
+    try:
+        with time_limit(6.0):
+            try:
+                is_equal = s_rel.as_set() == e_rel.as_set()
+            except (NotImplementedError, TypeError, ValueError):
+                # Multivariate or set-unbuildable: compare canonical relations.
+                is_equal = s_rel.canonical == e_rel.canonical
+    except MathTimeoutError:
+        return GradeResult(
+            is_correct=False, score=0.0, grader=grader, confidence=1.0,
+            detail="evaluation timed out while comparing inequalities",
+        )
+    except Exception as exc:  # noqa: BLE001
+        return GradeResult(
+            is_correct=False, score=0.0, grader=grader, confidence=0.8,
+            detail=f"comparison error: {exc}",
+        )
+
+    return GradeResult(
+        is_correct=bool(is_equal),
+        score=1.0 if is_equal else 0.0,
+        grader=grader,
+        confidence=0.95,
+        detail="solution sets match" if is_equal else "solution sets differ",
+        normalized_student=_safe_str(s_rel.canonical),
+        normalized_expected=_safe_str(e_rel.canonical),
+    )

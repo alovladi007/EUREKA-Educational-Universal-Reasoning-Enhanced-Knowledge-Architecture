@@ -197,6 +197,39 @@ def _presentation(kind: str, meta: dict | None) -> dict:
                 if isinstance(p, dict)
             ]
         }
+    if kind == "cloze_math":
+        # segments interleave prose and blanks: a list of strings where an empty
+        # string marks where an input goes. Only the blank count and the prose
+        # cross to the client; accepted answers stay server-side.
+        segments = meta.get("segments")
+        if isinstance(segments, list):
+            return {"segments": [str(s) for s in segments]}
+        return {"blank_count": int(meta.get("blank_count", 1) or 1)}
+    if kind == "categorize_sort":
+        # The items to place and the category buckets are presentation-only; the
+        # correct item->category map stays server-side.
+        return {
+            "items": [str(x) for x in (meta.get("items") or [])],
+            "categories": [str(x) for x in (meta.get("categories") or [])],
+        }
+    if kind == "drag_tokens":
+        # The bank of tokens to arrange; the target expression is the answer key
+        # and stays server-side.
+        return {"tokens": [str(t) for t in (meta.get("tokens") or [])]}
+    if kind == "number_line":
+        return {
+            "min": float(meta.get("min", -10)),
+            "max": float(meta.get("max", 10)),
+            "step": float(meta.get("step", 1)),
+        }
+    if kind == "table_completion":
+        # display is the grid the learner sees, with blank cells as empty
+        # strings; row/column headers label it. The answer grid stays server-side.
+        return {
+            "display": meta.get("display") or [],
+            "row_headers": [str(x) for x in (meta.get("row_headers") or [])],
+            "col_headers": [str(x) for x in (meta.get("col_headers") or [])],
+        }
     return {}
 
 

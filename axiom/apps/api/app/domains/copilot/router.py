@@ -174,6 +174,33 @@ async def generate_items(
     }
 
 
+@router.get("/embeddings/status", summary="pgvector semantic store status")
+async def embeddings_status(
+    session: AsyncSession = Depends(get_session),
+    _: UserOut = Depends(get_current_user),
+) -> dict:
+    from app.core.config import get_settings
+    from app.domains.copilot import pgvector_store
+
+    return {
+        "store": get_settings().retrieval_store,
+        "embedding_provider": get_settings().embedding_provider,
+        "rows": await pgvector_store.count(session),
+    }
+
+
+@router.post("/embeddings/rebuild", summary="Rebuild the pgvector semantic store (author)")
+async def embeddings_rebuild(
+    session: AsyncSession = Depends(get_session),
+    _: UserOut = Depends(author_only),
+) -> dict:
+    from app.domains.copilot import pgvector_store
+
+    written = await pgvector_store.rebuild(session)
+    await session.commit()
+    return {"rebuilt": written}
+
+
 @router.get("/generated", summary="The pending item-generation review queue (author)")
 async def generated_queue(
     status: str = "pending",

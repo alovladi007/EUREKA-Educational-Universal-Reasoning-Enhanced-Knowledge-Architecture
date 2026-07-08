@@ -27,6 +27,7 @@ from math_core import (
     check_counterexample,
     grade_equation,
     grade_expression,
+    grade_inequality,
     grade_numeric,
     symbolic_equal,
 )
@@ -156,6 +157,72 @@ def grade_step_credit(milestones: list[str], student_work: str) -> tuple[list[di
 def _norm_text(text: str) -> str:
     """Lowercase, strip non-alphanumerics, and collapse whitespace for matching."""
     return " ".join(re.sub(r"[^a-z0-9 ]+", " ", (text or "").lower()).split())
+
+
+def _blank_hit(student: str, accepted: str) -> bool:
+    """True when a filled blank/cell matches an accepted form.
+
+    CAS symbolic equivalence is tried first (so any algebraically equal form of a
+    math blank counts), falling back to normalized text equality for word
+    answers. Used by cloze and table-completion grading.
+    """
+    student = (student or "").strip()
+    if not student:
+        return False
+    try:
+        if symbolic_equal(student, accepted):
+            return True
+    except Exception:  # noqa: BLE001 - CAS parse failure means "not a math match"
+        pass
+    return _norm_text(student) == _norm_text(accepted)
+
+
+def _parse_mixed_number(text: str) -> float | None:
+    """Parse 'a b/c', 'b/c', or a plain decimal/integer into a float."""
+    text = (text or "").strip()
+    m = re.fullmatch(r"(-?\d+)\s+(\d+)/(\d+)", text)
+    if m:
+        whole, num, den = int(m.group(1)), int(m.group(2)), int(m.group(3))
+        if den == 0:
+            return None
+        sign = -1 if text.lstrip().startswith("-") else 1
+        return whole + sign * (num / den)
+    m = re.fullmatch(r"(-?\d+)/(\d+)", text)
+    if m:
+        den = int(m.group(2))
+        return None if den == 0 else int(m.group(1)) / den
+    try:
+        return float(text)
+    except ValueError:
+        return None
+
+
+# A small curated unit table for units-aware numeric grading. Each unit maps to
+# its physical dimension and its factor to that dimension's SI-ish base
+# (length->m, mass->kg, time->s, volume->L). Two answers grade equal only when
+# they share a dimension and match after converting to the base.
+_UNIT_TO_BASE: dict[str, tuple[str, float]] = {
+    "mm": ("length", 1e-3), "cm": ("length", 1e-2), "m": ("length", 1.0),
+    "km": ("length", 1e3), "in": ("length", 0.0254), "ft": ("length", 0.3048),
+    "yd": ("length", 0.9144), "mi": ("length", 1609.344),
+    "mg": ("mass", 1e-6), "g": ("mass", 1e-3), "kg": ("mass", 1.0),
+    "lb": ("mass", 0.45359237), "oz": ("mass", 0.028349523),
+    "ms": ("time", 1e-3), "s": ("time", 1.0), "sec": ("time", 1.0),
+    "min": ("time", 60.0), "h": ("time", 3600.0), "hr": ("time", 3600.0),
+    "ml": ("volume", 1e-3), "l": ("volume", 1.0),
+}
+
+
+def _parse_units(text: str) -> tuple[str, float] | None:
+    """Parse 'value unit' into (dimension, value_in_base_units), or None."""
+    m = re.fullmatch(r"\s*(-?\d+(?:\.\d+)?)\s*([a-zA-Z]+)\s*", text or "")
+    if not m:
+        return None
+    unit = m.group(2).lower()
+    if unit not in _UNIT_TO_BASE:
+        return None
+    dim, factor = _UNIT_TO_BASE[unit]
+    return dim, float(m.group(1)) * factor
 
 
 def _proof_hit(student_line: str, accepted: list[str]) -> bool:
@@ -350,7 +417,14 @@ def grade(
 
     if kind == "numeric":
         atol = tolerance if tolerance is not None else 1e-9
-        res = grade_numeric(student, str(correct), atol=atol)
+        # Optional significant-figures grading: meta.sig_figs rounds both values
+        # to that many significant figures before comparing (the DeltaMath /
+        # myOpenMath sig-fig policy). Absent, plain absolute tolerance is used.
+        sig_figs = meta.get("sig_figs")
+        sig_figs = int(sig_figs) if isinstance(sig_figs, (int, float, str)) and str(
+            sig_figs
+        ).lstrip("-").isdigit() else None
+        res = grade_numeric(student, str(correct), atol=atol, sig_figs=sig_figs)
         return GradeOutcome(
             res.is_correct, res.score, "numeric", res.confidence, res.detail,
             str(correct), explanation,
@@ -543,6 +617,165 @@ def grade(
         return GradeOutcome(
             False, 0.0, "structured", 0.5,
             "no accepted phrasing matched; needs review", str(correct), explanation,
+        )
+
+    if kind == "inequality":
+        res = grade_inequality(student, str(correct))
+        return GradeOutcome(
+            res.is_correct, res.score, "cas", res.confidence, res.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "number_line":
+        # A value placed on a number line: accept a bare number or a JSON number.
+        atol = tolerance if tolerance is not None else 1e-9
+        value = student
+        try:
+            parsed = json.loads(student)
+            if isinstance(parsed, (int, float)):
+                value = str(parsed)
+        except (ValueError, TypeError):
+            pass
+        res = grade_numeric(value, str(correct), atol=atol)
+        return GradeOutcome(
+            res.is_correct, res.score, "numeric", res.confidence, res.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "mixed_number":
+        sv = _parse_mixed_number(student)
+        ev = _parse_mixed_number(str(correct))
+        atol = tolerance if tolerance is not None else 1e-9
+        ok = sv is not None and ev is not None and abs(sv - ev) <= atol + 1e-9 * abs(ev)
+        detail = (
+            f"{sv} vs {ev}" if sv is not None and ev is not None
+            else "could not parse a mixed number"
+        )
+        return GradeOutcome(
+            ok, 1.0 if ok else 0.0, "numeric", 1.0, detail, str(correct), explanation,
+        )
+
+    if kind == "units_numeric":
+        s = _parse_units(student)
+        e = _parse_units(str(correct))
+        atol = tolerance if tolerance is not None else 0.0
+        if s is None or e is None:
+            return GradeOutcome(
+                False, 0.0, "numeric", 1.0,
+                "could not parse a value with a known unit", str(correct), explanation,
+            )
+        if s[0] != e[0]:
+            return GradeOutcome(
+                False, 0.0, "numeric", 1.0,
+                f"unit dimension mismatch ({s[0]} vs {e[0]})", str(correct), explanation,
+            )
+        ok = abs(s[1] - e[1]) <= atol + 1e-6 * abs(e[1])
+        return GradeOutcome(
+            ok, 1.0 if ok else 0.0, "numeric", 1.0,
+            f"compared in base units: {s[1]} vs {e[1]}", str(correct), explanation,
+        )
+
+    if kind == "cloze_math":
+        # correct is a JSON list; each element is the accepted answer(s) for one
+        # blank (multiple accepted forms separated by "|"). student is a JSON
+        # list of the learner's blanks, in order.
+        try:
+            key_blanks = json.loads(str(correct))
+            stu_blanks = json.loads(student) if student else []
+        except (ValueError, TypeError):
+            key_blanks = stu_blanks = None
+        if not isinstance(key_blanks, list) or not isinstance(stu_blanks, list):
+            return GradeOutcome(
+                False, 0.0, "cas", 1.0, "malformed cloze answer", str(correct), explanation,
+            )
+        per: list[dict] = []
+        hit = 0
+        for i, key in enumerate(key_blanks):
+            stu = stu_blanks[i] if i < len(stu_blanks) else ""
+            accepted = [a.strip() for a in str(key).split("|") if a.strip()]
+            ok = any(_blank_hit(str(stu), a) for a in accepted)
+            per.append({"milestone": f"blank {i + 1}", "awarded": ok})
+            if ok:
+                hit += 1
+        frac = hit / len(key_blanks) if key_blanks else 0.0
+        return GradeOutcome(
+            frac >= 1.0 and len(key_blanks) > 0, round(frac, 4), "cas", 0.95,
+            f"{hit}/{len(key_blanks)} blanks", str(correct), explanation, per,
+        )
+
+    if kind == "categorize_sort":
+        # correct/student are JSON objects mapping each item to its category.
+        try:
+            key_map = json.loads(str(correct))
+            stu_map = json.loads(student) if student else {}
+        except (ValueError, TypeError):
+            key_map = stu_map = None
+        if not isinstance(key_map, dict) or not isinstance(stu_map, dict):
+            return GradeOutcome(
+                False, 0.0, "exact", 1.0, "malformed categorize answer",
+                str(correct), explanation,
+            )
+        hit = sum(
+            1 for item, cat in key_map.items()
+            if str(stu_map.get(item, "")).strip() == str(cat).strip()
+        )
+        frac = hit / len(key_map) if key_map else 0.0
+        return GradeOutcome(
+            frac >= 1.0 and len(key_map) > 0, round(frac, 4), "exact", 1.0,
+            f"{hit}/{len(key_map)} placed correctly", str(correct), explanation,
+        )
+
+    if kind == "drag_tokens":
+        # student is a JSON list of tokens in the chosen order. Join them and
+        # grade the assembled expression (or equation) by CAS equivalence, so any
+        # ordering that is algebraically equal to the key is accepted.
+        try:
+            toks = json.loads(student) if student else []
+        except (ValueError, TypeError):
+            toks = None
+        if not isinstance(toks, list):
+            return GradeOutcome(
+                False, 0.0, "cas", 1.0, "malformed token order", str(correct), explanation,
+            )
+        assembled = " ".join(str(t) for t in toks)
+        res = (
+            grade_equation(assembled, str(correct)) if "=" in str(correct)
+            else grade_expression(assembled, str(correct))
+        )
+        return GradeOutcome(
+            res.is_correct, res.score, "cas", res.confidence,
+            f"assembled '{assembled}': {res.detail}", str(correct), explanation,
+        )
+
+    if kind == "table_completion":
+        # correct/student are JSON 2D arrays of cell strings. Each cell is graded
+        # by CAS-or-text; the score is the fraction of cells filled correctly.
+        try:
+            key_grid = json.loads(str(correct))
+            stu_grid = json.loads(student) if student else []
+        except (ValueError, TypeError):
+            key_grid = stu_grid = None
+        if not isinstance(key_grid, list):
+            return GradeOutcome(
+                False, 0.0, "cas", 1.0, "malformed table answer", str(correct), explanation,
+            )
+        total = 0
+        hit = 0
+        for r, row in enumerate(key_grid):
+            if not isinstance(row, list):
+                continue
+            for c, cell in enumerate(row):
+                total += 1
+                try:
+                    stu_cell = stu_grid[r][c]
+                except (IndexError, TypeError, KeyError):
+                    stu_cell = ""
+                if _blank_hit(str(stu_cell), str(cell)):
+                    hit += 1
+        frac = hit / total if total else 0.0
+        return GradeOutcome(
+            frac >= 1.0 and total > 0, round(frac, 4), "cas", 0.95,
+            f"{hit}/{total} cells", str(correct), explanation,
         )
 
     return GradeOutcome(

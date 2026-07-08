@@ -39,6 +39,18 @@ if config.config_file_name is not None:
 
 target_metadata = Base.metadata
 
+# Tables managed by raw SQL in migrations rather than by an ORM model (their
+# column types have no SQLite equivalent, so they cannot live in Base.metadata
+# without breaking the SQLite test schema). Autogenerate must ignore them, or it
+# would propose dropping them and report false schema drift.
+_RAW_SQL_TABLES = frozenset({"content_embeddings"})
+
+
+def _include_object(obj, name, type_, reflected, compare_to):
+    if type_ == "table" and name in _RAW_SQL_TABLES:
+        return False
+    return True
+
 
 def _db_url() -> str:
     return get_settings().database_url
@@ -51,13 +63,19 @@ def run_migrations_offline() -> None:
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
         compare_type=True,
+        include_object=_include_object,
     )
     with context.begin_transaction():
         context.run_migrations()
 
 
 def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata, compare_type=True)
+    context.configure(
+        connection=connection,
+        target_metadata=target_metadata,
+        compare_type=True,
+        include_object=_include_object,
+    )
     with context.begin_transaction():
         context.run_migrations()
 

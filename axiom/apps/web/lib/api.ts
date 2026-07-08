@@ -382,7 +382,16 @@ export type PracticeKind =
   | 'formal_proof'
   | 'free_form_proof'
   // Multi-part mixed compute-then-prove.
-  | 'mixed';
+  | 'mixed'
+  // Extended technology-enhanced kinds (Build Section 7 long tail).
+  | 'inequality'
+  | 'number_line'
+  | 'mixed_number'
+  | 'units_numeric'
+  | 'cloze_math'
+  | 'categorize_sort'
+  | 'drag_tokens'
+  | 'table_completion';
 
 // Answer-free UI hints for the structured proof kinds (see the API's
 // _presentation): the justification bank to choose from, the gap count, and (for
@@ -391,6 +400,18 @@ export interface PracticePresentation {
   justification_bank?: string[];
   gap_count?: number;
   parts?: { label: string; kind: string }[];
+  // Extended technology-enhanced kinds (Build Section 7 long tail).
+  segments?: string[];
+  blank_count?: number;
+  items?: string[];
+  categories?: string[];
+  tokens?: string[];
+  min?: number;
+  max?: number;
+  step?: number;
+  display?: string[][];
+  row_headers?: string[];
+  col_headers?: string[];
 }
 
 // A served practice question.

@@ -70,6 +70,22 @@ class Settings(BaseSettings):
     #                exact match misses. This is the default.
     retrieval_mode: Literal["lexical", "semantic", "hybrid"] = "hybrid"
 
+    # Where the semantic vectors live:
+    #   "memory"   - embed candidates in-process and cosine in Python (default,
+    #                offline, works in tests / SQLite).
+    #   "pgvector" - store embeddings in Postgres and rank by cosine distance
+    #                (the <=> operator) in the database (Build Prompt Section 5).
+    #                Requires Postgres with the pgvector extension.
+    retrieval_store: Literal["memory", "pgvector"] = "memory"
+
+    # Which embedding model produces the vectors, behind embeddings.py's
+    # EmbeddingProvider interface:
+    #   "hash"                  - deterministic hashed embedder (offline, no deps).
+    #   "sentence_transformers" - a real neural model (optional dependency; falls
+    #                             back to hash if not installed).
+    embedding_provider: Literal["hash", "sentence_transformers"] = "hash"
+    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+
     # Integrations (Phase 4).
     # Where the web app lives, used to redirect an LTI launch into AXIOM.
     web_base_url: str = "http://localhost:4100"

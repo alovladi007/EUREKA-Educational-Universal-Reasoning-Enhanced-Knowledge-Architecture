@@ -56,6 +56,15 @@ ITEM_KINDS = (
     "free_form_proof",
     # Multi-part mixed compute-then-prove (Section 5).
     "mixed",
+    # Extended technology-enhanced kinds (Build Section 7 long tail).
+    "inequality",
+    "number_line",
+    "mixed_number",
+    "units_numeric",
+    "cloze_math",
+    "categorize_sort",
+    "drag_tokens",
+    "table_completion",
 )
 
 

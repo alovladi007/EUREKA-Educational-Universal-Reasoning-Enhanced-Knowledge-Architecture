@@ -510,6 +510,85 @@ PROOF_ITEMS: dict[str, list] = {
 }
 
 
+# Extended technology-enhanced question types (Build Prompt Section 7 long tail),
+# attached to foundational nodes so each new kind is demonstrable end to end.
+# Tuple shape matches PROOF_ITEMS: (kind, prompt, options, correct, explanation, meta).
+EXTENDED_ITEMS: dict[str, list] = {
+    "PREALG": [
+        (
+            "number_line",
+            "Drag the marker to place the value 3 on the number line.",
+            None,
+            "3",
+            "3 sits three units to the right of zero.",
+            {"min": -5, "max": 5, "step": 1},
+        ),
+        (
+            "mixed_number",
+            "Write the value 7/3 as a mixed number (a whole number plus a fraction).",
+            None,
+            "7/3",
+            "7/3 is 2 and 1/3, since 3 goes into 7 twice with 1 left over.",
+            None,
+        ),
+        (
+            "units_numeric",
+            "How many meters are in 3 kilometers? Include the unit, for example '5 m'.",
+            None,
+            "3000 m",
+            "1 km = 1000 m, so 3 km = 3000 m.",
+            None,
+        ),
+        (
+            "categorize_sort",
+            "Sort each number as prime or composite.",
+            None,
+            json.dumps({"7": "prime", "9": "composite", "2": "prime"}),
+            "7 and 2 are prime; 9 = 3 times 3 is composite.",
+            {"items": ["7", "9", "2"], "categories": ["prime", "composite"]},
+        ),
+    ],
+    "ALG1": [
+        (
+            "inequality",
+            "Solve 2*x + 1 > 7 for x. Enter your answer as an inequality, for example 'x > 3'.",
+            None,
+            "x > 3",
+            "Subtract 1 to get 2x > 6, then divide by 2 to get x > 3.",
+            None,
+        ),
+        (
+            "drag_tokens",
+            "Tap the tokens in order to build the expression 2x + 1.",
+            None,
+            "2*x + 1",
+            "Any arrangement that is algebraically equal to 2x + 1 is accepted.",
+            {"tokens": ["1", "+", "2*x"]},
+        ),
+        (
+            "cloze_math",
+            "Fill in the slope-intercept form of the line with slope 2 and y-intercept 5.",
+            None,
+            json.dumps(["2", "5"]),
+            "The slope-intercept form is y = 2x + 5.",
+            {"segments": ["y = ", "", "x + ", ""]},
+        ),
+        (
+            "table_completion",
+            "Complete the table of products.",
+            None,
+            json.dumps([["2", "3"], ["4", "6"]]),
+            "Multiply each row header by each column header.",
+            {
+                "display": [["", ""], ["", ""]],
+                "row_headers": ["1", "2"],
+                "col_headers": ["x2", "x3"],
+            },
+        ),
+    ],
+}
+
+
 async def seed_proof_items(session: AsyncSession) -> int:
     """Add the structured proof demo items if missing (idempotent, by prompt).
 
@@ -564,6 +643,50 @@ async def seed_proof_items(session: AsyncSession) -> int:
                 )
             )
             added += 1
+
+    # Extended technology-enhanced kinds (Section 7 long tail) in their own bank.
+    ext_bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Technology-Enhanced Bank")
+        )
+    ).scalar_one_or_none()
+    if ext_bank is None:
+        ext_bank = ItemBank(
+            name="Technology-Enhanced Bank",
+            description="Extended question types: inequality, number line, cloze, "
+            "categorize, drag-tokens, table completion, units, mixed number.",
+        )
+        session.add(ext_bank)
+        await session.flush()
+
+    for code, rows in EXTENDED_ITEMS.items():
+        node = nodes.get(code)
+        if node is None:
+            continue
+        for kind, prompt, options, correct, explanation, meta in rows:
+            exists = (
+                await session.execute(
+                    select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+                )
+            ).scalar_one_or_none()
+            if exists is not None:
+                continue
+            session.add(
+                Item(
+                    bank_id=ext_bank.id,
+                    node_id=node.id,
+                    kind=kind,
+                    prompt=prompt,
+                    options=options,
+                    correct=correct,
+                    explanation=explanation,
+                    difficulty=0.4,
+                    tolerance=None,
+                    meta=meta,
+                )
+            )
+            added += 1
+
     if added:
         await session.flush()
     return added
@@ -885,6 +1008,19 @@ async def _main() -> None:
     async with sessionmaker() as session:
         seeded = await seed(session)
     print("seeded" if seeded else "already seeded")
+
+    # Build the pgvector semantic store from the seeded corpus when enabled. This
+    # runs on every startup (idempotent full rebuild) and fails soft, so the copilot
+    # keeps working through the in-memory ranker if the store is unavailable.
+    from app.core.config import get_settings
+
+    if get_settings().retrieval_store == "pgvector":
+        from app.domains.copilot import pgvector_store
+
+        async with sessionmaker() as session:
+            written = await pgvector_store.rebuild(session)
+            await session.commit()
+        print(f"pgvector embeddings rebuilt: {written} rows")
 
 
 if __name__ == "__main__":

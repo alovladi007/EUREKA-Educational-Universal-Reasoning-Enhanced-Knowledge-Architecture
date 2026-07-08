@@ -51,6 +51,11 @@ services:
       AXIOM_IDENTITY_PROVIDER: hmac
       AXIOM_EUREKA_JWT_SECRET: eureka_dev_secret_key_change_in_production
       AXIOM_EUREKA_JWT_ALGORITHM: HS256
+      # Formal-proof track: the image bundles the Lean 4 kernel, so formal-track
+      # items are machine-verified rather than routed to manual review.
+      AXIOM_FORMAL_VERIFIER: lean
+      # Copilot semantic retrieval ranks in Postgres via pgvector (<=> cosine).
+      AXIOM_RETRIEVAL_STORE: pgvector
     command: >
       sh -c "alembic upgrade head &&
              python -m app.seed &&
@@ -76,6 +81,8 @@ services:
       AXIOM_ENV: development
       AXIOM_DATABASE_URL: postgresql+asyncpg://axiom:axiom@postgres:5432/axiom
       AXIOM_REDIS_URL: redis://redis:6379/0
+      AXIOM_FORMAL_VERIFIER: lean
+      AXIOM_RETRIEVAL_STORE: pgvector
     command: celery -A app.worker.celery_app.celery_app worker --loglevel=info
     depends_on:
       redis:

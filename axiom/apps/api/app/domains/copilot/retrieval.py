@@ -26,6 +26,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.domains.assessment.models import Item
 from app.domains.content.models import ContentStep, Lesson
+from app.domains.copilot import pgvector_store
 from app.domains.copilot.embeddings import cosine, embed
 from app.domains.copilot.reasoning import Passage
 from app.domains.curriculum.models import KnowledgeNode
@@ -125,11 +126,36 @@ async def retrieve(
     are still grounded. include_items=False withholds answer-bearing worked
     explanations, which the hint flow uses so it cannot leak the answer.
     """
+    settings = get_settings()
+    mode = settings.retrieval_mode
+
+    # pgvector store: rank by cosine distance in Postgres, then (for hybrid) apply
+    # the lexical boost over that candidate set. Falls through to the in-memory
+    # ranker when the store is empty or unavailable, so behavior degrades safely.
+    if settings.retrieval_store == "pgvector" and mode in ("semantic", "hybrid"):
+        hits = await pgvector_store.search(
+            session, query, node_id, max(limit * 3, limit), include_items
+        )
+        if hits:
+            query_terms = set(_tokens(query))
+            scored_hits: list[tuple[float, int, Passage]] = []
+            n = len(hits)
+            for rank, (source, kind, title, body) in enumerate(hits):
+                passage = Passage(source, kind, body)
+                # DB order encodes the semantic rank; turn it into a 0..1 proxy.
+                semantic = (n - rank) / n
+                if mode == "hybrid":
+                    total = float(_score(query_terms, title, body)) + _SEMANTIC_WEIGHT * semantic
+                else:
+                    total = semantic
+                scored_hits.append((total, rank, passage))
+            scored_hits.sort(key=lambda row: (-row[0], row[1]))
+            return [p for _s, _r, p in scored_hits][:limit]
+
     candidates = await _candidates(session, node_id, include_items)
     if not candidates:
         return []
 
-    mode = get_settings().retrieval_mode
     query_terms = set(_tokens(query))
     query_vec = embed(query) if mode in ("semantic", "hybrid") else None
 

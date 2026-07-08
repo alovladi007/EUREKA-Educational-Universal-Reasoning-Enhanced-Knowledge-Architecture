@@ -13,6 +13,24 @@ WORKDIR /app
 COPY apps/api/requirements.txt /app/requirements.txt
 RUN pip install -r /app/requirements.txt
 
+# Lean 4 toolchain for the formal-proof track (Curriculum & Proof Extension,
+# Section 4.1). Pinned and installed as its own early layer so it is cached
+# across app-code rebuilds. This bundles the core Lean 4 kernel only; Mathlib is
+# NOT bundled (it is multi-GB and would balloon the image), so core-kernel and
+# Natural-Number-Game-style proofs verify, while proofs that `import Mathlib`
+# will not resolve. Enable it with AXIOM_FORMAL_VERIFIER=lean (set in compose).
+# Production should run this in a dedicated sandboxed container; the verifier
+# interface does not change when it does.
+ENV ELAN_HOME=/opt/elan
+ENV PATH="/opt/elan/bin:${PATH}"
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends curl git ca-certificates \
+    && curl -fsSL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+       -o /tmp/elan-init.sh \
+    && sh /tmp/elan-init.sh -y --default-toolchain leanprover/lean4:v4.31.0 \
+    && rm -rf /tmp/elan-init.sh /var/lib/apt/lists/* \
+    && lean --version
+
 # Local workspace packages.
 COPY packages/shared_schemas /app/packages/shared_schemas
 COPY packages/events /app/packages/events

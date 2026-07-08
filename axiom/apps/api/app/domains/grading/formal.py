@@ -78,8 +78,16 @@ class UnavailableFormalVerifier:
         )
 
 
-def _set_limits(cpu_seconds: int, address_bytes: int):
-    """Return a preexec_fn that caps CPU and memory, or None if unsupported."""
+def _set_limits(cpu_seconds: int):
+    """Return a preexec_fn that caps CPU time, or None if unsupported.
+
+    Only the CPU-time rlimit is set. An address-space (RLIMIT_AS) cap is
+    deliberately NOT applied: Lean 4's runtime is multi-threaded and reserves a
+    large virtual address space per thread, so an AS cap makes it fail to create
+    threads. Memory is instead bounded at the container / cgroup level in
+    production (documented in the Dockerfile); the wall-clock timeout in verify()
+    is the hard stop regardless.
+    """
     try:
         import resource
     except ImportError:
@@ -88,10 +96,9 @@ def _set_limits(cpu_seconds: int, address_bytes: int):
     def _apply() -> None:
         try:
             resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds))
-            resource.setrlimit(resource.RLIMIT_AS, (address_bytes, address_bytes))
         except (ValueError, OSError):
-            # Best effort: if a limit cannot be set, the wall-clock timeout still
-            # bounds the run.
+            # Best effort: if the limit cannot be set, the wall-clock timeout
+            # still bounds the run.
             pass
 
     return _apply
@@ -139,7 +146,7 @@ class LeanVerifier:
                     cwd=workdir,
                     stdout=asyncio.subprocess.PIPE,
                     stderr=asyncio.subprocess.PIPE,
-                    preexec_fn=_set_limits(cpu, 2 * 1024 * 1024 * 1024),
+                    preexec_fn=_set_limits(cpu),
                 )
             except (OSError, ValueError) as exc:
                 return FormalVerdict(

@@ -19,6 +19,7 @@ from .grading import (
     GradeResult,
     grade_equation,
     grade_expression,
+    grade_inequality,
     grade_numeric,
     symbolic_equal,
 )
@@ -37,6 +38,7 @@ __all__ = [
     "grade_expression",
     "grade_numeric",
     "grade_equation",
+    "grade_inequality",
     "symbolic_equal",
     "check_counterexample",
     "resolve_template",
