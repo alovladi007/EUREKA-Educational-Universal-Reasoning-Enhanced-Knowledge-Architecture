@@ -24,7 +24,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domains.adaptive.models import IRTParameters, MasteryEvent, MasteryState
 from app.domains.assessment.models import Item
-from app.domains.attempts.models import Response, Score
+from app.domains.attempts.models import Attempt, Response, Score
 from app.domains.curriculum.models import KnowledgeNode
 
 # How many characters of an item prompt to surface as a preview. A short slice
@@ -44,6 +44,36 @@ def _mean(values: list[float]) -> float:
     return sum(values) / len(values)
 
 
+def _point_biserial(pairs: list[tuple[float, bool]]) -> float | None:
+    """Point-biserial discrimination for one item.
+
+    pairs are (learner_total_score, got_this_item_correct). The index is the
+    correlation between getting the item right and overall performance: a high
+    positive value means strong students tend to get it right (a discriminating
+    item); near zero means it does not separate students; a NEGATIVE value flags
+    a likely miskeyed or broken item, so it is deliberately NOT clamped to [0, 1].
+
+    Returns None when discrimination is undefined: fewer than two responses, no
+    variance in correctness (everyone right or everyone wrong), or no variance in
+    total scores.
+    """
+    n = len(pairs)
+    if n < 2:
+        return None
+    p = sum(1 for _, correct in pairs if correct) / n
+    if p in (0.0, 1.0):
+        return None
+    totals = [total for total, _ in pairs]
+    mean_all = sum(totals) / n
+    variance = sum((t - mean_all) ** 2 for t in totals) / n
+    sd = variance**0.5
+    if sd == 0:
+        return None
+    m1 = sum(t for t, correct in pairs if correct) / (p * n)
+    m0 = sum(t for t, correct in pairs if not correct) / ((1.0 - p) * n)
+    return round((m1 - m0) / sd * ((p * (1.0 - p)) ** 0.5), 4)
+
+
 async def item_analysis(session: AsyncSession) -> list[dict]:
     """Classical item statistics with IRT parameters attached, per item.
 
@@ -59,13 +89,14 @@ async def item_analysis(session: AsyncSession) -> list[dict]:
     nodes = (await session.execute(select(KnowledgeNode))).scalars().all()
     irt_rows = (await session.execute(select(IRTParameters))).scalars().all()
 
-    # Join Score to its Response so each score carries the item_id it belongs to.
-    # Doing the join in SQL avoids a second pass to map response_id -> item_id.
+    # Join Score to its Response so each score carries the item_id and the
+    # learner it belongs to. The learner id is needed to compute each student's
+    # total score, which is the criterion for the discrimination index.
     score_rows = (
         await session.execute(
-            select(Response.item_id, Score.is_correct, Score.score).join(
-                Score, Score.response_id == Response.id
-            )
+            select(
+                Response.item_id, Response.user_id, Score.is_correct, Score.score
+            ).join(Score, Score.response_id == Response.id)
         )
     ).all()
 
@@ -76,11 +107,19 @@ async def item_analysis(session: AsyncSession) -> list[dict]:
 
     corrects_by_item: dict[uuid.UUID, list[float]] = {}
     scores_by_item: dict[uuid.UUID, list[float]] = {}
-    for item_id, is_correct, score in score_rows:
+    # Per-learner total score across all items (the discrimination criterion) and
+    # the (learner, correct) pairs per item to correlate against it.
+    total_by_user: dict[uuid.UUID, float] = {}
+    pairs_by_item: dict[uuid.UUID, list[tuple[uuid.UUID, bool]]] = {}
+    for item_id, user_id, is_correct, score in score_rows:
+        if user_id is not None:
+            total_by_user[user_id] = total_by_user.get(user_id, 0.0) + (score or 0.0)
         if item_id is None:
             continue
         corrects_by_item.setdefault(item_id, []).append(1.0 if is_correct else 0.0)
         scores_by_item.setdefault(item_id, []).append(score)
+        if user_id is not None:
+            pairs_by_item.setdefault(item_id, []).append((user_id, bool(is_correct)))
 
     out: list[dict] = []
     for item in items:
@@ -89,6 +128,12 @@ async def item_analysis(session: AsyncSession) -> list[dict]:
         node = node_by_id.get(item.node_id)
         irt = irt_by_item.get(item.id)
         prompt = item.prompt or ""
+        discrimination = _point_biserial(
+            [
+                (total_by_user.get(uid, 0.0), correct)
+                for uid, correct in pairs_by_item.get(item.id, [])
+            ]
+        )
         out.append(
             {
                 "item_id": str(item.id),
@@ -99,6 +144,7 @@ async def item_analysis(session: AsyncSession) -> list[dict]:
                 "prompt_preview": prompt[:_PROMPT_PREVIEW],
                 "n_responses": len(corrects),
                 "p_value": round(_mean(corrects), 4),
+                "discrimination": discrimination,
                 "avg_score": round(_mean(scores), 4),
                 "irt": ({"a": irt.a, "b": irt.b, "c": irt.c} if irt is not None else None),
             }
@@ -184,17 +230,62 @@ async def growth(session: AsyncSession, user_id: uuid.UUID) -> dict:
     return {"events": series, "avg_p_known_now": avg_now, "n_events": len(series)}
 
 
-def item_analysis_table(rows: list[dict]) -> tuple[list[str], list[list]]:
-    """Flatten item_analysis dicts into (headers, rows) for CSV/PDF export.
+async def live_assessment(session: AsyncSession, assessment_id: uuid.UUID) -> dict:
+    """A live, during-assessment progress snapshot for a teacher.
 
-    Keeping the column layout here means the CSV and PDF endpoints share one
-    source of truth for which fields appear and in what order, so the two exports
-    never drift apart. IRT columns are blank for items without a calibrated row.
+    Lists every attempt on the assessment with its current progress (answered and
+    correct counts, status) so a teacher can watch a class work in real time and
+    intervene (the Formative pattern). It is a point-in-time read; a dashboard
+    polls it. In-progress attempts are surfaced first via n_active.
     """
-    headers = ["Node", "Title", "Kind", "N", "P-Value", "Avg Score", "a", "b", "c"]
+    attempts = (
+        (
+            await session.execute(
+                select(Attempt)
+                .where(Attempt.assessment_id == assessment_id)
+                .order_by(Attempt.started_at)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    rows = [
+        {
+            "attempt_id": str(a.id),
+            "user_id": str(a.user_id),
+            "status": a.status,
+            "answered": a.answered_count,
+            "correct": a.correct_count,
+            "score_scaled": a.score_scaled,
+            "started_at": a.started_at.isoformat() if a.started_at is not None else "",
+            "submitted_at": a.submitted_at.isoformat() if a.submitted_at is not None else None,
+        }
+        for a in attempts
+    ]
+    active = sum(1 for a in attempts if a.status == "in_progress")
+    return {
+        "assessment_id": str(assessment_id),
+        "n_active": active,
+        "n_total": len(attempts),
+        "attempts": rows,
+    }
+
+
+def item_analysis_table(rows: list[dict]) -> tuple[list[str], list[list]]:
+    """Flatten item_analysis dicts into (headers, rows) for CSV/PDF/XLSX export.
+
+    Keeping the column layout here means every export endpoint shares one source
+    of truth for which fields appear and in what order, so they never drift
+    apart. Discrimination is blank when undefined (too few responses or no
+    variance); IRT columns are blank for items without a calibrated row.
+    """
+    headers = [
+        "Node", "Title", "Kind", "N", "P-Value", "Discrimination", "Avg Score", "a", "b", "c",
+    ]
     table: list[list] = []
     for row in rows:
         irt = row.get("irt")
+        disc = row.get("discrimination")
         table.append(
             [
                 row["node_code"],
@@ -202,10 +293,31 @@ def item_analysis_table(rows: list[dict]) -> tuple[list[str], list[list]]:
                 row["kind"],
                 row["n_responses"],
                 row["p_value"],
+                "" if disc is None else disc,
                 row["avg_score"],
                 irt["a"] if irt else "",
                 irt["b"] if irt else "",
                 irt["c"] if irt else "",
             ]
         )
+    return headers, table
+
+
+def standards_table(data: dict) -> tuple[list[str], list[list]]:
+    """Flatten a standards_heatmap payload into (headers, rows) for export."""
+    headers = ["Code", "Title", "Learners", "Avg Mastery"]
+    table = [
+        [n["code"], n["title"], n["n_learners"], n["avg_p_known"]]
+        for n in data.get("nodes", [])
+    ]
+    return headers, table
+
+
+def growth_table(data: dict) -> tuple[list[str], list[list]]:
+    """Flatten a growth payload's event series into (headers, rows) for export."""
+    headers = ["Time", "Node", "Correct", "Mastery After"]
+    table = [
+        [e["t"], e["node_id"], "yes" if e["correct"] else "no", e["p_known_after"]]
+        for e in data.get("events", [])
+    ]
     return headers, table

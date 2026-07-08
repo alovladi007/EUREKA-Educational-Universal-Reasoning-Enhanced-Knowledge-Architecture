@@ -192,6 +192,19 @@ export default function AnalyticsPage() {
                   >
                     Download PDF
                   </button>
+                  <button
+                    type="button"
+                    onClick={() =>
+                      void exportFile(
+                        '/api/v1/analytics/items.xlsx',
+                        'item-analysis.xlsx',
+                      )
+                    }
+                    disabled={exporting}
+                    className="inline-flex items-center justify-center rounded-lg border border-border bg-background px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500 disabled:opacity-60"
+                  >
+                    Download Excel
+                  </button>
                 </div>
               </div>
 
@@ -215,6 +228,7 @@ export default function AnalyticsPage() {
                         <th className="px-3 py-2 font-medium">Kind</th>
                         <th className="px-3 py-2 font-medium">N</th>
                         <th className="px-3 py-2 font-medium">p-value</th>
+                        <th className="px-3 py-2 font-medium">Discrim.</th>
                         <th className="px-3 py-2 font-medium">Avg score</th>
                         <th className="px-3 py-2 font-medium">IRT a/b/c</th>
                       </tr>
@@ -239,6 +253,24 @@ export default function AnalyticsPage() {
                           </td>
                           <td className="px-3 py-2 text-muted-foreground">
                             {item.p_value.toFixed(2)}
+                          </td>
+                          <td
+                            className={`px-3 py-2 ${
+                              item.discrimination !== null &&
+                              item.discrimination < 0
+                                ? 'font-medium text-red-700 dark:text-red-300'
+                                : 'text-muted-foreground'
+                            }`}
+                            title={
+                              item.discrimination !== null &&
+                              item.discrimination < 0
+                                ? 'Negative discrimination: strong students did worse. Check the answer key.'
+                                : undefined
+                            }
+                          >
+                            {item.discrimination === null
+                              ? '-'
+                              : item.discrimination.toFixed(2)}
                           </td>
                           <td className="px-3 py-2 text-muted-foreground">
                             {item.avg_score.toFixed(2)}

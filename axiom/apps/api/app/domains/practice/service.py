@@ -25,6 +25,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.config import get_settings
 from app.domains.adaptive.bkt import level_for
 from app.domains.adaptive.service import apply_mastery, plan_path, schedule_review
+from app.domains.analytics.ingest import record_event
 from app.domains.assessment.models import Item, ItemTemplate, ItemVariant
 from app.domains.attempts.models import (
     Attempt,
@@ -411,6 +412,41 @@ async def finalize_response_grade(
                 grader_confidence=outcome.confidence,
             )
             technique_updates.append({"code": str(code), **upd})
+
+    # Emit Caliper-style analytics events for the graded response and any mastery
+    # change. Best-effort: recording an event must never break grading, so a
+    # failure here is swallowed (the grade, score, and mastery are already set).
+    try:
+        await record_event(
+            session,
+            str(user_id),
+            "Graded",
+            "response",
+            str(response.id),
+            extensions={
+                "kind": kind,
+                "is_correct": outcome.is_correct,
+                "score": outcome.score,
+                "grader": outcome.grader,
+                "node_id": str(response.node_id),
+            },
+        )
+        if mastery is not None:
+            await record_event(
+                session,
+                str(user_id),
+                "MasteryChanged",
+                "node",
+                str(response.node_id),
+                extensions={
+                    "p_known_before": mastery["p_known_before"],
+                    "p_known_after": mastery["p_known_after"],
+                    "level": mastery["level"],
+                    "signal": mastery.get("signal", "apply"),
+                },
+            )
+    except Exception:
+        pass
 
     # A worked solution attached to the item (meta.worked_solution) is shown
     # after the answer, but only after every step is re-verified against the CAS,

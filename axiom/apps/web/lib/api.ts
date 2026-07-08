@@ -879,6 +879,9 @@ export interface AnalyticsItem {
   prompt_preview: string;
   n_responses: number;
   p_value: number;
+  // Point-biserial discrimination; null when undefined (too few responses or
+  // no variance). Negative values flag a likely miskeyed item.
+  discrimination: number | null;
   avg_score: number;
   irt: ItemIrt | null;
 }

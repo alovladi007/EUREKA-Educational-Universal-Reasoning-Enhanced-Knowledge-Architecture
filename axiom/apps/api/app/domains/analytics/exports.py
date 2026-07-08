@@ -5,9 +5,9 @@ Python data (headers and rows) and render it as CSV text or PDF bytes. There is
 no database access and no web framework here, so the functions are easy to unit
 test in isolation.
 
-CSV rendering uses the standard library csv module. PDF rendering uses reportlab,
-which is imported lazily inside to_pdf so that importing this module does not
-require reportlab to be installed.
+CSV rendering uses the standard library csv module. PDF rendering uses reportlab
+and XLSX rendering uses openpyxl, both imported lazily inside their functions so
+that importing this module does not require either to be installed.
 """
 
 from __future__ import annotations
@@ -78,4 +78,27 @@ def to_pdf(title: str, headers: list[str], rows: list[list]) -> bytes:
         table,
     ]
     doc.build(story)
+    return buffer.getvalue()
+
+
+def to_xlsx(title: str, headers: list[str], rows: list[list]) -> bytes:
+    """Render a title, header row, and data rows as an .xlsx workbook (bytes).
+
+    openpyxl is imported here (not at module import time) so this module imports
+    without it present. The sheet is named from the title (trimmed to Excel's
+    31-character limit and stripped of characters Excel forbids in sheet names).
+    Numbers are written as numbers so Excel can sum and chart them; None becomes
+    an empty cell.
+    """
+    from openpyxl import Workbook
+
+    workbook = Workbook()
+    sheet = workbook.active
+    safe_title = "".join(c for c in (title or "Sheet") if c not in '[]:*?/\\')[:31] or "Sheet"
+    sheet.title = safe_title
+    sheet.append([_cell(h) for h in headers])
+    for row in rows:
+        sheet.append([value if isinstance(value, (int, float)) else _cell(value) for value in row])
+    buffer = io.BytesIO()
+    workbook.save(buffer)
     return buffer.getvalue()

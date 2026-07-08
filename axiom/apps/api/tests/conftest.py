@@ -38,6 +38,7 @@ async def engine():
 
     # Import every model module so all tables register on the metadata.
     from app.domains.adaptive import models as _a  # noqa: F401
+    from app.domains.analytics import models as _an  # noqa: F401
     from app.domains.assessment import models as _s  # noqa: F401
     from app.domains.attempts import models as _t  # noqa: F401
     from app.domains.content import models as _c  # noqa: F401

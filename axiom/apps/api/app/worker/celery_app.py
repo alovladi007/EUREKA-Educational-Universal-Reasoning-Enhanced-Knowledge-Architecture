@@ -46,6 +46,7 @@ def ping() -> str:
 # regardless of which task's import chain runs. Kept at the bottom, after the app
 # object exists.
 from app.domains.adaptive import models as _adaptive_models  # noqa: E402, F401
+from app.domains.analytics import models as _analytics_models  # noqa: E402, F401
 from app.domains.assessment import models as _assessment_models  # noqa: E402, F401
 from app.domains.attempts import models as _attempts_models  # noqa: E402, F401
 from app.domains.content import models as _content_models  # noqa: E402, F401
