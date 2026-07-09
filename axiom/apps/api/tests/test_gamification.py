@@ -12,6 +12,7 @@ from app.domains.gamification.service import (
     leaderboard,
     record_practice_result,
     seed_badges,
+    set_preferences,
 )
 from app.domains.identity.models import User
 from tests.conftest import AUTH
@@ -68,6 +69,9 @@ async def test_leaderboard_orders_by_xp(db_session):
     await db_session.flush()
     await award_xp(db_session, alpha.id, 50, "correct")
     await award_xp(db_session, beta.id, 200, "correct")
+    # Leaderboards are opt-in and listed under an alias; both opt in here.
+    await set_preferences(db_session, alpha.id, leaderboard_opt_in=True, display_alias="Alpha")
+    await set_preferences(db_session, beta.id, leaderboard_opt_in=True, display_alias="Beta")
 
     board = await leaderboard(db_session)
     names = [row["name"] for row in board]

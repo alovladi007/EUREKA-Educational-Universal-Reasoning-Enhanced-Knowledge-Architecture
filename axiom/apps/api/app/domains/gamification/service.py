@@ -25,9 +25,27 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domains.attempts.models import Response, Score
-from app.domains.gamification.models import Badge, BadgeAward, GameProfile, XpLedger
-from app.domains.identity.models import User
+from app.domains.curriculum.models import KnowledgeNode
+from app.domains.gamification.models import (
+    Badge,
+    BadgeAward,
+    GameProfile,
+    Quest,
+    QuestProgress,
+    XpLedger,
+)
 from app.domains.notifications.service import notify
+
+# Quests tied to skill-graph progress (Build prompt Section 12). Completing the
+# target node's mastery completes the quest and awards its XP.
+DEFAULT_QUESTS: list[dict] = [
+    {"code": "master_prealg", "title": "Foundations Cleared",
+     "description": "Master Pre-algebra.", "node_code": "PREALG", "xp_reward": 50},
+    {"code": "master_alg1", "title": "Algebra Initiate",
+     "description": "Master Algebra I.", "node_code": "ALG1", "xp_reward": 75},
+    {"code": "master_introproof", "title": "Into the Proof",
+     "description": "Master Introduction to Proof.", "node_code": "INTROPROOF", "xp_reward": 120},
+]
 
 # Badge catalogue seeded once per environment. Codes are stable identifiers the
 # award logic keys on; names and descriptions are display strings.
@@ -187,6 +205,7 @@ async def record_practice_result(
     correct: bool,
     leveled_up: bool,
     mastered: bool,
+    node_id: uuid.UUID | None = None,
 ) -> dict:
     """Apply all gamification effects of one graded practice response.
 
@@ -236,6 +255,11 @@ async def record_practice_result(
     if mastered and await _award_badge(session, user_id, "first_mastery"):
         new_badges.append("first_mastery")
 
+    # Complete any skill-graph quests whose target node was just mastered.
+    completed_quests: list[str] = []
+    if mastered and node_id is not None:
+        completed_quests = await _award_quests_for_node(session, user_id, node_id)
+
     # Alert the learner in their in-app inbox for each freshly earned badge.
     for code in new_badges:
         await notify(
@@ -253,6 +277,7 @@ async def record_practice_result(
         "level": profile.level,
         "streak_days": profile.streak_days,
         "new_badges": new_badges,
+        "completed_quests": completed_quests,
     }
 
 
@@ -288,21 +313,128 @@ async def get_profile(session: AsyncSession, user_id: uuid.UUID) -> dict:
 
 
 async def leaderboard(session: AsyncSession, limit: int = 10) -> list[dict]:
-    """Top learners by total XP. Names fall back to "Learner" when blank."""
+    """Top OPTED-IN learners by total XP (Build prompt Section 12: opt-in
+    leaderboards). Only profiles with leaderboard_opt_in are listed, and each is
+    shown under its display_alias so a real name is never exposed without the
+    learner setting one; a blank alias falls back to a generic "Learner"."""
     rows = (
         await session.execute(
-            select(GameProfile, User)
-            .join(User, User.id == GameProfile.user_id)
+            select(GameProfile)
+            .where(GameProfile.leaderboard_opt_in.is_(True))
             .order_by(GameProfile.xp_total.desc())
             .limit(limit)
         )
-    ).all()
+    ).scalars().all()
     return [
         {
             "user_id": str(profile.user_id),
-            "name": user.display_name or "Learner",
+            "name": profile.display_alias or "Learner",
+            "avatar": profile.avatar,
             "xp_total": profile.xp_total,
             "level": profile.level,
         }
-        for profile, user in rows
+        for profile in rows
+    ]
+
+
+async def set_preferences(
+    session: AsyncSession,
+    user_id: uuid.UUID,
+    *,
+    leaderboard_opt_in: bool | None = None,
+    display_alias: str | None = None,
+    avatar: str | None = None,
+) -> dict:
+    """Update the learner's gamification preferences (opt-in, alias, avatar).
+
+    Only provided fields change. Returns the current preference snapshot. The
+    caller commits.
+    """
+    profile = await _get_profile(session, user_id)
+    if leaderboard_opt_in is not None:
+        profile.leaderboard_opt_in = bool(leaderboard_opt_in)
+    if display_alias is not None:
+        profile.display_alias = display_alias.strip()[:60] or None
+    if avatar is not None:
+        profile.avatar = avatar.strip()[:32]
+    profile.updated_at = _now()
+    await session.flush()
+    return {
+        "leaderboard_opt_in": profile.leaderboard_opt_in,
+        "display_alias": profile.display_alias,
+        "avatar": profile.avatar,
+    }
+
+
+async def seed_quests(session: AsyncSession) -> int:
+    """Insert any DEFAULT_QUESTS whose code is not already present. Idempotent."""
+    existing = set((await session.execute(select(Quest.code))).scalars().all())
+    inserted = 0
+    for spec in DEFAULT_QUESTS:
+        if spec["code"] in existing:
+            continue
+        session.add(Quest(**spec))
+        inserted += 1
+    if inserted:
+        await session.flush()
+    return inserted
+
+
+async def _award_quests_for_node(
+    session: AsyncSession, user_id: uuid.UUID, node_id: uuid.UUID
+) -> list[str]:
+    """Complete and reward any quests whose target node was just mastered."""
+    node = (
+        await session.execute(select(KnowledgeNode).where(KnowledgeNode.id == node_id))
+    ).scalar_one_or_none()
+    if node is None:
+        return []
+    quests = (
+        (await session.execute(select(Quest).where(Quest.node_code == node.code)))
+        .scalars()
+        .all()
+    )
+    completed: list[str] = []
+    for quest in quests:
+        progress = (
+            await session.execute(
+                select(QuestProgress).where(
+                    QuestProgress.user_id == user_id, QuestProgress.quest_id == quest.id
+                )
+            )
+        ).scalar_one_or_none()
+        if progress is None:
+            progress = QuestProgress(user_id=user_id, quest_id=quest.id, status="active")
+            session.add(progress)
+        if progress.status == "completed":
+            continue
+        progress.status = "completed"
+        progress.completed_at = _now()
+        await award_xp(session, user_id, quest.xp_reward, "quest")
+        await notify(session, user_id, "quest", "Quest complete", quest.title, link="/achievements")
+        completed.append(quest.code)
+    if completed:
+        await session.flush()
+    return completed
+
+
+async def list_quests(session: AsyncSession, user_id: uuid.UUID) -> list[dict]:
+    """All quests with this learner's completion status."""
+    quests = (await session.execute(select(Quest).order_by(Quest.xp_reward))).scalars().all()
+    progress_rows = (
+        (await session.execute(select(QuestProgress).where(QuestProgress.user_id == user_id)))
+        .scalars()
+        .all()
+    )
+    status_by_quest = {p.quest_id: p.status for p in progress_rows}
+    return [
+        {
+            "code": q.code,
+            "title": q.title,
+            "description": q.description,
+            "node_code": q.node_code,
+            "xp_reward": q.xp_reward,
+            "status": status_by_quest.get(q.id, "active"),
+        }
+        for q in quests
     ]

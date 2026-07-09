@@ -27,7 +27,7 @@ from app.domains.curriculum.models import (
     StandardsFramework,
     Theorem,
 )
-from app.domains.gamification.service import seed_badges
+from app.domains.gamification.service import seed_badges, seed_quests
 
 # (code, title, description, [prerequisite codes])
 NODES = [
@@ -877,6 +877,7 @@ async def seed(session: AsyncSession) -> bool:
     those features existed still gets them without a full reseed.
     """
     await seed_badges(session)
+    await seed_quests(session)
     # The full tier 0-6 curriculum backbone (Curriculum & Proof Extension). It is
     # idempotent and independent of the algebra demo below, so it seeds on every
     # startup, old databases included. The structured proof demo items attach to

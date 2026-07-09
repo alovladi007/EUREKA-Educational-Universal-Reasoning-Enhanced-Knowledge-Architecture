@@ -384,6 +384,7 @@ async def finalize_response_grade(
             correct=outcome.is_correct,
             leveled_up=leveled_up,
             mastered=mastered,
+            node_id=response.node_id,
         )
 
     # Proof-technique transfer (Extension Section 8): a graded proof that uses a
