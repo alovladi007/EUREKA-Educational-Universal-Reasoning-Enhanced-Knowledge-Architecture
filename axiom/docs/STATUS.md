@@ -109,3 +109,42 @@ These are explicitly not implemented:
 ## How to read this file
 
 If a row says planned, treat it as not existing. If a row says scaffold, treat it as a boundary plus a stub, not a feature. Only rows marked done are implemented and tested. This file is updated at the close of every phase.
+
+## Remaining-task completion waves (RW-1 through RW-8, 2026-07)
+
+After the base platform, the Curriculum & Proof Extension, and moves a/b/c (real
+Lean formal track, pgvector, question-type batch), a program of eight waves
+closed the remaining full-spec gaps from the audit. All committed, pushed, and
+verified (235 backend tests pass, ruff clean, migrations 0016-0018 zero-drift on
+Postgres, web tsc + build green):
+
+- RW-1 Analytics completeness: item discrimination (point-biserial), Caliper-style
+  event ingestion (analytics_events, migration 0016) + best-effort emission from
+  grading, Excel (.xlsx) export plus CSV/PDF for item-analysis/standards/growth,
+  and a live during-assessment teacher view.
+- RW-2 Adaptive completeness: predictive growth projection, a decision rationale
+  on the path planner and CAT item selection, and a swappable MasteryModel (BKT
+  default + an honest DKT seam that mirrors BKT until a trained checkpoint lands).
+- RW-3 Proof content/pedagogy: definition/theorem reference-library CRUD + copilot
+  grounding (proofs do not leak in hint mode), annotated-proof view, counterexample
+  search, and proof-practice generation with a verified/flagged reference proof.
+- RW-4 QTI 3.0 breadth: every item kind round-trips without loss (native QTI
+  interactions for the common kinds, a lossless carrier for the long tail).
+- RW-5 Gamification breadth: skill-graph quests (migration 0017), an OPT-IN
+  leaderboard shown under an alias, and avatars/preferences.
+- RW-6 Accommodations & a11y: per-user accommodations (migration 0018) applied
+  app-wide and mid-assessment - real extra-time (assessment time_limit x
+  multiplier), high-contrast, reduced-motion, and a TTS helper; /accessibility page.
+- RW-7 Infra/meta: k8s manifests (infra/k8s), OpenTelemetry deps wired so traces
+  are real, and a committed OpenAPI snapshot (openapi/axiom.v1.json) + a contract
+  test that fails CI if a published path disappears.
+- RW-8 Remaining question types: deterministic graders for hotspot, image_labeling,
+  construct_shape, and transform_figure (the two point-based kinds also get a
+  renderer).
+
+Still deliberately not built (honest scope, and the four deferred strategic
+directions the user is deciding on separately): a real model-backed embedding +
+item generation (pgvector store is wired, the model is a hook), live LMS/SIS
+round-trips against a real Canvas/Moodle, the live game-show mode, hotspot /
+image-labeling renderers (need authored image content), full FERPA/COPPA +
+per-tenant-isolation enforcement, tutoring video, and handwritten grading.
