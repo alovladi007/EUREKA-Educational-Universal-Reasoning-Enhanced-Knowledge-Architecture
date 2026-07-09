@@ -243,3 +243,34 @@ async def teacher_assist(
     if "error" in result:
         raise HTTPException(status_code=404, detail=result["error"])
     return result
+
+
+class CounterexampleRequest(BaseModel):
+    predicate: str
+    candidates: list[str]
+    var: str = "n"
+
+
+@router.post("/counterexample-search", summary="Search for a counterexample (author)")
+async def counterexample_search(
+    body: CounterexampleRequest,
+    _: UserOut = Depends(author_only),
+) -> dict:
+    """Validate that a suspected-false claim really is false, before it becomes a
+    find-the-error or counterexample item. Deterministic, CAS-backed."""
+    from app.domains.copilot.proof_tools import search_counterexample
+
+    return search_counterexample(body.predicate, body.candidates, body.var)
+
+
+@router.post("/proof-practice", summary="Generate a provable statement with a verified reference")
+async def proof_practice(
+    difficulty: str = "intro",
+    salt: int = 0,
+    _: UserOut = Depends(author_only),
+) -> dict:
+    """Emit a provable statement with a known reference proof, verified by the
+    formal kernel where formalizable and otherwise flagged for human review."""
+    from app.domains.copilot.proof_tools import generate_proof_practice
+
+    return await generate_proof_practice(difficulty, salt)

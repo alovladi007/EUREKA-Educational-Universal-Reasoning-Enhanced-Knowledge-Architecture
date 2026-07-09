@@ -29,7 +29,7 @@ from app.domains.content.models import ContentStep, Lesson
 from app.domains.copilot import pgvector_store
 from app.domains.copilot.embeddings import cosine, embed
 from app.domains.copilot.reasoning import Passage
-from app.domains.curriculum.models import KnowledgeNode
+from app.domains.curriculum.models import Definition, KnowledgeNode, Theorem
 
 # How much a semantic (0..1) score is worth relative to a lexical term match in
 # the hybrid ranker: comparable to a few exact-term hits.
@@ -88,6 +88,29 @@ async def _candidates(
             .all()
         )
 
+    # Definition and theorem reference library (Extension Section 6). Scoped to
+    # the node when one is given, so the copilot grounds proof work in the
+    # course's chosen conventions. Definitions are always included; a theorem's
+    # PROOF sketch is only included when include_items is True (the answer-bearing
+    # mode), so the proof-tutor hint flow (include_items=False) can cite the
+    # statement without leaking the proof.
+    defs: list[Definition] = []
+    thms: list[Theorem] = []
+    if node_ids is not None:
+        defs = (
+            (await session.execute(select(Definition).where(Definition.node_id.in_(node_ids))))
+            .scalars()
+            .all()
+        )
+        thms = (
+            (await session.execute(select(Theorem).where(Theorem.node_id.in_(node_ids))))
+            .scalars()
+            .all()
+        )
+    else:
+        defs = (await session.execute(select(Definition))).scalars().all()
+        thms = (await session.execute(select(Theorem))).scalars().all()
+
     out: list[tuple[str, str, Passage]] = []
     for node in nodes:
         passage = Passage(f"Skill: {node.title}", "node", node.description)
@@ -98,6 +121,12 @@ async def _candidates(
     for step in steps:
         passage = Passage(f"Lesson step: {step.title}", "step", step.body)
         out.append((step.title, step.body, passage))
+    for d in defs:
+        body = f"{d.statement} {d.notation}".strip()
+        out.append((d.term, body, Passage(f"Definition: {d.term}", "definition", body)))
+    for t in thms:
+        body = t.statement if not include_items else f"{t.statement}. Proof: {t.proof_sketch}"
+        out.append((t.name, body, Passage(f"Theorem: {t.name}", "theorem", body)))
 
     if include_items:
         item_q = select(Item)
