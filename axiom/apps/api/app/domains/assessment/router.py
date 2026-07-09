@@ -16,8 +16,6 @@ from app.core.security import get_current_user, require_roles
 from app.domains.assessment import service as svc
 from app.domains.assessment.models import Assessment, AssignmentTarget, Item, ItemBank
 from app.domains.assessment.qti import (
-    MCQ_KIND,
-    TEXT_KINDS,
     bank_to_qti,
     item_to_qti,
     qti_to_bank,
@@ -29,10 +27,10 @@ router = APIRouter(prefix="/assessments", tags=["assessment"])
 
 teacher_only = require_roles("teacher", "org_admin", "super_admin", "author")
 
-# QTI 3.0 export covers the selection and text-entry kinds the mapping supports.
-# Richer kinds (show_work, plot_points, mcq_multi) have no lossless QTI form yet
-# and are skipped on export rather than emitted incorrectly.
-QTI_SUPPORTED_KINDS = (MCQ_KIND, *TEXT_KINDS)
+# QTI 3.0 export/import covers EVERY item kind. The common kinds (mcq_single,
+# mcq_multi, true_false, ordering, and the text-entry kinds) map to native QTI
+# interactions; the rest round-trip losslessly via a carrier that preserves the
+# answer key and options with the AXIOM kind stored authoritatively (see qti.py).
 
 
 class QtiImport(BaseModel):
@@ -235,8 +233,6 @@ async def export_item_qti(
     ).scalar_one_or_none()
     if item is None:
         raise HTTPException(status_code=404, detail="item not found")
-    if item.kind not in QTI_SUPPORTED_KINDS:
-        raise HTTPException(status_code=400, detail=f"kind {item.kind} has no QTI export")
     xml = item_to_qti(_item_to_qti_dict(item))
     return Response(
         content=xml,
@@ -254,9 +250,7 @@ async def export_bank_qti(
     items = (
         (
             await session.execute(
-                select(Item)
-                .where(Item.bank_id == uuid.UUID(bank_id))
-                .where(Item.kind.in_(QTI_SUPPORTED_KINDS))
+                select(Item).where(Item.bank_id == uuid.UUID(bank_id))
             )
         )
         .scalars()
