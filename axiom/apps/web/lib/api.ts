@@ -391,7 +391,12 @@ export type PracticeKind =
   | 'cloze_math'
   | 'categorize_sort'
   | 'drag_tokens'
-  | 'table_completion';
+  | 'table_completion'
+  // Graphical / image kinds (Build Section 7).
+  | 'hotspot'
+  | 'image_labeling'
+  | 'construct_shape'
+  | 'transform_figure';
 
 // Answer-free UI hints for the structured proof kinds (see the API's
 // _presentation): the justification bank to choose from, the gap count, and (for

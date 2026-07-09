@@ -1101,10 +1101,16 @@ function PracticeInner() {
                   ) : null}
                 </div>
               </div>
-            ) : kind === 'plot_points' ? (
+            ) : kind === 'plot_points' ||
+              kind === 'construct_shape' ||
+              kind === 'transform_figure' ? (
               <div className="mt-5">
                 <label className="mb-1 block text-sm font-medium text-card-foreground">
-                  Plot the points
+                  {kind === 'construct_shape'
+                    ? 'Place the vertices of the shape'
+                    : kind === 'transform_figure'
+                      ? 'Plot the image of the figure'
+                      : 'Plot the points'}
                 </label>
                 <GraphInput
                   key={question.response_token}

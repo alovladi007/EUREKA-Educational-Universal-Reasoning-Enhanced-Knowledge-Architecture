@@ -65,6 +65,12 @@ ITEM_KINDS = (
     "categorize_sort",
     "drag_tokens",
     "table_completion",
+    # Graphical / image kinds (Build Section 7): click a region, place labels on
+    # an image, construct a shape, transform a figure.
+    "hotspot",
+    "image_labeling",
+    "construct_shape",
+    "transform_figure",
 )
 
 

@@ -778,6 +778,74 @@ def grade(
             f"{hit}/{total} cells", str(correct), explanation,
         )
 
+    if kind == "hotspot":
+        # meta.regions is a list of [x, y, w, h] target rectangles; the student's
+        # answer is the clicked point [x, y]. Correct when the click lands in any
+        # target region.
+        regions = (meta or {}).get("regions") or []
+        try:
+            pt = json.loads(student)
+            px, py = float(pt[0]), float(pt[1])
+        except (ValueError, TypeError, IndexError):
+            return GradeOutcome(
+                False, 0.0, "exact", 1.0, "could not read a click point",
+                str(correct), explanation,
+            )
+        inside = any(
+            isinstance(r, (list, tuple)) and len(r) == 4
+            and r[0] <= px <= r[0] + r[2] and r[1] <= py <= r[1] + r[3]
+            for r in regions
+        )
+        return GradeOutcome(
+            inside, 1.0 if inside else 0.0, "exact", 1.0,
+            f"click ({px}, {py}) in {'a' if inside else 'no'} target region",
+            str(correct), explanation,
+        )
+
+    if kind == "image_labeling":
+        # Same pairing semantics as matching: a JSON list of [label, region-id].
+        def _label_pairs(raw: str) -> set[tuple[str, str]] | None:
+            try:
+                parsed = json.loads(raw)
+            except (ValueError, TypeError):
+                return None
+            if not isinstance(parsed, list):
+                return None
+            out: set[tuple[str, str]] = set()
+            for pair in parsed:
+                if isinstance(pair, (list, tuple)) and len(pair) == 2:
+                    out.add((str(pair[0]), str(pair[1])))
+                else:
+                    return None
+            return out
+
+        chosen_pairs = _label_pairs(student)
+        key_pairs = _label_pairs(str(correct))
+        ok = (
+            chosen_pairs is not None
+            and key_pairs is not None
+            and chosen_pairs == key_pairs
+            and len(key_pairs) > 0
+        )
+        return GradeOutcome(
+            ok, 1.0 if ok else 0.0, "exact", 1.0, "label placements",
+            str(correct), explanation,
+        )
+
+    if kind in ("construct_shape", "transform_figure"):
+        # Both reduce to a point-set match (order-independent): the vertices the
+        # student constructed, or the image of a figure under a transformation,
+        # versus the expected set of points.
+        chosen_pts = _parse_points(student)
+        key_pts = _parse_points(str(correct))
+        ok = chosen_pts == key_pts and len(key_pts) > 0
+        label = "shape vertices" if kind == "construct_shape" else "transformed points"
+        return GradeOutcome(
+            ok, 1.0 if ok else 0.0, "exact", 1.0,
+            f"{label}: {len(chosen_pts & key_pts)} of {len(key_pts)} match",
+            str(correct), explanation,
+        )
+
     return GradeOutcome(
         False, 0.0, "exact", 0.0, f"unsupported item kind: {kind}", str(correct), explanation,
     )
