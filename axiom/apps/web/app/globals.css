@@ -68,15 +68,17 @@ body {
 }
 
 /* High-contrast accommodation: force maximum-contrast tokens and visible
-   focus/borders so text and controls are legible for low-vision users. */
+   focus/borders so text and controls are legible for low-vision users. The
+   theme tokens are HSL triplets consumed as hsl(var(--token)), so these values
+   MUST be triplets too (not hex), or only the literal-color rules below apply. */
 .high-contrast {
-  --background: #000000;
-  --foreground: #ffffff;
-  --card: #000000;
-  --card-foreground: #ffffff;
-  --muted: #1a1a1a;
-  --muted-foreground: #f0f0f0;
-  --border: #ffffff;
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  --card: 0 0% 0%;
+  --card-foreground: 0 0% 100%;
+  --muted: 0 0% 12%;
+  --muted-foreground: 0 0% 92%;
+  --border: 0 0% 100%;
 }
 .high-contrast a,
 .high-contrast .text-brand-600,
