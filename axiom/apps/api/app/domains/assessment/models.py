@@ -168,6 +168,9 @@ class Assessment(Base):
     # between open_at and close_at; null on either side means unbounded.
     open_at: Mapped[datetime | None] = mapped_column(nullable=True)
     close_at: Mapped[datetime | None] = mapped_column(nullable=True)
+    # Optional base time limit in minutes (null = untimed). A learner's
+    # extra-time accommodation multiplies this into an effective limit at start.
+    time_limit_minutes: Mapped[int | None] = mapped_column(Integer, nullable=True)
 
     forms: Mapped[list[AssessmentForm]] = relationship(
         back_populates="assessment", cascade="all, delete-orphan"

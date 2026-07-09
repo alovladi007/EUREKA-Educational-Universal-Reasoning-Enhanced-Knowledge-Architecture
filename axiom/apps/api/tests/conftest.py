@@ -37,6 +37,7 @@ async def engine():
     from app.core.security import get_identity
 
     # Import every model module so all tables register on the metadata.
+    from app.domains.accommodations import models as _acc  # noqa: F401
     from app.domains.adaptive import models as _a  # noqa: F401
     from app.domains.analytics import models as _an  # noqa: F401
     from app.domains.assessment import models as _s  # noqa: F401

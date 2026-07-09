@@ -17,6 +17,7 @@ from math_core import resolve_template
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.domains.accommodations.service import effective_time_limit_minutes
 from app.domains.assessment.models import (
     Assessment,
     AssessmentForm,
@@ -226,7 +227,18 @@ async def start_attempt(
                     "options": None,
                 }
             )
-    return {"attempt_id": str(attempt.id), "items": served, "count": len(served)}
+    # Honor an extra-time accommodation: the effective limit is the base limit
+    # scaled by the learner's multiplier (untimed stays untimed).
+    effective_limit = await effective_time_limit_minutes(
+        session, user_id, assessment.time_limit_minutes
+    )
+    return {
+        "attempt_id": str(attempt.id),
+        "items": served,
+        "count": len(served),
+        "time_limit_minutes": effective_limit,
+        "base_time_limit_minutes": assessment.time_limit_minutes,
+    }
 
 
 async def results(session: AsyncSession, assessment_id: uuid.UUID) -> dict:

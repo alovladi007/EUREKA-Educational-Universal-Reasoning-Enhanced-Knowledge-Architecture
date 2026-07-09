@@ -57,6 +57,37 @@ body {
   }
 }
 
+/* User-toggled reduced motion (accommodation), independent of the OS setting. */
+.reduce-motion *,
+.reduce-motion ::before,
+.reduce-motion ::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+/* High-contrast accommodation: force maximum-contrast tokens and visible
+   focus/borders so text and controls are legible for low-vision users. */
+.high-contrast {
+  --background: #000000;
+  --foreground: #ffffff;
+  --card: #000000;
+  --card-foreground: #ffffff;
+  --muted: #1a1a1a;
+  --muted-foreground: #f0f0f0;
+  --border: #ffffff;
+}
+.high-contrast a,
+.high-contrast .text-brand-600,
+.high-contrast .text-brand-700 {
+  color: #ffff00 !important;
+}
+.high-contrast *:focus-visible {
+  outline: 3px solid #ffff00 !important;
+  outline-offset: 2px !important;
+}
+
 /* Skip-to-content link: visually hidden until focused, so a keyboard user can
    jump past the sidebar to the page content. */
 .skip-link {

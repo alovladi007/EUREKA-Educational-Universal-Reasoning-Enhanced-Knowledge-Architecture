@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { fetchUnreadCount, getToken } from '@/lib/api';
+import { useAccommodations } from '@/lib/useAccommodations';
 import { Wordmark } from '@/components/PageShell';
 
 // The persistent application shell: a fixed left sidebar listing every module,
@@ -49,6 +50,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/copilot', label: 'Copilot' },
       { href: '/tutor', label: 'Live tutoring' },
       { href: '/notifications', label: 'Notifications' },
+      { href: '/accessibility', label: 'Accessibility' },
     ],
   },
   {
@@ -173,6 +175,9 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname() ?? '';
   const [unreadCount, setUnreadCount] = useState(0);
   const [open, setOpen] = useState(false);
+  // Load and apply the learner's accessibility accommodations app-wide
+  // (high-contrast / reduced-motion toggle classes on the document root).
+  useAccommodations();
 
   // Best-effort unread count for the Notifications badge. Fetched once on mount;
   // rendered as nothing extra on failure, and skipped entirely when signed out.

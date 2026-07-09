@@ -45,6 +45,7 @@ def ping() -> str:
 # cross-domain foreign keys (for example notifications.user_id -> users.id)
 # regardless of which task's import chain runs. Kept at the bottom, after the app
 # object exists.
+from app.domains.accommodations import models as _accommodations_models  # noqa: E402, F401
 from app.domains.adaptive import models as _adaptive_models  # noqa: E402, F401
 from app.domains.analytics import models as _analytics_models  # noqa: E402, F401
 from app.domains.assessment import models as _assessment_models  # noqa: E402, F401

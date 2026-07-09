@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
+from app.domains.accommodations.router import router as accommodations_router
 from app.domains.adaptive.router import router as adaptive_router
 from app.domains.analytics.router import router as analytics_router
 from app.domains.assessment.router import router as assessment_router
@@ -40,3 +41,4 @@ api_v1.include_router(notifications_router)
 api_v1.include_router(proctoring_router)
 api_v1.include_router(integrations_router)
 api_v1.include_router(tutoring_router)
+api_v1.include_router(accommodations_router)

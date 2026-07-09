@@ -1538,3 +1538,25 @@ export function copilotTeacherAssist(body: {
 }): Promise<TeacherAssistResult> {
   return apiPost('/api/v1/copilot/teacher-assist', body);
 }
+
+// -------------------------------------------------------------------------
+// Accommodations (Build prompt Section 13): extra time, TTS, high contrast,
+// reduced motion. Applied app-wide by useAccommodations.
+// -------------------------------------------------------------------------
+
+export interface Accommodations {
+  extra_time_multiplier: number;
+  text_to_speech: boolean;
+  high_contrast: boolean;
+  reduced_motion: boolean;
+}
+
+export function fetchAccommodations(): Promise<Accommodations> {
+  return apiGet<Accommodations>('/api/v1/accommodations/me');
+}
+
+export function updateAccommodations(
+  patch: Partial<Accommodations>,
+): Promise<Accommodations> {
+  return apiSend<Accommodations>('/api/v1/accommodations/me', 'PUT', patch);
+}

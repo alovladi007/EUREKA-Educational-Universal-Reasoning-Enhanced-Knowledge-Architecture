@@ -20,6 +20,7 @@ from app.core.config import get_settings
 from app.core.db import Base
 
 # Import model modules so their tables register on Base.metadata.
+from app.domains.accommodations import models as _accommodations_models  # noqa: F401
 from app.domains.adaptive import models as _adaptive_models  # noqa: F401
 from app.domains.analytics import models as _analytics_models  # noqa: F401
 from app.domains.assessment import models as _assessment_models  # noqa: F401
