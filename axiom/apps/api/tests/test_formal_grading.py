@@ -41,12 +41,15 @@ class _StubKernel:
         )
 
 
-async def test_unavailable_verifier_never_passes_and_is_pending():
+async def test_unavailable_verifier_never_passes_and_is_pending(monkeypatch):
     verdict = await UnavailableFormalVerifier().verify("theorem t : True := trivial")
     assert verdict.verified is False and verdict.available is False
 
-    # Default config has no toolchain, so a formal proof is pending review, not
-    # failed: confidence 0.0 signals "route to a human", and it is not correct.
+    # With no toolchain a formal proof is pending review, not failed: confidence
+    # 0.0 signals "route to a human", and it is not correct. Pin the unavailable
+    # verifier so the assertion holds regardless of AXIOM_FORMAL_VERIFIER in the
+    # environment (a Lean-configured container would otherwise verify it).
+    monkeypatch.setattr(formal, "get_formal_verifier", lambda: UnavailableFormalVerifier())
     outcome = await grade_formal_proof("theorem t : True := trivial")
     assert outcome.grader == "formal"
     assert outcome.is_correct is False
@@ -68,7 +71,9 @@ async def test_formal_item_accepts_only_kernel_verified(monkeypatch):
 
 @pytest.mark.skipif(shutil.which("lean") is None, reason="no Lean toolchain installed")
 async def test_real_lean_accepts_and_rejects():
-    verifier = LeanVerifier("lean", timeout_seconds=30.0)
+    # A real Lean elaboration is slow (tens of seconds cold); give it generous
+    # headroom so it is not tipped over by load when run in the full suite.
+    verifier = LeanVerifier("lean", timeout_seconds=120.0)
     good = await verifier.verify("theorem t : True := trivial")
     assert good.verified is True
     bad = await verifier.verify("theorem t : False := trivial")
