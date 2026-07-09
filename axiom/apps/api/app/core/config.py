@@ -132,6 +132,11 @@ class Settings(BaseSettings):
     lean_binary: str = "lean"
     formal_timeout_seconds: float = 20.0
 
+    # Mastery model (Build prompt Section 9). "bkt" is the explainable default;
+    # "dkt" selects the Deep Knowledge Tracing seam, which mirrors BKT until a
+    # trained checkpoint is wired in (see adaptive/mastery_model.py).
+    mastery_model: Literal["bkt", "dkt"] = "bkt"
+
     # Observability
     log_level: str = "INFO"
     otel_exporter_otlp_endpoint: str | None = None

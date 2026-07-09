@@ -77,6 +77,22 @@ def _item_payload(item: Item) -> dict:
     }
 
 
+def _selection_reason(information: float, theta: float) -> dict:
+    """Explain why the CAT chose this item (Build prompt Section 9: every
+    adaptive decision writes a rationale). An item is chosen because it carries
+    the most Fisher information at the current ability estimate, which is where
+    it most sharpens the measurement."""
+    return {
+        "rule": "maximum-information",
+        "theta": round(theta, 4),
+        "information": round(information, 4),
+        "reason": (
+            f"selected for maximum Fisher information ({information:.3f}) at the "
+            f"current ability estimate theta {theta:.2f}"
+        ),
+    }
+
+
 async def start_cat(session: AsyncSession, user_id: uuid.UUID) -> dict:
     """Open a CAT session and serve the first item.
 
@@ -105,7 +121,7 @@ async def start_cat(session: AsyncSession, user_id: uuid.UUID) -> dict:
         candidates.append((str(item.id), params))
         by_id[str(item.id)] = item
 
-    next_id, _info = select_next(0.0, candidates)
+    next_id, info = select_next(0.0, candidates)
     if next_id is None:
         return {"done": True, "message": "No items available for adaptive testing yet."}
 
@@ -120,6 +136,7 @@ async def start_cat(session: AsyncSession, user_id: uuid.UUID) -> dict:
         "standard_error": 1.0,
         "item_count": 0,
         "item": _item_payload(first),
+        "selection": _selection_reason(info, 0.0),
     }
 
 
@@ -190,7 +207,7 @@ async def answer_cat(
                 continue
             candidates.append((str(candidate.id), await _item_params(session, candidate)))
             by_id[str(candidate.id)] = candidate
-        next_id, _info = select_next(theta, candidates)
+        next_id, info = select_next(theta, candidates)
         if next_id is None:
             stop = True
         else:
@@ -206,6 +223,7 @@ async def answer_cat(
                 "item_count": cat.item_count,
                 "is_correct": outcome.is_correct,
                 "item": _item_payload(nxt),
+                "selection": _selection_reason(info, theta),
             }
 
     cat.status = "completed"

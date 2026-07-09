@@ -17,6 +17,7 @@ committed; the caller's request-scoped session is only used to read.
 
 from __future__ import annotations
 
+import math
 import uuid
 
 from sqlalchemy import select
@@ -31,6 +32,50 @@ from app.domains.curriculum.models import KnowledgeNode
 # keeps the analytics payload and exported tables readable without shipping the
 # full prompt text for every item.
 _PROMPT_PREVIEW = 80
+
+# The mastery bar a growth projection targets (matches adaptive.service).
+_MASTERED_BAR = 0.9
+# Minimum events before a trend is worth projecting.
+_MIN_PROJECTION_EVENTS = 3
+
+
+def _project_growth(p_series: list[float], current_avg: float) -> dict:
+    """A simple predictive growth estimate from a learner's mastery history.
+
+    Fits an ordinary least-squares line to the sequence of post-response mastery
+    values and extrapolates it to the mastered bar. This is deliberately a naive
+    linear projection, labeled as such -- it answers "at the current rate, how
+    many more graded responses until mastery?" It is a forecast, not a promise,
+    and returns insufficient_data until there is enough history to fit a line.
+    """
+    n = len(p_series)
+    if n < _MIN_PROJECTION_EVENTS:
+        return {"method": "insufficient_data", "n": n}
+
+    xs = list(range(n))
+    mean_x = sum(xs) / n
+    mean_y = sum(p_series) / n
+    var_x = sum((x - mean_x) ** 2 for x in xs)
+    if var_x == 0:
+        return {"method": "insufficient_data", "n": n}
+    cov = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, p_series, strict=True))
+    slope = cov / var_x
+
+    on_track = slope > 0
+    if current_avg >= _MASTERED_BAR:
+        events_to_mastery = 0
+    elif slope > 1e-6:
+        events_to_mastery = math.ceil((_MASTERED_BAR - current_avg) / slope)
+    else:
+        events_to_mastery = None  # flat or declining: no positive ETA
+    return {
+        "method": "linear-extrapolation",
+        "n": n,
+        "slope_per_event": round(slope, 5),
+        "target": _MASTERED_BAR,
+        "on_track": on_track,
+        "projected_events_to_mastery": events_to_mastery,
+    }
 
 
 def _mean(values: list[float]) -> float:
@@ -227,7 +272,13 @@ async def growth(session: AsyncSession, user_id: uuid.UUID) -> dict:
         for ev in events
     ]
     avg_now = round(_mean([state.p_known for state in states]), 4)
-    return {"events": series, "avg_p_known_now": avg_now, "n_events": len(series)}
+    projection = _project_growth([ev.p_known_after for ev in events], avg_now)
+    return {
+        "events": series,
+        "avg_p_known_now": avg_now,
+        "n_events": len(series),
+        "projection": projection,
+    }
 
 
 async def live_assessment(session: AsyncSession, assessment_id: uuid.UUID) -> dict:

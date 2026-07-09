@@ -564,6 +564,9 @@ export interface PathNode {
   p_known: number;
   level: string;
   status: PathStatus;
+  // Human-readable rationale for the planner's decision (why available/locked/
+  // recommended), e.g. "locked: prerequisite(s) below the 0.70 bar -> ALG1".
+  reason?: string;
 }
 
 export interface LearningPath {
@@ -911,10 +914,22 @@ export interface GrowthEvent {
   p_known_after: number;
 }
 
+// A naive linear projection of mastery growth. method is "insufficient_data"
+// until there is enough history to fit a trend.
+export interface GrowthProjection {
+  method: string;
+  n: number;
+  slope_per_event?: number;
+  target?: number;
+  on_track?: boolean;
+  projected_events_to_mastery?: number | null;
+}
+
 export interface GrowthResponse {
   events: GrowthEvent[];
   avg_p_known_now: number;
   n_events: number;
+  projection?: GrowthProjection;
 }
 
 // -------------------------------------------------------------------------

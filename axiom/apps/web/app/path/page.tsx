@@ -270,6 +270,11 @@ export default function PathPage() {
                                 {toPercent(node.p_known)}%{' '}
                                 <span className="capitalize">({node.level})</span>
                               </p>
+                              {node.reason && (
+                                <p className="mt-1 text-xs italic text-muted-foreground">
+                                  {node.reason}
+                                </p>
+                              )}
                             </div>
 
                             {clickable && (

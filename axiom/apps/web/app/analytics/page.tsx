@@ -344,6 +344,16 @@ export default function AnalyticsPage() {
                     across {growth.n_events} recorded event
                     {growth.n_events === 1 ? '' : 's'}.
                   </p>
+                  {growth.projection &&
+                    growth.projection.method === 'linear-extrapolation' && (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {growth.projection.on_track
+                          ? growth.projection.projected_events_to_mastery === 0
+                            ? 'Projection: already at the mastery bar.'
+                            : `Projection (naive linear estimate): about ${growth.projection.projected_events_to_mastery} more graded responses to reach mastery at the current rate.`
+                          : 'Projection: mastery is flat or declining recently; no positive trend to project.'}
+                      </p>
+                    )}
                   <ol className="mt-4 space-y-2">
                     {recentEvents.map((event, index) => (
                       <li

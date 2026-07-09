@@ -14,7 +14,8 @@ from datetime import UTC, datetime, timedelta
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domains.adaptive.bkt import DEFAULT_PARAMS, bkt_update, level_for
+from app.domains.adaptive.bkt import DEFAULT_PARAMS, level_for
+from app.domains.adaptive.mastery_model import get_mastery_model
 from app.domains.adaptive.models import (
     LearningPathState,
     MasteryEvent,
@@ -170,7 +171,7 @@ async def apply_mastery(
     conf = min(1.0, max(0.0, grader_confidence))
     state = await _get_state(session, user_id, node_id, signal)
     before = state.p_known
-    full = bkt_update(before, correct)
+    full = get_mastery_model().update(before, correct)
     after = before + conf * (full - before)
     state.p_known = after
     state.level = level_for(after)
@@ -314,16 +315,34 @@ async def plan_path(session: AsyncSession, user_id: uuid.UUID) -> dict:
     for nid in ordered_ids:
         node = node_by_id[nid]
         p = p_by_node.get(nid, DEFAULT_PARAMS.p_l0)
+        # A rationale accompanies every planner decision so a teacher can answer
+        # "why is my student seeing (or not seeing) this?" (Build prompt Section
+        # 9: every adaptive decision writes a reason).
         if p >= MASTERED_BAR:
             status = "mastered"
+            reason = f"mastered: p_known {p:.2f} is at or above the {MASTERED_BAR:.2f} bar"
         else:
-            prereq_ok = all(
-                p_by_node.get(pid, DEFAULT_PARAMS.p_l0) >= PREREQ_BAR
+            unmet = [
+                node_by_id[pid].code
                 for pid in prereqs.get(nid, set())
-            )
-            status = "available" if prereq_ok else "locked"
+                if pid in node_by_id
+                and p_by_node.get(pid, DEFAULT_PARAMS.p_l0) < PREREQ_BAR
+            ]
+            if unmet:
+                status = "locked"
+                reason = (
+                    f"locked: prerequisite(s) below the {PREREQ_BAR:.2f} bar -> "
+                    f"{', '.join(sorted(unmet))}"
+                )
+            elif prereqs.get(nid):
+                status = "available"
+                reason = "available: all prerequisites meet the mastery bar"
+            else:
+                status = "available"
+                reason = "available: no prerequisites"
         if recommended is None and status == "available":
             recommended = nid
+            reason = f"recommended next -- {reason}"
         plan.append(
             {
                 "node_id": str(nid),
@@ -335,6 +354,7 @@ async def plan_path(session: AsyncSession, user_id: uuid.UUID) -> dict:
                 "p_known": round(p, 4),
                 "level": level_for(p),
                 "status": status,
+                "reason": reason,
             }
         )
 
