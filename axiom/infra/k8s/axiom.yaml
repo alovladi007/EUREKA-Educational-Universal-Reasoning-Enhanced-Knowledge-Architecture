@@ -1,0 +1,240 @@
+# AXIOM Kubernetes manifests (Build prompt Section 15).
+#
+# A production-shaped baseline: the four app workloads (api, web, worker, beat)
+# plus Postgres (with pgvector) and Redis, wired through a Secret and a
+# ConfigMap. Images are referenced by the tags a CI publish step produces; set
+# them for your registry. Postgres uses a PersistentVolumeClaim; Redis is
+# ephemeral (cache/broker). apply with:  kubectl apply -k infra/k8s
+#
+# This is a deploy baseline, not a hardened cluster config: add resource
+# requests/limits tuned to your load, network policies, TLS/Ingress, and a real
+# secrets backend (this Secret is a placeholder to be replaced by your manager).
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: axiom
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: axiom-secrets
+  namespace: axiom
+type: Opaque
+stringData:
+  # Replace via your secrets manager; never commit real values.
+  AXIOM_EUREKA_JWT_SECRET: "change-me-in-production"
+  POSTGRES_PASSWORD: "change-me-in-production"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: axiom-config
+  namespace: axiom
+data:
+  AXIOM_ENV: "production"
+  AXIOM_IDENTITY_PROVIDER: "jwks"
+  AXIOM_DATABASE_URL: "postgresql+asyncpg://axiom:change-me-in-production@axiom-postgres:5432/axiom"
+  AXIOM_REDIS_URL: "redis://axiom-redis:6379/0"
+  AXIOM_FORMAL_VERIFIER: "lean"
+  NEXT_PUBLIC_AXIOM_API_URL: "https://api.axiom.example.com"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: axiom-postgres-data
+  namespace: axiom
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axiom-postgres
+  namespace: axiom
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: axiom-postgres }
+  template:
+    metadata:
+      labels: { app: axiom-postgres }
+    spec:
+      containers:
+        - name: postgres
+          image: pgvector/pgvector:pg16
+          env:
+            - name: POSTGRES_USER
+              value: axiom
+            - name: POSTGRES_DB
+              value: axiom
+            - name: POSTGRES_PASSWORD
+              valueFrom: { secretKeyRef: { name: axiom-secrets, key: POSTGRES_PASSWORD } }
+          ports: [{ containerPort: 5432 }]
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/postgresql/data
+          readinessProbe:
+            exec: { command: ["pg_isready", "-U", "axiom"] }
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: axiom-postgres-data }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: axiom-postgres
+  namespace: axiom
+spec:
+  selector: { app: axiom-postgres }
+  ports: [{ port: 5432, targetPort: 5432 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axiom-redis
+  namespace: axiom
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: axiom-redis }
+  template:
+    metadata:
+      labels: { app: axiom-redis }
+    spec:
+      containers:
+        - name: redis
+          image: redis:7-alpine
+          ports: [{ containerPort: 6379 }]
+          readinessProbe:
+            exec: { command: ["redis-cli", "ping"] }
+            initialDelaySeconds: 3
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: axiom-redis
+  namespace: axiom
+spec:
+  selector: { app: axiom-redis }
+  ports: [{ port: 6379, targetPort: 6379 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axiom-api
+  namespace: axiom
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: axiom-api }
+  template:
+    metadata:
+      labels: { app: axiom-api }
+    spec:
+      containers:
+        - name: api
+          image: ghcr.io/alovladi007/axiom-api:latest
+          command: ["sh", "-c", "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8400"]
+          envFrom:
+            - configMapRef: { name: axiom-config }
+            - secretRef: { name: axiom-secrets }
+          ports: [{ containerPort: 8400 }]
+          readinessProbe:
+            httpGet: { path: /health, port: 8400 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet: { path: /ready, port: 8400 }
+            initialDelaySeconds: 20
+            periodSeconds: 15
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: axiom-api
+  namespace: axiom
+spec:
+  selector: { app: axiom-api }
+  ports: [{ port: 80, targetPort: 8400 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axiom-web
+  namespace: axiom
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: axiom-web }
+  template:
+    metadata:
+      labels: { app: axiom-web }
+    spec:
+      containers:
+        - name: web
+          image: ghcr.io/alovladi007/axiom-web:latest
+          envFrom:
+            - configMapRef: { name: axiom-config }
+          ports: [{ containerPort: 4100 }]
+          readinessProbe:
+            httpGet: { path: /, port: 4100 }
+            initialDelaySeconds: 10
+            periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: axiom-web
+  namespace: axiom
+spec:
+  selector: { app: axiom-web }
+  ports: [{ port: 80, targetPort: 4100 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axiom-worker
+  namespace: axiom
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: axiom-worker }
+  template:
+    metadata:
+      labels: { app: axiom-worker }
+    spec:
+      containers:
+        - name: worker
+          image: ghcr.io/alovladi007/axiom-api:latest
+          command: ["celery", "-A", "app.worker.celery_app.celery_app", "worker", "--loglevel=info"]
+          envFrom:
+            - configMapRef: { name: axiom-config }
+            - secretRef: { name: axiom-secrets }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: axiom-beat
+  namespace: axiom
+spec:
+  replicas: 1
+  selector:
+    matchLabels: { app: axiom-beat }
+  template:
+    metadata:
+      labels: { app: axiom-beat }
+    spec:
+      containers:
+        - name: beat
+          image: ghcr.io/alovladi007/axiom-api:latest
+          command: ["celery", "-A", "app.worker.celery_app.celery_app", "beat", "--loglevel=info"]
+          envFrom:
+            - configMapRef: { name: axiom-config }
+            - secretRef: { name: axiom-secrets }
