@@ -42,6 +42,7 @@ async def engine():
     from app.domains.analytics import models as _an  # noqa: F401
     from app.domains.assessment import models as _s  # noqa: F401
     from app.domains.attempts import models as _t  # noqa: F401
+    from app.domains.compliance import models as _comp  # noqa: F401
     from app.domains.content import models as _c  # noqa: F401
     from app.domains.copilot import models as _cp  # noqa: F401
     from app.domains.curriculum import models as _cur  # noqa: F401

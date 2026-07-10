@@ -26,11 +26,16 @@ celery_app.conf.update(
     enable_utc=True,
 )
 
-# The beat scheduler runs the assignment due-date reminder scan on an interval.
+# The beat scheduler runs the assignment due-date reminder scan and the data
+# retention purge on their configured intervals.
 celery_app.conf.beat_schedule = {
     "assignment-due-reminders": {
         "task": "axiom.due_reminders",
         "schedule": settings.reminder_interval_seconds,
+    },
+    "data-retention-purge": {
+        "task": "axiom.retention_purge",
+        "schedule": settings.retention_purge_interval_seconds,
     },
 }
 
@@ -50,6 +55,7 @@ from app.domains.adaptive import models as _adaptive_models  # noqa: E402, F401
 from app.domains.analytics import models as _analytics_models  # noqa: E402, F401
 from app.domains.assessment import models as _assessment_models  # noqa: E402, F401
 from app.domains.attempts import models as _attempts_models  # noqa: E402, F401
+from app.domains.compliance import models as _compliance_models  # noqa: E402, F401
 from app.domains.content import models as _content_models  # noqa: E402, F401
 from app.domains.copilot import models as _copilot_models  # noqa: E402, F401
 from app.domains.curriculum import models as _curriculum_models  # noqa: E402, F401

@@ -25,6 +25,7 @@ from app.domains.adaptive import models as _adaptive_models  # noqa: F401
 from app.domains.analytics import models as _analytics_models  # noqa: F401
 from app.domains.assessment import models as _assessment_models  # noqa: F401
 from app.domains.attempts import models as _attempts_models  # noqa: F401
+from app.domains.compliance import models as _compliance_models  # noqa: F401
 from app.domains.content import models as _content_models  # noqa: F401
 from app.domains.copilot import models as _copilot_models  # noqa: F401
 from app.domains.curriculum import models as _curriculum_models  # noqa: F401

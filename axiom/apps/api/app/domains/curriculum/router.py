@@ -11,6 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
 from app.core.security import get_current_user, require_roles
+from app.core.tenancy import scope_to_tenant, tenant_uuid
 from app.domains.curriculum.models import (
     Definition,
     KnowledgeEdge,
@@ -148,9 +149,11 @@ async def list_definitions(
     course: str | None = None,
     node: str | None = None,
     session: AsyncSession = Depends(get_session),
-    _: UserOut = Depends(get_current_user),
+    user: UserOut = Depends(get_current_user),
 ) -> dict:
-    query = select(Definition)
+    # Tenant isolation: a caller sees their organization's entries plus the
+    # shared global library, never another tenant's (Section 13).
+    query = scope_to_tenant(select(Definition), Definition, user)
     if course:
         query = query.where(Definition.course_code == course)
     if node:
@@ -164,7 +167,7 @@ async def list_definitions(
 async def create_definition(
     payload: dict = Body(...),
     session: AsyncSession = Depends(get_session),
-    _: UserOut = Depends(author_only),
+    user: UserOut = Depends(author_only),
 ) -> dict:
     term = str(payload.get("term", "")).strip()
     statement = str(payload.get("statement", "")).strip()
@@ -176,6 +179,7 @@ async def create_definition(
         term=term,
         statement=statement,
         notation=str(payload.get("notation", "")),
+        tenant_id=tenant_uuid(user),
     )
     session.add(definition)
     await session.commit()
@@ -203,9 +207,9 @@ async def list_theorems(
     course: str | None = None,
     node: str | None = None,
     session: AsyncSession = Depends(get_session),
-    _: UserOut = Depends(get_current_user),
+    user: UserOut = Depends(get_current_user),
 ) -> dict:
-    query = select(Theorem)
+    query = scope_to_tenant(select(Theorem), Theorem, user)
     if course:
         query = query.where(Theorem.course_code == course)
     if node:
@@ -219,7 +223,7 @@ async def list_theorems(
 async def create_theorem(
     payload: dict = Body(...),
     session: AsyncSession = Depends(get_session),
-    _: UserOut = Depends(author_only),
+    user: UserOut = Depends(author_only),
 ) -> dict:
     name = str(payload.get("name", "")).strip()
     statement = str(payload.get("statement", "")).strip()
@@ -233,6 +237,7 @@ async def create_theorem(
         proof_sketch=str(payload.get("proof_sketch", "")),
         techniques=list(payload.get("techniques", []) or []),
         depends_on=list(payload.get("depends_on", []) or []),
+        tenant_id=tenant_uuid(user),
     )
     session.add(theorem)
     await session.commit()

@@ -9,6 +9,7 @@ from app.domains.adaptive.router import router as adaptive_router
 from app.domains.analytics.router import router as analytics_router
 from app.domains.assessment.router import router as assessment_router
 from app.domains.authoring.router import router as authoring_router
+from app.domains.compliance.router import router as compliance_router
 from app.domains.content.router import router as content_router
 from app.domains.copilot.router import router as copilot_router
 from app.domains.curriculum.router import router as curriculum_router
@@ -42,3 +43,4 @@ api_v1.include_router(proctoring_router)
 api_v1.include_router(integrations_router)
 api_v1.include_router(tutoring_router)
 api_v1.include_router(accommodations_router)
+api_v1.include_router(compliance_router)

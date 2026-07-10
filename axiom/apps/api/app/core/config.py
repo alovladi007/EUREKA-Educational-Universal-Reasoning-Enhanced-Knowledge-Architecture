@@ -120,6 +120,15 @@ class Settings(BaseSettings):
     smtp_password: str = ""
     smtp_use_tls: bool = True
 
+    # Data retention (Build prompt Section 13: configurable retention + data
+    # minimization). Rows older than each TTL are purged by the beat worker. The
+    # raw proctoring and analytics event streams are minimized aggressively; the
+    # audit trail is kept longer for accountability. 0 disables purging a stream.
+    retention_proctoring_days: int = 180
+    retention_analytics_days: int = 365
+    retention_audit_days: int = 730
+    retention_purge_interval_seconds: int = 86400
+
     # Formal proof verification (Curriculum & Proof Extension, Section 4.1).
     # formal_verifier selects the proof-assistant backend for formal-track items:
     #   "none" - no toolchain; formal proofs are routed to manual review and

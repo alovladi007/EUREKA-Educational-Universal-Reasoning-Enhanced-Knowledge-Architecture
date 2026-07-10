@@ -72,6 +72,38 @@ def send_due_reminders_task() -> str:
     return "reminders_sent"
 
 
+async def _purge() -> dict:
+    from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
+
+    from app.core.config import get_settings
+    from app.domains.compliance.service import purge_expired
+
+    settings = get_settings()
+    engine = create_async_engine(settings.database_url, pool_pre_ping=True)
+    try:
+        maker = async_sessionmaker(engine, expire_on_commit=False)
+        async with maker() as session:
+            deleted = await purge_expired(
+                session,
+                proctoring_days=settings.retention_proctoring_days,
+                analytics_days=settings.retention_analytics_days,
+                audit_days=settings.retention_audit_days,
+            )
+            await session.commit()
+            return deleted
+    finally:
+        await engine.dispose()
+
+
+@celery_app.task(name="axiom.retention_purge")
+def retention_purge_task() -> str:
+    """Beat-driven: enforce the data-retention policy by deleting rows older than
+    each stream's TTL (Build prompt Section 13). Idempotent: a second run finds
+    nothing new to delete."""
+    deleted = asyncio.run(_purge())
+    return f"purged {sum(deleted.values())}"
+
+
 @celery_app.task(name="axiom.send_email")
 def send_email_task(to: str, subject: str, body: str) -> str:
     """Deliver one notification email through the configured sender. Fails soft:
