@@ -28,5 +28,5 @@ structlog==23.2.0
 httpx==0.25.2
 
 # Shared module dependencies
-python-jose[cryptography]==3.3.0
+python-jose[cryptography]>=3.4.0
 aiokafka==0.10.0

@@ -16,7 +16,7 @@ alembic==1.13.0
 stripe==7.7.0
 
 # Content Processing
-python-multipart==0.0.6
+python-multipart>=0.0.7
 aiofiles==23.2.1
 python-magic==0.4.27
 
@@ -25,7 +25,7 @@ lxml==4.9.3
 xmltodict==0.13.0
 
 # Security & Auth
-python-jose[cryptography]==3.3.0
+python-jose[cryptography]>=3.4.0
 passlib[bcrypt]==1.7.4
 python-dotenv==1.0.0
 

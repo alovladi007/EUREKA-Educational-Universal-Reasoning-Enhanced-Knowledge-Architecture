@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "eureka-web",
+      "runtimeExecutable": "true",
+      "runtimeArgs": [],
+      "port": 4040
+    },
+    {
+      "name": "axiom-web",
+      "runtimeExecutable": "true",
+      "runtimeArgs": [],
+      "port": 4100
+    }
+  ]
+}

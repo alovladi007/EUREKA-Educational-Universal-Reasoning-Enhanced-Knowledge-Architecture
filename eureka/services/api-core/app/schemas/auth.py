@@ -10,19 +10,36 @@ from datetime import datetime
 from uuid import UUID
 
 
+# Roles a caller may self-assign during public registration. Privileged roles
+# (org_admin, super_admin, researcher) must be provisioned by an administrator
+# through the RBAC-gated user-management API; allowing them here let an anonymous
+# caller register as a super_admin and receive a fully-privileged token.
+SELF_REGISTERABLE_ROLES = {"student", "teacher", "parent"}
+
+
 class UserRegisterRequest(BaseModel):
     """User registration request"""
-    org_id: UUID = Field(..., description="Organization ID")
+    org_id: Optional[UUID] = Field(default=None, description="Organization ID; omit for public self-service signup into the default organization")
     email: EmailStr = Field(..., description="Email address")
     password: str = Field(..., min_length=8, description="Password (min 8 characters)")
     first_name: str = Field(..., min_length=1, max_length=100)
     last_name: str = Field(..., min_length=1, max_length=100)
-    role: str = Field(default="student", description="User role")
-    
+    role: str = Field(default="student", description="User role (self-service: student, teacher, or parent)")
+
     # COPPA compliance fields
     date_of_birth: Optional[datetime] = None
     parent_email: Optional[EmailStr] = None
-    
+
+    @validator('role')
+    def validate_self_registerable_role(cls, v):
+        """Block privilege escalation: reject any role not in the self-service allow-list."""
+        if v not in SELF_REGISTERABLE_ROLES:
+            raise ValueError(
+                "role must be one of " + ", ".join(sorted(SELF_REGISTERABLE_ROLES))
+                + "; privileged roles are assigned by an administrator"
+            )
+        return v
+
     @validator('password')
     def validate_password_strength(cls, v):
         """Validate password meets security requirements"""

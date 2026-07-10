@@ -42,13 +42,43 @@ export default function RegisterPage() {
 
     setLoading(true);
     try {
-      // Simulate registration API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+      // Split the single full-name field into first/last for the API.
+      const parts = formData.fullName.trim().split(/\s+/);
+      const firstName = parts[0] || formData.username || 'Learner';
+      const lastName = parts.slice(1).join(' ') || firstName;
+
+      const res = await fetch(`${apiUrl}/api/v1/auth/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          password: formData.password,
+          first_name: firstName,
+          last_name: lastName,
+          // Public self-service signup: no org_id (server assigns the default
+          // organization) and only the non-privileged student role.
+          role: 'student',
+        }),
+      });
+
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        const detail = typeof body?.detail === 'string' ? body.detail : 'Registration failed. Please try again.';
+        toast.error(detail);
+        return;
+      }
+      if (body.access_token) {
+        window.localStorage.setItem('access_token', body.access_token);
+        if (body.refresh_token) {
+          window.localStorage.setItem('refresh_token', body.refresh_token);
+        }
+      }
       toast.success('Account created successfully!');
       router.push('/dashboard/test-prep');
     } catch (error) {
       console.error('Registration failed:', error);
-      toast.error('Registration failed. Please try again.');
+      toast.error('Could not reach the server. Please try again.');
     } finally {
       setLoading(false);
     }

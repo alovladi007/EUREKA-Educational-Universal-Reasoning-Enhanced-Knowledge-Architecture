@@ -47,5 +47,5 @@ pyyaml==6.0.1
 structlog==23.2.0
 
 # Shared module dependencies
-python-jose[cryptography]==3.3.0
+python-jose[cryptography]>=3.4.0
 aiokafka==0.10.0  # matched to data-fabric, ethics-security, futures, institutions

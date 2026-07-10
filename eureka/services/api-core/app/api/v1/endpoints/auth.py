@@ -47,16 +47,31 @@ async def register(
     - Creates user account
     - Returns access and refresh tokens
     """
-    # Verify organization exists
-    org = await org_crud.get_organization_by_id(db, user_data.org_id)
-    if not org:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Organization not found"
-        )
-    
+    # Resolve the organization. Public self-service signup omits org_id and
+    # lands in a shared default organization, created on first use; an explicit
+    # org_id must reference an existing organization.
+    if user_data.org_id is None:
+        org = await org_crud.get_organization_by_slug(db, "public")
+        if not org:
+            from app.schemas.organization import OrganizationCreate
+            org = await org_crud.create_organization(
+                db,
+                OrganizationCreate(
+                    name="EUREKA Public",
+                    slug="public",
+                    tier="free",
+                ),
+            )
+    else:
+        org = await org_crud.get_organization_by_id(db, user_data.org_id)
+        if not org:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Organization not found"
+            )
+
     # Check if email already exists in this organization
-    existing_user = await user_crud.get_user_by_email(db, user_data.email, user_data.org_id)
+    existing_user = await user_crud.get_user_by_email(db, user_data.email, org.id)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -76,6 +91,8 @@ async def register(
     hashed_password = hash_password(user_data.password)
     
     # Create user
+    # Persist the resolved organization (public signup started with org_id=None).
+    user_data.org_id = org.id
     user = await user_crud.create_user(db, user_data, hashed_password)
     
     # Generate tokens

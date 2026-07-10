@@ -3,7 +3,7 @@
 # Web Framework
 fastapi==0.109.0
 uvicorn[standard]==0.27.0
-python-multipart==0.0.6
+python-multipart>=0.0.7
 
 # Database
 sqlalchemy==2.0.25
@@ -16,9 +16,9 @@ pydantic==2.7.0
 pydantic-settings==2.2.0
 
 # Authentication & Security
-python-jose[cryptography]==3.3.0
+python-jose[cryptography]>=3.4.0
 passlib[bcrypt]==1.7.4
-python-multipart==0.0.6
+python-multipart>=0.0.7
 
 # HTTP Client
 httpx==0.26.0

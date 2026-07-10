@@ -1,14 +1,20 @@
 """
 Main API router aggregating all endpoints
 """
+import os
+
 from fastapi import APIRouter
 from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content, pricing, lessons, notes, qbank, flashcards, patent_bar, patent_community, cissp_qbank
 
 api_router = APIRouter()
 
-# Include all endpoint routers
-# NOTE: Dev router first to override authenticated endpoints in development
-api_router.include_router(dev.router, tags=["development"])
+# Development-only routes. The dev router exposes unauthenticated helpers that
+# leak answer keys (e.g. /dev/adaptive/submit-answer returns correct_answer and
+# explanation), so it MUST NOT be mounted in production. Gated on ENVIRONMENT so
+# a prod deployment never exposes it; it still loads first in dev to override
+# authenticated endpoints as intended.
+if os.getenv("ENVIRONMENT", "development").lower() != "production":
+    api_router.include_router(dev.router, tags=["development"])
 api_router.include_router(auth.router, prefix="/auth", tags=["authentication"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(questions.router, prefix="/questions", tags=["questions"])

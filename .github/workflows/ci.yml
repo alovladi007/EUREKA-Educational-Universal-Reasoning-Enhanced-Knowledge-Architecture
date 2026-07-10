@@ -499,7 +499,7 @@ jobs:
     steps:
       - name: Fail if any required job failed
         run: |
-          for r in '${{ needs.gitleaks.result }}' '${{ needs.python-services.result }}' '${{ needs.api-core-tests.result }}' '${{ needs.node-services.result }}' '${{ needs.compose-validate.result }}' '${{ needs.docker-build.result }}'; do
+          for r in '${{ needs.gitleaks.result }}' '${{ needs.python-services.result }}' '${{ needs.api-core-tests.result }}' '${{ needs.migrations.result }}' '${{ needs.node-services.result }}' '${{ needs.compose-validate.result }}' '${{ needs.docker-build.result }}'; do
             echo "Result: $r"
             if [ "$r" != "success" ] && [ "$r" != "skipped" ]; then
               echo "::error::Required job result was: $r"
