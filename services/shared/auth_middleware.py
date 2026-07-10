@@ -6,7 +6,7 @@ across all Phase 2 microservices, ensuring consistent security.
 """
 
 from typing import Optional, Dict, Any
-from fastapi import Request, HTTPException, status
+from fastapi import Depends, Request, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from jose import JWTError, jwt
 import os
@@ -88,7 +88,7 @@ def verify_access_token(token: str) -> Dict[str, Any]:
     return payload
 
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = security) -> Dict[str, Any]:
+async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security)) -> Dict[str, Any]:
     """
     FastAPI dependency to get the current authenticated user.
 
@@ -165,7 +165,7 @@ def require_role(required_role: str):
     Returns:
         Dependency function that checks user role
     """
-    async def role_checker(user: Dict[str, Any] = get_current_user) -> Dict[str, Any]:
+    async def role_checker(user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
         user_role = user.get("role")
         if user_role != required_role and user_role != "admin":
             raise HTTPException(
@@ -187,7 +187,7 @@ def require_tier(required_tier: str):
     Returns:
         Dependency function that checks user tier
     """
-    async def tier_checker(user: Dict[str, Any] = get_current_user) -> Dict[str, Any]:
+    async def tier_checker(user: Dict[str, Any] = Depends(get_current_user)) -> Dict[str, Any]:
         user_tier = user.get("tier")
         if user_tier != required_tier:
             raise HTTPException(

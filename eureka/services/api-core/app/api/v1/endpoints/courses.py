@@ -283,8 +283,8 @@ async def get_course_stats(
     # Check permissions
     can_view_stats = (
         current_user.role == UserRole.SUPER_ADMIN or
-        (current_user.role == UserRole.ORG_ADMIN and current_user.org_id == course.org_id) or
-        current_user.role == UserRole.TEACHER or
+        (current_user.role in (UserRole.ORG_ADMIN, UserRole.TEACHER)
+         and current_user.org_id == course.org_id) or
         course.instructor_id == current_user.id
     )
     
@@ -448,14 +448,15 @@ async def list_course_enrollments(
             detail="Course not found"
         )
     
-    # Check permissions
+    # Check permissions. Org admins and teachers may only see enrollments for
+    # courses in THEIR organization; the course instructor may always see them.
     can_view = (
         current_user.role == UserRole.SUPER_ADMIN or
-        (current_user.role == UserRole.ORG_ADMIN and current_user.org_id == course.org_id) or
-        current_user.role == UserRole.TEACHER or
+        (current_user.role in (UserRole.ORG_ADMIN, UserRole.TEACHER)
+         and current_user.org_id == course.org_id) or
         course.instructor_id == current_user.id
     )
-    
+
     if not can_view:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -498,14 +499,16 @@ async def update_enrollment(
             detail="Enrollment not found"
         )
     
-    # Check permissions
+    # Check permissions. Org admins/teachers may only manage enrollments in
+    # their own organization; a learner may always manage their own enrollment.
+    course = await course_crud.get_course_by_id(db, course_id)
+    same_org = bool(course) and current_user.org_id == course.org_id
     can_update = (
         current_user.role == UserRole.SUPER_ADMIN or
-        current_user.role == UserRole.ORG_ADMIN or
-        current_user.role == UserRole.TEACHER or
+        (current_user.role in (UserRole.ORG_ADMIN, UserRole.TEACHER) and same_org) or
         enrollment.user_id == current_user.id
     )
-    
+
     if not can_update:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -544,14 +547,16 @@ async def unenroll_from_course(
             detail="Enrollment not found"
         )
     
-    # Check permissions
+    # Check permissions. Org admins/teachers may only unenroll within their own
+    # organization; a learner may always unenroll themselves.
+    course = await course_crud.get_course_by_id(db, course_id)
+    same_org = bool(course) and current_user.org_id == course.org_id
     can_unenroll = (
         current_user.role == UserRole.SUPER_ADMIN or
-        current_user.role == UserRole.ORG_ADMIN or
-        current_user.role == UserRole.TEACHER or
+        (current_user.role in (UserRole.ORG_ADMIN, UserRole.TEACHER) and same_org) or
         enrollment.user_id == current_user.id
     )
-    
+
     if not can_unenroll:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
