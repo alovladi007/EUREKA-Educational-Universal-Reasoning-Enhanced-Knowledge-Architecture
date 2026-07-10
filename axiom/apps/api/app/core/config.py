@@ -85,6 +85,27 @@ class Settings(BaseSettings):
     #                             back to hash if not installed).
     embedding_provider: Literal["hash", "sentence_transformers"] = "hash"
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
+    # The pgvector column dimension. Must match the active embedding provider's
+    # output (256 for hash, 384 for all-MiniLM-L6-v2). Set together with
+    # embedding_provider + a migration that recreates the column at this size.
+    embedding_dim: int = 256
+
+    # Copilot item generation (Build prompt Section 12). generation_provider
+    # selects how candidate items are drafted before SymPy validation and human
+    # review:
+    #   "deterministic" - parameterized templates (offline, always CAS-correct).
+    #   "ollama"        - a local model over the Ollama HTTP API.
+    #   "anthropic"     - a hosted Claude model over the Anthropic API.
+    # Model backends draft the prompt/answer; the math is ALWAYS re-verified by
+    # SymPy and only validated candidates are queued, so a model never injects an
+    # unverified answer key. Any backend error falls back to the deterministic
+    # generator, so generation never hard-depends on a model being reachable.
+    generation_provider: Literal["deterministic", "ollama", "anthropic"] = "deterministic"
+    ollama_base_url: str = "http://host.docker.internal:11434"
+    ollama_model: str = "llama3.2"
+    anthropic_api_key: str = ""
+    anthropic_model: str = "claude-haiku-4-5-20251001"
+    generation_timeout_seconds: float = 45.0
 
     # Integrations (Phase 4).
     # Where the web app lives, used to redirect an LTI launch into AXIOM.

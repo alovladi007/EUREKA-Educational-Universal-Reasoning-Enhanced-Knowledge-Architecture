@@ -34,8 +34,15 @@ from app.domains.curriculum.models import KnowledgeNode
 
 log = logging.getLogger("axiom.copilot")
 
-# Must match the vector(N) dimension created by migration 0015.
-STORE_DIM = 256
+# The vector(N) dimension of the content_embeddings column. It must match both
+# the active embedding provider's output and the column the migrations created
+# (256 for the hashed embedder, 384 for all-MiniLM-L6-v2). Config-driven so the
+# store follows the configured embedding model; when it does not match the
+# provider, rebuild/search skip and retrieval falls back to the in-memory path.
+def _store_dim() -> int:
+    from app.core.config import get_settings
+
+    return int(getattr(get_settings(), "embedding_dim", 256))
 
 
 def _to_vector_literal(vec: list[float]) -> str:
@@ -53,11 +60,11 @@ async def rebuild(session: AsyncSession) -> int:
     does not match the column.
     """
     provider = get_embedding_provider()
-    if provider.dimension != STORE_DIM:
+    if provider.dimension != _store_dim():
         log.warning(
             "embedding dimension %s != store dimension %s; skipping pgvector rebuild",
             provider.dimension,
-            STORE_DIM,
+            _store_dim(),
         )
         return 0
 
@@ -105,7 +112,7 @@ async def search(
     unavailable, so the caller can fall back to the in-memory ranker.
     """
     provider = get_embedding_provider()
-    if provider.dimension != STORE_DIM:
+    if provider.dimension != _store_dim():
         return []
     qvec = _to_vector_literal(provider.embed(query or ""))
     filters = []

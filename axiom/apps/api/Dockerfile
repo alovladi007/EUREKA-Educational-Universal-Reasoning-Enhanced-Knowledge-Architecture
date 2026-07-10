@@ -31,6 +31,17 @@ RUN apt-get update \
     && rm -rf /tmp/elan-init.sh /var/lib/apt/lists/* \
     && lean --version
 
+# Real neural embedding model for copilot semantic retrieval (Build prompt
+# Section 5). CPU-only torch + sentence-transformers, installed as their own
+# cached layer, and the all-MiniLM-L6-v2 weights pre-downloaded so the image is
+# self-contained (no first-request network fetch). This is a large layer (~1GB);
+# a deployment that wants a smaller image can drop this and set
+# AXIOM_EMBEDDING_PROVIDER=hash to fall back to the offline hashed embedder.
+ENV HF_HOME=/opt/hf
+RUN pip install --index-url https://download.pytorch.org/whl/cpu torch \
+    && pip install sentence-transformers \
+    && python -c "from sentence_transformers import SentenceTransformer as S; S('sentence-transformers/all-MiniLM-L6-v2')"
+
 # Local workspace packages.
 COPY packages/shared_schemas /app/packages/shared_schemas
 COPY packages/events /app/packages/events

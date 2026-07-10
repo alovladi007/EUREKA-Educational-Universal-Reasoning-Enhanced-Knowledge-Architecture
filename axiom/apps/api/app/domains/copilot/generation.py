@@ -22,7 +22,14 @@ from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.domains.assessment.models import Item, ItemBank
+from app.domains.copilot.generation_provider import (
+    DRAFTABLE_KINDS,
+    DraftedItem,
+    DraftRequest,
+    get_generation_provider,
+)
 from app.domains.copilot.models import GeneratedItem
+from app.domains.curriculum.models import KnowledgeNode
 
 
 def _now() -> datetime:
@@ -97,6 +104,40 @@ def _product_candidate(rng: random.Random) -> dict | None:
 _GENERATORS = (_linear_candidate, _sum_candidate, _product_candidate)
 
 
+def _validate_drafted(drafted: DraftedItem) -> dict | None:
+    """CAS-check a model-drafted item's answer is well-formed math for its kind.
+
+    A model never injects an unverified answer: an answer that does not parse (or
+    is not self-consistent) for its kind is rejected before it can be queued. A
+    human reviewer still confirms the answer is correct for the prompt, so this is
+    a well-formedness gate, not a correctness proof (the deterministic generators
+    are correct by construction; model drafts lean harder on human review).
+    """
+    from math_core import grade_equation, grade_expression
+
+    kind = drafted.kind
+    answer = drafted.correct
+    if kind == "numeric":
+        ok = grade_numeric(answer, answer).is_correct
+    elif kind == "math_expression":
+        ok = grade_expression(answer, answer).is_correct
+    elif kind == "equation":
+        ok = grade_equation(answer, answer).is_correct
+    else:
+        ok = False
+    if not ok:
+        return None
+    return {
+        "kind": kind,
+        "prompt": drafted.prompt,
+        "options": None,
+        "correct": answer,
+        "explanation": drafted.explanation,
+        "meta": {"drafted_by": drafted.backend},
+        "source": f"model:{drafted.backend}",
+    }
+
+
 async def generate_candidates(
     session: AsyncSession,
     *,
@@ -120,12 +161,35 @@ async def generate_candidates(
     seed = f"{node_id}:{created_by}:{existing}".encode()
     rng = random.Random(int.from_bytes(seed[:8].ljust(8, b"0"), "big"))
 
+    # Model-backed drafting (Build prompt Section 12): a configured provider
+    # drafts items about the node's topic; each draft is CAS-validated here and
+    # only well-formed ones are queued. The deterministic templates are the
+    # default and the fallback for anything the model does not produce.
+    provider = get_generation_provider()
+    topic = ""
+    if getattr(provider, "name", "deterministic") != "deterministic":
+        node = (
+            await session.execute(select(KnowledgeNode).where(KnowledgeNode.id == node_id))
+        ).scalar_one_or_none()
+        topic = f"{node.title}: {node.description}" if node else ""
+
     created: list[GeneratedItem] = []
     attempts = 0
     while len(created) < count and attempts < count * 6:
         attempts += 1
-        gen = rng.choice(_GENERATORS)
-        candidate = gen(rng)
+        candidate = None
+        # Try a model draft first when a provider is configured; fall back to the
+        # deterministic generators when it declines or the draft fails validation.
+        if topic:
+            kind = rng.choice(DRAFTABLE_KINDS)
+            drafted = await provider.draft(
+                DraftRequest(topic=topic, kind=kind, difficulty=difficulty)
+            )
+            if drafted is not None:
+                candidate = _validate_drafted(drafted)
+        if candidate is None:
+            gen = rng.choice(_GENERATORS)
+            candidate = gen(rng)
         if candidate is None:
             continue
         row = GeneratedItem(

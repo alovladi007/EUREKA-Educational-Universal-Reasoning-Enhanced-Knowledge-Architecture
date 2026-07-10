@@ -54,8 +54,12 @@ services:
       # Formal-proof track: the image bundles the Lean 4 kernel, so formal-track
       # items are machine-verified rather than routed to manual review.
       AXIOM_FORMAL_VERIFIER: lean
-      # Copilot semantic retrieval ranks in Postgres via pgvector (<=> cosine).
+      # Copilot semantic retrieval ranks in Postgres via pgvector (<=> cosine),
+      # embedding with the real all-MiniLM-L6-v2 model (384-dim) bundled in the
+      # image, not the offline hashed embedder.
       AXIOM_RETRIEVAL_STORE: pgvector
+      AXIOM_EMBEDDING_PROVIDER: sentence_transformers
+      AXIOM_EMBEDDING_DIM: "384"
     command: >
       sh -c "alembic upgrade head &&
              python -m app.seed &&
