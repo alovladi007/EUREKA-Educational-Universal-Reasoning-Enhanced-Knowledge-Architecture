@@ -24,9 +24,21 @@ from app.schemas import (
     StudentDashboardSummary
 )
 from app.services.analytics_service import AnalyticsService
+from app.core.auth_guard import CurrentUser, require_user, is_staff
 
-router = APIRouter()
+# Every analytics route requires a valid access token (previously all data was
+# unauthenticated). Per-learner endpoints additionally enforce ownership below.
+router = APIRouter(dependencies=[Depends(require_user)])
 analytics_service = AnalyticsService()
+
+
+def _ensure_self_or_staff(user: CurrentUser, target_user_id: UUID) -> None:
+    """Reject cross-learner access: a learner may only read their own records;
+    staff (teacher/admin/researcher) may read any."""
+    if is_staff(user):
+        return
+    if str(target_user_id) != str(user.get("user_id")):
+        raise HTTPException(status_code=403, detail="Not authorized for this learner's data")
 
 
 # ============= Student Analytics =============
@@ -35,9 +47,11 @@ analytics_service = AnalyticsService()
 async def calculate_student_analytics(
     user_id: UUID,
     course_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user)
 ):
     """Calculate analytics for a student in a course"""
+    _ensure_self_or_staff(user, user_id)
     analytics = await analytics_service.calculate_student_analytics(
         db=db,
         user_id=user_id,
@@ -50,9 +64,11 @@ async def calculate_student_analytics(
 async def get_student_analytics(
     user_id: UUID,
     course_id: Optional[UUID] = None,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user)
 ):
     """Get analytics for a student"""
+    _ensure_self_or_staff(user, user_id)
     query = select(StudentAnalytics).where(StudentAnalytics.user_id == user_id)
     
     if course_id:
@@ -100,9 +116,11 @@ async def identify_at_risk(
 async def get_student_alerts(
     user_id: UUID,
     active_only: bool = True,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user)
 ):
     """Get at-risk alerts for a student"""
+    _ensure_self_or_staff(user, user_id)
     query = select(AtRiskAlert).where(AtRiskAlert.user_id == user_id)
     
     if active_only:
@@ -191,9 +209,11 @@ async def get_user_events(
     user_id: UUID,
     course_id: Optional[UUID] = None,
     limit: int = 100,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user)
 ):
     """Get engagement events for a user"""
+    _ensure_self_or_staff(user, user_id)
     query = select(EngagementEvent).where(EngagementEvent.user_id == user_id)
     
     if course_id:
@@ -212,9 +232,11 @@ async def get_user_events(
 async def get_student_dashboard(
     user_id: UUID,
     course_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user)
 ):
     """Get complete dashboard summary for a student"""
+    _ensure_self_or_staff(user, user_id)
     # Get analytics
     result = await db.execute(
         select(StudentAnalytics).where(
