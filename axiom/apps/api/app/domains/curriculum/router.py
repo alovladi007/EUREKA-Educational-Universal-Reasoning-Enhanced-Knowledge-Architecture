@@ -16,6 +16,7 @@ from app.domains.curriculum.models import (
     Definition,
     KnowledgeEdge,
     KnowledgeNode,
+    Misconception,
     StandardsFramework,
     Theorem,
 )
@@ -23,6 +24,34 @@ from app.domains.curriculum.models import (
 router = APIRouter(prefix="/curriculum", tags=["curriculum"])
 
 author_only = require_roles("teacher", "org_admin", "super_admin", "author")
+
+
+@router.get("/misconceptions", summary="The misconception library")
+async def misconceptions(
+    session: AsyncSession = Depends(get_session),
+    _: UserOut = Depends(get_current_user),
+) -> list[dict]:
+    """List named-error misconceptions and the node each routes to for remediation."""
+    rows = (
+        await session.execute(select(Misconception).order_by(Misconception.code))
+    ).scalars().all()
+    nodes = {
+        n.id: n for n in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    out = []
+    for m in rows:
+        target = nodes.get(m.routes_to_node_id)
+        out.append(
+            {
+                "code": m.code,
+                "name": m.name,
+                "description": m.description,
+                "routes_to": (
+                    {"code": target.code, "title": target.title} if target else None
+                ),
+            }
+        )
+    return out
 
 
 async def _node_id_for_code(session: AsyncSession, code: str | None) -> uuid.UUID | None:

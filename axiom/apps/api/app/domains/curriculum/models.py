@@ -178,3 +178,25 @@ class Theorem(Base):
     techniques: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     depends_on: Mapped[list] = mapped_column(JSON, nullable=False, default=list)
     created_at: Mapped[datetime] = mapped_column(default=_now)
+
+
+class Misconception(Base):
+    """A named learner error, keyed to distractors and a remediation target.
+
+    The Engineering Math track's flagship differentiator (see the track spec):
+    each misconception has a stable code, a description, and the knowledge node a
+    triggered instance routes to for remediation. An assessment item keys a
+    distractor to a code (in Item.meta); when a learner picks it, the practice
+    flow records the diagnosis and the adaptive engine schedules targeted
+    practice on routes_to_node_id rather than re-serving the whole topic.
+    """
+
+    __tablename__ = "misconceptions"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    code: Mapped[str] = mapped_column(String(32), nullable=False, unique=True)
+    name: Mapped[str] = mapped_column(String(200), nullable=False)
+    description: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    routes_to_node_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("knowledge_nodes.id", ondelete="SET NULL"), nullable=True, index=True
+    )

@@ -22,6 +22,7 @@ from app.domains.curriculum.models import (
     Definition,
     KnowledgeEdge,
     KnowledgeNode,
+    Misconception,
     Objective,
     Standard,
     StandardsFramework,
@@ -869,6 +870,90 @@ async def seed_extra_items(session: AsyncSession) -> int:
     return added
 
 
+# Engineering Math track, Linear Algebra Unit 1 (see docs/AXIOM_Engineering_Math_Track.md
+# and tracks/eng_math/). Fine-grained nodes N1..N11, their prerequisite chain, and
+# the ten-code misconception library routing each learner error to a remediation node.
+_LA_U1_NODES = [
+    ("LA.U1.N1", "computational_skill", "Vector operations", "Vector addition, scalar multiplication, and their geometric meaning."),
+    ("LA.U1.N2", "concept", "Linear combinations", "Forming a vector as a weighted sum of other vectors."),
+    ("LA.U1.N3", "concept", "Span", "The set of all linear combinations of a set of vectors."),
+    ("LA.U1.N4", "concept", "Matrix-vector product as a combination of columns", "A x is the linear combination of the columns of A weighted by the entries of x."),
+    ("LA.U1.N5", "concept", "Row picture and column picture", "A linear system read as intersecting hyperplanes and as a combination of columns, two views of the same system."),
+    ("LA.U1.N6", "concept", "Linear system as A x = b", "Expressing a system of linear equations in matrix form."),
+    ("LA.U1.N7", "computational_skill", "Gaussian elimination to row echelon form", "Reducing a system by elementary row operations."),
+    ("LA.U1.N8", "computational_skill", "Reduced row echelon form and pivots", "The unique reduced form and identification of pivot positions."),
+    ("LA.U1.N9", "concept", "Free variables", "Identifying free variables from non-pivot columns and parameterizing."),
+    ("LA.U1.N10", "concept", "Existence and uniqueness", "Classifying a solution set as none, one, or infinitely many from the pivots."),
+    ("LA.U1.N11", "concept", "Homogeneous systems", "Systems A x = 0 and the always-present trivial solution."),
+]
+_LA_U1_EDGES = [
+    ("LA.U1.N1", "LA.U1.N2"), ("LA.U1.N2", "LA.U1.N3"), ("LA.U1.N2", "LA.U1.N4"),
+    ("LA.U1.N4", "LA.U1.N5"), ("LA.U1.N5", "LA.U1.N6"), ("LA.U1.N6", "LA.U1.N7"),
+    ("LA.U1.N7", "LA.U1.N8"), ("LA.U1.N8", "LA.U1.N9"), ("LA.U1.N9", "LA.U1.N10"),
+    ("LA.U1.N10", "LA.U1.N11"),
+]
+_LA_U1_MISCONCEPTIONS = [
+    ("LA.U1.M1", "Dimension-blind product", "Multiplies matrix by vector row-by-row or ignores shape compatibility.", "LA.U1.N4"),
+    ("LA.U1.M2", "Row-picture lock-in", "Sees a system only as intersecting lines, never as a combination of columns.", "LA.U1.N5"),
+    ("LA.U1.M3", "Always-unique belief", "Assumes every system has exactly one solution.", "LA.U1.N10"),
+    ("LA.U1.M4", "Shape-equals-solvability", "Concludes solvability from the count of equations and unknowns alone.", "LA.U1.N10"),
+    ("LA.U1.M5", "Illegal row operation", "Multiplies a row by zero or adds a row to itself without scaling.", "LA.U1.N7"),
+    ("LA.U1.M6", "REF and RREF confusion", "Stops at row echelon form or believes RREF is not unique.", "LA.U1.N8"),
+    ("LA.U1.M7", "Free-variable mishandling", "Fails to identify free variables or parameterizes with the wrong variable.", "LA.U1.N9"),
+    ("LA.U1.M8", "Inconsistent-homogeneous error", "Believes a homogeneous system can have no solution.", "LA.U1.N11"),
+    ("LA.U1.M9", "Count-based span", "Believes span depends on the number of vectors rather than their independence.", "LA.U1.N3"),
+    ("LA.U1.M10", "Scalar-sign confusion", "Mishandles the geometric effect of a negative scalar.", "LA.U1.N1"),
+]
+
+
+async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
+    """Seed Linear Algebra Unit 1 nodes, prerequisites, and the misconception
+    library. Idempotent: each node, edge, and misconception is created only if
+    absent, so it runs on every startup including existing databases."""
+    by_code = {
+        n.code: n
+        for n in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    created = 0
+    for code, kind, title, desc in _LA_U1_NODES:
+        if code not in by_code:
+            node = KnowledgeNode(
+                code=code, title=title, description=desc, kind=kind, tier=3, track="applied"
+            )
+            session.add(node)
+            by_code[code] = node
+            created += 1
+    await session.flush()
+
+    existing_edges = {
+        (e.from_node_id, e.to_node_id)
+        for e in (await session.execute(select(KnowledgeEdge))).scalars().all()
+    }
+    for src, dst in _LA_U1_EDGES:
+        pair = (by_code[src].id, by_code[dst].id)
+        if pair not in existing_edges:
+            session.add(
+                KnowledgeEdge(from_node_id=pair[0], to_node_id=pair[1], kind="prerequisite")
+            )
+
+    have_codes = {
+        m.code for m in (await session.execute(select(Misconception))).scalars().all()
+    }
+    for code, name, desc, routes_to in _LA_U1_MISCONCEPTIONS:
+        if code not in have_codes:
+            target = by_code.get(routes_to)
+            session.add(
+                Misconception(
+                    code=code,
+                    name=name,
+                    description=desc,
+                    routes_to_node_id=target.id if target else None,
+                )
+            )
+    await session.flush()
+    return created
+
+
 async def backfill_lessons(session: AsyncSession) -> int:
     """Give every knowledge node a lesson so the Learn view never 404s.
 
@@ -940,6 +1025,8 @@ async def seed(session: AsyncSession) -> bool:
     await seed_curriculum_graph(session)
     await seed_proof_items(session)
     await seed_reference_library(session)
+    # Engineering Math track: Linear Algebra Unit 1 nodes + misconception library.
+    await seed_eng_math_la_unit1(session)
     # Ensure every node in the full ladder has a lesson so the Learn view never
     # 404s (idempotent; skips nodes that already have one). Runs before the
     # first-run early-return below so it also covers existing databases.
