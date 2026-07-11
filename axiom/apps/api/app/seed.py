@@ -869,6 +869,61 @@ async def seed_extra_items(session: AsyncSession) -> int:
     return added
 
 
+async def backfill_lessons(session: AsyncSession) -> int:
+    """Give every knowledge node a lesson so the Learn view never 404s.
+
+    The full tier 0-6 + proof-technique graph has far more nodes than the
+    original algebra demo authored lessons for, so most Learn entries used to
+    return 404 (which the UI showed as an API error). This creates a minimal,
+    honest lesson from each node's own title and description for any node that
+    lacks one. It is idempotent: nodes that already have a lesson are skipped,
+    so hand-authored lessons are never overwritten.
+    """
+    nodes = (await session.execute(select(KnowledgeNode))).scalars().all()
+    have = set(
+        (await session.execute(select(Lesson.node_id))).scalars().all()
+    )
+    created = 0
+    for node in nodes:
+        if node.id in have:
+            continue
+        is_technique = getattr(node, "kind", "") == "proof_technique"
+        lesson = Lesson(node_id=node.id, title=node.title, summary=node.description)
+        session.add(lesson)
+        await session.flush()
+        session.add(
+            ContentStep(
+                lesson_id=lesson.id,
+                position=0,
+                kind="reading",
+                title="Overview",
+                body=(
+                    f"{node.description}\n\n"
+                    + (
+                        "This is a reusable proof technique. Learn its shape here, "
+                        "then practise applying it; mastery of the technique carries "
+                        "across every course that uses it."
+                        if is_technique
+                        else "Read the idea, then use Practice to work problems on this skill."
+                    )
+                ),
+            )
+        )
+        session.add(
+            ContentStep(
+                lesson_id=lesson.id,
+                position=1,
+                kind="checkpoint",
+                title="Practice",
+                body="Head to Practice to try problems on this skill and move your mastery.",
+            )
+        )
+        created += 1
+    if created:
+        await session.flush()
+    return created
+
+
 async def seed(session: AsyncSession) -> bool:
     """Seed the graph. Returns True if it seeded, False if already present.
 
@@ -885,6 +940,10 @@ async def seed(session: AsyncSession) -> bool:
     await seed_curriculum_graph(session)
     await seed_proof_items(session)
     await seed_reference_library(session)
+    # Ensure every node in the full ladder has a lesson so the Learn view never
+    # 404s (idempotent; skips nodes that already have one). Runs before the
+    # first-run early-return below so it also covers existing databases.
+    await backfill_lessons(session)
 
     existing = (
         await session.execute(select(StandardsFramework).where(StandardsFramework.code == "AAF"))
