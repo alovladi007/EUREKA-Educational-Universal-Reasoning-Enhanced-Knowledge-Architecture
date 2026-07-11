@@ -5,13 +5,14 @@ FastAPI application for handling file uploads, storage, and retrieval.
 Integrates with MinIO/S3 for object storage.
 """
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 import logging
 import time
 
 from app.api.v1 import router as api_router
+from app.core.auth_guard import require_user
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -51,7 +52,10 @@ async def add_process_time_header(request: Request, call_next):
     return response
 
 # Include API routes
-app.include_router(api_router, prefix="/api/v1", tags=["files"])
+# Every file route requires a valid access token (the store was fully open:
+# upload / download-by-arbitrary-path / list / delete with no auth). Per-file
+# ownership is enforced inside the handlers.
+app.include_router(api_router, prefix="/api/v1", tags=["files"], dependencies=[Depends(require_user)])
 
 # Health check endpoint
 @app.get("/health", tags=["health"])

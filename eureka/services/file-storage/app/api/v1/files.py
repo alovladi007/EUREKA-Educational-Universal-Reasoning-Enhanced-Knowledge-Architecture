@@ -12,6 +12,7 @@ import logging
 
 from app.core.storage import get_storage_client, StorageClient
 from app.core.config import get_settings
+from app.core.auth_guard import CurrentUser, require_user, is_staff
 from app.schemas import (
     FileUploadResponse, FileInfo, FileListResponse,
     PresignedUrlResponse, FileDeleteResponse
@@ -20,6 +21,20 @@ from app.schemas import (
 settings = get_settings()
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+
+def ensure_path_owner(user: CurrentUser, file_path: str) -> None:
+    """Reject access to another user's object.
+
+    Files are stored under '{folder}/{user_id}/{file_id}', so a caller may only
+    touch a path whose segments include their own user id. Staff (teacher/admin)
+    may access any path. This closes the download-by-arbitrary-path IDOR.
+    """
+    if is_staff(user):
+        return
+    uid = str(user.get("user_id"))
+    if uid not in (file_path or "").strip("/").split("/"):
+        raise HTTPException(status_code=403, detail="Not authorized for this file")
 
 
 def validate_file_extension(filename: str) -> bool:
@@ -37,13 +52,15 @@ def validate_file_size(file_size: int) -> bool:
 @router.post("/upload", response_model=FileUploadResponse, status_code=201)
 async def upload_file(
     file: UploadFile = File(...),
-    user_id: Optional[str] = Form(None),
     course_id: Optional[str] = Form(None),
     assignment_id: Optional[str] = Form(None),
     folder: str = Form("general"),
     description: Optional[str] = Form(None),
-    storage: StorageClient = Depends(get_storage_client)
+    storage: StorageClient = Depends(get_storage_client),
+    user: CurrentUser = Depends(require_user),
 ):
+    # Namespace the object to the authenticated user, not a spoofable form field.
+    user_id = str(user.get("user_id"))
     """
     Upload a file to storage
 
@@ -129,8 +146,10 @@ async def upload_file(
 @router.get("/download/{file_path:path}")
 async def download_file(
     file_path: str,
-    storage: StorageClient = Depends(get_storage_client)
+    storage: StorageClient = Depends(get_storage_client),
+    user: CurrentUser = Depends(require_user),
 ):
+    ensure_path_owner(user, file_path)
     """
     Download a file from storage
 
@@ -176,8 +195,10 @@ async def download_file(
 @router.get("/info/{file_path:path}", response_model=FileInfo)
 async def get_file_info(
     file_path: str,
-    storage: StorageClient = Depends(get_storage_client)
+    storage: StorageClient = Depends(get_storage_client),
+    user: CurrentUser = Depends(require_user),
 ):
+    ensure_path_owner(user, file_path)
     """
     Get metadata about a file
 
@@ -215,8 +236,10 @@ async def get_file_info(
 async def get_presigned_url(
     file_path: str,
     expires_hours: int = Query(1, ge=1, le=168),  # 1 hour to 7 days
-    storage: StorageClient = Depends(get_storage_client)
+    storage: StorageClient = Depends(get_storage_client),
+    user: CurrentUser = Depends(require_user),
 ):
+    ensure_path_owner(user, file_path)
     """
     Generate a presigned URL for temporary file access
 
@@ -291,8 +314,10 @@ async def list_files(
 @router.delete("/delete/{file_path:path}", response_model=FileDeleteResponse)
 async def delete_file(
     file_path: str,
-    storage: StorageClient = Depends(get_storage_client)
+    storage: StorageClient = Depends(get_storage_client),
+    user: CurrentUser = Depends(require_user),
 ):
+    ensure_path_owner(user, file_path)
     """
     Delete a file from storage
 
