@@ -6,9 +6,10 @@ Purpose: AI-powered tutoring with RAG, conversation management, and knowledge tr
 """
 import os
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import router as api_router
+from app.core.auth_guard import require_user
 from app.core.config import get_settings
 from app.core.observability import init_observability
 
@@ -41,7 +42,10 @@ app.add_middleware(
 )
 
 # Include API routes
-app.include_router(api_router, prefix="/api/v1/tutor", tags=["tutor"])
+app.include_router(
+    api_router, prefix="/api/v1/tutor", tags=["tutor"],
+    dependencies=[Depends(require_user)],
+)
 
 
 @app.get("/")

@@ -4,9 +4,10 @@ Adaptive Learning Service - Main Application
 Port: 8004
 Purpose: Personalized learning paths, mastery tracking, recommendations
 """
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1 import router as api_router
+from app.core.auth_guard import require_user
 from app.core.config import get_settings
 
 settings = get_settings()
@@ -29,8 +30,12 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API routes
-app.include_router(api_router, prefix="/api/v1/adaptive", tags=["adaptive"])
+# Include API routes. Every data route requires a valid access token (was
+# fully unauthenticated); /health is defined on app directly and stays public.
+app.include_router(
+    api_router, prefix="/api/v1/adaptive", tags=["adaptive"],
+    dependencies=[Depends(require_user)],
+)
 
 
 @app.get("/")
