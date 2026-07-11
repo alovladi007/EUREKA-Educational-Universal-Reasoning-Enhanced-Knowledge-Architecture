@@ -23,6 +23,14 @@ from .grading import (
     grade_numeric,
     symbolic_equal,
 )
+from .linalg import (
+    generate_unique_3x3,
+    grade_rref,
+    grade_solution_point,
+    grade_solution_set,
+    verify_linear_system_key,
+    verify_unique_solution,
+)
 from .proof import check_counterexample
 from .solutions import (
     SolutionCheck,
@@ -41,6 +49,12 @@ __all__ = [
     "grade_inequality",
     "symbolic_equal",
     "check_counterexample",
+    "grade_rref",
+    "grade_solution_point",
+    "grade_solution_set",
+    "generate_unique_3x3",
+    "verify_unique_solution",
+    "verify_linear_system_key",
     "resolve_template",
     "ItemTemplate",
     "ItemVariant",
