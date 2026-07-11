@@ -1,0 +1,89 @@
+{
+  "unit_id": "LA-U1",
+  "title": "Linear Algebra Unit 1: Vectors and Linear Systems",
+  "nodes": [
+    {"id": "N1", "kind": "computational", "title": "Vector operations", "description": "Vector addition, scalar multiplication, and their geometric meaning.", "standards": []},
+    {"id": "N2", "kind": "concept", "title": "Linear combinations", "description": "Forming a vector as a weighted sum of other vectors.", "standards": []},
+    {"id": "N3", "kind": "concept", "title": "Span", "description": "The set of all linear combinations of a set of vectors.", "standards": []},
+    {"id": "N4", "kind": "concept", "title": "Matrix-vector product as a combination of columns", "description": "A x is the linear combination of the columns of A weighted by the entries of x.", "standards": []},
+    {"id": "N5", "kind": "concept", "title": "Row picture and column picture", "description": "A linear system read as intersecting hyperplanes and as a combination of columns, two views of the same system.", "standards": []},
+    {"id": "N6", "kind": "concept", "title": "Linear system as A x = b", "description": "Expressing a system of linear equations in matrix form.", "standards": []},
+    {"id": "N7", "kind": "computational", "title": "Gaussian elimination to row echelon form", "description": "Reducing a system by elementary row operations.", "standards": []},
+    {"id": "N8", "kind": "computational", "title": "Reduced row echelon form and pivots", "description": "The unique reduced form and identification of pivot positions.", "standards": []},
+    {"id": "N9", "kind": "concept", "title": "Free variables", "description": "Identifying free variables from non-pivot columns and parameterizing.", "standards": []},
+    {"id": "N10", "kind": "concept", "title": "Existence and uniqueness", "description": "Classifying a solution set as none, one, or infinitely many from the pivots.", "standards": []},
+    {"id": "N11", "kind": "concept", "title": "Homogeneous systems", "description": "Systems A x = 0 and the always-present trivial solution.", "standards": []}
+  ],
+  "edges": [
+    {"source": "N1", "target": "N2", "relation": "prerequisite"},
+    {"source": "N2", "target": "N3", "relation": "prerequisite"},
+    {"source": "N2", "target": "N4", "relation": "prerequisite"},
+    {"source": "N4", "target": "N5", "relation": "prerequisite"},
+    {"source": "N5", "target": "N6", "relation": "prerequisite"},
+    {"source": "N6", "target": "N7", "relation": "prerequisite"},
+    {"source": "N7", "target": "N8", "relation": "prerequisite"},
+    {"source": "N8", "target": "N9", "relation": "prerequisite"},
+    {"source": "N9", "target": "N10", "relation": "prerequisite"},
+    {"source": "N10", "target": "N11", "relation": "prerequisite"}
+  ],
+  "misconceptions": [
+    {"code": "M1", "name": "Dimension-blind product", "description": "Multiplies matrix by vector row-by-row or ignores shape compatibility.", "routes_to": "N4"},
+    {"code": "M2", "name": "Row-picture lock-in", "description": "Sees a system only as intersecting lines, never as a combination of columns.", "routes_to": "N5"},
+    {"code": "M3", "name": "Always-unique belief", "description": "Assumes every system has exactly one solution.", "routes_to": "N10"},
+    {"code": "M4", "name": "Shape-equals-solvability", "description": "Concludes solvability from the count of equations and unknowns alone.", "routes_to": "N10"},
+    {"code": "M5", "name": "Illegal row operation", "description": "Multiplies a row by zero or adds a row to itself without scaling.", "routes_to": "N7"},
+    {"code": "M6", "name": "REF and RREF confusion", "description": "Stops at row echelon form or believes RREF is not unique.", "routes_to": "N8"},
+    {"code": "M7", "name": "Free-variable mishandling", "description": "Fails to identify free variables or parameterizes with the wrong variable.", "routes_to": "N9"},
+    {"code": "M8", "name": "Inconsistent-homogeneous error", "description": "Believes a homogeneous system can have no solution.", "routes_to": "N11"},
+    {"code": "M9", "name": "Count-based span", "description": "Believes span depends on the number of vectors rather than their independence.", "routes_to": "N3"},
+    {"code": "M10", "name": "Scalar-sign confusion", "description": "Mishandles the geometric effect of a negative scalar.", "routes_to": "N1"}
+  ],
+  "items": [
+    {
+      "id": "LA-U1-A",
+      "node_id": "N7",
+      "grader": "cas",
+      "stem": "Solve the system: 2x + y = 5 and x - y = 1. Give x and y.",
+      "answer_spec": {"coeffs": [[2, 1], [1, -1]], "rhs": [5, 1], "key": {"x": "2", "y": "1"}},
+      "choices": []
+    },
+    {
+      "id": "LA-U1-B",
+      "node_id": "N7",
+      "grader": "cas",
+      "stem": "Solve the seeded 3 by 3 integer system for x1, x2, x3.",
+      "answer_spec": {},
+      "choices": [],
+      "template": {"id": "LA-U1-B-T", "node_id": "N7", "kind": "generate_unique_3x3", "params": {"coeff_range": 4, "sol_range": 6}}
+    },
+    {
+      "id": "LA-U1-C",
+      "node_id": "N8",
+      "grader": "exact",
+      "stem": "Row reduce the matrix to reduced row echelon form.",
+      "answer_spec": {"problem_matrix": [[1, 2, 1], [2, 4, 0], [1, 1, 3]]},
+      "choices": []
+    },
+    {
+      "id": "LA-U1-D",
+      "node_id": "N10",
+      "grader": "mc",
+      "stem": "Classify the solution set of: x + y = 2 and 2x + 2y = 4.",
+      "answer_spec": {},
+      "choices": [
+        {"key": "a", "text": "Infinitely many solutions", "correct": true, "misconception": null},
+        {"key": "b", "text": "Exactly one solution", "correct": false, "misconception": "M3"},
+        {"key": "c", "text": "No solution", "correct": false, "misconception": "M4"},
+        {"key": "d", "text": "Cannot be determined", "correct": false, "misconception": "M6"}
+      ]
+    },
+    {
+      "id": "LA-U1-E",
+      "node_id": "N9",
+      "grader": "set_equal",
+      "stem": "Write the general solution of: x1 + x2 = 2 and x3 = 5 in parametric form.",
+      "answer_spec": {"A": [[1, 1, 0], [0, 0, 1]], "b": [2, 5], "example_particular": [2, 0, 5], "example_directions": [[-1, 1, 0]]},
+      "choices": []
+    }
+  ]
+}
