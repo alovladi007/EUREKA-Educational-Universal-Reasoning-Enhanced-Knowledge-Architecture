@@ -23,6 +23,7 @@ from .grading import (
     grade_numeric,
     symbolic_equal,
 )
+from .ode import grade_ode, verify_ode_key
 from .linalg import (
     generate_unique_3x3,
     grade_rref,
@@ -55,6 +56,8 @@ __all__ = [
     "generate_unique_3x3",
     "verify_unique_solution",
     "verify_linear_system_key",
+    "grade_ode",
+    "verify_ode_key",
     "resolve_template",
     "ItemTemplate",
     "ItemVariant",

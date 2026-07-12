@@ -29,6 +29,7 @@ from math_core import (
     grade_expression,
     grade_inequality,
     grade_numeric,
+    grade_ode,
     grade_rref,
     grade_solution_point,
     grade_solution_set,
@@ -846,6 +847,18 @@ def grade(
         return GradeOutcome(
             ok, 1.0 if ok else 0.0, "exact", 1.0,
             f"{label}: {len(chosen_pts & key_pts)} of {len(key_pts)} match",
+            str(correct), explanation,
+        )
+
+    if kind == "ode_solution":
+        # Engineering Math track (ODE units). meta.residual is the ODE written so
+        # it equals zero (y, yp, ypp, x); the student submits a proposed y(x).
+        # Grading verifies the solution satisfies the equation, so any equivalent
+        # form and any name for the arbitrary constant is accepted.
+        cfg = meta or {}
+        r = grade_ode(student, cfg.get("residual", ""), order=cfg.get("order"))
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,
         )
 

@@ -1020,6 +1020,163 @@ async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
     return created
 
 
+# Engineering Math track, ODE Unit 1 (First-Order ODEs) and Unit 2 (Second-Order
+# Linear ODEs). Nodes are graded by verifying a proposed y(x) solves the equation
+# (ode_solution kind), so any equivalent form and any constant name is accepted.
+_ODE_NODES = [
+    # Unit 1: first-order ODEs.
+    ("ODE.U1.N1", "computational_skill", "Separable first-order ODEs", "Separate variables and integrate both sides."),
+    ("ODE.U1.N2", "computational_skill", "First-order linear ODEs (integrating factor)", "Solve y' + p(x) y = q(x) with an integrating factor."),
+    ("ODE.U1.N3", "computational_skill", "Exact first-order ODEs", "Recognize and solve exact equations M dx + N dy = 0."),
+    ("ODE.U1.N4", "concept", "Existence and uniqueness (first-order)", "When a first-order initial value problem has a unique solution."),
+    ("ODE.U1.N5", "concept", "General versus particular solutions", "The arbitrary constant, the general solution family, and fixing it with an initial condition."),
+    # Unit 2: second-order linear ODEs.
+    ("ODE.U2.N1", "concept", "Characteristic equation", "Reduce a constant-coefficient homogeneous ODE to its characteristic polynomial."),
+    ("ODE.U2.N2", "computational_skill", "Real distinct roots", "General solution C1 e^{r1 x} + C2 e^{r2 x} for distinct real roots."),
+    ("ODE.U2.N3", "computational_skill", "Repeated roots", "General solution (C1 + C2 x) e^{r x} for a repeated root."),
+    ("ODE.U2.N4", "computational_skill", "Complex roots", "General solution e^{a x}(C1 cos b x + C2 sin b x) for complex roots."),
+    ("ODE.U2.N5", "computational_skill", "Undetermined coefficients", "A particular solution of a nonhomogeneous linear ODE by an educated guess."),
+    ("ODE.U2.N6", "concept", "Superposition (general = homogeneous + particular)", "The general solution is the homogeneous solution plus any particular solution."),
+]
+_ODE_EDGES = [
+    ("ODE.U1.N1", "ODE.U1.N2"), ("ODE.U1.N1", "ODE.U1.N3"), ("ODE.U1.N1", "ODE.U1.N4"),
+    ("ODE.U1.N2", "ODE.U1.N5"),
+    # Second-order builds on first-order and on linear algebra eigen-ideas.
+    ("ODE.U1.N2", "ODE.U2.N1"),
+    ("ODE.U2.N1", "ODE.U2.N2"), ("ODE.U2.N1", "ODE.U2.N3"), ("ODE.U2.N1", "ODE.U2.N4"),
+    ("ODE.U2.N2", "ODE.U2.N5"), ("ODE.U2.N5", "ODE.U2.N6"),
+]
+_ODE_MISCONCEPTIONS = [
+    ("ODE.U1.M1", "Losing the arbitrary constant", "Integrates but drops the constant of integration.", "ODE.U1.N5"),
+    ("ODE.U1.M2", "Divide-by-zero factor", "Divides by a factor that can be zero, dropping solutions.", "ODE.U1.N1"),
+    ("ODE.U1.M3", "General versus particular confusion", "Confuses the general solution family with a particular solution.", "ODE.U1.N5"),
+    ("ODE.U1.M4", "Integrating-factor setup error", "Forms the wrong integrating factor or mishandles its sign.", "ODE.U1.N2"),
+    ("ODE.U2.M1", "Wrong characteristic roots", "Solves the characteristic polynomial incorrectly.", "ODE.U2.N1"),
+    ("ODE.U2.M2", "Repeated-root missing x factor", "Forgets the x e^{r x} term for a repeated root.", "ODE.U2.N3"),
+    ("ODE.U2.M3", "Complex-root real-form error", "Mishandles the real form e^{a x}(cos, sin) for complex roots.", "ODE.U2.N4"),
+    ("ODE.U2.M4", "Guess collides with homogeneous", "Picks a particular-solution guess that is already a homogeneous solution.", "ODE.U2.N5"),
+]
+# Items: (node_code, kind, prompt, options, correct, explanation, meta).
+_ODE_ITEMS = [
+    ("ODE.U1.N1", "ode_solution",
+     "Solve the separable equation dy/dx = 2xy. Enter the general solution y(x) "
+     "(use C for the arbitrary constant, exp for e).",
+     None, "", "Separate to dy/y = 2x dx, integrate to ln|y| = x^2 + c, so "
+     "y = C exp(x^2).",
+     {"residual": "yp - 2*x*y", "order": 1}),
+    ("ODE.U1.N2", "ode_solution",
+     "Solve the linear equation dy/dx + y = x. Enter the general solution y(x).",
+     None, "", "Integrating factor e^x gives (e^x y)' = x e^x, so "
+     "y = x - 1 + C exp(-x).",
+     {"residual": "yp + y - x", "order": 1}),
+    ("ODE.U1.N5", "mcq_single",
+     "You integrate dy/dx = 3x^2 and write y = x^3. Which best describes this?",
+     ["It is only one particular solution; the general solution is x^3 + C",
+      "It is the complete general solution",
+      "It is wrong; the answer should be 3x^3",
+      "It cannot be determined"],
+     "0", "Integrating gives a family y = x^3 + C; writing x^3 alone drops the "
+     "arbitrary constant.",
+     {"choices": [
+         {"index": 1, "misconception": "ODE.U1.M1"},
+         {"index": 2, "misconception": "ODE.U1.M4"},
+     ]}),
+    ("ODE.U2.N2", "ode_solution",
+     "Solve y'' - y = 0. Enter the general solution y(x) (use C1, C2).",
+     None, "", "Characteristic equation r^2 - 1 = 0 has roots +-1, so "
+     "y = C1 exp(x) + C2 exp(-x).",
+     {"residual": "ypp - y", "order": 2}),
+    ("ODE.U2.N3", "ode_solution",
+     "Solve y'' - 4y' + 4y = 0. Enter the general solution y(x).",
+     None, "", "Characteristic equation (r-2)^2 = 0 has a repeated root 2, so "
+     "y = (C1 + C2 x) exp(2x).",
+     {"residual": "ypp - 4*yp + 4*y", "order": 2}),
+    ("ODE.U2.N4", "ode_solution",
+     "Solve y'' + y = 0. Enter the general solution y(x).",
+     None, "", "Characteristic roots +-i give y = C1 cos(x) + C2 sin(x).",
+     {"residual": "ypp + y", "order": 2}),
+]
+
+
+async def seed_eng_math_ode(session: AsyncSession) -> int:
+    """Seed ODE Units 1 and 2: nodes, prerequisites, the misconception library,
+    and items. Idempotent, like the Linear Algebra seed."""
+    by_code = {
+        n.code: n
+        for n in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    created = 0
+    for code, kind, title, desc in _ODE_NODES:
+        if code not in by_code:
+            node = KnowledgeNode(
+                code=code, title=title, description=desc, kind=kind, tier=3, track="applied"
+            )
+            session.add(node)
+            by_code[code] = node
+            created += 1
+    await session.flush()
+
+    existing_edges = {
+        (e.from_node_id, e.to_node_id)
+        for e in (await session.execute(select(KnowledgeEdge))).scalars().all()
+    }
+    for src, dst in _ODE_EDGES:
+        if src in by_code and dst in by_code:
+            pair = (by_code[src].id, by_code[dst].id)
+            if pair not in existing_edges:
+                session.add(
+                    KnowledgeEdge(from_node_id=pair[0], to_node_id=pair[1], kind="prerequisite")
+                )
+
+    have_codes = {
+        m.code for m in (await session.execute(select(Misconception))).scalars().all()
+    }
+    for code, name, desc, routes_to in _ODE_MISCONCEPTIONS:
+        if code not in have_codes:
+            target = by_code.get(routes_to)
+            session.add(
+                Misconception(
+                    code=code, name=name, description=desc,
+                    routes_to_node_id=target.id if target else None,
+                )
+            )
+    await session.flush()
+
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Ordinary Differential Equations")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        bank = ItemBank(
+            name="Ordinary Differential Equations",
+            description="Engineering Math track: first- and second-order ODEs, CAS-graded.",
+        )
+        session.add(bank)
+        await session.flush()
+
+    for code, kind, prompt, options, correct, explanation, meta in _ODE_ITEMS:
+        node = by_code.get(code)
+        if node is None:
+            continue
+        exists = (
+            await session.execute(
+                select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Item(
+                bank_id=bank.id, node_id=node.id, kind=kind, prompt=prompt,
+                options=options, correct=correct, explanation=explanation,
+                difficulty=0.5, tolerance=None, meta=meta,
+            )
+        )
+    await session.flush()
+    return created
+
+
 async def backfill_lessons(session: AsyncSession) -> int:
     """Give every knowledge node a lesson so the Learn view never 404s.
 
@@ -1093,6 +1250,8 @@ async def seed(session: AsyncSession) -> bool:
     await seed_reference_library(session)
     # Engineering Math track: Linear Algebra Unit 1 nodes + misconception library.
     await seed_eng_math_la_unit1(session)
+    # Engineering Math track: ODE Units 1 and 2.
+    await seed_eng_math_ode(session)
     # Ensure every node in the full ladder has a lesson so the Learn view never
     # 404s (idempotent; skips nodes that already have one). Runs before the
     # first-run early-return below so it also covers existing databases.

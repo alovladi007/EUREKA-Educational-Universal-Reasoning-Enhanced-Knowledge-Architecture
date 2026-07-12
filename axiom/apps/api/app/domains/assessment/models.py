@@ -76,6 +76,8 @@ ITEM_KINDS = (
     "matrix_rref",       # submit an RREF matrix; any valid reduction path accepted
     "solution_set",      # submit {particular, directions}; affine set equality
     "linear_system",     # submit {var: value}; symbolic point equivalence
+    # ODE units: submit a proposed y(x); graded by verifying it solves the ODE.
+    "ode_solution",
 )
 
 
