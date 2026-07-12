@@ -71,6 +71,11 @@ ITEM_KINDS = (
     "image_labeling",
     "construct_shape",
     "transform_figure",
+    # Engineering Math track (Linear Algebra Unit 1): SymPy-backed linear-algebra
+    # kinds. Problem data in Item.meta; the student submits a JSON answer.
+    "matrix_rref",       # submit an RREF matrix; any valid reduction path accepted
+    "solution_set",      # submit {particular, directions}; affine set equality
+    "linear_system",     # submit {var: value}; symbolic point equivalence
 )
 
 

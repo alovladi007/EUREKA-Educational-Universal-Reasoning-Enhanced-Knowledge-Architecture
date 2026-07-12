@@ -29,6 +29,9 @@ from math_core import (
     grade_expression,
     grade_inequality,
     grade_numeric,
+    grade_rref,
+    grade_solution_point,
+    grade_solution_set,
     symbolic_equal,
 )
 
@@ -843,6 +846,45 @@ def grade(
         return GradeOutcome(
             ok, 1.0 if ok else 0.0, "exact", 1.0,
             f"{label}: {len(chosen_pts & key_pts)} of {len(key_pts)} match",
+            str(correct), explanation,
+        )
+
+    if kind in ("matrix_rref", "solution_set", "linear_system"):
+        # Engineering Math track (Linear Algebra Unit 1). The problem data lives
+        # in meta; the student submits a JSON answer. Graders are SymPy-backed
+        # (RREF is unique; solution-set is affine equality; point is symbolic
+        # equivalence), so any valid form or reduction path is accepted.
+        cfg = meta or {}
+        try:
+            resp = json.loads(student) if student else None
+        except (ValueError, TypeError):
+            resp = None
+        if kind == "matrix_rref":
+            if not isinstance(resp, list):
+                return GradeOutcome(
+                    False, 0.0, "exact", 1.0, "expected a matrix (JSON list of rows)",
+                    str(correct), explanation,
+                )
+            r = grade_rref(resp, cfg.get("problem_matrix") or [])
+        elif kind == "linear_system":
+            if not isinstance(resp, dict):
+                return GradeOutcome(
+                    False, 0.0, "cas", 1.0, "expected a variable-to-value map",
+                    str(correct), explanation,
+                )
+            r = grade_solution_point(resp, cfg.get("key") or {})
+        else:  # solution_set
+            if not isinstance(resp, dict):
+                return GradeOutcome(
+                    False, 0.0, "set_equal", 1.0,
+                    "expected {particular, directions}", str(correct), explanation,
+                )
+            r = grade_solution_set(
+                cfg.get("A") or [], cfg.get("b") or [],
+                resp.get("particular") or [], resp.get("directions") or [],
+            )
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,
         )
 
