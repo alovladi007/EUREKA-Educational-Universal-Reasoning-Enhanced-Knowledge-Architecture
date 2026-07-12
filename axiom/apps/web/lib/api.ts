@@ -396,7 +396,11 @@ export type PracticeKind =
   | 'hotspot'
   | 'image_labeling'
   | 'construct_shape'
-  | 'transform_figure';
+  | 'transform_figure'
+  // Engineering Math track (Linear Algebra Unit 1): SymPy-backed, JSON answers.
+  | 'matrix_rref'
+  | 'solution_set'
+  | 'linear_system';
 
 // Answer-free UI hints for the structured proof kinds (see the API's
 // _presentation): the justification bank to choose from, the gap count, and (for
@@ -503,6 +507,17 @@ export interface AnswerResult {
   confidence?: number;
   // A CAS-verified worked solution, shown after answering when the item has one.
   worked_solution?: string[] | null;
+  // Misconception diagnosis (Engineering Math track): set when a wrong answer on
+  // a misconception-keyed item names the likely error and a remediation node.
+  diagnosis?: Diagnosis | null;
+}
+
+// A named-error diagnosis with the node to practice next.
+export interface Diagnosis {
+  code: string;
+  name: string;
+  description: string;
+  remediation_node?: { code: string; title: string } | null;
 }
 
 // The result of GET /api/v1/practice/response/{response_token}, the endpoint
