@@ -35,7 +35,7 @@ from app.domains.attempts.models import (
     Score,
     StepCredit,
 )
-from app.domains.curriculum.models import KnowledgeNode
+from app.domains.curriculum.models import KnowledgeNode, Misconception
 from app.domains.gamification.service import record_practice_result
 from app.domains.grading.formal import grade_formal_proof
 from app.domains.grading.free_response import grade_free_form_proof, grade_free_response
@@ -414,6 +414,62 @@ async def finalize_response_grade(
             )
             technique_updates.append({"code": str(code), **upd})
 
+    # Misconception diagnosis + remediation routing (Engineering Math track's
+    # flagship differentiator). When a learner picks a misconception-keyed
+    # distractor on a selection item, the wrong answer becomes a named diagnosis
+    # and a remediation target: the item keys each distractor to a code in
+    # meta.choices, that code resolves to a Misconception whose routes_to_node is
+    # the thing to practice next, and a review is queued on that node so it
+    # resurfaces rather than re-serving the whole topic.
+    diagnosis: dict | None = None
+    if kind == "mcq_single" and not outcome.is_correct and isinstance(meta, dict):
+        answer_txt = (student_answer or "").strip()
+        chosen_index: int | None = None
+        if answer_txt.isdigit():
+            chosen_index = int(answer_txt)
+        elif options and answer_txt in options:
+            chosen_index = options.index(answer_txt)
+        code = next(
+            (
+                c.get("misconception")
+                for c in (meta.get("choices") or [])
+                if c.get("index") == chosen_index and c.get("misconception")
+            ),
+            None,
+        )
+        if code:
+            m = (
+                await session.execute(
+                    select(Misconception).where(Misconception.code == str(code))
+                )
+            ).scalar_one_or_none()
+            if m is not None:
+                target = None
+                if m.routes_to_node_id is not None:
+                    target = (
+                        await session.execute(
+                            select(KnowledgeNode).where(KnowledgeNode.id == m.routes_to_node_id)
+                        )
+                    ).scalar_one_or_none()
+                if target is not None:
+                    # Queue targeted practice on the remediation node so it is due
+                    # for review. Best-effort: never let scheduling break grading.
+                    try:
+                        await schedule_review(
+                            session, user_id, target.id,
+                            is_correct=False, score=0.0, mastery_level="developing",
+                        )
+                    except Exception:  # noqa: BLE001
+                        pass
+                diagnosis = {
+                    "code": m.code,
+                    "name": m.name,
+                    "description": m.description,
+                    "remediation_node": (
+                        {"code": target.code, "title": target.title} if target else None
+                    ),
+                }
+
     # Emit Caliper-style analytics events for the graded response and any mastery
     # change. Best-effort: recording an event must never break grading, so a
     # failure here is swallowed (the grade, score, and mastery are already set).
@@ -476,6 +532,7 @@ async def finalize_response_grade(
         "review": review,
         "gamification": gamification,
         "technique_transfer": technique_updates,
+        "diagnosis": diagnosis,
     }
 
 

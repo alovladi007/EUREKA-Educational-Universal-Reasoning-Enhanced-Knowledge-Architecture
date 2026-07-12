@@ -951,6 +951,72 @@ async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
                 )
             )
     await session.flush()
+
+    # Unit 1 items (node_code, kind, prompt, options, correct, explanation, meta).
+    # Item D's distractors are keyed to misconceptions in meta.choices, so a wrong
+    # pick becomes a diagnosis and a remediation route (see the practice flow).
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Linear Algebra Unit 1")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        bank = ItemBank(
+            name="Linear Algebra Unit 1",
+            description="Engineering Math track: vectors and linear systems, CAS-graded.",
+        )
+        session.add(bank)
+        await session.flush()
+
+    la_items = [
+        ("LA.U1.N7", "linear_system",
+         "Solve the system 2x + y = 5 and x - y = 1. Enter your answer as JSON, "
+         'for example {"x": 2, "y": 1}.',
+         None, "", "Add the equations to eliminate y: 3x = 6, so x = 2 and y = 1.",
+         {"key": {"x": "2", "y": "1"}}),
+        ("LA.U1.N8", "matrix_rref",
+         "Row reduce the matrix [[1, 2, 1], [2, 4, 0], [1, 1, 3]] to reduced row "
+         "echelon form. Enter the result as a JSON list of rows.",
+         None, "", "Any valid sequence of row operations reaches the unique RREF, "
+         "here the 3x3 identity.",
+         {"problem_matrix": [[1, 2, 1], [2, 4, 0], [1, 1, 3]]}),
+        ("LA.U1.N10", "mcq_single",
+         "Classify the solution set of x + y = 2 and 2x + 2y = 4.",
+         ["Infinitely many solutions", "Exactly one solution", "No solution",
+          "Cannot be determined"],
+         "0", "The second equation is twice the first, so the lines coincide and "
+         "there are infinitely many solutions.",
+         {"choices": [
+             {"index": 1, "misconception": "LA.U1.M3"},
+             {"index": 2, "misconception": "LA.U1.M4"},
+             {"index": 3, "misconception": "LA.U1.M6"},
+         ]}),
+        ("LA.U1.N9", "solution_set",
+         "Write the general solution of x1 + x2 = 2 and x3 = 5 in parametric form. "
+         'Enter JSON {"particular": [...], "directions": [[...]]}.',
+         None, "", "x3 is fixed at 5; x1 is free and x2 = 2 - x1, so a direction is "
+         "(-1, 1, 0).",
+         {"A": [[1, 1, 0], [0, 0, 1]], "b": [2, 5]}),
+    ]
+    for code, kind, prompt, options, correct, explanation, meta in la_items:
+        node = by_code.get(code)
+        if node is None:
+            continue
+        exists = (
+            await session.execute(
+                select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Item(
+                bank_id=bank.id, node_id=node.id, kind=kind, prompt=prompt,
+                options=options, correct=correct, explanation=explanation,
+                difficulty=0.5, tolerance=None, meta=meta,
+            )
+        )
+    await session.flush()
     return created
 
 
