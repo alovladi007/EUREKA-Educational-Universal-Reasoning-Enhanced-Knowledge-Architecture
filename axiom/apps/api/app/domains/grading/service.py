@@ -27,6 +27,8 @@ from math_core import (
     check_counterexample,
     grade_equation,
     grade_expression,
+    grade_eigenvalues,
+    grade_eigenvector,
     grade_inequality,
     grade_laplace,
     grade_numeric,
@@ -910,6 +912,32 @@ def grade(
                 cfg.get("A") or [], cfg.get("b") or [],
                 resp.get("particular") or [], resp.get("directions") or [],
             )
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind in ("eigenvalues", "eigenvector"):
+        # Engineering Math track (LA Unit 7 / ODE systems). meta.matrix is the
+        # square matrix; the student submits a JSON list. Eigenvalues match as a
+        # multiset; eigenvectors are checked by (A - lambda I) v = 0, so any
+        # nonzero scaling is accepted. A comma-separated string is also accepted.
+        cfg = meta or {}
+        try:
+            resp = json.loads(student) if student else None
+        except (ValueError, TypeError):
+            resp = None
+        if not isinstance(resp, list):
+            resp = [p.strip() for p in student.split(",") if p.strip()] if student else None
+        if not isinstance(resp, list):
+            return GradeOutcome(
+                False, 0.0, "cas", 1.0, "expected a list (JSON or comma-separated)",
+                str(correct), explanation,
+            )
+        if kind == "eigenvalues":
+            r = grade_eigenvalues(resp, cfg.get("matrix") or [])
+        else:
+            r = grade_eigenvector(resp, cfg.get("matrix") or [], cfg.get("eigenvalue"))
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,

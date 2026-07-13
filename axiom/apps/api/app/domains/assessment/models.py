@@ -82,6 +82,10 @@ ITEM_KINDS = (
     # F(s); graded against the SymPy-computed transform.
     "laplace_transform",   # forward:  given f(t), submit F(s)
     "inverse_laplace",     # inverse:  given F(s), submit f(t)
+    # LA Unit 7 / ODE systems: eigenvalues (multiset) and eigenvectors (any
+    # nonzero scaling), graded against the matrix's true spectrum.
+    "eigenvalues",         # submit a list of eigenvalues (with multiplicity)
+    "eigenvector",         # submit an eigenvector for a given eigenvalue
 )
 
 

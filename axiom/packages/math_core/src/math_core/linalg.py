@@ -156,3 +156,72 @@ def verify_linear_system_key(coeffs: list, rhs: list, key: dict) -> bool:
         if sp.simplify(val - _parse(key[name])) != 0:
             return False
     return True
+
+
+# ---------------------------------------------------------------------------
+# Grader: eigenvalues and eigenvectors (Linear Algebra Unit 7; ODE systems)
+# ---------------------------------------------------------------------------
+
+def grade_eigenvalues(response_values: list, matrix: list) -> GradeResult:
+    """Grade a submitted set of eigenvalues against the matrix's true spectrum.
+
+    Correct iff the submitted values match the eigenvalues with multiplicity (as
+    a multiset). Any equivalent form is accepted (2, 4/2, sqrt(4) all match),
+    because each value is matched by symbolic equality. Order does not matter.
+    """
+    try:
+        A = sp.Matrix(matrix)
+    except (TypeError, ValueError):
+        return _no("problem matrix could not be parsed")
+    if A.rows != A.cols:
+        return _no("eigenvalues are only defined for a square matrix")
+    try:
+        submitted = [sp.nsimplify(sp.sympify(str(v))) for v in response_values]
+    except (sp.SympifyError, TypeError, ValueError):
+        return _no("could not parse the submitted eigenvalues")
+
+    # Reference spectrum with algebraic multiplicity.
+    reference: list = []
+    for val, mult in A.eigenvals().items():
+        reference.extend([val] * int(mult))
+    if len(submitted) != len(reference):
+        return _no(
+            f"expected {len(reference)} eigenvalue(s) (with multiplicity), "
+            f"got {len(submitted)}"
+        )
+
+    remaining = list(reference)
+    for s in submitted:
+        hit = next((r for r in remaining if sp.simplify(s - r) == 0), None)
+        if hit is None:
+            return _no("a submitted value is not an eigenvalue (or multiplicity is wrong)")
+        remaining.remove(hit)
+    return _ok("eigenvalues match the spectrum with multiplicity")
+
+
+def grade_eigenvector(response_vector: list, matrix: list, eigenvalue) -> GradeResult:
+    """Grade a submitted eigenvector for a given eigenvalue of the matrix.
+
+    Correct iff the vector is nonzero and (A - lambda I) v = 0, so any nonzero
+    scalar multiple of a true eigenvector is accepted.
+    """
+    try:
+        A = sp.Matrix(matrix)
+        v = _as_rational_vector(response_vector)
+        lam = sp.nsimplify(sp.sympify(str(eigenvalue)))
+    except (sp.SympifyError, TypeError, ValueError):
+        return _no("could not parse the vector, matrix, or eigenvalue")
+    if A.rows != A.cols or v.rows != A.cols:
+        return _no("vector length must match the square matrix size")
+    if all(sp.simplify(c) == 0 for c in v):
+        return _no("the zero vector is never an eigenvector")
+    residual = sp.simplify((A - lam * sp.eye(A.rows)) * v)
+    if residual == sp.zeros(A.rows, 1):
+        return _ok("(A - lambda I) v = 0: a valid eigenvector")
+    return _no("(A - lambda I) v is not zero for this eigenvalue")
+
+
+def verify_eigen_key(matrix: list, eigenvalues: list) -> bool:
+    """Verified-everything gate: confirm an authored eigenvalue list is exactly
+    the matrix spectrum (with multiplicity) before an item ships."""
+    return grade_eigenvalues(eigenvalues, matrix).is_correct

@@ -1020,11 +1020,12 @@ async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
     return created
 
 
-# Engineering Math track, ODE Units 1-4: First-Order ODEs, Second-Order Linear
-# ODEs, Nonhomogeneous methods, and Laplace transforms. Solution items are graded
-# by verifying a proposed y(x) solves the equation (ode_solution kind), so any
-# equivalent form and any constant name is accepted; Laplace items are graded
-# against the SymPy-computed transform (laplace_transform / inverse_laplace).
+# Engineering Math track, ODE Units 1-5: First-Order ODEs, Second-Order Linear
+# ODEs, Nonhomogeneous methods, Laplace transforms, and Systems (the eigenvalue
+# method). Solution items are graded by verifying a proposed y(x) solves the
+# equation (ode_solution kind), so any equivalent form and any constant name is
+# accepted; Laplace items are graded against the SymPy-computed transform
+# (laplace_transform / inverse_laplace); systems use the eigen graders.
 _ODE_NODES = [
     # Unit 1: first-order ODEs.
     ("ODE.U1.N1", "computational_skill", "Separable first-order ODEs", "Separate variables and integrate both sides."),
@@ -1049,6 +1050,11 @@ _ODE_NODES = [
     ("ODE.U4.N2", "computational_skill", "Inverse Laplace transform (partial fractions)", "Recover f(t) from F(s), decomposing with partial fractions."),
     ("ODE.U4.N3", "concept", "Transform of derivatives and solving IVPs", "L{y'} = sY - y(0) turns an IVP into an algebra problem in s."),
     ("ODE.U4.N4", "computational_skill", "Shifting theorems (s-shift and t-shift)", "First and second shifting theorems for e^{at} f(t) and step-delayed signals."),
+    # Unit 5: systems of first-order linear ODEs (the eigenvalue method).
+    ("ODE.U5.N1", "concept", "Systems as x' = A x", "Write a first-order linear system in matrix form and read off the coefficient matrix."),
+    ("ODE.U5.N2", "computational_skill", "Eigenvalue method for systems", "Solve x' = A x from the eigenvalues and eigenvectors of A."),
+    ("ODE.U5.N3", "computational_skill", "Real distinct eigenvalues", "Build the general solution sum c_i e^{lambda_i t} v_i for real distinct eigenvalues."),
+    ("ODE.U5.N4", "concept", "Complex eigenvalues (spirals and centers)", "Complex eigenvalues give oscillatory (spiral or center) solutions."),
 ]
 _ODE_EDGES = [
     ("ODE.U1.N1", "ODE.U1.N2"), ("ODE.U1.N1", "ODE.U1.N3"), ("ODE.U1.N1", "ODE.U1.N4"),
@@ -1063,6 +1069,10 @@ _ODE_EDGES = [
     # Unit 4 (Laplace) is an alternative route once second-order linear is in hand.
     ("ODE.U2.N6", "ODE.U4.N1"), ("ODE.U4.N1", "ODE.U4.N2"), ("ODE.U4.N1", "ODE.U4.N3"),
     ("ODE.U4.N1", "ODE.U4.N4"),
+    # Unit 5 (systems) needs second-order linear ideas; the eigenvalue machinery
+    # is cross-linked from Linear Algebra Unit 7 in seed_eng_math_la_unit7.
+    ("ODE.U2.N6", "ODE.U5.N1"), ("ODE.U5.N1", "ODE.U5.N2"), ("ODE.U5.N2", "ODE.U5.N3"),
+    ("ODE.U5.N2", "ODE.U5.N4"),
 ]
 _ODE_MISCONCEPTIONS = [
     ("ODE.U1.M1", "Losing the arbitrary constant", "Integrates but drops the constant of integration.", "ODE.U1.N5"),
@@ -1079,6 +1089,8 @@ _ODE_MISCONCEPTIONS = [
     ("ODE.U4.M1", "Linearity misapplied to products", "Treats L{f g} as L{f} times L{g}.", "ODE.U4.N1"),
     ("ODE.U4.M2", "Wrong shift direction", "Confuses the s-shift and t-shift theorems.", "ODE.U4.N4"),
     ("ODE.U4.M3", "Dropped initial-condition terms", "Omits the y(0), y'(0) terms when transforming a derivative.", "ODE.U4.N3"),
+    ("ODE.U5.M1", "Eigenvector treated as unique", "Thinks a system's eigenvector is a single fixed vector, not a direction.", "ODE.U5.N2"),
+    ("ODE.U5.M2", "Phase-portrait misread", "Reads opposite-sign real eigenvalues as a node instead of a saddle.", "ODE.U5.N3"),
 ]
 # Items: (node_code, kind, prompt, options, correct, explanation, meta).
 _ODE_ITEMS = [
@@ -1180,6 +1192,30 @@ _ODE_ITEMS = [
          {"index": 1, "misconception": "ODE.U4.M3"},
          {"index": 2, "misconception": "ODE.U4.M3"},
      ]}),
+    # Unit 5: systems. The coefficient matrix's eigen-decomposition is graded
+    # with the eigen graders; classification is a misconception-keyed MCQ.
+    ("ODE.U5.N2", "eigenvalues",
+     "For the system x' = A x with A = [[0, 1], [-2, -3]], find the eigenvalues "
+     "of A. Enter them as a comma-separated list.",
+     None, "", "The characteristic polynomial is lambda^2 + 3 lambda + 2 = "
+     "(lambda + 1)(lambda + 2), so the eigenvalues are -1 and -2.",
+     {"matrix": [[0, 1], [-2, -3]]}),
+    ("ODE.U5.N2", "eigenvector",
+     "For A = [[0, 1], [-2, -3]], give an eigenvector for the eigenvalue -1. "
+     "Enter it as a comma-separated list (e.g. 1, -1).",
+     None, "", "(A + I) v = 0 gives v proportional to (1, -1); any nonzero "
+     "multiple is a valid eigenvector.",
+     {"matrix": [[0, 1], [-2, -3]], "eigenvalue": -1}),
+    ("ODE.U5.N3", "mcq_single",
+     "A planar system x' = A x has real eigenvalues 2 and -1 (opposite signs). "
+     "What is the origin?",
+     ["A saddle point", "A stable node", "A spiral", "A center"],
+     "0", "Real eigenvalues of opposite sign make the origin a saddle: one "
+     "direction grows, the other decays.",
+     {"choices": [
+         {"index": 1, "misconception": "ODE.U5.M2"},
+         {"index": 2, "misconception": "ODE.U5.M2"},
+     ]}),
 ]
 
 
@@ -1241,6 +1277,155 @@ async def seed_eng_math_ode(session: AsyncSession) -> int:
         await session.flush()
 
     for code, kind, prompt, options, correct, explanation, meta in _ODE_ITEMS:
+        node = by_code.get(code)
+        if node is None:
+            continue
+        exists = (
+            await session.execute(
+                select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Item(
+                bank_id=bank.id, node_id=node.id, kind=kind, prompt=prompt,
+                options=options, correct=correct, explanation=explanation,
+                difficulty=0.5, tolerance=None, meta=meta,
+            )
+        )
+    await session.flush()
+    return created
+
+
+# Engineering Math track, Linear Algebra Unit 7 (Eigenvalues and Eigenvectors).
+# Eigenvalues are graded as a multiset and eigenvectors by (A - lambda I) v = 0
+# (any nonzero scaling), so any equivalent form is accepted. This is the machinery
+# ODE systems (ODE.U5) and PDE eigenfunction expansions both run on -- the spine
+# cross-edge LA7 -> ODE systems is added here.
+_LA_U7_NODES = [
+    ("LA.U7.N1", "computational_skill", "Eigenvalues and the characteristic polynomial", "Solve det(A - lambda I) = 0 for the eigenvalues of a matrix."),
+    ("LA.U7.N2", "computational_skill", "Eigenvectors and eigenspaces", "Solve (A - lambda I) v = 0 for the eigenvectors of each eigenvalue."),
+    ("LA.U7.N3", "concept", "Algebraic versus geometric multiplicity", "How a repeated eigenvalue's root count relates to its eigenspace dimension."),
+    ("LA.U7.N4", "concept", "Diagonalization", "When A = P D P^-1 exists: a full set of independent eigenvectors."),
+]
+_LA_U7_EDGES = [
+    ("LA.U7.N1", "LA.U7.N2"), ("LA.U7.N2", "LA.U7.N3"), ("LA.U7.N3", "LA.U7.N4"),
+    # The track spine: eigenvalues feed the ODE systems unit.
+    ("LA.U7.N2", "ODE.U5.N2"),
+]
+_LA_U7_MISCONCEPTIONS = [
+    ("LA.U7.M1", "Characteristic sign error", "Forms det(A - lambda I) with a sign slip and gets wrong roots.", "LA.U7.N1"),
+    ("LA.U7.M2", "Eigenvector treated as unique", "Believes an eigenvector is one fixed vector, not a whole line.", "LA.U7.N2"),
+    ("LA.U7.M3", "Multiplicity conflation", "Assumes geometric multiplicity always equals algebraic multiplicity.", "LA.U7.N3"),
+    ("LA.U7.M4", "Assumes always diagonalizable", "Thinks every square matrix can be diagonalized.", "LA.U7.N4"),
+]
+_LA_U7_ITEMS = [
+    ("LA.U7.N1", "eigenvalues",
+     "Find the eigenvalues of A = [[2, 0], [0, 3]]. Enter them comma-separated.",
+     None, "", "A diagonal matrix has its diagonal entries as eigenvalues: 2 and 3.",
+     {"matrix": [[2, 0], [0, 3]]}),
+    ("LA.U7.N1", "eigenvalues",
+     "Find the eigenvalues of A = [[3, 1], [0, 3]] (with multiplicity). Enter "
+     "them comma-separated.",
+     None, "", "The triangular matrix has a repeated eigenvalue 3 of algebraic "
+     "multiplicity 2, so enter 3, 3.",
+     {"matrix": [[3, 1], [0, 3]]}),
+    ("LA.U7.N2", "eigenvector",
+     "For A = [[2, 0], [0, 3]], give an eigenvector for the eigenvalue 3. Enter "
+     "it comma-separated (e.g. 0, 1).",
+     None, "", "(A - 3I) v = 0 gives v proportional to (0, 1); any nonzero "
+     "multiple works.",
+     {"matrix": [[2, 0], [0, 3]], "eigenvalue": 3}),
+    ("LA.U7.N3", "mcq_single",
+     "The matrix [[3, 1], [0, 3]] has eigenvalue 3 with algebraic multiplicity 2 "
+     "but only a one-dimensional eigenspace. What does this mean?",
+     ["Geometric multiplicity (1) is less than algebraic multiplicity (2), so it "
+      "is defective",
+      "Geometric and algebraic multiplicity are always equal",
+      "It has two independent eigenvectors",
+      "It is diagonalizable"],
+     "0", "A defective matrix has fewer independent eigenvectors than the "
+     "eigenvalue's algebraic multiplicity.",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U7.M3"},
+         {"index": 2, "misconception": "LA.U7.M3"},
+         {"index": 3, "misconception": "LA.U7.M4"},
+     ]}),
+    ("LA.U7.N4", "mcq_single",
+     "Which statement about diagonalization is correct?",
+     ["A matrix is diagonalizable iff it has a full set of independent eigenvectors",
+      "Every square matrix is diagonalizable",
+      "Only symmetric matrices are diagonalizable",
+      "Diagonalization requires distinct eigenvalues"],
+     "0", "A = P D P^-1 exists exactly when the eigenvectors form a basis; "
+     "repeated eigenvalues are fine if the eigenspace is big enough.",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U7.M4"},
+         {"index": 3, "misconception": "LA.U7.M4"},
+     ]}),
+]
+
+
+async def seed_eng_math_la_unit7(session: AsyncSession) -> int:
+    """Seed Linear Algebra Unit 7 (eigenvalues/eigenvectors), the machinery ODE
+    systems and PDE eigenfunction expansions run on. Idempotent, and it adds the
+    track spine edge LA7 -> ODE systems (both nodes exist by the time it runs)."""
+    by_code = {
+        n.code: n
+        for n in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    created = 0
+    for code, kind, title, desc in _LA_U7_NODES:
+        if code not in by_code:
+            node = KnowledgeNode(
+                code=code, title=title, description=desc, kind=kind, tier=3, track="applied"
+            )
+            session.add(node)
+            by_code[code] = node
+            created += 1
+    await session.flush()
+
+    existing_edges = {
+        (e.from_node_id, e.to_node_id)
+        for e in (await session.execute(select(KnowledgeEdge))).scalars().all()
+    }
+    for src, dst in _LA_U7_EDGES:
+        if src in by_code and dst in by_code:
+            pair = (by_code[src].id, by_code[dst].id)
+            if pair not in existing_edges:
+                session.add(
+                    KnowledgeEdge(from_node_id=pair[0], to_node_id=pair[1], kind="prerequisite")
+                )
+
+    have_codes = {
+        m.code for m in (await session.execute(select(Misconception))).scalars().all()
+    }
+    for code, name, desc, routes_to in _LA_U7_MISCONCEPTIONS:
+        if code not in have_codes:
+            target = by_code.get(routes_to)
+            session.add(
+                Misconception(
+                    code=code, name=name, description=desc,
+                    routes_to_node_id=target.id if target else None,
+                )
+            )
+    await session.flush()
+
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Linear Algebra Unit 7")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        bank = ItemBank(
+            name="Linear Algebra Unit 7",
+            description="Engineering Math track: eigenvalues and eigenvectors, CAS-graded.",
+        )
+        session.add(bank)
+        await session.flush()
+
+    for code, kind, prompt, options, correct, explanation, meta in _LA_U7_ITEMS:
         node = by_code.get(code)
         if node is None:
             continue
@@ -1335,8 +1520,11 @@ async def seed(session: AsyncSession) -> bool:
     await seed_reference_library(session)
     # Engineering Math track: Linear Algebra Unit 1 nodes + misconception library.
     await seed_eng_math_la_unit1(session)
-    # Engineering Math track: ODE Units 1 and 2.
+    # Engineering Math track: ODE Units 1-5 (systems uses the eigen graders).
     await seed_eng_math_ode(session)
+    # Engineering Math track: Linear Algebra Unit 7 (eigenvalues); adds the track
+    # spine edge LA7 -> ODE systems, so it runs after the ODE seed.
+    await seed_eng_math_la_unit7(session)
     # Ensure every node in the full ladder has a lesson so the Learn view never
     # 404s (idempotent; skips nodes that already have one). Runs before the
     # first-run early-return below so it also covers existing databases.

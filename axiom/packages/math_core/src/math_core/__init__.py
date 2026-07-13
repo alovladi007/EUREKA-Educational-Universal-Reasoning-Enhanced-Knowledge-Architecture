@@ -27,9 +27,12 @@ from .ode import grade_ode, verify_ode_key
 from .transforms import grade_laplace, verify_laplace_key
 from .linalg import (
     generate_unique_3x3,
+    grade_eigenvalues,
+    grade_eigenvector,
     grade_rref,
     grade_solution_point,
     grade_solution_set,
+    verify_eigen_key,
     verify_linear_system_key,
     verify_unique_solution,
 )
@@ -54,6 +57,9 @@ __all__ = [
     "grade_rref",
     "grade_solution_point",
     "grade_solution_set",
+    "grade_eigenvalues",
+    "grade_eigenvector",
+    "verify_eigen_key",
     "generate_unique_3x3",
     "verify_unique_solution",
     "verify_linear_system_key",
