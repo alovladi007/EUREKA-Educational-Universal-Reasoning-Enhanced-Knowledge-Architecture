@@ -43,6 +43,16 @@ def test_eigenvector_accepts_any_scaling():
     assert not grade_eigenvector([0, 0], A, -1).is_correct
 
 
+def test_eigenvector_failure_modes_are_distinguished():
+    A = [[0, 1], [-2, -3]]  # eigenvalues -1, -2
+    # Right eigenvalue (-1 is real), but the vector is not in its eigenspace.
+    r1 = grade_eigenvector([1, 1], A, -1)
+    assert not r1.is_correct and "not in its eigenspace" in r1.detail
+    # 5 is not an eigenvalue at all -- a different misconception.
+    r2 = grade_eigenvector([1, 1], A, 5)
+    assert not r2.is_correct and "not an eigenvalue" in r2.detail
+
+
 def test_verified_everything_gate():
     A = [[2, 0], [0, 3]]
     assert verify_eigen_key(A, [2, 3])

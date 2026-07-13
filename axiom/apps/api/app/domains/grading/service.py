@@ -985,9 +985,10 @@ def grade(
         # move is accepted and the first line that changes the solution set is
         # reported (partial credit for the valid prefix).
         cfg = meta or {}
-        lines = [ln.strip() for ln in student.replace(";", ";").splitlines() if ln.strip()]
+        lines = [ln.strip() for ln in student.splitlines() if ln.strip()]
         r = grade_steps(
             lines, cfg.get("variables") or [], final_key=cfg.get("final_key"),
+            milestones=cfg.get("milestones"),
         )
         return GradeOutcome(
             r.is_correct, r.score, r.grader, r.confidence, r.detail,

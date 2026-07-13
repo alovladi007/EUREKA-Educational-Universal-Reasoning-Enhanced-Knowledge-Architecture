@@ -48,21 +48,58 @@ def _solution_set(eqs: list[sp.Eq], symbols: list[sp.Symbol]):
     return frozenset(canon)
 
 
+def _milestones_hit(parsed: list, milestones: list, syms: list[sp.Symbol]) -> list[str]:
+    """Detect declared milestones anywhere in the work. Two kinds, matching the
+    reference: "isolated" (a line has var = expr with expr free of var) and
+    "eliminated" (a line no longer mentions var)."""
+    hit: list[str] = []
+    for m in milestones:
+        name = m.get("name", "")
+        kind = m.get("kind", "")
+        v = sp.Symbol(str(m.get("var", "")))
+        found = False
+        for eqs in parsed:
+            if eqs is None:
+                continue
+            if kind == "isolated":
+                for eq in eqs:
+                    if eq.lhs == v and v not in eq.rhs.free_symbols:
+                        found = True
+                        break
+                    if eq.rhs == v and v not in eq.lhs.free_symbols:
+                        found = True
+                        break
+            elif kind == "eliminated":
+                all_syms: set = set().union(*(eq.free_symbols for eq in eqs)) if eqs else set()
+                if v not in all_syms:
+                    found = True
+            if found:
+                break
+        if found:
+            hit.append(name)
+    return hit
+
+
 def grade_steps(
     lines: list[str],
     variables: list[str],
     final_key: dict | None = None,
-    step_weight: float = 0.7,
+    milestones: list | None = None,
+    step_weight: float = 0.5,
+    milestone_weight: float = 0.2,
     final_weight: float = 0.3,
 ) -> GradeResult:
     """Grade a derivation given as a list of equation lines.
 
     Correct iff every consecutive line preserves the solution set and (when a
     final_key is given) the last line matches it. score is partial credit: the
-    fraction of valid transitions (step_weight) plus the final answer
-    (final_weight). detail names the first error line, the signal for remediation.
+    fraction of valid transitions (step_weight), declared milestones reached
+    (milestone_weight; "isolated"/"eliminated" waypoints), and the final answer
+    (final_weight). detail names the first error line -- the signal for
+    remediation -- and the milestones reached.
     """
     syms = [sp.Symbol(v) for v in variables]
+    milestones = milestones or []
     parsed: list[list[sp.Eq] | None] = []
     first_error: int | None = None
 
@@ -75,7 +112,6 @@ def grade_steps(
                 first_error = i
 
     prev_set = None
-    prev_index: int | None = None
     n_trans = max(len(lines) - 1, 1)
     valid_trans = 0
     for i, eqs in enumerate(parsed):
@@ -91,7 +127,7 @@ def grade_steps(
                 valid_trans += 1
             elif first_error is None:
                 first_error = i
-        prev_set, prev_index = cur, i
+        prev_set = cur
 
     final_correct = False
     if final_key is not None and parsed and parsed[-1] is not None:
@@ -100,14 +136,27 @@ def grade_steps(
         key_set = _solution_set(key_eqs, syms)
         final_correct = last is not None and last == key_set
 
-    weight = step_weight + (0.0 if final_key is not None else final_weight)
-    score = weight * (valid_trans / n_trans) + (final_weight if final_correct else 0.0)
+    hit = _milestones_hit(parsed, milestones, syms)
+
+    # Fold unused weights back into steps so score always tops out at 1.0.
+    step_w = step_weight
+    if not milestones:
+        step_w += milestone_weight
+    if final_key is None:
+        step_w += final_weight
+    score = step_w * (valid_trans / n_trans)
+    if milestones:
+        score += milestone_weight * (len(hit) / len(milestones))
+    if final_correct:
+        score += final_weight
     score = round(min(score, 1.0), 4)
 
     if first_error is None:
         detail = "all steps valid"
     else:
         detail = f"first error at line {first_error}: {lines[first_error]!r}"
+    if milestones:
+        detail += f"; milestones reached: {', '.join(hit) if hit else 'none'}"
     if final_key is not None:
         detail += f"; final answer {'correct' if final_correct else 'incorrect'}"
 

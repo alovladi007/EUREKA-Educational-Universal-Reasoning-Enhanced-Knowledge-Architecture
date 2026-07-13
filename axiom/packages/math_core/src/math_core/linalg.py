@@ -218,7 +218,14 @@ def grade_eigenvector(response_vector: list, matrix: list, eigenvalue) -> GradeR
     residual = sp.simplify((A - lam * sp.eye(A.rows)) * v)
     if residual == sp.zeros(A.rows, 1):
         return _ok("(A - lambda I) v = 0: a valid eigenvector")
-    return _no("(A - lambda I) v is not zero for this eigenvalue")
+    # Distinguish the two failure modes -- they are different misconceptions.
+    try:
+        is_eigenvalue = sp.simplify((A - lam * sp.eye(A.rows)).det()) == 0
+    except (TypeError, ValueError):
+        is_eigenvalue = False
+    if is_eigenvalue:
+        return _no("the eigenvalue is correct but the vector is not in its eigenspace")
+    return _no("that value is not an eigenvalue of the matrix")
 
 
 def verify_eigen_key(matrix: list, eigenvalues: list) -> bool:

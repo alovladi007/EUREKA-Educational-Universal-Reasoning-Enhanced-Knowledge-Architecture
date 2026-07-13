@@ -46,3 +46,27 @@ def test_illegal_move_changes_solution_set():
 def test_unparseable_line_is_first_error():
     r = grade_steps(["x + y = 4", "this is not an equation"], ["x", "y"])
     assert not r.is_correct and "first error at line 1" in r.detail
+
+
+def test_milestones_detected():
+    lines = [
+        "2*x + y = 5; x - y = 1",
+        "3*x = 6; x - y = 1",
+        "x = 2; x - y = 1",     # x isolated
+        "x = 2; y = 1",         # y isolated
+    ]
+    ms = [
+        {"name": "x isolated", "kind": "isolated", "var": "x"},
+        {"name": "y isolated", "kind": "isolated", "var": "y"},
+    ]
+    r = grade_steps(lines, ["x", "y"], final_key={"x": "2", "y": "1"}, milestones=ms)
+    assert r.is_correct and r.score == 1.0
+    assert "x isolated" in r.detail and "y isolated" in r.detail
+
+
+def test_eliminated_milestone_when_variable_leaves_the_system():
+    # Substituting x = 2 back leaves a single equation with no x.
+    lines = ["2*x + y = 5; x = 2", "y = 1"]
+    ms = [{"name": "x eliminated", "kind": "eliminated", "var": "x"}]
+    r = grade_steps(lines, ["x", "y"], milestones=ms)
+    assert "x eliminated" in r.detail
