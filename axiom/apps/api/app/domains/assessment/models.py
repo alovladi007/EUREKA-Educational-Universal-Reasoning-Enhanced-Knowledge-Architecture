@@ -89,6 +89,8 @@ ITEM_KINDS = (
     # PDE/Fourier Unit 1: submit one Fourier coefficient (a0, a_n, or b_n) of a
     # periodic function; graded against SymPy exact integration.
     "fourier_coefficient",
+    # LA Unit 6: submit the determinant of a matrix; graded against SymPy det(A).
+    "determinant",
 )
 
 

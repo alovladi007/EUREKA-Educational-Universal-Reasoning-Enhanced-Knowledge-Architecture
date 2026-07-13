@@ -27,6 +27,7 @@ from math_core import (
     check_counterexample,
     grade_equation,
     grade_expression,
+    grade_determinant,
     grade_eigenvalues,
     grade_eigenvector,
     grade_fourier_coefficient,
@@ -954,6 +955,16 @@ def grade(
             student, cfg.get("function", ""), str(cfg.get("half_period", "pi")),
             cfg.get("coeff", "a"), int(cfg.get("n", 1)),
         )
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "determinant":
+        # LA Unit 6. meta.matrix is the square matrix; the student submits det(A)
+        # as a scalar. Any equivalent form is accepted (symbolic check).
+        cfg = meta or {}
+        r = grade_determinant(student, cfg.get("matrix") or [])
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,

@@ -28,11 +28,13 @@ from .transforms import grade_laplace, verify_laplace_key
 from .fourier import grade_fourier_coefficient, verify_fourier_key
 from .linalg import (
     generate_unique_3x3,
+    grade_determinant,
     grade_eigenvalues,
     grade_eigenvector,
     grade_rref,
     grade_solution_point,
     grade_solution_set,
+    verify_determinant_key,
     verify_eigen_key,
     verify_linear_system_key,
     verify_unique_solution,
@@ -61,6 +63,8 @@ __all__ = [
     "grade_eigenvalues",
     "grade_eigenvector",
     "verify_eigen_key",
+    "grade_determinant",
+    "verify_determinant_key",
     "generate_unique_3x3",
     "verify_unique_solution",
     "verify_linear_system_key",

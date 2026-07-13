@@ -1518,6 +1518,142 @@ async def seed_eng_math_la_unit7(session: AsyncSession) -> int:
     return created
 
 
+# Engineering Math track, Linear Algebra Unit 6 (Determinants). Determinant items
+# are graded against SymPy det(A) (determinant kind), so any equivalent form is
+# accepted. Determinants are the prerequisite for the characteristic polynomial,
+# so this unit feeds eigenvalues (LA6 -> LA7), wired in seed_eng_math_la_unit6.
+_LA_U6_NODES = [
+    ("LA.U6.N1", "computational_skill", "Determinant of 2x2 and 3x3 matrices", "Compute small determinants directly and by the rule of Sarrus."),
+    ("LA.U6.N2", "computational_skill", "Cofactor (Laplace) expansion", "Expand along a row or column with the checkerboard of signs."),
+    ("LA.U6.N3", "concept", "Determinant properties", "Effect of row operations, det(AB) = det(A) det(B), det(A^T) = det(A)."),
+    ("LA.U6.N4", "concept", "Determinant and invertibility", "A is invertible iff det(A) is nonzero."),
+]
+_LA_U6_EDGES = [
+    ("LA.U6.N1", "LA.U6.N2"), ("LA.U6.N1", "LA.U6.N3"), ("LA.U6.N3", "LA.U6.N4"),
+    # Determinants are needed for the characteristic polynomial det(A - lambda I).
+    ("LA.U6.N1", "LA.U7.N1"),
+]
+_LA_U6_MISCONCEPTIONS = [
+    ("LA.U6.M1", "Diagonal-product error", "Takes the determinant as the product of the diagonal for a non-triangular matrix.", "LA.U6.N1"),
+    ("LA.U6.M2", "Cofactor sign error", "Uses the wrong checkerboard signs in cofactor expansion.", "LA.U6.N2"),
+    ("LA.U6.M3", "False determinant linearity", "Assumes det(A + B) = det(A) + det(B).", "LA.U6.N3"),
+]
+_LA_U6_ITEMS = [
+    ("LA.U6.N1", "determinant",
+     "Find the determinant of A = [[1, 2], [3, 4]].",
+     None, "", "det = 1*4 - 2*3 = 4 - 6 = -2.",
+     {"matrix": [[1, 2], [3, 4]]}),
+    ("LA.U6.N2", "determinant",
+     "Find the determinant of the upper-triangular A = [[2, 5, 1], [0, 3, 7], "
+     "[0, 0, 4]].",
+     None, "", "A triangular determinant is the product of the diagonal: "
+     "2 * 3 * 4 = 24.",
+     {"matrix": [[2, 5, 1], [0, 3, 7], [0, 0, 4]]}),
+    ("LA.U6.N4", "mcq_single",
+     "A square matrix A has det(A) = 0. What does this tell you?",
+     ["A is singular (not invertible)",
+      "A is invertible",
+      "A is the identity",
+      "A has all-zero entries"],
+     "0", "det(A) = 0 exactly when the columns are dependent, so A is singular "
+     "and has no inverse.",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U6.M3"},
+     ]}),
+    ("LA.U6.N3", "mcq_single",
+     "Which determinant identity is always true?",
+     ["det(A B) = det(A) det(B)",
+      "det(A + B) = det(A) + det(B)",
+      "det(2A) = 2 det(A) for an n x n matrix",
+      "det(A^T) = -det(A)"],
+     "0", "The determinant is multiplicative over products; it is not additive, "
+     "and det(cA) = c^n det(A), det(A^T) = det(A).",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U6.M3"},
+     ]}),
+]
+
+
+async def seed_eng_math_la_unit6(session: AsyncSession) -> int:
+    """Seed Linear Algebra Unit 6 (Determinants). Idempotent, and it adds the
+    edge LA6 -> LA7 (determinants feed the characteristic polynomial), so it runs
+    after the LA Unit 7 seed."""
+    by_code = {
+        n.code: n
+        for n in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    created = 0
+    for code, kind, title, desc in _LA_U6_NODES:
+        if code not in by_code:
+            node = KnowledgeNode(
+                code=code, title=title, description=desc, kind=kind, tier=3, track="applied"
+            )
+            session.add(node)
+            by_code[code] = node
+            created += 1
+    await session.flush()
+
+    existing_edges = {
+        (e.from_node_id, e.to_node_id)
+        for e in (await session.execute(select(KnowledgeEdge))).scalars().all()
+    }
+    for src, dst in _LA_U6_EDGES:
+        if src in by_code and dst in by_code:
+            pair = (by_code[src].id, by_code[dst].id)
+            if pair not in existing_edges:
+                session.add(
+                    KnowledgeEdge(from_node_id=pair[0], to_node_id=pair[1], kind="prerequisite")
+                )
+
+    have_codes = {
+        m.code for m in (await session.execute(select(Misconception))).scalars().all()
+    }
+    for code, name, desc, routes_to in _LA_U6_MISCONCEPTIONS:
+        if code not in have_codes:
+            target = by_code.get(routes_to)
+            session.add(
+                Misconception(
+                    code=code, name=name, description=desc,
+                    routes_to_node_id=target.id if target else None,
+                )
+            )
+    await session.flush()
+
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Linear Algebra Unit 6")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        bank = ItemBank(
+            name="Linear Algebra Unit 6",
+            description="Engineering Math track: determinants, CAS-graded.",
+        )
+        session.add(bank)
+        await session.flush()
+
+    for code, kind, prompt, options, correct, explanation, meta in _LA_U6_ITEMS:
+        node = by_code.get(code)
+        if node is None:
+            continue
+        exists = (
+            await session.execute(
+                select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Item(
+                bank_id=bank.id, node_id=node.id, kind=kind, prompt=prompt,
+                options=options, correct=correct, explanation=explanation,
+                difficulty=0.5, tolerance=None, meta=meta,
+            )
+        )
+    await session.flush()
+    return created
+
+
 # Engineering Math track, PDE and Fourier Analysis Unit 1 (Fourier Series). The
 # flagship, most-underserved course; applied context (signal reconstruction, heat
 # profiles, Fourier optics) lands hardest here. Coefficient items are graded by
@@ -1750,6 +1886,10 @@ async def seed(session: AsyncSession) -> bool:
     # Engineering Math track: Linear Algebra Unit 7 (eigenvalues); adds the track
     # spine edge LA7 -> ODE systems, so it runs after the ODE seed.
     await seed_eng_math_la_unit7(session)
+    # Engineering Math track: Linear Algebra Unit 6 (determinants); adds the edge
+    # LA6 -> LA7 (determinants feed the characteristic polynomial), so it runs
+    # after the LA Unit 7 seed.
+    await seed_eng_math_la_unit6(session)
     # Engineering Math track: PDE/Fourier Unit 1 (Fourier series), the flagship;
     # adds the spine edge second-order ODE -> Fourier, so it runs after the ODE seed.
     await seed_eng_math_fourier_unit1(session)

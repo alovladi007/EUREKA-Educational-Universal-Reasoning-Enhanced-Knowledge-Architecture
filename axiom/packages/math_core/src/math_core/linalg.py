@@ -225,3 +225,34 @@ def verify_eigen_key(matrix: list, eigenvalues: list) -> bool:
     """Verified-everything gate: confirm an authored eigenvalue list is exactly
     the matrix spectrum (with multiplicity) before an item ships."""
     return grade_eigenvalues(eigenvalues, matrix).is_correct
+
+
+# ---------------------------------------------------------------------------
+# Grader: determinant (Linear Algebra Unit 6)
+# ---------------------------------------------------------------------------
+
+def grade_determinant(response, matrix: list) -> GradeResult:
+    """Grade a submitted determinant against det(A) computed by SymPy.
+
+    Any equivalent form is accepted (a value, a fraction, an unsimplified
+    arithmetic expression) because the check is symbolic (det(A) - value == 0).
+    """
+    try:
+        A = sp.Matrix(matrix)
+    except (TypeError, ValueError):
+        return _no("problem matrix could not be parsed")
+    if A.rows != A.cols:
+        return _no("the determinant is only defined for a square matrix")
+    try:
+        student = sp.sympify(str(response))
+        if not isinstance(student, sp.Expr):
+            return _no("the answer is not a numeric expression")
+        matches = sp.simplify(A.det() - student) == 0
+    except (sp.SympifyError, TypeError, ValueError):
+        return _no("could not parse the determinant value")
+    return _ok("matches the determinant") if matches else _no("does not match the determinant")
+
+
+def verify_determinant_key(matrix: list, value) -> bool:
+    """Verified-everything gate: confirm an authored determinant equals det(A)."""
+    return grade_determinant(value, matrix).is_correct
