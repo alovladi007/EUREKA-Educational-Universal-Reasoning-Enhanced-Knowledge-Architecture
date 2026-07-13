@@ -90,3 +90,47 @@ def verify_laplace_key(
     """Verified-everything gate: confirm an authored reference answer equals the
     SymPy-computed transform before the item ships."""
     return grade_laplace(reference_answer, source, direction, var_t, var_s).is_correct
+
+
+def grade_fourier_transform(
+    student_answer: str, source: str, direction: str = "forward",
+    var_x: str = "x", var_k: str = "k",
+) -> GradeResult:
+    """Grade a Fourier transform (forward: given f(x), submit F(k)) or inverse
+    (given F(k), submit f(x)), in SymPy's convention F(k) = integral f(x)
+    e^{-2 pi i k x} dx. Graded by symbolic equality with the computed reference
+    (numeric fallback), so any equivalent closed form is accepted.
+    """
+    x = sp.Symbol(var_x, real=True)
+    k = sp.Symbol(var_k, real=True)
+    answer_var = x if direction == "inverse" else k
+    try:
+        if direction == "inverse":
+            big_f = sp.sympify(str(source), locals={var_k: k})
+            ref = sp.inverse_fourier_transform(big_f, k, x)
+        else:
+            small_f = sp.sympify(str(source), locals={var_x: x})
+            ref = sp.fourier_transform(small_f, x, k)
+        student = sp.sympify(str(student_answer), locals={var_x: x, var_k: k})
+        if not isinstance(student, sp.Expr):
+            return _no("the answer is not an expression")
+    except (sp.SympifyError, TypeError, ValueError, AttributeError) as exc:
+        return _no(f"could not parse or transform: {exc}")
+
+    if sp.simplify(ref - student) == 0:
+        return _ok("matches the Fourier transform")
+    try:
+        pts = [sp.Rational(j, 2) for j in (1, 3, 5, 7)]
+        if all(abs(complex((ref - student).subs(answer_var, p))) < 1e-9 for p in pts):
+            return _ok("matches the Fourier transform (numeric)")
+    except (TypeError, ValueError):
+        pass
+    return _no("does not match the Fourier transform")
+
+
+def verify_fourier_transform_key(
+    reference_answer: str, source: str, direction: str = "forward",
+    var_x: str = "x", var_k: str = "k",
+) -> bool:
+    """Verified-everything gate for an authored Fourier-transform answer."""
+    return grade_fourier_transform(reference_answer, source, direction, var_x, var_k).is_correct

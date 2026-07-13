@@ -97,6 +97,10 @@ ITEM_KINDS = (
     # Show-your-work derivation graded line by line: each line must preserve the
     # solution set, and the first line that changes it is where the error entered.
     "derivation",
+    # PDE/Fourier Unit 2: submit a Fourier transform F(k) for a given f(x), or
+    # f(x) for a given F(k); graded against the SymPy-computed transform.
+    "fourier_transform",   # forward:  given f(x), submit F(k)
+    "inverse_fourier",     # inverse:  given F(k), submit f(x)
 )
 
 

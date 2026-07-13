@@ -1695,18 +1695,28 @@ _PF_U1_NODES = [
     ("PF.U1.N3", "concept", "Even and odd functions (cosine and sine series)", "Symmetry kills half the coefficients: even -> cosine series, odd -> sine series."),
     ("PF.U1.N4", "concept", "Convergence and the Gibbs phenomenon", "Pointwise convergence, the value at a jump, and overshoot near discontinuities."),
     ("PF.U1.N5", "concept", "Parseval's theorem (energy)", "The energy of a signal equals the sum of squared Fourier coefficients."),
+    # Unit 2: the Fourier transform (the continuous-spectrum sibling of the series).
+    ("PF.U2.N1", "concept", "The Fourier transform (definition)", "Extend the Fourier idea to non-periodic signals: F(k) = integral f(x) e^{-2 pi i k x} dx."),
+    ("PF.U2.N2", "computational_skill", "Transforms of standard signals", "Transform Gaussians, exponentials, and the delta to the frequency domain."),
+    ("PF.U2.N3", "concept", "Transform properties (linearity, shift, scaling)", "How shifts, scalings, and modulations act on F(k)."),
+    ("PF.U2.N4", "concept", "Parseval / energy in the transform domain", "Signal energy is preserved between the x- and k-domains."),
 ]
 _PF_U1_EDGES = [
     ("PF.U1.N1", "PF.U1.N2"), ("PF.U1.N2", "PF.U1.N3"), ("PF.U1.N2", "PF.U1.N4"),
     ("PF.U1.N2", "PF.U1.N5"),
     # Spine: second-order linear ODEs are the prerequisite for Fourier/PDE work.
     ("ODE.U2.N6", "PF.U1.N1"),
+    # Unit 2 (transforms) builds on the Fourier series coefficients.
+    ("PF.U1.N2", "PF.U2.N1"), ("PF.U2.N1", "PF.U2.N2"), ("PF.U2.N1", "PF.U2.N3"),
+    ("PF.U2.N1", "PF.U2.N4"),
 ]
 _PF_U1_MISCONCEPTIONS = [
     ("PF.U1.M1", "Missing the 1/L normalization", "Drops the 1/L factor in the Euler coefficient formulas.", "PF.U1.N2"),
     ("PF.U1.M2", "Symmetry ignored", "Computes sine terms for an even function (or cosine terms for an odd one).", "PF.U1.N3"),
     ("PF.U1.M3", "Constant-term halving confusion", "Mishandles the a0/2 constant term of the series.", "PF.U1.N2"),
     ("PF.U1.M4", "Convergence-at-a-jump error", "Assumes the series equals the function everywhere, ignoring jumps and Gibbs overshoot.", "PF.U1.N4"),
+    ("PF.U2.M1", "Transform convention confusion", "Misplaces the 2 pi factor in the transform definition.", "PF.U2.N1"),
+    ("PF.U2.M2", "Shift theorem direction swap", "Confuses a time-domain shift (phase in k) with a frequency-domain shift.", "PF.U2.N3"),
 ]
 _PF_U1_ITEMS = [
     ("PF.U1.N2", "fourier_coefficient",
@@ -1758,6 +1768,34 @@ _PF_U1_ITEMS = [
      {"choices": [
          {"index": 1, "misconception": "PF.U1.M4"},
          {"index": 2, "misconception": "PF.U1.M4"},
+     ]}),
+    # Unit 2: Fourier transforms, graded against SymPy (convention F(k) =
+    # integral f(x) e^{-2 pi i k x} dx).
+    ("PF.U2.N2", "fourier_transform",
+     "Find the Fourier transform F(k) of the Gaussian f(x) = e^{-x^2}. (Use the "
+     "convention F(k) = integral f(x) e^{-2*pi*i*k*x} dx.)",
+     None, "", "The Gaussian is its own transform up to scaling: "
+     "F(k) = sqrt(pi) e^{-pi^2 k^2}.",
+     {"source": "exp(-x**2)"}),
+    ("PF.U2.N2", "fourier_transform",
+     "Find the Fourier transform F(k) of the two-sided exponential "
+     "f(x) = e^{-|x|}.",
+     None, "", "F(k) = 2/(1 + 4 pi^2 k^2), a Lorentzian.",
+     {"source": "exp(-Abs(x))"}),
+    ("PF.U2.N2", "inverse_fourier",
+     "Find the inverse Fourier transform f(x) of F(k) = sqrt(pi) e^{-pi^2 k^2}.",
+     None, "", "This inverts the Gaussian transform back to f(x) = e^{-x^2}.",
+     {"source": "sqrt(pi)*exp(-pi**2*k**2)"}),
+    ("PF.U2.N3", "mcq_single",
+     "A time shift f(x - a) multiplies the Fourier transform F(k) by what?",
+     ["A phase factor e^{-2*pi*i*k*a}",
+      "A real scaling by a",
+      "A frequency shift F(k - a)",
+      "Nothing; it is unchanged"],
+     "0", "Shifting in x multiplies F(k) by a pure phase; shifting in k "
+     "(modulation) is the dual operation.",
+     {"choices": [
+         {"index": 2, "misconception": "PF.U2.M2"},
      ]}),
 ]
 

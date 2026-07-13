@@ -24,7 +24,12 @@ from .grading import (
     symbolic_equal,
 )
 from .ode import grade_ode, verify_ode_key
-from .transforms import grade_laplace, verify_laplace_key
+from .transforms import (
+    grade_fourier_transform,
+    grade_laplace,
+    verify_fourier_transform_key,
+    verify_laplace_key,
+)
 from .fourier import grade_fourier_coefficient, verify_fourier_key
 from .calculus import grade_antiderivative, verify_antiderivative_key
 from .steps import grade_steps
@@ -74,6 +79,8 @@ __all__ = [
     "verify_ode_key",
     "grade_laplace",
     "verify_laplace_key",
+    "grade_fourier_transform",
+    "verify_fourier_transform_key",
     "grade_fourier_coefficient",
     "verify_fourier_key",
     "grade_antiderivative",

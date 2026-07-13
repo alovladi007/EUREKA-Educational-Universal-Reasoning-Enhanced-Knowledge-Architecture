@@ -32,6 +32,7 @@ from math_core import (
     grade_eigenvalues,
     grade_eigenvector,
     grade_fourier_coefficient,
+    grade_fourier_transform,
     grade_inequality,
     grade_steps,
     grade_laplace,
@@ -962,6 +963,19 @@ def grade(
             student, cfg.get("function", ""), str(cfg.get("half_period", "pi")),
             cfg.get("coeff", "a"), cfg.get("n", 1),
         )
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind in ("fourier_transform", "inverse_fourier"):
+        # PDE/Fourier Unit 2. meta.source is the given function: f(x) for
+        # fourier_transform (submit F(k)) or F(k) for inverse_fourier (submit
+        # f(x)). Graded against the SymPy-computed transform, so any equivalent
+        # closed form is accepted.
+        cfg = meta or {}
+        direction = "inverse" if kind == "inverse_fourier" else "forward"
+        r = grade_fourier_transform(student, cfg.get("source", ""), direction=direction)
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,
