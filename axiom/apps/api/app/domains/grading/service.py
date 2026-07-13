@@ -28,6 +28,7 @@ from math_core import (
     grade_equation,
     grade_expression,
     grade_inequality,
+    grade_laplace,
     grade_numeric,
     grade_ode,
     grade_rref,
@@ -857,6 +858,19 @@ def grade(
         # form and any name for the arbitrary constant is accepted.
         cfg = meta or {}
         r = grade_ode(student, cfg.get("residual", ""), order=cfg.get("order"))
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind in ("laplace_transform", "inverse_laplace"):
+        # Engineering Math track (ODE Unit 4). meta.source is the given function:
+        # f(t) for laplace_transform (submit F(s)) or F(s) for inverse_laplace
+        # (submit f(t)). Grading compares to the SymPy-computed transform, so any
+        # equivalent closed form is accepted.
+        cfg = meta or {}
+        direction = "inverse" if kind == "inverse_laplace" else "forward"
+        r = grade_laplace(student, cfg.get("source", ""), direction=direction)
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,

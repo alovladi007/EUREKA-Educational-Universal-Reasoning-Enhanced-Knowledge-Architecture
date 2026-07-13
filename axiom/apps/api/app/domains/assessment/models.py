@@ -78,6 +78,10 @@ ITEM_KINDS = (
     "linear_system",     # submit {var: value}; symbolic point equivalence
     # ODE units: submit a proposed y(x); graded by verifying it solves the ODE.
     "ode_solution",
+    # ODE Unit 4 (Laplace): submit F(s) for a given f(t), or f(t) for a given
+    # F(s); graded against the SymPy-computed transform.
+    "laplace_transform",   # forward:  given f(t), submit F(s)
+    "inverse_laplace",     # inverse:  given F(s), submit f(t)
 )
 
 

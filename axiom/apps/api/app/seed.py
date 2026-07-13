@@ -1020,9 +1020,11 @@ async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
     return created
 
 
-# Engineering Math track, ODE Unit 1 (First-Order ODEs) and Unit 2 (Second-Order
-# Linear ODEs). Nodes are graded by verifying a proposed y(x) solves the equation
-# (ode_solution kind), so any equivalent form and any constant name is accepted.
+# Engineering Math track, ODE Units 1-4: First-Order ODEs, Second-Order Linear
+# ODEs, Nonhomogeneous methods, and Laplace transforms. Solution items are graded
+# by verifying a proposed y(x) solves the equation (ode_solution kind), so any
+# equivalent form and any constant name is accepted; Laplace items are graded
+# against the SymPy-computed transform (laplace_transform / inverse_laplace).
 _ODE_NODES = [
     # Unit 1: first-order ODEs.
     ("ODE.U1.N1", "computational_skill", "Separable first-order ODEs", "Separate variables and integrate both sides."),
@@ -1037,6 +1039,16 @@ _ODE_NODES = [
     ("ODE.U2.N4", "computational_skill", "Complex roots", "General solution e^{a x}(C1 cos b x + C2 sin b x) for complex roots."),
     ("ODE.U2.N5", "computational_skill", "Undetermined coefficients", "A particular solution of a nonhomogeneous linear ODE by an educated guess."),
     ("ODE.U2.N6", "concept", "Superposition (general = homogeneous + particular)", "The general solution is the homogeneous solution plus any particular solution."),
+    # Unit 3: nonhomogeneous solution methods (deeper).
+    ("ODE.U3.N1", "computational_skill", "Undetermined coefficients (polynomial and exponential forcing)", "Choose a trial form matching the forcing term and solve for its coefficients."),
+    ("ODE.U3.N2", "computational_skill", "Resonance and the modification rule", "When the trial form collides with a homogeneous solution, multiply by x."),
+    ("ODE.U3.N3", "computational_skill", "Variation of parameters", "A particular solution for any forcing via the Wronskian formula."),
+    ("ODE.U3.N4", "concept", "Full nonhomogeneous solution y_h + y_p", "Assemble the general solution as the homogeneous family plus one particular solution."),
+    # Unit 4: Laplace transforms.
+    ("ODE.U4.N1", "computational_skill", "Laplace transform of elementary functions", "Transform exponentials, powers, sines, and cosines to the s-domain."),
+    ("ODE.U4.N2", "computational_skill", "Inverse Laplace transform (partial fractions)", "Recover f(t) from F(s), decomposing with partial fractions."),
+    ("ODE.U4.N3", "concept", "Transform of derivatives and solving IVPs", "L{y'} = sY - y(0) turns an IVP into an algebra problem in s."),
+    ("ODE.U4.N4", "computational_skill", "Shifting theorems (s-shift and t-shift)", "First and second shifting theorems for e^{at} f(t) and step-delayed signals."),
 ]
 _ODE_EDGES = [
     ("ODE.U1.N1", "ODE.U1.N2"), ("ODE.U1.N1", "ODE.U1.N3"), ("ODE.U1.N1", "ODE.U1.N4"),
@@ -1045,6 +1057,12 @@ _ODE_EDGES = [
     ("ODE.U1.N2", "ODE.U2.N1"),
     ("ODE.U2.N1", "ODE.U2.N2"), ("ODE.U2.N1", "ODE.U2.N3"), ("ODE.U2.N1", "ODE.U2.N4"),
     ("ODE.U2.N2", "ODE.U2.N5"), ("ODE.U2.N5", "ODE.U2.N6"),
+    # Unit 3 builds on undetermined coefficients / superposition.
+    ("ODE.U2.N6", "ODE.U3.N1"), ("ODE.U3.N1", "ODE.U3.N2"), ("ODE.U3.N1", "ODE.U3.N3"),
+    ("ODE.U3.N2", "ODE.U3.N4"), ("ODE.U3.N3", "ODE.U3.N4"),
+    # Unit 4 (Laplace) is an alternative route once second-order linear is in hand.
+    ("ODE.U2.N6", "ODE.U4.N1"), ("ODE.U4.N1", "ODE.U4.N2"), ("ODE.U4.N1", "ODE.U4.N3"),
+    ("ODE.U4.N1", "ODE.U4.N4"),
 ]
 _ODE_MISCONCEPTIONS = [
     ("ODE.U1.M1", "Losing the arbitrary constant", "Integrates but drops the constant of integration.", "ODE.U1.N5"),
@@ -1055,6 +1073,12 @@ _ODE_MISCONCEPTIONS = [
     ("ODE.U2.M2", "Repeated-root missing x factor", "Forgets the x e^{r x} term for a repeated root.", "ODE.U2.N3"),
     ("ODE.U2.M3", "Complex-root real-form error", "Mishandles the real form e^{a x}(cos, sin) for complex roots.", "ODE.U2.N4"),
     ("ODE.U2.M4", "Guess collides with homogeneous", "Picks a particular-solution guess that is already a homogeneous solution.", "ODE.U2.N5"),
+    ("ODE.U3.M1", "Resonance not accounted for", "Forgets to multiply the trial form by x when it duplicates a homogeneous solution.", "ODE.U3.N2"),
+    ("ODE.U3.M2", "Dropped the homogeneous part", "Reports only the particular solution as the general solution.", "ODE.U3.N4"),
+    ("ODE.U3.M3", "Wrong ansatz family", "Chooses a trial form that cannot match the forcing term.", "ODE.U3.N1"),
+    ("ODE.U4.M1", "Linearity misapplied to products", "Treats L{f g} as L{f} times L{g}.", "ODE.U4.N1"),
+    ("ODE.U4.M2", "Wrong shift direction", "Confuses the s-shift and t-shift theorems.", "ODE.U4.N4"),
+    ("ODE.U4.M3", "Dropped initial-condition terms", "Omits the y(0), y'(0) terms when transforming a derivative.", "ODE.U4.N3"),
 ]
 # Items: (node_code, kind, prompt, options, correct, explanation, meta).
 _ODE_ITEMS = [
@@ -1095,6 +1119,67 @@ _ODE_ITEMS = [
      "Solve y'' + y = 0. Enter the general solution y(x).",
      None, "", "Characteristic roots +-i give y = C1 cos(x) + C2 sin(x).",
      {"residual": "ypp + y", "order": 2}),
+    # Unit 3: nonhomogeneous. The residual carries the forcing term moved to the
+    # left, so a correct general solution y_h + y_p makes it zero; order is the
+    # homogeneous order (2), which grade_ode enforces via the two constants.
+    ("ODE.U3.N1", "ode_solution",
+     "Solve y'' - 3y' + 2y = e^{3x}. Enter the general solution y(x) (use C1, C2).",
+     None, "", "Homogeneous roots 1 and 2; a trial A e^{3x} gives A = 1/2, so "
+     "y = C1 exp(x) + C2 exp(2x) + exp(3x)/2.",
+     {"residual": "ypp - 3*yp + 2*y - exp(3*x)", "order": 2}),
+    ("ODE.U3.N2", "ode_solution",
+     "Solve y'' + y = cos(x) (a resonant forcing). Enter the general solution y(x).",
+     None, "", "cos(x) is a homogeneous solution, so the trial form is multiplied "
+     "by x: y_p = (x/2) sin(x); y = C1 cos(x) + C2 sin(x) + (x/2) sin(x).",
+     {"residual": "ypp + y - cos(x)", "order": 2}),
+    ("ODE.U3.N3", "ode_solution",
+     "Solve y'' - y = x. Enter the general solution y(x).",
+     None, "", "A trial y_p = a x + b gives y_p = -x; "
+     "y = C1 exp(x) + C2 exp(-x) - x.",
+     {"residual": "ypp - y - x", "order": 2}),
+    ("ODE.U3.N4", "mcq_single",
+     "You found a particular solution y_p = (1/2) e^{3x} for y'' - 3y' + 2y = e^{3x}. "
+     "What is the general solution?",
+     ["C1 e^{x} + C2 e^{2x} + (1/2) e^{3x}",
+      "(1/2) e^{3x}",
+      "C1 e^{x} + C2 e^{2x}",
+      "C1 e^{3x} + C2 e^{3x}"],
+     "0", "The general solution is the homogeneous family C1 e^{x} + C2 e^{2x} "
+     "plus the particular solution (1/2) e^{3x}.",
+     {"choices": [
+         {"index": 1, "misconception": "ODE.U3.M2"},
+         {"index": 2, "misconception": "ODE.U3.M2"},
+     ]}),
+    # Unit 4: Laplace transforms. source is the given function; the student
+    # submits the transform in the opposite domain.
+    ("ODE.U4.N1", "laplace_transform",
+     "Find the Laplace transform F(s) of f(t) = e^{3t}.",
+     None, "", "L{e^{at}} = 1/(s - a), so F(s) = 1/(s - 3).",
+     {"source": "exp(3*t)"}),
+    ("ODE.U4.N1", "laplace_transform",
+     "Find the Laplace transform F(s) of f(t) = t^2.",
+     None, "", "L{t^n} = n!/s^{n+1}, so L{t^2} = 2/s^3.",
+     {"source": "t**2"}),
+    ("ODE.U4.N2", "inverse_laplace",
+     "Find the inverse Laplace transform f(t) of F(s) = 2/(s^2 + 4).",
+     None, "", "This is the transform of sin(2t): L{sin(bt)} = b/(s^2 + b^2).",
+     {"source": "2/(s**2 + 4)"}),
+    ("ODE.U4.N4", "laplace_transform",
+     "Find the Laplace transform F(s) of f(t) = t e^{-t} (first shifting theorem).",
+     None, "", "L{t} = 1/s^2 shifted by s -> s + 1 gives 1/(s + 1)^2.",
+     {"source": "t*exp(-t)"}),
+    ("ODE.U4.N3", "mcq_single",
+     "Using L{y'} = sY(s) - y(0), which transform is correct for y'' with "
+     "y(0) and y'(0)?",
+     ["s^2 Y(s) - s y(0) - y'(0)",
+      "s^2 Y(s)",
+      "s^2 Y(s) - y(0) - y'(0)",
+      "s Y(s) - y(0)"],
+     "0", "Apply the derivative rule twice: L{y''} = s^2 Y - s y(0) - y'(0).",
+     {"choices": [
+         {"index": 1, "misconception": "ODE.U4.M3"},
+         {"index": 2, "misconception": "ODE.U4.M3"},
+     ]}),
 ]
 
 

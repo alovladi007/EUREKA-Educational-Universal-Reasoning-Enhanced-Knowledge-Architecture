@@ -24,6 +24,7 @@ from .grading import (
     symbolic_equal,
 )
 from .ode import grade_ode, verify_ode_key
+from .transforms import grade_laplace, verify_laplace_key
 from .linalg import (
     generate_unique_3x3,
     grade_rref,
@@ -58,6 +59,8 @@ __all__ = [
     "verify_linear_system_key",
     "grade_ode",
     "verify_ode_key",
+    "grade_laplace",
+    "verify_laplace_key",
     "resolve_template",
     "ItemTemplate",
     "ItemVariant",
