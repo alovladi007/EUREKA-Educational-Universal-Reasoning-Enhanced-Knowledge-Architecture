@@ -1020,12 +1020,14 @@ async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
     return created
 
 
-# Engineering Math track, ODE Units 1-5: First-Order ODEs, Second-Order Linear
-# ODEs, Nonhomogeneous methods, Laplace transforms, and Systems (the eigenvalue
-# method). Solution items are graded by verifying a proposed y(x) solves the
-# equation (ode_solution kind), so any equivalent form and any constant name is
-# accepted; Laplace items are graded against the SymPy-computed transform
-# (laplace_transform / inverse_laplace); systems use the eigen graders.
+# Engineering Math track, ODE Units 1-7 (the complete ODE course): First-Order
+# ODEs, Second-Order Linear ODEs, Nonhomogeneous methods, Laplace transforms,
+# Systems (the eigenvalue method), Series solutions, and Phase plane / stability.
+# Solution items are graded by verifying a proposed y(x) solves the equation
+# (ode_solution kind), so any equivalent form and any constant name is accepted;
+# Laplace items are graded against the SymPy-computed transform (laplace_transform
+# / inverse_laplace); systems and stability use the eigen graders; series
+# coefficients are graded numerically.
 _ODE_NODES = [
     # Unit 1: first-order ODEs.
     ("ODE.U1.N1", "computational_skill", "Separable first-order ODEs", "Separate variables and integrate both sides."),
@@ -1055,6 +1057,14 @@ _ODE_NODES = [
     ("ODE.U5.N2", "computational_skill", "Eigenvalue method for systems", "Solve x' = A x from the eigenvalues and eigenvectors of A."),
     ("ODE.U5.N3", "computational_skill", "Real distinct eigenvalues", "Build the general solution sum c_i e^{lambda_i t} v_i for real distinct eigenvalues."),
     ("ODE.U5.N4", "concept", "Complex eigenvalues (spirals and centers)", "Complex eigenvalues give oscillatory (spiral or center) solutions."),
+    # Unit 6: power series solutions.
+    ("ODE.U6.N1", "concept", "Ordinary and singular points", "Classify a point of a linear ODE as ordinary or singular before seeking a series solution."),
+    ("ODE.U6.N2", "computational_skill", "Power series solution and the recurrence", "Substitute y = sum a_n x^n and match powers to get a recurrence for the coefficients."),
+    ("ODE.U6.N3", "concept", "Radius of convergence", "How far from the center a power series solution is guaranteed to converge."),
+    # Unit 7: phase plane and stability.
+    ("ODE.U7.N1", "concept", "Equilibria and the phase plane", "Find equilibrium points and sketch trajectories in the phase plane."),
+    ("ODE.U7.N2", "computational_skill", "Linear stability from eigenvalues", "Read stability from the sign of the real parts of the linearization's eigenvalues."),
+    ("ODE.U7.N3", "concept", "Classification (node, saddle, spiral, center)", "Classify an equilibrium from the eigenvalue pattern."),
 ]
 _ODE_EDGES = [
     ("ODE.U1.N1", "ODE.U1.N2"), ("ODE.U1.N1", "ODE.U1.N3"), ("ODE.U1.N1", "ODE.U1.N4"),
@@ -1073,6 +1083,9 @@ _ODE_EDGES = [
     # is cross-linked from Linear Algebra Unit 7 in seed_eng_math_la_unit7.
     ("ODE.U2.N6", "ODE.U5.N1"), ("ODE.U5.N1", "ODE.U5.N2"), ("ODE.U5.N2", "ODE.U5.N3"),
     ("ODE.U5.N2", "ODE.U5.N4"),
+    # Unit 6 (series) builds on second-order linear; Unit 7 (phase plane) on systems.
+    ("ODE.U2.N6", "ODE.U6.N1"), ("ODE.U6.N1", "ODE.U6.N2"), ("ODE.U6.N2", "ODE.U6.N3"),
+    ("ODE.U5.N2", "ODE.U7.N1"), ("ODE.U7.N1", "ODE.U7.N2"), ("ODE.U7.N2", "ODE.U7.N3"),
 ]
 _ODE_MISCONCEPTIONS = [
     ("ODE.U1.M1", "Losing the arbitrary constant", "Integrates but drops the constant of integration.", "ODE.U1.N5"),
@@ -1091,6 +1104,10 @@ _ODE_MISCONCEPTIONS = [
     ("ODE.U4.M3", "Dropped initial-condition terms", "Omits the y(0), y'(0) terms when transforming a derivative.", "ODE.U4.N3"),
     ("ODE.U5.M1", "Eigenvector treated as unique", "Thinks a system's eigenvector is a single fixed vector, not a direction.", "ODE.U5.N2"),
     ("ODE.U5.M2", "Phase-portrait misread", "Reads opposite-sign real eigenvalues as a node instead of a saddle.", "ODE.U5.N3"),
+    ("ODE.U6.M1", "Singular point mistaken for ordinary", "Seeks an ordinary power series at a singular point.", "ODE.U6.N1"),
+    ("ODE.U6.M2", "Recurrence index-shift error", "Shifts the summation index wrong when matching powers.", "ODE.U6.N2"),
+    ("ODE.U7.M1", "Stability sign error", "Reads a positive eigenvalue real part as stable.", "ODE.U7.N2"),
+    ("ODE.U7.M2", "Center versus spiral confusion", "Confuses pure-imaginary (center) with complex (spiral) eigenvalues.", "ODE.U7.N3"),
 ]
 # Items: (node_code, kind, prompt, options, correct, explanation, meta).
 _ODE_ITEMS = [
@@ -1215,6 +1232,60 @@ _ODE_ITEMS = [
      {"choices": [
          {"index": 1, "misconception": "ODE.U5.M2"},
          {"index": 2, "misconception": "ODE.U5.M2"},
+     ]}),
+    # Unit 6: power series solutions. A specific coefficient is graded numerically
+    # (verified by hand against y = cos x, whose series is 1 - x^2/2 + x^4/24 - ...).
+    ("ODE.U6.N2", "numeric",
+     "Solve y'' + y = 0 with y(0) = 1, y'(0) = 0 as a power series y = sum a_n "
+     "x^n. What is a_2? (Enter a decimal.)",
+     None, "-0.5", "The recurrence a_{n+2} = -a_n/((n+2)(n+1)) with a_0 = 1 gives "
+     "a_2 = -1/2. (The solution is cos x.)",
+     None),
+    ("ODE.U6.N2", "numeric",
+     "For the same series solution of y'' + y = 0, what is a_4? Enter the exact "
+     "fraction.",
+     None, "1/24", "a_4 = -a_2/(4*3) = (1/2)/12 = 1/24.",
+     None),
+    ("ODE.U6.N1", "mcq_single",
+     "For x^2 y'' + y = 0, what is the point x = 0?",
+     ["A singular point (the leading coefficient vanishes there)",
+      "An ordinary point",
+      "A point where no solution exists",
+      "Irrelevant to the series method"],
+     "0", "x = 0 makes the leading coefficient x^2 vanish, so it is a singular "
+     "point; an ordinary power series is not guaranteed there.",
+     {"choices": [
+         {"index": 1, "misconception": "ODE.U6.M1"},
+     ]}),
+    # Unit 7: phase plane and stability. Eigenvalues via the eigen grader;
+    # classification and stability via misconception-keyed MCQs.
+    ("ODE.U7.N2", "eigenvalues",
+     "For the linearization A = [[-1, 0], [0, -2]], find the eigenvalues. Enter "
+     "them comma-separated.",
+     None, "", "The diagonal entries are the eigenvalues: -1 and -2 (both "
+     "negative, so the origin is asymptotically stable).",
+     {"matrix": [[-1, 0], [0, -2]]}),
+    ("ODE.U7.N2", "mcq_single",
+     "A linear system has eigenvalues -1 and -2. What is the stability of the "
+     "origin?",
+     ["Asymptotically stable (both real parts negative)",
+      "Unstable",
+      "A saddle",
+      "Neutrally stable"],
+     "0", "When every eigenvalue has negative real part, trajectories decay to "
+     "the origin: asymptotic stability.",
+     {"choices": [
+         {"index": 1, "misconception": "ODE.U7.M1"},
+     ]}),
+    ("ODE.U7.N3", "mcq_single",
+     "A planar system has purely imaginary eigenvalues +-2i. What is the origin?",
+     ["A center (closed orbits)", "A stable spiral", "An unstable spiral",
+      "A saddle"],
+     "0", "Purely imaginary eigenvalues give closed orbits around a center; a "
+     "nonzero real part would make it a spiral.",
+     {"choices": [
+         {"index": 1, "misconception": "ODE.U7.M2"},
+         {"index": 2, "misconception": "ODE.U7.M2"},
      ]}),
 ]
 
