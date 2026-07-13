@@ -33,6 +33,7 @@ from math_core import (
     grade_eigenvector,
     grade_fourier_coefficient,
     grade_inequality,
+    grade_steps,
     grade_laplace,
     grade_numeric,
     grade_ode,
@@ -974,6 +975,22 @@ def grade(
         r = grade_antiderivative(student, cfg.get("integrand", ""), cfg.get("var", "x"))
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "derivation":
+        # Show-your-work: the student submits their derivation as newline-separated
+        # equation lines; meta.variables lists the unknowns and meta.final_key the
+        # answer. Graded line by line by solution-set preservation, so any legal
+        # move is accepted and the first line that changes the solution set is
+        # reported (partial credit for the valid prefix).
+        cfg = meta or {}
+        lines = [ln.strip() for ln in student.replace(";", ";").splitlines() if ln.strip()]
+        r = grade_steps(
+            lines, cfg.get("variables") or [], final_key=cfg.get("final_key"),
+        )
+        return GradeOutcome(
+            r.is_correct, r.score, r.grader, r.confidence, r.detail,
             str(correct), explanation,
         )
 

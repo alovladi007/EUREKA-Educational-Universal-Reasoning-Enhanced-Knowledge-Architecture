@@ -94,6 +94,9 @@ ITEM_KINDS = (
     # Calculus foundation: submit an antiderivative F(x); graded by checking
     # F'(x) equals the integrand (any constant of integration accepted).
     "antiderivative",
+    # Show-your-work derivation graded line by line: each line must preserve the
+    # solution set, and the first line that changes it is where the error entered.
+    "derivation",
 )
 
 

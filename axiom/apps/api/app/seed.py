@@ -997,6 +997,14 @@ async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
          None, "", "x3 is fixed at 5; x1 is free and x2 = 2 - x1, so a direction is "
          "(-1, 1, 0).",
          {"A": [[1, 1, 0], [0, 0, 1]], "b": [2, 5]}),
+        ("LA.U1.N7", "derivation",
+         "Show your work solving 2x + y = 5 and x - y = 1. Put each step on its "
+         "own line (use ';' to separate simultaneous equations). Any legal "
+         "sequence of moves is accepted; grading finds the first line, if any, "
+         "where the solution set changes.",
+         None, "", "For example: 2*x + y = 5; x - y = 1  ->  3*x = 6; x - y = 1  "
+         "->  x = 2; x - y = 1  ->  x = 2; y = 1.",
+         {"variables": ["x", "y"], "final_key": {"x": "2", "y": "1"}}),
     ]
     for code, kind, prompt, options, correct, explanation, meta in la_items:
         node = by_code.get(code)

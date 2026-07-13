@@ -27,6 +27,7 @@ from .ode import grade_ode, verify_ode_key
 from .transforms import grade_laplace, verify_laplace_key
 from .fourier import grade_fourier_coefficient, verify_fourier_key
 from .calculus import grade_antiderivative, verify_antiderivative_key
+from .steps import grade_steps
 from .linalg import (
     generate_unique_3x3,
     grade_determinant,
@@ -77,6 +78,7 @@ __all__ = [
     "verify_fourier_key",
     "grade_antiderivative",
     "verify_antiderivative_key",
+    "grade_steps",
     "resolve_template",
     "ItemTemplate",
     "ItemVariant",
