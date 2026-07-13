@@ -86,6 +86,9 @@ ITEM_KINDS = (
     # nonzero scaling), graded against the matrix's true spectrum.
     "eigenvalues",         # submit a list of eigenvalues (with multiplicity)
     "eigenvector",         # submit an eigenvector for a given eigenvalue
+    # PDE/Fourier Unit 1: submit one Fourier coefficient (a0, a_n, or b_n) of a
+    # periodic function; graded against SymPy exact integration.
+    "fourier_coefficient",
 )
 
 

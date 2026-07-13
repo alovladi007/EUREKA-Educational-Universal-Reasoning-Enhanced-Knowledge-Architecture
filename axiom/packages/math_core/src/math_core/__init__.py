@@ -25,6 +25,7 @@ from .grading import (
 )
 from .ode import grade_ode, verify_ode_key
 from .transforms import grade_laplace, verify_laplace_key
+from .fourier import grade_fourier_coefficient, verify_fourier_key
 from .linalg import (
     generate_unique_3x3,
     grade_eigenvalues,
@@ -67,6 +68,8 @@ __all__ = [
     "verify_ode_key",
     "grade_laplace",
     "verify_laplace_key",
+    "grade_fourier_coefficient",
+    "verify_fourier_key",
     "resolve_template",
     "ItemTemplate",
     "ItemVariant",

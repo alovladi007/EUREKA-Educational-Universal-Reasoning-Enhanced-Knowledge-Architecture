@@ -1447,6 +1447,160 @@ async def seed_eng_math_la_unit7(session: AsyncSession) -> int:
     return created
 
 
+# Engineering Math track, PDE and Fourier Analysis Unit 1 (Fourier Series). The
+# flagship, most-underserved course; applied context (signal reconstruction, heat
+# profiles, Fourier optics) lands hardest here. Coefficient items are graded by
+# SymPy exact integration (fourier_coefficient kind), so any equivalent closed
+# form is accepted. Second-order linear ODEs (ODE.U2/U3) are the prerequisite,
+# since separation of variables reduces a PDE to them (the OD3 -> PF4 spine).
+_PF_U1_NODES = [
+    ("PF.U1.N1", "concept", "Periodic functions and the Fourier series", "Represent a periodic function as a sum of sines and cosines."),
+    ("PF.U1.N2", "computational_skill", "Fourier coefficients (Euler formulas)", "Compute a0, a_n, b_n by the Euler integral formulas over one period."),
+    ("PF.U1.N3", "concept", "Even and odd functions (cosine and sine series)", "Symmetry kills half the coefficients: even -> cosine series, odd -> sine series."),
+    ("PF.U1.N4", "concept", "Convergence and the Gibbs phenomenon", "Pointwise convergence, the value at a jump, and overshoot near discontinuities."),
+    ("PF.U1.N5", "concept", "Parseval's theorem (energy)", "The energy of a signal equals the sum of squared Fourier coefficients."),
+]
+_PF_U1_EDGES = [
+    ("PF.U1.N1", "PF.U1.N2"), ("PF.U1.N2", "PF.U1.N3"), ("PF.U1.N2", "PF.U1.N4"),
+    ("PF.U1.N2", "PF.U1.N5"),
+    # Spine: second-order linear ODEs are the prerequisite for Fourier/PDE work.
+    ("ODE.U2.N6", "PF.U1.N1"),
+]
+_PF_U1_MISCONCEPTIONS = [
+    ("PF.U1.M1", "Missing the 1/L normalization", "Drops the 1/L factor in the Euler coefficient formulas.", "PF.U1.N2"),
+    ("PF.U1.M2", "Symmetry ignored", "Computes sine terms for an even function (or cosine terms for an odd one).", "PF.U1.N3"),
+    ("PF.U1.M3", "Constant-term halving confusion", "Mishandles the a0/2 constant term of the series.", "PF.U1.N2"),
+    ("PF.U1.M4", "Convergence-at-a-jump error", "Assumes the series equals the function everywhere, ignoring jumps and Gibbs overshoot.", "PF.U1.N4"),
+]
+_PF_U1_ITEMS = [
+    ("PF.U1.N2", "fourier_coefficient",
+     "The odd square wave has f(x) = -1 on (-pi, 0) and f(x) = 1 on (0, pi), "
+     "period 2pi. Find the sine coefficient b_1. (Series convention: "
+     "a0/2 + sum a_n cos(n x) + b_n sin(n x).)",
+     None, "", "b_1 = (1/pi) integral_{-pi}^{pi} f(x) sin(x) dx = 4/pi.",
+     {"function": "Piecewise((-1, x < 0), (1, True))", "half_period": "pi", "coeff": "b", "n": 1}),
+    ("PF.U1.N2", "fourier_coefficient",
+     "For the same odd square wave, find b_2.",
+     None, "", "Even harmonics vanish for this wave, so b_2 = 0.",
+     {"function": "Piecewise((-1, x < 0), (1, True))", "half_period": "pi", "coeff": "b", "n": 2}),
+    ("PF.U1.N2", "fourier_coefficient",
+     "For the sawtooth f(x) = x on (-pi, pi) (period 2pi), find the sine "
+     "coefficient b_1.",
+     None, "", "b_1 = (1/pi) integral_{-pi}^{pi} x sin(x) dx = 2.",
+     {"function": "x", "half_period": "pi", "coeff": "b", "n": 1}),
+    ("PF.U1.N3", "fourier_coefficient",
+     "For the even function f(x) = x^2 on (-pi, pi) (period 2pi), find the "
+     "constant term coefficient a0. (a0 = (1/pi) integral_{-pi}^{pi} f dx.)",
+     None, "", "a0 = (1/pi) integral_{-pi}^{pi} x^2 dx = 2 pi^2 / 3.",
+     {"function": "x**2", "half_period": "pi", "coeff": "a0", "n": 0}),
+    ("PF.U1.N3", "mcq_single",
+     "A function f(x) is odd on (-pi, pi). Which Fourier coefficients are "
+     "automatically zero?",
+     ["All the cosine coefficients a_n (including a0)",
+      "All the sine coefficients b_n",
+      "None of them",
+      "Only a0"],
+     "0", "An odd function integrates against the even cosines to zero, so its "
+     "series is pure sine (all a_n = 0).",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U1.M2"},
+         {"index": 3, "misconception": "PF.U1.M2"},
+     ]}),
+    ("PF.U1.N4", "mcq_single",
+     "At a jump discontinuity, what does a convergent Fourier series equal?",
+     ["The average of the left and right limits",
+      "The left-hand limit",
+      "The function's value there",
+      "Plus infinity"],
+     "0", "At a jump the series converges to the midpoint (average of the "
+     "one-sided limits); near it, partial sums overshoot (Gibbs).",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U1.M4"},
+         {"index": 2, "misconception": "PF.U1.M4"},
+     ]}),
+]
+
+
+async def seed_eng_math_fourier_unit1(session: AsyncSession) -> int:
+    """Seed PDE/Fourier Unit 1 (Fourier Series), the flagship course. Idempotent,
+    and it adds the spine edge second-order ODE -> Fourier (both nodes exist by
+    the time it runs)."""
+    by_code = {
+        n.code: n
+        for n in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    created = 0
+    for code, kind, title, desc in _PF_U1_NODES:
+        if code not in by_code:
+            node = KnowledgeNode(
+                code=code, title=title, description=desc, kind=kind, tier=3, track="applied"
+            )
+            session.add(node)
+            by_code[code] = node
+            created += 1
+    await session.flush()
+
+    existing_edges = {
+        (e.from_node_id, e.to_node_id)
+        for e in (await session.execute(select(KnowledgeEdge))).scalars().all()
+    }
+    for src, dst in _PF_U1_EDGES:
+        if src in by_code and dst in by_code:
+            pair = (by_code[src].id, by_code[dst].id)
+            if pair not in existing_edges:
+                session.add(
+                    KnowledgeEdge(from_node_id=pair[0], to_node_id=pair[1], kind="prerequisite")
+                )
+
+    have_codes = {
+        m.code for m in (await session.execute(select(Misconception))).scalars().all()
+    }
+    for code, name, desc, routes_to in _PF_U1_MISCONCEPTIONS:
+        if code not in have_codes:
+            target = by_code.get(routes_to)
+            session.add(
+                Misconception(
+                    code=code, name=name, description=desc,
+                    routes_to_node_id=target.id if target else None,
+                )
+            )
+    await session.flush()
+
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Fourier Series")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        bank = ItemBank(
+            name="Fourier Series",
+            description="Engineering Math track: Fourier series, CAS-graded by exact integration.",
+        )
+        session.add(bank)
+        await session.flush()
+
+    for code, kind, prompt, options, correct, explanation, meta in _PF_U1_ITEMS:
+        node = by_code.get(code)
+        if node is None:
+            continue
+        exists = (
+            await session.execute(
+                select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Item(
+                bank_id=bank.id, node_id=node.id, kind=kind, prompt=prompt,
+                options=options, correct=correct, explanation=explanation,
+                difficulty=0.5, tolerance=None, meta=meta,
+            )
+        )
+    await session.flush()
+    return created
+
+
 async def backfill_lessons(session: AsyncSession) -> int:
     """Give every knowledge node a lesson so the Learn view never 404s.
 
@@ -1525,6 +1679,9 @@ async def seed(session: AsyncSession) -> bool:
     # Engineering Math track: Linear Algebra Unit 7 (eigenvalues); adds the track
     # spine edge LA7 -> ODE systems, so it runs after the ODE seed.
     await seed_eng_math_la_unit7(session)
+    # Engineering Math track: PDE/Fourier Unit 1 (Fourier series), the flagship;
+    # adds the spine edge second-order ODE -> Fourier, so it runs after the ODE seed.
+    await seed_eng_math_fourier_unit1(session)
     # Ensure every node in the full ladder has a lesson so the Learn view never
     # 404s (idempotent; skips nodes that already have one). Runs before the
     # first-run early-return below so it also covers existing databases.

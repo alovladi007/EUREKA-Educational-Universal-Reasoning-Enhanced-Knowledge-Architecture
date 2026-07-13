@@ -29,6 +29,7 @@ from math_core import (
     grade_expression,
     grade_eigenvalues,
     grade_eigenvector,
+    grade_fourier_coefficient,
     grade_inequality,
     grade_laplace,
     grade_numeric,
@@ -938,6 +939,21 @@ def grade(
             r = grade_eigenvalues(resp, cfg.get("matrix") or [])
         else:
             r = grade_eigenvector(resp, cfg.get("matrix") or [], cfg.get("eigenvalue"))
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "fourier_coefficient":
+        # PDE/Fourier Unit 1. meta carries the function, half-period L, which
+        # coefficient (a0/a/b), and harmonic n; the student submits the value.
+        # Grading integrates the reference exactly, so any equivalent closed form
+        # is accepted.
+        cfg = meta or {}
+        r = grade_fourier_coefficient(
+            student, cfg.get("function", ""), str(cfg.get("half_period", "pi")),
+            cfg.get("coeff", "a"), int(cfg.get("n", 1)),
+        )
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,
