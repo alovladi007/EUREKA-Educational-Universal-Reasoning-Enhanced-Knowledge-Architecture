@@ -104,10 +104,34 @@ new grading infrastructure.
   10 edges, 10 misconceptions, 5 items incl. a parameterized template), and an
   end-to-end demo that validates and exercises everything. Proven: run
   `python3 demo_verify.py` -> ALL CHECKS PASSED.
-- EM-2 (next): integrate the slice into the live AXIOM platform -- the
-  fine-grained N1..N11 nodes with lessons, a misconception model + library +
+- EM-2 (done): integrated the LA Unit 1 slice into the live AXIOM platform --
+  the fine-grained N1..N11 nodes with lessons, a misconception model + library +
   adaptive remediation routing (new to AXIOM), and the rref / solution_set /
   solution_point graders + the 3x3 template wired into math_core and the grading
   service as first-class item kinds.
-- Then: remaining Linear Algebra units, then ODEs Unit 1, then PDEs/Fourier
-  Unit 1, reusing the same engine.
+- EM-3..EM-7 (done): built out the courses on the shared engine, each adding
+  content and a misconception set (and a grader only where a new one was needed):
+  - ODEs, complete (Units 1-7): first-order (separable / integrating factor /
+    exact) with existence-uniqueness; second-order linear (characteristic roots:
+    real-distinct / repeated / complex, undetermined coefficients, superposition);
+    nonhomogeneous methods (resonance, variation of parameters); Laplace
+    transforms; systems (the eigenvalue method); power series solutions; and
+    phase plane / stability. New graders: grade_ode (verify a proposed y(x) solves
+    the ODE, with a general-solution order check), grade_laplace (forward /
+    inverse transform vs SymPy).
+  - Linear Algebra Unit 7 (Eigenvalues): eigenvalues, eigenvectors, algebraic vs
+    geometric multiplicity, diagonalization. New grader: grade_eigenvalues /
+    grade_eigenvector. The track spine edge LA7 -> ODE systems is wired.
+  - PDEs and Fourier Unit 1 (Fourier Series): the Euler coefficient formulas,
+    even/odd cosine/sine series, convergence and the Gibbs phenomenon, Parseval.
+    New grader: grade_fourier_coefficient (a0 / a_n / b_n by SymPy exact
+    integration). The spine edge second-order ODE -> Fourier is wired.
+  Every grader has a verified-everything gate and a math_core test module; every
+  new item kind (ode_solution, laplace_transform, inverse_laplace, eigenvalues,
+  eigenvector, fourier_coefficient) is wired into the grading service; each unit
+  was seeded live and grade-verified end-to-end.
+- Then (remaining): Linear Algebra Units 2-6 and 8-9 (matrix algebra, subspaces,
+  linear transformations, determinants, orthogonality/least squares, SVD) and
+  PDEs/Fourier Units 2-9 (Fourier transforms, PDE classification, heat, wave,
+  Laplace's equation, Sturm-Liouville, characteristics, Green's functions),
+  reusing the same engine.
