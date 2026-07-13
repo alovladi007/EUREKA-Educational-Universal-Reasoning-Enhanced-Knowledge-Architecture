@@ -27,6 +27,7 @@ from math_core import (
     check_counterexample,
     grade_equation,
     grade_expression,
+    grade_antiderivative,
     grade_determinant,
     grade_eigenvalues,
     grade_eigenvector,
@@ -861,7 +862,10 @@ def grade(
         # Grading verifies the solution satisfies the equation, so any equivalent
         # form and any name for the arbitrary constant is accepted.
         cfg = meta or {}
-        r = grade_ode(student, cfg.get("residual", ""), order=cfg.get("order"))
+        r = grade_ode(
+            student, cfg.get("residual", ""), order=cfg.get("order"),
+            initial_conditions=cfg.get("initial_conditions"),
+        )
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,
@@ -951,10 +955,23 @@ def grade(
         # Grading integrates the reference exactly, so any equivalent closed form
         # is accepted.
         cfg = meta or {}
+        # n may be a fixed integer or the identifier "n" (grade the general
+        # formula); pass it through unchanged.
         r = grade_fourier_coefficient(
             student, cfg.get("function", ""), str(cfg.get("half_period", "pi")),
-            cfg.get("coeff", "a"), int(cfg.get("n", 1)),
+            cfg.get("coeff", "a"), cfg.get("n", 1),
         )
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "antiderivative":
+        # Calculus foundation. meta.integrand is f(x); the student submits F(x),
+        # graded by checking F'(x) = f(x), so any constant of integration and any
+        # equivalent form is accepted.
+        cfg = meta or {}
+        r = grade_antiderivative(student, cfg.get("integrand", ""), cfg.get("var", "x"))
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,

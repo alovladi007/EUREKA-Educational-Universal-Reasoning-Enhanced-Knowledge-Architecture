@@ -1029,6 +1029,8 @@ async def seed_eng_math_la_unit1(session: AsyncSession) -> int:
 # / inverse_laplace); systems and stability use the eigen graders; series
 # coefficients are graded numerically.
 _ODE_NODES = [
+    # Unit 0: the integration foundation the ODE course rests on.
+    ("ODE.U0.N1", "computational_skill", "Antiderivatives (basic integration)", "Find an antiderivative F with F' = f; the constant of integration is free."),
     # Unit 1: first-order ODEs.
     ("ODE.U1.N1", "computational_skill", "Separable first-order ODEs", "Separate variables and integrate both sides."),
     ("ODE.U1.N2", "computational_skill", "First-order linear ODEs (integrating factor)", "Solve y' + p(x) y = q(x) with an integrating factor."),
@@ -1067,6 +1069,8 @@ _ODE_NODES = [
     ("ODE.U7.N3", "concept", "Classification (node, saddle, spiral, center)", "Classify an equilibrium from the eigenvalue pattern."),
 ]
 _ODE_EDGES = [
+    # Integration is the prerequisite for separable ODEs.
+    ("ODE.U0.N1", "ODE.U1.N1"),
     ("ODE.U1.N1", "ODE.U1.N2"), ("ODE.U1.N1", "ODE.U1.N3"), ("ODE.U1.N1", "ODE.U1.N4"),
     ("ODE.U1.N2", "ODE.U1.N5"),
     # Second-order builds on first-order and on linear algebra eigen-ideas.
@@ -1111,12 +1115,29 @@ _ODE_MISCONCEPTIONS = [
 ]
 # Items: (node_code, kind, prompt, options, correct, explanation, meta).
 _ODE_ITEMS = [
+    # Unit 0: antiderivatives, graded by differentiation (any constant accepted).
+    ("ODE.U0.N1", "antiderivative",
+     "Find an antiderivative of f(x) = x*cos(x). Enter F(x) (the constant of "
+     "integration is optional).",
+     None, "", "By parts, F(x) = x*sin(x) + cos(x) (+ C); F'(x) = x*cos(x).",
+     {"integrand": "x*cos(x)"}),
+    ("ODE.U0.N1", "antiderivative",
+     "Find an antiderivative of f(x) = x^2.",
+     None, "", "F(x) = x^3/3 (+ C); any constant of integration is accepted.",
+     {"integrand": "x**2"}),
     ("ODE.U1.N1", "ode_solution",
      "Solve the separable equation dy/dx = 2xy. Enter the general solution y(x) "
      "(use C for the arbitrary constant, exp for e).",
      None, "", "Separate to dy/y = 2x dx, integrate to ln|y| = x^2 + c, so "
      "y = C exp(x^2).",
      {"residual": "yp - 2*x*y", "order": 1}),
+    # An initial value problem: a particular solution, no free constant.
+    ("ODE.U1.N4", "ode_solution",
+     "Solve the initial value problem y' = y, y(0) = 2. Enter the particular "
+     "solution y(x).",
+     None, "", "The general solution is C exp(x); y(0) = 2 fixes C = 2, so "
+     "y = 2 exp(x).",
+     {"residual": "yp - y", "initial_conditions": {"y(0)": "2"}}),
     ("ODE.U1.N2", "ode_solution",
      "Solve the linear equation dy/dx + y = x. Enter the general solution y(x).",
      None, "", "Integrating factor e^x gives (e^x y)' = x e^x, so "
@@ -1695,6 +1716,11 @@ _PF_U1_ITEMS = [
      "coefficient b_1.",
      None, "", "b_1 = (1/pi) integral_{-pi}^{pi} x sin(x) dx = 2.",
      {"function": "x", "half_period": "pi", "coeff": "b", "n": 1}),
+    ("PF.U1.N2", "fourier_coefficient",
+     "For the sawtooth f(x) = x on (-pi, pi), find the GENERAL sine coefficient "
+     "b_n as a formula in n.",
+     None, "", "b_n = (1/pi) integral_{-pi}^{pi} x sin(n x) dx = 2*(-1)^(n+1)/n.",
+     {"function": "x", "half_period": "pi", "coeff": "b", "n": "n"}),
     ("PF.U1.N3", "fourier_coefficient",
      "For the even function f(x) = x^2 on (-pi, pi) (period 2pi), find the "
      "constant term coefficient a0. (a0 = (1/pi) integral_{-pi}^{pi} f dx.)",

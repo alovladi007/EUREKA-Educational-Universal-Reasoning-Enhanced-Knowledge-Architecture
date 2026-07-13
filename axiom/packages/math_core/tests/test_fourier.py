@@ -49,3 +49,14 @@ def test_verified_everything_gate():
 
 def test_malformed_answer_is_rejected_not_crash():
     assert not grade_fourier_coefficient("this is not math", SQUARE, "pi", "b", 1).is_correct
+
+
+def test_general_formula_symbolic_n():
+    # Sawtooth f = x: the general sine coefficient is b_n = 2(-1)^{n+1}/n.
+    assert grade_fourier_coefficient("2*(-1)**(n+1)/n", "x", "pi", "b", "n").is_correct
+    # An equivalent form of the same general formula.
+    assert grade_fourier_coefficient("-2*(-1)**n/n", "x", "pi", "b", "n").is_correct
+    # A wrong general formula (missing the alternating sign) fails.
+    assert not grade_fourier_coefficient("2/n", "x", "pi", "b", "n").is_correct
+    # x^2 (even): general cosine coefficient a_n = 4(-1)^n/n^2.
+    assert grade_fourier_coefficient("4*(-1)**n/n**2", "x**2", "pi", "a", "n").is_correct

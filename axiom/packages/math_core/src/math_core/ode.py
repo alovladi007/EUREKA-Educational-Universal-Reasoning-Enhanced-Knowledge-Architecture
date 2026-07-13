@@ -51,8 +51,35 @@ def _residual_value(student_solution: str, residual: str, var: str) -> sp.Expr:
     return resid.subs({_Y: ysol, _YP: yp, _YPP: ypp})
 
 
+def _check_initial_conditions(
+    ysol: sp.Expr, x: sp.Symbol, conditions: dict
+) -> tuple[bool, str]:
+    """Check an IVP's initial conditions against a proposed y(x).
+
+    Keys look like "y(0)", "y'(0)", "y''(2)": the number of primes is the
+    derivative order and the value in parentheses is the point. Returns
+    (ok, detail).
+    """
+    for cond, val in conditions.items():
+        key = str(cond).replace(" ", "")
+        if "(" not in key or ")" not in key:
+            return False, f"could not parse initial condition {cond!r}"
+        primes = key.count("'")
+        point = key[key.index("(") + 1:key.index(")")]
+        try:
+            a = sp.sympify(point, locals={str(x): x})
+            expr = sp.diff(ysol, x, primes) if primes else ysol
+            got = expr.subs(x, a)
+            if sp.simplify(got - sp.sympify(str(val))) != 0:
+                return False, f"initial condition {cond} = {val} is not satisfied"
+        except (sp.SympifyError, TypeError, ValueError, AttributeError) as exc:
+            return False, f"could not evaluate initial condition {cond!r}: {exc}"
+    return True, "all initial conditions satisfied"
+
+
 def grade_ode(
-    student_solution: str, residual: str, var: str = "x", order: int | None = None
+    student_solution: str, residual: str, var: str = "x", order: int | None = None,
+    initial_conditions: dict | None = None,
 ) -> GradeResult:
     """Grade a proposed ODE solution.
 
@@ -61,8 +88,13 @@ def grade_ode(
     arbitrary constants that produce linearly independent basis functions (a
     nonzero Wronskian). This rejects a mere particular member -- for example
     e^{2x} alone for a repeated-root second-order ODE -- while still accepting any
-    equivalent form and any constant names. Omit order to accept any solution
-    that satisfies the equation (a "verify this is a solution" item).
+    equivalent form and any constant names.
+
+    When initial_conditions is given (an IVP, keys like "y(0)", "y'(0)"), the
+    response must be a PARTICULAR solution: it must satisfy the ODE, carry no
+    remaining arbitrary constants, and meet every initial condition.
+
+    Omit both to accept any solution that satisfies the equation.
     """
     x = sp.Symbol(var)
     try:
@@ -72,6 +104,18 @@ def grade_ode(
             return _no("the proposed function does not satisfy the ODE")
     except (sp.SympifyError, TypeError, ValueError, AttributeError) as exc:
         return _no(f"could not parse or evaluate the solution: {exc}")
+
+    if initial_conditions:
+        constants = sorted(ysol.free_symbols - {x}, key=str)
+        if constants:
+            return _no(
+                "an initial value problem needs a particular solution with no "
+                f"remaining arbitrary constants (found {', '.join(map(str, constants))})"
+            )
+        ok, detail = _check_initial_conditions(ysol, x, initial_conditions)
+        if not ok:
+            return _no(detail)
+        return _ok("satisfies the ODE and all initial conditions")
 
     if order is not None:
         constants = sorted(ysol.free_symbols - {x}, key=str)

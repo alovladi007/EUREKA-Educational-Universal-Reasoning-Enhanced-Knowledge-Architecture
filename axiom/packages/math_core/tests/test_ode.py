@@ -65,3 +65,16 @@ def test_second_order_general_forms_accepted():
     assert grade_ode("C1*cos(x) + C2*sin(x)", "ypp + y", order=2).is_correct
     # Two independent constants are required for a second-order general solution.
     assert not grade_ode("C1*cos(x)", "ypp + y", order=2).is_correct
+
+
+def test_initial_value_problem():
+    # y'' + y = 0, y(0) = 3, y'(0) = 0  ->  y = 3 cos(x).
+    ic = {"y(0)": "3", "y'(0)": "0"}
+    assert grade_ode("3*cos(x)", "ypp + y", initial_conditions=ic).is_correct
+    # A response still carrying an arbitrary constant is not a particular solution.
+    assert not grade_ode("C1*cos(x) + C2*sin(x)", "ypp + y", initial_conditions=ic).is_correct
+    # Satisfies the ODE but not the initial conditions.
+    assert not grade_ode("3*sin(x)", "ypp + y", initial_conditions=ic).is_correct
+    # First-order IVP: y' = y, y(0) = 2  ->  y = 2 e^x.
+    assert grade_ode("2*exp(x)", "yp - y", initial_conditions={"y(0)": "2"}).is_correct
+    assert not grade_ode("exp(x)", "yp - y", initial_conditions={"y(0)": "2"}).is_correct

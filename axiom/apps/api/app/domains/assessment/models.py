@@ -91,6 +91,9 @@ ITEM_KINDS = (
     "fourier_coefficient",
     # LA Unit 6: submit the determinant of a matrix; graded against SymPy det(A).
     "determinant",
+    # Calculus foundation: submit an antiderivative F(x); graded by checking
+    # F'(x) equals the integrand (any constant of integration accepted).
+    "antiderivative",
 )
 
 
