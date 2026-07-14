@@ -37,6 +37,12 @@ celery_app.conf.beat_schedule = {
         "task": "axiom.retention_purge",
         "schedule": settings.retention_purge_interval_seconds,
     },
+    # Nightly entitlement reconciliation: the safety net behind the EUREKA
+    # purchase webhook (Integration Plan: webhooks plus reconciliation).
+    "entitlement-reconciliation": {
+        "task": "axiom.reconcile_entitlements",
+        "schedule": 86400.0,
+    },
 }
 
 

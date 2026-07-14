@@ -117,3 +117,51 @@ def send_email_task(to: str, subject: str, body: str) -> str:
 def enqueue_email(to: str, subject: str, body: str) -> None:
     """Hand a notification email to the worker for delivery."""
     send_email_task.delay(to, subject, body)
+
+
+async def _reconcile_entitlements() -> dict:
+    """Nightly reconciliation pull (Integration Plan S2/S3): fetch every paid
+    AXIOM purchase from EUREKA and grant any entitlement the webhook missed
+    (AXIOM down at purchase time, or the user had not touched AXIOM yet).
+    Grant-only by design: revocation stays webhook-driven so an admin grant is
+    never clawed back by a feed glitch."""
+    import httpx
+    from sqlalchemy import select
+
+    from app.core.config import get_settings
+    from app.core.db import get_sessionmaker
+    from app.domains.entitlements.service import grant, has_entitlement
+    from app.domains.identity.models import User
+
+    settings = get_settings()
+    url = f"{settings.eureka_api_base_url.rstrip('/')}/api/v1/marketplace/axiom-entitlements"
+    async with httpx.AsyncClient(timeout=15.0) as client:
+        resp = await client.get(url, headers={"X-Webhook-Secret": settings.entitlement_webhook_secret})
+        resp.raise_for_status()
+        feed = resp.json().get("entitlements", [])
+
+    granted = skipped_unknown = already = 0
+    async with get_sessionmaker()() as session:
+        for row in feed:
+            user = (
+                await session.execute(
+                    select(User).where(User.eureka_user_id == str(row["eureka_user_id"]))
+                )
+            ).scalar_one_or_none()
+            if user is None:
+                skipped_unknown += 1  # granted on their first SSO via the next run
+                continue
+            if await has_entitlement(session, user.id, row["product_code"]):
+                already += 1
+                continue
+            await grant(session, user.id, row["product_code"], source="reconcile")
+            granted += 1
+        await session.commit()
+    return {"feed": len(feed), "granted": granted, "already": already,
+            "unknown_users": skipped_unknown}
+
+
+@celery_app.task(name="axiom.reconcile_entitlements")
+def reconcile_entitlements_task() -> str:
+    result = asyncio.run(_reconcile_entitlements())
+    return str(result)

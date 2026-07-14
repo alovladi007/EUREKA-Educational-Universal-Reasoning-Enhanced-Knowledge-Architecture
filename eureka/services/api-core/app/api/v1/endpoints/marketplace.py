@@ -869,3 +869,41 @@ async def admin_act_on_report(
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     return ModerationActionResponse.model_validate(action, from_attributes=True)
+
+
+# ---------------------------------------------------------------------------
+# AXIOM entitlement reconciliation feed (Integration Plan S2/S3: webhooks plus
+# a nightly reconciliation pull as the safety net). Secret-guarded: the caller
+# is the AXIOM backend, not a browser.
+# ---------------------------------------------------------------------------
+
+from fastapi import Header  # noqa: E402
+
+from app.services.axiom_entitlements import sku_for_course  # noqa: E402
+
+
+@router.get("/marketplace/axiom-entitlements")
+async def axiom_entitlement_feed(
+    db: AsyncSession = Depends(get_db),
+    x_webhook_secret: str | None = Header(default=None),
+):
+    """Every (eureka_user_id, sku) with an active paid purchase on an
+    AXIOM-mapped course. AXIOM's nightly task grants anything it missed."""
+    import os
+
+    secret = os.environ.get("AXIOM_ENTITLEMENT_WEBHOOK_SECRET", "axiom_dev_webhook_secret")
+    if x_webhook_secret != secret:
+        raise HTTPException(status_code=401, detail="bad secret")
+    rows = (
+        await db.execute(
+            select(MarketplacePurchase.user_id, Course.id, Course.title)
+            .join(Course, Course.id == MarketplacePurchase.course_id)
+            .where(MarketplacePurchase.status == PurchaseStatus.paid.value)
+        )
+    ).all()
+    out = []
+    for user_id, course_id, title in rows:
+        sku = sku_for_course(str(course_id), title)
+        if sku:
+            out.append({"eureka_user_id": str(user_id), "product_code": sku})
+    return {"entitlements": out}
