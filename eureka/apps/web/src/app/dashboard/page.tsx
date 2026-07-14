@@ -12,6 +12,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api } from "@/lib/eureka-api";
+import { AxiomMathCard } from "@/components/dashboard/axiom-math-card";
 import {
   Activity,
   Trophy,
@@ -109,6 +110,8 @@ export default function DashboardPage() {
           straight from the EUREKA API.
         </p>
       </div>
+
+      <AxiomMathCard />
 
       {error && (
         <Alert>
