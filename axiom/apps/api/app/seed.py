@@ -1603,6 +1603,220 @@ _LA_U6_ITEMS = [
 ]
 
 
+# Engineering Math track, remaining Linear Algebra units (completing LA1-LA9
+# from the track doc on the shared engine): Unit 2 matrix algebra, Unit 3
+# subspaces, Unit 4 linear transformations, Unit 5 rank and the fundamental
+# theorem, Unit 8 orthogonality and least squares, Unit 9 the SVD. All items
+# reuse existing graders (numeric, solution_set, determinant, eigenvalues, mcq).
+_LA_MORE_NODES = [
+    ("LA.U2.N1", "computational_skill", "Matrix multiplication", "Row-by-column products; sizes must chain; AB is generally not BA."),
+    ("LA.U2.N2", "computational_skill", "Matrix inverse (2x2)", "A^-1 exists iff det(A) != 0; the 2x2 adjugate formula."),
+    ("LA.U3.N1", "concept", "Subspaces", "Closed under addition and scaling; always contains the zero vector."),
+    ("LA.U3.N2", "computational_skill", "Null space", "All solutions of A x = 0: a subspace, found by parameterizing the free variables."),
+    ("LA.U4.N1", "concept", "Linear transformations", "Matrix maps: linearity, composition as multiplication, geometry of rotations and scalings."),
+    ("LA.U4.N2", "concept", "Determinant as area scale", "The determinant of the matrix is the signed scaling factor of area or volume."),
+    ("LA.U5.N1", "computational_skill", "Rank", "The number of pivots: the dimension of the column space."),
+    ("LA.U5.N2", "concept", "Rank-nullity theorem", "rank + nullity = number of columns: the fundamental accounting of A x = b."),
+    ("LA.U8.N1", "computational_skill", "Dot product and orthogonality", "Inner products, lengths, angles, and orthogonal vectors."),
+    ("LA.U8.N2", "computational_skill", "Projection and least squares", "Project onto a line or subspace; the normal equations A^T A x = A^T b."),
+    ("LA.U9.N1", "concept", "Singular value decomposition", "A = U Sigma V^T: singular values are the square roots of the eigenvalues of A^T A."),
+]
+_LA_MORE_EDGES = [
+    ("LA.U1.N11", "LA.U2.N1"), ("LA.U2.N1", "LA.U2.N2"),
+    ("LA.U2.N1", "LA.U3.N1"), ("LA.U3.N1", "LA.U3.N2"),
+    ("LA.U2.N1", "LA.U4.N1"), ("LA.U4.N1", "LA.U4.N2"),
+    ("LA.U3.N2", "LA.U5.N1"), ("LA.U5.N1", "LA.U5.N2"),
+    ("LA.U3.N1", "LA.U8.N1"), ("LA.U8.N1", "LA.U8.N2"),
+    # SVD sits on eigenvalues (LA7) and orthogonality (LA8).
+    ("LA.U7.N4", "LA.U9.N1"), ("LA.U8.N2", "LA.U9.N1"),
+    # Matrix algebra feeds determinants; determinants feed area scaling.
+    ("LA.U2.N1", "LA.U6.N1"), ("LA.U6.N1", "LA.U4.N2"),
+]
+_LA_MORE_MISCONCEPTIONS = [
+    ("LA.U2.M1", "Commutativity assumption", "Assumes AB = BA for matrices.", "LA.U2.N1"),
+    ("LA.U3.M1", "Origin test skipped", "Calls a shifted plane a subspace even though it misses the zero vector.", "LA.U3.N1"),
+    ("LA.U5.M1", "Rank as a count of entries", "Counts nonzero entries or rows instead of pivots.", "LA.U5.N1"),
+    ("LA.U8.M1", "Projection scaling error", "Drops the 1/(a.a) normalization in the projection formula.", "LA.U8.N2"),
+    ("LA.U9.M1", "Singular values equal eigenvalues", "Uses the eigenvalues of A itself instead of sqrt of the eigenvalues of A^T A.", "LA.U9.N1"),
+]
+_LA_MORE_ITEMS = [
+    ("LA.U2.N1", "numeric",
+     "Let A = [[1, 2], [3, 4]] and B = [[0, 1], [1, 0]]. What is the (1,1) "
+     "entry (top-left) of the product A B?",
+     None, "2", "Row (1,2) dot column (0,1): 1*0 + 2*1 = 2.",
+     None),
+    ("LA.U2.N1", "mcq_single",
+     "For square matrices A and B, which statement is true in general?",
+     ["AB and BA can differ (matrix multiplication is not commutative)",
+      "AB = BA always",
+      "AB = BA whenever both products are defined",
+      "AB = BA iff A and B are invertible"],
+     "0", "Multiplication composes maps; order matters. AB = BA only in "
+     "special cases (e.g. when one is a scalar multiple of I).",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U2.M1"},
+         {"index": 2, "misconception": "LA.U2.M1"},
+         {"index": 3, "misconception": "LA.U2.M1"},
+     ]}),
+    ("LA.U2.N2", "numeric",
+     "What is the (1,1) entry of the inverse of A = [[2, 1], [1, 1]]?",
+     None, "1", "det = 1; the adjugate swaps the diagonal: A^-1 = "
+     "[[1, -1], [-1, 2]], so the (1,1) entry is 1.",
+     None),
+    ("LA.U3.N2", "solution_set",
+     "Find the null space of A = [[1, 2], [2, 4]]: write the general solution "
+     'of A x = 0. Enter JSON {"particular": [...], "directions": [[...]]}.',
+     None, "", "The rows are dependent; x1 = -2 x2, so the null space is "
+     "span{(-2, 1)} and the particular solution is the origin.",
+     {"A": [[1, 2], [2, 4]], "b": [0, 0]}),
+    ("LA.U3.N1", "mcq_single",
+     "Which of these is a subspace of R^2?",
+     ["The line y = 2x",
+      "The line y = 2x + 1",
+      "The first quadrant",
+      "The unit circle"],
+     "0", "A subspace must contain 0 and close under scaling; the shifted "
+     "line misses the origin, the quadrant fails negative scaling.",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U3.M1"},
+     ]}),
+    ("LA.U4.N2", "determinant",
+     "A linear map of the plane is given by A = [[3, 1], [0, 2]]. By what "
+     "signed factor does it scale areas? (Enter det A.)",
+     None, "", "Triangular: det = 3 * 2 = 6; areas scale by 6.",
+     {"matrix": [[3, 1], [0, 2]]}),
+    ("LA.U4.N1", "mcq_single",
+     "Which property must every linear transformation T satisfy?",
+     ["T(a u + b v) = a T(u) + b T(v)",
+      "T(u v) = T(u) T(v)",
+      "T(u + v) = T(u) T(v)",
+      "T(0) = 1"],
+     "0", "Linearity is additivity plus homogeneity; in particular T(0) = 0.",
+     None),
+    ("LA.U5.N1", "numeric",
+     "What is the rank of A = [[1, 2, 3], [2, 4, 6], [1, 1, 1]]?",
+     None, "2", "Row 2 is twice row 1, so only two independent rows remain: "
+     "rank 2 (pivots, not nonzero entries).",
+     None),
+    ("LA.U5.N2", "mcq_single",
+     "A is a 3x5 matrix with rank 2. What is the dimension of its null space?",
+     ["3", "2", "5", "1"],
+     "0", "Rank-nullity: nullity = columns - rank = 5 - 2 = 3.",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U5.M1"},
+     ]}),
+    ("LA.U8.N1", "numeric",
+     "Compute the dot product of u = (1, 2, -1) and v = (3, 0, 4).",
+     None, "-1", "1*3 + 2*0 + (-1)*4 = 3 - 4 = -1.",
+     None),
+    ("LA.U8.N2", "numeric",
+     "Project b = (3, 4) onto a = (1, 0). What is the first component of the "
+     "projection?",
+     None, "3", "proj = (a.b / a.a) a = 3 (1, 0); the 1/(a.a) normalization "
+     "matters when a is not a unit vector.",
+     None),
+    ("LA.U9.N1", "eigenvalues",
+     "For A = [[3, 0], [0, -4]], the singular values are the square roots of "
+     "the eigenvalues of A^T A. Find the eigenvalues of A^T A = [[9, 0], "
+     "[0, 16]]. Enter them comma-separated.",
+     None, "", "A^T A is diagonal: eigenvalues 9 and 16, so the singular "
+     "values are 3 and 4 (always nonnegative).",
+     {"matrix": [[9, 0], [0, 16]]}),
+    ("LA.U9.N1", "mcq_single",
+     "For a square matrix A, the singular values are:",
+     ["The square roots of the eigenvalues of A^T A",
+      "The eigenvalues of A",
+      "The diagonal entries of A",
+      "The pivots of A"],
+     "0", "Singular values come from A^T A (always nonnegative); they equal "
+     "|eigenvalues| only for symmetric A.",
+     {"choices": [
+         {"index": 1, "misconception": "LA.U9.M1"},
+         {"index": 2, "misconception": "LA.U9.M1"},
+     ]}),
+]
+
+
+async def seed_eng_math_la_more(session: AsyncSession) -> int:
+    """Seed the remaining Linear Algebra units (2-5, 8-9), completing LA1-LA9.
+    Idempotent; runs after Units 6/7 so the cross-edges (SVD on eigenvalues,
+    matrix algebra into determinants) can wire."""
+    by_code = {
+        n.code: n
+        for n in (await session.execute(select(KnowledgeNode))).scalars().all()
+    }
+    created = 0
+    for code, kind, title, desc in _LA_MORE_NODES:
+        if code not in by_code:
+            node = KnowledgeNode(
+                code=code, title=title, description=desc, kind=kind, tier=3, track="applied"
+            )
+            session.add(node)
+            by_code[code] = node
+            created += 1
+    await session.flush()
+
+    existing_edges = {
+        (e.from_node_id, e.to_node_id)
+        for e in (await session.execute(select(KnowledgeEdge))).scalars().all()
+    }
+    for src, dst in _LA_MORE_EDGES:
+        if src in by_code and dst in by_code:
+            pair = (by_code[src].id, by_code[dst].id)
+            if pair not in existing_edges:
+                session.add(
+                    KnowledgeEdge(from_node_id=pair[0], to_node_id=pair[1], kind="prerequisite")
+                )
+
+    have_codes = {
+        m.code for m in (await session.execute(select(Misconception))).scalars().all()
+    }
+    for code, name, desc, routes_to in _LA_MORE_MISCONCEPTIONS:
+        if code not in have_codes:
+            target = by_code.get(routes_to)
+            session.add(
+                Misconception(
+                    code=code, name=name, description=desc,
+                    routes_to_node_id=target.id if target else None,
+                )
+            )
+    await session.flush()
+
+    bank = (
+        await session.execute(
+            select(ItemBank).where(ItemBank.name == "Linear Algebra Units 2-9")
+        )
+    ).scalar_one_or_none()
+    if bank is None:
+        bank = ItemBank(
+            name="Linear Algebra Units 2-9",
+            description="Engineering Math track: matrix algebra through the SVD, CAS-graded.",
+        )
+        session.add(bank)
+        await session.flush()
+
+    for code, kind, prompt, options, correct, explanation, meta in _LA_MORE_ITEMS:
+        node = by_code.get(code)
+        if node is None:
+            continue
+        exists = (
+            await session.execute(
+                select(Item.id).where(Item.node_id == node.id, Item.prompt == prompt)
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        session.add(
+            Item(
+                bank_id=bank.id, node_id=node.id, kind=kind, prompt=prompt,
+                options=options, correct=correct, explanation=explanation,
+                difficulty=0.5, tolerance=None, meta=meta,
+            )
+        )
+    await session.flush()
+    return created
+
+
 async def seed_eng_math_la_unit6(session: AsyncSession) -> int:
     """Seed Linear Algebra Unit 6 (Determinants). Idempotent, and it adds the
     edge LA6 -> LA7 (determinants feed the characteristic polynomial), so it runs
@@ -2139,6 +2353,9 @@ async def seed(session: AsyncSession) -> bool:
     # LA6 -> LA7 (determinants feed the characteristic polynomial), so it runs
     # after the LA Unit 7 seed.
     await seed_eng_math_la_unit6(session)
+    # Engineering Math track: remaining LA units (2-5, 8-9), completing LA1-LA9;
+    # runs after Units 6/7 so the SVD-on-eigenvalues cross-edges can wire.
+    await seed_eng_math_la_more(session)
     # Engineering Math track: PDE/Fourier Unit 1 (Fourier series), the flagship;
     # adds the spine edge second-order ODE -> Fourier, so it runs after the ODE seed.
     await seed_eng_math_fourier_unit1(session)

@@ -130,8 +130,13 @@ new grading infrastructure.
   new item kind (ode_solution, laplace_transform, inverse_laplace, eigenvalues,
   eigenvector, fourier_coefficient) is wired into the grading service; each unit
   was seeded live and grade-verified end-to-end.
-- Then (remaining): Linear Algebra Units 2-6 and 8-9 (matrix algebra, subspaces,
-  linear transformations, determinants, orthogonality/least squares, SVD) and
-  PDEs/Fourier Units 2-9 (Fourier transforms, PDE classification, heat, wave,
-  Laplace's equation, Sturm-Liouville, characteristics, Green's functions),
-  reusing the same engine.
+- EM-8..EM-18 (done): ALL THREE COURSES COMPLETE. Linear Algebra LA1-LA9
+  (vectors/systems, matrix algebra, subspaces, transformations, rank,
+  determinants, eigenvalues, orthogonality/least squares, SVD); ODEs complete
+  (Units 0-7 incl. the antiderivative foundation); PDEs and Fourier PF1-PF9
+  (series, transforms, classification, heat, wave, Laplace's equation,
+  Sturm-Liouville, characteristics, Green's functions). All three track-doc
+  spine edges live: LA7 -> OD6 (systems), OD3 -> PF4 (heat via separation of
+  variables), LA7 + PF1 -> PF7 (Sturm-Liouville). Nine CAS graders with
+  verified-everything gates; the platform also gained explainable
+  remediation-first serving (EM-14) and entitlement enforcement (EM-15).
