@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import uuid
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from shared_schemas.identity import UserOut
 from sqlalchemy import select
@@ -14,7 +14,14 @@ from app.core.db import get_session
 from app.core.security import get_current_user
 from app.domains.curriculum.models import KnowledgeNode
 from app.domains.practice.service import answer as answer_service
-from app.domains.practice.service import response_result, review_mistakes, serve_next
+from app.domains.practice.service import (
+    missed_questions,
+    missed_summary,
+    response_result,
+    retry_missed,
+    review_mistakes,
+    serve_next,
+)
 
 router = APIRouter(tags=["practice"])
 
@@ -98,3 +105,33 @@ async def diagnostic_start(
             served.append(result)
     await session.commit()
     return {"items": served, "count": len(served)}
+
+
+@router.get("/review/missed", summary="My saved missed questions (save-and-redo)")
+async def review_missed(
+    status: str = "open",
+    node: str | None = None,
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> list[dict]:
+    return await missed_questions(session, uuid.UUID(user.id), status=status, node_code=node)
+
+
+@router.get("/review/summary", summary="Open miss counts by skill")
+async def review_summary(
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> list[dict]:
+    return await missed_summary(session, uuid.UUID(user.id))
+
+
+@router.post("/review/retry/{missed_id}", summary="Redo a missed question (exact variant, no answer leakage)")
+async def review_retry(
+    missed_id: uuid.UUID,
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> dict:
+    result = await retry_missed(session, uuid.UUID(user.id), missed_id)
+    if "error" in result:
+        raise HTTPException(status_code=404, detail=result["error"])
+    return result

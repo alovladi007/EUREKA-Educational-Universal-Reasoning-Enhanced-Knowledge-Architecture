@@ -32,6 +32,7 @@ from app.domains.assessment.models import Item, ItemTemplate, ItemVariant
 from app.domains.attempts.models import (
     Attempt,
     GradingRecord,
+    MissedQuestion,
     ReasoningTrace,
     Response,
     Score,
@@ -593,6 +594,17 @@ async def finalize_response_grade(
                 if isinstance(response.answer, dict):
                     response.answer = {**response.answer, "diagnosis": m.code}
 
+    # Save-and-redo review layer (EM-19): a wrong answer upserts an open
+    # missed-question entry (exact prompt served, miss count, diagnosis); a
+    # correct re-attempt on the same question clears it. Best-effort.
+    try:
+        await _record_missed(
+            session, user_id, response, outcome.is_correct, student_answer,
+            (response.answer or {}).get("diagnosis") if isinstance(response.answer, dict) else None,
+        )
+    except Exception:  # noqa: BLE001
+        pass
+
     # Emit Caliper-style analytics events for the graded response and any mastery
     # change. Best-effort: recording an event must never break grading, so a
     # failure here is swallowed (the grade, score, and mastery are already set).
@@ -887,3 +899,166 @@ async def review_mistakes(
             }
         )
     return out
+
+
+# ---------------------------------------------------------------------------
+# Save-and-redo review layer (EM-19, from the reference review layer)
+# ---------------------------------------------------------------------------
+
+async def _record_missed(
+    session: AsyncSession, user_id: uuid.UUID, response: Response,
+    is_correct: bool, student_answer: str, misconception_code: str | None,
+) -> None:
+    """Upsert the missed-question entry for a graded response.
+
+    Matching key: the item for static questions, the variant for template
+    questions (so a cleared entry means the learner redid the SAME numbers).
+    """
+    if response.item_id is not None:
+        cond = MissedQuestion.item_id == response.item_id
+    elif response.variant_id is not None:
+        cond = MissedQuestion.variant_id == response.variant_id
+    else:
+        return
+    row = (
+        await session.execute(
+            select(MissedQuestion).where(MissedQuestion.user_id == user_id, cond)
+        )
+    ).scalars().first()
+
+    if is_correct:
+        if row is not None and row.status == "open":
+            row.status = "cleared"
+        return
+
+    if row is not None:
+        row.status = "open"
+        row.miss_count += 1
+        row.last_answer = student_answer[:2000]
+        if misconception_code:
+            row.misconception_code = str(misconception_code)
+        return
+
+    prompt = ""
+    if response.item_id is not None:
+        item = (
+            await session.execute(select(Item).where(Item.id == response.item_id))
+        ).scalar_one_or_none()
+        prompt = item.prompt if item else ""
+    else:
+        variant = (
+            await session.execute(
+                select(ItemVariant).where(ItemVariant.id == response.variant_id)
+            )
+        ).scalar_one_or_none()
+        prompt = variant.prompt if variant else ""
+    session.add(MissedQuestion(
+        user_id=user_id, node_id=response.node_id,
+        item_id=response.item_id, template_id=response.template_id,
+        variant_id=response.variant_id, prompt=prompt,
+        last_answer=student_answer[:2000],
+        misconception_code=str(misconception_code) if misconception_code else None,
+    ))
+
+
+async def missed_questions(
+    session: AsyncSession, user_id: uuid.UUID, status: str = "open",
+    node_code: str | None = None, limit: int = 50,
+) -> list[dict]:
+    """List saved missed questions (open, cleared, or all). Never includes the
+    correct answer: retry is a real re-attempt, not a reveal."""
+    q = select(MissedQuestion, KnowledgeNode).join(
+        KnowledgeNode, KnowledgeNode.id == MissedQuestion.node_id
+    ).where(MissedQuestion.user_id == user_id)
+    if status in ("open", "cleared"):
+        q = q.where(MissedQuestion.status == status)
+    if node_code:
+        q = q.where(KnowledgeNode.code == node_code)
+    rows = (
+        await session.execute(q.order_by(MissedQuestion.updated_at.desc()).limit(limit))
+    ).all()
+    return [
+        {
+            "id": str(m.id),
+            "node_code": n.code,
+            "node_title": n.title,
+            "prompt": m.prompt,
+            "your_answer": m.last_answer,
+            "misconception": m.misconception_code,
+            "miss_count": m.miss_count,
+            "status": m.status,
+            "updated_at": m.updated_at.isoformat(),
+        }
+        for m, n in rows
+    ]
+
+
+async def missed_summary(session: AsyncSession, user_id: uuid.UUID) -> list[dict]:
+    """Open miss counts by node, for the review dashboard."""
+    rows = (
+        await session.execute(
+            select(KnowledgeNode.code, KnowledgeNode.title, func.count(MissedQuestion.id))
+            .join(KnowledgeNode, KnowledgeNode.id == MissedQuestion.node_id)
+            .where(MissedQuestion.user_id == user_id, MissedQuestion.status == "open")
+            .group_by(KnowledgeNode.code, KnowledgeNode.title)
+            .order_by(func.count(MissedQuestion.id).desc())
+        )
+    ).all()
+    return [{"node_code": c, "node_title": t, "open": n} for c, t, n in rows]
+
+
+async def retry_missed(
+    session: AsyncSession, user_id: uuid.UUID, missed_id: uuid.UUID
+) -> dict:
+    """Re-serve a missed question as a fresh gradable attempt, with no answer
+    leakage. Template questions re-serve the EXACT stored variant, so the
+    learner redoes the very numbers they missed and grading runs against the
+    stored key. Submit through the normal /practice/answer flow."""
+    row = (
+        await session.execute(
+            select(MissedQuestion).where(
+                MissedQuestion.id == missed_id, MissedQuestion.user_id == user_id
+            )
+        )
+    ).scalar_one_or_none()
+    if row is None:
+        return {"error": "missed question not found"}
+
+    attempt = await _open_practice_attempt(session, user_id)
+    response = Response(
+        attempt_id=attempt.id, user_id=user_id, node_id=row.node_id, answer={},
+        item_id=row.item_id, template_id=row.template_id, variant_id=row.variant_id,
+    )
+    session.add(response)
+    await session.flush()
+
+    kind, prompt, options = "", row.prompt, None
+    if row.item_id is not None:
+        item = (
+            await session.execute(select(Item).where(Item.id == row.item_id))
+        ).scalar_one_or_none()
+        if item is None:
+            return {"error": "the original question no longer exists"}
+        kind, prompt, options = item.kind, item.prompt, item.options
+    else:
+        template = (
+            await session.execute(
+                select(ItemTemplate).where(ItemTemplate.id == row.template_id)
+            )
+        ).scalar_one_or_none()
+        variant = (
+            await session.execute(
+                select(ItemVariant).where(ItemVariant.id == row.variant_id)
+            )
+        ).scalar_one_or_none()
+        if template is None or variant is None:
+            return {"error": "the original question no longer exists"}
+        kind, prompt = template.kind, variant.prompt
+    await session.commit()
+    return {
+        "response_token": str(response.id),
+        "kind": kind,
+        "prompt": prompt,
+        "options": options,
+        "miss_count": row.miss_count,
+    }

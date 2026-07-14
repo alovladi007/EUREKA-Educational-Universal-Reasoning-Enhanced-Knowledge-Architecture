@@ -162,3 +162,37 @@ class ReasoningTrace(Base):
     kind: Mapped[str] = mapped_column(String(32), nullable=False)
     content: Mapped[dict] = mapped_column(JSON, nullable=False, default=dict)
     created_at: Mapped[datetime] = mapped_column(default=_now)
+
+
+class MissedQuestion(Base):
+    """Save-and-redo entry for a missed question (EM-19, from the reference
+    review layer). Every wrong answer upserts a row with the exact prompt the
+    learner saw; a correct re-attempt on the SAME question (same item, or same
+    template variant, so retry serves the very numbers missed) clears it, and a
+    later miss reopens it with the miss count preserved."""
+
+    __tablename__ = "missed_questions"
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=_uuid)
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("users.id", ondelete="CASCADE"), index=True
+    )
+    node_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("knowledge_nodes.id", ondelete="CASCADE"), index=True
+    )
+    item_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("items.id", ondelete="CASCADE"), nullable=True
+    )
+    template_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("item_templates.id", ondelete="CASCADE"), nullable=True
+    )
+    variant_id: Mapped[uuid.UUID | None] = mapped_column(
+        Uuid, ForeignKey("item_variants.id", ondelete="CASCADE"), nullable=True
+    )
+    prompt: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    last_answer: Mapped[str] = mapped_column(Text, nullable=False, default="")
+    misconception_code: Mapped[str | None] = mapped_column(String(32), nullable=True)
+    miss_count: Mapped[int] = mapped_column(Integer, nullable=False, default=1)
+    status: Mapped[str] = mapped_column(String(12), nullable=False, default="open")
+    created_at: Mapped[datetime] = mapped_column(default=_now)
+    updated_at: Mapped[datetime] = mapped_column(default=_now, onupdate=_now)

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { fetchMistakes, getToken, type MistakeItem } from '@/lib/api';
+import { fetchMistakes, getToken, type MistakeItem, apiGet, apiPost, practiceAnswer } from '@/lib/api';
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
 import { RichMath } from '@/components/Math';
@@ -69,6 +69,97 @@ function MistakeCard({ item }: { item: MistakeItem }) {
   );
 }
 
+
+type Missed = {
+  id: string; node_code: string; node_title: string; prompt: string;
+  your_answer: string; misconception: string | null; miss_count: number;
+  status: string; updated_at: string;
+};
+type RetryPayload = {
+  response_token: string; kind: string; prompt: string;
+  options: string[] | null; miss_count: number;
+};
+
+// Save-and-redo (EM-19): open missed questions with an inline, no-answer-leak
+// retry. A correct redo clears the entry server-side; the list refreshes.
+function MissedSection() {
+  const [rows, setRows] = useState<Missed[]>([]);
+  const [retry, setRetry] = useState<{ id: string; q: RetryPayload } | null>(null);
+  const [input, setInput] = useState('');
+  const [verdict, setVerdict] = useState<string>('');
+
+  const load = async () => {
+    try {
+      setRows(await apiGet<Missed[]>('/api/v1/review/missed?status=open'));
+    } catch {
+      /* section is additive; the classic list below still works */
+    }
+  };
+  useEffect(() => { void load(); }, []);
+
+  const startRetry = async (id: string) => {
+    setVerdict(''); setInput('');
+    const q = await apiPost<RetryPayload>(`/api/v1/review/retry/${id}`, {});
+    setRetry({ id, q });
+  };
+  const submit = async (answer: string) => {
+    if (!retry) return;
+    const r = await practiceAnswer(retry.q.response_token, answer);
+    setVerdict(r.is_correct ? 'Correct - cleared from your missed list.' : 'Not yet - it stays on your list.');
+    setRetry(null);
+    await load();
+  };
+
+  if (rows.length === 0 && !verdict) return null;
+  return (
+    <section className="mt-8">
+      <h2 className="text-base font-semibold text-foreground">Redo the questions you missed</h2>
+      <p className="mt-1 text-xs text-muted-foreground">
+        Same question, same numbers, no answer shown. Get it right and it clears.
+      </p>
+      {verdict && <p className="mt-2 text-sm font-medium text-foreground">{verdict}</p>}
+      <ul className="mt-3 space-y-3">
+        {rows.map((m) => (
+          <li key={m.id} className="rounded-lg border border-border p-4">
+            <div className="text-xs text-muted-foreground">
+              {m.node_title} ({m.node_code}) - missed {m.miss_count}x
+              {m.misconception ? ` - pattern ${m.misconception}` : ''}
+            </div>
+            <div className="mt-1 text-sm text-foreground">{m.prompt}</div>
+            {retry?.id === m.id ? (
+              <div className="mt-3 space-y-2">
+                {retry.q.options ? (
+                  retry.q.options.map((opt, i) => (
+                    <button key={i} onClick={() => void submit(String(i))}
+                      className="block w-full rounded-md border border-border px-3 py-2 text-left text-sm hover:bg-accent">
+                      {opt}
+                    </button>
+                  ))
+                ) : (
+                  <div className="flex gap-2">
+                    <input value={input} onChange={(e) => setInput(e.target.value)}
+                      className="flex-1 rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      placeholder="Your answer" />
+                    <button onClick={() => void submit(input)}
+                      className="rounded-md bg-primary px-4 py-2 text-sm text-primary-foreground">
+                      Submit
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button onClick={() => void startRetry(m.id)}
+                className="mt-3 rounded-md border border-border px-3 py-1.5 text-xs font-medium hover:bg-accent">
+                Retry this question
+              </button>
+            )}
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
 export default function ReviewPage() {
   const [state, setState] = useState<LoadState>('checking');
   const [items, setItems] = useState<MistakeItem[]>([]);
@@ -128,6 +219,8 @@ export default function ReviewPage() {
           Your recent incorrect answers, most recent first. Revisit each one to
           see the correct answer and why.
         </p>
+
+        <MissedSection />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">
