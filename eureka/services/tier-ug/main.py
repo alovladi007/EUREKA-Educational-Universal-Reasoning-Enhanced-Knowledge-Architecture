@@ -3,6 +3,12 @@ EUREKA Undergraduate Tier - Main FastAPI Service
 Socratic Tutor with Labs, Peer Review, and LMS Integration (ABET/ACM/IEEE aligned)
 """
 from fastapi import FastAPI, HTTPException, Depends, File, UploadFile
+
+# P0-3 (Gap Register): every data route requires a valid access token
+# (was fully unauthenticated); / and /health stay public for probes.
+from auth_guard import require_user
+
+_authed = [Depends(require_user)]
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, HttpUrl
 from typing import List, Optional, Dict, Any
@@ -162,7 +168,7 @@ async def root():
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
 
-@app.post("/socratic", response_model=SocraticResponse)
+@app.post("/socratic", dependencies=_authed, response_model=SocraticResponse)
 async def socratic_tutor(request: SocraticRequest):
     """
     Socratic tutoring with citations from authoritative sources
@@ -192,7 +198,7 @@ async def socratic_tutor(request: SocraticRequest):
         misconception_addressed=response_data.get("misconception")
     )
 
-@app.post("/lab_template", response_model=LabTemplate)
+@app.post("/lab_template", dependencies=_authed, response_model=LabTemplate)
 async def generate_lab_template(request: LabTemplateRequest):
     """
     Generate comprehensive lab template with rubric
@@ -207,7 +213,7 @@ async def generate_lab_template(request: LabTemplateRequest):
     
     return template
 
-@app.get("/lab_template/{template_id}/export")
+@app.get("/lab_template/{template_id}/export", dependencies=_authed)
 async def export_lab_template(template_id: str, format: str = "pdf"):
     """
     Export lab template to PDF
@@ -218,7 +224,7 @@ async def export_lab_template(template_id: str, format: str = "pdf"):
     pdf_content = await export_to_pdf(template_id)
     return {"download_url": f"/exports/{template_id}.pdf"}
 
-@app.post("/code_grade", response_model=CodeGradeResponse)
+@app.post("/code_grade", dependencies=_authed, response_model=CodeGradeResponse)
 async def grade_code(request: CodeGradeRequest):
     """
     Autograder for Python/JavaScript code
@@ -248,7 +254,7 @@ async def grade_code(request: CodeGradeRequest):
         suggestions=suggestions
     )
 
-@app.post("/peer_review", response_model=PeerReviewResponse)
+@app.post("/peer_review", dependencies=_authed, response_model=PeerReviewResponse)
 async def simulate_peer_review(request: PeerReviewRequest):
     """
     Peer review simulator with calibrated exemplars
@@ -279,7 +285,7 @@ async def simulate_peer_review(request: PeerReviewRequest):
         calibration_score=calibration
     )
 
-@app.post("/lti_launch", response_model=LTILaunchResponse)
+@app.post("/lti_launch", dependencies=_authed, response_model=LTILaunchResponse)
 async def lti_launch(request: LTILaunchRequest):
     """
     LTI 1.3 launch endpoint
@@ -306,7 +312,7 @@ async def lti_launch(request: LTILaunchRequest):
         status="success"
     )
 
-@app.post("/lti_grade_passback")
+@app.post("/lti_grade_passback", dependencies=_authed)
 async def grade_passback(request: GradePassbackRequest):
     """
     LTI 1.3 grade passback
@@ -321,7 +327,7 @@ async def grade_passback(request: GradePassbackRequest):
     
     return {"status": "success", "lms_response": result}
 
-@app.post("/plagiarism_check")
+@app.post("/plagiarism_check", dependencies=_authed)
 async def check_plagiarism(
     text: str,
     assignment_id: str,
@@ -347,7 +353,7 @@ async def check_plagiarism(
         "requires_review": results["score"] > similarity_threshold
     }
 
-@app.get("/courses")
+@app.get("/courses", dependencies=_authed)
 async def list_courses():
     """
     List available courses with metadata

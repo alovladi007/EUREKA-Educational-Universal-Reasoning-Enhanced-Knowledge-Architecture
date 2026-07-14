@@ -4,7 +4,13 @@ EUREKA High School Tier Service
 Provides gamification, badges, parent portal, and HS-specific features.
 """
 
-from fastapi import FastAPI
+from fastapi import Depends, FastAPI
+
+# P0-3 (Gap Register): every data route requires a valid access token
+# (was fully unauthenticated); / and /health stay public for probes.
+from auth_guard import require_user
+
+_authed = [Depends(require_user)]
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI(
@@ -39,7 +45,7 @@ async def root():
         ]
     }
 
-@app.get("/api/v1/courses")
+@app.get("/api/v1/courses", dependencies=_authed)
 async def get_courses():
     return {
         "courses": [],

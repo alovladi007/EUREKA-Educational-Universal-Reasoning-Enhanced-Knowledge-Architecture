@@ -4,7 +4,13 @@ EUREKA Content Service
 Manages course content, lessons, modules, and learning materials.
 Port: 8004
 """
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, HTTPException
+
+# P0-3 (Gap Register): every data route requires a valid access token
+# (was fully unauthenticated); / and /health stay public for probes.
+from auth_guard import require_user
+
+_authed = [Depends(require_user)]
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional, List
@@ -128,7 +134,7 @@ modules_db: dict[UUID, dict] = {}
 
 # ============= Module Endpoints =============
 
-@app.post("/api/v1/modules", response_model=ModuleResponse, status_code=201)
+@app.post("/api/v1/modules", dependencies=_authed, response_model=ModuleResponse, status_code=201)
 async def create_module(module: ModuleCreate):
     """Create a new content module"""
     module_id = uuid4()
@@ -143,7 +149,7 @@ async def create_module(module: ModuleCreate):
     return module_data
 
 
-@app.get("/api/v1/modules/{module_id}", response_model=ModuleResponse)
+@app.get("/api/v1/modules/{module_id}", dependencies=_authed, response_model=ModuleResponse)
 async def get_module(module_id: UUID):
     """Get a specific module"""
     if module_id not in modules_db:
@@ -151,14 +157,14 @@ async def get_module(module_id: UUID):
     return modules_db[module_id]
 
 
-@app.get("/api/v1/courses/{course_id}/modules", response_model=List[ModuleResponse])
+@app.get("/api/v1/courses/{course_id}/modules", dependencies=_authed, response_model=List[ModuleResponse])
 async def list_course_modules(course_id: UUID):
     """List all modules for a course"""
     modules = [m for m in modules_db.values() if m["course_id"] == course_id]
     return sorted(modules, key=lambda x: x["order_index"])
 
 
-@app.delete("/api/v1/modules/{module_id}", status_code=204)
+@app.delete("/api/v1/modules/{module_id}", dependencies=_authed, status_code=204)
 async def delete_module(module_id: UUID):
     """Delete a module"""
     if module_id not in modules_db:
@@ -170,7 +176,7 @@ async def delete_module(module_id: UUID):
 
 # ============= Content Endpoints =============
 
-@app.post("/api/v1/content", response_model=ContentResponse, status_code=201)
+@app.post("/api/v1/content", dependencies=_authed, response_model=ContentResponse, status_code=201)
 async def create_content(content: ContentCreate, created_by: Optional[UUID] = None):
     """Create new course content"""
     content_id = uuid4()
@@ -193,7 +199,7 @@ async def create_content(content: ContentCreate, created_by: Optional[UUID] = No
     return content_data
 
 
-@app.get("/api/v1/content/{content_id}", response_model=ContentResponse)
+@app.get("/api/v1/content/{content_id}", dependencies=_authed, response_model=ContentResponse)
 async def get_content(content_id: UUID):
     """Get specific content"""
     if content_id not in content_db:
@@ -205,7 +211,7 @@ async def get_content(content_id: UUID):
     return content_db[content_id]
 
 
-@app.get("/api/v1/courses/{course_id}/content", response_model=List[ContentResponse])
+@app.get("/api/v1/courses/{course_id}/content", dependencies=_authed, response_model=List[ContentResponse])
 async def list_course_content(
     course_id: UUID,
     module_id: Optional[UUID] = None,
@@ -245,7 +251,7 @@ async def update_content(content_id: UUID, content_update: ContentUpdate):
     return content
 
 
-@app.delete("/api/v1/content/{content_id}", status_code=204)
+@app.delete("/api/v1/content/{content_id}", dependencies=_authed, status_code=204)
 async def delete_content(content_id: UUID):
     """Delete content"""
     if content_id not in content_db:
@@ -262,7 +268,7 @@ async def delete_content(content_id: UUID):
     return None
 
 
-@app.post("/api/v1/content/{content_id}/publish", response_model=ContentResponse)
+@app.post("/api/v1/content/{content_id}/publish", dependencies=_authed, response_model=ContentResponse)
 async def publish_content(content_id: UUID):
     """Publish content (make it available to students)"""
     if content_id not in content_db:

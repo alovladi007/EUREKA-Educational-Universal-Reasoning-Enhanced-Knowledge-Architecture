@@ -3,8 +3,15 @@ Main API router aggregating all endpoints
 """
 import os
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from app.api.v1.endpoints import auth, users, questions, adaptive, exams, analytics, dev, study_planner, ai_content, pricing, lessons, notes, qbank, flashcards, patent_bar, patent_community, cissp_qbank
+
+from app.api.v1.endpoints.auth import get_current_user
+
+# P2-10 (Gap Register): qbank/flashcards/notes/patent-bar carried 50+ fully
+# public routes over learner data and answer keys. Gate every route at the
+# mount site; write-role checks inside the routers still apply on top.
+_authed = [Depends(get_current_user)]
 
 api_router = APIRouter()
 
@@ -25,11 +32,11 @@ api_router.include_router(study_planner.router, prefix="/study-planner", tags=["
 api_router.include_router(ai_content.router, prefix="/ai", tags=["ai-content"])
 api_router.include_router(pricing.router, prefix="/test-prep", tags=["pricing"])
 api_router.include_router(lessons.router, prefix="/lessons", tags=["video-lessons"])
-api_router.include_router(notes.router, prefix="/notes", tags=["notes"])
-api_router.include_router(qbank.router, prefix="/qbank", tags=["qbank"])
-api_router.include_router(cissp_qbank.router, prefix="/qbank", tags=["cissp-qbank"])
-api_router.include_router(flashcards.router, prefix="/flashcards", tags=["flashcards"])
-api_router.include_router(patent_bar.router, prefix="/patent-bar", tags=["patent-bar"])
+api_router.include_router(notes.router, dependencies=_authed, prefix="/notes", tags=["notes"])
+api_router.include_router(qbank.router, dependencies=_authed, prefix="/qbank", tags=["qbank"])
+api_router.include_router(cissp_qbank.router, dependencies=_authed, prefix="/qbank", tags=["cissp-qbank"])
+api_router.include_router(flashcards.router, dependencies=_authed, prefix="/flashcards", tags=["flashcards"])
+api_router.include_router(patent_bar.router, dependencies=_authed, prefix="/patent-bar", tags=["patent-bar"])
 api_router.include_router(patent_community.router, prefix="/patent-bar/community", tags=["patent-community"])
 
 @api_router.get("/")

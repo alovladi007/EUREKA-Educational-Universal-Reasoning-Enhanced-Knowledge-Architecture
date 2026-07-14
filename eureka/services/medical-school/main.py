@@ -10,7 +10,7 @@ Professional medical education platform with:
 - HIPAA-compliant infrastructure
 """
 
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from contextlib import asynccontextmanager
@@ -134,7 +134,11 @@ async def root():
 
 
 # Include API routes
-app.include_router(api_router, prefix="/api/v1", tags=["Medical School"])
+# P0-3 (Gap Register): every data route requires a valid access token
+from app.core.auth_guard import require_user
+
+app.include_router(api_router, prefix="/api/v1", tags=["Medical School"],
+                   dependencies=[Depends(require_user)])
 
 
 # Global exception handler

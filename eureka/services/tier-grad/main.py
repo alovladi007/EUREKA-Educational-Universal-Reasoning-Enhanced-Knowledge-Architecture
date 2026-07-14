@@ -2,7 +2,13 @@
 EUREKA Graduate Tier - Main FastAPI Service
 Research Workspace, Thesis Coach, Literature Review Tools with IRB compliance
 """
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import Depends, FastAPI, HTTPException, UploadFile, File
+
+# P0-3 (Gap Register): every data route requires a valid access token
+# (was fully unauthenticated); / and /health stay public for probes.
+from auth_guard import require_user
+
+_authed = [Depends(require_user)]
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field, HttpUrl
 from typing import List, Optional, Dict, Any
@@ -233,7 +239,7 @@ async def root():
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.utcnow()}
 
-@app.get("/api/v1/courses")
+@app.get("/api/v1/courses", dependencies=_authed)
 async def get_courses():
     return {
         "courses": [],
@@ -245,7 +251,7 @@ async def get_courses():
         }
     }
 
-@app.post("/lit_review", response_model=LitReviewResponse)
+@app.post("/lit_review", dependencies=_authed, response_model=LitReviewResponse)
 async def conduct_literature_review(request: LitReviewRequest):
     """
     Structured literature review with citation-grounded synthesis
@@ -285,7 +291,7 @@ async def conduct_literature_review(request: LitReviewRequest):
         no_fabricated_citations=True
     )
 
-@app.post("/method_plan", response_model=MethodPlanResponse)
+@app.post("/method_plan", dependencies=_authed, response_model=MethodPlanResponse)
 async def create_method_plan(request: MethodPlanRequest):
     """
     Create research method plan with reproducibility checklist
@@ -308,7 +314,7 @@ async def create_method_plan(request: MethodPlanRequest):
         ethical_considerations=method_template["ethics"]
     )
 
-@app.post("/power_calc", response_model=PowerAnalysisResponse)
+@app.post("/power_calc", dependencies=_authed, response_model=PowerAnalysisResponse)
 async def calculate_power(request: PowerAnalysisRequest):
     """
     Statistical power analysis and sample size calculation
@@ -330,7 +336,7 @@ async def calculate_power(request: PowerAnalysisRequest):
         notes=sample_size["notes"]
     )
 
-@app.get("/prereg_template/{study_type}")
+@app.get("/prereg_template/{study_type}", dependencies=_authed)
 async def get_preregistration_template(study_type: str):
     """
     Get preregistration template
@@ -338,7 +344,7 @@ async def get_preregistration_template(study_type: str):
     template = await load_prereg_template(study_type)
     return template
 
-@app.post("/peer_review", response_model=PeerReviewSimResponse)
+@app.post("/peer_review", dependencies=_authed, response_model=PeerReviewSimResponse)
 async def simulate_peer_review(request: PeerReviewSimRequest):
     """
     Simulate peer review with actionable critiques
@@ -363,7 +369,7 @@ async def simulate_peer_review(request: PeerReviewSimRequest):
         response_to_review_template=response_template
     )
 
-@app.post("/thesis_outline", response_model=ThesisOutline)
+@app.post("/thesis_outline", dependencies=_authed, response_model=ThesisOutline)
 async def create_thesis_outline(request: ThesisOutlineRequest):
     """
     Generate comprehensive thesis outline
@@ -384,7 +390,7 @@ async def create_thesis_outline(request: ThesisOutlineRequest):
         total_estimated_pages=total_pages
     )
 
-@app.post("/chapter_draft", response_model=ChapterDraft)
+@app.post("/chapter_draft", dependencies=_authed, response_model=ChapterDraft)
 async def generate_chapter_draft(request: ChapterDraftRequest):
     """
     Generate chapter draft with proper citations
@@ -404,7 +410,7 @@ async def generate_chapter_draft(request: ChapterDraftRequest):
         suggestions=content["improvement_suggestions"]
     )
 
-@app.post("/figure", response_model=Figure)
+@app.post("/figure", dependencies=_authed, response_model=Figure)
 async def create_figure(request: FigureRequest):
     """
     Create and manage figures/tables
@@ -423,7 +429,7 @@ async def create_figure(request: FigureRequest):
         latex_code=figure["latex"]
     )
 
-@app.post("/thesis_export")
+@app.post("/thesis_export", dependencies=_authed)
 async def export_thesis(request: ThesisExportRequest):
     """
     Export thesis to LaTeX or compiled PDF
@@ -440,7 +446,7 @@ async def export_thesis(request: ThesisExportRequest):
     else:
         raise HTTPException(status_code=400, detail="Unsupported format")
 
-@app.post("/irb_assessment", response_model=IRBAssessmentResponse)
+@app.post("/irb_assessment", dependencies=_authed, response_model=IRBAssessmentResponse)
 async def assess_irb_needs(request: IRBAssessmentRequest):
     """
     Assess IRB requirements and provide guidance
@@ -462,7 +468,7 @@ async def assess_irb_needs(request: IRBAssessmentRequest):
         considerations=await get_irb_considerations(category)
     )
 
-@app.post("/dmp", response_model=DataManagementPlan)
+@app.post("/dmp", dependencies=_authed, response_model=DataManagementPlan)
 async def create_data_management_plan(request: DataManagementPlanRequest):
     """
     Generate Data Management Plan
@@ -476,7 +482,7 @@ async def create_data_management_plan(request: DataManagementPlanRequest):
     
     return dmp
 
-@app.post("/citation_export")
+@app.post("/citation_export", dependencies=_authed)
 async def export_citations(
     citations: List[PaperCitation],
     format: str = "bibtex"  # bibtex, endnote, ris
