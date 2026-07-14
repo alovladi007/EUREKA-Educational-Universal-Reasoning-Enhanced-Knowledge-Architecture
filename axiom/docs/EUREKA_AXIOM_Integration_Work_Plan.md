@@ -199,9 +199,12 @@ this repo has already replaced the slice's four shortcuts in whole or part:
   Enforcement ships off by default (AXIOM_ENTITLEMENTS_ENFORCED). EUREKA-side
   remainder: register the SKUs as products, emit purchase/refund/expiry
   webhooks, and the Stripe checkout itself.
-- Copilot contract (S4): PARTIAL -- AXIOM has its own reasoning provider
-  interface + pgvector retrieval; serving the contract from EUREKA api-core is
-  EK-2 in the Gap Register.
+- Copilot contract (S4): DONE (2026-07-13, EK-2) -- api-core serves
+  /api/v1/reasoning/generate and /score-rubric (real model when
+  ANTHROPIC_API_KEY is set; honest grounded-deterministic fallback otherwise);
+  the axiom api joins the external eureka-network and calls
+  http://api-core:8000, verified provider=eureka end-to-end. AXIOM keeps its
+  SymPy gate on everything that comes back.
 - Frontend (S5): DONE for shell -- AXIOM is a separate Next.js app behind the
   EUREKA sidebar with SSO handoff; MathLive + KaTeX are in (BP-1).
 - Events (S6): DONE -- Caliper events package + analytics ingestion (RW-1).

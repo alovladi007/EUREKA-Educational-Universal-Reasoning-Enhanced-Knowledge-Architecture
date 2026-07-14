@@ -60,6 +60,15 @@ services:
       AXIOM_RETRIEVAL_STORE: pgvector
       AXIOM_EMBEDDING_PROVIDER: sentence_transformers
       AXIOM_EMBEDDING_DIM: "384"
+      # Copilot reasoning calls EUREKA first (EK-2): the api container also
+      # joins the external eureka-network, so api-core is addressed by service
+      # name (no host-gateway port collisions). Any failure falls back to the
+      # deterministic mock, so this never hard-blocks development.
+      AXIOM_REASONING_PROVIDER: eureka
+      AXIOM_EUREKA_REASONING_BASE_URL: http://api-core:8000
+    networks:
+      - default
+      - eureka-network
     command: >
       sh -c "alembic upgrade head &&
              python -m app.seed &&
@@ -133,6 +142,10 @@ services:
       - "3100:3000"
     depends_on:
       - prometheus
+
+networks:
+  eureka-network:
+    external: true
 
 volumes:
   axiom_pg:
