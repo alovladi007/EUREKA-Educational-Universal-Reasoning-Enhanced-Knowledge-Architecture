@@ -511,9 +511,28 @@ function PracticeInner() {
           phase === 'answered') &&
           question && (
           <section className="mt-8 rounded-lg border border-border bg-card p-6">
-            <p className="text-xs font-medium uppercase tracking-wide text-brand-600 dark:text-brand-300">
-              {question.node_title}
-            </p>
+            <div className="flex flex-wrap items-center gap-2">
+              <p className="text-xs font-medium uppercase tracking-wide text-brand-600 dark:text-brand-300">
+                {question.node_title}
+              </p>
+              {question.policy && question.policy !== 'none' && (
+                <span
+                  className={
+                    'inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider ' +
+                    (question.policy === 'remediation'
+                      ? 'border-amber-300 text-amber-700 dark:border-amber-700 dark:text-amber-300'
+                      : 'border-border text-muted-foreground')
+                  }
+                >
+                  {question.policy}
+                </span>
+              )}
+            </div>
+            {question.reason && (
+              <p className="mt-2 border-l-2 border-border pl-3 text-xs text-muted-foreground">
+                {question.reason}
+              </p>
+            )}
             <div className="mt-3 text-base leading-relaxed text-card-foreground">
               <RichMath text={question.prompt} />
             </div>

@@ -423,7 +423,9 @@ export interface PracticePresentation {
   col_headers?: string[];
 }
 
-// A served practice question.
+// A served practice question. policy/reason explain WHY this item was picked
+// (requested / remediation / path), per the rule that every adaptive decision
+// is explainable.
 export interface PracticeQuestion {
   done?: false;
   response_token: string;
@@ -433,6 +435,8 @@ export interface PracticeQuestion {
   prompt: string;
   options: string[] | null;
   presentation?: PracticePresentation;
+  policy?: "requested" | "remediation" | "path" | "none";
+  reason?: string;
 }
 
 // The "nothing to practice" terminal state.

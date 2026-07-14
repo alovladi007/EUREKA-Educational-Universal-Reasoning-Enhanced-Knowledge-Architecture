@@ -24,7 +24,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.config import get_settings
 from app.domains.adaptive.bkt import level_for
-from app.domains.adaptive.service import apply_mastery, plan_path, schedule_review
+from app.domains.adaptive.models import MasteryState
+from app.domains.adaptive.service import MASTERED_BAR, apply_mastery, plan_path, schedule_review
 from app.domains.analytics.ingest import record_event
 from app.domains.assessment.models import Item, ItemTemplate, ItemVariant
 from app.domains.attempts.models import (
@@ -77,21 +78,90 @@ async def _open_practice_attempt(session: AsyncSession, user_id: uuid.UUID) -> A
     return attempt
 
 
+async def _last_diagnosis_target(
+    session: AsyncSession, user_id: uuid.UUID
+) -> tuple[uuid.UUID, str] | None:
+    """Remediation-first signal: if the learner's MOST RECENT graded answer
+    carried a misconception diagnosis, return the node it routes to (and the
+    misconception name) -- unless that node is already mastered."""
+    last = (
+        await session.execute(
+            select(Response)
+            .where(Response.user_id == user_id, Response.submitted_at.isnot(None))
+            .order_by(Response.submitted_at.desc())
+            .limit(1)
+        )
+    ).scalar_one_or_none()
+    if last is None or not isinstance(last.answer, dict):
+        return None
+    code = last.answer.get("diagnosis")
+    if not code:
+        return None
+    m = (
+        await session.execute(select(Misconception).where(Misconception.code == str(code)))
+    ).scalar_one_or_none()
+    if m is None or m.routes_to_node_id is None:
+        return None
+    state = (
+        await session.execute(
+            select(MasteryState).where(
+                MasteryState.user_id == user_id,
+                MasteryState.node_id == m.routes_to_node_id,
+                MasteryState.signal == "apply",
+            )
+        )
+    ).scalar_one_or_none()
+    if state is not None and state.p_known >= MASTERED_BAR:
+        return None  # already mastered; no detour needed
+    return m.routes_to_node_id, m.name
+
+
 async def _pick_node(
     session: AsyncSession, user_id: uuid.UUID, node_id: uuid.UUID | None
-) -> uuid.UUID | None:
+) -> tuple[uuid.UUID | None, str, str]:
+    """Pick the node to practice and say why (the build prompt's rule: every
+    adaptive decision is explainable). Returns (node_id, policy, reason).
+
+    Policy order: requested (the client pinned a node) -> remediation (the most
+    recent wrong answer's misconception routes the next item) -> path (the
+    planner's frontier recommendation, with its written rationale).
+    """
     if node_id is not None:
-        return node_id
+        return node_id, "requested", "You chose this topic."
+    detour = await _last_diagnosis_target(session, user_id)
+    if detour is not None:
+        target, misc_name = detour
+        return (
+            target,
+            "remediation",
+            f"Your last wrong answer showed the pattern '{misc_name}', so the "
+            f"next item targets the skill it routes to.",
+        )
     planned = await plan_path(session, user_id)
     rec = planned.get("recommended_node_id")
-    return uuid.UUID(rec) if rec else None
+    if not rec:
+        return None, "none", "Nothing to practice right now."
+    reason = next(
+        (
+            row.get("reason", "")
+            for row in planned.get("plan", [])
+            if row.get("node_id") == rec
+        ),
+        "recommended by the path planner",
+    )
+    return uuid.UUID(rec), "path", reason
 
 
 async def serve_next(
     session: AsyncSession, user_id: uuid.UUID, node_id: uuid.UUID | None = None
 ) -> dict:
-    """Serve the next practice question, resolving a variant when needed."""
-    target = await _pick_node(session, user_id, node_id)
+    """Serve the next practice question, resolving a variant when needed.
+
+    The response carries the pick's policy and a written reason (requested /
+    remediation / path), so the UI can always tell the learner why they are
+    seeing this item.
+    """
+    target, policy, reason = await _pick_node(session, user_id, node_id)
     if target is None:
         return {"done": True, "message": "Nothing to practice right now. Great work."}
 
@@ -155,6 +225,8 @@ async def serve_next(
             "kind": template.kind,
             "prompt": variant.prompt,
             "options": None,
+            "policy": policy,
+            "reason": reason,
         }
 
     item = rng.choice(items)
@@ -171,6 +243,8 @@ async def serve_next(
         "options": item.options,
         # Non-answer UI data for the structured proof kinds (never leaks the key).
         "presentation": _presentation(item.kind, item.meta),
+        "policy": policy,
+        "reason": reason,
     }
 
 
@@ -469,6 +543,12 @@ async def finalize_response_grade(
                         {"code": target.code, "title": target.title} if target else None
                     ),
                 }
+                # Record the diagnosis on the response so the next serve_next can
+                # apply remediation-first: the most recent wrong answer's
+                # misconception routes the next item (reassign the JSON column so
+                # the ORM sees the change).
+                if isinstance(response.answer, dict):
+                    response.answer = {**response.answer, "diagnosis": m.code}
 
     # Emit Caliper-style analytics events for the graded response and any mastery
     # change. Best-effort: recording an event must never break grading, so a
