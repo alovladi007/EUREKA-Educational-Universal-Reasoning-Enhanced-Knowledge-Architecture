@@ -1700,6 +1700,17 @@ _PF_U1_NODES = [
     ("PF.U2.N2", "computational_skill", "Transforms of standard signals", "Transform Gaussians, exponentials, and the delta to the frequency domain."),
     ("PF.U2.N3", "concept", "Transform properties (linearity, shift, scaling)", "How shifts, scalings, and modulations act on F(k)."),
     ("PF.U2.N4", "concept", "Parseval / energy in the transform domain", "Signal energy is preserved between the x- and k-domains."),
+    # Unit 3: classification of second-order linear PDEs.
+    ("PF.U3.N1", "concept", "PDE classification (elliptic, parabolic, hyperbolic)", "Classify a second-order linear PDE by its discriminant; the class dictates the behavior and the method."),
+    ("PF.U3.N2", "concept", "The three canonical equations", "Heat (parabolic), wave (hyperbolic), and Laplace (elliptic) as the model problems of each class."),
+    # Unit 4: the heat equation.
+    ("PF.U4.N1", "concept", "Separation of variables", "Split u(x,t) = X(x) T(t); the PDE becomes two ODEs joined by a separation constant."),
+    ("PF.U4.N2", "computational_skill", "Heat equation modes", "Verify and build solutions e^{-k n^2 pi^2 t} sin(n pi x) of u_t = k u_xx."),
+    # Unit 5: the wave equation.
+    ("PF.U5.N1", "concept", "d'Alembert's solution", "u = f(x - c t) + g(x + c t): every solution is two traveling waves."),
+    ("PF.U5.N2", "computational_skill", "Traveling-wave solutions", "Verify and build solutions of u_tt = c^2 u_xx at the right wave speed."),
+    # Unit 6: Laplace's equation.
+    ("PF.U6.N1", "concept", "Harmonic functions", "Solutions of u_xx + u_yy = 0: equilibrium states, mean-value property, no interior extrema."),
 ]
 _PF_U1_EDGES = [
     ("PF.U1.N1", "PF.U1.N2"), ("PF.U1.N2", "PF.U1.N3"), ("PF.U1.N2", "PF.U1.N4"),
@@ -1709,6 +1720,14 @@ _PF_U1_EDGES = [
     # Unit 2 (transforms) builds on the Fourier series coefficients.
     ("PF.U1.N2", "PF.U2.N1"), ("PF.U2.N1", "PF.U2.N2"), ("PF.U2.N1", "PF.U2.N3"),
     ("PF.U2.N1", "PF.U2.N4"),
+    # Units 3-6: classification gates the canonical equations; the track spine
+    # OD3 -> PF4 (second-order ODEs feed the heat equation via separation of
+    # variables, per the track doc) is wired here.
+    ("PF.U1.N1", "PF.U3.N1"), ("PF.U3.N1", "PF.U3.N2"),
+    ("PF.U3.N2", "PF.U4.N1"), ("PF.U4.N1", "PF.U4.N2"),
+    ("ODE.U2.N6", "PF.U4.N1"),
+    ("PF.U3.N2", "PF.U5.N1"), ("PF.U5.N1", "PF.U5.N2"),
+    ("PF.U3.N2", "PF.U6.N1"),
 ]
 _PF_U1_MISCONCEPTIONS = [
     ("PF.U1.M1", "Missing the 1/L normalization", "Drops the 1/L factor in the Euler coefficient formulas.", "PF.U1.N2"),
@@ -1717,6 +1736,10 @@ _PF_U1_MISCONCEPTIONS = [
     ("PF.U1.M4", "Convergence-at-a-jump error", "Assumes the series equals the function everywhere, ignoring jumps and Gibbs overshoot.", "PF.U1.N4"),
     ("PF.U2.M1", "Transform convention confusion", "Misplaces the 2 pi factor in the transform definition.", "PF.U2.N1"),
     ("PF.U2.M2", "Shift theorem direction swap", "Confuses a time-domain shift (phase in k) with a frequency-domain shift.", "PF.U2.N3"),
+    ("PF.U3.M1", "Classification by appearance", "Classifies a PDE by which variables appear instead of by the discriminant.", "PF.U3.N1"),
+    ("PF.U4.M1", "Decay rate mismatch", "Pairs the spatial mode sin(n pi x) with the wrong exponential decay rate.", "PF.U4.N2"),
+    ("PF.U5.M1", "Wrong wave speed", "Uses a traveling-wave profile whose speed does not match c in the equation.", "PF.U5.N2"),
+    ("PF.U6.M1", "Harmonic sign error", "Treats x^2 + y^2 (Laplacian 4) as harmonic; the harmonic saddle is x^2 - y^2.", "PF.U6.N1"),
 ]
 _PF_U1_ITEMS = [
     ("PF.U1.N2", "fourier_coefficient",
@@ -1796,6 +1819,73 @@ _PF_U1_ITEMS = [
      "(modulation) is the dual operation.",
      {"choices": [
          {"index": 2, "misconception": "PF.U2.M2"},
+     ]}),
+    # Unit 3: classification.
+    ("PF.U3.N1", "mcq_single",
+     "Classify the heat equation u_t = k u_xx.",
+     ["Parabolic", "Hyperbolic", "Elliptic", "First order"],
+     "0", "One time derivative against two space derivatives: discriminant "
+     "zero, the parabolic prototype (diffusion).",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U3.M1"},
+         {"index": 2, "misconception": "PF.U3.M1"},
+     ]}),
+    ("PF.U3.N2", "mcq_single",
+     "Which equation is the ELLIPTIC prototype?",
+     ["Laplace's equation u_xx + u_yy = 0",
+      "The heat equation u_t = k u_xx",
+      "The wave equation u_tt = c^2 u_xx",
+      "The transport equation u_t + c u_x = 0"],
+     "0", "Laplace's equation (steady state, no time) is elliptic; heat is "
+     "parabolic and wave is hyperbolic.",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U3.M1"},
+         {"index": 2, "misconception": "PF.U3.M1"},
+     ]}),
+    # Unit 4: heat equation, graded by verification (pde_solution).
+    ("PF.U4.N2", "pde_solution",
+     "Give a nonzero solution u(x, t) of the heat equation u_t = u_xx that "
+     "vanishes at x = 0 and x = 1 (a separated mode; use exp, sin, pi).",
+     None, "", "The n = 1 separated mode: u = e^{-pi^2 t} sin(pi x). Any "
+     "mode e^{-n^2 pi^2 t} sin(n pi x), or a combination, also works.",
+     {"residual": "ut - uxx"}),
+    ("PF.U4.N2", "pde_solution",
+     "Give a nonzero solution u(x, t) of u_t = 2 u_xx (diffusivity k = 2) "
+     "vanishing at x = 0 and x = 1.",
+     None, "", "The decay rate carries the diffusivity: u = e^{-2 pi^2 t} "
+     "sin(pi x).",
+     {"residual": "ut - 2*uxx"}),
+    # Unit 5: wave equation.
+    ("PF.U5.N2", "pde_solution",
+     "Give a nonconstant traveling-wave solution u(x, t) of the wave equation "
+     "u_tt = 4 u_xx (wave speed c = 2).",
+     None, "", "Any profile moving at speed 2 works: u = sin(x - 2t), "
+     "u = (x + 2t)^3, or a d'Alembert sum of both directions.",
+     {"residual": "utt - 4*uxx"}),
+    ("PF.U5.N1", "mcq_single",
+     "By d'Alembert, every solution of u_tt = c^2 u_xx is:",
+     ["A sum f(x - ct) + g(x + ct) of two traveling waves",
+      "A single standing wave sin(x) cos(t)",
+      "A decaying exponential in t",
+      "A harmonic function of x and t"],
+     "0", "The general solution splits into a left-moving and a right-moving "
+     "wave at speed c.",
+     {"choices": [
+         {"index": 2, "misconception": "PF.U5.M1"},
+     ]}),
+    # Unit 6: Laplace's equation.
+    ("PF.U6.N1", "pde_solution",
+     "Give a nonconstant harmonic function u(x, y): a solution of Laplace's "
+     "equation u_xx + u_yy = 0.",
+     None, "", "The saddle x^2 - y^2, or e^x cos(y), or x y: any harmonic "
+     "function passes; x^2 + y^2 does not (its Laplacian is 4).",
+     {"residual": "uxx + uyy"}),
+    ("PF.U6.N1", "mcq_single",
+     "Which function is harmonic (solves u_xx + u_yy = 0)?",
+     ["x^2 - y^2", "x^2 + y^2", "x^2", "sin(x)"],
+     "0", "The saddle x^2 - y^2 has Laplacian 2 - 2 = 0; x^2 + y^2 gives 4.",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U6.M1"},
      ]}),
 ]
 

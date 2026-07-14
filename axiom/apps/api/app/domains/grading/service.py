@@ -38,6 +38,7 @@ from math_core import (
     grade_laplace,
     grade_numeric,
     grade_ode,
+    grade_pde,
     grade_rref,
     grade_solution_point,
     grade_solution_set,
@@ -868,6 +869,18 @@ def grade(
             student, cfg.get("residual", ""), order=cfg.get("order"),
             initial_conditions=cfg.get("initial_conditions"),
         )
+        return GradeOutcome(
+            r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
+            str(correct), explanation,
+        )
+
+    if kind == "pde_solution":
+        # PDE/Fourier Units 4-6. meta.residual is the PDE written so it equals
+        # zero (u, ut, utt, ux, uxx, uy, uyy); the student submits u. Grading
+        # verifies the solution satisfies the equation, so any equivalent form
+        # (separated product, traveling wave, ...) is accepted.
+        cfg = meta or {}
+        r = grade_pde(student, cfg.get("residual", ""))
         return GradeOutcome(
             r.is_correct, 1.0 if r.is_correct else 0.0, r.grader, r.confidence, r.detail,
             str(correct), explanation,

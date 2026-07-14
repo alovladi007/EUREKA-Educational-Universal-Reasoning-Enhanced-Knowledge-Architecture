@@ -91,6 +91,9 @@ ITEM_KINDS = (
     "fourier_coefficient",
     # LA Unit 6: submit the determinant of a matrix; graded against SymPy det(A).
     "determinant",
+    # PDE/Fourier Units 4-6: submit u(x,t) (or u(x,y)); graded by verifying it
+    # satisfies the PDE residual (ut/utt/ux/uxx/uy/uyy), like ode_solution.
+    "pde_solution",
     # Calculus foundation: submit an antiderivative F(x); graded by checking
     # F'(x) equals the integrand (any constant of integration accepted).
     "antiderivative",
