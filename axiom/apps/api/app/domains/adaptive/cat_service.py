@@ -27,7 +27,7 @@ from app.domains.adaptive.irt import (
 )
 from app.domains.adaptive.models import CatSession, IRTParameters
 from app.domains.assessment.models import Item
-from app.domains.grading.service import grade
+from app.domains.grading.sandbox import grade_sandboxed
 
 # Stop once the standard error is at or below this, but only after MIN_ITEMS so
 # a lucky early streak cannot end the test prematurely. MAX_ITEMS caps length
@@ -166,7 +166,7 @@ async def answer_cat(
         return {"error": "pending item not found"}
 
     params = await _item_params(session, item)
-    outcome = grade(
+    outcome = await grade_sandboxed(
         item.kind,
         str(item.correct),
         student_answer,

@@ -19,6 +19,9 @@ os.environ.setdefault("AXIOM_ENV", "development")
 # Grade synchronously in tests: no Celery broker runs, and the worker path is
 # covered directly (see test_async_grading) via the grade_pending_response core.
 os.environ.setdefault("AXIOM_ASYNC_GRADING", "false")
+# Grade inline in tests: the process-pool sandbox is exercised by its own
+# smoke; unit tests must stay deterministic and fast.
+os.environ.setdefault("AXIOM_GRADING_SANDBOX", "false")
 # No broker in tests, so do not enqueue notification emails; the email sender is
 # covered directly (see test_email).
 os.environ.setdefault("AXIOM_EMAIL_ENABLED", "false")

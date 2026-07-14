@@ -44,6 +44,7 @@ from app.domains.gamification.service import record_practice_result
 from app.domains.grading.formal import grade_formal_proof
 from app.domains.grading.free_response import grade_free_form_proof, grade_free_response
 from app.domains.grading.mixed import grade_mixed
+from app.domains.grading.sandbox import grade_sandboxed
 from app.domains.grading.service import grade
 
 # Ordered mastery bands, used to detect a level increase from one response so
@@ -406,7 +407,9 @@ async def finalize_response_grade(
         outcome = await grade_mixed(meta, student_answer, explanation=explanation)
     else:
         milestones = meta.get("milestones") if kind == "show_work" else None
-        outcome = grade(
+        # Untrusted learner input grades in the sandbox: process isolation
+        # plus a hard timeout, so adversarial input cannot wedge the API.
+        outcome = await grade_sandboxed(
             kind,
             str(correct),
             student_answer,

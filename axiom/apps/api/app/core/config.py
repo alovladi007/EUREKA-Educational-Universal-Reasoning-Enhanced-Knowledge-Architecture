@@ -60,6 +60,12 @@ class Settings(BaseSettings):
     # attempt time. free_units lists the unit prefixes that stay free samples
     # (rules, not hardcoded checks); Unit 1 of Linear Algebra is the natural
     # free demo per the plan. The webhook is guarded by a shared secret.
+    # Grading sandbox (the standing pre-launch hardening item): learner-
+    # submitted answers grade in a small process pool with a hard timeout,
+    # so adversarial SymPy input cannot wedge the API. Off in tests/CI.
+    grading_sandbox: bool = True
+    grading_timeout_seconds: float = 8.0
+
     entitlements_enforced: bool = False
     free_units: list[str] = Field(default_factory=lambda: ["LA.U1"])
     entitlement_webhook_secret: str = "axiom_dev_webhook_secret"
