@@ -12,13 +12,16 @@ from app.models import AssessmentAttempt, QuestionResponse
 from app.schemas import AutoGradeRequest, AutoGradeResponse, AIGradeRequest, AIGradeResponse
 from app.services.auto_grader import auto_grade_attempt
 from app.services.ai_grader import ai_grade_response
+from app.core.auth_guard import CurrentUser, require_user
+from app.routes.attempts import _assert_attempt_access
 
 router = APIRouter()
 
 @router.post("/auto-grade", response_model=AutoGradeResponse)
 async def auto_grade(
     request: AutoGradeRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
     """Auto-grade an assessment attempt (MCQ, True/False)"""
     
@@ -33,7 +36,9 @@ async def auto_grade(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Attempt {request.attempt_id} not found"
         )
-    
+
+    _assert_attempt_access(user, attempt)
+
     # Grade the attempt
     grading_result = await auto_grade_attempt(request.attempt_id, db)
     
@@ -42,7 +47,8 @@ async def auto_grade(
 @router.post("/ai-grade", response_model=AIGradeResponse)
 async def ai_grade(
     request: AIGradeRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
     """AI-grade a single essay response"""
     
@@ -57,7 +63,14 @@ async def ai_grade(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Response {request.response_id} not found"
         )
-    
+
+    result = await db.execute(
+        select(AssessmentAttempt).where(AssessmentAttempt.id == response.attempt_id)
+    )
+    attempt = result.scalar_one_or_none()
+    if attempt is not None:
+        _assert_attempt_access(user, attempt)
+
     # Grade with AI
     grading_result = await ai_grade_response(
         response_id=request.response_id,
@@ -72,7 +85,8 @@ async def ai_grade(
 @router.get("/attempt/{attempt_id}/results")
 async def get_attempt_results(
     attempt_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
     """Get detailed grading results for an attempt"""
     
@@ -87,7 +101,9 @@ async def get_attempt_results(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Attempt {attempt_id} not found"
         )
-    
+
+    _assert_attempt_access(user, attempt)
+
     # Get responses
     result = await db.execute(
         select(QuestionResponse)

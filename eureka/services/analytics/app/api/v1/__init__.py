@@ -32,13 +32,51 @@ router = APIRouter(dependencies=[Depends(require_user)])
 analytics_service = AnalyticsService()
 
 
+def _staff_org(user: CurrentUser) -> Optional[UUID]:
+    """The caller's org claim when they are staff with an org; None otherwise.
+    Staff without an org claim get no cross-learner powers (self-only)."""
+    if is_staff(user) and user.get("org_id"):
+        return UUID(str(user["org_id"]))
+    return None
+
+
 def _ensure_self_or_staff(user: CurrentUser, target_user_id: UUID) -> None:
     """Reject cross-learner access: a learner may only read their own records;
-    staff (teacher/admin/researcher) may read any."""
-    if is_staff(user):
+    staff may read learners in their own org only (P2-8) — queries are
+    additionally org-scoped via _scope_to_org."""
+    if str(target_user_id) == str(user.get("user_id")):
         return
-    if str(target_user_id) != str(user.get("user_id")):
-        raise HTTPException(status_code=403, detail="Not authorized for this learner's data")
+    if _staff_org(user) is not None:
+        return
+    raise HTTPException(status_code=403, detail="Not authorized for this learner's data")
+
+
+def _scope_to_org(query, model, user: CurrentUser, target_user_id: UUID):
+    """P2-8: when staff read another learner, only rows stamped with the
+    caller's org are visible (unstamped legacy rows stay owner-only)."""
+    if str(target_user_id) == str(user.get("user_id")):
+        return query
+    return query.where(model.org_id == _staff_org(user))
+
+
+def _require_staff_org(user: CurrentUser) -> UUID:
+    """Staff-only routes: require the staff role plus an org claim, and scope
+    everything the route touches to that org."""
+    org = _staff_org(user)
+    if org is None:
+        raise HTTPException(status_code=403, detail="Staff role with an organization required")
+    return org
+
+
+def _assert_row_access(user: CurrentUser, row) -> None:
+    """Owner always passes; staff pass only for rows stamped with their org."""
+    if str(getattr(row, "user_id", None)) == str(user.get("user_id")):
+        return
+    org = _staff_org(user)
+    if (org is not None and getattr(row, "org_id", None) is not None
+            and str(row.org_id) == str(org)):
+        return
+    raise HTTPException(status_code=403, detail="Not authorized for this record")
 
 
 # ============= Student Analytics =============
@@ -57,6 +95,10 @@ async def calculate_student_analytics(
         user_id=user_id,
         course_id=course_id
     )
+    if getattr(analytics, "org_id", None) is None and user.get("org_id"):
+        analytics.org_id = UUID(str(user["org_id"]))
+        await db.commit()
+        await db.refresh(analytics)
     return analytics
 
 
@@ -70,7 +112,8 @@ async def get_student_analytics(
     """Get analytics for a student"""
     _ensure_self_or_staff(user, user_id)
     query = select(StudentAnalytics).where(StudentAnalytics.user_id == user_id)
-    
+    query = _scope_to_org(query, StudentAnalytics, user, user_id)
+
     if course_id:
         query = query.where(StudentAnalytics.course_id == course_id)
     
@@ -102,13 +145,23 @@ async def get_course_analytics(
 @router.post("/at-risk/identify", response_model=List[AtRiskAlertResponse])
 async def identify_at_risk(
     request: IdentifyAtRiskRequest,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Identify at-risk students"""
+    """Identify at-risk students (staff only; alerts are stamped with the
+    caller's org so later reads stay org-scoped)"""
+    org = _require_staff_org(user)
     alerts = await analytics_service.identify_at_risk_students(
         db=db,
         course_id=request.course_id
     )
+    stamped = False
+    for alert in alerts:
+        if getattr(alert, "org_id", None) is None:
+            alert.org_id = org
+            stamped = True
+    if stamped:
+        await db.commit()
     return alerts
 
 
@@ -122,7 +175,8 @@ async def get_student_alerts(
     """Get at-risk alerts for a student"""
     _ensure_self_or_staff(user, user_id)
     query = select(AtRiskAlert).where(AtRiskAlert.user_id == user_id)
-    
+    query = _scope_to_org(query, AtRiskAlert, user, user_id)
+
     if active_only:
         query = query.where(
             and_(
@@ -139,10 +193,15 @@ async def get_student_alerts(
 async def get_course_alerts(
     course_id: UUID,
     active_only: bool = True,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Get at-risk alerts for a course"""
-    query = select(AtRiskAlert).where(AtRiskAlert.course_id == course_id)
+    """Get at-risk alerts for a course (staff only, own org only)"""
+    org = _require_staff_org(user)
+    query = select(AtRiskAlert).where(
+        AtRiskAlert.course_id == course_id,
+        AtRiskAlert.org_id == org,
+    )
     
     if active_only:
         query = query.where(
@@ -160,11 +219,13 @@ async def get_course_alerts(
 async def update_alert(
     alert_id: UUID,
     alert_update: AtRiskAlertUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Update an at-risk alert"""
+    """Update an at-risk alert (staff of the alert's org only)"""
     from datetime import datetime
-    
+
+    _require_staff_org(user)
     result = await db.execute(
         select(AtRiskAlert).where(AtRiskAlert.id == alert_id)
     )
@@ -172,7 +233,9 @@ async def update_alert(
     
     if not alert:
         raise HTTPException(status_code=404, detail="Alert not found")
-    
+
+    _assert_row_access(user, alert)
+
     update_data = alert_update.dict(exclude_unset=True)
     for field, value in update_data.items():
         setattr(alert, field, value)
@@ -194,10 +257,17 @@ async def update_alert(
 @router.post("/events", response_model=EngagementEventResponse)
 async def log_engagement_event(
     event: EngagementEventCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Log an engagement event"""
-    db_event = EngagementEvent(**event.dict())
+    """Log an engagement event (P2-8: non-staff callers always log as
+    themselves — a body-supplied user_id is overridden from the token)"""
+    payload = event.dict()
+    if _staff_org(user) is None:
+        payload["user_id"] = UUID(str(user["user_id"]))
+    db_event = EngagementEvent(**payload)
+    if user.get("org_id"):
+        db_event.org_id = UUID(str(user["org_id"]))
     db.add(db_event)
     await db.commit()
     await db.refresh(db_event)
@@ -215,7 +285,8 @@ async def get_user_events(
     """Get engagement events for a user"""
     _ensure_self_or_staff(user, user_id)
     query = select(EngagementEvent).where(EngagementEvent.user_id == user_id)
-    
+    query = _scope_to_org(query, EngagementEvent, user, user_id)
+
     if course_id:
         query = query.where(EngagementEvent.course_id == course_id)
     
@@ -250,6 +321,8 @@ async def get_student_dashboard(
     
     if not analytics:
         raise HTTPException(status_code=404, detail="Analytics not found")
+
+    _assert_row_access(user, analytics)
     
     # Get alerts
     alerts_result = await db.execute(
@@ -297,9 +370,11 @@ async def get_student_dashboard(
 @router.post("/outcomes", response_model=LearningOutcomeResponse, status_code=201)
 async def create_learning_outcome(
     outcome: LearningOutcomeCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Create a new learning outcome"""
+    """Create a new learning outcome (staff only)"""
+    _require_staff_org(user)
     db_outcome = LearningOutcome(**outcome.dict())
     db.add(db_outcome)
     await db.commit()
@@ -340,9 +415,11 @@ async def list_course_outcomes(
 async def update_learning_outcome(
     outcome_id: UUID,
     outcome_update: LearningOutcomeUpdate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Update a learning outcome"""
+    """Update a learning outcome (staff only)"""
+    _require_staff_org(user)
     result = await db.execute(
         select(LearningOutcome).where(LearningOutcome.id == outcome_id)
     )
@@ -363,9 +440,11 @@ async def update_learning_outcome(
 @router.delete("/outcomes/{outcome_id}", status_code=204)
 async def delete_learning_outcome(
     outcome_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Delete a learning outcome"""
+    """Delete a learning outcome (staff only)"""
+    _require_staff_org(user)
     result = await db.execute(
         select(LearningOutcome).where(LearningOutcome.id == outcome_id)
     )
@@ -386,10 +465,13 @@ async def get_student_achievements(
     user_id: UUID,
     outcome_id: Optional[UUID] = None,
     achieved_only: bool = False,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Get student outcome achievements"""
+    """Get student outcome achievements (self, or staff within their org)"""
+    _ensure_self_or_staff(user, user_id)
     query = select(StudentOutcomeAchievement).where(StudentOutcomeAchievement.user_id == user_id)
+    query = _scope_to_org(query, StudentOutcomeAchievement, user, user_id)
 
     if outcome_id:
         query = query.where(StudentOutcomeAchievement.outcome_id == outcome_id)
@@ -404,14 +486,17 @@ async def get_student_achievements(
 @router.get("/outcomes/{outcome_id}/achievements", response_model=List[StudentOutcomeAchievementResponse])
 async def get_outcome_achievements(
     outcome_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Get all students who achieved a specific outcome"""
+    """Get all students who achieved a specific outcome (staff, own org only)"""
+    org = _require_staff_org(user)
     result = await db.execute(
         select(StudentOutcomeAchievement).where(
             and_(
                 StudentOutcomeAchievement.outcome_id == outcome_id,
-                StudentOutcomeAchievement.is_achieved == True
+                StudentOutcomeAchievement.is_achieved == True,
+                StudentOutcomeAchievement.org_id == org
             )
         )
     )
@@ -428,13 +513,16 @@ async def create_performance_trend(
     metric_value: float,
     period_start: datetime,
     period_end: datetime,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Create a performance trend record"""
+    """Create a performance trend record (self, or staff within their org)"""
     from app.core.models import MetricType
     from datetime import datetime
 
+    _ensure_self_or_staff(user, user_id)
     trend = PerformanceTrend(
+        org_id=UUID(str(user["org_id"])) if user.get("org_id") else None,
         user_id=user_id,
         course_id=course_id,
         metric_type=MetricType(metric_type),
@@ -454,12 +542,15 @@ async def get_user_performance_trends(
     course_id: Optional[UUID] = None,
     metric_type: Optional[str] = None,
     limit: int = 50,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Get performance trends for a user"""
+    """Get performance trends for a user (self, or staff within their org)"""
     from app.core.models import MetricType
 
+    _ensure_self_or_staff(user, user_id)
     query = select(PerformanceTrend).where(PerformanceTrend.user_id == user_id)
+    query = _scope_to_org(query, PerformanceTrend, user, user_id)
 
     if course_id:
         query = query.where(PerformanceTrend.course_id == course_id)
@@ -478,10 +569,14 @@ async def get_user_performance_trends(
 @router.post("/cohorts", response_model=CohortAnalyticsResponse, status_code=201)
 async def create_cohort(
     cohort: CohortAnalyticsCreate,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Create a new cohort for analytics"""
-    db_cohort = CohortAnalytics(**cohort.dict())
+    """Create a new cohort for analytics (staff; pinned to the caller's org)"""
+    org = _require_staff_org(user)
+    payload = cohort.dict()
+    payload["organization_id"] = org
+    db_cohort = CohortAnalytics(**payload)
     db.add(db_cohort)
     await db.commit()
     await db.refresh(db_cohort)
@@ -491,9 +586,11 @@ async def create_cohort(
 @router.get("/cohorts/{cohort_id}", response_model=CohortAnalyticsResponse)
 async def get_cohort(
     cohort_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Get a specific cohort"""
+    """Get a specific cohort (staff, own org only)"""
+    org = _require_staff_org(user)
     result = await db.execute(
         select(CohortAnalytics).where(CohortAnalytics.id == cohort_id)
     )
@@ -502,15 +599,21 @@ async def get_cohort(
     if not cohort:
         raise HTTPException(status_code=404, detail="Cohort not found")
 
+    if str(cohort.organization_id) != str(org):
+        raise HTTPException(status_code=403, detail="Not authorized for this organization")
+
     return cohort
 
 
 @router.get("/organizations/{org_id}/cohorts", response_model=List[CohortAnalyticsResponse])
 async def list_organization_cohorts(
     org_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """List all cohorts for an organization"""
+    """List all cohorts for an organization (staff of that org only)"""
+    if str(_require_staff_org(user)) != str(org_id):
+        raise HTTPException(status_code=403, detail="Not authorized for this organization")
     result = await db.execute(
         select(CohortAnalytics).where(CohortAnalytics.organization_id == org_id)
     )
@@ -520,9 +623,11 @@ async def list_organization_cohorts(
 @router.delete("/cohorts/{cohort_id}", status_code=204)
 async def delete_cohort(
     cohort_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Delete a cohort"""
+    """Delete a cohort (staff of the cohort's org only)"""
+    org = _require_staff_org(user)
     result = await db.execute(
         select(CohortAnalytics).where(CohortAnalytics.id == cohort_id)
     )
@@ -530,6 +635,9 @@ async def delete_cohort(
 
     if not cohort:
         raise HTTPException(status_code=404, detail="Cohort not found")
+
+    if str(cohort.organization_id) != str(org):
+        raise HTTPException(status_code=403, detail="Not authorized for this organization")
 
     await db.delete(cohort)
     await db.commit()
@@ -541,9 +649,11 @@ async def delete_cohort(
 @router.delete("/at-risk/{alert_id}", status_code=204)
 async def delete_alert(
     alert_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Delete an at-risk alert"""
+    """Delete an at-risk alert (staff of the alert's org only)"""
+    _require_staff_org(user)
     result = await db.execute(
         select(AtRiskAlert).where(AtRiskAlert.id == alert_id)
     )
@@ -551,6 +661,8 @@ async def delete_alert(
 
     if not alert:
         raise HTTPException(status_code=404, detail="Alert not found")
+
+    _assert_row_access(user, alert)
 
     await db.delete(alert)
     await db.commit()
@@ -560,9 +672,10 @@ async def delete_alert(
 @router.delete("/events/{event_id}", status_code=204)
 async def delete_engagement_event(
     event_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Delete an engagement event"""
+    """Delete an engagement event (owner, or staff of the event's org)"""
     result = await db.execute(
         select(EngagementEvent).where(EngagementEvent.id == event_id)
     )
@@ -570,6 +683,8 @@ async def delete_engagement_event(
 
     if not event:
         raise HTTPException(status_code=404, detail="Event not found")
+
+    _assert_row_access(user, event)
 
     await db.delete(event)
     await db.commit()

@@ -49,6 +49,8 @@ class StudentAnalytics(Base):
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    # P2-8 tenancy: learner's org copied from the caller's JWT at write time.
+    org_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     course_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     
     # Engagement metrics
@@ -156,6 +158,8 @@ class StudentOutcomeAchievement(Base):
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    # P2-8 tenancy: learner's org copied from the caller's JWT at write time.
+    org_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     outcome_id = Column(UUID(as_uuid=True), ForeignKey("learning_outcomes.id"), nullable=False)
     
     # Achievement
@@ -178,6 +182,8 @@ class AtRiskAlert(Base):
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    # P2-8 tenancy: learner's org copied from the caller's JWT at write time.
+    org_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     course_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     
     # Alert details
@@ -215,6 +221,8 @@ class EngagementEvent(Base):
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    # P2-8 tenancy: learner's org copied from the caller's JWT at write time.
+    org_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     course_id = Column(UUID(as_uuid=True), index=True)
     
     # Event details
@@ -240,6 +248,8 @@ class PerformanceTrend(Base):
     
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    # P2-8 tenancy: learner's org copied from the caller's JWT at write time.
+    org_id = Column(UUID(as_uuid=True), nullable=True, index=True)
     course_id = Column(UUID(as_uuid=True), nullable=False, index=True)
     
     # Metric

@@ -19,14 +19,34 @@ from app.schemas import (
     AttemptListResponse, QuestionResponseResult
 )
 
+from app.core.auth_guard import CurrentUser, is_staff, require_user
+
 router = APIRouter()
+
+
+def _assert_attempt_access(user: CurrentUser, attempt, *, owner_only: bool = False) -> None:
+    """P2-8 tenant/ownership gate: the owner always passes; staff pass only for
+    attempts in their own org (attempts carry org_id from the creator's token).
+    owner_only routes (submit) never accept staff acting for a learner."""
+    if str(attempt.user_id) == str(user.get("user_id")):
+        return
+    if (not owner_only and is_staff(user) and user.get("org_id")
+            and attempt.org_id is not None
+            and str(attempt.org_id) == str(user.get("org_id"))):
+        return
+    raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                        detail="Not authorized for this attempt")
 
 @router.post("/start", response_model=AttemptResponse, status_code=status.HTTP_201_CREATED)
 async def start_attempt(
     attempt_data: AttemptStart,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Start a new assessment attempt"""
+    """Start a new assessment attempt (P2-8: identity comes from the token —
+    a body-supplied user_id is ignored, so attempts cannot be started as
+    someone else)."""
+    attempt_data.user_id = UUID(str(user["user_id"]))
     
     # Get assessment
     result = await db.execute(
@@ -57,35 +77,36 @@ async def start_attempt(
     )
     attempt_count = result.scalar() or 0
     
-    if attempt_count >= assessment.attempts_allowed:
+    if assessment.max_attempts is not None and attempt_count >= assessment.max_attempts:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail=f"Maximum attempts ({assessment.attempts_allowed}) reached"
+            detail=f"Maximum attempts ({assessment.max_attempts}) reached"
         )
     
-    # Check if assessment is available
+    # Check if assessment is available (the model has no late-submission
+    # concept: available_until is a hard cutoff)
     now = datetime.utcnow()
-    if assessment.start_date and now < assessment.start_date:
+    if assessment.available_from and now < assessment.available_from:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Assessment has not started yet"
         )
     
-    if assessment.due_date and now > assessment.due_date and not assessment.late_submission_allowed:
+    if assessment.available_until and now > assessment.available_until:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Assessment deadline has passed"
         )
     
     # Create attempt
-    is_late = assessment.due_date and now > assessment.due_date
     attempt = AssessmentAttempt(
         assessment_id=attempt_data.assessment_id,
         user_id=attempt_data.user_id,
         attempt_number=attempt_count + 1,
         status=AttemptStatus.IN_PROGRESS,
-        is_late=is_late,
-        max_score=assessment.total_points
+        is_late=False,
+        max_score=assessment.total_points,
+        org_id=UUID(str(user["org_id"])) if user.get("org_id") else None,
     )
     
     db.add(attempt)
@@ -98,7 +119,8 @@ async def start_attempt(
 async def submit_attempt(
     attempt_id: UUID,
     submission: AttemptSubmit,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
     """Submit assessment attempt"""
     
@@ -114,6 +136,8 @@ async def submit_attempt(
             detail=f"Attempt {attempt_id} not found"
         )
     
+    _assert_attempt_access(user, attempt, owner_only=True)
+
     if attempt.status != AttemptStatus.IN_PROGRESS:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -175,7 +199,8 @@ async def submit_attempt(
 async def get_attempt(
     attempt_id: UUID,
     include_responses: bool = Query(True),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
     """Get attempt by ID"""
     
@@ -190,6 +215,8 @@ async def get_attempt(
             detail=f"Attempt {attempt_id} not found"
         )
     
+    _assert_attempt_access(user, attempt)
+
     if include_responses:
         result = await db.execute(
             select(QuestionResponse).where(QuestionResponse.attempt_id == attempt_id)
@@ -205,16 +232,24 @@ async def list_attempts(
     status: Optional[AttemptStatus] = Query(None),
     page: int = Query(1, ge=1),
     page_size: int = Query(20, ge=1, le=100),
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """List attempts with filters"""
-    
+    """List attempts. Learners see only their own; staff see their org's
+    (P2-8: rows carry org_id, and a staff caller without an org claim gets
+    self-only rather than everything)."""
+
     query = select(AssessmentAttempt)
-    
+
+    if is_staff(user) and user.get("org_id"):
+        query = query.where(AssessmentAttempt.org_id == UUID(str(user["org_id"])))
+        if user_id:
+            query = query.where(AssessmentAttempt.user_id == user_id)
+    else:
+        query = query.where(AssessmentAttempt.user_id == UUID(str(user["user_id"])))
+
     if assessment_id:
         query = query.where(AssessmentAttempt.assessment_id == assessment_id)
-    if user_id:
-        query = query.where(AssessmentAttempt.user_id == user_id)
     if status:
         query = query.where(AssessmentAttempt.status == status)
     
@@ -238,9 +273,13 @@ async def list_attempts(
 @router.delete("/{attempt_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_attempt(
     attempt_id: UUID,
-    db: AsyncSession = Depends(get_db)
+    db: AsyncSession = Depends(get_db),
+    user: CurrentUser = Depends(require_user),
 ):
-    """Delete attempt (admin only)"""
+    """Delete attempt (staff of the attempt's org only)."""
+    if not is_staff(user):
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail="Staff role required")
     
     result = await db.execute(
         select(AssessmentAttempt).where(AssessmentAttempt.id == attempt_id)
@@ -253,5 +292,6 @@ async def delete_attempt(
             detail=f"Attempt {attempt_id} not found"
         )
     
+    _assert_attempt_access(user, attempt)
     await db.delete(attempt)
     await db.commit()

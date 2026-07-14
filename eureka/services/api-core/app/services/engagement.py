@@ -212,28 +212,50 @@ async def record_activity(
 
 async def leaderboard(
     db: AsyncSession, *, limit: int = 20, period_days: Optional[int] = None,
+    org_id: Optional[UUID] = None,
 ) -> list[dict]:
-    """Top-N learners by XP (overall, or in the trailing window)."""
+    """Top-N learners by XP (overall, or in the trailing window).
+
+    P2-8 tenancy: the board is always org-scoped (transitively via
+    users.org_id); org_id=None matches only org-less learners, never all.
+    Both variants respect the learner's show_on_leaderboard opt-in — the
+    windowed query previously did not.
+    """
+    from app.models.user import User
+
     if period_days is None:
-        q = await db.execute(
-            select(EngagementState).where(EngagementState.show_on_leaderboard.is_(True))
+        q = (
+            select(EngagementState)
+            .join(User, User.id == EngagementState.user_id)
+            .where(
+                EngagementState.show_on_leaderboard.is_(True),
+                User.org_id == org_id,
+            )
             .order_by(EngagementState.xp.desc()).limit(limit)
         )
-        rows = list(q.scalars().all())
+        rows = list((await db.execute(q)).scalars().all())
         return [
             {"user_id": str(r.user_id), "xp": r.xp, "level": r.level,
              "current_streak_days": r.current_streak_days}
             for r in rows
         ]
     since = _utc() - timedelta(days=period_days)
-    q = await db.execute(
+    q = (
         select(XpEvent.user_id, func.sum(XpEvent.xp_delta).label("xp_in_window"))
-        .where(XpEvent.occurred_at >= since)
-        .group_by(XpEvent.user_id)
+        .join(EngagementState, EngagementState.user_id == XpEvent.user_id)
+        .where(
+            XpEvent.occurred_at >= since,
+            EngagementState.show_on_leaderboard.is_(True),
+        )
+    )
+    q = q.join(User, User.id == XpEvent.user_id).where(User.org_id == org_id)
+    q = (
+        q.group_by(XpEvent.user_id)
         .order_by(func.sum(XpEvent.xp_delta).desc())
         .limit(limit)
     )
+    res = await db.execute(q)
     return [
         {"user_id": str(uid), "xp_in_window": int(xp), "period_days": period_days}
-        for uid, xp in q.all()
+        for uid, xp in res.all()
     ]

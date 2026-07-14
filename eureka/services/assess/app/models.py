@@ -100,10 +100,21 @@ class AssessmentAttempt(Base):
         index=True,
     )
     user_id = Column(UUID(as_uuid=True), nullable=False, index=True)
+    # P2-8 tenancy: org of the learner at attempt time, copied from the JWT
+    # claim. Nullable because pre-existing rows (and tokens without an org)
+    # have no value; access checks treat NULL as "owner only".
+    org_id = Column(UUID(as_uuid=True), nullable=True, index=True)
+    # Contract repair: the routes, auto-grader, and response schemas always
+    # expected these; the model was written thinner than the code using it.
+    attempt_number = Column(Integer, nullable=False, default=1)
+    is_late = Column(Boolean, nullable=False, default=False)
     status = Column(String(20), nullable=False, default="in_progress")
     started_at = Column(DateTime, default=datetime.utcnow)
     submitted_at = Column(DateTime, nullable=True)
+    time_spent_seconds = Column(Integer, nullable=True)
     score = Column(Numeric(10, 2), nullable=True)
+    max_score = Column(Numeric(10, 2), nullable=True)
+    percentage = Column(Numeric(5, 2), nullable=True)
     passed = Column(Boolean, nullable=True)
     extra_metadata = Column("metadata", JSONB, default=dict)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -133,9 +144,12 @@ class QuestionResponse(Base):
         nullable=False,
         index=True,
     )
+    response_text = Column(Text, nullable=True)
     response_data = Column(JSONB, nullable=True)
     is_correct = Column(Boolean, nullable=True)
     score = Column(Numeric(10, 2), nullable=True)
+    points_earned = Column(Numeric(10, 2), nullable=True)
+    points_possible = Column(Numeric(10, 2), nullable=True)
     ai_feedback = Column(Text, nullable=True)
     extra_metadata = Column("metadata", JSONB, default=dict)
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -147,12 +161,12 @@ class GradingResult(Base):
     One grading record per attempt. Auto-graded scores land here first;
     if a human regrades, the same row gets the final score.
 
-    TODO (Phase 5.1): add `grading_results` table to init SQL — the
-    table referenced by SQL `grading_results` (already exists in seed)
-    has a slightly different shape from what the routes expect. Reconcile.
+    Reconciled (P2-8 session): the seed SQL's `grading_results` is a
+    different, submission-based legacy table (0 rows, no other reader), so
+    this model owns its own table instead of colliding with it.
     """
 
-    __tablename__ = "grading_results"
+    __tablename__ = "attempt_grading_results"
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     attempt_id = Column(

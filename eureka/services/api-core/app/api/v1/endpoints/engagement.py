@@ -191,8 +191,13 @@ async def leaderboard(
     period_days: Optional[int] = Query(None, ge=1, le=365),
     limit: int = Query(20, ge=1, le=100),
     db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
 ):
-    rows = await eng_svc.leaderboard(db, limit=limit, period_days=period_days)
+    # P2-8: the board is per-organization — a caller only ever sees their own
+    # org's learners. Callers without an org see only org-less learners.
+    rows = await eng_svc.leaderboard(
+        db, limit=limit, period_days=period_days, org_id=current_user.org_id,
+    )
     return rows
 
 
