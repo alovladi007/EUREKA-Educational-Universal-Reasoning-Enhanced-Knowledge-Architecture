@@ -161,6 +161,16 @@ function PracticeInner() {
         return;
       }
       const question = next as PracticeQuestion;
+      if (question.locked) {
+        // Entitlement gate: the picked node is in a paid course the user has
+        // not purchased. Show the message instead of a question card.
+        setDoneMessage(
+          question.message ||
+            'This unit is part of a paid course. Purchase it in EUREKA to continue.',
+        );
+        setPhase('done');
+        return;
+      }
       setQuestion(question);
       if (question.kind === 'ordering' || question.kind === 'proof_assembly') {
         setOrdered(question.options ?? []);

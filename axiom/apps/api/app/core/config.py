@@ -54,6 +54,16 @@ class Settings(BaseSettings):
     # being reachable during local development.
     eureka_directory_enrichment: bool = False
 
+    # Entitlements (Integration Work Plan, Section 3: the monetization link).
+    # When entitlements_enforced is true, paid Engineering Math units require an
+    # active entitlement row (written by the EUREKA webhook) at next-item and
+    # attempt time. free_units lists the unit prefixes that stay free samples
+    # (rules, not hardcoded checks); Unit 1 of Linear Algebra is the natural
+    # free demo per the plan. The webhook is guarded by a shared secret.
+    entitlements_enforced: bool = False
+    free_units: list[str] = Field(default_factory=lambda: ["LA.U1"])
+    entitlement_webhook_secret: str = "axiom_dev_webhook_secret"
+
     # Copilot reasoning (Phase 3). reasoning_provider selects the backend the
     # copilot calls, behind a swappable interface (ADR 0001):
     #   "mock"   - deterministic, curriculum-grounded responses. Local and tests.

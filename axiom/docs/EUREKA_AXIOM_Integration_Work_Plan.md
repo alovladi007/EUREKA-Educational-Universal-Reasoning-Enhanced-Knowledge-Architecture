@@ -190,8 +190,15 @@ this repo has already replaced the slice's four shortcuts in whole or part:
 - User sync (S2): PARTIAL -- shared identity gives one user id; a deletion
   cascade for AXIOM attempts/mastery exists via retention machinery (CT wave),
   enrollment membership lives in EUREKA api-core.
-- Entitlements (S3): MISSING -- no entitlement check at next-item/attempt time;
-  this remains the monetization link to build (EK backlog).
+- Entitlements (S3): AXIOM-SIDE DONE (2026-07-13) -- entitlements table +
+  migration 0022, product SKUs by node-code prefix (axiom-linear-algebra /
+  axiom-odes / axiom-pdes-fourier), free-tier RULES via settings free_units
+  (default LA.U1), check_access enforced at next-item AND attempt time behind a
+  short-TTL cache, EUREKA webhook (granted/revoked, shared-secret guarded),
+  GET /entitlements/me, and a locked payload the practice UI renders.
+  Enforcement ships off by default (AXIOM_ENTITLEMENTS_ENFORCED). EUREKA-side
+  remainder: register the SKUs as products, emit purchase/refund/expiry
+  webhooks, and the Stripe checkout itself.
 - Copilot contract (S4): PARTIAL -- AXIOM has its own reasoning provider
   interface + pgvector retrieval; serving the contract from EUREKA api-core is
   EK-2 in the Gap Register.

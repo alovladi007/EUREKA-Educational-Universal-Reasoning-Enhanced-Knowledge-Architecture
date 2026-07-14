@@ -210,6 +210,7 @@ def grade_steps(
         final_correct = last_set is not None and last_set == key_set
 
     # Score.
+    checkable = [r for r in reports[1:] if True]  # transitions after line 0
     n_trans = max(len(lines) - 1, 1)
     n_valid_trans = sum(
         1 for r in reports[1:] if r.valid and "preserved" in r.note

@@ -437,6 +437,11 @@ export interface PracticeQuestion {
   presentation?: PracticePresentation;
   policy?: "requested" | "remediation" | "path" | "none";
   reason?: string;
+  // Entitlement gate: set when the picked node is in a paid course the user
+  // has not purchased. prompt/kind are absent on a locked payload.
+  locked?: boolean;
+  product?: string;
+  message?: string;
 }
 
 // The "nothing to practice" terminal state.

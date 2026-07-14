@@ -37,6 +37,7 @@ from app.domains.attempts.models import (
     StepCredit,
 )
 from app.domains.curriculum.models import KnowledgeNode, Misconception
+from app.domains.entitlements.service import check_access
 from app.domains.gamification.service import record_practice_result
 from app.domains.grading.formal import grade_formal_proof
 from app.domains.grading.free_response import grade_free_form_proof, grade_free_response
@@ -170,6 +171,23 @@ async def serve_next(
     ).scalar_one_or_none()
     if node is None:
         return {"done": True, "message": "Unknown node."}
+
+    # Entitlement gate (Integration Work Plan, Section 3): paid units require an
+    # active entitlement at next-item time. Free-sample units and unpaywalled
+    # content always pass; enforcement is off by default in development.
+    access = await check_access(session, user_id, node.code)
+    if not access.allowed:
+        return {
+            "done": False,
+            "locked": True,
+            "node_id": str(target),
+            "node_title": node.title,
+            "product": access.product_code,
+            "message": (
+                f"'{node.title}' is part of a paid course. "
+                f"Purchase {access.product_code} in EUREKA to continue."
+            ),
+        }
 
     templates = (
         (await session.execute(select(ItemTemplate).where(ItemTemplate.node_id == target)))
@@ -662,6 +680,22 @@ async def answer(
         return {"error": "response not found"}
     if response.submitted_at is not None:
         return {"error": "already answered"}
+
+    # Entitlement gate at attempt time (Integration Work Plan, Section 3): a
+    # question served before a refund/expiry cannot be graded after access ends.
+    node_for_gate = (
+        await session.execute(
+            select(KnowledgeNode).where(KnowledgeNode.id == response.node_id)
+        )
+    ).scalar_one_or_none()
+    if node_for_gate is not None:
+        access = await check_access(session, user_id, node_for_gate.code)
+        if not access.allowed:
+            return {
+                "error": "entitlement required",
+                "locked": True,
+                "product": access.product_code,
+            }
 
     kind, *_rest = await _resolve_source(session, response)
 
