@@ -1711,6 +1711,15 @@ _PF_U1_NODES = [
     ("PF.U5.N2", "computational_skill", "Traveling-wave solutions", "Verify and build solutions of u_tt = c^2 u_xx at the right wave speed."),
     # Unit 6: Laplace's equation.
     ("PF.U6.N1", "concept", "Harmonic functions", "Solutions of u_xx + u_yy = 0: equilibrium states, mean-value property, no interior extrema."),
+    # Unit 7: Sturm-Liouville theory (eigenvalues meet Fourier series).
+    ("PF.U7.N1", "concept", "Boundary value eigenproblems", "X'' + lambda X = 0 with boundary conditions has solutions only for special lambda: the eigenvalues."),
+    ("PF.U7.N2", "computational_skill", "Eigenvalues and eigenfunctions of X'' + lambda X = 0", "On [0, pi] with X(0) = X(pi) = 0: lambda_n = n^2, X_n = sin(n x)."),
+    ("PF.U7.N3", "concept", "Orthogonality and eigenfunction expansions", "Sturm-Liouville eigenfunctions are orthogonal; Fourier series are the special case."),
+    # Unit 8: method of characteristics.
+    ("PF.U8.N1", "concept", "Characteristic lines", "First-order PDEs carry data along characteristics; u is constant on x - c t = const for transport."),
+    ("PF.U8.N2", "computational_skill", "The transport equation", "Solve u_t + c u_x = 0: any profile f(x - c t) riding right at speed c."),
+    # Unit 9: Green's functions.
+    ("PF.U9.N1", "concept", "Green's functions", "The response to a point source; superpose responses to solve for any forcing."),
 ]
 _PF_U1_EDGES = [
     ("PF.U1.N1", "PF.U1.N2"), ("PF.U1.N2", "PF.U1.N3"), ("PF.U1.N2", "PF.U1.N4"),
@@ -1728,6 +1737,13 @@ _PF_U1_EDGES = [
     ("ODE.U2.N6", "PF.U4.N1"),
     ("PF.U3.N2", "PF.U5.N1"), ("PF.U5.N1", "PF.U5.N2"),
     ("PF.U3.N2", "PF.U6.N1"),
+    # Unit 7: the track-doc spine LA7 + PF1 -> PF7 (eigenvalues + Fourier
+    # series feed Sturm-Liouville).
+    ("PF.U4.N1", "PF.U7.N1"), ("PF.U7.N1", "PF.U7.N2"), ("PF.U7.N2", "PF.U7.N3"),
+    ("LA.U7.N1", "PF.U7.N1"), ("PF.U1.N2", "PF.U7.N3"),
+    # Unit 8 rides on classification; Unit 9 on the heat/Laplace machinery.
+    ("PF.U3.N1", "PF.U8.N1"), ("PF.U8.N1", "PF.U8.N2"),
+    ("PF.U6.N1", "PF.U9.N1"), ("PF.U4.N2", "PF.U9.N1"),
 ]
 _PF_U1_MISCONCEPTIONS = [
     ("PF.U1.M1", "Missing the 1/L normalization", "Drops the 1/L factor in the Euler coefficient formulas.", "PF.U1.N2"),
@@ -1740,6 +1756,10 @@ _PF_U1_MISCONCEPTIONS = [
     ("PF.U4.M1", "Decay rate mismatch", "Pairs the spatial mode sin(n pi x) with the wrong exponential decay rate.", "PF.U4.N2"),
     ("PF.U5.M1", "Wrong wave speed", "Uses a traveling-wave profile whose speed does not match c in the equation.", "PF.U5.N2"),
     ("PF.U6.M1", "Harmonic sign error", "Treats x^2 + y^2 (Laplacian 4) as harmonic; the harmonic saddle is x^2 - y^2.", "PF.U6.N1"),
+    ("PF.U7.M1", "Eigenvalue-index confusion", "Reports lambda_n = n instead of n^2 for X'' + lambda X = 0 on [0, pi].", "PF.U7.N2"),
+    ("PF.U7.M2", "Any-lambda belief", "Thinks the boundary value problem has nonzero solutions for every lambda.", "PF.U7.N1"),
+    ("PF.U8.M1", "Wrong characteristic direction", "Uses f(x + c t) for u_t + c u_x = 0 (rides the wrong way).", "PF.U8.N2"),
+    ("PF.U9.M1", "Green's function as the solution", "Confuses the point-source response with the solution for general forcing (which needs superposition).", "PF.U9.N1"),
 ]
 _PF_U1_ITEMS = [
     ("PF.U1.N2", "fourier_coefficient",
@@ -1886,6 +1906,73 @@ _PF_U1_ITEMS = [
      "0", "The saddle x^2 - y^2 has Laplacian 2 - 2 = 0; x^2 + y^2 gives 4.",
      {"choices": [
          {"index": 1, "misconception": "PF.U6.M1"},
+     ]}),
+    # Unit 7: Sturm-Liouville. The eigenfunction is verified against the ODE;
+    # the eigenvalue ladder is a numeric with an exact answer.
+    ("PF.U7.N2", "ode_solution",
+     "For the eigenvalue lambda = 4, give a nonzero eigenfunction X(x) of "
+     "X'' + lambda X = 0 satisfying X(0) = X(pi) = 0.",
+     None, "", "lambda = 4 = 2^2, so X = sin(2x) (any nonzero multiple works).",
+     {"residual": "ypp + 4*y"}),
+    ("PF.U7.N2", "numeric",
+     "For X'' + lambda X = 0 on [0, pi] with X(0) = X(pi) = 0, what is the "
+     "THIRD eigenvalue lambda_3?",
+     None, "9", "lambda_n = n^2, so lambda_3 = 9 (eigenfunction sin(3x)).",
+     None),
+    ("PF.U7.N1", "mcq_single",
+     "For which lambda does X'' + lambda X = 0, X(0) = X(pi) = 0 have a "
+     "NONZERO solution?",
+     ["Only the eigenvalues lambda = n^2 (n = 1, 2, ...)",
+      "Every lambda > 0",
+      "Every real lambda",
+      "Only lambda = 0"],
+     "0", "The boundary conditions kill all solutions except at the discrete "
+     "eigenvalues n^2 -- that is what makes it an eigenproblem.",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U7.M2"},
+         {"index": 2, "misconception": "PF.U7.M2"},
+     ]}),
+    ("PF.U7.N3", "mcq_single",
+     "Distinct Sturm-Liouville eigenfunctions are:",
+     ["Orthogonal (their weighted product integrates to zero)",
+      "Equal up to scaling",
+      "Always polynomials",
+      "Linearly dependent"],
+     "0", "Orthogonality is what makes eigenfunction (Fourier) expansions "
+     "work: coefficients come from projections.",
+     {"choices": [
+         {"index": 3, "misconception": "PF.U7.M1"},
+     ]}),
+    # Unit 8: characteristics / transport, verified by substitution.
+    ("PF.U8.N2", "pde_solution",
+     "Give a nonconstant solution u(x, t) of the transport equation "
+     "u_t + 2 u_x = 0.",
+     None, "", "Any profile riding right at speed 2: u = f(x - 2t), for "
+     "example sin(x - 2t).",
+     {"residual": "ut + 2*ux"}),
+    ("PF.U8.N1", "mcq_single",
+     "For u_t + c u_x = 0, the solution is constant along which lines?",
+     ["The characteristics x - c t = constant",
+      "The lines x + c t = constant",
+      "Vertical lines x = constant",
+      "Horizontal lines t = constant"],
+     "0", "Data rides the characteristics x = x_0 + c t; along them du/dt = "
+     "u_t + c u_x = 0.",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U8.M1"},
+     ]}),
+    # Unit 9: Green's functions (concept).
+    ("PF.U9.N1", "mcq_single",
+     "What is a Green's function G(x, s) for a linear problem L u = f?",
+     ["The response to a unit point source at s; the solution for general f "
+      "is the superposition integral of G against f",
+      "The general solution of L u = f",
+      "The Fourier transform of f",
+      "An eigenfunction of L"],
+     "0", "G solves L G = delta(x - s); linearity then gives "
+     "u(x) = integral G(x, s) f(s) ds for any forcing.",
+     {"choices": [
+         {"index": 1, "misconception": "PF.U9.M1"},
      ]}),
 ]
 
