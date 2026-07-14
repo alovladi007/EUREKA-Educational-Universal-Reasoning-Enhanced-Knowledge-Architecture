@@ -196,9 +196,15 @@ this repo has already replaced the slice's four shortcuts in whole or part:
   (default LA.U1), check_access enforced at next-item AND attempt time behind a
   short-TTL cache, EUREKA webhook (granted/revoked, shared-secret guarded),
   GET /entitlements/me, and a locked payload the practice UI renders.
-  Enforcement ships off by default (AXIOM_ENTITLEMENTS_ENFORCED). EUREKA-side
-  remainder: register the SKUs as products, emit purchase/refund/expiry
-  webhooks, and the Stripe checkout itself.
+  Enforcement ships off by default (AXIOM_ENTITLEMENTS_ENFORCED). EUREKA side
+  (2026-07-13): api-core emits the webhooks on purchase -- courses map to AXIOM
+  SKUs via AXIOM_PRODUCT_COURSES env JSON or a "[axiom:<sku>]" course-title tag
+  (services/axiom_entitlements.py), hooked into both paid transitions (free
+  checkout + stub confirm) best-effort so a webhook failure never blocks a
+  purchase. Verified end-to-end across stacks: grant -> row persists -> ODE
+  unlocks while PF stays locked -> revoke -> re-locks. Remainder: the real
+  Stripe webhook handler and a refund endpoint (which then calls the same
+  emitter with entitlement.revoked).
 - Copilot contract (S4): DONE (2026-07-13, EK-2) -- api-core serves
   /api/v1/reasoning/generate and /score-rubric (real model when
   ANTHROPIC_API_KEY is set; honest grounded-deterministic fallback otherwise);

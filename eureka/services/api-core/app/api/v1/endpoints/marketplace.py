@@ -113,6 +113,7 @@ from app.schemas.marketplace import (
 from app.services import marketplace_instructor as inst_svc
 from app.services import marketplace_moderation as mod_svc
 from app.services import marketplace_pricing as price_svc
+from app.services.axiom_entitlements import maybe_grant_for_purchase
 from app.services import marketplace_ranking as rank_svc
 
 
@@ -551,6 +552,9 @@ async def start_checkout(
                 )
             )
         await db.commit()
+        # AXIOM entitlement (Integration Plan S3): a paid course that maps to
+        # an AXIOM SKU unlocks the AXIOM units; best-effort, never blocks.
+        await maybe_grant_for_purchase(db, current_user.id, payload.course_id)
         return CheckoutResponse(
             purchase_id=purchase.id, checkout_url=None, is_free=True, is_stub=True,
         )
@@ -635,6 +639,8 @@ async def confirm_stub_checkout(
         inst.total_sales_cents = (inst.total_sales_cents or 0) + purchase.final_price_cents
     await db.commit()
     await db.refresh(purchase)
+    # AXIOM entitlement (Integration Plan S3); best-effort, never blocks.
+    await maybe_grant_for_purchase(db, purchase.user_id, purchase.course_id)
     return purchase
 
 

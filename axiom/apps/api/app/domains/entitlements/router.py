@@ -107,8 +107,10 @@ async def entitlement_webhook(
     if body.event == "entitlement.granted":
         expires = body.expires_at.replace(tzinfo=None) if body.expires_at else None
         await grant(session, user.id, body.product_code, expires_at=expires)
+        await session.commit()
         return WebhookOut(ok=True, detail="granted")
     if body.event == "entitlement.revoked":
         existed = await revoke(session, user.id, body.product_code)
+        await session.commit()
         return WebhookOut(ok=True, detail="revoked" if existed else "nothing to revoke")
     raise HTTPException(status_code=422, detail=f"unknown event {body.event}")
