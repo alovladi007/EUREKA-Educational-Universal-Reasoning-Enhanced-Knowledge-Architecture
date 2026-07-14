@@ -43,6 +43,56 @@ def validate_file_extension(filename: str) -> bool:
     return ext in settings.ALLOWED_EXTENSIONS
 
 
+# Magic-byte signatures per extension (P2-15): the extension check alone trusts
+# the attacker-controlled filename, so a renamed executable sails through. For
+# binary formats with well-known signatures the file CONTENT must match the
+# claimed extension. Text-ish formats (.txt, .rtf, .svg, ...) have no reliable
+# signature and are only screened against embedded executable magic.
+_MAGIC_SIGNATURES: dict = {
+    ".pdf": [b"%PDF-"],
+    ".png": [b"\x89PNG\r\n\x1a\n"],
+    ".jpg": [b"\xff\xd8\xff"],
+    ".jpeg": [b"\xff\xd8\xff"],
+    ".gif": [b"GIF87a", b"GIF89a"],
+    ".bmp": [b"BM"],
+    ".webp": [b"RIFF"],
+    # OOXML/ODF documents are ZIP containers; legacy .doc is OLE2.
+    ".docx": [b"PK\x03\x04"],
+    ".xlsx": [b"PK\x03\x04"],
+    ".pptx": [b"PK\x03\x04"],
+    ".odt": [b"PK\x03\x04"],
+    ".zip": [b"PK\x03\x04", b"PK\x05\x06"],
+    ".doc": [b"\xd0\xcf\x11\xe0"],
+    ".mp3": [b"ID3", b"\xff\xfb", b"\xff\xf3", b"\xff\xf2"],
+    ".wav": [b"RIFF"],
+    ".avi": [b"RIFF"],
+    ".webm": [b"\x1a\x45\xdf\xa3"],
+    ".flv": [b"FLV"],
+}
+# Content that must never be stored regardless of the claimed extension.
+_EXECUTABLE_MAGIC = (b"MZ", b"\x7fELF", b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf",
+                     b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe", b"#!")
+
+
+def validate_magic_bytes(filename: str, content: bytes) -> bool:
+    """True when the file content is consistent with its claimed extension.
+
+    Binary formats must start with a known signature (mp4/mov check the ftyp
+    box at offset 4). Formats without a reliable signature are allowed unless
+    the content starts with executable magic (PE/ELF/Mach-O/shebang).
+    """
+    head = content[:16]
+    if any(head.startswith(sig) for sig in _EXECUTABLE_MAGIC):
+        return False
+    ext = os.path.splitext(filename or "")[1].lower()
+    if ext in (".mp4", ".mov"):
+        return len(content) > 11 and content[4:8] == b"ftyp"
+    sigs = _MAGIC_SIGNATURES.get(ext)
+    if not sigs:
+        return True  # no reliable signature; executable screen only
+    return any(head.startswith(sig) for sig in sigs)
+
+
 def validate_file_size(file_size: int) -> bool:
     """Check if file size is within limits"""
     max_size_bytes = settings.MAX_FILE_SIZE_MB * 1024 * 1024
@@ -92,6 +142,15 @@ async def upload_file(
             raise HTTPException(
                 status_code=413,
                 detail=f"File too large. Maximum size: {settings.MAX_FILE_SIZE_MB}MB"
+            )
+
+        # Validate content against the claimed extension (P2-15): the filename
+        # is attacker-controlled, so binary formats must carry their magic
+        # bytes and executable content is rejected outright.
+        if not validate_magic_bytes(file.filename, file_content):
+            raise HTTPException(
+                status_code=400,
+                detail="File content does not match its extension",
             )
 
         # Generate unique file path
