@@ -1,0 +1,3612 @@
+{
+  "track": "AXIOM Engineering Mathematics",
+  "courses": [
+    {
+      "id": "LA",
+      "title": "Linear Algebra",
+      "units": [
+        [
+          "LA-U1",
+          "Vectors and Linear Systems"
+        ],
+        [
+          "LA-U2",
+          "Matrix Algebra and Inverses"
+        ],
+        [
+          "LA-U3",
+          "Subspaces, Basis, and Dimension"
+        ],
+        [
+          "LA-U4",
+          "Linear Transformations"
+        ],
+        [
+          "LA-U5",
+          "Determinants"
+        ],
+        [
+          "LA-U6",
+          "Eigenvalues and Eigenvectors"
+        ],
+        [
+          "LA-U7",
+          "Orthogonality and Projections"
+        ],
+        [
+          "LA-U8",
+          "Least Squares and QR"
+        ],
+        [
+          "LA-U9",
+          "SVD and Applications"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "LA01",
+          "unit": "LA-U1",
+          "kind": "computational",
+          "title": "Vector operations and linear combinations",
+          "description": "Addition, scalar multiplication, and forming weighted sums of vectors.",
+          "standards": []
+        },
+        {
+          "id": "LA02",
+          "unit": "LA-U1",
+          "kind": "concept",
+          "title": "Span and the column picture",
+          "description": "The set of all combinations of given vectors; A x as a combination of columns.",
+          "standards": []
+        },
+        {
+          "id": "LA03",
+          "unit": "LA-U1",
+          "kind": "computational",
+          "title": "Gaussian elimination and RREF",
+          "description": "Row reduction to echelon and reduced echelon form; pivots.",
+          "standards": []
+        },
+        {
+          "id": "LA04",
+          "unit": "LA-U1",
+          "kind": "concept",
+          "title": "Existence, uniqueness, and free variables",
+          "description": "Classifying solution sets from pivots; parameterizing infinite families.",
+          "standards": []
+        },
+        {
+          "id": "LA05",
+          "unit": "LA-U2",
+          "kind": "computational",
+          "title": "Matrix multiplication",
+          "description": "Row-column products, composition meaning, non-commutativity.",
+          "standards": []
+        },
+        {
+          "id": "LA06",
+          "unit": "LA-U2",
+          "kind": "computational",
+          "title": "Matrix inverse",
+          "description": "Invertibility, 2x2 formula, Gauss-Jordan inversion, inverse of a product.",
+          "standards": []
+        },
+        {
+          "id": "LA07",
+          "unit": "LA-U2",
+          "kind": "concept",
+          "title": "Elementary matrices and LU",
+          "description": "Row operations as matrix multiplication; factoring A = LU.",
+          "standards": []
+        },
+        {
+          "id": "LA08",
+          "unit": "LA-U3",
+          "kind": "concept",
+          "title": "Subspaces, null space, column space",
+          "description": "Closure under the operations; the four ways a subspace arises from A.",
+          "standards": []
+        },
+        {
+          "id": "LA09",
+          "unit": "LA-U3",
+          "kind": "concept",
+          "title": "Linear independence",
+          "description": "When the only combination giving zero is trivial; tests via RREF.",
+          "standards": []
+        },
+        {
+          "id": "LA10",
+          "unit": "LA-U3",
+          "kind": "concept",
+          "title": "Basis and dimension",
+          "description": "Minimal spanning sets; every basis has the same size.",
+          "standards": []
+        },
+        {
+          "id": "LA11",
+          "unit": "LA-U3",
+          "kind": "concept",
+          "title": "Rank and the rank-nullity theorem",
+          "description": "rank(A) + nullity(A) = n and what it forces about solutions.",
+          "standards": []
+        },
+        {
+          "id": "LA12",
+          "unit": "LA-U4",
+          "kind": "concept",
+          "title": "Linear transformations and their matrices",
+          "description": "T(x) = A x; finding A from the images of basis vectors.",
+          "standards": []
+        },
+        {
+          "id": "LA13",
+          "unit": "LA-U4",
+          "kind": "computational",
+          "title": "Geometry of transformations",
+          "description": "Rotations, reflections, shears, scalings in the plane.",
+          "standards": []
+        },
+        {
+          "id": "LA14",
+          "unit": "LA-U4",
+          "kind": "concept",
+          "title": "Kernel, image, and invertibility of maps",
+          "description": "One-to-one and onto in matrix language.",
+          "standards": []
+        },
+        {
+          "id": "LA15",
+          "unit": "LA-U5",
+          "kind": "computational",
+          "title": "Determinants: computation",
+          "description": "Cofactor expansion and row-reduction computation; triangular shortcut.",
+          "standards": []
+        },
+        {
+          "id": "LA16",
+          "unit": "LA-U5",
+          "kind": "concept",
+          "title": "Determinants: properties and meaning",
+          "description": "Multiplicativity, det = 0 iff singular, volume scaling.",
+          "standards": []
+        },
+        {
+          "id": "LA17",
+          "unit": "LA-U6",
+          "kind": "computational",
+          "title": "Characteristic polynomial and eigenvalues",
+          "description": "det(A - lambda I) = 0; algebraic multiplicity.",
+          "standards": []
+        },
+        {
+          "id": "LA18",
+          "unit": "LA-U6",
+          "kind": "computational",
+          "title": "Eigenvectors and eigenspaces",
+          "description": "Null space of A - lambda I; geometric multiplicity.",
+          "standards": []
+        },
+        {
+          "id": "LA19",
+          "unit": "LA-U6",
+          "kind": "concept",
+          "title": "Diagonalization",
+          "description": "A = P D P^{-1}; when a basis of eigenvectors exists; powers of A.",
+          "standards": []
+        },
+        {
+          "id": "LA20",
+          "unit": "LA-U6",
+          "kind": "concept",
+          "title": "Symmetric matrices and the spectral theorem",
+          "description": "Real eigenvalues, orthogonal eigenvectors, orthogonal diagonalization.",
+          "standards": []
+        },
+        {
+          "id": "LA21",
+          "unit": "LA-U7",
+          "kind": "computational",
+          "title": "Dot product, norms, and angles",
+          "description": "Inner products, length, orthogonality, Cauchy-Schwarz.",
+          "standards": []
+        },
+        {
+          "id": "LA22",
+          "unit": "LA-U7",
+          "kind": "computational",
+          "title": "Projection onto lines and subspaces",
+          "description": "proj formulas; the projection matrix P = A (A^T A)^{-1} A^T.",
+          "standards": []
+        },
+        {
+          "id": "LA23",
+          "unit": "LA-U7",
+          "kind": "computational",
+          "title": "Gram-Schmidt and orthonormal bases",
+          "description": "Producing orthonormal bases; why orthonormal columns are convenient.",
+          "standards": []
+        },
+        {
+          "id": "LA24",
+          "unit": "LA-U8",
+          "kind": "computational",
+          "title": "Least squares via normal equations",
+          "description": "Minimizing ||A x - b||; A^T A x = A^T b; fitting lines to data.",
+          "standards": []
+        },
+        {
+          "id": "LA25",
+          "unit": "LA-U8",
+          "kind": "concept",
+          "title": "QR factorization and conditioning",
+          "description": "A = QR; why QR beats normal equations numerically.",
+          "standards": []
+        },
+        {
+          "id": "LA26",
+          "unit": "LA-U9",
+          "kind": "concept",
+          "title": "Singular value decomposition",
+          "description": "A = U S V^T; singular values as the geometry of any matrix.",
+          "standards": []
+        },
+        {
+          "id": "LA27",
+          "unit": "LA-U9",
+          "kind": "concept",
+          "title": "Low-rank approximation and PCA",
+          "description": "Eckart-Young; principal components as an SVD of centered data.",
+          "standards": []
+        },
+        {
+          "id": "LA28",
+          "unit": "LA-U9",
+          "kind": "computational",
+          "title": "Condition number and numerical sanity",
+          "description": "kappa(A) = s_max / s_min; when computed answers deserve distrust.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "LA01",
+          "target": "LA02",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA02",
+          "target": "LA03",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA03",
+          "target": "LA04",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA03",
+          "target": "LA05",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA05",
+          "target": "LA06",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA06",
+          "target": "LA07",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA04",
+          "target": "LA08",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA08",
+          "target": "LA09",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA09",
+          "target": "LA10",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA10",
+          "target": "LA11",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA05",
+          "target": "LA12",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA12",
+          "target": "LA13",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA11",
+          "target": "LA14",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA12",
+          "target": "LA14",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA06",
+          "target": "LA15",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA15",
+          "target": "LA16",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA16",
+          "target": "LA17",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA17",
+          "target": "LA18",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA18",
+          "target": "LA19",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA19",
+          "target": "LA20",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA01",
+          "target": "LA21",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA21",
+          "target": "LA22",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA22",
+          "target": "LA23",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA22",
+          "target": "LA24",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA23",
+          "target": "LA25",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA24",
+          "target": "LA25",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA20",
+          "target": "LA26",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA25",
+          "target": "LA26",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA26",
+          "target": "LA27",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "LA26",
+          "target": "LA28",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "LAM01",
+          "name": "Dimension-blind product",
+          "description": "Multiplies matrices entrywise or ignores shape compatibility.",
+          "routes_to": "LA05"
+        },
+        {
+          "code": "LAM02",
+          "name": "Commutativity assumption",
+          "description": "Assumes A B = B A in general.",
+          "routes_to": "LA05"
+        },
+        {
+          "code": "LAM03",
+          "name": "Always-unique belief",
+          "description": "Assumes every linear system has exactly one solution.",
+          "routes_to": "LA04"
+        },
+        {
+          "code": "LAM04",
+          "name": "Inverse-always-exists belief",
+          "description": "Inverts a matrix without checking invertibility, or writes 1/A entrywise.",
+          "routes_to": "LA06"
+        },
+        {
+          "code": "LAM05",
+          "name": "Determinant linearity error",
+          "description": "Believes det(A + B) = det A + det B or det(cA) = c det A for n > 1.",
+          "routes_to": "LA16"
+        },
+        {
+          "code": "LAM06",
+          "name": "Independence by count",
+          "description": "Judges independence by how many vectors there are, not by combinations.",
+          "routes_to": "LA09"
+        },
+        {
+          "code": "LAM07",
+          "name": "Rank equals row count",
+          "description": "Confuses the number of rows or equations with the rank.",
+          "routes_to": "LA11"
+        },
+        {
+          "code": "LAM08",
+          "name": "Zero-vector eigenvector",
+          "description": "Offers the zero vector as an eigenvector, or rejects eigenvalue 0 as impossible.",
+          "routes_to": "LA18"
+        },
+        {
+          "code": "LAM09",
+          "name": "Eigenvalue-of-sum error",
+          "description": "Assumes eigenvalues of A + B are sums of eigenvalues of A and B.",
+          "routes_to": "LA17"
+        },
+        {
+          "code": "LAM10",
+          "name": "Projection idempotence miss",
+          "description": "Expects projecting twice to move the vector again; misses P^2 = P.",
+          "routes_to": "LA22"
+        },
+        {
+          "code": "LAM11",
+          "name": "Normal-equations blindness",
+          "description": "Solves A x = b directly when the system is inconsistent instead of least squares.",
+          "routes_to": "LA24"
+        },
+        {
+          "code": "LAM12",
+          "name": "Orthogonal-means-perpendicular-entries",
+          "description": "Thinks a matrix is orthogonal when entries look symmetric, not when Q^T Q = I.",
+          "routes_to": "LA23"
+        }
+      ],
+      "items": [
+        {
+          "id": "LA-D1",
+          "node_id": "LA05",
+          "grader": "mc",
+          "stem": "A is 2x3 and B is 3x2. Which product is defined, and what is its shape?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "AB is 2x2 and BA is 3x3; both are defined",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "Only AB is defined; BA is not",
+              "correct": false,
+              "misconception": "LAM01"
+            },
+            {
+              "key": "c",
+              "text": "AB = BA whenever both are defined",
+              "correct": false,
+              "misconception": "LAM02"
+            },
+            {
+              "key": "d",
+              "text": "Neither is defined because the shapes differ",
+              "correct": false,
+              "misconception": "LAM01"
+            }
+          ]
+        },
+        {
+          "id": "LA-D2",
+          "node_id": "LA16",
+          "grader": "mc",
+          "stem": "A is 3x3 with det A = 2. What is det(2A)?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "16",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "4",
+              "correct": false,
+              "misconception": "LAM05"
+            },
+            {
+              "key": "c",
+              "text": "2",
+              "correct": false,
+              "misconception": "LAM05"
+            },
+            {
+              "key": "d",
+              "text": "8",
+              "correct": false,
+              "misconception": "LAM05"
+            }
+          ]
+        },
+        {
+          "id": "LA-D3",
+          "node_id": "LA18",
+          "grader": "mc",
+          "stem": "Which statement about eigenvectors is true?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "An eigenvector must be nonzero, but eigenvalue 0 is allowed",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "The zero vector is an eigenvector for every eigenvalue",
+              "correct": false,
+              "misconception": "LAM08"
+            },
+            {
+              "key": "c",
+              "text": "A matrix with eigenvalue 0 cannot exist",
+              "correct": false,
+              "misconception": "LAM08"
+            },
+            {
+              "key": "d",
+              "text": "Eigenvalues of A + B are the sums of eigenvalues of A and B",
+              "correct": false,
+              "misconception": "LAM09"
+            }
+          ]
+        },
+        {
+          "id": "LA-D4",
+          "node_id": "LA09",
+          "grader": "mc",
+          "stem": "Three vectors in R^3. Which conclusion is valid?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "They may be independent or dependent; test the only-trivial-combination condition",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "Three vectors in R^3 are always independent",
+              "correct": false,
+              "misconception": "LAM06"
+            },
+            {
+              "key": "c",
+              "text": "Three vectors always span R^3",
+              "correct": false,
+              "misconception": "LAM06"
+            },
+            {
+              "key": "d",
+              "text": "Independence is impossible to determine without lengths",
+              "correct": false,
+              "misconception": "LAM06"
+            }
+          ]
+        },
+        {
+          "id": "LA-D5",
+          "node_id": "LA22",
+          "grader": "mc",
+          "stem": "P projects onto a subspace. What is P(P(v))?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "P(v): projecting an already-projected vector changes nothing",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "A vector strictly closer to the subspace than P(v)",
+              "correct": false,
+              "misconception": "LAM10"
+            },
+            {
+              "key": "c",
+              "text": "The zero vector",
+              "correct": false,
+              "misconception": "LAM10"
+            },
+            {
+              "key": "d",
+              "text": "v itself",
+              "correct": false,
+              "misconception": "LAM10"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "OD",
+      "title": "Ordinary Differential Equations",
+      "units": [
+        [
+          "OD-U1",
+          "First-Order Equations"
+        ],
+        [
+          "OD-U2",
+          "Modeling and Qualitative Behavior"
+        ],
+        [
+          "OD-U3",
+          "Second-Order Linear Equations"
+        ],
+        [
+          "OD-U4",
+          "Nonhomogeneous Equations and Resonance"
+        ],
+        [
+          "OD-U5",
+          "Laplace Transform Methods"
+        ],
+        [
+          "OD-U6",
+          "Systems of ODEs"
+        ],
+        [
+          "OD-U7",
+          "Series Solutions"
+        ],
+        [
+          "OD-U8",
+          "Phase Plane and Stability"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "OD01",
+          "unit": "OD-U1",
+          "kind": "computational",
+          "title": "Separable equations",
+          "description": "Separating variables, integrating, and recovering the constant.",
+          "standards": []
+        },
+        {
+          "id": "OD02",
+          "unit": "OD-U1",
+          "kind": "computational",
+          "title": "Linear first-order and integrating factors",
+          "description": "y' + p(x) y = q(x) solved by the integrating factor e^{int p}.",
+          "standards": []
+        },
+        {
+          "id": "OD03",
+          "unit": "OD-U1",
+          "kind": "concept",
+          "title": "Existence, uniqueness, and interval of validity",
+          "description": "Picard conditions; where a solution is guaranteed and where it can fail.",
+          "standards": []
+        },
+        {
+          "id": "OD04",
+          "unit": "OD-U1",
+          "kind": "computational",
+          "title": "Exact equations",
+          "description": "M dx + N dy = 0 with M_y = N_x; recovering the potential function.",
+          "standards": []
+        },
+        {
+          "id": "OD05",
+          "unit": "OD-U2",
+          "kind": "concept",
+          "title": "Modeling with first-order ODEs",
+          "description": "Growth and decay, mixing, cooling, and reading a model from a scenario.",
+          "standards": []
+        },
+        {
+          "id": "OD06",
+          "unit": "OD-U2",
+          "kind": "concept",
+          "title": "Autonomous equations and equilibria",
+          "description": "Phase line, stable and unstable equilibria, qualitative sketching.",
+          "standards": []
+        },
+        {
+          "id": "OD07",
+          "unit": "OD-U3",
+          "kind": "computational",
+          "title": "Homogeneous constant-coefficient equations",
+          "description": "Characteristic roots: distinct real, repeated, complex.",
+          "standards": []
+        },
+        {
+          "id": "OD08",
+          "unit": "OD-U3",
+          "kind": "concept",
+          "title": "Linear independence and the Wronskian",
+          "description": "Fundamental sets of solutions; general solution structure.",
+          "standards": []
+        },
+        {
+          "id": "OD09",
+          "unit": "OD-U3",
+          "kind": "computational",
+          "title": "Initial value problems, second order",
+          "description": "Fitting constants to y(0) and y'(0).",
+          "standards": []
+        },
+        {
+          "id": "OD10",
+          "unit": "OD-U4",
+          "kind": "computational",
+          "title": "Undetermined coefficients",
+          "description": "Guessing particular solutions for polynomial, exponential, sinusoidal forcing.",
+          "standards": []
+        },
+        {
+          "id": "OD11",
+          "unit": "OD-U4",
+          "kind": "computational",
+          "title": "Variation of parameters",
+          "description": "The general particular-solution formula from a fundamental set.",
+          "standards": []
+        },
+        {
+          "id": "OD12",
+          "unit": "OD-U4",
+          "kind": "concept",
+          "title": "Oscillators and resonance",
+          "description": "Damped and forced oscillators; resonance and beats in engineering terms.",
+          "standards": []
+        },
+        {
+          "id": "OD13",
+          "unit": "OD-U5",
+          "kind": "computational",
+          "title": "Laplace transforms and inverses",
+          "description": "Transform table, linearity, s-shifting.",
+          "standards": []
+        },
+        {
+          "id": "OD14",
+          "unit": "OD-U5",
+          "kind": "computational",
+          "title": "Solving IVPs by Laplace transform",
+          "description": "Derivative rule turns an IVP into algebra; partial fractions back.",
+          "standards": []
+        },
+        {
+          "id": "OD15",
+          "unit": "OD-U5",
+          "kind": "computational",
+          "title": "Step functions and impulses",
+          "description": "Heaviside and Dirac inputs; switched and impulsive forcing.",
+          "standards": []
+        },
+        {
+          "id": "OD16",
+          "unit": "OD-U6",
+          "kind": "computational",
+          "title": "Linear systems x' = A x",
+          "description": "Eigenvalue method; straight-line solutions.",
+          "standards": []
+        },
+        {
+          "id": "OD17",
+          "unit": "OD-U6",
+          "kind": "concept",
+          "title": "Complex and repeated eigenvalues in systems",
+          "description": "Spirals from complex pairs; generalized eigenvectors.",
+          "standards": []
+        },
+        {
+          "id": "OD18",
+          "unit": "OD-U6",
+          "kind": "concept",
+          "title": "Matrix exponential",
+          "description": "e^{At} as the flow of the system; computing it via diagonalization.",
+          "standards": []
+        },
+        {
+          "id": "OD19",
+          "unit": "OD-U7",
+          "kind": "computational",
+          "title": "Power series solutions",
+          "description": "Series about ordinary points; recurrence relations for coefficients.",
+          "standards": []
+        },
+        {
+          "id": "OD20",
+          "unit": "OD-U7",
+          "kind": "concept",
+          "title": "Regular singular points and Frobenius",
+          "description": "Indicial equation; why Bessel-type equations need Frobenius.",
+          "standards": []
+        },
+        {
+          "id": "OD21",
+          "unit": "OD-U8",
+          "kind": "concept",
+          "title": "Phase portraits and classification",
+          "description": "Nodes, saddles, spirals, centers from eigenvalues.",
+          "standards": []
+        },
+        {
+          "id": "OD22",
+          "unit": "OD-U8",
+          "kind": "concept",
+          "title": "Linearization and stability of equilibria",
+          "description": "Jacobian at an equilibrium; when the linear picture is trustworthy.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "OD01",
+          "target": "OD02",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD01",
+          "target": "OD03",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD02",
+          "target": "OD04",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD01",
+          "target": "OD05",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD05",
+          "target": "OD06",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD02",
+          "target": "OD07",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD07",
+          "target": "OD08",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD07",
+          "target": "OD09",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD09",
+          "target": "OD10",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD10",
+          "target": "OD11",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD09",
+          "target": "OD12",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD07",
+          "target": "OD13",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD13",
+          "target": "OD14",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD14",
+          "target": "OD15",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD07",
+          "target": "OD16",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD16",
+          "target": "OD17",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD17",
+          "target": "OD18",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD07",
+          "target": "OD19",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD19",
+          "target": "OD20",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD16",
+          "target": "OD21",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD21",
+          "target": "OD22",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "OD06",
+          "target": "OD21",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "ODM01",
+          "name": "Lost constant of integration",
+          "description": "Drops the arbitrary constant, or adds it before integrating both sides.",
+          "routes_to": "OD01"
+        },
+        {
+          "code": "ODM02",
+          "name": "Particular-as-general",
+          "description": "Presents one particular solution as the general solution.",
+          "routes_to": "OD07"
+        },
+        {
+          "code": "ODM03",
+          "name": "Division by a vanishing factor",
+          "description": "Divides by an expression that can be zero and silently loses solutions.",
+          "routes_to": "OD01"
+        },
+        {
+          "code": "ODM04",
+          "name": "Integrating factor misapplied",
+          "description": "Multiplies by e^{int p} but forgets the left side must become (mu y)'.",
+          "routes_to": "OD02"
+        },
+        {
+          "code": "ODM05",
+          "name": "Characteristic-equation sign error",
+          "description": "Builds the characteristic polynomial with flipped signs from the ODE.",
+          "routes_to": "OD07"
+        },
+        {
+          "code": "ODM06",
+          "name": "Complex roots discarded",
+          "description": "Treats complex characteristic roots as no solution instead of oscillation.",
+          "routes_to": "OD07"
+        },
+        {
+          "code": "ODM07",
+          "name": "Resonant guess collision",
+          "description": "Uses an undetermined-coefficients guess that duplicates a homogeneous solution.",
+          "routes_to": "OD10"
+        },
+        {
+          "code": "ODM08",
+          "name": "Laplace derivative rule dropped ICs",
+          "description": "Uses L{y'} = s Y instead of s Y - y(0).",
+          "routes_to": "OD14"
+        },
+        {
+          "code": "ODM09",
+          "name": "Eigenvalue-free system solving",
+          "description": "Tries to solve x' = A x componentwise, ignoring the coupling.",
+          "routes_to": "OD16"
+        },
+        {
+          "code": "ODM10",
+          "name": "Equilibrium stability by sign of value",
+          "description": "Judges stability by the sign of the equilibrium value, not the derivative test.",
+          "routes_to": "OD06"
+        },
+        {
+          "code": "ODM11",
+          "name": "Interval-of-validity blindness",
+          "description": "Extends a solution across a singularity of the equation.",
+          "routes_to": "OD03"
+        },
+        {
+          "code": "ODM12",
+          "name": "Wronskian as a number for all x",
+          "description": "Evaluates the Wronskian at one point incorrectly generalized, or treats a zero value at a point as dependence everywhere.",
+          "routes_to": "OD08"
+        }
+      ],
+      "items": [
+        {
+          "id": "OD-D1",
+          "node_id": "OD07",
+          "grader": "mc",
+          "stem": "y'' + 4y = 0. Which is the general solution?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "C1 cos(2x) + C2 sin(2x)",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "C1 e^{2x} + C2 e^{-2x}",
+              "correct": false,
+              "misconception": "ODM05"
+            },
+            {
+              "key": "c",
+              "text": "No real solution exists because the roots are complex",
+              "correct": false,
+              "misconception": "ODM06"
+            },
+            {
+              "key": "d",
+              "text": "cos(2x) + sin(2x)",
+              "correct": false,
+              "misconception": "ODM02"
+            }
+          ]
+        },
+        {
+          "id": "OD-D2",
+          "node_id": "OD14",
+          "grader": "mc",
+          "stem": "Taking the Laplace transform of y' with y(0) = 3 gives:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "s Y(s) - 3",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "s Y(s)",
+              "correct": false,
+              "misconception": "ODM08"
+            },
+            {
+              "key": "c",
+              "text": "Y(s) / s",
+              "correct": false,
+              "misconception": "ODM08"
+            },
+            {
+              "key": "d",
+              "text": "s Y(s) + 3",
+              "correct": false,
+              "misconception": "ODM08"
+            }
+          ]
+        },
+        {
+          "id": "OD-D3",
+          "node_id": "OD10",
+          "grader": "mc",
+          "stem": "y'' - y = e^x. What particular-solution guess works?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "A x e^x, because e^x already solves the homogeneous equation",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "A e^x",
+              "correct": false,
+              "misconception": "ODM07"
+            },
+            {
+              "key": "c",
+              "text": "A constant",
+              "correct": false,
+              "misconception": "ODM07"
+            },
+            {
+              "key": "d",
+              "text": "A cos x + B sin x",
+              "correct": false,
+              "misconception": "ODM07"
+            }
+          ]
+        },
+        {
+          "id": "OD-D4",
+          "node_id": "OD01",
+          "grader": "mc",
+          "stem": "Solving dy/dx = y^2 by separation, dividing by y^2 requires what caution?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "y = 0 is a solution that division silently discards; note it separately",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "No caution; division is always valid",
+              "correct": false,
+              "misconception": "ODM03"
+            },
+            {
+              "key": "c",
+              "text": "The constant of integration is unnecessary here",
+              "correct": false,
+              "misconception": "ODM01"
+            },
+            {
+              "key": "d",
+              "text": "Separation does not apply to this equation",
+              "correct": false,
+              "misconception": "ODM03"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PF",
+      "title": "PDEs and Fourier Analysis",
+      "units": [
+        [
+          "PF-U1",
+          "Fourier Series"
+        ],
+        [
+          "PF-U2",
+          "Fourier Convergence and Parseval"
+        ],
+        [
+          "PF-U3",
+          "Fourier Transforms"
+        ],
+        [
+          "PF-U4",
+          "PDE Classification and Boundary Conditions"
+        ],
+        [
+          "PF-U5",
+          "The Heat Equation"
+        ],
+        [
+          "PF-U6",
+          "The Wave Equation"
+        ],
+        [
+          "PF-U7",
+          "Laplace's Equation"
+        ],
+        [
+          "PF-U8",
+          "Sturm-Liouville Theory"
+        ],
+        [
+          "PF-U9",
+          "Transform Methods and Green's Functions"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "PF01",
+          "unit": "PF-U1",
+          "kind": "computational",
+          "title": "Fourier coefficients",
+          "description": "Computing a0, an, bn on [-L, L]; even and odd shortcuts.",
+          "standards": []
+        },
+        {
+          "id": "PF02",
+          "unit": "PF-U1",
+          "kind": "computational",
+          "title": "Half-range expansions",
+          "description": "Sine and cosine series on [0, L] for boundary-value problems.",
+          "standards": []
+        },
+        {
+          "id": "PF03",
+          "unit": "PF-U2",
+          "kind": "concept",
+          "title": "Pointwise convergence and Gibbs",
+          "description": "Dirichlet conditions, convergence at jumps, the Gibbs overshoot.",
+          "standards": []
+        },
+        {
+          "id": "PF04",
+          "unit": "PF-U2",
+          "kind": "concept",
+          "title": "Parseval and energy",
+          "description": "Series energy identity; mean-square convergence; engineering reading.",
+          "standards": []
+        },
+        {
+          "id": "PF05",
+          "unit": "PF-U3",
+          "kind": "computational",
+          "title": "Fourier transform and inverse",
+          "description": "Transform pairs, linearity, shifting, scaling.",
+          "standards": []
+        },
+        {
+          "id": "PF06",
+          "unit": "PF-U3",
+          "kind": "concept",
+          "title": "Convolution and filtering",
+          "description": "Convolution theorem; frequency-domain reasoning for signals.",
+          "standards": []
+        },
+        {
+          "id": "PF07",
+          "unit": "PF-U4",
+          "kind": "concept",
+          "title": "Classification of second-order PDEs",
+          "description": "Elliptic, parabolic, hyperbolic; why the type dictates the method.",
+          "standards": []
+        },
+        {
+          "id": "PF08",
+          "unit": "PF-U4",
+          "kind": "concept",
+          "title": "Boundary and initial conditions",
+          "description": "Dirichlet, Neumann, Robin; well-posedness in brief.",
+          "standards": []
+        },
+        {
+          "id": "PF09",
+          "unit": "PF-U5",
+          "kind": "computational",
+          "title": "Heat equation by separation of variables",
+          "description": "u_t = alpha u_xx on a rod; eigenfunction expansion of the initial data.",
+          "standards": []
+        },
+        {
+          "id": "PF10",
+          "unit": "PF-U5",
+          "kind": "concept",
+          "title": "Heat kernel intuition and steady state",
+          "description": "Smoothing, decay rates by mode, and the long-time limit.",
+          "standards": []
+        },
+        {
+          "id": "PF11",
+          "unit": "PF-U5",
+          "kind": "computational",
+          "title": "Nonhomogeneous boundary conditions",
+          "description": "Shifting to steady state plus transient.",
+          "standards": []
+        },
+        {
+          "id": "PF12",
+          "unit": "PF-U6",
+          "kind": "computational",
+          "title": "Wave equation by separation of variables",
+          "description": "Standing waves; normal modes of a string.",
+          "standards": []
+        },
+        {
+          "id": "PF13",
+          "unit": "PF-U6",
+          "kind": "computational",
+          "title": "d'Alembert's solution",
+          "description": "Traveling waves u = f(x - ct) + g(x + ct); domain of dependence.",
+          "standards": []
+        },
+        {
+          "id": "PF14",
+          "unit": "PF-U6",
+          "kind": "concept",
+          "title": "Energy and characteristics",
+          "description": "Energy conservation for the string; characteristic lines.",
+          "standards": []
+        },
+        {
+          "id": "PF15",
+          "unit": "PF-U7",
+          "kind": "computational",
+          "title": "Laplace's equation on a rectangle",
+          "description": "Separation with boundary data on one side at a time; superposition.",
+          "standards": []
+        },
+        {
+          "id": "PF16",
+          "unit": "PF-U7",
+          "kind": "concept",
+          "title": "Harmonic functions and mean value",
+          "description": "Maximum principle, mean-value property, physical reading as steady heat.",
+          "standards": []
+        },
+        {
+          "id": "PF17",
+          "unit": "PF-U7",
+          "kind": "computational",
+          "title": "Laplace's equation on a disk",
+          "description": "Polar separation; Poisson kernel in brief.",
+          "standards": []
+        },
+        {
+          "id": "PF18",
+          "unit": "PF-U8",
+          "kind": "concept",
+          "title": "Sturm-Liouville problems",
+          "description": "Self-adjoint form; real eigenvalues and orthogonal eigenfunctions.",
+          "standards": []
+        },
+        {
+          "id": "PF19",
+          "unit": "PF-U8",
+          "kind": "concept",
+          "title": "Eigenfunction expansions",
+          "description": "Generalized Fourier series; why separation of variables always lands here.",
+          "standards": []
+        },
+        {
+          "id": "PF20",
+          "unit": "PF-U8",
+          "kind": "concept",
+          "title": "Bessel and Legendre in brief",
+          "description": "Where cylindrical and spherical problems get their special functions.",
+          "standards": []
+        },
+        {
+          "id": "PF21",
+          "unit": "PF-U9",
+          "kind": "computational",
+          "title": "Method of characteristics, first order",
+          "description": "Transport equations; solving along characteristic curves.",
+          "standards": []
+        },
+        {
+          "id": "PF22",
+          "unit": "PF-U9",
+          "kind": "computational",
+          "title": "Transform methods on infinite domains",
+          "description": "Fourier transform in x for the heat equation on the line.",
+          "standards": []
+        },
+        {
+          "id": "PF23",
+          "unit": "PF-U9",
+          "kind": "concept",
+          "title": "Green's functions",
+          "description": "Impulse response of a boundary-value problem; superposition of sources.",
+          "standards": []
+        },
+        {
+          "id": "PF24",
+          "unit": "PF-U9",
+          "kind": "concept",
+          "title": "PDEs in engineering practice",
+          "description": "Fourier optics, diffusion in semiconductors, waveguides: the applied spine.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "PF01",
+          "target": "PF02",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF01",
+          "target": "PF03",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF03",
+          "target": "PF04",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF01",
+          "target": "PF05",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF05",
+          "target": "PF06",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF07",
+          "target": "PF08",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF02",
+          "target": "PF09",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF08",
+          "target": "PF09",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF09",
+          "target": "PF10",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF09",
+          "target": "PF11",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF02",
+          "target": "PF12",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF08",
+          "target": "PF12",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF12",
+          "target": "PF13",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF13",
+          "target": "PF14",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF08",
+          "target": "PF15",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF15",
+          "target": "PF16",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF15",
+          "target": "PF17",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF09",
+          "target": "PF18",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF12",
+          "target": "PF18",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF18",
+          "target": "PF19",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF19",
+          "target": "PF20",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF07",
+          "target": "PF21",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF05",
+          "target": "PF22",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF22",
+          "target": "PF23",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF10",
+          "target": "PF24",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF14",
+          "target": "PF24",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PF16",
+          "target": "PF24",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "PFM01",
+          "name": "Coefficient formula mix-up",
+          "description": "Swaps the an and bn integrals, or forgets the 1/L normalization.",
+          "routes_to": "PF01"
+        },
+        {
+          "code": "PFM02",
+          "name": "Parity blindness",
+          "description": "Computes all coefficients for an odd or even function instead of using symmetry.",
+          "routes_to": "PF01"
+        },
+        {
+          "code": "PFM03",
+          "name": "Convergence-at-jump error",
+          "description": "Believes the series converges to a one-sided value at a jump instead of the midpoint.",
+          "routes_to": "PF03"
+        },
+        {
+          "code": "PFM04",
+          "name": "Gibbs disappears with more terms",
+          "description": "Expects the Gibbs overshoot to shrink to zero as terms are added.",
+          "routes_to": "PF03"
+        },
+        {
+          "code": "PFM05",
+          "name": "Separation without homogeneous BCs",
+          "description": "Applies separation of variables directly despite nonhomogeneous boundary data.",
+          "routes_to": "PF11"
+        },
+        {
+          "code": "PFM06",
+          "name": "Sign error in the separated ODEs",
+          "description": "Chooses the wrong sign for the separation constant and gets growing modes on a rod.",
+          "routes_to": "PF09"
+        },
+        {
+          "code": "PFM07",
+          "name": "Heat and wave conflation",
+          "description": "Uses oscillatory time behavior for the heat equation or decaying for the wave equation.",
+          "routes_to": "PF07"
+        },
+        {
+          "code": "PFM08",
+          "name": "d'Alembert direction error",
+          "description": "Writes f(x + ct) as the right-moving wave.",
+          "routes_to": "PF13"
+        },
+        {
+          "code": "PFM09",
+          "name": "Laplace as evolution",
+          "description": "Treats Laplace's equation as if it has an initial condition to march in time.",
+          "routes_to": "PF07"
+        },
+        {
+          "code": "PFM10",
+          "name": "Orthogonality assumed for any two functions",
+          "description": "Assumes any two eigenfunction-looking functions are orthogonal without the S-L structure.",
+          "routes_to": "PF18"
+        }
+      ],
+      "items": [
+        {
+          "id": "PF-D1",
+          "node_id": "PF03",
+          "grader": "mc",
+          "stem": "A Fourier series at a jump discontinuity of f converges to:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "The average of the left and right limits",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "The left-hand value",
+              "correct": false,
+              "misconception": "PFM03"
+            },
+            {
+              "key": "c",
+              "text": "The right-hand value",
+              "correct": false,
+              "misconception": "PFM03"
+            },
+            {
+              "key": "d",
+              "text": "It diverges at the jump",
+              "correct": false,
+              "misconception": "PFM03"
+            }
+          ]
+        },
+        {
+          "id": "PF-D2",
+          "node_id": "PF07",
+          "grader": "mc",
+          "stem": "u_t = alpha u_xx and u_tt = c^2 u_xx differ how in time behavior of each spatial mode?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "Heat modes decay exponentially; wave modes oscillate",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "Both oscillate",
+              "correct": false,
+              "misconception": "PFM07"
+            },
+            {
+              "key": "c",
+              "text": "Both decay",
+              "correct": false,
+              "misconception": "PFM07"
+            },
+            {
+              "key": "d",
+              "text": "Heat modes oscillate; wave modes decay",
+              "correct": false,
+              "misconception": "PFM07"
+            }
+          ]
+        },
+        {
+          "id": "PF-D3",
+          "node_id": "PF13",
+          "grader": "mc",
+          "stem": "In u(x, t) = f(x - ct) + g(x + ct), the term f(x - ct) represents:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "A shape moving right with speed c",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "A shape moving left with speed c",
+              "correct": false,
+              "misconception": "PFM08"
+            },
+            {
+              "key": "c",
+              "text": "A standing wave",
+              "correct": false,
+              "misconception": "PFM08"
+            },
+            {
+              "key": "d",
+              "text": "A decaying mode",
+              "correct": false,
+              "misconception": "PFM07"
+            }
+          ]
+        },
+        {
+          "id": "PF-D4",
+          "node_id": "PF01",
+          "grader": "mc",
+          "stem": "f(x) = x on [-pi, pi] is odd. Its Fourier series therefore:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "Has only sine terms; a0 and all an vanish by symmetry",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "Has only cosine terms",
+              "correct": false,
+              "misconception": "PFM02"
+            },
+            {
+              "key": "c",
+              "text": "Requires computing all coefficients; symmetry gives no shortcut",
+              "correct": false,
+              "misconception": "PFM02"
+            },
+            {
+              "key": "d",
+              "text": "Has a nonzero a0 because f is nonzero",
+              "correct": false,
+              "misconception": "PFM02"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C1",
+      "title": "Calculus I",
+      "units": [
+        [
+          "C1-U1",
+          "Limits and Continuity"
+        ],
+        [
+          "C1-U2",
+          "The Derivative"
+        ],
+        [
+          "C1-U3",
+          "Differentiation Rules"
+        ],
+        [
+          "C1-U4",
+          "Applications of Derivatives"
+        ],
+        [
+          "C1-U5",
+          "Introduction to Integration"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "C101",
+          "unit": "C1-U1",
+          "kind": "concept",
+          "title": "The limit concept",
+          "description": "Limits numerically and graphically; one-sided limits.",
+          "standards": []
+        },
+        {
+          "id": "C102",
+          "unit": "C1-U1",
+          "kind": "computational",
+          "title": "Limit laws and algebraic evaluation",
+          "description": "Evaluating limits by algebra; resolving 0/0 by factoring and conjugates.",
+          "standards": []
+        },
+        {
+          "id": "C103",
+          "unit": "C1-U1",
+          "kind": "concept",
+          "title": "Continuity and the IVT",
+          "description": "Continuity at a point and on intervals; intermediate value theorem.",
+          "standards": []
+        },
+        {
+          "id": "C104",
+          "unit": "C1-U1",
+          "kind": "computational",
+          "title": "Limits at infinity and asymptotes",
+          "description": "End behavior; horizontal and vertical asymptotes.",
+          "standards": []
+        },
+        {
+          "id": "C105",
+          "unit": "C1-U2",
+          "kind": "concept",
+          "title": "The derivative as a limit",
+          "description": "Difference quotient; tangent slope and instantaneous rate.",
+          "standards": []
+        },
+        {
+          "id": "C106",
+          "unit": "C1-U2",
+          "kind": "concept",
+          "title": "Differentiability and continuity",
+          "description": "Where derivatives fail: corners, cusps, vertical tangents.",
+          "standards": []
+        },
+        {
+          "id": "C107",
+          "unit": "C1-U3",
+          "kind": "computational",
+          "title": "Power, product, and quotient rules",
+          "description": "Core differentiation rules and when each applies.",
+          "standards": []
+        },
+        {
+          "id": "C108",
+          "unit": "C1-U3",
+          "kind": "computational",
+          "title": "The chain rule",
+          "description": "Derivatives of compositions; inner derivative discipline.",
+          "standards": []
+        },
+        {
+          "id": "C109",
+          "unit": "C1-U3",
+          "kind": "computational",
+          "title": "Implicit differentiation",
+          "description": "Differentiating relations; dy/dx from F(x, y) = 0.",
+          "standards": []
+        },
+        {
+          "id": "C110",
+          "unit": "C1-U3",
+          "kind": "computational",
+          "title": "Exponential, log, and trig derivatives",
+          "description": "The transcendental derivative vocabulary.",
+          "standards": []
+        },
+        {
+          "id": "C111",
+          "unit": "C1-U4",
+          "kind": "computational",
+          "title": "Related rates",
+          "description": "Linking rates through a constraint equation.",
+          "standards": []
+        },
+        {
+          "id": "C112",
+          "unit": "C1-U4",
+          "kind": "computational",
+          "title": "Linear approximation",
+          "description": "Tangent-line approximation and differentials.",
+          "standards": []
+        },
+        {
+          "id": "C113",
+          "unit": "C1-U4",
+          "kind": "concept",
+          "title": "Extrema and the mean value theorem",
+          "description": "Critical points, extreme value theorem, MVT.",
+          "standards": []
+        },
+        {
+          "id": "C114",
+          "unit": "C1-U4",
+          "kind": "computational",
+          "title": "Curve analysis",
+          "description": "First and second derivative tests; concavity and inflection.",
+          "standards": []
+        },
+        {
+          "id": "C115",
+          "unit": "C1-U4",
+          "kind": "computational",
+          "title": "Optimization",
+          "description": "Modeling and solving applied max-min problems.",
+          "standards": []
+        },
+        {
+          "id": "C116",
+          "unit": "C1-U5",
+          "kind": "computational",
+          "title": "Antiderivatives",
+          "description": "Reversing differentiation; the constant of integration.",
+          "standards": []
+        },
+        {
+          "id": "C117",
+          "unit": "C1-U5",
+          "kind": "concept",
+          "title": "Riemann sums and the definite integral",
+          "description": "Area under a curve as a limit of sums.",
+          "standards": []
+        },
+        {
+          "id": "C118",
+          "unit": "C1-U5",
+          "kind": "concept",
+          "title": "The fundamental theorem of calculus",
+          "description": "Both parts; evaluation and the derivative of an accumulation function.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "C101",
+          "target": "C102",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C102",
+          "target": "C103",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C102",
+          "target": "C104",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C102",
+          "target": "C105",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C105",
+          "target": "C106",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C105",
+          "target": "C107",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C107",
+          "target": "C108",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C108",
+          "target": "C109",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C107",
+          "target": "C110",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C108",
+          "target": "C111",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C105",
+          "target": "C112",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C106",
+          "target": "C113",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C113",
+          "target": "C114",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C114",
+          "target": "C115",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C107",
+          "target": "C116",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C103",
+          "target": "C117",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C116",
+          "target": "C118",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C117",
+          "target": "C118",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "C1M01",
+          "name": "Limit equals plug-in always",
+          "description": "Evaluates every limit by substitution, treating all functions as continuous.",
+          "routes_to": "C103"
+        },
+        {
+          "code": "C1M02",
+          "name": "0/0 means no limit",
+          "description": "Concludes a limit does not exist whenever direct substitution gives 0/0.",
+          "routes_to": "C102"
+        },
+        {
+          "code": "C1M03",
+          "name": "Product rule denial",
+          "description": "Differentiates a product as the product of derivatives.",
+          "routes_to": "C107"
+        },
+        {
+          "code": "C1M04",
+          "name": "Dropped inner derivative",
+          "description": "Applies the chain rule without multiplying by the inner derivative.",
+          "routes_to": "C108"
+        },
+        {
+          "code": "C1M05",
+          "name": "Continuous implies differentiable",
+          "description": "Assumes continuity guarantees a derivative; forgets corners and cusps.",
+          "routes_to": "C106"
+        },
+        {
+          "code": "C1M06",
+          "name": "Critical point equals extremum",
+          "description": "Declares every critical point a max or min without a test.",
+          "routes_to": "C113"
+        },
+        {
+          "code": "C1M07",
+          "name": "Lost constant of integration",
+          "description": "Omits + C from indefinite integrals.",
+          "routes_to": "C116"
+        },
+        {
+          "code": "C1M08",
+          "name": "FTC lower-limit blindness",
+          "description": "Evaluates F(b) only, or differentiates an accumulation function incorrectly.",
+          "routes_to": "C118"
+        }
+      ],
+      "items": [
+        {
+          "id": "C1-D1",
+          "node_id": "C102",
+          "grader": "mc",
+          "stem": "lim as x -> 2 of (x^2 - 4)/(x - 2). Direct substitution gives 0/0. Therefore:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "Factor and cancel: the limit is 4",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "The limit does not exist because of the 0/0",
+              "correct": false,
+              "misconception": "C1M02"
+            },
+            {
+              "key": "c",
+              "text": "The limit is 0",
+              "correct": false,
+              "misconception": "C1M01"
+            },
+            {
+              "key": "d",
+              "text": "The limit is undefined, same as f(2)",
+              "correct": false,
+              "misconception": "C1M01"
+            }
+          ]
+        },
+        {
+          "id": "C1-D2",
+          "node_id": "C108",
+          "grader": "mc",
+          "stem": "d/dx of sin(x^2) is:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "2x cos(x^2)",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "cos(x^2)",
+              "correct": false,
+              "misconception": "C1M04"
+            },
+            {
+              "key": "c",
+              "text": "2x cos(2x)",
+              "correct": false,
+              "misconception": "C1M04"
+            },
+            {
+              "key": "d",
+              "text": "-2x cos(x^2)",
+              "correct": false,
+              "misconception": "C1M04"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C2",
+      "title": "Calculus II",
+      "units": [
+        [
+          "C2-U1",
+          "Techniques of Integration"
+        ],
+        [
+          "C2-U2",
+          "Improper Integrals"
+        ],
+        [
+          "C2-U3",
+          "Applications of Integration"
+        ],
+        [
+          "C2-U4",
+          "Sequences and Series"
+        ],
+        [
+          "C2-U5",
+          "Power and Taylor Series"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "C201",
+          "unit": "C2-U1",
+          "kind": "computational",
+          "title": "Substitution",
+          "description": "Reversing the chain rule; changing bounds in definite integrals.",
+          "standards": []
+        },
+        {
+          "id": "C202",
+          "unit": "C2-U1",
+          "kind": "computational",
+          "title": "Integration by parts",
+          "description": "Reversing the product rule; choosing u and dv.",
+          "standards": []
+        },
+        {
+          "id": "C203",
+          "unit": "C2-U1",
+          "kind": "computational",
+          "title": "Trigonometric integrals",
+          "description": "Powers and products of sines, cosines, secants, tangents.",
+          "standards": []
+        },
+        {
+          "id": "C204",
+          "unit": "C2-U1",
+          "kind": "computational",
+          "title": "Trigonometric substitution",
+          "description": "Radicals of quadratics via sin, tan, sec substitutions.",
+          "standards": []
+        },
+        {
+          "id": "C205",
+          "unit": "C2-U1",
+          "kind": "computational",
+          "title": "Partial fractions",
+          "description": "Decomposing rational functions to integrate them.",
+          "standards": []
+        },
+        {
+          "id": "C206",
+          "unit": "C2-U2",
+          "kind": "concept",
+          "title": "Improper integrals",
+          "description": "Infinite limits and unbounded integrands; convergence as a limit.",
+          "standards": []
+        },
+        {
+          "id": "C207",
+          "unit": "C2-U3",
+          "kind": "computational",
+          "title": "Area between curves",
+          "description": "Signed area, intersection-driven bounds, top minus bottom.",
+          "standards": []
+        },
+        {
+          "id": "C208",
+          "unit": "C2-U3",
+          "kind": "computational",
+          "title": "Volumes of revolution",
+          "description": "Disks, washers, and shells; choosing the method.",
+          "standards": []
+        },
+        {
+          "id": "C209",
+          "unit": "C2-U3",
+          "kind": "computational",
+          "title": "Arc length and surface area",
+          "description": "The sqrt(1 + (y')^2) integrals.",
+          "standards": []
+        },
+        {
+          "id": "C210",
+          "unit": "C2-U4",
+          "kind": "concept",
+          "title": "Sequences and convergence",
+          "description": "Limits of sequences; monotone and bounded behavior.",
+          "standards": []
+        },
+        {
+          "id": "C211",
+          "unit": "C2-U4",
+          "kind": "computational",
+          "title": "Series and geometric series",
+          "description": "Partial sums; the geometric series and telescoping.",
+          "standards": []
+        },
+        {
+          "id": "C212",
+          "unit": "C2-U4",
+          "kind": "computational",
+          "title": "Integral and comparison tests",
+          "description": "Convergence by comparison to integrals and known series; p-series.",
+          "standards": []
+        },
+        {
+          "id": "C213",
+          "unit": "C2-U4",
+          "kind": "computational",
+          "title": "Ratio, root, and alternating tests",
+          "description": "Absolute vs conditional convergence; test selection.",
+          "standards": []
+        },
+        {
+          "id": "C214",
+          "unit": "C2-U5",
+          "kind": "computational",
+          "title": "Power series and convergence intervals",
+          "description": "Radius of convergence; endpoint checks.",
+          "standards": []
+        },
+        {
+          "id": "C215",
+          "unit": "C2-U5",
+          "kind": "computational",
+          "title": "Taylor and Maclaurin series",
+          "description": "Building series from derivatives; the standard library.",
+          "standards": []
+        },
+        {
+          "id": "C216",
+          "unit": "C2-U5",
+          "kind": "concept",
+          "title": "Taylor approximation and error",
+          "description": "Truncation, remainder bounds, and where the approximation is trustworthy.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "C201",
+          "target": "C202",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C202",
+          "target": "C203",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C203",
+          "target": "C204",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C202",
+          "target": "C205",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C205",
+          "target": "C206",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C201",
+          "target": "C207",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C207",
+          "target": "C208",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C208",
+          "target": "C209",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C210",
+          "target": "C211",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C211",
+          "target": "C212",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C212",
+          "target": "C213",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C213",
+          "target": "C214",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C214",
+          "target": "C215",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C215",
+          "target": "C216",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C206",
+          "target": "C212",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "C2M01",
+          "name": "Parts sign slip",
+          "description": "Writes integration by parts as uv + int v du, or misassigns u and dv.",
+          "routes_to": "C202"
+        },
+        {
+          "code": "C2M02",
+          "name": "Substitution without the bounds",
+          "description": "Changes variables in a definite integral but keeps the old limits.",
+          "routes_to": "C201"
+        },
+        {
+          "code": "C2M03",
+          "name": "Improper treated as proper",
+          "description": "Evaluates across an infinite limit or singularity without a limit process.",
+          "routes_to": "C206"
+        },
+        {
+          "code": "C2M04",
+          "name": "nth-term test proves convergence",
+          "description": "Concludes a series converges because its terms go to zero.",
+          "routes_to": "C212"
+        },
+        {
+          "code": "C2M05",
+          "name": "Ratio test equals one is conclusive",
+          "description": "Reads L = 1 in the ratio test as convergence or divergence.",
+          "routes_to": "C213"
+        },
+        {
+          "code": "C2M06",
+          "name": "Unchecked endpoints",
+          "description": "States an interval of convergence without testing the endpoints.",
+          "routes_to": "C214"
+        },
+        {
+          "code": "C2M07",
+          "name": "Infinite series as big finite sum",
+          "description": "Manipulates divergent or conditionally convergent series as if finite.",
+          "routes_to": "C211"
+        },
+        {
+          "code": "C2M08",
+          "name": "Remainder ignored",
+          "description": "Uses a Taylor polynomial with no sense of where or how much it errs.",
+          "routes_to": "C216"
+        }
+      ],
+      "items": [
+        {
+          "id": "C2-D1",
+          "node_id": "C212",
+          "grader": "mc",
+          "stem": "The terms of sum 1/n go to zero. The series therefore:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "May still diverge, and this one does (harmonic series)",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "Converges, because the terms go to zero",
+              "correct": false,
+              "misconception": "C2M04"
+            },
+            {
+              "key": "c",
+              "text": "Converges to 1",
+              "correct": false,
+              "misconception": "C2M07"
+            },
+            {
+              "key": "d",
+              "text": "Converges by the ratio test with L = 1",
+              "correct": false,
+              "misconception": "C2M05"
+            }
+          ]
+        },
+        {
+          "id": "C2-D2",
+          "node_id": "C201",
+          "grader": "mc",
+          "stem": "Evaluating int from 0 to 2 of 2x (x^2 + 1)^3 dx with u = x^2 + 1, the new bounds are:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "u from 1 to 5",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "u from 0 to 2, unchanged",
+              "correct": false,
+              "misconception": "C2M02"
+            },
+            {
+              "key": "c",
+              "text": "u from 0 to 5",
+              "correct": false,
+              "misconception": "C2M02"
+            },
+            {
+              "key": "d",
+              "text": "Bounds are irrelevant for substitution",
+              "correct": false,
+              "misconception": "C2M02"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "C3",
+      "title": "Calculus III",
+      "units": [
+        [
+          "C3-U1",
+          "Vectors and Space"
+        ],
+        [
+          "C3-U2",
+          "Partial Derivatives"
+        ],
+        [
+          "C3-U3",
+          "Multivariable Optimization"
+        ],
+        [
+          "C3-U4",
+          "Multiple Integrals"
+        ],
+        [
+          "C3-U5",
+          "Vector Calculus"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "C301",
+          "unit": "C3-U1",
+          "kind": "computational",
+          "title": "Vectors, dot and cross products",
+          "description": "3D vectors; projections, areas, and perpendicularity.",
+          "standards": []
+        },
+        {
+          "id": "C302",
+          "unit": "C3-U1",
+          "kind": "computational",
+          "title": "Lines, planes, and surfaces",
+          "description": "Parametric lines, plane equations, quadric surfaces.",
+          "standards": []
+        },
+        {
+          "id": "C303",
+          "unit": "C3-U1",
+          "kind": "computational",
+          "title": "Vector functions and curves",
+          "description": "Parametrized curves; velocity, acceleration, arc length.",
+          "standards": []
+        },
+        {
+          "id": "C304",
+          "unit": "C3-U2",
+          "kind": "computational",
+          "title": "Partial derivatives",
+          "description": "Holding variables fixed; higher partials and Clairaut.",
+          "standards": []
+        },
+        {
+          "id": "C305",
+          "unit": "C3-U2",
+          "kind": "computational",
+          "title": "Tangent planes and linearization",
+          "description": "The multivariable tangent-line idea.",
+          "standards": []
+        },
+        {
+          "id": "C306",
+          "unit": "C3-U2",
+          "kind": "computational",
+          "title": "The multivariable chain rule",
+          "description": "Trees of dependence; implicit differentiation in several variables.",
+          "standards": []
+        },
+        {
+          "id": "C307",
+          "unit": "C3-U2",
+          "kind": "computational",
+          "title": "Gradient and directional derivatives",
+          "description": "The gradient as steepest ascent; derivatives in a direction.",
+          "standards": []
+        },
+        {
+          "id": "C308",
+          "unit": "C3-U3",
+          "kind": "computational",
+          "title": "Critical points and the second derivative test",
+          "description": "Maxima, minima, saddles via the Hessian discriminant.",
+          "standards": []
+        },
+        {
+          "id": "C309",
+          "unit": "C3-U3",
+          "kind": "computational",
+          "title": "Lagrange multipliers",
+          "description": "Constrained optimization; gradient alignment.",
+          "standards": []
+        },
+        {
+          "id": "C310",
+          "unit": "C3-U4",
+          "kind": "computational",
+          "title": "Double integrals",
+          "description": "Iterated integrals over rectangles and general regions; Fubini.",
+          "standards": []
+        },
+        {
+          "id": "C311",
+          "unit": "C3-U4",
+          "kind": "computational",
+          "title": "Polar double integrals",
+          "description": "Changing to polar coordinates; the r dA factor.",
+          "standards": []
+        },
+        {
+          "id": "C312",
+          "unit": "C3-U4",
+          "kind": "computational",
+          "title": "Triple integrals",
+          "description": "Volume and density integrals; cylindrical and spherical coordinates.",
+          "standards": []
+        },
+        {
+          "id": "C313",
+          "unit": "C3-U5",
+          "kind": "concept",
+          "title": "Vector fields",
+          "description": "Fields, flow lines, divergence and curl as derivatives of fields.",
+          "standards": []
+        },
+        {
+          "id": "C314",
+          "unit": "C3-U5",
+          "kind": "computational",
+          "title": "Line integrals",
+          "description": "Work along curves; the fundamental theorem for gradients.",
+          "standards": []
+        },
+        {
+          "id": "C315",
+          "unit": "C3-U5",
+          "kind": "computational",
+          "title": "Green's theorem",
+          "description": "Circulation and flux forms in the plane.",
+          "standards": []
+        },
+        {
+          "id": "C316",
+          "unit": "C3-U5",
+          "kind": "concept",
+          "title": "Stokes and divergence theorems",
+          "description": "The 3D integral theorems and their physical readings.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "C301",
+          "target": "C302",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C302",
+          "target": "C303",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C303",
+          "target": "C304",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C304",
+          "target": "C305",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C304",
+          "target": "C306",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C306",
+          "target": "C307",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C307",
+          "target": "C308",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C308",
+          "target": "C309",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C304",
+          "target": "C310",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C310",
+          "target": "C311",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C311",
+          "target": "C312",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C307",
+          "target": "C313",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C313",
+          "target": "C314",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C314",
+          "target": "C315",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C315",
+          "target": "C316",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "C312",
+          "target": "C316",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "C3M01",
+          "name": "Partial forgets to hold constant",
+          "description": "Differentiates all variables at once when taking a partial.",
+          "routes_to": "C304"
+        },
+        {
+          "code": "C3M02",
+          "name": "Scalar gradient",
+          "description": "Treats the gradient as a number instead of a vector of partials.",
+          "routes_to": "C307"
+        },
+        {
+          "code": "C3M03",
+          "name": "Unnormalized direction",
+          "description": "Computes directional derivatives with a non-unit direction vector.",
+          "routes_to": "C307"
+        },
+        {
+          "code": "C3M04",
+          "name": "1D test in 2D",
+          "description": "Classifies critical points by f_xx alone, ignoring the mixed partial.",
+          "routes_to": "C308"
+        },
+        {
+          "code": "C3M05",
+          "name": "Bounds order confusion",
+          "description": "Sets iterated-integral bounds that do not describe the region.",
+          "routes_to": "C310"
+        },
+        {
+          "code": "C3M06",
+          "name": "Dropped Jacobian",
+          "description": "Converts to polar or spherical without the r or rho^2 sin(phi) factor.",
+          "routes_to": "C311"
+        },
+        {
+          "code": "C3M07",
+          "name": "Orientation blindness",
+          "description": "Ignores curve or surface orientation in line and flux integrals.",
+          "routes_to": "C314"
+        },
+        {
+          "code": "C3M08",
+          "name": "Theorem without hypotheses",
+          "description": "Applies Green or Stokes on non-closed curves or with singularities inside.",
+          "routes_to": "C315"
+        }
+      ],
+      "items": [
+        {
+          "id": "C3-D1",
+          "node_id": "C311",
+          "grader": "mc",
+          "stem": "Converting a double integral to polar coordinates, dA becomes:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "r dr d(theta)",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "dr d(theta)",
+              "correct": false,
+              "misconception": "C3M06"
+            },
+            {
+              "key": "c",
+              "text": "r^2 dr d(theta)",
+              "correct": false,
+              "misconception": "C3M06"
+            },
+            {
+              "key": "d",
+              "text": "dx dy, unchanged",
+              "correct": false,
+              "misconception": "C3M06"
+            }
+          ]
+        },
+        {
+          "id": "C3-D2",
+          "node_id": "C308",
+          "grader": "mc",
+          "stem": "At a critical point, f_xx > 0 and f_yy > 0. Can you conclude a local minimum?",
+          "choices": [
+            {
+              "key": "a",
+              "text": "Not yet: the discriminant f_xx f_yy - f_xy^2 must be positive too",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "Yes: both second partials positive means minimum",
+              "correct": false,
+              "misconception": "C3M04"
+            },
+            {
+              "key": "c",
+              "text": "Yes: any positive second partial suffices",
+              "correct": false,
+              "misconception": "C3M04"
+            },
+            {
+              "key": "d",
+              "text": "No: it must be a saddle",
+              "correct": false,
+              "misconception": "C3M04"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "PS",
+      "title": "Probability and Statistics",
+      "units": [
+        [
+          "PS-U1",
+          "Probability Foundations"
+        ],
+        [
+          "PS-U2",
+          "Conditional Probability and Bayes"
+        ],
+        [
+          "PS-U3",
+          "Discrete Random Variables"
+        ],
+        [
+          "PS-U4",
+          "Continuous Random Variables"
+        ],
+        [
+          "PS-U5",
+          "Sampling and Estimation"
+        ],
+        [
+          "PS-U6",
+          "Inference and Regression"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "PS01",
+          "unit": "PS-U1",
+          "kind": "computational",
+          "title": "Counting for probability",
+          "description": "Equally likely outcomes; counting favorable cases.",
+          "standards": []
+        },
+        {
+          "id": "PS02",
+          "unit": "PS-U1",
+          "kind": "concept",
+          "title": "Sample spaces and probability axioms",
+          "description": "Events, complements, unions; the axioms and their consequences.",
+          "standards": []
+        },
+        {
+          "id": "PS03",
+          "unit": "PS-U2",
+          "kind": "computational",
+          "title": "Conditional probability and independence",
+          "description": "P(A given B); testing and using independence.",
+          "standards": []
+        },
+        {
+          "id": "PS04",
+          "unit": "PS-U2",
+          "kind": "computational",
+          "title": "Bayes' theorem",
+          "description": "Inverting conditionals; base rates and posterior probability.",
+          "standards": []
+        },
+        {
+          "id": "PS05",
+          "unit": "PS-U3",
+          "kind": "computational",
+          "title": "Discrete random variables and expectation",
+          "description": "Distributions, expected value, linearity.",
+          "standards": []
+        },
+        {
+          "id": "PS06",
+          "unit": "PS-U3",
+          "kind": "computational",
+          "title": "Variance and standard deviation",
+          "description": "Spread; Var = E[X^2] - (E[X])^2 and its uses.",
+          "standards": []
+        },
+        {
+          "id": "PS07",
+          "unit": "PS-U3",
+          "kind": "computational",
+          "title": "Binomial and geometric distributions",
+          "description": "Repeated independent trials; success counts and waiting times.",
+          "standards": []
+        },
+        {
+          "id": "PS08",
+          "unit": "PS-U3",
+          "kind": "computational",
+          "title": "Poisson distribution",
+          "description": "Rare events at a rate; Poisson as a binomial limit.",
+          "standards": []
+        },
+        {
+          "id": "PS09",
+          "unit": "PS-U4",
+          "kind": "concept",
+          "title": "Continuous random variables",
+          "description": "Densities, probabilities as areas, cumulative distributions.",
+          "standards": []
+        },
+        {
+          "id": "PS10",
+          "unit": "PS-U4",
+          "kind": "computational",
+          "title": "The normal distribution",
+          "description": "Z-scores, standardization, the empirical rule.",
+          "standards": []
+        },
+        {
+          "id": "PS11",
+          "unit": "PS-U4",
+          "kind": "concept",
+          "title": "The central limit theorem",
+          "description": "Sums and means become normal; conditions and limits of the claim.",
+          "standards": []
+        },
+        {
+          "id": "PS12",
+          "unit": "PS-U5",
+          "kind": "computational",
+          "title": "Descriptive statistics",
+          "description": "Mean, median, quantiles, spread; reading data honestly.",
+          "standards": []
+        },
+        {
+          "id": "PS13",
+          "unit": "PS-U5",
+          "kind": "concept",
+          "title": "Sampling distributions and standard error",
+          "description": "The distribution of a statistic; SE vs SD.",
+          "standards": []
+        },
+        {
+          "id": "PS14",
+          "unit": "PS-U6",
+          "kind": "computational",
+          "title": "Confidence intervals",
+          "description": "Estimating with uncertainty; interpretation discipline.",
+          "standards": []
+        },
+        {
+          "id": "PS15",
+          "unit": "PS-U6",
+          "kind": "concept",
+          "title": "Hypothesis testing",
+          "description": "Null and alternative, p-values, errors of both kinds.",
+          "standards": []
+        },
+        {
+          "id": "PS16",
+          "unit": "PS-U6",
+          "kind": "computational",
+          "title": "Correlation and linear regression",
+          "description": "Fitting lines, reading r, and the limits of both.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "PS01",
+          "target": "PS02",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS02",
+          "target": "PS03",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS03",
+          "target": "PS04",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS02",
+          "target": "PS05",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS05",
+          "target": "PS06",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS05",
+          "target": "PS07",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS07",
+          "target": "PS08",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS05",
+          "target": "PS09",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS09",
+          "target": "PS10",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS10",
+          "target": "PS11",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS02",
+          "target": "PS12",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS11",
+          "target": "PS13",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS12",
+          "target": "PS13",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS13",
+          "target": "PS14",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS14",
+          "target": "PS15",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS15",
+          "target": "PS16",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "PS06",
+          "target": "PS16",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "PSM01",
+          "name": "Confusion of the inverse",
+          "description": "Equates P(A given B) with P(B given A); neglects base rates.",
+          "routes_to": "PS04"
+        },
+        {
+          "code": "PSM02",
+          "name": "Independence by default",
+          "description": "Multiplies probabilities without checking independence.",
+          "routes_to": "PS03"
+        },
+        {
+          "code": "PSM03",
+          "name": "Gambler's fallacy",
+          "description": "Believes past independent outcomes change future probabilities.",
+          "routes_to": "PS03"
+        },
+        {
+          "code": "PSM04",
+          "name": "Unnormalized probabilities",
+          "description": "Assigns probabilities that do not sum or integrate to one.",
+          "routes_to": "PS02"
+        },
+        {
+          "code": "PSM05",
+          "name": "Variance shortcut misuse",
+          "description": "Uses (E[X])^2 for E[X^2], or Var(X + Y) = Var X + Var Y without independence.",
+          "routes_to": "PS06"
+        },
+        {
+          "code": "PSM06",
+          "name": "SD-SE conflation",
+          "description": "Uses the sample standard deviation where the standard error belongs.",
+          "routes_to": "PS13"
+        },
+        {
+          "code": "PSM07",
+          "name": "CI as probability of the parameter",
+          "description": "Reads a 95 percent CI as a 95 percent chance the parameter is inside.",
+          "routes_to": "PS14"
+        },
+        {
+          "code": "PSM08",
+          "name": "p-value as truth probability",
+          "description": "Reads the p-value as the probability the null hypothesis is true.",
+          "routes_to": "PS15"
+        },
+        {
+          "code": "PSM09",
+          "name": "Correlation implies causation",
+          "description": "Infers causal influence from association alone.",
+          "routes_to": "PS16"
+        },
+        {
+          "code": "PSM10",
+          "name": "Normality everywhere",
+          "description": "Invokes the CLT for tiny samples or heavy-tailed data.",
+          "routes_to": "PS11"
+        }
+      ],
+      "items": [
+        {
+          "id": "PS-D1",
+          "node_id": "PS04",
+          "grader": "mc",
+          "stem": "A test is 99 percent accurate; the condition affects 1 in 1000. A person tests positive. The chance they have the condition is:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "Well under 50 percent: the false positives outnumber the true ones",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "99 percent, the accuracy of the test",
+              "correct": false,
+              "misconception": "PSM01"
+            },
+            {
+              "key": "c",
+              "text": "About 1 in 1000, unchanged",
+              "correct": false,
+              "misconception": "PSM02"
+            },
+            {
+              "key": "d",
+              "text": "Exactly 50 percent",
+              "correct": false,
+              "misconception": "PSM01"
+            }
+          ]
+        },
+        {
+          "id": "PS-D2",
+          "node_id": "PS15",
+          "grader": "mc",
+          "stem": "A study reports p = 0.03. This means:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "Data this extreme occurs 3 percent of the time if the null is true",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "There is a 3 percent chance the null hypothesis is true",
+              "correct": false,
+              "misconception": "PSM08"
+            },
+            {
+              "key": "c",
+              "text": "There is a 97 percent chance the alternative is true",
+              "correct": false,
+              "misconception": "PSM08"
+            },
+            {
+              "key": "d",
+              "text": "The effect size is large",
+              "correct": false,
+              "misconception": "PSM08"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "DM",
+      "title": "Discrete Mathematics",
+      "units": [
+        [
+          "DM-U1",
+          "Logic"
+        ],
+        [
+          "DM-U2",
+          "Proof Techniques"
+        ],
+        [
+          "DM-U3",
+          "Sets, Functions, Relations"
+        ],
+        [
+          "DM-U4",
+          "Counting"
+        ],
+        [
+          "DM-U5",
+          "Recurrences and Number Theory"
+        ],
+        [
+          "DM-U6",
+          "Graphs and Growth"
+        ]
+      ],
+      "nodes": [
+        {
+          "id": "DM01",
+          "unit": "DM-U1",
+          "kind": "computational",
+          "title": "Propositional logic",
+          "description": "Connectives, truth tables, equivalence, De Morgan.",
+          "standards": []
+        },
+        {
+          "id": "DM02",
+          "unit": "DM-U1",
+          "kind": "concept",
+          "title": "Predicates and quantifiers",
+          "description": "For-all and there-exists; negating quantified statements.",
+          "standards": []
+        },
+        {
+          "id": "DM03",
+          "unit": "DM-U2",
+          "kind": "concept",
+          "title": "Direct proof and counterexample",
+          "description": "Proving universal claims; disproving with one counterexample.",
+          "standards": []
+        },
+        {
+          "id": "DM04",
+          "unit": "DM-U2",
+          "kind": "concept",
+          "title": "Induction",
+          "description": "Base case plus inductive step; strong induction.",
+          "standards": []
+        },
+        {
+          "id": "DM05",
+          "unit": "DM-U3",
+          "kind": "computational",
+          "title": "Sets and set operations",
+          "description": "Union, intersection, complement, power sets, Venn reasoning.",
+          "standards": []
+        },
+        {
+          "id": "DM06",
+          "unit": "DM-U3",
+          "kind": "concept",
+          "title": "Functions and relations",
+          "description": "Injective, surjective, bijective; equivalence relations.",
+          "standards": []
+        },
+        {
+          "id": "DM07",
+          "unit": "DM-U4",
+          "kind": "computational",
+          "title": "Sum and product rules",
+          "description": "Decomposing counting problems into stages and cases.",
+          "standards": []
+        },
+        {
+          "id": "DM08",
+          "unit": "DM-U4",
+          "kind": "computational",
+          "title": "Permutations and combinations",
+          "description": "Ordered vs unordered selection; binomial coefficients.",
+          "standards": []
+        },
+        {
+          "id": "DM09",
+          "unit": "DM-U4",
+          "kind": "computational",
+          "title": "Pigeonhole and inclusion-exclusion",
+          "description": "Guaranteed collisions; counting unions without double counting.",
+          "standards": []
+        },
+        {
+          "id": "DM10",
+          "unit": "DM-U5",
+          "kind": "computational",
+          "title": "Recurrence relations",
+          "description": "Modeling with recurrences; solving linear cases in closed form.",
+          "standards": []
+        },
+        {
+          "id": "DM11",
+          "unit": "DM-U5",
+          "kind": "computational",
+          "title": "Modular arithmetic",
+          "description": "Congruences, inverses mod m, and applications.",
+          "standards": []
+        },
+        {
+          "id": "DM12",
+          "unit": "DM-U6",
+          "kind": "computational",
+          "title": "Graphs: basics and degree",
+          "description": "Vertices, edges, degree, handshake lemma.",
+          "standards": []
+        },
+        {
+          "id": "DM13",
+          "unit": "DM-U6",
+          "kind": "concept",
+          "title": "Connectivity, paths, and trees",
+          "description": "Euler paths, tree properties, spanning trees in brief.",
+          "standards": []
+        },
+        {
+          "id": "DM14",
+          "unit": "DM-U6",
+          "kind": "concept",
+          "title": "Growth of functions and Big-O",
+          "description": "Comparing algorithm growth; dominant terms.",
+          "standards": []
+        }
+      ],
+      "edges": [
+        {
+          "source": "DM01",
+          "target": "DM02",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM02",
+          "target": "DM03",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM03",
+          "target": "DM04",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM01",
+          "target": "DM05",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM05",
+          "target": "DM06",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM05",
+          "target": "DM07",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM07",
+          "target": "DM08",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM08",
+          "target": "DM09",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM04",
+          "target": "DM10",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM10",
+          "target": "DM11",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM06",
+          "target": "DM12",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM12",
+          "target": "DM13",
+          "relation": "prerequisite"
+        },
+        {
+          "source": "DM10",
+          "target": "DM14",
+          "relation": "prerequisite"
+        }
+      ],
+      "misconceptions": [
+        {
+          "code": "DMM01",
+          "name": "Converse assumed",
+          "description": "Reads p implies q as also meaning q implies p.",
+          "routes_to": "DM01"
+        },
+        {
+          "code": "DMM02",
+          "name": "Quantifier negation error",
+          "description": "Negates for-all as for-all-not instead of there-exists-not.",
+          "routes_to": "DM02"
+        },
+        {
+          "code": "DMM03",
+          "name": "Induction without a base",
+          "description": "Runs the inductive step with no base case, or the wrong one.",
+          "routes_to": "DM04"
+        },
+        {
+          "code": "DMM04",
+          "name": "Order confusion in counting",
+          "description": "Uses permutations where order is irrelevant, or combinations where it matters.",
+          "routes_to": "DM08"
+        },
+        {
+          "code": "DMM05",
+          "name": "Double counting",
+          "description": "Counts overlapping cases twice; skips inclusion-exclusion.",
+          "routes_to": "DM09"
+        },
+        {
+          "code": "DMM06",
+          "name": "Ordinary division mod m",
+          "description": "Divides both sides of a congruence without a modular inverse.",
+          "routes_to": "DM11"
+        },
+        {
+          "code": "DMM07",
+          "name": "Proof by example",
+          "description": "Verifies a universal claim on a few cases and declares it proved.",
+          "routes_to": "DM03"
+        },
+        {
+          "code": "DMM08",
+          "name": "Big-O reads constants",
+          "description": "Ranks growth by constants and lower-order terms instead of dominant term.",
+          "routes_to": "DM14"
+        }
+      ],
+      "items": [
+        {
+          "id": "DM-D1",
+          "node_id": "DM02",
+          "grader": "mc",
+          "stem": "The negation of 'every student passed' is:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "At least one student did not pass",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "Every student did not pass",
+              "correct": false,
+              "misconception": "DMM02"
+            },
+            {
+              "key": "c",
+              "text": "No student passed",
+              "correct": false,
+              "misconception": "DMM02"
+            },
+            {
+              "key": "d",
+              "text": "Most students did not pass",
+              "correct": false,
+              "misconception": "DMM02"
+            }
+          ]
+        },
+        {
+          "id": "DM-D2",
+          "node_id": "DM08",
+          "grader": "mc",
+          "stem": "Choosing a 3-person committee from 10 people:",
+          "choices": [
+            {
+              "key": "a",
+              "text": "C(10, 3) = 120: order does not matter",
+              "correct": true
+            },
+            {
+              "key": "b",
+              "text": "P(10, 3) = 720: order matters",
+              "correct": false,
+              "misconception": "DMM04"
+            },
+            {
+              "key": "c",
+              "text": "10^3 = 1000",
+              "correct": false,
+              "misconception": "DMM04"
+            },
+            {
+              "key": "d",
+              "text": "3^10",
+              "correct": false,
+              "misconception": "DMM04"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "cross_edges": [
+    {
+      "source": "LA03",
+      "target": "OD02",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "LA19",
+      "target": "OD16",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "OD07",
+      "target": "PF09",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "OD07",
+      "target": "PF12",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "LA20",
+      "target": "PF18",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "PF01",
+      "target": "PF09",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "OD13",
+      "target": "PF22",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C118",
+      "target": "C201",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C110",
+      "target": "C304",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C201",
+      "target": "C310",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C201",
+      "target": "C314",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C110",
+      "target": "OD01",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C201",
+      "target": "OD01",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C215",
+      "target": "OD19",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C304",
+      "target": "PF07",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "C301",
+      "target": "LA21",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "DM08",
+      "target": "PS01",
+      "relation": "prerequisite"
+    },
+    {
+      "source": "LA24",
+      "target": "PS16",
+      "relation": "prerequisite"
+    }
+  ]
+}

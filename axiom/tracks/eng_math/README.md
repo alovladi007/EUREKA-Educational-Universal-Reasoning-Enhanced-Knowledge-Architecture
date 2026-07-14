@@ -145,3 +145,60 @@ Verified in the test run: alice and bob received different systems with
 different keys, alice's correct answers failed on bob's variant (answer
 sharing defeated by construction), and cross-learner variant submission was
 rejected.
+
+## Course content (full curriculum build)
+
+- axiom_curriculum.py       source of truth for the full curriculum; run to emit JSON and integrity checks
+- axiom_full_curriculum.json  3 courses, 26 units, 74 nodes, 86 edges (7 cross-course), 34 misconceptions, 13 diagnostic MC items
+- axiom_templates.py        18 parameterized item templates with independent SymPy verifiers; run for the verification sweep (270/270 passing)
+- lessons_linear_algebra.md   28 lessons, one per LA node
+- lessons_odes.md             22 lessons, one per OD node
+- lessons_pdes_fourier.md     24 lessons, one per PF node
+
+Next wiring step: a loader to ingest axiom_full_curriculum.json plus the
+template registry into axiom_db (the current seed loader handles the older
+linalg_unit1_seed.json format).
+
+## Wave 2 content (Calculus I-III, Probability and Statistics, Discrete Math)
+
+Teaching layer:
+- axiom_teaching_model.md: the pedagogy contract. Hint ladders before
+  solutions, misconception-named feedback, six-part lesson arc, mastery
+  gates, and the compliance checklist every new course must pass.
+
+Curriculum (run: python3 axiom_curriculum_wave2.py, regenerates
+axiom_full_curriculum.json with all 8 courses):
+- 8 courses, 154 nodes, 176 edges, 76 misconceptions, 23 diagnostic items,
+  0 integrity problems. New courses: C1 Calculus I (18 nodes), C2 Calculus
+  II (16), C3 Calculus III (16), PS Probability and Statistics (16), DM
+  Discrete Mathematics (14). 12 new cross-course edges, including
+  C110/C201 -> OD01, C215 -> OD19, C304 -> PF07, DM08 -> PS01, LA24 -> PS16.
+
+Templates (run: python3 axiom_templates_wave2.py):
+- 19 new parameterized templates, 228/228 variants verified through
+  independent paths (numeric difference quotients, differentiate-the-key,
+  opposite-order Fubini, derivative-formula Taylor checks, recurrence
+  iteration, brute-force enumeration, sympy.stats).
+- HINTS: three-rung hint ladders (orient, method, first step) for all 37
+  templates across both waves; hint_coverage() enforces completeness.
+
+Lessons (six-part teaching arc, one lesson per node, coverage-checked):
+- lessons_calculus_1.md (18 lessons), lessons_calculus_2.md (16),
+  lessons_calculus_3.md (16), lessons_probability_statistics.md (16),
+  lessons_discrete_math.md (14). With wave 1: 154 lessons total.
+
+## Review layer: save and redo missed questions
+
+- axiom_review.py: missed_questions table plus the /v1/review API. Every
+  wrong attempt is saved automatically (exact stem the learner saw, their
+  answer, diagnosed misconception, miss count); a correct re-attempt on the
+  same question clears the entry; a later miss reopens it with history
+  intact. Template items store the variant_id, so retry serves the very
+  numbers the learner missed and grades against the stored key.
+- Endpoints: GET /v1/review/{learner}/missed (open, cleared, or all,
+  filterable by node), GET /v1/review/{learner}/summary (counts by node for
+  a dashboard), POST /v1/review/{learner}/retry/{missed_id} (re-serves the
+  question with no answer leakage, submit via /v3/attempt).
+- axiom_service.py: review recording hooked into both attempt-grading
+  sites; review router mounted. Run: python3 test_review.py (20/20), and
+  test_service.py still passes 11/11.

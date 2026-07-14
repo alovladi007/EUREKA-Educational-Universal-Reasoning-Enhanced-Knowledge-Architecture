@@ -483,6 +483,11 @@ def _verify_item_for_load(it: dict) -> bool:
     return False
 
 
+from axiom_review import record_attempt as _review_record, router as _review_router
+
+app.include_router(_review_router)
+
+
 @app.on_event("startup")
 def _startup() -> None:
     init_db()
@@ -586,6 +591,19 @@ def submit_attempt_v2(req: AttemptV2Request) -> AttemptResponse:
             correct=correct, score=score, grader=grader, detail=detail,
             misconception_code=misc_code,
         ))
+        if req.choice_key is not None and item.grader == "mc":
+            _c = next((c for c in item.choices if c["key"] == req.choice_key), None)
+            _resp = f"chose ({req.choice_key}) {_c['text']}" if _c else f"chose {req.choice_key}"
+        elif req.point_response is not None:
+            _resp = json.dumps(req.point_response)
+        elif req.response_matrix is not None:
+            _resp = json.dumps(req.response_matrix)
+        else:
+            _resp = json.dumps({"particular": req.particular, "directions": req.directions})
+        _review_record(
+            db, req.learner_id, item, correct,
+            response_summary=_resp, misconception_code=misc_code,
+        )
         db.commit()
 
         before, after, note = _db_mastery.update(
@@ -761,6 +779,15 @@ def submit_attempt_v3(req: AttemptV3Request) -> AttemptResponse:
                 correct=r.correct, score=float(r.correct), grader=r.grader,
                 detail=r.detail, misconception_code=None,
             ))
+            _payload = _j2.loads(var.payload_json)
+            _stem = (_format_system_stem(_payload["A"], _payload["b"])
+                     if isinstance(_payload, dict) and "A" in _payload and "b" in _payload
+                     else item.stem)
+            _review_record(
+                db, req.learner_id, item, r.correct,
+                response_summary=_j2.dumps(req.point_response or {}),
+                variant_id=req.variant_id, stem=_stem,
+            )
             db.commit()
             before, after, note = _db_mastery.update(
                 db, req.learner_id, item.node_id, item.id, r.correct
