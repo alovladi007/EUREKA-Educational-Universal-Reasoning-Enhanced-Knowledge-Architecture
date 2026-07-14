@@ -18,6 +18,7 @@ import uuid
 from datetime import UTC, datetime
 
 from math_core import ItemTemplate as McItemTemplate
+from math_core import resolve_generated
 from math_core import resolve_template, verify_steps
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -54,6 +55,15 @@ def _variant_seed(user_id: uuid.UUID, template_id: uuid.UUID, count: int) -> int
     different users (or the same user later) get different numbers."""
     raw = f"{user_id}:{template_id}:{count}".encode()
     return int.from_bytes(hashlib.sha256(raw).digest()[:4], "big") & 0x7FFFFFFF
+
+
+def _generator_id(template) -> str | None:
+    """A generator-backed template stores [{"kind": "generator", "id": ...}] in
+    variables; classic parameterized templates keep their VarSpec list."""
+    v = template.variables or []
+    if len(v) == 1 and isinstance(v[0], dict) and v[0].get("kind") == "generator":
+        return v[0].get("id")
+    return None
 
 
 async def _open_practice_attempt(session: AsyncSession, user_id: uuid.UUID) -> Attempt:
@@ -213,22 +223,36 @@ async def serve_next(
     if prefer_template:
         template = rng.choice(templates)
         seed = _variant_seed(user_id, template.id, count)
-        mc_template = McItemTemplate(
-            id=str(template.id),
-            variables=template.variables,
-            constraints=template.constraints,
-            stem=template.stem,
-            answer_expr=template.answer_expr,
-            tolerance=template.tolerance,
-        )
-        variant_out = resolve_template(mc_template, seed)
-        variant = ItemVariant(
-            template_id=template.id,
-            seed=seed,
-            values=variant_out.values,
-            prompt=variant_out.stem,
-            answer=variant_out.answer,
-        )
+        generator_id = _generator_id(template)
+        if generator_id is not None:
+            # Generator-backed template (EM-18): the verified generator produces
+            # the exact prompt and key; the variant stores both, so grading runs
+            # against the very numbers the learner saw.
+            q = resolve_generated(generator_id, seed)
+            variant = ItemVariant(
+                template_id=template.id,
+                seed=seed,
+                values={"generator": generator_id, "meta": q.meta},
+                prompt=q.prompt,
+                answer=q.correct,
+            )
+        else:
+            mc_template = McItemTemplate(
+                id=str(template.id),
+                variables=template.variables,
+                constraints=template.constraints,
+                stem=template.stem,
+                answer_expr=template.answer_expr,
+                tolerance=template.tolerance,
+            )
+            variant_out = resolve_template(mc_template, seed)
+            variant = ItemVariant(
+                template_id=template.id,
+                seed=seed,
+                values=variant_out.values,
+                prompt=variant_out.stem,
+                answer=variant_out.answer,
+            )
         session.add(variant)
         await session.flush()
         response.template_id = template.id
@@ -350,7 +374,8 @@ async def _resolve_source(
     template = (
         await session.execute(select(ItemTemplate).where(ItemTemplate.id == response.template_id))
     ).scalar_one()
-    return template.kind, variant.answer, None, template.tolerance, template.explanation, {}
+    variant_meta = variant.values.get("meta", {}) if isinstance(variant.values, dict) else {}
+    return template.kind, variant.answer, None, template.tolerance, template.explanation, variant_meta
 
 
 async def finalize_response_grade(

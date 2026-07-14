@@ -83,6 +83,44 @@ async def _trace(
     )
 
 
+async def _generator_hint_ladder(session: AsyncSession, response: Response) -> dict | None:
+    """Authored three-rung hint ladder for generator-backed template questions
+    (EM-18, AXIOM Teaching Model: orient, method, first step). The rung
+    escalates with each request on the same response, and the ladder is served
+    before any model-generated hint because it was written for this exact
+    template. Returns None when the response is not generator-backed."""
+    if response.template_id is None or response.variant_id is None:
+        return None
+    variant = (
+        await session.execute(
+            select(ItemVariant).where(ItemVariant.id == response.variant_id)
+        )
+    ).scalar_one_or_none()
+    if variant is None or not isinstance(variant.values, dict):
+        return None
+    generator_id = variant.values.get("generator")
+    if not generator_id:
+        return None
+    from math_core.generators import HINTS
+
+    ladder = HINTS.get(str(generator_id))
+    if not ladder:
+        return None
+    served = int(variant.values.get("hints_served", 0))
+    rung = min(served, len(ladder) - 1)
+    variant.values = {**variant.values, "hints_served": served + 1}
+    await session.flush()
+    names = ("orient", "method", "first step")
+    return {
+        "hint": ladder[rung],
+        "rung": rung + 1,
+        "rung_name": names[rung] if rung < len(names) else f"rung {rung + 1}",
+        "rungs_total": len(ladder),
+        "provider": "authored-ladder",
+        "grounded": True,
+    }
+
+
 async def hint(
     session: AsyncSession,
     user_id: uuid.UUID,
@@ -114,6 +152,9 @@ async def hint(
         ).scalar_one_or_none()
         if response is None:
             return {"error": "response not found"}
+        ladder = await _generator_hint_ladder(session, response)
+        if ladder is not None:
+            return ladder
         node = (
             await session.execute(
                 select(KnowledgeNode).where(KnowledgeNode.id == response.node_id)
@@ -188,6 +229,9 @@ async def proof_tutor(
         ).scalar_one_or_none()
         if response is None:
             return {"error": "response not found"}
+        ladder = await _generator_hint_ladder(session, response)
+        if ladder is not None:
+            return ladder
         node = (
             await session.execute(
                 select(KnowledgeNode).where(KnowledgeNode.id == response.node_id)

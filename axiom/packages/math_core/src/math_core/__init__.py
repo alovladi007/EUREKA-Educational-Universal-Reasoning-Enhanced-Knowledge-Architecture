@@ -32,6 +32,11 @@ from .transforms import (
 )
 from .fourier import grade_fourier_coefficient, verify_fourier_key
 from .calculus import grade_antiderivative, verify_antiderivative_key
+from .generators import (
+    GeneratedQuestion,
+    REGISTRY as GENERATOR_REGISTRY,
+    resolve_generated,
+)
 from .pde import grade_pde, verify_pde_key
 from .steps import grade_steps
 from .linalg import (
@@ -86,6 +91,9 @@ __all__ = [
     "verify_fourier_key",
     "grade_antiderivative",
     "verify_antiderivative_key",
+    "GeneratedQuestion",
+    "GENERATOR_REGISTRY",
+    "resolve_generated",
     "grade_steps",
     "grade_pde",
     "verify_pde_key",

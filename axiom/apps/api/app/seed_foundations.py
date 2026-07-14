@@ -27,7 +27,9 @@ from pathlib import Path
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domains.assessment.models import Item, ItemBank
+from math_core import GENERATOR_REGISTRY, resolve_generated
+
+from app.domains.assessment.models import Item, ItemBank, ItemTemplate
 from app.domains.content.models import ContentStep, Lesson
 from app.domains.curriculum.models import KnowledgeEdge, KnowledgeNode, Misconception
 
@@ -212,5 +214,34 @@ async def seed_foundations(session: AsyncSession) -> dict:
             ))
             have_lessons.add(node.id)
             counts["lessons"] += 1
+    await session.flush()
+
+    # Generator-backed templates (EM-18): one ItemTemplate row per verified
+    # generator in math_core.generators. The row's variables field carries the
+    # generator id; serve_next dispatches to resolve_generated, so every learner
+    # gets fresh verified numbers and unlimited practice per node. The live kind
+    # is derived by resolving a sample variant, never hardcoded.
+    counts["generator_templates"] = 0
+    for tid, entry in GENERATOR_REGISTRY.items():
+        node = by_code.get(entry["node"])
+        if node is None:
+            continue
+        stem = f"[{tid}] Parameterized practice (verified generator)"
+        exists = (
+            await session.execute(
+                select(ItemTemplate.id).where(
+                    ItemTemplate.node_id == node.id, ItemTemplate.stem == stem
+                )
+            )
+        ).scalar_one_or_none()
+        if exists is not None:
+            continue
+        sample = resolve_generated(tid, 1)
+        session.add(ItemTemplate(
+            bank_id=bank.id, node_id=node.id, kind=sample.kind, stem=stem,
+            variables=[{"kind": "generator", "id": tid}], constraints=[],
+            answer_expr="", explanation="", difficulty=0.5, tolerance=None,
+        ))
+        counts["generator_templates"] += 1
     await session.flush()
     return counts
