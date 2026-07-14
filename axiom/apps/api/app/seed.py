@@ -2359,6 +2359,12 @@ async def seed(session: AsyncSession) -> bool:
     # Engineering Math track: PDE/Fourier Unit 1 (Fourier series), the flagship;
     # adds the spine edge second-order ODE -> Fourier, so it runs after the ODE seed.
     await seed_eng_math_fourier_unit1(session)
+    # Foundations courses from the full-curriculum reference (EM-17): Calculus
+    # I-III, Probability & Statistics, Discrete Math, with authored lessons --
+    # must run before backfill_lessons so the generic backfill never shadows them.
+    from app.seed_foundations import seed_foundations
+
+    await seed_foundations(session)
     # Ensure every node in the full ladder has a lesson so the Learn view never
     # 404s (idempotent; skips nodes that already have one). Runs before the
     # first-run early-return below so it also covers existing databases.
