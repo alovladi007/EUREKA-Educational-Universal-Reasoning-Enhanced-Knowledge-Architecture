@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AXIOM Adaptive Practice</title>
+<style>
+  :root {
+    --bg:#0f1420; --panel:#171e2e; --panel2:#1e2740; --text:#e8ecf4;
+    --muted:#8b96ad; --accent:#5eead4; --good:#34d399; --bad:#f87171;
+    --warn:#fbbf24; --line:#2a3552;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 Georgia,serif}
+  header{padding:20px 28px;border-bottom:1px solid var(--line);display:flex;align-items:baseline;gap:14px}
+  header h1{margin:0;font-size:22px;letter-spacing:.06em}
+  header span{color:var(--muted);font-size:14px}
+  main{display:grid;grid-template-columns:1fr 320px;gap:22px;max-width:1080px;margin:0 auto;padding:24px 28px 60px}
+  @media(max-width:860px){main{grid-template-columns:1fr}}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:20px 22px;margin-bottom:18px}
+  .tag{font-size:12px;color:var(--muted);letter-spacing:.05em}
+  .policy{display:inline-block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;
+    padding:2px 8px;border-radius:10px;border:1px solid var(--line);color:var(--accent);margin-bottom:8px}
+  .policy.remediation{color:var(--warn);border-color:var(--warn)}
+  .reason{font-size:14px;color:var(--muted);border-left:3px solid var(--line);padding-left:10px;margin:8px 0 14px}
+  .stem{margin:12px 0 14px;font-size:17px}
+  input[type=text]{background:var(--panel2);color:var(--text);border:1px solid var(--line);
+    border-radius:6px;padding:8px 10px;font:15px "Courier New",monospace;width:100%;margin:4px 0}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  label{font-size:14px;color:var(--muted)}
+  button{background:var(--accent);color:#08211c;border:0;border-radius:6px;padding:9px 18px;
+    font:600 14px Georgia,serif;cursor:pointer;margin-top:10px;margin-right:8px}
+  button.secondary{background:var(--panel2);color:var(--text);border:1px solid var(--line)}
+  .choice{display:block;margin:6px 0;cursor:pointer;font-size:15px}
+  .result{margin-top:14px;padding:12px 14px;border-radius:8px;font-size:14px;display:none}
+  .result.good{display:block;background:#10321f;border:1px solid var(--good)}
+  .result.bad{display:block;background:#3a1420;border:1px solid var(--bad)}
+  .diag{margin-top:10px;padding:10px 12px;border-left:3px solid var(--warn);background:#2b2413;
+    border-radius:0 6px 6px 0;font-size:14px}
+  .diag b{color:var(--warn)}
+  .mastery-row{margin:12px 0}
+  .mastery-row .name{font-size:13px;color:var(--muted);margin-bottom:3px}
+  .bar{height:10px;background:var(--panel2);border-radius:5px;overflow:hidden}
+  .bar>div{height:100%;background:linear-gradient(90deg,#38bdf8,var(--accent));transition:width .5s}
+  .bar.done>div{background:var(--good)}
+  .pct{font-size:12px;color:var(--muted)}
+  .empty{color:var(--muted);font-size:14px}
+  code{font-family:"Courier New",monospace;color:var(--accent)}
+</style>
+</head>
+<body>
+<header>
+  <h1>AXIOM</h1>
+  <span>adaptive practice &middot; the picker chooses, and always tells you why</span>
+</header>
+<main>
+  <section>
+    <div class="card">
+      <div id="policy" class="policy">loading</div>
+      <div id="title" style="font-size:17px;font-weight:600"></div>
+      <div id="reason" class="reason"></div>
+      <div id="stem" class="stem"></div>
+      <div id="inputs"></div>
+      <button onclick="submitAnswer()" id="checkBtn">Check</button>
+      <button class="secondary" onclick="loadNext()">Skip / Next</button>
+      <div class="result" id="result"></div>
+    </div>
+  </section>
+  <aside>
+    <div class="card">
+      <h3 style="margin:0 0 10px;font-size:15px">Mastery (live)</h3>
+      <div id="mastery"><p class="empty">Answer an item to see mastery move.</p></div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 10px;font-size:15px">Why trust the grades</h3>
+      <p class="pct">Every answer key is machine-verified before it can be served.
+      Parameterized items are seeded per learner, verified per variant, and graded
+      against the exact variant you were shown. Symbolic equivalence, not string match.</p>
+    </div>
+  </aside>
+</main>
+<script>
+const LEARNER = "web-" + (localStorage.getItem("axiom_id") ||
+  (() => { const v = Math.random().toString(36).slice(2, 10);
+           localStorage.setItem("axiom_id", v); return v; })());
+let current = null;
+
+function esc(s){const d=document.createElement("div");d.textContent=s;return d.innerHTML;}
+
+async function loadNext(){
+  document.getElementById("result").className = "result";
+  const d = await (await fetch(`/v2/next-item2/${LEARNER}`)).json();
+  current = d;
+  const pol = document.getElementById("policy");
+  pol.textContent = d.policy; pol.className = "policy " + d.policy;
+  document.getElementById("title").textContent =
+    d.node_title ? `${d.node_title}  (${d.item_id})` : "Nothing to serve";
+  document.getElementById("reason").textContent = d.reason;
+  document.getElementById("stem").textContent = d.stem || "";
+  const box = document.getElementById("inputs");
+  box.innerHTML = "";
+  if (!d.item_id) { document.getElementById("checkBtn").style.display="none"; return; }
+  document.getElementById("checkBtn").style.display="inline-block";
+  if (d.grader === "mc") {
+    box.innerHTML = d.choices.map(c =>
+      `<label class="choice"><input type="radio" name="mc" value="${esc(c.key)}"> ${esc(c.text)}</label>`).join("");
+  } else if (d.grader === "cas" && d.variant_id) {
+    box.innerHTML = ["x1","x2","x3"].map(v =>
+      `<label>${v} = <input type="text" id="in_${v}"></label>`).join("");
+  } else if (d.grader === "cas") {
+    box.innerHTML = ["x","y"].map(v =>
+      `<label>${v} = <input type="text" id="in_${v}"></label>`).join("");
+  } else if (d.grader === "exact") {
+    box.innerHTML = '<label>Enter the RREF, row by row:</label>' +
+      [0,1,2].map(r => `<div class="grid3">` + [0,1,2].map(c =>
+        `<input type="text" id="m_${r}_${c}" placeholder="0">`).join("") + `</div>`).join("");
+  } else if (d.grader === "set_equal") {
+    box.innerHTML =
+      '<label>Particular solution (x1, x2, x3):</label><div class="grid3">' +
+      [0,1,2].map(i=>`<input type="text" id="p_${i}">`).join("") + '</div>' +
+      '<label>Direction vector (t-coefficient):</label><div class="grid3">' +
+      [0,1,2].map(i=>`<input type="text" id="d_${i}">`).join("") + '</div>';
+  }
+}
+
+async function submitAnswer(){
+  if (!current || !current.item_id) return;
+  const payload = { learner_id: LEARNER, item_id: current.item_id };
+  const g = current.grader;
+  if (g === "mc") {
+    const sel = document.querySelector('input[name="mc"]:checked');
+    if (!sel) return; payload.choice_key = sel.value;
+  } else if (g === "cas" && current.variant_id) {
+    payload.variant_id = current.variant_id;
+    payload.point_response = Object.fromEntries(["x1","x2","x3"].map(v =>
+      [v, document.getElementById("in_"+v).value]));
+  } else if (g === "cas") {
+    payload.point_response = Object.fromEntries(["x","y"].map(v =>
+      [v, document.getElementById("in_"+v).value]));
+  } else if (g === "exact") {
+    payload.response_matrix = [0,1,2].map(r => [0,1,2].map(c =>
+      parseFloat(document.getElementById(`m_${r}_${c}`).value || "0")));
+  } else if (g === "set_equal") {
+    payload.particular = [0,1,2].map(i => parseFloat(document.getElementById(`p_${i}`).value || "0"));
+    payload.directions = [[0,1,2].map(i => parseFloat(document.getElementById(`d_${i}`).value || "0"))];
+  }
+  const r = await (await fetch("/v3/attempt", {method:"POST",
+    headers:{"Content-Type":"application/json"}, body: JSON.stringify(payload)})).json();
+  const box = document.getElementById("result");
+  box.className = "result " + (r.correct ? "good" : "bad");
+  let html = `<b>${r.correct ? "Correct" : "Not yet"}</b> &mdash; ${esc(r.detail)}`;
+  if (r.diagnosis) html += `<div class="diag"><b>Diagnosis: ${esc(r.diagnosis.name)}</b> (${esc(r.diagnosis.code)})<br>` +
+    `${esc(r.diagnosis.description)}<br>Remediation &rarr; <b>${esc(r.diagnosis.routes_to_title)}</b></div>`;
+  html += `<br><span class="pct">${esc(r.mastery_note)}</span>` +
+    `<br><button onclick="loadNext()">Next item</button>`;
+  box.innerHTML = html;
+  refreshMastery();
+}
+
+async function refreshMastery(){
+  const rows = await (await fetch(`/v2/mastery/${LEARNER}`)).json();
+  const el = document.getElementById("mastery");
+  if (!rows.length){el.innerHTML='<p class="empty">Answer an item to see mastery move.</p>';return;}
+  el.innerHTML = rows.map(m => `
+    <div class="mastery-row">
+      <div class="name">${esc(m.node_title)} &middot; ${m.attempts} attempt${m.attempts===1?"":"s"}${m.mastered?" &middot; mastered":""}</div>
+      <div class="bar ${m.mastered?"done":""}"><div style="width:${Math.round(m.p_mastered*100)}%"></div></div>
+      <div class="pct">${(m.p_mastered*100).toFixed(1)}%</div>
+    </div>`).join("");
+}
+
+loadNext(); refreshMastery();
+</script>
+</body>
+</html>
