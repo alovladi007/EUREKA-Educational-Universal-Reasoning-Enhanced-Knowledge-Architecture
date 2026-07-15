@@ -30,10 +30,18 @@ CREATE TABLE IF NOT EXISTS xr_experiences (
     rating_count         INTEGER DEFAULT 0,
     usage_count          INTEGER DEFAULT 0,
     created_by           UUID,
+    -- XR-1 (authoring loop): scene-builder scenes are JSON scene graphs, not
+    -- glTF files. Publish copies the project's scene_data here so the viewer
+    -- can render it; source_project_id links back to the authoring project.
+    scene_data           JSONB,
+    source_project_id    UUID,
     created_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at           TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 CREATE INDEX IF NOT EXISTS ix_xr_experiences_published ON xr_experiences (is_published);
+-- Idempotent upgrades for databases created before XR-1.
+ALTER TABLE xr_experiences ADD COLUMN IF NOT EXISTS scene_data JSONB;
+ALTER TABLE xr_experiences ADD COLUMN IF NOT EXISTS source_project_id UUID;
 
 CREATE TABLE IF NOT EXISTS xr_sessions (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),

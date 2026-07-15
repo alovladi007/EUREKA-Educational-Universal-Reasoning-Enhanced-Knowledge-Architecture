@@ -35,6 +35,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import toast from 'react-hot-toast';
+import { api } from '@/lib/eureka-api';
+import { populateScene, serializeObjects } from '@/lib/xr/scene-serializer';
 
 // =====================================================
 // TYPES
@@ -168,6 +170,8 @@ function SceneBuilderEditor() {
   // UI State
   const [showAssetLibrary, setShowAssetLibrary] = useState(false);
   const [showTemplates, setShowTemplates] = useState(false);
+  const [showMyProjects, setShowMyProjects] = useState(false);
+  const [myProjects, setMyProjects] = useState<any[]>([]);
   const [showSaveDialog, setShowSaveDialog] = useState(false);
   const [showPublishDialog, setShowPublishDialog] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -241,7 +245,11 @@ function SceneBuilderEditor() {
       orbitControls.enabled = !event.value;
     });
     transformControls.addEventListener('objectChange', handleObjectTransform);
-    scene.add(transformControls);
+    // three r169: TransformControls is a Controls object, not an Object3D —
+    // its visual gizmo lives on getHelper(). Adding the controls object was
+    // silently failing, so the move/rotate/scale gizmo never appeared and
+    // drag-manipulation was dead.
+    scene.add(transformControls.getHelper ? transformControls.getHelper() : transformControls);
     transformControlsRef.current = transformControls;
 
     // Lights
@@ -412,7 +420,7 @@ function SceneBuilderEditor() {
         position: [0, 0, 0],
         rotation: [0, 0, 0],
         scale: [1, 1, 1],
-        properties: { assetId: asset.id, hasAnimations: asset.has_animations }
+        properties: { assetId: asset.id, fileUrl: asset.file_url, hasAnimations: asset.has_animations }
       };
 
       setObjects([...objects, newObject]);
@@ -432,26 +440,99 @@ function SceneBuilderEditor() {
     }
   };
 
-  const loadTemplate = async (template: Template) => {
-    // Clear current scene
+  // XR-1: restore a serialized scene graph into the editor via the SHARED
+  // serializer (the same code the viewer renders with, so save/open/publish/
+  // view cannot drift). Replaces the old loadTemplate body, which set project
+  // state but never actually instantiated the template's objects in 3D.
+  const restoreScene = async (sceneData: any) => {
+    if (!sceneRef.current) return;
+    if (transformControlsRef.current) transformControlsRef.current.detach();
     objects.forEach(obj => {
-      if (sceneRef.current) {
-        sceneRef.current.remove(obj.mesh);
-      }
+      sceneRef.current.remove(obj.mesh);
     });
-    setObjects([]);
+    setSelectedObject(null);
 
-    // Load template data
-    const templateData = template.scene_data;
+    const restored = await populateScene(
+      sceneRef.current,
+      sceneData ?? { objects: [] },
+      async (assetId: string) => {
+        const found = assets.find(a => a.id === assetId);
+        return found ? found.file_url : null;
+      },
+    );
+    const restoredObjects: SceneObject[] = restored.map(({ data, object3D }) => ({
+      id: data.id,
+      name: data.name,
+      type: data.type,
+      mesh: object3D,
+      position: data.position,
+      rotation: data.rotation,
+      scale: data.scale,
+      properties: data.properties ?? {}
+    }));
+    setObjects(restoredObjects);
+    const total = (sceneData?.objects ?? []).length;
+    if (restored.length < total) {
+      toast(`${total - restored.length} object(s) could not be restored.`, { icon: '⚠️' });
+    }
+  };
+
+  const loadTemplate = async (template: Template) => {
+    await restoreScene(template.scene_data);
     setProject({
       ...project,
       projectName: template.template_name,
       description: template.description,
-      sceneData: templateData
+      sceneData: template.scene_data
     });
-
     setShowTemplates(false);
     toast.success('Template loaded! Start customizing your scene.');
+  };
+
+  // ── My Projects (XR-1: saved work must be reopenable) ──
+
+  const fetchMyProjects = async () => {
+    try {
+      const data = await api<{ projects: any[] }>('/xr/scene-builder/projects');
+      setMyProjects(data.projects || []);
+    } catch (error) {
+      console.error('Error fetching projects:', error);
+      toast.error('Failed to load your projects');
+    }
+  };
+
+  const openProject = async (projectId: string) => {
+    try {
+      const data = await api<{ project: any }>(`/xr/scene-builder/projects/${projectId}`);
+      const p = data.project;
+      await restoreScene(p.sceneData);
+      setProject({
+        id: p.id,
+        projectName: p.projectName,
+        description: p.description,
+        category: p.category,
+        sceneData: p.sceneData
+      });
+      setShowMyProjects(false);
+      toast.success(`Opened "${p.projectName}"`);
+    } catch (error) {
+      console.error('Error opening project:', error);
+      toast.error('Failed to open project');
+    }
+  };
+
+  const deleteProjectById = async (projectId: string) => {
+    try {
+      await api(`/xr/scene-builder/projects/${projectId}`, { method: 'DELETE' });
+      setMyProjects((prev: any[]) => prev.filter((p) => p.id !== projectId));
+      if (project.id === projectId) {
+        setProject({ ...project, id: undefined });
+      }
+      toast.success('Project deleted');
+    } catch (error) {
+      console.error('Error deleting project:', error);
+      toast.error('Failed to delete project');
+    }
   };
 
   const selectObject = (obj: SceneObject) => {
@@ -507,19 +588,7 @@ function SceneBuilderEditor() {
     try {
       setIsSaving(true);
 
-      const sceneData = {
-        objects: objects.map(obj => ({
-          id: obj.id,
-          name: obj.name,
-          type: obj.type,
-          position: obj.position,
-          rotation: obj.rotation,
-          scale: obj.scale,
-          properties: obj.properties
-        })),
-        lights: [],
-        cameras: []
-      };
+      const sceneData = serializeObjects(objects);
 
       const token = localStorage.getItem('access_token');
       const url = project.id
@@ -641,7 +710,7 @@ function SceneBuilderEditor() {
       <div className="bg-gray-800 border-b border-gray-700 p-3 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <button
-            onClick={() => router.push('/xr-labs')}
+            onClick={() => router.push('/dashboard/xr-labs')}
             className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors"
           >
             ← Back
@@ -659,6 +728,13 @@ function SceneBuilderEditor() {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => { fetchMyProjects(); setShowMyProjects(true); }}
+            className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors font-semibold"
+          >
+            📂 My Projects
+          </button>
+
           <button
             onClick={() => setShowSaveDialog(true)}
             className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition-colors font-semibold"
@@ -919,6 +995,17 @@ function SceneBuilderEditor() {
         />
       )}
 
+      {/* MY PROJECTS MODAL */}
+      {showMyProjects && (
+        <MyProjectsModal
+          projects={myProjects}
+          currentProjectId={project.id}
+          onOpenProject={openProject}
+          onDeleteProject={deleteProjectById}
+          onClose={() => setShowMyProjects(false)}
+        />
+      )}
+
       {/* TEMPLATES MODAL */}
       {showTemplates && (
         <TemplatesModal
@@ -1003,6 +1090,74 @@ function AssetLibraryModal({ assets, search, onSearchChange, onSelectAsset, onCl
               </div>
             ))}
           </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function MyProjectsModal({ projects, currentProjectId, onOpenProject, onDeleteProject, onClose }: any) {
+  const [armedDelete, setArmedDelete] = useState<string | null>(null);
+  return (
+    <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+      <div className="bg-gray-800 rounded-xl w-full max-w-3xl max-h-[80vh] flex flex-col">
+        <div className="flex items-center justify-between p-6 border-b border-gray-700">
+          <div>
+            <h2 className="text-2xl font-bold">My Projects</h2>
+            <p className="text-sm text-gray-400">Reopen a saved scene or delete old ones</p>
+          </div>
+          <button onClick={onClose} aria-label="Close my projects" className="text-3xl hover:text-gray-400"><span aria-hidden="true">×</span></button>
+        </div>
+
+        <div className="flex-1 overflow-y-auto p-6 space-y-2">
+          {projects.length === 0 && (
+            <p className="text-gray-400 text-sm">
+              No saved projects yet. Build a scene and hit 💾 Save — it will show up here.
+            </p>
+          )}
+          {projects.map((p: any) => (
+            <div
+              key={p.id}
+              className={`flex items-center justify-between gap-3 px-4 py-3 rounded-lg ${
+                p.id === currentProjectId ? 'bg-blue-900/40 border border-blue-700' : 'bg-gray-700'
+              }`}
+            >
+              <div className="min-w-0">
+                <div className="font-semibold truncate">
+                  {p.projectName}
+                  {p.id === currentProjectId && <span className="ml-2 text-xs text-blue-300">(open)</span>}
+                </div>
+                <div className="text-xs text-gray-400 truncate">
+                  {p.category}{p.description ? ` · ${p.description}` : ''}
+                  {p.updatedAt ? ` · ${new Date(p.updatedAt).toLocaleString()}` : ''}
+                </div>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => onOpenProject(p.id)}
+                  className="px-3 py-1.5 bg-blue-600 rounded hover:bg-blue-700 transition-colors text-sm font-semibold"
+                >
+                  Open
+                </button>
+                {armedDelete === p.id ? (
+                  <button
+                    onClick={() => { onDeleteProject(p.id); setArmedDelete(null); }}
+                    className="px-3 py-1.5 bg-red-600 rounded hover:bg-red-700 transition-colors text-sm font-semibold"
+                  >
+                    Confirm?
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setArmedDelete(p.id)}
+                    aria-label={`Delete ${p.projectName}`}
+                    className="px-3 py-1.5 bg-gray-600 rounded hover:bg-red-700 transition-colors text-sm"
+                  >
+                    🗑️
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </div>

@@ -220,7 +220,7 @@ log for no unexpected external hosts.
 
 | wave | scope | status |
 |------|-------|--------|
-| XR-1 | authoring loop (G1, G2) | pending |
+| XR-1 | authoring loop (G1, G2) | DONE 2026-07-14 — project list/get/delete endpoints (owner-scoped, cross-user 404 verified); publish copies scene_data + source_project_id; shared serializer `src/lib/xr/scene-serializer.ts`; viewer renders scene graphs (verified in browser: published scene shows its objects); builder My Projects open/delete + template restore actually instantiates objects now; bonus: three-r169 TransformControls gizmo restored via getHelper() (drag-manipulation had been silently dead) |
 | XR-2 | sessions/ratings/XP (G3, G4, G11) | pending |
 | XR-3 | asset uploads (G5) | pending |
 | XR-4 | molecules + anatomy portals (G6) | pending |

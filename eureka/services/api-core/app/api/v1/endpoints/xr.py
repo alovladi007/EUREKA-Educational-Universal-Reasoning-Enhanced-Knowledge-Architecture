@@ -60,6 +60,16 @@ def _map_experience(r) -> dict:
         "total_sessions": r["usage_count"] or 0,
         "avg_rating": float(r["avg_rating"]) if r["avg_rating"] is not None else None,
         "created_at": r["created_at"].isoformat() if r["created_at"] else None,
+        # XR-1: scene-builder scenes are JSON scene graphs — the viewer renders
+        # scene_data when scene_url is empty (asyncpg returns jsonb as str).
+        "scene_data": (
+            json.loads(r["scene_data"])
+            if isinstance(r.get("scene_data"), str)
+            else r.get("scene_data")
+        ),
+        "source_project_id": (
+            str(r["source_project_id"]) if r.get("source_project_id") else None
+        ),
     }
 
 
@@ -281,7 +291,7 @@ async def use_asset(
     return {"ok": True, "usage_count": row["usage_count"]}
 
 
-# ── Scene Builder: projects (save / update / publish) ───────────────────────
+# ── Scene Builder: projects (list / get / save / update / delete / publish) ─
 
 
 class ProjectBody(BaseModel):
@@ -289,6 +299,108 @@ class ProjectBody(BaseModel):
     description: Optional[str] = ""
     category: Optional[str] = "general"
     sceneData: dict = {}
+
+
+def _load_scene_data(value) -> dict:
+    """jsonb comes back as dict (psycopg) or str (asyncpg) — normalize."""
+    if isinstance(value, str):
+        try:
+            return json.loads(value)
+        except ValueError:
+            return {}
+    return value or {}
+
+
+@router.get("/scene-builder/projects")
+async def list_projects(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """The caller's saved scene projects (XR-1: saved work must be reopenable)."""
+    rows = (
+        await db.execute(
+            text(
+                "SELECT id, project_name, description, category, is_public, "
+                "created_at, updated_at, last_edited "
+                "FROM xr_scene_projects WHERE created_by = :uid "
+                "ORDER BY COALESCE(last_edited, updated_at, created_at) DESC"
+            ),
+            {"uid": current_user.id},
+        )
+    ).mappings().all()
+    return {
+        "projects": [
+            {
+                "id": str(r["id"]),
+                "projectName": r["project_name"],
+                "description": r["description"] or "",
+                "category": r["category"] or "general",
+                "isPublic": bool(r["is_public"]),
+                "updatedAt": (
+                    (r["last_edited"] or r["updated_at"] or r["created_at"]).isoformat()
+                    if (r["last_edited"] or r["updated_at"] or r["created_at"])
+                    else None
+                ),
+            }
+            for r in rows
+        ]
+    }
+
+
+@router.get("/scene-builder/projects/{project_id}")
+async def get_project(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """One of the caller's projects, with the full scene graph (owner-scoped)."""
+    pid = _as_uuid(project_id)
+    if pid is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    row = (
+        await db.execute(
+            text(
+                "SELECT id, project_name, description, category, scene_data "
+                "FROM xr_scene_projects WHERE id = :id AND created_by = :uid"
+            ),
+            {"id": pid, "uid": current_user.id},
+        )
+    ).mappings().first()
+    if not row:
+        raise HTTPException(status_code=404, detail="Project not found")
+    return {
+        "project": {
+            "id": str(row["id"]),
+            "projectName": row["project_name"],
+            "description": row["description"] or "",
+            "category": row["category"] or "general",
+            "sceneData": _load_scene_data(row["scene_data"]),
+        }
+    }
+
+
+@router.delete("/scene-builder/projects/{project_id}", status_code=204)
+async def delete_project(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Delete one of the caller's projects (owner-scoped)."""
+    pid = _as_uuid(project_id)
+    if pid is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    row = (
+        await db.execute(
+            text(
+                "DELETE FROM xr_scene_projects "
+                "WHERE id = :id AND created_by = :uid RETURNING id"
+            ),
+            {"id": pid, "uid": current_user.id},
+        )
+    ).first()
+    if not row:
+        raise HTTPException(status_code=404, detail="Project not found")
+    await db.commit()
 
 
 @router.post("/scene-builder/projects")
@@ -373,10 +485,9 @@ async def publish_project(
 ):
     """Publish a project as a real, browsable xr_experiences row.
 
-    Scene-builder projects are JSON scene graphs (scene_data), not a single
-    glTF, so scene_url is left empty — the viewer renders an empty lit scene
-    until a renderer that consumes scene_data is wired. The experience IS
-    browsable/launchable and shows up in the XR Labs experiences list.
+    XR-1: the project's scene_data (JSON scene graph) is copied onto the
+    experience, and the viewer renders it directly — published scenes show
+    the actual authored objects. source_project_id links back to the project.
     """
     pid = _as_uuid(project_id)
     if pid is None:
@@ -395,8 +506,10 @@ async def publish_project(
             text(
                 "INSERT INTO xr_experiences "
                 "(title, description, category, difficulty, duration_minutes, "
-                " scene_url, tags, is_published, created_by) "
-                "VALUES (:title, :desc, :cat, :diff, :mins, '', :tags, true, :uid) "
+                " scene_url, tags, is_published, created_by, scene_data, "
+                " source_project_id) "
+                "VALUES (:title, :desc, :cat, :diff, :mins, '', :tags, true, "
+                "        :uid, CAST(:scene AS jsonb), :pid) "
                 "RETURNING id"
             ),
             {
@@ -407,6 +520,8 @@ async def publish_project(
                 "mins": body.duration_minutes,
                 "tags": body.tags or [],
                 "uid": current_user.id,
+                "scene": json.dumps(_load_scene_data(proj["scene_data"])),
+                "pid": pid,
             },
         )
     ).mappings().first()

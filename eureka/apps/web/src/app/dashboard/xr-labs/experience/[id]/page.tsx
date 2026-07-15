@@ -21,6 +21,11 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import toast from 'react-hot-toast';
 import { api } from '@/lib/eureka-api';
+import {
+  hasRenderableContent,
+  populateScene,
+  type SceneData,
+} from '@/lib/xr/scene-serializer';
 
 interface XRExperience {
   id: string;
@@ -43,6 +48,10 @@ interface XRExperience {
   total_sessions: number;
   avg_rating?: number;
   created_at: string;
+  // XR-1: scene-builder experiences carry their JSON scene graph instead of
+  // a glTF URL; the viewer renders whichever the experience has.
+  scene_data?: SceneData | null;
+  source_project_id?: string | null;
 }
 
 // XR data is served by api-core (/api/v1/xr/*) via the shared `api()` client,
@@ -61,6 +70,71 @@ export default function ExperienceViewerPage() {
   const [isInVR, setIsInVR] = useState(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const assetUrlCacheRef = useRef<Map<string, string> | null>(null);
+
+  // Resolve an xr_3d_assets id to its glTF URL (older saves lack the stamped
+  // fileUrl). One library fetch, then cached for the page's lifetime.
+  const resolveAssetUrl = async (assetId: string): Promise<string | null> => {
+    if (!assetUrlCacheRef.current) {
+      try {
+        const data = await api<{ assets: { id: string; file_url: string }[] }>(
+          '/xr/asset-library/search?limit=500',
+        );
+        assetUrlCacheRef.current = new Map(
+          (data.assets ?? []).map((a) => [a.id, a.file_url]),
+        );
+      } catch {
+        assetUrlCacheRef.current = new Map();
+      }
+    }
+    return assetUrlCacheRef.current.get(assetId) ?? null;
+  };
+
+  // Ground + grid so scenes (and load failures) never render as a black void.
+  const addEnvironment = (scene: THREE.Scene) => {
+    scene.add(new THREE.GridHelper(30, 30, 0x555577, 0x333355));
+    const ground = new THREE.Mesh(
+      new THREE.PlaneGeometry(30, 30),
+      new THREE.MeshStandardMaterial({ color: 0x1c1c2e, roughness: 0.9 }),
+    );
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    scene.add(ground);
+  };
+
+  // XR-1: one content loader for both the desktop preview and the WebXR
+  // session — glTF experiences load their file (with a visible failure path
+  // instead of the old silent void); scene-builder experiences render their
+  // JSON scene graph through the shared serializer.
+  const loadContentIntoScene = (scene: THREE.Scene, exp: XRExperience) => {
+    if (exp.scene_file_url) {
+      const loader = new GLTFLoader();
+      loader.load(
+        exp.scene_file_url,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (gltf: any) => scene.add(gltf.scene),
+        undefined,
+        () => {
+          toast.error('Failed to load the 3D scene file — showing an empty environment.');
+          addEnvironment(scene);
+        },
+      );
+      return;
+    }
+    if (hasRenderableContent(exp.scene_data)) {
+      addEnvironment(scene);
+      const total = exp.scene_data.objects.length;
+      populateScene(scene, exp.scene_data, resolveAssetUrl).then((restored) => {
+        if (restored.length < total) {
+          toast(`${total - restored.length} scene object(s) could not be loaded.`, {
+            icon: '⚠️',
+          });
+        }
+      });
+      return;
+    }
+    addEnvironment(scene);
+  };
 
   // Fetch experience details
   useEffect(() => {
@@ -119,14 +193,8 @@ export default function ExperienceViewerPage() {
     directionalLight.position.set(5, 5, 5);
     scene.add(directionalLight);
 
-    // Load scene
-    const loader = new GLTFLoader();
-    // GLTFLoader is typed as any (see src/types/three-modules.d.ts).
-    // Explicitly annotate the callback to satisfy strict implicit-any.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    loader.load(experience.scene_file_url, (gltf: any) => {
-      scene.add(gltf.scene);
-    });
+    // Load scene content (glTF or scene-builder scene graph)
+    loadContentIntoScene(scene, experience);
 
     // Animation loop
     const animate = () => {
@@ -206,14 +274,8 @@ export default function ExperienceViewerPage() {
         directionalLight.position.set(1, 1, 1);
         scene.add(directionalLight);
 
-        // Load scene
-        const loader = new GLTFLoader();
-        // GLTFLoader is typed as any (see src/types/three-modules.d.ts).
-    // Explicitly annotate the callback to satisfy strict implicit-any.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    loader.load(experience.scene_file_url, (gltf: any) => {
-          scene.add(gltf.scene);
-        });
+        // Load scene content (glTF or scene-builder scene graph)
+        loadContentIntoScene(scene, experience);
 
         // VR controllers
         const controller1 = renderer.xr.getController(0);
