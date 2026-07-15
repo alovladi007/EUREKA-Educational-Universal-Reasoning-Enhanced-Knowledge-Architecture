@@ -66,8 +66,17 @@ export default function ExperienceViewerPage() {
   const [experience, setExperience] = useState<XRExperience | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [sessionId, setSessionId] = useState<string | null>(null);
   const [isInVR, setIsInVR] = useState(false);
+  const [showRating, setShowRating] = useState(false);
+  const [sessionRecorded, setSessionRecorded] = useState(false);
+
+  // XR-2: one honest session per viewer visit. Started when the experience
+  // loads (desktop viewing counts — not just VR launches), ended with the
+  // REAL elapsed-derived completion on leave, or explicitly via the rating
+  // dialog. The old code only tracked VR sessions and hardcoded 100%/5★.
+  const sessionIdRef = useRef<string | null>(null);
+  const sessionStartRef = useRef<number>(0);
+  const sessionEndedRef = useRef(false);
 
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const assetUrlCacheRef = useRef<Map<string, string> | null>(null);
@@ -135,6 +144,92 @@ export default function ExperienceViewerPage() {
     }
     addEnvironment(scene);
   };
+
+  const computeCompletion = () => {
+    if (!experience || !sessionStartRef.current) return 0;
+    const elapsedMin = (Date.now() - sessionStartRef.current) / 60000;
+    return Math.max(
+      1,
+      Math.min(100, Math.round((elapsedMin / Math.max(1, experience.duration_minutes)) * 100)),
+    );
+  };
+
+  const endSessionSilently = async () => {
+    if (!sessionIdRef.current || sessionEndedRef.current) return;
+    sessionEndedRef.current = true;
+    try {
+      await api(`/xr/sessions/${sessionIdRef.current}/end`, {
+        method: 'POST',
+        keepalive: true,
+        body: JSON.stringify({
+          completion_percentage: computeCompletion(),
+          user_rating: null,
+        }),
+      });
+    } catch {
+      // Best effort on page leave.
+    }
+  };
+
+  const endSessionWithRating = async (rating: number | null) => {
+    if (!sessionIdRef.current || sessionEndedRef.current) {
+      setShowRating(false);
+      return;
+    }
+    sessionEndedRef.current = true;
+    setShowRating(false);
+    try {
+      const res = await api<{ xp_awarded?: number }>(
+        `/xr/sessions/${sessionIdRef.current}/end`,
+        {
+          method: 'POST',
+          body: JSON.stringify({
+            completion_percentage: computeCompletion(),
+            user_rating: rating,
+          }),
+        },
+      );
+      setSessionRecorded(true);
+      toast.success(
+        res.xp_awarded ? `Session recorded — +${res.xp_awarded} XP` : 'Session recorded',
+      );
+    } catch {
+      toast.error('Could not record the session');
+    }
+  };
+
+  // Start the session when the experience loads; end it on leave.
+  useEffect(() => {
+    if (!experience) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await api<{ session: { id: string } }>('/xr/sessions/start', {
+          method: 'POST',
+          body: JSON.stringify({
+            experience_id: experience.id,
+            device_type: 'web_browser',
+          }),
+        });
+        if (!cancelled) {
+          sessionIdRef.current = data.session.id;
+          sessionStartRef.current = Date.now();
+        }
+      } catch {
+        // Signed out or API down — viewing still works, just untracked.
+      }
+    })();
+    const onBeforeUnload = () => {
+      void endSessionSilently();
+    };
+    window.addEventListener('beforeunload', onBeforeUnload);
+    return () => {
+      cancelled = true;
+      window.removeEventListener('beforeunload', onBeforeUnload);
+      void endSessionSilently();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [experience?.id]);
 
   // Fetch experience details
   useEffect(() => {
@@ -205,28 +300,6 @@ export default function ExperienceViewerPage() {
     animate();
   };
 
-  const startSession = async (deviceType: string) => {
-    try {
-      // api() attaches the access_token automatically (the old code read a
-      // non-existent 'auth_token' localStorage key, so this always 401'd).
-      const data = await api<{ session: { id: string } }>(
-        '/xr/sessions/start',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            experience_id: experienceId,
-            device_type: deviceType,
-          }),
-        },
-      );
-      setSessionId(data.session.id);
-      return data.session.id;
-    } catch (err) {
-      console.error('Error starting session:', err);
-      return null;
-    }
-  };
-
   const launchWebXR = async () => {
     if (!navigator.xr) {
       toast.error('WebXR is not supported in your browser. Try Chrome or Edge on desktop/mobile, or use a VR headset browser.');
@@ -241,10 +314,8 @@ export default function ExperienceViewerPage() {
         return;
       }
 
-      // Start session tracking
-      const sessId = await startSession('web_browser');
-
-      // Request VR session
+      // Request VR session (tracked by the page-level session — no second
+      // session row, no fabricated completion)
       const session = await navigator.xr.requestSession('immersive-vr', {
         requiredFeatures: ['local-floor'],
         optionalFeatures: ['hand-tracking', 'eye-tracking'],
@@ -289,21 +360,11 @@ export default function ExperienceViewerPage() {
           renderer.render(scene, camera);
         });
 
-        // Handle session end
-        session.addEventListener('end', async () => {
+        // Handle VR session end — the page session keeps running; it ends
+        // with real numbers when the user leaves or rates.
+        session.addEventListener('end', () => {
           setIsInVR(false);
           renderer.setAnimationLoop(null);
-
-          // End session tracking (api() attaches the access_token).
-          if (sessId) {
-            await api(`/xr/sessions/${sessId}/end`, {
-              method: 'POST',
-              body: JSON.stringify({
-                completion_percentage: 100,
-                user_rating: 5,
-              }),
-            }).catch((err) => console.error('Error ending session:', err));
-          }
         });
       }
     } catch (err: any) {
@@ -326,8 +387,6 @@ export default function ExperienceViewerPage() {
         toast.error('AR mode is not supported on this device.');
         return;
       }
-
-      await startSession('mobile_ar');
 
       const session = await navigator.xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
@@ -381,6 +440,13 @@ export default function ExperienceViewerPage() {
             ← Back to XR Labs
           </button>
           <div className="flex gap-2">
+            <button
+              onClick={() => setShowRating(true)}
+              disabled={sessionRecorded}
+              className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all disabled:opacity-50"
+            >
+              {sessionRecorded ? '✓ Session recorded' : '■ End session & rate'}
+            </button>
             {experience.supported_devices.includes('web_browser') && (
               <button
                 onClick={launchWebXR}
@@ -515,6 +581,42 @@ export default function ExperienceViewerPage() {
           </div>
         </div>
       </div>
+
+      {/* XR-2: the rating is the user's, not a hardcoded 5★ */}
+      {showRating && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
+          <div className="bg-slate-900 border border-white/20 rounded-xl p-6 w-full max-w-sm text-center">
+            <h2 className="text-xl font-bold mb-1">How was this experience?</h2>
+            <p className="text-sm text-gray-400 mb-4">
+              Your completion so far: {computeCompletion()}%
+            </p>
+            <div className="flex justify-center gap-2 mb-5">
+              {[1, 2, 3, 4, 5].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => endSessionWithRating(n)}
+                  aria-label={`Rate ${n} star${n === 1 ? '' : 's'}`}
+                  className="text-3xl hover:scale-125 transition-transform"
+                >
+                  ⭐
+                </button>
+              ))}
+            </div>
+            <button
+              onClick={() => endSessionWithRating(null)}
+              className="w-full py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-sm"
+            >
+              End without rating
+            </button>
+            <button
+              onClick={() => setShowRating(false)}
+              className="w-full mt-2 py-2 text-sm text-gray-400 hover:text-white"
+            >
+              Keep exploring
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -72,10 +72,22 @@ type XRExperience = {
   avg_rating: number | null;
 };
 
+type XRSession = {
+  id: string;
+  experience_id: string;
+  title: string;
+  category: string | null;
+  status: string;
+  completion_percentage: number | null;
+  user_rating: number | null;
+  started_at: string | null;
+};
+
 export default function XRLabsPage() {
   const [resources, setResources] = useState<Resource[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [experiences, setExperiences] = useState<XRExperience[]>([]);
+  const [recent, setRecent] = useState<XRSession[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newTitle, setNewTitle] = useState("");
@@ -84,14 +96,16 @@ export default function XRLabsPage() {
   async function refresh() {
     setLoading(true);
     try {
-      const [res, cols, exps] = await Promise.all([
+      const [res, cols, exps, sess] = await Promise.all([
         api<Resource[]>("/resources?tag=xr").catch(() => [] as Resource[]),
         api<Collection[]>("/me/collections?kind=study_set").catch(() => [] as Collection[]),
         api<{ experiences: XRExperience[] }>("/xr/experiences").catch(() => ({ experiences: [] })),
+        api<{ sessions: XRSession[] }>("/xr/me/sessions?limit=6").catch(() => ({ sessions: [] })),
       ]);
       setResources(Array.isArray(res) ? res : []);
       setCollections(Array.isArray(cols) ? cols : []);
       setExperiences(Array.isArray(exps?.experiences) ? exps.experiences : []);
+      setRecent(Array.isArray(sess?.sessions) ? sess.sessions : []);
       setError(null);
     } catch (e) {
       setError(String((e as Error).message));
@@ -219,6 +233,34 @@ export default function XRLabsPage() {
           </Card>
         </div>
       </div>
+
+      {/* ───────────── Recently explored (XR-2: real session history) ───── */}
+      {recent.length > 0 && (
+        <div>
+          <h2 className="text-base font-semibold mb-3 flex items-center gap-2">
+            <Activity className="h-4 w-4 text-primary" />
+            Recently explored
+          </h2>
+          <div className="flex gap-3 overflow-x-auto pb-1">
+            {recent.map((s) => (
+              <Link key={s.id} href={`/dashboard/xr-labs/experience/${s.experience_id}`}>
+                <Card className="min-w-[220px] hover:border-primary/40 transition-colors cursor-pointer">
+                  <CardHeader className="py-3 px-4">
+                    <CardTitle className="text-sm truncate">{s.title}</CardTitle>
+                    <CardDescription className="text-xs">
+                      {s.status === "completed"
+                        ? `${s.completion_percentage ?? 0}% complete`
+                        : "in progress"}
+                      {typeof s.user_rating === "number" && ` · ${s.user_rating}★`}
+                      {s.started_at && ` · ${formatDate(s.started_at)}`}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* ───────────── XR Experiences (real, from api-core /xr) ─────────────
           Live experiences served by api-core (/api/v1/xr/experiences). Each

@@ -221,7 +221,7 @@ log for no unexpected external hosts.
 | wave | scope | status |
 |------|-------|--------|
 | XR-1 | authoring loop (G1, G2) | DONE 2026-07-14 — project list/get/delete endpoints (owner-scoped, cross-user 404 verified); publish copies scene_data + source_project_id; shared serializer `src/lib/xr/scene-serializer.ts`; viewer renders scene graphs (verified in browser: published scene shows its objects); builder My Projects open/delete + template restore actually instantiates objects now; bonus: three-r169 TransformControls gizmo restored via getHelper() (drag-manipulation had been silently dead) |
-| XR-2 | sessions/ratings/XP (G3, G4, G11) | pending |
+| XR-2 | sessions/ratings/XP (G3, G4, G11) | DONE 2026-07-14 — desktop viewing starts a real session (was VR-only); completion is elapsed-derived (browser session recorded 9%, honest); rating comes from a user dialog (verified 4★ click → DB row); end is idempotent (re-end keeps original values, no double XP); avg_rating recomputed from actual session ratings (4.00/cnt 2 live); +25 XP via engagement engine on ≥50% completion (verified +35 incl. streak bonus, awarded once); org_id stamped on sessions; GET /xr/me/sessions + hub "Recently explored" strip verified in browser; VR/AR reuse the page session (AR leak closed, hardcoded 100%/5★ removed) |
 | XR-3 | asset uploads (G5) | pending |
 | XR-4 | molecules + anatomy portals (G6) | pending |
 | XR-5 | topology + honesty (G7–G10, G12) | pending |

@@ -42,6 +42,7 @@ XP_RULES: dict[str, int] = {
     "first_question_of_day": 15,
     "streak_day": 10,
     "live_session_attended": 25,
+    "xr_session_completed": 25,
     "achievement_bonus": 0,        # populated dynamically
 }
 

@@ -42,6 +42,10 @@ CREATE INDEX IF NOT EXISTS ix_xr_experiences_published ON xr_experiences (is_pub
 -- Idempotent upgrades for databases created before XR-1.
 ALTER TABLE xr_experiences ADD COLUMN IF NOT EXISTS scene_data JSONB;
 ALTER TABLE xr_experiences ADD COLUMN IF NOT EXISTS source_project_id UUID;
+-- XR-2 tenancy: sessions are learner data — carry the learner's org (P2-8
+-- pattern) so staff views can stay org-scoped.
+ALTER TABLE xr_sessions ADD COLUMN IF NOT EXISTS org_id UUID;
+CREATE INDEX IF NOT EXISTS ix_xr_sessions_org_id ON xr_sessions (org_id);
 
 CREATE TABLE IF NOT EXISTS xr_sessions (
     id                    UUID PRIMARY KEY DEFAULT gen_random_uuid(),

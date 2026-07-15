@@ -129,11 +129,16 @@ async def start_session(
     row = (
         await db.execute(
             text(
-                "INSERT INTO xr_sessions (experience_id, user_id, device_type, status) "
-                "VALUES (:eid, :uid, :dev, 'active') "
+                "INSERT INTO xr_sessions (experience_id, user_id, org_id, device_type, status) "
+                "VALUES (:eid, :uid, :org, :dev, 'active') "
                 "RETURNING id, experience_id, user_id, device_type, status, started_at"
             ),
-            {"eid": eid, "uid": current_user.id, "dev": body.device_type},
+            {
+                "eid": eid,
+                "uid": current_user.id,
+                "org": current_user.org_id,
+                "dev": body.device_type,
+            },
         )
     ).mappings().first()
     await db.execute(
@@ -165,7 +170,14 @@ async def end_session(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """End one of the caller's own sessions (auth + ownership-scoped)."""
+    """End one of the caller's own sessions (auth + ownership-scoped).
+
+    XR-2: completion/rating come from the client's real run (no more
+    hardcoded 100%/5-star); the experience's avg_rating is recomputed from
+    actual session ratings; completing a session (>=50%) earns XP through
+    the engagement engine. Ending is idempotent — a second call returns the
+    stored result without re-awarding XP or double-counting the rating.
+    """
     sid = _as_uuid(session_id)
     if sid is None:
         raise HTTPException(status_code=404, detail="Session not found")
@@ -174,8 +186,9 @@ async def end_session(
             text(
                 "UPDATE xr_sessions SET status = 'completed', ended_at = now(), "
                 "completion_percentage = :cp, user_rating = :ur "
-                "WHERE id = :sid AND user_id = :uid "
-                "RETURNING id, status, completion_percentage, user_rating, ended_at"
+                "WHERE id = :sid AND user_id = :uid AND status = 'active' "
+                "RETURNING id, experience_id, status, completion_percentage, "
+                "user_rating, ended_at"
             ),
             {
                 "sid": sid,
@@ -186,8 +199,59 @@ async def end_session(
         )
     ).mappings().first()
     if not row:
-        raise HTTPException(status_code=404, detail="Session not found")
+        # Already ended, or not the caller's session at all.
+        existing = (
+            await db.execute(
+                text(
+                    "SELECT id, experience_id, status, completion_percentage, "
+                    "user_rating, ended_at FROM xr_sessions "
+                    "WHERE id = :sid AND user_id = :uid"
+                ),
+                {"sid": sid, "uid": current_user.id},
+            )
+        ).mappings().first()
+        if not existing:
+            raise HTTPException(status_code=404, detail="Session not found")
+        return {
+            "session": {
+                "id": str(existing["id"]),
+                "status": existing["status"],
+                "completion_percentage": existing["completion_percentage"],
+                "user_rating": existing["user_rating"],
+                "ended_at": existing["ended_at"].isoformat() if existing["ended_at"] else None,
+            },
+            "already_ended": True,
+        }
+
+    # Real ratings: recompute the experience aggregate from session ratings.
+    await db.execute(
+        text(
+            "UPDATE xr_experiences e SET "
+            "avg_rating = COALESCE(sub.avg, 0), rating_count = sub.cnt "
+            "FROM (SELECT AVG(user_rating)::numeric(3,2) AS avg, "
+            "             COUNT(user_rating) AS cnt "
+            "      FROM xr_sessions WHERE experience_id = :eid "
+            "      AND user_rating IS NOT NULL) sub "
+            "WHERE e.id = :eid"
+        ),
+        {"eid": row["experience_id"]},
+    )
     await db.commit()
+
+    xp_awarded = 0
+    if (body.completion_percentage or 0) >= 50:
+        from app.services import engagement as eng_svc
+
+        result = await eng_svc.record_activity(
+            db,
+            user_id=current_user.id,
+            source="xr_session_completed",
+            ref_kind="xr_session",
+            ref_id=sid,
+        )
+        xp_awarded = result.xp_awarded if hasattr(result, "xp_awarded") else 0
+        await db.commit()
+
     return {
         "session": {
             "id": str(row["id"]),
@@ -195,7 +259,48 @@ async def end_session(
             "completion_percentage": row["completion_percentage"],
             "user_rating": row["user_rating"],
             "ended_at": row["ended_at"].isoformat() if row["ended_at"] else None,
-        }
+        },
+        "xp_awarded": xp_awarded,
+    }
+
+
+@router.get("/me/sessions")
+async def my_sessions(
+    limit: int = 20,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """The caller's XR session history, newest first (XR-2)."""
+    rows = (
+        await db.execute(
+            text(
+                "SELECT s.id, s.experience_id, s.device_type, s.status, "
+                "s.completion_percentage, s.user_rating, s.started_at, "
+                "s.ended_at, e.title, e.category "
+                "FROM xr_sessions s "
+                "JOIN xr_experiences e ON e.id = s.experience_id "
+                "WHERE s.user_id = :uid "
+                "ORDER BY s.started_at DESC LIMIT :lim"
+            ),
+            {"uid": current_user.id, "lim": max(1, min(limit, 100))},
+        )
+    ).mappings().all()
+    return {
+        "sessions": [
+            {
+                "id": str(r["id"]),
+                "experience_id": str(r["experience_id"]),
+                "title": r["title"],
+                "category": r["category"],
+                "device_type": r["device_type"],
+                "status": r["status"],
+                "completion_percentage": r["completion_percentage"],
+                "user_rating": r["user_rating"],
+                "started_at": r["started_at"].isoformat() if r["started_at"] else None,
+                "ended_at": r["ended_at"].isoformat() if r["ended_at"] else None,
+            }
+            for r in rows
+        ]
     }
 
 
