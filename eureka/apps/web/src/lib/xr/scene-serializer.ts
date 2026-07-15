@@ -33,7 +33,16 @@ export interface SerializedObjectProperties {
 export interface SerializedSceneObject {
   id: string;
   name: string;
-  type: "cube" | "sphere" | "cylinder" | "model" | "light" | "text";
+  type:
+    | "cube"
+    | "sphere"
+    | "cylinder"
+    | "cone"
+    | "torus"
+    | "plane"
+    | "model"
+    | "light"
+    | "text";
   position: Vec3;
   rotation: Vec3;
   scale: Vec3;
@@ -71,6 +80,15 @@ export function createPrimitiveMesh(
       break;
     case "cylinder":
       geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+      break;
+    case "cone":
+      geometry = new THREE.ConeGeometry(0.5, 1, 32);
+      break;
+    case "torus":
+      geometry = new THREE.TorusGeometry(0.4, 0.16, 16, 48);
+      break;
+    case "plane":
+      geometry = new THREE.PlaneGeometry(1, 1);
       break;
     default:
       return null;

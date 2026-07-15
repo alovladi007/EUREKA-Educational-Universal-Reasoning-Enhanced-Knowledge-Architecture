@@ -55,8 +55,7 @@ interface XRExperience {
 }
 
 // XR data is served by api-core (/api/v1/xr/*) via the shared `api()` client,
-// which targets NEXT_PUBLIC_API_URL and attaches the access_token. The old
-// standalone :3005/api/xr service never existed.
+// which targets NEXT_PUBLIC_API_URL and attaches the access_token.
 
 export default function ExperienceViewerPage() {
   const params = useParams();
@@ -409,6 +408,13 @@ export default function ExperienceViewerPage() {
     }
   };
 
+  // G10: the API hardcodes supported_devices for every row, so derive what
+  // this experience can actually do. Internal portals are pages (handled by
+  // the redirect above); glTF and scene-graph experiences render in WebXR.
+  const isPortal = Boolean(experience?.scene_file_url?.startsWith('/dashboard/'));
+  const supportsVR = !isPortal;
+  const supportsAR = !isPortal && Boolean(experience?.scene_file_url);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-indigo-950 via-purple-900 to-pink-900 flex items-center justify-center">
@@ -456,7 +462,7 @@ export default function ExperienceViewerPage() {
             >
               {sessionRecorded ? '✓ Session recorded' : '■ End session & rate'}
             </button>
-            {experience.supported_devices.includes('web_browser') && (
+            {supportsVR && (
               <button
                 onClick={launchWebXR}
                 className="px-6 py-3 bg-gradient-to-r from-pink-500 to-purple-600 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-700 transition-all shadow-lg"
@@ -465,7 +471,7 @@ export default function ExperienceViewerPage() {
                 {isInVR ? 'In VR Mode...' : '🥽 Launch VR'}
               </button>
             )}
-            {experience.supported_devices.includes('mobile_ar') && (
+            {supportsAR && (
               <button
                 onClick={launchAR}
                 className="px-6 py-3 bg-gradient-to-r from-blue-500 to-teal-600 rounded-lg font-semibold hover:from-blue-600 hover:to-teal-700 transition-all shadow-lg"

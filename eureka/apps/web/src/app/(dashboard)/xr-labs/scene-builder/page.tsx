@@ -6,8 +6,9 @@
  * Companion to ../page.tsx's redirect. The original 1039-line scene
  * builder here was very similar to /dashboard/xr-labs/scene-builder
  * (1091 lines) — keep the sidebar-canonical one, redirect this URL.
- * Any divergent functionality between the two implementations is worth
- * a follow-up audit but is out of scope for the route-collision pass.
+ * Divergence audit closed (XR-5): the /dashboard/ tree is the only live
+ * implementation and has since gained the authoring loop, sessions, uploads,
+ * and portals. Nothing unique remains here.
  */
 
 import { useEffect } from "react";

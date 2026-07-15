@@ -1,11 +1,3 @@
-// @ts-nocheck — Heavy direct usage of three.js + OrbitControls/TransformControls
-// that the platform's type shims (see src/types/three-modules.d.ts) intentionally
-// expose as `any`. Most of the remaining type errors are property accesses on
-// runtime-narrowed Object3D subclasses (.geometry, .material, .color). Rather
-// than litter the file with `as Mesh` / `as MeshStandardMaterial` casts we
-// ts-nocheck the whole experimental lab module. Tracked as P1 follow-up.
-// TODO(p1): Add real type narrowing helpers for selected scene objects, then
-//   remove this @ts-nocheck.
 'use client';
 
 /**
@@ -15,14 +7,14 @@
  * Build VR/AR experiences without writing code
  *
  * Features:
- * - Three.js 3D viewport
- * - Transform controls (move, rotate, scale)
- * - Asset library browser (10,000+ models)
+ * - Three.js 3D viewport with transform gizmo (move/rotate/scale)
+ * - Primitives (cube/sphere/cylinder/cone/torus/plane) + glTF assets
+ * - Asset library browser with upload (XR-3)
  * - Scene templates
- * - Object hierarchy
- * - Properties panel
- * - Save/Load projects
- * - One-click publish to XR platform
+ * - Object hierarchy + properties panel
+ * - Save / reopen / delete projects (XR-1)
+ * - Publish to the XR Labs catalog — the published experience renders the
+ *   authored scene through the shared serializer (src/lib/xr/scene-serializer)
  */
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
@@ -45,12 +37,33 @@ import { populateScene, serializeObjects } from '@/lib/xr/scene-serializer';
 interface SceneObject {
   id: string;
   name: string;
-  type: 'cube' | 'sphere' | 'cylinder' | 'model' | 'light' | 'text';
+  type: 'cube' | 'sphere' | 'cylinder' | 'cone' | 'torus' | 'plane' | 'model' | 'light' | 'text';
   mesh: THREE.Object3D;
   position: [number, number, number];
   rotation: [number, number, number];
   scale: [number, number, number];
   properties: Record<string, any>;
+}
+
+// XR-5: real type narrowing for three.js objects, replacing the file-wide
+// @ts-nocheck. The jsm shims type OrbitControls/TransformControls as `any`
+// values, so we alias their instance types here; disposeObject3D walks a
+// subtree and frees GPU resources with proper Mesh/Material narrowing.
+type OrbitControlsInstance = InstanceType<typeof OrbitControls>;
+type TransformControlsInstance = InstanceType<typeof TransformControls>;
+
+function disposeObject3D(root: THREE.Object3D): void {
+  root.traverse((child: THREE.Object3D) => {
+    const mesh = child as THREE.Mesh;
+    if (!mesh.isMesh) return;
+    mesh.geometry?.dispose();
+    const material = mesh.material;
+    if (Array.isArray(material)) {
+      material.forEach((m) => m.dispose());
+    } else {
+      material?.dispose();
+    }
+  });
 }
 
 interface Project {
@@ -89,8 +102,7 @@ interface Template {
 // =====================================================
 
 // Scene-builder data is served by api-core under /api/v1/xr/* (templates,
-// asset-library, scene-builder projects + publish). The old standalone
-// :3005/api/xr service never existed.
+// asset-library, scene-builder projects + publish).
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1'}/xr`;
 // XR-3: uploads go to the file-storage service (magic-byte validated),
 // then get registered in the shared asset library via api-core.
@@ -101,10 +113,9 @@ const FILE_STORAGE_URL = process.env.NEXT_PUBLIC_FILE_STORAGE_URL || 'http://loc
 // =====================================================
 
 export default function SceneBuilderPage() {
-  // Microservice health gate: if services/xr-labs/ isn't running on :3005,
-  // every API call here returns ERR_CONNECTION_REFUSED and Three.js
-  // crashes trying to add(undefined) objects to the scene. Show a clean
-  // "start the microservice" page in that case instead of mounting.
+  // API health gate: if api-core's /xr endpoints are unreachable, every call
+  // here fails and Three.js crashes trying to add(undefined) to the scene.
+  // Show a clean error page in that case instead of mounting the editor.
   const [msHealthy, setMsHealthy] = useState<boolean | null>(null);
   useEffect(() => {
     const ctl = new AbortController();
@@ -154,8 +165,8 @@ function SceneBuilderEditor() {
   const sceneRef = useRef<THREE.Scene | null>(null);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const orbitControlsRef = useRef<OrbitControls | null>(null);
-  const transformControlsRef = useRef<TransformControls | null>(null);
+  const orbitControlsRef = useRef<OrbitControlsInstance | null>(null);
+  const transformControlsRef = useRef<TransformControlsInstance | null>(null);
   const animationFrameRef = useRef<number>(0);
 
   // State
@@ -244,7 +255,7 @@ function SceneBuilderEditor() {
 
     // Transform Controls
     const transformControls = new TransformControls(camera, renderer.domElement);
-    transformControls.addEventListener('dragging-changed', (event) => {
+    transformControls.addEventListener('dragging-changed', (event: { value: boolean }) => {
       orbitControls.enabled = !event.value;
     });
     transformControls.addEventListener('objectChange', handleObjectTransform);
@@ -319,23 +330,14 @@ function SceneBuilderEditor() {
       rendererRef.current.dispose();
     }
 
-    objects.forEach(obj => {
-      if (obj.mesh.geometry) obj.mesh.geometry.dispose();
-      if (obj.mesh.material) {
-        if (Array.isArray(obj.mesh.material)) {
-          obj.mesh.material.forEach(mat => mat.dispose());
-        } else {
-          obj.mesh.material.dispose();
-        }
-      }
-    });
+    objects.forEach(obj => disposeObject3D(obj.mesh));
   };
 
   // =====================================================
   // OBJECT MANAGEMENT
   // =====================================================
 
-  const addPrimitive = (type: 'cube' | 'sphere' | 'cylinder') => {
+  const addPrimitive = (type: 'cube' | 'sphere' | 'cylinder' | 'cone' | 'torus' | 'plane') => {
     if (!sceneRef.current) return;
 
     let geometry: THREE.BufferGeometry;
@@ -350,6 +352,15 @@ function SceneBuilderEditor() {
         break;
       case 'cylinder':
         geometry = new THREE.CylinderGeometry(0.5, 0.5, 1, 32);
+        break;
+      case 'cone':
+        geometry = new THREE.ConeGeometry(0.5, 1, 32);
+        break;
+      case 'torus':
+        geometry = new THREE.TorusGeometry(0.4, 0.16, 16, 48);
+        break;
+      case 'plane':
+        geometry = new THREE.PlaneGeometry(1, 1);
         break;
       default:
         return;
@@ -379,7 +390,7 @@ function SceneBuilderEditor() {
       position: [0, 1, 0],
       rotation: [0, 0, 0],
       scale: [1, 1, 1],
-      properties: { color: material.color.getHex() }
+      properties: { color: (material as THREE.MeshStandardMaterial).color.getHex() }
     };
 
     setObjects([...objects, newObject]);
@@ -450,9 +461,8 @@ function SceneBuilderEditor() {
   const restoreScene = async (sceneData: any) => {
     if (!sceneRef.current) return;
     if (transformControlsRef.current) transformControlsRef.current.detach();
-    objects.forEach(obj => {
-      sceneRef.current.remove(obj.mesh);
-    });
+    const scene = sceneRef.current;
+    objects.forEach(obj => scene.remove(obj.mesh));
     setSelectedObject(null);
 
     const restored = await populateScene(
@@ -827,6 +837,24 @@ function SceneBuilderEditor() {
                 className="w-full py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-left px-3"
               >
                 🔶 Cylinder
+              </button>
+              <button
+                onClick={() => addPrimitive('cone')}
+                className="w-full py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-left px-3"
+              >
+                🔺 Cone
+              </button>
+              <button
+                onClick={() => addPrimitive('torus')}
+                className="w-full py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-left px-3"
+              >
+                🍩 Torus
+              </button>
+              <button
+                onClick={() => addPrimitive('plane')}
+                className="w-full py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-left px-3"
+              >
+                ▭ Plane
               </button>
               <button
                 onClick={() => setShowAssetLibrary(true)}
@@ -1310,9 +1338,12 @@ function PublishDialog({ onPublish, onClose }: any) {
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-gray-800 rounded-xl p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Publish to XR Platform</h2>
+        <h2 className="text-2xl font-bold mb-4">Publish to XR Labs</h2>
         <p className="text-sm text-gray-400 mb-4">
-          Your scene will be published as a VR experience. It will be available to all users on Meta Quest, HTC Vive, and web browsers.
+          Your scene becomes a published experience in the XR Labs catalog: anyone
+          can open it in the browser viewer, and a headset browser with WebXR can
+          enter it immersively. Sessions and ratings are recorded like any other
+          experience.
         </p>
 
         <button

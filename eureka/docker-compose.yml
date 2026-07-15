@@ -677,29 +677,10 @@ services:
       - ai_research_data:/data/research
     command: uvicorn main:app --host 0.0.0.0 --port 8060 --reload
 
-  xr-labs:
-    restart: unless-stopped
-    profiles:
-      - full
-    build:
-      context: ../services/xr-labs
-      dockerfile: Dockerfile
-    container_name: eureka-xr-labs
-    environment:
-      KAFKA_BOOTSTRAP_SERVERS: kafka:9092
-      JWT_SECRET: eureka_dev_secret_key_change_in_production
-      JWT_ALGORITHM: HS256
-      ENVIRONMENT: development
-    ports:
-      - "8070:8070"
-    depends_on:
-      kafka:
-        condition: service_started
-    volumes:
-      - ../services/xr-labs:/app
-      - ../services/shared:/shared
-      - xr_simulations:/data/xr
-    command: uvicorn main:app --host 0.0.0.0 --port 8070 --reload
+  # xr-labs: RETIRED (XR-5). XR Labs is served by api-core's /api/v1/xr
+  # endpoints (see services/api-core/app/api/v1/endpoints/xr.py) against the
+  # tables in ops/db/22_xr_labs.sql; the frontend portals run in-browser.
+  # See services/xr-labs/DEPRECATED.md.
 
   ethics-security:
     restart: unless-stopped
@@ -998,7 +979,6 @@ volumes:
   kafka_data:
   marketplace_content:
   ai_research_data:
-  xr_simulations:
   neo4j_data:
   qdrant_data:
   notebook_uploads:
