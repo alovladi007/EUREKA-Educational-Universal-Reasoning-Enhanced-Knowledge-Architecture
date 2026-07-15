@@ -21,6 +21,9 @@ from app.schemas import (
 settings = get_settings()
 logger = logging.getLogger(__name__)
 router = APIRouter()
+# XR-3: shared asset-library reads are catalog content and must be fetchable
+# by GLTFLoader (no bearer header) — mounted WITHOUT the blanket auth gate.
+public_router = APIRouter()
 
 
 def ensure_path_owner(user: CurrentUser, file_path: str) -> None:
@@ -68,6 +71,8 @@ _MAGIC_SIGNATURES: dict = {
     ".avi": [b"RIFF"],
     ".webm": [b"\x1a\x45\xdf\xa3"],
     ".flv": [b"FLV"],
+    # Binary glTF (XR-3). .gltf is JSON, so it gets the executable screen only.
+    ".glb": [b"glTF"],
 }
 # Content that must never be stored regardless of the claimed extension.
 _EXECUTABLE_MAGIC = (b"MZ", b"\x7fELF", b"\xfe\xed\xfa\xce", b"\xfe\xed\xfa\xcf",
@@ -200,6 +205,35 @@ async def upload_file(
     except Exception as e:
         logger.error(f"Error uploading file: {e}")
         raise HTTPException(status_code=500, detail=f"Upload failed: {str(e)}")
+
+
+@public_router.get("/public/xr-assets/{file_path:path}")
+async def public_xr_asset(
+    file_path: str,
+    storage: StorageClient = Depends(get_storage_client),
+):
+    """Serve shared XR asset-library models without auth (XR-3).
+
+    GLTFLoader fetches URLs directly and cannot attach a bearer token, and
+    library assets are shared catalog content (like the public experiences
+    list) — so this route exposes EXACTLY the xr-assets folder, glTF formats
+    only, with traversal blocked. Personal files in other folders stay behind
+    the authenticated /download route.
+    """
+    if ".." in file_path or file_path.startswith("/"):
+        raise HTTPException(status_code=404, detail="File not found")
+    if os.path.splitext(file_path)[1].lower() not in (".glb", ".gltf"):
+        raise HTTPException(status_code=404, detail="File not found")
+    full_path = f"xr-assets/{file_path}"
+    if not storage.file_exists(full_path):
+        raise HTTPException(status_code=404, detail="File not found")
+    file_data = storage.download_file(full_path)
+    media = "model/gltf-binary" if full_path.endswith(".glb") else "model/gltf+json"
+    return StreamingResponse(
+        io.BytesIO(file_data),
+        media_type=media,
+        headers={"Cache-Control": "public, max-age=86400"},
+    )
 
 
 @router.get("/download/{file_path:path}")

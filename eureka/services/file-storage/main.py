@@ -56,6 +56,9 @@ async def add_process_time_header(request: Request, call_next):
 # upload / download-by-arbitrary-path / list / delete with no auth). Per-file
 # ownership is enforced inside the handlers.
 app.include_router(api_router, prefix="/api/v1", tags=["files"], dependencies=[Depends(require_user)])
+# Public XR asset reads (glTF only, xr-assets folder only — see files.py).
+from app.api.v1.files import public_router as xr_public_router  # noqa: E402
+app.include_router(xr_public_router, prefix="/api/v1/files", tags=["files-public"])
 
 # Health check endpoint
 @app.get("/health", tags=["health"])

@@ -39,7 +39,9 @@ class Settings(BaseSettings):
         # Presentations
         ".ppt", ".pptx",
         # Other
-        ".json", ".xml", ".md"
+        ".json", ".xml", ".md",
+        # 3D models (XR-3: the XR Labs asset-library upload pipeline)
+        ".glb", ".gltf"
     ]
 
     # Virus Scanning

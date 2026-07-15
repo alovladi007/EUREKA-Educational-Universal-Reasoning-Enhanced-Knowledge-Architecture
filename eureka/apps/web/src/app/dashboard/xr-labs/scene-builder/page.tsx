@@ -35,7 +35,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { TransformControls } from 'three/examples/jsm/controls/TransformControls';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import toast from 'react-hot-toast';
-import { api } from '@/lib/eureka-api';
+import { api, getToken } from '@/lib/eureka-api';
 import { populateScene, serializeObjects } from '@/lib/xr/scene-serializer';
 
 // =====================================================
@@ -92,6 +92,9 @@ interface Template {
 // asset-library, scene-builder projects + publish). The old standalone
 // :3005/api/xr service never existed.
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000'}${process.env.NEXT_PUBLIC_API_PREFIX || '/api/v1'}/xr`;
+// XR-3: uploads go to the file-storage service (magic-byte validated),
+// then get registered in the shared asset library via api-core.
+const FILE_STORAGE_URL = process.env.NEXT_PUBLIC_FILE_STORAGE_URL || 'http://localhost:8300';
 
 // =====================================================
 // MAIN COMPONENT
@@ -675,6 +678,55 @@ function SceneBuilderEditor() {
     fetchTemplates();
   }, []);
 
+  const [isUploading, setIsUploading] = useState(false);
+
+  // XR-3: upload a .glb/.gltf to file-storage, register it in the shared
+  // library, and refresh the panel so it's immediately placeable.
+  const uploadAsset = async (file: File) => {
+    const ext = file.name.toLowerCase().split('.').pop();
+    if (ext !== 'glb' && ext !== 'gltf') {
+      toast.error('Only .glb / .gltf models can be uploaded');
+      return;
+    }
+    setIsUploading(true);
+    try {
+      const form = new FormData();
+      form.append('file', file);
+      form.append('folder', 'xr-assets');
+      form.append('description', 'XR Labs asset-library upload');
+      const upRes = await fetch(`${FILE_STORAGE_URL}/api/v1/files/upload`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${getToken() ?? ''}` },
+        body: form,
+      });
+      const upData = await upRes.json();
+      if (!upRes.ok) {
+        toast.error('Upload rejected: ' + (upData.detail || upRes.status));
+        return;
+      }
+      // file_path is 'xr-assets/{user}/{id}.glb' — the public route serves
+      // everything under xr-assets/ without auth (GLTFLoader can't send one).
+      const publicUrl = `${FILE_STORAGE_URL}/api/v1/files/public/${upData.file_path}`;
+      await api('/xr/asset-library/assets', {
+        method: 'POST',
+        body: JSON.stringify({
+          asset_name: file.name.replace(/\.(glb|gltf)$/i, ''),
+          file_url: publicUrl,
+          file_format: ext,
+          category_name: 'Uploads',
+          file_size_kb: Math.round(file.size / 1024),
+        }),
+      });
+      toast.success(`"${file.name}" added to the asset library`);
+      await fetchAssets();
+    } catch (error) {
+      console.error('Error uploading asset:', error);
+      toast.error('Failed to upload asset');
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
   const fetchAssets = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/asset-library/search?limit=100`);
@@ -991,6 +1043,8 @@ function SceneBuilderEditor() {
           search={assetSearch}
           onSearchChange={setAssetSearch}
           onSelectAsset={loadAsset}
+          onUpload={uploadAsset}
+          isUploading={isUploading}
           onClose={() => setShowAssetLibrary(false)}
         />
       )}
@@ -1040,7 +1094,8 @@ function SceneBuilderEditor() {
 // MODAL COMPONENTS
 // =====================================================
 
-function AssetLibraryModal({ assets, search, onSearchChange, onSelectAsset, onClose }: any) {
+function AssetLibraryModal({ assets, search, onSearchChange, onSelectAsset, onUpload, isUploading, onClose }: any) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
       <div className="bg-gray-800 rounded-xl w-full max-w-6xl h-[80vh] flex flex-col">
@@ -1048,9 +1103,29 @@ function AssetLibraryModal({ assets, search, onSearchChange, onSelectAsset, onCl
         <div className="flex items-center justify-between p-6 border-b border-gray-700">
           <div>
             <h2 className="text-2xl font-bold">Asset Library</h2>
-            <p className="text-sm text-gray-400">10,000+ 3D models and textures</p>
+            <p className="text-sm text-gray-400">{assets.length} model{assets.length === 1 ? '' : 's'} — upload your own .glb/.gltf</p>
           </div>
-          <button onClick={onClose} aria-label="Close asset library" className="text-3xl hover:text-gray-400"><span aria-hidden="true">×</span></button>
+          <div className="flex items-center gap-3">
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".glb,.gltf"
+              className="hidden"
+              onChange={(e) => {
+                const f = e.target.files?.[0];
+                if (f) onUpload(f);
+                e.target.value = '';
+              }}
+            />
+            <button
+              onClick={() => fileInputRef.current?.click()}
+              disabled={isUploading}
+              className="px-4 py-2 bg-blue-600 rounded-lg hover:bg-blue-700 transition-colors font-semibold disabled:opacity-50"
+            >
+              {isUploading ? 'Uploading…' : '⬆️ Upload model'}
+            </button>
+            <button onClick={onClose} aria-label="Close asset library" className="text-3xl hover:text-gray-400"><span aria-hidden="true">×</span></button>
+          </div>
         </div>
 
         {/* Search */}
@@ -1085,6 +1160,9 @@ function AssetLibraryModal({ assets, search, onSearchChange, onSelectAsset, onCl
                   <div className="text-xs text-gray-400 capitalize">{asset.category_name}</div>
                   {asset.has_animations && (
                     <div className="text-xs text-green-400 mt-1">🎬 Animated</div>
+                  )}
+                  {typeof asset.file_url === 'string' && asset.file_url.includes('modelviewer.dev') && (
+                    <div className="text-[10px] text-amber-400/80 mt-1">external sample</div>
                   )}
                 </div>
               </div>

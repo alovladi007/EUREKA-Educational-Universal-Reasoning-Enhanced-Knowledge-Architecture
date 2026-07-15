@@ -371,6 +371,81 @@ async def search_assets(
     }
 
 
+class AssetRegisterBody(BaseModel):
+    asset_name: str
+    file_url: str
+    file_format: Optional[str] = "glb"
+    category_name: Optional[str] = "Uploads"
+    thumbnail_url: Optional[str] = None
+    file_size_kb: Optional[int] = None
+
+
+@router.post("/asset-library/assets", status_code=201)
+async def register_asset(
+    body: AssetRegisterBody,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Register an uploaded model in the shared asset library (XR-3).
+
+    The file itself lives in file-storage (uploaded with magic-byte
+    validation); this records it so the scene builder can place it.
+    """
+    cat_name = (body.category_name or "Uploads").strip() or "Uploads"
+    cat = (
+        await db.execute(
+            text("SELECT id FROM xr_asset_library_categories WHERE category_name = :n"),
+            {"n": cat_name},
+        )
+    ).first()
+    if cat:
+        cat_id = cat[0]
+    else:
+        cat_id = (
+            await db.execute(
+                text(
+                    "INSERT INTO xr_asset_library_categories (category_name) "
+                    "VALUES (:n) RETURNING id"
+                ),
+                {"n": cat_name},
+            )
+        ).first()[0]
+
+    row = (
+        await db.execute(
+            text(
+                "INSERT INTO xr_3d_assets "
+                "(category_id, asset_name, file_url, thumbnail_url, file_format, "
+                " file_size_kb, is_animated, license_type, created_by) "
+                "VALUES (:cat, :name, :url, :thumb, :fmt, :kb, false, "
+                "        'user-upload', :uid) "
+                "RETURNING id"
+            ),
+            {
+                "cat": cat_id,
+                "name": body.asset_name,
+                "url": body.file_url,
+                "thumb": body.thumbnail_url,
+                "fmt": body.file_format or "glb",
+                "kb": body.file_size_kb,
+                "uid": current_user.id,
+            },
+        )
+    ).mappings().first()
+    await db.commit()
+    return {
+        "asset": {
+            "id": str(row["id"]),
+            "asset_name": body.asset_name,
+            "category_name": cat_name,
+            "file_url": body.file_url,
+            "thumbnail_url": body.thumbnail_url,
+            "file_format": body.file_format or "glb",
+            "has_animations": False,
+        }
+    }
+
+
 @router.post("/asset-library/assets/{asset_id}/use")
 async def use_asset(
     asset_id: str,
