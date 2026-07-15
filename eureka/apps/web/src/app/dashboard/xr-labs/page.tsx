@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, formatDate } from "@/lib/eureka-api";
+import { PortalCardLink } from "@/components/xr/portal-card-link";
 import {
   Glasses,
   Box,
@@ -173,7 +174,7 @@ export default function XRLabsPage() {
           Built-in portals
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <Link href="/dashboard/xr-labs/solar-system">
+          <PortalCardLink href="/dashboard/xr-labs/solar-system">
             <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer bg-gradient-to-br from-indigo-950/50 via-purple-950/30 to-transparent border-primary/20">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
@@ -200,8 +201,8 @@ export default function XRLabsPage() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
-          <Link href="/dashboard/xr-labs/molecules">
+          </PortalCardLink>
+          <PortalCardLink href="/dashboard/xr-labs/molecules">
             <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer bg-gradient-to-br from-emerald-950/40 via-teal-950/20 to-transparent border-primary/20">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
@@ -222,8 +223,8 @@ export default function XRLabsPage() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
-          <Link href="/dashboard/xr-labs/anatomy">
+          </PortalCardLink>
+          <PortalCardLink href="/dashboard/xr-labs/anatomy">
             <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer bg-gradient-to-br from-rose-950/40 via-purple-950/20 to-transparent border-primary/20">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
@@ -244,7 +245,7 @@ export default function XRLabsPage() {
                 </div>
               </CardContent>
             </Card>
-          </Link>
+          </PortalCardLink>
         </div>
       </div>
 
@@ -327,7 +328,7 @@ export default function XRLabsPage() {
 
       {/* ───────────── Authoring tools ───────────── */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <Link href="/dashboard/xr-labs/scene-builder">
+        <PortalCardLink href="/dashboard/xr-labs/scene-builder">
           <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer">
             <CardHeader>
               <CardTitle className="text-base flex items-center gap-2">
@@ -345,7 +346,7 @@ export default function XRLabsPage() {
               </div>
             </CardContent>
           </Card>
-        </Link>
+        </PortalCardLink>
         <Card className="h-full">
           <CardHeader>
             <CardTitle className="text-base flex items-center gap-2">

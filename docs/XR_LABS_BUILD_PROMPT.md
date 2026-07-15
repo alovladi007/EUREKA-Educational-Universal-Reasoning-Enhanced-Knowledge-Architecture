@@ -216,6 +216,48 @@ log for no unexpected external hosts.
 
 ---
 
+## 4b. XR-7 — "the portal cards don't open" (reported 2026-07-14, FIXED)
+
+**Symptom (user):** clicking Solar System / Organic Chemistry / Anatomy did
+nothing.
+
+**Root cause — a real defect, not the user's setup.** The cards were correct
+`<Link>`s to working pages; the problem was that a click produced *zero
+feedback* while the route loaded. Next's App Router must fetch a route's RSC
+payload before it can render anything for that route — **including its
+`loading.tsx`** — so on a slow load the old page just sits there, looking
+inert. The three "broken" cards were exactly the three heaviest three.js
+routes:
+
+| route | cold `next dev` compile |
+|---|---|
+| /dashboard/xr-labs/anatomy | 3.1s (961 modules) |
+| /dashboard/xr-labs/solar-system | 8.4s (2149 modules) |
+| ...under CPU contention (observed once) | **183.2s** |
+
+8s of dead air already reads as broken; the 183s case (measured while other
+builds saturated the machine) is indistinguishable from a dead button. My
+earlier "verified working" clicks were all on **pre-warmed** routes — that is
+what hid this.
+
+**Fix:** `components/xr/portal-card-link.tsx` — a Link that uses
+`useTransition` + `router.push`, so the pending state is known on the CLIENT
+the instant of the click, independent of the route payload. The card dims and
+shows a spinner + "Opening 3D view…" immediately. Keeps a real `<a href>` so
+cmd/middle-click still open a new tab. Applied to all four heavy cards (three
+portals + scene builder). A `loading.tsx` is also in place for the segment (it
+helps once the payload is in flight and for slow data in production), but on
+its own it does NOT fix this — verified.
+
+**Verified:** cold cache + click → spinner visible for the whole 8.4s compile
+→ lands on the portal. Production build clean.
+
+**Lesson for the register:** "it works when I click it" is not a verification
+if the route was already warm. Cold-path click feedback is its own acceptance
+criterion.
+
+---
+
 ## 5. Status
 
 | wave | scope | status |
@@ -225,4 +267,5 @@ log for no unexpected external hosts.
 | XR-3 | asset uploads (G5) | DONE 2026-07-14 — file-storage allows .glb/.gltf with glTF magic-byte validation (MZ-executable and junk-renamed-.glb both rejected live); public read route serves ONLY xr-assets/ glTF files (traversal + foreign-extension 404, authed routes still gated) because GLTFLoader can't send a bearer; POST /xr/asset-library/assets registers uploads (auto "Uploads" category); builder gained an Upload button, honest model count (fake "10,000+ models" copy removed), and "external sample" badges on modelviewer.dev hotlinks. E2E verified: real 2.8MB Astronaut GLB uploaded → publicly served byte-perfect → registered → placed in a builder scene in-browser |
 | XR-4 | molecules + anatomy portals (G6) | DONE 2026-07-14 — both "coming soon" cards are now real, self-contained three.js portals. Molecules: 10 molecules (methane→caffeine) with real coordinate data, bond-order rendering (1/2/3 rods), click-for-facts per atom (element + hybridization), geometry/polarity per molecule, labeled "idealized geometries". Anatomy: 23 structures across 3 toggleable layers (skeletal/organs/circulatory), click-for-facts, prominently labeled "schematic — not anatomically exact"; verified live: hiding skeletal drops 23→13 structures, Heart selection shows its facts. Both registered as xr_experiences whose scene_url is an internal route; new shared `useXrSession` hook gives them the same session/rating/XP contract (verified: session auto-started on load, auto-ended on leave); viewer redirects internal-route experiences instead of GLTF-loading them; hub cards live + portal duplicates filtered from the Experiences grid. Network log: zero external hosts |
 | XR-5 | topology + honesty (G7–G10, G12) | DONE 2026-07-14 — zombie Node service retired (compose block + volume removed, compose validates; services/xr-labs/DEPRECATED.md documents what owns XR now and why: zero consumers, and it shipped Node sources while its compose block ran uvicorn). Builder: `@ts-nocheck` REMOVED with real type narrowing (OrbitControls/TransformControls instance types, disposeObject3D helper) — the June P1 TODO is closed, tsc clean; cone/torus/plane primitives added (the shared serializer's type union caught the drift immediately — the module doing its job); publish dialog no longer promises Meta Quest/HTC Vive availability it can't know; fake "10,000+ models" copy already gone in XR-3. Viewer: supported_devices derived from what the experience actually is instead of the API's hardcoded list; glTF load failure shows a toast + fallback grid instead of a silent black void. Stale `:3005` comments and the (dashboard) divergence TODOs closed. |
+| XR-7 | portal cards give no click feedback on cold/slow routes (user-reported) | DONE 2026-07-14 — PortalCardLink (useTransition) shows an instant spinner; verified across an 8.4s cold compile. loading.tsx added too but proven insufficient alone. |
 | XR-6 | verify + rebuild + register | DONE 2026-07-14 — 17 XR integration tests added (tests/integration/test_xr.py) covering the authoring loop, session lifecycle, idempotent end, avg_rating computation, org stamping, asset registration, and every ownership boundary: **17 passed**. tsc + next build clean; web/api-core/file-storage images rebuilt and healthy; full loop verified in-browser across all waves. Gap Register updated. |
