@@ -201,6 +201,7 @@ export default function ExperienceViewerPage() {
   // Start the session when the experience loads; end it on leave.
   useEffect(() => {
     if (!experience) return;
+    if (experience.scene_file_url?.startsWith('/dashboard/')) return; // portal tracks itself
     let cancelled = false;
     (async () => {
       try {
@@ -230,6 +231,14 @@ export default function ExperienceViewerPage() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [experience?.id]);
+
+  // XR-4: built-in portals store their internal route in scene_url — they are
+  // whole pages, not glTF payloads, so hand off instead of trying to render.
+  useEffect(() => {
+    if (experience?.scene_file_url?.startsWith('/dashboard/')) {
+      router.replace(experience.scene_file_url);
+    }
+  }, [experience, router]);
 
   // Fetch experience details
   useEffect(() => {

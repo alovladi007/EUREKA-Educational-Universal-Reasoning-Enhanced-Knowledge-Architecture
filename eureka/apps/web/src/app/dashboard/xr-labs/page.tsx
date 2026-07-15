@@ -62,6 +62,7 @@ type Collection = {
 
 type XRExperience = {
   id: string;
+  scene_file_url?: string;
   title: string;
   description: string;
   experience_type: string;
@@ -104,7 +105,9 @@ export default function XRLabsPage() {
       ]);
       setResources(Array.isArray(res) ? res : []);
       setCollections(Array.isArray(cols) ? cols : []);
-      setExperiences(Array.isArray(exps?.experiences) ? exps.experiences : []);
+      // Built-in portals have their own cards above; don't list them twice.
+      const allExps = Array.isArray(exps?.experiences) ? exps.experiences : [];
+      setExperiences(allExps.filter((e) => !(e as any).scene_file_url?.startsWith("/dashboard/")));
       setRecent(Array.isArray(sess?.sessions) ? sess.sessions : []);
       setError(null);
     } catch (e) {
@@ -142,10 +145,11 @@ export default function XRLabsPage() {
           XR Labs
         </h1>
         <p className="text-muted-foreground mt-1">
-          Virtual reality + augmented reality study sets and resources. Real EUREKA
-          data, no hardcoded simulations. Real-time XR experiences run via the
-          separate <span className="font-mono text-xs">services/xr-labs/</span> Node
-          microservice (the subroutes below).
+          Virtual reality + augmented reality experiences, study sets, and
+          resources — all real EUREKA data. Experiences, sessions, and the scene
+          builder are served by api-core&apos;s{" "}
+          <span className="font-mono text-xs">/api/v1/xr</span> endpoints; the
+          built-in portals below run entirely in your browser.
         </p>
       </div>
 
@@ -197,40 +201,50 @@ export default function XRLabsPage() {
               </CardContent>
             </Card>
           </Link>
-          <Card className="h-full opacity-70">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Atom className="h-5 w-5 text-emerald-500" />
-                Organic Chemistry 3D
-              </CardTitle>
-              <CardDescription>
-                Interactive 3D molecules — rotate, measure bond angles, see
-                hybridization. Coming up next in this build pass.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Badge variant="outline" className="text-[10px]">
-                Coming next
-              </Badge>
-            </CardContent>
-          </Card>
-          <Card className="h-full opacity-70">
-            <CardHeader>
-              <CardTitle className="text-base flex items-center gap-2">
-                <Activity className="h-5 w-5 text-rose-500" />
-                Anatomy 3D
-              </CardTitle>
-              <CardDescription>
-                Layer-by-layer human anatomy walkthrough (skeletal →
-                muscular → nervous → vascular). Wired to the medical tier.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Badge variant="outline" className="text-[10px]">
-                Planned
-              </Badge>
-            </CardContent>
-          </Card>
+          <Link href="/dashboard/xr-labs/molecules">
+            <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer bg-gradient-to-br from-emerald-950/40 via-teal-950/20 to-transparent border-primary/20">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Atom className="h-5 w-5 text-emerald-500" />
+                  Organic Chemistry 3D
+                </CardTitle>
+                <CardDescription>
+                  Ball-and-stick explorer for 10 molecules, methane through
+                  caffeine. Click any atom for its element and hybridization;
+                  compare geometry, bond order, and polarity.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="secondary" className="text-[10px]">Chemistry</Badge>
+                  <Badge variant="secondary" className="text-[10px]">Three.js</Badge>
+                  <Badge variant="secondary" className="text-[10px]">Interactive</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
+          <Link href="/dashboard/xr-labs/anatomy">
+            <Card className="h-full hover:border-primary/40 transition-colors cursor-pointer bg-gradient-to-br from-rose-950/40 via-purple-950/20 to-transparent border-primary/20">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Activity className="h-5 w-5 text-rose-500" />
+                  Anatomy 3D
+                </CardTitle>
+                <CardDescription>
+                  Toggle skeletal, organ, and circulatory layers to peel inward;
+                  click any structure for facts. Schematic — teaches layer order
+                  and vocabulary, not clinical detail.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="secondary" className="text-[10px]">Biology</Badge>
+                  <Badge variant="secondary" className="text-[10px]">Layered</Badge>
+                  <Badge variant="outline" className="text-[10px]">Schematic</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
       </div>
 

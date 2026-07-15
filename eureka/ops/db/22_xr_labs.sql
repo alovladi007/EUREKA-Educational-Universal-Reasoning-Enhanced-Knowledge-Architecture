@@ -113,3 +113,33 @@ SET scene_url = CASE
     ELSE 'https://modelviewer.dev/shared-assets/models/Astronaut.glb'
 END
 WHERE scene_url IS NULL OR scene_url = '';
+
+-- XR-4: the built-in portals are real experiences too — their scene_url is an
+-- internal route (the viewer redirects instead of GLTF-loading), so their runs
+-- record sessions, ratings, and XP exactly like glTF/scene-builder ones.
+INSERT INTO xr_experiences
+    (title, description, category, difficulty, duration_minutes, scene_url,
+     learning_objectives, tags, is_published)
+SELECT * FROM (VALUES
+    ('Organic Chemistry 3D',
+     'Interactive ball-and-stick molecule explorer: 10 molecules from methane to caffeine. Rotate, click any atom for its element and hybridization, and compare geometry and polarity. Idealized textbook geometries, fully offline.',
+     'Chemistry', 'beginner', 15, '/dashboard/xr-labs/molecules',
+     ARRAY['Predict molecular shape from VSEPR', 'Identify sp/sp2/sp3 hybridization at a center', 'Explain why symmetric molecules with polar bonds are nonpolar', 'Relate bond order to bond length and rigidity'],
+     ARRAY['chemistry','molecules','interactive','built-in'], TRUE),
+    ('Anatomy 3D',
+     'Layered walkthrough of the human body: toggle skeletal, organ, and circulatory layers and click any structure for facts. Schematic volumes — for layer order, spatial relationships, and vocabulary, not clinical detail.',
+     'Biology', 'beginner', 15, '/dashboard/xr-labs/anatomy',
+     ARRAY['Order the body layers from skeleton inward', 'Locate the major thoracic and abdominal organs', 'Trace the heart and great vessels', 'Use correct anatomical vocabulary'],
+     ARRAY['anatomy','biology','interactive','built-in'], TRUE),
+    ('Solar System Explorer (portal)',
+     'Real-time orbital mechanics for all 8 planets plus the Moon, with click-for-facts on every body. Built from scratch — no external assets.',
+     'Astronomy', 'beginner', 15, '/dashboard/xr-labs/solar-system',
+     ARRAY['Compare planetary orbits and relative scale', 'Relate orbital period to distance from the Sun'],
+     ARRAY['astronomy','space','interactive','built-in'], TRUE)
+) AS v(title, description, category, difficulty, duration_minutes, scene_url,
+       learning_objectives, tags, is_published)
+WHERE NOT EXISTS (
+    SELECT 1 FROM xr_experiences e WHERE e.scene_url = v.scene_url
+);
+UPDATE xr_experiences SET is_published = true
+WHERE scene_url LIKE '/dashboard/xr-labs/%';
