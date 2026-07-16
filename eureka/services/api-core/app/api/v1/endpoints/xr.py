@@ -471,7 +471,7 @@ async def use_asset(
     return {"ok": True, "usage_count": row["usage_count"]}
 
 
-# ── Scene Builder: projects (list / get / save / update / delete / publish) ─
+# ── Scene Builder: projects (list/get/save/update/delete/publish/unpublish) ─
 
 
 class ProjectBody(BaseModel):
@@ -500,10 +500,13 @@ async def list_projects(
     rows = (
         await db.execute(
             text(
-                "SELECT id, project_name, description, category, is_public, "
-                "created_at, updated_at, last_edited "
-                "FROM xr_scene_projects WHERE created_by = :uid "
-                "ORDER BY COALESCE(last_edited, updated_at, created_at) DESC"
+                "SELECT p.id, p.project_name, p.description, p.category, "
+                "p.is_public, p.created_at, p.updated_at, p.last_edited, "
+                "(SELECT count(*) FROM xr_experiences e "
+                " WHERE e.source_project_id = p.id AND e.is_published) "
+                "  AS published_count "
+                "FROM xr_scene_projects p WHERE p.created_by = :uid "
+                "ORDER BY COALESCE(p.last_edited, p.updated_at, p.created_at) DESC"
             ),
             {"uid": current_user.id},
         )
@@ -516,6 +519,7 @@ async def list_projects(
                 "description": r["description"] or "",
                 "category": r["category"] or "general",
                 "isPublic": bool(r["is_public"]),
+                "publishedCount": int(r["published_count"] or 0),
                 "updatedAt": (
                     (r["last_edited"] or r["updated_at"] or r["created_at"]).isoformat()
                     if (r["last_edited"] or r["updated_at"] or r["created_at"])
@@ -712,3 +716,46 @@ async def publish_project(
     await db.commit()
     eid = str(exp["id"])
     return {"experienceId": eid, "experience_id": eid}
+
+
+@router.post("/scene-builder/projects/{project_id}/unpublish")
+async def unpublish_project(
+    project_id: str,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Take a published scene back down (XR-8: publishing was one-way).
+
+    Soft by design: the linked experiences flip is_published=false so the
+    catalog hides them immediately, while learners' session history on those
+    experiences is preserved. Owner-scoped on both the project and the
+    experiences (created_by must match on each row touched).
+    """
+    pid = _as_uuid(project_id)
+    if pid is None:
+        raise HTTPException(status_code=404, detail="Project not found")
+    proj = (
+        await db.execute(
+            text("SELECT id FROM xr_scene_projects WHERE id = :id AND created_by = :uid"),
+            {"id": pid, "uid": current_user.id},
+        )
+    ).first()
+    if not proj:
+        raise HTTPException(status_code=404, detail="Project not found")
+
+    rows = (
+        await db.execute(
+            text(
+                "UPDATE xr_experiences SET is_published = false, updated_at = now() "
+                "WHERE source_project_id = :pid AND created_by = :uid "
+                "  AND is_published = true RETURNING id"
+            ),
+            {"pid": pid, "uid": current_user.id},
+        )
+    ).fetchall()
+    await db.execute(
+        text("UPDATE xr_scene_projects SET is_public = false WHERE id = :id"),
+        {"id": pid},
+    )
+    await db.commit()
+    return {"unpublished": len(rows)}

@@ -548,6 +548,29 @@ function SceneBuilderEditor() {
     }
   };
 
+  // XR-8: publishing used to be one-way. Unpublish flips the linked
+  // experiences to unpublished (soft — session history survives) and clears
+  // the project's public flag.
+  const unpublishProjectById = async (projectId: string) => {
+    try {
+      const res = await api<{ unpublished: number }>(
+        `/xr/scene-builder/projects/${projectId}/unpublish`,
+        { method: 'POST' },
+      );
+      setMyProjects((prev: any[]) => prev.map((p) =>
+        p.id === projectId ? { ...p, isPublic: false, publishedCount: 0 } : p
+      ));
+      toast.success(
+        res.unpublished > 0
+          ? 'Scene unpublished — removed from the experiences catalog'
+          : 'Nothing was published for this project',
+      );
+    } catch (error) {
+      console.error('Error unpublishing project:', error);
+      toast.error('Failed to unpublish');
+    }
+  };
+
   const selectObject = (obj: SceneObject) => {
     setSelectedObject(obj);
     if (transformControlsRef.current) {
@@ -564,8 +587,63 @@ function SceneBuilderEditor() {
       transformControlsRef.current.detach();
     }
 
+    // Safe because duplicates deep-clone geometry+material (never shared).
+    disposeObject3D(obj.mesh);
     setObjects(objects.filter(o => o.id !== obj.id));
     setSelectedObject(null);
+  };
+
+  // XR-8: duplicate the selected object. Geometry and material are cloned
+  // (not shared) so recoloring or deleting one never affects the other.
+  const duplicateObject = (obj: SceneObject) => {
+    if (!sceneRef.current) return;
+    const cloned = obj.mesh.clone(true);
+    cloned.traverse((child: THREE.Object3D) => {
+      const mesh = child as THREE.Mesh;
+      if (mesh.isMesh) {
+        mesh.geometry = mesh.geometry.clone();
+        mesh.material = Array.isArray(mesh.material)
+          ? mesh.material.map((m) => m.clone())
+          : mesh.material.clone();
+      }
+    });
+    const objectId = `obj_${Date.now()}`;
+    cloned.userData.id = objectId;
+    cloned.position.x += 0.75;
+    sceneRef.current.add(cloned);
+
+    const newObject: SceneObject = {
+      id: objectId,
+      name: `${obj.name} copy`,
+      type: obj.type,
+      mesh: cloned,
+      position: [cloned.position.x, cloned.position.y, cloned.position.z],
+      rotation: [...obj.rotation] as [number, number, number],
+      scale: [...obj.scale] as [number, number, number],
+      properties: { ...obj.properties }
+    };
+    setObjects(prev => [...prev, newObject]);
+    selectObject(newObject);
+  };
+
+  // XR-8: recolor the selected primitive (models keep their own materials).
+  // Writes properties.color so the serializer persists it through
+  // save -> reopen -> publish -> view.
+  const setObjectColor = (hex: string) => {
+    if (!selectedObject) return;
+    const mesh = selectedObject.mesh as THREE.Mesh;
+    if (!mesh.isMesh || Array.isArray(mesh.material)) return;
+    const mat = mesh.material as THREE.MeshStandardMaterial;
+    if (!mat.color) return;
+    const num = parseInt(hex.replace('#', ''), 16);
+    if (Number.isNaN(num)) return;
+    mat.color.setHex(num);
+    const updated = {
+      ...selectedObject,
+      properties: { ...selectedObject.properties, color: num }
+    };
+    setSelectedObject(updated);
+    setObjects(objects.map(o => o.id === selectedObject.id ? updated : o));
   };
 
   const handleObjectTransform = () => {
@@ -592,6 +670,27 @@ function SceneBuilderEditor() {
       transformControlsRef.current.setMode(transformMode);
     }
   }, [transformMode]);
+
+  // XR-8: the controls help always advertised "Del: Delete Selected" but no
+  // handler existed. Guarded so typing in the name/position inputs (or any
+  // dialog field) never nukes the selection.
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== 'Delete' && e.key !== 'Backspace') return;
+      const target = e.target as HTMLElement | null;
+      if (target && (
+        target.tagName === 'INPUT' ||
+        target.tagName === 'TEXTAREA' ||
+        target.isContentEditable
+      )) return;
+      if (!selectedObject) return;
+      e.preventDefault();
+      deleteObject(selectedObject);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedObject, objects]);
 
   // =====================================================
   // PROJECT MANAGEMENT
@@ -1049,6 +1148,29 @@ function SceneBuilderEditor() {
                 </div>
               </div>
 
+              {selectedObject.type !== 'model' && (
+                <div>
+                  <label className="block text-sm mb-1 text-gray-400">Color</label>
+                  <input
+                    type="color"
+                    aria-label="Object color"
+                    value={`#${(typeof selectedObject.properties?.color === 'number'
+                      ? selectedObject.properties.color
+                      : 0x8888ff
+                    ).toString(16).padStart(6, '0')}`}
+                    onChange={(e) => setObjectColor(e.target.value)}
+                    className="w-full h-9 bg-gray-700 rounded border border-gray-600 cursor-pointer"
+                  />
+                </div>
+              )}
+
+              <button
+                onClick={() => duplicateObject(selectedObject)}
+                className="w-full py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors font-semibold"
+              >
+                📄 Duplicate
+              </button>
+
               <button
                 onClick={() => deleteObject(selectedObject)}
                 className="w-full py-2 bg-red-600 rounded hover:bg-red-700 transition-colors font-semibold"
@@ -1084,6 +1206,7 @@ function SceneBuilderEditor() {
           currentProjectId={project.id}
           onOpenProject={openProject}
           onDeleteProject={deleteProjectById}
+          onUnpublishProject={unpublishProjectById}
           onClose={() => setShowMyProjects(false)}
         />
       )}
@@ -1202,7 +1325,7 @@ function AssetLibraryModal({ assets, search, onSearchChange, onSelectAsset, onUp
   );
 }
 
-function MyProjectsModal({ projects, currentProjectId, onOpenProject, onDeleteProject, onClose }: any) {
+function MyProjectsModal({ projects, currentProjectId, onOpenProject, onDeleteProject, onUnpublishProject, onClose }: any) {
   const [armedDelete, setArmedDelete] = useState<string | null>(null);
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
@@ -1232,6 +1355,11 @@ function MyProjectsModal({ projects, currentProjectId, onOpenProject, onDeletePr
                 <div className="font-semibold truncate">
                   {p.projectName}
                   {p.id === currentProjectId && <span className="ml-2 text-xs text-blue-300">(open)</span>}
+                  {p.publishedCount > 0 && (
+                    <span className="ml-2 text-[10px] uppercase tracking-wide bg-green-900/60 text-green-300 border border-green-700 rounded px-1.5 py-0.5">
+                      Published
+                    </span>
+                  )}
                 </div>
                 <div className="text-xs text-gray-400 truncate">
                   {p.category}{p.description ? ` · ${p.description}` : ''}
@@ -1245,6 +1373,14 @@ function MyProjectsModal({ projects, currentProjectId, onOpenProject, onDeletePr
                 >
                   Open
                 </button>
+                {p.publishedCount > 0 && (
+                  <button
+                    onClick={() => onUnpublishProject(p.id)}
+                    className="px-3 py-1.5 bg-amber-700 rounded hover:bg-amber-600 transition-colors text-sm font-semibold"
+                  >
+                    Unpublish
+                  </button>
+                )}
                 {armedDelete === p.id ? (
                   <button
                     onClick={() => { onDeleteProject(p.id); setArmedDelete(null); }}

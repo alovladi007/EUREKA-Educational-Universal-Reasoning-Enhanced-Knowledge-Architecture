@@ -198,6 +198,69 @@ def test_publish_carries_the_scene(owner, project):
     assert got["source_project_id"] == project
 
 
+# ── XR-8: unpublish (publishing used to be one-way) ────────────────────────
+
+
+def test_unpublish_takes_the_experience_out_of_the_catalog(owner):
+    """XR-8: a published scene can be pulled back down; it leaves the public
+    catalog, publishedCount drops to 0, and re-unpublishing is a no-op."""
+    proj = httpx.post(
+        f"{API_BASE}/api/v1/xr/scene-builder/projects",
+        headers=owner["headers"],
+        json={"projectName": "Unpublish Lab", "category": "science", "sceneData": SCENE},
+        timeout=30,
+    ).json()["project"]["id"]
+    eid = httpx.post(
+        f"{API_BASE}/api/v1/xr/scene-builder/projects/{proj}/publish",
+        headers=owner["headers"],
+        json={"duration_minutes": 5},
+        timeout=30,
+    ).json()["experienceId"]
+
+    # published: in the catalog, and My Projects reports publishedCount >= 1
+    ids = [e["id"] for e in httpx.get(f"{API_BASE}/api/v1/xr/experiences", timeout=30).json()["experiences"]]
+    assert eid in ids
+    mine = httpx.get(f"{API_BASE}/api/v1/xr/scene-builder/projects", headers=owner["headers"], timeout=30).json()["projects"]
+    assert next(p for p in mine if p["id"] == proj)["publishedCount"] >= 1
+
+    # unpublish
+    r = httpx.post(
+        f"{API_BASE}/api/v1/xr/scene-builder/projects/{proj}/unpublish",
+        headers=owner["headers"], timeout=30,
+    )
+    assert r.status_code == 200, r.text
+    assert r.json()["unpublished"] >= 1
+
+    ids = [e["id"] for e in httpx.get(f"{API_BASE}/api/v1/xr/experiences", timeout=30).json()["experiences"]]
+    assert eid not in ids, "unpublished experience must leave the public catalog"
+    mine = httpx.get(f"{API_BASE}/api/v1/xr/scene-builder/projects", headers=owner["headers"], timeout=30).json()["projects"]
+    assert next(p for p in mine if p["id"] == proj)["publishedCount"] == 0
+
+    # idempotent: a second unpublish reports 0, no error
+    again = httpx.post(
+        f"{API_BASE}/api/v1/xr/scene-builder/projects/{proj}/unpublish",
+        headers=owner["headers"], timeout=30,
+    )
+    assert again.status_code == 200 and again.json()["unpublished"] == 0
+
+    httpx.delete(f"{API_BASE}/api/v1/xr/scene-builder/projects/{proj}", headers=owner["headers"], timeout=30)
+
+
+def test_other_user_cannot_unpublish_my_project(owner, other):
+    proj = httpx.post(
+        f"{API_BASE}/api/v1/xr/scene-builder/projects",
+        headers=owner["headers"],
+        json={"projectName": "Guarded Lab", "category": "science", "sceneData": SCENE},
+        timeout=30,
+    ).json()["project"]["id"]
+    r = httpx.post(
+        f"{API_BASE}/api/v1/xr/scene-builder/projects/{proj}/unpublish",
+        headers=other["headers"], timeout=30,
+    )
+    assert r.status_code == 404, "unpublish must be owner-scoped"
+    httpx.delete(f"{API_BASE}/api/v1/xr/scene-builder/projects/{proj}", headers=owner["headers"], timeout=30)
+
+
 # ── XR-2: session lifecycle, ratings, XP ───────────────────────────────────
 
 
