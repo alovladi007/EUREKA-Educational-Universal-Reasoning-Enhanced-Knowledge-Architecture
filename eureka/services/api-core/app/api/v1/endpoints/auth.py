@@ -54,12 +54,16 @@ async def register(
         org = await org_crud.get_organization_by_slug(db, "public")
         if not org:
             from app.schemas.organization import OrganizationCreate
+            # tier must be one of the real education tiers (schema validator +
+            # DB CHECK constraint); "free" was rejected, so the default org was
+            # never created and every public signup dead-ended. "undergraduate"
+            # is the neutral general-education default for the shared org.
             org = await org_crud.create_organization(
                 db,
                 OrganizationCreate(
                     name="EUREKA Public",
                     slug="public",
-                    tier="free",
+                    tier="undergraduate",
                 ),
             )
     else:

@@ -49,7 +49,10 @@ CREATE INDEX idx_orgs_tier ON organizations(tier);
 CREATE INDEX idx_orgs_active ON organizations(is_active) WHERE is_active = TRUE;
 
 -- Users
-CREATE TYPE user_role AS ENUM ('super_admin', 'org_admin', 'teacher', 'student', 'parent');
+-- role is VARCHAR + CHECK (not a native enum) to match the api-core ORM
+-- (String(50) + ck_users_role). A native user_role enum drifted from the ORM
+-- and broke asyncpg INSERTs (varchar -> enum DatatypeMismatch), dead-ending
+-- every public signup; the check lists all seven real roles.
 
 CREATE TABLE IF NOT EXISTS users (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -63,7 +66,9 @@ CREATE TABLE IF NOT EXISTS users (
     phone VARCHAR(50),
     bio VARCHAR(2000),
     location VARCHAR(200),
-    role user_role NOT NULL DEFAULT 'student',
+    role VARCHAR(50) NOT NULL DEFAULT 'student'
+        CONSTRAINT ck_users_role CHECK (role IN (
+            'student','teacher','super_admin','org_admin','admin','researcher','parent')),
     locale VARCHAR(10) DEFAULT 'en-US',
     timezone VARCHAR(50) DEFAULT 'UTC',
     preferences JSONB DEFAULT '{}',
