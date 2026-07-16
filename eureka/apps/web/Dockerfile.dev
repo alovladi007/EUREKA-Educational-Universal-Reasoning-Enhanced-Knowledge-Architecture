@@ -15,5 +15,15 @@ COPY . .
 # Expose port
 EXPOSE 3000
 
-# Start development server
-CMD ["npm", "run", "dev"]
+# Start the dev server with a self-warming sidecar (XR-9):
+# 1. Clear .next first — it lives in an anonymous volume that SURVIVES
+#    `--force-recreate`, so after an image rebuild the new server booted
+#    against the previous image's webpack cache. Next 14 dev dies silently
+#    (clean exit, no error) on a mismatched cache; observed as 2 restarts in
+#    the first ~2 minutes after every rebuild, then stability once the cache
+#    had been rewritten. A clean cache makes boots deterministic.
+# 2. warm-routes.mjs waits for the server then pre-compiles the heavy routes,
+#    so a restart/rebuild never leaves the user's first clicks paying
+#    multi-second on-demand compiles (it also absorbs the cache-clear cost).
+# `exec` keeps npm receiving container signals directly.
+CMD ["sh", "-c", "rm -rf /app/.next/* 2>/dev/null; node scripts/warm-routes.mjs & exec npm run dev"]

@@ -484,20 +484,57 @@ services:
   # Frontend Applications
   # ==========================================
 
+  # XR-9: the web app is served as a PRODUCTION build. `next dev` compiled
+  # routes on demand; the ~3k-module three.js XR compiles were repeatedly
+  # OOM-killed inside the shared Docker VM (docker events: `oom` before each
+  # `die`), each restart wiped the compile cache, and every click after a
+  # restart paid a multi-second cold compile. Prebuilt routes serve in ~100ms
+  # with a few hundred MB steady memory and no spikes. For HMR development
+  # use the `web-dev` service: docker compose --profile dev up -d web-dev
+  # (port 4041). Note: production builds hard-disable the dev auto-login
+  # (P1.3a by design) — sign in at /auth/login with the seeded demo account.
   web:
     restart: unless-stopped
     build:
       context: ./apps/web
-      dockerfile: Dockerfile.dev
+      dockerfile: Dockerfile.prod
     container_name: eureka-web
-    environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8000
-      NEXT_PUBLIC_TUTOR_URL: http://localhost:8001
     # Host port is configurable via eureka/.env (WEB_HOST_PORT) if 3000 is taken by another project
     ports:
       - "${WEB_HOST_PORT:-3000}:3000"
     # P0.8: gate on api-core being healthy (not just started) so the FE
     # doesn't boot against an api-core that's still running migrations.
+    depends_on:
+      api-core:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "require('http').get('http://127.0.0.1:3000',(r)=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))",
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 6
+
+  web-dev:
+    profiles:
+      - dev
+    restart: unless-stopped
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile.dev
+    container_name: eureka-web-dev
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
+      NEXT_PUBLIC_TUTOR_URL: http://localhost:8001
+      # Bound V8's heap so a webpack compile spike garbage-collects instead
+      # of ballooning toward the VM's OOM killer.
+      NODE_OPTIONS: "--max-old-space-size=3072"
+    ports:
+      - "${WEB_DEV_HOST_PORT:-4041}:3000"
     depends_on:
       api-core:
         condition: service_healthy

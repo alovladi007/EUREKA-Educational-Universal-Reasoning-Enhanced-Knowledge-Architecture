@@ -1,0 +1,44 @@
+# Production image for the EUREKA web app (XR-9).
+#
+# Why this exists: the compose stack used to serve the app through `next dev`
+# (Dockerfile.dev), which compiles routes on demand. The heavy three.js XR
+# routes pull ~3,000 modules per compile; inside the shared Docker VM those
+# compile spikes were repeatedly OOM-killed by the kernel (docker events show
+# `oom` immediately before each `die`), the restart wiped the compile cache,
+# and every click after a restart paid a multi-second cold compile — the
+# "taking too long to load" loop.
+#
+# A production build has no compile-at-request-time at all: every route is
+# prebuilt by `next build`, `next start` serves them in ~100ms, and steady-
+# state memory is a few hundred MB with no spikes. Dev-mode (HMR) remains
+# available via the `web-dev` compose profile.
+#
+# NEXT_PUBLIC_* values are inlined at build time; the ARGs below default to
+# the same localhost endpoints docker-compose wires, so a plain build Just
+# Works for the local stack.
+
+FROM node:20-alpine
+
+WORKDIR /app
+
+# .npmrc carries legacy-peer-deps=true (see Dockerfile.dev for why).
+COPY package*.json .npmrc ./
+RUN npm install
+
+COPY . .
+
+ARG NEXT_PUBLIC_API_URL=http://localhost:8000
+ARG NEXT_PUBLIC_API_PREFIX=/api/v1
+ARG NEXT_PUBLIC_AXIOM_API_URL=http://localhost:8400
+ARG NEXT_PUBLIC_AXIOM_WEB_URL=http://localhost:4100
+ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL \
+    NEXT_PUBLIC_API_PREFIX=$NEXT_PUBLIC_API_PREFIX \
+    NEXT_PUBLIC_AXIOM_API_URL=$NEXT_PUBLIC_AXIOM_API_URL \
+    NEXT_PUBLIC_AXIOM_WEB_URL=$NEXT_PUBLIC_AXIOM_WEB_URL
+
+RUN npm run build
+
+ENV NODE_ENV=production
+EXPOSE 3000
+
+CMD ["npm", "run", "start"]
