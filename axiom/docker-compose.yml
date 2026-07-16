@@ -10,6 +10,7 @@
 
 services:
   postgres:
+    restart: unless-stopped
     image: pgvector/pgvector:pg16
     environment:
       POSTGRES_USER: axiom
@@ -29,6 +30,7 @@ services:
       retries: 10
 
   redis:
+    restart: unless-stopped
     image: redis:7-alpine
     ports:
       # Host port 6392 (6390 is taken by an unrelated project on this machine).
@@ -41,6 +43,7 @@ services:
       retries: 10
 
   api:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -87,6 +90,7 @@ services:
       retries: 10
 
   worker:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -102,6 +106,7 @@ services:
         condition: service_healthy
 
   beat:
+    restart: unless-stopped
     build:
       context: .
       dockerfile: apps/api/Dockerfile
@@ -114,6 +119,7 @@ services:
         condition: service_healthy
 
   web:
+    restart: unless-stopped
     build:
       context: ./apps/web
       dockerfile: Dockerfile
@@ -126,6 +132,7 @@ services:
       - api
 
   prometheus:
+    restart: unless-stopped
     image: prom/prometheus:latest
     profiles: ["observability"]
     volumes:
@@ -134,6 +141,7 @@ services:
       - "9100:9090"
 
   grafana:
+    restart: unless-stopped
     image: grafana/grafana:latest
     profiles: ["observability"]
     environment:
