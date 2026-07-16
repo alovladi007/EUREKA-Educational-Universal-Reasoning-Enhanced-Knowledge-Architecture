@@ -322,7 +322,10 @@ export interface GraphNode {
   id: string;
   code: string;
   title: string;
-  description: string;
+  description: string | null;
+  kind: string;
+  tier: number;
+  track: string | null;
 }
 
 // A directed edge between two nodes (for example a prerequisite relation).
@@ -1003,6 +1006,25 @@ export function fetchStandards(): Promise<StandardsResponse> {
 
 export function fetchGrowth(): Promise<GrowthResponse> {
   return apiGet<GrowthResponse>('/api/v1/analytics/growth/me');
+}
+
+// My mastery states, joined client-side onto the curriculum graph to color
+// the map page. fetchGraph() (above) already serves the DAG itself.
+
+export interface MasteryStateRow {
+  node_id: string;
+  code: string;
+  title: string;
+  kind: string;
+  signal: string;
+  p_known: number;
+  level: string;
+  updated_at: string;
+}
+
+export function fetchMasteryMe(): Promise<{ states: MasteryStateRow[] }> {
+  // The adaptive domain router is mounted WITHOUT an /adaptive prefix.
+  return apiGet<{ states: MasteryStateRow[] }>('/api/v1/mastery/me');
 }
 
 // Fetch a file from the API with the bearer token and trigger a browser

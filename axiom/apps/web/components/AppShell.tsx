@@ -38,6 +38,7 @@ const NAV_GROUPS: NavGroup[] = [
       { href: '/practice', label: 'Practice' },
       { href: '/review', label: 'Review' },
       { href: '/mastery', label: 'Mastery' },
+      { href: '/map', label: 'Curriculum map' },
       { href: '/path', label: 'Path' },
       { href: '/cat', label: 'Adaptive test' },
     ],

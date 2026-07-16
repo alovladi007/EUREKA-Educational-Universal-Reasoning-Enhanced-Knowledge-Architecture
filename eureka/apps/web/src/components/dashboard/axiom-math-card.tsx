@@ -44,7 +44,7 @@ export function AxiomMathCard() {
       fetch(`${AXIOM_API_URL}/api/v1/gamification/me`, { headers }).then((r) =>
         r.ok ? r.json() : null,
       ),
-      fetch(`${AXIOM_API_URL}/api/v1/adaptive/mastery/me`, { headers }).then(
+      fetch(`${AXIOM_API_URL}/api/v1/mastery/me`, { headers }).then(
         (r) => (r.ok ? r.json() : null),
       ),
     ])

@@ -16,6 +16,12 @@ import {
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
 import { ProgressBar, toPercent } from '@/components/ProgressBar';
+import {
+  GrowthLineChart,
+  ItemScatterChart,
+  LevelDistributionBar,
+  LevelLegend,
+} from '@/components/Charts';
 
 // The teacher-facing analytics view. Item analysis, a standards heatmap, and the
 // current user's growth summary. The analytics endpoints are teacher-gated, so a
@@ -219,6 +225,21 @@ export default function AnalyticsPage() {
                   No item responses recorded yet.
                 </p>
               ) : (
+                <>
+                  {items.some((i) => i.discrimination !== null) && (
+                    <div className="mb-4 rounded-lg border border-border bg-card p-4">
+                      <ItemScatterChart
+                        items={items
+                          .filter((i) => i.discrimination !== null)
+                          .map((i) => ({
+                            label: `${i.node_code} ${i.node_title}`,
+                            pValue: i.p_value,
+                            discrimination: i.discrimination as number,
+                            n: i.n_responses,
+                          }))}
+                      />
+                    </div>
+                  )}
                 <div className="overflow-x-auto rounded-lg border border-border bg-card">
                   <table className="w-full text-left text-sm">
                     <thead>
@@ -287,6 +308,7 @@ export default function AnalyticsPage() {
                     </tbody>
                   </table>
                 </div>
+                </>
               )}
             </section>
 
@@ -299,6 +321,10 @@ export default function AnalyticsPage() {
                   No standards data yet.
                 </p>
               ) : (
+                <>
+                <div className="mb-3">
+                  <LevelLegend nodes={nodes} />
+                </div>
                 <ul className="space-y-3">
                   {nodes.map((node) => (
                     <li
@@ -321,12 +347,22 @@ export default function AnalyticsPage() {
                           label={`Average mastery of ${node.title}`}
                         />
                       </div>
+                      {node.n_learners > 0 && (
+                        <div className="mt-2">
+                          <LevelDistributionBar
+                            levels={node.levels}
+                            totalLearners={node.n_learners}
+                            label={`Mastery-level distribution for ${node.title}`}
+                          />
+                        </div>
+                      )}
                       <span className="mt-2 block font-mono text-xs text-muted-foreground">
                         {node.code}
                       </span>
                     </li>
                   ))}
                 </ul>
+                </>
               )}
             </section>
 
@@ -354,6 +390,15 @@ export default function AnalyticsPage() {
                           : 'Projection: mastery is flat or declining recently; no positive trend to project.'}
                       </p>
                     )}
+                  <div className="mt-4">
+                    <GrowthLineChart
+                      points={growth.events.map((e) => ({
+                        t: e.t,
+                        v: e.p_known_after,
+                        correct: e.correct,
+                      }))}
+                    />
+                  </div>
                   <ol className="mt-4 space-y-2">
                     {recentEvents.map((event, index) => (
                       <li
