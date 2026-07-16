@@ -28,9 +28,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.domains.content.models import ContentStep, Lesson
 from app.domains.curriculum.models import KnowledgeNode
 
-from . import calculus1, calculus2
+from . import calculus1, calculus2, calculus3, surveys_core
 
-_MODULES = [calculus1, calculus2]
+_MODULES = [calculus1, calculus2, calculus3, surveys_core]
 
 
 def all_lessons() -> dict[str, dict]:
