@@ -35,6 +35,7 @@ from . import (
     discrete,
     elementary_algebra,
     linear_algebra,
+    odes,
     probstat,
     surveys_core,
 )
@@ -46,6 +47,7 @@ _MODULES = [
     discrete,
     elementary_algebra,
     linear_algebra,
+    odes,
     probstat,
     surveys_core,
 ]
