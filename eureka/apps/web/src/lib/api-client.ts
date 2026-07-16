@@ -68,7 +68,18 @@ class ApiClient {
       async (error) => {
         const originalRequest = error.config;
 
-        if (error.response?.status === 401 && !originalRequest._retry) {
+        // 401 = bad/expired token. 403 with NO Authorization header attached
+        // is FastAPI HTTPBearer's answer for a MISSING token ("Not
+        // authenticated") — same signed-out condition, different status.
+        // Without the 403 arm, a signed-out user's requests fell through to
+        // reject: no refresh attempt, no redirect, just console 403s on a
+        // broken page. A 403 WITH a token attached is a real permission
+        // denial and is deliberately not treated as signed-out.
+        const signedOut =
+          error.response?.status === 401 ||
+          (error.response?.status === 403 &&
+            !originalRequest?.headers?.Authorization);
+        if (signedOut && !originalRequest._retry) {
           originalRequest._retry = true;
 
           // 1. Try refresh_token if we have one (normal session refresh)

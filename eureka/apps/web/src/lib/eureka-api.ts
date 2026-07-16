@@ -130,7 +130,20 @@ export async function api<T = unknown>(
     }
     // No token at all → fetch one silently with the seeded dev admin.
     if (!tok) tok = await devAutoLogin();
-    if (tok) finalHeaders["Authorization"] = `Bearer ${tok}`;
+    if (tok) {
+      finalHeaders["Authorization"] = `Bearer ${tok}`;
+    } else if (typeof window !== "undefined") {
+      // Signed out with no auto-login (production builds compile it out,
+      // P1.3a). Firing the request anyway can only produce a 403 — FastAPI's
+      // HTTPBearer answers 403 "Not authenticated" for a MISSING header, and
+      // the 401 branch below never sees it, so the user was stranded on a
+      // broken page full of console 403s. Send them to sign in instead.
+      const here = window.location.pathname + window.location.search;
+      if (!here.startsWith("/auth/")) {
+        window.location.replace(`/auth/login?next=${encodeURIComponent(here)}`);
+        return new Promise<never>(() => {}) as unknown as T;
+      }
+    }
   }
   const r = await fetch(`${API_URL}${API_PREFIX}${path}`, {
     ...rest,
