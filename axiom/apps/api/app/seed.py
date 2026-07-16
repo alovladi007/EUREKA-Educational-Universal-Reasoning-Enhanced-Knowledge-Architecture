@@ -2369,6 +2369,12 @@ async def seed(session: AsyncSession) -> bool:
     # 404s (idempotent; skips nodes that already have one). Runs before the
     # first-run early-return below so it also covers existing databases.
     await backfill_lessons(session)
+    # Authored coursework (app/coursework/*): replaces one-step stub lessons
+    # with full multi-step lessons wherever authored content exists. Runs
+    # AFTER the backfill so it upgrades stubs; idempotent by content diff.
+    from app.coursework import apply_coursework
+
+    await apply_coursework(session)
 
     existing = (
         await session.execute(select(StandardsFramework).where(StandardsFramework.code == "AAF"))
