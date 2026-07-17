@@ -85,6 +85,16 @@ def all_lessons() -> dict[str, dict]:
                     f"full-course lesson {code} in {mod.__name__} has only "
                     f"{len(lesson['steps'])} steps; the tier's contract is >= 20"
                 )
+            # Per-page floor. Catches silently-truncated bodies — e.g. an
+            # unescaped double-quote in a "..."-string that Python parses as
+            # `"..." or "..."`, short-circuiting the page down to a fragment.
+            for position, (_kind, title, body) in enumerate(lesson["steps"]):
+                if len(body) < 400:
+                    raise ValueError(
+                        f"full-course lesson {code} in {mod.__name__}: step "
+                        f"{position + 1} ({title!r}) body is only {len(body)} "
+                        f"chars; full-tier pages must be substantial (>= 400)"
+                    )
             full_seen[code] = mod.__name__
         merged.update(mod.LESSONS)
     return merged
