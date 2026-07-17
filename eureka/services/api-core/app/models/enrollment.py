@@ -5,7 +5,7 @@ SQLAlchemy ORM model for enrollments table (user-course relationships).
 """
 
 from sqlalchemy import Column, String, DateTime, Numeric, ForeignKey, Index, CheckConstraint, UniqueConstraint
-from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.dialects.postgresql import UUID, JSONB
 from sqlalchemy.orm import relationship
 from datetime import datetime
 import uuid
@@ -47,6 +47,10 @@ class Enrollment(Base):
     enrolled_at = Column(DateTime, nullable=False, default=datetime.utcnow)
     completed_at = Column(DateTime, nullable=True, index=True)
     last_accessed_at = Column(DateTime, nullable=True)
+
+    # Misc (DB column is literally named "metadata" — a reserved attribute
+    # name on declarative classes, hence the mapped attribute name)
+    extra_metadata = Column("metadata", JSONB, nullable=True, default=dict)
 
     # Relationships
     user = relationship("User", back_populates="enrollments")

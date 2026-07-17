@@ -12,9 +12,11 @@ ORM declared (ban_reason, date_of_birth, parent_email,
 parental_consent_*, deleted_at). This kind of drift only shows up when
 someone tries to log in. CI should catch it.
 
-Doesn't fail the build by default (the CI workflow sets
-continue-on-error). Once the known drift is cleaned up we'll flip that
-flag and make this gate the build.
+GATES the build (exit 1 on drift) since 2026-07, when the known drift was
+converged: api-core's dormant models (assignments, submissions, grades,
+refresh_tokens, audit_logs, file_uploads) were rewritten to mirror the init
+SQL, DB-only columns were added to the live models, and the two sanctioned
+exceptions below (ALLOWED_DRIFT, SELF_CONVERGING_TABLES) were documented.
 
 Usage:
     DATABASE_URL=postgresql://postgres:postgres@localhost:5432/eureka_test \\
@@ -44,6 +46,34 @@ SERVICES = [
     # Add more as services grow real ORM layers.
 ]
 
+# (table, column) pairs where ORM and SQL differ ON PURPOSE. Keep this list
+# tiny and documented — it is the only sanctioned escape hatch.
+ALLOWED_DRIFT: set[tuple[str, str]] = {
+    # pgvector columns are managed in raw SQL; the ORM deliberately omits
+    # them so the model layer doesn't depend on a Python pgvector binding
+    # (see app/models/item_bank.py and app/models/agent.py in api-core).
+    ("item_embeddings", "embedding"),
+    ("knowledge_chunks", "embedding"),
+}
+
+# Tables whose owning service converges the live schema itself at startup
+# (analytics: _converge_schema() in services/analytics/main.py runs
+# create_all + ADD COLUMN IF NOT EXISTS + relaxes legacy NOT NULLs before
+# serving). The init SQL keeps the legacy shape; the service upgrades it to
+# the ORM's superset on boot, so an ORM-vs-init-SQL diff here is expected
+# and harmless. The missing-column class of bug this check exists to catch
+# cannot occur for these tables.
+SELF_CONVERGING_TABLES: set[str] = {
+    "student_analytics",
+    "course_analytics",
+    "learning_outcomes",
+    "student_outcome_achievements",
+    "at_risk_alerts",
+    "engagement_events",
+    "performance_trends",
+    "cohort_analytics",
+}
+
 
 def db_url() -> str:
     url = os.environ.get("DATABASE_URL")
@@ -70,17 +100,29 @@ def columns_in_db(table: str) -> set[str]:
         conn.close()
 
 
+def _purge_service_modules() -> None:
+    """Drop any previously imported service package from sys.modules.
+
+    Every service names its package `app`, so without this purge the second
+    and third services silently re-import the FIRST service's cached
+    modules: assess and analytics were never actually checked, and
+    api-core's tables were re-reported under their names.
+    """
+    for mod_name in list(sys.modules):
+        if mod_name == "app" or mod_name.startswith("app."):
+            del sys.modules[mod_name]
+
+
 def load_metadata(service_path: Path, module_name: str):
     """Add the service dir to sys.path and import its models module."""
+    _purge_service_modules()
     sys.path.insert(0, str(service_path))
     try:
-        # Try `app.utils.database.Base` (assess) or `app.core.database.Base`
-        # (analytics/api-core). We just import the models module — its
-        # `Base` registers the tables.
+        # We just import the models module — its `Base` registers the tables.
         importlib.import_module(module_name)
-        # Find every loaded Base by introspecting SQLAlchemy's class registry.
-        from sqlalchemy.orm import DeclarativeBase  # noqa: F401
-        # Easier: walk every module we've imported and harvest its tables.
+        # Walk every imported module and harvest its tables. The purge above
+        # guarantees only THIS service's `app.*` modules are loaded, so the
+        # harvest can't pick up a previous service's tables.
         return _harvest_tables()
     finally:
         sys.path.pop(0)
@@ -146,13 +188,15 @@ def check_service(name: str, path_str: str, module: str) -> Iterable[str]:
 
     drift = False
     for table_name, orm_cols in tables:
+        if table_name in SELF_CONVERGING_TABLES:
+            continue
         db_cols = columns_in_db(table_name)
         if not db_cols:
             # Table not in DB at all — skip silently. Many ORM-declared
             # tables don't have a seed yet (Phase 5 will add them).
             continue
-        missing_in_db = orm_cols - db_cols
-        extra_in_db = db_cols - orm_cols
+        missing_in_db = {c for c in orm_cols - db_cols if (table_name, c) not in ALLOWED_DRIFT}
+        extra_in_db = {c for c in db_cols - orm_cols if (table_name, c) not in ALLOWED_DRIFT}
         if missing_in_db or extra_in_db:
             drift = True
             yield f"  ✗ {name}/{table_name}:"

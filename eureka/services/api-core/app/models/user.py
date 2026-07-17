@@ -50,7 +50,13 @@ class User(Base):
     is_banned = Column(Boolean, nullable=False, default=False)
     ban_reason = Column(String, nullable=True)
     failed_login_attempts = Column(Integer, nullable=False, default=0)
+    last_failed_login = Column(DateTime, nullable=True)
     locked_until = Column(DateTime, nullable=True)
+
+    # Email verification / password reset (single-use tokens)
+    email_verification_token = Column(String(255), nullable=True)
+    password_reset_token = Column(String(255), nullable=True)
+    password_reset_expires = Column(DateTime, nullable=True)
 
     # MFA / TOTP (Session 3.3, 2026-05).
     # `mfa_secret` is stored as Fernet-encrypted ciphertext keyed by

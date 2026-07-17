@@ -37,13 +37,25 @@ class Course(Base):
 
     # Metadata
     subject = Column(String(100), nullable=True, index=True)
+    category = Column(String(100), nullable=True)
     level = Column(String(50), nullable=True)  # beginner, intermediate, advanced, expert
     credits = Column(Integer, nullable=True)
+    syllabus_url = Column(String(500), nullable=True)
+    thumbnail_url = Column(String(500), nullable=True)
+    max_students = Column(Integer, nullable=True)
+    # DB column is literally named "metadata" — a reserved attribute name on
+    # declarative classes, hence the mapped attribute name.
+    extra_metadata = Column("metadata", JSONB, nullable=True, default=dict)
 
     # Settings (stored as JSON)
     settings = Column(JSONB, nullable=False, default=dict)
 
     # Status Flags
+    status = Column(String(50), nullable=True, default="draft")  # draft | published | archived
+    # DB column "is_active"; mapped under a different attribute name because
+    # the computed `is_active` property below predates the column and callers
+    # rely on its published/archived/date logic.
+    is_active_flag = Column("is_active", Boolean, nullable=True, default=True)
     is_published = Column(Boolean, nullable=False, default=False, index=True)
     is_archived = Column(Boolean, nullable=False, default=False, index=True)
 

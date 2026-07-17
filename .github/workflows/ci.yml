@@ -403,13 +403,13 @@ jobs:
   # Schema-drift check
   # Bring up Postgres with the init SQL, then for each Python service that
   # uses SQLAlchemy, declare its Base and run a metadata-vs-DB diff.
-  # Failing rows are listed but DON'T fail the build yet — Phase 3.6 will
-  # flip continue-on-error to false after we clean up the known drift.
+  # GATING since 2026-07: the known drift was converged (api-core models
+  # rewritten to match the init SQL; analytics self-converges at startup and
+  # its tables are exempted in the script). New drift fails the build.
   # -------------------------------------------------------------------------
   schema-drift:
     name: schema drift check
     runs-on: ubuntu-latest
-    continue-on-error: true
 
     services:
       postgres:

@@ -42,6 +42,10 @@ class Organization(Base):
     settings = Column(JSONB, nullable=False, default=dict)
     tier_config = Column(JSONB, nullable=False, default=dict)
 
+    # Subscription
+    subscription_status = Column(String(50), nullable=True, default="trial")
+    subscription_expires_at = Column(DateTime, nullable=True)
+
     # Compliance Flags
     ferpa_compliant = Column(Boolean, nullable=False, default=True)
     coppa_compliant = Column(Boolean, nullable=False, default=False)
