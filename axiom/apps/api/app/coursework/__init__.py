@@ -38,6 +38,8 @@ from . import (
     linear_algebra,
     odes,
     probstat,
+    proof_techniques,
+    surveys_advanced,
     surveys_core,
 )
 
@@ -51,6 +53,8 @@ _MODULES = [
     linear_algebra,
     odes,
     probstat,
+    proof_techniques,
+    surveys_advanced,
     surveys_core,
 ]
 
