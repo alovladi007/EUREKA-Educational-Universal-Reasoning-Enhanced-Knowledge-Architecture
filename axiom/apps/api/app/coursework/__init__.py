@@ -66,6 +66,27 @@ def all_lessons() -> dict[str, dict]:
         if overlap:
             raise ValueError(f"coursework modules overlap on nodes: {sorted(overlap)}")
         merged.update(mod.LESSONS)
+
+    # Full-course tier (>=20-page lessons in coursework/full/) OVERRIDES the
+    # base 5-step tier node by node; overlap within the tier is an error.
+    from .full import full_modules
+
+    full_seen: dict[str, str] = {}
+    for mod in full_modules():
+        overlap = full_seen.keys() & mod.LESSONS.keys()
+        if overlap:
+            raise ValueError(
+                f"full-course modules overlap on nodes: "
+                f"{sorted((c, full_seen[c], mod.__name__) for c in overlap)}"
+            )
+        for code, lesson in mod.LESSONS.items():
+            if len(lesson["steps"]) < 20:
+                raise ValueError(
+                    f"full-course lesson {code} in {mod.__name__} has only "
+                    f"{len(lesson['steps'])} steps; the tier's contract is >= 20"
+                )
+            full_seen[code] = mod.__name__
+        merged.update(mod.LESSONS)
     return merged
 
 
