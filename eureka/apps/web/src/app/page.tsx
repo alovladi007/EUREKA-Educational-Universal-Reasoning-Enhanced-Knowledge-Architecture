@@ -283,10 +283,10 @@ export default function HomePage() {
                 <img
                   src="/images/hero-learner.jpg"
                   alt="A EUREKA learner at their workstation"
-                  width={969}
-                  height={784}
+                  width={1104}
+                  height={1104}
                   loading="eager"
-                  className="h-56 w-56 rounded-full border-4 border-white bg-gray-100 object-contain object-center shadow-xl ring-1 ring-gray-200 dark:border-gray-800 dark:bg-gray-800 dark:ring-gray-700 sm:h-72 sm:w-72 lg:h-80 lg:w-80"
+                  className="h-56 w-56 rounded-full border-4 border-white object-cover object-center shadow-xl ring-1 ring-gray-200 dark:border-gray-800 dark:ring-gray-700 sm:h-72 sm:w-72 lg:h-80 lg:w-80"
                 />
                 <div className="absolute -bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-gray-200 bg-white px-4 py-2 shadow-lg dark:border-gray-800 dark:bg-gray-900 sm:flex">
                   <span className="text-emerald-600 dark:text-emerald-400"><i className="fas fa-users" aria-hidden /></span>
