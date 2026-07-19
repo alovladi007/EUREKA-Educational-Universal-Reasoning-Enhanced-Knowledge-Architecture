@@ -10,6 +10,7 @@ const TABS = [
   { href: "/admin/users", label: "Members" },
   { href: "/admin/cohorts", label: "Cohorts" },
   { href: "/admin/workforce", label: "Workforce" },
+  { href: "/admin/integrations", label: "SSO & LTI" },
   { href: "/admin/jobs", label: "Background jobs" },
   { href: "/admin/audit", label: "Audit log" },
   { href: "/admin/settings", label: "Settings" },

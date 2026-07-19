@@ -30,6 +30,11 @@ export default function AdminIndex() {
             body: "Profile, contact details, and compliance posture (FERPA / COPPA / HIPAA).",
           },
           {
+            href: "/admin/integrations",
+            title: "SSO & LTI",
+            body: "Connect your identity provider (OIDC single sign-on) and LMS (LTI 1.3).",
+          },
+          {
             href: "/admin/jobs",
             title: "Background jobs",
             body: "Queue depth, recent runs, run-once trigger.",
