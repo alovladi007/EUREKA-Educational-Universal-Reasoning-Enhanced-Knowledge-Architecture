@@ -20,12 +20,14 @@ import {
   Settings,
   ArrowLeft,
   BookMarked,
+  BadgeCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 const SECTIONS = [
   { href: "/institutions", label: "Overview", icon: LayoutDashboard },
+  { href: "/institutions/passport", label: "Skill Passport", icon: BadgeCheck },
   { href: "/institutions/partnerships", label: "Partnerships", icon: Building2 },
   { href: "/institutions/cohorts", label: "Cohorts", icon: GraduationCap },
   { href: "/institutions/programs", label: "Programs", icon: ClipboardList },

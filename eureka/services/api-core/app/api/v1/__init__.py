@@ -12,7 +12,7 @@ from app.core.database import get_db
 from app.models import User, Course, Organization
 from app.utils.dependencies import require_admin
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport
 
 api_router = APIRouter()
 
@@ -35,6 +35,7 @@ api_router.include_router(engagement.router, tags=["engagement"])
 api_router.include_router(integrations.router, tags=["integrations"])
 api_router.include_router(ops.router, tags=["ops"])
 api_router.include_router(workforce.router, tags=["workforce"])
+api_router.include_router(passport.router, tags=["skill-passport"])
 api_router.include_router(graduate.router, tags=["graduate"])
 api_router.include_router(research.router, tags=["research"])
 api_router.include_router(user_content.router, tags=["dashboard"])
