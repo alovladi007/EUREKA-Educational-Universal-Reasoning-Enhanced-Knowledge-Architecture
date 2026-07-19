@@ -587,6 +587,159 @@ async def cancel_my_deletion(
     return d
 
 
+# ---------------------------------------------------------------------------
+# Admin DSAR console (13.5) — org admins act on a MEMBER's data.
+# The self-service /me/compliance/* endpoints only cover the caller's own
+# account; these let an org_admin export or schedule deletion of a member's
+# data (org-scoped) and see the org's pending requests.
+# ---------------------------------------------------------------------------
+
+
+async def _admin_subject(db: AsyncSession, current_user: User, subject_user_id: UUID) -> User:
+    """Resolve a target member, enforcing admin role + same-org isolation."""
+    _require_admin(current_user)
+    subj = await db.get(User, subject_user_id)
+    if subj is None:
+        raise HTTPException(status_code=404, detail="user not found")
+    if current_user.role != UserRole.SUPER_ADMIN.value and subj.org_id != current_user.org_id:
+        raise HTTPException(status_code=403, detail="user not in your organization")
+    return subj
+
+
+def _org_compliance_query(model, current_user: User, limit: int):
+    stmt = (
+        select(model)
+        .join(User, User.id == model.user_id)
+        .order_by(model.requested_at.desc())
+        .limit(limit)
+    )
+    if current_user.role != UserRole.SUPER_ADMIN.value:
+        stmt = stmt.where(User.org_id == current_user.org_id)
+    return stmt
+
+
+@router.get("/admin/compliance/exports", response_model=list[ExportResponse])
+async def admin_list_exports(
+    limit: int = Query(100, ge=1, le=500),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    _require_admin(current_user)
+    q = await db.execute(_org_compliance_query(ComplianceExport, current_user, limit))
+    return list(q.scalars().all())
+
+
+@router.get("/admin/compliance/deletions", response_model=list[DeletionResponse])
+async def admin_list_deletions(
+    limit: int = Query(100, ge=1, le=500),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    _require_admin(current_user)
+    q = await db.execute(_org_compliance_query(ComplianceDeletion, current_user, limit))
+    return list(q.scalars().all())
+
+
+@router.post("/admin/compliance/export/{subject_user_id}", response_model=ExportResponse, status_code=201)
+async def admin_request_export(
+    subject_user_id: UUID,
+    payload: ExportRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    subj = await _admin_subject(db, current_user, subject_user_id)
+    sections = payload.sections or list(ig_svc._EXPORT_BUILDERS.keys())
+    export = ComplianceExport(
+        user_id=subj.id, status=ComplianceExportStatus.queued.value, sections=sections
+    )
+    db.add(export)
+    await db.commit()
+    await db.refresh(export)
+    export = await ig_svc.build_export(db, export=export)
+    await ig_svc.log_audit(
+        db, event_name="compliance.export.request", severity="warn",
+        actor_user_id=current_user.id, subject_user_id=subj.id,
+        org_id=current_user.org_id,
+        metadata={"sections": sections, "by_admin": True},
+        request_ip=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+    return export
+
+
+@router.post("/admin/compliance/delete/{subject_user_id}", response_model=DeletionResponse, status_code=201)
+async def admin_request_deletion(
+    subject_user_id: UUID,
+    payload: DeletionRequest,
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    subj = await _admin_subject(db, current_user, subject_user_id)
+    if subj.id == current_user.id:
+        raise HTTPException(status_code=400, detail="use the self-service flow for your own account")
+    if subj.role == UserRole.SUPER_ADMIN.value and current_user.role != UserRole.SUPER_ADMIN.value:
+        raise HTTPException(status_code=403, detail="cannot schedule deletion of a super admin")
+    existing_q = await db.execute(
+        select(ComplianceDeletion).where(
+            ComplianceDeletion.user_id == subj.id,
+            ComplianceDeletion.status.in_(("requested", "scheduled")),
+        )
+    )
+    if existing_q.scalar_one_or_none() is not None:
+        raise HTTPException(status_code=409, detail="deletion already pending for this user")
+    scheduled = _utc() + timedelta(days=payload.days_until_execution)
+    deletion = ComplianceDeletion(
+        user_id=subj.id, requested_by=current_user.id,
+        status=ComplianceDeleteStatus.scheduled.value,
+        reason=payload.reason, scheduled_for=scheduled,
+    )
+    db.add(deletion)
+    await db.commit()
+    await db.refresh(deletion)
+    await ig_svc.log_audit(
+        db, event_name="compliance.delete.request", severity="warn",
+        actor_user_id=current_user.id, subject_user_id=subj.id,
+        org_id=current_user.org_id,
+        metadata={"scheduled_for": scheduled.isoformat(), "by_admin": True},
+        request_ip=request.client.host if request.client else None,
+        user_agent=request.headers.get("user-agent"),
+    )
+    return deletion
+
+
+@router.post("/admin/compliance/deletions/{deletion_id}/cancel", response_model=DeletionResponse)
+async def admin_cancel_deletion(
+    deletion_id: UUID,
+    reason: Optional[str] = Query(None),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    _require_admin(current_user)
+    d = await db.get(ComplianceDeletion, deletion_id)
+    if d is None:
+        raise HTTPException(status_code=404, detail="deletion not found")
+    subj = await db.get(User, d.user_id)
+    if subj is None or (
+        current_user.role != UserRole.SUPER_ADMIN.value and subj.org_id != current_user.org_id
+    ):
+        raise HTTPException(status_code=404, detail="deletion not found")
+    if d.status not in ("requested", "scheduled"):
+        raise HTTPException(status_code=409, detail=f"cannot cancel from status={d.status}")
+    d.status = ComplianceDeleteStatus.canceled.value
+    d.canceled_at = _utc()
+    d.canceled_reason = reason
+    await db.commit()
+    await db.refresh(d)
+    await ig_svc.log_audit(
+        db, event_name="compliance.delete.cancel", severity="warn",
+        actor_user_id=current_user.id, subject_user_id=d.user_id,
+        org_id=current_user.org_id,
+    )
+    return d
+
+
 def _audit_query(current_user: User, event_name, severity, limit):
     """Build the audit SELECT with tenant isolation + filters.
 

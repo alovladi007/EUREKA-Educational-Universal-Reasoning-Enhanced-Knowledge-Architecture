@@ -44,6 +44,11 @@ export default function AdminIndex() {
             title: "Audit log",
             body: "Org-scoped security events with actor + subject + IP, filterable + CSV export.",
           },
+          {
+            href: "/admin/compliance",
+            title: "Data & compliance",
+            body: "Fulfil data-subject requests — export or schedule deletion of a member's data.",
+          },
         ].map((p) => (
           <Link key={p.href} href={p.href}>
             <Card className="h-full hover:shadow-md transition-shadow">

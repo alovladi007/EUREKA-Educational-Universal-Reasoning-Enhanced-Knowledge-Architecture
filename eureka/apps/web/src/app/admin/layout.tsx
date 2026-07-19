@@ -13,6 +13,7 @@ const TABS = [
   { href: "/admin/integrations", label: "SSO & LTI" },
   { href: "/admin/jobs", label: "Background jobs" },
   { href: "/admin/audit", label: "Audit log" },
+  { href: "/admin/compliance", label: "Data & compliance" },
   { href: "/admin/settings", label: "Settings" },
 ];
 
