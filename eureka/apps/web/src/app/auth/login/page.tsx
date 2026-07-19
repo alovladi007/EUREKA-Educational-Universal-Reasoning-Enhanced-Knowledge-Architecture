@@ -16,6 +16,17 @@ export default function LoginPage() {
   );
 }
 
+// Demo credentials shown on the login page for convenience. Shown in dev
+// builds, or when NEXT_PUBLIC_SHOW_DEMO_LOGIN=true is baked in at build time.
+// The flag defaults to OFF, so a real production deployment (which doesn't set
+// it) never renders these — the local compose opts in explicitly. Both checks
+// are inlined and dead-code-eliminated by Next.js when false.
+const DEMO_EMAIL = 'you@eureka.example.com';
+const DEMO_PASSWORD = 'EurekaAdmin!2026';
+const SHOW_DEMO_CREDENTIALS =
+  process.env.NODE_ENV !== 'production' ||
+  process.env.NEXT_PUBLIC_SHOW_DEMO_LOGIN === 'true';
+
 function LoginPageBody() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -103,6 +114,37 @@ function LoginPageBody() {
           <h2 className="text-4xl font-bold text-gray-900">Welcome Back!</h2>
           <p className="mt-2 text-gray-600">Sign in to continue your learning journey</p>
         </div>
+
+        {SHOW_DEMO_CREDENTIALS && (
+          <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm">
+            <div className="flex items-center justify-between">
+              <span className="font-semibold text-amber-800">Demo login</span>
+              <button
+                type="button"
+                onClick={() =>
+                  setFormData({ username: DEMO_EMAIL, password: DEMO_PASSWORD })
+                }
+                className="rounded-md bg-amber-600 px-2.5 py-1 text-xs font-medium text-white hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500"
+              >
+                Use these credentials
+              </button>
+            </div>
+            <dl className="mt-2 space-y-1 text-amber-900">
+              <div className="flex justify-between gap-2">
+                <dt className="text-amber-700">Email</dt>
+                <dd className="font-mono">{DEMO_EMAIL}</dd>
+              </div>
+              <div className="flex justify-between gap-2">
+                <dt className="text-amber-700">Password</dt>
+                <dd className="font-mono">{DEMO_PASSWORD}</dd>
+              </div>
+            </dl>
+            <p className="mt-2 text-xs text-amber-700">
+              Local convenience — a real deployment omits the opt-in flag, so
+              this box does not ship.
+            </p>
+          </div>
+        )}
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="space-y-4">

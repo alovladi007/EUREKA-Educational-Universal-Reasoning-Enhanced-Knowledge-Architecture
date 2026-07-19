@@ -96,9 +96,15 @@ export function Sidebar() {
 
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-card">
-      <div className="flex h-16 shrink-0 items-center gap-2 border-b px-6 bg-card">
-        <GraduationCap className="h-8 w-8 text-primary" />
-        <span className="text-xl font-bold">EUREKA</span>
+      <div className="flex h-16 shrink-0 items-center border-b px-6 bg-card">
+        <Link
+          href="/"
+          aria-label="EUREKA home"
+          className="flex items-center gap-2 rounded-md transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+        >
+          <GraduationCap className="h-8 w-8 text-primary" />
+          <span className="text-xl font-bold">EUREKA</span>
+        </Link>
       </div>
       <div className="flex-1 overflow-y-scroll min-h-0">
         <nav className="p-4 space-y-1">

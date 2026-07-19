@@ -498,6 +498,11 @@ services:
     build:
       context: ./apps/web
       dockerfile: Dockerfile.prod
+      args:
+        # Local convenience: surface the demo-login credentials on the sign-in
+        # page. Off by default in the Dockerfile, so real deployments that don't
+        # pass this stay clean; this local stack opts in explicitly.
+        NEXT_PUBLIC_SHOW_DEMO_LOGIN: "true"
     container_name: eureka-web
     # Host port is configurable via eureka/.env (WEB_HOST_PORT) if 3000 is taken by another project
     ports:

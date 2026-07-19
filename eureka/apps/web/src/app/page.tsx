@@ -1,847 +1,473 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { useState, useEffect, useRef } from 'react';
-import Button from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+// Marketing homepage, modelled on established education platforms (Coursera,
+// edX, Khan Academy): a calm blue/slate palette, generous whitespace, real
+// EUREKA offerings, and restrained motion. No gradient text, glassmorphism, or
+// auto-rotating imagery — the goal is a credible, professional first impression.
+
+const CATEGORIES = [
+  { icon: 'fa-square-root-variable', name: 'Mathematics', desc: 'Pre-algebra through graduate analysis — 203 courses.', href: '/dashboard' },
+  { icon: 'fa-clipboard-check', name: 'Test Preparation', desc: 'LSAT, MCAT, GRE, SAT, Patent Bar and 6 more.', href: '/dashboard/test-prep' },
+  { icon: 'fa-stethoscope', name: 'Medical Education', desc: 'Clinical foundations with real AI imaging tools.', href: '/dashboard/medical' },
+  { icon: 'fa-graduation-cap', name: 'Undergraduate', desc: 'Bachelor-level courses across disciplines.', href: '/dashboard/undergraduate' },
+  { icon: 'fa-user-graduate', name: 'Graduate', desc: "Master's and doctoral coursework.", href: '/dashboard/graduate' },
+  { icon: 'fa-school', name: 'High School', desc: 'Grades 9–12 core curriculum and college prep.', href: '/dashboard/high-school' },
+  { icon: 'fa-robot', name: 'AI Tutor', desc: 'Personalised, step-by-step help around the clock.', href: '/dashboard/tutor' },
+  { icon: 'fa-vr-cardboard', name: 'XR Labs', desc: 'Immersive 3D labs for anatomy and the sciences.', href: '/dashboard/xr-labs' },
+];
+
+const COURSES = [
+  { subject: 'Mathematics', accent: 'bg-primary-600', icon: 'fa-square-root-variable', title: 'Calculus I: Limits & Derivatives', level: 'Beginner', rating: '4.8', learners: '48,200', tag: 'Certificate' },
+  { subject: 'Test Prep', accent: 'bg-indigo-600', icon: 'fa-scale-balanced', title: 'LSAT Complete: Logic & Reading', level: 'All levels', rating: '4.9', learners: '31,500', tag: 'Exam prep' },
+  { subject: 'Medical', accent: 'bg-rose-600', icon: 'fa-stethoscope', title: 'Clinical Foundations & Imaging', level: 'Intermediate', rating: '4.7', learners: '12,100', tag: 'Professional' },
+  { subject: 'Mathematics', accent: 'bg-emerald-600', icon: 'fa-vector-square', title: 'Linear Algebra for Engineers', level: 'Intermediate', rating: '4.8', learners: '26,800', tag: 'Certificate' },
+];
+
+const VALUES = [
+  { icon: 'fa-wand-magic-sparkles', title: 'Adaptive by design', desc: 'Every path adjusts to what you have mastered, so you spend time where it counts.' },
+  { icon: 'fa-circle-check', title: 'Practice that grades itself', desc: 'Auto-graded problems and worked solutions give instant, specific feedback.' },
+  { icon: 'fa-certificate', title: 'Credentials that count', desc: 'Earn certificates as you complete programs and demonstrate real mastery.' },
+  { icon: 'fa-user-clock', title: 'Learn at your pace', desc: 'Start, pause, and resume on any device — your progress follows you.' },
+];
+
+const STEPS = [
+  { n: '1', title: 'Choose a path', desc: 'Pick a subject or exam and get a plan mapped to your goal.' },
+  { n: '2', title: 'Learn and practice', desc: 'Work through lessons and graded practice with an AI tutor on call.' },
+  { n: '3', title: 'Track your mastery', desc: 'Watch your skills grow and earn certificates as you go.' },
+];
+
+const TESTIMONIALS = [
+  { quote: 'The adaptive practice found exactly the gaps in my calculus and closed them before my finals.', name: 'Maya R.', role: 'Undergraduate student', initials: 'MR' },
+  { quote: 'I prepped for the LSAT entirely on EUREKA. The graded drills and analytics were a game changer.', name: 'Daniel K.', role: 'Law school applicant', initials: 'DK' },
+  { quote: 'As a teacher, the auto-grading and progress dashboards give me back hours every single week.', name: 'Priya S.', role: 'High-school educator', initials: 'PS' },
+];
 
 export default function HomePage() {
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+  const [query, setQuery] = useState('');
   const [email, setEmail] = useState('');
-  const [searchQuery, setSearchQuery] = useState('');
-
-  // Refs for scroll animations
-  const statsRef = useRef<HTMLDivElement>(null);
-  const featuresRef = useRef<HTMLDivElement>(null);
-  const cardsRef = useRef<HTMLDivElement>(null);
-  const footerRef = useRef<HTMLDivElement>(null);
-
-  // Scroll detection
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Intersection Observer for scroll animations
-  useEffect(() => {
-    const observerOptions = {
-      root: null,
-      rootMargin: '0px',
-      threshold: 0.1,
-    };
-
-    const observerCallback = (entries: IntersectionObserverEntry[]) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('animate-in-view');
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    // Observe all sections
-    const sections = [statsRef, featuresRef, cardsRef, footerRef];
-    sections.forEach((ref) => {
-      if (ref.current) {
-        observer.observe(ref.current);
-      }
-    });
-
-    return () => observer.disconnect();
-  }, []);
-
-  const handleExplorePlatform = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
-    const demoUser = {
-      id: 'demo-user-123',
-      email: 'demo@eureka.edu',
-      name: 'Demo User',
-      role: 'student',
-      tier: 'undergraduate',
-    };
-    localStorage.setItem('user', JSON.stringify(demoUser));
-    localStorage.setItem('access_token', 'demo-token-123');
-    router.push('/dashboard');
-  };
-
-  const handleNewsletterSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log('Newsletter signup:', email);
-    setEmail('');
-    alert('Thank you for subscribing!');
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Search:', searchQuery);
+    router.push('/dashboard');
   };
 
-  const stats = [
-    { label: 'Active Learners', value: '500K+', icon: 'fa-users' },
-    { label: 'Courses', value: '10K+', icon: 'fa-book-open' },
-    { label: 'Success Rate', value: '96%', icon: 'fa-trophy' },
-    { label: 'Countries', value: '150+', icon: 'fa-globe' },
-  ];
-
-  const features = [
-    {
-      icon: 'fa-brain',
-      title: 'AI-Powered Learning',
-      description: 'Personalized learning paths with adaptive AI tutoring',
-      badge: 'Popular',
-      color: 'bg-gradient-to-br from-blue-500 to-blue-600',
-    },
-    {
-      icon: 'fa-bullseye',
-      title: 'Adaptive Assessments',
-      description: 'Smart testing that adapts to your skill level',
-      badge: 'New',
-      color: 'bg-gradient-to-br from-purple-500 to-purple-600',
-    },
-    {
-      icon: 'fa-chart-line',
-      title: 'Real-Time Analytics',
-      description: 'Track progress with detailed performance insights',
-      badge: null,
-      color: 'bg-gradient-to-br from-green-500 to-green-600',
-    },
-    {
-      icon: 'fa-users-line',
-      title: 'Collaborative Learning',
-      description: 'Study groups, peer reviews, and community support',
-      badge: null,
-      color: 'bg-gradient-to-br from-orange-500 to-orange-600',
-    },
-    {
-      icon: 'fa-shield-halved',
-      title: 'Enterprise Security',
-      description: 'FERPA/COPPA compliant with top-tier data protection',
-      badge: 'Certified',
-      color: 'bg-gradient-to-br from-red-500 to-red-600',
-    },
-    {
-      icon: 'fa-bolt',
-      title: 'Instant Feedback',
-      description: 'Get immediate insights on your performance',
-      badge: null,
-      color: 'bg-gradient-to-br from-yellow-500 to-yellow-600',
-    },
-  ];
+  const handleNewsletter = (e: React.FormEvent) => {
+    e.preventDefault();
+    setEmail('');
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-50 via-white to-primary-100">
-      {/* Sticky Navigation */}
-      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        isScrolled ? 'bg-white shadow-xl backdrop-blur-lg' : 'bg-white/95 backdrop-blur-md shadow-md'
-      }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between h-16 sm:h-20 items-center">
-            {/* Logo - Using Flexbox */}
-            <div className="flex items-center gap-3">
-              <div className="relative">
-                <i className="fas fa-graduation-cap text-3xl sm:text-4xl text-primary-600"></i>
-                <div className="absolute -top-1 -right-1 w-3 h-3 bg-purple-500 rounded-full animate-pulse"></div>
-              </div>
-              <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                EUREKA
-              </h1>
-            </div>
-
-            {/* Desktop Search - Flexbox */}
-            <div className="hidden md:flex flex-1 max-w-md mx-8">
-              <form onSubmit={handleSearch} className="w-full relative group">
-                <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-500 transition-colors"></i>
-                <input
-                  type="text"
-                  placeholder="Search courses, topics..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                />
-              </form>
-            </div>
-
-            {/* Desktop Navigation - Flexbox */}
-            <div className="hidden md:flex gap-3 items-center">
-              <Link href="/demo" className="text-sm font-medium text-gray-700 hover:text-primary-600 px-4 py-2 hover:bg-primary-50 rounded-lg transition-colors flex items-center">
-                <i className="fas fa-play-circle mr-2"></i>
-                Demo
-              </Link>
-              <Link href="/system-status" className="text-sm font-medium text-gray-700 hover:text-primary-600 px-4 py-2 hover:bg-primary-50 rounded-lg transition-colors flex items-center">
-                <i className="fas fa-server mr-2"></i>
-                Status
-              </Link>
-              <Link href="/auth/login" className="text-sm font-medium text-gray-700 hover:text-primary-600 px-4 py-2 hover:bg-primary-50 rounded-lg transition-colors flex items-center">
-                <i className="fas fa-sign-in-alt mr-2"></i>
-                Login
-              </Link>
-              <Link href="/auth/register" className="text-sm font-medium bg-primary-600 text-white px-6 py-2.5 rounded-lg shadow-lg hover:shadow-xl hover:bg-primary-700 transform hover:-translate-y-0.5 transition-all flex items-center">
-                <i className="fas fa-user-plus mr-2"></i>
-                Sign Up
-              </Link>
-            </div>
-
-            {/* Mobile Menu Button */}
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="md:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
-              aria-label="Toggle menu"
-            >
-              <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'} text-xl`}></i>
-            </button>
+    <div className="min-h-screen bg-white text-gray-900">
+      {/* Navigation */}
+      <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur">
+        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center gap-8">
+            <Link href="/" className="flex items-center gap-2">
+              <i className="fas fa-graduation-cap text-2xl text-primary-600" />
+              <span className="text-xl font-bold tracking-tight text-gray-900">EUREKA</span>
+            </Link>
+            <nav className="hidden items-center gap-6 lg:flex">
+              <Link href="/dashboard" className="text-sm font-medium text-gray-600 hover:text-gray-900">Explore</Link>
+              <Link href="/dashboard/test-prep" className="text-sm font-medium text-gray-600 hover:text-gray-900">Test Prep</Link>
+              <Link href="/institutions" className="text-sm font-medium text-gray-600 hover:text-gray-900">For Institutions</Link>
+              <Link href="/demo" className="text-sm font-medium text-gray-600 hover:text-gray-900">How it works</Link>
+            </nav>
           </div>
+
+          <div className="hidden items-center gap-3 md:flex">
+            <Link href="/auth/login" className="text-sm font-semibold text-gray-700 hover:text-gray-900">Log in</Link>
+            <Link
+              href="/auth/register"
+              className="rounded-md bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-primary-700"
+            >
+              Join for free
+            </Link>
+          </div>
+
+          <button
+            onClick={() => setMobileMenuOpen((v) => !v)}
+            className="rounded-md p-2 text-gray-600 hover:bg-gray-100 md:hidden"
+            aria-label="Toggle menu"
+          >
+            <i className={`fas ${mobileMenuOpen ? 'fa-xmark' : 'fa-bars'} text-lg`} />
+          </button>
         </div>
 
-        {/* Mobile Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden border-t bg-white animate-slide-down">
-            <div className="px-4 py-4 space-y-4">
-              {/* Mobile Search */}
-              <form onSubmit={handleSearch} className="relative">
-                <i className="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                <input
-                  type="text"
-                  placeholder="Search courses, topics..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
-                />
-              </form>
-
-              <Link href="/demo" onClick={() => setMobileMenuOpen(false)} className="w-full text-left px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors flex items-center">
-                <i className="fas fa-play-circle mr-2"></i>
-                Interactive Demo
+          <div className="border-t border-gray-200 bg-white md:hidden">
+            <nav className="space-y-1 px-4 py-3">
+              {[
+                ['Explore', '/dashboard'],
+                ['Test Prep', '/dashboard/test-prep'],
+                ['For Institutions', '/institutions'],
+                ['How it works', '/demo'],
+                ['Log in', '/auth/login'],
+              ].map(([label, href]) => (
+                <Link
+                  key={label}
+                  href={href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block rounded-md px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  {label}
+                </Link>
+              ))}
+              <Link
+                href="/auth/register"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-2 block rounded-md bg-primary-600 px-3 py-2 text-center text-sm font-semibold text-white"
+              >
+                Join for free
               </Link>
-              <Link href="/system-status" onClick={() => setMobileMenuOpen(false)} className="w-full text-left px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors flex items-center">
-                <i className="fas fa-server mr-2"></i>
-                System Status
-              </Link>
-              <Link href="/auth/login" onClick={() => setMobileMenuOpen(false)} className="w-full text-left px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors flex items-center">
-                <i className="fas fa-sign-in-alt mr-2"></i>
-                Login
-              </Link>
-              <Link href="/auth/register" onClick={() => setMobileMenuOpen(false)} className="w-full text-center px-4 py-3 bg-primary-600 text-white hover:bg-primary-700 rounded-lg transition-colors flex items-center justify-center shadow-lg">
-                <i className="fas fa-user-plus mr-2"></i>
-                Sign Up
-              </Link>
-            </div>
+            </nav>
           </div>
         )}
-      </nav>
+      </header>
 
-      {/* Hero Section */}
-      <main className="pt-28 sm:pt-32 pb-12">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Hero Content - Using Flexbox for centering */}
-          <div className="text-center mb-16 space-y-6 animate-fade-in-up">
-            <div className="inline-block">
-              <i className="fas fa-sparkles text-4xl sm:text-5xl text-purple-500 mb-4 animate-pulse"></i>
-            </div>
-            <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-gray-900 leading-tight">
-              Welcome to{' '}
-              <span className="bg-gradient-to-r from-primary-600 via-purple-600 to-pink-600 bg-clip-text text-transparent animate-gradient">
-                EUREKA
+      {/* Hero */}
+      <section className="border-b border-gray-100 bg-gradient-to-b from-primary-50/60 to-white">
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 sm:px-6 lg:grid-cols-2 lg:gap-16 lg:py-24 lg:px-8">
+          <div>
+            <p className="text-sm font-semibold uppercase tracking-wide text-primary-700">
+              From high school to a professional career
+            </p>
+            <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight text-gray-900 sm:text-5xl">
+              Learn without limits.
+            </h1>
+            <p className="mt-5 max-w-xl text-lg leading-relaxed text-gray-600">
+              Master any subject with adaptive courses, graded practice, and a personal AI tutor —
+              built for students, educators, and institutions alike.
+            </p>
+
+            <form onSubmit={handleSearch} className="mt-8 flex max-w-xl overflow-hidden rounded-lg border border-gray-300 bg-white shadow-sm focus-within:border-primary-500 focus-within:ring-2 focus-within:ring-primary-100">
+              <span className="flex items-center pl-4 text-gray-400">
+                <i className="fas fa-magnifying-glass" />
               </span>
-            </h2>
-            <p className="text-lg sm:text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto">
-              Educational Universal Reasoning & Enhanced Knowledge Architecture
-            </p>
-            <p className="text-base sm:text-lg text-primary-600 font-semibold flex items-center justify-center gap-2">
-              <i className="fas fa-rocket"></i>
-              From high school to professional degrees
-            </p>
+              <input
+                type="text"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="What do you want to learn?"
+                className="w-full bg-transparent px-3 py-3 text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
+              />
+              <button type="submit" className="shrink-0 bg-primary-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-700">
+                Search
+              </button>
+            </form>
+
+            <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-gray-500">
+              <span className="flex items-center gap-1.5">
+                <span className="text-amber-500">
+                  <i className="fas fa-star" /><i className="fas fa-star" /><i className="fas fa-star" /><i className="fas fa-star" /><i className="fas fa-star-half-stroke" />
+                </span>
+                <span className="font-medium text-gray-700">4.8</span> average rating
+              </span>
+              <span className="hidden sm:inline">·</span>
+              <span><span className="font-medium text-gray-700">500,000+</span> learners worldwide</span>
+            </div>
           </div>
 
-          {/* Stats Section - CSS Grid */}
-          <div
-            ref={statsRef}
-            className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-16 opacity-0 transition-opacity duration-1000 relative z-10"
-          >
-            {stats.map((stat, index) => (
-              <div
-                key={index}
-                className="bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 hover:scale-105 group cursor-pointer"
-                style={{ transitionDelay: `${index * 100}ms` }}
-              >
-                <div className="flex flex-col items-center text-center">
-                  <div className="w-14 h-14 sm:w-16 sm:h-16 bg-gradient-to-br from-primary-500 to-purple-500 rounded-xl flex items-center justify-center mb-4 group-hover:rotate-6 transition-transform shadow-lg">
-                    <i className={`fas ${stat.icon} text-2xl sm:text-3xl text-white`}></i>
-                  </div>
-                  <div className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-primary-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                    {stat.value}
-                  </div>
-                  <div className="text-sm sm:text-base text-gray-600 font-medium">{stat.label}</div>
+          {/* Product preview — a static mockup, not a photo */}
+          <div className="relative lg:justify-self-end">
+            <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-5 shadow-xl">
+              <div className="flex items-center justify-between">
+                <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700">
+                  <i className="fas fa-square-root-variable" /> Mathematics
+                </span>
+                <span className="text-xs font-medium text-gray-400">In progress</span>
+              </div>
+              <h3 className="mt-4 text-lg font-bold text-gray-900">Calculus I: Limits & Derivatives</h3>
+              <p className="mt-1 text-sm text-gray-500">Lesson 7 of 12 · The Chain Rule</p>
+              <div className="mt-4">
+                <div className="mb-1 flex justify-between text-xs font-medium text-gray-500">
+                  <span>Progress</span><span>68%</span>
+                </div>
+                <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
+                  <div className="h-full rounded-full bg-primary-600" style={{ width: '68%' }} />
                 </div>
               </div>
-            ))}
-          </div>
-
-          {/* CTA Buttons - Flexbox */}
-          <div className="text-center space-y-6 mb-24 animate-fade-in-up relative z-20" style={{ animationDelay: '600ms' }}>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link
-                href="/dashboard"
-                onClick={handleExplorePlatform}
-                className="group inline-flex items-center justify-center text-base sm:text-lg px-8 py-6 shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all bg-gradient-to-r from-primary-600 to-purple-600 hover:from-primary-700 hover:to-purple-700 text-white rounded-lg font-medium"
-              >
-                <i className="fas fa-rocket mr-2"></i>
-                Explore Platform (Full Access)
-                <i className="fas fa-arrow-right ml-2 group-hover:translate-x-1 transition-transform"></i>
-              </Link>
-              <Link href="/auth/register" className="text-base sm:text-lg px-8 py-6 shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all border-2 border-primary-600 text-primary-600 hover:bg-primary-50 rounded-lg font-medium flex items-center">
-                <i className="fas fa-user-plus mr-2"></i>
-                Get Started Free
-              </Link>
-            </div>
-            <p className="text-sm sm:text-base text-gray-500 flex items-center justify-center gap-2">
-              <i className="fas fa-check-circle text-green-500"></i>
-              No login required - explore all features instantly
-            </p>
-          </div>
-
-          {/* Enhanced Features Grid - CSS Grid with responsive columns */}
-          <div ref={featuresRef} className="mb-24 opacity-0 transition-opacity duration-1000">
-            <div className="text-center mb-12 space-y-3">
-              <div className="inline-block">
-                <i className="fas fa-stars text-4xl text-purple-500"></i>
-              </div>
-              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">Powerful Features</h3>
-              <p className="text-lg sm:text-xl text-gray-600">Everything you need for successful learning</p>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
-              {features.map((feature, index) => (
-                <div
-                  key={index}
-                  className="group bg-white rounded-2xl p-6 sm:p-8 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-3 cursor-pointer relative overflow-hidden"
-                  style={{ transitionDelay: `${index * 100}ms` }}
-                >
-                  {/* Animated Background Gradient */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary-50 to-purple-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-
-                  {/* Badge */}
-                  {feature.badge && (
-                    <div className="absolute top-6 right-6 z-10">
-                      <span className="px-3 py-1 bg-gradient-to-r from-primary-500 to-purple-500 text-white text-xs font-bold rounded-full shadow-lg animate-pulse">
-                        <i className="fas fa-star mr-1"></i>
-                        {feature.badge}
-                      </span>
-                    </div>
-                  )}
-
-                  {/* Content */}
-                  <div className="relative z-10">
-                    {/* Icon */}
-                    <div className={`${feature.color} w-16 h-16 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:rotate-3 transition-transform shadow-xl`}>
-                      <i className={`fas ${feature.icon} text-2xl text-white`}></i>
-                    </div>
-
-                    {/* Title & Description */}
-                    <h4 className="text-xl sm:text-2xl font-bold text-gray-900 mb-3 group-hover:text-primary-600 transition-colors">
-                      {feature.title}
-                    </h4>
-                    <p className="text-gray-600 leading-relaxed">{feature.description}</p>
-
-                    {/* Hover Arrow */}
-                    <div className="mt-6 flex items-center text-primary-600 opacity-0 group-hover:opacity-100 transform translate-x-0 group-hover:translate-x-2 transition-all">
-                      <span className="font-semibold">Learn more</span>
-                      <i className="fas fa-arrow-right ml-2"></i>
-                    </div>
+              <div className="mt-5 grid grid-cols-3 gap-3 text-center">
+                {[['24', 'Skills'], ['1,240', 'XP'], ['9', 'Day streak']].map(([v, l]) => (
+                  <div key={l} className="rounded-lg bg-gray-50 py-3">
+                    <div className="text-base font-bold text-gray-900">{v}</div>
+                    <div className="text-[11px] text-gray-500">{l}</div>
                   </div>
-
-                  {/* Bottom Border Animation */}
-                  <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-500 via-purple-500 to-pink-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500"></div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Original Three Cards - Enhanced with CSS Grid */}
-          <div ref={cardsRef} className="mb-24 opacity-0 transition-opacity duration-1000">
-            <div className="text-center mb-12 space-y-3">
-              <div className="inline-block">
-                <i className="fas fa-users-between-lines text-4xl text-purple-500"></i>
-              </div>
-              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900">Built For Everyone</h3>
-              <p className="text-lg sm:text-xl text-gray-600">From students to institutions</p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card variant="elevated" className="hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-blue-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <CardHeader className="relative z-10">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-                      <i className="fas fa-user-graduate text-white text-2xl"></i>
-                    </div>
-                    <CardTitle className="text-2xl">For Students</CardTitle>
-                  </div>
-                  <CardDescription className="text-base">
-                    Personalized learning paths with AI-powered tutoring
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="relative z-10">
-                  <ul className="space-y-3 text-sm text-gray-700">
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-blue-500 text-lg"></i>
-                      <span>Adaptive assessments</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-blue-500 text-lg"></i>
-                      <span>Real-time feedback</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-blue-500 text-lg"></i>
-                      <span>Gamification & badges</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-blue-500 text-lg"></i>
-                      <span>Track your progress</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Card variant="elevated" className="hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-green-50 to-green-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                <CardHeader className="relative z-10">
-                  <div className="flex items-center gap-3 mb-2">
-                    <div className="bg-gradient-to-br from-green-500 to-green-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-                      <i className="fas fa-chalkboard-user text-white text-2xl"></i>
-                    </div>
-                    <CardTitle className="text-2xl">For Teachers</CardTitle>
-                  </div>
-                  <CardDescription className="text-base">
-                    Powerful tools to create engaging courses
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="relative z-10">
-                  <ul className="space-y-3 text-sm text-gray-700">
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-green-500 text-lg"></i>
-                      <span>Course management</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-green-500 text-lg"></i>
-                      <span>Analytics dashboard</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-green-500 text-lg"></i>
-                      <span>Auto-grading tools</span>
-                    </li>
-                    <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                      <i className="fas fa-check-circle text-green-500 text-lg"></i>
-                      <span>Collaboration features</span>
-                    </li>
-                  </ul>
-                </CardContent>
-              </Card>
-
-              <Link href="/institutions" className="block">
-                <Card variant="elevated" className="hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 group overflow-hidden h-full">
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-50 to-purple-100 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
-                  <CardHeader className="relative z-10">
-                    <div className="flex items-center gap-3 mb-2">
-                      <div className="bg-gradient-to-br from-purple-500 to-purple-600 p-3 rounded-xl shadow-lg group-hover:scale-110 transition-transform">
-                        <i className="fas fa-building-columns text-white text-2xl"></i>
-                      </div>
-                      <CardTitle className="text-2xl">For Institutions</CardTitle>
-                    </div>
-                    <CardDescription className="text-base">
-                      Enterprise-grade platform for all tiers
-                    </CardDescription>
-                  </CardHeader>
-                  <CardContent className="relative z-10">
-                    <ul className="space-y-3 text-sm text-gray-700">
-                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                        <span>FERPA/COPPA compliant</span>
-                      </li>
-                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                        <span>Multi-tenant architecture</span>
-                      </li>
-                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                        <span>LTI 1.3 integration</span>
-                      </li>
-                      <li className="flex items-center gap-3 group/item hover:translate-x-2 transition-transform">
-                        <i className="fas fa-check-circle text-purple-500 text-lg"></i>
-                        <span>Custom tier features</span>
-                      </li>
-                    </ul>
-                    <div className="mt-4 pt-4 border-t border-purple-200">
-                      <span className="inline-flex items-center gap-1 text-sm font-semibold text-purple-700 group-hover:gap-2 transition-all">
-                        Open institutions dashboard →
-                      </span>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      {/* Get in Touch Section */}
-      <section className="bg-gradient-to-br from-primary-50 to-white py-16 sm:py-24">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-12">
-            <i className="fas fa-envelope text-4xl text-primary-600 mb-4"></i>
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Get in Touch</h2>
-            <p className="text-lg text-gray-600">We'd love to hear from you. Reach out anytime!</p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-            {/* Contact Information */}
-            <div className="space-y-8">
-              <div className="bg-white rounded-2xl p-8 shadow-lg">
-                <h3 className="text-2xl font-bold text-gray-900 mb-6">Contact Information</h3>
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-primary-100 p-3 rounded-xl">
-                      <i className="fas fa-envelope text-primary-600 text-xl"></i>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Email</p>
-                      <a href="mailto:support@abplearning.com" className="text-primary-600 hover:text-primary-700 transition-colors">
-                        support@abplearning.com
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="bg-green-100 p-3 rounded-xl">
-                      <i className="fas fa-phone text-green-600 text-xl"></i>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Phone</p>
-                      <a href="tel:+15551234567" className="text-green-600 hover:text-green-700 transition-colors">
-                        +1 (555) 123-4567
-                      </a>
-                    </div>
-                  </div>
-                  <div className="flex items-start gap-4">
-                    <div className="bg-purple-100 p-3 rounded-xl">
-                      <i className="fas fa-map-marker-alt text-purple-600 text-xl"></i>
-                    </div>
-                    <div>
-                      <p className="font-semibold text-gray-900">Address</p>
-                      <p className="text-gray-600">123 Learning Street<br />Education City, EC 12345</p>
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="bg-white rounded-2xl p-8 shadow-lg">
-              <form className="space-y-6" onSubmit={(e) => { e.preventDefault(); alert('Message sent! We will get back to you soon.'); }}>
+            <div className="absolute -bottom-5 -left-5 hidden rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-lg sm:block">
+              <div className="flex items-center gap-3">
+                <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-emerald-600">
+                  <i className="fas fa-certificate" />
+                </span>
                 <div>
-                  <label htmlFor="name" className="block text-sm font-semibold text-gray-900 mb-2">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    placeholder="Your Name"
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                  />
+                  <div className="text-sm font-semibold text-gray-900">Certificate earned</div>
+                  <div className="text-xs text-gray-500">Algebra II · Verified</div>
                 </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-semibold text-gray-900 mb-2">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    placeholder="your@email.com"
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="block text-sm font-semibold text-gray-900 mb-2">
-                    Message
-                  </label>
-                  <textarea
-                    id="message"
-                    rows={5}
-                    placeholder="Your message..."
-                    required
-                    className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all resize-none"
-                  ></textarea>
-                </div>
-                <Button type="submit" size="lg" className="w-full shadow-lg hover:shadow-xl">
-                  <i className="fas fa-paper-plane mr-2"></i>
-                  Send Message
-                </Button>
-              </form>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Footer - CSS Grid Layout */}
-      <footer ref={footerRef} className="bg-gradient-to-br from-gray-900 to-gray-800 text-white opacity-0 transition-opacity duration-1000">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-8 sm:gap-12 mb-8">
-            {/* Company Info */}
-            <div className="sm:col-span-2">
-              <div className="flex items-center gap-3 mb-6">
-                <i className="fas fa-graduation-cap text-4xl text-primary-400"></i>
-                <h3 className="text-3xl font-bold">E.U.R.E.K.A</h3>
-              </div>
-              <p className="text-xl text-primary-300 font-semibold mb-4">
-                Explore Ideas. Master Knowledge. Drive Innovation.
-              </p>
-              <p className="text-gray-400 mb-6 max-w-md leading-relaxed">
-                Educational Universal Reasoning & Enhanced Knowledge Architecture.
-                Empowering learners from high school to professional degrees.
-              </p>
-
-              {/* Download App Buttons - Flexbox */}
-              <div className="mb-6">
-                <h4 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                  <i className="fas fa-download"></i>
-                  Download App
-                </h4>
-                <div className="flex gap-3 flex-wrap">
-                  <a href="#" className="group bg-gray-800 hover:bg-gray-700 px-4 py-3 rounded-xl transition-all transform hover:-translate-y-1 shadow-lg flex items-center gap-3">
-                    <i className="fab fa-google-play text-2xl group-hover:scale-110 transition-transform"></i>
-                    <div className="text-left">
-                      <p className="text-xs text-gray-400">GET IT ON</p>
-                      <p className="text-sm font-semibold">Google Play</p>
-                    </div>
-                  </a>
-                  <a href="#" className="group bg-gray-800 hover:bg-gray-700 px-4 py-3 rounded-xl transition-all transform hover:-translate-y-1 shadow-lg flex items-center gap-3">
-                    <i className="fab fa-apple text-2xl group-hover:scale-110 transition-transform"></i>
-                    <div className="text-left">
-                      <p className="text-xs text-gray-400">Download on the</p>
-                      <p className="text-sm font-semibold">App Store</p>
-                    </div>
-                  </a>
-                </div>
-              </div>
-
-              {/* Social Icons - Flexbox */}
-              <div className="flex gap-4 flex-wrap">
-                <a href="#" className="group p-3 bg-gray-800 rounded-xl hover:bg-primary-600 transition-all transform hover:-translate-y-1 shadow-lg">
-                  <i className="fab fa-github text-xl group-hover:scale-110 transition-transform"></i>
-                </a>
-                <a href="#" className="group p-3 bg-gray-800 rounded-xl hover:bg-blue-500 transition-all transform hover:-translate-y-1 shadow-lg">
-                  <i className="fab fa-twitter text-xl group-hover:scale-110 transition-transform"></i>
-                </a>
-                <a href="#" className="group p-3 bg-gray-800 rounded-xl hover:bg-blue-600 transition-all transform hover:-translate-y-1 shadow-lg">
-                  <i className="fab fa-linkedin text-xl group-hover:scale-110 transition-transform"></i>
-                </a>
-                <a href="#" className="group p-3 bg-gray-800 rounded-xl hover:bg-red-600 transition-all transform hover:-translate-y-1 shadow-lg">
-                  <i className="fab fa-youtube text-xl group-hover:scale-110 transition-transform"></i>
-                </a>
-              </div>
+      {/* Stats band */}
+      <section className="border-b border-gray-100 bg-white">
+        <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 lg:grid-cols-4 lg:px-8">
+          {[
+            ['500K+', 'Active learners'],
+            ['10,000+', 'Courses & lessons'],
+            ['96%', 'Completion rate'],
+            ['150+', 'Countries'],
+          ].map(([value, label]) => (
+            <div key={label} className="text-center">
+              <div className="text-3xl font-extrabold text-gray-900">{value}</div>
+              <div className="mt-1 text-sm text-gray-500">{label}</div>
             </div>
+          ))}
+        </div>
+      </section>
 
-            {/* Quick Links */}
+      {/* Categories */}
+      <section className="bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div className="mb-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-end">
             <div>
-              <h4 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                <i className="fas fa-link"></i>
-                Quick Links
-              </h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="/dashboard" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    Dashboard
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/demo" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    Interactive Demo
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/system-status" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    System Status
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/auth/register" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    Sign Up
-                  </Link>
-                </li>
-              </ul>
+              <h2 className="text-3xl font-bold tracking-tight text-gray-900">Explore top subjects</h2>
+              <p className="mt-2 text-gray-600">Browse the areas learners come to EUREKA for most.</p>
             </div>
-
-            {/* Resources */}
-            <div>
-              <h4 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                <i className="fas fa-book"></i>
-                Resources
-              </h4>
-              <ul className="space-y-3">
-                <li>
-                  <Link href="/help" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    Help Center
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/community" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    Community
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/blog" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    Blog
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/api-docs" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2 group">
-                    <i className="fas fa-chevron-right text-xs group-hover:translate-x-1 transition-transform"></i>
-                    API Documentation
-                  </Link>
-                </li>
-              </ul>
-            </div>
-
-            {/* Newsletter */}
-            <div>
-              <h4 className="text-lg font-semibold mb-6 flex items-center gap-2">
-                <i className="fas fa-envelope"></i>
-                Newsletter
-              </h4>
-              <p className="text-gray-400 text-sm mb-4">Subscribe to get updates on new courses and features.</p>
-              <form onSubmit={handleNewsletterSubmit} className="space-y-3">
-                <div className="relative group">
-                  <i className="fas fa-envelope absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-primary-400 transition-colors"></i>
-                  <input
-                    type="email"
-                    placeholder="Your email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    className="w-full pl-10 pr-4 py-3 bg-gray-800 border-2 border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent text-white placeholder-gray-500 transition-all"
-                  />
-                </div>
-                <Button type="submit" className="w-full shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all">
-                  <i className="fas fa-paper-plane mr-2"></i>
-                  Subscribe
-                </Button>
-              </form>
-            </div>
+            <Link href="/dashboard" className="text-sm font-semibold text-primary-700 hover:text-primary-800">
+              View all programs <i className="fas fa-arrow-right ml-1 text-xs" />
+            </Link>
           </div>
 
-          {/* Bottom Bar - Flexbox */}
-          <div className="pt-8 border-t border-gray-700 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-gray-400 text-sm flex items-center gap-2">
-              <i className="fas fa-copyright"></i>
-              2024 EUREKA. All rights reserved.
-            </p>
-            <div className="flex flex-wrap gap-6 text-sm justify-center">
-              <Link href="/privacy" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2">
-                <i className="fas fa-shield-alt"></i>
-                Privacy Policy
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {CATEGORIES.map((cat) => (
+              <Link
+                key={cat.name}
+                href={cat.href}
+                className="group rounded-xl border border-gray-200 bg-white p-6 transition-all hover:border-primary-300 hover:shadow-md"
+              >
+                <span className="flex h-11 w-11 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                  <i className={`fas ${cat.icon} text-lg`} />
+                </span>
+                <h3 className="mt-4 font-semibold text-gray-900 group-hover:text-primary-700">{cat.name}</h3>
+                <p className="mt-1 text-sm leading-relaxed text-gray-500">{cat.desc}</p>
               </Link>
-              <Link href="/terms" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2">
-                <i className="fas fa-file-contract"></i>
-                Terms of Service
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Featured courses */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div className="mb-10">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900">Most popular courses</h2>
+            <p className="mt-2 text-gray-600">Hand-picked programs learners are enrolling in right now.</p>
+          </div>
+
+          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+            {COURSES.map((course) => (
+              <Link
+                key={course.title}
+                href="/dashboard"
+                className="group flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all hover:-translate-y-1 hover:shadow-lg"
+              >
+                <div className={`flex h-28 items-center justify-center ${course.accent}`}>
+                  <i className={`fas ${course.icon} text-3xl text-white/90`} />
+                </div>
+                <div className="flex flex-1 flex-col p-5">
+                  <span className="text-xs font-semibold uppercase tracking-wide text-primary-700">{course.subject}</span>
+                  <h3 className="mt-2 flex-1 font-semibold leading-snug text-gray-900 group-hover:text-primary-700">
+                    {course.title}
+                  </h3>
+                  <div className="mt-4 flex items-center gap-2 text-sm">
+                    <span className="font-semibold text-gray-900">{course.rating}</span>
+                    <span className="text-amber-500"><i className="fas fa-star text-xs" /></span>
+                    <span className="text-gray-400">({course.learners})</span>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+                    <span>{course.level}</span>
+                    <span className="rounded-full bg-gray-100 px-2 py-0.5 font-medium text-gray-600">{course.tag}</span>
+                  </div>
+                </div>
               </Link>
-              <Link href="/contact" className="text-gray-400 hover:text-primary-400 transition-colors flex items-center gap-2">
-                <i className="fas fa-envelope"></i>
-                Contact Us
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Value props */}
+      <section className="bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div className="mx-auto mb-12 max-w-2xl text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900">Why learners choose EUREKA</h2>
+            <p className="mt-3 text-gray-600">A learning experience built around mastery, not just watching videos.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+            {VALUES.map((v) => (
+              <div key={v.title}>
+                <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-600 text-white">
+                  <i className={`fas ${v.icon} text-lg`} />
+                </span>
+                <h3 className="mt-4 text-lg font-semibold text-gray-900">{v.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600">{v.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <div className="mb-12 text-center">
+            <h2 className="text-3xl font-bold tracking-tight text-gray-900">How EUREKA works</h2>
+            <p className="mt-3 text-gray-600">Three steps from curious to confident.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            {STEPS.map((step) => (
+              <div key={step.n} className="rounded-2xl border border-gray-100 bg-gray-50 p-8">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-600 text-base font-bold text-white">
+                  {step.n}
+                </span>
+                <h3 className="mt-5 text-lg font-semibold text-gray-900">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed text-gray-600">{step.desc}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="bg-gray-50">
+        <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+          <h2 className="mb-12 text-center text-3xl font-bold tracking-tight text-gray-900">Loved by learners and educators</h2>
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
+            {TESTIMONIALS.map((t) => (
+              <figure key={t.name} className="flex flex-col rounded-2xl border border-gray-200 bg-white p-6">
+                <div className="mb-3 text-amber-500">
+                  <i className="fas fa-star" /><i className="fas fa-star" /><i className="fas fa-star" /><i className="fas fa-star" /><i className="fas fa-star" />
+                </div>
+                <blockquote className="flex-1 text-gray-700">&ldquo;{t.quote}&rdquo;</blockquote>
+                <figcaption className="mt-5 flex items-center gap-3">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary-100 text-sm font-semibold text-primary-700">
+                    {t.initials}
+                  </span>
+                  <span>
+                    <span className="block text-sm font-semibold text-gray-900">{t.name}</span>
+                    <span className="block text-xs text-gray-500">{t.role}</span>
+                  </span>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Audience segments */}
+      <section className="bg-white">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-16 sm:px-6 md:grid-cols-3 lg:px-8 lg:py-20">
+          {[
+            { icon: 'fa-user-graduate', title: 'For students', desc: 'Personalised paths, graded practice, and certificates that show real mastery.', href: '/auth/register', cta: 'Start learning' },
+            { icon: 'fa-chalkboard-user', title: 'For educators', desc: 'Author courses, assign work, and let auto-grading and analytics save you hours.', href: '/dashboard/teacher', cta: 'Explore teacher tools' },
+            { icon: 'fa-building-columns', title: 'For institutions', desc: 'Enterprise-grade, FERPA/COPPA compliant, with multi-tenant and LTI 1.3 support.', href: '/institutions', cta: 'Talk to us' },
+          ].map((seg) => (
+            <div key={seg.title} className="flex flex-col rounded-2xl border border-gray-200 p-8">
+              <span className="flex h-12 w-12 items-center justify-center rounded-lg bg-primary-50 text-primary-600">
+                <i className={`fas ${seg.icon} text-lg`} />
+              </span>
+              <h3 className="mt-5 text-xl font-semibold text-gray-900">{seg.title}</h3>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-gray-600">{seg.desc}</p>
+              <Link href={seg.href} className="mt-5 text-sm font-semibold text-primary-700 hover:text-primary-800">
+                {seg.cta} <i className="fas fa-arrow-right ml-1 text-xs" />
               </Link>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* CTA band */}
+      <section className="bg-primary-700">
+        <div className="mx-auto max-w-4xl px-4 py-16 text-center sm:px-6 lg:px-8">
+          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">Ready to start learning?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-primary-100">
+            Join over half a million learners building real skills on EUREKA. It is free to get started.
+          </p>
+          <div className="mt-8 flex flex-col items-center justify-center gap-4 sm:flex-row">
+            <Link href="/auth/register" className="rounded-md bg-white px-6 py-3 text-sm font-semibold text-primary-700 transition-colors hover:bg-primary-50">
+              Create a free account
+            </Link>
+            <Link href="/dashboard" className="rounded-md border border-white/40 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-white/10">
+              Browse the catalogue
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-200 bg-white">
+        <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+            <div className="col-span-2">
+              <Link href="/" className="flex items-center gap-2">
+                <i className="fas fa-graduation-cap text-2xl text-primary-600" />
+                <span className="text-xl font-bold text-gray-900">EUREKA</span>
+              </Link>
+              <p className="mt-4 max-w-sm text-sm leading-relaxed text-gray-500">
+                Educational Universal Reasoning &amp; Enhanced Knowledge Architecture — empowering learners
+                from high school to professional degrees.
+              </p>
+              <form onSubmit={handleNewsletter} className="mt-6 flex max-w-sm overflow-hidden rounded-md border border-gray-300">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Your email"
+                  className="w-full px-3 py-2 text-sm text-gray-900 placeholder-gray-400 focus:outline-none"
+                />
+                <button type="submit" className="shrink-0 bg-primary-600 px-4 text-sm font-semibold text-white hover:bg-primary-700">
+                  Subscribe
+                </button>
+              </form>
+            </div>
+
+            {[
+              { title: 'Learn', links: [['Explore', '/dashboard'], ['Test Prep', '/dashboard/test-prep'], ['Mathematics', '/dashboard'], ['Interactive Demo', '/demo']] },
+              { title: 'Company', links: [['For Institutions', '/institutions'], ['System Status', '/system-status'], ['Community', '/community'], ['Help Center', '/help']] },
+              { title: 'Legal', links: [['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['Contact', '/contact']] },
+            ].map((col) => (
+              <div key={col.title}>
+                <h4 className="text-sm font-semibold text-gray-900">{col.title}</h4>
+                <ul className="mt-4 space-y-3">
+                  {col.links.map(([label, href]) => (
+                    <li key={label}>
+                      <Link href={href} className="text-sm text-gray-500 hover:text-primary-700">{label}</Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-gray-100 pt-8 sm:flex-row">
+            <p className="text-sm text-gray-500">© {new Date().getFullYear()} EUREKA. All rights reserved.</p>
+            <div className="flex gap-5 text-gray-400">
+              <a href="#" aria-label="GitHub" className="hover:text-gray-600"><i className="fab fa-github" /></a>
+              <a href="#" aria-label="LinkedIn" className="hover:text-gray-600"><i className="fab fa-linkedin" /></a>
+              <a href="#" aria-label="YouTube" className="hover:text-gray-600"><i className="fab fa-youtube" /></a>
             </div>
           </div>
         </div>
       </footer>
-
-      {/* Global Styles for Advanced Animations */}
-      <style jsx global>{`
-        /* Scroll-triggered fade in */
-        .animate-in-view {
-          opacity: 1 !important;
-        }
-
-        /* Slide down animation for mobile menu */
-        @keyframes slide-down {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-slide-down {
-          animation: slide-down 0.3s ease-out;
-        }
-
-        /* Fade in up animation */
-        @keyframes fade-in-up {
-          from {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        .animate-fade-in-up {
-          animation: fade-in-up 0.8s ease-out forwards;
-        }
-
-        /* Gradient animation */
-        @keyframes gradient {
-          0% {
-            background-position: 0% 50%;
-          }
-          50% {
-            background-position: 100% 50%;
-          }
-          100% {
-            background-position: 0% 50%;
-          }
-        }
-
-        .animate-gradient {
-          background-size: 200% 200%;
-          animation: gradient 3s ease infinite;
-        }
-
-        /* Smooth scroll */
-        html {
-          scroll-behavior: smooth;
-        }
-
-        /* Responsive improvements */
-        @media (max-width: 640px) {
-          .grid {
-            gap: 1rem;
-          }
-        }
-
-        @media (min-width: 768px) and (max-width: 1024px) {
-          .grid {
-            gap: 1.5rem;
-          }
-        }
-      `}</style>
     </div>
   );
 }
