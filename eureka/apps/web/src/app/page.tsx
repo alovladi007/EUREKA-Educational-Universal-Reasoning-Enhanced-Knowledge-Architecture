@@ -103,10 +103,46 @@ const JSON_LD = {
   sameAs: [] as string[],
 };
 
+// Guided, multi-course "programs" — the platform's real verticals framed as
+// journeys. Distinct from the single-course cards.
+const PROGRAMS = [
+  { icon: 'fa-clipboard-check', title: 'Ace your entrance exam', tag: '11 exams', accent: 'from-indigo-600 to-indigo-700', href: '/dashboard/test-prep', desc: 'Full prep for LSAT, MCAT, GRE, SAT, GMAT, Patent Bar, Security+, PE and more — diagnostics, graded drills, and timed mocks.' },
+  { icon: 'fa-square-root-variable', title: 'Master mathematics', tag: 'Full track', accent: 'from-primary-600 to-primary-700', href: '/dashboard', desc: 'A guided ladder from pre-algebra to graduate analysis, with adaptive practice and step-by-step AI tutoring.' },
+  { icon: 'fa-stethoscope', title: 'Build clinical foundations', tag: 'Medical', accent: 'from-rose-600 to-rose-700', href: '/dashboard/medical', desc: 'Medical education with real AI imaging tools and structured clinical modules.' },
+  { icon: 'fa-user-graduate', title: 'Follow a degree pathway', tag: 'Undergrad → Grad', accent: 'from-emerald-600 to-emerald-700', href: '/dashboard/undergraduate', desc: 'Bachelor- through doctoral-level coursework organised into a coherent progression toward your goal.' },
+];
+
+// Animate a number from 0 → value with an ease-out, respecting reduced motion.
+function CountUp({ value }: { value?: number }) {
+  const [n, setN] = useState(0);
+  useEffect(() => {
+    if (value == null) return;
+    const reduce = typeof window !== 'undefined'
+      && window.matchMedia?.('(prefers-reduced-motion: reduce)').matches;
+    if (reduce) {
+      setN(value);
+      return;
+    }
+    let raf = 0;
+    let start = 0;
+    const duration = 1000;
+    const tick = (t: number) => {
+      if (!start) start = t;
+      const p = Math.min(1, (t - start) / duration);
+      setN(Math.round(value * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [value]);
+  return <>{value == null ? '—' : n.toLocaleString()}</>;
+}
+
 export default function HomePage() {
   const router = useRouter();
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
+  const [showBanner, setShowBanner] = useState(true);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [email, setEmail] = useState('');
@@ -141,6 +177,29 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(JSON_LD) }} />
+      {/* Course rich-results — real catalogue items, so search engines can
+          surface individual courses. Rendered only once courses have loaded. */}
+      {courses.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'ItemList',
+              itemListElement: courses.slice(0, 8).map((c, i) => ({
+                '@type': 'ListItem',
+                position: i + 1,
+                item: {
+                  '@type': 'Course',
+                  name: c.title,
+                  description: c.description || undefined,
+                  provider: { '@type': 'Organization', name: 'EUREKA', sameAs: JSON_LD.url },
+                },
+              })),
+            }),
+          }}
+        />
+      )}
 
       <a
         href="#main"
@@ -148,6 +207,23 @@ export default function HomePage() {
       >
         Skip to content
       </a>
+
+      {/* Slim announcement bar */}
+      {showBanner && (
+        <div className="relative bg-primary-700 px-10 py-2 text-center text-sm text-white dark:bg-primary-800">
+          <span className="font-semibold">New:</span> browse the full catalogue — no login needed.{' '}
+          <Link href="/explore" className="font-semibold underline underline-offset-2 hover:text-primary-100">
+            Explore courses →
+          </Link>
+          <button
+            onClick={() => setShowBanner(false)}
+            aria-label="Dismiss announcement"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-white/80 hover:text-white"
+          >
+            <i className="fas fa-xmark" aria-hidden />
+          </button>
+        </div>
+      )}
 
       {/* Navigation */}
       <header className="sticky top-0 z-50 border-b border-gray-200 bg-white/95 backdrop-blur dark:border-gray-800 dark:bg-gray-950/95">
@@ -300,14 +376,14 @@ export default function HomePage() {
         {/* Stats band — live from the public API */}
         <section className="border-b border-gray-100 bg-white dark:border-gray-900 dark:bg-gray-950" aria-label="At a glance">
           <div className="mx-auto grid max-w-7xl grid-cols-2 gap-6 px-4 py-10 sm:px-6 lg:grid-cols-4 lg:px-8">
-            {[
-              [fmt(stats?.learners), 'Learners'],
-              [fmt(stats?.courses), 'Published courses'],
-              [fmt(stats?.institutions), 'Institutions'],
-              [fmt(stats?.subjects), 'Subjects'],
-            ].map(([value, label]) => (
+            {([
+              [stats?.learners, 'Learners'],
+              [stats?.courses, 'Published courses'],
+              [stats?.institutions, 'Institutions'],
+              [stats?.subjects, 'Subjects'],
+            ] as const).map(([value, label]) => (
               <div key={label} className="text-center">
-                <div className="text-3xl font-extrabold">{value}</div>
+                <div className="text-3xl font-extrabold"><CountUp value={value} /></div>
                 <div className="mt-1 text-sm text-gray-500 dark:text-gray-400">{label}</div>
               </div>
             ))}
@@ -390,6 +466,37 @@ export default function HomePage() {
           </div>
         </section>
 
+        {/* Guided learning paths — the platform's real programs as journeys */}
+        <section className="border-t border-gray-100 bg-white dark:border-gray-900 dark:bg-gray-950">
+          <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
+            <div className="mb-10 text-center">
+              <h2 className="text-3xl font-bold tracking-tight">Guided learning paths</h2>
+              <p className="mt-3 text-gray-600 dark:text-gray-400">Not sure where to start? Follow a path built around your goal.</p>
+            </div>
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+              {PROGRAMS.map((p) => (
+                <Link
+                  key={p.title}
+                  href={p.href}
+                  className="group flex overflow-hidden rounded-2xl border border-gray-200 bg-white transition-all hover:-translate-y-0.5 hover:shadow-lg dark:border-gray-800 dark:bg-gray-900"
+                >
+                  <div className={`flex w-20 shrink-0 items-center justify-center bg-gradient-to-b ${p.accent}`}>
+                    <i className={`fas ${p.icon} text-2xl text-white`} aria-hidden />
+                  </div>
+                  <div className="flex-1 p-6">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold group-hover:text-primary-700 dark:group-hover:text-primary-400">{p.title}</h3>
+                      <span className="rounded-full bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-600 dark:bg-gray-800 dark:text-gray-300">{p.tag}</span>
+                    </div>
+                    <p className="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{p.desc}</p>
+                    <span className="mt-3 inline-block text-sm font-semibold text-primary-700 dark:text-primary-400">Start this path →</span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Value props */}
         <section className="bg-gray-50 dark:bg-gray-900">
           <div className="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8 lg:py-20">
@@ -427,6 +534,27 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        {/* Interactive demo callout */}
+        <section className="bg-primary-50 dark:bg-primary-950/30">
+          <div className="mx-auto flex max-w-5xl flex-col items-center gap-5 px-4 py-10 text-center sm:flex-row sm:justify-between sm:px-6 sm:text-left lg:px-8">
+            <div className="flex items-start gap-4">
+              <span className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white sm:flex">
+                <i className="fas fa-play text-lg" aria-hidden />
+              </span>
+              <div>
+                <h2 className="text-xl font-bold">See EUREKA in action</h2>
+                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">Try a sample lesson right now — interactive, no account needed.</p>
+              </div>
+            </div>
+            <Link
+              href="/demo"
+              className="shrink-0 rounded-md bg-primary-600 px-6 py-3 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-primary-700"
+            >
+              <i className="fas fa-play mr-2 text-xs" aria-hidden />Try a sample lesson
+            </Link>
           </div>
         </section>
 
