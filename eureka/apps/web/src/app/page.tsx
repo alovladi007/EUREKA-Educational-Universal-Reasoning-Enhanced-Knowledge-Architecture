@@ -276,26 +276,21 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Hero image — a real learner */}
-            <div className="relative lg:justify-self-end">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/images/hero-learner.jpg"
-                alt="A EUREKA learner at their workstation"
-                width={969}
-                height={784}
-                loading="eager"
-                className="w-full max-w-md rounded-2xl border border-gray-200 object-cover shadow-xl dark:border-gray-800"
-              />
-              <div className="absolute -bottom-5 -left-5 hidden rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-lg dark:border-gray-800 dark:bg-gray-900 sm:block">
-                <div className="flex items-center gap-3">
-                  <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-                    <i className="fas fa-users" aria-hidden />
-                  </span>
-                  <div>
-                    <div className="text-sm font-semibold">{fmt(stats?.learners)} learners</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">building real skills</div>
-                  </div>
+            {/* Hero image — a real learner, framed as a circular portrait */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src="/images/hero-learner.jpg"
+                  alt="A EUREKA learner at their workstation"
+                  width={969}
+                  height={784}
+                  loading="eager"
+                  className="h-56 w-56 rounded-full border-4 border-white object-cover object-[35%_25%] shadow-xl ring-1 ring-gray-200 dark:border-gray-800 dark:ring-gray-700 sm:h-72 sm:w-72 lg:h-80 lg:w-80"
+                />
+                <div className="absolute -bottom-3 left-1/2 hidden -translate-x-1/2 items-center gap-2 whitespace-nowrap rounded-full border border-gray-200 bg-white px-4 py-2 shadow-lg dark:border-gray-800 dark:bg-gray-900 sm:flex">
+                  <span className="text-emerald-600 dark:text-emerald-400"><i className="fas fa-users" aria-hidden /></span>
+                  <span className="text-sm font-semibold">{fmt(stats?.learners)} learners</span>
                 </div>
               </div>
             </div>
