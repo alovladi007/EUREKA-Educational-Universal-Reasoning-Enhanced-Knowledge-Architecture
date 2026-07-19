@@ -183,9 +183,10 @@ class UserResponse(BaseModel):
     timezone: str
     is_active: bool
     is_email_verified: bool
+    is_banned: bool = False
     created_at: datetime
     last_login_at: Optional[datetime]
-    
+
     class Config:
         from_attributes = True
 

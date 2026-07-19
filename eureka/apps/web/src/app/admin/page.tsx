@@ -15,19 +15,29 @@ export default function AdminIndex() {
       <div className="grid md:grid-cols-2 gap-4">
         {[
           {
+            href: "/admin/users",
+            title: "Members",
+            body: "Search your organization's people, assign roles, ban or reactivate accounts.",
+          },
+          {
             href: "/admin/cohorts",
-            title: "Cohorts (Phase 9)",
+            title: "Cohorts",
             body: "Cohort lifecycle, members, blueprints, at-risk early-warning.",
           },
           {
+            href: "/admin/settings",
+            title: "Organization settings",
+            body: "Profile, contact details, and compliance posture (FERPA / COPPA / HIPAA).",
+          },
+          {
             href: "/admin/jobs",
-            title: "Background jobs (Phase 14)",
+            title: "Background jobs",
             body: "Queue depth, recent runs, run-once trigger.",
           },
           {
             href: "/admin/audit",
-            title: "Audit log (Phase 13.5)",
-            body: "Security-relevant events with actor + subject + IP.",
+            title: "Audit log",
+            body: "Org-scoped security events with actor + subject + IP, filterable + CSV export.",
           },
         ].map((p) => (
           <Link key={p.href} href={p.href}>

@@ -7,10 +7,12 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 
 const TABS = [
   { href: "/admin", label: "Overview" },
+  { href: "/admin/users", label: "Members" },
   { href: "/admin/cohorts", label: "Cohorts" },
   { href: "/admin/workforce", label: "Workforce" },
   { href: "/admin/jobs", label: "Background jobs" },
   { href: "/admin/audit", label: "Audit log" },
+  { href: "/admin/settings", label: "Settings" },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {

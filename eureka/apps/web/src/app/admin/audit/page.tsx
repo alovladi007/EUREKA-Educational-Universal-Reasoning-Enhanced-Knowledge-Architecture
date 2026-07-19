@@ -1,14 +1,23 @@
 "use client";
 
 /**
- * Phase 13.5 — Audit log.
+ * Audit log — org-scoped security event feed with filters + CSV export.
+ * The backend now scopes events to the caller's org (super_admin sees all).
  */
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
-import { api, formatDate } from "@/lib/eureka-api";
+import {
+  api,
+  formatDate,
+  getToken,
+  API_URL,
+  API_PREFIX,
+} from "@/lib/eureka-api";
 
 type AuditEvent = {
   id: number;
@@ -23,28 +32,71 @@ type AuditEvent = {
   occurred_at: string;
 };
 
+const SEVERITIES = ["info", "warn", "critical"];
+
 export default function AuditPage() {
   const [rows, setRows] = useState<AuditEvent[]>([]);
+  const [eventName, setEventName] = useState("");
+  const [severity, setSeverity] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const [downloading, setDownloading] = useState(false);
 
-  async function reload() {
+  const query = useCallback(() => {
+    const p = new URLSearchParams({ limit: "200" });
+    if (eventName.trim()) p.set("event_name", eventName.trim());
+    if (severity) p.set("severity", severity);
+    return p.toString();
+  }, [eventName, severity]);
+
+  const reload = useCallback(async () => {
+    setError(null);
     try {
-      setRows(await api<AuditEvent[]>("/admin/audit?limit=200"));
+      setRows(await api<AuditEvent[]>(`/admin/audit?${query()}`));
     } catch (e) {
       setError(String((e as Error).message));
     }
-  }
+  }, [query]);
 
   useEffect(() => {
     reload();
-  }, []);
+  }, [reload]);
+
+  // CSV export goes straight to the endpoint (not through api(), which parses
+  // JSON) so we can stream the file to a blob download.
+  async function downloadCsv() {
+    setDownloading(true);
+    setError(null);
+    try {
+      const p = new URLSearchParams();
+      if (eventName.trim()) p.set("event_name", eventName.trim());
+      if (severity) p.set("severity", severity);
+      const res = await fetch(
+        `${API_URL}${API_PREFIX}/admin/audit/export?${p.toString()}`,
+        { headers: { Authorization: `Bearer ${getToken() || ""}` } },
+      );
+      if (!res.ok) throw new Error(`Export failed (HTTP ${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "audit-log.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(String((e as Error).message));
+    } finally {
+      setDownloading(false);
+    }
+  }
 
   return (
     <>
       <div>
         <h1 className="text-3xl font-bold mb-1">Audit log</h1>
         <p className="text-slate-600">
-          Most recent 200 security-relevant events.
+          Security-relevant events for your organization.
         </p>
       </div>
 
@@ -56,12 +108,53 @@ export default function AuditPage() {
       )}
 
       <Card>
+        <CardContent className="flex flex-wrap items-center gap-3 pt-6">
+          <Input
+            value={eventName}
+            onChange={(e) => setEventName(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && reload()}
+            placeholder="Filter by event name (e.g. admin.user.role_change)"
+            className="max-w-sm"
+          />
+          <select
+            value={severity}
+            onChange={(e) => setSeverity(e.target.value)}
+            className="h-9 rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="">All severities</option>
+            {SEVERITIES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+          <Button variant="outline" size="sm" onClick={reload}>
+            Apply
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto"
+            onClick={downloadCsv}
+            disabled={downloading}
+          >
+            {downloading ? "Exporting…" : "Download CSV"}
+          </Button>
+        </CardContent>
+      </Card>
+
+      <Card>
         <CardHeader>
-          <CardTitle className="text-lg">Events</CardTitle>
+          <CardTitle className="text-lg">
+            Events{" "}
+            <span className="text-sm font-normal text-slate-500">
+              ({rows.length})
+            </span>
+          </CardTitle>
         </CardHeader>
         <CardContent>
           {rows.length === 0 && (
-            <p className="text-slate-500 text-sm">No events yet.</p>
+            <p className="text-slate-500 text-sm">No events match.</p>
           )}
           <ul className="divide-y">
             {rows.map((e) => (

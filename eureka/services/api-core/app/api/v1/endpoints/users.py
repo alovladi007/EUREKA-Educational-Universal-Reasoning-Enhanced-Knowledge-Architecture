@@ -6,6 +6,7 @@ Handles user management operations.
 
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
+from pydantic import BaseModel
 from typing import Optional
 from uuid import UUID
 
@@ -227,15 +228,98 @@ async def unban_user(
     Requires: Admin role
     """
     user = await user_crud.get_user_by_id(db, user_id)
-    
+
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found"
         )
-    
+
     # Verify org access
     await verify_org_access(user.org_id, current_user)
-    
+
     unbanned_user = await user_crud.unban_user(db, user)
     return UserResponse.model_validate(unbanned_user)
+
+
+class UserRoleUpdate(BaseModel):
+    """Request body for changing a member's role."""
+    role: str
+
+
+@router.patch("/{user_id}/role", response_model=UserResponse)
+async def set_user_role(
+    user_id: UUID,
+    payload: UserRoleUpdate,
+    current_user: User = Depends(require_admin),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Change a member's role within the organization.
+
+    Requires: Admin role (org_admin / super_admin). Org admins may only manage
+    members of their own organization. Guardrails:
+      * You cannot change your own role (prevents self-lockout).
+      * Only a super_admin may grant the super_admin role or modify a user who
+        is already a super_admin.
+    """
+    try:
+        new_role = UserRole(payload.role)
+    except ValueError:
+        allowed = ", ".join(r.value for r in UserRole)
+        raise HTTPException(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            detail=f"Invalid role '{payload.role}'. Allowed: {allowed}",
+        )
+
+    user = await user_crud.get_user_by_id(db, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    # Org isolation: org admins can only touch their own org's members.
+    await verify_org_access(user.org_id, current_user)
+
+    if user.id == current_user.id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="You cannot change your own role.",
+        )
+
+    is_super = current_user.role == UserRole.SUPER_ADMIN.value
+    if new_role == UserRole.SUPER_ADMIN and not is_super:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only a super admin can grant the super_admin role.",
+        )
+    if user.role == UserRole.SUPER_ADMIN.value and not is_super:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Only a super admin can change a super admin's role.",
+        )
+
+    old_role = user.role
+    if old_role == new_role.value:
+        return UserResponse.model_validate(user)
+
+    user.role = new_role.value
+    await db.commit()
+    await db.refresh(user)
+
+    # Audit — role changes are security-relevant.
+    try:
+        from app.services import integrations as ig_svc
+
+        await ig_svc.log_audit(
+            db,
+            event_name="admin.user.role_change",
+            severity="warn",
+            actor_user_id=current_user.id,
+            subject_user_id=user.id,
+            org_id=current_user.org_id,
+            metadata={"from": old_role, "to": new_role.value},
+        )
+    except Exception:
+        # Auditing must never break the operation it records.
+        pass
+
+    return UserResponse.model_validate(user)

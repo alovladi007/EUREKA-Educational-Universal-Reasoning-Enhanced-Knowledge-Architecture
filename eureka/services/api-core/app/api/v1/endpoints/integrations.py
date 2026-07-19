@@ -41,11 +41,13 @@ Endpoint map
 
 from __future__ import annotations
 
+import csv
+import io
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, Query, Request
+from fastapi import APIRouter, Depends, HTTPException, Query, Request, Response
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -66,6 +68,7 @@ from app.models.integrations import (
     WebhookEndpoint,
 )
 from app.models.user import User
+from app.core.models import UserRole
 from app.schemas.integrations import (
     ApiKeyCreateRequest,
     ApiKeyMintedResponse,
@@ -584,6 +587,23 @@ async def cancel_my_deletion(
     return d
 
 
+def _audit_query(current_user: User, event_name, severity, limit):
+    """Build the audit SELECT with tenant isolation + filters.
+
+    Tenant isolation: an org_admin only ever sees their OWN org's events;
+    only a super_admin sees events across all organizations. (Previously this
+    query had no org filter, leaking every org's audit trail to any admin.)
+    """
+    stmt = select(AuditEvent).order_by(AuditEvent.occurred_at.desc()).limit(limit)
+    if current_user.role != UserRole.SUPER_ADMIN.value:
+        stmt = stmt.where(AuditEvent.org_id == current_user.org_id)
+    if event_name:
+        stmt = stmt.where(AuditEvent.event_name == event_name)
+    if severity:
+        stmt = stmt.where(AuditEvent.severity == severity)
+    return stmt
+
+
 @router.get("/admin/audit", response_model=list[AuditEventResponse])
 async def admin_recent_audit(
     event_name: Optional[str] = Query(None),
@@ -593,10 +613,52 @@ async def admin_recent_audit(
     current_user: User = Depends(get_current_user),
 ):
     _require_admin(current_user)
-    stmt = select(AuditEvent).order_by(AuditEvent.occurred_at.desc()).limit(limit)
-    if event_name:
-        stmt = stmt.where(AuditEvent.event_name == event_name)
-    if severity:
-        stmt = stmt.where(AuditEvent.severity == severity)
-    q = await db.execute(stmt)
+    q = await db.execute(_audit_query(current_user, event_name, severity, limit))
     return list(q.scalars().all())
+
+
+@router.get("/admin/audit/export")
+async def admin_export_audit(
+    event_name: Optional[str] = Query(None),
+    severity: Optional[str] = Query(None),
+    limit: int = Query(5000, ge=1, le=50000),
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Download the (org-scoped, filtered) audit trail as CSV."""
+    _require_admin(current_user)
+    q = await db.execute(_audit_query(current_user, event_name, severity, limit))
+    rows = list(q.scalars().all())
+
+    buf = io.StringIO()
+    writer = csv.writer(buf)
+    writer.writerow(
+        [
+            "occurred_at",
+            "event_name",
+            "severity",
+            "actor_user_id",
+            "subject_user_id",
+            "org_id",
+            "request_ip",
+            "user_agent",
+        ]
+    )
+    for e in rows:
+        writer.writerow(
+            [
+                e.occurred_at.isoformat() if e.occurred_at else "",
+                e.event_name,
+                e.severity,
+                str(e.actor_user_id or ""),
+                str(e.subject_user_id or ""),
+                str(e.org_id or ""),
+                e.request_ip or "",
+                e.user_agent or "",
+            ]
+        )
+    return Response(
+        content=buf.getvalue(),
+        media_type="text/csv",
+        headers={"Content-Disposition": "attachment; filename=audit-log.csv"},
+    )

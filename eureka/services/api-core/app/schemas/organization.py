@@ -77,7 +77,12 @@ class OrganizationUpdate(BaseModel):
     settings: Optional[Dict[str, Any]] = None
     tier_config: Optional[Dict[str, Any]] = None
     is_active: Optional[bool] = None
-    
+    # Compliance posture — editable by org/super admins from the Admin settings
+    # page. Columns already exist on the model; the CRUD applies them generically.
+    ferpa_compliant: Optional[bool] = None
+    coppa_compliant: Optional[bool] = None
+    hipaa_compliant: Optional[bool] = None
+
     class Config:
         extra = 'ignore'
 
