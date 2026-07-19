@@ -6,9 +6,38 @@ import './globals.css';
 // Avoid next/font/google (downloads at build/request time) — breaks offline/Docker/firewalls
 // and can contribute to flaky responses. Tailwind `font-sans` uses the system stack.
 
+const SITE_DESCRIPTION =
+  'Master any subject with adaptive courses, graded practice, and a personal AI tutor — from high school to professional degrees. Free to start; enterprise-ready for institutions.';
+
 export const metadata: Metadata = {
-  title: 'EUREKA - Educational Platform',
-  description: 'Universal Reasoning & Enhanced Knowledge Architecture for all educational tiers',
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://eureka.example.com'),
+  title: {
+    default: 'EUREKA — Learn without limits',
+    template: '%s · EUREKA',
+  },
+  description: SITE_DESCRIPTION,
+  keywords: [
+    'online learning',
+    'adaptive learning',
+    'AI tutor',
+    'test prep',
+    'mathematics',
+    'certificates',
+    'LMS',
+    'education platform',
+  ],
+  applicationName: 'EUREKA',
+  openGraph: {
+    type: 'website',
+    siteName: 'EUREKA',
+    title: 'EUREKA — Learn without limits',
+    description: SITE_DESCRIPTION,
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EUREKA — Learn without limits',
+    description: SITE_DESCRIPTION,
+  },
 };
 
 export default function RootLayout({

@@ -12,11 +12,12 @@ from app.core.database import get_db
 from app.models import User, Course, Organization
 from app.utils.dependencies import require_admin
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public
 
 api_router = APIRouter()
 
 # Include routers
+api_router.include_router(public.router, tags=["public"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(reasoning.router, tags=["reasoning"])
 api_router.include_router(mfa.router, prefix="/auth/mfa", tags=["mfa"])
