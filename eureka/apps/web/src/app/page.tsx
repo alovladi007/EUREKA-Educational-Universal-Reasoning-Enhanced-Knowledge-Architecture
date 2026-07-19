@@ -276,42 +276,25 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Product preview — a clean illustrative mockup */}
-            <div className="relative lg:justify-self-end" aria-hidden>
-              <div className="w-full max-w-md rounded-2xl border border-gray-200 bg-white p-5 shadow-xl dark:border-gray-800 dark:bg-gray-900">
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-700 dark:bg-primary-950 dark:text-primary-300">
-                    <i className="fas fa-square-root-variable" /> Mathematics
-                  </span>
-                  <span className="text-xs font-medium text-gray-400">In progress</span>
-                </div>
-                <h3 className="mt-4 text-lg font-bold">Calculus I: Limits &amp; Derivatives</h3>
-                <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Lesson 7 of 12 · The Chain Rule</p>
-                <div className="mt-4">
-                  <div className="mb-1 flex justify-between text-xs font-medium text-gray-500 dark:text-gray-400">
-                    <span>Progress</span><span>68%</span>
-                  </div>
-                  <div className="h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
-                    <div className="h-full rounded-full bg-primary-600" style={{ width: '68%' }} />
-                  </div>
-                </div>
-                <div className="mt-5 grid grid-cols-3 gap-3 text-center">
-                  {[['24', 'Skills'], ['1,240', 'XP'], ['9', 'Day streak']].map(([v, l]) => (
-                    <div key={l} className="rounded-lg bg-gray-50 py-3 dark:bg-gray-800">
-                      <div className="text-base font-bold">{v}</div>
-                      <div className="text-[11px] text-gray-500 dark:text-gray-400">{l}</div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+            {/* Hero image — a real learner */}
+            <div className="relative lg:justify-self-end">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/images/hero-learner.jpg"
+                alt="A EUREKA learner at their workstation"
+                width={969}
+                height={784}
+                loading="eager"
+                className="w-full max-w-md rounded-2xl border border-gray-200 object-cover shadow-xl dark:border-gray-800"
+              />
               <div className="absolute -bottom-5 -left-5 hidden rounded-xl border border-gray-200 bg-white px-4 py-3 shadow-lg dark:border-gray-800 dark:bg-gray-900 sm:block">
                 <div className="flex items-center gap-3">
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 dark:bg-emerald-950 dark:text-emerald-400">
-                    <i className="fas fa-certificate" />
+                    <i className="fas fa-users" aria-hidden />
                   </span>
                   <div>
-                    <div className="text-sm font-semibold">Certificate earned</div>
-                    <div className="text-xs text-gray-500 dark:text-gray-400">Algebra II · Verified</div>
+                    <div className="text-sm font-semibold">{fmt(stats?.learners)} learners</div>
+                    <div className="text-xs text-gray-500 dark:text-gray-400">building real skills</div>
                   </div>
                 </div>
               </div>
