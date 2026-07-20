@@ -7,7 +7,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
-  PlayCircle, BookOpen, FileText, BarChart3, Clock, CheckCircle2,
+  PlayCircle, BookOpen, BarChart3, Clock, CheckCircle2,
   Plus, Search, Filter, ChevronRight, Star, Pin, Trash2, Edit3,
   Flag, ArrowRight, ArrowLeft, Timer, Pause, Play, X, Lightbulb,
   BookMarked, Video, StickyNote, BrainCircuit, Trophy, AlertCircle,
@@ -59,6 +59,9 @@ import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCoh
 import { LsatFrequencyHeatmap } from '@/components/test-prep/LsatFrequencyHeatmap';
 import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatmap';
 import { SecurityPlusPBQTab } from '@/components/test-prep/SecurityPlusPBQ';
+import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
+import { VideoLessonTabs } from '@/components/test-prep/VideoLessonTabs';
+import { LessonCurriculumRail } from '@/components/test-prep/LessonCurriculumRail';
 import { LSAT_QUESTION_TYPES } from '@/lib/lsat-frequency';
 import { recordExamAttempt, getExamAttempts, mergeExamHistory } from '@/lib/exam-attempts';
 
@@ -1267,46 +1270,32 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
         <Button variant="ghost" onClick={() => setActiveLesson(null)} className="gap-2">
           <ArrowLeft className="h-4 w-4" /> Back to lessons
         </Button>
-        <Card className="overflow-hidden">
-          <div className="aspect-video bg-black flex items-center justify-center">
-            {activeLesson.video_url ? (
-              <video
-                src={activeLesson.video_url}
-                controls
-                className="w-full h-full"
-                autoPlay
-              />
-            ) : (
-              <div className="text-white text-center">
-                <PlayCircle className="h-16 w-16 mx-auto mb-3 opacity-50" />
-                <p className="text-lg font-medium">{activeLesson.title}</p>
-                <p className="text-sm opacity-60">Video coming soon</p>
-              </div>
-            )}
-          </div>
-          <div className="p-6">
-            <h2 className="text-xl font-bold mb-2">{activeLesson.title}</h2>
-            <p className="text-muted-foreground mb-4">{activeLesson.description}</p>
-            {activeLesson.official_notes && (
-              <div>
-                <h3 className="font-semibold mb-2 flex items-center gap-2"><FileText className="h-4 w-4" /> Lesson Notes</h3>
-                <div className="prose prose-sm dark:prose-invert max-w-none bg-muted/50 rounded-lg p-4 whitespace-pre-wrap">
-                  {activeLesson.official_notes}
+        <div className="flex gap-4">
+          <LessonCurriculumRail
+            lessons={lessons}
+            activeId={activeLesson.id}
+            onSelect={setActiveLesson}
+            progress={progress}
+          />
+          <div className="min-w-0 flex-1">
+            <Card className="overflow-hidden">
+              <LessonVideoPlayer videoUrl={activeLesson.video_url} title={activeLesson.title} />
+              <div className="p-6 space-y-5">
+                <div>
+                  <h2 className="text-xl font-bold">{activeLesson.title}</h2>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {[
+                      activeLesson.section,
+                      activeLesson.duration_seconds ? `${Math.round(activeLesson.duration_seconds / 60)} min` : null,
+                      activeLesson.domain ? `Domain ${activeLesson.domain}` : null,
+                    ].filter(Boolean).join(' · ')}
+                  </p>
                 </div>
+                <VideoLessonTabs lesson={activeLesson} />
               </div>
-            )}
-            {activeLesson.key_concepts?.length > 0 && (
-              <div className="mt-4">
-                <h3 className="font-semibold mb-2">Key Concepts</h3>
-                <div className="flex flex-wrap gap-2">
-                  {activeLesson.key_concepts.map((c: string, i: number) => (
-                    <Badge key={i} variant="secondary">{c}</Badge>
-                  ))}
-                </div>
-              </div>
-            )}
+            </Card>
           </div>
-        </Card>
+        </div>
       </div>
     );
   }
