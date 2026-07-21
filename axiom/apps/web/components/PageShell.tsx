@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { EUREKA_LOGIN_URL, fetchUnreadCount, getToken } from '@/lib/api';
+import { EurekaMark } from '@/components/eureka-mark';
 
 // Shared chrome for the Phase 1 pages. It renders the AXIOM wordmark, a link
 // back to the dashboard, and a slot for the page content. It does not fetch
@@ -10,13 +11,14 @@ import { EUREKA_LOGIN_URL, fetchUnreadCount, getToken } from '@/lib/api';
 
 export function Wordmark() {
   return (
-    <div className="flex flex-col">
-      <span className="text-2xl font-bold tracking-tight text-foreground">
-        AXIOM
-      </span>
-      <span className="text-xs text-muted-foreground">
-        Adaptive eXpert Instruction and Outcome Measurement
-      </span>
+    <div className="flex items-center gap-2">
+      <EurekaMark className="h-8 w-8 shrink-0" />
+      <div className="flex flex-col leading-none">
+        <span className="text-2xl font-bold tracking-tight text-foreground">AXIOM</span>
+        <span className="mt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+          Learn. Discover. Master.
+        </span>
+      </div>
     </div>
   );
 }

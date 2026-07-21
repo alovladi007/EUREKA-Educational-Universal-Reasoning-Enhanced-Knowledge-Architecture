@@ -103,8 +103,13 @@ export function Sidebar() {
           aria-label="EUREKA home"
           className="flex items-center gap-2 rounded-md transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <EurekaMark className="h-8 w-8" />
-          <span className="text-xl font-bold">EUREKA</span>
+          <EurekaMark className="h-8 w-8 shrink-0" />
+          <span className="flex flex-col leading-none">
+            <span className="text-xl font-bold">EUREKA</span>
+            <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+              Learn. Discover. Master.
+            </span>
+          </span>
         </Link>
       </div>
       <div className="flex-1 overflow-y-scroll min-h-0">

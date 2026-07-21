@@ -24,6 +24,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { EurekaMark } from "@/components/eureka-logo";
 
 const SECTIONS = [
   { href: "/institutions", label: "Overview", icon: LayoutDashboard },
@@ -49,10 +50,10 @@ export default function InstitutionsLayout({ children }: { children: React.React
     <div className="flex h-screen overflow-hidden bg-slate-50">
       <aside className="flex h-screen w-64 shrink-0 flex-col border-r bg-white">
         <div className="flex h-16 shrink-0 items-center gap-2 border-b px-6">
-          <Building2 className="h-7 w-7 text-amber-600" />
+          <EurekaMark className="h-7 w-7 shrink-0" />
           <div>
             <div className="text-base font-bold leading-tight">Institutions</div>
-            <div className="text-[10px] uppercase text-slate-500">L&amp;D admin console</div>
+            <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-500">Learn. Discover. Master.</div>
           </div>
         </div>
         <div className="flex-1 overflow-y-auto p-3">
