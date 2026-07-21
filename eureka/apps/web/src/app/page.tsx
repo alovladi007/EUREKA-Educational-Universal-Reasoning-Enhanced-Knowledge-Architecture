@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { EurekaMark } from '@/components/eureka-logo';
 
 // Marketing homepage. Real data (public API), a browsable /explore catalogue so
 // visitors can look before signing in, honest social proof, pricing, FAQ, SEO
@@ -230,7 +231,7 @@ export default function HomePage() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-8">
             <Link href="/" className="flex items-center gap-2" aria-label="EUREKA home">
-              <i className="fas fa-graduation-cap text-2xl text-primary-600" aria-hidden />
+              <EurekaMark className="h-7 w-7" />
               <span className="text-xl font-bold tracking-tight">EUREKA</span>
             </Link>
             <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary">
@@ -701,7 +702,7 @@ export default function HomePage() {
           <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
             <div className="col-span-2">
               <Link href="/" className="flex items-center gap-2" aria-label="EUREKA home">
-                <i className="fas fa-graduation-cap text-2xl text-primary-600" aria-hidden />
+                <EurekaMark className="h-7 w-7" />
                 <span className="text-xl font-bold">EUREKA</span>
               </Link>
               <p className="mt-4 max-w-sm text-sm leading-relaxed text-gray-500 dark:text-gray-400">
