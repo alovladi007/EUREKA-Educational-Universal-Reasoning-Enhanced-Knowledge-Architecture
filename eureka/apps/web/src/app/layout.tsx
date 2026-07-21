@@ -12,7 +12,7 @@ const SITE_DESCRIPTION =
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://eureka.example.com'),
   title: {
-    default: 'EUREKA — Learn without limits',
+    default: 'EUREKA — Learn. Discover. Master.',
     template: '%s · EUREKA',
   },
   description: SITE_DESCRIPTION,
@@ -30,12 +30,12 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     siteName: 'EUREKA',
-    title: 'EUREKA — Learn without limits',
+    title: 'EUREKA — Learn. Discover. Master.',
     description: SITE_DESCRIPTION,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EUREKA — Learn without limits',
+    title: 'EUREKA — Learn. Discover. Master.',
     description: SITE_DESCRIPTION,
   },
 };

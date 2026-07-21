@@ -312,7 +312,7 @@ export default function HomePage() {
                 From high school to a professional career
               </p>
               <h1 className="mt-4 text-4xl font-extrabold leading-tight tracking-tight sm:text-5xl">
-                Learn without limits.
+                Learn. Discover. Master.
               </h1>
               <p className="mt-5 max-w-xl text-lg leading-relaxed text-gray-600 dark:text-gray-400">
                 Master any subject with adaptive courses, graded practice, and a personal AI tutor —
