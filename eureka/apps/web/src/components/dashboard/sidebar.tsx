@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn, getUserDisplayName, getUserInitials } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { EurekaMark } from "@/components/eureka-logo";
 import { useAuthStore } from "@/stores/auth";
 import {
   LayoutDashboard,
@@ -102,7 +103,7 @@ export function Sidebar() {
           aria-label="EUREKA home"
           className="flex items-center gap-2 rounded-md transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
         >
-          <GraduationCap className="h-8 w-8 text-primary" />
+          <EurekaMark className="h-8 w-8" />
           <span className="text-xl font-bold">EUREKA</span>
         </Link>
       </div>
