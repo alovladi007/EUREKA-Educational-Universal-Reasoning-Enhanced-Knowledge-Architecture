@@ -99,7 +99,7 @@ function TestPrepDashboardInner() {
 
   const fetchUserAccess = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('access_token');
       const response = await fetch('http://localhost:3010/api/my-access', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -117,7 +117,7 @@ function TestPrepDashboardInner() {
 
   const fetchPackages = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('access_token');
       const response = await fetch('http://localhost:3010/api/packages', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -135,7 +135,7 @@ function TestPrepDashboardInner() {
 
   const fetchProgress = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('access_token');
       const response = await fetch('http://localhost:3010/api/progress', {
         headers: {
           'Authorization': `Bearer ${token}`,

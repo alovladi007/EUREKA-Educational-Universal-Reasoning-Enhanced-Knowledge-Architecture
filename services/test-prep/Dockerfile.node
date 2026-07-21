@@ -1,0 +1,20 @@
+# Node/Express "video portal" API for Test Prep (subscriptions, packages,
+# content access, study progress). Separate from the Python FastAPI service in
+# this folder (which is served by the default Dockerfile on :8200). This app
+# listens on :3010 and backs the /dashboard/test-prep/videos pages.
+FROM node:18-slim
+
+WORKDIR /app
+
+# Install dependencies first for better layer caching.
+COPY package.json ./
+RUN npm install
+
+# App source.
+COPY tsconfig.json ./
+COPY src ./src
+
+EXPOSE 3010
+
+# Transpile-only so runtime never blocks on type errors.
+CMD ["npx", "ts-node-dev", "--respawn", "--transpile-only", "src/app.ts"]

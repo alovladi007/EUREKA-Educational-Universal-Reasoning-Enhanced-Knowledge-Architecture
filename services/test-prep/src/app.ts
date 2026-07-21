@@ -9,6 +9,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import { Pool } from 'pg';
 import Stripe from 'stripe';
+import jwt from 'jsonwebtoken';
 
 const app: Application = express();
 const PORT = process.env.PORT || 3010;
@@ -33,7 +34,8 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 // Middleware
 app.use(helmet());
 app.use(cors({
-  origin: process.env.CORS_ORIGIN || 'http://localhost:3006',
+  // Comma-separated list of allowed origins (the Next.js app runs on :4040).
+  origin: (process.env.CORS_ORIGIN || 'http://localhost:4040').split(',').map((o) => o.trim()),
   credentials: true,
 }));
 app.use(morgan('combined'));
@@ -63,16 +65,16 @@ const authMiddleware = async (req: AuthRequest, res: Response, next: NextFunctio
 
     const token = authHeader.substring(7);
 
-    // TODO: Implement JWT verification
-    // For now, decode the user info from a simple token
-    // In production, use proper JWT verification
-
-    // Mock user for development
+    // Verify the EUREKA / api-core JWT (HS256, shared JWT_SECRET). The token's
+    // `sub` claim is the user's UUID (matches users.id in the eureka database).
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'dev_secret') as {
+      sub?: string; id?: string; email?: string; org_id?: string; role?: string;
+    };
     req.user = {
-      id: 'test-user-id',
-      email: 'user@example.com',
-      org_id: 'test-org-id',
-      role: 'student',
+      id: decoded.sub || decoded.id || '',
+      email: decoded.email || '',
+      org_id: decoded.org_id || '',
+      role: decoded.role || 'student',
     };
 
     next();

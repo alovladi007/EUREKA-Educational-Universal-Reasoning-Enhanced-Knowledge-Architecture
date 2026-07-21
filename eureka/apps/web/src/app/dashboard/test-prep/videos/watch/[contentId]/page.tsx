@@ -52,7 +52,7 @@ export default function VideoPlayerPage() {
 
   const fetchContent = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`http://localhost:3010/api/packages/${contentId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -72,7 +72,7 @@ export default function VideoPlayerPage() {
 
   const fetchNotes = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`http://localhost:3010/api/videos/${contentId}/notes`, {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -133,7 +133,7 @@ export default function VideoPlayerPage() {
     if (!currentNote.trim()) return;
 
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`http://localhost:3010/api/videos/${contentId}/notes`, {
         method: 'POST',
         headers: {
@@ -159,7 +159,7 @@ export default function VideoPlayerPage() {
 
   const handleDeleteNote = async (noteId: string) => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('access_token');
       const response = await fetch(`http://localhost:3010/api/notes/${noteId}`, {
         method: 'DELETE',
         headers: {

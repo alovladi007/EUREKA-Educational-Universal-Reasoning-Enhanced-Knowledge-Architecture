@@ -912,6 +912,45 @@ services:
       retries: 5
 
   # ─────────────────────────────────────────────────────────────────────
+  # Test-prep VIDEO PORTAL (Node/Express) — subscriptions, content packages,
+  # and study progress on :3010. Backs /dashboard/test-prep/videos*. Separate
+  # process from the Python test-prep API above (which is on :8200). Uses the
+  # main `eureka` db + the test_prep_* subscription tables
+  # (database/migrations/add-test-prep-subscriptions.sql).
+  # ─────────────────────────────────────────────────────────────────────
+  test-prep-videos:
+    restart: unless-stopped
+    build:
+      context: ../services/test-prep
+      dockerfile: Dockerfile.node
+    container_name: eureka-test-prep-videos
+    environment:
+      PORT: "3010"
+      NODE_ENV: development
+      DB_HOST: db
+      DB_PORT: "5432"
+      DB_NAME: eureka
+      DB_USER: eureka
+      DB_PASSWORD: eureka_dev_password
+      # Shared secret so api-core-issued JWTs (sub = user UUID) verify here.
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      # Allowed browser origins for the Next.js app.
+      CORS_ORIGIN: http://localhost:4040,http://localhost:3000,http://127.0.0.1:4040
+      # Stripe is optional; empty key is fine for browse/read endpoints.
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+    ports:
+      - "3010:3010"
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3010/health',r=>process.exit(r.statusCode===200?0:1)).on('error',()=>process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      start_period: 30s
+      retries: 5
+
+  # ─────────────────────────────────────────────────────────────────────
   # Celery worker for test-prep background tasks
   # ─────────────────────────────────────────────────────────────────────
   # The test-prep service configures Celery (see app/core/celery_app.py:
