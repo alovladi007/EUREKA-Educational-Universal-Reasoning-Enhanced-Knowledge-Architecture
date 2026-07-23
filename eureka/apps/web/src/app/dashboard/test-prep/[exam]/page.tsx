@@ -2168,6 +2168,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   const [questionCount, setQuestionCount] = useState(20);
   const [patentAiaEra, setPatentAiaEra] = useState<string>('');
   const [patentContentTypes, setPatentContentTypes] = useState<string[]>([]);
+  // Drill only the official USPTO released-exam questions (ids `uspto-*`).
+  const [patentOfficialOnly, setPatentOfficialOnly] = useState(false);
 
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
@@ -2175,7 +2177,11 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     // PATENT_BAR = 536 authored + 135 official USPTO (Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM)
     PATENT_BAR: 671, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
-  const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
+  const OFFICIAL_USPTO_COUNT = 135; // Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM
+  const qbankMax =
+    examType === 'PATENT_BAR' && patentOfficialOnly
+      ? OFFICIAL_USPTO_COUNT
+      : QBANK_SIZES[examType] || config.totalQuestions || 200;
 
   useEffect(() => {
     apiClient.getQBankStats(examType).then(setStats).catch(() => {});
@@ -2196,7 +2202,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         mode: string;
         section_ids?: string[];
         question_count: number;
-        patent_filters?: { aia_era?: string; content_types?: string[] };
+        patent_filters?: { aia_era?: string; content_types?: string[]; official_only?: boolean };
       } = {
         exam_type: examType,
         mode,
@@ -2204,9 +2210,10 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         question_count: questionCount,
       };
       if (examType === 'PATENT_BAR') {
-        const pf: { aia_era?: string; content_types?: string[] } = {};
+        const pf: { aia_era?: string; content_types?: string[]; official_only?: boolean } = {};
         if (patentAiaEra) pf.aia_era = patentAiaEra;
         if (patentContentTypes.length > 0) pf.content_types = patentContentTypes;
+        if (patentOfficialOnly) pf.official_only = true;
         if (Object.keys(pf).length > 0) payload.patent_filters = pf;
       }
       const data = await apiClient.createQBankSession(payload);
@@ -2421,6 +2428,9 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         const { USPTO_OCT2003_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2003-pm-data');
         const { USPTO_APR2003_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-apr2003-data');
         let pbQuestions = [...PATENT_BAR_QUESTIONS, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS];
+        if (patentOfficialOnly) {
+          pbQuestions = pbQuestions.filter((q) => q.id.startsWith('uspto-'));
+        }
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
             patentability: 0, application_prep: 1, filing_prosecution: 2, office_responses: 3,
@@ -2803,6 +2813,43 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
               <p className="text-xs text-muted-foreground">
                 Requires tagged questions in the bank. Leave blank to include all available items.
               </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setPatentOfficialOnly((prev) => {
+                    const next = !prev;
+                    // Clamp the session size to the smaller official pool.
+                    if (next && questionCount > OFFICIAL_USPTO_COUNT) {
+                      setQuestionCount(OFFICIAL_USPTO_COUNT);
+                    }
+                    return next;
+                  });
+                }}
+                className={`flex w-full items-center justify-between rounded-md border px-3 py-2 text-left text-sm transition-colors ${
+                  patentOfficialOnly
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'bg-background hover:bg-muted'
+                }`}
+              >
+                <span>
+                  <span className="font-medium">Official USPTO questions only</span>
+                  <span className="block text-xs text-muted-foreground">
+                    {OFFICIAL_USPTO_COUNT} real released-exam questions (Oct 2003 AM/PM + Apr 2003 AM) with the
+                    USPTO&apos;s own model-answer explanations
+                  </span>
+                </span>
+                <span
+                  className={`ml-3 inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+                    patentOfficialOnly ? 'bg-primary' : 'bg-muted-foreground/30'
+                  }`}
+                >
+                  <span
+                    className={`h-4 w-4 rounded-full bg-white shadow transition-transform ${
+                      patentOfficialOnly ? 'translate-x-4' : 'translate-x-0.5'
+                    }`}
+                  />
+                </span>
+              </button>
               <div>
                 <label className="block text-xs font-medium mb-1">AIA era</label>
                 <select
