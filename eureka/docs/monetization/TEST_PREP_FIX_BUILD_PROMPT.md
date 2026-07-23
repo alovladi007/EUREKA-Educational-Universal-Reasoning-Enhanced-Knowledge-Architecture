@@ -11,6 +11,22 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 10 (2026-07-23): WS3 ethics gap-fill tranche SHIPPED — ethics floor cleared.**
+> New bank `src/lib/patent-bar-gapfill-ethics-data.ts`: 65 original questions (`pb_gf7_001`–`065`,
+> topicId 7) grounded in 37 CFR Part 11 (USPTO Rules of Professional Conduct 11.101–11.804, plus
+> 11.5–11.14 registration/limited recognition, 11.18 signature certifications, 11.19–11.24
+> discipline, 11.58 suspended-practitioner limits) and 37 CFR 1.56 duty of disclosure. Keys
+> balanced exactly 13 per letter (balance test extended to the new bank — 30/30 pass). ALL 65 are
+> `unverified` and flow into the SME review queue (now 601 = 536 authored + 65 gap-fill); none may
+> appear in a scored mock until SME-stamped. Wired everywhere: session pool (slider 775), coverage
+> card + regenerated matrix, review queue, coverage generator. **Coverage after tranche (bank 775):**
+> Ethics 117 = 15.1% vs 15% ✓ (floor CLEARED); Prosecution 37.8% ✓, Patentability 22.2% ✓;
+> remaining gaps (dilution deepened them as predicted): Design/Plant 4.1% vs 10%, PCT 7.5% vs 10%,
+> Post-Issuance 13.3% vs 15%. Live-verified: pb_gf7_041 served in an ethics-filtered session with
+> the amber Unverified badge and graded green on its key (B); queue lists pb_gf7 items; matrix,
+> card, and script all agree at 775. **Next tranches:** design/plant (~50), PCT (~25),
+> post-issuance (~15) — recompute the matrix after each; then WS4 mock.
+
 > **STATUS UPDATE 9 (2026-07-23): WS3 coverage matrix PUBLISHED.** New shared module
 > `src/lib/patent-bar-coverage.ts` (blueprint section ↔ topicId mapping + computePatentBarCoverage),
 > generator `scripts/generate-coverage-matrix.mjs` → `docs/monetization/PATENT_BAR_COVERAGE_MATRIX.md`

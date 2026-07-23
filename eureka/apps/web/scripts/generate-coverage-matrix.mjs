@@ -4,7 +4,7 @@
  *
  * Usage: node scripts/generate-coverage-matrix.mjs [--out <path>]
  *
- * Loads all five Patent Bar banks (authored + 4 official USPTO sessions),
+ * Loads all six Patent Bar banks (authored + WS3 gap-fill + 4 official USPTO sessions),
  * computes per-blueprint-section coverage via src/lib/patent-bar-coverage.ts
  * (the same module the in-app Coverage card uses), and writes the matrix to
  * docs/monetization/PATENT_BAR_COVERAGE_MATRIX.md. Re-run after any bank
@@ -34,6 +34,7 @@ function loadTs(file, extraModules = {}) {
 
 const lib = (f) => path.join('src', 'lib', f);
 const qbank = loadTs(lib('patent-bar-qbank-data.ts'));
+const gapEthics = loadTs(lib('patent-bar-gapfill-ethics-data.ts'), { './patent-bar-qbank-data': qbank });
 const octAm = loadTs(lib('patent-bar-uspto-oct2003-data.ts'), { './patent-bar-qbank-data': qbank });
 const octPm = loadTs(lib('patent-bar-uspto-oct2003-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const aprAm = loadTs(lib('patent-bar-uspto-apr2003-data.ts'), { './patent-bar-qbank-data': qbank });
@@ -42,6 +43,7 @@ const coverage = loadTs(lib('patent-bar-coverage.ts'), { './patent-bar-qbank-dat
 
 const all = [
   ...qbank.PATENT_BAR_QUESTIONS,
+  ...gapEthics.PATENT_BAR_GAPFILL_ETHICS,
   ...octAm.USPTO_OCT2003_AM_QUESTIONS,
   ...octPm.USPTO_OCT2003_PM_QUESTIONS,
   ...aprAm.USPTO_APR2003_AM_QUESTIONS,

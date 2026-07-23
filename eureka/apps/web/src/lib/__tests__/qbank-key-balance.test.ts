@@ -24,6 +24,7 @@ import { FE_EE_QUESTIONS } from '../fe-ee-qbank-data';
 import { SAT_QUESTIONS } from '../sat-qbank-data';
 import { SECPLUS_QUESTIONS } from '../security-plus-qbank-data';
 import { PATENT_BAR_QUESTIONS } from '../patent-bar-qbank-data';
+import { PATENT_BAR_GAPFILL_ETHICS } from '../patent-bar-gapfill-ethics-data';
 import { MCAT_QUESTIONS } from '../mcat-qbank-data';
 import { LSAT_QUESTIONS } from '../lsat-qbank-data';
 import { CISSP_QUESTIONS } from '../cissp-qbank-data';
@@ -44,6 +45,7 @@ const BANKS: [string, AnyQuestion[]][] = [
   ['SAT', SAT_QUESTIONS as AnyQuestion[]],
   ['SECURITY_PLUS', SECPLUS_QUESTIONS as AnyQuestion[]],
   ['PATENT_BAR', PATENT_BAR_QUESTIONS as AnyQuestion[]],
+  ['PATENT_BAR_GAPFILL_ETHICS', PATENT_BAR_GAPFILL_ETHICS as AnyQuestion[]],
   ['MCAT', MCAT_QUESTIONS as AnyQuestion[]],
   ['LSAT', LSAT_QUESTIONS as AnyQuestion[]],
   ['CISSP', cisspNormalized],
