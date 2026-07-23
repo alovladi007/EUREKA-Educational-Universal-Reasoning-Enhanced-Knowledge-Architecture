@@ -11,6 +11,27 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 11 (2026-07-23): WS3 design/plant gap-fill tranche SHIPPED — design floor cleared,
+> and the WS3 endgame is now exactly specified.** New bank
+> `src/lib/patent-bar-gapfill-design-data.ts`: 66 original questions (`pb_gf6_001`–`066`, topicId 6)
+> grounded in 35 U.S.C. 171–173 & 37 CFR 1.152–1.155 (designs: single claim, 15-yr-from-grant term,
+> 6-month priority, no provisionals/publication, CPA-not-RCE, rocket docket, broken lines,
+> ordinary-observer/ordinary-designer tests, Webb/Zahn/icons/functionality, § 289), 35 U.S.C. 161–164
+> & 37 CFR 1.161–1.167 (plants: asexual reproduction, tuber/uncultivated exclusions, § 162, Latin
+> name, Imazio, sports), 35 U.S.C. 382–390 (Hague), and PVPA/utility boundaries (J.E.M.). Keys
+> balanced A:14/B–E:13 (33/33 balance tests). All unverified → SME queue (now 667). **STRUCTURAL
+> FINDING:** because shares and weights both sum to 100%, ALL six floors can hold simultaneously
+> only at exact proportion — with prosecution fixed at 293, that is a bank of ~980
+> (294/196/147/147/98/98). Terminal additions from the 775 base: design +66 (DONE this tranche),
+> PCT +40, post-issuance +44, ethics +30, patentability +24, prosecution +1. Mid-program the matrix
+> will honestly show regressions (ethics dropped back to 13.9% this tranche, as predicted).
+> **Coverage at bank 841:** Design/Plant 98 = 11.7% vs 10% ✓ (was 4.1%); Prosecution 34.8% ✓,
+> Patentability 20.5% ✓; gaps: Ethics 13.9%, Post-Issuance 12.2%, PCT 6.9%. Live-verified:
+> section-filtered session served an official Oct 2003 design item (green badge) then pb_gf6_004
+> (amber Unverified) graded green on its key (B); queue lists all 66 pb_gf6 items; card/matrix/
+> script agree at 841. **Next tranches:** PCT +40, post-issuance +44, then the ethics/patentability/
+> prosecution top-up (+55) to land the exact-proportion bank of 980.
+
 > **STATUS UPDATE 10 (2026-07-23): WS3 ethics gap-fill tranche SHIPPED — ethics floor cleared.**
 > New bank `src/lib/patent-bar-gapfill-ethics-data.ts`: 65 original questions (`pb_gf7_001`–`065`,
 > topicId 7) grounded in 37 CFR Part 11 (USPTO Rules of Professional Conduct 11.101–11.804, plus

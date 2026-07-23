@@ -55,11 +55,12 @@ export default function PatentBarReviewQueuePage() {
 
   useEffect(() => {
     (async () => {
-      const [{ PATENT_BAR_QUESTIONS, getPatentBarVerification }, { PATENT_BAR_GAPFILL_ETHICS }] = await Promise.all([
+      const [{ PATENT_BAR_QUESTIONS, getPatentBarVerification }, { PATENT_BAR_GAPFILL_ETHICS }, { PATENT_BAR_GAPFILL_DESIGN }] = await Promise.all([
         import('@/lib/patent-bar-qbank-data'),
         import('@/lib/patent-bar-gapfill-ethics-data'),
+        import('@/lib/patent-bar-gapfill-design-data'),
       ]);
-      setQuestions([...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS].filter((q) => getPatentBarVerification(q) === 'unverified'));
+      setQuestions([...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN].filter((q) => getPatentBarVerification(q) === 'unverified'));
       setDecisions(loadDecisions());
       setLoading(false);
     })();
