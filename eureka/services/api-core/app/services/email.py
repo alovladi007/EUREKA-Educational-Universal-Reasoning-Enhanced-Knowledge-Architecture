@@ -102,8 +102,11 @@ class EmailService:
         Returns:
             True if sent successfully
         """
-        # In production, this would be your actual frontend URL
-        verification_url = f"http://localhost:3006/auth/verify-email?token={verification_token}"
+        verification_url = f"{settings.FRONTEND_URL}/auth/verify-email?token={verification_token}"
+        if not self.smtp_host or not self.smtp_username:
+            # SMTP unconfigured (dev): surface the link in the server log so
+            # the flow can still be completed end-to-end. Never claims a send.
+            logger.info("SMTP unconfigured — verification link for %s: %s", to_email, verification_url)
 
         subject = "Verify Your EUREKA Account"
 
@@ -187,7 +190,9 @@ class EmailService:
         Returns:
             True if sent successfully
         """
-        reset_url = f"http://localhost:3006/auth/reset-password?token={reset_token}"
+        reset_url = f"{settings.FRONTEND_URL}/auth/reset-password?token={reset_token}"
+        if not self.smtp_host or not self.smtp_username:
+            logger.info("SMTP unconfigured — password reset link for %s: %s", to_email, reset_url)
 
         subject = "Reset Your EUREKA Password"
 
@@ -322,7 +327,7 @@ class EmailService:
                     </div>
 
                     <p style="text-align: center;">
-                        <a href="http://localhost:3006/dashboard" class="button">Go to Dashboard</a>
+                        <a href="{settings.FRONTEND_URL}/dashboard" class="button">Go to Dashboard</a>
                     </p>
 
                     <p>If you have any questions, feel free to reach out to our support team.</p>
@@ -343,7 +348,7 @@ class EmailService:
 
         Your account has been successfully created.
 
-        Get started at: http://localhost:3006/dashboard
+        Get started at: {settings.FRONTEND_URL}/dashboard
 
         What's available:
         - AI Tutor for personalized help

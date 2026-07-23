@@ -164,6 +164,9 @@ services:
       # checkout/webhook endpoints return 503 (no mock checkout, ever).
       STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
       STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
+      # WS4 GTM: public web origin for links in outbound emails
+      # (verification, password reset). Set to the real domain in prod.
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4040}
       # OpenTelemetry — leave blank to disable. Jaeger lives behind
       # `--profile dev-obs`; container DNS resolves `jaeger` when both
       # are on the same compose network.

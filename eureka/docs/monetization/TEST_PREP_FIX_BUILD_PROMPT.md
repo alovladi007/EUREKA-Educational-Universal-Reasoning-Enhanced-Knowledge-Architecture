@@ -11,6 +11,28 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 18 (2026-07-23): GTM step 2 SHIPPED — email verification + password reset work
+> end-to-end.** Most of the backend already existed (verification/reset tokens, endpoints, SMTP
+> email service with honest skip-when-unconfigured); the gaps were: email links hardcoded a WRONG
+> origin (localhost:3006), the two token-consuming frontend pages didn't exist, and there was no
+> resend path for expired verification links. Fixed: (1) new `FRONTEND_URL` setting (default
+> :4040, env-overridable; plumbed in compose) now builds all email links — verification, reset, and
+> the welcome email's dashboard links; (2) when SMTP is unconfigured (dev), the email service logs
+> the action link at INFO so flows complete end-to-end WITHOUT claiming a send (prod sets SMTP_*
+> and sends real mail); (3) new pages `/auth/verify-email?token=` (posts to /auth/verify-email;
+> success → dashboard; failure → "Send me a new link") and `/auth/reset-password?token=` (new
+> password form → /auth/password-reset/confirm; both Suspense-wrapped); (4) new authenticated
+> POST /auth/resend-verification (24h-expiry links would otherwise strand accounts).
+> **Live-verified E2E with a throwaway user:** register → verification link captured from the dev
+> log (correct :4040 origin) → verify page showed "Email verified" → users.is_email_verified
+> flipped to true in the DB; forgot-password → reset link from log → reset page → old password
+> rejected (401), new password logs in; resend endpoint returns "already verified" for verified
+> users (the send branch shares the registration path, which was E2E-tested). Test user deleted.
+> **Production checklist for real email:** set SMTP_HOST/PORT/USERNAME/PASSWORD/FROM_* and
+> FRONTEND_URL (real domain) in the deployment env — no code changes needed. **Remaining GTM
+> tail:** refund policy + terms pages (business-policy decisions for the user), optional
+> verify-email nudge banner in the dashboard, then the Security+ vertical reuse.
+
 > **STATUS UPDATE 17 (2026-07-23): GTM step 1 SHIPPED — public Patent Bar landing page + free
 > diagnostic funnel.** ADDITIVE, not a homepage replacement. New public routes (no auth):
 > **`/patent-bar`** — conversion page with hero, real-numbers stats strip (980 QBank / 174 official

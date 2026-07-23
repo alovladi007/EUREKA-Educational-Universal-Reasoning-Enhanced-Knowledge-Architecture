@@ -101,6 +101,11 @@ class Settings(BaseSettings):
     AUTH0_CLIENT_SECRET: Optional[str] = Field(default=None, env="AUTH0_CLIENT_SECRET")
     AUTH0_AUDIENCE: Optional[str] = Field(default=None, env="AUTH0_AUDIENCE")
     
+    # Public frontend origin — used to build links in outbound emails
+    # (verification, password reset). The web app runs on :4040 in this
+    # stack; set to the real domain in production.
+    FRONTEND_URL: str = Field(default="http://localhost:4040", env="FRONTEND_URL")
+
     # SMTP
     SMTP_HOST: Optional[str] = Field(default=None, env="SMTP_HOST")
     SMTP_PORT: int = Field(default=587, env="SMTP_PORT")

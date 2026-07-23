@@ -356,8 +356,35 @@ async def verify_email(
     
     # Verify email
     await user_crud.verify_user_email(db, user)
-    
+
     return {"message": "Email verified successfully"}
+
+
+@router.post("/resend-verification", response_model=dict)
+async def resend_verification(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Re-send the email verification link for the logged-in user (WS4 GTM).
+
+    Needed because the original link expires in 24h; without a resend path
+    an expired token would strand the account unverified forever.
+    """
+    payload = verify_token(credentials.credentials, token_type="access")
+    from uuid import UUID
+    user = await user_crud.get_user_by_id(db, UUID(payload["sub"]))
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    if user.is_email_verified:
+        return {"message": "Email is already verified"}
+    token = create_email_verification_token(str(user.id), user.email)
+    await email_service.send_verification_email(
+        to_email=user.email,
+        user_name=f"{user.first_name} {user.last_name}",
+        verification_token=token,
+    )
+    return {"message": "If sending is configured, a new verification link is on its way"}
 
 
 @router.post("/password-reset", response_model=dict)
