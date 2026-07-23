@@ -2320,7 +2320,11 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         } else { toast.error('No questions available for the selected sections.'); }
       } else if (examType === 'PATENT_BAR') {
         const { PATENT_BAR_QUESTIONS } = await import('@/lib/patent-bar-qbank-data');
-        let pbQuestions = [...PATENT_BAR_QUESTIONS];
+        // Official public-domain USPTO released-exam questions (Oct 2003) join
+        // the practice pool alongside the authored bank. They carry official
+        // model-answer explanations and are labeled [OFFICIAL USPTO EXAM].
+        const { USPTO_OCT2003_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2003-data');
+        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...USPTO_OCT2003_AM_QUESTIONS];
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
             patentability: 0, application_prep: 1, filing_prosecution: 2, office_responses: 3,

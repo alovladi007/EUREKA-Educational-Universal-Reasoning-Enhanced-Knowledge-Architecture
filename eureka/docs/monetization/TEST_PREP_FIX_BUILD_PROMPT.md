@@ -11,6 +11,21 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 2 (2026-07-20): WS1 COMPLETE (all 9 skewed banks).** LSAT (88%→17-23%/5 slots) and
+> CISSP (83%→24-27%) de-biased with letter-remapped explanations (v2 tool); invariants machine-verified on
+> all 660 questions; balance test now covers 9 banks (27 assertions). **WS2 STARTED — official USPTO
+> ingestion:** located the original USPTO released-exam PDFs (Oct 15 2003 AM: `15oct03aq.pdf` questions +
+> `15oct03aa.pdf` official Model Answers, via Internet Archive copy of uspto.gov; public domain). Full
+> official answer key extracted for all 48 scoreable questions (Q2 & Q39 officially discarded — "CREDIT
+> GIVEN FOR ALL ANSWERS"). First tranche ingested: **Q1, Q3–Q12 (11 questions) in
+> `src/lib/patent-bar-uspto-oct2003-data.ts`**, verbatim stems/options in official order (never shuffle —
+> options cross-reference letters), official model-answer explanations (abridged, citations kept), pre-AIA
+> era tags on 102/103-timing items, wired into the Patent Bar QBank pool and verified live. **Next:**
+> transcribe AM Q13–Q50 + PM session (same pipeline; key already extracted:
+> 13:D 14:A 15:A 16:A 17:A 18:A 19:E 20:D 21:D 22:E 23:C 24:D 25:D 26:D 27:C 28:A 29:B 30:B 31:C 32:B
+> 33:D 34:A 35:E 36:D 37:E 38:D 40:E 41:E 42:E 43:C 44:A 45:E 46:C 47:B 48:C 49:D 50:D), then April 2003
+> set (`15apr03*.pdf`, same Wayback path).
+
 > **STATUS (2026-07-20): WS1 DONE for 7 banks** (commit `2410f33d`): FME, PE-EE, FE-EE, SAT, Security+,
 > Patent Bar, MCAT — 3,290 questions de-biased to ~20–31%/slot, invariants machine-verified (keyed answer
 > text unchanged on every question), regression test added (`src/lib/__tests__/qbank-key-balance.test.ts`),
