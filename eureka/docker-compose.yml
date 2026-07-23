@@ -160,6 +160,10 @@ services:
       # below, so cross-service auth silently failed. One secret now.
       JWT_SECRET: eureka_dev_secret_key_change_in_production
       ENVIRONMENT: development
+      # WS5 test-prep billing. Stripe TEST keys from the host env; unset =
+      # checkout/webhook endpoints return 503 (no mock checkout, ever).
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY:-}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET:-}
       # OpenTelemetry — leave blank to disable. Jaeger lives behind
       # `--profile dev-obs`; container DNS resolves `jaeger` when both
       # are on the same compose network.

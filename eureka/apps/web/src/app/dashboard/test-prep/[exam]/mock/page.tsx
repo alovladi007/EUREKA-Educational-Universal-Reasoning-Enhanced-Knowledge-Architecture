@@ -38,6 +38,9 @@ import {
   type MockAllocationRow,
 } from '@/lib/patent-bar-mock';
 import { PATENT_BAR_BLUEPRINT } from '@/lib/patent-bar-coverage';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { PaywallCard } from '@/components/test-prep/PaywallCard';
+import { apiClient } from '@/lib/api-client';
 
 type Phase = 'loading' | 'intro' | 'exam' | 'break' | 'review';
 
@@ -65,6 +68,9 @@ function fmtClock(s: number): string {
 export default function PatentBarMockPage() {
   const params = useParams();
   const exam = ((params.exam as string) || '').toUpperCase();
+  // WS5: the mock is paid-tier. Client gate is UX; the server enforces the
+  // same rule on POST /me/test-prep/mock-results (402 without entitlement).
+  const ent = useEntitlements();
 
   const [phase, setPhase] = useState<Phase>('loading');
   const [bank, setBank] = useState<Map<string, any>>(new Map());
@@ -160,9 +166,16 @@ export default function PatentBarMockPage() {
         if (finalAnswers[i] === q.correct) perSection[s].correct++;
       });
       const history = JSON.parse(localStorage.getItem(HISTORY_KEY) || '[]');
-      history.push({ completedAt: new Date().toISOString(), startedAt, correct, total: form.length, perSection });
+      const completedAt = new Date().toISOString();
+      history.push({ completedAt, startedAt, correct, total: form.length, perSection });
       localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
       localStorage.removeItem(STATE_KEY);
+      // Server-side persistence (WS5) — entitlement-gated on the server;
+      // best-effort, localStorage above remains the offline record.
+      apiClient.post('/me/test-prep/mock-results', {
+        exam_type: 'PATENT_BAR', correct, total: form.length,
+        per_section: perSection, started_at: startedAt, completed_at: completedAt,
+      }).catch(() => {});
     } catch { /* history is best-effort */ }
   }, [form, startedAt]);
 
@@ -301,21 +314,35 @@ export default function PatentBarMockPage() {
             </table>
           </div>
         </Card>
-        {resumeAvailable && (
-          <Card className="flex flex-wrap items-center justify-between gap-3 border-primary/40 p-4 text-sm">
-            <span>
-              A mock from {new Date(resumeAvailable.startedAt).toLocaleString()} is in progress
-              (session {resumeAvailable.half}, {resumeAvailable.answers.filter((a) => a !== null).length}/{MOCK_FORM_SIZE} answered).
-            </span>
-            <span className="flex gap-2">
-              <Button onClick={resume}>Resume</Button>
-              <Button variant="outline" onClick={() => { localStorage.removeItem(STATE_KEY); setResumeAvailable(null); }}>Discard</Button>
-            </span>
-          </Card>
+        {ent.loading ? (
+          <div className="flex items-center justify-center p-4 text-sm text-muted-foreground">
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Checking access…
+          </div>
+        ) : !ent.has('PATENT_BAR') ? (
+          <PaywallCard
+            product={ent.productFor('PATENT_BAR')}
+            feature="Real Exam Mode"
+            examSlug="patent_bar"
+          />
+        ) : (
+          <>
+            {resumeAvailable && (
+              <Card className="flex flex-wrap items-center justify-between gap-3 border-primary/40 p-4 text-sm">
+                <span>
+                  A mock from {new Date(resumeAvailable.startedAt).toLocaleString()} is in progress
+                  (session {resumeAvailable.half}, {resumeAvailable.answers.filter((a) => a !== null).length}/{MOCK_FORM_SIZE} answered).
+                </span>
+                <span className="flex gap-2">
+                  <Button onClick={resume}>Resume</Button>
+                  <Button variant="outline" onClick={() => { localStorage.removeItem(STATE_KEY); setResumeAvailable(null); }}>Discard</Button>
+                </span>
+              </Card>
+            )}
+            <Button size="lg" className="w-full gap-2" onClick={startFresh} disabled={!pool}>
+              <Timer className="h-5 w-5" /> Start Real Exam Mock (Session 1 of 2 — 3:00:00)
+            </Button>
+          </>
         )}
-        <Button size="lg" className="w-full gap-2" onClick={startFresh} disabled={!pool}>
-          <Timer className="h-5 w-5" /> Start Real Exam Mock (Session 1 of 2 — 3:00:00)
-        </Button>
       </div>
     );
   }

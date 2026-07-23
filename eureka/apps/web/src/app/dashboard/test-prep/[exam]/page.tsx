@@ -19,6 +19,8 @@ import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
 import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
+import { useEntitlements } from '@/hooks/useEntitlements';
+import { PaywallCard } from '@/components/test-prep/PaywallCard';
 import toast from 'react-hot-toast';
 import { eMpepChapterUrl } from '@/lib/mpep-chapters';
 import { getCISSPLessonContent } from '@/lib/cissp-lesson-content';
@@ -2180,6 +2182,13 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // bank modules the session fallback uses.
   const [pbCoverage, setPbCoverage] = useState<{ rows: any[]; bankTotal: number } | null>(null);
 
+  // WS5 paywall: Patent Bar QBank beyond the free preview requires an active
+  // entitlement. Client gate is UX only — the server is the authority
+  // (has_exam_access). Other exams are ungated for now (beachhead plan).
+  const { has: hasEntitlement, productFor, loading: entLoading } = useEntitlements();
+  const pbEntitled = examType !== 'PATENT_BAR' || hasEntitlement('PATENT_BAR');
+  const PB_FREE_PREVIEW = 20; // 10 official USPTO + 10 authored, fixed slice
+
   useEffect(() => {
     if (examType !== 'PATENT_BAR') return;
     (async () => {
@@ -2225,9 +2234,11 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   };
   const OFFICIAL_USPTO_COUNT = 174; // Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM
   const qbankMax =
-    examType === 'PATENT_BAR' && patentOfficialOnly
-      ? OFFICIAL_USPTO_COUNT
-      : QBANK_SIZES[examType] || config.totalQuestions || 200;
+    examType === 'PATENT_BAR' && !pbEntitled
+      ? PB_FREE_PREVIEW
+      : examType === 'PATENT_BAR' && patentOfficialOnly
+        ? OFFICIAL_USPTO_COUNT
+        : QBANK_SIZES[examType] || config.totalQuestions || 200;
 
   useEffect(() => {
     apiClient.getQBankStats(examType).then(setStats).catch(() => {});
@@ -2480,10 +2491,16 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         const { PATENT_BAR_GAPFILL_POST_ISSUANCE } = await import('@/lib/patent-bar-gapfill-postissuance-data');
         const { PATENT_BAR_GAPFILL_TOPUP } = await import('@/lib/patent-bar-gapfill-topup-data');
         let pbQuestions = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...PATENT_BAR_GAPFILL_TOPUP, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS, ...USPTO_APR2003_PM_QUESTIONS];
-        if (patentOfficialOnly) {
+        if (!pbEntitled) {
+          // WS5 free preview: a FIXED 20-question slice (10 official USPTO +
+          // 10 authored). Section/official filters don't apply to the
+          // preview; the full 980-question bank requires Full Access.
+          pbQuestions = [...USPTO_OCT2003_AM_QUESTIONS.slice(0, 10), ...PATENT_BAR_QUESTIONS.slice(0, 10)];
+        }
+        if (pbEntitled && patentOfficialOnly) {
           pbQuestions = pbQuestions.filter((q) => q.id.startsWith('uspto-'));
         }
-        if (selectedSections.length > 0) {
+        if (pbEntitled && selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
             patentability: 0, application_prep: 1, filing_prosecution: 2, office_responses: 3,
             pct_international: 4, post_issuance: 5, design_plant: 6, ethics_conduct: 7,
@@ -2999,8 +3016,18 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             </div>
           </div>
 
+          {examType === 'PATENT_BAR' && !entLoading && !pbEntitled && (
+            <div className="mb-3 space-y-2">
+              <p className="text-xs text-muted-foreground">
+                Free preview: {PB_FREE_PREVIEW} of 980 questions (10 official USPTO + 10 authored).
+                Section and official-only filters apply with Full Access.
+              </p>
+              <PaywallCard product={productFor('PATENT_BAR')} feature="The full 980-question QBank" examSlug="patent_bar" />
+            </div>
+          )}
+
           <Button className="w-full" size="lg" onClick={startSession} disabled={loading}>
-            {loading ? 'Starting...' : 'Start QBank Session'}
+            {loading ? 'Starting...' : pbEntitled ? 'Start QBank Session' : `Start Free Preview (${PB_FREE_PREVIEW} questions)`}
           </Button>
 
           {examType === 'PATENT_BAR' && (

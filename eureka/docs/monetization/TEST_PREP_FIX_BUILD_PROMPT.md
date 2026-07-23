@@ -11,6 +11,37 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 16 (2026-07-23): WS5 PAYWALL SHIPPED — entitlements in api-core, Stripe test-mode
+> checkout, server-enforced gating. THE monetization blocker is closed.** DECISION OF RECORD:
+> billing lives in api-core (auth authority) — the legacy Node test-prep (:3010) Stripe scaffolding
+> and test_prep_plans/subscriptions tables are NOT used; one billing system. **Backend:** new
+> `products` + `entitlements` + `mock_results` tables (migration billing_001; models registered so
+> create_all also builds them), seeded with the ONE real SKU `patent_bar_full` @ $599 one-time (the
+> strategy doc's ~$600 planning price; adjustable in the products table — no fake catalogue rows).
+> Endpoints: GET /billing/test-prep/products, GET /me/entitlements, POST /billing/test-prep/checkout
+> (real Stripe Checkout via price_data; 503 when STRIPE_SECRET_KEY unset — deliberately NO
+> mock-checkout fallback), POST /billing/test-prep/webhook (signature IS the auth; 400 on bad
+> signature, 503 when secret unset — never a silent 200), POST /billing/test-prep/comp (admin-only,
+> audited source=comp|trial), POST+GET /me/test-prep/mock-results (mock history now server-side;
+> recording requires an active entitlement — 402 otherwise). Shared rule: has_exam_access /
+> require_exam_access (app/utils/entitlements.py). Stripe env plumbed to api-core in compose;
+> `stripe` added to requirements. **Frontend:** useEntitlements hook (fail-closed) + PaywallCard
+> (real product/price; honest 503 notice). Gates: QBank without entitlement = fixed 20-question
+> free preview (10 official USPTO + 10 authored; slider capped, filters suspended, "Start Free
+> Preview" label); Real Exam Mode intro = paywall card; mock completion posts results server-side.
+> **Live-verified end-to-end:** un-entitled state showed slider 20 + $599.00 card + free-preview
+> session (1/20, official item served) + checkout returning the honest "Billing is not configured"
+> notice + 402 from mock-results; webhook test with a locally-HMAC-signed event (secret set via
+> env): bad signature → 400, good signature → 200 + entitlement row (source=stripe, session ref) —
+> row then deleted as test residue; admin comp grant (source=comp) written via the API; after
+> grant: slider 980, paywall gone, mock unlocked, mock-results 200 (smoke row cleaned). The comp
+> entitlement for you@eureka.example.com REMAINS in the dev DB so dev has full access. **To enable
+> real test checkout:** set STRIPE_SECRET_KEY + STRIPE_WEBHOOK_SECRET (test keys) in the host env
+> and `docker compose up -d api-core`. **Remaining (WS5 tail / GTM):** client bundle still contains
+> all questions (true content gating needs server-served content); lessons/flashcards not yet
+> gated (QBank + mock are); landing page + free-diagnostic funnel + email verification (build
+> prompt WS4); Stripe live keys only on the user's explicit go.
+
 > **STATUS UPDATE 15 (2026-07-23): WS4 Real Exam Mode mock SHIPPED — timed, scored, official-only.**
 > New module `src/lib/patent-bar-mock.ts` + page `/dashboard/test-prep/patent_bar/mock` (linked
 > below Start QBank Session). Structure mirrors the real exam: 100 questions in two 50-question

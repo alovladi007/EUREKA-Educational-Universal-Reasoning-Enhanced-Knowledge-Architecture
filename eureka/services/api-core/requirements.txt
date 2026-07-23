@@ -97,3 +97,4 @@ biopython>=1.83,<2      # 16.7 biology backend (sequence I/O, BLAST helpers)
 # falls back to a PubChem REST lookup. Comment in when ready to ship.
 # rdkit-pypi>=2022.9.5
 
+stripe==11.4.1
