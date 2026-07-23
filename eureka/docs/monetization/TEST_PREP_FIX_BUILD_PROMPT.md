@@ -11,6 +11,17 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 6 (2026-07-23): USPTO April 2003 PM session INGESTED — released-exam ingestion
+> COMPLETE for both 2003 exams.** 39 new official questions in `patent-bar-uspto-apr2003-pm-data.ts`
+> (Q43 discarded; **10 verbatim cross-exam duplicates excluded**: Q9/11/16/20/26/28/29/33/49/50; Q7 and
+> Q46 retained as reworded official variants). Official pool now **174** (Oct 47 AM + 48 PM; Apr 40 AM +
+> 39 PM); Patent Bar total 710; official-only toggle max updated 135→174. All 174 keys machine-verified
+> vs the model-answer PDFs incl. the stem+options duplicate check. Live-verified: official-only session
+> Q 1/170, 4/4 sampled official, Apr PM Q13 answered (D) → green + official explanation. **WS2
+> released-exam anchor is DONE.** Next: the `verified: official|sme|unverified` flag + SME review-queue
+> pipeline (WS2 tail), then WS3 coverage matrix / WS4 mocks (the official set is the natural seed for a
+> timed "real exam mode") / WS5 entitlement.
+
 > **STATUS UPDATE 5 (2026-07-23): USPTO April 2003 AM session INGESTED + shuffle-bias fix.** 40 new
 > official questions in `patent-bar-uspto-apr2003-data.ts` (Q28 discarded; Q2/Q33 dual-keyed excluded;
 > **7 verbatim cross-exam duplicates of Oct 2003 excluded**: Apr Q16/21/22/26/29/34/50 — the USPTO reused
