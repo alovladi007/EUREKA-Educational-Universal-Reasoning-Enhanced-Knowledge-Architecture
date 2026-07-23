@@ -55,14 +55,15 @@ export default function PatentBarReviewQueuePage() {
 
   useEffect(() => {
     (async () => {
-      const [{ PATENT_BAR_QUESTIONS, getPatentBarVerification }, { PATENT_BAR_GAPFILL_ETHICS }, { PATENT_BAR_GAPFILL_DESIGN }, { PATENT_BAR_GAPFILL_PCT }, { PATENT_BAR_GAPFILL_POST_ISSUANCE }] = await Promise.all([
+      const [{ PATENT_BAR_QUESTIONS, getPatentBarVerification }, { PATENT_BAR_GAPFILL_ETHICS }, { PATENT_BAR_GAPFILL_DESIGN }, { PATENT_BAR_GAPFILL_PCT }, { PATENT_BAR_GAPFILL_POST_ISSUANCE }, { PATENT_BAR_GAPFILL_TOPUP }] = await Promise.all([
         import('@/lib/patent-bar-qbank-data'),
         import('@/lib/patent-bar-gapfill-ethics-data'),
         import('@/lib/patent-bar-gapfill-design-data'),
         import('@/lib/patent-bar-gapfill-pct-data'),
         import('@/lib/patent-bar-gapfill-postissuance-data'),
+        import('@/lib/patent-bar-gapfill-topup-data'),
       ]);
-      setQuestions([...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE].filter((q) => getPatentBarVerification(q) === 'unverified'));
+      setQuestions([...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...PATENT_BAR_GAPFILL_TOPUP].filter((q) => getPatentBarVerification(q) === 'unverified'));
       setDecisions(loadDecisions());
       setLoading(false);
     })();

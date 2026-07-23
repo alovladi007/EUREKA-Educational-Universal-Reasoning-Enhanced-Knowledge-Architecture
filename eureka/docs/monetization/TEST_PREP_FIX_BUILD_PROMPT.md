@@ -11,6 +11,35 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 14 (2026-07-23): WS3 COMPLETE — final top-up tranche SHIPPED; ALL SIX blueprint
+> floors hold simultaneously at the exact-proportion bank of 980.** New bank
+> `src/lib/patent-bar-gapfill-topup-data.ts`: 55 questions — 30 ethics (`pb_gf7b_001`–`030`,
+> topicId 7: 11.106(b) confidentiality exceptions, the 11.108 specific-conflict catalogue
+> (business deals/gifts/literary rights/financial assistance/third-party payors), 11.109–11.111
+> former-client + lateral/government screening, 11.113 organization client, 11.114 diminished
+> capacity, 11.115 trust accounts, 11.116+1.36(b) withdrawal, 11.201/11.203 advisor/evaluator,
+> 11.301–11.305 tribunal duties incl. adverse-authority disclosure + false-evidence remediation,
+> 11.402/11.403 contact rules, 11.503/11.504 supervision + fee-sharing/partnership bans,
+> 11.701/11.704 advertising, 11.803 mandatory reporting, 1.56 foreign search reports), 24
+> patentability (`pb_gf0_001`–`024`, topicId 0: AIA 102(a)(1) categories + grace period +
+> derivation shield, Helsinn, City of Elizabeth, In re Hall/Klopfenstein accessibility,
+> 102(a)(2)/(b)(2) secret art + exceptions, Graham/KSR/nexus/analogous art, Alice-Mayo, Myriad,
+> Chakrabarty, Ariad WD-vs-enablement, Wands, best mode post-AIA, Nautilus, 112(f), utility,
+> conception/joint inventorship, statutory-vs-ODP double patenting, 100(i)), and 1 prosecution
+> (`pb_gf2_001`, topicId 2: 3-month statutory non-extendable issue fee). Keys balanced exactly 11
+> per letter (42/42 balance tests). **FINAL COVERAGE (bank 980):** Prosecution 294=30%, 
+> Patentability 196=20%, Post-Issuance 147=15%, Ethics 147=15%, Design/Plant 98=10%, PCT 98=10% —
+> every Floor cell ✓ for the first time, live-verified on the card and in the regenerated matrix.
+> WS3 total: 270 gap-fill questions across 6 banks, ALL unverified → SME queue (now 806 = 536
+> authored + 270 gap-fill; 174 official items excluded as pre-verified). Live-verified: 
+> patentability-filtered session served pb_gf0_004 (City of Elizabeth, amber Unverified) graded
+> green on its key (C); queue lists all 55 top-up ids (30 gf7b + 24 gf0 + 1 gf2); slider/card/
+> matrix/script agree at 980. **NEXT: WS4 — timed real-exam-mode mock seeded from the 174 official
+> USPTO questions (scored mocks draw ONLY official/SME items; official skew: 79 prosecution/70
+> patentability/17 post-issuance/2 ethics/2 design/4 PCT means a blueprint-weighted 100-q official
+> mock is impossible in thin sections — the mock must be honest about its section mix), then WS5
+> entitlement/paywall.**
+
 > **STATUS UPDATE 13 (2026-07-23): WS3 post-issuance gap-fill tranche SHIPPED — post-issuance floor
 > cleared (4 of 6 sections at terminal size).** New bank
 > `src/lib/patent-bar-gapfill-postissuance-data.ts`: 44 original questions (`pb_gf5_001`–`044`,

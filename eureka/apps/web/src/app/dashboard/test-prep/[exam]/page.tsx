@@ -2184,12 +2184,13 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     if (examType !== 'PATENT_BAR') return;
     (async () => {
       try {
-        const [bank, gapfill, gapfillDesign, gapfillPct, gapfillPost, octAm, octPm, aprAm, aprPm, cov] = await Promise.all([
+        const [bank, gapfill, gapfillDesign, gapfillPct, gapfillPost, gapfillTopup, octAm, octPm, aprAm, aprPm, cov] = await Promise.all([
           import('@/lib/patent-bar-qbank-data'),
           import('@/lib/patent-bar-gapfill-ethics-data'),
           import('@/lib/patent-bar-gapfill-design-data'),
           import('@/lib/patent-bar-gapfill-pct-data'),
           import('@/lib/patent-bar-gapfill-postissuance-data'),
+          import('@/lib/patent-bar-gapfill-topup-data'),
           import('@/lib/patent-bar-uspto-oct2003-data'),
           import('@/lib/patent-bar-uspto-oct2003-pm-data'),
           import('@/lib/patent-bar-uspto-apr2003-data'),
@@ -2202,6 +2203,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           ...gapfillDesign.PATENT_BAR_GAPFILL_DESIGN,
           ...gapfillPct.PATENT_BAR_GAPFILL_PCT,
           ...gapfillPost.PATENT_BAR_GAPFILL_POST_ISSUANCE,
+          ...gapfillTopup.PATENT_BAR_GAPFILL_TOPUP,
           ...octAm.USPTO_OCT2003_AM_QUESTIONS,
           ...octPm.USPTO_OCT2003_PM_QUESTIONS,
           ...aprAm.USPTO_APR2003_AM_QUESTIONS,
@@ -2215,10 +2217,11 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 399, FE_EE: 610, FE_ME: 554,
-    // PATENT_BAR = 536 authored + 65 ethics + 66 design/plant + 40 PCT + 44
-    // post-issuance gap-fill (WS3) + 174 official USPTO (Oct 2003: 47 AM +
-    // 48 PM; Apr 2003: 40 AM + 39 PM)
-    PATENT_BAR: 925, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
+    // PATENT_BAR = 536 authored + 270 WS3 gap-fill (65 ethics + 66 design/
+    // plant + 40 PCT + 44 post-issuance + 55 top-up) + 174 official USPTO
+    // (Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM) = the exact-
+    // proportion bank of 980 (all six blueprint floors hold simultaneously)
+    PATENT_BAR: 980, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
   const OFFICIAL_USPTO_COUNT = 174; // Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM
   const qbankMax =
@@ -2475,7 +2478,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         const { PATENT_BAR_GAPFILL_DESIGN } = await import('@/lib/patent-bar-gapfill-design-data');
         const { PATENT_BAR_GAPFILL_PCT } = await import('@/lib/patent-bar-gapfill-pct-data');
         const { PATENT_BAR_GAPFILL_POST_ISSUANCE } = await import('@/lib/patent-bar-gapfill-postissuance-data');
-        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS, ...USPTO_APR2003_PM_QUESTIONS];
+        const { PATENT_BAR_GAPFILL_TOPUP } = await import('@/lib/patent-bar-gapfill-topup-data');
+        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...PATENT_BAR_GAPFILL_TOPUP, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS, ...USPTO_APR2003_PM_QUESTIONS];
         if (patentOfficialOnly) {
           pbQuestions = pbQuestions.filter((q) => q.id.startsWith('uspto-'));
         }

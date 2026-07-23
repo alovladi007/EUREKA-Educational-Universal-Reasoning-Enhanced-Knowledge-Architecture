@@ -38,6 +38,7 @@ const gapEthics = loadTs(lib('patent-bar-gapfill-ethics-data.ts'), { './patent-b
 const gapDesign = loadTs(lib('patent-bar-gapfill-design-data.ts'), { './patent-bar-qbank-data': qbank });
 const gapPct = loadTs(lib('patent-bar-gapfill-pct-data.ts'), { './patent-bar-qbank-data': qbank });
 const gapPost = loadTs(lib('patent-bar-gapfill-postissuance-data.ts'), { './patent-bar-qbank-data': qbank });
+const gapTopup = loadTs(lib('patent-bar-gapfill-topup-data.ts'), { './patent-bar-qbank-data': qbank });
 const octAm = loadTs(lib('patent-bar-uspto-oct2003-data.ts'), { './patent-bar-qbank-data': qbank });
 const octPm = loadTs(lib('patent-bar-uspto-oct2003-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const aprAm = loadTs(lib('patent-bar-uspto-apr2003-data.ts'), { './patent-bar-qbank-data': qbank });
@@ -50,6 +51,7 @@ const all = [
   ...gapDesign.PATENT_BAR_GAPFILL_DESIGN,
   ...gapPct.PATENT_BAR_GAPFILL_PCT,
   ...gapPost.PATENT_BAR_GAPFILL_POST_ISSUANCE,
+  ...gapTopup.PATENT_BAR_GAPFILL_TOPUP,
   ...octAm.USPTO_OCT2003_AM_QUESTIONS,
   ...octPm.USPTO_OCT2003_PM_QUESTIONS,
   ...aprAm.USPTO_APR2003_AM_QUESTIONS,
