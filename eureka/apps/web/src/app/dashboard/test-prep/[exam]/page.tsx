@@ -2175,6 +2175,34 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   const [patentContentTypes, setPatentContentTypes] = useState<string[]>([]);
   // Drill only the official USPTO released-exam questions (ids `uspto-*`).
   const [patentOfficialOnly, setPatentOfficialOnly] = useState(false);
+  // WS3 blueprint coverage (Patent Bar): per-section bank counts and
+  // verification split vs exam-config weights. Computed from the same lazy
+  // bank modules the session fallback uses.
+  const [pbCoverage, setPbCoverage] = useState<{ rows: any[]; bankTotal: number } | null>(null);
+
+  useEffect(() => {
+    if (examType !== 'PATENT_BAR') return;
+    (async () => {
+      try {
+        const [bank, octAm, octPm, aprAm, aprPm, cov] = await Promise.all([
+          import('@/lib/patent-bar-qbank-data'),
+          import('@/lib/patent-bar-uspto-oct2003-data'),
+          import('@/lib/patent-bar-uspto-oct2003-pm-data'),
+          import('@/lib/patent-bar-uspto-apr2003-data'),
+          import('@/lib/patent-bar-uspto-apr2003-pm-data'),
+          import('@/lib/patent-bar-coverage'),
+        ]);
+        const all = [
+          ...bank.PATENT_BAR_QUESTIONS,
+          ...octAm.USPTO_OCT2003_AM_QUESTIONS,
+          ...octPm.USPTO_OCT2003_PM_QUESTIONS,
+          ...aprAm.USPTO_APR2003_AM_QUESTIONS,
+          ...aprPm.USPTO_APR2003_PM_QUESTIONS,
+        ];
+        setPbCoverage(cov.computePatentBarCoverage(all));
+      } catch { /* coverage card simply doesn't render */ }
+    })();
+  }, [examType]);
 
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
@@ -2894,6 +2922,45 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
                     </button>
                   ))}
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* WS3 blueprint coverage matrix (Patent Bar) */}
+          {examType === 'PATENT_BAR' && pbCoverage && (
+            <div className="rounded-lg border bg-muted/20 p-4">
+              <p className="text-sm font-medium">Blueprint coverage</p>
+              <p className="mb-2 text-xs text-muted-foreground">
+                Bank of {pbCoverage.bankTotal} vs the 100-question exam blueprint. Sections below their
+                blueprint weight are the current authoring gaps.
+              </p>
+              <div className="overflow-x-auto">
+                <table className="w-full text-xs">
+                  <thead>
+                    <tr className="text-left text-muted-foreground">
+                      <th className="py-1 pr-2 font-medium">Section</th>
+                      <th className="py-1 pr-2 text-right font-medium">Weight</th>
+                      <th className="py-1 pr-2 text-right font-medium">Qs</th>
+                      <th className="py-1 pr-2 text-right font-medium">Share</th>
+                      <th className="py-1 pr-2 text-right font-medium">Official</th>
+                      <th className="py-1 pr-2 text-right font-medium">Unverified</th>
+                      <th className="py-1 text-center font-medium">Floor</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {pbCoverage.rows.map((r: any) => (
+                      <tr key={r.id} className="border-t border-border/50">
+                        <td className="py-1 pr-2">{r.name}</td>
+                        <td className="py-1 pr-2 text-right">{r.weightPct}%</td>
+                        <td className="py-1 pr-2 text-right">{r.total}</td>
+                        <td className={`py-1 pr-2 text-right ${r.meetsWeight ? '' : 'text-amber-600 dark:text-amber-400'}`}>{r.sharePct}%</td>
+                        <td className="py-1 pr-2 text-right text-emerald-600">{r.official}</td>
+                        <td className="py-1 pr-2 text-right text-muted-foreground">{r.unverified}</td>
+                        <td className="py-1 text-center">{r.meetsWeight ? '✓' : <span className="text-amber-600 dark:text-amber-400">gap</span>}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </div>
           )}

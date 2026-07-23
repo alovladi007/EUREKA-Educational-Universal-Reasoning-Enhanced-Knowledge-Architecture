@@ -11,6 +11,18 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 9 (2026-07-23): WS3 coverage matrix PUBLISHED.** New shared module
+> `src/lib/patent-bar-coverage.ts` (blueprint section ↔ topicId mapping + computePatentBarCoverage),
+> generator `scripts/generate-coverage-matrix.mjs` → `docs/monetization/PATENT_BAR_COVERAGE_MATRIX.md`
+> (regenerate + commit after bank changes), and a live "Blueprint coverage" card on the QBank setup
+> (Patent Bar) — both views computed from the same module and verified to agree. **Findings (bank 710):**
+> Prosecution 41.3% vs 30% ✓, Patentability 24.2% vs 20% ✓; GAPS: Post-Issuance 14.5% vs 15%
+> (marginal), Ethics 7.3% vs 15%, Design/Plant 4.5% vs 10%, PCT 8.2% vs 10%. Official items also skew
+> heavily to prosecution/patentability (79+70 of 174; ethics 2, design 2, PCT 4) — a real-exam-mode
+> mock drawn purely from official items cannot yet be blueprint-weighted in the thin sections.
+> **WS3 authoring backlog:** ~55 ethics, ~40 design/plant, ~15 PCT, ~5 post-issuance questions
+> (AI-authored → unverified label → SME queue). Then WS4 mock + WS5 entitlement.
+
 > **STATUS UPDATE 8 (2026-07-23): WS2 SME review queue SHIPPED — WS2 pipeline complete.**
 > New page `/dashboard/test-prep/patent_bar/review-queue` (linked from the Patent Bar command
 > center): lists all 536 unverified questions with stem/options (keyed answer highlighted)/
