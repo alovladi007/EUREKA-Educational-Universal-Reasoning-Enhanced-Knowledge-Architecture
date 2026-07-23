@@ -2159,7 +2159,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 399, FE_EE: 610, FE_ME: 554,
-    PATENT_BAR: 536, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
+    // PATENT_BAR = 536 authored + 95 official USPTO Oct 2003 (47 AM + 48 PM)
+    PATENT_BAR: 631, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
 
@@ -2404,7 +2405,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         // the practice pool alongside the authored bank. They carry official
         // model-answer explanations and are labeled [OFFICIAL USPTO EXAM].
         const { USPTO_OCT2003_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2003-data');
-        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...USPTO_OCT2003_AM_QUESTIONS];
+        const { USPTO_OCT2003_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2003-pm-data');
+        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS];
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
             patentability: 0, application_prep: 1, filing_prosecution: 2, office_responses: 3,

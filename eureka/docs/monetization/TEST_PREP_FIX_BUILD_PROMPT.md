@@ -11,6 +11,18 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 4 (2026-07-23): USPTO Oct 2003 PM session FULLY INGESTED — Oct 2003 exam complete.**
+> All 48 usable PM questions (Q1–Q8, Q10–Q22, Q24–Q50) live in `patent-bar-uspto-oct2003-pm-data.ts`
+> (Q9 officially discarded; **Q23 excluded — dual-keyed** "(A) or (D)", same policy as AM Q30). Total
+> official pool now **95 questions (47 AM + 48 PM)**, every key machine-verified against the model-answer
+> PDFs (`verify-uspto.js` covers both sessions), wired into the QBank pool, QBANK_SIZES bumped 536→631
+> (also fixes the AM undercount). Live-verified: PM Q47 served in a 630-question session, answered (B)
+> → green + official explanation. NOTE: the test-prep service's `questions` table is EMPTY (all exams) —
+> `POST /qbank/sessions` 404s and Patent Bar sessions come from the client-side static pool, which is
+> where the officials live. If the server bank is ever seeded (WS5), seed the officials there too.
+> **Next in WS2:** April 2003 set (`15apr03{aq,aa,pq,pa}.pdf`, same Wayback path), then the
+> `verified` flag + SME review-queue pipeline.
+
 > **STATUS UPDATE 3 (2026-07-23): USPTO Oct 2003 AM session FULLY INGESTED.** All 47 usable
 > questions (Q1, Q3–Q29, Q31–Q38, Q40–Q50) now live in `patent-bar-uspto-oct2003-data.ts`, verbatim
 > stems/options with the official Model Answer explanations. **Q30 excluded** in addition to the
