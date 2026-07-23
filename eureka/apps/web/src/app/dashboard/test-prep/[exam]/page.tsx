@@ -2421,7 +2421,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { toast.error('No questions available for the selected sections.'); }
       } else if (examType === 'PATENT_BAR') {
-        const { PATENT_BAR_QUESTIONS } = await import('@/lib/patent-bar-qbank-data');
+        const { PATENT_BAR_QUESTIONS, getPatentBarVerification } = await import('@/lib/patent-bar-qbank-data');
         // Official public-domain USPTO released-exam questions (Oct 2003) join
         // the practice pool alongside the authored bank. They carry official
         // model-answer explanations and are labeled [OFFICIAL USPTO EXAM].
@@ -2448,6 +2448,10 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
             correct_index: q.correct, explanation_text: q.explanation,
             section_id: `pb_topic${q.topicId}`, _idx: i,
+            // WS2 provenance: 'official' (USPTO released exam), 'sme'
+            // (expert-reviewed), or 'unverified' (AI-authored, pending
+            // review). Surfaced as a badge in the session header.
+            verification: getPatentBarVerification(q),
           }));
           const fakeSessionId = `static-${Date.now()}`;
           setSessionId(fakeSessionId);
@@ -2924,6 +2928,27 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             <Badge variant="secondary">Q {currentIndex + 1}/{sessionData?.question_count || '?'}</Badge>
             <Badge variant="outline">{currentQ.section}</Badge>
             {currentQ.difficulty_label && <Badge variant="outline">{currentQ.difficulty_label}</Badge>}
+            {/* WS2 provenance badge — honest labeling: official released-exam
+                items vs SME-reviewed vs AI-authored/unverified. The id-prefix
+                fallback covers questions that skipped fallback normalization. */}
+            {examType === 'PATENT_BAR' && (() => {
+              const v = currentQ.verification ?? (String(currentQ.id || '').startsWith('uspto-') ? 'official' : 'unverified');
+              if (v === 'official') return (
+                <Badge className="bg-emerald-600 text-white text-[10px]" title="Official USPTO released-exam question, graded against the USPTO's published model answer.">
+                  Official USPTO
+                </Badge>
+              );
+              if (v === 'sme') return (
+                <Badge className="bg-sky-600 text-white text-[10px]" title="Reviewed and approved by a subject-matter expert.">
+                  SME-verified
+                </Badge>
+              );
+              return (
+                <Badge variant="outline" className="border-amber-500 text-amber-600 dark:text-amber-400 text-[10px]" title="AI-authored practice item — not yet reviewed by a subject-matter expert. Official USPTO items carry the USPTO's own model answers.">
+                  Unverified
+                </Badge>
+              );
+            })()}
             {examType === 'PATENT_BAR' && currentQ.patent?.aia_era && (
               <Badge variant="outline" className="text-[10px] font-mono">AIA: {currentQ.patent.aia_era}</Badge>
             )}

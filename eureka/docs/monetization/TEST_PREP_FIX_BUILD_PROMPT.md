@@ -11,6 +11,18 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 7 (2026-07-23): WS2 verified-status model + honest labeling SHIPPED.**
+> `PatentBarQuestion` now carries `verified?: 'official' | 'sme' | 'unverified'` with the canonical
+> resolver `getPatentBarVerification()` (`uspto-*` ids are always 'official'; omitted = 'unverified'
+> until an SME stamps 'sme'). Every Patent Bar QBank session question shows a provenance badge:
+> green "Official USPTO" (tooltip: graded against the USPTO's published model answer), amber
+> "Unverified" (tooltip: AI-authored, not yet SME-reviewed), blue "SME-verified" (reserved — zero
+> items carry it yet, honestly). Live-verified: official question → green badge, authored question →
+> amber badge, correct in every sampled case. **Remaining WS2 tail:** the SME review-queue UI
+> (surface unverified items for an expert to approve → stamp `verified: 'sme'` in the data file) and
+> the mock-exclusion rule ("no unverified item in any scored mock") to be enforced when WS4 builds
+> the Patent Bar mock. Then WS3 coverage matrix / WS4 real-exam-mode mock / WS5 entitlement.
+
 > **STATUS UPDATE 6 (2026-07-23): USPTO April 2003 PM session INGESTED — released-exam ingestion
 > COMPLETE for both 2003 exams.** 39 new official questions in `patent-bar-uspto-apr2003-pm-data.ts`
 > (Q43 discarded; **10 verbatim cross-exam duplicates excluded**: Q9/11/16/20/26/28/29/33/49/50; Q7 and

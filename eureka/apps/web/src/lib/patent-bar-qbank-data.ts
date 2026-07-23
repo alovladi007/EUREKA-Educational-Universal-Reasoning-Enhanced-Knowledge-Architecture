@@ -13,6 +13,26 @@ export interface PatentBarQuestion {
   options: string[];
   correct: number;
   explanation: string;
+  /**
+   * Verification provenance (WS2). Omitted = 'unverified'. Official USPTO
+   * released-exam items (`uspto-*` ids) are always 'official' regardless of
+   * this field; authored items become 'sme' only after a subject-matter
+   * expert signs off.
+   */
+  verified?: 'official' | 'sme' | 'unverified';
+}
+
+export type PatentBarVerification = 'official' | 'sme' | 'unverified';
+
+/**
+ * Resolve a question's verification status. The `uspto-*` id prefix is the
+ * source of truth for official released-exam items (their files document
+ * provenance); everything else defaults to 'unverified' until SME review
+ * stamps `verified: 'sme'`.
+ */
+export function getPatentBarVerification(q: { id: string; verified?: PatentBarVerification }): PatentBarVerification {
+  if (q.id.startsWith('uspto-')) return 'official';
+  return q.verified ?? 'unverified';
 }
 
 const TOPIC_ID_MAP: Record<number, string> = {
