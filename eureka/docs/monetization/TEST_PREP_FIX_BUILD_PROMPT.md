@@ -11,6 +11,28 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 12 (2026-07-23): WS3 PCT gap-fill tranche SHIPPED — PCT floor cleared (3 of 6
+> sections now at terminal size).** New bank `src/lib/patent-bar-gapfill-pct-data.ts`: 40 original
+> questions (`pb_gf4_001`–`040`, topicId 4) taking PCT from 58 to its terminal 98. Grounded in PCT
+> Articles 11/19/21/22/34 & Rules 26bis/46/54bis/90bis/91 (filing-date elements, claims-required,
+> Article 19 vs 34 amendments, demand deadline, 18-month publication + early publication +
+> withdrawal, priority restoration, incorporation by reference, obvious mistakes), 35 U.S.C.
+> 351–376 (363 pendency effect, 365(c) benefit/bypass, 371 national stage: 30-month hard fee
+> requirement vs curable translation/oath, unintentional revival), 37 CFR 1.401–1.499 (RO/US
+> competence, English-only, three filing fees, unity of invention in the national stage vs
+> restriction in bypass), AIA 102(a)(2)/(d) prior-art effect of WIPO publications ([Pre-AIA]
+> contrast noted), 154(d) provisional rights w/ English translation, term-from-international-
+> filing-date, small-entity fees national-stage-only. Keys balanced exactly 8 per letter; balance
+> test extended with per-bank minimum counts (tuple third element) since blueprint-sized tranches
+> can be <50 items (36/36 pass). All 40 unverified → SME queue (707). **Coverage at bank 881:**
+> PCT 98 = 11.1% ✓, Design/Plant 11.1% ✓, Prosecution 33.3% ✓; gaps: Patentability 19.5% (NEW
+> regression, predicted — needs its +24 top-up), Ethics 13.3%, Post-Issuance 11.7%. Live-verified:
+> PCT-filtered session served pb_gf4_001 (amber Unverified, 5 options) graded green on its key (C);
+> queue lists all 40 pb_gf4 items; card/matrix/script agree at 881. NOTE for SME queue: legacy
+> authored item with subtopic `pct_national_371` conflates priority restoration with the 30-month
+> deadline — flagged candidate. **Remaining to bank 980:** post-issuance +44, ethics +30,
+> patentability +24, prosecution +1 (99 questions).
+
 > **STATUS UPDATE 11 (2026-07-23): WS3 design/plant gap-fill tranche SHIPPED — design floor cleared,
 > and the WS3 endgame is now exactly specified.** New bank
 > `src/lib/patent-bar-gapfill-design-data.ts`: 66 original questions (`pb_gf6_001`–`066`, topicId 6)

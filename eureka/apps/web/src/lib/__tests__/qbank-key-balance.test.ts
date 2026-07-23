@@ -26,6 +26,7 @@ import { SECPLUS_QUESTIONS } from '../security-plus-qbank-data';
 import { PATENT_BAR_QUESTIONS } from '../patent-bar-qbank-data';
 import { PATENT_BAR_GAPFILL_ETHICS } from '../patent-bar-gapfill-ethics-data';
 import { PATENT_BAR_GAPFILL_DESIGN } from '../patent-bar-gapfill-design-data';
+import { PATENT_BAR_GAPFILL_PCT } from '../patent-bar-gapfill-pct-data';
 import { MCAT_QUESTIONS } from '../mcat-qbank-data';
 import { LSAT_QUESTIONS } from '../lsat-qbank-data';
 import { CISSP_QUESTIONS } from '../cissp-qbank-data';
@@ -39,7 +40,12 @@ const cisspNormalized: AnyQuestion[] = CISSP_QUESTIONS.map((q) => ({
   correct: q.correct_index,
 }));
 
-const BANKS: [string, AnyQuestion[]][] = [
+// Optional third element: minimum expected keyed-question count for the bank
+// (guards against an import silently yielding an empty/truncated bank). Full
+// exam banks default to >50; WS3 gap-fill tranches are sized by blueprint
+// arithmetic (e.g., PCT's terminal tranche is exactly 40) and declare their
+// own floor.
+const BANKS: [string, AnyQuestion[], number?][] = [
   ['FME', FME_QUESTIONS as AnyQuestion[]],
   ['PE_EE', PE_EE_QUESTIONS as AnyQuestion[]],
   ['FE_EE', FE_EE_QUESTIONS as AnyQuestion[]],
@@ -48,18 +54,19 @@ const BANKS: [string, AnyQuestion[]][] = [
   ['PATENT_BAR', PATENT_BAR_QUESTIONS as AnyQuestion[]],
   ['PATENT_BAR_GAPFILL_ETHICS', PATENT_BAR_GAPFILL_ETHICS as AnyQuestion[]],
   ['PATENT_BAR_GAPFILL_DESIGN', PATENT_BAR_GAPFILL_DESIGN as AnyQuestion[]],
+  ['PATENT_BAR_GAPFILL_PCT', PATENT_BAR_GAPFILL_PCT as AnyQuestion[], 39],
   ['MCAT', MCAT_QUESTIONS as AnyQuestion[]],
   ['LSAT', LSAT_QUESTIONS as AnyQuestion[]],
   ['CISSP', cisspNormalized],
 ];
 
-describe.each(BANKS)('%s qbank answer keys', (_name, questions) => {
+describe.each(BANKS)('%s qbank answer keys', (_name, questions, minCount) => {
   const keyed = questions.filter(
     (q) => typeof q.correct === 'number' && Array.isArray(q.options),
   );
 
   it('has questions with keyed answers', () => {
-    expect(keyed.length).toBeGreaterThan(50);
+    expect(keyed.length).toBeGreaterThan(minCount ?? 50);
   });
 
   it('keys every question inside its options range', () => {

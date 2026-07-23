@@ -36,6 +36,7 @@ const lib = (f) => path.join('src', 'lib', f);
 const qbank = loadTs(lib('patent-bar-qbank-data.ts'));
 const gapEthics = loadTs(lib('patent-bar-gapfill-ethics-data.ts'), { './patent-bar-qbank-data': qbank });
 const gapDesign = loadTs(lib('patent-bar-gapfill-design-data.ts'), { './patent-bar-qbank-data': qbank });
+const gapPct = loadTs(lib('patent-bar-gapfill-pct-data.ts'), { './patent-bar-qbank-data': qbank });
 const octAm = loadTs(lib('patent-bar-uspto-oct2003-data.ts'), { './patent-bar-qbank-data': qbank });
 const octPm = loadTs(lib('patent-bar-uspto-oct2003-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const aprAm = loadTs(lib('patent-bar-uspto-apr2003-data.ts'), { './patent-bar-qbank-data': qbank });
@@ -46,6 +47,7 @@ const all = [
   ...qbank.PATENT_BAR_QUESTIONS,
   ...gapEthics.PATENT_BAR_GAPFILL_ETHICS,
   ...gapDesign.PATENT_BAR_GAPFILL_DESIGN,
+  ...gapPct.PATENT_BAR_GAPFILL_PCT,
   ...octAm.USPTO_OCT2003_AM_QUESTIONS,
   ...octPm.USPTO_OCT2003_PM_QUESTIONS,
   ...aprAm.USPTO_APR2003_AM_QUESTIONS,
