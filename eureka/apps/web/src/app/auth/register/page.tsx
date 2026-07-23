@@ -1,13 +1,21 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { Suspense, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { motion } from 'framer-motion';
 import toast, { Toaster } from 'react-hot-toast';
 
-export default function RegisterPage() {
+// useSearchParams requires a Suspense boundary for static prerender —
+// the default export wraps the real form (see bottom of file).
+function RegisterForm() {
   const router = useRouter();
+  // Funnel support (WS4): /auth/register?next=/dashboard/... returns the new
+  // user to where they came from (e.g. the Patent Bar free preview). Only
+  // same-origin path redirects are honored.
+  const searchParams = useSearchParams();
+  const nextParam = searchParams?.get('next') ?? '';
+  const nextPath = nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/dashboard/test-prep';
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -75,7 +83,7 @@ export default function RegisterPage() {
         }
       }
       toast.success('Account created successfully!');
-      router.push('/dashboard/test-prep');
+      router.push(nextPath);
     } catch (error) {
       console.error('Registration failed:', error);
       toast.error('Could not reach the server. Please try again.');
@@ -260,5 +268,13 @@ export default function RegisterPage() {
         </div>
       </motion.div>
     </div>
+  );
+}
+
+export default function RegisterPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen" />}>
+      <RegisterForm />
+    </Suspense>
   );
 }

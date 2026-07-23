@@ -11,6 +11,27 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 17 (2026-07-23): GTM step 1 SHIPPED — public Patent Bar landing page + free
+> diagnostic funnel.** ADDITIVE, not a homepage replacement. New public routes (no auth):
+> **`/patent-bar`** — conversion page with hero, real-numbers stats strip (980 QBank / 174 official
+> USPTO / 100-Q 2×3h mock / 511 flashcards — traceable to the coverage matrix), six included-feature
+> cards, a PROVENANCE section (official vs original-pending-review content, "no pass-rate claims"
+> stated outright), pricing card reading the live products API (fallback $599 static; checkout
+> always charges the DB price), and an honest FAQ (incl. "Do you guarantee I will pass?" → "No —
+> and you should be skeptical of anyone who does"). NO testimonials/student counts/pass rates.
+> **`/patent-bar/diagnostic`** — 10 official USPTO questions (public domain, account-free), drawn
+> by the SAME buildOfficialMockPool + waterfall allocator as Real Exam Mode, no feedback until the
+> end, then score + per-section readout + full review with official model answers + signup CTA.
+> Funnel wiring: `/auth/register` now honors a sanitized same-origin `?next=` param (Suspense-
+> wrapped for prerender), so diagnostic → signup lands on the Patent Bar workspace (free preview →
+> paywall from WS5). Homepage: one new PROGRAMS card ("Pass the Patent Bar" → /patent-bar) + a
+> footer link — no other homepage changes. **Live-verified:** landing renders (hero/stats/
+> provenance/$599-from-API/FAQ/CTAs — screenshot taken); diagnostic completed end-to-end (10
+> official items, all-A scored 30% — balanced keys, per-section table, model-answer review, CTA
+> carries ?next=); homepage card + footer link present; register 200 with ?next=. **Remaining GTM
+> tail:** email verification + password reset end-to-end (next step), refund policy + terms pages
+> (business-policy decisions for the user), then Security+ vertical reuse.
+
 > **STATUS UPDATE 16 (2026-07-23): WS5 PAYWALL SHIPPED — entitlements in api-core, Stripe test-mode
 > checkout, server-enforced gating. THE monetization blocker is closed.** DECISION OF RECORD:
 > billing lives in api-core (auth authority) — the legacy Node test-prep (:3010) Stripe scaffolding

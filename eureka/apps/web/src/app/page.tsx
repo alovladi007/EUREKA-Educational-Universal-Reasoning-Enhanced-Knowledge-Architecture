@@ -107,6 +107,7 @@ const JSON_LD = {
 // Guided, multi-course "programs" — the platform's real verticals framed as
 // journeys. Distinct from the single-course cards.
 const PROGRAMS = [
+  { icon: 'fa-scale-balanced', title: 'Pass the Patent Bar', tag: 'Full program', accent: 'from-amber-600 to-amber-700', href: '/patent-bar', desc: '980-question QBank built on 174 official USPTO exam questions, timed real-exam mocks, and an MPEP workbench. Free diagnostic — no account needed.' },
   { icon: 'fa-clipboard-check', title: 'Ace your entrance exam', tag: '11 exams', accent: 'from-indigo-600 to-indigo-700', href: '/dashboard/test-prep', desc: 'Full prep for LSAT, MCAT, GRE, SAT, GMAT, Patent Bar, Security+, PE and more — diagnostics, graded drills, and timed mocks.' },
   { icon: 'fa-square-root-variable', title: 'Master mathematics', tag: 'Full track', accent: 'from-primary-600 to-primary-700', href: '/dashboard', desc: 'A guided ladder from pre-algebra to graduate analysis, with adaptive practice and step-by-step AI tutoring.' },
   { icon: 'fa-stethoscope', title: 'Build clinical foundations', tag: 'Medical', accent: 'from-rose-600 to-rose-700', href: '/dashboard/medical', desc: 'Medical education with real AI imaging tools and structured clinical modules.' },
@@ -733,7 +734,7 @@ export default function HomePage() {
             </div>
 
             {[
-              { title: 'Learn', links: [['Explore', '/explore'], ['Test Prep', '/dashboard/test-prep'], ['Pricing', '#pricing'], ['Interactive Demo', '/demo']] },
+              { title: 'Learn', links: [['Explore', '/explore'], ['Patent Bar', '/patent-bar'], ['Test Prep', '/dashboard/test-prep'], ['Pricing', '#pricing'], ['Interactive Demo', '/demo']] },
               { title: 'Company', links: [['For Institutions', '/institutions'], ['System Status', '/system-status'], ['Community', '/community'], ['Help Center', '/help']] },
               { title: 'Legal', links: [['Privacy Policy', '/privacy'], ['Terms of Service', '/terms'], ['Contact', '/contact']] },
             ].map((col) => (
