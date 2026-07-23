@@ -13,7 +13,7 @@ import {
   BookMarked, Video, StickyNote, BrainCircuit, Trophy, AlertCircle,
   RotateCcw, Eye, EyeOff, Layers, Zap, ThumbsUp, ThumbsDown,
   Library, ExternalLink, Search as SearchIcon, Hash, Sparkles, XCircle,
-  Puzzle,
+  Puzzle, ShieldCheck,
 } from 'lucide-react';
 import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
@@ -147,6 +147,11 @@ export default function ExamPage() {
               <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/mpep-workbench`}>
                 <Button size="sm" variant="outline" className="gap-1.5">
                   <Library className="h-3.5 w-3.5" /> MPEP workbench
+                </Button>
+              </Link>
+              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/review-queue`}>
+                <Button size="sm" variant="outline" className="gap-1.5">
+                  <ShieldCheck className="h-3.5 w-3.5" /> SME review queue
                 </Button>
               </Link>
             </div>

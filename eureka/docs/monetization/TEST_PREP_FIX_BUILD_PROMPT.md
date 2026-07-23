@@ -11,6 +11,23 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 8 (2026-07-23): WS2 SME review queue SHIPPED — WS2 pipeline complete.**
+> New page `/dashboard/test-prep/patent_bar/review-queue` (linked from the Patent Bar command
+> center): lists all 536 unverified questions with stem/options (keyed answer highlighted)/
+> explanation/topic filters + Pending/Approved/Flagged tabs. An expert Approves or Flags (with
+> note); decisions persist in localStorage (`pb_sme_reviews_v1`) and export as JSON. The
+> DELIBERATE human-in-the-loop bridge: `apps/web/scripts/apply-sme-reviews.mjs <export.json>`
+> stamps `verified: 'sme',` onto approved ids in `patent-bar-qbank-data.ts` (idempotent,
+> `--dry-run`, flagged items printed and untouched) — so promotion to "SME-verified" only lands
+> via a reviewed git commit, keeping the provenance trail. Verified end-to-end: queue loads
+> 536/0/0, approve+flag persisted (1/1/534), export shape correct, apply script tested against a
+> TEMP COPY (stamp placed after multi-line explanations before the closing brace — a first-cut
+> insertion bug was caught and fixed by the syntax check), stamped copy transpiles and the
+> resolver returns 'sme', idempotent rerun stamps 0, REAL data file untouched (zero sme stamps
+> committed — no expert has reviewed anything yet, honestly). **WS2 is now complete.** Next:
+> WS3 coverage matrix, WS4 real-exam-mode mock (174 official questions = the seed; enforce
+> "no unverified item in any scored mock"), WS5 entitlement.
+
 > **STATUS UPDATE 7 (2026-07-23): WS2 verified-status model + honest labeling SHIPPED.**
 > `PatentBarQuestion` now carries `verified?: 'official' | 'sme' | 'unverified'` with the canonical
 > resolver `getPatentBarVerification()` (`uspto-*` ids are always 'official'; omitted = 'unverified'
