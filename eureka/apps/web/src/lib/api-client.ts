@@ -793,28 +793,52 @@ class ApiClient {
         (error) => Promise.reject(error),
       );
 
-      // Graceful-degrade response interceptor: when the legacy test-prep
-      // microservice on :8200 isn't running (almost always in dev — it's
-      // behind --profile full), or when it CAN'T authenticate us (it has
-      // its own SECRET_KEY ≠ api-core's JWT_SECRET, and looks up users by
-      // username not UUID — see P1-2 follow-up for the proper auth
-      // bridge), return an empty-shaped response instead of a thrown
-      // error that spams the console + alerts the user. Logs one warning
-      // per session so debuggers still see it.
+      // Graceful-degrade response interceptor: when the test-prep
+      // microservice on :8200 isn't running, or when authentication
+      // genuinely can't be recovered, return an empty-shaped response
+      // instead of a thrown error that spams the console + alerts the
+      // user. Logs one warning per session so debuggers still see it.
+      //
+      // A 401 here almost always means the STORED ACCESS TOKEN IS STALE
+      // (expired, or signed before a JWT_SECRET rotation) — the P0.5 auth
+      // bridge is wired and test-prep accepts fresh api-core JWTs. So
+      // before degrading, mirror the main client's recovery: refresh the
+      // access token and retry the request ONCE. Without this, the first
+      // 401 after token expiry permanently blanked the QBank stats for
+      // the rest of the session even though a refresh token was sitting
+      // in localStorage.
       this.testPrepClient.interceptors.response.use(
         (r) => r,
-        (error) => {
+        async (error) => {
           const status = error?.response?.status;
           const offline =
             error?.code === 'ERR_NETWORK' ||
             error?.code === 'ECONNREFUSED' ||
             error?.code === 'ECONNABORTED' ||
             !error?.response;
-          // 401/403 = service responded but can't authenticate the api-core
-          // JWT (different SECRET_KEY + username-vs-UUID mismatch). Treat
-          // like offline for UI purposes so the page renders empty-state
-          // rather than firehosing console errors.
           const unauthenticated = status === 401 || status === 403;
+
+          // Recovery attempt: stale token + available refresh token.
+          const originalRequest = error?.config;
+          if (unauthenticated && originalRequest && !originalRequest._retry) {
+            originalRequest._retry = true;
+            try {
+              const refreshToken = this.getRefreshToken();
+              if (refreshToken) {
+                const resp = await axios.post(
+                  `${API_URL}${API_PREFIX}/auth/refresh`,
+                  { refresh_token: refreshToken },
+                );
+                const { access_token } = resp.data;
+                this.setToken(access_token);
+                originalRequest.headers.Authorization = `Bearer ${access_token}`;
+                return this.testPrepClient(originalRequest);
+              }
+            } catch {
+              /* refresh failed — fall through to graceful degrade */
+            }
+          }
+
           if (offline || unauthenticated) {
             // P1.4: surface a visible banner (once) instead of only a
             // console line the user never sees.
@@ -823,7 +847,7 @@ class ApiClient {
               this.testPrepWarned = true;
               const reason = offline
                 ? 'unreachable — to start it: `docker compose --profile full up -d test-prep`'
-                : `returned ${status} (auth bridge not yet wired between api-core and test-prep; see P1-2)`;
+                : `returned ${status} (stored token stale and refresh failed — sign in again to restore live stats)`;
               // eslint-disable-next-line no-console
               console.info(
                 `[apiClient] test-prep microservice (:8200) ${reason}. Returning empty results.`,
