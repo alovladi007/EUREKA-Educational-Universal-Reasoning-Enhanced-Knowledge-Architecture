@@ -27,6 +27,7 @@ import { PATENT_BAR_QUESTIONS } from '../patent-bar-qbank-data';
 import { PATENT_BAR_GAPFILL_ETHICS } from '../patent-bar-gapfill-ethics-data';
 import { PATENT_BAR_GAPFILL_DESIGN } from '../patent-bar-gapfill-design-data';
 import { PATENT_BAR_GAPFILL_PCT } from '../patent-bar-gapfill-pct-data';
+import { PATENT_BAR_GAPFILL_POST_ISSUANCE } from '../patent-bar-gapfill-postissuance-data';
 import { MCAT_QUESTIONS } from '../mcat-qbank-data';
 import { LSAT_QUESTIONS } from '../lsat-qbank-data';
 import { CISSP_QUESTIONS } from '../cissp-qbank-data';
@@ -55,6 +56,7 @@ const BANKS: [string, AnyQuestion[], number?][] = [
   ['PATENT_BAR_GAPFILL_ETHICS', PATENT_BAR_GAPFILL_ETHICS as AnyQuestion[]],
   ['PATENT_BAR_GAPFILL_DESIGN', PATENT_BAR_GAPFILL_DESIGN as AnyQuestion[]],
   ['PATENT_BAR_GAPFILL_PCT', PATENT_BAR_GAPFILL_PCT as AnyQuestion[], 39],
+  ['PATENT_BAR_GAPFILL_POST_ISSUANCE', PATENT_BAR_GAPFILL_POST_ISSUANCE as AnyQuestion[], 43],
   ['MCAT', MCAT_QUESTIONS as AnyQuestion[]],
   ['LSAT', LSAT_QUESTIONS as AnyQuestion[]],
   ['CISSP', cisspNormalized],

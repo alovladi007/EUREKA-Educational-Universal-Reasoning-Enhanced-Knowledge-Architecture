@@ -11,6 +11,31 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 13 (2026-07-23): WS3 post-issuance gap-fill tranche SHIPPED — post-issuance floor
+> cleared (4 of 6 sections at terminal size).** New bank
+> `src/lib/patent-bar-gapfill-postissuance-data.ts`: 44 original questions (`pb_gf5_001`–`044`,
+> topicId 5) taking post-issuance from 103 to its terminal 147. Grounded in reissue (251/252:
+> error grounds, 2-year broadening rule + broader-in-any-respect test, no new matter, recapture,
+> Orita non-elected-claims bar, intervening rights, AIA oath change, offer to surrender, priority-
+> claim correction, reissue families), certificates of correction (254 Office/no-fee vs 255
+> applicant/clerical + no-broadening), disclaimers (253 statutory; terminal + 1.321(c)-(d)
+> common-ownership clause), maintenance fees (3.5/7.5/11.5 + windows, grace+surcharge, 1.378
+> unintentional reinstatement, 41(c)(2) intervening rights, utility-only + reissue-keeps-schedule),
+> ex parte reexam (any-person/anonymous, patents-and-printed-pubs-only, SNQ + 3 months, owner
+> statement/single reply, no broadening + 307(b) intervening rights, BRI/special dispatch,
+> owner-only appeal, 301 citations incl. claim-scope statements), IPR (311-319: petitioner/grounds,
+> 9-month wait, 315(a)-(b) bars + joinder exception, reasonable-likelihood, 315(e) estoppel, PTAB
+> 12+6 clock, 316(d) motion to amend, 317 settlement), PGR (9-month window, FITF-only, broad 282(b)
+> grounds, more-likely-than-not or novel-legal-question), and supplemental examination (257:
+> owner-only, any information, inequitable-conduct inoculation + carve-outs, SNQ → modified ex
+> parte reexam). Keys balanced A-D:9/E:8 (39/39 balance tests). All 44 unverified → SME queue
+> (751). **Coverage at bank 925:** Post-Issuance 147 = 15.9% ✓ (was 12.2%), Prosecution 31.7% ✓,
+> Design/Plant 10.6% ✓, PCT 10.6% ✓; remaining gaps: Patentability 18.6%, Ethics 12.6%.
+> Live-verified: post-issuance-filtered session served pb_gf5_024 (amber Unverified) graded green
+> on its key (E); queue lists all 44 pb_gf5 items; card/matrix/script agree at 925. **FINAL WS3
+> tranche remaining:** the top-up to the exact-proportion bank of 980 — ethics +30, patentability
+> +24, prosecution +1 (55 questions) — after which ALL SIX floors hold simultaneously.
+
 > **STATUS UPDATE 12 (2026-07-23): WS3 PCT gap-fill tranche SHIPPED — PCT floor cleared (3 of 6
 > sections now at terminal size).** New bank `src/lib/patent-bar-gapfill-pct-data.ts`: 40 original
 > questions (`pb_gf4_001`–`040`, topicId 4) taking PCT from 58 to its terminal 98. Grounded in PCT
