@@ -11,6 +11,29 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 15 (2026-07-23): WS4 Real Exam Mode mock SHIPPED — timed, scored, official-only.**
+> New module `src/lib/patent-bar-mock.ts` + page `/dashboard/test-prep/patent_bar/mock` (linked
+> below Start QBank Session). Structure mirrors the real exam: 100 questions in two 50-question
+> 3-hour sessions with a break (session-1 answers lock at the break), flag-for-review, per-half
+> navigator grid, no feedback until the end, auto-submit at time expiry, 70% pass threshold on the
+> score screen. **Honesty enforcement is mechanical, not UI-side:** buildOfficialMockPool() admits
+> only official/SME-verified items, so no path can score an unverified question — live-verified
+> that all 100 drawn ids are `uspto-*`. **Honest section mix:** computeMockAllocation() starts at
+> blueprint targets, caps at official supply, and redistributes shortfall to supplied sections
+> proportional to weights (waterfall + largest-remainder rounding). Current pool yields
+> 45 prosecution / 30 patentability / 17 post-issuance / 2 ethics / 2 design / 4 PCT — DISCLOSED
+> on the intro screen with ⚠ on the three short sections (never passed off as blueprint-weighted);
+> the allocation converges to the blueprint automatically as more officials/SME items land. Unit
+> tests (7) pin the documented mix, sum/cap invariants, ample-supply blueprint convergence, and
+> the verified-only pool rule (49 tests total pass). Mid-exam state persists to localStorage
+> (pb_mock_state_v1) with resume/discard on return — live-verified answer, flag, and a
+> mid-countdown timer (2:59:45) surviving a reload. Completed runs append to pb_mock_history_v1
+> and clear the in-progress state. Full live run: intro table rendered; 100/100 unique official
+> ids; break screen; all-A guessing scored 20/100 (balanced keys — not gameable) with per-section
+> breakdown matching the allocation exactly, [Pre-AIA] caveat shown, and 100 review cards with
+> official explanations. Test-run history cleaned from localStorage afterward. Known limits (WS5):
+> results are local-only (no server persistence), and no entitlement gate yet.
+
 > **STATUS UPDATE 14 (2026-07-23): WS3 COMPLETE — final top-up tranche SHIPPED; ALL SIX blueprint
 > floors hold simultaneously at the exact-proportion bank of 980.** New bank
 > `src/lib/patent-bar-gapfill-topup-data.ts`: 55 questions — 30 ethics (`pb_gf7b_001`–`030`,

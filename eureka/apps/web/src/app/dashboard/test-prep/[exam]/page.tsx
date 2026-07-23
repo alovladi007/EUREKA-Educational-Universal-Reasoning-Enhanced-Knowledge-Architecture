@@ -3002,6 +3002,14 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           <Button className="w-full" size="lg" onClick={startSession} disabled={loading}>
             {loading ? 'Starting...' : 'Start QBank Session'}
           </Button>
+
+          {examType === 'PATENT_BAR' && (
+            <Button asChild variant="outline" className="mt-2 w-full gap-2">
+              <Link href={`/dashboard/test-prep/${examType.toLowerCase()}/mock`}>
+                <Timer className="h-4 w-4" /> Real Exam Mock — 100 official USPTO questions, timed 2×3h
+              </Link>
+            </Button>
+          )}
         </Card>
       </div>
     );
