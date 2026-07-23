@@ -11,6 +11,14 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS (2026-07-20): WS1 DONE for 7 banks** (commit `2410f33d`): FME, PE-EE, FE-EE, SAT, Security+,
+> Patent Bar, MCAT — 3,290 questions de-biased to ~20–31%/slot, invariants machine-verified (keyed answer
+> text unchanged on every question), regression test added (`src/lib/__tests__/qbank-key-balance.test.ts`),
+> live grading verified in the browser. **Remaining for WS1:** LSAT (multiline template-literal options;
+> explanations may reference "(B)"-style letters — needs a smarter letter-ref guard) and CISSP (different
+> schema: `options: {index,text}[]` + `correct_index` — tool needs a second mode). GRE/GMAT already
+> near-balanced. Next session: extend the de-bias tool for those two, then proceed to WS2.
+
 ## WS1 — Answer-key de-bias (do FIRST; mostly automatable; safe)
 
 **Problem:** correct answers cluster at one index (FE-ME 99.5% A, PE-EE 98.7% A, FE-EE 73% A, Security+ 80% B,
