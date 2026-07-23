@@ -11,6 +11,17 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 3 (2026-07-23): USPTO Oct 2003 AM session FULLY INGESTED.** All 47 usable
+> questions (Q1, Q3–Q29, Q31–Q38, Q40–Q50) now live in `patent-bar-uspto-oct2003-data.ts`, verbatim
+> stems/options with the official Model Answer explanations. **Q30 excluded** in addition to the
+> discarded Q2/Q39: the USPTO's model answer accepts TWO keys ("(B) or (D) is accepted") and the
+> single-key QBank format cannot represent dual credit without mis-grading one officially-correct
+> choice. Every key machine-verified against the model-answer PDF (scratchpad `verify-uspto.js`);
+> served + graded live in the browser (Q21 answered (D) → green, official explanation rendered);
+> Patent Bar pool now 536. **Next in WS2:** PM session (`15oct03pq.pdf` / `15oct03pa.pdf`, same
+> Wayback path `web.archive.org/web/2004id_/http://www.uspto.gov/web/offices/dcom/olia/oed/…`),
+> then April 2003 (`15apr03*.pdf`), then the `verified` flag + SME review-queue pipeline.
+
 > **STATUS UPDATE 2 (2026-07-20): WS1 COMPLETE (all 9 skewed banks).** LSAT (88%→17-23%/5 slots) and
 > CISSP (83%→24-27%) de-biased with letter-remapped explanations (v2 tool); invariants machine-verified on
 > all 660 questions; balance test now covers 9 banks (27 assertions). **WS2 STARTED — official USPTO
