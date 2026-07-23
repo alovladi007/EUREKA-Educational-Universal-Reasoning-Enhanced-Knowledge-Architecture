@@ -8,7 +8,7 @@
  * in the Video Lessons tab — no extra fetch.
  */
 
-import { BookOpen, PlayCircle, Circle } from "lucide-react";
+import { BookOpen, PlayCircle, Circle, CheckCircle2 } from "lucide-react";
 
 type LessonLike = { id?: string; title?: string; duration_seconds?: number };
 type Progress = { completed?: number; total_lessons?: number; completion_percent?: number } | null;
@@ -33,12 +33,15 @@ export function LessonCurriculumRail({
   activeId,
   onSelect,
   progress,
+  completedIds,
   title = "Course outline",
 }: {
   lessons: Record<string, LessonLike[]>;
   activeId?: string;
   onSelect: (lesson: LessonLike) => void;
   progress?: Progress;
+  /** Lesson ids the learner has completed — shown with a green check. */
+  completedIds?: Set<string>;
   title?: string;
 }) {
   const sections = Object.entries(lessons).filter(([, ls]) => Array.isArray(ls) && ls.length > 0);
@@ -78,6 +81,7 @@ export function LessonCurriculumRail({
               <ul className="space-y-0.5">
                 {ls.map((l, i) => {
                   const active = !!l.id && l.id === activeId;
+                  const done = !!l.id && !!completedIds?.has(l.id);
                   return (
                     <li key={l.id || i}>
                       <button
@@ -87,7 +91,9 @@ export function LessonCurriculumRail({
                         }`}
                       >
                         <span className="mt-0.5">
-                          {active ? <PlayCircle className="h-4 w-4 text-primary" /> : <Circle className="h-4 w-4 text-muted-foreground/40" />}
+                          {active ? <PlayCircle className="h-4 w-4 text-primary" />
+                            : done ? <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                            : <Circle className="h-4 w-4 text-muted-foreground/40" />}
                         </span>
                         <span className="min-w-0 flex-1">
                           <span className={`block truncate ${active ? "font-semibold" : ""}`}>{l.title}</span>

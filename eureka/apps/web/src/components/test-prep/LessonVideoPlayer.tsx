@@ -33,10 +33,13 @@ export function LessonVideoPlayer({
   videoUrl,
   title,
   poster,
+  onEnded,
 }: {
   videoUrl?: string | null;
   title: string;
   poster?: string | null;
+  /** Called once when playback reaches the end (used to auto-mark complete). */
+  onEnded?: () => void;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -78,19 +81,22 @@ export function LessonVideoPlayer({
     const onProgress = () => {
       try { if (v.buffered.length) setBuffered(v.buffered.end(v.buffered.length - 1)); } catch { /* noop */ }
     };
+    const onEnd = () => { setPlaying(false); onEnded?.(); };
     v.addEventListener("timeupdate", onTime);
     v.addEventListener("loadedmetadata", onMeta);
     v.addEventListener("play", onPlay);
     v.addEventListener("pause", onPause);
     v.addEventListener("progress", onProgress);
+    v.addEventListener("ended", onEnd);
     return () => {
       v.removeEventListener("timeupdate", onTime);
       v.removeEventListener("loadedmetadata", onMeta);
       v.removeEventListener("play", onPlay);
       v.removeEventListener("pause", onPause);
       v.removeEventListener("progress", onProgress);
+      v.removeEventListener("ended", onEnd);
     };
-  }, [videoUrl]);
+  }, [videoUrl, onEnded]);
 
   useEffect(() => { if (videoRef.current) videoRef.current.playbackRate = speed; }, [speed]);
   useEffect(() => { if (videoRef.current) { videoRef.current.volume = volume; videoRef.current.muted = muted; } }, [volume, muted]);

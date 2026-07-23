@@ -1236,18 +1236,31 @@ function ReadLessonsTab({ examType }: { examType: string }) {
 // LESSONS TAB (Video)
 // ═══════════════════════════════════════════════════════════════
 
-function LessonsTab({ examType, sections }: { examType: string; sections: any[] }) {
+// Real clips can be well under a minute — show m:ss, not a rounded "0 min".
+function fmtLessonDur(s?: number): string | null {
+  if (!s || s <= 0) return null;
+  const m = Math.floor(s / 60);
+  const sec = Math.round(s % 60);
+  return `${m}:${String(sec).padStart(2, '0')}`;
+}
+
+function LessonsTab({ examType }: { examType: string; sections: any[] }) {
   const [lessons, setLessons] = useState<Record<string, any[]>>({});
-  const [progress, setProgress] = useState<any>(null);
+  const [progress] = useState<any>(null);
   const [activeLesson, setActiveLesson] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+
+  // Per-lesson completion lives in api-core /me/progress (one row per
+  // (user, exam, topic)); a completed video lesson is a progress row whose
+  // topic_id equals the lesson id. This also feeds mastery analytics.
+  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     (async () => {
       try {
-        const [lessonData, progressData] = await Promise.all([
+        const [lessonData, userProgress] = await Promise.all([
           apiClient.getLessons(examType).catch(() => null),
-          apiClient.getLessonProgress(examType).catch(() => null),
+          apiClient.getUserProgress(examType).catch(() => [] as any[]),
         ]);
         if (lessonData?.sections && Object.keys(lessonData.sections).length > 0) {
           setLessons(lessonData.sections);
@@ -1255,7 +1268,9 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
           // Fallback: use static CISSP video lesson data
           setLessons(getCISSPVideoLessons());
         }
-        if (progressData) setProgress(progressData);
+        if (Array.isArray(userProgress)) {
+          setCompletedIds(new Set(userProgress.map((r: any) => r.topic_id)));
+        }
       } catch { /* ignore */ }
       setLoading(false);
     })();
@@ -1263,6 +1278,29 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
 
   const allLessons = Object.values(lessons).flat();
   const hasLessons = allLessons.length > 0;
+  const completedCount = allLessons.filter((l: any) => completedIds.has(l.id)).length;
+  // Derived progress for the rail + list header (the old python lessons/progress
+  // endpoint never existed — this is computed from real /me/progress rows).
+  const progressView = hasLessons
+    ? { completed: completedCount, total_lessons: allLessons.length, completion_percent: Math.round((completedCount / allLessons.length) * 100) }
+    : progress;
+
+  const markComplete = async (lesson: any) => {
+    if (!lesson?.id || completedIds.has(lesson.id)) return;
+    setCompletedIds((prev) => new Set(prev).add(lesson.id)); // optimistic
+    try {
+      await apiClient.recordProgress({
+        exam_type: examType,
+        topic_id: lesson.id,
+        is_correct: true,
+        seconds: lesson.duration_seconds || undefined,
+      });
+    } catch { /* keep optimistic state; next load re-syncs */ }
+  };
+
+  const activeIndex = activeLesson ? allLessons.findIndex((l: any) => l.id === activeLesson.id) : -1;
+  const prevLesson = activeIndex > 0 ? allLessons[activeIndex - 1] : null;
+  const nextLesson = activeIndex >= 0 && activeIndex < allLessons.length - 1 ? allLessons[activeIndex + 1] : null;
 
   if (activeLesson) {
     return (
@@ -1275,23 +1313,59 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
             lessons={lessons}
             activeId={activeLesson.id}
             onSelect={setActiveLesson}
-            progress={progress}
+            progress={progressView}
+            completedIds={completedIds}
           />
           <div className="min-w-0 flex-1">
             <Card className="overflow-hidden">
-              <LessonVideoPlayer videoUrl={activeLesson.video_url} title={activeLesson.title} />
+              <LessonVideoPlayer
+                videoUrl={activeLesson.video_url}
+                title={activeLesson.title}
+                onEnded={() => markComplete(activeLesson)}
+              />
               <div className="p-6 space-y-5">
-                <div>
-                  <h2 className="text-xl font-bold">{activeLesson.title}</h2>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    {[
-                      activeLesson.section,
-                      activeLesson.duration_seconds ? `${Math.round(activeLesson.duration_seconds / 60)} min` : null,
-                      activeLesson.domain ? `Domain ${activeLesson.domain}` : null,
-                    ].filter(Boolean).join(' · ')}
-                  </p>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div>
+                    <h2 className="text-xl font-bold">{activeLesson.title}</h2>
+                    <p className="mt-1 text-xs text-muted-foreground">
+                      {[
+                        activeLesson.section,
+                        fmtLessonDur(activeLesson.duration_seconds),
+                        activeLesson.domain ? `Domain ${activeLesson.domain}` : null,
+                      ].filter(Boolean).join(' · ')}
+                    </p>
+                  </div>
+                  {completedIds.has(activeLesson.id) ? (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-300">
+                      <CheckCircle2 className="h-4 w-4" /> Completed
+                    </span>
+                  ) : (
+                    <Button variant="outline" size="sm" className="gap-1.5" onClick={() => markComplete(activeLesson)}>
+                      <CheckCircle2 className="h-4 w-4" /> Mark complete
+                    </Button>
+                  )}
                 </div>
                 <VideoLessonTabs lesson={activeLesson} />
+                {/* Prev / next lesson navigation */}
+                <div className="flex items-center justify-between border-t pt-4">
+                  <Button
+                    variant="ghost"
+                    className="gap-1 text-muted-foreground disabled:opacity-40"
+                    disabled={!prevLesson}
+                    onClick={() => prevLesson && setActiveLesson(prevLesson)}
+                  >
+                    <ArrowLeft className="h-4 w-4" />
+                    <span className="max-w-[16rem] truncate">{prevLesson ? prevLesson.title : 'First lesson'}</span>
+                  </Button>
+                  <Button
+                    className="gap-1 disabled:opacity-40"
+                    disabled={!nextLesson}
+                    onClick={() => nextLesson && setActiveLesson(nextLesson)}
+                  >
+                    <span className="max-w-[16rem] truncate">{nextLesson ? nextLesson.title : 'Last lesson'}</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Button>
+                </div>
               </div>
             </Card>
           </div>
@@ -1303,14 +1377,14 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
   return (
     <div className="space-y-6">
       {/* Progress bar */}
-      {progress && progress.total_lessons > 0 && (
+      {progressView && progressView.total_lessons > 0 && (
         <Card className="p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium">Course Progress</span>
-            <span className="text-sm text-muted-foreground">{progress.completed}/{progress.total_lessons} lessons</span>
+            <span className="text-sm text-muted-foreground">{progressView.completed}/{progressView.total_lessons} lessons</span>
           </div>
           <div className="w-full bg-muted rounded-full h-2">
-            <div className="bg-primary h-2 rounded-full transition-all" style={{ width: `${progress.completion_percent}%` }} />
+            <div className="bg-primary h-2 rounded-full transition-all" style={{ width: `${progressView.completion_percent}%` }} />
           </div>
         </Card>
       )}
@@ -1328,12 +1402,14 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
           </p>
         </Card>
       ) : (
-        sections.map((section) => {
-          const sectionLessons = lessons[section.id] || [];
-          if (sectionLessons.length === 0) return null;
+        // Render straight from the lessons record — its keys ARE the display
+        // group names (e.g. "Domain 1 · Security & Risk Management"), so this
+        // works for any exam's grouping without a separate section-id lookup.
+        Object.entries(lessons).map(([groupName, sectionLessons]) => {
+          if (!sectionLessons || sectionLessons.length === 0) return null;
           return (
-            <div key={section.id}>
-              <h3 className="font-semibold text-lg mb-3">{section.name}</h3>
+            <div key={groupName}>
+              <h3 className="font-semibold text-lg mb-3">{groupName}</h3>
               <div className="grid gap-3">
                 {sectionLessons.map((lesson: any) => (
                   <Card
@@ -1349,11 +1425,15 @@ function LessonsTab({ examType, sections }: { examType: string; sections: any[] 
                     }}
                   >
                     <div className="flex-shrink-0 h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <PlayCircle className="h-6 w-6 text-primary" />
+                      {completedIds.has(lesson.id)
+                        ? <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                        : <PlayCircle className="h-6 w-6 text-primary" />}
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="font-medium truncate">{lesson.title}</p>
-                      <p className="text-xs text-muted-foreground">{lesson.topic} &middot; {Math.round((lesson.duration_seconds || 0) / 60)} min</p>
+                      <p className="text-xs text-muted-foreground">
+                        {[lesson.topic, fmtLessonDur(lesson.duration_seconds)].filter(Boolean).join(' · ') || 'Video'}
+                      </p>
                     </div>
                     {lesson.is_free && <Badge variant="secondary">Free</Badge>}
                     <ChevronRight className="h-4 w-4 text-muted-foreground" />
