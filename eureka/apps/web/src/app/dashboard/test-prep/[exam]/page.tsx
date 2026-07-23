@@ -67,6 +67,19 @@ import { recordExamAttempt, getExamAttempts, mergeExamHistory } from '@/lib/exam
 
 type Tab = 'read' | 'lessons' | 'flashcards' | 'notes' | 'qbank' | 'mpep' | 'lsat' | 'exam' | 'analytics' | 'pbq';
 
+// Fisher-Yates. The old `.sort(() => Math.random() - 0.5)` idiom is a biased
+// shuffle — items keep a strong pull toward their original array position, so
+// questions appended late in a pool (e.g. the official USPTO banks) rarely
+// surfaced early in a session.
+function shuffle<T>(arr: T[]): T[] {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
 export default function ExamPage() {
   const params = useParams();
   const examId = (params.exam as string)?.toUpperCase();
@@ -1759,7 +1772,7 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
 
   const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
-    const studyDeck = shuffled ? [...cards].sort(() => Math.random() - 0.5) : cards;
+    const studyDeck = shuffled ? shuffle(cards) : cards;
     setDeck(studyDeck);
     setDeckIndex(0);
     setFlipped(false);
@@ -2159,8 +2172,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // Question bank sizes per exam (actual number of questions in the static bank)
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 399, FE_EE: 610, FE_ME: 554,
-    // PATENT_BAR = 536 authored + 95 official USPTO Oct 2003 (47 AM + 48 PM)
-    PATENT_BAR: 631, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
+    // PATENT_BAR = 536 authored + 135 official USPTO (Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM)
+    PATENT_BAR: 671, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
   const qbankMax = QBANK_SIZES[examType] || config.totalQuestions || 200;
 
@@ -2252,7 +2265,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           feQuestions = feQuestions.filter(q => topicIds.includes(q.topicId));
         }
         // Shuffle and limit
-        feQuestions = feQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        feQuestions = shuffle(feQuestions).slice(0, questionCount);
         if (feQuestions.length > 0) {
           // Normalize to match the static question format
           const normalized = feQuestions.map((q, i) => ({
@@ -2291,7 +2304,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
           meQuestions = meQuestions.filter(q => topicIds.includes(q.topicId));
         }
-        meQuestions = meQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        meQuestions = shuffle(meQuestions).slice(0, questionCount);
         if (meQuestions.length > 0) {
           const normalized = meQuestions.map((q: any, i: number) => ({
             ...q,
@@ -2324,7 +2337,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
           peeQuestions = peeQuestions.filter(q => topicIds.includes(q.topicId));
         }
-        peeQuestions = peeQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        peeQuestions = shuffle(peeQuestions).slice(0, questionCount);
         if (peeQuestions.length > 0) {
           const normalized = peeQuestions.map((q: any, i: number) => ({
             ...q,
@@ -2355,7 +2368,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
           mcatQuestions = mcatQuestions.filter(q => topicIds.includes(q.topicId));
         }
-        mcatQuestions = mcatQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        mcatQuestions = shuffle(mcatQuestions).slice(0, questionCount);
         if (mcatQuestions.length > 0) {
           const normalized = mcatQuestions.map((q: any, i: number) => ({
             ...q,
@@ -2386,7 +2399,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
           spQuestions = spQuestions.filter(q => topicIds.includes(q.topicId));
         }
-        spQuestions = spQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        spQuestions = shuffle(spQuestions).slice(0, questionCount);
         if (spQuestions.length > 0) {
           const normalized = spQuestions.map((q: any, i: number) => ({
             ...q, question_text: q.question,
@@ -2406,7 +2419,8 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         // model-answer explanations and are labeled [OFFICIAL USPTO EXAM].
         const { USPTO_OCT2003_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2003-data');
         const { USPTO_OCT2003_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2003-pm-data');
-        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS];
+        const { USPTO_APR2003_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-apr2003-data');
+        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS];
         if (selectedSections.length > 0) {
           const sectionToTopic: Record<string, number> = {
             patentability: 0, application_prep: 1, filing_prosecution: 2, office_responses: 3,
@@ -2415,7 +2429,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           const topicIds = selectedSections.map(s => sectionToTopic[s]).filter(n => n !== undefined);
           pbQuestions = pbQuestions.filter(q => topicIds.includes(q.topicId));
         }
-        pbQuestions = pbQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        pbQuestions = shuffle(pbQuestions).slice(0, questionCount);
         if (pbQuestions.length > 0) {
           const normalized = pbQuestions.map((q: any, i: number) => ({
             ...q, question_text: q.question,
@@ -2445,7 +2459,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             lsatQuestions = lsatQuestions.filter((q) => topicIds.includes(q.topicId));
           }
         }
-        lsatQuestions = lsatQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        lsatQuestions = shuffle(lsatQuestions).slice(0, questionCount);
         if (lsatQuestions.length > 0) {
           const normalized = lsatQuestions.map((q: any, i: number) => ({
             ...q,
@@ -2475,7 +2489,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
             satQuestions = satQuestions.filter((q) => topicIds.includes(q.topicId));
           }
         }
-        satQuestions = satQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        satQuestions = shuffle(satQuestions).slice(0, questionCount);
         if (satQuestions.length > 0) {
           const normalized = satQuestions.map((q: any, i: number) => ({
             ...q,
@@ -2500,7 +2514,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
           if (topicIds.length > 0) greQuestions = greQuestions.filter((q) => topicIds.includes(q.topicId));
         }
-        greQuestions = greQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        greQuestions = shuffle(greQuestions).slice(0, questionCount);
         if (greQuestions.length > 0) {
           const normalized = greQuestions.map((q: any, i: number) => ({
             ...q,
@@ -2525,7 +2539,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
           if (topicIds.length > 0) gmatQuestions = gmatQuestions.filter((q) => topicIds.includes(q.topicId));
         }
-        gmatQuestions = gmatQuestions.sort(() => Math.random() - 0.5).slice(0, questionCount);
+        gmatQuestions = shuffle(gmatQuestions).slice(0, questionCount);
         if (gmatQuestions.length > 0) {
           const normalized = gmatQuestions.map((q: any, i: number) => ({
             ...q,
@@ -3130,7 +3144,7 @@ function FEEEExamTab() {
     for (let topicId = 0; topicId < 18; topicId++) {
       const count = FE_EE_TOPIC_DISTRIBUTION[topicId];
       const topicQs = questionPool.filter((q: FEEEQuestion) => q.topicId === topicId);
-      const shuffled = [...topicQs].sort(() => Math.random() - 0.5).slice(0, count);
+      const shuffled = shuffle(topicQs).slice(0, count);
       shuffled.forEach(q => { examQs.push({ ...q, examIdx: idx }); idx++; });
     }
     setQuestions(examQs);
@@ -3568,7 +3582,7 @@ function SECPLUSExamTab() {
     for (let topicId = 0; topicId < 5; topicId++) {
       const count = SECPLUS_TOPIC_DISTRIBUTION[topicId];
       const topicQs = questionPool.filter((q: any) => q.topicId === topicId);
-      const shuffled = [...topicQs].sort(() => Math.random() - 0.5).slice(0, count);
+      const shuffled = shuffle(topicQs).slice(0, count);
       shuffled.forEach(q => { examQs.push({ ...q, examIdx: idx }); idx++; });
     }
     // Append the multi-select / performance-based items after the 90 MCQ.
@@ -3970,7 +3984,7 @@ function FMEExamTab() {
   React.useEffect(() => { if (phase !== 'exam') return; timerRef.current = setInterval(() => { setTimeLeft(prev => { if (prev <= 1) { clearInterval(timerRef.current!); return 0; } return prev - 1; }); }, 1000); return () => { if (timerRef.current) clearInterval(timerRef.current); }; }, [phase]);
   React.useEffect(() => { if (phase === 'exam' && timeLeft === 0) handleSubmit(); }, [timeLeft, phase]);
   const formatTime = (s: number) => { const h = Math.floor(s / 3600); const m = Math.floor((s % 3600) / 60); const sec = s % 60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; };
-  const startExam = () => { if (questionPool.length === 0) return; const examQs: any[] = []; let idx = 0; for (let tid = 0; tid < 16; tid++) { const count = FME_TOPIC_DISTRIBUTION[tid]; const tQs = questionPool.filter((q: any) => q.topicId === tid); const sh = [...tQs].sort(() => Math.random() - 0.5).slice(0, count); sh.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; }); } setQuestions(examQs); setAnswers({}); setFlagged(new Set()); setCurrentIdx(0); setTimeLeft(FME_EXAM_TIME); setPhase('exam'); };
+  const startExam = () => { if (questionPool.length === 0) return; const examQs: any[] = []; let idx = 0; for (let tid = 0; tid < 16; tid++) { const count = FME_TOPIC_DISTRIBUTION[tid]; const tQs = questionPool.filter((q: any) => q.topicId === tid); const sh = shuffle(tQs).slice(0, count); sh.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; }); } setQuestions(examQs); setAnswers({}); setFlagged(new Set()); setCurrentIdx(0); setTimeLeft(FME_EXAM_TIME); setPhase('exam'); };
   const handleSubmit = () => { if (timerRef.current) clearInterval(timerRef.current); const res: any = { total: questions.length, correct: 0, incorrect: [], byTopic: {}, timeSpent: FME_EXAM_TIME - timeLeft }; questions.forEach(q => { if (!res.byTopic[q.topicId]) res.byTopic[q.topicId] = { correct: 0, total: 0 }; res.byTopic[q.topicId].total++; if (answers[q.examIdx] === q.correct) { res.correct++; res.byTopic[q.topicId].correct++; } else { res.incorrect.push({ question: q, userAnswer: answers[q.examIdx] !== undefined ? q.options[answers[q.examIdx]] : 'Not answered', correctAnswer: q.options[q.correct], explanation: q.explanation }); } }); res.percentage = Math.round((res.correct / res.total) * 100); res.passed = res.percentage >= 70; const fmeEntry = { date: new Date().toISOString(), score: res.percentage, passed: res.passed, correct: res.correct, total: res.total, timeSpent: res.timeSpent, byTopic: res.byTopic }; const hist = JSON.parse(localStorage.getItem('fme_exam_history') || '[]'); hist.push(fmeEntry); localStorage.setItem('fme_exam_history', JSON.stringify(hist)); recordExamAttempt('FME', fmeEntry); setResults(res); setPhase('results'); };
   if (phase === 'intro') return (<div className="space-y-6"><Card className="overflow-hidden"><div className="bg-gradient-to-r from-orange-600 to-red-700 p-8 text-white text-center"><Trophy className="h-12 w-12 mx-auto mb-4" /><h2 className="text-3xl font-bold mb-2">FE Mechanical Engineering — Full Practice Exam</h2><p className="text-orange-100 text-lg">110 Questions &middot; 5 Hours 20 Minutes</p></div><div className="p-6 space-y-4"><div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-blue-600">110</p><p className="text-xs text-muted-foreground">Questions</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-purple-600">16</p><p className="text-xs text-muted-foreground">Topics</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-amber-600">5:20</p><p className="text-xs text-muted-foreground">Hours</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-green-600">70%</p><p className="text-xs text-muted-foreground">Est. Pass</p></div></div><Button onClick={startExam} disabled={questionPool.length === 0} className="w-full py-6 text-lg font-bold bg-green-600 hover:bg-green-700 disabled:opacity-60">{questionPool.length === 0 ? 'Loading questions…' : 'Start Exam Now'}</Button></div></Card></div>);
   if (phase === 'exam' && questions.length > 0) { const q = questions[currentIdx]; const answered = Object.keys(answers).length; const isFl = flagged.has(currentIdx); return (<div className="space-y-4"><Card className="p-4"><div className="flex justify-between items-center"><div className="flex items-center gap-4"><span className="text-sm font-medium">Q {currentIdx+1} / {questions.length}</span><div className="w-48 bg-gray-200 dark:bg-gray-800 rounded-full h-2"><div className="bg-orange-600 h-2 rounded-full transition-all" style={{width:`${((currentIdx+1)/questions.length)*100}%`}}/></div><span className="text-xs text-muted-foreground">{answered} answered</span></div><div className={`text-2xl font-mono font-bold ${timeLeft<600?'text-red-600 animate-pulse':'text-gray-900 dark:text-gray-100'}`}>{formatTime(timeLeft)}</div></div></Card><Card className="p-6"><div className="flex items-center gap-2 mb-4"><Badge variant="secondary" className="text-xs">{FME_TOPIC_NAMES[q.topicId]}</Badge><Badge variant="outline" className="text-xs">{q.subtopic}</Badge></div><h3 className="text-lg font-semibold mb-6">{q.question}</h3><div className="space-y-3">{q.options.map((opt:string,i:number)=>(<button key={i} onClick={()=>setAnswers(p=>({...p,[currentIdx]:i}))} className={`w-full text-left p-4 rounded-lg border-2 transition-all ${answers[currentIdx]===i?'border-orange-500 bg-orange-50 dark:bg-orange-950/30':'border-gray-200 dark:border-gray-700 hover:border-gray-400'}`}><span className="font-mono text-sm mr-3 text-muted-foreground">{String.fromCharCode(65+i)}</span>{opt}</button>))}</div><div className="flex items-center justify-between mt-6"><button onClick={()=>{const nf=new Set(flagged);isFl?nf.delete(currentIdx):nf.add(currentIdx);setFlagged(nf);}} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${isFl?'bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100':'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}`}>{isFl?'★ Flagged':'☆ Flag'}</button><div className="flex gap-2"><Button variant="outline" size="sm" disabled={currentIdx===0} onClick={()=>setCurrentIdx(currentIdx-1)}>← Prev</Button>{currentIdx<questions.length-1?<Button size="sm" onClick={()=>setCurrentIdx(currentIdx+1)}>Next →</Button>:<Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={()=>{if(confirm('Submit exam?'))handleSubmit();}}>Submit</Button>}</div></div></Card><Card className="p-4"><p className="text-xs font-medium text-muted-foreground mb-2">Navigator</p><div className="flex flex-wrap gap-1">{questions.map((_:any,i:number)=>(<button key={i} onClick={()=>setCurrentIdx(i)} className={`w-7 h-7 rounded text-[10px] font-bold transition ${i===currentIdx?'bg-orange-600 text-white':flagged.has(i)?'bg-amber-400 dark:bg-amber-600 text-amber-900 dark:text-white':answers[i]!==undefined?'bg-green-400 dark:bg-green-600 text-green-900 dark:text-white':'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>{i+1}</button>))}</div></Card></div>); }
@@ -4003,7 +4017,7 @@ function PEEEExamTab() {
   React.useEffect(() => { if (phase !== 'exam') return; timerRef.current = setInterval(() => { setTimeLeft(prev => { if (prev <= 1) { clearInterval(timerRef.current!); return 0; } return prev - 1; }); }, 1000); return () => { if (timerRef.current) clearInterval(timerRef.current); }; }, [phase]);
   React.useEffect(() => { if (phase === 'exam' && timeLeft === 0) handleSubmit(); }, [timeLeft, phase]);
   const formatTime = (s: number) => { const h = Math.floor(s / 3600); const m = Math.floor((s % 3600) / 60); const sec = s % 60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; };
-  const startExam = () => { if (questionPool.length === 0) return; const examQs: any[] = []; let idx = 0; for (let tid = 0; tid < 10; tid++) { const count = PEE_TOPIC_DISTRIBUTION[tid]; const tQs = questionPool.filter((q: any) => q.topicId === tid); const sh = [...tQs].sort(() => Math.random() - 0.5).slice(0, count); sh.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; }); } setQuestions(examQs); setAnswers({}); setFlagged(new Set()); setCurrentIdx(0); setTimeLeft(PEE_EXAM_TIME); setPhase('exam'); };
+  const startExam = () => { if (questionPool.length === 0) return; const examQs: any[] = []; let idx = 0; for (let tid = 0; tid < 10; tid++) { const count = PEE_TOPIC_DISTRIBUTION[tid]; const tQs = questionPool.filter((q: any) => q.topicId === tid); const sh = shuffle(tQs).slice(0, count); sh.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; }); } setQuestions(examQs); setAnswers({}); setFlagged(new Set()); setCurrentIdx(0); setTimeLeft(PEE_EXAM_TIME); setPhase('exam'); };
   const handleSubmit = () => { if (timerRef.current) clearInterval(timerRef.current); const res: any = { total: questions.length, correct: 0, incorrect: [], byTopic: {}, timeSpent: PEE_EXAM_TIME - timeLeft }; questions.forEach(q => { if (!res.byTopic[q.topicId]) res.byTopic[q.topicId] = { correct: 0, total: 0 }; res.byTopic[q.topicId].total++; if (answers[q.examIdx] === q.correct) { res.correct++; res.byTopic[q.topicId].correct++; } else { res.incorrect.push({ question: q, userAnswer: answers[q.examIdx] !== undefined ? q.options[answers[q.examIdx]] : 'Not answered', correctAnswer: q.options[q.correct], explanation: q.explanation }); } }); res.percentage = Math.round((res.correct / res.total) * 100); res.passed = res.percentage >= 60; const peeeEntry = { date: new Date().toISOString(), score: res.percentage, passed: res.passed, correct: res.correct, total: res.total, timeSpent: res.timeSpent, byTopic: res.byTopic }; const hist = JSON.parse(localStorage.getItem('peee_exam_history') || '[]'); hist.push(peeeEntry); localStorage.setItem('peee_exam_history', JSON.stringify(hist)); recordExamAttempt('PE_EE', peeeEntry); setResults(res); setPhase('results'); };
   if (phase === 'intro') return (<div className="space-y-6"><Card className="overflow-hidden"><div className="bg-gradient-to-r from-yellow-600 to-amber-700 p-8 text-white text-center"><Trophy className="h-12 w-12 mx-auto mb-4" /><h2 className="text-3xl font-bold mb-2">PE Electrical & Computer (Power) — Full Practice Exam</h2><p className="text-yellow-100 text-lg">80 Questions &middot; 8 Hours</p></div><div className="p-6 space-y-4"><div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-blue-600">80</p><p className="text-xs text-muted-foreground">Questions</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-purple-600">10</p><p className="text-xs text-muted-foreground">Sections</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-amber-600">8:00</p><p className="text-xs text-muted-foreground">Hours</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-green-600">60%</p><p className="text-xs text-muted-foreground">Est. Pass</p></div></div><Button onClick={startExam} disabled={questionPool.length === 0} className="w-full py-6 text-lg font-bold bg-green-600 hover:bg-green-700 disabled:opacity-60">{questionPool.length === 0 ? 'Loading questions…' : 'Start Exam Now'}</Button></div></Card></div>);
   if (phase === 'exam' && questions.length > 0) { const q = questions[currentIdx]; const answered = Object.keys(answers).length; const isFl = flagged.has(currentIdx); return (<div className="space-y-4"><Card className="p-4"><div className="flex justify-between items-center"><div className="flex items-center gap-4"><span className="text-sm font-medium">Q {currentIdx+1} / {questions.length}</span><div className="w-48 bg-gray-200 dark:bg-gray-800 rounded-full h-2"><div className="bg-amber-600 h-2 rounded-full transition-all" style={{width:`${((currentIdx+1)/questions.length)*100}%`}}/></div><span className="text-xs text-muted-foreground">{answered} answered</span></div><div className={`text-2xl font-mono font-bold ${timeLeft<600?'text-red-600 animate-pulse':'text-gray-900 dark:text-gray-100'}`}>{formatTime(timeLeft)}</div></div></Card><Card className="p-6"><div className="flex items-center gap-2 mb-4"><Badge variant="secondary" className="text-xs">{PEE_TOPIC_NAMES[q.topicId]}</Badge><Badge variant="outline" className="text-xs">{q.subtopic}</Badge></div><h3 className="text-lg font-semibold mb-6">{q.question}</h3><div className="space-y-3">{q.options.map((opt:string,i:number)=>(<button key={i} onClick={()=>setAnswers(p=>({...p,[currentIdx]:i}))} className={`w-full text-left p-4 rounded-lg border-2 transition-all ${answers[currentIdx]===i?'border-amber-500 bg-amber-50 dark:bg-amber-950/30':'border-gray-200 dark:border-gray-700 hover:border-gray-400'}`}><span className="font-mono text-sm mr-3 text-muted-foreground">{String.fromCharCode(65+i)}</span>{opt}</button>))}</div><div className="flex items-center justify-between mt-6"><button onClick={()=>{const nf=new Set(flagged);isFl?nf.delete(currentIdx):nf.add(currentIdx);setFlagged(nf);}} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${isFl?'bg-amber-200 dark:bg-amber-900 text-amber-900 dark:text-amber-100':'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}`}>{isFl?'★ Flagged':'☆ Flag'}</button><div className="flex gap-2"><Button variant="outline" size="sm" disabled={currentIdx===0} onClick={()=>setCurrentIdx(currentIdx-1)}>← Prev</Button>{currentIdx<questions.length-1?<Button size="sm" onClick={()=>setCurrentIdx(currentIdx+1)}>Next →</Button>:<Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={()=>{if(confirm('Submit exam?'))handleSubmit();}}>Submit</Button>}</div></div></Card><Card className="p-4"><p className="text-xs font-medium text-muted-foreground mb-2">Navigator</p><div className="flex flex-wrap gap-1">{questions.map((_:any,i:number)=>(<button key={i} onClick={()=>setCurrentIdx(i)} className={`w-7 h-7 rounded text-[10px] font-bold transition ${i===currentIdx?'bg-amber-600 text-white':flagged.has(i)?'bg-yellow-400 dark:bg-yellow-600 text-yellow-900 dark:text-white':answers[i]!==undefined?'bg-green-400 dark:bg-green-600 text-green-900 dark:text-white':'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>{i+1}</button>))}</div></Card></div>); }
@@ -4036,7 +4050,7 @@ function MCATExamTab() {
   React.useEffect(() => { if (phase !== 'exam') return; timerRef.current = setInterval(() => { setTimeLeft(prev => { if (prev <= 1) { clearInterval(timerRef.current!); return 0; } return prev - 1; }); }, 1000); return () => { if (timerRef.current) clearInterval(timerRef.current); }; }, [phase]);
   React.useEffect(() => { if (phase === 'exam' && timeLeft === 0) handleSubmit(); }, [timeLeft, phase]);
   const formatTime = (s: number) => { const h = Math.floor(s / 3600); const m = Math.floor((s % 3600) / 60); const sec = s % 60; return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`; };
-  const startExam = () => { if (questionPool.length === 0) return; const examQs: any[] = []; let idx = 0; for (let tid = 0; tid < 4; tid++) { const count = MCAT_SECTION_DISTRIBUTION[tid]; const tQs = questionPool.filter((q: any) => q.topicId === tid); const sh = [...tQs].sort(() => Math.random() - 0.5).slice(0, count); sh.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; }); } setQuestions(examQs); setAnswers({}); setFlagged(new Set()); setCurrentIdx(0); setTimeLeft(MCAT_EXAM_TIME); setPhase('exam'); };
+  const startExam = () => { if (questionPool.length === 0) return; const examQs: any[] = []; let idx = 0; for (let tid = 0; tid < 4; tid++) { const count = MCAT_SECTION_DISTRIBUTION[tid]; const tQs = questionPool.filter((q: any) => q.topicId === tid); const sh = shuffle(tQs).slice(0, count); sh.forEach((q: any) => { examQs.push({ ...q, examIdx: idx }); idx++; }); } setQuestions(examQs); setAnswers({}); setFlagged(new Set()); setCurrentIdx(0); setTimeLeft(MCAT_EXAM_TIME); setPhase('exam'); };
   const handleSubmit = () => { if (timerRef.current) clearInterval(timerRef.current); const res: any = { total: questions.length, correct: 0, incorrect: [], byTopic: {}, timeSpent: MCAT_EXAM_TIME - timeLeft }; questions.forEach(q => { if (!res.byTopic[q.topicId]) res.byTopic[q.topicId] = { correct: 0, total: 0 }; res.byTopic[q.topicId].total++; if (answers[q.examIdx] === q.correct) { res.correct++; res.byTopic[q.topicId].correct++; } else { res.incorrect.push({ question: q, userAnswer: answers[q.examIdx] !== undefined ? q.options[answers[q.examIdx]] : 'Not answered', correctAnswer: q.options[q.correct], explanation: q.explanation }); } }); res.percentage = Math.round((res.correct / res.total) * 100); res.passed = res.percentage >= 70; const mcatEntry = { date: new Date().toISOString(), score: res.percentage, passed: res.passed, correct: res.correct, total: res.total, timeSpent: res.timeSpent, byTopic: res.byTopic }; const hist = JSON.parse(localStorage.getItem('mcat_exam_history') || '[]'); hist.push(mcatEntry); localStorage.setItem('mcat_exam_history', JSON.stringify(hist)); recordExamAttempt('MCAT', mcatEntry); setResults(res); setPhase('results'); };
   if (phase === 'intro') return (<div className="space-y-6"><Card className="overflow-hidden"><div className="bg-gradient-to-r from-teal-600 to-cyan-700 p-8 text-white text-center"><Trophy className="h-12 w-12 mx-auto mb-4" /><h2 className="text-3xl font-bold mb-2">MCAT — Full Practice Exam</h2><p className="text-teal-100 text-lg">230 Questions &middot; 6 Hours 15 Minutes &middot; 4 Sections</p></div><div className="p-6 space-y-4"><div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center"><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-blue-600">230</p><p className="text-xs text-muted-foreground">Questions</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-purple-600">4</p><p className="text-xs text-muted-foreground">Sections</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-teal-600">6:15</p><p className="text-xs text-muted-foreground">Hours</p></div><div className="bg-gray-50 dark:bg-gray-900 rounded-lg p-4"><p className="text-2xl font-bold text-green-600">472–528</p><p className="text-xs text-muted-foreground">Score Range</p></div></div><div className="bg-teal-50 dark:bg-teal-950/30 rounded-lg p-4 text-sm"><p className="font-semibold text-teal-900 dark:text-teal-200 mb-1">MCAT Scoring</p><p className="text-teal-800 dark:text-teal-300">Each section scored 118–132. Total: 472–528. Median ≈ 500. Competitive: 510+. Top 10%: 519+.</p></div><Button onClick={startExam} disabled={questionPool.length === 0} className="w-full py-6 text-lg font-bold bg-green-600 hover:bg-green-700 disabled:opacity-60">{questionPool.length === 0 ? 'Loading questions…' : 'Start Full Exam'}</Button></div></Card></div>);
   if (phase === 'exam' && questions.length > 0) { const q = questions[currentIdx]; const answered = Object.keys(answers).length; const isFl = flagged.has(currentIdx); return (<div className="space-y-4"><Card className="p-4"><div className="flex justify-between items-center"><div className="flex items-center gap-4"><span className="text-sm font-medium">Q {currentIdx+1} / {questions.length}</span><div className="w-48 bg-gray-200 dark:bg-gray-800 rounded-full h-2"><div className="bg-teal-600 h-2 rounded-full transition-all" style={{width:`${((currentIdx+1)/questions.length)*100}%`}}/></div><span className="text-xs text-muted-foreground">{answered} answered</span></div><div className={`text-2xl font-mono font-bold ${timeLeft<600?'text-red-600 animate-pulse':'text-gray-900 dark:text-gray-100'}`}>{formatTime(timeLeft)}</div></div></Card><Card className="p-6"><div className="flex items-center gap-2 mb-4"><Badge variant="secondary" className="text-xs">{MCAT_SECTION_NAMES[q.topicId]}</Badge><Badge variant="outline" className="text-xs">{q.subtopic}</Badge></div><h3 className="text-lg font-semibold mb-6">{q.question}</h3><div className="space-y-3">{q.options.map((opt:string,i:number)=>(<button key={i} onClick={()=>setAnswers(p=>({...p,[currentIdx]:i}))} className={`w-full text-left p-4 rounded-lg border-2 transition-all ${answers[currentIdx]===i?'border-teal-500 bg-teal-50 dark:bg-teal-950/30':'border-gray-200 dark:border-gray-700 hover:border-gray-400'}`}><span className="font-mono text-sm mr-3 text-muted-foreground">{String.fromCharCode(65+i)}</span>{opt}</button>))}</div><div className="flex items-center justify-between mt-6"><button onClick={()=>{const nf=new Set(flagged);isFl?nf.delete(currentIdx):nf.add(currentIdx);setFlagged(nf);}} className={`px-4 py-2 rounded-lg text-sm font-medium transition ${isFl?'bg-teal-200 dark:bg-teal-900 text-teal-900 dark:text-teal-100':'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300'}`}>{isFl?'★ Flagged':'☆ Flag'}</button><div className="flex gap-2"><Button variant="outline" size="sm" disabled={currentIdx===0} onClick={()=>setCurrentIdx(currentIdx-1)}>← Prev</Button>{currentIdx<questions.length-1?<Button size="sm" onClick={()=>setCurrentIdx(currentIdx+1)}>Next →</Button>:<Button size="sm" className="bg-green-600 hover:bg-green-700" onClick={()=>{if(confirm('Submit exam?'))handleSubmit();}}>Submit</Button>}</div></div></Card><Card className="p-4"><p className="text-xs font-medium text-muted-foreground mb-2">Navigator</p><div className="flex flex-wrap gap-1">{questions.map((_:any,i:number)=>(<button key={i} onClick={()=>setCurrentIdx(i)} className={`w-7 h-7 rounded text-[10px] font-bold transition ${i===currentIdx?'bg-teal-600 text-white':flagged.has(i)?'bg-cyan-400 dark:bg-cyan-600 text-cyan-900 dark:text-white':answers[i]!==undefined?'bg-green-400 dark:bg-green-600 text-green-900 dark:text-white':'bg-gray-200 dark:bg-gray-700 text-gray-600 dark:text-gray-300'}`}>{i+1}</button>))}</div></Card></div>); }

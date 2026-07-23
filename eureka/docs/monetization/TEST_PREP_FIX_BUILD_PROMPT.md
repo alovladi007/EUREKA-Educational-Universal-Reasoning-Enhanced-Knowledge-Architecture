@@ -11,6 +11,19 @@ CISSP differs: `{ question_text, options: {index,text}[], correct_index, ... }`.
 
 ---
 
+> **STATUS UPDATE 5 (2026-07-23): USPTO April 2003 AM session INGESTED + shuffle-bias fix.** 40 new
+> official questions in `patent-bar-uspto-apr2003-data.ts` (Q28 discarded; Q2/Q33 dual-keyed excluded;
+> **7 verbatim cross-exam duplicates of Oct 2003 excluded**: Apr Q16/21/22/26/29/34/50 — the USPTO reused
+> them; keys match Oct in every case). Official pool now **135** (Oct 47 AM + 48 PM + Apr 40 AM); Patent
+> Bar total 671. Keys machine-verified vs the model-answer PDFs incl. a full-stem+options duplicate check
+> (`verify-uspto.js`). **Also fixed:** all 16 `sort(() => Math.random() - 0.5)` biased shuffles in
+> `[exam]/page.tsx` replaced with Fisher-Yates `shuffle()` — the biased idiom left late-appended pool items
+> (the official banks) clustered at the END of sessions (measured: 0 April sightings in 143 draws before,
+> April at draw 4 after). Live-verified: Apr Q30 served, official answer (B) → green + official explanation.
+> **Next in WS2:** April 2003 PM session (`15apr03pq/pa.txt` already extracted in scratchpad; 49 usable —
+> Q43 discarded, no dual-keys; check for Oct duplicates before ingesting), then the `verified` flag + SME
+> review-queue pipeline.
+
 > **STATUS UPDATE 4 (2026-07-23): USPTO Oct 2003 PM session FULLY INGESTED — Oct 2003 exam complete.**
 > All 48 usable PM questions (Q1–Q8, Q10–Q22, Q24–Q50) live in `patent-bar-uspto-oct2003-pm-data.ts`
 > (Q9 officially discarded; **Q23 excluded — dual-keyed** "(A) or (D)", same policy as AM Q30). Total
