@@ -11,8 +11,10 @@
  *   1. every `correct` index is in range for its options array, and
  *   2. no single option position holds more than MAX_SHARE of the keys.
  *
- * GRE/GMAT (already near-balanced but small), LSAT and CISSP (different
- * shapes) join this list when they go through the same pipeline.
+ * GRE/GMAT (already near-balanced but small) join this list when they go
+ * through the same pipeline. LSAT (5 options) and CISSP ({index,text} shape,
+ * `correct_index`) were de-biased with letter-remapping of explanations and
+ * are normalized into the same {options, correct} view below.
  */
 import { describe, expect, it } from 'vitest';
 
@@ -23,10 +25,17 @@ import { SAT_QUESTIONS } from '../sat-qbank-data';
 import { SECPLUS_QUESTIONS } from '../security-plus-qbank-data';
 import { PATENT_BAR_QUESTIONS } from '../patent-bar-qbank-data';
 import { MCAT_QUESTIONS } from '../mcat-qbank-data';
+import { LSAT_QUESTIONS } from '../lsat-qbank-data';
+import { CISSP_QUESTIONS } from '../cissp-qbank-data';
 
 const MAX_SHARE = 0.35;
 
 type AnyQuestion = { options: string[]; correct?: number };
+
+const cisspNormalized: AnyQuestion[] = CISSP_QUESTIONS.map((q) => ({
+  options: q.options.map((o) => o.text),
+  correct: q.correct_index,
+}));
 
 const BANKS: [string, AnyQuestion[]][] = [
   ['FME', FME_QUESTIONS as AnyQuestion[]],
@@ -36,6 +45,8 @@ const BANKS: [string, AnyQuestion[]][] = [
   ['SECURITY_PLUS', SECPLUS_QUESTIONS as AnyQuestion[]],
   ['PATENT_BAR', PATENT_BAR_QUESTIONS as AnyQuestion[]],
   ['MCAT', MCAT_QUESTIONS as AnyQuestion[]],
+  ['LSAT', LSAT_QUESTIONS as AnyQuestion[]],
+  ['CISSP', cisspNormalized],
 ];
 
 describe.each(BANKS)('%s qbank answer keys', (_name, questions) => {
