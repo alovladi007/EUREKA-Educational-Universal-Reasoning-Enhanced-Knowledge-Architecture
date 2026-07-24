@@ -13,6 +13,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { toast } from 'react-hot-toast';
 import { apiClient } from '@/lib/api-client';
 import { useAuthStore } from '@/stores/auth';
@@ -181,6 +182,17 @@ const SettingsPage: React.FC = () => {
     }
   }, [delPassword, delConfirmText, router]);
 
+  // ─── Apply the saved theme ────────────────────────────────────────────
+  // The theme choice used to save to prefs but never change the actual UI
+  // (only the header toggle touched next-themes). applyTheme is called when
+  // the user picks a theme here, and once on load IF a saved pref exists —
+  // never with the un-loaded default, which would stomp the current theme.
+  const { setTheme } = useTheme();
+  const applyTheme = useCallback(
+    (t: 'light' | 'dark' | 'auto') => setTheme(t === 'auto' ? 'system' : t),
+    [setTheme],
+  );
+
   // ─── Load on mount ────────────────────────────────────────────────────
   useEffect(() => {
     let cancelled = false;
@@ -207,6 +219,8 @@ const SettingsPage: React.FC = () => {
           appearance: { ...prev.appearance, ...(prefs.appearance as object || {}) },
           accessibility: { ...prev.accessibility, ...(prefs.accessibility as object || {}) },
         }));
+        const savedTheme = (prefs.appearance as { theme?: 'light' | 'dark' | 'auto' })?.theme;
+        if (savedTheme) applyTheme(savedTheme);
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error('Settings load failed:', err);
@@ -560,10 +574,13 @@ const SettingsPage: React.FC = () => {
           {['light', 'dark', 'auto'].map(theme => (
             <button
               key={theme}
-              onClick={() => setSettings({
-                ...settings,
-                appearance: { ...settings.appearance, theme: theme as any }
-              })}
+              onClick={() => {
+                applyTheme(theme as 'light' | 'dark' | 'auto');
+                setSettings({
+                  ...settings,
+                  appearance: { ...settings.appearance, theme: theme as any }
+                });
+              }}
               className={`p-4 border-2 rounded-lg transition-colors ${
                 settings.appearance.theme === theme
                   ? 'border-blue-600 bg-blue-50'

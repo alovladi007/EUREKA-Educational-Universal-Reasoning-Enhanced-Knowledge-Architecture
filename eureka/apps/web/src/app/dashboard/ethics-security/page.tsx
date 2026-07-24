@@ -11,6 +11,27 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Download, Trash2, XCircle } from "lucide-react";
+
+type ComplianceExport = {
+  id: string;
+  status: string;
+  sections: string[];
+  payload_jsonb?: Record<string, unknown> | null;
+  requested_at: string;
+  completed_at?: string | null;
+  error_message?: string | null;
+};
+
+type ComplianceDeletion = {
+  id: string;
+  status: string;
+  reason?: string | null;
+  scheduled_for: string;
+  canceled_at?: string | null;
+  requested_at: string;
+};
 
 type AuditEvent = {
   id?: string;
@@ -52,6 +73,76 @@ export default function EthicsSecurityPage() {
   const [audit, setAudit] = useState<AuditEvent[]>([]);
   const [compliance, setCompliance] = useState<ComplianceItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exports, setExports] = useState<ComplianceExport[]>([]);
+  const [deletions, setDeletions] = useState<ComplianceDeletion[]>([]);
+  const [gdprBusy, setGdprBusy] = useState(false);
+
+  async function loadGdpr() {
+    const [ex, del] = await Promise.all([
+      api<ComplianceExport[]>("/me/compliance/exports").catch(() => [] as ComplianceExport[]),
+      api<ComplianceDeletion[]>("/me/compliance/deletions").catch(() => [] as ComplianceDeletion[]),
+    ]);
+    setExports(Array.isArray(ex) ? ex : []);
+    setDeletions(Array.isArray(del) ? del : []);
+  }
+
+  async function requestExport() {
+    setGdprBusy(true);
+    try {
+      await api("/me/compliance/export", { method: "POST", body: JSON.stringify({}) });
+      await loadGdpr();
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setGdprBusy(false);
+    }
+  }
+
+  function downloadExport(ex: ComplianceExport) {
+    const blob = new Blob([JSON.stringify(ex.payload_jsonb ?? {}, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `eureka-data-export-${ex.id.slice(0, 8)}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  async function requestDeletion() {
+    const ok = window.confirm(
+      "Request deletion of your account and personal data?\n\n" +
+        "Deletion is scheduled 30 days out (a required grace period) and you " +
+        "can cancel it any time before then from this page. After execution " +
+        "it cannot be undone.",
+    );
+    if (!ok) return;
+    setGdprBusy(true);
+    try {
+      await api("/me/compliance/delete", {
+        method: "POST",
+        body: JSON.stringify({ days_until_execution: 30 }),
+      });
+      await loadGdpr();
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setGdprBusy(false);
+    }
+  }
+
+  async function cancelDeletion(id: string) {
+    setGdprBusy(true);
+    try {
+      await api(`/me/compliance/delete/${id}/cancel`, { method: "POST" });
+      await loadGdpr();
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setGdprBusy(false);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -77,6 +168,8 @@ export default function EthicsSecurityPage() {
           : [];
       setAudit(auditList);
       setCompliance(Array.isArray(compResp) ? compResp : []);
+      await loadGdpr();
+      if (cancelled) return;
       setLoading(false);
     })();
     return () => {
@@ -132,6 +225,85 @@ export default function EthicsSecurityPage() {
                 </li>
               ))}
             </ul>
+          )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>My data (GDPR)</CardTitle>
+          <CardDescription>
+            Export a copy of your personal data, or request account deletion.
+            Wired to <code>/me/compliance/export</code> and{" "}
+            <code>/me/compliance/delete</code>.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-wrap gap-2">
+            <Button size="sm" onClick={requestExport} disabled={gdprBusy}>
+              <Download className="h-3.5 w-3.5 mr-1" />
+              {gdprBusy ? "Working…" : "Request data export"}
+            </Button>
+            {!deletions.some((d) => d.status === "scheduled" || d.status === "requested") && (
+              <Button size="sm" variant="destructive" onClick={requestDeletion} disabled={gdprBusy}>
+                <Trash2 className="h-3.5 w-3.5 mr-1" /> Request account deletion
+              </Button>
+            )}
+          </div>
+
+          {exports.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Exports</p>
+              <ul className="space-y-1.5 text-sm">
+                {exports.map((ex) => (
+                  <li key={ex.id} className="flex flex-wrap items-center gap-2 border-b pb-1.5 last:border-b-0">
+                    <Badge variant={ex.status === "ready" || ex.status === "completed" ? "default" : "outline"}>
+                      {ex.status}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {new Date(ex.requested_at).toLocaleString()} · {ex.sections.length} section(s)
+                    </span>
+                    {ex.error_message && (
+                      <span className="text-xs text-destructive">{ex.error_message}</span>
+                    )}
+                    {(ex.status === "ready" || ex.status === "completed") && ex.payload_jsonb && (
+                      <Button size="sm" variant="ghost" className="ml-auto" onClick={() => downloadExport(ex)}>
+                        <Download className="h-3.5 w-3.5 mr-1" /> Download JSON
+                      </Button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {deletions.length > 0 && (
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">Deletion requests</p>
+              <ul className="space-y-1.5 text-sm">
+                {deletions.map((d) => (
+                  <li key={d.id} className="flex flex-wrap items-center gap-2 border-b pb-1.5 last:border-b-0">
+                    <Badge variant={d.status === "scheduled" ? "destructive" : "outline"}>{d.status}</Badge>
+                    <span className="text-xs text-muted-foreground">
+                      {d.status === "scheduled"
+                        ? `executes ${new Date(d.scheduled_for).toLocaleDateString()}`
+                        : `requested ${new Date(d.requested_at).toLocaleDateString()}`}
+                    </span>
+                    {(d.status === "scheduled" || d.status === "requested") && (
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="ml-auto"
+                        disabled={gdprBusy}
+                        onClick={() => cancelDeletion(d.id)}
+                      >
+                        <XCircle className="h-3.5 w-3.5 mr-1" /> Cancel deletion
+                      </Button>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
           )}
         </CardContent>
       </Card>

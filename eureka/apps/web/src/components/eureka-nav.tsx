@@ -9,6 +9,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuthStore } from "@/stores/auth";
 
 const SECTIONS = [
   { href: "/", label: "Home" },
@@ -18,11 +19,16 @@ const SECTIONS = [
   { href: "/transcript", label: "Transcript" },
   { href: "/institutions", label: "Institutions" },
   { href: "/settings", label: "Settings" },
-  { href: "/admin", label: "Admin" },
+  // Only rendered for admin roles — the /admin shell itself is guarded by
+  // ProtectedRoute(allowedRoles), this just stops advertising it to everyone.
+  { href: "/admin", label: "Admin", adminOnly: true },
 ];
 
 export function EurekaNav() {
   const pathname = usePathname() || "";
+  const role = useAuthStore((s) => s.user?.role);
+  const isAdmin = role === "org_admin" || role === "super_admin";
+  const sections = SECTIONS.filter((s) => !("adminOnly" in s && s.adminOnly) || isAdmin);
   return (
     <header className="w-full border-b bg-white sticky top-0 z-10">
       <div className="max-w-6xl mx-auto px-4 py-3 flex items-center gap-6">
@@ -30,7 +36,7 @@ export function EurekaNav() {
           EUREKA
         </Link>
         <nav className="flex gap-1 items-center text-sm flex-1">
-          {SECTIONS.map((s) => {
+          {sections.map((s) => {
             const active = pathname === s.href || pathname.startsWith(s.href + "/");
             return (
               <Link

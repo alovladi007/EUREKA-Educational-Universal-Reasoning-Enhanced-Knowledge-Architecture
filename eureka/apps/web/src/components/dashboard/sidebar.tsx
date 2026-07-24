@@ -66,7 +66,8 @@ const navigation = [
   { name: "Data Fabric", href: "/dashboard/data-fabric", icon: Database },
   { name: "Futures", href: "/dashboard/futures", icon: Rocket },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
-  { name: "Admin", href: "/dashboard/admin", icon: Shield },
+  // adminOnly entries are filtered out for non-admin roles at render time.
+  { name: "Admin", href: "/dashboard/admin", icon: Shield, adminOnly: true },
 ];
 
 export function Sidebar() {
@@ -114,7 +115,14 @@ export function Sidebar() {
       </div>
       <div className="flex-1 overflow-y-scroll min-h-0">
         <nav className="p-4 space-y-1">
-          {navigation.map((item) => {
+          {navigation
+            .filter(
+              (item) =>
+                !("adminOnly" in item && item.adminOnly) ||
+                user?.role === "org_admin" ||
+                user?.role === "super_admin",
+            )
+            .map((item) => {
             // The Mathematics entry opens the separate AXIOM app with a token
             // handoff, so it is a button rather than an in-app Link.
             if (item.href === "axiom://open") {

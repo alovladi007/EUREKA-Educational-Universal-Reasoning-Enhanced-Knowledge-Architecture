@@ -526,6 +526,20 @@ async def get_my_export(
     return e
 
 
+@router.get("/me/compliance/deletions", response_model=list[DeletionResponse])
+async def list_my_deletions(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Own deletion requests — lets the UI show (and cancel) a pending
+    deletion after a reload; previously only admins could list these."""
+    q = await db.execute(
+        select(ComplianceDeletion).where(ComplianceDeletion.user_id == current_user.id)
+        .order_by(ComplianceDeletion.requested_at.desc())
+    )
+    return list(q.scalars().all())
+
+
 @router.post("/me/compliance/delete", response_model=DeletionResponse, status_code=201)
 async def request_my_deletion(
     payload: DeletionRequest,

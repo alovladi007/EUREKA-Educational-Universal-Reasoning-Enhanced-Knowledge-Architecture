@@ -13,6 +13,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
@@ -95,7 +96,17 @@ const OTHER_SHELLS: { href: string; title: string; subtitle: string }[] = [
   { href: "/institutions/graduate-programs", title: "/institutions/graduate-programs", subtitle: "Phase 16.1" },
 ];
 
+// The org stats + audit surface is admin-only (the APIs 403 for everyone
+// else); gate the page itself so non-admins are redirected, matching /admin/*.
 export default function DashboardAdminPage() {
+  return (
+    <ProtectedRoute allowedRoles={["org_admin", "super_admin"]}>
+      <DashboardAdminInner />
+    </ProtectedRoute>
+  );
+}
+
+function DashboardAdminInner() {
   const [stats, setStats] = useState<AdminStatistics | null>(null);
   const [audit, setAudit] = useState<AuditEvent[]>([]);
   const [statsErr, setStatsErr] = useState<string | null>(null);
