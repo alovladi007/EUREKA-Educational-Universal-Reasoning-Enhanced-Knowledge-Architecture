@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useResumeStore } from "@/stores/resume";
 import { apiGetPublicResume } from "@/lib/resume/api";
+import { DEFAULT_RESUME_DATA } from "@/lib/resume/default-data";
+import type { ResumeData } from "@/types/resume";
 import { MeridianTemplate } from "@/components/resume-builder/templates/MeridianTemplate";
 import { AtlasTemplate } from "@/components/resume-builder/templates/AtlasTemplate";
 import { PrismTemplate } from "@/components/resume-builder/templates/PrismTemplate";
@@ -16,6 +18,32 @@ import { Button } from "@/components/ui/button";
 import { FileEdit, Download, AlertCircle } from "lucide-react";
 import type { TemplateProps, ResumeDocument } from "@/types/resume";
 import Link from "next/link";
+
+// A shared resume's stored `data` can be partial or shape-drifted (older
+// versions, hand-crafted rows). Merge it over the default skeleton so the
+// public page never white-screens on a missing field — e.g. the templates
+// call data.skills.groups.some(...), which throws if skills isn't an object.
+function normalizeResumeData(raw: any): ResumeData {
+  const d = raw ?? {};
+  const arr = (v: unknown) => (Array.isArray(v) ? v : []);
+  return {
+    ...DEFAULT_RESUME_DATA,
+    ...d,
+    meta: { ...DEFAULT_RESUME_DATA.meta, ...(d.meta ?? {}) },
+    header: { ...DEFAULT_RESUME_DATA.header, ...(d.header ?? {}) },
+    summary: { ...DEFAULT_RESUME_DATA.summary, ...(d.summary ?? {}) },
+    skills:
+      d.skills && Array.isArray(d.skills.groups)
+        ? d.skills
+        : DEFAULT_RESUME_DATA.skills,
+    experience: arr(d.experience),
+    education: arr(d.education),
+    projects: arr(d.projects),
+    certifications: arr(d.certifications),
+    languages: arr(d.languages),
+    customSections: arr(d.customSections),
+  } as ResumeData;
+}
 
 const TEMPLATE_COMPONENTS: Record<string, React.ComponentType<TemplateProps>> = {
   meridian: MeridianTemplate,
@@ -47,7 +75,7 @@ export default function SharedResumePage() {
         setResume({
           id: row.id,
           title: row.title ?? "",
-          data: row.data,
+          data: normalizeResumeData(row.data),
           templateId: (row.template_id as ResumeDocument["templateId"]) ?? "meridian",
           sectionVisibility: cfg.sectionVisibility ?? row.data?.meta?.sectionVisibility ?? {},
           createdAt: row.created_at ?? "",
