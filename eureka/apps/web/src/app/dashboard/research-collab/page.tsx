@@ -34,7 +34,7 @@ type RGroup = {
 type SharedWs = { id: string; title: string; kind: string; status: string; owner_name: string | null; my_role: string };
 type MyWs = {
   id: string; title: string; kind?: string; status?: string;
-  reference_count?: number; draft_count?: number;
+  reference_count?: number; draft_count?: number; is_public?: boolean;
 };
 type LitEntry = { id: string; title: string; authors: string[]; venue: string | null; year: number | null; read_status: string; user_notes_md: string | null };
 type Draft = { id: string; title: string; kind: string; updated_at: string };
@@ -51,6 +51,25 @@ export default function ResearchCollabPage() {
   const [myWs, setMyWs] = useState<MyWs[]>([]);
   const [wsMembers, setWsMembers] = useState<Record<string, WsMember[]>>({});
   const [overview, setOverview] = useState<Overview | null>(null);
+
+  async function togglePublic(w: MyWs) {
+    const makingPublic = !w.is_public;
+    if (makingPublic && !window.confirm(
+      `Make "${w.title}" public? It will appear on your public scholar profile, visible to anyone with the link.`,
+    )) return;
+    setBusy(true);
+    try {
+      await api(`/me/research/workspaces/${w.id}`, {
+        method: "PATCH",
+        body: JSON.stringify({ is_public: makingPublic }),
+      });
+      await load();
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setBusy(false);
+    }
+  }
 
   const [lookup, setLookup] = useState({ kind: "doi", value: "" });
   const [preview, setPreview] = useState<Record<string, unknown> | null>(null);
@@ -238,6 +257,15 @@ export default function ResearchCollabPage() {
           <CardTitle className="text-base">Share my workspaces</CardTitle>
           <CardDescription>
             Add org members by email — viewer (read) or collaborator (edit).
+            Public workspaces appear on{" "}
+            {myWs.some((w) => w.is_public) && me?.id ? (
+              <a href={`/scholar/${me.id}`} target="_blank" rel="noreferrer" className="underline text-primary">
+                your public scholar profile
+              </a>
+            ) : (
+              <span>your public scholar profile (make a workspace public to create it)</span>
+            )}
+            .
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -255,12 +283,16 @@ export default function ResearchCollabPage() {
                     <span className="font-medium">{w.title}</span>
                     {w.kind && <Badge variant="outline" className="text-[10px]">{w.kind}</Badge>}
                     {w.status && <Badge variant="secondary" className="text-[10px]">{w.status}</Badge>}
+                    {w.is_public && <Badge className="text-[10px]">public</Badge>}
                     {typeof w.reference_count === "number" && (
                       <span className="text-xs text-muted-foreground">{w.reference_count} refs · {w.draft_count ?? 0} drafts</span>
                     )}
                     <div className="ml-auto flex gap-1">
                       <Button size="sm" variant="ghost" onClick={() => openOverview(w.id)}>
                         Open
+                      </Button>
+                      <Button size="sm" variant="ghost" disabled={busy} onClick={() => togglePublic(w)}>
+                        {w.is_public ? "Make private" : "Make public"}
                       </Button>
                       <Button size="sm" variant="outline" disabled={busy} onClick={() => shareWorkspace(w.id)}>
                         <UserPlus className="h-3.5 w-3.5 mr-1" /> Share

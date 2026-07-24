@@ -251,6 +251,68 @@ async def workspace_overview(
 
 
 # ---------------------------------------------------------------------------
+# R-4: public scholarly profile (opt-in via workspace.is_public)
+# ---------------------------------------------------------------------------
+
+
+class PublicWorkspaceOut(BaseModel):
+    id: UUID
+    title: str
+    kind: str
+    status: str
+    tags: list[str]
+    reference_count: int
+    draft_count: int
+
+
+class ScholarProfileResponse(BaseModel):
+    user_id: UUID
+    name: str
+    member_since: Optional[int]
+    public_workspaces: list[PublicWorkspaceOut]
+    total_references: int
+    # Honesty contract: we only report on-platform activity. No external
+    # citation counts / h-index are shown unless a real source is integrated.
+    metrics_note: str = (
+        "On-platform activity only — external citation metrics are not tracked."
+    )
+
+
+@router.get("/public/scholar/{user_id}", response_model=ScholarProfileResponse)
+async def public_scholar_profile(
+    user_id: UUID,
+    db: AsyncSession = Depends(get_db),
+):
+    """Unauthenticated. A profile exists only while the user has at least one
+    PUBLIC research workspace — making a workspace private again removes it."""
+    u = await db.get(User, user_id)
+    if u is None:
+        raise HTTPException(status_code=404, detail="scholar profile not found")
+    rows = (await db.execute(
+        select(ResearchWorkspace).where(
+            ResearchWorkspace.user_id == user_id,
+            ResearchWorkspace.is_public.is_(True),
+        ).order_by(ResearchWorkspace.last_activity_at.desc())
+    )).scalars().all()
+    if not rows:
+        raise HTTPException(status_code=404, detail="scholar profile not found")
+    return ScholarProfileResponse(
+        user_id=u.id,
+        name=u.display_name or f"{u.first_name} {u.last_name}",
+        member_since=u.created_at.year if u.created_at else None,
+        public_workspaces=[
+            PublicWorkspaceOut(
+                id=w.id, title=w.title, kind=str(w.kind), status=str(w.status),
+                tags=list(w.tags or []), reference_count=w.reference_count,
+                draft_count=w.draft_count,
+            )
+            for w in rows
+        ],
+        total_references=sum(w.reference_count for w in rows),
+    )
+
+
+# ---------------------------------------------------------------------------
 # Research groups (labs / reading groups)
 # ---------------------------------------------------------------------------
 
