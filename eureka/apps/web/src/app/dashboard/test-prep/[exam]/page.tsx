@@ -230,9 +230,21 @@ export default function ExamPage() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'read' && <ReadLessonsTab examType={examId} />}
-      {activeTab === 'lessons' && <LessonsTab examType={examId} sections={sections} />}
-      {activeTab === 'flashcards' && <FlashcardsTab examType={examId} sections={sections} />}
+      {activeTab === 'read' && (
+        <PbContentGate examType={examId} feature="All Patent Bar lessons">
+          <ReadLessonsTab examType={examId} />
+        </PbContentGate>
+      )}
+      {activeTab === 'lessons' && (
+        <PbContentGate examType={examId} feature="The full Patent Bar curriculum">
+          <LessonsTab examType={examId} sections={sections} />
+        </PbContentGate>
+      )}
+      {activeTab === 'flashcards' && (
+        <PbContentGate examType={examId} feature="All Patent Bar flashcards">
+          <FlashcardsTab examType={examId} sections={sections} />
+        </PbContentGate>
+      )}
       {activeTab === 'notes' && <NotesTab examType={examId} sections={sections} />}
       {activeTab === 'qbank' && <QBankTab examType={examId} config={config} sections={sections} />}
       {activeTab === 'mpep' && isPatentBar && <MPEPTab />}
@@ -718,6 +730,33 @@ function LSATTab() {
 // ═══════════════════════════════════════════════════════════════
 // READ LESSONS TAB
 // ═══════════════════════════════════════════════════════════════
+
+// Patent Bar monetization: lessons/read/flashcards are part of Full Access.
+// Free tier keeps the overview, the 20-question QBank preview, the public
+// diagnostic, and the MPEP reference tab. Other exams are unaffected.
+function PbContentGate({
+  examType,
+  feature,
+  children,
+}: {
+  examType: string;
+  feature: string;
+  children: React.ReactNode;
+}) {
+  const { has, productFor, loading } = useEntitlements();
+  if (examType !== 'PATENT_BAR' || loading || has('PATENT_BAR')) {
+    return <>{children}</>;
+  }
+  return (
+    <div className="space-y-3 max-w-2xl">
+      <p className="text-sm text-muted-foreground">
+        {feature} is part of Patent Bar Full Access. The free tier includes
+        the 20-question QBank preview, the diagnostic, and the MPEP reference.
+      </p>
+      <PaywallCard product={productFor('PATENT_BAR')} feature={feature} examSlug="patent_bar" />
+    </div>
+  );
+}
 
 function ReadLessonsTab({ examType }: { examType: string }) {
   const curriculum = getCurriculum(examType);
