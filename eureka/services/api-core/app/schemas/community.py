@@ -45,6 +45,8 @@ class ThreadResponse(BaseModel):
     last_activity_at: datetime
     created_at: datetime
     updated_at: datetime
+    # Display name of the author, joined from users at read time.
+    author_name: Optional[str] = None
 
 
 # -- posts -------------------------------------------------------------------
@@ -70,6 +72,7 @@ class PostResponse(BaseModel):
     # current viewer's reactions — populated by the thread-detail endpoint.
     reactions: dict[str, int] = Field(default_factory=dict)
     my_reactions: list[str] = Field(default_factory=list)
+    author_name: Optional[str] = None
 
 
 class ThreadDetailResponse(BaseModel):

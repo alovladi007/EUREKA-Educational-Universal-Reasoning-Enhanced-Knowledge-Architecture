@@ -19,9 +19,10 @@ import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
 import { Markdown } from "@/components/ui/markdown";
+import { useAuthStore } from "@/stores/auth";
 import {
   MessageSquare, Plus, ThumbsUp, Lock, Pin, ArrowLeft, Send, CheckCircle2,
-  Lightbulb, HeartHandshake, Reply as ReplyIcon, X,
+  Lightbulb, HeartHandshake, Reply as ReplyIcon, X, Unlock, PinOff,
 } from "lucide-react";
 
 type Thread = {
@@ -38,6 +39,7 @@ type Thread = {
   upvote_count: number;
   last_activity_at: string;
   created_at: string;
+  author_name?: string | null;
 };
 
 type Post = {
@@ -51,6 +53,7 @@ type Post = {
   created_at: string;
   reactions?: Record<string, number>;
   my_reactions?: string[];
+  author_name?: string | null;
 };
 
 type ThreadDetail = {
@@ -108,6 +111,8 @@ const TIERS = [
 ];
 
 export default function CommunityPage() {
+  const me = useAuthStore((s) => s.user);
+  const isAdmin = me?.role === "super_admin" || me?.role === "org_admin";
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -235,10 +240,24 @@ export default function CommunityPage() {
     }
   }
 
-  async function acceptAnswer(pid: string) {
+  async function acceptAnswer(pid: string, accept: boolean) {
     try {
-      await api(`/community/posts/${pid}/accept`, { method: "POST" });
+      await api(`/community/posts/${pid}/accept`, { method: accept ? "POST" : "DELETE" });
       if (openThread) await loadDetail(openThread);
+    } catch (e) {
+      alert(String((e as Error).message));
+    }
+  }
+
+  // Admin moderation: pin/unpin + lock/unlock (server enforces admin-only).
+  async function moderateThread(tid: string, patch: { pinned?: boolean; locked?: boolean }) {
+    try {
+      await api(`/community/threads/${tid}`, {
+        method: "PATCH",
+        body: JSON.stringify(patch),
+      });
+      await loadDetail(tid);
+      await loadThreads();
     } catch (e) {
       alert(String((e as Error).message));
     }
@@ -252,6 +271,10 @@ export default function CommunityPage() {
     const childrenOf = (id: string) =>
       detail.posts.filter((p) => p.parent_post_id === id);
 
+    // Only the thread author (or an admin) can accept/unaccept — matches the
+    // server-side rule, so we don't show buttons that would 403.
+    const canAccept = isAdmin || me?.id === detail.thread.user_id;
+
     function renderPost(p: Post, depth: number): ReactElement {
       return (
         <div key={p.id} className={depth > 0 ? "ml-6 border-l-2 border-muted pl-3 space-y-3" : "space-y-3"}>
@@ -264,7 +287,7 @@ export default function CommunityPage() {
               )}
               <Markdown className="text-sm">{p.body_md}</Markdown>
               <div className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
-                <span className="font-mono">{p.user_id.slice(0, 8)}</span>
+                <span className="font-medium">{p.author_name ?? p.user_id.slice(0, 8)}</span>
                 <span>· {formatDate(p.created_at)}</span>
               </div>
               <div className="flex items-center justify-between gap-2 mt-2 flex-wrap">
@@ -277,9 +300,10 @@ export default function CommunityPage() {
                   <Button variant="ghost" size="sm" onClick={() => setReplyTo(p)}>
                     <ReplyIcon className="h-3.5 w-3.5 mr-1" /> Reply
                   </Button>
-                  {!p.is_accepted_answer && (
-                    <Button variant="ghost" size="sm" onClick={() => acceptAnswer(p.id)}>
-                      <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Accept
+                  {canAccept && (
+                    <Button variant="ghost" size="sm" onClick={() => acceptAnswer(p.id, !p.is_accepted_answer)}>
+                      <CheckCircle2 className="h-3.5 w-3.5 mr-1" />
+                      {p.is_accepted_answer ? "Unaccept" : "Accept"}
                     </Button>
                   )}
                 </div>
@@ -317,15 +341,40 @@ export default function CommunityPage() {
                   {detail.thread.tags.map((t) => (
                     <Badge key={t} variant="secondary" className="text-[10px]">{t}</Badge>
                   ))}
+                  <span className="font-medium">
+                    {detail.thread.author_name ?? detail.thread.user_id.slice(0, 8)}
+                  </span>
                   <span className="text-muted-foreground">· {formatDate(detail.thread.created_at)}</span>
                 </div>
               </div>
-              <div className="shrink-0">
+              <div className="shrink-0 flex flex-col items-end gap-1">
                 <ReactionBar
                   counts={detail.thread_reactions}
                   mine={detail.my_thread_reactions}
                   onToggle={(kind, active) => toggleReact("threads", detail.thread.id, kind, active)}
                 />
+                {isAdmin && (
+                  <div className="flex items-center gap-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => moderateThread(detail.thread.id, { pinned: !detail.thread.pinned })}
+                    >
+                      {detail.thread.pinned
+                        ? <><PinOff className="h-3.5 w-3.5 mr-1" /> Unpin</>
+                        : <><Pin className="h-3.5 w-3.5 mr-1" /> Pin</>}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => moderateThread(detail.thread.id, { locked: !detail.thread.locked })}
+                    >
+                      {detail.thread.locked
+                        ? <><Unlock className="h-3.5 w-3.5 mr-1" /> Unlock</>
+                        : <><Lock className="h-3.5 w-3.5 mr-1" /> Lock</>}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           </CardHeader>
@@ -502,6 +551,7 @@ export default function CommunityPage() {
                   {t.tags.slice(0, 3).map((tag) => (
                     <Badge key={tag} variant="secondary" className="text-[10px]">{tag}</Badge>
                   ))}
+                  {t.author_name && <span className="font-medium">{t.author_name}</span>}
                   <span>· {formatDate(t.last_activity_at)}</span>
                 </div>
               </div>

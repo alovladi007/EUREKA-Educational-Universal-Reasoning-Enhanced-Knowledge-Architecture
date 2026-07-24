@@ -111,7 +111,21 @@ async def list_threads(
             CommunityThread.body_md.ilike(pat),
         ))
     qry = qry.order_by(CommunityThread.pinned.desc(), CommunityThread.last_activity_at.desc()).limit(limit)
-    return list((await db.execute(qry)).scalars().all())
+    rows = list((await db.execute(qry)).scalars().all())
+    names = await _author_names(db, [r.user_id for r in rows])
+    out = []
+    for r in rows:
+        tr = ThreadResponse.model_validate(r)
+        tr.author_name = names.get(r.user_id)
+        out.append(tr)
+    return out
+
+
+async def _author_names(db: AsyncSession, user_ids: list[UUID]) -> dict[UUID, str]:
+    if not user_ids:
+        return {}
+    users = (await db.execute(select(User).where(User.id.in_(set(user_ids))))).scalars().all()
+    return {u.id: (u.display_name or f"{u.first_name} {u.last_name}") for u in users}
 
 
 async def _own_or_admin_thread(db: AsyncSession, tid: UUID, u: User) -> CommunityThread:
@@ -158,15 +172,21 @@ async def get_thread(
         )).all():
             mine.setdefault(tid_, []).append(str(kind_))
 
+    names = await _author_names(db, [t.user_id] + [p.user_id for p in posts])
+
     post_out = []
     for p in posts:
         pr = PostResponse.model_validate(p)
         pr.reactions = counts.get(p.id, {})
         pr.my_reactions = mine.get(p.id, [])
+        pr.author_name = names.get(p.user_id)
         post_out.append(pr)
 
+    thread_out = ThreadResponse.model_validate(t)
+    thread_out.author_name = names.get(t.user_id)
+
     return ThreadDetailResponse(
-        thread=ThreadResponse.model_validate(t),
+        thread=thread_out,
         posts=post_out,
         thread_reactions=counts.get(thread_id, {}),
         my_thread_reactions=mine.get(thread_id, []),
@@ -255,7 +275,35 @@ async def accept_post(
     t = await db.get(CommunityThread, p.thread_id)
     if t is None or (t.user_id != current_user.id and not _is_admin(current_user)):
         raise HTTPException(status_code=403, detail="only thread author can accept")
+    # Exclusive: a thread has at most one accepted answer.
+    others = (await db.execute(
+        select(CommunityPost).where(
+            CommunityPost.thread_id == p.thread_id,
+            CommunityPost.is_accepted_answer.is_(True),
+            CommunityPost.id != post_id,
+        )
+    )).scalars().all()
+    for o in others:
+        o.is_accepted_answer = False
     p.is_accepted_answer = True
+    await db.commit()
+    await db.refresh(p)
+    return p
+
+
+@router.delete("/community/posts/{post_id}/accept", response_model=PostResponse)
+async def unaccept_post(
+    post_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    p = await db.get(CommunityPost, post_id)
+    if p is None:
+        raise HTTPException(status_code=404, detail="post not found")
+    t = await db.get(CommunityThread, p.thread_id)
+    if t is None or (t.user_id != current_user.id and not _is_admin(current_user)):
+        raise HTTPException(status_code=403, detail="only thread author can unaccept")
+    p.is_accepted_answer = False
     await db.commit()
     await db.refresh(p)
     return p
