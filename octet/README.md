@@ -9,23 +9,33 @@ chemistry vertical of EUREKA, from general chemistry through organic.
 > diagnoses the belief behind every error and withholds solutions behind hint
 > ladders.
 
-Current state: Phase 0 and Phase 1 complete. See [docs/STATUS.md](docs/STATUS.md)
-for the honest register, including what is deliberately not built yet.
+Current state: Phases 0 through 3 complete. See
+[docs/STATUS.md](docs/STATUS.md) for the honest register, including what is
+deliberately not built yet.
 
 ## What exists today
 
 A deterministic chemistry grading engine with an independent verifier behind
-every grader, exposed over an authenticated API.
+every grader, a general chemistry course on top of it, and a web app.
 
-- 5 graders live: formula, balance, stoichiometry, multiple choice, equilibrium.
+- 8 graders live: formula, balance, stoichiometry, numeric with units,
+  multiple choice, equilibrium, structure, prediction.
 - Every answer key is verified by a second computational path before it is
   served. The formula key is checked by RDKit, the balancing key by
   conservation arithmetic that never calls SymPy, the stoichiometry key by a
   pint route through different units, the equilibrium key by substituting the
-  root back into the mass action expression.
-- 19 named misconceptions with literature citations, counterexamples and
+  root back into the mass action expression, the structure key by InChIKey
+  agreement, and a prediction key by running the simulation and comparing.
+- 60 curriculum nodes, 60 lessons in the six part arc, 22 templates, a curated
+  200 molecule library, and 18 Johnstone triangle views.
+- 26 named misconceptions with literature citations, counterexamples and
   remediation routing.
 - Three rung hint ladders on every template, enforced in CI and at the API.
+- Titration and equilibrium simulators solved exactly rather than through the
+  usual classroom approximations, wrapped in predict, observe, explain
+  activities whose ordering the server enforces.
+- A periodic table explorer over 118 elements that reports how much of each
+  trend is actually measured rather than filling the gaps.
 
 ## Quick start
 
@@ -35,13 +45,19 @@ cd octet
 pip install -e packages/chem_core
 pytest packages/chem_core/tests -q
 
-# The API
+# The API and the web app
 docker compose up -d
 curl localhost:8500/health
 curl localhost:8500/ready     # reports whether the grading engine self verified
+open http://localhost:4200
 ```
 
-The API requires a EUREKA issued token. OCTET does not own identity.
+The API requires a EUREKA issued token. OCTET does not own identity. Reaching
+OCTET from the EUREKA sidebar hands the current token over in the URL hash,
+which the app reads once and strips.
+
+`JWT_SECRET` must match EUREKA's, or every request is correctly rejected as
+having an unverifiable signature.
 
 ## Layout
 
@@ -49,7 +65,10 @@ The API requires a EUREKA issued token. OCTET does not own identity.
 octet/
   apps/api/            FastAPI service (AXIOM skeleton, OCTET_ env prefix)
     app/core/          settings, async DB session, EUREKA SSO bridge
-    app/domains/       grading (with the sandbox), chemistry models
+    app/data/          curriculum, lessons, molecules, periodic table,
+                       triangle views, simulation scenarios
+    app/domains/       grading (with the sandbox), chemistry, adaptive
+  apps/web/            Next.js app on 4200, opened from the EUREKA sidebar
   packages/chem_core/  every grader, verifier, misconception, hint ladder
   docs/                integration contract, status
 ```
@@ -71,6 +90,12 @@ can be tested in isolation from everything else.
 6. Chemistry facts live in reviewed data files with cited sources, never inline
    in code, and nothing claims expert review it has not had.
 7. Grading is sandboxed before it is publicly reachable.
+8. A prediction is graded before the result is shown, and cannot be revised
+   afterwards. Attempt state travels in a signed ticket so this holds across
+   restarts and workers rather than only inside one process.
+9. Nothing is scored that cannot be scored honestly. Written reflection is
+   recorded and explicitly not graded, because there is no reviewed rubric for
+   free text chemistry explanation.
 
 ## Safety
 

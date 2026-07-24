@@ -79,6 +79,8 @@ export default function DashboardPage() {
           <HeaderLink href="/learn">Learn</HeaderLink>
           <HeaderLink href="/practice">Practice</HeaderLink>
           <HeaderLink href="/path">Path</HeaderLink>
+          <HeaderLink href="/explore">Explore</HeaderLink>
+          <HeaderLink href="/simulations">Simulations</HeaderLink>
         </>
       }
     >
@@ -149,6 +151,16 @@ export default function DashboardPage() {
                 href="/path"
                 title="Path"
                 detail="The planned route, with a reason on every node."
+              />
+              <NavCard
+                href="/explore"
+                title="Explore"
+                detail="Periodic table, molecule library and the chemistry triangle."
+              />
+              <NavCard
+                href="/simulations"
+                title="Simulations"
+                detail="Predict, observe, explain. The result waits for your prediction."
               />
             </div>
           </section>

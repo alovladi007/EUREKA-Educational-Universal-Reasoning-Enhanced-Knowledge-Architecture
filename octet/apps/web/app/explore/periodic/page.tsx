@@ -402,8 +402,8 @@ function UncolouredLayer({
         The table in this build draws three colour layers: electronegativity,
         atomic radius and first ionization energy. It does not draw{' '}
         {meta.label.toLowerCase()}, so the values are listed here instead of
-        being pushed through another layer's scale and legend. Every element is
-        still selectable.
+        being pushed through a colour scale and a legend that name a different
+        property. Every element is still selectable.
       </p>
 
       <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 lg:grid-cols-6">

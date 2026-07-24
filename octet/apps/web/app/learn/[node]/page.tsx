@@ -3,7 +3,14 @@
 import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Lesson, getCurriculumNodes, getLesson } from '@/lib/api';
+import {
+  Lesson,
+  TriangleView as TriangleViewData,
+  getCurriculumNodes,
+  getLesson,
+  getTriangle,
+} from '@/lib/api';
+import TriangleView from '@/components/TriangleView';
 import {
   Card,
   ErrorPanel,
@@ -35,6 +42,7 @@ export default function LessonPage() {
 
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [title, setTitle] = useState<string>('');
+  const [triangle, setTriangle] = useState<TriangleViewData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -87,6 +95,27 @@ export default function LessonPage() {
     };
   }, [nodeCode]);
 
+  // The triangle view, where the node has one. Only 18 nodes are triangle
+  // eligible, so a 404 here is the normal case rather than a fault, and the
+  // section simply does not render. Nothing is invented to fill the space.
+  useEffect(() => {
+    let cancelled = false;
+    setTriangle(null);
+    (async () => {
+      try {
+        const result = await getTriangle(nodeCode);
+        if (!cancelled) {
+          setTriangle(result);
+        }
+      } catch {
+        // No triangle view for this node.
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [nodeCode]);
+
   return (
     <Page
       nav={
@@ -117,6 +146,9 @@ export default function LessonPage() {
           <ArcPart index={1} label="Objective" body={lesson.objective} />
           <ArcPart index={2} label="Build on" body={lesson.build_on} />
           <ArcPart index={3} label="Core idea" body={lesson.core_idea} />
+
+          {triangle && <Triangle view={triangle} />}
+
           <ArcPart
             index={4}
             label="Worked example"
@@ -142,6 +174,51 @@ export default function LessonPage() {
         </article>
       )}
     </Page>
+  );
+}
+
+// Johnstone's three levels, placed immediately after the core idea because
+// that is where they do their work. The failure this addresses is a course
+// moving between levels without saying so, which cannot be fixed by putting
+// the three levels on a separate page the learner visits later.
+//
+// The component takes the three panels. connector and pitfall are rendered
+// here instead, because the component has no slot for them and they are the
+// two fields that carry the teaching: the connector names the one thing that
+// is identical across all three levels, and the pitfall names the specific
+// level confusion learners fall into on this topic.
+function Triangle({ view }: { view: TriangleViewData }) {
+  return (
+    <section className="space-y-3" aria-label="The same idea at three levels">
+      <TriangleView
+        nodeTitle={view.title}
+        macroscopic={{ caption: view.macroscopic }}
+        particulate={{ caption: view.particulate }}
+        symbolic={{ caption: view.symbolic, equation: view.katex }}
+      />
+
+      <Card>
+        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+          What is the same in all three
+        </h3>
+        <p className="mt-1 text-[15px] leading-relaxed text-card-foreground">
+          {view.connector}
+        </p>
+      </Card>
+
+      <Card>
+        <div className="flex flex-wrap items-center gap-2">
+          <Pill tone="amber">level confusion</Pill>
+        </div>
+        <p className="mt-2 text-[15px] leading-relaxed text-card-foreground">
+          {view.pitfall}
+        </p>
+      </Card>
+
+      {view.caption && (
+        <p className="text-xs text-muted-foreground">{view.caption}</p>
+      )}
+    </section>
   );
 }
 
