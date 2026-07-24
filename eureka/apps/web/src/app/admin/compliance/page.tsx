@@ -73,7 +73,9 @@ export default function CompliancePage() {
   useEffect(() => {
     (async () => {
       try {
-        const data = await api<{ items: Member[] }>("/users/?limit=200");
+        // GET /users/ caps limit at 100 (le=100) — 200 got a 422 and the
+        // member list silently failed.
+        const data = await api<{ items: Member[] }>("/users/?limit=100");
         const map: Record<string, string> = {};
         data.items.forEach((m) => (map[m.id] = m.email));
         setEmailById(map);
