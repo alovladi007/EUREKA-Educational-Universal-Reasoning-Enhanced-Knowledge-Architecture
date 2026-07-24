@@ -4,8 +4,9 @@
  * Dashboard Futures — the EUREKA roadmap.
  *
  * Pure static page — no fetches, no defunct :8110 microservice calls,
- * no fabricated "AR/VR Education Future" or "BCI" content.
- * Source of truth: docs/STATUS.md + docs/ROADMAP.md in this repo.
+ * no fabricated "AR/VR Education Future" or "BCI" content. The roadmap
+ * below is hand-maintained; the "Project docs" links point at files that
+ * actually exist in the repo.
  */
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -43,11 +44,13 @@ const NEXT: { label: string; detail: string }[] = [
   { label: "16.7", detail: "Research Tools II: physics + chemistry + biology + citation-aware Q&A" },
 ];
 
+// Only files that actually exist in the repo (the former STATUS.md /
+// ROADMAP.md / ARCHITECTURE.md links 404'd — those docs don't exist).
 const DOCS: { label: string; path: string }[] = [
   { label: "README.md", path: "README.md" },
-  { label: "docs/STATUS.md", path: "docs/STATUS.md" },
-  { label: "docs/ROADMAP.md", path: "docs/ROADMAP.md" },
-  { label: "docs/ARCHITECTURE.md", path: "docs/ARCHITECTURE.md" },
+  { label: "docs/PROJECT_SUMMARY.md", path: "docs/PROJECT_SUMMARY.md" },
+  { label: "docs/BACKEND_ARCHITECTURE.md", path: "docs/BACKEND_ARCHITECTURE.md" },
+  { label: "docs/INTEGRATIONS_FEATURE_FLAGS.md", path: "docs/INTEGRATIONS_FEATURE_FLAGS.md" },
 ];
 
 export default function DashboardFuturesPage() {
@@ -59,9 +62,8 @@ export default function DashboardFuturesPage() {
           Futures — the EUREKA roadmap
         </h1>
         <p className="text-muted-foreground mt-1">
-          Where the platform actually is, drawn from this repo&apos;s{" "}
-          <span className="font-mono text-xs">docs/STATUS.md</span> and{" "}
-          <span className="font-mono text-xs">docs/ROADMAP.md</span>.
+          A hand-maintained snapshot of where the platform is and where it&apos;s
+          headed. Project docs are linked below.
         </p>
       </div>
 
@@ -112,9 +114,9 @@ export default function DashboardFuturesPage() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="text-base">Anchor docs</CardTitle>
+          <CardTitle className="text-base">Project docs</CardTitle>
           <CardDescription>
-            Source of truth for every claim on this page.
+            Reference documentation in the repository.
           </CardDescription>
         </CardHeader>
         <CardContent className="grid sm:grid-cols-2 gap-2 text-sm">

@@ -57,8 +57,7 @@ export default function CommunityPublicPage() {
                 Threaded discussions
               </CardTitle>
               <CardDescription>
-                Ask, answer, and follow up. Markdown, code blocks, and LaTeX
-                math render inline.
+                Ask, answer, and follow up. Markdown and code blocks render inline.
               </CardDescription>
             </CardHeader>
           </Card>

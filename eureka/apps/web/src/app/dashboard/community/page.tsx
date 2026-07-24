@@ -18,6 +18,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
+import { Markdown } from "@/components/ui/markdown";
 import {
   MessageSquare, Plus, ThumbsUp, Lock, Pin, ArrowLeft, Send, CheckCircle2,
 } from "lucide-react";
@@ -230,7 +231,7 @@ export default function CommunityPage() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="whitespace-pre-wrap text-sm">{detail.thread.body_md}</div>
+            <Markdown className="text-sm">{detail.thread.body_md}</Markdown>
           </CardContent>
         </Card>
 
@@ -248,7 +249,7 @@ export default function CommunityPage() {
                         <CheckCircle2 className="h-3.5 w-3.5" /> Accepted answer
                       </div>
                     )}
-                    <div className="whitespace-pre-wrap text-sm">{p.body_md}</div>
+                    <Markdown className="text-sm">{p.body_md}</Markdown>
                     <div className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
                       <span className="font-mono">{p.user_id.slice(0, 8)}</span>
                       <span>· {formatDate(p.created_at)}</span>

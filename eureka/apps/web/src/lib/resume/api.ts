@@ -116,15 +116,6 @@ export async function apiGenerateSummary(data: { title: string; years: string; e
   return handleResponse<{ variants: string[] }>(res);
 }
 
-export async function apiImproveBullet(data: { bullet: string; context?: string }) {
-  const res = await fetch(`${API_BASE}/resumes/ai/improve-bullet`, {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify(data),
-  });
-  return handleResponse<{ improved: string[] }>(res);
-}
-
 export async function apiATSScore(data: { resume_data: Record<string, unknown>; job_description?: string }) {
   const res = await fetch(`${API_BASE}/resumes/ai/ats-score`, {
     method: "POST",
@@ -170,21 +161,11 @@ export async function apiCheckTone(data: { text: string }) {
   return handleResponse<{ issues: Array<{ original: string; suggestion: string; reason: string }>; tone_score: number }>(res);
 }
 
-// ── Export endpoints ─────────────────────────────────────────
-
-export async function apiExportPDF(data: { resume_id: string; template_id?: string; paper_size?: string }) {
-  const res = await fetch(`${API_BASE}/exports/pdf`, {
-    method: "POST",
-    headers: getHeaders(),
-    body: JSON.stringify(data),
-  });
-  return handleResponse<{ job_id: string; status: string }>(res);
-}
-
-export async function apiExportStatus(jobId: string) {
-  const res = await fetch(`${API_BASE}/exports/status/${jobId}`, { headers: getHeaders() });
-  return handleResponse<{ job_id: string; status: string; file_url?: string }>(res);
-}
+// PDF export is done client-side via the browser print dialog (see
+// ExportDialog); DOCX uses the real /exports/docx endpoint. The former
+// /exports/pdf + /exports/status job endpoints were a stub (accepted a job
+// no worker ever ran, always reported "completed", pointed at a download
+// route that didn't exist) and have been removed.
 
 export async function apiStreamAI(
   data: { prompt_type: string; text: string; title?: string; company?: string; years?: string },

@@ -288,14 +288,16 @@ const SettingsPage: React.FC = () => {
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Email Address</label>
             <div className="flex items-center space-x-2">
+              {/* Read-only: there is no change-email endpoint yet, and the
+                  save path never sent email — an editable field silently
+                  discarded edits. Kept read-only until a verified
+                  change-email flow exists. */}
               <input
                 type="email"
                 value={settings.profile.email}
-                onChange={e => setSettings({
-                  ...settings,
-                  profile: { ...settings.profile, email: e.target.value }
-                })}
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                readOnly
+                aria-readonly="true"
+                className="flex-1 px-4 py-2 border border-gray-300 bg-gray-50 text-gray-600 rounded-lg cursor-not-allowed"
               />
               {settings.profile.emailVerified && (
                 <span className="px-3 py-2 bg-green-100 text-green-800 text-sm font-medium rounded-lg">
@@ -303,6 +305,10 @@ const SettingsPage: React.FC = () => {
                 </span>
               )}
             </div>
+            <p className="mt-1 text-xs text-gray-500">
+              To change your email, contact support — email changes require
+              re-verification and aren&apos;t self-service yet.
+            </p>
           </div>
 
           <div>

@@ -23,25 +23,6 @@ except ImportError:
 router = APIRouter(prefix="/exports", tags=["resume-exports"])
 
 
-class PDFExportRequest(BaseModel):
-    resume_id: str
-    template_id: str = "meridian"
-    paper_size: str = "letter"  # "letter" | "a4"
-
-
-class PDFExportResponse(BaseModel):
-    job_id: str
-    status: str = "queued"
-    message: str = "PDF generation has been queued"
-
-
-class ExportStatusResponse(BaseModel):
-    job_id: str
-    status: str  # "queued" | "processing" | "completed" | "failed"
-    file_url: Optional[str] = None
-    error: Optional[str] = None
-
-
 class DOCXExportRequest(BaseModel):
     resume_data: dict
     template_id: str = "meridian"
@@ -53,58 +34,6 @@ class TemplateInfo(BaseModel):
     description: str
     best_for: str
     preview_url: Optional[str] = None
-
-
-# ── PDF Export ───────────────────────────────────────────────
-
-
-@router.post("/pdf", response_model=PDFExportResponse)
-async def export_pdf(
-    request: PDFExportRequest,
-    db: AsyncSession = Depends(get_db),
-    current_user=Depends(get_current_user),
-):
-    """Queue a PDF export job for one of the caller's OWN resumes.
-
-    Auth is REQUIRED (it was commented out "for dev"). We also verify the
-    resume belongs to the caller before queueing, so an authenticated user
-    can't enqueue exports of someone else's resume by guessing IDs.
-    """
-    # Ownership gate: get_resume returns None unless the resume exists AND
-    # belongs to current_user.
-    resume = await get_resume(db, request.resume_id, current_user.id)
-    if not resume:
-        raise HTTPException(status_code=404, detail="Resume not found")
-
-    # NOTE: the BullMQ + Puppeteer render worker is a future integration not
-    # yet part of this Python service — the job is accepted but no worker
-    # completes it. /exports/docx is a fully-working real download today.
-    import uuid
-    job_id = str(uuid.uuid4())
-
-    return PDFExportResponse(
-        job_id=job_id,
-        status="queued",
-        message="PDF generation queued. Poll /exports/status/{job_id} for completion.",
-    )
-
-
-@router.get("/status/{job_id}", response_model=ExportStatusResponse)
-async def export_status(
-    job_id: str,
-    current_user=Depends(get_current_user),
-):
-    """Poll the status of a PDF export job. Auth REQUIRED (was disabled).
-
-    STUB: there's no BullMQ jobs table to look the id up in yet, so this
-    returns a placeholder. Wire the worker + a jobs table to make it real
-    (and to scope job lookups to current_user.id).
-    """
-    return ExportStatusResponse(
-        job_id=job_id,
-        status="completed",
-        file_url=f"/api/v1/exports/download/{job_id}",
-    )
 
 
 # ── DOCX Export ──────────────────────────────────────────────
