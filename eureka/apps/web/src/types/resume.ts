@@ -183,6 +183,11 @@ export interface ResumeDocument {
   shareSlug?: string;
   deletedAt?: string; // Soft delete — recoverable for 30 days
   sharePassword?: string; // Optional password protection for shared links
+  // Backend resume row id, set once the local doc has been saved to the
+  // cloud. Sharing and cloud upsert key off this — without it, "Save to
+  // cloud" would create duplicate rows and share links couldn't persist
+  // server-side (the old cross-device-sharing bug).
+  cloudId?: string;
 }
 
 // ═══════════════════════════════════════════════════════════════

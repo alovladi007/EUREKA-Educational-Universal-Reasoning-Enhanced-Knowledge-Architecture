@@ -71,6 +71,19 @@ interface ResumeStore {
   duplicateDocument: (id: string) => string;
   setActiveDocument: (id: string | null) => void;
   renameDocument: (id: string, title: string) => void;
+  // Cloud linkage (cross-device sharing + upsert). setCloudId records the
+  // backend row id + share state on a local doc; loadCloudResume opens a
+  // cloud row in the editor (returns the local doc id).
+  setCloudId: (id: string, cloudId: string, share?: { isPublic?: boolean; shareSlug?: string }) => void;
+  loadCloudResume: (row: {
+    id: string;
+    templateId?: string;
+    data: ResumeData;
+    sectionVisibility?: Record<SectionId, boolean>;
+    title?: string;
+    isPublic?: boolean;
+    shareSlug?: string;
+  }) => string;
 
   // Template
   setTemplate: (templateId: TemplateId) => void;
@@ -310,6 +323,43 @@ export const useResumeStore = create<ResumeStore>()(
           state.activeDocumentId = newId;
         });
         return newId;
+      },
+
+      setCloudId: (id, cloudId, share) =>
+        set((state) => {
+          const d = state.documents[id];
+          if (!d) return;
+          d.cloudId = cloudId;
+          if (share?.isPublic !== undefined) d.isPublic = share.isPublic;
+          if (share?.shareSlug !== undefined) d.shareSlug = share.shareSlug;
+        }),
+
+      loadCloudResume: (row) => {
+        // Reuse an already-open local doc for this cloud row if present, so
+        // reopening from the cloud list doesn't spawn duplicates.
+        const existing = Object.values(get().documents).find(
+          (d) => d.cloudId === row.id && !d.deletedAt,
+        );
+        const targetId = existing?.id ?? generateId("resume");
+        set((state) => {
+          const now = new Date().toISOString();
+          const prev = state.documents[targetId];
+          state.documents[targetId] = {
+            id: targetId,
+            cloudId: row.id,
+            title: row.title || prev?.title || "Untitled resume",
+            data: structuredClone(row.data),
+            templateId: (row.templateId as ResumeDocument["templateId"]) || prev?.templateId || "meridian",
+            sectionVisibility:
+              row.sectionVisibility || prev?.sectionVisibility || ({} as Record<SectionId, boolean>),
+            createdAt: prev?.createdAt || now,
+            updatedAt: now,
+            isPublic: row.isPublic ?? prev?.isPublic ?? false,
+            shareSlug: row.shareSlug ?? prev?.shareSlug,
+          };
+          state.activeDocumentId = targetId;
+        });
+        return targetId;
       },
 
       setActiveDocument: (id) => set({ activeDocumentId: id }),

@@ -443,6 +443,9 @@ async def upvote_resource(
     v = LearningResourceVote(resource_id=resource_id, user_id=current_user.id)
     db.add(v)
     try:
+        # upvote_count is maintained by the DB trigger trg_resource_vote_ins
+        # (bump_resource_upvote, ops/db/20_community_resources.sql) — do NOT
+        # also bump it here or the count doubles.
         await db.commit()
     except IntegrityError:
         await db.rollback()
@@ -467,6 +470,7 @@ async def unupvote_resource(
     )).scalar_one_or_none()
     if v is not None:
         await db.delete(v)
+        # Counter decremented by the DB trigger trg_resource_vote_del.
         await db.commit()
     r = await db.get(LearningResource, resource_id)
     if r is None:

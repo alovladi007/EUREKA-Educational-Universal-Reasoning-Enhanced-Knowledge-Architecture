@@ -45,7 +45,9 @@ type AuditEvent = {
   actor_user_id?: string | null;
   event_name?: string;
   severity?: string;
-  created_at?: string;
+  // The audit API returns `occurred_at` (schemas/integrations.py) — this
+  // page previously read `created_at`, so the When column always showed "—".
+  occurred_at?: string;
   extra?: unknown;
 };
 
@@ -266,7 +268,7 @@ export default function DashboardAdminPage() {
                   {audit.map((ev, i) => (
                     <tr key={ev.id || i} className="border-b last:border-0">
                       <td className="py-2 pr-3 text-xs text-muted-foreground">
-                        {formatDate(ev.created_at)}
+                        {formatDate(ev.occurred_at)}
                       </td>
                       <td className="py-2 pr-3 font-mono text-xs">
                         {toText(ev.event_name) || "—"}

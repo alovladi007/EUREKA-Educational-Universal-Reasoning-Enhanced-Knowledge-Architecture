@@ -1,15 +1,22 @@
 """Resume notification + OG image + monitoring endpoints."""
 
 import logging
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional, List
 from app.core.config import settings
+from app.utils.dependencies import get_current_active_user
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/resumes/notifications", tags=["notifications"])
+# Router-level auth (Wave 1 security fix): the email endpoint could relay
+# arbitrary mail via configured SMTP if left unauthenticated.
+router = APIRouter(
+    prefix="/resumes/notifications",
+    tags=["notifications"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 # ── Email Notifications ──────────────────────────────────────

@@ -1,11 +1,12 @@
 """Resume billing endpoints — Stripe checkout + subscription management."""
 
 import logging
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Depends, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional
 from app.core.config import settings
+from app.utils.dependencies import get_current_active_user
 
 logger = logging.getLogger(__name__)
 
@@ -30,7 +31,12 @@ PLAN_PRICES = {
 
 
 @router.post("/checkout", response_model=CheckoutResponse)
-async def create_checkout(request: CheckoutRequest):
+async def create_checkout(
+    request: CheckoutRequest,
+    # Wave 1 security fix: checkout requires a logged-in user. The webhook
+    # below stays public by design (Stripe calls it; signature is its auth).
+    _user=Depends(get_current_active_user),
+):
     """Create a Stripe Checkout session for plan upgrade."""
     stripe_key = getattr(settings, "STRIPE_SECRET_KEY", None)
     if not stripe_key:

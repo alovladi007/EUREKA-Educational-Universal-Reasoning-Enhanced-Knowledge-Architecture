@@ -5,14 +5,21 @@ import re
 import logging
 from typing import List, Optional
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 from app.core.config import settings
+from app.utils.dependencies import get_current_active_user
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/resumes/ai", tags=["resume-ai"])
+# Router-level auth (Wave 1 security fix): every endpoint here spends real
+# Anthropic tokens — unauthenticated access was an open cost-abuse hole.
+router = APIRouter(
+    prefix="/resumes/ai",
+    tags=["resume-ai"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 # ── AI Client Setup ──────────────────────────────────────────
 

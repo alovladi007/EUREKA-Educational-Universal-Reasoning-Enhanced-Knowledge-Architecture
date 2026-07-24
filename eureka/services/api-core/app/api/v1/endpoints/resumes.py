@@ -1,5 +1,7 @@
 """Resume API endpoints — async (rewritten 2026-05 to fix AsyncSession bug)."""
 
+import secrets
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List
@@ -115,11 +117,21 @@ async def api_update_share(
     db: AsyncSession = Depends(get_db),
     current_user=Depends(get_current_user),
 ):
-    """Toggle public/private and optionally set custom slug."""
-    update_data = ResumeUpdate(
-        is_public=share_in.is_public,
-        slug=share_in.slug,
-    )
+    """Toggle public/private and optionally set custom slug.
+
+    Auto-assigns a URL-safe slug when a resume is made public without one, so
+    the share link actually resolves (previously going public left slug NULL
+    and the /shared/{slug} link was unusable).
+    """
+    existing = await get_resume(db, resume_id, current_user.id)
+    if not existing:
+        raise HTTPException(status_code=404, detail="Resume not found")
+
+    slug = share_in.slug or existing.slug
+    if share_in.is_public and not slug:
+        slug = secrets.token_urlsafe(8)
+
+    update_data = ResumeUpdate(is_public=share_in.is_public, slug=slug)
     resume = await update_resume(db, resume_id, current_user.id, update_data)
     if not resume:
         raise HTTPException(status_code=404, detail="Resume not found")

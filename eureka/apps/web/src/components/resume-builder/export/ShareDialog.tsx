@@ -6,8 +6,8 @@ import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Share2, X, Copy, Check, Globe, Lock, Eye, Link2, ExternalLink } from "lucide-react";
-import { generateId } from "@/lib/resume/default-data";
+import { Share2, X, Copy, Check, Globe, Lock, Link2, ExternalLink, Loader2 } from "lucide-react";
+import { apiCreateResume, apiUpdateShare } from "@/lib/resume/api";
 
 interface ShareDialogProps {
   open: boolean;
@@ -17,20 +17,44 @@ interface ShareDialogProps {
 export function ShareDialog({ open, onClose }: ShareDialogProps) {
   const doc = useResumeStore((s) => s.activeDocument());
   const activeId = useResumeStore((s) => s.activeDocumentId);
+  const setCloudId = useResumeStore((s) => s.setCloudId);
   const [copied, setCopied] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const togglePublic = useCallback(() => {
-    if (!activeId) return;
-    useResumeStore.setState((state) => {
-      const d = state.documents[activeId];
-      if (d) {
-        d.isPublic = !d.isPublic;
-        if (d.isPublic && !d.shareSlug) {
-          d.shareSlug = generateId("share").slice(0, 10);
-        }
+  // Toggling public now persists to the BACKEND so the link works for real
+  // recipients on any device (the old bug: share state lived only in the
+  // sharer's browser store, so everyone else got "Resume Not Found").
+  const togglePublic = useCallback(async () => {
+    if (!activeId || !doc) return;
+    setBusy(true);
+    setError(null);
+    try {
+      const goingPublic = !doc.isPublic;
+      // The resume must exist server-side before it can be shared.
+      let cloudId = doc.cloudId;
+      if (!cloudId) {
+        const fullName = `${doc.data.header.firstName} ${doc.data.header.lastName}`.trim();
+        const created = await apiCreateResume({
+          title: fullName || doc.data.header.headline || "Untitled resume",
+          template_id: doc.templateId,
+          data: { ...doc.data, meta: { ...(doc.data.meta ?? {}), sectionVisibility: doc.sectionVisibility } } as any,
+        });
+        cloudId = (created as any).id;
+        if (cloudId) setCloudId(activeId, cloudId);
       }
-    });
-  }, [activeId]);
+      if (!cloudId) throw new Error("Could not save resume to the cloud.");
+      const updated = (await apiUpdateShare(cloudId, { is_public: goingPublic })) as any;
+      setCloudId(activeId, cloudId, {
+        isPublic: !!updated.is_public,
+        shareSlug: updated.slug ?? undefined,
+      });
+    } catch (e) {
+      setError(String((e as Error).message));
+    } finally {
+      setBusy(false);
+    }
+  }, [activeId, doc, setCloudId]);
 
   const copyLink = useCallback(() => {
     if (!doc?.shareSlug) return;
@@ -77,14 +101,24 @@ export function ShareDialog({ open, onClose }: ShareDialogProps) {
             </div>
           </div>
           <button
-            className={`relative w-11 h-6 rounded-full transition-colors ${doc.isPublic ? "bg-green-500" : "bg-gray-300"}`}
+            disabled={busy}
+            aria-pressed={doc.isPublic}
+            className={`relative w-11 h-6 rounded-full transition-colors disabled:opacity-60 ${doc.isPublic ? "bg-green-500" : "bg-gray-300"}`}
             onClick={togglePublic}
           >
-            <span
-              className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${doc.isPublic ? "translate-x-5" : ""}`}
-            />
+            {busy ? (
+              <Loader2 className="absolute inset-0 m-auto w-4 h-4 animate-spin text-white" />
+            ) : (
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${doc.isPublic ? "translate-x-5" : ""}`}
+              />
+            )}
           </button>
         </div>
+
+        {error && (
+          <p className="text-xs text-red-500">{error}</p>
+        )}
 
         {/* Share Link */}
         {doc.isPublic && shareUrl && (
@@ -122,72 +156,10 @@ export function ShareDialog({ open, onClose }: ShareDialogProps) {
               </Button>
             </div>
 
-            {/* Password Protection */}
-            <div className="space-y-1">
-              <Label className="text-xs flex items-center gap-1">
-                <Lock className="w-3 h-3" /> Password Protection
-                <span className="text-muted-foreground">(optional, Pro)</span>
-              </Label>
-              <Input
-                className="h-8 text-sm"
-                type="password"
-                placeholder="Leave empty for no password"
-                value={doc.sharePassword || ""}
-                onChange={(e) => {
-                  if (!activeId) return;
-                  useResumeStore.setState((state) => {
-                    const d = state.documents[activeId];
-                    if (d) d.sharePassword = e.target.value || undefined;
-                  });
-                }}
-              />
-            </div>
-
-            {/* Custom Slug */}
-            <div className="space-y-1">
-              <Label className="text-xs">Custom URL Slug (Pro)</Label>
-              <div className="flex gap-1">
-                <span className="text-xs text-muted-foreground flex items-center">{`${typeof window !== "undefined" ? window.location.origin : ""}/r/`}</span>
-                <Input
-                  className="h-8 text-sm flex-1"
-                  value={doc.shareSlug || ""}
-                  onChange={(e) => {
-                    if (!activeId) return;
-                    const slug = e.target.value.replace(/[^a-zA-Z0-9-]/g, "").slice(0, 30);
-                    useResumeStore.setState((state) => {
-                      const d = state.documents[activeId];
-                      if (d) d.shareSlug = slug;
-                    });
-                  }}
-                  placeholder="my-resume"
-                />
-              </div>
-            </div>
-
-            {/* Analytics placeholder */}
-            <Card className="p-3 bg-muted/50">
-              <div className="flex items-center gap-2 mb-2">
-                <Eye className="w-4 h-4 text-muted-foreground" />
-                <span className="text-xs font-medium text-muted-foreground">Link Analytics</span>
-              </div>
-              <div className="grid grid-cols-3 gap-2 text-center">
-                <div>
-                  <p className="text-lg font-bold">0</p>
-                  <p className="text-[10px] text-muted-foreground">Total Views</p>
-                </div>
-                <div>
-                  <p className="text-lg font-bold">0</p>
-                  <p className="text-[10px] text-muted-foreground">Unique Visitors</p>
-                </div>
-                <div>
-                  <p className="text-lg font-bold">—</p>
-                  <p className="text-[10px] text-muted-foreground">Last Viewed</p>
-                </div>
-              </div>
-              <p className="text-[10px] text-muted-foreground text-center mt-1">
-                Analytics tracked when backend is connected
-              </p>
-            </Card>
+            <p className="text-[11px] text-muted-foreground">
+              This link is served from your account, so it works for anyone on
+              any device. Turning sharing off makes it private again immediately.
+            </p>
           </div>
         )}
       </Card>

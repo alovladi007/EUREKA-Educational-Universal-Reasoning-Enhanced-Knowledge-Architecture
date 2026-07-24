@@ -1,15 +1,22 @@
 """Resume import endpoints — PDF text extraction + AI parsing."""
 
 import logging
-from fastapi import APIRouter, HTTPException, UploadFile, File
+from fastapi import APIRouter, Depends, HTTPException, UploadFile, File
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import Optional
 from app.core.config import settings
+from app.utils.dependencies import get_current_active_user
 
 logger = logging.getLogger(__name__)
 
-router = APIRouter(prefix="/resumes/import", tags=["resume-import"])
+# Router-level auth (Wave 1 security fix): PDF parsing burns CPU and the AI
+# parse spends real Anthropic tokens — this was open to unauthenticated abuse.
+router = APIRouter(
+    prefix="/resumes/import",
+    tags=["resume-import"],
+    dependencies=[Depends(get_current_active_user)],
+)
 
 
 class ImportResponse(BaseModel):

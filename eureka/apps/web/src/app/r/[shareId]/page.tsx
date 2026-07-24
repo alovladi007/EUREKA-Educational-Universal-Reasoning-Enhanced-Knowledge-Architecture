@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import { useResumeStore } from "@/stores/resume";
+import { apiGetPublicResume } from "@/lib/resume/api";
 import { MeridianTemplate } from "@/components/resume-builder/templates/MeridianTemplate";
 import { AtlasTemplate } from "@/components/resume-builder/templates/AtlasTemplate";
 import { PrismTemplate } from "@/components/resume-builder/templates/PrismTemplate";
@@ -35,16 +36,39 @@ export default function SharedResumePage() {
   const [notFound, setNotFound] = useState(false);
 
   useEffect(() => {
-    // Find the resume by share slug
-    const found = Object.values(documents).find(
-      (doc) => doc.shareSlug === shareId && doc.isPublic
-    );
-    if (found) {
-      setResume(found);
-    } else {
-      // In production, this would call the backend API
-      setNotFound(true);
-    }
+    let cancelled = false;
+    (async () => {
+      // Primary path: fetch the shared resume from the backend so the link
+      // resolves for ANY visitor, not just the browser that created it.
+      try {
+        const row: any = await apiGetPublicResume(shareId);
+        if (cancelled) return;
+        const cfg = row.template_config ?? {};
+        setResume({
+          id: row.id,
+          title: row.title ?? "",
+          data: row.data,
+          templateId: (row.template_id as ResumeDocument["templateId"]) ?? "meridian",
+          sectionVisibility: cfg.sectionVisibility ?? row.data?.meta?.sectionVisibility ?? {},
+          createdAt: row.created_at ?? "",
+          updatedAt: row.updated_at ?? "",
+          isPublic: true,
+        } as ResumeDocument);
+        return;
+      } catch {
+        // Fall through to the local store (same-browser preview before the
+        // first cloud save).
+      }
+      const found = Object.values(documents).find(
+        (doc) => doc.shareSlug === shareId && doc.isPublic,
+      );
+      if (cancelled) return;
+      if (found) setResume(found);
+      else setNotFound(true);
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [shareId, documents]);
 
   if (notFound) {

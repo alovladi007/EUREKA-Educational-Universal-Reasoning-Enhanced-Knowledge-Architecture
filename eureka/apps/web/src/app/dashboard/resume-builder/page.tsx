@@ -40,6 +40,8 @@ export default function ResumeBuilderPage() {
   const duplicateDocument = useResumeStore((s) => s.duplicateDocument);
   const setActiveDocument = useResumeStore((s) => s.setActiveDocument);
   const renameDocument = useResumeStore((s) => s.renameDocument);
+  const setCloudId = useResumeStore((s) => s.setCloudId);
+  const loadCloudResume = useResumeStore((s) => s.loadCloudResume);
   const [showImport, setShowImport] = useState(false);
   const [showWizard, setShowWizard] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
@@ -78,16 +80,45 @@ export default function ResumeBuilderPage() {
     try {
       const fullName = `${doc.data.header.firstName} ${doc.data.header.lastName}`.trim();
       const title = fullName || doc.data.header.headline || "Untitled resume";
-      await api("/resumes", {
-        method: "POST",
-        body: JSON.stringify({
-          title,
-          template_id: doc.templateId,
-          data: doc.data,
-          template_config: doc.data.meta ?? null,
-        }),
+      // Persist sectionVisibility alongside meta so a shared/reopened resume
+      // renders identically to the editor.
+      const body = JSON.stringify({
+        title,
+        template_id: doc.templateId,
+        data: doc.data,
+        template_config: { ...(doc.data.meta ?? {}), sectionVisibility: doc.sectionVisibility },
       });
+      // Upsert: PATCH the existing cloud row instead of always POSTing (which
+      // spawned a duplicate on every save). Record the id for next time.
+      const saved = doc.cloudId
+        ? await api<CloudResume>(`/resumes/${doc.cloudId}`, { method: "PATCH", body })
+        : await api<CloudResume>("/resumes", { method: "POST", body });
+      if (saved?.id) setCloudId(activeDocumentId, saved.id);
       await refreshCloud();
+    } catch (e) {
+      setCloudError(String((e as Error).message));
+    } finally {
+      setCloudBusy(false);
+    }
+  };
+
+  // Open a cloud-saved resume in the editor (fixes "cloud list was display
+  // only — a saved resume could never be restored").
+  const openCloudResume = async (id: string) => {
+    setCloudBusy(true);
+    setCloudError(null);
+    try {
+      const row = await api<any>(`/resumes/${id}`);
+      const cfg = row.template_config ?? {};
+      loadCloudResume({
+        id: row.id,
+        templateId: row.template_id,
+        data: row.data,
+        sectionVisibility: cfg.sectionVisibility,
+        title: row.title,
+        isPublic: row.is_public,
+        shareSlug: row.slug ?? undefined,
+      });
     } catch (e) {
       setCloudError(String((e as Error).message));
     } finally {
@@ -237,7 +268,7 @@ export default function ResumeBuilderPage() {
         {cloudLoaded && cloudResumes.length > 0 && (
           <ul className="mt-3 divide-y divide-border/60">
             {cloudResumes.slice(0, 8).map((r) => (
-              <li key={r.id} className="py-2 flex items-center justify-between text-sm">
+              <li key={r.id} className="py-2 flex items-center justify-between gap-2 text-sm">
                 <div className="min-w-0 flex-1">
                   <div className="font-medium truncate">{r.title || "Untitled resume"}</div>
                   <div className="text-xs text-muted-foreground">
@@ -246,9 +277,15 @@ export default function ResumeBuilderPage() {
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
                   {r.is_public && <Badge variant="secondary" className="text-[10px]">Public</Badge>}
-                  <span className="font-mono text-[10px] text-muted-foreground">
-                    {r.id.slice(0, 8)}
-                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-xs"
+                    disabled={cloudBusy}
+                    onClick={() => openCloudResume(r.id)}
+                  >
+                    Open
+                  </Button>
                 </div>
               </li>
             ))}

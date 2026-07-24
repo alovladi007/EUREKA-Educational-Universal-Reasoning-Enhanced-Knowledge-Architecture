@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { api } from "@/lib/eureka-api";
+import { useAuthStore } from "@/stores/auth";
 import {
   Card,
   CardContent,
@@ -15,7 +16,9 @@ type AuditEvent = {
   id?: string;
   actor_user_id?: string | null;
   action?: string | null;
-  created_at?: string | null;
+  // The audit API returns `occurred_at`; `created_at` was always undefined
+  // here so the timestamp column rendered blank.
+  occurred_at?: string | null;
 };
 type AuditResp = { events: AuditEvent[] } | AuditEvent[] | null | undefined;
 
@@ -44,6 +47,8 @@ const RUNBOOKS: { label: string; href: string }[] = [
 ];
 
 export default function EthicsSecurityPage() {
+  const role = useAuthStore((s) => s.user?.role);
+  const isAdmin = role === "super_admin" || role === "org_admin";
   const [audit, setAudit] = useState<AuditEvent[]>([]);
   const [compliance, setCompliance] = useState<ComplianceItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,10 +56,15 @@ export default function EthicsSecurityPage() {
   useEffect(() => {
     let cancelled = false;
     (async () => {
+      // The org audit stream is admin-only (server returns 403 otherwise).
+      // Only fetch it for admins, so non-admins get an explicit "requires
+      // admin" state instead of a silently-empty card.
       const [auditResp, compResp] = await Promise.all([
-        api<AuditResp>("/admin/audit?limit=20").catch(
-          () => ({ events: [] }) as AuditResp,
-        ),
+        isAdmin
+          ? api<AuditResp>("/admin/audit?limit=20").catch(
+              () => ({ events: [] }) as AuditResp,
+            )
+          : Promise.resolve({ events: [] } as AuditResp),
         api<ComplianceItem[]>("/me/compliance").catch(
           () => [] as ComplianceItem[],
         ),
@@ -72,7 +82,7 @@ export default function EthicsSecurityPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [isAdmin]);
 
   return (
     <div className="space-y-6">
@@ -134,7 +144,11 @@ export default function EthicsSecurityPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          {loading ? (
+          {!isAdmin ? (
+            <p className="text-sm text-muted-foreground">
+              The organization audit log is available to administrators.
+            </p>
+          ) : loading ? (
             <p className="text-sm text-muted-foreground">Loading...</p>
           ) : audit.length === 0 ? (
             <p className="text-sm text-muted-foreground">No audit events.</p>
@@ -152,7 +166,7 @@ export default function EthicsSecurityPage() {
                   <span>{e.action ?? "—"}</span>
                   <span>·</span>
                   <span className="text-xs text-muted-foreground ml-auto">
-                    {e.created_at ?? ""}
+                    {e.occurred_at ? new Date(e.occurred_at).toLocaleString() : ""}
                   </span>
                 </li>
               ))}
