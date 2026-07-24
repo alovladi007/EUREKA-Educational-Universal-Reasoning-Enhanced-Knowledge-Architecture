@@ -187,17 +187,152 @@ def _check_molecules() -> list[dict]:
     return problems
 
 
-def _check_triangle_readiness() -> list[dict]:
-    """Phase 3 gate, reported early as a warning rather than a failure.
+def _check_triangle_views() -> list[dict]:
+    """Every triangle eligible G1 and G2 node ships a complete triangle view.
 
-    Every triangle eligible G1 and G2 node must ship a triangle_view before
-    the course lists. Phase 2 does not build them, so this reports the size of
-    the Phase 3 obligation rather than failing the Phase 2 gate.
+    This was a Phase 3 warning while the views did not exist. Phase 3 builds
+    them, so it is now blocking: a node flagged triangle eligible that has no
+    view is a promise the course does not keep.
+
+    A view with an empty corner is treated the same as a missing view. Two of
+    three levels is exactly the silent jump between levels that Johnstone
+    identified as the problem, so a partial view is worse than none.
     """
-    pending = [
-        n.code for n in NODES if n.triangle_eligible and n.tier in ("G1", "G2")
-    ]
-    return [{"check": "triangle_view_pending", "detail": code, "severity": "phase3"} for code in pending]
+    from app.data.triangle_views import TRIANGLE_VIEWS
+
+    problems: list[dict] = []
+    eligible = [n.code for n in NODES if n.triangle_eligible and n.tier in ("G1", "G2")]
+    for code in eligible:
+        view = TRIANGLE_VIEWS.get(code)
+        if view is None:
+            problems.append({"check": "triangle_view", "detail": f"{code} has no triangle view"})
+            continue
+        for level in ("macroscopic", "particulate", "symbolic", "connector", "pitfall"):
+            if not str(getattr(view, level, "")).strip():
+                problems.append(
+                    {"check": "triangle_view", "detail": f"{code} view has an empty {level}"}
+                )
+    for code in TRIANGLE_VIEWS:
+        if code not in NODES_BY_CODE:
+            problems.append({"check": "triangle_view", "detail": f"view {code} has no node"})
+    return problems
+
+
+def _check_poe_items() -> list[dict]:
+    """Predict, observe, explain items agree with their own simulations.
+
+    The key is not taken on the author's word. Each activity's simulation is
+    run and the derived outcome is compared against the stored key, which is
+    what makes grader 12 verifiable rather than merely asserted.
+    """
+    import chem_core as cc
+
+    from app.data.simulations import OUTCOME_RULES, POE_ITEMS, run_scenario
+
+    problems: list[dict] = []
+    for item_id, item in POE_ITEMS.items():
+        for options, key, which in (
+            (item.predict_options, item.predict_key, "predict"),
+            (item.explain_options, item.explain_key, "explain"),
+        ):
+            for issue in cc.check_options(options, key):
+                problems.append({"check": "poe_options", "detail": f"{item_id} {which}: {issue}"})
+            for option in options:
+                if option.misconception and option.misconception not in cc.MISCONCEPTIONS:
+                    problems.append(
+                        {
+                            "check": "poe_misconception",
+                            "detail": f"{item_id} {which} option {option.id} names unknown "
+                            f"misconception {option.misconception}",
+                        }
+                    )
+        if item.node not in NODES_BY_CODE:
+            problems.append({"check": "poe_node", "detail": f"{item_id} targets unknown node {item.node}"})
+
+        rule = OUTCOME_RULES.get(item_id)
+        if rule is None:
+            problems.append({"check": "poe_verified", "detail": f"{item_id} has no outcome rule"})
+            continue
+        try:
+            outcome = rule(run_scenario(item.scenario))
+        except Exception as exc:
+            problems.append({"check": "poe_verified", "detail": f"{item_id} simulation failed: {exc}"})
+            continue
+        verified = cc.verify_prediction_key(item, {"outcome": outcome})
+        if not verified.ok:
+            problems.append({"check": "poe_verified", "detail": f"{item_id}: {verified.detail}"})
+    return problems
+
+
+def _check_simulation_engines() -> list[dict]:
+    """Each simulation engine agrees with an independently derived landmark."""
+    import chem_core as cc
+
+    from app.data.simulations import EQUILIBRIA, SCENARIOS, TITRATIONS
+
+    problems: list[dict] = []
+    for key, setup in TITRATIONS.items():
+        ok, detail = cc.verify_titration(setup)
+        if not ok:
+            problems.append({"check": "simulation_verified", "detail": f"{key}: {detail}"})
+    for scenario in SCENARIOS.values():
+        if scenario.kind != "equilibrium":
+            continue
+        setup = EQUILIBRIA[scenario.engine_key]
+        result = cc.equilibrium_shift(setup, scenario.stress)
+        ok, detail = cc.verify_equilibrium_shift(setup, result)
+        if not ok:
+            problems.append({"check": "simulation_verified", "detail": f"{scenario.id}: {detail}"})
+    return problems
+
+
+def _check_periodic_coverage() -> list[dict]:
+    """How much of each periodic trend is genuinely measured.
+
+    Reported as a warning rather than a failure, because the gaps are real
+    chemistry rather than missing work. Francium's ionization energy and the
+    electronegativity of the light noble gases are not values anyone has
+    withheld, they are values that do not exist. The client renders these gaps
+    instead of interpolating across them, and this is where the size of each
+    gap is stated.
+    """
+    from app.data import periodic
+
+    warnings: list[dict] = []
+    total = len(periodic.ELEMENTS)
+    for field in (
+        "electronegativity",
+        "atomic_radius_pm",
+        "ionization_energy_kJmol",
+        "electron_affinity_kJmol",
+    ):
+        measured = len(periodic.trend_values(field))
+        if measured < total:
+            warnings.append(
+                {
+                    "check": "periodic_coverage",
+                    "detail": f"{field} is measured for {measured} of {total} elements",
+                    "severity": "informational",
+                }
+            )
+    return warnings
+
+
+def _counts() -> dict:
+    from app.data import periodic, triangle_views
+    from app.data.simulations import POE_ITEMS, SCENARIOS
+
+    return {
+        "nodes": len(NODES),
+        "lessons": len(LESSONS),
+        "templates": len(cc.REGISTRY),
+        "misconceptions": len(cc.MISCONCEPTIONS),
+        "molecules": validate_library()["built"],
+        "triangle_views": len(triangle_views.TRIANGLE_VIEWS),
+        "elements": len(periodic.ELEMENTS),
+        "scenarios": len(SCENARIOS),
+        "poe_activities": len(POE_ITEMS),
+    }
 
 
 def run() -> dict:
@@ -209,8 +344,11 @@ def run() -> dict:
     blocking += _check_distractors()
     blocking += _check_no_early_solution()
     blocking += _check_molecules()
+    blocking += _check_triangle_views()
+    blocking += _check_poe_items()
+    blocking += _check_simulation_engines()
 
-    warnings = _check_triangle_readiness()
+    warnings = _check_periodic_coverage()
 
     by_check: dict[str, int] = {}
     for p in blocking:
@@ -223,13 +361,7 @@ def run() -> dict:
         "by_check": by_check,
         "warnings_count": len(warnings),
         "warnings": warnings,
-        "counts": {
-            "nodes": len(NODES),
-            "lessons": len(LESSONS),
-            "templates": len(cc.REGISTRY),
-            "misconceptions": len(cc.MISCONCEPTIONS),
-            "molecules": validate_library()["built"],
-        },
+        "counts": _counts(),
     }
 
 

@@ -61,6 +61,25 @@ services:
       - default
       - eureka-network
 
+  web:
+    build:
+      context: ./apps/web
+      dockerfile: Dockerfile
+    container_name: octet-web
+    restart: unless-stopped
+    environment:
+      # The browser resolves these, not the container, so they are host
+      # addresses rather than service names.
+      NEXT_PUBLIC_OCTET_API_URL: http://localhost:8500
+      NEXT_PUBLIC_EUREKA_LOGIN_URL: http://localhost:4040/auth/login
+    ports:
+      - "4200:4200"
+    depends_on:
+      - api
+    networks:
+      - default
+      - eureka-network
+
 volumes:
   octet_pg:
 

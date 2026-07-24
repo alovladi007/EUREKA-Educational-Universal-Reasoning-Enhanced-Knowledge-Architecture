@@ -323,6 +323,117 @@ MISCONCEPTIONS: dict[str, Misconception] = {
             routes_to="C.G2.EQUILIBRIUM",
             source="Taber (2002); Kind (2004)",
         ),
+        # Phase 3 additions. These are the beliefs the structure grader and the
+        # predict, observe, explain simulations are built to surface, so they
+        # arrive with the graders that diagnose them rather than ahead of them.
+        Misconception(
+            code="STEREO-IGNORED",
+            name="Three dimensional arrangement does not change the substance",
+            description=(
+                "The learner treats a structural drawing as a connectivity list, "
+                "so two molecules with the same bonds but different arrangements "
+                "in space read as the same compound."
+            ),
+            counterexample=(
+                "Carvone has one arrangement that smells of spearmint and its "
+                "mirror image smells of caraway. Same atoms, same bonds, "
+                "different arrangement in space, different substance."
+            ),
+            routes_to="C.G2.VSEPR",
+            source="Taber (2002); Kind (2004)",
+        ),
+        Misconception(
+            code="CONSTITUTIONAL-ISOMER",
+            name="Molecular formula identifies the compound",
+            description=(
+                "The learner treats the molecular formula as a unique name, so "
+                "any structure with the right atom counts reads as correct."
+            ),
+            counterexample=(
+                "C2H6O is ethanol, which is a drinkable liquid boiling at 78 "
+                "degrees Celsius, and it is also dimethyl ether, which is a gas "
+                "at room temperature. The formula does not settle which."
+            ),
+            routes_to="C.G1.FORMULA",
+            source="Taber (2002); Nakhleh (1992)",
+        ),
+        Misconception(
+            code="EQUIV-IS-NEUTRAL",
+            name="The equivalence point is always pH 7",
+            description=(
+                "The learner equates equivalence, which is a stoichiometric "
+                "condition, with neutrality, which is a statement about pH."
+            ),
+            counterexample=(
+                "Titrating acetic acid with sodium hydroxide reaches equivalence "
+                "at pH 8.7. All the acid has reacted, and the acetate left "
+                "behind is a weak base."
+            ),
+            routes_to="C.G2.TITRATIONCURVE",
+            source="Taber (2002); Nakhleh (1992)",
+        ),
+        Misconception(
+            code="INDICATOR-SETS-EQUIV",
+            name="The indicator determines where the equivalence point is",
+            description=(
+                "The learner believes the colour change creates the equivalence "
+                "point rather than reporting an endpoint near it."
+            ),
+            counterexample=(
+                "Run the same titration with two different indicators and the "
+                "equivalence volume is unchanged. Only the endpoint the eye "
+                "catches moves, which is why the indicator is chosen to match."
+            ),
+            routes_to="C.G2.TITRATIONCURVE",
+            source="Taber (2002)",
+        ),
+        Misconception(
+            code="CATALYST-SHIFTS",
+            name="A catalyst shifts the position of equilibrium",
+            description=(
+                "The learner reasons that anything which speeds a reaction must "
+                "produce more product, so a catalyst is expected to shift the "
+                "position toward products."
+            ),
+            counterexample=(
+                "A catalyst lowers the activation barrier in both directions by "
+                "the same amount. Forward and reverse rates rise together, so "
+                "equilibrium arrives sooner at exactly the same composition."
+            ),
+            routes_to="C.G2.LECHATELIER",
+            source="Taber (2002); Kind (2004)",
+        ),
+        Misconception(
+            code="STRONG-IS-CONCENTRATED",
+            name="Strong and concentrated mean the same thing",
+            description=(
+                "The learner conflates the extent of dissociation, which is what "
+                "strong describes, with the amount of solute per volume, which "
+                "is what concentrated describes."
+            ),
+            counterexample=(
+                "A 0.001 molar hydrochloric acid solution is strong and dilute. "
+                "A 15 molar acetic acid solution is weak and concentrated."
+            ),
+            routes_to="C.G2.ACIDBASE",
+            source="Taber (2002); Nakhleh (1992); Kind (2004)",
+        ),
+        Misconception(
+            code="SPECTATOR-ACTIVE",
+            name="Spectator ions influence the outcome",
+            description=(
+                "The learner attributes an observed change to an ion that took "
+                "no part in the reaction, most often the counter ion carried in "
+                "with a reagent."
+            ),
+            counterexample=(
+                "Titrate the same acid with potassium hydroxide instead of "
+                "sodium hydroxide and the curve is unchanged. If sodium were "
+                "doing the work, swapping it would show."
+            ),
+            routes_to="C.G1.NETIONIC",
+            source="Taber (2002); Nakhleh (1992)",
+        ),
     ]
 }
 

@@ -5,11 +5,14 @@ grader, every independent verifier, the misconception library, the hint
 ladders, and the template registry. It has no database, no network, and no web
 framework, so it can be tested and reasoned about in isolation.
 
-Phase 1 scope (graders verified gate): graders 1 formula, 2 balance,
-3 stoichiometry, 6 multiple choice, 7 equilibrium. Graders 4 structure,
-5 Lewis, 8 mechanism, 9 lab data, 10 spectra, 11 retro step and 12 prediction
-arrive in their own phases and are not stubbed here. A missing grader raises,
-it does not silently pass.
+Live graders: 1 formula, 2 balance, 3 stoichiometry, 4 structure, 6 multiple
+choice, 7 equilibrium, 12 prediction. Graders 5 Lewis, 8 mechanism, 9 lab
+data, 10 spectra and 11 retro step arrive in their own phases and are not
+stubbed here. A missing grader raises, it does not silently pass.
+
+Graders 4 and 12 landed in Phase 3 alongside the visualization surface they
+feed: 4 grades what the Sketcher draws, and 12 grades the prediction a learner
+commits to before a simulation runs.
 """
 
 from __future__ import annotations
@@ -48,6 +51,15 @@ from .hints import HINTS, hint_coverage, rung
 from .mc import grade_mc, validate_choices
 from .numeric import grade_numeric, parse_quantity
 from .pool import get_pool, pool_source, set_pool
+from .prediction import (
+    Option,
+    PoeAttempt,
+    PoeItem,
+    check_options,
+    grade_explanation,
+    grade_prediction,
+    verify_prediction_key,
+)
 from .misconceptions import MISCONCEPTIONS, Misconception
 from .registry import REGISTRY, Variant, resolve_generated, sweep, variant_seed
 from .stoich import (
@@ -59,6 +71,26 @@ from .stoich import (
     sig_figs,
     solve_stoichiometry,
     verify_stoichiometry_key,
+)
+from .simulate import (
+    EquilibriumSetup,
+    TitrationSetup,
+    equilibrium_shift,
+    reaction_quotient,
+    solve_extent,
+    solve_ph,
+    titration_curve,
+    titration_landmarks,
+    verify_equilibrium_shift,
+    verify_titration,
+)
+from .structure import (
+    canonical,
+    formula_of,
+    grade_structure,
+    inchikey,
+    parse_smiles,
+    verify_structure_key,
 )
 from .types import GradeResult, VerifierResult
 
@@ -117,13 +149,45 @@ __all__ = [
     "sweep",
     "variant_seed",
     "grade",
+    "Option",
+    "PoeAttempt",
+    "PoeItem",
+    "check_options",
+    "grade_explanation",
+    "grade_prediction",
+    "verify_prediction_key",
+    "grade_structure",
+    "verify_structure_key",
+    "canonical",
+    "inchikey",
+    "parse_smiles",
+    "formula_of",
+    "TitrationSetup",
+    "EquilibriumSetup",
+    "solve_ph",
+    "titration_curve",
+    "titration_landmarks",
+    "verify_titration",
+    "equilibrium_shift",
+    "solve_extent",
+    "reaction_quotient",
+    "verify_equilibrium_shift",
     "SUPPORTED_GRADERS",
 ]
 
 __version__ = "0.1.0"
 
 # Graders live in this phase. Anything outside this set raises on dispatch.
-SUPPORTED_GRADERS = ("formula", "balance", "stoich", "mc", "equilibrium", "numeric")
+SUPPORTED_GRADERS = (
+    "formula",
+    "balance",
+    "stoich",
+    "mc",
+    "equilibrium",
+    "numeric",
+    "structure",
+    "prediction",
+)
 
 
 def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
@@ -176,6 +240,29 @@ def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
         )
     if grader == "mc":
         return grade_mc(meta.get("correct_index", int(key or 0)), student_answer, meta.get("choices", []))
+    if grader == "structure":
+        return grade_structure(
+            key,
+            student_answer,
+            stereo=meta.get("stereo", "strict"),
+            tautomer=meta.get("tautomer", "strict"),
+        )
+    if grader == "prediction":
+        # The options and key travel in meta so this dispatches through the
+        # same sandbox as every other grader. Rebuilding the dataclasses here
+        # keeps the child process free of any application import.
+        item = PoeItem(
+            id=meta.get("item_id", ""),
+            node=meta.get("node", ""),
+            scenario=meta.get("scenario", ""),
+            predict_prompt="",
+            predict_options=[Option(**o) for o in meta.get("options", [])],
+            predict_key=str(key),
+            explain_prompt="",
+            explain_options=[],
+            explain_key="",
+        )
+        return grade_prediction(item, student_answer)
     # equilibrium
     problem = EquilibriumProblem(
         k=meta["ka"],

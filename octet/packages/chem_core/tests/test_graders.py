@@ -456,11 +456,24 @@ def test_grade_dispatch_routes_every_supported_grader():
 
 
 def test_grade_dispatch_refuses_graders_from_later_phases():
-    # Structure, Lewis, mechanism, spectra and retro arrive in later phases.
-    # They must raise rather than quietly pass a learner.
-    for later in ("structure", "lewis", "mechanism", "spectra-elucidation", "retro-step"):
+    # Lewis, mechanism, lab data, spectra and retro step arrive in later
+    # phases. They must raise rather than quietly pass a learner.
+    #
+    # This list shrank in Phase 3. Structure (grader 4) and prediction (grader
+    # 12) moved out of it because they were built, not because the rule was
+    # relaxed: both ship with an independent verifier, and both are covered by
+    # tests in apps/api/tests/test_phase3.py. Anything still named here has no
+    # implementation at all.
+    for later in ("lewis", "mechanism", "lab-data", "spectra-elucidation", "retro-step"):
         with pytest.raises(KeyError):
             cc.grade(later, {"key": "x", "meta": {}}, "anything")
+
+
+def test_phase_three_graders_are_genuinely_live():
+    """The other half of the boundary: what is claimed built must work."""
+    for live in ("structure", "prediction"):
+        assert live in cc.SUPPORTED_GRADERS
+    assert cc.grade_structure("CCO", "OCC").is_correct
 
 
 @pytest.mark.parametrize("payload", ["NaN", "nan", "inf", "-inf", "Infinity"])

@@ -16,6 +16,16 @@ hint_coverage() gates CI. A template with fewer than three rungs cannot ship.
 from __future__ import annotations
 
 HINTS: dict[str, tuple[str, str, str]] = {
+    "structure.draw.v1": (
+        "You are asked to draw a structure, so the answer is a picture of which "
+        "atom is bonded to which, not a formula and not a name.",
+        "Work from the name outward. The parent chain or ring comes first, then "
+        "whatever is attached to it, and only then the hydrogens that fill the "
+        "remaining valences. Carbon takes four bonds, nitrogen three, oxygen "
+        "two, and a halogen one.",
+        "Draw only the carbon skeleton first, with no hydrogens and no other "
+        "elements, and count that the number of carbons matches the name.",
+    ),
     "formula.molecular.v1": (
         "You are asked for the molecular formula: how many atoms of each element "
         "are in one molecule of this substance.",

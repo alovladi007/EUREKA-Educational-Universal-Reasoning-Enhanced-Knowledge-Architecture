@@ -34,6 +34,7 @@ import {
   Calculator,
   UsersRound,
   FlaskConical,
+  FlaskRound,
 } from "lucide-react";
 
 // /dashboard sidebar = ORIGINAL learner-oriented surface only.
@@ -48,9 +49,11 @@ const navigation = [
   { name: "Undergraduate", href: "/dashboard/undergraduate", icon: GraduationCap },
   { name: "Graduate", href: "/dashboard/graduate", icon: GraduationCap },
   { name: "Medical Education", href: "/dashboard/medical", icon: Stethoscope },
-  // AXIOM, the mathematics vertical, runs as its own app. This entry opens it
-  // with the current EUREKA token handed over so the user arrives signed in.
+  // AXIOM and OCTET, the mathematics and chemistry verticals, run as their own
+  // apps. These entries open them with the current EUREKA token handed over so
+  // the user arrives signed in.
   { name: "Mathematics", href: "axiom://open", icon: Calculator },
+  { name: "Chemistry", href: "octet://open", icon: FlaskRound },
   { name: "My Courses", href: "/dashboard/courses", icon: BookOpen },
   { name: "Teacher Tools", href: "/dashboard/teacher", icon: BookCheck },
   { name: "AI Tutor", href: "/dashboard/tutor", icon: Brain },
@@ -79,24 +82,27 @@ export function Sidebar() {
   const user = useAuthStore((s) => s.user);
   const display = user ? getUserDisplayName(user) : "Account";
 
-  // Open AXIOM (the mathematics vertical) in a new tab, handing over the
-  // current EUREKA JWT in the URL hash so the user lands signed in. The hash
-  // is client-only (never sent to a server), and AXIOM strips it on arrival.
+  // Open a vertical (AXIOM for mathematics, OCTET for chemistry) in a new tab,
+  // handing over the current EUREKA JWT in the URL hash so the user lands
+  // signed in. The hash is client-only (never sent to a server), and both
+  // verticals strip it on arrival.
   const AXIOM_WEB_URL =
     process.env.NEXT_PUBLIC_AXIOM_WEB_URL || "http://localhost:4100";
-  const openAxiom = () => {
+  const OCTET_WEB_URL =
+    process.env.NEXT_PUBLIC_OCTET_WEB_URL || "http://localhost:4200";
+  const openVertical = (root: string) => {
     try {
       const token =
         typeof window !== "undefined"
           ? window.localStorage.getItem("access_token")
           : null;
-      const base = `${AXIOM_WEB_URL}/dashboard`;
+      const base = `${root}/dashboard`;
       const url = token
         ? `${base}#access_token=${encodeURIComponent(token)}`
         : base;
       window.open(url, "_blank", "noopener");
     } catch {
-      window.open(AXIOM_WEB_URL, "_blank", "noopener");
+      window.open(root, "_blank", "noopener");
     }
   };
 
@@ -127,14 +133,16 @@ export function Sidebar() {
                 user?.role === "super_admin",
             )
             .map((item) => {
-            // The Mathematics entry opens the separate AXIOM app with a token
-            // handoff, so it is a button rather than an in-app Link.
-            if (item.href === "axiom://open") {
+            // The Mathematics and Chemistry entries open separate apps with a
+            // token handoff, so they are buttons rather than in-app Links.
+            if (item.href === "axiom://open" || item.href === "octet://open") {
+              const root =
+                item.href === "axiom://open" ? AXIOM_WEB_URL : OCTET_WEB_URL;
               return (
                 <button
                   key={item.name}
                   type="button"
-                  onClick={openAxiom}
+                  onClick={() => openVertical(root)}
                   className={cn(
                     "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                     "text-muted-foreground hover:bg-accent hover:text-accent-foreground"
