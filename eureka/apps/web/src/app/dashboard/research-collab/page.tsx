@@ -5,8 +5,8 @@
  * (docs/RESEARCH_TIER_16_2_16_5_SPEC.md).
  *
  * Extends the existing solo research workspace (AI Research) with:
- *  - workspace sharing (owner adds org members by email; members get READ
- *    access — collaborator co-editing lands in R-2)
+ *  - workspace sharing (owner adds org members by email; viewer = read,
+ *    collaborator = read + edit references/drafts — R-2 shipped)
  *  - research groups (labs / reading groups, org-visible, open-join)
  */
 
@@ -127,11 +127,14 @@ export default function ResearchCollabPage() {
   async function shareWorkspace(wsId: string) {
     const email = window.prompt("Share with (email of a member of your organization):");
     if (!email) return;
+    const asCollab = window.confirm(
+      "OK = collaborator (can edit references + drafts)\nCancel = viewer (read-only)",
+    );
     setBusy(true);
     try {
       await api(`/me/research/workspaces/${wsId}/members`, {
         method: "POST",
-        body: JSON.stringify({ email: email.trim(), role: "viewer" }),
+        body: JSON.stringify({ email: email.trim(), role: asCollab ? "collaborator" : "viewer" }),
       });
       await loadMembers(wsId);
     } catch (e) {
@@ -160,8 +163,8 @@ export default function ResearchCollabPage() {
           <FlaskConical className="h-7 w-7 text-primary" /> Research Collaboration
         </h1>
         <p className="text-muted-foreground mt-1">
-          Share your research workspaces and join lab groups. Shared members
-          get read access today; co-editing arrives in the next research wave.
+          Share your research workspaces and join lab groups. Viewers get
+          read access; collaborators can also edit references and drafts.
         </p>
       </div>
 
@@ -169,7 +172,7 @@ export default function ResearchCollabPage() {
         <CardHeader>
           <CardTitle className="text-base">Share my workspaces</CardTitle>
           <CardDescription>
-            Give org members read access to a workspace (by email).
+            Add org members by email — viewer (read) or collaborator (edit).
           </CardDescription>
         </CardHeader>
         <CardContent>

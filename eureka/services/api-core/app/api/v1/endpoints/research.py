@@ -79,6 +79,7 @@ async def _get_owned_workspace_or_404(
     user: User,
     *,
     allow_public_read: bool = False,
+    allow_member: str | None = None,  # None (owner only) | "read" | "write"
 ) -> ResearchWorkspace:
     ws = await db.get(ResearchWorkspace, workspace_id)
     if ws is None:
@@ -87,6 +88,20 @@ async def _get_owned_workspace_or_404(
         return ws
     if allow_public_read and ws.is_public:
         return ws
+    # R-2: shared members. viewer -> read only; collaborator -> read + write.
+    if allow_member in ("read", "write"):
+        from sqlalchemy import select as _select
+
+        from app.models.research_collab import ResearchWorkspaceMember
+
+        m = (await db.execute(
+            _select(ResearchWorkspaceMember).where(
+                ResearchWorkspaceMember.workspace_id == workspace_id,
+                ResearchWorkspaceMember.user_id == user.id,
+            )
+        )).scalar_one_or_none()
+        if m is not None and (allow_member == "read" or m.role == "collaborator"):
+            return ws
     # Deliberately 404 instead of 403 — don't leak workspace existence.
     raise HTTPException(status_code=404, detail="workspace not found")
 
@@ -97,7 +112,7 @@ async def _get_owned_reference_or_404(
     entry = await db.get(LitReviewEntry, ref_id)
     if entry is None:
         raise HTTPException(status_code=404, detail="reference not found")
-    ws = await _get_owned_workspace_or_404(db, entry.workspace_id, user)
+    ws = await _get_owned_workspace_or_404(db, entry.workspace_id, user, allow_member="write")
     return entry, ws
 
 
@@ -107,7 +122,7 @@ async def _get_owned_draft_or_404(
     draft = await db.get(WorkspaceDraft, draft_id)
     if draft is None:
         raise HTTPException(status_code=404, detail="draft not found")
-    ws = await _get_owned_workspace_or_404(db, draft.workspace_id, user)
+    ws = await _get_owned_workspace_or_404(db, draft.workspace_id, user, allow_member="write")
     return draft, ws
 
 
@@ -157,7 +172,7 @@ async def get_workspace_detail_endpoint(
     current_user: User = Depends(get_current_user),
 ):
     ws = await _get_owned_workspace_or_404(
-        db, workspace_id, current_user, allow_public_read=True
+        db, workspace_id, current_user, allow_public_read=True, allow_member="read"
     )
     refs = await research_svc.list_references(db, workspace_id=workspace_id)
     drafts = await research_svc.list_drafts(db, workspace_id=workspace_id)
@@ -217,7 +232,7 @@ async def add_reference_endpoint(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    await _get_owned_workspace_or_404(db, workspace_id, current_user)
+    await _get_owned_workspace_or_404(db, workspace_id, current_user, allow_member="write")
     entry = await research_svc.add_reference(
         db, workspace_id=workspace_id, payload=payload
     )
@@ -239,7 +254,7 @@ async def lookup_reference_endpoint(
     """Resolve a DOI / arXiv ID via the external metadata service. Returns the
     normalized fields. Does NOT persist — frontend reviews then POSTs to
     /references with the chosen values."""
-    await _get_owned_workspace_or_404(db, workspace_id, current_user)
+    await _get_owned_workspace_or_404(db, workspace_id, current_user, allow_member="write")
     kind = (payload.kind or "").lower()
     if kind == "doi":
         result = await research_svc.lookup_crossref(payload.value)
@@ -263,7 +278,7 @@ async def list_references_endpoint(
 ):
     await _get_owned_workspace_or_404(
         db, workspace_id, current_user, allow_public_read=True
-    )
+    , allow_member="read")
     return await research_svc.list_references(db, workspace_id=workspace_id)
 
 
@@ -315,7 +330,7 @@ async def create_draft_endpoint(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    await _get_owned_workspace_or_404(db, workspace_id, current_user)
+    await _get_owned_workspace_or_404(db, workspace_id, current_user, allow_member="write")
     draft = await research_svc.create_draft(
         db, workspace_id=workspace_id, payload=payload
     )
@@ -335,7 +350,7 @@ async def list_drafts_endpoint(
 ):
     await _get_owned_workspace_or_404(
         db, workspace_id, current_user, allow_public_read=True
-    )
+    , allow_member="read")
     return await research_svc.list_drafts(db, workspace_id=workspace_id)
 
 
@@ -387,6 +402,6 @@ async def export_bibtex_endpoint(
 ):
     await _get_owned_workspace_or_404(
         db, workspace_id, current_user, allow_public_read=True
-    )
+    , allow_member="read")
     bibtex, count = await research_svc.export_bibtex(db, workspace_id=workspace_id)
     return BibTexExportResponse(bibtex=bibtex, format="bibtex", count=count)
