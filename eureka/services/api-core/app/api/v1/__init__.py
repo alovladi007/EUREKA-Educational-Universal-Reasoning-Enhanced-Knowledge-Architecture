@@ -12,7 +12,7 @@ from app.core.database import get_db
 from app.models import User, Course, Organization
 from app.utils.dependencies import require_admin
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing, study_groups, research_collab
 
 api_router = APIRouter()
 
@@ -40,6 +40,8 @@ api_router.include_router(graduate.router, tags=["graduate"])
 api_router.include_router(research.router, tags=["research"])
 api_router.include_router(user_content.router, tags=["dashboard"])
 api_router.include_router(community.router, tags=["community"])
+api_router.include_router(study_groups.router, tags=["study-groups"])
+api_router.include_router(research_collab.router, tags=["research-collab"])
 api_router.include_router(users.router, prefix="/users", tags=["users"])
 api_router.include_router(organizations.router, prefix="/organizations", tags=["organizations"])
 api_router.include_router(courses.router, prefix="/courses", tags=["courses"])

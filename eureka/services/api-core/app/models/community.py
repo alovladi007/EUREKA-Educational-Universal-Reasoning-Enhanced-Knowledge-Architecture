@@ -59,6 +59,8 @@ class CommunityThread(Base):
     tags: Mapped[list[str]] = mapped_column(ARRAY(String), default=list, nullable=False)
     skill_code: Mapped[str | None] = mapped_column(String(120))
     tier: Mapped[str | None] = mapped_column(String(40))
+    # Optional study-group scoping (ops/db/24_study_groups.sql).
+    group_id: Mapped[uuid.UUID | None] = mapped_column(UUID(as_uuid=True), ForeignKey("study_groups.id", ondelete="CASCADE"))
     pinned: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     locked: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     reply_count: Mapped[int] = mapped_column(Integer, default=0, nullable=False)

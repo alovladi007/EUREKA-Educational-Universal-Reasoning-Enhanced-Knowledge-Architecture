@@ -17,6 +17,8 @@ class ThreadCreateRequest(BaseModel):
     tags: list[str] = Field(default_factory=list, max_length=10)
     skill_code: Optional[str] = Field(None, max_length=120)
     tier: Optional[str] = Field(None, max_length=40)
+    # Optional study-group scoping — poster must be a member of the group.
+    group_id: Optional[UUID] = None
 
 
 class ThreadUpdateRequest(BaseModel):
@@ -38,6 +40,7 @@ class ThreadResponse(BaseModel):
     tags: list[str]
     skill_code: Optional[str]
     tier: Optional[str]
+    group_id: Optional[UUID] = None
     pinned: bool
     locked: bool
     reply_count: int

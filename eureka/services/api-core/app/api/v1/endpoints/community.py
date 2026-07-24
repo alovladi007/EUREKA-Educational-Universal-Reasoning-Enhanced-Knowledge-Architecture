@@ -79,6 +79,22 @@ async def create_thread(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
+    if payload.group_id is not None:
+        # Group-scoped thread: the group must be in your org and you must be
+        # a member to post into it.
+        from app.models.study_group import StudyGroup, StudyGroupMember
+
+        g = await db.get(StudyGroup, payload.group_id)
+        if g is None or g.org_id != current_user.org_id:
+            raise HTTPException(status_code=404, detail="study group not found")
+        member = (await db.execute(
+            select(StudyGroupMember).where(
+                StudyGroupMember.group_id == payload.group_id,
+                StudyGroupMember.user_id == current_user.id,
+            )
+        )).scalar_one_or_none()
+        if member is None:
+            raise HTTPException(status_code=403, detail="join the group to post in it")
     t = CommunityThread(
         org_id=current_user.org_id,
         user_id=current_user.id,
@@ -94,12 +110,18 @@ async def create_thread(
 async def list_threads(
     tier: Optional[str] = None,
     skill_code: Optional[str] = None,
+    group_id: Optional[UUID] = None,
     q: Optional[str] = Query(None, max_length=120),
     limit: int = Query(50, ge=1, le=200),
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
     qry = select(CommunityThread).where(CommunityThread.org_id == current_user.org_id)
+    if group_id is not None:
+        qry = qry.where(CommunityThread.group_id == group_id)
+    else:
+        # The org-wide feed stays group-free; group threads live in their group.
+        qry = qry.where(CommunityThread.group_id.is_(None))
     if tier:
         qry = qry.where(CommunityThread.tier == tier)
     if skill_code:

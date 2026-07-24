@@ -10,7 +10,9 @@
  * trigger. No mock forum.
  */
 
-import { useEffect, useState, type ReactElement } from "react";
+import { Suspense, useEffect, useState, type ReactElement } from "react";
+import { useSearchParams } from "next/navigation";
+import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -110,9 +112,29 @@ const TIERS = [
   { value: "test_prep", label: "Test prep" },
 ];
 
+// useSearchParams requires a Suspense boundary for prerender (same pattern
+// as /auth/register).
 export default function CommunityPage() {
+  return (
+    <Suspense fallback={null}>
+      <CommunityPageInner />
+    </Suspense>
+  );
+}
+
+function CommunityPageInner() {
   const me = useAuthStore((s) => s.user);
   const isAdmin = me?.role === "super_admin" || me?.role === "org_admin";
+  // Study-group scoping: /dashboard/community?group={id} shows that group's
+  // threads and posts new threads into the group.
+  const groupId = useSearchParams().get("group");
+  const [groupName, setGroupName] = useState<string | null>(null);
+  useEffect(() => {
+    if (!groupId) { setGroupName(null); return; }
+    api<{ name: string }>(`/study-groups/${groupId}`)
+      .then((g) => setGroupName(g.name))
+      .catch(() => setGroupName(null));
+  }, [groupId]);
   const [threads, setThreads] = useState<Thread[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -138,6 +160,7 @@ export default function CommunityPage() {
     setError(null);
     try {
       const params = new URLSearchParams();
+      if (groupId) params.set("group_id", groupId);
       if (filter.tier) params.set("tier", filter.tier);
       if (filter.q) params.set("q", filter.q);
       const rows = await api<Thread[]>(
@@ -180,6 +203,7 @@ export default function CommunityPage() {
           tags,
           tier: form.tier || null,
           skill_code: form.skill_code.trim() || null,
+          group_id: groupId,
         }),
       });
       setShowForm(false);
@@ -434,10 +458,19 @@ export default function CommunityPage() {
           <h1 className="flex items-center gap-2 text-3xl font-bold">
             <MessageSquare className="h-7 w-7 text-primary" /> Community
           </h1>
-          <p className="text-muted-foreground mt-1">
-            Discussion forum across your organization. Real threads, real replies,
-            real upvotes — wired to <span className="font-mono text-xs">/api/v1/community/*</span>.
-          </p>
+          {groupId ? (
+            <p className="text-muted-foreground mt-1 flex items-center gap-2 flex-wrap">
+              <Badge variant="secondary">Group: {groupName ?? groupId.slice(0, 8)}</Badge>
+              <Link href="/dashboard/community" className="text-xs underline text-primary">
+                ← back to org-wide discussions
+              </Link>
+            </p>
+          ) : (
+            <p className="text-muted-foreground mt-1">
+              Discussion forum across your organization. Real threads, real replies,
+              real upvotes — wired to <span className="font-mono text-xs">/api/v1/community/*</span>.
+            </p>
+          )}
         </div>
         <Button onClick={() => setShowForm(!showForm)}>
           <Plus className="h-4 w-4 mr-1" /> {showForm ? "Cancel" : "New thread"}

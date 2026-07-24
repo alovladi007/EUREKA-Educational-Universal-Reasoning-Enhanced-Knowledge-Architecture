@@ -32,6 +32,8 @@ import {
   FileEdit,
   Home,
   Calculator,
+  UsersRound,
+  FlaskConical,
 } from "lucide-react";
 
 // /dashboard sidebar = ORIGINAL learner-oriented surface only.
@@ -62,6 +64,8 @@ const navigation = [
   { name: "Resume Builder", href: "/dashboard/resume-builder", icon: FileEdit },
   { name: "Resources", href: "/dashboard/resources", icon: FileText },
   { name: "Community", href: "/dashboard/community", icon: Users },
+  { name: "Study Groups", href: "/dashboard/study-groups", icon: UsersRound },
+  { name: "Research Collab", href: "/dashboard/research-collab", icon: FlaskConical },
   { name: "Ethics & Security", href: "/dashboard/ethics-security", icon: Lock },
   { name: "Data Fabric", href: "/dashboard/data-fabric", icon: Database },
   { name: "Futures", href: "/dashboard/futures", icon: Rocket },
