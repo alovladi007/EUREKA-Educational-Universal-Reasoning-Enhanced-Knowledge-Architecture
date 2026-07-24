@@ -19,7 +19,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
-from app.models.research import ResearchWorkspace
+from app.models.research import LitReviewEntry, ResearchWorkspace, WorkspaceDraft
 from app.models.research_collab import (
     ResearchGroup,
     ResearchGroupMember,
@@ -174,6 +174,80 @@ async def list_shared_workspaces(
         )
         for m, w in rows
     ]
+
+
+class LitEntryOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    title: str
+    authors: list[str]
+    venue: Optional[str]
+    year: Optional[int]
+    read_status: str
+    user_notes_md: Optional[str]
+
+
+class DraftOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: UUID
+    title: str
+    kind: str
+    updated_at: datetime
+
+
+class WorkspaceOverview(BaseModel):
+    id: UUID
+    title: str
+    description_md: Optional[str]
+    kind: str
+    status: str
+    tags: list[str]
+    owner_name: Optional[str]
+    my_role: str  # owner | viewer | collaborator
+    lit_review: list[LitEntryOut]
+    drafts: list[DraftOut]
+
+
+@router.get("/research/workspaces/{workspace_id}/overview", response_model=WorkspaceOverview)
+async def workspace_overview(
+    workspace_id: UUID,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    """Read-only workspace view for the owner AND shared members — this is
+    what 'read access' concretely grants."""
+    w = await db.get(ResearchWorkspace, workspace_id)
+    if w is None:
+        raise HTTPException(status_code=404, detail="workspace not found")
+    my_role = "owner" if w.user_id == current_user.id else None
+    if my_role is None:
+        m = (await db.execute(
+            select(ResearchWorkspaceMember).where(
+                ResearchWorkspaceMember.workspace_id == workspace_id,
+                ResearchWorkspaceMember.user_id == current_user.id,
+            )
+        )).scalar_one_or_none()
+        if m is None and not is_admin(current_user):
+            raise HTTPException(status_code=403, detail="not shared with you")
+        my_role = m.role if m else "admin"
+    entries = (await db.execute(
+        select(LitReviewEntry).where(LitReviewEntry.workspace_id == workspace_id)
+        .order_by(LitReviewEntry.created_at.desc()).limit(100)
+    )).scalars().all()
+    drafts = (await db.execute(
+        select(WorkspaceDraft).where(WorkspaceDraft.workspace_id == workspace_id)
+        .order_by(WorkspaceDraft.updated_at.desc()).limit(50)
+    )).scalars().all()
+    return WorkspaceOverview(
+        id=w.id, title=w.title, description_md=w.description_md,
+        kind=str(w.kind), status=str(w.status), tags=list(w.tags or []),
+        owner_name=(await _names(db, [w.user_id])).get(w.user_id),
+        my_role=my_role,
+        lit_review=[LitEntryOut.model_validate(e) for e in entries],
+        drafts=[DraftOut.model_validate(d) for d in drafts],
+    )
 
 
 # ---------------------------------------------------------------------------

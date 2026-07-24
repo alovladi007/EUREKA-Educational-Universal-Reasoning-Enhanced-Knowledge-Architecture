@@ -17,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { api } from "@/lib/eureka-api";
 import { useAuthStore } from "@/stores/auth";
+import { Markdown } from "@/components/ui/markdown";
 import { FlaskConical, Plus, UserPlus, LogIn, LogOut, Trash2 } from "lucide-react";
 
 type RGroup = {
@@ -31,7 +32,16 @@ type RGroup = {
 };
 
 type SharedWs = { id: string; title: string; kind: string; status: string; owner_name: string | null; my_role: string };
-type MyWs = { id: string; title: string };
+type MyWs = {
+  id: string; title: string; kind?: string; status?: string;
+  reference_count?: number; draft_count?: number;
+};
+type LitEntry = { id: string; title: string; authors: string[]; venue: string | null; year: number | null; read_status: string; user_notes_md: string | null };
+type Draft = { id: string; title: string; kind: string; updated_at: string };
+type Overview = {
+  id: string; title: string; description_md: string | null; kind: string; status: string;
+  tags: string[]; owner_name: string | null; my_role: string; lit_review: LitEntry[]; drafts: Draft[];
+};
 type WsMember = { user_id: string; role: string; name: string | null };
 
 export default function ResearchCollabPage() {
@@ -40,6 +50,16 @@ export default function ResearchCollabPage() {
   const [shared, setShared] = useState<SharedWs[]>([]);
   const [myWs, setMyWs] = useState<MyWs[]>([]);
   const [wsMembers, setWsMembers] = useState<Record<string, WsMember[]>>({});
+  const [overview, setOverview] = useState<Overview | null>(null);
+
+  async function openOverview(wsId: string) {
+    if (overview?.id === wsId) { setOverview(null); return; }
+    try {
+      setOverview(await api<Overview>(`/research/workspaces/${wsId}/overview`));
+    } catch (e) {
+      alert(String((e as Error).message));
+    }
+  }
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [groupName, setGroupName] = useState("");
@@ -165,7 +185,15 @@ export default function ResearchCollabPage() {
                 <li key={w.id} className="border rounded-md p-3">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-medium">{w.title}</span>
+                    {w.kind && <Badge variant="outline" className="text-[10px]">{w.kind}</Badge>}
+                    {w.status && <Badge variant="secondary" className="text-[10px]">{w.status}</Badge>}
+                    {typeof w.reference_count === "number" && (
+                      <span className="text-xs text-muted-foreground">{w.reference_count} refs · {w.draft_count ?? 0} drafts</span>
+                    )}
                     <div className="ml-auto flex gap-1">
+                      <Button size="sm" variant="ghost" onClick={() => openOverview(w.id)}>
+                        Open
+                      </Button>
                       <Button size="sm" variant="outline" disabled={busy} onClick={() => shareWorkspace(w.id)}>
                         <UserPlus className="h-3.5 w-3.5 mr-1" /> Share
                       </Button>
@@ -218,12 +246,77 @@ export default function ResearchCollabPage() {
                   <span className="ml-auto text-xs text-muted-foreground">
                     by {w.owner_name ?? "unknown"}
                   </span>
+                  <Button size="sm" variant="outline" onClick={() => openOverview(w.id)}>Open</Button>
                 </li>
               ))}
             </ul>
           )}
         </CardContent>
       </Card>
+
+      {overview && (
+        <Card className="border-primary/40">
+          <CardHeader>
+            <CardTitle className="text-base flex items-center gap-2 flex-wrap">
+              {overview.title}
+              <Badge variant="outline" className="text-[10px]">{overview.kind}</Badge>
+              <Badge variant="secondary" className="text-[10px]">{overview.status}</Badge>
+              <Badge variant="secondary" className="text-[10px]">{overview.my_role}</Badge>
+              <button className="ml-auto text-xs underline text-muted-foreground" onClick={() => setOverview(null)}>close</button>
+            </CardTitle>
+            <CardDescription>
+              {overview.owner_name ? `Owned by ${overview.owner_name}` : ""}
+              {overview.my_role !== "owner" ? " — read-only view" : ""}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {overview.description_md && <Markdown className="text-sm">{overview.description_md}</Markdown>}
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">
+                Literature review ({overview.lit_review.length})
+              </p>
+              {overview.lit_review.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No references yet.</p>
+              ) : (
+                <ul className="space-y-1.5 text-sm">
+                  {overview.lit_review.map((e) => (
+                    <li key={e.id} className="border-b pb-1.5 last:border-b-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-medium">{e.title}</span>
+                        <Badge variant="outline" className="text-[10px]">{e.read_status}</Badge>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {e.authors.join(", ")}{e.venue ? ` · ${e.venue}` : ""}{e.year ? ` · ${e.year}` : ""}
+                      </p>
+                      {e.user_notes_md && <Markdown className="text-xs mt-1">{e.user_notes_md}</Markdown>}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-muted-foreground mb-1.5">
+                Drafts ({overview.drafts.length})
+              </p>
+              {overview.drafts.length === 0 ? (
+                <p className="text-sm text-muted-foreground">No drafts yet.</p>
+              ) : (
+                <ul className="space-y-1 text-sm">
+                  {overview.drafts.map((d) => (
+                    <li key={d.id} className="flex items-center gap-2">
+                      <span>{d.title}</span>
+                      <Badge variant="outline" className="text-[10px]">{d.kind}</Badge>
+                      <span className="ml-auto text-xs text-muted-foreground">
+                        {new Date(d.updated_at).toLocaleDateString()}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <Card>
         <CardHeader>
