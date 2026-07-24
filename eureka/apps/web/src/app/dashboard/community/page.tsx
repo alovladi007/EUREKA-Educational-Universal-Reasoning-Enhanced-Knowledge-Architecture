@@ -10,7 +10,7 @@
  * trigger. No mock forum.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactElement } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,6 +21,7 @@ import { api, ApiError, formatDate } from "@/lib/eureka-api";
 import { Markdown } from "@/components/ui/markdown";
 import {
   MessageSquare, Plus, ThumbsUp, Lock, Pin, ArrowLeft, Send, CheckCircle2,
+  Lightbulb, HeartHandshake, Reply as ReplyIcon, X,
 } from "lucide-react";
 
 type Thread = {
@@ -48,9 +49,54 @@ type Post = {
   upvote_count: number;
   is_accepted_answer: boolean;
   created_at: string;
+  reactions?: Record<string, number>;
+  my_reactions?: string[];
 };
 
-type ThreadDetail = { thread: Thread; posts: Post[] };
+type ThreadDetail = {
+  thread: Thread;
+  posts: Post[];
+  thread_reactions?: Record<string, number>;
+  my_thread_reactions?: string[];
+};
+
+const REACTION_KINDS = [
+  { kind: "upvote", label: "Upvote", Icon: ThumbsUp },
+  { kind: "helpful", label: "Helpful", Icon: HeartHandshake },
+  { kind: "insightful", label: "Insightful", Icon: Lightbulb },
+] as const;
+
+function ReactionBar({
+  counts = {},
+  mine = [],
+  onToggle,
+}: {
+  counts?: Record<string, number>;
+  mine?: string[];
+  onToggle: (kind: string, active: boolean) => void;
+}) {
+  return (
+    <div className="flex items-center gap-1">
+      {REACTION_KINDS.map(({ kind, label, Icon }) => {
+        const active = mine.includes(kind);
+        return (
+          <Button
+            key={kind}
+            variant={active ? "secondary" : "ghost"}
+            size="sm"
+            title={label}
+            aria-pressed={active}
+            onClick={(e) => { e.stopPropagation(); onToggle(kind, active); }}
+            className={active ? "text-primary" : ""}
+          >
+            <Icon className="h-3.5 w-3.5 mr-1" />
+            {counts[kind] ?? 0}
+          </Button>
+        );
+      })}
+    </div>
+  );
+}
 
 const TIERS = [
   { value: "", label: "All tiers" },
@@ -80,6 +126,7 @@ export default function CommunityPage() {
   const [detail, setDetail] = useState<ThreadDetail | null>(null);
   const [reply, setReply] = useState("");
   const [replyBusy, setReplyBusy] = useState(false);
+  const [replyTo, setReplyTo] = useState<Post | null>(null);
 
   async function loadThreads() {
     setLoading(true);
@@ -148,9 +195,13 @@ export default function CommunityPage() {
     try {
       await api(`/community/threads/${openThread}/posts`, {
         method: "POST",
-        body: JSON.stringify({ body_md: reply.trim() }),
+        body: JSON.stringify({
+          body_md: reply.trim(),
+          parent_post_id: replyTo?.id ?? null,
+        }),
       });
       setReply("");
+      setReplyTo(null);
       await loadDetail(openThread);
       await loadThreads();
     } catch (e) {
@@ -160,26 +211,25 @@ export default function CommunityPage() {
     }
   }
 
-  async function upvoteThread(tid: string) {
+  // Toggle a typed reaction (upvote / helpful / insightful) on a thread or
+  // post — POST when not yet reacted, DELETE (?kind=) when already reacted.
+  async function toggleReact(
+    target: "threads" | "posts",
+    id: string,
+    kind: string,
+    active: boolean,
+  ) {
     try {
-      await api(`/community/threads/${tid}/react`, {
-        method: "POST",
-        body: JSON.stringify({ kind: "upvote" }),
-      });
-      if (detail && detail.thread.id === tid) await loadDetail(tid);
-      await loadThreads();
-    } catch (e) {
-      alert(String((e as Error).message));
-    }
-  }
-
-  async function upvotePost(pid: string) {
-    try {
-      await api(`/community/posts/${pid}/react`, {
-        method: "POST",
-        body: JSON.stringify({ kind: "upvote" }),
-      });
+      if (active) {
+        await api(`/community/${target}/${id}/react?kind=${kind}`, { method: "DELETE" });
+      } else {
+        await api(`/community/${target}/${id}/react`, {
+          method: "POST",
+          body: JSON.stringify({ kind }),
+        });
+      }
       if (openThread) await loadDetail(openThread);
+      if (target === "threads") await loadThreads();
     } catch (e) {
       alert(String((e as Error).message));
     }
@@ -195,10 +245,56 @@ export default function CommunityPage() {
   }
 
   if (openThread && detail) {
+    const postIds = new Set(detail.posts.map((p) => p.id));
+    const topLevel = detail.posts.filter(
+      (p) => !p.parent_post_id || !postIds.has(p.parent_post_id),
+    );
+    const childrenOf = (id: string) =>
+      detail.posts.filter((p) => p.parent_post_id === id);
+
+    function renderPost(p: Post, depth: number): ReactElement {
+      return (
+        <div key={p.id} className={depth > 0 ? "ml-6 border-l-2 border-muted pl-3 space-y-3" : "space-y-3"}>
+          <Card className={p.is_accepted_answer ? "border-emerald-500" : ""}>
+            <CardContent className="p-4">
+              {p.is_accepted_answer && (
+                <div className="flex items-center gap-1 text-xs text-emerald-600 font-medium mb-2">
+                  <CheckCircle2 className="h-3.5 w-3.5" /> Accepted answer
+                </div>
+              )}
+              <Markdown className="text-sm">{p.body_md}</Markdown>
+              <div className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
+                <span className="font-mono">{p.user_id.slice(0, 8)}</span>
+                <span>· {formatDate(p.created_at)}</span>
+              </div>
+              <div className="flex items-center justify-between gap-2 mt-2 flex-wrap">
+                <ReactionBar
+                  counts={p.reactions}
+                  mine={p.my_reactions}
+                  onToggle={(kind, active) => toggleReact("posts", p.id, kind, active)}
+                />
+                <div className="flex items-center gap-1">
+                  <Button variant="ghost" size="sm" onClick={() => setReplyTo(p)}>
+                    <ReplyIcon className="h-3.5 w-3.5 mr-1" /> Reply
+                  </Button>
+                  {!p.is_accepted_answer && (
+                    <Button variant="ghost" size="sm" onClick={() => acceptAnswer(p.id)}>
+                      <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Accept
+                    </Button>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+          {childrenOf(p.id).map((c) => renderPost(c, Math.min(depth + 1, 3)))}
+        </div>
+      );
+    }
+
     return (
       <div className="space-y-4 max-w-4xl">
         <button
-          onClick={() => { setOpenThread(null); setDetail(null); }}
+          onClick={() => { setOpenThread(null); setDetail(null); setReplyTo(null); }}
           className="inline-flex items-center gap-1 text-sm text-primary hover:underline"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> All discussions
@@ -224,10 +320,13 @@ export default function CommunityPage() {
                   <span className="text-muted-foreground">· {formatDate(detail.thread.created_at)}</span>
                 </div>
               </div>
-              <Button variant="outline" size="sm" onClick={() => upvoteThread(detail.thread.id)} className="shrink-0">
-                <ThumbsUp className="h-3.5 w-3.5 mr-1" />
-                {detail.thread.upvote_count}
-              </Button>
+              <div className="shrink-0">
+                <ReactionBar
+                  counts={detail.thread_reactions}
+                  mine={detail.my_thread_reactions}
+                  onToggle={(kind, active) => toggleReact("threads", detail.thread.id, kind, active)}
+                />
+              </div>
             </div>
           </CardHeader>
           <CardContent>
@@ -239,43 +338,34 @@ export default function CommunityPage() {
           <h3 className="text-sm font-semibold text-muted-foreground">
             {detail.posts.length} {detail.posts.length === 1 ? "reply" : "replies"}
           </h3>
-          {detail.posts.map((p) => (
-            <Card key={p.id} className={p.is_accepted_answer ? "border-emerald-500" : ""}>
-              <CardContent className="p-4">
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0 flex-1">
-                    {p.is_accepted_answer && (
-                      <div className="flex items-center gap-1 text-xs text-emerald-600 font-medium mb-2">
-                        <CheckCircle2 className="h-3.5 w-3.5" /> Accepted answer
-                      </div>
-                    )}
-                    <Markdown className="text-sm">{p.body_md}</Markdown>
-                    <div className="text-xs text-muted-foreground mt-2 flex items-center gap-2">
-                      <span className="font-mono">{p.user_id.slice(0, 8)}</span>
-                      <span>· {formatDate(p.created_at)}</span>
-                    </div>
-                  </div>
-                  <div className="flex flex-col gap-1 shrink-0">
-                    <Button variant="ghost" size="sm" onClick={() => upvotePost(p.id)}>
-                      <ThumbsUp className="h-3.5 w-3.5 mr-1" />
-                      {p.upvote_count}
-                    </Button>
-                    {!p.is_accepted_answer && (
-                      <Button variant="ghost" size="sm" onClick={() => acceptAnswer(p.id)}>
-                        <CheckCircle2 className="h-3.5 w-3.5 mr-1" /> Accept
-                      </Button>
-                    )}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+          {topLevel.map((p) => renderPost(p, 0))}
         </div>
 
         {!detail.thread.locked && (
           <Card>
             <CardContent className="p-4 space-y-2">
-              <Textarea placeholder="Reply…" value={reply} onChange={(e) => setReply(e.target.value)} rows={4} />
+              {replyTo && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground bg-muted rounded-md px-2 py-1.5">
+                  <ReplyIcon className="h-3.5 w-3.5 shrink-0" />
+                  <span>
+                    Replying to <span className="font-mono">{replyTo.user_id.slice(0, 8)}</span>
+                  </span>
+                  <span className="truncate max-w-[280px]">— {replyTo.body_md}</span>
+                  <button
+                    onClick={() => setReplyTo(null)}
+                    className="ml-auto hover:text-foreground"
+                    aria-label="Cancel replying to this post"
+                  >
+                    <X className="h-3.5 w-3.5" />
+                  </button>
+                </div>
+              )}
+              <Textarea
+                placeholder={replyTo ? "Reply to this comment… (markdown + LaTeX ok)" : "Reply… (markdown + LaTeX ok)"}
+                value={reply}
+                onChange={(e) => setReply(e.target.value)}
+                rows={4}
+              />
               <div className="flex justify-end">
                 <Button onClick={postReply} disabled={replyBusy || !reply.trim()}>
                   <Send className="h-3.5 w-3.5 mr-1" /> Post reply
@@ -349,7 +439,7 @@ export default function CommunityPage() {
                 required minLength={4} maxLength={280}
               />
               <Textarea
-                placeholder="What's your question? (markdown ok)"
+                placeholder="What's your question? (markdown + LaTeX ok)"
                 value={form.body_md}
                 onChange={(e) => setForm({ ...form, body_md: e.target.value })}
                 required rows={5}

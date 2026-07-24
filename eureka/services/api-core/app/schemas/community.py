@@ -66,11 +66,17 @@ class PostResponse(BaseModel):
     is_accepted_answer: bool
     created_at: datetime
     updated_at: datetime
+    # Per-kind reaction counts ({"upvote": 2, "helpful": 1, ...}) and the
+    # current viewer's reactions — populated by the thread-detail endpoint.
+    reactions: dict[str, int] = Field(default_factory=dict)
+    my_reactions: list[str] = Field(default_factory=list)
 
 
 class ThreadDetailResponse(BaseModel):
     thread: ThreadResponse
     posts: list[PostResponse] = Field(default_factory=list)
+    thread_reactions: dict[str, int] = Field(default_factory=dict)
+    my_thread_reactions: list[str] = Field(default_factory=list)
 
 
 # -- reactions ---------------------------------------------------------------

@@ -137,9 +137,39 @@ async def get_thread(
     posts = (await db.execute(
         select(CommunityPost).where(CommunityPost.thread_id == thread_id).order_by(CommunityPost.created_at)
     )).scalars().all()
+
+    # Per-kind reaction counts + the viewer's own reactions, one query each.
+    post_ids = [p.id for p in posts]
+    target_ids = post_ids + [thread_id]
+    counts: dict[UUID, dict[str, int]] = {}
+    mine: dict[UUID, list[str]] = {}
+    if target_ids:
+        for tid_, kind_, n_ in (await db.execute(
+            select(CommunityReaction.target_id, CommunityReaction.kind, func.count())
+            .where(CommunityReaction.target_id.in_(target_ids))
+            .group_by(CommunityReaction.target_id, CommunityReaction.kind)
+        )).all():
+            counts.setdefault(tid_, {})[str(kind_)] = n_
+        for tid_, kind_ in (await db.execute(
+            select(CommunityReaction.target_id, CommunityReaction.kind).where(
+                CommunityReaction.target_id.in_(target_ids),
+                CommunityReaction.user_id == current_user.id,
+            )
+        )).all():
+            mine.setdefault(tid_, []).append(str(kind_))
+
+    post_out = []
+    for p in posts:
+        pr = PostResponse.model_validate(p)
+        pr.reactions = counts.get(p.id, {})
+        pr.my_reactions = mine.get(p.id, [])
+        post_out.append(pr)
+
     return ThreadDetailResponse(
         thread=ThreadResponse.model_validate(t),
-        posts=[PostResponse.model_validate(p) for p in posts],
+        posts=post_out,
+        thread_reactions=counts.get(thread_id, {}),
+        my_thread_reactions=mine.get(thread_id, []),
     )
 
 
@@ -197,6 +227,10 @@ async def create_post(
         raise HTTPException(status_code=403, detail="not in your org")
     if t.locked:
         raise HTTPException(status_code=409, detail="thread is locked")
+    if payload.parent_post_id is not None:
+        parent = await db.get(CommunityPost, payload.parent_post_id)
+        if parent is None or parent.thread_id != thread_id:
+            raise HTTPException(status_code=422, detail="parent post is not in this thread")
     p = CommunityPost(
         thread_id=thread_id,
         user_id=current_user.id,
