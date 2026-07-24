@@ -10,7 +10,9 @@ import {
   getNextItem,
   getTemplates,
   submitAnswer,
+  submitStructure,
 } from '@/lib/api';
+import Sketcher from '@/components/Sketcher';
 import {
   Card,
   EmptyState,
@@ -159,11 +161,10 @@ export default function PracticePage() {
     setSubmitting(true);
     setSubmitError(null);
     try {
-      const graded = await submitAnswer(
-        variant.template_id,
-        variant.seed,
-        answer,
-      );
+      const graded =
+        variant.grader === 'structure'
+          ? await submitStructure(variant.template_id, variant.seed, answer)
+          : await submitAnswer(variant.template_id, variant.seed, answer);
       setResult(graded);
     } catch (err) {
       setSubmitError(errorMessage(err));
@@ -174,6 +175,9 @@ export default function PracticePage() {
 
   const choices = variant?.meta?.choices ?? [];
   const isMultipleChoice = variant?.grader === 'mc';
+  // Grader 4 items are drawn, not typed. The Sketcher produces SMILES, which
+  // is the answer string, so the rest of the submit flow is unchanged.
+  const isStructure = variant?.grader === 'structure';
 
   return (
     <Page>
@@ -281,6 +285,13 @@ export default function PracticePage() {
                         </div>
                       </fieldset>
                     )
+                  ) : isStructure ? (
+                    <div>
+                      <span className="mb-2 block text-sm font-medium text-card-foreground">
+                        Draw your answer
+                      </span>
+                      <Sketcher onChange={setAnswer} />
+                    </div>
                   ) : (
                     <div>
                       <label
@@ -392,7 +403,10 @@ function ResultCard({ result }: { result: GradeResult }) {
       ? 'Correct'
       : 'Not correct';
 
-  const failed = result.milestones.find((m) => m.ok === false);
+  // Defensive on purpose. Not every grader reports milestones, and a page that
+  // white screens because one optional field is absent is a worse failure than
+  // the missing field.
+  const failed = (result.milestones ?? []).find((m) => m.ok === false);
 
   return (
     <Card>

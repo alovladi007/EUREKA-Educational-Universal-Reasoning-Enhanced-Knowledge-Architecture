@@ -17,6 +17,7 @@ from pydantic import BaseModel, Field
 import chem_core as cc
 from app.core.security import Principal, get_current_principal
 from app.domains.chemistry import poe
+from app.domains.grading.router import GradeOut
 from app.domains.grading.sandbox import grade_sandboxed
 
 router = APIRouter()
@@ -494,10 +495,10 @@ class StructureIn(BaseModel):
     smiles: str = Field(max_length=1000)
 
 
-@router.post("/structure/submit")
+@router.post("/structure/submit", response_model=GradeOut)
 async def structure_submit(
     payload: StructureIn, _p: Principal = Depends(get_current_principal)
-) -> dict:
+) -> GradeOut:
     """Grade a drawn structure against the issued variant's stored key."""
     if payload.template_id not in cc.REGISTRY:
         raise HTTPException(404, f"unknown template {payload.template_id}")
@@ -512,11 +513,21 @@ async def structure_submit(
     result = await grade_sandboxed(
         "structure", {"key": variant.key, "meta": variant.meta}, payload.smiles
     )
-    return {
-        "is_correct": result["is_correct"],
-        "score": result["score"],
-        "graded": result["graded"],
-        "grader": result["grader"],
-        "detail": result["detail"],
-        "misconception": result["misconception"],
-    }
+    # GradeOut is shared with /practice/submit rather than reimplemented. A
+    # grade result that varies its fields by which endpoint produced it forces
+    # every client to special case, and a client that forgets crashes on the
+    # missing field instead of degrading. Sharing the model makes that class of
+    # divergence impossible rather than merely discouraged.
+    #
+    # correct_display is absent from GradeOut for the same reason it is absent
+    # on the practice path: the teaching model forbids showing the solution on
+    # the grading path.
+    return GradeOut(
+        is_correct=result["is_correct"],
+        score=result["score"],
+        graded=result["graded"],
+        grader=result["grader"],
+        detail=result["detail"],
+        misconception=result["misconception"],
+        milestones=result["milestones"],
+    )

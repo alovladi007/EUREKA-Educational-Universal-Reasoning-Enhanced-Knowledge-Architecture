@@ -492,3 +492,48 @@ def test_compliance_counts_the_new_surfaces():
     assert counts["triangle_views"] == 18
     assert counts["elements"] == 118
     assert counts["poe_activities"] >= 4
+
+
+# ---------------------------------------------------------------------------
+# Endpoint contract
+# ---------------------------------------------------------------------------
+
+
+def test_both_grading_endpoints_share_one_response_model():
+    """A grade result must not change its fields by which endpoint made it.
+
+    This is the check that was missing when /structure/submit shipped its own
+    dict without milestones. The client renders one result component for both
+    endpoints, so it called .find() on a field the structure path never sent
+    and white screened the page. The TypeScript type declared the field as
+    present, which is exactly why the compiler could not catch it: the type was
+    a claim about the server that the server did not honour.
+
+    Asserting the shared model rather than comparing key lists is deliberate.
+    Sharing GradeOut makes divergence impossible instead of merely detected.
+    """
+    from fastapi.routing import APIRoute
+
+    from app.api.v1 import api_v1
+    from app.domains.grading.router import GradeOut
+
+    models = {
+        r.path: r.response_model
+        for r in api_v1.routes
+        if isinstance(r, APIRoute) and r.path.endswith(("/practice/submit", "/structure/submit"))
+    }
+    assert len(models) == 2, f"expected both grading routes, found {sorted(models)}"
+    assert set(models.values()) == {GradeOut}, models
+
+
+def test_neither_grading_endpoint_returns_the_answer():
+    """correct_display must not appear on either grading path."""
+    import inspect
+
+    from app.domains.chemistry.router import structure_submit
+    from app.domains.grading.router import submit
+
+    for fn in (submit, structure_submit):
+        source = inspect.getsource(fn)
+        body = source[source.rindex("return"):]
+        assert '"correct_display"' not in body, f"{fn.__name__} returns the answer"

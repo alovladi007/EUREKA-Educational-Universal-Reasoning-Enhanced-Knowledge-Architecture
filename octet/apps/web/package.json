@@ -12,6 +12,7 @@
   "dependencies": {
     "3dmol": "2.5.5",
     "katex": "^0.16.11",
+    "ketcher-core": "3.17.1",
     "ketcher-react": "3.17.1",
     "ketcher-standalone": "3.17.1",
     "lucide-react": "^0.309.0",

@@ -93,7 +93,7 @@ Bugs these gates caught before they could ship:
 | Deliverable | Specified | Delivered |
 |---|---|---|
 | MolViewer | yes | 3Dmol loaded dynamically, states plainly that the library stores connectivity and not coordinates |
-| Sketcher wired to grader 4 | yes | Ketcher with a text SMILES fallback, posting to POST /structure/submit |
+| Sketcher wired to grader 4 | yes | Ketcher rendered live on the practice page for structure items, posting to POST /structure/submit, with a text SMILES fallback if it fails to load |
 | Periodic table explorer | yes | 118 elements, 5 trend layers, per layer coverage reported |
 | KaTeX and mhchem | yes | rendered in the triangle views, 16 of 18 carry \ce notation |
 | Titration simulator | yes | exact charge balance solve, one code path from initial point to excess base |
@@ -114,7 +114,7 @@ Evidence:
   checks added this phase: triangle_view completeness, poe_verified, and
   simulation_verified. The triangle check was a Phase 2 warning and is now a
   failure, because the views exist.
-- 192 tests pass (118 chem_core, 74 API and content).
+- 194 tests pass (118 chem_core, 76 API and content).
 - 12 seed sweep across all 22 templates: 264 of 264 keys independently
   verified.
 - Titration engine checked against landmarks derived separately from the
@@ -168,6 +168,22 @@ Bugs these gates caught before they could ship:
 3. MolViewer set its "no 3D coordinates" status inside an effect, which never
    runs during server rendering, so the panel rendered blank on first paint.
    That was the exact silent blank the component exists to prevent.
+4. The Sketcher was built and the structure endpoint was built, but nothing
+   rendered the Sketcher, so grader 4 had no drawing surface in the product.
+   The status table said otherwise. Found by opening the page and looking for
+   it rather than by trusting the entry.
+5. ketcher-react and ketcher-standalone both declare ketcher-core as "*", and
+   npm resolved that wildcard to 3.12.0 against packages written for the 3.17
+   API. The editor failed to load on every page and fell back to a text field.
+   Pinning ketcher-core to 3.17.1 took the build from dozens of "not exported
+   from ketcher-core" warnings to zero.
+6. /structure/submit returned its own dict without milestones while
+   /practice/submit returned a GradeOut that had them. One result component
+   renders both, so it called .find() on an absent field and white screened the
+   page on submit. The TypeScript type declared the field present, which is
+   precisely why the compiler could not catch it: the type was a claim about
+   the server the server did not honour. Both endpoints now share GradeOut, so
+   the divergence is impossible rather than merely tested for.
 
 ## Phase 4 and later: NOT STARTED
 
