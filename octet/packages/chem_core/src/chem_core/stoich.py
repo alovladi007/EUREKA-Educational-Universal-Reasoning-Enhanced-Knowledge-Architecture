@@ -145,6 +145,28 @@ def round_to_sig_figs(value: float, figures: int) -> float:
     return round(value * factor) / factor
 
 
+def format_sig_figs(value: float, figures: int) -> str:
+    """Render a value showing exactly this many significant figures.
+
+    The %g format drops trailing zeros, so 0.350 becomes "0.35" and reads as
+    two significant figures. When a prompt asks for three, the stored key has
+    to show three or the item contradicts itself. Falls back to scientific
+    notation when plain decimal cannot express the precision (100 to two
+    significant figures is 1.0e+02, there is no plain form).
+    """
+    if figures <= 0:
+        return f"{value:g}"
+    if value == 0:
+        return "0." + "0" * (figures - 1) if figures > 1 else "0"
+    exponent = math.floor(math.log10(abs(value)))
+    decimals = figures - 1 - exponent
+    if decimals >= 0:
+        text = f"{value:.{decimals}f}"
+        if sig_figs(text) == figures:
+            return text
+    return f"{value:.{figures - 1}e}"
+
+
 def _parse_number(text: str) -> float | None:
     if text is None:
         return None

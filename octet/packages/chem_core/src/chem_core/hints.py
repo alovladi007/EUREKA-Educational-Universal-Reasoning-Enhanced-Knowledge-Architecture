@@ -70,6 +70,76 @@ HINTS: dict[str, tuple[str, str, str]] = {
         "Write the initial row of the ICE table, with the acid at its stated "
         "concentration and both products at zero.",
     ),
+    "molarmass.compute.v1": (
+        "You are asked for the molar mass: the mass of one mole of this substance.",
+        "A molar mass is the sum of the atomic masses of every atom in the formula, each counted as many times as its subscript says.",
+        "Write out how many atoms of each element the formula contains, and stop before multiplying anything.",
+    ),
+    "mole.mass_to_moles.v1": (
+        "You are asked how many moles are in a measured mass.",
+        "Molar mass is the bridge between grams and moles. Divide by it to go from mass to a count, and the units cancel to tell you which way round it goes.",
+        "Compute the molar mass of the substance first, and stop there.",
+    ),
+    "percentcomp.element.v1": (
+        "You are asked what fraction of the mass of this compound is one particular element.",
+        "Percent by mass is the mass contributed by that element in one mole, divided by the mass of the whole mole, times 100.",
+        "Find the total molar mass of the compound first.",
+    ),
+    "molarity.compute.v1": (
+        "You are asked for the concentration of a solution in moles per litre.",
+        "Molarity counts moles of solute per litre of solution, so a mass has to become moles before it can become a concentration.",
+        "Convert the mass of solute to moles, and stop before dividing by the volume.",
+    ),
+    "dilution.m1v1.v1": (
+        "You are asked for the concentration after solvent is added.",
+        "Diluting adds solvent but not solute, so the number of moles is unchanged. That conservation is the whole equation.",
+        "Compute how many moles of solute are in the stock sample you started with.",
+    ),
+    "gaslaw.ideal.v1": (
+        "You are asked for the volume of a gas from its pressure, temperature and amount.",
+        "The ideal gas law ties all four together. Rearrange it for the one you want, and check that every quantity is in units that match R.",
+        "Confirm the temperature is in kelvin, and rearrange the equation for volume without substituting numbers yet.",
+    ),
+    "gaslaw.combined.v1": (
+        "You are asked how a fixed amount of gas responds to a change in pressure and temperature.",
+        "With the amount constant, the quantity pressure times volume divided by temperature is the same before and after. Set the two states equal.",
+        "Write the before state as P1V1 over T1, and stop.",
+    ),
+    "thermo.calorimetry.v1": (
+        "You are asked how much heat a mass of water absorbed for a measured temperature rise.",
+        "The heat is the mass times the specific heat times the temperature change. Specific heat is what makes the units come out as energy.",
+        "Identify the three quantities you were given and their units, and stop before multiplying.",
+    ),
+    "ph.strong_acid.v1": (
+        "You are asked for the pH of a strong acid solution.",
+        "A strong acid ionizes completely, so the hydronium concentration equals the acid concentration. pH is the negative base ten logarithm of that.",
+        "Write down the hydronium ion concentration, which for a strong acid you can read straight off the label.",
+    ),
+    "limiting.reactant.v1": (
+        "You are asked how much product forms when both reactant amounts are given.",
+        "When both amounts are given, one runs out first and caps the product. Convert each reactant to moles, then divide by its coefficient to see which is scarcer.",
+        "Convert both masses to moles, and stop before comparing them.",
+    ),
+    "ksp.solubility.v1": (
+        "You are asked how many moles of this salt dissolve per litre of pure water.",
+        "Let the molar solubility be s, write each ion concentration in terms of s using the formula, and substitute into the Ksp expression.",
+        "Write down what one formula unit releases when it dissolves, in terms of s.",
+    ),
+    "density.compute.v1": (
+        "You are asked for the density of a sample from its mass and volume.",
+        "Density is mass per unit volume, so the units of the answer tell you which quantity divides which.",
+        "Write the units you want in the answer, and see which arrangement of the two numbers produces them.",
+    ),
+    "sigfig.round.v1": (
+        "You are asked to report a number to a stated number of significant figures.",
+        "Count significant figures from the first non zero digit. Then look at the digit just past your cut off to decide whether to round up.",
+        "Identify the first significant digit in the number and count forward from it.",
+    ),
+    "mc.particulate.v1": (
+        "You are asked which particle level picture matches this substance or change.",
+        "Move between what you see, what the particles are doing, and what the symbols say. A formula is a symbol, and it does not always mean a discrete molecule exists.",
+        "Ask first whether this substance is made of separate molecules or of ions in a lattice.",
+    ),
     "mc.subscript_coefficient.v1": (
         "You are asked which change correctly balances the equation.",
         "A coefficient multiplies a whole formula unit, a subscript counts atoms "

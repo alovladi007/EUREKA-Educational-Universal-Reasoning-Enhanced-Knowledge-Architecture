@@ -410,6 +410,13 @@ REGISTRY: dict[str, dict[str, object]] = {
 }
 
 
+# Phase 2 general chemistry templates. Imported at the bottom to avoid a
+# circular import, since templates_g builds Variant objects from this module.
+from .templates_g import PHASE2_TEMPLATES  # noqa: E402
+
+REGISTRY.update(PHASE2_TEMPLATES)
+
+
 def resolve_generated(template_id: str, seed: int, *, max_attempts: int = MAX_SEED_RETRIES) -> Variant:
     """Produce a variant whose key has been independently verified.
 

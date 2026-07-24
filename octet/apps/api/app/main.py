@@ -21,6 +21,38 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("octet")
 
 
+def install_molecule_pool() -> int:
+    """Point the item generators at the curated 200 entry library.
+
+    Until this runs, chem_core generates from its small internal fixture set,
+    which is what keeps the package testable with no application present. The
+    pool passed here is already filtered by the Section 18 safety policy.
+    """
+    import chem_core as cc
+
+    from app.data.molecule_build import build_library
+    from app.data.molecules import molecule_pool
+
+    safe = {m.name for m in molecule_pool()}
+    built, _problems = build_library()
+    # build_library returns the RDKit derived record, whose SMILES field is
+    # named smiles_canonical. The pool contract wants "smiles", so map it
+    # explicitly rather than relying on attribute names lining up.
+    usable = [
+        {
+            "name": b.name,
+            "smiles": b.smiles_canonical,
+            "formula": b.formula,
+            "real_world_note": b.real_world_note,
+        }
+        for b in built
+        if b.name in safe
+    ]
+    count = cc.set_pool(usable, source="curated-library-v1")
+    logger.info("molecule pool installed: %d entries", count)
+    return count
+
+
 def create_app() -> FastAPI:
     settings = get_settings()
     app = FastAPI(
@@ -68,6 +100,10 @@ def create_app() -> FastAPI:
             "templates": len(cc.REGISTRY),
             "engine_verified": engine_ok,
         }
+
+    @app.on_event("startup")
+    async def _startup() -> None:
+        install_molecule_pool()
 
     app.include_router(api_v1)
     return app

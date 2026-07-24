@@ -154,6 +154,102 @@ async def hint(
     return HintOut(template_id=template_id, rung=rung, text=text)
 
 
+@router.get("/curriculum/nodes")
+async def curriculum_nodes(
+    tier: str | None = Query(None), _p: Principal = Depends(get_current_principal)
+) -> dict:
+    """The knowledge graph. Nodes carry their tier and prerequisites."""
+    from app.data.curriculum import NODES, prerequisites_of, tier_counts
+
+    nodes = [n for n in NODES if not tier or n.tier == tier]
+    return {
+        "nodes": [
+            {
+                "code": n.code, "title": n.title, "tier": n.tier, "summary": n.summary,
+                "prerequisites": prerequisites_of(n.code),
+                "lab_adjacent": n.lab_adjacent,
+                "triangle_eligible": n.triangle_eligible,
+            }
+            for n in nodes
+        ],
+        "tier_counts": tier_counts(),
+    }
+
+
+@router.get("/curriculum/lessons/{node_code}")
+async def lesson(node_code: str, _p: Principal = Depends(get_current_principal)) -> dict:
+    """One lesson in the six part arc.
+
+    try_it_answer is returned so the client can render it click to reveal.
+    The teaching model requires the learner to answer before revealing, which
+    is a client side interaction, and no item key is exposed here.
+    """
+    from app.data.lessons import lesson_for
+
+    found = lesson_for(node_code)
+    if found is None:
+        raise HTTPException(404, f"no lesson for {node_code}")
+    return {
+        "node": found.node,
+        "objective": found.objective,
+        "build_on": found.build_on,
+        "core_idea": found.core_idea,
+        "worked_example": found.worked_example,
+        "try_it": {"prompt": found.try_it_prompt, "answer": found.try_it_answer,
+                   "reveal": "click"},
+        "pitfall": found.pitfall,
+        "misconception": found.misconception,
+    }
+
+
+@router.get("/path")
+async def learning_path(
+    principal: Principal = Depends(get_current_principal),
+) -> dict:
+    """The planned route through the graph, with a reason on every node.
+
+    Mastery is empty until Phase 3 persists it, so this currently plans from a
+    cold start. That is stated rather than faked.
+    """
+    from app.domains.adaptive.picker import plan_path
+
+    planned = plan_path({})
+    planned["note"] = "Mastery persistence lands in Phase 3, so this plans from a cold start."
+    return planned
+
+
+@router.get("/diagnostic")
+async def diagnostic(
+    tier: str | None = Query(None),
+    limit: int = Query(12, ge=1, le=30),
+    principal: Principal = Depends(get_current_principal),
+) -> dict:
+    """Placement diagnostic: one item per covered node. Keys are not returned."""
+    from app.domains.practice.diagnostic import build_diagnostic
+
+    items = build_diagnostic(principal.user_id, tier=tier, limit=limit)
+    return {
+        "items": [
+            {"node": i.node, "template_id": i.template_id, "seed": i.seed,
+             "prompt": i.prompt, "grader": i.grader, "meta": i.meta}
+            for i in items
+        ],
+        "count": len(items),
+    }
+
+
+@router.get("/compliance")
+async def compliance(_p: Principal = Depends(get_current_principal)) -> dict:
+    """The teaching model compliance checklist, run live.
+
+    Exposed deliberately: a course that cannot show a green checklist should
+    not be trusted, and hiding the check would defeat its purpose.
+    """
+    from app.compliance import run
+
+    return run()
+
+
 @router.get("/misconceptions")
 async def misconceptions(_p: Principal = Depends(get_current_principal)) -> dict:
     """The named misconception library, with review status stated honestly."""

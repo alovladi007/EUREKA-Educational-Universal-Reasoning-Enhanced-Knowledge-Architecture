@@ -40,6 +40,20 @@ jobs:
           print(cov)
           sys.exit(1 if cov["missing"] or cov["incomplete"] else 0)
           PY
+      - name: Phase 2 gate (compliance checklist green)
+        working-directory: octet/apps/api
+        run: |
+          pip install -r requirements.txt
+          PYTHONPATH=../../packages/chem_core/src:. python -m pytest tests -q
+          PYTHONPATH=../../packages/chem_core/src:. python - <<'PY'
+          import sys
+          from app.compliance import run
+          report = run()
+          print("blocking:", report["blocking_count"], "counts:", report["counts"])
+          for p in report["blocking"][:20]:
+              print(" -", p["check"], p["detail"])
+          sys.exit(0 if report["green"] else 1)
+          PY
       - name: Misconception library integrity
         run: |
           python - <<'PY'

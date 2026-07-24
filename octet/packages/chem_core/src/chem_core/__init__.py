@@ -46,12 +46,15 @@ from .formula import (
 )
 from .hints import HINTS, hint_coverage, rung
 from .mc import grade_mc, validate_choices
+from .numeric import grade_numeric, parse_quantity
+from .pool import get_pool, pool_source, set_pool
 from .misconceptions import MISCONCEPTIONS, Misconception
 from .registry import REGISTRY, Variant, resolve_generated, sweep, variant_seed
 from .stoich import (
     StoichProblem,
     StoichSolution,
     grade_stoichiometry,
+    format_sig_figs,
     round_to_sig_figs,
     sig_figs,
     solve_stoichiometry,
@@ -88,6 +91,7 @@ __all__ = [
     "verify_stoichiometry_key",
     "sig_figs",
     "round_to_sig_figs",
+    "format_sig_figs",
     "EquilibriumProblem",
     "EquilibriumSolution",
     "solve_equilibrium",
@@ -97,6 +101,11 @@ __all__ = [
     "ph_from_hydronium",
     "grade_mc",
     "validate_choices",
+    "grade_numeric",
+    "parse_quantity",
+    "set_pool",
+    "get_pool",
+    "pool_source",
     "MISCONCEPTIONS",
     "Misconception",
     "HINTS",
@@ -114,7 +123,7 @@ __all__ = [
 __version__ = "0.1.0"
 
 # Graders live in this phase. Anything outside this set raises on dispatch.
-SUPPORTED_GRADERS = ("formula", "balance", "stoich", "mc", "equilibrium")
+SUPPORTED_GRADERS = ("formula", "balance", "stoich", "mc", "equilibrium", "numeric")
 
 
 def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
@@ -156,6 +165,15 @@ def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
             sig_figs=meta.get("sig_figs", 3),
         )
         return grade_stoichiometry(problem, student_answer, **kwargs)
+    if grader == "numeric":
+        return grade_numeric(
+            meta["value"],
+            meta.get("unit", ""),
+            student_answer,
+            expected_sig_figs=meta.get("sig_figs"),
+            wrong_paths=[w for w in meta.get("wrong_paths", []) if w.get("value")],
+            **kwargs,
+        )
     if grader == "mc":
         return grade_mc(meta.get("correct_index", int(key or 0)), student_answer, meta.get("choices", []))
     # equilibrium
