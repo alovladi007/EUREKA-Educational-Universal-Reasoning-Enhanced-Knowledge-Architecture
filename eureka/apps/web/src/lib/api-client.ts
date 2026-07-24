@@ -1640,7 +1640,9 @@ class ApiClient {
   async getPatentBarAnalytics(userId?: string): Promise<any> {
     // 1) Try api-core (auth-protected).
     try {
-      const r = await this.client.get('/api/v1/me/patent-bar/analytics');
+      // this.client's baseURL already includes /api/v1 — an absolute
+      // '/api/v1/...' path here doubled the prefix and 404'd.
+      const r = await this.client.get('/me/patent-bar/analytics');
       const data = r.data || {};
       // Only short-circuit if api-core actually has data. Otherwise fall
       // through to test-prep for the richer buckets.
@@ -1699,7 +1701,7 @@ class ApiClient {
    */
   async getPatentBarReviewQueue(limit?: number, userId?: string): Promise<any> {
     try {
-      const r = await this.client.get('/api/v1/me/patent-bar/review-queue', {
+      const r = await this.client.get('/me/patent-bar/review-queue', {
         params: { limit: limit ?? 30 },
       });
       const data = r.data || {};
