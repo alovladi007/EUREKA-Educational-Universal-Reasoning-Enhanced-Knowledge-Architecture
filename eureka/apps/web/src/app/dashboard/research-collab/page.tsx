@@ -52,6 +52,71 @@ export default function ResearchCollabPage() {
   const [wsMembers, setWsMembers] = useState<Record<string, WsMember[]>>({});
   const [overview, setOverview] = useState<Overview | null>(null);
 
+  const [lookup, setLookup] = useState({ kind: "doi", value: "" });
+  const [preview, setPreview] = useState<Record<string, unknown> | null>(null);
+
+  async function runLookup() {
+    if (!overview || !lookup.value.trim()) return;
+    setBusy(true);
+    setPreview(null);
+    try {
+      const r = await api<Record<string, unknown>>(
+        `/me/research/workspaces/${overview.id}/references/lookup`,
+        { method: "POST", body: JSON.stringify({ kind: lookup.kind, value: lookup.value.trim() }) },
+      );
+      if (!r.found) { alert("Not found — check the identifier."); return; }
+      setPreview(r);
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function addReference() {
+    if (!overview || !preview) return;
+    setBusy(true);
+    try {
+      await api(`/me/research/workspaces/${overview.id}/references`, {
+        method: "POST",
+        body: JSON.stringify({
+          source: preview.source ?? lookup.kind,
+          doi: preview.doi ?? null,
+          arxiv_id: preview.arxiv_id ?? null,
+          title: preview.title,
+          authors: preview.authors ?? [],
+          venue: preview.venue ?? null,
+          year: preview.year ?? null,
+          abstract: preview.abstract ?? null,
+          raw_metadata: (preview.raw as Record<string, unknown>) ?? {},
+        }),
+      });
+      setPreview(null);
+      setLookup({ kind: lookup.kind, value: "" });
+      setOverview(await api<Overview>(`/research/workspaces/${overview.id}/overview`));
+    } catch (e) {
+      alert(String((e as Error).message));
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function exportBibtex() {
+    if (!overview) return;
+    try {
+      const r = await api<{ bibtex: string }>(`/me/research/workspaces/${overview.id}/export/bibtex`);
+      const blob = new Blob([r.bibtex], { type: "application/x-bibtex" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${overview.title.replace(/[^a-z0-9]+/gi, "-").toLowerCase() || "workspace"}.bib`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      alert(String((e as Error).message));
+    }
+  }
+
   async function openOverview(wsId: string) {
     if (overview?.id === wsId) { setOverview(null); return; }
     try {
@@ -265,7 +330,14 @@ export default function ResearchCollabPage() {
               <Badge variant="outline" className="text-[10px]">{overview.kind}</Badge>
               <Badge variant="secondary" className="text-[10px]">{overview.status}</Badge>
               <Badge variant="secondary" className="text-[10px]">{overview.my_role}</Badge>
-              <button className="ml-auto text-xs underline text-muted-foreground" onClick={() => setOverview(null)}>close</button>
+              <span className="ml-auto flex items-center gap-2">
+                {overview.lit_review.length > 0 && (
+                  <button className="text-xs underline text-primary" onClick={exportBibtex}>
+                    Export BibTeX
+                  </button>
+                )}
+                <button className="text-xs underline text-muted-foreground" onClick={() => setOverview(null)}>close</button>
+              </span>
             </CardTitle>
             <CardDescription>
               {overview.owner_name ? `Owned by ${overview.owner_name}` : ""}
@@ -274,6 +346,45 @@ export default function ResearchCollabPage() {
           </CardHeader>
           <CardContent className="space-y-4">
             {overview.description_md && <Markdown className="text-sm">{overview.description_md}</Markdown>}
+            {overview.my_role !== "viewer" && (
+              <div className="border rounded-md p-3 space-y-2">
+                <p className="text-xs font-semibold text-muted-foreground">
+                  Add reference by identifier (live CrossRef / arXiv lookup)
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  <select
+                    value={lookup.kind}
+                    onChange={(e) => setLookup({ ...lookup, kind: e.target.value })}
+                    className="rounded-md border border-input bg-background px-2 py-1.5 text-sm"
+                  >
+                    <option value="doi">DOI</option>
+                    <option value="arxiv">arXiv ID</option>
+                  </select>
+                  <Input
+                    className="flex-1 min-w-[220px]"
+                    placeholder={lookup.kind === "doi" ? "10.1038/nature14539" : "1706.03762"}
+                    value={lookup.value}
+                    onChange={(e) => setLookup({ ...lookup, value: e.target.value })}
+                  />
+                  <Button size="sm" onClick={runLookup} disabled={busy || !lookup.value.trim()}>
+                    {busy ? "Looking up…" : "Look up"}
+                  </Button>
+                </div>
+                {preview && (
+                  <div className="bg-muted rounded-md p-2 text-sm space-y-1">
+                    <p className="font-medium">{String(preview.title ?? "")}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {(preview.authors as string[] | undefined)?.join(", ")}
+                      {preview.venue ? ` · ${preview.venue}` : ""}{preview.year ? ` · ${preview.year}` : ""}
+                    </p>
+                    <div className="flex gap-2 pt-1">
+                      <Button size="sm" onClick={addReference} disabled={busy}>Add to lit review</Button>
+                      <Button size="sm" variant="ghost" onClick={() => setPreview(null)}>Discard</Button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
             <div>
               <p className="text-xs font-semibold text-muted-foreground mb-1.5">
                 Literature review ({overview.lit_review.length})
