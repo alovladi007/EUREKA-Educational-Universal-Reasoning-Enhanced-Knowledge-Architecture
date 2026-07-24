@@ -8,7 +8,6 @@ import {
   EmptyState,
   ErrorPanel,
   LoadingPanel,
-  MainNav,
   Page,
   Pill,
   SectionTitle,
@@ -110,7 +109,7 @@ export default function MoleculesPage() {
   const categories = list?.categories ?? [];
 
   return (
-    <Page nav={<MainNav />}>
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">
         Molecule library
       </h1>

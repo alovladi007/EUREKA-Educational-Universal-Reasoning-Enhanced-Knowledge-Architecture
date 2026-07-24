@@ -46,8 +46,18 @@ const TREND_META: Record<PeriodicTrend, TrendMeta> = {
   ionization: { label: 'First ionization energy', unit: 'kJ/mol', decimals: 0 },
 };
 
-/** Viridis stops. Perceptually ordered and readable for common colour vision deficiencies. */
-const RAMP = ['#440154', '#3b528b', '#21918c', '#5ec962', '#fde725'];
+/**
+ * A single hue blue ramp built on the EUREKA brand colour, so the table reads
+ * as part of the platform rather than as a separate tool.
+ *
+ * These are the sky stops from 100 through 900, which keeps the ramp
+ * monotonically darkening. That matters more than it looks: a reader compares
+ * two cells by lightness, so a scale that brightens and then darkens again
+ * would make two different values look equally intense. Viridis was here
+ * before and is perceptually excellent, but it sweeps through purple, green
+ * and yellow, which is three hues this product does not otherwise use.
+ */
+const RAMP = ['#e0f2fe', '#7dd3fc', '#0ea5e9', '#0369a1', '#0c4a6e'];
 const RAMP_CSS = `linear-gradient(to right, ${RAMP.join(', ')})`;
 
 /** Grid geometry. Row 1 carries the group headers, so a period sits at period + 1. */

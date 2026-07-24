@@ -25,7 +25,6 @@ import {
   EmptyState,
   ErrorPanel,
   LoadingPanel,
-  MainNav,
   Page,
   Pill,
   SectionTitle,
@@ -269,7 +268,7 @@ export default function SimulationActivityPage() {
   }
 
   return (
-    <Page nav={<MainNav />}>
+    <Page>
       <Link
         href="/simulations"
         className="text-sm text-muted-foreground hover:underline"

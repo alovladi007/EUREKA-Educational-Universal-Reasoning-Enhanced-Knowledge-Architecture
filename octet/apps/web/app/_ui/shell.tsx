@@ -1,7 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import {
+  Atom,
+  BookOpen,
+  Compass,
+  FlaskConical,
+  LayoutDashboard,
+  PencilRuler,
+  Route,
+} from 'lucide-react';
 import { EUREKA_LOGIN_URL, getToken } from '@/lib/api';
 
 // Shared chrome for the OCTET pages. Nothing here fetches: every page owns its
@@ -12,21 +22,21 @@ import { EUREKA_LOGIN_URL, getToken } from '@/lib/api';
 
 export function Wordmark() {
   return (
-    <div className="flex items-center gap-2.5">
+    <div className="flex items-center gap-2">
       <span
         aria-hidden="true"
-        className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-sm font-bold text-white"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-white"
       >
-        O
+        <Atom className="h-5 w-5" />
       </span>
-      <div className="flex flex-col leading-none">
-        <span className="text-2xl font-bold tracking-tight text-foreground">
+      <span className="flex flex-col leading-none">
+        <span className="text-xl font-bold tracking-tight text-foreground">
           OCTET
         </span>
-        <span className="mt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+        <span className="mt-0.5 text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
           Chemistry on EUREKA
         </span>
-      </div>
+      </span>
     </div>
   );
 }
@@ -87,69 +97,90 @@ export function AuthGate({ children }: { children: React.ReactNode }) {
   return <>{children}</>;
 }
 
-// A consistent secondary-navigation link.
-export function HeaderLink({
-  href,
-  children,
-}: {
-  href: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <Link
-      href={href}
-      className="rounded px-2 py-1 text-muted-foreground transition-colors hover:text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
-    >
-      {children}
-    </Link>
-  );
-}
+// The navigation set, in one place so a surface added later is reachable from
+// every page. Order is the order a learner meets them: read, then attempt,
+// then see the route, then look things up, then experiment.
+const NAV = [
+  { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Learn', href: '/learn', icon: BookOpen },
+  { name: 'Practice', href: '/practice', icon: PencilRuler },
+  { name: 'Path', href: '/path', icon: Route },
+  { name: 'Explore', href: '/explore', icon: Compass },
+  { name: 'Simulations', href: '/simulations', icon: FlaskConical },
+];
 
-// The full set of surfaces, in one place, so a page added later is reachable
-// from every page that uses it. Pages that want a shorter nav still pass their
-// own links into Page.
-export function MainNav() {
-  return (
-    <>
-      <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-      <HeaderLink href="/learn">Learn</HeaderLink>
-      <HeaderLink href="/practice">Practice</HeaderLink>
-      <HeaderLink href="/path">Path</HeaderLink>
-      <HeaderLink href="/explore">Explore</HeaderLink>
-      <HeaderLink href="/simulations">Simulations</HeaderLink>
-    </>
-  );
-}
+// The left sidebar, matching the EUREKA shell so crossing between the platform
+// and this vertical does not feel like arriving at a different product. The
+// active item is decided by the pathname rather than by each page declaring
+// itself, because a page that has to remember to say where it is eventually
+// forgets.
+export function Sidebar() {
+  const pathname = usePathname() ?? '';
 
-export function PageHeader({ children }: { children?: React.ReactNode }) {
   return (
-    <header className="border-b border-border">
-      <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-6 py-5">
+    <aside className="flex h-screen w-64 shrink-0 flex-col border-r border-border bg-card">
+      <div className="flex h-16 shrink-0 items-center border-b border-border px-6">
         <Link
           href="/dashboard"
-          className="rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
           aria-label="OCTET home"
+          className="rounded-md transition-opacity hover:opacity-80 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
         >
           <Wordmark />
         </Link>
-        <nav className="flex items-center gap-1 text-sm">{children}</nav>
       </div>
-    </header>
+
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        <nav className="space-y-1 p-4">
+          {NAV.map((item) => {
+            // Dashboard would otherwise match every route, since every path
+            // starts with a slash.
+            const active =
+              item.href === '/dashboard'
+                ? pathname === item.href
+                : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.name}
+                href={item.href}
+                aria-current={active ? 'page' : undefined}
+                className={[
+                  'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
+                  'focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500',
+                  active
+                    ? 'bg-brand-500 text-white'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                ].join(' ')}
+              >
+                <item.icon className="h-5 w-5 shrink-0" />
+                <span>{item.name}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </div>
+
+      <div className="shrink-0 border-t border-border p-4">
+        <a
+          href={EUREKA_LOGIN_URL.replace(/\/auth\/login$/, '/dashboard')}
+          className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        >
+          Back to EUREKA
+        </a>
+      </div>
+    </aside>
   );
 }
 
-// The standard page frame: header, then a centered content column.
-export function Page({
-  nav,
-  children,
-}: {
-  nav?: React.ReactNode;
-  children: React.ReactNode;
-}) {
+// The standard page frame: sidebar on the left, scrolling content beside it.
+// Navigation lives in the sidebar alone, so no page declares its own links and
+// no two navigations can disagree about where the learner is.
+export function Page({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen">
-      <PageHeader>{nav}</PageHeader>
-      <main className="mx-auto max-w-5xl px-6 py-8">{children}</main>
+    <div className="flex h-screen overflow-hidden">
+      <Sidebar />
+      <main className="flex-1 overflow-y-auto">
+        <div className="mx-auto max-w-5xl px-6 py-8">{children}</div>
+      </main>
     </div>
   );
 }

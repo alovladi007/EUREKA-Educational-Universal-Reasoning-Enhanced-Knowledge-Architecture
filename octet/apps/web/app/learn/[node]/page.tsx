@@ -14,7 +14,6 @@ import TriangleView from '@/components/TriangleView';
 import {
   Card,
   ErrorPanel,
-  HeaderLink,
   LoadingPanel,
   Page,
   Pill,
@@ -117,15 +116,7 @@ export default function LessonPage() {
   }, [nodeCode]);
 
   return (
-    <Page
-      nav={
-        <>
-          <HeaderLink href="/learn">Learn</HeaderLink>
-          <HeaderLink href="/practice">Practice</HeaderLink>
-          <HeaderLink href="/path">Path</HeaderLink>
-        </>
-      }
-    >
+    <Page>
       <Link
         href="/learn"
         className="text-sm text-muted-foreground hover:underline"

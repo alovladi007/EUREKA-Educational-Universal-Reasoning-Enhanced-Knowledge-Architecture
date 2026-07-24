@@ -14,7 +14,6 @@ import {
   Card,
   EmptyState,
   ErrorPanel,
-  HeaderLink,
   LoadingPanel,
   Page,
   Pill,
@@ -73,17 +72,7 @@ export default function DashboardPage() {
   const nodeTotal = Object.values(tierCounts).reduce((a, b) => a + b, 0);
 
   return (
-    <Page
-      nav={
-        <>
-          <HeaderLink href="/learn">Learn</HeaderLink>
-          <HeaderLink href="/practice">Practice</HeaderLink>
-          <HeaderLink href="/path">Path</HeaderLink>
-          <HeaderLink href="/explore">Explore</HeaderLink>
-          <HeaderLink href="/simulations">Simulations</HeaderLink>
-        </>
-      }
-    >
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Dashboard</h1>
       <p className="mb-8 text-sm text-muted-foreground">
         Orbitals, Compounds, Thermodynamics, Equilibria, Transformations.

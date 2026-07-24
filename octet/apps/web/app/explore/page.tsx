@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { MainNav, Page, SectionTitle } from '@/app/_ui/shell';
+import { Page, SectionTitle } from '@/app/_ui/shell';
 
 // The explore index. Three surfaces sit under it, and each one is a way of
 // looking at chemistry rather than a way of being tested on it.
@@ -33,7 +33,7 @@ const SURFACES: Array<{ href: string; title: string; detail: string }> = [
 
 export default function ExplorePage() {
   return (
-    <Page nav={<MainNav />}>
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Explore</h1>
       <p className="mb-8 text-sm text-muted-foreground">
         Three ways to look at the same subject. Nothing here is graded.

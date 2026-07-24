@@ -7,7 +7,6 @@ import {
   Card,
   EmptyState,
   ErrorPanel,
-  HeaderLink,
   LoadingPanel,
   Page,
   Pill,
@@ -63,15 +62,7 @@ export default function PathPage() {
   };
 
   return (
-    <Page
-      nav={
-        <>
-          <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-          <HeaderLink href="/learn">Learn</HeaderLink>
-          <HeaderLink href="/practice">Practice</HeaderLink>
-        </>
-      }
-    >
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Path</h1>
       <p className="mb-6 text-sm text-muted-foreground">
         The order the course plans for you, with the reason behind each

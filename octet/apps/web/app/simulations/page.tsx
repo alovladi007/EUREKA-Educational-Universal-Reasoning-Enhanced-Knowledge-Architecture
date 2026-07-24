@@ -8,7 +8,6 @@ import {
   EmptyState,
   ErrorPanel,
   LoadingPanel,
-  MainNav,
   Page,
   Pill,
   SectionTitle,
@@ -54,7 +53,7 @@ export default function SimulationsPage() {
   const scenarios = catalogue?.scenarios ?? [];
 
   return (
-    <Page nav={<MainNav />}>
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Simulations</h1>
       <p className="mb-8 text-sm text-muted-foreground">
         Predict, observe, explain. You commit to a prediction, then the result

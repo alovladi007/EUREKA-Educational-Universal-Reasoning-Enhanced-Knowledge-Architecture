@@ -15,7 +15,6 @@ import {
   Card,
   EmptyState,
   ErrorPanel,
-  HeaderLink,
   LoadingPanel,
   Page,
   Pill,
@@ -177,15 +176,7 @@ export default function PracticePage() {
   const isMultipleChoice = variant?.grader === 'mc';
 
   return (
-    <Page
-      nav={
-        <>
-          <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-          <HeaderLink href="/learn">Learn</HeaderLink>
-          <HeaderLink href="/path">Path</HeaderLink>
-        </>
-      }
-    >
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Practice</h1>
       <p className="mb-8 text-sm text-muted-foreground">
         Every item is generated and its answer key is independently verified

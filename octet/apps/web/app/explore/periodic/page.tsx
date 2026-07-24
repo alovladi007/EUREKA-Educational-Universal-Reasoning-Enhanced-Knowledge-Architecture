@@ -14,7 +14,6 @@ import {
   EmptyState,
   ErrorPanel,
   LoadingPanel,
-  MainNav,
   Page,
   Pill,
   SectionTitle,
@@ -171,7 +170,7 @@ export default function PeriodicPage() {
     table?.elements.find((element) => element.symbol === selectedSymbol) ?? null;
 
   return (
-    <Page nav={<MainNav />}>
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Periodic table</h1>
       <p className="mb-8 text-sm text-muted-foreground">
         One property at a time, drawn over the whole table. Every value on this

@@ -6,7 +6,6 @@ import { CurriculumNode, getCurriculumNodes } from '@/lib/api';
 import {
   EmptyState,
   ErrorPanel,
-  HeaderLink,
   LoadingPanel,
   Page,
   Pill,
@@ -61,15 +60,7 @@ export default function LearnPage() {
   );
 
   return (
-    <Page
-      nav={
-        <>
-          <HeaderLink href="/dashboard">Dashboard</HeaderLink>
-          <HeaderLink href="/practice">Practice</HeaderLink>
-          <HeaderLink href="/path">Path</HeaderLink>
-        </>
-      }
-    >
+    <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Learn</h1>
       <p className="mb-8 text-sm text-muted-foreground">
         Every node carries one lesson in the six part arc. A node lists the
