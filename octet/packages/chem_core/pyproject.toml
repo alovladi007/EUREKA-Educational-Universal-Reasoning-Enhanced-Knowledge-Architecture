@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "chem_core"
+version = "0.1.0"
+description = "Deterministic chemistry graders and verifiers for OCTET"
+requires-python = ">=3.11"
+dependencies = [
+  "rdkit==2024.3.5",
+  "sympy==1.13.3",
+  "pint==0.24.4",
+  "periodictable==1.7.1",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

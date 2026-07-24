@@ -1,0 +1,50 @@
+name: octet-ci
+
+on:
+  push:
+    paths: ["octet/**", ".github/workflows/ci.yml"]
+  pull_request:
+    paths: ["octet/**"]
+
+jobs:
+  graders:
+    name: Phase 1 gate (graders verified)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: octet
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install chem_core
+        run: pip install -e packages/chem_core pytest
+      - name: Test suite (includes adversarial payloads)
+        run: pytest packages/chem_core/tests -q
+      - name: 12 seed verification sweep
+        run: |
+          python - <<'PY'
+          import chem_core as cc, sys
+          report = cc.sweep(12)
+          bad = {t: r["failures"] for t, r in report.items() if r["failures"]}
+          for t, r in report.items():
+              print(f"{'PASS' if not r['failures'] else 'FAIL'} {t} {r['ok']}/{r['total']}")
+          sys.exit(1 if bad else 0)
+          PY
+      - name: Hint ladder coverage gate
+        run: |
+          python - <<'PY'
+          import chem_core as cc, sys
+          cov = cc.hint_coverage(list(cc.REGISTRY))
+          print(cov)
+          sys.exit(1 if cov["missing"] or cov["incomplete"] else 0)
+          PY
+      - name: Misconception library integrity
+        run: |
+          python - <<'PY'
+          import chem_core as cc, sys
+          bad = [c for c, m in cc.MISCONCEPTIONS.items() if not (m.routes_to and m.source and m.counterexample)]
+          print(f"{len(cc.MISCONCEPTIONS)} entries, {len(bad)} incomplete")
+          sys.exit(1 if bad else 0)
+          PY

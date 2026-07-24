@@ -84,3 +84,6 @@ eureka/apps/*/package-lock.json
 # Celery beat runtime state
 celerybeat-schedule
 celerybeat.pid
+
+# OCTET local dev venv
+.octet-venv/
