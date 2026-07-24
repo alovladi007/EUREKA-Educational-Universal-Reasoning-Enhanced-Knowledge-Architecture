@@ -58,7 +58,7 @@ export function PulseTemplate({ data, scale = 1, paperSize = "letter", sectionVi
                   <p className="text-xs flex-shrink-0 ml-2" style={{ color: "#94a3b8" }}>{exp.startDate} — {exp.current ? "Present" : exp.endDate}</p>
                 </div>
                 <p className="text-sm" style={{ color: colorScheme }}>{exp.company}{exp.location ? ` · ${exp.location}` : ""}</p>
-                {exp.bullets.length > 0 && <ul className="mt-1 space-y-0.5">{exp.bullets.filter(b => b.content).map(b => <li key={b.id} className="text-sm pl-3 relative" style={{ color: "#374151", fontWeight: b.highlighted ? 600 : 400 }}><span className="absolute left-0">&bull;</span>{b.content}</li>)}</ul>}
+                {exp.bullets.length > 0 && <ul className="mt-1 space-y-0.5">{exp.bullets.filter(b => b.content).map(b => <li key={b.id} className="block text-sm pl-3 relative" style={{ color: "#374151", fontWeight: b.highlighted ? 600 : 400 }}><span className="absolute left-0">&bull;</span>{b.content}</li>)}</ul>}
               </div>
             ))}
           </div>

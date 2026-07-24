@@ -115,7 +115,7 @@ export function MeridianTemplate({ data, scale = 1, paperSize = "letter", sectio
                   {exp.bullets.filter(b => b.content).map((bullet) => (
                     <li
                       key={bullet.id}
-                      className="relative text-sm pl-2"
+                      className="block relative text-sm pl-2"
                       style={{ color: "#334155", fontWeight: bullet.highlighted ? 600 : 400 }}
                     >
                       <span className="absolute -left-2">&bull;</span>
@@ -203,7 +203,7 @@ export function MeridianTemplate({ data, scale = 1, paperSize = "letter", sectio
               {proj.bullets.length > 0 && (
                 <ul className="mt-1 space-y-0.5 pl-4">
                   {proj.bullets.filter(b => b.content).map((bullet) => (
-                    <li key={bullet.id} className="relative text-sm pl-2" style={{ color: "#334155" }}>
+                    <li key={bullet.id} className="block relative text-sm pl-2" style={{ color: "#334155" }}>
                       <span className="absolute -left-2">&bull;</span>
                       {bullet.content}
                     </li>
@@ -268,7 +268,7 @@ export function MeridianTemplate({ data, scale = 1, paperSize = "letter", sectio
               {item.bullets.length > 0 && item.bullets.some(b => b) && (
                 <ul className="mt-1 space-y-0.5 pl-4">
                   {item.bullets.filter(Boolean).map((bullet, i) => (
-                    <li key={i} className="relative text-sm pl-2" style={{ color: "#334155" }}>
+                    <li key={i} className="block relative text-sm pl-2" style={{ color: "#334155" }}>
                       <span className="absolute -left-2">&bull;</span>
                       {bullet}
                     </li>

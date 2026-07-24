@@ -173,7 +173,7 @@ export function AtlasTemplate({ data, scale = 1, paperSize = "letter", sectionVi
                 {exp.bullets.length > 0 && (
                   <ul className="mt-1 space-y-0.5">
                     {exp.bullets.filter(b => b.content).map((bullet) => (
-                      <li key={bullet.id} className="text-sm pl-3 relative" style={{ color: "#374151", fontWeight: bullet.highlighted ? 600 : 400 }}>
+                      <li key={bullet.id} className="block text-sm pl-3 relative" style={{ color: "#374151", fontWeight: bullet.highlighted ? 600 : 400 }}>
                         <span className="absolute left-0" style={{ color: colorScheme }}>&bull;</span>
                         {bullet.content}
                       </li>
@@ -229,7 +229,7 @@ export function AtlasTemplate({ data, scale = 1, paperSize = "letter", sectionVi
                 {proj.bullets.length > 0 && (
                   <ul className="mt-0.5 space-y-0.5">
                     {proj.bullets.filter(b => b.content).map((bullet) => (
-                      <li key={bullet.id} className="text-sm pl-3 relative" style={{ color: "#374151" }}>
+                      <li key={bullet.id} className="block text-sm pl-3 relative" style={{ color: "#374151" }}>
                         <span className="absolute left-0" style={{ color: colorScheme }}>&bull;</span>
                         {bullet.content}
                       </li>

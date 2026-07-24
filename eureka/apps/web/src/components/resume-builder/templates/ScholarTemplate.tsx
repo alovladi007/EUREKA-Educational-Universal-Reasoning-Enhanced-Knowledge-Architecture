@@ -55,7 +55,7 @@ export function ScholarTemplate({ data, scale = 1, paperSize = "letter", section
             <div key={exp.id} className="mb-2">
               <div className="flex justify-between"><span className="font-bold">{exp.title}</span><span className="text-xs">{exp.startDate} — {exp.current ? "Present" : exp.endDate}</span></div>
               <p className="italic text-sm">{exp.company}{exp.location ? `, ${exp.location}` : ""}</p>
-              {exp.bullets.length > 0 && <ul className="mt-0.5 space-y-0">{exp.bullets.filter(b => b.content).map(b => <li key={b.id} className="text-sm pl-3 relative" style={{ fontWeight: b.highlighted ? 600 : 400 }}><span className="absolute left-0">&bull;</span>{b.content}</li>)}</ul>}
+              {exp.bullets.length > 0 && <ul className="mt-0.5 space-y-0">{exp.bullets.filter(b => b.content).map(b => <li key={b.id} className="block text-sm pl-3 relative" style={{ fontWeight: b.highlighted ? 600 : 400 }}><span className="absolute left-0">&bull;</span>{b.content}</li>)}</ul>}
             </div>
           ))}
         </div>
