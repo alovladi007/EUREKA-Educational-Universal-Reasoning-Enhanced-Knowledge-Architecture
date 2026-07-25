@@ -41,8 +41,15 @@ def test_phase2_deliverable_counts():
     # 60 lessons were authored against the retired CF / G1 / G2 codes. 59 of
     # them re-key onto a node of their own; the sixtieth is parked in
     # lessons_superseded.py because the course based map draws one formula
-    # node where the old map drew two. Dropping to 58 means a lesson was lost.
-    assert len(LESSONS) == 59
+    # node where the old map drew two. Dropping below 59 means a lesson was
+    # lost, so this is a floor rather than an equality: Phase 5 onward adds
+    # organic lessons on top of the general chemistry set, and pinning an exact
+    # total would make every authoring commit edit this line.
+    from app.data.curriculum import NODES_BY_CODE
+
+    general = [c for c in LESSONS if NODES_BY_CODE[c].course in ("GEN1", "GEN2")]
+    assert len(general) == 59, "a general chemistry lesson was lost"
+    assert len(LESSONS) >= 59
     assert len(cc.REGISTRY) >= 20, "Phase 2 specifies 20 or more templates"
     assert validate_library()["built"] == 200
 

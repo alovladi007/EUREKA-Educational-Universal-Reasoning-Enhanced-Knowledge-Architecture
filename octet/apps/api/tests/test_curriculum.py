@@ -180,15 +180,21 @@ def test_coverage_is_reported_and_internally_consistent():
     assert sum(row["authored"] for row in cov["by_course"].values()) == cov["authored"]
 
 
-def test_organic_is_mapped_but_not_yet_authored():
-    """Stated as a fact so it fails loudly when Phase 5 starts filling it in.
+def test_organic_authoring_matches_the_phase_that_is_running():
+    """Phase 5 authors ORG1 and leaves ORG2 for Phase 6.
 
-    If this test breaks because ORG1 has lessons, that is the phase landing
-    and the test should be updated, not deleted.
+    This replaced a test asserting ORG1 had zero lessons, which was true until
+    Phase 5 landed and is the kind of assertion that is meant to be updated
+    when the phase it describes arrives.
+
+    What it still guards is the boundary: ORG1 is being written, ORG2 is not,
+    and neither is complete. A number here going up without the phase plan
+    saying so means content arrived outside its gate.
     """
     cov = coverage()
-    assert cov["by_course"]["ORG1"]["authored"] == 0
-    assert cov["by_course"]["ORG2"]["authored"] == 0
+    assert cov["by_course"]["ORG1"]["authored"] > 0, "Phase 5 authors ORG1"
+    assert cov["by_course"]["ORG1"]["authored"] <= cov["by_course"]["ORG1"]["nodes"]
+    assert cov["by_course"]["ORG2"]["authored"] == 0, "ORG2 belongs to Phase 6"
     assert cov["by_course"]["GEN1"]["authored"] > 0
 
 

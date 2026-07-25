@@ -34,6 +34,15 @@ class Lesson:
     # Optional link into the misconception library. When set it must be a code
     # that exists, and the compliance checker enforces that.
     misconception: str | None = None
+    # Chemical facts this lesson asserts, in a form that can be re-derived from
+    # structure. The compliance checker fails the build when one does not hold.
+    #
+    # Empty is legal, because a lesson about laboratory safety or about what a
+    # reaction mechanism means has no structural claim to make. It is not legal
+    # for an organic lesson that states a configuration, a formula, an isomer
+    # relationship or an integration ratio: those go here as well as in the
+    # prose, and a test enforces that for ORG nodes.
+    claims: tuple = ()
 
     def parts(self) -> dict[str, str]:
         return {

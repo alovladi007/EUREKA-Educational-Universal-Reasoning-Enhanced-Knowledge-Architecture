@@ -21,6 +21,7 @@ from __future__ import annotations
 
 import chem_core as cc
 
+from app.data.claims import failures as claim_failures
 from app.data.coverage import authored_nodes, coverage
 from app.data.curriculum import (
     COURSES,
@@ -110,6 +111,48 @@ def _check_lessons() -> list[dict]:
                 {
                     "check": "lesson_misconception",
                     "detail": f"{code} lesson names unknown misconception {lesson.misconception}",
+                }
+            )
+        for claim, result in claim_failures(getattr(lesson, "claims", ())):
+            problems.append(
+                {
+                    "check": "lesson_claim",
+                    "detail": (
+                        f"{code} asserts a chemical fact that does not hold: "
+                        f"{result.detail} ({type(claim).__name__})"
+                    ),
+                }
+            )
+    problems += _check_organic_lessons_carry_claims()
+    return problems
+
+
+def _check_organic_lessons_carry_claims() -> list[dict]:
+    """An organic lesson with no checkable claim is unverified content.
+
+    Blocking rather than a warning, because the whole defence for authored
+    organic chemistry is that its structural facts are re-derived rather than
+    reviewed. A lesson that states a configuration only in prose has opted out
+    of that defence, and the failure mode is silent: it reads exactly like a
+    lesson that was checked.
+
+    Some organic nodes legitimately have nothing structural to claim, and they
+    say so by carrying a Source instead. That still counts, because a Source is
+    an author taking responsibility for a fact this system cannot derive. What
+    does not count is an empty tuple.
+    """
+    problems: list[dict] = []
+    for code, lesson in LESSONS.items():
+        if not code.startswith("ORG"):
+            continue
+        if not getattr(lesson, "claims", ()):
+            problems.append(
+                {
+                    "check": "lesson_unverified",
+                    "detail": (
+                        f"{code} is an organic lesson with no checkable claim, so "
+                        "nothing it asserts about structure was verified"
+                    ),
                 }
             )
     return problems
