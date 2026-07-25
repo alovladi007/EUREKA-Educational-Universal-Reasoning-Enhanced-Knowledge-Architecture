@@ -1,10 +1,9 @@
 # EUREKA and OCTET integration contract
 
 Status of the Phase 0 gate: **partially confirmed.** The inherited contract is
-confirmed and implemented. Three additions from build prompt Section 17 are
-open and require a decision from the platform owner. None of the three blocks
-Phase 1 through Phase 3, and each is recorded below with the phase it does
-block.
+confirmed and implemented. Of the three additions from build prompt Section 17,
+one is now decided (2.2, LTI termination) and two remain open. Neither open
+item blocks Phase 4.
 
 This document is the Phase 0 artefact. It is updated, not replaced, when the
 open items are decided.
@@ -46,15 +45,44 @@ Recommendation: EUREKA exposes it. Two verticals querying each other directly
 becomes N squared as verticals are added, and the shell already holds identity.
 
 ### 2.2 LTI 1.3 termination point
-**Blocks: Phase 4.**
+**DECIDED 2026-07-24: each vertical terminates its own LTI launches.**
 
-Decision needed: does LTI terminate in the EUREKA shell and fan out to
-verticals, or does each vertical terminate its own LTI launches.
+The decision went against the recommendation that was recorded here, and
+against the build prompt, so the reasoning is worth keeping rather than
+quietly overwriting.
 
-Recommendation, and the build prompt agrees: terminate in the EUREKA shell.
-LTI certification is per platform, gradebook writeback is a shared concern, and
-doing it once means the second and third verticals inherit it. Per vertical LTI
-means certifying every vertical separately.
+What was recommended: terminate in the EUREKA shell. LTI certification is per
+tool, gradebook writeback is a shared concern, and doing it once means later
+verticals inherit it.
+
+What was decided: OCTET terminates its own, matching what AXIOM already does.
+
+What made the difference: the shell recommendation described an architecture
+that does not exist. EUREKA has a full LTI 1.3 tool implementation and so does
+AXIOM, both live, both with registered platforms. Choosing the shell for OCTET
+would have left the codebase with two implementations plus a third vertical
+reaching across a boundary the other vertical does not respect, which is a
+worse shape than three consistent ones. It also keeps each vertical
+independently deployable, which is the property the port band and the separate
+compose stacks were chosen to preserve.
+
+What it costs, stated plainly so nobody rediscovers it later:
+
+- Three LTI certifications rather than one, and a fourth for every vertical
+  added afterwards.
+- Three sets of tool keys to rotate, and three places a launch bug could leak
+  a session.
+- Grade passback logic maintained three times.
+
+If those costs bite, the migration is to move termination into the shell and
+have verticals receive a launch context over the existing token bridge. That
+is a larger change once three implementations exist than it would have been
+now, which is the real price of this decision.
+
+OCTET's implementation mirrors AXIOM's rather than inventing a second shape:
+the same OIDC initiation, launch verification, nonce and state handling, and
+AGS grade passback, with the platform public key pinned for offline and test
+use and JWKS in production.
 
 ### 2.3 Tutor gateway model access and logging
 **Blocks: Phase 7.**
