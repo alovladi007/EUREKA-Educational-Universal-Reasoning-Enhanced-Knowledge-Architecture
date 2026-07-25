@@ -803,3 +803,410 @@ LESSONS_ORG1_U10 = {
             Relationship(BROMO_2_METHYLPROPANE_2, BROMOBUTANE_1, "constitutional"),
         ),
     ),
+    "ORG1.NMRSPLITTING": Lesson(
+        node="ORG1.NMRSPLITTING",
+        objective=(
+            "Predict the multiplicity of each signal from the number of "
+            "hydrogens on neighbouring carbons, and read a set of "
+            "multiplicities back as a statement about connectivity."
+        ),
+        build_on=(
+            "Integration told you how many hydrogens sit in each environment. "
+            "Splitting tells you what those hydrogens are next to, which is the "
+            "piece of information that turns a list of fragments into a "
+            "connected structure."
+        ),
+        core_idea=(
+            "A hydrogen nucleus feels not only the applied field and its own "
+            "electrons but also the small fields of nearby nuclei, whose spins "
+            "point with or against the applied field. A single neighbouring "
+            "hydrogen therefore splits a signal into two lines of equal height, "
+            "one for each of its two spin states. With n equivalent hydrogens "
+            "on adjacent atoms the combinations produce n plus 1 lines, with "
+            "relative heights following the binomial pattern, so two neighbours "
+            "give a 1:2:1 triplet and three give a 1:3:3:1 quartet. Two rules "
+            "constrain where this applies. Equivalent hydrogens do not split "
+            "each other, so a molecule whose hydrogens are all one environment "
+            "gives one unsplit line however many hydrogens it has. And coupling "
+            "is normally seen between hydrogens on adjacent atoms and fades "
+            "quickly beyond that, which is why a carbon with no hydrogens acts "
+            "as an insulator: a methyl group attached to a carbonyl carbon has "
+            "no neighbouring hydrogens and appears as a singlet. Hydrogens on "
+            "oxygen often appear unsplit as well, because they exchange between "
+            "molecules faster than the coupling can register. The spacing "
+            "between the lines of a multiplet is the coupling constant, and "
+            "unlike a chemical shift it does not change with instrument field."
+        ),
+        worked_example=(
+            "Take ethyl acetate, C4H8O2, three environments in the ratio 3:3:2, "
+            "and predict every multiplicity before looking at a spectrum. The "
+            "2H environment is the methylene attached to the ester oxygen. Its "
+            "neighbours are the three hydrogens of the methyl at the end of the "
+            "ethyl group, so n is 3 and it is a quartet. That methyl's "
+            "neighbour is the methylene, so n is 2 and it is a triplet. The "
+            "remaining 3H environment is the methyl attached directly to the "
+            "carbonyl carbon; the carbonyl carbon carries no hydrogens, so n is "
+            "0 and it is a singlet. The prediction is a 2H quartet, a 3H "
+            "triplet and a 3H singlet, and the triplet and quartet pair in a 3 "
+            "to 2 relationship is the signature of an isolated ethyl group. Now "
+            "see how far this gets you and no further. Methyl propanoate has "
+            "the same formula C4H8O2, the same three environments in the same "
+            "3:3:2 ratio, and the same set of multiplicities, because it too "
+            "contains an ethyl group and an isolated methyl. Integration and "
+            "splitting alone cannot separate the two. What separates them is "
+            "position: in ethyl acetate the methylene is attached to oxygen and "
+            "the singlet methyl is attached to the carbonyl, while in methyl "
+            "propanoate the singlet methyl is the one on oxygen and the "
+            "methylene sits next to the carbonyl, and hydrogens on a carbon "
+            "bearing oxygen resonate downfield of hydrogens on a carbon next to "
+            "a carbonyl."
+        ),
+        try_it_prompt=(
+            "1,1,2-trichloroethane is ClCH2CHCl2. It has two hydrogen "
+            "environments in the ratio 2:1. Predict the multiplicity of each "
+            "signal, and say what the pair of multiplicities alone would tell "
+            "you about connectivity."
+        ),
+        try_it_answer=(
+            "The 2H methylene has one neighbouring hydrogen, the single "
+            "hydrogen on the adjacent carbon, so n is 1 and it appears as a "
+            "doublet. That single hydrogen has two neighbours, so n is 2 and it "
+            "appears as a triplet. A 2H doublet paired with a 1H triplet is the "
+            "signature of a CH2 bonded to a CH, and the two multiplicities "
+            "point at each other: each signal names the size of the other "
+            "environment, which is the internal consistency check worth running "
+            "on every coupled pair."
+        ),
+        pitfall=(
+            "The commonest error is using the wrong n, by counting the "
+            "hydrogens that produce the signal instead of the hydrogens next "
+            "door. A learner reasons that a methyl group has three hydrogens "
+            "and so must be a quartet. The belief underneath is that splitting "
+            "is something a signal does to itself, when it is something the "
+            "neighbours do to it. The corrective is to say out loud, for each "
+            "environment, how many hydrogens are on the adjacent atoms, and to "
+            "remember that equivalent hydrogens do not split each other: "
+            "1,2-dichloroethane has four hydrogens in a single environment and "
+            "gives one line with no splitting at all, and 2-bromopropane's six "
+            "methyl hydrogens are one environment split only by the single "
+            "hydrogen between them, giving a 6H doublet and a 1H septet."
+        ),
+        claims=(
+            Formula(ETHYL_ACETATE, "C4H8O2", "ethyl acetate"),
+            Unsaturation(ETHYL_ACETATE, 1),
+            Environments(ETHYL_ACETATE, (3, 3, 2), "quartet 2H, triplet 3H, singlet 3H"),
+            Formula(METHYL_PROPANOATE, "C4H8O2", "methyl propanoate"),
+            Unsaturation(METHYL_PROPANOATE, 1),
+            Environments(
+                METHYL_PROPANOATE, (3, 3, 2),
+                "the same count and the same ratio as ethyl acetate, which is "
+                "why splitting alone does not separate them",
+            ),
+            Relationship(ETHYL_ACETATE, METHYL_PROPANOATE, "constitutional"),
+            Formula(TRICHLOROETHANE_112, "C2H3Cl3", "1,1,2-trichloroethane"),
+            Unsaturation(TRICHLOROETHANE_112, 0),
+            Environments(TRICHLOROETHANE_112, (2, 1), "doublet 2H, triplet 1H"),
+            Formula(DICHLOROETHANE_12, "C2H4Cl2", "1,2-dichloroethane"),
+            Environments(
+                DICHLOROETHANE_12, (4,),
+                "one environment, so no splitting despite four hydrogens",
+            ),
+            Formula(BROMOPROPANE_2, "C3H7Br", "2-bromopropane"),
+            Unsaturation(BROMOPROPANE_2, 0),
+            Environments(BROMOPROPANE_2, (6, 1), "doublet 6H, septet 1H"),
+            Relationship(BROMOPROPANE_2, "CCCBr", "constitutional", "against 1-bromopropane"),
+            Source(
+                "Coupling between hydrogens on adjacent sp3 carbons in a freely "
+                "rotating chain is typically of the order of 7 Hz, and the "
+                "coupling constant is independent of the spectrometer field, "
+                "unlike the chemical shift. Magnitudes for specific geometries "
+                "are tabulated and are not derivable in this repository.",
+                SILVERSTEIN,
+            ),
+            Source(
+                "Hydrogens bonded to oxygen or nitrogen frequently appear as "
+                "unsplit signals of variable position because of rapid "
+                "intermolecular exchange, and can be identified by their "
+                "disappearance on shaking the sample with deuterium oxide.",
+                PAVIA,
+            ),
+        ),
+    ),
+    "ORG1.CARBONNMR": Lesson(
+        node="ORG1.CARBONNMR",
+        objective=(
+            "Read a 13C spectrum as a count of carbon environments, and use a "
+            "DEPT experiment to say how many hydrogens each of those carbons "
+            "carries."
+        ),
+        build_on=(
+            "Proton NMR counted hydrogen environments using molecular symmetry. "
+            "Carbon NMR counts carbon environments using the same symmetry "
+            "argument, and it sees the carbons that carry no hydrogens at all, "
+            "which the proton spectrum can only infer."
+        ),
+        core_idea=(
+            "Carbon-13 is roughly one percent of natural carbon, so the signal "
+            "is weak and the chance of two carbon-13 nuclei sitting next to "
+            "each other is small. Spectra are normally recorded with the proton "
+            "coupling removed, which collapses every carbon environment to a "
+            "single line. What you get is therefore a count: one line per "
+            "distinct carbon environment, spread over a much wider shift range "
+            "than the proton spectrum uses, so environments that overlap in a "
+            "proton spectrum are usually resolved here. What you do not get is "
+            "integration. Decoupling enhances different carbons by different "
+            "amounts and carbons return to equilibrium at different rates, so "
+            "line heights in a routine spectrum are not proportional to the "
+            "number of carbons behind them. DEPT recovers the missing "
+            "information another way. In a DEPT-135 experiment, carbons "
+            "carrying one or three hydrogens appear with one phase, carbons "
+            "carrying two hydrogens appear with the opposite phase, and carbons "
+            "with no attached hydrogen do not appear at all. Comparing the "
+            "decoupled spectrum with the DEPT locates the quaternary carbons by "
+            "subtraction."
+        ),
+        worked_example=(
+            "Return to the four isomers of C8H10 and count carbons instead of "
+            "hydrogens. Para-xylene has eight carbons falling into three "
+            "environments: the two methyl carbons are equivalent, the four "
+            "aromatic carbons bearing hydrogen are equivalent, and the two "
+            "substituted ring carbons are equivalent. Ortho-xylene has four "
+            "environments, meta-xylene has five, and ethylbenzene has six, "
+            "which is a cleaner separation than the proton spectra gave, "
+            "because carbon sees the substituted ring positions that carry no "
+            "hydrogen. DEPT then labels what it found. For para-xylene the "
+            "three line carbon spectrum becomes a two line DEPT: the methyl "
+            "carbon and the aromatic carbon bearing hydrogen both appear in the "
+            "phase used for CH and CH3, and the substituted ring carbon "
+            "vanishes because it has no hydrogen. A three line carbon spectrum "
+            "with a two line DEPT, no line in the CH2 phase, and a proton "
+            "spectrum of two signals in the ratio 6:4 identifies para-xylene "
+            "from three independent directions. Ethylbenzene would announce "
+            "itself differently: its methylene carbon appears in the opposite "
+            "DEPT phase, and no other C8H10 isomer here has a CH2 at all."
+        ),
+        try_it_prompt=(
+            "Cyclohexanone is C6H10O, and its proton spectrum shows three "
+            "environments in the ratio 4:4:2. How many lines does its decoupled "
+            "13C spectrum show, how many of those appear in a DEPT-135, and "
+            "what accounts for the difference?"
+        ),
+        try_it_answer=(
+            "Four lines in the carbon spectrum and three in the DEPT. The "
+            "molecule has a mirror plane through the carbonyl carbon and the "
+            "carbon opposite it, so the two carbons flanking the carbonyl are "
+            "equivalent and the next two are equivalent, leaving four "
+            "environments: the carbonyl carbon, two equivalent pairs, and the "
+            "unique carbon opposite the carbonyl. In DEPT-135 the three "
+            "methylene environments all appear in the CH2 phase and the "
+            "carbonyl carbon is absent, because it carries no hydrogen. The "
+            "line present in one spectrum and missing from the other is the "
+            "quaternary carbon, and that subtraction is what DEPT is for."
+        ),
+        pitfall=(
+            "Two habits carried over from proton NMR go wrong here. The first "
+            "is integrating the carbon spectrum, or reading a tall line as more "
+            "carbons than a short one. Routine decoupled carbon spectra are not "
+            "quantitative, and the belief that they are comes from assuming "
+            "every NMR signal behaves like a proton signal. The second is "
+            "expecting the number of lines to equal the number of carbons in "
+            "the formula. It equals the number of environments, and any "
+            "symmetry in the molecule makes it smaller: para-xylene has eight "
+            "carbons and three lines. A line count below the carbon count is "
+            "evidence of symmetry and should be used as such rather than "
+            "treated as a missing peak."
+        ),
+        claims=(
+            Formula(P_XYLENE, "C8H10", "para-xylene"),
+            Unsaturation(P_XYLENE, 4),
+            Environments(
+                P_XYLENE, (6, 4),
+                "the same symmetry that gives two proton environments gives "
+                "three carbon environments",
+            ),
+            Formula(O_XYLENE, "C8H10", "ortho-xylene"),
+            Environments(O_XYLENE, (6, 2, 2)),
+            Formula(M_XYLENE, "C8H10", "meta-xylene"),
+            Environments(M_XYLENE, (6, 2, 1, 1)),
+            Formula(ETHYLBENZENE, "C8H10", "ethylbenzene"),
+            Environments(ETHYLBENZENE, (3, 2, 2, 2, 1), "the only one of the four with a CH2"),
+            Relationship(P_XYLENE, M_XYLENE, "constitutional"),
+            Formula(CYCLOHEXANONE, "C6H10O", "cyclohexanone"),
+            Unsaturation(CYCLOHEXANONE, 2, "one ring plus the carbonyl pi bond"),
+            Environments(CYCLOHEXANONE, (4, 4, 2), "three proton environments, four carbon environments"),
+            Source(
+                "Carbon-13 is approximately 1.1 percent of natural carbon, "
+                "which is why the experiment is insensitive relative to the "
+                "proton experiment and why carbon to carbon coupling is not "
+                "normally observed.",
+                CRC_ISOTOPES,
+            ),
+            Source(
+                "In a DEPT-135 experiment CH and CH3 carbons appear with "
+                "positive phase, CH2 carbons with negative phase, and carbons "
+                "with no attached hydrogen give no signal. Routine "
+                "proton-decoupled 13C spectra are not quantitative, because the "
+                "nuclear Overhauser enhancement and the relaxation times differ "
+                "between carbons.",
+                CLARIDGE,
+            ),
+            Source(
+                "Approximate 13C shift regions: saturated carbons not bonded to "
+                "a heteroatom about 0 to 50 ppm; carbons bonded to oxygen about "
+                "50 to 90 ppm; alkene and aromatic carbons about 100 to 160 "
+                "ppm; ester and carboxylic acid carbonyl carbons about 160 to "
+                "185 ppm; aldehyde and ketone carbonyl carbons about 190 to 220 "
+                "ppm. These are ranges from a correlation chart.",
+                SILVERSTEIN,
+            ),
+        ),
+    ),
+    "ORG1.ELUCIDATION": Lesson(
+        node="ORG1.ELUCIDATION",
+        objective=(
+            "Combine a molecular formula, degrees of unsaturation, infrared "
+            "bands, proton count and ratio, splitting and mass spectral "
+            "fragments into one structure, and test that structure against "
+            "every observation before committing to it."
+        ),
+        build_on=(
+            "Each technique in this unit leaves several structures standing. "
+            "Elucidation is the discipline of using them in an order where each "
+            "one eliminates candidates the next would otherwise have to "
+            "consider, and of treating the data as constraints that all hold at "
+            "once rather than hints of which one might be decisive."
+        ),
+        core_idea=(
+            "Work in a fixed order. Start with the molecular formula from the "
+            "mass spectrum and convert it to degrees of unsaturation, because "
+            "that number is the budget every later assignment spends from, and "
+            "a count of four or more with signals in the aromatic region "
+            "usually means a benzene ring, which alone accounts for four. Use "
+            "the infrared spectrum to name what the remaining degrees are and, "
+            "as importantly, to rule out whole classes by the bands that are "
+            "absent. Use the proton count and integration ratio next, since the "
+            "number of environments and their ratio are consequences of the "
+            "structure's symmetry: any candidate predicting the wrong count is "
+            "eliminated without argument. Use splitting to join the fragments "
+            "into chains, and a carbon spectrum with DEPT to count carbons and "
+            "place the ones carrying no hydrogen. Then assemble the pieces so "
+            "the atoms sum exactly to the formula, and finally run the check "
+            "backwards, re-deriving formula, unsaturation, environment count "
+            "and ratio from the finished structure and comparing each against "
+            "what was observed."
+        ),
+        worked_example=(
+            "A compound is C9H10O. Its infrared spectrum has a strong band in "
+            "the carbonyl region and nothing above 3100 cm-1. Its proton "
+            "spectrum shows four environments in the ratio 3:3:2:2, totalling "
+            "ten hydrogens. Its mass spectrum has a molecular ion at m/z 134, a "
+            "strong peak at m/z 43 and a loss of 15 to m/z 119. Take the steps "
+            "in order. The formula gives five degrees of unsaturation. Four of "
+            "them are a benzene ring, leaving one, and the infrared spectrum "
+            "says that one is a carbon to oxygen double bond; the absence of "
+            "anything above 3100 rules out an alcohol, an acid and an N-H, and "
+            "also says there are no hydrogens on sp2 carbons outside the ring. "
+            "The mass spectrum contributes a methyl ketone: a loss of 15 is a "
+            "methyl radical, and m/z 43 is the acetyl cation left behind, with "
+            "43 plus 91 accounting for 134. Now the integration. Two separate "
+            "3H environments mean two methyl groups that are not equivalent, "
+            "and the two 2H environments account for four ring hydrogens "
+            "arranged as two equivalent pairs, which is the symmetry a "
+            "para-disubstituted ring with two different substituents produces. "
+            "Assemble: a benzene ring, para-substituted, one substituent an "
+            "acetyl group and the other a methyl. That is "
+            "4-methylacetophenone, C9H10O, five degrees of unsaturation, four "
+            "proton environments in the ratio 3:3:2:2 and seven carbon "
+            "environments. Test the rejects rather than trusting the fit. "
+            "Propiophenone has the same formula but gives five environments in "
+            "the ratio 3:2:2:2:1, so the observed 3:3:2:2 eliminates it. "
+            "3-methylacetophenone gives six environments, because a meta "
+            "substituted ring leaves no pair of equivalent ring hydrogens, so "
+            "it is eliminated too."
+        ),
+        try_it_prompt=(
+            "A compound is C4H8O. Its infrared spectrum shows a strong band "
+            "between 1700 and 1750 cm-1 and nothing above 3000 cm-1. Its proton "
+            "spectrum shows three environments in the ratio 3:3:2. Propose a "
+            "structure, and name which observation eliminated each of the "
+            "alternatives you considered."
+        ),
+        try_it_answer=(
+            "Butan-2-one. The formula gives one degree of unsaturation, and the "
+            "carbonyl band spends it, so there is no ring and no carbon to "
+            "carbon double bond. Nothing above 3000 cm-1 rules out an alcohol "
+            "and rules out hydrogens on sp2 carbon. Three environments in the "
+            "ratio 3:3:2 means two inequivalent methyl groups and one "
+            "methylene, which places the carbonyl between a methyl and an "
+            "ethyl. The alternatives fall on the integration: butanal has the "
+            "same formula but four environments in the ratio 3:2:2:1, and "
+            "2-methylpropanal has three environments in the ratio 6:1:1, so "
+            "neither produces 3:3:2. Splitting confirms the answer rather than "
+            "establishing it: a 3H singlet, a 3H triplet and a 2H quartet."
+        ),
+        pitfall=(
+            "The failure that costs the most marks is proposing a structure "
+            "from the single most memorable observation and never testing it "
+            "against the rest. A carbonyl band suggests a ketone, a ketone gets "
+            "drawn, and the integration ratio is read afterwards as "
+            "confirmation rather than as a test that could have failed. The "
+            "belief underneath is that spectral data is a set of hints, one of "
+            "which is the answer. It is a set of constraints, all of which the "
+            "structure has to satisfy at once, and the ones easiest to check "
+            "are the ones the structure determines exactly: the molecular "
+            "formula, the degrees of unsaturation, the number of proton "
+            "environments and their ratio. Re-derive all four from your "
+            "proposal and compare them with the data before writing anything "
+            "down as final."
+        ),
+        claims=(
+            Formula(METHYLACETOPHENONE_4, "C9H10O", "4-methylacetophenone"),
+            Unsaturation(METHYLACETOPHENONE_4, 5, "benzene ring accounts for four, carbonyl for one"),
+            Environments(
+                METHYLACETOPHENONE_4, (3, 3, 2, 2),
+                "two inequivalent methyls and four ring hydrogens in two "
+                "equivalent pairs, the para pattern",
+            ),
+            Formula(PROPIOPHENONE, "C9H10O", "propiophenone"),
+            Unsaturation(PROPIOPHENONE, 5),
+            Environments(
+                PROPIOPHENONE, (3, 2, 2, 2, 1),
+                "five environments, eliminated by the observed 3:3:2:2",
+            ),
+            Relationship(METHYLACETOPHENONE_4, PROPIOPHENONE, "constitutional"),
+            Relationship(
+                METHYLACETOPHENONE_4, "CC(=O)c1cccc(C)c1", "constitutional",
+                "against 3-methylacetophenone",
+            ),
+            Environments(
+                "CC(=O)c1cccc(C)c1", (3, 3, 1, 1, 1, 1),
+                "3-methylacetophenone: six environments, because a meta ring "
+                "leaves no pair of equivalent hydrogens",
+            ),
+            Formula(BUTAN_2_ONE, "C4H8O", "butan-2-one"),
+            Unsaturation(BUTAN_2_ONE, 1),
+            Environments(BUTAN_2_ONE, (3, 3, 2)),
+            Formula(BUTANAL, "C4H8O", "butanal"),
+            Environments(BUTANAL, (3, 2, 2, 1), "four environments, so eliminated by 3:3:2"),
+            Formula(METHYLPROPANAL, "C4H8O", "2-methylpropanal"),
+            Environments(METHYLPROPANAL, (6, 1, 1), "three environments but the wrong ratio"),
+            Relationship(BUTAN_2_ONE, BUTANAL, "constitutional"),
+            Relationship(BUTAN_2_ONE, METHYLPROPANAL, "constitutional"),
+            Source(
+                "A conjugated aryl ketone absorbs at lower wavenumber than a "
+                "comparable saturated ketone, in the approximate region 1680 to "
+                "1700 cm-1, and the absence of absorption above 3100 cm-1 rules "
+                "out O-H and N-H containing classes.",
+                SILVERSTEIN,
+            ),
+            Source(
+                "A loss of 15 mass units from the molecular ion corresponds to "
+                "a methyl radical, and a peak at m/z 43 in a carbonyl compound "
+                "corresponds to the acetyl cation; the reference spectrum of "
+                "4-methylacetophenone shows a molecular ion at m/z 134 with "
+                "these fragments.",
+                NIST_WEBBOOK,
+            ),
+        ),
+    ),
+}

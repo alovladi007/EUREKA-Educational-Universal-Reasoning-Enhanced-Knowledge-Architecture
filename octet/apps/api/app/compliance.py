@@ -363,6 +363,55 @@ def _check_simulation_engines() -> list[dict]:
     return problems
 
 
+def _report_citation_debt() -> list[dict]:
+    """How many authored facts are cited but not verified.
+
+    A Source claim records that somebody is accountable for a number this
+    system cannot derive. It does not record that the number was checked
+    against the work it cites, and the distinction matters more than it looks.
+    The organic units carry chemical shifts, IR frequencies, pKa values and
+    bond energies attached to real reference works, written from consensus
+    knowledge rather than read off the page. The citation is a pointer to
+    where the number should be confirmed, not evidence that it was.
+
+    Left unstated, a reader sees a citation and reasonably concludes the figure
+    was verified. So the count is reported on the same checklist as everything
+    else, and it is the review queue for a subject matter expert. It is a
+    warning rather than a blocker because the alternative to a cited unverified
+    number is usually an uncited one or a silently omitted fact, and both are
+    worse.
+    """
+    from app.data.claims import Source
+
+    cited = 0
+    per_course: dict[str, int] = {}
+    for code, lesson in LESSONS.items():
+        for claim in getattr(lesson, "claims", ()):
+            if isinstance(claim, Source):
+                cited += 1
+                node = NODES_BY_CODE.get(code)
+                if node:
+                    per_course[node.course] = per_course.get(node.course, 0) + 1
+    if not cited:
+        return []
+    breakdown = ", ".join(f"{k} {v}" for k, v in sorted(per_course.items()))
+    return [
+        {
+            "check": "citation_review_debt",
+            "detail": (
+                f"{cited} authored facts carry a citation but have not been "
+                f"checked against the cited work ({breakdown}). These are the "
+                "values this system cannot derive from structure, such as "
+                "chemical shifts, IR bands, pKa and bond energies. A citation "
+                "names who is accountable for a number; it is not evidence the "
+                "number was verified. This is the subject matter expert review "
+                "queue."
+            ),
+            "severity": "needs-expert-review",
+        }
+    ]
+
+
 def _report_coverage() -> list[dict]:
     """What exists on the map but is not written yet, and other real gaps.
 
@@ -386,6 +435,7 @@ def _report_coverage() -> list[dict]:
             "severity": "informational",
         }
     )
+    warnings += _report_citation_debt()
     for course_id, row in cov["by_course"].items():
         warnings.append(
             {
