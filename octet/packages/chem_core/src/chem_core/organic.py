@@ -138,37 +138,101 @@ def verify_stereo_claim(smiles: str, claimed: str | list[str]) -> VerifierResult
     return VerifierResult(True, "rdkit-cip", f"{derived}")
 
 
-def are_enantiomers(a: str, b: str) -> bool | None:
-    """True when two structures are mirror images, not merely different.
+def mirror_image(smiles: str) -> str | None:
+    """The mirror image, as canonical SMILES.
 
-    Same constitution, every stereocentre inverted. Used to check a lesson
-    that claims a pair are enantiomers rather than diastereomers, which is one
-    of the commonest confusions in the unit and one of the easiest to assert
-    wrongly.
+    Reflection inverts every tetrahedral centre and leaves double bond geometry
+    alone: a cis alkene stays cis in a mirror. Returns None when the structure
+    cannot be read.
+    """
+    Chem = _rdkit()
+    mol = _mol(smiles)
+    if mol is None:
+        return None
+    flipped = Chem.Mol(mol)
+    for atom in flipped.GetAtoms():
+        tag = atom.GetChiralTag()
+        if tag == Chem.ChiralType.CHI_TETRAHEDRAL_CW:
+            atom.SetChiralTag(Chem.ChiralType.CHI_TETRAHEDRAL_CCW)
+        elif tag == Chem.ChiralType.CHI_TETRAHEDRAL_CCW:
+            atom.SetChiralTag(Chem.ChiralType.CHI_TETRAHEDRAL_CW)
+    try:
+        Chem.AssignStereochemistry(flipped, cleanIt=True, force=True)
+        return Chem.MolToSmiles(flipped)
+    except Exception:
+        return None
+
+
+def is_chiral(smiles: str) -> bool | None:
+    """True when a structure is not superimposable on its mirror image.
+
+    A meso compound has stereocentres and is achiral, which is exactly the case
+    that counting stereocentres gets wrong.
     """
     from .structure import canonical
 
-    flat_a, flat_b = canonical(a, keep_stereo=False), canonical(b, keep_stereo=False)
-    if flat_a is None or flat_b is None or flat_a != flat_b:
-        return False
+    reflected = mirror_image(smiles)
+    original = canonical(smiles)
+    if reflected is None or original is None:
+        return None
+    return reflected != original
 
-    ca, cb = stereocentres(a), stereocentres(b)
-    if ca is None or cb is None or not ca or len(ca) != len(cb):
-        return False
-    if any(c.descriptor == "?" for c in ca + cb):
-        return None  # undetermined rather than false
-    inverted = all(x.descriptor != y.descriptor for x, y in zip(ca, cb))
-    return inverted and canonical(a) != canonical(b)
+
+def are_enantiomers(a: str, b: str) -> bool | None:
+    """True when two structures are non-superimposable mirror images.
+
+    Decided by actually reflecting one structure and comparing it to the other,
+    which is the definition. An earlier version compared CIP descriptors
+    pairwise and called a pair enantiomers when every descriptor differed. That
+    proxy is wrong in a way that matters:
+
+      cis and trans 1,4-dimethylcyclohexane carry descriptors s,s and r,r, so
+      every descriptor differs and the old test said enantiomers. Both are in
+      fact achiral, each having a mirror plane through C1 and C4, so they
+      cannot be an enantiomeric pair at all. They are diastereomers.
+
+    The failure mode was the dangerous direction. An author writing the correct
+    diastereomers claim got a rejection, and the obvious way to make the
+    rejection go away was to write the false enantiomers claim, which passed. A
+    verifier that refuses the truth and accepts the falsehood is worse than no
+    verifier, because it moves content toward the error under the appearance of
+    checking. Found by an author who hit it and reported it rather than
+    flipping the claim.
+    """
+    from .structure import canonical
+
+    ca, cb = canonical(a), canonical(b)
+    if ca is None or cb is None:
+        return None
+    if ca == cb:
+        return False  # one compound written twice cannot be a pair
+
+    flat_a = canonical(a, keep_stereo=False)
+    flat_b = canonical(b, keep_stereo=False)
+    if flat_a != flat_b:
+        return False  # different constitution
+
+    # An unassigned centre leaves the question genuinely open.
+    centres = (stereocentres(a) or []) + (stereocentres(b) or [])
+    if any(c.descriptor == "?" for c in centres):
+        return None
+
+    reflected = mirror_image(a)
+    if reflected is None:
+        return None
+    return reflected == cb
 
 
 def are_diastereomers(a: str, b: str) -> bool | None:
-    """Same constitution, differing stereochemistry, but not mirror images."""
+    """Stereoisomers that are not mirror images and not the same compound."""
     from .structure import canonical
 
-    flat_a, flat_b = canonical(a, keep_stereo=False), canonical(b, keep_stereo=False)
-    if flat_a is None or flat_b is None or flat_a != flat_b:
+    ca, cb = canonical(a), canonical(b)
+    if ca is None or cb is None:
+        return None
+    if ca == cb:
         return False
-    if canonical(a) == canonical(b):
+    if canonical(a, keep_stereo=False) != canonical(b, keep_stereo=False):
         return False
     enantio = are_enantiomers(a, b)
     if enantio is None:

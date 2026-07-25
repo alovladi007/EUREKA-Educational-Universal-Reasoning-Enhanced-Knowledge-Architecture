@@ -257,7 +257,21 @@ def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
             **kwargs,
         )
     if grader == "mc":
-        return grade_mc(meta.get("correct_index", int(key or 0)), student_answer, meta.get("choices", []))
+        # correct_index is read before falling back to the key, and the
+        # fallback is only evaluated when it is actually needed. Written as
+        # meta.get("correct_index", int(key or 0)) this crashed on any mc item
+        # whose key was not a number, because Python evaluates the default
+        # eagerly even when the key is present. It never bit while every mc
+        # template happened to key an integer.
+        index = meta.get("correct_index")
+        if index is None:
+            try:
+                index = int(key or 0)
+            except (TypeError, ValueError):
+                return GradeResult.ungradable(
+                    "mc", "This item does not record which choice is correct."
+                )
+        return grade_mc(index, student_answer, meta.get("choices", []))
     if grader == "structure":
         return grade_structure(
             key,

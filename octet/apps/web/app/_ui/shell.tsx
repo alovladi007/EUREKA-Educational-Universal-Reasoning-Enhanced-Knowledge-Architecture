@@ -13,7 +13,12 @@ import {
   PencilRuler,
   Route,
 } from 'lucide-react';
-import { EUREKA_LOGIN_URL, getToken } from '@/lib/api';
+import {
+  EUREKA_LOGIN_URL,
+  TOKEN_CLEARED_EVENT,
+  TOKEN_STORAGE_KEY,
+  getToken,
+} from '@/lib/api';
 
 // Shared chrome for the OCTET pages. Nothing here fetches: every page owns its
 // own data loading, and these pieces only render what they are handed.
@@ -72,15 +77,36 @@ export function SignInScreen() {
 
 type GateState = 'checking' | 'ready' | 'signed-out';
 
-// AuthGate settles the token question once, before any page renders. On mount
-// it reads the token, which also captures and strips a token handed over in the
+// AuthGate settles the token question before any page renders. On mount it
+// reads the token, which also captures and strips a token handed over in the
 // URL hash. With a token the page renders. Without one the learner sees the
 // sign-in prompt instead of a wall of failed requests.
+//
+// It also listens for a token being discarded, which is what happens when a
+// request comes back 401 because the token expired. Settling only at mount was
+// not enough: a session that expired while the tab was open left the learner
+// on a page that looked live while every request behind it failed, with the
+// reason visible only in the browser console. Expiry is normal and the honest
+// response is to say so and offer the way back.
 export function AuthGate({ children }: { children: React.ReactNode }) {
   const [state, setState] = useState<GateState>('checking');
 
   useEffect(() => {
     setState(getToken() ? 'ready' : 'signed-out');
+
+    const onCleared = () => setState('signed-out');
+    window.addEventListener(TOKEN_CLEARED_EVENT, onCleared);
+    // Another tab signing out clears the same storage key.
+    const onStorage = (event: StorageEvent) => {
+      if (event.key === TOKEN_STORAGE_KEY && !event.newValue) {
+        setState('signed-out');
+      }
+    };
+    window.addEventListener('storage', onStorage);
+    return () => {
+      window.removeEventListener(TOKEN_CLEARED_EVENT, onCleared);
+      window.removeEventListener('storage', onStorage);
+    };
   }, []);
 
   if (state === 'checking') {

@@ -81,6 +81,14 @@ export function getToken(): string | null {
 
 // Drop the stored token. Called when the API rejects it, so a stale token is
 // not resent forever.
+// Fired when a token is discarded, so the shell can drop back to the sign-in
+// prompt. Without this the gate keeps rendering the page it decided on at
+// mount: the token is gone from storage, every request 403s, and the learner
+// is looking at a screen that appears to be working. That is the state a
+// session expiring mid-use actually produces, and it reads as the app being
+// broken rather than as needing to sign in again.
+export const TOKEN_CLEARED_EVENT = 'octet:token-cleared';
+
 export function clearToken(): void {
   if (typeof window === 'undefined') {
     return;
@@ -89,6 +97,11 @@ export function clearToken(): void {
     window.localStorage.removeItem(TOKEN_STORAGE_KEY);
   } catch {
     // Ignore storage errors.
+  }
+  try {
+    window.dispatchEvent(new Event(TOKEN_CLEARED_EVENT));
+  } catch {
+    // Ignore environments without a working event constructor.
   }
 }
 

@@ -132,7 +132,18 @@ def grade_numeric(
     if not math.isfinite(converted):
         return GradeResult.ungradable(grader, "That is not a finite measurement.")
 
-    if key_value != 0 and math.isclose(converted, key_value, rel_tol=rel_tolerance):
+    # Zero needs an absolute comparison, not a relative one. math.isclose with
+    # a relative tolerance is always False against a key of zero, so the guard
+    # here used to read "key_value != 0 and ...", which made any item whose
+    # correct answer is zero impossible to answer: a learner typing 0 was told
+    # they were wrong and given no way to be right. No general chemistry item
+    # happens to key zero, so it went unnoticed until an organic item asked for
+    # the degrees of unsaturation of a saturated compound.
+    if key_value == 0:
+        matches = abs(converted) < 1e-9
+    else:
+        matches = math.isclose(converted, key_value, rel_tol=rel_tolerance)
+    if matches:
         submitted_figs = sig_figs(re.split(r"\s", str(student_answer).strip())[0])
         if enforce_sig_figs and expected_sig_figs and submitted_figs and submitted_figs != expected_sig_figs:
             return GradeResult(

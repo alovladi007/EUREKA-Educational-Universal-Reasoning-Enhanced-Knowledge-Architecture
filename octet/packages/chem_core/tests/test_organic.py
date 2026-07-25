@@ -20,6 +20,8 @@ import pytest
 from chem_core.organic import (
     are_diastereomers,
     are_enantiomers,
+    is_chiral,
+    mirror_image,
     degrees_of_unsaturation,
     proton_environments,
     reaction_conserves_atoms,
@@ -218,3 +220,60 @@ class TestReactionBalance:
 
     def test_an_unreadable_structure_is_refused(self):
         assert not reaction_conserves_atoms(["nonsense{"], ["C"]).ok
+
+
+class TestRingStereochemistryRegression:
+    """The 1,4-disubstituted ring bug, and the shape of the failure.
+
+    are_enantiomers used to compare CIP descriptors pairwise and call a pair
+    enantiomers when every descriptor differed. cis and trans
+    1,4-dimethylcyclohexane carry s,s and r,r, so the old test said
+    enantiomers. Both are achiral, each having a mirror plane through C1 and
+    C4, so they are diastereomers and cannot be an enantiomeric pair.
+
+    The direction of the failure is what makes it worth a named test. An
+    author writing the correct claim was rejected, and the obvious way to
+    silence the rejection was to write the false claim, which passed. A
+    verifier that refuses the truth and accepts the falsehood moves content
+    toward the error while appearing to check it.
+    """
+
+    CIS_14 = "C[C@H]1CC[C@@H](C)CC1"
+    TRANS_14 = "C[C@H]1CC[C@H](C)CC1"
+    # Confirmed by 3D embedding rather than by reading the SMILES: this one is
+    # trans (S,S and chiral), and the other is the cis meso form.
+    TRANS_12 = "C[C@H]1CCCC[C@@H]1C"
+    CIS_12_MESO = "C[C@H]1CCCC[C@H]1C"
+
+    def test_both_14_isomers_are_achiral(self):
+        assert is_chiral(self.CIS_14) is False
+        assert is_chiral(self.TRANS_14) is False
+
+    def test_14_isomers_are_diastereomers_not_enantiomers(self):
+        assert are_enantiomers(self.CIS_14, self.TRANS_14) is False
+        assert are_diastereomers(self.CIS_14, self.TRANS_14) is True
+
+    def test_cis_12_is_meso_and_achiral(self):
+        assert is_chiral(self.CIS_12_MESO) is False
+        assert are_enantiomers(self.CIS_12_MESO, mirror_image(self.CIS_12_MESO)) is False
+
+    def test_trans_12_is_chiral_and_pairs_with_its_mirror(self):
+        assert is_chiral(self.TRANS_12) is True
+        assert are_enantiomers(self.TRANS_12, mirror_image(self.TRANS_12)) is True
+
+    def test_cis_and_trans_12_are_diastereomers(self):
+        assert are_diastereomers(self.TRANS_12, self.CIS_12_MESO) is True
+        assert are_enantiomers(self.TRANS_12, self.CIS_12_MESO) is False
+
+    def test_mirror_image_of_an_achiral_molecule_is_itself(self):
+        from chem_core.structure import canonical
+
+        for achiral in ("CCO", "c1ccccc1", self.CIS_12_MESO, self.CIS_14):
+            assert mirror_image(achiral) == canonical(achiral), achiral
+
+    def test_mirror_image_leaves_double_bond_geometry_alone(self):
+        """Reflection inverts tetrahedral centres; a cis alkene stays cis."""
+        from chem_core.structure import canonical
+
+        for alkene in (r"C/C=C/C", r"C/C=C\C"):
+            assert mirror_image(alkene) == canonical(alkene), alkene

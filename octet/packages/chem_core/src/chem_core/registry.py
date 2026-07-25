@@ -414,9 +414,11 @@ REGISTRY: dict[str, dict[str, object]] = {
 # circular import, since templates_g builds Variant objects from this module.
 from .templates_g import PHASE2_TEMPLATES  # noqa: E402
 from .templates_s import PHASE3_TEMPLATES  # noqa: E402
+from .templates_o import ORG1_TEMPLATES  # noqa: E402
 
 REGISTRY.update(PHASE2_TEMPLATES)
 REGISTRY.update(PHASE3_TEMPLATES)
+REGISTRY.update(ORG1_TEMPLATES)
 
 
 def resolve_generated(template_id: str, seed: int, *, max_attempts: int = MAX_SEED_RETRIES) -> Variant:

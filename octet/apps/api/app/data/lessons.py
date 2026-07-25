@@ -38,3 +38,45 @@ except ImportError:  # pragma: no cover
 
 def lesson_for(node_code: str) -> Lesson | None:
     return LESSONS.get(node_code)
+
+try:
+    from app.data.lessons_org1_u1 import LESSONS_ORG1_U1 as _ORG1_U1
+
+    LESSONS.update(_ORG1_U1)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org1_u2 import LESSONS_ORG1_U2 as _ORG1_U2
+
+    LESSONS.update(_ORG1_U2)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org1_u3 import LESSONS_ORG1_U3 as _ORG1_U3
+
+    LESSONS.update(_ORG1_U3)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org1_u5 import LESSONS_ORG1_U5 as _ORG1_U5
+
+    LESSONS.update(_ORG1_U5)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org1_u7 import LESSONS_ORG1_U7 as _ORG1_U7
+
+    LESSONS.update(_ORG1_U7)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org1_u8 import LESSONS_ORG1_U8 as _ORG1_U8
+
+    LESSONS.update(_ORG1_U8)
+except ImportError:  # pragma: no cover
+    pass

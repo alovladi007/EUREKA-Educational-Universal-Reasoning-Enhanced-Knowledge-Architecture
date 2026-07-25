@@ -187,3 +187,68 @@ def rung(template_id: str, level: int) -> str | None:
     if not ladder or level < 1 or level > 3:
         return None
     return ladder[level - 1]
+
+
+# ORG1 ladders. Each rung narrows without stating the answer: the first names
+# what is being asked, the second gives the method, the third gives a concrete
+# first move the learner can make on their own paper.
+HINTS.update(
+    {
+        "org.unsaturation.v1": (
+            "Degrees of unsaturation counts rings plus pi bonds. You are being "
+            "asked how many of those a molecule with this formula must contain, "
+            "without being shown the structure.",
+            "Compare the formula against the saturated alkane with the same "
+            "number of carbons, which is CnH2n+2. Every two hydrogens missing "
+            "from that count is one degree of unsaturation. Halogens count as "
+            "hydrogens, oxygen is ignored, and each nitrogen adds one to the "
+            "hydrogen count you compare against.",
+            "Write down the formula of the saturated alkane with the same "
+            "number of carbons before you do anything else, and subtract.",
+        ),
+        "org.cip.v1": (
+            "You are being asked to name which of the two mirror image "
+            "arrangements this stereocentre has, using the Cahn-Ingold-Prelog "
+            "rules.",
+            "Rank the four groups by atomic number at the first point of "
+            "difference, working outward one sphere at a time until the tie "
+            "breaks. Then orient the lowest priority group away from you and "
+            "read whether 1 to 2 to 3 runs clockwise or counterclockwise.",
+            "Identify the lowest priority group first, which is almost always "
+            "the hydrogen, and write down where it points before you rank "
+            "anything else.",
+        ),
+        "org.relationship.v1": (
+            "You are being asked how two structures are related: whether they "
+            "are mirror images, stereoisomers that are not mirror images, the "
+            "same compound written twice, or different connectivity entirely.",
+            "Check connectivity first. Different connectivity means "
+            "constitutional isomers and you are done. Same connectivity means "
+            "you compare configuration at each stereocentre: all inverted is "
+            "enantiomers, some inverted is diastereomers.",
+            "Before comparing, check whether the molecule has an internal "
+            "mirror plane. If it does, two spellings that look like a pair may "
+            "be one compound.",
+        ),
+        "org.nmr.signals.v1": (
+            "You are being asked how many distinct environments the hydrogens "
+            "in this molecule occupy. Each environment gives one signal.",
+            "Hydrogens are equivalent when the molecule's symmetry can "
+            "interchange them. Look for mirror planes and rotation axes, and "
+            "group the hydrogens those operations map onto each other.",
+            "Count the total number of hydrogens first, then start grouping. "
+            "Your groups must add back up to that total.",
+        ),
+        "org.elucidation.v1": (
+            "You are being asked to propose a structure that fits the evidence "
+            "given, not to recall a compound. Several structures may share the "
+            "formula, and only some fit the spectrum.",
+            "Work in order: degrees of unsaturation from the formula tells you "
+            "how many rings and pi bonds to place, and the number of signals "
+            "with their integration ratio tells you how symmetric the "
+            "arrangement has to be.",
+            "Compute the degrees of unsaturation and write that number down "
+            "before you draw anything.",
+        ),
+    }
+)

@@ -450,3 +450,88 @@ def routes_for(code: str) -> str | None:
 def unreviewed() -> list[str]:
     """Codes still awaiting SME sign off. Used by the compliance report."""
     return sorted(c for c, m in MISCONCEPTIONS.items() if m.review != "reviewed")
+
+
+# ORG1 stereochemistry misconceptions. Added in Phase 5 for the organic MC
+# templates, which cannot ship without every distractor keying a named
+# misconception.
+#
+# On sources: the twenty six entries above cite published chemistry education
+# research where one was found. For these four the specific belief is familiar
+# from teaching practice but has not been traced to a particular study, and the
+# honest thing is to say so in the source field rather than attach a citation
+# that was not checked. All remain review "pending" like every other entry.
+MISCONCEPTIONS.update(
+    {
+        "CIP-RANK-BY-SIZE": Misconception(
+            code="CIP-RANK-BY-SIZE",
+            name="Priority follows group size rather than atomic number",
+            description=(
+                "The learner ranks substituents by how bulky or how many atoms "
+                "they contain, so a tert-butyl group outranks a hydroxyl."
+            ),
+            counterexample=(
+                "In butan-2-ol the hydroxyl outranks both carbon chains, "
+                "because priority is decided by the atomic number of the first "
+                "atom and oxygen beats carbon regardless of what follows it."
+            ),
+            routes_to="ORG1.RS",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+        "CIP-VIEWER-FACING": Misconception(
+            code="CIP-VIEWER-FACING",
+            name="Rotation read without checking where the lowest priority points",
+            description=(
+                "The learner traces 1 to 2 to 3 and reports the direction "
+                "without first establishing that the lowest priority group "
+                "points away, so every centre drawn with the hydrogen toward "
+                "the viewer comes out inverted."
+            ),
+            counterexample=(
+                "In a Fischer projection the horizontal bonds point toward the "
+                "viewer. Reading a clockwise rotation there gives S, not R, "
+                "and the drawing offers no hint that a reversal was needed."
+            ),
+            routes_to="ORG1.RS",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+        "MESO-AS-ENANTIOMERS": Misconception(
+            code="MESO-AS-ENANTIOMERS",
+            name="A meso compound and its mirror image are a pair",
+            description=(
+                "The learner sees two structures with inverted stereocentres "
+                "and concludes they are enantiomers, without checking whether "
+                "an internal mirror plane makes them the same molecule."
+            ),
+            counterexample=(
+                "R,S and S,R tartaric acid invert at every centre and are one "
+                "compound, because the mirror plane between the two central "
+                "carbons maps the molecule onto itself. Tartaric acid has "
+                "three stereoisomers, not four."
+            ),
+            routes_to="ORG1.ENANTIODIA",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+        "STEREO-AS-CONSTITUTIONAL": Misconception(
+            code="STEREO-AS-CONSTITUTIONAL",
+            name="Any two different structures are constitutional isomers",
+            description=(
+                "The learner treats constitutional isomerism as the catch all "
+                "for structures that are not identical, without checking "
+                "whether the connectivity is actually different."
+            ),
+            counterexample=(
+                "Two enantiomers have exactly the same connectivity. What "
+                "differs is the arrangement in space, which makes them "
+                "stereoisomers; nothing about which atom bonds to which has "
+                "changed."
+            ),
+            routes_to="ORG1.ENANTIODIA",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+    }
+)
