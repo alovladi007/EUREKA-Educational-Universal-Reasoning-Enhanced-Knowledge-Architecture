@@ -231,3 +231,168 @@ def test_section_totals_reconcile_with_the_overall_total():
     result = score_form(form, graded, {i.position for i in form.items})
     assert sum(s.items for s in result.sections) == result.items
     assert sum(s.correct for s in result.sections) == result.correct
+
+
+# ---------------------------------------------------------------------------
+# The attempt state machine
+#
+# These use the database fixtures, because the rules being tested are about
+# persisted state: what an open attempt may return, what time does to it, and
+# what happens when the same learner tries to open a second one.
+# ---------------------------------------------------------------------------
+
+import uuid
+from datetime import UTC, datetime, timedelta
+
+import pytest_asyncio
+from sqlalchemy import select
+
+from app.domains.exams import service
+from app.domains.exams.models import (
+    STATUS_EXPIRED,
+    STATUS_IN_PROGRESS,
+    STATUS_SUBMITTED,
+    ExamAttempt,
+    ExamResponse,
+)
+
+CODE = "exam.unit.gen1-u3"
+
+
+@pytest.mark.asyncio
+async def test_starting_an_attempt_snapshots_the_form(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    assert attempt.status == STATUS_IN_PROGRESS
+    assert attempt.form["items"], "the paper was not snapshotted"
+    assert attempt.result is None, "an open attempt must carry no result"
+
+
+@pytest.mark.asyncio
+async def test_an_open_attempt_carries_no_answer_key(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    blob = str(attempt.form)
+    assert "exact_g" not in blob
+    assert "exact_x" not in blob
+    assert "correct_index" not in blob
+
+
+@pytest.mark.asyncio
+async def test_a_second_open_attempt_is_refused_rather_than_replacing_the_first(db_session):
+    """Silently abandoning the first would discard answers already given."""
+    await service.start_attempt(db_session, USER, CODE)
+    with pytest.raises(service.ExamError):
+        await service.start_attempt(db_session, USER, CODE)
+
+
+@pytest.mark.asyncio
+async def test_an_unknown_blueprint_is_refused(db_session):
+    with pytest.raises(service.ExamError):
+        await service.start_attempt(db_session, USER, "exam.unit.does-not-exist")
+
+
+@pytest.mark.asyncio
+async def test_saving_an_answer_returns_no_grade(db_session):
+    """The rule that separates an exam from practice."""
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    result = await service.save_answer(db_session, USER, attempt.id, 1, "42")
+    assert result["saved"] is True
+    for leaky in ("is_correct", "score", "misconception", "detail", "correct_display"):
+        assert leaky not in result
+    assert "not graded until" in result["note"]
+
+
+@pytest.mark.asyncio
+async def test_changing_an_answer_updates_rather_than_appends(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    await service.save_answer(db_session, USER, attempt.id, 1, "first")
+    await service.save_answer(db_session, USER, attempt.id, 1, "second")
+    rows = (
+        await db_session.scalars(
+            select(ExamResponse).where(ExamResponse.attempt_id == attempt.id)
+        )
+    ).all()
+    assert len(rows) == 1
+    assert rows[0].answer == "second"
+
+
+@pytest.mark.asyncio
+async def test_answering_a_position_that_is_not_on_the_paper_is_refused(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    with pytest.raises(service.ExamError):
+        await service.save_answer(db_session, USER, attempt.id, 9999, "x")
+
+
+@pytest.mark.asyncio
+async def test_another_learner_cannot_read_or_answer_an_attempt(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    with pytest.raises(service.ExamError):
+        await service.save_answer(db_session, "someone-else", attempt.id, 1, "x")
+    with pytest.raises(service.ExamError):
+        await service.submit_attempt(db_session, "someone-else", attempt.id)
+
+
+@pytest.mark.asyncio
+async def test_time_is_enforced_by_the_server_not_the_client(db_session):
+    """Expiry is judged against the server clock, and it closes the attempt."""
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    attempt.expires_at = datetime.now(UTC) - timedelta(seconds=1)
+    await db_session.flush()
+
+    with pytest.raises(service.ExamError):
+        await service.save_answer(db_session, USER, attempt.id, 1, "late")
+    assert attempt.status == STATUS_EXPIRED
+
+
+@pytest.mark.asyncio
+async def test_submitting_after_time_is_refused(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    attempt.expires_at = datetime.now(UTC) - timedelta(seconds=1)
+    await db_session.flush()
+    with pytest.raises(service.ExamError):
+        await service.submit_attempt(db_session, USER, attempt.id)
+
+
+@pytest.mark.asyncio
+async def test_the_server_still_scores_what_was_answered_when_time_runs_out(db_session):
+    """An abandoned attempt is scored on what was given, not discarded."""
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    await service.save_answer(db_session, USER, attempt.id, 1, "something")
+    attempt.expires_at = datetime.now(UTC) - timedelta(seconds=1)
+    await db_session.flush()
+
+    closed = await service.expire_overdue(db_session)
+    assert closed == 1
+    await db_session.refresh(attempt)
+    assert attempt.status == STATUS_SUBMITTED
+    assert attempt.result is not None
+    assert attempt.result["was_late"] is True
+
+
+@pytest.mark.asyncio
+async def test_submission_grades_and_closes_the_attempt(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    await service.save_answer(db_session, USER, attempt.id, 1, "0.5")
+    result = await service.submit_attempt(db_session, USER, attempt.id)
+
+    assert attempt.status == STATUS_SUBMITTED
+    assert result["items"] == len(attempt.form["items"])
+    assert result["answered"] == 1
+    assert "raw_percent" in result
+    for forbidden in ("scaled_score", "predicted_grade", "passed", "percentile"):
+        assert forbidden not in result
+
+
+@pytest.mark.asyncio
+async def test_an_attempt_cannot_be_submitted_twice(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    await service.submit_attempt(db_session, USER, attempt.id)
+    with pytest.raises(service.ExamError):
+        await service.submit_attempt(db_session, USER, attempt.id)
+
+
+@pytest.mark.asyncio
+async def test_a_submitted_attempt_cannot_take_more_answers(db_session):
+    attempt = await service.start_attempt(db_session, USER, CODE)
+    await service.submit_attempt(db_session, USER, attempt.id)
+    with pytest.raises(service.ExamError):
+        await service.save_answer(db_session, USER, attempt.id, 1, "too late")

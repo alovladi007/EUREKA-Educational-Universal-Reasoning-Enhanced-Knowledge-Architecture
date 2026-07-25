@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-24 (Phase 3 complete; curriculum replaced).
+Last updated: 2026-07-24 (Phase 4 in progress).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -259,7 +259,63 @@ Bugs this work caught:
    node. It is a simple gas law, and the finer map has a node for exactly
    that.
 
-## Phase 4 and later: NOT STARTED
+## Phase 4: LTI and the exam engine. Gate: LTI + exam engine. Status: IN PROGRESS
+
+| Deliverable | Status |
+|---|---|
+| LTI termination decided | DONE. Each vertical terminates its own. Recorded in the contract with the reasoning and the costs, because it went against the recommendation there. |
+| Alembic | DONE. OCTET's first migrations. 0001 chemistry, 0002 LTI, 0003 exams. Applies from empty on Postgres and `alembic check` reports no drift. |
+| LTI 1.3 tool provider | DONE. OIDC initiation, launch verification, AGS grade passback, mirroring AXIOM rather than inventing a second shape. |
+| Exam blueprints and assembly | DONE |
+| Exam attempt state machine | DONE |
+| Exam API | DONE |
+| Exam taking UI | NOT STARTED |
+
+The exam engine is the substance of the phase, and what it refuses to do is
+the design.
+
+Blueprints are generated from the template registry, so the catalogue cannot
+list an exam the bank cannot build: a unit with no generated items produces no
+blueprint rather than a broken one. Ten unit exams exist today because ten
+units carry items. No blueprint claims alignment with ACS, AP, MCAT or any
+other examination, and a test enforces that. Those bodies publish real content
+outlines; reproducing one from memory would be inventing a specification and
+attaching an authoritative name to it.
+
+Assembly refuses rather than substitutes. An item may only come from a node
+the blueprint asked for, and when the bank cannot supply a section, assembly
+fails. An exam padded from a neighbouring node measures something the score
+does not describe. Every item is an issued variant whose key was independently
+verified at assembly time. Forms are deterministic per learner, so a reload is
+not a reroll, and two learners get different variants of the same templates.
+
+Scoring reports raw counts per section and per node plus a misconception
+tally, and deliberately no scaled score, no predicted grade and no pass mark.
+Scaling raw points onto a band is a psychometric claim needing item parameters
+estimated from real response data, and nothing in this bank has been
+calibrated. A test asserts those fields do not exist on the result, because
+this is the kind of number someone adds later thinking it was an oversight.
+Ungradable answers are counted separately from wrong ones and excluded from
+the percentage, since an unreadable answer is not evidence of a wrong belief.
+
+Four rules separate an exam from practice, and all four are enforced in the
+service rather than left to the client: no hints, no feedback until
+submission, server authoritative timing, and a paper that does not change. The
+form is snapshotted at start, so deploying a template change mid exam cannot
+alter the paper under a learner who has already answered half of it. The
+result column is null while an attempt is open, which makes withholding
+feedback a property of the schema rather than a discipline the API has to
+keep.
+
+Verified live against the running API: the catalogue lists ten available
+exams, a started attempt serves items with no answer key and states that
+hints are unavailable, saving an answer returns no grade, an open attempt
+carries no result, submission returns raw counts with none of the forbidden
+scaled fields, and a second submission is refused with 409.
+
+Tests: 270 pass, 35 of them new for exams.
+
+## Phase 5 and later: NOT STARTED
 
 Phase 4 LTI and exam engine, Phase 5 organic wave 1, Phase 6 organic wave 2
 with the retrosynthesis trainer, Phase 7 AN/P1/P2 tiers and the guardrailed

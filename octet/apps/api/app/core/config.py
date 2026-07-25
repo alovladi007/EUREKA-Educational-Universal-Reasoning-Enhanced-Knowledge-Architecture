@@ -40,6 +40,17 @@ class Settings(BaseSettings):
 
     cors_origins: str = "http://localhost:4200,http://localhost:4040"
 
+    # Where a completed LTI launch hands the learner off. OCTET's web app is on
+    # 4200 under the port band recorded in the integration contract.
+    web_base_url: str = "http://localhost:4200"
+
+    # The LTI tool's RSA private key (PEM). Supplied in production so the JWKS
+    # key id survives a restart. Empty means generate an ephemeral key.
+    lti_tool_private_key: str = ""
+    # Outbound calls to a platform (JWKS fetch, AGS token and score) are bounded
+    # so a slow LMS cannot hold an OCTET request open.
+    lti_http_timeout_seconds: float = 8.0
+
     @property
     def is_production(self) -> bool:
         return self.environment == "production"

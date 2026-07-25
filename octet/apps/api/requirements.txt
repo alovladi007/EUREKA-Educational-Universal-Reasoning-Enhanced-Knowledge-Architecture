@@ -7,6 +7,12 @@ sqlalchemy==2.0.36
 asyncpg==0.30.0
 alembic==1.14.0
 pyjwt==2.10.1
+# LTI 1.3 signs with RS256, which PyJWT cannot do without a crypto backend.
+# Pinned at the version AXIOM's image resolves so both verticals sign alike.
+cryptography==49.0.0
+# An LTI 1.3 launch arrives as an HTML form post, which Starlette cannot parse
+# without this. Pinned at the version AXIOM's image resolves.
+python-multipart==0.0.32
 httpx==0.28.1
 
 # Chemistry and exact arithmetic. Do not hand roll any of this.

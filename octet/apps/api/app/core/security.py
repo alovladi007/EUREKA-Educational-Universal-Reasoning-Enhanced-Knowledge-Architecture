@@ -107,3 +107,21 @@ async def get_current_principal(
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, f"invalid token: {exc}") from exc
     except NotImplementedError as exc:
         raise HTTPException(status.HTTP_503_SERVICE_UNAVAILABLE, str(exc)) from exc
+
+
+def require_roles(*allowed: str):
+    """Return a dependency that admits a principal holding any allowed role.
+
+    The roles are the ones EUREKA puts in the token, so OCTET authorises
+    against them without ever owning the account they describe.
+    """
+
+    async def _guard(principal: Principal = Depends(get_current_principal)) -> Principal:
+        if allowed and not (set(principal.roles) & set(allowed)):
+            raise HTTPException(
+                status.HTTP_403_FORBIDDEN,
+                "You do not have permission to access this resource.",
+            )
+        return principal
+
+    return _guard
