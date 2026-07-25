@@ -11,6 +11,11 @@ import {
   getCurriculumNodes,
 } from '@/lib/api';
 import {
+  MasteryIndex,
+  NodeMasteryRecord,
+  getMasteryMap,
+} from '@/lib/analyticsApi';
+import {
   EmptyState,
   ErrorPanel,
   LoadingPanel,
@@ -37,55 +42,35 @@ import { MasteryRing } from '@/app/_ui/mastery-ring';
 // Mastery
 // -------------------------------------------------------------------------
 
-// What a mastery record will look like when there is an endpoint that serves
-// one. Nothing serves one today.
-interface NodeMastery {
-  attempts: number;
-  // 0 to 1.
-  mastery: number;
-  due_for_review: boolean;
-  open_misses: number;
-}
-
-type MasteryIndex = Record<string, NodeMastery>;
-
-const MASTERY_THRESHOLD = 0.8;
-
-// There is no mastery endpoint yet, so this index is empty and stays empty.
+// The mastery index is fetched from GET /analytics/mastery alongside the
+// tree. It is keyed by node code, and a node the learner has never attempted
+// has no entry at all, which is a different fact from an entry with zero
+// attempts. The server derives the state (ready, in_progress, needs_review,
+// mastered) in one place from attempts and a recency-weighted accuracy, so
+// this page renders the claim rather than recomputing it.
 //
-// It is a named constant rather than an inline {} because it is the single
-// seam this page needs: when GET /curriculum/mastery lands, fetch it into
-// state and pass it where this constant is passed. Every branch below is
-// already written against the real shape and nothing else in this file moves.
-//
-// Until then, four of the seven states are unreachable by construction:
-// "In progress", "Mastered", "Needs review" and "Has misses" all require a
-// record, and there are no records. Every node therefore reads "Ready" or
-// "Not yet available". That is deliberate. A fabricated "In progress" on a
-// node the learner has never opened would be worse than an honest "Ready",
-// and a progress ring filled from nothing would be worse than a ring that
-// reads zero.
-const MASTERY: MasteryIndex = {};
+// On a fresh account the index is empty and four of the seven states stay
+// unreachable: "In progress", "Mastered", "Needs review" and "Has misses"
+// all require a record. Every node then reads "Ready" or "Not yet
+// available", which is the honest zero state, not a bug. "Has misses"
+// additionally needs an open-miss count the mastery endpoint does not report
+// yet, so that chip stays unreachable even once records exist.
 
 // Whether a prerequisite can be evaluated at all.
 //
-// The IA doc defines Locked as "at least one prerequisite is below the mastery
-// threshold". That is a claim about the learner, and with no mastery endpoint
-// there is nothing to measure it against. "Not measured" is not the same fact
-// as "below threshold", and rendering the second when only the first is true
-// would be inventing a result, which this page does not do.
+// The IA doc defines Locked as "at least one prerequisite is below the
+// mastery threshold". The mastery endpoint exists now, but gating stays off,
+// because "not yet attempted" is not the same fact as "below threshold" and
+// treating it as one would lock almost the whole program: the graph chains
+// nodes within a unit and units within a course, so exactly one node (the
+// very first) has no prerequisites, and a fresh account would see one
+// openable row. A map of the whole program with one openable row is not a
+// map.
 //
-// It is also not a close call in practice. The graph chains nodes within a
-// unit and chains units within a course, so exactly one node in the program
-// (laboratory safety, the very first one) has no prerequisites. Evaluating
-// prerequisites against an empty mastery index therefore locks 311 of 312
-// nodes, including 58 of the 59 that have a lesson written, and turns a map of
-// the whole program into a page with one openable row.
-//
-// So prerequisite gating is off until there is something to gate on. Both
-// branches below are live and typechecked: set this to true at the same time
-// as MASTERY is populated and the doc's Locked behaviour, the "Unlocks after"
-// sentence and the suppressed entry all switch on for the whole page at once.
+// Both branches below are live and typechecked: set this to true once there
+// is a product decision on how an unattempted prerequisite should gate, and
+// the Locked chip, the "Unlocks after" sentence and the suppressed entry all
+// switch on for the whole page at once.
 const PREREQUISITES_ARE_EVALUATED: boolean = false;
 
 // -------------------------------------------------------------------------
@@ -149,7 +134,7 @@ function blockingPrerequisites(
 ): string[] {
   return node.prerequisites.filter((code) => {
     const record = mastery[code];
-    return !record || record.mastery < MASTERY_THRESHOLD;
+    return !record || record.state !== 'mastered';
   });
 }
 
@@ -163,15 +148,17 @@ function nodeState(node: CurriculumNode, mastery: MasteryIndex): NodeState {
   }
   const record = mastery[node.code];
   if (record) {
-    if (record.open_misses > 0) {
-      return 'has-misses';
+    if (record.state === 'mastered') {
+      return 'mastered';
     }
-    if (record.mastery >= MASTERY_THRESHOLD) {
-      return record.due_for_review ? 'needs-review' : 'mastered';
+    if (record.state === 'needs_review') {
+      return 'needs-review';
     }
-    if (record.attempts > 0) {
+    if (record.state === 'in_progress') {
       return 'in-progress';
     }
+    // record.state is 'ready': a row exists but holds no attempts, which is
+    // the same fact as no row at all. Fall through.
   }
   if (
     PREREQUISITES_ARE_EVALUATED &&
@@ -184,12 +171,18 @@ function nodeState(node: CurriculumNode, mastery: MasteryIndex): NodeState {
   return 'ready';
 }
 
-// The states that cannot occur while mastery is unrecorded, named once so the
-// empty state can say why a filter found nothing instead of implying the
-// program simply has no such node.
-const UNREACHABLE_STATES = PREREQUISITES_ARE_EVALUATED
-  ? 'in progress, mastered, needs review or has misses'
-  : 'locked, in progress, mastered, needs review or has misses';
+// The states that cannot currently occur, named once so the empty state can
+// say why a filter found nothing instead of implying the program simply has
+// no such node. Which states those are depends on whether any mastery has
+// been recorded yet.
+function unreachableStates(masteryEmpty: boolean): string {
+  if (masteryEmpty) {
+    return PREREQUISITES_ARE_EVALUATED
+      ? 'in progress, mastered, needs review or has misses'
+      : 'locked, in progress, mastered, needs review or has misses';
+  }
+  return PREREQUISITES_ARE_EVALUATED ? 'has misses' : 'locked or has misses';
+}
 
 // Locked is the only state that suppresses entry, because the teaching model
 // sequences content rather than hiding it. Unauthored is not a lock, it is an
@@ -241,6 +234,8 @@ interface CourseView {
 
 export default function LearnPage() {
   const [data, setData] = useState<CurriculumNodes | null>(null);
+  const [mastery, setMastery] = useState<MasteryIndex>({});
+  const [masteryFailed, setMasteryFailed] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -261,9 +256,20 @@ export default function LearnPage() {
     let cancelled = false;
     (async () => {
       try {
-        const result = await getCurriculumNodes();
+        // Mastery is an overlay on the map, not the map. If it cannot be
+        // loaded the tree still renders, with the failure stated rather than
+        // mistaken for a learner who simply has no attempts.
+        const [result, masteryMap] = await Promise.all([
+          getCurriculumNodes(),
+          getMasteryMap().catch(() => null),
+        ]);
         if (!cancelled) {
           setData(result);
+          if (masteryMap) {
+            setMastery(masteryMap.nodes);
+          } else {
+            setMasteryFailed(true);
+          }
         }
       } catch (err) {
         if (!cancelled) {
@@ -285,10 +291,10 @@ export default function LearnPage() {
   const states = useMemo(() => {
     const map = new Map<string, NodeState>();
     for (const node of data?.nodes ?? []) {
-      map.set(node.code, nodeState(node, MASTERY));
+      map.set(node.code, nodeState(node, mastery));
     }
     return map;
-  }, [data]);
+  }, [data, mastery]);
 
   // Prerequisites arrive as codes. A learner is never shown a code, so every
   // one of them has to be resolved to a title before it can be rendered.
@@ -317,7 +323,7 @@ export default function LearnPage() {
         let unitMastered = 0;
         const kept: NodeView[] = [];
         for (const node of all) {
-          const state = states.get(node.code) ?? nodeState(node, MASTERY);
+          const state = states.get(node.code) ?? nodeState(node, mastery);
           if (state === 'mastered') {
             unitMastered += 1;
           }
@@ -353,7 +359,7 @@ export default function LearnPage() {
       }
     }
     return out;
-  }, [data, states, needle, stateFilter, filterActive]);
+  }, [data, states, mastery, needle, stateFilter, filterActive]);
 
   const totalNodes = data?.nodes.length ?? 0;
   const totalMastered = useMemo(() => {
@@ -373,6 +379,16 @@ export default function LearnPage() {
     (sum, view) => sum + view.units.reduce((s, u) => s + u.nodes.length, 0),
     0,
   );
+
+  // The sentence under the mastered counter, chosen to state what is actually
+  // known: a failed fetch is not the same fact as an account with no
+  // attempts, and neither is a recorded count.
+  const masteryEmpty = Object.keys(mastery).length === 0;
+  const masteryNote = masteryFailed
+    ? 'The mastery record could not be loaded, so nothing is counted and every authored node reads Ready.'
+    : masteryEmpty
+      ? 'No practice attempts are recorded yet, so this counts nothing rather than estimating.'
+      : 'Counted from your graded practice attempts.';
 
   // Changing what is being searched or filtered resets expansion, so a unit
   // the learner closed earlier cannot swallow a result they just asked for.
@@ -441,6 +457,7 @@ export default function LearnPage() {
             totalNodes={totalNodes}
             totalMastered={totalMastered}
             totalAuthored={totalAuthored}
+            masteryNote={masteryNote}
             filterActive={filterActive}
             shownNodes={shownNodes}
           />
@@ -448,7 +465,11 @@ export default function LearnPage() {
           {views.length === 0 ? (
             <EmptyState
               title="Nothing matches"
-              detail={`No node in the program matches that search and state. Mastery is not recorded yet, so no node can read as ${UNREACHABLE_STATES}.`}
+              detail={
+                masteryEmpty
+                  ? `No node in the program matches that search and state. No practice attempts are recorded yet, so no node can read as ${unreachableStates(true)}.`
+                  : `No node in the program matches that search and state. Prerequisite locks and open misses are not reported yet, so no node can read as ${unreachableStates(false)}.`
+              }
             />
           ) : (
             <div className="mt-8 space-y-8">
@@ -473,6 +494,7 @@ export default function LearnPage() {
                     }))
                   }
                   byCode={byCode}
+                  mastery={mastery}
                   instructorView={instructorView}
                   filterActive={filterActive}
                 />
@@ -499,6 +521,7 @@ function Controls({
   totalNodes,
   totalMastered,
   totalAuthored,
+  masteryNote,
   filterActive,
   shownNodes,
 }: {
@@ -511,6 +534,7 @@ function Controls({
   totalNodes: number;
   totalMastered: number;
   totalAuthored: number;
+  masteryNote: string;
   filterActive: boolean;
   shownNodes: number;
 }) {
@@ -539,12 +563,11 @@ function Controls({
             {totalMastered} of {totalNodes} nodes mastered
           </p>
           <p className="mt-0.5 text-xs text-muted-foreground">
-            Mastery is not recorded yet, so this counts nothing rather than
-            estimating. {totalAuthored} of {totalNodes}{' '}
+            {masteryNote} {totalAuthored} of {totalNodes}{' '}
             {plural(totalNodes, 'node has', 'nodes have')} a lesson written.
             {PREREQUISITES_ARE_EVALUATED
               ? ''
-              : ' Nothing is locked by prerequisites until there is mastery to measure them against.'}
+              : ' Prerequisite gating is off, so nothing reads as locked.'}
           </p>
         </div>
       </div>
@@ -639,6 +662,7 @@ function CourseSection({
   isUnitOpen,
   onToggleUnit,
   byCode,
+  mastery,
   instructorView,
   filterActive,
 }: {
@@ -648,6 +672,7 @@ function CourseSection({
   isUnitOpen: (unit: CurriculumUnit, unitIndex: number) => boolean;
   onToggleUnit: (unit: CurriculumUnit, unitIndex: number) => void;
   byCode: Map<string, CurriculumNode>;
+  mastery: MasteryIndex;
   instructorView: boolean;
   filterActive: boolean;
 }) {
@@ -743,6 +768,7 @@ function CourseSection({
                 open={isUnitOpen(unitView.unit, unitIndex)}
                 onToggle={() => onToggleUnit(unitView.unit, unitIndex)}
                 byCode={byCode}
+                mastery={mastery}
                 instructorView={instructorView}
                 filterActive={filterActive}
               />
@@ -763,6 +789,7 @@ function UnitSection({
   open,
   onToggle,
   byCode,
+  mastery,
   instructorView,
   filterActive,
 }: {
@@ -770,6 +797,7 @@ function UnitSection({
   open: boolean;
   onToggle: () => void;
   byCode: Map<string, CurriculumNode>;
+  mastery: MasteryIndex;
   instructorView: boolean;
   filterActive: boolean;
 }) {
@@ -830,6 +858,7 @@ function UnitSection({
                   node={nodeView.node}
                   state={nodeView.state}
                   byCode={byCode}
+                  mastery={mastery}
                   instructorView={instructorView}
                 />
               </li>
@@ -855,15 +884,17 @@ function NodeRow({
   node,
   state,
   byCode,
+  mastery,
   instructorView,
 }: {
   node: CurriculumNode;
   state: NodeState;
   byCode: Map<string, CurriculumNode>;
+  mastery: MasteryIndex;
   instructorView: boolean;
 }) {
   const enterable = isEnterable(state);
-  const record = MASTERY[node.code];
+  const record = mastery[node.code];
 
   const body = (
     <>
@@ -884,7 +915,7 @@ function NodeRow({
 
       {state === 'locked' && (
         <UnlockSentence
-          codes={blockingPrerequisites(node, MASTERY)}
+          codes={blockingPrerequisites(node, mastery)}
           byCode={byCode}
         />
       )}
@@ -961,11 +992,17 @@ function NodeIcons({ node }: { node: CurriculumNode }) {
   );
 }
 
-// The bar is decoration and the sentence beside it is the content. With no
-// record the bar is empty and says so, rather than drawing a zero that reads
-// like a measured result.
-function MasteryBar({ record }: { record: NodeMastery | undefined }) {
-  const fraction = record ? Math.min(Math.max(record.mastery, 0), 1) : 0;
+// The bar is decoration and the sentence beside it is the content. It draws
+// the figure the server computed: a recency-weighted accuracy over this
+// node's graded attempts, which is recent accuracy and not a completion
+// percentage, so the sentence names it as accuracy. With no record the bar
+// is empty and says so, rather than drawing a zero that reads like a
+// measured result.
+function MasteryBar({ record }: { record: NodeMasteryRecord | undefined }) {
+  const attempted = record !== undefined && record.attempts > 0;
+  const fraction = attempted
+    ? Math.min(Math.max(record.accuracy_ewma, 0), 1)
+    : 0;
   const percent = Math.round(fraction * 100);
   return (
     <div className="mt-3 flex items-center gap-2">
@@ -979,7 +1016,11 @@ function MasteryBar({ record }: { record: NodeMastery | undefined }) {
         />
       </span>
       <span className="text-xs text-muted-foreground">
-        {record ? `${percent} percent mastered` : 'Mastery not recorded yet'}
+        {attempted
+          ? `${percent} percent recent accuracy over ${record.attempts} ${
+              record.attempts === 1 ? 'attempt' : 'attempts'
+            }`
+          : 'Mastery not recorded yet'}
       </span>
     </div>
   );

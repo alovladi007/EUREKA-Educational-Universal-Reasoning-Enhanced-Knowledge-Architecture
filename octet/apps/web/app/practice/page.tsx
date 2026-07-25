@@ -1,18 +1,17 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
 import {
-  GradeResult,
-  Hint,
-  TemplateSummary,
-  Variant,
-  getHint,
-  getNextItem,
-  getTemplates,
-  submitAnswer,
-  submitStructure,
-} from '@/lib/api';
-import Sketcher from '@/components/Sketcher';
+  PracticeMode,
+  PracticeSessionRow,
+  PracticeUnit,
+  getPracticeCatalogue,
+  getPracticeHistory,
+  savePracticeSession,
+  startPracticeSession,
+} from '@/lib/practiceApi';
 import {
   Card,
   EmptyState,
@@ -24,58 +23,111 @@ import {
   errorMessage,
 } from '@/app/_ui/shell';
 
-// The practice surface.
+// The practice session builder.
 //
-// Two rules from the teaching model are enforced on this page, not merely
-// respected by it:
+// A learner picks units, an item count and a mode, and starts a session. Two
+// choices here are deliberate:
 //
-//   1. Hints unlock one rung at a time. Rung 2 cannot be requested until rung 1
-//      has been shown, so the request never names a rung above what the learner
-//      has actually unlocked. The API refuses out of order requests as well,
-//      but the client must not be the thing that tries.
-//
-//   2. No correct answer is displayed anywhere on this page. The submit
-//      endpoint does not return one, and nothing here reconstructs, guesses at
-//      or hints toward the key. Feedback is the grader's own detail string,
-//      which names the belief behind a wrong answer without stating the answer.
+//   1. Units with no practice items are listed and disabled, not hidden. A
+//      course looks the size it actually is, and the gap is visible instead
+//      of silent.
+//   2. The started session's items are written to sessionStorage before the
+//      route changes. The API serves an open session's items exactly once,
+//      in the start response, so the tab that starts a session is the tab
+//      that holds it. Review of a finished session opens from anywhere.
 
-const MAX_RUNGS = 3;
+const COURSE_TITLES: Record<string, string> = {
+  GEN1: 'General Chemistry I',
+  GEN2: 'General Chemistry II',
+  ORG1: 'Organic Chemistry I',
+  ORG2: 'Organic Chemistry II',
+};
+
+const COUNT_OPTIONS = [5, 10, 20, 40];
+
+const MODE_OPTIONS: Array<{
+  mode: PracticeMode;
+  label: string;
+  explanation: string;
+}> = [
+  {
+    mode: 'tutor',
+    label: 'Tutor',
+    explanation: 'Feedback and explanation after every question.',
+  },
+  {
+    mode: 'timed',
+    label: 'Timed',
+    explanation: 'No feedback until you finish; a timer runs.',
+  },
+];
+
+function formatStartedAt(iso: string | null): string {
+  if (!iso) {
+    return 'unknown date';
+  }
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) {
+    return 'unknown date';
+  }
+  return date.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: '2-digit',
+  });
+}
 
 export default function PracticePage() {
-  const [templates, setTemplates] = useState<TemplateSummary[] | null>(null);
-  const [selected, setSelected] = useState<string>('');
-  const [loadingTemplates, setLoadingTemplates] = useState(true);
-  const [templateError, setTemplateError] = useState<string | null>(null);
+  const router = useRouter();
 
-  const [variant, setVariant] = useState<Variant | null>(null);
-  const [count, setCount] = useState(0);
-  const [loadingItem, setLoadingItem] = useState(false);
-  const [itemError, setItemError] = useState<string | null>(null);
+  const [units, setUnits] = useState<PracticeUnit[] | null>(null);
+  const [loadingCatalogue, setLoadingCatalogue] = useState(true);
+  const [catalogueError, setCatalogueError] = useState<string | null>(null);
 
-  const [answer, setAnswer] = useState('');
-  const [hints, setHints] = useState<Hint[]>([]);
-  const [hintError, setHintError] = useState<string | null>(null);
-  const [loadingHint, setLoadingHint] = useState(false);
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [count, setCount] = useState(10);
+  const [mode, setMode] = useState<PracticeMode>('tutor');
 
-  const [result, setResult] = useState<GradeResult | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
+
+  const [history, setHistory] = useState<PracticeSessionRow[] | null>(null);
+  const [loadingHistory, setLoadingHistory] = useState(true);
+  const [historyError, setHistoryError] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
     (async () => {
       try {
-        const list = await getTemplates();
+        const catalogue = await getPracticeCatalogue();
         if (!cancelled) {
-          setTemplates(list.templates);
+          setUnits(catalogue.units ?? []);
         }
       } catch (err) {
         if (!cancelled) {
-          setTemplateError(errorMessage(err));
+          setCatalogueError(errorMessage(err));
         }
       } finally {
         if (!cancelled) {
-          setLoadingTemplates(false);
+          setLoadingCatalogue(false);
+        }
+      }
+    })();
+    (async () => {
+      try {
+        const list = await getPracticeHistory(10);
+        if (!cancelled) {
+          setHistory(list.sessions ?? []);
+        }
+      } catch (err) {
+        if (!cancelled) {
+          setHistoryError(errorMessage(err));
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingHistory(false);
         }
       }
     })();
@@ -84,369 +136,373 @@ export default function PracticePage() {
     };
   }, []);
 
-  // Clear everything that belongs to the previous item.
-  const resetItemState = useCallback(() => {
-    setAnswer('');
-    setHints([]);
-    setHintError(null);
-    setResult(null);
-    setSubmitError(null);
-    setItemError(null);
-  }, []);
-
-  const loadItem = useCallback(
-    async (templateId: string, attemptCount: number) => {
-      resetItemState();
-      setLoadingItem(true);
-      setVariant(null);
-      try {
-        const served = await getNextItem(templateId, attemptCount);
-        setVariant(served);
-      } catch (err) {
-        setItemError(errorMessage(err));
-      } finally {
-        setLoadingItem(false);
+  // Units grouped by course, in the order the API lists them, which is
+  // curriculum order.
+  const groups = useMemo(() => {
+    if (!units) {
+      return [];
+    }
+    const order: string[] = [];
+    const byCourse: Record<string, PracticeUnit[]> = {};
+    for (const unit of units) {
+      if (!byCourse[unit.course]) {
+        byCourse[unit.course] = [];
+        order.push(unit.course);
       }
-    },
-    [resetItemState],
-  );
-
-  function chooseTemplate(templateId: string) {
-    setSelected(templateId);
-    setCount(0);
-    if (templateId) {
-      void loadItem(templateId, 0);
-    } else {
-      setVariant(null);
-      resetItemState();
+      byCourse[unit.course].push(unit);
     }
+    return order.map((course) => ({ course, units: byCourse[course] }));
+  }, [units]);
+
+  function toggleUnit(unitId: string) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(unitId)) {
+        next.delete(unitId);
+      } else {
+        next.add(unitId);
+      }
+      return next;
+    });
   }
 
-  function nextVariant() {
-    if (!selected) {
-      return;
-    }
-    const next = count + 1;
-    setCount(next);
-    void loadItem(selected, next);
+  // Select or clear every available unit of one course. Disabled units are
+  // never selected, because a selection that cannot supply items is refused
+  // at start.
+  function setCourse(courseUnits: PracticeUnit[], on: boolean) {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      for (const unit of courseUnits) {
+        if (!unit.available) {
+          continue;
+        }
+        if (on) {
+          next.add(unit.unit_id);
+        } else {
+          next.delete(unit.unit_id);
+        }
+      }
+      return next;
+    });
   }
 
-  // The hint ladder. nextRung is always exactly one above what has been shown,
-  // and unlocked is set to the same value, so a request is never made for a
-  // rung the learner has not reached.
-  const shownRungs = hints.length;
-  const nextRung = shownRungs + 1;
-  const laddersLeft = nextRung <= MAX_RUNGS;
-
-  async function requestHint() {
-    if (!variant || !laddersLeft) {
+  async function start() {
+    if (starting || selected.size === 0) {
       return;
     }
-    setLoadingHint(true);
-    setHintError(null);
+    setStarting(true);
+    setStartError(null);
     try {
-      const hint = await getHint(variant.template_id, nextRung, nextRung);
-      setHints((prev) => [...prev, hint]);
+      const session = await startPracticeSession(
+        Array.from(selected),
+        count,
+        mode,
+      );
+      // The one moment the items exist client side. Persist them for this
+      // tab before navigating, so the player can render them.
+      savePracticeSession({
+        session_id: session.session_id,
+        mode: session.mode,
+        items: session.items,
+        answers: {},
+      });
+      router.push(
+        `/practice/session/${encodeURIComponent(session.session_id)}`,
+      );
     } catch (err) {
-      setHintError(errorMessage(err));
-    } finally {
-      setLoadingHint(false);
+      // A 409 carries the API's own reason, for example that the selection
+      // has no practice items. Shown as sent.
+      setStartError(errorMessage(err));
+      setStarting(false);
     }
   }
-
-  async function submit() {
-    if (!variant || !answer.trim()) {
-      return;
-    }
-    setSubmitting(true);
-    setSubmitError(null);
-    try {
-      const graded =
-        variant.grader === 'structure'
-          ? await submitStructure(variant.template_id, variant.seed, answer)
-          : await submitAnswer(variant.template_id, variant.seed, answer);
-      setResult(graded);
-    } catch (err) {
-      setSubmitError(errorMessage(err));
-    } finally {
-      setSubmitting(false);
-    }
-  }
-
-  const choices = variant?.meta?.choices ?? [];
-  const isMultipleChoice = variant?.grader === 'mc';
-  // Grader 4 items are drawn, not typed. The Sketcher produces SMILES, which
-  // is the answer string, so the rest of the submit flow is unchanged.
-  const isStructure = variant?.grader === 'structure';
 
   return (
     <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Practice</h1>
       <p className="mb-8 text-sm text-muted-foreground">
-        Every item is generated and its answer key is independently verified
-        before it is served.
+        Build a session from the units you choose. Every item is generated and
+        its answer key is verified before it is served, and every answer you
+        submit is final.
       </p>
 
-      <section className="mb-8">
-        <SectionTitle>Choose a template</SectionTitle>
-        {loadingTemplates && <LoadingPanel label="Loading templates." />}
-        {!loadingTemplates && templateError && (
-          <ErrorPanel message={templateError} />
+      <section className="mb-10">
+        <SectionTitle>Build a session</SectionTitle>
+
+        {loadingCatalogue && (
+          <LoadingPanel label="Loading the practice catalogue." />
         )}
-        {!loadingTemplates &&
-          !templateError &&
-          (!templates || templates.length === 0) && (
+        {!loadingCatalogue && catalogueError && (
+          <ErrorPanel message={catalogueError} />
+        )}
+        {!loadingCatalogue &&
+          !catalogueError &&
+          units &&
+          units.length === 0 && (
             <EmptyState
-              title="No templates registered"
-              detail="The API returned an empty template list, so there is nothing to practice."
+              title="No units in the catalogue"
+              detail="The API returned no units, so there is nothing to build a session from."
             />
           )}
-        {!loadingTemplates && !templateError && templates && templates.length > 0 && (
-          <Card>
-            <label
-              htmlFor="template"
-              className="mb-2 block text-sm font-medium text-card-foreground"
-            >
-              Template
-            </label>
-            <select
-              id="template"
-              value={selected}
-              onChange={(e) => chooseTemplate(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
-            >
-              <option value="">Pick one of {templates.length}</option>
-              {templates.map((t) => (
-                <option key={t.template_id} value={t.template_id}>
-                  {t.template_id} ({t.node}, {t.grader})
-                </option>
-              ))}
-            </select>
-          </Card>
+
+        {!loadingCatalogue && !catalogueError && units && units.length > 0 && (
+          <div className="space-y-4">
+            <Card>
+              <h3 className="mb-1 text-base font-semibold text-card-foreground">
+                Units
+              </h3>
+              <p className="mb-4 text-sm text-muted-foreground">
+                Pick at least one. A session mixes items across every unit you
+                select.
+              </p>
+
+              <div className="space-y-6">
+                {groups.map((group) => {
+                  const availableIds = group.units
+                    .filter((u) => u.available)
+                    .map((u) => u.unit_id);
+                  const pickedHere = availableIds.filter((id) =>
+                    selected.has(id),
+                  ).length;
+                  return (
+                    <fieldset key={group.course}>
+                      <legend className="mb-2 flex w-full flex-wrap items-center gap-3">
+                        <span className="text-sm font-semibold text-card-foreground">
+                          {COURSE_TITLES[group.course] ?? group.course}
+                        </span>
+                        {availableIds.length > 0 ? (
+                          <button
+                            type="button"
+                            onClick={() =>
+                              setCourse(
+                                group.units,
+                                pickedHere < availableIds.length,
+                              )
+                            }
+                            className="text-xs text-brand-600 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                          >
+                            {pickedHere < availableIds.length
+                              ? 'Select all'
+                              : 'Clear'}
+                          </button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">
+                            no items yet in this course
+                          </span>
+                        )}
+                      </legend>
+                      <div className="space-y-1">
+                        {group.units.map((unit) => (
+                          <label
+                            key={unit.unit_id}
+                            className={[
+                              'flex items-start gap-3 rounded-lg border p-3 text-sm transition-colors',
+                              unit.available
+                                ? 'cursor-pointer border-border hover:border-brand-500'
+                                : 'cursor-not-allowed border-border/60',
+                            ].join(' ')}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selected.has(unit.unit_id)}
+                              disabled={!unit.available}
+                              onChange={() => toggleUnit(unit.unit_id)}
+                              className="mt-0.5 h-4 w-4 accent-brand-600"
+                            />
+                            <span
+                              className={
+                                unit.available
+                                  ? 'text-card-foreground'
+                                  : 'text-muted-foreground'
+                              }
+                            >
+                              <span className="font-medium">
+                                {unit.index}. {unit.title}
+                              </span>
+                              <span className="ml-2 text-xs text-muted-foreground">
+                                {unit.available
+                                  ? `${unit.templates} ${
+                                      unit.templates === 1
+                                        ? 'template'
+                                        : 'templates'
+                                    }`
+                                  : 'no items yet'}
+                              </span>
+                            </span>
+                          </label>
+                        ))}
+                      </div>
+                    </fieldset>
+                  );
+                })}
+              </div>
+            </Card>
+
+            <Card>
+              <h3 className="mb-4 text-base font-semibold text-card-foreground">
+                Length and mode
+              </h3>
+
+              <div className="mb-5">
+                <label
+                  htmlFor="item-count"
+                  className="mb-2 block text-sm font-medium text-card-foreground"
+                >
+                  Items in this session
+                </label>
+                <select
+                  id="item-count"
+                  value={count}
+                  onChange={(e) => setCount(Number(e.target.value))}
+                  className="w-full max-w-xs rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
+                >
+                  {COUNT_OPTIONS.map((n) => (
+                    <option key={n} value={n}>
+                      {n} items
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <fieldset className="mb-5">
+                <legend className="mb-2 text-sm font-medium text-card-foreground">
+                  Mode
+                </legend>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {MODE_OPTIONS.map((option) => (
+                    <label
+                      key={option.mode}
+                      className={[
+                        'flex cursor-pointer items-start gap-3 rounded-lg border p-3 transition-colors',
+                        mode === option.mode
+                          ? 'border-brand-500 bg-brand-500/5'
+                          : 'border-border hover:border-brand-500',
+                      ].join(' ')}
+                    >
+                      <input
+                        type="radio"
+                        name="mode"
+                        value={option.mode}
+                        checked={mode === option.mode}
+                        onChange={() => setMode(option.mode)}
+                        className="mt-0.5 h-4 w-4 accent-brand-600"
+                      />
+                      <span>
+                        <span className="block text-sm font-medium text-card-foreground">
+                          {option.label}
+                        </span>
+                        <span className="block text-xs text-muted-foreground">
+                          {option.explanation}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => void start()}
+                  disabled={starting || selected.size === 0}
+                  className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
+                >
+                  {starting ? 'Starting' : 'Start session'}
+                </button>
+                <span className="text-xs text-muted-foreground">
+                  {selected.size === 0
+                    ? 'Pick at least one unit to start.'
+                    : `${selected.size} ${
+                        selected.size === 1 ? 'unit' : 'units'
+                      } selected.`}
+                </span>
+              </div>
+
+              {startError && (
+                <p
+                  role="alert"
+                  className="mt-3 text-sm text-red-700 dark:text-red-300"
+                >
+                  {startError}
+                </p>
+              )}
+            </Card>
+          </div>
         )}
       </section>
 
-      {selected && (
-        <section>
-          <SectionTitle>Item</SectionTitle>
+      <section>
+        <SectionTitle>Recent sessions</SectionTitle>
 
-          {loadingItem && <LoadingPanel label="Serving an item." />}
-          {!loadingItem && itemError && <ErrorPanel message={itemError} />}
-
-          {!loadingItem && !itemError && variant && (
-            <div className="space-y-4">
-              <Card>
-                <div className="mb-3 flex flex-wrap items-center gap-2">
-                  <Pill tone="neutral">{variant.node}</Pill>
-                  <Pill tone="neutral">grader: {variant.grader}</Pill>
-                  <span className="font-mono text-xs text-muted-foreground">
-                    seed {variant.seed}
-                  </span>
-                  {variant.verified_by && (
-                    <Pill tone="green">
-                      key verified by {variant.verified_by}
-                    </Pill>
-                  )}
-                </div>
-
-                <p className="whitespace-pre-wrap text-[15px] leading-relaxed text-card-foreground">
-                  {variant.prompt}
-                </p>
-
-                <div className="mt-5">
-                  {isMultipleChoice ? (
-                    choices.length === 0 ? (
-                      <p className="text-sm text-muted-foreground">
-                        This item is multiple choice but carried no options, so
-                        there is nothing to select.
-                      </p>
-                    ) : (
-                      <fieldset>
-                        <legend className="sr-only">Select an option</legend>
-                        <div className="space-y-2">
-                          {choices.map((choice) => (
-                            <label
-                              key={choice.index}
-                              className="flex cursor-pointer items-start gap-3 rounded-lg border border-border p-3 text-sm transition-colors hover:border-brand-500"
-                            >
-                              <input
-                                type="radio"
-                                name="choice"
-                                value={String(choice.index)}
-                                checked={answer === String(choice.index)}
-                                onChange={(e) => setAnswer(e.target.value)}
-                                className="mt-0.5 h-4 w-4 accent-brand-600"
-                              />
-                              <span className="text-card-foreground">
-                                {choice.text}
-                              </span>
-                            </label>
-                          ))}
-                        </div>
-                      </fieldset>
-                    )
-                  ) : isStructure ? (
-                    <div>
-                      <span className="mb-2 block text-sm font-medium text-card-foreground">
-                        Draw your answer
-                      </span>
-                      <Sketcher onChange={setAnswer} />
-                    </div>
-                  ) : (
-                    <div>
-                      <label
-                        htmlFor="answer"
-                        className="mb-2 block text-sm font-medium text-card-foreground"
-                      >
-                        Your answer
-                      </label>
-                      <input
-                        id="answer"
-                        type="text"
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            void submit();
-                          }
-                        }}
-                        autoComplete="off"
-                        className="w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-brand-500"
-                      />
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-5 flex flex-wrap items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => void submit()}
-                    disabled={submitting || !answer.trim()}
-                    className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-                  >
-                    {submitting ? 'Submitting' : 'Submit'}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => void requestHint()}
-                    disabled={loadingHint || !laddersLeft}
-                    className="inline-flex items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500"
-                  >
-                    {laddersLeft
-                      ? `Hint (rung ${nextRung} of ${MAX_RUNGS})`
-                      : 'All hints shown'}
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={nextVariant}
-                    className="text-sm text-muted-foreground hover:underline"
-                  >
-                    Next variant
-                  </button>
-                </div>
-
-                {submitError && (
-                  <p className="mt-3 text-sm text-red-700 dark:text-red-300">
-                    {submitError}
-                  </p>
-                )}
-              </Card>
-
-              {(hints.length > 0 || hintError) && (
-                <Card>
-                  <SectionTitle>Hints</SectionTitle>
-                  <ol className="space-y-3">
-                    {hints.map((hint) => (
-                      <li key={hint.rung} className="flex gap-3">
-                        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-xs font-semibold text-muted-foreground">
-                          {hint.rung}
-                        </span>
-                        <p className="text-sm leading-relaxed text-card-foreground">
-                          {hint.text}
-                        </p>
-                      </li>
-                    ))}
-                  </ol>
-                  {hintError && (
-                    <p className="mt-3 text-sm text-red-700 dark:text-red-300">
-                      {hintError}
-                    </p>
-                  )}
-                  {laddersLeft && hints.length > 0 && (
-                    <p className="mt-3 text-xs text-muted-foreground">
-                      Try again with this before asking for the next rung.
-                    </p>
-                  )}
-                </Card>
-              )}
-
-              {result && <ResultCard result={result} />}
-            </div>
+        {loadingHistory && <LoadingPanel label="Loading recent sessions." />}
+        {!loadingHistory && historyError && (
+          <ErrorPanel message={historyError} />
+        )}
+        {!loadingHistory &&
+          !historyError &&
+          history &&
+          history.length === 0 && (
+            <EmptyState
+              title="No sessions yet"
+              detail="Build one above."
+            />
           )}
-        </section>
-      )}
+
+        {!loadingHistory && !historyError && history && history.length > 0 && (
+          <ul className="space-y-3">
+            {history.map((session) => (
+              <li key={session.session_id}>
+                <SessionRow session={session} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </Page>
   );
 }
 
-// The graded result. Note what is absent: there is no correct answer here,
-// because the submit endpoint does not return one and this page must not
-// invent one. graded false is shown as its own state, because a submission
-// that could not be parsed is a different thing from one that was wrong.
-function ResultCard({ result }: { result: GradeResult }) {
-  const tone = !result.graded ? 'amber' : result.is_correct ? 'green' : 'red';
-  const label = !result.graded
-    ? 'Could not be read'
-    : result.is_correct
-      ? 'Correct'
-      : 'Not correct';
-
-  // Defensive on purpose. Not every grader reports milestones, and a page that
-  // white screens because one optional field is absent is a worse failure than
-  // the missing field.
-  const failed = (result.milestones ?? []).find((m) => m.ok === false);
+// One row of history. An in-progress session links to Resume, which only has
+// the items in the tab that started it; the player says so if this is a
+// different tab. A finished session links to Review, which works anywhere.
+function SessionRow({ session }: { session: PracticeSessionRow }) {
+  const inProgress = session.status === 'in_progress';
+  const summary = session.summary;
 
   return (
     <Card>
-      <div className="flex flex-wrap items-center gap-3">
-        <Pill tone={tone}>{label}</Pill>
-        <span className="text-sm text-muted-foreground">
-          score {result.score.toFixed(2)}
-        </span>
-        <span className="font-mono text-xs text-muted-foreground">
-          {result.grader}
-        </span>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <Pill tone={session.mode === 'timed' ? 'amber' : 'brand'}>
+              {session.mode === 'timed' ? 'Timed' : 'Tutor'}
+            </Pill>
+            <Pill tone={inProgress ? 'neutral' : 'green'}>
+              {inProgress ? 'In progress' : 'Finished'}
+            </Pill>
+            <span className="text-xs text-muted-foreground">
+              {formatStartedAt(session.started_at)}
+            </span>
+          </div>
+          <p className="mt-2 text-sm text-card-foreground">
+            {summary
+              ? `${summary.correct} of ${summary.total} correct`
+              : `${session.item_count} ${
+                  session.item_count === 1 ? 'item' : 'items'
+                }, not finished yet`}
+          </p>
+        </div>
+        <Link
+          href={`/practice/session/${encodeURIComponent(session.session_id)}`}
+          className={
+            inProgress
+              ? 'inline-flex items-center justify-center rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500'
+              : 'inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2'
+          }
+        >
+          {inProgress ? 'Resume' : 'Review'}
+        </Link>
       </div>
-
-      {result.detail && (
-        <p className="mt-3 text-[15px] leading-relaxed text-card-foreground">
-          {result.detail}
-        </p>
-      )}
-
-      {result.misconception && (
-        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 p-3 dark:border-amber-900 dark:bg-amber-950">
-          <p className="text-xs font-semibold uppercase tracking-wide text-amber-800 dark:text-amber-300">
-            Named misconception
-          </p>
-          <p className="mt-1 font-mono text-sm text-amber-900 dark:text-amber-200">
-            {result.misconception}
-          </p>
-        </div>
-      )}
-
-      {failed && (
-        <div className="mt-4 rounded-lg border border-border p-3">
-          <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-            First step that went wrong
-          </p>
-          <p className="mt-1 text-sm text-card-foreground">
-            {String(failed.step || failed.detail || 'See the detail above.')}
-          </p>
-        </div>
-      )}
     </Card>
   );
 }

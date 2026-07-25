@@ -3,35 +3,39 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
-  ComplianceReport,
   CurriculumNodes,
-  TemplateList,
-  getCompliance,
+  ExamCatalogue,
   getCurriculumNodes,
-  getTemplates,
+  getExams,
 } from '@/lib/api';
 import {
+  AnalyticsOverview,
+  PracticeSessionRow,
+  formatWhen,
+  getAnalyticsOverview,
+  getRecentPracticeSessions,
+  percentOf,
+} from '@/lib/analyticsApi';
+import {
   Card,
-  EmptyState,
   ErrorPanel,
   LoadingPanel,
   Page,
   Pill,
   SectionTitle,
   errorMessage,
-  tierName,
 } from '@/app/_ui/shell';
 
-// The dashboard is a status readout, not a summary of achievements. Every
-// number on it comes from a live endpoint, and anything the API has not
-// answered yet says so rather than showing a zero that looks like data.
-
-const TIER_ORDER = ['CF', 'G1', 'G2'];
+// The dashboard is content-first: the thing to continue, the record so far,
+// what exists to work on, and the doors to everything else. Every number on
+// it comes from a live endpoint. Nothing is projected, streaked or invented,
+// and a zero from the API is stated as what it is rather than dressed up.
 
 export default function DashboardPage() {
+  const [overview, setOverview] = useState<AnalyticsOverview | null>(null);
+  const [sessions, setSessions] = useState<PracticeSessionRow[]>([]);
   const [curriculum, setCurriculum] = useState<CurriculumNodes | null>(null);
-  const [templates, setTemplates] = useState<TemplateList | null>(null);
-  const [compliance, setCompliance] = useState<ComplianceReport | null>(null);
+  const [exams, setExams] = useState<ExamCatalogue | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -39,17 +43,19 @@ export default function DashboardPage() {
     let cancelled = false;
     (async () => {
       try {
-        const [nodes, tmpl, comp] = await Promise.all([
+        const [over, recent, nodes, catalogue] = await Promise.all([
+          getAnalyticsOverview(),
+          getRecentPracticeSessions(5),
           getCurriculumNodes(),
-          getTemplates(),
-          getCompliance(),
+          getExams(),
         ]);
         if (cancelled) {
           return;
         }
+        setOverview(over);
+        setSessions(recent.sessions);
         setCurriculum(nodes);
-        setTemplates(tmpl);
-        setCompliance(comp);
+        setExams(catalogue);
       } catch (err) {
         if (!cancelled) {
           setError(errorMessage(err));
@@ -65,12 +71,6 @@ export default function DashboardPage() {
     };
   }, []);
 
-  const tierCounts = curriculum?.tier_counts ?? {};
-  const tiers = TIER_ORDER.filter((t) => t in tierCounts).concat(
-    Object.keys(tierCounts).filter((t) => !TIER_ORDER.includes(t)),
-  );
-  const nodeTotal = Object.values(tierCounts).reduce((a, b) => a + b, 0);
-
   return (
     <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Dashboard</h1>
@@ -79,49 +79,30 @@ export default function DashboardPage() {
       </p>
 
       {loading && <LoadingPanel label="Loading the chemistry workspace." />}
-
       {!loading && error && <ErrorPanel message={error} />}
 
       {!loading && !error && (
         <div className="space-y-8">
           <section>
-            <SectionTitle>Compliance</SectionTitle>
-            <ComplianceCard report={compliance} />
+            <SectionTitle>Continue</SectionTitle>
+            <ContinueCard sessions={sessions} />
           </section>
 
           <section>
-            <SectionTitle>Curriculum</SectionTitle>
-            {nodeTotal === 0 ? (
-              <EmptyState
-                title="No curriculum nodes yet"
-                detail="The API returned an empty graph. Nothing is being shown in its place."
-              />
-            ) : (
-              <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <Card>
-                  <p className="text-3xl font-bold tabular-nums">{nodeTotal}</p>
-                  <p className="mt-1 text-sm text-muted-foreground">
-                    Nodes in total
-                  </p>
-                </Card>
-                {tiers.map((tier) => (
-                  <Card key={tier}>
-                    <p className="text-3xl font-bold tabular-nums">
-                      {tierCounts[tier]}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {tierName(tier)}
-                    </p>
-                  </Card>
-                ))}
-              </div>
-            )}
+            <SectionTitle>Your record</SectionTitle>
+            <RecordCard overview={overview} />
           </section>
 
-          <section>
-            <SectionTitle>Practice items</SectionTitle>
-            <TemplatesCard templates={templates} />
-          </section>
+          <div className="grid gap-4 sm:grid-cols-2">
+            <section>
+              <SectionTitle>Coverage</SectionTitle>
+              <CoverageCard curriculum={curriculum} />
+            </section>
+            <section>
+              <SectionTitle>Exams</SectionTitle>
+              <ExamsCard catalogue={exams} />
+            </section>
+          </div>
 
           <section>
             <SectionTitle>Where to go</SectionTitle>
@@ -129,22 +110,12 @@ export default function DashboardPage() {
               <NavCard
                 href="/learn"
                 title="Learn"
-                detail="Lessons in the six part arc, grouped by tier."
+                detail="The whole program by course and unit, lessons in the six part arc."
               />
               <NavCard
                 href="/practice"
                 title="Practice"
                 detail="Generated items with a three rung hint ladder."
-              />
-              <NavCard
-                href="/path"
-                title="Path"
-                detail="The planned route, with a reason on every node."
-              />
-              <NavCard
-                href="/explore"
-                title="Explore"
-                detail="Periodic table, molecule library and the chemistry triangle."
               />
               <NavCard
                 href="/simulations"
@@ -159,120 +130,225 @@ export default function DashboardPage() {
   );
 }
 
-// The compliance badge. Green means the teaching model checklist passed with
-// nothing blocking. Red states how many blocking problems are outstanding,
-// because a course that cannot show a green checklist should not be trusted
-// and hiding the count would defeat the purpose of running the check.
-function ComplianceCard({ report }: { report: ComplianceReport | null }) {
-  if (!report) {
+// -------------------------------------------------------------------------
+// Continue
+// -------------------------------------------------------------------------
+
+// The most recent open session wins; failing that the most recent finished
+// one; failing that the honest start-from-nothing prompt. The list arrives
+// newest first, so the first match in order is the right one.
+function ContinueCard({ sessions }: { sessions: PracticeSessionRow[] }) {
+  const open = sessions.find((s) => s.status === 'in_progress');
+  const finished = sessions.find((s) => s.status !== 'in_progress');
+
+  if (open) {
     return (
-      <EmptyState
-        title="No compliance report"
-        detail="The compliance endpoint returned nothing."
+      <SessionCard
+        row={open}
+        label="In progress"
+        tone="amber"
+        action="Resume"
+        detail="You have an open practice session. Picking it back up keeps its items and answers."
       />
     );
   }
 
-  const blocking = report.blocking_count;
-  const topChecks = Object.entries(report.by_check).sort((a, b) => b[1] - a[1]);
-
-  return (
-    <Card>
-      <div className="flex flex-wrap items-center gap-3">
-        <Pill tone={report.green ? 'green' : 'red'}>
-          {report.green ? 'Checklist green' : 'Checklist red'}
-        </Pill>
-        <span className="text-sm text-muted-foreground">
-          {blocking === 0
-            ? 'Zero blocking problems.'
-            : `${blocking} blocking ${blocking === 1 ? 'problem' : 'problems'}.`}
-        </span>
-        {report.warnings_count > 0 && (
-          <Pill tone="amber">
-            {report.warnings_count} pending for a later phase
-          </Pill>
-        )}
-      </div>
-
-      {topChecks.length > 0 && (
-        <ul className="mt-4 space-y-1 text-sm">
-          {topChecks.map(([check, count]) => (
-            <li key={check} className="flex justify-between gap-4">
-              <span className="font-mono text-xs text-muted-foreground">
-                {check}
-              </span>
-              <span className="tabular-nums text-red-700 dark:text-red-300">
-                {count}
-              </span>
-            </li>
-          ))}
-        </ul>
-      )}
-
-      {Object.keys(report.counts).length > 0 && (
-        <dl className="mt-4 flex flex-wrap gap-x-6 gap-y-2 border-t border-border pt-4 text-sm">
-          {Object.entries(report.counts).map(([key, value]) => (
-            <div key={key} className="flex items-baseline gap-1.5">
-              <dt className="text-muted-foreground">{key}</dt>
-              <dd className="font-semibold tabular-nums">{value}</dd>
-            </div>
-          ))}
-        </dl>
-      )}
-    </Card>
-  );
-}
-
-function TemplatesCard({ templates }: { templates: TemplateList | null }) {
-  if (!templates || templates.templates.length === 0) {
+  if (finished) {
     return (
-      <EmptyState
-        title="No templates registered"
-        detail="The API returned an empty template list, so there is nothing to practice yet."
+      <SessionCard
+        row={finished}
+        label="Finished"
+        tone="neutral"
+        action="Review"
+        detail="Your most recent practice session is finished. Reviewing it shows every item with your answer."
       />
     );
   }
 
-  const total = templates.templates.length;
-  const withLadder = templates.templates.filter((t) => t.hint_rungs >= 3).length;
-  const graders = Array.from(
-    new Set(templates.templates.map((t) => t.grader)),
-  ).sort();
-
   return (
     <Card>
-      <div className="grid gap-4 sm:grid-cols-3">
-        <div>
-          <p className="text-3xl font-bold tabular-nums">{total}</p>
-          <p className="mt-1 text-sm text-muted-foreground">Live templates</p>
-        </div>
-        <div>
-          <p className="text-3xl font-bold tabular-nums">{withLadder}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            With a three rung hint ladder
-          </p>
-        </div>
-        <div>
-          <p className="text-3xl font-bold tabular-nums">{graders.length}</p>
-          <p className="mt-1 text-sm text-muted-foreground">Graders in use</p>
-        </div>
-      </div>
-      <div className="mt-4 flex flex-wrap gap-2 border-t border-border pt-4">
-        {graders.map((g) => (
-          <Pill key={g} tone="neutral">
-            {g}
-          </Pill>
-        ))}
-      </div>
+      <p className="text-sm text-card-foreground">
+        No practice sessions yet. The record on this page builds from graded
+        practice attempts, so the first session is what starts everything else
+        filling in.
+      </p>
       <Link
         href="/practice"
-        className="mt-4 inline-block text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
+        className="mt-3 inline-block rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
       >
         Start practicing
       </Link>
     </Card>
   );
 }
+
+function SessionCard({
+  row,
+  label,
+  tone,
+  action,
+  detail,
+}: {
+  row: PracticeSessionRow;
+  label: string;
+  tone: 'amber' | 'neutral';
+  action: string;
+  detail: string;
+}) {
+  const summary = row.summary;
+  const scored =
+    summary &&
+    typeof summary.correct === 'number' &&
+    typeof summary.total === 'number';
+  return (
+    <Card>
+      <div className="flex flex-wrap items-center gap-3">
+        <Pill tone={tone}>{label}</Pill>
+        <span className="text-sm text-card-foreground">
+          {row.mode} session, {row.item_count}{' '}
+          {row.item_count === 1 ? 'item' : 'items'}
+        </span>
+        <span className="text-xs text-muted-foreground">
+          started {formatWhen(row.started_at, 'at an unrecorded time')}
+        </span>
+        {scored && (
+          <span className="text-sm tabular-nums text-muted-foreground">
+            {summary.correct} of {summary.total} correct
+          </span>
+        )}
+      </div>
+      <p className="mt-2 text-sm text-muted-foreground">{detail}</p>
+      <Link
+        href={`/practice/session/${encodeURIComponent(row.session_id)}`}
+        className="mt-3 inline-block rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+      >
+        {action}
+      </Link>
+    </Card>
+  );
+}
+
+// -------------------------------------------------------------------------
+// Your record
+// -------------------------------------------------------------------------
+
+// Accuracy is shown only when there are attempts to compute it from. The API
+// sends 0.0 alongside zero attempts, and rendering that as "0% accuracy"
+// would present a placeholder as a measurement.
+function RecordCard({ overview }: { overview: AnalyticsOverview | null }) {
+  if (!overview) {
+    return (
+      <Card>
+        <p className="text-sm text-muted-foreground">
+          The analytics endpoint returned nothing.
+        </p>
+      </Card>
+    );
+  }
+  const { attempts, correct, accuracy } = overview.totals;
+  return (
+    <Card>
+      <div className="grid gap-4 sm:grid-cols-3">
+        <div>
+          <p className="text-3xl font-bold tabular-nums">{attempts}</p>
+          <p className="mt-1 text-sm text-muted-foreground">Graded attempts</p>
+        </div>
+        <div>
+          <p className="text-3xl font-bold tabular-nums">{correct}</p>
+          <p className="mt-1 text-sm text-muted-foreground">Correct</p>
+        </div>
+        <div>
+          <p className="text-3xl font-bold tabular-nums">
+            {attempts > 0 ? percentOf(accuracy) : '-'}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {attempts > 0 ? 'Accuracy' : 'Accuracy needs an attempt'}
+          </p>
+        </div>
+      </div>
+      <Link
+        href="/analytics"
+        className="mt-4 inline-block border-t border-border pt-4 text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
+      >
+        See the full breakdown
+      </Link>
+    </Card>
+  );
+}
+
+// -------------------------------------------------------------------------
+// Coverage
+// -------------------------------------------------------------------------
+
+// Authored over total, stated plainly. Most of the program is mapped but not
+// yet written, and this card says so instead of hiding the unwritten part.
+function CoverageCard({ curriculum }: { curriculum: CurriculumNodes | null }) {
+  if (!curriculum || curriculum.nodes.length === 0) {
+    return (
+      <Card>
+        <p className="text-sm text-muted-foreground">
+          The curriculum endpoint returned an empty program.
+        </p>
+      </Card>
+    );
+  }
+  const total = curriculum.nodes.length;
+  const authored = curriculum.nodes.filter((n) => n.authored).length;
+  return (
+    <Card>
+      <p className="text-3xl font-bold tabular-nums">
+        {authored} of {total}
+      </p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        nodes have a lesson written. The rest are mapped and marked not yet
+        available.
+      </p>
+      <Link
+        href="/learn"
+        className="mt-3 inline-block text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
+      >
+        Open the map
+      </Link>
+    </Card>
+  );
+}
+
+// -------------------------------------------------------------------------
+// Exams
+// -------------------------------------------------------------------------
+
+function ExamsCard({ catalogue }: { catalogue: ExamCatalogue | null }) {
+  if (!catalogue || catalogue.exams.length === 0) {
+    return (
+      <Card>
+        <p className="text-sm text-muted-foreground">
+          The exam catalogue is empty.
+        </p>
+      </Card>
+    );
+  }
+  const total = catalogue.exams.length;
+  const available = catalogue.exams.filter((e) => e.available).length;
+  return (
+    <Card>
+      <p className="text-3xl font-bold tabular-nums">{available}</p>
+      <p className="mt-1 text-sm text-muted-foreground">
+        of {total} listed {total === 1 ? 'exam' : 'exams'}{' '}
+        {available === 1 ? 'is' : 'are'} available to start now.
+      </p>
+      <Link
+        href="/exams"
+        className="mt-3 inline-block text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
+      >
+        See the catalogue
+      </Link>
+    </Card>
+  );
+}
+
+// -------------------------------------------------------------------------
+// Quick links
+// -------------------------------------------------------------------------
 
 function NavCard({
   href,

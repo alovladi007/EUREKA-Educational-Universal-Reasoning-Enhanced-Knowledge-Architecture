@@ -25,6 +25,7 @@ from app.core.db import Base
 from app.domains.chemistry import models as _chemistry_models  # noqa: F401
 from app.domains.exams import models as _exams_models  # noqa: F401
 from app.domains.integrations import models as _integrations_models  # noqa: F401
+from app.domains.practice import models as _practice_models  # noqa: F401
 
 config = context.config
 if config.config_file_name is not None:

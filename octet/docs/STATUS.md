@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-25 (Phase 5 lessons complete, ORG1 70 of 70 nodes).
+Last updated: 2026-07-25 (Phase 5b: recorded practice, analytics, full item coverage for ORG1).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -386,6 +386,46 @@ trans 1,4-dimethylcyclohexane enantiomers when both are achiral. That last one
 rejected the true claim and accepted the false one, which is the worst possible
 direction for a verifier to fail, and it was found by an author who reported it
 rather than flipping the claim to make the failure go away.
+
+## Phase 5b: the practice product. Gate: recorded, reviewable practice. Status: DONE
+
+An audit against serious prep products (UWorld, the EUREKA test-prep module)
+found the deepest flaw was structural: practice was stateless. The sandbox
+graded a submission and the result went to the client and nowhere else, so
+there was no history, no mastery, no analytics, no review of mistakes, and the
+Learn page honestly said mastery was not recorded. Alongside it, 27 of 40
+units had no practice items at all, and the misconception library's distractor
+explanations were never shown to a learner.
+
+What landed:
+
+  practice sessions   pick units, count (5 to 40), tutor or timed mode; items
+                      assembled across the chosen units from verified
+                      templates only; answers final; sessions persisted
+                      (migration 0004: practice_sessions, practice_responses,
+                      node_mastery)
+  rationale           every multiple choice option explains itself after the
+                      attempt: the keyed misconception's description and
+                      counterexample from the reviewed library, plus a link to
+                      the lesson. Nothing is generated at request time.
+  mastery             per node EWMA accuracy (alpha 0.3), named accuracy and
+                      not ability; drives the Learn page state chips
+                      (mastered / in progress / needs review) and the honest
+                      counters that previously read zero
+  analytics           /analytics: totals, per course, per unit worst first,
+                      weakest nodes, recent exams and sessions. Own-account
+                      figures only; the page states why there are no cohort
+                      percentiles.
+  item coverage       22 new templates (49 total, every one with an
+                      independent verifier and a three rung hint ladder;
+                      misconception library at 52). All 10 ORG1 units are
+                      practiceable and all 24 catalogued unit exams assemble,
+                      up from 13.
+
+Still absent, deliberately not claimed: flashcards with spaced repetition, a
+study planner, cohort statistics, and item difficulty data (needs real
+learners). The path planner still plans from nothing but now has mastery rows
+to read in a later phase.
 
 ## Phase 6 and later: NOT STARTED
 

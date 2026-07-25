@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   Atom,
+  BarChart3,
   BookOpen,
   ClipboardList,
   Compass,
@@ -132,6 +133,7 @@ const NAV = [
   { name: 'Learn', href: '/learn', icon: BookOpen },
   { name: 'Practice', href: '/practice', icon: PencilRuler },
   { name: 'Exams', href: '/exams', icon: ClipboardList },
+  { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Path', href: '/path', icon: Route },
   { name: 'Explore', href: '/explore', icon: Compass },
   { name: 'Simulations', href: '/simulations', icon: FlaskConical },

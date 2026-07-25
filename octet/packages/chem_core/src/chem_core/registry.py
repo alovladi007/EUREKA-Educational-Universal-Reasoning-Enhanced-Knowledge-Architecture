@@ -492,3 +492,28 @@ def sweep(seeds_per_template: int = 12) -> dict[str, dict]:
             "failures": failures,
         }
     return report
+
+# Phase 5b template modules land as separate files so parallel authors never
+# edit this file or hints.py concurrently. Each module exports TEMPLATES_*,
+# HINTS_*, and optionally MISCONCEPTIONS_*; a module that is not present yet
+# is simply not live yet.
+def _wire_optional_templates() -> None:
+    from .hints import HINTS
+    from .misconceptions import MISCONCEPTIONS
+
+    specs = [
+        ("templates_o_u12", "TEMPLATES_O_U12", "HINTS_O_U12", "MISCONCEPTIONS_O_U12"),
+        ("templates_o_u567", "TEMPLATES_O_U567", "HINTS_O_U567", "MISCONCEPTIONS_O_U567"),
+        ("templates_o_u89g", "TEMPLATES_O_U89G", "HINTS_O_U89G", "MISCONCEPTIONS_O_U89G"),
+    ]
+    for module_name, templates_attr, hints_attr, misconceptions_attr in specs:
+        try:
+            module = __import__(f"chem_core.{module_name}", fromlist=[templates_attr])
+        except ImportError:
+            continue
+        REGISTRY.update(getattr(module, templates_attr))
+        HINTS.update(getattr(module, hints_attr, {}))
+        MISCONCEPTIONS.update(getattr(module, misconceptions_attr, {}))
+
+
+_wire_optional_templates()
