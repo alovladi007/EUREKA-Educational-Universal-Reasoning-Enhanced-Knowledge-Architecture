@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-24 (Phase 3 complete).
+Last updated: 2026-07-24 (Phase 3 complete; curriculum replaced).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -184,6 +184,80 @@ Bugs these gates caught before they could ship:
    precisely why the compiler could not catch it: the type was a claim about
    the server the server did not honour. Both endpoints now share GradeOut, so
    the divergence is impossible rather than merely tested for.
+
+## Curriculum replacement (after Phase 3)
+
+The three tier CF / G1 / G2 map was wrong and has been replaced. It presented
+one year of general chemistry as three courses, which no registrar, syllabus
+or textbook does, so an instructor could not map a course onto it and a
+learner could not tell where they were. It also covered roughly a third of a
+year.
+
+| | Before | After |
+|---|---|---|
+| Structure | 3 tiers, flat list of 60 | 4 courses, 40 units, 312 nodes |
+| Naming | C.G1.MOLE | GEN1.MOLE, shown to learners as "3.1" |
+| Edges | 86, hand listed | 385, generated from unit order and declared links |
+| Coverage | 60 of 60 nodes authored | 59 of 312 authored, stated on every row |
+
+GEN1 91 nodes, GEN2 75, ORG1 70, ORG2 76. Every unit carries its textbook
+chapter mapping, which is what makes syllabus alignment possible during an
+adoption conversation.
+
+Several topics moved course because the old placement was wrong rather than
+merely different: VSEPR, molecular polarity, intermolecular forces and
+colligative properties are first semester material and had been in the second.
+
+What changed in the gates:
+
+- The lesson rule was "every node has a lesson". At 312 nodes and 59 lessons
+  that would fail by design for two years, and a checklist that always fails
+  is a checklist nobody reads. It now gates on quality (a lesson that exists
+  is complete, sits on a real node, names a real misconception) and reports
+  extent separately. A lesson attached to a node that does not exist is still
+  a failure, because that is content detached from the graph.
+- The triangle rule changed the same way and for the same reason.
+- New blocking checks: unit integrity (no empty unit, every unit has a chapter
+  mapping) and course integrity.
+- New tests: every migration target resolves, no two lessons collapse onto one
+  node, no retired code survives anywhere, all authored content points at a
+  real node, and the vendored curriculum.json still matches its generator.
+
+The map is deliberately larger than the content. Unauthored nodes render with
+a "Not yet available" chip and are not enterable, the adaptive picker will not
+recommend one, and compliance states the coverage. Presenting 312 nodes as
+though they were all ready would have been the dishonest way to ship this.
+
+The Learn page was rebuilt to match. It had rendered 60 nodes as one flat
+list with prerequisites as prose naming raw node ids, and authoring metadata
+("triangle", "lab adjacent") leaked into the learner view as tags. It is now
+course, unit, node with collapsible units, positional numbering, a state chip
+carrying text on every row, and no node id visible anywhere. Accessibility is
+treated as a requirement rather than polish: h1/h2/h3 structure, every
+collapse control a real button with aria-expanded, state never by colour
+alone, and node rows as a list.
+
+Verified live: 1 h1, 4 h2, 40 h3, 44 aria-expanded controls, 312 list items,
+no raw node code rendered as text, no "Builds on:" prose, no leaked authoring
+tags, and no fabricated percentage. 213 tests pass, compliance green with 0
+blocking.
+
+Two honest gaps in that page. There is no mastery endpoint, so four of the six
+state chips are unreachable and the summary reports counts rather than a
+percentage. And the continue button is rendered disabled with the reason
+stated, because the adaptive picker is not wired to this surface yet.
+
+Bugs this work caught:
+
+1. The picker recommended the first ready node, which after the map grew could
+   be a node with no lesson behind it. It now requires the recommendation to
+   be authored, while the plan still lists every node, because the plan is the
+   route and the route includes what has not been written.
+2. The test that forbids typographic dashes and smart quotes held the seven
+   banned characters literally, so the file policing the rule violated it.
+3. The combined gas law template (P1V1/T1 = P2V2/T2) landed on the ideal gas
+   node. It is a simple gas law, and the finer map has a node for exactly
+   that.
 
 ## Phase 4 and later: NOT STARTED
 

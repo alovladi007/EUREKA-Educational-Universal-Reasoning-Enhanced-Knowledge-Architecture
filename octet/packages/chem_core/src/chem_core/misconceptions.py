@@ -67,7 +67,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Changing H2O to H2O2 balances the oxygen but names a different "
                 "substance: hydrogen peroxide is not water."
             ),
-            routes_to="C.G1.BALANCE",
+            routes_to="GEN1.BALANCE",
             source="Kind (2004); Nakhleh (1992)",
         ),
         Misconception(
@@ -81,7 +81,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Weigh a sealed flask before and after the reaction runs. The mass "
                 "does not change."
             ),
-            routes_to="C.G1.CONSERVATION",
+            routes_to="GEN1.CONSERVATION",
             source="Nakhleh (1992); Kind (2004)",
         ),
         Misconception(
@@ -95,7 +95,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "2 H2 + O2 -> 2 H2O and 4 H2 + 2 O2 -> 4 H2O describe the same "
                 "reaction. Only the first is in lowest terms."
             ),
-            routes_to="C.G1.BALANCE",
+            routes_to="GEN1.BALANCE",
             source="Kind (2004)",
         ),
         Misconception(
@@ -109,7 +109,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Fe2+ -> Fe3+ balances iron but creates charge from nothing. The "
                 "electron has to appear in the equation."
             ),
-            routes_to="C.G2.REDOX",
+            routes_to="GEN1.OXNUMBERS",
             source="Taber (2002)",
         ),
         Misconception(
@@ -123,7 +123,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "SO4 does not exist as a neutral species in solution. Sulfate is "
                 "SO4 with a 2 minus charge."
             ),
-            routes_to="C.G1.IONIC",
+            routes_to="GEN1.NOMENIONIC",
             source="Taber (2002); Kind (2004)",
         ),
         Misconception(
@@ -137,7 +137,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Glucose and formaldehyde share the empirical formula CH2O. They "
                 "are not the same compound."
             ),
-            routes_to="C.G1.FORMULA",
+            routes_to="GEN1.EMPIRICAL",
             source="Kind (2004)",
         ),
         Misconception(
@@ -152,7 +152,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "There is no single NaCl unit to point at in a salt crystal. Each "
                 "sodium ion is surrounded by six chloride ions."
             ),
-            routes_to="C.G2.BONDING",
+            routes_to="GEN1.IONICBOND",
             source="Taber (2002); Johnstone (1991)",
         ),
         Misconception(
@@ -166,7 +166,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Sulfur hexafluoride is stable with twelve electrons around "
                 "sulfur. The pattern is a summary, not a law of desire."
             ),
-            routes_to="C.G2.BONDING",
+            routes_to="GEN1.IONICBOND",
             source="Taber (2002), the octet framework",
         ),
         Misconception(
@@ -180,7 +180,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "One mole of hydrogen gas weighs about 2 grams, one mole of lead "
                 "weighs about 207 grams. The count is not the mass."
             ),
-            routes_to="C.G1.MOLE",
+            routes_to="GEN1.MOLE",
             source="Nakhleh (1992); Bodner (1991)",
         ),
         Misconception(
@@ -194,7 +194,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Burning one mole of propane does not give one mole of carbon "
                 "dioxide. It gives three."
             ),
-            routes_to="C.G1.STOICH",
+            routes_to="GEN1.STOICH",
             source="Nakhleh (1992)",
         ),
         Misconception(
@@ -207,7 +207,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
             counterexample=(
                 "2 H2 + O2 -> 2 H2O consumes twice as much hydrogen as oxygen."
             ),
-            routes_to="C.G1.STOICH",
+            routes_to="GEN1.STOICH",
             source="Nakhleh (1992); Kind (2004)",
         ),
         Misconception(
@@ -221,7 +221,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Converting from reactant to product puts product coefficient on "
                 "top. Flipping it turns an increase into a decrease."
             ),
-            routes_to="C.G1.STOICH",
+            routes_to="GEN1.STOICH",
             source="Nakhleh (1992)",
         ),
         Misconception(
@@ -235,7 +235,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Each substance has its own molar mass. Using the reactant's mass "
                 "for the product answers a different question."
             ),
-            routes_to="C.G1.MOLE",
+            routes_to="GEN1.MOLE",
             source="Bodner (1991)",
         ),
         Misconception(
@@ -249,7 +249,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "A balance reading 2.50 grams does not justify an answer to six "
                 "figures. The instrument sets the limit."
             ),
-            routes_to="C.CF.MEASURE",
+            routes_to="GEN1.SIGFIGS",
             source="Kind (2004)",
         ),
         Misconception(
@@ -263,7 +263,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "A coefficient of zero deletes a species that the equation says "
                 "takes part."
             ),
-            routes_to="C.G1.BALANCE",
+            routes_to="GEN1.BALANCE",
             source="Kind (2004)",
         ),
         Misconception(
@@ -278,7 +278,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "percent of the initial value, and the approximation then moves "
                 "the answer by more than the tolerance."
             ),
-            routes_to="C.G2.EQUILIBRIUM",
+            routes_to="GEN2.EQUILIBRIUM",
             source="Kind (2004)",
         ),
         Misconception(
@@ -292,7 +292,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "A solution with pOH 3 has pH 11 at 25 C, not pH 3. One is basic, "
                 "the other acidic."
             ),
-            routes_to="C.G2.ACIDBASE",
+            routes_to="GEN2.BRONSTED",
             source="Kind (2004); Nakhleh (1992)",
         ),
         Misconception(
@@ -306,7 +306,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "For x squared over C the extent is the square root of K times C, "
                 "not K times C."
             ),
-            routes_to="C.G2.EQUILIBRIUM",
+            routes_to="GEN2.EQUILIBRIUM",
             source="Kind (2004)",
         ),
         Misconception(
@@ -320,7 +320,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "Adding reactant shifts the position toward products, and Q "
                 "returns to the same K. Only temperature changes K."
             ),
-            routes_to="C.G2.EQUILIBRIUM",
+            routes_to="GEN2.EQUILIBRIUM",
             source="Taber (2002); Kind (2004)",
         ),
         # Phase 3 additions. These are the beliefs the structure grader and the
@@ -339,7 +339,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "mirror image smells of caraway. Same atoms, same bonds, "
                 "different arrangement in space, different substance."
             ),
-            routes_to="C.G2.VSEPR",
+            routes_to="GEN1.VSEPR",
             source="Taber (2002); Kind (2004)",
         ),
         Misconception(
@@ -354,7 +354,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "degrees Celsius, and it is also dimethyl ether, which is a gas "
                 "at room temperature. The formula does not settle which."
             ),
-            routes_to="C.G1.FORMULA",
+            routes_to="GEN1.EMPIRICAL",
             source="Taber (2002); Nakhleh (1992)",
         ),
         Misconception(
@@ -369,7 +369,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "at pH 8.7. All the acid has reacted, and the acetate left "
                 "behind is a weak base."
             ),
-            routes_to="C.G2.TITRATIONCURVE",
+            routes_to="GEN2.TITRATIONWEAK",
             source="Taber (2002); Nakhleh (1992)",
         ),
         Misconception(
@@ -384,7 +384,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "equivalence volume is unchanged. Only the endpoint the eye "
                 "catches moves, which is why the indicator is chosen to match."
             ),
-            routes_to="C.G2.TITRATIONCURVE",
+            routes_to="GEN2.TITRATIONWEAK",
             source="Taber (2002)",
         ),
         Misconception(
@@ -400,7 +400,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "the same amount. Forward and reverse rates rise together, so "
                 "equilibrium arrives sooner at exactly the same composition."
             ),
-            routes_to="C.G2.LECHATELIER",
+            routes_to="GEN2.LECHATELIER",
             source="Taber (2002); Kind (2004)",
         ),
         Misconception(
@@ -415,7 +415,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "A 0.001 molar hydrochloric acid solution is strong and dilute. "
                 "A 15 molar acetic acid solution is weak and concentrated."
             ),
-            routes_to="C.G2.ACIDBASE",
+            routes_to="GEN2.BRONSTED",
             source="Taber (2002); Nakhleh (1992); Kind (2004)",
         ),
         Misconception(
@@ -431,7 +431,7 @@ MISCONCEPTIONS: dict[str, Misconception] = {
                 "sodium hydroxide and the curve is unchanged. If sodium were "
                 "doing the work, swapping it would show."
             ),
-            routes_to="C.G1.NETIONIC",
+            routes_to="GEN1.NETIONIC",
             source="Taber (2002); Nakhleh (1992)",
         ),
     ]

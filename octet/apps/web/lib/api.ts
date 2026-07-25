@@ -203,23 +203,74 @@ export async function fetchHealth(): Promise<{
 // Curriculum
 // -------------------------------------------------------------------------
 
-// The three Phase 2 tiers: Chemical Foundations, General Chemistry 1 and 2.
-export type Tier = 'CF' | 'G1' | 'G2';
+// The curriculum is a three level tree: course, unit, node. That shape is not
+// cosmetic. A registrar, a syllabus and a textbook are all organized as course
+// then unit then topic, so anything flatter cannot be mapped onto a real
+// course, and anything without units gives a 312 node program no shape at any
+// zoom level.
 
-// One node of the chemistry knowledge graph. Codes read C.{TIER}.{TOPIC}.
+// One node of the chemistry knowledge graph.
+//
+// code is the stable key: it names the lesson file, the item templates and the
+// /learn/{code} route. It is NOT a label. A learner is shown `number` and
+// `title` and never the code, which appears only in an instructor or author
+// view.
+//
+// authored says whether a lesson exists behind this node. Most of the program
+// is mapped but not yet written, and the page has to be able to tell the two
+// apart, because a node that looks ready and opens to nothing is worse than a
+// node that says it is not ready.
 export interface CurriculumNode {
   code: string;
   title: string;
-  tier: string;
-  summary: string;
+  description: string;
+  // Positional and generated, for example "3.4": unit index within the course,
+  // node index within the unit. This is what a learner sees.
+  number: string;
+  // "concept" or "computational".
+  kind: string;
+  // Owning course id and unit id.
+  course: string;
+  unit: string;
+  // Node codes, not titles. Resolve them against the tree before display.
   prerequisites: string[];
   lab_adjacent: boolean;
   triangle_eligible: boolean;
+  authored: boolean;
 }
 
-// GET /curriculum/nodes. tier_counts is keyed by tier code.
-export interface CurriculumNodes {
+// One unit within a course. chapters is the textbook chapter mapping, for
+// example "Ch 3". It is what makes syllabus alignment possible during an
+// adoption conversation, so it is instructor facing rather than dropped.
+export interface CurriculumUnit {
+  id: string;
+  title: string;
+  chapters: string;
+  index: number;
   nodes: CurriculumNode[];
+}
+
+export interface CurriculumCourse {
+  id: string;
+  title: string;
+  semester: string;
+  units: CurriculumUnit[];
+}
+
+// The body GET /curriculum/nodes returns.
+export interface CurriculumTree {
+  courses: CurriculumCourse[];
+  counts: Record<string, number>;
+}
+
+// What getCurriculumNodes hands back: the tree exactly as the API sent it,
+// plus two flat views derived from it. The flat views are a projection of the
+// same response, not extra data, and they exist so callers that only need to
+// look one node up by code do not have to walk the tree themselves.
+export interface CurriculumNodes extends CurriculumTree {
+  // Every node in the program, in course then unit then node order.
+  nodes: CurriculumNode[];
+  // Alias of counts, kept for callers written against the earlier shape.
   tier_counts: Record<string, number>;
 }
 
@@ -246,9 +297,27 @@ export interface Lesson {
   misconception: string | null;
 }
 
-export function getCurriculumNodes(tier?: string): Promise<CurriculumNodes> {
-  const query = tier ? `?tier=${encodeURIComponent(tier)}` : '';
-  return apiGet<CurriculumNodes>(`/curriculum/nodes${query}`);
+// GET /curriculum/nodes. Pass a course id to fetch one course.
+//
+// The flat views are computed here rather than requested, so there is exactly
+// one place that knows how the tree flattens and no chance of the flat list
+// and the tree disagreeing about what the program contains.
+export async function getCurriculumNodes(
+  course?: string,
+): Promise<CurriculumNodes> {
+  const query = course ? `?course=${encodeURIComponent(course)}` : '';
+  const payload = await apiGet<CurriculumTree>(`/curriculum/nodes${query}`);
+  const courses = payload.courses ?? [];
+  const counts = payload.counts ?? {};
+  const nodes: CurriculumNode[] = [];
+  for (const c of courses) {
+    for (const unit of c.units ?? []) {
+      for (const node of unit.nodes ?? []) {
+        nodes.push(node);
+      }
+    }
+  }
+  return { courses, counts, nodes, tier_counts: counts };
 }
 
 export function getLesson(nodeCode: string): Promise<Lesson> {

@@ -35,15 +35,24 @@ def templates_by_node() -> dict[str, list[str]]:
     return mapping
 
 
-def build_diagnostic(user_id: str, *, tier: str | None = None, limit: int = 12) -> list[DiagnosticItem]:
-    """One item per covered node, ordered by tier then node code."""
+def build_diagnostic(user_id: str, *, course: str | None = None, limit: int = 12) -> list[DiagnosticItem]:
+    """One item per covered node, in curriculum order.
+
+    The order used to be tier then node code, which was a proxy for teaching
+    order while tiers existed. Course, unit and position is the same intent
+    stated directly, so a learner meets the earliest material first.
+    """
     mapping = templates_by_node()
     covered = sorted(
         (code for code in mapping if code in NODES_BY_CODE),
-        key=lambda c: (NODES_BY_CODE[c].tier, c),
+        key=lambda c: (
+            NODES_BY_CODE[c].course,
+            NODES_BY_CODE[c].unit_index,
+            NODES_BY_CODE[c].node_index,
+        ),
     )
-    if tier:
-        covered = [c for c in covered if NODES_BY_CODE[c].tier == tier]
+    if course:
+        covered = [c for c in covered if NODES_BY_CODE[c].course == course]
 
     items: list[DiagnosticItem] = []
     for code in covered[:limit]:

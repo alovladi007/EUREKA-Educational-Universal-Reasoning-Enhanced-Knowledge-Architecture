@@ -21,12 +21,22 @@ from __future__ import annotations
 
 import chem_core as cc
 
-from app.data.curriculum import EDGES, NODES, NODES_BY_CODE, topological_order
+from app.data.coverage import authored_nodes, coverage
+from app.data.curriculum import (
+    COURSES,
+    EDGES,
+    NODES,
+    NODES_BY_CODE,
+    UNITS,
+    course_counts,
+    topological_order,
+)
 from app.data.lessons import LESSONS
 from app.data.molecule_build import validate_library
 
 
 def _check_curriculum() -> list[dict]:
+    """Graph integrity, and the course and unit structure around it."""
     problems: list[dict] = []
     if topological_order() is None:
         problems.append({"check": "dag", "detail": "curriculum graph contains a cycle"})
@@ -35,56 +45,83 @@ def _check_curriculum() -> list[dict]:
             problems.append({"check": "edge", "detail": f"edge from unknown node {a}"})
         if b not in NODES_BY_CODE:
             problems.append({"check": "edge", "detail": f"edge to unknown node {b}"})
-    counts: dict[str, int] = {}
-    for n in NODES:
-        counts[n.tier] = counts.get(n.tier, 0) + 1
-    expected = {"CF": 12, "G1": 24, "G2": 24}
-    for tier, want in expected.items():
-        got = counts.get(tier, 0)
+
+    expected = {"GEN1": 91, "GEN2": 75, "ORG1": 70, "ORG2": 76}
+    counts = course_counts()
+    for course, want in expected.items():
+        got = counts.get(course, 0)
         if got != want:
             problems.append(
-                {"check": "tier_counts", "detail": f"{tier} has {got} nodes, Phase 2 specifies {want}"}
+                {"check": "course_counts", "detail": f"{course} has {got} nodes, expected {want}"}
             )
+
+    # A unit with no nodes is a heading with nothing under it, and a unit with
+    # no chapter mapping cannot be aligned to a syllabus, which is the reason
+    # units exist rather than a flat list.
+    for unit in UNITS:
+        if not unit.node_codes:
+            problems.append({"check": "unit_empty", "detail": f"{unit.id} has no nodes"})
+        if not unit.chapters.strip():
+            problems.append({"check": "unit_chapters", "detail": f"{unit.id} has no chapter mapping"})
+        for code in unit.node_codes:
+            if code not in NODES_BY_CODE:
+                problems.append({"check": "unit_node", "detail": f"{unit.id} lists unknown node {code}"})
+    for course in COURSES:
+        if not course.unit_ids:
+            problems.append({"check": "course_empty", "detail": f"{course.id} has no units"})
     return problems
 
 
 def _check_lessons() -> list[dict]:
-    """Every node has a lesson, and every lesson has all six arc parts."""
+    """Every authored lesson is complete and attached to a real node.
+
+    The rule changed when the curriculum became the full two year sequence.
+    It used to read "every node has a lesson", which was checkable when the
+    map was 60 nodes and the content was 60 lessons. The map is now 312 nodes
+    because it is the whole program, and the content is written phase by
+    phase, so "every node has a lesson" would fail by design for two years and
+    the checklist would be ignored rather than fixed.
+
+    What is gated instead: a lesson that exists must be complete, must sit on
+    a node that exists, and must name a misconception that exists. Coverage of
+    the map is reported separately and is not a failure. That keeps the gate
+    strict about quality while being honest about extent.
+
+    A lesson pointing at a node that is not in the curriculum is still a
+    failure, because that is content detached from the graph, which is the
+    error this file exists to catch.
+    """
     problems: list[dict] = []
-    for node in NODES:
-        lesson = LESSONS.get(node.code)
-        if lesson is None:
-            problems.append({"check": "lesson_present", "detail": f"{node.code} has no lesson"})
+    for code, lesson in LESSONS.items():
+        if code not in NODES_BY_CODE:
+            problems.append({"check": "lesson_orphan", "detail": f"lesson {code} has no node"})
             continue
         missing = lesson.missing_parts()
         if missing:
             problems.append(
-                {"check": "lesson_arc", "detail": f"{node.code} lesson missing {', '.join(missing)}"}
+                {"check": "lesson_arc", "detail": f"{code} lesson missing {', '.join(missing)}"}
             )
-        if lesson.node != node.code:
+        if lesson.node != code:
             problems.append(
-                {"check": "lesson_node", "detail": f"lesson under {node.code} claims node {lesson.node}"}
+                {"check": "lesson_node", "detail": f"lesson under {code} claims node {lesson.node}"}
             )
         if lesson.misconception and lesson.misconception not in cc.MISCONCEPTIONS:
             problems.append(
                 {
                     "check": "lesson_misconception",
-                    "detail": f"{node.code} lesson names unknown misconception {lesson.misconception}",
+                    "detail": f"{code} lesson names unknown misconception {lesson.misconception}",
                 }
             )
-    for code in LESSONS:
-        if code not in NODES_BY_CODE:
-            problems.append({"check": "lesson_orphan", "detail": f"lesson {code} has no node"})
     return problems
 
 
 def _check_templates() -> list[dict]:
     """Three rung ladders everywhere, and every key independently verified."""
     problems: list[dict] = []
-    coverage = cc.hint_coverage(list(cc.REGISTRY))
-    for tid in coverage["missing"]:
+    ladders = cc.hint_coverage(list(cc.REGISTRY))
+    for tid in ladders["missing"]:
         problems.append({"check": "hint_ladder", "detail": f"{tid} has no hint ladder"})
-    for tid in coverage["incomplete"]:
+    for tid in ladders["incomplete"]:
         problems.append({"check": "hint_ladder", "detail": f"{tid} ladder is not three complete rungs"})
 
     for tid, entry in cc.REGISTRY.items():
@@ -188,33 +225,30 @@ def _check_molecules() -> list[dict]:
 
 
 def _check_triangle_views() -> list[dict]:
-    """Every triangle eligible G1 and G2 node ships a complete triangle view.
+    """Every triangle view is complete and sits on a real node.
 
-    This was a Phase 3 warning while the views did not exist. Phase 3 builds
-    them, so it is now blocking: a node flagged triangle eligible that has no
-    view is a promise the course does not keep.
+    The rule used to be "every triangle eligible node ships a view", which
+    held when 18 nodes were eligible and 18 views existed. The finer grained
+    map flags many more nodes as eligible than have been authored, so that
+    form of the rule would now fail for the same reason the lesson rule would:
+    the map is ahead of the content on purpose.
 
-    A view with an empty corner is treated the same as a missing view. Two of
-    three levels is exactly the silent jump between levels that Johnstone
-    identified as the problem, so a partial view is worse than none.
+    What stays blocking is quality. A view with an empty corner is worse than
+    no view, because two of three levels is exactly the silent jump between
+    levels that Johnstone identified as the problem. Coverage is reported.
     """
     from app.data.triangle_views import TRIANGLE_VIEWS
 
     problems: list[dict] = []
-    eligible = [n.code for n in NODES if n.triangle_eligible and n.tier in ("G1", "G2")]
-    for code in eligible:
-        view = TRIANGLE_VIEWS.get(code)
-        if view is None:
-            problems.append({"check": "triangle_view", "detail": f"{code} has no triangle view"})
+    for code, view in TRIANGLE_VIEWS.items():
+        if code not in NODES_BY_CODE:
+            problems.append({"check": "triangle_view", "detail": f"view {code} has no node"})
             continue
         for level in ("macroscopic", "particulate", "symbolic", "connector", "pitfall"):
             if not str(getattr(view, level, "")).strip():
                 problems.append(
                     {"check": "triangle_view", "detail": f"{code} view has an empty {level}"}
                 )
-    for code in TRIANGLE_VIEWS:
-        if code not in NODES_BY_CODE:
-            problems.append({"check": "triangle_view", "detail": f"view {code} has no node"})
     return problems
 
 
@@ -286,19 +320,50 @@ def _check_simulation_engines() -> list[dict]:
     return problems
 
 
-def _check_periodic_coverage() -> list[dict]:
-    """How much of each periodic trend is genuinely measured.
+def _report_coverage() -> list[dict]:
+    """What exists on the map but is not written yet, and other real gaps.
 
-    Reported as a warning rather than a failure, because the gaps are real
-    chemistry rather than missing work. Francium's ionization energy and the
-    electronegativity of the light noble gases are not values anyone has
-    withheld, they are values that do not exist. The client renders these gaps
-    instead of interpolating across them, and this is where the size of each
-    gap is stated.
+    Reported rather than failed. Every line here is a true statement about
+    extent, not about quality, and the phase plan says which phase closes it.
+    Stating them on the same report as the blocking checks is deliberate: a
+    reader should not have to go somewhere else to find out how much of the
+    program is actually authored.
     """
-    from app.data import periodic
+    from app.data.triangle_views import TRIANGLE_VIEWS
 
     warnings: list[dict] = []
+    cov = coverage()
+    warnings.append(
+        {
+            "check": "lesson_coverage",
+            "detail": (
+                f"{cov['authored']} of {cov['nodes']} nodes carry a lesson. "
+                f"{cov['unauthored']} do not and are marked unavailable to learners."
+            ),
+            "severity": "informational",
+        }
+    )
+    for course_id, row in cov["by_course"].items():
+        warnings.append(
+            {
+                "check": "course_coverage",
+                "detail": f"{course_id} {row['title']}: {row['authored']} of {row['nodes']} nodes authored",
+                "severity": "informational",
+            }
+        )
+
+    eligible = [n.code for n in NODES if n.triangle_eligible]
+    have = [c for c in eligible if c in TRIANGLE_VIEWS]
+    warnings.append(
+        {
+            "check": "triangle_coverage",
+            "detail": f"{len(have)} of {len(eligible)} triangle eligible nodes have a view",
+            "severity": "informational",
+        }
+    )
+
+    from app.data import periodic
+
     total = len(periodic.ELEMENTS)
     for field in (
         "electronegativity",
@@ -323,7 +388,10 @@ def _counts() -> dict:
     from app.data.simulations import POE_ITEMS, SCENARIOS
 
     return {
+        "courses": len(COURSES),
+        "units": len(UNITS),
         "nodes": len(NODES),
+        "authored_nodes": len(authored_nodes()),
         "lessons": len(LESSONS),
         "templates": len(cc.REGISTRY),
         "misconceptions": len(cc.MISCONCEPTIONS),
@@ -348,7 +416,7 @@ def run() -> dict:
     blocking += _check_poe_items()
     blocking += _check_simulation_engines()
 
-    warnings = _check_periodic_coverage()
+    warnings = _report_coverage()
 
     by_check: dict[str, int] = {}
     for p in blocking:

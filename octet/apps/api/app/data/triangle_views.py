@@ -63,192 +63,9 @@ class TriangleView:
 
 
 _VIEWS: list[TriangleView] = [
-    # ---------------- G1: General Chemistry 1 (9) ----------------
+    # ---------------- GEN1: General Chemistry I (13) ----------------
     TriangleView(
-        node="C.G1.FORMULA",
-        title="What a formula counts, and what it leaves out",
-        macroscopic=(
-            "A bottle of acetic acid on the bench holds a clear liquid with a "
-            "sharp smell that boils at 118 degrees Celsius and freezes at 16.6 "
-            "degrees Celsius. Combustion analysis of a weighed sample returns "
-            "the mass of carbon, hydrogen and oxygen it contained, and nothing "
-            "else about it."
-        ),
-        particulate=(
-            "One molecule of that liquid holds exactly 2 carbon atoms, 4 "
-            "hydrogen atoms and 2 oxygen atoms, joined in one specific "
-            "arrangement: a methyl carbon carrying three hydrogens, bonded to a "
-            "second carbon that carries two oxygens, one of which holds the "
-            "fourth hydrogen. Every molecule in the bottle has that same count "
-            "and that same arrangement."
-        ),
-        symbolic=(
-            "The molecular formula is C2H4O2, and the subscripts are the atom "
-            "counts in one molecule. Divide those counts by their common factor "
-            "of 2 and you get the empirical formula, CH2O, which reports only "
-            "the ratio 1 carbon to 2 hydrogen to 1 oxygen."
-        ),
-        connector=(
-            "The count 2 carbon, 4 hydrogen and 2 oxygen is one count appearing "
-            "three times: it is what combustion analysis of the liquid returns "
-            "as mass fractions, it is what a single particle in the bottle "
-            "actually holds, and it is what the subscripts in C2H4O2 state."
-        ),
-        pitfall=(
-            "The specific confusion is reading the empirical formula as the "
-            "identity of a substance, which promotes a symbolic ratio into a "
-            "macroscopic thing. CH2O is not a substance you can pour. Glucose, "
-            "C6H12O6, reduces to CH2O as well, and it is a sweet white solid "
-            "rather than a sharp smelling liquid. The formula does not fix the "
-            "arrangement either: C2H6O is ethanol, a liquid boiling at 78 "
-            "degrees Celsius, and it is also dimethyl ether, a gas at room "
-            "temperature."
-        ),
-        katex=r"\ce{C2H4O2}\ \text{(molecular)}\quad \ce{CH2O}\ \text{(empirical)}",
-        caption=(
-            "Picture one molecule as eight balls: a two carbon backbone, three "
-            "hydrogens on the left carbon, and on the right carbon two oxygens "
-            "with the last hydrogen attached to one of them."
-        ),
-    ),
-    TriangleView(
-        node="C.G1.MOLE",
-        title="Counting by weighing",
-        macroscopic=(
-            "A balance reads 18.02 grams of water in a weighing boat. That is a "
-            "little over a tablespoon, something you could tip into your palm, "
-            "and a balance is the only instrument in the room."
-        ),
-        particulate=(
-            "That sample holds about 6.022 x 10^23 individual water molecules. "
-            "No instrument counted them. The count follows from the mass, "
-            "because the average mass of one water molecule is known, and "
-            "dividing the sample mass by it gives the number of particles. This "
-            "is the same move a hardware store makes when it weighs 5000 "
-            "washers rather than counting them."
-        ),
-        symbolic=(
-            "n = m / M, so n = 18.02 g divided by 18.02 g/mol = 1.000 mol. The "
-            "mole is a fixed count, defined since 2019 as exactly 6.02214076 x "
-            "10^23 entities, and the molar mass M is the conversion factor "
-            "between the balance reading and that count."
-        ),
-        connector=(
-            "The number 6.022 x 10^23 is one single count appearing three "
-            "times: it is how many particles are sitting on the balance pan, it "
-            "is how many objects a complete particulate drawing would have to "
-            "show, and it is exactly what the symbol 1.000 mol stands for."
-        ),
-        pitfall=(
-            "The specific confusion is treating equal masses as equal counts, "
-            "which quietly lets the symbol mol mean gram. 1.00 g of hydrogen "
-            "gas is 1.00 / 2.016 = 0.496 mol and 1.00 g of oxygen gas is 1.00 / "
-            "32.00 = 0.0313 mol, so the same balance reading covers about "
-            "sixteen times as many hydrogen molecules. The balance works at the "
-            "macroscopic level, the mole counts at the particulate level, and "
-            "molar mass is the only thing that connects them."
-        ),
-        katex=r"\ce{H2O}:\quad n = \frac{m}{M} = \frac{18.02\ \mathrm{g}}{18.02\ \mathrm{g/mol}} = 1.000\ \mathrm{mol}",
-        caption=(
-            "Picture the puddle magnified until single molecules show: bent "
-            "three atom units, one oxygen with two hydrogens, tumbling past "
-            "each other. Now imagine that picture repeated until there are six "
-            "hundred thousand billion billion of them."
-        ),
-    ),
-    TriangleView(
-        node="C.G1.CONSERVATION",
-        title="The mass that seems to vanish",
-        macroscopic=(
-            "Heat 100.0 g of calcium carbonate in an open dish. The white solid "
-            "left behind weighs 56.0 g, so the balance says 44.0 g has gone. "
-            "Run the identical decomposition in a sealed flask on the same "
-            "balance and the reading does not move at all."
-        ),
-        particulate=(
-            "Nothing was created or destroyed in either run. Every calcium, "
-            "carbon and oxygen atom that started is still present at the end. "
-            "In the open dish the carbon dioxide molecules drifted out of the "
-            "dish and into the room, taking their share of the mass off the "
-            "pan. In the sealed flask those same molecules are still inside, "
-            "bouncing around above the solid, so the pan still carries them."
-        ),
-        symbolic=(
-            "CaCO3(s) -> CaO(s) + CO2(g). One calcium, one carbon and three "
-            "oxygens on the left, and the same one, one and three on the right. "
-            "The state labels (s) and (g) are the part of the notation that "
-            "predicts which product can leave an open dish."
-        ),
-        connector=(
-            "The three oxygen atoms are the same three oxygen atoms in all "
-            "three descriptions: they are part of the 100.0 g you weighed out, "
-            "they are the particles that end up split between the solid residue "
-            "and the escaping gas, and they are what the subscript 3 on the "
-            "left and the 1 plus 2 on the right both count."
-        ),
-        pitfall=(
-            "The specific confusion is reading the drop from 100.0 g to 56.0 g "
-            "as mass being destroyed. That is a macroscopic observation with no "
-            "particulate event behind it. What happened is that a product "
-            "crossed the boundary of the system you were weighing. Seal the "
-            "system and the observation changes while the chemistry does not, "
-            "which is the whole content of the demonstration."
-        ),
-        katex=r"\ce{CaCO3(s) -> CaO(s) + CO2(g)}",
-        caption=(
-            "Picture the solid as a repeating grid of calcium ions and "
-            "carbonate ions. On heating, each carbonate ion breaks into a "
-            "linear CO2 molecule that leaves and an oxide ion that stays, and "
-            "what remains is a tighter grid of calcium and oxide ions."
-        ),
-    ),
-    TriangleView(
-        node="C.G1.BALANCE",
-        title="Coefficients count, subscripts identify",
-        macroscopic=(
-            "Burn hydrogen in oxygen and you get water, in a fixed ratio every "
-            "time: 4.03 g of hydrogen gas consumes 32.00 g of oxygen gas and "
-            "produces 36.03 g of water. Supply more hydrogen than that and the "
-            "surplus is still hydrogen gas at the end."
-        ),
-        particulate=(
-            "Two hydrogen molecules and one oxygen molecule rearrange into two "
-            "water molecules. The four hydrogen atoms and two oxygen atoms "
-            "present at the start are the same six atoms present at the end, "
-            "redistributed among different partners. No atom is added and none "
-            "is removed, which is why the mass ratio cannot be negotiated."
-        ),
-        symbolic=(
-            "2 H2 + O2 -> 2 H2O. The coefficients 2, 1 and 2 count how many of "
-            "each substance take part. The subscript 2 inside H2 and inside "
-            "H2O is part of what those substances are, and it is not "
-            "adjustable."
-        ),
-        connector=(
-            "The four hydrogen atoms are the same four atoms in all three "
-            "places: they arrive in the 4.03 g you weighed out, the particulate "
-            "picture shows them changing partners, and the coefficient 2 in "
-            "front of H2O is what makes the equation report the same four."
-        ),
-        pitfall=(
-            "The specific confusion is fixing a shortage by editing a "
-            "subscript. The edit looks purely symbolic, one character on a "
-            "page, but it silently swaps the particulate entity for a different "
-            "one: writing H2O2 instead of H2O balances the oxygen count and "
-            "changes the product from drinking water into hydrogen peroxide, "
-            "which would sting a cut rather than quench thirst. A coefficient "
-            "changes how many. A subscript changes what."
-        ),
-        katex=r"\ce{2H2 + O2 -> 2H2O}",
-        caption=(
-            "Picture six balls in three pairs on the left: two dumbbells of "
-            "paired hydrogen and one dumbbell of paired oxygen. On the right "
-            "the same six balls are regrouped as two bent three atom units. "
-            "Count either picture and you get four hydrogen and two oxygen."
-        ),
-    ),
-    TriangleView(
-        node="C.G1.IONIC",
+        node="GEN1.NOMENIONIC",
         title="A formula that names a ratio, not a particle",
         macroscopic=(
             "A grain of table salt is a hard, brittle, colourless cube that "
@@ -298,7 +115,190 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G1.SOLUBILITY",
+        node="GEN1.MOLE",
+        title="Counting by weighing",
+        macroscopic=(
+            "A balance reads 18.02 grams of water in a weighing boat. That is a "
+            "little over a tablespoon, something you could tip into your palm, "
+            "and a balance is the only instrument in the room."
+        ),
+        particulate=(
+            "That sample holds about 6.022 x 10^23 individual water molecules. "
+            "No instrument counted them. The count follows from the mass, "
+            "because the average mass of one water molecule is known, and "
+            "dividing the sample mass by it gives the number of particles. This "
+            "is the same move a hardware store makes when it weighs 5000 "
+            "washers rather than counting them."
+        ),
+        symbolic=(
+            "n = m / M, so n = 18.02 g divided by 18.02 g/mol = 1.000 mol. The "
+            "mole is a fixed count, defined since 2019 as exactly 6.02214076 x "
+            "10^23 entities, and the molar mass M is the conversion factor "
+            "between the balance reading and that count."
+        ),
+        connector=(
+            "The number 6.022 x 10^23 is one single count appearing three "
+            "times: it is how many particles are sitting on the balance pan, it "
+            "is how many objects a complete particulate drawing would have to "
+            "show, and it is exactly what the symbol 1.000 mol stands for."
+        ),
+        pitfall=(
+            "The specific confusion is treating equal masses as equal counts, "
+            "which quietly lets the symbol mol mean gram. 1.00 g of hydrogen "
+            "gas is 1.00 / 2.016 = 0.496 mol and 1.00 g of oxygen gas is 1.00 / "
+            "32.00 = 0.0313 mol, so the same balance reading covers about "
+            "sixteen times as many hydrogen molecules. The balance works at the "
+            "macroscopic level, the mole counts at the particulate level, and "
+            "molar mass is the only thing that connects them."
+        ),
+        katex=r"\ce{H2O}:\quad n = \frac{m}{M} = \frac{18.02\ \mathrm{g}}{18.02\ \mathrm{g/mol}} = 1.000\ \mathrm{mol}",
+        caption=(
+            "Picture the puddle magnified until single molecules show: bent "
+            "three atom units, one oxygen with two hydrogens, tumbling past "
+            "each other. Now imagine that picture repeated until there are six "
+            "hundred thousand billion billion of them."
+        ),
+    ),
+    TriangleView(
+        node="GEN1.EMPIRICAL",
+        title="What a formula counts, and what it leaves out",
+        macroscopic=(
+            "A bottle of acetic acid on the bench holds a clear liquid with a "
+            "sharp smell that boils at 118 degrees Celsius and freezes at 16.6 "
+            "degrees Celsius. Combustion analysis of a weighed sample returns "
+            "the mass of carbon, hydrogen and oxygen it contained, and nothing "
+            "else about it."
+        ),
+        particulate=(
+            "One molecule of that liquid holds exactly 2 carbon atoms, 4 "
+            "hydrogen atoms and 2 oxygen atoms, joined in one specific "
+            "arrangement: a methyl carbon carrying three hydrogens, bonded to a "
+            "second carbon that carries two oxygens, one of which holds the "
+            "fourth hydrogen. Every molecule in the bottle has that same count "
+            "and that same arrangement."
+        ),
+        symbolic=(
+            "The molecular formula is C2H4O2, and the subscripts are the atom "
+            "counts in one molecule. Divide those counts by their common factor "
+            "of 2 and you get the empirical formula, CH2O, which reports only "
+            "the ratio 1 carbon to 2 hydrogen to 1 oxygen."
+        ),
+        connector=(
+            "The count 2 carbon, 4 hydrogen and 2 oxygen is one count appearing "
+            "three times: it is what combustion analysis of the liquid returns "
+            "as mass fractions, it is what a single particle in the bottle "
+            "actually holds, and it is what the subscripts in C2H4O2 state."
+        ),
+        pitfall=(
+            "The specific confusion is reading the empirical formula as the "
+            "identity of a substance, which promotes a symbolic ratio into a "
+            "macroscopic thing. CH2O is not a substance you can pour. Glucose, "
+            "C6H12O6, reduces to CH2O as well, and it is a sweet white solid "
+            "rather than a sharp smelling liquid. The formula does not fix the "
+            "arrangement either: C2H6O is ethanol, a liquid boiling at 78 "
+            "degrees Celsius, and it is also dimethyl ether, a gas at room "
+            "temperature."
+        ),
+        katex=r"\ce{C2H4O2}\ \text{(molecular)}\quad \ce{CH2O}\ \text{(empirical)}",
+        caption=(
+            "Picture one molecule as eight balls: a two carbon backbone, three "
+            "hydrogens on the left carbon, and on the right carbon two oxygens "
+            "with the last hydrogen attached to one of them."
+        ),
+    ),
+    TriangleView(
+        node="GEN1.CONSERVATION",
+        title="The mass that seems to vanish",
+        macroscopic=(
+            "Heat 100.0 g of calcium carbonate in an open dish. The white solid "
+            "left behind weighs 56.0 g, so the balance says 44.0 g has gone. "
+            "Run the identical decomposition in a sealed flask on the same "
+            "balance and the reading does not move at all."
+        ),
+        particulate=(
+            "Nothing was created or destroyed in either run. Every calcium, "
+            "carbon and oxygen atom that started is still present at the end. "
+            "In the open dish the carbon dioxide molecules drifted out of the "
+            "dish and into the room, taking their share of the mass off the "
+            "pan. In the sealed flask those same molecules are still inside, "
+            "bouncing around above the solid, so the pan still carries them."
+        ),
+        symbolic=(
+            "CaCO3(s) -> CaO(s) + CO2(g). One calcium, one carbon and three "
+            "oxygens on the left, and the same one, one and three on the right. "
+            "The state labels (s) and (g) are the part of the notation that "
+            "predicts which product can leave an open dish."
+        ),
+        connector=(
+            "The three oxygen atoms are the same three oxygen atoms in all "
+            "three descriptions: they are part of the 100.0 g you weighed out, "
+            "they are the particles that end up split between the solid residue "
+            "and the escaping gas, and they are what the subscript 3 on the "
+            "left and the 1 plus 2 on the right both count."
+        ),
+        pitfall=(
+            "The specific confusion is reading the drop from 100.0 g to 56.0 g "
+            "as mass being destroyed. That is a macroscopic observation with no "
+            "particulate event behind it. What happened is that a product "
+            "crossed the boundary of the system you were weighing. Seal the "
+            "system and the observation changes while the chemistry does not, "
+            "which is the whole content of the demonstration."
+        ),
+        katex=r"\ce{CaCO3(s) -> CaO(s) + CO2(g)}",
+        caption=(
+            "Picture the solid as a repeating grid of calcium ions and "
+            "carbonate ions. On heating, each carbonate ion breaks into a "
+            "linear CO2 molecule that leaves and an oxide ion that stays, and "
+            "what remains is a tighter grid of calcium and oxide ions."
+        ),
+    ),
+    TriangleView(
+        node="GEN1.BALANCE",
+        title="Coefficients count, subscripts identify",
+        macroscopic=(
+            "Burn hydrogen in oxygen and you get water, in a fixed ratio every "
+            "time: 4.03 g of hydrogen gas consumes 32.00 g of oxygen gas and "
+            "produces 36.03 g of water. Supply more hydrogen than that and the "
+            "surplus is still hydrogen gas at the end."
+        ),
+        particulate=(
+            "Two hydrogen molecules and one oxygen molecule rearrange into two "
+            "water molecules. The four hydrogen atoms and two oxygen atoms "
+            "present at the start are the same six atoms present at the end, "
+            "redistributed among different partners. No atom is added and none "
+            "is removed, which is why the mass ratio cannot be negotiated."
+        ),
+        symbolic=(
+            "2 H2 + O2 -> 2 H2O. The coefficients 2, 1 and 2 count how many of "
+            "each substance take part. The subscript 2 inside H2 and inside "
+            "H2O is part of what those substances are, and it is not "
+            "adjustable."
+        ),
+        connector=(
+            "The four hydrogen atoms are the same four atoms in all three "
+            "places: they arrive in the 4.03 g you weighed out, the particulate "
+            "picture shows them changing partners, and the coefficient 2 in "
+            "front of H2O is what makes the equation report the same four."
+        ),
+        pitfall=(
+            "The specific confusion is fixing a shortage by editing a "
+            "subscript. The edit looks purely symbolic, one character on a "
+            "page, but it silently swaps the particulate entity for a different "
+            "one: writing H2O2 instead of H2O balances the oxygen count and "
+            "changes the product from drinking water into hydrogen peroxide, "
+            "which would sting a cut rather than quench thirst. A coefficient "
+            "changes how many. A subscript changes what."
+        ),
+        katex=r"\ce{2H2 + O2 -> 2H2O}",
+        caption=(
+            "Picture six balls in three pairs on the left: two dumbbells of "
+            "paired hydrogen and one dumbbell of paired oxygen. On the right "
+            "the same six balls are regrouped as two bent three atom units. "
+            "Count either picture and you get four hydrogen and two oxygen."
+        ),
+    ),
+    TriangleView(
+        node="GEN1.SOLUBILITY",
         title="The solid that appears on mixing",
         macroscopic=(
             "Two clear colourless solutions are poured together and a bright "
@@ -344,56 +344,7 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G1.GASLAWS",
-        title="Pressure as the drumming of particles",
-        macroscopic=(
-            "A sealed rigid steel cylinder of nitrogen sits on a bench with a "
-            "gauge reading 1.00 atm at 25 degrees Celsius. Stand it in a "
-            "boiling water bath at 100 degrees Celsius and the needle climbs to "
-            "1.25 atm. Nothing entered or left and the cylinder did not change "
-            "size."
-        ),
-        particulate=(
-            "The gas particles fly in straight lines between collisions, and "
-            "pressure is the summed force of their impacts on the wall divided "
-            "by the wall area. Heating adds no particles. It makes each one "
-            "faster, because average kinetic energy is proportional to absolute "
-            "temperature, so impacts land harder and more often. The ideal gas "
-            "model treats the particles as having no volume of their own and no "
-            "attraction for each other, which is a good approximation at "
-            "ordinary pressures and a poor one near condensation."
-        ),
-        symbolic=(
-            "PV = nRT, with R = 0.08206 L*atm/(mol*K). With V and n fixed, P/T "
-            "is constant, so P2 = P1 x T2 / T1 = 1.00 atm x 373.15 K / 298.15 K "
-            "= 1.25 atm."
-        ),
-        connector=(
-            "The absolute temperature is one quantity in all three: it is what "
-            "the bath thermometer reports once converted to kelvin, it is "
-            "proportional to the average kinetic energy of the particles "
-            "striking the wall, and it is the T the equation multiplies."
-        ),
-        pitfall=(
-            "The specific confusion is putting the Celsius reading into the "
-            "equation, which treats a scale with an arbitrary zero as though it "
-            "measured the particulate quantity directly. At 0 degrees Celsius "
-            "the law would then predict zero volume, meaning a balloon in a "
-            "freezer collapses to nothing. Particle motion does not stop at 0 "
-            "degrees Celsius. Only the kelvin scale puts its zero where the "
-            "particulate picture puts it, 273.15 degrees lower."
-        ),
-        katex="",
-        caption=(
-            "Picture a box of tiny hard spheres, far apart compared with their "
-            "own size, each moving in a straight line until it hits a wall or "
-            "another sphere and bounces. Warming the box adds no spheres and "
-            "changes no walls. It speeds every sphere up, so the drumming on "
-            "the walls gets harder and more frequent."
-        ),
-    ),
-    TriangleView(
-        node="C.G1.QUANTUM",
+        node="GEN1.QUANTUMNUMBERS",
         title="Sharp spectral lines from allowed states",
         macroscopic=(
             "Run an electric discharge through a tube of low pressure hydrogen "
@@ -447,57 +398,7 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G1.LEWISBASIC",
-        title="An electron budget on paper",
-        macroscopic=(
-            "Water is a liquid at 25 degrees Celsius, boils at 100 degrees "
-            "Celsius and dissolves table salt. Spectroscopy measures two "
-            "identical O-H bonds 95.8 pm long with 104.5 degrees between them, "
-            "and the two bonds are identical no matter how the sample was made."
-        ),
-        particulate=(
-            "Oxygen brings 6 valence electrons and each hydrogen brings 1, so "
-            "eight electrons in four pairs have to be accounted for. Two pairs "
-            "are shared, one with each hydrogen, and two pairs stay on the "
-            "oxygen alone. Sharing is not literal joint ownership: the "
-            "electrons are spread over both nuclei and are not evenly spread, "
-            "and the Lewis pair is a bookkeeping model that gets the "
-            "connectivity and the electron count right while saying nothing "
-            "quantitative about where the density actually sits."
-        ),
-        symbolic=(
-            "H-O-H with two pairs of dots drawn on the oxygen. The budget is "
-            "2(1) + 6 = 8 valence electrons, spent as 4 in the two bonds and 4 "
-            "in the two lone pairs. Exactly 8 in, exactly 8 out."
-        ),
-        connector=(
-            "The two lone pairs are the same two pairs in every description: "
-            "they are why the measured H-O-H angle is 104.5 rather than 109.5 "
-            "degrees, they are the two unshared pairs on the real particle, and "
-            "they are the two pairs of dots you draw on the oxygen."
-        ),
-        pitfall=(
-            "The specific confusion is giving hydrogen an octet, because the "
-            "rule was stated symbolically without its scope. Hydrogen has only "
-            "a 1s orbital and is complete at two electrons, so lone pairs on "
-            "the hydrogens in water would spend 12 electrons when the molecule "
-            "has 8 to give. The deeper level error is treating the octet as the "
-            "reason atoms bond rather than a pattern that energy accounting "
-            "summarises: sulfur hexafluoride is a stable substance with twelve "
-            "electrons around sulfur."
-        ),
-        katex=r"\ce{H2O}:\quad 2(1) + 6 = 8\ \text{valence electrons}",
-        caption=(
-            "Picture the oxygen at the centre with four clouds of charge around "
-            "it pointing toward the corners of a tetrahedron. Two of those "
-            "clouds end at a hydrogen nucleus. The other two end in nothing you "
-            "could see, and those two take up the most room."
-        ),
-    ),
-
-    # ---------------- G2: General Chemistry 2 (9) ----------------
-    TriangleView(
-        node="C.G2.BONDING",
+        node="GEN1.IONICBOND",
         title="Three solids, three ways of holding together",
         macroscopic=(
             "Three solids on a bench. Table salt is a brittle white crystal "
@@ -552,7 +453,56 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G2.VSEPR",
+        node="GEN1.LEWIS",
+        title="An electron budget on paper",
+        macroscopic=(
+            "Water is a liquid at 25 degrees Celsius, boils at 100 degrees "
+            "Celsius and dissolves table salt. Spectroscopy measures two "
+            "identical O-H bonds 95.8 pm long with 104.5 degrees between them, "
+            "and the two bonds are identical no matter how the sample was made."
+        ),
+        particulate=(
+            "Oxygen brings 6 valence electrons and each hydrogen brings 1, so "
+            "eight electrons in four pairs have to be accounted for. Two pairs "
+            "are shared, one with each hydrogen, and two pairs stay on the "
+            "oxygen alone. Sharing is not literal joint ownership: the "
+            "electrons are spread over both nuclei and are not evenly spread, "
+            "and the Lewis pair is a bookkeeping model that gets the "
+            "connectivity and the electron count right while saying nothing "
+            "quantitative about where the density actually sits."
+        ),
+        symbolic=(
+            "H-O-H with two pairs of dots drawn on the oxygen. The budget is "
+            "2(1) + 6 = 8 valence electrons, spent as 4 in the two bonds and 4 "
+            "in the two lone pairs. Exactly 8 in, exactly 8 out."
+        ),
+        connector=(
+            "The two lone pairs are the same two pairs in every description: "
+            "they are why the measured H-O-H angle is 104.5 rather than 109.5 "
+            "degrees, they are the two unshared pairs on the real particle, and "
+            "they are the two pairs of dots you draw on the oxygen."
+        ),
+        pitfall=(
+            "The specific confusion is giving hydrogen an octet, because the "
+            "rule was stated symbolically without its scope. Hydrogen has only "
+            "a 1s orbital and is complete at two electrons, so lone pairs on "
+            "the hydrogens in water would spend 12 electrons when the molecule "
+            "has 8 to give. The deeper level error is treating the octet as the "
+            "reason atoms bond rather than a pattern that energy accounting "
+            "summarises: sulfur hexafluoride is a stable substance with twelve "
+            "electrons around sulfur."
+        ),
+        katex=r"\ce{H2O}:\quad 2(1) + 6 = 8\ \text{valence electrons}",
+        caption=(
+            "Picture the oxygen at the centre with four clouds of charge around "
+            "it pointing toward the corners of a tetrahedron. Two of those "
+            "clouds end at a hydrogen nucleus. The other two end in nothing you "
+            "could see, and those two take up the most room."
+        ),
+    ),
+
+    TriangleView(
+        node="GEN1.VSEPR",
         title="The domains you cannot see set the shape",
         macroscopic=(
             "Carbon dioxide and water are both a central atom with two atoms "
@@ -601,7 +551,7 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G2.POLARITY",
+        node="GEN1.POLARITY",
         title="Polar bonds that add to nothing",
         macroscopic=(
             "Water dissolves table salt and mixes with ethanol in any "
@@ -652,7 +602,56 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G2.IMF",
+        node="GEN1.IDEALGAS",
+        title="Pressure as the drumming of particles",
+        macroscopic=(
+            "A sealed rigid steel cylinder of nitrogen sits on a bench with a "
+            "gauge reading 1.00 atm at 25 degrees Celsius. Stand it in a "
+            "boiling water bath at 100 degrees Celsius and the needle climbs to "
+            "1.25 atm. Nothing entered or left and the cylinder did not change "
+            "size."
+        ),
+        particulate=(
+            "The gas particles fly in straight lines between collisions, and "
+            "pressure is the summed force of their impacts on the wall divided "
+            "by the wall area. Heating adds no particles. It makes each one "
+            "faster, because average kinetic energy is proportional to absolute "
+            "temperature, so impacts land harder and more often. The ideal gas "
+            "model treats the particles as having no volume of their own and no "
+            "attraction for each other, which is a good approximation at "
+            "ordinary pressures and a poor one near condensation."
+        ),
+        symbolic=(
+            "PV = nRT, with R = 0.08206 L*atm/(mol*K). With V and n fixed, P/T "
+            "is constant, so P2 = P1 x T2 / T1 = 1.00 atm x 373.15 K / 298.15 K "
+            "= 1.25 atm."
+        ),
+        connector=(
+            "The absolute temperature is one quantity in all three: it is what "
+            "the bath thermometer reports once converted to kelvin, it is "
+            "proportional to the average kinetic energy of the particles "
+            "striking the wall, and it is the T the equation multiplies."
+        ),
+        pitfall=(
+            "The specific confusion is putting the Celsius reading into the "
+            "equation, which treats a scale with an arbitrary zero as though it "
+            "measured the particulate quantity directly. At 0 degrees Celsius "
+            "the law would then predict zero volume, meaning a balloon in a "
+            "freezer collapses to nothing. Particle motion does not stop at 0 "
+            "degrees Celsius. Only the kelvin scale puts its zero where the "
+            "particulate picture puts it, 273.15 degrees lower."
+        ),
+        katex="",
+        caption=(
+            "Picture a box of tiny hard spheres, far apart compared with their "
+            "own size, each moving in a straight line until it hits a wall or "
+            "another sphere and bounces. Warming the box adds no spheres and "
+            "changes no walls. It speeds every sphere up, so the drumming on "
+            "the walls gets harder and more frequent."
+        ),
+    ),
+    TriangleView(
+        node="GEN1.IMF",
         title="What boiling actually breaks",
         macroscopic=(
             "Water boils at 100 degrees Celsius. Hydrogen sulfide, a heavier "
@@ -703,8 +702,9 @@ _VIEWS: list[TriangleView] = [
             "leave, with the network intact behind it."
         ),
     ),
+    # ---------------- GEN2: General Chemistry II (5) ----------------
     TriangleView(
-        node="C.G2.EQUILIBRIUM",
+        node="GEN2.EQUILIBRIUM",
         title="Constant reading, running reaction",
         macroscopic=(
             "Seal hydrogen and iodine vapour in a flask at 448 degrees "
@@ -754,7 +754,7 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G2.LECHATELIER",
+        node="GEN2.LECHATELIER",
         title="A colour that moves with temperature",
         macroscopic=(
             "Two sealed glass tubes hold the same mixture of nitrogen dioxide "
@@ -802,7 +802,7 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G2.TITRATIONCURVE",
+        node="GEN2.TITRATIONWEAK",
         title="Where the curve goes vertical",
         macroscopic=(
             "Put 25.00 mL of 0.100 M acetic acid in a flask with a pH meter and "
@@ -855,7 +855,7 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G2.ENTROPY",
+        node="GEN2.ENTROPY",
         title="Heat that does not raise the temperature",
         macroscopic=(
             "An ice cube in a room at 20 degrees Celsius melts, and it never "
@@ -908,7 +908,7 @@ _VIEWS: list[TriangleView] = [
         ),
     ),
     TriangleView(
-        node="C.G2.ELECTROCHEM",
+        node="GEN2.GALVANIC",
         title="Sending the electrons the long way round",
         macroscopic=(
             "Drop a zinc strip into blue copper sulfate solution and it goes "

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from app.data.coverage import is_authored
 from app.data.curriculum import NODES, NODES_BY_CODE, prerequisites_of, topological_order
 from app.domains.adaptive.bkt import MASTERED_BAR, PREREQ_BAR, level_for
 
@@ -50,17 +51,26 @@ def plan_path(mastery: dict[str, float]) -> dict:
                 f"Ready now. Its prerequisites are in place and you are at "
                 f"{level_for(p)} on this."
             )
-            if recommended is None:
+            # The map is deliberately larger than the content: 312 nodes, and
+            # most have no lesson yet. A node with nothing behind it is not a
+            # recommendation, it is a dead end, so the first ready node that
+            # is also authored wins. Every node still appears in the plan,
+            # because the plan is the route and the route includes what has
+            # not been written yet.
+            if recommended is None and is_authored(code):
                 recommended = code
         plan.append(
             {
                 "node": code,
                 "title": node.title,
-                "tier": node.tier,
+                "course": node.course,
+                "unit": node.unit,
+                "number": node.number,
                 "p_known": round(p, 3),
                 "level": level_for(p),
                 "state": state,
                 "reason": reason,
+                "authored": is_authored(code),
             }
         )
     return {"plan": plan, "recommended_node": recommended}
@@ -106,5 +116,10 @@ def pick_next(
                 f"{NODES_BY_CODE[code].title.lower()} fresh.",
             )
 
-    first = NODES[0].code
+    # Last resort. The first node of the program is authored today, but that
+    # is a fact about content rather than a guarantee, so this looks rather
+    # than assumes.
+    first = next((n.code for n in NODES if is_authored(n.code)), None)
+    if first is None:
+        return Choice("", "unavailable", "No node has a lesson yet.")
     return Choice(first, "start", "Starting at the beginning of the course.")

@@ -71,7 +71,7 @@ def _gen_formula_molecular(seed: int) -> Variant:
             f"({mol.real_world_note})"
         ),
         key=mol.formula,
-        node="C.G1.FORMULA",
+        node="GEN1.EMPIRICAL",
         grader="formula",
         meta={"smiles": mol.smiles, "mode": "molecular", "name": mol.name},
     )
@@ -110,7 +110,7 @@ def _gen_formula_empirical(seed: int) -> Variant:
             "mass. Determine its empirical formula."
         ),
         key=key,
-        node="C.G1.FORMULA",
+        node="GEN1.EMPIRICAL",
         grader="formula",
         meta={"percents": percents, "mode": "empirical", "molecular": mol.formula},
     )
@@ -166,7 +166,7 @@ def _gen_balance_combustion(seed: int) -> Variant:
             "Give the coefficients in order."
         ),
         key=",".join(str(c) for c in coefficients),
-        node="C.G1.BALANCE",
+        node="GEN1.BALANCE",
         grader="balance",
         meta={"skeleton": skeleton},
     )
@@ -186,7 +186,7 @@ def _gen_balance_precipitation(seed: int) -> Variant:
             f"the reaction:\n{skeleton}\nGive the coefficients in order."
         ),
         key=",".join(str(c) for c in coefficients),
-        node="C.G1.BALANCE",
+        node="GEN1.BALANCE",
         grader="balance",
         meta={"skeleton": skeleton, "precipitate": precip},
     )
@@ -230,7 +230,7 @@ def _gen_stoich_mass_to_mass(seed: int) -> Variant:
             f"grams to {problem.sig_figs} significant figures."
         ),
         key=f"{solution.rounded_g:g}",
-        node="C.G1.STOICH",
+        node="GEN1.STOICH",
         grader="stoich",
         meta={
             "given_mass_g": given,
@@ -287,7 +287,7 @@ def _gen_equilibrium_weak_acid(seed: int) -> Variant:
             "valid before you rely on it."
         ),
         key=f"{solution.x:.4g}",
-        node="C.G2.EQUILIBRIUM",
+        node="GEN2.EQUILIBRIUM",
         grader="equilibrium",
         meta={
             "ka": ka,
@@ -347,7 +347,7 @@ def _gen_mc_subscript(seed: int) -> Variant:
             f"You are balancing {skeleton}. Which approach is chemically valid?"
         ),
         key="0",
-        node="C.G1.BALANCE",
+        node="GEN1.BALANCE",
         grader="mc",
         meta={"choices": choices, "correct_index": 0},
     )
@@ -368,43 +368,43 @@ REGISTRY: dict[str, dict[str, object]] = {
     "formula.molecular.v1": {
         "gen": _gen_formula_molecular,
         "ver": _ver_formula_molecular,
-        "node": "C.G1.FORMULA",
+        "node": "GEN1.EMPIRICAL",
         "grader": "formula",
     },
     "formula.empirical.v1": {
         "gen": _gen_formula_empirical,
         "ver": _ver_formula_empirical,
-        "node": "C.G1.FORMULA",
+        "node": "GEN1.EMPIRICAL",
         "grader": "formula",
     },
     "balance.combustion.v1": {
         "gen": _gen_balance_combustion,
         "ver": _ver_balance,
-        "node": "C.G1.BALANCE",
+        "node": "GEN1.BALANCE",
         "grader": "balance",
     },
     "balance.precipitation.v1": {
         "gen": _gen_balance_precipitation,
         "ver": _ver_balance,
-        "node": "C.G1.BALANCE",
+        "node": "GEN1.BALANCE",
         "grader": "balance",
     },
     "stoich.mass_to_mass.v1": {
         "gen": _gen_stoich_mass_to_mass,
         "ver": _ver_stoich,
-        "node": "C.G1.STOICH",
+        "node": "GEN1.STOICH",
         "grader": "stoich",
     },
     "equilibrium.weak_acid.v1": {
         "gen": _gen_equilibrium_weak_acid,
         "ver": _ver_equilibrium,
-        "node": "C.G2.EQUILIBRIUM",
+        "node": "GEN2.EQUILIBRIUM",
         "grader": "equilibrium",
     },
     "mc.subscript_coefficient.v1": {
         "gen": _gen_mc_subscript,
         "ver": _ver_mc,
-        "node": "C.G1.BALANCE",
+        "node": "GEN1.BALANCE",
         "grader": "mc",
     },
 }

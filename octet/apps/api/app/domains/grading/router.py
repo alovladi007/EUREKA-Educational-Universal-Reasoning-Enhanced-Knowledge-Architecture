@@ -156,23 +156,68 @@ async def hint(
 
 @router.get("/curriculum/nodes")
 async def curriculum_nodes(
-    tier: str | None = Query(None), _p: Principal = Depends(get_current_principal)
+    course: str | None = Query(None), _p: Principal = Depends(get_current_principal)
 ) -> dict:
-    """The knowledge graph. Nodes carry their tier and prerequisites."""
-    from app.data.curriculum import NODES, prerequisites_of, tier_counts
+    """The knowledge graph, as the course and unit hierarchy it is taught in.
 
-    nodes = [n for n in NODES if not tier or n.tier == tier]
+    A flat node list was serviceable at 60 nodes. At 312 it is not: the client
+    has to rebuild the course and unit grouping to render anything, and the
+    chapter mapping that makes a syllabus conversation possible would be lost
+    on the way. The nesting here is the structure, not a convenience.
+
+    course narrows the response to one course and is the whole program when
+    omitted. counts stays flat and unfiltered, so a client can show how much of
+    the program it is looking at.
+    """
+    from app.data.coverage import is_authored
+    from app.data.curriculum import (
+        COURSES,
+        NODES_BY_CODE,
+        UNITS_BY_ID,
+        course_counts,
+        prerequisites_of,
+    )
+
+    def node_row(code: str) -> dict:
+        n = NODES_BY_CODE[code]
+        return {
+            "code": n.code,
+            "title": n.title,
+            "description": n.description,
+            "number": n.number,
+            "kind": n.kind,
+            "course": n.course,
+            "unit": n.unit,
+            "prerequisites": prerequisites_of(n.code),
+            "lab_adjacent": n.lab_adjacent,
+            "triangle_eligible": n.triangle_eligible,
+            # The map is larger than the content on purpose, so the client is
+            # told which nodes are enterable rather than left to guess from a
+            # 404 on the lesson route.
+            "authored": is_authored(n.code),
+        }
+
+    selected = [c for c in COURSES if not course or c.id == course]
     return {
-        "nodes": [
+        "courses": [
             {
-                "code": n.code, "title": n.title, "tier": n.tier, "summary": n.summary,
-                "prerequisites": prerequisites_of(n.code),
-                "lab_adjacent": n.lab_adjacent,
-                "triangle_eligible": n.triangle_eligible,
+                "id": c.id,
+                "title": c.title,
+                "semester": c.semester,
+                "units": [
+                    {
+                        "id": u.id,
+                        "title": u.title,
+                        "chapters": u.chapters,
+                        "index": u.index,
+                        "nodes": [node_row(code) for code in u.node_codes],
+                    }
+                    for u in (UNITS_BY_ID[uid] for uid in c.unit_ids)
+                ],
             }
-            for n in nodes
+            for c in selected
         ],
-        "tier_counts": tier_counts(),
+        "counts": course_counts(),
     }
 
 
@@ -220,14 +265,14 @@ async def learning_path(
 
 @router.get("/diagnostic")
 async def diagnostic(
-    tier: str | None = Query(None),
+    course: str | None = Query(None),
     limit: int = Query(12, ge=1, le=30),
     principal: Principal = Depends(get_current_principal),
 ) -> dict:
     """Placement diagnostic: one item per covered node. Keys are not returned."""
     from app.domains.practice.diagnostic import build_diagnostic
 
-    items = build_diagnostic(principal.user_id, tier=tier, limit=limit)
+    items = build_diagnostic(principal.user_id, course=course, limit=limit)
     return {
         "items": [
             {"node": i.node, "template_id": i.template_id, "seed": i.seed,

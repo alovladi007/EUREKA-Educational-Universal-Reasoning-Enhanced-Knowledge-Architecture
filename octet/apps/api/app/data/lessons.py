@@ -1,8 +1,11 @@
-"""All lessons, merged from the per tier authoring files.
+"""All lessons, merged from the per course authoring files.
 
-One lesson per node is a compliance requirement, and app/compliance.py checks
-that this dict covers every node in the curriculum with all six arc parts
-present.
+Lessons are keyed by curriculum node code. app/compliance.py checks that every
+lesson lands on a real node with all six arc parts present.
+
+lessons_superseded.py is deliberately not merged here. It holds one lesson that
+the course based map has no distinct node for, retained for a human to fold in
+rather than deleted. Merging it would put two lessons on one node.
 """
 
 from __future__ import annotations
@@ -12,23 +15,16 @@ from app.data.lesson_types import Lesson
 LESSONS: dict[str, Lesson] = {}
 
 try:
-    from app.data.lessons_cf import LESSONS as _CF
+    from app.data.lessons_gen1 import LESSONS as _GEN1
 
-    LESSONS.update(_CF)
-except ImportError:  # pragma: no cover - tier not authored yet
+    LESSONS.update(_GEN1)
+except ImportError:  # pragma: no cover - course not authored yet
     pass
 
 try:
-    from app.data.lessons_g1 import LESSONS as _G1
+    from app.data.lessons_gen2 import LESSONS as _GEN2
 
-    LESSONS.update(_G1)
-except ImportError:  # pragma: no cover
-    pass
-
-try:
-    from app.data.lessons_g2 import LESSONS as _G2
-
-    LESSONS.update(_G2)
+    LESSONS.update(_GEN2)
 except ImportError:  # pragma: no cover
     pass
 

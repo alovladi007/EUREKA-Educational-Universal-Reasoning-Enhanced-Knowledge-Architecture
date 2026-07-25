@@ -1,0 +1,5076 @@
+{
+  "program": "OCTET",
+  "courses": [
+    {
+      "id": "GEN1",
+      "title": "General Chemistry I",
+      "semester": "Year 1 semester 1",
+      "units": [
+        {
+          "id": "GEN1-U1",
+          "title": "Matter and Measurement",
+          "chapters": "Ch 1",
+          "nodes": [
+            {
+              "id": "GEN1.SAFETY",
+              "kind": "concept",
+              "title": "Laboratory safety and GHS hazard literacy",
+              "description": "Reading a pictogram and a safety data sheet before touching anything.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.MATTER",
+              "kind": "concept",
+              "title": "Matter, pure substances and mixtures",
+              "description": "What counts as a substance, and how a mixture differs from a compound.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.PROPERTIES",
+              "kind": "concept",
+              "title": "Physical and chemical properties and changes",
+              "description": "Telling a change of state from a change of substance.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.STATES",
+              "kind": "concept",
+              "title": "States of matter at the particle level",
+              "description": "Solid, liquid and gas described by particle arrangement and motion.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.UNITS",
+              "kind": "computational",
+              "title": "SI units and derived units",
+              "description": "Base units, derived units, and prefixes as powers of ten.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.SIGFIGS",
+              "kind": "computational",
+              "title": "Significant figures, accuracy and precision",
+              "description": "Why a measurement carries a precision, and how it survives arithmetic.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.DIMANAL",
+              "kind": "computational",
+              "title": "Dimensional analysis",
+              "description": "Converting by carrying units through the algebra as cancelling factors.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.DENSITY",
+              "kind": "computational",
+              "title": "Density and derived quantities",
+              "description": "A ratio of two measurements, and the first real use of unit conversion.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.TEMPERATURE",
+              "kind": "computational",
+              "title": "Temperature scales",
+              "description": "Celsius, Kelvin and Fahrenheit, and which one the gas laws require.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U2",
+          "title": "Atoms, Molecules and Ions",
+          "chapters": "Ch 2",
+          "nodes": [
+            {
+              "id": "GEN1.ATOMICTHEORY",
+              "kind": "concept",
+              "title": "Atomic theory and the mass laws",
+              "description": "Conservation of mass, definite proportions, multiple proportions.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.SUBATOMIC",
+              "kind": "concept",
+              "title": "Subatomic particles and nuclear atom",
+              "description": "Protons, neutrons and electrons, and what each one determines.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.ISOTOPES",
+              "kind": "computational",
+              "title": "Atomic number, mass number and isotopes",
+              "description": "Same element, different neutron count, different mass.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.ATOMICMASS",
+              "kind": "computational",
+              "title": "Average atomic mass",
+              "description": "Why the tabulated mass is a weighted average and rarely a whole number.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.PERIODICTABLE",
+              "kind": "concept",
+              "title": "Reading the periodic table",
+              "description": "Groups, periods, metals and nonmetals, and what position predicts.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.IONS",
+              "kind": "concept",
+              "title": "Ions, charge and the octet pattern",
+              "description": "Which ions elements tend to form, and why the pattern is a summary.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.COMPOUNDTYPES",
+              "kind": "concept",
+              "title": "Ionic versus molecular compounds",
+              "description": "Two different kinds of substance behind two different kinds of formula.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.NOMENIONIC",
+              "kind": "computational",
+              "title": "Naming ionic compounds and polyatomic ions",
+              "description": "Cation first, anion second, and the polyatomic ions worth memorizing.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.NOMENMOLEC",
+              "kind": "computational",
+              "title": "Naming molecular compounds and acids",
+              "description": "Prefix naming for molecules, and the acid naming rules that follow anions.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U3",
+          "title": "Composition of Substances and Solutions",
+          "chapters": "Ch 3",
+          "nodes": [
+            {
+              "id": "GEN1.MOLE",
+              "kind": "computational",
+              "title": "The mole and Avogadro's number",
+              "description": "Counting by weighing, the central move of quantitative chemistry.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.MOLARMASS",
+              "kind": "computational",
+              "title": "Molar mass",
+              "description": "Converting between grams and moles for elements and compounds.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.PERCENTCOMP",
+              "kind": "computational",
+              "title": "Percent composition",
+              "description": "Turning a formula into mass fractions.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.EMPIRICAL",
+              "kind": "computational",
+              "title": "Empirical and molecular formulas",
+              "description": "Running percent composition backwards to recover a formula.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.MOLARITY",
+              "kind": "computational",
+              "title": "Molarity",
+              "description": "Moles per litre of solution, not of solvent.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.DILUTION",
+              "kind": "computational",
+              "title": "Dilution",
+              "description": "Adding solvent changes concentration and never the amount of solute.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.OTHERCONC",
+              "kind": "computational",
+              "title": "Other concentration units",
+              "description": "Mass percent, parts per million, and when each is the natural unit.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U4",
+          "title": "Stoichiometry of Chemical Reactions",
+          "chapters": "Ch 4",
+          "nodes": [
+            {
+              "id": "GEN1.CONSERVATION",
+              "kind": "concept",
+              "title": "Conservation of mass and atoms",
+              "description": "Reactions rearrange atoms and never create or destroy them.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.BALANCE",
+              "kind": "computational",
+              "title": "Balancing chemical equations",
+              "description": "Coefficients change, subscripts never do.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.REACTIONTYPES",
+              "kind": "concept",
+              "title": "Classifying reactions",
+              "description": "Precipitation, acid base and oxidation reduction as three patterns.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.SOLUBILITY",
+              "kind": "computational",
+              "title": "Solubility rules and precipitation",
+              "description": "Predicting which product leaves solution as a solid.",
+              "lab_adjacent": true,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.NETIONIC",
+              "kind": "computational",
+              "title": "Complete and net ionic equations",
+              "description": "Writing only the species that actually change.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.NEUTRALIZATION",
+              "kind": "computational",
+              "title": "Acid base neutralization reactions",
+              "description": "Acid plus base gives salt plus water, and what that means ionically.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.OXNUMBERS",
+              "kind": "computational",
+              "title": "Oxidation numbers and redox identification",
+              "description": "Bookkeeping that reveals which atoms gained and lost electrons.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.STOICH",
+              "kind": "computational",
+              "title": "Reaction stoichiometry",
+              "description": "Mass to moles, across the balanced equation, back to mass.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.LIMITING",
+              "kind": "computational",
+              "title": "Limiting reactant",
+              "description": "Which reactant runs out first, and why the other one does not matter.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.YIELD",
+              "kind": "computational",
+              "title": "Theoretical, actual and percent yield",
+              "description": "Why real yields fall short of the calculation.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.TITRATIONBASIC",
+              "kind": "computational",
+              "title": "Titration and quantitative analysis",
+              "description": "Using a known concentration to measure an unknown one.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U5",
+          "title": "Thermochemistry",
+          "chapters": "Ch 5",
+          "nodes": [
+            {
+              "id": "GEN1.ENERGYBASICS",
+              "kind": "concept",
+              "title": "Energy, heat, work and temperature",
+              "description": "Distinguishing thermal energy from temperature, and both from heat.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.FIRSTLAW",
+              "kind": "concept",
+              "title": "System, surroundings and the first law",
+              "description": "Energy moves between system and surroundings and is conserved overall.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.HEATCAPACITY",
+              "kind": "computational",
+              "title": "Heat capacity and specific heat",
+              "description": "How much energy a substance absorbs per degree.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.CALORIMETRY",
+              "kind": "computational",
+              "title": "Calorimetry",
+              "description": "Measuring energy change by watching temperature change.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.ENTHALPY",
+              "kind": "computational",
+              "title": "Enthalpy of reaction",
+              "description": "Heat at constant pressure, and the sign convention that trips everyone.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.THERMOSTOICH",
+              "kind": "computational",
+              "title": "Thermochemical equations",
+              "description": "Enthalpy scales with the amounts in the balanced equation.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.HESS",
+              "kind": "computational",
+              "title": "Hess's law",
+              "description": "Enthalpy is a state function, so routes can be added.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.FORMATION",
+              "kind": "computational",
+              "title": "Standard enthalpies of formation",
+              "description": "One table of reference values that gives any reaction enthalpy.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.BONDENTHALPY",
+              "kind": "computational",
+              "title": "Bond enthalpies",
+              "description": "Estimating reaction enthalpy from bonds broken and bonds formed.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U6",
+          "title": "Electronic Structure and Periodic Properties",
+          "chapters": "Ch 6",
+          "nodes": [
+            {
+              "id": "GEN1.LIGHT",
+              "kind": "concept",
+              "title": "Electromagnetic radiation and quantized energy",
+              "description": "Wavelength, frequency and the photon.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.SPECTRA",
+              "kind": "concept",
+              "title": "Line spectra and the Bohr model",
+              "description": "Discrete lines as evidence for discrete energy levels.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.QUANTUMMODEL",
+              "kind": "concept",
+              "title": "The quantum mechanical model and orbitals",
+              "description": "Orbitals as probability distributions, not paths.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.QUANTUMNUMBERS",
+              "kind": "computational",
+              "title": "Quantum numbers and orbital shapes",
+              "description": "The four numbers that address an electron.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.ELECTRONCONFIG",
+              "kind": "computational",
+              "title": "Electron configurations",
+              "description": "Filling orbitals in order, with orbital diagrams.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.CONFIGEXCEPTIONS",
+              "kind": "computational",
+              "title": "Exceptions and ion configurations",
+              "description": "Chromium, copper, and which electrons leave first when ions form.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.RADIUS",
+              "kind": "concept",
+              "title": "Periodic trend: atomic and ionic radius",
+              "description": "Shielding and effective nuclear charge explain the pattern.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.IONIZATION",
+              "kind": "concept",
+              "title": "Periodic trend: ionization energy and electron affinity",
+              "description": "The energy cost of removing an electron, and the exceptions.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.ELECTRONEG",
+              "kind": "concept",
+              "title": "Electronegativity and metallic character",
+              "description": "The trend that drives bond polarity in every later unit.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U7",
+          "title": "Chemical Bonding and Molecular Geometry",
+          "chapters": "Ch 7",
+          "nodes": [
+            {
+              "id": "GEN1.IONICBOND",
+              "kind": "concept",
+              "title": "Ionic bonding and lattice energy",
+              "description": "Lattices rather than molecules, and what holds them together.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.COVALENTBOND",
+              "kind": "concept",
+              "title": "Covalent bonding and bond polarity",
+              "description": "Shared electrons, and what unequal sharing does.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.LEWIS",
+              "kind": "computational",
+              "title": "Lewis structures",
+              "description": "Accounting for valence electrons on paper.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.FORMALCHARGE",
+              "kind": "computational",
+              "title": "Formal charge",
+              "description": "Choosing between structures that both satisfy the octet.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.RESONANCE",
+              "kind": "concept",
+              "title": "Resonance",
+              "description": "One structure is not enough, and the real molecule is neither.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.OCTETEXCEPTIONS",
+              "kind": "computational",
+              "title": "Exceptions to the octet rule",
+              "description": "Incomplete octets, expanded octets and odd electron species.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.BONDPROPERTIES",
+              "kind": "concept",
+              "title": "Bond order, length and strength",
+              "description": "Three properties that move together.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.VSEPR",
+              "kind": "computational",
+              "title": "VSEPR and molecular geometry",
+              "description": "Electron domains set the shape, and shape sets almost everything else.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.POLARITY",
+              "kind": "computational",
+              "title": "Molecular polarity and dipole moment",
+              "description": "Bond polarity plus geometry gives molecular polarity.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U8",
+          "title": "Advanced Theories of Covalent Bonding",
+          "chapters": "Ch 8",
+          "nodes": [
+            {
+              "id": "GEN1.VALENCEBOND",
+              "kind": "concept",
+              "title": "Valence bond theory and orbital overlap",
+              "description": "Bonds as overlapping atomic orbitals.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.HYBRIDIZATION",
+              "kind": "computational",
+              "title": "Hybridization",
+              "description": "sp, sp2 and sp3 orbitals, and how geometry predicts them.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.SIGMAPI",
+              "kind": "concept",
+              "title": "Sigma and pi bonds and multiple bonds",
+              "description": "Why a double bond does not rotate.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.MOTHEORY",
+              "kind": "concept",
+              "title": "Molecular orbital theory",
+              "description": "Bonding and antibonding orbitals from combined atomic orbitals.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.MODIAGRAMS",
+              "kind": "computational",
+              "title": "MO diagrams, bond order and magnetism",
+              "description": "Filling the diagram to predict stability and paramagnetism.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U9",
+          "title": "Gases",
+          "chapters": "Ch 9",
+          "nodes": [
+            {
+              "id": "GEN1.PRESSURE",
+              "kind": "computational",
+              "title": "Pressure and its measurement",
+              "description": "What a barometer measures and the units it is reported in.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.SIMPLEGASLAWS",
+              "kind": "computational",
+              "title": "The simple gas laws",
+              "description": "Boyle, Charles and Avogadro as three slices of one relationship.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.IDEALGAS",
+              "kind": "computational",
+              "title": "The ideal gas law",
+              "description": "One equation tying pressure, volume, temperature and amount.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.GASDENSITY",
+              "kind": "computational",
+              "title": "Gas density and molar mass",
+              "description": "Determining a molar mass from a density measurement.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.PARTIALPRESSURE",
+              "kind": "computational",
+              "title": "Dalton's law and partial pressures",
+              "description": "Mixtures of gases, including gas collected over water.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.GASSTOICH",
+              "kind": "computational",
+              "title": "Gas stoichiometry",
+              "description": "Reactions that produce or consume gases.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.KMT",
+              "kind": "concept",
+              "title": "Kinetic molecular theory",
+              "description": "The particle model that explains why the gas laws work.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.EFFUSION",
+              "kind": "computational",
+              "title": "Effusion, diffusion and Graham's law",
+              "description": "Lighter molecules move faster at the same temperature.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.REALGASES",
+              "kind": "concept",
+              "title": "Real gases and the van der Waals equation",
+              "description": "Where the ideal model fails, and the two corrections that fix it.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U10",
+          "title": "Liquids and Solids",
+          "chapters": "Ch 10",
+          "nodes": [
+            {
+              "id": "GEN1.IMF",
+              "kind": "concept",
+              "title": "Intermolecular forces",
+              "description": "Dispersion, dipole dipole and hydrogen bonding, ranked.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.IMFPROPERTIES",
+              "kind": "concept",
+              "title": "Properties that follow from IMF",
+              "description": "Boiling point, viscosity, surface tension and capillary action.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.PHASECHANGE",
+              "kind": "computational",
+              "title": "Phase transitions and heating curves",
+              "description": "Energy goes into temperature or into the transition, never both.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.VAPORPRESSURE",
+              "kind": "computational",
+              "title": "Vapor pressure and Clausius Clapeyron",
+              "description": "Escaping tendency and its temperature dependence.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.PHASEDIAGRAM",
+              "kind": "concept",
+              "title": "Phase diagrams",
+              "description": "Reading the state of a substance off pressure and temperature.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.SOLIDTYPES",
+              "kind": "concept",
+              "title": "Types of solids",
+              "description": "Ionic, molecular, metallic and covalent network, and their properties.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.UNITCELLS",
+              "kind": "computational",
+              "title": "Crystal lattices and unit cells",
+              "description": "Packing, coordination number and density from a unit cell.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN1-U11",
+          "title": "Solutions and Colloids",
+          "chapters": "Ch 11",
+          "nodes": [
+            {
+              "id": "GEN1.DISSOLUTION",
+              "kind": "concept",
+              "title": "The dissolution process",
+              "description": "Solute solute, solvent solvent and solute solvent interactions.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN1.SOLUBILITYFACTORS",
+              "kind": "computational",
+              "title": "Solubility and saturation",
+              "description": "Saturated, unsaturated and supersaturated, and what shifts them.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.HENRY",
+              "kind": "computational",
+              "title": "Henry's law and gas solubility",
+              "description": "Pressure dependence of dissolved gas.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.MOLALITY",
+              "kind": "computational",
+              "title": "Molality and mole fraction",
+              "description": "Concentration units that do not change with temperature.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.COLLIGATIVE",
+              "kind": "computational",
+              "title": "Colligative properties",
+              "description": "Vapor pressure lowering, boiling point elevation, freezing point depression.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.OSMOSIS",
+              "kind": "computational",
+              "title": "Osmotic pressure and the van't Hoff factor",
+              "description": "Why an electrolyte counts more than once.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN1.COLLOIDS",
+              "kind": "concept",
+              "title": "Colloids and suspensions",
+              "description": "Between solution and mixture, and how to tell.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        }
+      ],
+      "unit_prereqs": {
+        "GEN1-U2": [
+          "GEN1.MATTER"
+        ],
+        "GEN1-U3": [
+          "GEN1.NOMENMOLEC",
+          "GEN1.DIMANAL"
+        ],
+        "GEN1-U4": [
+          "GEN1.MOLARMASS"
+        ],
+        "GEN1-U5": [
+          "GEN1.STOICH",
+          "GEN1.TEMPERATURE"
+        ],
+        "GEN1-U6": [
+          "GEN1.PERIODICTABLE"
+        ],
+        "GEN1-U7": [
+          "GEN1.ELECTRONEG",
+          "GEN1.IONS"
+        ],
+        "GEN1-U8": [
+          "GEN1.VSEPR"
+        ],
+        "GEN1-U9": [
+          "GEN1.MOLE",
+          "GEN1.TEMPERATURE"
+        ],
+        "GEN1-U10": [
+          "GEN1.POLARITY",
+          "GEN1.KMT"
+        ],
+        "GEN1-U11": [
+          "GEN1.IMF",
+          "GEN1.MOLARITY"
+        ]
+      },
+      "extra_edges": [
+        [
+          "GEN1.SIGFIGS",
+          "GEN1.DENSITY"
+        ],
+        [
+          "GEN1.ATOMICMASS",
+          "GEN1.MOLE"
+        ],
+        [
+          "GEN1.COMPOUNDTYPES",
+          "GEN1.EMPIRICAL"
+        ],
+        [
+          "GEN1.MOLARITY",
+          "GEN1.TITRATIONBASIC"
+        ],
+        [
+          "GEN1.BALANCE",
+          "GEN1.STOICH"
+        ],
+        [
+          "GEN1.LEWIS",
+          "GEN1.VSEPR"
+        ],
+        [
+          "GEN1.HYBRIDIZATION",
+          "GEN1.SIGMAPI"
+        ],
+        [
+          "GEN1.IDEALGAS",
+          "GEN1.GASSTOICH"
+        ],
+        [
+          "GEN1.STOICH",
+          "GEN1.GASSTOICH"
+        ],
+        [
+          "GEN1.PHASECHANGE",
+          "GEN1.PHASEDIAGRAM"
+        ],
+        [
+          "GEN1.HEATCAPACITY",
+          "GEN1.PHASECHANGE"
+        ]
+      ],
+      "misconceptions": [
+        {
+          "code": "GEN1M01",
+          "name": "Coefficient and subscript confusion",
+          "description": "Balances an equation by changing subscripts, which changes the substance.",
+          "routes_to": "GEN1.BALANCE"
+        },
+        {
+          "code": "GEN1M02",
+          "name": "Mass not conserved with gases",
+          "description": "Believes mass is lost when a product is a gas that leaves the vessel.",
+          "routes_to": "GEN1.CONSERVATION"
+        },
+        {
+          "code": "GEN1M03",
+          "name": "Ionic compounds as molecules",
+          "description": "Pictures NaCl as discrete NaCl molecules rather than a lattice.",
+          "routes_to": "GEN1.IONICBOND"
+        },
+        {
+          "code": "GEN1M04",
+          "name": "Electron shells as planetary orbits",
+          "description": "Treats orbitals as fixed circular paths rather than probability regions.",
+          "routes_to": "GEN1.QUANTUMMODEL"
+        },
+        {
+          "code": "GEN1M05",
+          "name": "Bond breaking releases energy",
+          "description": "Believes breaking bonds is exothermic; it always costs energy.",
+          "routes_to": "GEN1.BONDENTHALPY"
+        },
+        {
+          "code": "GEN1M06",
+          "name": "Significant figures as decoration",
+          "description": "Reports every digit the calculator shows, or rounds arbitrarily.",
+          "routes_to": "GEN1.SIGFIGS"
+        },
+        {
+          "code": "GEN1M07",
+          "name": "Molarity per litre of solvent",
+          "description": "Computes molarity using solvent volume instead of final solution volume.",
+          "routes_to": "GEN1.MOLARITY"
+        },
+        {
+          "code": "GEN1M08",
+          "name": "Limiting reactant is the smaller mass",
+          "description": "Picks the reactant with less mass instead of comparing mole ratios.",
+          "routes_to": "GEN1.LIMITING"
+        },
+        {
+          "code": "GEN1M09",
+          "name": "Heat and temperature conflated",
+          "description": "Uses heat and temperature interchangeably, so calorimetry has no meaning.",
+          "routes_to": "GEN1.ENERGYBASICS"
+        },
+        {
+          "code": "GEN1M10",
+          "name": "Electron domains equal atoms",
+          "description": "Counts only bonded atoms in VSEPR and ignores lone pairs.",
+          "routes_to": "GEN1.VSEPR"
+        },
+        {
+          "code": "GEN1M11",
+          "name": "Polar bonds mean polar molecule",
+          "description": "Ignores geometry, so symmetric molecules are called polar.",
+          "routes_to": "GEN1.POLARITY"
+        },
+        {
+          "code": "GEN1M12",
+          "name": "Hydrogen bonding as a covalent bond",
+          "description": "Treats hydrogen bonding as bonding within the molecule.",
+          "routes_to": "GEN1.IMF"
+        },
+        {
+          "code": "GEN1M13",
+          "name": "Intramolecular forces break on boiling",
+          "description": "Believes covalent bonds break when a molecular substance boils.",
+          "routes_to": "GEN1.IMFPROPERTIES"
+        },
+        {
+          "code": "GEN1M14",
+          "name": "Resonance as oscillation",
+          "description": "Believes the molecule flips between resonance structures over time.",
+          "routes_to": "GEN1.RESONANCE"
+        },
+        {
+          "code": "GEN1M15",
+          "name": "Ideal gas law without Kelvin",
+          "description": "Substitutes Celsius temperature into gas law calculations.",
+          "routes_to": "GEN1.IDEALGAS"
+        }
+      ],
+      "edges": [
+        [
+          "GEN1.SAFETY",
+          "GEN1.MATTER"
+        ],
+        [
+          "GEN1.MATTER",
+          "GEN1.PROPERTIES"
+        ],
+        [
+          "GEN1.PROPERTIES",
+          "GEN1.STATES"
+        ],
+        [
+          "GEN1.STATES",
+          "GEN1.UNITS"
+        ],
+        [
+          "GEN1.UNITS",
+          "GEN1.SIGFIGS"
+        ],
+        [
+          "GEN1.SIGFIGS",
+          "GEN1.DIMANAL"
+        ],
+        [
+          "GEN1.DIMANAL",
+          "GEN1.DENSITY"
+        ],
+        [
+          "GEN1.DENSITY",
+          "GEN1.TEMPERATURE"
+        ],
+        [
+          "GEN1.ATOMICTHEORY",
+          "GEN1.SUBATOMIC"
+        ],
+        [
+          "GEN1.SUBATOMIC",
+          "GEN1.ISOTOPES"
+        ],
+        [
+          "GEN1.ISOTOPES",
+          "GEN1.ATOMICMASS"
+        ],
+        [
+          "GEN1.ATOMICMASS",
+          "GEN1.PERIODICTABLE"
+        ],
+        [
+          "GEN1.PERIODICTABLE",
+          "GEN1.IONS"
+        ],
+        [
+          "GEN1.IONS",
+          "GEN1.COMPOUNDTYPES"
+        ],
+        [
+          "GEN1.COMPOUNDTYPES",
+          "GEN1.NOMENIONIC"
+        ],
+        [
+          "GEN1.NOMENIONIC",
+          "GEN1.NOMENMOLEC"
+        ],
+        [
+          "GEN1.MATTER",
+          "GEN1.ATOMICTHEORY"
+        ],
+        [
+          "GEN1.MOLE",
+          "GEN1.MOLARMASS"
+        ],
+        [
+          "GEN1.MOLARMASS",
+          "GEN1.PERCENTCOMP"
+        ],
+        [
+          "GEN1.PERCENTCOMP",
+          "GEN1.EMPIRICAL"
+        ],
+        [
+          "GEN1.EMPIRICAL",
+          "GEN1.MOLARITY"
+        ],
+        [
+          "GEN1.MOLARITY",
+          "GEN1.DILUTION"
+        ],
+        [
+          "GEN1.DILUTION",
+          "GEN1.OTHERCONC"
+        ],
+        [
+          "GEN1.NOMENMOLEC",
+          "GEN1.MOLE"
+        ],
+        [
+          "GEN1.DIMANAL",
+          "GEN1.MOLE"
+        ],
+        [
+          "GEN1.CONSERVATION",
+          "GEN1.BALANCE"
+        ],
+        [
+          "GEN1.BALANCE",
+          "GEN1.REACTIONTYPES"
+        ],
+        [
+          "GEN1.REACTIONTYPES",
+          "GEN1.SOLUBILITY"
+        ],
+        [
+          "GEN1.SOLUBILITY",
+          "GEN1.NETIONIC"
+        ],
+        [
+          "GEN1.NETIONIC",
+          "GEN1.NEUTRALIZATION"
+        ],
+        [
+          "GEN1.NEUTRALIZATION",
+          "GEN1.OXNUMBERS"
+        ],
+        [
+          "GEN1.OXNUMBERS",
+          "GEN1.STOICH"
+        ],
+        [
+          "GEN1.STOICH",
+          "GEN1.LIMITING"
+        ],
+        [
+          "GEN1.LIMITING",
+          "GEN1.YIELD"
+        ],
+        [
+          "GEN1.YIELD",
+          "GEN1.TITRATIONBASIC"
+        ],
+        [
+          "GEN1.MOLARMASS",
+          "GEN1.CONSERVATION"
+        ],
+        [
+          "GEN1.ENERGYBASICS",
+          "GEN1.FIRSTLAW"
+        ],
+        [
+          "GEN1.FIRSTLAW",
+          "GEN1.HEATCAPACITY"
+        ],
+        [
+          "GEN1.HEATCAPACITY",
+          "GEN1.CALORIMETRY"
+        ],
+        [
+          "GEN1.CALORIMETRY",
+          "GEN1.ENTHALPY"
+        ],
+        [
+          "GEN1.ENTHALPY",
+          "GEN1.THERMOSTOICH"
+        ],
+        [
+          "GEN1.THERMOSTOICH",
+          "GEN1.HESS"
+        ],
+        [
+          "GEN1.HESS",
+          "GEN1.FORMATION"
+        ],
+        [
+          "GEN1.FORMATION",
+          "GEN1.BONDENTHALPY"
+        ],
+        [
+          "GEN1.STOICH",
+          "GEN1.ENERGYBASICS"
+        ],
+        [
+          "GEN1.TEMPERATURE",
+          "GEN1.ENERGYBASICS"
+        ],
+        [
+          "GEN1.LIGHT",
+          "GEN1.SPECTRA"
+        ],
+        [
+          "GEN1.SPECTRA",
+          "GEN1.QUANTUMMODEL"
+        ],
+        [
+          "GEN1.QUANTUMMODEL",
+          "GEN1.QUANTUMNUMBERS"
+        ],
+        [
+          "GEN1.QUANTUMNUMBERS",
+          "GEN1.ELECTRONCONFIG"
+        ],
+        [
+          "GEN1.ELECTRONCONFIG",
+          "GEN1.CONFIGEXCEPTIONS"
+        ],
+        [
+          "GEN1.CONFIGEXCEPTIONS",
+          "GEN1.RADIUS"
+        ],
+        [
+          "GEN1.RADIUS",
+          "GEN1.IONIZATION"
+        ],
+        [
+          "GEN1.IONIZATION",
+          "GEN1.ELECTRONEG"
+        ],
+        [
+          "GEN1.PERIODICTABLE",
+          "GEN1.LIGHT"
+        ],
+        [
+          "GEN1.IONICBOND",
+          "GEN1.COVALENTBOND"
+        ],
+        [
+          "GEN1.COVALENTBOND",
+          "GEN1.LEWIS"
+        ],
+        [
+          "GEN1.LEWIS",
+          "GEN1.FORMALCHARGE"
+        ],
+        [
+          "GEN1.FORMALCHARGE",
+          "GEN1.RESONANCE"
+        ],
+        [
+          "GEN1.RESONANCE",
+          "GEN1.OCTETEXCEPTIONS"
+        ],
+        [
+          "GEN1.OCTETEXCEPTIONS",
+          "GEN1.BONDPROPERTIES"
+        ],
+        [
+          "GEN1.BONDPROPERTIES",
+          "GEN1.VSEPR"
+        ],
+        [
+          "GEN1.VSEPR",
+          "GEN1.POLARITY"
+        ],
+        [
+          "GEN1.ELECTRONEG",
+          "GEN1.IONICBOND"
+        ],
+        [
+          "GEN1.IONS",
+          "GEN1.IONICBOND"
+        ],
+        [
+          "GEN1.VALENCEBOND",
+          "GEN1.HYBRIDIZATION"
+        ],
+        [
+          "GEN1.HYBRIDIZATION",
+          "GEN1.SIGMAPI"
+        ],
+        [
+          "GEN1.SIGMAPI",
+          "GEN1.MOTHEORY"
+        ],
+        [
+          "GEN1.MOTHEORY",
+          "GEN1.MODIAGRAMS"
+        ],
+        [
+          "GEN1.VSEPR",
+          "GEN1.VALENCEBOND"
+        ],
+        [
+          "GEN1.PRESSURE",
+          "GEN1.SIMPLEGASLAWS"
+        ],
+        [
+          "GEN1.SIMPLEGASLAWS",
+          "GEN1.IDEALGAS"
+        ],
+        [
+          "GEN1.IDEALGAS",
+          "GEN1.GASDENSITY"
+        ],
+        [
+          "GEN1.GASDENSITY",
+          "GEN1.PARTIALPRESSURE"
+        ],
+        [
+          "GEN1.PARTIALPRESSURE",
+          "GEN1.GASSTOICH"
+        ],
+        [
+          "GEN1.GASSTOICH",
+          "GEN1.KMT"
+        ],
+        [
+          "GEN1.KMT",
+          "GEN1.EFFUSION"
+        ],
+        [
+          "GEN1.EFFUSION",
+          "GEN1.REALGASES"
+        ],
+        [
+          "GEN1.MOLE",
+          "GEN1.PRESSURE"
+        ],
+        [
+          "GEN1.TEMPERATURE",
+          "GEN1.PRESSURE"
+        ],
+        [
+          "GEN1.IMF",
+          "GEN1.IMFPROPERTIES"
+        ],
+        [
+          "GEN1.IMFPROPERTIES",
+          "GEN1.PHASECHANGE"
+        ],
+        [
+          "GEN1.PHASECHANGE",
+          "GEN1.VAPORPRESSURE"
+        ],
+        [
+          "GEN1.VAPORPRESSURE",
+          "GEN1.PHASEDIAGRAM"
+        ],
+        [
+          "GEN1.PHASEDIAGRAM",
+          "GEN1.SOLIDTYPES"
+        ],
+        [
+          "GEN1.SOLIDTYPES",
+          "GEN1.UNITCELLS"
+        ],
+        [
+          "GEN1.POLARITY",
+          "GEN1.IMF"
+        ],
+        [
+          "GEN1.KMT",
+          "GEN1.IMF"
+        ],
+        [
+          "GEN1.DISSOLUTION",
+          "GEN1.SOLUBILITYFACTORS"
+        ],
+        [
+          "GEN1.SOLUBILITYFACTORS",
+          "GEN1.HENRY"
+        ],
+        [
+          "GEN1.HENRY",
+          "GEN1.MOLALITY"
+        ],
+        [
+          "GEN1.MOLALITY",
+          "GEN1.COLLIGATIVE"
+        ],
+        [
+          "GEN1.COLLIGATIVE",
+          "GEN1.OSMOSIS"
+        ],
+        [
+          "GEN1.OSMOSIS",
+          "GEN1.COLLOIDS"
+        ],
+        [
+          "GEN1.IMF",
+          "GEN1.DISSOLUTION"
+        ],
+        [
+          "GEN1.MOLARITY",
+          "GEN1.DISSOLUTION"
+        ],
+        [
+          "GEN1.SIGFIGS",
+          "GEN1.DENSITY"
+        ],
+        [
+          "GEN1.ATOMICMASS",
+          "GEN1.MOLE"
+        ],
+        [
+          "GEN1.COMPOUNDTYPES",
+          "GEN1.EMPIRICAL"
+        ],
+        [
+          "GEN1.MOLARITY",
+          "GEN1.TITRATIONBASIC"
+        ],
+        [
+          "GEN1.BALANCE",
+          "GEN1.STOICH"
+        ],
+        [
+          "GEN1.LEWIS",
+          "GEN1.VSEPR"
+        ],
+        [
+          "GEN1.HYBRIDIZATION",
+          "GEN1.SIGMAPI"
+        ],
+        [
+          "GEN1.IDEALGAS",
+          "GEN1.GASSTOICH"
+        ],
+        [
+          "GEN1.STOICH",
+          "GEN1.GASSTOICH"
+        ],
+        [
+          "GEN1.PHASECHANGE",
+          "GEN1.PHASEDIAGRAM"
+        ],
+        [
+          "GEN1.HEATCAPACITY",
+          "GEN1.PHASECHANGE"
+        ]
+      ]
+    },
+    {
+      "id": "GEN2",
+      "title": "General Chemistry II",
+      "semester": "Year 1 semester 2",
+      "units": [
+        {
+          "id": "GEN2-U1",
+          "title": "Chemical Kinetics",
+          "chapters": "Ch 12",
+          "nodes": [
+            {
+              "id": "GEN2.RATES",
+              "kind": "concept",
+              "title": "Reaction rates and rate expressions",
+              "description": "Rate as change per unit time, tied to coefficients.",
+              "lab_adjacent": true,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.RATEFACTORS",
+              "kind": "concept",
+              "title": "Factors that change reaction rate",
+              "description": "Concentration, temperature, surface area and catalyst.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.RATELAW",
+              "kind": "computational",
+              "title": "Rate laws and reaction order",
+              "description": "Order is measured, never read off the balanced equation.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.INITIALRATES",
+              "kind": "computational",
+              "title": "Determining a rate law from initial rates",
+              "description": "Comparing trials in which one concentration changes at a time.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.INTEGRATED",
+              "kind": "computational",
+              "title": "Integrated rate laws",
+              "description": "Zero, first and second order concentration versus time.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.HALFLIFE",
+              "kind": "computational",
+              "title": "Half life",
+              "description": "The half life that is constant, and the two that are not.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.COLLISION",
+              "kind": "concept",
+              "title": "Collision theory and activation energy",
+              "description": "Why most collisions do not react.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.ARRHENIUS",
+              "kind": "computational",
+              "title": "The Arrhenius equation",
+              "description": "Temperature dependence of the rate constant.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.MECHANISM",
+              "kind": "concept",
+              "title": "Reaction mechanisms and elementary steps",
+              "description": "A balanced equation is a summary, the mechanism is the story.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.RDS",
+              "kind": "computational",
+              "title": "Rate determining step and mechanism validation",
+              "description": "A proposed mechanism must reproduce the observed rate law.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.CATALYSIS",
+              "kind": "concept",
+              "title": "Catalysis",
+              "description": "Lowering activation energy without being consumed.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U2",
+          "title": "Chemical Equilibrium",
+          "chapters": "Ch 13",
+          "nodes": [
+            {
+              "id": "GEN2.EQUILIBRIUM",
+              "kind": "concept",
+              "title": "The equilibrium state",
+              "description": "Forward and reverse rates equal, concentrations constant, reaction running.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.KEXPRESSION",
+              "kind": "computational",
+              "title": "The equilibrium constant",
+              "description": "Writing K from a balanced equation.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.KCKP",
+              "kind": "computational",
+              "title": "Kc, Kp and the relationship between them",
+              "description": "Concentration and pressure constants, and the delta n exponent.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.HETEROGENEOUS",
+              "kind": "computational",
+              "title": "Heterogeneous equilibria",
+              "description": "Why pure solids and liquids are left out of K.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.MANIPULATEK",
+              "kind": "computational",
+              "title": "Manipulating equilibrium constants",
+              "description": "Reversing, scaling and adding reactions.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.QUOTIENT",
+              "kind": "computational",
+              "title": "The reaction quotient and direction of shift",
+              "description": "Comparing Q to K tells you which way the reaction runs.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.ICE",
+              "kind": "computational",
+              "title": "ICE tables",
+              "description": "The bookkeeping that turns an equilibrium into one unknown.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.LECHATELIER",
+              "kind": "concept",
+              "title": "Le Chatelier's principle",
+              "description": "Stress shifts position, and only temperature changes K.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.KTEMPERATURE",
+              "kind": "computational",
+              "title": "Temperature dependence of K",
+              "description": "Treating heat as a reactant or product, and what that predicts.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U3",
+          "title": "Acid Base Equilibria",
+          "chapters": "Ch 14",
+          "nodes": [
+            {
+              "id": "GEN2.BRONSTED",
+              "kind": "concept",
+              "title": "Bronsted Lowry acids, bases and conjugate pairs",
+              "description": "Proton donors and acceptors, and what conjugate really means.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.AMPHOTERIC",
+              "kind": "concept",
+              "title": "Amphoteric species and water autoionization",
+              "description": "Water on both sides, and the Kw that follows.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.PH",
+              "kind": "computational",
+              "title": "pH, pOH and the pH scale",
+              "description": "A logarithmic scale, and the reason it has the range it does.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.STRONGACID",
+              "kind": "computational",
+              "title": "Strong acids and strong bases",
+              "description": "Complete ionization, and the short list worth memorizing.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.WEAKACID",
+              "kind": "computational",
+              "title": "Weak acid equilibria and Ka",
+              "description": "Partial ionization solved as an equilibrium problem.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.WEAKBASE",
+              "kind": "computational",
+              "title": "Weak base equilibria and Kb",
+              "description": "The same problem run from the base side.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.KAKB",
+              "kind": "computational",
+              "title": "The relationship between Ka and Kb",
+              "description": "Conjugate pairs multiply to Kw.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.APPROXIMATION",
+              "kind": "computational",
+              "title": "Percent ionization and the small x approximation",
+              "description": "When dropping x is honest, and how to check.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.POLYPROTIC",
+              "kind": "computational",
+              "title": "Polyprotic acids",
+              "description": "Sequential ionizations that get progressively harder.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.SALTHYDROLYSIS",
+              "kind": "computational",
+              "title": "Salt solutions and hydrolysis",
+              "description": "Predicting whether a salt solution is acidic, basic or neutral.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.ACIDSTRUCTURE",
+              "kind": "concept",
+              "title": "Acid strength and molecular structure",
+              "description": "Why some acids are stronger, from bond strength and stability.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.LEWISACID",
+              "kind": "concept",
+              "title": "Lewis acids and bases",
+              "description": "Electron pair acceptors and donors, the definition organic chemistry uses.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U4",
+          "title": "Buffers and Titration",
+          "chapters": "Ch 14",
+          "nodes": [
+            {
+              "id": "GEN2.COMMONION",
+              "kind": "computational",
+              "title": "The common ion effect",
+              "description": "Adding a shared ion suppresses ionization.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.BUFFER",
+              "kind": "concept",
+              "title": "Buffer composition and action",
+              "description": "Why some solutions resist pH change.",
+              "lab_adjacent": true,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.HENDERSON",
+              "kind": "computational",
+              "title": "Henderson Hasselbalch and buffer capacity",
+              "description": "The shortcut, its assumptions, and where it fails.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.BUFFERPREP",
+              "kind": "computational",
+              "title": "Preparing a buffer at a target pH",
+              "description": "Choosing the acid, then the ratio.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.TITRATIONSTRONG",
+              "kind": "computational",
+              "title": "Strong acid strong base titration curves",
+              "description": "The shape, and why the equivalence point is at pH 7.",
+              "lab_adjacent": true,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.TITRATIONWEAK",
+              "kind": "computational",
+              "title": "Weak acid strong base titration curves",
+              "description": "The buffer region, and why equivalence is not at pH 7.",
+              "lab_adjacent": true,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.HALFEQUIV",
+              "kind": "computational",
+              "title": "Half equivalence and equivalence points",
+              "description": "Reading pKa straight off the curve.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.INDICATORS",
+              "kind": "concept",
+              "title": "Indicators and endpoint selection",
+              "description": "Matching indicator range to the equivalence pH.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U5",
+          "title": "Solubility and Complex Ion Equilibria",
+          "chapters": "Ch 15",
+          "nodes": [
+            {
+              "id": "GEN2.KSP",
+              "kind": "computational",
+              "title": "Ksp and molar solubility",
+              "description": "Equilibrium applied to sparingly soluble salts.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.KSPCOMMONION",
+              "kind": "computational",
+              "title": "The common ion effect on solubility",
+              "description": "Why a salt is less soluble in a solution of its own ion.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.PRECIPITATION",
+              "kind": "computational",
+              "title": "Predicting precipitation with Q and Ksp",
+              "description": "Will it precipitate, and at what concentration.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.PHSOLUBILITY",
+              "kind": "computational",
+              "title": "pH effects on solubility",
+              "description": "Salts of weak acids dissolve more in acid.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.COMPLEXION",
+              "kind": "computational",
+              "title": "Complex ion formation and Kf",
+              "description": "Ligand binding that pulls a salt into solution.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.SELECTIVEPPT",
+              "kind": "computational",
+              "title": "Selective precipitation",
+              "description": "Separating ions by exploiting different Ksp values.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U6",
+          "title": "Thermodynamics",
+          "chapters": "Ch 16",
+          "nodes": [
+            {
+              "id": "GEN2.SPONTANEITY",
+              "kind": "concept",
+              "title": "Spontaneity and the second law",
+              "description": "Spontaneous means it proceeds without input, not that it is fast.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.ENTROPY",
+              "kind": "concept",
+              "title": "Entropy and its molecular interpretation",
+              "description": "Dispersal of energy and matter, not disorder in the everyday sense.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.STANDARDENTROPY",
+              "kind": "computational",
+              "title": "Standard molar entropy and reaction entropy",
+              "description": "Tabulated values and the sign you should predict first.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.SURROUNDINGS",
+              "kind": "computational",
+              "title": "Entropy change of the surroundings",
+              "description": "Why an exothermic reaction increases the entropy of everything else.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.GIBBS",
+              "kind": "computational",
+              "title": "Gibbs free energy and spontaneity",
+              "description": "One criterion combining enthalpy, entropy and temperature.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.GIBBSCASES",
+              "kind": "concept",
+              "title": "Temperature dependence and the four cases",
+              "description": "When a reaction switches from spontaneous to not.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.GIBBSFORMATION",
+              "kind": "computational",
+              "title": "Standard free energy of formation",
+              "description": "Tabulated values used the same way as formation enthalpies.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.NONSTANDARD",
+              "kind": "computational",
+              "title": "Free energy under nonstandard conditions",
+              "description": "The correction term that vanishes at equilibrium.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.GIBBSK",
+              "kind": "computational",
+              "title": "Relating free energy to the equilibrium constant",
+              "description": "The bridge between thermodynamics and equilibrium.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U7",
+          "title": "Electrochemistry",
+          "chapters": "Ch 17",
+          "nodes": [
+            {
+              "id": "GEN2.BALANCEREDOX",
+              "kind": "computational",
+              "title": "Balancing redox reactions",
+              "description": "Half reaction method in acidic and basic solution.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.GALVANIC",
+              "kind": "concept",
+              "title": "Galvanic cells and cell notation",
+              "description": "Turning a redox reaction into a current.",
+              "lab_adjacent": true,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.REDUCTIONPOTENTIAL",
+              "kind": "computational",
+              "title": "Standard reduction potentials",
+              "description": "One table, and the sign conventions that make it work.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.CELLPOTENTIAL",
+              "kind": "computational",
+              "title": "Cell potential, free energy and K",
+              "description": "Three ways of stating the same driving force.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.NERNST",
+              "kind": "computational",
+              "title": "The Nernst equation and concentration cells",
+              "description": "Cell potential away from standard conditions.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.BATTERIES",
+              "kind": "concept",
+              "title": "Batteries and fuel cells",
+              "description": "Practical cells and why they run down.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.CORROSION",
+              "kind": "concept",
+              "title": "Corrosion and its prevention",
+              "description": "Electrochemistry happening where nobody wanted it.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.ELECTROLYSIS",
+              "kind": "computational",
+              "title": "Electrolysis and Faraday's laws",
+              "description": "Driving a nonspontaneous reaction, and counting the electrons.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U8",
+          "title": "Transition Metals and Coordination Chemistry",
+          "chapters": "Ch 18-19",
+          "nodes": [
+            {
+              "id": "GEN2.TRANSITIONMETALS",
+              "kind": "concept",
+              "title": "Transition metal properties",
+              "description": "Variable oxidation states and d electron configurations.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.COORDINATION",
+              "kind": "concept",
+              "title": "Coordination compounds",
+              "description": "Ligands, coordination number and the coordination sphere.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.COORDNOMEN",
+              "kind": "computational",
+              "title": "Nomenclature of coordination compounds",
+              "description": "Naming ligands, metals and oxidation states in order.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.COORDISOMERISM",
+              "kind": "concept",
+              "title": "Isomerism in coordination compounds",
+              "description": "Geometric and optical isomers of complexes.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.CRYSTALFIELD",
+              "kind": "concept",
+              "title": "Crystal field theory",
+              "description": "d orbital splitting explains color and magnetism.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "GEN2.MAINGROUP",
+              "kind": "concept",
+              "title": "Main group descriptive chemistry",
+              "description": "Representative metals, metalloids and nonmetals in survey.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "GEN2-U9",
+          "title": "Nuclear Chemistry",
+          "chapters": "Ch 20",
+          "nodes": [
+            {
+              "id": "GEN2.NUCLEARSTABILITY",
+              "kind": "concept",
+              "title": "Nuclear structure and stability",
+              "description": "The band of stability and what falls off it.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.DECAYMODES",
+              "kind": "computational",
+              "title": "Radioactive decay modes",
+              "description": "Alpha, beta, positron, capture and gamma, with balanced equations.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.NUCLEARHALFLIFE",
+              "kind": "computational",
+              "title": "Half life and radioactive dating",
+              "description": "First order decay applied to carbon 14 and beyond.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.BINDINGENERGY",
+              "kind": "computational",
+              "title": "Mass defect and binding energy",
+              "description": "Why nuclear energies dwarf chemical ones.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.FISSIONFUSION",
+              "kind": "concept",
+              "title": "Fission and fusion",
+              "description": "Two routes to energy from the curve of binding energy.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "GEN2.RADIATIONEFFECTS",
+              "kind": "concept",
+              "title": "Biological effects and applications",
+              "description": "Dose, shielding, and medical uses.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        }
+      ],
+      "unit_prereqs": {
+        "GEN2-U1": [
+          "GEN1.STOICH",
+          "GEN1.MOLARITY"
+        ],
+        "GEN2-U2": [
+          "GEN2.RDS"
+        ],
+        "GEN2-U3": [
+          "GEN2.ICE",
+          "GEN1.NEUTRALIZATION"
+        ],
+        "GEN2-U4": [
+          "GEN2.WEAKACID",
+          "GEN1.TITRATIONBASIC"
+        ],
+        "GEN2-U5": [
+          "GEN2.ICE",
+          "GEN1.SOLUBILITY"
+        ],
+        "GEN2-U6": [
+          "GEN1.HESS",
+          "GEN1.FORMATION"
+        ],
+        "GEN2-U7": [
+          "GEN1.OXNUMBERS",
+          "GEN2.GIBBSK"
+        ],
+        "GEN2-U8": [
+          "GEN1.CONFIGEXCEPTIONS",
+          "GEN2.COMPLEXION"
+        ],
+        "GEN2-U9": [
+          "GEN1.ISOTOPES",
+          "GEN2.HALFLIFE"
+        ]
+      },
+      "extra_edges": [
+        [
+          "GEN2.QUOTIENT",
+          "GEN2.PRECIPITATION"
+        ],
+        [
+          "GEN2.LECHATELIER",
+          "GEN2.COMMONION"
+        ],
+        [
+          "GEN2.EQUILIBRIUM",
+          "GEN2.GIBBSK"
+        ],
+        [
+          "GEN2.PH",
+          "GEN2.TITRATIONSTRONG"
+        ],
+        [
+          "GEN2.HENDERSON",
+          "GEN2.TITRATIONWEAK"
+        ],
+        [
+          "GEN2.KAKB",
+          "GEN2.SALTHYDROLYSIS"
+        ],
+        [
+          "GEN2.INTEGRATED",
+          "GEN2.NUCLEARHALFLIFE"
+        ],
+        [
+          "GEN1.IONIZATION",
+          "GEN2.CRYSTALFIELD"
+        ]
+      ],
+      "misconceptions": [
+        {
+          "code": "GEN2M01",
+          "name": "Order read off coefficients",
+          "description": "Takes reaction order from stoichiometric coefficients instead of data.",
+          "routes_to": "GEN2.RATELAW"
+        },
+        {
+          "code": "GEN2M02",
+          "name": "Catalyst consumed",
+          "description": "Believes a catalyst is used up, or that it changes the equilibrium position.",
+          "routes_to": "GEN2.CATALYSIS"
+        },
+        {
+          "code": "GEN2M03",
+          "name": "Equilibrium means equal concentrations",
+          "description": "Reads equilibrium as equal amounts rather than equal rates.",
+          "routes_to": "GEN2.EQUILIBRIUM"
+        },
+        {
+          "code": "GEN2M04",
+          "name": "Equilibrium means the reaction stopped",
+          "description": "Pictures a static system rather than a dynamic one.",
+          "routes_to": "GEN2.EQUILIBRIUM"
+        },
+        {
+          "code": "GEN2M05",
+          "name": "Le Chatelier as universal predictor",
+          "description": "Applies the principle to catalysts, inert gases or K itself.",
+          "routes_to": "GEN2.LECHATELIER"
+        },
+        {
+          "code": "GEN2M06",
+          "name": "Strong acid means concentrated",
+          "description": "Conflates extent of ionization with amount dissolved.",
+          "routes_to": "GEN2.STRONGACID"
+        },
+        {
+          "code": "GEN2M07",
+          "name": "Neutral means pH 7 always",
+          "description": "Ignores temperature dependence of Kw and equivalence points of weak acids.",
+          "routes_to": "GEN2.AMPHOTERIC"
+        },
+        {
+          "code": "GEN2M08",
+          "name": "Buffer means unchanging pH",
+          "description": "Believes a buffer holds pH constant rather than resisting change.",
+          "routes_to": "GEN2.BUFFER"
+        },
+        {
+          "code": "GEN2M09",
+          "name": "Approximation never checked",
+          "description": "Uses the small x approximation without validating the five percent rule.",
+          "routes_to": "GEN2.APPROXIMATION"
+        },
+        {
+          "code": "GEN2M10",
+          "name": "Ksp compared directly across salts",
+          "description": "Ranks solubility by Ksp values for salts with different ion counts.",
+          "routes_to": "GEN2.KSP"
+        },
+        {
+          "code": "GEN2M11",
+          "name": "Entropy as messiness",
+          "description": "Uses everyday disorder instead of energy and matter dispersal.",
+          "routes_to": "GEN2.ENTROPY"
+        },
+        {
+          "code": "GEN2M12",
+          "name": "Spontaneous means fast",
+          "description": "Confuses thermodynamic favorability with kinetic accessibility.",
+          "routes_to": "GEN2.SPONTANEITY"
+        },
+        {
+          "code": "GEN2M13",
+          "name": "Cell potential scaled by coefficients",
+          "description": "Multiplies standard potentials when scaling a half reaction.",
+          "routes_to": "GEN2.REDUCTIONPOTENTIAL"
+        },
+        {
+          "code": "GEN2M14",
+          "name": "Oxidation happens at the cathode",
+          "description": "Reverses the electrode definitions.",
+          "routes_to": "GEN2.GALVANIC"
+        }
+      ],
+      "edges": [
+        [
+          "GEN2.RATES",
+          "GEN2.RATEFACTORS"
+        ],
+        [
+          "GEN2.RATEFACTORS",
+          "GEN2.RATELAW"
+        ],
+        [
+          "GEN2.RATELAW",
+          "GEN2.INITIALRATES"
+        ],
+        [
+          "GEN2.INITIALRATES",
+          "GEN2.INTEGRATED"
+        ],
+        [
+          "GEN2.INTEGRATED",
+          "GEN2.HALFLIFE"
+        ],
+        [
+          "GEN2.HALFLIFE",
+          "GEN2.COLLISION"
+        ],
+        [
+          "GEN2.COLLISION",
+          "GEN2.ARRHENIUS"
+        ],
+        [
+          "GEN2.ARRHENIUS",
+          "GEN2.MECHANISM"
+        ],
+        [
+          "GEN2.MECHANISM",
+          "GEN2.RDS"
+        ],
+        [
+          "GEN2.RDS",
+          "GEN2.CATALYSIS"
+        ],
+        [
+          "GEN1.STOICH",
+          "GEN2.RATES"
+        ],
+        [
+          "GEN1.MOLARITY",
+          "GEN2.RATES"
+        ],
+        [
+          "GEN2.EQUILIBRIUM",
+          "GEN2.KEXPRESSION"
+        ],
+        [
+          "GEN2.KEXPRESSION",
+          "GEN2.KCKP"
+        ],
+        [
+          "GEN2.KCKP",
+          "GEN2.HETEROGENEOUS"
+        ],
+        [
+          "GEN2.HETEROGENEOUS",
+          "GEN2.MANIPULATEK"
+        ],
+        [
+          "GEN2.MANIPULATEK",
+          "GEN2.QUOTIENT"
+        ],
+        [
+          "GEN2.QUOTIENT",
+          "GEN2.ICE"
+        ],
+        [
+          "GEN2.ICE",
+          "GEN2.LECHATELIER"
+        ],
+        [
+          "GEN2.LECHATELIER",
+          "GEN2.KTEMPERATURE"
+        ],
+        [
+          "GEN2.RDS",
+          "GEN2.EQUILIBRIUM"
+        ],
+        [
+          "GEN2.BRONSTED",
+          "GEN2.AMPHOTERIC"
+        ],
+        [
+          "GEN2.AMPHOTERIC",
+          "GEN2.PH"
+        ],
+        [
+          "GEN2.PH",
+          "GEN2.STRONGACID"
+        ],
+        [
+          "GEN2.STRONGACID",
+          "GEN2.WEAKACID"
+        ],
+        [
+          "GEN2.WEAKACID",
+          "GEN2.WEAKBASE"
+        ],
+        [
+          "GEN2.WEAKBASE",
+          "GEN2.KAKB"
+        ],
+        [
+          "GEN2.KAKB",
+          "GEN2.APPROXIMATION"
+        ],
+        [
+          "GEN2.APPROXIMATION",
+          "GEN2.POLYPROTIC"
+        ],
+        [
+          "GEN2.POLYPROTIC",
+          "GEN2.SALTHYDROLYSIS"
+        ],
+        [
+          "GEN2.SALTHYDROLYSIS",
+          "GEN2.ACIDSTRUCTURE"
+        ],
+        [
+          "GEN2.ACIDSTRUCTURE",
+          "GEN2.LEWISACID"
+        ],
+        [
+          "GEN2.ICE",
+          "GEN2.BRONSTED"
+        ],
+        [
+          "GEN1.NEUTRALIZATION",
+          "GEN2.BRONSTED"
+        ],
+        [
+          "GEN2.COMMONION",
+          "GEN2.BUFFER"
+        ],
+        [
+          "GEN2.BUFFER",
+          "GEN2.HENDERSON"
+        ],
+        [
+          "GEN2.HENDERSON",
+          "GEN2.BUFFERPREP"
+        ],
+        [
+          "GEN2.BUFFERPREP",
+          "GEN2.TITRATIONSTRONG"
+        ],
+        [
+          "GEN2.TITRATIONSTRONG",
+          "GEN2.TITRATIONWEAK"
+        ],
+        [
+          "GEN2.TITRATIONWEAK",
+          "GEN2.HALFEQUIV"
+        ],
+        [
+          "GEN2.HALFEQUIV",
+          "GEN2.INDICATORS"
+        ],
+        [
+          "GEN2.WEAKACID",
+          "GEN2.COMMONION"
+        ],
+        [
+          "GEN1.TITRATIONBASIC",
+          "GEN2.COMMONION"
+        ],
+        [
+          "GEN2.KSP",
+          "GEN2.KSPCOMMONION"
+        ],
+        [
+          "GEN2.KSPCOMMONION",
+          "GEN2.PRECIPITATION"
+        ],
+        [
+          "GEN2.PRECIPITATION",
+          "GEN2.PHSOLUBILITY"
+        ],
+        [
+          "GEN2.PHSOLUBILITY",
+          "GEN2.COMPLEXION"
+        ],
+        [
+          "GEN2.COMPLEXION",
+          "GEN2.SELECTIVEPPT"
+        ],
+        [
+          "GEN2.ICE",
+          "GEN2.KSP"
+        ],
+        [
+          "GEN1.SOLUBILITY",
+          "GEN2.KSP"
+        ],
+        [
+          "GEN2.SPONTANEITY",
+          "GEN2.ENTROPY"
+        ],
+        [
+          "GEN2.ENTROPY",
+          "GEN2.STANDARDENTROPY"
+        ],
+        [
+          "GEN2.STANDARDENTROPY",
+          "GEN2.SURROUNDINGS"
+        ],
+        [
+          "GEN2.SURROUNDINGS",
+          "GEN2.GIBBS"
+        ],
+        [
+          "GEN2.GIBBS",
+          "GEN2.GIBBSCASES"
+        ],
+        [
+          "GEN2.GIBBSCASES",
+          "GEN2.GIBBSFORMATION"
+        ],
+        [
+          "GEN2.GIBBSFORMATION",
+          "GEN2.NONSTANDARD"
+        ],
+        [
+          "GEN2.NONSTANDARD",
+          "GEN2.GIBBSK"
+        ],
+        [
+          "GEN1.HESS",
+          "GEN2.SPONTANEITY"
+        ],
+        [
+          "GEN1.FORMATION",
+          "GEN2.SPONTANEITY"
+        ],
+        [
+          "GEN2.BALANCEREDOX",
+          "GEN2.GALVANIC"
+        ],
+        [
+          "GEN2.GALVANIC",
+          "GEN2.REDUCTIONPOTENTIAL"
+        ],
+        [
+          "GEN2.REDUCTIONPOTENTIAL",
+          "GEN2.CELLPOTENTIAL"
+        ],
+        [
+          "GEN2.CELLPOTENTIAL",
+          "GEN2.NERNST"
+        ],
+        [
+          "GEN2.NERNST",
+          "GEN2.BATTERIES"
+        ],
+        [
+          "GEN2.BATTERIES",
+          "GEN2.CORROSION"
+        ],
+        [
+          "GEN2.CORROSION",
+          "GEN2.ELECTROLYSIS"
+        ],
+        [
+          "GEN1.OXNUMBERS",
+          "GEN2.BALANCEREDOX"
+        ],
+        [
+          "GEN2.GIBBSK",
+          "GEN2.BALANCEREDOX"
+        ],
+        [
+          "GEN2.TRANSITIONMETALS",
+          "GEN2.COORDINATION"
+        ],
+        [
+          "GEN2.COORDINATION",
+          "GEN2.COORDNOMEN"
+        ],
+        [
+          "GEN2.COORDNOMEN",
+          "GEN2.COORDISOMERISM"
+        ],
+        [
+          "GEN2.COORDISOMERISM",
+          "GEN2.CRYSTALFIELD"
+        ],
+        [
+          "GEN2.CRYSTALFIELD",
+          "GEN2.MAINGROUP"
+        ],
+        [
+          "GEN1.CONFIGEXCEPTIONS",
+          "GEN2.TRANSITIONMETALS"
+        ],
+        [
+          "GEN2.COMPLEXION",
+          "GEN2.TRANSITIONMETALS"
+        ],
+        [
+          "GEN2.NUCLEARSTABILITY",
+          "GEN2.DECAYMODES"
+        ],
+        [
+          "GEN2.DECAYMODES",
+          "GEN2.NUCLEARHALFLIFE"
+        ],
+        [
+          "GEN2.NUCLEARHALFLIFE",
+          "GEN2.BINDINGENERGY"
+        ],
+        [
+          "GEN2.BINDINGENERGY",
+          "GEN2.FISSIONFUSION"
+        ],
+        [
+          "GEN2.FISSIONFUSION",
+          "GEN2.RADIATIONEFFECTS"
+        ],
+        [
+          "GEN1.ISOTOPES",
+          "GEN2.NUCLEARSTABILITY"
+        ],
+        [
+          "GEN2.HALFLIFE",
+          "GEN2.NUCLEARSTABILITY"
+        ],
+        [
+          "GEN2.QUOTIENT",
+          "GEN2.PRECIPITATION"
+        ],
+        [
+          "GEN2.LECHATELIER",
+          "GEN2.COMMONION"
+        ],
+        [
+          "GEN2.EQUILIBRIUM",
+          "GEN2.GIBBSK"
+        ],
+        [
+          "GEN2.PH",
+          "GEN2.TITRATIONSTRONG"
+        ],
+        [
+          "GEN2.HENDERSON",
+          "GEN2.TITRATIONWEAK"
+        ],
+        [
+          "GEN2.KAKB",
+          "GEN2.SALTHYDROLYSIS"
+        ],
+        [
+          "GEN2.INTEGRATED",
+          "GEN2.NUCLEARHALFLIFE"
+        ],
+        [
+          "GEN1.IONIZATION",
+          "GEN2.CRYSTALFIELD"
+        ]
+      ]
+    },
+    {
+      "id": "ORG1",
+      "title": "Organic Chemistry I",
+      "semester": "Year 2 semester 1",
+      "units": [
+        {
+          "id": "ORG1-U1",
+          "title": "Structure and Bonding",
+          "chapters": "Ch 1",
+          "nodes": [
+            {
+              "id": "ORG1.ORBITALS",
+              "kind": "concept",
+              "title": "Atomic and molecular orbitals in carbon",
+              "description": "Why carbon forms four bonds and what shape they take.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.HYBRIDORG",
+              "kind": "computational",
+              "title": "Hybridization and organic geometry",
+              "description": "sp3, sp2 and sp centres, and the geometry each one forces.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.DRAWING",
+              "kind": "computational",
+              "title": "Drawing conventions",
+              "description": "Lewis, condensed and skeletal structures as the same information.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.FORMALCHARGEORG",
+              "kind": "computational",
+              "title": "Formal charge in organic structures",
+              "description": "Counting electrons on an atom to assign charge correctly.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.RESONANCEORG",
+              "kind": "computational",
+              "title": "Resonance and resonance rules",
+              "description": "Which structures are legal, and which contributor dominates.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.INDUCTIVE",
+              "kind": "concept",
+              "title": "Inductive effects and bond polarity",
+              "description": "Electron withdrawal through sigma bonds, and how far it reaches.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.FUNCTIONALGROUPS",
+              "kind": "concept",
+              "title": "Functional group recognition",
+              "description": "The vocabulary the whole course is written in.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U2",
+          "title": "Acids and Bases in Organic Chemistry",
+          "chapters": "Ch 2",
+          "nodes": [
+            {
+              "id": "ORG1.PKA",
+              "kind": "computational",
+              "title": "Bronsted acidity, pKa and equilibrium direction",
+              "description": "Which way a proton transfer goes, from two pKa values.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ACIDITYFACTORS",
+              "kind": "concept",
+              "title": "Structural factors controlling acidity",
+              "description": "Atom, resonance, induction and orbital, applied in that order.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.NUCELEC",
+              "kind": "concept",
+              "title": "Nucleophiles, electrophiles and Lewis acids",
+              "description": "The electron rich and electron poor labelling that drives every mechanism.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ARROWS",
+              "kind": "computational",
+              "title": "Curved arrow formalism",
+              "description": "Arrows show electron movement, always from source to sink.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U3",
+          "title": "Alkanes and Conformational Analysis",
+          "chapters": "Ch 3-4",
+          "nodes": [
+            {
+              "id": "ORG1.ALKANENOMEN",
+              "kind": "computational",
+              "title": "Alkane nomenclature",
+              "description": "IUPAC naming, substituents and numbering rules.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ISOMERS",
+              "kind": "computational",
+              "title": "Constitutional isomers and degrees of unsaturation",
+              "description": "Counting isomers, and reading rings and pi bonds off a formula.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.NEWMAN",
+              "kind": "computational",
+              "title": "Conformational analysis of acyclic alkanes",
+              "description": "Newman projections, torsional strain and energy diagrams.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.RINGSTRAIN",
+              "kind": "concept",
+              "title": "Cycloalkane strain",
+              "description": "Angle, torsional and steric strain across ring sizes.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.CHAIR",
+              "kind": "computational",
+              "title": "Cyclohexane chair conformations",
+              "description": "Axial and equatorial positions, and the ring flip.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.AVALUES",
+              "kind": "computational",
+              "title": "Substituted cyclohexanes and A values",
+              "description": "Predicting the favoured chair from substituent size.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.CISTRANSRING",
+              "kind": "computational",
+              "title": "Cis and trans isomerism in rings",
+              "description": "Which substituent combinations can both be equatorial.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U4",
+          "title": "Stereochemistry",
+          "chapters": "Ch 5",
+          "nodes": [
+            {
+              "id": "ORG1.CHIRALITY",
+              "kind": "concept",
+              "title": "Chirality and stereocentres",
+              "description": "Mirror images that do not superimpose.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.RS",
+              "kind": "computational",
+              "title": "R and S configuration",
+              "description": "Cahn Ingold Prelog priority rules applied carefully.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ENANTIODIA",
+              "kind": "concept",
+              "title": "Enantiomers, diastereomers and meso compounds",
+              "description": "The three relationships, and how to tell them apart.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.OPTICALACTIVITY",
+              "kind": "computational",
+              "title": "Optical activity and specific rotation",
+              "description": "What a polarimeter measures and what it cannot tell you.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.FISCHER",
+              "kind": "computational",
+              "title": "Fischer projections",
+              "description": "A flat convention for a three dimensional arrangement.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.MULTIPLESTEREO",
+              "kind": "computational",
+              "title": "Multiple stereocentres",
+              "description": "Counting stereoisomers and spotting internal symmetry.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.RESOLUTION",
+              "kind": "concept",
+              "title": "Racemic mixtures and resolution",
+              "description": "Why enantiomers are hard to separate, and how it is done.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U5",
+          "title": "Understanding Organic Reactions",
+          "chapters": "Ch 6",
+          "nodes": [
+            {
+              "id": "ORG1.REACTIONTYPES",
+              "kind": "concept",
+              "title": "Reaction types",
+              "description": "Addition, elimination, substitution and rearrangement.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.HOMOHETERO",
+              "kind": "concept",
+              "title": "Homolysis, heterolysis, radicals and polar reactions",
+              "description": "Two ways a bond can break, and the arrows each one uses.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ENERGYDIAGRAM",
+              "kind": "computational",
+              "title": "Energy diagrams, transition states and intermediates",
+              "description": "Reading a mechanism off a reaction coordinate.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.KINETICTHERMO",
+              "kind": "concept",
+              "title": "Kinetic versus thermodynamic control",
+              "description": "Fastest product is not always the most stable one.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.CARBOCATION",
+              "kind": "concept",
+              "title": "Carbocation structure and stability",
+              "description": "Hyperconjugation and resonance ranking every cation you will meet.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.REARRANGEMENT",
+              "kind": "computational",
+              "title": "Carbocation rearrangements",
+              "description": "Hydride and alkyl shifts, and when to expect them.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U6",
+          "title": "Alkenes: Structure and Reactions",
+          "chapters": "Ch 7-8",
+          "nodes": [
+            {
+              "id": "ORG1.ALKENENOMEN",
+              "kind": "computational",
+              "title": "Alkene nomenclature and E Z designation",
+              "description": "Naming, and assigning configuration across a double bond.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKENESTABILITY",
+              "kind": "concept",
+              "title": "Alkene stability",
+              "description": "Substitution and hyperconjugation ranking isomeric alkenes.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.HXADDITION",
+              "kind": "computational",
+              "title": "Electrophilic addition of HX and Markovnikov",
+              "description": "The cation forms where it is most stable, and the rule follows.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.HYDRATION",
+              "kind": "computational",
+              "title": "Hydration: acid catalysed, oxymercuration, hydroboration",
+              "description": "Three routes to an alcohol with two different regiochemistries.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.HALOGENATION",
+              "kind": "computational",
+              "title": "Halogenation and halohydrin formation",
+              "description": "Bromonium ion intermediates and anti addition.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.HYDROGENATION",
+              "kind": "computational",
+              "title": "Catalytic hydrogenation",
+              "description": "Syn addition of hydrogen across the double bond.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.EPOXIDATION",
+              "kind": "computational",
+              "title": "Epoxidation and dihydroxylation",
+              "description": "Syn and anti diols, and the reagent that gives each.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.OZONOLYSIS",
+              "kind": "computational",
+              "title": "Ozonolysis and oxidative cleavage",
+              "description": "Cutting the double bond, and working backwards from the fragments.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.RADICALHBR",
+              "kind": "computational",
+              "title": "Radical addition of HBr",
+              "description": "Anti Markovnikov addition, and the peroxide condition that causes it.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKENESYNTH",
+              "kind": "computational",
+              "title": "Synthesis of alkenes",
+              "description": "Elimination routes, previewing the substitution and elimination unit.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U7",
+          "title": "Alkynes",
+          "chapters": "Ch 9",
+          "nodes": [
+            {
+              "id": "ORG1.ALKYNENOMEN",
+              "kind": "computational",
+              "title": "Alkyne nomenclature and structure",
+              "description": "Linear geometry and sp hybridized carbon.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ACETYLIDE",
+              "kind": "computational",
+              "title": "Alkyne acidity and acetylide anions",
+              "description": "Terminal alkynes as the only weakly acidic hydrocarbons.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKYNEADDITION",
+              "kind": "computational",
+              "title": "Addition reactions of alkynes",
+              "description": "Adding once or twice, and controlling which.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.TAUTOMER",
+              "kind": "computational",
+              "title": "Hydration and keto enol tautomerization",
+              "description": "Enols that convert to carbonyls, with regiochemistry to choose.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKYNEREDUCTION",
+              "kind": "computational",
+              "title": "Reduction to cis and trans alkenes",
+              "description": "Lindlar and dissolving metal, two stereochemical outcomes.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKYNESYNTH",
+              "kind": "computational",
+              "title": "Alkyne synthesis and alkylation",
+              "description": "Building carbon chains with acetylide nucleophiles.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U8",
+          "title": "Organohalides and Radical Reactions",
+          "chapters": "Ch 10",
+          "nodes": [
+            {
+              "id": "ORG1.HALIDENOMEN",
+              "kind": "computational",
+              "title": "Alkyl halide nomenclature and structure",
+              "description": "Naming, and the polarity of the carbon halogen bond.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.RADICALHALOGEN",
+              "kind": "computational",
+              "title": "Radical halogenation of alkanes",
+              "description": "Initiation, propagation, termination, and bromine selectivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALLYLIC",
+              "kind": "computational",
+              "title": "Allylic bromination",
+              "description": "NBS and the resonance stabilized allylic radical.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.GRIGNARD",
+              "kind": "computational",
+              "title": "Grignard and organolithium reagents",
+              "description": "Carbon nucleophiles, and why they cannot meet acidic protons.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.COUPLING",
+              "kind": "concept",
+              "title": "Organometallic coupling reactions",
+              "description": "Gilman reagents and palladium coupling in overview.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U9",
+          "title": "Substitution and Elimination",
+          "chapters": "Ch 11",
+          "nodes": [
+            {
+              "id": "ORG1.SN2",
+              "kind": "computational",
+              "title": "The SN2 mechanism",
+              "description": "Backside attack, inversion, and second order kinetics.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.SN2FACTORS",
+              "kind": "computational",
+              "title": "SN2 substrate, nucleophile, leaving group and solvent",
+              "description": "Four variables that decide whether SN2 runs.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.SN1",
+              "kind": "computational",
+              "title": "The SN1 mechanism",
+              "description": "Rate determining ionization, racemization, first order kinetics.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.SN1FACTORS",
+              "kind": "computational",
+              "title": "SN1 substrate and solvent effects",
+              "description": "Cation stability and polar protic solvents.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.E2",
+              "kind": "computational",
+              "title": "The E2 mechanism",
+              "description": "Concerted elimination and the anti periplanar requirement.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.ZAITSEV",
+              "kind": "computational",
+              "title": "Zaitsev and Hofmann regiochemistry",
+              "description": "Which alkene forms, and the base that changes the answer.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.E2RINGS",
+              "kind": "computational",
+              "title": "E2 in cyclohexane rings",
+              "description": "Only axial leaving groups eliminate, which constrains the product.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.E1",
+              "kind": "computational",
+              "title": "The E1 mechanism",
+              "description": "Same cation as SN1, different fate.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.COMPETITION",
+              "kind": "computational",
+              "title": "Predicting substitution versus elimination",
+              "description": "A decision procedure over substrate, nucleophile, base and temperature.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U10",
+          "title": "Structure Determination",
+          "chapters": "Ch 12-13",
+          "nodes": [
+            {
+              "id": "ORG1.MSBASICS",
+              "kind": "computational",
+              "title": "Mass spectrometry: molecular ion and isotopes",
+              "description": "Reading molecular mass and halogen patterns off a spectrum.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.MSFRAGMENT",
+              "kind": "computational",
+              "title": "Mass spectrometry fragmentation",
+              "description": "Common cleavages, and what a fragment mass tells you.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.IRREGIONS",
+              "kind": "computational",
+              "title": "Infrared spectroscopy: functional group regions",
+              "description": "The four regions, and the bands that are actually diagnostic.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.IRINTERPRET",
+              "kind": "computational",
+              "title": "IR interpretation",
+              "description": "Deciding what is present and what is absent.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.NMRTHEORY",
+              "kind": "concept",
+              "title": "NMR theory: shielding and chemical shift",
+              "description": "Why different protons resonate at different frequencies.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.NMRINTEGRATION",
+              "kind": "computational",
+              "title": "1H NMR integration",
+              "description": "Relative areas as relative proton counts, not absolute ones.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.NMRSPLITTING",
+              "kind": "computational",
+              "title": "1H NMR spin spin splitting",
+              "description": "The n plus 1 rule, coupling constants and common patterns.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.CARBONNMR",
+              "kind": "computational",
+              "title": "13C NMR and DEPT",
+              "description": "Counting unique carbons and assigning their substitution.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ELUCIDATION",
+              "kind": "computational",
+              "title": "Combined structure elucidation",
+              "description": "Assembling a structure from MS, IR and NMR together.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        }
+      ],
+      "unit_prereqs": {
+        "ORG1-U1": [
+          "GEN1.HYBRIDIZATION",
+          "GEN1.RESONANCE",
+          "GEN1.VSEPR"
+        ],
+        "ORG1-U2": [
+          "ORG1.INDUCTIVE",
+          "GEN2.LEWISACID",
+          "GEN2.WEAKACID"
+        ],
+        "ORG1-U3": [
+          "ORG1.FUNCTIONALGROUPS"
+        ],
+        "ORG1-U4": [
+          "ORG1.CHAIR"
+        ],
+        "ORG1-U5": [
+          "ORG1.ARROWS",
+          "GEN2.RDS"
+        ],
+        "ORG1-U6": [
+          "ORG1.CARBOCATION",
+          "ORG1.ENANTIODIA"
+        ],
+        "ORG1-U7": [
+          "ORG1.ALKENESYNTH"
+        ],
+        "ORG1-U8": [
+          "ORG1.HOMOHETERO",
+          "ORG1.ALKYNESYNTH"
+        ],
+        "ORG1-U9": [
+          "ORG1.GRIGNARD",
+          "ORG1.REARRANGEMENT"
+        ],
+        "ORG1-U10": [
+          "ORG1.FUNCTIONALGROUPS",
+          "GEN1.LIGHT"
+        ]
+      },
+      "extra_edges": [
+        [
+          "ORG1.PKA",
+          "ORG1.ACETYLIDE"
+        ],
+        [
+          "ORG1.RS",
+          "ORG1.SN2"
+        ],
+        [
+          "ORG1.CHAIR",
+          "ORG1.E2RINGS"
+        ],
+        [
+          "ORG1.E2",
+          "ORG1.E2RINGS"
+        ],
+        [
+          "ORG1.KINETICTHERMO",
+          "ORG1.ZAITSEV"
+        ],
+        [
+          "ORG1.TAUTOMER",
+          "ORG1.ALKYNEREDUCTION"
+        ],
+        [
+          "ORG1.NMRTHEORY",
+          "ORG1.CARBONNMR"
+        ],
+        [
+          "ORG1.IRINTERPRET",
+          "ORG1.ELUCIDATION"
+        ],
+        [
+          "ORG1.MSFRAGMENT",
+          "ORG1.ELUCIDATION"
+        ]
+      ],
+      "misconceptions": [
+        {
+          "code": "ORG1M01",
+          "name": "Arrows drawn from atoms",
+          "description": "Draws curved arrows starting at an atom instead of an electron pair or bond.",
+          "routes_to": "ORG1.ARROWS"
+        },
+        {
+          "code": "ORG1M02",
+          "name": "Arrows show atom movement",
+          "description": "Reads a curved arrow as an atom moving rather than electrons moving.",
+          "routes_to": "ORG1.ARROWS"
+        },
+        {
+          "code": "ORG1M03",
+          "name": "Resonance structures interconvert",
+          "description": "Treats resonance contributors as species in equilibrium.",
+          "routes_to": "ORG1.RESONANCEORG"
+        },
+        {
+          "code": "ORG1M04",
+          "name": "Resonance moves atoms",
+          "description": "Relocates atoms rather than only pi and lone pair electrons.",
+          "routes_to": "ORG1.RESONANCEORG"
+        },
+        {
+          "code": "ORG1M05",
+          "name": "Chirality equals four different groups only",
+          "description": "Applies the rule mechanically and misses rings and internal symmetry.",
+          "routes_to": "ORG1.CHIRALITY"
+        },
+        {
+          "code": "ORG1M06",
+          "name": "Meso compounds called chiral",
+          "description": "Counts stereocentres without checking for an internal mirror plane.",
+          "routes_to": "ORG1.ENANTIODIA"
+        },
+        {
+          "code": "ORG1M07",
+          "name": "CIP priority by size",
+          "description": "Ranks substituents by mass or bulk instead of atomic number at first difference.",
+          "routes_to": "ORG1.RS"
+        },
+        {
+          "code": "ORG1M08",
+          "name": "Markovnikov as a rule without a reason",
+          "description": "Memorizes the outcome instead of deriving it from cation stability.",
+          "routes_to": "ORG1.HXADDITION"
+        },
+        {
+          "code": "ORG1M09",
+          "name": "Rearrangement never considered",
+          "description": "Reports a product from an unrearranged cation when a shift was available.",
+          "routes_to": "ORG1.REARRANGEMENT"
+        },
+        {
+          "code": "ORG1M10",
+          "name": "SN1 gives one enantiomer",
+          "description": "Forgets that a planar cation is attacked from both faces.",
+          "routes_to": "ORG1.SN1"
+        },
+        {
+          "code": "ORG1M11",
+          "name": "Strong nucleophile equals strong base",
+          "description": "Conflates the two properties, so substitution and elimination are not separated.",
+          "routes_to": "ORG1.COMPETITION"
+        },
+        {
+          "code": "ORG1M12",
+          "name": "E2 without geometry",
+          "description": "Ignores the anti periplanar requirement, especially in rings.",
+          "routes_to": "ORG1.E2"
+        },
+        {
+          "code": "ORG1M13",
+          "name": "Integration read as absolute count",
+          "description": "Reads NMR integration as the number of protons rather than a ratio.",
+          "routes_to": "ORG1.NMRINTEGRATION"
+        },
+        {
+          "code": "ORG1M14",
+          "name": "Splitting counts neighbours directly",
+          "description": "Reports the peak multiplicity as the neighbour count, off by one.",
+          "routes_to": "ORG1.NMRSPLITTING"
+        },
+        {
+          "code": "ORG1M15",
+          "name": "IR absence ignored",
+          "description": "Uses only the bands present and never reasons from the bands missing.",
+          "routes_to": "ORG1.IRINTERPRET"
+        }
+      ],
+      "edges": [
+        [
+          "ORG1.ORBITALS",
+          "ORG1.HYBRIDORG"
+        ],
+        [
+          "ORG1.HYBRIDORG",
+          "ORG1.DRAWING"
+        ],
+        [
+          "ORG1.DRAWING",
+          "ORG1.FORMALCHARGEORG"
+        ],
+        [
+          "ORG1.FORMALCHARGEORG",
+          "ORG1.RESONANCEORG"
+        ],
+        [
+          "ORG1.RESONANCEORG",
+          "ORG1.INDUCTIVE"
+        ],
+        [
+          "ORG1.INDUCTIVE",
+          "ORG1.FUNCTIONALGROUPS"
+        ],
+        [
+          "GEN1.HYBRIDIZATION",
+          "ORG1.ORBITALS"
+        ],
+        [
+          "GEN1.RESONANCE",
+          "ORG1.ORBITALS"
+        ],
+        [
+          "GEN1.VSEPR",
+          "ORG1.ORBITALS"
+        ],
+        [
+          "ORG1.PKA",
+          "ORG1.ACIDITYFACTORS"
+        ],
+        [
+          "ORG1.ACIDITYFACTORS",
+          "ORG1.NUCELEC"
+        ],
+        [
+          "ORG1.NUCELEC",
+          "ORG1.ARROWS"
+        ],
+        [
+          "ORG1.INDUCTIVE",
+          "ORG1.PKA"
+        ],
+        [
+          "GEN2.LEWISACID",
+          "ORG1.PKA"
+        ],
+        [
+          "GEN2.WEAKACID",
+          "ORG1.PKA"
+        ],
+        [
+          "ORG1.ALKANENOMEN",
+          "ORG1.ISOMERS"
+        ],
+        [
+          "ORG1.ISOMERS",
+          "ORG1.NEWMAN"
+        ],
+        [
+          "ORG1.NEWMAN",
+          "ORG1.RINGSTRAIN"
+        ],
+        [
+          "ORG1.RINGSTRAIN",
+          "ORG1.CHAIR"
+        ],
+        [
+          "ORG1.CHAIR",
+          "ORG1.AVALUES"
+        ],
+        [
+          "ORG1.AVALUES",
+          "ORG1.CISTRANSRING"
+        ],
+        [
+          "ORG1.FUNCTIONALGROUPS",
+          "ORG1.ALKANENOMEN"
+        ],
+        [
+          "ORG1.CHIRALITY",
+          "ORG1.RS"
+        ],
+        [
+          "ORG1.RS",
+          "ORG1.ENANTIODIA"
+        ],
+        [
+          "ORG1.ENANTIODIA",
+          "ORG1.OPTICALACTIVITY"
+        ],
+        [
+          "ORG1.OPTICALACTIVITY",
+          "ORG1.FISCHER"
+        ],
+        [
+          "ORG1.FISCHER",
+          "ORG1.MULTIPLESTEREO"
+        ],
+        [
+          "ORG1.MULTIPLESTEREO",
+          "ORG1.RESOLUTION"
+        ],
+        [
+          "ORG1.CHAIR",
+          "ORG1.CHIRALITY"
+        ],
+        [
+          "ORG1.REACTIONTYPES",
+          "ORG1.HOMOHETERO"
+        ],
+        [
+          "ORG1.HOMOHETERO",
+          "ORG1.ENERGYDIAGRAM"
+        ],
+        [
+          "ORG1.ENERGYDIAGRAM",
+          "ORG1.KINETICTHERMO"
+        ],
+        [
+          "ORG1.KINETICTHERMO",
+          "ORG1.CARBOCATION"
+        ],
+        [
+          "ORG1.CARBOCATION",
+          "ORG1.REARRANGEMENT"
+        ],
+        [
+          "ORG1.ARROWS",
+          "ORG1.REACTIONTYPES"
+        ],
+        [
+          "GEN2.RDS",
+          "ORG1.REACTIONTYPES"
+        ],
+        [
+          "ORG1.ALKENENOMEN",
+          "ORG1.ALKENESTABILITY"
+        ],
+        [
+          "ORG1.ALKENESTABILITY",
+          "ORG1.HXADDITION"
+        ],
+        [
+          "ORG1.HXADDITION",
+          "ORG1.HYDRATION"
+        ],
+        [
+          "ORG1.HYDRATION",
+          "ORG1.HALOGENATION"
+        ],
+        [
+          "ORG1.HALOGENATION",
+          "ORG1.HYDROGENATION"
+        ],
+        [
+          "ORG1.HYDROGENATION",
+          "ORG1.EPOXIDATION"
+        ],
+        [
+          "ORG1.EPOXIDATION",
+          "ORG1.OZONOLYSIS"
+        ],
+        [
+          "ORG1.OZONOLYSIS",
+          "ORG1.RADICALHBR"
+        ],
+        [
+          "ORG1.RADICALHBR",
+          "ORG1.ALKENESYNTH"
+        ],
+        [
+          "ORG1.CARBOCATION",
+          "ORG1.ALKENENOMEN"
+        ],
+        [
+          "ORG1.ENANTIODIA",
+          "ORG1.ALKENENOMEN"
+        ],
+        [
+          "ORG1.ALKYNENOMEN",
+          "ORG1.ACETYLIDE"
+        ],
+        [
+          "ORG1.ACETYLIDE",
+          "ORG1.ALKYNEADDITION"
+        ],
+        [
+          "ORG1.ALKYNEADDITION",
+          "ORG1.TAUTOMER"
+        ],
+        [
+          "ORG1.TAUTOMER",
+          "ORG1.ALKYNEREDUCTION"
+        ],
+        [
+          "ORG1.ALKYNEREDUCTION",
+          "ORG1.ALKYNESYNTH"
+        ],
+        [
+          "ORG1.ALKENESYNTH",
+          "ORG1.ALKYNENOMEN"
+        ],
+        [
+          "ORG1.HALIDENOMEN",
+          "ORG1.RADICALHALOGEN"
+        ],
+        [
+          "ORG1.RADICALHALOGEN",
+          "ORG1.ALLYLIC"
+        ],
+        [
+          "ORG1.ALLYLIC",
+          "ORG1.GRIGNARD"
+        ],
+        [
+          "ORG1.GRIGNARD",
+          "ORG1.COUPLING"
+        ],
+        [
+          "ORG1.HOMOHETERO",
+          "ORG1.HALIDENOMEN"
+        ],
+        [
+          "ORG1.ALKYNESYNTH",
+          "ORG1.HALIDENOMEN"
+        ],
+        [
+          "ORG1.SN2",
+          "ORG1.SN2FACTORS"
+        ],
+        [
+          "ORG1.SN2FACTORS",
+          "ORG1.SN1"
+        ],
+        [
+          "ORG1.SN1",
+          "ORG1.SN1FACTORS"
+        ],
+        [
+          "ORG1.SN1FACTORS",
+          "ORG1.E2"
+        ],
+        [
+          "ORG1.E2",
+          "ORG1.ZAITSEV"
+        ],
+        [
+          "ORG1.ZAITSEV",
+          "ORG1.E2RINGS"
+        ],
+        [
+          "ORG1.E2RINGS",
+          "ORG1.E1"
+        ],
+        [
+          "ORG1.E1",
+          "ORG1.COMPETITION"
+        ],
+        [
+          "ORG1.GRIGNARD",
+          "ORG1.SN2"
+        ],
+        [
+          "ORG1.REARRANGEMENT",
+          "ORG1.SN2"
+        ],
+        [
+          "ORG1.MSBASICS",
+          "ORG1.MSFRAGMENT"
+        ],
+        [
+          "ORG1.MSFRAGMENT",
+          "ORG1.IRREGIONS"
+        ],
+        [
+          "ORG1.IRREGIONS",
+          "ORG1.IRINTERPRET"
+        ],
+        [
+          "ORG1.IRINTERPRET",
+          "ORG1.NMRTHEORY"
+        ],
+        [
+          "ORG1.NMRTHEORY",
+          "ORG1.NMRINTEGRATION"
+        ],
+        [
+          "ORG1.NMRINTEGRATION",
+          "ORG1.NMRSPLITTING"
+        ],
+        [
+          "ORG1.NMRSPLITTING",
+          "ORG1.CARBONNMR"
+        ],
+        [
+          "ORG1.CARBONNMR",
+          "ORG1.ELUCIDATION"
+        ],
+        [
+          "ORG1.FUNCTIONALGROUPS",
+          "ORG1.MSBASICS"
+        ],
+        [
+          "GEN1.LIGHT",
+          "ORG1.MSBASICS"
+        ],
+        [
+          "ORG1.PKA",
+          "ORG1.ACETYLIDE"
+        ],
+        [
+          "ORG1.RS",
+          "ORG1.SN2"
+        ],
+        [
+          "ORG1.CHAIR",
+          "ORG1.E2RINGS"
+        ],
+        [
+          "ORG1.E2",
+          "ORG1.E2RINGS"
+        ],
+        [
+          "ORG1.KINETICTHERMO",
+          "ORG1.ZAITSEV"
+        ],
+        [
+          "ORG1.TAUTOMER",
+          "ORG1.ALKYNEREDUCTION"
+        ],
+        [
+          "ORG1.NMRTHEORY",
+          "ORG1.CARBONNMR"
+        ],
+        [
+          "ORG1.IRINTERPRET",
+          "ORG1.ELUCIDATION"
+        ],
+        [
+          "ORG1.MSFRAGMENT",
+          "ORG1.ELUCIDATION"
+        ]
+      ]
+    },
+    {
+      "id": "ORG2",
+      "title": "Organic Chemistry II",
+      "semester": "Year 2 semester 2",
+      "units": [
+        {
+          "id": "ORG2-U1",
+          "title": "Conjugation and Dienes",
+          "chapters": "Ch 14",
+          "nodes": [
+            {
+              "id": "ORG2.CONJUGATION",
+              "kind": "concept",
+              "title": "Conjugated dienes: structure and stability",
+              "description": "Overlap across the system, and the stability it buys.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.ALLYLIC",
+              "kind": "concept",
+              "title": "Allylic and conjugated cation stability",
+              "description": "Resonance delocalization ranked against alkyl substitution.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.CONJUGATEADD",
+              "kind": "computational",
+              "title": "1,2 versus 1,4 addition",
+              "description": "Kinetic and thermodynamic control made concrete.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.DIELSALDER",
+              "kind": "computational",
+              "title": "The Diels Alder reaction",
+              "description": "Concerted cycloaddition, stereospecific and predictable.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.DAREQUIREMENTS",
+              "kind": "computational",
+              "title": "Diene and dienophile requirements",
+              "description": "s cis geometry, electron demand, and endo selectivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.UVVIS",
+              "kind": "computational",
+              "title": "UV visible spectroscopy and conjugation",
+              "description": "Absorption wavelength as a report on the conjugated system.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U2",
+          "title": "Aromaticity",
+          "chapters": "Ch 15",
+          "nodes": [
+            {
+              "id": "ORG2.BENZENE",
+              "kind": "concept",
+              "title": "Benzene structure and stability",
+              "description": "Delocalization energy and why benzene does not add.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.HUCKEL",
+              "kind": "computational",
+              "title": "Huckel's rule and the aromaticity criteria",
+              "description": "Cyclic, planar, fully conjugated, and 4n plus 2 electrons.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AROMATICIONS",
+              "kind": "computational",
+              "title": "Aromatic ions and heterocycles",
+              "description": "Cyclopentadienyl, tropylium, pyrrole and pyridine.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ANTIAROMATIC",
+              "kind": "concept",
+              "title": "Antiaromatic and nonaromatic systems",
+              "description": "Why 4n electrons in a ring is destabilizing.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.BENZENENOMEN",
+              "kind": "computational",
+              "title": "Nomenclature of benzene derivatives",
+              "description": "Ortho, meta, para and the retained common names.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AROMATICSPECTRA",
+              "kind": "computational",
+              "title": "Spectroscopy of aromatic compounds",
+              "description": "Aromatic shifts and substitution patterns in NMR.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U3",
+          "title": "Reactions of Aromatic Compounds",
+          "chapters": "Ch 16",
+          "nodes": [
+            {
+              "id": "ORG2.EASMECH",
+              "kind": "computational",
+              "title": "Electrophilic aromatic substitution mechanism",
+              "description": "Addition then elimination, restoring aromaticity.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.EASREACTIONS",
+              "kind": "computational",
+              "title": "Halogenation, nitration and sulfonation",
+              "description": "Generating the electrophile in each case.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.FRIEDELCRAFTS",
+              "kind": "computational",
+              "title": "Friedel Crafts alkylation and acylation",
+              "description": "Two carbon carbon bond formations, and the limits of each.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACTIVATING",
+              "kind": "concept",
+              "title": "Activating and deactivating substituents",
+              "description": "How a substituent changes the ring's reactivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.DIRECTING",
+              "kind": "computational",
+              "title": "Ortho, para and meta directing effects",
+              "description": "Resonance and induction deciding where the next group lands.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.MULTIPLESUB",
+              "kind": "computational",
+              "title": "Multiple substituents and directing conflicts",
+              "description": "Which group wins, and where sterics intervene.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.NAS",
+              "kind": "computational",
+              "title": "Nucleophilic aromatic substitution and benzyne",
+              "description": "Two routes to substitution on an electron poor or forced ring.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.SIDECHAIN",
+              "kind": "computational",
+              "title": "Side chain reactions and ring reduction",
+              "description": "Benzylic oxidation, reduction, and the Birch reaction.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AROMATICSYNTH",
+              "kind": "computational",
+              "title": "Synthesis strategy on aromatic rings",
+              "description": "Order of operations decides whether a target is reachable.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U4",
+          "title": "Alcohols, Ethers and Epoxides",
+          "chapters": "Ch 17-18",
+          "nodes": [
+            {
+              "id": "ORG2.ALCOHOLPROPS",
+              "kind": "computational",
+              "title": "Alcohol nomenclature, properties and acidity",
+              "description": "Hydrogen bonding, and substituent effects on acidity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ALCOHOLREDUCTION",
+              "kind": "computational",
+              "title": "Alcohols by reduction of carbonyls",
+              "description": "Hydride reagents and their relative reactivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ALCOHOLGRIGNARD",
+              "kind": "computational",
+              "title": "Alcohols from organometallic addition",
+              "description": "Building the carbon skeleton and the alcohol in one step.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ALCOHOLSUB",
+              "kind": "computational",
+              "title": "Substitution and dehydration of alcohols",
+              "description": "Converting a bad leaving group into a good one.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.OXIDATION",
+              "kind": "computational",
+              "title": "Oxidation of alcohols",
+              "description": "Primary to aldehyde or acid, secondary to ketone, and reagent choice.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.PROTECTING",
+              "kind": "computational",
+              "title": "Protecting groups for alcohols",
+              "description": "Silyl ethers, and why a synthesis sometimes needs them.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.PHENOLS",
+              "kind": "computational",
+              "title": "Phenol chemistry",
+              "description": "Enhanced acidity and oxidation to quinones.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.WILLIAMSON",
+              "kind": "computational",
+              "title": "Ether synthesis and cleavage",
+              "description": "The Williamson synthesis as an SN2, with its substrate limits.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.EPOXIDE",
+              "kind": "computational",
+              "title": "Epoxide synthesis and ring opening",
+              "description": "Acidic and basic conditions open at opposite carbons.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.THIOLS",
+              "kind": "concept",
+              "title": "Thiols and sulfides",
+              "description": "Sulfur analogues, better nucleophiles and weaker hydrogen bonders.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U5",
+          "title": "Aldehydes and Ketones",
+          "chapters": "Ch 19",
+          "nodes": [
+            {
+              "id": "ORG2.CARBONYLSTRUCTURE",
+              "kind": "concept",
+              "title": "Carbonyl structure and nomenclature",
+              "description": "The polarized pi bond that organizes the rest of the course.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.CARBONYLPREP",
+              "kind": "computational",
+              "title": "Preparation of aldehydes and ketones",
+              "description": "Routes back from alcohols, alkenes, alkynes and acid derivatives.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.NUCADDITION",
+              "kind": "computational",
+              "title": "Nucleophilic addition",
+              "description": "Mechanism, and the steric and electronic reactivity trend.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.HYDRATEACETAL",
+              "kind": "computational",
+              "title": "Hydrates, hemiacetals and acetals",
+              "description": "Reversible addition of oxygen nucleophiles.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACETALPROTECT",
+              "kind": "computational",
+              "title": "Acetals as protecting groups",
+              "description": "Masking a carbonyl through a basic step.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.IMINEENAMINE",
+              "kind": "computational",
+              "title": "Imines and enamines",
+              "description": "Addition of nitrogen nucleophiles, and the pH dependence.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.WITTIG",
+              "kind": "computational",
+              "title": "The Wittig reaction",
+              "description": "Carbonyl to alkene with unambiguous regiochemistry.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.REDUCTIVEAMINATION",
+              "kind": "computational",
+              "title": "Reduction and reductive amination",
+              "description": "Two of the most used transformations in medicinal chemistry.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.CONJUGATEADDITION",
+              "kind": "computational",
+              "title": "Conjugate addition to enones",
+              "description": "1,2 versus 1,4 addition decided by the nucleophile.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.CARBONYLSPECTRA",
+              "kind": "computational",
+              "title": "Spectroscopy of carbonyl compounds",
+              "description": "The carbonyl stretch, and the aldehyde proton.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U6",
+          "title": "Carboxylic Acids and Nitriles",
+          "chapters": "Ch 20",
+          "nodes": [
+            {
+              "id": "ORG2.ACIDPROPS",
+              "kind": "computational",
+              "title": "Carboxylic acid structure, nomenclature and acidity",
+              "description": "Resonance stabilized conjugate base, and the pKa that follows.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACIDSUBSTITUENT",
+              "kind": "computational",
+              "title": "Substituent effects on acidity",
+              "description": "Inductive withdrawal quantified across a series.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACIDSYNTH",
+              "kind": "computational",
+              "title": "Synthesis of carboxylic acids",
+              "description": "Oxidation, carboxylation and nitrile hydrolysis.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.NITRILES",
+              "kind": "computational",
+              "title": "Nitriles: synthesis and reactions",
+              "description": "A carbon nucleophile that becomes an acid, ketone or amine.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACIDSPECTRA",
+              "kind": "computational",
+              "title": "Spectroscopy of acids and nitriles",
+              "description": "The broad hydroxyl band and the sharp nitrile stretch.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U7",
+          "title": "Carboxylic Acid Derivatives",
+          "chapters": "Ch 21",
+          "nodes": [
+            {
+              "id": "ORG2.DERIVATIVEREACTIVITY",
+              "kind": "concept",
+              "title": "Structure and relative reactivity of derivatives",
+              "description": "One reactivity ladder that predicts every interconversion.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.ACYLSUB",
+              "kind": "computational",
+              "title": "Nucleophilic acyl substitution mechanism",
+              "description": "Addition then elimination of the leaving group.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACIDCHLORIDE",
+              "kind": "computational",
+              "title": "Acid chlorides and anhydrides",
+              "description": "The most reactive derivatives and what they make.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ESTERS",
+              "kind": "computational",
+              "title": "Esters: Fischer esterification and hydrolysis",
+              "description": "Equilibrium control, and saponification as the irreversible route.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AMIDES",
+              "kind": "computational",
+              "title": "Amides: synthesis and hydrolysis",
+              "description": "The least reactive derivative, and the peptide bond.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.DERIVATIVEREDUCTION",
+              "kind": "computational",
+              "title": "Reduction of acid derivatives",
+              "description": "Choosing a reagent that stops at the aldehyde or goes to the alcohol.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.DERIVATIVEORGANOMETALLIC",
+              "kind": "computational",
+              "title": "Organometallic addition to derivatives",
+              "description": "Why esters give tertiary alcohols and acid chlorides can be stopped.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.POLYMERS",
+              "kind": "concept",
+              "title": "Polyamides and polyesters",
+              "description": "Step growth polymerization from the same chemistry.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U8",
+          "title": "Enols, Enolates and Condensations",
+          "chapters": "Ch 22-23",
+          "nodes": [
+            {
+              "id": "ORG2.TAUTOMERISM",
+              "kind": "computational",
+              "title": "Keto enol tautomerism",
+              "description": "Acid and base catalysed interconversion, and where the equilibrium sits.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ENOLATE",
+              "kind": "computational",
+              "title": "Enolate formation and acidity",
+              "description": "Alpha protons, the base that removes them, and regioselectivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ALPHAHALOGEN",
+              "kind": "computational",
+              "title": "Alpha halogenation",
+              "description": "Acidic and basic conditions, and the haloform reaction.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ALKYLATION",
+              "kind": "computational",
+              "title": "Alkylation of enolates and malonic ester synthesis",
+              "description": "Making a substituted acetic acid with controlled carbon count.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACETOACETIC",
+              "kind": "computational",
+              "title": "Acetoacetic ester synthesis",
+              "description": "The ketone counterpart of the malonic ester route.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ALDOL",
+              "kind": "computational",
+              "title": "The aldol reaction and condensation",
+              "description": "Enolate plus carbonyl, and the dehydration that follows.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.CROSSEDALDOL",
+              "kind": "computational",
+              "title": "Crossed and intramolecular aldol",
+              "description": "Controlling which partner enolizes, and ring formation.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.CLAISEN",
+              "kind": "computational",
+              "title": "The Claisen and Dieckmann condensations",
+              "description": "The ester version, and why it needs a full equivalent of base.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.MICHAEL",
+              "kind": "computational",
+              "title": "Michael addition and Robinson annulation",
+              "description": "Conjugate addition followed by aldol, building a ring.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U9",
+          "title": "Amines and Heterocycles",
+          "chapters": "Ch 24",
+          "nodes": [
+            {
+              "id": "ORG2.AMINEPROPS",
+              "kind": "computational",
+              "title": "Amine nomenclature, structure and basicity",
+              "description": "What raises and lowers basicity across aliphatic and aromatic amines.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AMINESYNTH",
+              "kind": "computational",
+              "title": "Synthesis of amines",
+              "description": "Reduction, reductive amination, Gabriel and Hofmann routes.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AMINEREACTIONS",
+              "kind": "computational",
+              "title": "Reactions of amines",
+              "description": "Hofmann elimination and diazonium chemistry.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.HETEROCYCLES",
+              "kind": "computational",
+              "title": "Aromatic heterocycles",
+              "description": "Pyrrole, furan, pyridine and their contrasting reactivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AMINESPECTRA",
+              "kind": "computational",
+              "title": "Spectroscopy of amines",
+              "description": "N-H stretches and the nitrogen rule in mass spectrometry.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U10",
+          "title": "Biomolecules and Synthesis Strategy",
+          "chapters": "Ch 25-26",
+          "nodes": [
+            {
+              "id": "ORG2.CARBOHYDRATES",
+              "kind": "computational",
+              "title": "Carbohydrates: structure and anomers",
+              "description": "Cyclic forms, anomeric carbon and mutarotation.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.CARBREACTIONS",
+              "kind": "computational",
+              "title": "Carbohydrate reactions and glycosides",
+              "description": "Reduction, oxidation and glycoside formation.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AMINOACIDS",
+              "kind": "computational",
+              "title": "Amino acids and isoelectric point",
+              "description": "Zwitterions, and the pH at which charge cancels.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.PEPTIDES",
+              "kind": "computational",
+              "title": "Peptides, proteins and peptide synthesis",
+              "description": "Sequencing, and protecting group strategy on the solid phase.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.LIPIDS",
+              "kind": "concept",
+              "title": "Lipids and terpenes",
+              "description": "Fatty acids, triglycerides and isoprene assembly.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.NUCLEICACIDS",
+              "kind": "concept",
+              "title": "Nucleic acids",
+              "description": "Nucleotides, base pairing and the phosphodiester backbone.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.RETROSYNTHESIS",
+              "kind": "computational",
+              "title": "Retrosynthetic analysis",
+              "description": "Disconnections, synthons and reagent equivalents.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.MULTISTEP",
+              "kind": "computational",
+              "title": "Multistep synthesis design",
+              "description": "Functional group interconversion, order of operations, protecting groups.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        }
+      ],
+      "unit_prereqs": {
+        "ORG2-U1": [
+          "ORG1.ELUCIDATION",
+          "ORG1.ALKENESTABILITY"
+        ],
+        "ORG2-U2": [
+          "ORG2.CONJUGATION"
+        ],
+        "ORG2-U3": [
+          "ORG2.HUCKEL",
+          "ORG1.ARROWS"
+        ],
+        "ORG2-U4": [
+          "ORG1.COMPETITION",
+          "ORG1.GRIGNARD"
+        ],
+        "ORG2-U5": [
+          "ORG2.OXIDATION",
+          "ORG1.TAUTOMER"
+        ],
+        "ORG2-U6": [
+          "ORG2.NUCADDITION",
+          "ORG1.PKA"
+        ],
+        "ORG2-U7": [
+          "ORG2.ACIDPROPS"
+        ],
+        "ORG2-U8": [
+          "ORG2.DERIVATIVEREACTIVITY",
+          "ORG2.CARBONYLSTRUCTURE"
+        ],
+        "ORG2-U9": [
+          "ORG2.REDUCTIVEAMINATION",
+          "ORG2.AMIDES"
+        ],
+        "ORG2-U10": [
+          "ORG2.MICHAEL",
+          "ORG2.AMINESYNTH",
+          "ORG1.ELUCIDATION"
+        ]
+      },
+      "extra_edges": [
+        [
+          "ORG1.CARBOCATION",
+          "ORG2.ALLYLIC"
+        ],
+        [
+          "ORG1.KINETICTHERMO",
+          "ORG2.CONJUGATEADD"
+        ],
+        [
+          "ORG1.ENANTIODIA",
+          "ORG2.DIELSALDER"
+        ],
+        [
+          "ORG2.EASMECH",
+          "ORG2.DIRECTING"
+        ],
+        [
+          "ORG2.ACTIVATING",
+          "ORG2.DIRECTING"
+        ],
+        [
+          "ORG2.DIRECTING",
+          "ORG2.AROMATICSYNTH"
+        ],
+        [
+          "ORG2.FRIEDELCRAFTS",
+          "ORG2.AROMATICSYNTH"
+        ],
+        [
+          "ORG1.SN2",
+          "ORG2.WILLIAMSON"
+        ],
+        [
+          "ORG1.SN2",
+          "ORG2.EPOXIDE"
+        ],
+        [
+          "ORG2.ENOLATE",
+          "ORG2.MICHAEL"
+        ],
+        [
+          "ORG2.ALDOL",
+          "ORG2.MICHAEL"
+        ],
+        [
+          "ORG2.ESTERS",
+          "ORG2.CLAISEN"
+        ],
+        [
+          "ORG2.ACETALPROTECT",
+          "ORG2.MULTISTEP"
+        ],
+        [
+          "ORG2.PROTECTING",
+          "ORG2.PEPTIDES"
+        ],
+        [
+          "ORG2.HYDRATEACETAL",
+          "ORG2.CARBOHYDRATES"
+        ],
+        [
+          "ORG2.AMINEPROPS",
+          "ORG2.AMINOACIDS"
+        ],
+        [
+          "ORG2.AROMATICSYNTH",
+          "ORG2.MULTISTEP"
+        ]
+      ],
+      "misconceptions": [
+        {
+          "code": "ORG2M01",
+          "name": "Aromaticity by ring alone",
+          "description": "Calls any cyclic conjugated ring aromatic without applying all four criteria.",
+          "routes_to": "ORG2.HUCKEL"
+        },
+        {
+          "code": "ORG2M02",
+          "name": "Benzene undergoes addition",
+          "description": "Applies alkene addition chemistry to an aromatic ring.",
+          "routes_to": "ORG2.BENZENE"
+        },
+        {
+          "code": "ORG2M03",
+          "name": "Directing effects from electronegativity alone",
+          "description": "Predicts orientation from induction and ignores resonance donation.",
+          "routes_to": "ORG2.DIRECTING"
+        },
+        {
+          "code": "ORG2M04",
+          "name": "Friedel Crafts on any ring",
+          "description": "Attempts alkylation on strongly deactivated rings or with rearranging substrates.",
+          "routes_to": "ORG2.FRIEDELCRAFTS"
+        },
+        {
+          "code": "ORG2M05",
+          "name": "Epoxide opening regiochemistry ignored",
+          "description": "Uses the same attack position under acidic and basic conditions.",
+          "routes_to": "ORG2.EPOXIDE"
+        },
+        {
+          "code": "ORG2M06",
+          "name": "Carbonyl reactivity ladder inverted",
+          "description": "Attempts to make an acid chloride from an amide directly.",
+          "routes_to": "ORG2.DERIVATIVEREACTIVITY"
+        },
+        {
+          "code": "ORG2M07",
+          "name": "Grignard with acidic protons present",
+          "description": "Uses an organometallic reagent alongside an alcohol, acid or amine.",
+          "routes_to": "ORG2.ALCOHOLGRIGNARD"
+        },
+        {
+          "code": "ORG2M08",
+          "name": "Ester Grignard stops at the ketone",
+          "description": "Forgets the second addition that gives a tertiary alcohol.",
+          "routes_to": "ORG2.DERIVATIVEORGANOMETALLIC"
+        },
+        {
+          "code": "ORG2M09",
+          "name": "Wrong alpha carbon enolized",
+          "description": "Deprotonates a non alpha position, or ignores thermodynamic and kinetic control.",
+          "routes_to": "ORG2.ENOLATE"
+        },
+        {
+          "code": "ORG2M10",
+          "name": "Aldol without dehydration",
+          "description": "Stops at the beta hydroxy carbonyl when conditions force condensation.",
+          "routes_to": "ORG2.ALDOL"
+        },
+        {
+          "code": "ORG2M11",
+          "name": "Claisen run with catalytic base",
+          "description": "Uses substoichiometric base, so the driving deprotonation never happens.",
+          "routes_to": "ORG2.CLAISEN"
+        },
+        {
+          "code": "ORG2M12",
+          "name": "Amine basicity by substitution count only",
+          "description": "Ignores resonance delocalization in anilines and amides.",
+          "routes_to": "ORG2.AMINEPROPS"
+        },
+        {
+          "code": "ORG2M13",
+          "name": "Retrosynthesis run forwards",
+          "description": "Proposes reagents instead of disconnections, so the analysis never simplifies.",
+          "routes_to": "ORG2.RETROSYNTHESIS"
+        },
+        {
+          "code": "ORG2M14",
+          "name": "Protecting groups omitted",
+          "description": "Designs a route in which a reagent destroys a functional group elsewhere.",
+          "routes_to": "ORG2.MULTISTEP"
+        },
+        {
+          "code": "ORG2M15",
+          "name": "Anomers called enantiomers",
+          "description": "Misclassifies alpha and beta anomers, which are diastereomers.",
+          "routes_to": "ORG2.CARBOHYDRATES"
+        }
+      ],
+      "edges": [
+        [
+          "ORG2.CONJUGATION",
+          "ORG2.ALLYLIC"
+        ],
+        [
+          "ORG2.ALLYLIC",
+          "ORG2.CONJUGATEADD"
+        ],
+        [
+          "ORG2.CONJUGATEADD",
+          "ORG2.DIELSALDER"
+        ],
+        [
+          "ORG2.DIELSALDER",
+          "ORG2.DAREQUIREMENTS"
+        ],
+        [
+          "ORG2.DAREQUIREMENTS",
+          "ORG2.UVVIS"
+        ],
+        [
+          "ORG1.ELUCIDATION",
+          "ORG2.CONJUGATION"
+        ],
+        [
+          "ORG1.ALKENESTABILITY",
+          "ORG2.CONJUGATION"
+        ],
+        [
+          "ORG2.BENZENE",
+          "ORG2.HUCKEL"
+        ],
+        [
+          "ORG2.HUCKEL",
+          "ORG2.AROMATICIONS"
+        ],
+        [
+          "ORG2.AROMATICIONS",
+          "ORG2.ANTIAROMATIC"
+        ],
+        [
+          "ORG2.ANTIAROMATIC",
+          "ORG2.BENZENENOMEN"
+        ],
+        [
+          "ORG2.BENZENENOMEN",
+          "ORG2.AROMATICSPECTRA"
+        ],
+        [
+          "ORG2.CONJUGATION",
+          "ORG2.BENZENE"
+        ],
+        [
+          "ORG2.EASMECH",
+          "ORG2.EASREACTIONS"
+        ],
+        [
+          "ORG2.EASREACTIONS",
+          "ORG2.FRIEDELCRAFTS"
+        ],
+        [
+          "ORG2.FRIEDELCRAFTS",
+          "ORG2.ACTIVATING"
+        ],
+        [
+          "ORG2.ACTIVATING",
+          "ORG2.DIRECTING"
+        ],
+        [
+          "ORG2.DIRECTING",
+          "ORG2.MULTIPLESUB"
+        ],
+        [
+          "ORG2.MULTIPLESUB",
+          "ORG2.NAS"
+        ],
+        [
+          "ORG2.NAS",
+          "ORG2.SIDECHAIN"
+        ],
+        [
+          "ORG2.SIDECHAIN",
+          "ORG2.AROMATICSYNTH"
+        ],
+        [
+          "ORG2.HUCKEL",
+          "ORG2.EASMECH"
+        ],
+        [
+          "ORG1.ARROWS",
+          "ORG2.EASMECH"
+        ],
+        [
+          "ORG2.ALCOHOLPROPS",
+          "ORG2.ALCOHOLREDUCTION"
+        ],
+        [
+          "ORG2.ALCOHOLREDUCTION",
+          "ORG2.ALCOHOLGRIGNARD"
+        ],
+        [
+          "ORG2.ALCOHOLGRIGNARD",
+          "ORG2.ALCOHOLSUB"
+        ],
+        [
+          "ORG2.ALCOHOLSUB",
+          "ORG2.OXIDATION"
+        ],
+        [
+          "ORG2.OXIDATION",
+          "ORG2.PROTECTING"
+        ],
+        [
+          "ORG2.PROTECTING",
+          "ORG2.PHENOLS"
+        ],
+        [
+          "ORG2.PHENOLS",
+          "ORG2.WILLIAMSON"
+        ],
+        [
+          "ORG2.WILLIAMSON",
+          "ORG2.EPOXIDE"
+        ],
+        [
+          "ORG2.EPOXIDE",
+          "ORG2.THIOLS"
+        ],
+        [
+          "ORG1.COMPETITION",
+          "ORG2.ALCOHOLPROPS"
+        ],
+        [
+          "ORG1.GRIGNARD",
+          "ORG2.ALCOHOLPROPS"
+        ],
+        [
+          "ORG2.CARBONYLSTRUCTURE",
+          "ORG2.CARBONYLPREP"
+        ],
+        [
+          "ORG2.CARBONYLPREP",
+          "ORG2.NUCADDITION"
+        ],
+        [
+          "ORG2.NUCADDITION",
+          "ORG2.HYDRATEACETAL"
+        ],
+        [
+          "ORG2.HYDRATEACETAL",
+          "ORG2.ACETALPROTECT"
+        ],
+        [
+          "ORG2.ACETALPROTECT",
+          "ORG2.IMINEENAMINE"
+        ],
+        [
+          "ORG2.IMINEENAMINE",
+          "ORG2.WITTIG"
+        ],
+        [
+          "ORG2.WITTIG",
+          "ORG2.REDUCTIVEAMINATION"
+        ],
+        [
+          "ORG2.REDUCTIVEAMINATION",
+          "ORG2.CONJUGATEADDITION"
+        ],
+        [
+          "ORG2.CONJUGATEADDITION",
+          "ORG2.CARBONYLSPECTRA"
+        ],
+        [
+          "ORG2.OXIDATION",
+          "ORG2.CARBONYLSTRUCTURE"
+        ],
+        [
+          "ORG1.TAUTOMER",
+          "ORG2.CARBONYLSTRUCTURE"
+        ],
+        [
+          "ORG2.ACIDPROPS",
+          "ORG2.ACIDSUBSTITUENT"
+        ],
+        [
+          "ORG2.ACIDSUBSTITUENT",
+          "ORG2.ACIDSYNTH"
+        ],
+        [
+          "ORG2.ACIDSYNTH",
+          "ORG2.NITRILES"
+        ],
+        [
+          "ORG2.NITRILES",
+          "ORG2.ACIDSPECTRA"
+        ],
+        [
+          "ORG2.NUCADDITION",
+          "ORG2.ACIDPROPS"
+        ],
+        [
+          "ORG1.PKA",
+          "ORG2.ACIDPROPS"
+        ],
+        [
+          "ORG2.DERIVATIVEREACTIVITY",
+          "ORG2.ACYLSUB"
+        ],
+        [
+          "ORG2.ACYLSUB",
+          "ORG2.ACIDCHLORIDE"
+        ],
+        [
+          "ORG2.ACIDCHLORIDE",
+          "ORG2.ESTERS"
+        ],
+        [
+          "ORG2.ESTERS",
+          "ORG2.AMIDES"
+        ],
+        [
+          "ORG2.AMIDES",
+          "ORG2.DERIVATIVEREDUCTION"
+        ],
+        [
+          "ORG2.DERIVATIVEREDUCTION",
+          "ORG2.DERIVATIVEORGANOMETALLIC"
+        ],
+        [
+          "ORG2.DERIVATIVEORGANOMETALLIC",
+          "ORG2.POLYMERS"
+        ],
+        [
+          "ORG2.ACIDPROPS",
+          "ORG2.DERIVATIVEREACTIVITY"
+        ],
+        [
+          "ORG2.TAUTOMERISM",
+          "ORG2.ENOLATE"
+        ],
+        [
+          "ORG2.ENOLATE",
+          "ORG2.ALPHAHALOGEN"
+        ],
+        [
+          "ORG2.ALPHAHALOGEN",
+          "ORG2.ALKYLATION"
+        ],
+        [
+          "ORG2.ALKYLATION",
+          "ORG2.ACETOACETIC"
+        ],
+        [
+          "ORG2.ACETOACETIC",
+          "ORG2.ALDOL"
+        ],
+        [
+          "ORG2.ALDOL",
+          "ORG2.CROSSEDALDOL"
+        ],
+        [
+          "ORG2.CROSSEDALDOL",
+          "ORG2.CLAISEN"
+        ],
+        [
+          "ORG2.CLAISEN",
+          "ORG2.MICHAEL"
+        ],
+        [
+          "ORG2.DERIVATIVEREACTIVITY",
+          "ORG2.TAUTOMERISM"
+        ],
+        [
+          "ORG2.CARBONYLSTRUCTURE",
+          "ORG2.TAUTOMERISM"
+        ],
+        [
+          "ORG2.AMINEPROPS",
+          "ORG2.AMINESYNTH"
+        ],
+        [
+          "ORG2.AMINESYNTH",
+          "ORG2.AMINEREACTIONS"
+        ],
+        [
+          "ORG2.AMINEREACTIONS",
+          "ORG2.HETEROCYCLES"
+        ],
+        [
+          "ORG2.HETEROCYCLES",
+          "ORG2.AMINESPECTRA"
+        ],
+        [
+          "ORG2.REDUCTIVEAMINATION",
+          "ORG2.AMINEPROPS"
+        ],
+        [
+          "ORG2.AMIDES",
+          "ORG2.AMINEPROPS"
+        ],
+        [
+          "ORG2.CARBOHYDRATES",
+          "ORG2.CARBREACTIONS"
+        ],
+        [
+          "ORG2.CARBREACTIONS",
+          "ORG2.AMINOACIDS"
+        ],
+        [
+          "ORG2.AMINOACIDS",
+          "ORG2.PEPTIDES"
+        ],
+        [
+          "ORG2.PEPTIDES",
+          "ORG2.LIPIDS"
+        ],
+        [
+          "ORG2.LIPIDS",
+          "ORG2.NUCLEICACIDS"
+        ],
+        [
+          "ORG2.NUCLEICACIDS",
+          "ORG2.RETROSYNTHESIS"
+        ],
+        [
+          "ORG2.RETROSYNTHESIS",
+          "ORG2.MULTISTEP"
+        ],
+        [
+          "ORG2.MICHAEL",
+          "ORG2.CARBOHYDRATES"
+        ],
+        [
+          "ORG2.AMINESYNTH",
+          "ORG2.CARBOHYDRATES"
+        ],
+        [
+          "ORG1.ELUCIDATION",
+          "ORG2.CARBOHYDRATES"
+        ],
+        [
+          "ORG1.CARBOCATION",
+          "ORG2.ALLYLIC"
+        ],
+        [
+          "ORG1.KINETICTHERMO",
+          "ORG2.CONJUGATEADD"
+        ],
+        [
+          "ORG1.ENANTIODIA",
+          "ORG2.DIELSALDER"
+        ],
+        [
+          "ORG2.EASMECH",
+          "ORG2.DIRECTING"
+        ],
+        [
+          "ORG2.ACTIVATING",
+          "ORG2.DIRECTING"
+        ],
+        [
+          "ORG2.DIRECTING",
+          "ORG2.AROMATICSYNTH"
+        ],
+        [
+          "ORG2.FRIEDELCRAFTS",
+          "ORG2.AROMATICSYNTH"
+        ],
+        [
+          "ORG1.SN2",
+          "ORG2.WILLIAMSON"
+        ],
+        [
+          "ORG1.SN2",
+          "ORG2.EPOXIDE"
+        ],
+        [
+          "ORG2.ENOLATE",
+          "ORG2.MICHAEL"
+        ],
+        [
+          "ORG2.ALDOL",
+          "ORG2.MICHAEL"
+        ],
+        [
+          "ORG2.ESTERS",
+          "ORG2.CLAISEN"
+        ],
+        [
+          "ORG2.ACETALPROTECT",
+          "ORG2.MULTISTEP"
+        ],
+        [
+          "ORG2.PROTECTING",
+          "ORG2.PEPTIDES"
+        ],
+        [
+          "ORG2.HYDRATEACETAL",
+          "ORG2.CARBOHYDRATES"
+        ],
+        [
+          "ORG2.AMINEPROPS",
+          "ORG2.AMINOACIDS"
+        ],
+        [
+          "ORG2.AROMATICSYNTH",
+          "ORG2.MULTISTEP"
+        ]
+      ]
+    }
+  ]
+}

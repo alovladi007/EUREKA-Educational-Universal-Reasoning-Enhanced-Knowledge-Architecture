@@ -35,7 +35,7 @@ def _gen_structure_draw(seed: int) -> Variant:
             "with the correct connectivity is what is wanted."
         ),
         key=key or mol.smiles,
-        node="C.G1.LEWISBASIC",
+        node="GEN1.LEWIS",
         grader="structure",
         meta={
             "name": mol.name,
@@ -78,7 +78,7 @@ PHASE3_TEMPLATES: dict[str, dict[str, object]] = {
     "structure.draw.v1": {
         "gen": _gen_structure_draw,
         "ver": _ver_structure_draw,
-        "node": "C.G1.LEWISBASIC",
+        "node": "GEN1.LEWIS",
         "grader": "structure",
     },
 }

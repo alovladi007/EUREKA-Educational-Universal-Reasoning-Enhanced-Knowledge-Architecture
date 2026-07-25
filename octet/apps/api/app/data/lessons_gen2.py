@@ -1,10 +1,16 @@
-"""G2 tier lessons: General Chemistry 2.
+"""GEN2 lessons: General Chemistry II.
 
-Twenty four lessons, one per G2 node in app/data/curriculum.py, each following
-the six part arc defined in app/data/lesson_types.py. Numbers in the worked
-examples were checked by hand: standard general chemistry constants are used
-throughout (Kw = 1.0e-14 at 25 C, acetic acid Ka = 1.8e-5, R = 8.314
-J/(mol*K), F = 96485 C/mol).
+18 lessons, one per authored GEN2 node in app/data/curriculum.py, in
+curriculum order, each following the six part arc defined in
+app/data/lesson_types.py. Numbers in the worked examples were checked by hand:
+standard general chemistry constants are used throughout (Kw = 1.0e-14 at 25 C,
+acetic acid Ka = 1.8e-5, R = 8.314 J/(mol*K), F = 96485 C/mol).
+
+These were authored against the retired CF / G1 / G2 node codes and re-keyed
+onto the course based map through app/data/node_migration.py. The prose is
+unchanged; only the node each lesson claims moved. Bonding, geometry, polarity,
+intermolecular forces and colligative properties left this file for GEN1, where
+the standard sequence puts them.
 """
 
 from __future__ import annotations
@@ -12,304 +18,8 @@ from __future__ import annotations
 from app.data.lesson_types import Lesson
 
 LESSONS: dict[str, Lesson] = {
-    "C.G2.BONDING": Lesson(
-        node="C.G2.BONDING",
-        objective=(
-            "Classify a substance as ionic, covalent or metallic from its "
-            "constituent elements, and predict melting point and conductivity "
-            "from that classification."
-        ),
-        build_on=(
-            "You already draw Lewis structures and read electronegativity off "
-            "the periodic table, and the gap in electronegativity between two "
-            "atoms is what decides which kind of bond forms."
-        ),
-        core_idea=(
-            "Three substances on a kitchen counter tell the whole story: table "
-            "salt, natural gas and a copper wire. In table salt the "
-            "electronegativity gap between sodium (0.93) and chlorine (3.16) is "
-            "2.23, large enough that chlorine takes the electron outright, and "
-            "the resulting Na+ and Cl- ions pack into a lattice held by "
-            "electrostatic attraction in every direction. In methane the gap "
-            "between carbon (2.55) and hydrogen (2.20) is only 0.35, so the "
-            "electrons are shared inside discrete CH4 molecules and nothing "
-            "strong holds one molecule to the next. In copper the atoms release "
-            "their valence electrons into a shared sea that flows freely past "
-            "fixed positive cores. Bond type is not a label you memorise, it is "
-            "a prediction: salt melts at 801 C and conducts only once molten, "
-            "methane boils at -161.5 C, copper melts at 1085 C and conducts "
-            "cold."
-        ),
-        worked_example=(
-            "Classify magnesium oxide, MgO, and predict two properties. "
-            "Magnesium is a metal from group 2 with electronegativity 1.31 and "
-            "oxygen is a nonmetal with electronegativity 3.44. The difference "
-            "is 3.44 - 1.31 = 2.13, well above the rough 1.7 cutoff, so this is "
-            "ionic. Magnesium loses two electrons to give Mg2+ and oxygen gains "
-            "two to give O2-, and the +2 and -2 charges attract far more "
-            "strongly than the +1 and -1 charges in NaCl. Coulomb's law says "
-            "the attraction scales with the product of the charges, so 2 times "
-            "2 = 4 against 1 times 1 = 1, roughly a fourfold stronger pull at "
-            "the same separation. Predict a melting point well above the 801 C "
-            "of NaCl, and MgO in fact melts at 2852 C. Predict that solid MgO "
-            "does not conduct, because the ions are locked in place, but molten "
-            "MgO does, because the ions are then free to move."
-        ),
-        try_it_prompt=(
-            "Silicon carbide, SiC, is used for grinding wheels. Silicon has "
-            "electronegativity 1.90 and carbon 2.55. What bond type does the "
-            "gap predict, and would you expect SiC to conduct electricity as a "
-            "solid?"
-        ),
-        try_it_answer=(
-            "The gap is 2.55 - 1.90 = 0.65, so the bonding is covalent, and "
-            "since there are no free electrons and no mobile ions the solid "
-            "does not conduct. SiC is a covalent network solid, which is why it "
-            "is hard enough to grind steel and does not break down until about "
-            "2730 C."
-        ),
-        pitfall=(
-            "The pitfall is treating an ionic formula as a molecule. The "
-            "formula NaCl invites you to picture one sodium bonded to one "
-            "chlorine, but there is no such pair to point at in a salt crystal: "
-            "each sodium ion is surrounded by six chloride ions and each "
-            "chloride by six sodium ions. NaCl is the smallest whole number "
-            "ratio in a lattice, not a particle."
-        ),
-        misconception="MOLECULAR-IONIC",
-    ),
-    "C.G2.VSEPR": Lesson(
-        node="C.G2.VSEPR",
-        objective=(
-            "Predict the electron geometry, molecular shape and approximate "
-            "bond angles of a small molecule by counting electron domains "
-            "around its central atom."
-        ),
-        build_on=(
-            "A Lewis structure already tells you where the bonding pairs and "
-            "lone pairs sit, and VSEPR is the one extra step that turns that "
-            "flat drawing into a three dimensional shape."
-        ),
-        core_idea=(
-            "Think of balloons tied together at their necks. Two balloons point "
-            "opposite ways, three spread into a flat triangle, four splay into "
-            "a tripod plus one, because each balloon pushes the others as far "
-            "away as it can. Electron domains do the same thing, where a domain "
-            "is any group of electrons on the central atom: one lone pair, one "
-            "single bond, one double bond or one triple bond each count as "
-            "exactly one domain. The number of domains fixes the electron "
-            "geometry, and then you describe the molecular shape using only the "
-            "positions of the atoms, ignoring the lone pairs you cannot see. "
-            "Lone pairs are fatter than bonding pairs because they are held by "
-            "one nucleus instead of two, so every lone pair squeezes the "
-            "remaining bond angles a little smaller."
-        ),
-        worked_example=(
-            "Find the shape of ammonia, NH3. Count valence electrons: nitrogen "
-            "contributes 5 and each hydrogen 1, giving 5 + 3 = 8 electrons, or "
-            "4 pairs. Three of those pairs bond to hydrogens and one is a lone "
-            "pair on nitrogen, so the central atom carries 3 + 1 = 4 electron "
-            "domains. Four domains spread as far apart as possible into a "
-            "tetrahedron, so the electron geometry is tetrahedral with an ideal "
-            "angle of 109.5 degrees. Now name the shape using atoms only: three "
-            "hydrogens and one invisible corner give a trigonal pyramidal "
-            "molecule, not a tetrahedral one. Finally correct the angle, "
-            "because the single lone pair pushes harder than the three bonding "
-            "pairs and compresses the H-N-H angle from 109.5 to the measured "
-            "107 degrees."
-        ),
-        try_it_prompt=(
-            "Water has 6 valence electrons on oxygen plus 1 from each hydrogen. "
-            "How many electron domains does oxygen carry, what is the molecular "
-            "shape, and should the bond angle be larger or smaller than the "
-            "107 degrees in ammonia?"
-        ),
-        try_it_answer=(
-            "Oxygen carries 4 domains (2 bonding pairs and 2 lone pairs), the "
-            "shape is bent, and the angle is smaller, 104.5 degrees. Two lone "
-            "pairs squeeze the bond angle more than ammonia's single lone pair "
-            "does."
-        ),
-        pitfall=(
-            "The pitfall is counting attached atoms instead of electron "
-            "domains. Carbon dioxide and water both have a central atom with "
-            "exactly two atoms attached, yet CO2 is linear at 180 degrees and "
-            "water is bent at 104.5 degrees, because oxygen in water carries "
-            "two lone pairs and carbon in CO2 carries none."
-        ),
-        misconception=None,
-    ),
-    "C.G2.POLARITY": Lesson(
-        node="C.G2.POLARITY",
-        objective=(
-            "Decide whether a molecule is polar by combining bond dipoles with "
-            "molecular geometry and checking whether the vectors cancel."
-        ),
-        build_on=(
-            "VSEPR gave you the three dimensional shape, and polarity is what "
-            "happens when you place an arrow along each polar bond and add "
-            "those arrows up in that shape."
-        ),
-        core_idea=(
-            "Polarity is a tug of war with direction. Each bond between "
-            "different elements pulls electron density toward the more "
-            "electronegative atom, which you draw as an arrow pointing that "
-            "way, and the size of the arrow tracks the electronegativity gap. "
-            "The molecule as a whole is polar only if those arrows fail to "
-            "cancel, which is a geometry question, not a bond question. A "
-            "symmetric arrangement lets equal arrows cancel to nothing, while a "
-            "lopsided arrangement leaves a leftover pull called the dipole "
-            "moment, measured in debye. This is why water sticks to itself and "
-            "dissolves salt, while carbon dioxide, built from bonds that are "
-            "individually more polar than nothing, does neither."
-        ),
-        worked_example=(
-            "Compare carbon dioxide and water. In CO2 the gap is 3.44 - 2.55 = "
-            "0.89, so each C=O bond is genuinely polar, and the arrows point "
-            "from carbon out to each oxygen. Carbon has two electron domains "
-            "and no lone pairs, so the molecule is linear at 180 degrees and "
-            "the two arrows point in exactly opposite directions with equal "
-            "size. They cancel, and the measured dipole moment of CO2 is 0 "
-            "debye. In water the gap is 3.44 - 2.20 = 1.24, so each O-H bond is "
-            "even more polar, and both arrows point from hydrogen toward "
-            "oxygen. But water is bent at 104.5 degrees, so the two arrows are "
-            "on the same side of the molecule and reinforce rather than cancel, "
-            "giving a measured dipole moment of 1.85 debye. Same logic, "
-            "opposite answer, and the only thing that changed was the shape."
-        ),
-        try_it_prompt=(
-            "Boron trifluoride, BF3, is trigonal planar with three identical "
-            "B-F bonds at 120 degrees and no lone pair on boron. Fluorine is far "
-            "more electronegative than boron. Is BF3 polar?"
-        ),
-        try_it_answer=(
-            "No, BF3 is nonpolar with a dipole moment of 0 debye. The three "
-            "strongly polar B-F arrows are equal in size and spread evenly at "
-            "120 degrees around a flat triangle, so they sum to zero."
-        ),
-        pitfall=(
-            "The pitfall is concluding that polar bonds make a polar molecule. "
-            "Carbon tetrachloride has four strongly polar C-Cl bonds, yet its "
-            "dipole moment is 0 debye, because the tetrahedral arrangement "
-            "cancels all four arrows and CCl4 will not mix with water."
-        ),
-        misconception=None,
-    ),
-    "C.G2.IMF": Lesson(
-        node="C.G2.IMF",
-        objective=(
-            "Rank substances by boiling point or predict solubility by "
-            "identifying the strongest intermolecular force each one can use."
-        ),
-        build_on=(
-            "You can now say whether a molecule is polar, and that answer "
-            "decides which of the forces between molecules is available to it."
-        ),
-        core_idea=(
-            "Intermolecular forces are the stickiness between molecules, not "
-            "inside them. There are three to know, weakest to strongest for "
-            "molecules of similar size: London dispersion forces, which every "
-            "substance has and which grow with the number of electrons; dipole "
-            "dipole attraction, available only to polar molecules; and hydrogen "
-            "bonding, a strong special case that needs H bonded directly to N, "
-            "O or F. Boiling is the act of pulling molecules apart from one "
-            "another, so the boiling point measures how strong these forces "
-            "are. Solubility follows the same rule, since like dissolves like "
-            "means a solvent dissolves a solute when the forces they would make "
-            "with each other are comparable to the ones they already have."
-        ),
-        worked_example=(
-            "Ethanol and dimethyl ether have the identical molecular formula "
-            "C2H6O and the identical molar mass of 46.07 g/mol, so dispersion "
-            "forces are nearly the same for both. Ethanol is CH3CH2OH, with its "
-            "hydrogen bonded straight to oxygen, so ethanol molecules hydrogen "
-            "bond to each other. Dimethyl ether is CH3OCH3, where both "
-            "hydrogens sit on carbon, so the molecule is polar and gets dipole "
-            "dipole attraction but cannot hydrogen bond. Predict that ethanol "
-            "boils much higher, and the measurement agrees: ethanol boils at "
-            "78 C while dimethyl ether boils at -25 C, a gap of about 103 "
-            "degrees from one structural difference. Compare that to propane "
-            "(-42 C) against butane (-0.5 C), where only dispersion is at work "
-            "and adding a whole carbon buys just 42 degrees. Hydrogen bonding "
-            "is worth more than a lot of extra mass."
-        ),
-        try_it_prompt=(
-            "Water boils at 100 C and hydrogen sulfide, H2S, boils at -60 C, "
-            "even though H2S is the heavier molecule. Which force explains the "
-            "160 degree gap, and why does H2S miss out on it?"
-        ),
-        try_it_answer=(
-            "Hydrogen bonding. Water has H bonded directly to oxygen, which "
-            "qualifies, while sulfur is not N, O or F, so H2S is limited to "
-            "dipole dipole and dispersion despite being heavier."
-        ),
-        pitfall=(
-            "The pitfall is believing that boiling breaks the covalent bonds "
-            "inside a molecule. Steam is still made of intact H2O molecules, "
-            "not loose H and O atoms. Vaporising water costs about 41 kJ/mol, "
-            "while breaking an O-H bond costs about 463 kJ/mol, more than ten "
-            "times as much."
-        ),
-        misconception=None,
-    ),
-    "C.G2.SOLUTIONS": Lesson(
-        node="C.G2.SOLUTIONS",
-        objective=(
-            "Calculate freezing point depression and boiling point elevation "
-            "from molality and the van't Hoff factor."
-        ),
-        build_on=(
-            "Intermolecular forces told you what dissolves in what, and now you "
-            "quantify what the dissolved particles do to the solvent's phase "
-            "change temperatures."
-        ),
-        core_idea=(
-            "Salt on an icy road and antifreeze in a car radiator are the same "
-            "phenomenon. Colligative properties depend only on how many solute "
-            "particles are present, not on what they are, which is why sugar "
-            "and salt at equal particle counts do the identical job. The two "
-            "you compute are freezing point depression, delta Tf = i * Kf * m, "
-            "and boiling point elevation, delta Tb = i * Kb * m. Here m is "
-            "molality in moles of solute per kilogram of solvent (not per litre "
-            "of solution), Kf for water is 1.86 C/m and Kb for water is 0.512 "
-            "C/m, and i is the van't Hoff factor, the number of particles one "
-            "formula unit releases. Sugar gives i = 1 because it dissolves "
-            "whole, NaCl gives i = 2 because it splits into Na+ and Cl-, and "
-            "CaCl2 gives i = 3."
-        ),
-        worked_example=(
-            "Find the freezing point of a radiator mix made from 100.0 g of "
-            "ethylene glycol, C2H6O2, in 1.00 kg of water. The molar mass of "
-            "C2H6O2 is 2(12.01) + 6(1.008) + 2(16.00) = 62.07 g/mol, so moles = "
-            "100.0 g / 62.07 g/mol = 1.611 mol. Molality = 1.611 mol / 1.00 kg "
-            "= 1.611 m. Ethylene glycol is a molecular compound that does not "
-            "ionise, so i = 1. Then delta Tf = 1 * 1.86 C/m * 1.611 m = 3.00 C. "
-            "Freezing point depression means subtract, so the solution freezes "
-            "at 0.00 - 3.00 = -3.00 C. Note that grams never entered the "
-            "formula directly, only the moles they converted to, which is why "
-            "the same 100.0 g of a heavier solute would protect the radiator "
-            "less."
-        ),
-        try_it_prompt=(
-            "You dissolve 1.00 mol of NaCl in 1.00 kg of water instead. By how "
-            "many degrees does the freezing point drop, and why is it not 1.86 "
-            "C?"
-        ),
-        try_it_answer=(
-            "It drops 3.72 C, to -3.72 C, because delta Tf = 2 * 1.86 * 1.00. "
-            "NaCl dissociates into two ions, so 1.00 mol of salt puts 2.00 mol "
-            "of particles into the water."
-        ),
-        pitfall=(
-            "The pitfall is dropping the van't Hoff factor for ionic solutes. "
-            "One mole of CaCl2 in a kilogram of water lowers the freezing point "
-            "by 3 * 1.86 = 5.58 C, not 1.86 C, because each formula unit "
-            "releases one Ca2+ and two Cl- for a total of three particles."
-        ),
-        misconception=None,
-    ),
-    "C.G2.KINETICS": Lesson(
-        node="C.G2.KINETICS",
+    "GEN2.RATES": Lesson(
+        node="GEN2.RATES",
         objective=(
             "Express the rate of a reaction from concentration change over time "
             "and convert between the rates of different species using the "
@@ -362,8 +72,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.RATELAW": Lesson(
-        node="C.G2.RATELAW",
+    "GEN2.RATELAW": Lesson(
+        node="GEN2.RATELAW",
         objective=(
             "Determine the order in each reactant and the rate constant from a "
             "table of initial rates."
@@ -416,66 +126,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.MECHANISM": Lesson(
-        node="C.G2.MECHANISM",
-        objective=(
-            "Check that a proposed mechanism sums to the overall equation and "
-            "predict the rate law from its rate determining step."
-        ),
-        build_on=(
-            "You measured a rate law that did not match the coefficients, and a "
-            "mechanism is the explanation for why it did not."
-        ),
-        core_idea=(
-            "A balanced equation is like a receipt showing what you walked in "
-            "with and what you walked out with, while a mechanism is the "
-            "security footage of what actually happened inside. A mechanism is "
-            "a list of elementary steps, and an elementary step is one real "
-            "collision, so for elementary steps alone the coefficients do give "
-            "the orders. A valid mechanism must satisfy two tests: the steps "
-            "must add up to the overall equation, and the predicted rate law "
-            "must match the measured one. Species made in one step and consumed "
-            "in a later step are intermediates, and they cancel in the sum and "
-            "must not appear in the final rate law. The slowest step is the "
-            "rate determining step, a bottleneck exactly like the narrowest "
-            "lane of a highway, and it alone sets the rate law when it comes "
-            "first."
-        ),
-        worked_example=(
-            "The reaction 2 NO2 + F2 -> 2 NO2F is measured to follow rate = "
-            "k[NO2][F2], which the coefficients would not predict. Consider the "
-            "proposed mechanism: step 1, NO2 + F2 -> NO2F + F, slow; step 2, "
-            "NO2 + F -> NO2F, fast. Test the sum first. Adding the two steps "
-            "gives 2 NO2 + F2 + F -> 2 NO2F + F, and the fluorine atom F "
-            "appears once on each side, so it cancels and leaves 2 NO2 + F2 -> "
-            "2 NO2F. That matches. Now test the rate law: step 1 is slow, so it "
-            "is rate determining, and because it is an elementary step you may "
-            "read its molecularity directly, one NO2 and one F2 colliding, "
-            "giving rate = k[NO2][F2]. That matches the measurement, so the "
-            "mechanism survives both tests. The F atom is an intermediate, made "
-            "in step 1 and eaten in step 2, and it correctly appears nowhere in "
-            "the rate law."
-        ),
-        try_it_prompt=(
-            "The overall equation has 2 NO2 but the rate law has [NO2] to the "
-            "first power. Which step of the mechanism explains that, and where "
-            "does the second NO2 go?"
-        ),
-        try_it_answer=(
-            "The slow first step uses only one NO2, and that step alone sets "
-            "the rate law. The second NO2 is consumed in the fast second step, "
-            "which is not a bottleneck and therefore does not affect the rate."
-        ),
-        pitfall=(
-            "The pitfall is letting an intermediate stay in the final rate law. "
-            "Writing rate = k[NO2][F] for the reaction above is useless, "
-            "because F is never something you put in the flask and its "
-            "concentration is not a quantity you can set or measure."
-        ),
-        misconception=None,
-    ),
-    "C.G2.ARRHENIUS": Lesson(
-        node="C.G2.ARRHENIUS",
+    "GEN2.ARRHENIUS": Lesson(
+        node="GEN2.ARRHENIUS",
         objective=(
             "Calculate an activation energy from rate constants at two "
             "temperatures using the two point Arrhenius equation."
@@ -532,8 +184,66 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.EQUILIBRIUM": Lesson(
-        node="C.G2.EQUILIBRIUM",
+    "GEN2.MECHANISM": Lesson(
+        node="GEN2.MECHANISM",
+        objective=(
+            "Check that a proposed mechanism sums to the overall equation and "
+            "predict the rate law from its rate determining step."
+        ),
+        build_on=(
+            "You measured a rate law that did not match the coefficients, and a "
+            "mechanism is the explanation for why it did not."
+        ),
+        core_idea=(
+            "A balanced equation is like a receipt showing what you walked in "
+            "with and what you walked out with, while a mechanism is the "
+            "security footage of what actually happened inside. A mechanism is "
+            "a list of elementary steps, and an elementary step is one real "
+            "collision, so for elementary steps alone the coefficients do give "
+            "the orders. A valid mechanism must satisfy two tests: the steps "
+            "must add up to the overall equation, and the predicted rate law "
+            "must match the measured one. Species made in one step and consumed "
+            "in a later step are intermediates, and they cancel in the sum and "
+            "must not appear in the final rate law. The slowest step is the "
+            "rate determining step, a bottleneck exactly like the narrowest "
+            "lane of a highway, and it alone sets the rate law when it comes "
+            "first."
+        ),
+        worked_example=(
+            "The reaction 2 NO2 + F2 -> 2 NO2F is measured to follow rate = "
+            "k[NO2][F2], which the coefficients would not predict. Consider the "
+            "proposed mechanism: step 1, NO2 + F2 -> NO2F + F, slow; step 2, "
+            "NO2 + F -> NO2F, fast. Test the sum first. Adding the two steps "
+            "gives 2 NO2 + F2 + F -> 2 NO2F + F, and the fluorine atom F "
+            "appears once on each side, so it cancels and leaves 2 NO2 + F2 -> "
+            "2 NO2F. That matches. Now test the rate law: step 1 is slow, so it "
+            "is rate determining, and because it is an elementary step you may "
+            "read its molecularity directly, one NO2 and one F2 colliding, "
+            "giving rate = k[NO2][F2]. That matches the measurement, so the "
+            "mechanism survives both tests. The F atom is an intermediate, made "
+            "in step 1 and eaten in step 2, and it correctly appears nowhere in "
+            "the rate law."
+        ),
+        try_it_prompt=(
+            "The overall equation has 2 NO2 but the rate law has [NO2] to the "
+            "first power. Which step of the mechanism explains that, and where "
+            "does the second NO2 go?"
+        ),
+        try_it_answer=(
+            "The slow first step uses only one NO2, and that step alone sets "
+            "the rate law. The second NO2 is consumed in the fast second step, "
+            "which is not a bottleneck and therefore does not affect the rate."
+        ),
+        pitfall=(
+            "The pitfall is letting an intermediate stay in the final rate law. "
+            "Writing rate = k[NO2][F] for the reaction above is useless, "
+            "because F is never something you put in the flask and its "
+            "concentration is not a quantity you can set or measure."
+        ),
+        misconception=None,
+    ),
+    "GEN2.EQUILIBRIUM": Lesson(
+        node="GEN2.EQUILIBRIUM",
         objective=(
             "Write the equilibrium constant expression for a reaction and "
             "evaluate K or Q from concentrations."
@@ -589,8 +299,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception="K-SQUARE",
     ),
-    "C.G2.ICE": Lesson(
-        node="C.G2.ICE",
+    "GEN2.ICE": Lesson(
+        node="GEN2.ICE",
         objective=(
             "Set up an initial, change, equilibrium table and solve it for the "
             "equilibrium concentrations."
@@ -643,8 +353,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.LECHATELIER": Lesson(
-        node="C.G2.LECHATELIER",
+    "GEN2.LECHATELIER": Lesson(
+        node="GEN2.LECHATELIER",
         objective=(
             "Predict the direction an equilibrium shifts when concentration, "
             "volume or temperature changes, and state whether K itself changes."
@@ -699,8 +409,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception="LECHAT-AMOUNT",
     ),
-    "C.G2.ACIDBASE": Lesson(
-        node="C.G2.ACIDBASE",
+    "GEN2.BRONSTED": Lesson(
+        node="GEN2.BRONSTED",
         objective=(
             "Identify the Bronsted-Lowry acid, base and both conjugate pairs in "
             "a proton transfer reaction, and relate Ka to Kb for a pair."
@@ -754,8 +464,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.PH": Lesson(
-        node="C.G2.PH",
+    "GEN2.PH": Lesson(
+        node="GEN2.PH",
         objective=(
             "Convert among [H3O+], [OH-], pH and pOH at 25 C."
         ),
@@ -806,8 +516,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception="PH-POH",
     ),
-    "C.G2.WEAKACID": Lesson(
-        node="C.G2.WEAKACID",
+    "GEN2.WEAKACID": Lesson(
+        node="GEN2.WEAKACID",
         objective=(
             "Calculate the pH of a weak acid or weak base solution from Ka or "
             "Kb, and test whether the small x approximation was valid."
@@ -860,8 +570,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception="APPROX-INVALID",
     ),
-    "C.G2.BUFFER": Lesson(
-        node="C.G2.BUFFER",
+    "GEN2.BUFFER": Lesson(
+        node="GEN2.BUFFER",
         objective=(
             "Calculate the pH of a buffer with the Henderson-Hasselbalch "
             "equation and the new pH after a strong acid or base is added."
@@ -917,8 +627,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.TITRATIONCURVE": Lesson(
-        node="C.G2.TITRATIONCURVE",
+    "GEN2.TITRATIONWEAK": Lesson(
+        node="GEN2.TITRATIONWEAK",
         objective=(
             "Identify the buffer region, half equivalence point and equivalence "
             "point on a titration curve, and calculate the pH at each."
@@ -973,8 +683,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.KSP": Lesson(
-        node="C.G2.KSP",
+    "GEN2.KSP": Lesson(
+        node="GEN2.KSP",
         objective=(
             "Calculate molar solubility from Ksp, and calculate how a common "
             "ion reduces it."
@@ -1028,8 +738,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.ENTROPY": Lesson(
-        node="C.G2.ENTROPY",
+    "GEN2.ENTROPY": Lesson(
+        node="GEN2.ENTROPY",
         objective=(
             "Predict the sign of the entropy change for a process and calculate "
             "delta S from standard molar entropies."
@@ -1086,8 +796,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.GIBBS": Lesson(
-        node="C.G2.GIBBS",
+    "GEN2.GIBBS": Lesson(
+        node="GEN2.GIBBS",
         objective=(
             "Determine whether a process is spontaneous at a given temperature "
             "using delta G = delta H - T * delta S, and find the crossover "
@@ -1145,66 +855,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.REDOX": Lesson(
-        node="C.G2.REDOX",
-        objective=(
-            "Assign oxidation numbers and balance a redox equation in acidic "
-            "solution using the half reaction method."
-        ),
-        build_on=(
-            "You can balance atoms in an ordinary equation, and redox adds one "
-            "more thing that must balance, which is the electrons transferred."
-        ),
-        core_idea=(
-            "An iron nail rusting and a battery running are the same process: "
-            "electrons moving from one species to another. Oxidation is loss of "
-            "electrons and reduction is gain, and you track them with oxidation "
-            "numbers, which are a bookkeeping charge assigned by rules such as "
-            "oxygen is -2, hydrogen is +1, an element alone is 0, and the "
-            "numbers sum to the overall charge. The species that is oxidised "
-            "gives electrons away and is therefore the reducing agent, which "
-            "feels backwards until you say it out loud a few times. To balance, "
-            "split the reaction into two half reactions and fix each "
-            "separately: balance the main atoms, then oxygen with H2O, then "
-            "hydrogen with H+, then charge with electrons. Finally scale the "
-            "halves so the electrons cancel exactly, then add."
-        ),
-        worked_example=(
-            "Balance MnO4- + Fe2+ -> Mn2+ + Fe3+ in acid. Assign numbers first: "
-            "in MnO4-, four oxygens at -2 total -8, and the ion charge is -1, "
-            "so Mn is +7; it becomes +2, a gain of 5 electrons, which is "
-            "reduction. Iron goes +2 to +3, a loss of 1 electron, which is "
-            "oxidation. Build the reduction half: MnO4- -> Mn2+, add 4 H2O on "
-            "the right to balance oxygen, add 8 H+ on the left to balance the "
-            "hydrogen in that water, then add 5 electrons on the left to make "
-            "the charges match, giving MnO4- + 8 H+ + 5 e- -> Mn2+ + 4 H2O. The "
-            "oxidation half is simply Fe2+ -> Fe3+ + e-. Multiply the iron half "
-            "by 5 so both halves move 5 electrons, then add: MnO4- + 8 H+ + 5 "
-            "Fe2+ -> Mn2+ + 4 H2O + 5 Fe3+. Verify charge, which is the step "
-            "most often skipped: left is -1 + 8 + 10 = +17 and right is +2 + 0 "
-            "+ 15 = +17, so it balances."
-        ),
-        try_it_prompt=(
-            "In the balanced equation above, which species is the oxidising "
-            "agent, and how many electrons does one permanganate ion accept?"
-        ),
-        try_it_answer=(
-            "Permanganate, MnO4-, is the oxidising agent and it accepts 5 "
-            "electrons. It is the species being reduced, going from Mn at +7 "
-            "down to +2, and the thing that gets reduced is by definition what "
-            "oxidises everything else."
-        ),
-        pitfall=(
-            "The pitfall is balancing atoms and calling it done without "
-            "checking charge. Write MnO4- + 8 H+ + Fe2+ -> Mn2+ + 4 H2O + Fe3+ "
-            "and every atom balances, but the left carries +9 and the right "
-            "carries +5, so four units of charge appeared from nowhere. Total "
-            "charge must be identical on both sides."
-        ),
-        misconception="CHG-BAL",
-    ),
-    "C.G2.ELECTROCHEM": Lesson(
-        node="C.G2.ELECTROCHEM",
+    "GEN2.GALVANIC": Lesson(
+        node="GEN2.GALVANIC",
         objective=(
             "Calculate a standard cell potential from half cell potentials and "
             "convert it to delta G."
@@ -1262,8 +914,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.NERNST": Lesson(
-        node="C.G2.NERNST",
+    "GEN2.NERNST": Lesson(
+        node="GEN2.NERNST",
         objective=(
             "Calculate a cell potential at nonstandard concentrations with the "
             "Nernst equation, and obtain K from a standard cell potential."
@@ -1318,8 +970,8 @@ LESSONS: dict[str, Lesson] = {
         ),
         misconception=None,
     ),
-    "C.G2.NUCLEAR": Lesson(
-        node="C.G2.NUCLEAR",
+    "GEN2.NUCLEARSTABILITY": Lesson(
+        node="GEN2.NUCLEARSTABILITY",
         objective=(
             "Write balanced nuclear equations for alpha and beta decay and use "
             "half life to find how much of a sample remains."

@@ -1,6 +1,6 @@
 """Phase 2 templates: the general chemistry item bank.
 
-Fourteen templates covering CF, G1 and G2, each with a generator and an
+Fourteen templates covering GEN1 and GEN2, each with a generator and an
 independent verifier that inverts the relationship rather than repeating the
 generator's arithmetic. Registered into REGISTRY by registry.py.
 
@@ -65,7 +65,7 @@ def gen_molar_mass(seed: int):
     return _v("molarmass.compute.v1", seed,
               f"Calculate the molar mass of {m.name} ({m.formula}). ({m.real_world_note}) "
               "Report your answer in g/mol to 2 decimal places.",
-              f"{mass:.2f}", "C.G1.MOLE", "numeric",
+              f"{mass:.2f}", "GEN1.MOLE", "numeric",
               {"unit": "g/mol", "value": round(mass, 2), "formula": m.formula, "name": m.name,
                "counts": parse_formula(m.formula).counts, "sig_figs": None})
 
@@ -87,7 +87,7 @@ def gen_mass_to_moles(seed: int):
     return _v("mole.mass_to_moles.v1", seed,
               f"How many moles are in {grams} g of {m.name} ({m.formula})? "
               "Report your answer in mol to 3 significant figures.",
-              format_sig_figs(moles, 3), "C.G1.MOLE", "numeric",
+              format_sig_figs(moles, 3), "GEN1.MOLE", "numeric",
               {"unit": "mol", "value": moles, "grams": grams, "molar_mass": molar,
                "formula": m.formula, "sig_figs": 3,
                "wrong_paths": [
@@ -119,7 +119,7 @@ def gen_percent_comp(seed: int):
     return _v("percentcomp.element.v1", seed,
               f"What is the percent by mass of {element} in {m.name} ({m.formula})? "
               "Report your answer as a percentage to 2 decimal places.",
-              f"{pct:.2f}", "C.G1.PERCENTCOMP", "numeric",
+              f"{pct:.2f}", "GEN1.PERCENTCOMP", "numeric",
               {"unit": "percent", "value": pct, "element": element, "formula": m.formula,
                "counts": counts, "sig_figs": None})
 
@@ -151,7 +151,7 @@ def gen_molarity(seed: int):
     return _v("molarity.compute.v1", seed,
               f"{grams} g of {m.name} ({m.formula}) is dissolved and made up to "
               f"{litres} L of solution. What is the molarity? Report in mol/L to 3 significant figures.",
-              format_sig_figs(molarity, 3), "C.G1.MOLARITY", "numeric",
+              format_sig_figs(molarity, 3), "GEN1.MOLARITY", "numeric",
               {"unit": "mol/L", "value": molarity, "grams": grams, "litres": litres,
                "molar_mass": molar, "sig_figs": 3,
                "wrong_paths": [
@@ -179,7 +179,7 @@ def gen_dilution(seed: int):
     return _v("dilution.m1v1.v1", seed,
               f"{v1_ml} mL of a {c1} M stock solution is diluted to a final volume of "
               f"{v2_ml} mL. What is the final concentration? Report in mol/L to 3 significant figures.",
-              format_sig_figs(c2, 3), "C.G1.DILUTION", "numeric",
+              format_sig_figs(c2, 3), "GEN1.DILUTION", "numeric",
               {"unit": "mol/L", "value": c2, "c1": c1, "v1_ml": v1_ml, "v2_ml": v2_ml, "sig_figs": 3,
                "wrong_paths": [
                    {"value": c1 * v2_ml / v1_ml, "misconception": None,
@@ -210,7 +210,7 @@ def gen_ideal_gas(seed: int):
               f"{moles} mol of an ideal gas is held at {pressure} atm and {temp_k} K. "
               "What volume does it occupy? Use R = 0.08206 L*atm/(mol*K) and report in L "
               "to 3 significant figures.",
-              format_sig_figs(volume, 3), "C.G1.GASLAWS", "numeric",
+              format_sig_figs(volume, 3), "GEN1.IDEALGAS", "numeric",
               {"unit": "L", "value": volume, "moles": moles, "temp_k": temp_k,
                "pressure": pressure, "sig_figs": 3,
                "wrong_paths": [
@@ -241,7 +241,7 @@ def gen_combined_gas(seed: int):
     return _v("gaslaw.combined.v1", seed,
               f"A gas occupies {v1} L at {p1} atm and {t1} K. It is brought to {p2} atm "
               f"and {t2} K. What is its new volume? Report in L to 3 significant figures.",
-              format_sig_figs(v2, 3), "C.G1.GASLAWS", "numeric",
+              format_sig_figs(v2, 3), "GEN1.SIMPLEGASLAWS", "numeric",
               {"unit": "L", "value": v2, "p1": p1, "v1": v1, "t1": t1, "p2": p2, "t2": t2, "sig_figs": 3})
 
 
@@ -265,7 +265,7 @@ def gen_calorimetry(seed: int):
               f"{mass} g of water is warmed by {delta_t} degrees Celsius. How much heat did it "
               f"absorb? The specific heat of water is 4.184 J/(g*degC). Report in J to 3 "
               "significant figures.",
-              format_sig_figs(q, 3), "C.G1.THERMOBASIC", "numeric",
+              format_sig_figs(q, 3), "GEN1.CALORIMETRY", "numeric",
               {"unit": "J", "value": q, "mass": mass, "delta_t": delta_t, "sig_figs": 3,
                "wrong_paths": [
                    {"value": mass * delta_t, "misconception": None,
@@ -293,7 +293,7 @@ def gen_ph_strong(seed: int):
     return _v("ph.strong_acid.v1", seed,
               f"What is the pH of a {concentration:.2e} M solution of {name} ({formula})? "
               "It ionizes completely. Report pH to 2 decimal places.",
-              f"{ph:.2f}", "C.G2.PH", "numeric",
+              f"{ph:.2f}", "GEN2.PH", "numeric",
               {"unit": "", "value": round(ph, 2), "concentration": concentration,
                "sig_figs": None,
                "wrong_paths": [
@@ -333,7 +333,7 @@ def gen_limiting(seed: int):
               f"{h2_g} g of hydrogen reacts with {o2_g} g of oxygen:\n"
               "2 H2 + O2 -> 2 H2O\n"
               "What mass of water forms? Report in g to 3 significant figures.",
-              format_sig_figs(water_g, 3), "C.G1.LIMITING", "numeric",
+              format_sig_figs(water_g, 3), "GEN1.LIMITING", "numeric",
               {"unit": "g", "value": water_g, "h2_g": h2_g, "o2_g": o2_g,
                "limiting": limiting, "sig_figs": 3,
                "wrong_paths": [
@@ -372,7 +372,7 @@ def gen_ksp(seed: int):
     return _v("ksp.solubility.v1", seed,
               f"{name} ({formula}) has Ksp = {ksp:.2g} at 25 C. What is its molar "
               "solubility in pure water? Report in mol/L to 3 significant figures.",
-              format_sig_figs(s, 3), "C.G2.KSP", "numeric",
+              format_sig_figs(s, 3), "GEN2.KSP", "numeric",
               {"unit": "mol/L", "value": s, "ksp": ksp, "n_cat": n_cat, "n_an": n_an,
                "formula": formula, "sig_figs": 3,
                "wrong_paths": [
@@ -403,7 +403,7 @@ def gen_density(seed: int):
     return _v("density.compute.v1", seed,
               f"A sample has a mass of {mass} g and occupies {volume} mL. "
               "What is its density in g/mL, to 3 significant figures?",
-              format_sig_figs(density, 3), "C.CF.DENSITY", "numeric",
+              format_sig_figs(density, 3), "GEN1.DENSITY", "numeric",
               {"unit": "g/mL", "value": density, "mass": mass, "volume": volume, "sig_figs": 3,
                "wrong_paths": [
                    {"value": volume / mass, "misconception": None,
@@ -433,7 +433,7 @@ def gen_sigfig(seed: int):
     key = plain if sig_figs(plain) == figures else f"{rounded:.{figures - 1}e}"
     return _v("sigfig.round.v1", seed,
               f"Round {raw:.6f} to {figures} significant figures.",
-              key, "C.CF.MEASURE", "numeric",
+              key, "GEN1.SIGFIGS", "numeric",
               {"unit": "", "value": rounded, "raw": raw, "figures": figures,
                "key_text": key, "sig_figs": None})
 
@@ -478,7 +478,7 @@ def gen_particulate(seed: int):
     ]
     return _v("mc.particulate.v1", seed,
               f"At the particle level, which picture best represents {label}?",
-              "0", "C.G1.IONIC", "mc",
+              "0", "GEN1.NOMENIONIC", "mc",
               {"choices": choices, "correct_index": 0, "triangle_corner": "particulate"})
 
 
@@ -490,18 +490,18 @@ def ver_particulate(v) -> VerifierResult:
 
 
 PHASE2_TEMPLATES = {
-    "molarmass.compute.v1": {"gen": gen_molar_mass, "ver": ver_molar_mass, "node": "C.G1.MOLE", "grader": "numeric"},
-    "mole.mass_to_moles.v1": {"gen": gen_mass_to_moles, "ver": ver_mass_to_moles, "node": "C.G1.MOLE", "grader": "numeric"},
-    "percentcomp.element.v1": {"gen": gen_percent_comp, "ver": ver_percent_comp, "node": "C.G1.PERCENTCOMP", "grader": "numeric"},
-    "molarity.compute.v1": {"gen": gen_molarity, "ver": ver_molarity, "node": "C.G1.MOLARITY", "grader": "numeric"},
-    "dilution.m1v1.v1": {"gen": gen_dilution, "ver": ver_dilution, "node": "C.G1.DILUTION", "grader": "numeric"},
-    "gaslaw.ideal.v1": {"gen": gen_ideal_gas, "ver": ver_ideal_gas, "node": "C.G1.GASLAWS", "grader": "numeric"},
-    "gaslaw.combined.v1": {"gen": gen_combined_gas, "ver": ver_combined_gas, "node": "C.G1.GASLAWS", "grader": "numeric"},
-    "thermo.calorimetry.v1": {"gen": gen_calorimetry, "ver": ver_calorimetry, "node": "C.G1.THERMOBASIC", "grader": "numeric"},
-    "ph.strong_acid.v1": {"gen": gen_ph_strong, "ver": ver_ph_strong, "node": "C.G2.PH", "grader": "numeric"},
-    "limiting.reactant.v1": {"gen": gen_limiting, "ver": ver_limiting, "node": "C.G1.LIMITING", "grader": "numeric"},
-    "ksp.solubility.v1": {"gen": gen_ksp, "ver": ver_ksp, "node": "C.G2.KSP", "grader": "numeric"},
-    "density.compute.v1": {"gen": gen_density, "ver": ver_density, "node": "C.CF.DENSITY", "grader": "numeric"},
-    "sigfig.round.v1": {"gen": gen_sigfig, "ver": ver_sigfig, "node": "C.CF.MEASURE", "grader": "numeric"},
-    "mc.particulate.v1": {"gen": gen_particulate, "ver": ver_particulate, "node": "C.G1.IONIC", "grader": "mc"},
+    "molarmass.compute.v1": {"gen": gen_molar_mass, "ver": ver_molar_mass, "node": "GEN1.MOLE", "grader": "numeric"},
+    "mole.mass_to_moles.v1": {"gen": gen_mass_to_moles, "ver": ver_mass_to_moles, "node": "GEN1.MOLE", "grader": "numeric"},
+    "percentcomp.element.v1": {"gen": gen_percent_comp, "ver": ver_percent_comp, "node": "GEN1.PERCENTCOMP", "grader": "numeric"},
+    "molarity.compute.v1": {"gen": gen_molarity, "ver": ver_molarity, "node": "GEN1.MOLARITY", "grader": "numeric"},
+    "dilution.m1v1.v1": {"gen": gen_dilution, "ver": ver_dilution, "node": "GEN1.DILUTION", "grader": "numeric"},
+    "gaslaw.ideal.v1": {"gen": gen_ideal_gas, "ver": ver_ideal_gas, "node": "GEN1.IDEALGAS", "grader": "numeric"},
+    "gaslaw.combined.v1": {"gen": gen_combined_gas, "ver": ver_combined_gas, "node": "GEN1.SIMPLEGASLAWS", "grader": "numeric"},
+    "thermo.calorimetry.v1": {"gen": gen_calorimetry, "ver": ver_calorimetry, "node": "GEN1.CALORIMETRY", "grader": "numeric"},
+    "ph.strong_acid.v1": {"gen": gen_ph_strong, "ver": ver_ph_strong, "node": "GEN2.PH", "grader": "numeric"},
+    "limiting.reactant.v1": {"gen": gen_limiting, "ver": ver_limiting, "node": "GEN1.LIMITING", "grader": "numeric"},
+    "ksp.solubility.v1": {"gen": gen_ksp, "ver": ver_ksp, "node": "GEN2.KSP", "grader": "numeric"},
+    "density.compute.v1": {"gen": gen_density, "ver": ver_density, "node": "GEN1.DENSITY", "grader": "numeric"},
+    "sigfig.round.v1": {"gen": gen_sigfig, "ver": ver_sigfig, "node": "GEN1.SIGFIGS", "grader": "numeric"},
+    "mc.particulate.v1": {"gen": gen_particulate, "ver": ver_particulate, "node": "GEN1.NOMENIONIC", "grader": "mc"},
 }

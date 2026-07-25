@@ -10,7 +10,13 @@ import chem_core as cc
 import pytest
 
 from app.compliance import run
-from app.data.curriculum import EDGES, NODES, NODES_BY_CODE, tier_counts, topological_order
+from app.data.curriculum import (
+    EDGES,
+    NODES,
+    NODES_BY_CODE,
+    course_counts,
+    topological_order,
+)
 from app.data.lessons import LESSONS
 from app.data.molecule_build import validate_library
 from app.data.molecules import MOLECULES, molecule_pool
@@ -29,9 +35,14 @@ def test_compliance_checklist_is_green():
 
 
 def test_phase2_deliverable_counts():
-    counts = tier_counts()
-    assert counts == {"CF": 12, "G1": 24, "G2": 24}, counts
-    assert len(LESSONS) == 60
+    counts = course_counts()
+    assert counts == {"GEN1": 91, "GEN2": 75, "ORG1": 70, "ORG2": 76}, counts
+    assert len(NODES) == 312
+    # 60 lessons were authored against the retired CF / G1 / G2 codes. 59 of
+    # them re-key onto a node of their own; the sixtieth is parked in
+    # lessons_superseded.py because the course based map draws one formula
+    # node where the old map drew two. Dropping to 58 means a lesson was lost.
+    assert len(LESSONS) == 59
     assert len(cc.REGISTRY) >= 20, "Phase 2 specifies 20 or more templates"
     assert validate_library()["built"] == 200
 
@@ -45,11 +56,36 @@ def test_graph_is_acyclic_and_fully_connected():
         assert a in NODES_BY_CODE and b in NODES_BY_CODE
 
 
-def test_every_node_has_a_lesson_in_the_six_part_arc():
-    for node in NODES:
-        lesson = LESSONS.get(node.code)
-        assert lesson is not None, f"{node.code} has no lesson"
-        assert lesson.missing_parts() == [], f"{node.code}: {lesson.missing_parts()}"
+def test_every_lesson_sits_on_a_real_node_in_the_six_part_arc():
+    """Every authored lesson is complete and attached to the graph.
+
+    This used to read "every node has a lesson", which held when the map was
+    60 nodes and the content was 60 lessons. The map is now the full two year
+    sequence at 312 nodes and the content is written phase by phase, so that
+    form of the rule would fail by design. What is still gated is that no
+    lesson is detached from the graph and no lesson has a hole in its arc,
+    which is what the re-key could plausibly have broken.
+    """
+    for code, lesson in LESSONS.items():
+        assert code in NODES_BY_CODE, f"lesson {code} has no node"
+        assert lesson.node == code, f"lesson under {code} claims node {lesson.node}"
+        assert lesson.missing_parts() == [], f"{code}: {lesson.missing_parts()}"
+
+
+def test_the_superseded_lesson_is_retained_rather_than_dropped():
+    """The one lesson with no node of its own is kept, and kept out of LESSONS.
+
+    The course based map has a single formula node where the old map had two,
+    so one of the two authored lessons has nowhere to land. It is parked for a
+    human to fold in. Serving it would put two lessons on one node; deleting it
+    would lose authored content, and this asserts neither happened.
+    """
+    from app.data.lessons_superseded import SUPERSEDED_LESSONS
+
+    assert len(SUPERSEDED_LESSONS) == 1
+    for code, lesson in SUPERSEDED_LESSONS.items():
+        assert code not in LESSONS, f"{code} is being served as well as parked"
+        assert lesson.missing_parts() == [], f"{code}: {lesson.missing_parts()}"
 
 
 def test_lesson_misconceptions_all_exist_in_the_library():
@@ -59,8 +95,14 @@ def test_lesson_misconceptions_all_exist_in_the_library():
 
 
 def test_lessons_are_plain_ascii_house_style():
-    """No em dashes, en dashes, ellipses or curly quotes anywhere in content."""
-    banned = {"—", "–", "…", "“", "”", "‘", "’"}
+    """No em dashes, en dashes, ellipses or curly quotes anywhere in content.
+
+    Written as escapes so that this file is itself plain ASCII. Spelling the
+    characters out literally made the one file that polices the rule the one
+    file that broke it, and a grep for them across the repository could not
+    tell the check apart from a violation.
+    """
+    banned = {"\u2014", "\u2013", "\u2026", "\u201c", "\u201d", "\u2018", "\u2019"}
     for code, lesson in LESSONS.items():
         blob = " ".join(lesson.parts().values())
         found = banned & set(blob)
@@ -146,9 +188,9 @@ def test_path_planner_gates_on_prerequisites_and_explains_itself():
 
 
 def test_picker_prefers_remediation_over_the_frontier():
-    choice = pick_next({}, last_misconception_route="C.G1.STOICH")
+    choice = pick_next({}, last_misconception_route="GEN1.STOICH")
     assert choice.policy == "remediation"
-    assert "C.G1.STOICH" == choice.node
+    assert "GEN1.STOICH" == choice.node
 
 
 # --------------------------- diagnostic and review ---------------------------
@@ -171,18 +213,18 @@ def test_diagnostic_scores_into_starting_mastery():
 def test_missed_question_reopens_and_clears():
     store = []
     for _ in range(2):
-        record_outcome(store, user_id="u", node="C.G1.STOICH",
+        record_outcome(store, user_id="u", node="GEN1.STOICH",
                        template_id="stoich.mass_to_mass.v1", seed=7, prompt="p",
                        is_correct=False, student_answer="1", misconception="NO-RATIO")
     assert open_missed(store, "u")[0].miss_count == 2
-    record_outcome(store, user_id="u", node="C.G1.STOICH",
+    record_outcome(store, user_id="u", node="GEN1.STOICH",
                    template_id="stoich.mass_to_mass.v1", seed=7, prompt="p", is_correct=True)
     assert not open_missed(store, "u")
 
 
 def test_retry_reserves_the_same_variant_without_the_key():
     store = []
-    record_outcome(store, user_id="u", node="C.G1.MOLE", template_id="mole.mass_to_moles.v1",
+    record_outcome(store, user_id="u", node="GEN1.MOLE", template_id="mole.mass_to_moles.v1",
                    seed=11, prompt="p", is_correct=False, student_answer="x")
     payload = retry_payload(store[0])
     assert payload["seed"] == 11

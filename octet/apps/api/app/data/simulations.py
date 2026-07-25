@@ -136,7 +136,7 @@ SCENARIOS: dict[str, Scenario] = {
                 "hydroxide from the burette."
             ),
             stress={},
-            node="C.G2.TITRATIONCURVE",
+            node="GEN2.TITRATIONWEAK",
         ),
         Scenario(
             id="sim.titr.strong",
@@ -148,7 +148,7 @@ SCENARIOS: dict[str, Scenario] = {
                 "sodium hydroxide from the burette."
             ),
             stress={},
-            node="C.G2.TITRATIONCURVE",
+            node="GEN2.TITRATIONSTRONG",
         ),
         Scenario(
             id="sim.eq.add-h2",
@@ -160,7 +160,7 @@ SCENARIOS: dict[str, Scenario] = {
                 "degrees Celsius. A further 0.050 M of hydrogen is injected."
             ),
             stress={"H2": 0.050},
-            node="C.G2.LECHATELIER",
+            node="GEN2.LECHATELIER",
         ),
         Scenario(
             id="sim.eq.catalyst",
@@ -173,7 +173,7 @@ SCENARIOS: dict[str, Scenario] = {
                 "is empty, which is exactly what a catalyst is."
             ),
             stress={},
-            node="C.G2.LECHATELIER",
+            node="GEN2.LECHATELIER",
         ),
     ]
 }
@@ -288,7 +288,7 @@ POE_ITEMS: dict[str, PoeItem] = {
     for item in [
         PoeItem(
             id="poe.titr.weak-equivalence",
-            node="C.G2.TITRATIONCURVE",
+            node="GEN2.TITRATIONWEAK",
             scenario="sim.titr.weak",
             predict_prompt=(
                 "Before the titration runs, commit to a prediction. At the "
@@ -380,7 +380,7 @@ POE_ITEMS: dict[str, PoeItem] = {
         ),
         PoeItem(
             id="poe.titr.buffer-region",
-            node="C.G2.BUFFER",
+            node="GEN2.BUFFER",
             scenario="sim.titr.weak",
             predict_prompt=(
                 "Between 5 mL and 20 mL of added base, three quarters of the way "
@@ -454,7 +454,7 @@ POE_ITEMS: dict[str, PoeItem] = {
         ),
         PoeItem(
             id="poe.lechat.add-h2",
-            node="C.G2.LECHATELIER",
+            node="GEN2.LECHATELIER",
             scenario="sim.eq.add-h2",
             predict_prompt=(
                 "The hydrogen iodide system sits at equilibrium. More hydrogen is "
@@ -530,7 +530,7 @@ POE_ITEMS: dict[str, PoeItem] = {
         ),
         PoeItem(
             id="poe.lechat.catalyst",
-            node="C.G2.LECHATELIER",
+            node="GEN2.LECHATELIER",
             scenario="sim.eq.catalyst",
             predict_prompt=(
                 "The same system at equilibrium. A catalyst is added. Predict what "
