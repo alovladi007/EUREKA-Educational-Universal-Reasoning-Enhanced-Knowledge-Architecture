@@ -94,3 +94,10 @@ try:
     LESSONS.update(_ORG1_U10)
 except ImportError:  # pragma: no cover
     pass
+
+try:
+    from app.data.lessons_org1_u6 import LESSONS_ORG1_U6 as _ORG1_U6
+
+    LESSONS.update(_ORG1_U6)
+except ImportError:  # pragma: no cover
+    pass

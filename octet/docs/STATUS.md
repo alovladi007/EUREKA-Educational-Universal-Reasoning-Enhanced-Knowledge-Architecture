@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-25 (Phase 5 in progress, ORG1 60 of 70 nodes).
+Last updated: 2026-07-25 (Phase 5 lessons complete, ORG1 70 of 70 nodes).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -342,10 +342,17 @@ gives no hints and marks nothing until submission; a started attempt shows the
 clock in an aria-live region, every input has a label, and no correctness
 appears anywhere; and a reload rehydrates the fields from the server.
 
-## Phase 5: organic wave 1. Gate: ORG1 authored. Status: IN PROGRESS
+## Phase 5: organic wave 1. Gate: ORG1 authored. Status: LESSONS DONE, ITEMS PARTIAL
 
-ORG1 is 60 of 70 nodes authored, carrying 734 machine-checked claims. Unit 6
-(alkenes, 10 nodes) is the remainder.
+All 70 ORG1 nodes carry a lesson, together making 938 machine-checked claims,
+every one passing. That is the lesson half of the gate.
+
+The item half is not finished, and the difference matters to a learner. Five
+organic templates exist, and they target nodes in three units, so only units 3,
+4 and 10 have practice items and only those three assemble a unit exam. The
+other seven units teach and cannot yet be practised. Exam assembly refuses
+rather than substituting from elsewhere, so this shows up as an exam that is
+absent rather than one quietly built from the wrong nodes.
 
 The phase opened by building verification before content, because organic
 content fails differently from everything before it. A stoichiometry lesson is
@@ -417,12 +424,15 @@ tutor.
    organic templates: unsaturation, CIP assignment, isomer relationships,
    proton environment counting and structure elucidation. Mechanism and
    retrosynthesis items remain unbuilt, with graders 5, 8, 9 and 11.
-9. 95 authored facts in ORG1 carry a citation but have not been checked against
+9. 112 authored facts in ORG1 carry a citation but have not been checked against
    the cited work. These are the values the system cannot derive from structure:
    chemical shifts, IR bands, pKa values, bond energies. A citation names who is
    accountable for a number, not that the number was verified, and the
    compliance checklist reports the count as `citation_review_debt` so the
    review queue is visible rather than implied. Nothing in ORG1 should be
    presented as expert reviewed.
+10. Seven of ORG1's ten units have lessons but no practice items, because the
+   five organic templates cover nodes in units 3, 4 and 10 only. Those seven
+   units are readable and not practisable, and no unit exam exists for them.
 8. The tutor gateway does not exist. It is Phase 7 and gated on a red team
    suite.
