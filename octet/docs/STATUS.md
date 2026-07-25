@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-24 (Phase 4 complete).
+Last updated: 2026-07-25 (Phase 5 in progress, ORG1 60 of 70 nodes).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -342,9 +342,47 @@ gives no hints and marks nothing until submission; a started attempt shows the
 clock in an aria-live region, every input has a label, and no correctness
 appears anywhere; and a reload rehydrates the fields from the server.
 
-## Phase 5 and later: NOT STARTED
+## Phase 5: organic wave 1. Gate: ORG1 authored. Status: IN PROGRESS
 
-Phase 4 LTI and exam engine, Phase 5 organic wave 1, Phase 6 organic wave 2
+ORG1 is 60 of 70 nodes authored, carrying 734 machine-checked claims. Unit 6
+(alkenes, 10 nodes) is the remainder.
+
+The phase opened by building verification before content, because organic
+content fails differently from everything before it. A stoichiometry lesson is
+self checking: the arithmetic either works or it does not. A stereochemical
+assignment can be confidently inverted and read perfectly fluently, which makes
+reviewing organic prose by reading it close to useless.
+
+  chem_core/organic.py   CIP descriptors, enantiomer and diastereomer
+                         relationships by actual reflection, degrees of
+                         unsaturation, proton environments from symmetry
+  chem_core/spectra.py   grader 10, whose verifier checks that an elucidation
+                         item's data determines its own key, aiming the check
+                         at the author rather than the learner
+  app/data/claims.py     Stereo, Formula, Unsaturation, Relationship,
+                         Environments and Source, attached to lessons and
+                         re-derived when the suite runs
+  chem_core/templates_o.py   five ORG1 templates, so organic nodes are
+                         practiceable and ORG1 unit exams assemble
+
+Compliance fails on a claim that does not hold and on an organic lesson
+carrying no claims at all. The second rule matters because that failure is
+silent: a lesson stating a configuration only in prose reads exactly like one
+that was verified.
+
+The evidence that this was necessary is in the record. The reference unit had
+5 of its first 25 claims rejected, including two inverted CIP descriptors.
+Three separate bugs in the checking machinery were found by using it: aromatic
+pi bonds scoring zero under banker's rounding, a numeric grader that could
+never mark a zero answer correct, and an are_enantiomers that called cis and
+trans 1,4-dimethylcyclohexane enantiomers when both are achiral. That last one
+rejected the true claim and accepted the false one, which is the worst possible
+direction for a verifier to fail, and it was found by an author who reported it
+rather than flipping the claim to make the failure go away.
+
+## Phase 6 and later: NOT STARTED
+
+Phase 6 organic wave 2
 with the retrosynthesis trainer, Phase 7 AN/P1/P2 tiers and the guardrailed
 tutor.
 
@@ -375,8 +413,16 @@ tutor.
 6. Molecules have no 3D coordinates. The library stores SMILES, which records
    connectivity and not geometry, so `has_3d` is false for all 200 and the
    viewer states that the layout it draws is illustrative rather than measured.
-7. Structure items cover drawing a named molecule and nothing more. Isomer,
-   functional group and stereochemistry items are the organic phases, and
-   building them now would put content ahead of the pedagogy that supports it.
+7. Structure items covered drawing a named molecule until Phase 5 added five
+   organic templates: unsaturation, CIP assignment, isomer relationships,
+   proton environment counting and structure elucidation. Mechanism and
+   retrosynthesis items remain unbuilt, with graders 5, 8, 9 and 11.
+9. 95 authored facts in ORG1 carry a citation but have not been checked against
+   the cited work. These are the values the system cannot derive from structure:
+   chemical shifts, IR bands, pKa values, bond energies. A citation names who is
+   accountable for a number, not that the number was verified, and the
+   compliance checklist reports the count as `citation_review_debt` so the
+   review queue is visible rather than implied. Nothing in ORG1 should be
+   presented as expert reviewed.
 8. The tutor gateway does not exist. It is Phase 7 and gated on a red team
    suite.
