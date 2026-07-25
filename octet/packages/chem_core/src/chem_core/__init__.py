@@ -334,8 +334,21 @@ def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
             key_precursors=tuple(meta.get("key_precursors", [])),
             source=meta.get("source", ""),
         )
-        chosen = student_answer.get("disconnection", "") if isinstance(student_answer, dict) else ""
-        precursors = student_answer.get("precursors", []) if isinstance(student_answer, dict) else []
+        # The answer is structured (a disconnection plus a precursor list). It
+        # may arrive as a dict directly, or as a JSON string, which is how it
+        # travels through the practice endpoint's plain-text answer field. A
+        # bare string that is not JSON is treated as no structured answer and
+        # grades as ungradable rather than crashing.
+        answer = student_answer
+        if isinstance(answer, str):
+            import json
+
+            try:
+                answer = json.loads(answer)
+            except (ValueError, TypeError):
+                answer = {}
+        chosen = answer.get("disconnection", "") if isinstance(answer, dict) else ""
+        precursors = answer.get("precursors", []) if isinstance(answer, dict) else []
         return grade_retro(item, chosen, precursors)
     # equilibrium
     problem = EquilibriumProblem(

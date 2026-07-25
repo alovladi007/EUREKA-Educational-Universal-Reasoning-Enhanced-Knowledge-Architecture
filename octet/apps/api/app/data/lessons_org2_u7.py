@@ -1,601 +1,978 @@
 """ORG2 Unit 7: Carboxylic Acid Derivatives.
 
-One reactivity ladder runs through this whole unit. Acid chlorides, anhydrides,
-esters and amides are the same carbonyl carbon carrying different leaving
-groups, and every interconversion in the unit is nucleophilic acyl
-substitution: a nucleophile adds to the carbonyl, then a leaving group departs.
-Where a derivative sits on the ladder is decided by how good its leaving group
-is and how much the group stabilises the carbonyl, and that single ordering
-predicts which derivative can be made from which.
+The chemistry of this unit is one reaction seen eight times. A nucleophile adds
+to a carbonyl carbon, a tetrahedral intermediate forms, and a leaving group
+departs, which turns one acid derivative into another. That single mechanism,
+nucleophilic acyl substitution, is what makes an acid chloride into an ester and
+an ester into an amide, and it is what strings monomers into a polyamide.
 
-Every structural fact here carries a claim that RDKit re-derives from the
-structure when the suite runs. Molecular formulas, the mass balance of a
-hydrolysis or esterification, and the isomer relationship between an ester and
-its acid are all checkable, and are checked. Facts that cannot be derived from a
-structure, the reactivity order itself and the geometry of the amide bond,
-carry a citation instead. No reagent quantities, temperatures, or preparative
-procedures appear; these are teaching structures, not recipes.
+The line between a checkable fact and an uncheckable one runs straight through
+the unit, so it is worth stating before any lesson leans on it.
+
+Checkable, and therefore claimed, re-derived from structure by RDKit when the
+test suite runs:
+
+  molecular formula of every substrate and every product   Formula
+  degrees of unsaturation, which track the loss and return
+  of the carbonyl pi bond through a transformation          Unsaturation
+  proton environments, which track molecular symmetry       Environments
+  the configuration of a stereocentre carried through a
+  reaction that does not touch it                           Stereo
+
+Not checkable by anything here, and therefore carried as a Source with a real
+citation or omitted:
+
+  the reactivity ordering acid chloride > anhydride > ester > amide, which is
+  taught as a consequence of leaving-group ability and of resonance donation
+  from the atom next to the carbonyl, and which is stated qualitatively rather
+  than with invented rate constants
+  the position of the carbonyl stretch in the infrared, which shifts with the
+  derivative type and is given as a range from a correlation chart
+  the pKa values that rank the leaving groups
+  whether a transformation proceeds under stated conditions
+
+Two facts about charged species are worth flagging because the claim system
+treats them exactly as the authoring guidance says it should. The anionic
+tetrahedral intermediate and the carboxylate product each carry a Formula, and
+the Unsaturation verifier refuses them, because degrees of unsaturation are not
+defined for an ion. Where a formula string below ends in a minus sign, that is a
+claim about a charged structure and it was derived, not written from memory.
 """
 
 from __future__ import annotations
 
-from app.data.claims import Formula, Relationship, Source
+from app.data.claims import Environments, Formula, Source, Stereo, Unsaturation
 from app.data.lesson_types import Lesson
 
-# Named once so a claim and its prose cannot drift apart. The four derivatives
-# are all built on the acetyl group, CH3C(=O)-, so that the only thing changing
-# down the ladder is the leaving group.
-ACETYL_CHLORIDE = "CC(=O)Cl"  # C2H3ClO
-ACETIC_ANHYDRIDE = "CC(=O)OC(C)=O"  # C4H6O3
-METHYL_ACETATE = "CC(=O)OC"  # C3H6O2
-ACETAMIDE = "CC(=O)N"  # C2H5NO
-ACETIC_ACID = "CC(=O)O"  # C2H4O2
-PROPANOIC_ACID = "CCC(=O)O"  # C3H6O2, an isomer of methyl acetate
-ETHYL_FORMATE = "CCOC=O"  # C3H6O2, a third isomer of the same formula
-METHANOL = "CO"  # CH4O
-WATER = "O"  # H2O
-GLYCINE = "NCC(=O)O"  # C2H5NO2
-GLYCYLGLYCINE = "NCC(=O)NCC(=O)O"  # C4H8N2O3, the dipeptide
-TERT_BUTANOL = "CC(C)(C)O"  # C4H10O, 2-methylpropan-2-ol
+# ---------------------------------------------------------------------------
+# Structures, named once so a claim and its prose cannot drift apart. Every
+# SMILES here was passed through RDKit during authoring; the stereo strings in
+# particular were read back from the descriptor rather than reasoned out by
+# hand, because a hand-written (S)-alanine came out (R) on the first attempt.
+# ---------------------------------------------------------------------------
+
+ACETYL_CHLORIDE = "CC(=O)Cl"
+ACETIC_ANHYDRIDE = "CC(=O)OC(C)=O"
+METHYL_ACETATE = "COC(C)=O"
+ETHYL_ACETATE = "CCOC(C)=O"
+ACETAMIDE = "CC(=O)N"
+ACETIC_ACID = "CC(=O)O"
+
+METHANOL = "CO"
+ETHANOL = "CCO"
+# Anionic tetrahedral intermediate from methoxide adding to acetyl chloride,
+# before chloride leaves. Charged, so it carries a Formula and no Unsaturation.
+TETRAHEDRAL_INTERMEDIATE = "CC([O-])(Cl)OC"
+# The carboxylate that makes saponification irreversible. Also charged.
+ACETATE = "CC(=O)[O-]"
+
+BENZOYL_CHLORIDE = "ClC(=O)c1ccccc1"
+BENZOIC_ACID = "OC(=O)c1ccccc1"
+BENZAMIDE = "NC(=O)c1ccccc1"
+
+N_METHYLACETAMIDE = "CC(=O)NC"
+GLYCINE = "NCC(=O)O"
+GLYCYLGLYCINE = "NCC(=O)NCC(=O)O"
+# (S)-alanine is the L amino acid. RDKit reads this string as S; the mirror
+# arrangement reads as R.
+L_ALANINE = "N[C@@H](C)C(=O)O"
+# Alanylglycine built from (S)-alanine. Acylation happens at alanine's carboxyl
+# carbon, not at its alpha carbon, so the alpha stereocentre stays S.
+ALA_GLY = "N[C@@H](C)C(=O)NCC(=O)O"
+
+METHYL_BENZOATE = "COC(=O)c1ccccc1"
+BENZYL_ALCOHOL = "OCc1ccccc1"
+BENZALDEHYDE = "O=Cc1ccccc1"
+ETHYLAMINE = "CCN"
+ACETALDEHYDE = "CC=O"
+
+ACETONE = "CC(C)=O"
+TERT_BUTANOL = "CC(C)(C)O"
+
+ETHYLENE_GLYCOL = "OCCO"
+TEREPHTHALIC_ACID = "OC(=O)c1ccc(C(=O)O)cc1"
+HEXANEDIAMINE = "NCCCCCCN"
+ADIPIC_ACID = "OC(=O)CCCCC(=O)O"
+
+# ---------------------------------------------------------------------------
+# Citations. Every number or ordering this unit states that the repository
+# cannot derive points at one of these.
+# ---------------------------------------------------------------------------
+
+CLAYDEN = (
+    "Clayden, Greeves and Warren, Organic Chemistry, 2nd edition, Oxford "
+    "University Press 2012, chapters on nucleophilic substitution at the "
+    "carbonyl group and on organometallic addition to carbonyls."
+)
+CLAYDEN_POLYMERS = (
+    "Clayden, Greeves and Warren, Organic Chemistry, 2nd edition, Oxford "
+    "University Press 2012, chapter on polymerization."
+)
+SILVERSTEIN = (
+    "Silverstein, Webster, Kiemle and Bryce, Spectrometric Identification of "
+    "Organic Compounds, 8th edition, Wiley 2014, infrared correlation charts "
+    "in the carbonyl-compound section."
+)
+CRC_PKA = (
+    "CRC Handbook of Chemistry and Physics, table of dissociation constants of "
+    "organic acids and bases; values quoted as approximate ranks, not "
+    "analytical figures."
+)
 
 LESSONS_ORG2_U7 = {
     "ORG2.DERIVATIVEREACTIVITY": Lesson(
         node="ORG2.DERIVATIVEREACTIVITY",
         objective=(
-            "Rank the four common acid derivatives by reactivity toward "
-            "nucleophilic acyl substitution, and use that ranking to predict "
-            "which derivative can be converted into which."
+            "Place the four common carboxylic acid derivatives on one "
+            "reactivity ladder, and explain the order from the two structural "
+            "causes that set it: the ability of the leaving group to leave and "
+            "the resonance donation of the atom attached to the carbonyl."
         ),
         build_on=(
-            "You know an aldehyde or ketone reacts with a nucleophile by "
-            "addition to the carbonyl. An acid derivative starts the same way, "
-            "but the carbon also carries a group that can leave, so addition is "
-            "followed by elimination and the carbonyl is restored."
+            "You know from ORG1 that a carbonyl carbon is electrophilic because "
+            "oxygen pulls electron density out of the pi bond. Every compound in "
+            "this unit has that same carbonyl. What changes from one to the next "
+            "is the single atom sitting on the other side of it, and this lesson "
+            "is about how much that one atom changes."
         ),
         core_idea=(
-            "Take the acetyl group and hang a different leaving group on it "
-            "four times: chlorine gives the acid chloride, an acyloxy group "
-            "gives the anhydride, an alkoxy group gives the ester, and an amino "
-            "group gives the amide. The reactivity of each toward a nucleophile "
-            "follows one order, acid chloride greater than anhydride greater "
-            "than ester greater than amide. Two effects run the same way and "
-            "reinforce each other. The better the leaving group, the more "
-            "reactive the derivative, so chloride departs easily and amide's "
-            "nitrogen does not. And the more the attached group donates into "
-            "the carbonyl, the less electrophilic the carbon; nitrogen donates "
-            "strongly, which is why the amide sits at the bottom. The ladder is "
-            "one directional: a nucleophile can always convert a derivative "
-            "into one lower on the ladder, never one higher."
+            "A carboxylic acid derivative is an acyl group, R-C(=O)-, joined to "
+            "one heteroatom that can leave. The four you meet here are the acid "
+            "chloride, where that atom is chlorine, the anhydride, where it is "
+            "an acyloxy group, the ester, where it is an alkoxy group, and the "
+            "amide, where it is nitrogen. They fall in one fixed order of "
+            "reactivity toward nucleophiles: acid chloride, then anhydride, then "
+            "ester, then amide, most reactive first. Two causes act in the same "
+            "direction and set that order. The first is leaving-group ability: "
+            "chloride is the conjugate base of a strong acid and leaves easily, "
+            "an alkoxide is the conjugate base of a weak alcohol and leaves "
+            "reluctantly, and an amide nitrogen leaves worst of all. The second "
+            "is resonance donation into the carbonyl. A lone pair on the atom "
+            "next to the carbonyl can push into the pi system and lower the "
+            "carbon's electrophilicity, and nitrogen does this strongly, oxygen "
+            "less, chlorine barely at all. Nitrogen both donates the most and "
+            "leaves the worst, which is why the amide sits at the unreactive end "
+            "of the ladder and the acid chloride sits at the reactive end."
         ),
         worked_example=(
-            "Ask whether an amide can be made from an ester by adding an amine, "
-            "and whether an ester can be made from an amide by adding an "
-            "alcohol. The ester is higher on the ladder than the amide, so the "
-            "first conversion runs downhill and is feasible: the amine "
-            "displaces the alkoxy group. The second asks to climb the ladder, "
-            "ester above amide, and it does not go, because you would be "
-            "expelling the poor amide leaving group in favour of a better one, "
-            "which is the wrong direction. Acetic anhydride, C4H6O3, sits above "
-            "both the ester methyl acetate, C3H6O2, and acetamide, C2H5NO, so "
-            "it can acylate an alcohol to give an ester or an amine to give an "
-            "amide, and that is exactly why anhydrides are common acylating "
-            "agents."
+            "Line the acetyl series up and read the structures. Acetyl chloride, "
+            "C2H3ClO, is the acetyl group on chlorine. Acetic anhydride, "
+            "C4H6O3, is two acetyl groups sharing one oxygen, so it is one "
+            "reactive acyl group with a carboxylate-like leaving group. Ethyl "
+            "acetate, C4H8O2, is the acetyl group on an ethoxy oxygen whose lone "
+            "pair donates into the carbonyl. Acetamide, C2H5NO, is the acetyl "
+            "group on nitrogen, whose lone pair donates hardest. Notice a "
+            "symmetry fact that reports the anhydride's structure directly: its "
+            "two acetyl groups are equivalent, so all six of its hydrogens are "
+            "one environment. Now use the ladder in the only way it is meant to "
+            "be used, which is downhill. You can convert any derivative into one "
+            "below it on the ladder because the incoming nucleophile brings a "
+            "worse leaving group than the one being expelled, so an acid "
+            "chloride makes an ester and an ester makes an amide. The reverse "
+            "steps do not happen by simple substitution, because they would have "
+            "to expel a better leaving group than the one arriving, and that is "
+            "the whole predictive content of the ladder."
         ),
         try_it_prompt=(
-            "You want to make acetamide from acetic acid's derivatives. Which "
-            "is the more sensible starting derivative, methyl acetate or acetyl "
-            "chloride, and why?"
+            "You want an amide and you have the choice of starting from an acid "
+            "chloride or from another amide by swapping its nitrogen group. "
+            "Which direction on the reactivity ladder works, and why does the "
+            "other one fail?"
         ),
         try_it_answer=(
-            "Acetyl chloride. It sits at the top of the ladder, well above the "
-            "amide, so ammonia displaces chloride readily and runs strongly "
-            "downhill. Methyl acetate is above the amide too and can be "
-            "converted, but the ester is much closer to the amide in reactivity "
-            "and the conversion is correspondingly harder to drive."
+            "Start from the acid chloride. Going acid chloride to amide is a "
+            "downhill step: the amine nucleophile arrives and chloride, a good "
+            "leaving group, departs, so the reaction runs. Trying to make one "
+            "amide from another by substitution is an uphill step in disguise, "
+            "because it would require an amide nitrogen, a poor leaving group, "
+            "to be expelled in favour of the incoming one. The ladder only lets "
+            "you move toward the less reactive end, and the amide is already at "
+            "that end."
         ),
         pitfall=(
-            "The trap is thinking a nucleophile can push any interconversion if "
-            "you supply enough of it. The ladder is set by leaving group "
-            "ability and carbonyl donation, not by concentration alone, and "
-            "climbing it, making an acid chloride from an amide by adding "
-            "chloride, is not a substitution you can force this way."
+            "The belief that trips people is that reactivity tracks the size or "
+            "the polarity of the leaving atom on its own, so chlorine wins "
+            "because it is big and electronegative. Electronegativity is part of "
+            "it, but the deciding quantity is how stable the group is once it has "
+            "left as an anion, which is what leaving-group ability means, "
+            "reinforced by how much the group donates back into the carbonyl "
+            "while it is still attached. Nitrogen is more electronegative than "
+            "carbon yet the amide is the least reactive derivative, because "
+            "nitrogen's lone pair is tied up donating into the carbonyl and its "
+            "anion is a terrible leaving group. Rank by leaving-group stability "
+            "and resonance donation, not by a single atom's electronegativity."
         ),
         claims=(
-            Formula(ACETYL_CHLORIDE, "C2H3ClO", "acetyl chloride, top of the ladder"),
+            Formula(ACETYL_CHLORIDE, "C2H3ClO", "acetyl chloride"),
+            Unsaturation(ACETYL_CHLORIDE, 1, "the carbonyl pi bond"),
             Formula(ACETIC_ANHYDRIDE, "C4H6O3", "acetic anhydride"),
-            Formula(METHYL_ACETATE, "C3H6O2", "methyl acetate, the ester"),
-            Formula(ACETAMIDE, "C2H5NO", "acetamide, bottom of the ladder"),
+            Unsaturation(ACETIC_ANHYDRIDE, 2, "two carbonyl pi bonds"),
+            Environments(
+                ACETIC_ANHYDRIDE, (6,),
+                "the two acetyl groups are equivalent, so all six hydrogens are "
+                "one environment",
+            ),
+            Formula(ETHYL_ACETATE, "C4H8O2", "ethyl acetate"),
+            Unsaturation(ETHYL_ACETATE, 1, "the ester carbonyl"),
+            Formula(ACETAMIDE, "C2H5NO", "acetamide"),
+            Unsaturation(ACETAMIDE, 1, "the amide carbonyl"),
             Source(
                 "The reactivity of carboxylic acid derivatives toward "
                 "nucleophilic acyl substitution decreases in the order acid "
-                "chloride, anhydride, ester, amide, tracking both leaving group "
-                "ability and the extent of electron donation into the "
-                "carbonyl.",
-                "Clayden, Greeves and Warren, Organic Chemistry, chapter on "
-                "nucleophilic substitution at the carbonyl group.",
+                "chloride, anhydride, ester, amide. The ordering is explained by "
+                "leaving-group ability and by resonance donation from the atom "
+                "bonded to the carbonyl, and is stated qualitatively; no rate "
+                "constants are attached.",
+                CLAYDEN,
+            ),
+            Source(
+                "The order tracks the acidity of the conjugate acid of the "
+                "leaving group: HCl is a strong acid so chloride leaves readily, "
+                "a carboxylic acid is moderately acidic, an alcohol has a pKa "
+                "near 16, and an amine near 35, so an amide nitrogen is the "
+                "worst leaving group of the set. These pKa ranks are quoted, not "
+                "derived.",
+                CRC_PKA,
+            ),
+            Source(
+                "The carbonyl stretch in the infrared rises as resonance "
+                "donation falls: amides absorb lowest, near 1630 to 1690 cm-1, "
+                "esters near 1735 to 1750 cm-1, anhydrides as a pair of bands "
+                "near 1760 and 1820 cm-1, and acid chlorides highest, near 1790 "
+                "to 1815 cm-1. These are ranges from a correlation chart.",
+                SILVERSTEIN,
             ),
         ),
     ),
     "ORG2.ACYLSUB": Lesson(
         node="ORG2.ACYLSUB",
         objective=(
-            "Describe nucleophilic acyl substitution as addition followed by "
-            "elimination through a tetrahedral intermediate, and explain why "
-            "the overall result is substitution rather than addition."
+            "Draw nucleophilic acyl substitution as two steps, addition of the "
+            "nucleophile to give a tetrahedral intermediate and elimination of "
+            "the leaving group to restore the carbonyl, and say why this is not "
+            "the one-step substitution you saw at saturated carbon."
         ),
         build_on=(
-            "Addition of a nucleophile to a carbonyl you have already seen with "
-            "aldehydes and ketones. The new feature is that the carbon here "
-            "carries a leaving group, so the tetrahedral species formed by "
-            "addition does not stay; it collapses."
+            "You have a reactivity ladder that says which derivative turns into "
+            "which. This lesson is the mechanism underneath that ladder, the "
+            "actual sequence of bond making and breaking that every "
+            "interconversion in the unit follows."
         ),
         core_idea=(
-            "The mechanism has two steps around one intermediate. First the "
-            "nucleophile adds to the planar carbonyl carbon, pushing the pi "
-            "electrons onto oxygen and giving a tetrahedral alkoxide with four "
-            "single bonds at carbon. That intermediate is where the fate of the "
-            "reaction is decided. It can expel the nucleophile again, undoing "
-            "the step, or it can expel the original leaving group; the carbonyl "
-            "reforms either way. When the leaving group leaves, the net change "
-            "is that one group at the carbonyl has been swapped for another, "
-            "which is a substitution even though every step was an addition or "
-            "an elimination. An aldehyde or ketone has no group worth expelling, "
-            "which is why they stop at the addition product."
+            "At a saturated carbon a nucleophile displaces a leaving group in "
+            "one concerted step, because carbon has no room to hold five bonds "
+            "even briefly. A carbonyl carbon has a way out that saturated carbon "
+            "does not: it can park the incoming electrons in the pi bond. So the "
+            "nucleophile adds first, the pi electrons move onto oxygen, and the "
+            "carbon becomes tetrahedral with the negative charge on oxygen. That "
+            "tetrahedral intermediate is the heart of the mechanism. It then "
+            "collapses: the oxygen lone pair pushes back down to reform the "
+            "carbonyl pi bond, and this time it expels the leaving group rather "
+            "than the nucleophile that arrived. Two separate steps, addition "
+            "then elimination, with a real intermediate between them, which is "
+            "why the whole family of reactions is called nucleophilic acyl "
+            "substitution and behaves nothing like substitution at saturated "
+            "carbon. Whether the intermediate goes forward or falls back to "
+            "starting material is decided by which of the two groups on it is "
+            "the better leaving group."
         ),
         worked_example=(
-            "Convert acetyl chloride, C2H3ClO, to methyl acetate, C3H6O2, with "
-            "methanol, CH4O. Methanol's oxygen adds to the carbonyl carbon to "
-            "give the tetrahedral intermediate bearing chlorine, the incoming "
-            "methoxy, and the alkoxide oxygen. Now compare the two groups that "
-            "could leave: chloride is a far better leaving group than methoxide, "
-            "so chloride departs, the carbonyl reforms, and loss of a proton "
-            "gives the ester. The atoms account exactly: acetyl chloride plus "
-            "methanol supplies the same atoms as methyl acetate plus hydrogen "
-            "chloride, C3H7ClO2 on each side."
+            "Follow methoxide converting acetyl chloride into methyl acetate. "
+            "Acetyl chloride is C2H3ClO and has one degree of unsaturation, the "
+            "carbonyl pi bond. Methoxide adds to the carbonyl carbon, the pi "
+            "electrons move onto oxygen, and the tetrahedral intermediate that "
+            "results is an alkoxide, C3H6ClO2 carrying a negative charge. That "
+            "intermediate has no carbonyl at all: the carbon is now sp3 with a "
+            "chlorine, an alkoxide oxygen, a methoxy oxygen and a methyl on it. "
+            "It is a charged species, so degrees of unsaturation are not defined "
+            "for it, which is why only its formula is claimed. The intermediate "
+            "then expels chloride, the oxygen lone pair reforms the pi bond, and "
+            "the product is methyl acetate, C3H6O2, one degree of unsaturation "
+            "again. The carbonyl was there at the start, gone in the "
+            "intermediate, and back in the product, and that appearance and "
+            "reappearance is the signature of the addition-elimination route."
         ),
         try_it_prompt=(
-            "In the tetrahedral intermediate from acetyl chloride and methanol, "
-            "two groups could be expelled to reform a carbonyl. Which leaves, "
-            "and what does that choice decide?"
+            "In the tetrahedral intermediate from methoxide and acetyl chloride, "
+            "the central carbon carries both a chloride and a methoxide as "
+            "potential leaving groups. Which one leaves, and what would it mean "
+            "for the reaction if the other left instead?"
         ),
         try_it_answer=(
-            "Chloride leaves, because it is the better leaving group of the "
-            "two. That choice decides the product: expelling chloride gives the "
-            "ester, whereas expelling the newly added methoxide would simply "
-            "regenerate the acid chloride and undo the addition."
+            "Chloride leaves, because it is a far better leaving group than "
+            "methoxide, and its departure gives the ester product. If methoxide "
+            "left instead, the intermediate would fall back to acetyl "
+            "chloride, undoing the addition. The intermediate is a fork: expel "
+            "the group that arrived and nothing has happened, expel the original "
+            "leaving group and the substitution is complete. Reactions run "
+            "forward precisely when the original leaving group is the weaker "
+            "base of the two."
         ),
         pitfall=(
-            "The common error is to imagine the leaving group departs at the "
-            "same instant the nucleophile arrives, as in an SN2 backside "
-            "displacement. It does not. The nucleophile adds first to a real "
-            "tetrahedral intermediate, and the leaving group goes in a separate "
-            "step. Treating it as concerted hides why the reactivity ladder "
-            "exists at all."
+            "The misconception carried in from earlier chemistry is that this is "
+            "an SN2 reaction, a backside attack that displaces the leaving group "
+            "in a single motion. Drawing it that way hides the intermediate, and "
+            "the intermediate is what makes carbonyl substitution predictable. "
+            "The reason a carbonyl can host a two-step mechanism while a "
+            "saturated carbon cannot is the pi bond, which accepts the incoming "
+            "electron pair and hands it back on cue. If you find yourself "
+            "drawing one arrow from nucleophile to carbon and a second from "
+            "carbon to leaving group at the same time, you have collapsed two "
+            "steps into one and lost the tetrahedral intermediate that the rest "
+            "of this unit depends on."
         ),
         claims=(
-            Formula(ACETYL_CHLORIDE, "C2H3ClO", "the acid chloride"),
-            Formula(METHYL_ACETATE, "C3H6O2", "the ester product"),
-            Formula(METHANOL, "CH4O", "the nucleophile"),
-            Formula(ACETIC_ACID, "C2H4O2", "the parent acid"),
+            Formula(ACETYL_CHLORIDE, "C2H3ClO", "acetyl chloride"),
+            Unsaturation(ACETYL_CHLORIDE, 1, "the carbonyl before addition"),
+            Formula(METHANOL, "CH4O", "the alcohol whose conjugate base is the nucleophile"),
+            Formula(
+                TETRAHEDRAL_INTERMEDIATE, "C3H6ClO2-",
+                "anionic tetrahedral intermediate; charged, so its degrees of "
+                "unsaturation are undefined and only the formula is claimed",
+            ),
+            Formula(METHYL_ACETATE, "C3H6O2", "methyl acetate"),
+            Unsaturation(
+                METHYL_ACETATE, 1,
+                "the carbonyl is gone in the intermediate and back in the "
+                "product",
+            ),
             Source(
-                "Nucleophilic acyl substitution proceeds through a discrete "
-                "tetrahedral intermediate; the partitioning of that "
-                "intermediate between reactant and product is governed by the "
-                "relative leaving ability of the two candidate groups.",
-                "Carey and Sundberg, Advanced Organic Chemistry, Part A, "
-                "chapter on carbonyl addition and acyl substitution.",
+                "Substitution at a carbonyl carbon proceeds by addition to a "
+                "tetrahedral intermediate followed by elimination of a leaving "
+                "group, not by a concerted one-step displacement; the direction "
+                "the intermediate collapses is governed by relative "
+                "leaving-group ability.",
+                CLAYDEN,
             ),
         ),
     ),
     "ORG2.ACIDCHLORIDE": Lesson(
         node="ORG2.ACIDCHLORIDE",
         objective=(
-            "Explain why acid chlorides and anhydrides are the most reactive "
-            "derivatives, and identify what each converts into on reaction with "
-            "an alcohol, an amine, or water."
+            "Predict the product of an acid chloride or an anhydride with water, "
+            "an alcohol, or an amine, and explain why these two derivatives sit "
+            "at the reactive end of the ladder and are the usual starting points "
+            "for making the others."
         ),
         build_on=(
-            "You have the reactivity ladder and the addition then elimination "
-            "mechanism. This lesson looks closely at the two derivatives at the "
-            "top of that ladder and what makes them so useful."
+            "The ladder told you the acid chloride is the most reactive "
+            "derivative and the mechanism told you how any of them react. Put "
+            "the two together and the acid chloride becomes a general acylating "
+            "agent: it will hand its acyl group to almost any nucleophile."
         ),
         core_idea=(
-            "Acid chlorides carry chloride, an excellent leaving group, and no "
-            "strong electron donation into the carbonyl, so they are the most "
-            "reactive derivative and acylate almost any nucleophile. An "
-            "anhydride is two acyl groups sharing one oxygen; expelling a "
-            "carboxylate is nearly as easy as expelling chloride, so it sits "
-            "just below the acid chloride. Both react with an alcohol to give "
-            "an ester, with an amine to give an amide, and with water to give "
-            "the carboxylic acid. The difference between them is mostly what "
-            "the leaving group becomes: an acid chloride releases hydrogen "
-            "chloride, while an anhydride releases a molecule of the carboxylic "
-            "acid, and so half of an anhydride's mass is spent as that leaving "
-            "carboxylic acid."
+            "An acid chloride reacts with a nucleophile by the addition-"
+            "elimination route, and because chloride is an excellent leaving "
+            "group the reaction is fast and goes to completion in one direction. "
+            "Water gives the carboxylic acid, an alcohol gives the ester, and "
+            "ammonia or an amine gives the amide. Each of these products is "
+            "lower on the reactivity ladder than the acid chloride, which is the "
+            "general rule restated: you make a derivative from anything above it. "
+            "The anhydride sits one rung below the acid chloride and does the same "
+            "chemistry a little more gently, expelling a carboxylate instead of "
+            "a chloride; with water it gives two equivalents of the acid, and "
+            "with an alcohol it gives one ester and one carboxylic acid. Because "
+            "both reagents release a strong acid or an acid as they react, these "
+            "acylations are usually run with a base present to mop it up, but the "
+            "acyl-transfer step itself is the same nucleophilic acyl "
+            "substitution throughout."
         ),
         worked_example=(
-            "Hydrolyse acetic anhydride, C4H6O3, and count the atoms. Water "
-            "adds to one carbonyl, the tetrahedral intermediate expels acetate, "
-            "and the result is two molecules of acetic acid. Written as a "
-            "balance, acetic anhydride plus water, C4H6O3 plus H2O, gives two "
-            "acetic acid molecules, two times C2H4O2, and the atoms match: "
-            "C4H8O4 on each side. The same anhydride reacting with an alcohol "
-            "instead of water would give one ester and one molecule of acetic "
-            "acid, because only one of the two acyl groups is transferred to "
-            "the nucleophile."
+            "Take acetyl chloride, C2H3ClO, one degree of unsaturation, and run "
+            "it against three nucleophiles. With water the product is acetic "
+            "acid, C2H4O2: hydroxide-like oxygen adds, chloride leaves, and the "
+            "carbonyl returns. With ethanol the product is ethyl acetate, "
+            "C4H8O2, the ester. With ammonia the product is acetamide, C2H5NO, "
+            "the amide, and note that the acid chloride reaches the amide in one "
+            "step even though the amide is the least reactive derivative, "
+            "because you are moving down the ladder from the top. Every product "
+            "keeps the one degree of unsaturation of its carbonyl. The same "
+            "pattern holds on an aromatic acyl group: benzoyl chloride, "
+            "C7H5ClO, five degrees of unsaturation for the ring and the "
+            "carbonyl, gives benzoic acid, C7H6O2, with water and benzamide, "
+            "C7H7NO, with ammonia, each still at five degrees. Acetic anhydride, "
+            "C4H6O3, two degrees of unsaturation for its two carbonyls, would "
+            "give the same acetylated products, releasing acetic acid rather "
+            "than hydrogen chloride as it goes."
         ),
         try_it_prompt=(
-            "Acetic anhydride reacts with methanol to give an ester. What "
-            "carbon containing products form, and why is only one ester made "
-            "per anhydride?"
+            "Benzoyl chloride is treated with methanol. Name the product, give "
+            "its molecular formula, and say how many degrees of unsaturation it "
+            "has compared with the benzoyl chloride you started from."
         ),
         try_it_answer=(
-            "One molecule of methyl acetate and one molecule of acetic acid. "
-            "The anhydride transfers a single acetyl group to methanol; the "
-            "other acyl group leaves as acetate and picks up a proton to become "
-            "acetic acid, so only one of the two acyl groups becomes the ester."
+            "The product is methyl benzoate, C8H8O2. Methanol's oxygen adds to "
+            "the carbonyl carbon, chloride is expelled, and the carbonyl "
+            "reforms as an ester. Both benzoyl chloride and methyl benzoate have "
+            "five degrees of unsaturation, four for the benzene ring and one for "
+            "the carbonyl, because the substitution swaps chlorine for an "
+            "alkoxy group and leaves every pi bond and the ring untouched."
         ),
         pitfall=(
-            "A frequent slip is expecting an anhydride to deliver both acyl "
-            "groups to the nucleophile. Only one is transferred per attack; the "
-            "second departs as the carboxylate leaving group. Budgeting an "
-            "anhydride as two acylations of the substrate double counts it."
+            "The trap is thinking the acid chloride is too reactive to bother "
+            "controlling, so any nucleophile around will attack it identically. "
+            "It is reactive, but selectivity still matters: an amine is a better "
+            "nucleophile than the alcohol or water it may be dissolved alongside, "
+            "so it wins even when it is the minor component, which is why amides "
+            "form cleanly from acid chlorides and amines despite moisture in the "
+            "flask. The deeper belief to correct is that reactivity and "
+            "selectivity are the same thing. The acid chloride reacts with "
+            "everything, and which product you isolate is decided by which "
+            "nucleophile is fastest, not by which derivative is most stable."
         ),
         claims=(
-            Formula(ACETYL_CHLORIDE, "C2H3ClO", "the most reactive derivative"),
-            Formula(ACETIC_ANHYDRIDE, "C4H6O3", "the anhydride"),
-            Formula(ACETIC_ACID, "C2H4O2", "the acid formed on hydrolysis"),
-            Formula(METHYL_ACETATE, "C3H6O2", "the ester from an alcohol"),
+            Formula(ACETYL_CHLORIDE, "C2H3ClO", "acetyl chloride"),
+            Unsaturation(ACETYL_CHLORIDE, 1),
+            Formula(ACETIC_ACID, "C2H4O2", "acetic acid, from water"),
+            Unsaturation(ACETIC_ACID, 1),
+            Formula(ETHYL_ACETATE, "C4H8O2", "ethyl acetate, from ethanol"),
+            Formula(ACETAMIDE, "C2H5NO", "acetamide, from ammonia"),
+            Formula(ACETIC_ANHYDRIDE, "C4H6O3", "acetic anhydride"),
+            Unsaturation(ACETIC_ANHYDRIDE, 2, "two carbonyls"),
+            Formula(BENZOYL_CHLORIDE, "C7H5ClO", "benzoyl chloride"),
+            Unsaturation(BENZOYL_CHLORIDE, 5, "ring accounts for four, carbonyl for one"),
+            Formula(BENZOIC_ACID, "C7H6O2", "benzoic acid"),
+            Unsaturation(BENZOIC_ACID, 5),
+            Formula(BENZAMIDE, "C7H7NO", "benzamide"),
+            Unsaturation(BENZAMIDE, 5),
+            Source(
+                "Acid chlorides absorb in the infrared near 1790 to 1815 cm-1 "
+                "and anhydrides show two carbonyl bands near 1760 and 1820 cm-1; "
+                "these positions are ranges from a correlation chart, not values "
+                "this repository can derive.",
+                SILVERSTEIN,
+            ),
         ),
     ),
     "ORG2.ESTERS": Lesson(
         node="ORG2.ESTERS",
         objective=(
-            "Account for Fischer esterification as an equilibrium, explain how "
-            "that equilibrium is driven, and contrast reversible hydrolysis "
-            "with the irreversible saponification route."
+            "Explain why Fischer esterification is an equilibrium you have to "
+            "drive, and why saponification is not, by identifying what makes the "
+            "final step of each reaction reversible or irreversible."
         ),
         build_on=(
-            "Esters sit in the middle of the reactivity ladder, close enough to "
-            "the carboxylic acid that the two interconvert. That closeness is "
-            "why making an ester from an acid is an equilibrium rather than a "
-            "one way reaction."
+            "You can make an ester from an acid chloride in one committed step. "
+            "Making an ester directly from a carboxylic acid is different, "
+            "because now both the forward and the reverse reaction are the same "
+            "easy acyl substitution, and you have to think about equilibrium."
         ),
         core_idea=(
             "Fischer esterification joins a carboxylic acid and an alcohol into "
-            "an ester and water, under acid catalysis, and every step is "
-            "reversible. Because the acid and the ester are so near each other "
-            "on the ladder, the reaction reaches an equilibrium rather than "
-            "running to completion, and you shift it by removing water or by "
-            "using an excess of one reactant. Hydrolysis is the same "
-            "equilibrium read backwards: water and acid catalyst convert the "
-            "ester back to the carboxylic acid and the alcohol. Saponification "
-            "escapes the equilibrium entirely. Hydroxide, not water, does the "
-            "hydrolysis, and the final proton transfer converts the carboxylic "
-            "acid to its carboxylate, which is so stable that the reaction "
-            "cannot run backward. That is why saponification is the "
-            "irreversible route to cleaving an ester."
+            "an ester and water, under acid catalysis. Every step is reversible: "
+            "the acid protonates the carbonyl, the alcohol adds, a tetrahedral "
+            "intermediate forms, water leaves, and each of those arrows runs "
+            "both ways, so the reaction settles at an equilibrium rather than "
+            "going to completion. To get a good yield you push the equilibrium "
+            "with Le Chatelier, using excess alcohol or removing water as it "
+            "forms. Ester hydrolysis under acid is the exact reverse, driven the "
+            "other way with excess water. Saponification is the alternative that "
+            "escapes the equilibrium entirely. Hydroxide adds to the ester "
+            "carbonyl, the tetrahedral intermediate expels alkoxide, and the "
+            "carboxylic acid that forms is immediately deprotonated by the base "
+            "to a carboxylate. That last proton transfer is effectively "
+            "irreversible: the carboxylate is stabilised and unreactive, and no "
+            "alcohol will attack it, so the reaction cannot run backward. You "
+            "consume one full equivalent of hydroxide to do it, which is why the "
+            "base is a reagent here and not a catalyst."
         ),
         worked_example=(
-            "Track the atoms of Fischer esterification with acetic acid and "
-            "methanol. Acetic acid, C2H4O2, and methanol, CH4O, combine to give "
-            "methyl acetate, C3H6O2, and water, H2O. The balance reads C3H8O3 "
-            "on the left and C3H8O3 on the right, so the equation is complete "
-            "and the only question is where the equilibrium sits. Notice that "
-            "the ester methyl acetate, C3H6O2, has the same molecular formula "
-            "as the carboxylic acid propanoic acid and as ethyl formate: three "
-            "different compounds, one formula, distinguished only by how the "
-            "atoms are connected. Run the reaction backward with water and you "
-            "recover the acid and the alcohol; that is hydrolysis. Replace "
-            "water with hydroxide and the acetic acid is converted to acetate "
-            "at the end, removing the reverse reaction and making the cleavage "
-            "go to completion."
+            "Build ethyl acetate by Fischer esterification and then take it "
+            "apart by saponification. Acetic acid, C2H4O2, and ethanol, C2H6O "
+            "and no degrees of unsaturation, react under acid catalysis to give "
+            "ethyl acetate, C4H8O2, and water. The ester shows three proton "
+            "environments in the ratio 3:3:2, the two inequivalent methyls and "
+            "the methylene, which is the fingerprint of an isolated ethyl group "
+            "on the oxygen. Left alone this mixture is an equilibrium, so you "
+            "would run it with an excess of ethanol to favour the ester. Now "
+            "saponify the same ester. Add aqueous hydroxide: it adds to the "
+            "carbonyl, ethoxide is expelled, and the acetic acid produced is "
+            "deprotonated to acetate, formula C2H3O2 carrying a negative charge, "
+            "with ethanol, C2H6O, released as the other product. The acetate is "
+            "a charged species, so its degrees of unsaturation are not defined "
+            "and only its formula is claimed. Because the acetate cannot be "
+            "attacked by ethanol, this reaction does not come back to the ester, "
+            "which is the practical difference from the Fischer route."
         ),
         try_it_prompt=(
-            "Fischer esterification of acetic acid and methanol has reached "
-            "equilibrium with a modest yield of ester. Name two ways to push "
-            "more ester out without changing which reaction is occurring."
+            "You esterify a carboxylic acid with an alcohol under acid catalysis "
+            "and stop at a disappointing yield. Give one change to the "
+            "conditions that raises it, and explain why saponification would not "
+            "have needed that trick."
         ),
         try_it_answer=(
-            "Remove the water as it forms, or add a large excess of one "
-            "reactant, most simply the alcohol. Both move the equilibrium "
-            "toward the ester by Le Chatelier's principle without altering the "
-            "underlying reversible chemistry."
+            "Use a large excess of the alcohol, or remove the water as it forms; "
+            "either shifts the Fischer equilibrium toward the ester by Le "
+            "Chatelier. Saponification needs no such push because its final step "
+            "deprotonates the acid to a carboxylate, which is stable and "
+            "unreactive toward the alcohol, so the reaction is drawn to "
+            "completion by that irreversible proton transfer rather than "
+            "balanced at an equilibrium. The cost is that hydroxide is consumed "
+            "in full, one equivalent per ester, so it is a reagent and not a "
+            "catalyst."
         ),
         pitfall=(
-            "Students often treat saponification as just base catalysed "
-            "hydrolysis, expecting it to be reversible like the acid catalysed "
-            "version. It is not. The hydroxide is consumed and the product is "
-            "the carboxylate, not the neutral acid, and that deprotonation is "
-            "what makes the step irreversible rather than merely faster."
+            "The misconception is that saponification is faster than Fischer "
+            "hydrolysis, and that speed is why it goes to completion. The reason "
+            "is thermodynamic, not kinetic. Fischer esterification and its "
+            "reverse are a genuine equilibrium because acid, alcohol, ester and "
+            "water can all interconvert. Saponification removes one of the "
+            "players from the game by turning the acid into a carboxylate that "
+            "will not react, so there is no reverse reaction left to balance "
+            "against. Reach for the deprotonation step when you explain why it "
+            "cannot go backward, not for a claim about which reaction is "
+            "quicker."
         ),
         claims=(
-            Formula(ACETIC_ACID, "C2H4O2", "the carboxylic acid"),
-            Formula(METHANOL, "CH4O", "the alcohol"),
-            Formula(METHYL_ACETATE, "C3H6O2", "the ester"),
-            Formula(WATER, "H2O", "the byproduct that drives the equilibrium"),
-            Relationship(
-                METHYL_ACETATE, PROPANOIC_ACID, "constitutional",
-                "an ester and a carboxylic acid of the same formula, C3H6O2",
+            Formula(ACETIC_ACID, "C2H4O2", "acetic acid"),
+            Unsaturation(ACETIC_ACID, 1, "the acid carbonyl"),
+            Formula(ETHANOL, "C2H6O", "ethanol"),
+            Unsaturation(ETHANOL, 0, "no pi bonds or rings"),
+            Formula(ETHYL_ACETATE, "C4H8O2", "ethyl acetate"),
+            Unsaturation(ETHYL_ACETATE, 1, "the ester carbonyl"),
+            Environments(ETHYL_ACETATE, (3, 3, 2), "two inequivalent methyls and a methylene"),
+            Formula(
+                ACETATE, "C2H3O2-",
+                "the carboxylate that makes saponification irreversible; "
+                "charged, so degrees of unsaturation are undefined",
             ),
-            Relationship(
-                METHYL_ACETATE, ETHYL_FORMATE, "constitutional",
-                "a third isomer of C3H6O2, a different ester",
+            Source(
+                "Fischer esterification is acid-catalysed and reversible and is "
+                "driven with excess reagent or water removal; base-promoted "
+                "hydrolysis, saponification, is made irreversible by "
+                "deprotonation of the carboxylic acid product to a carboxylate "
+                "and consumes a full equivalent of hydroxide.",
+                CLAYDEN,
             ),
         ),
     ),
     "ORG2.AMIDES": Lesson(
         node="ORG2.AMIDES",
         objective=(
-            "Explain why the amide is the least reactive derivative, relate "
-            "that stability to the planar amide bond, and describe amide "
-            "hydrolysis and the peptide bond it forms."
+            "Explain why the amide is the least reactive derivative, describe "
+            "how it is made and how it is hydrolysed, and show that forming the "
+            "peptide bond leaves an amino acid's alpha stereocentre unchanged."
         ),
         build_on=(
-            "The amide sits at the bottom of the reactivity ladder. This lesson "
-            "asks why nitrogen's donation into the carbonyl puts it there, and "
-            "what that same donation does to the shape of the bond."
+            "The reactivity ladder put the amide at the bottom. This lesson is "
+            "why it sits there, and why that stability is exactly what makes the "
+            "amide the linkage that holds proteins together."
         ),
         core_idea=(
-            "Nitrogen's lone pair is donated strongly into the carbonyl, so the "
-            "carbon nitrogen bond has partial double bond character and the "
-            "carbonyl carbon is the least electrophilic of the four "
-            "derivatives. Two consequences follow. First, the amide is the "
-            "least reactive derivative and the hardest to hydrolyse, which is "
-            "exactly why nature uses it for the bonds of proteins. Second, "
-            "because the lone pair is delocalised into the pi system, the six "
-            "atoms of the amide group lie in a plane and rotation about the "
-            "carbon nitrogen bond is hindered. Amide hydrolysis still follows "
-            "addition then elimination, cleaving the amide to a carboxylic acid "
-            "and an amine, and joining two amino acids by an amide bond, with "
-            "loss of water, makes the peptide bond."
+            "The amide is the least reactive derivative because nitrogen donates "
+            "its lone pair into the carbonyl more strongly than oxygen does, "
+            "which lowers the electrophilicity of the carbon and gives the C-N "
+            "bond partial double-bond character. That donation is also why the "
+            "amide nitrogen is a poor leaving group. So amides are made from "
+            "something higher on the ladder, an acid chloride or an anhydride "
+            "with an amine, rather than easily from the acid itself, and "
+            "hydrolysing an amide back to the acid takes forcing conditions, "
+            "strong acid or strong base and heat. The same stability makes the "
+            "amide the backbone bond of peptides. A peptide bond is the amide "
+            "that forms when the carboxyl of one amino acid joins the amino "
+            "group of the next, losing water. Because the acyl substitution "
+            "happens at the carboxyl carbon and never touches the alpha carbon, "
+            "any stereocentre at that alpha position is carried through "
+            "unchanged, which is why a protein made from L amino acids stays all "
+            "L."
         ),
         worked_example=(
-            "Form the simplest peptide bond from two molecules of glycine, "
-            "C2H5NO2. The acid group of one glycine and the amine of the other "
-            "join into an amide, releasing water, to give glycylglycine, "
-            "C4H8N2O3. Check the mass balance: two glycines supply C4H10N2O4, "
-            "and glycylglycine plus water is C4H8N2O3 plus H2O, which is also "
-            "C4H10N2O4. The atoms account exactly, and the new bond between the "
-            "two residues is a planar amide, the peptide bond that the same "
-            "chemistry builds along an entire protein chain."
+            "Start with the simplest amides and end at a stereocentre. Acetamide "
+            "is C2H5NO with one degree of unsaturation and two proton "
+            "environments in the ratio 3:2, the methyl and the two N-H "
+            "hydrogens; putting a methyl on the nitrogen gives "
+            "N-methylacetamide, C3H7NO. Now make a peptide bond. Glycine is the "
+            "simplest amino acid, C2H5NO2; couple two glycines, joining the "
+            "carboxyl of one to the amino group of the other with loss of water, "
+            "and you get glycylglycine, C4H8N2O3, whose two degrees of "
+            "unsaturation are its two carbonyls. Glycine has no stereocentre, so "
+            "switch to alanine to see configuration survive. (S)-alanine, "
+            "C3H7NO2, is the L amino acid, with its alpha carbon bearing an "
+            "amino group, a methyl, a carboxyl and a hydrogen. Couple its "
+            "carboxyl to glycine and you get alanylglycine, C5H10N2O3. The new "
+            "bond formed at the carboxyl carbon, one bond away from the "
+            "stereocentre, so the alpha carbon is still bonded to the same four "
+            "kinds of group and its configuration is still S. The reaction built "
+            "an amide and left the stereocentre exactly as it found it."
         ),
         try_it_prompt=(
-            "Hydrolysing glycylglycine, C4H8N2O3, in water reverses its "
-            "formation. What products form, and how do the atoms balance?"
+            "You couple (S)-alanine through its carboxyl group to another amino "
+            "acid, forming a peptide bond. Without working out the priorities "
+            "again, state what happens to the configuration at alanine's alpha "
+            "carbon and justify it from where the bonds change."
         ),
         try_it_answer=(
-            "Two molecules of glycine, C2H5NO2 each. Glycylglycine plus water, "
-            "C4H8N2O3 plus H2O, is C4H10N2O4, which is exactly two glycine "
-            "molecules, two times C2H5NO2. Hydrolysis adds back the water that "
-            "peptide bond formation removed."
+            "It stays S. Nucleophilic acyl substitution makes and breaks bonds "
+            "at the carboxyl carbon, which is a separate carbon from the alpha "
+            "stereocentre. None of alanine's four alpha-carbon bonds is broken, "
+            "so the spatial arrangement there is preserved and the descriptor "
+            "does not change. This is the structural reason peptide synthesis "
+            "does not scramble configuration: the chemistry happens one carbon "
+            "away from the centre that carries the stereochemistry."
         ),
         pitfall=(
-            "The misconception is that the amide's low reactivity comes only "
-            "from nitrogen being a poor leaving group. Donation of the lone "
-            "pair into the carbonyl is the deeper reason: it lowers the "
-            "electrophilicity of the carbon and flattens the group into a "
-            "plane, so the amide resists attack for a structural reason and not "
-            "just a leaving group one."
+            "A common worry is that any reaction at a molecule with a "
+            "stereocentre risks racemising it, so a coupling step must be "
+            "handled as though the configuration is fragile. The stereocentre is "
+            "only at risk if a bond to it is broken, and ordinary peptide "
+            "coupling breaks bonds at the carboxyl carbon, not at the alpha "
+            "carbon. The belief to correct is that reactions act on molecules as "
+            "wholes; they act at specific atoms, and a centre whose bonds are "
+            "untouched keeps its configuration. Racemisation at the alpha carbon "
+            "is a real side reaction in some coupling methods, but it happens "
+            "through a separate pathway that does remove the alpha hydrogen, not "
+            "through the acyl substitution itself."
         ),
         claims=(
-            Formula(ACETAMIDE, "C2H5NO", "the amide, least reactive derivative"),
-            Formula(GLYCINE, "C2H5NO2", "the amino acid"),
-            Formula(GLYCYLGLYCINE, "C4H8N2O3", "the dipeptide"),
-            Formula(WATER, "H2O", "lost when the peptide bond forms"),
+            Formula(ACETAMIDE, "C2H5NO", "acetamide"),
+            Unsaturation(ACETAMIDE, 1, "the amide carbonyl"),
+            Environments(ACETAMIDE, (3, 2), "the methyl and the two N-H hydrogens"),
+            Formula(N_METHYLACETAMIDE, "C3H7NO", "N-methylacetamide"),
+            Unsaturation(N_METHYLACETAMIDE, 1),
+            Formula(GLYCINE, "C2H5NO2", "glycine, the simplest amino acid"),
+            Unsaturation(GLYCINE, 1),
+            Formula(GLYCYLGLYCINE, "C4H8N2O3", "glycylglycine, one peptide bond"),
+            Unsaturation(GLYCYLGLYCINE, 2, "two carbonyls"),
+            Stereo(L_ALANINE, ("S",), "(S)-alanine, the L amino acid"),
+            Formula(L_ALANINE, "C3H7NO2", "alanine"),
+            Stereo(
+                ALA_GLY, ("S",),
+                "alanylglycine; the acyl substitution at the carboxyl leaves "
+                "the alpha stereocentre S",
+            ),
+            Formula(ALA_GLY, "C5H10N2O3", "alanylglycine"),
             Source(
-                "Delocalisation of the nitrogen lone pair into the carbonyl "
-                "gives the amide bond partial double bond character, making the "
-                "O-C-N unit planar and creating a substantial barrier to "
-                "rotation about the C-N bond.",
-                "Clayden, Greeves and Warren, Organic Chemistry, chapter on "
-                "conjugation and the structure of the amide group.",
+                "The amide is the least reactive acid derivative because of "
+                "resonance donation from nitrogen into the carbonyl, which also "
+                "gives the C-N bond partial double-bond character and hinders "
+                "rotation; amide hydrolysis requires forcing acidic or basic "
+                "conditions.",
+                CLAYDEN,
+            ),
+            Source(
+                "Amides absorb in the infrared near 1630 to 1690 cm-1 for the "
+                "carbonyl stretch, lower than esters, with N-H stretches near "
+                "3100 to 3500 cm-1; these are correlation-chart ranges.",
+                SILVERSTEIN,
             ),
         ),
     ),
     "ORG2.DERIVATIVEREDUCTION": Lesson(
         node="ORG2.DERIVATIVEREDUCTION",
         objective=(
-            "Choose a hydride reagent that reduces an acid derivative either "
-            "all the way to a primary alcohol or only as far as the aldehyde, "
-            "and explain what determines where the reduction stops."
+            "Choose a hydride reagent that takes an acid derivative to the "
+            "alcohol or amine, or stops it at the aldehyde, and explain the stop "
+            "at the aldehyde in terms of the tetrahedral intermediate."
         ),
         build_on=(
-            "Reduction delivers hydride to the carbonyl carbon rather than "
-            "another nucleophile, but it starts the same way: addition to the "
-            "carbonyl, then a tetrahedral intermediate that may or may not "
-            "collapse."
+            "Every reaction so far replaced the leaving group with another "
+            "heteroatom nucleophile. A hydride reagent delivers hydrogen as the "
+            "nucleophile instead, and the same addition-elimination framework "
+            "now tells you whether the reaction stops halfway or goes all the "
+            "way down."
         ),
         core_idea=(
-            "A strong, indiscriminate hydride source reduces an ester or acid "
-            "all the way to a primary alcohol, because the aldehyde formed "
-            "along the way is more reactive than the starting derivative and is "
-            "reduced again before it can be isolated. Stopping at the aldehyde "
-            "therefore needs a milder, bulkier hydride delivered so that the "
-            "first tetrahedral intermediate survives until workup and gives the "
-            "aldehyde on hydrolysis rather than adding a second hydride. Which "
-            "outcome you get is a property of the reagent, not of the "
-            "substrate: the choice of hydride source decides whether the "
-            "reduction runs to the alcohol or halts at the aldehyde. This is a "
-            "reagent selectivity, so it is stated with a citation rather than "
-            "derived from the structures."
+            "A hydride adds to the carbonyl and a tetrahedral intermediate "
+            "forms, exactly as before. What happens next depends on the reagent "
+            "and on the derivative. Lithium aluminium hydride is strong and "
+            "reduces an ester all the way to a primary alcohol, because the "
+            "aldehyde produced when the first leaving group departs is itself "
+            "reduced faster than it can be isolated. An amide reduced by lithium "
+            "aluminium hydride goes to the amine: the nitrogen stays and the "
+            "carbonyl oxygen is removed entirely, rather than a leaving group "
+            "departing. To stop an ester at the aldehyde you use "
+            "diisobutylaluminium hydride at low temperature, which delivers one "
+            "hydride and then leaves the tetrahedral intermediate standing until "
+            "workup, so the aldehyde is only released at the end and is never "
+            "exposed to more reducing agent. Sodium borohydride is milder and "
+            "generally leaves esters and amides alone, which is what lets you "
+            "reduce a ketone or aldehyde in a molecule that also contains an "
+            "ester. The choice of reagent is therefore a choice of where on the "
+            "path from derivative to alcohol you want the reaction to stop."
         ),
         worked_example=(
-            "Consider reducing methyl acetate, C3H6O2. A strong hydride source "
-            "reduces the ester past the aldehyde stage to the primary alcohol "
-            "ethanol, and the alkoxy group leaves as methanol; the aldehyde is "
-            "never isolated because it is reduced faster than the ester was. To "
-            "stop instead at acetaldehyde you switch to a bulkier, less "
-            "reactive hydride that adds once and no more, so that hydrolysis of "
-            "the tetrahedral intermediate liberates the aldehyde. Same "
-            "substrate, two products, and the reagent is what chooses between "
-            "them."
+            "Reduce methyl benzoate two ways and watch the degrees of "
+            "unsaturation. Methyl benzoate is C8H8O2 with five degrees of "
+            "unsaturation, four for the ring and one for the ester carbonyl. "
+            "Lithium aluminium hydride takes it to benzyl alcohol, C7H8O, and "
+            "methanol, CH4O; benzyl alcohol has four degrees of unsaturation, "
+            "the ring alone, because the carbonyl pi bond is gone. "
+            "Diisobutylaluminium hydride at low temperature stops instead at "
+            "benzaldehyde, C7H6O, which keeps five degrees of unsaturation "
+            "because it still has a carbonyl, now an aldehyde rather than an "
+            "ester. The count reports the outcome directly: full reduction to "
+            "the alcohol spends the carbonyl and drops from five to four, while "
+            "stopping at the aldehyde holds at five. Amide reduction looks "
+            "different again: acetamide, C2H5NO, goes to ethylamine, C2H7N, "
+            "which has zero degrees of unsaturation, because reducing an amide "
+            "removes the carbonyl oxygen and keeps the nitrogen. And an acid "
+            "chloride can be brought to the aldehyde with a hindered hydride, "
+            "acetyl chloride, C2H3ClO, giving acetaldehyde, C2H4O."
         ),
         try_it_prompt=(
-            "Why does a strong hydride reagent take an ester all the way to the "
-            "primary alcohol instead of stopping at the aldehyde, even though "
-            "the aldehyde forms first?"
+            "A molecule contains both an ester and a separate ketone, and you "
+            "want to reduce only the ketone to an alcohol. Which of lithium "
+            "aluminium hydride and sodium borohydride do you choose, and what "
+            "would the other one do wrong?"
         ),
         try_it_answer=(
-            "Because the aldehyde is more reactive toward hydride than the "
-            "ester it came from, so as soon as any aldehyde appears the strong "
-            "reagent reduces it again. There is no chance to isolate it; "
-            "stopping at the aldehyde requires a milder reagent that will not "
-            "add a second time."
+            "Choose sodium borohydride. It reduces the ketone to an alcohol and "
+            "generally leaves the ester untouched, so the ester survives. "
+            "Lithium aluminium hydride is strong enough to reduce the ester as "
+            "well, taking it to a primary alcohol, so you would lose the ester "
+            "you meant to keep. The point is that selectivity comes from "
+            "matching the strength of the hydride to the least reactive group "
+            "you are willing to touch."
         ),
         pitfall=(
-            "The error is to think the aldehyde is a stable resting point that "
-            "you could catch by timing. It is not, with a strong hydride: it is "
-            "consumed faster than it forms. Controlling the stopping point is a "
-            "matter of choosing a reagent that cannot over reduce, not of "
-            "watching the clock."
+            "The tempting shortcut is to think an aldehyde is easy to isolate "
+            "from ester reduction because it is an obvious halfway point. With "
+            "lithium aluminium hydride it is not isolable, because the aldehyde "
+            "is more reactive toward hydride than the ester was, so the moment "
+            "any aldehyde appears it is reduced again. Stopping at the aldehyde "
+            "is not a matter of adding one equivalent and hoping; it requires a "
+            "reagent, diisobutylaluminium hydride at low temperature, that holds "
+            "the tetrahedral intermediate together until workup so the aldehyde "
+            "is only unmasked when no reductant is left. The belief to fix is "
+            "that intermediates on a reaction path are automatically "
+            "collectable; they are collectable only when they are less reactive "
+            "than the starting material, and here the aldehyde is more reactive."
         ),
         claims=(
-            Formula(METHYL_ACETATE, "C3H6O2", "the ester being reduced"),
-            Formula(ACETIC_ACID, "C2H4O2", "the parent acid, also reducible"),
+            Formula(METHYL_BENZOATE, "C8H8O2", "methyl benzoate"),
+            Unsaturation(METHYL_BENZOATE, 5, "ring accounts for four, ester carbonyl for one"),
+            Formula(BENZYL_ALCOHOL, "C7H8O", "benzyl alcohol, full reduction"),
+            Unsaturation(BENZYL_ALCOHOL, 4, "ring only; the carbonyl pi bond is gone"),
+            Formula(BENZALDEHYDE, "C7H6O", "benzaldehyde, stopped by DIBAL-H"),
+            Unsaturation(BENZALDEHYDE, 5, "ring plus the aldehyde carbonyl"),
+            Formula(METHANOL, "CH4O", "the alcohol released from the ester oxygen"),
+            Formula(ACETAMIDE, "C2H5NO", "acetamide"),
+            Unsaturation(ACETAMIDE, 1),
+            Formula(ETHYLAMINE, "C2H7N", "ethylamine, from amide reduction"),
+            Unsaturation(ETHYLAMINE, 0, "the carbonyl oxygen is removed, nitrogen kept"),
+            Formula(ACETYL_CHLORIDE, "C2H3ClO", "acetyl chloride"),
+            Formula(ACETALDEHYDE, "C2H4O", "acetaldehyde, from a hindered-hydride reduction"),
+            Unsaturation(ACETALDEHYDE, 1),
             Source(
-                "Lithium aluminium hydride reduces esters and carboxylic acids "
-                "to primary alcohols, whereas a bulkier, milder hydride such as "
-                "diisobutylaluminium hydride can deliver a single hydride and "
-                "halt the reduction at the aldehyde.",
-                "Clayden, Greeves and Warren, Organic Chemistry, chapter on the "
-                "reduction of carbonyl compounds.",
+                "Lithium aluminium hydride reduces esters to primary alcohols "
+                "and amides to amines; diisobutylaluminium hydride at low "
+                "temperature stops ester reduction at the aldehyde by leaving "
+                "the tetrahedral intermediate intact until workup; sodium "
+                "borohydride is too mild to reduce esters and amides under "
+                "ordinary conditions.",
+                CLAYDEN,
             ),
         ),
     ),
     "ORG2.DERIVATIVEORGANOMETALLIC": Lesson(
         node="ORG2.DERIVATIVEORGANOMETALLIC",
         objective=(
-            "Explain why an organometallic reagent takes an ester to a tertiary "
-            "alcohol, and why the same addition to an acid chloride can be "
-            "stopped at the ketone."
+            "Explain why a Grignard reagent adds twice to an ester to give a "
+            "tertiary alcohol with two identical new groups, and why an acid "
+            "chloride can be stopped after one addition to give a ketone."
         ),
         build_on=(
-            "An organometallic reagent is a carbon nucleophile, so it adds to "
-            "the carbonyl just as hydride or an alcohol does. What is new is "
-            "that its addition builds a new carbon carbon bond, and it can add "
-            "more than once."
+            "Hydride reduction let a nucleophile that cannot leave, hydrogen, "
+            "add at a carbonyl. A carbon nucleophile from an organometallic "
+            "reagent does the same thing and builds carbon-carbon bonds, and the "
+            "same question decides the outcome: does the first product get "
+            "attacked again?"
         ),
         core_idea=(
-            "Add an organometallic reagent to an ester and the first product is "
-            "a ketone, but the ketone is more reactive than the ester was, so a "
-            "second equivalent adds at once and the result is a tertiary "
-            "alcohol carrying two identical groups from the reagent. You cannot "
-            "stop at the ketone with an ordinary organometallic because the "
-            "ketone outruns its precursor. An acid chloride is different: with a "
-            "suitably attenuated organometallic reagent the first addition can "
-            "be halted at the ketone, because the reagent is tuned to react "
-            "with the very reactive acid chloride but not with the less "
-            "reactive ketone it produces. The same reactivity ladder that "
-            "orders substitution decides whether a second addition happens."
+            "A Grignard reagent is a carbon nucleophile. Add it to an ester and "
+            "it goes through the addition-elimination sequence: the carbanion "
+            "adds, the tetrahedral intermediate expels the alkoxy leaving group, "
+            "and a ketone is produced. But the ketone is more electrophilic than "
+            "the ester it came from, so a second equivalent of the Grignard adds "
+            "to it at once, and this time there is no leaving group to expel, so "
+            "the reaction stops at the tetrahedral alkoxide, which becomes a "
+            "tertiary alcohol on workup. Two of the three groups on that "
+            "alcohol's carbon came from the Grignard, so they are identical: an "
+            "ester plus two equivalents of the same Grignard always gives a "
+            "tertiary alcohol bearing two copies of the organometallic's group. "
+            "An acid chloride can instead be stopped cleanly at the ketone if "
+            "you use a milder carbon nucleophile, a lithium dialkylcuprate, "
+            "which adds once and does not go on to attack the ketone. The whole "
+            "difference between one addition and two is whether the first "
+            "product is more reactive than the starting material, which for an "
+            "ester it is."
         ),
         worked_example=(
-            "React methyl acetate, C3H6O2, with a methyl organometallic. The "
-            "first equivalent gives a ketone, which is more electrophilic than "
-            "the ester, so a second methyl adds before anything can be "
-            "isolated. The nucleophile has delivered two methyl groups to the "
-            "original acetyl carbon, and after workup the product is "
-            "2-methylpropan-2-ol, C4H10O, a tertiary alcohol whose central "
-            "carbon bears the original methyl plus the two added ones and an OH. "
-            "To keep a single addition you would begin from the acid chloride "
-            "and choose a reagent mild enough to stop at the ketone."
+            "Treat methyl acetate, C3H6O2 with one degree of unsaturation, with "
+            "two equivalents of methylmagnesium bromide. The first methyl adds "
+            "to the carbonyl carbon, methoxide is expelled, and the intermediate "
+            "ketone is acetone, C3H6O, still one degree of unsaturation and all "
+            "six of its hydrogens equivalent. Acetone is more electrophilic than "
+            "methyl acetate, so the second methyl adds to it, and with no "
+            "leaving group available the reaction halts at the alkoxide. Workup "
+            "gives 2-methylpropan-2-ol, tert-butanol, C4H10O, zero degrees of "
+            "unsaturation because no carbonyl remains. Look at its symmetry: all "
+            "three methyl groups are equivalent, so it shows two proton "
+            "environments in the ratio 9:1, nine methyl hydrogens and one "
+            "hydroxyl hydrogen. Two of those three methyls are the ones the "
+            "Grignard delivered, which is the visible consequence of adding "
+            "twice. To stop at the ketone instead, start from acetyl chloride, "
+            "C2H3ClO, and use a dimethylcuprate, which adds a single methyl and "
+            "gives acetone, C3H6O, without a second addition."
         ),
         try_it_prompt=(
-            "An ester and a methyl organometallic give a tertiary alcohol with "
-            "two identical groups on the carbinol carbon. Where do those two "
-            "identical groups come from, and why are there exactly two?"
+            "You react an ester with two equivalents of ethylmagnesium bromide. "
+            "Before drawing anything, state what class of alcohol you will get "
+            "and what must be true about two of the groups on the new "
+            "carbinol carbon."
         ),
         try_it_answer=(
-            "Both come from the organometallic reagent. The first equivalent "
-            "converts the ester to a ketone by displacing the alkoxy group; the "
-            "second adds to that ketone. Two equivalents add because the ketone "
-            "intermediate is more reactive than the ester, so the addition "
-            "cannot stop after one."
+            "You will get a tertiary alcohol, and two of the three carbon groups "
+            "on the carbinol carbon must be identical ethyl groups. The Grignard "
+            "adds once to give a ketone, then a second time because the ketone "
+            "is more electrophilic than the ester, and both additions deliver "
+            "the same ethyl group. The alkoxy part of the ester leaves as an "
+            "alkoxide in the first step and is not part of the product, so the "
+            "product's structure depends on the acyl group and the Grignard, not "
+            "on which alcohol the ester was made from."
         ),
         pitfall=(
-            "The misconception is that you can isolate the ketone from an ester "
-            "and an organometallic by using just one equivalent. You cannot: "
-            "the ketone is consumed faster than it forms. Single addition to a "
-            "ketone stage is the province of the acid chloride with a mild "
-            "reagent, not of the ester."
+            "The misconception is that a Grignard adds once to an ester the way "
+            "a hydride can be made to, giving a ketone or an aldehyde you can "
+            "keep. It cannot be stopped there, because the ketone formed is more "
+            "electrophilic than the ester, so it is consumed by the second "
+            "equivalent before you can isolate it. The belief underneath is that "
+            "you control the number of additions by counting equivalents; what "
+            "actually controls it is the relative reactivity of the first "
+            "product. When that product is more reactive than the starting "
+            "material, as the ketone from an ester is, the reaction runs on to "
+            "the tertiary alcohol regardless. Stopping at the ketone requires a "
+            "different starting material, the acid chloride, and a gentler "
+            "reagent, the cuprate."
         ),
         claims=(
-            Formula(METHYL_ACETATE, "C3H6O2", "the ester"),
+            Formula(METHYL_ACETATE, "C3H6O2", "methyl acetate"),
+            Unsaturation(METHYL_ACETATE, 1, "the ester carbonyl"),
+            Formula(ACETONE, "C3H6O", "acetone, the ketone intermediate"),
+            Unsaturation(ACETONE, 1, "still one carbonyl"),
+            Environments(ACETONE, (6,), "two equivalent methyls, all six hydrogens one environment"),
             Formula(TERT_BUTANOL, "C4H10O", "2-methylpropan-2-ol, the tertiary alcohol"),
-            Formula(ACETYL_CHLORIDE, "C2H3ClO", "the acid chloride that can stop at a ketone"),
+            Unsaturation(TERT_BUTANOL, 0, "no carbonyl remains"),
+            Environments(
+                TERT_BUTANOL, (9, 1),
+                "three equivalent methyls and the hydroxyl hydrogen; two of the "
+                "methyls came from the Grignard",
+            ),
+            Formula(ACETYL_CHLORIDE, "C2H3ClO", "acetyl chloride"),
             Source(
-                "Grignard and organolithium reagents add twice to esters, "
-                "giving tertiary alcohols, because the ketone intermediate is "
-                "more electrophilic than the ester; a single addition to give a "
-                "ketone is achievable from an acid chloride using an attenuated "
-                "organometallic such as a Gilman cuprate.",
-                "Carey and Sundberg, Advanced Organic Chemistry, Part B, "
-                "chapter on organometallic reagents in synthesis.",
+                "A Grignard reagent adds twice to an ester, giving a tertiary "
+                "alcohol, because the ketone intermediate is more electrophilic "
+                "than the ester; a lithium dialkylcuprate adds once to an acid "
+                "chloride and can be stopped at the ketone.",
+                CLAYDEN,
             ),
         ),
     ),
     "ORG2.POLYMERS": Lesson(
         node="ORG2.POLYMERS",
         objective=(
-            "Explain how the same acyl substitution chemistry builds polyesters "
-            "and polyamides by step growth, and identify the small molecule "
-            "lost as each linkage forms."
+            "Show that polyesters and polyamides are made by the same "
+            "nucleophilic acyl substitution repeated many times, and explain why "
+            "step-growth polymerisation needs monomers with two reactive ends "
+            "and high conversion to give long chains."
         ),
         build_on=(
-            "You can form a single ester from an acid and an alcohol, and a "
-            "single amide from an acid derivative and an amine. A polymer is "
-            "that same bond formed over and over between molecules that each "
-            "carry two reactive ends."
+            "You now know esterification and amide formation as single "
+            "reactions. A polymer is those single reactions run over and over "
+            "on monomers built so that each new bond leaves another reactive end "
+            "free to react again."
         ),
         core_idea=(
-            "Give a monomer two functional ends and let the ester or amide "
-            "forming reaction repeat, and the chain grows by step growth "
-            "polymerisation. A diol and a diacid, or a molecule bearing both an "
-            "alcohol and an acid, link through ester bonds into a polyester; a "
-            "diamine and a diacid link through amide bonds into a polyamide, a "
-            "nylon. Each new linkage is one nucleophilic acyl substitution and "
-            "expels one small molecule, water for the direct condensation. "
-            "Because any two ends can react, short pieces join to short pieces "
-            "and the average chain length climbs steadily, which is what "
-            "distinguishes step growth from a chain reaction that adds one "
-            "monomer at a time."
+            "A step-growth polymer forms when each monomer carries two "
+            "functional groups, so that every acyl substitution that links two "
+            "monomers still leaves a reactive group at each end for the next "
+            "link. A diacid, or a diacid chloride, reacting with a diol gives a "
+            "polyester joined by ester bonds; the same diacid reacting with a "
+            "diamine gives a polyamide joined by amide bonds. Each individual "
+            "bond is the ordinary reaction you already know, an alcohol or an "
+            "amine adding to a carbonyl and a leaving group departing, and the "
+            "small molecule lost at each step, water in a direct condensation, "
+            "is why these are called condensation polymers. The mechanism sets a "
+            "practical demand that is worth stating: because the chain grows one "
+            "bond at a time from both ends, the average chain length depends "
+            "steeply on how completely the reaction runs. A conversion of 90 "
+            "percent leaves chains that are still short on average, and only "
+            "conversions very close to complete give the long chains a useful "
+            "material needs, which is why stoichiometry and purity matter more "
+            "in step-growth polymerisation than in most single reactions."
         ),
         worked_example=(
-            "Take a single ester linkage as the model reaction and account for "
-            "the atoms. An acid end and an alcohol end condense the way acetic "
-            "acid, C2H4O2, and methanol, CH4O, give methyl acetate, C3H6O2, and "
-            "water, H2O, balancing as C3H8O3 on both sides. Now imagine the "
-            "acid carried a second acid group at its far end and the alcohol a "
-            "second alcohol group at its own: the ester just formed still has a "
-            "free acid and a free alcohol available, and the same condensation "
-            "repeats at those ends, losing another water each time. Repeated "
-            "indefinitely, this is a polyester, and one water molecule leaves "
-            "for every bond made."
+            "Compare a polyester and a polyamide built from the same kind of "
+            "chemistry. For the polyester take ethylene glycol, C2H6O2 with two "
+            "hydroxyl ends and no degrees of unsaturation, and terephthalic "
+            "acid, C8H6O4, whose six degrees of unsaturation are the benzene "
+            "ring and its two carbonyls. Each hydroxyl of the diol attacks a "
+            "carbonyl of the diacid and water leaves, building an ester bond, "
+            "and because both monomers are difunctional the growing chain always "
+            "has an alcohol at one end and an acid at the other to continue. "
+            "That is poly(ethylene terephthalate). For the polyamide take "
+            "hexane-1,6-diamine, C6H16N2, and adipic acid, C6H10O4 with two "
+            "degrees of unsaturation for its two carbonyls; each amine attacks a "
+            "carbonyl and water leaves, building an amide bond, and the chain is "
+            "nylon-6,6. The proton environments echo the symmetry of the "
+            "monomers: terephthalic acid gives two environments in the ratio "
+            "4:2, its four equivalent ring hydrogens and its two acid hydrogens, "
+            "and adipic acid gives three in the ratio 4:4:2. Nothing in either "
+            "polymerisation is new chemistry; it is acyl substitution made to "
+            "repeat by giving every monomer two hands."
         ),
         try_it_prompt=(
-            "Nylon is a polyamide made from a diamine and a diacid. Which acyl "
-            "substitution forms each linkage, and what small molecule leaves "
-            "when an acid and an amine condense directly?"
+            "You mix a diacid with a compound that has only one alcohol group "
+            "instead of two. Explain why you get no polymer, using what the "
+            "step-growth mechanism requires of a monomer."
         ),
         try_it_answer=(
-            "Each linkage is an amide formed by nucleophilic acyl substitution, "
-            "the amine displacing the acid's leaving group. When a carboxylic "
-            "acid and an amine condense directly, the small molecule lost is "
-            "water, one per amide bond formed."
+            "A monomer with only one reactive end can form a single ester bond "
+            "and then has nothing left to continue the chain, so it caps the "
+            "growing end rather than extending it. Step-growth polymerisation "
+            "needs every monomer to be at least difunctional, so that each new "
+            "acyl substitution consumes one reactive group but leaves another "
+            "free at the new end. A one-ended alcohol acts as a chain "
+            "terminator, and adding enough of it is in fact how chain length is "
+            "deliberately limited."
         ),
         pitfall=(
-            "The common confusion is treating these condensation polymers like "
-            "addition polymers, where monomers add without losing anything. "
-            "Step growth polyesters and polyamides expel a small molecule at "
-            "every bond, so the repeat unit is lighter than the monomers that "
-            "made it, and the mechanism is substitution, not addition to a "
-            "double bond."
+            "The error is assuming that mixing the monomers and reaching a high "
+            "conversion, say 95 percent, is enough to get a strong polymer, "
+            "because 95 percent sounds like most of the reaction. In step-growth "
+            "polymerisation the average chain length rises steeply only as "
+            "conversion approaches 100 percent, so 95 percent gives chains that "
+            "are still far too short to be useful, and an imbalance in the "
+            "amounts of the two monomers caps chains early for the same reason a "
+            "one-ended monomer does. The belief to correct is that near-complete "
+            "is close enough. Here the last few percent of conversion, and exact "
+            "stoichiometry between the two difunctional monomers, are what turn "
+            "short chains into a material."
         ),
         claims=(
-            Formula(ACETIC_ACID, "C2H4O2", "acid end, model for a diacid"),
-            Formula(METHANOL, "CH4O", "alcohol end, model for a diol"),
-            Formula(METHYL_ACETATE, "C3H6O2", "the model ester linkage"),
-            Formula(WATER, "H2O", "lost per ester or amide bond formed"),
+            Formula(ETHYLENE_GLYCOL, "C2H6O2", "ethylene glycol, the diol"),
+            Unsaturation(ETHYLENE_GLYCOL, 0, "two hydroxyls, no pi bonds or rings"),
+            Environments(ETHYLENE_GLYCOL, (4, 2), "four methylene hydrogens and two hydroxyls"),
+            Formula(TEREPHTHALIC_ACID, "C8H6O4", "terephthalic acid, the diacid"),
+            Unsaturation(TEREPHTHALIC_ACID, 6, "the ring accounts for four, the two carbonyls for two"),
+            Environments(
+                TEREPHTHALIC_ACID, (4, 2),
+                "four equivalent ring hydrogens and two acid hydrogens",
+            ),
+            Formula(HEXANEDIAMINE, "C6H16N2", "hexane-1,6-diamine, the diamine"),
+            Unsaturation(HEXANEDIAMINE, 0),
+            Formula(ADIPIC_ACID, "C6H10O4", "adipic acid, the diacid for nylon-6,6"),
+            Unsaturation(ADIPIC_ACID, 2, "two carbonyls"),
+            Environments(ADIPIC_ACID, (4, 4, 2), "two pairs of equivalent methylenes and the two acid hydrogens"),
+            Source(
+                "Polyesters and polyamides form by step-growth polymerisation, "
+                "in which difunctional monomers link by the same nucleophilic "
+                "acyl substitution as their small-molecule analogues; the "
+                "number-average degree of polymerisation depends steeply on "
+                "fractional conversion and on stoichiometric balance, following "
+                "the Carothers treatment.",
+                CLAYDEN_POLYMERS,
+            ),
         ),
     ),
 }
