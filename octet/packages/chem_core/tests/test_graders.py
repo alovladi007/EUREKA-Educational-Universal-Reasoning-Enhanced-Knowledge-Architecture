@@ -447,10 +447,28 @@ def test_oversized_input_is_capped_rather_than_parsed():
 # ---------------------------------------------------------------------------
 
 
+def _self_answer(v):
+    """The answer that reproduces a variant's own stored key.
+
+    Most graders take the key directly. Two carry the answer in meta because
+    the key is not the thing the learner types: mc keys an index, and retro
+    keys the target while the answer is the chosen disconnection plus the
+    precursors that rebuild it.
+    """
+    if v.grader == "mc":
+        return v.meta["correct_index"]
+    if v.grader == "retro":
+        return {
+            "disconnection": v.meta["key_disconnection"],
+            "precursors": v.meta["key_precursors"],
+        }
+    return v.key
+
+
 def test_grade_dispatch_routes_every_supported_grader():
     for tid in cc.REGISTRY:
         v = cc.resolve_generated(tid, 4)
-        result = cc.grade(v.grader, v, v.key if v.grader != "mc" else v.meta["correct_index"])
+        result = cc.grade(v.grader, v, _self_answer(v))
         assert isinstance(result, cc.GradeResult)
         assert result.is_correct, f"{tid} did not accept its own stored key"
 
@@ -459,10 +477,10 @@ def test_grade_dispatch_refuses_graders_from_later_phases():
     # Lewis, mechanism, lab data and retro step arrive in later phases. They
     # must raise rather than quietly pass a learner.
     #
-    # This list shrank in Phase 3 (structure, prediction) and again in Phase 5
-    # (spectrum). Each moved out because it was built, not because the rule was
-    # relaxed: every one ships with an independent verifier. Anything still
-    # named here has no implementation at all.
+    # This list shrank in Phase 3 (structure, prediction), Phase 5 (spectrum)
+    # and Phase 6 (retro). Each moved out because it was built, not because the
+    # rule was relaxed: every one ships with an independent verifier. Anything
+    # still named here has no implementation at all.
     #
     # The names below are the exact strings dispatch would use. That matters:
     # this test previously guarded "spectra-elucidation" while the grader was
@@ -470,7 +488,7 @@ def test_grade_dispatch_refuses_graders_from_later_phases():
     # nothing would ever call. It passed, and would have kept passing had
     # spectrum gone live with no verifier at all. A boundary test that guards
     # the wrong string is worse than none, because it reads as coverage.
-    for later in ("lewis", "mechanism", "lab_data", "retro_step"):
+    for later in ("lewis", "mechanism", "lab_data"):
         with pytest.raises(KeyError):
             cc.grade(later, {"key": "x", "meta": {}}, "anything")
 
@@ -486,7 +504,7 @@ def test_unbuilt_grader_names_are_not_secretly_live_under_another_spelling():
     assert unbuilt.isdisjoint(cc.SUPPORTED_GRADERS)
     assert set(cc.SUPPORTED_GRADERS) == {
         "formula", "balance", "stoich", "mc", "equilibrium",
-        "numeric", "structure", "prediction", "spectrum",
+        "numeric", "structure", "prediction", "spectrum", "retro",
     }
 
 

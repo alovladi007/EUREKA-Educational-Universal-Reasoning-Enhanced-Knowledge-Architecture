@@ -243,12 +243,28 @@ def _check_no_early_solution() -> list[dict]:
                 problems.append(
                     {"check": "hint_reveals_answer", "detail": f"{tid} rung {level} contains the key"}
                 )
-        # The prompt itself must not contain the answer either.
+        # The prompt itself must not contain the answer either. Two graders are
+        # exempt because for them the stored key is not the withheld answer: an
+        # MC prompt legitimately lists the choices, and a retro prompt shows the
+        # target molecule, which is the question rather than the answer. The
+        # withheld answer in a retro item is the precursor set, and that is
+        # checked below instead.
         if key_text and len(key_text) > 3 and key_text in variant.prompt.lower():
-            if variant.grader != "mc":  # an MC prompt legitimately lists choices
+            if variant.grader not in ("mc", "retro"):
                 problems.append(
                     {"check": "prompt_reveals_answer", "detail": f"{tid} prompt contains the key"}
                 )
+        if variant.grader == "retro":
+            prompt_lower = variant.prompt.lower()
+            for precursor in variant.meta.get("key_precursors", []):
+                pl = str(precursor).strip().lower()
+                if pl and len(pl) > 2 and pl in prompt_lower:
+                    problems.append(
+                        {
+                            "check": "prompt_reveals_answer",
+                            "detail": f"{tid} prompt contains a key precursor {precursor}",
+                        }
+                    )
     return problems
 
 

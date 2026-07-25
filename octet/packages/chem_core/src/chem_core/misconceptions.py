@@ -535,3 +535,47 @@ MISCONCEPTIONS.update(
         ),
     }
 )
+
+
+# Grader 11 (retrosynthesis) diagnoses. Added in Phase 6 with the retro module.
+MISCONCEPTIONS.update(
+    {
+        "RETRO-FRAGMENTS-DO-NOT-JOIN": Misconception(
+            code="RETRO-FRAGMENTS-DO-NOT-JOIN",
+            name="The right fragments, joined the wrong way",
+            description=(
+                "The learner identifies precursors that carry the target's "
+                "carbon skeleton but chooses a disconnection whose forward "
+                "reaction does not assemble them into the target, usually "
+                "because the reactive groups are on the wrong carbons."
+            ),
+            counterexample=(
+                "Butan-2-ol can come from an organometallic adding to a "
+                "carbonyl, but only if the fragments split the new carbon-carbon "
+                "bond correctly; pairing the wrong halves gives fragments that "
+                "never join into butan-2-ol however the reaction is run."
+            ),
+            routes_to="ORG2.AROMATICSYNTH",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+        "RETRO-WRONG-PRECURSORS": Misconception(
+            code="RETRO-WRONG-PRECURSORS",
+            name="Precursors whose atoms do not add up",
+            description=(
+                "The learner proposes precursors whose combined carbon skeleton "
+                "cannot make the target, so no disconnection could join them "
+                "into it. The disconnection was named before the atom count was "
+                "checked."
+            ),
+            counterexample=(
+                "A five-carbon target cannot be built in one step from two "
+                "two-carbon precursors; the carbons are simply missing, and no "
+                "choice of reaction supplies them."
+            ),
+            routes_to="ORG2.AROMATICSYNTH",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+    }
+)

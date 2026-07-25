@@ -180,21 +180,24 @@ def test_coverage_is_reported_and_internally_consistent():
     assert sum(row["authored"] for row in cov["by_course"].values()) == cov["authored"]
 
 
-def test_organic_authoring_matches_the_phase_that_is_running():
-    """Phase 5 authors ORG1 and leaves ORG2 for Phase 6.
+def test_both_organic_courses_are_fully_authored():
+    """Phase 5 authored ORG1 and Phase 6 authored ORG2, both complete.
 
-    This replaced a test asserting ORG1 had zero lessons, which was true until
-    Phase 5 landed and is the kind of assertion that is meant to be updated
-    when the phase it describes arrives.
+    This assertion has been updated twice now, each time a phase it describes
+    landed: it began life asserting ORG1 had zero lessons, then guarded the
+    ORG1-being-written / ORG2-not boundary, and now records that both organic
+    courses are complete. Each rewrite followed a real gate, not a relaxation.
 
-    What it still guards is the boundary: ORG1 is being written, ORG2 is not,
-    and neither is complete. A number here going up without the phase plan
-    saying so means content arrived outside its gate.
+    Every organic node carries a lesson, and every lesson carries claims the
+    build re-derives, so "authored" here means machine-checked, not merely
+    present. General chemistry remains deliberately partial: those courses were
+    authored to a depth that seeded the engine, not to completion.
     """
     cov = coverage()
-    assert cov["by_course"]["ORG1"]["authored"] > 0, "Phase 5 authors ORG1"
-    assert cov["by_course"]["ORG1"]["authored"] <= cov["by_course"]["ORG1"]["nodes"]
-    assert cov["by_course"]["ORG2"]["authored"] == 0, "ORG2 belongs to Phase 6"
+    for course in ("ORG1", "ORG2"):
+        assert cov["by_course"][course]["authored"] == cov["by_course"][course]["nodes"], (
+            f"{course} should be fully authored"
+        )
     assert cov["by_course"]["GEN1"]["authored"] > 0
 
 

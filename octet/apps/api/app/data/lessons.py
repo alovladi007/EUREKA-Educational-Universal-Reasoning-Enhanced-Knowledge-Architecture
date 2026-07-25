@@ -101,3 +101,73 @@ try:
     LESSONS.update(_ORG1_U6)
 except ImportError:  # pragma: no cover
     pass
+
+try:
+    from app.data.lessons_org2_u1 import LESSONS_ORG2_U1 as _ORG2_U1
+
+    LESSONS.update(_ORG2_U1)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u2 import LESSONS_ORG2_U2 as _ORG2_U2
+
+    LESSONS.update(_ORG2_U2)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u3 import LESSONS_ORG2_U3 as _ORG2_U3
+
+    LESSONS.update(_ORG2_U3)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u4 import LESSONS_ORG2_U4 as _ORG2_U4
+
+    LESSONS.update(_ORG2_U4)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u5 import LESSONS_ORG2_U5 as _ORG2_U5
+
+    LESSONS.update(_ORG2_U5)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u6 import LESSONS_ORG2_U6 as _ORG2_U6
+
+    LESSONS.update(_ORG2_U6)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u7 import LESSONS_ORG2_U7 as _ORG2_U7
+
+    LESSONS.update(_ORG2_U7)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u8 import LESSONS_ORG2_U8 as _ORG2_U8
+
+    LESSONS.update(_ORG2_U8)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u9 import LESSONS_ORG2_U9 as _ORG2_U9
+
+    LESSONS.update(_ORG2_U9)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_org2_u10 import LESSONS_ORG2_U10 as _ORG2_U10
+
+    LESSONS.update(_ORG2_U10)
+except ImportError:  # pragma: no cover
+    pass

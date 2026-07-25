@@ -6,9 +6,9 @@ ladders, and the template registry. It has no database, no network, and no web
 framework, so it can be tested and reasoned about in isolation.
 
 Live graders: 1 formula, 2 balance, 3 stoichiometry, 4 structure, 6 multiple
-choice, 7 equilibrium, 10 spectra, 12 prediction. Graders 5 Lewis, 8 mechanism,
-9 lab data and 11 retro step arrive in their own phases and are not stubbed
-here. A missing grader raises, it does not silently pass.
+choice, 7 equilibrium, 10 spectra, 11 retro step, 12 prediction. Graders 5
+Lewis, 8 mechanism and 9 lab data arrive in their own phases and are not
+stubbed here. A missing grader raises, it does not silently pass.
 
 Graders 4 and 12 landed in Phase 3 alongside the visualization surface they
 feed: 4 grades what the Sketcher draws, and 12 grades the prediction a learner
@@ -90,6 +90,12 @@ from .simulate import (
     titration_landmarks,
     verify_equilibrium_shift,
     verify_titration,
+)
+from .retro import (  # noqa: E402
+    Disconnection,
+    RetroItem,
+    grade_retro,
+    verify_retro_item,
 )
 from .spectra import (  # noqa: E402
     Signal,
@@ -174,6 +180,10 @@ __all__ = [
     "verify_spectrum_item",
     "SpectrumItem",
     "Signal",
+    "grade_retro",
+    "verify_retro_item",
+    "RetroItem",
+    "Disconnection",
     "verify_structure_key",
     "canonical",
     "inchikey",
@@ -205,6 +215,7 @@ SUPPORTED_GRADERS = (
     "structure",
     "prediction",
     "spectrum",
+    "retro",
 )
 
 
@@ -308,6 +319,24 @@ def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
             source=meta.get("source", ""),
         )
         return grade_spectrum(item, student_answer)
+    if grader == "retro":
+        # The disconnections and key travel in meta so the sandboxed child
+        # rebuilds the item without importing the application. student_answer
+        # carries the chosen disconnection and the precursor list.
+        disconnections = tuple(
+            Disconnection(**d) for d in meta.get("disconnections", [])
+        )
+        item = RetroItem(
+            node=meta.get("node", ""),
+            target=str(key),
+            disconnections=disconnections,
+            key_disconnection=meta.get("key_disconnection", ""),
+            key_precursors=tuple(meta.get("key_precursors", [])),
+            source=meta.get("source", ""),
+        )
+        chosen = student_answer.get("disconnection", "") if isinstance(student_answer, dict) else ""
+        precursors = student_answer.get("precursors", []) if isinstance(student_answer, dict) else []
+        return grade_retro(item, chosen, precursors)
     # equilibrium
     problem = EquilibriumProblem(
         k=meta["ka"],
