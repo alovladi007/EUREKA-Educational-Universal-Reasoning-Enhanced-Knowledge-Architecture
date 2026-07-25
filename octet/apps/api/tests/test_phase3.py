@@ -478,7 +478,12 @@ def test_every_triangle_view_is_complete_and_attached():
     from app.data.curriculum import NODES_BY_CODE
     from app.data.triangle_views import TRIANGLE_VIEWS
 
-    assert len(TRIANGLE_VIEWS) == 18
+    # Not a fixed number. Phase 3 authored 18 general chemistry views and the
+    # organic phases added 26 more; pinning the total meant this test failed
+    # every time content was added, which trains people to edit the number
+    # rather than read the failure. What must hold is that every view is
+    # complete and attached, which is asserted below.
+    assert len(TRIANGLE_VIEWS) >= 18
     for code, view in TRIANGLE_VIEWS.items():
         assert code in NODES_BY_CODE, f"{code} is not a node"
         for level in ("macroscopic", "particulate", "symbolic", "connector", "pitfall"):
@@ -510,7 +515,10 @@ def test_compliance_counts_the_new_surfaces():
     from app.compliance import run
 
     counts = run()["counts"]
-    assert counts["triangle_views"] == 18
+    # A floor rather than an equality: authoring more views is the intended
+    # direction, and an exact count turns every content addition into a test
+    # edit.
+    assert counts["triangle_views"] >= 18
     assert counts["elements"] == 118
     assert counts["poe_activities"] >= 4
 
@@ -569,6 +577,7 @@ async def test_lesson_reports_whether_a_triangle_view_actually_exists(client, au
     69 nodes while only 18 have a view, so almost every lesson opened fired a
     request that 404ed. The flag and the view set must agree exactly.
     """
+    from app.data.lessons import LESSONS
     from app.data.triangle_views import TRIANGLE_VIEWS
 
     headers = auth("student")
@@ -580,12 +589,25 @@ async def test_lesson_reports_whether_a_triangle_view_actually_exists(client, au
         assert res.json()["has_triangle_view"] is True
         assert (await client.get(f"/api/v1/triangle/{with_view}", headers=headers)).status_code == 200
 
-    # An organic node marked eligible but with no authored view reports False,
-    # so the client never asks. This is the case the user hit.
+    # The node reported in the bug now has a view, so the flag reports True and
+    # the view serves. That is the fix landing, not the test going soft: the
+    # False case below still covers a node with no view.
     res = await client.get("/api/v1/curriculum/lessons/ORG2.CARBONYLSTRUCTURE", headers=headers)
     assert res.status_code == 200
+    assert res.json()["has_triangle_view"] is True
+    assert (
+        await client.get("/api/v1/triangle/ORG2.CARBONYLSTRUCTURE", headers=headers)
+    ).status_code == 200
+
+    # A node with a lesson and no view reports False, so the client never asks,
+    # and the endpoint still refuses honestly if something asks anyway.
+    without = next(
+        code for code in sorted(LESSONS) if code not in TRIANGLE_VIEWS
+    )
+    res = await client.get(f"/api/v1/curriculum/lessons/{without}", headers=headers)
+    assert res.status_code == 200
     assert res.json()["has_triangle_view"] is False
-    missing = await client.get("/api/v1/triangle/ORG2.CARBONYLSTRUCTURE", headers=headers)
+    missing = await client.get(f"/api/v1/triangle/{without}", headers=headers)
     assert missing.status_code == 404, "the endpoint still refuses honestly when asked directly"
 
 

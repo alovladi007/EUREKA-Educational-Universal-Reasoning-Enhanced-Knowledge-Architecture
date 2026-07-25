@@ -463,12 +463,24 @@ def _report_coverage() -> list[dict]:
 
     eligible = [n.code for n in NODES if n.triangle_eligible]
     have = [c for c in eligible if c in TRIANGLE_VIEWS]
+    # The two sets do not nest, so reporting only "have of eligible" would
+    # undercount the views that exist. Three views authored in Phase 3 sit on
+    # nodes the curriculum never marked eligible, which is a flag that was
+    # never set rather than a view that should not be there: those views serve
+    # fine and are what a learner sees. The count says both numbers rather than
+    # implying every view is on an eligible node.
+    off_flag = sorted(c for c in TRIANGLE_VIEWS if c not in set(eligible))
+    detail = (
+        f"{len(have)} of {len(eligible)} triangle eligible nodes have a view; "
+        f"{len(TRIANGLE_VIEWS)} views exist in total"
+    )
+    if off_flag:
+        detail += (
+            f". {len(off_flag)} view(s) sit on nodes not marked triangle "
+            f"eligible ({', '.join(off_flag)}), so the flag understates them"
+        )
     warnings.append(
-        {
-            "check": "triangle_coverage",
-            "detail": f"{len(have)} of {len(eligible)} triangle eligible nodes have a view",
-            "severity": "informational",
-        }
+        {"check": "triangle_coverage", "detail": detail, "severity": "informational"}
     )
 
     from app.data import periodic

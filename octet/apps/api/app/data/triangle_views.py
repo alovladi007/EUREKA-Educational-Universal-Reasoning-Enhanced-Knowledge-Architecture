@@ -967,6 +967,25 @@ _VIEWS: list[TriangleView] = [
 
 TRIANGLE_VIEWS: dict[str, TriangleView] = {v.node: v for v in _VIEWS}
 
+# The organic views live in their own modules so the general chemistry set above
+# stays readable. They are merged here rather than kept separate because
+# for_node is the single place the rest of the system asks whether a view
+# exists, and a second source of truth would let the lesson payload's
+# has_triangle_view flag disagree with what the endpoint can actually serve.
+try:
+    from app.data.triangle_views_org1 import TRIANGLE_VIEWS_ORG1
+
+    TRIANGLE_VIEWS.update(TRIANGLE_VIEWS_ORG1)
+except ImportError:  # pragma: no cover - organic views not authored yet
+    pass
+
+try:
+    from app.data.triangle_views_org2 import TRIANGLE_VIEWS_ORG2
+
+    TRIANGLE_VIEWS.update(TRIANGLE_VIEWS_ORG2)
+except ImportError:  # pragma: no cover
+    pass
+
 
 def for_node(node: str) -> TriangleView | None:
     """The triangle view for a curriculum node, or None if there is not one.
@@ -978,5 +997,9 @@ def for_node(node: str) -> TriangleView | None:
 
 
 def covered_nodes() -> list[str]:
-    """Node codes that have a triangle view, in curriculum order."""
-    return [v.node for v in _VIEWS]
+    """Node codes that have a triangle view.
+
+    Reads the merged mapping rather than the general chemistry list alone, so
+    the organic views are not invisible to callers that ask what is covered.
+    """
+    return sorted(TRIANGLE_VIEWS)
