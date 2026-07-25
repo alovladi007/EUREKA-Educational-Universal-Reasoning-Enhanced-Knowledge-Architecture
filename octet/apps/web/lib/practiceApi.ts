@@ -44,11 +44,22 @@ export interface PracticeChoice {
   text: string;
 }
 
+// One disconnection offered by a "retro" (retrosynthesis) item. name is the
+// disconnection the learner selects; forms says, in words, what bond or group
+// it makes; abstracts, when present, names the condition it stands in for. The
+// answer key (which disconnection is correct) never travels in this list.
+export interface RetroDisconnectionOption {
+  name: string;
+  forms: string;
+  abstracts?: string;
+}
+
 // Answer-free metadata on a served item. choices is present for the "mc"
-// grader; other graders carry their own fields, left unknown rather than
-// pretended to be typed.
+// grader; disconnections is present for the "retro" grader; other graders
+// carry their own fields, left unknown rather than pretended to be typed.
 export interface PracticeItemMeta {
   choices?: PracticeChoice[];
+  disconnections?: RetroDisconnectionOption[];
   [key: string]: unknown;
 }
 

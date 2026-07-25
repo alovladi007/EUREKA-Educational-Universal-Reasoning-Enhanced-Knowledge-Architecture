@@ -10,6 +10,7 @@ import {
   PracticeReview,
   PracticeReviewItem,
   Rationale,
+  RetroDisconnectionOption,
   StoredPracticeAnswer,
   StoredPracticeSession,
   TutorAnswerResult,
@@ -67,6 +68,58 @@ function formatSeconds(total: number): string {
   return `${minutes}:${String(seconds).padStart(2, '0')}`;
 }
 
+// A retro item is answered with a structured value that travels through the
+// plain-text answer field as JSON: the chosen disconnection and the precursor
+// SMILES the backend runs forward to check. These two helpers are the only
+// places that shape and read that JSON, so the player and the review agree.
+
+// The list of disconnection options a retro item offers, or null when the
+// served item did not carry them (in which case the player falls back to a
+// plain text box rather than crashing).
+function retroDisconnections(
+  item: PracticeItem | undefined,
+): RetroDisconnectionOption[] | null {
+  const list = item?.meta.disconnections;
+  return Array.isArray(list) && list.length > 0 ? list : null;
+}
+
+// Build the answer string for a retro item: JSON with the chosen disconnection
+// and the non-empty, trimmed precursor fields. Returns '' when nothing usable
+// has been entered, so the caller can treat it like any other empty draft.
+function buildRetroAnswer(disconnection: string, precursors: string[]): string {
+  const clean = precursors.map((p) => p.trim()).filter((p) => p.length > 0);
+  if (!disconnection || clean.length === 0) {
+    return '';
+  }
+  return JSON.stringify({ disconnection, precursors: clean });
+}
+
+// Read a stored retro answer back into its parts for display. Returns null
+// when the stored string is not the JSON shape (an older or hand-entered
+// answer), so the caller shows the raw string instead.
+function parseRetroAnswer(
+  raw: string,
+): { disconnection: string; precursors: string[] } | null {
+  try {
+    const obj = JSON.parse(raw) as unknown;
+    if (!obj || typeof obj !== 'object') {
+      return null;
+    }
+    const record = obj as Record<string, unknown>;
+    const disconnection =
+      typeof record.disconnection === 'string' ? record.disconnection : '';
+    const precursors = Array.isArray(record.precursors)
+      ? record.precursors.filter((p): p is string => typeof p === 'string')
+      : [];
+    if (!disconnection && precursors.length === 0) {
+      return null;
+    }
+    return { disconnection, precursors };
+  } catch {
+    return null;
+  }
+}
+
 export default function PracticeSessionPage() {
   const params = useParams<{ id: string }>();
   const raw = params?.id;
@@ -77,6 +130,11 @@ export default function PracticeSessionPage() {
   const [index, setIndex] = useState(0);
 
   const [draft, setDraft] = useState('');
+  // Retro items carry their own drafting state: the selected disconnection and
+  // a small list of precursor SMILES fields. For every other grader these stay
+  // at their defaults and the plain draft string is the answer.
+  const [retroDisc, setRetroDisc] = useState('');
+  const [retroPrecursors, setRetroPrecursors] = useState<string[]>(['', '']);
   const [flagged, setFlagged] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -187,6 +245,18 @@ export default function PracticeSessionPage() {
     setDraft(done ? done.answer : '');
     setFlagged(done ? done.flagged : false);
     setSubmitError(null);
+    // Seed the retro fields: from the recorded answer on an already answered
+    // item, or empty (one disconnection unchosen, two blank precursors) on a
+    // fresh one. Harmless for non-retro items, which ignore this state.
+    if (item.grader === 'retro') {
+      const parsed = done ? parseRetroAnswer(done.answer) : null;
+      setRetroDisc(parsed?.disconnection ?? '');
+      const pre = parsed?.precursors ?? [];
+      setRetroPrecursors(pre.length > 0 ? pre : ['', '']);
+    } else {
+      setRetroDisc('');
+      setRetroPrecursors(['', '']);
+    }
     itemStartRef.current = Date.now();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [index, view.kind]);
@@ -229,7 +299,13 @@ export default function PracticeSessionPage() {
     if (!item || stored.answers[item.position]) {
       return;
     }
-    const value = draft.trim();
+    // A retro item with its options present submits structured JSON; anything
+    // else (including a retro item served without options) submits the plain
+    // draft string exactly as before.
+    const value =
+      item.grader === 'retro' && retroDisconnections(item)
+        ? buildRetroAnswer(retroDisc, retroPrecursors)
+        : draft.trim();
     if (!value) {
       return;
     }
@@ -264,7 +340,7 @@ export default function PracticeSessionPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [stored, submitting, index, draft, flagged]);
+  }, [stored, submitting, index, draft, flagged, retroDisc, retroPrecursors]);
 
   const runFinish = useCallback(async () => {
     if (!stored || finishing) {
@@ -427,6 +503,15 @@ export default function PracticeSessionPage() {
   const timed = stored.mode === 'timed';
   const progressPercent = Math.round(((index + 1) / items.length) * 100);
 
+  // The options for a retro item, or null when the item is any other grader or
+  // was served without them. The value the Submit button would send, computed
+  // the same way submit() does, so the button disables until there is one.
+  const retroOptions =
+    currentItem.grader === 'retro' ? retroDisconnections(currentItem) : null;
+  const pendingValue = retroOptions
+    ? buildRetroAnswer(retroDisc, retroPrecursors)
+    : draft.trim();
+
   return (
     <Page>
       <div className="mb-1 flex flex-wrap items-center justify-between gap-3">
@@ -555,6 +640,102 @@ export default function PracticeSessionPage() {
                 </div>
               </fieldset>
             )
+          ) : retroOptions ? (
+            <div className="space-y-5">
+              <fieldset disabled={Boolean(currentDone) || submitting}>
+                <legend className="mb-2 block text-sm font-medium text-card-foreground">
+                  Disconnection
+                </legend>
+                <div className="space-y-2">
+                  {retroOptions.map((d) => (
+                    <label
+                      key={d.name}
+                      className={[
+                        'flex items-start gap-3 rounded-lg border p-3 text-sm transition-colors',
+                        currentDone
+                          ? 'cursor-default border-border'
+                          : 'cursor-pointer border-border hover:border-brand-500',
+                        retroDisc === d.name
+                          ? 'border-brand-500 bg-brand-500/5'
+                          : '',
+                      ].join(' ')}
+                    >
+                      <input
+                        type="radio"
+                        name="retro-disconnection"
+                        value={d.name}
+                        checked={retroDisc === d.name}
+                        onChange={(e) => setRetroDisc(e.target.value)}
+                        className="mt-0.5 h-4 w-4 accent-brand-600"
+                      />
+                      <span className="min-w-0 text-card-foreground">
+                        <span className="block font-medium">{d.name}</span>
+                        <span className="mt-0.5 block text-xs text-muted-foreground">
+                          {d.forms}
+                        </span>
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+
+              <div>
+                <span className="mb-2 block text-sm font-medium text-card-foreground">
+                  Precursors (SMILES)
+                </span>
+                <div className="space-y-2">
+                  {retroPrecursors.map((value, i) => (
+                    <div key={i} className="flex items-center gap-2">
+                      <input
+                        type="text"
+                        aria-label={`Precursor ${i + 1} SMILES`}
+                        value={value}
+                        disabled={Boolean(currentDone) || submitting}
+                        onChange={(e) =>
+                          setRetroPrecursors((prev) =>
+                            prev.map((v, j) => (j === i ? e.target.value : v)),
+                          )
+                        }
+                        autoComplete="off"
+                        className="w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      />
+                      {i > 0 && !currentDone && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setRetroPrecursors((prev) =>
+                              prev.filter((_, j) => j !== i),
+                            )
+                          }
+                          disabled={submitting}
+                          aria-label={`Remove precursor ${i + 1}`}
+                          className="inline-flex items-center justify-center rounded-lg border border-border px-2.5 py-2 text-xs font-medium text-muted-foreground transition-colors hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                {!currentDone && retroPrecursors.length < 4 && (
+                  <button
+                    type="button"
+                    onClick={() =>
+                      setRetroPrecursors((prev) => [...prev, ''])
+                    }
+                    disabled={submitting}
+                    className="mt-2 inline-flex items-center justify-center rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                  >
+                    Add precursor
+                  </button>
+                )}
+                <p className="mt-2 text-xs text-muted-foreground">
+                  Give each precursor as SMILES. Up to 4. Your precursors are
+                  correct when running the chosen disconnection forward
+                  reproduces the target.
+                </p>
+              </div>
+            </div>
           ) : (
             <div>
               <label
@@ -573,7 +754,9 @@ export default function PracticeSessionPage() {
                 className="w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-500"
               />
               <p className="mt-2 text-xs text-muted-foreground">
-                Give it in the form the prompt asks for.
+                {currentItem.grader === 'retro'
+                  ? 'This item did not include its disconnection options, so answer it as text in the form the prompt asks for.'
+                  : 'Give it in the form the prompt asks for.'}
               </p>
             </div>
           )}
@@ -584,7 +767,7 @@ export default function PracticeSessionPage() {
             <button
               type="button"
               onClick={() => void submit()}
-              disabled={submitting || !draft.trim()}
+              disabled={submitting || !pendingValue}
               className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
             >
               {submitting ? 'Submitting' : 'Submit'}
@@ -1058,6 +1241,14 @@ function ReviewItemCard({ item }: { item: PracticeReviewItem }) {
     return item.your_answer;
   })();
 
+  // A retro answer is stored as JSON; parse it so the review shows the chosen
+  // disconnection and precursors rather than the raw string. A parse failure
+  // (an older or hand-entered answer) falls back to the raw string below.
+  const retroAnswer =
+    item.grader === 'retro' && item.answered
+      ? parseRetroAnswer(item.your_answer)
+      : null;
+
   return (
     <Card>
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
@@ -1099,16 +1290,46 @@ function ReviewItemCard({ item }: { item: PracticeReviewItem }) {
       </p>
 
       <div className="mt-4 space-y-1 text-sm">
-        <p className="text-card-foreground">
-          Your answer:{' '}
-          {yourAnswerText === null ? (
-            <span className="text-muted-foreground">none recorded</span>
-          ) : (
-            <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">
-              {yourAnswerText}
-            </code>
-          )}
-        </p>
+        {retroAnswer ? (
+          <>
+            <p className="text-card-foreground">
+              Your disconnection:{' '}
+              {retroAnswer.disconnection ? (
+                <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">
+                  {retroAnswer.disconnection}
+                </code>
+              ) : (
+                <span className="text-muted-foreground">none recorded</span>
+              )}
+            </p>
+            <p className="text-card-foreground">
+              Your precursors:{' '}
+              {retroAnswer.precursors.length > 0 ? (
+                retroAnswer.precursors.map((p, i) => (
+                  <code
+                    key={i}
+                    className="mr-1 rounded bg-muted px-1.5 py-0.5 font-mono text-sm"
+                  >
+                    {p}
+                  </code>
+                ))
+              ) : (
+                <span className="text-muted-foreground">none recorded</span>
+              )}
+            </p>
+          </>
+        ) : (
+          <p className="text-card-foreground">
+            Your answer:{' '}
+            {yourAnswerText === null ? (
+              <span className="text-muted-foreground">none recorded</span>
+            ) : (
+              <code className="rounded bg-muted px-1.5 py-0.5 font-mono text-sm">
+                {yourAnswerText}
+              </code>
+            )}
+          </p>
+        )}
         {item.rationale.correct_display && (
           <p className="text-card-foreground">
             Correct answer:{' '}
