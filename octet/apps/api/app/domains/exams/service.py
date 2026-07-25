@@ -13,9 +13,17 @@ rather than left to the client:
    opens, and a submission after that expiry is refused.
 4. The paper does not change. The form is snapshotted at start.
 
-The state machine is forward only: in_progress to submitted, or in_progress to
-expired. There is no reopening. An attempt that ran out of time is scored on
-what was answered, which is what a timed exam means.
+The state machine has two states, not three. An attempt is in progress or it
+is submitted, and running out of time submits it rather than moving it to a
+separate expired state. Every path that notices expiry goes through the same
+scoring call, so a learner who came back after the deadline and a learner
+whose attempt the sweep closed get the same outcome.
+
+An earlier version had three states and set the status by hand in three
+places, two of which discarded the answers already given. A status nothing
+sets is also a claim the schema makes and does not keep, so it is gone.
+Lateness is recorded on the result as was_late, which is a fact about the
+attempt rather than a state it sits in.
 """
 
 from __future__ import annotations
@@ -30,7 +38,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.domains.exams import blueprints as bp
 from app.domains.exams.assembly import AssemblyError, Form, FormItem, assemble
 from app.domains.exams.models import (
-    STATUS_EXPIRED,
     STATUS_IN_PROGRESS,
     STATUS_SUBMITTED,
     ExamAttempt,
@@ -92,11 +99,15 @@ async def start_attempt(session: AsyncSession, user_id: str, blueprint_code: str
         )
     )
     if existing is not None:
-        # Expire it here if its time has passed, so a stale attempt does not
-        # block the learner forever.
         if _as_aware(existing.expires_at) <= _now():
-            existing.status = STATUS_EXPIRED
-            await session.flush()
+            # Its time has passed, so close it here rather than letting it
+            # block the learner forever. It is SCORED on the way out, by the
+            # same path the scheduled sweep uses. An earlier version marked it
+            # expired without scoring, which meant the same situation produced
+            # a different outcome depending on whether the learner came back
+            # before the sweep ran, and silently discarded answers they had
+            # already given.
+            await submit_attempt(session, user_id, existing.id, late_ok=True)
         else:
             raise ExamError(
                 "You already have this exam open. Finish or submit that attempt "
@@ -135,8 +146,6 @@ async def _load_open(session: AsyncSession, user_id: str, attempt_id: uuid.UUID)
         raise ExamError("That attempt was not found.")
     if attempt.status == STATUS_SUBMITTED:
         raise ExamError("This attempt has already been submitted.")
-    if attempt.status == STATUS_EXPIRED:
-        raise ExamError("Time on this attempt has run out.")
     return attempt
 
 
@@ -147,9 +156,13 @@ async def save_answer(
     attempt = await _load_open(session, user_id, attempt_id)
 
     if _as_aware(attempt.expires_at) <= _now():
-        attempt.status = STATUS_EXPIRED
-        await session.flush()
-        raise ExamError("Time on this attempt has run out, so this answer was not saved.")
+        # Score on the way out. This answer is not saved, because it arrived
+        # after time, but everything given before it is.
+        await submit_attempt(session, user_id, attempt.id, late_ok=True)
+        raise ExamError(
+            "Time on this attempt has run out, so this answer was not saved. "
+            "The answers you gave before time ran out have been submitted."
+        )
 
     positions = {i["position"] for i in attempt.form["items"]}
     if position not in positions:
@@ -202,9 +215,14 @@ async def submit_attempt(
 
     expired = _as_aware(attempt.expires_at) <= _now()
     if expired and not late_ok:
-        attempt.status = STATUS_EXPIRED
-        await session.flush()
-        raise ExamError("Time on this attempt has run out.")
+        # Close it by scoring rather than by discarding. Every path that
+        # notices expiry produces the same outcome, which is the property that
+        # was missing when three places each set the status by hand.
+        await submit_attempt(session, user_id, attempt_id, late_ok=True)
+        raise ExamError(
+            "Time on this attempt had already run out, so it was submitted "
+            "with the answers you had given."
+        )
 
     form = _form_from_json(attempt.form)
     rows = (

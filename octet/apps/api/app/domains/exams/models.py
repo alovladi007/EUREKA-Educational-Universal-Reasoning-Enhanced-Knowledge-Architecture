@@ -41,11 +41,15 @@ from sqlalchemy.orm import Mapped, mapped_column
 
 from app.core.db import Base
 
-# Attempt lifecycle. Forward only.
+# Attempt lifecycle. Two states, forward only.
+#
+# There is no separate expired state. Running out of time submits the attempt,
+# scored on whatever was answered, and the result records was_late. A third
+# state would be one nothing sets, which is a claim the schema makes and does
+# not keep.
 STATUS_IN_PROGRESS = "in_progress"
 STATUS_SUBMITTED = "submitted"
-STATUS_EXPIRED = "expired"
-STATUSES = (STATUS_IN_PROGRESS, STATUS_SUBMITTED, STATUS_EXPIRED)
+STATUSES = (STATUS_IN_PROGRESS, STATUS_SUBMITTED)
 
 
 class ExamAttempt(Base):

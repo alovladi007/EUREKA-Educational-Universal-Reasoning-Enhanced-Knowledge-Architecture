@@ -249,7 +249,6 @@ from sqlalchemy import select
 
 from app.domains.exams import service
 from app.domains.exams.models import (
-    STATUS_EXPIRED,
     STATUS_IN_PROGRESS,
     STATUS_SUBMITTED,
     ExamAttempt,
@@ -340,16 +339,23 @@ async def test_time_is_enforced_by_the_server_not_the_client(db_session):
 
     with pytest.raises(service.ExamError):
         await service.save_answer(db_session, USER, attempt.id, 1, "late")
-    assert attempt.status == STATUS_EXPIRED
+    # Expiry submits rather than discarding, on every path.
+    assert attempt.status == STATUS_SUBMITTED
+    assert attempt.result["was_late"] is True
 
 
 @pytest.mark.asyncio
-async def test_submitting_after_time_is_refused(db_session):
+async def test_submitting_after_time_still_scores_what_was_given(db_session):
+    """The refusal explains what happened rather than implying loss."""
     attempt = await service.start_attempt(db_session, USER, CODE)
+    await service.save_answer(db_session, USER, attempt.id, 1, "in time")
     attempt.expires_at = datetime.now(UTC) - timedelta(seconds=1)
     await db_session.flush()
-    with pytest.raises(service.ExamError):
+    with pytest.raises(service.ExamError) as excinfo:
         await service.submit_attempt(db_session, USER, attempt.id)
+    assert "answers you had given" in str(excinfo.value)
+    assert attempt.status == STATUS_SUBMITTED
+    assert attempt.result["answered"] == 1
 
 
 @pytest.mark.asyncio
@@ -396,3 +402,100 @@ async def test_a_submitted_attempt_cannot_take_more_answers(db_session):
     await service.submit_attempt(db_session, USER, attempt.id)
     with pytest.raises(service.ExamError):
         await service.save_answer(db_session, USER, attempt.id, 1, "too late")
+
+
+@pytest.mark.asyncio
+async def test_restarting_after_time_ran_out_scores_the_old_attempt(db_session):
+    """The same situation must not produce two different outcomes.
+
+    Whether a stale attempt is noticed by the scheduled sweep or by the
+    learner coming back to start a new one, it is scored on what was answered.
+    An earlier version marked it expired without scoring on this path, which
+    discarded answers the learner had already given.
+    """
+    first = await service.start_attempt(db_session, USER, CODE)
+    await service.save_answer(db_session, USER, first.id, 1, "something")
+    first.expires_at = datetime.now(UTC) - timedelta(seconds=1)
+    await db_session.flush()
+
+    second = await service.start_attempt(db_session, USER, CODE)
+    await db_session.refresh(first)
+
+    assert first.status == STATUS_SUBMITTED, "the stale attempt was discarded, not scored"
+    assert first.result is not None
+    assert first.result["answered"] == 1
+    assert first.result["was_late"] is True
+    assert second.id != first.id
+    assert second.status == STATUS_IN_PROGRESS
+
+
+# ---------------------------------------------------------------------------
+# Across the HTTP boundary
+#
+# The service tests above drive the session directly, which means they never
+# exercise the router's transaction handling. A real bug lived in exactly that
+# gap: the service scored an expired attempt and then raised the refusal, and
+# the router turned the refusal into a 409 without committing, so the scoring
+# was rolled back. The refusal message said the attempt had been submitted
+# while the database still showed it open. These tests cross the boundary.
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.asyncio
+async def test_late_submit_persists_the_scoring_across_the_http_boundary(client, auth, db_session):
+    headers = auth("student", user_id="http-learner")
+
+    started = await client.post(
+        "/api/v1/exams/attempts", json={"blueprint_code": CODE}, headers=headers
+    )
+    assert started.status_code == 200
+    attempt_id = started.json()["attempt_id"]
+
+    saved = await client.post(
+        f"/api/v1/exams/attempts/{attempt_id}/answer",
+        json={"position": 1, "answer": "0.5"},
+        headers=headers,
+    )
+    assert saved.status_code == 200
+    assert "is_correct" not in saved.json(), "an open exam leaked a grade"
+
+    attempt = await db_session.get(ExamAttempt, uuid.UUID(attempt_id))
+    attempt.expires_at = datetime.now(UTC) - timedelta(seconds=1)
+    await db_session.commit()
+
+    late = await client.post(f"/api/v1/exams/attempts/{attempt_id}/submit", headers=headers)
+    assert late.status_code == 409
+    assert "answers you had given" in late.json()["detail"]
+
+    # The refusal must not have rolled back the scoring it did first.
+    reread = await client.get(f"/api/v1/exams/attempts/{attempt_id}", headers=headers)
+    body = reread.json()
+    assert body["status"] == STATUS_SUBMITTED, "the scoring was rolled back by the refusal"
+    assert body["result"]["answered"] == 1
+    assert body["result"]["was_late"] is True
+
+
+@pytest.mark.asyncio
+async def test_an_open_attempt_over_http_carries_no_result_and_no_hints(client, auth):
+    headers = auth("student", user_id="http-learner-2")
+    started = await client.post(
+        "/api/v1/exams/attempts", json={"blueprint_code": CODE}, headers=headers
+    )
+    body = started.json()
+    assert body["hints_available"] is False
+    assert "result" not in body
+    blob = str(body)
+    for leak in ("exact_g", "exact_x", "correct_index", "is_correct"):
+        assert leak not in blob
+
+
+@pytest.mark.asyncio
+async def test_one_learner_cannot_read_anothers_attempt_over_http(client, auth):
+    owner = auth("student", user_id="owner")
+    intruder = auth("student", user_id="intruder")
+    started = await client.post(
+        "/api/v1/exams/attempts", json={"blueprint_code": CODE}, headers=owner
+    )
+    attempt_id = started.json()["attempt_id"]
+    peek = await client.get(f"/api/v1/exams/attempts/{attempt_id}", headers=intruder)
+    assert peek.status_code == 404

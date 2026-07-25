@@ -24,6 +24,25 @@ from app.domains.exams.models import ExamAttempt
 router = APIRouter()
 
 
+async def _refuse(session: AsyncSession, exc: service.ExamError) -> HTTPException:
+    """Turn a refusal into a 409, keeping any work the service did first.
+
+    ExamError is a controlled refusal, not a crash, and some refusals happen
+    only after the service has legitimately changed state. Submitting late is
+    the case that matters: the service scores the attempt on what was answered
+    and then refuses the late submission. Rolling that back would discard the
+    scoring and leave the attempt open, which is the behaviour this whole path
+    exists to prevent.
+
+    An earlier version let the exception propagate without committing, so the
+    refusal message said the attempt had been submitted while the database
+    still showed it in progress. The tests did not catch it because they drive
+    the service directly and never cross this transaction boundary.
+    """
+    await session.commit()
+    return HTTPException(409, str(exc))
+
+
 class StartIn(BaseModel):
     blueprint_code: str = Field(max_length=80)
 
@@ -107,7 +126,7 @@ async def start(
     try:
         attempt = await service.start_attempt(session, principal.user_id, payload.blueprint_code)
     except service.ExamError as exc:
-        raise HTTPException(409, str(exc)) from exc
+        raise await _refuse(session, exc) from exc
     await session.commit()
     return _attempt_view(attempt)
 
@@ -139,7 +158,7 @@ async def answer(
             session, principal.user_id, attempt_id, payload.position, payload.answer
         )
     except service.ExamError as exc:
-        raise HTTPException(409, str(exc)) from exc
+        raise await _refuse(session, exc) from exc
     await session.commit()
     return result
 
@@ -153,6 +172,6 @@ async def submit(
     try:
         result = await service.submit_attempt(session, principal.user_id, attempt_id)
     except service.ExamError as exc:
-        raise HTTPException(409, str(exc)) from exc
+        raise await _refuse(session, exc) from exc
     await session.commit()
     return result
