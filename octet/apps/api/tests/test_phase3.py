@@ -558,3 +558,45 @@ def test_neither_grading_endpoint_returns_the_answer():
         source = inspect.getsource(fn)
         body = source[source.rindex("return"):]
         assert '"correct_display"' not in body, f"{fn.__name__} returns the answer"
+
+
+@pytest.mark.asyncio
+async def test_lesson_reports_whether_a_triangle_view_actually_exists(client, auth):
+    """has_triangle_view is a fact about content, not an authoring intention.
+
+    The client uses this to decide whether to request a triangle view. It used
+    to infer availability from the node's triangle_eligible flag, which marks
+    69 nodes while only 18 have a view, so almost every lesson opened fired a
+    request that 404ed. The flag and the view set must agree exactly.
+    """
+    from app.data.triangle_views import TRIANGLE_VIEWS
+
+    headers = auth("student")
+
+    # A node with an authored view reports True and the view fetches.
+    with_view = sorted(TRIANGLE_VIEWS)[0]
+    res = await client.get(f"/api/v1/curriculum/lessons/{with_view}", headers=headers)
+    if res.status_code == 200:
+        assert res.json()["has_triangle_view"] is True
+        assert (await client.get(f"/api/v1/triangle/{with_view}", headers=headers)).status_code == 200
+
+    # An organic node marked eligible but with no authored view reports False,
+    # so the client never asks. This is the case the user hit.
+    res = await client.get("/api/v1/curriculum/lessons/ORG2.CARBONYLSTRUCTURE", headers=headers)
+    assert res.status_code == 200
+    assert res.json()["has_triangle_view"] is False
+    missing = await client.get("/api/v1/triangle/ORG2.CARBONYLSTRUCTURE", headers=headers)
+    assert missing.status_code == 404, "the endpoint still refuses honestly when asked directly"
+
+
+@pytest.mark.asyncio
+async def test_no_authored_lesson_claims_a_triangle_view_it_does_not_have(client, auth):
+    """Sweep every authored lesson: the flag must never over-promise."""
+    from app.data.lessons import LESSONS
+    from app.data.triangle_views import TRIANGLE_VIEWS
+
+    headers = auth("student")
+    for code in sorted(LESSONS)[:40]:  # a representative slice, kept fast
+        res = await client.get(f"/api/v1/curriculum/lessons/{code}", headers=headers)
+        assert res.status_code == 200, code
+        assert res.json()["has_triangle_view"] == (code in TRIANGLE_VIEWS), code

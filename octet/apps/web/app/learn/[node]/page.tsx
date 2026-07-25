@@ -94,12 +94,22 @@ export default function LessonPage() {
     };
   }, [nodeCode]);
 
-  // The triangle view, where the node has one. Only 18 nodes are triangle
-  // eligible, so a 404 here is the normal case rather than a fault, and the
-  // section simply does not render. Nothing is invented to fill the space.
+  // The triangle view, only where the lesson says one exists. Most nodes have
+  // none, and the section simply does not render; nothing is invented to fill
+  // the space.
+  //
+  // This used to fire for every node and swallow the 404, which meant a doomed
+  // request and a console error on almost every lesson opened. The lesson
+  // payload now reports whether a view is actually authored, so the request is
+  // only made when it can succeed.
+  const hasTriangle = lesson?.has_triangle_view ?? false;
+
   useEffect(() => {
     let cancelled = false;
     setTriangle(null);
+    if (!nodeCode || !hasTriangle) {
+      return;
+    }
     (async () => {
       try {
         const result = await getTriangle(nodeCode);
@@ -107,13 +117,14 @@ export default function LessonPage() {
           setTriangle(result);
         }
       } catch {
-        // No triangle view for this node.
+        // The lesson said a view exists and fetching it failed anyway. The
+        // section stays hidden rather than showing a broken panel.
       }
     })();
     return () => {
       cancelled = true;
     };
-  }, [nodeCode]);
+  }, [nodeCode, hasTriangle]);
 
   return (
     <Page>

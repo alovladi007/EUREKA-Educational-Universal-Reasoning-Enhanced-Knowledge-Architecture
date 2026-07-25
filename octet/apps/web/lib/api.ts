@@ -308,6 +308,10 @@ export interface Lesson {
   try_it: LessonTryIt;
   pitfall: string;
   misconception: string | null;
+  // True when a Johnstone triangle view exists for this node. Not the same as
+  // the node's triangle_eligible flag, which records that a view would be
+  // worth authoring rather than that one is there.
+  has_triangle_view: boolean;
 }
 
 // GET /curriculum/nodes. Pass a course id to fetch one course.

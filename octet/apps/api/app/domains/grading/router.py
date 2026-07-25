@@ -248,7 +248,22 @@ async def lesson(node_code: str, _p: Principal = Depends(get_current_principal))
                    "reveal": "click"},
         "pitfall": found.pitfall,
         "misconception": found.misconception,
+        # Whether a Johnstone triangle view actually exists for this node, so
+        # the client can decide whether to ask for one.
+        #
+        # This is deliberately not the node's triangle_eligible flag. That flag
+        # marks a node where a triangle view would teach something, which is an
+        # authoring intention: 69 nodes carry it and 18 have a view. A client
+        # reading eligibility as availability requests a view for every lesson
+        # and takes a 404 on most of them, which is what happened.
+        "has_triangle_view": _has_triangle_view(node_code),
     }
+
+
+def _has_triangle_view(node_code: str) -> bool:
+    from app.data import triangle_views
+
+    return triangle_views.for_node(node_code) is not None
 
 
 @router.get("/path")
