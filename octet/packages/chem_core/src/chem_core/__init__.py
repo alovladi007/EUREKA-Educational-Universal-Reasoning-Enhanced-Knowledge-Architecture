@@ -6,13 +6,20 @@ ladders, and the template registry. It has no database, no network, and no web
 framework, so it can be tested and reasoned about in isolation.
 
 Live graders: 1 formula, 2 balance, 3 stoichiometry, 4 structure, 6 multiple
-choice, 7 equilibrium, 12 prediction. Graders 5 Lewis, 8 mechanism, 9 lab
-data, 10 spectra and 11 retro step arrive in their own phases and are not
-stubbed here. A missing grader raises, it does not silently pass.
+choice, 7 equilibrium, 10 spectra, 12 prediction. Graders 5 Lewis, 8 mechanism,
+9 lab data and 11 retro step arrive in their own phases and are not stubbed
+here. A missing grader raises, it does not silently pass.
 
 Graders 4 and 12 landed in Phase 3 alongside the visualization surface they
 feed: 4 grades what the Sketcher draws, and 12 grades the prediction a learner
 commits to before a simulation runs.
+
+Grader 10 landed in Phase 5 with the organic module beside it. Its verifier is
+unlike the others: rather than checking a generated key against a second
+computational path, it checks that an elucidation item's stated data actually
+determines its own answer. That makes it a check on the author, which is the
+right target, because organic content is authored by a system that produces
+fluent and confidently wrong chemistry.
 """
 
 from __future__ import annotations
@@ -83,6 +90,12 @@ from .simulate import (
     titration_landmarks,
     verify_equilibrium_shift,
     verify_titration,
+)
+from .spectra import (  # noqa: E402
+    Signal,
+    SpectrumItem,
+    grade_spectrum,
+    verify_spectrum_item,
 )
 from .structure import (
     canonical,
@@ -157,6 +170,10 @@ __all__ = [
     "grade_prediction",
     "verify_prediction_key",
     "grade_structure",
+    "grade_spectrum",
+    "verify_spectrum_item",
+    "SpectrumItem",
+    "Signal",
     "verify_structure_key",
     "canonical",
     "inchikey",
@@ -187,6 +204,7 @@ SUPPORTED_GRADERS = (
     "numeric",
     "structure",
     "prediction",
+    "spectrum",
 )
 
 
@@ -263,6 +281,19 @@ def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
             explain_key="",
         )
         return grade_prediction(item, student_answer)
+    if grader == "spectrum":
+        # Signals travel in meta so the sandboxed child rebuilds the item
+        # without importing anything from the application. Only the proton
+        # counts matter to grading; shifts are display text.
+        item = SpectrumItem(
+            node=meta.get("node", ""),
+            formula=meta.get("formula", ""),
+            answer=str(key),
+            signals=tuple(Signal(**s) for s in meta.get("signals", [])),
+            ir_bands=tuple(meta.get("ir_bands", [])),
+            source=meta.get("source", ""),
+        )
+        return grade_spectrum(item, student_answer)
     # equilibrium
     problem = EquilibriumProblem(
         k=meta["ka"],

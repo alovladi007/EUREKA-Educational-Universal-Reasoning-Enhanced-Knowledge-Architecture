@@ -456,17 +456,38 @@ def test_grade_dispatch_routes_every_supported_grader():
 
 
 def test_grade_dispatch_refuses_graders_from_later_phases():
-    # Lewis, mechanism, lab data, spectra and retro step arrive in later
-    # phases. They must raise rather than quietly pass a learner.
+    # Lewis, mechanism, lab data and retro step arrive in later phases. They
+    # must raise rather than quietly pass a learner.
     #
-    # This list shrank in Phase 3. Structure (grader 4) and prediction (grader
-    # 12) moved out of it because they were built, not because the rule was
-    # relaxed: both ship with an independent verifier, and both are covered by
-    # tests in apps/api/tests/test_phase3.py. Anything still named here has no
-    # implementation at all.
-    for later in ("lewis", "mechanism", "lab-data", "spectra-elucidation", "retro-step"):
+    # This list shrank in Phase 3 (structure, prediction) and again in Phase 5
+    # (spectrum). Each moved out because it was built, not because the rule was
+    # relaxed: every one ships with an independent verifier. Anything still
+    # named here has no implementation at all.
+    #
+    # The names below are the exact strings dispatch would use. That matters:
+    # this test previously guarded "spectra-elucidation" while the grader was
+    # eventually registered as "spectrum", so the name it protected was one
+    # nothing would ever call. It passed, and would have kept passing had
+    # spectrum gone live with no verifier at all. A boundary test that guards
+    # the wrong string is worse than none, because it reads as coverage.
+    for later in ("lewis", "mechanism", "lab_data", "retro_step"):
         with pytest.raises(KeyError):
             cc.grade(later, {"key": "x", "meta": {}}, "anything")
+
+
+def test_unbuilt_grader_names_are_not_secretly_live_under_another_spelling():
+    """Guard against the failure the test above used to have.
+
+    Every grader named as unbuilt must be absent from SUPPORTED_GRADERS, and
+    no supported grader may lack the verifier the house rule requires. This
+    catches a rename that quietly widens the live set.
+    """
+    unbuilt = {"lewis", "mechanism", "lab_data", "retro_step"}
+    assert unbuilt.isdisjoint(cc.SUPPORTED_GRADERS)
+    assert set(cc.SUPPORTED_GRADERS) == {
+        "formula", "balance", "stoich", "mc", "equilibrium",
+        "numeric", "structure", "prediction", "spectrum",
+    }
 
 
 def test_phase_three_graders_are_genuinely_live():
@@ -474,6 +495,23 @@ def test_phase_three_graders_are_genuinely_live():
     for live in ("structure", "prediction"):
         assert live in cc.SUPPORTED_GRADERS
     assert cc.grade_structure("CCO", "OCC").is_correct
+
+
+def test_phase_five_grader_is_genuinely_live_with_its_verifier():
+    """Grader 10 must both grade and refuse an item whose data does not fit."""
+    assert "spectrum" in cc.SUPPORTED_GRADERS
+    good = cc.SpectrumItem(
+        node="t", formula="C8H10", answer="Cc1ccc(C)cc1",
+        signals=(cc.Signal(6), cc.Signal(4)),
+    )
+    assert cc.grade_spectrum(good, "Cc1ccc(C)cc1").is_correct
+    assert cc.verify_spectrum_item(good).ok
+    # Para data on a meta key: unanswerable, and the verifier must say so.
+    broken = cc.SpectrumItem(
+        node="t", formula="C8H10", answer="Cc1cccc(C)c1",
+        signals=(cc.Signal(6), cc.Signal(4)),
+    )
+    assert not cc.verify_spectrum_item(broken).ok
 
 
 @pytest.mark.parametrize("payload", ["NaN", "nan", "inf", "-inf", "Infinity"])
