@@ -10,10 +10,14 @@ router returns a worked solution.
 
 from __future__ import annotations
 
+from datetime import datetime
+
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
+from sqlalchemy.ext.asyncio import AsyncSession
 
 import chem_core as cc
+from app.core.db import get_session
 from app.core.security import Principal, get_current_principal
 from app.domains.grading.sandbox import grade_sandboxed
 
@@ -250,17 +254,137 @@ async def lesson(node_code: str, _p: Principal = Depends(get_current_principal))
 @router.get("/path")
 async def learning_path(
     principal: Principal = Depends(get_current_principal),
+    session: AsyncSession = Depends(get_session),
 ) -> dict:
-    """The planned route through the graph, with a reason on every node.
+    """The recommended route, built from this learner's recorded practice.
 
-    Mastery is empty until Phase 3 persists it, so this currently plans from a
-    cold start. That is stated rather than faked.
+    Three groups, each with a reason on every node:
+
+      review    nodes whose recorded accuracy fell below the review bar,
+                weakest first, so the biggest hole is repaired first.
+      continue  nodes with attempts that are neither mastered nor failing,
+                most recently touched first.
+      next      authored nodes not yet attempted whose authored prerequisites
+                have all been attempted, in course order. An unauthored
+                prerequisite cannot gate: there is nothing to open, so
+                blocking on it would deadlock the plan rather than teach.
+
+    The numbers behind this are recorded practice accuracy (an exponentially
+    weighted average of graded attempts). That is stated in the note, along
+    with what it is not: an IRT ability estimate.
     """
-    from app.domains.adaptive.picker import plan_path
+    from sqlalchemy import select
 
-    planned = plan_path({})
-    planned["note"] = "Mastery persistence lands in Phase 3, so this plans from a cold start."
-    return planned
+    from app.data.coverage import is_authored
+    from app.data.curriculum import NODES_BY_CODE, prerequisites_of, topological_order
+    from app.domains.practice.models import NodeMastery, mastery_state
+
+    order = topological_order()
+    if order is None:
+        raise ValueError("curriculum graph has a cycle")
+
+    rows = (
+        await session.execute(
+            select(NodeMastery).where(NodeMastery.user_id == principal.user_id)
+        )
+    ).scalars().all()
+    by_code = {r.node_code: r for r in rows if r.node_code in NODES_BY_CODE}
+    states = {c: mastery_state(r.attempts, r.ewma) for c, r in by_code.items()}
+    attempted = {c for c, r in by_code.items() if r.attempts > 0}
+
+    def entry(code: str, state: str, reason: str) -> dict:
+        node = NODES_BY_CODE[code]
+        out = {
+            "node": code,
+            "title": node.title,
+            "course": node.course,
+            "unit": node.unit,
+            "state": state,
+            "reason": reason,
+        }
+        row = by_code.get(code)
+        if row is not None and row.attempts:
+            out["attempts"] = row.attempts
+            out["accuracy"] = round(row.ewma, 3)
+        return out
+
+    review = [
+        entry(
+            code,
+            "needs_review",
+            f"Recorded accuracy is {round(by_code[code].ewma * 100)}% over "
+            f"{by_code[code].attempts} attempts, so this is the weakest thing "
+            "to repair first.",
+        )
+        for code in sorted(
+            (c for c, s in states.items() if s == "needs_review"),
+            key=lambda c: by_code[c].ewma,
+        )[:3]
+    ]
+
+    in_progress = sorted(
+        (c for c, s in states.items() if s == "in_progress"),
+        key=lambda c: (
+            by_code[c].last_attempt_at is not None,
+            by_code[c].last_attempt_at or datetime.min,
+        ),
+        reverse=True,
+    )[:3]
+    cont = [
+        entry(
+            code,
+            "in_progress",
+            f"You have started this ({by_code[code].attempts} attempts, "
+            f"{round(by_code[code].ewma * 100)}% recent accuracy) and it is "
+            "not yet mastered.",
+        )
+        for code in in_progress
+    ]
+
+    if not attempted:
+        nxt = [
+            entry(code, "ready", "Nothing is recorded yet, so the course starts here.")
+            for code in (c for c in order if is_authored(c))
+        ][:5]
+        note = (
+            "Nothing is recorded for you yet, so this plan starts from the "
+            "beginning of the course. Once you practice, it is built from your "
+            "recorded accuracy on graded attempts. It is accuracy, not an IRT "
+            "ability estimate, and it does not predict an exam score."
+        )
+    else:
+
+        def unlocked(code: str) -> bool:
+            # Only authored prerequisites gate: an unauthored one has no
+            # lesson to open, so it is skipped rather than allowed to block.
+            return all(
+                q in attempted for q in prerequisites_of(code) if is_authored(q)
+            )
+
+        nxt = [
+            entry(
+                code,
+                "ready",
+                "Every prerequisite you can study is mastered or under way, "
+                "so this is next in course order.",
+            )
+            for code in order
+            if is_authored(code) and code not in attempted and unlocked(code)
+        ][:5]
+        note = (
+            "This plan is built from your recorded practice accuracy, an "
+            "exponentially weighted average of your graded attempts. It is "
+            "accuracy, not an IRT ability estimate, and it does not predict "
+            "an exam score."
+        )
+
+    return {
+        "review": review,
+        "continue": cont,
+        "next": nxt,
+        "recorded_nodes": len(attempted),
+        "note": note,
+    }
 
 
 @router.get("/diagnostic")

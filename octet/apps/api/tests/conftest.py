@@ -35,6 +35,7 @@ async def engine():
     # Import every model module so all tables register on the metadata.
     from app.domains.chemistry import models as _chemistry  # noqa: F401
     from app.domains.integrations import models as _integrations  # noqa: F401
+    from app.domains.srs import models as _srs  # noqa: F401
 
     eng = create_async_engine(
         "sqlite+aiosqlite://",

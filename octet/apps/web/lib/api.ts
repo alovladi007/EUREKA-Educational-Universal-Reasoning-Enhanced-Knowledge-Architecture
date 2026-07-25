@@ -459,27 +459,33 @@ export function submitAnswer(
 // Path
 // -------------------------------------------------------------------------
 
-// Whether a node can be worked on now, is waiting on prerequisites, or is done.
-export type PathState = 'ready' | 'blocked' | 'mastered';
+// The recorded state behind a recommendation: failing, under way, or ready.
+export type PathState = 'needs_review' | 'in_progress' | 'ready';
 
-// One planned node. reason is written for the learner and always present: the
-// planner explains every decision rather than asserting one.
+// One recommended node. reason is written for the learner and always present:
+// the planner explains every decision rather than asserting one. attempts and
+// accuracy are present only when practice has actually been recorded.
 export interface PathEntry {
   node: string;
   title: string;
-  tier: string;
-  p_known: number;
-  level: string;
+  course: string;
+  unit: string;
   state: PathState;
   reason: string;
+  attempts?: number;
+  accuracy?: number;
 }
 
-// GET /path. note carries any honest caveat from the server, for example that
-// mastery is not persisted yet and the plan starts cold.
+// GET /path. Three groups built from recorded practice accuracy: review
+// (weakest first), continue (most recent first), next (course order). note
+// states what the numbers are (recorded accuracy) and what they are not (an
+// IRT ability estimate).
 export interface PathPlan {
-  plan: PathEntry[];
-  recommended_node: string | null;
-  note?: string;
+  review: PathEntry[];
+  continue: PathEntry[];
+  next: PathEntry[];
+  recorded_nodes: number;
+  note: string;
 }
 
 export function getPath(): Promise<PathPlan> {

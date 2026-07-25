@@ -11,6 +11,7 @@ import {
   Compass,
   FlaskConical,
   LayoutDashboard,
+  Layers,
   PencilRuler,
   Route,
 } from 'lucide-react';
@@ -132,6 +133,7 @@ const NAV = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Learn', href: '/learn', icon: BookOpen },
   { name: 'Practice', href: '/practice', icon: PencilRuler },
+  { name: 'Review', href: '/review', icon: Layers },
   { name: 'Exams', href: '/exams', icon: ClipboardList },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Path', href: '/path', icon: Route },

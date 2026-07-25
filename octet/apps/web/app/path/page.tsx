@@ -11,22 +11,20 @@ import {
   Page,
   Pill,
   errorMessage,
-  tierName,
 } from '@/app/_ui/shell';
 
-// The planned route through the graph.
+// The recommended route, built from recorded practice.
 //
-// Every entry carries a reason, and the reason is shown. The planner is
-// required to explain itself to the learner rather than just asserting an
-// order, so hiding the reason would remove the point of the page.
+// Three groups, in the order a learner should act on them: review what is
+// failing, continue what is under way, then open what is newly ready. Every
+// entry carries a reason, and the reason is shown. The planner is required to
+// explain itself to the learner rather than just asserting an order, so
+// hiding the reason would remove the point of the page.
 
 export default function PathPage() {
   const [plan, setPlan] = useState<PathPlan | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'ready' | 'blocked' | 'mastered'>(
-    'all',
-  );
 
   useEffect(() => {
     let cancelled = false;
@@ -51,114 +49,105 @@ export default function PathPage() {
     };
   }, []);
 
-  const entries = plan?.plan ?? [];
-  const shown =
-    filter === 'all' ? entries : entries.filter((e) => e.state === filter);
-
-  const counts = {
-    ready: entries.filter((e) => e.state === 'ready').length,
-    blocked: entries.filter((e) => e.state === 'blocked').length,
-    mastered: entries.filter((e) => e.state === 'mastered').length,
-  };
+  const review = plan?.review ?? [];
+  const cont = plan?.continue ?? [];
+  const next = plan?.next ?? [];
+  const empty = review.length === 0 && cont.length === 0 && next.length === 0;
 
   return (
     <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Path</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        The order the course plans for you, with the reason behind each
-        decision.
+        What to do next, with the reason behind each recommendation.
       </p>
 
       {loading && <LoadingPanel label="Planning your route." />}
       {!loading && error && <ErrorPanel message={error} />}
 
-      {!loading && !error && entries.length === 0 && (
-        <EmptyState
-          title="No plan to show"
-          detail="The path endpoint returned an empty plan."
-        />
-      )}
-
-      {!loading && !error && entries.length > 0 && (
+      {!loading && !error && plan && (
         <div className="space-y-6">
-          {plan?.note && (
+          {plan.note && (
             <Card className="border-amber-300 dark:border-amber-800">
               <p className="text-sm text-card-foreground">{plan.note}</p>
             </Card>
           )}
 
-          {plan?.recommended_node && (
-            <Card className="border-brand-500">
-              <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
-                Recommended next
-              </p>
-              <Link
-                href={`/learn/${encodeURIComponent(plan.recommended_node)}`}
-                className="mt-1 inline-block text-lg font-semibold text-brand-700 hover:underline dark:text-brand-300"
-              >
-                {entries.find((e) => e.node === plan.recommended_node)?.title ||
-                  plan.recommended_node}
-              </Link>
-              <p className="mt-1 font-mono text-xs text-muted-foreground">
-                {plan.recommended_node}
-              </p>
-            </Card>
-          )}
-
-          <div className="flex flex-wrap gap-2">
-            <FilterButton
-              active={filter === 'all'}
-              onClick={() => setFilter('all')}
-              label={`All (${entries.length})`}
-            />
-            <FilterButton
-              active={filter === 'ready'}
-              onClick={() => setFilter('ready')}
-              label={`Ready (${counts.ready})`}
-            />
-            <FilterButton
-              active={filter === 'blocked'}
-              onClick={() => setFilter('blocked')}
-              label={`Blocked (${counts.blocked})`}
-            />
-            <FilterButton
-              active={filter === 'mastered'}
-              onClick={() => setFilter('mastered')}
-              label={`Mastered (${counts.mastered})`}
-            />
-          </div>
-
-          {shown.length === 0 ? (
+          {empty && (
             <EmptyState
-              title="Nothing in this state"
-              detail="No node in the plan currently matches this filter."
+              title="Nothing to recommend"
+              detail="The path endpoint returned no recommendations."
             />
-          ) : (
-            <ol className="space-y-2">
-              {shown.map((entry) => (
-                <li key={entry.node}>
-                  <PlanRow entry={entry} />
-                </li>
-              ))}
-            </ol>
           )}
+
+          <PathGroup
+            title="Review first"
+            detail="Recorded accuracy fell below the review bar. Weakest first."
+            entries={review}
+          />
+          <PathGroup
+            title="Continue"
+            detail="Started but not yet mastered. Most recently practiced first."
+            entries={cont}
+          />
+          <PathGroup
+            title="Up next"
+            detail="Not attempted yet, prerequisites in place. Course order."
+            entries={next}
+          />
         </div>
       )}
     </Page>
   );
 }
 
+function PathGroup({
+  title,
+  detail,
+  entries,
+}: {
+  title: string;
+  detail: string;
+  entries: PathEntry[];
+}) {
+  if (entries.length === 0) {
+    return null;
+  }
+  return (
+    <section>
+      <h2 className="text-lg font-semibold text-card-foreground">{title}</h2>
+      <p className="mb-2 text-sm text-muted-foreground">{detail}</p>
+      <ol className="space-y-2">
+        {entries.map((entry) => (
+          <li key={entry.node}>
+            <PlanRow entry={entry} />
+          </li>
+        ))}
+      </ol>
+    </section>
+  );
+}
+
 function stateTone(state: string): 'green' | 'red' | 'brand' | 'neutral' {
-  if (state === 'mastered') {
-    return 'green';
-  }
-  if (state === 'ready') {
-    return 'brand';
-  }
-  if (state === 'blocked') {
+  if (state === 'needs_review') {
     return 'red';
   }
+  if (state === 'in_progress') {
+    return 'brand';
+  }
+  if (state === 'ready') {
+    return 'green';
+  }
   return 'neutral';
+}
+
+function stateLabel(state: string): string {
+  if (state === 'needs_review') {
+    return 'needs review';
+  }
+  if (state === 'in_progress') {
+    return 'in progress';
+  }
+  return state;
 }
 
 function PlanRow({ entry }: { entry: PathEntry }) {
@@ -168,14 +157,13 @@ function PlanRow({ entry }: { entry: PathEntry }) {
       className="block rounded-xl border border-border bg-card p-4 shadow-sm transition-colors hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
     >
       <div className="flex flex-wrap items-center gap-2">
-        <Pill tone={stateTone(entry.state)}>{entry.state}</Pill>
-        <Pill tone="neutral">{tierName(entry.tier)}</Pill>
+        <Pill tone={stateTone(entry.state)}>{stateLabel(entry.state)}</Pill>
         <span className="font-mono text-xs text-muted-foreground">
           {entry.node}
         </span>
-        {entry.level && (
+        {typeof entry.accuracy === 'number' && (
           <span className="text-xs text-muted-foreground">
-            level {entry.level}
+            {Math.round(entry.accuracy * 100)}% over {entry.attempts} attempts
           </span>
         )}
       </div>
@@ -184,29 +172,5 @@ function PlanRow({ entry }: { entry: PathEntry }) {
       </p>
       <p className="mt-1 text-sm text-muted-foreground">{entry.reason}</p>
     </Link>
-  );
-}
-
-function FilterButton({
-  active,
-  onClick,
-  label,
-}: {
-  active: boolean;
-  onClick: () => void;
-  label: string;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-full border px-3 py-1 text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 ${
-        active
-          ? 'border-brand-600 bg-brand-600 text-white'
-          : 'border-border text-muted-foreground hover:border-brand-500'
-      }`}
-    >
-      {label}
-    </button>
   );
 }

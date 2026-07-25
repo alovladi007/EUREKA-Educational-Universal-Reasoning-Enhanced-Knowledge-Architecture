@@ -422,10 +422,24 @@ What landed:
                       practiceable and all 24 catalogued unit exams assemble,
                       up from 13.
 
-Still absent, deliberately not claimed: flashcards with spaced repetition, a
-study planner, cohort statistics, and item difficulty data (needs real
-learners). The path planner still plans from nothing but now has mastery rows
-to read in a later phase.
+Completed in the same wave, closing the gaps the first pass named:
+
+  flashcards      258 cards derived verbatim from the 129 authored lessons
+                  (try_it and pitfall per lesson; no card text stored, so a
+                  content fix propagates). SM-2 scheduling per learner
+                  (migration 0005), /review surface with flip and four grades,
+                  the true next interval shown after each grade.
+  path planner    /path now plans from recorded mastery: review (weakest
+                  first), continue (in progress), next (authored nodes whose
+                  prerequisites are attempted, topological order). An empty
+                  account is told the plan starts from the beginning. The
+                  response says it is recorded practice accuracy, not an IRT
+                  ability estimate.
+
+Still absent, deliberately not claimed: a study planner with dates, cohort
+statistics, and item difficulty data. The last two need real learners, and
+inventing them would be the exact dishonesty this platform is built to
+refuse.
 
 ## Phase 6 and later: NOT STARTED
 
