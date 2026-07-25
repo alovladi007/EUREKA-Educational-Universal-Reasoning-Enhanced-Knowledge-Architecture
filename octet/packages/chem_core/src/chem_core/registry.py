@@ -509,9 +509,7 @@ def _wire_optional_templates() -> None:
         ("templates_o_u12", "TEMPLATES_O_U12", "HINTS_O_U12", "MISCONCEPTIONS_O_U12"),
         ("templates_o_u567", "TEMPLATES_O_U567", "HINTS_O_U567", "MISCONCEPTIONS_O_U567"),
         ("templates_o_u89g", "TEMPLATES_O_U89G", "HINTS_O_U89G", "MISCONCEPTIONS_O_U89G"),
-        ("templates_org2_u123", "TEMPLATES_ORG2_U123", "HINTS_ORG2_U123", "MISCONCEPTIONS_ORG2_U123"),
-        ("templates_org2_u456", "TEMPLATES_ORG2_U456", "HINTS_ORG2_U456", "MISCONCEPTIONS_ORG2_U456"),
-        ("templates_org2_u78910", "TEMPLATES_ORG2_U78910", "HINTS_ORG2_U78910", "MISCONCEPTIONS_ORG2_U78910"),
+        ("templates_org2", "ORG2_TEMPLATES", "ORG2_HINTS", "ORG2_MISCONCEPTIONS"),
     ]
     for module_name, templates_attr, hints_attr, misconceptions_attr in specs:
         try:

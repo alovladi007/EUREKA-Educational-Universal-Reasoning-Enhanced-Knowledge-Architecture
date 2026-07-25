@@ -43,9 +43,13 @@ async def test_session_starts_with_items_and_no_keys(client, auth):
 
 
 async def test_empty_selection_is_refused_with_a_reason(client, auth):
+    # ORG2-U3 has lessons but no practice templates yet, so it is a genuine
+    # example of a selectable unit that cannot supply items. (ORG2-U1 was used
+    # here until Phase 6 gave it a template, which is exactly the kind of
+    # change that turns a "no items" fixture stale.)
     res = await client.post(
         "/api/v1/practice/sessions",
-        json={"units": ["ORG2-U1"], "count": 5, "mode": "tutor"},
+        json={"units": ["ORG2-U3"], "count": 5, "mode": "tutor"},
         headers=auth("student"),
     )
     assert res.status_code == 409

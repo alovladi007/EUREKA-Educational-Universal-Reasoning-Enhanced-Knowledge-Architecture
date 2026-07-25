@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-25 (Phase 5b: recorded practice, analytics, full item coverage for ORG1).
+Last updated: 2026-07-25 (Phase 6: ORG2 authored, grader 11 retrosynthesis, ORG2 practiceable).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -441,9 +441,37 @@ statistics, and item difficulty data. The last two need real learners, and
 inventing them would be the exact dishonesty this platform is built to
 refuse.
 
-## Phase 6 and later: NOT STARTED
+## Phase 6: organic wave 2 and the retrosynthesis trainer. Gate: ORG2 + grader 11. Status: DONE
 
-Phase 6 organic wave 2
+Organic Chemistry II is authored: all 76 nodes across 10 units carry a lesson,
+together making 720 machine-checked claims, every one passing. Both organic
+courses are now complete (ORG1 70/70, ORG2 76/76); the platform holds 205 of
+312 nodes, general chemistry deliberately partial.
+
+Grader 11, retrosynthesis, is built and live. It refuses to grade by judgement:
+each disconnection is backed by an RDKit forward reaction, and a proposed
+precursor set is correct exactly when running that reaction rebuilds the
+target. The item verifier confirms the item's own key builds its own target, so
+an unanswerable retro item cannot ship. The retrosynthesis trainer is a live
+practice template on ORG2.RETROSYNTHESIS with a proper disconnection-menu and
+precursor-input interaction in the practice player, riding the same recorded,
+reviewable loop as every other grader.
+
+Six ORG2 practice templates (unsaturation, aromatic NMR symmetry, alcohol
+oxidation class, keto-enol tautomer, amine classification, amino-acid
+configuration) make units 1, 2, 4, 8, 9 and 10 practiceable; their unit exams
+assemble. Units 3, 5, 6 and 7 are readable and not yet practiceable, and the
+practice catalogue marks them so.
+
+The record again shows the claims discipline earning its place. The ORG2
+authors caught, by deriving rather than asserting: L-cysteine is R not S (its
+sulfur side chain outranks the carboxyl), maleic anhydride is 4 degrees of
+unsaturation not 5, cyclohexene is 2 not 1, and the Diels-Alder adduct of the
+cis dienophile is the meso diester while the trans gives the chiral pair.
+
+## Phase 7 and later: NOT STARTED
+
+Phase 7
 with the retrosynthesis trainer, Phase 7 AN/P1/P2 tiers and the guardrailed
 tutor.
 
@@ -485,7 +513,7 @@ tutor.
    compliance checklist reports the count as `citation_review_debt` so the
    review queue is visible rather than implied. Nothing in ORG1 should be
    presented as expert reviewed.
-10. Seven of ORG1's ten units have lessons but no practice items, because the
+10. Four of ORG2's ten units (3, 5, 6, 7) have lessons but no practice items yet, and earlier seven of ORG1's ten units, because the
    five organic templates cover nodes in units 3, 4 and 10 only. Those seven
    units are readable and not practisable, and no unit exam exists for them.
 8. The tutor gateway does not exist. It is Phase 7 and gated on a red team
