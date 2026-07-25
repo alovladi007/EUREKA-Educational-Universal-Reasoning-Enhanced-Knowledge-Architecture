@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-24 (Phase 4 in progress).
+Last updated: 2026-07-24 (Phase 4 complete).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -259,7 +259,7 @@ Bugs this work caught:
    node. It is a simple gas law, and the finer map has a node for exactly
    that.
 
-## Phase 4: LTI and the exam engine. Gate: LTI + exam engine. Status: IN PROGRESS
+## Phase 4: LTI and the exam engine. Gate: LTI + exam engine. Status: DONE
 
 | Deliverable | Status |
 |---|---|
@@ -269,7 +269,7 @@ Bugs this work caught:
 | Exam blueprints and assembly | DONE |
 | Exam attempt state machine | DONE |
 | Exam API | DONE |
-| Exam taking UI | NOT STARTED |
+| Exam taking UI | DONE |
 
 The exam engine is the substance of the phase, and what it refuses to do is
 the design.
@@ -313,7 +313,34 @@ hints are unavailable, saving an answer returns no grade, an open attempt
 carries no result, submission returns raw counts with none of the forbidden
 scaled fields, and a second submission is refused with 409.
 
-Tests: 270 pass, 35 of them new for exams.
+Tests: 275 pass, 40 of them new for exams.
+
+Three defects found by verifying live rather than by the tests, which is the
+part worth recording:
+
+1. Expiry was handled by hand in three places and two discarded the answers
+   already given, so the same situation produced a different outcome depending
+   on which path noticed first. Every path now goes through one scoring call.
+   With that fixed nothing set the expired status, so the state machine is two
+   states: a status the schema declares and nothing sets is a claim it does
+   not keep.
+2. The service scored an expired attempt and then raised the refusal, and the
+   router turned the refusal into a 409 without committing, so the scoring was
+   rolled back. The response said the attempt had been submitted while the
+   database still showed it open. The service tests could not see it because
+   they never cross the router's transaction boundary. Three tests now do, and
+   the regression test was checked by reverting the fix and confirming it
+   fails.
+3. The attempt view returned no saved answers, so a learner who reloaded mid
+   exam saw empty fields. The answers were always saved, but the reasonable
+   thing to conclude from an empty field during a timed exam is that the work
+   was lost, and the reasonable response is to type it all again while the
+   clock runs.
+
+Verified live in the browser: the catalogue states that an exam is timed,
+gives no hints and marks nothing until submission; a started attempt shows the
+clock in an aria-live region, every input has a label, and no correctness
+appears anywhere; and a reload rehydrates the fields from the server.
 
 ## Phase 5 and later: NOT STARTED
 

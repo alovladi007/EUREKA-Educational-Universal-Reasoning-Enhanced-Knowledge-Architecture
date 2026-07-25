@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import {
   Atom,
   BookOpen,
+  ClipboardList,
   Compass,
   FlaskConical,
   LayoutDashboard,
@@ -104,6 +105,7 @@ const NAV = [
   { name: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
   { name: 'Learn', href: '/learn', icon: BookOpen },
   { name: 'Practice', href: '/practice', icon: PencilRuler },
+  { name: 'Exams', href: '/exams', icon: ClipboardList },
   { name: 'Path', href: '/path', icon: Route },
   { name: 'Explore', href: '/explore', icon: Compass },
   { name: 'Simulations', href: '/simulations', icon: FlaskConical },

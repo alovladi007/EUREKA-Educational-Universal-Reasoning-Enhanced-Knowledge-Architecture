@@ -820,3 +820,197 @@ export function submitStructure(
     smiles,
   });
 }
+
+// -------------------------------------------------------------------------
+// Exams
+//
+// An exam is not a practice session with a clock on it, and the shapes below
+// are what enforce that. Read them against app/domains/exams/router.py.
+//
+// Three absences are deliberate and must survive any later edit:
+//
+//   1. There is no hint type and no hint call. The API has no exam hint route.
+//      hints_available is typed as the literal false so a control that depends
+//      on it being true cannot be written without the compiler objecting.
+//   2. The answer response carries no grade. ExamAnswerSaved has saved,
+//      position, answered, seconds_remaining and note, and nothing else. There
+//      is no is_correct on it because the server does not send one while the
+//      attempt is open.
+//   3. ExamResult carries raw counts and raw_percent only. No scaled score, no
+//      letter grade, no pass mark and no percentile appear here, because the
+//      API omits them on purpose and inventing one in the client would put the
+//      exact number back that the server refused to compute.
+// -------------------------------------------------------------------------
+
+// One section of a blueprint, as the catalogue reports it. minutes is an
+// assumption stated by the blueprint, not a measured figure.
+export interface ExamSection {
+  id: string;
+  title: string;
+  items: number;
+  minutes: number;
+}
+
+// One entry in GET /exams. available is false when the item bank cannot
+// currently assemble the blueprint, and the catalogue still lists it so a
+// broken exam is visible rather than failing when a learner presses start.
+// review reads "pending" until a subject matter expert signs the blueprint
+// off, and basis states what the blueprint was derived from.
+export interface ExamSummary {
+  code: string;
+  title: string;
+  description: string;
+  scope: string;
+  items: number;
+  minutes: number;
+  sections: ExamSection[];
+  basis: string;
+  review: string;
+  available: boolean;
+}
+
+// GET /exams. note carries the platform's own caveat about what these
+// blueprints are and are not, and is rendered verbatim.
+export interface ExamCatalogue {
+  exams: ExamSummary[];
+  note: string;
+}
+
+// An attempt is forward only: in_progress to submitted, or in_progress to
+// expired. There is no reopening.
+export type ExamAttemptStatus = 'in_progress' | 'submitted' | 'expired';
+
+// One item on the form a learner holds. No answer key, no node, no template
+// id and no seed: the served form carries the question and nothing that
+// identifies the answer. meta.choices is present for the "mc" grader, and the
+// answer submitted for that grader is the choice index as a string.
+export interface ExamItem {
+  position: number;
+  section_id: string;
+  prompt: string;
+  grader: string;
+  meta: VariantMeta;
+  // The answer the server currently holds, or an empty string. Present so
+  // a reload rehydrates the fields rather than showing blanks, which during
+  // a timed exam reads as the work having been lost.
+  answer: string;
+}
+
+// Per section counts on a submitted result. ungradable is separate from wrong
+// on purpose: an answer the grader could not read is not evidence of a wrong
+// belief, so it is excluded from raw_percent rather than counted against the
+// learner. raw_percent is null when nothing gradable was measured, which is a
+// different fact from zero and must be rendered as one.
+export interface ExamSectionScore {
+  section_id: string;
+  items: number;
+  answered: number;
+  correct: number;
+  ungradable: number;
+  raw_percent: number | null;
+}
+
+export interface ExamNodeScore {
+  node: string;
+  items: number;
+  correct: number;
+}
+
+export interface ExamMisconceptionCount {
+  code: string;
+  count: number;
+}
+
+// The result of a submitted attempt. was_late is true when the server closed
+// the attempt because its time ran out and scored what had been answered.
+// notes explain what the counts do and do not mean, and are rendered verbatim.
+export interface ExamResult {
+  blueprint_code: string;
+  items: number;
+  answered: number;
+  correct: number;
+  ungradable: number;
+  raw_percent: number | null;
+  sections: ExamSectionScore[];
+  nodes: ExamNodeScore[];
+  misconceptions: ExamMisconceptionCount[];
+  notes: string[];
+  was_late: boolean;
+}
+
+// The learner's view of an attempt. result is present only once status is
+// "submitted"; while the attempt is open there is nothing to put in it.
+//
+// seconds_remaining is the authoritative clock. It is computed by the server
+// against the stored expiry, so it is the only value the client may trust. A
+// client may tick it down for smoothness between requests, and must resync to
+// the value returned with every answer.
+export interface ExamAttemptView {
+  attempt_id: string;
+  blueprint_code: string;
+  status: ExamAttemptStatus;
+  seconds_remaining: number;
+  items: ExamItem[];
+  // Positions the server holds a response for.
+  answered: number[];
+  notes: string[];
+  hints_available: false;
+  feedback_policy: string;
+  result?: ExamResult;
+}
+
+// POST /exams/attempts/{id}/answer. answered is the full set of positions the
+// server has a response row for, so it is the authority on answered versus not
+// answered. There is no grade in this payload and none is coming until submit.
+export interface ExamAnswerSaved {
+  saved: true;
+  position: number;
+  answered: number[];
+  seconds_remaining: number;
+  note: string;
+}
+
+export function getExams(): Promise<ExamCatalogue> {
+  return apiGet<ExamCatalogue>('/exams');
+}
+
+// Open an attempt. Throws ApiError with status 409 when the learner already
+// has this exam open, or when the bank cannot assemble the blueprint. The
+// message on that error is written for the learner and must be shown as it
+// stands rather than replaced with a generic failure.
+export function startExamAttempt(
+  blueprintCode: string,
+): Promise<ExamAttemptView> {
+  return apiPost<ExamAttemptView>('/exams/attempts', {
+    blueprint_code: blueprintCode,
+  });
+}
+
+export function getExamAttempt(attemptId: string): Promise<ExamAttemptView> {
+  return apiGet<ExamAttemptView>(
+    `/exams/attempts/${encodeURIComponent(attemptId)}`,
+  );
+}
+
+// Record one answer. Returns no grade. For the "mc" grader the answer is the
+// choice index as a string; every other grader takes the learner's text.
+export function saveExamAnswer(
+  attemptId: string,
+  position: number,
+  answer: string,
+): Promise<ExamAnswerSaved> {
+  return apiPost<ExamAnswerSaved>(
+    `/exams/attempts/${encodeURIComponent(attemptId)}/answer`,
+    { position, answer },
+  );
+}
+
+// Close the attempt and grade it. Throws ApiError with status 409 when the
+// attempt was already submitted or when its time has run out, and that
+// message is the one the learner needs to read.
+export function submitExamAttempt(attemptId: string): Promise<ExamResult> {
+  return apiPost<ExamResult>(
+    `/exams/attempts/${encodeURIComponent(attemptId)}/submit`,
+    {},
+  );
+}

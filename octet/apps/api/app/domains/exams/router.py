@@ -12,6 +12,7 @@ import uuid
 
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel, Field
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
@@ -19,7 +20,7 @@ from app.core.security import Principal, get_current_principal
 from app.domains.exams import blueprints as bp
 from app.domains.exams import service
 from app.domains.exams.assembly import check_feasible
-from app.domains.exams.models import ExamAttempt
+from app.domains.exams.models import ExamAttempt, ExamResponse
 
 router = APIRouter()
 
@@ -52,12 +53,20 @@ class AnswerIn(BaseModel):
     answer: str = Field(default="", max_length=4000)
 
 
-def _attempt_view(attempt: ExamAttempt) -> dict:
+def _attempt_view(attempt: ExamAttempt, answers: dict[int, str] | None = None) -> dict:
     """The learner's view of an open attempt.
 
-    Carries the form and the clock. It cannot carry a score because an open
-    attempt has none: result is null until submission.
+    Carries the form, the clock, and the answers already given. It cannot
+    carry a score because an open attempt has none: result is null until
+    submission.
+
+    Returning the saved answers is not a convenience. Without them a learner
+    who reloads mid exam sees empty fields, and the honest conclusion to draw
+    from empty fields is that the work was lost. It was not, but a timed exam
+    is the worst place to make somebody guess about that, and the likely
+    response is to answer everything again against a clock that kept running.
     """
+    answers = answers or {}
     return {
         "attempt_id": str(attempt.id),
         "blueprint_code": attempt.blueprint_code,
@@ -70,9 +79,11 @@ def _attempt_view(attempt: ExamAttempt) -> dict:
                 "prompt": i["prompt"],
                 "grader": i["grader"],
                 "meta": i["meta"],
+                "answer": answers.get(i["position"], ""),
             }
             for i in attempt.form["items"]
         ],
+        "answered": sorted(answers),
         "notes": attempt.form.get("notes", []),
         "hints_available": False,
         "feedback_policy": (
@@ -128,7 +139,9 @@ async def start(
     except service.ExamError as exc:
         raise await _refuse(session, exc) from exc
     await session.commit()
-    return _attempt_view(attempt)
+    # A freshly started attempt has none, so this is an empty dict rather than
+    # a query.
+    return _attempt_view(attempt, {})
 
 
 @router.get("/exams/attempts/{attempt_id}")
@@ -140,7 +153,12 @@ async def read(
     attempt = await session.get(ExamAttempt, attempt_id)
     if attempt is None or attempt.user_id != principal.user_id:
         raise HTTPException(404, "That attempt was not found.")
-    view = _attempt_view(attempt)
+    rows = (
+        await session.scalars(
+            select(ExamResponse).where(ExamResponse.attempt_id == attempt.id)
+        )
+    ).all()
+    view = _attempt_view(attempt, {r.position: r.answer for r in rows})
     if attempt.status == "submitted":
         view["result"] = attempt.result
     return view

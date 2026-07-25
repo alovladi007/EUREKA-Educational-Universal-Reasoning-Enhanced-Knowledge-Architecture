@@ -499,3 +499,36 @@ async def test_one_learner_cannot_read_anothers_attempt_over_http(client, auth):
     attempt_id = started.json()["attempt_id"]
     peek = await client.get(f"/api/v1/exams/attempts/{attempt_id}", headers=intruder)
     assert peek.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_reloading_mid_exam_returns_the_answers_already_given(client, auth, db_session):
+    """A reload must not look like the work was lost.
+
+    The answers were always saved, but the attempt view did not return them,
+    so a reloading learner saw empty fields. In a timed exam the reasonable
+    conclusion from an empty field is that the answer is gone, and the
+    reasonable response is to type it again while the clock runs.
+    """
+    headers = auth("student", user_id="reloader")
+    started = await client.post(
+        "/api/v1/exams/attempts", json={"blueprint_code": CODE}, headers=headers
+    )
+    attempt_id = started.json()["attempt_id"]
+    assert started.json()["answered"] == []
+
+    await client.post(
+        f"/api/v1/exams/attempts/{attempt_id}/answer",
+        json={"position": 2, "answer": "my working answer"},
+        headers=headers,
+    )
+
+    reread = await client.get(f"/api/v1/exams/attempts/{attempt_id}", headers=headers)
+    body = reread.json()
+    assert body["answered"] == [2]
+    item = next(i for i in body["items"] if i["position"] == 2)
+    assert item["answer"] == "my working answer"
+    # Everything else is still blank, and still carries no grade.
+    other = next(i for i in body["items"] if i["position"] == 1)
+    assert other["answer"] == ""
+    assert "is_correct" not in str(body)
