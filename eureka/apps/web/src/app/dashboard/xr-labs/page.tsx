@@ -35,6 +35,7 @@ import {
   Atom,
   Activity,
   Sparkles,
+  Shapes,
 } from "lucide-react";
 import toast from 'react-hot-toast';
 
@@ -210,15 +211,39 @@ export default function XRLabsPage() {
                   Organic Chemistry 3D
                 </CardTitle>
                 <CardDescription>
-                  Ball-and-stick explorer for 10 molecules, methane through
-                  caffeine. Click any atom for its element and hybridization;
-                  compare geometry, bond order, and polarity.
+                  Five modes over the ORG1 and ORG2 curriculum: twist a double
+                  bond until the pi overlap breaks, drive a Newman projection
+                  against its energy curve, run a cyclohexane ring inversion,
+                  and test a mirror image for superimposability.
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="flex flex-wrap gap-1">
-                  <Badge variant="secondary" className="text-[10px]">Chemistry</Badge>
-                  <Badge variant="secondary" className="text-[10px]">Three.js</Badge>
+                  <Badge variant="secondary" className="text-[10px]">Organic</Badge>
+                  <Badge variant="secondary" className="text-[10px]">OCTET aligned</Badge>
+                  <Badge variant="secondary" className="text-[10px]">Interactive</Badge>
+                </div>
+              </CardContent>
+            </Card>
+          </PortalCardLink>
+          <PortalCardLink href="/dashboard/xr-labs/general-chemistry">
+            <Card className="h-full cursor-pointer border-primary/20 bg-gradient-to-br from-sky-950/40 via-cyan-950/20 to-transparent transition-colors hover:border-primary/40">
+              <CardHeader>
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Shapes className="h-5 w-5 text-sky-400" />
+                  General Chemistry 3D
+                </CardTitle>
+                <CardDescription>
+                  The full VSEPR shape catalogue with electron domains counted
+                  on screen, bond dipoles summing to a molecular dipole, an
+                  ionic lattice drawn with no sticks at all, orbitals as
+                  probability clouds, and a hydrogen bond you can pull apart.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-1">
+                  <Badge variant="secondary" className="text-[10px]">General</Badge>
+                  <Badge variant="secondary" className="text-[10px]">OCTET aligned</Badge>
                   <Badge variant="secondary" className="text-[10px]">Interactive</Badge>
                 </div>
               </CardContent>

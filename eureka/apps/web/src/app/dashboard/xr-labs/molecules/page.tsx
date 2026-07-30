@@ -1,586 +1,691 @@
 'use client';
 
 /**
- * Organic Chemistry 3D — built-in XR portal (XR-4).
+ * Organic Chemistry 3D -- a built-in XR portal aligned to the OCTET
+ * ORG1/ORG2 curriculum.
  *
- * Interactive ball-and-stick molecule explorer, self-contained like the
- * Solar System Explorer: every geometry is internal coordinate data (no
- * external assets, no network fetches for content). Click an atom for its
- * element + hybridization at that center; pick molecules from the panel.
+ * The earlier version of this page was a molecule viewer: pick from a list,
+ * spin it, read three sentences. That is a fine toy and a poor teacher,
+ * because the things ORG1 actually struggles to convey are not shapes, they
+ * are RELATIONSHIPS BETWEEN SHAPES -- what changes when you rotate a bond,
+ * what a ring flip does and does not do, why one mirror image is a different
+ * compound and another is the same one. None of those fit in a static model.
  *
- * Honesty note (rendered in the UI too): geometries are IDEALIZED textbook
- * shapes (VSEPR angles, standard bond lengths) — right for learning shape,
- * hybridization, and polarity; not crystallographic data.
+ * So this is five modes, each aimed at a specific node and, where possible,
+ * at a specific named misconception from OCTET's library:
  *
- * Sessions: tracked through the shared useXrSession hook, so runs count,
- * completion is elapsed-derived, and ratings/XP flow like any experience.
+ *   Explore    ORG1.HYBRIDORG, ORG1.FUNCTIONALGROUPS, GEN1.POLARITY
+ *              Click an atom and the panel shows the COUNT that decides its
+ *              hybridisation, not a lookup keyed on the element.
+ *   Orbitals   ORG1.ORBITALS -- "one bond that turns, one that cannot".
+ *              Try to rotate a double bond and watch the pi overlap break.
+ *   Conformers ORG1.NEWMAN -- a real Newman projection with the dihedral on
+ *              a slider and the energy curve tracking it.
+ *   Chair      ORG1.CHAIR, ORG1.AVALUES -- run a ring inversion and watch
+ *              every axial bond become equatorial. Targets the belief that a
+ *              flip can turn cis into trans.
+ *   Stereo     ORG1.CHIRALITY, ORG1.RS, ORG1.ENANTIODIA -- build the mirror
+ *              image and try to superimpose it. Targets ORG1M06, meso called
+ *              chiral.
+ *
+ * All structural data is derived, never typed: see _chem/moleculeData.ts for
+ * the generated library and _chem/procedural.ts for the parametric geometry,
+ * whose claims are asserted in procedural.test.ts.
  */
 
-import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import Link from 'next/link';
+import { Canvas } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import toast from 'react-hot-toast';
+import {
+  ArrowLeft,
+  Atom as AtomIcon,
+  FlaskConical,
+  Orbit,
+  Pause,
+  Play,
+  RotateCcw,
+  Ruler,
+  Sparkles,
+} from 'lucide-react';
+
 import { useXrSession } from '@/lib/xr/use-xr-session';
+import { ChemLights, MoleculeScene } from '../_chem/MoleculeScene';
+import { ORGANIC_MOLECULES } from '../_chem/moleculeData';
+import { ELEMENTS, vsepr } from '../_chem/elements';
+import {
+  A_VALUES,
+  angle as angleBetween,
+  cyclohexaneChair,
+  distance,
+  equatorialPercent,
+  torsionEnergy,
+  torsionLabel,
+  torsionMolecule,
+  type TorsionKind,
+} from '../_chem/procedural';
+import {
+  EnergyCurve,
+  HelpLine,
+  ModelNote,
+  NodeBadge,
+  Panel,
+  PanelTitle,
+  Slider,
+  Stat,
+  ToggleButton,
+} from '../_chem/ui';
+import { DEFAULT_OVERLAYS, type Molecule, type RenderStyle, type SceneOverlays } from '../_chem/types';
 
-// ── Chemistry data (all internal — the whole portal is offline) ────────────
+type Mode = 'explore' | 'orbitals' | 'conformers' | 'chair' | 'stereo';
 
-type Element = 'C' | 'H' | 'O' | 'N';
-
-const ELEMENTS: Record<
-  Element,
-  { name: string; color: number; radius: number; blurb: string }
-> = {
-  C: {
-    name: 'Carbon',
-    color: 0x333338,
-    radius: 0.4,
-    blurb: 'Four valence electrons; the backbone of organic chemistry. Hybridizes sp³/sp²/sp.',
-  },
-  H: {
-    name: 'Hydrogen',
-    color: 0xf2f2f2,
-    radius: 0.25,
-    blurb: 'One electron, one bond. Terminal atom on almost every organic skeleton.',
-  },
-  O: {
-    name: 'Oxygen',
-    color: 0xd43a2f,
-    radius: 0.38,
-    blurb: 'Two bonds + two lone pairs. Strongly electronegative — the usual source of polarity.',
-  },
-  N: {
-    name: 'Nitrogen',
-    color: 0x2f52d4,
-    radius: 0.38,
-    blurb: 'Three bonds + one lone pair. Basic sites and H-bond acceptors in biomolecules.',
-  },
-};
-
-type AtomDef = { el: Element; pos: [number, number, number]; hyb?: string };
-type BondDef = { a: number; b: number; order: 1 | 2 | 3 };
-type Molecule = {
-  key: string;
-  name: string;
-  formula: string;
-  geometry: string;
-  polarity: string;
-  atoms: AtomDef[];
-  bonds: BondDef[];
-  facts: string[];
-};
-
-const T = 0.63; // tetrahedral H offset for C-H ~1.09 Å
-
-const MOLECULES: Molecule[] = [
-  {
-    key: 'methane', name: 'Methane', formula: 'CH₄',
-    geometry: 'Tetrahedral · 109.5°', polarity: 'Nonpolar',
-    atoms: [
-      { el: 'C', pos: [0, 0, 0], hyb: 'sp³' },
-      { el: 'H', pos: [T, T, T] }, { el: 'H', pos: [T, -T, -T] },
-      { el: 'H', pos: [-T, T, -T] }, { el: 'H', pos: [-T, -T, T] },
-    ],
-    bonds: [{ a: 0, b: 1, order: 1 }, { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 }, { a: 0, b: 4, order: 1 }],
-    facts: [
-      'The simplest alkane and the textbook sp³ carbon: four equivalent σ bonds at 109.5°.',
-      'Perfectly symmetric, so the four C–H dipoles cancel — nonpolar despite polar-ish bonds.',
-      'Main component of natural gas; a potent greenhouse gas.',
-    ],
-  },
-  {
-    key: 'ammonia', name: 'Ammonia', formula: 'NH₃',
-    geometry: 'Trigonal pyramidal · 107°', polarity: 'Polar',
-    atoms: [
-      { el: 'N', pos: [0, 0.07, 0], hyb: 'sp³ (one lone pair)' },
-      { el: 'H', pos: [0.94, -0.33, 0] }, { el: 'H', pos: [-0.47, -0.33, 0.81] }, { el: 'H', pos: [-0.47, -0.33, -0.81] },
-    ],
-    bonds: [{ a: 0, b: 1, order: 1 }, { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 }],
-    facts: [
-      'sp³ nitrogen with a lone pair squeezing the H–N–H angle from 109.5° down to ~107°.',
-      'The lone pair makes it a classic Brønsted base and nucleophile.',
-      'VSEPR poster child: electron geometry tetrahedral, molecular shape pyramidal.',
-    ],
-  },
-  {
-    key: 'water', name: 'Water', formula: 'H₂O',
-    geometry: 'Bent · 104.5°', polarity: 'Strongly polar',
-    atoms: [
-      { el: 'O', pos: [0, 0.06, 0], hyb: 'sp³ (two lone pairs)' },
-      { el: 'H', pos: [0.76, -0.47, 0] }, { el: 'H', pos: [-0.76, -0.47, 0] },
-    ],
-    bonds: [{ a: 0, b: 1, order: 1 }, { a: 0, b: 2, order: 1 }],
-    facts: [
-      'Two lone pairs compress the bond angle to 104.5° — the classic bent geometry.',
-      'Large dipole moment + hydrogen bonding explain its absurdly high boiling point for its size.',
-      'Universal solvent for ionic and polar species.',
-    ],
-  },
-  {
-    key: 'co2', name: 'Carbon dioxide', formula: 'CO₂',
-    geometry: 'Linear · 180°', polarity: 'Nonpolar (dipoles cancel)',
-    atoms: [
-      { el: 'C', pos: [0, 0, 0], hyb: 'sp' },
-      { el: 'O', pos: [0, 1.16, 0] }, { el: 'O', pos: [0, -1.16, 0] },
-    ],
-    bonds: [{ a: 0, b: 1, order: 2 }, { a: 0, b: 2, order: 2 }],
-    facts: [
-      'sp carbon with two σ + two π bonds — both C=O double bonds, 180° apart.',
-      'Each C=O is polar, but the two dipoles point opposite ways and cancel exactly.',
-      'Great contrast case with water when teaching molecular vs bond polarity.',
-    ],
-  },
-  {
-    key: 'ethane', name: 'Ethane', formula: 'C₂H₆',
-    geometry: 'Tetrahedral at each C', polarity: 'Nonpolar',
-    atoms: [
-      { el: 'C', pos: [0, 0.77, 0], hyb: 'sp³' }, { el: 'C', pos: [0, -0.77, 0], hyb: 'sp³' },
-      { el: 'H', pos: [0.96, 1.16, 0] }, { el: 'H', pos: [-0.48, 1.16, 0.83] }, { el: 'H', pos: [-0.48, 1.16, -0.83] },
-      { el: 'H', pos: [-0.96, -1.16, 0] }, { el: 'H', pos: [0.48, -1.16, -0.83] }, { el: 'H', pos: [0.48, -1.16, 0.83] },
-    ],
-    bonds: [
-      { a: 0, b: 1, order: 1 },
-      { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 }, { a: 0, b: 4, order: 1 },
-      { a: 1, b: 5, order: 1 }, { a: 1, b: 6, order: 1 }, { a: 1, b: 7, order: 1 },
-    ],
-    facts: [
-      'Free rotation about the C–C σ bond; drawn here in the staggered conformation.',
-      'Staggered beats eclipsed by ~12 kJ/mol of torsional strain — conformational analysis starts here.',
-    ],
-  },
-  {
-    key: 'ethene', name: 'Ethene (ethylene)', formula: 'C₂H₄',
-    geometry: 'Trigonal planar · 120°', polarity: 'Nonpolar',
-    atoms: [
-      { el: 'C', pos: [0, 0.67, 0], hyb: 'sp²' }, { el: 'C', pos: [0, -0.67, 0], hyb: 'sp²' },
-      { el: 'H', pos: [0.92, 1.23, 0] }, { el: 'H', pos: [-0.92, 1.23, 0] },
-      { el: 'H', pos: [0.92, -1.23, 0] }, { el: 'H', pos: [-0.92, -1.23, 0] },
-    ],
-    bonds: [
-      { a: 0, b: 1, order: 2 },
-      { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 }, { a: 1, b: 4, order: 1 }, { a: 1, b: 5, order: 1 },
-    ],
-    facts: [
-      'The π bond locks the molecule flat — no rotation about C=C, hence cis/trans isomerism.',
-      'sp² carbons, all angles ≈120°.',
-      'The most-produced organic compound on Earth (polyethylene starts here).',
-    ],
-  },
-  {
-    key: 'ethyne', name: 'Ethyne (acetylene)', formula: 'C₂H₂',
-    geometry: 'Linear · 180°', polarity: 'Nonpolar',
-    atoms: [
-      { el: 'C', pos: [0, 0.6, 0], hyb: 'sp' }, { el: 'C', pos: [0, -0.6, 0], hyb: 'sp' },
-      { el: 'H', pos: [0, 1.66, 0] }, { el: 'H', pos: [0, -1.66, 0] },
-    ],
-    bonds: [{ a: 0, b: 1, order: 3 }, { a: 0, b: 2, order: 1 }, { a: 1, b: 3, order: 1 }],
-    facts: [
-      'A triple bond: one σ + two orthogonal π bonds. Shortest, strongest C–C bond of the series.',
-      'sp carbons make the terminal C–H unusually acidic (pKa ≈ 25).',
-      'Compare bond lengths across ethane → ethene → ethyne as bond order rises.',
-    ],
-  },
-  {
-    key: 'ethanol', name: 'Ethanol', formula: 'C₂H₅OH',
-    geometry: 'Tetrahedral centers, bent at O', polarity: 'Polar (–OH)',
-    atoms: [
-      { el: 'C', pos: [-1.17, -0.25, 0], hyb: 'sp³' }, { el: 'C', pos: [0.13, 0.55, 0], hyb: 'sp³' },
-      { el: 'O', pos: [1.25, -0.31, 0], hyb: 'sp³ (two lone pairs)' }, { el: 'H', pos: [2.03, 0.24, 0] },
-      { el: 'H', pos: [-2.05, 0.38, 0] }, { el: 'H', pos: [-1.2, -0.89, 0.88] }, { el: 'H', pos: [-1.2, -0.89, -0.88] },
-      { el: 'H', pos: [0.17, 1.19, 0.88] }, { el: 'H', pos: [0.17, 1.19, -0.88] },
-    ],
-    bonds: [
-      { a: 0, b: 1, order: 1 }, { a: 1, b: 2, order: 1 }, { a: 2, b: 3, order: 1 },
-      { a: 0, b: 4, order: 1 }, { a: 0, b: 5, order: 1 }, { a: 0, b: 6, order: 1 },
-      { a: 1, b: 7, order: 1 }, { a: 1, b: 8, order: 1 },
-    ],
-    facts: [
-      'The –OH group hydrogen-bonds: miscible with water and boils far above propane.',
-      'Oxidation ladder: ethanol → acetaldehyde → acetic acid.',
-      'Functional-group thinking: the hydroxyl dominates its chemistry.',
-    ],
-  },
-  {
-    key: 'acetic', name: 'Acetic acid', formula: 'CH₃COOH',
-    geometry: 'Trigonal planar at carboxyl C', polarity: 'Polar (carboxylic acid)',
-    atoms: [
-      { el: 'C', pos: [-1.38, -0.22, 0], hyb: 'sp³ (methyl)' },
-      { el: 'C', pos: [0.05, 0.3, 0], hyb: 'sp² (carboxyl)' },
-      { el: 'O', pos: [0.32, 1.49, 0] }, { el: 'O', pos: [1.02, -0.62, 0] }, { el: 'H', pos: [1.9, -0.18, 0] },
-      { el: 'H', pos: [-2.11, 0.58, 0] }, { el: 'H', pos: [-1.55, -0.85, 0.88] }, { el: 'H', pos: [-1.55, -0.85, -0.88] },
-    ],
-    bonds: [
-      { a: 0, b: 1, order: 1 }, { a: 1, b: 2, order: 2 }, { a: 1, b: 3, order: 1 }, { a: 3, b: 4, order: 1 },
-      { a: 0, b: 5, order: 1 }, { a: 0, b: 6, order: 1 }, { a: 0, b: 7, order: 1 },
-    ],
-    facts: [
-      'The carboxyl group: one sp² carbon carrying both C=O and C–OH.',
-      'Acidic because the conjugate base (acetate) delocalizes charge over both oxygens.',
-      'Vinegar is ~5% acetic acid.',
-    ],
-  },
-  {
-    key: 'benzene', name: 'Benzene', formula: 'C₆H₆',
-    geometry: 'Planar hexagon · 120°', polarity: 'Nonpolar',
-    atoms: [
-      ...Array.from({ length: 6 }, (_, i) => {
-        const a = (i * Math.PI) / 3;
-        return { el: 'C' as Element, pos: [1.39 * Math.cos(a), 1.39 * Math.sin(a), 0] as [number, number, number], hyb: 'sp² (aromatic)' };
-      }),
-      ...Array.from({ length: 6 }, (_, i) => {
-        const a = (i * Math.PI) / 3;
-        return { el: 'H' as Element, pos: [2.48 * Math.cos(a), 2.48 * Math.sin(a), 0] as [number, number, number] };
-      }),
-    ],
-    bonds: [
-      ...Array.from({ length: 6 }, (_, i) => ({ a: i, b: (i + 1) % 6, order: (i % 2 === 0 ? 2 : 1) as 1 | 2 })),
-      ...Array.from({ length: 6 }, (_, i) => ({ a: i, b: i + 6, order: 1 as const })),
-    ],
-    facts: [
-      'Drawn with alternating double bonds, but the 6 π electrons are fully delocalized — all six C–C bonds are identical (1.39 Å).',
-      'Aromatic stability (~150 kJ/mol) is why benzene substitutes rather than adds.',
-      'Every carbon is sp², the whole ring is rigidly planar.',
-    ],
-  },
-  {
-    key: 'caffeine', name: 'Caffeine', formula: 'C₈H₁₀N₄O₂',
-    geometry: 'Planar fused bicyclic core', polarity: 'Polar (two C=O, four N)',
-    atoms: [
-      { el: 'N', pos: [-2.24, 0.31, 0], hyb: 'sp² (amide N)' },   // 0  N1
-      { el: 'C', pos: [-1.53, 1.44, 0], hyb: 'sp² (carbonyl)' },  // 1  C2
-      { el: 'N', pos: [-0.16, 1.49, 0], hyb: 'sp² (amide N)' },   // 2  N3
-      { el: 'C', pos: [0.51, 0.33, 0], hyb: 'sp²' },              // 3  C4
-      { el: 'C', pos: [-0.19, -0.85, 0], hyb: 'sp²' },            // 4  C5
-      { el: 'C', pos: [-1.63, -0.91, 0], hyb: 'sp² (carbonyl)' }, // 5  C6
-      { el: 'O', pos: [-2.29, -1.95, 0] },                        // 6  O6
-      { el: 'O', pos: [-2.13, 2.51, 0] },                         // 7  O2
-      { el: 'N', pos: [0.76, -1.79, 0], hyb: 'sp²' },             // 8  N7
-      { el: 'C', pos: [1.95, -1.19, 0], hyb: 'sp²' },             // 9  C8
-      { el: 'N', pos: [1.86, 0.14, 0], hyb: 'sp² (pyridine-like)' }, // 10 N9
-      { el: 'C', pos: [-3.69, 0.35, 0], hyb: 'sp³ (N-methyl)' },  // 11
-      { el: 'C', pos: [0.58, 2.77, 0], hyb: 'sp³ (N-methyl)' },   // 12
-      { el: 'C', pos: [0.63, -3.24, 0], hyb: 'sp³ (N-methyl)' },  // 13
-      { el: 'H', pos: [2.86, -1.76, 0] },                         // 14
-      { el: 'H', pos: [-4.1, 1.36, 0] }, { el: 'H', pos: [-4.1, -0.16, 0.88] }, { el: 'H', pos: [-4.1, -0.16, -0.88] },
-      { el: 'H', pos: [1.66, 2.7, 0] }, { el: 'H', pos: [0.27, 3.32, 0.88] }, { el: 'H', pos: [0.27, 3.32, -0.88] },
-      { el: 'H', pos: [1.63, -3.66, 0] }, { el: 'H', pos: [0.12, -3.6, 0.88] }, { el: 'H', pos: [0.12, -3.6, -0.88] },
-    ],
-    bonds: [
-      { a: 0, b: 1, order: 1 }, { a: 1, b: 2, order: 1 }, { a: 2, b: 3, order: 1 },
-      { a: 3, b: 4, order: 2 }, { a: 4, b: 5, order: 1 }, { a: 5, b: 0, order: 1 },
-      { a: 1, b: 7, order: 2 }, { a: 5, b: 6, order: 2 },
-      { a: 4, b: 8, order: 1 }, { a: 8, b: 9, order: 1 }, { a: 9, b: 10, order: 2 }, { a: 10, b: 3, order: 1 },
-      { a: 0, b: 11, order: 1 }, { a: 2, b: 12, order: 1 }, { a: 8, b: 13, order: 1 },
-      { a: 9, b: 14, order: 1 },
-      { a: 11, b: 15, order: 1 }, { a: 11, b: 16, order: 1 }, { a: 11, b: 17, order: 1 },
-      { a: 12, b: 18, order: 1 }, { a: 12, b: 19, order: 1 }, { a: 12, b: 20, order: 1 },
-      { a: 13, b: 21, order: 1 }, { a: 13, b: 22, order: 1 }, { a: 13, b: 23, order: 1 },
-    ],
-    facts: [
-      'A xanthine alkaloid: fused 6- and 5-membered rings, both aromatic-ish and planar.',
-      'Blocks adenosine receptors — the reason it keeps you awake.',
-      'Find the three N-methyl groups: the only sp³ carbons in the molecule.',
-      'Two amide carbonyls (C=O) make the core strongly polar despite no O–H.',
-    ],
-  },
+const MODES: { id: Mode; label: string; icon: typeof AtomIcon; nodes: string[] }[] = [
+  { id: 'explore', label: 'Explore', icon: AtomIcon, nodes: ['ORG1.HYBRIDORG'] },
+  { id: 'orbitals', label: 'Sigma and pi', icon: Orbit, nodes: ['ORG1.ORBITALS'] },
+  { id: 'conformers', label: 'Conformations', icon: RotateCcw, nodes: ['ORG1.NEWMAN'] },
+  { id: 'chair', label: 'Chair flip', icon: FlaskConical, nodes: ['ORG1.CHAIR', 'ORG1.AVALUES'] },
+  { id: 'stereo', label: 'Stereochemistry', icon: Sparkles, nodes: ['ORG1.CHIRALITY', 'ORG1.RS'] },
 ];
 
-// ── Page ────────────────────────────────────────────────────────────────────
-
-const SCALE = 1.6;
-
-export default function MoleculesPortal() {
-  const router = useRouter();
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const groupRef = useRef<THREE.Group | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const raycasterRef = useRef(new THREE.Raycaster());
-  const frameRef = useRef(0);
-
+export default function OrganicChemistryPortal() {
+  const [mode, setMode] = useState<Mode>('explore');
   const [molKey, setMolKey] = useState('methane');
-  const [selectedAtom, setSelectedAtom] = useState<AtomDef | null>(null);
-  const [autoRotate, setAutoRotate] = useState(true);
-  const autoRotateRef = useRef(true);
+  const [style, setStyle] = useState<RenderStyle>('ball-and-stick');
+  const [overlays, setOverlays] = useState<SceneOverlays>(DEFAULT_OVERLAYS);
+  const [spinning, setSpinning] = useState(true);
+  const [selectedAtom, setSelectedAtom] = useState<number | null>(null);
+  const [measureMode, setMeasureMode] = useState(false);
+  const [measureSet, setMeasureSet] = useState<number[]>([]);
   const [showStars, setShowStars] = useState(false);
+
+  // Mode-specific state.
+  const [torsionKind, setTorsionKind] = useState<TorsionKind>('butane');
+  const [phi, setPhi] = useState(180);
+  const [pucker, setPucker] = useState(1);
+  const [flipping, setFlipping] = useState(false);
+  const [substituent, setSubstituent] = useState<'none' | 'methyl' | 'tert-butyl'>('methyl');
+  const [twistPi, setTwistPi] = useState(0);
+  const [mirrorKey, setMirrorKey] = useState('butan2ol_r');
 
   const { recorded, endWithRating } = useXrSession('/dashboard/xr-labs/molecules');
 
-  const molecule = MOLECULES.find((m) => m.key === molKey) ?? MOLECULES[0];
+  const libraryMolecule =
+    ORGANIC_MOLECULES.find((m) => m.key === molKey) ?? ORGANIC_MOLECULES[0];
 
-  // Scene bootstrap (once)
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0x0b0e1a);
-    sceneRef.current = scene;
+  // ---- the molecule currently on screen, per mode ------------------------
+  const chair = useMemo(
+    () => cyclohexaneChair(pucker, substituent),
+    [pucker, substituent],
+  );
 
-    const camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
-    camera.position.set(0, 2, 9);
-    cameraRef.current = camera;
-
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    renderer.setSize(canvas.clientWidth, canvas.clientHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
-
-    const controls = new OrbitControls(camera, renderer.domElement);
-    controls.enableDamping = true;
-    controls.minDistance = 3;
-    controls.maxDistance = 30;
-
-    scene.add(new THREE.AmbientLight(0xffffff, 0.55));
-    const key = new THREE.DirectionalLight(0xffffff, 1.1);
-    key.position.set(5, 8, 6);
-    scene.add(key);
-    const rim = new THREE.DirectionalLight(0x8899ff, 0.35);
-    rim.position.set(-6, -4, -5);
-    scene.add(rim);
-
-    const group = new THREE.Group();
-    scene.add(group);
-    groupRef.current = group;
-
-    const onResize = () => {
-      if (!canvasRef.current) return;
-      camera.aspect = canvasRef.current.clientWidth / canvasRef.current.clientHeight;
-      camera.updateProjectionMatrix();
-      renderer.setSize(canvasRef.current.clientWidth, canvasRef.current.clientHeight);
-    };
-    window.addEventListener('resize', onResize);
-
-    const animate = () => {
-      frameRef.current = requestAnimationFrame(animate);
-      if (autoRotateRef.current && groupRef.current) groupRef.current.rotation.y += 0.004;
-      controls.update();
-      renderer.render(scene, camera);
-    };
-    animate();
-
-    return () => {
-      cancelAnimationFrame(frameRef.current);
-      window.removeEventListener('resize', onResize);
-      renderer.dispose();
-    };
-  }, []);
-
-  // (Re)build the molecule mesh when the selection changes
-  useEffect(() => {
-    const group = groupRef.current;
-    if (!group) return;
-    group.clear();
-    group.rotation.set(0, 0, 0);
-    setSelectedAtom(null);
-
-    // Atoms
-    molecule.atoms.forEach((atom, idx) => {
-      const info = ELEMENTS[atom.el];
-      const mesh = new THREE.Mesh(
-        new THREE.SphereGeometry(info.radius * SCALE * 0.55, 32, 32),
-        new THREE.MeshStandardMaterial({ color: info.color, roughness: 0.35, metalness: 0.05 }),
-      );
-      mesh.position.set(atom.pos[0] * SCALE, atom.pos[1] * SCALE, atom.pos[2] * SCALE);
-      mesh.userData.atomIndex = idx;
-      group.add(mesh);
-    });
-
-    // Bonds — order N renders as N parallel cylinders
-    const up = new THREE.Vector3(0, 1, 0);
-    molecule.bonds.forEach((bond) => {
-      const a = new THREE.Vector3(...molecule.atoms[bond.a].pos).multiplyScalar(SCALE);
-      const b = new THREE.Vector3(...molecule.atoms[bond.b].pos).multiplyScalar(SCALE);
-      const dir = new THREE.Vector3().subVectors(b, a);
-      const len = dir.length();
-      const mid = new THREE.Vector3().addVectors(a, b).multiplyScalar(0.5);
-      // Offset axis perpendicular to the bond for multi-order rendering
-      const perp = new THREE.Vector3().crossVectors(dir, up);
-      if (perp.lengthSq() < 1e-6) perp.set(1, 0, 0);
-      perp.normalize();
-      const offsets =
-        bond.order === 1 ? [0] : bond.order === 2 ? [-0.09, 0.09] : [-0.13, 0, 0.13];
-      offsets.forEach((off) => {
-        const cyl = new THREE.Mesh(
-          new THREE.CylinderGeometry(bond.order === 1 ? 0.07 : 0.05, bond.order === 1 ? 0.07 : 0.05, len, 16),
-          new THREE.MeshStandardMaterial({ color: 0x9aa1b5, roughness: 0.5 }),
-        );
-        cyl.position.copy(mid).addScaledVector(perp, off * SCALE);
-        cyl.quaternion.setFromUnitVectors(up, dir.clone().normalize());
-        group.add(cyl);
-      });
-    });
-  }, [molecule]);
-
-  // Atom picking
-  const onCanvasClick = (e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    const camera = cameraRef.current;
-    const group = groupRef.current;
-    if (!canvas || !camera || !group) return;
-    const rect = canvas.getBoundingClientRect();
-    const ndc = new THREE.Vector2(
-      ((e.clientX - rect.left) / rect.width) * 2 - 1,
-      -(((e.clientY - rect.top) / rect.height) * 2 - 1),
-    );
-    raycasterRef.current.setFromCamera(ndc, camera);
-    const hits = raycasterRef.current
-      .intersectObjects(group.children, false)
-      .filter((h) => h.object.userData.atomIndex !== undefined);
-    if (hits.length > 0) {
-      const idx = hits[0].object.userData.atomIndex as number;
-      setSelectedAtom(molecule.atoms[idx]);
-    } else {
-      setSelectedAtom(null);
+  const shown: Molecule = useMemo(() => {
+    if (mode === 'conformers') return torsionMolecule(torsionKind, phi);
+    if (mode === 'chair') return chair.molecule;
+    if (mode === 'stereo') {
+      return ORGANIC_MOLECULES.find((m) => m.key === mirrorKey) ?? libraryMolecule;
     }
-  };
+    if (mode === 'orbitals') {
+      // The pi-rotation demo runs on ethene; twisting it is the whole point.
+      const base = ORGANIC_MOLECULES.find((m) => m.key === 'ethene')!;
+      if (twistPi === 0) return base;
+      return twistAboutDoubleBond(base, twistPi);
+    }
+    return libraryMolecule;
+  }, [mode, torsionKind, phi, chair, mirrorKey, libraryMolecule, twistPi]);
+
+  // The mirror partner shown alongside in stereo mode.
+  const mirrorPartner = useMemo(() => {
+    if (mode !== 'stereo') return null;
+    return mirrorImage(shown);
+  }, [mode, shown]);
+
+  // Ring-flip animation.
+  useEffect(() => {
+    if (!flipping) return;
+    let raf = 0;
+    const start = performance.now();
+    const from = pucker;
+    const to = -Math.sign(pucker || 1);
+    const DURATION = 2200;
+    const tick = (now: number) => {
+      const t = Math.min(1, (now - start) / DURATION);
+      // Ease so the slow part is the middle, where the swap happens.
+      const eased = t < 0.5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+      setPucker(from + (to - from) * eased);
+      if (t < 1) raf = requestAnimationFrame(tick);
+      else setFlipping(false);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+    // Intentionally not depending on pucker: the animation owns it while running.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flipping]);
+
+  // Reset per-molecule UI state when the subject changes.
+  useEffect(() => {
+    setSelectedAtom(null);
+    setMeasureSet([]);
+  }, [molKey, mode, mirrorKey]);
+
+  const onPickAtom = useCallback(
+    (i: number) => {
+      if (measureMode) {
+        setMeasureSet((prev) => {
+          if (prev.includes(i)) return prev.filter((x) => x !== i);
+          if (prev.length >= 4) return [i];
+          return [...prev, i];
+        });
+        return;
+      }
+      setSelectedAtom((prev) => (prev === i ? null : i));
+    },
+    [measureMode],
+  );
+
+  const measurement = useMemo(() => {
+    const a = shown.atoms;
+    if (measureSet.length === 2) {
+      return {
+        text: `${distance(a[measureSet[0]], a[measureSet[1]]).toFixed(3)} A`,
+        kind: 'Bond length',
+      };
+    }
+    if (measureSet.length === 3) {
+      return {
+        text: `${angleBetween(a[measureSet[0]], a[measureSet[1]], a[measureSet[2]]).toFixed(1)} deg`,
+        kind: 'Angle at the middle atom',
+      };
+    }
+    if (measureSet.length === 4) {
+      const t = torsionOf(a, measureSet);
+      return { text: `${t.toFixed(1)} deg`, kind: 'Torsion' };
+    }
+    return null;
+  }, [measureSet, shown]);
 
   const finishAndRate = async (rating: number | null) => {
     setShowStars(false);
     const xp = await endWithRating(rating);
     if (xp !== null) {
-      toast.success(xp ? `Session recorded — +${xp} XP` : 'Session recorded');
+      toast.success(xp ? `Session recorded, +${xp} XP` : 'Session recorded');
     }
   };
 
-  return (
-    <div className="min-h-screen bg-[#0b0e1a] text-white flex flex-col">
-      {/* Header */}
-      <div className="border-b border-white/10 px-4 py-3 flex items-center justify-between gap-3 flex-wrap">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={() => router.push('/dashboard/xr-labs')}
-            className="px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-sm"
-          >
-            ← XR Labs
-          </button>
-          <h1 className="text-lg font-bold">🧪 Organic Chemistry 3D</h1>
-          <span className="text-[11px] text-amber-300/80 border border-amber-300/30 rounded px-2 py-0.5">
-            idealized geometries — for learning shape &amp; hybridization
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => {
-              autoRotateRef.current = !autoRotateRef.current;
-              setAutoRotate(autoRotateRef.current);
-            }}
-            className="px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-sm"
-          >
-            {autoRotate ? '⏸ Pause spin' : '▶ Spin'}
-          </button>
-          <button
-            onClick={() => setShowStars(true)}
-            disabled={recorded}
-            className="px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-sm disabled:opacity-50"
-          >
-            {recorded ? '✓ Recorded' : '■ Finish & rate'}
-          </button>
-        </div>
-      </div>
+  const toggle = (k: keyof SceneOverlays) =>
+    setOverlays((o) => ({ ...o, [k]: !o[k] }));
 
-      <div className="flex-1 flex flex-col lg:flex-row min-h-0">
-        {/* Molecule list */}
-        <div className="lg:w-56 shrink-0 border-b lg:border-b-0 lg:border-r border-white/10 p-3 overflow-y-auto">
-          <div className="text-xs uppercase tracking-wide text-gray-400 mb-2">Molecules</div>
-          <div className="flex lg:flex-col gap-1 flex-wrap">
-            {MOLECULES.map((m) => (
+  const selected = selectedAtom !== null ? shown.atoms[selectedAtom] : null;
+  const modelKind =
+    mode === 'conformers' || mode === 'chair' ? 'idealised' : 'computed';
+
+  return (
+    <div className="fixed inset-0 z-50 bg-[#070a14] text-white">
+      <Canvas
+        camera={{ position: [0, 2.2, 9], fov: 48, near: 0.05, far: 200 }}
+        legacy
+        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15 }}
+        dpr={[1, 2]}
+      >
+        <Suspense fallback={null}>
+          <ChemLights />
+          <group position={mirrorPartner ? [-2.6, 0, 0] : [0, 0, 0]}>
+            <MoleculeScene
+              molecule={shown}
+              style={style}
+              overlays={overlays}
+              spinning={spinning && !flipping}
+              selectedAtom={selectedAtom}
+              measureSet={measureSet}
+              onPickAtom={onPickAtom}
+            />
+          </group>
+          {mirrorPartner && (
+            <group position={[2.6, 0, 0]}>
+              <MoleculeScene
+                molecule={mirrorPartner}
+                style={style}
+                overlays={overlays}
+                spinning={spinning}
+                selectedAtom={null}
+                measureSet={[]}
+                onPickAtom={() => {}}
+              />
+            </group>
+          )}
+          <OrbitControls
+            enableDamping
+            dampingFactor={0.08}
+            minDistance={2.5}
+            maxDistance={40}
+            makeDefault
+          />
+        </Suspense>
+      </Canvas>
+
+      {/* ---------------- Top bar ---------------- */}
+      <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex flex-wrap items-center justify-between gap-3 p-4">
+        <Link
+          href="/dashboard/xr-labs"
+          className="pointer-events-auto flex items-center gap-2 rounded-md border border-white/10 bg-white/10 px-3 py-2 text-sm font-medium backdrop-blur-md transition-colors hover:bg-white/20"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          XR Labs
+        </Link>
+
+        <Panel className="flex items-center gap-1 p-1">
+          {MODES.map((m) => {
+            const Icon = m.icon;
+            return (
               <button
-                key={m.key}
-                onClick={() => setMolKey(m.key)}
-                className={`text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                  m.key === molKey ? 'bg-indigo-600' : 'bg-white/5 hover:bg-white/10'
+                key={m.id}
+                type="button"
+                onClick={() => setMode(m.id)}
+                className={`flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition-colors ${
+                  mode === m.id
+                    ? 'bg-sky-500 text-white'
+                    : 'text-white/70 hover:bg-white/10 hover:text-white'
                 }`}
               >
-                <div className="font-semibold">{m.name}</div>
-                <div className="text-[11px] text-gray-300">{m.formula}</div>
+                <Icon className="h-3.5 w-3.5" />
+                {m.label}
               </button>
+            );
+          })}
+        </Panel>
+
+        <Panel className="flex items-center gap-1 p-1">
+          <button
+            type="button"
+            onClick={() => setSpinning((s) => !s)}
+            className="rounded p-2 transition-colors hover:bg-white/10"
+            title={spinning ? 'Pause rotation' : 'Rotate'}
+          >
+            {spinning ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </button>
+          <button
+            type="button"
+            onClick={() => {
+              setMeasureMode((m) => !m);
+              setMeasureSet([]);
+            }}
+            className={`rounded p-2 transition-colors ${
+              measureMode ? 'bg-amber-500 text-black' : 'hover:bg-white/10'
+            }`}
+            title="Measure: click 2 atoms for a length, 3 for an angle, 4 for a torsion"
+          >
+            <Ruler className="h-4 w-4" />
+          </button>
+          <button
+            type="button"
+            onClick={() => setShowStars(true)}
+            disabled={recorded}
+            className="rounded px-3 py-1.5 text-xs font-medium transition-colors hover:bg-white/10 disabled:opacity-50"
+          >
+            {recorded ? 'Recorded' : 'Finish'}
+          </button>
+        </Panel>
+      </div>
+
+      {/* ---------------- Left rail ---------------- */}
+      <div className="pointer-events-none absolute left-4 top-24 z-10 flex max-h-[calc(100vh-12rem)] w-56 flex-col gap-3 overflow-y-auto">
+        {mode === 'explore' && (
+          <Panel className="p-3">
+            <PanelTitle>Molecules</PanelTitle>
+            <div className="flex flex-col gap-1">
+              {ORGANIC_MOLECULES.map((m) => (
+                <button
+                  key={m.key}
+                  type="button"
+                  onClick={() => setMolKey(m.key)}
+                  className={`rounded px-2.5 py-1.5 text-left transition-colors ${
+                    m.key === molKey ? 'bg-sky-500' : 'bg-white/5 hover:bg-white/10'
+                  }`}
+                >
+                  <div className="text-xs font-semibold">{m.name}</div>
+                  <div className="font-mono text-[10px] text-white/60">{m.formula}</div>
+                </button>
+              ))}
+            </div>
+          </Panel>
+        )}
+
+        {mode === 'conformers' && (
+          <Panel className="p-3">
+            <PanelTitle>Molecule</PanelTitle>
+            <div className="flex flex-col gap-1">
+              {(['ethane', 'butane'] as TorsionKind[]).map((k) => (
+                <ToggleButton
+                  key={k}
+                  active={torsionKind === k}
+                  onClick={() => setTorsionKind(k)}
+                >
+                  {k === 'ethane' ? 'Ethane' : 'Butane'}
+                </ToggleButton>
+              ))}
+            </div>
+            <div className="mt-3">
+              <Slider
+                label="Dihedral angle"
+                value={phi}
+                min={0}
+                max={360}
+                onChange={setPhi}
+                suffix=" deg"
+              />
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1">
+              {(torsionKind === 'butane'
+                ? [0, 60, 120, 180, 240, 300]
+                : [0, 60, 120, 180]
+              ).map((d) => (
+                <button
+                  key={d}
+                  type="button"
+                  onClick={() => setPhi(d)}
+                  className="rounded bg-white/5 px-1.5 py-1 text-[10px] hover:bg-white/15"
+                >
+                  {d}
+                </button>
+              ))}
+            </div>
+          </Panel>
+        )}
+
+        {mode === 'chair' && (
+          <Panel className="p-3">
+            <PanelTitle>Substituent</PanelTitle>
+            <div className="flex flex-col gap-1">
+              {(['none', 'methyl', 'tert-butyl'] as const).map((s) => (
+                <ToggleButton
+                  key={s}
+                  active={substituent === s}
+                  onClick={() => setSubstituent(s)}
+                >
+                  {s === 'none' ? 'Cyclohexane' : s === 'methyl' ? 'Methyl' : 'tert-Butyl'}
+                </ToggleButton>
+              ))}
+            </div>
+            <div className="mt-3">
+              <Slider
+                label="Ring pucker"
+                value={pucker}
+                min={-1}
+                max={1}
+                step={0.01}
+                onChange={setPucker}
+              />
+            </div>
+            <button
+              type="button"
+              onClick={() => setFlipping(true)}
+              disabled={flipping}
+              className="mt-2 w-full rounded bg-sky-500 px-3 py-2 text-xs font-semibold transition-colors hover:bg-sky-400 disabled:opacity-50"
+            >
+              {flipping ? 'Flipping...' : 'Run ring inversion'}
+            </button>
+          </Panel>
+        )}
+
+        {mode === 'stereo' && (
+          <Panel className="p-3">
+            <PanelTitle>Compare with its mirror</PanelTitle>
+            <div className="flex flex-col gap-1">
+              {ORGANIC_MOLECULES.filter((m) =>
+                ['butan2ol_r', 'butan2ol_s', 'tartaric_meso', 'l_alanine', 'glucose_beta', 'methane'].includes(
+                  m.key,
+                ),
+              ).map((m) => (
+                <button
+                  key={m.key}
+                  type="button"
+                  onClick={() => setMirrorKey(m.key)}
+                  className={`rounded px-2.5 py-1.5 text-left transition-colors ${
+                    m.key === mirrorKey ? 'bg-sky-500' : 'bg-white/5 hover:bg-white/10'
+                  }`}
+                >
+                  <div className="text-xs font-semibold">{m.name}</div>
+                </button>
+              ))}
+            </div>
+          </Panel>
+        )}
+
+        {mode === 'orbitals' && (
+          <Panel className="p-3">
+            <PanelTitle>Twist the double bond</PanelTitle>
+            <Slider
+              label="Twist about C=C"
+              value={twistPi}
+              min={0}
+              max={90}
+              onChange={setTwistPi}
+              suffix=" deg"
+            />
+            <p className="mt-2 text-[11px] leading-relaxed text-white/60">
+              Turn the far carbon and watch the two p lobes fall out of
+              alignment. At 90 degrees they are perpendicular and the overlap,
+              which is the pi bond, is gone.
+            </p>
+            <button
+              type="button"
+              onClick={() => setTwistPi(0)}
+              className="mt-2 w-full rounded bg-white/10 px-3 py-1.5 text-xs hover:bg-white/20"
+            >
+              Reset to planar
+            </button>
+          </Panel>
+        )}
+
+        {/* Rendering controls, shared by every mode. */}
+        <Panel className="p-3">
+          <PanelTitle>Show</PanelTitle>
+          <div className="flex flex-wrap gap-1">
+            <ToggleButton active={overlays.lonePairs} onClick={() => toggle('lonePairs')}>
+              Lone pairs
+            </ToggleButton>
+            <ToggleButton active={overlays.dipoles} onClick={() => toggle('dipoles')}>
+              Dipoles
+            </ToggleButton>
+            <ToggleButton active={overlays.piSystems} onClick={() => toggle('piSystems')}>
+              Pi orbitals
+            </ToggleButton>
+            <ToggleButton active={overlays.labels} onClick={() => toggle('labels')}>
+              Labels
+            </ToggleButton>
+            <ToggleButton active={overlays.stereo} onClick={() => toggle('stereo')}>
+              R / S
+            </ToggleButton>
+          </div>
+          <PanelTitle>
+            <span className="mt-3 block">Style</span>
+          </PanelTitle>
+          <div className="flex flex-wrap gap-1">
+            {(['ball-and-stick', 'space-filling', 'wireframe'] as RenderStyle[]).map((s) => (
+              <ToggleButton key={s} active={style === s} onClick={() => setStyle(s)}>
+                {s === 'ball-and-stick' ? 'Ball' : s === 'space-filling' ? 'Space' : 'Wire'}
+              </ToggleButton>
             ))}
           </div>
-        </div>
+        </Panel>
+      </div>
 
-        {/* Canvas */}
-        <div className="flex-1 relative min-h-[320px]">
-          <canvas ref={canvasRef} className="w-full h-full block" onClick={onCanvasClick} />
-          <div className="absolute bottom-3 left-3 text-[11px] text-gray-400 bg-black/50 rounded px-2 py-1">
-            drag to rotate · scroll to zoom · click an atom
+      {/* ---------------- Right panel ---------------- */}
+      <div className="pointer-events-none absolute right-4 top-24 z-10 max-h-[calc(100vh-12rem)] w-[22rem] overflow-y-auto">
+        <Panel className="p-4">
+          <h2 className="text-lg font-bold leading-tight">{shown.name}</h2>
+          <div className="mt-0.5 flex items-center gap-2">
+            <span className="font-mono text-xs text-white/70">{shown.formula}</span>
+            {shown.mass > 0 && (
+              <span className="text-[11px] text-white/40">{shown.mass} g/mol</span>
+            )}
           </div>
-        </div>
 
-        {/* Info panel */}
-        <div className="lg:w-80 shrink-0 border-t lg:border-t-0 lg:border-l border-white/10 p-4 overflow-y-auto space-y-4">
-          <div>
-            <h2 className="text-xl font-bold">{molecule.name}</h2>
-            <div className="text-sm text-gray-300">{molecule.formula}</div>
-            <div className="mt-2 space-y-1 text-sm">
-              <div><span className="text-gray-400">Geometry:</span> {molecule.geometry}</div>
-              <div><span className="text-gray-400">Polarity:</span> {molecule.polarity}</div>
+          {shown.teaches.length > 0 && (
+            <div className="mt-2 flex flex-wrap gap-1">
+              {shown.teaches.map((c) => (
+                <NodeBadge key={c} code={c} />
+              ))}
             </div>
-          </div>
+          )}
 
-          {selectedAtom ? (
-            <div className="bg-white/5 rounded-lg p-3 border border-white/10">
+          {/* -------- mode-specific readouts -------- */}
+          {mode === 'conformers' && (
+            <ConformerPanel kind={torsionKind} phi={phi} />
+          )}
+          {mode === 'chair' && (
+            <ChairPanel pucker={pucker} substituent={substituent} />
+          )}
+          {mode === 'stereo' && <StereoPanel molecule={shown} />}
+          {mode === 'orbitals' && <OrbitalPanel twist={twistPi} />}
+
+          {/* -------- selected atom -------- */}
+          {selected && (
+            <div className="mt-4 rounded-lg border border-white/10 bg-white/5 p-3">
               <div className="flex items-center gap-2">
                 <span
-                  className="inline-block w-4 h-4 rounded-full border border-white/30"
-                  style={{ backgroundColor: `#${ELEMENTS[selectedAtom.el].color.toString(16).padStart(6, '0')}` }}
+                  className="inline-block h-4 w-4 rounded-full ring-1 ring-white/30"
+                  style={{ backgroundColor: ELEMENTS[selected.el].color }}
                 />
-                <span className="font-bold">{ELEMENTS[selectedAtom.el].name}</span>
-                {selectedAtom.hyb && (
-                  <span className="text-xs bg-indigo-500/30 border border-indigo-400/40 rounded px-1.5 py-0.5">
-                    {selectedAtom.hyb}
+                <span className="font-bold">{ELEMENTS[selected.el].name}</span>
+                {selected.hyb && (
+                  <span className="rounded bg-sky-500/25 px-1.5 py-0.5 text-[10px] font-semibold ring-1 ring-sky-400/40">
+                    {selected.hyb}
+                  </span>
+                )}
+                {selected.cip && (
+                  <span className="rounded bg-fuchsia-500/25 px-1.5 py-0.5 text-[10px] font-bold ring-1 ring-fuchsia-400/40">
+                    {selected.cip}
                   </span>
                 )}
               </div>
-              <p className="text-xs text-gray-300 mt-2">{ELEMENTS[selectedAtom.el].blurb}</p>
+
+              {/* The count, shown as a count. The lesson's rule is that
+                  hybridisation follows from how many groups an atom carries,
+                  not from which element it is, so the arithmetic is on
+                  screen rather than the conclusion alone. */}
+              <div className="mt-2">
+                <Stat
+                  label="Attached atoms"
+                  value={shown.bonds.filter(
+                    (b) => b.a === selectedAtom || b.b === selectedAtom,
+                  ).length}
+                />
+                <Stat label="Lone pairs" value={selected.lp} />
+                <Stat
+                  label="Steric number"
+                  value={<span className="text-sky-300">{selected.sn}</span>}
+                  hint="Attached atoms plus lone pairs. This is what sets the geometry."
+                />
+                {vsepr(selected.sn, selected.lp) && (
+                  <>
+                    <Stat
+                      label="Electron geometry"
+                      value={vsepr(selected.sn, selected.lp)!.electron}
+                    />
+                    <Stat
+                      label="Molecular shape"
+                      value={vsepr(selected.sn, selected.lp)!.molecular}
+                    />
+                    <Stat
+                      label="Ideal angle"
+                      value={`${vsepr(selected.sn, selected.lp)!.angle} deg`}
+                    />
+                  </>
+                )}
+                {selected.charge ? (
+                  <Stat label="Formal charge" value={selected.charge > 0 ? `+${selected.charge}` : selected.charge} />
+                ) : null}
+                <Stat label="Electronegativity" value={ELEMENTS[selected.el].en.toFixed(2)} />
+              </div>
+
+              <p className="mt-2 text-[11px] leading-relaxed text-white/60">
+                {ELEMENTS[selected.el].blurb}
+              </p>
             </div>
-          ) : (
-            <div className="text-xs text-gray-500">Click an atom to inspect its element and hybridization.</div>
           )}
 
-          <div>
-            <div className="text-xs uppercase tracking-wide text-gray-400 mb-2">Why it matters</div>
-            <ul className="space-y-2">
-              {molecule.facts.map((f, i) => (
-                <li key={i} className="text-sm text-gray-200 flex gap-2">
-                  <span className="text-indigo-400 shrink-0">•</span>
-                  <span>{f}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {measureMode && (
+            <div className="mt-4 rounded-lg border border-amber-400/30 bg-amber-950/30 p-3">
+              <PanelTitle>Measure</PanelTitle>
+              {measurement ? (
+                <>
+                  <div className="text-lg font-bold text-amber-300">{measurement.text}</div>
+                  <div className="text-[11px] text-white/60">{measurement.kind}</div>
+                </>
+              ) : (
+                <p className="text-[11px] text-white/60">
+                  Click 2 atoms for a bond length, 3 for an angle, 4 for a
+                  torsion. Selected: {measureSet.length}.
+                </p>
+              )}
+              <p className="mt-2 text-[10px] text-white/40">
+                Read off this model. In the computed modes that is an optimised
+                conformer, not a measurement.
+              </p>
+            </div>
+          )}
 
-          <div className="text-[11px] text-gray-500 border-t border-white/10 pt-3">
-            Bond orders render as parallel rods (double = 2, triple = 3). Colors follow the CPK
-            convention: C dark, H white, O red, N blue.
-          </div>
-        </div>
+          {shown.facts.length > 0 && (
+            <div className="mt-4">
+              <PanelTitle>Why it matters</PanelTitle>
+              <ul className="space-y-2">
+                {shown.facts.map((f, i) => (
+                  <li key={i} className="flex gap-2 text-xs leading-relaxed text-white/80">
+                    <span className="shrink-0 text-sky-400">-</span>
+                    <span>{f}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {!selected && mode === 'explore' && (
+            <p className="mt-4 text-[11px] text-white/40">
+              Click any atom to see the count that fixes its hybridisation and
+              geometry.
+            </p>
+          )}
+        </Panel>
       </div>
 
-      {/* Rating dialog (same contract as the experience viewer) */}
+      {/* ---------------- Bottom ---------------- */}
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 flex flex-col gap-2">
+        <HelpLine>drag to rotate, scroll to zoom, click an atom</HelpLine>
+      </div>
+      <div className="pointer-events-none absolute bottom-4 right-4 z-10">
+        <ModelNote kind={modelKind} />
+      </div>
+
       {showStars && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-slate-900 border border-white/20 rounded-xl p-6 w-full max-w-sm text-center">
-            <h2 className="text-xl font-bold mb-4">How was this portal?</h2>
-            <div className="flex justify-center gap-2 mb-5">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
+          <div className="w-full max-w-sm rounded-xl border border-white/20 bg-slate-900 p-6 text-center">
+            <h2 className="mb-4 text-xl font-bold">How was this portal?</h2>
+            <div className="mb-5 flex justify-center gap-2">
               {[1, 2, 3, 4, 5].map((n) => (
                 <button
                   key={n}
+                  type="button"
                   onClick={() => finishAndRate(n)}
                   aria-label={`Rate ${n} star${n === 1 ? '' : 's'}`}
-                  className="text-3xl hover:scale-125 transition-transform"
+                  className="text-3xl transition-transform hover:scale-125"
                 >
-                  ⭐
+                  *
                 </button>
               ))}
             </div>
             <button
+              type="button"
               onClick={() => finishAndRate(null)}
-              className="w-full py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-sm"
+              className="w-full rounded-lg bg-white/10 py-2 text-sm transition-colors hover:bg-white/20"
             >
               Finish without rating
             </button>
             <button
+              type="button"
               onClick={() => setShowStars(false)}
-              className="w-full mt-2 py-2 text-sm text-gray-400 hover:text-white"
+              className="mt-2 w-full py-2 text-sm text-white/50 hover:text-white"
             >
               Keep exploring
             </button>
@@ -589,4 +694,257 @@ export default function MoleculesPortal() {
       )}
     </div>
   );
+}
+
+// ---------------------------------------------------------------------------
+// Mode panels
+// ---------------------------------------------------------------------------
+
+function ConformerPanel({ kind, phi }: { kind: TorsionKind; phi: number }) {
+  const label = torsionLabel(kind, phi);
+  const energy = torsionEnergy(kind, phi);
+  const max = kind === 'ethane' ? 12 : 19;
+  return (
+    <div className="mt-3">
+      <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+        <div className="text-sm font-bold text-sky-300">{label.name}</div>
+        <div className="mt-1 text-[11px] leading-relaxed text-white/70">{label.note}</div>
+        <div className="mt-2">
+          <Stat label="Dihedral" value={`${phi.toFixed(0)} deg`} />
+          <Stat
+            label="Strain above the minimum"
+            value={`${energy.toFixed(1)} kJ/mol`}
+          />
+        </div>
+      </div>
+      <div className="mt-3">
+        <PanelTitle>Energy against dihedral</PanelTitle>
+        <EnergyCurve
+          energyAt={(d) => torsionEnergy(kind, d)}
+          current={phi}
+          maxEnergy={max}
+          markers={[
+            { deg: 0, label: '0' },
+            { deg: 60, label: '60' },
+            { deg: 120, label: '120' },
+            { deg: 180, label: '180' },
+            { deg: 240, label: '240' },
+            { deg: 300, label: '300' },
+          ]}
+        />
+        <p className="mt-3 text-[10px] leading-relaxed text-white/40">
+          The curve is a three-term torsional potential fitted to the
+          experimental stationary points the course cites: for butane, anti 0,
+          gauche 3.8, methyl-hydrogen eclipsed 16 and methyl-methyl eclipsed 19
+          kJ/mol. It interpolates between cited values rather than computing
+          them.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function ChairPanel({
+  pucker,
+  substituent,
+}: {
+  pucker: number;
+  substituent: 'none' | 'methyl' | 'tert-butyl';
+}) {
+  const a = substituent === 'none' ? null : A_VALUES[substituent];
+  const flat = Math.abs(pucker) < 0.12;
+  return (
+    <div className="mt-3 space-y-3">
+      <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+        <div className="text-sm font-bold text-sky-300">
+          {flat ? 'Mid inversion' : pucker > 0 ? 'Chair A' : 'Chair B'}
+        </div>
+        <p className="mt-1 text-[11px] leading-relaxed text-white/70">
+          {flat
+            ? 'Between the two chairs. Every axial bond is on its way to becoming equatorial and every equatorial to becoming axial.'
+            : 'Three carbons above the mean plane and three below. Every angle sits near tetrahedral and every bond is staggered, which is why the chair is essentially strain free.'}
+        </p>
+      </div>
+
+      {a && (
+        <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <PanelTitle>A value</PanelTitle>
+          <Stat label="Preference for equatorial" value={`${a.kj} kJ/mol`} />
+          <Stat label="In kcal/mol" value={`${a.kcal}`} />
+          <Stat
+            label="Equatorial at 298 K"
+            value={`${equatorialPercent(a.kj).toFixed(1)} %`}
+            hint="From K = exp(dG/RT) with RT = 2.479 kJ/mol"
+          />
+          <p className="mt-2 text-[10px] leading-relaxed text-white/40">
+            The A value is cited experimental data. The percentage is computed
+            from it here.
+          </p>
+        </div>
+      )}
+
+      <div className="rounded-lg border border-amber-400/25 bg-amber-950/25 p-3">
+        <p className="text-[11px] leading-relaxed text-amber-200/80">
+          A ring flip swaps axial and equatorial at every carbon. It does NOT
+          move a group from one face of the ring to the other, so it cannot
+          turn cis into trans. Conformation is not configuration.
+        </p>
+        <p className="mt-2 text-[10px] leading-relaxed text-amber-200/50">
+          The path drawn here is simplified. The real inversion passes through
+          a half-chair transition state and a twist-boat intermediate, over a
+          barrier of about 45 kJ/mol; a flat ring is not on that path.
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function StereoPanel({ molecule }: { molecule: Molecule }) {
+  const centres = molecule.atoms.filter((a) => a.cip);
+  const superimposable = isAchiral(molecule);
+  return (
+    <div className="mt-3 space-y-3">
+      <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+        <Stat label="Stereocentres" value={centres.length} />
+        <Stat
+          label="Descriptors"
+          value={centres.length ? centres.map((c) => c.cip).join(', ') : 'none'}
+        />
+        <Stat
+          label="Mirror image is"
+          value={
+            <span className={superimposable ? 'text-emerald-400' : 'text-amber-300'}>
+              {superimposable ? 'the same compound' : 'a different compound'}
+            </span>
+          }
+        />
+      </div>
+      <p className="text-[11px] leading-relaxed text-white/70">
+        {superimposable
+          ? centres.length > 0
+            ? 'This molecule has stereocentres and is still achiral: an internal mirror plane makes it superimposable on its own reflection. That is what meso means. Having stereocentres is not the same as being chiral.'
+            : 'No stereocentres, so the mirror image is just the molecule again.'
+          : 'The reflection cannot be rotated onto the original, so the two are enantiomers: same formula, same connectivity, same melting point, and different behaviour only in a chiral environment.'}
+      </p>
+      <p className="text-[10px] leading-relaxed text-white/40">
+        The right-hand model is the reflection of the left through the yz
+        plane, computed live. R and S labels come from RDKit&apos;s CIP
+        implementation, not from the name.
+      </p>
+    </div>
+  );
+}
+
+function OrbitalPanel({ twist }: { twist: number }) {
+  // cos^2 is the standard angular dependence of p-orbital overlap.
+  const overlap = Math.cos((twist * Math.PI) / 180) ** 2;
+  return (
+    <div className="mt-3 space-y-3">
+      <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+        <Stat label="Twist" value={`${twist.toFixed(0)} deg`} />
+        <Stat
+          label="Remaining pi overlap"
+          value={
+            <span className={overlap < 0.15 ? 'text-rose-400' : 'text-emerald-400'}>
+              {(overlap * 100).toFixed(0)} %
+            </span>
+          }
+          hint="Proportional to cos squared of the twist angle"
+        />
+      </div>
+      <p className="text-[11px] leading-relaxed text-white/70">
+        The sigma bond is cylindrically symmetric about the C-C axis, so
+        turning the ends does nothing to it. The pi bond is made from two p
+        orbitals that must stay parallel to overlap at all. Twist them and the
+        bond weakens; at 90 degrees the overlap is zero and the pi bond is
+        broken.
+      </p>
+      <p className="text-[11px] leading-relaxed text-white/70">
+        That is the whole reason a C=C does not rotate at room temperature, and
+        therefore the reason cis and trans isomers are separate compounds
+        rather than two shapes of one.
+      </p>
+      <p className="text-[10px] leading-relaxed text-white/40">
+        Switch on the pi orbital overlay to see the lobes. The overlap figure
+        is the textbook cos-squared angular dependence, shown to make the trend
+        legible rather than as a calculated bond energy.
+      </p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Geometry helpers used only by this page
+// ---------------------------------------------------------------------------
+
+/** Reflect through the yz plane: the mirror image. */
+function mirrorImage(m: Molecule): Molecule {
+  return {
+    ...m,
+    key: `${m.key}-mirror`,
+    name: `${m.name} (mirror image)`,
+    atoms: m.atoms.map((a) => ({
+      ...a,
+      pos: [-a.pos[0], a.pos[1], a.pos[2]] as [number, number, number],
+      // Reflection inverts every descriptor.
+      cip: a.cip === 'R' ? 'S' : a.cip === 'S' ? 'R' : undefined,
+    })),
+  };
+}
+
+/**
+ * Is the molecule superimposable on its mirror image?
+ *
+ * Decided from the CIP descriptors rather than by attempting a 3D alignment:
+ * a molecule with no stereocentres is achiral, and one whose descriptors come
+ * in matched R/S pairs has an internal mirror plane and is meso. That covers
+ * every molecule in this library. It would not cover axial or planar
+ * chirality, which the library does not contain.
+ */
+function isAchiral(m: Molecule): boolean {
+  const codes = m.atoms.map((a) => a.cip).filter(Boolean) as string[];
+  if (codes.length === 0) return true;
+  const r = codes.filter((c) => c === 'R').length;
+  const s = codes.filter((c) => c === 'S').length;
+  return r === s && codes.length % 2 === 0;
+}
+
+/** Rotate one end of the ethene double bond, to break the pi overlap. */
+function twistAboutDoubleBond(base: Molecule, deg: number): Molecule {
+  const bond = base.bonds.find((b) => b.order === 2);
+  if (!bond) return base;
+  const a = new THREE.Vector3(...base.atoms[bond.a].pos);
+  const b = new THREE.Vector3(...base.atoms[bond.b].pos);
+  const axis = new THREE.Vector3().subVectors(b, a).normalize();
+  const q = new THREE.Quaternion().setFromAxisAngle(axis, (deg * Math.PI) / 180);
+
+  // Everything attached to the far carbon turns with it.
+  const moving = new Set<number>();
+  base.bonds.forEach((bd) => {
+    if (bd === bond) return;
+    if (bd.a === bond.b) moving.add(bd.b);
+    if (bd.b === bond.b) moving.add(bd.a);
+  });
+
+  return {
+    ...base,
+    key: 'ethene-twisted',
+    name: `Ethene, twisted ${deg.toFixed(0)} deg`,
+    atoms: base.atoms.map((atom, i) => {
+      if (!moving.has(i)) return atom;
+      const p = new THREE.Vector3(...atom.pos).sub(b).applyQuaternion(q).add(b);
+      return { ...atom, pos: [p.x, p.y, p.z] as [number, number, number] };
+    }),
+  };
+}
+
+function torsionOf(atoms: Molecule['atoms'], idx: number[]): number {
+  const [p0, p1, p2, p3] = idx.map((i) => new THREE.Vector3(...atoms[i].pos));
+  const b1 = new THREE.Vector3().subVectors(p1, p0);
+  const b2 = new THREE.Vector3().subVectors(p2, p1);
+  const b3 = new THREE.Vector3().subVectors(p3, p2);
+  const n1 = new THREE.Vector3().crossVectors(b1, b2);
+  const n2 = new THREE.Vector3().crossVectors(b2, b3);
+  const m = new THREE.Vector3().crossVectors(n1, b2.clone().normalize());
+  return (Math.atan2(m.dot(n2), n1.dot(n2)) * 180) / Math.PI;
 }
