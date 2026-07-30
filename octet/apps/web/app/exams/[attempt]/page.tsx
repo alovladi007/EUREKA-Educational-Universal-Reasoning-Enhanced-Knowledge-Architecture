@@ -442,7 +442,10 @@ export default function ExamAttemptPage() {
           in an API response nobody sees. */}
       <div className="mb-6 rounded-lg border border-border bg-muted/40 p-4">
         <p className="text-sm text-card-foreground">{attempt.feedback_policy}</p>
-        {!attempt.hints_available && (
+        {/* Only while the attempt is open. After submission every answer has
+            been marked, so "no answer is marked correct or incorrect until
+            you submit" describes the opposite of what is on screen. */}
+        {!attempt.hints_available && open && (
           <p className="mt-2 text-sm text-muted-foreground">
             Hints are not available on this page, and no answer is marked
             correct or incorrect until you submit.

@@ -490,6 +490,35 @@ async def test_an_open_attempt_over_http_carries_no_result_and_no_hints(client, 
 
 
 @pytest.mark.asyncio
+async def test_the_feedback_policy_matches_the_attempt_status(client, auth):
+    """The policy line must not contradict the screen it sits on.
+
+    One fixed string was sent whatever the status, so a submitted attempt
+    told the learner "nothing is graded until you submit" directly above the
+    grade it had just been given.
+    """
+    headers = auth("student", user_id="policy-learner")
+    started = await client.post(
+        "/api/v1/exams/attempts", json={"blueprint_code": CODE}, headers=headers
+    )
+    attempt_id = started.json()["attempt_id"]
+
+    open_policy = started.json()["feedback_policy"]
+    assert "until you submit" in open_policy
+
+    submitted = await client.post(
+        f"/api/v1/exams/attempts/{attempt_id}/submit", headers=headers
+    )
+    assert submitted.status_code == 200
+
+    reread = await client.get(f"/api/v1/exams/attempts/{attempt_id}", headers=headers)
+    closed_policy = reread.json()["feedback_policy"]
+    assert closed_policy != open_policy, "the policy did not change on submission"
+    assert "until you submit" not in closed_policy
+    assert "has been graded" in closed_policy
+
+
+@pytest.mark.asyncio
 async def test_one_learner_cannot_read_anothers_attempt_over_http(client, auth):
     owner = auth("student", user_id="owner")
     intruder = auth("student", user_id="intruder")

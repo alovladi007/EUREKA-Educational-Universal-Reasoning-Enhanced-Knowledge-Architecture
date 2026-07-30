@@ -86,12 +86,29 @@ def _attempt_view(attempt: ExamAttempt, answers: dict[int, str] | None = None) -
         "answered": sorted(answers),
         "notes": attempt.form.get("notes", []),
         "hints_available": False,
-        "feedback_policy": (
+        "feedback_policy": _feedback_policy(attempt.status),
+    }
+
+
+def _feedback_policy(status: str) -> str:
+    """What the learner is told about grading, in the tense that is true now.
+
+    This used to be one fixed sentence sent whatever the attempt's status,
+    so a submitted attempt told the learner "nothing is graded until you
+    submit" directly above the grade it had just been given. A policy line
+    that contradicts the screen it sits on teaches the learner to stop
+    reading policy lines.
+    """
+    if status == "in_progress":
+        return (
             "Nothing is graded until you submit. No answer is marked right or "
             "wrong while the exam is open, and hints are not available during "
             "an exam."
-        ),
-    }
+        )
+    return (
+        "This attempt is closed and has been graded. Your answers are shown "
+        "as you submitted them and can no longer be changed."
+    )
 
 
 @router.get("/exams")
