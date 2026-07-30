@@ -271,7 +271,20 @@ export default function ExamAttemptPage() {
           try {
             const res = await saveExamAnswer(attemptId, position, value);
             savedRef.current[position] = value;
-            setServerAnswered(res.answered ?? []);
+            // Merge rather than replace. Each item saves on its own loop, so
+            // several saves are in flight at once, and every response carries
+            // the answered list as it stood when the server handled that
+            // request. Assigning it outright let a response that started
+            // earlier land later and erase newer positions: a learner who
+            // answered all four items saw "3 of 4" and one item still marked
+            // unanswered, while the server in fact held all four. An answer is
+            // never withdrawn during an attempt, so the union is the true set
+            // and the merge is order independent.
+            setServerAnswered((prev) =>
+              Array.from(
+                new Set([...(prev ?? []), ...(res.answered ?? [])]),
+              ).sort((a, b) => a - b),
+            );
             // Rule 3, second half. Every answer response carries a fresh
             // clock, and the local countdown is resynchronised to it here.
             setSecondsLeft(res.seconds_remaining);
@@ -865,7 +878,10 @@ function ItemCard({
           This answer was not saved. {saveState.message}
         </p>
       )}
-      {saveState.kind === 'saved' && (
+      {/* Only while the attempt is open. Once it is closed the answer has
+          been graded and the result is on screen, so "it is not graded yet"
+          contradicts what the learner is reading beside it. */}
+      {saveState.kind === 'saved' && !closed && (
         <p className="mt-3 text-sm text-muted-foreground">
           Saved. It is not graded yet.
         </p>
