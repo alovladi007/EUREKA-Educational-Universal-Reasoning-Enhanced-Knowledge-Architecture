@@ -152,6 +152,93 @@ describe('cyclohexane chair is solved, not hand placed', () => {
   });
 });
 
+describe('a substituent stays on its face through a ring flip', () => {
+  // This is the exact claim the chair lesson makes and the POE item asks
+  // about, so it is asserted rather than trusted. The builder used to place
+  // the substituent "equatorial" unconditionally, which meant inverting the
+  // ring moved it to the other face -- teaching the opposite of the lesson.
+  const faceOf = (c: ReturnType<typeof cyclohexaneChair>) => {
+    const ring = c.molecule.atoms[0];
+    const sub = c.molecule.atoms.find(
+      (a, i) => i > 5 && a.el === 'C' && Math.abs(a.pos[1] - ring.pos[1]) < 2,
+    )!;
+    return Math.sign(sub.pos[1] - ring.pos[1]);
+  };
+
+  it.each(['methyl', 'tert-butyl'] as const)(
+    'keeps %s on the same side of the ring when the chair inverts',
+    (sub) => {
+      const up = cyclohexaneChair(1, sub);
+      const down = cyclohexaneChair(-1, sub);
+      expect(faceOf(up)).not.toBe(0);
+      expect(faceOf(down)).toBe(faceOf(up));
+    },
+  );
+
+  it('converts the substituent between axial and equatorial instead', () => {
+    // Lean along the ring axis is what distinguishes axial from equatorial.
+    const lean = (c: ReturnType<typeof cyclohexaneChair>) => {
+      const ring = c.molecule.atoms[0];
+      const sub = c.molecule.atoms.find(
+        (a, i) => i > 5 && a.el === 'C' && Math.abs(a.pos[1] - ring.pos[1]) < 2,
+      )!;
+      return Math.abs(sub.pos[1] - ring.pos[1]);
+    };
+    const up = lean(cyclohexaneChair(1, 'methyl'));
+    const down = lean(cyclohexaneChair(-1, 'methyl'));
+    // One chair holds it steeply (axial), the other shallowly (equatorial).
+    const steep = Math.max(up, down);
+    const shallow = Math.min(up, down);
+    expect(steep).toBeGreaterThan(shallow * 2);
+  });
+
+  it('honours an explicit face request', () => {
+    const upper = cyclohexaneChair(1, 'methyl', 1);
+    const lower = cyclohexaneChair(1, 'methyl', -1);
+    expect(faceOf(upper)).toBe(-faceOf(lower));
+  });
+
+  it('never lets the substituent collide with its geminal hydrogen', () => {
+    // Pinning the substituent to a face means it is axial in one chair, and
+    // the hydrogen has to take the other direction. Leaving the hydrogen on
+    // the axial vector unconditionally put the two 0.45 A apart -- physically
+    // impossible, and completely invisible in a screenshot because the
+    // hydrogen simply disappears inside the carbon.
+    for (const sub of ['methyl', 'tert-butyl'] as const) {
+      for (const face of [1, -1] as const) {
+        for (const pucker of [1, -1, 0.5]) {
+          const c = cyclohexaneChair(pucker, sub, face);
+          const ring = c.molecule.atoms[0];
+          const exo = c.molecule.bonds
+            .filter((b) => (b.a === 0 || b.b === 0))
+            .map((b) => (b.a === 0 ? b.b : b.a))
+            .filter((i) => i !== 1 && i !== 5);
+          expect(exo.length, `${sub} face ${face}`).toBe(2);
+          const [p, q] = exo.map((i) => c.molecule.atoms[i]);
+          expect(
+            distance(p, q),
+            `${sub} face ${face} pucker ${pucker}: exocyclic atoms overlap`,
+          ).toBeGreaterThan(1.7);
+          // Both must actually be bonded at a sane length to the ring carbon.
+          expect(distance(ring, p)).toBeGreaterThan(0.9);
+          expect(distance(ring, q)).toBeGreaterThan(0.9);
+        }
+      }
+    }
+  });
+
+  it('reports the substituted carbon in exactly one of axial or equatorial', () => {
+    for (const face of [1, -1] as const) {
+      const c = cyclohexaneChair(1, 'methyl', face);
+      // Six carbons, one exocyclic group each in either list, no double count.
+      expect(c.axial).toHaveLength(6);
+      expect(c.equatorial).toHaveLength(6);
+      const all = [...c.axial, ...c.equatorial];
+      expect(new Set(all).size, `face ${face}`).toBe(all.length);
+    }
+  });
+});
+
 describe('A values give the equilibrium the course cites', () => {
   it('puts methylcyclohexane about 95 percent equatorial at 298 K', () => {
     const pct = equatorialPercent(A_VALUES.methyl.kj);

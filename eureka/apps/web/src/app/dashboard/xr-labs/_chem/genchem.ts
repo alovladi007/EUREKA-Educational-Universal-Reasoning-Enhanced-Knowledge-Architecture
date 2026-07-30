@@ -393,25 +393,90 @@ export const ORBITALS: OrbitalSpec[] = [
 ];
 
 /**
- * Point cloud for an orbital, sampled from the real hydrogenic angular
- * functions.
+ * The exact hydrogenic radial wavefunction R(n,l,r), in Bohr radii with Z=1.
  *
- * Each point is a sample position; density of points stands in for
- * probability density. Sign is tracked so the two phases can be drawn in
- * different colours, which is what makes bonding and antibonding overlap
- * meaningful later.
+ * These are the real closed forms, not an envelope shaped to look right. The
+ * earlier version used exp(-r/a) multiplied by (r/a - k) once per radial node,
+ * which puts nodes in roughly the correct places and gets the amplitudes and
+ * the spacing wrong. Since the whole point of the orbital mode is that a node
+ * is a surface where the probability is genuinely zero, an approximation that
+ * merely has the right NUMBER of zeroes was teaching the shape of the idea
+ * rather than the thing itself.
  *
- * The radial part is a simple exponential envelope with the right number of
- * nodes rather than the exact Laguerre polynomial: it puts the shells in the
- * right places and keeps the shapes honest, and the labs describe it as a
- * schematic of the shape rather than a computed wavefunction.
+ * Normalisation constants are omitted throughout: the cloud is produced by
+ * rejection sampling, which only needs the density up to a constant factor.
+ */
+function radialWavefunction(n: number, l: number, r: number): number {
+  const rho = r / n; // 2Zr/(n a0) folded into the standard forms below
+  switch (`${n}${l}`) {
+    case '10': // 1s
+      return Math.exp(-r);
+    case '20': // 2s: one radial node at r = 2
+      return (2 - r) * Math.exp(-r / 2);
+    case '21': // 2p: no radial node
+      return r * Math.exp(-r / 2);
+    case '30': // 3s: two radial nodes
+      return (27 - 18 * r + 2 * r * r) * Math.exp(-r / 3);
+    case '31': // 3p
+      return r * (6 - r) * Math.exp(-r / 3);
+    case '32': // 3d: no radial node
+      return r * r * Math.exp(-r / 3);
+    default:
+      // Nothing outside 1s..3d is offered by the lab, so an unknown
+      // combination is a programming error rather than something to
+      // approximate around.
+      throw new Error(`no radial wavefunction for n=${n} l=${l} (rho ${rho})`);
+  }
+}
+
+/** Real spherical harmonic, up to normalisation, for the shapes on offer. */
+function angular(kind: OrbitalSpec['kind'], theta: number, phi: number): number {
+  switch (kind) {
+    case 's':
+      return 1;
+    case 'p':
+      // p_z
+      return Math.cos(theta);
+    case 'd-cloverleaf':
+      // d_xz
+      return Math.sin(theta) * Math.cos(theta) * Math.cos(phi);
+    case 'd-z2':
+      return (3 * Math.cos(theta) ** 2 - 1) / 2;
+    default:
+      return 1;
+  }
+}
+
+const L_OF_KIND: Record<OrbitalSpec['kind'], number> = {
+  s: 0,
+  p: 1,
+  'd-cloverleaf': 2,
+  'd-z2': 2,
+};
+
+/**
+ * Point cloud for an orbital, sampled from the real hydrogenic wavefunction.
+ *
+ * Each point is one sample of the position probability density
+ * |psi|^2 = |R(n,l,r)|^2 |Y(theta,phi)|^2, drawn by rejection sampling, so the
+ * density of dots IS the probability density rather than standing in for it.
+ * Radial nodes appear as genuinely empty shells because the wavefunction is
+ * genuinely zero there, not because a factor was inserted to make a gap.
+ *
+ * The sign of psi is carried per point so the two phases can be drawn in
+ * different colours. That is what makes constructive and destructive overlap
+ * meaningful later, and it is a property of the wavefunction rather than a
+ * decoration.
  */
 export function orbitalPoints(
   spec: OrbitalSpec,
   count = 2600,
 ): { pos: [number, number, number]; sign: 1 | -1 }[] {
   const out: { pos: [number, number, number]; sign: 1 | -1 }[] = [];
-  const scale = 1.1 + spec.n * 0.55;
+  const l = L_OF_KIND[spec.kind];
+  // Sample out to where the density has become negligible for this shell.
+  const rMax = 4 + 6 * spec.n;
+
   // Deterministic sampling so the cloud does not shimmer between renders.
   let seed = 12345;
   const rnd = () => {
@@ -419,46 +484,44 @@ export function orbitalPoints(
     return seed / 4294967296;
   };
 
+  // Find a ceiling for the density so rejection sampling stays efficient and,
+  // more importantly, unbiased: a guessed ceiling that is too low silently
+  // truncates the tail.
+  let peak = 0;
+  for (let i = 1; i <= 600; i += 1) {
+    const r = (i / 600) * rMax;
+    const d = radialWavefunction(spec.n, l, r) ** 2 * r * r;
+    if (d > peak) peak = d;
+  }
+  const angularPeak = spec.kind === 'd-cloverleaf' ? 0.5 : 1;
+  const ceiling = peak * angularPeak * angularPeak * 1.05;
+
   let tries = 0;
-  while (out.length < count && tries < count * 60) {
+  while (out.length < count && tries < count * 400) {
     tries += 1;
-    // Uniform point in a ball, then accept against the angular probability.
+    // Uniform direction on the sphere, radius uniform in r with the r^2
+    // Jacobian carried in the density below.
     const u = rnd() * 2 - 1;
     const theta = Math.acos(u);
     const phi = rnd() * Math.PI * 2;
-    const r = Math.cbrt(rnd()) * scale * 2.4;
+    const r = rnd() * rMax;
 
-    const st = Math.sin(theta);
-    const x = r * st * Math.cos(phi);
-    const y = r * Math.cos(theta);
-    const z = r * st * Math.sin(phi);
+    const R = radialWavefunction(spec.n, l, r);
+    const Y = angular(spec.kind, theta, phi);
+    const density = R * R * r * r * Y * Y;
 
-    let angular = 1;
-    let sign: 1 | -1 = 1;
-    if (spec.kind === 'p') {
-      angular = Math.cos(theta);
-      sign = angular >= 0 ? 1 : -1;
-      angular = Math.abs(angular);
-    } else if (spec.kind === 'd-cloverleaf') {
-      // dxz-like: sin(theta)cos(theta)cos(phi), giving four lobes.
-      const v = Math.sin(theta) * Math.cos(theta) * Math.cos(phi);
-      sign = v >= 0 ? 1 : -1;
-      angular = Math.abs(v) * 2;
-    } else if (spec.kind === 'd-z2') {
-      const v = (3 * Math.cos(theta) ** 2 - 1) / 2;
-      sign = v >= 0 ? 1 : -1;
-      angular = Math.abs(v);
-    }
-
-    // Radial envelope with the right node count.
-    let radial = Math.exp(-r / scale);
-    for (let k = 1; k <= spec.radialNodes; k += 1) {
-      radial *= r / scale - k;
-    }
-    const density = angular * angular * radial * radial * r * r;
-
-    if (rnd() < density * 6) {
-      out.push({ pos: [x, y, z], sign });
+    if (rnd() * ceiling < density) {
+      const st = Math.sin(theta);
+      // Scale into scene units. Bohr radii would make 3d fill the screen.
+      const k = 0.42;
+      out.push({
+        pos: [
+          r * st * Math.cos(phi) * k,
+          r * Math.cos(theta) * k,
+          r * st * Math.sin(phi) * k,
+        ],
+        sign: R * Y >= 0 ? 1 : -1,
+      });
     }
   }
   return out;

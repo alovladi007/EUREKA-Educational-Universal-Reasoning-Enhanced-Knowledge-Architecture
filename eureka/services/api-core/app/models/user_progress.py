@@ -32,7 +32,19 @@ from app.core.database import Base
 
 
 class ExamTypeKind(str, enum.Enum):
-    """Stable identifiers matching the frontend's exam-config.ts keys."""
+    """Stable identifiers matching the frontend's exam-config.ts keys.
+
+    OCTET_CHEM is the one member that is not an exam. The XR chemistry labs
+    record predict-observe-explain outcomes per OCTET curriculum node, and this
+    table is the platform's only per-topic mastery store: it already keys on
+    (user, scope, topic) with a smoothed accuracy, which is exactly the shape
+    that evidence needs. Its topic_id holds a node code such as ORG1.CHAIR
+    rather than an exam topic, so anything enumerating exam types for a UI
+    should filter this member out.
+
+    The column is a varchar rather than a Postgres enum, so adding a member
+    needs no migration.
+    """
     PATENT_BAR = "PATENT_BAR"
     MCAT = "MCAT"
     LSAT = "LSAT"
@@ -44,6 +56,7 @@ class ExamTypeKind(str, enum.Enum):
     SAT = "SAT"
     GRE = "GRE"
     GMAT = "GMAT"
+    OCTET_CHEM = "OCTET_CHEM"
 
 
 class UserProgress(Base):

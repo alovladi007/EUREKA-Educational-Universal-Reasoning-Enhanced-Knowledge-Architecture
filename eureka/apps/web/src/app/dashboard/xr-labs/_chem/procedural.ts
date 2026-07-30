@@ -281,6 +281,14 @@ export interface ChairResult {
 export function cyclohexaneChair(
   pucker: number,
   substituent: 'none' | 'methyl' | 'tert-butyl' = 'none',
+  /**
+   * Which side of the ring the substituent sits on, +1 or -1.
+   *
+   * A substituent is bonded to one face of the ring and stays there. Whether
+   * that bond is called axial or equatorial is a fact about the current chair,
+   * not about the molecule, and it is what the ring flip changes.
+   */
+  substituentFace: 1 | -1 = 1,
 ): ChairResult {
   const dMax = 0.25;
   const d = dMax * pucker;
@@ -338,14 +346,28 @@ export function cyclohexaneChair(
     const eqDir = aIsAxial ? dirB : dirA;
 
     const subHere = substituent !== 'none' && i === 0;
-    // Put the substituent equatorial, which is the point of the A-value story.
     const subLen = C_C;
 
     if (subHere) {
-      atoms.push({ el: 'C', pos: add(c, scale(eqDir, subLen)), lp: 0, sn: 4, hyb: 'sp3' });
+      // The substituent is placed by which FACE of the ring it is on, not by
+      // whether that position is currently called axial or equatorial.
+      //
+      // This matters, and getting it wrong inverts the lesson. Placing it
+      // "equatorial" unconditionally means that when the ring inverts, the
+      // group follows whichever direction has become equatorial -- so it
+      // appears to jump to the other face of the ring. That is precisely the
+      // belief the chair lesson exists to kill: a flip swaps axial and
+      // equatorial and moves nothing between faces. Pinning the face instead
+      // makes the model do what the chemistry does, and the group converts
+      // from equatorial to axial on its own.
+      const subDir = Math.sign(axDir[1]) === substituentFace ? axDir : eqDir;
+      const hDir = subDir === axDir ? eqDir : axDir;
+      const subIsAxial = subDir === axDir;
+
+      atoms.push({ el: 'C', pos: add(c, scale(subDir, subLen)), lp: 0, sn: 4, hyb: 'sp3' });
       const subIdx = atoms.length - 1;
       bonds.push({ a: i, b: subIdx, order: 1 });
-      equatorial.push(subIdx);
+      (subIsAxial ? axial : equatorial).push(subIdx);
 
       if (substituent === 'tert-butyl') {
         // Three methyls on the quaternary carbon.
@@ -371,9 +393,13 @@ export function cyclohexaneChair(
         }
       }
 
-      atoms.push({ el: 'H', pos: add(c, scale(axDir, C_H)), lp: 0, sn: 1 });
+      // The geminal hydrogen takes whichever direction the substituent did
+      // not. Placing it along axDir unconditionally put it on top of an axial
+      // substituent, 0.45 A apart instead of 2.16, and left the axial and
+      // equatorial index arrays wrong for this carbon.
+      atoms.push({ el: 'H', pos: add(c, scale(hDir, C_H)), lp: 0, sn: 1 });
       bonds.push({ a: i, b: atoms.length - 1, order: 1 });
-      axial.push(atoms.length - 1);
+      (subIsAxial ? equatorial : axial).push(atoms.length - 1);
     } else {
       atoms.push({ el: 'H', pos: add(c, scale(axDir, C_H)), lp: 0, sn: 1 });
       bonds.push({ a: i, b: atoms.length - 1, order: 1 });

@@ -20,6 +20,11 @@
  *              samples, with nodes where the probability is actually zero.
  *   Forces     GEN1M12 and GEN1M13, hydrogen bonding mistaken for a covalent
  *              bond, and covalent bonds believed to break on boiling.
+ *   Bench      GEN2M04 and the titration nodes. The burette and the curve stay
+ *              locked until a prediction has been committed, because a result
+ *              you are allowed to read first is not one you can predict.
+ *   Triangle   Johnstone's three levels for one node at a time, with the
+ *              particulate pane beside the model it was describing.
  *
  * Structural data is derived, not typed: molecules come from the RDKit
  * generator, and the shapes RDKit cannot embed (hypervalent centres, boron)
@@ -31,16 +36,19 @@ import Link from 'next/link';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, Line, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
+import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import toast from 'react-hot-toast';
 import {
   ArrowLeft,
   Boxes,
   Droplets,
+  FlaskConical,
   Magnet,
   Orbit,
   Pause,
   Play,
   Shapes,
+  Triangle,
 } from 'lucide-react';
 
 import { useXrSession } from '@/lib/xr/use-xr-session';
@@ -57,7 +65,21 @@ import {
   waterDimer,
 } from '../_chem/genchem';
 import {
-  HelpLine,
+  EquilibriumVessel,
+  TitrationBench,
+  TitrationCurve,
+} from '../_chem/Bench';
+import { PoePanel, type PoeOutcome } from '../_chem/Poe';
+import {
+  KeyboardHint,
+  TourOverlay,
+  useKeyboardOrbit,
+  type TourStep,
+} from '../_chem/Tour';
+import { TriangleList, TrianglePanel, triangleViewsFor } from '../_chem/Triangle';
+import { POE_ITEMS, SCENARIOS } from '../_chem/chemContent';
+import { recordOutcome } from '../_chem/mastery';
+import {
   ModelNote,
   NodeBadge,
   Panel,
@@ -68,7 +90,14 @@ import {
 } from '../_chem/ui';
 import { DEFAULT_OVERLAYS, type RenderStyle, type SceneOverlays } from '../_chem/types';
 
-type Mode = 'vsepr' | 'polarity' | 'lattice' | 'orbitals' | 'forces';
+type Mode =
+  | 'vsepr'
+  | 'polarity'
+  | 'lattice'
+  | 'orbitals'
+  | 'forces'
+  | 'bench'
+  | 'triangle';
 
 const MODES: { id: Mode; label: string; icon: typeof Shapes }[] = [
   { id: 'vsepr', label: 'VSEPR shapes', icon: Shapes },
@@ -76,7 +105,124 @@ const MODES: { id: Mode; label: string; icon: typeof Shapes }[] = [
   { id: 'lattice', label: 'Ionic lattice', icon: Boxes },
   { id: 'orbitals', label: 'Orbitals', icon: Orbit },
   { id: 'forces', label: 'Forces between', icon: Droplets },
+  { id: 'bench', label: 'Bench', icon: FlaskConical },
+  { id: 'triangle', label: 'Triangle', icon: Triangle },
 ];
+
+/** This portal is the general-chemistry half of the collection. */
+const GEN_TRIANGLE_VIEWS = triangleViewsFor(['GEN']);
+
+/**
+ * What each mode is for, and one thing to do in it.
+ *
+ * Written per mode rather than once for the portal because the modes teach
+ * different things, and a tour that says "drag to rotate" is a tour that has
+ * told a learner nothing they could not have guessed.
+ */
+const TOURS: Record<Mode, TourStep[]> = {
+  vsepr: [
+    {
+      title: 'The count is the answer',
+      body: 'Every value in the right panel is read off the model in front of you. The shape comes from how many electron domains the central atom carries, and the formula is never consulted.',
+      tryIt: 'Open AX4 and then AX2E2. Both have four domains and the same electron geometry, and only the one carrying two lone pairs is bent.',
+    },
+    {
+      title: 'The domains with no atom on the end',
+      body: 'A lone pair pushes on the other domains exactly as a bond does, but the shape is named from the atoms alone. That gap between what shapes the molecule and what names it is where most of the marks go.',
+      tryIt: 'Turn Lone pairs off on AX3E. Without the overlay the model looks like it has no reason not to be flat.',
+    },
+  ],
+  polarity: [
+    {
+      title: 'Polar bonds, no dipole',
+      body: 'Whether a bond is polar and whether the molecule is polar are two different questions. The second one is settled by geometry, which is the thing a flat drawing cannot show you.',
+      tryIt: 'Turn Dipoles on and pick Carbon tetrachloride. Four strongly polar bonds, arranged so the four arrows cancel exactly.',
+    },
+    {
+      title: 'Break the symmetry',
+      body: 'Swapping one atom is enough to stop the cancellation, and none of the individual bonds changed when you did it.',
+      tryIt: 'Go from Carbon tetrachloride to Chloroform and watch the sum stop being zero.',
+    },
+  ],
+  lattice: [
+    {
+      title: 'There are no molecules here',
+      body: 'The scene draws ions and no sticks at all. Bonds would smuggle molecules back into a picture whose whole point is that there is no NaCl particle to find.',
+      tryIt: 'Try to pick out one sodium that belongs to one particular chloride. Every ion is held by all six of its neighbours instead.',
+    },
+    {
+      title: 'A formula that names a ratio',
+      body: 'NaCl states the one to one ratio of ions in the repeating pattern. It is not a count of atoms in a particle, because there is no particle.',
+      tryIt: 'Switch to Caesium chloride. The same one to one ratio, packed differently, because the caesium ion is much larger.',
+    },
+  ],
+  orbitals: [
+    {
+      title: 'A cloud, not an orbit',
+      body: 'Each dot is one sample of where the electron could be found. There is no path and no lap time, so asking where the electron is right now has no answer to give.',
+      tryIt: 'Pause the rotation and look straight at the centre of the 2p orbital. The nucleus sits in a gap, because the density there is zero.',
+    },
+    {
+      title: 'Nodes are genuinely empty',
+      body: 'The dots are drawn from the exact hydrogenic wavefunction, so an empty shell is empty because the wavefunction is zero across it, not because a gap was drawn in to look convincing.',
+      tryIt: 'Pick 2s and find the empty shell between the inner ball and the outer one. That is the single radial node the panel counts.',
+    },
+    {
+      title: 'Colour is phase',
+      body: 'Blue and pink are the sign of the wavefunction, not charge. Sign is what decides whether two orbitals reinforce or cancel when a bond forms, so it is worth reading as a real feature rather than decoration.',
+    },
+  ],
+  forces: [
+    {
+      title: 'Two different bonds in one picture',
+      body: 'The solid sticks inside each water are covalent bonds. The dashed line running between the two molecules is a hydrogen bond, and it is roughly twenty times weaker than the sticks it connects.',
+      tryIt: 'Read both numbers at once: about 0.96 A inside a molecule, about 2.8 A across the gap.',
+    },
+    {
+      title: 'What boiling actually breaks',
+      body: 'Separating the molecules costs the hydrogen bond and nothing else. Steam is still water, because the O-H bonds were never involved.',
+      tryIt: 'Drag the O to O distance out to 7 A and watch the O-H bond length stay exactly where it started.',
+    },
+  ],
+  bench: [
+    {
+      title: 'Commit before you look',
+      body: 'The burette is locked and the readouts are hidden until a prediction has been committed. A result you are allowed to read first is not one you can predict, and the predicting is the part that does the work.',
+      tryIt: 'Answer the Predict question in the right panel, then come back to the burette.',
+    },
+    {
+      title: 'One slider, two representations',
+      body: 'The flask colour and the moving point on the curve are driven by the same volume. Watching them together is the link between a colour changing in front of you and a line going vertical.',
+      tryIt: 'Walk the burette up to 25 mL a quarter of a millilitre at a time, and count how few drops the whole colour change takes.',
+    },
+    {
+      title: 'The vessel counts particles',
+      body: 'For the equilibrium scenarios the vessel holds the mixture at the instant the stress is applied, and switches to where it settles once you have observed. The particles never stop reacting; it is the counts that stop moving.',
+      tryIt: 'Run the catalyst scenario and compare the two states. Nothing moves, which is exactly what a catalyst does to a position of equilibrium.',
+    },
+    {
+      title: 'What gets recorded',
+      body: 'Finishing the loop writes the prediction and the explanation to your progress on this curriculum node as two separate attempts, so being right for the wrong reason stays visible instead of being averaged away.',
+    },
+  ],
+  triangle: [
+    {
+      title: 'Three levels, said out loud',
+      body: 'Chemistry teaching moves constantly between what you could observe, what the particles are doing, and what gets written down, usually without announcing the switch. This shows all three for one node at once.',
+      tryIt: 'Click one level to dim the other two, then ask which level the last thing you read was on.',
+    },
+    {
+      title: 'The connector carries the load',
+      body: 'The green box names the one quantity or object that is identical across all three panes. That sentence is the part a learner cannot reconstruct alone, so it is not left implied.',
+      tryIt: 'Read the particulate pane, then the connector, then look at the model on the canvas and check all three are about the same object.',
+    },
+    {
+      title: 'The picture beside the words',
+      body: 'The particulate pane carries a caption written when this system had no artwork at all. Read the other way round, it is a specification for the scene sitting next to it.',
+      tryIt: 'The molecule on the canvas is whatever Polarity currently has selected, so choose there first if you want a particular one beside these words.',
+    },
+  ],
+};
 
 export default function GeneralChemistryPortal() {
   const [mode, setMode] = useState<Mode>('vsepr');
@@ -93,14 +239,43 @@ export default function GeneralChemistryPortal() {
   const [spinning, setSpinning] = useState(true);
   const [selectedAtom, setSelectedAtom] = useState<number | null>(null);
   const [showStars, setShowStars] = useState(false);
+  const [triangleNode, setTriangleNode] = useState(GEN_TRIANGLE_VIEWS[0].node);
+  const [scenarioId, setScenarioId] = useState(SCENARIOS[0].id);
+  const [burette, setBurette] = useState(0);
+  const [observed, setObserved] = useState(false);
+  const [masteryNote, setMasteryNote] = useState<{
+    ok: boolean;
+    node: string;
+    level: number;
+  } | null>(null);
 
   const { recorded, endWithRating } = useXrSession(
     '/dashboard/xr-labs/general-chemistry',
   );
 
+  const controlsRef = useRef<OrbitControlsImpl | null>(null);
+  const { onKeyDown, announcement } = useKeyboardOrbit(controlsRef);
+  // Time on the current POE item, which is what a mastery attempt is timed
+  // against. Reset whenever a different item comes on screen.
+  const attemptStartedAt = useRef(Date.now());
+
   const vseprCase = VSEPR_CASES.find((c) => c.key === vseprKey) ?? VSEPR_CASES[0];
   const latticeSpec = LATTICES.find((l) => l.key === latticeKey) ?? LATTICES[0];
   const orbitalSpec = ORBITALS.find((o) => o.key === orbitalKey) ?? ORBITALS[0];
+  const triangleView =
+    GEN_TRIANGLE_VIEWS.find((v) => v.node === triangleNode) ?? GEN_TRIANGLE_VIEWS[0];
+
+  const scenario = SCENARIOS.find((s) => s.id === scenarioId) ?? SCENARIOS[0];
+  const titration = scenario.derived.kind === 'titration' ? scenario.derived : null;
+  const equilibrium =
+    scenario.derived.kind === 'equilibrium' ? scenario.derived : null;
+  const poeItem = POE_ITEMS.filter((i) => i.scenario === scenario.id)[0] ?? null;
+  // A scenario with no authored item has nothing to predict, so gating it
+  // would leave a dead bench rather than enforce anything.
+  const revealed = observed || poeItem === null;
+  const buretteMax = titration
+    ? (titration.curve[titration.curve.length - 1]?.v ?? 0)
+    : 0;
 
   const built = useMemo(() => buildVsepr(vseprCase), [vseprCase]);
   const lattice = useMemo(() => buildLattice(latticeSpec, 2), [latticeSpec]);
@@ -119,6 +294,28 @@ export default function GeneralChemistryPortal() {
     [],
   );
 
+  const pickScenario = useCallback((id: string) => {
+    setScenarioId(id);
+    setBurette(0);
+    setObserved(false);
+    setMasteryNote(null);
+    attemptStartedAt.current = Date.now();
+  }, []);
+
+  const onObserve = useCallback(() => setObserved(true), []);
+
+  const onPoeComplete = useCallback(async (outcome: PoeOutcome) => {
+    const row = await recordOutcome(
+      outcome,
+      (Date.now() - attemptStartedAt.current) / 1000,
+    );
+    setMasteryNote({
+      ok: row !== null,
+      node: outcome.node,
+      level: row?.mastery_level ?? 0,
+    });
+  }, []);
+
   const finishAndRate = async (rating: number | null) => {
     setShowStars(false);
     const xp = await endWithRating(rating);
@@ -132,52 +329,152 @@ export default function GeneralChemistryPortal() {
 
   const selected = selectedAtom !== null ? shown.atoms[selectedAtom] : null;
   // The lattice and the VSEPR catalogue are exact constructions; the polarity
-  // molecules are optimised conformers. Say which is on screen.
-  const modelKind = mode === 'polarity' || mode === 'forces' ? 'computed' : 'idealised';
+  // molecules are optimised conformers. Say which is on screen. Triangle mode
+  // borrows the polarity molecule, so it borrows the note with it.
+  const modelKind =
+    mode === 'polarity' || mode === 'forces' || mode === 'triangle'
+      ? 'computed'
+      : 'idealised';
 
-  // Auto-frame: a lattice is far bigger than a molecule.
-  const camDistance = mode === 'lattice' ? 26 : mode === 'orbitals' ? 12 : 9;
+  // Auto-frame: a lattice is far bigger than a molecule, and the bench is a
+  // stand of glassware rather than a particle.
+  const camDistance =
+    mode === 'lattice' ? 26 : mode === 'orbitals' ? 12 : mode === 'bench' ? 11 : 9;
+
+  const modeLabel = MODES.find((m) => m.id === mode)?.label ?? '';
+
+  /**
+   * The result the POE loop is asking about.
+   *
+   * Built once and rendered in exactly one place, because a second copy of it
+   * somewhere ungated would hand over the answer before the prediction.
+   */
+  const readout = titration ? (
+    <div className="space-y-2">
+      <TitrationCurve
+        derived={titration}
+        volume={burette}
+        width={286}
+        height={168}
+      />
+      <div>
+        <Stat
+          label="Equivalence volume"
+          value={`${titration.landmarks.equivalence_volume_mL.toFixed(2)} mL`}
+        />
+        <Stat
+          label="pH at equivalence"
+          value={
+            <span className="text-amber-300">
+              {titration.landmarks.equivalence_pH.toFixed(2)}
+            </span>
+          }
+        />
+        <Stat
+          label="pH at half equivalence"
+          value={titration.landmarks.half_equivalence_pH.toFixed(2)}
+          hint="For a weak acid this one is the pKa."
+        />
+        <Stat
+          label="pH before any titrant"
+          value={titration.landmarks.initial_pH.toFixed(2)}
+        />
+      </div>
+    </div>
+  ) : equilibrium ? (
+    <div>
+      <Stat
+        label="Which way it shifted"
+        value={
+          <span className="text-amber-300">{equilibrium.result.direction}</span>
+        }
+      />
+      <Stat
+        label="Q before the shift"
+        value={equilibrium.result.q_before.toFixed(3)}
+        hint="Compare it with K. That comparison is the whole prediction."
+      />
+      <Stat
+        label="K at this temperature"
+        value={equilibrium.result.k.toFixed(3)}
+        hint="Only temperature moves this number."
+      />
+      {Object.entries(equilibrium.result.final).map(([name, molar]) => (
+        <Stat
+          key={name}
+          label={`${name} once it settles`}
+          value={`${molar.toFixed(4)} M`}
+        />
+      ))}
+    </div>
+  ) : null;
 
   return (
     <div className="fixed inset-0 z-50 bg-[#070a14] text-white">
-      <Canvas
-        camera={{ position: [0, 2.2, camDistance], fov: 48, near: 0.05, far: 500 }}
-        legacy
-        gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15 }}
-        dpr={[1, 2]}
+      {/* Focusable so the scene can be orbited without a pointer. */}
+      <div
+        className="absolute inset-0 outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-sky-400/60"
+        tabIndex={0}
+        role="application"
+        aria-label={`3D view: ${modeLabel}. Arrow keys rotate, plus and minus zoom, 0 resets the view.`}
+        onKeyDown={onKeyDown}
       >
-        <Suspense fallback={null}>
-          <ChemLights />
+        <Canvas
+          camera={{ position: [0, 2.2, camDistance], fov: 48, near: 0.05, far: 500 }}
+          legacy
+          gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.15 }}
+          dpr={[1, 2]}
+        >
+          <Suspense fallback={null}>
+            <ChemLights />
 
-          {mode === 'orbitals' ? (
-            <OrbitalCloud points={cloud} spinning={spinning} />
-          ) : (
-            <>
-              <MoleculeScene
-                molecule={shown}
-                style={mode === 'lattice' ? 'space-filling' : style}
-                overlays={mode === 'lattice' ? { ...overlays, lonePairs: false } : overlays}
-                spinning={spinning}
-                selectedAtom={selectedAtom}
-                measureSet={[]}
-                onPickAtom={onPickAtom}
-              />
-              {mode === 'vsepr' && overlays.lonePairs && (
-                <VseprLonePairs dirs={built.lonePairDirs} />
-              )}
-              {mode === 'forces' && <HydrogenBond molecule={shown} />}
-            </>
-          )}
+            {mode === 'orbitals' ? (
+              <OrbitalCloud points={cloud} spinning={spinning} />
+            ) : mode === 'bench' ? (
+              <>
+                {titration && (
+                  <TitrationBench
+                    derived={titration}
+                    volume={burette}
+                    running={revealed}
+                  />
+                )}
+                {equilibrium && (
+                  <EquilibriumVessel
+                    derived={equilibrium}
+                    showStressed={revealed}
+                  />
+                )}
+              </>
+            ) : (
+              <>
+                <MoleculeScene
+                  molecule={shown}
+                  style={mode === 'lattice' ? 'space-filling' : style}
+                  overlays={mode === 'lattice' ? { ...overlays, lonePairs: false } : overlays}
+                  spinning={spinning}
+                  selectedAtom={selectedAtom}
+                  measureSet={[]}
+                  onPickAtom={onPickAtom}
+                />
+                {mode === 'vsepr' && overlays.lonePairs && (
+                  <VseprLonePairs dirs={built.lonePairDirs} />
+                )}
+                {mode === 'forces' && <HydrogenBond molecule={shown} />}
+              </>
+            )}
 
-          <OrbitControls
-            enableDamping
-            dampingFactor={0.08}
-            minDistance={2}
-            maxDistance={120}
-            makeDefault
-          />
-        </Suspense>
-      </Canvas>
+            <OrbitControls
+              ref={controlsRef}
+              enableDamping
+              dampingFactor={0.08}
+              minDistance={2}
+              maxDistance={120}
+              makeDefault
+            />
+          </Suspense>
+        </Canvas>
+      </div>
 
       {/* ---------------- Top bar ---------------- */}
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex flex-wrap items-center justify-between gap-3 p-4">
@@ -199,6 +496,7 @@ export default function GeneralChemistryPortal() {
                 onClick={() => {
                   setMode(m.id);
                   setSelectedAtom(null);
+                  attemptStartedAt.current = Date.now();
                 }}
                 className={`flex items-center gap-1.5 rounded px-3 py-1.5 text-xs font-medium transition-colors ${
                   mode === m.id
@@ -348,7 +646,74 @@ export default function GeneralChemistryPortal() {
           </Panel>
         )}
 
-        {mode !== 'orbitals' && (
+        {mode === 'bench' && (
+          <>
+            <Panel className="p-3">
+              <PanelTitle>Scenario</PanelTitle>
+              <div className="flex flex-col gap-1">
+                {SCENARIOS.map((s) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={() => pickScenario(s.id)}
+                    className={`rounded px-2.5 py-1.5 text-left transition-colors ${
+                      s.id === scenarioId ? 'bg-sky-500' : 'bg-white/5 hover:bg-white/10'
+                    }`}
+                  >
+                    <div className="text-[11px] font-semibold leading-tight">
+                      {s.title}
+                    </div>
+                    <div className="font-mono text-[9px] text-white/50">{s.kind}</div>
+                  </button>
+                ))}
+              </div>
+            </Panel>
+
+            {titration && (
+              <Panel className="p-3">
+                <PanelTitle>Burette</PanelTitle>
+                {/* The shared Slider has no disabled state, and this control
+                    has to be genuinely inert before a prediction exists. */}
+                <label className="block">
+                  <div className="mb-1 flex items-baseline justify-between">
+                    <span className="text-[11px] text-white/60">Titrant added</span>
+                    <span className="font-mono text-xs font-semibold text-white">
+                      {burette.toFixed(2)} mL
+                    </span>
+                  </div>
+                  <input
+                    type="range"
+                    min={0}
+                    max={buretteMax}
+                    step={0.25}
+                    value={burette}
+                    disabled={!revealed}
+                    onChange={(e) => setBurette(Number(e.target.value))}
+                    aria-label="Titrant added, mL"
+                    className="h-1.5 w-full appearance-none rounded-full bg-white/15 accent-sky-400 disabled:cursor-not-allowed disabled:opacity-40"
+                  />
+                </label>
+                <p className="mt-2 text-[11px] leading-relaxed text-white/60">
+                  {revealed
+                    ? 'The flask colour and the moving point on the curve are this one volume read twice. The pH is the nearest computed point rather than an interpolation, so no value on screen was invented between them.'
+                    : 'Locked until you commit a prediction in the right panel. Running it first would leave nothing to predict.'}
+                </p>
+              </Panel>
+            )}
+          </>
+        )}
+
+        {mode === 'triangle' && (
+          <Panel className="p-3">
+            <TriangleList
+              views={GEN_TRIANGLE_VIEWS}
+              selected={triangleNode}
+              onSelect={setTriangleNode}
+            />
+          </Panel>
+        )}
+
+        {mode !== 'orbitals' && mode !== 'bench' && (
           <Panel className="p-3">
             <PanelTitle>Show</PanelTitle>
             <div className="flex flex-wrap gap-1">
@@ -421,11 +786,87 @@ export default function GeneralChemistryPortal() {
                 ))}
               </ul>
               <p className="mt-3 text-[10px] leading-relaxed text-white/40">
-                The angular part is the real hydrogenic function, so the lobe
-                shapes and nodal planes are right. The radial part is an
-                envelope with the correct number of nodes rather than the exact
-                Laguerre polynomial: this is a schematic of the shape, not a
-                computed wavefunction.
+                Every dot is one sample of the exact hydrogenic wavefunction
+                with Z equal to 1, drawn from the probability density
+                |psi|^2 = |R(n,l,r)|^2 |Y(theta,phi)|^2. The density of the
+                dots IS the probability density rather than standing in for it,
+                and a radial node is empty because the wavefunction is
+                genuinely zero across that shell.
+              </p>
+            </>
+          ) : mode === 'triangle' ? (
+            <TrianglePanel view={triangleView} />
+          ) : mode === 'bench' ? (
+            <>
+              <h2 className="text-lg font-bold leading-tight">{scenario.title}</h2>
+              <div className="mt-1.5 flex flex-wrap gap-1">
+                <NodeBadge code={scenario.node} />
+              </div>
+              <p className="mt-2 text-xs leading-relaxed text-white/70">
+                {scenario.description}
+              </p>
+
+              {!revealed && (
+                <div className="mt-3 rounded-lg border border-dashed border-white/15 bg-white/5 p-3">
+                  <PanelTitle>Result withheld</PanelTitle>
+                  <p className="text-[11px] leading-relaxed text-white/60">
+                    {titration
+                      ? 'The curve, the landmarks and the burette unlock once you commit a prediction below. Reading the answer first would turn the question into a lookup.'
+                      : 'The vessel is holding the mixture at the instant the stress lands. Where it settles, and the numbers behind it, appear once you commit a prediction below.'}
+                  </p>
+                </div>
+              )}
+
+              {poeItem ? (
+                <div className="mt-3">
+                  <PoePanel
+                    key={poeItem.id}
+                    item={poeItem}
+                    onObserve={onObserve}
+                    onComplete={onPoeComplete}
+                    observation={readout}
+                  />
+                </div>
+              ) : (
+                <div className="mt-3 rounded-lg border border-white/10 bg-white/5 p-3">
+                  <PanelTitle>Readout</PanelTitle>
+                  {readout}
+                  <p className="mt-2 text-[10px] leading-relaxed text-white/40">
+                    No predict-observe-explain item is authored against this
+                    scenario, so there is nothing to commit to and the bench is
+                    open from the start.
+                  </p>
+                </div>
+              )}
+
+              {masteryNote && (
+                <div
+                  className={`mt-3 rounded-lg border p-3 ${
+                    masteryNote.ok
+                      ? 'border-emerald-400/30 bg-emerald-950/25'
+                      : 'border-amber-400/30 bg-amber-950/25'
+                  }`}
+                >
+                  {masteryNote.ok ? (
+                    <p className="text-[11px] leading-relaxed text-emerald-200/90">
+                      Recorded against {masteryNote.node}. Mastery on that node
+                      is now {Math.round(masteryNote.level * 100)} percent.
+                    </p>
+                  ) : (
+                    <p className="text-[11px] leading-relaxed text-amber-200/85">
+                      Not recorded. The write to your progress did not land, so
+                      nothing was stored against {masteryNote.node}. What you
+                      answered still stands; only the record of it is missing.
+                    </p>
+                  )}
+                </div>
+              )}
+
+              <p className="mt-3 text-[10px] leading-relaxed text-white/40">
+                The curve and the concentrations were computed by chem_core when
+                this content was exported. The bench indexes into that result
+                and reads the flask colour off the pH at the point it lands on,
+                so nothing on screen is deciding any chemistry.
               </p>
             </>
           ) : (
@@ -561,16 +1002,17 @@ export default function GeneralChemistryPortal() {
         </Panel>
       </div>
 
-      <div className="pointer-events-none absolute bottom-4 left-4 z-10">
-        <HelpLine>
-          {mode === 'orbitals'
-            ? 'drag to rotate, scroll to zoom'
-            : 'drag to rotate, scroll to zoom, click an atom'}
-        </HelpLine>
+      <div className="pointer-events-none absolute bottom-4 left-4 z-10 flex flex-col items-start gap-2">
+        <TourOverlay steps={TOURS[mode]} storageKey={`genchem-${mode}`} />
+        <KeyboardHint announcement={announcement} />
       </div>
-      <div className="pointer-events-none absolute bottom-4 right-4 z-10">
-        <ModelNote kind={modelKind} />
-      </div>
+      {/* Both kinds of model note describe geometry, and the bench has none of
+          its own. Its provenance is in the panel instead. */}
+      {mode !== 'bench' && (
+        <div className="pointer-events-none absolute bottom-4 right-4 z-10">
+          <ModelNote kind={modelKind} />
+        </div>
+      )}
 
       {showStars && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4">
