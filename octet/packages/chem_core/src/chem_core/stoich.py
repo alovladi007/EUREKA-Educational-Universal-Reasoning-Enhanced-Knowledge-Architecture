@@ -167,6 +167,20 @@ def format_sig_figs(value: float, figures: int) -> str:
     return f"{value:.{figures - 1}e}"
 
 
+_LEADING_NUMBER = re.compile(r"^[+-]?[\d.]+(?:[eE][+-]?\d+)?")
+
+
+def _leading_number_text(text: str) -> str:
+    """The leading numeric token, split from any glued unit.
+
+    '4.21g' and '4.21 g' both yield '4.21', so sig figs are counted from the
+    number rather than returning zero on a unit-glued token.
+    """
+    stripped = str(text).strip().replace(",", "")
+    m = _LEADING_NUMBER.match(stripped)
+    return m.group(0) if m else stripped
+
+
 def _parse_number(text: str) -> float | None:
     if text is None:
         return None
@@ -214,7 +228,7 @@ def grade_stoichiometry(
 
     correct_value = math.isclose(value, solution.answer_g, rel_tol=rel_tolerance)
     if correct_value:
-        submitted_figs = sig_figs(student_answer)
+        submitted_figs = sig_figs(_leading_number_text(student_answer))
         if enforce_sig_figs and submitted_figs and submitted_figs != problem.sig_figs:
             milestones[3]["ok"] = False
             return GradeResult(

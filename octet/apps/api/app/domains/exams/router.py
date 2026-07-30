@@ -95,13 +95,26 @@ def _attempt_view(attempt: ExamAttempt, answers: dict[int, str] | None = None) -
 
 
 @router.get("/exams")
-async def list_exams(_p: Principal = Depends(get_current_principal)) -> dict:
+async def list_exams(
+    principal: Principal = Depends(get_current_principal),
+    session: AsyncSession = Depends(get_session),
+) -> dict:
     """The catalogue.
 
     Only exams the item bank can actually build appear, and each reports
     whether it is currently assemblable so a broken one would be visible
     rather than failing at start time.
+
+    Opening the catalogue also closes and scores any of this learner's
+    attempts whose time has passed. There is no background scheduler in this
+    deployment, so expiry runs at the moments the learner would notice a stale
+    attempt: here, and when starting a new attempt on the same blueprint. An
+    abandoned attempt therefore resolves the next time its owner looks at
+    exams, not silently in the night, and never blocks a restart.
     """
+    expired = await service.expire_overdue(session, user_id=principal.user_id)
+    if expired:
+        await session.commit()
     return {
         "exams": [
             {

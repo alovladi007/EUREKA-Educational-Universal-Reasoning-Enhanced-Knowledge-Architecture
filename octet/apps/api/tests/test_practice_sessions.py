@@ -42,6 +42,50 @@ async def test_session_starts_with_items_and_no_keys(client, auth):
             assert set(choice) == {"index", "text"}, "no misconception leak on serve"
 
 
+async def test_multi_unit_session_draws_from_every_selected_unit(client, auth):
+    """The builder promises a mix across every selected unit, and means it.
+
+    GEN1-U4 and ORG2-U8 reproduce the reported failure exactly: the registry
+    lists GEN1-U4's templates before ORG2's, so the old raw round-robin drew
+    all five items from GEN1-U4 and none from ORG2-U8. Round-robin across
+    units first makes both appear whenever count >= the number of selected
+    units with supply.
+    """
+    data = await _start(
+        client,
+        auth("student", user_id="mix-learner"),
+        units=["GEN1-U4", "ORG2-U8"],
+        count=5,
+    )
+    served = {item["unit"] for item in data["items"]}
+    assert served == {"GEN1-U4", "ORG2-U8"}
+
+
+async def test_session_items_do_not_repeat_a_variant(client, auth):
+    """No two items share one learner-visible face when the pool permits.
+
+    ORG2-U8 supplies a single template with exactly four distinct variants,
+    so a four-item session over it permits four distinct items, and before
+    the dedup it served repeats more often than not. Identity is prompt plus
+    choice texts, because mc templates may share one prompt across distinct
+    choice sets.
+    """
+    data = await _start(
+        client,
+        auth("student", user_id="dedup-learner"),
+        units=["ORG2-U8"],
+        count=4,
+    )
+    faces = [
+        (
+            item["prompt"],
+            tuple(c["text"] for c in item.get("meta", {}).get("choices", [])),
+        )
+        for item in data["items"]
+    ]
+    assert len(set(faces)) == len(faces), faces
+
+
 async def test_empty_selection_is_refused_with_a_reason(client, auth):
     # ORG2-U3 has lessons but no practice templates yet, so it is a genuine
     # example of a selectable unit that cannot supply items. (ORG2-U1 was used

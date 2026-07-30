@@ -34,6 +34,7 @@ from sqlalchemy.sql import func
 
 from app.data.curriculum import NODES_BY_CODE, UNITS
 from app.domains.grading.sandbox import grade_sandboxed
+from app.domains.grading.serve import public_meta as serve_public_meta
 from app.domains.practice.models import (
     MODE_TIMED,
     MODE_TUTOR,
@@ -89,18 +90,7 @@ def catalogue() -> list[dict]:
 
 def _public_item(variant: cc.Variant, position: int, node_title: str, unit: str) -> dict:
     """What the learner sees. The key never leaves the server."""
-    if variant.grader == "mc":
-        meta = {
-            "choices": [
-                {"index": c["index"], "text": c["text"]} for c in variant.meta["choices"]
-            ]
-        }
-    else:
-        meta = {
-            k: v
-            for k, v in variant.meta.items()
-            if k in ("unit", "formula", "name", "signals", "choices")
-        }
+    meta = serve_public_meta(variant.grader, variant.meta)
     return {
         "position": position,
         "template_id": variant.template_id,
@@ -134,31 +124,75 @@ async def start_session(
             "marks which units are practiceable."
         )
 
-    # Round-robin across templates so a session mixes nodes rather than
-    # drilling one, matching how the exam assembler spreads a form.
+    # Round-robin across UNITS first, then across each unit's templates, so a
+    # session mixes items from every selected unit that has supply. Cycling
+    # the raw registry-ordered template list looked like a mix but was not:
+    # one unit's templates sit contiguously in the registry, so a small
+    # session drew every item from whichever unit happened to come first.
+    by_unit: dict[str, list[tuple[str, str]]] = {}
+    for tid, node_code in supply:
+        by_unit.setdefault(NODES_BY_CODE[node_code].unit, []).append((tid, node_code))
+    unit_order = [u.id for u in UNITS if u.id in by_unit]
+    cursors = {u: 0 for u in unit_order}
+
     items: list[dict] = []
+    served: set[tuple] = set()
     salt = uuid.uuid4().hex[:8]
     position = 1
-    idx = 0
+    turn = 0
+    failures = 0
     while len(items) < count:
-        tid, node_code = supply[idx % len(supply)]
-        seed = cc.variant_seed(user_id, tid, hash(salt) % 10_000 + position)
-        try:
-            variant = cc.resolve_generated(tid, seed)
-        except RuntimeError:
-            idx += 1
+        unit = unit_order[turn % len(unit_order)]
+        turn += 1
+        unit_supply = by_unit[unit]
+        tid, node_code = unit_supply[cursors[unit] % len(unit_supply)]
+        cursors[unit] += 1
+
+        # A small fixture pool can hand two positions the same variant. Bump
+        # the seed a bounded number of times looking for one the session has
+        # not served yet; a repeat is accepted only once the bumps are spent,
+        # because a duplicate item still beats refusing the session. The bumps
+        # are consecutive seeds on purpose: fixture pools index by seed modulo
+        # their size, so eight consecutive seeds sweep every fixture of any
+        # pool of eight or fewer, making the dedup deterministic rather than a
+        # rerolled dice throw. Identity is the learner-visible face of the
+        # item (prompt plus choice texts), since mc templates may share one
+        # prompt across distinct choice sets.
+        base_seed = cc.variant_seed(user_id, tid, hash(salt) % 10_000 + position)
+        variant = None
+        fallback = None
+        for bump in range(8):
+            try:
+                candidate = cc.resolve_generated(tid, base_seed + bump)
+            except RuntimeError:
+                break
+            if fallback is None:
+                fallback = candidate
+            fingerprint = (
+                candidate.prompt,
+                tuple(c["text"] for c in candidate.meta.get("choices", [])),
+            )
+            if fingerprint not in served:
+                variant = candidate
+                break
+        if variant is None:
+            variant = fallback
+        if variant is None:
             # A template that cannot verify a variant is skipped, and if every
             # template fails the session cannot start. Refusing beats serving
             # an unverified key.
-            if idx > 3 * len(supply):
+            failures += 1
+            if failures > 3 * len(supply):
                 raise PracticeError(
                     "The selected units cannot supply verified items right now."
                 )
             continue
+        served.add(
+            (variant.prompt, tuple(c["text"] for c in variant.meta.get("choices", [])))
+        )
         node = NODES_BY_CODE[node_code]
         items.append(_public_item(variant, position, node.title, node.unit))
         position += 1
-        idx += 1
 
     row = PracticeSession(
         user_id=user_id,

@@ -15,7 +15,18 @@ the standard sequence puts them.
 
 from __future__ import annotations
 
+from app.data.claims import Formula, Source
 from app.data.lesson_types import Lesson
+
+# Citations for facts the compliance checker cannot re-derive from a structure:
+# measured constants, tabulated properties and definitional conventions. Each
+# records who is accountable for the number; the citation-debt report tracks
+# them. Where a specific molecule is discussed it also carries a Formula claim,
+# re-derived by RDKit, so the atom count at least is under test.
+OPENSTAX = "OpenStax, Chemistry 2e, Rice University 2019"
+CRC = "CRC Handbook of Chemistry and Physics, 97th edition, CRC Press 2016"
+GOLDBOOK = "IUPAC Compendium of Chemical Terminology (the Gold Book), 2nd edition"
+CODATA = "CODATA internationally recommended values of the fundamental physical constants, NIST"
 
 LESSONS: dict[str, Lesson] = {
     "GEN2.RATES": Lesson(
@@ -71,6 +82,14 @@ LESSONS: dict[str, Lesson] = {
             "which it was measured."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Reaction rate is a concentration change per unit time (units "
+                "of molarity per second), and dividing each species' rate by "
+                "its stoichiometric coefficient gives a single reaction rate.",
+                OPENSTAX + ", Ch. 12.1 Chemical Reaction Rates",
+            ),
+        ),
     ),
     "GEN2.RATELAW": Lesson(
         node="GEN2.RATELAW",
@@ -125,6 +144,15 @@ LESSONS: dict[str, Lesson] = {
             "multiplying it by nine, so the measured order in H2 is 1."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "In a rate law rate = k[A]^m[B]^n the orders m and n are "
+                "determined experimentally, not from the balanced equation's "
+                "coefficients, and the units of k follow from the overall "
+                "order.",
+                OPENSTAX + ", Ch. 12.3 Rate Laws",
+            ),
+        ),
     ),
     "GEN2.ARRHENIUS": Lesson(
         node="GEN2.ARRHENIUS",
@@ -183,6 +211,14 @@ LESSONS: dict[str, Lesson] = {
             "yield sooner, not to a better one."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The Arrhenius equation k = A*exp(-Ea/(R*T)) uses the gas "
+                "constant R = 8.314 J/(mol*K); a catalyst lowers Ea without "
+                "changing delta H or K.",
+                CODATA + " (gas constant); OpenStax, Chemistry 2e, Ch. 12.5 Collision Theory",
+            ),
+        ),
     ),
     "GEN2.MECHANISM": Lesson(
         node="GEN2.MECHANISM",
@@ -241,6 +277,15 @@ LESSONS: dict[str, Lesson] = {
             "concentration is not a quantity you can set or measure."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "A valid mechanism's elementary steps sum to the overall "
+                "equation, intermediates cancel and must not appear in the rate "
+                "law, and for an elementary step the molecularity gives the "
+                "orders directly; the slowest step is rate determining.",
+                OPENSTAX + ", Ch. 12.6 Reaction Mechanisms",
+            ),
+        ),
     ),
     "GEN2.EQUILIBRIUM": Lesson(
         node="GEN2.EQUILIBRIUM",
@@ -298,6 +343,15 @@ LESSONS: dict[str, Lesson] = {
             "of four."
         ),
         misconception="K-SQUARE",
+        claims=(
+            Source(
+                "The equilibrium constant Kc is products over reactants, each "
+                "concentration raised to its coefficient, with pure solids and "
+                "liquids omitted; comparing the reaction quotient Q to K gives "
+                "the direction of reaction.",
+                OPENSTAX + ", Ch. 13.2 Equilibrium Constants and Ch. 13.3 Shifting Equilibria",
+            ),
+        ),
     ),
     "GEN2.ICE": Lesson(
         node="GEN2.ICE",
@@ -352,6 +406,13 @@ LESSONS: dict[str, Lesson] = {
             "longer satisfies Kc = 50.5 when you substitute it back."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The reaction H2(g) + I2(g) <=> 2 HI(g) has Kc about 50.5 at "
+                "448 C.",
+                CRC + " and OpenStax, Chemistry 2e, Ch. 13.4 (tabulated equilibrium constants)",
+            ),
+        ),
     ),
     "GEN2.LECHATELIER": Lesson(
         node="GEN2.LECHATELIER",
@@ -408,6 +469,14 @@ LESSONS: dict[str, Lesson] = {
             "moves K."
         ),
         misconception="LECHAT-AMOUNT",
+        claims=(
+            Source(
+                "The synthesis N2(g) + 3 H2(g) -> 2 NH3(g) is exothermic with a "
+                "standard enthalpy of about -92.2 kJ, so heating shifts it "
+                "toward reactants and lowers K.",
+                CRC + ", table of standard enthalpies of formation",
+            ),
+        ),
     ),
     "GEN2.BRONSTED": Lesson(
         node="GEN2.BRONSTED",
@@ -463,6 +532,14 @@ LESSONS: dict[str, Lesson] = {
             "solution of table salt sits at pH 7 rather than turning basic."
         ),
         misconception=None,
+        claims=(
+            Formula("CC(=O)O", "C2H4O2", "acetic acid, HC2H3O2"),
+            Source(
+                "Acetic acid has Ka about 1.8e-5, and Ka*Kb = Kw = 1.0e-14 at "
+                "25 C, so its conjugate base acetate has Kb about 5.6e-10.",
+                OPENSTAX + ", Ch. 14.3 Relative Strengths of Acids and Bases (Appendix H, ionization constants)",
+            ),
+        ),
     ),
     "GEN2.PH": Lesson(
         node="GEN2.PH",
@@ -515,6 +592,13 @@ LESSONS: dict[str, Lesson] = {
             "labelling the answer pH."
         ),
         misconception="PH-POH",
+        claims=(
+            Source(
+                "Water autoionises with Kw = [H3O+][OH-] = 1.0e-14 at 25 C, so "
+                "in pure water each ion is 1.0e-7 M and pH + pOH = 14.00.",
+                OPENSTAX + ", Ch. 14.1 Bronsted-Lowry Acids and Bases and Ch. 14.2 pH and pOH",
+            ),
+        ),
     ),
     "GEN2.WEAKACID": Lesson(
         node="GEN2.WEAKACID",
@@ -569,6 +653,15 @@ LESSONS: dict[str, Lesson] = {
             "untested shortcut is 13 percent off in x and misstates the pH."
         ),
         misconception="APPROX-INVALID",
+        claims=(
+            Formula("CC(=O)O", "C2H4O2", "acetic acid"),
+            Source(
+                "Acetic acid has Ka about 1.8e-5; the small-x approximation is "
+                "honest only when x is under 5 percent of the initial "
+                "concentration.",
+                OPENSTAX + ", Ch. 14.3 (Appendix H, ionization constants of weak acids)",
+            ),
+        ),
     ),
     "GEN2.BUFFER": Lesson(
         node="GEN2.BUFFER",
@@ -626,6 +719,18 @@ LESSONS: dict[str, Lesson] = {
             "Henderson-Hasselbalch no longer applies at all."
         ),
         misconception=None,
+        claims=(
+            Formula("CC(=O)O", "C2H4O2", "acetic acid, the buffer's weak acid"),
+            Source(
+                "Human arterial blood is held between about pH 7.35 and 7.45 by "
+                "its buffer systems.",
+                OPENSTAX + ", Ch. 14.6 Buffers (Chemistry in Everyday Life: blood pH)",
+            ),
+            Source(
+                "Acetic acid has Ka about 1.8e-5, so pKa about 4.74.",
+                OPENSTAX + ", Ch. 14.3 (Appendix H, ionization constants)",
+            ),
+        ),
     ),
     "GEN2.TITRATIONWEAK": Lesson(
         node="GEN2.TITRATIONWEAK",
@@ -682,6 +787,15 @@ LESSONS: dict[str, Lesson] = {
             "early."
         ),
         misconception=None,
+        claims=(
+            Formula("CC(=O)O", "C2H4O2", "acetic acid"),
+            Source(
+                "Acetic acid has Ka about 1.8e-5, so at half-equivalence "
+                "pH = pKa about 4.74; a weak acid titrated with strong base "
+                "reaches equivalence above pH 7.",
+                OPENSTAX + ", Ch. 14.7 Acid-Base Titrations",
+            ),
+        ),
     ),
     "GEN2.KSP": Lesson(
         node="GEN2.KSP",
@@ -737,6 +851,13 @@ LESSONS: dict[str, Lesson] = {
             "before comparing."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Approximate solubility products at 25 C: AgCl 1.8e-10, CaF2 "
+                "3.9e-11, Ag2CrO4 1.1e-12.",
+                OPENSTAX + ", Ch. 15.1 Precipitation and Dissolution (Appendix J, solubility products)",
+            ),
+        ),
     ),
     "GEN2.ENTROPY": Lesson(
         node="GEN2.ENTROPY",
@@ -795,6 +916,14 @@ LESSONS: dict[str, Lesson] = {
             "that the second law constrains."
         ),
         misconception=None,
+        claims=(
+            Formula("O", "H2O", "liquid water, the product in the worked example"),
+            Source(
+                "Standard molar entropies used: H2(g) 130.7, O2(g) 205.2 and "
+                "H2O(l) 69.9 J/(mol*K).",
+                CRC + " and OpenStax, Chemistry 2e, Appendix G (standard thermodynamic properties)",
+            ),
+        ),
     ),
     "GEN2.GIBBS": Lesson(
         node="GEN2.GIBBS",
@@ -854,6 +983,15 @@ LESSONS: dict[str, Lesson] = {
             "speed."
         ),
         misconception=None,
+        claims=(
+            Formula("O", "H2O", "water, vaporised in the worked example"),
+            Source(
+                "For vaporising water delta H is about +44.0 kJ/mol; the "
+                "diamond-to-graphite conversion has delta G about -2.9 kJ/mol "
+                "at 25 C.",
+                CRC + " and OpenStax, Chemistry 2e, Appendix G (standard thermodynamic properties)",
+            ),
+        ),
     ),
     "GEN2.GALVANIC": Lesson(
         node="GEN2.GALVANIC",
@@ -913,6 +1051,14 @@ LESSONS: dict[str, Lesson] = {
             "salt bridge is still in place."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Standard reduction potentials: Zn2+ + 2 e- -> Zn at -0.76 V "
+                "and Cu2+ + 2 e- -> Cu at +0.34 V; the Faraday constant is "
+                "96485 C/mol.",
+                OPENSTAX + ", Ch. 17.3 Standard Reduction Potentials (Appendix L); Faraday constant from CODATA",
+            ),
+        ),
     ),
     "GEN2.NERNST": Lesson(
         node="GEN2.NERNST",
@@ -969,6 +1115,14 @@ LESSONS: dict[str, Lesson] = {
             "delta G = -n * F * E went from 2 to 4."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "At 25 C the Nernst equation reduces to E = E(standard) - "
+                "(0.0592/n)*log(Q), the factor 0.0592 V coming from "
+                "(R*T/F)*ln(10) = (8.314*298.15/96485)*ln(10).",
+                OPENSTAX + ", Ch. 17.4 The Nernst Equation",
+            ),
+        ),
     ),
     "GEN2.NUCLEARSTABILITY": Lesson(
         node="GEN2.NUCLEARSTABILITY",
@@ -1029,5 +1183,13 @@ LESSONS: dict[str, Lesson] = {
             "there."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Carbon-14 beta decays to nitrogen-14 with a half-life of about "
+                "5730 years, the beta particle carrying up to about 0.156 MeV; "
+                "1 eV per particle corresponds to 96.485 kJ/mol.",
+                CRC + ", table of the isotopes (nuclear data)",
+            ),
+        ),
     ),
 }

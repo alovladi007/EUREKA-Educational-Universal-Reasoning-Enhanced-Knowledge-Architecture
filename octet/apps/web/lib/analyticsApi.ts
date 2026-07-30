@@ -154,6 +154,18 @@ export function percentOf(fraction: number): string {
   return `${Math.round(Math.min(Math.max(fraction, 0), 1) * 100)}%`;
 }
 
+// A blueprint code to a readable exam title. The codes are structured, for
+// example "exam.unit.gen1-u1", and showing them raw to a learner reads as a
+// leaked identifier rather than a name. Anything that does not match the known
+// shape is returned unchanged rather than mangled.
+export function examTitle(code: string): string {
+  const m = /^exam\.unit\.([a-z]+\d*)-u(\d+)$/.exec(code);
+  if (!m) {
+    return code;
+  }
+  return `${m[1].toUpperCase()} Unit ${m[2]} exam`;
+}
+
 // An ISO timestamp to a short local date-and-time line, or the stated
 // fallback when the API sent null.
 export function formatWhen(iso: string | null, fallback: string): string {

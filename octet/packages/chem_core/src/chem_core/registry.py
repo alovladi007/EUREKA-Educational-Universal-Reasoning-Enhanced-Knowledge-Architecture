@@ -16,6 +16,8 @@ sweep(seeds_per_template=12) is the CI gate named in the acceptance criteria.
 from __future__ import annotations
 
 import hashlib
+import math
+import re
 from dataclasses import dataclass, field
 from fractions import Fraction
 from typing import Callable
@@ -193,7 +195,13 @@ def _gen_balance_precipitation(seed: int) -> Variant:
 
 
 def _ver_balance(v: Variant) -> VerifierResult:
-    coefficients = [int(t) for t in v.key.split(",")]
+    # A corrupted key must fail verification, not raise: resolve_generated retries
+    # the next seed on a False result but would 500 on an uncaught exception.
+    try:
+        coefficients = [int(t) for t in v.key.split(",")]
+    except (ValueError, AttributeError) as exc:
+        return VerifierResult(ok=False, method="conservation-arithmetic",
+                              detail=f"key is not a coefficient list: {exc}")
     return verify_balance_key(v.meta["skeleton"], coefficients)
 
 
@@ -245,6 +253,24 @@ def _gen_stoich_mass_to_mass(seed: int) -> Variant:
 
 
 def _ver_stoich(v: Variant) -> VerifierResult:
+    # The served prompt is the contract with the learner. A corrupted meta that
+    # still carries the original prompt would grade against numbers the learner
+    # never saw, so require the prompt's stated mass and species to match meta.
+    m = re.search(r"([0-9]+(?:\.[0-9]+)?)\s*g of\s+(\S+)\s+burns", v.prompt)
+    if m is None:
+        return VerifierResult(ok=False, method="prompt-coherence",
+                              detail="prompt does not state a given mass and fuel")
+    if not math.isclose(float(m.group(1)), float(v.meta["given_mass_g"]), rel_tol=0, abs_tol=1e-9):
+        return VerifierResult(ok=False, method="prompt-coherence",
+                              detail=f"prompt mass {m.group(1)} != meta {v.meta['given_mass_g']}")
+    if m.group(2) != v.meta["from_formula"]:
+        return VerifierResult(ok=False, method="prompt-coherence",
+                              detail=f"prompt fuel {m.group(2)} != meta {v.meta['from_formula']}")
+    product = re.search(r"->\s*(\S+)\s*\+", v.prompt)
+    if product and product.group(1) != v.meta["to_formula"]:
+        return VerifierResult(ok=False, method="prompt-coherence",
+                              detail=f"prompt product {product.group(1)} != meta {v.meta['to_formula']}")
+
     problem = StoichProblem(
         given_mass_g=v.meta["given_mass_g"],
         from_formula=v.meta["from_formula"],
@@ -315,13 +341,20 @@ def _ver_equilibrium(v: Variant) -> VerifierResult:
 # ---------------------------------------------------------------------------
 
 
+# The one chemically valid approach. Held at module level so the verifier can
+# assert the keyed choice carries this exact text, independent of correct_index.
+_MC_SUBSCRIPT_CORRECT_TEXT = (
+    "Put coefficients in front of the formulas until each element balances."
+)
+
+
 def _gen_mc_subscript(seed: int) -> Variant:
     name, carbons, hydrogens = _pick(fx.HYDROCARBONS, seed, salt=11)
     skeleton = f"{name} + O2 -> CO2 + H2O"
     choices = [
         {
             "index": 0,
-            "text": "Put coefficients in front of the formulas until each element balances.",
+            "text": _MC_SUBSCRIPT_CORRECT_TEXT,
             "misconception": None,
         },
         {
@@ -357,6 +390,12 @@ def _ver_mc(v: Variant) -> VerifierResult:
     problems = validate_choices(v.meta["choices"], v.meta["correct_index"])
     if problems:
         return VerifierResult(ok=False, method="mc-structural", detail="; ".join(problems))
+    # Independent of the stored key: the keyed choice must carry the canonical
+    # correct text. A flipped correct_index then fails even when structure holds.
+    keyed = next((c for c in v.meta["choices"] if c.get("index") == v.meta["correct_index"]), None)
+    if keyed is None or keyed.get("text") != _MC_SUBSCRIPT_CORRECT_TEXT:
+        return VerifierResult(ok=False, method="mc-correct-text",
+                              detail="keyed choice is not the canonical correct answer")
     return VerifierResult(ok=True, method="mc-structural", detail="all distractors keyed and routed")
 
 
@@ -509,6 +548,7 @@ def _wire_optional_templates() -> None:
         ("templates_o_u12", "TEMPLATES_O_U12", "HINTS_O_U12", "MISCONCEPTIONS_O_U12"),
         ("templates_o_u567", "TEMPLATES_O_U567", "HINTS_O_U567", "MISCONCEPTIONS_O_U567"),
         ("templates_o_u89g", "TEMPLATES_O_U89G", "HINTS_O_U89G", "MISCONCEPTIONS_O_U89G"),
+        ("templates_g2", "TEMPLATES_G2", "HINTS_G2", "MISCONCEPTIONS_G2"),
         ("templates_org2", "ORG2_TEMPLATES", "ORG2_HINTS", "ORG2_MISCONCEPTIONS"),
     ]
     for module_name, templates_attr, hints_attr, misconceptions_attr in specs:

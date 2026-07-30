@@ -143,14 +143,19 @@ def _check_organic_lessons_carry_claims() -> list[dict]:
     """
     problems: list[dict] = []
     for code, lesson in LESSONS.items():
-        if not code.startswith("ORG"):
-            continue
+        # This gate began ORG-only, because organic content is where fluent
+        # and wrong coincide most easily. The review that widened it found the
+        # general chemistry lessons stating blood pH ranges, bond angles and
+        # equilibrium constants as bare prose the checker never saw, which is
+        # the same failure with different numbers. Every course is now held to
+        # the same rule: a lesson asserts nothing checkable, or it carries the
+        # claims that check it, or a Source naming who is accountable.
         if not getattr(lesson, "claims", ()):
             problems.append(
                 {
                     "check": "lesson_unverified",
                     "detail": (
-                        f"{code} is an organic lesson with no checkable claim, so "
+                        f"{code} is a lesson with no checkable claim, so "
                         "nothing it asserts about structure was verified"
                     ),
                 }

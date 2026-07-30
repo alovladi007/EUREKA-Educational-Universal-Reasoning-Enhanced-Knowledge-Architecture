@@ -46,7 +46,7 @@ def _gen_retro(seed: int) -> Variant:
         template_id="org.retro.step.v1",
         seed=seed,
         prompt=(
-            f"Propose a one-step synthesis of {name} ({target}). Choose the "
+            f"Propose a one-step synthesis of {name} (SMILES {target}). Choose the "
             "disconnection that builds it and give the precursor structures as "
             "SMILES. Your precursors are correct when running the chosen "
             "reaction forward reproduces the target."

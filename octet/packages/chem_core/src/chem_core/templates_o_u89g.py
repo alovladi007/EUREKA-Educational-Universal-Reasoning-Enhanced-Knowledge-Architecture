@@ -329,24 +329,29 @@ def _ver_halide_class(v: Variant) -> VerifierResult:
 # org.sn2.config.v1  (ORG1.SN2)
 # ---------------------------------------------------------------------------
 
-# Each entry is (substrate, product, leaving token, nucleophile token,
-# nucleophile name, product name). The product is the SN2 (inverted) product of
-# the substrate, encoded so that inversion is the flip of the single chiral tag
-# and substitution is the swap of the leaving token for the nucleophile token.
-# The last two entries are the case the unit 9 lesson is built around: the
-# geometry inverts and the CIP letter does not change.
+# Each entry is (substrate, substrate name, product, leaving token,
+# nucleophile token, nucleophile name, product name). The substrate name is
+# constitution-level with no stereo-descriptor, because assigning descriptors
+# is the work the item asks for; the specific enantiomer is carried by the
+# SMILES. The product is the SN2 (inverted) product of the substrate, encoded
+# so that inversion is the flip of the single chiral tag and substitution is
+# the swap of the leaving token for the nucleophile token. The last two
+# entries are the case the unit 9 lesson is built around: the geometry
+# inverts and the CIP letter does not change.
 _SN2_FIXTURES = [
-    ("CC[C@H](C)Br", "CC[C@@H](C)O", "Br", "O", "hydroxide", "butan-2-ol"),
-    ("CC[C@@H](C)Br", "CC[C@H](C)O", "Br", "O", "hydroxide", "butan-2-ol"),
-    ("CC[C@H](C)Br", "CC[C@@H](C)C#N", "Br", "C#N", "cyanide", "2-methylbutanenitrile"),
-    ("CC[C@@H](C)Br", "CC[C@H](C)C#N", "Br", "C#N", "cyanide", "2-methylbutanenitrile"),
-    ("C[C@H](Br)C(=O)OCC", "C[C@@H](C#N)C(=O)OCC", "Br", "C#N", "cyanide", "ethyl 2-cyanopropanoate"),
-    ("C[C@@H](Br)C(=O)OCC", "C[C@H](C#N)C(=O)OCC", "Br", "C#N", "cyanide", "ethyl 2-cyanopropanoate"),
+    ("CC[C@H](C)Br", "2-bromobutane", "CC[C@@H](C)O", "Br", "O", "hydroxide", "butan-2-ol"),
+    ("CC[C@@H](C)Br", "2-bromobutane", "CC[C@H](C)O", "Br", "O", "hydroxide", "butan-2-ol"),
+    ("CC[C@H](C)Br", "2-bromobutane", "CC[C@@H](C)C#N", "Br", "C#N", "cyanide", "2-methylbutanenitrile"),
+    ("CC[C@@H](C)Br", "2-bromobutane", "CC[C@H](C)C#N", "Br", "C#N", "cyanide", "2-methylbutanenitrile"),
+    ("C[C@H](Br)C(=O)OCC", "ethyl 2-bromopropanoate", "C[C@@H](C#N)C(=O)OCC", "Br", "C#N", "cyanide", "ethyl 2-cyanopropanoate"),
+    ("C[C@@H](Br)C(=O)OCC", "ethyl 2-bromopropanoate", "C[C@H](C#N)C(=O)OCC", "Br", "C#N", "cyanide", "ethyl 2-cyanopropanoate"),
 ]
 
 
 def _gen_sn2_config(seed: int) -> Variant:
-    substrate, product, leaving, nu, nu_name, product_name = _pick(_SN2_FIXTURES, seed)
+    substrate, substrate_name, product, leaving, nu, nu_name, product_name = _pick(
+        _SN2_FIXTURES, seed
+    )
     sub_centres = stereocentres(substrate) or []
     prod_centres = stereocentres(product) or []
     sub_desc = sub_centres[0].descriptor if sub_centres else ""
@@ -373,9 +378,10 @@ def _gen_sn2_config(seed: int) -> Variant:
         template_id="org.sn2.config.v1",
         seed=seed,
         prompt=(
-            f"The alkyl halide drawn as {substrate} reacts with {nu_name} by an "
-            f"SN2 mechanism, giving {product_name}. Assign the configuration at "
-            "the stereocentre of the product: is it R or S?"
+            f"The alkyl halide {substrate_name} (SMILES {substrate}) reacts "
+            f"with {nu_name} by an SN2 mechanism, giving {product_name}. "
+            "Assign the configuration at the stereocentre of the product: is "
+            "it R or S?"
         ),
         key=str(correct_index),
         node="ORG1.SN2",
@@ -615,8 +621,8 @@ def _gen_hybridization(seed: int) -> Variant:
         template_id="gen.hybridization.v1",
         seed=seed,
         prompt=(
-            f"In {name} ({smiles}), what is the hybridization of the carbon "
-            "atom or atoms?"
+            f"In {name} (SMILES {smiles}), what is the hybridization of the "
+            "carbon atom or atoms?"
         ),
         key=str(correct_index),
         node="GEN1.HYBRIDIZATION",

@@ -539,3 +539,139 @@ def test_non_finite_numbers_are_ungradable_not_merely_wrong(payload):
     assert not r.graded, f"{payload} was graded as a number"
     r2 = cc.grade_equilibrium(_acetic(), payload)
     assert not r2.graded, f"{payload} was graded as a concentration"
+
+
+# ---------------------------------------------------------------------------
+# Regression: BUG 1 formula space-separated charge token
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize("spelling,key", [
+    ("SO4 2-", "SO4^2-"),
+    ("PO4 3-", "PO4^3-"),
+    ("CO3 2-", "CO3^2-"),
+    ("NH4 +", "NH4^+"),
+])
+def test_formula_space_separated_charge_parses_and_grades_correct(spelling, key):
+    got = cc.parse_formula(spelling)
+    keyed = cc.parse_formula(key)
+    assert got.counts == keyed.counts, f"{spelling} lost a subscript to the charge"
+    assert got.charge == keyed.charge, f"{spelling} charge {got.charge}"
+    assert cc.grade_formula(key, spelling).is_correct
+
+
+def test_formula_wrong_space_separated_charge_still_fails():
+    r = cc.grade_formula("SO4^2-", "SO4 3-")
+    assert not r.is_correct
+
+
+# ---------------------------------------------------------------------------
+# Regression: BUG 2 verifier independence
+# ---------------------------------------------------------------------------
+
+
+def _flip_mc_key(v):
+    """Point correct_index at a distractor and swap misconception fields so the
+    purely structural check still passes."""
+    choices = v.meta["choices"]
+    correct = next(c for c in choices if c["index"] == v.meta["correct_index"])
+    distractor = next(
+        c for c in choices
+        if c["index"] != v.meta["correct_index"] and c["misconception"]
+    )
+    correct["misconception"], distractor["misconception"] = (
+        distractor["misconception"], correct["misconception"],
+    )
+    v.meta["correct_index"] = distractor["index"]
+
+
+def test_particulate_verifier_rejects_a_flipped_key():
+    entry = cc.REGISTRY["mc.particulate.v1"]
+    v = entry["gen"](0)
+    assert entry["ver"](v).ok
+    _flip_mc_key(v)
+    assert not entry["ver"](v).ok, "flipped correct_index verified structurally"
+
+
+def test_subscript_verifier_rejects_a_flipped_key():
+    entry = cc.REGISTRY["mc.subscript_coefficient.v1"]
+    v = entry["gen"](0)
+    assert entry["ver"](v).ok
+    _flip_mc_key(v)
+    assert not entry["ver"](v).ok
+
+
+def test_stoich_verifier_rejects_meta_that_contradicts_the_prompt():
+    entry = cc.REGISTRY["stoich.mass_to_mass.v1"]
+    v = entry["gen"](0)
+    assert entry["ver"](v).ok
+    v.meta["given_mass_g"] = v.meta["given_mass_g"] + 100.0
+    assert not entry["ver"](v).ok, "meta mass contradicts the served prompt"
+    v2 = entry["gen"](0)
+    v2.meta["from_formula"] = "C99H99"
+    assert not entry["ver"](v2).ok, "meta fuel contradicts the served prompt"
+
+
+def test_balance_verifier_returns_false_on_garbage_key_without_raising():
+    for tid in ("balance.combustion.v1", "balance.precipitation.v1"):
+        entry = cc.REGISTRY[tid]
+        v = entry["gen"](0)
+        assert entry["ver"](v).ok
+        v.key = "1,x,3,4"
+        r = entry["ver"](v)
+        assert not r.ok, f"{tid} accepted a non-integer key"
+        v.key = "not,a,list"
+        assert not entry["ver"](v).ok
+
+
+# ---------------------------------------------------------------------------
+# Regression: BUG 3 structure tautomer='any' honors the stereo policy
+# ---------------------------------------------------------------------------
+
+
+def test_structure_loose_any_accepts_enantiomer():
+    # 2-butanol enantiomers; the alpha stereocentre survives tautomer
+    # canonicalization, so before the fix loose/any misgraded this 0.25.
+    key, student = "C[C@H](O)CC", "C[C@@H](O)CC"
+    r = cc.grade_structure(key, student, stereo="loose", tautomer="any")
+    assert r.is_correct and r.score == 1.0
+    # A genuine constitutional isomer is still rejected under the same policy.
+    wrong = cc.grade_structure("CCO", "COC", stereo="loose", tautomer="any")
+    assert not wrong.is_correct
+
+
+def test_structure_strict_any_is_refused_as_unsound():
+    # D-alanine vs L-alanine: tautomer canonicalization drops the alpha centre,
+    # so a strict stereo check through it wrongly accepted before the fix.
+    L, D = "C[C@@H](N)C(=O)O", "C[C@H](N)C(=O)O"
+    r = cc.grade_structure(L, D, stereo="strict", tautomer="any")
+    assert not r.graded, "the unsound policy combination must be refused"
+    assert "not supported" in r.detail.lower()
+
+
+# ---------------------------------------------------------------------------
+# Regression: BUG 4 sig-fig enforcement survives a glued unit
+# ---------------------------------------------------------------------------
+
+
+def test_numeric_glued_unit_still_enforces_sig_figs():
+    glued_wrong = cc.grade_numeric(2.5e-3, "mol/L", "2.5e-3M", expected_sig_figs=3)
+    spaced_wrong = cc.grade_numeric(2.5e-3, "mol/L", "2.5e-3 M", expected_sig_figs=3)
+    assert glued_wrong.score == spaced_wrong.score == 0.75
+    assert glued_wrong.misconception == spaced_wrong.misconception == "SIGFIG"
+
+    glued_right = cc.grade_numeric(2.5e-3, "mol/L", "2.50e-3M", expected_sig_figs=3)
+    spaced_right = cc.grade_numeric(2.5e-3, "mol/L", "2.50e-3 M", expected_sig_figs=3)
+    assert glued_right.is_correct and spaced_right.is_correct
+    assert glued_right.score == spaced_right.score == 1.0
+
+
+def test_stoich_glued_unit_still_enforces_sig_figs():
+    p = _propane_problem()  # sig_figs = 3
+    s = cc.solve_stoichiometry(p)
+    over = f"{s.answer_g:.8f}"
+    glued = cc.grade_stoichiometry(p, over + "g")
+    spaced = cc.grade_stoichiometry(p, over + " g")
+    assert glued.score == spaced.score == 0.75
+    assert glued.misconception == spaced.misconception == "SIGFIG"
+    assert cc.grade_stoichiometry(p, f"{s.rounded_g:g}g").is_correct

@@ -362,9 +362,9 @@ def _gen_reactiontype(seed: int) -> Variant:
         template_id="org.reactiontype.v1",
         seed=seed,
         prompt=(
-            f"In the transformation below, {wording}: the SMILES {reactant} "
-            f"becomes {product}. Classify the reaction as an addition, an "
-            "elimination or a substitution."
+            f"In the transformation below, {wording} (in SMILES notation, "
+            f"{reactant} becomes {product}). Classify the reaction as an "
+            "addition, an elimination or a substitution."
         ),
         key=str(correct_index),
         node="ORG1.REACTIONTYPES",

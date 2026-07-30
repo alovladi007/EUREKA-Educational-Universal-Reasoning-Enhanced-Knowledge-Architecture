@@ -532,3 +532,108 @@ async def test_reloading_mid_exam_returns_the_answers_already_given(client, auth
     other = next(i for i in body["items"] if i["position"] == 1)
     assert other["answer"] == ""
     assert "is_correct" not in str(body)
+
+
+FORBIDDEN_META_KEYS = {
+    "value", "raw", "key_text", "wrong_paths", "exact_g", "exact_x",
+    "correct_index", "molecular", "smiles_key", "key_disconnection",
+    "key_precursors", "expected_inchikey", "approximation_valid",
+    "percent_ionization", "verifier_detail", "misconception",
+}
+
+
+@pytest.mark.asyncio
+async def test_open_attempt_serves_no_answer_material(client, auth):
+    """No served item's meta may carry the key or its derivation.
+
+    Found by review, not by tests: the serve path used a blacklist that
+    dropped two named keys and passed everything else, so when the numeric
+    templates grew value/raw/key_text/wrong_paths, every numeric answer rode
+    the attempt payload to the client. A blacklist on a growing dictionary
+    fails open; the whitelist this pins fails closed.
+    """
+    headers = auth("student", user_id="leak-check")
+    for code in list(BLUEPRINTS)[:6]:
+        res = await client.post(
+            "/api/v1/exams/attempts", json={"blueprint_code": code}, headers=headers
+        )
+        if res.status_code != 200:
+            continue
+        body = res.json()
+        for item in body["items"]:
+            leaked = FORBIDDEN_META_KEYS & set(item["meta"])
+            assert not leaked, f"{code} pos {item['position']} leaks {leaked}"
+            for choice in item["meta"].get("choices", []):
+                assert set(choice) <= {"index", "text"}, choice
+        # Submit so the next blueprint can start without an open attempt.
+        await client.post(
+            f"/api/v1/exams/attempts/{body['attempt_id']}/submit", headers=headers
+        )
+
+
+@pytest.mark.asyncio
+async def test_practice_next_serves_no_answer_material(client, auth):
+    headers = auth("student", user_id="leak-check-2")
+    import chem_core as cc
+
+    for tid in list(cc.REGISTRY)[:12]:
+        res = await client.get(
+            f"/api/v1/practice/next?template_id={tid}", headers=headers
+        )
+        assert res.status_code == 200, tid
+        meta = res.json()["meta"]
+        leaked = FORBIDDEN_META_KEYS & set(meta)
+        assert not leaked, f"{tid} leaks {leaked}"
+
+
+@pytest.mark.asyncio
+async def test_abandoned_attempt_resolves_when_the_catalogue_is_opened(client, auth, db_session):
+    """Lazy expiry: opening /exams closes this learner's overdue attempts."""
+    from datetime import datetime, timedelta, timezone
+
+    from app.domains.exams.models import ExamAttempt
+
+    headers = auth("student", user_id="abandoner")
+    res = await client.post(
+        "/api/v1/exams/attempts", json={"blueprint_code": CODE}, headers=headers
+    )
+    attempt_id = res.json()["attempt_id"]
+
+    # Age the attempt past its deadline directly in the database.
+    row = await db_session.get(ExamAttempt, __import__("uuid").UUID(attempt_id))
+    row.expires_at = datetime.now(timezone.utc) - timedelta(minutes=5)
+    await db_session.commit()
+
+    await client.get("/api/v1/exams", headers=headers)
+
+    check = await client.get(f"/api/v1/exams/attempts/{attempt_id}", headers=headers)
+    body = check.json()
+    assert body["status"] == "submitted", "catalogue open must resolve overdue attempts"
+    assert body["result"] is not None and body["result"].get("was_late") in (True, None)
+
+
+@pytest.mark.asyncio
+async def test_refresh_tokens_are_not_access_tokens(client):
+    import time
+    import uuid as _uuid
+
+    import jwt as pyjwt
+
+    from app.core.config import get_settings
+
+    secret = get_settings().jwt_secret
+    refresh = pyjwt.encode(
+        {
+            "sub": "someone",
+            "exp": int(time.time()) + 3600,
+            "iat": int(time.time()),
+            "jti": str(_uuid.uuid4()),
+            "type": "refresh",
+        },
+        secret,
+        algorithm="HS256",
+    )
+    res = await client.get(
+        "/api/v1/exams", headers={"Authorization": f"Bearer {refresh}"}
+    )
+    assert res.status_code == 401

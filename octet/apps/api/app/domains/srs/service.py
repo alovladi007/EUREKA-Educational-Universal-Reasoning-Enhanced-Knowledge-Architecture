@@ -14,10 +14,10 @@ link and nothing to claim.
 
 Scheduling. Plain SM-2 (the same family the adaptive planner's port uses),
 as a pure function over (repetitions, interval, ease, grade). Grades run 0
-to 5. Below 3 is a lapse: repetitions reset and the card comes back in one
-day, with the ease still adjusted downward, so a lapsed card that keeps
-lapsing keeps getting cheaper to fail. At 3 and above the interval walks the
-classic ladder: 1 day, 6 days, then the previous interval times the ease.
+to 5. Below 3 is a lapse: repetitions and interval reset and the card comes
+back in one day, with the E-Factor left unchanged, as published SM-2 defines
+it. At 3 and above the E-Factor is updated and the interval walks the classic
+ladder: 1 day, 6 days, then the previous interval times the ease.
 """
 
 from __future__ import annotations
@@ -115,14 +115,15 @@ def sm2(repetitions: int, interval_days: float, ease: float, q: int) -> tuple[in
     """One SM-2 step. Returns the new (repetitions, interval_days, ease).
 
     Pure on purpose: no clock, no rows, so the arithmetic is testable on its
-    own and the router owns all persistence. The ease update applies on
-    every grade, lapses included, exactly as SM-2 defines it.
+    own and the router owns all persistence. The E-Factor is updated only on a
+    successful recall (q >= 3); a lapse (q < 3) resets repetitions and interval
+    but leaves the ease unchanged, exactly as published SM-2 defines it.
     """
     if not 0 <= q <= 5:
         raise SrsError("grade must be between 0 and 5")
-    ease = max(MIN_EASE, ease + 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02))
     if q < 3:
         return 0, 1.0, ease
+    ease = max(MIN_EASE, ease + 0.1 - (5 - q) * (0.08 + (5 - q) * 0.02))
     repetitions += 1
     if repetitions == 1:
         interval = 1.0

@@ -171,3 +171,66 @@ try:
     LESSONS.update(_ORG2_U10)
 except ImportError:  # pragma: no cover
     pass
+
+try:
+    from app.data.lessons_gen1_fill_a import LESSONS_GEN1_FILL_A as _LESSONS_GEN1_FILL_A
+
+    LESSONS.update(_LESSONS_GEN1_FILL_A)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen1_fill_b import LESSONS_GEN1_FILL_B as _LESSONS_GEN1_FILL_B
+
+    LESSONS.update(_LESSONS_GEN1_FILL_B)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen1_fill_c import LESSONS_GEN1_FILL_C as _LESSONS_GEN1_FILL_C
+
+    LESSONS.update(_LESSONS_GEN1_FILL_C)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen1_fill_d import LESSONS_GEN1_FILL_D as _LESSONS_GEN1_FILL_D
+
+    LESSONS.update(_LESSONS_GEN1_FILL_D)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen1_fill_e import LESSONS_GEN1_FILL_E as _LESSONS_GEN1_FILL_E
+
+    LESSONS.update(_LESSONS_GEN1_FILL_E)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen2_fill_a import LESSONS_GEN2_FILL_A as _LESSONS_GEN2_FILL_A
+
+    LESSONS.update(_LESSONS_GEN2_FILL_A)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen2_fill_b import LESSONS_GEN2_FILL_B as _LESSONS_GEN2_FILL_B
+
+    LESSONS.update(_LESSONS_GEN2_FILL_B)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen2_fill_c import LESSONS_GEN2_FILL_C as _LESSONS_GEN2_FILL_C
+
+    LESSONS.update(_LESSONS_GEN2_FILL_C)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.lessons_gen2_fill_d import LESSONS_GEN2_FILL_D as _LESSONS_GEN2_FILL_D
+
+    LESSONS.update(_LESSONS_GEN2_FILL_D)
+except ImportError:  # pragma: no cover
+    pass

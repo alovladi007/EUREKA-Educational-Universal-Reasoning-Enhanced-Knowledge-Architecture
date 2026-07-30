@@ -942,11 +942,16 @@ function RationaleBlock({
   grader,
   yourAnswer,
   answered,
+  showCorrect = true,
 }: {
   rationale: Rationale;
   grader: string;
   yourAnswer: string;
   answered: boolean;
+  // The review-item card already shows the correct answer beside the
+  // learner's, so it passes false to suppress the duplicate here. Tutor
+  // feedback, which has no such line of its own, keeps the default.
+  showCorrect?: boolean;
 }) {
   const choices = rationale.choices ?? [];
   const isMc = grader === 'mc' && choices.length > 0;
@@ -1020,6 +1025,7 @@ function RationaleBlock({
           })}
         </ul>
       ) : (
+        showCorrect &&
         rationale.correct_display && (
           <p className="text-sm text-card-foreground">
             Correct answer:{' '}
@@ -1330,6 +1336,10 @@ function ReviewItemCard({ item }: { item: PracticeReviewItem }) {
             )}
           </p>
         )}
+        {/* The correct answer is shown once, here beside the learner's own
+            answer. RationaleBlock below renders the same line for a non-mc
+            item, so it is told to omit it (showCorrect={false}) to avoid the
+            duplicate a review found. */}
         {item.rationale.correct_display && (
           <p className="text-card-foreground">
             Correct answer:{' '}
@@ -1346,6 +1356,7 @@ function ReviewItemCard({ item }: { item: PracticeReviewItem }) {
           grader={item.grader}
           yourAnswer={item.your_answer}
           answered={item.answered}
+          showCorrect={false}
         />
       </div>
     </Card>

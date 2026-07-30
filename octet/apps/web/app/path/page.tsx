@@ -163,7 +163,7 @@ function PlanRow({ entry }: { entry: PathEntry }) {
         </span>
         {typeof entry.accuracy === 'number' && (
           <span className="text-xs text-muted-foreground">
-            {Math.round(entry.accuracy * 100)}% over {entry.attempts} attempts
+            {Math.round(entry.accuracy * 100)}% over {entry.attempts} {entry.attempts === 1 ? 'attempt' : 'attempts'}
           </span>
         )}
       </div>

@@ -23,7 +23,7 @@ import {
 // The spaced review player.
 //
 // Cards are derived server side from the authored lessons: each complete
-// lesson contributes its try-it question and its pitfall, verbatim. Nothing
+// lesson contributes a try-it recall card and a pitfall recall card. Nothing
 // on this page invents content, and every card links back to the lesson it
 // was cut from.
 //
@@ -176,8 +176,9 @@ export default function ReviewPage() {
     <Page>
       <h1 className="mb-1 text-2xl font-bold tracking-tight">Review</h1>
       <p className="mb-6 text-sm text-muted-foreground">
-        Spaced repetition over the lessons. Every card is the try-it question
-        or the pitfall of a lesson, word for word, and links back to it.
+        Spaced repetition drawn from the lessons. Each card asks you to recall
+        a lesson&apos;s try-it answer or its pitfall, with that lesson&apos;s
+        own words on the back, and links back to it.
       </p>
 
       {view.kind === 'loading' && <LoadingPanel label="Loading your review queue." />}

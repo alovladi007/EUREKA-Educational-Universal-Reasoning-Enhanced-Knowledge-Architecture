@@ -12,7 +12,18 @@ of the course is still unauthored, and the gap is real rather than hidden.
 
 from __future__ import annotations
 
+from app.data.claims import Formula, Source
 from app.data.lesson_types import Lesson
+
+# Citations for facts the compliance checker cannot re-derive from a structure:
+# measured constants, tabulated properties and definitional conventions. Each
+# records who is accountable for the number; the citation-debt report tracks
+# them. Where a specific molecule is discussed it also carries a Formula claim,
+# re-derived by RDKit, so the atom count at least is under test.
+OPENSTAX = "OpenStax, Chemistry 2e, Rice University 2019"
+CRC = "CRC Handbook of Chemistry and Physics, 97th edition, CRC Press 2016"
+GOLDBOOK = "IUPAC Compendium of Chemical Terminology (the Gold Book), 2nd edition"
+CODATA = "CODATA internationally recommended values of the fundamental physical constants, NIST"
 
 LESSONS: dict[str, Lesson] = {
     "GEN1.SAFETY": Lesson(
@@ -71,6 +82,18 @@ LESSONS: dict[str, Lesson] = {
             "open, and what else is nearby."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "GHS defines nine hazard pictograms, the two signal words "
+                "Danger and Warning, and a safety data sheet of sixteen "
+                "sections in a fixed order (Section 2 hazards, 4 first aid, 7 "
+                "handling and storage, 8 exposure controls, 10 stability and "
+                "reactivity).",
+                "OSHA Hazard Communication Standard, 29 CFR 1910.1200, aligned "
+                "with the UN Globally Harmonized System of Classification and "
+                "Labelling of Chemicals (GHS), 8th revised edition",
+            ),
+        ),
     ),
     "GEN1.MATTER": Lesson(
         node="GEN1.MATTER",
@@ -122,6 +145,15 @@ LESSONS: dict[str, Lesson] = {
             "separation and so proves it was a mixture all along."
         ),
         misconception=None,
+        claims=(
+            Formula("OCC1OC(CO)(OC2OC(CO)C(O)C(O)C2O)C(O)C1O", "C12H22O11", "sucrose"),
+            Source(
+                "Dry air is approximately 78 percent nitrogen, 21 percent "
+                "oxygen and about 1 percent argon by volume, with a variable "
+                "amount of water vapour.",
+                CRC + ", section on the composition of the Earth's atmosphere",
+            ),
+        ),
     ),
     "GEN1.PROPERTIES": Lesson(
         node="GEN1.PROPERTIES",
@@ -172,6 +204,14 @@ LESSONS: dict[str, Lesson] = {
             "the KMnO4 crystals come back unchanged, so that color change was dissolving, not reacting."
         ),
         misconception=None,
+        claims=(
+            Formula("O", "H2O", "water, unchanged through a physical change"),
+            Source(
+                "The density of iron at room temperature is about 7.87 grams "
+                "per cubic centimetre.",
+                CRC + ", table of the physical constants of the elements",
+            ),
+        ),
     ),
     "GEN1.SIGFIGS": Lesson(
         node="GEN1.SIGFIGS",
@@ -219,6 +259,16 @@ LESSONS: dict[str, Lesson] = {
             "resolved three, so the correct report is 1.18 g per mL."
         ),
         misconception="SIGFIG",
+        claims=(
+            Source(
+                "The significant-figure conventions used here, that "
+                "multiplication and division keep the fewest significant "
+                "figures and that addition and subtraction keep the fewest "
+                "decimal places, are the standard rules for propagating "
+                "measurement precision.",
+                OPENSTAX + ", Ch. 1.5 Measurement Uncertainty, Accuracy, and Precision",
+            ),
+        ),
     ),
     "GEN1.DIMANAL": Lesson(
         node="GEN1.DIMANAL",
@@ -268,6 +318,15 @@ LESSONS: dict[str, Lesson] = {
             "up, giving 0.500 g."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "One mile is defined as exactly 1609.344 metres and one hour as "
+                "exactly 3600 seconds; both are exact unit definitions, not "
+                "measurements.",
+                "NIST Special Publication 811, Guide for the Use of the "
+                "International System of Units (SI)",
+            ),
+        ),
     ),
     "GEN1.DENSITY": Lesson(
         node="GEN1.DENSITY",
@@ -313,6 +372,14 @@ LESSONS: dict[str, Lesson] = {
             "itself tells you nothing about it."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Approximate densities at room temperature: liquid water about "
+                "1.00, aluminium about 2.70, iron about 7.87 and lead about "
+                "11.3 grams per cubic centimetre.",
+                CRC + ", tables of density of the elements and of water",
+            ),
+        ),
     ),
     "GEN1.ATOMICTHEORY": Lesson(
         node="GEN1.ATOMICTHEORY",
@@ -362,6 +429,14 @@ LESSONS: dict[str, Lesson] = {
             "the proton count names an element."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "A proton and a neutron each have a mass of about one atomic "
+                "mass unit, while an electron is about 1/1836 the mass of a "
+                "proton, so the nucleus carries almost all of an atom's mass.",
+                CODATA,
+            ),
+        ),
     ),
     "GEN1.ISOTOPES": Lesson(
         node="GEN1.ISOTOPES",
@@ -410,6 +485,16 @@ LESSONS: dict[str, Lesson] = {
             "of the natural mixture rather than of any atom in it."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Chlorine-35 has mass 34.969 u and abundance about 75.76 "
+                "percent, chlorine-37 has mass 36.966 u and abundance about "
+                "24.24 percent, giving a standard atomic weight near 35.45; "
+                "carbon's is 12.011 and bromine's about 79.90.",
+                CRC + ", table of the isotopic composition and relative atomic "
+                "masses of the elements",
+            ),
+        ),
     ),
     "GEN1.PERIODICTABLE": Lesson(
         node="GEN1.PERIODICTABLE",
@@ -460,6 +545,15 @@ LESSONS: dict[str, Lesson] = {
             "chemical behavior."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Elements in the same group share the number of outer electrons "
+                "and therefore similar chemistry and combining ratios, while a "
+                "period runs from metals on the left to nonmetals on the upper "
+                "right; this organisation is the periodic law.",
+                OPENSTAX + ", Ch. 6.4 Electronic Structure of Atoms and Ch. 6.5 Periodic Variations in Element Properties",
+            ),
+        ),
     ),
     "GEN1.IONS": Lesson(
         node="GEN1.IONS",
@@ -509,6 +603,16 @@ LESSONS: dict[str, Lesson] = {
             "so the octet describes the common case rather than driving it."
         ),
         misconception="OCTET-EXPLAINS",
+        claims=(
+            Formula("FB(F)F", "BF3", "boron trifluoride, stable with six electrons on boron"),
+            Source(
+                "Main-group elements commonly form ions with a noble-gas "
+                "electron count (the octet rule), but this summarises common "
+                "behaviour rather than a law: SF6 and BF3 are stable "
+                "exceptions.",
+                GOLDBOOK + ", entry for octet rule",
+            ),
+        ),
     ),
     "GEN1.NOMENIONIC": Lesson(
         node="GEN1.NOMENIONIC",
@@ -564,6 +668,15 @@ LESSONS: dict[str, Lesson] = {
             "melted sugar, which really is made of molecules, does not."
         ),
         misconception="MOLECULAR-IONIC",
+        claims=(
+            Source(
+                "Standard atomic weights used to build the molar mass of "
+                "aluminium sulfate, Al2(SO4)3 = 342.14 g/mol: aluminium 26.98, "
+                "sulfur 32.06, oxygen 16.00 g/mol.",
+                "IUPAC Commission on Isotopic Abundances and Atomic Weights, "
+                "standard atomic weights 2021",
+            ),
+        ),
     ),
     "GEN1.NOMENMOLEC": Lesson(
         node="GEN1.NOMENMOLEC",
@@ -614,6 +727,16 @@ LESSONS: dict[str, Lesson] = {
             "to say what the charges already guarantee."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The nomenclature rules used here, ionic compounds named cation "
+                "then anion with an -ide ending and a Roman numeral for "
+                "variable-charge metals, and binary molecular compounds named "
+                "with Greek multiplying prefixes, are the standard "
+                "conventions.",
+                OPENSTAX + ", Ch. 2.6 Molecular and Ionic Compounds and Ch. 2.7 Chemical Nomenclature",
+            ),
+        ),
     ),
     "GEN1.MOLE": Lesson(
         node="GEN1.MOLE",
@@ -668,6 +791,15 @@ LESSONS: dict[str, Lesson] = {
             "about sixteen times as many molecules."
         ),
         misconception="MOLES-NOT-MASS",
+        claims=(
+            Formula("O", "H2O", "water"),
+            Source(
+                "The Avogadro constant is 6.02214076e23 per mole (used here as "
+                "6.022e23), and standard atomic weights give hydrogen 1.008 and "
+                "oxygen 16.00 g/mol.",
+                CODATA + "; atomic weights from IUPAC 2021",
+            ),
+        ),
     ),
     "GEN1.PERCENTCOMP": Lesson(
         node="GEN1.PERCENTCOMP",
@@ -721,6 +853,14 @@ LESSONS: dict[str, Lesson] = {
             "sixteenth of an oxygen."
         ),
         misconception=None,
+        claims=(
+            Formula("O=C=O", "CO2", "carbon dioxide"),
+            Source(
+                "Standard atomic weights carbon 12.01 and oxygen 16.00 g/mol "
+                "give carbon dioxide a molar mass of 44.01 g/mol.",
+                "IUPAC standard atomic weights 2021",
+            ),
+        ),
     ),
     "GEN1.EMPIRICAL": Lesson(
         node="GEN1.EMPIRICAL",
@@ -774,6 +914,11 @@ LESSONS: dict[str, Lesson] = {
             "them on cereal."
         ),
         misconception="EMP-MOL",
+        claims=(
+            Formula("OCC(O)C(O)C(O)C(O)C=O", "C6H12O6", "glucose"),
+            Formula("CC(=O)O", "C2H4O2", "acetic acid, empirical formula CH2O like glucose"),
+            Formula("OO", "H2O2", "hydrogen peroxide, empirical formula HO"),
+        ),
     ),
     "GEN1.MOLARITY": Lesson(
         node="GEN1.MOLARITY",
@@ -826,6 +971,13 @@ LESSONS: dict[str, Lesson] = {
             "solute is in, never before."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Sodium chloride has a molar mass of 58.44 g/mol from the "
+                "standard atomic weights sodium 22.99 and chlorine 35.45 g/mol.",
+                "IUPAC standard atomic weights 2021",
+            ),
+        ),
     ),
     "GEN1.DILUTION": Lesson(
         node="GEN1.DILUTION",
@@ -882,6 +1034,14 @@ LESSONS: dict[str, Lesson] = {
             "any point."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Dilution conserves the moles of solute, so M1*V1 = M2*V2 where "
+                "V2 is the final total volume; this is the standard dilution "
+                "relationship.",
+                OPENSTAX + ", Ch. 3.3 Molarity (dilution of solutions)",
+            ),
+        ),
     ),
     "GEN1.CONSERVATION": Lesson(
         node="GEN1.CONSERVATION",
@@ -935,6 +1095,16 @@ LESSONS: dict[str, Lesson] = {
             "a sealed flask and the balance never moves."
         ),
         misconception="ATOM-CONSERV",
+        claims=(
+            Formula("O", "H2O", "water, the product of hydrogen burning in oxygen"),
+            Source(
+                "Mass is conserved in a chemical reaction because atoms are "
+                "neither created nor destroyed; apparent losses in an open "
+                "vessel are gas escaping (100.0 g CaCO3 leaves 56.0 g CaO and "
+                "releases 44.0 g CO2).",
+                OPENSTAX + ", Ch. 4 Stoichiometry of Chemical Reactions (conservation of mass)",
+            ),
+        ),
     ),
     "GEN1.BALANCE": Lesson(
         node="GEN1.BALANCE",
@@ -988,6 +1158,9 @@ LESSONS: dict[str, Lesson] = {
             "rather than quench thirst."
         ),
         misconception="SUB-COEF",
+        claims=(
+            Formula("CCC", "C3H8", "propane, balanced C3H8 + 5 O2 -> 3 CO2 + 4 H2O"),
+        ),
     ),
     "GEN1.REACTIONTYPES": Lesson(
         node="GEN1.REACTIONTYPES",
@@ -1044,6 +1217,16 @@ LESSONS: dict[str, Lesson] = {
             "correct at the same time."
         ),
         misconception=None,
+        claims=(
+            Formula("OO", "H2O2", "hydrogen peroxide, which decomposes to water and oxygen"),
+            Source(
+                "The five reaction categories used here, synthesis, "
+                "decomposition, single replacement, double replacement and "
+                "combustion, are descriptive patterns, and a reaction can "
+                "belong to more than one.",
+                OPENSTAX + ", Ch. 4.1 Writing and Balancing Chemical Equations and Ch. 4.2 Classifying Chemical Reactions",
+            ),
+        ),
     ),
     "GEN1.SOLUBILITY": Lesson(
         node="GEN1.SOLUBILITY",
@@ -1101,6 +1284,16 @@ LESSONS: dict[str, Lesson] = {
             "the formula it came out of."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The solubility guidelines used here (all Group 1 and ammonium "
+                "salts and all nitrates soluble; chlorides, bromides and "
+                "iodides soluble except with silver, lead and mercury(I); most "
+                "carbonates, phosphates, sulfides and hydroxides insoluble) are "
+                "the standard qualitative rules.",
+                OPENSTAX + ", Ch. 4.1 (precipitation reactions and solubility rules)",
+            ),
+        ),
     ),
     "GEN1.NETIONIC": Lesson(
         node="GEN1.NETIONIC",
@@ -1156,6 +1349,15 @@ LESSONS: dict[str, Lesson] = {
             "whole."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "In a complete ionic equation only fully dissociated aqueous "
+                "strong electrolytes are written as separated ions; solids, "
+                "liquids, gases and weak electrolytes stay as whole formulas, "
+                "and spectator ions cancel to give the net ionic equation.",
+                OPENSTAX + ", Ch. 4.1 (ionic and net ionic equations)",
+            ),
+        ),
     ),
     "GEN1.OXNUMBERS": Lesson(
         node="GEN1.OXNUMBERS",
@@ -1214,6 +1416,15 @@ LESSONS: dict[str, Lesson] = {
             "charge must be identical on both sides."
         ),
         misconception="CHG-BAL",
+        claims=(
+            Source(
+                "The oxidation-number rules used here (a free element is 0, "
+                "oxygen usually -2, hydrogen usually +1, and the numbers sum to "
+                "the species charge) and the half-reaction method of balancing "
+                "redox equations are the standard conventions.",
+                OPENSTAX + ", Ch. 4.2 Classifying Chemical Reactions (oxidation-reduction)",
+            ),
+        ),
     ),
     "GEN1.STOICH": Lesson(
         node="GEN1.STOICH",
@@ -1269,6 +1480,10 @@ LESSONS: dict[str, Lesson] = {
             "than a third of a propane."
         ),
         misconception="NO-RATIO",
+        claims=(
+            Formula("CCC", "C3H8", "propane"),
+            Formula("O=C=O", "CO2", "carbon dioxide, the combustion product"),
+        ),
     ),
     "GEN1.LIMITING": Lesson(
         node="GEN1.LIMITING",
@@ -1325,6 +1540,10 @@ LESSONS: dict[str, Lesson] = {
             "coefficient before comparing."
         ),
         misconception="IGNORED-RATIO",
+        claims=(
+            Formula("C", "CH4", "methane"),
+            Formula("O=C=O", "CO2", "carbon dioxide, the product whose yield the limiting reactant sets"),
+        ),
     ),
     "GEN1.TITRATIONBASIC": Lesson(
         node="GEN1.TITRATIONBASIC",
@@ -1380,6 +1599,15 @@ LESSONS: dict[str, Lesson] = {
             "hydroxides."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "In a titration the moles of titrant at the endpoint, converted "
+                "through the balanced neutralisation ratio, give the moles and "
+                "hence concentration of the analyte; a diprotic acid such as "
+                "H2SO4 consumes two hydroxides per molecule.",
+                OPENSTAX + ", Ch. 4.5 Quantitative Chemical Analysis (titration)",
+            ),
+        ),
     ),
     "GEN1.ENERGYBASICS": Lesson(
         node="GEN1.ENERGYBASICS",
@@ -1433,6 +1661,13 @@ LESSONS: dict[str, Lesson] = {
             "energy available to transfer."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The specific heat of liquid water is about 4.184 J/(g*C) and "
+                "that of aluminium about 0.897 J/(g*C).",
+                CRC + ", table of specific heat capacities",
+            ),
+        ),
     ),
     "GEN1.CALORIMETRY": Lesson(
         node="GEN1.CALORIMETRY",
@@ -1486,6 +1721,13 @@ LESSONS: dict[str, Lesson] = {
             "specific heat is 0.449 J/(g*C), and it warms by 9.32 degrees."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The specific heat of liquid water is about 4.184 J/(g*C) and "
+                "that of iron about 0.449 J/(g*C).",
+                CRC + ", table of specific heat capacities",
+            ),
+        ),
     ),
     "GEN1.ENTHALPY": Lesson(
         node="GEN1.ENTHALPY",
@@ -1540,6 +1782,15 @@ LESSONS: dict[str, Lesson] = {
             "system."
         ),
         misconception=None,
+        claims=(
+            Formula("C", "CH4", "methane"),
+            Source(
+                "The standard enthalpy of combustion is about -890.3 kJ per "
+                "mole for methane and about -285.8 kJ per mole for hydrogen "
+                "(forming liquid water).",
+                CRC + ", tables of standard enthalpies of combustion and formation",
+            ),
+        ),
     ),
     "GEN1.HESS": Lesson(
         node="GEN1.HESS",
@@ -1596,6 +1847,15 @@ LESSONS: dict[str, Lesson] = {
             "does not, as anyone who has stood near a coal fire knows."
         ),
         misconception=None,
+        claims=(
+            Formula("[C-]#[O+]", "CO", "carbon monoxide"),
+            Source(
+                "Standard reaction enthalpies used: C(s) + O2 -> CO2 about "
+                "-393.5 kJ and 2 CO + O2 -> 2 CO2 about -566.0 kJ, which combine "
+                "by Hess's law to 2 C + O2 -> 2 CO at about -221.0 kJ.",
+                CRC + ", tables of standard enthalpies of formation and combustion",
+            ),
+        ),
     ),
     "GEN1.QUANTUMNUMBERS": Lesson(
         node="GEN1.QUANTUMNUMBERS",
@@ -1650,6 +1910,14 @@ LESSONS: dict[str, Lesson] = {
             "manage."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The allowed quantum numbers used here (n a positive integer, l "
+                "from 0 to n-1, m_l from -l to +l, m_s equal to +1/2 or -1/2) "
+                "give n^2 orbitals and 2n^2 electrons per shell.",
+                OPENSTAX + ", Ch. 6.3 Development of Quantum Theory (quantum numbers)",
+            ),
+        ),
     ),
     "GEN1.ELECTRONCONFIG": Lesson(
         node="GEN1.ELECTRONCONFIG",
@@ -1703,6 +1971,14 @@ LESSONS: dict[str, Lesson] = {
             "subshell is worth promoting an s electron for."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "The Aufbau filling order used here and the anomalous "
+                "ground-state configurations of chromium ([Ar] 4s1 3d5) and "
+                "copper ([Ar] 4s1 3d10) are the standard results.",
+                OPENSTAX + ", Ch. 6.4 Electronic Structure of Atoms (Electron Configurations)",
+            ),
+        ),
     ),
     "GEN1.RADIUS": Lesson(
         node="GEN1.RADIUS",
@@ -1761,6 +2037,14 @@ LESSONS: dict[str, Lesson] = {
             "on everything."
         ),
         misconception=None,
+        claims=(
+            Source(
+                "Approximate atomic radii: sodium 186 pm, magnesium 160 pm, "
+                "potassium 227 pm; approximate first ionisation energies: "
+                "sodium 496, magnesium 738, potassium 419 kJ/mol.",
+                CRC + ", tables of atomic radii and ionisation energies",
+            ),
+        ),
     ),
     "GEN1.IONICBOND": Lesson(
         node="GEN1.IONICBOND",
@@ -1827,6 +2111,21 @@ LESSONS: dict[str, Lesson] = {
             "ratio in a lattice, not a particle."
         ),
         misconception="MOLECULAR-IONIC",
+        claims=(
+            Formula("C", "CH4", "methane, a molecular substance"),
+            Source(
+                "Pauling electronegativities used here: sodium 0.93, magnesium "
+                "1.31, silicon 1.90, carbon 2.55, chlorine 3.16, oxygen 3.44, "
+                "hydrogen 2.20.",
+                CRC + ", table of electronegativities (Pauling scale)",
+            ),
+            Source(
+                "Approximate melting or boiling points: NaCl melts at 801 C, "
+                "MgO at 2852 C, copper at 1085 C; methane boils at -161.5 C; "
+                "silicon carbide decomposes near 2730 C.",
+                CRC + ", tables of melting and boiling points",
+            ),
+        ),
     ),
     "GEN1.LEWIS": Lesson(
         node="GEN1.LEWIS",
@@ -1883,6 +2182,10 @@ LESSONS: dict[str, Lesson] = {
             "molecule only has 8 to give."
         ),
         misconception=None,
+        claims=(
+            Formula("O=C=O", "CO2", "carbon dioxide, two double bonds"),
+            Formula("O", "H2O", "water, two bonds and two lone pairs on oxygen"),
+        ),
     ),
     "GEN1.VSEPR": Lesson(
         node="GEN1.VSEPR",
@@ -1944,6 +2247,16 @@ LESSONS: dict[str, Lesson] = {
             "two lone pairs and carbon in CO2 carries none."
         ),
         misconception=None,
+        claims=(
+            Formula("N", "H3N", "ammonia"),
+            Formula("O", "H2O", "water"),
+            Source(
+                "Measured bond angles: about 109.5 degrees for an ideal "
+                "tetrahedron, about 107 degrees in ammonia, about 104.5 degrees "
+                "in water, and 180 degrees in carbon dioxide.",
+                CRC + ", tables of molecular structure and bond angles",
+            ),
+        ),
     ),
     "GEN1.POLARITY": Lesson(
         node="GEN1.POLARITY",
@@ -2000,6 +2313,17 @@ LESSONS: dict[str, Lesson] = {
             "cancels all four arrows and CCl4 will not mix with water."
         ),
         misconception=None,
+        claims=(
+            Formula("O=C=O", "CO2", "carbon dioxide, nonpolar by symmetry"),
+            Formula("O", "H2O", "water, polar"),
+            Formula("ClC(Cl)(Cl)Cl", "CCl4", "carbon tetrachloride, nonpolar by symmetry"),
+            Source(
+                "Approximate dipole moments: carbon dioxide 0, boron "
+                "trifluoride 0 and carbon tetrachloride 0 debye by symmetry, "
+                "while water is about 1.85 debye.",
+                CRC + ", table of dipole moments",
+            ),
+        ),
     ),
     "GEN1.IDEALGAS": Lesson(
         node="GEN1.IDEALGAS",
@@ -2053,6 +2377,15 @@ LESSONS: dict[str, Lesson] = {
             "obviously does not, because the real temperature is 273.15 K."
         ),
         misconception=None,
+        claims=(
+            Formula("O=O", "O2", "oxygen gas"),
+            Source(
+                "The ideal gas constant is 0.08206 L*atm/(mol*K), and one mole "
+                "of an ideal gas occupies about 22.4 L at 1.00 atm and "
+                "273.15 K.",
+                CODATA + " (gas constant); molar volume from OpenStax, Chemistry 2e, Ch. 9",
+            ),
+        ),
     ),
     "GEN1.PARTIALPRESSURE": Lesson(
         node="GEN1.PARTIALPRESSURE",
@@ -2107,6 +2440,15 @@ LESSONS: dict[str, Lesson] = {
             "helium, because ideal particles ignore each other entirely."
         ),
         misconception=None,
+        claims=(
+            Formula("N#N", "N2", "nitrogen gas"),
+            Source(
+                "Dalton's law of partial pressures: the total pressure of a gas "
+                "mixture is the sum of the partial pressures, and each partial "
+                "pressure equals the mole fraction times the total pressure.",
+                OPENSTAX + ", Ch. 9.3 Stoichiometry of Gaseous Substances, Mixtures, and Reactions",
+            ),
+        ),
     ),
     "GEN1.IMF": Lesson(
         node="GEN1.IMF",
@@ -2164,6 +2506,16 @@ LESSONS: dict[str, Lesson] = {
             "times as much."
         ),
         misconception=None,
+        claims=(
+            Formula("CCO", "C2H6O", "ethanol, which hydrogen bonds"),
+            Formula("COC", "C2H6O", "dimethyl ether, a polar isomer that cannot hydrogen bond"),
+            Source(
+                "Approximate boiling points: ethanol 78 C, dimethyl ether "
+                "-25 C, propane -42 C, butane -0.5 C, water 100 C, hydrogen "
+                "sulfide -60 C.",
+                CRC + ", tables of boiling points",
+            ),
+        ),
     ),
     "GEN1.COLLIGATIVE": Lesson(
         node="GEN1.COLLIGATIVE",
@@ -2220,5 +2572,14 @@ LESSONS: dict[str, Lesson] = {
             "releases one Ca2+ and two Cl- for a total of three particles."
         ),
         misconception=None,
+        claims=(
+            Formula("OCCO", "C2H6O2", "ethylene glycol, a nonelectrolyte with i = 1"),
+            Source(
+                "For water the molal freezing-point depression constant Kf is "
+                "1.86 C/m and the boiling-point elevation constant Kb is "
+                "0.512 C/m.",
+                CRC + ", tables of cryoscopic and ebullioscopic constants",
+            ),
+        ),
     ),
 }

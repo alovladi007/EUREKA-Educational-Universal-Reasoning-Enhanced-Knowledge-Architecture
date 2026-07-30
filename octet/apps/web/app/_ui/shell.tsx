@@ -12,6 +12,7 @@ import {
   FlaskConical,
   LayoutDashboard,
   Layers,
+  Menu,
   PencilRuler,
   Route,
 } from 'lucide-react';
@@ -146,7 +147,11 @@ const NAV = [
 // active item is decided by the pathname rather than by each page declaring
 // itself, because a page that has to remember to say where it is eventually
 // forgets.
-export function Sidebar() {
+//
+// onNavigate fires when a nav link is clicked, so the mobile slide-over can
+// close itself after the learner picks a destination. It is a no-op on
+// desktop, where the sidebar is always visible.
+export function Sidebar({ onNavigate }: { onNavigate?: () => void } = {}) {
   const pathname = usePathname() ?? '';
 
   return (
@@ -174,6 +179,7 @@ export function Sidebar() {
               <Link
                 key={item.name}
                 href={item.href}
+                onClick={onNavigate}
                 aria-current={active ? 'page' : undefined}
                 className={[
                   'flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors',
@@ -206,13 +212,51 @@ export function Sidebar() {
 // The standard page frame: sidebar on the left, scrolling content beside it.
 // Navigation lives in the sidebar alone, so no page declares its own links and
 // no two navigations can disagree about where the learner is.
+//
+// Below the md breakpoint the fixed 256px sidebar would crush the content to a
+// column too narrow to read (a review measured 119px, one word per line), so
+// there the sidebar becomes a slide-over behind a hamburger in a slim top bar.
+// Desktop is unchanged: the sidebar is always present and there is no top bar.
 export function Page({ children }: { children: React.ReactNode }) {
+  const [menuOpen, setMenuOpen] = useState(false);
+
   return (
     <div className="flex h-screen overflow-hidden">
-      <Sidebar />
-      <main className="flex-1 overflow-y-auto">
-        <div className="mx-auto max-w-5xl px-6 py-8">{children}</div>
-      </main>
+      <div className="hidden md:block">
+        <Sidebar />
+      </div>
+
+      {menuOpen && (
+        <div className="fixed inset-0 z-40 md:hidden">
+          <button
+            type="button"
+            aria-label="Close menu"
+            className="absolute inset-0 bg-black/40"
+            onClick={() => setMenuOpen(false)}
+          />
+          <div className="absolute left-0 top-0 h-full">
+            <Sidebar onNavigate={() => setMenuOpen(false)} />
+          </div>
+        </div>
+      )}
+
+      <div className="flex min-w-0 flex-1 flex-col">
+        <div className="flex h-14 shrink-0 items-center gap-3 border-b border-border bg-card px-4 md:hidden">
+          <button
+            type="button"
+            aria-label="Open menu"
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen(true)}
+            className="rounded-md p-2 text-muted-foreground hover:bg-muted hover:text-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <span className="text-sm font-semibold">OCTET</span>
+        </div>
+        <main className="min-w-0 flex-1 overflow-y-auto">
+          <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">{children}</div>
+        </main>
+      </div>
     </div>
   );
 }

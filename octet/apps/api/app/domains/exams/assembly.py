@@ -33,6 +33,8 @@ from dataclasses import dataclass, field
 
 import chem_core as cc
 
+from app.domains.grading.serve import public_meta as serve_public_meta
+
 from app.data.curriculum import NODES_BY_CODE
 from app.domains.exams.blueprints import Blueprint, SectionSpec
 
@@ -172,16 +174,11 @@ def assemble(blueprint: Blueprint, user_id: str) -> Form:
                     f"{template_id} could not produce a verifiable item: {exc}"
                 ) from exc
 
-            public_meta = {
-                k: v for k, v in variant.meta.items() if k not in ("exact_g", "exact_x")
-            }
-            if variant.grader == "mc":
-                public_meta = {
-                    "choices": [
-                        {"index": c["index"], "text": c["text"]}
-                        for c in variant.meta["choices"]
-                    ]
-                }
+            # Whitelisted, fail-closed. This line used to be a blacklist
+            # dropping two named keys and passing the rest, which leaked every
+            # numeric item's answer (value, key_text, wrong_paths) into the
+            # attempt payload once the numeric templates grew those fields.
+            public_meta = serve_public_meta(variant.grader, variant.meta)
             items.append(
                 FormItem(
                     position=position,

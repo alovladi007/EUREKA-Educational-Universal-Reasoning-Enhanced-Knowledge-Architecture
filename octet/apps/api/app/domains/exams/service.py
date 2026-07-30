@@ -17,7 +17,7 @@ The state machine has two states, not three. An attempt is in progress or it
 is submitted, and running out of time submits it rather than moving it to a
 separate expired state. Every path that notices expiry goes through the same
 scoring call, so a learner who came back after the deadline and a learner
-whose attempt the sweep closed get the same outcome.
+whose attempt lazy expiry closed get the same outcome.
 
 An earlier version had three states and set the status by hand in three
 places, two of which discarded the answers already given. A status nothing
@@ -102,10 +102,10 @@ async def start_attempt(session: AsyncSession, user_id: str, blueprint_code: str
         if _as_aware(existing.expires_at) <= _now():
             # Its time has passed, so close it here rather than letting it
             # block the learner forever. It is SCORED on the way out, by the
-            # same path the scheduled sweep uses. An earlier version marked it
+            # same path lazy expiry uses. An earlier version marked it
             # expired without scoring, which meant the same situation produced
             # a different outcome depending on whether the learner came back
-            # before the sweep ran, and silently discarded answers they had
+            # before expiry ran, and silently discarded answers they had
             # already given.
             await submit_attempt(session, user_id, existing.id, late_ok=True)
         else:
@@ -278,18 +278,26 @@ async def submit_attempt(
     return attempt.result
 
 
-async def expire_overdue(session: AsyncSession) -> int:
+async def expire_overdue(session: AsyncSession, user_id: str | None = None) -> int:
     """Close and score attempts whose time has passed.
 
     Without this an abandoned attempt sits open forever, which blocks the
     learner from restarting and leaves the answers they did give unscored.
+
+    There is no scheduler in this deployment, so this is called lazily: for
+    one learner when they open the exam catalogue, and for a same-blueprint
+    attempt inside start_attempt. user_id narrows the sweep to one learner so
+    the catalogue request does not pay for everyone's expiry.
     """
+    conditions = [
+        ExamAttempt.status == STATUS_IN_PROGRESS,
+        ExamAttempt.expires_at <= _now(),
+    ]
+    if user_id is not None:
+        conditions.append(ExamAttempt.user_id == user_id)
     overdue = (
         await session.scalars(
-            select(ExamAttempt).where(
-                ExamAttempt.status == STATUS_IN_PROGRESS,
-                ExamAttempt.expires_at <= _now(),
-            )
+            select(ExamAttempt).where(*conditions)
         )
     ).all()
     for attempt in overdue:

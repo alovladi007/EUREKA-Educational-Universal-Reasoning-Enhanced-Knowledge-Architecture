@@ -48,8 +48,15 @@ def test_phase2_deliverable_counts():
     from app.data.curriculum import NODES_BY_CODE
 
     general = [c for c in LESSONS if NODES_BY_CODE[c].course in ("GEN1", "GEN2")]
-    assert len(general) == 59, "a general chemistry lesson was lost"
-    assert len(LESSONS) >= 59
+    # 59 was the migrated legacy set; the fill waves then authored the rest of
+    # both courses. The floor guards against losing lessons, and the full
+    # coverage equality is asserted through the coverage module so this test
+    # does not need editing every time content lands.
+    assert len(general) >= 59, "a general chemistry lesson was lost"
+    from app.data.coverage import coverage
+
+    cov = coverage()
+    assert len(LESSONS) == cov["authored"]
     assert len(cc.REGISTRY) >= 20, "Phase 2 specifies 20 or more templates"
     assert validate_library()["built"] == 200
 

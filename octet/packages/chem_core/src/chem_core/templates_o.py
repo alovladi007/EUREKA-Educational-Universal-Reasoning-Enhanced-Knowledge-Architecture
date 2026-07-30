@@ -239,15 +239,33 @@ _TARTARIC_SS = "O[C@H](C(=O)O)[C@H](O)C(=O)O"
 _TARTARIC_MESO = "O[C@@H](C(=O)O)[C@H](O)C(=O)O"
 _MESO_OTHER_SPELLING = "O[C@H](C(=O)O)[C@@H](O)C(=O)O"
 
+# (a, b, kind, name of a, name of b). The names are constitution-level on
+# purpose: no stereo-descriptors, because "(2R,3R)-" in a name would hand the
+# learner the relationship the item asks them to derive. The same name pair
+# ("tartaric acid" twice) appears across enantiomer, diastereomer and
+# identical fixtures, so the names decide nothing; the structures do. Every
+# name was checked against its SMILES with RDKit before being written.
 _RELATIONSHIP_FIXTURES = [
-    (_TARTARIC_RR, _TARTARIC_SS, "enantiomers"),
-    (_TARTARIC_RR, _TARTARIC_MESO, "diastereomers"),
-    (_TARTARIC_SS, _TARTARIC_MESO, "diastereomers"),
-    (_TARTARIC_MESO, _MESO_OTHER_SPELLING, "identical"),
-    ("CC[C@@H](C)O", "CC[C@H](C)O", "enantiomers"),
-    ("CCO", "COC", "constitutional"),
-    ("C[C@@H](O)[C@H](Cl)C", "C[C@H](O)[C@@H](Cl)C", "enantiomers"),
-    ("C[C@@H](O)[C@H](Cl)C", "C[C@@H](O)[C@@H](Cl)C", "diastereomers"),
+    (_TARTARIC_RR, _TARTARIC_SS, "enantiomers", "tartaric acid", "tartaric acid"),
+    (_TARTARIC_RR, _TARTARIC_MESO, "diastereomers", "tartaric acid", "tartaric acid"),
+    (_TARTARIC_SS, _TARTARIC_MESO, "diastereomers", "tartaric acid", "tartaric acid"),
+    (_TARTARIC_MESO, _MESO_OTHER_SPELLING, "identical", "tartaric acid", "tartaric acid"),
+    ("CC[C@@H](C)O", "CC[C@H](C)O", "enantiomers", "butan-2-ol", "butan-2-ol"),
+    ("CCO", "COC", "constitutional", "ethanol", "methoxymethane"),
+    (
+        "C[C@@H](O)[C@H](Cl)C",
+        "C[C@H](O)[C@@H](Cl)C",
+        "enantiomers",
+        "3-chlorobutan-2-ol",
+        "3-chlorobutan-2-ol",
+    ),
+    (
+        "C[C@@H](O)[C@H](Cl)C",
+        "C[C@@H](O)[C@@H](Cl)C",
+        "diastereomers",
+        "3-chlorobutan-2-ol",
+        "3-chlorobutan-2-ol",
+    ),
 ]
 
 # Each distractor names the belief that produces it. Choosing "enantiomers"
@@ -279,13 +297,14 @@ def _relationship_choices(correct_index: int) -> list[dict]:
 
 
 def _gen_relationship(seed: int) -> Variant:
-    a, b, kind = _pick(_RELATIONSHIP_FIXTURES, seed)
+    a, b, kind, a_name, b_name = _pick(_RELATIONSHIP_FIXTURES, seed)
     correct_index = _KIND_TO_INDEX[kind]
     return Variant(
         template_id="org.relationship.v1",
         seed=seed,
         prompt=(
-            f"Consider these two structures, written as SMILES: {a} and {b}. "
+            f"Consider these two structures: {a_name} (SMILES {a}) and "
+            f"{b_name} (SMILES {b}). "
             "What is the relationship between them?"
         ),
         key=str(correct_index),

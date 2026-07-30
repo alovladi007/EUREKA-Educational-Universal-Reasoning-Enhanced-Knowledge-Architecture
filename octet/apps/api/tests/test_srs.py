@@ -122,6 +122,28 @@ async def test_state_is_private_to_its_owner(client, auth):
     assert b_stats["seen"] == 0
 
 
+async def test_sm2_lapse_resets_repetitions_but_leaves_ease_unchanged():
+    from app.domains.srs.service import sm2
+
+    reps, interval, ease = sm2(0, 0.0, 2.5, 5)
+    reps, interval, ease = sm2(reps, interval, ease, 5)
+    assert reps == 2
+    ease_before_lapse = ease
+
+    reps, interval, ease = sm2(reps, interval, ease, 1)
+    assert reps == 0
+    assert interval == 1.0
+    assert ease == ease_before_lapse, "published SM-2 restarts reps without touching the E-Factor"
+
+
+async def test_sm2_updates_ease_only_on_a_successful_recall():
+    from app.domains.srs.service import sm2
+
+    _, _, ease_barely = sm2(0, 0.0, 2.5, 3)
+    _, _, ease_perfect = sm2(0, 0.0, 2.5, 5)
+    assert ease_barely < 2.5 < ease_perfect
+
+
 async def test_stats_roll_up_by_course(client, auth):
     headers = auth("student", user_id="srs-stats")
     data = await _queue(client, headers, limit=2)

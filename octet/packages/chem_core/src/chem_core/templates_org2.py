@@ -228,11 +228,15 @@ def _ver_ox(v: Variant) -> VerifierResult:
 # verifier confirms the pair are constitutional isomers and identifies the keto
 # form by substructure.
 
+# (keto SMILES, keto name, enol SMILES, enol name). Each name was read back
+# against its structure with RDKit before being written; note the enol of
+# butan-2-one used here is but-1-en-2-ol (enolization toward C1), not
+# but-2-en-2-ol, which an earlier combined label misnamed.
 _TAUT_FIX = [
-    ("CC(=O)C", "CC(O)=C", "propan-2-one and prop-1-en-2-ol"),
-    ("CCC(=O)C", "CCC(O)=C", "butan-2-one and but-2-en-2-ol"),
-    ("CC=O", "C=CO", "ethanal and ethenol"),
-    ("CCC=O", "CC=CO", "propanal and prop-1-en-1-ol"),
+    ("CC(=O)C", "propan-2-one", "CC(O)=C", "prop-1-en-2-ol"),
+    ("CCC(=O)C", "butan-2-one", "CCC(O)=C", "but-1-en-2-ol"),
+    ("CC=O", "ethanal", "C=CO", "ethenol"),
+    ("CCC=O", "propanal", "CC=CO", "prop-1-en-1-ol"),
 ]
 
 
@@ -248,10 +252,11 @@ def _has_ketone_or_aldehyde(smiles: str) -> bool:
 
 
 def _gen_taut(seed: int) -> Variant:
-    keto, enol, name = _pick(_TAUT_FIX, seed)
+    keto, keto_name, enol, enol_name = _pick(_TAUT_FIX, seed)
     # Randomize which option is listed first by seed parity, deriving the key.
     first_is_keto = seed % 2 == 0
     a, b = (keto, enol) if first_is_keto else (enol, keto)
+    a_name, b_name = (keto_name, enol_name) if first_is_keto else (enol_name, keto_name)
     correct = 0 if first_is_keto else 1
     options = [
         (f"the first structure ({a})", None if correct == 0 else "TAUTOMER-KETO-ENOL-CONFUSED"),
@@ -261,8 +266,8 @@ def _gen_taut(seed: int) -> Variant:
         template_id="org2.tautomer.v1",
         seed=seed,
         prompt=(
-            f"These two structures, {a} and {b}, are tautomers. Which one is "
-            "the keto form?"
+            f"These two structures, {a_name} (SMILES {a}) and {b_name} "
+            f"(SMILES {b}), are tautomers. Which one is the keto form?"
         ),
         key=str(correct),
         node="ORG2.TAUTOMERISM",
@@ -332,8 +337,8 @@ def _gen_amine(seed: int) -> Variant:
         template_id="org2.amine.class.v1",
         seed=seed,
         prompt=(
-            f"Is {name} ({smiles}) a primary, secondary, or tertiary amine? "
-            "Count the carbon groups bonded to nitrogen."
+            f"Is {name} (SMILES {smiles}) a primary, secondary, or tertiary "
+            "amine? Count the carbon groups bonded to nitrogen."
         ),
         key=str(correct),
         node="ORG2.AMINEPROPS",
@@ -381,8 +386,9 @@ def _gen_aa(seed: int) -> Variant:
         template_id="org2.aminoacid.config.v1",
         seed=seed,
         prompt=(
-            f"{name} is drawn as {smiles}. What is the CIP configuration at its "
-            "alpha carbon, R or S? Rank the four groups on that carbon."
+            f"{name} is drawn as the SMILES {smiles}. What is the CIP "
+            "configuration at its alpha carbon, R or S? Rank the four groups "
+            "on that carbon."
         ),
         key=str(correct),
         node="ORG2.AMINOACIDS",

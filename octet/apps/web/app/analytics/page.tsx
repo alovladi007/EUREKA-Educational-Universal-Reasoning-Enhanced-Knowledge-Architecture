@@ -11,8 +11,7 @@ import {
   formatWhen,
   getAnalyticsOverview,
   getRecentPracticeSessions,
-  percentOf,
-} from '@/lib/analyticsApi';
+  percentOf, examTitle} from '@/lib/analyticsApi';
 import {
   Card,
   EmptyState,
@@ -348,7 +347,7 @@ function RecentExams({ exams }: { exams: RecentExam[] }) {
                 href={`/exams/${encodeURIComponent(exam.attempt_id)}`}
                 className="text-sm font-medium text-brand-700 hover:underline dark:text-brand-300"
               >
-                {exam.blueprint_code}
+                {examTitle(exam.blueprint_code)}
               </Link>
               <span className="ml-3 text-xs text-muted-foreground">
                 {formatWhen(exam.submitted_at, 'submission time not recorded')}

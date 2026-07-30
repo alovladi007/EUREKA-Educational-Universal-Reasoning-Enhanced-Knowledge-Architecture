@@ -20,6 +20,7 @@ import chem_core as cc
 from app.core.db import get_session
 from app.core.security import Principal, get_current_principal
 from app.domains.grading.sandbox import grade_sandboxed
+from app.domains.grading.serve import public_meta as serve_public_meta
 
 router = APIRouter()
 
@@ -92,14 +93,10 @@ async def next_item(
     except RuntimeError as exc:
         raise HTTPException(503, str(exc)) from exc
 
-    # The stored key never leaves the server on the serve path.
-    public_meta = {k: v for k, v in variant.meta.items() if k not in ("exact_g", "exact_x")}
-    if variant.grader == "mc":
-        public_meta = {
-            "choices": [
-                {"index": c["index"], "text": c["text"]} for c in variant.meta["choices"]
-            ]
-        }
+    # The stored key never leaves the server on the serve path. Whitelisted
+    # per grader and fail-closed; the blacklist this replaced leaked numeric
+    # answers through meta once templates grew value/key_text/wrong_paths.
+    public_meta = serve_public_meta(variant.grader, variant.meta)
     return VariantOut(
         template_id=variant.template_id,
         seed=variant.seed,

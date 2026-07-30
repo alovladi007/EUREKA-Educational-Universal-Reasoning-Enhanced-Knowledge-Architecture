@@ -529,16 +529,18 @@ LESSONS_ORG1_U10 = {
             "them as well."
         ),
         pitfall=(
-            "The misconception to name is that a strong band near 1700 cm-1 "
-            "identifies a ketone. It identifies a carbon to oxygen double bond, "
-            "and aldehydes, ketones, esters, carboxylic acids, amides and acid "
-            "chlorides all have one. The belief underneath is that each "
-            "functional group owns a band, so finding the band finds the group. "
-            "What actually separates the carbonyl classes is the company the "
-            "band keeps: the acid's broad O-H, the ester's carbon to oxygen "
-            "single bond stretches, the aldehyde's pair of weak C-H stretches "
-            "below 3000 cm-1 near 2720 and 2820 cm-1, and the position of the "
-            "carbonyl band itself within its region."
+            "The habit to break in this lesson is stopping at the carbonyl "
+            "band and declaring a ketone. A strong absorption near 1700 cm-1 "
+            "reports only that a carbon to oxygen double bond is present, which "
+            "is true of every aldehyde, ketone, ester, carboxylic acid, amide "
+            "and acid chloride, so by itself it eliminates almost nothing. The "
+            "decision procedure has to run past it: ask whether a very broad "
+            "O-H reaches down through the C-H region, which marks an acid; "
+            "whether strong carbon to oxygen single bond stretches sit near "
+            "1000 to 1300 cm-1, which marks an ester; whether the weak aldehyde "
+            "C-H pair near 2720 and 2820 cm-1 is there; and exactly where in "
+            "its region the carbonyl band falls. The band opens the question of "
+            "which carbonyl; it does not close it."
         ),
         claims=(
             Formula(ETHYL_ACETATE, "C4H8O2", "ethyl acetate"),

@@ -9,7 +9,7 @@ the build fails rather than a learner finding it.
 
 The facts this unit most wants to state that no code can check are reaction
 outcomes and spectroscopic positions: that an aldehyde is more reactive than a
-ketone, that a carbonyl absorbs near 1700 wavenumbers, that an aldehyde proton
+ketone, that a carbonyl absorbs near 1700 cm-1, that an aldehyde proton
 resonates far downfield. Those are carried as a Source with a real citation,
 never as a number recalled from memory.
 """
@@ -741,10 +741,10 @@ LESSONS_ORG2_U5 = {
         ),
         core_idea=(
             "In the infrared, the carbonyl stretch is a strong band in the "
-            "region near 1700 wavenumbers, and its exact position separates the "
+            "region near 1700 cm-1, and its exact position separates the "
             "carbonyl classes, with conjugation lowering it. An aldehyde adds "
             "two confirmations a ketone lacks: a pair of weak carbon-hydrogen "
-            "stretch bands from the aldehyde C-H a little below 3000 wavenumbers, "
+            "stretch bands from the aldehyde C-H a little below 3000 cm-1, "
             "and in the proton spectrum a signal far downfield, well beyond the "
             "usual range, for the single aldehyde hydrogen. The proton count "
             "still does structural work: propanone shows one environment, "
@@ -753,7 +753,7 @@ LESSONS_ORG2_U5 = {
         ),
         worked_example=(
             "You have a C3H6O compound with a strong infrared band near 1700 "
-            "wavenumbers, so a carbonyl. Is it propanal or propanone? The "
+            "cm-1, so a carbonyl. Is it propanal or propanone? The "
             "proton spectrum settles it. Propanone is symmetric: its six "
             "hydrogens are one environment, a single signal. Propanal has three "
             "environments in the ratio 3:2:1, and one of them, the aldehyde "
@@ -764,19 +764,19 @@ LESSONS_ORG2_U5 = {
         ),
         try_it_prompt=(
             "Two C3H6O isomers, propanal and propanone, both show a strong "
-            "carbonyl band near 1700 wavenumbers. Which spectroscopic features "
+            "carbonyl band near 1700 cm-1. Which spectroscopic features "
             "distinguish them, and how many proton environments does each have?"
         ),
         try_it_answer=(
             "Propanal has three proton environments in the ratio 3:2:1 and "
             "shows a far-downfield aldehyde-hydrogen signal plus weak aldehyde "
-            "C-H stretches a little below 3000 wavenumbers. Propanone has a single "
+            "C-H stretches a little below 3000 cm-1. Propanone has a single "
             "proton environment by symmetry and none of those aldehyde "
             "features. The environment count and the aldehyde signals separate "
             "them."
         ),
         pitfall=(
-            "The misconception is that a strong band near 1700 wavenumbers "
+            "The misconception is that a strong band near 1700 cm-1 "
             "names a ketone. It names a carbon-oxygen double bond, which "
             "aldehydes, ketones, esters, acids and amides all have. What "
             "separates them is the company the band keeps: the aldehyde's weak "
@@ -791,15 +791,15 @@ LESSONS_ORG2_U5 = {
             Relationship(PROPANAL, PROPANONE, "constitutional"),
             Source(
                 "Approximate carbonyl stretch regions: saturated ketone about "
-                "1705 to 1725 wavenumbers; aldehyde about 1720 to 1740; "
+                "1705 to 1725 cm-1; aldehyde about 1720 to 1740; "
                 "conjugation with an adjacent double bond or ring lowers the "
-                "position by roughly 20 to 30 wavenumbers. These are ranges in "
+                "position by roughly 20 to 30 cm-1. These are ranges in "
                 "correlation charts, not values this repository can derive.",
                 SILVERSTEIN,
             ),
             Source(
                 "Aldehydes show a characteristic pair of weak carbon-hydrogen "
-                "stretch bands near 2720 and 2820 wavenumbers, and the aldehyde "
+                "stretch bands near 2720 and 2820 cm-1, and the aldehyde "
                 "hydrogen resonates far downfield in the proton spectrum, near "
                 "9 to 10 parts per million; both are tabulated values, not "
                 "derivable ones.",

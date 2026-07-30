@@ -455,19 +455,26 @@ def ver_sigfig(v) -> VerifierResult:
 # 14. particulate diagram multiple choice (Johnstone triangle crossing)
 # ---------------------------------------------------------------------------
 
+# (label, correct_text, wrong_text, misconception) for the particulate item.
+# Module level so the verifier holds the same canonical correct texts the
+# generator keys, and can assert the keyed choice is genuinely the correct one.
+PARTICULATE_SCENARIOS = (
+    ("sodium chloride dissolved in water",
+     "Separated sodium ions and chloride ions, each surrounded by water molecules.",
+     "Neutral NaCl units floating between water molecules.", "MOLECULAR-IONIC"),
+    ("solid sodium chloride",
+     "An extended alternating lattice of sodium ions and chloride ions.",
+     "Discrete NaCl molecules packed side by side.", "MOLECULAR-IONIC"),
+    ("hydrogen gas reacting with oxygen gas to form water",
+     "The same atoms, regrouped into water molecules, with none left over.",
+     "Some atoms disappear because the product weighs less than the reactants.", "ATOM-CONSERV"),
+)
+
+_PARTICULATE_CORRECT_TEXTS = frozenset(s[1] for s in PARTICULATE_SCENARIOS)
+
+
 def gen_particulate(seed: int):
-    scenarios = (
-        ("sodium chloride dissolved in water",
-         "Separated sodium ions and chloride ions, each surrounded by water molecules.",
-         "Neutral NaCl units floating between water molecules.", "MOLECULAR-IONIC"),
-        ("solid sodium chloride",
-         "An extended alternating lattice of sodium ions and chloride ions.",
-         "Discrete NaCl molecules packed side by side.", "MOLECULAR-IONIC"),
-        ("hydrogen gas reacting with oxygen gas to form water",
-         "The same atoms, regrouped into water molecules, with none left over.",
-         "Some atoms disappear because the product weighs less than the reactants.", "ATOM-CONSERV"),
-    )
-    label, correct_text, wrong_text, code = _pick(scenarios, seed)
+    label, correct_text, wrong_text, code = _pick(PARTICULATE_SCENARIOS, seed)
     choices = [
         {"index": 0, "text": correct_text, "misconception": None},
         {"index": 1, "text": wrong_text, "misconception": code},
@@ -486,6 +493,13 @@ def ver_particulate(v) -> VerifierResult:
     problems = validate_choices(v.meta["choices"], v.meta["correct_index"])
     if problems:
         return VerifierResult(False, "mc-structural", "; ".join(problems))
+    # Independent of the stored key: the choice the key points at must carry one
+    # of the canonical correct texts. A flipped correct_index then fails here
+    # even when the structural check still passes.
+    keyed = next((c for c in v.meta["choices"] if c.get("index") == v.meta["correct_index"]), None)
+    if keyed is None or keyed.get("text") not in _PARTICULATE_CORRECT_TEXTS:
+        return VerifierResult(False, "mc-correct-text",
+                              "keyed choice is not the canonical correct answer")
     return VerifierResult(True, "mc-structural", "distractors keyed and routed")
 
 

@@ -51,6 +51,15 @@ class HmacJwtEurekaIdentity:
         subject = claims.get("sub")
         if not subject:
             raise InvalidTokenError("token has no subject")
+        # EUREKA signs access and refresh tokens with the same secret and
+        # marks them apart with a type claim. A refresh token is a credential
+        # for minting access tokens, not for using APIs, so accepting one here
+        # would widen what a stolen refresh token is worth. Tokens without a
+        # type claim still pass, because LTI-derived and older EUREKA tokens
+        # do not carry one; only an explicit non-access type is refused.
+        token_type = claims.get("type")
+        if token_type is not None and token_type != "access":
+            raise InvalidTokenError(f"a {token_type} token cannot be used as an access token")
         roles = claims.get("roles") or ([claims["role"]] if claims.get("role") else [])
         return Principal(
             user_id=str(subject),

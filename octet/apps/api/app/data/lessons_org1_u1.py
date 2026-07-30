@@ -549,7 +549,7 @@ LESSONS_ORG1_U1 = {
         core_idea=(
             "Resonance is not an equilibrium and it is not two molecules "
             "interconverting. There is one molecule, its electron distribution "
-            "cannot be represented by any single Lewis drawing, so we draw "
+            "cannot be represented by any single Lewis drawing, so you draw "
             "several and take the truth to be a weighted blend of them. The "
             "nuclei stay exactly where they are in every contributor; only "
             "electrons move, and only pi electrons and lone pairs move, never a "

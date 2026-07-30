@@ -21,6 +21,15 @@ want different strictness at different points in the curriculum:
             any tautomer of the key, which is right when the item is about
             constitution rather than a specific tautomeric form.
 
+The stereo and tautomer policies interact. tautomer="any" requires stripping
+stereo before tautomer canonicalization: RDKit's TautomerEnumerator can move or
+remove an alpha stereocentre while enumerating, so stereo descriptors cannot be
+trusted through it. That makes stereo="strict" with tautomer="any" unsound (a
+stereocentre silently dropped by the enumerator would let an enantiomer pass a
+strict item), so that combination is refused as an authoring error rather than
+graded. stereo="loose" with tautomer="any" strips stereo from both sides first,
+which is exactly what the loose policy asks for, so enantiomers match.
+
 A wrong answer is diagnosed rather than merely rejected: same formula but
 different connectivity is a constitutional isomer, and same connectivity but
 different stereo descriptors is a stereochemistry slip. Those are different
@@ -119,6 +128,18 @@ def grade_structure(
     """Grade a drawn or typed structure against the item's key."""
     grader = "structure"
 
+    if tautomer == "any" and stereo == "strict":
+        # Unsound combination: tautomer canonicalization can strip a stereocentre,
+        # so a strict stereo requirement cannot be honored through it. Refuse as
+        # an authoring error rather than silently accept an enantiomer.
+        return GradeResult.ungradable(
+            grader,
+            "This item combines stereo='strict' with tautomer='any', which is not "
+            "supported: tautomer canonicalization can discard stereochemistry, so a "
+            "strict stereo check cannot be trusted through it. Author the item with "
+            "tautomer='strict' or stereo='loose'.",
+        )
+
     key_mol = parse_smiles(key_smiles)
     if key_mol is None:
         return GradeResult.ungradable(grader, f"item key is not a valid structure: {key_smiles}")
@@ -133,8 +154,15 @@ def grade_structure(
 
     keep_stereo = stereo == "strict"
     if tautomer == "any":
-        key_canon = _canonical_tautomer(key_smiles)
-        got_canon = _canonical_tautomer(student_smiles)
+        # stereo='strict' is refused above, so here stereo is 'loose': strip
+        # stereo from both sides before tautomer canonicalization so enantiomers
+        # collapse to one form and match.
+        key_flat_smiles = canonical(key_smiles, keep_stereo=False)
+        got_flat_smiles = canonical(student_smiles, keep_stereo=False)
+        if key_flat_smiles is None or got_flat_smiles is None:
+            return GradeResult.ungradable(grader, "structure could not be canonicalized")
+        key_canon = _canonical_tautomer(key_flat_smiles)
+        got_canon = _canonical_tautomer(got_flat_smiles)
     else:
         key_canon = canonical(key_smiles, keep_stereo=keep_stereo)
         got_canon = canonical(student_smiles, keep_stereo=keep_stereo)

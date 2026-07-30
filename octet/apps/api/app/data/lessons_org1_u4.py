@@ -126,13 +126,18 @@ LESSONS_ORG1_U4 = {
         ),
         try_it_prompt=(
             "In butan-2-ol the stereocentre carries OH, CH3, CH2CH3 and H. "
-            "Rank those four groups from highest to lowest priority."
+            "Rank those four groups from highest to lowest priority. Then, for "
+            "the enantiomer in which the lowest priority group points away from "
+            "you and the path from priority 1 to 2 to 3 runs clockwise, assign "
+            "R or S."
         ),
         try_it_answer=(
             "OH is 1, since oxygen outranks carbon. H is 4, the lowest atomic "
             "number. Between the two carbon groups, ethyl's carbon holds "
             "(C, H, H) and methyl's holds (H, H, H), so ethyl is 2 and methyl "
-            "is 3. The full ranking is OH, CH2CH3, CH3, H."
+            "is 3. The full ranking is OH, CH2CH3, CH3, H. With the lowest "
+            "priority group pointing away, a clockwise 1 to 2 to 3 path is R by "
+            "the CIP convention, so this arrangement is (R)-butan-2-ol."
         ),
         pitfall=(
             "The most common error is ranking by group size or by how many "
@@ -361,12 +366,19 @@ LESSONS_ORG1_U4 = {
         ),
         try_it_prompt=(
             "A molecule has three stereocentres and no internal symmetry. How "
-            "many stereoisomers does it have, and how many enantiomeric pairs?"
+            "many stereoisomers does it have, and how many enantiomeric pairs? "
+            "Then take tartaric acid, whose two stereocentres sit on "
+            "constitutionally identical ends: how many stereoisomers does it "
+            "have, and which one is achiral?"
         ),
         try_it_answer=(
             "Eight stereoisomers, since two cubed is eight, arranged as four "
-            "enantiomeric pairs. Any two isomers that are not mirror images "
-            "are diastereomers of each other."
+            "enantiomeric pairs; any two isomers that are not mirror images are "
+            "diastereomers of each other. Tartaric acid, by contrast, has only "
+            "three: the R,R and S,S forms are an enantiomeric pair, and the R,S "
+            "form is superimposable on its own mirror image, an achiral meso "
+            "compound that is a diastereomer of both. Its internal mirror plane "
+            "is what collapses the expected fourth isomer onto the meso form."
         ),
         pitfall=(
             "Applying two to the n without checking for symmetry overcounts, "
@@ -383,6 +395,11 @@ LESSONS_ORG1_U4 = {
                 "one centre inverted, not both",
             ),
             Formula(CHLOROBUTANOL_RR, "C4H9ClO", "3-chlorobutan-2-ol"),
+            Stereo(TARTARIC_MESO, ("R", "S"), "the meso form the try_it asks about"),
+            Relationship(
+                TARTARIC_RR, TARTARIC_MESO, "diastereomers",
+                "meso versus R,R, the symmetry-reduction case",
+            ),
         ),
     ),
     "ORG1.RESOLUTION": Lesson(

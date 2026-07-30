@@ -19,7 +19,7 @@ from __future__ import annotations
 import math
 import re
 
-from .stoich import round_to_sig_figs, sig_figs
+from .stoich import format_sig_figs, sig_figs
 from .types import GradeResult
 
 # Unit strings pint understands, mapped from what learners actually type.
@@ -41,6 +41,20 @@ _ALIASES = {
     "g/mol": "gram/mole",
     "g/mL": "gram/milliliter",
 }
+
+
+_LEADING_NUMBER = re.compile(r"^[+-]?[\d.]+(?:[eE][+-]?\d+)?")
+
+
+def _leading_number_text(text: str) -> str:
+    """The leading numeric token, split from any glued unit.
+
+    '2.5e-3M' and '2.5e-3 M' both yield '2.5e-3', so sig figs are counted from
+    the number rather than returning zero on a unit-glued token.
+    """
+    stripped = str(text).strip().replace(",", "")
+    m = _LEADING_NUMBER.match(stripped)
+    return m.group(0) if m else stripped
 
 
 def _registry():
@@ -88,6 +102,20 @@ def parse_quantity(text: str, expected_unit: str | None):
         return ureg.Quantity(magnitude, unit_text)
     except Exception:
         return None
+
+
+def _correct_display(key_value: float, key_unit: str, figures: int | None) -> str:
+    """Render the canonical answer at the precision the item demands.
+
+    An item that asks for 3 significant figures must not display its own key
+    with 4: "%g" prints the raw float ("22.34 g" against a 3-figure demand),
+    contradicting the prompt in the learner's review. When the item demands a
+    figure count, the display is rounded and rendered to exactly that count;
+    otherwise the raw "%g" rendering stands.
+    """
+    if figures:
+        return f"{format_sig_figs(key_value, figures)} {key_unit}"
+    return f"{key_value:g} {key_unit}"
 
 
 def grade_numeric(
@@ -144,7 +172,7 @@ def grade_numeric(
     else:
         matches = math.isclose(converted, key_value, rel_tol=rel_tolerance)
     if matches:
-        submitted_figs = sig_figs(re.split(r"\s", str(student_answer).strip())[0])
+        submitted_figs = sig_figs(_leading_number_text(student_answer))
         if enforce_sig_figs and expected_sig_figs and submitted_figs and submitted_figs != expected_sig_figs:
             return GradeResult(
                 is_correct=False,
@@ -156,11 +184,11 @@ def grade_numeric(
                     f"significant figures, so the answer should as well, and yours "
                     f"carries {submitted_figs}."
                 ),
-                correct_display=f"{round_to_sig_figs(key_value, expected_sig_figs):g} {key_unit}",
+                correct_display=_correct_display(key_value, key_unit, expected_sig_figs),
             )
         return GradeResult(
             is_correct=True, score=1.0, grader=grader, detail="Correct.",
-            correct_display=f"{key_value:g} {key_unit}",
+            correct_display=_correct_display(key_value, key_unit, expected_sig_figs),
         )
 
     for path in wrong_paths or []:
@@ -172,7 +200,7 @@ def grade_numeric(
                 grader=grader,
                 misconception=path.get("misconception"),
                 detail=path.get("detail", "That is a common wrong route through this problem."),
-                correct_display=f"{key_value:g} {key_unit}",
+                correct_display=_correct_display(key_value, key_unit, expected_sig_figs),
             )
 
     # Order of magnitude slip is worth naming on its own, it is almost always
@@ -190,7 +218,7 @@ def grade_numeric(
                         f"Your value is {note}. Check whether a unit conversion was "
                         "skipped, for example millilitres to litres."
                     ),
-                    correct_display=f"{key_value:g} {key_unit}",
+                    correct_display=_correct_display(key_value, key_unit, expected_sig_figs),
                 )
 
     return GradeResult(
@@ -198,5 +226,5 @@ def grade_numeric(
         score=0.0,
         grader=grader,
         detail="Not correct. Write down what you know with units, and what the question asks for with units, before you calculate.",
-        correct_display=f"{key_value:g} {key_unit}",
+        correct_display=_correct_display(key_value, key_unit, expected_sig_figs),
     )

@@ -25,6 +25,10 @@ _HYDRATE_SEPARATORS = ("·", "•", "*", ".")
 
 _TOKEN = re.compile(r"([A-Z][a-z]?)(\d*)|(\()|(\))(\d*)")
 _CHARGE = re.compile(r"\^?(\d*)([+-])$")
+# A charge written as a space-separated trailing token ('SO4 2-', 'NH4 +').
+# Must be matched before whitespace removal, or the subscript digit glues onto
+# the charge magnitude.
+_SPACE_CHARGE = re.compile(r"\s+(\d*)([+-])$")
 
 
 @dataclass(frozen=True)
@@ -78,18 +82,32 @@ def parse_formula(text: str) -> Formula:
     if text is None:
         raise FormulaParseError("empty formula")
     try:
-        raw = check_size(str(text)).strip().replace(" ", "")
+        raw = check_size(str(text)).strip()
     except InputTooLarge as exc:
         raise FormulaParseError(str(exc)) from exc
     if not raw:
         raise FormulaParseError("empty formula")
 
     charge = 0
-    m = _CHARGE.search(raw)
-    if m:
-        magnitude = int(m.group(1)) if m.group(1) else 1
-        charge = magnitude if m.group(2) == "+" else -magnitude
-        raw = raw[: m.start()]
+    # A space-separated trailing charge token is extracted before whitespace is
+    # removed. 'SO4 2-' is sulfate with charge -2, not element counts with a
+    # -42 charge glued from the subscript.
+    space_charge = _SPACE_CHARGE.search(raw)
+    if space_charge:
+        magnitude = int(space_charge.group(1)) if space_charge.group(1) else 1
+        charge = magnitude if space_charge.group(2) == "+" else -magnitude
+        raw = raw[: space_charge.start()]
+
+    raw = raw.replace(" ", "")
+    if not raw:
+        raise FormulaParseError("empty formula")
+
+    if not charge:
+        m = _CHARGE.search(raw)
+        if m:
+            magnitude = int(m.group(1)) if m.group(1) else 1
+            charge = magnitude if m.group(2) == "+" else -magnitude
+            raw = raw[: m.start()]
     if not raw:
         raise FormulaParseError("charge given with no formula")
 
