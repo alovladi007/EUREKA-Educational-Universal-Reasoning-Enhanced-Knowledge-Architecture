@@ -11,7 +11,7 @@ commit first, and the ticket it carries is the proof that it did.
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query, Response
 from pydantic import BaseModel, Field
 
 import chem_core as cc
@@ -530,4 +530,49 @@ async def structure_submit(
         detail=result["detail"],
         misconception=result["misconception"],
         milestones=result["milestones"],
+    )
+
+
+# ---------------------------------------------------------------------------
+# Expert review queue
+# ---------------------------------------------------------------------------
+#
+# Read only, deliberately. There is no POST that marks a claim reviewed, and
+# there should not be: an endpoint anyone can call to stamp "an expert checked
+# this" is the fake-verification vector the rest of this system is built to
+# refuse. Sign-off is a commit to fact_reviews.json, so it carries a diff, an
+# author and a reviewer of the reviewer. See app/data/review_ledger.py.
+
+
+@router.get("/review-queue")
+async def review_queue(
+    kind: str | None = Query(None, pattern="^(fact|misconception)$"),
+    course: str | None = Query(None),
+    limit: int = Query(100, ge=1, le=1000),
+    _p: Principal = Depends(get_current_principal),
+) -> dict:
+    """What still needs an expert, and the standing tally beside it."""
+    from app.data.review_ledger import queue, status
+
+    return {"status": status(), "items": queue(kind=kind, course=course, limit=limit)}
+
+
+@router.get("/review-queue.csv")
+async def review_queue_csv(
+    kind: str | None = Query(None, pattern="^(fact|misconception)$"),
+    course: str | None = Query(None),
+    _p: Principal = Depends(get_current_principal),
+) -> Response:
+    """The queue as a file an expert can work through offline.
+
+    They fill in verdict, reviewer and note and send it back. item_id must
+    survive the round trip unchanged, because it is what binds a row to the
+    exact wording that was reviewed.
+    """
+    from app.data.review_ledger import export_csv
+
+    return Response(
+        content=export_csv(kind=kind, course=course),
+        media_type="text/csv",
+        headers={"Content-Disposition": 'attachment; filename="octet-review-queue.csv"'},
     )

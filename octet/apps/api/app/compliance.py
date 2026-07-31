@@ -403,6 +403,7 @@ def _report_citation_debt() -> list[dict]:
     worse.
     """
     from app.data.claims import Source
+    from app.data.review_ledger import status
 
     cited = 0
     per_course: dict[str, int] = {}
@@ -415,6 +416,8 @@ def _report_citation_debt() -> list[dict]:
                     per_course[node.course] = per_course.get(node.course, 0) + 1
     if not cited:
         return []
+
+    st = status()
     breakdown = ", ".join(f"{k} {v}" for k, v in sorted(per_course.items()))
     return [
         {
@@ -429,8 +432,91 @@ def _report_citation_debt() -> list[dict]:
                 "queue."
             ),
             "severity": "needs-expert-review",
-        }
+        },
+        {
+            "check": "review_queue",
+            "detail": (
+                f"{st['total']} reviewable claims: {st['confirmed']} confirmed, "
+                f"{st['pending']} pending, {st['disputed']} disputed. Facts and "
+                "misconceptions are counted together because both are assertions "
+                "an expert has to judge rather than something the checker can "
+                "derive. Sign-off is committed to fact_reviews.json; the queue is "
+                "readable at /api/v1/review-queue."
+            ),
+            "severity": "needs-expert-review",
+        },
     ]
+
+
+def _check_review_ledger() -> list[dict]:
+    """Blocking checks on the review ledger itself.
+
+    Everything here is about a review that is claimed but cannot be trusted,
+    which is worse than a claim nobody has reviewed. An unreviewed number is
+    honestly labelled unreviewed. A number carrying a stale sign-off is
+    labelled as checked by a named expert who never saw that wording.
+    """
+    from app.data.review_ledger import LedgerError, status
+
+    try:
+        st = status()
+    except LedgerError as exc:
+        return [
+            {
+                "check": "review_ledger_malformed",
+                "detail": (
+                    f"{exc}. The ledger is refused rather than partially read, "
+                    "because a half-parsed ledger silently downgrades reviews to "
+                    "pending and nobody would notice."
+                ),
+                "severity": "blocking",
+            }
+        ]
+
+    problems: list[dict] = []
+
+    for entry in st["stale_entries"]:
+        problems.append(
+            {
+                "check": "review_stale",
+                "detail": (
+                    f"Review {entry['item_id']} by {entry['reviewer']} on "
+                    f"{entry['reviewed_on']} matches no current claim"
+                    + (f" (was: {entry['label']})" if entry["label"] else "")
+                    + ". The wording was edited or removed after sign-off, so the "
+                    "review no longer applies to anything. Re-review the current "
+                    "text and update the entry, or delete it."
+                ),
+                "severity": "blocking",
+            }
+        )
+
+    for item in st["disputed_items"]:
+        problems.append(
+            {
+                "check": "review_disputed",
+                "detail": (
+                    f"{item['node']} claim {item['item_id']} was reviewed and "
+                    f"disputed: {item['statement'][:120]}. A claim an expert "
+                    "believes is wrong must be corrected or withdrawn, not served."
+                ),
+                "severity": "blocking",
+            }
+        )
+
+    for dup in st["duplicate_ids"]:
+        problems.append(
+            {
+                "check": "review_id_collision",
+                "detail": (
+                    f"Two live claims share id {dup}. A review would attach to "
+                    "both. Reword one, or widen the hash."
+                ),
+                "severity": "blocking",
+            }
+        )
+
+    return problems
 
 
 def _report_coverage() -> list[dict]:
@@ -541,6 +627,7 @@ def run() -> dict:
     blocking += _check_triangle_views()
     blocking += _check_poe_items()
     blocking += _check_simulation_engines()
+    blocking += _check_review_ledger()
 
     warnings = _report_coverage()
 
