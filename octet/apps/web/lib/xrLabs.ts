@@ -7,7 +7,7 @@
 //
 // Two rules hold this file honest.
 //
-// 1. Coverage is data, and it is short. Thirty two of the program's 312 nodes
+// 1. Coverage is data, and it is short. Thirty six of the program's 312 nodes
 //    have a lab mode built for them. Every other node returns null and
 //    the lesson renders nothing, because a link that opens a lab with nothing
 //    in it for the node the learner came from is worse than no link.
@@ -29,9 +29,15 @@
 // constraint is why at most one link is offered per node: see labLinkForLesson
 // for the precedence rule the receiving side has to match.
 //
-// The labs ignore the parameter today. A link still lands the learner in the
-// right lab, so this is useful before the receiving side exists and better
-// after.
+// The labs consume the parameter. The receiving table lives at
+// _chem/deepLink.ts in the EUREKA app and a test asserts the two agree in both
+// directions: same 36 nodes, no node in one and not the other, no mode
+// mismatches. Verified live on GEN2.CATALYSIS, which lands in Bench with the
+// catalyst scenario already selected.
+//
+// This comment said the opposite until 2026-07-30, because the sending side
+// shipped one commit ahead of the receiving side and the note was not revisited
+// when the other half landed. If you change one table, run that test.
 
 export type LabId = 'organic' | 'general';
 
