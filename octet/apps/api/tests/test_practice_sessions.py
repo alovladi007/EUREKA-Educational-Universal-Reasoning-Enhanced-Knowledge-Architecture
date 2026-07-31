@@ -22,14 +22,28 @@ async def _start(client, headers, **overrides):
 
 
 async def test_catalogue_marks_supply_honestly(client, auth):
+    """The availability flag must agree with the item count, in both directions.
+
+    This used to assert that both states "must actually occur today", which was
+    a statement about how much content existed rather than about whether the
+    catalogue tells the truth. It held while units were still being written and
+    stopped holding the moment the last one got items, which is the wrong thing
+    for a test to punish.
+
+    What matters is the invariant: a unit is offered as available exactly when
+    it can supply items. That is checkable whatever the coverage, and it is
+    what a learner is relying on when they pick a unit.
+    """
     res = await client.get("/api/v1/practice/catalogue", headers=auth("student"))
     assert res.status_code == 200
     units = res.json()["units"]
     assert len(units) == 40, "every unit is listed, practiceable or not"
-    available = [u for u in units if u["available"]]
-    empty = [u for u in units if not u["available"]]
-    assert available and empty, "both states must actually occur today"
-    assert all(u["templates"] == 0 for u in empty)
+
+    for u in units:
+        assert u["available"] == (u["templates"] > 0), (
+            f"{u['id']} reports available={u['available']} with "
+            f"{u['templates']} templates"
+        )
 
 
 async def test_session_starts_with_items_and_no_keys(client, auth):
@@ -86,11 +100,26 @@ async def test_session_items_do_not_repeat_a_variant(client, auth):
     assert len(set(faces)) == len(faces), faces
 
 
-async def test_empty_selection_is_refused_with_a_reason(client, auth):
-    # ORG2-U3 has lessons but no practice templates yet, so it is a genuine
-    # example of a selectable unit that cannot supply items. (ORG2-U1 was used
-    # here until Phase 6 gave it a template, which is exactly the kind of
-    # change that turns a "no items" fixture stale.)
+async def test_empty_selection_is_refused_with_a_reason(client, auth, monkeypatch):
+    """The endpoint refuses a selection it cannot fill, and says why.
+
+    This test used to name a real unit that happened to have no templates, and
+    it broke twice for the happiest possible reason: someone wrote items for
+    that unit. ORG2-U1 was the fixture until Phase 6 gave it a template, then
+    ORG2-U3 was, until this unit build gave it nine. Its own comment predicted
+    the second break.
+
+    Now that every unit in the curriculum can supply items, no such fixture
+    exists at all, and pointing at a third unit would only schedule the same
+    failure again. So the condition is constructed rather than borrowed: the
+    supply lookup is emptied for this one call. That tests what the endpoint
+    does when supply runs out, which is the actual subject, and it cannot be
+    invalidated by anybody authoring content.
+    """
+    from app.domains.practice import sessions as sessions_mod
+
+    monkeypatch.setattr(sessions_mod, "templates_for_units", lambda unit_ids: [])
+
     res = await client.post(
         "/api/v1/practice/sessions",
         json={"units": ["ORG2-U3"], "count": 5, "mode": "tutor"},
@@ -98,6 +127,27 @@ async def test_empty_selection_is_refused_with_a_reason(client, auth):
     )
     assert res.status_code == 409
     assert "practice items" in res.json()["detail"]
+
+
+async def test_every_unit_can_now_supply_practice_items(client, auth):
+    """The state that made the fixture above impossible, asserted directly.
+
+    Worth its own test rather than a comment: "readable but not practisable"
+    was the largest content gap in the platform, and if a unit ever loses its
+    last template this should fail loudly rather than showing up as a learner
+    finding an empty practice session.
+    """
+    import chem_core as cc
+
+    from app.data.curriculum import NODES_BY_CODE, UNITS
+
+    with_items = {
+        NODES_BY_CODE[str(entry["node"])].unit
+        for entry in cc.REGISTRY.values()
+        if str(entry["node"]) in NODES_BY_CODE
+    }
+    empty = [u.id for u in UNITS if u.id not in with_items]
+    assert empty == [], f"units with no practice items: {empty}"
 
 
 async def test_tutor_answer_returns_rationale_and_persists(client, auth):
