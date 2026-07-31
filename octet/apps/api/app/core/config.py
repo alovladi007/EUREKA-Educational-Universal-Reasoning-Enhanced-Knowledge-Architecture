@@ -32,8 +32,19 @@ class Settings(BaseSettings):
     eureka_api_url: str = "http://api-core:8000"
 
     # Grading sandbox. RDKit and SymPy on adversarial input are DoS vectors,
-    # so the sandbox is on everywhere except the test suite and the Celery
-    # worker, which already has process isolation.
+    # so this is on everywhere, with no exception anywhere in the tree: no
+    # conftest disables it, no fixture overrides it, and both docker-compose
+    # and .env.example set it true.
+    #
+    # This comment used to claim two exceptions, "the test suite and the Celery
+    # worker, which already has process isolation". Neither existed. Nothing
+    # turned it off for tests, and OCTET has no Celery worker at all: celery is
+    # a declared dependency in requirements.txt with no app, no tasks and no
+    # service in docker-compose. The setting was right and the sentence
+    # describing it was wrong, which is the more dangerous way round, because
+    # anyone reading it would have believed the public path had a documented
+    # off switch. test_sandbox.py::TestSandboxIsActuallyOn now asserts both the
+    # default and the live value, so the claim cannot rot again silently.
     grading_sandbox: bool = True
     grading_timeout_seconds: float = 5.0
     grading_max_workers: int = 2
