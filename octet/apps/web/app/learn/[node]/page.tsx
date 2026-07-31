@@ -12,6 +12,12 @@ import {
 } from '@/lib/api';
 import TriangleView from '@/components/TriangleView';
 import {
+  LAB_NAMES,
+  type LabLink,
+  labLinkForLesson,
+  modeLabel,
+} from '@/lib/xrLabs';
+import {
   Card,
   ErrorPanel,
   LoadingPanel,
@@ -104,6 +110,12 @@ export default function LessonPage() {
   // only made when it can succeed.
   const hasTriangle = lesson?.has_triangle_view ?? false;
 
+  // The 3D lab on EUREKA built for this node, if one is. Most nodes have none
+  // and this stays null, which renders nothing at all. It is computed from the
+  // node code and the triangle flag rather than fetched, because the coverage
+  // is a property of what the labs were built to show.
+  const labLink = labLinkForLesson(nodeCode, hasTriangle);
+
   useEffect(() => {
     let cancelled = false;
     setTriangle(null);
@@ -173,9 +185,44 @@ export default function LessonPage() {
               </p>
             </Card>
           )}
+
+          {labLink && <LabCard link={labLink} />}
         </article>
       )}
     </Page>
+  );
+}
+
+// The matching 3D lab on EUREKA, at the end of the arc because it is what to
+// do next rather than part of the reading.
+//
+// The link ran one way until now. The labs are built against these node codes
+// and link back to this page, while the lesson offered no route out to the
+// model of the thing it had described. A learner on ORG1.CHAIR could read
+// about a ring inversion and had nowhere to run one.
+//
+// Nothing renders for a node no lab covers, which is most of them. An empty
+// state here would advertise a lab that has nothing for the node.
+function LabCard({ link }: { link: LabLink }) {
+  return (
+    <a
+      href={link.href}
+      className="block rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
+    >
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill tone="brand">3D lab</Pill>
+        <span className="text-sm font-semibold text-card-foreground">
+          {LAB_NAMES[link.lab]}, {modeLabel(link)} mode
+        </span>
+      </div>
+      <p className="mt-2 text-[15px] leading-relaxed text-card-foreground">
+        {link.blurb}
+      </p>
+      <p className="mt-2 text-xs text-muted-foreground">
+        Opens on EUREKA. What you turn there is a model of this node, not a
+        measurement of it.
+      </p>
+    </a>
   );
 }
 

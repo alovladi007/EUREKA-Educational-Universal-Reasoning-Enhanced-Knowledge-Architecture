@@ -57,10 +57,23 @@ describe('triangle views', () => {
 
 describe('simulation scenarios', () => {
   it('carries a derived result for every scenario', () => {
-    expect(SCENARIOS.length).toBe(4);
+    // Two titrations, two equilibria, two kinetics, one gas, one comparison.
+    expect(SCENARIOS.length).toBe(8);
     SCENARIOS.forEach((s) => {
       expect(s.derived, s.id).toBeDefined();
-      expect(['titration', 'equilibrium']).toContain(s.derived.kind);
+      // Every kind here has to have a bench scene and a readout behind it. A
+      // new kind arriving in the export with nothing to render it is the
+      // failure this list is guarding against.
+      expect([
+        'titration',
+        'equilibrium',
+        'kinetics',
+        'gas',
+        'gas-comparison',
+      ]).toContain(s.derived.kind);
+      // The scenario's own kind field and its result's kind are written by
+      // different parts of the exporter and have to agree.
+      expect(s.derived.kind, s.id).toBe(s.kind);
     });
   });
 
@@ -114,7 +127,7 @@ describe('simulation scenarios', () => {
 
 describe('POE items', () => {
   it('has a verified key for every item', () => {
-    expect(POE_ITEMS.length).toBe(4);
+    expect(POE_ITEMS.length).toBe(8);
     POE_ITEMS.forEach((i) => {
       expect(i.keyVerified, `${i.id}: ${i.keyVerdict}`).toBe(true);
       expect(i.keyVerdict.length).toBeGreaterThan(10);

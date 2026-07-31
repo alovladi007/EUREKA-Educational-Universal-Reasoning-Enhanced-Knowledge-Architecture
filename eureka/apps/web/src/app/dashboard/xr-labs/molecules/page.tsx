@@ -51,6 +51,7 @@
 
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
@@ -106,18 +107,18 @@ import {
 } from '../_chem/Tour';
 import { recordOutcome } from '../_chem/mastery';
 import { SPECTRA } from '../_chem/chemContent';
+import {
+  resolveMoleculesDeepLink,
+  teachingKey,
+  type MoleculesMode as Mode,
+} from '../_chem/deepLink';
 import type { PoeItem } from '../_chem/contentTypes';
 import { DEFAULT_OVERLAYS, type Molecule, type RenderStyle, type SceneOverlays } from '../_chem/types';
 
-type Mode =
-  | 'explore'
-  | 'orbitals'
-  | 'conformers'
-  | 'chair'
-  | 'stereo'
-  | 'triangle'
-  | 'spectra';
-
+/**
+ * The mode union comes from _chem/deepLink so that the node-to-mode table and
+ * this page cannot disagree about what modes exist.
+ */
 const MODES: { id: Mode; label: string; icon: typeof AtomIcon; nodes: string[] }[] = [
   { id: 'explore', label: 'Explore', icon: AtomIcon, nodes: ['ORG1.HYBRIDORG'] },
   { id: 'orbitals', label: 'Sigma and pi', icon: Orbit, nodes: ['ORG1.ORBITALS'] },
@@ -132,6 +133,26 @@ const MODES: { id: Mode; label: string; icon: typeof AtomIcon; nodes: string[] }
 
 /** The Johnstone views for this course, both ORG1 and ORG2. */
 const ORG_TRIANGLE_VIEWS = triangleViewsFor(['ORG']);
+
+/**
+ * What stereochemistry mode will compare against its mirror.
+ *
+ * A module constant rather than a literal in the JSX because the deep link has
+ * to consult the same list: preselecting a molecule this mode cannot show would
+ * silently leave the picker on something else, which reads as the link having
+ * been ignored.
+ */
+const STEREO_KEYS = [
+  'butan2ol_r',
+  'butan2ol_s',
+  'tartaric_meso',
+  'l_alanine',
+  'glucose_beta',
+  'methane',
+];
+
+/** The two molecules the torsion builder can produce. */
+const TORSION_KINDS: TorsionKind[] = ['ethane', 'butane'];
 
 /**
  * The predict-observe-explain item for the ring flip.
@@ -344,7 +365,19 @@ const TOURS: Record<Mode, TourStep[]> = {
   ],
 };
 
+/**
+ * `useSearchParams` opts the tree into client rendering, and Next requires the
+ * boundary to be explicit. The lab itself is the child.
+ */
 export default function OrganicChemistryPortal() {
+  return (
+    <Suspense fallback={<div className="fixed inset-0 z-50 bg-[#070a14]" />}>
+      <OrganicChemistryLab />
+    </Suspense>
+  );
+}
+
+function OrganicChemistryLab() {
   const [mode, setMode] = useState<Mode>('explore');
   const [molKey, setMolKey] = useState('methane');
   const [style, setStyle] = useState<RenderStyle>('ball-and-stick');
@@ -460,6 +493,45 @@ export default function OrganicChemistryPortal() {
     setPoeSaved(null);
     poeStartedAt.current = Date.now();
   }, [mode]);
+
+  /**
+   * Land where the OCTET lesson that linked here was pointing.
+   *
+   * Once, on mount, and never again. A learner who arrives on ORG1.CHAIR and
+   * then switches to Spectra has made a choice, and a hook that reapplied the
+   * query string would drag them back with no way to stay where they went. The
+   * ref guard rather than an empty dependency list is so the intent is legible
+   * rather than a lint exemption.
+   */
+  const deepLinkApplied = useRef(false);
+  const linkedNode = useSearchParams().get('node');
+
+  useEffect(() => {
+    if (deepLinkApplied.current) return;
+    deepLinkApplied.current = true;
+
+    const target = resolveMoleculesDeepLink(linkedNode);
+    // An unrecognised node is not an error. It means the lesson linked to a lab
+    // with nothing specific for it, and the default view is a better answer
+    // than a blank screen.
+    if (!target) return;
+
+    setMode(target.mode);
+    if (target.triangleNode) setTriangleNode(target.triangleNode);
+
+    // One lookup, applied to whichever pickers can actually show the result.
+    // Null leaves the existing selection alone.
+    const key = teachingKey(ORGANIC_MOLECULES, linkedNode);
+    if (!key) return;
+    setMolKey(key);
+    if (STEREO_KEYS.includes(key)) setMirrorKey(key);
+    if (TORSION_KINDS.includes(key as TorsionKind)) {
+      setTorsionKind(key as TorsionKind);
+    }
+    // Spectra mode drives the scene from the spectrum rather than the library,
+    // so it only follows a node whose molecule has a spectrum on file.
+    if (SPECTRA.some((s) => s.key === key)) setSpectraKey(key);
+  }, [linkedNode]);
 
   const onPoeComplete = useCallback(async (outcome: PoeOutcome) => {
     const elapsed = (Date.now() - poeStartedAt.current) / 1000;
@@ -669,7 +741,7 @@ export default function OrganicChemistryPortal() {
           <Panel className="p-3">
             <PanelTitle>Molecule</PanelTitle>
             <div className="flex flex-col gap-1">
-              {(['ethane', 'butane'] as TorsionKind[]).map((k) => (
+              {TORSION_KINDS.map((k) => (
                 <ToggleButton
                   key={k}
                   active={torsionKind === k}
@@ -791,11 +863,7 @@ export default function OrganicChemistryPortal() {
           <Panel className="p-3">
             <PanelTitle>Compare with its mirror</PanelTitle>
             <div className="flex flex-col gap-1">
-              {ORGANIC_MOLECULES.filter((m) =>
-                ['butan2ol_r', 'butan2ol_s', 'tartaric_meso', 'l_alanine', 'glucose_beta', 'methane'].includes(
-                  m.key,
-                ),
-              ).map((m) => (
+              {ORGANIC_MOLECULES.filter((m) => STEREO_KEYS.includes(m.key)).map((m) => (
                 <button
                   key={m.key}
                   type="button"

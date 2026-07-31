@@ -1941,6 +1941,107 @@ export const SCENARIOS: Scenario[] = [
         }
       }
     }
+  },
+  {
+    id: 'sim.kin.double-concentration',
+    kind: 'kinetics',
+    engineKey: 'kin.second-order.no2',
+    title: 'Doubling the concentration of a second order reactant',
+    description: 'Nitrogen dioxide dimerises with a rate law that is second order in NO2. The concentration is doubled from 0.100 M to 0.200 M with the temperature held constant.',
+    stress: {
+      concentration_factor: 2.0
+    },
+    node: 'GEN2.RATELAW',
+    derived: {
+      kind: 'kinetics',
+      result: {
+        source: 'Second order in NO2. Rate constant chosen for legibility rather than taken from a measurement; the teaching point is the exponent, and the panel says so.',
+        outcome: 'quadruples',
+        rate_before: 0.0054,
+        rate_after: 0.0216,
+        ratio: 4.0,
+        order: 2,
+        k_before: 0.54,
+        k_after: 0.54,
+        half_life_s: 18.518519
+      }
+    }
+  },
+  {
+    id: 'sim.kin.catalyst',
+    kind: 'kinetics',
+    engineKey: 'kin.first-order.n2o5',
+    title: 'Lowering the activation energy with a catalyst',
+    description: 'Dinitrogen pentoxide decomposes over a barrier of 103 kJ/mol. A catalyst offers a route with the barrier lowered by 20 kJ/mol, at the same temperature and concentration.',
+    stress: {
+      activation_delta_kJ: -20.0
+    },
+    node: 'GEN2.CATALYSIS',
+    derived: {
+      kind: 'kinetics',
+      result: {
+        source: 'Activation energy 103 kJ/mol for the gas phase decomposition of dinitrogen pentoxide. Atkins, Physical Chemistry, 11th edition, table of Arrhenius parameters.',
+        outcome: 'increases',
+        rate_before: 0.0001,
+        rate_after: 0.319042,
+        ratio: 3190.424022,
+        order: 1,
+        k_before: 0.001,
+        k_after: 3.190424,
+        half_life_s: 693.147181
+      }
+    }
+  },
+  {
+    id: 'sim.gas.halve-volume',
+    kind: 'gas',
+    engineKey: 'gas.helium.stp',
+    title: 'Halving the volume of a gas at constant temperature',
+    description: 'One mole of helium occupies 24.79 L at 298.15 K. The container is compressed to half that volume with the temperature held constant.',
+    stress: {
+      volume_factor: 0.5
+    },
+    node: 'GEN1.SIMPLEGASLAWS',
+    derived: {
+      kind: 'gas',
+      result: {
+        source: 'Molar masses from the CRC Handbook, 97th edition.',
+        outcome: 'doubles',
+        pressure_before_bar: 0.999983,
+        pressure_after_bar: 1.999965,
+        ideal_before_bar: 0.999983,
+        ideal_after_bar: 1.999965,
+        ratio: 2.0,
+        departure_before: 0.0,
+        departure_after: 0.0,
+        rms_before_m_per_s: 1363.020324,
+        rms_after_m_per_s: 1363.020324
+      }
+    }
+  },
+  {
+    id: 'sim.gas.kmt-compare',
+    kind: 'gas-comparison',
+    engineKey: 'gas.helium.stp',
+    title: 'Helium and xenon at the same temperature',
+    description: 'One mole of helium and one mole of xenon, both at 298.15 K in identical containers. Helium is 4.003 g/mol and xenon 131.29 g/mol.',
+    stress: {},
+    node: 'GEN1.KMT',
+    derived: {
+      kind: 'gas-comparison',
+      result: {
+        source: 'Molar masses from the CRC Handbook, 97th edition.',
+        outcome: 'same',
+        energy: 'same',
+        speed: 'a',
+        same_temperature: true,
+        ke_a_J_per_mol: 3718.435544,
+        ke_b_J_per_mol: 3718.435544,
+        rms_a_m_per_s: 1363.020324,
+        rms_b_m_per_s: 238.001285,
+        effusion_ratio_a_over_b: 5.726945
+      }
+    }
   }
 ];
 
@@ -2003,7 +2104,7 @@ export const POE_ITEMS: PoeItem[] = [
     explainKey: 'acetate-base',
     reflectionPrompt: 'In your own words, what would have to be true of the acid for the equivalence point to land at pH 7?',
     keyVerified: true,
-    keyVerdict: 'simulated equivalence pH is 8.728, which is above7'
+    keyVerdict: 'simulation produced above7'
   },
   {
     id: 'poe.titr.buffer-region',
@@ -2057,7 +2158,7 @@ export const POE_ITEMS: PoeItem[] = [
     explainKey: 'buffer-pair',
     reflectionPrompt: '',
     keyVerified: true,
-    keyVerdict: 'pH moves 0.95 units across the middle half of the buffer region, which is small'
+    keyVerdict: 'simulation produced small'
   },
   {
     id: 'poe.lechat.add-h2',
@@ -2111,7 +2212,7 @@ export const POE_ITEMS: PoeItem[] = [
     explainKey: 'q-below-k',
     reflectionPrompt: '',
     keyVerified: true,
-    keyVerdict: 'engine reports direction forward, read as forward'
+    keyVerdict: 'simulation produced forward'
   },
   {
     id: 'poe.lechat.catalyst',
@@ -2165,7 +2266,223 @@ export const POE_ITEMS: PoeItem[] = [
     explainKey: 'both-directions',
     reflectionPrompt: '',
     keyVerified: true,
-    keyVerdict: 'engine reports direction none, read as unchanged'
+    keyVerdict: 'simulation produced unchanged'
+  },
+  {
+    id: 'poe.kin.order-two',
+    node: 'GEN2.RATELAW',
+    scenario: 'sim.kin.double-concentration',
+    scenarioTitle: 'Doubling the concentration of a second order reactant',
+    predictPrompt: 'The rate law is rate = k[NO2]^2. Commit before anything runs. If the concentration of NO2 is doubled and nothing else changes, what happens to the rate?',
+    predictOptions: [
+      {
+        id: 'unchanged',
+        text: 'It does not change, because k is a constant',
+        misconception: 'RATE-IS-K',
+        feedback: 'k is constant and rate is not k. The rate is k times a concentration term, and that term moved.'
+      },
+      {
+        id: 'doubles',
+        text: 'It doubles, because the concentration doubled',
+        misconception: 'ORDER-READ-AS-ONE',
+        feedback: 'That is what first order would give. The exponent here is 2, and the exponent decides.'
+      },
+      {
+        id: 'quadruples',
+        text: 'It quadruples, because the concentration is squared',
+        misconception: null,
+        feedback: 'Correct. Doubling a squared term multiplies it by four.'
+      }
+    ],
+    predictKey: 'quadruples',
+    observePrompt: 'Read the two rates and the ratio between them.',
+    explainPrompt: 'You have seen the ratio. Which account explains it?',
+    explainOptions: [
+      {
+        id: 'exponent',
+        text: 'The rate depends on concentration raised to the order, so a factor of 2 becomes 2 squared',
+        misconception: null,
+        feedback: 'Correct.'
+      },
+      {
+        id: 'coefficient',
+        text: 'The balanced equation has a 2 in front of NO2',
+        misconception: 'ORDER-FROM-COEFFICIENT',
+        feedback: 'The coefficient and the order are different quantities. Order is measured, not read off the equation.'
+      },
+      {
+        id: 'k-changed',
+        text: 'The rate constant doubled when the concentration doubled',
+        misconception: 'RATE-IS-K',
+        feedback: 'k did not move. Compare the two values on the panel: only the concentration term changed.'
+      }
+    ],
+    explainKey: 'exponent',
+    reflectionPrompt: '',
+    keyVerified: true,
+    keyVerdict: 'simulation produced quadruples'
+  },
+  {
+    id: 'poe.kin.catalyst',
+    node: 'GEN2.CATALYSIS',
+    scenario: 'sim.kin.catalyst',
+    scenarioTitle: 'Lowering the activation energy with a catalyst',
+    predictPrompt: 'A catalyst offers a route with an activation energy 20 kJ/mol lower, at the same temperature and the same concentration. Commit first: what happens to the rate?',
+    predictOptions: [
+      {
+        id: 'unchanged',
+        text: 'Nothing, because a catalyst is not consumed',
+        misconception: 'CATALYST-DOES-NOTHING',
+        feedback: 'Not being consumed is true, and is a different statement from having no effect.'
+      },
+      {
+        id: 'decreases',
+        text: 'It falls, because the catalyst gets in the way',
+        misconception: 'CATALYST-BLOCKS',
+        feedback: 'A catalyst opens a route rather than blocking one.'
+      },
+      {
+        id: 'increases',
+        text: 'It rises sharply, because the barrier is lower',
+        misconception: null,
+        feedback: 'Correct, and by far more than 20 kJ/mol might suggest: the barrier sits in an exponent.'
+      }
+    ],
+    predictKey: 'increases',
+    observePrompt: 'Read the factor by which the rate changed, and note how large it is for a 20 kJ/mol change.',
+    explainPrompt: 'Which account explains the size of that factor?',
+    explainOptions: [
+      {
+        id: 'exponential',
+        text: 'The barrier sits in an exponent, so lowering it multiplies the rate rather than adding to it',
+        misconception: null,
+        feedback: 'Correct.'
+      },
+      {
+        id: 'equilibrium-moved',
+        text: 'The catalyst shifted the equilibrium toward products',
+        misconception: 'CATALYST-SHIFTS-EQUILIBRIUM',
+        feedback: 'A catalyst speeds both directions equally and moves no equilibrium. The other bench scenario shows exactly that.'
+      },
+      {
+        id: 'more-collisions',
+        text: 'The catalyst made the molecules collide more often',
+        misconception: 'CATALYST-ADDS-COLLISIONS',
+        feedback: 'Collision frequency is set by concentration and temperature, neither of which changed. What changed is which collisions succeed.'
+      }
+    ],
+    explainKey: 'exponential',
+    reflectionPrompt: '',
+    keyVerified: true,
+    keyVerdict: 'simulation produced increases'
+  },
+  {
+    id: 'poe.gas.boyle',
+    node: 'GEN1.SIMPLEGASLAWS',
+    scenario: 'sim.gas.halve-volume',
+    scenarioTitle: 'Halving the volume of a gas at constant temperature',
+    predictPrompt: 'The volume is halved with the temperature held constant. Commit before the gauge is revealed: what does the pressure do?',
+    predictOptions: [
+      {
+        id: 'halves',
+        text: 'It halves, following the volume down',
+        misconception: 'PRESSURE-TRACKS-VOLUME',
+        feedback: 'Pressure and volume move in opposite directions at constant temperature, not together.'
+      },
+      {
+        id: 'unchanged',
+        text: 'It stays the same, because no gas was added or removed',
+        misconception: 'PRESSURE-NEEDS-MOLES',
+        feedback: 'The amount of gas is one of several things pressure depends on. The same molecules in half the room reach the walls twice as often.'
+      },
+      {
+        id: 'doubles',
+        text: 'It doubles, because the same molecules have half the room',
+        misconception: null,
+        feedback: 'Correct. This is Boyle\'s law.'
+      }
+    ],
+    predictKey: 'doubles',
+    observePrompt: 'Read the two pressures and the ratio between them.',
+    explainPrompt: 'Which account explains it at the level of the particles?',
+    explainOptions: [
+      {
+        id: 'wall-collisions',
+        text: 'Each molecule reaches a wall twice as often in half the volume, so the force per unit area doubles',
+        misconception: null,
+        feedback: 'Correct.'
+      },
+      {
+        id: 'molecules-shrink',
+        text: 'The molecules were compressed and became smaller',
+        misconception: 'MOLECULES-COMPRESS',
+        feedback: 'The molecules do not change size. The space between them does, and in a gas that space is nearly all of the volume.'
+      },
+      {
+        id: 'faster',
+        text: 'Compressing the gas made the molecules move faster',
+        misconception: 'COMPRESSION-HEATS',
+        feedback: 'Speed is set by temperature, which was held constant. The root mean square speed on the panel did not move.'
+      }
+    ],
+    explainKey: 'wall-collisions',
+    reflectionPrompt: '',
+    keyVerified: true,
+    keyVerdict: 'simulation produced doubles'
+  },
+  {
+    id: 'poe.gas.kmt-energy',
+    node: 'GEN1.KMT',
+    scenario: 'sim.gas.kmt-compare',
+    scenarioTitle: 'Helium and xenon at the same temperature',
+    predictPrompt: 'Helium and xenon sit at the same temperature, and xenon is about thirty times heavier per mole. Commit before looking: which has the higher average kinetic energy per molecule?',
+    predictOptions: [
+      {
+        id: 'a',
+        text: 'Helium, because its molecules move much faster',
+        misconception: 'SPEED-IS-ENERGY',
+        feedback: 'Helium is faster, and speed alone does not settle energy: kinetic energy carries mass as well.'
+      },
+      {
+        id: 'b',
+        text: 'Xenon, because its molecules are much heavier',
+        misconception: 'MASS-IS-ENERGY',
+        feedback: 'Xenon is heavier and correspondingly slower. The two effects cancel exactly.'
+      },
+      {
+        id: 'same',
+        text: 'Neither, they are equal because the temperature is equal',
+        misconception: null,
+        feedback: 'Correct. Average translational kinetic energy is three halves RT and depends on nothing else.'
+      }
+    ],
+    predictKey: 'same',
+    observePrompt: 'Read both energies and both speeds. One pair is equal and the other is not.',
+    explainPrompt: 'Which account explains why the energies match?',
+    explainOptions: [
+      {
+        id: 'temperature-is-energy',
+        text: 'Temperature is the average translational kinetic energy, so equal temperature means equal energy and the lighter gas makes it up in speed',
+        misconception: null,
+        feedback: 'Correct.'
+      },
+      {
+        id: 'same-container',
+        text: 'They are in identical containers, so everything matches',
+        misconception: 'CONTAINER-DECIDES',
+        feedback: 'The containers match and the speeds do not. Read the two root mean square values again.'
+      },
+      {
+        id: 'ideal-gas',
+        text: 'Both are ideal, and ideal gases are identical in every respect',
+        misconception: 'IDEAL-MEANS-IDENTICAL',
+        feedback: 'Ideal means no attraction and negligible molecular volume. It says nothing about mass, which is why they effuse at different rates.'
+      }
+    ],
+    explainKey: 'temperature-is-energy',
+    reflectionPrompt: '',
+    keyVerified: true,
+    keyVerdict: 'simulation produced same'
   }
 ];
 
@@ -2491,4 +2808,4 @@ export const IR_BANDS = [
   }
 ] as const;
 
-// counts: 44 triangle views, 4 scenarios, 4 POE items, 10 spectra subjects
+// counts: 44 triangle views, 8 scenarios, 8 POE items, 10 spectra subjects

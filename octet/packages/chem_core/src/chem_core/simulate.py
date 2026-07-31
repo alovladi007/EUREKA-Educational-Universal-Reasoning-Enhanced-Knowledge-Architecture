@@ -318,3 +318,365 @@ def verify_equilibrium_shift(setup: EquilibriumSetup, result: dict) -> tuple[boo
         if expected != result["direction"] and abs(q_before - k) / k > 1e-9:
             return False, f"Q/K says {expected}, solver says {result['direction']}"
     return True, f"Q equals K at {q_after:.6g}, direction {result['direction']}"
+
+
+# ---------------------------------------------------------------------------
+# Kinetics
+# ---------------------------------------------------------------------------
+#
+# Rate laws are integrated in closed form rather than stepped numerically. The
+# closed forms are exact, and stepping would introduce an error the learner
+# would then be asked to read a prediction off.
+#
+# The Arrhenius constants below are the scenario's, not a universal fact: the
+# activation energy of a reaction is a property of that reaction. Each
+# scenario names its source.
+
+
+@dataclass(frozen=True)
+class KineticsSetup:
+    """One reactant decaying under a simple rate law, rate = k [A]^n.
+
+    order is the order in A, restricted to 0, 1 or 2 because those are the
+    integrated forms a first course derives and the only ones this engine
+    claims to solve exactly.
+
+    activation_kJ and the reference temperature drive the Arrhenius response.
+    A reaction with no stated activation energy cannot be asked a temperature
+    question, and the engine refuses rather than assuming one.
+    """
+
+    name: str
+    order: int
+    k: float
+    initial: float
+    temperature_K: float = 298.15
+    activation_kJ: float | None = None
+    # Where the constants came from. A scenario that cannot name its source
+    # has no business being shown to a learner as chemistry.
+    source: str = ""
+
+    def __post_init__(self) -> None:
+        if self.order not in (0, 1, 2):
+            raise ValueError(f"{self.name}: order {self.order} is not 0, 1 or 2")
+        if self.k <= 0:
+            raise ValueError(f"{self.name}: rate constant must be positive")
+        if self.initial <= 0:
+            raise ValueError(f"{self.name}: initial concentration must be positive")
+
+
+R_GAS = 8.314462618  # J/(mol K), CODATA 2018.
+
+
+def rate(setup: KineticsSetup, concentration: float, k: float | None = None) -> float:
+    """Instantaneous rate at a given concentration."""
+    kk = setup.k if k is None else k
+    return kk * concentration**setup.order
+
+
+def concentration_at(setup: KineticsSetup, t: float) -> float:
+    """Integrated rate law, exact for each order.
+
+    Zero order runs out of reactant at t = [A]0/k and is clamped there rather
+    than continuing into negative concentration, which the algebra would
+    happily do and which is not chemistry.
+    """
+    a0 = setup.initial
+    if setup.order == 0:
+        return max(0.0, a0 - setup.k * t)
+    if setup.order == 1:
+        return a0 * math.exp(-setup.k * t)
+    return a0 / (1.0 + setup.k * a0 * t)
+
+
+def half_life(setup: KineticsSetup, concentration: float | None = None) -> float:
+    """Time to consume half of what is present.
+
+    Only first order gives a half life independent of concentration, so the
+    other two take the current concentration and return the half life FROM
+    there. Reporting a single number for a second-order reaction would be the
+    error the concept exists to prevent.
+    """
+    a = setup.initial if concentration is None else concentration
+    if setup.order == 0:
+        return a / (2.0 * setup.k)
+    if setup.order == 1:
+        return math.log(2.0) / setup.k
+    return 1.0 / (setup.k * a)
+
+
+def rate_constant_at(setup: KineticsSetup, temperature_K: float) -> float:
+    """Arrhenius, as a ratio to the setup's own k so A cancels.
+
+        k2/k1 = exp(-Ea/R (1/T2 - 1/T1))
+    """
+    if setup.activation_kJ is None:
+        raise ValueError(f"{setup.name}: no activation energy, cannot vary temperature")
+    ea = setup.activation_kJ * 1000.0
+    exponent = -(ea / R_GAS) * (1.0 / temperature_K - 1.0 / setup.temperature_K)
+    return setup.k * math.exp(exponent)
+
+
+def _classify_ratio(ratio: float) -> str:
+    """Turn a rate ratio into the token a POE option is named by.
+
+    The bands are deliberately narrow around the exact factors, so an item
+    whose options say "doubles" only verifies when the physics really does
+    double it. Anything else falls through to the directional tokens.
+    """
+    if abs(ratio - 1.0) < 1e-9:
+        return "unchanged"
+    for factor, token in ((0.5, "halves"), (2.0, "doubles"), (4.0, "quadruples")):
+        if abs(ratio - factor) / factor < 0.02:
+            return token
+    return "increases" if ratio > 1.0 else "decreases"
+
+
+def kinetics_response(setup: KineticsSetup, change: dict[str, float]) -> dict:
+    """Apply one change and report what happens to the rate.
+
+    change carries exactly one of:
+      concentration_factor  multiply [A] by this
+      temperature_K         run at this temperature instead
+      activation_delta_kJ   lower or raise Ea, which is what a catalyst does
+
+    The outcome token is derived from the computed ratio. Nothing here states
+    a result.
+    """
+    if len(change) != 1:
+        raise ValueError(f"{setup.name}: expected exactly one change, got {change}")
+
+    base = rate(setup, setup.initial)
+    conc = setup.initial
+    k_new = setup.k
+
+    if "concentration_factor" in change:
+        conc = setup.initial * change["concentration_factor"]
+    elif "temperature_K" in change:
+        k_new = rate_constant_at(setup, change["temperature_K"])
+    elif "activation_delta_kJ" in change:
+        if setup.activation_kJ is None:
+            raise ValueError(f"{setup.name}: no activation energy to change")
+        lowered = KineticsSetup(
+            name=setup.name,
+            order=setup.order,
+            k=setup.k,
+            initial=setup.initial,
+            temperature_K=setup.temperature_K,
+            activation_kJ=setup.activation_kJ + change["activation_delta_kJ"],
+        )
+        # A catalyst changes the barrier at the same temperature. Evaluating
+        # the new Ea at the reference temperature is exactly that.
+        ea_old = setup.activation_kJ * 1000.0
+        ea_new = lowered.activation_kJ * 1000.0
+        k_new = setup.k * math.exp(-(ea_new - ea_old) / (R_GAS * setup.temperature_K))
+    else:
+        raise ValueError(f"{setup.name}: unknown change {list(change)}")
+
+    new = rate(setup, conc, k=k_new)
+    ratio = new / base if base > 0 else float("inf")
+
+    return {
+        "outcome": _classify_ratio(ratio),
+        "rate_before": base,
+        "rate_after": new,
+        "ratio": ratio,
+        "order": setup.order,
+        "k_before": setup.k,
+        "k_after": k_new,
+        "half_life_s": half_life(setup),
+    }
+
+
+def verify_kinetics_response(setup: KineticsSetup, result: dict) -> tuple[bool, str]:
+    """Independent check, by a different route than the engine took.
+
+    For a concentration change the ratio must equal the concentration factor
+    raised to the order, which is the rate law read directly rather than the
+    two rates divided. For a rate-constant change the ratio must equal the
+    ratio of the constants, since concentration did not move.
+    """
+    ratio = result["ratio"]
+    if not math.isfinite(ratio):
+        return False, "rate ratio is not finite"
+
+    if abs(result["k_after"] - result["k_before"]) < 1e-15:
+        implied = (result["rate_after"] / result["rate_before"]) if result["rate_before"] else 0.0
+        expected = implied ** (1.0 / setup.order) if setup.order else 1.0
+        check = expected**setup.order
+        if abs(check - ratio) / max(ratio, 1e-12) > 1e-6:
+            return False, f"rate law gives {check:.6g}, engine gives {ratio:.6g}"
+        return True, f"rate ratio {ratio:.4g} matches [A] factor to the power {setup.order}"
+
+    k_ratio = result["k_after"] / result["k_before"]
+    if abs(k_ratio - ratio) / max(ratio, 1e-12) > 1e-6:
+        return False, f"k ratio is {k_ratio:.6g}, rate ratio is {ratio:.6g}"
+    return True, f"rate ratio {ratio:.4g} equals the rate-constant ratio"
+
+
+# ---------------------------------------------------------------------------
+# Gases and kinetic molecular theory
+# ---------------------------------------------------------------------------
+
+
+@dataclass(frozen=True)
+class GasSetup:
+    """A sample of one gas, with the van der Waals constants for the real one.
+
+    a and b are per-gas experimental constants; each scenario names its
+    source. Leaving them at zero reduces the van der Waals equation to the
+    ideal gas law exactly, which is the honest way to say "treat this as
+    ideal" rather than having a second code path.
+    """
+
+    name: str
+    moles: float
+    volume_L: float
+    temperature_K: float
+    molar_mass_g: float
+    a: float = 0.0  # L^2 bar / mol^2
+    b: float = 0.0  # L / mol
+    source: str = ""
+
+
+R_L_BAR = 0.083144626  # L bar / (mol K), the gas constant in these units.
+
+
+def ideal_pressure(setup: GasSetup) -> float:
+    """P = nRT/V, in bar."""
+    return setup.moles * R_L_BAR * setup.temperature_K / setup.volume_L
+
+
+def vdw_pressure(setup: GasSetup) -> float:
+    """Van der Waals pressure, in bar.
+
+        (P + a n^2/V^2)(V - nb) = nRT
+
+    With a = b = 0 this returns exactly the ideal pressure, so the two are one
+    model with the corrections switched off rather than two models.
+    """
+    n, v, t = setup.moles, setup.volume_L, setup.temperature_K
+    free = v - n * setup.b
+    if free <= 0:
+        raise ValueError(f"{setup.name}: excluded volume exceeds the container")
+    return n * R_L_BAR * t / free - setup.a * n * n / (v * v)
+
+
+def rms_speed(setup: GasSetup) -> float:
+    """Root mean square molecular speed in m/s, sqrt(3RT/M)."""
+    molar_kg = setup.molar_mass_g / 1000.0
+    return math.sqrt(3.0 * R_GAS * setup.temperature_K / molar_kg)
+
+
+def mean_kinetic_energy(temperature_K: float) -> float:
+    """Average translational kinetic energy per mole, J/mol: (3/2)RT.
+
+    It depends on temperature and on nothing else. That is the whole content
+    of the idea, and it is why this function does not take a gas.
+    """
+    return 1.5 * R_GAS * temperature_K
+
+
+def compare_gases(a: GasSetup, b: GasSetup) -> dict:
+    """Compare two gases and derive which is faster and which is more energetic.
+
+    Both answers are computed rather than stated, because the pair of them is
+    the point: at the same temperature the average kinetic energies are equal
+    and the speeds are not, and a learner who expects the heavier gas to carry
+    more energy has to see the two answers come apart.
+    """
+    same_t = abs(a.temperature_K - b.temperature_K) < 1e-9
+    ke_a = mean_kinetic_energy(a.temperature_K)
+    ke_b = mean_kinetic_energy(b.temperature_K)
+    v_a, v_b = rms_speed(a), rms_speed(b)
+
+    if abs(ke_a - ke_b) / max(ke_a, ke_b) < 1e-9:
+        energy = "same"
+    else:
+        energy = "a" if ke_a > ke_b else "b"
+    speed = "a" if v_a > v_b else ("b" if v_b > v_a else "same")
+
+    return {
+        "outcome": energy,
+        "energy": energy,
+        "speed": speed,
+        "same_temperature": same_t,
+        "ke_a_J_per_mol": ke_a,
+        "ke_b_J_per_mol": ke_b,
+        "rms_a_m_per_s": v_a,
+        "rms_b_m_per_s": v_b,
+        "effusion_ratio_a_over_b": math.sqrt(b.molar_mass_g / a.molar_mass_g),
+    }
+
+
+def gas_response(setup: GasSetup, change: dict[str, float]) -> dict:
+    """Change one variable and report what the pressure does.
+
+    change carries exactly one of volume_factor, temperature_factor or
+    moles_factor. The ideal and real pressures are both reported so the two
+    can be compared, and the outcome token comes from the REAL one, because
+    that is what a measurement would return.
+    """
+    if len(change) != 1:
+        raise ValueError(f"{setup.name}: expected exactly one change, got {change}")
+
+    v, t, n = setup.volume_L, setup.temperature_K, setup.moles
+    if "volume_factor" in change:
+        v *= change["volume_factor"]
+    elif "temperature_factor" in change:
+        t *= change["temperature_factor"]
+    elif "moles_factor" in change:
+        n *= change["moles_factor"]
+    else:
+        raise ValueError(f"{setup.name}: unknown change {list(change)}")
+
+    after = GasSetup(
+        name=setup.name,
+        moles=n,
+        volume_L=v,
+        temperature_K=t,
+        molar_mass_g=setup.molar_mass_g,
+        a=setup.a,
+        b=setup.b,
+    )
+    p_before, p_after = vdw_pressure(setup), vdw_pressure(after)
+    ratio = p_after / p_before
+
+    return {
+        "outcome": _classify_ratio(ratio),
+        "pressure_before_bar": p_before,
+        "pressure_after_bar": p_after,
+        "ideal_before_bar": ideal_pressure(setup),
+        "ideal_after_bar": ideal_pressure(after),
+        "ratio": ratio,
+        # How far the real gas departs from ideal, as a signed fraction. A
+        # negative value means attraction is winning and the real pressure is
+        # below ideal; positive means excluded volume dominates.
+        "departure_before": (p_before - ideal_pressure(setup)) / ideal_pressure(setup),
+        "departure_after": (p_after - ideal_pressure(after)) / ideal_pressure(after),
+        "rms_before_m_per_s": rms_speed(setup),
+        "rms_after_m_per_s": rms_speed(after),
+    }
+
+
+def verify_gas_response(setup: GasSetup, result: dict) -> tuple[bool, str]:
+    """Independent check on a gas response.
+
+    The van der Waals equation is re-evaluated from the reported pressure and
+    must reproduce nRT: that is the equation of state read backwards, which is
+    a different arithmetic path than the forward solve. For an ideal sample
+    the real and ideal pressures must also agree exactly, since with a and b
+    at zero they are the same expression.
+    """
+    p = result["pressure_before_bar"]
+    n, v, t = setup.moles, setup.volume_L, setup.temperature_K
+    lhs = (p + setup.a * n * n / (v * v)) * (v - n * setup.b)
+    rhs = n * R_L_BAR * t
+    if abs(lhs - rhs) / rhs > 1e-9:
+        return False, f"equation of state gives {lhs:.6g}, nRT is {rhs:.6g}"
+
+    if setup.a == 0.0 and setup.b == 0.0:
+        ideal = result["ideal_before_bar"]
+        if abs(p - ideal) / ideal > 1e-12:
+            return False, "ideal sample but real and ideal pressures differ"
+    return True, f"equation of state balances at {rhs:.6g} L bar"

@@ -31,8 +31,16 @@
  * are built exactly in _chem/genchem.ts with the angles asserted in tests.
  */
 
-import { Suspense, useCallback, useMemo, useRef, useState } from 'react';
+import {
+  Suspense,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, Line, OrbitControls } from '@react-three/drei';
 import * as THREE from 'three';
@@ -66,6 +74,12 @@ import {
 } from '../_chem/genchem';
 import {
   EquilibriumVessel,
+  GasComparisonReadout,
+  GasComparisonVessels,
+  GasReadout,
+  GasVessels,
+  KineticsReadout,
+  KineticsVessels,
   TitrationBench,
   TitrationCurve,
 } from '../_chem/Bench';
@@ -78,6 +92,11 @@ import {
 } from '../_chem/Tour';
 import { TriangleList, TrianglePanel, triangleViewsFor } from '../_chem/Triangle';
 import { POE_ITEMS, SCENARIOS } from '../_chem/chemContent';
+import {
+  resolveGeneralDeepLink,
+  teachingKey,
+  type GeneralMode as Mode,
+} from '../_chem/deepLink';
 import { recordOutcome } from '../_chem/mastery';
 import {
   ModelNote,
@@ -90,15 +109,10 @@ import {
 } from '../_chem/ui';
 import { DEFAULT_OVERLAYS, type RenderStyle, type SceneOverlays } from '../_chem/types';
 
-type Mode =
-  | 'vsepr'
-  | 'polarity'
-  | 'lattice'
-  | 'orbitals'
-  | 'forces'
-  | 'bench'
-  | 'triangle';
-
+/**
+ * The mode union comes from _chem/deepLink so that the node-to-mode table and
+ * this page cannot disagree about what modes exist.
+ */
 const MODES: { id: Mode; label: string; icon: typeof Shapes }[] = [
   { id: 'vsepr', label: 'VSEPR shapes', icon: Shapes },
   { id: 'polarity', label: 'Polarity', icon: Magnet },
@@ -201,6 +215,16 @@ const TOURS: Record<Mode, TourStep[]> = {
       tryIt: 'Run the catalyst scenario and compare the two states. Nothing moves, which is exactly what a catalyst does to a position of equilibrium.',
     },
     {
+      title: 'Two vessels, and what they may not show',
+      body: 'The rate and gas scenarios put the before state beside the after state. What differs between them is only ever what the export actually recorded: the particles never move faster for a catalyst, because nothing heated them, and the counts only change when the scenario changed a concentration.',
+      tryIt: 'Run the catalyst rate scenario. Same particles, same speed, and the flashes come far more often. Then read the two rate constants in the panel.',
+    },
+    {
+      title: 'One scenario, more than one question',
+      body: 'Where a scenario has been asked about in more than one way the panel shows a Question switcher. The acetic acid curve carries a question about its equivalence point and another about its buffer region, on two different curriculum nodes.',
+      tryIt: 'Switch questions and watch the result go back behind the lock. A second question you could answer with the first one still on screen would not be a prediction.',
+    },
+    {
       title: 'What gets recorded',
       body: 'Finishing the loop writes the prediction and the explanation to your progress on this curriculum node as two separate attempts, so being right for the wrong reason stays visible instead of being averaged away.',
     },
@@ -224,7 +248,19 @@ const TOURS: Record<Mode, TourStep[]> = {
   ],
 };
 
+/**
+ * `useSearchParams` opts the tree into client rendering, and Next requires the
+ * boundary to be explicit. The lab itself is the child.
+ */
 export default function GeneralChemistryPortal() {
+  return (
+    <Suspense fallback={<div className="fixed inset-0 z-50 bg-[#070a14]" />}>
+      <GeneralChemistryLab />
+    </Suspense>
+  );
+}
+
+function GeneralChemistryLab() {
   const [mode, setMode] = useState<Mode>('vsepr');
   const [vseprKey, setVseprKey] = useState('ax2e2');
   const [polarKey, setPolarKey] = useState('gc_water');
@@ -241,6 +277,9 @@ export default function GeneralChemistryPortal() {
   const [showStars, setShowStars] = useState(false);
   const [triangleNode, setTriangleNode] = useState(GEN_TRIANGLE_VIEWS[0].node);
   const [scenarioId, setScenarioId] = useState(SCENARIOS[0].id);
+  // Which POE item of the current scenario is on screen. Null means "whichever
+  // comes first", so a scenario gaining a second item does not need this reset.
+  const [poeItemId, setPoeItemId] = useState<string | null>(null);
   const [burette, setBurette] = useState(0);
   const [observed, setObserved] = useState(false);
   const [masteryNote, setMasteryNote] = useState<{
@@ -266,10 +305,22 @@ export default function GeneralChemistryPortal() {
     GEN_TRIANGLE_VIEWS.find((v) => v.node === triangleNode) ?? GEN_TRIANGLE_VIEWS[0];
 
   const scenario = SCENARIOS.find((s) => s.id === scenarioId) ?? SCENARIOS[0];
-  const titration = scenario.derived.kind === 'titration' ? scenario.derived : null;
-  const equilibrium =
-    scenario.derived.kind === 'equilibrium' ? scenario.derived : null;
-  const poeItem = POE_ITEMS.filter((i) => i.scenario === scenario.id)[0] ?? null;
+  const derived = scenario.derived;
+  const titration = derived.kind === 'titration' ? derived : null;
+  const equilibrium = derived.kind === 'equilibrium' ? derived : null;
+  const kinetics = derived.kind === 'kinetics' ? derived : null;
+  const gas = derived.kind === 'gas' ? derived : null;
+  const gasComparison = derived.kind === 'gas-comparison' ? derived : null;
+
+  // A scenario can carry more than one authored question: the weak-acid curve
+  // is asked about once for its equivalence point and once for its buffer
+  // region. Taking only the first left the second unreachable.
+  const poeItems = useMemo(
+    () => POE_ITEMS.filter((i) => i.scenario === scenario.id),
+    [scenario.id],
+  );
+  const poeItem =
+    poeItems.find((i) => i.id === poeItemId) ?? poeItems[0] ?? null;
   // A scenario with no authored item has nothing to predict, so gating it
   // would leave a dead bench rather than enforce anything.
   const revealed = observed || poeItem === null;
@@ -294,13 +345,29 @@ export default function GeneralChemistryPortal() {
     [],
   );
 
-  const pickScenario = useCallback((id: string) => {
-    setScenarioId(id);
+  /**
+   * Put a fresh question on screen.
+   *
+   * Both pickers route through here because the observe gate is what makes
+   * this bench a bench. `observed` is what unlocks the burette, the scene and
+   * every derived number, so carrying it across a change of question would
+   * open the next one with its answer already showing.
+   */
+  const startItem = useCallback((itemId: string | null) => {
+    setPoeItemId(itemId);
     setBurette(0);
     setObserved(false);
     setMasteryNote(null);
     attemptStartedAt.current = Date.now();
   }, []);
+
+  const pickScenario = useCallback(
+    (id: string) => {
+      setScenarioId(id);
+      startItem(null);
+    },
+    [startItem],
+  );
 
   const onObserve = useCallback(() => setObserved(true), []);
 
@@ -315,6 +382,47 @@ export default function GeneralChemistryPortal() {
       level: row?.mastery_level ?? 0,
     });
   }, []);
+
+  /**
+   * Land where the OCTET lesson that linked here was pointing.
+   *
+   * Once, on mount, and never again. A learner who arrives on GEN2.BUFFER and
+   * then clicks over to Orbitals has made a choice, and a hook that reapplied
+   * the query string would drag them back to the bench with no way to stay
+   * where they went. The ref guard rather than an empty dependency list is so
+   * the intent is legible rather than a lint exemption.
+   */
+  const deepLinkApplied = useRef(false);
+  const linkedNode = useSearchParams().get('node');
+
+  useEffect(() => {
+    if (deepLinkApplied.current) return;
+    deepLinkApplied.current = true;
+
+    const target = resolveGeneralDeepLink(linkedNode);
+    // An unrecognised node is not an error. It means the lesson linked to a lab
+    // with nothing specific for it, and the default view is a better answer
+    // than a blank screen.
+    if (!target) return;
+
+    setMode(target.mode);
+    if (target.triangleNode) setTriangleNode(target.triangleNode);
+    if (target.bench) {
+      setScenarioId(target.bench.scenarioId);
+      startItem(target.bench.poeItemId ?? null);
+    }
+
+    // Where the mode picks from a catalogue, open it on the entry that teaches
+    // this node. Null leaves the existing selection alone.
+    const vsepr = teachingKey(VSEPR_CASES, linkedNode);
+    if (vsepr) setVseprKey(vsepr);
+    const polar = teachingKey(GENERAL_MOLECULES, linkedNode);
+    if (polar) setPolarKey(polar);
+    const lattice = teachingKey(LATTICES, linkedNode);
+    if (lattice) setLatticeKey(lattice);
+    const orbital = teachingKey(ORBITALS, linkedNode);
+    if (orbital) setOrbitalKey(orbital);
+  }, [linkedNode, startItem]);
 
   const finishAndRate = async (rating: number | null) => {
     setShowStars(false);
@@ -407,7 +515,32 @@ export default function GeneralChemistryPortal() {
         />
       ))}
     </div>
+  ) : kinetics ? (
+    <KineticsReadout derived={kinetics} />
+  ) : gas ? (
+    <GasReadout derived={gas} />
+  ) : gasComparison ? (
+    <GasComparisonReadout derived={gasComparison} />
   ) : null;
+
+  /**
+   * What is being held back, said in the terms of the scenario on screen.
+   *
+   * Naming the withheld thing is part of the gate rather than a nicety: a
+   * learner who cannot tell what is missing reads the lock as the page being
+   * broken.
+   */
+  const withheldNote = titration
+    ? 'The curve, the landmarks and the burette unlock once you commit a prediction below. Reading the answer first would turn the question into a lookup.'
+    : equilibrium
+      ? 'The vessel is holding the mixture at the instant the stress lands. Where it settles, and the numbers behind it, appear once you commit a prediction below.'
+      : kinetics
+        ? 'The second vessel is empty until you commit. The rates, the rate constants and how much faster the reaction runs all appear together, because any one of them gives the others away.'
+        : gas
+          ? 'Only the starting state is on the bench. Both pressures, the ideal ones beside them and the molecular speeds appear once a prediction is committed.'
+          : gasComparison
+            ? 'Both gases are in the vessel and neither is on screen yet. The two energies and the two speeds appear together once you commit, because seeing one pair first would settle the question.'
+            : 'The result appears once you commit a prediction below.';
 
   return (
     <div className="fixed inset-0 z-50 bg-[#070a14] text-white">
@@ -443,6 +576,30 @@ export default function GeneralChemistryPortal() {
                   <EquilibriumVessel
                     derived={equilibrium}
                     showStressed={revealed}
+                  />
+                )}
+                {/* The stress is passed through because it is the only place
+                    the export says whether a concentration or a volume moved,
+                    and these scenes may not draw a change they were not told
+                    about. */}
+                {kinetics && (
+                  <KineticsVessels
+                    derived={kinetics}
+                    stress={scenario.stress}
+                    showAfter={revealed}
+                  />
+                )}
+                {gas && (
+                  <GasVessels
+                    derived={gas}
+                    stress={scenario.stress}
+                    showAfter={revealed}
+                  />
+                )}
+                {gasComparison && (
+                  <GasComparisonVessels
+                    derived={gasComparison}
+                    show={revealed}
                   />
                 )}
               </>
@@ -810,9 +967,33 @@ export default function GeneralChemistryPortal() {
                 <div className="mt-3 rounded-lg border border-dashed border-white/15 bg-white/5 p-3">
                   <PanelTitle>Result withheld</PanelTitle>
                   <p className="text-[11px] leading-relaxed text-white/60">
-                    {titration
-                      ? 'The curve, the landmarks and the burette unlock once you commit a prediction below. Reading the answer first would turn the question into a lookup.'
-                      : 'The vessel is holding the mixture at the instant the stress lands. Where it settles, and the numbers behind it, appear once you commit a prediction below.'}
+                    {withheldNote}
+                  </p>
+                </div>
+              )}
+
+              {/* One scenario can be asked about in more than one way. Without
+                  a switcher the later questions exist in the export and are
+                  unreachable on screen. */}
+              {poeItems.length > 1 && (
+                <div className="mt-3">
+                  <PanelTitle>Question</PanelTitle>
+                  <div className="flex flex-wrap gap-1">
+                    {poeItems.map((i) => (
+                      <ToggleButton
+                        key={i.id}
+                        active={i.id === poeItem?.id}
+                        onClick={() => startItem(i.id)}
+                        title={`Ask about ${i.node}. Switching starts a fresh predict step.`}
+                      >
+                        {i.node.split('.')[1] ?? i.node}
+                      </ToggleButton>
+                    ))}
+                  </div>
+                  <p className="mt-1.5 text-[10px] leading-relaxed text-white/40">
+                    Two questions about the same curve, on two different
+                    curriculum nodes. Switching starts a fresh prediction and
+                    hides the result again.
                   </p>
                 </div>
               )}
@@ -863,10 +1044,12 @@ export default function GeneralChemistryPortal() {
               )}
 
               <p className="mt-3 text-[10px] leading-relaxed text-white/40">
-                The curve and the concentrations were computed by chem_core when
-                this content was exported. The bench indexes into that result
-                and reads the flask colour off the pH at the point it lands on,
-                so nothing on screen is deciding any chemistry.
+                Every number here was computed by chem_core when this content
+                was exported: the curves, the concentrations, the rates and the
+                pressures alike. The bench indexes into that result rather than
+                deciding any chemistry of its own, and where a scene cannot show
+                a quantity faithfully it says so on the canvas instead of
+                drawing something plausible.
               </p>
             </>
           ) : (

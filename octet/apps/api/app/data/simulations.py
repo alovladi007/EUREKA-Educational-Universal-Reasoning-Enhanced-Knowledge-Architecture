@@ -25,6 +25,11 @@ from typing import Callable
 from chem_core.prediction import Option, PoeItem
 from chem_core.simulate import (
     STRONG_KA,
+    GasSetup,
+    KineticsSetup,
+    compare_gases,
+    gas_response,
+    kinetics_response,
     EquilibriumSetup,
     TitrationSetup,
     equilibrium_shift,
@@ -207,6 +212,41 @@ def run_scenario(scenario_id: str) -> dict:
             "source": setup.ka_source,
             "x_label": "Volume of titrant added (mL)",
             "y_label": "pH",
+        }
+
+    if scenario.kind == "kinetics":
+        setup = KINETICS[scenario.engine_key]
+        result = kinetics_response(setup, scenario.stress)
+        return {
+            "scenario": scenario.id,
+            "kind": "kinetics",
+            "title": scenario.title,
+            "description": scenario.description,
+            "source": setup.source,
+            **result,
+        }
+
+    if scenario.kind == "gas":
+        setup = GASES[scenario.engine_key]
+        result = gas_response(setup, scenario.stress)
+        return {
+            "scenario": scenario.id,
+            "kind": "gas",
+            "title": scenario.title,
+            "description": scenario.description,
+            "source": setup.source,
+            **result,
+        }
+
+    if scenario.kind == "gas-comparison":
+        result = compare_gases(GASES["gas.helium.stp"], GASES["gas.xenon.stp"])
+        return {
+            "scenario": scenario.id,
+            "kind": "gas-comparison",
+            "title": scenario.title,
+            "description": scenario.description,
+            "source": GASES["gas.helium.stp"].source,
+            **result,
         }
 
     setup = EQUILIBRIA[scenario.engine_key]
@@ -611,3 +651,455 @@ POE_ITEMS: dict[str, PoeItem] = {
 
 def items_for_node(node: str) -> list[PoeItem]:
     return [i for i in POE_ITEMS.values() if i.node == node]
+
+
+# ---------------------------------------------------------------------------
+# Kinetics and gas scenarios
+# ---------------------------------------------------------------------------
+
+KINETICS: dict[str, KineticsSetup] = {
+    "kin.first-order.n2o5": KineticsSetup(
+        name="N2O5 decomposition",
+        order=1,
+        k=1.0e-3,
+        initial=0.100,
+        temperature_K=298.15,
+        activation_kJ=103.0,
+        source=(
+            "Activation energy 103 kJ/mol for the gas phase decomposition of "
+            "dinitrogen pentoxide. Atkins, Physical Chemistry, 11th edition, "
+            "table of Arrhenius parameters."
+        ),
+    ),
+    "kin.second-order.no2": KineticsSetup(
+        name="NO2 dimerisation",
+        order=2,
+        k=0.540,
+        initial=0.100,
+        temperature_K=298.15,
+        source=(
+            "Second order in NO2. Rate constant chosen for legibility rather "
+            "than taken from a measurement; the teaching point is the exponent, "
+            "and the panel says so."
+        ),
+    ),
+}
+
+GASES: dict[str, GasSetup] = {
+    "gas.helium.stp": GasSetup(
+        name="Helium",
+        moles=1.0,
+        volume_L=24.79,
+        temperature_K=298.15,
+        molar_mass_g=4.003,
+        source="Molar masses from the CRC Handbook, 97th edition.",
+    ),
+    "gas.xenon.stp": GasSetup(
+        name="Xenon",
+        moles=1.0,
+        volume_L=24.79,
+        temperature_K=298.15,
+        molar_mass_g=131.29,
+        source="Molar masses from the CRC Handbook, 97th edition.",
+    ),
+    "gas.co2.compressed": GasSetup(
+        name="Carbon dioxide, compressed",
+        moles=1.0,
+        volume_L=0.500,
+        temperature_K=298.15,
+        molar_mass_g=44.01,
+        a=3.640,
+        b=0.04267,
+        source=(
+            "van der Waals constants a = 3.640 L^2 bar/mol^2 and b = 0.04267 "
+            "L/mol. CRC Handbook, 97th edition."
+        ),
+    ),
+}
+
+SCENARIOS.update(
+    {
+        s.id: s
+        for s in [
+            Scenario(
+                id="sim.kin.double-concentration",
+                kind="kinetics",
+                engine_key="kin.second-order.no2",
+                title="Doubling the concentration of a second order reactant",
+                description=(
+                    "Nitrogen dioxide dimerises with a rate law that is second "
+                    "order in NO2. The concentration is doubled from 0.100 M to "
+                    "0.200 M with the temperature held constant."
+                ),
+                stress={"concentration_factor": 2.0},
+                node="GEN2.RATELAW",
+            ),
+            Scenario(
+                id="sim.kin.catalyst",
+                kind="kinetics",
+                engine_key="kin.first-order.n2o5",
+                title="Lowering the activation energy with a catalyst",
+                description=(
+                    "Dinitrogen pentoxide decomposes over a barrier of 103 "
+                    "kJ/mol. A catalyst offers a route with the barrier lowered "
+                    "by 20 kJ/mol, at the same temperature and concentration."
+                ),
+                stress={"activation_delta_kJ": -20.0},
+                node="GEN2.CATALYSIS",
+            ),
+            Scenario(
+                id="sim.gas.halve-volume",
+                kind="gas",
+                engine_key="gas.helium.stp",
+                title="Halving the volume of a gas at constant temperature",
+                description=(
+                    "One mole of helium occupies 24.79 L at 298.15 K. The "
+                    "container is compressed to half that volume with the "
+                    "temperature held constant."
+                ),
+                stress={"volume_factor": 0.5},
+                node="GEN1.SIMPLEGASLAWS",
+            ),
+            Scenario(
+                id="sim.gas.kmt-compare",
+                kind="gas-comparison",
+                engine_key="gas.helium.stp",
+                title="Helium and xenon at the same temperature",
+                description=(
+                    "One mole of helium and one mole of xenon, both at 298.15 K "
+                    "in identical containers. Helium is 4.003 g/mol and xenon "
+                    "131.29 g/mol."
+                ),
+                stress={},
+                node="GEN1.KMT",
+            ),
+        ]
+    }
+)
+
+
+# The outcome rules for the new scenarios, registered through the same
+# decorator the original four use. Each reads the engine's derived result; none
+# states an outcome.
+@_rule("poe.kin.order-two")
+def _order_two(result: dict) -> str:
+    return result["outcome"]
+
+
+@_rule("poe.kin.catalyst")
+def _catalyst_rate(result: dict) -> str:
+    return result["outcome"]
+
+
+@_rule("poe.gas.boyle")
+def _boyle(result: dict) -> str:
+    return result["outcome"]
+
+
+@_rule("poe.gas.kmt-energy")
+def _kmt_energy(result: dict) -> str:
+    # compare_gases reports which sample carries more average kinetic energy.
+    # 'same' is the derived answer when the temperatures match, and it is
+    # derived rather than assumed: the two energies are computed and compared.
+    return result["energy"]
+
+
+POE_ITEMS.update(
+    {
+        item.id: item
+        for item in [
+            PoeItem(
+                id="poe.kin.order-two",
+                node="GEN2.RATELAW",
+                scenario="sim.kin.double-concentration",
+                predict_prompt=(
+                    "The rate law is rate = k[NO2]^2. Commit before anything "
+                    "runs. If the concentration of NO2 is doubled and nothing "
+                    "else changes, what happens to the rate?"
+                ),
+                predict_options=[
+                    Option(
+                        id="unchanged",
+                        text="It does not change, because k is a constant",
+                        misconception="RATE-IS-K",
+                        feedback=(
+                            "k is constant and rate is not k. The rate is k "
+                            "times a concentration term, and that term moved."
+                        ),
+                    ),
+                    Option(
+                        id="doubles",
+                        text="It doubles, because the concentration doubled",
+                        misconception="ORDER-READ-AS-ONE",
+                        feedback=(
+                            "That is what first order would give. The exponent "
+                            "here is 2, and the exponent decides."
+                        ),
+                    ),
+                    Option(
+                        id="quadruples",
+                        text="It quadruples, because the concentration is squared",
+                        feedback=(
+                            "Correct. Doubling a squared term multiplies it by "
+                            "four."
+                        ),
+                    ),
+                ],
+                predict_key="quadruples",
+                observe_prompt="Read the two rates and the ratio between them.",
+                explain_prompt="You have seen the ratio. Which account explains it?",
+                explain_options=[
+                    Option(
+                        id="exponent",
+                        text=(
+                            "The rate depends on concentration raised to the "
+                            "order, so a factor of 2 becomes 2 squared"
+                        ),
+                        feedback="Correct.",
+                    ),
+                    Option(
+                        id="coefficient",
+                        text="The balanced equation has a 2 in front of NO2",
+                        misconception="ORDER-FROM-COEFFICIENT",
+                        feedback=(
+                            "The coefficient and the order are different "
+                            "quantities. Order is measured, not read off the "
+                            "equation."
+                        ),
+                    ),
+                    Option(
+                        id="k-changed",
+                        text="The rate constant doubled when the concentration doubled",
+                        misconception="RATE-IS-K",
+                        feedback=(
+                            "k did not move. Compare the two values on the "
+                            "panel: only the concentration term changed."
+                        ),
+                    ),
+                ],
+                explain_key="exponent",
+            ),
+            PoeItem(
+                id="poe.kin.catalyst",
+                node="GEN2.CATALYSIS",
+                scenario="sim.kin.catalyst",
+                predict_prompt=(
+                    "A catalyst offers a route with an activation energy 20 "
+                    "kJ/mol lower, at the same temperature and the same "
+                    "concentration. Commit first: what happens to the rate?"
+                ),
+                predict_options=[
+                    Option(
+                        id="unchanged",
+                        text="Nothing, because a catalyst is not consumed",
+                        misconception="CATALYST-DOES-NOTHING",
+                        feedback=(
+                            "Not being consumed is true, and is a different "
+                            "statement from having no effect."
+                        ),
+                    ),
+                    Option(
+                        id="decreases",
+                        text="It falls, because the catalyst gets in the way",
+                        misconception="CATALYST-BLOCKS",
+                        feedback="A catalyst opens a route rather than blocking one.",
+                    ),
+                    Option(
+                        id="increases",
+                        text="It rises sharply, because the barrier is lower",
+                        feedback=(
+                            "Correct, and by far more than 20 kJ/mol might "
+                            "suggest: the barrier sits in an exponent."
+                        ),
+                    ),
+                ],
+                predict_key="increases",
+                observe_prompt=(
+                    "Read the factor by which the rate changed, and note how "
+                    "large it is for a 20 kJ/mol change."
+                ),
+                explain_prompt="Which account explains the size of that factor?",
+                explain_options=[
+                    Option(
+                        id="exponential",
+                        text=(
+                            "The barrier sits in an exponent, so lowering it "
+                            "multiplies the rate rather than adding to it"
+                        ),
+                        feedback="Correct.",
+                    ),
+                    Option(
+                        id="equilibrium-moved",
+                        text="The catalyst shifted the equilibrium toward products",
+                        misconception="CATALYST-SHIFTS-EQUILIBRIUM",
+                        feedback=(
+                            "A catalyst speeds both directions equally and "
+                            "moves no equilibrium. The other bench scenario "
+                            "shows exactly that."
+                        ),
+                    ),
+                    Option(
+                        id="more-collisions",
+                        text="The catalyst made the molecules collide more often",
+                        misconception="CATALYST-ADDS-COLLISIONS",
+                        feedback=(
+                            "Collision frequency is set by concentration and "
+                            "temperature, neither of which changed. What "
+                            "changed is which collisions succeed."
+                        ),
+                    ),
+                ],
+                explain_key="exponential",
+            ),
+            PoeItem(
+                id="poe.gas.boyle",
+                node="GEN1.SIMPLEGASLAWS",
+                scenario="sim.gas.halve-volume",
+                predict_prompt=(
+                    "The volume is halved with the temperature held constant. "
+                    "Commit before the gauge is revealed: what does the "
+                    "pressure do?"
+                ),
+                predict_options=[
+                    Option(
+                        id="halves",
+                        text="It halves, following the volume down",
+                        misconception="PRESSURE-TRACKS-VOLUME",
+                        feedback=(
+                            "Pressure and volume move in opposite directions at "
+                            "constant temperature, not together."
+                        ),
+                    ),
+                    Option(
+                        id="unchanged",
+                        text="It stays the same, because no gas was added or removed",
+                        misconception="PRESSURE-NEEDS-MOLES",
+                        feedback=(
+                            "The amount of gas is one of several things "
+                            "pressure depends on. The same molecules in half "
+                            "the room reach the walls twice as often."
+                        ),
+                    ),
+                    Option(
+                        id="doubles",
+                        text="It doubles, because the same molecules have half the room",
+                        feedback="Correct. This is Boyle's law.",
+                    ),
+                ],
+                predict_key="doubles",
+                observe_prompt="Read the two pressures and the ratio between them.",
+                explain_prompt=(
+                    "Which account explains it at the level of the particles?"
+                ),
+                explain_options=[
+                    Option(
+                        id="wall-collisions",
+                        text=(
+                            "Each molecule reaches a wall twice as often in "
+                            "half the volume, so the force per unit area "
+                            "doubles"
+                        ),
+                        feedback="Correct.",
+                    ),
+                    Option(
+                        id="molecules-shrink",
+                        text="The molecules were compressed and became smaller",
+                        misconception="MOLECULES-COMPRESS",
+                        feedback=(
+                            "The molecules do not change size. The space "
+                            "between them does, and in a gas that space is "
+                            "nearly all of the volume."
+                        ),
+                    ),
+                    Option(
+                        id="faster",
+                        text="Compressing the gas made the molecules move faster",
+                        misconception="COMPRESSION-HEATS",
+                        feedback=(
+                            "Speed is set by temperature, which was held "
+                            "constant. The root mean square speed on the panel "
+                            "did not move."
+                        ),
+                    ),
+                ],
+                explain_key="wall-collisions",
+            ),
+            PoeItem(
+                id="poe.gas.kmt-energy",
+                node="GEN1.KMT",
+                scenario="sim.gas.kmt-compare",
+                predict_prompt=(
+                    "Helium and xenon sit at the same temperature, and xenon is "
+                    "about thirty times heavier per mole. Commit before "
+                    "looking: which has the higher average kinetic energy per "
+                    "molecule?"
+                ),
+                predict_options=[
+                    Option(
+                        id="a",
+                        text="Helium, because its molecules move much faster",
+                        misconception="SPEED-IS-ENERGY",
+                        feedback=(
+                            "Helium is faster, and speed alone does not settle "
+                            "energy: kinetic energy carries mass as well."
+                        ),
+                    ),
+                    Option(
+                        id="b",
+                        text="Xenon, because its molecules are much heavier",
+                        misconception="MASS-IS-ENERGY",
+                        feedback=(
+                            "Xenon is heavier and correspondingly slower. The "
+                            "two effects cancel exactly."
+                        ),
+                    ),
+                    Option(
+                        id="same",
+                        text="Neither, they are equal because the temperature is equal",
+                        feedback=(
+                            "Correct. Average translational kinetic energy is "
+                            "three halves RT and depends on nothing else."
+                        ),
+                    ),
+                ],
+                predict_key="same",
+                observe_prompt=(
+                    "Read both energies and both speeds. One pair is equal and "
+                    "the other is not."
+                ),
+                explain_prompt="Which account explains why the energies match?",
+                explain_options=[
+                    Option(
+                        id="temperature-is-energy",
+                        text=(
+                            "Temperature is the average translational kinetic "
+                            "energy, so equal temperature means equal energy "
+                            "and the lighter gas makes it up in speed"
+                        ),
+                        feedback="Correct.",
+                    ),
+                    Option(
+                        id="same-container",
+                        text="They are in identical containers, so everything matches",
+                        misconception="CONTAINER-DECIDES",
+                        feedback=(
+                            "The containers match and the speeds do not. Read "
+                            "the two root mean square values again."
+                        ),
+                    ),
+                    Option(
+                        id="ideal-gas",
+                        text="Both are ideal, and ideal gases are identical in every respect",
+                        misconception="IDEAL-MEANS-IDENTICAL",
+                        feedback=(
+                            "Ideal means no attraction and negligible molecular "
+                            "volume. It says nothing about mass, which is why "
+                            "they effuse at different rates."
+                        ),
+                    ),
+                ],
+                explain_key="temperature-is-energy",
+            ),
+        ]
+    }
+)

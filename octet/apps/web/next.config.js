@@ -10,6 +10,8 @@ const nextConfig = {
     NEXT_PUBLIC_EUREKA_LOGIN_URL:
       process.env.NEXT_PUBLIC_EUREKA_LOGIN_URL ||
       'http://localhost:4040/auth/login',
+    NEXT_PUBLIC_EUREKA_URL:
+      process.env.NEXT_PUBLIC_EUREKA_URL || 'http://localhost:4040',
   },
   typescript: { ignoreBuildErrors: false },
   eslint: { ignoreDuringBuilds: false },

@@ -21,11 +21,11 @@ is retyped here: curves come out of chem_core.simulate, environment counts out
 of chem_core.organic, and every POE item's answer key is checked against the
 simulation before it is allowed into the output.
 
-That last check matters more than it looks. OCTET's own prediction module says
-a prediction key is never taken on the author's word, and exports the verifier
-to prove it. An item whose key disagrees with its own physics does not ship,
-and this script enforces that at the boundary rather than trusting that it was
-enforced upstream.
+Key verification defers to OCTET rather than duplicating it. simulations.py
+registers an outcome rule per item and test_phase3 already asserts the whole
+registry upstream; this script runs the same pair and REFUSES to export an item
+that has no rule or whose key disagrees. The point is a gate at the boundary,
+not a second implementation to keep in step with the first.
 
 Run from the octet directory:
 
@@ -47,6 +47,7 @@ from chem_core.organic import (  # noqa: E402
     degrees_of_unsaturation,
     proton_environments,
 )
+from chem_core.prediction import verify_prediction_key  # noqa: E402
 from chem_core.simulate import (  # noqa: E402
     equilibrium_shift,
     titration_curve,
@@ -138,7 +139,11 @@ def triangle_review_status() -> str:
 
 
 def run_scenario(scenario) -> dict:
-    """Run a scenario through chem_core and return what it derived."""
+    """Shape one scenario's derived result for the labs.
+
+    OCTET's run_scenario returns the full payload; this trims it to what the
+    3D bench actually plots and rounds for a readable diff.
+    """
     if scenario.kind == "titration":
         setup = sims.TITRATIONS[scenario.engine_key]
         curve = titration_curve(setup, points=161)
@@ -163,6 +168,18 @@ def run_scenario(scenario) -> dict:
             else:
                 clean[k] = v
         return {"kind": "equilibrium", "result": clean}
+    if scenario.kind in ("kinetics", "gas", "gas-comparison"):
+        # These engines already return a flat, plottable result. Round the
+        # floats so a regenerated file diffs cleanly, and drop the descriptive
+        # keys the exporter carries separately.
+        full = sims.run_scenario(scenario.id)
+        skip = {"scenario", "title", "description", "kind"}
+        clean = {
+            k: (round(v, 6) if isinstance(v, float) else v)
+            for k, v in full.items()
+            if k not in skip
+        }
+        return {"kind": scenario.kind, "result": clean}
     raise SystemExit(f"{scenario.id}: unknown scenario kind {scenario.kind}")
 
 
@@ -196,75 +213,38 @@ def opt(o) -> dict:
     }
 
 
-# Mechanical checks, one per POE item, evaluated against what the simulation
-# actually produced.
+# Key verification uses OCTET's own mechanism rather than a second one here.
 #
-# These exist because OCTET's simulations.py documents an `outcome_rule` on
-# each item that "turns that derived result into the option id ... so the item
-# key can be checked against the physics rather than against the author's
-# intention". No such field exists on Scenario or PoeItem, and nothing calls
-# chem_core's verify_prediction_key on these items. The mechanism is described
-# and absent, so the keys have never actually been checked. Running the
-# exported verifier as-is would fail the catalyst item outright, because the
-# engine reports direction 'none' while the item keys 'unchanged'.
+# simulations.py registers an outcome rule per item via its @_rule decorator,
+# and run_scenario executes the item's scenario. That pair is what
+# test_phase3 already asserts over the whole registry upstream. Re-deriving the
+# outcome independently in this exporter would be a second implementation to
+# keep in step with the first, and the failure mode of two implementations that
+# disagree is worse than the failure mode of one.
 #
-# Rather than skip the check or quietly paper over the mismatch, each item gets
-# an explicit predicate here that reads the derived result and decides whether
-# the authored key is what the physics produced. The predicates are visible,
-# and the build fails when one does not hold.
-def _check_titr_equivalence(run: dict, key: str) -> tuple[bool, str]:
-    ph = run["landmarks"]["equivalence_pH"]
-    got = "above7" if ph > 7.0 else "equals7" if abs(ph - 7.0) < 1e-6 else "below7"
-    return got == key, f"simulated equivalence pH is {ph:.3f}, which is {got}"
-
-
-def _check_titr_buffer(run: dict, key: str) -> tuple[bool, str]:
-    # The buffer region is the plateau either side of half equivalence. Take
-    # the pH swing across the middle half of the pre-equivalence volume.
-    veq = run["landmarks"]["equivalence_volume_mL"]
-    band = [p for p in run["curve"] if 0.25 * veq <= p["v"] <= 0.75 * veq]
-    swing = max(p["ph"] for p in band) - min(p["ph"] for p in band)
-    got = "small" if swing < 1.5 else "large"
-    return got == key, (
-        f"pH moves {swing:.2f} units across the middle half of the buffer region, "
-        f"which is {got}"
-    )
-
-
-def _check_eq_direction(run: dict, key: str) -> tuple[bool, str]:
-    direction = run["result"]["direction"]
-    # 'none' and 'unchanged' are the same claim about the physics: the position
-    # of equilibrium did not move. The alias is declared rather than assumed.
-    alias = {"none": "unchanged", "forward": "forward", "reverse": "reverse"}
-    got = alias.get(direction, direction)
-    return got == key, f"engine reports direction {direction}, read as {got}"
-
-
-POE_CHECKS = {
-    "poe.titr.weak-equivalence": _check_titr_equivalence,
-    "poe.titr.buffer-region": _check_titr_buffer,
-    "poe.lechat.add-h2": _check_eq_direction,
-    "poe.lechat.catalyst": _check_eq_direction,
-}
-
-
+# What this exporter adds is refusal: an item that cannot be checked, or whose
+# key disagrees, fails the export instead of shipping into the labs.
 def collect_poe(derived: dict[str, dict]) -> list[dict]:
     out = []
     for item in sims.POE_ITEMS.values():
         scenario = sims.SCENARIOS[item.scenario]
         run = derived[item.scenario]
 
-        check = POE_CHECKS.get(item.id)
-        if check is None:
+        rule = sims.OUTCOME_RULES.get(item.id)
+        if rule is None:
             raise SystemExit(
-                f"{item.id}: no mechanical check is declared for this item. Add one to "
-                f"POE_CHECKS rather than shipping an unverified answer key."
+                f"{item.id}: no outcome rule is registered upstream, so this key "
+                f"cannot be checked against the physics. Register one with @_rule "
+                f"in simulations.py rather than shipping it unverified."
             )
-        verified, verdict = check(run, item.predict_key)
+        outcome = rule(sims.run_scenario(item.scenario))
+        result = verify_prediction_key(item, {"outcome": outcome})
+        verified = bool(result.ok)
+        verdict = result.detail
         if not verified:
             raise SystemExit(
-                f"{item.id}: prediction key {item.predict_key!r} disagrees with its own "
-                f"simulation: {verdict}"
+                f"{item.id}: prediction key {item.predict_key!r} disagrees with its "
+                f"own simulation: {verdict}"
             )
 
         # The key must also be one of the item's own options, which is the

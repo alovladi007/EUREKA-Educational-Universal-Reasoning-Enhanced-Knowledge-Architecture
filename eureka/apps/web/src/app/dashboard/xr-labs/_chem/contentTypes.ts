@@ -70,10 +70,80 @@ export interface EquilibriumDerived {
     k: number;
     stressed: Record<string, number>;
     final: Record<string, number>;
+    source?: string;
   };
 }
 
-export type Derived = TitrationDerived | EquilibriumDerived;
+/**
+ * Rate response to one change: a different concentration, temperature, or
+ * activation barrier. `outcome` is the token the answer key is checked
+ * against, derived by classifying the computed rate ratio.
+ */
+export interface KineticsDerived {
+  kind: 'kinetics';
+  result: {
+    outcome: string;
+    rate_before: number;
+    rate_after: number;
+    ratio: number;
+    order: number;
+    k_before: number;
+    k_after: number;
+    half_life_s: number;
+    source?: string;
+  };
+}
+
+/**
+ * Pressure response to one change. Both the real and ideal pressures are
+ * carried so the departure can be shown rather than asserted.
+ */
+export interface GasDerived {
+  kind: 'gas';
+  result: {
+    outcome: string;
+    pressure_before_bar: number;
+    pressure_after_bar: number;
+    ideal_before_bar: number;
+    ideal_after_bar: number;
+    ratio: number;
+    departure_before: number;
+    departure_after: number;
+    rms_before_m_per_s: number;
+    rms_after_m_per_s: number;
+    source?: string;
+  };
+}
+
+/**
+ * Two gases compared at one temperature.
+ *
+ * `energy` and `speed` are separate fields because the whole teaching point is
+ * that they come apart: equal temperature makes the energies equal and leaves
+ * the speeds different.
+ */
+export interface GasComparisonDerived {
+  kind: 'gas-comparison';
+  result: {
+    outcome: string;
+    energy: string;
+    speed: string;
+    same_temperature: boolean;
+    ke_a_J_per_mol: number;
+    ke_b_J_per_mol: number;
+    rms_a_m_per_s: number;
+    rms_b_m_per_s: number;
+    effusion_ratio_a_over_b: number;
+    source?: string;
+  };
+}
+
+export type Derived =
+  | TitrationDerived
+  | EquilibriumDerived
+  | KineticsDerived
+  | GasDerived
+  | GasComparisonDerived;
 
 export interface Scenario {
   id: string;

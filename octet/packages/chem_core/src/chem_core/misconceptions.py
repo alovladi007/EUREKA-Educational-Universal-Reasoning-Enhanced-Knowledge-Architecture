@@ -579,3 +579,273 @@ MISCONCEPTIONS.update(
         ),
     }
 )
+
+
+# Kinetics and gas-law misconceptions, added with the predict-observe-explain
+# scenarios that key them. Each one is a belief the simulation can be made to
+# contradict in front of the learner, which is the only reason to name it.
+#
+# Sourcing note: these carry the same honest provenance as the rest of this
+# file. They are instructor observation rather than findings traced to a
+# published study, and they stay review="pending" until a named expert signs
+# them off.
+MISCONCEPTIONS.update(
+    {
+        m.code: m
+        for m in [
+            Misconception(
+                code="RATE-IS-K",
+                name="The rate constant is the rate",
+                description=(
+                    "The learner treats k as the rate itself, so anything that "
+                    "leaves k alone is taken to leave the rate alone, and "
+                    "concentration drops out of the picture."
+                ),
+                counterexample=(
+                    "For rate = k[NO2]^2 with k fixed, raising [NO2] from 0.100 "
+                    "M to 0.200 M multiplies the rate by four while k does not "
+                    "move at all."
+                ),
+                routes_to="GEN2.RATELAW",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="ORDER-READ-AS-ONE",
+                name="Every reactant is treated as first order",
+                description=(
+                    "The learner scales the rate by the same factor the "
+                    "concentration was scaled by, whatever exponent the rate "
+                    "law actually carries."
+                ),
+                counterexample=(
+                    "Doubling a second order reactant quadruples the rate "
+                    "rather than doubling it, because the concentration enters "
+                    "squared."
+                ),
+                routes_to="GEN2.RATELAW",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="ORDER-FROM-COEFFICIENT",
+                name="Reaction order is read off the balanced equation",
+                description=(
+                    "The learner takes the stoichiometric coefficient as the "
+                    "order in that species. Order is a measured property of the "
+                    "rate law and equals the coefficient only for an elementary "
+                    "step."
+                ),
+                counterexample=(
+                    "The reaction of hydrogen with bromine has a coefficient of "
+                    "one on Br2 and an order in Br2 of one half, which no "
+                    "reading of the equation would produce."
+                ),
+                routes_to="GEN2.RATELAW",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="CATALYST-DOES-NOTHING",
+                name="A catalyst has no effect because it is not consumed",
+                description=(
+                    "The learner correctly recalls that a catalyst is recovered "
+                    "unchanged and concludes it changes nothing, confusing "
+                    "being unconsumed with being inert."
+                ),
+                counterexample=(
+                    "Lowering a barrier by 20 kJ/mol at 298 K multiplies the "
+                    "rate constant by roughly three thousand, and the catalyst "
+                    "is still there at the end."
+                ),
+                routes_to="GEN2.CATALYSIS",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="CATALYST-BLOCKS",
+                name="A catalyst obstructs the reactants",
+                description=(
+                    "The learner pictures the catalyst as an extra species in "
+                    "the way and so expects the rate to fall."
+                ),
+                counterexample=(
+                    "A catalyst supplies an alternative route with a lower "
+                    "barrier while the original route remains open, so the "
+                    "total rate can only rise."
+                ),
+                routes_to="GEN2.CATALYSIS",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="CATALYST-ADDS-COLLISIONS",
+                name="A catalyst makes molecules collide more often",
+                description=(
+                    "The learner attributes the speed up to collision frequency "
+                    "rather than to the fraction of collisions energetic enough "
+                    "to clear the barrier."
+                ),
+                counterexample=(
+                    "Collision frequency is fixed by concentration and "
+                    "temperature. A catalyst changes neither and the rate still "
+                    "rises, so what changed is which collisions succeed."
+                ),
+                routes_to="GEN2.CATALYSIS",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="CATALYST-SHIFTS-EQUILIBRIUM",
+                name="A catalyst moves the position of equilibrium",
+                description=(
+                    "The learner expects a catalyst to raise the yield, "
+                    "treating a kinetic effect as a thermodynamic one."
+                ),
+                counterexample=(
+                    "A catalyst lowers the barrier equally in both directions, "
+                    "so forward and reverse rates rise together and K is "
+                    "untouched. Equilibrium arrives sooner, not elsewhere."
+                ),
+                routes_to="GEN2.CATALYSIS",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="PRESSURE-TRACKS-VOLUME",
+                name="Pressure follows volume",
+                description=(
+                    "The learner expects pressure to fall when volume falls, "
+                    "treating the two as varying together rather than "
+                    "inversely."
+                ),
+                counterexample=(
+                    "Halving the volume at constant temperature doubles the "
+                    "pressure. What is held constant is their product."
+                ),
+                routes_to="GEN1.SIMPLEGASLAWS",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="PRESSURE-NEEDS-MOLES",
+                name="Pressure changes only when gas is added or removed",
+                description=(
+                    "The learner treats the amount of gas as the only thing "
+                    "pressure depends on, so a sealed sample is expected to "
+                    "hold its pressure through any change."
+                ),
+                counterexample=(
+                    "A sealed syringe compressed to half its volume reads twice "
+                    "the pressure without one molecule being added."
+                ),
+                routes_to="GEN1.SIMPLEGASLAWS",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="MOLECULES-COMPRESS",
+                name="Compressing a gas squeezes its molecules",
+                description=(
+                    "The learner pictures the molecules themselves shrinking "
+                    "rather than the empty space between them closing up."
+                ),
+                counterexample=(
+                    "At ordinary pressures the molecules occupy well under a "
+                    "thousandth of a gas's volume. What compresses is the gap, "
+                    "which is why a liquid, where the gap is gone, barely "
+                    "compresses at all."
+                ),
+                routes_to="GEN1.KMT",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="COMPRESSION-HEATS",
+                name="Compression necessarily speeds the molecules up",
+                description=(
+                    "The learner generalises the warming of a bicycle pump into "
+                    "a rule that any compression raises molecular speed, "
+                    "including one held at constant temperature."
+                ),
+                counterexample=(
+                    "A pump warms because the compression is fast and the heat "
+                    "cannot escape. Compress slowly in a thermostat and the "
+                    "root mean square speed is unchanged while the pressure "
+                    "still doubles."
+                ),
+                routes_to="GEN1.KMT",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="SPEED-IS-ENERGY",
+                name="The faster gas carries more kinetic energy",
+                description=(
+                    "The learner compares molecular speeds and reads kinetic "
+                    "energy off them, leaving mass out of the comparison."
+                ),
+                counterexample=(
+                    "Helium moves about 5.7 times faster than xenon at the same "
+                    "temperature and the two have identical average kinetic "
+                    "energy, because xenon is about 33 times heavier and energy "
+                    "goes as mass times speed squared."
+                ),
+                routes_to="GEN1.KMT",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="MASS-IS-ENERGY",
+                name="The heavier gas carries more kinetic energy",
+                description=(
+                    "The learner compares molar masses and reads kinetic energy "
+                    "off them, leaving speed out of the comparison."
+                ),
+                counterexample=(
+                    "Xenon is far heavier than helium and correspondingly "
+                    "slower; at the same temperature the average translational "
+                    "kinetic energies are exactly equal at three halves RT."
+                ),
+                routes_to="GEN1.KMT",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="CONTAINER-DECIDES",
+                name="Identical containers make gases identical",
+                description=(
+                    "The learner treats matching macroscopic conditions as "
+                    "making every molecular property match as well."
+                ),
+                counterexample=(
+                    "Helium and xenon in identical containers at one "
+                    "temperature share a pressure and an average kinetic "
+                    "energy, and differ by a factor of 5.7 in molecular speed, "
+                    "which is why they effuse at different rates."
+                ),
+                routes_to="GEN1.KMT",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+            Misconception(
+                code="IDEAL-MEANS-IDENTICAL",
+                name="Ideal gases are identical in every respect",
+                description=(
+                    "The learner takes ideal behaviour to erase the differences "
+                    "between gases rather than to name the two assumptions "
+                    "being made."
+                ),
+                counterexample=(
+                    "Ideal means no intermolecular attraction and negligible "
+                    "molecular volume. It says nothing about molar mass, so two "
+                    "ideal gases still differ in speed, effusion rate and "
+                    "density."
+                ),
+                routes_to="GEN1.IDEALGAS",
+                source="Instructor observation; not traced to a published study",
+                review="pending",
+            ),
+        ]
+    }
+)

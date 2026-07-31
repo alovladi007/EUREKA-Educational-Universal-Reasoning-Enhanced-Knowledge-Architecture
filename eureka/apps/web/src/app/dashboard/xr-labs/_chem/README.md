@@ -107,15 +107,46 @@ These are shown to learners, not just written here:
   checked against a simulation, and the chair-flip item — which is authored
   locally rather than exported from OCTET — says it was not.
 
-## Known upstream gap
+## A correction, kept on the record
 
-`octet/apps/api/app/data/simulations.py` documents an `outcome_rule` on each
-POE item that "turns that derived result into the option id ... so the item
-key can be checked against the physics rather than against the author's
-intention". No such field exists on `Scenario` or `PoeItem`, and nothing calls
-`chem_core.prediction.verify_prediction_key` on them. The mechanism is
-described and absent, so upstream those keys have never actually been checked.
+An earlier version of this file, and commit `d1b4d85f`, claimed that OCTET
+documented an `outcome_rule` mechanism it did not implement, and that POE
+answer keys "have never actually been checked upstream."
 
-`gen_chem_content.py` therefore declares an explicit predicate per item and
-verifies at export instead. Worth fixing upstream so the check lives with the
-content rather than with one consumer of it.
+**That was wrong.** The mechanism exists and always did:
+
+- `simulations.py` registers a rule per item through an `@_rule` decorator into
+  `OUTCOME_RULES`
+- `run_scenario(scenario_id)` executes the item's scenario
+- `test_phase3.test_every_poe_key_agrees_with_its_own_simulation` already runs
+  the pair over the whole registry
+
+The error came from grepping for the lowercase `outcome_rule` used in the
+module docstring rather than the `OUTCOME_RULES` identifier that implements it,
+and treating one empty search as proof of absence. Acting on that false premise
+then broke the working check by bolting a competing mechanism onto `PoeItem`,
+which took six OCTET tests down with it. Both were reverted.
+
+`gen_chem_content.py` now calls OCTET's own `OUTCOME_RULES` and
+`verify_prediction_key` rather than re-deriving outcomes with its own
+predicates. It still refuses to export an item that has no registered rule or
+whose key disagrees, so the boundary is a gate rather than a second
+implementation to keep in step.
+
+The lesson generalises: absence is much harder to establish than presence, and
+a single negative grep is not evidence of it.
+## Simulation engines
+
+`chem_core.simulate` carries four engines. Titration and equilibrium predate
+this work; kinetics and gases were added with it.
+
+| Engine | Solves | Outcome token |
+|---|---|---|
+| Titration | mass and charge balance, bisected on log10[H+] | read off the curve |
+| Equilibrium | reaction quotient, extent solved numerically | direction of shift |
+| Kinetics | integrated rate laws in closed form, Arrhenius as a ratio | rate ratio, classified |
+| Gases | van der Waals, which reduces to ideal exactly at a = b = 0 | pressure ratio, classified |
+
+Each ships a `verify_*` that re-derives the result by a different route: the
+gas check runs the equation of state backwards, the kinetics check reads the
+rate law directly rather than dividing two rates.
