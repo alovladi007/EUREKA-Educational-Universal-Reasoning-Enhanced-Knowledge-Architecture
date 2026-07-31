@@ -143,7 +143,7 @@ export default function SceneBuilderPage() {
           </p>
           <p className="text-xs text-muted-foreground">
             In the meantime,{" "}
-            <Link href="/dashboard/xr-labs" className="text-primary hover:underline">XR Labs</Link>{" "}
+            <Link href="/dashboard/xr-labs" className="text-primary hover:underline">3D &amp; XR Labs</Link>{" "}
             (experiences, study sets + resources) works independently.
           </p>
         </Card>
@@ -1474,7 +1474,7 @@ function PublishDialog({ onPublish, onClose }: any) {
   return (
     <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
       <div className="bg-gray-800 rounded-xl p-6 w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Publish to XR Labs</h2>
+        <h2 className="text-2xl font-bold mb-4">Publish to 3D &amp; XR Labs</h2>
         <p className="text-sm text-gray-400 mb-4">
           Your scene becomes a published experience in the XR Labs catalog: anyone
           can open it in the browser viewer, and a headset browser with WebXR can

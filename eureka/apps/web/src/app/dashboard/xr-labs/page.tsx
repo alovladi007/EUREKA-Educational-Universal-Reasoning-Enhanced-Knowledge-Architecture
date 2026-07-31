@@ -1,18 +1,26 @@
 "use client";
 
 /**
- * Phase 19 — XR Labs (real-data version).
+ * The 3D & XR Labs hub.
  *
- * Previously the page called a defunct xr-labs microservice and fell back
- * to hardcoded "Solar System Explorer / Human Anatomy VR / Chemistry Lab"
- * cards. Those mocks are GONE.
+ * The name carries an "&" because the module is two things, and only one of
+ * them is XR:
  *
- * Real data:
- *   /resources?q=xr            VR/AR resources from the catalog (Phase 18)
- *   /me/collections?kind=study_set  user's XR study sets (Phase 17)
- * Plus rich pre-existing subroutes at /dashboard/xr-labs/{scene-builder,experience}
- * remain available — they run against the separate services/xr-labs/
- * Node microservice when it's up; the cards below link to them as-is.
+ *   Built-in portals   solar-system, molecules, general-chemistry, anatomy.
+ *                      Three.js / R3F in a normal browser window. No headset,
+ *                      no navigator.xr, no WebXR session. Desktop 3D.
+ *   Experiences        scene-builder output, viewed at experience/[id], which
+ *                      really does call navigator.xr.requestSession() for both
+ *                      immersive-vr and immersive-ar.
+ *
+ * Calling the whole module "XR Labs" was an overclaim on four of its six
+ * routes, and the landing page compounded it by advertising "immersive 3D
+ * labs". Both now say which is which.
+ *
+ * Data:
+ *   /resources?tag=xr               catalog resources (Phase 18)
+ *   /me/collections?kind=study_set  study sets (Phase 17)
+ *   /xr/experiences, /xr/me/sessions  api-core, not a separate microservice
  */
 
 import { useEffect, useState } from "react";
@@ -144,14 +152,18 @@ export default function XRLabsPage() {
       <div>
         <h1 className="flex items-center gap-2 text-3xl font-bold">
           <Glasses className="h-7 w-7 text-primary" />
-          XR Labs
+          3D &amp; XR Labs
         </h1>
         <p className="text-muted-foreground mt-1">
-          Virtual reality + augmented reality experiences, study sets, and
-          resources — all real EUREKA data. Experiences, sessions, and the scene
-          builder are served by api-core&apos;s{" "}
+          Two different things live here, and the difference is worth stating.
+          The <strong>built-in portals</strong> below are desktop 3D: they run
+          in an ordinary browser window with a mouse and keyboard, and they do
+          not enter a headset. <strong>Experiences</strong> published through
+          the scene builder are true WebXR and can be entered immersively on a
+          headset, or previewed on a desktop. Experiences, sessions, and the
+          scene builder are served by api-core&apos;s{" "}
           <span className="font-mono text-xs">/api/v1/xr</span> endpoints; the
-          built-in portals below run entirely in your browser.
+          portals need no server at all.
         </p>
       </div>
 
@@ -163,16 +175,29 @@ export default function XRLabsPage() {
       )}
 
       {/* ───────────── Built-in portals ─────────────
-          Self-contained Three.js / R3F experiences we ship in-shell — no
-          external scene service or external assets. The first one is the
-          Solar System Explorer (Phase 19+ extension); Organic Chemistry
-          and Anatomy 3D are next on the roadmap (cards below link to
-          coming-soon placeholders for now).
+          Self-contained Three.js / R3F scenes we ship in-shell — no external
+          scene service, no external assets, no server round trip. All four
+          are built and live.
+
+          None of them is XR. There is no navigator.xr call anywhere in this
+          subtree: no requestSession, no renderer.xr, and @react-three/xr is
+          not a dependency of this app. They are desktop 3D, and the badge on
+          every card says so, because sitting them under a route named
+          "xr-labs" beside a genuine WebXR viewer is exactly the arrangement
+          that would otherwise let a reader assume the wrong thing.
+
+          The route path stays /dashboard/xr-labs despite the rename. It is
+          not cosmetic: OCTET lesson pages deep-link into the chemistry
+          portals by that path, and published built-in portals store it in
+          scene_url in the database. Moving it would break stored rows.
       */}
       <div>
         <h2 className="text-base font-semibold mb-3 flex items-center gap-2">
           <Sparkles className="h-4 w-4 text-primary" />
           Built-in portals
+          <span className="text-xs font-normal text-muted-foreground">
+            desktop 3D, no headset
+          </span>
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           <PortalCardLink href="/dashboard/xr-labs/solar-system">
@@ -199,6 +224,7 @@ export default function XRLabsPage() {
                   <Badge variant="secondary" className="text-[10px]">
                     Interactive
                   </Badge>
+                  <Badge variant="outline" className="text-[10px]">Desktop 3D</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -222,6 +248,7 @@ export default function XRLabsPage() {
                   <Badge variant="secondary" className="text-[10px]">Organic</Badge>
                   <Badge variant="secondary" className="text-[10px]">OCTET aligned</Badge>
                   <Badge variant="secondary" className="text-[10px]">Interactive</Badge>
+                  <Badge variant="outline" className="text-[10px]">Desktop 3D</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -245,6 +272,7 @@ export default function XRLabsPage() {
                   <Badge variant="secondary" className="text-[10px]">General</Badge>
                   <Badge variant="secondary" className="text-[10px]">OCTET aligned</Badge>
                   <Badge variant="secondary" className="text-[10px]">Interactive</Badge>
+                  <Badge variant="outline" className="text-[10px]">Desktop 3D</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -267,6 +295,7 @@ export default function XRLabsPage() {
                   <Badge variant="secondary" className="text-[10px]">Biology</Badge>
                   <Badge variant="secondary" className="text-[10px]">Layered</Badge>
                   <Badge variant="outline" className="text-[10px]">Schematic</Badge>
+                  <Badge variant="outline" className="text-[10px]">Desktop 3D</Badge>
                 </div>
               </CardContent>
             </Card>
@@ -383,8 +412,10 @@ export default function XRLabsPage() {
               <span className="font-mono text-[11px]">
                 /dashboard/xr-labs/experience/&lt;id&gt;
               </span>
-              . WebXR works in any modern browser; Quest/Vive/Index for the
-              full immersive mode.
+              . The desktop preview works anywhere. Entering immersively needs
+              a browser that implements WebXR, which today means Chrome or Edge
+              or a headset browser, not Safari or desktop Firefox, and the
+              viewer says so if yours cannot.
             </CardDescription>
           </CardHeader>
           <CardContent>

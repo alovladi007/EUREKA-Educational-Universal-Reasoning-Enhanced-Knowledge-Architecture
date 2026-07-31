@@ -23,8 +23,31 @@ WORKDIR /app
 
 # .npmrc carries legacy-peer-deps=true (see Dockerfile.dev for why).
 COPY package*.json .npmrc ./
+
+# This should be `npm ci`, and cannot be yet. See LOCKFILE below.
+#
+# From a clean cache `npm install` does resolve the platform-specific SWC
+# binary correctly. What it does not do is stay put: a stale cached layer of
+# this step was serving a tree with @next/swc-linux-arm64-musl missing, and
+# the build died with "Failed to load SWC binary for linux/arm64". That fails
+# here and nowhere else, because musl is what Alpine uses and every developer
+# machine in this project is glibc or macOS. If it recurs, rebuild this layer
+# with `docker compose build --no-cache web`.
+#
+# LOCKFILE: eureka/ is an npm workspace root (apps/*, services/*) and its real
+# lockfile is eureka/package-lock.json. The apps/web/package-lock.json copied
+# on the line above is a vestigial standalone file that predates the workspace
+# and is missing ten packages that apps/web/package.json depends on
+# (@next/bundle-analyzer, the @testing-library set, @vitejs/plugin-react,
+# jsdom, rehype-katex, remark-math, uuid). `npm ci` refuses it, correctly.
+# Fixing that means regenerating a standalone lockfile for this package while
+# reproducing the root's react/react-dom overrides, which re-resolves the
+# whole tree and wants its own verification pass. Until then this step is
+# reproducible only to the extent npm's resolver is.
 RUN npm install
 
+# Requires .dockerignore to exclude node_modules. Without it this line copies
+# the host's macOS tree straight over the one installed above.
 COPY . .
 
 ARG NEXT_PUBLIC_API_URL=http://localhost:8000

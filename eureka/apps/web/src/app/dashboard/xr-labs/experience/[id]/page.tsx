@@ -436,7 +436,7 @@ export default function ExperienceViewerPage() {
             onClick={() => router.push('/dashboard/xr-labs')}
             className="mt-6 px-6 py-3 bg-white/20 rounded-lg hover:bg-white/30 transition-all"
           >
-            ← Back to XR Labs
+            ← Back to 3D &amp; XR Labs
           </button>
         </div>
       </div>
@@ -452,7 +452,7 @@ export default function ExperienceViewerPage() {
             onClick={() => router.push('/dashboard/xr-labs')}
             className="px-4 py-2 bg-white/10 rounded-lg hover:bg-white/20 transition-all"
           >
-            ← Back to XR Labs
+            ← Back to 3D &amp; XR Labs
           </button>
           <div className="flex gap-2">
             <button

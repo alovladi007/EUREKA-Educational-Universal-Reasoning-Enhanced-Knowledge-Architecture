@@ -106,6 +106,26 @@ These are shown to learners, not just written here:
 - **Answer-key provenance.** Every POE item displays whether its key was
   checked against a simulation, and the chair-flip item — which is authored
   locally rather than exported from OCTET — says it was not.
+- **Not XR.** These labs are desktop 3D. There is no `navigator.xr` call in
+  this subtree, no WebXR session, and `@react-three/xr` is not a dependency.
+  They sit under a route named `xr-labs` for a reason given below, and both
+  the hub and each portal card now carry a `Desktop 3D` badge so the route
+  name cannot be read as a capability claim.
+
+## Why the route is still called xr-labs
+
+The module was renamed **3D & XR Labs**, because it is genuinely two things:
+these four portals, which are desktop 3D, and scene-builder experiences viewed
+at `experience/[id]`, which really do call
+`navigator.xr.requestSession('immersive-vr')`. Calling the whole thing "XR
+Labs" overclaimed on four of its six routes.
+
+The URL did **not** change, and that is deliberate rather than laziness. The
+36 deep links in `octet/apps/web/lib/xrLabs.ts` address these labs by path, and
+published built-in portals store the same path in `scene_url` in the database.
+Renaming the segment would break stored rows. A name in a database row is a
+worse thing to break than a name in a heading, so the heading moved and the
+path stayed.
 
 ## A correction, kept on the record
 

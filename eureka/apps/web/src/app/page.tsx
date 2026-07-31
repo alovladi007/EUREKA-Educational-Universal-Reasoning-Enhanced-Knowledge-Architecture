@@ -34,7 +34,7 @@ const CATEGORIES = [
   { icon: 'fa-user-graduate', name: 'Graduate', desc: "Master's and doctoral coursework.", href: '/dashboard/graduate' },
   { icon: 'fa-school', name: 'High School', desc: 'Grades 9–12 core curriculum and college prep.', href: '/dashboard/high-school' },
   { icon: 'fa-robot', name: 'AI Tutor', desc: 'Personalised, step-by-step help around the clock.', href: '/dashboard/tutor' },
-  { icon: 'fa-vr-cardboard', name: 'XR Labs', desc: 'Immersive 3D labs for anatomy and the sciences.', href: '/dashboard/xr-labs' },
+  { icon: 'fa-vr-cardboard', name: '3D & XR Labs', desc: 'Chemistry, anatomy and astronomy in 3D, plus WebXR experiences.', href: '/dashboard/xr-labs' },
 ];
 
 const VALUES = [

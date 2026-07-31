@@ -407,7 +407,7 @@ export default function AnatomyPortal() {
             onClick={() => router.push('/dashboard/xr-labs')}
             className="px-3 py-1.5 bg-white/10 rounded-lg hover:bg-white/20 transition-all text-sm"
           >
-            ← XR Labs
+            ← 3D &amp; XR Labs
           </button>
           <h1 className="text-lg font-bold">🫀 Anatomy 3D</h1>
           <span className="text-[11px] text-amber-300/90 border border-amber-300/30 rounded px-2 py-0.5">

@@ -63,7 +63,7 @@ const navigation = [
   { name: "Analytics", href: "/dashboard/analytics", icon: LineChart },
   { name: "Notebook", href: "/dashboard/notebook", icon: FolderKanban },
   { name: "Pedagogy", href: "/dashboard/pedagogy", icon: Lightbulb },
-  { name: "XR Labs", href: "/dashboard/xr-labs", icon: Glasses },
+  { name: "3D & XR Labs", href: "/dashboard/xr-labs", icon: Glasses },
   { name: "Resume Builder", href: "/dashboard/resume-builder", icon: FileEdit },
   { name: "Resources", href: "/dashboard/resources", icon: FileText },
   { name: "Community", href: "/dashboard/community", icon: Users },

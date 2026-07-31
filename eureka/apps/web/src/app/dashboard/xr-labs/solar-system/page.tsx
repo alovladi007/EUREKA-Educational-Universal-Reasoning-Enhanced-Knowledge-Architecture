@@ -2095,7 +2095,7 @@ export default function SolarSystemPage() {
           className="pointer-events-auto flex items-center gap-2 px-3 py-2 bg-white/10 hover:bg-white/20 backdrop-blur-md rounded-md text-sm font-medium transition-colors border border-white/10"
         >
           <ArrowLeft className="h-4 w-4" />
-          XR Labs
+          3D &amp; XR Labs
         </Link>
 
         <div className="pointer-events-auto bg-black/50 backdrop-blur-md rounded-md px-4 py-2 text-center border border-white/10">

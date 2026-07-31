@@ -640,7 +640,7 @@ function GeneralChemistryLab() {
           className="pointer-events-auto flex items-center gap-2 rounded-md border border-white/10 bg-white/10 px-3 py-2 text-sm font-medium backdrop-blur-md transition-colors hover:bg-white/20"
         >
           <ArrowLeft className="h-4 w-4" />
-          XR Labs
+          3D &amp; XR Labs
         </Link>
 
         <Panel className="flex items-center gap-1 p-1">

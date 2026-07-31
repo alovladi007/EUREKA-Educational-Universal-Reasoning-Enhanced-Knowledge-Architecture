@@ -29,7 +29,7 @@ export default function XRLabsRedirect() {
   return (
     <div className="min-h-[50vh] flex items-center justify-center px-4">
       <div className="max-w-md text-center space-y-3">
-        <h1 className="text-2xl font-bold">XR Labs moved</h1>
+        <h1 className="text-2xl font-bold">3D &amp; XR Labs moved</h1>
         <p className="text-slate-600 text-sm">
           The XR Labs experience list now lives at{" "}
           <Link href="/dashboard/xr-labs" className="text-primary underline">
