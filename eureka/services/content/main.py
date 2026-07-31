@@ -4,6 +4,7 @@ EUREKA Content Service
 Manages course content, lessons, modules, and learning materials.
 Port: 8004
 """
+import os
 from fastapi import Depends, FastAPI, HTTPException
 
 # P0-3 (Gap Register): every data route requires a valid access token
@@ -38,7 +39,12 @@ app = FastAPI(
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    # Explicit allowlist, never "*" with credentials: browsers reject the
+    # combination outright, so the wildcard never actually worked for the
+    # credentialed requests this app makes, and it advertises intent to
+    # trust any origin. Override per environment with CORS_ORIGINS
+    # (comma-separated); the default covers the local web and admin apps.
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "http://localhost:4040,http://localhost:4041").split(",") if o.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

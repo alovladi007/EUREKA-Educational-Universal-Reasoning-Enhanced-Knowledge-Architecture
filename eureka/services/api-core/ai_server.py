@@ -5,6 +5,7 @@ Runs independently of the full api-core (no database required).
 Usage: uvicorn ai_server:app --port 8000 --reload
 """
 
+import os
 import sys
 from types import SimpleNamespace
 
@@ -29,7 +30,12 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allow all origins for development
+    # Explicit allowlist, never "*" with credentials: browsers reject the
+    # combination outright, so the wildcard never actually worked for the
+    # credentialed requests this app makes, and it advertises intent to
+    # trust any origin. Override per environment with CORS_ORIGINS
+    # (comma-separated); the default covers the local web and admin apps.
+    allow_origins=[o.strip() for o in os.getenv("CORS_ORIGINS", "http://localhost:4040,http://localhost:4041").split(",") if o.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
