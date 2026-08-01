@@ -230,8 +230,8 @@ export default function CourseDetailPage() {
           <CardHeader>
             <CardTitle>Readings ({readings.length})</CardTitle>
             <CardDescription>
-              Original lessons for the modules authored so far. Modules not
-              listed here are structure-only until their lessons are written.
+              Original lessons covering the full syllabus, grouped by module in
+              course order.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
@@ -245,7 +245,18 @@ export default function CourseDetailPage() {
                 m.get(ch)!.push(r);
                 return m;
               }, new Map<string, typeof readings>()),
-            ).map(([ch, rows]) => (
+            )
+              // Numeric modules ascending, then the lettered appendices.
+              // String sort put Module 10 right after Module 1.
+              .sort(([a], [b]) => {
+                const na = parseInt(a, 10);
+                const nb = parseInt(b, 10);
+                if (Number.isNaN(na) && Number.isNaN(nb)) return a.localeCompare(b);
+                if (Number.isNaN(na)) return 1;
+                if (Number.isNaN(nb)) return -1;
+                return na - nb;
+              })
+              .map(([ch, rows]) => (
               <div key={ch} className="rounded-lg border p-4">
                 <h3 className="mb-1 text-base font-semibold">Module {ch}</h3>
                 <p className="mb-3 text-xs text-muted-foreground">
