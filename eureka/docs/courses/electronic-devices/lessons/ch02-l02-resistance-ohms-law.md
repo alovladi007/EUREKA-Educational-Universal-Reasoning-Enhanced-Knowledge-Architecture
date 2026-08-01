@@ -2,90 +2,158 @@
 
 <!-- covers: 2.5, 2.5.1, 2.5.2, 2.6, 2.7, 2.8, 2.8.1, 2.9, 2.10, 2.11 -->
 
-## Ohm's law
+**In this lesson:** Ohm's law and where it does (and doesn't) apply · what physically sets resistance · the conductor–semiconductor–insulator spectrum · power, heat, and picking a resistor that survives · real wire and gauge selection · the three meanings of "ground."
+
+---
+
+## 1 · Ohm's law
 
 For a resistor, current is proportional to the voltage across it:
 
-V = I x R
+$$V = I R$$
 
-R, in ohms, is the constant of proportionality — how many volts of push each
-ampere of flow requires. The three rearrangements (I = V/R, R = V/I) are one
-fact, not three. Ohm's law is an empirical property of materials called
-*ohmic*, not a law of nature: metals and carbon films obey it closely over
-wide ranges; diodes, lamps as they heat, and semiconductors generally do not,
-which is precisely what makes those parts interesting later.
+$R$, in ohms ($\Omega$), is the constant of proportionality — **how many volts of push each ampere of flow requires**.
 
-## What sets a conductor's resistance
+> **One fact, not three.** The rearrangements are the same statement solved for a different unknown:
+> $$I = \frac{V}{R} \qquad R = \frac{V}{I}$$
+> Know any two of $V$, $I$, $R$ and you know the third.
 
-Resistance is geometry times material:
+### Where it applies — and where it doesn't
 
-R = ρL / A
+Ohm's law is an *empirical property of materials*, not a law of nature. Materials that obey it are called **ohmic**.
 
-Double a wire's length and you double its resistance — twice the lattice for
-carriers to fight through. Double its cross-sectional area and you halve the
-resistance — twice the parallel paths. The material constant ρ (resistivity,
-ohm-meters) captures how obstructive the lattice itself is; its reciprocal is
-conductivity. Copper sits near 1.7 x 10^-8 ohm-m, which is why it wires the
-world; nichrome is ~60x worse, which is why it makes heating elements.
+| Behaves ohmically (over wide ranges) | Doesn't |
+|---|---|
+| Metals | Diodes |
+| Carbon films | Lamps (as their filament heats) |
+| | Semiconductors generally |
 
-Resistivity drifts with temperature. In metals it rises roughly linearly —
-warmer lattice, more scattering. In semiconductors it *falls* as heat frees
-more carriers, a sign-flip that matters for thermistors and for why
-overheating transistors can run away.
+The non-ohmic column is precisely what makes those parts interesting later in the course.
 
-## Insulators, conductors, semiconductors
+---
 
-The spread of resistivity across materials is a factor of about 10^24 —
-perhaps the largest range of any physical property we use. Conductors (metals)
-have carriers free at any temperature. Insulators (glass, PTFE, dry air) bind
-their electrons so strongly that fields of millions of volts per meter are
-needed to rip them loose — which does happen; every insulator has a breakdown
-voltage, and lightning is air's. Semiconductors (silicon, germanium) sit
-between, with a carrier population you can tune by doping, temperature, and
-field — the property the entire second half of this course exploits.
+## 2 · What sets a conductor's resistance
 
-## Heat and power in resistance
+Resistance is **geometry × material**:
 
-Combine P = VI with Ohm's law and you get the two forms you will use daily:
+$$R = \frac{\rho L}{A}$$
 
-P = I²R    and    P = V²/R
+Two intuitions carry the whole formula:
 
-Every resistor converts electrical energy to heat at this rate, always. Sizing
-matters: a 1 kΩ resistor across 12 V dissipates 144 mW — fine for a standard
-quarter-watt part; across 50 V it would need to shed 2.5 W and a quarter-watt
-part will discolor, drift, and eventually open. Choose a power rating with a
-factor of two of headroom.
+- **Double the length $L$** → double the resistance. Twice the lattice for carriers to fight through.
+- **Double the cross-section $A$** → half the resistance. Twice the parallel paths.
 
-**Thermal resistance** completes the picture. Heat leaving a component obeys a
-law shaped exactly like Ohm's: temperature rise = power x thermal resistance
-(°C per watt). A part in still air might show 200 °C/W from junction to
-ambient; bolt it to a heat sink and the number drops to a few °C/W. When later
-chapters say a regulator "needs a heat sink," this is the arithmetic they
-mean. Silicon junctions typically must stay below about 150 °C; work backward
-from there.
+### Resistivity: the material's own number
 
-## Wires, gauges, and the imperfect conductor
+$\rho$ (**resistivity**, ohm-meters) captures how obstructive the lattice itself is. Its reciprocal is **conductivity**.
 
-Real wire is a resistor too, just a small one. Wire is sold by gauge (AWG in
-North America): *smaller* gauge numbers mean *thicker* wire, roughly halving
-resistance every three gauge steps. Two consequences drive selection. First,
-voltage drop: ten meters of thin hookup wire carrying an ampere can eat a
-tenth of a volt each way, which a 3.3 V sensor circuit will feel. Second,
-heating: I²R in a wire bundled inside insulation raises its temperature, which
-is why ampacity tables exist and why fuses (next lesson group) are placed to
-open before insulation cooks.
+| Material | Resistivity | Which is why… |
+|---|---|---|
+| Copper | $\approx 1.7 \times 10^{-8}\ \Omega\!\cdot\!\text{m}$ | …it wires the world |
+| Nichrome | ~60× worse | …it makes heating elements |
 
-For low-voltage bench work the rule of thumb is generous headroom: 22 AWG
-handles the currents of typical breadboard circuits; motors and power stages
-deserve 18 AWG or better and short runs.
+### Temperature moves it
 
-## Grounds and reference points
+- **Metals:** resistivity **rises** roughly linearly with temperature — warmer lattice, more scattering.
+- **Semiconductors:** resistivity **falls** as heat frees more carriers.
 
-"Ground" carries three meanings that must not be blurred. **Reference ground**
-is simply the node you declare zero volts so other node voltages have meaning
-— every circuit has one, even battery toys. **Chassis ground** is a
-conductive enclosure tied to that reference. **Earth ground** is a literal rod
-in the soil, bonded through building wiring, whose job is safety: it gives
-fault current somewhere to go that is not you. Schematic symbols distinguish
-them, and Appendix A returns to earth grounding where mains wiring is
-described. In this course "ground" unqualified means the reference node.
+That sign-flip matters twice later: it's how **thermistors** sense temperature, and it's why an overheating transistor can **run away**.
+
+---
+
+## 3 · Conductors, insulators, semiconductors
+
+The spread of resistivity across materials is a factor of about $10^{24}$ — perhaps the largest range of any physical property we use.
+
+| Class | Examples | What the electrons are doing |
+|---|---|---|
+| **Conductors** | metals | Carriers free at any temperature |
+| **Insulators** | glass, PTFE, dry air | Electrons bound so strongly that fields of *millions of volts per meter* are needed to rip them loose |
+| **Semiconductors** | silicon, germanium | In between — a carrier population you can **tune** by doping, temperature, and field |
+
+> **Every insulator gives up eventually.** Ripping electrons loose does happen: every insulator has a **breakdown voltage**. Lightning is air's.
+
+That tunable middle row is the property the entire second half of this course exploits.
+
+---
+
+## 4 · Heat and power in resistance
+
+Combine $P = VI$ with Ohm's law and you get the two forms you'll use daily:
+
+$$P = I^2 R \qquad\qquad P = \frac{V^2}{R}$$
+
+Every resistor converts electrical energy to heat at this rate — **always**.
+
+### Worked example: the same resistor, two fates
+
+> A **1 kΩ** resistor across **12 V**:
+> $$P = \frac{12^2}{1000} = 144\ \text{mW}$$
+> Fine for a standard quarter-watt part.
+>
+> The same resistor across **50 V**:
+> $$P = \frac{50^2}{1000} = 2.5\ \text{W}$$
+> A quarter-watt part will discolor, drift, and eventually open.
+
+> **Rule of thumb:** choose a power rating with a **factor of two of headroom**.
+
+### Thermal resistance: Ohm's law for heat
+
+Heat leaving a component obeys a law shaped exactly like Ohm's:
+
+$$\text{temperature rise} = \text{power} \times \text{thermal resistance (°C/W)}$$
+
+| Mounting | Junction → ambient |
+|---|---|
+| Part in still air | ~200 °C/W |
+| Bolted to a heat sink | a few °C/W |
+
+When later chapters say a regulator "needs a heat sink," this is the arithmetic they mean. Silicon junctions typically must stay below about **150 °C** — work backward from there.
+
+---
+
+## 5 · Wires, gauges, and the imperfect conductor
+
+Real wire is a resistor too — just a small one. Wire is sold by **gauge** (AWG in North America):
+
+- **Smaller gauge number = thicker wire.**
+- Resistance roughly **halves every three gauge steps**.
+
+### The two consequences that drive wire selection
+
+1. **Voltage drop.** Ten meters of thin hookup wire carrying an ampere can eat a tenth of a volt *each way* — a 3.3 V sensor circuit will feel that.
+2. **Heating.** $I^2R$ in a wire bundled inside insulation raises its temperature. That's why **ampacity tables** exist, and why **fuses** (next lesson group) are placed to open before insulation cooks.
+
+> **Bench rules of thumb**
+>
+> | Use | Wire |
+> |---|---|
+> | Typical breadboard circuits | 22 AWG |
+> | Motors and power stages | 18 AWG or better, short runs |
+
+---
+
+## 6 · Grounds and reference points
+
+"Ground" carries **three meanings** that must not be blurred:
+
+| Term | What it is | Why it exists |
+|---|---|---|
+| **Reference ground** | The node you declare 0 V | So other node voltages have meaning — every circuit has one, even battery toys |
+| **Chassis ground** | A conductive enclosure tied to that reference | Shielding and safety bonding |
+| **Earth ground** | A literal rod in the soil, bonded through building wiring | Gives fault current somewhere to go **that is not you** |
+
+Schematic symbols distinguish the three. Appendix A returns to earth grounding where mains wiring is described.
+
+> In this course, "ground" unqualified means the **reference node**.
+
+---
+
+## Key takeaways
+
+- $V = IR$ — one relationship, three arrangements. Ohmic is a material property, not a universal law.
+- $R = \rho L / A$: longer = more resistance, fatter = less; the material contributes $\rho$.
+- Metals get *more* resistive when hot; semiconductors get *less* — the root of thermistors and thermal runaway.
+- $P = I^2R = V^2/R$ heats every resistor, always. Size the power rating with 2× headroom, and remember heat flow has its own Ohm's law (°C per watt).
+- Real wire drops voltage and makes heat; pick gauge for the current and the run.
+- Say which ground you mean: reference, chassis, or earth.

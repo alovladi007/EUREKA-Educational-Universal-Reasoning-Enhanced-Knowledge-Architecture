@@ -16,7 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
-import ReactMarkdown from "react-markdown";
+import { Markdown } from "@/components/ui/markdown";
 import { ArrowLeft, BookOpen, GraduationCap, Calendar, Tag, User, CheckCircle2 } from "lucide-react";
 
 type Course = {
@@ -257,8 +257,13 @@ export default function CourseDetailPage() {
                       <summary className="cursor-pointer text-sm font-medium">
                         {ch}.{i + 1} — {r.title}
                       </summary>
-                      <div className="prose prose-sm dark:prose-invert mt-3 max-w-none border-t pt-3">
-                        <ReactMarkdown>{r.content.replace(/<!--[\s\S]*?-->/g, "")}</ReactMarkdown>
+                      {/* Shared Markdown component, NOT bare ReactMarkdown:
+                          lessons use GFM tables and $KaTeX$ math, which the
+                          plugin-less renderer displayed as literal pipes and
+                          dollar signs — flattening every lesson into the
+                          wall-of-text readers complained about. */}
+                      <div className="mt-3 border-t pt-3">
+                        <Markdown>{r.content.replace(/<!--[\s\S]*?-->/g, "")}</Markdown>
                       </div>
                     </details>
                   ))}
