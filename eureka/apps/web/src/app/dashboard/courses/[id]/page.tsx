@@ -26,7 +26,10 @@ type Course = {
   description: string | null;
   tier: string | null;
   instructor_id: string | null;
-  syllabus: string | null;
+  // Either legacy free text or the structured {chapters:[{id,title,sections}]}
+  // shape the Electronic Devices course seeds. Rendering an object as a React
+  // child throws error #31, which took this whole page down.
+  syllabus: string | { chapters: { id: string; title: string; sections: { n: string; t: string }[] }[] } | null;
   learning_objectives: string[] | null;
   standards: string[] | null;
   subject: string | null;
@@ -214,7 +217,27 @@ export default function CourseDetailPage() {
         <Card>
           <CardHeader><CardTitle className="text-base">Syllabus</CardTitle></CardHeader>
           <CardContent>
-            <pre className="text-xs whitespace-pre-wrap font-sans">{course.syllabus}</pre>
+            {typeof course.syllabus === "string" ? (
+              <pre className="text-xs whitespace-pre-wrap font-sans">{course.syllabus}</pre>
+            ) : (
+              <div className="space-y-3">
+                {course.syllabus.chapters?.map((ch) => (
+                  <details key={ch.id} className="rounded border p-2">
+                    <summary className="cursor-pointer text-sm font-medium">
+                      Module {ch.id}: {ch.title}
+                      <span className="ml-2 text-xs text-muted-foreground">
+                        {ch.sections?.length ?? 0} sections
+                      </span>
+                    </summary>
+                    <ul className="mt-2 ml-4 list-disc text-xs text-muted-foreground">
+                      {(ch.sections ?? []).filter((sec) => sec.n.split(".").length === 2).map((sec) => (
+                        <li key={sec.n}>{sec.n} {sec.t}</li>
+                      ))}
+                    </ul>
+                  </details>
+                ))}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

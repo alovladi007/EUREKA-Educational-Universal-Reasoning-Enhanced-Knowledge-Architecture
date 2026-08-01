@@ -76,7 +76,13 @@ SELECT o.id, '{q(COURSE_TITLE)}', '{COURSE_CODE}',
        jsonb_build_object('coverage_reference',
          'Scherz & Monk, Practical Electronics for Inventors, 3rd ed. (topic map only; all lesson text original)',
          'sections_total', {sum(len(c['sections']) for c in curriculum)})
-FROM organizations o WHERE o.slug = 'public' OR o.name ILIKE 'public%' ORDER BY o.created_at LIMIT 1
+-- The org gate on GET /courses/{id} (P0-4) means learners only see
+-- courses in THEIR org. Seed into the org that actually holds users,
+-- not an empty catch-all: first seed landed in 'EUREKA Public' while
+-- the demo learners live in 'Demo University', and the detail page
+-- 403'd. Most-users is the right default for dev and harmless in prod.
+FROM organizations o
+ORDER BY (SELECT count(*) FROM users u WHERE u.org_id = o.id) DESC LIMIT 1
 ON CONFLICT DO NOTHING;
 """)
     # code has no unique constraint; emulate idempotency by updating if present
