@@ -1,0 +1,2307 @@
+[
+ {
+  "id": "1",
+  "title": "Introduction to Electronics",
+  "sections": []
+ },
+ {
+  "id": "2",
+  "title": "Theory",
+  "sections": [
+   {
+    "n": "2.1",
+    "t": "Theory of Electronics"
+   },
+   {
+    "n": "2.2",
+    "t": "Electric Current"
+   },
+   {
+    "n": "2.2.1",
+    "t": "Currents in Perspective"
+   },
+   {
+    "n": "2.3",
+    "t": "Voltage"
+   },
+   {
+    "n": "2.3.1",
+    "t": "The Mechanisms of Voltage"
+   },
+   {
+    "n": "2.3.2",
+    "t": "Definition of Volt and Generalized Power Law"
+   },
+   {
+    "n": "2.3.3",
+    "t": "Combining Batteries"
+   },
+   {
+    "n": "2.3.4",
+    "t": "Other Voltage Sources"
+   },
+   {
+    "n": "2.3.5",
+    "t": "Water Analogies"
+   },
+   {
+    "n": "2.4",
+    "t": "A Microscopic View of Conduction (For Those Who Are Interested)"
+   },
+   {
+    "n": "2.4.1",
+    "t": "Applying a Voltage"
+   },
+   {
+    "n": "2.5",
+    "t": "Resistance, Resistivity, Conductivity"
+   },
+   {
+    "n": "2.5.1",
+    "t": "How the Shape of a Conductor Affects Resistance"
+   },
+   {
+    "n": "2.5.2",
+    "t": "Resistivity and Conductivity"
+   },
+   {
+    "n": "2.6",
+    "t": "Insulators, Conductors, and Semiconductors"
+   },
+   {
+    "n": "2.7",
+    "t": "Heat and Power"
+   },
+   {
+    "n": "2.8",
+    "t": "Thermal Heat Conduction and Thermal Resistance"
+   },
+   {
+    "n": "2.8.1",
+    "t": "Importance of Heat Production"
+   },
+   {
+    "n": "2.9",
+    "t": "Wire Gauges"
+   },
+   {
+    "n": "2.10",
+    "t": "Grounds"
+   },
+   {
+    "n": "2.10.1",
+    "t": "Earth Ground"
+   },
+   {
+    "n": "2.10.2",
+    "t": "Different Types of Ground Symbols"
+   },
+   {
+    "n": "2.10.3",
+    "t": "Loose Ends on Grounding"
+   },
+   {
+    "n": "2.11",
+    "t": "Electric Circuits"
+   },
+   {
+    "n": "2.12",
+    "t": "Ohm\u2019s Law and Resistors"
+   },
+   {
+    "n": "2.12.1",
+    "t": "Resistor Power Ratings"
+   },
+   {
+    "n": "2.12.2",
+    "t": "Resistors in Parallel"
+   },
+   {
+    "n": "2.12.3",
+    "t": "Resistors in Series"
+   },
+   {
+    "n": "2.12.4",
+    "t": "Reducing a Complex Resistor Network"
+   },
+   {
+    "n": "2.12.5",
+    "t": "Multiple Voltage Dividers"
+   },
+   {
+    "n": "2.13",
+    "t": "Voltage and Current Sources"
+   },
+   {
+    "n": "2.14",
+    "t": "Measuring Voltage, Current, and Resistance"
+   },
+   {
+    "n": "2.15",
+    "t": "Combining Batteries"
+   },
+   {
+    "n": "2.16",
+    "t": "Open and Short Circuits"
+   },
+   {
+    "n": "2.17",
+    "t": "Kirchhoff\u2019s Laws"
+   },
+   {
+    "n": "2.18",
+    "t": "Superposition Theorem"
+   },
+   {
+    "n": "2.19",
+    "t": "Thevenin\u2019s and Norton\u2019s Theorems"
+   },
+   {
+    "n": "2.20",
+    "t": "AC Circuits"
+   },
+   {
+    "n": "2.21",
+    "t": "AC and Resistors, RMS Voltage, and Current"
+   },
+   {
+    "n": "2.22",
+    "t": "Mains Power"
+   },
+   {
+    "n": "2.23",
+    "t": "Capacitors"
+   },
+   {
+    "n": "2.24",
+    "t": "Inductors"
+   },
+   {
+    "n": "2.19.1",
+    "t": "Thevenin\u2019s Theorem"
+   },
+   {
+    "n": "2.19.2",
+    "t": "Norton\u2019s Theorem"
+   },
+   {
+    "n": "2.20.1",
+    "t": "Generating AC"
+   },
+   {
+    "n": "2.20.2",
+    "t": "Water Analogy of AC"
+   },
+   {
+    "n": "2.20.3",
+    "t": "Pulsating DC"
+   },
+   {
+    "n": "2.20.4",
+    "t": "Combining Sinusoidal Sources"
+   },
+   {
+    "n": "2.20.5",
+    "t": "AC Waveforms"
+   },
+   {
+    "n": "2.20.6",
+    "t": "Describing an AC Waveform"
+   },
+   {
+    "n": "2.20.7",
+    "t": "Frequency and Period"
+   },
+   {
+    "n": "2.20.8",
+    "t": "Phase"
+   },
+   {
+    "n": "2.23.1",
+    "t": "Determining Capacitance"
+   },
+   {
+    "n": "2.23.2",
+    "t": "Commercial Capacitors"
+   },
+   {
+    "n": "2.23.3",
+    "t": "Voltage Rating and Dielectric Breakdown"
+   },
+   {
+    "n": "2.23.4",
+    "t": "Maxwell\u2019s Displacement Current"
+   },
+   {
+    "n": "2.23.5",
+    "t": "Charge-Based Model of Current Through a Capacitor"
+   },
+   {
+    "n": "2.23.6",
+    "t": "Capacitor Water Analogy"
+   },
+   {
+    "n": "2.23.7",
+    "t": "Energy in a Capacitor"
+   },
+   {
+    "n": "2.23.8",
+    "t": "RC Time Constant"
+   },
+   {
+    "n": "2.23.9",
+    "t": "Stray Capacitance"
+   },
+   {
+    "n": "2.23.10",
+    "t": "Capacitors in Parallel"
+   },
+   {
+    "n": "2.23.11",
+    "t": "Capacitors in Series"
+   },
+   {
+    "n": "2.23.12",
+    "t": "Alternating Current in a Capacitor"
+   },
+   {
+    "n": "2.23.13",
+    "t": "Capacitive Reactance"
+   },
+   {
+    "n": "2.23.14",
+    "t": "Capacitive Divider"
+   },
+   {
+    "n": "2.23.15",
+    "t": "Quality Factor"
+   },
+   {
+    "n": "2.24.1",
+    "t": "Electromagnetism"
+   },
+   {
+    "n": "2.24.2",
+    "t": "Magnetic Fields and Their Influence"
+   },
+   {
+    "n": "2.24.3",
+    "t": "Self-Inductance"
+   },
+   {
+    "n": "2.24.4",
+    "t": "Inductors"
+   },
+   {
+    "n": "2.24.5",
+    "t": "Inductor Water Analogy"
+   },
+   {
+    "n": "2.24.6",
+    "t": "Inductor Equations"
+   },
+   {
+    "n": "2.24.7",
+    "t": "Energy Within an Inductor"
+   },
+   {
+    "n": "2.24.8",
+    "t": "Inductor Cores"
+   },
+   {
+    "n": "2.24.9",
+    "t": "Understanding the Inductor Equations"
+   },
+   {
+    "n": "2.24.10",
+    "t": "Energizing LR Circuit"
+   },
+   {
+    "n": "2.24.11",
+    "t": "Deenergizing LR Circuit"
+   },
+   {
+    "n": "2.24.12",
+    "t": "Voltage Spikes Due to Switching"
+   },
+   {
+    "n": "2.24.13",
+    "t": "Straight-Wire Inductance"
+   },
+   {
+    "n": "2.24.14",
+    "t": "Mutual Inductance and Magnetic Coupling"
+   },
+   {
+    "n": "2.25",
+    "t": "Modeling Complex Circuits"
+   },
+   {
+    "n": "2.26",
+    "t": "Complex Numbers"
+   },
+   {
+    "n": "2.27",
+    "t": "Circuit with Sinusoidal Sources"
+   },
+   {
+    "n": "2.28",
+    "t": "Power in AC Circuits (Apparent Power, Real Power, Reactive Power)"
+   },
+   {
+    "n": "2.29",
+    "t": "Thevenin\u2019s Theorem in AC Form"
+   },
+   {
+    "n": "2.30",
+    "t": "Resonant Circuits"
+   },
+   {
+    "n": "2.31",
+    "t": "Lecture on Decibels"
+   },
+   {
+    "n": "2.32",
+    "t": "Input and Output Impedance"
+   },
+   {
+    "n": "2.33",
+    "t": "Two-Port Networks and Filters"
+   },
+   {
+    "n": "2.34",
+    "t": "Transient Circuits"
+   },
+   {
+    "n": "2.35",
+    "t": "Circuits with Periodic Nonsinusoidal Sources"
+   },
+   {
+    "n": "2.36",
+    "t": "Nonperiodic Sources"
+   },
+   {
+    "n": "2.37",
+    "t": "SPICE"
+   },
+   {
+    "n": "2.24.15",
+    "t": "Unwanted Coupling: Spikes, Lightning, and Other Pulses"
+   },
+   {
+    "n": "2.24.16",
+    "t": "Inductors in Series and Parallel"
+   },
+   {
+    "n": "2.24.17",
+    "t": "Alternating Current and Inductors"
+   },
+   {
+    "n": "2.24.18",
+    "t": "Inductive Reactance"
+   },
+   {
+    "n": "2.24.19",
+    "t": "Nonideal Inductor Model"
+   },
+   {
+    "n": "2.24.20",
+    "t": "Quality Factor"
+   },
+   {
+    "n": "2.24.21",
+    "t": "Inductor Applications"
+   },
+   {
+    "n": "2.27.1",
+    "t": "Analyzing Sinusoidal Circuits with Complex Impedances"
+   },
+   {
+    "n": "2.27.2",
+    "t": "Sinusoidal Voltage Source in Complex Notation"
+   },
+   {
+    "n": "2.27.3",
+    "t": "Odd Phenomena in Reactive Circuits"
+   },
+   {
+    "n": "2.28.1",
+    "t": "Power Factor"
+   },
+   {
+    "n": "2.30.1",
+    "t": "Resonance in RLC Circuits"
+   },
+   {
+    "n": "2.30.2",
+    "t": "Q (Quality Factor) and Bandwidth"
+   },
+   {
+    "n": "2.30.3",
+    "t": "Bandwidth"
+   },
+   {
+    "n": "2.30.4",
+    "t": "Voltage Drop Across Components in RLC Resonant Circuit"
+   },
+   {
+    "n": "2.30.5",
+    "t": "Capacitor Losses"
+   },
+   {
+    "n": "2.30.6",
+    "t": "Parallel-Resonant Circuits"
+   },
+   {
+    "n": "2.30.7",
+    "t": "The Q of Loaded Circuits"
+   },
+   {
+    "n": "2.31.1",
+    "t": "Alternative Decibel Representations"
+   },
+   {
+    "n": "2.32.1",
+    "t": "Input Impedance"
+   },
+   {
+    "n": "2.32.2",
+    "t": "Output Impedance"
+   },
+   {
+    "n": "2.33.1",
+    "t": "Filters"
+   },
+   {
+    "n": "2.33.2",
+    "t": "Attenuators"
+   },
+   {
+    "n": "2.34.1",
+    "t": "Series RLC Circuit"
+   },
+   {
+    "n": "2.35.1",
+    "t": "Fourier Series"
+   },
+   {
+    "n": "2.37.1",
+    "t": "How SPICE Works"
+   },
+   {
+    "n": "2.37.2",
+    "t": "Limitations of SPICE and Other Simulators"
+   },
+   {
+    "n": "2.37.3",
+    "t": "A Simple Simulation Example"
+   }
+  ]
+ },
+ {
+  "id": "3",
+  "title": "Basic Electronic Circuit Components",
+  "sections": [
+   {
+    "n": "3.1",
+    "t": "Wires, Cables, and Connectors"
+   },
+   {
+    "n": "3.1.1",
+    "t": "Wires"
+   },
+   {
+    "n": "3.1.2",
+    "t": "Cables"
+   },
+   {
+    "n": "3.2",
+    "t": "Batteries"
+   },
+   {
+    "n": "3.3",
+    "t": "Switches"
+   },
+   {
+    "n": "3.4",
+    "t": "Relays"
+   },
+   {
+    "n": "3.5",
+    "t": "Resistors"
+   },
+   {
+    "n": "3.6",
+    "t": "Capacitors"
+   },
+   {
+    "n": "3.7",
+    "t": "Inductors"
+   },
+   {
+    "n": "3.1.3",
+    "t": "Connectors"
+   },
+   {
+    "n": "3.1.4",
+    "t": "Wiring and Connector Symbols"
+   },
+   {
+    "n": "3.1.5",
+    "t": "High-Frequency Effects Within Wires and Cables"
+   },
+   {
+    "n": "3.2.1",
+    "t": "How a Cell Works"
+   },
+   {
+    "n": "3.2.2",
+    "t": "Primary Batteries"
+   },
+   {
+    "n": "3.2.3",
+    "t": "Comparing Primary Batteries"
+   },
+   {
+    "n": "3.2.4",
+    "t": "Secondary Batteries"
+   },
+   {
+    "n": "3.2.5",
+    "t": "Battery Capacity"
+   },
+   {
+    "n": "3.2.6",
+    "t": "Note on Internal Voltage Drop of a Battery"
+   },
+   {
+    "n": "3.3.1",
+    "t": "How a Switch Works"
+   },
+   {
+    "n": "3.3.2",
+    "t": "Describing a Switch"
+   },
+   {
+    "n": "3.3.3",
+    "t": "Kinds of Switches"
+   },
+   {
+    "n": "3.3.4",
+    "t": "Simple Switch Applications"
+   },
+   {
+    "n": "3.4.1",
+    "t": "Specific Kinds of Relays"
+   },
+   {
+    "n": "3.4.2",
+    "t": "A Few Notes about Relays"
+   },
+   {
+    "n": "3.4.3",
+    "t": "Some Simple Relay Circuits"
+   },
+   {
+    "n": "3.5.1",
+    "t": "Resistance and Ohm\u2019s Law"
+   },
+   {
+    "n": "3.5.2",
+    "t": "Resistors in Series and Parallel"
+   },
+   {
+    "n": "3.5.3",
+    "t": "Reading Resistor Labels"
+   },
+   {
+    "n": "3.5.4",
+    "t": "Real Resistor Characteristics"
+   },
+   {
+    "n": "3.5.5",
+    "t": "Types of Resistors"
+   },
+   {
+    "n": "3.5.6",
+    "t": "Variable Resistors (Rheostats, Potentiometers, Trimmers)"
+   },
+   {
+    "n": "3.5.7",
+    "t": "Potentiometer Characteristics"
+   },
+   {
+    "n": "3.6.1",
+    "t": "Capacitance"
+   },
+   {
+    "n": "3.6.2",
+    "t": "Capacitors in Parallel"
+   },
+   {
+    "n": "3.6.3",
+    "t": "Capacitors in Series"
+   },
+   {
+    "n": "3.6.4",
+    "t": "RC Time Constant"
+   },
+   {
+    "n": "3.6.5",
+    "t": "Capacitive Reactance"
+   },
+   {
+    "n": "3.6.6",
+    "t": "Real Capacitors"
+   },
+   {
+    "n": "3.6.7",
+    "t": "Capacitor Specifications"
+   },
+   {
+    "n": "3.6.8",
+    "t": "Types of Capacitors"
+   },
+   {
+    "n": "3.6.9",
+    "t": "Capacitor Applications"
+   },
+   {
+    "n": "3.6.10",
+    "t": "Timing and Sample and Hold"
+   },
+   {
+    "n": "3.6.11",
+    "t": "RC Ripple Filter"
+   },
+   {
+    "n": "3.6.12",
+    "t": "Arc Suppression"
+   },
+   {
+    "n": "3.6.13",
+    "t": "Supercapacitor Applications"
+   },
+   {
+    "n": "3.6.14",
+    "t": "Problems"
+   },
+   {
+    "n": "3.7.1",
+    "t": "Inductance"
+   },
+   {
+    "n": "3.7.2",
+    "t": "Constructing Inductors"
+   },
+   {
+    "n": "3.7.3",
+    "t": "Inductors in Series and Parallel"
+   },
+   {
+    "n": "3.7.4",
+    "t": "RL Time Constant"
+   },
+   {
+    "n": "3.8",
+    "t": "Transformers"
+   },
+   {
+    "n": "3.9",
+    "t": "Fuses and Circuit Breakers"
+   },
+   {
+    "n": "3.7.5",
+    "t": "Inductive Reactance"
+   },
+   {
+    "n": "3.7.6",
+    "t": "Real Inductors"
+   },
+   {
+    "n": "3.7.7",
+    "t": "Inductor Specifications"
+   },
+   {
+    "n": "3.7.8",
+    "t": "Types of Inductors"
+   },
+   {
+    "n": "3.7.9",
+    "t": "Reading Inductor Labels"
+   },
+   {
+    "n": "3.7.10",
+    "t": "Inductor Applications"
+   },
+   {
+    "n": "3.7.11",
+    "t": "EMI/EMC Design Tips"
+   },
+   {
+    "n": "3.8.1",
+    "t": "Basic Operations"
+   },
+   {
+    "n": "3.8.2",
+    "t": "Transformer Construction"
+   },
+   {
+    "n": "3.8.3",
+    "t": "Autotransformers and Variable Transformers"
+   },
+   {
+    "n": "3.8.4",
+    "t": "Circuit Isolation and the Isolation Transformer"
+   },
+   {
+    "n": "3.8.5",
+    "t": "Various Standard and Specialized Transformers"
+   },
+   {
+    "n": "3.8.6",
+    "t": "Transformer Applications"
+   },
+   {
+    "n": "3.9.1",
+    "t": "Types of Fuses and Circuit Breakers"
+   }
+  ]
+ },
+ {
+  "id": "4",
+  "title": "Semiconductors",
+  "sections": [
+   {
+    "n": "4.1",
+    "t": "Semiconductor Technology"
+   },
+   {
+    "n": "4.1.1",
+    "t": "What Is a Semiconductor?"
+   },
+   {
+    "n": "4.1.2",
+    "t": "Applications of Silicon"
+   },
+   {
+    "n": "4.2",
+    "t": "Diodes"
+   },
+   {
+    "n": "4.2.1",
+    "t": "How p-n Junction Diodes Work"
+   },
+   {
+    "n": "4.2.2",
+    "t": "Diode Water Analogy"
+   },
+   {
+    "n": "4.2.3",
+    "t": "Kinds of Rectifiers/Diodes"
+   },
+   {
+    "n": "4.2.4",
+    "t": "Practical Considerations"
+   },
+   {
+    "n": "4.2.5",
+    "t": "Diode/Rectifier Applications"
+   },
+   {
+    "n": "4.2.6",
+    "t": "Zener Diodes"
+   },
+   {
+    "n": "4.2.7",
+    "t": "Zener Diode Applications"
+   },
+   {
+    "n": "4.2.8",
+    "t": "Varactor Diodes (Variable Capacitance Diodes)"
+   },
+   {
+    "n": "4.2.9",
+    "t": "PIN Diodes"
+   },
+   {
+    "n": "4.2.10",
+    "t": "Microwave Diodes (IMPATT, Gunn, Tunnel, etc.)"
+   },
+   {
+    "n": "4.2.11",
+    "t": "Problems"
+   },
+   {
+    "n": "4.3",
+    "t": "Transistors"
+   },
+   {
+    "n": "4.3.1",
+    "t": "Introduction to Transistors"
+   },
+   {
+    "n": "4.3.2",
+    "t": "Bipolar Transistors"
+   },
+   {
+    "n": "4.3.3",
+    "t": "Junction Field-Effect Transistors"
+   },
+   {
+    "n": "4.3.4",
+    "t": "Metal Oxide Semiconductor Field-Effect Transistors"
+   },
+   {
+    "n": "4.3.5",
+    "t": "Unijunction Transistors"
+   },
+   {
+    "n": "4.4",
+    "t": "Thyristors"
+   },
+   {
+    "n": "4.4.1",
+    "t": "Introduction"
+   },
+   {
+    "n": "4.4.2",
+    "t": "Silicon-Controlled Rectifiers"
+   },
+   {
+    "n": "4.4.3",
+    "t": "Silicon-Controlled Switches"
+   },
+   {
+    "n": "4.4.4",
+    "t": "Triacs"
+   },
+   {
+    "n": "4.4.5",
+    "t": "Four-Layer Diodes and Diacs"
+   },
+   {
+    "n": "4.5",
+    "t": "Transient Voltage Suppressors"
+   },
+   {
+    "n": "4.6",
+    "t": "Integrated Circuits"
+   },
+   {
+    "n": "4.5.1",
+    "t": "Lecture on Transients"
+   },
+   {
+    "n": "4.5.2",
+    "t": "Devices Used to Suppress Transients"
+   },
+   {
+    "n": "4.6.1",
+    "t": "IC Packages"
+   }
+  ]
+ },
+ {
+  "id": "5",
+  "title": "Optoelectronics",
+  "sections": [
+   {
+    "n": "5.1",
+    "t": "A Little Lecture on Photons"
+   },
+   {
+    "n": "5.2",
+    "t": "Lamps"
+   },
+   {
+    "n": "5.3",
+    "t": "Light-Emitting Diodes"
+   },
+   {
+    "n": "5.3.1",
+    "t": "How an LED Works"
+   },
+   {
+    "n": "5.3.2",
+    "t": "Kinds of LEDs"
+   },
+   {
+    "n": "5.3.3",
+    "t": "More on LEDs"
+   },
+   {
+    "n": "5.3.4",
+    "t": "LED Applications"
+   },
+   {
+    "n": "5.3.5",
+    "t": "Laser Diodes"
+   },
+   {
+    "n": "5.4",
+    "t": "Photoresistors"
+   },
+   {
+    "n": "5.4.1",
+    "t": "How a Photoresistor Works"
+   },
+   {
+    "n": "5.4.2",
+    "t": "Technical Stuff"
+   },
+   {
+    "n": "5.4.3",
+    "t": "Applications"
+   },
+   {
+    "n": "5.5",
+    "t": "Photodiodes"
+   },
+   {
+    "n": "5.5.1",
+    "t": "How a Photodiode Works"
+   },
+   {
+    "n": "5.5.2",
+    "t": "Basic Operations"
+   },
+   {
+    "n": "5.5.3",
+    "t": "Kinds of Photodiodes"
+   },
+   {
+    "n": "5.6",
+    "t": "Solar Cells"
+   },
+   {
+    "n": "5.6.1",
+    "t": "Basic Operations"
+   },
+   {
+    "n": "5.7",
+    "t": "Phototransistors"
+   },
+   {
+    "n": "5.7.1",
+    "t": "How a Phototransistor Works"
+   },
+   {
+    "n": "5.7.2",
+    "t": "Basic Configurations"
+   },
+   {
+    "n": "5.7.3",
+    "t": "Kinds of Phototransistors"
+   },
+   {
+    "n": "5.7.4",
+    "t": "Technical Stuff"
+   },
+   {
+    "n": "5.7.5",
+    "t": "Applications"
+   },
+   {
+    "n": "5.8",
+    "t": "Photothyristors"
+   },
+   {
+    "n": "5.8.1",
+    "t": "How LASCRs Work"
+   },
+   {
+    "n": "5.8.2",
+    "t": "Basic Operation"
+   },
+   {
+    "n": "5.9",
+    "t": "Optoisolators"
+   },
+   {
+    "n": "5.9.1",
+    "t": "Integrated Optoisolators"
+   },
+   {
+    "n": "5.9.2",
+    "t": "Applications"
+   },
+   {
+    "n": "5.10",
+    "t": "Optical Fiber"
+   }
+  ]
+ },
+ {
+  "id": "6",
+  "title": "Sensors",
+  "sections": [
+   {
+    "n": "6.1",
+    "t": "General Principals"
+   },
+   {
+    "n": "6.1.1",
+    "t": "Precision, Accuracy, and Resolution"
+   },
+   {
+    "n": "6.1.2",
+    "t": "The Observer Effect"
+   },
+   {
+    "n": "6.1.3",
+    "t": "Calibration"
+   },
+   {
+    "n": "6.2",
+    "t": "Temperature"
+   },
+   {
+    "n": "6.2.1",
+    "t": "Thermistors"
+   },
+   {
+    "n": "6.3",
+    "t": "Proximity and Touch"
+   },
+   {
+    "n": "6.4",
+    "t": "Movement, Force, and Pressure"
+   },
+   {
+    "n": "6.5",
+    "t": "Chemical"
+   },
+   {
+    "n": "6.6",
+    "t": "Light, Radiation, Magnetism, and Sound"
+   },
+   {
+    "n": "6.7",
+    "t": "GPS"
+   },
+   {
+    "n": "6.2.2",
+    "t": "Thermocouples"
+   },
+   {
+    "n": "6.2.3",
+    "t": "Resistive Temperature Detectors"
+   },
+   {
+    "n": "6.2.4",
+    "t": "Analog Output Thermometer ICs"
+   },
+   {
+    "n": "6.2.5",
+    "t": "Digital Thermometer ICs"
+   },
+   {
+    "n": "6.2.6",
+    "t": "Infrared Thermometers/Pyrometers"
+   },
+   {
+    "n": "6.2.7",
+    "t": "Summary"
+   },
+   {
+    "n": "6.3.1",
+    "t": "Touch Screens"
+   },
+   {
+    "n": "6.3.2",
+    "t": "Ultrasonic Distance"
+   },
+   {
+    "n": "6.3.3",
+    "t": "Optical Distance"
+   },
+   {
+    "n": "6.3.4",
+    "t": "Capacitive Sensors"
+   },
+   {
+    "n": "6.3.5",
+    "t": "Summary"
+   },
+   {
+    "n": "6.4.1",
+    "t": "Passive Infrared"
+   },
+   {
+    "n": "6.4.2",
+    "t": "Acceleration"
+   },
+   {
+    "n": "6.4.3",
+    "t": "Rotation"
+   },
+   {
+    "n": "6.4.4",
+    "t": "Flow"
+   },
+   {
+    "n": "6.4.5",
+    "t": "Force"
+   },
+   {
+    "n": "6.4.6",
+    "t": "Tilt"
+   },
+   {
+    "n": "6.4.7",
+    "t": "Vibration and Mechanical Shock"
+   },
+   {
+    "n": "6.4.8",
+    "t": "Pressure"
+   },
+   {
+    "n": "6.5.1",
+    "t": "Smoke"
+   },
+   {
+    "n": "6.5.2",
+    "t": "Gas"
+   },
+   {
+    "n": "6.5.3",
+    "t": "Humidity"
+   },
+   {
+    "n": "6.6.1",
+    "t": "Light"
+   },
+   {
+    "n": "6.6.2",
+    "t": "Ionizing Radiation"
+   },
+   {
+    "n": "6.6.3",
+    "t": "Magnetic Fields"
+   },
+   {
+    "n": "6.6.4",
+    "t": "Sound"
+   }
+  ]
+ },
+ {
+  "id": "7",
+  "title": "Hands-on Electronics",
+  "sections": [
+   {
+    "n": "7.1",
+    "t": "Safety"
+   },
+   {
+    "n": "7.1.1",
+    "t": "Lecture on Safety"
+   },
+   {
+    "n": "7.1.2",
+    "t": "Damaging Components with Electrostatic Discharge"
+   },
+   {
+    "n": "7.1.3",
+    "t": "Component Handling Precautions"
+   },
+   {
+    "n": "7.2",
+    "t": "Constructing Circuits"
+   },
+   {
+    "n": "7.2.1",
+    "t": "Drawing a Circuit Schematic"
+   },
+   {
+    "n": "7.2.2",
+    "t": "A Note on Circuit Simulator Programs"
+   },
+   {
+    "n": "7.2.3",
+    "t": "Making a Prototype of Your Circuit"
+   },
+   {
+    "n": "7.2.4",
+    "t": "The Final Circuit"
+   },
+   {
+    "n": "7.2.5",
+    "t": "Making a PCB"
+   },
+   {
+    "n": "7.2.6",
+    "t": "Special Pieces of Hardware Used in Circuit Construction"
+   },
+   {
+    "n": "7.2.7",
+    "t": "Soldering"
+   },
+   {
+    "n": "7.2.8",
+    "t": "Desoldering"
+   },
+   {
+    "n": "7.3",
+    "t": "Multimeters"
+   },
+   {
+    "n": "7.4",
+    "t": "Oscilloscopes"
+   },
+   {
+    "n": "7.5",
+    "t": "The Electronics Laboratory"
+   },
+   {
+    "n": "7.2.9",
+    "t": "Enclosing the Circuit"
+   },
+   {
+    "n": "7.2.10",
+    "t": "Useful Items to Keep Handy"
+   },
+   {
+    "n": "7.2.11",
+    "t": "Troubleshooting the Circuits You Build"
+   },
+   {
+    "n": "7.3.1",
+    "t": "Basic Operation"
+   },
+   {
+    "n": "7.3.2",
+    "t": "How Analog VOMs Work"
+   },
+   {
+    "n": "7.3.3",
+    "t": "How Digital Multimeters Work"
+   },
+   {
+    "n": "7.3.4",
+    "t": "A Note on Measurement Errors"
+   },
+   {
+    "n": "7.4.1",
+    "t": "How Scopes Work"
+   },
+   {
+    "n": "7.4.2",
+    "t": "Interior Circuitry of a Scope"
+   },
+   {
+    "n": "7.4.3",
+    "t": "Aiming the Beam"
+   },
+   {
+    "n": "7.4.4",
+    "t": "Scope Usage"
+   },
+   {
+    "n": "7.4.5",
+    "t": "What All the Little Knobs and Switches Do"
+   },
+   {
+    "n": "7.4.6",
+    "t": "Measuring Things with Scopes"
+   },
+   {
+    "n": "7.4.7",
+    "t": "Scope Applications"
+   },
+   {
+    "n": "7.4.8",
+    "t": "Measuring Impedances"
+   },
+   {
+    "n": "7.5.1",
+    "t": "Work Area"
+   },
+   {
+    "n": "7.5.2",
+    "t": "Test Equipment"
+   },
+   {
+    "n": "7.5.3",
+    "t": "Multimeters"
+   },
+   {
+    "n": "7.5.4",
+    "t": "DC Power Supplies"
+   },
+   {
+    "n": "7.5.5",
+    "t": "Oscilloscope"
+   },
+   {
+    "n": "7.5.6",
+    "t": "Oscilloscope Probes"
+   },
+   {
+    "n": "7.5.7",
+    "t": "General-Purpose Function Generator"
+   },
+   {
+    "n": "7.5.8",
+    "t": "Frequency Counter"
+   },
+   {
+    "n": "7.5.9",
+    "t": "Computer"
+   },
+   {
+    "n": "7.5.10",
+    "t": "Miscellaneous Test Equipment"
+   },
+   {
+    "n": "7.5.11",
+    "t": "Multifunction PC Instruments"
+   },
+   {
+    "n": "7.5.12",
+    "t": "Isolation Transformers"
+   },
+   {
+    "n": "7.5.13",
+    "t": "Variable Transformers, or Variacs"
+   },
+   {
+    "n": "7.5.14",
+    "t": "Substitution Boxes"
+   },
+   {
+    "n": "7.5.15",
+    "t": "Test Cables, Connectors, and Adapters"
+   },
+   {
+    "n": "7.5.16",
+    "t": "Soldering Equipment"
+   },
+   {
+    "n": "7.5.17",
+    "t": "Prototyping Boards"
+   },
+   {
+    "n": "7.5.18",
+    "t": "Hand Tools"
+   },
+   {
+    "n": "7.5.19",
+    "t": "Wires, Cables, Hardware, and Chemicals"
+   },
+   {
+    "n": "7.5.20",
+    "t": "Electronics Catalogs"
+   },
+   {
+    "n": "7.5.21",
+    "t": "Recommended Electronics Parts"
+   },
+   {
+    "n": "7.5.22",
+    "t": "Electronic CAD Programs"
+   },
+   {
+    "n": "7.5.23",
+    "t": "Building Your Own Workbench"
+   }
+  ]
+ },
+ {
+  "id": "8",
+  "title": "Operational Amplifiers",
+  "sections": [
+   {
+    "n": "8.1",
+    "t": "Operational Amplifier Water Analogy"
+   },
+   {
+    "n": "8.2",
+    "t": "How Op Amps Work (The \u201cCop-Out\u201d Explanation)"
+   },
+   {
+    "n": "8.3",
+    "t": "Theory"
+   },
+   {
+    "n": "8.4",
+    "t": "Negative Feedback"
+   },
+   {
+    "n": "8.5",
+    "t": "Positive Feedback"
+   },
+   {
+    "n": "8.6",
+    "t": "Real Kinds of Op Amps"
+   },
+   {
+    "n": "8.7",
+    "t": "Op Amp Specifications"
+   },
+   {
+    "n": "8.8",
+    "t": "Powering Op Amps"
+   },
+   {
+    "n": "8.9",
+    "t": "Some Practical Notes"
+   },
+   {
+    "n": "8.10",
+    "t": "Voltage and Current Offset Compensation"
+   },
+   {
+    "n": "8.11",
+    "t": "Frequency Compensation"
+   },
+   {
+    "n": "8.12",
+    "t": "Comparators"
+   },
+   {
+    "n": "8.13",
+    "t": "Comparators with Hysteresis"
+   },
+   {
+    "n": "8.13.1",
+    "t": "Inverting Comparator with Hysteresis"
+   },
+   {
+    "n": "8.13.2",
+    "t": "Noninverting Comparator with Hysteresis"
+   },
+   {
+    "n": "8.14",
+    "t": "Using Single-Supply Comparators"
+   },
+   {
+    "n": "8.15",
+    "t": "Window Comparator"
+   },
+   {
+    "n": "8.16",
+    "t": "Voltage-Level Indicator"
+   },
+   {
+    "n": "8.17",
+    "t": "Applications"
+   }
+  ]
+ },
+ {
+  "id": "9",
+  "title": "Filters",
+  "sections": [
+   {
+    "n": "9.1",
+    "t": "Things to Know Before You Start Designing Filters"
+   },
+   {
+    "n": "9.2",
+    "t": "Basic Filters"
+   },
+   {
+    "n": "9.3",
+    "t": "Passive Low-Pass Filter Design"
+   },
+   {
+    "n": "9.4",
+    "t": "A Note on Filter Types"
+   },
+   {
+    "n": "9.5",
+    "t": "Passive High-Pass Filter Design"
+   },
+   {
+    "n": "9.6",
+    "t": "Passive Bandpass Filter Design"
+   },
+   {
+    "n": "9.7",
+    "t": "Passive Notch Filter Design"
+   },
+   {
+    "n": "9.8",
+    "t": "Active Filter Design"
+   },
+   {
+    "n": "9.8.1",
+    "t": "Active Low-Pass Filter Example"
+   },
+   {
+    "n": "9.8.2",
+    "t": "Active High-Pass Filter Example"
+   },
+   {
+    "n": "9.8.3",
+    "t": "Active Bandpass Filters"
+   },
+   {
+    "n": "9.8.4",
+    "t": "Active Notch Filters"
+   },
+   {
+    "n": "9.9",
+    "t": "Integrated Filter Circuits"
+   }
+  ]
+ },
+ {
+  "id": "10",
+  "title": "Oscillators and Timers",
+  "sections": [
+   {
+    "n": "10.1",
+    "t": "RC Relaxation Oscillators"
+   },
+   {
+    "n": "10.2",
+    "t": "The 555 Timer IC"
+   },
+   {
+    "n": "10.2.1",
+    "t": "How a 555 Works (Astable Operation)"
+   },
+   {
+    "n": "10.2.2",
+    "t": "Basic Astable Operation"
+   },
+   {
+    "n": "10.2.3",
+    "t": "How a 555 Works (Monostable Operation)"
+   },
+   {
+    "n": "10.2.4",
+    "t": "Basic Monostable Operation"
+   },
+   {
+    "n": "10.2.5",
+    "t": "Some Important Notes About 555 Timers"
+   },
+   {
+    "n": "10.2.6",
+    "t": "Simple 555 Applications"
+   },
+   {
+    "n": "10.3",
+    "t": "Voltage-Controlled Oscillators"
+   },
+   {
+    "n": "10.4",
+    "t": "Wien-Bridge and Twin-T Oscillators"
+   },
+   {
+    "n": "10.5",
+    "t": "LC Oscillators (Sinusoidal Oscillators)"
+   },
+   {
+    "n": "10.6",
+    "t": "Crystal Oscillators"
+   },
+   {
+    "n": "10.7",
+    "t": "Microcontroller Oscillators"
+   }
+  ]
+ },
+ {
+  "id": "11",
+  "title": "Voltage Regulators and Power Supplies",
+  "sections": [
+   {
+    "n": "11.1",
+    "t": "Voltage-Regulator ICs"
+   },
+   {
+    "n": "11.1.1",
+    "t": "Fixed Regulator ICs"
+   },
+   {
+    "n": "11.1.2",
+    "t": "Adjustable Regulator ICs"
+   },
+   {
+    "n": "11.1.3",
+    "t": "Regulator Specifications"
+   },
+   {
+    "n": "11.2",
+    "t": "A Quick Look at a Few Regulator Applications"
+   },
+   {
+    "n": "11.3",
+    "t": "The Transformer"
+   },
+   {
+    "n": "11.4",
+    "t": "Rectifier Packages"
+   },
+   {
+    "n": "11.5",
+    "t": "A Few Simple Power Supplies"
+   },
+   {
+    "n": "11.6",
+    "t": "Technical Points About Ripple Reduction"
+   },
+   {
+    "n": "11.7",
+    "t": "Loose Ends"
+   },
+   {
+    "n": "11.8",
+    "t": "Switching Regulator Supplies (Switchers)"
+   },
+   {
+    "n": "11.9",
+    "t": "Switch-Mode Power Supplies"
+   },
+   {
+    "n": "11.10",
+    "t": "Kinds of Commercial Power Supply Packages"
+   },
+   {
+    "n": "11.11",
+    "t": "Power Supply Construction"
+   }
+  ]
+ },
+ {
+  "id": "12",
+  "title": "Digital Electronics",
+  "sections": [
+   {
+    "n": "12.1",
+    "t": "The Basics of Digital Electronics"
+   },
+   {
+    "n": "12.1.1",
+    "t": "Digital Logic States"
+   },
+   {
+    "n": "12.1.2",
+    "t": "Number Codes Used in Digital Electronics"
+   },
+   {
+    "n": "12.1.3",
+    "t": "Clock Timing and Parallel Versus Serial Transmission"
+   },
+   {
+    "n": "12.2",
+    "t": "Logic Gates"
+   },
+   {
+    "n": "12.2.1",
+    "t": "Multiple-Input Logic Gates"
+   },
+   {
+    "n": "12.2.2",
+    "t": "Digital Logic Gate ICs"
+   },
+   {
+    "n": "12.2.3",
+    "t": "Applications for a Single Logic Gate"
+   },
+   {
+    "n": "12.2.4",
+    "t": "Combinational Logic"
+   },
+   {
+    "n": "12.2.5",
+    "t": "Keeping Circuits Simple (Karnaugh Maps)"
+   },
+   {
+    "n": "12.3",
+    "t": "Combinational Devices"
+   },
+   {
+    "n": "12.3.1",
+    "t": "Multiplexers (Data Selectors) and Bilateral Switches"
+   },
+   {
+    "n": "12.3.2",
+    "t": "Demultiplexers (Data Distributors) and Decoders"
+   },
+   {
+    "n": "12.3.3",
+    "t": "Encoders and Code Converters"
+   },
+   {
+    "n": "12.3.4",
+    "t": "Binary Adders"
+   },
+   {
+    "n": "12.3.5",
+    "t": "Binary Adder/Subtractor"
+   },
+   {
+    "n": "12.3.6",
+    "t": "Arithmetic Logic Units"
+   },
+   {
+    "n": "12.3.7",
+    "t": "Comparators and Magnitude Comparator ICs"
+   },
+   {
+    "n": "12.3.8",
+    "t": "Parity Generator/Checker"
+   },
+   {
+    "n": "12.3.9",
+    "t": "A Note on Obsolescence and the Trend Toward Microcontroller Control"
+   },
+   {
+    "n": "12.4",
+    "t": "Logic Families"
+   },
+   {
+    "n": "12.4.1",
+    "t": "TTL Family of ICs"
+   },
+   {
+    "n": "12.4.2",
+    "t": "CMOS Family of ICs"
+   },
+   {
+    "n": "12.4.3",
+    "t": "I/O Voltages and Noise Margins"
+   },
+   {
+    "n": "12.4.4",
+    "t": "Current Ratings, Fanout, and Propagation Delays"
+   },
+   {
+    "n": "12.4.5",
+    "t": "A Detailed Look at the TTL and CMOS Subfamilies"
+   },
+   {
+    "n": "12.4.6",
+    "t": "A Look at a Few Other Logic Series"
+   },
+   {
+    "n": "12.4.7",
+    "t": "Logic Gates with Open-Collector Outputs"
+   },
+   {
+    "n": "12.4.8",
+    "t": "Schmitt-Triggered Gates"
+   },
+   {
+    "n": "12.4.9",
+    "t": "Interfacing Logic Families"
+   },
+   {
+    "n": "12.5",
+    "t": "Powering and Testing Logic ICs"
+   },
+   {
+    "n": "12.5.1",
+    "t": "Power Supply Decoupling"
+   },
+   {
+    "n": "12.5.2",
+    "t": "Unused Inputs"
+   },
+   {
+    "n": "12.5.3",
+    "t": "Logic Probes and Logic Pulsers"
+   },
+   {
+    "n": "12.6",
+    "t": "Sequential Logic"
+   },
+   {
+    "n": "12.6.1",
+    "t": "SR Flip-Flops"
+   },
+   {
+    "n": "12.6.2",
+    "t": "SR Flip-Flop ICs"
+   },
+   {
+    "n": "12.6.3",
+    "t": "D-Type Flip-Flops"
+   },
+   {
+    "n": "12.6.4",
+    "t": "Quad and Octal D Flip-Flops"
+   },
+   {
+    "n": "12.6.5",
+    "t": "JK Flip-Flops"
+   },
+   {
+    "n": "12.6.6",
+    "t": "Practical Timing Considerations with Flip-Flops"
+   },
+   {
+    "n": "12.6.7",
+    "t": "Digital Clock Generators and Single-Pulse Generators"
+   },
+   {
+    "n": "12.6.8",
+    "t": "Automatic Power-Up Clear (Reset) Circuits"
+   },
+   {
+    "n": "12.6.9",
+    "t": "More on Switch Debouncers"
+   },
+   {
+    "n": "12.6.10",
+    "t": "Pullup and Pulldown Resistors"
+   },
+   {
+    "n": "12.7",
+    "t": "Counter ICs"
+   },
+   {
+    "n": "12.7.1",
+    "t": "Asynchronous Counter (Ripple Counter) ICs"
+   },
+   {
+    "n": "12.7.2",
+    "t": "Synchronous Counter ICs"
+   },
+   {
+    "n": "12.7.3",
+    "t": "A Note on Counters with Displays"
+   },
+   {
+    "n": "12.8",
+    "t": "Shift Registers"
+   },
+   {
+    "n": "12.8.1",
+    "t": "Serial-In/Serial-Out Shift Registers"
+   },
+   {
+    "n": "12.8.2",
+    "t": "Serial-In/Parallel-Out Shift Registers"
+   },
+   {
+    "n": "12.8.3",
+    "t": "Parallel-In/Serial-Out Shift Registers"
+   },
+   {
+    "n": "12.8.4",
+    "t": "Ring Counter (Shift Register Sequencer)"
+   },
+   {
+    "n": "12.8.5",
+    "t": "Johnson Shift Counter"
+   },
+   {
+    "n": "12.8.6",
+    "t": "Shift Register ICs"
+   },
+   {
+    "n": "12.8.7",
+    "t": "Simple Shift Register Applications"
+   },
+   {
+    "n": "12.9",
+    "t": "Three-State Buffers, Latches, and Transceivers"
+   },
+   {
+    "n": "12.9.1",
+    "t": "Three-State Octal Buffers"
+   },
+   {
+    "n": "12.9.2",
+    "t": "Three-State Octal Latches and Flip-Flops"
+   },
+   {
+    "n": "12.9.3",
+    "t": "Transceivers"
+   },
+   {
+    "n": "12.10",
+    "t": "Analog/Digital Interfacing"
+   },
+   {
+    "n": "12.10.1",
+    "t": "Triggering Simple Logic Responses from Analog Signals"
+   },
+   {
+    "n": "12.10.2",
+    "t": "Using Logic to Drive External Loads"
+   },
+   {
+    "n": "12.10.3",
+    "t": "Analog Switches"
+   },
+   {
+    "n": "12.10.4",
+    "t": "Analog Multiplexer/Demultiplexer"
+   },
+   {
+    "n": "12.10.5",
+    "t": "Analog-to-Digital and Digital-to-Analog Conversion"
+   },
+   {
+    "n": "12.10.6",
+    "t": "Analog-to-Digital Converters"
+   },
+   {
+    "n": "12.11",
+    "t": "Displays"
+   },
+   {
+    "n": "12.11.1",
+    "t": "LED Displays"
+   },
+   {
+    "n": "12.11.2",
+    "t": "Liquid-Crystal Displays"
+   },
+   {
+    "n": "12.12",
+    "t": "Memory Devices"
+   },
+   {
+    "n": "12.12.1",
+    "t": "Read-Only Memory"
+   },
+   {
+    "n": "12.12.2",
+    "t": "Simple ROM Made Using Diodes"
+   },
+   {
+    "n": "12.12.3",
+    "t": "Memory Size and Organization"
+   },
+   {
+    "n": "12.12.4",
+    "t": "Simple Programmable ROM"
+   },
+   {
+    "n": "12.12.5",
+    "t": "ROM Devices"
+   },
+   {
+    "n": "12.12.6",
+    "t": "RAM"
+   }
+  ]
+ },
+ {
+  "id": "13",
+  "title": "Microcontrollers",
+  "sections": [
+   {
+    "n": "13.1",
+    "t": "Basic Structure of a Microcontroller"
+   },
+   {
+    "n": "13.2",
+    "t": "Example Microcontrollers"
+   },
+   {
+    "n": "13.2.1",
+    "t": "The ATtiny85 Microcontroller"
+   },
+   {
+    "n": "13.2.2",
+    "t": "The PIC16Cx Microcontrollers"
+   },
+   {
+    "n": "13.2.3",
+    "t": "32-Bit Microcontrollers"
+   },
+   {
+    "n": "13.2.4",
+    "t": "Digital Signal Processing"
+   },
+   {
+    "n": "13.3",
+    "t": "Evaluation/Development Boards"
+   },
+   {
+    "n": "13.4",
+    "t": "Arduino"
+   },
+   {
+    "n": "13.4.1",
+    "t": "A Tour of Arduino"
+   },
+   {
+    "n": "13.4.2",
+    "t": "The Arduino IDE"
+   },
+   {
+    "n": "13.4.3",
+    "t": "Arduino Board Models"
+   },
+   {
+    "n": "13.4.4",
+    "t": "Shields"
+   },
+   {
+    "n": "13.4.5",
+    "t": "The Arduino C Library"
+   },
+   {
+    "n": "13.4.6",
+    "t": "Arduino Example Project"
+   },
+   {
+    "n": "13.4.7",
+    "t": "Taking the Arduino Offboard"
+   },
+   {
+    "n": "13.5",
+    "t": "Interfacing with Microcontrollers"
+   },
+   {
+    "n": "13.5.1",
+    "t": "Switches"
+   },
+   {
+    "n": "13.5.2",
+    "t": "Analog Inputs"
+   },
+   {
+    "n": "13.5.3",
+    "t": "High-Power Digital Outputs"
+   },
+   {
+    "n": "13.5.4",
+    "t": "Sound Interfaces"
+   },
+   {
+    "n": "13.5.5",
+    "t": "Serial Interfaces"
+   },
+   {
+    "n": "13.5.6",
+    "t": "Level Conversion"
+   },
+   {
+    "n": "13.5.7",
+    "t": "LED Display Interfaces"
+   }
+  ]
+ },
+ {
+  "id": "14",
+  "title": "Motors",
+  "sections": [
+   {
+    "n": "14.1",
+    "t": "DC Continuous Motors"
+   },
+   {
+    "n": "14.2",
+    "t": "Speed Control of DC Motors"
+   },
+   {
+    "n": "14.3",
+    "t": "Directional Control of DC Motors"
+   },
+   {
+    "n": "14.4",
+    "t": "RC Servos"
+   },
+   {
+    "n": "14.5",
+    "t": "Stepper Motors"
+   },
+   {
+    "n": "14.6",
+    "t": "Kinds of Stepper Motors"
+   },
+   {
+    "n": "14.7",
+    "t": "Driving Stepper Motors"
+   },
+   {
+    "n": "14.8",
+    "t": "Controlling the Driver with a Translator"
+   },
+   {
+    "n": "14.9",
+    "t": "A Final Word on Identifying Stepper Motors"
+   }
+  ]
+ },
+ {
+  "id": "15",
+  "title": "Audio Electronics",
+  "sections": [
+   {
+    "n": "15.1",
+    "t": "A Little Lecture on Sound"
+   },
+   {
+    "n": "15.2",
+    "t": "Microphones"
+   },
+   {
+    "n": "15.3",
+    "t": "Microphone Specifications"
+   },
+   {
+    "n": "15.4",
+    "t": "Audio Amplifiers"
+   },
+   {
+    "n": "15.4.1",
+    "t": "Inverting Amplifier"
+   },
+   {
+    "n": "15.4.2",
+    "t": "Noninverting Amplifier"
+   },
+   {
+    "n": "15.4.3",
+    "t": "Digital Amplifiers"
+   },
+   {
+    "n": "15.4.4",
+    "t": "Reducing Hum in Audio Amplifiers"
+   },
+   {
+    "n": "15.5",
+    "t": "Preamplifiers"
+   },
+   {
+    "n": "15.6",
+    "t": "Mixer Circuits"
+   },
+   {
+    "n": "15.7",
+    "t": "A Note on Impedance Matching"
+   },
+   {
+    "n": "15.8",
+    "t": "Speakers"
+   },
+   {
+    "n": "15.9",
+    "t": "Crossover Networks"
+   },
+   {
+    "n": "15.10",
+    "t": "Simple ICs Used to Drive Speakers"
+   },
+   {
+    "n": "15.11",
+    "t": "Audible-Signal Devices"
+   },
+   {
+    "n": "15.12",
+    "t": "Miscellaneous Audio Circuits"
+   }
+  ]
+ },
+ {
+  "id": "16",
+  "title": "Modular Electronics",
+  "sections": [
+   {
+    "n": "16.1",
+    "t": "There\u2019s an IC for It"
+   },
+   {
+    "n": "16.2",
+    "t": "Breakout Boards and Modules"
+   },
+   {
+    "n": "16.2.1",
+    "t": "Radio Frequency Modules"
+   },
+   {
+    "n": "16.2.2",
+    "t": "Audio Modules"
+   },
+   {
+    "n": "16.3",
+    "t": "Plug-and-Play Prototyping"
+   },
+   {
+    "n": "16.4",
+    "t": "Open Source Hardware"
+   }
+  ]
+ },
+ {
+  "id": "A",
+  "title": "Power Distribution and Home Wiring",
+  "sections": [
+   {
+    "n": "A.1",
+    "t": "Power Distribution"
+   },
+   {
+    "n": "A.2",
+    "t": "A Closer Look at Three-Phase Electricity"
+   },
+   {
+    "n": "A.3",
+    "t": "Home Wiring"
+   },
+   {
+    "n": "A.4",
+    "t": "Electricity in Other Countries"
+   }
+  ]
+ },
+ {
+  "id": "B",
+  "title": "Error Analysis",
+  "sections": [
+   {
+    "n": "B.1",
+    "t": "Absolute Error, Relative Error, and Percent Error"
+   },
+   {
+    "n": "B.2",
+    "t": "Uncertainty Estimates"
+   }
+  ]
+ },
+ {
+  "id": "C",
+  "title": "Useful Facts and Formulas",
+  "sections": [
+   {
+    "n": "C.1",
+    "t": "Greek Alphabet"
+   },
+   {
+    "n": "C.2",
+    "t": "Powers of 10 Unit Prefixes"
+   },
+   {
+    "n": "C.3",
+    "t": "Linear Functions (y = mx + b)"
+   },
+   {
+    "n": "C.4",
+    "t": "Quadratic Equation (y = ax2 + bx + c)"
+   },
+   {
+    "n": "C.5",
+    "t": "Exponents and Logarithms"
+   },
+   {
+    "n": "C.6",
+    "t": "Trigonometry"
+   },
+   {
+    "n": "C.7",
+    "t": "Complex Numbers"
+   },
+   {
+    "n": "C.8",
+    "t": "Differential Calculus"
+   },
+   {
+    "n": "C.9",
+    "t": "Integral Calculus"
+   }
+  ]
+ }
+]
