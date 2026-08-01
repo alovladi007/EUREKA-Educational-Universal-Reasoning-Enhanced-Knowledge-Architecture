@@ -119,10 +119,17 @@ jobs:
 
       - name: Install dependencies
         working-directory: ${{ matrix.service.path }}
+        # --no-cache-dir + the CPU torch index, because ai-research (and any
+        # service that pulls torch) otherwise downloads the CUDA build: ~6 GB
+        # installed plus ~6 GB of pip cache, which reproducibly fills the
+        # runner's disk ("No space left on device", run 30676575160, failed
+        # identically on rerun). The CPU index only hosts torch-family wheels,
+        # so every other package still resolves from PyPI; CI runners have no
+        # GPU, so nothing is lost.
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-          pip install pytest pytest-asyncio pytest-cov ruff
+          pip install --no-cache-dir --extra-index-url https://download.pytorch.org/whl/cpu -r requirements.txt
+          pip install --no-cache-dir pytest pytest-asyncio pytest-cov ruff
 
       - name: Lint (ruff)
         working-directory: ${{ matrix.service.path }}
