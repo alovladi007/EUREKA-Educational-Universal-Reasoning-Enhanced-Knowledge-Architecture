@@ -80,6 +80,36 @@ async def get_course(
     return CourseResponse.model_validate(course)
 
 
+@router.get("/{course_id}/content")
+async def get_course_content(
+    course_id: UUID,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Readings and other content for a course, same org gate as the course.
+
+    course_content is seeded (e.g. the Electronic Devices course) and has no
+    ORM model yet, so this reads it directly. Rows are small prose documents;
+    ordering by metadata chapter then title keeps modules together.
+    """
+    from sqlalchemy import text as _text
+
+    course = await course_crud.get_course_by_id(db, course_id)
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Course not found")
+    await verify_org_access(course.org_id, current_user)
+
+    rows = (await db.execute(_text(
+        """SELECT id, content_type, title, content, topics, metadata
+           FROM course_content WHERE course_id = :cid
+           ORDER BY COALESCE(metadata->>'chapter',''), title"""),
+        {"cid": str(course_id)})).mappings().all()
+    return {"content": [
+        {"id": str(r["id"]), "content_type": r["content_type"], "title": r["title"],
+         "content": r["content"], "topics": r["topics"], "metadata": r["metadata"]}
+        for r in rows]}
+
+
 @router.patch("/{course_id}", response_model=CourseResponse)
 async def update_course(
     course_id: UUID,

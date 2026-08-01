@@ -16,6 +16,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { api, ApiError, formatDate } from "@/lib/eureka-api";
+import ReactMarkdown from "react-markdown";
 import { ArrowLeft, BookOpen, GraduationCap, Calendar, Tag, User, CheckCircle2 } from "lucide-react";
 
 type Course = {
@@ -50,6 +51,9 @@ export default function CourseDetailPage() {
   const id = params?.id as string | undefined;
 
   const [course, setCourse] = useState<Course | null>(null);
+  const [readings, setReadings] = useState<
+    { id: string; title: string; content: string; metadata: { chapter?: string } }[]
+  >([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [enrolling, setEnrolling] = useState(false);
@@ -60,6 +64,14 @@ export default function CourseDetailPage() {
     (async () => {
       try {
         const c = await api<Course>(`/courses/${id}`);
+        // Authored readings, served from course_content. Absence is a normal
+        // state (structure-only modules), so a failure here never blocks the
+        // page - the syllabus still tells the truth about coverage.
+        api<{ content: { id: string; title: string; content: string; metadata: { chapter?: string } }[] }>(
+          `/courses/${id}/content`,
+        )
+          .then((r) => setReadings(r.content ?? []))
+          .catch(() => setReadings([]));
         setCourse(c);
       } catch (e) {
         setError(String((e as Error).message));
@@ -209,6 +221,30 @@ export default function CourseDetailPage() {
                 <Badge key={s} variant="secondary" className="text-[10px] font-mono">{s}</Badge>
               ))}
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {readings.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Readings ({readings.length})</CardTitle>
+            <CardDescription>
+              Original lessons for the modules authored so far. Modules not
+              listed here are structure-only until their lessons are written.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {readings.map((r) => (
+              <details key={r.id} className="rounded border p-3">
+                <summary className="cursor-pointer text-sm font-medium">
+                  {r.metadata?.chapter ? `Module ${r.metadata.chapter}: ` : ""}{r.title}
+                </summary>
+                <div className="prose prose-sm dark:prose-invert mt-3 max-w-none">
+                  <ReactMarkdown>{r.content.replace(/<!--[\s\S]*?-->/g, "")}</ReactMarkdown>
+                </div>
+              </details>
+            ))}
           </CardContent>
         </Card>
       )}
