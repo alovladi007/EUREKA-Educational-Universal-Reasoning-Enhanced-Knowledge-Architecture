@@ -134,7 +134,14 @@ WITH covered AS (
   WHERE c.code = '{COURSE_CODE}'
 )
 UPDATE course_modules m SET is_published = COALESCE(
-  (SELECT count(*) > 0 AND bool_and(split_part(obj, ' ', 1) IN (SELECT n FROM covered))
+  -- A section counts as covered if its own number is claimed by a lesson OR
+  -- its two-level parent is (a lesson covering 3.1 covers 3.1.x), matching
+  -- check_ed_coverage.py. Exact-only matching left every module with L3
+  -- objectives unpublished while the checker said DONE.
+  (SELECT count(*) > 0 AND bool_and(
+     split_part(obj, ' ', 1) IN (SELECT n FROM covered)
+     OR (split_part(split_part(obj, ' ', 1), '.', 1) || '.' ||
+         split_part(split_part(obj, ' ', 1), '.', 2)) IN (SELECT n FROM covered))
    FROM jsonb_array_elements_text(m.learning_objectives) obj), false)
 FROM courses c
 WHERE c.code = '{COURSE_CODE}' AND m.course_id = c.id;

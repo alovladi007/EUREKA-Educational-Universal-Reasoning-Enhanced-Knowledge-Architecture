@@ -5,18 +5,13 @@ lives in api-core (`courses` / `course_modules` / `course_content`) and is
 live in the catalog. This doc is the standing prompt for authoring the
 remaining lessons. Paste it (or point the agent at it) to continue.
 
-## State as of 2026-08-01
+## State as of 2026-08-01 — COURSE COMPLETE
 
-- Full topic map seeded: 19 modules, 549 sections, parsed from the coverage
-  reference and committed as `curriculum.json`. Machine-checked; zero
-  untitled sections.
-- Authored and live: Module 1 complete; Module 2 sections 2.1-2.20 (4
-  lessons). Coverage: 49/549 sections. Run
-  `python3 scripts/check_ed_coverage.py` for the current table.
-- Modules auto-publish only when every section is covered by an authored
-  lesson (`scripts/seed_electronic_devices.py` computes this). Unauthored
-  modules stay visible but unpublished. Never publish a topic map as if it
-  were content.
+All 19 modules authored and published: 58 original lessons covering
+549/549 sections (verify: `python3 scripts/check_ed_coverage.py`). The
+authoring order below is retained as history. Remaining work is
+enrichment, not coverage: per-lesson diagrams, practice questions wired
+to the assessment engine, and SME review of the lesson text.
 
 ## The rules (binding)
 
