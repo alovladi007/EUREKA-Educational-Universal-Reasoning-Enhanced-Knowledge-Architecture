@@ -47,7 +47,10 @@ def main() -> None:
         covers = [c.strip() for c in (m.group(1).split(",") if m else [])]
         title = text.splitlines()[0].lstrip("# ").strip()
         chapter = md.name.split("-")[0].removeprefix("ch").lstrip("0") or "1"
-        lessons.append({"title": title, "body": text, "covers": covers, "chapter": chapter})
+        # Explicit pedagogical order from the filename (ch02-l03-...). Without
+        # it the reader sorted alphabetically and Decibels preceded Current.
+        order = int(md.name.split("-")[1].removeprefix("l"))
+        lessons.append({"title": title, "body": text, "covers": covers, "chapter": chapter, "order": order})
 
     sql = ["BEGIN;"]
 
@@ -114,10 +117,12 @@ FROM courses c WHERE c.code = '{COURSE_CODE}' AND m.course_id = c.id AND m.order
         sql.append(f"""
 INSERT INTO course_content (course_id, content_type, title, content, topics, metadata)
 SELECT c.id, 'reading', '{title}', '{body}', '{topics}'::jsonb,
-       jsonb_build_object('chapter', '{les['chapter']}', 'authored', true, 'origin', 'original')
+       jsonb_build_object('chapter', '{les['chapter']}', 'order', {les['order']}, 'authored', true, 'origin', 'original')
 FROM courses c WHERE c.code = '{COURSE_CODE}'
   AND NOT EXISTS (SELECT 1 FROM course_content cc WHERE cc.course_id = c.id AND cc.title = '{title}');
-UPDATE course_content cc SET content = '{body}', topics = '{topics}'::jsonb, updated_at = NOW()
+UPDATE course_content cc SET content = '{body}', topics = '{topics}'::jsonb,
+    metadata = jsonb_build_object('chapter', '{les['chapter']}', 'order', {les['order']}, 'authored', true, 'origin', 'original'),
+    updated_at = NOW()
 FROM courses c WHERE c.code = '{COURSE_CODE}' AND cc.course_id = c.id AND cc.title = '{title}';
 """)
 

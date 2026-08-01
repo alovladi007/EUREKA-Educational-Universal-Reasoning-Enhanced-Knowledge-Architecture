@@ -234,16 +234,36 @@ export default function CourseDetailPage() {
               listed here are structure-only until their lessons are written.
             </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            {readings.map((r) => (
-              <details key={r.id} className="rounded border p-3">
-                <summary className="cursor-pointer text-sm font-medium">
-                  {r.metadata?.chapter ? `Module ${r.metadata.chapter}: ` : ""}{r.title}
-                </summary>
-                <div className="prose prose-sm dark:prose-invert mt-3 max-w-none">
-                  <ReactMarkdown>{r.content.replace(/<!--[\s\S]*?-->/g, "")}</ReactMarkdown>
+          <CardContent className="space-y-6">
+            {/* Grouped by module, in authored order (metadata.order), so the
+                reading sequence matches the pedagogy instead of the alphabet:
+                the flat list put Decibels before Current. */}
+            {Array.from(
+              readings.reduce((m, r) => {
+                const ch = r.metadata?.chapter ?? "?";
+                if (!m.has(ch)) m.set(ch, []);
+                m.get(ch)!.push(r);
+                return m;
+              }, new Map<string, typeof readings>()),
+            ).map(([ch, rows]) => (
+              <div key={ch} className="rounded-lg border p-4">
+                <h3 className="mb-1 text-base font-semibold">Module {ch}</h3>
+                <p className="mb-3 text-xs text-muted-foreground">
+                  {rows.length} lesson{rows.length === 1 ? "" : "s"}, in course order
+                </p>
+                <div className="space-y-2">
+                  {rows.map((r, i) => (
+                    <details key={r.id} className="rounded border bg-secondary/20 p-3">
+                      <summary className="cursor-pointer text-sm font-medium">
+                        {ch}.{i + 1} — {r.title}
+                      </summary>
+                      <div className="prose prose-sm dark:prose-invert mt-3 max-w-none border-t pt-3">
+                        <ReactMarkdown>{r.content.replace(/<!--[\s\S]*?-->/g, "")}</ReactMarkdown>
+                      </div>
+                    </details>
+                  ))}
                 </div>
-              </details>
+              </div>
             ))}
           </CardContent>
         </Card>

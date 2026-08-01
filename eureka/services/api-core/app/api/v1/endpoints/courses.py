@@ -102,7 +102,7 @@ async def get_course_content(
     rows = (await db.execute(_text(
         """SELECT id, content_type, title, content, topics, metadata
            FROM course_content WHERE course_id = :cid
-           ORDER BY COALESCE(metadata->>'chapter',''), title"""),
+           ORDER BY COALESCE(metadata->>'chapter',''), COALESCE((metadata->>'order')::int, 999), title"""),
         {"cid": str(course_id)})).mappings().all()
     return {"content": [
         {"id": str(r["id"]), "content_type": r["content_type"], "title": r["title"],
