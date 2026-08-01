@@ -5,6 +5,34 @@ product line. Target: **$200K/year**. These docs are the working plan for upcomi
 
 ---
 
+## 0. State as of 2026-07-31 (read before acting on anything below)
+
+The sections below are the PLAN as written 2026-07-20. Much of it has since been
+BUILT, and the inventory numbers are stale. Verified live 2026-07-31:
+
+- **The paywall exists.** Entitlements live in api-core (decision of record:
+  not the legacy Node service): `products`/`entitlements` tables,
+  `GET /me/entitlements`, `POST /billing/test-prep/checkout` (Stripe TEST mode,
+  honest 503 when keys are unset, no mock fallback), signature-verified
+  webhook, `require_exam_access` enforcing 402 server-side. SKU
+  `patent_bar_full` ($599 one-time) is seeded. Frontend: 20-Q free preview,
+  PbContentGate on Lessons/Flashcards, pricing page, `/patent-bar` landing +
+  diagnostic funnel. Accounts: email verification + password reset.
+- **Patent Bar bank is ~980**, not 537: 536 authored + 270 gap-fill + 174
+  official USPTO 2003 released (apr+oct, AM+PM), machine-verified keys.
+- **Still open:** (1) Stripe TEST keys in `.env` — user action, checkout 503s
+  until then; (2) SME review of unverified items before any marketing claim;
+  (3) refund/terms copy — user decision; (4) server-served questions: the
+  client bundle still ships the full bank, so gating is UX-level until the
+  bank moves behind the API (overlaps Gap Register P1-7); (5) rolling the
+  shared paywall to the next exams (`NEXT_EXAMS_PROMPTS.md`, Security+ first).
+
+If this note and a later commit disagree, trust the commit. Update this
+section when the state changes; a plan that mis-states what exists costs a
+verification sweep every session that trusts it.
+
+---
+
 ## 1. The thesis (read this first)
 
 EUREKA is **broad but shallow** — ~21 modules, most at demo depth. **$200K does not come from polishing
