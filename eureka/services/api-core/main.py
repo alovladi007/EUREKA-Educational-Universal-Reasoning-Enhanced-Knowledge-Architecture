@@ -9,6 +9,7 @@ Main FastAPI application for the core API service handling:
 - Enrollment and grades
 """
 
+import os
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -73,11 +74,20 @@ async def lifespan(app: FastAPI):
             "MFA secrets become unreadable on restart. See docs/SECURITY.md."
         )
 
-    # Create database tables (in production, use Alembic migrations)
-    if settings.ENVIRONMENT == "development":
+    # P1-13 (Gap Register): create_all no longer runs by default anywhere,
+    # including development. When it ran on every dev boot, a model change
+    # materialized silently without a migration and the drift surfaced only in
+    # CI, papering over exactly the gap Alembic exists to catch. Schema comes
+    # from ops/db init SQL on a fresh volume and `alembic upgrade head` after
+    # that. The escape hatch below is for throwaway local databases only, is
+    # never set in compose, and announces itself loudly when used.
+    if os.getenv("EUREKA_DEV_CREATE_ALL", "").lower() == "true":
+        logger.warning(
+            "EUREKA_DEV_CREATE_ALL=true: creating tables from ORM metadata. "
+            "This bypasses Alembic and is for throwaway databases only."
+        )
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-            logger.info("Database tables created")
 
     yield
 

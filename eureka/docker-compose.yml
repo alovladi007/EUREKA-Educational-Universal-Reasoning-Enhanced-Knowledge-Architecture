@@ -170,7 +170,12 @@ services:
       # OpenTelemetry — leave blank to disable. Jaeger lives behind
       # `--profile dev-obs`; container DNS resolves `jaeger` when both
       # are on the same compose network.
-      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-http://jaeger:4317}
+      # P3-7 (Gap Register): defaulting this to jaeger:4317 while jaeger is
+      # profile-gated meant every plain `up` retried a nonexistent host
+      # forever, filling the log with exporter errors. Empty default = tracing
+      # off, matching observability.py's documented disabled-by-default
+      # behaviour. Set it (with --profile dev-obs up jaeger) to opt in.
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
       OTEL_SERVICE_NAME: api-core
     ports:
       - "8000:8000"
