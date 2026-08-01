@@ -137,10 +137,14 @@ router.post('/',
           'INSERT INTO activity_logs (action, entity_type, entity_id, user_id, metadata) VALUES ($1, $2, $3, $4, $5)',
           ['project_created', 'project', project.id, req.user.id, JSON.stringify({ project_name: name })]
         );
+        // P0-8: write api-core's notifications shape (the table owner).
+        // notification_type is a Postgres enum without a 'project' member, so
+        // 'info' carries it; the project linkage rides in reference_type +
+        // metadata because reference_id is a UUID and project ids are ints.
         await pool.query(
-          `INSERT INTO notifications (type, title, message, user_id, related_id, related_type)
-           VALUES ($1, $2, $3, $4, $5, $6)`,
-          ['project', 'New Project Created', `You created project: ${name}`, req.user.id, project.id, 'project']
+          `INSERT INTO notifications (user_id, notification_type, title, message, reference_type, metadata)
+           VALUES ($1, 'info', $2, $3, 'notebook_project', $4)`,
+          [req.user.id, 'New Project Created', `You created project: ${name}`, JSON.stringify({ project_id: project.id })]
         );
       } catch (sideEffectErr) {
         console.warn('Project created but side-effect (activity/notification) failed:', sideEffectErr.message);

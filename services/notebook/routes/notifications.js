@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get('/', auth, async (req, res) => {
   try {
-    const result = await pool.query('SELECT * FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50', [req.user.id]);
+    const result = await pool.query('SELECT *, notification_type AS type FROM notifications WHERE user_id = $1 ORDER BY created_at DESC LIMIT 50', [req.user.id]);
     const unread = await pool.query('SELECT COUNT(*) FROM notifications WHERE user_id = $1 AND is_read = false', [req.user.id]);
     res.json({ notifications: result.rows, unread_count: parseInt(unread.rows[0].count) });
   } catch (error) {

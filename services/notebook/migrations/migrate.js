@@ -98,19 +98,13 @@ const createTables = async () => {
     console.log('✅ Payments table created');
 
     // Notifications table (using UUID for user_id)
-    await client.query(`
-      CREATE TABLE IF NOT EXISTS notifications (
-        id SERIAL PRIMARY KEY,
-        type VARCHAR(50) NOT NULL,
-        title VARCHAR(255) NOT NULL,
-        message TEXT,
-        user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-        related_id INTEGER,
-        related_type VARCHAR(50),
-        is_read BOOLEAN DEFAULT false,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-      )
-    `);
+    // P0-8 (Gap Register): notebook previously CREATE'd `notifications` here
+    // with a SERIAL integer id and its own columns. api-core owns that table
+    // (UUID ids, notification_type enum), and on any database where the init
+    // SQL ran first this IF NOT EXISTS silently no-opped, leaving notebook's
+    // INSERT targeting columns that do not exist -- it failed on every project
+    // creation and was swallowed by a catch. One owner per table: notebook
+    // reads and writes api-core's shape (see routes/) and defines nothing.
     console.log('✅ Notifications table created');
 
     // Activity logs table (using UUID for user_id)
