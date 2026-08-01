@@ -58,12 +58,17 @@ interface NewPlan {
 interface StudyPlan {
   id?: string;
   exam_type: string;
-  target_date: string;
+  // P1-4 (Gap Register): these used to be non-null and were FABRICATED when
+  // the backend had nothing: a target date 45 days out the user never chose,
+  // "45 days until exam", progress || 32 (which replaced a real 0% with 32%),
+  // and GRE-shaped default scores. Null now means "no data", and the cards
+  // say so instead of inventing a personalized-looking number.
+  target_date: string | null;
   target_score: number;
-  current_score: number;
-  days_until_exam: number;
+  current_score: number | null;
+  days_until_exam: number | null;
   progress: number;
-  estimated_score?: number;
+  estimated_score?: number | null;
   weekly_schedule?: any;
 }
 
@@ -170,29 +175,29 @@ export default function StudyPlanPage() {
         const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
         const accuracyAsScore = statsRes.overall_accuracy
           ? Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * (statsRes.overall_accuracy / 100))
-          : Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.5);
+          : null; // no practice history: say "no data", never invent a midpoint score
         setStudyPlan({
           exam_type: examType,
-          target_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+          target_date: null,
           target_score: targetScore,
           current_score: accuracyAsScore,
-          days_until_exam: 45,
-          progress: progressRes.data?.overall_progress || 32,
-          estimated_score: predRes.exam_score?.expected || accuracyAsScore,
+          days_until_exam: null,
+          progress: progressRes.data?.overall_progress ?? 0,
+          estimated_score: predRes.exam_score?.expected ?? accuracyAsScore,
         });
       } catch (error) {
         console.log('Predictions not available, using defaults');
         const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
         const accuracyAsScore = statsRes.overall_accuracy
           ? Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * (statsRes.overall_accuracy / 100))
-          : Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.5);
+          : null; // no practice history: say "no data", never invent a midpoint score
         setStudyPlan({
           exam_type: examType,
-          target_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+          target_date: null,
           target_score: targetScore,
           current_score: accuracyAsScore,
-          days_until_exam: 45,
-          progress: progressRes.data?.overall_progress || 32,
+          days_until_exam: null,
+          progress: progressRes.data?.overall_progress ?? 0,
           estimated_score: accuracyAsScore,
         });
       }
@@ -213,15 +218,14 @@ export default function StudyPlanPage() {
       // Set default values on error — scale targets to the active exam's
       // actual score range so non-GRE users see numbers that make sense.
       const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
-      const baselineScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.5);
       setStudyPlan({
         exam_type: examType,
-        target_date: new Date(Date.now() + 45 * 24 * 60 * 60 * 1000).toISOString(),
+        target_date: null,
         target_score: targetScore,
-        current_score: baselineScore,
-        days_until_exam: 45,
+        current_score: null,
+        days_until_exam: null,
         progress: 0,
-        estimated_score: baselineScore,
+        estimated_score: null,
       });
 
       setRecommendations(fallbackRecommendations());
@@ -308,7 +312,7 @@ export default function StudyPlanPage() {
         exam_type: newPlan.examType,
         target_date: newPlan.targetDate,
         target_score: parseInt(newPlan.targetScore),
-        current_score: studyPlan?.current_score || 0,
+        current_score: studyPlan?.current_score ?? null,
         weak_areas: recommendations.filter(r => r.priority === 'high').map(r => r.topic),
         available_hours: newPlan.studyHoursPerDay * newPlan.studyDaysPerWeek
       });
@@ -399,7 +403,11 @@ export default function StudyPlanPage() {
           </div>
           <div className="bg-white/10 rounded-lg p-4">
             <p className="text-indigo-100 text-sm">Days Until Exam</p>
-            <p className="text-xl font-semibold">{studyPlan?.days_until_exam || 45}</p>
+            {studyPlan?.days_until_exam != null ? (
+              <p className="text-xl font-semibold">{studyPlan.days_until_exam}</p>
+            ) : (
+              <p className="text-sm text-indigo-200 mt-1">No exam date set</p>
+            )}
           </div>
           <div className="bg-white/10 rounded-lg p-4">
             <p className="text-indigo-100 text-sm">Progress</p>
@@ -413,10 +421,14 @@ export default function StudyPlanPage() {
           <div className="bg-white/10 rounded-lg p-4">
             <p className="text-indigo-100 text-sm">Estimated Score</p>
             <div className="flex items-center gap-2">
-              <p className="text-xl font-semibold">{studyPlan?.estimated_score || 300}</p>
-              {predictions && (
+              {studyPlan?.estimated_score != null ? (
+                <p className="text-xl font-semibold">{studyPlan.estimated_score}</p>
+              ) : (
+                <p className="text-sm text-indigo-200 mt-1">No practice data yet</p>
+              )}
+              {predictions && studyPlan?.target_score != null && (
                 <span className="text-xs text-indigo-200">
-                  Target: {studyPlan?.target_score || 320}
+                  Target: {studyPlan.target_score}
                 </span>
               )}
             </div>

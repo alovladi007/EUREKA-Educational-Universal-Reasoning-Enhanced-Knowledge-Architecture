@@ -1152,7 +1152,9 @@ class ApiClient {
     exam_type: string;
     target_date: string;
     target_score: number;
-    current_score: number;
+    // Null when the learner has no practice history. Sending 0 would assert a
+    // measured score of zero, which is a different claim from "unknown".
+    current_score: number | null;
     weak_areas: string[];
     available_hours: number;
   }): Promise<any> {

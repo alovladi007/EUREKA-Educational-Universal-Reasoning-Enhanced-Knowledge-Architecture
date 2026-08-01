@@ -10,6 +10,11 @@ import { Badge } from '@/components/ui/badge';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
+// P3-3 (Gap Register): this URL was hardcoded, which is dead in any
+// deployment and collided with another service's default port. The env
+// var keeps local behavior identical and makes production configurable.
+const VIDEO_SERVICE_URL = process.env.NEXT_PUBLIC_VIDEO_SERVICE_URL || 'http://localhost:3010';
+
 interface Note {
   id: string;
   note_text: string;
@@ -53,7 +58,7 @@ export default function VideoPlayerPage() {
   const fetchContent = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:3010/api/packages/${contentId}`, {
+      const response = await fetch(`${VIDEO_SERVICE_URL}/api/packages/${contentId}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -73,7 +78,7 @@ export default function VideoPlayerPage() {
   const fetchNotes = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:3010/api/videos/${contentId}/notes`, {
+      const response = await fetch(`${VIDEO_SERVICE_URL}/api/videos/${contentId}/notes`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -134,7 +139,7 @@ export default function VideoPlayerPage() {
 
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:3010/api/videos/${contentId}/notes`, {
+      const response = await fetch(`${VIDEO_SERVICE_URL}/api/videos/${contentId}/notes`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -160,7 +165,7 @@ export default function VideoPlayerPage() {
   const handleDeleteNote = async (noteId: string) => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch(`http://localhost:3010/api/notes/${noteId}`, {
+      const response = await fetch(`${VIDEO_SERVICE_URL}/api/notes/${noteId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

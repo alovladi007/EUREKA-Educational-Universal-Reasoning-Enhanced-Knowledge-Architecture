@@ -100,7 +100,7 @@ function TestPrepDashboardInner() {
   const fetchUserAccess = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:3010/api/my-access', {
+      const response = await fetch(`${VIDEO_SERVICE_URL}/api/my-access`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -118,7 +118,7 @@ function TestPrepDashboardInner() {
   const fetchPackages = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:3010/api/packages', {
+      const response = await fetch(`${VIDEO_SERVICE_URL}/api/packages`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -136,7 +136,7 @@ function TestPrepDashboardInner() {
   const fetchProgress = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      const response = await fetch('http://localhost:3010/api/progress', {
+      const response = await fetch(`${VIDEO_SERVICE_URL}/api/progress`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -431,6 +431,11 @@ function TestPrepDashboardInner() {
 // Wrap the page that calls useSearchParams() in a Suspense boundary
 // so Next 14 static export doesn't bail out. (Session 3.6, 2026-05.)
 import { Suspense } from 'react';
+
+// P3-3 (Gap Register): this URL was hardcoded, which is dead in any
+// deployment and collided with another service's default port. The env
+// var keeps local behavior identical and makes production configurable.
+const VIDEO_SERVICE_URL = process.env.NEXT_PUBLIC_VIDEO_SERVICE_URL || 'http://localhost:3010';
 export default function TestPrepDashboard() {
   return (
     <Suspense fallback={null}>

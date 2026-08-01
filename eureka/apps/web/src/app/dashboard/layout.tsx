@@ -3,6 +3,7 @@
 import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
 import ProtectedRoute from "@/components/auth/ProtectedRoute"
+import ServiceHealthBanner from "@/components/ServiceHealthBanner"
 import { useEffect } from "react"
 import { useAuthStore } from "@/stores/auth"
 
@@ -35,6 +36,12 @@ export default function DashboardLayout({
         <Sidebar />
         <div className="flex flex-1 flex-col overflow-hidden">
           <Header user={user || undefined} />
+          {/* P1-3 (Gap Register): the degraded-service banner was mounted only
+              in the legacy SRS-only DashboardLayout component, so the layout
+              every real dashboard page uses showed nothing when a backing
+              service was down and pages went silently empty instead. Mounted
+              here, it covers all of /dashboard/*. */}
+          <ServiceHealthBanner />
           {/* pb-28 reserves space for fixed bottom-docked bars (cookie
               consent, offline banner) so they never cover the last
               interactive control — e.g. the QBank "Start"/"Submit" buttons,
