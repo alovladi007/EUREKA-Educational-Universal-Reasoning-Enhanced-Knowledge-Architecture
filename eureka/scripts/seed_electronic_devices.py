@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Seed the Practical Electronics course into api-core's course tables.
+"""Seed the Electronic Devices course into api-core's course tables.
 
 Idempotent by natural key (P2-18 discipline): the course is keyed by its code,
 modules by (course, order_index), content by (course, title). Re-running
@@ -28,9 +28,9 @@ import re
 import subprocess
 
 ROOT = pathlib.Path(__file__).resolve().parents[1]
-DOCS = ROOT / "docs" / "courses" / "practical-electronics"
-COURSE_CODE = "ELEC-PRACT"
-COURSE_TITLE = "Practical Electronics: Devices and Circuit Design"
+DOCS = ROOT / "docs" / "courses" / "electronic-devices"
+COURSE_CODE = "ELEC-DEV"
+COURSE_TITLE = "Electronic Devices: Design and Characteristics"
 
 
 def q(s: str) -> str:
@@ -51,13 +51,21 @@ def main() -> None:
 
     sql = ["BEGIN;"]
 
+    # One-time identity migration: the course first shipped titled too close
+    # to its coverage reference. Rename in place so enrollments and content
+    # rows keep their course_id.
+    sql.append(f"""
+UPDATE courses SET code = '{COURSE_CODE}', title = '{q(COURSE_TITLE)}'
+WHERE code = 'ELEC-PRACT';
+""")
+
     # CourseResponse.syllabus is dict-typed; a bare list 500s the listing.
     syllabus = json.dumps({"chapters": curriculum}).replace("'", "''")
     sql.append(f"""
 INSERT INTO courses (org_id, title, code, description, tier, subject, category, level,
                      syllabus, status, is_published, metadata)
 SELECT o.id, '{q(COURSE_TITLE)}', '{COURSE_CODE}',
-       'A complete practical electronics course: circuit theory, components, '
+       'A complete electronics course: circuit theory, components, '
        'semiconductors, optoelectronics, sensors, workshop practice, op amps, '
        'filters, oscillators, power supplies, digital logic, microcontrollers, '
        'motors, audio, and modular prototyping systems. Lesson text is original '

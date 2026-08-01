@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Coverage report for the Practical Electronics course.
+"""Coverage report for the Electronic Devices course.
 
 Compares the full topic map (curriculum.json, 548 sections) with the union of
 sections the authored lessons declare in their `<!-- covers: ... -->` headers.
@@ -17,7 +17,7 @@ import json
 import pathlib
 import re
 
-DOCS = pathlib.Path(__file__).resolve().parents[1] / "docs" / "courses" / "practical-electronics"
+DOCS = pathlib.Path(__file__).resolve().parents[1] / "docs" / "courses" / "electronic-devices"
 
 
 def main() -> None:

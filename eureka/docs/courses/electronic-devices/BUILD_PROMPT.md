@@ -1,6 +1,6 @@
-# Practical Electronics — Course Build Prompt (continuation sessions)
+# Electronic Devices — Course Build Prompt (continuation sessions)
 
-Course `ELEC-PRACT` ("Practical Electronics: Devices and Circuit Design")
+Course `ELEC-DEV` ("Electronic Devices: Design and Characteristics")
 lives in api-core (`courses` / `course_modules` / `course_content`) and is
 live in the catalog. This doc is the standing prompt for authoring the
 remaining lessons. Paste it (or point the agent at it) to continue.
@@ -12,9 +12,9 @@ remaining lessons. Paste it (or point the agent at it) to continue.
   untitled sections.
 - Authored and live: Module 1 complete; Module 2 sections 2.1-2.20 (4
   lessons). Coverage: 49/549 sections. Run
-  `python3 scripts/check_pe_coverage.py` for the current table.
+  `python3 scripts/check_ed_coverage.py` for the current table.
 - Modules auto-publish only when every section is covered by an authored
-  lesson (`scripts/seed_practical_electronics.py` computes this). Unauthored
+  lesson (`scripts/seed_electronic_devices.py` computes this). Unauthored
   modules stay visible but unpublished. Never publish a topic map as if it
   were content.
 
@@ -38,9 +38,9 @@ remaining lessons. Paste it (or point the agent at it) to continue.
    `<!-- covers: 2.21, 2.22, ... -->` listing every section number the lesson
    covers (L2 numbers cover their L3 children; list L3 only when a child is
    split across lessons). 600-1000 words, plain markdown, ASCII.
-5. **After authoring:** run `python3 scripts/check_pe_coverage.py`, then
-   `python3 scripts/seed_practical_electronics.py` (idempotent), then spot-
-   check `GET /api/v1/courses/?search=Practical` returns 200. Commit lessons +
+5. **After authoring:** run `python3 scripts/check_ed_coverage.py`, then
+   `python3 scripts/seed_electronic_devices.py` (idempotent), then spot-
+   check `GET /api/v1/courses/?search=Electronic%20Devices` returns 200. Commit lessons +
    this doc's state line together.
 
 ## Authoring order (grouped into sessions of roughly one module)
