@@ -2,169 +2,356 @@
 
 <!-- covers: 18.5, 18.6, 18.7, 18.8 -->
 
-## Scattering mechanisms in semiconductors
+**Level.** Section 1 and 3 are the undergraduate core. Section 2 is the
+Boltzmann formalism and section 4 the effective-medium theory; both are
+graduate material, and both are used later in the course, so they are derived
+rather than quoted.
 
-A semiconductor has far fewer carriers than a metal, and those carriers are
-not degenerate, so the scattering picture is richer. Four mechanisms matter in
-practice, and knowing which one dominates tells you what to do about it.
+## 1. Scattering mechanisms in semiconductors
 
-**Acoustic phonon (lattice) scattering.** Carriers scatter off the
-long-wavelength vibrations of the lattice. The scattering rate rises with
-temperature, and for a simple band the resulting mobility falls roughly as
-T^(-3/2). This is the mechanism that limits mobility in a pure, lightly doped
-crystal at and above room temperature.
+A semiconductor has far fewer carriers than a metal, and they are
+non-degenerate, so the scattering picture is richer. Four mechanisms matter.
 
-**Ionized impurity scattering.** A charged dopant ion deflects a passing
-carrier by Coulomb attraction or repulsion. A slow carrier spends longer in the
-ion's field and is deflected more, so *faster* carriers scatter less. Since
-carriers get faster as the crystal warms, this mobility contribution *rises*
-with temperature, roughly as T^(3/2), the opposite trend from phonons. It also
-scales with the ionized impurity concentration.
+### 1.1 Acoustic phonon (deformation potential) scattering
 
-Put those two together with Matthiessen's rule and you get the characteristic
-mobility-versus-temperature curve of a doped semiconductor: rising at low
-temperature where impurity scattering dominates, peaking, then falling at high
-temperature where phonons take over. The peak moves to higher temperature as
-doping increases. This shape is a fingerprint, and measuring it is a standard
-way to separate the two contributions.
+A long-wavelength acoustic phonon strains the lattice, and strain shifts the
+band edge by the deformation potential $\Xi$. Carriers scatter off that
+fluctuating potential. Fermi's golden rule with an elastic, equipartitioned
+phonon population gives a relaxation time
 
-**Neutral impurity, alloy and carrier-carrier scattering.** Un-ionized
-impurities scatter weakly and mostly matter at low temperature. In alloys such
-as SiGe or AlGaAs, random arrangement of the constituent atoms scatters
-carriers even when the material is chemically perfect: **alloy scattering**
-sets a mobility ceiling that purification cannot lift. Carrier-carrier
-scattering redistributes momentum within the carrier population; because it
-conserves total momentum it does not directly limit conductivity, but it does
-matter for how energy is shared.
+$$
+\tau_{\rm ac}(E)=\frac{\pi\hbar^{4}c_{l}}{\sqrt{2}\,\Xi^{2}(m^{*})^{3/2}k_BT}\;E^{-1/2}
+$$
 
-**Optical phonon scattering.** At higher fields and temperatures carriers can
-emit optical phonons, which carry a large fixed quantum of energy. This is a
-strongly inelastic process and it is the main brake on carriers at high field
-(section 18.10).
+with $c_l$ the longitudinal elastic constant. Two features carry the physics:
+the explicit $T^{-1}$ from the phonon population, and $\tau\propto E^{-1/2}$.
+Averaging over a Maxwellian, as in module 18 lesson 1 section 5.2, adds a
+further $T^{-1/2}$, so
 
-Two design consequences follow immediately. First, heavy doping raises carrier
-density but lowers mobility, so conductivity does not rise proportionally with
-doping and eventually saturates. Second, if you want both high carrier density
-and high mobility, you have to physically separate the carriers from the
-dopants that supplied them, which is exactly the trick behind the
-two-dimensional electron gas in section 18.12.
+$$
+\boxed{\;\mu_{\rm ac}\propto T^{-3/2}\;}
+$$
 
-## The Boltzmann transport picture
+### 1.2 Ionised impurity scattering
 
-Everything above was a relaxation-time argument: assume a single average time
-between collisions and turn the crank. The **Boltzmann transport equation** is
-the framework that justifies it and shows where it breaks.
+A carrier passing a charged dopant is deflected by a screened Coulomb
+potential. The Brooks-Herring treatment yields
 
-The idea is to track a distribution function f(r, k, t): the probability that
-a state at position r with crystal momentum hbar*k is occupied at time t. At
-equilibrium f is the Fermi-Dirac distribution. Applied fields and temperature
-gradients push it away from equilibrium; collisions push it back. The equation
-is a bookkeeping statement that those effects must balance in steady state:
+$$
+\mu_{\rm ii}=\frac{128\sqrt{2\pi}\,\varepsilon^{2}(k_BT)^{3/2}}
+{N_I\,e^{3}\sqrt{m^{*}}\;\ln\!\left(1+b\right)-b/(1+b)},
+\qquad
+b=\frac{24 m^{*}\varepsilon (k_BT)^{2}}{\hbar^{2}e^{2}n}
+$$
 
-    (drift in real space) + (acceleration in k-space) = (collision term)
+The structure matters more than the constants: $\mu_{\rm ii}\propto
+T^{3/2}/N_I$. A faster carrier spends less time in the ion's field and is
+deflected less, so **hotter is better** here, the opposite of phonons. The
+logarithm is the screening cut-off, which is why the result depends weakly on
+carrier density as well as on impurity density.
 
-Solving it in general is hard because the collision term is an integral over
-all possible scattering events. The standard simplification is the
-**relaxation time approximation**: assume collisions restore equilibrium
-exponentially with a single time constant tau, which may depend on carrier
-energy. That assumption reproduces sigma = n e mu and gives a principled way to
-compute tau for each mechanism, which is where the T^(-3/2) and T^(3/2)
-exponents above come from.
+Put the two together with Matthiessen's rule and the peaked curve of lesson 1
+follows, with the peak moving to higher temperature as doping rises.
 
-What the full framework buys you beyond the simple picture:
+### 1.3 Alloy and neutral impurity scattering
 
-- It handles **energy-dependent scattering** correctly, so the mobility is an
-  appropriate average over the carrier distribution rather than a single
-  number. This is why the Hall mobility and the conductivity mobility differ
-  by a numerical factor of order one (section 18.9).
-- It treats **thermal transport and thermoelectric effects** in the same
-  language, which is the foundation of module 55.
-- It shows explicitly when the relaxation-time picture fails: when scattering
-  is strongly inelastic (optical phonon emission at high field), when the mean
-  free path approaches the device size (ballistic transport), and when the
-  field changes faster than tau.
+In a random alloy $A_xB_{1-x}C$, the cation site potential fluctuates even in a
+chemically perfect crystal. The scattering rate is proportional to the same
+composition variance met in Nordheim's rule:
 
-That last point matters more each generation. In a transistor with a channel
-tens of nanometres long, a carrier may cross without scattering at all. Drift
-and mobility stop being the right description, and the device has to be
-modelled ballistically or by direct Monte Carlo simulation of individual
-carrier trajectories. Knowing that the diffusive picture has a domain of
-validity, rather than treating it as universal, is the useful takeaway.
+$$
+\frac{1}{\tau_{\rm alloy}}\propto x(1-x)\,\Delta U^{2}
+$$
 
-## Resistivity of thin and polycrystalline films
+so alloy scattering sets a **mobility ceiling that purification cannot lift**.
+This is why SiGe, AlGaAs and the quaternaries have mobilities well below their
+endpoint compounds, and it is the reason module 55 can use alloying to wreck
+thermal conductivity on purpose.
 
-Bulk resistivity values do not apply to the films actually used in devices,
-and the discrepancy has become one of the central problems of modern
-interconnect.
+### 1.4 Optical phonon and carrier-carrier scattering
 
-Two effects add resistivity to a thin film, and both are geometric rather than
-chemical.
+Optical phonons carry a large fixed quantum, $\hbar\omega_{\rm op}=63\ {\rm meV}$
+in silicon and $36\ {\rm meV}$ in GaAs. Below that energy a carrier cannot emit
+one, so the channel switches on abruptly once carriers are heated past it. That
+threshold is the brake behind velocity saturation in the next lesson.
 
-**Surface scattering.** When the film thickness approaches the bulk mean free
-path (about 40 nm for copper at room temperature), a substantial fraction of
-carriers hit a surface before they hit anything else. If a surface scatters
-diffusely, that carrier's forward momentum is lost. The resistivity rise
-scales roughly with the ratio of mean free path to thickness, so it grows
-sharply as films thin.
+Carrier-carrier scattering conserves total momentum, so to first order it does
+**not** limit conductivity. It redistributes energy within the carrier gas,
+which matters for how hot carriers thermalize, not for how much current flows.
 
-**Grain boundary scattering.** A polycrystalline film is a mosaic of grains
-with disordered boundaries between them. Each boundary partially reflects
-carriers. The added resistivity scales with the ratio of mean free path to
-grain size and with the reflection coefficient of a boundary. Since deposited
-films tend to have grains comparable to their thickness, thinning a film
-usually shrinks the grains too, and the two effects compound.
+### 1.5 The design consequence
 
-The practical consequence is severe and current. Copper interconnect lines in
-advanced logic are now narrower than copper's mean free path, so their
-effective resistivity is several times the handbook bulk value and rises as
-lines get narrower. Interconnect delay and interconnect power have therefore
-been growing while transistors improved, which is why alternative metals with
-shorter mean free paths, such as cobalt and ruthenium, are under serious
-evaluation despite worse bulk numbers. A material with worse bulk resistivity
-can win at 15 nm because it degrades less on the way down. Bulk properties are
-the wrong figure of merit for nanoscale conductors.
+Doping raises $n$ and lowers $\mu$, so conductivity saturates rather than
+scaling with dopant. Getting **both** high density and high mobility requires
+separating carriers from their parent dopants in space, which is exactly the
+modulation-doping trick of lesson 4.
 
-Thin metal films also have a diffusion barrier and liner around them, which
-occupy cross-section without conducting well, further reducing the effective
-area. Module 44 covers deposition and microstructure, which is where grain
-size is actually decided.
+| mechanism | $\tau(E)$ | $\mu(T)$ | controlled by |
+|---|---|---|---|
+| acoustic phonon | $E^{-1/2}$ | $T^{-3/2}$ | nothing (intrinsic) |
+| ionised impurity | $E^{+3/2}$ | $T^{+3/2}$ | doping, compensation |
+| alloy disorder | $E^{-1/2}$ | $T^{-1/2}$ | composition only |
+| optical phonon | threshold | steep above $\hbar\omega_{\rm op}$ | intrinsic |
+| surface roughness | - | falls with field | interface quality |
 
-## Effective-medium treatment of inhomogeneous conductors
+## 2. The Boltzmann transport equation
 
-Many real materials are not uniform. A thick-film resistor is conductive
-particles in a glass matrix; a porous film is solid plus void; a composite is
-two phases with very different conductivities. You need a way to predict the
-conductivity of the mixture from the conductivities and volume fractions of
-the constituents.
+Everything above assumed a relaxation time. The Boltzmann equation is what
+justifies it and shows where it fails.
 
-**Effective medium approximation** does this by treating each inclusion as if
-it were embedded in a uniform medium whose conductivity is the unknown
-effective value, then requiring self-consistency: the average perturbation
-caused by the inclusions must vanish. For a random mixture of two phases, this
-yields an implicit equation for the effective conductivity that reduces to
-sensible limits at each end.
+### 2.1 The equation
 
-Two features of the result matter more than the algebra.
+Track $f(\mathbf{r},\mathbf{k},t)$, the occupation of a state. In steady state
+the streaming terms balance the collisions:
 
-**The bounds are far apart.** The same two materials in the same proportions
-can have wildly different conductivity depending on geometry. Continuous
-parallel paths of the good conductor give a volume-weighted arithmetic
-average, the highest possible value. Layers in series across the current give
-a harmonic average, the lowest. Real random mixtures fall between, so knowing
-composition alone does not determine conductivity. Microstructure does.
+$$
+\underbrace{\mathbf{v}\cdot\nabla_{\mathbf{r}}f}_{\text{diffusion}}
++\underbrace{\frac{\mathbf{F}}{\hbar}\cdot\nabla_{\mathbf{k}}f}_{\text{field}}
+=\left(\frac{\partial f}{\partial t}\right)_{\rm coll}
+$$
 
-**There is a percolation threshold.** In a random mixture of conducting and
-insulating particles, conductivity stays near zero until the conducting phase
-forms a connected path spanning the sample, then rises steeply. For randomly
-packed spheres this happens near 30 percent volume fraction of the conductor,
-though the threshold depends strongly on particle shape: high aspect ratio
-fillers such as fibres or nanotubes percolate at a few percent or less.
+The collision term is an integral over all transitions,
 
-This is directly practical. Conductive adhesives and conductive plastics
-(modules 54 and 52) are formulated just above their percolation threshold,
-close enough to be economical and far enough to be reliable, because
-conductivity near the threshold is steep and therefore sensitive to processing
-variation. Thick-film resistor pastes (module 45) get their wide range of
-sheet resistances by varying filler fraction across the percolation region.
-And a porous or partly oxidized metal film can be far more resistive than its
-density suggests, because current has to thread around the voids.
+$$
+\left(\frac{\partial f}{\partial t}\right)_{\rm coll}
+=\sum_{\mathbf{k}'}\Big[S(\mathbf{k}',\mathbf{k})f'(1-f)-S(\mathbf{k},\mathbf{k}')f(1-f')\Big]
+$$
+
+which is what makes the equation hard.
+
+### 2.2 The relaxation-time approximation and what it delivers
+
+Assume collisions drive $f$ back to equilibrium exponentially,
+
+$$
+\left(\frac{\partial f}{\partial t}\right)_{\rm coll}=-\frac{f-f_0}{\tau(E)}
+$$
+
+Linearising for a small uniform field gives
+$f=f_0+e\tau\mathbf{v}\cdot\boldsymbol{\mathcal{E}}\,(\partial f_0/\partial E)$,
+and integrating the current $\mathbf{J}=-e\int\mathbf{v}f\,d^{3}k/4\pi^{3}$
+returns
+
+$$
+\sigma=\frac{ne^{2}\langle\tau\rangle}{m^{*}}
+$$
+
+with the energy average of lesson 1. So the Drude form is recovered, now with a
+principled definition of $\langle\tau\rangle$ and a route to computing it per
+mechanism.
+
+The same framework, with a temperature gradient instead of a field, gives the
+thermoelectric coefficients of module 55 without any new physics.
+
+### 2.3 Where the picture breaks
+
+Three failures, each of which names a later topic:
+
+- **Inelastic scattering.** Optical phonon emission removes a fixed large
+  energy, so no single $\tau$ describes it. High-field transport needs the full
+  equation or Monte Carlo.
+- **Ballistic transport.** When the device is shorter than $\ell$, carriers
+  cross without scattering and $\mu$ stops being meaningful. In a 20 nm channel
+  with $\ell\approx50$ nm this is the normal case, and the Landauer picture of
+  lesson 4 replaces drift-diffusion.
+- **Fast transients.** If the field changes on a timescale shorter than $\tau$,
+  carriers overshoot their steady-state velocity. Velocity overshoot is real and
+  is exploited in short-channel devices.
+
+## 3. Resistivity of thin and polycrystalline films
+
+Bulk resistivity does not describe the films devices are made of, and the gap is
+now a first-order industry problem.
+
+### 3.1 Surface scattering: Fuchs-Sondheimer
+
+Solve the Boltzmann equation in a slab with a boundary condition that a
+fraction $p$ of carriers reflect specularly and $(1-p)$ diffusely. For a film
+much thicker than the mean free path the result reduces to
+
+$$
+\boxed{\;\frac{\rho_f}{\rho_0}=1+\frac{3}{8}(1-p)\frac{\lambda}{t}\;}
+\qquad (t\gg\lambda)
+$$
+
+Specular reflection ($p=1$) costs nothing: the carrier keeps its forward
+momentum. Only diffuse reflection, which randomises direction, adds
+resistivity.
+
+### 3.2 Grain boundaries: Mayadas-Shatzkes
+
+Model boundaries as planes of reflection coefficient $R$ spaced by the grain
+diameter $d$. With $\alpha=(\lambda/d)\,R/(1-R)$,
+
+$$
+\frac{\rho_0}{\rho_g}=3\left[\frac{1}{3}-\frac{\alpha}{2}+\alpha^{2}
+-\alpha^{3}\ln\!\left(1+\frac{1}{\alpha}\right)\right]
+$$
+
+![Both size effects plotted against dimension in units of the bulk mean free path, which is why the curves are material-independent. Below about two mean free paths the film is dominated by its own geometry.](/courses/electronic-devices/figures/m18-thin-film-resistivity.svg)
+
+### 3.3 Why this now governs interconnect
+
+Copper's mean free path is about 39 nm at 300 K. Advanced interconnect lines are
+narrower than that, so both effects are in their strong regime and compound,
+because deposited films tend to have grains comparable to their thickness.
+
+### Worked example 3.1 — the effective resistivity of a narrow line
+
+A copper line is 20 nm wide with grain size $d\approx20$ nm, $p=0$, $R=0.3$,
+$\lambda=39$ nm, $\rho_0=16.8\ {\rm n\Omega\,m}$. Estimate the resistivity.
+
+Surface term:
+
+$$
+\frac{\rho_f}{\rho_0}=1+\frac{3}{8}(1)\frac{39}{20}=1+0.73=1.73
+$$
+
+Grain boundary term with $\alpha=(39/20)(0.3/0.7)=0.836$:
+
+$$
+3\left[0.333-0.418+0.699-0.584\ln(2.196)\right]=3\left[0.614-0.460\right]=0.463
+$$
+
+so $\rho_g/\rho_0=1/0.463=2.16$. Adding the excesses (Matthiessen in the same
+spirit as lesson 1):
+
+$$
+\frac{\rho}{\rho_0}\approx1+0.73+1.16=2.89
+\quad\Longrightarrow\quad
+\rho\approx48.5\ {\rm n\Omega\,m}
+$$
+
+Nearly three times the handbook value. **This is why a metal with worse bulk
+resistivity but a shorter mean free path, such as cobalt or ruthenium, can win
+at 15 nm**: it degrades less on the way down. Bulk resistivity is the wrong
+figure of merit for a nanoscale conductor.
+
+## 4. Inhomogeneous media and the effective-medium approximation
+
+Thick-film resistors, conductive adhesives, porous films and composites are
+mixtures, and their conductivity is not a weighted average of the constituents.
+
+### 4.1 Bounds first
+
+For any two-phase mixture, conduction is bounded by the two extreme geometries:
+
+$$
+\sigma_{\parallel}=\phi\sigma_1+(1-\phi)\sigma_2
+\qquad\text{(slabs parallel to the current)}
+$$
+
+$$
+\frac{1}{\sigma_{\perp}}=\frac{\phi}{\sigma_1}+\frac{1-\phi}{\sigma_2}
+\qquad\text{(slabs across the current)}
+$$
+
+These Wiener bounds are far apart when the constituents differ strongly, which
+is the first lesson: **composition does not determine conductivity;
+microstructure does.**
+
+### 4.2 The Bruggeman self-consistent condition
+
+Embed each inclusion in a medium of the unknown effective conductivity and
+require that the average field perturbation vanish. For spherical inclusions in
+three dimensions,
+
+$$
+\phi\,\frac{\sigma_1-\sigma_{\rm eff}}{\sigma_1+2\sigma_{\rm eff}}
++(1-\phi)\,\frac{\sigma_2-\sigma_{\rm eff}}{\sigma_2+2\sigma_{\rm eff}}=0
+$$
+
+Setting the insulating phase to $\sigma_2=0$ and solving gives a strikingly
+simple result:
+
+$$
+\boxed{\;\sigma_{\rm eff}=\sigma_1\,\frac{\phi-\phi_c}{1-\phi_c},
+\qquad \phi_c=\tfrac{1}{3}\;}
+$$
+
+Conductivity is exactly zero below a **percolation threshold** and rises
+linearly above it.
+
+![The self-consistent mixture has no conduction at all until a connected path spans the sample. The parallel bound is drawn for comparison: the same composition, a different geometry, a completely different conductivity.](/courses/electronic-devices/figures/m18-percolation.svg)
+
+### 4.3 Percolation in practice
+
+The Bruggeman $\phi_c=1/3$ is for spheres in the mean-field treatment. Real
+thresholds depend strongly on particle shape, because what matters is
+connectivity, not volume:
+
+| filler shape | approximate $\phi_c$ | consequence |
+|---|---|---|
+| spheres, random packing | 0.25 to 0.30 | conductive adhesives are heavily loaded |
+| flakes | 0.05 to 0.15 | silver flake beats silver powder |
+| fibres, aspect ratio 100 | 0.01 to 0.02 | carbon fibre composites conduct cheaply |
+| nanotubes, aspect ratio 1000 | below 0.005 | a fraction of a percent suffices |
+
+Near threshold, conductivity follows a power law $\sigma\propto(\phi-\phi_c)^{t}$
+with $t\approx2$ in three dimensions, so it is **steep**, and therefore
+sensitive to processing variation. Formulators sit deliberately above the knee.
+
+Three places this returns in the course: thick-film resistor pastes get their
+decade range of sheet resistance by moving across this curve (module 45);
+isotropic and anisotropic conductive adhesives are formulated respectively just
+above and just below threshold (module 54); and a porous or partly oxidised
+metal film is far more resistive than its density suggests, because current
+must thread around the voids.
+
+## 5. Problems
+
+**P18.6** A silicon sample at 300 K has $N_I=10^{17}\ {\rm cm^{-3}}$ and
+lattice-limited mobility 1350. Given $\mu_{\rm ii}=760\ {\rm cm^{2}/Vs}$ at this
+doping, find $\mu$ at 300 K and at 200 K, using the temperature exponents from
+the table.
+
+**P18.7** An aluminium film is 30 nm thick with $\lambda=19$ nm and fully
+diffuse surfaces. By what factor does surface scattering alone raise its
+resistivity? What thickness would halve that excess?
+
+**P18.8** A conductive adhesive uses silver spheres with $\phi_c=0.28$ and
+$t=2.0$. If a formulation at $\phi=0.35$ has bulk conductivity
+$1.0\times10^{5}\ {\rm S/m}$, what conductivity results if mixing variation
+drops a batch to $\phi=0.31$? Comment on process control.
+
+**P18.9** *(graduate)* Starting from the linearised Boltzmann equation, show
+that a temperature gradient produces a current
+$\mathbf{J}=\sigma S(-\nabla T)$ and identify $S$ as an energy-weighted average
+of $\tau$. This is the Seebeck coefficient of module 55.
+
+### Answers
+
+**P18.6** At 300 K, $1/\mu=1/1350+1/760\Rightarrow\mu=486\ {\rm cm^{2}/Vs}$. At
+200 K, $\mu_L=1350(200/300)^{-3/2}=2480$ and
+$\mu_I=760(200/300)^{3/2}=414$, so $1/\mu=1/2480+1/414\Rightarrow
+\mu=355\ {\rm cm^{2}/Vs}$. Cooling made it **worse**, because at this doping
+impurity scattering already dominates and it gets stronger as carriers slow.
+That is the left-hand branch of the lesson 1 figure.
+
+**P18.7** $\rho_f/\rho_0=1+\tfrac{3}{8}(19/30)=1.238$, a 23.8 percent excess. To
+halve it to 11.9 percent needs $\tfrac{3}{8}(19/t)=0.119$, so $t=60$ nm.
+Thickness buys improvement only linearly in $1/t$, which is why this problem
+does not go away with modest process changes.
+
+**P18.8** $\sigma\propto(\phi-\phi_c)^{2}$. Ratio
+$=\left[(0.31-0.28)/(0.35-0.28)\right]^{2}=(0.03/0.07)^{2}=0.184$, so
+$\sigma$ falls to $1.8\times10^{4}\ {\rm S/m}$, a factor of 5.4 for a 4 percent
+loading change. Near threshold the composition tolerance has to be far tighter
+than intuition suggests, which is why formulations sit well above the knee even
+though silver is expensive.
+
+**P18.9** With $f=f_0+g$ and $f_0$ depending on $\mathbf{r}$ through $T$, the
+streaming term contributes
+$\mathbf{v}\cdot\nabla T\,(\partial f_0/\partial T)
+=\mathbf{v}\cdot\nabla T\,\frac{E-E_F}{T}\left(-\frac{\partial f_0}{\partial E}\right)$.
+Balancing against $-g/\tau$ and integrating the current gives
+$\mathbf{J}=\sigma S(-\nabla T)$ with
+
+$$
+S=-\frac{1}{eT}\frac{\langle\tau(E)\,(E-E_F)\rangle}{\langle\tau(E)\rangle}
+$$
+
+So the Seebeck coefficient measures the **average energy carried per carrier
+relative to the Fermi level**. That is why $S$ is large when the carrier
+distribution is asymmetric about $E_F$ and vanishes for a symmetric degenerate
+metal, and it is the basis of every band-engineering strategy in module 55.

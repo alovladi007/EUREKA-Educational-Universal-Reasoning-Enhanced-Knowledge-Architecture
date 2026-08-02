@@ -2,138 +2,352 @@
 
 <!-- covers: 18.9, 18.10, 18.11 -->
 
-## The Hall effect: carrier sign and carrier density
+## 1. The Hall effect
 
-Conductivity gives you the product n*mu. To design anything you need the two
-factors separately, and the Hall effect is how you get them.
+Conductivity gives the product $n\mu$. Device design needs the factors
+separately, and the Hall effect is how they are separated.
 
-Pass a current I along a bar in the x direction and apply a magnetic field B
-perpendicular to it, in z. Each moving carrier feels a Lorentz force
-q(v x B), which pushes it sideways in y. Charge piles up on one side of the
-bar until the transverse electric field it creates exactly balances the
-magnetic force. That transverse voltage is the **Hall voltage**:
+### 1.1 The force balance
 
-    V_H = I * B / (n * q * t)
+Send a current $I$ along $x$ through a bar of width $w$ and thickness $t$, with
+$\mathbf{B}$ along $z$. Each carrier drifts at $v_d$ and feels the Lorentz
+force $q\,\mathbf{v}\times\mathbf{B}$, which pushes it along $y$. Charge
+accumulates on one face until the transverse field it creates cancels the
+magnetic force:
 
-where t is the sample thickness. Rearranged, the **Hall coefficient**
-R_H = 1/(n q) gives the carrier density directly. Measure the conductivity on
-the same sample and you get mobility from mu = sigma * R_H.
+$$
+q\mathcal{E}_y=q\,v_d B
+\quad\Longrightarrow\quad
+\mathcal{E}_y=v_dB
+$$
 
-Two things make this measurement uniquely valuable.
+![The transverse field grows until it balances the magnetic force. Because electrons and holes drift in opposite directions and carry opposite charge, they deflect the same way but pile up with opposite sign, which is what makes the polarity diagnostic.](/courses/electronic-devices/figures/m18-hall-bar.svg)
 
-**The sign of V_H gives the sign of the carrier.** Electrons and holes are
-deflected to the same side of the bar (they move in opposite directions *and*
-carry opposite charge, and the two sign flips cancel in the deflection but not
-in the accumulated charge), so the polarity of the Hall voltage tells you
-whether conduction is by electrons or by holes. Historically this was the
-decisive experimental evidence that positive carriers are real in some
-materials, and it remains the routine way to confirm that a doped layer came
-out n-type or p-type.
+The measured Hall voltage is $V_H=\mathcal{E}_yw$, and with $I=nqv_d(wt)$,
 
-**It does not require knowing the geometry precisely** if you use the van der
-Pauw configuration, which works on an arbitrarily shaped flat sample with four
-contacts on its perimeter. That is why Hall measurement is the default
-characterization of a new semiconductor film. Module 36 covers the practical
-measurement, including the artefacts.
+$$
+\boxed{\;V_H=\frac{IB}{nqt}\;}
+\qquad
+R_H\equiv\frac{\mathcal{E}_y}{J_xB}=\frac{1}{nq}
+$$
 
-Two honest caveats. First, the simple formula assumes a single carrier type
-with a single mobility. When both electrons and holes conduct, their
-contributions partly cancel and R_H becomes a weighted combination that can
-even change sign with temperature; interpreting it then requires a two-carrier
-model. Second, the mobility you extract this way, the **Hall mobility**,
-differs from the conductivity mobility by a Hall scattering factor of order
-one (typically 1.0 to 2.0), because the two average over the energy-dependent
-scattering time differently. Reporting a Hall mobility as though it were the
-drift mobility is a common and quietly wrong habit.
+Combining with a four-point resistivity measurement on the same sample,
 
-## Transport in high electric fields
+$$
+\mu_H=|R_H|\,\sigma
+$$
 
-Everything so far assumed drift velocity is proportional to field. That holds
-only while the energy a carrier gains between collisions stays small compared
-to its thermal energy. Push the field up and it stops holding, which matters
-because a 1 V supply across a 20 nm channel is a field of 5 x 10^7 V/m.
+so one sample yields carrier **type**, **density** and **mobility**.
 
-As the field rises, carriers gain enough energy between collisions that their
-average energy exceeds the lattice temperature. They become **hot carriers**,
-with an effective temperature above that of the crystal. Once a carrier's
-energy reaches the optical phonon energy (about 63 meV in silicon), it can
-shed energy by emitting an optical phonon, and this channel is very efficient.
-The result is that additional field energy goes into phonon emission rather
-than into more drift, and the drift velocity **saturates**:
+### 1.2 Why the sign is the useful part
 
-    v_sat is about 10^5 m/s in silicon
+Reverse the carrier sign and two things flip: the charge $q$, and the drift
+direction $\mathbf{v}$. The Lorentz force $q\mathbf{v}\times\mathbf{B}$ is
+therefore unchanged in direction, so both carrier types deflect to the *same*
+face, but they deposit opposite charge there. The Hall voltage therefore
+reverses polarity with carrier type. Historically this was the decisive
+evidence that positive carriers conduct in some materials; practically, it is
+the routine confirmation that a doped layer came out n-type or p-type.
 
-Mobility, defined as v/E, therefore falls at high field. This is not a defect
-of the material; it is a hard ceiling. Velocity saturation is why transistor
-current stops rising linearly with gate overdrive in short channels, why
-device speed does not improve as fast as gate length shrinks, and why the
-saturation velocity of a material is quoted alongside its mobility as a figure
-of merit.
+### 1.3 Sheet form, and why van der Pauw wins
 
-Some materials do something more dramatic. In gallium arsenide and several
-other III-V compounds the conduction band has a low-energy valley with light,
-fast electrons and a higher-energy valley with heavy, slow ones. At low field
-electrons sit in the light valley. Raise the field past a threshold and they
-gain enough energy to transfer into the heavy valley, where they move more
-slowly. Average drift velocity therefore *decreases* as field increases over
-that range: **negative differential mobility**. A material with a region of
-negative differential resistance is unstable against forming travelling
-high-field domains, which is the Gunn effect, and it is used deliberately to
-build microwave oscillators with no resonant circuit at all.
+For a thin film the useful quantity is the **sheet density**
+$n_s=nt$ in ${\rm cm^{-2}}$:
 
-Hot carriers also cause reliability problems. A carrier with several
-electron-volts of energy that reaches the gate dielectric of a transistor can
-be injected into it and trapped, shifting the threshold voltage permanently.
-Hot-carrier degradation was one of the main reasons supply voltages were
-scaled down alongside dimensions.
+$$
+n_s=\frac{IB}{q|V_H|}
+$$
 
-## Impact ionization and avalanche multiplication
+which needs no thickness measurement at all. Van der Pauw geometry extends this
+to an arbitrarily shaped flat sample with four perimeter contacts, so a new
+film can be characterised without patterning a bar. Module 36 covers the
+protocol, including the field-reversal and current-reversal averaging that
+cancels misalignment and thermomagnetic offsets.
 
-Push the field higher still and a carrier can accumulate more than the bandgap
-energy before it scatters. When it then collides with the lattice, it can
-promote a valence electron across the gap, creating a new electron-hole pair
-and losing that energy itself. This is **impact ionization**.
+### Worked example 1.1 — reading a Hall measurement
 
-The new carriers are themselves accelerated by the same field, so they can
-ionize in turn. One carrier becomes two, two become four: **avalanche
-multiplication**. The multiplication factor M rises steeply with field and
-diverges at the breakdown field, which is where the device can no longer
-sustain the voltage.
+A film 1 µm thick carries $I=1\ {\rm mA}$ in $B=0.5\ {\rm T}$ and shows
+$V_H=-1.2\ {\rm mV}$. Its sheet resistance is $180\ \Omega/\square$. Find the
+carrier type, density and mobility.
 
-The rate is described by an ionization coefficient, the number of pairs
-generated per unit distance travelled, which depends roughly exponentially on
-the inverse of the field. Electrons and holes generally have different
-coefficients, and the ratio between them matters: when one carrier ionizes far
-more readily than the other, the avalanche is better behaved and quieter, and
-when both ionize equally the feedback loop between them makes the process
-noisy. This ratio is a primary material selection criterion for avalanche
-photodiodes, where you want gain without excess noise.
+Negative $V_H$ with this geometry indicates **electrons**. Then
 
-Impact ionization appears in three guises across electronics, and it is worth
-recognizing all three as the same physics:
+$$
+n=\frac{IB}{q|V_H|t}
+=\frac{10^{-3}\times0.5}{1.602\times10^{-19}\times1.2\times10^{-3}\times10^{-6}}
+=2.6\times10^{24}\ {\rm m^{-3}}=2.6\times10^{18}\ {\rm cm^{-3}}
+$$
 
-- **A failure mechanism.** Avalanche breakdown sets the maximum reverse
-  voltage of a diode and the maximum drain voltage of a transistor. Wide-gap
-  materials such as silicon carbide and gallium nitride have much higher
-  breakdown fields, roughly ten times silicon's, because it takes more energy
-  to create a pair across a wider gap. That single fact is why a 1200 V SiC
-  device can be about a hundred times thinner than a silicon one of the same
-  rating, and therefore much lower in on-resistance. This is the physical
-  basis of the wide-bandgap power electronics discussed in module 39 and in
-  the earlier power-supply module.
-- **A designed function.** Avalanche and Zener diodes clamp voltage on
-  purpose. Avalanche photodiodes and single-photon avalanche detectors use
-  the multiplication as internal gain, turning one absorbed photon into a
-  measurable pulse. Impact-ionization avalanche transit-time diodes generate
-  microwave power.
-- **A parasitic in ordinary operation.** Even below breakdown, modest
-  multiplication in the high-field drain region of a transistor generates a
-  substrate current. That current is routinely used as a monitor of hot
-  carrier stress during reliability testing, because it tracks the same
-  energetic-carrier population that damages the gate dielectric.
+$$
+\rho=R_s t=180\times10^{-6}=1.8\times10^{-4}\ \Omega\,{\rm m}
+\quad\Rightarrow\quad
+\mu=\frac{1}{nq\rho}=\frac{1}{2.6\times10^{24}\times1.602\times10^{-19}\times1.8\times10^{-4}}
+$$
 
-Note the tension that runs through the whole subject: a narrow bandgap gives
-you a sensitive infrared detector and a low turn-on voltage, and it also gives
-you low breakdown voltage and high leakage. A wide gap gives you high voltage
-and hot operation, and it costs you carrier density and easy doping. There is
-no free choice, only a choice matched to the job.
+$$
+\mu=1.33\times10^{-2}\ {\rm m^{2}/Vs}=133\ {\rm cm^{2}/Vs}
+$$
+
+**Report it as a Hall mobility.** The drift mobility is lower by the Hall
+factor $r_H$ of lesson 1, between about 1.2 and 1.9 depending on which
+mechanism dominates.
+
+### 1.4 Two honest caveats
+
+**Two-carrier conduction.** When electrons and holes both conduct,
+
+$$
+R_H=\frac{1}{q}\,\frac{p\mu_p^{2}-n\mu_n^{2}}{(p\mu_p+n\mu_n)^{2}}
+$$
+
+which can pass through zero and change sign with temperature even though
+nothing about the sample changed. A single-carrier reading of such data is
+meaningless. The test is field dependence: single-carrier $R_H$ is independent
+of $B$, two-carrier is not.
+
+**Inhomogeneity.** A layered sample returns a weighted average dominated by the
+most conductive layer, which may not be the layer of interest.
+
+## 2. High-field transport
+
+Everything so far assumed $v_d\propto\mathcal{E}$. That holds only while the
+energy gained between collisions stays small compared with $k_BT$. A 1 V supply
+across a 20 nm channel is $5\times10^{7}\ {\rm V/m}$, so it does not hold.
+
+### 2.1 The energy balance and saturation
+
+In steady state the power taken from the field equals the power lost to the
+lattice:
+
+$$
+e\mathcal{E}v_d=\frac{\langle E\rangle-\tfrac{3}{2}k_BT_L}{\tau_E}
+$$
+
+with $\tau_E$ the energy relaxation time. As the field rises, carriers become
+**hot**, with an effective temperature $T_e>T_L$. Once
+$\langle E\rangle$ reaches the optical phonon energy $\hbar\omega_{\rm op}$,
+emission of optical phonons switches on and becomes the dominant loss channel.
+Beyond that, extra field energy goes into phonon emission rather than into
+drift, and the velocity saturates. Equating the power input to the maximum
+phonon emission rate gives the scale
+
+$$
+v_{\rm sat}\approx\sqrt{\frac{8\hbar\omega_{\rm op}}{3\pi m^{*}}}
+$$
+
+which for silicon returns about $10^{5}\ {\rm m/s}$, matching measurement.
+
+A convenient empirical interpolation used throughout device modelling:
+
+$$
+v_d=\frac{\mu_0\mathcal{E}}{\left[1+\left(\mu_0\mathcal{E}/v_{\rm sat}\right)^{\beta}\right]^{1/\beta}}
+$$
+
+with $\beta\approx2$ for electrons in silicon and 1 for holes.
+
+![Silicon saturates monotonically. Gallium arsenide overshoots and then falls, because carriers transfer into a heavier, slower conduction band valley.](/courses/electronic-devices/figures/m18-velocity-field.svg)
+
+### 2.2 Negative differential mobility and the Gunn effect
+
+In GaAs the conduction band has a light central valley
+($m^{*}=0.067\,m_0$) and heavier satellite valleys about 0.3 eV above it
+($m^{*}\approx0.35\,m_0$). At low field carriers sit in the light valley. Once
+they gain 0.3 eV they transfer, and the average velocity **falls** as the field
+rises:
+
+$$
+\langle v\rangle=\frac{n_1\mu_1+n_2\mu_2}{n_1+n_2}\,\mathcal{E},
+\qquad \mu_2\ll\mu_1
+$$
+
+A region of $dv/d\mathcal{E}<0$ makes uniform field distribution unstable: any
+small high-field region grows, forming a travelling dipole domain that transits
+the device and produces current oscillations at the transit frequency. This is
+the **Gunn effect**, and it makes a microwave oscillator out of a slab of
+material with no resonant circuit.
+
+### 2.3 Hot carriers as a reliability problem
+
+A carrier with several electron-volts can surmount the ~3.1 eV barrier into
+silicon dioxide, be injected into the gate dielectric and trapped there,
+shifting threshold voltage permanently. Hot-carrier degradation scales
+steeply with supply voltage, which is one of the main reasons supply voltages
+were scaled down alongside dimensions. Module 36 measures the resulting
+interface damage by charge pumping.
+
+### Worked example 2.1 — when does the linear model fail?
+
+At what field does silicon's drift velocity fall 10 percent below the linear
+extrapolation? Take $\mu_0=1350\ {\rm cm^{2}/Vs}$, $v_{\rm sat}=10^{7}\
+{\rm cm/s}$, $\beta=2$.
+
+Require $v_d/(\mu_0\mathcal{E})=0.9$, so
+$\left[1+(\mu_0\mathcal{E}/v_{\rm sat})^{2}\right]^{-1/2}=0.9$, giving
+$(\mu_0\mathcal{E}/v_{\rm sat})^{2}=0.2346$ and
+
+$$
+\mathcal{E}=\frac{0.484\times10^{7}}{1350}=3.6\times10^{3}\ {\rm V/cm}
+$$
+
+In a 1 µm channel that is only 0.36 V. **Linear mobility is already a poor
+model at ordinary supply voltages**, which is why long-channel hand analysis
+overestimates drive current.
+
+## 3. Impact ionization and avalanche multiplication
+
+### 3.1 Threshold and rate
+
+Raise the field further and a carrier can accumulate more than the bandgap
+before scattering. Colliding with the lattice, it promotes a valence electron
+across the gap, creating a new pair. Momentum and energy conservation set a
+threshold above $E_g$; for parabolic bands with equal masses,
+
+$$
+E_{\rm th}=\frac{3}{2}E_g
+$$
+
+The **ionization coefficient** $\alpha$ is the number of pairs generated per
+unit length, and it follows a Chynoweth form
+
+$$
+\alpha(\mathcal{E})=\alpha_\infty\exp\!\left(-\frac{\mathcal{E}_{c}}{\mathcal{E}}\right)
+$$
+
+The exponential in $1/\mathcal{E}$ is why breakdown is so sharp: a small
+increase in field produces a large increase in generation.
+
+### 3.2 Multiplication
+
+For a depletion region of width $W$ with equal electron and hole coefficients,
+the multiplication factor solves
+
+$$
+1-\frac{1}{M}=\int_0^{W}\alpha\,dx
+$$
+
+so $M\to\infty$ when the ionization integral reaches unity, which **defines**
+the breakdown voltage. Empirically Miller's expression is used:
+
+$$
+M=\frac{1}{1-\left(V/V_{\rm BR}\right)^{n}}
+$$
+
+![Multiplication is a runaway, not an adjustable gain. Useful operation sits on the knee, where a small bias change is already a large gain change.](/courses/electronic-devices/figures/m18-avalanche.svg)
+
+### 3.3 The electron-to-hole ratio, and why it decides noise
+
+Electrons and holes generally have different coefficients. Define
+$k=\alpha_h/\alpha_e$. When $k\ll1$ only one carrier ionizes, the avalanche is
+a clean one-way cascade, and the excess noise factor is low. When $k\to1$ each
+carrier type feeds the other, the feedback lengthens and randomises the
+multiplication chain, and noise rises. McIntyre's result,
+
+$$
+F(M)=kM+\left(2-\frac{1}{M}\right)(1-k)
+$$
+
+is why silicon ($k\approx0.02$ to 0.1) makes far quieter avalanche photodiodes
+than germanium ($k\approx0.9$), and it is a primary material selection
+criterion for detectors.
+
+### 3.4 Breakdown voltage and the wide-bandgap argument
+
+For a one-sided abrupt junction of doping $N$, the depletion width at breakdown
+follows from Poisson's equation with a critical field $\mathcal{E}_c$:
+
+$$
+V_{\rm BR}=\frac{\varepsilon\,\mathcal{E}_c^{2}}{2qN},
+\qquad
+W_{\rm BR}=\frac{2V_{\rm BR}}{\mathcal{E}_c}
+$$
+
+The on-resistance of the drift region is $R_{\rm on}=W/(q\mu N)$, and
+eliminating $N$ and $W$ gives the **unipolar figure of merit**:
+
+$$
+\boxed{\;R_{\rm on,sp}=\frac{4V_{\rm BR}^{2}}{\varepsilon\mu\,\mathcal{E}_c^{3}}\;}
+$$
+
+The cube on the critical field is the whole wide-bandgap argument. Silicon
+carbide's $\mathcal{E}_c$ is about ten times silicon's, so at equal blocking
+voltage its specific on-resistance is roughly a thousand times lower before
+mobility differences are folded in, and a few hundred times lower after. That
+single exponent is why SiC and GaN power devices exist.
+
+### Worked example 3.1 — Si against SiC at 1200 V
+
+Silicon: $\mathcal{E}_c=3\times10^{5}\ {\rm V/cm}$, $\mu=1350$,
+$\varepsilon=11.7\varepsilon_0$. SiC: $\mathcal{E}_c=3\times10^{6}$,
+$\mu=900$, $\varepsilon=9.7\varepsilon_0$.
+
+Taking the ratio directly:
+
+$$
+\frac{R_{\rm Si}}{R_{\rm SiC}}
+=\frac{\varepsilon_{\rm SiC}\mu_{\rm SiC}\mathcal{E}_{c,\rm SiC}^{3}}
+{\varepsilon_{\rm Si}\mu_{\rm Si}\mathcal{E}_{c,\rm Si}^{3}}
+=\frac{9.7\times900\times(3\times10^{6})^{3}}{11.7\times1350\times(3\times10^{5})^{3}}
+$$
+
+$$
+=\frac{9.7\times900}{11.7\times1350}\times10^{3}=0.553\times10^{3}\approx550
+$$
+
+The drift region is about **550 times** less resistive per unit area. Also,
+since $W_{\rm BR}=2V/\mathcal{E}_c$, the SiC drift layer is 8 µm against
+silicon's 80 µm, which is why SiC dies are thin and fast as well as efficient.
+
+## 4. Problems
+
+**P18.10** A Hall bar 0.5 mm thick carries 10 mA in 0.3 T and shows
+$V_H=+2.5\ {\rm mV}$. Find the carrier type and density. If $\rho=0.05\ \Omega\,$cm,
+find the Hall mobility.
+
+**P18.11** Silicon at $\mathcal{E}=10^{4}\ {\rm V/cm}$: use the empirical
+saturation form with $\beta=2$ to find $v_d$ and the effective mobility
+$v_d/\mathcal{E}$. Compare with the low-field 1350.
+
+**P18.12** An avalanche photodiode operates at $M=20$ with $k=0.05$. Find the
+excess noise factor. Repeat for $k=0.5$ and comment.
+
+**P18.13** A silicon diode has $V_{\rm BR}=60$ V. Using
+$V_{\rm BR}=\varepsilon\mathcal{E}_c^{2}/2qN$ with
+$\mathcal{E}_c=3\times10^{5}\ {\rm V/cm}$, find the required doping and the
+depletion width at breakdown.
+
+**P18.14** *(graduate)* Show that for equal ionization coefficients the
+condition $\int_0^{W}\alpha\,dx=1$ follows from the coupled continuity
+equations for electron and hole currents in the depletion region.
+
+### Answers
+
+**P18.10** Positive $V_H$ indicates **holes**.
+$p=IB/(q|V_H|t)=(10^{-2}\times0.3)/(1.602\times10^{-19}\times2.5\times10^{-3}
+\times5\times10^{-4})=1.5\times10^{22}\ {\rm m^{-3}}=1.5\times10^{16}\ {\rm cm^{-3}}$.
+With $\rho=5\times10^{-4}\ \Omega\,$m, $\mu_H=1/(pq\rho)=833\ {\rm cm^{2}/Vs}$.
+That is above the usual hole mobility at this doping, which is a hint that the
+Hall factor has not been divided out.
+
+**P18.11** $\mu_0\mathcal{E}=1350\times10^{4}=1.35\times10^{7}\ {\rm cm/s}$.
+Then $v_d=1.35\times10^{7}/\sqrt{1+1.8225}=1.35\times10^{7}/1.680
+=8.04\times10^{6}\ {\rm cm/s}$, and effective mobility
+$=8.04\times10^{6}/10^{4}=804\ {\rm cm^{2}/Vs}$, about 60 percent of the
+low-field value.
+
+**P18.12** $F=kM+(2-1/M)(1-k)$. For $k=0.05$:
+$F=1.0+1.95\times0.95=2.85$. For $k=0.5$: $F=10+1.95\times0.5=10.98$. Nearly
+four times the noise power for the same gain, which is why the coefficient
+ratio, not the gain, is the material figure of merit for detectors.
+
+**P18.13** $N=\varepsilon\mathcal{E}_c^{2}/(2qV_{\rm BR})
+=(11.7\times8.854\times10^{-12})(3\times10^{7})^{2}/(2\times1.602\times10^{-19}\times60)
+=4.85\times10^{21}\ {\rm m^{-3}}=4.9\times10^{15}\ {\rm cm^{-3}}$.
+$W=2V/\mathcal{E}_c=120/(3\times10^{7})=4.0\ {\rm \mu m}$.
+
+**P18.14** With $\alpha_e=\alpha_h=\alpha$, the continuity equations give
+$dJ_n/dx=\alpha(J_n+J_p)$ and $-dJ_p/dx=\alpha(J_n+J_p)$, so the total
+$J=J_n+J_p$ is constant. Writing $J_n(W)=MJ_n(0)$ and integrating
+$dJ_n/dx=\alpha J$ across the region yields
+$J_n(W)-J_n(0)=J\int_0^{W}\alpha\,dx$. Dividing by $J=J_n(W)$ at the boundary
+where the current is all electrons gives $1-1/M=\int_0^{W}\alpha\,dx$, so $M$
+diverges when the integral reaches one.

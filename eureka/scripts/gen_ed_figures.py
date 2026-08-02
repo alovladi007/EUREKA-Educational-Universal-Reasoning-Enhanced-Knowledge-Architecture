@@ -324,6 +324,135 @@ def _(mode):
     return fig
 
 
+@figure("m18-hall-bar")
+def _(mode):
+    """Geometry of a Hall measurement, drawn from the force balance it encodes.
+
+    A schematic rather than a plot, so it is built from primitives here for the
+    same reason the plots are computed here: it has to be original.
+    """
+    c = S.SERIES[mode]
+    ink, ink2 = S.INK[mode], S.INK_2[mode]
+    fig, ax = plt.subplots(figsize=(7.2, 3.9))
+    # the bar
+    ax.add_patch(plt.Rectangle((0.5, 1.0), 6.0, 2.2, fill=True,
+                               facecolor=c[0], alpha=0.10, edgecolor=c[0], lw=1.8))
+    # current in
+    ax.annotate("", xy=(0.5, 2.1), xytext=(-0.35, 2.1),
+                arrowprops=dict(arrowstyle="-|>", color=c[0], lw=2.0))
+    ax.annotate("", xy=(7.35, 2.1), xytext=(6.5, 2.1),
+                arrowprops=dict(arrowstyle="-|>", color=c[0], lw=2.0))
+    ax.text(-0.45, 2.1, "$I$", color=c[0], fontsize=12, ha="right", va="center",
+            fontweight="semibold")
+    # B out of page
+    for xx in (2.0, 3.5, 5.0):
+        ax.plot([xx], [2.1], marker="o", ms=11, mfc="none", mec=ink2, mew=1.4)
+        ax.plot([xx], [2.1], marker=".", ms=4, color=ink2)
+    ax.text(3.5, 3.42, r"$B$  out of the page", color=ink2, fontsize=10, ha="center")
+    # carrier drift + Lorentz deflection
+    ax.annotate("", xy=(4.3, 2.1), xytext=(3.1, 2.1),
+                arrowprops=dict(arrowstyle="-|>", color=c[1], lw=1.8))
+    ax.annotate("", xy=(4.3, 2.95), xytext=(4.3, 2.15),
+                arrowprops=dict(arrowstyle="-|>", color=c[1], lw=1.8))
+    ax.text(4.45, 2.62, r"$q\,\mathbf{v}\times\mathbf{B}$", color=c[1], fontsize=11,
+            va="center", fontweight="semibold")
+    # accumulated charge and the field it sets up
+    ax.text(3.5, 3.05, "- - - - - - -", color=ink2, fontsize=11, ha="center")
+    ax.text(3.5, 1.06, "+ + + + + + +", color=ink2, fontsize=11, ha="center")
+    ax.annotate("", xy=(2.55, 1.35), xytext=(2.55, 2.85),
+                arrowprops=dict(arrowstyle="-|>", color=c[2], lw=1.8))
+    ax.text(2.42, 2.1, r"$\mathcal{E}_y$", color=c[2], fontsize=11, ha="right",
+            va="center", fontweight="semibold")
+    # Hall voltage probes
+    ax.plot([5.6, 5.6], [3.2, 3.75], color=ink2, lw=1.2)
+    ax.plot([5.6, 5.6], [1.0, 0.45], color=ink2, lw=1.2)
+    ax.text(5.75, 2.1, r"$V_H$", color=ink, fontsize=12, fontweight="semibold",
+            va="center")
+    ax.plot([5.6, 6.15, 6.15, 5.6], [3.75, 3.75, 0.45, 0.45], color=ink2, lw=1.2)
+    # thickness marker
+    ax.annotate("", xy=(0.5, 1.0), xytext=(0.5, 3.2),
+                arrowprops=dict(arrowstyle="<|-|>", color=ink2, lw=1.0))
+    ax.text(0.32, 2.1, "$w$", color=ink2, fontsize=10, ha="right", va="center")
+    ax.text(3.5, 0.10,
+            r"steady state: $q\mathcal{E}_y=qv_dB\;\Rightarrow\;"
+            r"V_H=\dfrac{IB}{n q t}$",
+            color=ink, fontsize=11.5, ha="center")
+    ax.set_xlim(-1.1, 7.6)
+    ax.set_ylim(-0.15, 4.0)
+    ax.axis("off")
+    ax.set_title("The Hall voltage is a force balance, so its sign names the carrier")
+    return fig
+
+
+@figure("m18-avalanche")
+def _(mode):
+    """Avalanche multiplication, Miller's empirical form M = 1/(1-(V/V_B)^n).
+
+    The divergence at breakdown is the point: multiplication is a runaway, not
+    a gain you can dial in past a certain bias.
+    """
+    c = S.SERIES[mode]
+    v = np.linspace(0, 0.985, 600)
+    fig, ax = plt.subplots()
+    for i, n in enumerate([2, 4, 6]):
+        M = 1.0 / (1.0 - v**n)
+        ax.plot(v, M, color=c[i], lw=2.0)
+        S.label_end(ax, v[-1], min(M[-1], 60), f"n = {n}", c[i], mode, dy=0)
+    ax.axvline(1.0, color=S.GUIDE[mode], lw=1.2, ls=":")
+    S.note(ax, 0.985, 45, "breakdown", mode, ha="right")
+    ax.set_xlabel(r"reverse bias  $V/V_{\rm BR}$")
+    ax.set_ylabel(r"multiplication factor  $M$")
+    ax.set_title(r"$M=\left[1-(V/V_{\rm BR})^{n}\right]^{-1}$ diverges at breakdown")
+    ax.set_xlim(0, 1.12)
+    ax.set_ylim(0, 60)
+    S.strip(ax)
+    return fig
+
+
+@figure("m18-2deg-band")
+def _(mode):
+    """Conduction band edge of a modulation-doped heterostructure.
+
+    Wide-gap donor layer, undoped spacer, then a triangular well at the
+    interface holding two bound subbands. The point of the figure is the
+    spatial separation between the ionised donors and the electrons.
+    """
+    c = S.SERIES[mode]
+    ink2 = S.INK_2[mode]
+    z = np.linspace(-40, 60, 800)  # nm, interface at 0
+    Ec = np.where(
+        z < -18, 0.75 - 0.004 * (z + 40),
+        np.where(z < 0, 0.66 - 0.020 * (z + 18), 0.30 + 0.016 * z),
+    )
+    Ec = np.where(z >= 0, 0.30 + 0.016 * z - 0.30, Ec - 0.30)
+    fig, ax = plt.subplots()
+    ax.plot(z, Ec, color=c[0], lw=2.2)
+    ax.axhline(0.0, color=S.GUIDE[mode], lw=1.1, ls="--")
+    S.note(ax, -39, 0.015, r"$E_F$", mode)
+    for e, lab in [(0.055, r"$E_1$"), (0.135, r"$E_2$")]:
+        zmax = (e + 0.30 - 0.30) / 0.016
+        ax.plot([0, max(zmax, 4)], [e, e], color=c[2], lw=1.6)
+        ax.text(max(zmax, 4) + 1.5, e, lab, color=c[2], fontsize=10,
+                va="center", fontweight="semibold")
+    ax.fill_between(z, -0.05, 0.0, where=(z >= 0) & (z < 12),
+                    color=c[2], alpha=0.16, lw=0)
+    ax.text(20, -0.033, "2DEG", color=c[2], fontsize=11, fontweight="semibold")
+    for zz in (-30, -26, -22):
+        ax.text(zz, 0.30, "+", color=c[1], fontsize=13, ha="center", fontweight="bold")
+    ax.text(-26, 0.365, "ionised donors", color=c[1], fontsize=10, ha="center",
+            fontweight="semibold")
+    ax.axvline(-18, color=ink2, lw=0.9, ls=":")
+    ax.axvline(0, color=ink2, lw=0.9, ls=":")
+    S.note(ax, -17.4, -0.115, "undoped\nspacer", mode, size=9)
+    ax.set_xlabel("depth  z  (nm)")
+    ax.set_ylabel(r"conduction band edge  $E_c-E_F$  (eV)")
+    ax.set_title("Modulation doping puts the carriers where the dopants are not")
+    ax.set_xlim(-40, 62)
+    ax.set_ylim(-0.13, 0.46)
+    S.strip(ax)
+    return fig
+
+
 # ---------------------------------------------------------------------------
 # driver
 # ---------------------------------------------------------------------------
@@ -347,6 +476,12 @@ def main() -> None:
                         transparent=True)
             plt.close(fig)
     print(f"rendered {len(names)} figures x 2 modes -> {OUT}")
+    print(
+        "\n  NOTE: apps/web/public is BAKED INTO the web image. New figures 404\n"
+        "  in the running app until the image is rebuilt, and a restart is not\n"
+        "  enough. After generating figures, run:\n"
+        "      docker compose build web && docker compose up -d --force-recreate web"
+    )
 
 
 if __name__ == "__main__":
