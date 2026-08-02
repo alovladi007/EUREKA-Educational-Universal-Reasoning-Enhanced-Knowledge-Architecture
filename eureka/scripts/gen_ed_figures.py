@@ -977,6 +977,514 @@ def _(mode):
 
 
 # ---------------------------------------------------------------------------
+# Module 17 - the materials framing module
+# ---------------------------------------------------------------------------
+
+
+@figure("m17-transistor-count")
+def _(mode):
+    """N(t) = N0 2^{(t-1971)/2}: the integration exponential, computed."""
+    c = S.SERIES[mode]
+    t = np.linspace(1971, 2026, 300)
+    N = 2300 * 2 ** ((t - 1971) / 2.0)
+    fig, ax = plt.subplots()
+    ax.semilogy(t, N, color=c[0], lw=2.2)
+    S.label_end(ax, t[-1], N[-1], r"$N=N_0\,2^{(t-1971)/2}$", c[0], mode)
+    for yr, n0, lab in [(1971, 2.3e3, "first microprocessor era"),
+                        (1993, 3.1e6, "superscalar era"),
+                        (2023, 1.3e11, "chiplet era")]:
+        ax.plot([yr], [n0], "o", color=c[1], ms=6)
+        ax.annotate(lab, xy=(yr, n0), xytext=(6, -12), textcoords="offset points",
+                    color=S.INK_2[mode], fontsize=9)
+    ax.set_xlabel("year")
+    ax.set_ylabel("transistors per chip")
+    ax.set_title("Eight orders of magnitude from one compounding rule")
+    ax.set_xlim(1969, 2038)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-wright-learning")
+def _(mode):
+    """Wright's law: unit cost falls as cumulative volume^-b."""
+    c = S.SERIES[mode]
+    V = np.logspace(0, 12, 300)
+    fig, ax = plt.subplots()
+    for i, (b, lab) in enumerate([(0.4, "b = 0.4 (transistors)"), (0.2, "b = 0.2 (typical goods)")]):
+        ax.loglog(V, V**-b, color=c[i], lw=2.1)
+        S.label_end(ax, V[-1], V[-1] ** -b, lab, c[i], mode, dy=4 - 10 * i)
+    ax.set_xlabel("cumulative units produced (relative)")
+    ax.set_ylabel("cost per unit (relative)")
+    ax.set_title(r"Wright's law $C\propto V^{-b}$: volume itself cuts cost")
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-dennard")
+def _(mode):
+    """Constant-field scaling: what a factor kappa buys, from the rules."""
+    c = S.SERIES[mode]
+    k = np.linspace(1, 10, 200)
+    fig, ax = plt.subplots()
+    ax.loglog(k, k**2, color=c[0], lw=2.1)
+    ax.loglog(k, k, color=c[1], lw=2.1)
+    ax.loglog(k, np.ones_like(k), color=c[2], lw=2.1)
+    S.label_end(ax, 10, 100, r"devices/area $\propto\kappa^{2}$", c[0], mode)
+    S.label_end(ax, 10, 10, r"speed $\propto\kappa$", c[1], mode)
+    S.label_end(ax, 10, 1, r"power/area $=$ const", c[2], mode)
+    ax.set_xlabel(r"scale factor  $\kappa$")
+    ax.set_ylabel("relative gain")
+    ax.set_title("Dennard's bargain: shrink everything, fields stay put")
+    ax.set_xlim(1, 22)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-frequency-vdd")
+def _(mode):
+    """The end of Dennard scaling: V_dd hits a floor, clocks plateau."""
+    c = S.SERIES[mode]
+    t = np.linspace(1985, 2026, 400)
+    f = np.minimum(0.02 * 2 ** ((t - 1985) / 2.1), 4.5)  # GHz
+    v = np.maximum(5.0 * 0.85 ** ((t - 1990).clip(0) / 2.0), 1.0)
+    fig, (a1, a2) = plt.subplots(2, 1, sharex=True, figsize=(7.2, 4.8),
+                                 gridspec_kw={"hspace": 0.12})
+    fig.skip_tight = True
+    a1.semilogy(t, f, color=c[0], lw=2.1)
+    S.label_end(a1, t[-1], f[-1], "clock (GHz)", c[0], mode)
+    a1.axhline(4.5, color=S.GUIDE[mode], lw=1.0, ls=":")
+    S.note(a1, 1986, 5.3, "the plateau: power density wall", mode)
+    a1.set_ylabel("clock frequency (GHz)")
+    a1.set_title("When the voltage floor arrived, frequency stopped")
+    a2.plot(t, v, color=c[1], lw=2.1)
+    S.label_end(a2, t[-1], v[-1], r"$V_{dd}$ (V)", c[1], mode)
+    a2.axhline(1.0, color=S.GUIDE[mode], lw=1.0, ls=":")
+    S.note(a2, 1986, 1.15, r"threshold + subthreshold floor $\approx$ 1 V", mode)
+    a2.set_xlabel("year")
+    a2.set_ylabel(r"supply $V_{dd}$ (V)")
+    a2.set_ylim(0, 5.6)
+    S.strip(a1)
+    S.strip(a2)
+    return fig
+
+
+@figure("m17-yield-poisson")
+def _(mode):
+    """Poisson yield Y = exp(-A D0) for three die sizes."""
+    c = S.SERIES[mode]
+    D = np.linspace(0, 0.5, 300)  # defects per cm^2
+    fig, ax = plt.subplots()
+    for i, A in enumerate([0.5, 2.0, 8.0]):
+        ax.plot(D, 100 * np.exp(-A * D), color=c[i], lw=2.1)
+        S.label_end(ax, D[-1], 100 * np.exp(-A * D[-1]), f"{A} cm$^2$ die", c[i], mode)
+    ax.set_xlabel(r"defect density  $D_0$  (cm$^{-2}$)")
+    ax.set_ylabel("yield  (%)")
+    ax.set_title(r"$Y=e^{-AD_0}$: big dies pay exponentially for every defect")
+    ax.set_xlim(0, 0.62)
+    ax.set_ylim(0, 104)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-dies-per-wafer")
+def _(mode):
+    """Gross and yielded dies per 300 mm wafer against die area."""
+    c = S.SERIES[mode]
+    A = np.linspace(0.2, 8, 300)  # cm^2
+    d = 30.0  # cm
+    gross = np.pi * (d / 2) ** 2 / A - np.pi * d / np.sqrt(2 * A)
+    good = gross * np.exp(-A * 0.1)
+    fig, ax = plt.subplots()
+    ax.plot(A, gross, color=c[0], lw=2.1)
+    ax.plot(A, good, color=c[1], lw=2.1)
+    S.label_end(ax, A[-1], gross[-1], "gross dies", c[0], mode, dy=6)
+    S.label_end(ax, A[-1], good[-1], r"good dies at $D_0=0.1$", c[1], mode, dy=-6)
+    ax.set_xlabel(r"die area  (cm$^{2}$)")
+    ax.set_ylabel("dies per 300 mm wafer")
+    ax.set_title("Edge loss plus yield: why giant dies cost superlinearly")
+    ax.set_yscale("log")
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-ni-comparison")
+def _(mode):
+    """Intrinsic carrier density vs temperature for Ge, Si, 4H-SiC."""
+    c = S.SERIES[mode]
+    kB = 8.617e-5
+    T = np.linspace(250, 800, 300)
+    mats = [("Ge", 0.66, 2.4e13), ("Si", 1.12, 1.0e10), ("4H-SiC", 3.26, 5e-9)]
+    fig, ax = plt.subplots()
+    for i, (lab, Eg, ni300) in enumerate(mats):
+        ni = ni300 * (T / 300) ** 1.5 * np.exp(-(Eg / (2 * kB)) * (1 / T - 1 / 300.0))
+        ax.semilogy(T, ni, color=c[i], lw=2.1)
+        S.label_end(ax, T[-1], ni[-1], lab, c[i], mode)
+    ax.axhline(1e14, color=S.GUIDE[mode], lw=1.0, ls=":")
+    S.note(ax, 255, 2e14, r"typical doping $10^{14}$: junctions die here", mode)
+    ax.set_xlabel("temperature  (K)")
+    ax.set_ylabel(r"$n_i$  (cm$^{-3}$)")
+    ax.set_title("The gap sets the leakage floor and the temperature ceiling")
+    ax.set_ylim(1e-10, 1e18)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-oxide-bands")
+def _(mode):
+    """Band alignment of Si/SiO2: the accident that built the industry."""
+    c = S.SERIES[mode]
+    ink, ink2 = S.INK[mode], S.INK_2[mode]
+    fig, ax = plt.subplots(figsize=(7.2, 4.2))
+    # silicon: Ec at 0, Ev at -1.12; oxide: Ec at +3.1, Ev at -5.8 (9 eV gap)
+    ax.fill_between([0, 2.6], -1.12, 0, color=c[0], alpha=0.15, lw=0)
+    ax.plot([0, 2.6], [0, 0], color=c[0], lw=2.2)
+    ax.plot([0, 2.6], [-1.12, -1.12], color=c[0], lw=2.2)
+    ax.fill_between([2.6, 5.2], -5.9, 3.1, color=c[1], alpha=0.10, lw=0)
+    ax.plot([2.6, 5.2], [3.1, 3.1], color=c[1], lw=2.2)
+    ax.plot([2.6, 5.2], [-5.9, -5.9], color=c[1], lw=2.2)
+    ax.text(1.3, 0.35, "Si", color=c[0], fontsize=12, ha="center", fontweight="semibold")
+    ax.text(3.9, 3.45, r"SiO$_2$", color=c[1], fontsize=12, ha="center", fontweight="semibold")
+    ax.annotate("", xy=(2.95, 3.1), xytext=(2.95, 0),
+                arrowprops=dict(arrowstyle="<|-|>", color=ink2, lw=1.2))
+    ax.text(3.1, 1.5, "3.1 eV electron barrier", color=ink, fontsize=10)
+    ax.annotate("", xy=(2.3, -5.9), xytext=(2.3, -1.12),
+                arrowprops=dict(arrowstyle="<|-|>", color=ink2, lw=1.2))
+    ax.text(0.05, -3.6, "4.8 eV hole barrier", color=ink, fontsize=10)
+    ax.text(2.6, -6.9,
+            "both carriers see multi-eV walls, the interface passivates to\n"
+            r"$\sim10^{10}$ traps cm$^{-2}$eV$^{-1}$, and the oxide grows from the crystal itself",
+            color=ink2, fontsize=9.5, ha="center")
+    ax.set_xlim(-0.2, 6.6)
+    ax.set_ylim(-7.6, 4.2)
+    ax.axis("off")
+    ax.set_title("No other semiconductor has an insulator like this for free")
+    return fig
+
+
+@figure("m17-mobility-lollipop")
+def _(mode):
+    """Room-temperature electron mobility across the workhorse materials."""
+    c = S.SERIES[mode]
+    mats = [("a-Si:H", 1), ("poly-Si", 50), ("4H-SiC", 900), ("Si", 1400),
+            ("GaN (2DEG)", 2000), ("Ge", 3900), ("GaAs", 8500),
+            ("In$_{0.53}$Ga$_{0.47}$As", 12000), ("InSb", 77000)]
+    y = np.arange(len(mats))
+    fig, ax = plt.subplots(figsize=(7.2, 4.4))
+    for i, (lab, mu) in enumerate(mats):
+        ax.plot([1, mu], [i, i], color=S.GRID[mode], lw=1.0)
+        ax.plot([mu], [i], "o", color=c[0], ms=8)
+        ax.annotate(f"{mu:,}", xy=(mu, i), xytext=(7, 0), textcoords="offset points",
+                    color=S.INK[mode], fontsize=9, va="center")
+    ax.set_yticks(y, [m[0] for m in mats])
+    ax.set_xscale("log")
+    ax.set_xlabel(r"electron mobility at 300 K  (cm$^2$ V$^{-1}$ s$^{-1}$)")
+    ax.set_title("Five decades of mobility, one job per decade")
+    ax.set_xlim(0.5, 8e5)
+    ax.grid(axis="y", alpha=0)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-thermal-lollipop")
+def _(mode):
+    """Thermal conductivity: the other axis a power designer reads first."""
+    c = S.SERIES[mode]
+    mats = [("glass", 1), ("polyimide", 0.2), ("GaAs", 55), ("InP", 68),
+            ("sapphire", 35), ("Si", 150), ("Cu", 400), ("4H-SiC", 490),
+            ("diamond", 2000)]
+    mats.sort(key=lambda m: m[1])
+    fig, ax = plt.subplots(figsize=(7.2, 4.4))
+    for i, (lab, k) in enumerate(mats):
+        ax.plot([0.1, k], [i, i], color=S.GRID[mode], lw=1.0)
+        ax.plot([k], [i], "o", color=c[1], ms=8)
+        ax.annotate(f"{k}", xy=(k, i), xytext=(7, 0), textcoords="offset points",
+                    color=S.INK[mode], fontsize=9, va="center")
+    ax.set_yticks(range(len(mats)), [m[0] for m in mats])
+    ax.set_xscale("log")
+    ax.set_xlabel(r"thermal conductivity at 300 K  (W m$^{-1}$ K$^{-1}$)")
+    ax.set_title("GaAs runs a third of silicon's heat path: RF designers pay for it")
+    ax.set_xlim(0.1, 2e4)
+    ax.grid(axis="y", alpha=0)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-wafer-diameter")
+def _(mode):
+    """Wafer diameter adoption: steps, and the area each step bought."""
+    c = S.SERIES[mode]
+    steps = [(1960, 25), (1969, 51), (1976, 100), (1983, 150), (1992, 200),
+             (2001, 300), (2026, 300)]
+    yrs = [s[0] for s in steps]
+    dia = [s[1] for s in steps]
+    fig, ax = plt.subplots()
+    ax.step(yrs, dia, where="post", color=c[0], lw=2.2)
+    S.label_end(ax, yrs[-1], 300, "300 mm since 2001", c[0], mode)
+    ax.plot([2015], [450], "x", color=c[1], ms=9, mew=2.4)
+    ax.annotate("450 mm: demonstrated,\nnot adopted (economics)", xy=(2015, 450),
+                xytext=(1988, 415), color=S.INK_2[mode], fontsize=9,
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0))
+    S.note(ax, 1961, 330, r"each step $\approx2\times$ the area,", mode)
+    S.note(ax, 1961, 300, "at nearly the same cost per wafer pass", mode)
+    ax.set_xlabel("year of first production use")
+    ax.set_ylabel("wafer diameter  (mm)")
+    ax.set_title("The quietest scaling law: the substrate itself")
+    ax.set_xlim(1958, 2038)
+    ax.set_ylim(0, 500)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-purity-ladder")
+def _(mode):
+    """Impurity fraction down the silicon purification chain."""
+    c = S.SERIES[mode]
+    stages = [("quartzite", 1e-2), ("MG-Si", 1e-2), ("distilled\nsilane/TCS", 1e-8),
+              ("EG poly-Si", 1e-9), ("CZ crystal", 1e-10), ("FZ crystal", 1e-11)]
+    x = np.arange(len(stages))
+    y = [s[1] for s in stages]
+    fig, ax = plt.subplots()
+    ax.semilogy(x, y, "-o", color=c[0], lw=2.0, ms=7)
+    S.label_end(ax, x[-1], y[-1], "one foreign atom in $10^{11}$", c[0], mode)
+    ax.set_xticks(x, [s[0] for s in stages], fontsize=9)
+    ax.set_ylabel("impurity fraction (approx.)")
+    ax.set_title("Nine orders of magnitude, won in the liquid phase")
+    S.note(ax, 0.1, 3e-11, "the big step is chemistry:\ndistillation of a volatile silicon\ncompound, not crystal growth", mode)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-bandgap-lattice")
+def _(mode):
+    """The bandgap-lattice constant map, from published lattice constants and
+    gaps (facts). Filled markers direct, open markers indirect."""
+    c = S.SERIES[mode]
+    pts = [  # (name, a in Angstrom, Eg eV, direct?)
+        ("Ge", 5.658, 0.66, False), ("Si", 5.431, 1.12, False),
+        ("GaAs", 5.653, 1.42, True), ("AlAs", 5.661, 2.16, False),
+        ("InP", 5.869, 1.34, True), ("InAs", 6.058, 0.35, True),
+        ("GaP", 5.451, 2.26, False), ("GaSb", 6.096, 0.73, True),
+        ("ZnSe", 5.668, 2.70, True), ("CdTe", 6.482, 1.50, True),
+        ("GaN*", 4.50, 3.40, True), ("AlN*", 4.38, 6.2, True),
+        ("InN*", 4.98, 0.7, True),
+    ]
+    fig, ax = plt.subplots()
+    # alloy tie-lines
+    ties = [("GaAs", "AlAs"), ("GaAs", "InAs"), ("InP", "InAs"),
+            ("GaN*", "InN*"), ("GaN*", "AlN*")]
+    d = {p[0]: p for p in pts}
+    for a, b in ties:
+        ax.plot([d[a][1], d[b][1]], [d[a][2], d[b][2]], color=c[1], lw=1.3,
+                ls="--", alpha=0.8, zorder=1)
+    for name, a, Eg, direct in pts:
+        ax.plot([a], [Eg], "o", ms=8, zorder=3,
+                mfc=c[0] if direct else "none", mec=c[0], mew=1.8)
+        ax.annotate(name, xy=(a, Eg), xytext=(5, 4), textcoords="offset points",
+                    color=S.INK[mode], fontsize=9)
+    S.note(ax, 6.02, 5.2, "filled = direct gap\nopen = indirect\ndashes = alloy lines", mode)
+    S.note(ax, 4.35, 0.25, "* wurtzite a-axis:\nplotted for reach,\nnot lattice match", mode, size=8.5)
+    ax.set_xlabel(r"lattice constant  ($\mathrm{\AA}$)")
+    ax.set_ylabel(r"bandgap  $E_g$  (eV)")
+    ax.set_title("The estate map: substrates fix a column, alloys walk the lines")
+    ax.set_xlim(4.2, 6.85)
+    ax.set_ylim(0, 6.8)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-vegard-bowing")
+def _(mode):
+    """Alloy gap with bowing: InGaN spans the visible; AlGaAs goes indirect."""
+    c = S.SERIES[mode]
+    x = np.linspace(0, 1, 300)
+    ingan = x * 0.7 + (1 - x) * 3.4 - 1.4 * x * (1 - x)
+    alg_d = 1.42 + 1.25 * x
+    alg_i = 1.90 + 0.26 * x  # X-valley edge, roughly linear
+    fig, ax = plt.subplots()
+    ax.plot(x, ingan, color=c[0], lw=2.2)
+    S.label_end(ax, x[-1], ingan[-1], r"In$_x$Ga$_{1-x}$N (b = 1.4 eV)", c[0], mode, dy=-4)
+    ax.plot(x, alg_d, color=c[1], lw=2.0)
+    ax.plot(x, alg_i, color=c[2], lw=2.0, ls="--")
+    S.label_end(ax, 1.0, alg_d[-1], r"Al$_x$Ga$_{1-x}$As $\Gamma$", c[1], mode, dy=6)
+    S.label_end(ax, 1.0, alg_i[-1], "X valley", c[2], mode, dy=-8)
+    xc = (1.90 - 1.42) / (1.25 - 0.26)
+    ax.plot([xc], [1.42 + 1.25 * xc], "o", color=S.INK[mode], ms=6)
+    ax.annotate("direct-indirect crossover\n$x\\approx0.45$", xy=(xc, 1.42 + 1.25 * xc),
+                xytext=(0.09, 2.9), color=S.INK_2[mode], fontsize=9,
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0))
+    ax.set_xlabel("alloy fraction  x")
+    ax.set_ylabel(r"$E_g$  (eV)")
+    ax.set_title(r"$E_g(x)=xE_A+(1-x)E_B-bx(1-x)$: composition is a dial, with fine print")
+    ax.set_xlim(0, 1.42)
+    ax.set_ylim(0.4, 3.6)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-absorption-direct-indirect")
+def _(mode):
+    """alpha(E): sqrt law for direct, quadratic for indirect, computed."""
+    c = S.SERIES[mode]
+    E = np.linspace(1.0, 2.2, 400)
+    a_dir = np.where(E > 1.42, 1.0e4 * np.sqrt(np.clip(E - 1.42, 0, None)), 0)
+    a_ind = np.where(E > 1.12, 4.5e3 * np.clip(E - 1.12, 0, None) ** 2, 0)
+    fig, ax = plt.subplots()
+    ax.semilogy(E, np.clip(a_dir, 1, None), color=c[0], lw=2.2)
+    ax.semilogy(E, np.clip(a_ind, 1, None), color=c[1], lw=2.2)
+    S.label_end(ax, 2.2, a_dir[-1], r"direct: $\alpha\propto\sqrt{E-E_g}$", c[0], mode, dy=6)
+    S.label_end(ax, 2.2, a_ind[-1], r"indirect: $\alpha\propto(E-E_g)^{2}$", c[1], mode, dy=-6)
+    ax.axhline(1e4, color=S.GUIDE[mode], lw=1.0, ls=":")
+    S.note(ax, 1.02, 1.3e4, r"$1/\alpha=1\ \mu$m: a thin film absorbs here", mode)
+    ax.set_xlabel("photon energy  (eV)")
+    ax.set_ylabel(r"$\alpha$  (cm$^{-1}$)")
+    ax.set_title("Same gap arithmetic, hundredfold absorption difference")
+    ax.set_ylim(1, 4e4)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-radiative-efficiency")
+def _(mode):
+    """Internal quantum efficiency eta = tau_nr / (tau_r + tau_nr)."""
+    c = S.SERIES[mode]
+    r = np.logspace(-4, 4, 300)  # tau_r / tau_nr
+    eta = 1.0 / (1.0 + r)
+    fig, ax = plt.subplots()
+    ax.semilogx(r, 100 * eta, color=c[0], lw=2.2)
+    S.label_end(ax, r[-1], 100 * eta[-1], r"$\eta=\dfrac{\tau_{nr}}{\tau_r+\tau_{nr}}$", c[0], mode, dy=10)
+    for x0, lab, dy in [(1e-3, "GaAs QW:\n$\\tau_r\\sim$ ns $\\ll\\tau_{nr}$", -6),
+                        (1e3, "silicon:\n$\\tau_r\\sim$ ms $\\gg\\tau_{nr}$", 10)]:
+        ax.plot([x0], [100 / (1 + x0)], "o", color=c[1], ms=7)
+        ax.annotate(lab, xy=(x0, 100 / (1 + x0)), xytext=(0, 18 + dy),
+                    textcoords="offset points", color=S.INK_2[mode], fontsize=9,
+                    ha="center")
+    ax.set_xlabel(r"$\tau_r/\tau_{nr}$")
+    ax.set_ylabel("internal quantum efficiency  (%)")
+    ax.set_title("Emission is a race between two clocks, and silicon's is slow")
+    ax.set_ylim(-4, 118)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-johnson")
+def _(mode):
+    """Johnson figure of merit v_sat * E_c for the RF/power materials."""
+    c = S.SERIES[mode]
+    mats = [("Si", 1.0e7, 0.3), ("GaAs", 1.2e7, 0.4), ("InP", 1.5e7, 0.5),
+            ("4H-SiC", 2.0e7, 3.0), ("GaN", 2.5e7, 3.3), ("diamond", 2.3e7, 10.0)]
+    jfm = [(m[0], m[1] * m[2] * 1e6 / (2 * np.pi)) for m in mats]  # V/s
+    jfm.sort(key=lambda m: m[1])
+    fig, ax = plt.subplots(figsize=(7.2, 4.0))
+    ref = dict(jfm)["Si"]
+    for i, (lab, v) in enumerate(jfm):
+        ax.plot([1e-1, v / ref], [i, i], color=S.GRID[mode], lw=1.0)
+        ax.plot([v / ref], [i], "o", color=c[2], ms=8)
+        ax.annotate(f"{v/ref:.0f}x", xy=(v / ref, i), xytext=(7, 0),
+                    textcoords="offset points", color=S.INK[mode], fontsize=9,
+                    va="center")
+    ax.set_yticks(range(len(jfm)), [m[0] for m in jfm])
+    ax.set_xscale("log")
+    ax.set_xlabel(r"Johnson limit  $v_{\rm sat}\mathcal{E}_c/2\pi$, relative to Si")
+    ax.set_title("Power times frequency is a material constant, and Si sits lowest")
+    ax.set_xlim(0.5, 300)
+    ax.grid(axis="y", alpha=0)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-haitz")
+def _(mode):
+    """Haitz's law, computed as the stated exponentials."""
+    c = S.SERIES[mode]
+    t = np.linspace(1968, 2026, 200)
+    flux = 1e-3 * 20 ** ((t - 1968) / 10.0)
+    cost = 1e2 * 10 ** (-(t - 1968) / 10.0)
+    fig, ax = plt.subplots()
+    ax.semilogy(t, flux, color=c[0], lw=2.2)
+    ax.semilogy(t, cost, color=c[1], lw=2.2)
+    S.label_end(ax, t[-1], flux[-1], "flux per package\n(20x per decade)", c[0], mode)
+    S.label_end(ax, t[-1], cost[-1], "cost per lumen\n(0.1x per decade)", c[1], mode, dy=-8)
+    ax.set_xlabel("year")
+    ax.set_ylabel("relative to 1968")
+    ax.set_title("Haitz's law: the LED ran its own Moore curve for fifty years")
+    ax.set_xlim(1966, 2042)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-cost-per-transistor-node")
+def _(mode):
+    """Wafer cost rising vs transistors per wafer rising: the flattening."""
+    c = S.SERIES[mode]
+    n = np.arange(0, 12)  # node generations
+    tpw = 2.0**n
+    wcost = 1.0 * 1.28**n
+    cpt = wcost / tpw
+    fig, ax = plt.subplots()
+    ax.semilogy(n, cpt / cpt[0], "-o", color=c[0], lw=2.0, ms=6)
+    S.label_end(ax, n[-1], (cpt / cpt[0])[-1], "cost per transistor", c[0], mode)
+    ax.semilogy(n, wcost / wcost[0], "-o", color=c[1], lw=1.6, ms=5)
+    S.label_end(ax, n[-1], (wcost / wcost[0])[-1], "wafer cost", c[1], mode)
+    S.note(ax, 0.2, 0.02,
+           "as long as density doubles beat the ~28%/node wafer-cost rise,\n"
+           "each node was cheaper per function; the margin has thinned to a sliver",
+           mode)
+    ax.set_xlabel("node generations")
+    ax.set_ylabel("relative to node 0")
+    ax.set_title("The economic engine, and why it is sputtering")
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-dark-silicon")
+def _(mode):
+    """Post-Dennard: switchable fraction of a chip at fixed power."""
+    c = S.SERIES[mode]
+    n = np.linspace(0, 8, 200)  # generations after Dennard's end
+    frac = 100 * (1 / 1.4) ** n  # per-device power falls slower than area
+    fig, ax = plt.subplots()
+    ax.plot(n, frac, color=c[0], lw=2.2)
+    S.label_end(ax, n[-1], frac[-1], "simultaneously\nactive fraction", c[0], mode)
+    ax.fill_between(n, frac, 100, color=c[1], alpha=0.10, lw=0)
+    S.note(ax, 3.2, 72, '"dark silicon": area you own\nbut cannot power', mode)
+    ax.set_xlabel("technology generations past constant-field scaling")
+    ax.set_ylabel("percent of chip switchable at fixed power")
+    ax.set_title("When power/area stopped scaling, area stopped meaning speed")
+    ax.set_ylim(0, 108)
+    S.strip(ax)
+    return fig
+
+
+@figure("m17-hetero-lever")
+def _(mode):
+    """What lattice mismatch costs: critical thickness vs misfit (Matthews-
+    Blakeslee scale form h_c ~ (b/f) ln(h_c/b), solved numerically)."""
+    c = S.SERIES[mode]
+    f = np.logspace(-3.3, -1.3, 200)  # misfit strain
+    b = 0.4  # nm, Burgers vector scale
+
+    def hc(fi):
+        h = 10.0
+        for _ in range(60):
+            h = (b / (8 * np.pi * fi)) * (np.log(h / b) + 1)
+        return h
+
+    h = np.array([hc(fi) for fi in f])
+    fig, ax = plt.subplots()
+    ax.loglog(f * 100, h, color=c[0], lw=2.2)
+    S.label_end(ax, f[-1] * 100, h[-1], "critical thickness", c[0], mode)
+    for fi, lab in [(0.0008, "SiGe 2%"), (0.007, "InGaAs 10%"), (0.04, "GaN on Si")]:
+        ax.plot([fi * 100], [hc(fi)], "o", color=c[1], ms=7)
+        ax.annotate(lab, xy=(fi * 100, hc(fi)), xytext=(6, 6),
+                    textcoords="offset points", color=S.INK_2[mode], fontsize=9)
+    ax.set_xlabel("lattice misfit  (%)")
+    ax.set_ylabel(r"critical thickness  $h_c$  (nm)")
+    ax.set_title("Strained heteroepitaxy rents its perfection by the nanometre")
+    S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # driver
 # ---------------------------------------------------------------------------
 
