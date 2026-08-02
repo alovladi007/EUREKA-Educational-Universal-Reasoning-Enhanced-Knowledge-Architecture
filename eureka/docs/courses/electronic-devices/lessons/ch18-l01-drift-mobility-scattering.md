@@ -7,18 +7,18 @@ it with a mechanism: carriers accelerate in a field, get scattered, and the
 balance between the two fixes the conductivity. Everything about resistivity in
 metals, alloys and semiconductors follows from asking what does the scattering.
 
-**Level.** Sections 1 to 4 are the undergraduate core. Sections marked
-*Graduate extension* carry the Drude-to-Boltzmann bridge, the Ziman resistivity
-formula and the Sommerfeld correction, and can be skipped on a first pass
-without breaking the thread.
+**Level.** Sections 1 to 7 are the undergraduate core, in a fixed pattern:
+derivation, orders of magnitude, worked examples. Section 8 is the graduate
+extension: the Sommerfeld correction, energy-dependent relaxation, the Hall
+factor and the transport-versus-quantum lifetime distinction. Section 9 is a
+problem set with full answers.
 
-## 1. Drift velocity, mobility and conductivity
+## 1. The three speeds, and the equation of motion
 
-### 1.1 The equation of motion
+### 1.1 Thermal, drift and signal speed
 
-Carriers in a solid are never still. At room temperature an electron in a
-non-degenerate semiconductor moves at a thermal speed obtained by equating
-kinetic energy to the equipartition value,
+Carriers in a solid are never still. In a non-degenerate semiconductor the
+thermal speed follows from equipartition,
 
 $$
 \tfrac{3}{2}k_BT=\tfrac{1}{2}m^{*}v_{\rm th}^{2}
@@ -26,189 +26,370 @@ $$
 v_{\rm th}=\sqrt{\frac{3k_BT}{m^{*}}}
 $$
 
-which for $m^{*}=0.26\,m_0$ in silicon at 300 K gives $v_{\rm th}\approx
-2.3\times10^{5}\ {\rm m/s}$. That motion is random, so it carries no net
-current.
+which for $m^{*}=0.26\,m_0$ in silicon at 300 K gives
+$v_{\rm th}\approx2.3\times10^{5}\ {\rm m/s}$. In a metal the analogous scale
+is the Fermi velocity, $v_F=\sqrt{2E_F/m}\approx1.6\times10^{6}\ {\rm m/s}$
+for copper, set by the Pauli principle rather than by temperature. Both are
+random motions and carry no net current.
 
-Now apply a field $\mathcal{E}$. Newton's law with a friction term standing in
-for scattering is
+Three distinct speeds have to be kept apart, because confusing them produces
+most beginner errors about conduction:
+
+| speed | scale | what it is |
+|---|---|---|
+| thermal / Fermi | $10^{5}$ to $10^{6}$ m/s | random carrier motion |
+| drift | $10^{-5}$ to $10^{5}$ m/s | the field-driven average |
+| signal | near $c$ | propagation of the field itself |
+
+A signal crosses a board in nanoseconds while the electrons that carry the
+current creep along at a snail's pace, because the *field* propagates, not the
+carriers.
+
+### 1.2 The Drude equation of motion
+
+Apply a field $\mathcal{E}$. Newton's law with a friction term standing in for
+scattering is
 
 $$
-m^{*}\frac{d\mathbf{v}_d}{dt}=-e\boldsymbol{\mathcal{E}}-\frac{m^{*}\mathbf{v}_d}{\tau}
+m^{*}\frac{d\mathbf{v}_d}{dt}
+=-e\boldsymbol{\mathcal{E}}-\frac{m^{*}\mathbf{v}_d}{\tau}
 $$
 
-The friction term is the entire model: it says that scattering destroys the
-drift momentum on a timescale $\tau$, the **mean free time**. Setting
-$d\mathbf{v}_d/dt=0$ for steady state gives
+The friction term is the entire model: it asserts that collisions destroy the
+drift momentum on a timescale $\tau$, the **mean free time**. The general
+solution for a field switched on at $t=0$ is
 
 $$
-\boxed{\;\mathbf{v}_d=-\frac{e\tau}{m^{*}}\boldsymbol{\mathcal{E}}\equiv-\mu\boldsymbol{\mathcal{E}},
+\mathbf{v}_d(t)=-\frac{e\tau}{m^{*}}\boldsymbol{\mathcal{E}}
+\left(1-e^{-t/\tau}\right)
+$$
+
+![The drift velocity relaxes exponentially to its steady value with the scattering time as the time constant; after one mean free time the carrier gas has covered 63 percent of the distance.](/courses/electronic-devices/figures/m18-drude-transient.svg)
+
+Steady state gives the definition of mobility:
+
+$$
+\boxed{\;\mathbf{v}_d=-\mu\boldsymbol{\mathcal{E}},
 \qquad \mu=\frac{e\tau}{m^{*}}\;}
 $$
 
-The proportionality constant $\mu$ is the **drift mobility**. In SI it is
-${\rm m^{2}V^{-1}s^{-1}}$; the literature almost always uses
+In SI, $\mu$ is ${\rm m^{2}V^{-1}s^{-1}}$; the literature uses
 ${\rm cm^{2}V^{-1}s^{-1}}$, and $1\ {\rm m^{2}/Vs}=10^{4}\ {\rm cm^{2}/Vs}$.
+The two ingredients say exactly what raises mobility: a long time between
+collisions and a light effective mass. Everything in module 18 is a story
+about one or the other.
 
-### 1.2 From mobility to conductivity
+### 1.3 The AC response
 
-With $n$ carriers per unit volume each of charge $-e$, the current density is
-$\mathbf{J}=-en\mathbf{v}_d=en\mu\boldsymbol{\mathcal{E}}$, and comparing with
-$\mathbf{J}=\sigma\boldsymbol{\mathcal{E}}$:
+Drive the same equation with $\mathcal{E}e^{i\omega t}$ and the steady
+oscillating solution gives a complex conductivity,
 
 $$
-\boxed{\;\sigma=en\mu=\frac{ne^{2}\tau}{m^{*}}\;}
-\qquad\text{and for both carrier types}\qquad
-\sigma=e\left(n\mu_n+p\mu_p\right)
+\sigma(\omega)=\frac{\sigma_0}{1+i\omega\tau},
+\qquad
+|\sigma|=\frac{\sigma_0}{\sqrt{1+\omega^{2}\tau^{2}}}
 $$
 
-This factorization is the organizing idea of the whole module, because the two
-factors are controlled by completely different physics. **Carrier density is
-set by doping and temperature. Mobility is set by scattering.** A material can
-be a poor conductor because it has few carriers or because those carriers are
-scattered constantly, and the two cases behave nothing alike.
+![The magnitude rolls off and the current lags the field, both governed by the single product of frequency and scattering time; with tau around 20 femtoseconds in a metal the corner sits in the terahertz.](/courses/electronic-devices/figures/m18-ac-drude.svg)
 
-Three companion quantities:
-
-| quantity | definition | silicon at 300 K, lightly doped |
-|---|---|---|
-| mean free time $\tau$ | average time between collisions | $\tau=\mu m^{*}/e\approx0.21\ {\rm ps}$ |
-| mean free path $\ell$ | $\ell=v_{\rm th}\tau$ | $\approx 48\ {\rm nm}$ |
-| drift velocity at 1 kV/cm | $v_d=\mu\mathcal{E}$ | $\approx1.4\times10^{5}\ {\rm cm/s}$ |
+With $\tau\approx2\times10^{-14}$ s in copper, $\omega\tau=1$ falls near 8 THz:
+metals behave as ideal Ohmic conductors through the entire electronic spectrum
+and only fail approaching the infrared. The same expression is the low-frequency
+end of the free-carrier optics of module 19, and setting
+$\sigma(\omega)$ into Maxwell's equations yields the plasma frequency at which
+a conductor turns transparent, the fact module 56 builds transparent conductors
+on. One model, three modules.
 
 ### Worked example 1.1 — how slow is drift, really?
 
 A copper wire of cross-section $A=1\ {\rm mm^{2}}$ carries $I=1\ {\rm A}$.
-Copper has one free electron per atom, density $8.96\ {\rm g/cm^{3}}$ and molar
-mass $63.5\ {\rm g/mol}$, so
+Copper has one conduction electron per atom, density $8.96\ {\rm g/cm^{3}}$,
+molar mass $63.5\ {\rm g/mol}$:
 
 $$
-n=\frac{8.96}{63.5}\times6.022\times10^{23}=8.5\times10^{22}\ {\rm cm^{-3}}
-=8.5\times10^{28}\ {\rm m^{-3}}
+n=\frac{8.96}{63.5}\times6.022\times10^{23}
+=8.5\times10^{22}\ {\rm cm^{-3}}=8.5\times10^{28}\ {\rm m^{-3}}
 $$
 
-From $J=nev_d$,
+$$
+v_d=\frac{J}{ne}
+=\frac{10^{6}\ {\rm A/m^{2}}}{8.5\times10^{28}\times1.602\times10^{-19}}
+=7.3\times10^{-5}\ {\rm m/s}
+$$
+
+About **four metres per day**, nine orders of magnitude below the Fermi
+velocity of the same electrons.
+
+### Worked example 1.2 — the memory time of the electron gas
+
+How long after a current is interrupted does the drift motion survive? From the
+transient solution, the decay constant is $\tau$ itself. For copper,
+$\tau=\mu m/e$ with $\mu=4.3\times10^{-3}\ {\rm m^{2}/Vs}$:
 
 $$
-v_d=\frac{J}{ne}=\frac{1/(10^{-6})}{8.5\times10^{28}\times1.602\times10^{-19}}
-=7.3\times10^{-5}\ {\rm m/s}\approx0.07\ {\rm mm/s}
+\tau=\frac{4.3\times10^{-3}\times9.109\times10^{-31}}{1.602\times10^{-19}}
+=2.4\times10^{-14}\ {\rm s}
 $$
 
-Roughly **four metres per day**. The drift velocity is about nine orders of
-magnitude below the Fermi velocity of the same electrons. A signal travels down
-the wire near the speed of light because the *field* propagates, not because
-carriers do. Keeping these three speeds separate, thermal (or Fermi), drift and
-signal, prevents most of the confusion beginners have about conduction.
+Twenty-four femtoseconds. Every circuit-level memory effect, inductive kick
+included, is field energy, not carrier momentum: the electron gas itself
+forgets essentially instantly.
 
-## 2. Matthiessen's rule: adding independent scattering rates
+## 2. Carrier statistics: degenerate or not
 
-Real carriers meet several scatterers at once. If the mechanisms are
-statistically independent, the probabilities of scattering per unit time add:
+### 2.1 Two distributions
+
+The occupation of a state at energy $E$ is the Fermi-Dirac function
+
+$$
+f(E)=\frac{1}{1+e^{(E-E_F)/k_BT}}
+$$
+
+When $E-E_F\gg k_BT$ the exponential dominates and
+
+$$
+f(E)\approx e^{-(E-E_F)/k_BT}
+$$
+
+which is Maxwell-Boltzmann. The approximation is excellent beyond about
+$3k_BT$ above $E_F$ and catastrophic below it, where Fermi-Dirac saturates at
+one occupant per state while the classical form happily predicts several.
+
+![The full quantum distribution and its classical limit agree in the tail and disagree completely near and below the Fermi level, which is why the same formulas serve lightly doped semiconductors and fail for metals.](/courses/electronic-devices/figures/m18-fermi-maxwell.svg)
+
+### 2.2 The practical criterion
+
+A semiconductor is **non-degenerate** while its carrier density stays well
+below the effective density of states,
+
+$$
+N_c=2\left(\frac{2\pi m^{*}k_BT}{h^{2}}\right)^{3/2}
+$$
+
+which for silicon electrons at 300 K is $2.8\times10^{19}\ {\rm cm^{-3}}$. The
+working rule: below about $10^{18}\ {\rm cm^{-3}}$ silicon is comfortably
+non-degenerate and Boltzmann statistics apply; at $10^{19}$ and above, the
+Fermi level enters the band, the material is **degenerate**, and it behaves
+like a poor metal. Metals sit at $10^{22}$ to $10^{23}\ {\rm cm^{-3}}$, five
+orders of magnitude past the crossover, which is why metallic conduction is a
+Fermi-surface story from the start.
+
+This one criterion decides which formulas apply throughout the course: the
+$T^{3/2}$ prefactors of the scattering laws, the diffusion-mobility relation
+(the Einstein relation $D/\mu=k_BT/e$ holds only when non-degenerate), and the
+interpretation of every temperature dependence.
+
+### Worked example 2.1 — is this contact layer a metal?
+
+A source contact is doped to $n=8\times10^{19}\ {\rm cm^{-3}}$. Degenerate?
+Estimate the Fermi level position using the degenerate free-electron result
+
+$$
+E_F=\frac{\hbar^{2}}{2m^{*}}\left(3\pi^{2}n\right)^{2/3}
+$$
+
+With $m^{*}=0.26\,m_0$ and $n=8\times10^{25}\ {\rm m^{-3}}$:
+$(3\pi^{2}n)^{2/3}=(2.37\times10^{27})^{2/3}=1.78\times10^{18}\ {\rm m^{-2}}$,
+so
+
+$$
+E_F=\frac{(1.055\times10^{-34})^{2}}{2\times0.26\times9.109\times10^{-31}}
+\times1.78\times10^{18}=4.2\times10^{-20}\ {\rm J}=0.26\ {\rm eV}
+$$
+
+The Fermi level sits a quarter of an electron-volt **inside the conduction
+band**, ten times $k_BT$. The layer is fully degenerate: its carrier density is
+temperature-independent, its resistivity rises with temperature like a metal's,
+and Boltzmann-statistics formulas do not apply to it. Contact layers are
+metals that happen to be made of silicon.
+
+## 3. Conductivity, resistivity, and sheet resistance
+
+### 3.1 The central factorization
+
+With $n$ carriers of charge $-e$ drifting at $v_d$, the current density is
+$\mathbf{J}=en\mu\boldsymbol{\mathcal{E}}$, so
+
+$$
+\boxed{\;\sigma=en\mu=\frac{ne^{2}\tau}{m^{*}},\qquad
+\sigma=e(n\mu_n+p\mu_p)\ \text{with both carriers}\;}
+$$
+
+The two factors are controlled by different physics. **Carrier density is set
+by doping and temperature; mobility is set by scattering.** A material can
+conduct badly because it has few carriers or because they are constantly
+scattered, and the two cases respond oppositely to almost every intervention.
+The span of the product is the widest of any material property in engineering:
+from $10^{-16}\ {\rm S/m}$ in PTFE to $6\times10^{7}$ in silver, twenty-three
+orders of magnitude.
+
+Companion quantities worth having at recall for silicon at 300 K, lightly
+doped: $\tau=\mu m^{*}/e\approx0.2\ {\rm ps}$, mean free path
+$\ell=v_{\rm th}\tau\approx45\ {\rm nm}$.
+
+### 3.2 Sheet resistance
+
+Films and diffusions have a fixed thickness $t$ set by the process, and the
+designer chooses only the layout. Factor the resistance accordingly:
+
+$$
+R=\rho\frac{L}{Wt}=\frac{\rho}{t}\cdot\frac{L}{W}
+=R_s\times\left(\text{number of squares}\right)
+$$
+
+![Only the length-to-width ratio enters: a resistor of five squares has the same resistance at any absolute size, which is why layouts are counted in squares.](/courses/electronic-devices/figures/m18-sheet-resistance.svg)
+
+The **sheet resistance** $R_s=\rho/t$, in "ohms per square", is the natural
+unit of every planar technology. Typical values: 10 to 100 m$\Omega/\square$
+for interconnect metal, 10 to 100 $\Omega/\square$ for silicided polysilicon
+and diffusions, $10^{2}$ to $10^{3}$ for undoped semiconductor films, and it
+is the figure of merit for the transparent conductors of module 56.
+
+### Worked example 3.1 — an interconnect delay budget
+
+A copper line ($\rho=17\ {\rm n\Omega\,m}$ bulk) is 100 nm thick, 100 nm wide
+and 1 mm long, over a dielectric giving 0.2 fF per micrometre of length.
+Estimate the RC delay, using the bulk resistivity first.
+
+$$
+R_s=\frac{17\times10^{-9}}{100\times10^{-9}}=0.17\ \Omega/\square,
+\qquad
+N_\square=\frac{10^{-3}}{10^{-7}}=10^{4}
+\ \Rightarrow\ R=1.7\ {\rm k\Omega}
+$$
+
+$$
+C=0.2\ {\rm fF/\mu m}\times1000\ {\rm \mu m}=0.2\ {\rm pF}
+\qquad
+RC=1.7\times10^{3}\times0.2\times10^{-12}=0.34\ {\rm ns}
+$$
+
+A third of a nanosecond to cross one millimetre: several clock cycles. And
+lesson 2 shows the bulk resistivity is optimistic by 2 to 3 times at this
+width, so the real budget is worse. This one number is why interconnect, not
+transistors, limits modern chips, and why module 43 spends a lesson on low-k
+dielectrics: the other factor in the product is $C$.
+
+### Worked example 3.2 — sizing a diffused resistor
+
+A process offers a p-type diffusion with $R_s=120\ \Omega/\square$. Lay out
+$4.8\ {\rm k\Omega}$. Squares needed: $4800/120=40$. At the minimum width of
+$2\ {\rm \mu m}$, the resistor is $80\ {\rm \mu m}$ long, folded into a
+serpentine. Corner squares count roughly 0.56 of a straight square because
+current crowds the inside edge; with 6 corners the layout is trimmed to
+$40-6\times(1-0.56)\approx37.4$ straight squares. Layout handbooks carry that
+0.56; the physics is nothing but current crowding.
+
+## 4. Matthiessen's rule
+
+### 4.1 Adding rates
+
+Independent scattering mechanisms add as probabilities per unit time:
 
 $$
 \frac{1}{\tau}=\sum_i\frac{1}{\tau_i}
-$$
-
-Since $\mu=e\tau/m^{*}$ and $\rho=1/\sigma=m^{*}/(ne^{2}\tau)$, this becomes
-
-$$
+\quad\Longrightarrow\quad
 \boxed{\;\frac{1}{\mu}=\sum_i\frac{1}{\mu_i}
 \qquad\text{equivalently}\qquad
 \rho=\sum_i\rho_i\;}
 $$
 
-This is **Matthiessen's rule**, and the resistivity form is the one to
-remember: independent scattering contributions add as resistivities. Two
-consequences worth internalizing:
+The resistivity form is the memorable one: **independent contributions add as
+resistivities.** Two consequences:
 
-- **The worst mechanism dominates.** If $\rho_1=20$ and $\rho_2=2$ in the same
-  units, removing mechanism 2 entirely buys 9 percent. The right question about
-  a conductor is always "what limits it *here*", never "how pure is it".
-- **The rule is an approximation.** It assumes the mechanisms do not interfere.
-  It fails when an impurity distorts the lattice enough to change local phonon
-  scattering, and when scattering is strongly anisotropic so that the two
-  mechanisms relax different parts of the distribution. Measured deviations
-  from Matthiessen's rule are therefore themselves evidence of coupling.
+- **The worst mechanism dominates.** With $\rho_1=20$ and $\rho_2=2$, removing
+  mechanism 2 entirely buys 9 percent. The right question about a conductor is
+  always "what limits it here", never "how pure is it".
+- **It is an approximation.** It fails when mechanisms interfere (an impurity
+  that changes local phonon modes), and when they are anisotropic in different
+  ways so that no single $\tau$ describes both. Deviations from Matthiessen's
+  rule are themselves used as evidence of such coupling.
 
-![Two mechanisms with opposite temperature dependence combine through Matthiessen's rule. Impurity scattering limits the cold end, lattice scattering the hot end, and the peak sits where they cross.](/courses/electronic-devices/figures/m18-mobility-vs-temperature.svg)
+![Two mechanisms with opposite temperature dependence combine through Matthiessen's rule; impurity scattering limits the cold end, lattice scattering the hot end, and the peak sits where they cross.](/courses/electronic-devices/figures/m18-mobility-vs-temperature.svg)
 
-### Worked example 2.1 — combining mobilities
+### Worked example 4.1 — combining and prioritising
 
-A sample has lattice-limited mobility $\mu_L=1400$ and impurity-limited
-$\mu_I=600\ {\rm cm^{2}/Vs}$. Then
+A sample has $\mu_L=1400$ and $\mu_I=600\ {\rm cm^{2}/Vs}$:
 
 $$
-\frac{1}{\mu}=\frac{1}{1400}+\frac{1}{600}=7.14\times10^{-4}+1.667\times10^{-3}
+\frac{1}{\mu}=\frac{1}{1400}+\frac{1}{600}
 =2.381\times10^{-3}
+\ \Rightarrow\ \mu=420\ {\rm cm^{2}/Vs}
 $$
 
-$$
-\mu=420\ {\rm cm^{2}/Vs}
-$$
+Below the smaller input, always. A 10 percent improvement in $\mu_I$ moves the
+answer by 7 percent; the same improvement in $\mu_L$ moves it 2 percent.
+Optimisation effort goes where the reciprocal is largest.
 
-The result is below the smaller of the two, always. Note also that a 10 percent
-improvement in $\mu_I$ moves $\mu$ by 7 percent, while a 10 percent improvement
-in $\mu_L$ moves it by 2 percent. Effort should go where the reciprocal is
-largest.
+### Worked example 4.2 — reading a mobility peak
 
-## 3. Why the resistivity of a metal rises with temperature
+A Hall measurement gives $\mu=2100\ {\rm cm^{2}/Vs}$ at 150 K and the mobility
+peaks there. Estimate the two components, assuming pure power laws
+$\mu_L=aT^{-3/2}$ and $\mu_I=bT^{3/2}$. At the peak of
+$1/\mu=1/\mu_L+1/\mu_I$, the derivative gives $\mu_L=\mu_I$ (equal components,
+since their logarithmic slopes are equal and opposite). Hence at 150 K each is
+$2\times2100=4200\ {\rm cm^{2}/Vs}$, so at 300 K,
+$\mu_L=4200\,(300/150)^{-3/2}=1485$ and $\mu_I=4200\,(2)^{3/2}=11900$: room
+temperature is lattice-limited, and cooling this sample below 150 K makes it
+worse, not better. The peak location is a doping diagnostic, and it moves up
+in temperature as $N_I$ rises.
 
-In a metal $n$ is fixed: every atom donates its valence electrons regardless of
-temperature. All the temperature dependence therefore lives in $\tau$.
+## 5. Metals: the phonon term, cold and hot
 
-### 3.1 The phonon argument
+### 5.1 The classical argument
 
-An electron scatters off the displacement of an ion from its lattice site. The
-scattering cross-section is proportional to the mean square displacement
-$\langle u^{2}\rangle$, and for a classical oscillator of stiffness $K$ in
-thermal equilibrium,
+In a metal, $n$ is fixed; all the temperature dependence lives in $\tau$. An
+electron scatters off the displacement of an ion from its site, with
+cross-section proportional to the mean-square displacement of a thermal
+oscillator:
 
 $$
 \tfrac{1}{2}K\langle u^{2}\rangle=\tfrac{1}{2}k_BT
-\quad\Longrightarrow\quad
-\langle u^{2}\rangle=\frac{k_BT}{K}\;\propto\;T
+\ \Longrightarrow\
+\langle u^{2}\rangle=\frac{k_BT}{K}\propto T
 $$
 
-The scattering rate is (number of scatterers) $\times$ (cross-section)
-$\times$ (velocity), and in a metal the velocity is the Fermi velocity, which
-is temperature-independent. So $1/\tau\propto T$ and
+The carrier speed in the rate (density of scatterers x cross-section x speed)
+is the temperature-independent $v_F$, so $1/\tau\propto T$ and
 
 $$
-\rho_{\rm phonon}\propto T \qquad (T\gtrsim\theta_D/3)
+\rho_{\rm ph}\propto T\qquad(T\gtrsim\theta_D/3)
 $$
 
-Below about a third of the Debye temperature $\theta_D$ the phonon population
-freezes out, both the number of phonons and the effective scattering angle
-shrink, and the Bloch-Gruneisen result $\rho\propto T^{5}$ takes over.
+### 5.2 Bloch-Gruneisen: what happens when phonons freeze
 
-### 3.2 Matthiessen made visible
-
-Adding the temperature-independent defect term:
-
-$$
-\rho(T)=\rho_{\rm res}+\rho_{\rm phonon}(T)
-$$
-
-Curves for samples of different purity are therefore **parallel**, offset by a
-constant. That is the experimental signature of Matthiessen's rule, and it is
-what the figure below shows.
-
-![Three purities of the same metal. The phonon term is common, so the curves are parallel and separated only by their residual resistivity.](/courses/electronic-devices/figures/m18-metal-resistivity.svg)
-
-The standard purity metric follows directly. The **residual resistance ratio**
+Below roughly a third of the Debye temperature $\theta_D$ two suppressions
+compound: fewer phonons exist, and those remaining carry small momentum, so
+each scattering event deflects the electron only slightly and the
+$(1-\cos\theta)$ weighting of section 8.4 discounts it further. The full
+result is the Bloch-Gruneisen integral,
 
 $$
-\mathrm{RRR}=\frac{\rho(300\ {\rm K})}{\rho(4.2\ {\rm K})}
-\approx\frac{\rho_{\rm phonon}(300)+\rho_{\rm res}}{\rho_{\rm res}}
+\rho_{\rm ph}(T)\propto\left(\frac{T}{\theta_D}\right)^{5}
+\int_{0}^{\theta_D/T}\frac{x^{5}e^{x}}{(e^{x}-1)^{2}}\,dx
 $$
 
-is large when the phonon term dominates, which means very little else is in the
-way. Commercial copper has RRR of 50 to 100; the best annealed single crystals
-exceed $10^{4}$.
+whose limits are $\rho\propto T$ for $T\gg\theta_D$ and the famous
+$\rho\propto T^{5}$ for $T\ll\theta_D$.
 
-### 3.3 The temperature coefficient of resistance
+![The curve computed from the integral itself, with both asymptotes drawn: five powers of temperature at the cold end collapse to one at the warm end.](/courses/electronic-devices/figures/m18-bloch-gruneisen.svg)
 
-Engineers meet this as
+Adding the temperature-independent defect term restores Matthiessen:
+
+$$
+\rho(T)=\rho_{\rm res}+\rho_{\rm ph}(T)
+$$
+
+so purity curves are **parallel**, offset by their residual resistivity, and
+the **residual resistance ratio** ${\rm RRR}=\rho(300\,{\rm K})/\rho(4.2\,{\rm K})$
+is the standard purity metric: 50 to 100 for commercial copper, above $10^{4}$
+for the best crystals.
+
+![Three purities of the same metal share one phonon curve; only the temperature-independent floor differs, which is Matthiessen's rule made visible.](/courses/electronic-devices/figures/m18-metal-resistivity.svg)
+
+### 5.3 The temperature coefficient, and its limits
+
+Engineering data sheets linearise:
 
 $$
 \rho(T)=\rho_0\left[1+\alpha_0(T-T_0)\right],
@@ -216,269 +397,427 @@ $$
 \alpha_0=\frac{1}{\rho_0}\left.\frac{d\rho}{dT}\right|_{T_0}
 $$
 
-For a pure metal near room temperature $\rho_{\rm res}\ll\rho_{\rm phonon}$, so
-$\rho\approx cT$ and $\alpha_0\approx1/T_0=1/293\approx3.4\times10^{-3}\
-{\rm K^{-1}}$. Measured values cluster near $3.9\times10^{-3}$ for copper,
-aluminium and platinum, which is the same physics with the residual term and
-the Bloch-Gruneisen curvature folded in. **A room-temperature TCR near
-$1/T$ is a fingerprint that phonons dominate.**
+For a pure metal near room temperature $\rho\approx cT$, so
+$\alpha_0\approx1/T_0\approx3.4\times10^{-3}\ {\rm K^{-1}}$; measured values
+cluster near $3.9\times10^{-3}$ for copper, aluminium and platinum. **A TCR
+near $1/T$ is a fingerprint of phonon-limited conduction**, and a TCR far
+below it (constantan at $10^{-5}$) is a fingerprint of disorder-limited
+conduction, section 7.
 
-| material | $\rho$ at 300 K (n$\Omega\,$m) | $\alpha_0$ ($10^{-3}$/K) | what limits it |
+| material | $\rho$ at 300 K (n$\Omega\,$m) | $\alpha_0$ ($10^{-3}$/K) | limited by |
 |---|---|---|---|
 | silver | 15.9 | 3.8 | phonons |
 | copper | 16.8 | 3.9 | phonons |
+| gold | 22.1 | 3.4 | phonons |
 | aluminium | 26.5 | 3.9 | phonons |
 | tungsten | 52.8 | 4.5 | phonons |
+| platinum | 105 | 3.92 | phonons |
 | nichrome | 1100 | 0.4 | alloy disorder |
-| constantan | 490 | 0.01 | alloy disorder, deliberately compensated |
+| constantan | 490 | 0.01 | disorder, compensated |
+| manganin | 430 | 0.02 | disorder, compensated |
 
-### Worked example 3.1 — a platinum resistance thermometer
+The linearisation has a measurable cost. Platinum resistance thermometry uses
+the quadratic Callendar-Van Dusen form
+$R(T)=R_0(1+AT+BT^{2})$ with $B<0$; treating platinum as linear misreads
+increasingly badly at high temperature:
 
-A Pt100 sensor reads $100.00\ \Omega$ at 0 °C with
-$\alpha_0=3.85\times10^{-3}\ {\rm K^{-1}}$. What resistance corresponds to
-85 °C, and what temperature error follows from a $0.05\ \Omega$ measurement
-uncertainty?
+![The error of a straight-line reading of a platinum sensor grows past fifty degrees by 600 C, which is why standards specify the quadratic and why precision readout never uses the single-number TCR.](/courses/electronic-devices/figures/m18-tcr-error.svg)
 
-$$
-R=100\left[1+3.85\times10^{-3}\times85\right]=132.7\ \Omega
-$$
+### Worked example 5.1 — a platinum thermometer, done properly
 
-$$
-\frac{dR}{dT}=100\times3.85\times10^{-3}=0.385\ \Omega/{\rm K}
-\quad\Longrightarrow\quad
-\delta T=\frac{0.05}{0.385}=0.13\ {\rm K}
-$$
-
-The sensitivity is set by $\alpha_0$, which is set by the phonon physics of
-section 3.1. This is a direct line from lattice vibrations to an instrument
-specification.
-
-### 3.4 Contrast with semiconductors
-
-Semiconductors do the opposite, for a different reason. There $n$ rises roughly
-as
+A Pt100 reads $R=213.5\ \Omega$. Linear estimate with
+$\alpha=3.9083\times10^{-3}$: $T=(2.135-1)/0.0039083=290.4\ ^{\circ}$C.
+Quadratic: solve $1+AT+BT^{2}=2.135$ with $A=3.9083\times10^{-3}$,
+$B=-5.775\times10^{-7}$:
 
 $$
-n_i\propto T^{3/2}\exp\!\left(-\frac{E_g}{2k_BT}\right)
+T=\frac{-A+\sqrt{A^{2}+4B(2.135-1)}}{2B}
+=\frac{-3.9083\times10^{-3}+\sqrt{1.5275\times10^{-5}-2.622\times10^{-6}}}
+{-1.155\times10^{-6}}
 $$
 
-and that exponential swamps the falling mobility. **Metals get worse when hot
-because of mobility; semiconductors get better when hot because of carrier
-density.** Same equation $\sigma=ne\mu$, different dominant factor. Every
-negative-temperature-coefficient thermistor is this exponential, and every
-thermal runaway in a bipolar device is it too.
+$$
+=\frac{-3.9083\times10^{-3}+3.5571\times10^{-3}}{-1.155\times10^{-6}}
+=304.1\ ^{\circ}{\rm C}
+$$
 
-## 4. Alloys and Nordheim's rule
+The linear reading is **13.7 degrees low**. At the top of the range the error
+approaches an entire control band, which is why the quadratic is not optional.
 
-A solute atom perturbs the periodic potential in two ways: its core charge
-differs, and its size differs, so it strains the lattice around it. Both
-scatter. Because the perturbation is static, the contribution is essentially
-temperature-independent and adds to the residual term.
+### Worked example 5.2 — RRR and the crossover
 
-For a random solid solution the added resistivity follows
+Copper with RRR = 80: $\rho_{\rm res}=16.8/80=0.21\ {\rm n\Omega\,m}$. Where do
+the two contributions cross? Linear extrapolation
+$\rho_{\rm ph}=16.6\,(T/300)$ crosses at 3.8 K, but by then the
+Bloch-Gruneisen $T^{5}$ suppression has cut the phonon term far below the
+linear estimate, pushing the true crossover to 15 to 25 K. The lesson: the
+linear law must never be extrapolated below $\theta_D/3$ (about 115 K for
+copper), which is precisely what the figure's $T^{5}$ branch is warning about.
+
+### 5.4 The semiconductor contrast
+
+Semiconductors run the opposite way because the dominant factor switches from
+$\mu$ to $n$:
+
+$$
+n_i(T)=\sqrt{N_cN_v}\;e^{-E_g/2k_BT}
+$$
+
+Between freeze-out and intrinsic takeover lies the **extrinsic plateau**,
+where $n\approx N_D$ and devices are designed to live:
+
+![The full carrier density of a doped sample on an Arrhenius axis: a steep intrinsic slope of half the gap, a flat extrinsic plateau, and a freeze-out slope of half the donor depth. The plateau's ends are the real operating limits of the technology.](/courses/electronic-devices/figures/m18-sigma-semiconductor.svg)
+
+Reading the figure quantitatively is a skill worth having: on the
+$\ln n$-versus-$1/T$ axis the intrinsic branch has slope $-E_g/2k_B$ and the
+freeze-out branch slope $-E_d/2k_B$, so **band gaps and dopant depths are
+measured with a resistance bridge and a cryostat**. The upper end of the
+plateau, where $n_i(T)$ reaches the doping, is the maximum operating
+temperature: roughly 200 to 250 C for silicon at ordinary dopings, and the
+single most cited justification for the wide-gap materials of module 39.
+
+### Worked example 5.3 — maximum operating temperature
+
+At what temperature does intrinsic carrier density reach $10^{15}$, upsetting
+a $N_D=10^{15}\ {\rm cm^{-3}}$ drift region? Solve
+$n_i(T)=10^{15}$ with $n_i(300)=1.0\times10^{10}$ and
+$E_g=1.12$ eV, ignoring the prefactor's slow $T^{3}$ drift:
+
+$$
+\frac{n_i(T)}{n_i(300)}=e^{-\frac{E_g}{2k_B}\left(\frac{1}{T}-\frac{1}{300}\right)}=10^{5}
+$$
+
+$$
+\frac{1}{300}-\frac{1}{T}=\frac{2k_B\ln 10^{5}}{E_g}
+=\frac{2\times8.617\times10^{-5}\times11.51}{1.12}=1.771\times10^{-3}
+$$
+
+giving $1/T=1.562\times10^{-3}$, $T=640\ {\rm K}\approx367\ ^{\circ}$C. High
+resistivity power devices hit intrinsic takeover well below that in practice
+(the criterion $n_i\approx0.1N_D$ is already trouble), which brackets silicon
+power electronics to junction temperatures near 175 C and hands the hotter
+territory to SiC.
+
+## 6. Interlude: what to remember so far
+
+Three sentences carry sections 1 to 5. Mobility is $e\tau/m^{*}$, so
+everything that lengthens the time between collisions or lightens the carrier
+raises it. Resistivities of independent mechanisms add, so the worst one is the
+design target. Metals lose mobility as they warm while semiconductors gain
+carriers, and each behaviour is a measurement instrument: the metal's slope is
+a thermometer, the semiconductor's slope is a spectrometer for gaps and dopant
+depths.
+
+## 7. Alloys: Nordheim's rule and the disorder ceiling
+
+### 7.1 The variance argument
+
+A solute atom perturbs the lattice twice over: different core potential,
+different size. Both scatter. For a **random** solid solution, treat each site
+as an independent random variable equal to solute with probability $x$. The
+mean-square fluctuation of the site potential is proportional to the variance
+of a Bernoulli variable,
+
+$$
+\langle(\delta U)^{2}\rangle\propto x(1-x)
+$$
+
+and in the Born approximation the scattering rate follows the mean-square
+perturbation, so
 
 $$
 \boxed{\;\rho_{\rm alloy}=C\,x(1-x)\;}
 $$
 
-with $x$ the solute atomic fraction. This is **Nordheim's rule**. The shape is
-forced by the disorder: at $x=0$ every site is host and at $x=1$ every site is
-solute, so both ends are perfectly ordered crystals with no alloy scattering,
-and the disorder is maximal in between.
+This is **Nordheim's rule**, and it is statistics, not curve fitting: zero at
+both pure ends, maximal disorder at the middle. The coefficient $C$ grows with
+the valence and size mismatch of the pair, from tens of
+${\rm n\Omega\,m}$ for silver-gold (nearly identical atoms) to over a thousand
+for copper-nickel.
 
-![Nordheim's parabola for two solute-solvent pairs. The prefactor grows with how dissimilar the atoms are; the shape is fixed by the statistics of a random solution.](/courses/electronic-devices/figures/m18-nordheim.svg)
+![The parabola for two solute-solvent pairs computed from the rule itself; the prefactor measures how dissimilar the two atoms are, the shape is fixed by the site-occupancy variance.](/courses/electronic-devices/figures/m18-nordheim.svg)
 
-*Where the parabola comes from.* Treat each site independently. The probability
-that a given site is a scatterer-relative-to-the-average is the probability
-that it differs from the mean occupancy. For a binary random alloy the variance
-of the site occupancy is exactly
+Three consequences:
 
-$$
-\langle(\delta c)^{2}\rangle=x(1-x)
-$$
+- **Resistance alloys sit near $x=0.5$**, where the disorder term is large and
+  temperature-independent, cancelling the phonon TCR: constantan and manganin
+  in the table above are designed there, and their $10^{-5}$ TCRs are why
+  precision shunts and strain gauges are made of them.
+- **Conductors must be pure.** The parabola is steepest at the ends: the first
+  atomic percent costs the most. This is why interconnect copper and busbar
+  aluminium carry purity specifications that look absurd until you differentiate
+  the rule at $x=0$.
+- **Ordering breaks the rule.** The variance argument assumed randomness. If
+  the alloy orders into a compound or phase-separates, disorder collapses and
+  resistivity drops at fixed composition; a heat treatment can change the
+  resistivity of the same chemistry. An anomalously low Nordheim coefficient is
+  evidence of short-range order.
 
-and, in the Born approximation, the scattering rate is proportional to the mean
-square of the potential fluctuation, hence to $x(1-x)$. So Nordheim's rule is
-the statistics of a random binary mixture, not an empirical curve fit.
+### 7.2 The same variance in semiconductors
 
-### Three consequences
-
-- **Resistance alloys sit near $x=0.5$.** Constantan (roughly Cu-45Ni) and
-  nichrome are chosen where the Nordheim term is large and, more importantly,
-  where its temperature independence nearly cancels the phonon term. That gives
-  the near-zero TCR in the table above: a deliberate use of disorder.
-- **Conductors must be kept pure.** Copper busbar and interconnect are specified
-  at very high purity because the parabola is steep near $x=0$: the initial
-  slope is $C$, so the first atomic percent costs the most.
-- **Order changes everything.** Nordheim's rule assumes a *random* solution. If
-  the alloy orders into a compound or separates into two phases, the disorder
-  falls and resistivity drops sharply at fixed composition. Heat treatment can
-  therefore change resistivity without changing chemistry, which is a useful
-  diagnostic and an occasional manufacturing surprise.
-
-### Worked example 4.1 — extracting the Nordheim coefficient
-
-A Cu-Ni alloy at $x=0.20$ measures $\rho=210\ {\rm n\Omega\,m}$ at 300 K. Pure
-copper is $16.8$. Estimate $C$, then predict $\rho$ at $x=0.45$.
-
-Subtract the host contribution and invert the rule:
+The identical $x(1-x)$ appears when the alloy is a semiconductor: SiGe,
+AlGaAs, InGaN. There it acts on mobility through alloy scattering,
 
 $$
-\rho_{\rm alloy}=210-16.8=193\ {\rm n\Omega\,m}
-\quad\Longrightarrow\quad
-C=\frac{193}{0.20\times0.80}=1206\ {\rm n\Omega\,m}
+\frac{1}{\mu_{\rm alloy}}=\frac{1}{\mu_{\rm host}(x)}+\frac{x(1-x)}{C_A}
 $$
 
+![Interpolating between two hosts does not interpolate the mobility: the disorder term carves a valley whose bottom no purification can raise, because the scatterer is the alloy itself.](/courses/electronic-devices/figures/m18-alloy-mobility.svg)
+
+This ceiling is intrinsic: the scatterer is the composition itself. Module 38
+meets it in SiGe channels, module 31 in HgCdTe detectors, and module 55 turns
+the same physics around and uses maximal-disorder alloys to scatter *phonons*
+on purpose in thermoelectrics. One variance, four modules.
+
+### Worked example 7.1 — extracting and using the coefficient
+
+A Cu-Ni alloy at $x=0.20$ measures $210\ {\rm n\Omega\,m}$; pure copper is
+16.8. Then
+
 $$
-\rho(0.45)\approx16.8+1206\times0.45\times0.55=16.8+298=315\ {\rm n\Omega\,m}
+C=\frac{210-16.8}{0.20\times0.80}=1208\ {\rm n\Omega\,m}
 $$
 
-The measured value for that composition is around $300\ {\rm n\Omega\,m}$, so
-the one-parameter rule is good to a few percent across a wide composition
-range. Where it fails badly, suspect ordering or a second phase.
+Predict $x=0.45$: $\rho=16.8+1208\times0.45\times0.55=316\ {\rm n\Omega\,m}$;
+measured values sit near 300, a few percent off, with the discrepancy carrying
+the short-range-order physics above.
 
-## 5. Graduate extension: from Drude to Boltzmann
+### Worked example 7.2 — designing a low-TCR shunt
 
-The relaxation-time argument above is Drude's, with a quantum effective mass
-bolted on. Two things about it are wrong in detail, and knowing which matters.
+A shunt alloy must hold $\pm100$ ppm/K over 0 to 100 C. The phonon term of the
+copper host contributes $d\rho/dT\approx0.055\ {\rm n\Omega\,m/K}$ around room
+temperature. A disorder term $C\,x(1-x)$ with $C=1208$ at $x=0.45$ adds
+$299\ {\rm n\Omega\,m}$ of temperature-independent resistivity, diluting the
+TCR to
 
-### 5.1 Which electrons carry the current
+$$
+\alpha=\frac{0.055}{16.8+299}=1.7\times10^{-4}\ {\rm K^{-1}}=170\ {\rm ppm/K}
+$$
 
-Drude assumed all $n$ electrons respond. In a degenerate metal they cannot:
-the Pauli principle blocks any electron more than $\sim k_BT$ below the Fermi
-level from changing its state. Only a fraction $\sim k_BT/E_F$ of electrons
-are free to scatter.
+Close, and not enough: real constantan reaches 10 ppm/K because the alloy's
+electronic structure gives the disorder term a slight *negative* temperature
+slope that cancels the phonon term to first order. The lesson generalises:
+dilution gets you the first factor of twenty, cancellation engineering gets the
+rest, and the cancellation is why the composition is tuned to the percent.
 
-The remarkable result is that the conductivity formula survives. Solving the
-Boltzmann equation in the relaxation-time approximation gives
+## 8. Graduate extension: from Drude to Boltzmann
+
+### 8.1 Which electrons carry the current
+
+Drude let all $n$ electrons respond to the field. In a degenerate metal the
+Pauli principle forbids it: only states within about $k_BT$ of the Fermi
+surface can scatter into empty states. The Boltzmann treatment (lesson 2,
+section 2) gives
 
 $$
 \sigma=\frac{e^{2}}{3}v_F^{2}\,\tau(E_F)\,g(E_F)
 $$
 
-where $g(E_F)$ is the density of states at the Fermi level. For a free-electron
-gas $g(E_F)=3n/2E_F$ and $E_F=\tfrac{1}{2}m v_F^{2}$, and substituting returns
+For free electrons $g(E_F)=3n/2E_F$ and $E_F=\tfrac{1}{2}mv_F^{2}$, and
+substitution collapses this to $\sigma=ne^{2}\tau/m$: **the Drude formula is
+correct, and Drude's reason for it was wrong.** The total density appears, but
+$\tau$ and $v$ are Fermi-surface properties. This is why metal resistivities
+track $\tau(E_F)$ alone, and why heat capacity, which Drude got badly wrong, is
+suppressed by the factor $k_BT/E_F$ while conductivity is not.
+
+### 8.2 Energy averaging and the power laws
+
+In a non-degenerate semiconductor the whole Maxwellian participates, and
+$\tau$ depends on energy, typically as $\tau=\tau_0(E/k_BT)^{s}$. The
+current-weighted average is
 
 $$
-\sigma=\frac{ne^{2}\tau}{m}
+\langle\tau\rangle
+=\frac{\displaystyle\int_0^{\infty}\tau(E)\,E^{3/2}e^{-E/k_BT}\,dE}
+{\displaystyle\int_0^{\infty}E^{3/2}e^{-E/k_BT}\,dE}
+=\tau_0\,\frac{\Gamma(s+5/2)}{\Gamma(5/2)}
 $$
 
-exactly as before. **The Drude expression is right; Drude's reason for it was
-not.** The correct statement is that $n$ is the total density but $\tau$ and
-$v$ are evaluated *at the Fermi surface*. This is why measured $\tau$ in a
-metal is a Fermi-surface property and why the temperature dependence is that of
-$\tau(E_F)$ alone.
+With $s=-1/2$ and $\tau_0\propto T^{-1}$ for acoustic phonons the celebrated
+$\mu\propto T^{-3/2}$ emerges; with $s=+3/2$ for ionised impurities,
+$\mu\propto T^{+3/2}$. The exponents used all through section 4 are theorems,
+not fits.
 
-### 5.2 Energy-dependent $\tau$ and the averaging problem
+### 8.3 The Hall factor
 
-In a non-degenerate semiconductor, carriers occupy a broad Maxwellian
-distribution and $\tau$ depends on energy, typically as a power law
-$\tau(E)\propto E^{s}$ with $s=-1/2$ for acoustic phonon scattering and
-$s=+3/2$ for ionised impurity scattering. The transport mobility uses the
-weighted average
+The Hall coefficient involves $\langle\tau^{2}\rangle$ rather than
+$\langle\tau\rangle$:
 
 $$
-\langle\tau\rangle=\frac{\int_0^{\infty}\tau(E)\,E^{3/2}\,(-\partial f/\partial E)\,dE}
-{\int_0^{\infty}E^{3/2}\,(-\partial f/\partial E)\,dE}
-$$
-
-Evaluating this for a Maxwellian gives the two temperature exponents used
-throughout this module:
-
-$$
-\mu_{\rm ac}\propto T^{-3/2},\qquad \mu_{\rm ii}\propto T^{+3/2}
-$$
-
-It also explains why the **Hall mobility differs from the drift mobility**. The
-Hall coefficient involves $\langle\tau^{2}\rangle$ rather than
-$\langle\tau\rangle$, so
-
-$$
-\mu_H=r_H\,\mu_d,\qquad
+\mu_H=r_H\,\mu_d,
+\qquad
 r_H=\frac{\langle\tau^{2}\rangle}{\langle\tau\rangle^{2}}
+=\frac{\Gamma(2s+5/2)\,\Gamma(5/2)}{\Gamma(s+5/2)^{2}}
 $$
 
-with $r_H=3\pi/8\approx1.18$ for acoustic scattering and $315\pi/512\approx1.93$
-for ionised impurity scattering. Reporting a Hall mobility as a drift mobility
-is therefore a systematic error of up to a factor of two, and module 36 returns
-to it.
+Evaluating: $r_H=3\pi/8=1.18$ for acoustic scattering, $315\pi/512=1.93$ for
+ionised-impurity scattering, exactly 1 for a degenerate metal (no averaging
+spread). Reporting a Hall mobility as a drift mobility is therefore a
+systematic error of up to a factor of two, in a direction that flatters the
+material. Lesson 3 and module 36 enforce the distinction.
 
-### 5.3 The Ziman formula, and why alloys are different
+### 8.4 Transport versus quantum lifetime
 
-For phonon scattering in a metal the resistivity can be written as an integral
-over the Fermi surface weighted by the phonon spectrum. The essential feature
-is the factor $(1-\cos\theta)$:
+Fermi's golden rule counts every scattering event; resistance does not. A
+carrier deflected by one degree still delivers essentially all its forward
+momentum. The transport rate carries the weighting
 
 $$
-\frac{1}{\tau_{\rm tr}}\propto\int (1-\cos\theta)\,S(\mathbf{q})\,d\Omega
+\frac{1}{\tau_{\rm tr}}\propto\int(1-\cos\theta)\,P(\theta)\,d\Omega
 $$
 
-Forward scattering ($\theta\to0$) does not degrade the current at all, so it
-does not contribute to resistivity even though it is a real scattering event.
-This is why the *transport* lifetime differs from the *quantum* lifetime
-measured by, say, the width of a quantum oscillation, and the two can differ by
-an order of magnitude in a 2D electron gas where small-angle scattering from
-remote donors dominates. Module 18's later lesson on the 2DEG depends on this
-distinction: modulation doping removes scatterers from the channel, but what it
-suppresses most effectively is precisely the large-angle scattering that
-$(1-\cos\theta)$ weights heavily.
+while the quantum lifetime $\tau_q$ (measured from the broadening of quantum
+oscillations) integrates $P(\theta)$ bare.
 
-## 6. Problems
+![All collisions count toward the quantum lifetime, but the transport integrand suppresses the forward peak; for a remote-donor angular distribution the two lifetimes separate by more than an order of magnitude.](/courses/electronic-devices/figures/m18-lifetimes.svg)
 
-**P18.1** Aluminium has $\rho=26.5\ {\rm n\Omega\,m}$ at 300 K, one free
-electron per atom, density $2.70\ {\rm g/cm^{3}}$ and molar mass
-$27.0\ {\rm g/mol}$. Find $n$, $\mu$, and $\tau$ (take $m^{*}=m_0$).
+For isotropic scattering the two coincide. For the small-angle scattering of
+remote ionised donors in a modulation-doped heterostructure,
+$\tau_{\rm tr}/\tau_q$ reaches 10 to 100: the electron is interrupted
+constantly and slowed almost never. That single distinction explains how
+lesson 4's 2DEG can show million-range mobilities while its quantum levels
+remain visibly broadened, and it is a warning for experimenters: two
+legitimate "lifetimes" of the same sample differ by an order of magnitude, and
+each answers a different question.
 
-**P18.2** A silicon sample has $\mu_L=1350$ and, at a doping of
-$10^{17}\ {\rm cm^{-3}}$, $\mu_I=900\ {\rm cm^{2}/Vs}$. (a) Find $\mu$. (b) The
-doping is raised tenfold, which halves $\mu_I$. Find the new $\mu$ and the
-percentage change in $\sigma$, given that $n$ rose by a factor of ten.
+### 8.5 Where the whole framework stops
 
-**P18.3** A copper sample has RRR = 80. Estimate $\rho_{\rm res}$ and the
-temperature at which the phonon and residual contributions are equal, assuming
-$\rho_{\rm phonon}$ is linear in $T$ down to that point.
+Three boundaries, each picked up later: **inelastic dominance** (optical
+phonon emission at high field, lesson 3), **ballistic transport** (device
+shorter than $\ell$, lesson 4), and **strong localisation** (disorder so
+strong that $\ell$ approaches the electron wavelength and the Boltzmann
+picture of well-defined trajectories fails entirely, module 25's hopping
+regime). The Ioffe-Regel criterion $k_F\ell\sim1$ marks the last frontier:
+below it, "mobility" stops being a meaningful word.
 
-**P18.4** A Cu-Ni alloy at $x=0.10$ has $\rho=130\ {\rm n\Omega\,m}$. Using
-Nordheim's rule with pure Cu at 16.8, find $C$ and the composition of maximum
-resistivity, and comment on why the real Cu-Ni system peaks slightly off
-$x=0.5$.
+## 9. Problems
 
-**P18.5** *(graduate)* Show that for $\tau(E)=\tau_0(E/k_BT)^{s}$ and a
-Maxwellian distribution, $\langle\tau\rangle=\tau_0\,\Gamma(s+5/2)/\Gamma(5/2)$.
-Evaluate for $s=-1/2$ and confirm the $T^{-3/2}$ mobility law.
+**P18.1** Aluminium: $\rho=26.5\ {\rm n\Omega\,m}$, three free electrons per
+atom, density $2.70\ {\rm g/cm^{3}}$, molar mass 27.0. Find $n$, $\mu$, $\tau$
+and the mean free path (take $v_F=2.0\times10^{6}$ m/s, $m^{*}=m_0$).
+
+**P18.2** A silicon layer is doped $2\times10^{16}\ {\rm cm^{-3}}$ n-type.
+Using $\mu_n=1200\ {\rm cm^{2}/Vs}$, find $\rho$ and the sheet resistance of a
+0.5 µm layer, and the resistance of a 20-square serpentine made in it.
+
+**P18.3** From the AC Drude form, at what frequency does copper's conductivity
+magnitude fall 5 percent below DC? ($\tau=2.4\times10^{-14}$ s.)
+
+**P18.4** A sample shows $\mu=800$ at 250 K rising to a maximum of 950 at
+190 K. Assuming pure $T^{\pm3/2}$ laws, find $\mu_L$ and $\mu_I$ at 300 K and
+state which side of the peak room temperature sits on.
+
+**P18.5** Copper at 77 K: with RRR = 60 and the linear phonon law valid down
+to 77 K, what fraction of the room-temperature resistivity survives, and what
+is the ratio of the two Matthiessen terms there?
+
+**P18.6** Estimate the temperature at which a Pt100's linear-model error
+reaches one degree, using $R=R_0(1+AT+BT^{2})$ with the section 5 constants.
+
+**P18.7** A Cu-Ni alloy must have $\rho=400\ {\rm n\Omega\,m}$. With
+$C=1208\ {\rm n\Omega\,m}$ and pure copper at 16.8, find the two compositions
+that satisfy it and give one reason to prefer the lower one.
+
+**P18.8** Show from the Nordheim form that the initial slope
+$d\rho/dx$ at $x=0$ equals $C$, and use it to bound the tolerable impurity
+fraction if interconnect resistivity may rise at most 1 percent
+($C=1208\ {\rm n\Omega\,m}$ for the worst-case solute).
+
+**P18.9** An n-type wafer must hold its extrinsic plateau to 200 C. Using the
+worked-example method, find the minimum doping.
+
+**P18.10** *(graduate)* Derive $\langle\tau\rangle=\tau_0\Gamma(s+5/2)/\Gamma(5/2)$
+for $\tau=\tau_0(E/k_BT)^{s}$ and a Maxwellian, and evaluate the Hall factor
+for $s=-1/2$.
+
+**P18.11** *(graduate)* A 2DEG shows $\tau_q=0.4$ ps from oscillation damping
+and $\mu=8\times10^{5}\ {\rm cm^{2}/Vs}$ with $m^{*}=0.067\,m_0$. Find
+$\tau_{\rm tr}$ and the lifetime ratio, and state what angular distribution
+this implies.
+
+**P18.12** *(graduate)* Using the Ioffe-Regel criterion $k_F\ell\approx1$ with
+$n=10^{21}\ {\rm cm^{-3}}$, estimate the mobility at which the Boltzmann
+picture fails ($m^{*}=m_0$), and name the module of this course that operates
+below it.
 
 ### Answers
 
-**P18.1** $n=6.02\times10^{28}\ {\rm m^{-3}}$;
-$\mu=1/(ne\rho)=3.9\times10^{-3}\ {\rm m^{2}/Vs}=39\ {\rm cm^{2}/Vs}$;
-$\tau=\mu m_0/e=2.2\times10^{-14}\ {\rm s}$. Note how much lower a metal's
-mobility is than silicon's, and that its conductivity is nonetheless far higher
-because $n$ is six orders of magnitude larger. This is the $\sigma=ne\mu$
-factorization at work.
+**P18.1** $n=3\times(2.70/27.0)\times6.022\times10^{23}
+=1.81\times10^{23}\ {\rm cm^{-3}}=1.81\times10^{29}\ {\rm m^{-3}}$.
+$\mu=1/(ne\rho)=1.30\times10^{-3}\ {\rm m^{2}/Vs}=13\ {\rm cm^{2}/Vs}$;
+$\tau=\mu m_0/e=7.4\times10^{-15}$ s; $\ell=v_F\tau=15$ nm. Note the pattern
+against copper: three times the carriers, a third the mobility.
 
-**P18.2** (a) $1/\mu=1/1350+1/900\Rightarrow\mu=540\ {\rm cm^{2}/Vs}$.
-(b) $\mu_I=450$, so $1/\mu=1/1350+1/450\Rightarrow\mu=337.5$. Conductivity
-scales as $n\mu$: $(10\times337.5)/(1\times540)=6.25$, a 525 percent increase.
-Ten times the dopant bought 6.25 times the conductivity, which is the
-diminishing return that makes heavy doping unattractive for series resistance.
+**P18.2** $\sigma=ne\mu=2\times10^{16}\times1.602\times10^{-19}\times1200
+=3.85\ {\rm S/cm}$, so $\rho=0.26\ \Omega\,$cm.
+$R_s=\rho/t=0.26/(0.5\times10^{-4})=5.2\ {\rm k\Omega}/\square$;
+20 squares give $104\ {\rm k\Omega}$.
 
-**P18.3** $\rho_{\rm res}=\rho(300)/{\rm RRR}=16.8/80=0.21\ {\rm n\Omega\,m}$.
-Linear phonon term $\rho_{\rm ph}=16.6\,(T/300)$, equal to $\rho_{\rm res}$ at
-$T=3.8\ {\rm K}$. In reality the Bloch-Gruneisen $T^{5}$ roll-off makes the
-crossing occur higher, near 10 to 20 K, which is why the linear extrapolation
-is only a first estimate.
+**P18.3** $1/\sqrt{1+\omega^{2}\tau^{2}}=0.95$ gives $\omega\tau=0.329$, so
+$f=0.329/(2\pi\times2.4\times10^{-14})=2.2\ {\rm THz}$. Copper is a textbook
+resistor through the entire radio and microwave range.
 
-**P18.4** $C=(130-16.8)/(0.1\times0.9)=1258\ {\rm n\Omega\,m}$; maximum at
-$x=0.5$ giving $\rho\approx331\ {\rm n\Omega\,m}$. The real system peaks near
-$x=0.45$ and lower than the rule predicts, because Cu-Ni develops short-range
-order and, below about 600 K, a miscibility gap. Both reduce the randomness
-that the $x(1-x)$ variance assumed.
+**P18.4** At the peak the components are equal: each
+$2\times950=1900$ at 190 K. Then
+$\mu_L(300)=1900(300/190)^{-3/2}=958$ and
+$\mu_I(300)=1900(300/190)^{3/2}=3768$. Room temperature is on the
+lattice-limited side; check: combining gives 764, and the measured 800 at
+250 K interpolates consistently.
 
-**P18.5** With $f\propto e^{-E/k_BT}$ the weighting is $E^{3/2}e^{-E/k_BT}$, so
+**P18.5** $\rho_{\rm res}=16.8/60=0.28$; $\rho_{\rm ph}(77)=16.6\times77/300
+=4.26$; total $4.54\ {\rm n\Omega\,m}=27$ percent of the 300 K value. Ratio
+phonon-to-residual $=15$: still phonon-dominated, which is why liquid-nitrogen
+cooling of copper coils buys a real factor of 3.7 in loss.
+
+**P18.6** Error $=(AT+BT^{2})/A-T=BT^{2}/A$. Setting
+$|B|T^{2}/A=1$: $T=\sqrt{A/|B|}=\sqrt{3.9083\times10^{-3}/5.775\times10^{-7}}
+=82\ ^{\circ}$C. Above roughly the boiling point of water, the single-TCR
+model is already a degree wrong: calibration standards switch to the quadratic
+long before that.
+
+**P18.7** $x(1-x)=(400-16.8)/1208=0.317$, so $x^{2}-x+0.317=0$ and
+$x=0.5\pm\sqrt{0.25-0.317}$... the discriminant is negative: **no composition
+reaches 400** with this pair's $C$ at the naive level; the maximum is
+$16.8+1208/4=319$. The problem is a trap with a lesson: Nordheim caps the
+resistivity available from a given pair at $C/4$, and reaching higher values
+needs a pair with larger mismatch or a second mechanism. (Real nichrome gets
+to 1100 through both.)
+
+**P18.8** Differentiate: $d\rho/dx=C(1-2x)\to C$ at $x=0$. A 1 percent rise on
+copper is $0.168\ {\rm n\Omega\,m}$, so
+$x\le0.168/1208=1.4\times10^{-4}$: about **140 atomic ppm** of a dissimilar
+solute is all a 1 percent budget tolerates, which is why interconnect purity
+is specified at 99.99 percent and better.
+
+**P18.9** Require $n_i(473\ {\rm K})\le0.1\,N_D$. Scaling from
+$n_i(300)=10^{10}$ with $E_g=1.12$ eV:
+$(1/300-1/473)=1.219\times10^{-3}$, exponent
+$=E_g/2k_B\times1.219\times10^{-3}=7.92$, so
+$n_i(473)=10^{10}e^{7.92}=2.8\times10^{13}$. Then
+$N_D\ge2.8\times10^{14}\ {\rm cm^{-3}}$. Lightly doped drift regions are the
+first casualties of heat, which is exactly where power devices need low doping
+for blocking voltage: the silicon power-device designer is squeezed from both
+sides, and problem P18.13 of lesson 3 quantifies the escape via SiC.
+
+**P18.10** Substituting $u=E/k_BT$:
 $\langle\tau\rangle=\tau_0\int u^{s+3/2}e^{-u}du/\int u^{3/2}e^{-u}du
-=\tau_0\Gamma(s+5/2)/\Gamma(5/2)$. For acoustic scattering the collision rate
-goes as the phonon population times the density of final states, giving
-$\tau_0\propto T^{-1}$ and $s=-1/2$, so
-$\langle\tau\rangle\propto T^{-1}\cdot T^{0}$ with the gamma-function ratio a
-pure number $=\Gamma(2)/\Gamma(5/2)=0.752$. Folding in the $T^{-1/2}$ from
-expressing $E$ in units of $k_BT$ yields $\mu\propto T^{-3/2}$.
+=\tau_0\Gamma(s+5/2)/\Gamma(5/2)$. For $s=-1/2$:
+$\langle\tau^{2}\rangle/\langle\tau\rangle^{2}
+=\Gamma(3/2)\Gamma(5/2)/\Gamma(2)^{2}
+=(\sqrt{\pi}/2)(3\sqrt{\pi}/4)/1=3\pi/8\approx1.18$.
+
+**P18.11** $\tau_{\rm tr}=\mu m^{*}/e
+=80\times0.067\times9.109\times10^{-31}/1.602\times10^{-19}=3.05\times10^{-11}$ s
+$=30.5$ ps. Ratio $\tau_{\rm tr}/\tau_q=76$: scattering is overwhelmingly
+small-angle, exactly the remote-donor signature of the figure in section 8.4.
+An interface-roughness-limited sample would show a ratio near one; the ratio
+is a fingerprint of *which* disorder limits the sample.
+
+**P18.12** $k_F=(3\pi^{2}n)^{1/3}=(3\pi^{2}\times10^{27})^{1/3}
+=3.1\times10^{9}\ {\rm m^{-1}}$, so $\ell=1/k_F=0.32$ nm. Then
+$\tau=\ell/v_F$ with $v_F=\hbar k_F/m_0=3.6\times10^{5}$ m/s gives
+$\tau=9\times10^{-16}$ s and $\mu=e\tau/m_0\approx1.6\ {\rm cm^{2}/Vs}$.
+Below a few ${\rm cm^{2}/Vs}$ at metallic densities, band transport is dead:
+module 25's disordered semiconductors, with mobilities of $10^{-3}$ to 10,
+live below the Ioffe-Regel line, and that is why they required a different
+theory, not a smaller $\tau$.

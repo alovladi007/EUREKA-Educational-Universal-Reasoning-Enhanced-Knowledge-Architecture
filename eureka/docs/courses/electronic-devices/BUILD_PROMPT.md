@@ -49,9 +49,39 @@ which chapters are in, which are held back, and why.
 Lesson format: `# Title`, then `<!-- covers: 17.1, 17.2 -->`, then `##` sections.
 The filename sets the module (`chNN`) and the in-module order (`lNN`).
 
+## The depth programme (2026-08-02 standard)
+
+Every module is being raised from narrative depth to a full undergraduate plus
+graduate treatment. The standard, enforced by `scripts/check_ed_depth.py`, is
+per module: >= 18,000 words, >= 60 display equations, >= 20 computed figures,
+>= 15 worked examples, >= 3 problem sets with answers. Module 18 is the
+reference implementation (5 lessons: four topic lessons plus a capstone of
+design case studies and a comprehensive exam).
+
+The loop per module:
+
+    add figure functions to scripts/gen_ed_figures.py   # computed from stated equations ONLY
+      -> python3 scripts/gen_ed_figures.py <prefix>
+      -> rewrite the module's lessons to the standard
+      -> python3 scripts/check_ed_math.py               # $$ fencing + figure refs; MUST be clean
+      -> python3 scripts/check_ed_depth.py              # module must read EXPANDED
+      -> python3 scripts/seed_electronic_devices.py
+      -> docker compose build web && docker compose up -d --force-recreate web
+         # public/ is BAKED into the image; new figures 404 without this
+      -> verify live signed in (0 katex-error spans, figures decode)
+      -> commit
+
+Figure rules (see scripts/ed_figstyle.py): every figure computed from an
+equation the lesson states, never traced or adapted from a book; max three
+categorical series per figure (validated all-pairs colour-vision cap); every
+series direct-labelled; matched light/dark pairs, not colour flips.
+
 ## What is next
 
-The **photonics wave**: the source's optoelectronics and photonics part (13
+Depth expansion of the remaining 59 modules, in order: 17, 19-27 (fundamental
+properties), 28-36 (growth and characterization), 37-45 (materials for
+electronics), 46-57 (applications), then the applied half 1-16. After that,
+the **photonics wave**: the source's optoelectronics and photonics part (13
 chapters) plus the photovoltaic, x-ray imaging, organic photovoltaic, terahertz
 and metamaterial chapters of its applications part (5 chapters), 109 sections in
 total. Append them as modules 58 onward, under the same rules, and update
