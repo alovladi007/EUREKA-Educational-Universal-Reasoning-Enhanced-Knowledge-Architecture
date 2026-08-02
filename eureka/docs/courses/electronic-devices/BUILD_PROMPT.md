@@ -1,64 +1,58 @@
-# Electronic Devices — Course Build Prompt (continuation sessions)
+# Build prompt: Electronic and Photonic Devices: Design and Characteristics
 
-Course `ELEC-DEV` ("Electronic Devices: Design and Characteristics")
-lives in api-core (`courses` / `course_modules` / `course_content`) and is
-live in the catalog. This doc is the standing prompt for authoring the
-remaining lessons. Paste it (or point the agent at it) to continue.
+## State as of 2026-08-02
 
-## State as of 2026-08-01 — COURSE COMPLETE
+**Course code `ELEC-DEV`. 60 modules, 764 sections, 125 original lessons, all
+modules published, live in the app.**
 
-All 19 modules authored and published: 58 original lessons covering
-549/549 sections (verify: `python3 scripts/check_ed_coverage.py`). The
-authoring order below is retained as history. Remaining work is
-enrichment, not coverage: per-lesson diagrams, practice questions wired
-to the assessment engine, and SME review of the lesson text.
+Two halves:
 
-## The rules (binding)
+- **Modules 1-16, A-C** (549 sections, 58 lessons): the applied half, circuit
+  theory through digital logic, microcontrollers, motors, audio and prototyping.
+- **Modules 17-57** (216 sections, 67 lessons): the materials and
+  characterization half, covering the ELECTRONIC scope of the materials
+  reference.
 
-1. **Copyright.** The coverage reference is Scherz & Monk, *Practical
-   Electronics for Inventors* 3e. Its chapter/section STRUCTURE defines
-   completeness; its TEXT is off limits. Every lesson is written original.
-   Never paste, closely paraphrase, or reconstruct book passages, examples,
-   or figures. The subject matter (Ohm's law, op-amp circuits, 555 timers) is
-   standard engineering knowledge; teach it in your own words.
-2. **Honesty.** No fabricated specs or invented "typical values" — use real
-   physical constants and widely published component characteristics, and say
-   "varies by part; check the datasheet" where it does. Unauthored = pending,
-   visibly.
-3. **Safety.** Mains wiring (Appendix A) is described for understanding, not
-   as a how-to; keep project guidance at low voltage. No instructions that
-   require opening mains equipment.
-4. **Format.** One markdown file per lesson in `lessons/`, named
-   `chNN-lNN-slug.md`, first line `# Title`, second line
-   `<!-- covers: 2.21, 2.22, ... -->` listing every section number the lesson
-   covers (L2 numbers cover their L3 children; list L3 only when a child is
-   split across lessons). 600-1000 words, plain markdown, ASCII.
-5. **After authoring:** run `python3 scripts/check_ed_coverage.py`, then
-   `python3 scripts/seed_electronic_devices.py` (idempotent), then spot-
-   check `GET /api/v1/courses/?search=Electronic%20Devices` returns 200. Commit lessons +
-   this doc's state line together.
+The photonics scope is deliberately **not built**. See `SCOPE.md` for exactly
+which chapters are in, which are held back, and why.
 
-## Authoring order (grouped into sessions of roughly one module)
+## The rules, which are not negotiable
 
-1. Module 2 remainder: 2.21-2.24 (capacitors, inductors), 2.25-2.33 (AC
-   analysis: complex impedance, power, resonance, decibels, filters intro),
-   2.34-2.37 (nonlinear elements, waveforms, nonperiodic sources). ~8 lessons.
-2. Module 3 (components: wires/connectors, batteries, switches, relays,
-   resistors, capacitors, inductors, transformers, fuses). ~7 lessons.
-3. Module 4 (semiconductors: junction physics, diodes, BJTs, FETs,
-   thyristors, ICs). ~6 lessons.
-4. Modules 5-6 (optoelectronics; sensors — the sensors chapter is broad:
-   temperature, proximity, light, acoustic, motion, chemical...). ~8 lessons.
-5. Module 7 (hands-on: instruments, prototyping, soldering, debugging,
-   multimeters, scopes). ~6 lessons.
-6. Modules 8-11 (op-amps; filters; oscillators/timers; regulators and
-   supplies). ~12 lessons.
-7. Module 12 (digital: number systems, gates, combinational, sequential,
-   memory, interfaces). ~8 lessons.
-8. Modules 13-16 (microcontrollers, motors, audio, modular electronics). ~10
-   lessons.
-9. Appendices A-C (mains distribution described-not-prescribed, error
-   analysis, reference formulas). ~3 lessons.
+1. **Copyright.** Both reference works are copyrighted and neither is a content
+   source. What was taken is the SHAPE of the subject only: chapter count,
+   section count per chapter, and which chapter a section belongs to. Every
+   module title and section label in `curriculum.json` was written for this
+   course; the source is referenced by chapter/section NUMBER alone, in the
+   `src` field, so no publisher heading text is stored here or displayed in the
+   app. Never paste, closely paraphrase or reconstruct book passages, worked
+   examples, figures, tables or data sets.
+2. **No fabricated content.** No invented numbers, no fabricated citations, no
+   claimed results that were not measured. Where a field is unsettled, say so.
+3. **No coverage claims the course cannot back.** The seeder publishes a module
+   only when every one of its sections has an authored lesson, so an unfinished
+   module reads as unfinished rather than as an empty promise.
+4. **House style.** ASCII punctuation only in the new lessons: no em dashes, en
+   dashes, ellipses or smart quotes. Scientific unicode (Greek letters, degree
+   signs, superscripts) is fine where it aids accuracy. Avoid "simply", "just",
+   "obviously", "clearly", "merely".
+5. **Mains electricity is described, not prescribed.** Appendix A explains it
+   for understanding; projects stay at low voltage.
 
-Estimated total: ~60 further lessons. Each session: author, check coverage,
-seed, verify, update the "State as of" line above, commit.
+## The loop
+
+    author lesson(s) in docs/courses/electronic-devices/lessons/chNN-lNN-slug.md
+      -> python3 scripts/check_ed_coverage.py     # authored vs pending, honestly
+      -> python3 scripts/seed_electronic_devices.py
+      -> verify live in the app, signed in
+      -> commit
+
+Lesson format: `# Title`, then `<!-- covers: 17.1, 17.2 -->`, then `##` sections.
+The filename sets the module (`chNN`) and the in-module order (`lNN`).
+
+## What is next
+
+The **photonics wave**: the source's optoelectronics and photonics part (13
+chapters) plus the photovoltaic, x-ray imaging, organic photovoltaic, terahertz
+and metamaterial chapters of its applications part (5 chapters), 109 sections in
+total. Append them as modules 58 onward, under the same rules, and update
+`SCOPE.md` as they land so the scope note stays true.
