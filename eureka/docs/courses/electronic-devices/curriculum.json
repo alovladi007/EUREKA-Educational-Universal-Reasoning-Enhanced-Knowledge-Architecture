@@ -106,7 +106,7 @@
    },
    {
     "n": "2.12",
-    "t": "Ohm\u2019s Law and Resistors"
+    "t": "Ohm’s Law and Resistors"
    },
    {
     "n": "2.12.1",
@@ -146,7 +146,7 @@
    },
    {
     "n": "2.17",
-    "t": "Kirchhoff\u2019s Laws"
+    "t": "Kirchhoff’s Laws"
    },
    {
     "n": "2.18",
@@ -154,7 +154,7 @@
    },
    {
     "n": "2.19",
-    "t": "Thevenin\u2019s and Norton\u2019s Theorems"
+    "t": "Thevenin’s and Norton’s Theorems"
    },
    {
     "n": "2.20",
@@ -178,11 +178,11 @@
    },
    {
     "n": "2.19.1",
-    "t": "Thevenin\u2019s Theorem"
+    "t": "Thevenin’s Theorem"
    },
    {
     "n": "2.19.2",
-    "t": "Norton\u2019s Theorem"
+    "t": "Norton’s Theorem"
    },
    {
     "n": "2.20.1",
@@ -230,7 +230,7 @@
    },
    {
     "n": "2.23.4",
-    "t": "Maxwell\u2019s Displacement Current"
+    "t": "Maxwell’s Displacement Current"
    },
    {
     "n": "2.23.5",
@@ -350,7 +350,7 @@
    },
    {
     "n": "2.29",
-    "t": "Thevenin\u2019s Theorem in AC Form"
+    "t": "Thevenin’s Theorem in AC Form"
    },
    {
     "n": "2.30",
@@ -604,7 +604,7 @@
    },
    {
     "n": "3.5.1",
-    "t": "Resistance and Ohm\u2019s Law"
+    "t": "Resistance and Ohm’s Law"
    },
    {
     "n": "3.5.2",
@@ -1418,7 +1418,7 @@
    },
    {
     "n": "8.2",
-    "t": "How Op Amps Work (The \u201cCop-Out\u201d Explanation)"
+    "t": "How Op Amps Work (The “Cop-Out” Explanation)"
    },
    {
     "n": "8.3",
@@ -2202,7 +2202,7 @@
   "sections": [
    {
     "n": "16.1",
-    "t": "There\u2019s an IC for It"
+    "t": "There’s an IC for It"
    },
    {
     "n": "16.2",
@@ -2223,6 +2223,1373 @@
    {
     "n": "16.4",
     "t": "Open Source Hardware"
+   }
+  ]
+ },
+ {
+  "id": "17",
+  "title": "Materials That Made Modern Electronics",
+  "source_ref": "handbook ch.1",
+  "sections": [
+   {
+    "n": "17.1",
+    "t": "How integration scaled, and what made it possible",
+    "src": "1.1"
+   },
+   {
+    "n": "17.2",
+    "t": "Why silicon became the default substrate",
+    "src": "1.2"
+   },
+   {
+    "n": "17.3",
+    "t": "Compound semiconductors and the jobs silicon cannot do",
+    "src": "1.3"
+   }
+  ]
+ },
+ {
+  "id": "18",
+  "title": "Electrical Conduction in Metals and Semiconductors",
+  "source_ref": "handbook ch.2",
+  "sections": [
+   {
+    "n": "18.1",
+    "t": "Drift velocity, mobility and conductivity",
+    "src": "2.1"
+   },
+   {
+    "n": "18.2",
+    "t": "Combining independent scattering rates",
+    "src": "2.2"
+   },
+   {
+    "n": "18.3",
+    "t": "Why the resistivity of a metal rises with temperature",
+    "src": "2.3"
+   },
+   {
+    "n": "18.4",
+    "t": "Alloy resistivity and the concentration rule",
+    "src": "2.4"
+   },
+   {
+    "n": "18.5",
+    "t": "Scattering mechanisms in semiconductors",
+    "src": "2.5"
+   },
+   {
+    "n": "18.6",
+    "t": "The Boltzmann transport picture",
+    "src": "2.6"
+   },
+   {
+    "n": "18.7",
+    "t": "Resistivity of thin and polycrystalline films",
+    "src": "2.7"
+   },
+   {
+    "n": "18.8",
+    "t": "Effective-medium treatment of inhomogeneous conductors",
+    "src": "2.8"
+   },
+   {
+    "n": "18.9",
+    "t": "The Hall effect: carrier sign and carrier density",
+    "src": "2.9"
+   },
+   {
+    "n": "18.10",
+    "t": "Transport in high electric fields",
+    "src": "2.10"
+   },
+   {
+    "n": "18.11",
+    "t": "Impact ionization and avalanche multiplication",
+    "src": "2.11"
+   },
+   {
+    "n": "18.12",
+    "t": "The two-dimensional electron gas",
+    "src": "2.12"
+   },
+   {
+    "n": "18.13",
+    "t": "One-dimensional channels and quantized conductance",
+    "src": "2.13"
+   },
+   {
+    "n": "18.14",
+    "t": "The quantum Hall effect",
+    "src": "2.14"
+   }
+  ]
+ },
+ {
+  "id": "19",
+  "title": "Optical Constants and Optical Characterization",
+  "source_ref": "handbook ch.3",
+  "sections": [
+   {
+    "n": "19.1",
+    "t": "Optical constants: n, k and the dielectric function",
+    "src": "3.1"
+   },
+   {
+    "n": "19.2",
+    "t": "Refractive index and dispersion",
+    "src": "3.2"
+   },
+   {
+    "n": "19.3",
+    "t": "Absorption processes in solids",
+    "src": "3.3"
+   },
+   {
+    "n": "19.4",
+    "t": "Optical methods for measuring materials",
+    "src": "3.4"
+   },
+   {
+    "n": "19.5",
+    "t": "Choosing an optical material",
+    "src": "3.5"
+   }
+  ]
+ },
+ {
+  "id": "20",
+  "title": "Magnetism, from Classical Magnets to Spintronics",
+  "source_ref": "handbook ch.4",
+  "sections": [
+   {
+    "n": "20.1",
+    "t": "Classical magnetism: order, domains and hysteresis",
+    "src": "4.1"
+   },
+   {
+    "n": "20.2",
+    "t": "Nanoscale and unconventional magnetism",
+    "src": "4.2"
+   },
+   {
+    "n": "20.3",
+    "t": "Spintronic devices and spin-based information",
+    "src": "4.3"
+   }
+  ]
+ },
+ {
+  "id": "21",
+  "title": "Defects in Monocrystalline Silicon",
+  "source_ref": "handbook ch.5",
+  "sections": [
+   {
+    "n": "21.1",
+    "t": "Why point-defect aggregates decide yield",
+    "src": "5.1"
+   },
+   {
+    "n": "21.2",
+    "t": "Thermophysical behaviour of vacancies and interstitials",
+    "src": "5.2"
+   },
+   {
+    "n": "21.3",
+    "t": "Voids, dislocation loops and other aggregates",
+    "src": "5.3"
+   },
+   {
+    "n": "21.4",
+    "t": "The oxidation-induced stacking fault ring",
+    "src": "5.4"
+   }
+  ]
+ },
+ {
+  "id": "22",
+  "title": "Diffusion in Semiconductors",
+  "source_ref": "handbook ch.6",
+  "sections": [
+   {
+    "n": "22.1",
+    "t": "Fick's laws and the diffusion coefficient",
+    "src": "6.1"
+   },
+   {
+    "n": "22.2",
+    "t": "Atomic mechanisms of diffusion",
+    "src": "6.2"
+   },
+   {
+    "n": "22.3",
+    "t": "Intrinsic, extrinsic and transient regimes",
+    "src": "6.3"
+   },
+   {
+    "n": "22.4",
+    "t": "Built-in fields and field-assisted diffusion",
+    "src": "6.4"
+   },
+   {
+    "n": "22.5",
+    "t": "Measuring a diffusion coefficient",
+    "src": "6.5"
+   },
+   {
+    "n": "22.6",
+    "t": "Hydrogen, the universal passivator",
+    "src": "6.6"
+   },
+   {
+    "n": "22.7",
+    "t": "Diffusion in silicon and germanium",
+    "src": "6.7"
+   },
+   {
+    "n": "22.8",
+    "t": "Diffusion in III-V compounds",
+    "src": "6.8"
+   },
+   {
+    "n": "22.9",
+    "t": "Diffusion in II-VI compounds",
+    "src": "6.9"
+   },
+   {
+    "n": "22.10",
+    "t": "Diffusion in nanoscale volumes",
+    "src": "6.10"
+   },
+   {
+    "n": "22.11",
+    "t": "Diffusion in the melt",
+    "src": "6.11"
+   },
+   {
+    "n": "22.12",
+    "t": "The Meyer-Neldel compensation rule",
+    "src": "6.12"
+   },
+   {
+    "n": "22.13",
+    "t": "What the diffusion picture explains",
+    "src": "6.13"
+   },
+   {
+    "n": "22.14",
+    "t": "Where to read further on diffusion",
+    "src": "6.14"
+   }
+  ]
+ },
+ {
+  "id": "23",
+  "title": "Photoconductivity as a Materials Probe",
+  "source_ref": "handbook ch.7",
+  "sections": [
+   {
+    "n": "23.1",
+    "t": "Steady-state photoconductivity",
+    "src": "7.1"
+   },
+   {
+    "n": "23.2",
+    "t": "Constant photocurrent methods",
+    "src": "7.2"
+   },
+   {
+    "n": "23.3",
+    "t": "The steady-state photocarrier grating",
+    "src": "7.3"
+   },
+   {
+    "n": "23.4",
+    "t": "Modulated photocurrent spectroscopy",
+    "src": "7.4"
+   },
+   {
+    "n": "23.5",
+    "t": "Switch-on and switch-off transients",
+    "src": "7.5"
+   },
+   {
+    "n": "23.6",
+    "t": "Transient photocurrent spectroscopy",
+    "src": "7.6"
+   },
+   {
+    "n": "23.7",
+    "t": "Time-of-flight measurement of drift mobility",
+    "src": "7.7"
+   },
+   {
+    "n": "23.8",
+    "t": "Related photoconductive techniques",
+    "src": "7.8"
+   }
+  ]
+ },
+ {
+  "id": "24",
+  "title": "Semiconductor Interfaces and Schottky Contacts",
+  "source_ref": "handbook ch.8",
+  "sections": [
+   {
+    "n": "24.1",
+    "t": "What the measured barrier database shows",
+    "src": "8.1"
+   },
+   {
+    "n": "24.2",
+    "t": "Interface-induced gap states and electronegativity",
+    "src": "8.2"
+   },
+   {
+    "n": "24.3",
+    "t": "Testing the theory against experiment",
+    "src": "8.3"
+   },
+   {
+    "n": "24.4",
+    "t": "Engineering the Schottky barrier",
+    "src": "8.4"
+   },
+   {
+    "n": "24.5",
+    "t": "Graphene contacts to semiconductors",
+    "src": "8.5"
+   },
+   {
+    "n": "24.6",
+    "t": "What interface physics settles, and what it does not",
+    "src": "8.6"
+   }
+  ]
+ },
+ {
+  "id": "25",
+  "title": "Charge Transport in Disordered Materials",
+  "source_ref": "handbook ch.9",
+  "sections": [
+   {
+    "n": "25.1",
+    "t": "What disorder does to transport",
+    "src": "9.1"
+   },
+   {
+    "n": "25.2",
+    "t": "Transport through extended states",
+    "src": "9.2"
+   },
+   {
+    "n": "25.3",
+    "t": "Hopping transport in localized states",
+    "src": "9.3"
+   },
+   {
+    "n": "25.4",
+    "t": "Reading transport data from a disordered film",
+    "src": "9.4"
+   }
+  ]
+ },
+ {
+  "id": "26",
+  "title": "Dielectric Response",
+  "source_ref": "handbook ch.10",
+  "sections": [
+   {
+    "n": "26.1",
+    "t": "Defining the dielectric response",
+    "src": "10.1"
+   },
+   {
+    "n": "26.2",
+    "t": "Frequency-dependent linear response",
+    "src": "10.2"
+   },
+   {
+    "n": "26.3",
+    "t": "What a relaxation spectrum reveals",
+    "src": "10.3"
+   },
+   {
+    "n": "26.4",
+    "t": "Charge transport inside a dielectric",
+    "src": "10.4"
+   },
+   {
+    "n": "26.5",
+    "t": "Presenting dielectric data honestly",
+    "src": "10.5"
+   },
+   {
+    "n": "26.6",
+    "t": "Common traps in dielectric measurement",
+    "src": "10.6"
+   }
+  ]
+ },
+ {
+  "id": "27",
+  "title": "Ionic Conduction and Its Applications",
+  "source_ref": "handbook ch.11",
+  "sections": [
+   {
+    "n": "27.1",
+    "t": "How ions move through a solid",
+    "src": "11.1"
+   },
+   {
+    "n": "27.2",
+    "t": "Fast ion conductors",
+    "src": "11.2"
+   },
+   {
+    "n": "27.3",
+    "t": "Mixed ionic and electronic conduction",
+    "src": "11.3"
+   },
+   {
+    "n": "27.4",
+    "t": "Batteries, sensors and fuel cells",
+    "src": "11.4"
+   },
+   {
+    "n": "27.5",
+    "t": "Where solid-state ionics is heading",
+    "src": "11.5"
+   }
+  ]
+ },
+ {
+  "id": "28",
+  "title": "Bulk Crystal Growth: Methods and Materials",
+  "source_ref": "handbook ch.12",
+  "sections": [
+   {
+    "n": "28.1",
+    "t": "Why single crystals, and what growth must control",
+    "src": "12.1"
+   },
+   {
+    "n": "28.2",
+    "t": "How the main growth methods emerged",
+    "src": "12.2"
+   },
+   {
+    "n": "28.3",
+    "t": "Melt, solution and vapour growth techniques",
+    "src": "12.3"
+   },
+   {
+    "n": "28.4",
+    "t": "Which materials are grown which way",
+    "src": "12.4"
+   },
+   {
+    "n": "28.5",
+    "t": "Selecting a growth route",
+    "src": "12.5"
+   }
+  ]
+ },
+ {
+  "id": "29",
+  "title": "Growing Single-Crystal Silicon",
+  "source_ref": "handbook ch.13",
+  "sections": [
+   {
+    "n": "29.1",
+    "t": "The silicon supply chain, end to end",
+    "src": "13.1"
+   },
+   {
+    "n": "29.2",
+    "t": "From quartz to polysilicon",
+    "src": "13.2"
+   },
+   {
+    "n": "29.3",
+    "t": "Czochralski and float-zone growth",
+    "src": "13.3"
+   },
+   {
+    "n": "29.4",
+    "t": "Newer approaches to silicon growth",
+    "src": "13.4"
+   }
+  ]
+ },
+ {
+  "id": "30",
+  "title": "Epitaxial Crystal Growth",
+  "source_ref": "handbook ch.14",
+  "sections": [
+   {
+    "n": "30.1",
+    "t": "Liquid-phase epitaxy",
+    "src": "14.1"
+   },
+   {
+    "n": "30.2",
+    "t": "Metal-organic chemical vapour deposition",
+    "src": "14.2"
+   },
+   {
+    "n": "30.3",
+    "t": "Molecular beam epitaxy",
+    "src": "14.3"
+   }
+  ]
+ },
+ {
+  "id": "31",
+  "title": "Growing Narrow-Bandgap II-VI Semiconductors",
+  "source_ref": "handbook ch.15",
+  "sections": [
+   {
+    "n": "31.1",
+    "t": "Bulk growth of narrow-gap II-VI crystals",
+    "src": "15.1"
+   },
+   {
+    "n": "31.2",
+    "t": "Liquid-phase epitaxy of mercury cadmium telluride",
+    "src": "15.2"
+   },
+   {
+    "n": "31.3",
+    "t": "Metal-organic vapour phase epitaxy",
+    "src": "15.3"
+   },
+   {
+    "n": "31.4",
+    "t": "Molecular beam epitaxy of MCT",
+    "src": "15.4"
+   },
+   {
+    "n": "31.5",
+    "t": "Alternatives to MCT",
+    "src": "15.5"
+   }
+  ]
+ },
+ {
+  "id": "32",
+  "title": "Wide-Bandgap II-VI Semiconductors",
+  "source_ref": "handbook ch.16",
+  "sections": [
+   {
+    "n": "32.1",
+    "t": "Crystal structure and properties",
+    "src": "16.1"
+   },
+   {
+    "n": "32.2",
+    "t": "Epitaxial growth routes",
+    "src": "16.2"
+   },
+   {
+    "n": "32.3",
+    "t": "Bulk crystal growth",
+    "src": "16.3"
+   },
+   {
+    "n": "32.4",
+    "t": "Where wide-gap II-VI materials stand",
+    "src": "16.4"
+   }
+  ]
+ },
+ {
+  "id": "33",
+  "title": "Structural Characterization",
+  "source_ref": "handbook ch.17",
+  "sections": [
+   {
+    "n": "33.1",
+    "t": "How radiation interacts with matter",
+    "src": "17.1"
+   },
+   {
+    "n": "33.2",
+    "t": "How particle beams interact with matter",
+    "src": "17.2"
+   },
+   {
+    "n": "33.3",
+    "t": "X-ray diffraction",
+    "src": "17.3"
+   },
+   {
+    "n": "33.4",
+    "t": "Electron microscopy, imaging and diffraction",
+    "src": "17.4"
+   },
+   {
+    "n": "33.5",
+    "t": "Mapping functional activity",
+    "src": "17.5"
+   },
+   {
+    "n": "33.6",
+    "t": "Sample preparation and its artefacts",
+    "src": "17.6"
+   },
+   {
+    "n": "33.7",
+    "t": "Combining techniques: worked case studies",
+    "src": "17.7"
+   },
+   {
+    "n": "33.8",
+    "t": "Building a characterization plan",
+    "src": "17.8"
+   }
+  ]
+ },
+ {
+  "id": "34",
+  "title": "Surface Chemical Analysis",
+  "source_ref": "handbook ch.18",
+  "sections": [
+   {
+    "n": "34.1",
+    "t": "Electron spectroscopies: XPS and Auger",
+    "src": "18.1"
+   },
+   {
+    "n": "34.2",
+    "t": "Glow-discharge optical and mass spectrometry",
+    "src": "18.2"
+   },
+   {
+    "n": "34.3",
+    "t": "Secondary ion mass spectrometry",
+    "src": "18.3"
+   },
+   {
+    "n": "34.4",
+    "t": "Choosing a surface analysis method",
+    "src": "18.4"
+   }
+  ]
+ },
+ {
+  "id": "35",
+  "title": "Thermal Properties and Thermal Analysis",
+  "source_ref": "handbook ch.19",
+  "sections": [
+   {
+    "n": "35.1",
+    "t": "Heat capacity",
+    "src": "19.1"
+   },
+   {
+    "n": "35.2",
+    "t": "Thermal conductivity",
+    "src": "19.2"
+   },
+   {
+    "n": "35.3",
+    "t": "Thermal expansion",
+    "src": "19.3"
+   },
+   {
+    "n": "35.4",
+    "t": "Enthalpy, transitions and calorimetry",
+    "src": "19.4"
+   },
+   {
+    "n": "35.5",
+    "t": "Temperature-modulated calorimetry",
+    "src": "19.5"
+   }
+  ]
+ },
+ {
+  "id": "36",
+  "title": "Electrical Characterization of Materials and Devices",
+  "source_ref": "handbook ch.20",
+  "sections": [
+   {
+    "n": "36.1",
+    "t": "Measuring resistivity",
+    "src": "20.1"
+   },
+   {
+    "n": "36.2",
+    "t": "Hall measurement in practice",
+    "src": "20.2"
+   },
+   {
+    "n": "36.3",
+    "t": "Capacitance-voltage profiling",
+    "src": "20.3"
+   },
+   {
+    "n": "36.4",
+    "t": "Current-voltage measurement",
+    "src": "20.4"
+   },
+   {
+    "n": "36.5",
+    "t": "Charge pumping",
+    "src": "20.5"
+   },
+   {
+    "n": "36.6",
+    "t": "Low-frequency noise",
+    "src": "20.6"
+   },
+   {
+    "n": "36.7",
+    "t": "Deep-level transient spectroscopy",
+    "src": "20.7"
+   }
+  ]
+ },
+ {
+  "id": "37",
+  "title": "Single-Crystal Silicon: Electrical and Optical Properties",
+  "source_ref": "handbook ch.21",
+  "sections": [
+   {
+    "n": "37.1",
+    "t": "Silicon fundamentals: bands, carriers and doping",
+    "src": "21.1"
+   },
+   {
+    "n": "37.2",
+    "t": "Electrical properties of silicon",
+    "src": "21.2"
+   },
+   {
+    "n": "37.3",
+    "t": "Optical properties of silicon",
+    "src": "21.3"
+   }
+  ]
+ },
+ {
+  "id": "38",
+  "title": "Silicon-Germanium",
+  "source_ref": "handbook ch.22",
+  "sections": [
+   {
+    "n": "38.1",
+    "t": "Physical properties of SiGe alloys",
+    "src": "22.1"
+   },
+   {
+    "n": "38.2",
+    "t": "Optical properties of SiGe",
+    "src": "22.2"
+   },
+   {
+    "n": "38.3",
+    "t": "Growing strained SiGe layers",
+    "src": "22.3"
+   },
+   {
+    "n": "38.4",
+    "t": "Polycrystalline SiGe",
+    "src": "22.4"
+   }
+  ]
+ },
+ {
+  "id": "39",
+  "title": "Temperature-Insensitive Bandgap III-V Alloys",
+  "source_ref": "handbook ch.23",
+  "sections": [
+   {
+    "n": "39.1",
+    "t": "Thallium-containing III-V alloys",
+    "src": "23.1"
+   },
+   {
+    "n": "39.2",
+    "t": "Bismuth-containing III-V alloys",
+    "src": "23.2"
+   },
+   {
+    "n": "39.3",
+    "t": "What a temperature-insensitive gap buys",
+    "src": "23.3"
+   }
+  ]
+ },
+ {
+  "id": "40",
+  "title": "Amorphous Semiconductors",
+  "source_ref": "handbook ch.24",
+  "sections": [
+   {
+    "n": "40.1",
+    "t": "Electronic states in an amorphous network",
+    "src": "24.1"
+   },
+   {
+    "n": "40.2",
+    "t": "Structure of the amorphous network",
+    "src": "24.2"
+   },
+   {
+    "n": "40.3",
+    "t": "Optical properties and the Tauc gap",
+    "src": "24.3"
+   },
+   {
+    "n": "40.4",
+    "t": "Electrical properties and conduction paths",
+    "src": "24.4"
+   },
+   {
+    "n": "40.5",
+    "t": "Light-induced metastability",
+    "src": "24.5"
+   },
+   {
+    "n": "40.6",
+    "t": "Nanostructured amorphous materials",
+    "src": "24.6"
+   }
+  ]
+ },
+ {
+  "id": "41",
+  "title": "Amorphous and Microcrystalline Silicon",
+  "source_ref": "handbook ch.25",
+  "sections": [
+   {
+    "n": "41.1",
+    "t": "Chemistry of silane plasmas",
+    "src": "25.1"
+   },
+   {
+    "n": "41.2",
+    "t": "Film growth at the surface",
+    "src": "25.2"
+   },
+   {
+    "n": "41.3",
+    "t": "Measuring defect density",
+    "src": "25.3"
+   },
+   {
+    "n": "41.4",
+    "t": "Device applications of thin-film silicon",
+    "src": "25.4"
+   },
+   {
+    "n": "41.5",
+    "t": "Recent material developments",
+    "src": "25.5"
+   },
+   {
+    "n": "41.6",
+    "t": "Where thin-film silicon stands",
+    "src": "25.6"
+   }
+  ]
+ },
+ {
+  "id": "42",
+  "title": "Ferroelectric Materials",
+  "source_ref": "handbook ch.26",
+  "sections": [
+   {
+    "n": "42.1",
+    "t": "Polarization, hysteresis and definitions",
+    "src": "26.1"
+   },
+   {
+    "n": "42.2",
+    "t": "The main ferroelectric material families",
+    "src": "26.2"
+   },
+   {
+    "n": "42.3",
+    "t": "Fabricating ferroelectric films",
+    "src": "26.3"
+   },
+   {
+    "n": "42.4",
+    "t": "Ferroelectric devices",
+    "src": "26.4"
+   }
+  ]
+ },
+ {
+  "id": "43",
+  "title": "Dielectric Materials for Microelectronics",
+  "source_ref": "handbook ch.27",
+  "sections": [
+   {
+    "n": "43.1",
+    "t": "What a microelectronic dielectric must do",
+    "src": "27.1"
+   },
+   {
+    "n": "43.2",
+    "t": "Gate dielectrics and the high-k transition",
+    "src": "27.2"
+   },
+   {
+    "n": "43.3",
+    "t": "Isolation dielectrics",
+    "src": "27.3"
+   },
+   {
+    "n": "43.4",
+    "t": "Capacitor dielectrics",
+    "src": "27.4"
+   },
+   {
+    "n": "43.5",
+    "t": "Interconnect and low-k dielectrics",
+    "src": "27.5"
+   },
+   {
+    "n": "43.6",
+    "t": "Selecting dielectrics across a process",
+    "src": "27.6"
+   }
+  ]
+ },
+ {
+  "id": "44",
+  "title": "Thin Films",
+  "source_ref": "handbook ch.28",
+  "sections": [
+   {
+    "n": "44.1",
+    "t": "Deposition methods",
+    "src": "28.1"
+   },
+   {
+    "n": "44.2",
+    "t": "Film structure and microstructure",
+    "src": "28.2"
+   },
+   {
+    "n": "44.3",
+    "t": "Properties of thin films",
+    "src": "28.3"
+   },
+   {
+    "n": "44.4",
+    "t": "Thin-film process choices",
+    "src": "28.4"
+   }
+  ]
+ },
+ {
+  "id": "45",
+  "title": "Thick Films",
+  "source_ref": "handbook ch.29",
+  "sections": [
+   {
+    "n": "45.1",
+    "t": "Thick-film processing",
+    "src": "29.1"
+   },
+   {
+    "n": "45.2",
+    "t": "Substrates",
+    "src": "29.2"
+   },
+   {
+    "n": "45.3",
+    "t": "Thick-film pastes and materials",
+    "src": "29.3"
+   },
+   {
+    "n": "45.4",
+    "t": "Components and assembly",
+    "src": "29.4"
+   },
+   {
+    "n": "45.5",
+    "t": "Thick-film sensors",
+    "src": "29.5"
+   }
+  ]
+ },
+ {
+  "id": "46",
+  "title": "Flexible Large-Area Electronics",
+  "source_ref": "handbook ch.44",
+  "sections": [
+   {
+    "n": "46.1",
+    "t": "Amorphous silicon thin-film transistors on flexible substrates",
+    "src": "44.1"
+   },
+   {
+    "n": "46.2",
+    "t": "Field-effect transport in amorphous films",
+    "src": "44.2"
+   },
+   {
+    "n": "46.3",
+    "t": "Electronic transport under mechanical strain",
+    "src": "44.3"
+   }
+  ]
+ },
+ {
+  "id": "47",
+  "title": "Phase-Change Memory Materials",
+  "source_ref": "handbook ch.46",
+  "sections": [
+   {
+    "n": "47.1",
+    "t": "Structure of germanium-antimony-tellurium alloys",
+    "src": "46.1"
+   },
+   {
+    "n": "47.2",
+    "t": "The switching mechanism",
+    "src": "46.2"
+   },
+   {
+    "n": "47.3",
+    "t": "Applications and outlook",
+    "src": "46.3"
+   }
+  ]
+ },
+ {
+  "id": "48",
+  "title": "Carbon Nanotubes and Fullerene Materials",
+  "source_ref": "handbook ch.47",
+  "sections": [
+   {
+    "n": "48.1",
+    "t": "Carbon nanotubes",
+    "src": "47.1"
+   },
+   {
+    "n": "48.2",
+    "t": "Fullerene solids",
+    "src": "47.2"
+   }
+  ]
+ },
+ {
+  "id": "49",
+  "title": "Graphene",
+  "source_ref": "handbook ch.48",
+  "sections": [
+   {
+    "n": "49.1",
+    "t": "Synthesis routes",
+    "src": "48.1"
+   },
+   {
+    "n": "49.2",
+    "t": "Band structure and electronic applications",
+    "src": "48.2"
+   },
+   {
+    "n": "49.3",
+    "t": "Characterizing graphene",
+    "src": "48.3"
+   },
+   {
+    "n": "49.4",
+    "t": "Optical behaviour and its device uses",
+    "src": "48.4"
+   }
+  ]
+ },
+ {
+  "id": "50",
+  "title": "Magnetic Information Storage",
+  "source_ref": "handbook ch.49",
+  "sections": [
+   {
+    "n": "50.1",
+    "t": "Magnetic recording technology",
+    "src": "49.1"
+   },
+   {
+    "n": "50.2",
+    "t": "Magnetic random-access memory",
+    "src": "49.2"
+   },
+   {
+    "n": "50.3",
+    "t": "Extraordinary magnetoresistance",
+    "src": "49.3"
+   },
+   {
+    "n": "50.4",
+    "t": "Where magnetic storage is going",
+    "src": "49.4"
+   }
+  ]
+ },
+ {
+  "id": "51",
+  "title": "High-Temperature Superconductors",
+  "source_ref": "handbook ch.50",
+  "sections": [
+   {
+    "n": "51.1",
+    "t": "The superconducting state",
+    "src": "50.1"
+   },
+   {
+    "n": "51.2",
+    "t": "The cuprate families",
+    "src": "50.2"
+   },
+   {
+    "n": "51.3",
+    "t": "Physical properties of the cuprates",
+    "src": "50.3"
+   },
+   {
+    "n": "51.4",
+    "t": "Superconducting films",
+    "src": "50.4"
+   },
+   {
+    "n": "51.5",
+    "t": "Magnesium diboride",
+    "src": "50.5"
+   },
+   {
+    "n": "51.6",
+    "t": "Iron-based superconductors",
+    "src": "50.6"
+   },
+   {
+    "n": "51.7",
+    "t": "Applications and limits",
+    "src": "50.7"
+   }
+  ]
+ },
+ {
+  "id": "52",
+  "title": "Molecular Electronics",
+  "source_ref": "handbook ch.51",
+  "sections": [
+   {
+    "n": "52.1",
+    "t": "Electrically conductive organic compounds",
+    "src": "51.1"
+   },
+   {
+    "n": "52.2",
+    "t": "Material families",
+    "src": "51.2"
+   },
+   {
+    "n": "52.3",
+    "t": "Plastic electronics",
+    "src": "51.3"
+   },
+   {
+    "n": "52.4",
+    "t": "Molecular-scale devices",
+    "src": "51.4"
+   },
+   {
+    "n": "52.5",
+    "t": "DNA as an electronic material",
+    "src": "51.5"
+   },
+   {
+    "n": "52.6",
+    "t": "What molecular electronics has delivered",
+    "src": "51.6"
+   }
+  ]
+ },
+ {
+  "id": "53",
+  "title": "Organic Materials for Chemical Sensing",
+  "source_ref": "handbook ch.52",
+  "sections": [
+   {
+    "n": "53.1",
+    "t": "What the analyte demands of a sensor",
+    "src": "52.1"
+   },
+   {
+    "n": "53.2",
+    "t": "Inorganic sensing materials, for comparison",
+    "src": "52.2"
+   },
+   {
+    "n": "53.3",
+    "t": "Macrocyclic sensing compounds",
+    "src": "52.3"
+   },
+   {
+    "n": "53.4",
+    "t": "Phthalocyanine and porphyrin sensors",
+    "src": "52.4"
+   },
+   {
+    "n": "53.5",
+    "t": "Polymeric sensing layers",
+    "src": "52.5"
+   },
+   {
+    "n": "53.6",
+    "t": "Cavitand receptors",
+    "src": "52.6"
+   },
+   {
+    "n": "53.7",
+    "t": "Designing a sensor material",
+    "src": "52.7"
+   }
+  ]
+ },
+ {
+  "id": "54",
+  "title": "Electronic Packaging Materials",
+  "source_ref": "handbook ch.53",
+  "sections": [
+   {
+    "n": "54.1",
+    "t": "What a package has to do",
+    "src": "53.1"
+   },
+   {
+    "n": "54.2",
+    "t": "The materials challenge in packaging",
+    "src": "53.2"
+   },
+   {
+    "n": "54.3",
+    "t": "Thermal expansion mismatch",
+    "src": "53.3"
+   },
+   {
+    "n": "54.4",
+    "t": "Wirebond materials",
+    "src": "53.4"
+   },
+   {
+    "n": "54.5",
+    "t": "Solder interconnects",
+    "src": "53.5"
+   },
+   {
+    "n": "54.6",
+    "t": "Package substrates",
+    "src": "53.6"
+   },
+   {
+    "n": "54.7",
+    "t": "Underfills and encapsulants",
+    "src": "53.7"
+   },
+   {
+    "n": "54.8",
+    "t": "Electrically conductive adhesives",
+    "src": "53.8"
+   },
+   {
+    "n": "54.9",
+    "t": "Thermal management",
+    "src": "53.9"
+   },
+   {
+    "n": "54.10",
+    "t": "Selecting a package",
+    "src": "53.10"
+   }
+  ]
+ },
+ {
+  "id": "55",
+  "title": "Thermoelectric Materials",
+  "source_ref": "handbook ch.57",
+  "sections": [
+   {
+    "n": "55.1",
+    "t": "Thermoelectric effects and the figure of merit",
+    "src": "57.1"
+   },
+   {
+    "n": "55.2",
+    "t": "Semiconductors as thermoelectrics",
+    "src": "57.2"
+   },
+   {
+    "n": "55.3",
+    "t": "Nanostructuring and new design concepts",
+    "src": "57.3"
+   },
+   {
+    "n": "55.4",
+    "t": "Where thermoelectrics are actually used",
+    "src": "57.4"
+   }
+  ]
+ },
+ {
+  "id": "56",
+  "title": "Transparent Conductive Oxides",
+  "source_ref": "handbook ch.58",
+  "sections": [
+   {
+    "n": "56.1",
+    "t": "What a transparent conductor must achieve",
+    "src": "58.1"
+   },
+   {
+    "n": "56.2",
+    "t": "Designing TCO materials",
+    "src": "58.2"
+   },
+   {
+    "n": "56.3",
+    "t": "Searching for new TCO candidates",
+    "src": "58.3"
+   }
+  ]
+ },
+ {
+  "id": "57",
+  "title": "Inorganic Perovskite Oxides",
+  "source_ref": "handbook ch.59",
+  "sections": [
+   {
+    "n": "57.1",
+    "t": "Properties of the perovskite structure",
+    "src": "59.1"
+   },
+   {
+    "n": "57.2",
+    "t": "Photocatalytic activity",
+    "src": "59.2"
+   },
+   {
+    "n": "57.3",
+    "t": "Solid oxide fuel cells",
+    "src": "59.3"
+   },
+   {
+    "n": "57.4",
+    "t": "Oxygen-separating membranes",
+    "src": "59.4"
+   },
+   {
+    "n": "57.5",
+    "t": "Perovskite oxides in devices",
+    "src": "59.5"
    }
   ]
  },

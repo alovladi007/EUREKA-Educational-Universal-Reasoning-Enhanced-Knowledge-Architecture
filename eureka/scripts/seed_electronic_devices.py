@@ -10,15 +10,26 @@ updates in place and never duplicates. Run from eureka/:
 It execs psql inside the running `db` compose service, so it needs the stack
 up and nothing else.
 
-PROVENANCE AND COPYRIGHT. The syllabus TOPIC MAP (chapter/section structure in
-docs/courses/practical-electronics/curriculum.json) follows the coverage of
-Scherz & Monk, "Practical Electronics for Inventors" 3e, so completeness can
-be checked against a recognized treatment of the subject. Every lesson body in
-lessons/*.md is ORIGINAL text written for this course; no passage is
-reproduced from the book, and the book is cited in course metadata as the
-coverage reference, not as the content source. Do not paste book text into
-the lessons directory; scripts/check_pe_coverage.py reports authored-vs-
-pending honestly and nothing here fabricates content for unauthored sections.
+PROVENANCE AND COPYRIGHT. The syllabus TOPIC MAP in
+docs/courses/electronic-devices/curriculum.json is a COVERAGE SPEC, not
+content. Modules 1-16 and A-C track the coverage of Scherz & Monk, "Practical
+Electronics for Inventors" 3e; modules 17-57 track the electronic half of
+Kasap & Capper (eds.), "Springer Handbook of Electronic and Photonic
+Materials" 2e. Both books are copyrighted and neither is a content source.
+
+Concretely, for modules 17-57 the only thing taken from the source is the
+SHAPE of the subject: how many chapters there are, how many sections each has,
+and which chapter a section belongs to. Every module title and every section
+label in curriculum.json was written for this course, and the source is
+referenced by chapter/section NUMBER alone (the "src" field), so no publisher
+heading text is stored in this repository or displayed in the app. Every
+lesson body in lessons/*.md is ORIGINAL text. No passage, example, figure,
+table or data set is reproduced or closely paraphrased from either book.
+
+Do not paste book text into the lessons directory.
+scripts/check_ed_coverage.py reports authored-vs-pending honestly and nothing
+here fabricates content for unauthored sections. See SCOPE.md for the
+electronic/photonic scope split.
 """
 from __future__ import annotations
 
@@ -30,7 +41,35 @@ import subprocess
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 DOCS = ROOT / "docs" / "courses" / "electronic-devices"
 COURSE_CODE = "ELEC-DEV"
-COURSE_TITLE = "Electronic Devices: Design and Characteristics"
+COURSE_TITLE = "Electronic and Photonic Devices: Design and Characteristics"
+
+COURSE_DESCRIPTION = (
+    "A two-part course. Part one builds working electronics from the ground "
+    "up: circuit theory, components, semiconductors, sensors, workshop "
+    "practice, op amps, filters, oscillators, power supplies, digital logic, "
+    "microcontrollers, motors and audio. Part two goes underneath the "
+    "components, into the materials and characterization that decide what a "
+    "device can do: conduction and scattering, defects and diffusion, "
+    "interfaces, disordered and amorphous semiconductors, dielectrics and "
+    "ferroelectrics, crystal growth and epitaxy, structural, surface, thermal "
+    "and electrical characterization, and the materials behind memory, "
+    "graphene, superconductors, thermoelectrics and packaging. All lesson "
+    "text is original to EUREKA."
+)
+
+COVERAGE_REFS = (
+    "Modules 1-16 and A-C: Scherz & Monk, Practical Electronics for "
+    "Inventors, 3rd ed. Modules 17-57: Kasap & Capper (eds.), Springer "
+    "Handbook of Electronic and Photonic Materials, 2nd ed. (electronic "
+    "chapters). Topic map only."
+)
+
+SCOPE_NOTE = (
+    "Modules 17-57 cover the electronic scope of the materials reference. "
+    "Its optoelectronics and photonics part, and the photovoltaic, x-ray "
+    "imaging, terahertz and metamaterial chapters, are deferred to a later "
+    "photonics wave and are deliberately not listed as syllabus here."
+)
 
 
 def q(s: str) -> str:
@@ -68,16 +107,13 @@ WHERE code = 'ELEC-PRACT';
 INSERT INTO courses (org_id, title, code, description, tier, subject, category, level,
                      syllabus, status, is_published, metadata)
 SELECT o.id, '{q(COURSE_TITLE)}', '{COURSE_CODE}',
-       'A complete electronics course: circuit theory, components, '
-       'semiconductors, optoelectronics, sensors, workshop practice, op amps, '
-       'filters, oscillators, power supplies, digital logic, microcontrollers, '
-       'motors, audio, and modular prototyping systems. Lesson text is original '
-       'to EUREKA; topic coverage tracks Scherz and Monk, Practical Electronics '
-       'for Inventors 3e, as the completeness reference.',
+       '{q(COURSE_DESCRIPTION)}',
        'undergraduate', 'Electrical Engineering', 'Electronics', 'beginner',
        '{syllabus}'::jsonb, 'published', true,
-       jsonb_build_object('coverage_reference',
-         'Scherz & Monk, Practical Electronics for Inventors, 3rd ed. (topic map only; all lesson text original)',
+       jsonb_build_object(
+         'coverage_reference', '{q(COVERAGE_REFS)}',
+         'content_origin', 'All lesson text is original to EUREKA. The references above define coverage only; no passage, figure or table is reproduced from them.',
+         'scope_note', '{q(SCOPE_NOTE)}',
          'sections_total', {sum(len(c['sections']) for c in curriculum)})
 -- The org gate on GET /courses/{id} (P0-4) means learners only see
 -- courses in THEIR org. Seed into the org that actually holds users,
@@ -88,9 +124,19 @@ FROM organizations o
 ORDER BY (SELECT count(*) FROM users u WHERE u.org_id = o.id) DESC LIMIT 1
 ON CONFLICT DO NOTHING;
 """)
-    # code has no unique constraint; emulate idempotency by updating if present
+    # code has no unique constraint; emulate idempotency by updating if present.
+    # Title, description and metadata are updated in place too, so a rename
+    # reaches the existing row instead of only new installs: the course id,
+    # its modules, its readings and its enrollments all survive the rename.
     sql.append(f"""
-UPDATE courses SET syllabus = '{syllabus}'::jsonb, is_published = true, status = 'published'
+UPDATE courses SET syllabus = '{syllabus}'::jsonb, is_published = true, status = 'published',
+       title = '{q(COURSE_TITLE)}',
+       description = '{q(COURSE_DESCRIPTION)}',
+       metadata = COALESCE(metadata, '{{}}'::jsonb) || jsonb_build_object(
+         'coverage_reference', '{q(COVERAGE_REFS)}',
+         'content_origin', 'All lesson text is original to EUREKA. The references above define coverage only; no passage, figure or table is reproduced from them.',
+         'scope_note', '{q(SCOPE_NOTE)}',
+         'sections_total', {sum(len(c['sections']) for c in curriculum)})
 WHERE code = '{COURSE_CODE}';
 """)
 
