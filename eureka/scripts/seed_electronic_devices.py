@@ -172,6 +172,19 @@ UPDATE course_content cc SET content = '{body}', topics = '{topics}'::jsonb,
 FROM courses c WHERE c.code = '{COURSE_CODE}' AND cc.course_id = c.id AND cc.title = '{title}';
 """)
 
+    # Prune orphans: rows this seeder authored whose title no longer matches any
+    # lesson file. Upserting by title means a retitled lesson leaves its old row
+    # behind (found live: 3 stale pre-expansion lessons in modules 17 and 19).
+    # Only 'authored' rows are candidates, so hand-added content is untouched.
+    current_titles = ", ".join(f"'{q(les['title'])}'" for les in lessons)
+    sql.append(f"""
+DELETE FROM course_content cc
+USING courses c
+WHERE c.code = '{COURSE_CODE}' AND cc.course_id = c.id
+  AND cc.metadata->>'authored' = 'true'
+  AND cc.title NOT IN ({current_titles});
+""")
+
     # A module whose sections are all covered by authored lessons is published.
     sql.append(f"""
 WITH covered AS (

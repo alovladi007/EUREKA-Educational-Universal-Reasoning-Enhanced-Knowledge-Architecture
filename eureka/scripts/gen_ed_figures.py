@@ -1635,6 +1635,372 @@ def _(mode):
 
 
 # ---------------------------------------------------------------------------
+# Module 19 - tranche 2
+# ---------------------------------------------------------------------------
+
+
+@figure("m19-penetration-depth")
+def _(mode):
+    """Silicon-like penetration depth 1/alpha from a stated two-term model:
+    indirect quadratic edge plus a direct term switching on in the UV."""
+    c = S.SERIES[mode]
+    E = np.linspace(1.2, 4.5, 600)
+    alpha = 3.5e3 * np.clip(E - 1.12, 0, None) ** 2 \
+        + 1.0e6 * np.where(E > 3.35, np.sqrt(np.clip(E - 3.35, 0, None)), 0)
+    lam = 1.24 / E
+    depth = 1e4 / np.clip(alpha, 1e-6, None)  # micrometres
+    fig, ax = plt.subplots()
+    ax.semilogy(lam * 1e3, depth, color=c[0], lw=2.2)
+    S.label_end(ax, lam[0] * 1e3, depth[0], "model: indirect + direct terms", c[0], mode, dx=-6, ha="right")
+    for l0, note in [(850, "IR: ~20 um, deep pixels"), (550, "green: ~1 um"),
+                     (350, "UV: tens of nm, surface only")]:
+        E0 = 1240.0 / l0
+        a0 = 3.5e3 * max(E0 - 1.12, 0) ** 2 + (1.0e6 * np.sqrt(E0 - 3.35) if E0 > 3.35 else 0)
+        ax.plot([l0], [1e4 / a0], "o", color=c[1], ms=6)
+        ax.annotate(note, xy=(l0, 1e4 / a0), xytext=(6, 6), textcoords="offset points",
+                    color=S.INK_2[mode], fontsize=9)
+    ax.set_xlabel("wavelength  (nm)")
+    ax.set_ylabel(r"penetration depth  $1/\alpha$  ($\mu$m)")
+    ax.set_title("Four decades of depth across the visible: why image sensors are colour-stratified")
+    ax.set_xlim(270, 1060)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-fresnel-angles")
+def _(mode):
+    """Fresnel reflectances Rs and Rp against angle, low and high index."""
+    c = S.SERIES[mode]
+    th = np.radians(np.linspace(0, 89.5, 500))
+    fig, axes = plt.subplots(1, 2, figsize=(7.2, 3.6), sharey=True)
+    fig.skip_tight = True
+    fig.subplots_adjust(wspace=0.12, left=0.09, right=0.97, bottom=0.17, top=0.84)
+    for ax, n in zip(axes, [1.5, 3.5]):
+        thr = np.arcsin(np.clip(np.sin(th) / n, -1, 1))
+        rs = (np.cos(th) - n * np.cos(thr)) / (np.cos(th) + n * np.cos(thr))
+        rp = (n * np.cos(th) - np.cos(thr)) / (n * np.cos(th) + np.cos(thr))
+        ax.plot(np.degrees(th), 100 * rs**2, color=c[0], lw=2.0)
+        ax.plot(np.degrees(th), 100 * rp**2, color=c[1], lw=2.0)
+        thB = np.degrees(np.arctan(n))
+        ax.axvline(thB, color=S.GUIDE[mode], lw=1.0, ls=":")
+        ax.set_title(f"n = {n}", fontsize=11)
+        ax.set_xlabel("angle of incidence (deg)")
+        S.note(ax, thB - 2, 55, f"Brewster {thB:.0f} deg", mode, ha="right", size=8.5)
+        S.strip(ax)
+    S.label_end(axes[1], 89, 92, r"$R_s$", c[0], mode, dx=-14, dy=-6, ha="right")
+    S.label_end(axes[1], 74, 12, r"$R_p$", c[1], mode)
+    axes[0].set_ylabel("reflectance  (%)")
+    return fig
+
+
+@figure("m19-sellmeier")
+def _(mode):
+    """Fused-silica Sellmeier fit (standard published coefficients: facts)."""
+    c = S.SERIES[mode]
+    lam = np.linspace(0.25, 3.5, 800)
+    l2 = lam**2
+    n2 = 1 + 0.6961663 * l2 / (l2 - 0.0684043**2) \
+        + 0.4079426 * l2 / (l2 - 0.1162414**2) \
+        + 0.8974794 * l2 / (l2 - 9.896161**2)
+    n = np.sqrt(n2)
+    fig, ax = plt.subplots()
+    ax.plot(lam, n, color=c[0], lw=2.2)
+    S.label_end(ax, lam[-1], n[-1], "fused silica", c[0], mode)
+    S.note(ax, 0.30, 1.443, "UV resonances pull the\nindex up on the left", mode)
+    S.note(ax, 2.05, 1.452, "the 9.9 um IR pole\npulls it down on the right", mode)
+    ax.set_xlabel(r"wavelength  ($\mu$m)")
+    ax.set_ylabel("refractive index  n")
+    ax.set_title("Three resonance terms reproduce five decades of glassmaking data")
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-group-index")
+def _(mode):
+    """Phase and group index of silica; the zero-dispersion wavelength."""
+    c = S.SERIES[mode]
+    lam = np.linspace(0.6, 2.2, 900)
+    l2 = lam**2
+    n = np.sqrt(1 + 0.6961663 * l2 / (l2 - 0.0684043**2)
+                + 0.4079426 * l2 / (l2 - 0.1162414**2)
+                + 0.8974794 * l2 / (l2 - 9.896161**2))
+    dn = np.gradient(n, lam)
+    ng = n - lam * dn
+    fig, ax = plt.subplots()
+    ax.plot(lam, n, color=c[0], lw=2.0)
+    ax.plot(lam, ng, color=c[1], lw=2.0)
+    S.label_end(ax, lam[-1], n[-1], "phase index n", c[0], mode)
+    S.label_end(ax, lam[-1], ng[-1], r"group index $n_g$", c[1], mode)
+    k = int(np.argmin(ng))
+    ax.plot([lam[k]], [ng[k]], "o", color=c[2], ms=7)
+    ax.annotate(f"zero-dispersion point\n{lam[k]:.2f} um: pulses hold together",
+                xy=(lam[k], ng[k]), xytext=(0.75, 1.470), color=S.INK_2[mode], fontsize=9,
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0))
+    ax.set_xlabel(r"wavelength  ($\mu$m)")
+    ax.set_ylabel("index")
+    ax.set_title(r"$n_g=n-\lambda\,dn/d\lambda$: what a pulse actually travels at")
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-oscillator-sum")
+def _(mode):
+    """Normal dispersion as the sum of a UV and an IR resonance."""
+    c = S.SERIES[mode]
+    lam = np.logspace(np.log10(0.15), np.log10(20), 900)
+    w = 1.0 / lam  # 1/um as frequency proxy
+    eps = 1 + 1.1 / (1 / 0.10**2 * 0.10**2 - (w * 0.10) ** 2 + 1e-9)  # placeholder
+    # cleaner: two Lorentz poles at lam_uv=0.1, lam_ir=9
+    wuv, wir = 1 / 0.10, 1 / 9.0
+    eps = 1 + 1.10 * wuv**2 / (wuv**2 - w**2) + 0.90 * wir**2 / (wir**2 - w**2)
+    n = np.sqrt(np.clip(eps, 0.05, None))
+    fig, ax = plt.subplots()
+    mask = (lam > 0.14) & (lam < 18)
+    ax.semilogx(lam[mask], n[mask], color=c[0], lw=2.2)
+    S.label_end(ax, 15, np.interp(15, lam, n), "n", c[0], mode)
+    for x0, lab in [(0.1, "UV electronic\nresonance"), (9.0, "IR lattice\nresonance")]:
+        ax.axvline(x0, color=S.GUIDE[mode], lw=1.0, ls=":")
+        S.note(ax, x0 * 1.1, 2.4, lab, mode, size=8.5)
+    S.note(ax, 0.9, 1.30, "between the poles: n falls slowly with wavelength,\nnormal dispersion, transparency", mode)
+    ax.set_xlabel(r"wavelength  ($\mu$m)")
+    ax.set_ylabel("refractive index  n")
+    ax.set_title("Every transparent window is the truce between two resonances")
+    ax.set_ylim(0.4, 2.8)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-abbe-map")
+def _(mode):
+    """The glass map: index against Abbe number (typical values: facts)."""
+    c = S.SERIES[mode]
+    pts = [("fluoro-crown", 95, 1.43), ("borosilicate crown", 64, 1.517),
+           ("lanthanum crown", 55, 1.69), ("flint", 36, 1.62),
+           ("dense flint", 25, 1.80)]
+    fig, ax = plt.subplots()
+    for lab, vd, nd in pts:
+        ax.plot([vd], [nd], "o", color=c[0], ms=9)
+        ax.annotate(lab, xy=(vd, nd), xytext=(6, 5), textcoords="offset points",
+                    color=S.INK[mode], fontsize=9)
+    ax.invert_xaxis()
+    S.note(ax, 92, 1.77, "achromats pair a point from\neach side so the colour\nerrors cancel", mode)
+    ax.set_xlabel(r"Abbe number  $V_d$  (low dispersion $\rightarrow$ left)")
+    ax.set_ylabel(r"index  $n_d$")
+    ax.set_title("Lens design shops in two dimensions, not one")
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-exciton-edge")
+def _(mode):
+    """Absorption edge with an exciton line, cold and warm."""
+    c = S.SERIES[mode]
+    E = np.linspace(1.46, 1.60, 700)
+    Eg, Ex = 1.545, 0.009
+    cont = 0.9 * np.sqrt(np.clip(E - Eg, 0, None))
+
+    def gauss(x0, w, a):
+        return a * np.exp(-((E - x0) ** 2) / (2 * w**2))
+
+    cold = cont * 0 + gauss(Eg - Ex, 0.0012, 1.15) + 0.9 * np.sqrt(np.clip(E - Eg, 0, None) + 1e-9) * (E > Eg)
+    warm = gauss(Eg - Ex - 0.004, 0.006, 0.35) + 0.85 * np.sqrt(np.clip(E - Eg + 0.004, 0, None))
+    fig, ax = plt.subplots()
+    ax.plot(E * 1e3, cold, color=c[0], lw=2.1)
+    ax.plot(E * 1e3, warm, color=c[1], lw=2.1)
+    S.label_end(ax, E[-1] * 1e3, cold[-1], "10 K", c[0], mode, dy=6)
+    S.label_end(ax, E[-1] * 1e3, warm[-1], "300 K", c[1], mode, dy=-6)
+    ax.annotate("bound exciton line,\n$E_g-E_X$", xy=((Eg - Ex) * 1e3, 1.1),
+                xytext=(1470, 0.85), color=S.INK_2[mode], fontsize=9,
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0))
+    ax.set_xlabel("photon energy  (meV)")
+    ax.set_ylabel(r"$\alpha$  (arb.)")
+    ax.set_title("The electron-hole atom prints a line just below the gap")
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-reststrahlen")
+def _(mode):
+    """Reststrahlen band from the factorised phonon dielectric function."""
+    c = S.SERIES[mode]
+    w = np.linspace(0.6, 1.6, 900)  # units of w_TO
+    eps_inf, wLO, g = 9.0, 1.20, 0.02
+    eps = eps_inf * (wLO**2 - w**2 - 1j * g * w) / (1.0 - w**2 - 1j * g * w)
+    nk = np.sqrt(eps)
+    R = np.abs((nk - 1) / (nk + 1)) ** 2
+    fig, ax = plt.subplots()
+    ax.plot(w, 100 * R, color=c[0], lw=2.2)
+    S.label_end(ax, w[-1], 100 * R[-1], "reflectance", c[0], mode)
+    ax.axvline(1.0, color=S.GUIDE[mode], lw=1.0, ls=":")
+    ax.axvline(wLO, color=S.GUIDE[mode], lw=1.0, ls=":")
+    S.note(ax, 0.985, 20, r"$\omega_{TO}$", mode, ha="right")
+    S.note(ax, 1.21, 20, r"$\omega_{LO}$", mode)
+    S.note(ax, 1.02, 92, "metallic mirror between\nthe phonon frequencies", mode)
+    ax.set_xlabel(r"frequency  $\omega/\omega_{TO}$")
+    ax.set_ylabel("reflectance  (%)")
+    ax.set_title("A polar lattice reflects like a metal inside its phonon band")
+    ax.set_ylim(0, 108)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-transparency-window")
+def _(mode):
+    """Transparency windows of a UV-strong and an IR-strong material,
+    drawn as the two exponential walls each window is trapped between."""
+    c = S.SERIES[mode]
+    lam = np.logspace(np.log10(0.12), np.log10(30), 900)
+    def walls(edge_uv, edge_ir, wu, wi):
+        return np.exp((edge_uv - lam) / wu * 6) + np.exp((lam - edge_ir) / wi * 4)
+    a1 = walls(0.16, 3.5, 0.05, 1.2)
+    a2 = walls(0.50, 18.0, 0.15, 5.0)
+    fig, ax = plt.subplots()
+    ax.loglog(lam, a1, color=c[0], lw=2.1)
+    ax.loglog(lam, a2, color=c[1], lw=2.1)
+    S.label_end(ax, 0.13, 40, "silica-class", c[0], mode, dy=8)
+    S.label_end(ax, 27, 20, "chalcogenide/ZnSe-class", c[1], mode, dx=-6, dy=10, ha="right")
+    S.note(ax, 0.55, 3e-3, "electronic edge walls the left,\nmultiphonon walls the right;\nheavy atoms push the right wall out\nand drag the left wall in", mode, size=8.5)
+    ax.set_xlabel(r"wavelength  ($\mu$m)")
+    ax.set_ylabel(r"$\alpha$  (arb., log)")
+    ax.set_title("No material is transparent, only transparent somewhere")
+    ax.set_ylim(1e-3, 1e3)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-plasma-edge")
+def _(mode):
+    """Drude reflectance of a doped semiconductor: the plasma edge moves
+    with carrier density (module 56's transparent-conductor design rule)."""
+    c = S.SERIES[mode]
+    lam = np.linspace(0.4, 4.0, 800)
+    w = 1.0 / lam
+    eps_inf, g = 3.8, 0.02
+    fig, ax = plt.subplots()
+    for i, (lp, lab) in enumerate([(1.0, r"$n\sim10^{21}$"), (1.8, r"$n\sim3\times10^{20}\ {\rm cm^{-3}}$")]):
+        wp = 1.0 / lp
+        eps = eps_inf * (1 - wp**2 / (w**2 + 1j * g * w))
+        nk = np.sqrt(eps)
+        R = np.abs((nk - 1) / (nk + 1)) ** 2
+        ax.plot(lam, 100 * R, color=c[i], lw=2.1)
+        S.label_end(ax, lam[-1], 100 * R[-1], lab, c[i], mode, dy=6 - 12 * i)
+    ax.axvspan(0.4, 0.7, color=c[2], alpha=0.08, lw=0)
+    S.note(ax, 0.43, 80, "visible", mode, size=8.5)
+    ax.set_xlabel(r"wavelength  ($\mu$m)")
+    ax.set_ylabel("reflectance  (%)")
+    ax.set_title("Transparent conductors park their plasma edge just past the visible")
+    ax.set_ylim(0, 108)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-ellipsometry")
+def _(mode):
+    """Ellipsometric Psi for an oxide film on a model substrate at 70 deg:
+    a five-nanometre thickness change is a visible spectral shift."""
+    c = S.SERIES[mode]
+    lam = np.linspace(300, 800, 600)  # nm
+    n1 = 1.46
+    N2 = 3.9 - 0.05j  # model substrate constants, stated as such
+    th0 = np.radians(70)
+
+    def psi(d):
+        s0 = np.sin(th0)
+        c0 = np.cos(th0)
+        c1 = np.sqrt(1 - (s0 / n1) ** 2 + 0j)
+        c2 = np.sqrt(1 - (s0 / N2) ** 2 + 0j)
+        r01s = (c0 - n1 * c1) / (c0 + n1 * c1)
+        r12s = (n1 * c1 - N2 * c2) / (n1 * c1 + N2 * c2)
+        r01p = (n1 * c0 - c1) / (n1 * c0 + c1)
+        r12p = (N2 * c1 - n1 * c2) / (N2 * c1 + n1 * c2)
+        beta = 2 * np.pi * n1 * d * c1 / lam
+        e = np.exp(-2j * beta)
+        rs = (r01s + r12s * e) / (1 + r01s * r12s * e)
+        rp = (r01p + r12p * e) / (1 + r01p * r12p * e)
+        return np.degrees(np.arctan(np.abs(rp / rs)))
+
+    fig, ax = plt.subplots()
+    for i, d in enumerate([100, 105]):
+        ax.plot(lam, psi(d), color=c[i], lw=2.1)
+        S.label_end(ax, lam[-1], psi(d)[-1], f"{d} nm film", c[i], mode, dy=6 - 12 * i)
+    S.note(ax, 315, 12, "five nanometres of oxide moves the whole\ncurve: sub-nm fits are routine, and the\nmodel dependence is the price", mode, size=8.5)
+    ax.set_xlabel("wavelength  (nm)")
+    ax.set_ylabel(r"ellipsometric $\Psi$  (deg)")
+    ax.set_title("Polarisation ratios, not intensities: why ellipsometry needs no reference")
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-pl-spectrum")
+def _(mode):
+    """A photoluminescence spectrum annotated by what each feature reports."""
+    c = S.SERIES[mode]
+    E = np.linspace(1.2, 1.65, 700)
+    band = 1.0 * np.exp(-((E - 1.515) ** 2) / (2 * 0.008**2))
+    defect = 0.22 * np.exp(-((E - 1.33) ** 2) / (2 * 0.03**2))
+    fig, ax = plt.subplots()
+    ax.plot(E, band + defect, color=c[0], lw=2.1)
+    S.label_end(ax, 1.545, 0.5, "near-edge peak:\nposition = gap/alloy,\nwidth = inhomogeneity", c[0], mode)
+    ax.annotate("deep-level band:\nspecies fingerprint;\nits RATIO to the edge\nis the quality metric",
+                xy=(1.33, 0.22), xytext=(1.21, 0.62), color=S.INK_2[mode], fontsize=9,
+                arrowprops=dict(arrowstyle="->", color=S.GUIDE[mode], lw=1.0))
+    ax.set_xlabel("photon energy  (eV)")
+    ax.set_ylabel("PL intensity  (arb.)")
+    ax.set_title("Contactless, fast, and it only works if the material emits: PL's bargain")
+    ax.set_ylim(0, 1.25)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-raman-fractions")
+def _(mode):
+    """Mixed-phase silicon Raman: crystalline 520 line over the amorphous
+    480 band; the area ratio is the crystalline-fraction measurement."""
+    c = S.SERIES[mode]
+    w = np.linspace(380, 580, 800)
+    def cryst(a):
+        return a * 16 / ((w - 520) ** 2 + 16)
+    def amor(a):
+        return a * np.exp(-((w - 480) ** 2) / (2 * 28**2))
+    fig, ax = plt.subplots()
+    for i, (fc, lab) in enumerate([(0.0, "amorphous"), (0.5, "mixed"), (0.9, "microcrystalline")]):
+        y = cryst(fc) + amor(0.55 * (1 - fc))
+        ax.plot(w, y + 0.0, color=c[i], lw=2.0)
+        S.label_end(ax, 578, y[-1] + 0.02 * (2 - i), lab, c[i], mode, dy=4 - 6 * i)
+    ax.axvline(520, color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.axvline(480, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 521, 0.9, "c-Si 520", mode, size=8.5)
+    S.note(ax, 452, 0.45, "a-Si 480", mode, size=8.5, ha="right")
+    ax.set_xlabel(r"Raman shift  (cm$^{-1}$)")
+    ax.set_ylabel("intensity  (arb.)")
+    ax.set_title("One optical spot, phase analysis for free: module 41's standard assay")
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-sensitivity-ladder")
+def _(mode):
+    """Minimum detectable absorption for the methods of this module."""
+    c = S.SERIES[mode]
+    rows = [("transmission, 1 um film", 1e2), ("transmission, 1 mm slab", 1e-1),
+            ("ellipsometry (k-fit)", 1e2), ("photothermal deflection", 1e-1),
+            ("constant photocurrent", 1e-1), ("cavity ringdown (bulk)", 1e-6)]
+    rows.sort(key=lambda r: -r[1])
+    fig, ax = plt.subplots(figsize=(7.2, 4.0))
+    for i, (lab, a) in enumerate(rows):
+        ax.plot([1e-7, a], [i, i], color=S.GRID[mode], lw=1.0)
+        ax.plot([a], [i], "o", color=c[0], ms=8)
+    ax.set_yticks(range(len(rows)), [r[0] for r in rows])
+    ax.set_xscale("log")
+    ax.set_xlabel(r"minimum detectable $\alpha$  (cm$^{-1}$, order of magnitude)")
+    ax.set_title("Choosing a method is choosing a floor: defects live below transmission's")
+    ax.set_xlim(1e-7, 1e4)
+    ax.grid(axis="y", alpha=0)
+    S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # driver
 # ---------------------------------------------------------------------------
 

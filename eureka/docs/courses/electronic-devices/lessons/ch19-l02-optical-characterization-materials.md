@@ -1,136 +1,269 @@
-# Optical Characterization Methods, and Choosing an Optical Material
+# Refractive Index and Dispersion
 
-<!-- covers: 19.4, 19.5 -->
+<!-- covers: 19.2 -->
 
-## Optical methods for measuring materials
+Lesson 1 established that $n$ and $k$ are one causal object. This lesson
+lives on the real side: how the index varies with wavelength, why it must,
+how it is parameterised for design, and the second-order coefficients
+(thermal, electrical, mechanical) through which the "constant" responds to
+the world.
 
-The previous lesson listed what the optical constants encode. This one is
-about the instruments that extract it, and about what each one can and cannot
-tell you. In a real characterization plan (module 33) these are the first
-techniques you reach for, because they are fast, non-contact and
-non-destructive.
+**Level.** Sections 1 to 4 undergraduate; section 5 graduate; section 6
+problems.
 
-**Transmission and reflection spectroscopy.** The workhorse. Measure the
-fraction of light transmitted and reflected across a wavelength range, and
-solve for alpha and n. On a thin film on a transparent substrate you get
-interference fringes, and their spacing gives thickness while their envelope
-gives the absorption. The standard products are a bandgap (from the
-appropriate edge plot in lesson 1), a film thickness, and, from the width of
-the sub-gap exponential tail, a disorder measure. The main limitations are
-that you need a transparent substrate for transmission, and that surface
-roughness scatters light and corrupts both quantities if it is not accounted
-for.
+## 1. Why every index disperses
 
-**Spectroscopic ellipsometry.** The most powerful of the group. It measures
-the change in *polarization* on reflection, giving two independent quantities
-at each wavelength rather than one. Because it measures a ratio of
-polarization states rather than an absolute intensity, it is insensitive to
-source drift and does not need a reference sample. Fitting the measured
-spectra to an optical model of the stack yields the thickness and the full
-n and k spectra of each layer, and it does so with sub-nanometre thickness
-sensitivity. It is the standard in-line tool for gate dielectric thickness and
-for multilayer stacks in production.
+Between absorption resonances, the Kramers-Kronig integral of lesson 1 makes
+the index a weighted memory of all the poles:
 
-The honest caveat is that ellipsometry is a *model-dependent* technique. The
-raw data are polarization ratios; the layer thicknesses and optical constants
-come out of a fit. A wrong layer model can fit the data well and give
-confidently wrong numbers, and correlated parameters (thickness against index,
-roughness against interfacial layer) are a standard trap. Good practice is to
-constrain the model with an independent measurement of at least one parameter.
+$$
+n^{2}(\omega)-1=\sum_j\frac{f_j\,\omega_j^{2}}{\omega_j^{2}-\omega^{2}}
+$$
 
-**Photoluminescence.** Excite the sample above its gap and measure the light
-it emits as carriers recombine. The peak energy gives the gap or the energy of
-whatever state the carriers relaxed into; the peak width reports alloy
-composition fluctuation and inhomogeneity; the intensity reports how much
-recombination is radiative rather than lost to defects, which makes it an
-extremely sensitive, contactless probe of material quality. Sub-gap peaks
-identify specific impurities and defect complexes. Low-temperature PL sharpens
-everything and is the standard way to identify shallow dopants by their
-bound-exciton lines. Time-resolved PL gives the carrier lifetime directly.
+![The index across five decades of wavelength for a two-pole model: pulled up approaching the UV electronic resonance, pulled down toward the IR lattice resonance, and falling gently in between. Every transparent material lives in such a valley.](/courses/electronic-devices/figures/m19-oscillator-sum.svg)
 
-The catch is that PL is only easy on direct-gap materials. Silicon's radiative
-efficiency is so low that PL is difficult, which is why silicon leans on
-electrical lifetime methods instead.
+Within a transparency window the UV poles dominate from the left, so $n$
+**falls** as wavelength grows: **normal dispersion**. The rule of thumb this
+buys: materials with smaller gaps have nearer UV poles and hence higher
+visible indices: silica (9 eV gap) at 1.46 against silicon (1.1 eV) at 3.5:
+lesson 1's estate observation, now with its mechanism.
 
-**Raman spectroscopy.** Measure the small frequency shift of inelastically
-scattered light, which corresponds to creating or absorbing a phonon. The
-peak positions identify the phases present, distinguishing crystalline from
-amorphous silicon unambiguously, and the ratio of crystalline to amorphous
-peak areas quantifies the crystalline fraction in a mixed-phase film, which
-is the standard measurement in module 41. Peak position shifts with strain, so
-Raman is a practical local strain gauge in strained-silicon and SiGe work
-(module 38), and peak width reports crystallite size and disorder. Its spatial
-resolution is set by the optical spot, typically under a micrometre.
+## 2. Sellmeier: dispersion as an engineering contract
 
-**Infrared absorption spectroscopy.** Reads bonding directly. The classic
-applications in this field are measuring interstitial oxygen and substitutional
-carbon in Czochralski silicon (module 29), where the calibration is
-standardized, and measuring hydrogen content and bonding configuration in
-amorphous silicon films from the Si-H stretch and wag modes.
+Group the poles into a few effective resonances and the working form
+appears:
 
-**Modulation and photothermal techniques.** When absorption is too weak to see
-in transmission, measure something proportional to absorbed energy instead.
-Photothermal deflection spectroscopy detects the heat deposited, and constant
-photocurrent methods (module 23) detect the carriers generated. Both reach
-absorption coefficients several orders of magnitude below what direct
-transmission can resolve, which is what makes deep defect states in thin films
-measurable at all.
+$$
+\boxed{\;n^{2}(\lambda)=1+\sum_{j=1}^{3}
+\frac{B_j\,\lambda^{2}}{\lambda^{2}-C_j}\;}
+$$
 
-A working sequence for a new film: ellipsometry for thickness and optical
-constants, transmission for the gap and the Urbach tail, Raman for phase and
-strain, PL for quality and lifetime if the material emits, infrared for
-bonding chemistry. Only then reach for the electrical measurements of module
-36, which need contacts and therefore alter the sample.
+![The three-term Sellmeier fit of fused silica, computed from the standard published coefficients. Two UV terms and one infrared term reproduce the measured index to the fifth decimal across the entire transmission window.](/courses/electronic-devices/figures/m19-sellmeier.svg)
 
-## Choosing an optical material
+The $C_j$ are squared pole wavelengths, the $B_j$ their strengths; the form
+is the physics of section 1 with fitted constants, which is why it
+extrapolates so much better than a polynomial: it fails only where new
+physics (a real absorption) begins. Glass catalogues, lens-design software
+and fibre models all speak Sellmeier.
 
-Selecting a material for an optical role is a matter of matching several
-properties at once, and the constraint that binds is usually not the obvious
-one.
+### Worked example 2.1 — using the fit as a designer does
 
-**Transparency window.** Every material is transparent only between two
-limits: the electronic absorption edge at short wavelength, set by the
-bandgap, and the multiphonon lattice absorption at long wavelength, set by the
-atomic masses and bond strengths. Wide transmission requires a wide gap *and*
-heavy, weakly bound atoms. Fused silica transmits from the ultraviolet to
-about 2 micrometres and is the backbone of visible and near-infrared optics.
-For the mid and far infrared you need heavier constituents: germanium, zinc
-selenide, chalcogenide glasses. Those materials have high refractive index and
-are usually softer, more expensive and less chemically durable, which is a
-representative example of how optical requirements drag mechanical and
-chemical ones along with them.
+How much does silica's index differ between the two fibre windows, 1310 and
+1550 nm, and what does it mean for a wavelength-division system? Evaluating
+the fit: $n(1.31)=1.4468$, $n(1.55)=1.4440$: a difference of $2.8\times
+10^{-3}$. Over 100 km, the *phase* paths differ by
+$\Delta nL=280$ m: irrelevant to detection: but the pulse-speed difference
+(next section) is what disperses data, and this example is why the naive
+"index difference" is the wrong first question: the derivative, not the
+value, carries the system penalty.
 
-**Index, dispersion, and the pair of them.** A lens designer needs both a
-value and a slope. Optical glasses are classified by refractive index and by
-Abbe number, which measures how little the index varies across the visible. A
-colour-corrected lens is built from a high-dispersion element and a
-low-dispersion element whose chromatic errors cancel, which is why glass
-catalogues span a two-dimensional map rather than a single axis.
+## 3. Group velocity: what information actually travels at
 
-**Loss, at the level the application demands.** For a window, a few percent
-matters. For an optical fibre, the relevant unit is decibels per kilometre,
-and reaching about 0.2 dB/km at 1.55 micrometres in silica took the removal of
-transition-metal impurities to parts per billion and hydroxyl groups to
-comparable levels. At that point the remaining loss is Rayleigh scattering off
-frozen-in density fluctuations, which is intrinsic to the glassy state and
-sets a floor no purification can beat. Knowing when you have hit an intrinsic
-floor rather than a preparation problem saves a great deal of wasted effort.
+A pulse is a beat of neighbouring frequencies; its envelope moves at the
+group velocity, described by the **group index**
 
-**Everything that is not optical.** Thermal expansion has to match what the
-material is bonded to, or thermal cycling delaminates it. Hardness and
-chemical durability decide whether a surface survives cleaning. Thermo-optic
-coefficient decides whether a precision instrument drifts as the room warms.
-Cost and manufacturability decide whether the design ships. In practice a
-material is rejected on these grounds at least as often as on optical ones.
+$$
+\boxed{\;n_g=n-\lambda\frac{dn}{d\lambda},
+\qquad v_g=\frac{c}{n_g}\;}
+$$
 
-For electronic materials specifically, the optical requirement is frequently
-a constraint rather than the function. A passivation layer must be transparent
-enough for the inspection wavelength. A gate dielectric's optical constants
-matter mainly because ellipsometry uses them to measure its thickness. An
-encapsulant must not yellow. Recognizing when optical properties are the
-product and when they are a measurement channel is part of reading a datasheet
-correctly.
+![Phase and group index of silica computed from the same Sellmeier fit. The group index passes through a minimum: the zero-dispersion wavelength near 1.27 micrometres where neighbouring wavelengths travel together.](/courses/electronic-devices/figures/m19-group-index.svg)
 
-The genuinely optical material families, glasses for photonic integration and
-nonlinear optical glasses among them, sit in the photonics scope that this
-course defers. See SCOPE.md for what is held back and why.
+The curvature of $n_g$ is the **chromatic dispersion** that limits fibre
+links, quoted as $D$ in ps/(nm km): the differential delay per nanometre of
+source width per kilometre. Where $n_g$ is minimal, $D=0$: the
+zero-dispersion wavelength: and silica's landing near 1.3 µm (with the loss
+minimum at 1.55 µm) shaped the entire telecom band plan: two material
+curves, one industry map.
+
+### Worked example 3.1 — a link's dispersion budget
+
+A 10 Gb/s link uses a laser with 0.1 nm linewidth at 1550 nm over 80 km of
+fibre with $D=17$ ps/(nm km). Pulse spread:
+
+$$
+\Delta t=D\,\Delta\lambda\,L=17\times0.1\times80=136\ {\rm ps}
+$$
+
+Bit period 100 ps: the spread **exceeds the bit slot**: uncompensated, the
+link fails. Remedies, each a materials-or-design chapter: dispersion-
+compensating fibre (engineered waveguide dispersion), narrower sources, or
+moving to 1310 nm and paying the loss. This one multiplication is the
+gatekeeper of every long link, and the reason "how wide is your laser" is a
+systems question.
+
+### Worked example 3.2 — group delay in a sensor
+
+A silicon photonic delay line seeks 100 ps of on-chip delay at 1550 nm
+using a waveguide with $n_g=4.2$ (waveguide dispersion added to material's).
+Length: $L=ct/n_g=3\times10^{8}\times10^{-10}/4.2=7.1$ mm: centimetres of
+spiral on a chip. High group index buys compactness: and the same
+enhancement multiplies loss and nonlinearity, the standard slow-light tax.
+
+## 4. The glass map and the coefficients of change
+
+### 4.1 Two numbers per glass
+
+Visible-optics practice compresses dispersion into the **Abbe number**
+
+$$
+V_d=\frac{n_d-1}{n_F-n_C}
+$$
+
+(large $V_d$ = low dispersion), and materials plot on the index-Abbe plane:
+
+![The glass map: crowns to the low-dispersion left, flints to the high-index right. An achromatic doublet pairs one from each side so their colour errors cancel at two wavelengths.](/courses/electronic-devices/figures/m19-abbe-map.svg)
+
+The achromat condition for two thin lenses in contact,
+$\phi_1/V_1+\phi_2/V_2=0$, forces opposite-signed powers from
+different-$V$ glasses: why the map has to be two-dimensional and why exotic
+low-dispersion materials (fluorite-class) command their prices.
+
+### 4.2 The index responds to everything
+
+| coefficient | symbol, scale | who uses it |
+|---|---|---|
+| thermo-optic | $dn/dT$: silica $+1\times10^{-5}$/K, silicon $+1.8\times10^{-4}$/K | interferometer drift; thermal tuning of ring resonators |
+| electro-optic | $r$: LiNbO3-class, pm/V | modulators (deferred photonic scope) |
+| carrier plasma | $\Delta n(N)$: silicon $-$ | the silicon modulator's mechanism (module 37) |
+| photoelastic | $p$: all glasses | stress birefringence; fibre sensors |
+
+Silicon's large $dn/dT$ makes photonic circuits thermally twitchy: a ring
+resonator detunes by a linewidth for a fraction of a degree: so every
+silicon photonic chip carries heaters and control loops: a materials
+coefficient turned into a power budget.
+
+### Worked example 4.1 — how stable must the lab be?
+
+An interferometric sensor uses 10 cm of silicon waveguide at 1550 nm and
+must hold phase to $\lambda/100$. Temperature tolerance:
+
+$$
+\Delta\phi=\frac{2\pi L}{\lambda}\frac{dn}{dT}\Delta T
+\Rightarrow
+\Delta T=\frac{\lambda/100}{L\,(dn/dT)}
+=\frac{1.55\times10^{-8}}{0.1\times1.8\times10^{-4}}=0.86\ {\rm mK}
+$$
+
+Millikelvin stability or active referencing: no free-running silicon
+interferometer survives a lab's air conditioning. The same arithmetic with
+silica's twentyfold-smaller coefficient is why fibre interferometers are
+merely difficult rather than absurd.
+
+## 5. Graduate extension: engineered dispersion
+
+**Waveguide dispersion.** Confinement adds a geometric term: the mode
+samples core and cladding in a wavelength-dependent ratio, so total
+dispersion is material plus waveguide. Designers move the zero-dispersion
+point (dispersion-shifted fibre), flatten it, or invert the sign: the
+compensating-fibre trick of worked example 3.1: all with geometry, no new
+chemistry. Photonic-crystal and nanostructured guides push this to extremes
+(slow light, $n_g$ of tens), always paying the loss-and-bandwidth tax.
+
+**Birefringence as a resource.** Anisotropic index differences retard one
+polarization against the other: wave plates from calcite-class crystals,
+polarization-maintaining fibre from deliberate stress rods (photoelastic
+coefficient used on purpose), and liquid-crystal displays from electrically
+reoriented birefringence: an entire display industry running on
+$\Delta n\approx0.1$ and a volt.
+
+**The honesty rule for quoted indices.** Any index without wavelength,
+temperature and (for films) density/porosity context is under-specified:
+lesson 4's ellipsometry can fit a film's "index" to three decimals that
+shift in the fourth with humidity. The module's data discipline (module 17,
+supplement) applies verbatim.
+
+## 5b. Where dispersion bites next in this course
+
+A forward routing, so the lesson's machinery is recognised when it
+reappears wearing other modules' clothes. In **module 31**, infrared
+detector optics live where materials run out of Abbe-map choices: the
+mid-IR designer colour-corrects with diffractive surfaces and material
+pairs like germanium-with-chalcogenide because the visible map's crowns
+and flints simply do not transmit there: same achromat algebra, a
+five-material palette. In **module 33**, electron microscopy has its own
+chromatic aberration: an energy spread in the beam is a wavelength spread,
+and the correctors that fixed it in the 2000s are the electron-optical
+achromats of this lesson's section 4. In **module 41**, the
+thin-film-silicon stack's optical model must carry the full $n(\lambda)$
+of each layer or its interference-based thickness extraction fails
+precisely at the band edge where the cell's performance is decided. And in
+**module 56**, the free-carrier contribution to the index (this lesson's
+coefficient table meeting lesson 3's plasma physics) makes a transparent
+conductor's dispersion depend on its doping: two process knobs, one
+optical constant: the correlation an in-line monitor must be designed
+around, as the workshop lesson demonstrates at length.
+
+The pattern across all four: dispersion is never the headline property and
+routinely the failure mode. The derivative of the index, like the
+derivative of every material property in this course, is where designs
+that matched at one operating point discover they were never matched at
+all: a closing sentence that the thermal, mechanical and electrical
+modules ahead will each re-earn with their own coefficients.
+
+## 6. Problems
+
+**P19.7** From the two-pole model, explain in two sentences why adding lead
+oxide to a glass (heavy ions, strong low-energy electronic transitions)
+raises both index and dispersion: the flint recipe.
+
+**P19.8** Evaluate silica's $n$ at 0.4 and 0.7 µm from the Sellmeier fit
+and compute $V_d$-style dispersion $(n_{0.4}-n_{0.7})$; compare with the
+$2.8\times10^{-3}$ of the fibre windows and explain the ratio.
+
+**P19.9** A source of 2 nm width runs at 850 nm over 500 m of fibre with
+$D=-90$ ps/(nm km) (silica's normal-dispersion side). Find the spread and
+the maximum bit rate by the quarter-period rule.
+
+**P19.10** Show that $n_g=n+\omega\,dn/d\omega$ is the same statement as
+the boxed $\lambda$ form.
+
+**P19.11** A thermally tuned silicon ring needs one free spectral range of
+tuning: $\Delta n/n=\lambda/(n L_{\rm rt})\times m$... simplified: it needs
+$\Delta n=3\times10^{-3}$. What temperature swing, and what does the answer
+say about tuning power?
+
+**P19.12** *(graduate)* An achromat pairs $V_1=64$, $V_2=36$ for net power
+$\phi=0.02\ {\rm cm^{-1}}$. Find the element powers and comment on why
+secondary spectrum (the residual at a third wavelength) drives designers to
+the map's exotic corners.
+
+### Answers
+
+**P19.7** Heavy-metal ions add strong oscillators just beyond the visible;
+by section 1 the nearby poles raise $n$ across the visible, and their
+proximity makes the $\lambda$-dependence steep, lowering $V_d$: index and
+dispersion rise together because both are the same poles moving closer:
+the flint corner of the map, explained by the transform.
+
+**P19.8** Fit gives $n(0.4)=1.4701$, $n(0.7)=1.4553$:
+$\Delta n=1.48\times10^{-2}$: five times the infrared pair's difference
+over a similar fractional span: the visible sits nearer the UV poles where
+the curve steepens: dispersion is a proximity effect.
+
+**P19.9** $\Delta t=90\times2\times0.5=90$ ps. Quarter-period rule:
+bit period $\ge4\Delta t=360$ ps: about **2.8 Gb/s**: why 850 nm multimode
+links are short and why their VCSELs are spec'd in fractions of a
+nanometre. (The negative sign flips which colours lead, not the penalty.)
+
+**P19.10** With $\lambda=2\pi c/\omega$:
+$d/d\lambda=-(\omega^{2}/2\pi c)\,d/d\omega$: substitute into
+$n-\lambda\,dn/d\lambda$ and the sign cancellation yields
+$n+\omega\,dn/d\omega$: one identity in two dialects; deriving it once
+prevents the classic sign error in dispersion calculations.
+
+**P19.11** $\Delta T=\Delta n/(dn/dT)=3\times10^{-3}/1.8\times10^{-4}
+=17$ K. At a typical few mW per ring-heater-kelvin, tens of milliwatts per
+ring: multiplied by thousands of rings in a switch fabric, the thermal
+tuning budget rivals the optical power budget: the coefficient table's
+quiet system cost.
+
+**P19.12** $\phi_1/64=-\phi_2/36$ and $\phi_1+\phi_2=0.02$:
+$\phi_1=0.02\times64/(64-36)=0.0457$, $\phi_2=-0.0257\ {\rm cm^{-1}}$:
+elements 2.3x stronger than the doublet they build, with opposite signs:
+strong curvatures, tight tolerances. The pairing cancels dispersion at two
+chosen wavelengths only; the residual at a third depends on the *shape* of
+each glass's dispersion curve (partial dispersion), and only the map's
+anomalous corners (fluorites, special crowns) bend that shape: why apo
+lenses cost what they cost, and a preview of how deeply "one number per
+material" fails an exacting design.

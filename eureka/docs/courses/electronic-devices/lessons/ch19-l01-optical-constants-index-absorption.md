@@ -1,143 +1,267 @@
-# Optical Constants, Refractive Index, and Absorption
+# Optical Constants: What Light Measures in a Solid
 
-<!-- covers: 19.1, 19.2, 19.3 -->
+<!-- covers: 19.1 -->
 
-Light is the most informative non-destructive probe of an electronic material.
-Shine it on a sample and what comes back encodes the bandgap, the doping, the
-film thickness, the crystallinity and the defect population. This module is
-about the quantities that carry that information and, in the next lesson, the
-instruments that read them.
+Light is the most informative non-destructive probe an electronic material
+ever meets. This module's first lesson builds the machinery: two numbers per
+wavelength that encode everything a beam can learn, the theorems that bind
+them, and the microscopic model that generates them both.
 
-## Optical constants: n, k and the dielectric function
+**Level.** Sections 1 to 4 undergraduate core; section 5 graduate; section 6
+problems.
 
-An electromagnetic wave travelling through a material is described by a single
-complex refractive index:
+## 1. The complex index and what each part does
 
-    N = n - i*k
+A monochromatic wave in a medium is described by one complex number,
 
-The real part n sets the phase velocity, c/n, and therefore refraction. The
-imaginary part k, the **extinction coefficient**, sets how fast the wave
-decays. Because intensity goes as the square of the field amplitude, k relates
-to the **absorption coefficient** alpha by
+$$
+\tilde{N}=n-ik
+$$
 
-    alpha = 4 * pi * k / lambda
+Insert into the plane wave $e^{i(\tilde{N}\omega z/c-\omega t)}$ and the two
+parts separate jobs: $n$ sets the phase velocity $c/n$ and therefore
+refraction; $k$, the **extinction coefficient**, sets exponential decay.
+Intensity goes as the field squared:
 
-with alpha in units of inverse length. Its reciprocal, 1/alpha, is the depth
-at which intensity has fallen to about 37 percent, the natural way to think
-about penetration.
+$$
+I(z)=I_0e^{-\alpha z},
+\qquad
+\boxed{\;\alpha=\frac{4\pi k}{\lambda}\;}
+$$
 
-The same physics can be written as a complex **dielectric function**,
-epsilon = epsilon_1 - i*epsilon_2, and the two descriptions are related by
-epsilon = N^2, so epsilon_1 = n^2 - k^2 and epsilon_2 = 2nk. Optical people
-prefer n and k; solid-state people prefer epsilon, because epsilon connects
-directly to the band structure. They are the same information.
+The reciprocal $1/\alpha$ is the **penetration depth**: the working length
+scale of every absorber, emitter and detector in this course.
 
-Two facts about these quantities do a lot of work.
+The same physics wears a second notation. The **dielectric function**
+$\tilde{\varepsilon}=\varepsilon_1-i\varepsilon_2$ relates to the index by
+$\tilde{\varepsilon}=\tilde{N}^{2}$:
 
-**They are not independent.** Causality alone (the material cannot respond
-before the light arrives) forces a mathematical relationship between the real
-and imaginary parts across all frequencies, the **Kramers-Kronig relations**.
-Given absorption over a wide enough spectral range you can compute the
-refractive index, and vice versa. Ellipsometry and reflectivity analysis lean
-on this constantly, and it explains an otherwise puzzling fact: anywhere a
-material absorbs strongly, its refractive index varies rapidly nearby.
-Absorption and dispersion are two faces of one response.
+$$
+\varepsilon_1=n^{2}-k^{2},
+\qquad
+\varepsilon_2=2nk
+$$
 
-**Reflection follows from them.** At normal incidence from air,
+Optics speaks in $n,k$ (propagation); solid-state physics speaks in
+$\varepsilon$ (response of the electron system). They are one quantity, and
+fluency in the translation is assumed from here on.
 
-    R = ((n-1)^2 + k^2) / ((n+1)^2 + k^2)
+### Worked example 1.1 — from a datasheet k to a device thickness
 
-A high index means a high reflectivity, which is why silicon, with n of about
-3.5 in the near infrared, reflects more than 30 percent of the light hitting a
-bare polished surface. That is exactly the loss an antireflection coating
-exists to cancel, and the same equation is what makes such a coating
-designable.
+An absorber layer quotes $k=0.08$ at $\lambda=620$ nm. What thickness
+absorbs 90 percent of the entering light?
 
-## Refractive index and dispersion
+$$
+\alpha=\frac{4\pi\times0.08}{620\times10^{-9}}=1.62\times10^{6}\ {\rm m^{-1}}
+=1.62\times10^{4}\ {\rm cm^{-1}}
+$$
 
-The refractive index of any real material varies with wavelength, which is
-**dispersion**. In the transparent region below the absorption edge, index
-falls smoothly as wavelength rises (normal dispersion), and is well described
-by empirical forms such as the Sellmeier equation, a sum of resonance terms
-fitted to measured data. Near and above an absorption feature the index swings
-sharply and can even rise with wavelength (anomalous dispersion), which is the
-Kramers-Kronig relationship made visible.
+$e^{-\alpha d}=0.1$: $d=\ln 10/\alpha=1.42\ {\rm \mu m}$. One line from an
+optical constant to a layer specification: the daily arithmetic of
+photodetector and solar-absorber design.
 
-Several contributions add up to the index of a semiconductor or insulator:
+The span of this one parameter across a single material is worth seeing
+whole:
 
-- **Electronic polarization** from interband transitions, dominant in the
-  visible and ultraviolet, which is why materials with a smaller bandgap
-  generally have a higher refractive index. Silicon (gap 1.1 eV, n about 3.5)
-  against silicon dioxide (gap about 9 eV, n about 1.46) is the standard
-  illustration, and it is not a coincidence but a consequence.
-- **Lattice (ionic) polarization** from the displacement of charged ions,
-  which matters in the infrared and produces strong reststrahlen reflection
-  bands near the optical phonon frequencies in polar crystals.
-- **Free carrier response**, which lowers the index and adds absorption at
-  long wavelengths in doped material. Push the doping high enough and the
-  plasma frequency moves into the visible; that is the physics of transparent
-  conducting oxides in module 56.
+![Silicon-like penetration depth computed from a stated two-term absorption model: four decades between the ultraviolet and the band edge. Every image sensor's colour response, crosstalk budget and surface-passivation sensitivity is this curve read as a depth chart.](/courses/electronic-devices/figures/m19-penetration-depth.svg)
 
-The index also responds to conditions, which is both a nuisance and a tool.
-It shifts with temperature (the thermo-optic coefficient), with strain (the
-photoelastic effect), with applied field (the electro-optic effect, the basis
-of optical modulators) and, at high intensity, with the intensity itself
-(the nonlinear index). For measurement purposes the important consequence is
-that an index measured at 20 degrees C on unstrained material does not apply to
-a hot, strained film on a wafer.
+## 2. Reflection: the index announces itself at every surface
 
-## Absorption processes in solids
+Continuity of the fields at a boundary gives the normal-incidence
+reflectance
 
-An absorption spectrum is a list of the mechanisms by which a material can
-take energy out of a light beam. Each one dominates a different spectral
-region and each carries different information.
+$$
+\boxed{\;R=\frac{(n-1)^{2}+k^{2}}{(n+1)^{2}+k^{2}}\;}
+$$
 
-**Fundamental (interband) absorption.** Above the bandgap, a photon can
-promote a valence electron into the conduction band. This is the strongest
-absorption in a semiconductor and it defines the **absorption edge**. Its
-shape distinguishes the two band-structure classes cleanly:
+![Reflectance against index for three extinction levels, with silica, gallium nitride and silicon marked. A high-index facet is a built-in mirror, whether wanted or not.](/courses/electronic-devices/figures/m19-reflectance-vs-n.svg)
 
-- In a **direct gap** material the transition needs only a photon, so
-  absorption rises very steeply above the gap, with alpha climbing to 10^4 per
-  cm within a few tens of meV. Near the edge, alpha^2 varies linearly with
-  photon energy, so plotting alpha^2 against energy and extrapolating gives
-  the gap.
-- In an **indirect gap** material the transition also needs a phonon to
-  conserve momentum, making it a weaker, second-order process. Absorption
-  turns on gradually over hundreds of meV, and here alpha^(1/2) is the
-  quantity that varies linearly with energy. This weakness is why a silicon
-  solar cell needs hundreds of micrometres of material to absorb sunlight
-  while a gallium arsenide cell needs a few.
+Silicon's $n\approx3.5$ reflects 31 percent of normal-incidence light from a
+bare surface: the loss every solar cell's antireflection coating exists to
+cancel, and, run in reverse, the free facet mirror that module 17's laser
+used. The quarter-wave coating condition follows from the same Fresnel
+algebra: a layer of index $n_c=\sqrt{n}$ and thickness $\lambda/4n_c$ nulls
+the reflection at its design wavelength.
 
-**Excitonic absorption.** An electron and the hole it leaves behind attract
-each other and can form a bound pair, an **exciton**, whose energy sits
-slightly below the gap. This produces sharp absorption peaks just below the
-edge, prominent at low temperature and in materials with low dielectric
-screening, and prominent at room temperature in quantum wells and in organic
-semiconductors, where binding energies are much larger.
+Away from normal incidence the two polarizations part company:
 
-**Free carrier absorption.** Carriers already in a band absorb photons and
-move to higher states within the same band. This absorption grows with carrier
-concentration and with wavelength (roughly as lambda^2), so it dominates in
-the infrared in doped material. It is a loss mechanism in infrared optics and
-a useful non-contact measure of carrier density.
+![The s and p reflectances for a glass-like and a silicon-like index. The p wave vanishes at Brewster's angle, and the whole ellipsometry industry of lesson 4 lives inside the difference between these two curves.](/courses/electronic-devices/figures/m19-fresnel-angles.svg)
 
-**Lattice (reststrahlen) absorption.** In a polar crystal, infrared photons
-couple directly to optical phonons, giving intense absorption and reflection
-bands at characteristic frequencies. Those frequencies are fingerprints of
-bonding, which is what makes infrared spectroscopy a compositional tool: the
-Si-H stretching modes in amorphous silicon (module 41) and the Si-O modes in
-oxide films are read this way routinely.
+$$
+\theta_B=\arctan n
+$$
 
-**Impurity and defect absorption.** States inside the gap absorb below-gap
-photons. These features are weak but diagnostically rich, since their energies
-identify specific defect species. Sub-gap absorption in amorphous
-semiconductors also produces the **Urbach tail**, an exponential edge whose
-width measures the degree of structural disorder, and which module 40 uses as
-a quantitative disorder metric.
+### Worked example 2.1 — an antireflection coating, checked
 
-Read together, one absorption spectrum tells you the bandgap and whether it is
-direct, the doping level, the bonding chemistry, the disorder and the defect
-content. That is why optical characterization comes before most of the
-electrical methods in a materials workflow: it is fast, non-contact, needs no
-processing, and it does not damage the sample.
+Design the single-layer AR coating for silicon at 600 nm and estimate the
+residual reflectance if the ideal coating index is unavailable and
+$n_c=2.0$ is used instead ($\sqrt{3.5}=1.87$ ideal).
+
+Thickness: $d=\lambda/4n_c=600/8=75$ nm. Residual at centre wavelength for
+a quarter-wave layer:
+
+$$
+R=\left(\frac{n_c^{2}-n}{n_c^{2}+n}\right)^{2}
+=\left(\frac{4.0-3.5}{4.0+3.5}\right)^{2}=(0.0667)^{2}=0.44\ \text{percent}
+$$
+
+From 31 percent to 0.4 percent with one evaporated layer of slightly wrong
+index: why AR coating is the cheapest efficiency any optical device buys,
+and why the *availability* of an index (a materials-catalogue fact) matters
+more than its ideality.
+
+## 3. The microscopic origin: one oscillator makes both constants
+
+Model a bound electron as a damped oscillator driven by the light field.
+Its polarization contributes
+
+$$
+\tilde{\varepsilon}(\omega)=1+\frac{\omega_p^{2}}
+{\omega_0^{2}-\omega^{2}-i\gamma\omega}
+$$
+
+with resonance $\omega_0$, strength $\omega_p^{2}$, damping $\gamma$.
+
+![The n and k of a single Lorentz oscillator, computed. Absorption peaks at the resonance while the index swings through its anomalous excursion around it: two curves, one cause.](/courses/electronic-devices/figures/m19-lorentz-nk.svg)
+
+Every feature of real optical spectra is sums of this shape: electronic
+transitions in the UV-visible, lattice vibrations in the infrared, free
+carriers as the $\omega_0\to0$ limit (which recovers module 18's Drude
+$\sigma(\omega)$ exactly: one model bridging the two modules). Lesson 2
+builds dispersion from these poles; lesson 3 catalogues the absorption each
+kind of pole produces.
+
+## 4. Kramers-Kronig: absorption and dispersion are not independent
+
+Causality alone: the medium cannot polarize before the field arrives:
+forces the real and imaginary parts to be Hilbert transforms of each other:
+
+$$
+n(\omega)-1=\frac{2}{\pi}\,\mathcal{P}\!\int_0^{\infty}
+\frac{\omega'k(\omega')}{\omega'^{2}-\omega^{2}}\,d\omega'
+$$
+
+Three working consequences:
+
+- **Measure one, compute the other.** Reflectance or absorption over a wide
+  range yields the full $n(\omega)$: the standard route to optical constants
+  where direct index measurement is impossible.
+- **Wherever a material absorbs, its index must swing nearby.** The
+  anomalous-dispersion excursion of the figure is mandatory, not incidental.
+- **Sum rules audit data.** The integrated $\varepsilon_2$ counts electrons;
+  a published constant set violating the f-sum rule is wrong somewhere, and
+  running the check is a real referee's tool.
+
+### Worked example 4.1 — a consistency audit in miniature
+
+A vendor claims a coating with $n=2.6$ across the entire visible and "zero
+absorption anywhere". Audit: silica, with UV resonances at 0.1 um, manages
+only 1.46 in the visible; reaching 2.6 requires strong oscillators close to
+the visible (lesson 2's sum-of-poles figure): and Kramers-Kronig then puts
+the absorption edge of those oscillators near the blue. High index with no
+nearby absorption violates the transform. The claim as stated is
+unphysical: the honest versions are "high index, absorbing in the near-UV"
+(titania-class, true) or "moderate index, transparent deep into the UV"
+(fluoride-class, true), and a one-line causality argument separated
+marketing from physics.
+
+## 5. Graduate extension: what "constant" hides
+
+**Local response only.** The $\tilde{N}(\omega)$ formalism assumes the
+polarization at a point depends on the field at that point. Near sharp
+excitonic resonances and in metals at short scales, spatial dispersion
+(dependence on $\mathbf{q}$) enters, and thin-film optical "constants"
+acquire thickness dependence: part of why film data and bulk data differ
+beyond density arguments (module 44 meets the practical side).
+
+**Anisotropy.** In non-cubic crystals $\tilde{\varepsilon}$ is a tensor:
+uniaxial materials carry ordinary and extraordinary indices, and module 32's
+nitrides, module 45's sapphire substrates and every liquid-crystal display
+live on the difference. A single quoted $n$ for such a material is
+incomplete without its axis.
+
+**Nonlinearity.** At laser intensities the polarization gains terms in
+$E^{2}$ and $E^{3}$: second-harmonic generation, the electro-optic effect,
+intensity-dependent index. This course's electronic scope stops at noting
+where they hide inside "constants": the electro-optic coefficient is how a
+field modulates $n$, which is how modulators work, and the deferred
+photonics wave (SCOPE.md) owns the full story.
+
+## 6. Problems
+
+**P19.1** Germanium at 2 µm has $n=4.1$, $k=0.001$. Find $R$, $\alpha$, the
+penetration depth, and the single-pass transmission of a 0.5 mm window
+(two surfaces, ignore interference).
+
+**P19.2** What coating index and thickness antireflect GaAs ($n=3.5$) at
+900 nm, and what happens to the null at 800 nm? (Compute the phase error.)
+
+**P19.3** From the Lorentz form, show that at exact resonance
+$\varepsilon_2=\omega_p^{2}/\gamma\omega_0$ and that the full width of the
+$\varepsilon_2$ peak is $\gamma$: absorption linewidth measures damping.
+
+**P19.4** Silicon's penetration depth spans 10 nm (UV) to 100 µm (1.05 µm).
+Using the model figure, explain the ordering of colour collection depths in
+an image sensor and why red pixels suffer more crosstalk.
+
+**P19.5** *(graduate)* The f-sum rule reads
+$\int_0^{\infty}\omega\,\varepsilon_2\,d\omega=\tfrac{\pi}{2}\omega_p^{2}$
+with $\omega_p^{2}=ne^{2}/\varepsilon_0m$. Evaluate the electron density
+this implies if a material's visible-UV absorption exhausts the rule by
+4 electrons per atom at atomic density $5\times10^{22}\ {\rm cm^{-3}}$, and
+state what the rule forbids a metamaterial vendor from claiming.
+
+**P19.6** *(graduate)* Show from the Fresnel equations that at Brewster's
+angle the reflected light is fully s-polarized, and give the two practical
+uses this course makes of that fact (one in this module, one anywhere
+else).
+
+### Answers
+
+**P19.1** $R=((3.1)^{2}+10^{-6})/((5.1)^{2}+10^{-6})=9.61/26.01=0.369$.
+$\alpha=4\pi\times0.001/2\times10^{-6}=6.3\times10^{3}\ {\rm m^{-1}}$
+$=63\ {\rm cm^{-1}}$; depth 159 µm. Bulk transmission over 0.5 mm:
+$e^{-3.14}=0.043$... that kills the window: recompute honestly:
+$\alpha d=6.3\times10^{3}\times5\times10^{-4}=3.15$: $T_{\rm bulk}=4.3$
+percent: with two 37-percent surfaces, total under 2 percent. The "small"
+$k=0.001$ destroyed a half-millimetre window: extinction coefficients
+deceive at thickness, which is why IR-window specs quote $\alpha$, not $k$.
+
+**P19.2** $n_c=\sqrt{3.5}=1.87$, $d=900/(4\times1.87)=120$ nm. At 800 nm
+the layer is $\lambda/4\times(900/800)=1.125$ quarter-waves: 12.5 percent
+phase error; residual $R\approx R_{\rm bare}\sin^{2}(\ldots)$ small but
+nonzero: single-layer coatings are narrowband, and broadband AR is a
+multilayer synthesis problem: the door to thin-film design.
+
+**P19.3** At $\omega=\omega_0$ the denominator is $-i\gamma\omega_0$:
+$\varepsilon_2=\omega_p^{2}/\gamma\omega_0$. Half-maximum where
+$|\omega_0^{2}-\omega^{2}|=\gamma\omega$: near resonance
+$\omega_0^{2}-\omega^{2}\approx2\omega_0\Delta$: $\Delta=\pm\gamma/2$:
+full width $\gamma$. Spectroscopy reads dissipation directly off a
+linewidth: used from Raman phonon lifetimes to exciton dephasing.
+
+**P19.4** Blue absorbs in the first tens of nanometres (surface-recombination
+territory: why blue quantum efficiency tests surface passivation); green
+within a micrometre; red and near-IR generate carriers many micrometres
+deep, below the pixel's depletion, where they diffuse sideways before
+collection: red crosstalk. The stratification is the penetration-depth
+figure read as a pixel cross-section, and deep-trench isolation (module 43)
+is the remedy sold against it.
+
+**P19.5** $\omega_p^{2}$ for $n=4\times5\times10^{22}=2\times10^{23}
+\ {\rm cm^{-3}}=2\times10^{29}\ {\rm m^{-3}}$:
+$\omega_p=\sqrt{ne^{2}/\varepsilon_0m}=\sqrt{2\times10^{29}\times(1.6\times
+10^{-19})^{2}/(8.85\times10^{-12}\times9.1\times10^{-31})}=2.5\times10^{16}$
+rad/s (a 75 nm plasma wavelength: deep UV, as befits dense valence
+electrons). Forbidden claim: arbitrarily strong absorption or index over an
+arbitrarily wide band from a fixed electron density: oscillator strength is
+conserved, so a resonance added somewhere is strength removed elsewhere.
+Sum rules are conservation laws for optical marketing.
+
+**P19.6** At $\theta_B$, $r_p=0$ by construction (the numerator
+$n\cos\theta-\cos\theta_t$ vanishes when $\theta+\theta_t=90^{\circ}$), so
+only s survives in reflection. Uses: pile-of-plates/Brewster-window
+polarizers and glare-free laser cavity windows; and in this course,
+ellipsometry's sensitivity maximum sits near Brewster (lesson 4): the
+measurement angle of 70 to 75 degrees on silicon is $\theta_B$ wearing lab
+clothes.
