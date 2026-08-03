@@ -1485,6 +1485,156 @@ def _(mode):
 
 
 # ---------------------------------------------------------------------------
+# Module 19 - optical constants and optical characterization (tranche 1)
+# ---------------------------------------------------------------------------
+
+
+@figure("m19-lorentz-nk")
+def _(mode):
+    """A single Lorentz oscillator: n and k from one resonance, computed.
+    epsilon = 1 + wp^2 / (w0^2 - w^2 - i g w)."""
+    c = S.SERIES[mode]
+    w = np.linspace(0.2, 2.2, 800)  # in units of w0
+    wp2, g = 0.8, 0.12
+    eps = 1 + wp2 / (1 - w**2 - 1j * g * w)
+    nk = np.sqrt(eps)
+    fig, (a1, a2) = plt.subplots(2, 1, sharex=True, figsize=(7.2, 4.8),
+                                 gridspec_kw={"hspace": 0.12})
+    fig.skip_tight = True
+    a1.plot(w, nk.real, color=c[0], lw=2.1)
+    S.label_end(a1, w[-1], nk.real[-1], "n", c[0], mode)
+    a1.axvline(1.0, color=S.GUIDE[mode], lw=1.0, ls=":")
+    S.note(a1, 1.03, 2.1, "anomalous dispersion\nrides the resonance", mode)
+    a1.set_ylabel("refractive index  n")
+    a1.set_title("One oscillator makes both constants: absorption and dispersion are twins")
+    a2.plot(w, nk.imag, color=c[1], lw=2.1)
+    S.label_end(a2, w[-1], nk.imag[-1], "k", c[1], mode)
+    a2.set_xlabel(r"frequency  $\omega/\omega_0$")
+    a2.set_ylabel("extinction  k")
+    S.strip(a1)
+    S.strip(a2)
+    return fig
+
+
+@figure("m19-reflectance-vs-n")
+def _(mode):
+    """Normal-incidence reflectance R = ((n-1)^2+k^2)/((n+1)^2+k^2)."""
+    c = S.SERIES[mode]
+    n = np.linspace(1.0, 4.5, 400)
+    fig, ax = plt.subplots()
+    for i, k in enumerate([0.0, 0.5, 2.0]):
+        R = ((n - 1) ** 2 + k**2) / ((n + 1) ** 2 + k**2)
+        ax.plot(n, 100 * R, color=c[i], lw=2.1)
+        S.label_end(ax, n[-1], 100 * R[-1], f"k = {k}", c[i], mode)
+    for x0, lab in [(1.46, "silica"), (2.4, "GaN"), (3.5, "Si")]:
+        ax.axvline(x0, color=S.GRID[mode], lw=0.8, ls=":")
+        S.note(ax, x0 + 0.02, 4, lab, mode, size=8.5)
+    ax.set_xlabel("refractive index  n")
+    ax.set_ylabel("normal-incidence reflectance  (%)")
+    ax.set_title("High index means bright facets: a third of the light bounces off bare silicon")
+    ax.set_ylim(0, 78)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-tauc-plots")
+def _(mode):
+    """Extracting gaps: direct (alpha^2 linear) and indirect (sqrt(alpha)
+    linear) plotted the way the analysis is actually done."""
+    c = S.SERIES[mode]
+    E = np.linspace(1.0, 2.0, 400)
+    Egd, Egi = 1.42, 1.12
+    a_dir = np.where(E > Egd, 8e3 * np.sqrt(np.clip(E - Egd, 0, None)), 0)
+    a_ind = np.where(E > Egi, 3.5e3 * np.clip(E - Egi, 0, None) ** 2, 0)
+    fig, (a1, a2) = plt.subplots(1, 2, figsize=(7.2, 3.6))
+    fig.skip_tight = True
+    fig.subplots_adjust(wspace=0.28, left=0.09, right=0.97, bottom=0.16, top=0.86)
+    a1.plot(E, (a_dir**2) / 1e7, color=c[0], lw=2.1)
+    a1.axvline(Egd, color=S.GUIDE[mode], lw=1.0, ls=":")
+    a1.set_xlabel("photon energy (eV)")
+    a1.set_ylabel(r"$\alpha^{2}$  (10$^{7}$ cm$^{-2}$)")
+    a1.set_title("direct: extrapolate $\\alpha^{2}$", color=c[0], fontsize=11)
+    S.note(a1, Egd + 0.02, 0.4, r"$E_g$", mode)
+    a2.plot(E, np.sqrt(a_ind), color=c[1], lw=2.1)
+    a2.axvline(Egi, color=S.GUIDE[mode], lw=1.0, ls=":")
+    a2.set_xlabel("photon energy (eV)")
+    a2.set_ylabel(r"$\sqrt{\alpha}$  (cm$^{-1/2}$)")
+    a2.set_title("indirect: extrapolate $\\sqrt{\\alpha}$", color=c[1], fontsize=11)
+    S.note(a2, Egi + 0.02, 8, r"$E_g$", mode)
+    for ax in (a1, a2):
+        S.strip(ax)
+    return fig
+
+
+@figure("m19-urbach-tail")
+def _(mode):
+    """Absorption edge with an exponential Urbach tail on semilog axes."""
+    c = S.SERIES[mode]
+    E = np.linspace(1.3, 2.1, 500)
+    Eg, Eu_a, Eu_b = 1.75, 0.050, 0.100
+    fig, ax = plt.subplots()
+    for i, (Eu, lab) in enumerate([(Eu_a, "device-grade: $E_U$ = 50 meV"),
+                                   (Eu_b, "poor network: $E_U$ = 100 meV")]):
+        alpha = np.where(E < Eg, 5e3 * np.exp((E - Eg) / Eu),
+                         5e3 * (1 + 8 * np.sqrt(np.clip(E - Eg, 0, None))))
+        ax.semilogy(E, alpha, color=c[i], lw=2.1)
+        S.label_end(ax, E[-1], alpha[-1], lab, c[i], mode, dy=6 - 12 * i)
+    ax.axvline(Eg, color=S.GUIDE[mode], lw=1.0, ls=":")
+    S.note(ax, Eg + 0.01, 3, "band edge", mode)
+    S.note(ax, 1.34, 30, "the tail slope on this axis\nIS the disorder measurement", mode)
+    ax.set_xlabel("photon energy  (eV)")
+    ax.set_ylabel(r"$\alpha$  (cm$^{-1}$)")
+    ax.set_title(r"$\alpha\propto e^{(E-E_g)/E_U}$: straight below the edge on semilog")
+    ax.set_ylim(1, 3e4)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-free-carrier")
+def _(mode):
+    """Free-carrier absorption rising as lambda^2 for three dopings."""
+    c = S.SERIES[mode]
+    lam = np.linspace(1, 12, 400)  # micrometres
+    fig, ax = plt.subplots()
+    for i, (n0, lab) in enumerate([(1e18, r"$10^{18}$"), (1e19, r"$10^{19}$"),
+                                   (1e20, r"$10^{20}\ {\rm cm^{-3}}$")]):
+        alpha = 2e-19 * n0 * lam**2
+        ax.loglog(lam, alpha, color=c[i], lw=2.1)
+        S.label_end(ax, lam[-1], alpha[-1], lab, c[i], mode)
+    ax.set_xlabel(r"wavelength  ($\mu$m)")
+    ax.set_ylabel(r"free-carrier $\alpha$  (cm$^{-1}$)")
+    ax.set_title(r"$\alpha_{fc}\propto n\,\lambda^{2}$: doped layers go opaque in the infrared")
+    S.note(ax, 1.1, 3e2, "the same Drude tail as module 18's\nAC conductivity, read optically", mode)
+    S.strip(ax)
+    return fig
+
+
+@figure("m19-interference-fringes")
+def _(mode):
+    """Transmission of a thin film on glass: fringes carry the thickness."""
+    c = S.SERIES[mode]
+    lam = np.linspace(0.5, 2.0, 1200)  # micrometres
+    n_f, d = 2.0, 1.0  # index, thickness in micrometres
+    phase = 4 * np.pi * n_f * d / lam
+    R1 = ((n_f - 1) / (n_f + 1)) ** 2
+    T = (1 - R1) ** 2 / (1 + R1**2 - 2 * R1 * np.cos(phase))
+    absline = np.where(lam < 0.62, np.exp(-8 * (0.62 - lam) / 0.12), 1.0)
+    fig, ax = plt.subplots()
+    ax.plot(lam, 100 * T * absline, color=c[0], lw=1.9)
+    S.label_end(ax, lam[-1], 100 * (T * absline)[-1], "film on glass", c[0], mode)
+    S.note(ax, 1.25, 66,
+           r"fringe spacing $\Rightarrow$ $n_fd$;"
+           "\nenvelope $\\Rightarrow$ absorption;"
+           "\nedge $\\Rightarrow$ gap", mode)
+    ax.set_xlabel(r"wavelength  ($\mu$m)")
+    ax.set_ylabel("transmittance  (%)")
+    ax.set_title("One spectrum, three measurements: the workhorse film characterisation")
+    ax.set_ylim(0, 108)
+    S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # driver
 # ---------------------------------------------------------------------------
 
