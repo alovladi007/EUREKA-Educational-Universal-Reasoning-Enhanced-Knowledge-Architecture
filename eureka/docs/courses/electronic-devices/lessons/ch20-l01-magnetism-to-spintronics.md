@@ -1,168 +1,318 @@
-# Magnetism, from Domains and Hysteresis to Spintronics
+# Magnetic Order: Moments, Exchange and the Curie Point
 
-<!-- covers: 20.1, 20.2, 20.3 -->
+<!-- covers: 20.1 -->
 
-## Classical magnetism: order, domains and hysteresis
+Every module so far has moved charge. This one moves the *other* quantum
+number. A century of physics compressed into one engineering sentence: spins
+interact strongly enough in some solids to hold a common direction at room
+temperature, and everything from the power grid's transformers to the read
+head that found this file exploits that fact. This first lesson builds the
+classical and statistical machinery: where moments come from, why they align,
+and how order dies at the Curie point.
 
-Magnetism in solids comes from electron spin and orbital angular momentum. The
-useful classification is by how neighbouring moments interact.
+**Level.** Sections 1 to 4 undergraduate core; section 5 graduate; section 6
+problems.
 
-**Diamagnetic** materials have no permanent moments; an applied field induces
-a weak opposing one. Every material is diamagnetic to some degree; it only
-matters when nothing stronger is present.
+## 1. Where the moment comes from
 
-**Paramagnetic** materials have permanent moments that do not interact, so
-thermal agitation randomizes them and an applied field aligns them only
-partially. Susceptibility falls as 1/T, the Curie law.
+An electron carries a magnetic moment from two sources: its orbital motion
+and its spin. Both are quantized in units of the **Bohr magneton**,
 
-**Ferromagnetic** materials have moments that align with their neighbours
-through the **exchange interaction**. Exchange is not the magnetic dipole force
-between moments, which is far too weak to explain magnetic order at room
-temperature; it is an electrostatic effect arising from the Pauli exclusion
-principle, which makes parallel-spin configurations lower in energy in certain
-electronic structures. Exchange energies are of order 0.1 eV, comparable to
-chemical bonding, which is why iron stays magnetic up to 770 degrees C. Above
-the **Curie temperature** thermal energy destroys the order and the material
-becomes paramagnetic.
+$$
+\mu_B = \frac{e\hbar}{2m_e} = 9.274\times10^{-24}\ {\rm J/T},
+$$
 
-**Antiferromagnetic** materials have neighbouring moments that align
-antiparallel, so there is order but no net moment. **Ferrimagnetic** materials
-have antiparallel sublattices of unequal size, giving a net moment; the
-ferrites used as inductor and transformer cores are of this type, and their
-practical virtue is being magnetic and electrically insulating at once, so
-eddy current losses are negligible at high frequency.
+and the moment of an atom with total angular momentum quantum number $J$ is
 
-**Domains** explain why a piece of iron can be ferromagnetic and yet show no
-external field. Uniform magnetization stores a large amount of energy in the
-field outside the sample. The material lowers that energy by breaking into
-regions, each magnetized to saturation but in different directions, so the
-external fields largely cancel. Between domains sit **domain walls**, of
-finite width, where the magnetization rotates gradually because exchange
-resists abrupt change while anisotropy resists pointing away from easy
-directions.
+$$
+\mu = g\,\mu_B\sqrt{J(J+1)},
+$$
 
-Magnetizing a sample means growing the favourably oriented domains at the
-expense of the others, then rotating the remainder into the field. Both steps
-are impeded by defects, grain boundaries and inclusions, which pin domain
-walls. Because unpinning is irreversible, the return path differs from the
-outward path, and the result is the **hysteresis loop**. Its parameters are
-the vocabulary of magnetic materials:
+with $g$ the Landé factor combining the spin and orbital contributions. Two
+consequences frame the whole module. First, filled shells contribute nothing:
+their spins and orbital momenta cancel pairwise, which is why magnetism is
+the specialty of partially-filled 3d and 4f shells — iron, cobalt, nickel and
+the rare earths — rather than a property of matter in general. Second, in a
+3d transition metal embedded in a crystal, the orbital contribution is
+largely **quenched** by the crystal field: the moment that survives is mostly
+spin, $g\approx2$, and the measured moments of Fe (2.2 $\mu_B$ per atom), Co
+(1.7) and Ni (0.6) are non-integer because the 3d electrons are itinerant,
+shared in bands rather than counted per atom. That non-integer moment is the
+first flag that a band picture (section 5) sits beneath the local-moment
+story this lesson mostly tells.
 
-- **Saturation magnetization**, the moment when everything is aligned, an
-  intrinsic property of composition.
-- **Remanence**, what is left after the field is removed. This is the signal
-  in magnetic storage.
-- **Coercivity**, the reverse field needed to bring magnetization back to
-  zero. This is the extrinsic, microstructure-controlled parameter, and it
-  divides the whole field in two.
+A field applied to any material also induces a small *opposing* moment in
+every filled shell — Lenz's law operating at the atomic scale. This
+**diamagnetism** is universal, temperature-independent and weak
+($\chi\sim-10^{-5}$); it is the whole story in silicon, copper and water, and
+the background subtraction in every magnetometry measurement.
 
-**Soft** magnetic materials have low coercivity and narrow loops. They
-magnetize and demagnetize easily and dissipate little per cycle, since the
-loop area is the energy lost per cycle. They are what you want in transformers,
-motors, inductors and shields, and they are made soft by removing the pinning
-sites: large clean grains, low stress, or no grains at all in an amorphous
-metallic glass.
+## 2. Paramagnetism: moments without a committee
 
-**Hard** magnetic materials have high coercivity and wide loops. They resist
-demagnetization, which is what a permanent magnet needs. They are made hard by
-strong crystalline anisotropy plus a microstructure of fine, decoupled
-particles, so reversing one does not cascade into the next. Their figure of
-merit is the maximum energy product, and the modern rare-earth families reach
-values two orders of magnitude above the steel magnets of a century ago.
+Give a solid permanent moments that ignore each other and you get a
+**paramagnet**: each moment aligns with the applied field only as far as
+thermal agitation permits. The classical calculation (Langevin's, derived in
+the supplement) averages a continuous moment orientation over the Boltzmann
+distribution and yields
 
-The same distinction determines the loss budget in power electronics: core
-loss is hysteresis loss (loop area times frequency) plus eddy current loss
-(which is why cores are laminated or made of insulating ferrite) plus anomalous
-loss from domain wall dynamics.
+$$
+\frac{M}{M_s} = L(x) = \coth x - \frac{1}{x},
+\qquad x = \frac{\mu_0 \mu H}{k_B T}.
+$$
 
-## Nanoscale and unconventional magnetism
+The quantum version restricts the moment to $2J+1$ orientations and gives
+the **Brillouin function** $B_J(x)$, which contains Langevin as its
+$J\to\infty$ limit and the simple $\tanh x$ as its $J=\frac{1}{2}$ limit:
 
-Shrink a magnetic particle and the classical picture changes in specific ways.
+![Brillouin functions for two J values with the classical Langevin limit: all rise linearly at small argument and saturate when the field energy per moment beats thermal energy.](/courses/electronic-devices/figures/m20-brillouin.svg)
 
-Below a critical size, typically tens of nanometres, forming a domain wall
-costs more energy than it saves, so the particle is **single domain**. It
-magnetizes only by coherent rotation, which requires overcoming the full
-anisotropy, so coercivity is at a maximum there. This is why fine-particle
-media are the basis of both permanent magnets and recording media.
+For laboratory fields at room temperature $x\ll1$: a moment of one Bohr
+magneton in a 1 T field has $\mu_B B \approx 5.8\times10^{-5}$ eV against
+$k_BT\approx0.025$ eV. Paramagnets are therefore *linear* in every ordinary
+circumstance, with the small-argument expansion delivering the **Curie law**:
 
-Shrink further and thermal energy becomes comparable to the anisotropy energy
-barrier that holds the moment in place. The moment then flips spontaneously
-and the particle behaves like a paramagnet with a very large moment:
-**superparamagnetism**. The stored bit is lost. This is a hard physical limit
-on magnetic storage density, and module 50 covers the engineering response to
-it, which is to use higher-anisotropy materials, at the cost of needing a
-larger field to write them.
+$$
+\chi = \frac{n\,\mu_0\,g^2\mu_B^2\,J(J+1)}{3k_BT} = \frac{C}{T}.
+$$
 
-Thin films and multilayers add effects with no bulk analogue:
+The $1/T$ signature is the fingerprint, and it is diagnostic in both
+directions: measure $\chi(T)$, plot $1/\chi$ against $T$, and the slope hands
+you the moment per atom — a chemistry-free way to count unpaired electrons
+that laboratories use on everything from catalysts to battery cathodes.
 
-- **Interface anisotropy** can make the easy axis perpendicular to the film,
-  which is what perpendicular magnetic recording exploits.
-- **Interlayer exchange coupling** through a non-magnetic spacer oscillates
-  in sign with spacer thickness, so two ferromagnetic layers can be made to
-  align parallel or antiparallel by choosing a thickness to within an atomic
-  layer.
-- **Exchange bias** at a ferromagnet-antiferromagnet interface pins the
-  ferromagnet's magnetization in one direction, shifting its loop off centre.
-  This is how a reference layer is fixed in a spin valve.
-- **Vortex states** form in small discs, where the magnetization curls in the
-  plane and turns out of plane only at a nanometre-scale core, giving a stable
-  configuration with almost no stray field.
+![The three temperature signatures on one plot: Curie 1/T for free moments, the small temperature-independent Pauli response of metals, and the negative diamagnetic floor.](/courses/electronic-devices/figures/m20-susceptibility-classes.svg)
 
-## Spintronic devices and spin-based information
+Metals add a subtlety worth flagging: conduction electrons show a weak,
+nearly temperature-independent **Pauli paramagnetism**, because only the
+states within $k_BT$ of the Fermi level can respond — the same Fermi-surface
+bottleneck that module 18 used to explain heat capacity. A measured
+susceptibility that neither falls as $1/T$ nor sits below zero is the metal
+announcing its Fermi sea.
 
-Conventional electronics uses only the charge of the electron. **Spintronics**
-uses its spin as well, and the enabling discovery was that resistance can
-depend on relative magnetic orientation.
+### Worked example 1.1 — counting unpaired electrons from a slope
 
-**Giant magnetoresistance.** In a stack of two ferromagnetic layers separated
-by a thin non-magnetic metal, the resistance is noticeably lower when the two
-magnetizations are parallel than when they are antiparallel. The reason is
-that scattering rates in a ferromagnet differ for spin-up and spin-down
-electrons. When the layers are parallel, one spin channel passes easily
-through both; when antiparallel, each channel is strongly scattered in one
-layer or the other. In a practical **spin valve**, one layer is pinned by
-exchange bias and the other rotates freely with the external field, so the
-device becomes a sensitive field sensor. GMR read heads increased hard disk
-density by orders of magnitude and reached mass production within about a
-decade of the effect's discovery, which is unusually fast for a materials
-effect.
+A dilute magnetic oxide with $n = 2\times10^{27}$ magnetic ions/m³ shows
+$1/\chi$ linear in temperature with slope 19.8 K⁻¹ through the origin, i.e.
+a Curie constant $C = 0.050$ K. What moment per ion does this imply?
 
-**Tunnel magnetoresistance.** Replace the metal spacer with a thin insulating
-barrier and electrons tunnel rather than diffuse. The tunnelling probability
-depends on the density of available states of matching spin on the far side,
-so the resistance ratio between parallel and antiparallel states becomes much
-larger. With crystalline magnesium oxide barriers, which filter tunnelling
-electrons by symmetry as well as by spin, ratios of several hundred percent
-are routine. The magnetic tunnel junction is the storage element of magnetic
-random access memory (module 50).
+Invert the Curie law with $\mu_{\rm eff}^2 = g^2\mu_B^2 J(J+1)$:
 
-**Spin transfer torque.** A spin-polarized current passing into a magnetic
-layer transfers angular momentum to it and can switch its magnetization
-directly, with no external field. This turned MRAM from a device needing
-current-carrying write lines into one that writes through the bit itself,
-which is what made it scalable. Related spin-orbit torque schemes use a heavy
-metal adjacent layer to generate the spin current more efficiently.
+$$
+\mu_{\rm eff} = \sqrt{\frac{3k_B C}{n\,\mu_0}}
+= \sqrt{\frac{3(1.38\times10^{-23})(0.050)}
+{(2\times10^{27})(4\pi\times10^{-7})}}
+= 2.9\times10^{-23}\ {\rm J/T} \approx 3.1\,\mu_B.
+$$
 
-The resulting memory is genuinely non-volatile, writes in nanoseconds,
-tolerates effectively unlimited write cycles, and resists radiation. Its
-drawbacks are cell area and write energy relative to static RAM, so it has
-found its place as embedded non-volatile memory replacing flash in
-microcontrollers, and as a candidate for last-level cache, rather than as a
-universal memory.
+With $g=2$ this gives $J(J+1)\approx2.4$, $J\approx1.1$: about two unpaired
+electrons per ion. A straight line on a lab plot counted electrons without
+touching the sample's chemistry — and a *curved* line would have been a
+finding too, announcing interactions (section 4) or a second magnetic phase.
 
-Two further directions are worth knowing by name. **Semiconductor spintronics**
-aims to inject, manipulate and detect spin in semiconductors, which would allow
-logic and memory in one material system; the obstacle is that spin injection
-from a metal into a semiconductor is inefficient because of the conductivity
-mismatch, and spin coherence times are short at room temperature. **Quantum
-information** uses spin as a qubit, in quantum dots, in nitrogen-vacancy
-centres in diamond, and in donor atoms in isotopically purified silicon. The
-attraction of the silicon route is that the same isotope purification that
-removes nuclear spins also removes the main source of decoherence, and the
-fabrication base already exists.
+## 3. Exchange: the interaction that is not magnetic
 
-Spintronics is the clearest case in this course of a materials effect becoming
-a product: the physics is interface physics, the performance is set by
-atomic-scale layer control, and the manufacturing question is whether you can
-deposit those layers reproducibly across a wafer. Module 44 covers that
-deposition problem.
+Why do the moments in iron align? Not because of their magnetic fields: the
+dipole energy between two Bohr magnetons at an interatomic spacing is
+
+$$
+E_{\rm dip} \sim \frac{\mu_0\mu_B^2}{4\pi a^3} \approx 5\times10^{-24}\ {\rm J}
+\approx 0.03\ {\rm meV},
+$$
+
+equivalent to a few kelvin — yet iron holds its order to 1043 K. The
+alignment energy is **exchange**: an electrostatic effect. The Pauli
+principle forces the two-electron wavefunction to be antisymmetric overall,
+which couples the spin configuration to the spatial configuration, and the
+spatial configuration sets the Coulomb energy. The energy difference between
+parallel and antiparallel spins is written as an effective spin-spin coupling,
+
+$$
+E = -2\mathcal{J}\,\vec{S}_1\cdot\vec{S}_2,
+$$
+
+with exchange integral $\mathcal{J}$ of order 10 meV — a thousand times the
+dipole energy, chemistry-scale, and the reason room-temperature magnetism
+exists at all. Its sign is a detail of orbital overlap: positive
+$\mathcal{J}$ gives **ferromagnetism** (parallel neighbours), negative gives
+**antiferromagnetism** (antiparallel), and two antiparallel sublattices of
+unequal moment give **ferrimagnetism** — the ferrites, whose practical charm
+is being magnetically ordered yet electrically insulating, so they work at
+frequencies where a metal core would be one large eddy-current loss (lesson
+2 prices this).
+
+## 4. Mean-field theory and the Curie point
+
+The cheapest honest model of collective order replaces each moment's
+neighbours with an average: an effective **molecular field** proportional to
+the magnetization itself, $H_{\rm eff} = H + \lambda M$. Self-consistency
+then closes the loop — the magnetization both creates and responds to the
+field:
+
+$$
+M = M_s\,B_J\!\left(\frac{g\mu_B J\,\mu_0(H+\lambda M)}{k_BT}\right).
+$$
+
+At zero applied field this equation has a non-zero solution only below a
+critical temperature: the **Curie temperature**
+
+$$
+T_C = \frac{n\,g^2\mu_B^2\,J(J+1)\,\mu_0\lambda}{3k_B},
+$$
+
+proportional to the exchange through $\lambda$. Solving the self-consistency
+numerically gives the classic order-parameter curve:
+
+![Mean-field spontaneous magnetization against reduced temperature for three J values, from the self-consistent Weiss equation: flat at low temperature, collapsing vertically at the Curie point.](/courses/electronic-devices/figures/m20-mean-field.svg)
+
+The shape teaches the mechanism. At low temperature the order is nearly
+complete and nearly flat: each moment sits in the full molecular field of
+its aligned neighbours. Near $T_C$ the collapse is self-accelerating — every
+moment that disorders weakens the field holding the others, which is why the
+curve ends vertically rather than tapering. Above $T_C$ the material is a
+paramagnet, but not a free one: the same expansion that gave the Curie law
+now gives the **Curie-Weiss law**,
+
+$$
+\chi = \frac{C}{T-\theta},
+$$
+
+with $\theta>0$ (and $\approx T_C$ in mean field) for ferromagnetic
+exchange, $\theta<0$ for antiferromagnetic. One straight-line extrapolation
+of $1/\chi$ therefore reads out the sign and strength of an interaction that
+no magnetometer can see directly:
+
+![Inverse susceptibility against temperature for the three exchange cases: the extrapolated intercept is positive for ferromagnetic coupling, zero for free moments, negative for antiferromagnetic.](/courses/electronic-devices/figures/m20-curie-weiss.svg)
+
+Antiferromagnets have their own critical point, the **Néel temperature**
+$T_N$, below which the sublattices order with no net moment. For fifty years
+that made them curiosities — famously dismissed as interesting but useless
+by their own theorist. Lesson 4 will show how completely that verdict has
+been reversed: the pinning layers in every spin valve and the fastest
+switching media in the laboratory are antiferromagnets.
+
+### Worked example 4.1 — the exchange field
+
+Estimate the molecular field inside iron at low temperature. Mean field says
+$k_BT_C \sim \mu_B\,\mu_0 H_{\rm mol}$ within factors of order one, so
+
+$$
+\mu_0 H_{\rm mol} \sim \frac{k_B T_C}{\mu_B}
+= \frac{(1.38\times10^{-23})(1043)}{9.27\times10^{-24}} \approx 1.5\times10^{3}\ {\rm T}.
+$$
+
+Fifteen hundred tesla — a hundred times any laboratory magnet, holding every
+iron moment in line. The lesson's central number: exchange is not a
+perturbation on magnetostatics; it is a different force wearing magnetic
+units.
+
+### Worked example 4.2 — why nickel quits at 358 °C
+
+A magnetic sensor specified to 400 °C is prototyped with a nickel element
+($T_C = 631$ K). Predict the failure mode. At 673 K the element is *above*
+its Curie point: the spontaneous magnetization is zero and the sensor reads
+only a weak Curie-Weiss paramagnetism, falling as $1/(T-\theta)$. Worse, the
+approach is steep: by the mean-field curve, at $T/T_C = 0.95$ (600 K) the
+magnetization has already lost about a third of its zero-temperature value,
+so the sensor drifts severely long before it dies. Materials are chosen with
+$T_C$ comfortably — not marginally — above the operating window; permalloy
+heads and NdFeB rotors (lesson 2) both obey this rule, and its violation is
+a recurring root-cause in failure reviews.
+
+## 5. Graduate extension: itinerant magnetism and the Stoner criterion
+
+The local-moment picture above fails quietly for the very metals that matter
+most: iron's 2.2 $\mu_B$ is no integer multiple of anything. In the band
+picture, ferromagnetism is a *spontaneous spin-splitting of the conduction
+band*: the spin-up and spin-down sub-bands shift rigidly by the exchange
+energy, transferring electrons from one to the other until the kinetic-energy
+cost of the transfer balances the exchange gain. The instability condition —
+the **Stoner criterion** —
+
+$$
+I\,g(E_F) > 1
+$$
+
+says a metal magnetizes when the product of the exchange integral $I$ and
+the density of states at the Fermi level exceeds unity. It explains the
+census: Fe, Co and Ni have narrow 3d bands (large $g(E_F)$) and pass;
+palladium famously *almost* passes — its product sits just below unity — and
+instead amplifies any moment placed in it; broad-band metals fail without
+drama. The non-integer moments fall out immediately — the split sub-band
+populations need not differ by an integer per atom.
+
+Two more consequences matter downstream. The spin-split band structure means
+the electrons at the Fermi level — the only ones that conduct — carry a net
+spin polarization $P$, the single most important number in lesson 5's tunnel
+junctions. And the exchange splitting collapses at $T_C$ along with the
+order, which couples magnetism to transport, giving the resistivity anomaly
+at the Curie point that instrument-makers use as a self-calibrating
+temperature reference.
+
+## 6. Problems
+
+**P20.1** Gadolinium has $J=7/2$, $g=2$, $n=3.0\times10^{28}$ m⁻³.
+Compute its Curie constant and its susceptibility at 350 K (it is
+paramagnetic there; $T_C = 293$ K — use Curie-Weiss with
+$\theta = 293$ K).
+
+**P20.2** At what combination of field and temperature does a $J=1/2$,
+$g=2$ paramagnet reach 90% of saturation? Give the required $B/T$ ratio in
+T/K, and comment on why adiabatic demagnetization refrigerators operate in
+millikelvin territory.
+
+**P20.3** Show that the Brillouin function reduces to $\tanh x$ for
+$J=1/2$ and to the Langevin function as $J\to\infty$.
+
+**P20.4** A material shows $1/\chi$ extrapolating to $-85$ K. Classify its
+dominant exchange, and predict qualitatively what its magnetization curve at
+4 K looks like compared with a ferromagnet of the same moment density.
+
+**P20.5** From the mean-field expression for $T_C$, estimate the exchange
+constant $\lambda$ for iron ($T_C = 1043$ K, $n = 8.5\times10^{28}$ m⁻³,
+moment 2.2 $\mu_B$; take $J(J+1)g^2\mu_B^2 \to \mu^2$ for the estimate),
+and verify it reproduces worked example 4.1's molecular field within
+factors of order one.
+
+**P20.6** Pauli susceptibility is $\chi_P = \mu_0\mu_B^2 g(E_F)$. Explain
+in one paragraph, using module 18's degenerate-gas argument, why it is
+temperature-independent while Curie susceptibility is not — and why the
+same argument made electronic heat capacity linear in $T$.
+
+### Answers
+
+**A20.1** $C = n\mu_0 g^2\mu_B^2 J(J+1)/3k_B$: with $J(J+1)=15.75$,
+$g^2\mu_B^2 J(J+1) = 5.4\times10^{-45}$ J²/T², so
+$C = (3.0\times10^{28})(4\pi\times10^{-7})(5.4\times10^{-45}) /
+(3\cdot1.38\times10^{-23}) \approx 4.9$ K. Then
+$\chi(350) = 4.9/(350-293) \approx 0.086$ — enormous by paramagnet
+standards, because 350 K sits close above the ordering point.
+
+**A20.2** $\tanh x = 0.9$ at $x = 1.47$, so $\mu_B B/k_BT = 1.47$ and
+$B/T = 1.47\,k_B/\mu_B \approx 2.2$ T/K. At 1 K that is a feasible 2.2 T; at
+300 K it is 660 T — hence magnetic cooling is a cryogenic technique.
+
+**A20.3** For $J=1/2$ the two-orientation partition function gives
+$M/M_s = \tanh x$ directly, and the general $B_J$ collapses to it via
+$\coth 2u = \frac{1}{2}(\coth u + \tanh u)$. For $J\to\infty$ the $2J+1$
+discrete orientations become a continuum and the orientation sum becomes
+Langevin's integral; expanding both at small argument shows the leading
+$x/3$ terms agree.
+
+**A20.4** $\theta<0$: antiferromagnetic exchange. Below its Néel point the
+net magnetization stays near zero in small fields — the sublattices cancel —
+so its $M(H)$ is a shallow line, not a saturating curve; large fields
+against the anisotropy produce spin-flop behaviour, which the supplement's
+veto list marks as beyond this module's scope.
+
+**A20.5** $\lambda = 3k_BT_C/(n\mu_0\mu^2)$ with $\mu = 2.2\mu_B =
+2.04\times10^{-23}$ J/T: $\lambda = (3\cdot1.38\times10^{-23}\cdot1043)/
+[(8.5\times10^{28})(4\pi\times10^{-7})(4.2\times10^{-46})] \approx 963$.
+Molecular field $\mu_0\lambda M_s = \mu_0\lambda n\mu \approx
+(4\pi\times10^{-7})(963)(8.5\times10^{28})(2.04\times10^{-23}) \approx
+2.1\times10^{3}$ T — same order as worked example 4.1, as it must be.
+
+**A20.6** Only electrons within $\sim k_BT$ of $E_F$ can change state; the
+fraction that can respond to the field grows as $T$ while each response
+falls as $1/T$, and the two cancel. The same window argument gave
+$c_v \propto T$: both quantities count the responsive fraction of a
+degenerate sea, one against a field, one against heat.

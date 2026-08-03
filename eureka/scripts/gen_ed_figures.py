@@ -2001,6 +2001,486 @@ def _(mode):
 
 
 # ---------------------------------------------------------------------------
+# Module 20 - magnetism, from classical magnets to spintronics
+# ---------------------------------------------------------------------------
+
+
+@figure("m20-susceptibility-classes")
+def _(mode):
+    """The three temperature signatures: diamagnetic (constant, negative),
+    Pauli paramagnetic (constant, small), Curie paramagnetic (1/T). Magnitudes
+    are typical orders; the SHAPES are the classification."""
+    c = S.SERIES[mode]
+    T = np.linspace(50, 600, 400)
+    chi_dia = np.full_like(T, -1.5e-5)
+    chi_pauli = np.full_like(T, 2.5e-5)
+    chi_curie = 1.2e-2 / T
+    fig, ax = plt.subplots()
+    ax.plot(T, chi_curie * 1e4, color=c[0], lw=2.2)
+    ax.plot(T, chi_pauli * 1e4, color=c[1], lw=2.0)
+    ax.plot(T, chi_dia * 1e4, color=c[2], lw=2.0)
+    S.label_end(ax, T[-1], chi_curie[-1] * 1e4, r"Curie  $\chi \propto 1/T$", c[0], mode, dy=6)
+    S.label_end(ax, T[-1], chi_pauli[-1] * 1e4, "Pauli (metals)", c[1], mode, dy=6)
+    S.label_end(ax, T[-1], chi_dia[-1] * 1e4, "diamagnetic", c[2], mode, dy=-10)
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.set_xlabel("temperature  (K)")
+    ax.set_ylabel(r"susceptibility  $\chi$  ($10^{-4}$)")
+    ax.set_title("Measure susceptibility against temperature and the class identifies itself")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-brillouin")
+def _(mode):
+    """Brillouin functions B_J(x) for three J plus the classical Langevin
+    limit, computed from their defining formulas."""
+    c = S.SERIES[mode]
+    x = np.linspace(1e-4, 6, 400)
+
+    def brillouin(J, x):
+        a = (2 * J + 1) / (2 * J)
+        b = 1 / (2 * J)
+        return a / np.tanh(a * x) - b / np.tanh(b * x)
+
+    fig, ax = plt.subplots()
+    ax.plot(x, brillouin(0.5, x), color=c[0], lw=2.2)
+    ax.plot(x, brillouin(3.5, x), color=c[1], lw=2.0)
+    ax.plot(x, 1 / np.tanh(x) - 1 / x, color=c[2], lw=2.0, ls="--")
+    S.label_end(ax, x[-1], brillouin(0.5, x)[-1], r"$J=\frac{1}{2}$", c[0], mode, dy=5)
+    S.label_end(ax, x[-1], brillouin(3.5, x)[-1], r"$J=\frac{7}{2}$", c[1], mode, dy=-4)
+    S.label_end(ax, x[-1], (1 / np.tanh(x) - 1 / x)[-1], r"Langevin ($J\to\infty$)", c[2], mode, dy=-14)
+    ax.set_xlabel(r"$x = g\mu_B J B / k_B T$")
+    ax.set_ylabel(r"$M / M_s = B_J(x)$")
+    ax.set_title("Saturation is a competition: field-energy per moment against $k_BT$")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-mean-field")
+def _(mode):
+    """Spontaneous magnetization from the self-consistent mean-field
+    (Weiss) equation m = B_J(3J/(J+1) * m/t), solved numerically."""
+    c = S.SERIES[mode]
+
+    def brillouin(J, x):
+        x = np.maximum(x, 1e-12)
+        a = (2 * J + 1) / (2 * J)
+        b = 1 / (2 * J)
+        return a / np.tanh(a * x) - b / np.tanh(b * x)
+
+    fig, ax = plt.subplots()
+    t = np.linspace(0.01, 1.0, 300)
+    for i, J in enumerate([0.5, 1.0, 3.5]):
+        m = np.zeros_like(t)
+        for k, tk in enumerate(t):
+            mk = 1.0
+            for _ in range(200):
+                mk = brillouin(J, 3 * J / (J + 1) * mk / tk)
+            m[k] = mk
+        ax.plot(t, m, color=c[i], lw=2.0)
+        S.label_end(ax, 0.12, 0.45 - 0.10 * i,
+                    f"$J={J:g}$" if J != 0.5 else r"$J=\frac{1}{2}$", c[i], mode, dx=0)
+    ax.set_xlabel(r"reduced temperature  $T/T_C$")
+    ax.set_ylabel(r"$M_s(T) / M_s(0)$")
+    ax.set_title("Order eats itself: each lost alignment weakens the field holding the rest")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-curie-weiss")
+def _(mode):
+    """Inverse susceptibility against temperature: the intercept's sign
+    reads out the exchange (ferro +theta, none 0, antiferro -theta)."""
+    c = S.SERIES[mode]
+    T = np.linspace(0, 600, 300)
+    C = 1.0
+    fig, ax = plt.subplots()
+    for i, (theta, lab) in enumerate([(200, "ferromagnet above $T_C$"),
+                                      (0, "ideal paramagnet"),
+                                      (-200, "antiferromagnet")]):
+        Tm = T[T > max(theta, 0) + 10]
+        ax.plot(Tm, (Tm - theta) / C, color=c[i], lw=2.0)
+        S.label_end(ax, Tm[-1], (Tm[-1] - theta) / C, lab, c[i], mode,
+                    dy=(8, 0, -10)[i])
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.set_xlabel("temperature  (K)")
+    ax.set_ylabel(r"$1/\chi$  (arb.)")
+    ax.set_title("One straight line, extrapolated: the intercept is the exchange verdict")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-hysteresis-loops")
+def _(mode):
+    """Soft vs hard hysteresis loops from a two-branch tanh model: same
+    saturation, coercive fields three decades apart (axis in kA/m, symbolic)."""
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots()
+    H = np.linspace(-60, 60, 600)
+    for i, (Hc, w, lab) in enumerate([(2, 4, "soft (core material)"),
+                                      (35, 8, "hard (permanent magnet)")]):
+        up = np.tanh((H + Hc) / w)
+        dn = np.tanh((H - Hc) / w)
+        ax.plot(H, up, color=c[i], lw=2.0)
+        ax.plot(H, dn, color=c[i], lw=2.0)
+        S.label_end(ax, 62, 1.0 - 0.16 * i, lab, c[i], mode)
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.axvline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.set_xlabel("applied field  $H$  (arb.)")
+    ax.set_ylabel(r"$M/M_s$")
+    ax.set_title("The same physics, opposite virtues: the loop area is the design choice")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-energy-product")
+def _(mode):
+    """Second-quadrant demagnetization line B = mu0(H + M) with M = Ms,
+    and the energy product |BH| along it: maximum at the midpoint."""
+    c = S.SERIES[mode]
+    Br = 1.2  # T, symbolic remanence
+    H = np.linspace(-Br, 0, 300)  # in units where mu0*|H| spans 0..Br
+    B = Br + H  # straight demag line
+    BH = -B * H
+    fig, ax = plt.subplots()
+    ax.plot(H, B, color=c[0], lw=2.2)
+    ax.plot(H, BH * 2.5, color=c[1], lw=2.0, ls="--")
+    S.label_end(ax, -1.02, 0.28, "demag line $B(H)$", c[0], mode, dx=0, dy=10)
+    S.label_end(ax, -0.62, 0.93, r"$|BH|$ (scaled)", c[1], mode, dx=0, dy=10, ha="center")
+    ax.plot([-Br / 2], [Br / 2], "o", color=c[2], ms=7)
+    S.note(ax, -Br / 2 + 0.03, Br / 2 + 0.06, r"$(BH)_{max}$ at the midpoint", mode, size=8.5)
+    ax.set_xlabel(r"$\mu_0 H$  (T, demagnetizing)")
+    ax.set_ylabel(r"$B$  (T)")
+    ax.set_title("A magnet is bought by the square: half the remanence, half the coercivity")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-domain-wall")
+def _(mode):
+    """Bloch wall profile theta(x) = 2 arctan(exp(pi x / delta)) for two wall
+    widths: exchange wants it wide, anisotropy wants it narrow."""
+    c = S.SERIES[mode]
+    x = np.linspace(-60, 60, 500)
+    fig, ax = plt.subplots()
+    for i, (d, lab) in enumerate([(40, "soft: wide wall"), (8, "hard: narrow wall")]):
+        th = 2 * np.arctan(np.exp(np.pi * x / d)) * 180 / np.pi
+        ax.plot(x, th, color=c[i], lw=2.2)
+        S.label_end(ax, x[-1], th[-1] - 4 - 8 * i, lab, c[i], mode, dy=-4)
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.axhline(180, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.set_xlabel("position across wall  (nm)")
+    ax.set_ylabel(r"magnetization angle  $\theta$  (deg)")
+    ax.set_title(r"The wall width $\delta=\pi\sqrt{A/K}$ is exchange against anisotropy")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-wall-width")
+def _(mode):
+    """Wall width delta = pi sqrt(A/K) against anisotropy K for two exchange
+    stiffnesses spanning the common range."""
+    c = S.SERIES[mode]
+    K = np.logspace(3, 7, 300)  # J/m^3
+    fig, ax = plt.subplots()
+    for i, (A, lab) in enumerate([(3e-11, r"$A=30$ pJ/m (Fe-like)"),
+                                  (1e-11, r"$A=10$ pJ/m")]):
+        d = np.pi * np.sqrt(A / K) * 1e9
+        ax.loglog(K, d, color=c[i], lw=2.2)
+        S.label_end(ax, K[-1], d[-1], lab, c[i], mode, dy=(6, -10)[i])
+    ax.set_xlabel(r"anisotropy  $K$  (J/m$^3$)")
+    ax.set_ylabel(r"wall width  $\delta$  (nm)")
+    ax.set_title("Three decades of anisotropy buy a factor of thirty in wall width")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-single-domain")
+def _(mode):
+    """Critical single-domain diameter d_c ~ 72 sqrt(AK) / (mu0 Ms^2)
+    against Ms for two anisotropies: why hard, weak magnets stay single."""
+    c = S.SERIES[mode]
+    mu0 = 4e-7 * np.pi
+    Ms = np.linspace(2e5, 1.8e6, 300)
+    A = 1e-11
+    fig, ax = plt.subplots()
+    for i, (K, lab) in enumerate([(1e6, r"hard  $K=10^6$ J/m$^3$"),
+                                  (1e4, r"soft  $K=10^4$ J/m$^3$")]):
+        dc = 72 * np.sqrt(A * K) / (mu0 * Ms**2) * 1e9
+        ax.semilogy(Ms / 1e6, dc, color=c[i], lw=2.2)
+        S.label_end(ax, Ms[-1] / 1e6, dc[-1], lab, c[i], mode, dy=(6, -10)[i])
+    ax.set_xlabel(r"saturation magnetization  $M_s$  (MA/m)")
+    ax.set_ylabel(r"single-domain diameter  $d_c$  (nm)")
+    ax.set_title("Below $d_c$ a wall costs more than the stray field it would save")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-neel-relaxation")
+def _(mode):
+    """Neel relaxation tau = tau0 exp(KV/kT) with tau0 = 1 ns: the
+    exponential that separates memory from superparamagnetism."""
+    c = S.SERIES[mode]
+    delta = np.linspace(0, 70, 300)
+    tau = 1e-9 * np.exp(delta)
+    fig, ax = plt.subplots()
+    ax.semilogy(delta, tau, color=c[0], lw=2.2)
+    for y, lab in [(1.0, "1 second"), (3.15e8, "10 years")]:
+        ax.axhline(y, color=S.GUIDE[mode], lw=0.9, ls=":")
+        S.note(ax, 2, y * 2.5, lab, mode, size=8.5)
+    ax.axvspan(0, 25, color=S.GRID[mode], alpha=0.25)
+    S.note(ax, 2, 1e4, "superparamagnetic\n(fluctuates in any\nmeasurement)", mode, size=8.5)
+    S.note(ax, 46, 1e3, r"stable: $\Delta\gtrsim 60$ for archival memory", mode, size=8.5)
+    ax.set_xlabel(r"barrier  $\Delta = KV/k_BT$")
+    ax.set_ylabel(r"relaxation time  $\tau$  (s)")
+    ax.set_title("Forty units of barrier separate a sensor from a hard drive")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-stoner-wohlfarth")
+def _(mode):
+    """Stoner-Wohlfarth astroid h_x^{2/3} + h_y^{2/3} = 1, computed from the
+    parametric form, plus the easy-axis square loop it implies."""
+    c = S.SERIES[mode]
+    t = np.linspace(0, 2 * np.pi, 400)
+    hx = np.cos(t) ** 3
+    hy = np.sin(t) ** 3
+    fig, ax = plt.subplots(figsize=(5.6, 5.2))
+    ax.plot(hx, hy, color=c[0], lw=2.2)
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.axvline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    S.note(ax, 0.62, 0.62, "outside: switches", mode, size=9)
+    S.note(ax, 0.0, 0.08, "inside:\nboth states stable", mode, size=9, ha="center")
+    S.note(ax, 1.02, -0.1, r"$h_\parallel=1$", mode, size=8.5)
+    S.note(ax, -0.05, 1.04, r"$h_\perp=1$", mode, size=8.5, ha="right")
+    ax.set_xlabel(r"easy-axis field  $H_\parallel / H_K$")
+    ax.set_ylabel(r"hard-axis field  $H_\perp / H_K$")
+    ax.set_title("The astroid: a transverse field lowers the switching cost")
+    ax.set_aspect("equal")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-langevin-nanoparticle")
+def _(mode):
+    """Room-temperature Langevin curves for two nanoparticle diameters:
+    the moment mu = Ms V grows as d^3, so saturation sharpens fast."""
+    c = S.SERIES[mode]
+    mu0, Ms, T = 4e-7 * np.pi, 4.8e5, 300.0
+    kT = 1.38e-23 * T
+    H = np.linspace(-4e5, 4e5, 500)
+    fig, ax = plt.subplots()
+    for i, dnm in enumerate([6, 12]):
+        V = np.pi / 6 * (dnm * 1e-9) ** 3
+        x = mu0 * Ms * V * H / kT
+        L = 1 / np.tanh(x + 1e-30) - 1 / (x + 1e-30)
+        ax.plot(H / 1e3, L, color=c[i], lw=2.2)
+        S.label_end(ax, H[-1] / 1e3, L[-1] - 0.02, f"{dnm} nm", c[i], mode, dy=(-2, 6)[i])
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.axvline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.set_xlabel("applied field  $H$  (kA/m)")
+    ax.set_ylabel(r"$M/M_s$")
+    ax.set_title("No hysteresis, steep response: the superparamagnetic signature")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-rkky")
+def _(mode):
+    """RKKY-form interlayer coupling J(x) ~ (sin x - x cos x)/x^4 with
+    x = 2 k_F r: the oscillation that made synthetic antiferromagnets."""
+    c = S.SERIES[mode]
+    x = np.linspace(2.2, 24, 600)
+    J = (np.sin(x) - x * np.cos(x)) / x**4
+    fig, ax = plt.subplots()
+    ax.plot(x, J * 100, color=c[0], lw=2.2)
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.9, ls=":")
+    ax.fill_between(x, J * 100, 0, where=J > 0, color=c[1], alpha=0.18)
+    ax.fill_between(x, J * 100, 0, where=J < 0, color=c[2], alpha=0.18)
+    S.note(ax, 5.4, 2.4, "ferromagnetic coupling", mode, size=9)
+    S.note(ax, 8.6, -1.6, "antiferromagnetic", mode, size=9)
+    ax.set_xlabel(r"spacer scale  $x = 2k_F r$")
+    ax.set_ylabel("coupling  $J$  (arb.)")
+    ax.set_title("Pick the spacer thickness, pick the sign: coupling by the angstrom")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-two-current")
+def _(mode):
+    """GMR from the two-current resistor model: parallel and antiparallel
+    resistances and their ratio against the spin asymmetry alpha."""
+    c = S.SERIES[mode]
+    a = np.linspace(1, 12, 300)  # alpha = rho_down / rho_up
+    # unit rho_up; P: spins see (1,1) and (a,a) in the two layers -> parallel
+    # channels 2*1*a/(1+a) each... use standard result GMR = (a-1)^2/(4a)
+    gmr = (a - 1) ** 2 / (4 * a) * 100
+    fig, ax = plt.subplots()
+    ax.plot(a, gmr, color=c[0], lw=2.2)
+    S.label_end(ax, a[-1], gmr[-1], r"$\frac{(\alpha-1)^2}{4\alpha}$", c[0], mode, dy=-2)
+    ax.set_xlabel(r"spin asymmetry  $\alpha = \rho_\downarrow/\rho_\uparrow$")
+    ax.set_ylabel("GMR ratio  (%)")
+    ax.set_title("No asymmetry, no effect: GMR is bought entirely with spin-dependent scattering")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-spin-valve")
+def _(mode):
+    """Spin-valve transfer curve: free layer switches at small field, pinned
+    layer far away, resistance high in the antiparallel window."""
+    c = S.SERIES[mode]
+    H = np.linspace(-80, 80, 1200)
+    Rp, dR = 100.0, 8.0
+
+    def state(H, Hc, up):
+        return np.tanh((H + (Hc if up else -Hc)) / 2.0)
+
+    free_up = state(H, 5, True)
+    pinned_up = state(H, 60, True)
+    R_up = Rp + dR / 2 * (1 - free_up * pinned_up)
+    free_dn = state(H, 5, False)
+    pinned_dn = state(H, 60, False)
+    R_dn = Rp + dR / 2 * (1 - free_dn * pinned_dn)
+    fig, ax = plt.subplots()
+    ax.plot(H, R_up, color=c[0], lw=2.0)
+    ax.plot(H, R_dn, color=c[1], lw=2.0)
+    S.label_end(ax, H[-1], R_up[-1] + 0.3, "sweep up", c[0], mode, dy=6)
+    S.label_end(ax, H[-1], R_dn[-1] - 0.3, "sweep down", c[1], mode, dy=-10)
+    S.note(ax, -35, Rp + dR - 0.6, "antiparallel: high R", mode, size=9)
+    ax.set_xlabel("applied field  $H$  (arb.)")
+    ax.set_ylabel(r"resistance  ($\Omega$)")
+    ax.set_title("A soft layer reads the field; a pinned layer supplies the reference")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-julliere")
+def _(mode):
+    """Julliere TMR = 2 P1 P2 / (1 - P1 P2) for matched polarizations and
+    for one electrode fixed at P = 0.5."""
+    c = S.SERIES[mode]
+    P = np.linspace(0, 0.95, 300)
+    fig, ax = plt.subplots()
+    tmr_eq = 2 * P * P / (1 - P * P) * 100
+    tmr_half = 2 * P * 0.5 / (1 - P * 0.5) * 100
+    ax.plot(P, tmr_eq, color=c[0], lw=2.2)
+    ax.plot(P, tmr_half, color=c[1], lw=2.0)
+    S.label_end(ax, 0.70, 320, r"$P_1=P_2=P$", c[0], mode, dx=0, ha="right")
+    S.label_end(ax, P[-1], tmr_half[-1], r"$P_2=0.5$ fixed", c[1], mode, dy=-8)
+    ax.set_ylim(0, 400)
+    ax.set_xlabel("electrode spin polarization  $P$")
+    ax.set_ylabel("TMR  (%)")
+    ax.set_title("The divergence as $P\\to 1$ is why half-metals and MgO filtering matter")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-stt-switching")
+def _(mode):
+    """Thermally-assisted spin-transfer switching: P_sw = 1 - exp(-t/tau),
+    tau = tau0 exp(Delta (1 - I/Ic0)), for three pulse widths."""
+    c = S.SERIES[mode]
+    I = np.linspace(0.3, 1.4, 400)
+    delta, tau0 = 60.0, 1e-9
+    fig, ax = plt.subplots()
+    tau = tau0 * np.exp(delta * np.maximum(1 - I, 0.0))
+    for i, (t_p, lab, xl) in enumerate([(1e-3, "1 ms pulse", 0.60), (1e-6, r"1 $\mu$s", 0.88), (1e-8, "10 ns", 1.10)]):
+        p = 1 - np.exp(-t_p / tau)
+        ax.plot(I, p, color=c[i], lw=2.0)
+        S.label_end(ax, xl, (0.55, 0.30, 0.55)[i], lab, c[i], mode, dx=0,
+                    ha=("right", "right", "left")[i])
+    ax.set_xlabel(r"drive  $I / I_{c0}$")
+    ax.set_ylabel("switching probability")
+    ax.set_title("Slower writes switch below threshold: heat pays part of the bill")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-retention")
+def _(mode):
+    """Retention against thermal stability factor: tau0 exp(Delta) with the
+    ten-year line, and the write-energy shadow it casts."""
+    c = S.SERIES[mode]
+    delta = np.linspace(20, 90, 300)
+    tau_yr = 1e-9 * np.exp(delta) / 3.15e7
+    fig, ax = plt.subplots()
+    ax.semilogy(delta, tau_yr, color=c[0], lw=2.2)
+    ax.axhline(10, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 24, 25, "10-year retention", mode, size=8.5)
+    ax.axvline(60, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 61, 1e-8, r"$\Delta\approx 60$", mode, size=8.5)
+    ax.set_xlabel(r"thermal stability  $\Delta = E_b/k_BT$")
+    ax.set_ylabel("mean retention  (years)")
+    ax.set_title("Memory's tax: every unit of retention barrier is write energy too")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-demag-shape")
+def _(mode):
+    """Prolate-spheroid demagnetizing factor along the long axis, from the
+    exact expression, and the shape-anisotropy field it produces."""
+    c = S.SERIES[mode]
+    m = np.linspace(1.01, 12, 400)  # aspect ratio c/a
+    e = np.sqrt(1 - 1 / m**2)
+    Nz = (1 - e**2) / e**3 * (np.log((1 + e) / (1 - e)) / 2 - e)
+    fig, ax = plt.subplots()
+    ax.plot(m, Nz, color=c[0], lw=2.2)
+    S.label_end(ax, m[-1], Nz[-1], r"$N_\parallel$", c[0], mode, dy=6)
+    ax.plot(m, (1 - Nz) / 2, color=c[1], lw=2.0)
+    S.label_end(ax, m[-1], ((1 - Nz) / 2)[-1], r"$N_\perp$", c[1], mode, dy=-4)
+    ax.axhline(1 / 3, color=S.GUIDE[mode], lw=0.9, ls=":")
+    S.note(ax, 10.4, 0.345, "sphere: 1/3", mode, size=8.5)
+    ax.set_xlabel("aspect ratio  $c/a$")
+    ax.set_ylabel("demagnetizing factor")
+    ax.set_title("Shape is an anisotropy you get for free: needles hold their axis")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-skyrmion")
+def _(mode):
+    """360-degree wall ansatz for a skyrmion radial profile,
+    theta(r) = 2 atan(sinh(R/w) / sinh(r/w)), two sizes."""
+    c = S.SERIES[mode]
+    r = np.linspace(0.01, 60, 500)
+    fig, ax = plt.subplots()
+    for i, (R, w, lab) in enumerate([(20, 5, "R = 20 nm"), (8, 3, "R = 8 nm")]):
+        th = 2 * np.arctan(np.sinh(R / w) / np.sinh(r / w)) * 180 / np.pi
+        ax.plot(r, th, color=c[i], lw=2.2)
+        S.label_end(ax, 34 - 10 * i, np.interp(34 - 10 * i, r, th) + 3, lab, c[i], mode, dy=8)
+    ax.axhline(180, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.axhline(0, color=S.GUIDE[mode], lw=0.8, ls=":")
+    ax.set_xlabel("radius  $r$  (nm)")
+    ax.set_ylabel(r"spin angle  $\theta(r)$  (deg)")
+    ax.set_title("A skyrmion is a wall wrapped into a circle: core reversed, edge aligned")
+    S.strip(ax)
+    return fig
+
+
+@figure("m20-snoek")
+def _(mode):
+    """Snoek's trade-off for ferrites: single-pole rolloff mu(f) for a
+    high-permeability and a high-frequency material, constant (mu-1)*f_res."""
+    c = S.SERIES[mode]
+    f = np.logspace(5, 9.5, 500)
+    fig, ax = plt.subplots()
+    for i, (mu_i, fr, lab) in enumerate([(2000, 1.5e6, "MnZn-type: high $\\mu$"),
+                                         (100, 3e7, "NiZn-type: high $f$")]):
+        mu = 1 + (mu_i - 1) / np.sqrt(1 + (f / fr) ** 2)
+        ax.loglog(f, mu, color=c[i], lw=2.2)
+    S.label_end(ax, 3e5, 2100, "MnZn-type: high $\\mu$", c[0], mode, dx=0, dy=8)
+    S.label_end(ax, 3e5, 105, "NiZn-type: high $f$", c[1], mode, dx=0, dy=8)
+    ax.set_xlabel("frequency  (Hz)")
+    ax.set_ylabel(r"permeability  $\mu_r$")
+    ax.set_title(r"Snoek's rule: $(\mu_i-1)\,f_{res}$ is roughly a material constant")
+    S.strip(ax)
+    return fig
+
+
+# ---------------------------------------------------------------------------
 # driver
 # ---------------------------------------------------------------------------
 
