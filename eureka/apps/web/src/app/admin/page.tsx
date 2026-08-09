@@ -22,8 +22,8 @@ const MODULES = [
   },
   {
     href: '/admin/workforce',
-    title: 'Workforce',
-    body: 'Workforce development tracks and progress across your teams.',
+    title: 'Workforce — partner portal ↗',
+    body: 'Opens the workforce partner portal: partnerships, contracted seats, training programs, and workplace compliance (HIPAA / OSHA / SOC2).',
     group: 'People',
   },
   {

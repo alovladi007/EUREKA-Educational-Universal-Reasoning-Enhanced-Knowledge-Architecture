@@ -1,26 +1,38 @@
-"use client";
+'use client';
 
 /**
- * Phase 15 workforce admin moved to /institutions/partnerships.
- * This stub redirects + offers a fallback link.
+ * Workforce admin lives in the workforce partner portal
+ * (/institutions/partnerships). This stub announces the handoff while it
+ * redirects, and offers a fallback link — so the jump between the console
+ * and the portal is marked, never silent.
  */
 
-import { useEffect } from "react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useEffect } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 export default function WorkforceMovedRedirect() {
   const router = useRouter();
-  useEffect(() => { router.replace("/institutions/partnerships"); }, [router]);
+  useEffect(() => {
+    router.replace('/institutions/partnerships');
+  }, [router]);
   return (
-    <div className="min-h-[50vh] flex items-center justify-center px-4">
-      <div className="max-w-md text-center space-y-3">
-        <h1 className="text-2xl font-bold">Moved to the Institutions dashboard</h1>
-        <p className="text-slate-600">
-          Workforce admin now lives at{" "}
-          <Link href="/institutions/partnerships" className="text-amber-700 underline">
-            /institutions/partnerships
-          </Link>.
+    <div className="flex min-h-[50vh] items-center justify-center px-4">
+      <div className="max-w-md space-y-3 text-center">
+        <p className="text-xs font-semibold uppercase tracking-[0.22em] text-stone-500 dark:text-stone-400">
+          Leaving the console
+        </p>
+        <h1 className="text-2xl font-bold tracking-tight">Opening the workforce partner portal…</h1>
+        <p className="text-sm leading-6 text-stone-600 dark:text-stone-400">
+          Workforce admin — partnerships, seats, programs and workplace compliance — lives in its
+          own portal. Not redirected?{' '}
+          <Link
+            href="/institutions/partnerships"
+            className="font-semibold text-indigo-700 dark:text-indigo-400"
+          >
+            Open it directly
+          </Link>
+          .
         </p>
       </div>
     </div>

@@ -1,97 +1,145 @@
-"use client";
+'use client';
 
 /**
- * Institutional dashboard shell — dedicated to L&D admins / org_admins.
- * Lives at /institutions/* with its own sidebar that hides learner-facing
- * sections and surfaces partnership / cohort / compliance / analytics work.
+ * Workforce partner portal shell — the /institutions/* surface for L&D
+ * admins, in the platform's editorial design language (warm stone surfaces,
+ * ink text, indigo accent, letterspaced kickers, hairline rules, dark mode).
+ *
+ * This is a DIFFERENT domain from the /admin institution console: here the
+ * core object is the partnership — contracted seats, role-based training
+ * programs, workplace compliance attestations (HIPAA/OSHA/SOC2), skill
+ * passports and funnels. The header names the portal explicitly and links
+ * back to the console so the seam between the two surfaces is marked, not
+ * silent. Still gated to org_admin / super_admin.
  */
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  Building2,
-  LayoutDashboard,
-  Users,
-  GraduationCap,
-  ShieldCheck,
-  ClipboardList,
-  LineChart,
-  ScrollText,
-  Settings,
-  ArrowLeft,
-  BookMarked,
-  BadgeCheck,
-} from "lucide-react";
-import { cn } from "@/lib/utils";
-import ProtectedRoute from "@/components/auth/ProtectedRoute";
-import { EurekaMark } from "@/components/eureka-logo";
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { useTheme } from 'next-themes';
+import ProtectedRoute from '@/components/auth/ProtectedRoute';
+import { EurekaMark } from '@/components/eureka-logo';
 
-const SECTIONS = [
-  { href: "/institutions", label: "Overview", icon: LayoutDashboard },
-  { href: "/institutions/passport", label: "Skill Passport", icon: BadgeCheck },
-  { href: "/institutions/partnerships", label: "Partnerships", icon: Building2 },
-  { href: "/institutions/cohorts", label: "Cohorts", icon: GraduationCap },
-  { href: "/institutions/programs", label: "Programs", icon: ClipboardList },
-  // Graduate programs moved to /dashboard/graduate/admin (2026-05-23) so
-  // there's a single navigation tree for everything graduate. Don't list
-  // it here anymore.
-  { href: "/institutions/compliance", label: "Compliance", icon: ShieldCheck },
-  { href: "/institutions/workers", label: "Workers (seats)", icon: Users },
-  { href: "/institutions/analytics", label: "Analytics", icon: LineChart },
-  { href: "/institutions/audit", label: "Audit log", icon: ScrollText },
-  { href: "/institutions/settings", label: "Settings", icon: Settings },
+const NAV_GROUPS: { title: string; items: { href: string; label: string }[] }[] = [
+  {
+    title: 'Portal',
+    items: [{ href: '/institutions', label: 'Overview' }],
+  },
+  {
+    title: 'Partnership',
+    items: [
+      { href: '/institutions/partnerships', label: 'Partnerships' },
+      { href: '/institutions/workers', label: 'Workers (seats)' },
+      { href: '/institutions/programs', label: 'Programs' },
+      { href: '/institutions/cohorts', label: 'Training cohorts' },
+    ],
+  },
+  {
+    title: 'Credentials',
+    items: [{ href: '/institutions/passport', label: 'Skill Passport' }],
+  },
+  {
+    title: 'Evidence',
+    items: [
+      { href: '/institutions/compliance', label: 'Workplace compliance' },
+      { href: '/institutions/analytics', label: 'Analytics' },
+      { href: '/institutions/audit', label: 'Audit log' },
+    ],
+  },
+  {
+    title: 'Admin',
+    items: [{ href: '/institutions/settings', label: 'Settings' }],
+  },
 ];
 
 export default function InstitutionsLayout({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname() || "";
-  // /institutions/* is L&D admin console — gate behind org_admin / super_admin.
+  const pathname = usePathname() || '';
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
+  const isActive = (href: string) =>
+    pathname === href || (href !== '/institutions' && pathname.startsWith(href + '/'));
+
   return (
-    <ProtectedRoute allowedRoles={["org_admin", "super_admin"]}>
-    <div className="flex h-screen overflow-hidden bg-slate-50">
-      <aside className="flex h-screen w-64 shrink-0 flex-col border-r bg-white">
-        <div className="flex h-16 shrink-0 items-center gap-2 border-b px-6">
-          <EurekaMark className="h-7 w-7 shrink-0" />
-          <div>
-            <div className="text-base font-bold leading-tight">Institutions</div>
-            <div className="text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-500">Learn. Discover. Master.</div>
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto p-3">
-          <nav className="space-y-0.5">
-            {SECTIONS.map((s) => {
-              const active =
-                pathname === s.href ||
-                (s.href !== "/institutions" && pathname.startsWith(s.href + "/"));
-              return (
-                <Link
-                  key={s.href}
-                  href={s.href}
-                  className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                    active
-                      ? "bg-amber-600 text-white"
-                      : "text-slate-700 hover:bg-slate-100",
-                  )}
+    <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+      <div className="min-h-screen bg-stone-50 text-stone-900 dark:bg-stone-950 dark:text-stone-100">
+        {/* Portal header — names the surface and marks the seam back to the console */}
+        <header className="sticky top-0 z-40 border-b border-stone-200 bg-stone-50/95 backdrop-blur dark:border-stone-800 dark:bg-stone-950/95">
+          <div className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+            <div className="flex items-center gap-3">
+              <Link href="/" className="flex items-center gap-2.5" aria-label="EUREKA home">
+                <EurekaMark className="h-7 w-7" />
+                <span className="text-lg font-bold tracking-tight">EUREKA</span>
+              </Link>
+              <span className="hidden h-5 w-px bg-stone-300 dark:bg-stone-700 sm:block" aria-hidden />
+              <span className="hidden text-[10px] font-semibold uppercase tracking-[0.24em] text-stone-500 dark:text-stone-400 sm:block">
+                Workforce partner portal
+              </span>
+            </div>
+            <div className="flex items-center gap-2 sm:gap-4">
+              {mounted && (
+                <button
+                  onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
+                  aria-label="Toggle dark mode"
+                  className="rounded-md p-2 text-stone-500 hover:bg-stone-200/70 dark:text-stone-400 dark:hover:bg-stone-800"
                 >
-                  <s.icon className="h-4 w-4" />
-                  {s.label}
-                </Link>
-              );
-            })}
-          </nav>
+                  <i className={`fas ${resolvedTheme === 'dark' ? 'fa-sun' : 'fa-moon'}`} aria-hidden />
+                </button>
+              )}
+              <Link
+                href="/admin"
+                className="text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100"
+              >
+                Back to console
+              </Link>
+              <Link
+                href="/dashboard"
+                className="hidden text-sm font-medium text-stone-500 hover:text-stone-900 dark:text-stone-400 dark:hover:text-stone-100 sm:block"
+              >
+                Dashboard
+              </Link>
+            </div>
+          </div>
+        </header>
+
+        <div className="mx-auto grid max-w-7xl gap-10 px-4 py-10 sm:px-6 lg:grid-cols-[220px_1fr] lg:gap-14 lg:px-8">
+          {/* Rail */}
+          <aside className="h-fit lg:sticky lg:top-24">
+            <nav aria-label="Portal sections" className="space-y-7">
+              {NAV_GROUPS.map((group) => (
+                <div key={group.title}>
+                  <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-stone-400 dark:text-stone-500">
+                    {group.title}
+                  </p>
+                  <ul className="mt-2.5 border-l border-stone-200 dark:border-stone-800">
+                    {group.items.map((item) => {
+                      const active = isActive(item.href);
+                      return (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            aria-current={active ? 'page' : undefined}
+                            className={`-ml-px block border-l-2 py-1.5 pl-4 text-sm transition-colors ${
+                              active
+                                ? 'border-indigo-700 font-semibold text-stone-900 dark:border-indigo-400 dark:text-stone-100'
+                                : 'border-transparent text-stone-500 hover:border-stone-300 hover:text-stone-900 dark:text-stone-400 dark:hover:border-stone-600 dark:hover:text-stone-100'
+                            }`}
+                          >
+                            {item.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
+            </nav>
+          </aside>
+
+          <main className="min-w-0 space-y-8 pb-16">{children}</main>
         </div>
-        <div className="shrink-0 border-t p-3 space-y-1">
-          <Link
-            href="/"
-            className="flex items-center gap-2 rounded-md px-3 py-2 text-xs text-slate-500 hover:bg-slate-100"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" />
-            Back to main site
-          </Link>
-        </div>
-      </aside>
-      <main className="flex-1 overflow-y-auto p-6">{children}</main>
-    </div>
+      </div>
     </ProtectedRoute>
   );
 }
