@@ -13,8 +13,9 @@ import { USPTO_APR2003_PM_QUESTIONS } from '../patent-bar-uspto-apr2003-pm-data'
 import { USPTO_APR2002_AM_QUESTIONS } from '../patent-bar-uspto-apr2002-data';
 import { USPTO_APR2002_PM_QUESTIONS } from '../patent-bar-uspto-apr2002-pm-data';
 import { USPTO_OCT2001_AM_QUESTIONS } from '../patent-bar-uspto-oct2001-data';
+import { USPTO_OCT2001_PM_QUESTIONS } from '../patent-bar-uspto-oct2001-pm-data';
 
-const OFFICIAL_TOTAL = 320; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48
+const OFFICIAL_TOTAL = 370; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48+50
 
 const ALL = [
   ...USPTO_OCT2003_AM_QUESTIONS,
@@ -24,6 +25,7 @@ const ALL = [
   ...USPTO_APR2002_AM_QUESTIONS,
   ...USPTO_APR2002_PM_QUESTIONS,
   ...USPTO_OCT2001_AM_QUESTIONS,
+  ...USPTO_OCT2001_PM_QUESTIONS,
 ];
 
 describe('official USPTO ingestion reaches the live pool', () => {
@@ -52,10 +54,11 @@ describe('official USPTO ingestion reaches the live pool', () => {
     }
   });
 
-  it('Oct 2001 AM (48 items) reaches the official mock pool', () => {
+  it('both Oct 2001 sessions (48 + 50) reach the official mock pool', () => {
     const pool = Object.values(buildOfficialMockPool(ALL as never)).flat();
     expect(pool.filter((q) => q.id.startsWith('uspto-oct01-am-')).length).toBe(48);
-    for (const q of USPTO_OCT2001_AM_QUESTIONS) {
+    expect(pool.filter((q) => q.id.startsWith('uspto-oct01-pm-')).length).toBe(50);
+    for (const q of [...USPTO_OCT2001_AM_QUESTIONS, ...USPTO_OCT2001_PM_QUESTIONS]) {
       expect(q.options.length).toBe(5);
       expect(q.correct).toBeGreaterThanOrEqual(0);
       expect(q.correct).toBeLessThan(5);

@@ -39,7 +39,7 @@ export default function PatentBarDiagnosticPage() {
 
   useEffect(() => {
     (async () => {
-      const [octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am] = await Promise.all([
+      const [octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm] = await Promise.all([
         import('@/lib/patent-bar-uspto-oct2003-data'),
         import('@/lib/patent-bar-uspto-oct2003-pm-data'),
         import('@/lib/patent-bar-uspto-apr2003-data'),
@@ -47,6 +47,7 @@ export default function PatentBarDiagnosticPage() {
         import('@/lib/patent-bar-uspto-apr2002-data'),
         import('@/lib/patent-bar-uspto-apr2002-pm-data'),
         import('@/lib/patent-bar-uspto-oct2001-data'),
+        import('@/lib/patent-bar-uspto-oct2001-pm-data'),
       ]);
       const officials = [
         ...octAm.USPTO_OCT2003_AM_QUESTIONS,
@@ -56,6 +57,7 @@ export default function PatentBarDiagnosticPage() {
         ...apr02Am.USPTO_APR2002_AM_QUESTIONS,
         ...apr02Pm.USPTO_APR2002_PM_QUESTIONS,
         ...oct01Am.USPTO_OCT2001_AM_QUESTIONS,
+        ...oct01Pm.USPTO_OCT2001_PM_QUESTIONS,
       ];
       draw(buildOfficialMockPool(officials as any));
     })();
