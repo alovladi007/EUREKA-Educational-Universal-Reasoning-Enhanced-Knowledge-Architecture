@@ -20,6 +20,7 @@ import {
   Stethoscope,
   School,
   Shield,
+  Building2,
   Lightbulb,
   Sparkles,
   Glasses,
@@ -37,11 +38,11 @@ import {
   FlaskRound,
 } from "lucide-react";
 
-// /dashboard sidebar = ORIGINAL learner-oriented surface only.
-// Institutions, Marketplace, My training, Settings (subscription), and the new
-// Admin console all live under their own routes (/institutions, /marketplace,
-// /training, /settings, /admin) with their own shells — accessible from the
-// home page (/), NOT cross-linked here.
+// /dashboard sidebar = the learner-oriented surface, plus (for admin roles
+// only) doors into the org surfaces: the Partner Portal (/institutions —
+// workforce partnerships, seats, programs) and the Admin console. Marketplace,
+// My training and Settings (subscription) still live under their own routes
+// with their own shells, reachable from the home page (/).
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "High School", href: "/dashboard/high-school", icon: School },
@@ -74,6 +75,7 @@ const navigation = [
   { name: "Futures", href: "/dashboard/futures", icon: Rocket },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
   // adminOnly entries are filtered out for non-admin roles at render time.
+  { name: "Partner Portal", href: "/institutions", icon: Building2, adminOnly: true },
   { name: "Admin", href: "/dashboard/admin", icon: Shield, adminOnly: true },
 ];
 
