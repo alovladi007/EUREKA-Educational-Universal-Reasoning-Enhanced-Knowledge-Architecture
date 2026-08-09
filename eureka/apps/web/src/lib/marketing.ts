@@ -119,7 +119,7 @@ export const PROGRAMS: Program[] = [
     levels: ['HS', 'UG', 'GR'],
     tagline: 'Pre-algebra to graduate analysis, graded by a computer algebra system.',
     blurb: 'A guided ladder of 200+ full-course lessons with SymPy-verified grading, proof training up to a Lean 4 formal track, and adaptive pathing.',
-    href: '/dashboard',
+    href: '/launch/mathematics',
     featured: true,
     detail: {
       summary:
@@ -153,7 +153,7 @@ export const PROGRAMS: Program[] = [
     levels: ['UG', 'GR'],
     tagline: 'A graduate-depth device-physics course, built like a book.',
     blurb: '60 modules and 156 lessons of device physics — every figure computed from the equations the lesson states, every derivation on the page.',
-    href: '/dashboard/courses',
+    href: '/dashboard/courses/by-code/ELEC-DEV',
     featured: true,
     detail: {
       summary:
@@ -342,7 +342,7 @@ export const PROGRAMS: Program[] = [
     levels: ['HS', 'UG'],
     tagline: 'Reaction engines, not videos of reactions.',
     blurb: 'Chemistry with working kinetics and gas-law engines, a Johnstone-triangle lab and predict-observe-explain benches.',
-    href: '/dashboard/chemistry',
+    href: '/launch/chemistry',
   },
 ];
 
