@@ -90,12 +90,13 @@ export default function PatentBarMockPage() {
   // Load the official banks once; build the verified-only pool.
   useEffect(() => {
     (async () => {
-      const [octAm, octPm, aprAm, aprPm, apr02Am] = await Promise.all([
+      const [octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm] = await Promise.all([
         import('@/lib/patent-bar-uspto-oct2003-data'),
         import('@/lib/patent-bar-uspto-oct2003-pm-data'),
         import('@/lib/patent-bar-uspto-apr2003-data'),
         import('@/lib/patent-bar-uspto-apr2003-pm-data'),
         import('@/lib/patent-bar-uspto-apr2002-data'),
+        import('@/lib/patent-bar-uspto-apr2002-pm-data'),
       ]);
       const officials = [
         ...octAm.USPTO_OCT2003_AM_QUESTIONS,
@@ -103,6 +104,7 @@ export default function PatentBarMockPage() {
         ...aprAm.USPTO_APR2003_AM_QUESTIONS,
         ...aprPm.USPTO_APR2003_PM_QUESTIONS,
         ...apr02Am.USPTO_APR2002_AM_QUESTIONS,
+        ...apr02Pm.USPTO_APR2002_PM_QUESTIONS,
       ];
       setBank(new Map(officials.map((q: any) => [q.id, q])));
       setPool(buildOfficialMockPool(officials as any));
