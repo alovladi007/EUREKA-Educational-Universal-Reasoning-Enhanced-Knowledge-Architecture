@@ -12,8 +12,9 @@ import { USPTO_APR2003_AM_QUESTIONS } from '../patent-bar-uspto-apr2003-data';
 import { USPTO_APR2003_PM_QUESTIONS } from '../patent-bar-uspto-apr2003-pm-data';
 import { USPTO_APR2002_AM_QUESTIONS } from '../patent-bar-uspto-apr2002-data';
 import { USPTO_APR2002_PM_QUESTIONS } from '../patent-bar-uspto-apr2002-pm-data';
+import { USPTO_OCT2001_AM_QUESTIONS } from '../patent-bar-uspto-oct2001-data';
 
-const OFFICIAL_TOTAL = 272; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49
+const OFFICIAL_TOTAL = 320; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48
 
 const ALL = [
   ...USPTO_OCT2003_AM_QUESTIONS,
@@ -22,6 +23,7 @@ const ALL = [
   ...USPTO_APR2003_PM_QUESTIONS,
   ...USPTO_APR2002_AM_QUESTIONS,
   ...USPTO_APR2002_PM_QUESTIONS,
+  ...USPTO_OCT2001_AM_QUESTIONS,
 ];
 
 describe('official USPTO ingestion reaches the live pool', () => {
@@ -50,9 +52,25 @@ describe('official USPTO ingestion reaches the live pool', () => {
     }
   });
 
+  it('Oct 2001 AM (48 items) reaches the official mock pool', () => {
+    const pool = Object.values(buildOfficialMockPool(ALL as never)).flat();
+    expect(pool.filter((q) => q.id.startsWith('uspto-oct01-am-')).length).toBe(48);
+    for (const q of USPTO_OCT2001_AM_QUESTIONS) {
+      expect(q.options.length).toBe(5);
+      expect(q.correct).toBeGreaterThanOrEqual(0);
+      expect(q.correct).toBeLessThan(5);
+      expect(q.explanation).toContain('OFFICIAL USPTO MODEL ANSWER');
+      expect(q.topicId).toBeGreaterThanOrEqual(0);
+      expect(q.topicId).toBeLessThanOrEqual(7);
+    }
+  });
+
   it('the officially discarded questions are excluded', () => {
-    // Apr 2002 AM Q49 and PM Q41 were both "All answers accepted".
+    // Apr 2002 AM Q49, Apr 2002 PM Q41, and Oct 2001 AM Q4 and Q26 were all
+    // "All answers accepted".
     expect(USPTO_APR2002_AM_QUESTIONS.find((q) => q.id === 'uspto-apr02-am-49')).toBeUndefined();
     expect(USPTO_APR2002_PM_QUESTIONS.find((q) => q.id === 'uspto-apr02-pm-41')).toBeUndefined();
+    expect(USPTO_OCT2001_AM_QUESTIONS.find((q) => q.id === 'uspto-oct01-am-04')).toBeUndefined();
+    expect(USPTO_OCT2001_AM_QUESTIONS.find((q) => q.id === 'uspto-oct01-am-26')).toBeUndefined();
   });
 });
