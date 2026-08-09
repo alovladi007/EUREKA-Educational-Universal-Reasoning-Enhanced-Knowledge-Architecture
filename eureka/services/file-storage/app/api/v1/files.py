@@ -35,6 +35,12 @@ def ensure_path_owner(user: CurrentUser, file_path: str) -> None:
     """
     if is_staff(user):
         return
+    # Course media (lecture videos, posters) is catalog content: readable by
+    # any authenticated user. Which courses a user can SEE is enforced by
+    # api-core's org gate on the course_content rows that carry these paths;
+    # writes to this folder are staff-only (enforced in upload_file).
+    if (file_path or "").strip("/").startswith("course-media/"):
+        return
     uid = str(user.get("user_id"))
     if uid not in (file_path or "").strip("/").split("/"):
         raise HTTPException(status_code=403, detail="Not authorized for this file")
@@ -162,8 +168,17 @@ async def upload_file(
         file_id = str(uuid.uuid4())
         file_extension = os.path.splitext(file.filename)[1]
 
-        # Organize by folder and user_id if provided
-        if user_id:
+        # Organize by folder and user_id if provided. Course media (lecture
+        # videos, posters) is catalog content keyed by course, not by the
+        # uploading user: staff-only writes, stored under the course id so
+        # ensure_path_owner's course-media read rule applies.
+        if folder == "course-media":
+            if not is_staff(user):
+                raise HTTPException(status_code=403, detail="Course media uploads are staff-only")
+            if not course_id:
+                raise HTTPException(status_code=400, detail="course_id is required for course media")
+            file_path = f"course-media/{course_id}/{file_id}{file_extension}"
+        elif user_id:
             file_path = f"{folder}/{user_id}/{file_id}{file_extension}"
         else:
             file_path = f"{folder}/{file_id}{file_extension}"

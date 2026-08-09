@@ -29,6 +29,20 @@ class StorageClient:
             secure=settings.S3_SECURE
         )
         self.bucket_name = settings.S3_BUCKET_NAME
+        # Presigned URLs are consumed by the USER'S BROWSER, which cannot
+        # resolve the in-network S3 host (minio:9000). Signing is purely
+        # client-side, so a second Minio client configured with the public
+        # endpoint produces URLs that are valid for the host browsers can
+        # actually reach (dev: localhost:9004; prod: the CDN/S3 domain).
+        # region pinned so the SDK signs without a bucket-location lookup —
+        # the public endpoint is generally NOT reachable from this container.
+        self.presign_client = Minio(
+            settings.S3_PUBLIC_ENDPOINT or settings.S3_ENDPOINT,
+            access_key=settings.S3_ACCESS_KEY,
+            secret_key=settings.S3_SECRET_KEY,
+            secure=settings.S3_PUBLIC_SECURE,
+            region=settings.S3_REGION or "us-east-1",
+        )
         self._ensure_bucket_exists()
 
     def _ensure_bucket_exists(self):
@@ -155,7 +169,7 @@ class StorageClient:
             Presigned URL
         """
         try:
-            url = self.client.presigned_get_object(
+            url = self.presign_client.presigned_get_object(
                 self.bucket_name,
                 file_path,
                 expires=expires

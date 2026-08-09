@@ -45,6 +45,37 @@ type Course = {
   enrollment_count: number | null;
 };
 
+
+const FILE_STORAGE = process.env.NEXT_PUBLIC_FILE_STORAGE_URL || "http://localhost:8300";
+
+/** Streams a course video from the platform's file storage. The <video> tag
+ * cannot send an Authorization header, so we exchange the storage path for a
+ * short-lived presigned URL (authenticated fetch) and point the player at
+ * that. Range requests work against the presigned URL, so seeking is free. */
+function VideoLecture({ filePath }: { filePath?: string }) {
+  const [src, setSrc] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+  useEffect(() => {
+    if (!filePath) { setErr("No video file attached yet."); return; }
+    const token = typeof window !== "undefined" ? window.localStorage.getItem("access_token") : null;
+    fetch(`${FILE_STORAGE}/api/v1/files/presigned-url/${filePath}?expires_hours=6`, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    })
+      .then(async (r) => {
+        if (!r.ok) throw new Error(`presign failed (${r.status})`);
+        const j = await r.json();
+        setSrc(j.url);
+      })
+      .catch((e) => setErr(String(e.message || e)));
+  }, [filePath]);
+  if (err) return <p className="text-sm text-muted-foreground">{err}</p>;
+  if (!src) return <p className="text-sm text-muted-foreground">Loading video…</p>;
+  return (
+    // eslint-disable-next-line jsx-a11y/media-has-caption -- captions arrive with produced content
+    <video controls preload="metadata" className="w-full rounded-md border bg-black" src={src} />
+  );
+}
+
 export default function CourseDetailPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
@@ -53,6 +84,9 @@ export default function CourseDetailPage() {
   const [course, setCourse] = useState<Course | null>(null);
   const [readings, setReadings] = useState<
     { id: string; title: string; content: string; metadata: { chapter?: string } }[]
+  >([]);
+  const [videos, setVideos] = useState<
+    { id: string; title: string; content: string; metadata: { chapter?: string; file_path?: string; duration_s?: number } }[]
   >([]);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -67,11 +101,21 @@ export default function CourseDetailPage() {
         // Authored readings, served from course_content. Absence is a normal
         // state (structure-only modules), so a failure here never blocks the
         // page - the syllabus still tells the truth about coverage.
-        api<{ content: { id: string; title: string; content: string; metadata: { chapter?: string } }[] }>(
+        api<{ content: { id: string; content_type?: string; title: string; content: string; metadata: { chapter?: string; file_path?: string; duration_s?: number } }[] }>(
           `/courses/${id}/content`,
         )
-          .then((r) => setReadings(r.content ?? []))
-          .catch(() => setReadings([]));
+          .then((r) => {
+            const rows = r.content ?? [];
+            // Video lectures (uploaded directly to the platform's file
+            // storage) render in their own card with a player; everything
+            // else stays in the readings card.
+            setVideos(rows.filter((x) => x.content_type === "video"));
+            setReadings(rows.filter((x) => x.content_type !== "video"));
+          })
+          .catch(() => {
+            setReadings([]);
+            setVideos([]);
+          });
         setCourse(c);
       } catch (e) {
         setError(String((e as Error).message));
@@ -221,6 +265,40 @@ export default function CourseDetailPage() {
                 <Badge key={s} variant="secondary" className="text-[10px] font-mono">{s}</Badge>
               ))}
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {videos.length > 0 && (
+        <Card className="mt-6">
+          <CardHeader>
+            <CardTitle>Video lectures ({videos.length})</CardTitle>
+            <CardDescription>
+              Uploaded directly to EUREKA and streamed from the platform&apos;s
+              own storage.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {videos.map((v) => (
+              <details key={v.id} className="rounded border bg-secondary/20 p-3">
+                <summary className="cursor-pointer text-sm font-medium">
+                  {v.title}
+                  {typeof v.metadata?.duration_s === "number" && (
+                    <span className="ml-2 font-mono text-xs text-muted-foreground">
+                      {Math.floor(v.metadata.duration_s / 60)}:{String(v.metadata.duration_s % 60).padStart(2, "0")}
+                    </span>
+                  )}
+                </summary>
+                <div className="mt-3 space-y-3">
+                  <VideoLecture filePath={v.metadata?.file_path} />
+                  {v.content && (
+                    <div className="prose prose-sm dark:prose-invert max-w-none">
+                      <Markdown>{v.content}</Markdown>
+                    </div>
+                  )}
+                </div>
+              </details>
+            ))}
           </CardContent>
         </Card>
       )}

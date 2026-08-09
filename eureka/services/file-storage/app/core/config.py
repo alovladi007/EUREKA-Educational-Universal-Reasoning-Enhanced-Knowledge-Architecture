@@ -19,10 +19,19 @@ class Settings(BaseSettings):
     S3_SECRET_KEY: str = "minioadmin"
     S3_BUCKET_NAME: str = "eureka-files"
     S3_SECURE: bool = False  # Use HTTP for local MinIO
+    # Endpoint BROWSERS can reach for presigned URLs (host:port, no scheme).
+    # Presigning is client-side, so this need not be reachable from inside
+    # the container. Dev default matches compose's minio mapping 9004:9000;
+    # set to the real S3/CDN domain in prod.
+    S3_PUBLIC_ENDPOINT: str = "localhost:9004"
+    S3_PUBLIC_SECURE: bool = False
     S3_REGION: str = "us-east-1"
 
     # File Upload Limits
-    MAX_FILE_SIZE_MB: int = 100
+    # Raised from 100 for direct-upload lecture videos (course-media/).
+    # The upload path buffers in memory; revisit with streaming uploads if
+    # lectures regularly exceed this.
+    MAX_FILE_SIZE_MB: int = 1024
     ALLOWED_EXTENSIONS: list = [
         # Documents
         ".pdf", ".doc", ".docx", ".txt", ".rtf", ".odt",

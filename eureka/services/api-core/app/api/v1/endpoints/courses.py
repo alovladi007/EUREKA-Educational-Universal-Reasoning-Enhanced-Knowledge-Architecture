@@ -7,6 +7,7 @@ Handles course and enrollment management operations.
 from fastapi import APIRouter, Depends, HTTPException, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import Optional
+from pydantic import BaseModel as _PydBaseModel
 from uuid import UUID
 
 from app.core.database import get_db
@@ -108,6 +109,65 @@ async def get_course_content(
         {"id": str(r["id"]), "content_type": r["content_type"], "title": r["title"],
          "content": r["content"], "topics": r["topics"], "metadata": r["metadata"]}
         for r in rows]}
+
+
+class CourseContentCreate(_PydBaseModel):
+    """Body for POST /{course_id}/content — one authored content row.
+
+    content_type 'reading' carries markdown in `content`; 'video' carries a
+    file-storage path in metadata.file_path (upload the file to the
+    file-storage service with folder=course-media first) plus optional
+    duration_s / poster_path. The reader renders both.
+    """
+    content_type: str = "reading"
+    title: str
+    content: str = ""
+    topics: list = []
+    metadata: dict = {}
+
+
+@router.post("/{course_id}/content", status_code=status.HTTP_201_CREATED)
+async def create_course_content(
+    course_id: UUID,
+    body: CourseContentCreate,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db)
+):
+    """Add a content row (reading or video lecture) to a course.
+
+    Same permission bar as editing the course: instructor, org admin of the
+    course's org, or super admin. Videos are stored by reference — the actual
+    bytes live in the file-storage service under course-media/{course_id}/.
+    """
+    from sqlalchemy import text as _text
+    import json as _json
+
+    course = await course_crud.get_course_by_id(db, course_id)
+    if not course:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Course not found")
+
+    can_edit = (
+        current_user.role == UserRole.SUPER_ADMIN or
+        (current_user.role == UserRole.ORG_ADMIN and current_user.org_id == course.org_id) or
+        (getattr(course, "instructor_id", None) == current_user.id)
+    )
+    if not can_edit:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Not allowed to author content for this course")
+
+    if body.content_type not in ("reading", "video"):
+        raise HTTPException(status_code=422, detail="content_type must be 'reading' or 'video'")
+    if body.content_type == "video" and not (body.metadata or {}).get("file_path"):
+        raise HTTPException(status_code=422, detail="video content requires metadata.file_path (upload to file-storage first)")
+
+    row = (await db.execute(_text(
+        """INSERT INTO course_content (course_id, content_type, title, content, topics, metadata)
+           VALUES (:cid, :ctype, :title, :content, cast(:topics as jsonb), cast(:meta as jsonb))
+           RETURNING id"""),
+        {"cid": str(course_id), "ctype": body.content_type, "title": body.title,
+         "content": body.content, "topics": _json.dumps(body.topics),
+         "meta": _json.dumps(body.metadata)})).scalar_one()
+    await db.commit()
+    return {"id": str(row), "content_type": body.content_type, "title": body.title}
 
 
 @router.patch("/{course_id}", response_model=CourseResponse)
