@@ -13,6 +13,7 @@ import { useAuthStore } from "@/stores/auth";
 
 const SECTIONS = [
   { href: "/", label: "Home" },
+  { href: "/dashboard", label: "Dashboard" },
   { href: "/learner", label: "Learner" },
   { href: "/marketplace", label: "Marketplace" },
   { href: "/training", label: "My training" },

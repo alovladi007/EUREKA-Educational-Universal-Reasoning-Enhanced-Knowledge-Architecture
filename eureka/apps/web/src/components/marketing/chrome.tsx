@@ -11,6 +11,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
 import { EurekaMark } from '@/components/eureka-logo';
+import { useAuthStore } from '@/stores/auth';
 
 const NAV = [
   { label: 'Programs', href: '/programs' },
@@ -66,6 +67,10 @@ export function MarketingNav() {
   const [mounted, setMounted] = useState(false);
   const [open, setOpen] = useState(false);
   useEffect(() => setMounted(true), []);
+  // Signed-in visitors get a direct door into the app; render only after
+  // mount so the persisted auth store cannot cause a hydration mismatch.
+  const isAuthed = useAuthStore((s) => s.isAuthenticated);
+  const showDashboard = mounted && isAuthed;
 
   const isActive = (href: string) => pathname === href || pathname?.startsWith(href + '/');
 
@@ -114,18 +119,29 @@ export function MarketingNav() {
               <i className={`fas ${resolvedTheme === 'dark' ? 'fa-sun' : 'fa-moon'}`} aria-hidden />
             </button>
           )}
-          <Link
-            href="/auth/login"
-            className="hidden text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 md:inline"
-          >
-            Log in
-          </Link>
-          <Link
-            href="/auth/register"
-            className="hidden rounded-md bg-indigo-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-800 md:inline-block"
-          >
-            Join for free
-          </Link>
+          {showDashboard ? (
+            <Link
+              href="/dashboard"
+              className="hidden rounded-md bg-indigo-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-800 md:inline-block"
+            >
+              Open dashboard
+            </Link>
+          ) : (
+            <>
+              <Link
+                href="/auth/login"
+                className="hidden text-sm font-semibold text-stone-600 hover:text-stone-900 dark:text-stone-300 dark:hover:text-stone-100 md:inline"
+              >
+                Log in
+              </Link>
+              <Link
+                href="/auth/register"
+                className="hidden rounded-md bg-indigo-700 px-4 py-2 text-sm font-semibold text-white transition-colors hover:bg-indigo-800 md:inline-block"
+              >
+                Join for free
+              </Link>
+            </>
+          )}
           <button
             onClick={() => setOpen((v) => !v)}
             className="rounded-md p-2 text-stone-600 hover:bg-stone-200/70 dark:text-stone-300 dark:hover:bg-stone-800 lg:hidden"
@@ -140,7 +156,10 @@ export function MarketingNav() {
       {open && (
         <div className="border-t border-stone-200 bg-stone-50 dark:border-stone-800 dark:bg-stone-950 lg:hidden">
           <nav className="space-y-1 px-4 py-3" aria-label="Mobile">
-            {NAV.concat([{ label: 'Log in', href: '/auth/login' }]).map((item) => (
+            {(showDashboard ? [{ label: 'Dashboard', href: '/dashboard' }] : [])
+              .concat(NAV)
+              .concat(showDashboard ? [] : [{ label: 'Log in', href: '/auth/login' }])
+              .map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
@@ -150,13 +169,15 @@ export function MarketingNav() {
                 {item.label}
               </Link>
             ))}
-            <Link
-              href="/auth/register"
-              onClick={() => setOpen(false)}
-              className="mt-2 block rounded-md bg-indigo-700 px-3 py-2 text-center text-sm font-semibold text-white"
-            >
-              Join for free
-            </Link>
+            {!showDashboard && (
+              <Link
+                href="/auth/register"
+                onClick={() => setOpen(false)}
+                className="mt-2 block rounded-md bg-indigo-700 px-3 py-2 text-center text-sm font-semibold text-white"
+              >
+                Join for free
+              </Link>
+            )}
           </nav>
         </div>
       )}
@@ -179,6 +200,7 @@ const FOOTER_COLS: { title: string; links: [string, string][] }[] = [
   {
     title: 'Platform',
     links: [
+      ['Open the dashboard', '/dashboard'],
       ['How we teach', '/methods'],
       ['Outcomes', '/outcomes'],
       ['Browse the catalogue', '/explore'],
