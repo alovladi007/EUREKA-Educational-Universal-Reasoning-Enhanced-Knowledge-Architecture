@@ -221,7 +221,7 @@ export default function HomePage() {
         <section className="border-b border-stone-200 bg-stone-100/60 dark:border-stone-800 dark:bg-stone-900/40" aria-label="At a glance">
           <div className="mx-auto grid max-w-7xl grid-cols-2 divide-x divide-stone-200 px-4 dark:divide-stone-800 sm:px-6 lg:grid-cols-4 lg:px-8">
             <Stat value="11" label="Exams prepared" />
-            <Stat value="980" label="Patent Bar QBank items" />
+            <Stat value="1029" label="Patent Bar QBank items" />
             <Stat value="60" label="Modules, flagship course" />
             <Stat value="200+" label="Mathematics lessons" />
           </div>
