@@ -25,7 +25,6 @@ const NAV_GROUPS: { title: string; items: { href: string; label: string }[] }[] 
     items: [
       { href: '/admin/users', label: 'Members' },
       { href: '/admin/cohorts', label: 'Cohorts' },
-      { href: '/admin/workforce', label: 'Workforce — partner portal ↗' },
     ],
   },
   {

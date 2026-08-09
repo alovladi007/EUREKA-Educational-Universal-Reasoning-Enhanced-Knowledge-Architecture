@@ -21,12 +21,6 @@ const MODULES = [
     group: 'People',
   },
   {
-    href: '/admin/workforce',
-    title: 'Workforce — partner portal ↗',
-    body: 'Opens the workforce partner portal: partnerships, contracted seats, training programs, and workplace compliance (HIPAA / OSHA / SOC2).',
-    group: 'People',
-  },
-  {
     href: '/admin/integrations',
     title: 'SSO & LTI',
     body: 'Connect your identity provider (OIDC single sign-on) and LMS (LTI 1.3).',
