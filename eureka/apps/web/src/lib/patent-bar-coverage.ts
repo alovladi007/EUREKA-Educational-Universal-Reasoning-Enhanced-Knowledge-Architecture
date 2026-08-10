@@ -40,11 +40,11 @@ export interface CoverageSection {
  * points of exam weight and under-served prosecution — the single largest
  * section of the real exam.
  *
- * `weightPct` is now derived from the 611 official released-exam questions
- * in this bank (Oct 2003, Apr 2003, Apr 2002 AM+PM, Oct 2001 AM+PM,
- * Apr 2001 AM+PM, Oct 2000 AM+PM, Apr 2000 AM), which distribute as
- * prosecution 55.65%, patentability 27.17%, post-issuance 9.98%, PCT 2.78%,
- * ethics 2.78%, design/plant 1.64%.
+ * `weightPct` is now derived from the 661 official released-exam questions
+ * in this bank — seven exam dates, morning and afternoon each (Oct 2003,
+ * Apr 2003, Apr 2002, Oct 2001, Apr 2001, Oct 2000, Apr 2000) — which
+ * distribute as prosecution 55.22%, patentability 27.08%, post-issuance
+ * 10.44%, ethics 3.03%, PCT 2.57%, design/plant 1.66%.
  *
  * DERIVATION RULE — apply this verbatim on each new ingest so the numbers
  * stay reproducible rather than hand-tuned:
@@ -69,7 +69,7 @@ export interface CoverageSection {
  *     the PTAB Consolidated Trial Practice Guide (Nov 2019), the 2013
  *     "Changes to Representation of Others" rule that created the 37 CFR
  *     Part 11 professional-conduct rules, and the Global/IP5 Patent
- *     Prosecution Highway programs. Ethics measures 2.78% here largely
+ *     Prosecution Highway programs. Ethics measures 3.03% here largely
  *     BECAUSE the modern conduct rules did not exist when these exams were
  *     written. The modern exam near-certainly tests ethics, post-issuance
  *     (IPR/PGR/derivation) and international practice ABOVE their
@@ -80,18 +80,18 @@ export interface CoverageSection {
  * preparation (1), filing & prosecution (2), and Office-action responses (3).
  */
 export const PATENT_BAR_BLUEPRINT: CoverageSection[] = [
-  { id: 'patent_prosecution', name: 'Patent Prosecution & Application', weightPct: 56, topicIds: [1, 2, 3],
-    basis: 'empirical: 340/611 official items = 55.65%' },
+  { id: 'patent_prosecution', name: 'Patent Prosecution & Application', weightPct: 55, topicIds: [1, 2, 3],
+    basis: 'empirical: 365/661 official items = 55.22%' },
   { id: 'patentability', name: 'Patentability & Prior Art', weightPct: 27, topicIds: [0],
-    basis: 'empirical: 166/611 official items = 27.17%' },
+    basis: 'empirical: 179/661 official items = 27.08%' },
   { id: 'post_issuance', name: 'Post-Issuance Proceedings', weightPct: 10, topicIds: [5],
-    basis: 'empirical: 61/611 = 9.98%; also a FLOOR — modern PTAB trial practice (IPR/PGR/derivation) is a named tested source and postdates every source exam' },
+    basis: 'empirical: 69/661 = 10.44%; also a FLOOR — modern PTAB trial practice (IPR/PGR/derivation) is a named tested source and postdates every source exam' },
   { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', weightPct: 3, topicIds: [7],
-    basis: 'empirical: 17/611 = 2.78%; FLOOR — the 37 CFR Part 11 conduct rules (2013) postdate every source exam and are a named tested source' },
-  { id: 'design_plant', name: 'Design & Plant Patents', weightPct: 1, topicIds: [6],
-    basis: 'empirical: 10/611 official items = 1.64%; not a floor section — the 2023 design patent practitioner bar is a separate examination' },
+    basis: 'empirical: 20/661 = 3.03%; FLOOR — the 37 CFR Part 11 conduct rules (2013) postdate every source exam and are a named tested source' },
+  { id: 'design_plant', name: 'Design & Plant Patents', weightPct: 2, topicIds: [6],
+    basis: 'empirical: 11/661 official items = 1.66%; not a floor section — the 2023 design patent practitioner bar is a separate examination' },
   { id: 'pct_international', name: 'PCT & International Filing', weightPct: 3, topicIds: [4],
-    basis: 'empirical: 17/611 = 2.78%; FLOOR — the Global/IP5 PPH programs are a named tested source and postdate every source exam' },
+    basis: 'empirical: 17/661 = 2.57%; FLOOR — the Global/IP5 PPH programs are a named tested source and postdate every source exam' },
 ];
 
 export interface CoverageRow {

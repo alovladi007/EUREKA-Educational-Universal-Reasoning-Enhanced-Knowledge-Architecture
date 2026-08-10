@@ -33,6 +33,7 @@ import { USPTO_APR2001_PM_QUESTIONS } from '../patent-bar-uspto-apr2001-pm-data'
 import { USPTO_OCT2000_AM_QUESTIONS } from '../patent-bar-uspto-oct2000-data';
 import { USPTO_OCT2000_PM_QUESTIONS } from '../patent-bar-uspto-oct2000-pm-data';
 import { USPTO_APR2000_AM_QUESTIONS } from '../patent-bar-uspto-apr2000-data';
+import { USPTO_APR2000_PM_QUESTIONS } from '../patent-bar-uspto-apr2000-pm-data';
 import { PATENT_BAR_QUESTIONS } from '../patent-bar-qbank-data';
 import { PATENT_BAR_GAPFILL_ETHICS } from '../patent-bar-gapfill-ethics-data';
 
@@ -50,6 +51,7 @@ const OFFICIALS = [
   ...USPTO_OCT2000_AM_QUESTIONS,
   ...USPTO_OCT2000_PM_QUESTIONS,
   ...USPTO_APR2000_AM_QUESTIONS,
+  ...USPTO_APR2000_PM_QUESTIONS,
 ];
 
 const FULL_BANK = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...OFFICIALS];
@@ -58,7 +60,7 @@ describe('buildOfficialMockPool', () => {
   it('admits every official question and nothing unverified', () => {
     const pool = buildOfficialMockPool(FULL_BANK as PatentBarQuestion[]);
     const all = Object.values(pool).flat();
-    expect(all.length).toBe(OFFICIALS.length); // 611 officials, zero sme so far
+    expect(all.length).toBe(OFFICIALS.length); // 661 officials, zero sme so far
     for (const q of all) expect(q.id.startsWith('uspto-')).toBe(true);
   });
 
@@ -68,11 +70,11 @@ describe('buildOfficialMockPool', () => {
       Object.entries(pool).map(([k, v]) => [k, v.length]),
     );
     expect(counts).toEqual({
-      patent_prosecution: 340,
-      patentability: 166,
-      post_issuance: 61,
-      ethics_conduct: 17,
-      design_plant: 10,
+      patent_prosecution: 365,
+      patentability: 179,
+      post_issuance: 69,
+      ethics_conduct: 20,
+      design_plant: 11,
       pct_international: 17,
     });
   });
@@ -80,30 +82,30 @@ describe('buildOfficialMockPool', () => {
 
 describe('computeMockAllocation', () => {
   const currentSupply = {
-    patent_prosecution: 340,
-    patentability: 166,
-    post_issuance: 61,
-    ethics_conduct: 17,
-    design_plant: 10,
+    patent_prosecution: 365,
+    patentability: 179,
+    post_issuance: 69,
+    ethics_conduct: 20,
+    design_plant: 11,
     pct_international: 17,
   };
 
-  it('hits the blueprint exactly (56/27/10/3/1/3) for the current official pool', () => {
+  it('hits the blueprint exactly (55/27/10/3/2/3) for the current official pool', () => {
     const rows = computeMockAllocation(currentSupply, 100);
     const byId = Object.fromEntries(rows.map((r) => [r.id, r.allocated]));
     expect(byId).toEqual({
-      patent_prosecution: 56,
+      patent_prosecution: 55,
       patentability: 27,
       post_issuance: 10,
       ethics_conduct: 3,
-      design_plant: 1,
+      design_plant: 2,
       pct_international: 3,
     });
     expect(rows.reduce((n, r) => n + r.allocated, 0)).toBe(100);
     // Every section is now satisfiable from official items alone. This used
     // to fail in the thin sections, which was read as a supply defect; it was
     // actually an artifact of the unsourced 30/20/15/15/10/10 weights. With
-    // the blueprint corrected to the empirical distribution of the 611
+    // the blueprint corrected to the empirical distribution of the 661
     // official items, nothing is capped and nothing is redistributed.
     for (const r of rows) {
       expect(r.shortOfBlueprint).toBe(false);

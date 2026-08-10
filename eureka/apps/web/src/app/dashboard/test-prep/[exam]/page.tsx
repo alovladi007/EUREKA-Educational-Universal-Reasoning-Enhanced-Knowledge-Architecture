@@ -2232,7 +2232,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     if (examType !== 'PATENT_BAR') return;
     (async () => {
       try {
-        const [bank, gapfill, gapfillDesign, gapfillPct, gapfillPost, gapfillTopup, octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am, oct00Pm, apr00Am, cov] = await Promise.all([
+        const [bank, gapfill, gapfillDesign, gapfillPct, gapfillPost, gapfillTopup, octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am, oct00Pm, apr00Am, apr00Pm, cov] = await Promise.all([
           import('@/lib/patent-bar-qbank-data'),
           import('@/lib/patent-bar-gapfill-ethics-data'),
           import('@/lib/patent-bar-gapfill-design-data'),
@@ -2252,6 +2252,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           import('@/lib/patent-bar-uspto-oct2000-data'),
           import('@/lib/patent-bar-uspto-oct2000-pm-data'),
           import('@/lib/patent-bar-uspto-apr2000-data'),
+          import('@/lib/patent-bar-uspto-apr2000-pm-data'),
           import('@/lib/patent-bar-coverage'),
         ]);
         const all = [
@@ -2274,6 +2275,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           ...oct00Am.USPTO_OCT2000_AM_QUESTIONS,
           ...oct00Pm.USPTO_OCT2000_PM_QUESTIONS,
           ...apr00Am.USPTO_APR2000_AM_QUESTIONS,
+          ...apr00Pm.USPTO_APR2000_PM_QUESTIONS,
         ];
         setPbCoverage(cov.computePatentBarCoverage(all));
       } catch { /* coverage card simply doesn't render */ }
@@ -2284,13 +2286,13 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 399, FE_EE: 610, FE_ME: 554,
     // PATENT_BAR = 536 authored + 270 WS3 gap-fill (65 ethics + 66 design/
-    // plant + 40 PCT + 44 post-issuance + 55 top-up) + 611 official USPTO
+    // plant + 40 PCT + 44 post-issuance + 55 top-up) + 661 official USPTO
     // (Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM; Apr 2002: 49 AM +
     // 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000:
-    // 47 AM + 50 PM; Apr 2000: 49 AM) = 1417. The gap-fill blueprint floors still hold.
-    PATENT_BAR: 1417, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
+    // 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM) = 1467. The gap-fill blueprint floors still hold.
+    PATENT_BAR: 1467, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
-  const OFFICIAL_USPTO_COUNT = 611; // Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM
+  const OFFICIAL_USPTO_COUNT = 661; // Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM
   const qbankMax =
     examType === 'PATENT_BAR' && !pbEntitled
       ? PB_FREE_PREVIEW
@@ -2552,16 +2554,17 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         const { USPTO_OCT2000_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2000-data');
         const { USPTO_OCT2000_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-oct2000-pm-data');
         const { USPTO_APR2000_AM_QUESTIONS } = await import('@/lib/patent-bar-uspto-apr2000-data');
+        const { USPTO_APR2000_PM_QUESTIONS } = await import('@/lib/patent-bar-uspto-apr2000-pm-data');
         const { PATENT_BAR_GAPFILL_ETHICS } = await import('@/lib/patent-bar-gapfill-ethics-data');
         const { PATENT_BAR_GAPFILL_DESIGN } = await import('@/lib/patent-bar-gapfill-design-data');
         const { PATENT_BAR_GAPFILL_PCT } = await import('@/lib/patent-bar-gapfill-pct-data');
         const { PATENT_BAR_GAPFILL_POST_ISSUANCE } = await import('@/lib/patent-bar-gapfill-postissuance-data');
         const { PATENT_BAR_GAPFILL_TOPUP } = await import('@/lib/patent-bar-gapfill-topup-data');
-        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...PATENT_BAR_GAPFILL_TOPUP, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS, ...USPTO_APR2003_PM_QUESTIONS, ...USPTO_APR2002_AM_QUESTIONS, ...USPTO_APR2002_PM_QUESTIONS, ...USPTO_OCT2001_AM_QUESTIONS, ...USPTO_OCT2001_PM_QUESTIONS, ...USPTO_APR2001_AM_QUESTIONS, ...USPTO_APR2001_PM_QUESTIONS, ...USPTO_OCT2000_AM_QUESTIONS, ...USPTO_OCT2000_PM_QUESTIONS, ...USPTO_APR2000_AM_QUESTIONS];
+        let pbQuestions = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...PATENT_BAR_GAPFILL_DESIGN, ...PATENT_BAR_GAPFILL_PCT, ...PATENT_BAR_GAPFILL_POST_ISSUANCE, ...PATENT_BAR_GAPFILL_TOPUP, ...USPTO_OCT2003_AM_QUESTIONS, ...USPTO_OCT2003_PM_QUESTIONS, ...USPTO_APR2003_AM_QUESTIONS, ...USPTO_APR2003_PM_QUESTIONS, ...USPTO_APR2002_AM_QUESTIONS, ...USPTO_APR2002_PM_QUESTIONS, ...USPTO_OCT2001_AM_QUESTIONS, ...USPTO_OCT2001_PM_QUESTIONS, ...USPTO_APR2001_AM_QUESTIONS, ...USPTO_APR2001_PM_QUESTIONS, ...USPTO_OCT2000_AM_QUESTIONS, ...USPTO_OCT2000_PM_QUESTIONS, ...USPTO_APR2000_AM_QUESTIONS, ...USPTO_APR2000_PM_QUESTIONS];
         if (!pbEntitled) {
           // WS5 free preview: a FIXED 20-question slice (10 official USPTO +
           // 10 authored). Section/official filters don't apply to the
-          // preview; the full 1417-question bank requires Full Access.
+          // preview; the full 1467-question bank requires Full Access.
           pbQuestions = [...USPTO_OCT2003_AM_QUESTIONS.slice(0, 10), ...PATENT_BAR_QUESTIONS.slice(0, 10)];
         }
         if (pbEntitled && patentOfficialOnly) {
@@ -3086,10 +3089,10 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           {examType === 'PATENT_BAR' && !entLoading && !pbEntitled && (
             <div className="mb-3 space-y-2">
               <p className="text-xs text-muted-foreground">
-                Free preview: {PB_FREE_PREVIEW} of 1417 questions (10 official USPTO + 10 authored).
+                Free preview: {PB_FREE_PREVIEW} of 1467 questions (10 official USPTO + 10 authored).
                 Section and official-only filters apply with Full Access.
               </p>
-              <PaywallCard product={productFor('PATENT_BAR')} feature="The full 1417-question QBank" examSlug="patent_bar" />
+              <PaywallCard product={productFor('PATENT_BAR')} feature="The full 1467-question QBank" examSlug="patent_bar" />
             </div>
           )}
 
