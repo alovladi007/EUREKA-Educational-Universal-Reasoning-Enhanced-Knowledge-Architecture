@@ -43,8 +43,22 @@ import fs from 'node:fs';
 // Patterns. Each one is deliberately wider than the case that broke it.
 // ---------------------------------------------------------------------------
 
-/** Trap 0: case AND wording both vary. Never narrow this. */
-const DISCARD = /all\s+answers?\s+(?:are\s+|were\s+|will\s+be\s+)?accepted/i;
+/**
+ * Trap 0: case AND wording both vary. Never narrow this.
+ *
+ * Six wordings seen so far, and the last one shares no words with the first:
+ *   "All answers accepted."              (most exams)
+ *   "All Answers Accepted"               (Oct 2000 — capitalised)
+ *   "All answers ARE accepted."          (Nov 1999 AM — inserted word)
+ *   "All answers were accepted."         (Apr 2003 AM)
+ *   "CREDIT GIVEN FOR ALL ANSWERS."      (Oct 2003 — BOTH sessions)
+ * The 2003 form is why this is two alternations rather than one: no pattern
+ * built around "answers ... accepted" can reach it. It went undetected for
+ * six sessions because the 2003 sources were not local to re-sweep; when they
+ * were finally re-fetched, Oct 2003 AM Q2/Q39 and PM Q9 all turned out to be
+ * discards that the audit had been silently reporting as "unparsed".
+ */
+const DISCARD = /all\s+answers?\s+(?:are\s+|were\s+|will\s+be\s+)?accepted|credit\s+given\s+for\s+all\s+answers?/i;
 
 /**
  * Start of an answer entry.
@@ -58,8 +72,14 @@ const DISCARD = /all\s+answers?\s+(?:are\s+|were\s+|will\s+be\s+)?accepted/i;
  * citation "37 CFR § 10.38(a)" into "question 37" and "35 U.S.C. § 112" into
  * "question 35". So a no-period line is accepted ONLY when it carries an
  * explicit ANSWER/ANSWERS token. Enforced in code below.
+ *
+ * The separator after the number is likewise OPTIONAL: Apr 2003 PM Q2 reads
+ * "2.ANSWER: (B) is the most correct answer." with no space at all. Same
+ * safeguard applies — a line with no separator needs the ANSWER token, or
+ * "1.136(a)(3)" would parse as question 1. That one cost a false-positive
+ * "key mismatch" against a data file whose key was in fact correct.
  */
-const ENTRY = /^[ \t]*(\d{1,2})(\.)?[ \t]+(ANSWERS?)?[:.]?[ \t]*(.*)$/gm;
+const ENTRY = /^[ \t]*(\d{1,2})(\.)?([ \t]*)(ANSWERS?)?[:.]?[ \t]*(.*)$/gm;
 
 /**
  * Locating the key: POSITIONAL, not phrase-based.
@@ -154,12 +174,14 @@ const seen = new Set();
 for (const m of text.matchAll(ENTRY)) {
   const n = Number(m[1]);
   const hasPeriod = Boolean(m[2]);
-  const answerTok = m[3];
-  const rest = (m[4] ?? '').trim();
+  const hasGap = m[3].length > 0;
+  const answerTok = m[4];
+  const rest = (m[5] ?? '').trim();
   if (!Number.isInteger(n) || n < 1 || n > MAX || seen.has(n)) continue;
-  // A no-period line is an answer entry ONLY with an explicit ANSWER token,
-  // otherwise "37 CFR § 10.38(a)" reads as question 37.
-  if (!hasPeriod && !answerTok) continue;
+  // A line missing EITHER the period or the separating whitespace is an answer
+  // entry ONLY with an explicit ANSWER token — otherwise "37 CFR § 10.38(a)"
+  // reads as question 37 and "1.136(a)(3)" as question 1.
+  if ((!hasPeriod || !hasGap) && !answerTok) continue;
 
   if (DISCARD.test(rest)) {
     seen.add(n);
