@@ -99,7 +99,7 @@ export const EXAM_CONFIGS: Record<string, ExamTypeConfig> = {
      * PTAB Consolidated Trial Practice Guide Nov 2019; the 2013 "Changes to
      * Representation of Others" rule creating 37 CFR Part 11; the Global/IP5
      * PPH programs) but never in what proportion. These counts are derived
-     * from the 562 official released-exam questions in the QBank and are kept
+     * from the 611 official released-exam questions in the QBank and are kept
      * in sync with PATENT_BAR_BLUEPRINT in patent-bar-coverage.ts — read the
      * provenance block there before changing them. It records the two limits
      * that matter: our own topic classification, and the fact that every
@@ -107,10 +107,10 @@ export const EXAM_CONFIGS: Record<string, ExamTypeConfig> = {
      * practice are treated as floors rather than targets.
      */
     sections: [
-      { id: 'patent_prosecution', name: 'Patent Prosecution & Application', questionCount: 55 },
+      { id: 'patent_prosecution', name: 'Patent Prosecution & Application', questionCount: 56 },
       { id: 'patentability', name: 'Patentability & Prior Art', questionCount: 27 },
       { id: 'post_issuance', name: 'Post-Issuance Proceedings', questionCount: 10 },
-      { id: 'design_plant', name: 'Design & Plant Patents', questionCount: 2 },
+      { id: 'design_plant', name: 'Design & Plant Patents', questionCount: 1 },
       { id: 'pct_international', name: 'PCT & International Filing', questionCount: 3 },
       { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', questionCount: 3 },
     ],

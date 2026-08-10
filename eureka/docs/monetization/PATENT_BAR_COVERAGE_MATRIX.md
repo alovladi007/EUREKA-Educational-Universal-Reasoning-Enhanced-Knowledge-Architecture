@@ -3,7 +3,7 @@
 > GENERATED — do not edit by hand. Re-run `node scripts/generate-coverage-matrix.mjs`
 > (from `apps/web/`) after any Patent Bar bank change and commit the diff.
 
-Bank total: **1368** questions — 562 official (USPTO released exams), 0 SME-verified, 806 unverified (AI-authored, pending review).
+Bank total: **1417** questions — 611 official (USPTO released exams), 0 SME-verified, 806 unverified (AI-authored, pending review).
 
 ## About these weights
 
@@ -14,7 +14,7 @@ Practice Guide (Nov 2019); the 2013 rule creating the 37 CFR Part 11 conduct rul
 the Global/IP5 PPH programs — but never in what proportion. Any percentage
 blueprint for this exam is an **estimate**, including ours.
 
-The weights below are measured from the 562 official released-exam questions in
+The weights below are measured from the 611 official released-exam questions in
 this bank. Two limits, stated rather than hidden: the topic labels are our own
 classification, and every released exam predates 2004 — so ethics, post-issuance
 and international practice are near-certainly under-weighted against today's exam,
@@ -29,18 +29,18 @@ every section target exactly.
 
 | Section | Weight | Bank Qs | Share | Official | SME | Unverified | Meets weight |
 |---|---:|---:|---:|---:|---:|---:|:---:|
-| Patent Prosecution & Application | 55% | 530 | 38.7% | 315 | 0 | 215 | ❌ |
-| Patentability & Prior Art | 27% | 280 | 20.5% | 154 | 0 | 126 | ❌ |
-| Post-Issuance Proceedings | 10% | 183 | 13.4% | 53 | 0 | 130 | ✅ |
-| Ethics & Professional Conduct | 3% | 159 | 11.6% | 14 | 0 | 145 | ✅ |
-| Design & Plant Patents | 2% | 106 | 7.7% | 10 | 0 | 96 | ✅ |
-| PCT & International Filing | 3% | 110 | 8% | 16 | 0 | 94 | ✅ |
+| Patent Prosecution & Application | 56% | 555 | 39.2% | 340 | 0 | 215 | ❌ |
+| Patentability & Prior Art | 27% | 292 | 20.6% | 166 | 0 | 126 | ❌ |
+| Post-Issuance Proceedings | 10% | 191 | 13.5% | 61 | 0 | 130 | ✅ |
+| Ethics & Professional Conduct | 3% | 162 | 11.4% | 17 | 0 | 145 | ✅ |
+| Design & Plant Patents | 1% | 106 | 7.5% | 10 | 0 | 96 | ✅ |
+| PCT & International Filing | 3% | 111 | 7.8% | 17 | 0 | 94 | ✅ |
 
-**Gaps:** Patent Prosecution & Application (38.7% vs 55% weight); Patentability & Prior Art (20.5% vs 27% weight). Filling these to the blueprint floor is the WS3 authoring backlog.
+**Gaps:** Patent Prosecution & Application (39.2% vs 56% weight); Patentability & Prior Art (20.6% vs 27% weight). Filling these to the blueprint floor is the WS3 authoring backlog.
 
 Notes:
-- Official items come from twelve USPTO released sessions — Oct 2000, Apr 2001, Oct 2001,
-  Apr 2002, Apr 2003 and Oct 2003, morning and afternoon each —
+- Official items come from thirteen USPTO released sessions — Apr 2000 (AM), and
+  Oct 2000, Apr 2001, Oct 2001, Apr 2002, Apr 2003 and Oct 2003 morning and afternoon each —
   graded against the USPTO model answers (public domain; provenance in each data file).
 - "SME-verified" counts only items stamped via scripts/apply-sme-reviews.mjs from a
   reviewed export — zero until an expert actually reviews.

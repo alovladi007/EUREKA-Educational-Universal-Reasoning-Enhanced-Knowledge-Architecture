@@ -4,7 +4,7 @@
  *
  * Usage: node scripts/generate-coverage-matrix.mjs [--out <path>]
  *
- * Loads every Patent Bar bank (authored + WS3 gap-fill + 12 official USPTO
+ * Loads every Patent Bar bank (authored + WS3 gap-fill + 13 official USPTO
  * released sessions, Oct 2000 through Oct 2003),
  * computes per-blueprint-section coverage via src/lib/patent-bar-coverage.ts
  * (the same module the in-app Coverage card uses), and writes the matrix to
@@ -52,6 +52,7 @@ const apr01Am = loadTs(lib('patent-bar-uspto-apr2001-data.ts'), { './patent-bar-
 const apr01Pm = loadTs(lib('patent-bar-uspto-apr2001-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const oct00Am = loadTs(lib('patent-bar-uspto-oct2000-data.ts'), { './patent-bar-qbank-data': qbank });
 const oct00Pm = loadTs(lib('patent-bar-uspto-oct2000-pm-data.ts'), { './patent-bar-qbank-data': qbank });
+const apr00Am = loadTs(lib('patent-bar-uspto-apr2000-data.ts'), { './patent-bar-qbank-data': qbank });
 const coverage = loadTs(lib('patent-bar-coverage.ts'), { './patent-bar-qbank-data': qbank });
 
 const all = [
@@ -73,6 +74,7 @@ const all = [
   ...apr01Pm.USPTO_APR2001_PM_QUESTIONS,
   ...oct00Am.USPTO_OCT2000_AM_QUESTIONS,
   ...oct00Pm.USPTO_OCT2000_PM_QUESTIONS,
+  ...apr00Am.USPTO_APR2000_AM_QUESTIONS,
 ];
 
 const { rows, bankTotal } = coverage.computePatentBarCoverage(all);
@@ -132,8 +134,8 @@ if (failing.length) {
 }
 lines.push('');
 lines.push('Notes:');
-lines.push('- Official items come from twelve USPTO released sessions — Oct 2000, Apr 2001, Oct 2001,');
-lines.push('  Apr 2002, Apr 2003 and Oct 2003, morning and afternoon each —');
+lines.push('- Official items come from thirteen USPTO released sessions — Apr 2000 (AM), and');
+lines.push('  Oct 2000, Apr 2001, Oct 2001, Apr 2002, Apr 2003 and Oct 2003 morning and afternoon each —');
 lines.push('  graded against the USPTO model answers (public domain; provenance in each data file).');
 lines.push('- "SME-verified" counts only items stamped via scripts/apply-sme-reviews.mjs from a');
 lines.push('  reviewed export — zero until an expert actually reviews.');

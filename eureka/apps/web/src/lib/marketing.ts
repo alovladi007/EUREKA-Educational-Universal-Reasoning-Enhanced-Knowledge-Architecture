@@ -43,12 +43,12 @@ export const FAMILIES: Family[] = [
 export const PROGRAMS: Program[] = [
   {
     slug: 'patent-bar',
-    code: 'PB-1368',
+    code: 'PB-1417',
     title: 'Patent Bar (USPTO Registration Exam)',
     family: 'test-prep',
     levels: ['PRO'],
     tagline: 'The flagship: a full program built on official USPTO questions.',
-    blurb: '1,368-question QBank built on 562 official USPTO exam questions, timed real-exam mocks, and an MPEP workbench.',
+    blurb: '1,417-question QBank built on 611 official USPTO exam questions, timed real-exam mocks, and an MPEP workbench.',
     href: '/patent-bar',
     badge: 'Free diagnostic',
     featured: true,
@@ -56,14 +56,14 @@ export const PROGRAMS: Program[] = [
       summary:
         'The Patent Bar program is EUREKA’s deepest exam build. The question bank is anchored on questions from the USPTO’s own released registration exams — public-domain source material, kept verbatim with answer keys and MPEP citations — and extended with original items mapped to the same blueprint. Around it sits the toolset the exam actually rewards: an MPEP workbench for looking things up fast, chapter-frequency heatmaps that tell you where points live, and full-length timed mocks in the real format.',
       inside: [
-        { title: '1,368-question QBank', desc: '562 official USPTO exam questions plus original items mapped to the MPEP, every one with a cited explanation.' },
+        { title: '1,417-question QBank', desc: '611 official USPTO exam questions plus original items mapped to the MPEP, every one with a cited explanation.' },
         { title: 'MPEP workbench', desc: 'A fast, searchable MPEP with chapter heatmaps showing where the exam historically concentrates.' },
         { title: 'Timed real-format mocks', desc: 'Two 50-question sessions, three hours each — the actual exam day, rehearsed.' },
         { title: 'Free diagnostic', desc: 'A no-account placement test that maps your starting line before you commit anything.' },
       ],
       specs: [
         ['QBank size', '1,318 questions'],
-        ['Official USPTO items', '562'],
+        ['Official USPTO items', '611'],
         ['Question format', 'MCQ, exam blueprint'],
         ['Mock format', '2 × 50 Q, timed'],
         ['Reference', 'Searchable MPEP'],
