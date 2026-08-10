@@ -30,6 +30,7 @@ import { USPTO_OCT2001_AM_QUESTIONS } from '../patent-bar-uspto-oct2001-data';
 import { USPTO_OCT2001_PM_QUESTIONS } from '../patent-bar-uspto-oct2001-pm-data';
 import { USPTO_APR2001_AM_QUESTIONS } from '../patent-bar-uspto-apr2001-data';
 import { USPTO_APR2001_PM_QUESTIONS } from '../patent-bar-uspto-apr2001-pm-data';
+import { USPTO_OCT2000_AM_QUESTIONS } from '../patent-bar-uspto-oct2000-data';
 import { PATENT_BAR_QUESTIONS } from '../patent-bar-qbank-data';
 import { PATENT_BAR_GAPFILL_ETHICS } from '../patent-bar-gapfill-ethics-data';
 
@@ -44,6 +45,7 @@ const OFFICIALS = [
   ...USPTO_OCT2001_PM_QUESTIONS,
   ...USPTO_APR2001_AM_QUESTIONS,
   ...USPTO_APR2001_PM_QUESTIONS,
+  ...USPTO_OCT2000_AM_QUESTIONS,
 ];
 
 const FULL_BANK = [...PATENT_BAR_QUESTIONS, ...PATENT_BAR_GAPFILL_ETHICS, ...OFFICIALS];
@@ -52,7 +54,7 @@ describe('buildOfficialMockPool', () => {
   it('admits every official question and nothing unverified', () => {
     const pool = buildOfficialMockPool(FULL_BANK as PatentBarQuestion[]);
     const all = Object.values(pool).flat();
-    expect(all.length).toBe(OFFICIALS.length); // 465 officials, zero sme so far
+    expect(all.length).toBe(OFFICIALS.length); // 512 officials, zero sme so far
     for (const q of all) expect(q.id.startsWith('uspto-')).toBe(true);
   });
 
@@ -62,34 +64,34 @@ describe('buildOfficialMockPool', () => {
       Object.entries(pool).map(([k, v]) => [k, v.length]),
     );
     expect(counts).toEqual({
-      patent_prosecution: 256,
-      patentability: 138,
-      post_issuance: 42,
-      ethics_conduct: 9,
+      patent_prosecution: 285,
+      patentability: 146,
+      post_issuance: 48,
+      ethics_conduct: 11,
       design_plant: 9,
-      pct_international: 11,
+      pct_international: 13,
     });
   });
 });
 
 describe('computeMockAllocation', () => {
   const currentSupply = {
-    patent_prosecution: 256,
-    patentability: 138,
-    post_issuance: 42,
-    ethics_conduct: 9,
+    patent_prosecution: 285,
+    patentability: 146,
+    post_issuance: 48,
+    ethics_conduct: 11,
     design_plant: 9,
-    pct_international: 11,
+    pct_international: 13,
   };
 
-  it('produces the documented 33/22/16/9/9/11 mix for the current official pool', () => {
+  it('produces the documented 32/21/16/11/9/11 mix for the current official pool', () => {
     const rows = computeMockAllocation(currentSupply, 100);
     const byId = Object.fromEntries(rows.map((r) => [r.id, r.allocated]));
     expect(byId).toEqual({
-      patent_prosecution: 33,
-      patentability: 22,
+      patent_prosecution: 32,
+      patentability: 21,
       post_issuance: 16,
-      ethics_conduct: 9,
+      ethics_conduct: 11,
       design_plant: 9,
       pct_international: 11,
     });
