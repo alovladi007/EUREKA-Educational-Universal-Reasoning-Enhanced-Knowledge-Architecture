@@ -10,7 +10,8 @@
  *
  * HONESTY MODEL:
  *  - The form draws ONLY verified questions — official USPTO released-exam
- *    items (Oct 2003 + Apr 2003, graded against the USPTO model answers)
+ *    items (twelve released sessions, Oct 2000 through Oct 2003, graded
+ *    against the USPTO's own model answers)
  *    plus any SME-verified items (currently zero). Enforcement lives in
  *    patent-bar-mock.ts at pool construction, not in UI logic.
  *  - The form now fills every section of the blueprint from official items
@@ -93,7 +94,7 @@ export default function PatentBarMockPage() {
   // Load the official banks once; build the verified-only pool.
   useEffect(() => {
     (async () => {
-      const [octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am] = await Promise.all([
+      const [octAm, octPm, aprAm, aprPm, apr02Am, apr02Pm, oct01Am, oct01Pm, apr01Am, apr01Pm, oct00Am, oct00Pm] = await Promise.all([
         import('@/lib/patent-bar-uspto-oct2003-data'),
         import('@/lib/patent-bar-uspto-oct2003-pm-data'),
         import('@/lib/patent-bar-uspto-apr2003-data'),
@@ -105,6 +106,7 @@ export default function PatentBarMockPage() {
         import('@/lib/patent-bar-uspto-apr2001-data'),
         import('@/lib/patent-bar-uspto-apr2001-pm-data'),
         import('@/lib/patent-bar-uspto-oct2000-data'),
+        import('@/lib/patent-bar-uspto-oct2000-pm-data'),
       ]);
       const officials = [
         ...octAm.USPTO_OCT2003_AM_QUESTIONS,
@@ -118,6 +120,7 @@ export default function PatentBarMockPage() {
         ...apr01Am.USPTO_APR2001_AM_QUESTIONS,
         ...apr01Pm.USPTO_APR2001_PM_QUESTIONS,
         ...oct00Am.USPTO_OCT2000_AM_QUESTIONS,
+        ...oct00Pm.USPTO_OCT2000_PM_QUESTIONS,
       ];
       setBank(new Map(officials.map((q: any) => [q.id, q])));
       setPool(buildOfficialMockPool(officials as any));
@@ -295,7 +298,7 @@ export default function PatentBarMockPage() {
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
             <span>
               Every question in a scored mock is <strong>verified</strong>: {totalVerified} official
-              USPTO released-exam questions drawn from eleven released sessions (Oct 2000 through
+              USPTO released-exam questions drawn from twelve released sessions (Oct 2000 through
               Oct 2003), graded against the USPTO&apos;s own model answers. AI-authored unverified
               items are excluded mechanically.
             </span>
