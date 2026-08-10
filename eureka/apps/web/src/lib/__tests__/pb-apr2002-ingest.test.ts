@@ -21,8 +21,9 @@ import { USPTO_OCT2000_PM_QUESTIONS } from '../patent-bar-uspto-oct2000-pm-data'
 import { USPTO_APR2000_AM_QUESTIONS } from '../patent-bar-uspto-apr2000-data';
 import { USPTO_APR2000_PM_QUESTIONS } from '../patent-bar-uspto-apr2000-pm-data';
 import { USPTO_NOV1999_AM_QUESTIONS } from '../patent-bar-uspto-nov1999-data';
+import { USPTO_NOV1999_PM_QUESTIONS } from '../patent-bar-uspto-nov1999-pm-data';
 
-const OFFICIAL_TOTAL = 709; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48+50; Apr 2001: 49+46; Oct 2000: 47+50; Apr 2000: 49+50; Nov 1999: 48 AM
+const OFFICIAL_TOTAL = 758; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48+50; Apr 2001: 49+46; Oct 2000: 47+50; Apr 2000: 49+50; Nov 1999: 48+49
 
 const ALL = [
   ...USPTO_OCT2003_AM_QUESTIONS,
@@ -40,6 +41,7 @@ const ALL = [
   ...USPTO_APR2000_AM_QUESTIONS,
   ...USPTO_APR2000_PM_QUESTIONS,
   ...USPTO_NOV1999_AM_QUESTIONS,
+  ...USPTO_NOV1999_PM_QUESTIONS,
 ];
 
 describe('official USPTO ingestion reaches the live pool', () => {
@@ -193,6 +195,35 @@ describe('official USPTO ingestion reaches the live pool', () => {
     expect(q49!.explanation).toContain('(B)');
   });
 
+  it('Nov 1999 PM (49 items, Q39 discarded, no multi-keys) reaches the official mock pool', () => {
+    const pool = Object.values(buildOfficialMockPool(ALL as never)).flat();
+    expect(pool.filter((q) => q.id.startsWith('uspto-nov99-pm-')).length).toBe(49);
+    expect(USPTO_NOV1999_PM_QUESTIONS.length).toBe(49);
+    for (const q of USPTO_NOV1999_PM_QUESTIONS) {
+      expect(q.options.length).toBe(5);
+      expect(q.correct).toBeGreaterThanOrEqual(0);
+      expect(q.correct).toBeLessThan(5);
+      expect(q.explanation).toContain('OFFICIAL USPTO MODEL ANSWER');
+      expect(q.topicId).toBeGreaterThanOrEqual(0);
+      expect(q.topicId).toBeLessThanOrEqual(7);
+    }
+  });
+
+  it('Nov 1999 PM keys match the USPTO model answers exactly', () => {
+    // A hand extraction of this file was WRONG throughout — it read citation
+    // lines ("37 CFR § 10.38") as answer entries and gave Q1 = (D) where the
+    // source plainly reads "1. ANSWER: (A)". These keys come from
+    // `npm run audit:uspto`, which parses only parenthesised keys on lines
+    // carrying an explicit ANSWER token. Spot-check the boundary cases: the
+    // first item, the item straddling the Q39 discard, and the last.
+    const key = (n: string) =>
+      USPTO_NOV1999_PM_QUESTIONS.find((q) => q.id === `uspto-nov99-pm-${n}`)?.correct;
+    expect(key('01')).toBe(0); // (A) — the item the hand pass got wrong
+    expect(key('38')).toBe(1); // (B) — last before the discard
+    expect(key('40')).toBe(2); // (C) — first after it; source reads "(C )"
+    expect(key('50')).toBe(2); // (C)
+  });
+
   it('the officially discarded questions are excluded', () => {
     // Apr 2002 AM Q49, Apr 2002 PM Q41, and Oct 2001 AM Q4 and Q26 were all
     // "All answers accepted".
@@ -217,5 +248,7 @@ describe('official USPTO ingestion reaches the live pool', () => {
     for (const n of ['06', '47']) {
       expect(USPTO_NOV1999_AM_QUESTIONS.find((q) => q.id === `uspto-nov99-am-${n}`)).toBeUndefined();
     }
+    // Nov 1999 PM discarded exactly one: Q39 ("All answers accepted").
+    expect(USPTO_NOV1999_PM_QUESTIONS.find((q) => q.id === 'uspto-nov99-pm-39')).toBeUndefined();
   });
 });

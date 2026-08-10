@@ -55,6 +55,7 @@ const oct00Pm = loadTs(lib('patent-bar-uspto-oct2000-pm-data.ts'), { './patent-b
 const apr00Am = loadTs(lib('patent-bar-uspto-apr2000-data.ts'), { './patent-bar-qbank-data': qbank });
 const apr00Pm = loadTs(lib('patent-bar-uspto-apr2000-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const nov99Am = loadTs(lib('patent-bar-uspto-nov1999-data.ts'), { './patent-bar-qbank-data': qbank });
+const nov99Pm = loadTs(lib('patent-bar-uspto-nov1999-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const coverage = loadTs(lib('patent-bar-coverage.ts'), { './patent-bar-qbank-data': qbank });
 
 const all = [
@@ -79,6 +80,7 @@ const all = [
   ...apr00Am.USPTO_APR2000_AM_QUESTIONS,
   ...apr00Pm.USPTO_APR2000_PM_QUESTIONS,
   ...nov99Am.USPTO_NOV1999_AM_QUESTIONS,
+  ...nov99Pm.USPTO_NOV1999_PM_QUESTIONS,
 ];
 
 const { rows, bankTotal } = coverage.computePatentBarCoverage(all);
@@ -138,9 +140,9 @@ if (failing.length) {
 }
 lines.push('');
 lines.push('Notes:');
-lines.push('- Official items come from fifteen USPTO released sessions — seven exam dates');
-lines.push('  (Apr 2000, Oct 2000, Apr 2001, Oct 2001, Apr 2002, Apr 2003, Oct 2003) morning and');
-lines.push('  afternoon each, plus Nov 1999 morning —');
+lines.push('- Official items come from sixteen USPTO released sessions — eight exam dates');
+lines.push('  (Nov 1999, Apr 2000, Oct 2000, Apr 2001, Oct 2001, Apr 2002, Apr 2003, Oct 2003),');
+lines.push('  morning and afternoon each —');
 lines.push('  graded against the USPTO model answers (public domain; provenance in each data file).');
 lines.push('- "SME-verified" counts only items stamped via scripts/apply-sme-reviews.mjs from a');
 lines.push('  reviewed export — zero until an expert actually reviews.');
