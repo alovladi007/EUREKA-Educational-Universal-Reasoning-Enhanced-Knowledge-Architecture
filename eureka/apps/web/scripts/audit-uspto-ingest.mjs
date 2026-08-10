@@ -79,11 +79,12 @@ const ENTRY = /^[ \t]*(\d{1,2})(\.)?[ \t]+(ANSWERS?)?[:.]?[ \t]*(.*)$/gm;
  * reject the line if a citation marker comes first (which means the line is
  * prose, not an answer entry).
  *
+ * Inner whitespace is tolerated — pdftotext emits "(C )" in places.
  * Only parenthesised letters count. A bare letter would let "CFR" and
  * "ANSWERS" masquerade as keys — both of which happened, and both produced
  * results that looked right by coincidence.
  */
-const FIRST_KEY = /\(([A-E])\)/;
+const FIRST_KEY = /\(\s*([A-E])\s*\)/;
 const CITATION = /§|U\.?S\.?C\.?|C\.?F\.?R\.?|MPEP/;
 
 /**
@@ -98,8 +99,8 @@ const CITATION = /§|U\.?S\.?C\.?|C\.?F\.?R\.?|MPEP/;
  * The run stops at a sentence break, which is what keeps statute subsections
  * ("35 U.S.C. § 102(b) and (e)") from being misread as additional keys.
  */
-const KEY_RUN = /^\(([A-E])\)((?:\s*(?:,|and|or|\/)\s*\([A-E]\))*)/;
-const KEY_MORE = /\(([A-E])\)/g;
+const KEY_RUN = /^\(\s*([A-E])\s*\)((?:\s*(?:,|and|or|\/)\s*\(\s*[A-E]\s*\))*)/;
+const KEY_MORE = /\(\s*([A-E])\s*\)/g;
 
 // ---------------------------------------------------------------------------
 
