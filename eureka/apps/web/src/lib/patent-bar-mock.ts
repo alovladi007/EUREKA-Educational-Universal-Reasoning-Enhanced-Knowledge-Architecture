@@ -14,12 +14,12 @@
  * official-only form is impossible in the thin sections." That diagnosis
  * was backwards. Those weights were never the exam's — the USPTO publishes
  * no topic breakdown at all, and the figures were unsourced. Measured
- * against the 779 official released-exam items, the "skew" IS the exam's
+ * against the 828 official released-exam items, the "skew" IS the exam's
  * shape. See the provenance block in patent-bar-coverage.ts.
  *
  * With the blueprint corrected to the empirical distribution, every section
- * is satisfiable from the official pool: supply 443/199/81/24/13/19 against
- * targets 55/26/11/3/2/3 allocates exactly on target, with no capping and
+ * is satisfiable from the official pool: supply 480/208/83/24/14/19 against
+ * targets 56/25/11/3/2/3 allocates exactly on target, with no capping and
  * no redistribution. shortOfBlueprint is false for all six.
  *
  * computeMockAllocation() keeps the redistribution machinery anyway — it is

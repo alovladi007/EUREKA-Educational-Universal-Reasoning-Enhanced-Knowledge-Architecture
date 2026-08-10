@@ -47,7 +47,7 @@ const MACHINERY = [
   {
     title: 'Content with receipts',
     body:
-      'Exam banks are anchored on official public-domain questions where they exist — 779 released USPTO items in the Patent Bar program. Course figures in the flagship engineering track are computed from the equations stated in the lesson, with readable source. AI demonstrations state whether they run real inference.',
+      'Exam banks are anchored on official public-domain questions where they exist — 828 released USPTO items in the Patent Bar program. Course figures in the flagship engineering track are computed from the equations stated in the lesson, with readable source. AI demonstrations state whether they run real inference.',
     mono: 'official items · computed figures',
   },
   {
@@ -60,7 +60,7 @@ const MACHINERY = [
 
 const RIGOR = [
   ['Depth gate, flagship courses', '18k words · 60 equations · 20 figures per module'],
-  ['Patent Bar question bank', '1,585 items · 779 official USPTO'],
+  ['Patent Bar question bank', '1,634 items · 828 official USPTO'],
   ['Mathematics lesson standard', '≥20 pages per topic, worked examples + problem sets'],
   ['Exam formats reproduced', 'MCQ, multi-select, PBQ, timed sections'],
   ['Institution controls', 'SSO/SAML · LTI 1.3 · FERPA · COPPA · HIPAA'],

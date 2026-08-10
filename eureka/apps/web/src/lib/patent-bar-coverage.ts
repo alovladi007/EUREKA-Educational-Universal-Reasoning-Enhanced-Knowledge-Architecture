@@ -40,11 +40,11 @@ export interface CoverageSection {
  * points of exam weight and under-served prosecution — the single largest
  * section of the real exam.
  *
- * `weightPct` is now derived from the 779 official released-exam questions
- * in this bank — Oct 2003, Apr 2003, Apr 2002, Oct 2001, Apr 2001, Oct 2000,
- * Apr 2000 and Nov 1999 (morning and afternoon each) — which distribute as
- * prosecution 56.87%, patentability 25.55%, post-issuance 10.40%, ethics
- * 3.08%, PCT 2.44%, design/plant 1.67%.
+ * `weightPct` is now derived from the 828 official released-exam questions
+ * in this bank — Oct 2003, Apr 2003, Oct 2002 (AM), Apr 2002, Oct 2001,
+ * Apr 2001, Oct 2000, Apr 2000 and Nov 1999 — which distribute as
+ * prosecution 57.97%, patentability 25.12%, post-issuance 10.02%, ethics
+ * 2.90%, PCT 2.29%, design/plant 1.69%.
  *
  * DERIVATION RULE — apply this verbatim on each new ingest so the numbers
  * stay reproducible rather than hand-tuned:
@@ -58,11 +58,19 @@ export interface CoverageSection {
  * and was held at its floor of 10; at 611 it genuinely rounded to 10 and the
  * adjustment was UNWOUND; at 709 and 758 PCT rounded to 2 and was held at 3
  * while post-issuance needed nothing (at 758 it reached 11 on its own
- * remainder); and at 779 post-issuance falls back to 10.40% and needs the
- * adjustment AGAIN, alongside PCT. Prosecution cedes two points this time.
- * The lesson is that an adjustment is a property of the CURRENT corpus, not
- * a permanent grant: never carry one forward unexamined, and never assume a
- * section that stopped needing one will not need it again.
+ * remainder); at 779 post-issuance fell back and needed the adjustment
+ * AGAIN, alongside PCT. An adjustment is a property of the CURRENT corpus,
+ * not a permanent grant: never carry one forward unexamined, and never
+ * assume a section that stopped needing one will not need it again.
+ *
+ * AT 828 THE WEIGHTS ACTUALLY MOVED for the first time since the rewrite:
+ * prosecution 55 -> 56 and patentability 26 -> 25. Every prior recount left
+ * 55/26/11/3/2/3 intact, which made it easy to assume the numbers were
+ * settled. They are not — they are a measurement, and adding a session with
+ * 16 spec/claims, 10 filing and 11 prosecution items against only 9
+ * patentability items shifted the balance. Recompute on EVERY ingest and
+ * expect the answer to change; do not skip the step because it has been a
+ * no-op before.
  * `basis` records the per-section derivation.
  *
  * KNOWN LIMITS of this estimate — do not treat it as ground truth:
@@ -74,7 +82,7 @@ export interface CoverageSection {
  *     the PTAB Consolidated Trial Practice Guide (Nov 2019), the 2013
  *     "Changes to Representation of Others" rule that created the 37 CFR
  *     Part 11 professional-conduct rules, and the Global/IP5 Patent
- *     Prosecution Highway programs. Ethics measures 3.08% here largely
+ *     Prosecution Highway programs. Ethics measures 2.90% here largely
  *     BECAUSE the modern conduct rules did not exist when these exams were
  *     written. The modern exam near-certainly tests ethics, post-issuance
  *     (IPR/PGR/derivation) and international practice ABOVE their
@@ -85,18 +93,18 @@ export interface CoverageSection {
  * preparation (1), filing & prosecution (2), and Office-action responses (3).
  */
 export const PATENT_BAR_BLUEPRINT: CoverageSection[] = [
-  { id: 'patent_prosecution', name: 'Patent Prosecution & Application', weightPct: 55, topicIds: [1, 2, 3],
-    basis: 'empirical: 443/779 official items = 56.87%, less 2 points ceded per derivation step 3 — one each to the post_issuance and pct_international floors' },
-  { id: 'patentability', name: 'Patentability & Prior Art', weightPct: 26, topicIds: [0],
-    basis: 'empirical: 199/779 official items = 25.55% (rounds up to 26 on a largest remainder)' },
+  { id: 'patent_prosecution', name: 'Patent Prosecution & Application', weightPct: 56, topicIds: [1, 2, 3],
+    basis: 'empirical: 480/828 official items = 57.97%, less 2 points ceded per derivation step 3 — one each to the post_issuance and pct_international floors' },
+  { id: 'patentability', name: 'Patentability & Prior Art', weightPct: 25, topicIds: [0],
+    basis: 'empirical: 208/828 official items = 25.12% (rounds DOWN to 25 — this is the first recount since the blueprint rewrite in which a weight actually moved)' },
   { id: 'post_issuance', name: 'Post-Issuance Proceedings', weightPct: 11, topicIds: [5],
-    basis: 'empirical: 81/779 = 10.40% (rounds to 10; restored to 11 by derivation step 3 — the adjustment was NOT needed at 758 and is needed again here, which is why step-3 state must be recomputed rather than carried); FLOOR — modern PTAB trial practice (IPR/PGR/derivation) is a named tested source and postdates every source exam' },
+    basis: 'empirical: 83/828 = 10.02% (rounds to 10; restored to 11 by derivation step 3 — the adjustment was NOT needed at 758 and is needed again here, which is why step-3 state must be recomputed rather than carried); FLOOR — modern PTAB trial practice (IPR/PGR/derivation) is a named tested source and postdates every source exam' },
   { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', weightPct: 3, topicIds: [7],
-    basis: 'empirical: 24/779 = 3.08%; also a FLOOR — the 37 CFR Part 11 conduct rules (2013) postdate every source exam and are a named tested source' },
+    basis: 'empirical: 24/828 = 2.90%; also a FLOOR — the 37 CFR Part 11 conduct rules (2013) postdate every source exam and are a named tested source' },
   { id: 'design_plant', name: 'Design & Plant Patents', weightPct: 2, topicIds: [6],
-    basis: 'empirical: 13/779 official items = 1.67% (rounds up to 2 on a largest remainder); not a floor section — the 2023 design patent practitioner bar is a separate examination' },
+    basis: 'empirical: 14/828 official items = 1.69% (rounds up to 2 on a largest remainder); not a floor section — the 2023 design patent practitioner bar is a separate examination' },
   { id: 'pct_international', name: 'PCT & International Filing', weightPct: 3, topicIds: [4],
-    basis: 'empirical: 19/779 = 2.44% (rounds to 2); held at 3 as a FLOOR — the Global/IP5 PPH programs are a named tested source and postdate every source exam' },
+    basis: 'empirical: 19/828 = 2.29% (rounds to 2); held at 3 as a FLOOR — the Global/IP5 PPH programs are a named tested source and postdate every source exam' },
 ];
 
 export interface CoverageRow {
