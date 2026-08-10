@@ -23,8 +23,8 @@ import {
 } from 'lucide-react';
 
 // Real bank composition — see docs/monetization/PATENT_BAR_COVERAGE_MATRIX.md.
-const BANK_TOTAL = 1225;
-const OFFICIAL_COUNT = 419;
+const BANK_TOTAL = 1271;
+const OFFICIAL_COUNT = 465;
 const FLASHCARD_COUNT = 511;
 const FREE_PREVIEW_COUNT = 20;
 

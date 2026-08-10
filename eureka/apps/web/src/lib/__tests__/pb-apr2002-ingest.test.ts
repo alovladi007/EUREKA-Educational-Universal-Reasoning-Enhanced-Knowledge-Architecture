@@ -15,8 +15,9 @@ import { USPTO_APR2002_PM_QUESTIONS } from '../patent-bar-uspto-apr2002-pm-data'
 import { USPTO_OCT2001_AM_QUESTIONS } from '../patent-bar-uspto-oct2001-data';
 import { USPTO_OCT2001_PM_QUESTIONS } from '../patent-bar-uspto-oct2001-pm-data';
 import { USPTO_APR2001_AM_QUESTIONS } from '../patent-bar-uspto-apr2001-data';
+import { USPTO_APR2001_PM_QUESTIONS } from '../patent-bar-uspto-apr2001-pm-data';
 
-const OFFICIAL_TOTAL = 419; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48+50; Apr 2001: 49
+const OFFICIAL_TOTAL = 465; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48+50; Apr 2001: 49+46
 
 const ALL = [
   ...USPTO_OCT2003_AM_QUESTIONS,
@@ -28,6 +29,7 @@ const ALL = [
   ...USPTO_OCT2001_AM_QUESTIONS,
   ...USPTO_OCT2001_PM_QUESTIONS,
   ...USPTO_APR2001_AM_QUESTIONS,
+  ...USPTO_APR2001_PM_QUESTIONS,
 ];
 
 describe('official USPTO ingestion reaches the live pool', () => {
@@ -70,10 +72,11 @@ describe('official USPTO ingestion reaches the live pool', () => {
     }
   });
 
-  it('Apr 2001 AM (49 items) reaches the official mock pool', () => {
+  it('both Apr 2001 sessions (49 + 46) reach the official mock pool', () => {
     const pool = Object.values(buildOfficialMockPool(ALL as never)).flat();
     expect(pool.filter((q) => q.id.startsWith('uspto-apr01-am-')).length).toBe(49);
-    for (const q of USPTO_APR2001_AM_QUESTIONS) {
+    expect(pool.filter((q) => q.id.startsWith('uspto-apr01-pm-')).length).toBe(46);
+    for (const q of [...USPTO_APR2001_AM_QUESTIONS, ...USPTO_APR2001_PM_QUESTIONS]) {
       expect(q.options.length).toBe(5);
       expect(q.correct).toBeGreaterThanOrEqual(0);
       expect(q.correct).toBeLessThan(5);
@@ -91,5 +94,9 @@ describe('official USPTO ingestion reaches the live pool', () => {
     expect(USPTO_OCT2001_AM_QUESTIONS.find((q) => q.id === 'uspto-oct01-am-04')).toBeUndefined();
     expect(USPTO_OCT2001_AM_QUESTIONS.find((q) => q.id === 'uspto-oct01-am-26')).toBeUndefined();
     expect(USPTO_APR2001_AM_QUESTIONS.find((q) => q.id === 'uspto-apr01-am-22')).toBeUndefined();
+    // Apr 2001 PM discarded four: Q3, Q10, Q20 and Q34.
+    for (const n of ['03', '10', '20', '34']) {
+      expect(USPTO_APR2001_PM_QUESTIONS.find((q) => q.id === `uspto-apr01-pm-${n}`)).toBeUndefined();
+    }
   });
 });
