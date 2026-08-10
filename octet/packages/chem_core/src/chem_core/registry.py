@@ -460,8 +460,12 @@ REGISTRY.update(PHASE2_TEMPLATES)
 REGISTRY.update(PHASE3_TEMPLATES)
 REGISTRY.update(ORG1_TEMPLATES)
 REGISTRY.update(RETRO_TEMPLATES)
+from .templates_mech import MECH_LAB_HINTS, MECH_LAB_TEMPLATES  # noqa: E402
+
+REGISTRY.update(MECH_LAB_TEMPLATES)
 from .hints import HINTS as _HINTS  # noqa: E402
 _HINTS.update(RETRO_HINTS)
+_HINTS.update(MECH_LAB_HINTS)
 
 
 def resolve_generated(template_id: str, seed: int, *, max_attempts: int = MAX_SEED_RETRIES) -> Variant:
