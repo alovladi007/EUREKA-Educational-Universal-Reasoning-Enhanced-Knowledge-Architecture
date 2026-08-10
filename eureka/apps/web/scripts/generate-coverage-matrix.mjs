@@ -4,8 +4,8 @@
  *
  * Usage: node scripts/generate-coverage-matrix.mjs [--out <path>]
  *
- * Loads every Patent Bar bank (authored + WS3 gap-fill + 14 official USPTO
- * released sessions, Oct 2000 through Oct 2003),
+ * Loads every Patent Bar bank (authored + WS3 gap-fill + 15 official USPTO
+ * released sessions, Nov 1999 through Oct 2003),
  * computes per-blueprint-section coverage via src/lib/patent-bar-coverage.ts
  * (the same module the in-app Coverage card uses), and writes the matrix to
  * docs/monetization/PATENT_BAR_COVERAGE_MATRIX.md. Re-run after any bank
@@ -54,6 +54,7 @@ const oct00Am = loadTs(lib('patent-bar-uspto-oct2000-data.ts'), { './patent-bar-
 const oct00Pm = loadTs(lib('patent-bar-uspto-oct2000-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const apr00Am = loadTs(lib('patent-bar-uspto-apr2000-data.ts'), { './patent-bar-qbank-data': qbank });
 const apr00Pm = loadTs(lib('patent-bar-uspto-apr2000-pm-data.ts'), { './patent-bar-qbank-data': qbank });
+const nov99Am = loadTs(lib('patent-bar-uspto-nov1999-data.ts'), { './patent-bar-qbank-data': qbank });
 const coverage = loadTs(lib('patent-bar-coverage.ts'), { './patent-bar-qbank-data': qbank });
 
 const all = [
@@ -77,6 +78,7 @@ const all = [
   ...oct00Pm.USPTO_OCT2000_PM_QUESTIONS,
   ...apr00Am.USPTO_APR2000_AM_QUESTIONS,
   ...apr00Pm.USPTO_APR2000_PM_QUESTIONS,
+  ...nov99Am.USPTO_NOV1999_AM_QUESTIONS,
 ];
 
 const { rows, bankTotal } = coverage.computePatentBarCoverage(all);
@@ -136,8 +138,9 @@ if (failing.length) {
 }
 lines.push('');
 lines.push('Notes:');
-lines.push('- Official items come from fourteen USPTO released sessions — seven exam dates');
-lines.push('  (Apr 2000, Oct 2000, Apr 2001, Oct 2001, Apr 2002, Apr 2003, Oct 2003), morning and afternoon each —');
+lines.push('- Official items come from fifteen USPTO released sessions — seven exam dates');
+lines.push('  (Apr 2000, Oct 2000, Apr 2001, Oct 2001, Apr 2002, Apr 2003, Oct 2003) morning and');
+lines.push('  afternoon each, plus Nov 1999 morning —');
 lines.push('  graded against the USPTO model answers (public domain; provenance in each data file).');
 lines.push('- "SME-verified" counts only items stamped via scripts/apply-sme-reviews.mjs from a');
 lines.push('  reviewed export — zero until an expert actually reviews.');
