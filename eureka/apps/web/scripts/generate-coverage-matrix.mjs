@@ -4,7 +4,8 @@
  *
  * Usage: node scripts/generate-coverage-matrix.mjs [--out <path>]
  *
- * Loads all six Patent Bar banks (authored + WS3 gap-fill + 4 official USPTO sessions),
+ * Loads every Patent Bar bank (authored + WS3 gap-fill + 11 official USPTO
+ * released sessions, Oct 2000 through Oct 2003),
  * computes per-blueprint-section coverage via src/lib/patent-bar-coverage.ts
  * (the same module the in-app Coverage card uses), and writes the matrix to
  * docs/monetization/PATENT_BAR_COVERAGE_MATRIX.md. Re-run after any bank
@@ -43,6 +44,13 @@ const octAm = loadTs(lib('patent-bar-uspto-oct2003-data.ts'), { './patent-bar-qb
 const octPm = loadTs(lib('patent-bar-uspto-oct2003-pm-data.ts'), { './patent-bar-qbank-data': qbank });
 const aprAm = loadTs(lib('patent-bar-uspto-apr2003-data.ts'), { './patent-bar-qbank-data': qbank });
 const aprPm = loadTs(lib('patent-bar-uspto-apr2003-pm-data.ts'), { './patent-bar-qbank-data': qbank });
+const apr02Am = loadTs(lib('patent-bar-uspto-apr2002-data.ts'), { './patent-bar-qbank-data': qbank });
+const apr02Pm = loadTs(lib('patent-bar-uspto-apr2002-pm-data.ts'), { './patent-bar-qbank-data': qbank });
+const oct01Am = loadTs(lib('patent-bar-uspto-oct2001-data.ts'), { './patent-bar-qbank-data': qbank });
+const oct01Pm = loadTs(lib('patent-bar-uspto-oct2001-pm-data.ts'), { './patent-bar-qbank-data': qbank });
+const apr01Am = loadTs(lib('patent-bar-uspto-apr2001-data.ts'), { './patent-bar-qbank-data': qbank });
+const apr01Pm = loadTs(lib('patent-bar-uspto-apr2001-pm-data.ts'), { './patent-bar-qbank-data': qbank });
+const oct00Am = loadTs(lib('patent-bar-uspto-oct2000-data.ts'), { './patent-bar-qbank-data': qbank });
 const coverage = loadTs(lib('patent-bar-coverage.ts'), { './patent-bar-qbank-data': qbank });
 
 const all = [
@@ -56,6 +64,13 @@ const all = [
   ...octPm.USPTO_OCT2003_PM_QUESTIONS,
   ...aprAm.USPTO_APR2003_AM_QUESTIONS,
   ...aprPm.USPTO_APR2003_PM_QUESTIONS,
+  ...apr02Am.USPTO_APR2002_AM_QUESTIONS,
+  ...apr02Pm.USPTO_APR2002_PM_QUESTIONS,
+  ...oct01Am.USPTO_OCT2001_AM_QUESTIONS,
+  ...oct01Pm.USPTO_OCT2001_PM_QUESTIONS,
+  ...apr01Am.USPTO_APR2001_AM_QUESTIONS,
+  ...apr01Pm.USPTO_APR2001_PM_QUESTIONS,
+  ...oct00Am.USPTO_OCT2000_AM_QUESTIONS,
 ];
 
 const { rows, bankTotal } = coverage.computePatentBarCoverage(all);
@@ -78,8 +93,27 @@ lines.push('');
 lines.push(`Bank total: **${bankTotal}** questions — ${totalOfficial} official (USPTO released exams), ` +
   `${totalSme} SME-verified, ${totalUnverified} unverified (AI-authored, pending review).`);
 lines.push('');
-lines.push('Blueprint: exam-config.ts PATENT_BAR (100-question form). "Share" is the section\'s');
-lines.push('portion of the whole bank; the WS3 floor requires share ≥ blueprint weight.');
+lines.push('## About these weights');
+lines.push('');
+lines.push('**The USPTO publishes no topic breakdown for the registration examination.** Its');
+lines.push('[source-material list](https://www.uspto.gov/sites/default/files/documents/registrationexamsourcematerial.pdf)');
+lines.push('names what is tested — MPEP Ninth Ed. Rev. 01.2024; the PTAB Consolidated Trial');
+lines.push('Practice Guide (Nov 2019); the 2013 rule creating the 37 CFR Part 11 conduct rules;');
+lines.push('the Global/IP5 PPH programs — but never in what proportion. Any percentage');
+lines.push('blueprint for this exam is an **estimate**, including ours.');
+lines.push('');
+lines.push(`The weights below are measured from the ${totalOfficial} official released-exam questions in`);
+lines.push('this bank. Two limits, stated rather than hidden: the topic labels are our own');
+lines.push('classification, and every released exam predates 2004 — so ethics, post-issuance');
+lines.push('and international practice are near-certainly under-weighted against today\'s exam,');
+lines.push('and are treated as floors rather than targets. Full provenance:');
+lines.push('`apps/web/src/lib/patent-bar-coverage.ts`.');
+lines.push('');
+lines.push('"Share" is the section\'s portion of the whole bank; the WS3 floor requires');
+lines.push('share ≥ weight. Sections flagged ❌ are ones where the AUTHORED content is');
+lines.push('mis-weighted — it was generated to the superseded blueprint — not ones where the');
+lines.push('official pool is short. A scored mock draws only official items and currently hits');
+lines.push('every section target exactly.');
 lines.push('');
 lines.push('| Section | Weight | Bank Qs | Share | Official | SME | Unverified | Meets weight |');
 lines.push('|---|---:|---:|---:|---:|---:|---:|:---:|');

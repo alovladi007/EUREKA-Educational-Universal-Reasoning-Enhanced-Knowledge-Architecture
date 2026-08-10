@@ -12,6 +12,12 @@ export interface ExamTypeConfig {
   description: string;
   totalDuration: number;
   totalQuestions: number;
+  /**
+   * Questions that count toward the score, when the exam delivers unscored
+   * pretest items alongside them. Omitted when every delivered question is
+   * scored.
+   */
+  scoredQuestions?: number;
   sections: ExamSection[];
   scoreRange: { min: number; max: number; label: string };
   passingInfo?: string;
@@ -80,16 +86,36 @@ export const EXAM_CONFIGS: Record<string, ExamTypeConfig> = {
     description: 'USPTO Registration Examination for Patent Practitioners',
     totalDuration: 360,
     totalQuestions: 100,
+    /**
+     * 100 questions are delivered but only 90 are SCORED — 10 are unscored
+     * pretest items — and passing is 63 of those 90. Source: USPTO, General
+     * Requirements Bulletin.
+     */
+    scoredQuestions: 90,
+    /**
+     * ESTIMATED section weights — NOT a USPTO-published blueprint.
+     *
+     * The Office publishes what is tested (MPEP Ninth Edition Rev. 01.2024;
+     * PTAB Consolidated Trial Practice Guide Nov 2019; the 2013 "Changes to
+     * Representation of Others" rule creating 37 CFR Part 11; the Global/IP5
+     * PPH programs) but never in what proportion. These counts are derived
+     * from the 512 official released-exam questions in the QBank and are kept
+     * in sync with PATENT_BAR_BLUEPRINT in patent-bar-coverage.ts — read the
+     * provenance block there before changing them. It records the two limits
+     * that matter: our own topic classification, and the fact that every
+     * source exam predates 2004, so ethics, post-issuance and international
+     * practice are treated as floors rather than targets.
+     */
     sections: [
-      { id: 'patent_prosecution', name: 'Patent Prosecution & Application', questionCount: 30 },
-      { id: 'patentability', name: 'Patentability & Prior Art', questionCount: 20 },
-      { id: 'post_issuance', name: 'Post-Issuance Proceedings', questionCount: 15 },
-      { id: 'design_plant', name: 'Design & Plant Patents', questionCount: 10 },
-      { id: 'pct_international', name: 'PCT & International Filing', questionCount: 10 },
-      { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', questionCount: 15 },
+      { id: 'patent_prosecution', name: 'Patent Prosecution & Application', questionCount: 56 },
+      { id: 'patentability', name: 'Patentability & Prior Art', questionCount: 28 },
+      { id: 'post_issuance', name: 'Post-Issuance Proceedings', questionCount: 10 },
+      { id: 'design_plant', name: 'Design & Plant Patents', questionCount: 2 },
+      { id: 'pct_international', name: 'PCT & International Filing', questionCount: 2 },
+      { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', questionCount: 2 },
     ],
-    scoreRange: { min: 0, max: 100, label: 'Pass / Fail (70% to pass)' },
-    passingInfo: 'Must score 70% or higher to pass',
+    scoreRange: { min: 0, max: 100, label: 'Pass / Fail (63 of 90 scored to pass)' },
+    passingInfo: 'Of the 100 questions delivered, 90 are scored; you must answer 63 of those 90 correctly (70%) to pass.',
   },
   MCAT: {
     id: 'MCAT',

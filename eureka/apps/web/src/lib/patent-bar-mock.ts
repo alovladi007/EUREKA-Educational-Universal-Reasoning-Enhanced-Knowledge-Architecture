@@ -8,18 +8,35 @@
  * exist, SME-verified items. AI-authored unverified questions are excluded
  * at the pool-construction step, so no UI path can leak one into a score.
  *
- * Section allocation is the honest part two: the real exam blueprint is
- * 30/20/15/15/10/10, but the official pool skews hard toward prosecution
- * and patentability (79/70/17/2/2/4 across the six sections). A blueprint-
- * weighted official-only form is therefore impossible in the thin sections.
- * computeMockAllocation() does the defensible thing: start each section at
- * its blueprint target, cap at available supply, and redistribute the
- * shortfall to uncapped sections in proportion to their blueprint weights —
- * iterating until stable, then largest-remainder rounding to exactly the
- * form size. The resulting mix is DISCLOSED to the user before they start
- * (never silently passed off as blueprint-weighted). As more official exams
- * are ingested or SME reviews land, the allocation converges toward the
- * blueprint automatically.
+ * Section allocation is the honest part two. This used to read "the real
+ * exam blueprint is 30/20/15/15/10/10, but the official pool skews hard
+ * toward prosecution and patentability, so a blueprint-weighted
+ * official-only form is impossible in the thin sections." That diagnosis
+ * was backwards. Those weights were never the exam's — the USPTO publishes
+ * no topic breakdown at all, and the figures were unsourced. Measured
+ * against the 512 official released-exam items, the "skew" IS the exam's
+ * shape. See the provenance block in patent-bar-coverage.ts.
+ *
+ * With the blueprint corrected to the empirical distribution, every section
+ * is satisfiable from the official pool: supply 285/146/48/11/9/13 against
+ * targets 56/28/10/2/2/2 allocates exactly on target, with no capping and
+ * no redistribution. shortOfBlueprint is false for all six.
+ *
+ * computeMockAllocation() keeps the redistribution machinery anyway — it is
+ * what makes the allocation self-correcting. It starts each section at its
+ * target, caps at available supply, redistributes any shortfall to uncapped
+ * sections in proportion to their weights, iterates until stable, then
+ * largest-remainder rounds to exactly the form size. That path is currently
+ * inert but guards narrower pools (a single-exam form, a future
+ * SME-only pool) and any re-weighting that outruns supply. The resulting
+ * mix is DISCLOSED to the user before they start, never silently passed off
+ * as blueprint-weighted.
+ *
+ * Form size note: the real exam delivers 100 questions of which only 90 are
+ * scored (10 are unscored pretest items), and passing is 63 of 90 — the same
+ * 70% threshold MOCK_PASS_PCT encodes. This mock scores all 100 rather than
+ * designating 10 arbitrary items unscored, which would change no candidate's
+ * outcome and would only cost them feedback on 10 real questions.
  */
 
 import { getPatentBarVerification, type PatentBarQuestion } from './patent-bar-qbank-data';

@@ -13,11 +13,14 @@
  *    items (Oct 2003 + Apr 2003, graded against the USPTO model answers)
  *    plus any SME-verified items (currently zero). Enforcement lives in
  *    patent-bar-mock.ts at pool construction, not in UI logic.
- *  - The official pool cannot fill the exam blueprint in the thin sections
- *    (ethics 2, design 2, PCT 4 available). The intro screen DISCLOSES the
- *    actual section mix vs the blueprint before the user starts; nothing is
- *    silently passed off as blueprint-weighted.
- *  - The 2003 sources predate the AIA; items keyed to pre-AIA law carry
+ *  - The form now fills every section of the blueprint from official items
+ *    alone. It previously could not, which was read as a supply defect in
+ *    the thin sections; the real cause was an unsourced blueprint. See the
+ *    provenance block in patent-bar-coverage.ts. The intro screen still
+ *    DISCLOSES the section mix and the fact that the blueprint is an
+ *    ESTIMATE (the USPTO publishes no topic weighting) before the user
+ *    starts; nothing is passed off as an official Office specification.
+ *  - The source exams predate the AIA; items keyed to pre-AIA law carry
  *    [Pre-AIA] tags in their explanations, and a global caveat is shown.
  *  - Results persist locally (pb_mock_history_v1); server-side result
  *    storage is a WS5 concern alongside entitlements.
@@ -282,25 +285,33 @@ export default function PatentBarMockPage() {
           <p>
             A full simulation of the registration exam: <strong>100 questions in two 50-question
             sessions of 3 hours each</strong>, with a break between. No answer feedback until you
-            finish; flag questions to revisit within the current session. Passing on the real exam
-            is <strong>{MOCK_PASS_PCT}%</strong>.
+            finish; flag questions to revisit within the current session. On the real exam only{' '}
+            <strong>90 of the 100</strong> delivered questions are scored — the other 10 are unscored
+            pretest items — and passing is <strong>63 of those 90</strong>, i.e. {MOCK_PASS_PCT}%.
+            This mock scores all 100 rather than picking 10 at random to throw away, so your
+            percentage means the same thing without costing you feedback on ten real questions.
           </p>
           <p className="flex items-start gap-2 rounded-md border border-emerald-500/40 bg-emerald-500/5 p-3">
             <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" />
             <span>
               Every question in a scored mock is <strong>verified</strong>: {totalVerified} official
-              USPTO released-exam questions (Oct 2003 + Apr 2003, both sessions), graded against the
-              USPTO&apos;s own model answers. AI-authored unverified items are excluded mechanically.
+              USPTO released-exam questions drawn from eleven released sessions (Oct 2000 through
+              Oct 2003), graded against the USPTO&apos;s own model answers. AI-authored unverified
+              items are excluded mechanically.
             </span>
           </p>
           <p className="flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/5 p-3">
             <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-600" />
             <span>
-              <strong>Honest section mix:</strong> the official pool is thin in ethics, design/plant,
-              and PCT, so this mock cannot match the real exam&apos;s blueprint in those sections —
-              the shortfall is reallocated to prosecution and patentability (table below). The 2003
-              sources also predate the AIA; answers keyed to pre-AIA law carry [Pre-AIA] tags in the
-              post-exam review.
+              <strong>The section mix is an estimate, not an official blueprint.</strong> The USPTO
+              publishes what it tests but never in what proportion, so no one can quote you a real
+              percentage breakdown. Ours is measured from the {totalVerified} official questions
+              below and this mock matches it exactly. Two caveats we&apos;d rather state than hide:
+              the topic labels are our own, and every released exam predates 2004 — so ethics,
+              post-issuance and international practice are almost certainly under-weighted relative
+              to today&apos;s exam, which also tests PTAB trial practice and the 2013 professional
+              conduct rules. We treat those three as floors. Answers keyed to pre-AIA law carry
+              [Pre-AIA] tags in the post-exam review.
             </span>
           </p>
           <div className="overflow-x-auto">

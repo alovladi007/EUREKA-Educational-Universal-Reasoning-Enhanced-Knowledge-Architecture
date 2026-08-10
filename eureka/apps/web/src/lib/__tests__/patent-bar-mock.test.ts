@@ -84,27 +84,27 @@ describe('computeMockAllocation', () => {
     pct_international: 13,
   };
 
-  it('produces the documented 32/21/16/11/9/11 mix for the current official pool', () => {
+  it('hits the blueprint exactly (56/28/10/2/2/2) for the current official pool', () => {
     const rows = computeMockAllocation(currentSupply, 100);
     const byId = Object.fromEntries(rows.map((r) => [r.id, r.allocated]));
     expect(byId).toEqual({
-      patent_prosecution: 32,
-      patentability: 21,
-      post_issuance: 16,
-      ethics_conduct: 11,
-      design_plant: 9,
-      pct_international: 11,
+      patent_prosecution: 56,
+      patentability: 28,
+      post_issuance: 10,
+      ethics_conduct: 2,
+      design_plant: 2,
+      pct_international: 2,
     });
     expect(rows.reduce((n, r) => n + r.allocated, 0)).toBe(100);
-    // Thin sections are flagged as short of blueprint; padded ones are not.
-    // MILESTONE: with Apr 2001 PM ingested, pct_international finally reaches
-    // its 10% blueprint target (11 allocated) and is no longer short — the
-    // first thin section to be filled by official items alone.
-    const short = Object.fromEntries(rows.map((r) => [r.id, r.shortOfBlueprint]));
-    expect(short.ethics_conduct).toBe(true);
-    expect(short.design_plant).toBe(true);
-    expect(short.pct_international).toBe(false);
-    expect(short.patent_prosecution).toBe(false);
+    // Every section is now satisfiable from official items alone. This used
+    // to fail in the thin sections, which was read as a supply defect; it was
+    // actually an artifact of the unsourced 30/20/15/15/10/10 weights. With
+    // the blueprint corrected to the empirical distribution of the 512
+    // official items, nothing is capped and nothing is redistributed.
+    for (const r of rows) {
+      expect(r.shortOfBlueprint).toBe(false);
+      expect(r.allocated).toBe(r.weightPct);
+    }
   });
 
   it('never allocates beyond a section supply and always sums to the form size', () => {

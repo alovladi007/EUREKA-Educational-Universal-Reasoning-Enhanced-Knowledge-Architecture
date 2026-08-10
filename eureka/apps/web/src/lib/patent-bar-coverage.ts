@@ -13,24 +13,72 @@ import { getPatentBarVerification, type PatentBarVerification } from './patent-b
 export interface CoverageSection {
   id: string;
   name: string;
-  /** Blueprint questions per 100-question form (== weight %). */
+  /**
+   * ESTIMATED questions per 100-question form (== weight %). The USPTO
+   * publishes no topic weighting; see the provenance block below.
+   */
   weightPct: number;
   /** QBank topicIds that roll up into this blueprint section. */
   topicIds: number[];
+  /** How this section's weight was derived — shown in the published matrix. */
+  basis: string;
 }
 
 /**
- * Mirrors exam-config.ts PATENT_BAR.sections. "Patent Prosecution &
- * Application" (30%) spans three bank topics: application preparation (1),
- * filing & prosecution (2), and Office-action responses (3).
+ * WEIGHT PROVENANCE — read before changing these numbers.
+ *
+ * The USPTO does NOT publish a topic breakdown for the registration
+ * examination. Its published source-material list
+ * (https://www.uspto.gov/sites/default/files/documents/registrationexamsourcematerial.pdf)
+ * names only WHAT is tested, never in what proportion. Any percentage
+ * blueprint for this exam is therefore an ESTIMATE, and must be labelled as
+ * one rather than presented as the Office's own spec.
+ *
+ * These weights were previously 30/20/15/15/10/10 with no source of any
+ * kind. That set was not merely unsourced but contradicted by evidence: the
+ * 512 official released-exam questions in this bank (Oct 2003, Apr 2003,
+ * Apr 2002 AM+PM, Oct 2001 AM+PM, Apr 2001 AM+PM, Oct 2000 AM) distribute
+ * as prosecution 55.7%, patentability 28.5%, post-issuance 9.4%,
+ * PCT 2.5%, ethics 2.1%, design/plant 1.8%. A mock built to the old numbers
+ * over-served ethics and design/plant by ~20 points of exam weight and
+ * under-served prosecution — the single largest section of the real exam.
+ *
+ * `weightPct` below is the empirical distribution of those 512 questions,
+ * rounded largest-remainder to sum to 100. `basis` records the derivation
+ * per section so the estimate can be audited and revised.
+ *
+ * KNOWN LIMITS of this estimate — do not treat it as ground truth:
+ *  1. CLASSIFICATION ERROR. topicIds were assigned during ingestion by
+ *     reading each question; a different reader would bucket some items
+ *     differently, particularly at the filing/prosecution boundary.
+ *  2. ERA DRIFT — the important one. Every source exam predates 2004.
+ *     THREE of the four current tested sources postdate them entirely:
+ *     the PTAB Consolidated Trial Practice Guide (Nov 2019), the 2013
+ *     "Changes to Representation of Others" rule that created the 37 CFR
+ *     Part 11 professional-conduct rules, and the Global/IP5 Patent
+ *     Prosecution Highway programs. Ethics measures 2.1% here largely
+ *     BECAUSE the modern conduct rules did not exist when these exams were
+ *     written. The modern exam near-certainly tests ethics, post-issuance
+ *     (IPR/PGR/derivation) and international practice ABOVE their
+ *     historical share. Those three are treated as FLOORS, not targets:
+ *     do not drive them lower on the strength of older exams alone.
+ *
+ * "Patent Prosecution & Application" spans three bank topics: application
+ * preparation (1), filing & prosecution (2), and Office-action responses (3).
  */
 export const PATENT_BAR_BLUEPRINT: CoverageSection[] = [
-  { id: 'patent_prosecution', name: 'Patent Prosecution & Application', weightPct: 30, topicIds: [1, 2, 3] },
-  { id: 'patentability', name: 'Patentability & Prior Art', weightPct: 20, topicIds: [0] },
-  { id: 'post_issuance', name: 'Post-Issuance Proceedings', weightPct: 15, topicIds: [5] },
-  { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', weightPct: 15, topicIds: [7] },
-  { id: 'design_plant', name: 'Design & Plant Patents', weightPct: 10, topicIds: [6] },
-  { id: 'pct_international', name: 'PCT & International Filing', weightPct: 10, topicIds: [4] },
+  { id: 'patent_prosecution', name: 'Patent Prosecution & Application', weightPct: 56, topicIds: [1, 2, 3],
+    basis: 'empirical: 285/512 official items = 55.7%' },
+  { id: 'patentability', name: 'Patentability & Prior Art', weightPct: 28, topicIds: [0],
+    basis: 'empirical: 146/512 official items = 28.5%' },
+  { id: 'post_issuance', name: 'Post-Issuance Proceedings', weightPct: 10, topicIds: [5],
+    basis: 'empirical: 48/512 = 9.4%; FLOOR — modern PTAB trial practice (IPR/PGR/derivation) is a named tested source and postdates every source exam' },
+  { id: 'ethics_conduct', name: 'Ethics & Professional Conduct', weightPct: 2, topicIds: [7],
+    basis: 'empirical: 11/512 = 2.1%; FLOOR — the 37 CFR Part 11 conduct rules (2013) postdate every source exam and are a named tested source' },
+  { id: 'design_plant', name: 'Design & Plant Patents', weightPct: 2, topicIds: [6],
+    basis: 'empirical: 9/512 official items = 1.8%' },
+  { id: 'pct_international', name: 'PCT & International Filing', weightPct: 2, topicIds: [4],
+    basis: 'empirical: 13/512 = 2.5%; FLOOR — the Global/IP5 PPH programs are a named tested source and postdate every source exam' },
 ];
 
 export interface CoverageRow {
