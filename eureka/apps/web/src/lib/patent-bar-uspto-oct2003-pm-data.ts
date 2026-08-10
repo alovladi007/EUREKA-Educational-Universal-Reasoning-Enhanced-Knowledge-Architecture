@@ -415,6 +415,24 @@ export const USPTO_OCT2003_PM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (E) is the correct answer — none is correct. (A): for a RESIDENCE error the ADS governs and no supplemental oath is required (37 CFR § 1.76(d)(2); MPEP § 601.05). (B): each joint inventor’s oath should reference the other inventors; defective oaths require new ones (MPEP § 602). (C): an improperly dependent claim is OBJECTED to under 37 CFR § 1.75(c), not rejected under § 112 ¶ 4 (MPEP § 608.01(n)). (D): the three-month period runs from the DATE ON the foreign office communication, not the date received by an associate or practitioner (MPEP § 609).',
   },
   {
+    id: 'uspto-oct03-pm-23',
+    topicId: 0,
+    subtopic: 'Relying on an abstract vs the underlying foreign-language document (Official Oct 2003)',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Oct 2003] A patent application is filed having one claim (claim 1). The most relevant prior art uncovered by the primary examiner, after searching the claimed subject matter, is a published abstract summarizing the disclosure of a foreign patent document. The abstract is in English, the foreign document is in German. Both the published abstract and the foreign document are prior art under 35 USC 102(b). The published abstract provides an adequate basis for concluding that claim 1 is prima facie obvious under 35 USC 103. Which of the following actions is in accord with the patent laws, rules and procedures as related in the MPEP?',
+    options: [
+      'Reject claim 1 under 35 USC 103, based on the abstract, because it is a publication in its own right and provides sufficient basis for a prima facie case of obviousness.',
+      'Reject claim 1 under 35 USC 103, based on the abstract, because disclosures that are not in English cannot form the basis of a prior art rejection.',
+      'Reject claim 1 under 35 USC 103, based on the German-language patent document, as evidenced by the abstract.',
+      'Do not reject claim 1 based on the abstract; instead, obtain a translation of the German-language document and determine whether its full disclosure supports a rejection under 35 USC 102(b) or 103.',
+      'Do not reject the claims based on the abstract because an abstract can never provide sufficient disclosure to be enabling.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): TWO ANSWERS WERE ACCEPTED — the USPTO states "(A) or (D) is accepted as correct." MPEP § 706.02, "Reliance Upon Abstracts And Foreign Language Documents In Support Of A Rejection." As to (A), that section states "[i]n limited circumstances, it may be appropriate for the examiner to make a rejection in a non-final Office action based in whole or in part on the abstract only without relying on the full text document," and here the abstract by hypothesis provides an adequate basis. As to (D), the same section states "[c]itation of and reliance upon an abstract without citation of and reliance upon the underlying scientific document is generally inappropriate where both the abstract and the underlying document are prior art." Ex parte Jones, 62 USPQ2d 1206, 1208 (Bd. Pat. App. & Int. 2001). (B) is incorrect — non-English documents CAN form the basis of a prior art rejection, though they must be translated first. (C) is incorrect because when an abstract is used to support a rejection, the evidence relied upon is the facts contained in the abstract, not additional facts in the underlying full-text document. (E) is incorrect — whether a disclosure is enabling is fact-dependent and case-by-case; even pictures may be enabling. MPEP §§ 2121.01, 2121.04. [Pre-AIA] — decided under pre-AIA § 102(b).',
+  },
+  {
     id: 'uspto-oct03-pm-24',
     topicId: 5,
     subtopic: 'Patent Term — 20 Years From Which Date (Official Oct 2003)',

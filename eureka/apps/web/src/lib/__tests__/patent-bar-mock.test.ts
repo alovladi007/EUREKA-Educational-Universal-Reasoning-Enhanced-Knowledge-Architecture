@@ -64,7 +64,7 @@ describe('buildOfficialMockPool', () => {
   it('admits every official question and nothing unverified', () => {
     const pool = buildOfficialMockPool(FULL_BANK as PatentBarQuestion[]);
     const all = Object.values(pool).flat();
-    expect(all.length).toBe(OFFICIALS.length); // 758 officials, zero sme so far
+    expect(all.length).toBe(OFFICIALS.length); // 779 officials, zero sme so far
     for (const q of all) expect(q.id.startsWith('uspto-')).toBe(true);
   });
 
@@ -74,8 +74,8 @@ describe('buildOfficialMockPool', () => {
       Object.entries(pool).map(([k, v]) => [k, v.length]),
     );
     expect(counts).toEqual({
-      patent_prosecution: 427,
-      patentability: 194,
+      patent_prosecution: 443,
+      patentability: 199,
       post_issuance: 81,
       ethics_conduct: 24,
       design_plant: 13,
@@ -86,8 +86,8 @@ describe('buildOfficialMockPool', () => {
 
 describe('computeMockAllocation', () => {
   const currentSupply = {
-    patent_prosecution: 427,
-    patentability: 194,
+    patent_prosecution: 443,
+    patentability: 199,
     post_issuance: 81,
     ethics_conduct: 24,
     design_plant: 13,
@@ -109,7 +109,7 @@ describe('computeMockAllocation', () => {
     // Every section is now satisfiable from official items alone. This used
     // to fail in the thin sections, which was read as a supply defect; it was
     // actually an artifact of the unsourced 30/20/15/15/10/10 weights. With
-    // the blueprint corrected to the empirical distribution of the 758
+    // the blueprint corrected to the empirical distribution of the 779
     // official items, nothing is capped and nothing is redistributed.
     for (const r of rows) {
       expect(r.shortOfBlueprint).toBe(false);

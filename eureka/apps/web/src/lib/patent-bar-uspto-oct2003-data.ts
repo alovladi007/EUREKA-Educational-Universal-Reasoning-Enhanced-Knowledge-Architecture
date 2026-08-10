@@ -545,6 +545,24 @@ export const USPTO_OCT2003_AM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (B) is the most proper answer (the incorrect statement). MPEP § 2128.02: “Evidence showing routine business practices CAN be used to establish the date on which publication became accessible to the public. Specific evidence showing when the specific document actually became available is not always necessary” (Constant v. Advanced Micro-Devices; In re Hall). (A), (C), (D) and (E) each correctly state the law (MPEP §§ 2128.01, 2128.02; In re Hall; MIT v. AB Fortia; In re George; In re Schlittler).',
   },
   {
+    id: 'uspto-oct03-am-30',
+    topicId: 0,
+    subtopic: 'Disqualifying § 102(e) art under § 103(c) — evidence of common ownership (Official Oct 2003)',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Oct 2003] A registered practitioner receives an Office action for Application X, a patent application filed after November 29, 1999. The action contains a rejection of all the claims as being obvious under 35 USC 103(a) over Patent A in view of Patent B. Patent A is only available as prior art under 35 USC 102(e). Patent B is available under 35 USC 102(b). The practitioner seeks to disqualify Patent A as prior art under 35 USC 103(c). Which of the following would be sufficient evidence to disqualify Patent A as prior art in accordance with the patent laws, rules and procedures as related in the MPEP?',
+    options: [
+      'A declaration signed by an employee of Corporation K, who is not empowered to act on behalf of Corporation K, stating that at the time the invention claimed in Application X was made, the claimed invention and Patent A were commonly owned by Corporation K.',
+      'A declaration signed by the inventor of Patent A stating that at the time the invention claimed in Application X was made, the invention claimed in Application X and the invention claimed in Patent A were both subject to an obligation of assignment to the same person.',
+      'A statement by the inventor Jones, the sole inventor of Application X, saying that at the present time, Application X and Patent A are commonly owned.',
+      'A statement by the practitioner stating that Application X and Patent A were, at the time the invention claimed in Application X was made, commonly owned by the same person.',
+      'A statement by inventor Jones, the sole inventor of Application X, saying that at the time the invention claimed in Application X was made, Jones owned a majority interest in Patent A.',
+    ],
+    correct: 1,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): TWO ANSWERS WERE ACCEPTED — the USPTO states "(B) or (D) is accepted as the correct answer." MPEP § 706.02(l)(2), "II. Evidence Required To Establish Common Ownership." (B) is accepted because applicants have the best knowledge of the ownership of their applications, and their statement of such is sufficient evidence because of their paramount obligation of candor and good faith to the USPTO. (D) reproduces the example set forth under that heading. (A) is incorrect because applicants or the representatives of record have that best knowledge and that obligation. (C) is incorrect because the statement does not establish common ownership AT THE TIME the later invention was made. 35 U.S.C. § 103(c). (E) is incorrect because a majority interest does not establish that the prior art invention and the claimed invention are entirely or wholly owned by the same person. [Pre-AIA] — § 103(c) common-ownership disqualification was superseded by the AIA § 102(b)(2)(C) exception.',
+  },
+  {
     id: 'uspto-oct03-am-31',
     topicId: 5,
     subtopic: 'Reexamination — Enlarging Claim Scope § 305 (Official Oct 2003)',

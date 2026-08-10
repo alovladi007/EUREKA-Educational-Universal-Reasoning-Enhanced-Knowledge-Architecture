@@ -187,6 +187,24 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (B) is the most correct answer. 37 CFR §§ 1.51(b), 1.53(b), 1.63(d)(1)(iv); MPEP §§ 201.06(c), 602.05(a): a continuation may be filed with a new specification and drawings free of new matter plus a copy of the signed declaration AS FILED in the prior application and the fees. (A) fails — the copy must be of the prior application AS FILED, not as amended; (C) fails — a continuation cannot contain what would have been new matter (that is a CIP); (D) fails — the oath/declaration is needed to name the same inventors.',
   },
   {
+    id: 'uspto-apr03-pm-09',
+    topicId: 2,
+    subtopic: 'A part-interest assignee cannot exclude a non-signing joint inventor from access',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Inventors B and C are employed by Corporation D, which authorized registered practitioner E to prepare and file a patent application claiming subject matter invented by B and C. Inventor B signed the oath, an assignment to Corporation D, and a power of attorney authorizing practitioner E to prosecute the application. Inventor C refused to sign the oath and any assignment documents for the application. The employment contract between inventor C and Corporation D contains no language obligating C to assign any invention to Corporation D. A patent application was properly filed in the USPTO under 37 CFR 1.47 naming B and C as inventors, but without inventor C signing the oath. C has now started his own company competing with Corporation D producing a product with the invention in the application. Inventor B is a friend of inventor C and wants C to have continued access to the application. Which of the following statements is in accordance with the USPTO rules and the procedures set forth in the MPEP?',
+    options: [
+      'Inventor C, who has not signed the oath or declaration, may revoke the power of attorney to practitioner E and appoint practitioner F to prosecute the application.',
+      'Inventor C cannot be excluded from access to the application because inventor B has not agreed to exclude inventor C. In order to exclude a co-inventor from access to an application, all the remaining inventors must agree to exclude that co-inventor.',
+      'Inasmuch as one of the named joint inventors has not assigned his or her rights to Corporation D, the corporation is not an assignee of the entire right and interest, and therefore cannot exclude inventor C from access to the application.',
+      'An inventor who did not sign the oath or declaration filed in an application can always be excluded from access to an application.',
+      'An assignee filing an application can control access to an application and exclude inventors who have not assigned their rights and other assignees from inspecting the application.',
+    ],
+    correct: 2,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (C) is the most correct answer. MPEP § 106: "[t]he assignee of record of the entire interest in an application may intervene in the prosecution of the application... Such intervention, however, does not exclude the applicant from access to the application to see that it is being prosecuted properly, unless the assignee makes specific request to that effect." 37 CFR § 3.71. (A) is contrary to MPEP § 409.03(i) — a non-signing inventor cannot revoke or give a power of attorney without agreement of all named inventors or the § 1.47(b) applicant. (B) is incorrect — § 106 does not empower an inventor who has assigned to exclude a non-signing joint inventor. (E) is incorrect — Corporation D, as assignee of a PART interest, cannot exclude the non-signing joint inventor; MPEP § 106.01 confirms an assignee of a part interest or exclusive licensee is entitled to inspect. (D) is incorrect because § 409.03(i) states a nonsigning inventor is entitled to inspect any papers in the application and order copies.',
+  },
+  {
     id: 'uspto-apr03-pm-10',
     topicId: 3,
     subtopic: 'Objection vs Rejection (Official Apr 2003)',
@@ -203,6 +221,24 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
     correct: 1,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (B) is the most correct answer. MPEP § 706.01: “If the form of the claim (as distinguished from its substance) is improper, an ‘objection’ is made.” (A)/(C) fail — a rejection (on the merits) is reviewable by the Board, while an objection is reviewable only by petition to the Commissioner. (D) fails — a § 112 ¶ 2 failure is a REJECTION (MPEP § 706.03(d)). (E) fails — dependency on a rejected claim, where the dependent claim is otherwise allowable, draws an OBJECTION as a matter of form (MPEP § 608.01(n)).',
+  },
+  {
+    id: 'uspto-apr03-pm-11',
+    topicId: 2,
+    subtopic: 'Assignment carries to a divisional, but the patent issues per PTOL-85B item 3',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] A registered practitioner properly recorded an assignment document for application A identifying XYZ Company as the assignee. The document assigns to XYZ Company the "subject matter claimed in Application A." A proper restriction requirement was made by a primary examiner in application A between two distinct inventions, and the practitioner elected to prosecute one of the inventions. Application A was prosecuted, and later became abandoned. Before the abandonment date of application A, the practitioner filed a complete application B as a proper divisional application of application A. Application B claimed the nonelected invention of Application A, and was published as a U.S. application publication. XYZ Company remains the assignee of application A. What must the practitioner do in accordance with the USPTO rules and the procedures set forth in the MPEP to ensure that XYZ Company is listed as the assignee on the face of any patent issuing from application B?',
+    options: [
+      'File a proper assignment document in application B identifying XYZ Company as the assignee.',
+      'File a proper assignment document in application B identifying XYZ Company as the assignee, and confirm that USPTO\'s bibliographic data for application B identifies XYZ Company as the assignee by checking the filing receipt for application B, the U.S. application publication of application B, or the USPTO\'s Patent Application Information Retrieval (PAIR) system data for application B, depending on when the practitioner filed the assignment document in application B.',
+      'Confirm that XYZ Company is identified as the assignee on the U.S. application publication of application B.',
+      'File a proper assignment document in application B identifying XYZ Company as the assignee, and confirm that XYZ Company is identified as the assignee on the U.S. application publication of application B.',
+      'Upon allowance of application B, the practitioner must identify XYZ Company as the assignee in the appropriate space on the Issue Fee Transmittal form for specifying the assignee for application B.',
+    ],
+    correct: 4,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (E) is the most correct answer. MPEP §§ 306 and 307. Section 306: "In the case of a division or continuation application, a prior assignment recorded against the original application is applied to the division or continuation application because the assignment recorded against the original application gives the assignee rights to the subject matter common to both applications." Section 307: "Unless an assignee\'s name and address are identified in item 3 of the Issue Fee Transmittal form PTOL-85B, the patent will issue to the applicant. Assignment data printed on the patent will be based solely on the information so supplied." So no new assignment need be recorded — (A), (B) and (D) are incorrect — and recording alone will not put the assignee on the patent. (C) is incorrect for the same reason; there is also no connection between the filing receipt, PAIR or the publication and the recorded assignment. See also MPEP §§ 1309, 1481.',
   },
   {
     id: 'uspto-apr03-pm-12',
@@ -277,6 +313,24 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 2137.01, “The Inventor Is Not Required To Reduce The Invention To Practice” (In re DeBaun, 214 USPQ 933 (CCPA 1982)): reduction to practice on the inventor’s behalf suffices. (B) fails — an inventor must contribute to CONCEPTION (Fiers v. Revel). (C) fails — as long as the inventor maintains intellectual domination over making the invention, ideas and materials may be adopted from others (Morse v. Porter). (D)/(E) fail — merely funding the application does not make John a joint inventor (35 U.S.C. § 116).',
   },
   {
+    id: 'uspto-apr03-pm-16',
+    topicId: 1,
+    subtopic: 'A special definition in the specification controls claim interpretation',
+    difficulty: 2,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Claim 1 of an application recites "[a]n article comprising: (a) a copper substrate; and (b) a electrically insulating layer on said substrate." The specification defines the term "copper" as being elemental copper or copper alloys. In accordance with USPTO rules and procedures set forth in the MPEP, for purposes of searching and examining the claim, the examiner should interpret the term "copper" in the claim as reading on:',
+    options: [
+      'Elemental copper only, based on the plain meaning of "copper."',
+      'Copper alloys only, based on the special definition in the specification.',
+      'Elemental copper and copper alloys, based on the special definition in the specification.',
+      'Any material that contains copper, including copper compounds.',
+      'None of the above.',
+    ],
+    correct: 2,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (C) is the most correct answer. When the specification expressly provides a special definition for a term used in the claims, the term must be given that special meaning. MPEP § 2111.01. (A) is incorrect because a term is given its plain meaning only when the specification does NOT define it. (B) is incorrect because the specification\'s definition is inclusive of elemental copper. (D) is incorrect because it ignores the definition of copper found in the specification.',
+  },
+  {
     id: 'uspto-apr03-pm-17',
     topicId: 0,
     subtopic: '102(d) Statutory Bar — Foreign Patent (Official Apr 2003)',
@@ -329,6 +383,24 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
     correct: 0,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 2107.01(IV): “A deficiency under 35 U.S.C. § 101 also creates a deficiency under 35 U.S.C. § 112, first paragraph” (In re Brana; In re Fouche — if compositions are useless, the specification cannot have taught how to use them). (B), (C), (D) and (E) all overstate the utility requirement — an invention need not work perfectly, on all occasions, accomplish every intended function, or be commercially successful (MPEP § 2107; E.I. du Pont v. Berkley).',
+  },
+  {
+    id: 'uspto-apr03-pm-20',
+    topicId: 3,
+    subtopic: 'Interview practice — timeliness, authority, and no right to an interview after final',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Inventor Joe is anxious to get a patent with the broadest claim coverage possible for the invention. Joe retained a registered practitioner, Jane, to obtain the advantage of legal counsel in obtaining broad protection. Jane filed a patent application for the invention. The inventor heard that, although patent prosecution is conducted in writing, it is possible to get interviews with examiners. Joe believes an interview might hasten the grant of a patent by providing the examiner a better understanding of the true novelty of the invention. Which of the following are consistent with the USPTO rules and the procedures set forth in the MPEP regarding usage of interviews?',
+    options: [
+      'Prior to the first Office action being mailed the inventor calls the examiner to whom the application is docketed to offer help in understanding the specification.',
+      'After receiving the first Office action Jane calls the examiner for an interview for the purpose of clarifying the structure and operation of the invention as claimed and disclosed, because the examiner\'s analysis regarding patentability in the rejection is novel and suggests that the examiner is interpreting the claimed invention in a manner very different from the inventor\'s intent.',
+      'Jane has Larry, a registered practitioner in the Washington D.C. area, who is more familiar with interview practice to call the examiner. Jane gives Larry a copy of the first Office action, which suggests that the primary examiner\'s analysis is incorrect, and offers to explain why. Jane instructs Larry that because Larry is unfamiliar with the inventor, Larry should not agree to possible ways in which the claims could be modified, or at least indicate to the examiner that Jane would have to approve of any such agreement.',
+      'Jane calls the primary examiner after receiving the final rejection, demanding that the examiner withdraw the finality of the final action. When the examiner states that the final rejection is proper, Jane demands an interview as a matter of right to explain the arguments.',
+      '(B) and (D).',
+    ],
+    correct: 1,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (B) is the most correct answer. MPEP § 713.01 — an interview should be had only when the nature of the case is such that it could serve to develop and clarify specific issues and lead to mutual understanding, thereby advancing prosecution. (A) is incorrect: 37 CFR § 1.133(a); MPEP § 713.02 — a request for an interview before the first action is ordinarily granted only in continuing or substitute applications; in all others it is untimely. (C) is incorrect: MPEP § 713.03 — Larry would only be sounding out the examiner with no authority to commit Joe to any agreement. (D) is incorrect: MPEP § 713.09 — there is NO right to an interview after final rejection; interviews merely to restate arguments of record should be denied. (E) is incorrect because (D) is incorrect.',
   },
   {
     id: 'uspto-apr03-pm-21',
@@ -421,6 +493,24 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (B) is the most correct answer (the action that cannot work). 35 U.S.C. § 113: “Drawings submitted after the filing date of the application may not be used (i) to overcome any insufficiency of the specification due to lack of an enabling disclosure.” (A) and (E) are proper traversals (37 CFR § 1.111); (C) is permitted via 35 U.S.C. § 120; (D) is a permissible amendment under 37 CFR § 1.121.',
   },
   {
+    id: 'uspto-apr03-pm-26',
+    topicId: 3,
+    subtopic: 'A § 1.131 declaration that omits claimed features does not show reduction to practice',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Co-inventors Smith and Jones filed an application for a patent on a cell phone, on May 15, 2002. They received a first Office action from a primary examiner rejecting the claims under 35 USC 102(a) over a publication by Bell and Watson, published on April 5, 2002, describing a cell phone having all the same features as is claimed in the patent application. In reply, the co-inventors each submitted a declaration under 37 CFR 1.131 stating that they had actually reduced the invention to practice no later than March 13, 2002. However, the declarations failed to include two claimed features. Neither the particular antenna needed to enable the cell phone to receive transmissions from the local cellular transmitting tower, nor a detachable carrying strap was included in the declarations. As evidence of their prior reduction to practice, Smith and Jones submitted their co-authored journal article. The journal article contained a figure of the cell phone as described in the declarations. That is, the cell phone shown in the figure of the article lacked an antenna and a detachable strap. The article was received by the journal on March 13, 2002, and was published on April 30, 2002. The cell phones shown in the figure in the Bell and Watson publication, and in the Smith and Jones patent application have the particular antenna and a detachable strap. Which of the following actions, if taken by the examiner, would be the most proper in accordance with USPTO rules and the procedures set forth in the MPEP?',
+    options: [
+      'The examiner should maintain the rejection of the claims under 35 USC 102(a) and make the rejection final.',
+      'The examiner should withdraw the rejection and look for references which have a publication date prior to May 15, 2001.',
+      'The examiner should withdraw the rejection and notify Smith and Jones that their application is in condition for allowance.',
+      'The examiner should maintain the rejection, but indicate that the claims would be allowable if Smith and Jones provided an original copy of the figure published in their journal article as factual support for their declarations.',
+      'The examiner should maintain the rejection and inform Smith and Jones that the declarations are insufficient because they cannot "swear behind" a reference which is a statutory bar.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 715.07, "Facts and Documentary Evidence": what must be shown under § 1.131 is priority of invention, by FACTS not conclusions, and "proof of actual reduction to practice requires a showing that the apparatus actually existed and worked for its intended purpose." Here the declarations and the exhibit both omit the antenna and the strap, so the device reduced to practice would not have worked for its intended purpose. (B) and (C) are incorrect because the record shows the applicants cannot overcome the prior art. (D) is wrong because an original copy of a figure that shows they were NOT in possession of the claimed invention cannot help. (E) is incorrect because prior art under § 102(a) is not a statutory bar. [Pre-AIA] — § 1.131 antedating is unavailable against AIA prior art.',
+  },
+  {
     id: 'uspto-apr03-pm-27',
     topicId: 0,
     subtopic: 'Inherency — New Property of an Old Product (Official Apr 2003)',
@@ -437,6 +527,42 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
     correct: 4,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (E) is the most correct answer — the reply is NOT persuasive. MPEP § 2112, “Something Which Is Old Does Not Become Patentable Upon The Discovery Of A New Property”: claiming a new use, function or unknown property inherently present in the prior art does not make the claim patentable (In re Best, 562 F.2d 1252 (CCPA 1977)). Patent A teaches every element of the string (shape, material Z, consisting only of Z); the examiner properly stipulated the stretchability as inherent, shifting the burden to applicant to show the products actually differ — arguing a property difference without showing a difference in material or shape fails.',
+  },
+  {
+    id: 'uspto-apr03-pm-28',
+    topicId: 1,
+    subtopic: 'Fee counting for multiple dependent claims (12 x 11 + 15 = 147)',
+    difficulty: 2,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Ben hires a registered practitioner to prosecute his patent application. The practitioner drafted an application having fifteen claims. Claim 1 is independent, and each of claims 2-15 are singularly dependent upon claim 1. A proper non-final Office action is mailed to the practitioner. Following consultation with Ben, the practitioner timely prepared, signed, and filed a reply to the Office action containing an amendment that does not add new matter, but does add claims 16-27. Each of claims 16-27 is directed to the same invention sought to be patented through claims 1-15. The dependency of each of claims 16-27 reads "any of claims 5-15." For purposes of fee calculation in accordance with the USPTO rules and the procedures set forth in the MPEP, how many total claims are contained in the application after the amendment is entered?',
+    options: [
+      'One hundred thirty-six.',
+      'One hundred thirty-five.',
+      'Twenty-seven.',
+      'One hundred forty-seven.',
+      'Fifteen.',
+    ],
+    correct: 3,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (D) is the most correct answer. 37 CFR § 1.75; MPEP § 608.01(n), "Multiple Dependent Claims" / "Acceptable Multiple Dependent Claim Wording" — the wording of claims 16-27 is proper (compare "in any of claims 1-3 or 7-9"). Section 1.75(c): "For fee calculation purposes under § 1.16, a multiple dependent claim will be considered to be that number of claims to which direct reference is made therein." Claims 16-27 each have a claim value of eleven, so 12 x 11 = 132, plus the original 15, for one hundred forty-seven. (A) and (B) are not the correct total. (C) ignores the multiple-dependent calculation. (E) ignores that the question asks for the total AFTER the amendment.',
+  },
+  {
+    id: 'uspto-apr03-pm-29',
+    topicId: 0,
+    subtopic: 'Enablement of a reference does not depend on the type or nationality of the prior art',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] In accordance with USPTO rules and procedures set forth in the MPEP, which of the following statements regarding operability or enablement of a prior art reference is the most correct?',
+    options: [
+      'The level of disclosure required for a reference to be enabling prior art is no less if the reference is a United States patent than if it is a foreign patent.',
+      'A reference is not presumed to be operable merely because it expressly anticipates or makes obvious all limitations of an applicant\'s claimed apparatus.',
+      'A non-enabling reference may not qualify as prior art for the purpose of determining anticipation or obviousness of the claimed invention.',
+      'A reference does not provide an enabling disclosure merely by showing that the public was in possession of the claimed invention before the date of the applicant\'s invention.',
+      'All of the above are correct.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 2121, "What Constitutes An \'Enabling Disclosure\' Does Not Depend On The Type Of Prior Art The Disclosure Is Contained In," relying on In re Moreton, 288 F.2d 708, 711 (CCPA 1961): "The level of disclosure required within a reference to make it an \'enabling disclosure\' is the same no matter what type of prior art is at issue.... There is no basis in the statute (35 U.S.C. 102 or 103) for discriminating either in favor of or against prior art references on the basis of nationality." (B) is incorrect — MPEP § 2121, "Prior Art Is Presumed To Be Operable/Enabling": when the reference expressly anticipates or makes obvious all the elements, it IS presumed operable. (C) is incorrect — MPEP § 2121.01, quoting Symbol Technologies Inc. v. Opticon Inc., 935 F.2d 1569, 1578 (Fed. Cir. 1991): "a non-enabling reference may qualify as prior art for the purpose of determining obviousness under 35 U.S.C. 103." (D) is incorrect — § 2121.01 states a reference contains an enabling disclosure if the public was in possession of the claimed invention before the date of invention. (E) is incorrect because (B), (C) and (D) are incorrect. [Pre-AIA] — framed under pre-AIA §§ 102/103.',
   },
   {
     id: 'uspto-apr03-pm-30',
@@ -491,6 +617,24 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
     correct: 2,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (C) is the best answer. MPEP §§ 2107.01, 2107.02, “The Claimed Invention Is The Focus Of The Utility Requirement”: an applicant need only make ONE credible assertion of specific utility; additional statements of utility, even if not credible, do not render the invention lacking in utility (In re Gottlieb, 328 F.2d 1016 (CCPA 1964)). Synthetic Z’s disclosed pain-alleviation utility gives intermediate compound Y a credible, substantial and specific utility, making the cancer-cure disclosure superfluous. (D) merely restates what is claimed without showing the required utility; (E) does not go far enough.',
+  },
+  {
+    id: 'uspto-apr03-pm-33',
+    topicId: 2,
+    subtopic: 'Copies of a published pending application come from Public Records, on request and fee',
+    difficulty: 2,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Application No. A was published as U.S. Patent Application Publication No. B. A member of the public reviewed the listing of the file contents of the application on the Patent Application Information Retrieval system and determined that the application was still pending, that a final Office action was mailed, and that the application file is in the Technology Center where it is being examined. The member of the public does not have a power to inspect, but would like a copy of the final Office action as well as the other papers in the patent application. In accordance with the USPTO rules and the procedures set forth in the MPEP, can a copy of these papers be obtained by the member of the public, and if so, how can the copy be obtained?',
+    options: [
+      'No, a copy cannot be obtained because patent applications are maintained in confidence pursuant to 35 USC 122(a).',
+      'No, a copy cannot be obtained because the patent application is still pending.',
+      'Yes, a member of the public can go to the Technology Center and ask for the file for copying at a public photocopier.',
+      'Yes, the member of the public can complete a "Request for Access to an Application Under 37 CFR 1.14(e)" and, without payment of a fee, order the file from the File Information Unit. Upon the Unit\'s receipt of the application, the member of the public can use a public photocopier to make a copy.',
+      'Yes, the member of the public can order a copy from the Office of Public Records, with a written request and payment of the appropriate fee.',
+    ],
+    correct: 4,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (E) is the most correct answer. MPEP § 103, "Published U.S. Patent Applications": "If a patent application has been published pursuant to 35 U.S.C. 122(b), then a copy of the specification, drawings, and all papers relating to the file of that published application (whether abandoned or pending) may be provided to any person upon written request and payment of the fee." (A) and (B) are not correct — 37 CFR § 1.14(c)(2); once published, a copy is available on written request and fee. (C) and (D) are not correct — if the published application is PENDING, the application file itself will not be available to the public for inspection.',
   },
   {
     id: 'uspto-apr03-pm-34',
@@ -743,5 +887,41 @@ export const USPTO_APR2003_PM_QUESTIONS: PatentBarQuestion[] = [
     correct: 3,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (D) is the most correct answer. [Pre-AIA] MPEP § 901.01: matter canceled from the file wrapper of a U.S. patent may be used as prior art AS OF THE PATENT DATE, as prior public knowledge under § 102(a) (In re Lund). (A) fails — canceled matter is NOT a reference as of the filing date under § 102(e) (Ex parte Stalego); (B) fails — disclosure relied on from a copending abandoned application IS available (In re Heritage); (C) fails — the effective date for the common subject matter is the ABANDONED application’s filing date (In re Switzer); (E) fails — foreign patents are references as of their patenting/publication date, not translation date (MPEP § 901.05).',
+  },
+  {
+    id: 'uspto-apr03-pm-49',
+    topicId: 1,
+    subtopic: 'Reading a claim in light of the spec is not reading limitations INTO the claim',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] In accordance with USPTO rules and procedures set forth in the MPEP, which of the following statements regarding claim interpretation during patent prosecution is incorrect?',
+    options: [
+      'A claim is to be given its broadest reasonable interpretation in light of the supporting disclosure in the specification.',
+      'Because a claim is read in light of the specification, the claim may properly be narrowed by interpreting it as including elements or steps disclosed in the specification but not recited in the claim.',
+      'If an applicant does not define a claim term in the specification, that term is given its ordinary meaning in the art.',
+      'When an explicit definition of a claim term is provided in an applicant\'s specification, that definition controls the interpretation of the term as it is used in the claims.',
+      'Means plus function language in claims which defines the characteristics of a machine or manufacture includes only the corresponding structures or materials disclosed in the specification and equivalents thereof.',
+    ],
+    correct: 1,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (B) is the most proper answer — it is the INCORRECT statement. MPEP § 2111, citing In re Prater, 415 F.2d 1393, 1404-05 (CCPA 1969): "reading a claim in light of the specification, to thereby interpret limitations expressly recited in the claim, is a quite different thing from reading limitations of the specification into a claim, to thereby narrow the scope of the claim by implicitly adding disclosed limitations which have no express basis in the claim." (A) is a correct statement — In re Marosi, 710 F.2d 799, 802 (Fed. Cir. 1983), quoting In re Okuzawa: claims are not read in a vacuum and limitations are interpreted in light of the specification in giving them their broadest reasonable interpretation. (C) is correct — when not defined by applicant, words of a claim are given their plain meaning. (D) is correct. (E) is correct — In re Donaldson, 16 F.3d 1189, 1193 (Fed. Cir. 1994): for § 112 sixth-paragraph language the specification must be consulted for the corresponding structure. MPEP § 2111.01.',
+  },
+  {
+    id: 'uspto-apr03-pm-50',
+    topicId: 1,
+    subtopic: 'Unsupported added claims: § 112 first-paragraph rejection and loss of benefit, not new matter',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] A registered practitioner files a nonprovisional utility application in 2000. In 2002, the practitioner files a continuation-in-part application and claims benefit of the filing date of the 2000 application for the 2002 application. Thereafter, the practitioner amends the 2002 application to include claims that were not present in either the originally filed 2000 application or the originally filed 2002 application. The primary examiner properly concludes that the added claims are not supported by the original disclosure in either application. Which of the following is in accord with the USPTO rules and the procedures set forth in the MPEP?',
+    options: [
+      'The added claims are rejected for lack of written description under 35 USC 112, first paragraph.',
+      'The added claims are rejected as new matter under 35 USC 132.',
+      'The added claims are denied benefit of the filing date of the 2000 application.',
+      '(A) and (B).',
+      '(A) and (C).',
+    ],
+    correct: 4,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (E) is the most correct answer — both (A) and (C) are correct. MPEP § 2163.01, "Support For The Claimed Subject Matter In The Disclosure": "[i]f the examiner concludes that the claimed subject matter is not supported [described] in an application as filed, this would result in a rejection of the claim on the ground of a lack of written description under 35 U.S.C. 112, first paragraph, or denial of the benefit of filing date of a previously filed application." (B) is incorrect — § 2163.01 states such claims "should not be rejected or objected to on the ground of new matter"; per In re Rasmussen, 650 F.2d 1212 (CCPA 1981), new matter is properly a basis for OBJECTION to amendments to the abstract, specification or drawings. (D) is incorrect because (B) is incorrect.',
   },
 ];

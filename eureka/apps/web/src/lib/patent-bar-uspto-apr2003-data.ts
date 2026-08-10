@@ -62,6 +62,24 @@ export const USPTO_APR2003_AM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (C) is the most correct. [Pre-AIA] Corona v. Dovan, 273 U.S. 692 (1928); MPEP § 2138.05: a process is reduced to actual practice when it is successfully performed. (A) fails — actual reduction requires a physical or tangible form with every element (Wetmore v. Quick); (B) fails — constructive reduction requires § 112 ¶ 1 compliance (Kawai v. Metlesics); (D) fails — diligence does not require dropping all other work (Keizer v. Bradley); (E) fails — a practitioner’s diligence in preparing and filing inures to the inventor’s benefit (Haskell v. Coleburne).',
   },
   {
+    id: 'uspto-apr03-am-02',
+    topicId: 2,
+    subtopic: 'Nonpublication request — 45-day notice of foreign filing',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] A registered practitioner filed in the USPTO a client’s utility patent application on December 30, 2002. The application was filed with a request for nonpublication, certifying that the invention disclosed in the U.S. application has not and will not be the subject of an application in another country, or under a multilateral international agreement, that requires eighteen month publication. Subsequently, the client files an application in Japan on the invention and some recent improvements to the invention. The improvements are not disclosed or supported in the utility application. Japan is a country that requires eighteen month publication. Two months after filing the application in Japan, and before filing any other papers in the USPTO, the client remembers that a nonpublication request was filed and informs the practitioner about the application that was filed in Japan. Which of the following courses of action is in accordance with the USPTO rules and the procedures set forth in the MPEP?',
+    options: [
+      'The application is abandoned because the practitioner did not rescind the nonpublication request and provide notice of foreign filing within 45 days of having filed the application in Japan. The applicant must now file a petition and fee to revive under 37 CFR 1.137(b).',
+      'The application is abandoned because the applicant did not rescind the nonpublication request before filing the application in Japan. The applicant must now file a petition and fee to revive under 37 CFR 1.137(b).',
+      'The applicant should file an amendment to the specification of the U.S. application, adding the recent improvements to the disclosure in the specification.',
+      'The application is abandoned because the applicant did not rescind the nonpublication request by notifying the Office under 37 CFR 1.213(c) within the appropriate time. The applicant must now file a petition and fee to revive under 37 CFR 1.137(b).',
+      'The applicant could today notify the USPTO of the foreign filing. It is not necessary to file a petition and fee to revive for the application to continue to be examined in the USPTO.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): TWO ANSWERS WERE ACCEPTED — "(A) and (D) are accepted as the correct answers." As to (A), 35 U.S.C. § 122(b)(2)(B)(iii); 37 CFR § 1.213; MPEP § 901.03; and 37 CFR § 1.137(f); MPEP § 711.03(c), "3. Abandonment for Failure to Notify the Office of a Foreign Filing After Submission of a Non-Publication Request." (D) was also accepted because it likewise characterizes the application as abandoned and states a proper reply if it was — though the application has not necessarily attained abandoned status. (B) is incorrect: the notice of foreign filing can be filed as late as 45 days AFTER the foreign filing before the U.S. application becomes abandoned. (C) is incorrect — the improvements would be new matter, and new matter cannot be added after the filing date. MPEP § 608.04(a). (E) is incorrect because notice was required within 45 days and two months have passed, so a petition to revive under § 1.137(b) is required.',
+  },
+  {
     id: 'uspto-apr03-am-03',
     topicId: 3,
     subtopic: 'Requirement for Information — Complete Reply (Official Apr 2003)',
@@ -296,6 +314,24 @@ export const USPTO_APR2003_AM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (C) is the most correct answer. MPEP § 706.07(b): a first-action final rejection is proper in a continuing application where all claims are drawn to the same invention as the parent and would have been properly finally rejected on the grounds and art of record. (A) fails — a second-action final is improper when it rests on newly cited art (other than IDS-submitted art under § 1.97(c)) (MPEP § 706.07(a)); (B) and (D) restate the two improper first-action-final situations of § 706.07(b).',
   },
   {
+    id: 'uspto-apr03-am-16',
+    topicId: 2,
+    subtopic: 'Filing date under § 1.53(b) — the basic filing fee is not required',
+    difficulty: 2,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] In accordance with the USPTO rules and the procedures set forth in the MPEP, for a nonprovisional application to receive a filing date in the USPTO under 37 CFR 1.53(b), all of the following must be filed except:',
+    options: [
+      'The basic filing fee required by 37 CFR 1.16(a).',
+      'A specification as prescribed by the first paragraph of 35 USC 112.',
+      'A description pursuant to 37 CFR 1.71.',
+      'At least one claim pursuant to 37 CFR 1.75.',
+      'Any drawing required by 37 CFR 1.81(a).',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. 35 U.S.C. § 111; 37 CFR § 1.53; MPEP §§ 601.01, 601.01(a): the filing fee for an application filed under § 1.53(b) can be submitted AFTER the filing date. (B), (C), (D) and (E) are incorrect — § 1.53(b) provides that a filing date is granted on the date a specification as prescribed by § 112 containing a description pursuant to § 1.71 and at least one claim pursuant to § 1.75, and any drawing required by § 1.81(a), are filed. Those four ARE needed to obtain a filing date.',
+  },
+  {
     id: 'uspto-apr03-am-17',
     topicId: 0,
     subtopic: '§ 112 — Essential Elements & Best Mode (Official Apr 2003)',
@@ -368,6 +404,42 @@ export const USPTO_APR2003_AM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (D) is the most correct answer. MPEP §§ 2112.01, 2131: where the claimed and prior art products are identical or substantially identical, a prima facie case of anticipation or obviousness is established (In re Best, 562 F.2d 1252 (CCPA 1977)). (A) fails — living matter made by man is patentable (Diamond v. Chakrabarty; isolation and purification makes it a product of human ingenuity). (B) fails — mouse testing supports utility; safety/efficacy in humans is not required (Cross v. Iizuka; In re Brana). (C) fails — the rejection rests on impermissible hindsight from applicant’s own disclosure (MPEP § 2145).',
   },
   {
+    id: 'uspto-apr03-am-21',
+    topicId: 3,
+    subtopic: 'New matter: rejection is appealable, objection is petitionable, both together are appealable',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Assuming that any rejection has been properly made final, which of the following statements is not in accordance with the USPTO rules and the procedures set forth in the MPEP?',
+    options: [
+      'An objection and requirement to delete new matter from the specification is subject to supervisory review by petition under 37 CFR 1.181.',
+      'A rejection of claims for lack of support by the specification (new matter) is reviewable by appeal to the Board of Patent Appeals and Interferences.',
+      'If both the claims and the specification contain the same new matter, and there has been both a rejection and objection by the primary examiner, the new matter issue should be decided by petition, and is not appealable.',
+      'If both the claims and the specification contain the same new matter, and there has been both a rejection and objection by the examiner, the new matter issue is appealable, and should not be decided by petition.',
+      'None of the above.',
+    ],
+    correct: 2,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (C) is the most correct answer. MPEP § 2163.06, "Review Of New Matter Objections And Rejections": "[a] rejection of claims is reviewable by the Board of Patent Appeals and Interferences, whereas an objection and requirement to delete new matter is subject to supervisory review by petition under 37 CFR 1.181. If both the claims and specification contain new matter either directly or indirectly, and there has been both a rejection and objection by the examiner, the issue becomes appealable and should not be decided by petition." (C) states the opposite and is therefore NOT in accordance with USPTO procedure. (A), (B) and (D) are incorrect because each IS in accord with proper procedure. (E) is not correct because (C) is correct.',
+  },
+  {
+    id: 'uspto-apr03-am-22',
+    topicId: 0,
+    subtopic: 'Product-by-process — rebut with comparative evidence of an unexpected property',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] On January 2, 2001, a registered practitioner filed a patent application with the USPTO for inventor Beck. The application includes a specification and a single claim to the invention which reads as follows: "1. Mixture Y made by the process Q1." In the specification, Mr. Beck discloses that mixture Y has a melting point of 150° F. On June 2, 2001, the practitioner received an Office action from the primary examiner rejecting the claim. The claim is rejected under 35 USC 102/103 as being clearly anticipated by or obvious over Patent A. The examiner states "Patent A teaches mixture Y but made by a different process Q2." Beck believes he is entitled to a patent to mixture Y. In accordance with USPTO rules and procedures set forth in the MPEP, which of the following would be the best reply to the rejection of his claim?',
+    options: [
+      'An argument that the claimed product has an unexpectedly low melting point of 150° F, supported by an affidavit showing that the mixture Y made by process Q2 exhibits a melting point of 300° F.',
+      'An argument that the processes used by applicant and patent A are different, supported by a third-party declaration stating only that the processes are different.',
+      'An argument that the claimed product has an unexpectedly low melting point of 150° F, supported by a third-party declaration stating only that the products are different.',
+      'An argument that the processes used by applicant and patent A are different, supported by an affidavit showing that the mixture Y made by process Q2 exhibits a melting point of 300° F.',
+      'An argument that the claimed product has an unexpectedly low melting point of 150° F because the claimed mixture Y has a melting point of 150° F and the mixture Y of patent A has a melting point of 300° F.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 2113: "even though product-by-process claims are limited by and defined by the process, determination of patentability is based on the product itself… If the product in the product-by-process claim is the same as or obvious from a product of the prior art, the claim is unpatentable even though the prior product was made by a different process." In re Thorpe, 777 F.2d 695, 698 (Fed. Cir. 1985). Once the examiner shows the product appears the same, the burden shifts to applicant to establish an unobvious DIFFERENCE. In re Marosi, 710 F.2d 798, 802 (Fed. Cir. 1983). Comparative evidence that the Q2 process yields a 300° F melting point shows the products are patentably different. Ex parte Gray, 10 USPQ2d 1922 (Bd. Pat. App. & Inter. 1989). (B) and (D) are not most correct because patentability of a product-by-process claim turns on PRODUCT characteristics, not process steps. (C) is not most correct because the declaration is conclusory rather than factual. MPEP § 716.02(c); In re Brandstadter, 484 F.2d 1395 (CCPA 1973). (E) rightly focuses on product properties but lacks the comparative factual evidence, so it is weaker than (A). [Pre-AIA] — decided under pre-AIA §§ 102/103.',
+  },
+  {
     id: 'uspto-apr03-am-23',
     topicId: 7,
     subtopic: 'Professional Responsibility — Permitted Conduct (Official Apr 2003)',
@@ -422,6 +494,24 @@ export const USPTO_APR2003_AM_QUESTIONS: PatentBarQuestion[] = [
       'OFFICIAL USPTO MODEL ANSWER (abridged): (D) is the most correct answer. MPEP § 1211.02: the Board has no authority to require the examiner to consider an affidavit not entered after final rejection — review of an examiner’s refusal to enter an affidavit as untimely is by PETITION, not appeal (In re Deters, 515 F.2d 1152 (CCPA 1975); MPEP § 715.09). (A), (B), (C) and (E) are each proper remand bases specifically provided in MPEP § 1211.',
   },
   {
+    id: 'uspto-apr03-am-26',
+    topicId: 3,
+    subtopic: 'IDS after allowance — the § 1.97(e) certification cannot be made',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] A registered practitioner filed a utility application on February 11, 2002. On April 4, 2002, the practitioner filed an information disclosure statement (IDS) in the application. The practitioner received a notice of allowance dated January 3, 2003 soon after it was mailed. When discussing the application with the practitioner on January 21, 2003, and before paying the issue fee, the client notices for the first time that a reference, which is one of many patents obtained by the client’s competitor, was inadvertently omitted from the IDS. The client has been aware of this reference since before the application was filed. The client is anxious to have this reference appear on the face of the patent as having been considered by the USPTO. Which of the following actions, if taken by the practitioner, would not be in accord with the USPTO rules and the procedures set forth in the MPEP?',
+    options: [
+      'Before paying the issue fee, timely file an IDS citing the reference, along with the certification specified in 37 CFR 1.97(e), and any necessary fees.',
+      'Within three months of the mail date of the notice of allowance, without paying the issue fee, timely file a Request for Continued Examination (RCE) under 37 CFR 1.114, accompanied by the fee for filing an RCE, and an IDS citing the reference.',
+      'Within three months of the mail date of the notice of allowance, without paying the issue fee, timely file a continuing application under 37 CFR 1.53(b), an IDS citing the reference, and any necessary fees.',
+      'After paying the issue fee, timely file a petition to withdraw the application from issue to permit the express abandonment of the application in favor of a continuing application, a continuation application under 37 CFR 1.53(b), an IDS citing the reference, and any necessary fees.',
+      'After paying the issue fee, timely file a petition to withdraw the application from issue to permit consideration of a Request for Continued Examination (RCE) under 37 CFR 1.114, the fee for filing an RCE, and an IDS citing the reference.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (A) — the procedure that is NOT in accordance with the rules — is the most correct answer. MPEP § 609, "Minimum Requirements for an Information Disclosure Statement," subheadings B(3) and B(5). The § 1.97(e) statement requires the practitioner to certify, after reasonable inquiry, that no item of information in the IDS was known to any individual designated in § 1.56(c) more than three months prior to filing the IDS. The practitioner cannot so certify: the client knew of the reference before February 11, 2002, far more than three months earlier. (B) is a conforming procedure — under § 1.313(a) no petition to withdraw from issue is required if a proper RCE is filed before payment of the issue fee. (C) conforms — a continuing application may be filed on or before the issue-fee due date, letting the parent go abandoned. (D) conforms under § 1.313(c)(3), and (E) under § 1.313(c)(2). See also MPEP § 1308.',
+  },
+  {
     id: 'uspto-apr03-am-27',
     topicId: 3,
     subtopic: '§ 1.131 — Conception Plus Diligence (Official Apr 2003)',
@@ -438,6 +528,24 @@ export const USPTO_APR2003_AM_QUESTIONS: PatentBarQuestion[] = [
     correct: 1,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (B) is the most correct answer. [Pre-AIA] MPEP § 715.07(a); Ex parte Merz, 75 USPQ 296: conception before the reference plus diligence from just prior to the reference date to actual reduction to practice suffices, and the lapse of time between reduction to practice and filing is not relevant. (A) fails — facts, not allegations, must establish diligence (Ex parte Hunter); (C) fails — diligence must be considered (Ex parte Kantor); (D) fails — completion may be shown only in the U.S. or NAFTA/WTO member countries with date limits (§ 1.131(a); MPEP § 715.07(c)); (E) fails — plans alone do not generally prove actual reduction to practice.',
+  },
+  {
+    id: 'uspto-apr03-am-29',
+    topicId: 2,
+    subtopic: 'Certificate of mailing does not apply to papers mailed from abroad',
+    difficulty: 2,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] In accordance with the USPTO rules and the procedures set forth in the MPEP, which of the following papers is precluded from receiving the benefit of a certificate of mailing or transmission under 37 CFR 1.8?',
+    options: [
+      'An amendment, replying to an Office action setting a period for reply, transmitted by mail with a certificate of mailing to the USPTO from a foreign country.',
+      'An amendment, replying to an Office action setting a period for reply, transmitted by facsimile with a certificate of transmission to the USPTO from a foreign country.',
+      'An information disclosure statement (IDS) under 37 CFR 1.97 and 1.98 transmitted after the first Office action.',
+      'A request for continued examination (RCE) under 37 CFR 1.114.',
+      'An appeal brief.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 512: "The Certificate of Mailing procedure does not apply to papers mailed in a foreign country." (B) is not correct — the certificate of TRANSMISSION procedure does apply to correspondence transmitted to the Office from a foreign country. (C) is not correct — MPEP § 609, "Time for Filing": an IDS is considered filed on the date of mailing if accompanied by a properly executed § 1.8 certificate. (D) is not correct — MPEP § 706.07(h): an RCE is entitled to the § 1.8 benefit. (E) is not correct — MPEP § 1206: an appeal brief is entitled to the benefit because it must be filed within a set period (2 months from the date of appeal).',
   },
   {
     id: 'uspto-apr03-am-30',
@@ -492,6 +600,42 @@ export const USPTO_APR2003_AM_QUESTIONS: PatentBarQuestion[] = [
     correct: 2,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (C) is the most correct answer (the statement NOT in accord). 37 CFR § 1.76(d)(4): captured bibliographic information containing errors MAY be recaptured by a request with a supplemental ADS, an oath or declaration under §§ 1.63/1.67, or a letter pursuant to § 1.33(b) — (C) says the opposite. (A), (B), (D) and (E) accord with 37 CFR § 1.76(a)-(d).',
+  },
+  {
+    id: 'uspto-apr03-am-33',
+    topicId: 0,
+    subtopic: 'Overcoming § 102 anticipation — elements must be arranged as claimed',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] A claim in a pending patent application for an electric toothbrush is rejected under 35 USC 102 as being anticipated by a U.S. Patent, which was issued to Lancer, the sole named inventor, for a similar electric toothbrush. The Lancer patent was issued one day before the filing date of the application in question. The claim in the pending application contains a limitation specifying the location of an on/off switch. In accordance with USPTO rules and procedures set forth in the MPEP, which of the following arguments, if true, would overcome the rejection?',
+    options: [
+      'The Lancer patent discloses and claims an electric toothbrush, but does not mention whether its toothbrush includes a power supply.',
+      'Evidence is submitted to show the electric toothbrush claimed in the application is commercially successful.',
+      'The Lancer patent teaches away from the bristles of the claimed toothbrush.',
+      'Lancer is one of the three named inventors of the claimed toothbrush in the pending application.',
+      'The on/off switch in the Lancer patent is on a different side of the body than that recited in the claim for the electric toothbrush in the patent application.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): TWO ANSWERS WERE ACCEPTED — "(A) and (E) are accepted as correct answers." As to (E), MPEP § 2131: to anticipate, the elements of a reference "must be arranged as required by the claim," In re Bond, 910 F.2d 831 (Fed. Cir. 1990); Lancer’s switch is arranged differently. (A) is accepted because the facts do not specify that the power supply is within the toothbrush — "electric" may imply an inherent source or an external one. (B) is incorrect: secondary considerations such as commercial success are irrelevant to a § 102 rejection. MPEP § 2131.04. (C) is incorrect: arguments that anticipatory prior art "teaches away" are not germane to § 102. MPEP § 2131.05, quoting Twin Disc, Inc. v. United States, 231 USPQ 417, 424 (Cl. Ct. 1986). (D) is incorrect: "others" under § 102(a) means any entity differing by even one person, so a patent naming Lancer alone is by others relative to three joint inventors. MPEP § 2132. [Pre-AIA] — decided under pre-AIA § 102.',
+  },
+  {
+    id: 'uspto-apr03-am-34',
+    topicId: 3,
+    subtopic: 'Traversing official notice — examiner may cite a reference and make it final, or vacate',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Inventor files an application containing the following original Claim 1: "1. A widget comprising element A, and element B." In a first Office action on the merits, a primary examiner rejects claim 1 under 35 USC 103 as being obvious over reference X. Reference X explicitly discloses a widget having element A, but it does not disclose element B. The examiner, however, takes official notice of the fact that element B is commonly associated with element A in the art and on that basis concludes that it would have been obvious to provide element B in the reference X widget. In reply to the Office action, the registered practitioner representing the applicant makes no amendments, but instead requests reconsideration of the rejection by demanding that examiner show proof that element B is commonly associated with element A in the art. Which of the following actions, if taken by the examiner in the next Office action would be in accord with the USPTO rules and the procedures set forth in the MPEP? I. Vacate the rejection and allow the claim. II. Cite a reference that teaches element B commonly associated with element A in the art and make the rejection final. III. Deny entry of applicant’s request for reconsideration on the ground that it is not responsive to the rejection and allow applicant time to submit a responsive amendment.',
+    options: [
+      'I and II only.',
+      'II only.',
+      'II and III only.',
+      'I, II, and III.',
+      'I and III only.',
+    ],
+    correct: 0,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 2144.03: when an applicant seasonably traverses an officially noticed fact, the examiner may cite a reference teaching that fact and make the next action final — so II is proper. I is also proper, because the examiner should VACATE a rejection based on official notice if no support for the noticed fact can be found in response to a challenge. In re Ahlert, 424 F.2d 1088, 1091 (CCPA 1970). (B) is incorrect because (A) is correct. (C), (D) and (E) are incorrect because action III is improper: an applicant is entitled to reply to a rejection by requesting reconsideration, with or without amending. 37 CFR § 1.111(a)(1). [Pre-AIA] — decided under pre-AIA § 103.',
   },
   {
     id: 'uspto-apr03-am-35',
@@ -762,5 +906,23 @@ export const USPTO_APR2003_AM_QUESTIONS: PatentBarQuestion[] = [
     correct: 0,
     explanation:
       'OFFICIAL USPTO MODEL ANSWER (abridged): (A) is the most correct answer. MPEP § 2106.02, “Affidavit Practice (37 CFR 1.132)”: factual evidence directed to the time, effort and level of knowledge required to practice the invention from the disclosure alone can rebut a prima facie case of nonenablement (Hirschfield v. Banner, 200 USPQ 276 (D.D.C. 1978)). (B) fails — arguments of counsel cannot take the place of evidence (In re Budnick); (C)/(D) fail — conclusory or opinion evidence on the ultimate legal issue carries little weight (In re Brandstadter); (E) fails — later-issued patents do not show the state of the art at filing (In re Gunn).',
+  },
+  {
+    id: 'uspto-apr03-am-50',
+    topicId: 1,
+    subtopic: 'Open-ended ranges — a dependent claim whose amounts leave too little for the parent',
+    difficulty: 3,
+    question:
+      '[OFFICIAL USPTO EXAM, Apr 2003] Inventor files an application for a non-theoretical metal alloy. The application as originally filed contains the following Claim 1: "Claim 1. A metal alloy comprising at least 20% by volume of iron; at least 10% by volume of gallium, and at least 10% by volume of copper." In accordance with the USPTO rules and the procedures set forth in the MPEP, which of the following claims would be properly held indefinite under 35 USC 112(2)?',
+    options: [
+      'Claim 2: The alloy of claim 1 containing 66% by volume of gallium and 14% by volume of copper.',
+      'Claim 2: The alloy of claim 1 containing at least 21% by volume of iron, 11% by volume of gallium, and 10.01% by volume of copper.',
+      'Claim 2: The alloy of claim 1 containing 20% by volume of iron, 10% by volume of gallium, and 10% by volume of copper.',
+      'Claim 2: The alloy of claim 1 containing 54% by volume of copper and 27% by volume of gallium.',
+      'Claim 2: The alloy of claim 1 containing at least 1% by volume of silver.',
+    ],
+    correct: 3,
+    explanation:
+      'OFFICIAL USPTO MODEL ANSWER (abridged): (D) is the most correct answer. MPEP § 2173.05(c), "Open-Ended Numerical Ranges." Where an independent claim recites "at least 20% iron" and a dependent claim sets forth non-iron amounts summing so as to exclude that much iron, an ambiguity is created unless the percentages are based on the weight of the non-iron ingredients. In (D) copper 54% plus gallium 27% is 81% by volume, leaving only 19% for iron, while Claim 1 requires AT LEAST 20% iron — so Claim 2 is ambiguous. (A) is incorrect: gallium plus copper is 80%, leaving exactly 20% for iron, which "at least 20%" includes. (B) and (C) are incorrect because "at least" includes 21%/11%/10.01% and 20%/10%/10% respectively. (E) is incorrect because Claim 1 uses the open transition "comprising," which permits adding silver.',
   },
 ];

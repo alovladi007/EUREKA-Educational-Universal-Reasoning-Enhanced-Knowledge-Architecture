@@ -2290,13 +2290,13 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   const QBANK_SIZES: Record<string, number> = {
     MCAT: 580, CISSP: 400, PE_EE: 399, FE_EE: 610, FE_ME: 554,
     // PATENT_BAR = 536 authored + 270 WS3 gap-fill (65 ethics + 66 design/
-    // plant + 40 PCT + 44 post-issuance + 55 top-up) + 758 official USPTO
-    // (Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM; Apr 2002: 49 AM +
+    // plant + 40 PCT + 44 post-issuance + 55 top-up) + 779 official USPTO
+    // (Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Apr 2002: 49 AM +
     // 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000:
-    // 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM) = 1564. The gap-fill blueprint floors still hold.
-    PATENT_BAR: 1564, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
+    // 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM) = 1585. The gap-fill blueprint floors still hold.
+    PATENT_BAR: 1585, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
   };
-  const OFFICIAL_USPTO_COUNT = 758; // Oct 2003: 47 AM + 48 PM; Apr 2003: 40 AM + 39 PM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM
+  const OFFICIAL_USPTO_COUNT = 779; // Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM
   const qbankMax =
     examType === 'PATENT_BAR' && !pbEntitled
       ? PB_FREE_PREVIEW
@@ -2570,7 +2570,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         if (!pbEntitled) {
           // WS5 free preview: a FIXED 20-question slice (10 official USPTO +
           // 10 authored). Section/official filters don't apply to the
-          // preview; the full 1564-question bank requires Full Access.
+          // preview; the full 1585-question bank requires Full Access.
           pbQuestions = [...USPTO_OCT2003_AM_QUESTIONS.slice(0, 10), ...PATENT_BAR_QUESTIONS.slice(0, 10)];
         }
         if (pbEntitled && patentOfficialOnly) {
@@ -3095,10 +3095,10 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           {examType === 'PATENT_BAR' && !entLoading && !pbEntitled && (
             <div className="mb-3 space-y-2">
               <p className="text-xs text-muted-foreground">
-                Free preview: {PB_FREE_PREVIEW} of 1564 questions (10 official USPTO + 10 authored).
+                Free preview: {PB_FREE_PREVIEW} of 1585 questions (10 official USPTO + 10 authored).
                 Section and official-only filters apply with Full Access.
               </p>
-              <PaywallCard product={productFor('PATENT_BAR')} feature="The full 1564-question QBank" examSlug="patent_bar" />
+              <PaywallCard product={productFor('PATENT_BAR')} feature="The full 1585-question QBank" examSlug="patent_bar" />
             </div>
           )}
 

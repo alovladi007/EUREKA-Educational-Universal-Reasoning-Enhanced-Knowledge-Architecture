@@ -23,7 +23,7 @@ import { USPTO_APR2000_PM_QUESTIONS } from '../patent-bar-uspto-apr2000-pm-data'
 import { USPTO_NOV1999_AM_QUESTIONS } from '../patent-bar-uspto-nov1999-data';
 import { USPTO_NOV1999_PM_QUESTIONS } from '../patent-bar-uspto-nov1999-pm-data';
 
-const OFFICIAL_TOTAL = 758; // Oct 2003: 47+48; Apr 2003: 40+39; Apr 2002: 49+49; Oct 2001: 48+50; Apr 2001: 49+46; Oct 2000: 47+50; Apr 2000: 49+50; Nov 1999: 48+49
+const OFFICIAL_TOTAL = 779; // Oct 2003: 48+49; Apr 2003: 49+49; Apr 2002: 49+49; Oct 2001: 48+50; Apr 2001: 49+46; Oct 2000: 47+50; Apr 2000: 49+50; Nov 1999: 48+49
 
 const ALL = [
   ...USPTO_OCT2003_AM_QUESTIONS,
