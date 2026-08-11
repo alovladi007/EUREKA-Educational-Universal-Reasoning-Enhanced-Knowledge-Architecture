@@ -81,18 +81,36 @@ export function getStudyAxis(examType: string): StudyUnit[] {
 
   return curriculum.map((section, i) => {
     const { name, share } = splitWeight(section.sectionName);
-    // When the config knows this section, prefer its published counts over
-    // a percentage parsed out of a label.
     const cfg = config.sections.find((s) => s.id === section.sectionId);
-    const fromConfig = cfg?.questionCount
-      ? `${cfg.questionCount} question${cfg.questionCount === 1 ? '' : 's'} on the exam` +
-        (cfg.timeMinutes ? ` · ${cfg.timeMinutes} min` : '')
-      : '';
+
+    // One statement of the weight, in this order of authority:
+    //   1. a published range (NCEES gives one per FE knowledge area)
+    //   2. a published fixed count
+    //   3. a percentage parsed out of the section label
+    //   4. nothing - rather than an invented number
+    // A section marked tested:false says that instead, because a weight
+    // beside an untested section implies exam questions that do not exist.
+    let examShare = '';
+    if (cfg && cfg.tested === false) {
+      examShare = 'Background - not a tested area on this exam';
+    } else if (cfg?.questionRange) {
+      const [lo, hi] = cfg.questionRange;
+      examShare = `${lo}-${hi} questions on the exam`;
+    } else if (cfg?.questionCount) {
+      examShare =
+        `${cfg.questionCount} question${cfg.questionCount === 1 ? '' : 's'} on the exam` +
+        (cfg.timeMinutes ? ` · ${cfg.timeMinutes} min` : '');
+    } else {
+      examShare = share;
+    }
+
+    // The config's name is the exam board's own wording where they differ;
+    // prefer it so the rail matches the published specification.
     return {
       id: section.sectionId,
-      name,
+      name: cfg?.name ?? name,
       blurb: '',
-      examShare: fromConfig || share,
+      examShare,
       accent: PALETTE[i % PALETTE.length],
       topicIds: section.topics.map((t) => t.id),
       kind: 'section' as const,

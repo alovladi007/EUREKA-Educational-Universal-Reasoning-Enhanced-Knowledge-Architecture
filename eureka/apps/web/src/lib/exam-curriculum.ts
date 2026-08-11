@@ -714,9 +714,12 @@ const CISSP: ExamCurriculum = [
 // FE ELECTRICAL & COMPUTER
 // ═══════════════════════════════════════════════════════════════
 
+// Section names carry no percentage: the exam weight is stated once, by
+// exam-config.ts, from the NCEES published specification. Percentages
+// baked into these labels were a second source that disagreed with it.
 const FE_EE: ExamCurriculum = [
   {
-    sectionId: 'fee_math', sectionName: 'Mathematics (7%)',
+    sectionId: 'fee_math', sectionName: 'Mathematics',
     topics: [
       t('fee_reference_handbook', 'NCEES Reference Handbook Navigation', 'Layout of the official FE Reference Handbook, where to find formula sheets quickly, common pages bookmarked by section, time-saving navigation strategy. NCEES gap fix (exam strategy, not content).'),
       t('fee_algebra_trig', 'Algebra & Trigonometry', 'Quadratic formula, trig identities, polar/rectangular conversion, unit circle.'),
@@ -731,7 +734,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_prob_stats', sectionName: 'Probability & Statistics (4%)',
+    sectionId: 'fee_prob_stats', sectionName: 'Probability & Statistics',
     topics: [
       t('fee_prob_dist', 'Probability Distributions', 'Binomial, Poisson, normal, exponential; CDF and PDF.'),
       t('fee_expected_values', 'Expected Values & Variance', 'Mean, variance, standard deviation, moments.'),
@@ -740,7 +743,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_ethics', sectionName: 'Ethics & Professional Practice (4%)',
+    sectionId: 'fee_ethics', sectionName: 'Ethics & Professional Practice',
     topics: [
       t('fee_codes_ethics', 'Codes of Ethics', 'NSPE code, public welfare, conflicts of interest, whistleblowing.'),
       t('fee_licensure', 'Professional Licensure', 'FE/PE path, EIT credentials, state licensure, comity.'),
@@ -748,7 +751,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_eng_econ', sectionName: 'Engineering Economics (4%)',
+    sectionId: 'fee_eng_econ', sectionName: 'Engineering Economics',
     topics: [
       t('fee_tvm', 'Time Value of Money', 'Present/future value, annuities, P/A, F/A, A/P factors.'),
       t('fee_cost_analysis', 'Cost Analysis & Comparison', 'NPV, IRR, benefit-cost ratio, annual worth, payback period.'),
@@ -756,7 +759,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_materials', sectionName: 'Electrical Materials (4%)',
+    sectionId: 'fee_materials', sectionName: 'Electrical Materials',
     topics: [
       t('fee_conductors', 'Conductors & Resistivity', 'Resistivity, temperature coefficient, wire gauge, conductivity.'),
       t('fee_semiconductors', 'Semiconductors & Band Gap', 'Band structure, doping (n-type/p-type), carrier concentration.'),
@@ -765,7 +768,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_eng_sci', sectionName: 'Engineering Sciences (4%)',
+    sectionId: 'fee_eng_sci', sectionName: 'Engineering Sciences',
     topics: [
       t('fee_work_energy', 'Work, Energy & Power', 'Mechanical/electrical work, efficiency, energy conservation.'),
       t('fee_charge_current', 'Charge, Current, Voltage & Power', 'Coulomb law, Ohm law, power dissipation, RMS values.'),
@@ -773,7 +776,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_circuits', sectionName: 'Circuit Analysis — DC & AC (10%)',
+    sectionId: 'fee_circuits', sectionName: 'Circuit Analysis — DC & AC',
     topics: [
       t('fee_dc_fundamentals', 'DC Fundamentals: Ohm, KCL, KVL', 'Series/parallel, voltage/current dividers, source transformation.'),
       t('fee_network_theorems', 'Network Theorems', 'Thevenin, Norton, superposition, maximum power transfer.'),
@@ -785,7 +788,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_linear_sys', sectionName: 'Linear Systems (5%)',
+    sectionId: 'fee_linear_sys', sectionName: 'Linear Systems',
     topics: [
       t('fee_time_domain', 'Time Domain Analysis', 'Impulse/step response, convolution, causality, LTI systems.'),
       t('fee_freq_domain', 'Frequency Domain Analysis', 'Fourier/Laplace transforms, Bode magnitude/phase, frequency response.'),
@@ -795,7 +798,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_signal_proc', sectionName: 'Signal Processing (6%)',
+    sectionId: 'fee_signal_proc', sectionName: 'Signal Processing',
     topics: [
       t('fee_fourier', 'Fourier Series & Transform', 'Periodic decomposition, continuous spectrum, Parseval theorem.'),
       t('fee_sampling', 'Sampling Theorem & Aliasing', 'Nyquist rate, anti-aliasing filters, reconstruction.'),
@@ -805,7 +808,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_electronics', sectionName: 'Electronics (6%)',
+    sectionId: 'fee_electronics', sectionName: 'Electronics',
     topics: [
       t('fee_diodes', 'Diode Circuits', 'Rectifiers (half/full wave), Zener regulators, Shockley equation.'),
       t('fee_bjt', 'BJT Analysis & Amplifiers', 'CE/CC/CB configurations, biasing, small-signal model, gain.'),
@@ -815,7 +818,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_power_sys', sectionName: 'Power Systems (6%)',
+    sectionId: 'fee_power_sys', sectionName: 'Power Systems',
     topics: [
       t('fee_3phase_power', 'Three-Phase Power Systems', 'Balanced systems, per-phase analysis, Y-Delta conversion.'),
       t('fee_transformers', 'Transformers', 'Turns ratio, equivalent circuit, voltage regulation, efficiency.'),
@@ -827,7 +830,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_electromagnetics', sectionName: 'Electromagnetics (6%)',
+    sectionId: 'fee_electromagnetics', sectionName: 'Electromagnetics',
     topics: [
       t('fee_electrostatics', 'Electrostatics', 'Coulomb law, Gauss law, electric field, potential, capacitance.'),
       t('fee_magnetostatics', 'Magnetostatics', 'Biot-Savart, Ampere law, solenoids, inductance, force on conductors.'),
@@ -837,7 +840,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_control', sectionName: 'Control Systems (6%)',
+    sectionId: 'fee_control', sectionName: 'Control Systems',
     topics: [
       t('fee_block_diagrams', 'Block Diagrams & Transfer Functions', 'Series/parallel/feedback reduction, Mason gain formula.'),
       t('fee_stability', 'Stability Analysis', 'Routh-Hurwitz criterion, characteristic equation, BIBO stability.'),
@@ -849,7 +852,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_comms', sectionName: 'Communications (6%)',
+    sectionId: 'fee_comms', sectionName: 'Communications',
     topics: [
       t('fee_am_fm', 'Analog Modulation (AM/FM)', 'AM bandwidth, modulation index, FM deviation, Carson rule.'),
       t('fee_digital_mod', 'Digital Modulation', 'ASK, FSK, PSK, QPSK, QAM, spectral efficiency, BER.'),
@@ -860,7 +863,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_networks', sectionName: 'Computer Networks (5%)',
+    sectionId: 'fee_networks', sectionName: 'Computer Networks',
     topics: [
       t('fee_osi_tcpip', 'OSI & TCP/IP Models', 'Seven layers, encapsulation, protocols, port numbers.'),
       t('fee_ip_subnetting', 'IP Addressing & Subnetting', 'IPv4, CIDR, subnet masks, usable hosts, broadcast address.'),
@@ -870,7 +873,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_digital', sectionName: 'Digital Systems (6%)',
+    sectionId: 'fee_digital', sectionName: 'Digital Systems',
     topics: [
       t('fee_number_sys', 'Number Systems & Boolean Algebra', 'Binary/hex/octal, DeMorgan, K-maps, simplification.'),
       t('fee_comb_logic', 'Combinational Logic', 'MUX, decoders, encoders, adders, subtractors.'),
@@ -880,7 +883,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_comp_sys', sectionName: 'Computer Systems (4%)',
+    sectionId: 'fee_comp_sys', sectionName: 'Computer Systems',
     topics: [
       t('fee_architecture', 'Computer Architecture', 'Von Neumann vs Harvard, RISC vs CISC, pipelining.'),
       t('fee_mem_hierarchy', 'Memory Hierarchy & Cache', 'Cache hit/miss, virtual memory, locality, EMAT.'),
@@ -889,7 +892,7 @@ const FE_EE: ExamCurriculum = [
     ],
   },
   {
-    sectionId: 'fee_software', sectionName: 'Software Development (4%)',
+    sectionId: 'fee_software', sectionName: 'Software Development',
     topics: [
       t('fee_algorithms', 'Algorithms & Complexity', 'Big-O, binary search, sorting (merge, quick, bubble), recursion.'),
       t('fee_data_structures', 'Data Structures', 'Arrays, linked lists, stacks, queues, trees, hash tables.'),

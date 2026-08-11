@@ -449,9 +449,16 @@ export default function ExamStudyPage() {
                 <Badge className={`${accentOf(unit.accent).soft} ${accentOf(unit.accent).text} border-0`}>
                   {unit.name}
                 </Badge>
-                {lesson?.domainWeight && (
+                {/* The exam weight is stated once, by the rail, from the
+                    config. It used to be repeated here from each lesson's
+                    own domainWeight string, which drifted: FE EE's rail said
+                    "8 questions on the exam" while the badge beside it said
+                    "7-11%", and inside one section different chapters
+                    claimed "4-6%" and "5%". Two sources for one number is
+                    how that happens, so there is now one. */}
+                {unit.examShare && (
                   <Badge variant="outline" className="text-[11px]">
-                    {lesson.domainWeight}
+                    {unit.examShare}
                   </Badge>
                 )}
                 {chapter?.readTimeMin && (

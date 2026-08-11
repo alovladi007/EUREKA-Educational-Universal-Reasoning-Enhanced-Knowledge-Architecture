@@ -2,7 +2,21 @@ export interface ExamSection {
   id: string;
   name: string;
   questionCount?: number;
+  /**
+   * The published question range, when the exam board publishes one rather
+   * than a fixed count. NCEES does this for every FE knowledge area, and
+   * flattening "11-17" to a single number was how our Mathematics weight
+   * ended up at 8 - below the real minimum. When present this is what gets
+   * shown; questionCount stays as the midpoint for arithmetic that needs a
+   * single number.
+   */
+  questionRange?: [number, number];
   timeMinutes?: number;
+  /**
+   * False when the section is taught as background rather than tested as
+   * its own area. The rail then says so instead of implying exam questions.
+   */
+  tested?: boolean;
 }
 
 export interface ExamTypeConfig {
@@ -172,28 +186,42 @@ export const EXAM_CONFIGS: Record<string, ExamTypeConfig> = {
     description: 'Fundamentals of Engineering — Electrical & Computer Engineering',
     totalDuration: 320,
     totalQuestions: 110,
+    /**
+     * Ranges are the NCEES published specification for FE Electrical and
+     * Computer, effective July 2020 (17 knowledge areas, 110 questions,
+     * 6-hour appointment of which 5 h 20 min is testing time).
+     *
+     * They replaced single numbers invented for this app, four of which sat
+     * BELOW the published minimum - Mathematics was 8 against a real 11-17 -
+     * and which summed to 106 rather than 110.
+     *
+     * `fee_eng_sci` is ours, not NCEES's: Engineering Sciences is a knowledge
+     * area in other FE disciplines but not in Electrical and Computer. It is
+     * kept as background because the material genuinely helps, and marked
+     * tested:false so nothing claims the exam asks about it.
+     */
     sections: [
-      { id: 'fee_math', name: 'Mathematics', questionCount: 8 },
-      { id: 'fee_prob_stats', name: 'Probability & Statistics', questionCount: 4 },
-      { id: 'fee_ethics', name: 'Ethics & Professional Practice', questionCount: 4 },
-      { id: 'fee_eng_econ', name: 'Engineering Economics', questionCount: 4 },
-      { id: 'fee_materials', name: 'Electrical Materials', questionCount: 4 },
-      { id: 'fee_eng_sci', name: 'Engineering Sciences', questionCount: 4 },
-      { id: 'fee_circuits', name: 'Circuit Analysis (DC & AC)', questionCount: 11 },
-      { id: 'fee_linear_sys', name: 'Linear Systems', questionCount: 6 },
-      { id: 'fee_signal_proc', name: 'Signal Processing', questionCount: 6 },
-      { id: 'fee_electronics', name: 'Electronics', questionCount: 7 },
-      { id: 'fee_power_sys', name: 'Power Systems', questionCount: 7 },
-      { id: 'fee_electromagnetics', name: 'Electromagnetics', questionCount: 6 },
-      { id: 'fee_control', name: 'Control Systems', questionCount: 7 },
-      { id: 'fee_comms', name: 'Communications', questionCount: 6 },
-      { id: 'fee_networks', name: 'Computer Networks', questionCount: 6 },
-      { id: 'fee_digital', name: 'Digital Systems', questionCount: 7 },
-      { id: 'fee_comp_sys', name: 'Computer Systems', questionCount: 5 },
-      { id: 'fee_software', name: 'Software Development', questionCount: 4 },
+      { id: 'fee_math', name: 'Mathematics', questionRange: [11, 17], questionCount: 14 },
+      { id: 'fee_prob_stats', name: 'Probability & Statistics', questionRange: [4, 6], questionCount: 5 },
+      { id: 'fee_ethics', name: 'Ethics & Professional Practice', questionRange: [4, 6], questionCount: 5 },
+      { id: 'fee_eng_econ', name: 'Engineering Economics', questionRange: [5, 8], questionCount: 6 },
+      { id: 'fee_materials', name: 'Properties of Electrical Materials', questionRange: [4, 6], questionCount: 5 },
+      { id: 'fee_eng_sci', name: 'Engineering Sciences', tested: false },
+      { id: 'fee_circuits', name: 'Circuit Analysis (DC & AC Steady State)', questionRange: [11, 17], questionCount: 14 },
+      { id: 'fee_linear_sys', name: 'Linear Systems', questionRange: [5, 8], questionCount: 6 },
+      { id: 'fee_signal_proc', name: 'Signal Processing', questionRange: [5, 8], questionCount: 6 },
+      { id: 'fee_electronics', name: 'Electronics', questionRange: [7, 11], questionCount: 9 },
+      { id: 'fee_power_sys', name: 'Power Systems', questionRange: [8, 12], questionCount: 10 },
+      { id: 'fee_electromagnetics', name: 'Electromagnetics', questionRange: [4, 6], questionCount: 5 },
+      { id: 'fee_control', name: 'Control Systems', questionRange: [6, 9], questionCount: 7 },
+      { id: 'fee_comms', name: 'Communications', questionRange: [5, 8], questionCount: 6 },
+      { id: 'fee_networks', name: 'Computer Networks', questionRange: [4, 6], questionCount: 5 },
+      { id: 'fee_digital', name: 'Digital Systems', questionRange: [8, 12], questionCount: 10 },
+      { id: 'fee_comp_sys', name: 'Computer Systems', questionRange: [5, 8], questionCount: 6 },
+      { id: 'fee_software', name: 'Software Engineering', questionRange: [4, 6], questionCount: 5 },
     ],
     scoreRange: { min: 0, max: 100, label: 'Pass / Fail' },
-    passingInfo: 'Estimated passing score ~50–60% (scaled); 110 questions in 5 hours 20 minutes',
+    passingInfo: '110 questions; 5 hours 20 minutes of testing within a 6-hour appointment. NCEES does not publish a fixed passing score - it is set by standard-setting and scaled.',
   },
   PE_EE: {
     id: 'PE_EE',
