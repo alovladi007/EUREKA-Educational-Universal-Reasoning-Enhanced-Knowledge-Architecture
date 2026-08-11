@@ -26,6 +26,7 @@ import { apiClient } from '@/lib/api-client';
 import { api as eurekaApi } from '@/lib/eureka-api';
 import { EXAM_TYPE_LIST, getExamConfig } from '@/lib/exam-config';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
+import { McatDashboard } from '@/components/test-prep/McatDashboard';
 import { useActiveExam } from '@/hooks/use-active-exam';
 import { ExamSelector } from '@/components/test-prep/ExamSelector';
 
@@ -76,8 +77,7 @@ export default function TestPrepDashboard() {
   const [insights, setInsights] = useState<Insight[]>([]);
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [performanceData, setPerformanceData] = useState<any[]>([]);
-  const [readinessScore, setReadinessScore] = useState<any>(null);
-  const [predictions, setPredictions] = useState<any>(null);
+  const [sessionCount, setSessionCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   // Phase 17 — additive: live skill mastery + Phase 4.5 recommendations
@@ -143,6 +143,7 @@ export default function TestPrepDashboard() {
       const totalCorrect = sessions.reduce((sum: number, s: any) => sum + (s.correct_count || 0), 0);
       const totalTime = sessions.reduce((sum: number, s: any) => sum + (s.total_time_seconds || 0), 0);
       const overallAccuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0;
+      setSessionCount(sessions.length);
 
       setStats({
         total_questions: totalQuestions,
@@ -237,6 +238,25 @@ export default function TestPrepDashboard() {
     );
   }
 
+  // MCAT collapses to one layer. This page and /dashboard/test-prep/mcat used
+  // to be two stacked dashboards a learner had to click through before
+  // reaching a lesson; both now render the same home, so whichever way you
+  // arrive you land on the same page with the same next action.
+  if (examType === 'MCAT') {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold mb-2">MCAT</h1>
+          <p className="text-muted-foreground">
+            {examConfig.name} &middot; seven subjects, a server-graded question
+            bank, and a timed simulation.
+          </p>
+        </div>
+        <McatDashboard examSlug="mcat" />
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-6">
       {/* Header — exam selection lives in the layout pill (top-right), so we
@@ -269,27 +289,39 @@ export default function TestPrepDashboard() {
           </div>
         </div>
 
+        {/* Every figure here is derived from the session history fetched
+            above. The two cards that used to sit either side of these -
+            "Readiness Score" and "Predicted Score" - were removed: their
+            state was never populated by anything, so they read N/A for every
+            exam and every learner, and a predicted score needs a validated
+            model behind it before it can be shown at all. */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-            <p className="text-sm text-muted-foreground">Readiness Score</p>
+            <p className="text-sm text-muted-foreground">Questions answered</p>
             <p className="text-xl font-semibold mt-1">
-              {readinessScore?.overall_score ? `${Math.round(readinessScore.overall_score * 100)}%` : 'N/A'}
+              {stats?.total_questions ? stats.total_questions.toLocaleString() : '—'}
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-            <p className="text-sm text-muted-foreground">Questions Today</p>
-            <p className="text-xl font-semibold mt-1">{stats?.questions_today || 0}</p>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-            <p className="text-sm text-muted-foreground">Overall Accuracy</p>
+            <p className="text-sm text-muted-foreground">Overall accuracy</p>
             <p className="text-xl font-semibold mt-1">
-              {stats?.overall_accuracy ? `${Math.round(stats.overall_accuracy)}%` : '0%'}
+              {stats?.total_questions
+                ? `${Math.round(stats.overall_accuracy)}%`
+                : '—'}
             </p>
           </div>
           <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
-            <p className="text-sm text-muted-foreground">Predicted Score</p>
+            <p className="text-sm text-muted-foreground">Practice sessions</p>
             <p className="text-xl font-semibold mt-1">
-              {predictions?.exam_score?.expected || 'N/A'}
+              {sessionCount > 0 ? sessionCount : '—'}
+            </p>
+          </div>
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-4">
+            <p className="text-sm text-muted-foreground">Time practising</p>
+            <p className="text-xl font-semibold mt-1">
+              {stats?.total_study_time
+                ? `${Math.round(stats.total_study_time / 60)} min`
+                : '—'}
             </p>
           </div>
         </div>
@@ -364,61 +396,20 @@ export default function TestPrepDashboard() {
         </div>
       </div>
 
-      {/* Stats Overview */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Performance Overview</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Current Streak</p>
-                <p className="text-2xl font-bold mt-1">{stats?.current_streak || 0} days</p>
-              </div>
-              <Flame className="h-8 w-8 text-orange-500" />
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Total Questions</p>
-                <p className="text-2xl font-bold mt-1">{stats?.total_questions || 0}</p>
-              </div>
-              <Trophy className="h-8 w-8 text-yellow-500" />
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Study Time</p>
-                <p className="text-2xl font-bold mt-1">
-                  {Math.round((stats?.total_study_time || 0) / 60)}h
-                </p>
-              </div>
-              <Clock className="h-8 w-8 text-blue-500" />
-            </div>
-          </Card>
-
-          <Card className="p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-muted-foreground">Overall Accuracy</p>
-                <p className="text-2xl font-bold mt-1">
-                  {stats?.overall_accuracy ? Math.round(stats.overall_accuracy) : 0}%
-                </p>
-              </div>
-              <TrendingUp className="h-8 w-8 text-green-500" />
-            </div>
-          </Card>
-        </div>
-      </div>
+      {/* The "Performance Overview" grid that used to sit here repeated
+          Total Questions / Study Time / Overall Accuracy from the card above
+          and added a "Current Streak" that was hardcoded to zero. Its study
+          time also divided seconds by 60 and labelled the result hours, so it
+          reported minutes as hours. All of it is gone; the card above carries
+          the same four figures once, with the right units. */}
 
       {/* Performance Chart */}
       <Card className="p-6">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-semibold">Performance Trends</h2>
-          <span className="text-sm text-muted-foreground">Last 7 days</span>
+          <span className="text-sm text-muted-foreground">
+            Last {Math.min(performanceData.length, 7) || 7} practice sessions
+          </span>
         </div>
 
         <ResponsiveContainer width="100%" height={300}>

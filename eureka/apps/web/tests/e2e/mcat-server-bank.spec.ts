@@ -207,12 +207,25 @@ test('the browser surfaces render the server data', async ({ page }) => {
     window.localStorage.setItem('access_token', tok);
   }, token);
 
+  // The MCAT home is now the dashboard itself rather than a strip of tabs,
+  // and each surface is its own route - so this navigates the way a learner
+  // does, by following the dashboard's own links.
+  const summaryOnHome = page.waitForResponse(
+    (r) => r.url().includes('/mcat/review/summary'),
+  );
   await page.goto('/dashboard/test-prep/mcat');
-  await page.getByRole('button', { name: 'QBank', exact: true }).click();
+  await expect(page.getByTestId('mcat-dashboard')).toBeVisible();
+  expect((await summaryOnHome).status()).toBe(200);
+  // Resume points at the course, and the figures on this page come from the
+  // 16 answers recorded above rather than from a placeholder.
+  await expect(page.getByTestId('mcat-resume')).toBeVisible();
+  await expect(page.getByTestId('mcat-dashboard')).toContainText('16');
+
+  await page.goto('/dashboard/test-prep/mcat/qbank');
   await expect(page.getByTestId('mcat-qbank-picker')).toBeVisible();
   await expect(page.getByTestId('mcat-passage-sets')).toBeVisible();
 
-  await page.getByRole('button', { name: 'Full Exam', exact: true }).click();
+  await page.goto('/dashboard/test-prep/mcat/exam');
   const intro = page.getByTestId('mcat-mock-intro');
   await expect(intro).toBeVisible();
   // Scoped and .first(): once this account has a sitting, the history note
@@ -228,10 +241,18 @@ test('the browser surfaces render the server data', async ({ page }) => {
   const summaryLanded = page.waitForResponse(
     (r) => r.url().includes('/mcat/review/summary'),
   );
-  await page.getByRole('button', { name: 'Analytics', exact: true }).click();
+  await page.goto('/dashboard/test-prep/mcat/review');
   const summary = await summaryLanded;
   expect(summary.status()).toBe(200);
   await expect(page.getByTestId('mcat-review-center')).toBeVisible();
   // The sitting from this run is already reflected server-side.
   await expect(page.getByTestId('mcat-review-section').first()).toBeVisible();
+
+  // Flashcards and notes did not disappear with the tab strip - the
+  // dashboard links to them by query param, and that still opens the tab UI.
+  await page.goto('/dashboard/test-prep/mcat?tab=flashcards');
+  await expect(page.getByTestId('mcat-dashboard')).toHaveCount(0);
+  await expect(
+    page.getByRole('button', { name: 'Read Lessons', exact: true }),
+  ).toBeVisible();
 });

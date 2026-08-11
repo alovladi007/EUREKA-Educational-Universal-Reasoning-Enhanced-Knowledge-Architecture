@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -63,6 +63,7 @@ import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatma
 import { McatServerQbank } from '@/components/test-prep/McatServerQbank';
 import { McatMockExam } from '@/components/test-prep/McatMockExam';
 import { McatReviewCenter } from '@/components/test-prep/McatReviewCenter';
+import { McatDashboard } from '@/components/test-prep/McatDashboard';
 import { SecurityPlusPBQTab } from '@/components/test-prep/SecurityPlusPBQ';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
 import { VideoLessonTabs } from '@/components/test-prep/VideoLessonTabs';
@@ -97,7 +98,15 @@ export default function ExamPage() {
   const isMCAT = examId === 'MCAT';
   const isLSAT = examId === 'LSAT';
   const isSecPlus = examId === 'SECURITY_PLUS';
-  const [activeTab, setActiveTab] = useState<Tab>('read');
+  const searchParams = useSearchParams();
+  // MCAT shows its own dashboard by default; ?tab= opens the shared tab UI
+  // for the surfaces the dashboard links to but does not replace.
+  const tabParam = searchParams.get('tab');
+  const [activeTab, setActiveTab] = useState<Tab>(
+    (tabParam as Tab) || 'read',
+  );
+  // Non-MCAT exams keep the tab UI exactly as before.
+  const showMcatTabs = !isMCAT || Boolean(tabParam);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'read', label: 'Read Lessons', icon: <BookOpen className="h-4 w-4" /> },
@@ -166,46 +175,6 @@ export default function ExamPage() {
 
       {isPatentBar && <PatentBarCohortPanel />}
 
-      {isMCAT && (
-        <Card className="p-4 bg-indigo-50/70 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="font-semibold text-sm">MCAT course &mdash; by subject</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                All 29 chapters organised into the seven subjects you actually
-                study, with a persistent syllabus, the full written chapter,
-                and its key takeaways and exam tips beside it.
-              </p>
-            </div>
-            <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/study`}>
-              <Button size="sm" variant="default" className="gap-1.5" data-testid="mcat-study-link">
-                <BookOpen className="h-3.5 w-3.5" /> Open the course
-              </Button>
-            </Link>
-          </div>
-        </Card>
-      )}
-
-      {isMCAT && (
-        <Card className="p-4 bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="font-semibold text-sm">Generated chemistry practice</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Items generated per session by the OCTET chemistry engine, every
-                answer key machine-verified before serving. Misses diagnose the
-                misconception and deep-link into the full OCTET course.
-              </p>
-            </div>
-            <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/chemistry`}>
-              <Button size="sm" variant="default" className="gap-1.5" data-testid="mcat-chemistry-link">
-                <FlaskRound className="h-3.5 w-3.5" /> Chemistry practice
-              </Button>
-            </Link>
-          </div>
-        </Card>
-      )}
-
       {isLSAT && (
         <Card className="p-4 bg-purple-50/70 dark:bg-purple-950/30 border-purple-200 dark:border-purple-900">
           <div className="flex flex-wrap items-center justify-between gap-3">
@@ -247,8 +216,13 @@ export default function ExamPage() {
           exams: shows what's most-tested + clicks open the official content
           reference (LSAC LawHub for LSAT, AAMC store for MCAT). */}
       {isLSAT && <LsatFrequencyHeatmap />}
-      {isMCAT && <McatFrequencyHeatmap />}
+      {isMCAT && !showMcatTabs && (
+        <McatDashboard examSlug={String(params.exam).toLowerCase()} />
+      )}
+      {isMCAT && !showMcatTabs && <McatFrequencyHeatmap />}
 
+      {showMcatTabs && (
+        <>
       {/* Tabs — scroll horizontally on mobile (Patent Bar has 9 tabs;
           flex-wrap wraps awkwardly on narrow screens). overflow-x-auto
           keeps tabs in a single row, scrollbar-thin trims the visual
@@ -308,6 +282,8 @@ export default function ExamPage() {
       {activeTab === 'exam' && isSecPlus && <SECPLUSExamTab />}
       {activeTab === 'analytics' && isSecPlus && <SECPLUSAnalyticsTab />}
       {activeTab === 'pbq' && isSecPlus && <SecurityPlusPBQTab />}
+        </>
+      )}
     </div>
   );
 }

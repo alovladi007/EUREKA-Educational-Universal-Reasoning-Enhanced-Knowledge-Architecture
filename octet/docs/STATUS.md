@@ -672,6 +672,56 @@ awaiting SME review, so the paid simulator pool is currently empty by
 design; scaled scoring stays absent until equating data exists, which
 calibration alone will never supply.
 
+## Phase 10: the MCAT course and its front door. Gate: live + suite green. Status: DONE
+
+2026-08-11. Phase 9 built the surfaces; this phase is about reaching them.
+A learner arriving at MCAT met two stacked dashboards before any lesson: the
+shared test-prep overview, then a second page of cards and seven tabs. The
+course itself, the question bank, the simulator and the review centre were
+all one or two clicks further in, behind tab labels.
+
+- The course. eureka/apps/web/src/app/dashboard/test-prep/[exam]/study is a
+  three-pane reader - subject rail, book column, companion column - over the
+  seven subjects students actually study on rather than the four sections
+  the AAMC administers. lib/mcat-subjects.ts is a second view over the same
+  29 topics, not a copy; assertSubjectCoverage() fails loudly if a topic is
+  listed twice or missed. CARS is carried separately and labelled a skill,
+  because calling it an eighth subject would imply a body of knowledge that
+  does not exist. LessonQuiz gained a skin map so the same component renders
+  in the book column without changing how it looks anywhere else - the
+  'vivid' default keeps the existing reader byte-identical.
+- The front door. components/test-prep/McatDashboard.tsx is one page that
+  answers "where am I and what do I do next": the next unread chapter as the
+  primary action, four entries to the four places work happens, and a "what
+  to fix next" panel. It reads /mcat/review/summary, /mcat/review/missed and
+  /mcat/mock/history, so every figure on it is a recorded answer. Where
+  there is none it says so - an em dash and "no answers recorded yet" rather
+  than a zero dressed as telemetry - and a section needs five recorded
+  answers before it is named weakest, because two is not a pattern.
+- Both layers now render that same page, so /dashboard/test-prep?exam=MCAT
+  and /dashboard/test-prep/mcat are one destination rather than two. The
+  qbank, simulator and review centre became their own routes
+  ([exam]/qbank, [exam]/exam, [exam]/review) so the dashboard can link to
+  them directly. Flashcards and notes stay reachable at ?tab=, and the ten
+  non-MCAT exams keep the tab UI unchanged.
+
+Two dead figures were removed from the shared overview while it was open.
+"Readiness Score" and "Predicted Score" read N/A for every exam and every
+learner because their state was never populated by anything; a predicted
+score also needs a validated model before it can be shown at all. The
+"Performance Overview" grid below them repeated three figures from the card
+above and added a streak hardcoded to zero, and its study time divided
+seconds by 60 and labelled the result hours. The grid is gone and the card
+carries the four figures once, with the right units.
+
+Verified live at :4040 on a fresh account (honest empty states) and on an
+account with 28 recorded answers and one sitting (resume at chapter 4,
+3/29 read, 14% from 4 of 28, weakest section named). 9 Playwright tests
+green against the live stack, 178 vitest, tsc clean. The GATE C browser
+test was rewritten to navigate the way a learner now does - by following
+the dashboard's own links - rather than by clicking tabs that no longer
+render.
+
 ## Known gaps and honest caveats
 
 1. The misconception library (26 entries, 7 added in Phase 3) carries

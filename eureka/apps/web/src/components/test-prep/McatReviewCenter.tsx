@@ -46,6 +46,10 @@ export function McatReviewCenter() {
     void load();
   }, [load]);
 
+  const answered = (summary?.by_section ?? []).reduce(
+    (n, s) => n + s.attempts, 0,
+  );
+
   const addToSrs = async (m: Missed['missed'][number]) => {
     try {
       await apiClient.createSrsCard({
@@ -149,9 +153,14 @@ export function McatReviewCenter() {
         {!missed ? (
           <p className="text-sm text-muted-foreground">Loading&hellip;</p>
         ) : missed.missed.length === 0 ? (
+          // An empty missed list means two different things, and saying the
+          // wrong one reads as a claim about performance that was never
+          // measured: with no answers on record nothing has been got right
+          // yet, it simply has not been asked.
           <p className="text-sm text-muted-foreground">
-            Nothing outstanding - every question you have answered, your
-            latest response got right.
+            {answered === 0
+              ? 'Nothing answered yet, so there is nothing to review.'
+              : 'Nothing outstanding - every question you have answered, your latest response got right.'}
           </p>
         ) : (
           <>
