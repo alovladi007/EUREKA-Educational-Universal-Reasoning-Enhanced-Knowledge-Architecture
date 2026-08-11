@@ -438,6 +438,33 @@ class ApiClient {
     return response.data;
   }
 
+  async getMcatQbankPassages(): Promise<{
+    passages: Array<{
+      passage_id: string; title: string; topic_id: number; section: string;
+      question_count: number; review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/mcat/qbank/passages');
+    return response.data;
+  }
+
+  async getMcatQbankPassageSet(passageId: string): Promise<{
+    passage: {
+      passage_id: string; title: string; body: string; topic_id: number;
+      section: string; review_status: string;
+    };
+    items: Array<{
+      item_id: string; stem: string; options: string[]; option_count: number;
+      difficulty: string; section: string | null; subtopic: string | null;
+      review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get(`/mcat/qbank/passage-set/${passageId}`);
+    return response.data;
+  }
+
   async submitMcatQbank(payload: {
     item_id: string; choice_index: number; seconds?: number;
   }): Promise<{

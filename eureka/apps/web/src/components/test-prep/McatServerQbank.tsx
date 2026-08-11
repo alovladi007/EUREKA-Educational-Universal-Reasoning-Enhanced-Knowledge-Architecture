@@ -29,6 +29,10 @@ type QbankItem = Awaited<
   ReturnType<typeof apiClient.getMcatQbankItems>
 >['items'][number];
 type Verdict = Awaited<ReturnType<typeof apiClient.submitMcatQbank>>;
+type PassageList = Awaited<ReturnType<typeof apiClient.getMcatQbankPassages>>;
+type ActivePassage = Awaited<
+  ReturnType<typeof apiClient.getMcatQbankPassageSet>
+>['passage'];
 
 const COUNTS = [10, 20, 40];
 
@@ -37,6 +41,10 @@ export function McatServerQbank() {
   const [error, setError] = React.useState<string | null>(null);
   const [selectedTopics, setSelectedTopics] = React.useState<number[]>([]);
   const [count, setCount] = React.useState(10);
+
+  const [passages, setPassages] = React.useState<PassageList | null>(null);
+  // Set while a passage session runs: its text stays pinned above the items.
+  const [activePassage, setActivePassage] = React.useState<ActivePassage | null>(null);
 
   const [session, setSession] = React.useState<{
     items: QbankItem[];
@@ -52,11 +60,36 @@ export function McatServerQbank() {
   const loadOverview = React.useCallback(async () => {
     try {
       setError(null);
-      setOverview(await apiClient.getMcatQbankOverview());
+      const [ov, pl] = await Promise.all([
+        apiClient.getMcatQbankOverview(),
+        apiClient.getMcatQbankPassages(),
+      ]);
+      setOverview(ov);
+      setPassages(pl);
     } catch {
       setError('Could not load the question bank from the server.');
     }
   }, []);
+
+  const startPassage = async (passageId: string) => {
+    setBusy(true);
+    try {
+      const set = await apiClient.getMcatQbankPassageSet(passageId);
+      if (!set.items.length) {
+        toast.error('That passage has no questions attached yet.');
+        return;
+      }
+      setActivePassage(set.passage);
+      setSession({ items: set.items, index: 0, correct: 0, answered: 0 });
+      setVerdict(null);
+      setChosen(null);
+      startedAt.current = Date.now();
+    } catch {
+      toast.error('Could not load the passage set.');
+    } finally {
+      setBusy(false);
+    }
+  };
 
   React.useEffect(() => {
     void loadOverview();
@@ -82,6 +115,7 @@ export function McatServerQbank() {
         toast.error('No questions available for that selection.');
         return;
       }
+      setActivePassage(null);
       setSession({ items, index: 0, correct: 0, answered: 0 });
       setVerdict(null);
       setChosen(null);
@@ -122,6 +156,7 @@ export function McatServerQbank() {
     if (!session) return;
     if (session.index + 1 >= session.items.length) {
       setSession(null);
+      setActivePassage(null);
     } else {
       setSession({ ...session, index: session.index + 1 });
       startedAt.current = Date.now();
@@ -223,6 +258,39 @@ export function McatServerQbank() {
                   Start practice <ArrowRight className="h-3.5 w-3.5 ml-1.5" />
                 </Button>
               </div>
+              {passages && passages.passages.length > 0 && (
+                <div className="space-y-2 pt-2 border-t" data-testid="mcat-passage-sets">
+                  <p className="text-xs font-semibold">Passage sets</p>
+                  <p className="text-[11px] text-muted-foreground">
+                    A reading passage with its own question set - the exam&apos;s
+                    native format. Served and graded server-side like everything
+                    else here.
+                  </p>
+                  {passages.passages.map((ps) => (
+                    <div
+                      key={ps.passage_id}
+                      className="flex items-center justify-between gap-3 rounded-lg border p-3"
+                    >
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{ps.title}</p>
+                        <p className="text-[11px] text-muted-foreground">
+                          {ps.section} &middot; {ps.question_count} questions
+                          {ps.review_status !== 'approved' && ' · awaiting SME review'}
+                        </p>
+                      </div>
+                      <Button
+                        size="sm"
+                        variant="secondary"
+                        disabled={busy}
+                        onClick={() => void startPassage(ps.passage_id)}
+                        data-testid={`mcat-passage-start-${ps.topic_id}`}
+                      >
+                        Read &amp; answer
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
               <p className="text-[11px] text-muted-foreground">{overview.disclaimer}</p>
             </>
           )}
@@ -242,6 +310,17 @@ export function McatServerQbank() {
           {session.correct}/{session.answered} correct so far
         </span>
       </div>
+      {activePassage && (
+        <div
+          className="rounded-md border bg-muted/30 p-4 max-h-72 overflow-y-auto"
+          data-testid="mcat-passage-body"
+        >
+          <p className="text-sm font-semibold mb-2">{activePassage.title}</p>
+          <p className="text-sm leading-relaxed whitespace-pre-wrap">
+            {activePassage.body}
+          </p>
+        </div>
+      )}
       <div className="flex items-center gap-2">
         {item.section && <Badge variant="secondary" className="text-xs">{item.section}</Badge>}
         {item.subtopic && <Badge variant="outline" className="text-xs">{item.subtopic}</Badge>}
@@ -322,7 +401,14 @@ export function McatServerQbank() {
       )}
 
       {!verdict && (
-        <Button size="sm" variant="ghost" onClick={() => setSession(null)}>
+        <Button
+          size="sm"
+          variant="ghost"
+          onClick={() => {
+            setSession(null);
+            setActivePassage(null);
+          }}
+        >
           End session
         </Button>
       )}
