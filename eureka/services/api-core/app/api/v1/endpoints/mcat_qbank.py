@@ -143,7 +143,9 @@ async def qbank_items(
                 "stem": i.content.get("stem"),
                 "options": list(i.content.get("options", [])),
                 "option_count": len(i.content.get("options", [])),
-                "difficulty": i.difficulty_nominal,
+                # Author-assigned label, NOT a measured statistic - named so it
+                # cannot be read as one (docs/mcat/IRT_CALIBRATION.md).
+                "difficulty_nominal": i.difficulty_nominal,
                 "section": i.extra_metadata.get("section"),
                 "subtopic": i.extra_metadata.get("subtopic"),
                 "review_status": i.review_status.value,
@@ -238,7 +240,9 @@ async def qbank_passage_set(
                 "stem": i.content.get("stem"),
                 "options": list(i.content.get("options", [])),
                 "option_count": len(i.content.get("options", [])),
-                "difficulty": i.difficulty_nominal,
+                # Author-assigned label, NOT a measured statistic - named so it
+                # cannot be read as one (docs/mcat/IRT_CALIBRATION.md).
+                "difficulty_nominal": i.difficulty_nominal,
                 "section": i.extra_metadata.get("section"),
                 "subtopic": i.extra_metadata.get("subtopic"),
                 "review_status": i.review_status.value,

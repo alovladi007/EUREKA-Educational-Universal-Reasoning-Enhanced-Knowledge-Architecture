@@ -429,8 +429,9 @@ class ApiClient {
   }): Promise<{
     items: Array<{
       item_id: string; stem: string; options: string[]; option_count: number;
-      difficulty: string; section: string | null; subtopic: string | null;
-      review_status: string;
+      // Author-assigned label, not a measured statistic.
+      difficulty_nominal: string; section: string | null;
+      subtopic: string | null; review_status: string;
     }>;
     disclaimer: string;
   }> {
@@ -456,8 +457,9 @@ class ApiClient {
     };
     items: Array<{
       item_id: string; stem: string; options: string[]; option_count: number;
-      difficulty: string; section: string | null; subtopic: string | null;
-      review_status: string;
+      // Author-assigned label, not a measured statistic.
+      difficulty_nominal: string; section: string | null;
+      subtopic: string | null; review_status: string;
     }>;
     disclaimer: string;
   }> {
