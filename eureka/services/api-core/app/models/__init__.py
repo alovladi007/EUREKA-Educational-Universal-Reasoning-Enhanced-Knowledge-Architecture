@@ -121,6 +121,7 @@ from app.models.user_progress import UserProgress, ExamTypeKind
 from app.models.srs_card import SrsCard
 from app.models.billing import Product, Entitlement
 from app.models.mock_result import MockResult
+from app.models.mcat_octet import OctetMcatMap, McatChemAttempt
 from app.models.graduate import (
     GraduateProgram,
     GraduateEnrollment,
