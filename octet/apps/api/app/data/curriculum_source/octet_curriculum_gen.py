@@ -622,6 +622,32 @@ def build() -> dict:
     return {"program": "OCTET", "courses": courses}
 
 
+#: Nodes that live in a course other than the one their id names.
+#:
+#: A node id is a STABLE KEY, not a location. It is the join column for lesson
+#: files, item templates, the misconception routing table and the MCAT mapping,
+#: and the Learn IA states that ids are never shown to a learner. When the
+#: organic sequence was rechaptered, spectroscopy and alkynes moved from ORG1
+#: into ORG2; renaming those fifteen nodes to match would have broken four
+#: systems to fix a mismatch nobody sees.
+#:
+#: The prefix check still runs. It is an integrity rule worth keeping, because
+#: an id that silently disagrees with its course is otherwise unnoticeable. So
+#: the exceptions are enumerated here instead of the rule being deleted: any
+#: node that drifts out of its course WITHOUT being listed still fails.
+MOVED_NODES = {
+    # ORG1 unit 10 (structure determination) -> ORG2 chapters 3 and 4
+    "ORG1.IRREGIONS", "ORG1.IRINTERPRET", "ORG1.MSBASICS", "ORG1.MSFRAGMENT",
+    "ORG1.NMRTHEORY", "ORG1.NMRINTEGRATION", "ORG1.NMRSPLITTING",
+    "ORG1.CARBONNMR", "ORG1.ELUCIDATION",
+    # ORG1 unit 7 (alkynes) -> ORG2 chapter 5
+    "ORG1.ALKYNENOMEN", "ORG1.ACETYLIDE", "ORG1.ALKYNEADDITION",
+    "ORG1.TAUTOMER", "ORG1.ALKYNEREDUCTION", "ORG1.ALKYNESYNTH",
+    # allylic bromination and organometallic coupling -> ORG2 chapters 8 and 9
+    "ORG1.ALLYLIC", "ORG1.COUPLING",
+}
+
+
 def check(cur: dict) -> list[str]:
     problems: list[str] = []
     node_ids: set[str] = set()
@@ -685,10 +711,11 @@ def check(cur: dict) -> list[str]:
                     problems.append(
                         f"{c['id']}: node id {n['id']!r} is not COURSE.TOPIC "
                         f"in uppercase alphanumerics")
-                if not n["id"].startswith(c["id"] + "."):
+                if (not n["id"].startswith(c["id"] + ".")
+                        and n["id"] not in MOVED_NODES):
                     problems.append(
                         f"{c['id']}: node id {n['id']!r} does not carry its "
-                        f"course prefix")
+                        f"course prefix and is not a declared move")
     return problems
 
 

@@ -2619,7 +2619,7 @@
       "units": [
         {
           "id": "ORG1-U1",
-          "title": "Structure and Bonding",
+          "title": "Chemical Bonding and Structure",
           "chapters": "Ch 1",
           "nodes": [
             {
@@ -2682,8 +2682,39 @@
         },
         {
           "id": "ORG1-U2",
-          "title": "Acids and Bases in Organic Chemistry",
+          "title": "Alkanes",
           "chapters": "Ch 2",
+          "nodes": [
+            {
+              "id": "ORG1.ALKANENOMEN",
+              "kind": "computational",
+              "title": "Alkane nomenclature",
+              "description": "IUPAC naming, substituents and numbering rules.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ISOMERS",
+              "kind": "computational",
+              "title": "Constitutional isomers and degrees of unsaturation",
+              "description": "Counting isomers, and reading rings and pi bonds off a formula.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.NEWMAN",
+              "kind": "computational",
+              "title": "Conformational analysis of acyclic alkanes",
+              "description": "Newman projections, torsional strain and energy diagrams.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U3",
+          "title": "Acids and Bases",
+          "chapters": "Ch 3",
           "nodes": [
             {
               "id": "ORG1.PKA",
@@ -2720,72 +2751,223 @@
           ]
         },
         {
-          "id": "ORG1-U3",
-          "title": "Alkanes and Conformational Analysis",
-          "chapters": "Ch 3-4",
+          "id": "ORG1-U4",
+          "title": "Alkenes: Structure",
+          "chapters": "Ch 4",
           "nodes": [
             {
-              "id": "ORG1.ALKANENOMEN",
-              "kind": "computational",
-              "title": "Alkane nomenclature",
-              "description": "IUPAC naming, substituents and numbering rules.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.ISOMERS",
-              "kind": "computational",
-              "title": "Constitutional isomers and degrees of unsaturation",
-              "description": "Counting isomers, and reading rings and pi bonds off a formula.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.NEWMAN",
-              "kind": "computational",
-              "title": "Conformational analysis of acyclic alkanes",
-              "description": "Newman projections, torsional strain and energy diagrams.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.RINGSTRAIN",
+              "id": "ORG1.ALKENEBONDING",
               "kind": "concept",
-              "title": "Cycloalkane strain",
-              "description": "Angle, torsional and steric strain across ring sizes.",
+              "title": "Alkene bonding and restricted rotation",
+              "description": "The pi bond, why it blocks rotation, and what that does to isomerism.",
               "lab_adjacent": false,
-              "triangle_eligible": false
+              "triangle_eligible": true,
+              "part": "A"
             },
             {
-              "id": "ORG1.CHAIR",
+              "id": "ORG1.ALKENENOMEN",
               "kind": "computational",
-              "title": "Cyclohexane chair conformations",
-              "description": "Axial and equatorial positions, and the ring flip.",
+              "title": "Alkene nomenclature and E Z designation",
+              "description": "Naming, and assigning configuration across a double bond.",
               "lab_adjacent": false,
-              "triangle_eligible": true
+              "triangle_eligible": false,
+              "part": "B"
             },
             {
-              "id": "ORG1.AVALUES",
-              "kind": "computational",
-              "title": "Substituted cyclohexanes and A values",
-              "description": "Predicting the favoured chair from substituent size.",
+              "id": "ORG1.ALKENESTABILITY",
+              "kind": "concept",
+              "title": "Alkene stability",
+              "description": "Substitution and hyperconjugation ranking isomeric alkenes.",
               "lab_adjacent": false,
-              "triangle_eligible": false
+              "triangle_eligible": false,
+              "part": "C"
             },
             {
-              "id": "ORG1.CISTRANSRING",
+              "id": "ORG1.HXADDITION",
               "kind": "computational",
-              "title": "Cis and trans isomerism in rings",
-              "description": "Which substituent combinations can both be equatorial.",
+              "title": "Electrophilic addition of HX and Markovnikov",
+              "description": "The cation forms where it is most stable, and the rule follows.",
               "lab_adjacent": false,
-              "triangle_eligible": false
+              "triangle_eligible": false,
+              "part": "D"
+            },
+            {
+              "id": "ORG1.CARBOCATION",
+              "kind": "concept",
+              "title": "Carbocation structure and stability",
+              "description": "Hyperconjugation and resonance ranking every cation you will meet.",
+              "lab_adjacent": false,
+              "triangle_eligible": true,
+              "part": "D"
+            },
+            {
+              "id": "ORG1.REARRANGEMENT",
+              "kind": "computational",
+              "title": "Carbocation rearrangements",
+              "description": "Hydride and alkyl shifts, and when to expect them.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "D"
+            },
+            {
+              "id": "ORG1.REACTIONTYPES",
+              "kind": "concept",
+              "title": "Reaction types",
+              "description": "Addition, elimination, substitution and rearrangement.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "D"
+            },
+            {
+              "id": "ORG1.HOMOHETERO",
+              "kind": "concept",
+              "title": "Homolysis, heterolysis, radicals and polar reactions",
+              "description": "Two ways a bond can break, and the arrows each one uses.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "D"
+            },
+            {
+              "id": "ORG1.ENERGYDIAGRAM",
+              "kind": "computational",
+              "title": "Energy diagrams, transition states and intermediates",
+              "description": "Reading a mechanism off a reaction coordinate.",
+              "lab_adjacent": false,
+              "triangle_eligible": true,
+              "part": "E"
+            },
+            {
+              "id": "ORG1.KINETICTHERMO",
+              "kind": "concept",
+              "title": "Kinetic versus thermodynamic control",
+              "description": "Fastest product is not always the most stable one.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "E"
+            },
+            {
+              "id": "ORG1.HYDROGENATION",
+              "kind": "computational",
+              "title": "Catalytic hydrogenation",
+              "description": "Syn addition of hydrogen across the double bond.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "F"
+            },
+            {
+              "id": "ORG1.CATALYSIS",
+              "kind": "concept",
+              "title": "Catalysis",
+              "description": "A catalyst lowers the barrier and is regenerated; it never moves the equilibrium.",
+              "lab_adjacent": false,
+              "triangle_eligible": true,
+              "part": "F"
+            }
+          ],
+          "parts": [
+            {
+              "part": "A",
+              "count": 1
+            },
+            {
+              "part": "B",
+              "count": 1
+            },
+            {
+              "part": "C",
+              "count": 1
+            },
+            {
+              "part": "D",
+              "count": 5
+            },
+            {
+              "part": "E",
+              "count": 2
+            },
+            {
+              "part": "F",
+              "count": 2
             }
           ]
         },
         {
-          "id": "ORG1-U4",
-          "title": "Stereochemistry",
+          "id": "ORG1-U5",
+          "title": "Addition Reactions of Alkenes",
           "chapters": "Ch 5",
+          "nodes": [
+            {
+              "id": "ORG1.HALOGENATION",
+              "kind": "computational",
+              "title": "Halogenation and halohydrin formation",
+              "description": "Bromonium ion intermediates and anti addition.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "A"
+            },
+            {
+              "id": "ORG1.HYDRATION",
+              "kind": "computational",
+              "title": "Hydration: acid catalysed, oxymercuration, hydroboration",
+              "description": "Three routes to an alcohol with two different regiochemistries.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "B"
+            },
+            {
+              "id": "ORG1.EPOXIDATION",
+              "kind": "computational",
+              "title": "Epoxidation and dihydroxylation",
+              "description": "Syn and anti diols, and the reagent that gives each.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "B"
+            },
+            {
+              "id": "ORG1.OZONOLYSIS",
+              "kind": "computational",
+              "title": "Ozonolysis and oxidative cleavage",
+              "description": "Cutting the double bond, and working backwards from the fragments.",
+              "lab_adjacent": false,
+              "triangle_eligible": false,
+              "part": "C"
+            },
+            {
+              "id": "ORG1.RADICALHBR",
+              "kind": "computational",
+              "title": "Radical addition of HBr",
+              "description": "Anti Markovnikov addition, and the peroxide condition that causes it.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKENESYNTH",
+              "kind": "computational",
+              "title": "Synthesis of alkenes",
+              "description": "Elimination routes, previewing the substitution and elimination unit.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ],
+          "parts": [
+            {
+              "part": "A",
+              "count": 1
+            },
+            {
+              "part": "B",
+              "count": 2
+            },
+            {
+              "part": "C",
+              "count": 1
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U6",
+          "title": "Stereochemistry",
+          "chapters": "Ch 6",
           "nodes": [
             {
               "id": "ORG1.CHIRALITY",
@@ -2846,197 +3028,39 @@
           ]
         },
         {
-          "id": "ORG1-U5",
-          "title": "Understanding Organic Reactions",
-          "chapters": "Ch 6",
-          "nodes": [
-            {
-              "id": "ORG1.REACTIONTYPES",
-              "kind": "concept",
-              "title": "Reaction types",
-              "description": "Addition, elimination, substitution and rearrangement.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.HOMOHETERO",
-              "kind": "concept",
-              "title": "Homolysis, heterolysis, radicals and polar reactions",
-              "description": "Two ways a bond can break, and the arrows each one uses.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.ENERGYDIAGRAM",
-              "kind": "computational",
-              "title": "Energy diagrams, transition states and intermediates",
-              "description": "Reading a mechanism off a reaction coordinate.",
-              "lab_adjacent": false,
-              "triangle_eligible": true
-            },
-            {
-              "id": "ORG1.KINETICTHERMO",
-              "kind": "concept",
-              "title": "Kinetic versus thermodynamic control",
-              "description": "Fastest product is not always the most stable one.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.CARBOCATION",
-              "kind": "concept",
-              "title": "Carbocation structure and stability",
-              "description": "Hyperconjugation and resonance ranking every cation you will meet.",
-              "lab_adjacent": false,
-              "triangle_eligible": true
-            },
-            {
-              "id": "ORG1.REARRANGEMENT",
-              "kind": "computational",
-              "title": "Carbocation rearrangements",
-              "description": "Hydride and alkyl shifts, and when to expect them.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            }
-          ]
-        },
-        {
-          "id": "ORG1-U6",
-          "title": "Alkenes: Structure and Reactions",
-          "chapters": "Ch 7-8",
-          "nodes": [
-            {
-              "id": "ORG1.ALKENENOMEN",
-              "kind": "computational",
-              "title": "Alkene nomenclature and E Z designation",
-              "description": "Naming, and assigning configuration across a double bond.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.ALKENESTABILITY",
-              "kind": "concept",
-              "title": "Alkene stability",
-              "description": "Substitution and hyperconjugation ranking isomeric alkenes.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.HXADDITION",
-              "kind": "computational",
-              "title": "Electrophilic addition of HX and Markovnikov",
-              "description": "The cation forms where it is most stable, and the rule follows.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.HYDRATION",
-              "kind": "computational",
-              "title": "Hydration: acid catalysed, oxymercuration, hydroboration",
-              "description": "Three routes to an alcohol with two different regiochemistries.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.HALOGENATION",
-              "kind": "computational",
-              "title": "Halogenation and halohydrin formation",
-              "description": "Bromonium ion intermediates and anti addition.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.HYDROGENATION",
-              "kind": "computational",
-              "title": "Catalytic hydrogenation",
-              "description": "Syn addition of hydrogen across the double bond.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.EPOXIDATION",
-              "kind": "computational",
-              "title": "Epoxidation and dihydroxylation",
-              "description": "Syn and anti diols, and the reagent that gives each.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.OZONOLYSIS",
-              "kind": "computational",
-              "title": "Ozonolysis and oxidative cleavage",
-              "description": "Cutting the double bond, and working backwards from the fragments.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.RADICALHBR",
-              "kind": "computational",
-              "title": "Radical addition of HBr",
-              "description": "Anti Markovnikov addition, and the peroxide condition that causes it.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.ALKENESYNTH",
-              "kind": "computational",
-              "title": "Synthesis of alkenes",
-              "description": "Elimination routes, previewing the substitution and elimination unit.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            }
-          ]
-        },
-        {
           "id": "ORG1-U7",
-          "title": "Alkynes",
-          "chapters": "Ch 9",
+          "title": "Cyclic Compounds",
+          "chapters": "Ch 7",
           "nodes": [
             {
-              "id": "ORG1.ALKYNENOMEN",
-              "kind": "computational",
-              "title": "Alkyne nomenclature and structure",
-              "description": "Linear geometry and sp hybridized carbon.",
+              "id": "ORG1.RINGSTRAIN",
+              "kind": "concept",
+              "title": "Cycloalkane strain",
+              "description": "Angle, torsional and steric strain across ring sizes.",
               "lab_adjacent": false,
               "triangle_eligible": false
             },
             {
-              "id": "ORG1.ACETYLIDE",
+              "id": "ORG1.CHAIR",
               "kind": "computational",
-              "title": "Alkyne acidity and acetylide anions",
-              "description": "Terminal alkynes as the only weakly acidic hydrocarbons.",
+              "title": "Cyclohexane chair conformations",
+              "description": "Axial and equatorial positions, and the ring flip.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.AVALUES",
+              "kind": "computational",
+              "title": "Substituted cyclohexanes and A values",
+              "description": "Predicting the favoured chair from substituent size.",
               "lab_adjacent": false,
               "triangle_eligible": false
             },
             {
-              "id": "ORG1.ALKYNEADDITION",
+              "id": "ORG1.CISTRANSRING",
               "kind": "computational",
-              "title": "Addition reactions of alkynes",
-              "description": "Adding once or twice, and controlling which.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.TAUTOMER",
-              "kind": "computational",
-              "title": "Hydration and keto enol tautomerization",
-              "description": "Enols that convert to carbonyls, with regiochemistry to choose.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.ALKYNEREDUCTION",
-              "kind": "computational",
-              "title": "Reduction to cis and trans alkenes",
-              "description": "Lindlar and dissolving metal, two stereochemical outcomes.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.ALKYNESYNTH",
-              "kind": "computational",
-              "title": "Alkyne synthesis and alkylation",
-              "description": "Building carbon chains with acetylide nucleophiles.",
+              "title": "Cis and trans isomerism in rings",
+              "description": "Which substituent combinations can both be equatorial.",
               "lab_adjacent": false,
               "triangle_eligible": false
             }
@@ -3044,8 +3068,63 @@
         },
         {
           "id": "ORG1-U8",
-          "title": "Organohalides and Radical Reactions",
-          "chapters": "Ch 10",
+          "title": "Noncovalent Intermolecular Interactions",
+          "chapters": "Ch 8",
+          "nodes": [
+            {
+              "id": "ORG1.IMFTYPES",
+              "kind": "concept",
+              "title": "The noncovalent interactions",
+              "description": "Dispersion, dipole-dipole and hydrogen bonding, and their relative strengths.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.DISPERSION",
+              "kind": "concept",
+              "title": "London dispersion and molecular shape",
+              "description": "Why surface area, not just mass, sets the strength of dispersion.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.DIPOLE",
+              "kind": "concept",
+              "title": "Dipole-dipole interactions and molecular polarity",
+              "description": "Adding bond dipoles as vectors, and when symmetry cancels them.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.HBONDING",
+              "kind": "concept",
+              "title": "Hydrogen bonding: donors and acceptors",
+              "description": "Which groups donate, which accept, and why N, O and F are the condition.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.IMFPROPERTIES",
+              "kind": "computational",
+              "title": "Predicting boiling and melting points",
+              "description": "Ranking compounds by the interactions their structures allow.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.SOLUBILITY",
+              "kind": "computational",
+              "title": "Solubility and like dissolves like",
+              "description": "Reading a structure for the balance of polar and nonpolar surface.",
+              "lab_adjacent": true,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "ORG1-U9",
+          "title": "Alkyl Halides",
+          "chapters": "Ch 9",
           "nodes": [
             {
               "id": "ORG1.HALIDENOMEN",
@@ -3064,14 +3143,6 @@
               "triangle_eligible": false
             },
             {
-              "id": "ORG1.ALLYLIC",
-              "kind": "computational",
-              "title": "Allylic bromination",
-              "description": "NBS and the resonance stabilized allylic radical.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
               "id": "ORG1.GRIGNARD",
               "kind": "computational",
               "title": "Grignard and organolithium reagents",
@@ -3079,21 +3150,6 @@
               "lab_adjacent": false,
               "triangle_eligible": false
             },
-            {
-              "id": "ORG1.COUPLING",
-              "kind": "concept",
-              "title": "Organometallic coupling reactions",
-              "description": "Gilman reagents and palladium coupling in overview.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            }
-          ]
-        },
-        {
-          "id": "ORG1-U9",
-          "title": "Substitution and Elimination",
-          "chapters": "Ch 11",
-          "nodes": [
             {
               "id": "ORG1.SN2",
               "kind": "computational",
@@ -3167,85 +3223,6 @@
               "triangle_eligible": false
             }
           ]
-        },
-        {
-          "id": "ORG1-U10",
-          "title": "Structure Determination",
-          "chapters": "Ch 12-13",
-          "nodes": [
-            {
-              "id": "ORG1.MSBASICS",
-              "kind": "computational",
-              "title": "Mass spectrometry: molecular ion and isotopes",
-              "description": "Reading molecular mass and halogen patterns off a spectrum.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.MSFRAGMENT",
-              "kind": "computational",
-              "title": "Mass spectrometry fragmentation",
-              "description": "Common cleavages, and what a fragment mass tells you.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.IRREGIONS",
-              "kind": "computational",
-              "title": "Infrared spectroscopy: functional group regions",
-              "description": "The four regions, and the bands that are actually diagnostic.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.IRINTERPRET",
-              "kind": "computational",
-              "title": "IR interpretation",
-              "description": "Deciding what is present and what is absent.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.NMRTHEORY",
-              "kind": "concept",
-              "title": "NMR theory: shielding and chemical shift",
-              "description": "Why different protons resonate at different frequencies.",
-              "lab_adjacent": false,
-              "triangle_eligible": true
-            },
-            {
-              "id": "ORG1.NMRINTEGRATION",
-              "kind": "computational",
-              "title": "1H NMR integration",
-              "description": "Relative areas as relative proton counts, not absolute ones.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.NMRSPLITTING",
-              "kind": "computational",
-              "title": "1H NMR spin spin splitting",
-              "description": "The n plus 1 rule, coupling constants and common patterns.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.CARBONNMR",
-              "kind": "computational",
-              "title": "13C NMR and DEPT",
-              "description": "Counting unique carbons and assigning their substitution.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG1.ELUCIDATION",
-              "kind": "computational",
-              "title": "Combined structure elucidation",
-              "description": "Assembling a structure from MS, IR and NMR together.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            }
-          ]
         }
       ],
       "unit_prereqs": {
@@ -3255,38 +3232,28 @@
           "GEN1.VSEPR"
         ],
         "ORG1-U2": [
-          "ORG1.INDUCTIVE",
-          "GEN2.LEWISACID",
-          "GEN2.WEAKACID"
-        ],
-        "ORG1-U3": [
           "ORG1.FUNCTIONALGROUPS"
         ],
+        "ORG1-U3": [
+          "ORG1.NEWMAN"
+        ],
         "ORG1-U4": [
-          "ORG1.CHAIR"
+          "ORG1.ARROWS"
         ],
         "ORG1-U5": [
-          "ORG1.ARROWS",
-          "GEN2.RDS"
+          "ORG1.CATALYSIS"
         ],
         "ORG1-U6": [
-          "ORG1.CARBOCATION",
-          "ORG1.ENANTIODIA"
-        ],
-        "ORG1-U7": [
           "ORG1.ALKENESYNTH"
         ],
+        "ORG1-U7": [
+          "ORG1.RESOLUTION"
+        ],
         "ORG1-U8": [
-          "ORG1.HOMOHETERO",
-          "ORG1.ALKYNESYNTH"
+          "ORG1.CISTRANSRING"
         ],
         "ORG1-U9": [
-          "ORG1.GRIGNARD",
-          "ORG1.REARRANGEMENT"
-        ],
-        "ORG1-U10": [
-          "ORG1.FUNCTIONALGROUPS",
-          "GEN1.LIGHT"
+          "ORG1.SOLUBILITY"
         ]
       },
       "extra_edges": [
@@ -3457,6 +3424,18 @@
           "ORG1.ORBITALS"
         ],
         [
+          "ORG1.ALKANENOMEN",
+          "ORG1.ISOMERS"
+        ],
+        [
+          "ORG1.ISOMERS",
+          "ORG1.NEWMAN"
+        ],
+        [
+          "ORG1.FUNCTIONALGROUPS",
+          "ORG1.ALKANENOMEN"
+        ],
+        [
           "ORG1.PKA",
           "ORG1.ACIDITYFACTORS"
         ],
@@ -3469,44 +3448,80 @@
           "ORG1.ARROWS"
         ],
         [
-          "ORG1.INDUCTIVE",
-          "ORG1.PKA"
-        ],
-        [
-          "GEN2.LEWISACID",
-          "ORG1.PKA"
-        ],
-        [
-          "GEN2.WEAKACID",
-          "ORG1.PKA"
-        ],
-        [
-          "ORG1.ALKANENOMEN",
-          "ORG1.ISOMERS"
-        ],
-        [
-          "ORG1.ISOMERS",
-          "ORG1.NEWMAN"
-        ],
-        [
           "ORG1.NEWMAN",
-          "ORG1.RINGSTRAIN"
+          "ORG1.PKA"
         ],
         [
-          "ORG1.RINGSTRAIN",
-          "ORG1.CHAIR"
+          "ORG1.ALKENEBONDING",
+          "ORG1.ALKENENOMEN"
         ],
         [
-          "ORG1.CHAIR",
-          "ORG1.AVALUES"
+          "ORG1.ALKENENOMEN",
+          "ORG1.ALKENESTABILITY"
         ],
         [
-          "ORG1.AVALUES",
-          "ORG1.CISTRANSRING"
+          "ORG1.ALKENESTABILITY",
+          "ORG1.HXADDITION"
         ],
         [
-          "ORG1.FUNCTIONALGROUPS",
-          "ORG1.ALKANENOMEN"
+          "ORG1.HXADDITION",
+          "ORG1.CARBOCATION"
+        ],
+        [
+          "ORG1.CARBOCATION",
+          "ORG1.REARRANGEMENT"
+        ],
+        [
+          "ORG1.REARRANGEMENT",
+          "ORG1.REACTIONTYPES"
+        ],
+        [
+          "ORG1.REACTIONTYPES",
+          "ORG1.HOMOHETERO"
+        ],
+        [
+          "ORG1.HOMOHETERO",
+          "ORG1.ENERGYDIAGRAM"
+        ],
+        [
+          "ORG1.ENERGYDIAGRAM",
+          "ORG1.KINETICTHERMO"
+        ],
+        [
+          "ORG1.KINETICTHERMO",
+          "ORG1.HYDROGENATION"
+        ],
+        [
+          "ORG1.HYDROGENATION",
+          "ORG1.CATALYSIS"
+        ],
+        [
+          "ORG1.ARROWS",
+          "ORG1.ALKENEBONDING"
+        ],
+        [
+          "ORG1.HALOGENATION",
+          "ORG1.HYDRATION"
+        ],
+        [
+          "ORG1.HYDRATION",
+          "ORG1.EPOXIDATION"
+        ],
+        [
+          "ORG1.EPOXIDATION",
+          "ORG1.OZONOLYSIS"
+        ],
+        [
+          "ORG1.OZONOLYSIS",
+          "ORG1.RADICALHBR"
+        ],
+        [
+          "ORG1.RADICALHBR",
+          "ORG1.ALKENESYNTH"
+        ],
+        [
+          "ORG1.CATALYSIS",
+          "ORG1.HALOGENATION"
         ],
         [
           "ORG1.CHIRALITY",
@@ -3533,104 +3548,48 @@
           "ORG1.RESOLUTION"
         ],
         [
-          "ORG1.CHAIR",
+          "ORG1.ALKENESYNTH",
           "ORG1.CHIRALITY"
         ],
         [
-          "ORG1.REACTIONTYPES",
-          "ORG1.HOMOHETERO"
+          "ORG1.RINGSTRAIN",
+          "ORG1.CHAIR"
         ],
         [
-          "ORG1.HOMOHETERO",
-          "ORG1.ENERGYDIAGRAM"
+          "ORG1.CHAIR",
+          "ORG1.AVALUES"
         ],
         [
-          "ORG1.ENERGYDIAGRAM",
-          "ORG1.KINETICTHERMO"
+          "ORG1.AVALUES",
+          "ORG1.CISTRANSRING"
         ],
         [
-          "ORG1.KINETICTHERMO",
-          "ORG1.CARBOCATION"
+          "ORG1.RESOLUTION",
+          "ORG1.RINGSTRAIN"
         ],
         [
-          "ORG1.CARBOCATION",
-          "ORG1.REARRANGEMENT"
+          "ORG1.IMFTYPES",
+          "ORG1.DISPERSION"
         ],
         [
-          "ORG1.ARROWS",
-          "ORG1.REACTIONTYPES"
+          "ORG1.DISPERSION",
+          "ORG1.DIPOLE"
         ],
         [
-          "GEN2.RDS",
-          "ORG1.REACTIONTYPES"
+          "ORG1.DIPOLE",
+          "ORG1.HBONDING"
         ],
         [
-          "ORG1.ALKENENOMEN",
-          "ORG1.ALKENESTABILITY"
+          "ORG1.HBONDING",
+          "ORG1.IMFPROPERTIES"
         ],
         [
-          "ORG1.ALKENESTABILITY",
-          "ORG1.HXADDITION"
+          "ORG1.IMFPROPERTIES",
+          "ORG1.SOLUBILITY"
         ],
         [
-          "ORG1.HXADDITION",
-          "ORG1.HYDRATION"
-        ],
-        [
-          "ORG1.HYDRATION",
-          "ORG1.HALOGENATION"
-        ],
-        [
-          "ORG1.HALOGENATION",
-          "ORG1.HYDROGENATION"
-        ],
-        [
-          "ORG1.HYDROGENATION",
-          "ORG1.EPOXIDATION"
-        ],
-        [
-          "ORG1.EPOXIDATION",
-          "ORG1.OZONOLYSIS"
-        ],
-        [
-          "ORG1.OZONOLYSIS",
-          "ORG1.RADICALHBR"
-        ],
-        [
-          "ORG1.RADICALHBR",
-          "ORG1.ALKENESYNTH"
-        ],
-        [
-          "ORG1.CARBOCATION",
-          "ORG1.ALKENENOMEN"
-        ],
-        [
-          "ORG1.ENANTIODIA",
-          "ORG1.ALKENENOMEN"
-        ],
-        [
-          "ORG1.ALKYNENOMEN",
-          "ORG1.ACETYLIDE"
-        ],
-        [
-          "ORG1.ACETYLIDE",
-          "ORG1.ALKYNEADDITION"
-        ],
-        [
-          "ORG1.ALKYNEADDITION",
-          "ORG1.TAUTOMER"
-        ],
-        [
-          "ORG1.TAUTOMER",
-          "ORG1.ALKYNEREDUCTION"
-        ],
-        [
-          "ORG1.ALKYNEREDUCTION",
-          "ORG1.ALKYNESYNTH"
-        ],
-        [
-          "ORG1.ALKENESYNTH",
-          "ORG1.ALKYNENOMEN"
+          "ORG1.CISTRANSRING",
+          "ORG1.IMFTYPES"
         ],
         [
           "ORG1.HALIDENOMEN",
@@ -3638,23 +3597,11 @@
         ],
         [
           "ORG1.RADICALHALOGEN",
-          "ORG1.ALLYLIC"
-        ],
-        [
-          "ORG1.ALLYLIC",
           "ORG1.GRIGNARD"
         ],
         [
           "ORG1.GRIGNARD",
-          "ORG1.COUPLING"
-        ],
-        [
-          "ORG1.HOMOHETERO",
-          "ORG1.HALIDENOMEN"
-        ],
-        [
-          "ORG1.ALKYNESYNTH",
-          "ORG1.HALIDENOMEN"
+          "ORG1.SN2"
         ],
         [
           "ORG1.SN2",
@@ -3689,52 +3636,8 @@
           "ORG1.COMPETITION"
         ],
         [
-          "ORG1.GRIGNARD",
-          "ORG1.SN2"
-        ],
-        [
-          "ORG1.REARRANGEMENT",
-          "ORG1.SN2"
-        ],
-        [
-          "ORG1.MSBASICS",
-          "ORG1.MSFRAGMENT"
-        ],
-        [
-          "ORG1.MSFRAGMENT",
-          "ORG1.IRREGIONS"
-        ],
-        [
-          "ORG1.IRREGIONS",
-          "ORG1.IRINTERPRET"
-        ],
-        [
-          "ORG1.IRINTERPRET",
-          "ORG1.NMRTHEORY"
-        ],
-        [
-          "ORG1.NMRTHEORY",
-          "ORG1.NMRINTEGRATION"
-        ],
-        [
-          "ORG1.NMRINTEGRATION",
-          "ORG1.NMRSPLITTING"
-        ],
-        [
-          "ORG1.NMRSPLITTING",
-          "ORG1.CARBONNMR"
-        ],
-        [
-          "ORG1.CARBONNMR",
-          "ORG1.ELUCIDATION"
-        ],
-        [
-          "ORG1.FUNCTIONALGROUPS",
-          "ORG1.MSBASICS"
-        ],
-        [
-          "GEN1.LIGHT",
-          "ORG1.MSBASICS"
+          "ORG1.SOLUBILITY",
+          "ORG1.HALIDENOMEN"
         ],
         [
           "ORG1.PKA",
@@ -3781,197 +3684,8 @@
       "units": [
         {
           "id": "ORG2-U1",
-          "title": "Conjugation and Dienes",
-          "chapters": "Ch 14",
-          "nodes": [
-            {
-              "id": "ORG2.CONJUGATION",
-              "kind": "concept",
-              "title": "Conjugated dienes: structure and stability",
-              "description": "Overlap across the system, and the stability it buys.",
-              "lab_adjacent": false,
-              "triangle_eligible": true
-            },
-            {
-              "id": "ORG2.ALLYLIC",
-              "kind": "concept",
-              "title": "Allylic and conjugated cation stability",
-              "description": "Resonance delocalization ranked against alkyl substitution.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.CONJUGATEADD",
-              "kind": "computational",
-              "title": "1,2 versus 1,4 addition",
-              "description": "Kinetic and thermodynamic control made concrete.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.DIELSALDER",
-              "kind": "computational",
-              "title": "The Diels Alder reaction",
-              "description": "Concerted cycloaddition, stereospecific and predictable.",
-              "lab_adjacent": false,
-              "triangle_eligible": true
-            },
-            {
-              "id": "ORG2.DAREQUIREMENTS",
-              "kind": "computational",
-              "title": "Diene and dienophile requirements",
-              "description": "s cis geometry, electron demand, and endo selectivity.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.UVVIS",
-              "kind": "computational",
-              "title": "UV visible spectroscopy and conjugation",
-              "description": "Absorption wavelength as a report on the conjugated system.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            }
-          ]
-        },
-        {
-          "id": "ORG2-U2",
-          "title": "Aromaticity",
-          "chapters": "Ch 15",
-          "nodes": [
-            {
-              "id": "ORG2.BENZENE",
-              "kind": "concept",
-              "title": "Benzene structure and stability",
-              "description": "Delocalization energy and why benzene does not add.",
-              "lab_adjacent": false,
-              "triangle_eligible": true
-            },
-            {
-              "id": "ORG2.HUCKEL",
-              "kind": "computational",
-              "title": "Huckel's rule and the aromaticity criteria",
-              "description": "Cyclic, planar, fully conjugated, and 4n plus 2 electrons.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.AROMATICIONS",
-              "kind": "computational",
-              "title": "Aromatic ions and heterocycles",
-              "description": "Cyclopentadienyl, tropylium, pyrrole and pyridine.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.ANTIAROMATIC",
-              "kind": "concept",
-              "title": "Antiaromatic and nonaromatic systems",
-              "description": "Why 4n electrons in a ring is destabilizing.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.BENZENENOMEN",
-              "kind": "computational",
-              "title": "Nomenclature of benzene derivatives",
-              "description": "Ortho, meta, para and the retained common names.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.AROMATICSPECTRA",
-              "kind": "computational",
-              "title": "Spectroscopy of aromatic compounds",
-              "description": "Aromatic shifts and substitution patterns in NMR.",
-              "lab_adjacent": true,
-              "triangle_eligible": false
-            }
-          ]
-        },
-        {
-          "id": "ORG2-U3",
-          "title": "Reactions of Aromatic Compounds",
-          "chapters": "Ch 16",
-          "nodes": [
-            {
-              "id": "ORG2.EASMECH",
-              "kind": "computational",
-              "title": "Electrophilic aromatic substitution mechanism",
-              "description": "Addition then elimination, restoring aromaticity.",
-              "lab_adjacent": false,
-              "triangle_eligible": true
-            },
-            {
-              "id": "ORG2.EASREACTIONS",
-              "kind": "computational",
-              "title": "Halogenation, nitration and sulfonation",
-              "description": "Generating the electrophile in each case.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.FRIEDELCRAFTS",
-              "kind": "computational",
-              "title": "Friedel Crafts alkylation and acylation",
-              "description": "Two carbon carbon bond formations, and the limits of each.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.ACTIVATING",
-              "kind": "concept",
-              "title": "Activating and deactivating substituents",
-              "description": "How a substituent changes the ring's reactivity.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.DIRECTING",
-              "kind": "computational",
-              "title": "Ortho, para and meta directing effects",
-              "description": "Resonance and induction deciding where the next group lands.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.MULTIPLESUB",
-              "kind": "computational",
-              "title": "Multiple substituents and directing conflicts",
-              "description": "Which group wins, and where sterics intervene.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.NAS",
-              "kind": "computational",
-              "title": "Nucleophilic aromatic substitution and benzyne",
-              "description": "Two routes to substitution on an electron poor or forced ring.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.SIDECHAIN",
-              "kind": "computational",
-              "title": "Side chain reactions and ring reduction",
-              "description": "Benzylic oxidation, reduction, and the Birch reaction.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.AROMATICSYNTH",
-              "kind": "computational",
-              "title": "Synthesis strategy on aromatic rings",
-              "description": "Order of operations decides whether a target is reachable.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            }
-          ]
-        },
-        {
-          "id": "ORG2-U4",
-          "title": "Alcohols, Ethers and Epoxides",
-          "chapters": "Ch 17-18",
+          "title": "Alcohols and Thiols",
+          "chapters": "Ch 1",
           "nodes": [
             {
               "id": "ORG2.ALCOHOLPROPS",
@@ -4022,13 +3736,20 @@
               "triangle_eligible": false
             },
             {
-              "id": "ORG2.PHENOLS",
-              "kind": "computational",
-              "title": "Phenol chemistry",
-              "description": "Enhanced acidity and oxidation to quinones.",
+              "id": "ORG2.THIOLS",
+              "kind": "concept",
+              "title": "Thiols and sulfides",
+              "description": "Sulfur analogues, better nucleophiles and weaker hydrogen bonders.",
               "lab_adjacent": false,
               "triangle_eligible": false
-            },
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U2",
+          "title": "Ethers, Epoxides, Glycols and Sulfides",
+          "chapters": "Ch 2",
+          "nodes": [
             {
               "id": "ORG2.WILLIAMSON",
               "kind": "computational",
@@ -4046,19 +3767,418 @@
               "triangle_eligible": true
             },
             {
-              "id": "ORG2.THIOLS",
+              "id": "ORG2.GLYCOLS",
               "kind": "concept",
-              "title": "Thiols and sulfides",
-              "description": "Sulfur analogues, better nucleophiles and weaker hydrogen bonders.",
+              "title": "Glycols: formation and cleavage",
+              "description": "1,2-diols from dihydroxylation, and their oxidative cleavage.",
               "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.SULFIDES",
+              "kind": "concept",
+              "title": "Sulfides, sulfoxides and sulfones",
+              "description": "Sulfur as a soft nucleophile, and the oxidation ladder above it.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U3",
+          "title": "Spectroscopy",
+          "chapters": "Ch 3",
+          "nodes": [
+            {
+              "id": "ORG1.IRREGIONS",
+              "kind": "computational",
+              "title": "Infrared spectroscopy: functional group regions",
+              "description": "The four regions, and the bands that are actually diagnostic.",
+              "lab_adjacent": true,
+              "triangle_eligible": false,
+              "part": "A"
+            },
+            {
+              "id": "ORG1.IRINTERPRET",
+              "kind": "computational",
+              "title": "IR interpretation",
+              "description": "Deciding what is present and what is absent.",
+              "lab_adjacent": true,
+              "triangle_eligible": false,
+              "part": "A"
+            },
+            {
+              "id": "ORG1.MSBASICS",
+              "kind": "computational",
+              "title": "Mass spectrometry: molecular ion and isotopes",
+              "description": "Reading molecular mass and halogen patterns off a spectrum.",
+              "lab_adjacent": true,
+              "triangle_eligible": false,
+              "part": "B"
+            },
+            {
+              "id": "ORG1.MSFRAGMENT",
+              "kind": "computational",
+              "title": "Mass spectrometry fragmentation",
+              "description": "Common cleavages, and what a fragment mass tells you.",
+              "lab_adjacent": true,
+              "triangle_eligible": false,
+              "part": "B"
+            },
+            {
+              "id": "ORG2.UVVIS",
+              "kind": "computational",
+              "title": "UV visible spectroscopy and conjugation",
+              "description": "Absorption wavelength as a report on the conjugated system.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            }
+          ],
+          "parts": [
+            {
+              "part": "A",
+              "count": 2
+            },
+            {
+              "part": "B",
+              "count": 2
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U4",
+          "title": "Nuclear Magnetic Resonance Spectroscopy",
+          "chapters": "Ch 4",
+          "nodes": [
+            {
+              "id": "ORG1.NMRTHEORY",
+              "kind": "concept",
+              "title": "NMR theory: shielding and chemical shift",
+              "description": "Why different protons resonate at different frequencies.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG1.NMRINTEGRATION",
+              "kind": "computational",
+              "title": "1H NMR integration",
+              "description": "Relative areas as relative proton counts, not absolute ones.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.NMRSPLITTING",
+              "kind": "computational",
+              "title": "1H NMR spin spin splitting",
+              "description": "The n plus 1 rule, coupling constants and common patterns.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.CARBONNMR",
+              "kind": "computational",
+              "title": "13C NMR and DEPT",
+              "description": "Counting unique carbons and assigning their substitution.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ELUCIDATION",
+              "kind": "computational",
+              "title": "Combined structure elucidation",
+              "description": "Assembling a structure from MS, IR and NMR together.",
+              "lab_adjacent": true,
               "triangle_eligible": false
             }
           ]
         },
         {
           "id": "ORG2-U5",
-          "title": "Aldehydes and Ketones",
-          "chapters": "Ch 19",
+          "title": "Alkynes",
+          "chapters": "Ch 5",
+          "nodes": [
+            {
+              "id": "ORG1.ALKYNENOMEN",
+              "kind": "computational",
+              "title": "Alkyne nomenclature and structure",
+              "description": "Linear geometry and sp hybridized carbon.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ACETYLIDE",
+              "kind": "computational",
+              "title": "Alkyne acidity and acetylide anions",
+              "description": "Terminal alkynes as the only weakly acidic hydrocarbons.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKYNEADDITION",
+              "kind": "computational",
+              "title": "Addition reactions of alkynes",
+              "description": "Adding once or twice, and controlling which.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.TAUTOMER",
+              "kind": "computational",
+              "title": "Hydration and keto enol tautomerization",
+              "description": "Enols that convert to carbonyls, with regiochemistry to choose.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKYNEREDUCTION",
+              "kind": "computational",
+              "title": "Reduction to cis and trans alkenes",
+              "description": "Lindlar and dissolving metal, two stereochemical outcomes.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALKYNESYNTH",
+              "kind": "computational",
+              "title": "Alkyne synthesis and alkylation",
+              "description": "Building carbon chains with acetylide nucleophiles.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U6",
+          "title": "Dienes, Resonance and Aromaticity",
+          "chapters": "Ch 6",
+          "nodes": [
+            {
+              "id": "ORG2.CONJUGATION",
+              "kind": "concept",
+              "title": "Conjugated dienes: structure and stability",
+              "description": "Overlap across the system, and the stability it buys.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.CONJUGATEADD",
+              "kind": "computational",
+              "title": "1,2 versus 1,4 addition",
+              "description": "Kinetic and thermodynamic control made concrete.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.DIELSALDER",
+              "kind": "computational",
+              "title": "The Diels Alder reaction",
+              "description": "Concerted cycloaddition, stereospecific and predictable.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.DAREQUIREMENTS",
+              "kind": "computational",
+              "title": "Diene and dienophile requirements",
+              "description": "s cis geometry, electron demand, and endo selectivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.BENZENE",
+              "kind": "concept",
+              "title": "Benzene structure and stability",
+              "description": "Delocalization energy and why benzene does not add.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.HUCKEL",
+              "kind": "computational",
+              "title": "Huckel's rule and the aromaticity criteria",
+              "description": "Cyclic, planar, fully conjugated, and 4n plus 2 electrons.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ANTIAROMATIC",
+              "kind": "concept",
+              "title": "Antiaromatic and nonaromatic systems",
+              "description": "Why 4n electrons in a ring is destabilizing.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U7",
+          "title": "Benzene and its Derivatives",
+          "chapters": "Ch 7",
+          "nodes": [
+            {
+              "id": "ORG2.BENZENENOMEN",
+              "kind": "computational",
+              "title": "Nomenclature of benzene derivatives",
+              "description": "Ortho, meta, para and the retained common names.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AROMATICSPECTRA",
+              "kind": "computational",
+              "title": "Spectroscopy of aromatic compounds",
+              "description": "Aromatic shifts and substitution patterns in NMR.",
+              "lab_adjacent": true,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.EASMECH",
+              "kind": "computational",
+              "title": "Electrophilic aromatic substitution mechanism",
+              "description": "Addition then elimination, restoring aromaticity.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.EASREACTIONS",
+              "kind": "computational",
+              "title": "Halogenation, nitration and sulfonation",
+              "description": "Generating the electrophile in each case.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.FRIEDELCRAFTS",
+              "kind": "computational",
+              "title": "Friedel Crafts alkylation and acylation",
+              "description": "Two carbon carbon bond formations, and the limits of each.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ACTIVATING",
+              "kind": "concept",
+              "title": "Activating and deactivating substituents",
+              "description": "How a substituent changes the ring's reactivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.DIRECTING",
+              "kind": "computational",
+              "title": "Ortho, para and meta directing effects",
+              "description": "Resonance and induction deciding where the next group lands.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.MULTIPLESUB",
+              "kind": "computational",
+              "title": "Multiple substituents and directing conflicts",
+              "description": "Which group wins, and where sterics intervene.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.AROMATICSYNTH",
+              "kind": "computational",
+              "title": "Synthesis strategy on aromatic rings",
+              "description": "Order of operations decides whether a target is reachable.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U8",
+          "title": "Allylic and Benzylic Reactivity",
+          "chapters": "Ch 8",
+          "nodes": [
+            {
+              "id": "ORG2.ALLYLIC",
+              "kind": "concept",
+              "title": "Allylic and conjugated cation stability",
+              "description": "Resonance delocalization ranked against alkyl substitution.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.ALLYLIC",
+              "kind": "computational",
+              "title": "Allylic bromination",
+              "description": "NBS and the resonance stabilized allylic radical.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.SIDECHAIN",
+              "kind": "computational",
+              "title": "Side chain reactions and ring reduction",
+              "description": "Benzylic oxidation, reduction, and the Birch reaction.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.BENZYLIC",
+              "kind": "concept",
+              "title": "Benzylic reactivity",
+              "description": "Why the ring stabilises a benzylic radical, cation and anion alike.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U9",
+          "title": "Aryl and Vinylic Halides, Phenols, Transition Metal Catalysis",
+          "chapters": "Ch 9",
+          "nodes": [
+            {
+              "id": "ORG2.NAS",
+              "kind": "computational",
+              "title": "Nucleophilic aromatic substitution and benzyne",
+              "description": "Two routes to substitution on an electron poor or forced ring.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.PHENOLS",
+              "kind": "computational",
+              "title": "Phenol chemistry",
+              "description": "Enhanced acidity and oxidation to quinones.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG1.COUPLING",
+              "kind": "concept",
+              "title": "Organometallic coupling reactions",
+              "description": "Gilman reagents and palladium coupling in overview.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.ARYLVINYLIC",
+              "kind": "concept",
+              "title": "Aryl and vinylic halides",
+              "description": "Why sp2 carbon resists both SN1 and SN2, and what does react.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            },
+            {
+              "id": "ORG2.CROSSCOUPLING",
+              "kind": "concept",
+              "title": "Transition metal catalysed cross coupling",
+              "description": "The oxidative addition, transmetalation and reductive elimination cycle.",
+              "lab_adjacent": false,
+              "triangle_eligible": true
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U10",
+          "title": "Aldehydes, Ketones and Carbonyl Addition Reactions",
+          "chapters": "Ch 10",
           "nodes": [
             {
               "id": "ORG2.CARBONYLSTRUCTURE",
@@ -4143,9 +4263,9 @@
           ]
         },
         {
-          "id": "ORG2-U6",
-          "title": "Carboxylic Acids and Nitriles",
-          "chapters": "Ch 20",
+          "id": "ORG2-U11",
+          "title": "Carboxylic Acids and Derivatives",
+          "chapters": "Ch 11",
           "nodes": [
             {
               "id": "ORG2.ACIDPROPS",
@@ -4186,14 +4306,7 @@
               "description": "The broad hydroxyl band and the sharp nitrile stretch.",
               "lab_adjacent": true,
               "triangle_eligible": false
-            }
-          ]
-        },
-        {
-          "id": "ORG2-U7",
-          "title": "Carboxylic Acid Derivatives",
-          "chapters": "Ch 21",
-          "nodes": [
+            },
             {
               "id": "ORG2.DERIVATIVEREACTIVITY",
               "kind": "concept",
@@ -4261,9 +4374,9 @@
           ]
         },
         {
-          "id": "ORG2-U8",
+          "id": "ORG2-U12",
           "title": "Enols, Enolates and Condensations",
-          "chapters": "Ch 22-23",
+          "chapters": "Ch 12",
           "nodes": [
             {
               "id": "ORG2.TAUTOMERISM",
@@ -4340,9 +4453,9 @@
           ]
         },
         {
-          "id": "ORG2-U9",
-          "title": "Amines and Heterocycles",
-          "chapters": "Ch 24",
+          "id": "ORG2-U13",
+          "title": "Amines",
+          "chapters": "Ch 13",
           "nodes": [
             {
               "id": "ORG2.AMINEPROPS",
@@ -4369,14 +4482,6 @@
               "triangle_eligible": false
             },
             {
-              "id": "ORG2.HETEROCYCLES",
-              "kind": "computational",
-              "title": "Aromatic heterocycles",
-              "description": "Pyrrole, furan, pyridine and their contrasting reactivity.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
               "id": "ORG2.AMINESPECTRA",
               "kind": "computational",
               "title": "Spectroscopy of amines",
@@ -4387,9 +4492,9 @@
           ]
         },
         {
-          "id": "ORG2-U10",
-          "title": "Biomolecules and Synthesis Strategy",
-          "chapters": "Ch 25-26",
+          "id": "ORG2-U14",
+          "title": "Carbohydrates",
+          "chapters": "Ch 14",
           "nodes": [
             {
               "id": "ORG2.CARBOHYDRATES",
@@ -4406,7 +4511,45 @@
               "description": "Reduction, oxidation and glycoside formation.",
               "lab_adjacent": false,
               "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U15",
+          "title": "Aromatic Heterocycles and Nucleic Acids",
+          "chapters": "Ch 15",
+          "nodes": [
+            {
+              "id": "ORG2.AROMATICIONS",
+              "kind": "computational",
+              "title": "Aromatic ions and heterocycles",
+              "description": "Cyclopentadienyl, tropylium, pyrrole and pyridine.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
             },
+            {
+              "id": "ORG2.HETEROCYCLES",
+              "kind": "computational",
+              "title": "Aromatic heterocycles",
+              "description": "Pyrrole, furan, pyridine and their contrasting reactivity.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            },
+            {
+              "id": "ORG2.NUCLEICACIDS",
+              "kind": "concept",
+              "title": "Nucleic acids",
+              "description": "Nucleotides, base pairing and the phosphodiester backbone.",
+              "lab_adjacent": false,
+              "triangle_eligible": false
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U16",
+          "title": "Amino Acids, Peptides and Proteins",
+          "chapters": "Ch 16",
+          "nodes": [
             {
               "id": "ORG2.AMINOACIDS",
               "kind": "computational",
@@ -4422,20 +4565,19 @@
               "description": "Sequencing, and protecting group strategy on the solid phase.",
               "lab_adjacent": false,
               "triangle_eligible": false
-            },
+            }
+          ]
+        },
+        {
+          "id": "ORG2-U17",
+          "title": "Lipids and Synthesis Strategy",
+          "chapters": "Ch 17",
+          "nodes": [
             {
               "id": "ORG2.LIPIDS",
               "kind": "concept",
               "title": "Lipids and terpenes",
               "description": "Fatty acids, triglycerides and isoprene assembly.",
-              "lab_adjacent": false,
-              "triangle_eligible": false
-            },
-            {
-              "id": "ORG2.NUCLEICACIDS",
-              "kind": "concept",
-              "title": "Nucleic acids",
-              "description": "Nucleotides, base pairing and the phosphodiester backbone.",
               "lab_adjacent": false,
               "triangle_eligible": false
             },
@@ -4460,43 +4602,55 @@
       ],
       "unit_prereqs": {
         "ORG2-U1": [
-          "ORG1.ELUCIDATION",
           "ORG1.ALKENESTABILITY"
         ],
         "ORG2-U2": [
-          "ORG2.CONJUGATION"
+          "ORG2.THIOLS"
         ],
         "ORG2-U3": [
-          "ORG2.HUCKEL",
-          "ORG1.ARROWS"
+          "ORG2.SULFIDES"
         ],
         "ORG2-U4": [
-          "ORG1.COMPETITION",
-          "ORG1.GRIGNARD"
+          "ORG2.UVVIS"
         ],
         "ORG2-U5": [
-          "ORG2.OXIDATION",
-          "ORG1.TAUTOMER"
+          "ORG1.ELUCIDATION"
         ],
         "ORG2-U6": [
-          "ORG2.NUCADDITION",
-          "ORG1.PKA"
+          "ORG1.ALKYNESYNTH"
         ],
         "ORG2-U7": [
-          "ORG2.ACIDPROPS"
+          "ORG2.ANTIAROMATIC"
         ],
         "ORG2-U8": [
-          "ORG2.DERIVATIVEREACTIVITY",
-          "ORG2.CARBONYLSTRUCTURE"
+          "ORG2.AROMATICSYNTH"
         ],
         "ORG2-U9": [
-          "ORG2.REDUCTIVEAMINATION",
-          "ORG2.AMIDES"
+          "ORG2.BENZYLIC"
         ],
         "ORG2-U10": [
-          "ORG2.MICHAEL",
-          "ORG2.AMINESYNTH",
-          "ORG1.ELUCIDATION"
+          "ORG2.CROSSCOUPLING"
+        ],
+        "ORG2-U11": [
+          "ORG2.CARBONYLSPECTRA"
+        ],
+        "ORG2-U12": [
+          "ORG2.POLYMERS"
+        ],
+        "ORG2-U13": [
+          "ORG2.MICHAEL"
+        ],
+        "ORG2-U14": [
+          "ORG2.AMINESPECTRA"
+        ],
+        "ORG2-U15": [
+          "ORG2.CARBREACTIONS"
+        ],
+        "ORG2-U16": [
+          "ORG2.NUCLEICACIDS"
+        ],
+        "ORG2-U17": [
+          "ORG2.PEPTIDES"
         ]
       },
       "extra_edges": [
@@ -4663,11 +4817,115 @@
       ],
       "edges": [
         [
-          "ORG2.CONJUGATION",
-          "ORG2.ALLYLIC"
+          "ORG2.ALCOHOLPROPS",
+          "ORG2.ALCOHOLREDUCTION"
         ],
         [
-          "ORG2.ALLYLIC",
+          "ORG2.ALCOHOLREDUCTION",
+          "ORG2.ALCOHOLGRIGNARD"
+        ],
+        [
+          "ORG2.ALCOHOLGRIGNARD",
+          "ORG2.ALCOHOLSUB"
+        ],
+        [
+          "ORG2.ALCOHOLSUB",
+          "ORG2.OXIDATION"
+        ],
+        [
+          "ORG2.OXIDATION",
+          "ORG2.PROTECTING"
+        ],
+        [
+          "ORG2.PROTECTING",
+          "ORG2.THIOLS"
+        ],
+        [
+          "ORG1.ALKENESTABILITY",
+          "ORG2.ALCOHOLPROPS"
+        ],
+        [
+          "ORG2.WILLIAMSON",
+          "ORG2.EPOXIDE"
+        ],
+        [
+          "ORG2.EPOXIDE",
+          "ORG2.GLYCOLS"
+        ],
+        [
+          "ORG2.GLYCOLS",
+          "ORG2.SULFIDES"
+        ],
+        [
+          "ORG2.THIOLS",
+          "ORG2.WILLIAMSON"
+        ],
+        [
+          "ORG1.IRREGIONS",
+          "ORG1.IRINTERPRET"
+        ],
+        [
+          "ORG1.IRINTERPRET",
+          "ORG1.MSBASICS"
+        ],
+        [
+          "ORG1.MSBASICS",
+          "ORG1.MSFRAGMENT"
+        ],
+        [
+          "ORG1.MSFRAGMENT",
+          "ORG2.UVVIS"
+        ],
+        [
+          "ORG2.SULFIDES",
+          "ORG1.IRREGIONS"
+        ],
+        [
+          "ORG1.NMRTHEORY",
+          "ORG1.NMRINTEGRATION"
+        ],
+        [
+          "ORG1.NMRINTEGRATION",
+          "ORG1.NMRSPLITTING"
+        ],
+        [
+          "ORG1.NMRSPLITTING",
+          "ORG1.CARBONNMR"
+        ],
+        [
+          "ORG1.CARBONNMR",
+          "ORG1.ELUCIDATION"
+        ],
+        [
+          "ORG2.UVVIS",
+          "ORG1.NMRTHEORY"
+        ],
+        [
+          "ORG1.ALKYNENOMEN",
+          "ORG1.ACETYLIDE"
+        ],
+        [
+          "ORG1.ACETYLIDE",
+          "ORG1.ALKYNEADDITION"
+        ],
+        [
+          "ORG1.ALKYNEADDITION",
+          "ORG1.TAUTOMER"
+        ],
+        [
+          "ORG1.TAUTOMER",
+          "ORG1.ALKYNEREDUCTION"
+        ],
+        [
+          "ORG1.ALKYNEREDUCTION",
+          "ORG1.ALKYNESYNTH"
+        ],
+        [
+          "ORG1.ELUCIDATION",
+          "ORG1.ALKYNENOMEN"
+        ],
+        [
+          "ORG2.CONJUGATION",
           "ORG2.CONJUGATEADD"
         ],
         [
@@ -4680,15 +4938,7 @@
         ],
         [
           "ORG2.DAREQUIREMENTS",
-          "ORG2.UVVIS"
-        ],
-        [
-          "ORG1.ELUCIDATION",
-          "ORG2.CONJUGATION"
-        ],
-        [
-          "ORG1.ALKENESTABILITY",
-          "ORG2.CONJUGATION"
+          "ORG2.BENZENE"
         ],
         [
           "ORG2.BENZENE",
@@ -4696,23 +4946,19 @@
         ],
         [
           "ORG2.HUCKEL",
-          "ORG2.AROMATICIONS"
-        ],
-        [
-          "ORG2.AROMATICIONS",
           "ORG2.ANTIAROMATIC"
         ],
         [
-          "ORG2.ANTIAROMATIC",
-          "ORG2.BENZENENOMEN"
+          "ORG1.ALKYNESYNTH",
+          "ORG2.CONJUGATION"
         ],
         [
           "ORG2.BENZENENOMEN",
           "ORG2.AROMATICSPECTRA"
         ],
         [
-          "ORG2.CONJUGATION",
-          "ORG2.BENZENE"
+          "ORG2.AROMATICSPECTRA",
+          "ORG2.EASMECH"
         ],
         [
           "ORG2.EASMECH",
@@ -4736,67 +4982,47 @@
         ],
         [
           "ORG2.MULTIPLESUB",
-          "ORG2.NAS"
+          "ORG2.AROMATICSYNTH"
         ],
         [
-          "ORG2.NAS",
+          "ORG2.ANTIAROMATIC",
+          "ORG2.BENZENENOMEN"
+        ],
+        [
+          "ORG2.ALLYLIC",
+          "ORG1.ALLYLIC"
+        ],
+        [
+          "ORG1.ALLYLIC",
           "ORG2.SIDECHAIN"
         ],
         [
           "ORG2.SIDECHAIN",
-          "ORG2.AROMATICSYNTH"
+          "ORG2.BENZYLIC"
         ],
         [
-          "ORG2.HUCKEL",
-          "ORG2.EASMECH"
+          "ORG2.AROMATICSYNTH",
+          "ORG2.ALLYLIC"
         ],
         [
-          "ORG1.ARROWS",
-          "ORG2.EASMECH"
-        ],
-        [
-          "ORG2.ALCOHOLPROPS",
-          "ORG2.ALCOHOLREDUCTION"
-        ],
-        [
-          "ORG2.ALCOHOLREDUCTION",
-          "ORG2.ALCOHOLGRIGNARD"
-        ],
-        [
-          "ORG2.ALCOHOLGRIGNARD",
-          "ORG2.ALCOHOLSUB"
-        ],
-        [
-          "ORG2.ALCOHOLSUB",
-          "ORG2.OXIDATION"
-        ],
-        [
-          "ORG2.OXIDATION",
-          "ORG2.PROTECTING"
-        ],
-        [
-          "ORG2.PROTECTING",
+          "ORG2.NAS",
           "ORG2.PHENOLS"
         ],
         [
           "ORG2.PHENOLS",
-          "ORG2.WILLIAMSON"
+          "ORG1.COUPLING"
         ],
         [
-          "ORG2.WILLIAMSON",
-          "ORG2.EPOXIDE"
+          "ORG1.COUPLING",
+          "ORG2.ARYLVINYLIC"
         ],
         [
-          "ORG2.EPOXIDE",
-          "ORG2.THIOLS"
+          "ORG2.ARYLVINYLIC",
+          "ORG2.CROSSCOUPLING"
         ],
         [
-          "ORG1.COMPETITION",
-          "ORG2.ALCOHOLPROPS"
-        ],
-        [
-          "ORG1.GRIGNARD",
-          "ORG2.ALCOHOLPROPS"
+          "ORG2.BENZYLIC",
+          "ORG2.NAS"
         ],
         [
           "ORG2.CARBONYLSTRUCTURE",
@@ -4835,11 +5061,7 @@
           "ORG2.CARBONYLSPECTRA"
         ],
         [
-          "ORG2.OXIDATION",
-          "ORG2.CARBONYLSTRUCTURE"
-        ],
-        [
-          "ORG1.TAUTOMER",
+          "ORG2.CROSSCOUPLING",
           "ORG2.CARBONYLSTRUCTURE"
         ],
         [
@@ -4859,12 +5081,8 @@
           "ORG2.ACIDSPECTRA"
         ],
         [
-          "ORG2.NUCADDITION",
-          "ORG2.ACIDPROPS"
-        ],
-        [
-          "ORG1.PKA",
-          "ORG2.ACIDPROPS"
+          "ORG2.ACIDSPECTRA",
+          "ORG2.DERIVATIVEREACTIVITY"
         ],
         [
           "ORG2.DERIVATIVEREACTIVITY",
@@ -4895,8 +5113,8 @@
           "ORG2.POLYMERS"
         ],
         [
-          "ORG2.ACIDPROPS",
-          "ORG2.DERIVATIVEREACTIVITY"
+          "ORG2.CARBONYLSPECTRA",
+          "ORG2.ACIDPROPS"
         ],
         [
           "ORG2.TAUTOMERISM",
@@ -4931,11 +5149,7 @@
           "ORG2.MICHAEL"
         ],
         [
-          "ORG2.DERIVATIVEREACTIVITY",
-          "ORG2.TAUTOMERISM"
-        ],
-        [
-          "ORG2.CARBONYLSTRUCTURE",
+          "ORG2.POLYMERS",
           "ORG2.TAUTOMERISM"
         ],
         [
@@ -4948,18 +5162,10 @@
         ],
         [
           "ORG2.AMINEREACTIONS",
-          "ORG2.HETEROCYCLES"
-        ],
-        [
-          "ORG2.HETEROCYCLES",
           "ORG2.AMINESPECTRA"
         ],
         [
-          "ORG2.REDUCTIVEAMINATION",
-          "ORG2.AMINEPROPS"
-        ],
-        [
-          "ORG2.AMIDES",
+          "ORG2.MICHAEL",
           "ORG2.AMINEPROPS"
         ],
         [
@@ -4967,23 +5173,31 @@
           "ORG2.CARBREACTIONS"
         ],
         [
+          "ORG2.AMINESPECTRA",
+          "ORG2.CARBOHYDRATES"
+        ],
+        [
+          "ORG2.AROMATICIONS",
+          "ORG2.HETEROCYCLES"
+        ],
+        [
+          "ORG2.HETEROCYCLES",
+          "ORG2.NUCLEICACIDS"
+        ],
+        [
           "ORG2.CARBREACTIONS",
-          "ORG2.AMINOACIDS"
+          "ORG2.AROMATICIONS"
         ],
         [
           "ORG2.AMINOACIDS",
           "ORG2.PEPTIDES"
         ],
         [
-          "ORG2.PEPTIDES",
-          "ORG2.LIPIDS"
+          "ORG2.NUCLEICACIDS",
+          "ORG2.AMINOACIDS"
         ],
         [
           "ORG2.LIPIDS",
-          "ORG2.NUCLEICACIDS"
-        ],
-        [
-          "ORG2.NUCLEICACIDS",
           "ORG2.RETROSYNTHESIS"
         ],
         [
@@ -4991,16 +5205,8 @@
           "ORG2.MULTISTEP"
         ],
         [
-          "ORG2.MICHAEL",
-          "ORG2.CARBOHYDRATES"
-        ],
-        [
-          "ORG2.AMINESYNTH",
-          "ORG2.CARBOHYDRATES"
-        ],
-        [
-          "ORG1.ELUCIDATION",
-          "ORG2.CARBOHYDRATES"
+          "ORG2.PEPTIDES",
+          "ORG2.LIPIDS"
         ],
         [
           "ORG1.CARBOCATION",

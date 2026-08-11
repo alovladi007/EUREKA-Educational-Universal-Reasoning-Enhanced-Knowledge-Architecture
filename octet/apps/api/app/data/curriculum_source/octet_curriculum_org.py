@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 
+from app.data.org_rechapter_map import ORG1_CHAPTERS, ORG2_CHAPTERS
 from octet_curriculum_gen import (
     M, N, U, _course, build as build_gen, check, generate_edges, summarize,
 )
@@ -27,7 +28,7 @@ from octet_curriculum_gen import (
 # ORG1: Organic Chemistry I
 # ===========================================================================
 
-ORG1_UNITS = [
+_LEGACY_ORG1_UNITS = [
     U("ORG1-U1", "Structure and Bonding", "Ch 1", [
         N("ORG1.ORBITALS", "concept", "Atomic and molecular orbitals in carbon",
           "Why carbon forms four bonds and what shape they take.", "tri"),
@@ -190,7 +191,7 @@ ORG1_UNITS = [
     ]),
 ]
 
-ORG1_UNIT_PREREQS = {
+_LEGACY_ORG1_UNIT_PREREQS = {
     "ORG1-U1": ["GEN1.HYBRIDIZATION", "GEN1.RESONANCE", "GEN1.VSEPR"],
     "ORG1-U2": ["ORG1.INDUCTIVE", "GEN2.LEWISACID", "GEN2.WEAKACID"],
     "ORG1-U3": ["ORG1.FUNCTIONALGROUPS"],
@@ -267,7 +268,7 @@ ORG1_MISCONCEPTIONS = [
 # ORG2: Organic Chemistry II
 # ===========================================================================
 
-ORG2_UNITS = [
+_LEGACY_ORG2_UNITS = [
     U("ORG2-U1", "Conjugation and Dienes", "Ch 14", [
         N("ORG2.CONJUGATION", "concept", "Conjugated dienes: structure and stability",
           "Overlap across the system, and the stability it buys.", "tri"),
@@ -442,7 +443,7 @@ ORG2_UNITS = [
     ]),
 ]
 
-ORG2_UNIT_PREREQS = {
+_LEGACY_ORG2_UNIT_PREREQS = {
     "ORG2-U1": ["ORG1.ELUCIDATION", "ORG1.ALKENESTABILITY"],
     "ORG2-U2": ["ORG2.CONJUGATION"],
     "ORG2-U3": ["ORG2.HUCKEL", "ORG1.ARROWS"],
@@ -522,6 +523,103 @@ ORG2_MISCONCEPTIONS = [
       "Misclassifies alpha and beta anomers, which are diastereomers.",
       "ORG2.CARBOHYDRATES"),
 ]
+
+
+# ===========================================================================
+# Chapter structure
+#
+# The unit literals above are now a NODE REGISTRY, not the chapter order. The
+# order comes from app.data.org_rechapter_map, which is a plain declaration of
+# which node belongs to which chapter and is gated by audit_org_rechapter.py:
+# that audit fails if any authored node appears in no chapter, so a curriculum
+# reorganisation cannot quietly shrink the course.
+#
+# Editing the literals above still works for node WORDING. To move a node
+# between chapters, edit the map.
+# ===========================================================================
+
+_NEW_NODES = [
+    N("ORG1.ALKENEBONDING", "concept", "Alkene bonding and restricted rotation",
+      "The pi bond, why it blocks rotation, and what that does to isomerism.", "tri"),
+    N("ORG1.CATALYSIS", "concept", "Catalysis",
+      "A catalyst lowers the barrier and is regenerated; it never moves the equilibrium.", "tri"),
+    N("ORG1.IMFTYPES", "concept", "The noncovalent interactions",
+      "Dispersion, dipole-dipole and hydrogen bonding, and their relative strengths.", "tri"),
+    N("ORG1.DISPERSION", "concept", "London dispersion and molecular shape",
+      "Why surface area, not just mass, sets the strength of dispersion.", "tri"),
+    N("ORG1.DIPOLE", "concept", "Dipole-dipole interactions and molecular polarity",
+      "Adding bond dipoles as vectors, and when symmetry cancels them.", "tri"),
+    N("ORG1.HBONDING", "concept", "Hydrogen bonding: donors and acceptors",
+      "Which groups donate, which accept, and why N, O and F are the condition.", "tri"),
+    N("ORG1.IMFPROPERTIES", "computational", "Predicting boiling and melting points",
+      "Ranking compounds by the interactions their structures allow.", "tri"),
+    N("ORG1.SOLUBILITY", "computational", "Solubility and like dissolves like",
+      "Reading a structure for the balance of polar and nonpolar surface.", "tri lab"),
+    N("ORG2.GLYCOLS", "concept", "Glycols: formation and cleavage",
+      "1,2-diols from dihydroxylation, and their oxidative cleavage.", "tri"),
+    N("ORG2.SULFIDES", "concept", "Sulfides, sulfoxides and sulfones",
+      "Sulfur as a soft nucleophile, and the oxidation ladder above it.", "tri"),
+    N("ORG2.BENZYLIC", "concept", "Benzylic reactivity",
+      "Why the ring stabilises a benzylic radical, cation and anion alike.", "tri"),
+    N("ORG2.ARYLVINYLIC", "concept", "Aryl and vinylic halides",
+      "Why sp2 carbon resists both SN1 and SN2, and what does react.", "tri"),
+    N("ORG2.CROSSCOUPLING", "concept", "Transition metal catalysed cross coupling",
+      "The oxidative addition, transmetalation and reductive elimination cycle.", "tri"),
+]
+
+_REGISTRY = {n["id"]: n for u in (_LEGACY_ORG1_UNITS + _LEGACY_ORG2_UNITS)
+             for n in u["nodes"]}
+_REGISTRY.update({n["id"]: n for n in _NEW_NODES})
+
+
+def _chapters(course_id, table):
+    """Build U() units from the chapter map, preserving lettered sub-parts."""
+    grouped = []
+    for num, title, part, ids in table:
+        if grouped and grouped[-1][0] == num:
+            grouped[-1][2].append((part, ids))
+        else:
+            grouped.append((num, title, [(part, ids)]))
+    units = []
+    for num, title, blocks in grouped:
+        nodes, parts = [], []
+        for part, ids in blocks:
+            if part:
+                parts.append({"part": part, "count": len(ids)})
+            for nid in ids:
+                node = dict(_REGISTRY[nid])
+                if part:
+                    node["part"] = part
+                nodes.append(node)
+        unit = U(f"{course_id}-U{num}", title, f"Ch {num}", nodes)
+        if parts:
+            unit["parts"] = parts
+        units.append(unit)
+    return units
+
+
+ORG1_UNITS = _chapters("ORG1", ORG1_CHAPTERS)
+ORG2_UNITS = _chapters("ORG2", ORG2_CHAPTERS)
+
+#: Each chapter builds on the last node of the one before it. The first
+#: chapter of each course keeps the cross course prerequisites it declared.
+def _prereqs(course_id, units, legacy):
+    # The first chapter keeps its CROSS COURSE prerequisites only. The legacy
+    # list for ORG2-U1 named ORG1.ELUCIDATION - "start organic II once you can
+    # elucidate a structure" - which was true while spectroscopy lived in ORG1.
+    # Spectroscopy is now ORG2 chapter 4, so that entry became a prerequisite
+    # pointing forwards inside the same course, and closed a cycle. Anything
+    # that now lives in this course cannot be a prerequisite for entering it.
+    here = {n["id"] for u in units for n in u["nodes"]}
+    out = {units[0]["id"]: [n for n in legacy.get(f"{course_id}-U1", [])
+                            if n not in here]}
+    for prev, unit in zip(units, units[1:]):
+        out[unit["id"]] = [prev["nodes"][-1]["id"]]
+    return out
+
+
+ORG1_UNIT_PREREQS = _prereqs("ORG1", ORG1_UNITS, _LEGACY_ORG1_UNIT_PREREQS)
+ORG2_UNIT_PREREQS = _prereqs("ORG2", ORG2_UNITS, _LEGACY_ORG2_UNIT_PREREQS)
 
 
 def build() -> dict:

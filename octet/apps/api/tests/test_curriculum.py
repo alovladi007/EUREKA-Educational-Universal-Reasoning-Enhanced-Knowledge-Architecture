@@ -46,8 +46,12 @@ from app.data.node_migration import NODE_MIGRATION, SUPERSEDED
 def test_program_shape():
     """The two year sequence, as registered."""
     assert [c.id for c in COURSES] == ["GEN1", "GEN2", "ORG1", "ORG2"]
-    assert course_counts() == {"GEN1": 91, "GEN2": 75, "ORG1": 70, "ORG2": 76}
-    assert len(NODES) == 312
+    # ORG1 61 and ORG2 98, not 70 and 76: the organic sequence was
+    # rechaptered to the requested structure. Spectroscopy and alkynes
+    # moved from ORG1 into ORG2 and thirteen nodes were added. No node
+    # was removed - audit_org_rechapter.py gates that separately.
+    assert course_counts() == {"GEN1": 91, "GEN2": 75, "ORG1": 61, "ORG2": 98}
+    assert len(NODES) == 325
     assert len(UNITS) == 40
 
 
