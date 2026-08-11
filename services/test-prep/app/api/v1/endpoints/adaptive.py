@@ -303,6 +303,8 @@ async def get_session_status(session_id: str):
         'should_stop': engine.should_stop(state),
         'topic_distribution': topic_counts,
         'difficulty_accuracy': diff_accuracy,
+        # None unless this exam has a calibrated theta->score mapping,
+        # which none does today (C7). The client must show the absence.
         'estimated_score': engine.theta_to_score(state.theta, session['exam_type'])
     }
 

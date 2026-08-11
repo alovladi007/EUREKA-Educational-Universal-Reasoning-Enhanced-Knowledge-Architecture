@@ -28,6 +28,12 @@ class InsightType(str, Enum):
     MILESTONE = 'milestone'
 
 
+# A percentile against a handful of people is not a percentile. Below this
+# many comparable peers, peer comparison reports nothing rather than
+# something shaped like a statistic (C7).
+MIN_PEER_COHORT = 30
+
+
 @dataclass
 class TopicMetrics:
     mastery: float
@@ -46,7 +52,8 @@ class PerformanceMetrics:
     readiness_score: float
     theta: float
     theta_se: float
-    percentile: float
+    # None until a cohort exists to rank against (C7). Never a placeholder.
+    percentile: Optional[float]
     questions_answered: int
     accuracy_by_difficulty: Dict[str, float]
     average_time_per_question: float
@@ -60,11 +67,28 @@ class PerformanceMetrics:
 
 @dataclass
 class ScorePrediction:
-    expected: float
-    confidence: float
-    range: Dict[str, float]  # min, median, max
-    distribution: List[float]
-    percentile_projection: float
+    """A score prediction this platform cannot currently make.
+
+    Every field here stayed None as of C7: predicting a score requires a
+    model validated against real outcomes, and none exists. The previous
+    implementation computed `expected` from a hand-written formula
+    (questions_answered * 0.01 + 50), drew `distribution` from
+    np.random.normal, and returned the raw score itself as a percentile.
+    Those were not estimates, they were decoration.
+
+    `basis` says why the numbers are absent, so a caller rendering this
+    can tell the learner the truth instead of showing a blank.
+    """
+    expected: Optional[float]
+    confidence: Optional[float]
+    range: Optional[Dict[str, float]]
+    distribution: Optional[List[float]]
+    percentile_projection: Optional[float]
+    basis: str = (
+        "No validated scoring model exists for this exam on this platform, "
+        "so no score is predicted. Raw accuracy and per-topic mastery below "
+        "are measured from your own recorded answers."
+    )
 
 
 @dataclass
@@ -78,11 +102,15 @@ class RiskFactor:
 @dataclass
 class Predictions:
     exam_score: ScorePrediction
-    readiness_date: datetime
-    probability_of_target: float
+    # Both None for the same reason as ScorePrediction: a readiness date and
+    # a success probability are predictions, and predicting needs a
+    # validated model. critical_topics and risk_factors survive because they
+    # are descriptions of recorded behaviour, not forecasts.
+    readiness_date: Optional[datetime]
+    probability_of_target: Optional[float]
     critical_topics: List[str]
     risk_factors: List[RiskFactor]
-    success_probability: float
+    success_probability: Optional[float]
 
 
 @dataclass
@@ -105,8 +133,10 @@ class TrendAnalysis:
 
 @dataclass
 class PeerComparison:
-    percentile_rank: float
-    average_score: float
+    # None below MIN_PEER_COHORT: a "percentile" against three people is
+    # not a percentile (C7).
+    percentile_rank: Optional[float]
+    average_score: Optional[float]
     peer_group_size: int
     strengths: List[str]
     weaknesses: List[str]
@@ -394,7 +424,8 @@ class AnalyticsService:
             readiness_score=0.0,  # Will be calculated separately
             theta=0.0,  # From adaptive engine
             theta_se=1.0,
-            percentile=50.0,
+            # Was hardcoded 50.0 - a made-up median dressed as a measurement.
+            percentile=None,
             questions_answered=total,
             accuracy_by_difficulty=accuracy_by_difficulty,
             average_time_per_question=avg_time,
@@ -572,29 +603,16 @@ class AnalyticsService:
     ) -> Predictions:
         """Generate predictions about future performance"""
 
-        # Predict exam score based on current metrics
-        base_score = metrics.questions_answered * 0.01 + 50  # Simplified
-        trend_adjustment = trends.overall.magnitude * 10
-
-        if trends.overall.direction == 'up':
-            predicted_score = min(100, base_score + trend_adjustment)
-        elif trends.overall.direction == 'down':
-            predicted_score = max(0, base_score - trend_adjustment)
-        else:
-            predicted_score = base_score
-
-        # Score prediction with distribution
-        score_std = 5.0  # Standard deviation
+        # No score is predicted. See ScorePrediction's docstring for what
+        # used to be here and why it is gone (C7): a formula over the
+        # question count, a normal-noise "distribution", and the score
+        # itself returned as a percentile.
         score_prediction = ScorePrediction(
-            expected=predicted_score,
-            confidence=trends.overall.confidence,
-            range={
-                'min': max(0, predicted_score - score_std * 2),
-                'median': predicted_score,
-                'max': min(100, predicted_score + score_std * 2)
-            },
-            distribution=self._generate_score_distribution(predicted_score, score_std),
-            percentile_projection=self._score_to_percentile(predicted_score)
+            expected=None,
+            confidence=None,
+            range=None,
+            distribution=None,
+            percentile_projection=None,
         )
 
         # Critical topics (lowest mastery)
@@ -629,20 +647,17 @@ class AnalyticsService:
                 mitigation='Review study strategy and take breaks'
             ))
 
-        # Readiness date (when predicted to be ready)
-        days_to_ready = max(1, int((80 - predicted_score) / (trend_adjustment or 1) * 7))
-        readiness_date = datetime.now() + timedelta(days=days_to_ready)
-
-        # Success probability
-        success_prob = min(1.0, predicted_score / 70)  # 70% as passing threshold
-
+        # The readiness date and success probability both descended from
+        # the deleted predicted_score, so they go with it. A date computed
+        # by dividing an invented score by an invented trend is a guess
+        # wearing a calendar.
         return Predictions(
             exam_score=score_prediction,
-            readiness_date=readiness_date,
-            probability_of_target=success_prob,
+            readiness_date=None,
+            probability_of_target=None,
             critical_topics=critical_topics,
             risk_factors=risk_factors,
-            success_probability=success_prob
+            success_probability=None,
         )
 
     def _generate_insights(
@@ -841,8 +856,17 @@ class AnalyticsService:
                 accuracy = data['correct'] / count if count > 0 else 0
                 peer_scores.append(accuracy)
 
-        if not peer_scores:
-            peer_scores = [0.5]  # Default
+        # No synthetic peer. Below the minimum cohort there is no
+        # comparison to report, and saying so is the honest answer.
+        if len(peer_scores) < MIN_PEER_COHORT:
+            return PeerComparison(
+                percentile_rank=None,
+                average_score=None,
+                peer_group_size=len(peer_scores),
+                strengths=[],
+                weaknesses=[],
+                unique_patterns=[],
+            )
 
         # Calculate user's overall accuracy
         user_accuracy = (
@@ -1003,13 +1027,11 @@ class AnalyticsService:
 
         return (max(0, center - margin), min(1, center + margin))
 
-    def _generate_score_distribution(self, mean: float, std: float, samples: int = 100) -> List[float]:
-        """Generate score distribution"""
-        return np.random.normal(mean, std, samples).tolist()
-
-    def _score_to_percentile(self, score: float) -> float:
-        """Convert score to percentile (simplified)"""
-        return min(99, max(1, score))
+    # _generate_score_distribution and _score_to_percentile were removed in
+    # C7. The first returned np.random.normal noise as a score distribution;
+    # the second returned the clamped raw score and called it a percentile.
+    # Nothing calls them now, and nothing should: a distribution needs a
+    # population and a percentile needs a cohort.
 
     def _calculate_percentile(self, value: float, distribution: List[float]) -> float:
         """Calculate percentile rank"""

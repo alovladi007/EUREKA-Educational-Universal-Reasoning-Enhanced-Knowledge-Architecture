@@ -64,8 +64,14 @@ interface StudyPlan {
   // and GRE-shaped default scores. Null now means "no data", and the cards
   // say so instead of inventing a personalized-looking number.
   target_date: string | null;
-  target_score: number;
-  current_score: number | null;
+  // C7 (AUDIT MC-10): target_score and estimated_score were scaled-scale
+  // numbers with nothing behind them - target_score was 85% of the exam's
+  // range (an aspiration the user never set), and estimated_score fell back
+  // to accuracy mapped linearly onto the scaled range, which is the same
+  // fabrication removed from the MCAT tabs. What is real is the practice
+  // accuracy, so that is what the card shows, labelled as accuracy.
+  target_score: number | null;
+  practice_accuracy: number | null;
   days_until_exam: number | null;
   progress: number;
   estimated_score?: number | null;
@@ -171,34 +177,28 @@ export default function StudyPlanPage() {
         const predRes = await apiClient.getPredictions(examType);
         setPredictions(predRes);
 
-        // Default target = 85% of the exam's max scaled score (sensible aspirational target).
-        const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
-        const accuracyAsScore = statsRes.overall_accuracy
-          ? Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * (statsRes.overall_accuracy / 100))
-          : null; // no practice history: say "no data", never invent a midpoint score
         setStudyPlan({
           exam_type: examType,
           target_date: null,
-          target_score: targetScore,
-          current_score: accuracyAsScore,
+          // No auto-invented target: the user has not set one here.
+          target_score: null,
+          practice_accuracy: statsRes.overall_accuracy ?? null,
           days_until_exam: null,
           progress: progressRes.data?.overall_progress ?? 0,
-          estimated_score: predRes.exam_score?.expected ?? accuracyAsScore,
+          // Only from a validated model. The service returns null today and
+          // says why in exam_score.basis.
+          estimated_score: predRes.exam_score?.expected ?? null,
         });
       } catch (error) {
         console.log('Predictions not available, using defaults');
-        const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
-        const accuracyAsScore = statsRes.overall_accuracy
-          ? Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * (statsRes.overall_accuracy / 100))
-          : null; // no practice history: say "no data", never invent a midpoint score
         setStudyPlan({
           exam_type: examType,
           target_date: null,
-          target_score: targetScore,
-          current_score: accuracyAsScore,
+          target_score: null,
+          practice_accuracy: statsRes.overall_accuracy ?? null,
           days_until_exam: null,
           progress: progressRes.data?.overall_progress ?? 0,
-          estimated_score: accuracyAsScore,
+          estimated_score: null,
         });
       }
 
@@ -215,14 +215,13 @@ export default function StudyPlanPage() {
     } catch (error) {
       console.error('Failed to fetch study plan:', error);
 
-      // Set default values on error — scale targets to the active exam's
-      // actual score range so non-GRE users see numbers that make sense.
-      const targetScore = Math.round(examConfig.scoreRange.min + (examConfig.scoreRange.max - examConfig.scoreRange.min) * 0.85);
+      // On error the cards say "no data" rather than showing a shaped-like-
+      // a-plan default (C7).
       setStudyPlan({
         exam_type: examType,
         target_date: null,
-        target_score: targetScore,
-        current_score: null,
+        target_score: null,
+        practice_accuracy: null,
         days_until_exam: null,
         progress: 0,
         estimated_score: null,
@@ -312,7 +311,7 @@ export default function StudyPlanPage() {
         exam_type: newPlan.examType,
         target_date: newPlan.targetDate,
         target_score: parseInt(newPlan.targetScore),
-        current_score: studyPlan?.current_score ?? null,
+        current_score: studyPlan?.practice_accuracy ?? null,
         weak_areas: recommendations.filter(r => r.priority === 'high').map(r => r.topic),
         available_hours: newPlan.studyHoursPerDay * newPlan.studyDaysPerWeek
       });
@@ -419,19 +418,19 @@ export default function StudyPlanPage() {
             </div>
           </div>
           <div className="bg-white/10 rounded-lg p-4">
-            <p className="text-indigo-100 text-sm">Estimated Score</p>
+            <p className="text-indigo-100 text-sm">Practice Accuracy</p>
             <div className="flex items-center gap-2">
-              {studyPlan?.estimated_score != null ? (
-                <p className="text-xl font-semibold">{studyPlan.estimated_score}</p>
+              {studyPlan?.practice_accuracy != null ? (
+                <p className="text-xl font-semibold">
+                  {Math.round(studyPlan.practice_accuracy)}%
+                </p>
               ) : (
                 <p className="text-sm text-indigo-200 mt-1">No practice data yet</p>
               )}
-              {predictions && studyPlan?.target_score != null && (
-                <span className="text-xs text-indigo-200">
-                  Target: {studyPlan.target_score}
-                </span>
-              )}
             </div>
+            <p className="text-[10px] text-indigo-200 mt-1">
+              Measured from your answers. No scaled score is estimated.
+            </p>
           </div>
         </div>
 
