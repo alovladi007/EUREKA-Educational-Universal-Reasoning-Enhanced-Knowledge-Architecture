@@ -36,6 +36,14 @@ except ImportError:  # pragma: no cover
     pass
 
 
+try:
+    from app.data.lessons_org_rechapter import LESSONS_ORG_RECHAPTER as _ORG_RE
+
+    LESSONS.update(_ORG_RE)
+except ImportError:  # pragma: no cover
+    pass
+
+
 def lesson_for(node_code: str) -> Lesson | None:
     return LESSONS.get(node_code)
 

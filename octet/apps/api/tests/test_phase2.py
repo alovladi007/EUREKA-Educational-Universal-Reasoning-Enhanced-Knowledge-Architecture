@@ -36,8 +36,9 @@ def test_compliance_checklist_is_green():
 
 def test_phase2_deliverable_counts():
     counts = course_counts()
-    assert counts == {"GEN1": 91, "GEN2": 75, "ORG1": 70, "ORG2": 76}, counts
-    assert len(NODES) == 312
+    # ORG1 61 / ORG2 98 after the organic rechaptering; no node removed.
+    assert counts == {"GEN1": 91, "GEN2": 75, "ORG1": 61, "ORG2": 98}, counts
+    assert len(NODES) == 325
     # 60 lessons were authored against the retired CF / G1 / G2 codes. 59 of
     # them re-key onto a node of their own; the sixtieth is parked in
     # lessons_superseded.py because the course based map draws one formula

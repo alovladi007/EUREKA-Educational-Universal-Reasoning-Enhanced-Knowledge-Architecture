@@ -47,7 +47,10 @@ def _check_curriculum() -> list[dict]:
         if b not in NODES_BY_CODE:
             problems.append({"check": "edge", "detail": f"edge to unknown node {b}"})
 
-    expected = {"GEN1": 91, "GEN2": 75, "ORG1": 70, "ORG2": 76}
+    # ORG1 61 and ORG2 98 after the organic rechaptering: spectroscopy and
+    # alkynes moved ORG1 -> ORG2 and thirteen nodes were added. No node was
+    # removed; audit_org_rechapter.py gates that independently.
+    expected = {"GEN1": 91, "GEN2": 75, "ORG1": 61, "ORG2": 98}
     counts = course_counts()
     for course, want in expected.items():
         got = counts.get(course, 0)

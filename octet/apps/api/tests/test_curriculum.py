@@ -52,7 +52,7 @@ def test_program_shape():
     # was removed - audit_org_rechapter.py gates that separately.
     assert course_counts() == {"GEN1": 91, "GEN2": 75, "ORG1": 61, "ORG2": 98}
     assert len(NODES) == 325
-    assert len(UNITS) == 40
+    assert len(UNITS) == 46  # ORG1 10->9, ORG2 10->17
 
 
 def test_node_codes_are_unique():
