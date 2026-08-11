@@ -278,3 +278,90 @@ async def test_attempts_are_owner_scoped(
         headers=_auth_headers(other),
     )
     assert res.status_code == 404
+
+
+# -- C5: the SME workflow and the pool rules --------------------------------
+
+
+async def test_sme_workflow_and_serving_rules(
+    async_client, async_session, seeded_user
+):
+    from app.models.billing import Entitlement
+    from app.models.item_bank import Item as _Item
+
+    bank = await _seed_bank(async_session)
+    hdrs_student = _auth_headers(seeded_user)
+
+    # Students cannot review.
+    some_item = (
+        await async_session.execute(select(_Item).limit(1))
+    ).scalar_one()
+    res = await async_client.post(
+        f"/api/v1/mcat/sme/items/{some_item.id}/approve",
+        json={},
+        headers=hdrs_student,
+    )
+    assert res.status_code == 403
+
+    # A teacher approves one item and flags another (notes required).
+    org_id = seeded_user.org_id
+    teacher = User(
+        id=uuid4(), email="mcat-sme-teacher@example.com", first_name="Sme",
+        last_name="Reviewer", hashed_password=hash_password("not-used"),
+        org_id=org_id, role="teacher", is_active=True, is_email_verified=True,
+    )
+    async_session.add(teacher)
+    await async_session.commit()
+    hdrs_teacher = _auth_headers(teacher)
+
+    queue = await async_client.get("/api/v1/mcat/sme/queue", headers=hdrs_teacher)
+    assert queue.status_code == 200, queue.text
+    assert queue.json()["counts"]["draft"] == 16
+    first = queue.json()["items"][0]
+    assert "correct_index" in first  # reviewers see the key
+
+    approved = await async_client.post(
+        f"/api/v1/mcat/sme/items/{first['item_id']}/approve",
+        json={"notes": "checked"},
+        headers=hdrs_teacher,
+    )
+    assert approved.status_code == 200
+    assert approved.json()["review_status"] == "approved"
+    assert approved.json()["reviewed_by"] == str(teacher.id)
+
+    no_notes = await async_client.post(
+        f"/api/v1/mcat/sme/items/{queue.json()['items'][1]['item_id']}/flag",
+        json={},
+        headers=hdrs_teacher,
+    )
+    assert no_notes.status_code == 422  # a flag without a reason helps nobody
+
+    flagged = await async_client.post(
+        f"/api/v1/mcat/sme/items/{queue.json()['items'][1]['item_id']}/flag",
+        json={"notes": "distractor B is also defensible"},
+        headers=hdrs_teacher,
+    )
+    assert flagged.status_code == 200
+    flagged_id = flagged.json()["item_id"]
+
+    # Serving rule: the flagged item never appears in the practice draw.
+    draw = await async_client.get(
+        "/api/v1/mcat/qbank/items?count=40", headers=hdrs_student
+    )
+    served = {i["item_id"] for i in draw.json()["items"]}
+    assert flagged_id not in served
+
+    # Pool rule: an ENTITLED learner's sitting needs approved items -
+    # with only 1 approved of the 4-per-section needed, it refuses.
+    async_session.add(
+        Entitlement(
+            user_id=seeded_user.id, exam_code="MCAT", sku="mcat_full",
+            status="active", source="comp",
+        )
+    )
+    await async_session.commit()
+    paid_start = await async_client.post(
+        "/api/v1/mcat/mock/start", json={"form": "mini"}, headers=hdrs_student
+    )
+    assert paid_start.status_code == 503
+    assert "SME-approved" in paid_start.json()["detail"]

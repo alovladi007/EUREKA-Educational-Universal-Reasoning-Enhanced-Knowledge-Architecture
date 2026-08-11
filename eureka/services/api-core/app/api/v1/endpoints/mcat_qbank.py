@@ -36,7 +36,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.models import User
 from app.models.exam import AttemptLog
-from app.models.item_bank import Item, ItemBank, Passage
+from app.models.item_bank import Item, ItemBank, ItemReviewStatus, Passage
 from app.utils.dependencies import get_current_active_user
 
 router = APIRouter()
@@ -124,6 +124,10 @@ async def qbank_items(
         Item.bank_id == bank.id,
         Item.deleted_at.is_(None),
         Item.passage_id.is_(None),
+        # C5 serving rule: flagged and retired content never serves.
+        Item.review_status.notin_(
+            (ItemReviewStatus.FLAGGED, ItemReviewStatus.RETIRED)
+        ),
     )
     if topic_id is not None:
         q = q.where(Item.extra_metadata["topic_id"].as_integer() == topic_id)
@@ -206,7 +210,13 @@ async def qbank_passage_set(
         (
             await db.execute(
                 select(Item)
-                .where(Item.passage_id == passage.id, Item.deleted_at.is_(None))
+                .where(
+                    Item.passage_id == passage.id,
+                    Item.deleted_at.is_(None),
+                    Item.review_status.notin_(
+                        (ItemReviewStatus.FLAGGED, ItemReviewStatus.RETIRED)
+                    ),
+                )
                 .order_by(Item.created_at)
             )
         )

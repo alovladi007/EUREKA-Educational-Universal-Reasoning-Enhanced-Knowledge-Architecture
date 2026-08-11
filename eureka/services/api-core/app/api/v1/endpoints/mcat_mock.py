@@ -13,11 +13,11 @@ Replaces the removed client-side simulation. The rules:
   - Every graded response also lands in attempt_logs (source='mcat_mock'),
     the same response-level record the qbank writes.
 
-Access: authenticated users, no entitlement gate YET - the entire bank is
-review_status='draft' (AI-generated, awaiting SME review), and unreviewed
-content must not be sold. The paid gate and the approved-only pool arrive
-together in C5; until then the simulator carries the same disclaimer as
-the qbank.
+Access: authenticated users. The pool rule (C5) does the honest gating:
+an MCAT-entitled learner's sitting draws SME-APPROVED items only -
+unreviewed content is never sold - and refuses with the reason rather than
+padding; free sittings may use draft items with the disclaimer, never
+flagged or retired ones.
 
 Forms are ExamBlueprint rows (get-or-created by slug): mcat-mini-v1 - 16
 questions, 4 per section, 40 minutes, for a short sitting; mcat-full-v1 -
@@ -40,8 +40,9 @@ from app.models import User
 from app.models.exam import (
     AttemptLog, ExamBlueprint, MockAttempt, MockAttemptItem, MockAttemptStatus,
 )
-from app.models.item_bank import Item, ItemBank
+from app.models.item_bank import Item, ItemBank, ItemReviewStatus
 from app.utils.dependencies import get_current_active_user
+from app.utils.entitlements import has_exam_access
 
 router = APIRouter()
 
@@ -154,6 +155,18 @@ async def mock_start(
     bp = await _blueprint(db, body.form)
     spec = FORMS[body.form]
 
+    # C5 pool rule: an ENTITLED learner's sitting draws approved items only -
+    # unreviewed content is never sold - and refuses with the reason rather
+    # than padding from the draft pool. Free sittings may use draft items
+    # (disclaimer shown) but never flagged or retired ones.
+    paid = await has_exam_access(db, current_user, "MCAT")
+    if paid:
+        status_clause = Item.review_status == ItemReviewStatus.APPROVED
+    else:
+        status_clause = Item.review_status.notin_(
+            (ItemReviewStatus.FLAGGED, ItemReviewStatus.RETIRED)
+        )
+
     drawn: list[Item] = []
     for topic_id, n in spec["section_counts"].items():
         rows = (
@@ -164,6 +177,7 @@ async def mock_start(
                         Item.bank_id == bank.id,
                         Item.deleted_at.is_(None),
                         Item.passage_id.is_(None),
+                        status_clause,
                         Item.extra_metadata["topic_id"].as_integer() == topic_id,
                     )
                     .order_by(func.random())
@@ -174,10 +188,12 @@ async def mock_start(
             .all()
         )
         if len(rows) < n:
+            pool = "SME-approved" if paid else "servable"
             raise HTTPException(
                 503,
-                f"section {topic_id} has only {len(rows)} servable items; "
-                f"the {body.form} form needs {n}. The form is not padded.",
+                f"section {topic_id} has only {len(rows)} {pool} items; "
+                f"the {body.form} form needs {n}. The form is not padded"
+                + (" from unreviewed content." if paid else "."),
             )
         drawn.extend(rows)
 
