@@ -477,6 +477,60 @@ class ApiClient {
     return response.data;
   }
 
+  // ==================== MCAT mock simulator (server-graded, C3) ====================
+  // Raw and per-section results only: no scaled score exists without
+  // equating data, and the server refuses to invent one.
+
+  async startMcatMock(form: 'mini' | 'full'): Promise<{
+    attempt_id: string; form: string; time_limit_min: number;
+    deadline_at: string;
+    items: Array<{
+      position: number; item_id: string; stem: string; options: string[];
+      option_count: number; topic_id: number; section: string | null;
+      subtopic: string | null;
+    }>;
+    note: string; disclaimer: string;
+  }> {
+    const response = await this.client.post('/mcat/mock/start', { form });
+    return response.data;
+  }
+
+  async submitMcatMock(attemptId: string, answers: Array<{
+    position: number; choice_index: number | null;
+  }>): Promise<{
+    attempt_id: string;
+    raw: { correct: number; answered: number; total: number };
+    by_section: Record<string, {
+      section: string | null; correct: number; answered: number; total: number;
+    }>;
+    review: Array<{
+      position: number; stem: string; options: string[];
+      chosen_index: number | null; correct_index: number; is_correct: boolean;
+      explanation: string | null; section: string | null; subtopic: string | null;
+    }>;
+    note: string; disclaimer: string;
+  }> {
+    const response = await this.client.post(
+      `/mcat/mock/${attemptId}/submit`, { answers },
+    );
+    return response.data;
+  }
+
+  async getMcatMockHistory(): Promise<{
+    attempts: Array<{
+      attempt_id: string; form: string; status: string; started_at: string;
+      submitted_at: string | null; correct: number | null;
+      answered: number | null; total: number;
+      by_section: Record<string, {
+        section: string | null; correct: number; answered: number; total: number;
+      }> | null;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/mock/history');
+    return response.data;
+  }
+
   // ==================== SRS (Spaced-Repetition flashcards, P1-4) ====================
   // Backed by the api-core srs_cards table + SM-2 algorithm. Each card
   // carries its own ease_factor / interval / repetitions / next_review

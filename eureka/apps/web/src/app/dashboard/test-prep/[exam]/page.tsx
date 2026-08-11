@@ -61,6 +61,7 @@ import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCoh
 import { LsatFrequencyHeatmap } from '@/components/test-prep/LsatFrequencyHeatmap';
 import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatmap';
 import { McatServerQbank } from '@/components/test-prep/McatServerQbank';
+import { McatMockExam } from '@/components/test-prep/McatMockExam';
 import { SecurityPlusPBQTab } from '@/components/test-prep/SecurityPlusPBQ';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
 import { VideoLessonTabs } from '@/components/test-prep/VideoLessonTabs';
@@ -4311,26 +4312,10 @@ function PEEEAnalyticsTab() {
 
 const MCAT_SECTION_NAMES = ['Chemical & Physical Foundations','Critical Analysis & Reasoning (CARS)','Biological & Biochemical Foundations','Psychological, Social & Biological Foundations'];
 function MCATExamTab() {
-  // The client-side full exam was removed with the client question bank: it
-  // graded in the browser against bundled keys and displayed an "estimated
-  // scaled score" computed by a linear percent map with no equating data
-  // behind it (docs/mcat/AUDIT.md MC-2/MC-9). Its replacement is the
-  // server-graded full-length simulator (Phase C3): server item bank,
-  // per-response recording, raw and per-section results only.
-  return (
-    <Card className="p-8 text-center space-y-3">
-      <Trophy className="h-10 w-10 mx-auto text-muted-foreground" />
-      <h3 className="text-lg font-semibold">Full-length simulation is being rebuilt</h3>
-      <p className="text-sm text-muted-foreground max-w-xl mx-auto">
-        The previous in-browser simulation graded locally and displayed an
-        estimated 472&ndash;528 score that no calibration data supported, so it
-        was removed rather than kept wrong. Its replacement runs on the server
-        question bank with every response recorded, and reports raw and
-        per-section results only. Until it ships, practice by section in the
-        QBank tab &mdash; served and graded server-side.
-      </p>
-    </Card>
-  );
+  // The server-graded simulator (C3): the server draws the form, holds the
+  // clock, and grades; results are raw and per-section only - no scaled
+  // score exists without equating data, and none is invented.
+  return <McatMockExam />;
 }
 
 function MCATAnalyticsTab() {
