@@ -41,17 +41,17 @@ fee_algebra_trig: {
       title: '1. Quadratic Equations and Systems of Equations',
       content: `## 1.1 The Quadratic Formula
 
-The **quadratic formula** solves any equation of the form **ax² + bx + c = 0**:
+The **quadratic formula** solves any equation of the form **$ax^{2} + bx + c = 0$**:
 
-**x = (-b ± sqrt(b² - 4ac)) / (2a)**
+**$x = (-b \\pm \\sqrt{b^{2} - 4ac}) / (2a)$**
 
 The **discriminant** D = b² - 4ac determines root type:
 
 | Discriminant | Root Type | Engineering Significance |
 |---|---|---|
-| D > 0 | Two distinct real roots | Two separate operating points |
-| D = 0 | One repeated real root | Critically damped system |
-| D < 0 | Two complex conjugate roots | Oscillatory behavior (underdamped) |
+| $D > 0$ | Two distinct real roots | Two separate operating points |
+| $D = 0$ | One repeated real root | Critically damped system |
+| $D < 0$ | Two complex conjugate roots | Oscillatory behavior (underdamped) |
 
 ### Systems of Linear Equations
 
@@ -62,8 +62,8 @@ Many circuit problems reduce to systems of linear equations. For two equations i
 
 For the FE exam, Cramer's rule is fast for 2x2 systems:
 - Given a1·x + b1·y = c1 and a2·x + b2·y = c2
-- **x = (c1·b2 - c2·b1) / (a1·b2 - a2·b1)**
-- **y = (a1·c2 - a2·c1) / (a1·b2 - a2·b1)**`,
+- **$x = (c1\\cdot b2 - c2\\cdot b1) / (a1\\cdot b2 - a2\\cdot b1)$**
+- **$y = (a1\\cdot c2 - a2\\cdot c1) / (a1\\cdot b2 - a2\\cdot b1)$**`,
       examTip: 'The discriminant b²-4ac tells you everything on the FE exam: positive means two real roots, zero means repeated (critically damped in circuits), negative means complex conjugate pair (oscillatory). Memorize this mapping — it saves time on second-order circuit and control system problems.',
     },
     {
@@ -73,11 +73,11 @@ For the FE exam, Cramer's rule is fast for 2x2 systems:
 
 The **Pythagorean identity** is the most important:
 
-**sin²θ + cos²θ = 1**
+**$\\sin ^{2}\\theta + \\cos ^{2}\\theta = 1$**
 
 Derived identities:
-- **tan²θ + 1 = sec²θ**
-- **1 + cot²θ = csc²θ**
+- **$\\tan ^{2}\\theta + 1 = \\sec ^{2}\\theta$**
+- **$1 + \\cot ^{2}\\theta = \\csc ^{2}\\theta$**
 
 ### Angle Addition Formulas
 
@@ -89,13 +89,13 @@ These appear constantly in AC circuit analysis where you combine sinusoidal sign
 ### Double-Angle Formulas
 
 - **sin(2A) = 2·sinA·cosA**
-- **cos(2A) = cos²A - sin²A = 2cos²A - 1 = 1 - 2sin²A**
+- **$\\cos (2A) = \\cos ^{2}A - \\sin ^{2}A = 2\\cos ^{2}A - 1 = 1 - 2\\sin ^{2}A$**
 
 ### Power-Reducing Formulas
 
 Used in power calculations for AC circuits:
-- **sin²θ = (1 - cos2θ) / 2**
-- **cos²θ = (1 + cos2θ) / 2**
+- **$\\sin ^{2}\\theta = (1 - \\cos 2\\theta) / 2$**
+- **$\\cos ^{2}\\theta = (1 + \\cos 2\\theta) / 2$**
 
 ## 2.2 Rectangular-Polar Conversion
 
@@ -103,18 +103,18 @@ Every phasor problem on the FE exam requires converting between forms:
 
 | Conversion | Formula |
 |---|---|
-| Rectangular to Polar | r = sqrt(x² + y²), θ = arctan(y/x) |
-| Polar to Rectangular | x = r·cosθ, y = r·sinθ |
+| Rectangular to Polar | $r = \\sqrt{x^{2} + y^{2}}, \\theta = \\arctan (y/x)$ |
+| Polar to Rectangular | $x = r\\cdot \\cos \\theta, y = r\\cdot \\sin \\theta$ |
 
 ### Unit Circle Values
 
 | Angle | sin | cos | tan |
 |---|---|---|---|
-| 0° | 0 | 1 | 0 |
-| 30° | 1/2 | sqrt(3)/2 | 1/sqrt(3) |
-| 45° | sqrt(2)/2 | sqrt(2)/2 | 1 |
-| 60° | sqrt(3)/2 | 1/2 | sqrt(3) |
-| 90° | 1 | 0 | undefined |`,
+| $0^\\circ$ | 0 | 1 | 0 |
+| $30^\\circ$ | $1/2$ | $\\sqrt{3}/2$ | $1/\\sqrt{3}$ |
+| $45^\\circ$ | $\\sqrt{2}/2$ | $\\sqrt{2}/2$ | 1 |
+| $60^\\circ$ | $\\sqrt{3}/2$ | $1/2$ | $\\sqrt{3}$ |
+| $90^\\circ$ | 1 | 0 | undefined |`,
       examTip: 'When converting rectangular to polar, ALWAYS check the quadrant. arctan(y/x) gives the correct angle only in Q1 and Q4. For Q2 and Q3, add 180 degrees. The FE reference handbook has these formulas, but knowing them cold saves critical minutes.',
       importantNote: 'The angle addition formulas are the basis for phasor addition in AC circuits. When you add two sinusoids of the same frequency, you are implicitly using these identities. Converting to phasors first is usually faster than expanding trig identities by hand.',
     },
@@ -129,13 +129,13 @@ When factoring is not obvious, the formula: s = [-b ± sqrt(b^2 - 4ac)]/(2a). Th
 
 | Discriminant | Roots | Circuit behaviour |
 |---|---|---|
-| > 0 | two real distinct | overdamped |
-| = 0 | one repeated real | critically damped |
-| < 0 | complex conjugate pair | underdamped, oscillatory |
+| $> 0$ | two real distinct | overdamped |
+| $= 0$ | one repeated real | critically damped |
+| $< 0$ | complex conjugate pair | underdamped, oscillatory |
 
 ## 3.2 Solving a two-loop system
 
-Mesh analysis produces 3i1 + 2i2 = 12 and i1 - 4i2 = -2. From the second, i1 = 4i2 - 2. Substitute: 3(4i2 - 2) + 2i2 = 12, so 12i2 - 6 + 2i2 = 12, giving 14i2 = 18 and **i2 = 1.286 A**. Then i1 = 4(1.286) - 2 = **3.14 A**.
+Mesh analysis produces 3i1 + 2i2 = 12 and i1 - 4i2 = -2. From the second, i1 = 4i2 - 2. Substitute: 3(4i2 - 2) + 2i2 = 12, so 12i2 - 6 + 2i2 = 12, giving 14i2 = 18 and **$i2 = 1.286\\ \\mathrm{A}$**. Then i1 = 4(1.286) - 2 = **3.14 A**.
 
 Substituting back into the first equation: 3(3.14) + 2(1.286) = 9.43 + 2.57 = 12. Checks.
 
@@ -143,9 +143,9 @@ Substituting back into the first equation: 3(3.14) + 2(1.286) = 9.43 + 2.57 = 12
 
 The three worth having instantly:
 
-- **sin^2 + cos^2 = 1** — converts between the two whenever only one is given
-- **sin(2x) = 2 sin x cos x** — appears in instantaneous power, p(t) = VI cos(theta) - VI cos(2 omega t - theta)
-- **cos(A - B) = cos A cos B + sin A sin B** — the phase-difference expansion behind every power-factor derivation
+- **$\\sin ^2 + \\cos ^2 = 1$** — converts between the two whenever only one is given
+- **$\\sin (2x) = 2 \\sin  x \\cos  x$** — appears in instantaneous power, p(t) = VI cos(theta) - VI cos(2 omega t - theta)
+- **$\\cos (A - B) = \\cos  A \\cos  B + \\sin  A \\sin  B$** — the phase-difference expansion behind every power-factor derivation
 
 Example: a load has cos(theta) = 0.6. Then sin(theta) = sqrt(1 - 0.36) = **0.8**, so a 5 kVA load carries P = 3 kW and Q = 4 kVAR. The 3-4-5 triangle turns up constantly in power problems and is worth recognising on sight.
 
@@ -200,7 +200,7 @@ Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 
   it at angle theta has coordinates **(cos theta, sin theta)** — that *is* what
   the two functions mean. Everything else follows:
   
-  - **sin² + cos² = 1** is the Pythagorean theorem applied to that point.
+  - **$\\sin ^{2} + \\cos ^{2} = 1$** is the Pythagorean theorem applied to that point.
   - **tan theta = sin/cos** is the slope of the ray, which is why it blows up at
     90° where the ray is vertical.
   - The sign of each function in each quadrant is the sign of the corresponding
@@ -213,11 +213,11 @@ Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 
   
   | theta | cos | sin | tan | Where it shows up |
   |---|---|---|---|---|
-  | 0° | 1 | 0 | 0 | purely resistive, unity power factor |
-  | 30° | √3/2 ≈ 0.866 | 1/2 | 1/√3 ≈ 0.577 | pf = 0.866 lagging |
-  | 45° | √2/2 ≈ 0.707 | √2/2 | 1 | equal R and X; half-power point |
-  | 60° | 1/2 | √3/2 ≈ 0.866 | √3 ≈ 1.732 | 120° three-phase geometry |
-  | 90° | 0 | 1 | undefined | purely reactive, zero real power |
+  | $0^\\circ$ | 1 | 0 | 0 | purely resistive, unity power factor |
+  | $30^\\circ$ | $\\sqrt{3}/2 \\approx 0.866$ | $1/2$ | $1/\\sqrt{3} \\approx 0.577$ | pf = 0.866 lagging |
+  | $45^\\circ$ | $\\sqrt{2}/2 \\approx 0.707$ | $\\sqrt{2}/2$ | 1 | equal R and X; half-power point |
+  | $60^\\circ$ | $1/2$ | $\\sqrt{3}/2 \\approx 0.866$ | $\\sqrt{3} \\approx 1.732$ | 120° three-phase geometry |
+  | $90^\\circ$ | 0 | 1 | undefined | purely reactive, zero real power |
   
   Note that **0.707 and 0.866 are the two decimals to recognise on sight**. A
   power factor of 0.707 means a 45° angle and equal real and reactive power; 0.866
@@ -230,12 +230,12 @@ Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 
   error is trusting the calculator's arctangent.
   
   **Convert 3 − j4.** The magnitude is √(3² + 4²) = √25 = **5**. The angle is
-  arctan(−4/3) = **−53.13°**. Both x and y checks agree: x = 3 > 0 and y = −4 < 0
+  arctan(−4/3) = **$-53.13^\\circ$**. Both x and y checks agree: x = 3 > 0 and y = −4 < 0
   put the point in quadrant IV, and −53.13° is in quadrant IV. Accept it.
   
   **Convert −3 + j4.** The magnitude is again 5. But arctan(4/−3) = arctan(−1.333)
-  = **−53.13°**, which is wrong. The point has x < 0 and y > 0, so it is in
-  quadrant II, and the answer is −53.13° + 180° = **126.87°**.
+  = **$-53.13^\\circ$**, which is wrong. The point has x < 0 and y > 0, so it is in
+  quadrant II, and the answer is −53.13° + 180° = **$126.87^\\circ$**.
   
   | Signs of (x, y) | Quadrant | Correction to arctan(y/x) |
   |---|---|---|
@@ -251,7 +251,7 @@ Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 
   ## 4.4 Going the other way, and the identities that matter
   
   Polar to rectangular has no such trap: x = r cos theta, y = r sin theta,
-  directly. **5∠126.87°** gives x = 5(−0.6) = −3 and y = 5(0.8) = 4, recovering
+  directly. **$5\\angle 126.87^\\circ$** gives x = 5(−0.6) = −3 and y = 5(0.8) = 4, recovering
   the number we started from — which is the check to run whenever a conversion
   matters.
   
@@ -279,8 +279,8 @@ Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 
   
   | Quantity | Decibel formula | 2× becomes | 10× becomes |
   |---|---|---|---|
-  | Power ratio | 10 log₁₀(P₂/P₁) | +3.01 dB | +10 dB |
-  | Voltage or current ratio | 20 log₁₀(V₂/V₁) | +6.02 dB | +20 dB |
+  | Power ratio | $10 \\log _{10}(P_{2}/P_{1})$ | +3.01 dB | +10 dB |
+  | Voltage or current ratio | $20 \\log _{10}(V_{2}/V_{1})$ | +6.02 dB | +20 dB |
   
   The factor of 20 for voltage is not a different rule — it is the same rule,
   because power goes as V², and 10 log(V²) = 20 log(V). A common trap gives a
@@ -299,8 +299,8 @@ Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 
   title: '5. Problem Set: Angles and Ratios',
   content: `## 5.1 Convert 8∠−150° to rectangular
 
-x = 8 cos(−150°) = 8(−0.866) = **−6.93**
-y = 8 sin(−150°) = 8(−0.5) = **−4.00**
+$$x = 8 \\cos (-150^\\circ) = 8(-0.866) = -6.93$$
+$$y = 8 \\sin (-150^\\circ) = 8(-0.5) = -4.00$$
 
 So 8∠−150° = −6.93 − j4.00. Both components negative puts it in quadrant III,
 which agrees with −150° being between −90° and −180°. Recognising 0.866 as
@@ -310,16 +310,16 @@ cos 30° avoids the calculator entirely.
 
 Apparent power S = VI = 240 × 25 = 6000 VA. Then
 
-pf = P/S = 5000/6000 = 0.833, so θ = arccos(0.833) = **33.6°**
+$$pf = P/S = 5000/6000 = 0.833, so \\theta = \\arccos (0.833) = 33.6^\\circ$$
 
 Reactive power follows: Q = S sin θ = 6000(0.553) = 3320 VAR, and the check
-S² = P² + Q² gives 5000² + 3320² = 25.0×10⁶ + 11.0×10⁶ = 36.0×10⁶ = 6000² ✓.
+S² = P² + Q² gives 5000² + 3320² = 25.0×$10^{6}$ + 11.0×$10^{6}$ = 36.0×$10^{6}$ = 6000² ✓.
 
 ## 5.3 Express a voltage gain of 250 in decibels
 
 This is a **voltage** ratio, so the factor is 20:
 
-20 log₁₀(250) = 20(2.398) = **47.96 dB**
+$$20 \\log _{10}(250) = 20(2.398) = 47.96\\ \\mathrm{dB}$$
 
 Sanity-check it against the anchors: 250 is between 100 (40 dB) and 1000
 (60 dB), and closer to the bottom, so a number just below 48 dB is right. Using
@@ -329,10 +329,10 @@ choices.
 ## 5.4 Two identities under time pressure
 
 Simplify (sin 2θ)/(2 sin θ). Using sin 2θ = 2 sin θ cos θ, the expression is
-2 sin θ cos θ/(2 sin θ) = **cos θ**.
+$$2 \\sin  \\theta \\cos  \\theta /(2 \\sin  \\theta) = \\cos  \\theta$$.
 
 Simplify 1 − 2sin²θ. Using sin²θ = (1 − cos 2θ)/2, this is
-1 − (1 − cos 2θ) = **cos 2θ**, which is the double-angle identity read
+1 − (1 − cos 2θ) = **$\\cos  2\\theta$**, which is the double-angle identity read
 backwards. Both appear inside power calculations, which is why they are worth
 recognising rather than deriving each time.`,
 },
@@ -364,14 +364,14 @@ A complex number has two equivalent representations:
 
 The bridge between them is **Euler's formula**:
 
-**e^(jθ) = cosθ + j·sinθ**
+**$e^{j\\theta} = \\cos \\theta + j\\cdot \\sin \\theta$**
 
 ### Conversion Between Forms
 
 | From → To | Formula |
 |---|---|
-| Rectangular → Polar | r = sqrt(a² + b²), θ = arctan(b/a) |
-| Polar → Rectangular | a = r·cosθ, b = r·sinθ |
+| Rectangular → Polar | $r = \\sqrt{a^{2} + b^{2}}, \\theta = \\arctan (b/a)$ |
+| Polar → Rectangular | $a = r\\cdot \\cos \\theta, b = r\\cdot \\sin \\theta$ |
 
 ### The Complex Conjugate
 
@@ -400,12 +400,12 @@ Add/subtract in **rectangular form** — combine real and imaginary parts separa
 
 Multiply/divide in **polar form** — multiply magnitudes, add/subtract angles:
 
-- (r₁∠θ₁) · (r₂∠θ₂) = r₁r₂ ∠(θ₁ + θ₂)
-- (r₁∠θ₁) / (r₂∠θ₂) = (r₁/r₂) ∠(θ₁ - θ₂)
+- ($r_{1}$∠θ₁) · ($r_{2}$∠θ₂) = r₁r₂ ∠(θ₁ + θ₂)
+- ($r_{1}$∠θ₁) / ($r_{2}$∠θ₂) = ($r_{1}$/$r_{2}$) ∠(θ₁ - θ₂)
 
 In rectangular form, division uses the **conjugate**:
 
-**(a + jb) / (c + jd) = [(a + jb)(c - jd)] / [(c + jd)(c - jd)] = [(ac + bd) + j(bc - ad)] / (c² + d²)**
+**$(a + jb) / (c + jd) = [(a + jb)(c - jd)] / [(c + jd)(c - jd)] = [(ac + bd) + j(bc - ad)] / (c^{2} + d^{2})$**
 
 ## 2.3 Phasor Representation
 
@@ -413,7 +413,7 @@ A sinusoidal signal v(t) = Vm·cos(ωt + φ) corresponds to **phasor V = Vm∠φ
 
 | Time Domain | Phasor Domain |
 |---|---|
-| v(t) = Vm·cos(ωt + φ) | V = Vm∠φ |
+| $v(t) = Vm\\cdot \\cos (\\omega t + \\phi)$ | $V = Vm\\angle \\phi$ |
 | Addition of sinusoids | Vector addition of phasors |
 | Differentiation (jω multiplier) | Multiply by jω |
 | Integration (1/jω multiplier) | Divide by jω |
@@ -518,23 +518,23 @@ Useful constants: j^2 = -1, 1/j = -j, and j = 1 at 90 degrees. Multiplying by j 
   chances to lose a quadrant.
   
   Multiplication acts on magnitude and angle independently:
-  r₁∠θ₁ × r₂∠θ₂ = r₁r₂∠(θ₁+θ₂). **Magnitudes multiply, angles add.** In
+  $r_{1}$∠θ₁ × $r_{2}$∠θ₂ = r₁r₂∠(θ₁+θ₂). **Magnitudes multiply, angles add.** In
   rectangular form the same operation needs four products and the j² = −1
   substitution.
   
   ## 4.3 One number pair, both ways, checked against each other
   
-  Take z₁ = 3 + j4 and z₂ = 5 − j2.
+  Take $z_{1}$ = 3 + j4 and $z_{2}$ = 5 − j2.
   
   **Sum, in rectangular.** (3+5) + j(4−2) = **8 + j2**. Done in one line.
   
   **Product, in polar.** First convert:
-  z₁ = √(9+16) ∠ arctan(4/3) = 5∠53.13°, and
-  z₂ = √(25+4) ∠ arctan(−2/5) = 5.385∠−21.80°.
-  Then z₁z₂ = (5)(5.385) ∠ (53.13 − 21.80) = **26.93∠31.33°**.
+  $z_{1}$ = √(9+16) ∠ arctan(4/3) = 5∠53.13°, and
+  $$z_{2} = \\sqrt{25+4} \\angle \\arctan (-2/5) = 5.385\\angle -21.80^\\circ$$.
+  Then z₁z₂ = (5)(5.385) ∠ (53.13 − 21.80) = **$26.93\\angle 31.33^\\circ$**.
   
   **The same product, in rectangular, as a check.**
-  (3+j4)(5−j2) = 15 − j6 + j20 − j²8 = 15 + j14 + 8 = **23 + j14**.
+  $$(3+j4)(5-j2) = 15 - j6 + j20 - j^{2}8 = 15 + j14 + 8 = 23 + j14$$.
   Its magnitude is √(529 + 196) = √725 = 26.93, and its angle is
   arctan(14/23) = 31.33°. The two routes agree exactly, which is the point:
   when a phasor answer matters, converting back and comparing costs fifteen
@@ -547,7 +547,7 @@ Useful constants: j^2 = -1, 1/j = -j, and j = 1 at 90 degrees. Multiplying by j 
   meaningful — R dissipates, X stores.
   
   Impedances in **parallel** combine through products and quotients, so polar
-  pays. For two branches, Z = Z₁Z₂/(Z₁+Z₂) needs one product (polar), one sum
+  pays. For two branches, Z = Z₁Z₂/($Z_{1}$+$Z_{2}$) needs one product (polar), one sum
   (rectangular), and one quotient (polar) — so a realistic problem uses both
   forms, converting once at each junction rather than committing to one.
   
@@ -601,16 +601,16 @@ Useful constants: j^2 = -1, 1/j = -j, and j = 1 at 90 degrees. Multiplying by j 
 A 10 Ω resistor, a 50 mH inductor and a 100 µF capacitor are in series at
 60 Hz. Find the total impedance.
 
-ω = 2π(60) = **377 rad/s**
-X_L = ωL = 377(0.05) = **18.85 Ω**
-X_C = 1/(ωC) = 1/(377 × 100×10⁻⁶) = **26.53 Ω**
+$$\\omega = 2\\pi (60) = 377\\ \\mathrm{rad/s}$$
+$$X_L = \\omega L = 377(0.05) = 18.85\\ \\Omega$$
+$$X_C = 1/(\\omega C) = 1/(377 \\times 100\\times 10^{-6}) = 26.53\\ \\Omega$$
 
 Series impedances add in rectangular form:
 
-Z = 10 + j18.85 − j26.53 = **10 − j7.68 Ω**
+$$Z = 10 + j18.85 - j26.53 = 10 - j7.68\\ \\Omega$$
 
 In polar form, |Z| = √(100 + 59.0) = 12.61 Ω and θ = arctan(−7.68/10) =
-**−37.5°**. The negative angle means the circuit is net **capacitive**, so
+**$-37.5^\\circ$**. The negative angle means the circuit is net **capacitive**, so
 current leads voltage — which follows from X_C exceeding X_L, and is worth
 stating as a check rather than discovering later.
 
@@ -618,7 +618,7 @@ stating as a check rather than discovering later.
 
 With 120 V rms applied at 0°:
 
-**I** = 120∠0° / 12.61∠−37.5° = **9.52∠+37.5° A**
+**I** = 120∠0° / 12.61∠−37.5° = **$9.52\\angle +37.5^\\circ A$**
 
 Division in polar form: magnitudes divide, angles subtract. The current leads by
 37.5°, consistent with a capacitive circuit.
@@ -629,12 +629,12 @@ second one is a reminder that only the resistance dissipates.
 
 ## 5.3 A parallel pair, using both forms
 
-Z₁ = 6 + j8 and Z₂ = 10∠−30° are in parallel.
+$Z_{1}$ = 6 + j8 and $Z_{2}$ = 10∠−30° are in parallel.
 
-Product, in polar: Z₁ = 10∠53.13°, so Z₁Z₂ = 100∠23.13°.
-Sum, in rectangular: Z₂ = 8.66 − j5.00, so Z₁ + Z₂ = 14.66 + j3.00 =
-14.96∠11.57°.
-Quotient, in polar: Z = 100∠23.13° / 14.96∠11.57° = **6.68∠11.56° Ω**
+Product, in polar: $Z_{1}$ = 10∠53.13°, so Z₁Z₂ = 100∠23.13°.
+Sum, in rectangular: $Z_{2}$ = 8.66 − j5.00, so $Z_{1}$ + $Z_{2}$ = 14.66 + j3.00 =
+$$14.96\\angle 11.57^\\circ$$.
+Quotient, in polar: Z = 100∠23.13° / 14.96∠11.57° = **$6.68\\angle 11.56^\\circ \\Omega$**
 
 Each operation used the form that suits it, with one conversion at each
 junction — which is faster and safer than forcing everything into one form.`,
@@ -681,14 +681,14 @@ A **set** is a collection of distinct objects. Operations:
 
 | Operation | Symbol | Meaning |
 |---|---|---|
-| Union | A ∪ B | Elements in A or B (or both) |
-| Intersection | A ∩ B | Elements in both A and B |
+| Union | $A \\cup B$ | Elements in A or B (or both) |
+| Intersection | $A \\cap B$ | Elements in both A and B |
 | Complement | A' | Elements NOT in A |
 | Difference | A - B | Elements in A but not B |
 
 **De Morgan's Laws** for sets mirror Boolean algebra:
-- **(A ∪ B)' = A' ∩ B'**
-- **(A ∩ B)' = A' ∪ B'**
+- **$(A \\cup B)' = A' \\cap B'$**
+- **$(A \\cap B)' = A' \\cup B'$**
 
 ## 1.2 Counting: Permutations and Combinations
 
@@ -697,7 +697,7 @@ A **set** is a collection of distinct objects. Operations:
 
 ### The Binomial Theorem
 
-**(a + b)^n = Σ C(n,k) · a^(n-k) · b^k** for k = 0 to n
+**$(a + b)^n = \\Sigma C(n,k) \\cdot a^{n-k} \\cdot b^k$** for k = 0 to n
 
 This is used in probability (binomial distribution) and series expansion.`,
       examTip: 'Permutations vs. combinations is a common FE question. Ask: "Does order matter?" If selecting a committee (no order), use C(n,r). If arranging items in sequence (order matters), use P(n,r). The binomial coefficient C(n,k) also appears in the binomial probability distribution.',
@@ -711,15 +711,15 @@ Logic operations map directly to digital circuits:
 
 | Operation | Symbol | Circuit Gate | Truth |
 |---|---|---|---|
-| AND | p ∧ q | AND gate | True only if both true |
-| OR | p ∨ q | OR gate | True if either true |
-| NOT | ¬p | Inverter | Flips truth value |
-| Implication | p → q | — | False only if p true and q false |
-| Biconditional | p ↔ q | XNOR | True if both same |
+| AND | $p \\wedge q$ | AND gate | True only if both true |
+| OR | $p \\vee q$ | OR gate | True if either true |
+| NOT | $\\neg p$ | Inverter | Flips truth value |
+| Implication | $p \\to q$ | — | False only if p true and q false |
+| Biconditional | $p \\leftrightarrow q$ | XNOR | True if both same |
 
 **De Morgan's Laws** for logic:
-- **¬(p ∧ q) ≡ ¬p ∨ ¬q**
-- **¬(p ∨ q) ≡ ¬p ∧ ¬q**
+- **$\\neg (p \\wedge q) \\equiv \\neg p \\vee \\neg q$**
+- **$\\neg (p \\vee q) \\equiv \\neg p \\wedge \\neg q$**
 
 **Contrapositive**: p → q is logically equivalent to ¬q → ¬p (always valid reasoning).
 
@@ -727,7 +727,7 @@ Logic operations map directly to digital circuits:
 
 A **graph** consists of vertices (nodes) connected by edges. Key properties:
 - **Degree** of a vertex: number of incident edges
-- **Euler's formula** for planar graphs: **V - E + F = 2** (vertices - edges + faces)
+- **Euler's formula** for planar graphs: **$V - E + F = 2$** (vertices - edges + faces)
 - **Complete graph** K_n has n(n-1)/2 edges
 - A **tree** with n vertices has exactly n-1 edges
 
@@ -750,14 +750,14 @@ The test for which to use: swap two of your chosen items. If that counts as a di
 
 The identities that actually reduce circuits:
 
-- **NOT(A AND B) = NOT A OR NOT B**
-- **NOT(A OR B) = NOT A AND NOT B**
+- **$NOT(A AND B) = NOT A OR NOT B$**
+- **$NOT(A OR B) = NOT A AND NOT B$**
 - Absorption: A + AB = A, and A(A + B) = A
 - Consensus: AB + A'C + BC = AB + A'C (the BC term is redundant)
 
 Simplify F = AB + AB' + A'B:
 
-AB + AB' = A(B + B') = A. So F = A + A'B. By absorption's dual, A + A'B = A + B. So **F = A + B**, a two-input OR from what looked like three product terms.
+AB + AB' = A(B + B') = A. So F = A + A'B. By absorption's dual, A + A'B = A + B. So **$F = A + B$**, a two-input OR from what looked like three product terms.
 
 ## 3.3 Set relations
 
@@ -803,15 +803,15 @@ For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so ther
   
   | Order matters? | Repetition? | Formula | Count for n=5, k=2 |
   |---|---|---|---|
-  | yes | yes | n^k | 25 |
-  | yes | no | P(n,k) = n!/(n−k)! | 20 |
-  | no | no | C(n,k) = n!/(k!(n−k)!) | 10 |
-  | no | yes | C(n+k−1, k) | 15 |
+  | yes | yes | $n^k$ | 25 |
+  | yes | no | $P(n,k) = n!/(n-k)!$ | 20 |
+  | no | no | $C(n,k) = n!/(k!(n-k)!)$ | 10 |
+  | no | yes | $C(n+k-1, k)$ | 15 |
   
   Read the four counts for the same n and k: they differ by more than a factor of
   two across the table, so the formula choice matters more than the arithmetic.
   
-  The relationship between the middle two is worth holding: **P(n,k) = C(n,k)·k!**
+  The relationship between the middle two is worth holding: **$P(n,k) = C(n,k)\\cdot k!$**
   Permutations are combinations that have then been arranged. For n=8, k=3:
   C(8,3) = 56 and P(8,3) = 336, and 336/56 = 6 = 3!, exactly as the identity
   requires.
@@ -830,7 +830,7 @@ For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so ther
   
   **Row n sums to 2ⁿ.** Summing C(n,k) over all k counts every possible subset of
   an n-element set, and each element is independently in or out, giving 2ⁿ. For a
-  digital-systems flavoured question: an 8-bit word has 2⁸ = 256 possible values,
+  digital-systems flavoured question: an 8-bit word has $2^{8}$ = 256 possible values,
   and the number of those with exactly three bits set is C(8,3) = **56**.
   
   ## 4.3 Worked: the same set of items, four questions
@@ -838,16 +838,16 @@ For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so ther
   Eight components are on a bench, all distinguishable.
   
   **Choose 3 for a test fixture, order irrelevant.**
-  C(8,3) = (8·7·6)/(3·2·1) = 336/6 = **56**.
+  $$C(8,3) = (8\\cdot 7\\cdot 6)/(3\\cdot 2\\cdot 1) = 336/6 = 56$$.
   
   **Arrange 3 of them in a row, order matters.**
-  P(8,3) = 8·7·6 = **336**.
+  $$P(8,3) = 8\\cdot 7\\cdot 6 = 336$$.
   
   **Assign 3 labelled roles, reuse allowed.**
-  8³ = **512**.
+  $$8^{3} = 512$$.
   
   **How many subsets of any size?**
-  2⁸ = **256**.
+  $$2^{8} = 256$$.
   
   Notice 512 > 336: allowing repetition adds more possibilities than requiring
   distinct items removes. And note 256 < 336, which is a useful sanity check on
@@ -855,7 +855,7 @@ For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so ther
   
   ## 4.4 Set identities, and the inclusion-exclusion trap
   
-  For two sets, **|A ∪ B| = |A| + |B| − |A ∩ B|**. The subtraction is there
+  For two sets, **$|A \\cup B| = |A| + |B| - |A \\cap B|$**. The subtraction is there
   because elements in both were counted twice. In a survey-style question — 60
   students take circuits, 45 take electronics, 20 take both — the number taking at
   least one is 60 + 45 − 20 = **85**, not 105.
@@ -865,8 +865,8 @@ For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so ther
   
   | Set form | Boolean form | Plain statement |
   |---|---|---|
-  | (A ∪ B)' = A' ∩ B' | (A + B)' = A'·B' | NOR is AND of the complements |
-  | (A ∩ B)' = A' ∪ B' | (A·B)' = A' + B' | NAND is OR of the complements |
+  | $(A \\cup B)' = A' \\cap B'$ | $(A + B)' = A'\\cdot B'$ | NOR is AND of the complements |
+  | $(A \\cap B)' = A' \\cup B'$ | $(A\\cdot B)' = A' + B'$ | NAND is OR of the complements |
   
   They are the same theorem. A question in Digital Systems asking you to convert
   a NAND network to OR gates and a question in Mathematics asking for the
@@ -898,16 +898,16 @@ For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so ther
 How many 4-digit PINs use digits 0-9 with no repeats?
 
 Order matters and repetition is barred, so this is a permutation:
-P(10,4) = 10 × 9 × 8 × 7 = **5040**.
+$$P(10,4) = 10 \\times 9 \\times 8 \\times 7 = 5040$$.
 
-With repeats allowed it would be 10⁴ = 10 000. The constraint removes almost
+With repeats allowed it would be $10^{4}$ = 10 000. The constraint removes almost
 half the space, which is the practical point of the distinction.
 
 ## 5.2 Committee selection
 
 From 12 engineers, choose a team of 4 with no roles assigned.
 
-C(12,4) = (12 × 11 × 10 × 9)/(4 × 3 × 2 × 1) = 11880/24 = **495**
+$$C(12,4) = (12 \\times 11 \\times 10 \\times 9)/(4 \\times 3 \\times 2 \\times 1) = 11880/24 = 495$$
 
 If instead the four roles are distinct — lead, reviewer, tester, scribe — then
 order matters and the count is P(12,4) = 11880. The ratio is 4! = 24, exactly as
@@ -919,9 +919,9 @@ An 8-bit byte carries one parity bit. How many 8-bit patterns have even parity
 (an even number of ones)?
 
 Even counts of ones are 0, 2, 4, 6, 8:
-C(8,0) + C(8,2) + C(8,4) + C(8,6) + C(8,8) = 1 + 28 + 70 + 28 + 1 = **128**
+$$C(8,0) + C(8,2) + C(8,4) + C(8,6) + C(8,8) = 1 + 28 + 70 + 28 + 1 = 128$$
 
-That is exactly half of 2⁸ = 256, and it is half for every n ≥ 1 — which is why
+That is exactly half of $2^{8}$ = 256, and it is half for every n ≥ 1 — which is why
 a single parity bit detects any odd number of bit errors and misses every even
 number of them.
 
@@ -989,26 +989,26 @@ fee_analytic_geom: {
       title: '1. Lines, Distance, and Coordinate Systems',
       content: `## 1.1 Distance and Midpoint
 
-- **Distance (2D)**: d = sqrt[(x₂-x₁)² + (y₂-y₁)²]
-- **Distance (3D)**: d = sqrt[(x₂-x₁)² + (y₂-y₁)² + (z₂-z₁)²]
-- **Midpoint**: ((x₁+x₂)/2, (y₁+y₂)/2)
+- **Distance (2D)**: d = sqrt[($x_{2}$-$x_{1}$)² + ($y_{2}$-$y_{1}$)²]
+- **Distance (3D)**: d = sqrt[($x_{2}$-$x_{1}$)² + ($y_{2}$-$y_{1}$)² + ($z_{2}$-$z_{1}$)²]
+- **Midpoint**: (($x_{1}$+$x_{2}$)/2, ($y_{1}$+$y_{2}$)/2)
 
 ## 1.2 Lines
 
-- **Slope**: m = (y₂-y₁)/(x₂-x₁)
-- **Point-slope form**: y - y₁ = m(x - x₁)
+- **Slope**: m = ($y_{2}$-$y_{1}$)/($x_{2}$-$x_{1}$)
+- **Point-slope form**: y - $y_{1}$ = m(x - $x_{1}$)
 - **Slope-intercept**: y = mx + b
-- **Parallel lines**: m₁ = m₂
-- **Perpendicular lines**: m₁ · m₂ = -1
+- **Parallel lines**: $m_{1}$ = $m_{2}$
+- **Perpendicular lines**: $m_{1}$ · $m_{2}$ = -1
 
 ## 1.3 Coordinate Systems
 
 | System | Coordinates | Use Case |
 |---|---|---|
 | Cartesian | (x, y, z) | General analysis |
-| Polar | (r, θ) | Phasor analysis, 2D symmetry |
-| Cylindrical | (r, θ, z) | Wire/cable fields |
-| Spherical | (r, θ, φ) | Antenna radiation patterns |
+| Polar | $(r, \\theta)$ | Phasor analysis, 2D symmetry |
+| Cylindrical | $(r, \\theta, z)$ | Wire/cable fields |
+| Spherical | $(r, \\theta, \\phi)$ | Antenna radiation patterns |
 
 ### Conversion: Polar ↔ Cartesian
 - x = r·cosθ, y = r·sinθ
@@ -1024,10 +1024,10 @@ Conic sections arise from slicing a cone at different angles:
 
 | Conic | Standard Form | Key Property |
 |---|---|---|
-| Circle | x² + y² = r² | Constant radius |
-| Ellipse | x²/a² + y²/b² = 1 | Sum of distances to foci = constant |
-| Parabola | y = ax² + bx + c | Single focus and directrix |
-| Hyperbola | x²/a² - y²/b² = 1 | Difference of distances to foci = constant |
+| Circle | $x^{2} + y^{2} = r^{2}$ | Constant radius |
+| Ellipse | $x^{2}/a^{2} + y^{2}/b^{2} = 1$ | Sum of distances to foci = constant |
+| Parabola | $y = ax^{2} + bx + c$ | Single focus and directrix |
+| Hyperbola | $x^{2}/a^{2} - y^{2}/b^{2} = 1$ | Difference of distances to foci = constant |
 
 ### Circle Properties
 - Center (h,k): (x-h)² + (y-k)² = r²
@@ -1053,9 +1053,9 @@ Conic sections arise from slicing a cone at different angles:
       title: '3. Worked Examples',
       content: `## 3.1 Lines and slopes
 
-Through (2, 3) and (6, 11): slope m = (11-3)/(6-2) = 8/4 = **2**. Point-slope: y - 3 = 2(x - 2), so **y = 2x - 1**.
+Through (2, 3) and (6, 11): slope m = (11-3)/(6-2) = 8/4 = **2**. Point-slope: y - 3 = 2(x - 2), so **$y = 2x - 1$**.
 
-Perpendicular lines have slopes whose product is -1, so a perpendicular through (2,3) has slope **-1/2**: y = -x/2 + 4.
+Perpendicular lines have slopes whose product is -1, so a perpendicular through (2,3) has slope **$-1/2$**: y = -x/2 + 4.
 
 This is not abstract on this exam: a load line on a transistor characteristic is a straight line, and its slope is -1/R_load. Given a 10 V supply and a 2 kilohm load, the load line runs from (10 V, 0 mA) to (0 V, 5 mA) with slope -1/2000 per volt.
 
@@ -1063,7 +1063,7 @@ This is not abstract on this exam: a load line on a transistor characteristic is
 
 x^2 + y^2 - 6x + 4y - 12 = 0. Group and complete:
 
-(x^2 - 6x + 9) + (y^2 + 4y + 4) = 12 + 9 + 4
+$$(x^2 - 6x + 9) + (y^2 + 4y + 4) = 12 + 9 + 4$$
 
 (x - 3)^2 + (y + 2)^2 = 25, so centre **(3, -2)** and radius **5**.
 
@@ -1073,10 +1073,10 @@ The same algebra turns up in Smith-chart work, where constant-resistance and con
 
 | Equation form | Conic | Where it appears |
 |---|---|---|
-| (x-h)^2 + (y-k)^2 = r^2 | circle | impedance loci, phasor magnitude |
-| x^2/a^2 + y^2/b^2 = 1 | ellipse | Lissajous figures, elliptical polarisation |
-| y = ax^2 + bx + c | parabola | reflector antennas, power vs load curves |
-| x^2/a^2 - y^2/b^2 = 1 | hyperbola | constant-power curves, hyperbolic navigation |
+| $(x-h)^2 + (y-k)^2 = r^2$ | circle | impedance loci, phasor magnitude |
+| $x^2/a^2 + y^2/b^2 = 1$ | ellipse | Lissajous figures, elliptical polarisation |
+| $y = ax^2 + bx + c$ | parabola | reflector antennas, power vs load curves |
+| $x^2/a^2 - y^2/b^2 = 1$ | hyperbola | constant-power curves, hyperbolic navigation |
 
 A power-vs-load-resistance curve is a parabola-like shape whose maximum you found by calculus in the differentiation chapter; recognising the shape tells you a maximum exists before you compute it.
 
@@ -1120,10 +1120,10 @@ That normal-vector idea is the same one used for surface integrals in the electr
   
   | Condition on A and C | Curve | Standard form |
   |---|---|---|
-  | A = C, same sign | circle | (x−h)² + (y−k)² = r² |
-  | A ≠ C, same sign | ellipse | (x−h)²/a² + (y−k)²/b² = 1 |
-  | A or C is zero | parabola | (x−h)² = 4p(y−k) |
-  | A and C opposite signs | hyperbola | (x−h)²/a² − (y−k)²/b² = 1 |
+  | A = C, same sign | circle | $(x-h)^{2} + (y-k)^{2} = r^{2}$ |
+  | A ≠ C, same sign | ellipse | $(x-h)^{2}/a^{2} + (y-k)^{2}/b^{2} = 1$ |
+  | A or C is zero | parabola | $(x-h)^{2} = 4p(y-k)$ |
+  | A and C opposite signs | hyperbola | $(x-h)^{2}/a^{2} - (y-k)^{2}/b^{2} = 1$ |
   
   ![The four conic sections drawn together from their standard forms: a circle of radius 2, an ellipse, a parabola and a hyperbola. Only the signs and the relative coefficients differ between them.](/courses/fe-ee/figures/math-conic-sections.svg)
   
@@ -1140,16 +1140,16 @@ That normal-vector idea is the same one used for surface integrals in the electr
   
   A = C = 1, same sign, so it is a circle. Group and complete:
   
-  x² − 6x + y² + 4y = 12
+  $$x^{2} - 6x + y^{2} + 4y = 12$$
   
   For x: half of −6 is −3, squared is 9. For y: half of 4 is 2, squared is 4. Add
   both to *each* side:
   
-  (x² − 6x + 9) + (y² + 4y + 4) = 12 + 9 + 4
+  $$(x^{2} - 6x + 9) + (y^{2} + 4y + 4) = 12 + 9 + 4$$
   
-  (x − 3)² + (y + 2)² = **25**
+  $$(x - 3)^{2} + (y + 2)^{2} = 25$$
   
-  So the centre is **(3, −2)** and the radius is **5**. Note the sign flip: the
+  So the centre is **$(3, -2)$** and the radius is **5**. Note the sign flip: the
   equation reads (y + 2)², so k = −2, not +2. That flip is the single most common
   error in this topic, and it costs the whole question because the centre is
   usually what is asked for.
@@ -1164,18 +1164,18 @@ That normal-vector idea is the same one used for surface integrals in the electr
   
   | Quantity | Formula |
   |---|---|
-  | Slope through two points | m = (y₂ − y₁)/(x₂ − x₁) |
-  | Point-slope form | y − y₁ = m(x − x₁) |
-  | Slope-intercept form | y = mx + b |
-  | Distance between points | d = √((x₂−x₁)² + (y₂−y₁)²) |
-  | Midpoint | ((x₁+x₂)/2, (y₁+y₂)/2) |
-  | Distance from point to line Ax+By+C=0 | \\|Ax₀+By₀+C\\|/√(A²+B²) |
+  | Slope through two points | $m = (y_{2} - y_{1})/(x_{2} - x_{1})$ |
+  | Point-slope form | $y - y_{1} = m(x - x_{1})$ |
+  | Slope-intercept form | $y = mx + b$ |
+  | Distance between points | $d = \\sqrt{(x_{2}-x_{1})^{2} + (y_{2}-y_{1})^{2}}$ |
+  | Midpoint | $((x_{1}+x_{2})/2, (y_{1}+y_{2})/2)$ |
+  | Distance from point to line Ax+By+C=0 | \\| $Ax_{0}+By_{0}+C$ | $/\\sqrt{A^{2}+B^{2}}$ |
   
   Two relationships between lines are asked directly:
   
-  - **Parallel** lines have equal slopes: m₁ = m₂.
+  - **Parallel** lines have equal slopes: $m_{1}$ = $m_{2}$.
   - **Perpendicular** lines have slopes whose product is −1: m₁m₂ = −1, so
-    m₂ = −1/m₁.
+    $$m_{2} = -1/m_{1}$$.
   
   A line of slope 2 is perpendicular to one of slope −1/2, not −2. The negative
   *reciprocal*, not the negative, is the rule, and the distractor is always there.
@@ -1185,11 +1185,11 @@ That normal-vector idea is the same one used for surface integrals in the electr
   A 12 V source with 4 kΩ series resistance drives a nonlinear device. The load
   line is the I-V relation the *circuit* imposes: by KVL, 12 = 4000·I + V, so
   
-  I = (12 − V)/4000
+  $$I = (12 - V)/4000$$
   
   Two points fix the line. At V = 0, I = 12/4000 = **3 mA** (the short-circuit
   current). At I = 0, V = **12 V** (the open-circuit voltage). The slope is
-  −1/4000 A/V, i.e. **−0.25 mA/V** — negative, and its magnitude is the reciprocal
+  −1/4000 A/V, i.e. **$-0.25\\ \\mathrm{mA}/V$** — negative, and its magnitude is the reciprocal
   of the resistance.
   
   That is a straight line through (0 V, 3 mA) and (12 V, 0 mA), and the operating
@@ -1212,30 +1212,30 @@ That normal-vector idea is the same one used for surface integrals in the electr
   title: '5. Problem Set: Lines, Circles and Intercepts',
   content: `## 5.1 Identify the conic
 
-4x² + 9y² − 16x + 18y − 11 = 0
+$$4x^{2} + 9y^{2} - 16x + 18y - 11 = 0$$
 
 A = 4 and C = 9 are unequal but the same sign, so this is an **ellipse**.
 Completing the square in both variables:
 
-4(x² − 4x) + 9(y² + 2y) = 11
-4(x² − 4x + 4) + 9(y² + 2y + 1) = 11 + 16 + 9
+$$4(x^{2} - 4x) + 9(y^{2} + 2y) = 11$$
+$$4(x^{2} - 4x + 4) + 9(y^{2} + 2y + 1) = 11 + 16 + 9$$
 
 Note what was added to the right: 4 × 4 = 16 and 9 × 1 = 9, because the
 completed terms sit inside the coefficients. Dropping the multiplier here is the
 usual error.
 
-4(x − 2)² + 9(y + 1)² = 36    →    (x−2)²/9 + (y+1)²/4 = 1
+$$4(x - 2)^{2} + 9(y + 1)^{2} = 36 \\to (x-2)^{2}/9 + (y+1)^{2}/4 = 1$$
 
-Centre **(2, −1)**, semi-axes a = 3 along x and b = 2 along y.
+Centre **$(2, -1)$**, semi-axes a = 3 along x and b = 2 along y.
 
 ## 5.2 Perpendicular through a point
 
 Find the line perpendicular to 3x + 4y = 12 passing through (6, 1).
 
 Rearranging: y = −(3/4)x + 3, so m = −3/4. The perpendicular slope is the
-negative reciprocal, **+4/3**. Point-slope:
+negative reciprocal, **$+4/3$**. Point-slope:
 
-y − 1 = (4/3)(x − 6)    →    **y = (4/3)x − 7**
+$$y - 1 = (4/3)(x - 6) \\to y = (4/3)x - 7$$
 
 Check perpendicularity: (−3/4)(4/3) = −1 ✓.
 
@@ -1243,7 +1243,7 @@ Check perpendicularity: (−3/4)(4/3) = −1 ✓.
 
 How far is (6, 1) from 3x + 4y − 12 = 0?
 
-d = |3(6) + 4(1) − 12| / √(3² + 4²) = |18 + 4 − 12|/5 = 10/5 = **2.0**
+$$d = |3(6) + 4(1) - 12| / \\sqrt{3^{2} + 4^{2}} = |18 + 4 - 12|/5 = 10/5 = 2.0$$
 
 The absolute value matters: distance is never negative, and omitting it on a
 point below the line yields −2, which is offered as a choice.
@@ -1302,29 +1302,29 @@ fee_diff_calc: {
       title: '1. Derivative Rules and Common Derivatives',
       content: `## 1.1 Definition and Basic Rules
 
-The derivative measures instantaneous rate of change: **f'(x) = lim(h→0) [f(x+h) - f(x)] / h**
+The derivative measures instantaneous rate of change: **$f'(x) = \\lim (h\\to 0) [f(x+h) - f(x)] / h$**
 
 ### Differentiation Rules
 
 | Rule | Formula |
 |---|---|
-| Power rule | d/dx(x^n) = n·x^(n-1) |
-| Constant multiple | d/dx(c·f) = c·f'(x) |
-| Sum rule | d/dx(f+g) = f' + g' |
-| Product rule | (uv)' = u'v + uv' |
-| Quotient rule | (u/v)' = (u'v - uv') / v² |
-| Chain rule | dy/dx = (dy/du)·(du/dx) |
+| Power rule | $d/dx(x^n) = n\\cdot x^{n-1}$ |
+| Constant multiple | $d/dx(c\\cdot f) = c\\cdot f'(x)$ |
+| Sum rule | $d/dx(f+g) = f' + g'$ |
+| Product rule | $(uv)' = u'v + uv'$ |
+| Quotient rule | $(u/v)' = (u'v - uv') / v^{2}$ |
+| Chain rule | $dy/dx = (dy/du)\\cdot (du/dx)$ |
 
 ### Common Derivatives
 
 | Function | Derivative |
 |---|---|
-| e^x | e^x |
-| ln(x) | 1/x |
-| sin(x) | cos(x) |
-| cos(x) | -sin(x) |
-| tan(x) | sec²(x) |
-| e^(ax) | a·e^(ax) |
+| $e^x$ | $e^x$ |
+| $\\ln (x)$ | 1/x |
+| $\\sin (x)$ | $\\cos (x)$ |
+| $\\cos (x)$ | $-\\sin (x)$ |
+| $\\tan (x)$ | $\\sec ^{2}(x)$ |
+| $e^{ax}$ | $a\\cdot e^{ax}$ |
 
 ## 1.2 Applications in Circuit Analysis
 
@@ -1339,20 +1339,20 @@ In electrical engineering, derivatives describe dynamic behavior:
       title: '2. Limits, L\'Hopital\'s Rule, and Taylor Series',
       content: `## 2.1 Limits and Continuity
 
-A limit **lim(x→a) f(x) = L** means f(x) approaches L as x approaches a. Limits define derivatives, integrals, and series convergence.
+A limit **$\\lim (x\\to a) f(x) = L$** means f(x) approaches L as x approaches a. Limits define derivatives, integrals, and series convergence.
 
 ### L'Hopital's Rule
 
 When a limit gives an **indeterminate form** (0/0 or ∞/∞), differentiate top and bottom:
 
-**lim(x→a) f(x)/g(x) = lim(x→a) f'(x)/g'(x)**
+**$\\lim (x\\to a) f(x)/g(x) = \\lim (x\\to a) f'(x)/g'(x)$**
 
 This can be applied repeatedly until the limit is determinate.
 
 ## 2.2 Optimization (Max/Min)
 
 To find extrema of f(x):
-1. Find critical points: set **f'(x) = 0** and solve
+1. Find critical points: set **$f'(x) = 0$** and solve
 2. **Second derivative test**: if f''(x) > 0 → local minimum; if f''(x) < 0 → local maximum
 
 ### Applications
@@ -1361,18 +1361,18 @@ To find extrema of f(x):
 
 ## 2.3 Taylor Series
 
-**f(x) = f(a) + f'(a)(x-a) + f''(a)(x-a)²/2! + f'''(a)(x-a)³/3! + ...**
+**$f(x) = f(a) + f'(a)(x-a) + f''(a)(x-a)^{2}/2! + f'''(a)(x-a)^{3}/3! + ...$**
 
 **Linearization** (first-order Taylor): f(x) ≈ f(a) + f'(a)(x-a)
 
 Common series:
-- **e^x = 1 + x + x²/2! + x³/3! + ...**
-- **sin(x) = x - x³/3! + x⁵/5! - ...**
-- **cos(x) = 1 - x²/2! + x⁴/4! - ...**
+- **$e^x = 1 + x + x^{2}/2! + x^{3}/3! + ...$**
+- **$\\sin (x) = x - x^{3}/3! + x^{5}/5! - ...$**
+- **$\\cos (x) = 1 - x^{2}/2! + x^{4}/4! - ...$**
 
 ### Partial Derivatives
 
-For multivariable functions, **∂f/∂x** treats all other variables as constants. The **gradient** ∇f = (∂f/∂x)i + (∂f/∂y)j + (∂f/∂z)k gives the direction of steepest increase.`,
+For multivariable functions, **$\\partial f/\\partial x$** treats all other variables as constants. The **gradient** ∇f = (∂f/∂x)i + (∂f/∂y)j + (∂f/∂z)k gives the direction of steepest increase.`,
       examTip: 'L\'Hopital\'s rule only works for 0/0 or ∞/∞ forms. If the limit is not indeterminate, do NOT apply L\'Hopital. Taylor series linearization f(x) ≈ f(a) + f\'(a)(x-a) is used for small-signal analysis of nonlinear circuits (like diode linearization around the Q-point).',
       importantNote: 'The maximum power transfer theorem (R_L = R_Th) is derived by differentiating P = V²·R_L/(R_Th+R_L)² and setting dP/dR_L = 0. This is a direct application of optimization using calculus.',
     },
@@ -1383,8 +1383,8 @@ For multivariable functions, **∂f/∂x** treats all other variables as constan
 
 The two defining relations are derivatives, and the exam asks about them as calculus:
 
-- Capacitor: **i = C dv/dt**. A capacitor charged by a voltage ramping at 500 V/s with C = 20 microfarad passes i = (20e-6)(500) = **10 mA**. A constant voltage gives zero current, which is why a capacitor blocks DC.
-- Inductor: **v = L di/dt**. A 0.5 H inductor whose current changes at 40 A/s develops v = (0.5)(40) = **20 V**. Try to interrupt inductor current instantly and di/dt is enormous - which is what destroys switch contacts and why flyback diodes exist.
+- Capacitor: **$i = C dv/dt$**. A capacitor charged by a voltage ramping at 500 V/s with C = 20 microfarad passes i = (20e-6)(500) = **10 mA**. A constant voltage gives zero current, which is why a capacitor blocks DC.
+- Inductor: **$v = L di/dt$**. A 0.5 H inductor whose current changes at 40 A/s develops v = (0.5)(40) = **20 V**. Try to interrupt inductor current instantly and di/dt is enormous - which is what destroys switch contacts and why flyback diodes exist.
 
 ## 3.2 Chain and product rules on a real waveform
 
@@ -1392,9 +1392,9 @@ Differentiate v(t) = 10 e^(-2t) sin(3t).
 
 Product rule with u = 10 e^(-2t) and w = sin(3t):
 
-u' = -20 e^(-2t), w' = 3 cos(3t)
+$$u' = -20 e^{-2t}, w' = 3 \\cos (3t)$$
 
-dv/dt = -20 e^(-2t) sin(3t) + 30 e^(-2t) cos(3t) = **10 e^(-2t)[3 cos(3t) - 2 sin(3t)]**
+$$dv/dt = -20 e^{-2t} \\sin (3t) + 30 e^{-2t} \\cos (3t) = 10 e^{-2t}[3 \\cos (3t) - 2 \\sin (3t)]$$
 
 This is the shape of a damped oscillation - exactly the underdamped RLC response - and its derivative is what you set to zero to find the overshoot peak.
 
@@ -1402,19 +1402,19 @@ This is the shape of a damped oscillation - exactly the underdamped RLC response
 
 A source of V volts with internal resistance R_s drives a load R_L. Load power is
 
-P = V^2 R_L/(R_s + R_L)^2
+$$P = V^2 R_L/(R_s + R_L)^2$$
 
 Differentiate with the quotient rule and set to zero. The numerator of dP/dR_L is
 
-V^2[(R_s + R_L)^2 - R_L x 2(R_s + R_L)] = V^2 (R_s + R_L)[(R_s + R_L) - 2R_L]
+$$V^2[(R_s + R_L)^2 - R_L x 2(R_s + R_L)] = V^2 (R_s + R_L)[(R_s + R_L) - 2R_L]$$
 
-Setting the bracket to zero: R_s + R_L - 2R_L = 0, so **R_L = R_s**.
+Setting the bracket to zero: R_s + R_L - 2R_L = 0, so **$R_L = R_s$**.
 
 That is the maximum power transfer theorem derived rather than memorised, and the calculus route is what an exam question means when it presents it as an optimisation problem.
 
 ## 3.4 Critical points and the second derivative
 
-f(x) = x^3 - 6x^2 + 9x + 2.
+$$f(x) = x^3 - 6x^2 + 9x + 2$$.
 
 f'(x) = 3x^2 - 12x + 9 = 3(x^2 - 4x + 3) = 3(x-1)(x-3), so critical points at **x = 1 and x = 3**.
 
@@ -1461,7 +1461,7 @@ The second-derivative test in one line: negative means a peak, positive means a 
   The procedure the picture encodes:
   
   1. **f′ = 0 locates** candidate extrema. For f = x³ − 3x, f′ = 3x² − 3 = 0 gives
-     x = ±1.
+     $$x = \\pm 1$$.
   2. **f″ classifies** them. f″ = 6x, so f″(−1) = −6 < 0 (**maximum**) and
      f″(+1) = +6 > 0 (**minimum**).
   3. **f″ = 0 with a sign change** is an inflection: here x = 0.
@@ -1479,15 +1479,15 @@ The second-derivative test in one line: negative means a peak, positive means a 
   
   | Rule | Statement |
   |---|---|
-  | Power | d/dx xⁿ = n xⁿ⁻¹ |
-  | Product | (uv)′ = u′v + uv′ |
-  | Quotient | (u/v)′ = (u′v − uv′)/v² |
-  | Chain | d/dx f(g(x)) = f′(g(x))·g′(x) |
-  | Exponential | d/dx e^(kx) = k e^(kx) |
-  | Logarithm | d/dx ln x = 1/x |
-  | Sine, cosine | d/dx sin x = cos x; d/dx cos x = −sin x |
+  | Power | $d/dx x^{n} = n x^{n-1}$ |
+  | Product | $(uv)' = u'v + uv'$ |
+  | Quotient | $(u/v)' = (u'v - uv')/v^{2}$ |
+  | Chain | $d/dx f(g(x)) = f'(g(x))\\cdot g'(x)$ |
+  | Exponential | $d/dx e^{kx} = k e^{kx}$ |
+  | Logarithm | $d/dx \\ln  x = 1/x$ |
+  | Sine, cosine | $d/dx \\sin  x = \\cos  x; d/dx \\cos  x = -\\sin  x$ |
   
-  The quotient rule's numerator order matters: **u′v − uv′**, and reversing it
+  The quotient rule's numerator order matters: **$u'v - uv'$**, and reversing it
   flips the sign of every answer. If it is easier to remember, write u/v as u·v⁻¹
   and use the product and chain rules instead — the result is identical and the
   sign takes care of itself.
@@ -1497,19 +1497,19 @@ The second-derivative test in one line: negative means a peak, positive means a 
   A source of open-circuit voltage V and internal resistance R_s drives a load
   R_L. The current is I = V/(R_s + R_L), so the load power is
   
-  P = I²R_L = V²R_L / (R_s + R_L)²
+  $$P = I^{2}R_L = V^{2}R_L / (R_s + R_L)^{2}$$
   
   Differentiate with respect to R_L using the quotient rule, with u = V²R_L and
-  v = (R_s + R_L)²:
+  $$v = (R_s + R_L)^{2}$$:
   
-  dP/dR_L = [V²(R_s + R_L)² − V²R_L·2(R_s + R_L)] / (R_s + R_L)⁴
+  $$dP/dR_L = [V^{2}(R_s + R_L)^{2} - V^{2}R_L\\cdot 2(R_s + R_L)] / (R_s + R_L)^{4}$$
   
   Cancel one factor of (R_s + R_L) from every term:
   
-  dP/dR_L = V²[(R_s + R_L) − 2R_L] / (R_s + R_L)³ = V²(R_s − R_L)/(R_s + R_L)³
+  $$dP/dR_L = V^{2}[(R_s + R_L) - 2R_L] / (R_s + R_L)^{3} = V^{2}(R_s - R_L)/(R_s + R_L)^{3}$$
   
-  Setting the numerator to zero gives **R_L = R_s**, and substituting back gives
-  P_max = V²R_s/(2R_s)² = **V²/(4R_s)**.
+  Setting the numerator to zero gives **$R_L = R_s$**, and substituting back gives
+  $$P_{\\max} = V^{2}R_s/(2R_s)^{2} = V^{2}/(4R_s)$$.
   
   This is the same result the Network Theorems topic states as a rule. Deriving it
   takes about ninety seconds and, more usefully, shows *why* the peak is broad:
@@ -1527,7 +1527,7 @@ The second-derivative test in one line: negative means a peak, positive means a 
   
   Relationship first: A = πr². Differentiate with respect to time:
   
-  dA/dt = 2πr · dr/dt = 2π(20)(0.5) = 20π ≈ **62.8 m²/s**
+  $$dA/dt = 2\\pi r \\cdot dr/dt = 2\\pi (20)(0.5) = 20\\pi \\approx 62.8 m^{2}/s$$
   
   The rate depends on r, so "how fast is the area growing" has no single answer —
   it grows faster as the slick gets bigger. A question that omits the radius is
@@ -1535,10 +1535,10 @@ The second-derivative test in one line: negative means a peak, positive means a 
   
   ## 4.5 L'Hopital, and when it does not apply
   
-  For limits of the indeterminate forms **0/0** or **∞/∞**, differentiate
+  For limits of the indeterminate forms **$0/0$** or **∞/∞**, differentiate
   numerator and denominator separately and re-evaluate:
   
-  lim(x→0) sin x / x = lim(x→0) cos x / 1 = **1**
+  $$\\lim (x\\to 0) \\sin  x / x = \\lim (x\\to 0) \\cos  x / 1 = 1$$
   
   The restriction is strict. The form must be indeterminate before you may apply
   the rule. lim(x→0) (x + 1)/x is 1/0, which is not indeterminate — it diverges,
@@ -1557,11 +1557,11 @@ Differentiate v(t) = 10 e^(−t/0.02) sin(377t) at t = 0.
 
 This is a product, and the first factor needs the chain rule:
 
-v′ = 10[(−1/0.02)e^(−t/0.02) sin(377t) + e^(−t/0.02)(377)cos(377t)]
+$$v' = 10[(-1/0.02)e^{-t/0.02} \\sin (377t) + e^{-t/0.02}(377)\\cos (377t)]$$
 
 At t = 0 the exponential is 1, sin(0) = 0 and cos(0) = 1, so
 
-v′(0) = 10[0 + 377] = **3770 V/s**
+$$v'(0) = 10[0 + 377] = 3770\\ \\mathrm{V}/s$$
 
 The decaying envelope contributes nothing at t = 0 because the sine is zero
 there — the whole initial slope comes from the oscillation.
@@ -1573,9 +1573,9 @@ Minimise the surface area.
 
 Volume fixes h: h = 8000/x². Surface area (closed box):
 
-A = 2x² + 4xh = 2x² + 32000/x
+$$A = 2x^{2} + 4xh = 2x^{2} + 32000/x$$
 
-dA/dx = 4x − 32000/x² = 0    →    4x³ = 32000    →    x³ = 8000    →    x = **20 cm**
+$$dA/dx = 4x - 32000/x^{2} = 0 \\to 4x^{3} = 32000 \\to x^{3} = 8000 \\to x = 20 cm$$
 
 Then h = 8000/400 = **20 cm**, so the optimum is a cube — the answer for any
 closed box of fixed volume. Confirm it is a minimum: A″ = 4 + 64000/x³ > 0
@@ -1586,7 +1586,7 @@ for all positive x, so concave up. ✓
 For P(θ) = 1000 sin θ cos θ, find the maximum.
 
 Rewrite with the double-angle identity: P = 500 sin 2θ, whose maximum is
-**500 W at 2θ = 90°**, i.e. **θ = 45°**. Differentiating directly gives
+**$500\\ \\mathrm{W} at 2\\theta = 90^\\circ$**, i.e. **$\\theta = 45^\\circ$**. Differentiating directly gives
 P′ = 1000 cos 2θ = 0 at the same place, but the identity makes the peak value
 immediate.
 
@@ -1596,7 +1596,7 @@ Evaluate lim(x→0) (e^(2x) − 1)/x.
 
 Substituting gives 0/0, so L'Hopital applies:
 
-lim(x→0) 2e^(2x)/1 = **2**
+$$\\lim (x\\to 0) 2e^{2x}/1 = 2$$
 
 This is the small-signal linearisation of an exponential, and it is why a diode
 equation is often approximated as linear near the origin.`,
@@ -1647,12 +1647,12 @@ fee_int_calc: {
 
 | Function | Integral |
 |---|---|
-| x^n | x^(n+1)/(n+1) + C (n ≠ -1) |
+| $x^n$ | $x^{n+1}/(n+1) + C (n \\ne -1)$ |
 | 1/x | ln|x| + C |
-| e^x | e^x + C |
-| e^(ax) | (1/a)e^(ax) + C |
-| sin(x) | -cos(x) + C |
-| cos(x) | sin(x) + C |
+| $e^x$ | $e^x + C$ |
+| $e^{ax}$ | $(1/a)e^{ax} + C$ |
+| $\\sin (x)$ | $-\\cos (x) + C$ |
+| $\\cos (x)$ | $\\sin (x) + C$ |
 
 ## 1.2 Integration Techniques
 
@@ -1662,15 +1662,15 @@ Replace a composite expression with u, transform dx to du:
 - ∫f(g(x))·g'(x)dx = ∫f(u)du
 
 ### Integration by Parts
-**∫u dv = uv - ∫v du**
+**$\\int u dv = uv - \\int v du$**
 
 Choose u and dv using **LIATE** priority: Logarithmic, Inverse trig, Algebraic, Trig, Exponential.
 
 ### The Fundamental Theorem of Calculus
 
-**d/dx[∫ₐˣ f(t)dt] = f(x)**
+**$d/dx[\\int _{a}^{x} f(t)dt] = f(x)$**
 
-**∫ₐᵇ f(x)dx = F(b) - F(a)** where F is any antiderivative of f.`,
+**$\\int _{a}^{b} f(x)dx = F(b) - F(a)$** where F is any antiderivative of f.`,
       examTip: 'Integration by parts (∫u dv = uv - ∫v du) appears when integrating products like t·e^(-t) which arise in transient circuit analysis. Use LIATE to choose u: pick the function that simplifies when differentiated.',
     },
     {
@@ -1680,13 +1680,13 @@ Choose u and dv using **LIATE** priority: Logarithmic, Inverse trig, Algebraic, 
 
 Integration computes energy stored in reactive elements:
 
-- **Capacitor energy**: W = ∫₀ᵛ Cv dv = **½CV²**
-- **Inductor energy**: W = ∫₀ⁱ Li di = **½LI²**
+- **Capacitor energy**: W = ∫₀ᵛ Cv dv = **$\\tfrac{1}{2} CV^{2}$**
+- **Inductor energy**: W = ∫₀ⁱ Li di = **$\\tfrac{1}{2} LI^{2}$**
 
 ## 2.2 Charge and Current
 
 Total charge is the integral of current:
-- **Q = ∫I dt** (charge = area under current-time curve)
+- **$Q = \\int I dt$** (charge = area under current-time curve)
 
 ## 2.3 Average and RMS Values
 
@@ -1695,12 +1695,12 @@ Total charge is the integral of current:
 - **Average power**: P_avg = (1/T)∫₀ᵀ p(t)dt = (1/T)∫₀ᵀ v(t)·i(t)dt
 
 For a sinusoid v(t) = Vm·cos(ωt):
-- **V_rms = Vm / sqrt(2) ≈ 0.707·Vm**
+- **$V_{rms} = Vm / \\sqrt{2} \\approx 0.707\\cdot Vm$**
 
 ## 2.4 Improper Integrals
 
 The **Laplace transform** uses an improper integral:
-- **F(s) = ∫₀^∞ f(t)·e^(-st)dt**
+- **$F(s) = \\int _{0}^\\infty f(t)\\cdot e^{-st}dt$**
 
 This integral converges when the exponential decay e^(-st) dominates the growth of f(t), defining the **region of convergence**.`,
       examTip: 'The three most important integration results for the FE exam: W = ½CV² (capacitor energy), W = ½LI² (inductor energy), and V_rms = V_peak/sqrt(2). These appear in power calculations, energy balance, and transient analysis.',
@@ -1737,11 +1737,11 @@ For a sinusoid the average over a full cycle is zero and the rms is V_peak/sqrt(
 
 Energy = integral p dt. A resistor carrying i(t) = 2e^(-t) A, with R = 10 ohm:
 
-p(t) = i^2 R = 40 e^(-2t) W
+$$p(t) = i^2 R = 40 e^{-2t}\\ \\mathrm{W}$$
 
 W = integral from 0 to infinity of 40 e^(-2t) dt = 40 x [(-1/2) e^(-2t)] from 0 to infinity = 40 x (1/2) = **20 J**.
 
-Stored energy has closed forms worth knowing without integrating: **(1/2) C V^2** in a capacitor and **(1/2) L I^2** in an inductor.
+Stored energy has closed forms worth knowing without integrating: **$(1/2) C V^2$** in a capacitor and **$(1/2) L I^2$** in an inductor.
 
 ## 3.4 Integration by parts, once
 
@@ -1751,7 +1751,7 @@ Let u = t, dv = e^(-2t) dt. Then du = dt and v = (-1/2) e^(-2t).
 
 integral = uv - integral v du = (-t/2) e^(-2t) + (1/2) integral e^(-2t) dt = (-t/2) e^(-2t) - (1/4) e^(-2t) + C
 
-Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value is -1/4. So the definite integral is **1/4**.`,
+Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value is -1/4. So the definite integral is **$1/4$**.`,
       examTip: 'Learn the rms of the standard waveforms rather than integrating under time pressure: sinusoid V_m/sqrt(2), square V_m, triangle V_m/sqrt(3), half-wave rectified sinusoid V_m/2. One of these appears on almost every sitting.',
       quiz: [
         {
@@ -1793,19 +1793,19 @@ Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value i
   
   | Integral | Result |
   |---|---|
-  | ∫xⁿ dx (n ≠ −1) | xⁿ⁺¹/(n+1) + C |
-  | ∫(1/x) dx | ln\\|x\\| + C |
-  | ∫e^(kx) dx | (1/k)e^(kx) + C |
-  | ∫sin(kx) dx | −(1/k)cos(kx) + C |
-  | ∫cos(kx) dx | (1/k)sin(kx) + C |
-  | ∫sin²(kx) dx | x/2 − sin(2kx)/(4k) + C |
+  | $\\int x^{n} dx (n \\ne -1)$ | $x^{n+1}/(n+1) + C$ |
+  | $\\int (1/x) dx$ | ln\\|x\\| + C |
+  | $\\int e^{kx} dx$ | $(1/k)e^{kx} + C$ |
+  | $\\int \\sin (kx) dx$ | $-(1/k)\\cos (kx) + C$ |
+  | $\\int \\cos (kx) dx$ | $(1/k)\\sin (kx) + C$ |
+  | $\\int \\sin ^{2}(kx) dx$ | $x/2 - \\sin (2kx)/(4k) + C$ |
   
   The last one is not a separate fact: apply the power-reduction identity
   sin² = (1 − cos 2θ)/2 first, and it becomes two integrals you already know. Any
   integral of a squared sinusoid is done this way, and that is the route to RMS.
   
   **Substitution** handles composites: for ∫2x·e^(x²) dx, let u = x², so du = 2x dx
-  and the integral is ∫e^u du = e^u + C = **e^(x²) + C**. The signal that
+  and the integral is ∫e^u du = e^u + C = **$e^{x^{2}} + C$**. The signal that
   substitution will work is seeing a function *and its derivative* both present.
   
   **Integration by parts**, ∫u dv = uv − ∫v du, handles products of unlike things —
@@ -1816,22 +1816,22 @@ Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value i
   
   RMS is defined by its name read backwards — root of the mean of the square:
   
-  V_rms = √( (1/T) ∫₀^T v(t)² dt )
+  $$V_{rms} = \\sqrt{ (1/T) \\int _{0}^T v(t)^{2} dt}$$
   
   **For a sinusoid v = V_m sin(ωt).** Square it and use power reduction:
   
-  v² = V_m² sin²(ωt) = V_m²(1 − cos 2ωt)/2
+  $$v^{2} = V_m^{2} \\sin ^{2}(\\omega t) = V_m^{2}(1 - \\cos  2\\omega t)/2$$
   
   Over a whole period the cos 2ωt term integrates to zero, leaving the mean square
   as V_m²/2. Taking the root:
   
-  V_rms = V_m/√2 = **0.707 V_m**
+  $$V_{rms} = V_m/\\sqrt{2} = 0.707 V_m$$
   
   **For a square wave** of amplitude ±V_m, the square is V_m² at every instant, so
   the mean square is V_m² and V_rms = **V_m**. No factor at all.
   
   **For a symmetric triangle wave** of peak V_m, the same integral gives
-  V_rms = **V_m/√3 ≈ 0.577 V_m**.
+  $$V_{rms} = V_m/\\sqrt{3} \\approx 0.577 V_m$$.
   
   | Waveform | V_rms | V_avg (full-wave rectified) | Form factor |
   |---|---|---|---|
@@ -1849,7 +1849,7 @@ Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value i
   
   The average of a full-wave rectified sine is
   
-  V_avg = (1/π)∫₀^π V_m sin θ dθ = (V_m/π)[−cos θ]₀^π = (V_m/π)(1 + 1) = 2V_m/π
+  $$V_{avg} = (1/\\pi)\\int _{0}^\\pi V_m \\sin  \\theta d\\theta = (V_m/\\pi)[-\\cos  \\theta]_{0}^\\pi = (V_m/\\pi)(1 + 1) = 2V_m/\\pi$$
   
   which is **0.637 V_m**. This is what a moving-coil DC meter responds to, while a
   true-RMS meter responds to 0.707 V_m. The ratio of the two, 0.707/0.637 = 1.11,
@@ -1884,10 +1884,10 @@ zero otherwise. Find the RMS value.
 
 Mean square = (1/T)∫i² dt = (1/0.010)(10² × 0.003) = (100 × 0.003)/0.010 = 30
 
-I_rms = √30 = **5.48 A**
+$$I_{rms} = \\sqrt{30} = 5.48\\ \\mathrm{A}$$
 
 The duty cycle is 0.3, and 10√0.3 = 5.48 confirms the general result
-**I_rms = I_peak√D** for a rectangular pulse train. The *average* current is
+**$I_{rms} = I_{peak}\\sqrt{D}$** for a rectangular pulse train. The *average* current is
 10 × 0.3 = 3 A, well below the RMS — the gap between them is what makes a
 heating calculation different from a charge calculation.
 
@@ -1904,18 +1904,18 @@ exam's integration questions are geometry in disguise.
 
 W = ∫p dt = ∫vi dt, and for a capacitor i = C dv/dt, so
 
-W = ∫v · C(dv/dt) dt = C∫v dv = **½CV²**
+$$W = \\int v \\cdot C(dv/dt) dt = C\\int v dv = \\tfrac{1}{2} CV^{2}$$
 
-Substituting C = 100 µF charged to 50 V: W = ½(100×10⁻⁶)(2500) = **0.125 J**.
+Substituting C = 100 µF charged to 50 V: W = ½(100×$10^{-6}$)(2500) = **0.125 J**.
 Deriving it takes three lines and removes any doubt about whether the factor is
-½ or 2.
+$$\\tfrac{1}{2} or 2$$.
 
 ## 5.4 Average of a half-wave rectified sine
 
 Only the positive half survives, and the average is taken over the **full**
 period:
 
-V_avg = (1/2π)∫₀^π V_m sin θ dθ = (V_m/2π)(2) = V_m/π = **0.318 V_m**
+$$V_{avg} = (1/2\\pi)\\int _{0}^\\pi V_m \\sin  \\theta d\\theta = (V_m/2\\pi)(2) = V_m/\\pi = 0.318 V_m$$
 
 Dividing by π instead of 2π gives 0.637 V_m, which is the *full*-wave answer.
 The distinction is which rectifier is in the circuit, and both numbers always
@@ -1927,7 +1927,7 @@ Evaluate ∫₀^1 x·e^(x²) dx.
 
 Let u = x², du = 2x dx, so x dx = du/2. Limits become u: 0 → 1.
 
-∫₀^1 (1/2)e^u du = ½(e¹ − e⁰) = ½(2.718 − 1) = **0.859**
+$$\\int _{0}^1 (1/2)e^u du = \\tfrac{1}{2} (e^{1} - e^{0}) = \\tfrac{1}{2} (2.718 - 1) = 0.859$$
 
 Changing the limits with the variable avoids converting back at the end, which
 is where sign and bound errors creep in.`,
@@ -1979,15 +1979,15 @@ fee_diffeq: {
 
 A first-order linear ODE with constant coefficients:
 
-**dy/dt + ay = b**
+**$dy/dt + ay = b$**
 
-With initial condition y(0) = y₀, the solution is:
+With initial condition y(0) = $y_{0}$, the solution is:
 
-**y(t) = b/a + (y₀ - b/a)·e^(-at)**
+**$y(t) = b/a + (y_{0} - b/a)\\cdot e^{-at}$**
 
 This has two parts:
 - **Steady-state (forced) response**: y_ss = b/a (the value as t → ∞)
-- **Transient (natural) response**: (y₀ - y_ss)·e^(-at) (decays exponentially)
+- **Transient (natural) response**: ($y_{0}$ - y_ss)·e^(-at) (decays exponentially)
 
 ### Time Constant
 
@@ -1995,10 +1995,10 @@ The **time constant** τ = 1/a determines how fast the transient decays:
 
 | Time | Value of e^(-t/τ) | % of Steady State |
 |---|---|---|
-| t = τ | 0.368 | 63.2% |
-| t = 2τ | 0.135 | 86.5% |
-| t = 3τ | 0.050 | 95.0% |
-| t = 5τ | 0.007 | 99.3% |
+| $t = \\tau$ | 0.368 | 63.2% |
+| $t = 2\\tau$ | 0.135 | 86.5% |
+| $t = 3\\tau$ | 0.050 | 95.0% |
+| $t = 5\\tau$ | 0.007 | 99.3% |
 
 ## 1.2 Circuit Applications
 
@@ -2007,7 +2007,7 @@ The **time constant** τ = 1/a determines how fast the transient decays:
 
 The general first-order transient formula works for ANY first-order circuit:
 
-**x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ)**`,
+**$x(t) = x(\\infty) + [x(0) - x(\\infty)]\\cdot e^{-t/\\tau}$**`,
       examTip: 'The universal first-order formula x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ) solves ANY RC or RL transient. Find three things: initial value x(0), final value x(∞), and time constant τ. This single formula covers charging, discharging, and source-switching problems.',
       importantNote: 'At t = 0⁺ (just after switching): capacitor voltage CANNOT change instantly (v_C(0⁺) = v_C(0⁻)), and inductor current CANNOT change instantly (i_L(0⁺) = i_L(0⁻)). These continuity conditions are essential for finding initial values.',
     },
@@ -2018,7 +2018,7 @@ The general first-order transient formula works for ANY first-order circuit:
 
 The general second-order ODE for circuits and control systems:
 
-**d²y/dt² + 2ζωₙ·dy/dt + ωₙ²·y = ωₙ²·u(t)**
+**$d^{2}y/dt^{2} + 2\\zeta \\omega _{n}\\cdot dy/dt + \\omega _{n}^{2}\\cdot y = \\omega _{n}^{2}\\cdot u(t)$**
 
 Where:
 - **ωₙ** = natural frequency (rad/s)
@@ -2034,24 +2034,24 @@ Roots: s = -ζωₙ ± ωₙ·sqrt(ζ² - 1)
 
 | Damping Ratio | Response Type | Root Type | Behavior |
 |---|---|---|---|
-| ζ < 1 | Underdamped | Complex conjugate | Oscillates with decaying envelope |
-| ζ = 1 | Critically damped | Repeated real | Fastest return without overshoot |
-| ζ > 1 | Overdamped | Distinct real | Slow, monotonic approach |
+| $\\zeta < 1$ | Underdamped | Complex conjugate | Oscillates with decaying envelope |
+| $\\zeta = 1$ | Critically damped | Repeated real | Fastest return without overshoot |
+| $\\zeta > 1$ | Overdamped | Distinct real | Slow, monotonic approach |
 
 ### Series RLC Circuit Parameters
 
 For a series RLC circuit:
-- **ωₙ = 1/sqrt(LC)** (natural frequency)
-- **ζ = R/(2sqrt(L/C)) = R/(2)·sqrt(C/L)** (damping ratio)
+- **$\\omega _{n} = 1/\\sqrt{LC}$** (natural frequency)
+- **$\\zeta = R/(2\\sqrt{L/C}) = R/(2)\\cdot \\sqrt{C/L}$** (damping ratio)
 - **Damped frequency**: ωd = ωₙ·sqrt(1 - ζ²) (for underdamped case)
 
 ### Laplace Transform Approach
 
 Converting to s-domain simplifies solving: the ODE becomes an algebraic equation in s.
 
-**s²Y(s) + 2ζωₙsY(s) + ωₙ²Y(s) = ωₙ²U(s)** (assuming zero initial conditions)
+**$s^{2}Y(s) + 2\\zeta \\omega _{n}sY(s) + \\omega _{n}^{2}Y(s) = \\omega _{n}^{2}U(s)$** (assuming zero initial conditions)
 
-This gives **H(s) = Y(s)/U(s) = ωₙ²/(s² + 2ζωₙs + ωₙ²)**`,
+This gives **$H(s) = Y(s)/U(s) = \\omega _{n}^{2}/(s^{2} + 2\\zeta \\omega _{n}s + \\omega _{n}^{2})$**`,
       examTip: 'The damping ratio ζ is the MOST important parameter for second-order systems on the FE exam. ζ < 1 oscillates (underdamped), ζ = 1 is critically damped (fastest no-overshoot), ζ > 1 is overdamped (sluggish). For series RLC: ζ = R/(2sqrt(L/C)). Increasing R increases damping.',
       importantNote: 'Critically damped (ζ = 1) is NOT the fastest response — underdamped (ζ < 1) reaches the target faster but overshoots. Critically damped is the fastest WITHOUT overshoot. This distinction is tested on the FE exam.',
     },
@@ -2072,7 +2072,7 @@ For a 100 V step onto an uncharged capacitor with tau = 0.5 s: x(0+) = 0, x(infi
 
 A series RLC gives L d2i/dt2 + R di/dt + i/C = 0, whose characteristic equation is
 
-**s^2 + (R/L) s + 1/(LC) = 0**
+**$s^2 + (R/L) s + 1/(LC) = 0$**
 
 Write it as s^2 + 2 alpha s + omega_0^2 = 0 with alpha = R/2L (the damping factor) and omega_0 = 1/sqrt(LC) (the undamped natural frequency). Then:
 
@@ -2092,7 +2092,7 @@ Change R to 100 ohm: alpha = 500 < omega_0 = 1000, so underdamped, with damped f
 
 dy/dt = -ky, the decay law behind radioactive decay, capacitor discharge and thermal cooling.
 
-Separate: dy/y = -k dt. Integrate: ln y = -kt + C, so **y = y_0 e^(-kt)**.
+Separate: dy/y = -k dt. Integrate: ln y = -kt + C, so **$y = y_0 e^{-kt}$**.
 
 A quantity falling to half its value in 5 s gives 0.5 = e^(-5k), so k = ln2/5 = **0.139 per second**, and the time constant 1/k = 7.2 s. Note that the time constant is longer than the half-life by the factor 1/0.693.
 
@@ -2142,16 +2142,16 @@ For a sinusoidal drive, the forced response is a sinusoid at the driving frequen
   a·y″ + b·y′ + c·y = 0, is solved by assuming y = e^(st). Substituting gives
   (as² + bs + c)e^(st) = 0, and since the exponential is never zero:
   
-  **as² + bs + c = 0**
+  **$as^{2} + bs + c = 0$**
   
   The roots of that quadratic are the entire behaviour of the system. The
   discriminant b² − 4ac decides which of three cases you are in:
   
   | Discriminant | Roots | Response | Circuit name |
   |---|---|---|---|
-  | > 0 | two distinct real | C₁e^(s₁t) + C₂e^(s₂t) | overdamped |
-  | = 0 | one repeated real | (C₁ + C₂t)e^(st) | critically damped |
-  | < 0 | complex conjugate pair | e^(αt)(C₁cos ω_d t + C₂sin ω_d t) | underdamped |
+  | $> 0$ | two distinct real | $C_{1}e^{s_{1}t} + C_{2}e^{s_{2}t}$ | overdamped |
+  | $= 0$ | one repeated real | $(C_{1} + C_{2}t)e^{st}$ | critically damped |
+  | $< 0$ | complex conjugate pair | $e^{\\alpha t}(C_{1}\\cos  \\omega _d t + C_{2}\\sin  \\omega _d t)$ | underdamped |
   
   ![Three second-order responses from the same natural frequency with different damping: overdamped approaches the final value slowly without overshoot, critically damped is the fastest without overshoot, and underdamped overshoots and rings before settling.](/courses/fe-ee/figures/math-damping-regimes.svg)
   
@@ -2164,13 +2164,13 @@ For a sinusoidal drive, the forced response is a sinusoid at the driving frequen
   For a series RLC circuit the loop equation is
   L·di/dt + Ri + (1/C)∫i dt = 0. Differentiating once to clear the integral:
   
-  L·i″ + R·i′ + i/C = 0    →    s² + (R/L)s + 1/(LC) = 0
+  $$L\\cdot i'' + R\\cdot i' + i/C = 0 \\to s^{2} + (R/L)s + 1/(LC) = 0$$
   
   Comparing with the standard form s² + 2αs + ω₀² = 0 gives the two parameters
   that name everything:
   
-  - **α = R/(2L)**, the neper frequency — how fast the envelope decays
-  - **ω₀ = 1/√(LC)**, the resonant frequency — how fast it would oscillate undamped
+  - **$\\alpha = R/(2L)$**, the neper frequency — how fast the envelope decays
+  - **$\\omega _{0} = 1/\\sqrt{LC}$**, the resonant frequency — how fast it would oscillate undamped
   
   | Comparison | Regime | What you see |
   |---|---|---|
@@ -2180,16 +2180,16 @@ For a sinusoidal drive, the forced response is a sinusoid at the driving frequen
   
   **Worked.** Take L = 20 mH, C = 50 µF, and R = 20 Ω.
   
-  ω₀ = 1/√(0.02 × 50×10⁻⁶) = 1/√(10⁻⁶) = **1000 rad/s**
-  α = R/(2L) = 20/(2 × 0.02) = **500 s⁻¹**
+  $$\\omega _{0} = 1/\\sqrt{0.02 \\times 50\\times 10^{-6}} = 1/\\sqrt{10^{-6}} = 1000\\ \\mathrm{rad/s}$$
+  $$\\alpha = R/(2L) = 20/(2 \\times 0.02) = 500\\ \\mathrm{s}^{-1}$$
   
   Since α = 500 < ω₀ = 1000, the circuit is **underdamped**, and it rings at
   
-  ω_d = √(1000² − 500²) = √750000 = **866 rad/s**
+  $$\\omega _d = \\sqrt{1000^{2} - 500^{2}} = \\sqrt{750000} = 866\\ \\mathrm{rad/s}$$
   
   Note that the ringing frequency is *below* ω₀, always — damping slows the
   oscillation as well as shrinking it. To make this same circuit critically
-  damped you would need α = ω₀, i.e. R = 2Lω₀ = 2(0.02)(1000) = **40 Ω**.
+  damped you would need α = ω₀, i.e. R = 2Lω₀ = 2(0.02)(1000) = **$40\\ \\Omega$**.
   
   ## 4.3 First order, and the shortcut that avoids the algebra
   
@@ -2197,10 +2197,10 @@ For a sinusoidal drive, the forced response is a sinusoid at the driving frequen
   them has the same solution shape, and reading three numbers off the circuit is
   faster than solving anything:
   
-  **y(t) = y(∞) + [y(0) − y(∞)]·e^(−t/τ)**
+  **$y(t) = y(\\infty) + [y(0) - y(\\infty)]\\cdot e^{-t/\\tau}$**
   
   - **y(0)** from continuity: capacitor voltage and inductor current cannot jump.
-  - **y(∞)** from DC steady state: capacitor is an open circuit, inductor a short.
+  - **$y(\\infty)$** from DC steady state: capacitor is an open circuit, inductor a short.
   - **τ** = RC or L/R, with R being the **Thevenin resistance seen by the storage
     element**, not necessarily any single resistor in the diagram.
   
@@ -2217,8 +2217,8 @@ For a sinusoidal drive, the forced response is a sinusoid at the driving frequen
   | Forcing function | Try a particular solution of the form |
   |---|---|
   | constant K | constant A |
-  | e^(kt) | A·e^(kt) |
-  | sin ωt or cos ωt | A cos ωt + B sin ωt (**both terms**) |
+  | $e^{kt}$ | $A\\cdot e^{kt}$ |
+  | $\\sin  \\omega t or \\cos  \\omega t$ | A cos ωt + B sin ωt (**both terms**) |
   | polynomial of degree n | general polynomial of degree n |
   
   For a sinusoidal forcing function you must include **both** sine and cosine even
@@ -2242,8 +2242,8 @@ A 10 µF capacitor sits between node A and ground. Looking back from the
 capacitor with sources deactivated, the network reduces to 40 kΩ in parallel
 with 60 kΩ. Find the time constant.
 
-R_th = (40 × 60)/(40 + 60) = 2400/100 = **24 kΩ**
-τ = R_th·C = 24×10³ × 10×10⁻⁶ = **0.24 s**
+$$R_{th} = (40 \\times 60)/(40 + 60) = 2400/100 = 24 k\\Omega$$
+$$\\tau = R_{th}\\cdot C = 24\\times 10^{3} \\times 10\\times 10^{-6} = 0.24\\ \\mathrm{s}$$
 
 Using either resistor alone gives 0.4 s or 0.6 s, both of which are offered.
 The time constant uses the resistance the *element* sees, not any single
@@ -2253,12 +2253,12 @@ component.
 
 Series RLC with R = 100 Ω, L = 10 mH, C = 1 µF.
 
-ω₀ = 1/√(0.01 × 10⁻⁶) = 1/√(10⁻⁸) = **10 000 rad/s**
-α = R/(2L) = 100/(2 × 0.01) = **5000 s⁻¹**
+$$\\omega _{0} = 1/\\sqrt{0.01 \\times 10^{-6}} = 1/\\sqrt{10^{-8}} = 10 000\\ \\mathrm{rad/s}$$
+$$\\alpha = R/(2L) = 100/(2 \\times 0.01) = 5000\\ \\mathrm{s}^{-1}$$
 
 α < ω₀, so **underdamped**, ringing at
 
-ω_d = √(10⁴² − 5000²) = √(10⁸ − 2.5×10⁷) = √(7.5×10⁷) = **8660 rad/s**
+$$\\omega _d = \\sqrt{10^{42} - 5000^{2}} = \\sqrt{10^{8} - 2.5\\times 10^{7}} = \\sqrt{7.5\\times 10^{7}} = 8660\\ \\mathrm{rad/s}$$
 
 The damping ratio ζ = α/ω₀ = 0.5, which is the value control-systems questions
 use for a well-damped step response with about 16 % overshoot.
@@ -2267,7 +2267,7 @@ use for a well-damped step response with about 16 % overshoot.
 
 For that same L and C, critical damping needs α = ω₀:
 
-R/(2L) = ω₀    →    R = 2Lω₀ = 2(0.01)(10 000) = **200 Ω**
+$$R/(2L) = \\omega _{0} \\to R = 2L\\omega _{0} = 2(0.01)(10 000) = 200\\ \\Omega$$
 
 Doubling R from 100 Ω to 200 Ω moves the circuit from underdamped to critically
 damped. Any larger R is overdamped — slower, but with no overshoot at all.
@@ -2280,7 +2280,7 @@ Natural part: root of s + 4 = 0 is s = −4, giving i_n = Ae^(−4t).
 Forced part: a constant input gives a constant output, i_p = 12/4 = 3.
 So i = 3 + Ae^(−4t), and i(0) = 0 gives A = −3:
 
-i(t) = **3(1 − e^(−4t))**
+$$i(t) = 3(1 - e^{-4t})$$
 
 which is the universal first-order form with i(0) = 0, i(∞) = 3 and τ = 1/4 s —
 confirming that the three-number shortcut and the full solution agree.`,
@@ -2323,7 +2323,7 @@ fee_linear_algebra: {
       title: '1. Matrix Operations and Determinants',
       content: `## 1.1 Matrix Arithmetic
 
-A system **Ax = b** represents n equations in n unknowns:
+A system **$Ax = b$** represents n equations in n unknowns:
 
 - **Addition**: element-wise (matrices must be same size)
 - **Scalar multiplication**: multiply every element
@@ -2341,7 +2341,7 @@ A matrix is **invertible** if and only if det(A) ≠ 0.
 
 ### Matrix Inverse (2×2)
 
-**[a b; c d]⁻¹ = (1/(ad-bc)) · [d -b; -c a]**
+**$[a b; c d]^{-1} = (1/(ad-bc)) \\cdot [d -b; -c a]$**
 
 ## 1.2 Solving Linear Systems
 
@@ -2353,8 +2353,8 @@ Reduce to row echelon form using elementary row operations. Faster than Cramer's
 
 | Method | Best For | Complexity |
 |---|---|---|
-| Cramer's rule | 2×2 or 3×3 systems | O(n! · n) |
-| Gaussian elimination | Any size | O(n³) |
+| Cramer's rule | 2×2 or 3×3 systems | $O(n! \\cdot n)$ |
+| Gaussian elimination | Any size | $O(n^{3})$ |
 | Matrix inverse | Multiple right-hand sides | O(n³) setup |`,
       examTip: 'For 2×2 systems, Cramer\'s rule is fastest on the FE exam. For 3×3, Gaussian elimination is usually faster. Always check that det(A) ≠ 0 before applying Cramer\'s — if det = 0, the system has no unique solution.',
     },
@@ -2363,11 +2363,11 @@ Reduce to row echelon form using elementary row operations. Faster than Cramer's
       title: '2. Eigenvalues and Stability',
       content: `## 2.1 Eigenvalue Problem
 
-The eigenvalue equation: **Ax = λx**
+The eigenvalue equation: **$Ax = \\lambda x$**
 
 Where λ is the **eigenvalue** and x is the **eigenvector**.
 
-To find eigenvalues, solve: **det(A - λI) = 0** (the characteristic equation)
+To find eigenvalues, solve: **$\\det (A - \\lambda I) = 0$** (the characteristic equation)
 
 For a 2×2 matrix [a b; c d]:
 - **Characteristic equation**: λ² - (a+d)λ + (ad-bc) = 0
@@ -2399,9 +2399,9 @@ Mesh analysis gives 5i1 - 2i2 = 10 and -2i1 + 6i2 = 4.
 
 Coefficient determinant: det(A) = (5)(6) - (-2)(-2) = 30 - 4 = **26**.
 
-Replace column 1 with the right-hand side: det(A1) = (10)(6) - (4)(-2) = 60 + 8 = 68, so **i1 = 68/26 = 2.62 A**.
+Replace column 1 with the right-hand side: det(A1) = (10)(6) - (4)(-2) = 60 + 8 = 68, so **$i1 = 68/26 = 2.62\\ \\mathrm{A}$**.
 
-Replace column 2: det(A2) = (5)(4) - (-2)(10) = 20 + 20 = 40, so **i2 = 40/26 = 1.54 A**.
+Replace column 2: det(A2) = (5)(4) - (-2)(10) = 20 + 20 = 40, so **$i2 = 40/26 = 1.54\\ \\mathrm{A}$**.
 
 Substitute back: 5(2.62) - 2(1.54) = 13.1 - 3.08 = 10.0. Correct.
 
@@ -2481,11 +2481,11 @@ Worked: A = [[0, 1],[-6, -5]]. Characteristic equation: lambda^2 - (trace)lambda
   The defining equation A**v** = λ**v** rearranges to (A − λI)**v** = 0. A
   non-zero **v** can only satisfy this if the matrix is singular, so:
   
-  **det(A − λI) = 0**
+  **$\\det (A - \\lambda I) = 0$**
   
   For A = [[2, 1], [1, 2]]:
   
-  det([[2−λ, 1], [1, 2−λ]]) = (2−λ)² − 1 = λ² − 4λ + 3 = 0
+  $$\\det ([[2-\\lambda, 1], [1, 2-\\lambda]]) = (2-\\lambda)^{2} - 1 = \\lambda ^{2} - 4\\lambda + 3 = 0$$
   
   giving λ = **3 and 1**, exactly the factors in the figure.
   
@@ -2500,9 +2500,9 @@ Worked: A = [[0, 1],[-6, -5]]. Characteristic equation: lambda^2 - (trace)lambda
   error in the characteristic polynomial. If your eigenvalues do not sum to the
   trace, you do not need to look for the mistake — you already know there is one.
   
-  To get an eigenvector, substitute a λ back. For λ = 3: (2−3)v₁ + v₂ = 0, so
-  v₂ = v₁ and the eigenvector is any multiple of **[1, 1]**. For λ = 1:
-  (2−1)v₁ + v₂ = 0, so v₂ = −v₁ and the eigenvector is any multiple of **[1, −1]**.
+  To get an eigenvector, substitute a λ back. For λ = 3: (2−3)$v_{1}$ + $v_{2}$ = 0, so
+  $v_{2}$ = $v_{1}$ and the eigenvector is any multiple of **[1, 1]**. For λ = 1:
+  (2−1)$v_{1}$ + $v_{2}$ = 0, so $v_{2}$ = −$v_{1}$ and the eigenvector is any multiple of **$[1, -1]$**.
   Eigenvectors are directions, so any non-zero scaling is equally correct — an
   answer choice differing from yours by a factor is not necessarily wrong.
   
@@ -2510,8 +2510,8 @@ Worked: A = [[0, 1],[-6, -5]]. Characteristic equation: lambda^2 - (trace)lambda
   
   | Size | Method |
   |---|---|
-  | 2×2 | ad − bc |
-  | 3×3 | expansion along any row or column with alternating signs |
+  | $2\\times 2$ | $ad - bc$ |
+  | $3\\times 3$ | expansion along any row or column with alternating signs |
   | any | product of the eigenvalues |
   
   Geometrically the determinant is the **area (or volume) scaling factor** of the
@@ -2527,19 +2527,19 @@ Worked: A = [[0, 1],[-6, -5]]. Characteristic equation: lambda^2 - (trace)lambda
   For small systems Cramer's rule beats elimination because it needs no
   bookkeeping. Solving A**x** = **b**, each unknown is
   
-  xᵢ = det(Aᵢ)/det(A)
+  $$x_{i} = \\det (A_{i})/\\det (A)$$
   
   where Aᵢ is A with column i replaced by **b**.
   
   **Worked, from a mesh problem.** Two mesh equations:
   
-  3I₁ − I₂ = 10
-  −I₁ + 2I₂ = 4
+  $$3I_{1} - I_{2} = 10$$
+  $$-I_{1} + 2I_{2} = 4$$
   
-  det(A) = (3)(2) − (−1)(−1) = 6 − 1 = **5**
+  $$\\det (A) = (3)(2) - (-1)(-1) = 6 - 1 = 5$$
   
-  det(A₁) = det([[10, −1], [4, 2]]) = 20 + 4 = 24 → I₁ = 24/5 = **4.8 A**
-  det(A₂) = det([[3, 10], [−1, 4]]) = 12 + 10 = 22 → I₂ = 22/5 = **4.4 A**
+  $$\\det (A_{1}) = \\det ([[10, -1], [4, 2]]) = 20 + 4 = 24 \\to I_{1} = 24/5 = 4.8\\ \\mathrm{A}$$
+  $$\\det (A_{2}) = \\det ([[3, 10], [-1, 4]]) = 12 + 10 = 22 \\to I_{2} = 22/5 = 4.4\\ \\mathrm{A}$$
   
   **Check by substitution**, which is the habit worth keeping: 3(4.8) − 4.4 =
   14.4 − 4.4 = 10 ✓, and −4.8 + 2(4.4) = −4.8 + 8.8 = 4 ✓. Both original equations
@@ -2553,7 +2553,7 @@ Worked: A = [[0, 1],[-6, -5]]. Characteristic equation: lambda^2 - (trace)lambda
   | Scalar multiply | every element | — |
   | Matrix product | rows × columns | **AB ≠ BA** in general |
   | Transpose | rows become columns | (AB)ᵀ = BᵀAᵀ, order reverses |
-  | Inverse | A⁻¹A = I | exists only if det A ≠ 0 |
+  | Inverse | $A^{-1}A = I$ | exists only if det A ≠ 0 |
   
   For the product to exist, the inner dimensions must match: an m×n times an n×p
   gives an m×p. **Matrix multiplication does not commute**, and both the transpose
@@ -2587,9 +2587,9 @@ Find det of [[2, 0, 1], [3, −1, 2], [1, 4, 0]].
 
 Expanding along the first row, with the alternating sign pattern + − +:
 
-2·det([[−1,2],[4,0]]) − 0·det(...) + 1·det([[3,−1],[1,4]])
-= 2(0 − 8) − 0 + 1(12 + 1)
-= −16 + 13 = **−3**
+$$2\\cdot \\det ([[-1,2],[4,0]]) - 0\\cdot \\det (...) + 1\\cdot \\det ([[3,-1],[1,4]])$$
+$$= 2(0 - 8) - 0 + 1(12 + 1)$$
+$$= -16 + 13 = -3$$
 
 Expanding along the second row (which contains a zero) would have been quicker.
 **Choose the row or column with the most zeros** — the answer is the same and
@@ -2597,14 +2597,14 @@ the arithmetic is shorter.
 
 ## 5.2 Eigenvalues of a non-symmetric matrix
 
-A = [[4, 1], [2, 3]].
+$$A = [[4, 1], [2, 3]]$$.
 
 Characteristic equation: (4−λ)(3−λ) − 2 = λ² − 7λ + 10 = 0, so λ = **5 and 2**.
 
 Checks: trace = 4 + 3 = 7 = 5 + 2 ✓, and det = 12 − 2 = 10 = 5 × 2 ✓.
 
-Eigenvector for λ = 5: (4−5)v₁ + v₂ = 0 gives v₂ = v₁, so **[1, 1]**.
-Eigenvector for λ = 2: (4−2)v₁ + v₂ = 0 gives v₂ = −2v₁, so **[1, −2]**.
+Eigenvector for λ = 5: (4−5)$v_{1}$ + $v_{2}$ = 0 gives $v_{2}$ = $v_{1}$, so **[1, 1]**.
+Eigenvector for λ = 2: (4−2)$v_{1}$ + $v_{2}$ = 0 gives $v_{2}$ = −2v₁, so **$[1, -2]$**.
 
 ## 5.3 A singular system, and what it means
 
@@ -2620,11 +2620,11 @@ reference node.
 
 ## 5.4 Three equations by Cramer
 
-x + y + z = 6, 2x − y + z = 3, x + 2y − z = 2.
+$$x + y + z = 6, 2x - y + z = 3, x + 2y - z = 2$$.
 
-det(A) = 1(1−2) − 1(−2−1) + 1(4+1) = −1 + 3 + 5 = **7**
+$$\\det (A) = 1(1-2) - 1(-2-1) + 1(4+1) = -1 + 3 + 5 = 7$$
 
-Replacing the first column with the constants gives det(A₁) = 7, so x = 7/7 =
+Replacing the first column with the constants gives det($A_{1}$) = 7, so x = 7/7 =
 **1**. Similarly y = **2** and z = **3**.
 
 Check all three originals: 1+2+3 = 6 ✓, 2−2+3 = 3 ✓, 1+4−3 = 2 ✓. For a 3×3
@@ -2652,32 +2652,32 @@ fee_vector_analysis: {
       title: '1. Laplace Transform',
       content: `## 1.1 Definition and Key Transform Pairs
 
-The Laplace transform: **F(s) = ∫₀^∞ f(t)·e^(-st)dt** where s = σ + jω
+The Laplace transform: **$F(s) = \\int _{0}^\\infty f(t)\\cdot e^{-st}dt$** where s = σ + jω
 
 ### Essential Transform Pairs
 
 | f(t) | F(s) |
 |---|---|
 | 1 (unit step) | 1/s |
-| t | 1/s² |
-| t^n | n!/s^(n+1) |
-| e^(-at) | 1/(s+a) |
-| sin(ωt) | ω/(s²+ω²) |
-| cos(ωt) | s/(s²+ω²) |
-| e^(-at)·sin(ωt) | ω/[(s+a)²+ω²] |
-| e^(-at)·cos(ωt) | (s+a)/[(s+a)²+ω²] |
+| t | $1/s^{2}$ |
+| $t^n$ | $n!/s^{n+1}$ |
+| $e^{-at}$ | 1/(s+a) |
+| $\\sin (\\omega t)$ | $\\omega /(s^{2}+\\omega ^{2})$ |
+| $\\cos (\\omega t)$ | $s/(s^{2}+\\omega ^{2})$ |
+| $e^{-at}\\cdot \\sin (\\omega t)$ | $\\omega /[(s+a)^{2}+\\omega ^{2}]$ |
+| $e^{-at}\\cdot \\cos (\\omega t)$ | $(s+a)/[(s+a)^{2}+\\omega ^{2}]$ |
 
 ### Key Properties
 
 - **Linearity**: L{af + bg} = aF(s) + bG(s)
 - **Frequency shift**: L{e^(-at)f(t)} = F(s+a)
-- **Derivative**: L{f'(t)} = sF(s) - f(0⁻)
+- **Derivative**: L{f'(t)} = sF(s) - f($0^{-}$)
 - **Integral**: L{∫f(t)dt} = F(s)/s
 - **Convolution**: L{f*g} = F(s)·G(s)
 
 ## 1.2 Value Theorems
 
-- **Initial Value Theorem**: lim(t→0⁺) f(t) = lim(s→∞) sF(s)
+- **Initial Value Theorem**: lim(t→$0^{+}$) f(t) = lim(s→∞) sF(s)
 - **Final Value Theorem**: lim(t→∞) f(t) = lim(s→0) sF(s)
 
 The Final Value Theorem finds steady-state WITHOUT inverse transforming — a major time-saver.`,
@@ -2699,17 +2699,17 @@ The cross product finds the area of the parallelogram and the normal direction.
 
 | Operator | Formula | Physical Meaning |
 |---|---|---|
-| **Gradient** ∇f | (∂f/∂x)i + (∂f/∂y)j + (∂f/∂z)k | Direction of steepest increase |
-| **Divergence** ∇·F | ∂Fx/∂x + ∂Fy/∂y + ∂Fz/∂z | Net outflow from a point |
+| **Gradient** ∇f | $(\\partial f/\\partial x)i + (\\partial f/\\partial y)j + (\\partial f/\\partial z)k$ | Direction of steepest increase |
+| **Divergence** ∇·F | $\\partial Fx/\\partial x + \\partial Fy/\\partial y + \\partial Fz/\\partial z$ | Net outflow from a point |
 | **Curl** ∇×F | (see determinant formula) | Rotation/circulation of field |
 
 ### Applications in Electromagnetics
 
-- **∇V = -E** (electric field is negative gradient of potential)
-- **∇·E = ρ/ε₀** (Gauss's law — charge creates divergence in E)
-- **∇·B = 0** (no magnetic monopoles — B has zero divergence)
-- **∇×E = -∂B/∂t** (Faraday's law — changing B creates curl in E)
-- **∇×B = μ₀J + μ₀ε₀∂E/∂t** (Ampere-Maxwell law)
+- **$\\nabla V = -E$** (electric field is negative gradient of potential)
+- **$\\nabla \\cdot E = \\rho /\\varepsilon _{0}$** (Gauss's law — charge creates divergence in E)
+- **$\\nabla \\cdot B = 0$** (no magnetic monopoles — B has zero divergence)
+- **$\\nabla \\times E = -\\partial B/\\partial t$** (Faraday's law — changing B creates curl in E)
+- **$\\nabla \\times B = \\mu _{0}J + \\mu _{0}\\varepsilon _{0}\\partial E/\\partial t$** (Ampere-Maxwell law)
 
 ## 2.3 Integral Theorems
 
@@ -2742,7 +2742,7 @@ Two identities that answer questions on their own: **curl(grad f) = 0** always, 
 
 Move along the straight path from (0,0) to (2,4) in the field F = y i + x j. Parametrise x = 2t, y = 4t for t from 0 to 1. Then dx = 2 dt, dy = 4 dt, and
 
-F.dr = y dx + x dy = (4t)(2 dt) + (2t)(4 dt) = 16t dt
+$$F.dr = y dx + x dy = (4t)(2 dt) + (2t)(4 dt) = 16t dt$$
 
 Integral from 0 to 1: 16(1/2) = **8**.
 
@@ -2813,7 +2813,7 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
   
   | Product | Result | Formula | Zero when |
   |---|---|---|---|
-  | Dot **A**·**B** | scalar | \\|A\\|\\|B\\|cos θ | perpendicular |
+  | Dot **A**·**B** | scalar | \\|A\\|\\|B\\| $\\cos  \\theta$ | perpendicular |
   | Cross **A**×**B** | vector | \\|A\\|\\|B\\|sin θ, ⊥ to both | parallel |
   
   The distinction is physical. Work and real power are **dot** products — only the
@@ -2834,13 +2834,13 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
   |---|---|
   | δ(t) impulse | 1 |
   | u(t) unit step | 1/s |
-  | t | 1/s² |
-  | e^(−at) | 1/(s+a) |
-  | sin ωt | ω/(s² + ω²) |
-  | cos ωt | s/(s² + ω²) |
-  | e^(−at)sin ωt | ω/((s+a)² + ω²) |
-  | f′(t) | sF(s) − f(0) |
-  | ∫f dt | F(s)/s |
+  | t | $1/s^{2}$ |
+  | $e^{-at}$ | 1/(s+a) |
+  | $\\sin  \\omega t$ | $\\omega /(s^{2} + \\omega ^{2})$ |
+  | $\\cos  \\omega t$ | $s/(s^{2} + \\omega ^{2})$ |
+  | $e^{-at}\\sin  \\omega t$ | $\\omega /((s+a)^{2} + \\omega ^{2})$ |
+  | $f'(t)$ | $sF(s) - f(0)$ |
+  | $\\int f dt$ | F(s)/s |
   
   The derivative rule is the one that does the work, and note that it **carries the
   initial condition**: sF(s) − f(0). Transforming a differential equation with
@@ -2875,11 +2875,11 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
   
   Transform both terms, using the derivative rule:
   
-  sY(s) − 5 + 3Y(s) = 0    →    Y(s)(s + 3) = 5    →    Y(s) = 5/(s + 3)
+  $$sY(s) - 5 + 3Y(s) = 0 \\to Y(s)(s + 3) = 5 \\to Y(s) = 5/(s + 3)$$
   
   Inverting with the table entry for e^(−at):
   
-  y(t) = **5e^(−3t)**
+  $$y(t) = 5e^{-3t}$$
   
   Check it: y(0) = 5 ✓, and y′ = −15e^(−3t) = −3y ✓. The pole at s = −3 sits in
   the left half-plane, so the response decays — and its time constant is
@@ -2897,10 +2897,10 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
 Dot: **A**·**B** = (3)(2) + (4)(−1) = 6 − 4 = **2**
 
 Cross (z-component only, since both lie in the xy-plane):
-**A**×**B** = (AₓB_y − A_yBₓ)**k** = (3(−1) − 4(2))**k** = **−11k**
+**A**×**B** = (AₓB_y − A_yBₓ)**k** = (3(−1) − 4(2))**k** = **$-11k$**
 
 The angle between them follows from either: |A| = 5, |B| = √5 = 2.236, so
-cos θ = 2/(5 × 2.236) = 0.179, giving θ = **79.7°**. Cross-checking with the
+cos θ = 2/(5 × 2.236) = 0.179, giving θ = **$79.7^\\circ$**. Cross-checking with the
 cross product: sin θ = 11/(5 × 2.236) = 0.984, θ = 79.7° ✓. Two independent
 routes to the same angle.
 
@@ -2913,7 +2913,7 @@ div **F** = ∂(x²)/∂x + ∂(yz)/∂y + ∂(z)/∂z = 2x + z + 1
 At the point (1, 2, 3): div **F** = 2 + 3 + 1 = **6**.
 
 The x-component of the curl is ∂F_z/∂y − ∂F_y/∂z = 0 − y = −y, which at that
-point is **−2**. A field can have both a divergence and a curl; they are
+point is **$-2$**. A field can have both a divergence and a curl; they are
 independent measurements, not alternatives.
 
 ## 5.3 Inverse transform by partial fractions
@@ -2923,7 +2923,7 @@ Find the inverse transform of F(s) = 10/(s(s + 5)).
 Split it: 10/(s(s+5)) = A/s + B/(s+5). Multiplying through, 10 = A(s+5) + Bs.
 Setting s = 0 gives A = 2; setting s = −5 gives 10 = −5B, so B = −2.
 
-F(s) = 2/s − 2/(s+5)    →    f(t) = **2 − 2e^(−5t)**
+$$F(s) = 2/s - 2/(s+5) \\to f(t) = 2 - 2e^{-5t}$$
 
 Check the endpoints: f(0) = 0 and f(∞) = 2, matching the initial- and
 final-value theorems applied to F(s) directly — lim(s→∞) sF(s) = 0 and
@@ -2973,7 +2973,7 @@ fee_prob_dist: {
 
 ## 1.2 Bayes' Theorem
 
-**P(A|B) = P(B|A)·P(A) / P(B)**
+**$P(A|B) = P(B|A)\\cdot P(A) / P(B)$**
 
 Bayes' theorem updates probabilities with new evidence. It reverses the conditioning:
 - P(A) is the **prior** probability
@@ -2993,7 +2993,7 @@ P(B) = Σ P(B|Aᵢ)·P(Aᵢ) for all mutually exclusive events Aᵢ`,
 ### Binomial Distribution
 Models **n independent trials** with probability p of success each:
 
-**P(X=k) = C(n,k)·p^k·(1-p)^(n-k)**
+**$P(X=k) = C(n,k)\\cdot p^k\\cdot (1-p)^{n-k}$**
 
 - Mean: E[X] = np
 - Variance: Var(X) = np(1-p)
@@ -3001,7 +3001,7 @@ Models **n independent trials** with probability p of success each:
 ### Poisson Distribution
 Models **rare events** with average rate λ:
 
-**P(X=k) = (λ^k · e^(-λ)) / k!**
+**$P(X=k) = (\\lambda ^k \\cdot e^{-\\lambda}) / k!$**
 
 - Mean = Variance = λ
 - Approximates binomial when n is large, p is small, and λ = np
@@ -3010,14 +3010,14 @@ Models **rare events** with average rate λ:
 
 ### Normal (Gaussian) Distribution
 
-**f(x) = (1/(σ·sqrt(2π))) · e^(-(x-μ)²/(2σ²))**
+**$f(x) = (1/(\\sigma \\cdot \\sqrt{2\\pi})) \\cdot e^{-(x-\\mu)^{2}/(2\\sigma ^{2})}$**
 
 - **Standard normal**: Z = (X - μ)/σ (use Z-tables for probabilities)
 - **68-95-99.7 rule**: ~68% within 1σ, ~95% within 2σ, ~99.7% within 3σ
 
 ### Exponential Distribution
 
-**f(t) = λ·e^(-λt)** for t ≥ 0
+**$f(t) = \\lambda \\cdot e^{-\\lambda t}$** for t ≥ 0
 
 - Mean: 1/λ
 - **Memoryless property**: P(T > t+s | T > s) = P(T > t)
@@ -3059,7 +3059,7 @@ fee_expected_values: {
 
 ### Expected Value
 
-For a discrete random variable: **E[X] = Σ xᵢ·P(xᵢ)**
+For a discrete random variable: **$E[X] = \\Sigma x_{i}\\cdot P(x_{i})$**
 
 Properties:
 - E[aX + b] = a·E[X] + b
@@ -3074,9 +3074,9 @@ Properties:
 
 | Measure | Population | Sample |
 |---|---|---|
-| Mean | μ = ΣX/N | x̄ = ΣX/n |
-| Variance | σ² = Σ(X-μ)²/N | s² = Σ(X-x̄)²/(n-1) |
-| Std Dev | σ = sqrt(σ²) | s = sqrt(s²) |`,
+| Mean | $\\mu = \\Sigma X/N$ | $x = \\Sigma X/n$ |
+| Variance | $\\sigma ^{2} = \\Sigma (X-\\mu)^{2}/N$ | $s^{2} = \\Sigma (X-x)^{2}/(n-1)$ |
+| Std Dev | $\\sigma = \\sqrt{\\sigma ^{2}}$ | $s = \\sqrt{s^{2}}$ |`,
       examTip: 'Sample variance divides by (n-1), not n. This is called Bessel\'s correction and gives an unbiased estimate. The FE exam may test whether you use n or n-1 in the denominator — sample statistics always use n-1.',
     },
     {
@@ -3096,12 +3096,12 @@ Properties:
 
 | r Value | Interpretation |
 |---|---|
-| r = +1 | Perfect positive linear relationship |
-| r = -1 | Perfect negative linear relationship |
-| r = 0 | No linear relationship |
-| 0 < |r| < 0.5 | Weak linear relationship |
-| 0.5 < |r| < 0.8 | Moderate linear relationship |
-| 0.8 < |r| < 1 | Strong linear relationship |
+| $r = +1$ | Perfect positive linear relationship |
+| $r = -1$ | Perfect negative linear relationship |
+| $r = 0$ | No linear relationship |
+| $0 <$ |r| $< 0.5$ | Weak linear relationship |
+| $0.5 <$ |r| $< 0.8$ | Moderate linear relationship |
+| $0.8 <$ |r| $< 1$ | Strong linear relationship |
 
 ### Variance of Sums
 
@@ -3132,7 +3132,7 @@ fee_regression: {
       title: '1. Least-Squares Regression Line',
       content: `## 1.1 The Regression Equation
 
-The best-fit line through data: **y = a + bx**
+The best-fit line through data: **$y = a + bx$**
 
 Where:
 - **Slope**: b = r · (sy/sx) = [nΣxy - ΣxΣy] / [nΣx² - (Σx)²]
@@ -3140,7 +3140,7 @@ Where:
 
 ### Coefficient of Determination
 
-**R² = r²** measures the fraction of variance in y explained by x:
+**$R^{2} = r^{2}$** measures the fraction of variance in y explained by x:
 - R² = 1: perfect fit (all points on line)
 - R² = 0: no linear relationship
 - R² = 0.85: 85% of y-variance explained by x
@@ -3176,7 +3176,7 @@ Good regression has:
 
 ## 2.2 Standard Error of Estimate
 
-**Se = sqrt[Σ(yᵢ - ŷᵢ)² / (n-2)]**
+**$Se = \\sqrt{\\Sigma (y_{i} - \\hat{y} _{i})^{2} / (n-2)}$**
 
 This measures the typical distance of data points from the regression line. Smaller Se means better fit. Dividing by n-2 accounts for the two estimated parameters (slope and intercept).`,
       examTip: 'If the FE exam shows a residual plot with a clear curve pattern, the linear model is inappropriate — the data has a nonlinear relationship. Transform the data (log, square root, etc.) or use a higher-order polynomial model.',
@@ -3202,11 +3202,11 @@ fee_hypothesis: {
       title: '1. Hypothesis Testing Framework',
       content: `## 1.1 The Testing Process
 
-1. **State hypotheses**: H₀ (null — no effect) and H₁ (alternative — effect exists)
+1. **State hypotheses**: $H_{0}$ (null — no effect) and $H_{1}$ (alternative — effect exists)
 2. **Choose significance level** α (typically 0.05 = 5% risk of false positive)
 3. **Calculate test statistic** from data
 4. **Find p-value** or compare to critical value
-5. **Decide**: reject H₀ if p < α; fail to reject H₀ if p ≥ α
+5. **Decide**: reject $H_{0}$ if p < α; fail to reject $H_{0}$ if p ≥ α
 
 ## 1.2 Types of Errors
 
@@ -3215,22 +3215,22 @@ fee_hypothesis: {
 | **Reject H₀** | Type I error (α) | Correct! (Power = 1-β) |
 | **Fail to reject H₀** | Correct! | Type II error (β) |
 
-- **Type I error** (false positive): rejecting a true H₀; probability = α
-- **Type II error** (false negative): failing to reject a false H₀; probability = β
+- **Type I error** (false positive): rejecting a true $H_{0}$; probability = α
+- **Type II error** (false negative): failing to reject a false $H_{0}$; probability = β
 - **Power** = 1 - β: probability of correctly detecting a real effect
 
 ## 1.3 Common Tests
 
 ### t-Test (comparing means)
 
-**t = (x̄ - μ₀) / (s/sqrt(n))**
+**$t = (x - \\mu _{0}) / (s/\\sqrt{n})$**
 
 - Degrees of freedom: df = n - 1
 - Compare t to critical value from t-table at significance α
 
 ### Chi-Square Test (categorical data)
 
-**χ² = Σ(O - E)²/E**
+**$\\chi ^{2} = \\Sigma (O - E)^{2}/E$**
 
 - O = observed frequency, E = expected frequency
 - Compare χ² to critical value from chi-square table`,
@@ -3244,7 +3244,7 @@ fee_hypothesis: {
 
 A **confidence interval** estimates a population parameter:
 
-**CI = x̄ ± t(α/2, n-1) · s/sqrt(n)**
+**$CI = x \\pm t(\\alpha /2, n-1) \\cdot s/\\sqrt{n}$**
 
 Where:
 - x̄ is the sample mean
@@ -3268,7 +3268,7 @@ It does **NOT** mean: "there is a 95% probability the true value is in this inte
 
 ### Standard Error
 
-**SE = s/sqrt(n)**
+**$SE = s/\\sqrt{n}$**
 
 The standard error decreases with larger n — more data gives more precise estimates. To halve the standard error, quadruple the sample size.`,
       examTip: 'Confidence interval width depends on three things: confidence level (higher = wider), standard deviation (more spread = wider), and sample size (larger n = narrower). The formula SE = s/sqrt(n) shows why: doubling precision requires 4x the sample size.',
@@ -3539,28 +3539,28 @@ fee_tvm: {
       title: '1. Compound Interest and Standard Factors',
       content: `## 1.1 Compound Interest
 
-**F = P(1+i)^n** — future value of present amount P at interest rate i for n periods
+**$F = P(1+i)^n$** — future value of present amount P at interest rate i for n periods
 
-**P = F/(1+i)^n** — present value of future amount F
+**$P = F/(1+i)^n$** — present value of future amount F
 
 ## 1.2 The Six Standard Cash Flow Factors
 
 | Factor | Symbol | Formula | Converts |
 |---|---|---|---|
-| Future Worth | (F/P, i, n) | (1+i)^n | P → F |
-| Present Worth | (P/F, i, n) | 1/(1+i)^n | F → P |
-| Annuity to Future | (F/A, i, n) | [(1+i)^n - 1]/i | A → F |
-| Annuity to Present | (P/A, i, n) | [(1+i)^n - 1]/[i(1+i)^n] | A → P |
-| Capital Recovery | (A/P, i, n) | i(1+i)^n/[(1+i)^n - 1] | P → A |
-| Sinking Fund | (A/F, i, n) | i/[(1+i)^n - 1] | F → A |
+| Future Worth | (F/P, i, n) | $(1+i)^n$ | $P \\to F$ |
+| Present Worth | (P/F, i, n) | $1/(1+i)^n$ | $F \\to P$ |
+| Annuity to Future | (F/A, i, n) | $[(1+i)^n - 1]/i$ | $A \\to F$ |
+| Annuity to Present | (P/A, i, n) | $[(1+i)^n - 1]/[i(1+i)^n]$ | $A \\to P$ |
+| Capital Recovery | (A/P, i, n) | $i(1+i)^n/[(1+i)^n - 1]$ | $P \\to A$ |
+| Sinking Fund | (A/F, i, n) | $i/[(1+i)^n - 1]$ | $F \\to A$ |
 
 ## 1.3 Effective Annual Rate
 
 For nominal rate r compounded m times per year:
 
-**EAR = (1 + r/m)^m - 1**
+**$EAR = (1 + r/m)^m - 1$**
 
-For continuous compounding: **EAR = e^r - 1** and **F = P·e^(rt)**`,
+For continuous compounding: **$EAR = e^r - 1$** and **$F = P\\cdot e^{rt}$**`,
       examTip: 'The FE reference handbook includes factor tables. Know which factor to use: P/F for single future payment, P/A for uniform annual series, A/P for loan payments. The most common mistake is using the wrong factor — draw a cash flow diagram first to clarify.',
       importantNote: 'When comparing alternatives with different lifespans, use Annual Worth (AW) method or find the least common multiple of lifespans. Do NOT directly compare NPV of projects with different durations.',
     },
@@ -3576,7 +3576,7 @@ Example: 12% compounded monthly → i_monthly = 1%/month → EAR = (1.01)^12 - 1
 
 ### Continuous Compounding
 
-When compounding frequency approaches infinity: **F = P·e^(rt)**
+When compounding frequency approaches infinity: **$F = P\\cdot e^{rt}$**
 
 ## 2.2 Cash Flow Diagrams
 
@@ -3589,10 +3589,10 @@ A cash flow diagram is essential for setting up economic problems:
 ### Gradient Series
 
 Sometimes cash flows increase by a constant amount G each period:
-- **P = G · (P/G, i, n)** where (P/G, i, n) = [(1+i)^n - in - 1] / [i²(1+i)^n]
+- **$P = G \\cdot (P/G, i, n)$** where (P/G, i, n) = [(1+i)^n - in - 1] / [i²(1+i)^n]
 
 Or by a constant percentage g each period (geometric gradient):
-- **P = A₁ · [(1 - (1+g)^n·(1+i)^(-n)) / (i - g)]** when i ≠ g`,
+- **$P = A_{1} \\cdot [(1 - (1+g)^n\\cdot (1+i)^{-n}) / (i - g)]$** when i ≠ g`,
       examTip: 'Always draw the cash flow diagram before selecting factors. Mark every payment with its correct time period. A common error is off-by-one timing — the first payment of an annuity occurs at the END of period 1, not at time 0.',
     },
   ],
@@ -3616,13 +3616,13 @@ fee_cost_analysis: {
       title: '1. NPV and Internal Rate of Return',
       content: `## 1.1 Net Present Value (NPV)
 
-**NPV = -C₀ + Σ[Bₜ/(1+i)^t]**
+**$NPV = -C_{0} + \\Sigma [B_{t}/(1+i)^t]$**
 
-Where C₀ is initial cost, Bₜ is net benefit in year t, and i is discount rate.
+Where $C_{0}$ is initial cost, Bₜ is net benefit in year t, and i is discount rate.
 
-- **NPV > 0**: project adds value — accept
-- **NPV < 0**: project destroys value — reject
-- **NPV = 0**: project breaks even at the discount rate
+- **$NPV > 0$**: project adds value — accept
+- **$NPV < 0$**: project destroys value — reject
+- **$NPV = 0$**: project breaks even at the discount rate
 
 For mutually exclusive alternatives, choose the one with **highest NPV**.
 
@@ -3630,7 +3630,7 @@ For mutually exclusive alternatives, choose the one with **highest NPV**.
 
 IRR is the discount rate that makes NPV = 0:
 
-**0 = -C₀ + Σ[Bₜ/(1+IRR)^t]**
+**$0 = -C_{0} + \\Sigma [B_{t}/(1+IRR)^t]$**
 
 Decision rule: **accept if IRR > MARR** (Minimum Acceptable Rate of Return)
 
@@ -3651,15 +3651,15 @@ Decision rule: **accept if IRR > MARR** (Minimum Acceptable Rate of Return)
 
 **B/C = PV(benefits) / PV(costs)**
 
-- **B/C > 1**: project justified — accept
-- **B/C < 1**: costs exceed benefits — reject
+- **$B/C > 1$**: project justified — accept
+- **$B/C < 1$**: costs exceed benefits — reject
 - Standard for **public sector** projects (government, infrastructure)
 
 For incremental analysis of two alternatives: accept the more expensive if incremental B/C > 1.
 
 ## 2.2 Annual Worth
 
-**AW = NPV × (A/P, i, n)**
+**$AW = NPV \\times (A/P, i, n)$**
 
 Converts NPV to equivalent annual amount. Positive AW means the project is worthwhile. Particularly useful for comparing alternatives with **different lifespans**.
 
@@ -3724,9 +3724,9 @@ Accelerated depreciation reduces taxes earlier → better cash flow due to **tim
 Sum of years for n-year life: SYD = n(n+1)/2
 
 Example: 5-year life → SYD = 15
-- Year 1: D₁ = (5/15)(Cost-Salvage) = 33.3%
-- Year 2: D₂ = (4/15)(Cost-Salvage) = 26.7%
-- Year 3: D₃ = (3/15)(Cost-Salvage) = 20.0%
+- Year 1: $D_{1}$ = (5/15)(Cost-Salvage) = 33.3%
+- Year 2: $D_{2}$ = (4/15)(Cost-Salvage) = 26.7%
+- Year 3: $D_{3}$ = (3/15)(Cost-Salvage) = 20.0%
 
 | Method | Pattern | Salvage Value | Tax Use |
 |---|---|---|---|
@@ -3753,7 +3753,7 @@ Depreciation reduces taxable income, creating a **tax shield**:
 
 **Tax savings = D × Tax rate**
 
-Example: $10,000 depreciation at 30% tax rate → $3,000 tax savings
+Example: \\$10,000 depreciation at 30% tax rate → \\$3,000 tax savings
 
 ### After-Tax Cash Flow
 
@@ -3798,7 +3798,7 @@ fee_conductors: {
 
 **Resistivity** ρ (ohm·meters) is an intrinsic material property:
 
-**R = ρL/A**
+**$R = \\rho L/A$**
 
 Where:
 - R = resistance (Ω)
@@ -3812,13 +3812,13 @@ Where:
 
 | Material Type | Resistivity Range | Examples |
 |---|---|---|
-| Conductors | 10⁻⁸ Ω·m | Copper (1.7×10⁻⁸), Aluminum (2.8×10⁻⁸) |
-| Semiconductors | 10⁻⁴ to 10⁴ Ω·m | Silicon, Germanium |
-| Insulators | 10⁸ to 10²⁰ Ω·m | Glass, Rubber, Teflon |
+| Conductors | $10^{-8}\\ \\Omega \\cdot m$ | Copper (1.7×10⁻⁸), Aluminum (2.8×10⁻⁸) |
+| Semiconductors | $10^{-4} to 10^{4}\\ \\Omega \\cdot m$ | Silicon, Germanium |
+| Insulators | $10^{8} to 10^{20}\\ \\Omega \\cdot m$ | Glass, Rubber, Teflon |
 
 ## 1.2 Temperature Dependence
 
-**ρ(T) = ρ₀[1 + α(T - T₀)]**
+**$\\rho (T) = \\rho _{0}[1 + \\alpha (T - T_{0})]$**
 
 Where α is the **temperature coefficient of resistance**:
 - **Metals** (positive α): resistance increases with temperature
@@ -3892,11 +3892,11 @@ In a semiconductor crystal:
 
 ## 1.2 Intrinsic Carrier Concentration
 
-**ni ∝ exp(-Eg/(2kT))**
+**$ni \\propto \\exp (-Eg/(2kT))$**
 
-Where k = 8.617×10⁻⁵ eV/K (Boltzmann constant) and T is temperature in Kelvin.
+Where k = 8.617×$10^{-5}$ eV/K (Boltzmann constant) and T is temperature in Kelvin.
 
-For silicon at 300K: **ni ≈ 1.5 × 10¹⁰ cm⁻³**
+For silicon at 300K: **$ni \\approx 1.5 \\times 10^{10} cm^{-3}$**
 
 ### Temperature Effects
 - Higher T → more thermal energy → more electrons promoted → higher conductivity
@@ -3925,7 +3925,7 @@ Adding impurities dramatically changes conductivity:
 
 ### Mass Action Law
 
-**n × p = ni²** (constant at fixed temperature, regardless of doping)
+**$n \\times p = ni^{2}$** (constant at fixed temperature, regardless of doping)
 
 ## 2.2 The p-n Junction (Diode)
 
@@ -3937,7 +3937,7 @@ When p-type meets n-type:
 
 ### Shockley Diode Equation
 
-**I = Is(e^(qV/kT) - 1)**
+**$I = Is(e^{qV/kT} - 1)$**
 
 Where Is is saturation current (≈ 10⁻¹² A), q = 1.602×10⁻¹⁹ C, kT/q ≈ 26 mV at 300K.`,
       examTip: 'The mass action law n×p = ni² is critical. If you dope silicon with ND = 10¹⁶ donors/cm³, then n ≈ 10¹⁶ and p = (1.5×10¹⁰)²/10¹⁶ = 2.25×10⁴ cm⁻³. The minority carrier concentration drops dramatically with doping.',
@@ -3966,11 +3966,11 @@ fee_dielectrics: {
 
 The **dielectric constant** (relative permittivity) εr measures how much a material increases capacitance compared to vacuum:
 
-**C = εr·ε₀·A/d**
+**$C = \\varepsilon r\\cdot \\varepsilon _{0}\\cdot A/d$**
 
 Where ε₀ = 8.854×10⁻¹² F/m is permittivity of free space.
 
-| Material | εr | Typical Application |
+| Material | $\\varepsilon r$ | Typical Application |
 |---|---|---|
 | Vacuum | 1 | Reference |
 | Air | 1.0006 | Variable capacitors |
@@ -3981,7 +3981,7 @@ Where ε₀ = 8.854×10⁻¹² F/m is permittivity of free space.
 
 ## 1.2 Energy Storage
 
-**U = ½CV² = ½εr·ε₀·(A/d)·V²**
+**$U = \\tfrac{1}{2} CV^{2} = \\tfrac{1}{2} \\varepsilon r\\cdot \\varepsilon _{0}\\cdot (A/d)\\cdot V^{2}$**
 
 Higher εr → more energy stored per volume → smaller capacitors for same capacitance.
 
@@ -4005,7 +4005,7 @@ Real dielectrics dissipate some energy as heat, characterized by the **loss tang
 - **Low-loss materials** (tan δ < 0.001): mica, PTFE — used in high-frequency applications
 - **High-loss materials** (tan δ > 0.01): some ceramics — cause heating at high frequency
 
-Dielectric power loss: **P_loss ∝ V²·f·tan(δ)**
+Dielectric power loss: **$P_{loss} \\propto V^{2}\\cdot f\\cdot \\tan (\\delta)$**
 
 Higher frequency and higher voltage increase dielectric heating.
 
@@ -4050,11 +4050,11 @@ fee_magnetic_mat: {
       title: '1. Magnetic Material Classification',
       content: `## 1.1 Permeability
 
-**B = μ₀·μr·H** where μ₀ = 4π×10⁻⁷ H/m
+**$B = \\mu _{0}\\cdot \\mu r\\cdot H$** where μ₀ = 4π×$10^{-7}$ H/m
 
 **Permeability** μ = μ₀·μr determines field amplification.
 
-| Material Type | μr | Example | Behavior |
+| Material Type | $\\mu r$ | Example | Behavior |
 |---|---|---|---|
 | Diamagnetic | < 1 (slightly) | Copper, Bismuth | Weakly repels field |
 | Paramagnetic | > 1 (slightly) | Aluminum | Weakly attracts field |
@@ -4107,7 +4107,7 @@ The **area inside the hysteresis loop** represents energy dissipated as heat per
 
 Changing magnetic flux induces circulating currents (**eddy currents**) in conductive cores:
 
-**P_eddy ∝ B²·f²·t²/ρ**
+**$P_{eddy} \\propto B^{2}\\cdot f^{2}\\cdot t^{2}/\\rho$**
 
 Where t = lamination thickness, f = frequency, ρ = resistivity.
 
@@ -4143,16 +4143,16 @@ fee_work_energy: {
       title: '1. Electrical Power and Energy',
       content: `## 1.1 Power Fundamentals
 
-**P = V·I** (instantaneous power in watts)
+**$P = V\\cdot I$** (instantaneous power in watts)
 
 For resistive elements, three equivalent forms:
-- **P = V·I = I²R = V²/R**
+- **$P = V\\cdot I = I^{2}R = V^{2}/R$**
 
 All three give the same result; choose based on which quantities you know.
 
 ### Energy
 
-Energy is power integrated over time: **W = ∫P dt = P·t** (for constant power)
+Energy is power integrated over time: **$W = \\int P dt = P\\cdot t$** (for constant power)
 
 Units: 1 joule = 1 watt·second; 1 kWh = 3.6 MJ
 
@@ -4160,8 +4160,8 @@ Units: 1 joule = 1 watt·second; 1 kWh = 3.6 MJ
 
 | Element | Energy Formula | Stored In |
 |---|---|---|
-| Capacitor | **W = ½CV²** | Electric field |
-| Inductor | **W = ½LI²** | Magnetic field |
+| Capacitor | **$W = \\tfrac{1}{2} CV^{2}$** | Electric field |
+| Inductor | **$W = \\tfrac{1}{2} LI^{2}$** | Magnetic field |
 
 Reactive elements store and return energy — they do NOT dissipate power (ideal case). Only resistors dissipate power as heat.
 
@@ -4185,7 +4185,7 @@ Reactive elements store and return energy — they do NOT dissipate power (ideal
       title: '2. Electromechanical Energy Conversion',
       content: `## 2.1 Mechanical Power
 
-**P_mech = τ·ω** (torque × angular velocity)
+**$P_{mech} = \\tau \\cdot \\omega$** (torque × angular velocity)
 
 Where τ is in N·m and ω is in rad/s.
 
@@ -4239,7 +4239,7 @@ fee_charge_current: {
 
 ## 1.2 Current
 
-**I = dQ/dt** (rate of charge flow, in amperes)
+**$I = dQ/dt$** (rate of charge flow, in amperes)
 
 - 1 ampere = 1 coulomb/second
 - **Conventional current** flows from + to - (opposite to electron flow)
@@ -4247,7 +4247,7 @@ fee_charge_current: {
 
 ## 1.3 Voltage
 
-**V = dW/dQ** (work per unit charge, in volts)
+**$V = dW/dQ$** (work per unit charge, in volts)
 
 - 1 volt = 1 joule/coulomb
 - Voltage is the "pressure" that drives current through resistance
@@ -4257,14 +4257,14 @@ fee_charge_current: {
 
 Force between point charges:
 
-**F = k·Q₁·Q₂/r²** where k = 8.99×10⁹ N·m²/C²
+**$F = k\\cdot Q_{1}\\cdot Q_{2}/r^{2}$** where k = 8.99×$10^{9}$ N·m²/C²
 
 - Like charges repel; opposite charges attract
 - Force decreases with square of distance (inverse-square law)
 
 ### Electric Field
 
-**E = F/Q = V/d** (for uniform field)
+**$E = F/Q = V/d$** (for uniform field)
 
 | Quantity | Symbol | Unit | Definition |
 |---|---|---|---|
@@ -4281,14 +4281,14 @@ Force between point charges:
 
 A charge q moving with velocity v in electric field E and magnetic field B experiences:
 
-**F = q(E + v × B)**
+**$F = q(E + v \\times B)$**
 
 - Electric force qE: along E direction (accelerates or decelerates charge)
 - Magnetic force q(v×B): perpendicular to both v and B (deflects without doing work)
 
 ## 2.2 Force on a Current-Carrying Conductor
 
-**F = I·L × B = B·I·L·sinθ**
+**$F = I\\cdot L \\times B = B\\cdot I\\cdot L\\cdot \\sin \\theta$**
 
 Where L is the conductor length vector and θ is the angle between L and B.
 
@@ -4305,7 +4305,7 @@ Direction: use the **right-hand rule** — point fingers along I, curl toward B,
 
 A conductor moving through a magnetic field:
 
-**ε = B·L·v** (for v perpendicular to B and L)`,
+**$\\varepsilon = B\\cdot L\\cdot v$** (for v perpendicular to B and L)`,
       examTip: 'The Lorentz force F = q(E + v×B) combines electric and magnetic forces. The magnetic force is always PERPENDICULAR to velocity — it changes direction but not speed (does no work). This is why magnetic fields deflect charges but cannot accelerate them.',
     },
   ],
@@ -4331,7 +4331,7 @@ fee_electromech: {
 
 A current-carrying loop in a magnetic field experiences torque:
 
-**τ = N·B·I·A·sinθ**
+**$\\tau = N\\cdot B\\cdot I\\cdot A\\cdot \\sin \\theta$**
 
 Where N = turns, B = flux density, I = current, A = loop area, θ = angle to field.
 
@@ -4350,7 +4350,7 @@ At steady state: E_back ≈ V → small current (just supplying load + losses).
 
 A rotating coil in a magnetic field:
 
-**ε = N·B·ω·A·cos(ωt)**
+**$\\varepsilon = N\\cdot B\\cdot \\omega \\cdot A\\cdot \\cos (\\omega t)$**
 
 - Peak EMF: ε_peak = NBAω
 - Higher speed → higher voltage
@@ -4360,8 +4360,8 @@ A rotating coil in a magnetic field:
 
 | Device | Input | Output | Efficiency |
 |---|---|---|---|
-| Motor | V·I (electrical) | τ·ω (mechanical) | η = τ·ω/(V·I) |
-| Generator | τ·ω (mechanical) | V·I (electrical) | η = V·I/(τ·ω) |`,
+| Motor | V·I (electrical) | τ·ω (mechanical) | $\\eta = \\tau \\cdot \\omega /(V\\cdot I)$ |
+| Generator | τ·ω (mechanical) | V·I (electrical) | $\\eta = V\\cdot I/(\\tau \\cdot \\omega)$ |`,
       examTip: 'Motors and generators use the same electromagnetic principles in opposite directions. The motor equation V = IR + E_back is essential: at high speed, E_back is large so current is small. At stall (ω=0), current is maximum V/R — this is why motors need current limiting at startup.',
     },
     {
@@ -4371,9 +4371,9 @@ A rotating coil in a magnetic field:
 
 | Sensor | Measures | Principle | Key Formula |
 |---|---|---|---|
-| Strain gauge | Deformation | Resistance change | ΔR/R = GF·ε |
-| Thermistor | Temperature | R(T) changes | R = R₀·exp[β(1/T-1/T₀)] |
-| Thermocouple | Temperature | Seebeck voltage | V ∝ ΔT |
+| Strain gauge | Deformation | Resistance change | $\\Delta R/R = GF\\cdot \\varepsilon$ |
+| Thermistor | Temperature | R(T) changes | $R = R_{0}\\cdot \\exp [\\beta (1/T-1/T_{0})]$ |
+| Thermocouple | Temperature | Seebeck voltage | $V \\propto \\Delta T$ |
 | Accelerometer | Acceleration | Piezoelectric/MEMS | V ∝ acceleration |
 | Pressure sensor | Pressure | Diaphragm deflection | V ∝ pressure |
 
@@ -4389,10 +4389,10 @@ A rotating coil in a magnetic field:
 
 The **Wheatstone bridge** extracts small resistance changes from sensors:
 
-At balance: **R₁/R₂ = R₃/R₄** → output voltage = 0
+At balance: **$R_{1}/R_{2} = R_{3}/R_{4}$** → output voltage = 0
 
 When one arm changes by ΔR (sensor):
-- Output voltage **V_out ≈ V_supply · ΔR/(4R)** (for small ΔR)
+- Output voltage **$V_{out} \\approx V_{supply} \\cdot \\Delta R/(4R)$** (for small ΔR)
 
 Used with strain gauges, RTDs, and other resistive sensors for precise measurement.`,
       examTip: 'For the strain gauge formula ΔR/R = GF·ε, the gauge factor GF ≈ 2 for metallic gauges. The Wheatstone bridge detects the tiny ΔR by producing a proportional output voltage. This is the standard measurement circuit for resistive sensors.',
@@ -4446,9 +4446,9 @@ follows from that and from Ohm's law.
 
 ## 1.2 Ohm's Law
 
-**V = I·R** relates voltage, current, and resistance.
+**$V = I\\cdot R$** relates voltage, current, and resistance.
 
-Three equivalent forms for power: **P = V·I = I²R = V²/R**
+Three equivalent forms for power: **$P = V\\cdot I = I^{2}R = V^{2}/R$**
 
 Pick the power form by what you already know, not by habit. If you have solved
 for a branch current, I²R needs no further division; if you have a node
@@ -4460,7 +4460,7 @@ introduced.
 
 **The sum of currents entering a node equals the sum leaving:**
 
-**ΣI_in = ΣI_out** or equivalently **ΣI = 0** (with sign convention)
+**$\\Sigma I_{in} = \\Sigma I_{out}$** or equivalently **$\\Sigma I = 0$** (with sign convention)
 
 KCL is conservation of charge — charge cannot accumulate at a node.
 
@@ -4468,7 +4468,7 @@ KCL is conservation of charge — charge cannot accumulate at a node.
 
 **The sum of voltage rises around any closed loop equals zero:**
 
-**ΣV = 0** (around any closed loop)
+**$\\Sigma V = 0$** (around any closed loop)
 
 KVL is conservation of energy — energy gained equals energy lost around any path.
 
@@ -4492,8 +4492,8 @@ head; the same statement drawn is read in a second:
 Work it in the order the laws come in.
 
 **Reduce.** R2 and R3 share both of their nodes, so they are in parallel:
-R2‖R3 = (6 × 12)/(6 + 12) = 72/18 = **4 Ω**. That sits in series with R1, so
-the source sees R_eq = 4 + 4 = **8 Ω**.
+R2‖R3 = (6 × 12)/(6 + 12) = 72/18 = **$4\\ \\Omega$**. That sits in series with R1, so
+the source sees R_eq = 4 + 4 = **$8\\ \\Omega$**.
 
 **Ohm's law for the source current.** I = 12/8 = **1.5 A**.
 
@@ -4506,10 +4506,10 @@ error forward.
 
 | Branch | Voltage | Resistance | Current | Power |
 |---|---|---|---|---|
-| R1 | 6 V | 4 Ω | 1.500 A | 9.0 W |
-| R2 | 6 V | 6 Ω | 1.000 A | 6.0 W |
-| R3 | 6 V | 12 Ω | 0.500 A | 3.0 W |
-| **Source** | 12 V | 8 Ω (eq.) | **1.500 A** | **18.0 W** |
+| R1 | 6 V | $4\\ \\Omega$ | 1.500 A | 9.0 W |
+| R2 | 6 V | $6\\ \\Omega$ | 1.000 A | 6.0 W |
+| R3 | 6 V | $12\\ \\Omega$ | 0.500 A | 3.0 W |
+| **Source** | 12 V | $8\\ \\Omega (eq.)$ | **1.500 A** | **18.0 W** |
 
 The branch currents sum to 1.000 + 0.500 = 1.500 A, which is the source
 current — that is KCL closing. The dissipated powers sum to 9 + 6 + 3 = 18 W,
@@ -4529,38 +4529,38 @@ more than memorising which resistance goes in the numerator.`,
       content: `## 2.1 Series and Parallel Combinations
 
 ### Series (same current through all elements)
-- **R_total = R₁ + R₂ + ... + Rₙ**
-- Voltages add: V_total = V₁ + V₂ + ...
+- **$R_{total} = R_{1} + R_{2} + ... + R_{n}$**
+- Voltages add: V_total = $V_{1}$ + $V_{2}$ + ...
 - Largest resistor has largest voltage drop
 
 ### Parallel (same voltage across all elements)
-- **1/R_total = 1/R₁ + 1/R₂ + ... + 1/Rₙ**
-- For two resistors: **R_total = R₁·R₂/(R₁ + R₂)**
-- Currents add: I_total = I₁ + I₂ + ...
+- **$1/R_{total} = 1/R_{1} + 1/R_{2} + ... + 1/R_{n}$**
+- For two resistors: **$R_{total} = R_{1}\\cdot R_{2}/(R_{1} + R_{2})$**
+- Currents add: I_total = $I_{1}$ + $I_{2}$ + ...
 - Total resistance is ALWAYS less than the smallest individual resistance
 
 ## 2.2 Voltage Divider
 
 For resistors in series:
 
-**V_x = V_total · R_x / (R₁ + R₂ + ... + Rₙ)**
+**$V_x = V_{total} \\cdot R_x / (R_{1} + R_{2} + ... + R_{n})$**
 
-For two resistors: V₁ = V · R₁/(R₁+R₂), V₂ = V · R₂/(R₁+R₂)
+For two resistors: $V_{1}$ = V · $R_{1}$/($R_{1}$+$R_{2}$), $V_{2}$ = V · $R_{2}$/($R_{1}$+$R_{2}$)
 
 ## 2.3 Current Divider
 
 For two resistors in parallel:
 
-**I₁ = I_total · R₂/(R₁ + R₂)** (current through R₁ uses the OTHER resistance)
+**$I_{1} = I_{total} \\cdot R_{2}/(R_{1} + R_{2})$** (current through $R_{1}$ uses the OTHER resistance)
 
-**I₂ = I_total · R₁/(R₁ + R₂)**
+**$I_{2} = I_{total} \\cdot R_{1}/(R_{1} + R_{2})$**
 
 Note: current goes preferentially through the SMALLER resistance (path of least resistance).
 
 | Configuration | Same Quantity | Add Up | Equivalent |
 |---|---|---|---|
-| Series | Current | Voltages | R_eq = ΣR |
-| Parallel | Voltage | Currents | 1/R_eq = Σ(1/R) |`,
+| Series | Current | Voltages | $R_{eq} = \\Sigma R$ |
+| Parallel | Voltage | Currents | $1/R_{eq} = \\Sigma (1/R)$ |`,
       examTip: 'The current divider formula is backwards from what you might expect: I through R₁ uses R₂ in the numerator. Think of it as: more resistance in YOUR branch means LESS current goes through it, so the OTHER resistance goes on top.',
     },
     {
@@ -4580,7 +4580,7 @@ Branch currents: I2 = 6/6 = 1 A, I3 = 6/12 = 0.5 A, and 1 + 0.5 = 1.5 A, which i
 
 The same 1.5 A splits between 6 ohm and 12 ohm. The divider gives
 
-I2 = I x R3/(R2+R3) = 1.5 x 12/18 = **1.0 A**
+$$I2 = I x R3/(R2+R3) = 1.5 x 12/18 = 1.0\\ \\mathrm{A}$$
 
 The 6 ohm branch — the smaller resistance — takes the larger share, and the formula gets there by putting the OTHER resistance on top. If your answer gives more current to the larger resistor, you have the fraction upside down.
 
@@ -4588,9 +4588,9 @@ The 6 ohm branch — the smaller resistance — takes the larger share, and the 
 
 Two sources, 10 V and 4 V, feed a common node through 2 ohm and 4 ohm respectively; a 4 ohm resistor runs from that node to ground. Series-parallel reduction cannot touch this, so use one node equation with node voltage V:
 
-(V - 10)/2 + (V - 4)/4 + V/4 = 0
+$$(V - 10)/2 + (V - 4)/4 + V/4 = 0$$
 
-Multiply by 4: 2(V - 10) + (V - 4) + V = 0, so 2V - 20 + V - 4 + V = 0, giving 4V = 24 and **V = 6 V**.
+Multiply by 4: 2(V - 10) + (V - 4) + V = 0, so 2V - 20 + V - 4 + V = 0, giving 4V = 24 and **$V = 6\\ \\mathrm{V}$**.
 
 Currents: (6-10)/2 = -2 A (so 2 A flows INTO the node from the 10 V source), (6-4)/4 = 0.5 A out, 6/4 = 1.5 A out. Out equals 0.5 + 1.5 = 2 A in. KCL balances.
 
@@ -4669,7 +4669,7 @@ is driven by one voltage source, mesh is marginally cleaner.
 Real sources have internal resistance, and the exam tests what that does. A
 battery of EMF 12 V with r = 0.5 ohm driving a 5.5 ohm load:
 
-I = 12/(0.5 + 5.5) = **2 A**
+$$I = 12/(0.5 + 5.5) = 2\\ \\mathrm{A}$$
 Terminal voltage = 12 - (2)(0.5) = **11 V**, not 12
 
 The terminal voltage droops under load, and the droop is I times r. At short
@@ -4734,14 +4734,14 @@ network again.
    - Voltage sources → short circuits (wire)
    - Current sources → open circuits (removed)
 
-With load connected: **I_load = V_Th/(R_Th + R_load)**
+With load connected: **$I_{load} = V_{Th}/(R_{Th} + R_{load})$**
 
 ## 1.2 Norton's Theorem
 
 Any linear network = **I_N** (current source) in parallel with **R_N**
 
 - **I_N = short-circuit current** (short A-B terminals)
-- **R_N = R_Th** (same resistance)
+- **$R_N = R_{Th}$** (same resistance)
 - **Relationship**: V_Th = I_N · R_N
 
 ### When to Use Which
@@ -4755,23 +4755,23 @@ Any linear network = **I_N** (current source) in parallel with **R_N**
 
 ## 1.3 Reducing a real network, and checking it two ways
 
-Take a 6 V source in series with R₁ = 3 Ω, with R₂ = 6 Ω across the output
+Take a 6 V source in series with $R_{1}$ = 3 Ω, with $R_{2}$ = 6 Ω across the output
 terminals. Reduce it to the pair drawn above.
 
 **V_Th, by open circuit.** With nothing across a-b, no current flows out of the
-port, so R₁ and R₂ form a plain divider:
-V_Th = 6 × 6/(3 + 6) = 36/9 = **4 V**.
+port, so $R_{1}$ and $R_{2}$ form a plain divider:
+$$V_{Th} = 6 \\times 6/(3 + 6) = 36/9 = 4\\ \\mathrm{V}$$.
 
 **R_Th, by source deactivation.** Kill the 6 V source — replace it with a wire,
 because a voltage source holds zero volts when off, and a wire is the element
-that holds zero volts. R₁ and R₂ are then both connected between the a node and
+that holds zero volts. $R_{1}$ and $R_{2}$ are then both connected between the a node and
 the reference, i.e. in parallel:
-R_Th = (3 × 6)/(3 + 6) = 18/9 = **2 Ω**.
+$$R_{Th} = (3 \\times 6)/(3 + 6) = 18/9 = 2\\ \\Omega$$.
 
 **I_N, by short circuit — the independent check.** Now short a-b directly. The
-short puts 0 V across R₂, so R₂ carries no current at all and the entire source
-current goes through R₁ into the short:
-I_N = 6/3 = **2 A**.
+short puts 0 V across $R_{2}$, so $R_{2}$ carries no current at all and the entire source
+current goes through $R_{1}$ into the short:
+$$I_N = 6/3 = 2\\ \\mathrm{A}$$.
 
 Those three numbers must satisfy V_Th = I_N · R_N. Here 2 A × 2 Ω = 4 V, which
 matches the open-circuit voltage computed by a completely different route. This
@@ -4783,21 +4783,21 @@ not in whatever you do next.
 |---|---|---|---|
 | V_Th | open-circuit voltage at a-b | none (open) | 4 V |
 | I_N | short-circuit current at a-b | short | 2 A |
-| R_Th = R_N | sources deactivated, look in | none | 2 Ω |
-| Consistency | V_Th = I_N · R_N | — | 2 × 2 = 4 ✓ |
+| $R_{Th} = R_N$ | sources deactivated, look in | none | $2\\ \\Omega$ |
+| Consistency | $V_{Th} = I_N \\cdot R_N$ | — | 2 × 2 = 4 ✓ |
 
 ## 1.4 What the equivalent is for: sweeping the load
 
 With the equivalent in hand, every load question is one division:
 I_L = 4/(2 + R_L), and P_L = I_L²R_L.
 
-| R_L | I_L = 4/(2+R_L) | V_L = I_L·R_L | P_L = I_L²R_L | Efficiency P_L/P_total |
+| R_L | $I_L = 4/(2+R_L)$ | $V_L = I_L\\cdot R_L$ | $P_L = I_L^{2}R_L$ | Efficiency P_L/P_total |
 |---|---|---|---|---|
 | 0 Ω (short) | 2.000 A | 0.00 V | 0.00 W | 0 % |
-| 1 Ω | 1.333 A | 1.33 V | 1.78 W | 33 % |
+| $1\\ \\Omega$ | 1.333 A | 1.33 V | 1.78 W | 33 % |
 | **2 Ω (matched)** | **1.000 A** | **2.00 V** | **2.00 W** | **50 %** |
-| 4 Ω | 0.667 A | 2.67 V | 1.78 W | 67 % |
-| 8 Ω | 0.400 A | 3.20 V | 1.28 W | 80 % |
+| $4\\ \\Omega$ | 0.667 A | 2.67 V | 1.78 W | 67 % |
+| $8\\ \\Omega$ | 0.400 A | 3.20 V | 1.28 W | 80 % |
 | ∞ (open) | 0 A | 4.00 V | 0.00 W | — |
 
 Three things in that table are worth carrying into the exam.
@@ -4842,21 +4842,21 @@ In a linear circuit with multiple independent sources, the response is the **sum
 
 Maximum power is delivered to a load when:
 
-**R_load = R_Th** (for purely resistive circuits)
-**Z_load = Z_Th*** (conjugate match for complex impedances)
+**$R_{load} = R_{Th}$** (for purely resistive circuits)
+**$Z_{load} = Z_{Th}$*** (conjugate match for complex impedances)
 
 The maximum power delivered:
 
-**P_max = V_Th² / (4·R_Th)**
+**$P_{\\max} = V_{Th}^{2} / (4\\cdot R_{Th})$**
 
 ### Important Tradeoffs
 
 | Condition | Power Transfer | Efficiency |
 |---|---|---|
-| R_L = R_Th | **Maximum** (P_max) | 50% |
-| R_L > R_Th | Less than max | Higher than 50% |
+| $R_L = R_{Th}$ | **Maximum** (P_max) | 50% |
+| $R_L > R_{Th}$ | Less than max | Higher than 50% |
 | R_L >> R_Th | Much less | Approaches 100% |
-| R_L < R_Th | Less than max | Lower than 50% |
+| $R_L < R_{Th}$ | Less than max | Lower than 50% |
 
 Maximum power transfer and maximum efficiency are **opposite goals**.`,
       examTip: 'Maximum power transfer delivers P_max = V_Th²/(4R_Th) at 50% efficiency. This matters in communications (match impedances for signal power). In power systems, efficiency matters more, so loads are NOT matched to source impedance.',
@@ -4958,7 +4958,7 @@ R_1 = R_a R_b/(R_a + R_b + R_c), and cyclically.
 the opposite wye resistor.
 
 For the **balanced** case the whole thing collapses to two facts worth
-memorising: **R_wye = R_delta/3**, and **R_delta = 3 R_wye**.
+memorising: **$R_{wye} = R_{delta}/3$**, and **$R_{delta} = 3 R_{wye}$**.
 
 **Worked:** a delta of three 90 ohm resistors converts to a wye of 30 ohm
 each. A bridge whose upper delta is 90/90/90 becomes a wye of 30/30/30, after
@@ -5033,23 +5033,23 @@ fee_ac_phasors: {
 
 A sinusoidal signal v(t) = Vm·cos(ωt + φ) converts to phasor:
 
-**V = Vm∠φ** (polar form) or **V = Vm·cosφ + j·Vm·sinφ** (rectangular)
+**$V = Vm\\angle \\phi$** (polar form) or **$V = Vm\\cdot \\cos \\phi + j\\cdot Vm\\cdot \\sin \\phi$** (rectangular)
 
 The angular frequency ω = 2πf relates frequency f (Hz) to radians/second.
 
 ## 1.2 Impedance
 
-**Impedance Z** generalizes Ohm's law to AC: **V = I·Z**
+**Impedance Z** generalizes Ohm's law to AC: **$V = I\\cdot Z$**
 
 | Element | Impedance | Reactance | Phase Relationship |
 |---|---|---|---|
-| Resistor | Z_R = R | X_R = 0 | V and I in phase |
-| Inductor | Z_L = jωL | X_L = ωL | V leads I by 90° |
-| Capacitor | Z_C = 1/(jωC) = -j/(ωC) | X_C = -1/(ωC) | I leads V by 90° |
+| Resistor | $Z_R = R$ | $X_R = 0$ | V and I in phase |
+| Inductor | $Z_L = j\\omega L$ | $X_L = \\omega L$ | V leads I by 90° |
+| Capacitor | $Z_C = 1/(j\\omega C) = -j/(\\omega C)$ | $X_C = -1/(\\omega C)$ | I leads V by 90° |
 
 ### Impedance in Rectangular and Polar Form
 
-**Z = R + jX = |Z|∠θ**
+**$Z = R + jX = |Z|\\angle \\theta$**
 
 Where:
 - |Z| = sqrt(R² + X²)
@@ -5059,14 +5059,14 @@ Where:
 
 ## 1.3 Admittance
 
-**Y = 1/Z = G + jB**
+**$Y = 1/Z = G + jB$**
 
 Where G is conductance and B is susceptance. Admittance is useful for parallel circuits.
 
 ### Combining Impedances
 
-- **Series**: Z_total = Z₁ + Z₂ (add impedances)
-- **Parallel**: 1/Z_total = 1/Z₁ + 1/Z₂ (add admittances)`,
+- **Series**: Z_total = $Z_{1}$ + $Z_{2}$ (add impedances)
+- **Parallel**: 1/Z_total = 1/$Z_{1}$ + 1/$Z_{2}$ (add admittances)`,
       examTip: 'Mnemonic for inductor/capacitor phase: "ELI the ICE man" — E leads I in L (inductor), I leads E in C (capacitor). On the FE exam, inductive impedance is +jωL (positive imaginary) and capacitive impedance is -j/(ωC) (negative imaginary).',
       importantNote: 'ALL DC circuit analysis techniques work with phasors: KVL, KCL, Thevenin, Norton, superposition, voltage divider, current divider — just use impedances Z instead of resistances R, and phasors instead of DC values.',
     },
@@ -5079,7 +5079,7 @@ Impedance changes with frequency ω:
 
 | Frequency | Inductor Z_L = jωL | Capacitor Z_C = 1/(jωC) |
 |---|---|---|
-| DC (ω → 0) | **0** (short circuit) | **∞** (open circuit) |
+| $DC (\\omega \\to 0)$ | **0** (short circuit) | **∞** (open circuit) |
 | Low ω | Small | Large |
 | High ω | Large | Small |
 | ω → ∞ | **∞** (open circuit) | **0** (short circuit) |
@@ -5092,9 +5092,9 @@ This frequency dependence is the basis of filters:
 
 For sinusoidal signals:
 
-**V_rms = V_peak / sqrt(2) ≈ 0.707 · V_peak**
+**$V_{rms} = V_{peak} / \\sqrt{2} \\approx 0.707 \\cdot V_{peak}$**
 
-- RMS values are used for power calculations: **P = V_rms · I_rms · cosφ**
+- RMS values are used for power calculations: **$P = V_{rms} \\cdot I_{rms} \\cdot \\cos \\phi$**
 - Standard outlet voltage (120V) is an RMS value; peak is 120·sqrt(2) ≈ 170V
 - Phasors typically represent **peak** values unless specified as RMS
 
@@ -5198,11 +5198,11 @@ relationship.
 
 For parallel circuits, invert everything:
 
-**Y = 1/Z = G + jB**, where G is conductance and B is susceptance.
+**$Y = 1/Z = G + jB$**, where G is conductance and B is susceptance.
 
 The trap is that G is **not** 1/R when reactance is present. For Z = R + jX,
 
-Y = 1/(R + jX) = (R - jX)/(R^2 + X^2)
+$$Y = 1/(R + jX) = (R - jX)/(R^2 + X^2)$$
 
 so G = R/(R^2 + X^2) and B = -X/(R^2 + X^2). Only when X = 0 does G reduce to
 1/R.
@@ -5219,11 +5219,11 @@ values cover almost every non-sinusoidal question:
 
 | Waveform | rms | Relative to peak |
 |---|---|---|
-| Sinusoid | V_p/sqrt(2) | 0.707 |
+| Sinusoid | $V_p/\\sqrt{2}$ | 0.707 |
 | Square (bipolar) | V_p | 1.000 |
-| Triangle / sawtooth | V_p/sqrt(3) | 0.577 |
+| Triangle / sawtooth | $V_p/\\sqrt{3}$ | 0.577 |
 | Half-wave rectified sinusoid | V_p/2 | 0.500 |
-| Full-wave rectified sinusoid | V_p/sqrt(2) | 0.707 |
+| Full-wave rectified sinusoid | $V_p/\\sqrt{2}$ | 0.707 |
 
 The last row surprises people: full-wave rectification does not change the rms
 at all, because rms squares the signal and squaring removes the sign. It
@@ -5298,15 +5298,15 @@ fee_ac_power: {
 
 | Power | Symbol | Unit | Formula | Meaning |
 |---|---|---|---|---|
-| Real (Active) | P | Watts (W) | V·I·cosφ | Does useful work |
-| Reactive | Q | VAR | V·I·sinφ | Oscillates, no net work |
-| Apparent | S | VA | V·I | Total power burden |
+| Real (Active) | P | Watts (W) | $V\\cdot I\\cdot \\cos \\phi$ | Does useful work |
+| Reactive | Q | VAR | $V\\cdot I\\cdot \\sin \\phi$ | Oscillates, no net work |
+| Apparent | S | VA | $V\\cdot I$ | Total power burden |
 
 ### The Power Triangle
 
-**S² = P² + Q²** (Pythagorean relationship)
+**$S^{2} = P^{2} + Q^{2}$** (Pythagorean relationship)
 
-**S = P + jQ** (complex power)
+**$S = P + jQ$** (complex power)
 
 - P is the horizontal leg
 - Q is the vertical leg
@@ -5314,20 +5314,20 @@ fee_ac_power: {
 
 ## 1.2 Power Factor
 
-**PF = cosφ = P/S**
+**$PF = \\cos \\phi = P/S$**
 
 Where φ is the phase angle between voltage and current.
 
 | PF | Meaning | Load Type |
 |---|---|---|
-| PF = 1 | Unity (all real) | Purely resistive |
+| $PF = 1$ | Unity (all real) | Purely resistive |
 | PF < 1, lagging | Current lags voltage | Inductive (motors) |
 | PF < 1, leading | Current leads voltage | Capacitive |
 
 ### Why Power Factor Matters
 
 Low PF means:
-- More current needed for the same real power: **I = P/(V·PF)**
+- More current needed for the same real power: **$I = P/(V\\cdot PF)$**
 - Higher I²R losses in conductors
 - Larger transformers and cables needed
 - Utilities charge penalties for low PF`,
@@ -5338,13 +5338,13 @@ Low PF means:
       title: '2. Complex Power and Power Factor Correction',
       content: `## 2.1 Complex Power
 
-**S = V · I*** (voltage phasor times conjugate of current phasor)
+**$S = V \\cdot I$*** (voltage phasor times conjugate of current phasor)
 
-**S = P + jQ = |V|·|I|∠(θv - θi)**
+**$S = P + jQ = |V|\\cdot |I|\\angle (\\theta v - \\theta i)$**
 
 For a load with impedance Z = R + jX:
-- **P = I²·R** (real power dissipated in resistance)
-- **Q = I²·X** (reactive power in reactance)
+- **$P = I^{2}\\cdot R$** (real power dissipated in resistance)
+- **$Q = I^{2}\\cdot X$** (reactive power in reactance)
 
 ## 2.2 Power Factor Correction
 
@@ -5352,12 +5352,12 @@ Industrial loads (motors) are inductive (lagging PF). Adding **parallel capacito
 
 ### Calculating Required Capacitance
 
-To correct from PF₁ to PF₂:
+To correct from $PF_{1}$ to $PF_{2}$:
 
-1. Calculate old angle: φ₁ = arccos(PF₁)
-2. Calculate new angle: φ₂ = arccos(PF₂)
-3. Required capacitive reactive power: **Q_C = P·(tanφ₁ - tanφ₂)**
-4. Capacitor value: **C = Q_C/(ω·V²)**
+1. Calculate old angle: φ₁ = arccos($PF_{1}$)
+2. Calculate new angle: φ₂ = arccos($PF_{2}$)
+3. Required capacitive reactive power: **$Q_C = P\\cdot (\\tan \\phi _{1} - \\tan \\phi _{2})$**
+4. Capacitor value: **$C = Q_C/(\\omega \\cdot V^{2})$**
 
 ### Example
 - 100 kW load at PF = 0.8 lagging; correct to PF = 0.95
@@ -5375,7 +5375,7 @@ The capacitor bank must supply 42.1 kVAR of reactive power.`,
 
 A single-phase load draws 20 A rms at 240 V rms with a lagging power factor of 0.80.
 
-S = V I = 240 x 20 = **4800 VA**
+$$S = V I = 240 x 20 = 4800 VA$$
 P = S cos(theta) = 4800 x 0.80 = **3840 W**
 Q = S sin(theta), and sin(theta) = sqrt(1 - 0.64) = 0.60, so Q = 4800 x 0.60 = **2880 VAR** (lagging, so inductive and positive by convention)
 
@@ -5387,7 +5387,7 @@ The phase angle is arccos(0.80) = **36.9 degrees**, current lagging.
 
 Correct the load above to unity power factor at 60 Hz. The capacitor must supply the whole 2880 VAR:
 
-Q_C = V^2/X_C, so X_C = V^2/Q_C = 240^2/2880 = 57600/2880 = **20 ohm**.
+$$Q_C = V^2/X_C, so X_C = V^2/Q_C = 240^2/2880 = 57600/2880 = 20 ohm$$.
 
 C = 1/(omega X_C) = 1/(377 x 20) = 1/7540 = **133 microfarad**.
 
@@ -5469,8 +5469,8 @@ while the current is at full amplitude.
 
 ## 4.3 Complex power, and the sign convention that matters
 
-**S = V I\\*** (voltage phasor times the CONJUGATE of the current phasor)
-= P + jQ.
+**$S = V I$*** (voltage phasor times the CONJUGATE of the current phasor)
+$$= P + jQ$$.
 
 The conjugate is not optional. Using V I instead of V I* flips the sign of Q
 and turns a lagging load into a leading one.
@@ -5533,12 +5533,12 @@ fee_resonance: {
 
 At resonance, X_L = X_C:
 
-**ω₀ = 1/sqrt(LC)** (rad/s) or **f₀ = 1/(2π·sqrt(LC))** (Hz)
+**$\\omega _{0} = 1/\\sqrt{LC}$** (rad/s) or **$f_{0} = 1/(2\\pi \\cdot \\sqrt{LC})$** (Hz)
 
 ## 1.2 Series RLC Resonance
 
 At resonance:
-- **Z = R** (minimum impedance, purely resistive)
+- **$Z = R$** (minimum impedance, purely resistive)
 - **Current is maximum**: I = V/R
 - Voltage and current are **in phase** (φ = 0)
 - Voltage across L and C can be **much larger** than source voltage (Q-factor amplification)
@@ -5546,7 +5546,7 @@ At resonance:
 ## 1.3 Parallel RLC Resonance
 
 At resonance:
-- **Z = R** (maximum impedance, purely resistive)
+- **$Z = R$** (maximum impedance, purely resistive)
 - Current from source is **minimum**: I = V/R
 - This is the opposite behavior from series resonance
 
@@ -5554,7 +5554,7 @@ At resonance:
 |---|---|---|
 | At resonance | Z minimum | Z maximum |
 | Current | Maximum | Minimum |
-| Impedance | Z = R | Z = R (or Q²R for practical) |
+| Impedance | $Z = R$ | Z = R (or Q²R for practical) |
 | Application | Band-pass filter | Band-reject filter |
 
 ## 1.4 One circuit, numbers all the way through
@@ -5564,22 +5564,22 @@ quantity comes from the same three components:
 
 ![A series RLC circuit driven by a sinusoidal source: R = 10 ohm, L = 100 mH and C = 10 microfarad in one loop. Series resonance is the condition that makes this loop look purely resistive.](/courses/fe-ee/figures/sch-rlc-series.svg)
 
-**Resonant frequency.** ω₀ = 1/√(LC) = 1/√(0.1 × 10×10⁻⁶) = 1/√(10⁻⁶) =
-**1000 rad/s**, which is f₀ = 1000/2π = **159.2 Hz**.
+**Resonant frequency.** ω₀ = 1/√(LC) = 1/√(0.1 × 10×$10^{-6}$) = 1/√($10^{-6}$) =
+**1000 rad/s**, which is $f_{0}$ = 1000/2π = **159.2 Hz**.
 
 **The reactances at that frequency.** X_L = ω₀L = 1000 × 0.1 = 100 Ω, and
-X_C = 1/(ω₀C) = 1/(1000 × 10×10⁻⁶) = 100 Ω. Equal, as they must be — that
+X_C = 1/(ω₀C) = 1/(1000 × 10×$10^{-6}$) = 100 Ω. Equal, as they must be — that
 equality *is* the definition of resonance, and computing both is the fastest
 check that you inverted LC correctly.
 
 **Quality factor, two ways.** Q = ω₀L/R = 1000 × 0.1/10 = 10. Independently,
-Q = (1/R)√(L/C) = (1/10)√(0.1/10⁻⁵) = (1/10)√(10⁴) = (1/10)(100) = 10. Same
+Q = (1/R)√(L/C) = (1/10)√(0.1/$10^{-5}$) = (1/10)√($10^{4}$) = (1/10)(100) = 10. Same
 answer by a different route.
 
 **Bandwidth.** BW = ω₀/Q = 1000/10 = **100 rad/s**, i.e. 15.92 Hz. The
 half-power frequencies are not simply ω₀ ± BW/2; they are
 
-ω = ∓R/(2L) + √((R/2L)² + 1/(LC)) = ∓50 + √(2500 + 10⁶) = ∓50 + 1001.25
+$$\\omega = \\mp R/(2L) + \\sqrt{(R/2L)^{2} + 1/(LC)} = \\mp 50 + \\sqrt{2500 + 10^{6}} = \\mp 50 + 1001.25$$
 
 giving **951.25 and 1051.25 rad/s**. Their difference is exactly 100 rad/s, so
 the bandwidth formula holds precisely, while their *geometric* mean —
@@ -5594,10 +5594,10 @@ purely R = 10 Ω, so I = 10/10 = 1 A rms. Then:
 
 | Element | Impedance at ω₀ | Voltage across it | Relative to source |
 |---|---|---|---|
-| R | 10 Ω | 10.0 V | 1× |
-| L | j100 Ω | 100.0 V | **10×** |
-| C | −j100 Ω | 100.0 V | **10×** |
-| L and C together | j100 − j100 = 0 | 0.0 V | 0× |
+| R | $10\\ \\Omega$ | 10.0 V | $1\\times$ |
+| L | $j100\\ \\Omega$ | 100.0 V | **$10\\times$** |
+| C | $-j100\\ \\Omega$ | 100.0 V | **$10\\times$** |
+| L and C together | $j100 - j100 = 0$ | 0.0 V | $0\\times$ |
 
 A 10 V source produces 100 V across the inductor. Nothing is violated: the
 inductor and capacitor voltages are 180° out of phase and cancel exactly, so
@@ -5639,7 +5639,7 @@ unchanged.`,
       title: '2. Quality Factor and Bandwidth',
       content: `## 2.1 Quality Factor (Q)
 
-**Q = ω₀L/R = 1/(ω₀RC) = sqrt(L/C)/R**
+**$Q = \\omega _{0}L/R = 1/(\\omega _{0}RC) = \\sqrt{L/C}/R$**
 
 Q measures how "sharp" the resonance peak is:
 - **High Q** (> 10): narrow bandwidth, very selective
@@ -5650,26 +5650,26 @@ Q also represents energy stored vs. energy dissipated per cycle:
 
 ## 2.2 Bandwidth
 
-**BW = f₀/Q = R/(2πL)** for series RLC
+**$BW = f_{0}/Q = R/(2\\pi L)$** for series RLC
 
 The bandwidth is the frequency range between the **-3 dB points** (half-power points):
 
-- Lower cutoff: f₁ = f₀ - BW/2
-- Upper cutoff: f₂ = f₀ + BW/2
+- Lower cutoff: $f_{1}$ = $f_{0}$ - BW/2
+- Upper cutoff: $f_{2}$ = $f_{0}$ + BW/2
 
 At the -3 dB points:
 - Power is **half** of peak power
-- Current is **1/sqrt(2) ≈ 0.707** of peak current
-- Impedance is **sqrt(2) ≈ 1.414** times minimum impedance
+- Current is **$1/\\sqrt{2} \\approx 0.707$** of peak current
+- Impedance is **$\\sqrt{2} \\approx 1.414$** times minimum impedance
 
 ### Selectivity
 
 | Q Value | Bandwidth | Application |
 |---|---|---|
-| Q > 100 | Very narrow | Radio tuning, crystal oscillators |
-| Q = 10-100 | Moderate | Band-pass filters |
-| Q < 10 | Wide | Broadband circuits |
-| Q < 1 | Very wide | Damped systems |`,
+| $Q > 100$ | Very narrow | Radio tuning, crystal oscillators |
+| $Q = 10-100$ | Moderate | Band-pass filters |
+| $Q < 10$ | Wide | Broadband circuits |
+| $Q < 1$ | Very wide | Damped systems |`,
       examTip: 'BW = f₀/Q tells you everything: higher Q = narrower bandwidth = more selective. On the FE exam, if asked about bandwidth, find Q first. Remember: Q = ω₀L/R, so increasing R decreases Q and widens bandwidth.',
       importantNote: 'The -3 dB points are where power drops to HALF (-3 dB ≈ 10·log(0.5)) — not where voltage drops to half. Voltage at -3 dB is 1/sqrt(2) ≈ 0.707 of peak. This is a common source of confusion.',
     },
@@ -5786,7 +5786,7 @@ An ideal parallel LC has infinite impedance at resonance. A real one does not,
 because the inductor carries winding resistance R_L in series with it. The
 tank's impedance at resonance becomes finite:
 
-**Z_tank = L/(R_L C)**
+**$Z_{tank} = L/(R_L C)$**
 
 which is often written as Q^2 R_L. This is the dynamic resistance, and it is
 what a real tank circuit presents to the source.
@@ -5875,7 +5875,7 @@ Three balanced sinusoidal voltages, each 120° apart:
 - V_b = Vm∠-120°
 - V_c = Vm∠-240° (= Vm∠+120°)
 
-For balanced systems: **V_a + V_b + V_c = 0**
+For balanced systems: **$V_a + V_b + V_c = 0$**
 
 ## 1.2 Wye (Y) Connection
 
@@ -5883,8 +5883,8 @@ Phase windings share a common **neutral point**.
 
 | Quantity | Relationship |
 |---|---|
-| Line voltage | V_L = sqrt(3) · V_ph |
-| Line current | I_L = I_ph |
+| Line voltage | $V_L = \\sqrt{3} \\cdot V_{ph}$ |
+| Line current | $I_L = I_{ph}$ |
 | Neutral carries | Only unbalanced current (zero if balanced) |
 
 ## 1.3 Delta (Δ) Connection
@@ -5893,13 +5893,13 @@ Phase windings form a closed triangle.
 
 | Quantity | Relationship |
 |---|---|
-| Line voltage | V_L = V_ph |
-| Line current | I_L = sqrt(3) · I_ph |
+| Line voltage | $V_L = V_{ph}$ |
+| Line current | $I_L = \\sqrt{3} \\cdot I_{ph}$ |
 | No neutral wire | Delta has no neutral point |
 
 ### Delta-Wye Conversion
 
-For balanced impedances: **Z_Δ = 3 · Z_Y** (or Z_Y = Z_Δ/3)
+For balanced impedances: **$Z_\\Delta = 3 \\cdot Z_Y$** (or Z_Y = Z_Δ/3)
 
 ## 1.4 The two loads, drawn
 
@@ -5929,10 +5929,10 @@ Connect them first in wye, then in delta, and compute everything.
 
 | Quantity | Wye connection | Delta connection |
 |---|---|---|
-| Voltage across each element | 208/√3 = 120.1 V | 208 V |
-| Current in each element | 120.1/10 = 12.01 A | 208/10 = 20.80 A |
-| Line current | 12.01 A | √3 × 20.80 = 36.03 A |
-| Power per element | 12.01² × 10 = 1442 W | 20.80² × 10 = 4326 W |
+| Voltage across each element | $208/\\sqrt{3} = 120.1\\ \\mathrm{V}$ | 208 V |
+| Current in each element | $120.1/10 = 12.01\\ \\mathrm{A}$ | $208/10 = 20.80\\ \\mathrm{A}$ |
+| Line current | 12.01 A | $\\sqrt{3} \\times 20.80 = 36.03\\ \\mathrm{A}$ |
+| Power per element | $12.01^{2} \\times 10 = 1442\\ \\mathrm{W}$ | $20.80^{2} \\times 10 = 4326\\ \\mathrm{W}$ |
 | **Total real power** | **4.33 kW** | **12.98 kW** |
 
 The delta connection draws **exactly three times** the power of the wye from the
@@ -5988,7 +5988,7 @@ The sum is *algebraic*, and one reading goes negative when the power factor
 falls below 0.5. That is not a fault and not a wiring error, and a question that
 reports one negative wattmeter is testing whether you subtract rather than
 ignore it. The two readings also give the power factor directly, since
-tan φ = √3 (P₂ − P₁)/(P₂ + P₁) — which is why the two-wattmeter method survives
+tan φ = √3 ($P_{2}$ − $P_{1}$)/($P_{2}$ + $P_{1}$) — which is why the two-wattmeter method survives
 in practice long after digital meters could have replaced it.`,
       examTip: 'The sqrt(3) factor appears in EVERY three-phase problem. For wye: multiply phase voltage by sqrt(3) to get line voltage. For delta: multiply phase current by sqrt(3) to get line current. Draw the phasor diagram if you forget which one.',
     },
@@ -5999,11 +5999,11 @@ in practice long after digital meters could have replaced it.`,
 
 For balanced systems:
 
-- **P = sqrt(3) · V_L · I_L · cosφ** (real power)
-- **Q = sqrt(3) · V_L · I_L · sinφ** (reactive power)
-- **S = sqrt(3) · V_L · I_L** (apparent power)
+- **$P = \\sqrt{3} \\cdot V_L \\cdot I_L \\cdot \\cos \\phi$** (real power)
+- **$Q = \\sqrt{3} \\cdot V_L \\cdot I_L \\cdot \\sin \\phi$** (reactive power)
+- **$S = \\sqrt{3} \\cdot V_L \\cdot I_L$** (apparent power)
 
-Or equivalently: **P = 3 · V_ph · I_ph · cosφ** (three times single-phase power)
+Or equivalently: **$P = 3 \\cdot V_{ph} \\cdot I_{ph} \\cdot \\cos \\phi$** (three times single-phase power)
 
 ### Key Advantage
 
@@ -6060,15 +6060,15 @@ P = sqrt(3) x 208 x 36 = **12,970 W** — three times the wye figure.
 
 A balanced delta load draws 30 A of line current at 480 V line-to-line with pf = 0.85 lagging.
 
-S = sqrt(3) V_L I_L = 1.732 x 480 x 30 = **24,940 VA**
-P = S x 0.85 = **21,200 W**
-Q = S x sin(arccos 0.85) = 24,940 x 0.527 = **13,140 VAR**
+$$S = \\sqrt{3} V_L I_L = 1.732 x 480 x 30 = 24,940 VA$$
+$$P = S x 0.85 = 21,200\\ \\mathrm{W}$$
+$$Q = S x \\sin (\\arccos  0.85) = 24,940 x 0.527 = 13,140\\ \\mathrm{VAR}$$
 
 Note that the sqrt(3) V_L I_L formula uses LINE quantities for both, whichever way the load is connected — that is why it is the one worth memorising.
 
 ## 3.4 Delta-to-wye conversion for analysis
 
-A balanced delta of Z_delta converts to a wye of **Z_wye = Z_delta/3**. Converting a delta load to its wye equivalent lets you analyse one phase against neutral and multiply by three, which is almost always faster than working the delta directly.
+A balanced delta of Z_delta converts to a wye of **$Z_{wye} = Z_{delta}/3$**. Converting a delta load to its wye equivalent lets you analyse one phase against neutral and multiply by three, which is almost always faster than working the delta directly.
 
 Applying it to 3.2: Z_wye = 10/3 = 3.33 ohm per phase, V_phase = 120 V, I_line = 120/3.33 = 36 A. Matches the delta answer exactly.`,
       examTip: 'Write down which connection you have before touching sqrt(3). Wye: line voltage is sqrt(3) larger, currents equal. Delta: line current is sqrt(3) larger, voltages equal. Getting this backwards is the single biggest source of lost marks in three-phase problems.',
@@ -6138,12 +6138,12 @@ generally the arithmetic difference.
 **Worked:** phase currents of 10 A, 10 A and 4 A, at the usual 120-degree
 spacing. Taking the first along the reference axis:
 
-I_a = 10 at 0, I_b = 10 at -120, I_c = 4 at +120
+$$I_a = 10 at 0, I_b = 10 at -120, I_c = 4 at +120$$
 
 Real parts: 10 + 10(-0.5) + 4(-0.5) = 10 - 5 - 2 = **3**
 Imag parts: 0 + 10(-0.866) + 4(+0.866) = -8.66 + 3.46 = **-5.2**
 
-I_n = sqrt(9 + 27) = **6.0 A**
+$$I_n = \\sqrt{9 + 27} = 6.0\\ \\mathrm{A}$$
 
 Note it is not 10 - 4 = 6 by coincidence of these numbers; change the angles
 and the arithmetic-difference shortcut fails. Always sum as phasors.
@@ -6159,7 +6159,7 @@ harmonic-rich circuits.
 Three-phase power can be measured with two wattmeters regardless of balance,
 provided there is no neutral connection:
 
-**P_total = W1 + W2**
+**$P_{total} = W1 + W2$**
 
 and for a balanced load the power factor follows from the ratio:
 
@@ -6167,7 +6167,7 @@ and for a balanced load the power factor follows from the ratio:
 
 **Worked:** W1 = 8 kW, W2 = 2 kW. Total = **10 kW**.
 tan(theta) = 1.732(6)/10 = 1.039, so theta = 46.1 degrees and
-pf = cos(46.1) = **0.693**.
+$$pf = \\cos (46.1) = 0.693$$.
 
 When one wattmeter reads negative, the power factor is below 0.5 - a useful
 diagnostic that needs no calculation at all.`,
@@ -6213,19 +6213,19 @@ fee_transients: {
       title: '1. First-Order Transients (RC and RL)',
       content: `## 1.1 The Universal First-Order Formula
 
-**x(t) = x(∞) + [x(0) - x(∞)] · e^(-t/τ)**
+**$x(t) = x(\\infty) + [x(0) - x(\\infty)] \\cdot e^{-t/\\tau}$**
 
 This single formula solves ANY first-order transient. Find three things:
 1. **x(0)**: initial value (from circuit conditions before switching)
-2. **x(∞)**: final value (from circuit at t → ∞ in steady state)
+2. **$x(\\infty)$**: final value (from circuit at t → ∞ in steady state)
 3. **τ**: time constant
 
 ### Time Constants
 
 | Circuit | Time Constant | Settling Time (99%) |
 |---|---|---|
-| RC | τ = R·C | 5τ = 5RC |
-| RL | τ = L/R | 5τ = 5L/R |
+| RC | $\\tau = R\\cdot C$ | $5\\tau = 5RC$ |
+| RL | $\\tau = L/R$ | $5\\tau = 5L/R$ |
 
 ## 1.2 RC Circuit Responses
 
@@ -6233,9 +6233,9 @@ This single formula solves ANY first-order transient. Find three things:
 - v_C(t) = V(1 - e^(-t/RC))
 - i(t) = (V/R)·e^(-t/RC)
 
-### Discharging (from V₀ to 0):
-- v_C(t) = V₀·e^(-t/RC)
-- i(t) = -(V₀/R)·e^(-t/RC)
+### Discharging (from $V_{0}$ to 0):
+- v_C(t) = $V_{0}$·e^(-t/RC)
+- i(t) = -($V_{0}$/R)·e^(-t/RC)
 
 ## 1.3 RL Circuit Response
 
@@ -6245,9 +6245,9 @@ This single formula solves ANY first-order transient. Find three things:
 
 ## 1.4 Initial Conditions (Continuity)
 
-At the instant of switching (t = 0⁺):
-- **Capacitor voltage cannot change instantly**: v_C(0⁺) = v_C(0⁻)
-- **Inductor current cannot change instantly**: i_L(0⁺) = i_L(0⁻)
+At the instant of switching (t = $0^{+}$):
+- **Capacitor voltage cannot change instantly**: v_C($0^{+}$) = v_C($0^{-}$)
+- **Inductor current cannot change instantly**: i_L($0^{+}$) = i_L($0^{-}$)
 
 ## 1.5 A charging circuit, end to end
 
@@ -6256,34 +6256,34 @@ circuit rather than derived:
 
 ![A 100 V source, a switch that closes at t = 0, a 50 kilohm resistor and a 10 microfarad capacitor in series. The capacitor charges through the resistor once the switch closes.](/courses/fe-ee/figures/sch-rc-transient.svg)
 
-**τ = RC** = 50×10³ × 10×10⁻⁶ = **0.5 s**. Get the exponents right by grouping:
-kΩ × µF = 10³ × 10⁻⁶ = 10⁻³, so kΩ × µF gives milliseconds directly. Here
+**$\\tau = RC$** = 50×10³ × 10×$10^{-6}$ = **0.5 s**. Get the exponents right by grouping:
+kΩ × µF = 10³ × $10^{-6}$ = 10⁻³, so kΩ × µF gives milliseconds directly. Here
 50 × 10 = 500 ms. That shortcut removes the most common arithmetic slip in the
 whole topic.
 
-**x(0⁺) = 0 V.** The capacitor was uncharged before the switch closed, and
+**$x(0^{+}) = 0\\ \\mathrm{V}.$** The capacitor was uncharged before the switch closed, and
 capacitor voltage is continuous, so it is still 0 V immediately after.
 
-**x(∞) = 100 V.** After a long time the capacitor current falls to zero, so
+**$x(\\infty) = 100\\ \\mathrm{V}.$** After a long time the capacitor current falls to zero, so
 there is no drop across R and the capacitor holds the full source voltage.
 
 Therefore v_C(t) = 100(1 − e^(−t/0.5)) volts.
 
-The current follows from the *resistor*, not the capacitor: at t = 0⁺ the
+The current follows from the *resistor*, not the capacitor: at t = $0^{+}$ the
 capacitor is at 0 V so the entire 100 V appears across R, giving
-i(0⁺) = 100/50 kΩ = **2 mA**. This is the counter-intuitive half of the problem
+i($0^{+}$) = 100/50 kΩ = **2 mA**. This is the counter-intuitive half of the problem
 worth stating plainly: **the capacitor voltage starts at its minimum while the
 current starts at its maximum.** The element that cannot change is the voltage;
 the current is free to jump, and it does.
 
-| Time | t/τ | v_C | Fraction of final | i(t) |
+| Time | $t/\\tau$ | v_C | Fraction of final | i(t) |
 |---|---|---|---|---|
 | 0 s | 0 | 0.00 V | 0.0 % | 2.000 mA |
-| 0.5 s | 1τ | 63.21 V | 63.2 % | 0.736 mA |
-| 1.0 s | 2τ | 86.47 V | 86.5 % | 0.271 mA |
-| 1.5 s | 3τ | 95.02 V | 95.0 % | 0.100 mA |
-| 2.0 s | 4τ | 98.17 V | 98.2 % | 0.037 mA |
-| 2.5 s | 5τ | 99.33 V | 99.3 % | 0.013 mA |
+| 0.5 s | $1\\tau$ | 63.21 V | 63.2 % | 0.736 mA |
+| 1.0 s | $2\\tau$ | 86.47 V | 86.5 % | 0.271 mA |
+| 1.5 s | $3\\tau$ | 95.02 V | 95.0 % | 0.100 mA |
+| 2.0 s | $4\\tau$ | 98.17 V | 98.2 % | 0.037 mA |
+| 2.5 s | $5\\tau$ | 99.33 V | 99.3 % | 0.013 mA |
 
 The percentages in the middle column are worth memorising, because FE questions
 ask for them far more often than they ask for a general time: **63.2 % after one
@@ -6295,10 +6295,10 @@ if a computed value looks wrong.
 
 The other common form asks *when* rather than *how much*. Invert the exponential:
 
-t = −τ · ln[(x(∞) − x(t))/(x(∞) − x(0))]
+$$t = -\\tau \\cdot \\ln [(x(\\infty) - x(t))/(x(\\infty) - x(0))]$$
 
 For this circuit to reach 90 V:
-t = −0.5 · ln[(100 − 90)/(100 − 0)] = −0.5 · ln(0.1) = 0.5 × 2.303 = **1.15 s**.
+$$t = -0.5 \\cdot \\ln [(100 - 90)/(100 - 0)] = -0.5 \\cdot \\ln (0.1) = 0.5 \\times 2.303 = 1.15\\ \\mathrm{s}$$.
 
 Sanity-check it against the table: 90 V sits between the 86.47 V at 2τ = 1.0 s
 and the 95.02 V at 3τ = 1.5 s, and 1.15 s lands between them. Any answer outside
@@ -6306,7 +6306,7 @@ that bracket is arithmetic, not physics.
 
 ## 1.7 Where the energy goes
 
-Charging this capacitor stores E = ½CV² = ½ × 10×10⁻⁶ × 100² = **0.05 J**. But
+Charging this capacitor stores E = ½CV² = ½ × 10×$10^{-6}$ × 100² = **0.05 J**. But
 the source delivers charge Q = CV at a constant 100 V, so it supplies
 E = QV = CV² = **0.1 J**. The missing half — another 0.05 J — is dissipated in
 R as heat, and this is true **regardless of the value of R**.
@@ -6324,26 +6324,26 @@ correct one does not.`,
       title: '2. Second-Order Transients (RLC)',
       content: `## 2.1 RLC Circuit Response Types
 
-The characteristic equation: **s² + 2αs + ω₀² = 0**
+The characteristic equation: **$s^{2} + 2\\alpha s + \\omega _{0}^{2} = 0$**
 
 Where:
-- **α = R/(2L)** is the damping coefficient (series RLC)
-- **ω₀ = 1/sqrt(LC)** is the natural frequency
-- **ζ = α/ω₀ = R/(2sqrt(L/C))** is the damping ratio
+- **$\\alpha = R/(2L)$** is the damping coefficient (series RLC)
+- **$\\omega _{0} = 1/\\sqrt{LC}$** is the natural frequency
+- **$\\zeta = \\alpha /\\omega _{0} = R/(2\\sqrt{L/C})$** is the damping ratio
 
 ### Response Types
 
 | Condition | Type | Roots | Behavior |
 |---|---|---|---|
-| ζ < 1 (α < ω₀) | **Underdamped** | Complex conjugate | Oscillates with decay |
-| ζ = 1 (α = ω₀) | **Critically damped** | Repeated real | Fastest non-oscillatory |
-| ζ > 1 (α > ω₀) | **Overdamped** | Distinct real | Slow, monotonic |
+| $\\zeta < 1 (\\alpha < \\omega _{0})$ | **Underdamped** | Complex conjugate | Oscillates with decay |
+| $\\zeta = 1 (\\alpha = \\omega _{0})$ | **Critically damped** | Repeated real | Fastest non-oscillatory |
+| $\\zeta > 1 (\\alpha > \\omega _{0})$ | **Overdamped** | Distinct real | Slow, monotonic |
 
 ### Underdamped Response
 
-**x(t) = e^(-αt) · [A·cos(ωd·t) + B·sin(ωd·t)]**
+**$x(t) = e^{-\\alpha t} \\cdot [A\\cdot \\cos (\\omega d\\cdot t) + B\\cdot \\sin (\\omega d\\cdot t)]$**
 
-Where **ωd = ω₀·sqrt(1-ζ²)** is the damped natural frequency.
+Where **$\\omega d = \\omega _{0}\\cdot \\sqrt{1-\\zeta ^{2}}$** is the damped natural frequency.
 
 ## 2.2 Practical Implications
 
@@ -6395,7 +6395,7 @@ A 2 H inductor with 100 ohm in series is switched onto 50 V.
 
 tau = L/R = 2/100 = **0.02 s** = 20 ms. Final current = 50/100 = **0.5 A**.
 
-i(t) = 0.5(1 - e^(-t/0.02)) A.
+$$i(t) = 0.5(1 - e^{-t/0.02}) A$$.
 
 At t = 0+ the inductor is an open circuit, so i = 0 and the full 50 V appears across the inductor. At steady state the inductor is a plain wire, so the whole 50 V sits across the resistor and the inductor voltage is zero.
 
@@ -6476,7 +6476,7 @@ Opening a switch in an inductive circuit forces di/dt toward infinity, and
 v = L di/dt follows it. A 0.5 H relay coil carrying 2 A, interrupted in 1
 microsecond, would in principle generate
 
-v = 0.5 x (2/1e-6) = **1 MV**
+$$v = 0.5 x (2/1e-6) = 1 MV$$
 
 In practice the switch contacts arc and clamp it far below that, which is
 exactly the damage mechanism. A flyback diode across the coil gives the
@@ -6549,28 +6549,28 @@ The **impulse response** h(t) is the output of a system when the input is a unit
 
 **Continuous-time convolution:**
 
-**y(t) = ∫ x(τ) · h(t − τ) dτ**
+**$y(t) = \\int x(\\tau) \\cdot h(t - \\tau) d\\tau$**
 
 **Discrete-time convolution:**
 
-**y[n] = Σ x[k] · h[n − k]**
+**$y[n] = \\Sigma x[k] \\cdot h[n - k]$**
 
 | Signal | Response | What It Reveals |
 |---|---|---|
 | Impulse δ(t) | h(t) | All system dynamics — poles, zeros, decay, oscillation |
-| Step u(t) | g(t) = ∫h(τ)dτ | Settling time, overshoot, steady-state value |
+| Step u(t) | $g(t) = \\int h(\\tau)d\\tau$ | Settling time, overshoot, steady-state value |
 
 ### Step Response
 
-The **step response** g(t) is the integral of the impulse response: **g(t) = ∫₀ᵗ h(τ)dτ**. Conversely, **h(t) = dg(t)/dt**. The step response reveals how quickly and smoothly a system reaches steady state.
+The **step response** g(t) is the integral of the impulse response: **$g(t) = \\int _{0}^{t} h(\\tau)d\\tau$**. Conversely, **$h(t) = dg(t)/dt$**. The step response reveals how quickly and smoothly a system reaches steady state.
 
 ## 1.2 Convolution Properties
 
 - **Commutative**: x * h = h * x
-- **Associative**: (x * h₁) * h₂ = x * (h₁ * h₂)
-- **Distributive**: x * (h₁ + h₂) = x * h₁ + x * h₂
+- **Associative**: (x * $h_{1}$) * $h_{2}$ = x * ($h_{1}$ * $h_{2}$)
+- **Distributive**: x * ($h_{1}$ + $h_{2}$) = x * $h_{1}$ + x * $h_{2}$
 - **Identity**: x(t) * δ(t) = x(t)
-- **Time-shift**: x(t) * δ(t − t₀) = x(t − t₀)
+- **Time-shift**: x(t) * δ(t − $t_{0}$) = x(t − $t_{0}$)
 
 For the FE exam, memorize key response shapes for first and second-order systems — these appear repeatedly in both circuit analysis and control questions.`,
         examTip: 'On the FE exam, convolution problems often simplify dramatically. Remember that convolving any signal with δ(t) returns the signal itself, and convolving with δ(t−t₀) shifts it by t₀. For rectangular pulse convolution, the result is a trapezoid — sketch it rather than computing the integral.',
@@ -6583,25 +6583,25 @@ For the FE exam, memorize key response shapes for first and second-order systems
 An LTI system must satisfy two properties:
 
 **Linearity (Superposition):**
-- If x₁(t) → y₁(t) and x₂(t) → y₂(t), then **α·x₁(t) + β·x₂(t) → α·y₁(t) + β·y₂(t)**
+- If $x_{1}$(t) → $y_{1}$(t) and $x_{2}$(t) → $y_{2}$(t), then **$\\alpha \\cdot x_{1}(t) + \\beta \\cdot x_{2}(t) \\to \\alpha \\cdot y_{1}(t) + \\beta \\cdot y_{2}(t)$**
 
 **Time-Invariance:**
-- If x(t) → y(t), then **x(t − t₀) → y(t − t₀)** — the system response does not change over time
+- If x(t) → y(t), then **$x(t - t_{0}) \\to y(t - t_{0})$** — the system response does not change over time
 
 | Property | Test | Engineering Significance |
 |---|---|---|
 | **Linearity** | Scale and add inputs → outputs scale and add | Enables superposition analysis |
 | **Time-invariance** | Shifted input → same shifted output | System parameters constant |
 | **Causality** | h(t) = 0 for t < 0 | Output depends only on past/present inputs |
-| **BIBO Stability** | ∫\|h(t)\|dt < ∞ | Bounded inputs produce bounded outputs |
+| **BIBO Stability** | ∫\|h(t)\| $dt < \\infty$ | Bounded inputs produce bounded outputs |
 
 ## 2.2 BIBO Stability
 
 A system is **Bounded-Input Bounded-Output (BIBO) stable** if every bounded input produces a bounded output. For LTI systems, this is equivalent to:
 
-**∫₋∞^∞ |h(t)| dt < ∞** (continuous-time)
+**$\\int _{-}\\infty ^\\infty |h(t)| dt < \\infty$** (continuous-time)
 
-**Σ |h[n]| < ∞** (discrete-time)
+**$\\Sigma |h[n]| < \\infty$** (discrete-time)
 
 For systems described by rational transfer functions, BIBO stability requires **all poles in the open left half-plane** (Re(pᵢ) < 0).
 
@@ -6629,14 +6629,14 @@ If a pole lies exactly on the imaginary axis (e.g., s = jω₀), the system is *
 1. **Set up the integral**: y(t) = ∫₀^∞ x(τ)·h(t−τ) dτ
 2. **Identify nonzero region of x(τ)**: x(τ) = 1 for 0 ≤ τ ≤ 2, zero elsewhere
 3. **Substitute**: y(t) = ∫₀^min(t,2) e^(−(t−τ)) dτ (require t−τ ≥ 0 for causality of h)
-4. **For 0 ≤ t ≤ 2**: y(t) = e^(−t) · ∫₀^t e^τ dτ = e^(−t)·(e^t − 1) = **1 − e^(−t)**
-5. **For t > 2**: y(t) = e^(−t) · ∫₀^2 e^τ dτ = e^(−t)·(e² − 1) = **(e² − 1)·e^(−t)**
+4. **For 0 ≤ t ≤ 2**: y(t) = e^(−t) · ∫₀^t e^τ dτ = e^(−t)·(e^t − 1) = **$1 - e^{-t}$**
+5. **For t > 2**: y(t) = e^(−t) · ∫₀^2 e^τ dτ = e^(−t)·(e² − 1) = **$(e^{2} - 1)\\cdot e^{-t}$**
 
 The result is a rising exponential that transitions to a decaying exponential at t = 2.
 
 ## 3.2 Common Mistakes to Avoid
 
-- **Forgetting initial conditions**: When using Laplace to solve ODEs, always include the initial condition terms in L{y'(t)} = sY(s) − y(0⁻). Setting y(0) = 0 when it is not zero produces a completely wrong answer.
+- **Forgetting initial conditions**: When using Laplace to solve ODEs, always include the initial condition terms in L{y'(t)} = sY(s) − y($0^{-}$). Setting y(0) = 0 when it is not zero produces a completely wrong answer.
 - **Confusing impulse vs. step**: The impulse response h(t) and step response g(t) are related by differentiation: h(t) = dg(t)/dt. If the problem gives the step response, differentiate to get h(t) before convolving.
 - **Wrong convolution limits**: The integral limits depend on the support of BOTH signals. Sketch both x(τ) and h(t−τ) to determine where they overlap — this visual approach prevents limit errors.
 
@@ -6648,10 +6648,10 @@ The result is a rising exponential that transitions to a decaying exponential at
 
 | System | h(t) | Causal? | BIBO Stable? |
 |---|---|---|---|
-| h(t) = e^(−3t)·u(t) | Decaying exponential | Yes | Yes (integral = 1/3) |
-| h(t) = e^(2t)·u(t) | Growing exponential | Yes | **No** (integral diverges) |
-| h(t) = e^(−\|t\|) | Two-sided | No | Yes (integral = 2) |
-| h(t) = u(t) | Step function | Yes | **No** (integral diverges) |`,
+| $h(t) = e^{-3t}\\cdot u(t)$ | Decaying exponential | Yes | Yes (integral = 1/3) |
+| $h(t) = e^{2t}\\cdot u(t)$ | Growing exponential | Yes | **No** (integral diverges) |
+| $h(t) = e^(-$ |t\|) | Two-sided | No | Yes (integral = 2) |
+| $h(t) = u(t)$ | Step function | Yes | **No** (integral diverges) |`,
         examTip: 'When convolving a rectangular pulse with an exponential on the FE exam, the result always has two regions — a rising portion and a decaying tail. Sketch the shape rather than memorizing the formula. If the problem involves δ(t), remember: x(t)*δ(t−t₀) = x(t−t₀) — no integration needed.',
         importantNote: 'Always verify your convolution result at key points: at t = 0 the output should be zero (for causal signals), and as t → ∞ the output should decay to zero (for stable systems). These sanity checks catch algebraic errors quickly.',
       },
@@ -6677,15 +6677,15 @@ The result is a rising exponential that transitions to a decaying exponential at
         title: '1. Fourier Series and Fourier Transform',
         content: `## 1.1 Fourier Series (Periodic Signals)
 
-For a signal with period **T₀** and fundamental frequency **f₀ = 1/T₀**, the **trigonometric form** is:
+For a signal with period **$T_{0}$** and fundamental frequency **$f_{0} = 1/T_{0}$**, the **trigonometric form** is:
 
-**x(t) = a₀ + Σ aₙ·cos(nω₀t) + Σ bₙ·sin(nω₀t)**
+**$x(t) = a_{0} + \\Sigma a_{n}\\cdot \\cos (n\\omega _{0}t) + \\Sigma b_{n}\\cdot \\sin (n\\omega _{0}t)$**
 
 The **complex exponential form** is more compact:
 
-**x(t) = Σ cₙ · e^(j2πnf₀t)**
+**$x(t) = \\Sigma c_{n} \\cdot e^{j2\\pi nf_{0}t}$**
 
-where **cₙ = (1/T₀) ∫ x(t) · e^(−j2πnf₀t) dt**
+where **$c_{n} = (1/T_{0}) \\int x(t) \\cdot e^{-j2\\pi nf_{0}t} dt$**
 
 | Signal Type | Representation | Spectrum |
 |---|---|---|
@@ -6696,19 +6696,19 @@ where **cₙ = (1/T₀) ∫ x(t) · e^(−j2πnf₀t) dt**
 
 The **Fourier Transform** extends analysis to non-periodic signals:
 
-**X(f) = ∫ x(t) · e^(−j2πft) dt**
+**$X(f) = \\int x(t) \\cdot e^{-j2\\pi ft} dt$**
 
 **Inverse: x(t) = ∫ X(f) · e^(j2πft) df**
 
 ### Key Properties
 
-- **Linearity**: α·x₁ + β·x₂ → α·X₁ + β·X₂
-- **Time shift**: x(t − t₀) → X(f) · e^(−j2πft₀)
-- **Frequency shift**: x(t) · e^(j2πf₀t) → X(f − f₀)
+- **Linearity**: α·$x_{1}$ + β·$x_{2}$ → α·$X_{1}$ + β·$X_{2}$
+- **Time shift**: x(t − $t_{0}$) → X(f) · e^(−j2πft₀)
+- **Frequency shift**: x(t) · e^(j2πf₀t) → X(f − $f_{0}$)
 - **Convolution theorem**: x(t) * h(t) ↔ X(f) · H(f)
 - **Parseval's theorem**: ∫|x(t)|² dt = ∫|X(f)|² df (energy conservation)
 
-Differentiation in time multiplies by **j2πf** in frequency, so signals with sharp edges (discontinuities) have broader spectra.`,
+Differentiation in time multiplies by **$j2\\pi f$** in frequency, so signals with sharp edges (discontinuities) have broader spectra.`,
         examTip: 'On the FE exam, use the convolution theorem to avoid computing convolution integrals — just multiply in the frequency domain and inverse-transform. Parseval\'s theorem lets you compute signal energy from either domain, whichever is simpler.',
       },
       {
@@ -6718,7 +6718,7 @@ Differentiation in time multiplies by **j2πf** in frequency, so signals with sh
 
 The Laplace Transform adds an exponential convergence factor to the Fourier Transform, handling unstable and growing signals:
 
-**X(s) = ∫₀^∞ x(t) · e^(−st) dt** where **s = σ + jω**
+**$X(s) = \\int _{0}^\\infty x(t) \\cdot e^{-st} dt$** where **$s = \\sigma + j\\omega$**
 
 This converts differential equations into **algebraic equations** in s, dramatically simplifying circuit and system analysis.
 
@@ -6726,12 +6726,12 @@ This converts differential equations into **algebraic equations** in s, dramatic
 
 | Time Domain x(t) | s-Domain X(s) | ROC |
 |---|---|---|
-| δ(t) | 1 | All s |
-| u(t) | 1/s | Re(s) > 0 |
-| e^(−at)·u(t) | 1/(s+a) | Re(s) > −a |
-| t·e^(−at)·u(t) | 1/(s+a)² | Re(s) > −a |
-| sin(ωt)·u(t) | ω/(s²+ω²) | Re(s) > 0 |
-| cos(ωt)·u(t) | s/(s²+ω²) | Re(s) > 0 |
+| $\\delta (t)$ | 1 | All s |
+| u(t) | 1/s | $Re(s) > 0$ |
+| $e^{-at}\\cdot u(t)$ | 1/(s+a) | $Re(s) > -a$ |
+| $t\\cdot e^{-at}\\cdot u(t)$ | $1/(s+a)^{2}$ | $Re(s) > -a$ |
+| $\\sin (\\omega t)\\cdot u(t)$ | $\\omega /(s^{2}+\\omega ^{2})$ | $Re(s) > 0$ |
+| $\\cos (\\omega t)\\cdot u(t)$ | $s/(s^{2}+\\omega ^{2})$ | $Re(s) > 0$ |
 
 ## 2.2 Region of Convergence (ROC)
 
@@ -6743,10 +6743,10 @@ The **ROC** specifies the values of s where the integral converges. It is essent
 
 ### Important Properties
 
-- **Differentiation**: L{f'(t)} = s·F(s) − f(0⁻) — converts derivatives to multiplication
+- **Differentiation**: L{f'(t)} = s·F(s) − f($0^{-}$) — converts derivatives to multiplication
 - **Integration**: L{∫f(t)dt} = F(s)/s — converts integrals to division
 - **Final Value Theorem**: lim(t→∞) f(t) = lim(s→0) s·F(s) — find steady-state without inverse transform
-- **Initial Value Theorem**: lim(t→0⁺) f(t) = lim(s→∞) s·F(s)`,
+- **Initial Value Theorem**: lim(t→$0^{+}$) f(t) = lim(s→∞) s·F(s)`,
         examTip: 'The Final Value Theorem is a huge time-saver on the FE exam — it gives steady-state values directly from the s-domain without performing an inverse transform. But verify all poles of s·F(s) are in the LHP first, otherwise the theorem gives a wrong answer.',
         importantNote: 'On the FE exam, use the Laplace transform table provided in the reference handbook — do not try to compute transforms from the integral definition. The table lookup approach is much faster and less error-prone.',
       },
@@ -6759,16 +6759,16 @@ Memorize these pairs — they cover 90% of FE exam transform problems:
 
 | # | Time Domain f(t) | Laplace Domain F(s) |
 |---|---|---|
-| 1 | **δ(t)** | **1** |
+| 1 | **$\\delta (t)$** | **1** |
 | 2 | **u(t)** | **1/s** |
-| 3 | **t·u(t)** | **1/s²** |
-| 4 | **t^n·u(t)** | **n!/s^(n+1)** |
-| 5 | **e^(−at)·u(t)** | **1/(s+a)** |
-| 6 | **t·e^(−at)·u(t)** | **1/(s+a)²** |
-| 7 | **sin(ωt)·u(t)** | **ω/(s²+ω²)** |
-| 8 | **cos(ωt)·u(t)** | **s/(s²+ω²)** |
-| 9 | **e^(−at)·sin(ωt)·u(t)** | **ω/((s+a)²+ω²)** |
-| 10 | **e^(−at)·cos(ωt)·u(t)** | **(s+a)/((s+a)²+ω²)** |
+| 3 | **$t\\cdot u(t)$** | **$1/s^{2}$** |
+| 4 | **$t^n\\cdot u(t)$** | **$n!/s^{n+1}$** |
+| 5 | **$e^{-at}\\cdot u(t)$** | **1/(s+a)** |
+| 6 | **$t\\cdot e^{-at}\\cdot u(t)$** | **$1/(s+a)^{2}$** |
+| 7 | **$\\sin (\\omega t)\\cdot u(t)$** | **$\\omega /(s^{2}+\\omega ^{2})$** |
+| 8 | **$\\cos (\\omega t)\\cdot u(t)$** | **$s/(s^{2}+\\omega ^{2})$** |
+| 9 | **$e^{-at}\\cdot \\sin (\\omega t)\\cdot u(t)$** | **$\\omega /((s+a)^{2}+\\omega ^{2})$** |
+| 10 | **$e^{-at}\\cdot \\cos (\\omega t)\\cdot u(t)$** | **$(s+a)/((s+a)^{2}+\\omega ^{2})$** |
 
 **Pattern recognition tip**: Pairs 9 and 10 are just pairs 7 and 8 with **s replaced by (s+a)** — this is the frequency-shift property.
 
@@ -6780,18 +6780,18 @@ Memorize these pairs — they cover 90% of FE exam transform problems:
 - For A/(s+a): cover (s+a) in the original expression, evaluate at s = −a
 
 **Step 3**: For complex conjugate poles, keep as a quadratic:
-- **(As+B)/(s²+2αs+ω₀²)** → complete the square to **(A(s+α)+C)/((s+α)²+ω_d²)**
+- **$(As+B)/(s^{2}+2\\alpha s+\\omega _{0}^{2})$** → complete the square to **$(A(s+\\alpha)+C)/((s+\\alpha)^{2}+\\omega _d^{2})$**
 - Match to damped sinusoid pairs 9 and 10
 
 **Step 4**: For repeated poles, use differentiation:
-- **B₂ = F(s)·(s+a)²|_{s=−a}**, then **B₁ = d/ds[F(s)·(s+a)²]|_{s=−a}**
+- **$B_{2} = F(s)\\cdot (s+a)^{2}|_{s=-a}$**, then **$B_{1} = d/ds[F(s)\\cdot (s+a)^{2}]|_{s=-a}$**
 
 ## 3.3 Final Value vs. Initial Value Theorem
 
 | Theorem | Formula | Gives You | Validity Check |
 |---|---|---|---|
-| **Final Value** | lim(s→0) s·F(s) | Steady-state f(∞) | All poles of s·F(s) in LHP |
-| **Initial Value** | lim(s→∞) s·F(s) | Starting value f(0⁺) | Always valid if F(s) is proper |
+| **Final Value** | $\\lim (s\\to 0) s\\cdot F(s)$ | Steady-state f(∞) | All poles of s·F(s) in LHP |
+| **Initial Value** | $\\lim (s\\to \\infty) s\\cdot F(s)$ | Starting value f(0⁺) | Always valid if F(s) is proper |
 
 **When to use each**:
 - **Final Value Theorem**: Finding steady-state output, DC gain verification, checking if a controller eliminates steady-state error
@@ -6825,20 +6825,20 @@ Memorize these pairs — they cover 90% of FE exam transform problems:
 
 The **transfer function** relates output to input in the s-domain:
 
-**H(s) = Y(s)/X(s) = N(s)/D(s)**
+**$H(s) = Y(s)/X(s) = N(s)/D(s)$**
 
 It can be written in **factored form**:
 
-**H(s) = K · Π(s − zᵢ) / Π(s − pⱼ)**
+**$H(s) = K \\cdot \\Pi (s - z_{i}) / \\Pi (s - p_{j})$**
 
-where **zᵢ** are the **zeros** (numerator roots) and **pⱼ** are the **poles** (denominator roots).
+where **$z_{i}$** are the **zeros** (numerator roots) and **$p_{j}$** are the **poles** (denominator roots).
 
 | Feature | Definition | Effect on Response |
 |---|---|---|
 | **Zeros** | Values where N(s) = 0 | Affect response magnitude and shape |
 | **Poles** | Values where D(s) = 0 | Determine stability and time constants |
 | **System order** | Degree of D(s) | Number of energy-storage elements |
-| **DC gain** | H(0) = K · Πzᵢ / Πpⱼ | Steady-state value for step input |
+| **DC gain** | $H(0) = K \\cdot \\Pi z_{i} / \\Pi p_{j}$ | Steady-state value for step input |
 
 ## 1.2 Pole Locations and Time-Domain Behavior
 
@@ -6864,15 +6864,15 @@ Pole position in the s-plane directly maps to time-domain behavior:
 
 To find the inverse Laplace transform of H(s), decompose into simple fractions:
 
-**H(s) = A₁/(s − p₁) + A₂/(s − p₂) + ... + Aₙ/(s − pₙ)**
+**$H(s) = A_{1}/(s - p_{1}) + A_{2}/(s - p_{2}) + ... + A_{n}/(s - p_{n})$**
 
-Each term has a known inverse transform: **Aᵢ/(s − pᵢ) → Aᵢ · e^(pᵢt) · u(t)**
+Each term has a known inverse transform: **$A_{i}/(s - p_{i}) \\to A_{i} \\cdot e^{p_{i}t} \\cdot u(t)$**
 
 ### Distinct Real Poles
 
-For **H(s) = (2s + 3)/[(s + 1)(s + 4)]**, expand as:
+For **$H(s) = (2s + 3)/[(s + 1)(s + 4)]$**, expand as:
 
-**H(s) = A/(s+1) + B/(s+4)**
+**$H(s) = A/(s+1) + B/(s+4)$**
 
 Solve: A = H(s)·(s+1)|_{s=−1}, B = H(s)·(s+4)|_{s=−4}
 
@@ -6880,11 +6880,11 @@ Solve: A = H(s)·(s+1)|_{s=−1}, B = H(s)·(s+4)|_{s=−4}
 
 For a pole of multiplicity k at s = p:
 
-**... + B₁/(s−p) + B₂/(s−p)² + ... + Bₖ/(s−p)^k**
+**$... + B_{1}/(s-p) + B_{2}/(s-p)^{2} + ... + B_{k}/(s-p)^k$**
 
 ### Complex Conjugate Poles
 
-Keep as a second-order term: **(As + B)/(s² + 2αs + ω₀²)** and use the damped sinusoid transform pair.
+Keep as a second-order term: **$(As + B)/(s^{2} + 2\\alpha s + \\omega _{0}^{2})$** and use the damped sinusoid transform pair.
 
 ## 2.2 Stability from Transfer Function
 
@@ -6910,8 +6910,8 @@ Find: DC gain, poles, zeros, sketch Bode magnitude, and determine stability.
 ## 3.2 Step-by-Step Solution
 
 **Step 1 — Identify Poles and Zeros:**
-- **Zero**: s + 2 = 0 → **z₁ = −2** (numerator root)
-- **Poles**: s + 1 = 0 → **p₁ = −1**; s + 5 = 0 → **p₂ = −5** (denominator roots)
+- **Zero**: s + 2 = 0 → **$z_{1} = -2$** (numerator root)
+- **Poles**: s + 1 = 0 → **$p_{1} = -1$**; s + 5 = 0 → **$p_{2} = -5$** (denominator roots)
 - System is **2nd order** (degree of denominator = 2)
 
 **Step 2 — DC Gain (evaluate at s = 0):**
@@ -6926,16 +6926,16 @@ H(0) = 10(0 + 2) / [(0 + 1)(0 + 5)] = 20/5 = **4** (equivalently **12.04 dB**)
 
 Rewrite in standard form by factoring out DC values:
 
-H(s) = 4 · (1 + s/2) / [(1 + s/1)(1 + s/5)]
+$$H(s) = 4 \\cdot (1 + s/2) / [(1 + s/1)(1 + s/5)]$$
 
-Corner frequencies: **ω = 1 rad/s** (pole), **ω = 2 rad/s** (zero), **ω = 5 rad/s** (pole)
+Corner frequencies: **$\\omega = 1\\ \\mathrm{rad/s}$** (pole), **$\\omega = 2\\ \\mathrm{rad/s}$** (zero), **$\\omega = 5\\ \\mathrm{rad/s}$** (pole)
 
 | Frequency Range | Slope | Reasoning |
 |---|---|---|
-| ω < 1 | 0 dB/dec | Flat at DC gain = 12 dB |
-| 1 < ω < 2 | −20 dB/dec | Pole at ω = 1 adds −20 dB/dec |
-| 2 < ω < 5 | 0 dB/dec | Zero at ω = 2 cancels: −20 + 20 = 0 |
-| ω > 5 | −20 dB/dec | Pole at ω = 5 adds −20 dB/dec |
+| $\\omega < 1$ | 0 dB/dec | Flat at DC gain = 12 dB |
+| $1 < \\omega < 2$ | −20 dB/dec | Pole at ω = 1 adds −20 dB/dec |
+| $2 < \\omega < 5$ | 0 dB/dec | Zero at ω = 2 cancels: −20 + 20 = 0 |
+| $\\omega > 5$ | −20 dB/dec | Pole at ω = 5 adds −20 dB/dec |
 
 **Step 5 — High-Frequency Gain:**
 
@@ -6974,7 +6974,7 @@ As ω → ∞: |H(jω)| → 10·ω/(ω·ω) = 10/ω → rolls off at −20 dB/de
 
 For a discrete signal x[n], the **bilateral Z-Transform** is:
 
-**X(z) = Σ x[n] · z^(−n)** (sum over all n)
+**$X(z) = \\Sigma x[n] \\cdot z^{-n}$** (sum over all n)
 
 The **unilateral Z-Transform** (causal sequences, n ≥ 0) is standard for digital control and FE exam problems.
 
@@ -6982,16 +6982,16 @@ The **unilateral Z-Transform** (causal sequences, n ≥ 0) is standard for digit
 
 | Time Domain x[n] | Z-Domain X(z) | ROC |
 |---|---|---|
-| δ[n] | 1 | All z |
-| u[n] | z/(z−1) | \|z\| > 1 |
-| aⁿ·u[n] | z/(z−a) | \|z\| > \|a\| |
-| n·aⁿ·u[n] | az/(z−a)² | \|z\| > \|a\| |
-| n·u[n] | z/(z−1)² | \|z\| > 1 |
-| cos(ω₀n)·u[n] | z(z−cos ω₀)/(z²−2z cos ω₀+1) | \|z\| > 1 |
+| $\\delta [n]$ | 1 | All z |
+| u[n] | $z/(z-1)$ | \|z\| $> 1$ |
+| $a^{n}\\cdot u[n]$ | $z/(z-a)$ | \|z\| > \|a\| |
+| $n\\cdot a^{n}\\cdot u[n]$ | $az/(z-a)^{2}$ | \|z\| > \|a\| |
+| $n\\cdot u[n]$ | $z/(z-1)^{2}$ | \|z\| $> 1$ |
+| $\\cos (\\omega _{0}n)\\cdot u[n]$ | $z(z-\\cos  \\omega _{0})/(z^{2}-2z \\cos  \\omega _{0}+1)$ | \|z\| $> 1$ |
 
 ### Key Properties
 
-- **Linearity**: Z{α·x₁ + β·x₂} = α·X₁(z) + β·X₂(z)
+- **Linearity**: Z{α·$x_{1}$ + β·$x_{2}$} = α·$X_{1}$(z) + β·$X_{2}$(z)
 - **Time shift**: Z{x[n−k]} = z^(−k)·X(z) — delay by k samples multiplies by z^(−k)
 - **Convolution**: Z{x[n]*h[n]} = X(z)·H(z)
 - **Initial value**: x[0] = lim(z→∞) X(z)
@@ -7014,21 +7014,21 @@ The ROC specifies where the Z-Transform sum converges:
 
 The fundamental relationship is:
 
-**z = e^(sT)** where T is the sampling period (T = 1/fₛ)
+**$z = e^{sT}$** where T is the sampling period (T = 1/fₛ)
 
 This exponential mapping transforms continuous-domain regions to discrete-domain regions:
 
 | s-Plane Region | z-Plane Region | System Behavior |
 |---|---|---|
-| Left half-plane (LHP) | **Inside** unit circle \|z\| < 1 | Decaying (stable) |
-| Imaginary axis (jω) | **On** unit circle \|z\| = 1 | Sustained oscillation |
-| Right half-plane (RHP) | **Outside** unit circle \|z\| > 1 | Growing (unstable) |
+| Left half-plane (LHP) | **Inside** unit circle \|z\| $< 1$ | Decaying (stable) |
+| Imaginary axis (jω) | **On** unit circle \|z\| $= 1$ | Sustained oscillation |
+| Right half-plane (RHP) | **Outside** unit circle \|z\| $> 1$ | Growing (unstable) |
 
 ### Discrete-Time Stability
 
 For discrete systems, **BIBO stability requires all poles inside the unit circle**:
 
-**\|pᵢ\| < 1** for all poles pᵢ
+**$\\|p_{i}\\| < 1$** for all poles pᵢ
 
 This is the discrete equivalent of "all poles in the LHP" for continuous systems.
 
@@ -7042,13 +7042,13 @@ To find x[n] from X(z):
 
 ### Example
 
-**X(z) = 3z/[(z−0.5)(z−0.8)]**
+**$X(z) = 3z/[(z-0.5)(z-0.8)]$**
 
 Partial fractions of X(z)/z: A/(z−0.5) + B/(z−0.8)
 
-A = 3/(0.5−0.8) = −10, B = 3/(0.8−0.5) = 10
+$$A = 3/(0.5-0.8) = -10, B = 3/(0.8-0.5) = 10$$
 
-**x[n] = [−10·(0.5)ⁿ + 10·(0.8)ⁿ]·u[n]**
+**$x[n] = [-10\\cdot (0.5)^{n} + 10\\cdot (0.8)^{n}]\\cdot u[n]$**
 
 Both poles (\|0.5\| < 1 and \|0.8\| < 1) are inside the unit circle → **stable**.
 
@@ -7056,11 +7056,11 @@ Both poles (\|0.5\| < 1 and \|0.8\| < 1) are inside the unit circle → **stable
 
 Z-Transforms convert difference equations to algebraic form. For:
 
-**y[n] − 0.5·y[n−1] = x[n]**
+**$y[n] - 0.5\\cdot y[n-1] = x[n]$**
 
 Taking Z-Transform: Y(z) − 0.5·z⁻¹·Y(z) = X(z)
 
-**H(z) = Y(z)/X(z) = 1/(1 − 0.5z⁻¹) = z/(z − 0.5)**
+**$H(z) = Y(z)/X(z) = 1/(1 - 0.5z^{-1}) = z/(z - 0.5)$**
 
 Pole at z = 0.5 (inside unit circle) → stable system.`,
         examTip: 'When computing inverse Z-Transforms on the FE exam, always divide by z first (form X(z)/z), do partial fractions, then multiply each term by z before looking up the table. This avoids sign errors and works for every problem type.',
@@ -7092,24 +7092,24 @@ Pole at z = 0.5 (inside unit circle) → stable system.`,
         title: '1. Fourier Series for Periodic Signals',
         content: `## 1.1 Trigonometric and Complex Forms
 
-For a periodic signal with period **T₀** and fundamental frequency **f₀ = 1/T₀**:
+For a periodic signal with period **$T_{0}$** and fundamental frequency **$f_{0} = 1/T_{0}$**:
 
 **Trigonometric form:**
-**x(t) = a₀ + Σ aₙ·cos(nω₀t) + Σ bₙ·sin(nω₀t)**
+**$x(t) = a_{0} + \\Sigma a_{n}\\cdot \\cos (n\\omega _{0}t) + \\Sigma b_{n}\\cdot \\sin (n\\omega _{0}t)$**
 
 where ω₀ = 2πf₀ and:
-- **a₀ = (1/T₀) ∫ x(t) dt** (DC component / average value)
-- **aₙ = (2/T₀) ∫ x(t)·cos(nω₀t) dt**
-- **bₙ = (2/T₀) ∫ x(t)·sin(nω₀t) dt**
+- **$a_{0} = (1/T_{0}) \\int x(t) dt$** (DC component / average value)
+- **$a_{n} = (2/T_{0}) \\int x(t)\\cdot \\cos (n\\omega _{0}t) dt$**
+- **$b_{n} = (2/T_{0}) \\int x(t)\\cdot \\sin (n\\omega _{0}t) dt$**
 
 **Complex exponential form** (more compact):
-**x(t) = Σ cₙ · e^(j2πnf₀t)**
+**$x(t) = \\Sigma c_{n} \\cdot e^{j2\\pi nf_{0}t}$**
 
-where **cₙ = (1/T₀) ∫ x(t) · e^(−j2πnf₀t) dt**
+where **$c_{n} = (1/T_{0}) \\int x(t) \\cdot e^{-j2\\pi nf_{0}t} dt$**
 
 ## 1.2 Amplitude and Phase Spectra
 
-The **one-sided amplitude spectrum** plots |cₙ| at each harmonic frequency nf₀. The spectrum reveals:
+The **one-sided amplitude spectrum** plots |cₙ| at each harmonic frequency $nf_{0}$. The spectrum reveals:
 
 | Signal Shape | Spectral Characteristics |
 |---|---|
@@ -7131,7 +7131,7 @@ Truncating a Fourier Series near a discontinuity produces **overshoot of approxi
 
 The **Fourier Transform** extends spectral analysis to non-periodic signals, producing a **continuous** frequency spectrum:
 
-**X(f) = ∫ x(t) · e^(−j2πft) dt**
+**$X(f) = \\int x(t) \\cdot e^{-j2\\pi ft} dt$**
 
 **Inverse: x(t) = ∫ X(f) · e^(j2πft) df**
 
@@ -7141,7 +7141,7 @@ The **Fourier Transform** extends spectral analysis to non-periodic signals, pro
 |---|---|
 | Rectangular pulse rect(t/τ) | τ · sinc(fτ) |
 | Gaussian e^(−πt²) | e^(−πf²) (Gaussian in both domains) |
-| Exponential e^(−at)·u(t) | 1/(a + j2πf) |
+| Exponential e^(−at)·u(t) | $1/(a + j2\\pi f)$ |
 | Impulse δ(t) | 1 (flat — all frequencies present) |
 | Constant 1 | δ(f) (single frequency at DC) |
 
@@ -7149,7 +7149,7 @@ The **Fourier Transform** extends spectral analysis to non-periodic signals, pro
 
 **Parseval's theorem** states energy is conserved across domains:
 
-**∫ |x(t)|² dt = ∫ |X(f)|² df**
+**$\\int |x(t)|^{2} dt = \\int |X(f)|^{2} df$**
 
 The **Energy Spectral Density (ESD)** is |X(f)|² — it shows how signal energy is distributed across frequency.
 
@@ -7172,7 +7172,7 @@ Fourier analysis has a **duality** property: if x(t) ↔ X(f), then X(t) ↔ x(�
         title: '3. Exam Problem Walkthrough: Fourier Analysis',
         content: `## 3.1 Problem: Fourier Series of a Square Wave
 
-**Given**: A square wave with amplitude A = 5 V, period T₀ = 4 ms, and 50% duty cycle (symmetric about zero).
+**Given**: A square wave with amplitude A = 5 V, period $T_{0}$ = 4 ms, and 50% duty cycle (symmetric about zero).
 
 **Find**: Fundamental frequency, first three nonzero Fourier coefficients, and sketch the amplitude spectrum.
 
@@ -7180,29 +7180,29 @@ Fourier analysis has a **duality** property: if x(t) ↔ X(f), then X(t) ↔ x(�
 
 **Step 1 — Fundamental frequency:**
 
-**f₀ = 1/T₀ = 1/(4 × 10⁻³) = 250 Hz**; ω₀ = 2πf₀ = 500π rad/s
+**$f_{0} = 1/T_{0} = 1/(4 \\times 10^{-3}) = 250\\ \\mathrm{Hz}$**; ω₀ = 2πf₀ = 500π rad/s
 
 **Step 2 — Identify symmetry:**
 
-A symmetric square wave (odd function) has **only sine terms** (aₙ = 0 for all n, including a₀ = 0).
+A symmetric square wave (odd function) has **only sine terms** (aₙ = 0 for all n, including $a_{0}$ = 0).
 
 **Step 3 — Compute Fourier coefficients:**
 
 For an odd-symmetric square wave of amplitude A:
 
-**bₙ = (4A)/(nπ)** for n = 1, 3, 5, ... (odd harmonics only)
+**$b_{n} = (4A)/(n\\pi)$** for n = 1, 3, 5, ... (odd harmonics only)
 
-**bₙ = 0** for n = 2, 4, 6, ... (even harmonics vanish due to half-wave symmetry)
+**$b_{n} = 0$** for n = 2, 4, 6, ... (even harmonics vanish due to half-wave symmetry)
 
 | Harmonic | Frequency | Coefficient bₙ | Amplitude |
 |---|---|---|---|
-| n = 1 (fundamental) | 250 Hz | 4(5)/(1·π) = **6.37 V** | 6.37 V |
-| n = 3 (3rd harmonic) | 750 Hz | 4(5)/(3·π) = **2.12 V** | 2.12 V |
-| n = 5 (5th harmonic) | 1250 Hz | 4(5)/(5·π) = **1.27 V** | 1.27 V |
+| n = 1 (fundamental) | 250 Hz | $4(5)/(1\\cdot \\pi) = 6.37\\ \\mathrm{V}$ | 6.37 V |
+| n = 3 (3rd harmonic) | 750 Hz | $4(5)/(3\\cdot \\pi) = 2.12\\ \\mathrm{V}$ | 2.12 V |
+| n = 5 (5th harmonic) | 1250 Hz | $4(5)/(5\\cdot \\pi) = 1.27\\ \\mathrm{V}$ | 1.27 V |
 
 **Step 4 — Reconstruct the signal:**
 
-x(t) ≈ 6.37·sin(500πt) + 2.12·sin(1500πt) + 1.27·sin(2500πt) + ...
+$$x(t) \\approx 6.37\\cdot \\sin (500\\pi t) + 2.12\\cdot \\sin (1500\\pi t) + 1.27\\cdot \\sin (2500\\pi t) +$$...
 
 The amplitude spectrum shows spikes at odd multiples of 250 Hz, decreasing as 1/n.
 
@@ -7212,7 +7212,7 @@ The amplitude spectrum shows spikes at odd multiples of 250 Hz, decreasing as 1/
 |---|---|---|
 | **Applies to** | **Periodic** signals | **Aperiodic** signals |
 | **Spectrum type** | **Discrete** (spikes at nf₀) | **Continuous** (smooth curve) |
-| **Coefficients** | cₙ (dimensionless or V) | X(f) (V/Hz or V·s) |
+| **Coefficients** | cₙ (dimensionless or V) | $X(f) (V/Hz or V\\cdot s)$ |
 | **Energy** | Infinite (signal extends forever) | Finite (Parseval applies) |
 
 **Common mistake**: Using the Fourier Transform on a periodic signal or Fourier Series on a one-time pulse. The Series is for periodic signals that repeat forever; the Transform is for finite-energy aperiodic signals.
@@ -7221,7 +7221,7 @@ The amplitude spectrum shows spikes at odd multiples of 250 Hz, decreasing as 1/
 
 - **Even function** (symmetric about t = 0): bₙ = 0 → only cosine terms
 - **Odd function** (antisymmetric): aₙ = 0 → only sine terms
-- **Half-wave symmetry** (x(t) = −x(t + T₀/2)): only odd harmonics (n = 1, 3, 5, ...)
+- **Half-wave symmetry** (x(t) = −x(t + $T_{0}$/2)): only odd harmonics (n = 1, 3, 5, ...)
 - **Quarter-wave even**: only odd cosine harmonics
 - **Quarter-wave odd**: only odd sine harmonics
 
@@ -7253,18 +7253,18 @@ Exploiting symmetry can eliminate 50–75% of the computation on an exam problem
 
 To perfectly reconstruct a **bandlimited** signal from its samples, the sampling frequency must exceed twice the highest frequency component:
 
-**fₛ > 2·f_max** (Nyquist criterion)
+**$f_{s} > 2\\cdot f_{\\max}$** (Nyquist criterion)
 
-The **Nyquist rate** is the minimum sampling frequency: **fₛ_min = 2·f_max**
+The **Nyquist rate** is the minimum sampling frequency: **$f_{s,\\min} = 2\\cdot f_{\\max}$**
 
-The **Nyquist frequency** is the maximum recoverable frequency: **fₙ = fₛ/2**
+The **Nyquist frequency** is the maximum recoverable frequency: **$f_{n} = f_{s}/2$**
 
 | Term | Definition | Example (audio CD) |
 |---|---|---|
 | **fₛ** (sampling frequency) | Samples per second | 44,100 Hz |
 | **f_max** (max signal freq) | Highest frequency in signal | 20,000 Hz |
 | **fₙ = fₛ/2** (Nyquist freq) | Folding frequency | 22,050 Hz |
-| **T = 1/fₛ** (sampling period) | Time between samples | 22.7 μs |
+| **T = 1/fₛ** (sampling period) | Time between samples | $22.7 \\mu s$ |
 
 ### Frequency-Domain View
 
@@ -7293,7 +7293,7 @@ When a signal contains frequencies above fₙ = fₛ/2, those components **fold 
 
 For a signal at frequency f sampled at fₛ, the **apparent (aliased) frequency** is:
 
-**f_alias = |f − k·fₛ|** for the integer k that brings the result into [0, fₛ/2]
+**$f_{alias} = |f - k\\cdot f_{s}|$** for the integer k that brings the result into [0, fₛ/2]
 
 **Example**: A 15 kHz signal sampled at 20 kHz:
 - f_alias = |15 − 20| = 5 kHz
@@ -7303,9 +7303,9 @@ For a signal at frequency f sampled at fₛ, the **apparent (aliased) frequency*
 
 | Condition | Result | Spectrum |
 |---|---|---|
-| fₛ > 2·f_max | **No aliasing** | Spectral replicas separated |
-| fₛ = 2·f_max | **Critical sampling** | Replicas touch — theoretically OK |
-| fₛ < 2·f_max | **Aliasing** | Replicas overlap — distortion |
+| $f_{s} > 2\\cdot f_{\\max}$ | **No aliasing** | Spectral replicas separated |
+| $f_{s} = 2\\cdot f_{\\max}$ | **Critical sampling** | Replicas touch — theoretically OK |
+| $f_{s} < 2\\cdot f_{\\max}$ | **Aliasing** | Replicas overlap — distortion |
 
 ## 2.2 Anti-Aliasing Filters
 
@@ -7327,7 +7327,7 @@ Modern systems often **oversample** (sample at much higher than 2·f_max), then 
         title: '3. Aliasing Problems & Anti-Aliasing Design',
         content: `## 3.1 Worked Example: Computing Aliased Frequency
 
-**Problem**: A signal contains a component at **f = 15 kHz**. It is sampled at **fₛ = 20 kHz**. What frequency appears in the sampled output?
+**Problem**: A signal contains a component at **$f = 15\\ \\mathrm{kHz}$**. It is sampled at **$f_{s} = 20\\ \\mathrm{kHz}$**. What frequency appears in the sampled output?
 
 **Solution**:
 - Nyquist frequency: fₙ = fₛ/2 = 10 kHz
@@ -7342,11 +7342,11 @@ The 15 kHz signal appears as a phantom 5 kHz signal after sampling. This aliased
 
 **Problem**: A signal x(t) = cos(2π·3000t) + cos(2π·14000t) + cos(2π·22000t) is sampled at fₛ = 16 kHz.
 
-| Component | Frequency | fₛ/2 = 8 kHz | Aliased? | Apparent Frequency |
+| Component | Frequency | $f_{s}/2 = 8\\ \\mathrm{kHz}$ | Aliased? | Apparent Frequency |
 |---|---|---|---|---|
-| 1st | 3 kHz | 3 < 8 | No | **3 kHz** (unchanged) |
-| 2nd | 14 kHz | 14 > 8 | Yes | \|14 − 16\| = **2 kHz** |
-| 3rd | 22 kHz | 22 > 8 | Yes | \|22 − 16\| = 6, in range → **6 kHz** |
+| 1st | 3 kHz | $3 < 8$ | No | **3 kHz** (unchanged) |
+| 2nd | 14 kHz | $14 > 8$ | Yes | \| $14 - 16$ | $= 2\\ \\mathrm{kHz}$ |
+| 3rd | 22 kHz | $22 > 8$ | Yes | \| $22 - 16$ | = 6, in range → **6 kHz** |
 
 After sampling, the output appears to contain 3 kHz, 2 kHz, and 6 kHz — the original 14 kHz and 22 kHz components are permanently destroyed and replaced by aliases.
 
@@ -7404,18 +7404,18 @@ This trades digital processing cost for analog filter complexity — standard pr
 
 | Filter Type | Passes | Blocks | Application |
 |---|---|---|---|
-| **Low-Pass (LP)** | f < fₒ | f > fₒ | Anti-aliasing, noise removal |
-| **High-Pass (HP)** | f > fₒ | f < fₒ | DC blocking, bass cut |
-| **Band-Pass (BP)** | f₁ < f < f₂ | f < f₁ and f > f₂ | Radio tuning, selective amplification |
-| **Band-Stop (BS/Notch)** | f < f₁ and f > f₂ | f₁ < f < f₂ | 60 Hz hum removal, interference rejection |
+| **Low-Pass (LP)** | $f < f_{o}$ | $f > f_{o}$ | Anti-aliasing, noise removal |
+| **High-Pass (HP)** | $f > f_{o}$ | $f < f_{o}$ | DC blocking, bass cut |
+| **Band-Pass (BP)** | $f_{1} < f < f_{2}$ | f < f₁ and f > f₂ | Radio tuning, selective amplification |
+| **Band-Stop (BS/Notch)** | f < f₁ and f > f₂ | $f_{1} < f < f_{2}$ | 60 Hz hum removal, interference rejection |
 
 ### Standard Transfer Functions
 
-**First-order LP:** **H(s) = ωc / (s + ωc)**
+**First-order LP:** **$H(s) = \\omega c / (s + \\omega c)$**
 
-**Second-order Butterworth LP:** **H(s) = ωc² / (s² + √2·ωc·s + ωc²)**
+**Second-order Butterworth LP:** **$H(s) = \\omega c^{2} / (s^{2} + \\sqrt{2}\\cdot \\omega c\\cdot s + \\omega c^{2})$**
 
-**General second-order:** **H(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)**
+**General second-order:** **$H(s) = \\omega _{n}^{2} / (s^{2} + 2\\zeta \\omega _{n}s + \\omega _{n}^{2})$**
 
 where ζ is the damping ratio and ωₙ is the natural frequency.
 
@@ -7438,7 +7438,7 @@ Higher order = steeper transition from passband to stopband, but more components
 
 The **−3 dB cutoff frequency** fₒ (or ωc) is where the output power drops to half (voltage to 1/√2 ≈ 0.707):
 
-**|H(jωc)| = 1/√2 ≈ −3 dB**`,
+**$|H(j\\omega c)| = 1/\\sqrt{2} \\approx -3\\ \\mathrm{dB}$**`,
         examTip: 'On the FE exam, if you see a transfer function and need to identify the filter type: look at the behavior at DC (s=0) and at high frequency (s→∞). LP has gain at DC and zero at infinity; HP has zero at DC and gain at infinity; BP has gain at a center frequency and zero at both extremes.',
       },
       {
@@ -7458,7 +7458,7 @@ The **−3 dB cutoff frequency** fₒ (or ωc) is where the output power drops t
 
 The **Butterworth** filter has the flattest possible passband — no ripple:
 
-**|H(jω)|² = 1 / [1 + (ω/ωc)^(2n)]**
+**$|H(j\\omega)|^{2} = 1 / [1 + (\\omega /\\omega c)^{2n}]$**
 
 At ω = ωc: |H| = 1/√2 = −3 dB regardless of order n.
 
@@ -7506,24 +7506,24 @@ For the same specifications (passband ripple, stopband attenuation), Chebyshev r
 
 The **DFT** converts N time-domain samples into N frequency-domain components:
 
-**X[k] = Σ(n=0 to N−1) x[n] · e^(−j2πkn/N)** for k = 0, 1, ..., N−1
+**$X[k] = \\Sigma (n=0 to N-1) x[n] \\cdot e^{-j2\\pi kn/N}$** for k = 0, 1, ..., N−1
 
 **Inverse DFT:**
-**x[n] = (1/N) Σ(k=0 to N−1) X[k] · e^(j2πkn/N)**
+**$x[n] = (1/N) \\Sigma (k=0 to N-1) X[k] \\cdot e^{j2\\pi kn/N}$**
 
 ### Frequency Bin Interpretation
 
 | Parameter | Formula | Meaning |
 |---|---|---|
-| **Frequency of bin k** | fₖ = k · fₛ/N | Center frequency of bin k |
-| **Frequency resolution** | Δf = fₛ/N | Smallest distinguishable frequency difference |
-| **Bin 0** | f₀ = 0 (DC) | Average value of signal |
+| **Frequency of bin k** | $f_{k} = k \\cdot f_{s}/N$ | Center frequency of bin k |
+| **Frequency resolution** | $\\Delta f = f_{s}/N$ | Smallest distinguishable frequency difference |
+| **Bin 0** | $f_{0} = 0 (DC)$ | Average value of signal |
 | **Bin N/2** | fₛ/2 (Nyquist) | Maximum frequency represented |
 | **Bins N/2+1 to N−1** | Negative frequencies | Mirror of bins 1 to N/2−1 for real signals |
 
 ### Improving Frequency Resolution
 
-**Δf = fₛ/N = 1/(N·T) = 1/T_record**
+**$\\Delta f = f_{s}/N = 1/(N\\cdot T) = 1/T_{record}$**
 
 To improve resolution (smaller Δf):
 - **Increase N** (more samples) — adds actual information
@@ -7536,8 +7536,8 @@ The **FFT** is an algorithm (not a different transform) that computes the DFT ef
 
 | Method | Operations | For N = 1024 |
 |---|---|---|
-| Direct DFT | **O(N²)** | ~1,048,576 |
-| FFT (Cooley-Tukey) | **O(N log₂ N)** | ~10,240 |
+| Direct DFT | **$O(N^{2})$** | ~1,048,576 |
+| FFT (Cooley-Tukey) | **$O(N \\log _{2} N)$** | ~10,240 |
 
 The Cooley-Tukey algorithm requires N to be a **power of 2** (128, 256, 512, 1024, ...). If your data has a non-power-of-2 length, **zero-pad** to the next power of 2.`,
         examTip: 'For FE exam DFT problems: given N samples at rate fₛ, the frequency resolution is Δf = fₛ/N and the maximum frequency is fₛ/2. If asked to identify which bin a frequency falls in: bin k = round(f/Δf). These three formulas solve most DFT exam problems.',
@@ -7560,9 +7560,9 @@ A finite-length signal is equivalent to multiplying an infinite signal by a rect
 | Window | Main-Lobe Width | Side-Lobe Level | Use Case |
 |---|---|---|---|
 | **Rectangular** | Narrowest | −13 dB (worst) | Only when signal is exactly periodic in window |
-| **Hann (Hanning)** | Moderate | −31 dB | General purpose |
-| **Hamming** | Moderate | −43 dB | Speech processing |
-| **Blackman** | Widest | −58 dB | When side-lobe suppression is critical |
+| **Hann (Hanning)** | Moderate | $-31\\ \\mathrm{dB}$ | General purpose |
+| **Hamming** | Moderate | $-43\\ \\mathrm{dB}$ | Speech processing |
+| **Blackman** | Widest | $-58\\ \\mathrm{dB}$ | When side-lobe suppression is critical |
 | **Kaiser** | Adjustable (β parameter) | Adjustable | Flexible tradeoff |
 
 ### Tradeoff
@@ -7608,7 +7608,7 @@ Windows reduce leakage (lower side-lobes) at the cost of **wider main lobe** (wo
 
 The **ideal diode** has zero forward resistance and infinite reverse resistance. Practical **silicon diodes** have:
 
-- **Forward voltage drop**: Vf ≈ **0.6–0.7 V**
+- **Forward voltage drop**: Vf ≈ **$0.6-0.7\\ \\mathrm{V}$**
 - **Reverse leakage current**: negligible (nA range)
 - **Breakdown voltage**: diode fails if reverse voltage exceeds rating
 
@@ -7618,7 +7618,7 @@ The **ideal diode** has zero forward resistance and infinite reverse resistance.
 |---|---|---|---|
 | **Ideal** | Short circuit | Open circuit | Quick estimation |
 | **Constant drop** | 0.7 V source | Open circuit | FE exam standard |
-| **Exponential** | i = Iₛ·(e^(v/nVt)−1) | −Iₛ | Precise analysis |
+| **Exponential** | i = Iₛ·(e^(v/nVt)−1) | $-I_{s}$ | Precise analysis |
 
 where Vt = kT/q ≈ **26 mV** at room temperature (thermal voltage).
 
@@ -7699,7 +7699,7 @@ A **Zener diode** operates in **reverse breakdown** at a precisely controlled vo
 
 Rectifier efficiency: **η = Pdc/Pac**
 
-For practical design, account for diode drops: each silicon diode subtracts ~0.7 V from the output. A bridge rectifier loses **2 × 0.7 = 1.4 V** from the peak output.`,
+For practical design, account for diode drops: each silicon diode subtracts ~0.7 V from the output. A bridge rectifier loses **$2 \\times 0.7 = 1.4\\ \\mathrm{V}$** from the peak output.`,
         examTip: 'For Zener regulator problems on the FE exam, always check that the Zener current stays above the minimum (Iz > Iz_min) at worst-case conditions (minimum Vin, maximum IL). If Iz drops below minimum, the Zener falls out of breakdown and regulation is lost.',
         importantNote: 'A common FE exam mistake is forgetting to subtract diode voltage drops in rectifier circuits. A full-wave bridge loses 2 × 0.7 = 1.4 V, so actual Vdc = 2(Vpeak − 1.4)/π for the constant-drop model. This matters significantly for low-voltage circuits.',
       },
@@ -7732,13 +7732,13 @@ where Idc = Vdc/RL = 15/100 = 150 mA, and f = 60 Hz.
 
 Solving for C: **C = Idc / (2·f·ΔV) = 0.15 / (2 × 60 × 0.5) = 2500 μF**
 
-Select next standard value: **C = 3300 μF** (provides margin).
+Select next standard value: **$C = 3300 \\mu F$** (provides margin).
 
 **Step 3 — Determine PIV rating:**
 
 For a bridge rectifier: **PIV = Vpeak = 16.65 V** per diode.
 
-Select diodes rated for at least **2× PIV = 33.3 V** (safety margin). A 1N4001 (PIV = 50 V) is suitable.
+Select diodes rated for at least **$2\\times PIV = 33.3\\ \\mathrm{V}$** (safety margin). A 1N4001 (PIV = 50 V) is suitable.
 
 **Step 4 — Verify average DC output:**
 
@@ -7750,7 +7750,7 @@ With the capacitor filter, **Vdc ≈ Vpeak − ΔV/2 − 2·Vdiode = 16.95 − 0
 |---|---|---|
 | Ripple voltage ΔV | Idc/(f·C) | **Idc/(2f·C)** |
 | Ripple frequency | f (60 Hz) | **2f (120 Hz)** |
-| Ripple factor (with C) | 1/(2√3·f·R·C) | **1/(4√3·f·R·C)** |
+| Ripple factor (with C) | $1/(2\\sqrt{3}\\cdot f\\cdot R\\cdot C)$ | **$1/(4\\sqrt{3}\\cdot f\\cdot R\\cdot C)$** |
 
 **Key insight**: The full-wave bridge has **half the ripple** of a half-wave rectifier for the same capacitor — this is why bridge rectifiers are preferred for most applications.
 
@@ -7789,15 +7789,15 @@ A BJT has three terminals: **Base (B)**, **Collector (C)**, **Emitter (E)**. For
 
 | Region | Condition | Behavior |
 |---|---|---|
-| **Active** (amplification) | VBE ≈ 0.7 V, VCE > VCE(sat) | Ic = β·Ib |
-| **Saturation** (switch ON) | VBE ≈ 0.7 V, VCE ≈ 0.2 V | Ic < β·Ib (current-limited by circuit) |
-| **Cutoff** (switch OFF) | VBE < 0.5 V, Ib ≈ 0 | Ic ≈ 0 (both junctions reverse-biased) |
+| **Active** (amplification) | VBE ≈ 0.7 V, VCE > VCE(sat) | $Ic = \\beta \\cdot Ib$ |
+| **Saturation** (switch ON) | $VBE \\approx 0.7\\ \\mathrm{V}, VCE \\approx 0.2\\ \\mathrm{V}$ | Ic < β·Ib (current-limited by circuit) |
+| **Cutoff** (switch OFF) | $VBE < 0.5\\ \\mathrm{V}, Ib \\approx 0$ | Ic ≈ 0 (both junctions reverse-biased) |
 
 ### Key DC Relationships
 
-- **Ic = β · Ib** (active region); β = hfe typically 50–300
-- **Ie = Ic + Ib = (β+1) · Ib**
-- **VBE ≈ 0.7 V** (silicon)
+- **$Ic = \\beta \\cdot Ib$** (active region); β = hfe typically 50–300
+- **$Ie = Ic + Ib = (\\beta +1) \\cdot Ib$**
+- **$VBE \\approx 0.7\\ \\mathrm{V}$** (silicon)
 - **VCE(sat) ≈ 0.2 V** (minimum collector-emitter voltage in saturation)
 
 ## 1.2 Q-Point Biasing Methods
@@ -7808,11 +7808,11 @@ The **Q-point** (quiescent operating point) sets DC conditions for amplification
 
 The most common and stable biasing method:
 
-1. **VB = VCC · R2/(R1+R2)** (base voltage from voltage divider)
-2. **VE = VB − 0.7 V** (emitter voltage)
-3. **IE = VE/RE** (emitter current)
-4. **IC ≈ IE** (since β >> 1)
-5. **VCE = VCC − IC(RC+RE)** (verify active: VCE > 0.2 V)
+1. **$VB = VCC \\cdot R2/(R1+R2)$** (base voltage from voltage divider)
+2. **$VE = VB - 0.7\\ \\mathrm{V}$** (emitter voltage)
+3. **$IE = VE/RE$** (emitter current)
+4. **$IC \\approx IE$** (since β >> 1)
+5. **$VCE = VCC - IC(RC+RE)$** (verify active: VCE > 0.2 V)
 
 ### Why Voltage Divider is Preferred
 
@@ -7828,17 +7828,17 @@ The most common and stable biasing method:
 
 For AC analysis around the Q-point, the BJT is modeled with small-signal parameters:
 
-- **Transconductance**: **gm = IC/VT ≈ IC/26 mV** (at room temperature)
-- **Input resistance**: **rπ = β/gm = β·VT/IC**
-- **Small-signal emitter resistance**: **re = VT/IE ≈ 26 mV/IE**
-- **Output resistance**: **ro = VA/IC** (VA = Early voltage, typically 50–200 V)
+- **Transconductance**: **$gm = IC/VT \\approx IC/26\\ \\mathrm{mV}$** (at room temperature)
+- **Input resistance**: **$r\\pi = \\beta /gm = \\beta \\cdot VT/IC$**
+- **Small-signal emitter resistance**: **$re = VT/IE \\approx 26\\ \\mathrm{mV}/IE$**
+- **Output resistance**: **$ro = VA/IC$** (VA = Early voltage, typically 50–200 V)
 
 ## 2.2 Amplifier Configurations
 
 | Parameter | Common-Emitter (CE) | Common-Collector (CC) | Common-Base (CB) |
 |---|---|---|---|
-| **Voltage gain** | **Av = −gm·RC** (high) | **Av ≈ 1** | **Av = gm·RC** (high) |
-| **Current gain** | **Ai ≈ β** (high) | **Ai ≈ β+1** | **Ai ≈ 1** |
+| **Voltage gain** | **Av = −gm·RC** (high) | **$Av \\approx 1$** | **Av = gm·RC** (high) |
+| **Current gain** | **Ai ≈ β** (high) | **$Ai \\approx \\beta +1$** | **$Ai \\approx 1$** |
 | **Input impedance** | **Zin = rπ** (moderate) | **Zin = rπ + (β+1)·RE** (high) | **Zin = re** (low) |
 | **Output impedance** | **Zout ≈ RC** | **Zout ≈ re** (low) | **Zout ≈ RC** |
 | **Phase inversion** | **Yes** (180°) | **No** | **No** |
@@ -7848,7 +7848,7 @@ For AC analysis around the Q-point, the BJT is modeled with small-signal paramet
 
 The CE configuration provides **high voltage gain** and **high current gain**, making it the most widely used amplifier stage:
 
-**Av = −gm · RC = −IC · RC / VT**
+**$Av = -gm \\cdot RC = -IC \\cdot RC / VT$**
 
 The negative sign indicates **180° phase inversion**.
 
@@ -7864,7 +7864,7 @@ Low input impedance but **no Miller effect** (no capacitive multiplication), mak
 
 The BJT has frequency-dependent behavior due to internal capacitances:
 
-- **fT (unity-gain frequency)**: frequency where current gain drops to 1; **fT = gm/(2π·Cπ)**
+- **fT (unity-gain frequency)**: frequency where current gain drops to 1; **$fT = gm/(2\\pi \\cdot C\\pi)$**
 - **Miller effect**: in CE configuration, CBC appears multiplied by gain: **Cin_Miller = CBC·(1+|Av|)**
 - **Bandwidth**: inversely related to gain (gain-bandwidth product ≈ constant)`,
         examTip: 'The small-signal transconductance gm = IC/VT is the most important parameter. At room temperature, VT ≈ 26 mV. For IC = 1 mA: gm = 1/26 ≈ 38.5 mS. Voltage gain of CE stage is Av = −gm·RC, so gain is proportional to bias current.',
@@ -7889,17 +7889,17 @@ Apply KVL around the collector-emitter loop:
 
 VCC = IC·RC + VCE + IE·RE ≈ IC·(RC + RE) + VCE (since IC ≈ IE)
 
-12 = 2 mA · (RC + RE) + 6 → **RC + RE = 3 kΩ**
+$$12 = 2\\ \\mathrm{mA} \\cdot (RC + RE) + 6 \\to RC + RE = 3 k\\Omega$$
 
 **Step 2 — Set RC from the gain requirement:**
 
 Small-signal gain: |Av| = gm · RC (with bypassed RE)
 
-First, find gm: **gm = IC/VT = 2 mA / 26 mV = 76.9 mS**
+First, find gm: **$gm = IC/VT = 2\\ \\mathrm{mA} / 26\\ \\mathrm{mV} = 76.9 mS$**
 
-RC = |Av|/gm = 20/0.0769 = **260 Ω** → use standard value **RC = 270 Ω**
+RC = |Av|/gm = 20/0.0769 = **$260\\ \\Omega$** → use standard value **$RC = 270\\ \\Omega$**
 
-Then RE = 3000 − 270 = **2730 Ω** → use **RE = 2.7 kΩ**
+Then RE = 3000 − 270 = **$2730\\ \\Omega$** → use **$RE = 2.7 k\\Omega$**
 
 **Step 3 — Design the voltage divider bias:**
 
@@ -7909,23 +7909,23 @@ For stable biasing, divider current should be ~10× IB:
 
 IB = IC/β = 2 mA/100 = 20 μA → Idivider ≈ 200 μA
 
-**R2 = VB/Idivider = 6.1/0.2 mA = 30.5 kΩ** → use **R2 = 30 kΩ**
+**R2 = VB/Idivider = 6.1/0.2 mA = 30.5 kΩ** → use **$R2 = 30 k\\Omega$**
 
-**R1 = (VCC − VB)/Idivider = (12 − 6.1)/0.2 mA = 29.5 kΩ** → use **R1 = 30 kΩ**
+**R1 = (VCC − VB)/Idivider = (12 − 6.1)/0.2 mA = 29.5 kΩ** → use **$R1 = 30 k\\Omega$**
 
 **Step 4 — Verify the Q-point:**
 
 VB = 12 × 30/(30+30) = **6.0 V** (close to target)
 
-VE = 6.0 − 0.7 = 5.3 V → IE = 5.3/2.7k = **1.96 mA** ≈ 2 mA
+$$VE = 6.0 - 0.7 = 5.3\\ \\mathrm{V} \\to IE = 5.3/2.7k = 1.96\\ \\mathrm{mA} \\approx 2\\ \\mathrm{mA}$$
 
 VCE = 12 − 1.96 mA × (270 + 2700) = 12 − 5.82 = **6.18 V** → active region confirmed (VCE > 0.2 V)
 
 **Step 5 — Calculate actual small-signal gain:**
 
-gm = 1.96 mA / 26 mV = 75.4 mS
+$$gm = 1.96\\ \\mathrm{mA} / 26\\ \\mathrm{mV} = 75.4 mS$$
 
-**Av = −gm × RC = −75.4 × 0.270 = −20.4** (meets spec, negative sign = 180° inversion)
+**$Av = -gm \\times RC = -75.4 \\times 0.270 = -20.4$** (meets spec, negative sign = 180° inversion)
 
 ## 3.3 Design Verification Checklist
 
@@ -7963,39 +7963,39 @@ An **N-channel enhancement MOSFET** has three terminals: **Gate (G)**, **Drain (
 
 | Region | Condition | Drain Current |
 |---|---|---|
-| **Cutoff** | VGS < Vt | ID = 0 |
-| **Triode (Linear)** | VGS > Vt, VDS < VGS − Vt | ID = K·[2(VGS−Vt)·VDS − VDS²] |
-| **Saturation** | VGS > Vt, VDS ≥ VGS − Vt | **ID = K·(VGS − Vt)²** |
+| **Cutoff** | $VGS < Vt$ | $ID = 0$ |
+| **Triode (Linear)** | $VGS > Vt, VDS < VGS - Vt$ | $ID = K\\cdot [2(VGS-Vt)\\cdot VDS - VDS^{2}]$ |
+| **Saturation** | $VGS > Vt, VDS \\ge VGS - Vt$ | **$ID = K\\cdot (VGS - Vt)^{2}$** |
 
-where **K = (μₙCₒₓ/2)·(W/L)** is the device transconductance parameter.
+where **$K = (\\mu _{n}C_{ox}/2)\\cdot (W/L)$** is the device transconductance parameter.
 
 - **Vt** = threshold voltage (typically 0.5–2 V for NMOS)
-- **μₙCₒₓ** = process transconductance parameter (μA/V²)
+- **$\\mu _{n}C_{ox}$** = process transconductance parameter (μA/V²)
 - **W/L** = width-to-length ratio (designer controls this)
 
 ### Saturation Equation (Most Important)
 
-**ID = (μₙCₒₓ/2) · (W/L) · (VGS − Vt)²**
+**$ID = (\\mu _{n}C_{ox}/2) \\cdot (W/L) \\cdot (VGS - Vt)^{2}$**
 
 This **square-law** relationship means doubling (VGS − Vt) quadruples the drain current.
 
 ### Transconductance
 
-**gm = ∂ID/∂VGS = μₙCₒₓ · (W/L) · (VGS − Vt) = 2·ID/(VGS − Vt)**
+**$gm = \\partial ID/\\partial VGS = \\mu _{n}C_{ox} \\cdot (W/L) \\cdot (VGS - Vt) = 2\\cdot ID/(VGS - Vt)$**
 
-Alternative: **gm = √(2·μₙCₒₓ·(W/L)·ID)**
+Alternative: **$gm = \\sqrt{2\\cdot \\mu _{n}C_{ox}\\cdot (W/L)\\cdot ID}$**
 
 ## 1.2 P-Channel MOSFET
 
 PMOS is complementary — all voltages and currents reverse:
-- Conducts when **VGS < Vt** (Vt is negative)
+- Conducts when **$VGS < Vt$** (Vt is negative)
 - Current flows from source to drain
 - Used in CMOS logic paired with NMOS
 
 ## 1.3 Depletion-Mode MOSFET
 
 A **depletion-mode** MOSFET conducts at VGS = 0 and turns off with negative VGS (for N-channel):
-- **ID = IDSS · (1 − VGS/Vp)²** where IDSS is drain current at VGS = 0 and Vp is pinch-off voltage`,
+- **$ID = IDSS \\cdot (1 - VGS/Vp)^{2}$** where IDSS is drain current at VGS = 0 and Vp is pinch-off voltage`,
         examTip: 'The saturation current equation ID = K·(VGS−Vt)² is the most-tested MOSFET formula on the FE exam. Always check VDS ≥ VGS−Vt to confirm saturation before using this equation. If VDS < VGS−Vt, the MOSFET is in the triode (linear) region and requires the different formula.',
       },
       {
@@ -8007,9 +8007,9 @@ A **depletion-mode** MOSFET conducts at VGS = 0 and turns off with negative VGS 
 
 The most common discrete MOSFET biasing method:
 
-1. Gate voltage set by a resistor divider or directly: **VG = VDD · R2/(R1+R2)**
-2. Source voltage: **VS = ID · RS**
-3. Gate-source voltage: **VGS = VG − VS = VG − ID·RS**
+1. Gate voltage set by a resistor divider or directly: **$VG = VDD \\cdot R2/(R1+R2)$**
+2. Source voltage: **$VS = ID \\cdot RS$**
+3. Gate-source voltage: **$VGS = VG - VS = VG - ID\\cdot RS$**
 4. Solve simultaneously with saturation equation: ID = K·(VGS − Vt)²
 
 The source resistor RS provides **negative feedback**: if ID increases → VS increases → VGS decreases → ID decreases. This stabilizes the Q-point.
@@ -8025,21 +8025,21 @@ MOSFET gate draws **essentially zero DC current** (IG ≈ 0), so:
 
 | Parameter | Common-Source (CS) | Common-Drain (CD) | Common-Gate (CG) |
 |---|---|---|---|
-| **Voltage gain** | **Av = −gm·RD** | **Av ≈ gm·RS/(1+gm·RS) ≈ 1** | **Av = gm·RD** |
+| **Voltage gain** | **$Av = -gm\\cdot RD$** | **$Av \\approx gm\\cdot RS/(1+gm\\cdot RS) \\approx 1$** | **$Av = gm\\cdot RD$** |
 | **Input impedance** | **Very high** (gate) | **Very high** (gate) | **Low** (≈ 1/gm) |
-| **Output impedance** | **≈ RD** | **≈ 1/gm** (low) | **≈ RD** |
+| **Output impedance** | **$\\approx RD$** | **≈ 1/gm** (low) | **$\\approx RD$** |
 | **Phase inversion** | **Yes** | **No** | **No** |
 | **Analog to BJT** | CE | CC (emitter follower) | CB |
 
 ### Common-Source (CS) — Primary Amplifier
 
-**Av = −gm · RD** (without source degeneration)
+**$Av = -gm \\cdot RD$** (without source degeneration)
 
-**Av = −gm · RD / (1 + gm·RS)** (with unbypassed RS — reduces gain but improves linearity)
+**$Av = -gm \\cdot RD / (1 + gm\\cdot RS)$** (with unbypassed RS — reduces gain but improves linearity)
 
 ### Common-Drain (CD) — Source Follower
 
-**Av ≈ 1** (unity gain buffer), **Zin ≈ ∞**, **Zout ≈ 1/gm**
+**$Av \\approx 1$** (unity gain buffer), **Zin ≈ ∞**, **Zout ≈ 1/gm**
 
 Ideal for driving low-impedance loads from high-impedance sources.
 
@@ -8077,19 +8077,19 @@ The foundation of digital electronics: NMOS + PMOS in series between VDD and gro
 
 | Parameter | Ideal Value | Real (e.g., LM741) |
 |---|---|---|
-| **Open-loop gain (Aol)** | ∞ | 10⁵–10⁶ |
-| **Input impedance (Zin)** | ∞ | 1–10 MΩ |
-| **Output impedance (Zout)** | 0 | 50–100 Ω |
-| **Bandwidth** | ∞ | GBW ≈ 1 MHz |
-| **Input offset voltage** | 0 | 1–5 mV |
-| **Input bias current** | 0 | nA–μA |
+| **Open-loop gain (Aol)** | ∞ | $10^{5}-10^{6}$ |
+| **Input impedance (Zin)** | ∞ | $1-10 M\\Omega$ |
+| **Output impedance (Zout)** | 0 | $50-100\\ \\Omega$ |
+| **Bandwidth** | ∞ | $GBW \\approx 1\\ \\mathrm{MHz}$ |
+| **Input offset voltage** | 0 | $1-5\\ \\mathrm{mV}$ |
+| **Input bias current** | 0 | $nA-\\mu A$ |
 
 ### The Virtual Short Principle
 
 With **negative feedback**, the ideal op-amp enforces two conditions:
 
-1. **V⁺ = V⁻** (virtual short — inputs are at the same voltage)
-2. **I⁺ = I⁻ = 0** (no current flows into the inputs)
+1. **$V^{+} = V^{-}$** (virtual short — inputs are at the same voltage)
+2. **$I^{+} = I^{-} = 0$** (no current flows into the inputs)
 
 These two rules are sufficient to analyze **any** ideal op-amp circuit.
 
@@ -8109,16 +8109,16 @@ These two rules are sufficient to analyze **any** ideal op-amp circuit.
 Derive the gain from the two rules rather than recalling it, because the same
 three lines handle every variation the exam throws at this topology.
 
-The non-inverting terminal is grounded, so rule 1 (V⁺ = V⁻) puts the inverting
+The non-inverting terminal is grounded, so rule 1 ($V^{+}$ = $V^{-}$) puts the inverting
 node at **0 V** — a *virtual ground*: held at ground potential by feedback, but
 not connected to ground. Rule 2 says no current enters the op-amp input, so all
 the current arriving through Rin must continue through Rf.
 
 - Current in: i = (v_in − 0)/R_in = v_in/R_in
 - Same current out: v_out = 0 − i·R_f = −v_in·R_f/R_in
-- Therefore **A = −R_f/R_in**
+- Therefore **$A = -R_f/R_{in}$**
 
-With the values drawn, A = −10 kΩ/1 kΩ = **−10**. A 0.5 V input gives −5.0 V
+With the values drawn, A = −10 kΩ/1 kΩ = **$-10$**. A 0.5 V input gives −5.0 V
 out, via 0.5 mA flowing through both resistors and dropping 5 V across Rf.
 
 Two consequences of the virtual ground are tested more often than the gain
@@ -8135,9 +8135,9 @@ accuracy in these circuits.
 
 | Configuration (R_in = 1 kΩ, R_f = 10 kΩ) | Gain | Z_in | Phase | v_out for v_in = 0.5 V |
 |---|---|---|---|---|
-| Inverting | −10 | 1 kΩ | 180° | −5.00 V |
-| Non-inverting | 1 + 10 = +11 | ≈ ∞ | 0° | +5.50 V |
-| Unity buffer | +1 | ≈ ∞ | 0° | +0.50 V |
+| Inverting | $-10$ | $1 k\\Omega$ | $180^\\circ$ | $-5.00\\ \\mathrm{V}$ |
+| Non-inverting | $1 + 10 = +11$ | ≈ ∞ | $0^\\circ$ | +5.50 V |
+| Unity buffer | +1 | ≈ ∞ | $0^\\circ$ | +0.50 V |
 
 The non-inverting gain is **11, not 10** — the "1 +" is not decoration. It comes
 from the input appearing directly at the output through the feedback divider,
@@ -8170,7 +8170,7 @@ other: each contributes i = v/R independently, and the currents simply add in
 R_f. With R_f = 10 kΩ and inputs of 0.1 V through 1 kΩ, 0.2 V through 2 kΩ and
 0.5 V through 5 kΩ:
 
-v_out = −(10×0.1 + 5×0.2 + 2×0.5) = −(1 + 1 + 1) = **−3.0 V**
+$$v_{out} = -(10\\times 0.1 + 5\\times 0.2 + 2\\times 0.5) = -(1 + 1 + 1) = -3.0\\ \\mathrm{V}$$
 
 Each branch contributes exactly 1 V despite its different source voltage,
 because gain is set per-input by R_f/R_n. That independence is the reason this
@@ -8188,9 +8188,9 @@ and it is the most common practical failure of this circuit.
 
 | Feedback element | Relationship | Circuit |
 |---|---|---|
-| Resistor R_f | v_out = −v_in R_f/R_in | inverting amplifier |
-| Capacitor C | v_out = −(1/R_in C)∫v_in dt | integrator |
-| Resistor, with C at the input | v_out = −R_f C dv_in/dt | differentiator |
+| Resistor R_f | $v_{out} = -v_{in} R_f/R_{in}$ | inverting amplifier |
+| Capacitor C | $v_{out} = -(1/R_{in} C)\\int v_{in} dt$ | integrator |
+| Resistor, with C at the input | $v_{out} = -R_f C dv_{in}/dt$ | differentiator |
 
 Read that table as one idea rather than three formulas: **the input branch sets
 the current, the feedback element decides what that current does.**
@@ -8198,12 +8198,12 @@ the current, the feedback element decides what that current does.**
 ### When the virtual short does not apply
 
 Both rules depend on **negative feedback** being present. Remove the feedback
-path, or route it to the non-inverting terminal instead, and V⁺ no longer equals
-V⁻ — the open-loop gain of 10⁵ or more drives the output straight to whichever
+path, or route it to the non-inverting terminal instead, and $V^{+}$ no longer equals
+$V^{-}$ — the open-loop gain of $10^{5}$ or more drives the output straight to whichever
 rail the input difference points at. That circuit is a **comparator**, not an
 amplifier, and its output is one of two voltages rather than a scaled copy.
 
-So before applying V⁺ = V⁻ to anything, check where the feedback goes. If it
+So before applying $V^{+}$ = $V^{-}$ to anything, check where the feedback goes. If it
 returns to the inverting input, the virtual short holds and the closed-loop
 formulas apply. If there is no feedback at all, or it returns to the
 non-inverting input, expect saturation or latch-up and analyse it as a switching
@@ -8234,19 +8234,19 @@ numerical answer that is not on the answer sheet.
 
 Combines multiple weighted inputs:
 
-**Vo = −Rf · (V₁/R₁ + V₂/R₂ + V₃/R₃ + ...)**
+**$Vo = -Rf \\cdot (V_{1}/R_{1} + V_{2}/R_{2} + V_{3}/R_{3} + ...)$**
 
-Each input is weighted by −Rf/Rᵢ. If all Rᵢ = R, then Vo = −(Rf/R)·(V₁+V₂+V₃+...) — a scaled sum.
+Each input is weighted by −Rf/Rᵢ. If all Rᵢ = R, then Vo = −(Rf/R)·($V_{1}$+$V_{2}$+$V_{3}$+...) — a scaled sum.
 
 ### Difference (Differential) Amplifier
 
-**Vo = (Rf/Rin) · (V₂ − V₁)** (when Rf/Rin = R₂/R₁)
+**Vo = (Rf/Rin) · ($V_{2}$ − $V_{1}$)** (when Rf/Rin = $R_{2}$/$R_{1}$)
 
 Amplifies the **difference** between two inputs while rejecting common-mode signals. The **Common-Mode Rejection Ratio (CMRR)** measures this ability.
 
 ## 2.2 Integrator
 
-**Vo = −(1/RC) · ∫ Vi dt**
+**$Vo = -(1/RC) \\cdot \\int Vi dt$**
 
 - Capacitor C replaces Rf in the inverting configuration
 - Output is proportional to the integral of the input
@@ -8273,11 +8273,11 @@ Amplifies the **difference** between two inputs while rejecting common-mode sign
 
 For a real op-amp, the product of closed-loop gain and bandwidth is constant:
 
-**GBW = Aol · f₃dB = Acl · BW**
+**GBW = Aol · $f_{3}dB$ = Acl · BW**
 
 | Closed-Loop Gain | Bandwidth |
 |---|---|
-| 1 (buffer) | 1 MHz (= GBW) |
+| 1 (buffer) | $1\\ \\mathrm{MHz} (= GBW)$ |
 | 10 | 100 kHz |
 | 100 | 10 kHz |
 | 1000 | 1 kHz |
@@ -8293,18 +8293,18 @@ Higher gain → lower bandwidth. This is a fundamental tradeoff.`,
 
 For ANY ideal op-amp circuit with negative feedback, apply these two rules and solve:
 
-**Rule 1**: V⁺ = V⁻ (virtual short — no voltage difference between inputs)
-**Rule 2**: I⁺ = I⁻ = 0 (no current into either input terminal)
+**Rule 1**: $V^{+}$ = $V^{-}$ (virtual short — no voltage difference between inputs)
+**Rule 2**: $I^{+}$ = $I^{-}$ = 0 (no current into either input terminal)
 
 **Worked Example — Determine the output of this circuit:**
 
-Non-inverting input: V⁺ connected to 3 V. Feedback: Rf = 20 kΩ from output to V⁻. Rin = 10 kΩ from V⁻ to ground.
+Non-inverting input: $V^{+}$ connected to 3 V. Feedback: Rf = 20 kΩ from output to $V^{-}$. Rin = 10 kΩ from $V^{-}$ to ground.
 
-1. By Rule 1: V⁻ = V⁺ = **3 V**
-2. Current through Rin: I = V⁻/Rin = 3/10k = **0.3 mA** (flows toward ground)
+1. By Rule 1: $V^{-}$ = $V^{+}$ = **3 V**
+2. Current through Rin: I = $V^{-}$/Rin = 3/10k = **0.3 mA** (flows toward ground)
 3. By Rule 2: same current flows through Rf (no current into the op-amp)
 4. Voltage across Rf: V_Rf = I × Rf = 0.3 mA × 20 kΩ = **6 V**
-5. Output: Vo = V⁻ + V_Rf = 3 + 6 = **9 V**
+5. Output: Vo = $V^{-}$ + V_Rf = 3 + 6 = **9 V**
 
 **Verification**: Non-inverting gain = 1 + Rf/Rin = 1 + 20/10 = 3. Vo = 3 × 3 V = 9 V. Confirmed.
 
@@ -8321,7 +8321,7 @@ When multiple inputs feed an op-amp circuit, use **superposition**:
 
 V1 = 2 V through R1 = 10 kΩ; V2 = −1 V through R2 = 20 kΩ; Rf = 40 kΩ
 
-- From V1 alone: Vo1 = −(Rf/R1)·V1 = −(40/10)·2 = **−8 V**
+- From V1 alone: Vo1 = −(Rf/R1)·V1 = −(40/10)·2 = **$-8\\ \\mathrm{V}$**
 - From V2 alone: Vo2 = −(Rf/R2)·V2 = −(40/20)·(−1) = **+2 V**
 - **Total: Vo = −8 + 2 = −6 V**
 
@@ -8329,16 +8329,16 @@ V1 = 2 V through R1 = 10 kΩ; V2 = −1 V through R2 = 20 kΩ; Rf = 40 kΩ
 
 The ideal op-amp model assumes infinite output voltage range, but **real op-amps clip** at the supply rails:
 
-- If V+ supply = +15 V and V− supply = −15 V, output saturates at approximately **±13 to ±14 V** (1–2 V below rails for standard op-amps)
+- If V+ supply = +15 V and V− supply = −15 V, output saturates at approximately **$\\pm 13 to \\pm 14\\ \\mathrm{V}$** (1–2 V below rails for standard op-amps)
 - Rail-to-rail op-amps can reach within 50–200 mV of the supply
 
-**Example trap**: An inverting amplifier with Av = −100, Vin = 0.5 V → calculated Vo = −50 V. But if supply is ±15 V, the actual output is **−14 V** (saturated, not −50 V).
+**Example trap**: An inverting amplifier with Av = −100, Vin = 0.5 V → calculated Vo = −50 V. But if supply is ±15 V, the actual output is **$-14\\ \\mathrm{V}$** (saturated, not −50 V).
 
 **How to spot saturation on the exam:**
 1. Calculate the ideal output voltage
 2. Compare to supply rails
 3. If |Vo| > |Vsupply| − 1.5 V, the output is **clipped/saturated**
-4. When saturated, the virtual short (V⁺ = V⁻) **no longer holds** — the op-amp is in open-loop
+4. When saturated, the virtual short ($V^{+}$ = $V^{-}$) **no longer holds** — the op-amp is in open-loop
 
 ## 3.4 Quick Gain Formulas Reference
 
@@ -8347,7 +8347,7 @@ The ideal op-amp model assumes infinite output voltage range, but **real op-amps
 | Inverting | **−Rf/Rin** | Input impedance = Rin |
 | Non-inverting | **1 + Rf/Rin** | Input impedance ≈ ∞ |
 | Buffer | **1** | Rf = 0, Rin = ∞ |
-| Summing | **−Rf·Σ(Vi/Ri)** | One term per input |
+| Summing | **$-Rf\\cdot \\Sigma (Vi/Ri)$** | One term per input |
 | Difference | **(Rf/Rin)·(V2−V1)** | When ratios matched |
 | Integrator | **−1/(sRC)** | C replaces Rf |
 | Differentiator | **−sRC** | C replaces Rin |`,
@@ -8384,7 +8384,7 @@ The **buck converter** reduces DC voltage using a switch, inductor, diode, and c
 |---|---|
 | Output voltage | **Vo = D · Vin** |
 | Inductor current ripple | **ΔIL = Vin · D · (1−D) / (L · fₛ)** |
-| Output voltage ripple | **ΔVo = ΔIL / (8 · C · fₛ)** |
+| Output voltage ripple | **$\\Delta Vo = \\Delta IL / (8 \\cdot C \\cdot f_{s})$** |
 | Minimum inductance (CCM) | **Lmin = (1−D) · R / (2 · fₛ)** |
 
 ### Continuous vs. Discontinuous Conduction Mode
@@ -8402,7 +8402,7 @@ The **boost converter** increases DC voltage:
 |---|---|
 | Output voltage | **Vo = Vin/(1−D)** |
 | Inductor current ripple | **ΔIL = Vin · D / (L · fₛ)** |
-| Output voltage ripple | **ΔVo = Io · D / (C · fₛ)** |
+| Output voltage ripple | **$\\Delta Vo = Io \\cdot D / (C \\cdot f_{s})$** |
 
 As D → 1, Vo → ∞ theoretically, but practical limits (losses, component ratings) cap the boost ratio to about 4–5×.
 
@@ -8432,10 +8432,10 @@ where Vm is the peak phase voltage and VL_rms is the line-to-line RMS voltage.
 
 | Rectifier Type | Vdc | Ripple Frequency | Ripple Factor |
 |---|---|---|---|
-| Single-phase half-wave | Vm/π | f | 121% |
-| Single-phase full-wave | 2Vm/π | 2f | 48% |
-| Three-phase half-wave | 3√3·Vm/(2π) | 3f | 18% |
-| **Three-phase full-wave (6-pulse)** | **3√3·Vm/π** | **6f** | **4%** |
+| Single-phase half-wave | $Vm/\\pi$ | f | 121% |
+| Single-phase full-wave | $2Vm/\\pi$ | 2f | 48% |
+| Three-phase half-wave | $3\\sqrt{3}\\cdot Vm/(2\\pi)$ | 3f | 18% |
+| **Three-phase full-wave (6-pulse)** | **$3\\sqrt{3}\\cdot Vm/\\pi$** | **6f** | **4%** |
 
 ### Controlled (SCR) Rectifiers
 
@@ -8501,35 +8501,35 @@ PWM controls average output by rapidly switching between on and off states:
 
 Three-phase systems deliver **constant instantaneous power** (no pulsation), use conductors more efficiently than single-phase, and produce rotating magnetic fields that drive motors directly.
 
-Three voltage sources separated by **120°**:
+Three voltage sources separated by **$120^\\circ$**:
 
-- **Va = V·cos(ωt)**
-- **Vb = V·cos(ωt − 120°)**
-- **Vc = V·cos(ωt − 240°)**
+- **$Va = V\\cdot \\cos (\\omega t)$**
+- **$Vb = V\\cdot \\cos (\\omega t - 120^\\circ)$**
+- **$Vc = V\\cdot \\cos (\\omega t - 240^\\circ)$**
 
-In complex (phasor) notation using the **a-operator** where **a = e^(j120°) = −½ + j√3/2**:
+In complex (phasor) notation using the **a-operator** where **$a = e^{j120^\\circ} = -\\tfrac{1}{2} + j\\sqrt{3}/2$**:
 
 | Phasor | Value |
 |---|---|
-| Va | V∠0° |
-| Vb | V∠−120° = a²·Va |
-| Vc | V∠−240° = a·Va |
+| Va | $V\\angle 0^\\circ$ |
+| Vb | $V\\angle -120^\\circ = a^{2}\\cdot Va$ |
+| Vc | $V\\angle -240^\\circ = a\\cdot Va$ |
 
-For **balanced** loads: **Va + Vb + Vc = 0** and **Ia + Ib + Ic = 0**.
+For **balanced** loads: **$Va + Vb + Vc = 0$** and **$Ia + Ib + Ic = 0$**.
 
 ## 1.2 Wye (Y) vs. Delta (Δ) Connections
 
 | Property | Wye (Y) | Delta (Δ) |
 |---|---|---|
-| Line-to-line voltage | **V_LL = √3 · V_ph** | **V_LL = V_ph** |
-| Line current | **I_L = I_ph** | **I_L = √3 · I_ph** |
+| Line-to-line voltage | **$V_{LL} = \\sqrt{3} \\cdot V_{ph}$** | **$V_{LL} = V_{ph}$** |
+| Line current | **$I_L = I_{ph}$** | **$I_L = \\sqrt{3} \\cdot I_{ph}$** |
 | Neutral wire | Present (carries unbalanced current) | No neutral |
 | Typical use | Distribution, generators | Motors, capacitor banks |
 
 ### Y ↔ Δ Impedance Conversion
 
-- **Z_Δ = 3·Z_Y** (balanced loads)
-- **Z_Y = Z_Δ / 3**`,
+- **$Z_\\Delta = 3\\cdot Z_Y$** (balanced loads)
+- **$Z_Y = Z_\\Delta / 3$**`,
       examTip: 'The √3 factor is the single most tested relationship: in a Y-connection it multiplies VOLTAGE (V_LL = √3·V_ph), while in a Δ-connection it multiplies CURRENT (I_L = √3·I_ph). If you mix these up, every downstream calculation is wrong.',
       importantNote: 'The a-operator a = e^(j120°) satisfies 1 + a + a² = 0. This identity is the mathematical reason Va + Vb + Vc = 0 for a balanced set, and it is used repeatedly in symmetrical component analysis.',
     },
@@ -8540,34 +8540,34 @@ For **balanced** loads: **Va + Vb + Vc = 0** and **Ia + Ib + Ic = 0**.
 
 | Quantity | Formula | Unit |
 |---|---|---|
-| Real power | **P = √3 · V_LL · I_L · cos(φ)** | W |
-| Reactive power | **Q = √3 · V_LL · I_L · sin(φ)** | VAR |
-| Apparent power | **S = √3 · V_LL · I_L** | VA |
-| Complex power | **S = P + jQ** | VA |
+| Real power | **$P = \\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\cos (\\phi)$** | W |
+| Reactive power | **$Q = \\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\sin (\\phi)$** | VAR |
+| Apparent power | **$S = \\sqrt{3} \\cdot V_{LL} \\cdot I_L$** | VA |
+| Complex power | **$S = P + jQ$** | VA |
 
 All formulas use **line** quantities (V_LL and I_L) — no need to know whether the load is Y or Δ.
 
 ### Power per phase:
-- **P_phase = V_ph · I_ph · cos(φ)** → total **P = 3·P_phase**
+- **$P_{phase} = V_{ph} \\cdot I_{ph} \\cdot \\cos (\\phi)$** → total **$P = 3\\cdot P_{phase}$**
 
 ## 2.2 Per-Phase Analysis
 
 For **balanced** systems, analyze one phase as a single-phase circuit:
 
-1. Convert Δ-loads to equivalent Y: **Z_Y = Z_Δ/3**
+1. Convert Δ-loads to equivalent Y: **$Z_Y = Z_\\Delta /3$**
 2. Solve the single-phase equivalent (line-to-neutral voltage, phase current)
 3. Multiply power by 3 for total three-phase power
-4. Line quantities: **V_LL = √3·V_ph**, **I_L = I_ph** (Y connection)
+4. Line quantities: **$V_{LL} = \\sqrt{3}\\cdot V_{ph}$**, **$I_L = I_{ph}$** (Y connection)
 
 ## 2.3 Symmetrical Components (Unbalanced Analysis)
 
 Unbalanced currents or voltages decompose into three **sequence** sets:
 
-- **Positive sequence** (V₁): balanced, normal rotation (abc)
-- **Negative sequence** (V₂): balanced, reverse rotation (acb)
-- **Zero sequence** (V₀): all three phasors equal (in-phase)
+- **Positive sequence** ($V_{1}$): balanced, normal rotation (abc)
+- **Negative sequence** ($V_{2}$): balanced, reverse rotation (acb)
+- **Zero sequence** ($V_{0}$): all three phasors equal (in-phase)
 
-**Transformation**: V₀ = ⅓(Va + Vb + Vc); V₁ = ⅓(Va + a·Vb + a²·Vc); V₂ = ⅓(Va + a²·Vb + a·Vc)`,
+**Transformation**: $V_{0}$ = ⅓(Va + Vb + Vc); $V_{1}$ = ⅓(Va + a·Vb + a²·Vc); $V_{2}$ = ⅓(Va + a²·Vb + a·Vc)`,
       examTip: 'On the FE exam, three-phase power problems almost always give line voltage and line current. Plug directly into P = √3·V_LL·I_L·cos(φ). If they give phase quantities, first convert to line quantities using the Y or Δ relationship.',
     },
     {
@@ -8576,15 +8576,15 @@ Unbalanced currents or voltages decompose into three **sequence** sets:
       content: `## 3.1 Quick Conversion Reference
 
 **Y ↔ Δ Impedance Conversion (Balanced):**
-- **Z_Δ = 3 · Z_Y** (Delta impedance is 3× the Wye impedance)
-- **Z_Y = Z_Δ / 3**
+- **$Z_\\Delta = 3 \\cdot Z_Y$** (Delta impedance is 3× the Wye impedance)
+- **$Z_Y = Z_\\Delta / 3$**
 
 **Line ↔ Phase Conversions:**
 
 | Connection | Voltage Relationship | Current Relationship |
 |---|---|---|
-| **Wye (Y)** | V_LL = √3 · V_ph | I_L = I_ph |
-| **Delta (Δ)** | V_LL = V_ph | I_L = √3 · I_ph |
+| **Wye (Y)** | $V_{LL} = \\sqrt{3} \\cdot V_{ph}$ | $I_L = I_{ph}$ |
+| **Delta (Δ)** | $V_{LL} = V_{ph}$ | $I_L = \\sqrt{3} \\cdot I_{ph}$ |
 
 **Memory trick**: The √3 factor always multiplies the LARGER quantity — in Y, line voltage is larger; in Δ, line current is larger.
 
@@ -8594,19 +8594,19 @@ Unbalanced currents or voltages decompose into three **sequence** sets:
 
 **Step 1 — Phase voltage:**
 
-V_ph = V_LL / √3 = 480 / 1.732 = **277.1 V**
+$$V_{ph} = V_{LL} / \\sqrt{3} = 480 / 1.732 = 277.1\\ \\mathrm{V}$$
 
 **Step 2 — Phase current (= line current for Y):**
 
-|Z_Y| = √(10² + 5²) = √125 = **11.18 Ω**
+|Z_Y| = √(10² + 5²) = √125 = **$11.18\\ \\Omega$**
 
-I_ph = V_ph / |Z_Y| = 277.1 / 11.18 = **24.79 A**
+$$I_{ph} = V_{ph} / |Z_Y| = 277.1 / 11.18 = 24.79\\ \\mathrm{A}$$
 
-**I_L = I_ph = 24.79 A** (Y connection)
+**$I_L = I_{ph} = 24.79\\ \\mathrm{A}$** (Y connection)
 
 **Step 3 — Power factor angle:**
 
-φ = arctan(X/R) = arctan(5/10) = **26.57°**
+$$\\phi = \\arctan (X/R) = \\arctan (5/10) = 26.57^\\circ$$
 
 cos(φ) = cos(26.57°) = **0.894 lagging** (inductive load)
 
@@ -8614,9 +8614,9 @@ cos(φ) = cos(26.57°) = **0.894 lagging** (inductive load)
 
 | Power | Formula | Result |
 |---|---|---|
-| **Real power P** | √3 · V_LL · I_L · cos(φ) | √3 × 480 × 24.79 × 0.894 = **18,432 W ≈ 18.4 kW** |
-| **Reactive power Q** | √3 · V_LL · I_L · sin(φ) | √3 × 480 × 24.79 × 0.447 = **9,216 VAR ≈ 9.22 kVAR** |
-| **Apparent power S** | √3 · V_LL · I_L | √3 × 480 × 24.79 = **20,608 VA ≈ 20.6 kVA** |
+| **Real power P** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\cos (\\phi)$ | $\\sqrt{3} \\times 480 \\times 24.79 \\times 0.894 = 18,432\\ \\mathrm{W} \\approx 18.4\\ \\mathrm{kW}$ |
+| **Reactive power Q** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L \\cdot \\sin (\\phi)$ | $\\sqrt{3} \\times 480 \\times 24.79 \\times 0.447 = 9,216\\ \\mathrm{VAR} \\approx 9.22\\ \\mathrm{kVAR}$ |
+| **Apparent power S** | $\\sqrt{3} \\cdot V_{LL} \\cdot I_L$ | $\\sqrt{3} \\times 480 \\times 24.79 = 20,608 VA \\approx 20.6\\ \\mathrm{kVA}$ |
 
 **Verification**: S² = P² + Q² → 20,608² ≈ 18,432² + 9,216² → 424.5M ≈ 339.7M + 84.9M ≈ 424.6M. Confirmed.
 
@@ -8666,8 +8666,8 @@ An ideal transformer has **perfect coupling, zero losses, and infinite permeabil
 |---|---|
 | Voltage ratio | **Vs/Vp = Ns/Np = n** (turns ratio) |
 | Current ratio | **Ip/Is = n** (currents are inverse) |
-| Power conservation | **Pp = Ps** → **Vp·Ip = Vs·Is** |
-| Impedance reflection | **Z_primary = Z_load / n²** |
+| Power conservation | $Pp = Ps \\to Vp\\cdot Ip = Vs\\cdot Is$ |
+| Impedance reflection | **$Z_{primary} = Z_{load} / n^{2}$** |
 
 ## 1.2 Real Transformer Equivalent Circuit
 
@@ -8705,15 +8705,15 @@ Real transformers have losses modeled by additional circuit elements:
 
 ### Approximate Voltage Drop
 
-**ΔV ≈ I·(R_eq·cos(φ) + X_eq·sin(φ))**
+**$\\Delta V \\approx I\\cdot (R_{eq}\\cdot \\cos (\\phi) + X_{eq}\\cdot \\sin (\\phi))$**
 
 where R_eq and X_eq are equivalent series impedance referred to one side.
 
 ## 2.2 Efficiency
 
-**η = P_out / (P_out + P_core + P_copper) × 100%**
+**$\\eta = P_{out} / (P_{out} + P_{core} + P_{copper}) \\times 100\\%$**
 
-Equivalently: **η = P_out / P_in × 100%**
+Equivalently: **$\\eta = P_{out} / P_{in} \\times 100\\%$**
 
 | Load Condition | Core Loss | Copper Loss | Efficiency |
 |---|---|---|---|
@@ -8722,11 +8722,11 @@ Equivalently: **η = P_out / P_in × 100%**
 | **Rated load** | Full | **Full** | **Maximum (~95–99%)** |
 | Overload | Full | Increases as I² | Decreasing |
 
-**Maximum efficiency** occurs when **P_core = P_copper** (core loss equals copper loss).
+**Maximum efficiency** occurs when **$P_{core} = P_{copper}$** (core loss equals copper loss).
 
 ### Per-Unit Impedance Shortcut
 
-**Z_pu = Z_actual / Z_base** where **Z_base = V_base² / S_base**
+**$Z_{pu} = Z_{actual} / Z_{base}$** where **$Z_{base} = V_{base}^{2} / S_{base}$**
 
 Per-unit impedance is the same on both sides of the transformer — no need to reflect through n².`,
       examTip: 'Maximum transformer efficiency occurs when core loss equals copper loss. This is a classic FE exam question. At rated load, typical transformer efficiency is 95-99%. If you are asked "at what load is efficiency maximum," set P_core = P_copper and solve for load fraction.',
@@ -8756,15 +8756,15 @@ Follow this checklist for every transformer problem on the FE exam:
 
 - Core loss: **Pcore = 60 W** (constant at rated voltage)
 - Apparent power: Soc = 240 × 1.2 = 288 VA
-- Core loss resistance: Rc = V²/Poc = 240²/60 = **960 Ω** (referred to LV side)
-- Magnetizing reactance: Xm = V²/Qoc where Qoc = √(S² − P²) = √(288² − 60²) = 281.7 → Xm = 240²/281.7 = **204.5 Ω**
+- Core loss resistance: Rc = V²/Poc = 240²/60 = **$960\\ \\Omega$** (referred to LV side)
+- Magnetizing reactance: Xm = V²/Qoc where Qoc = √(S² − P²) = √(288² − 60²) = 281.7 → Xm = 240²/281.7 = **$204.5\\ \\Omega$**
 
 **Step 2 — Copper loss parameters (from SC test):**
 
 - Copper loss at rated current: **Pcopper = 120 W**
-- Equivalent impedance (referred to HV side): Zeq = Vsc/Isc = 48/4.17 = **11.51 Ω**
-- Equivalent resistance: Req = Psc/Isc² = 120/4.17² = **6.90 Ω**
-- Equivalent reactance: Xeq = √(Zeq² − Req²) = √(11.51² − 6.90²) = **9.21 Ω**
+- Equivalent impedance (referred to HV side): Zeq = Vsc/Isc = 48/4.17 = **$11.51\\ \\Omega$**
+- Equivalent resistance: Req = Psc/Isc² = 120/4.17² = **$6.90\\ \\Omega$**
+- Equivalent reactance: Xeq = √(Zeq² − Req²) = √(11.51² − 6.90²) = **$9.21\\ \\Omega$**
 
 **Step 3 — Voltage regulation at full load, 0.8 PF lagging:**
 
@@ -8772,15 +8772,15 @@ VR ≈ (Irated × (Req·cos(φ) + Xeq·sin(φ))) / Vrated × 100%
 
 Irated(HV) = 10,000/2400 = 4.17 A; cos(φ) = 0.8, sin(φ) = 0.6
 
-ΔV = 4.17 × (6.90 × 0.8 + 9.21 × 0.6) = 4.17 × (5.52 + 5.53) = 4.17 × 11.05 = **46.1 V**
+$$\\Delta V = 4.17 \\times (6.90 \\times 0.8 + 9.21 \\times 0.6) = 4.17 \\times (5.52 + 5.53) = 4.17 \\times 11.05 = 46.1\\ \\mathrm{V}$$
 
-**VR = 46.1/2400 × 100% = 1.92%** (excellent regulation)
+**$VR = 46.1/2400 \\times 100\\% = 1.92\\%$** (excellent regulation)
 
 **Step 4 — Efficiency at full load, 0.8 PF:**
 
 Pout = S × PF = 10,000 × 0.8 = 8,000 W
 
-η = 8,000 / (8,000 + 60 + 120) × 100% = 8,000/8,180 = **97.8%**
+$$\\eta = 8,000 / (8,000 + 60 + 120) \\times 100\\% = 8,000/8,180 = 97.8\\%$$
 
 **Step 5 — Load for maximum efficiency:**
 
@@ -8827,16 +8827,16 @@ Select **two independent bases** — everything else follows:
 
 | Quantity | Formula | Note |
 |---|---|---|
-| **I_base** | S_base / (√3 · V_base) | Three-phase; use S_base / V_base for single-phase |
-| **Z_base** | V_base² / S_base | Most important derived base |
+| **I_base** | $S_{base} / (\\sqrt{3} \\cdot V_{base})$ | Three-phase; use S_base / V_base for single-phase |
+| **Z_base** | $V_{base}^{2} / S_{base}$ | Most important derived base |
 | **P_base** | S_base | Same as S_base |
 
 ## 1.2 Converting to Per-Unit
 
-- **V_pu = V_actual / V_base**
-- **I_pu = I_actual / I_base**
-- **Z_pu = Z_actual / Z_base**
-- **P_pu = P_actual / S_base**
+- **$V_{pu} = V_{actual} / V_{base}$**
+- **$I_{pu} = I_{actual} / I_{base}$**
+- **$Z_{pu} = Z_{actual} / Z_{base}$**
+- **$P_{pu} = P_{actual} / S_{base}$**
 
 ### Changing Base (Re-basing Equipment Data)
 
@@ -8878,9 +8878,9 @@ In a system with transformers:
 
 For a three-phase fault at a bus:
 
-**I_fault(pu) = V_prefault(pu) / Z_total(pu)**
+**$I_{fault}(pu) = V_{prefault}(pu) / Z_{total}(pu)$**
 
-Convert to actual: **I_fault = I_fault(pu) × I_base** where **I_base = S_base / (√3 · V_base)**`,
+Convert to actual: **$I_{fault} = I_{fault}(pu) \\times I_{base}$** where **$I_{base} = S_{base} / (\\sqrt{3} \\cdot V_{base})$**`,
       examTip: 'On multi-zone power system problems, draw the per-unit circuit first. All transformers become wires (1:1 ratio). Then solve using simple series/parallel impedance combinations. This avoids the messy turns-ratio algebra that causes errors under exam time pressure.',
     },
     {
@@ -8890,8 +8890,8 @@ Convert to actual: **I_fault = I_fault(pu) × I_base** where **I_base = S_base /
 
 Choose S_base = 100 MVA and V_base = 138 kV on a transmission section.
 
-Z_base = V_base^2/S_base = (138e3)^2/100e6 = 19.044e9/100e6 = **190.4 ohm**
-I_base = S_base/(sqrt(3) V_base) = 100e6/(1.732 x 138e3) = **418.4 A**
+$$Z_{base} = V_{base}^2/S_{base} = (138e3)^2/100e6 = 19.044e9/100e6 = 190.4 ohm$$
+$$I_{base} = S_{base}/(\\sqrt{3} V_{base}) = 100e6/(1.732 x 138e3) = 418.4\\ \\mathrm{A}$$
 
 A line of actual impedance 38 ohm is then Z_pu = 38/190.4 = **0.200 pu**.
 
@@ -8905,11 +8905,11 @@ Per-unit values also cluster in narrow, recognisable bands, which makes an error
 
 Equipment is rated on its own base; the system uses another. Convert with
 
-**Z_new = Z_old x (S_new/S_old) x (V_old/V_new)^2**
+**$Z_{new} = Z_{old} x (S_{new}/S_{old}) x (V_{old}/V_{new})^2$**
 
 A 50 MVA transformer with 8% impedance on its own 13.8 kV base, moved to a 100 MVA, 13.8 kV system base:
 
-Z_new = 0.08 x (100/50) x (13.8/13.8)^2 = 0.08 x 2 = **0.16 pu**
+$$Z_{new} = 0.08 x (100/50) x (13.8/13.8)^2 = 0.08 x 2 = 0.16 pu$$
 
 The voltage ratio is 1 here, but note it is SQUARED when it is not - that exponent is the most common slip in base conversion.
 
@@ -8917,9 +8917,9 @@ The voltage ratio is 1 here, but note it is SQUARED when it is not - that expone
 
 Per-unit makes symmetrical fault current almost trivial. A three-phase bolted fault at a bus with total 0.16 pu reactance behind it, on a 100 MVA / 13.8 kV base:
 
-I_fault(pu) = 1.0/0.16 = **6.25 pu**
-I_base = 100e6/(1.732 x 13.8e3) = **4184 A**
-I_fault = 6.25 x 4184 = **26.2 kA**
+$$I_{fault}(pu) = 1.0/0.16 = 6.25 pu$$
+$$I_{base} = 100e6/(1.732 x 13.8e3) = 4184\\ \\mathrm{A}$$
+$$I_{fault} = 6.25 x 4184 = 26.2\\ \\mathrm{kA}$$
 
 Equivalently the fault MVA is S_base/Z_pu = 100/0.16 = **625 MVA**, which is the number a switchgear rating is chosen against.`,
       examTip: 'Per-unit impedance is unchanged across a transformer, but per-unit CURRENT and VOLTAGE bases are not - they scale with the turns ratio. Fix S_base once for the whole system and let V_base follow the transformer ratios.',
@@ -8969,13 +8969,13 @@ Transmission lines have per-unit-length parameters:
 
 | Parameter | Symbol | Unit | Cause |
 |---|---|---|---|
-| Series resistance | R | Ω/km | Conductor resistivity |
+| Series resistance | R | $\\Omega /km$ | Conductor resistivity |
 | Series inductance | L | H/km | Magnetic field around conductors |
 | Shunt capacitance | C | F/km | Electric field between conductors and ground |
 | Shunt conductance | G | S/km | Leakage (usually negligible) |
 
-**Series impedance per unit length**: **Z = R + jωL** (Ω/km)
-**Shunt admittance per unit length**: **Y = G + jωC** (S/km)
+**Series impedance per unit length**: **$Z = R + j\\omega L$** (Ω/km)
+**Shunt admittance per unit length**: **$Y = G + j\\omega C$** (S/km)
 
 ## 1.2 Line Models by Length
 
@@ -8985,11 +8985,11 @@ Transmission lines have per-unit-length parameters:
 | **Medium** (80–240 km) | π or T equivalent | Series Z, shunt Y/2 at each end (π model) |
 | **Long** (> 240 km) | Distributed parameter | Hyperbolic functions: V = V_R·cosh(γℓ) + I_R·Z₀·sinh(γℓ) |
 
-where **γ = √(Z·Y)** is the propagation constant and **ℓ** is line length.
+where **$\\gamma = \\sqrt{Z\\cdot Y}$** is the propagation constant and **ℓ** is line length.
 
 ## 1.3 Voltage Drop for Short Line
 
-**ΔV ≈ (R·P + X·Q) / V**
+**$\\Delta V \\approx (R\\cdot P + X\\cdot Q) / V$**
 
 - Both real power P and reactive power Q contribute to voltage drop
 - Poor power factor (large Q) worsens voltage drop even at moderate P`,
@@ -9002,13 +9002,13 @@ where **γ = √(Z·Y)** is the propagation constant and **ℓ** is line length.
 
 **Surge impedance (characteristic impedance)**:
 
-**Z₀ = √(Z/Y) ≈ √(L/C)**
+**$Z_{0} = \\sqrt{Z/Y} \\approx \\sqrt{L/C}$**
 
-Typical values: **200–400 Ω** for overhead lines, **30–60 Ω** for underground cables.
+Typical values: **$200-400\\ \\Omega$** for overhead lines, **$30-60\\ \\Omega$** for underground cables.
 
 **Surge Impedance Loading (SIL)** or Natural Power:
 
-**P_SIL = V²_LL / Z₀**
+**$P_{SIL} = V^{2}_{LL} / Z_{0}$**
 
 | Load vs. SIL | Voltage Profile | Reactive Power |
 |---|---|---|
@@ -9025,9 +9025,9 @@ On **lightly loaded or unloaded** long lines, shunt capacitance charging current
 
 ## 2.3 Charging Current
 
-No-load charging current: **I_c = V · ω · C · ℓ**
+No-load charging current: **$I_c = V \\cdot \\omega \\cdot C \\cdot \\ell$**
 
-Charging reactive power: **Q_c = V² · ω · C · ℓ** (can be hundreds of MVAR on long HV lines)`,
+Charging reactive power: **$Q_c = V^{2} \\cdot \\omega \\cdot C \\cdot \\ell$** (can be hundreds of MVAR on long HV lines)`,
       examTip: 'SIL = V²/Z₀ is the "sweet spot" where the line generates exactly as much reactive power as it absorbs. Below SIL, voltage rises (Ferranti); above SIL, voltage drops. The FE exam may ask you to identify the Ferranti effect scenario — it always involves a lightly loaded or open-ended long line.',
     },
     {
@@ -9051,7 +9051,7 @@ Note what the reactive term did: at 0.9 pf the X sin(theta) term contributes MOR
 
 Real loss is I^2 R per phase, times three:
 
-P_loss = 3 x (200)^2 x 0.5 = 3 x 40000 x 0.5 = **60 kW**
+$$P_{loss} = 3 x (200)^2 x 0.5 = 3 x 40000 x 0.5 = 60\\ \\mathrm{kW}$$
 
 Delivered power = 3 x V_phase x I x cos(theta) = 3 x 7200 x 200 x 0.9 = **3.89 MW**.
 
@@ -9124,12 +9124,12 @@ For a 345 kV line with Z_0 = 300 ohm: SIL = V^2/Z_0 = (345e3)^2/300 = **397 MW**
 
 | Quantity | Symbol | Formula | Unit |
 |---|---|---|---|
-| Real power | P | V·I·cos(φ) | W (watts) |
-| Reactive power | Q | V·I·sin(φ) | VAR |
-| Apparent power | S | V·I | VA |
+| Real power | P | $V\\cdot I\\cdot \\cos (\\phi)$ | W (watts) |
+| Reactive power | Q | $V\\cdot I\\cdot \\sin (\\phi)$ | VAR |
+| Apparent power | S | $V\\cdot I$ | VA |
 | Complex power | **S** | P + jQ | VA |
 
-**Power factor**: **PF = cos(φ) = P / S = P / √(P² + Q²)**
+**Power factor**: **$PF = \\cos (\\phi) = P / S = P / \\sqrt{P^{2} + Q^{2}}$**
 
 - **Lagging PF** (φ > 0): current lags voltage — inductive loads (motors, transformers)
 - **Leading PF** (φ < 0): current leads voltage — capacitive loads
@@ -9158,7 +9158,7 @@ For a 345 kV line with Z_0 = 300 ohm: SIL = V^2/Z_0 = (345e3)^2/300 = **397 MW**
 
 To correct from old angle θ₁ to new angle θ₂:
 
-**Q_c = P · (tan(θ₁) − tan(θ₂))**
+**$Q_c = P \\cdot (\\tan (\\theta _{1}) - \\tan (\\theta _{2}))$**
 
 where:
 - P = real power of the load (unchanged by correction)
@@ -9167,9 +9167,9 @@ where:
 
 ### Capacitor Value
 
-**C = Q_c / (ω · V²)** where ω = 2πf
+**$C = Q_c / (\\omega \\cdot V^{2})$** where ω = 2πf
 
-For three-phase: **Q_c(3φ) = 3 · V_ph² · ω · C** or **Q_c(3φ) = V_LL² · ω · C** (for Δ-connected caps)
+For three-phase: **$Q_c(3\\phi) = 3 \\cdot V_{ph}^{2} \\cdot \\omega \\cdot C$** or **$Q_c(3\\phi) = V_{LL}^{2} \\cdot \\omega \\cdot C$** (for Δ-connected caps)
 
 ## 2.2 Correction Methods
 
@@ -9213,7 +9213,7 @@ A 21% current reduction. Feeder losses go as I^2, so they fall by 1 - (73/92.6)^
 
 At 4160 V, delta-connected: Q_C per phase = 277/3 = 92.3 kVAR, and each capacitor sees the full line voltage.
 
-X_C = V^2/Q_phase = (4160)^2/92.3e3 = 17.3e6/92.3e3 = **187 ohm**
+$$X_C = V^2/Q_{phase} = (4160)^2/92.3e3 = 17.3e6/92.3e3 = 187 ohm$$
 C = 1/(omega X_C) = 1/(377 x 187) = **14.2 microfarad per phase**
 
 ## 3.4 Why not correct to unity
@@ -9273,7 +9273,7 @@ Automatic switched banks with contactors staged in steps solve the light-load pr
       title: '1. Induction Motors',
       content: `## 1.1 Synchronous Speed and Slip
 
-**Synchronous speed**: **N_s = 120·f / P** (rpm)
+**Synchronous speed**: **$N_s = 120\\cdot f / P$** (rpm)
 
 where f = supply frequency (Hz), P = number of **poles** (not pole pairs).
 
@@ -9284,14 +9284,14 @@ where f = supply frequency (Hz), P = number of **poles** (not pole pairs).
 | 6 | 1200 rpm | 1000 rpm |
 | 8 | 900 rpm | 750 rpm |
 
-**Slip**: **s = (N_s − N) / N_s**
+**Slip**: **$s = (N_s - N) / N_s$**
 
 - At **no-load**: s ≈ 0 (rotor nearly at synchronous speed)
 - At **full load**: s ≈ 0.02–0.05 (2–5%)
 - At **starting** (N = 0): s = 1
 - At **synchronous speed** (N = N_s): s = 0 (no torque — induction motor cannot run at N_s)
 
-**Rotor frequency**: **f_rotor = s · f_line**
+**Rotor frequency**: **$f_{rotor} = s \\cdot f_{line}$**
 
 ## 1.2 Torque-Speed Characteristic
 
@@ -9310,7 +9310,7 @@ where f = supply frequency (Hz), P = number of **poles** (not pole pairs).
 
 ## 1.3 Efficiency and Losses
 
-**η = P_mechanical / P_electrical**
+**$\\eta = P_{mechanical} / P_{electrical}$**
 
 Motor losses:
 - **Copper loss** (I²R in stator and rotor windings) — load-dependent
@@ -9392,9 +9392,9 @@ Key relationships:
 
 Force between two point charges:
 
-**F = k·Q₁·Q₂ / r²**
+**$F = k\\cdot Q_{1}\\cdot Q_{2} / r^{2}$**
 
-where **k = 1/(4πε₀) = 8.99 × 10⁹ N·m²/C²** and **ε₀ = 8.854 × 10⁻¹² F/m**.
+where **$k = 1/(4\\pi \\varepsilon _{0}) = 8.99 \\times 10^{9} N\\cdot m^{2}/C^{2}$** and **$\\varepsilon _{0} = 8.854 \\times 10^{-12}\\ \\mathrm{F}/m$**.
 
 - Like charges repel; unlike charges attract
 - Force is along the line connecting charges (radial)
@@ -9402,19 +9402,19 @@ where **k = 1/(4πε₀) = 8.99 × 10⁹ N·m²/C²** and **ε₀ = 8.854 × 10�
 
 ## 1.2 Electric Field
 
-**E = F/q** (force per unit positive test charge, units: N/C = V/m)
+**$E = F/q$** (force per unit positive test charge, units: N/C = V/m)
 
 - Field lines point **away** from positive charges, **toward** negative charges
 - **Superposition**: E_total = ΣE_i (vector sum of fields from all charges)
 
-### Point charge field: **E = kQ/r²** (radial, directed away from +Q)
+### Point charge field: **$E = kQ/r^{2}$** (radial, directed away from +Q)
 
 ## 1.3 Electric Potential
 
-**V(r) = kQ/r** (potential from a point charge, with V(∞) = 0 reference)
+**$V(r) = kQ/r$** (potential from a point charge, with V(∞) = 0 reference)
 
 - **Potential difference**: ΔV = −∫E·dr (path-independent in electrostatics)
-- **E = −∇V** (field points from high to low potential)
+- **$E = -\\nabla V$** (field points from high to low potential)
 - **Equipotential surfaces** are perpendicular to field lines`,
       examTip: "Coulomb's law uses 1/r² for force, but potential uses 1/r (no square). A common FE exam mistake is mixing up the exponents. Force falls off as r² but potential falls off as r.",
     },
@@ -9423,7 +9423,7 @@ where **k = 1/(4πε₀) = 8.99 × 10⁹ N·m²/C²** and **ε₀ = 8.854 × 10�
       title: "2. Gauss's Law, Capacitance, and Stored Energy",
       content: `## 2.1 Gauss's Law
 
-**∮E·dA = Q_enc / ε₀**
+**$\\oint E\\cdot dA = Q_{enc} / \\varepsilon _{0}$**
 
 Total electric flux through a closed surface equals enclosed charge divided by permittivity.
 
@@ -9431,31 +9431,31 @@ Total electric flux through a closed surface equals enclosed charge divided by p
 
 | Geometry | Gaussian Surface | Electric Field |
 |---|---|---|
-| Infinite plane (surface charge σ) | Pill box | **E = σ / (2ε₀)** |
-| Infinite line (charge λ per length) | Cylinder | **E = λ / (2πε₀r)** |
+| Infinite plane (surface charge σ) | Pill box | **$E = \\sigma / (2\\varepsilon _{0})$** |
+| Infinite line (charge λ per length) | Cylinder | **$E = \\lambda / (2\\pi \\varepsilon _{0}r)$** |
 | Conducting sphere (charge Q) | Concentric sphere | **E = kQ/r²** (outside); **E = 0** (inside) |
 | Uniformly charged sphere | Concentric sphere | **E = kQr/R³** (inside); **kQ/r²** (outside) |
 
 ## 2.2 Capacitance
 
-**C = Q/V** (charge stored per volt, Farads)
+**$C = Q/V$** (charge stored per volt, Farads)
 
 ### Common Geometries
 
 | Type | Formula |
 |---|---|
-| Parallel plate | **C = ε₀·ε_r·A / d** |
-| Cylindrical | **C = 2πε₀·ε_r·L / ln(b/a)** |
-| Spherical | **C = 4πε₀·ε_r·a·b / (b − a)** |
+| Parallel plate | **$C = \\varepsilon _{0}\\cdot \\varepsilon _r\\cdot A / d$** |
+| Cylindrical | **$C = 2\\pi \\varepsilon _{0}\\cdot \\varepsilon _r\\cdot L / \\ln (b/a)$** |
+| Spherical | **$C = 4\\pi \\varepsilon _{0}\\cdot \\varepsilon _r\\cdot a\\cdot b / (b - a)$** |
 
-- Series capacitors: **1/C_eq = 1/C₁ + 1/C₂** (opposite of resistors)
-- Parallel capacitors: **C_eq = C₁ + C₂**
+- Series capacitors: **$1/C_{eq} = 1/C_{1} + 1/C_{2}$** (opposite of resistors)
+- Parallel capacitors: **$C_{eq} = C_{1} + C_{2}$**
 
 ## 2.3 Stored Energy
 
-**U = ½CV² = ½QV = Q²/(2C)**
+**$U = \\tfrac{1}{2} CV^{2} = \\tfrac{1}{2} QV = Q^{2}/(2C)$**
 
-Energy density in an electric field: **u = ½ε₀E²** (J/m³)`,
+Energy density in an electric field: **$u = \\tfrac{1}{2} \\varepsilon _{0}E^{2}$** (J/m³)`,
       examTip: "Gauss's law is the fastest path to E-field on the FE exam when symmetry exists. Choose the Gaussian surface so E is constant on it: sphere for point/spherical charges, cylinder for line charges, pillbox for plane charges. If there is no symmetry, fall back to Coulomb's law with superposition.",
       importantNote: "Capacitors in series combine like resistors in parallel (1/C_eq = 1/C₁ + 1/C₂), and capacitors in parallel combine like resistors in series (C_eq = C₁ + C₂). This is the OPPOSITE of resistor rules and is a frequent source of FE exam errors.",
     },
@@ -9480,7 +9480,7 @@ Energy density in an electric field: **u = ½ε₀E²** (J/m³)`,
       title: "1. Ampere's Law and Biot-Savart Law",
       content: `## 1.1 Ampere's Law
 
-**∮B·dl = μ₀·I_enc**
+**$\\oint B\\cdot dl = \\mu _{0}\\cdot I_{enc}$**
 
 The line integral of B around any closed path equals μ₀ times the enclosed current.
 
@@ -9488,30 +9488,30 @@ The line integral of B around any closed path equals μ₀ times the enclosed cu
 
 | Geometry | Amperian Path | Magnetic Field |
 |---|---|---|
-| Long straight wire | Circle of radius r | **B = μ₀I / (2πr)** |
-| Inside long wire (radius a) | Circle inside wire | **B = μ₀Ir / (2πa²)** |
+| Long straight wire | Circle of radius r | **$B = \\mu _{0}I / (2\\pi r)$** |
+| Inside long wire (radius a) | Circle inside wire | **$B = \\mu _{0}Ir / (2\\pi a^{2})$** |
 | Solenoid (n turns/m) | Rectangle through coil | **B = μ₀nI** (inside); **B ≈ 0** (outside) |
 | Toroid (N total turns) | Circle at radius r | **B = μ₀NI / (2πr)** (inside) |
 
-where **μ₀ = 4π × 10⁻⁷ T·m/A** (permeability of free space).
+where **$\\mu _{0} = 4\\pi \\times 10^{-7} T\\cdot m/A$** (permeability of free space).
 
 ## 1.2 Biot-Savart Law
 
-**dB = (μ₀/4π) · (I·dl × r̂) / r²**
+**$dB = (\\mu _{0}/4\\pi) \\cdot (I\\cdot dl \\times r) / r^{2}$**
 
 - Used when Ampere's law symmetry is absent (e.g., finite wire, circular loop)
-- Circular loop center: **B = μ₀I / (2R)**
+- Circular loop center: **$B = \\mu _{0}I / (2R)$**
 - **Right-hand rule**: thumb in current direction, fingers curl in B-field direction
 
 ## 1.3 Permeability in Materials
 
-**μ = μ₀·μ_r** where μ_r is relative permeability:
+**$\\mu = \\mu _{0}\\cdot \\mu _r$** where μ_r is relative permeability:
 
-| Material Type | μ_r | Examples |
+| Material Type | $\\mu _r$ | Examples |
 |---|---|---|
 | Diamagnetic | ≈ 1 (slightly < 1) | Copper, silver |
 | Paramagnetic | ≈ 1 (slightly > 1) | Aluminum, platinum |
-| Ferromagnetic | **100 – 100,000** | Iron, nickel, cobalt |`,
+| Ferromagnetic | **$100 - 100,000$** | Iron, nickel, cobalt |`,
       examTip: "The long-wire formula B = μ₀I/(2πr) is the most-tested magnetostatics result on the FE exam. It decreases as 1/r (not 1/r²). Do not confuse this with Coulomb's law, which has 1/r². Magnetic field from a long wire is 1/r; electric field from a point charge is 1/r².",
     },
     {
@@ -9519,19 +9519,19 @@ where **μ₀ = 4π × 10⁻⁷ T·m/A** (permeability of free space).
       title: '2. Magnetic Flux, Inductance, and Force',
       content: `## 2.1 Magnetic Flux and Inductance
 
-**Magnetic flux**: **Φ = ∫B·dA** (units: Weber = T·m²)
+**Magnetic flux**: **$\\Phi = \\int B\\cdot dA$** (units: Weber = T·m²)
 
-**Inductance**: **L = NΦ/I** (for N-turn coil linking flux Φ)
+**Inductance**: **$L = N\\Phi /I$** (for N-turn coil linking flux Φ)
 
 | Inductor Type | Inductance Formula |
 |---|---|
-| Solenoid (N turns, length ℓ, area A) | **L = μ₀·μ_r·N²·A / ℓ** |
-| Toroid (N turns, area A, mean radius r) | **L = μ₀·μ_r·N²·A / (2πr)** |
-| Coaxial cable (per unit length) | **L = (μ₀/2π)·ln(b/a)** |
+| Solenoid (N turns, length ℓ, area A) | **$L = \\mu _{0}\\cdot \\mu _r\\cdot N^{2}\\cdot A / \\ell$** |
+| Toroid (N turns, area A, mean radius r) | **$L = \\mu _{0}\\cdot \\mu _r\\cdot N^{2}\\cdot A / (2\\pi r)$** |
+| Coaxial cable (per unit length) | **$L = (\\mu _{0}/2\\pi)\\cdot \\ln (b/a)$** |
 
-**Energy stored**: **U = ½LI²**
+**Energy stored**: **$U = \\tfrac{1}{2} LI^{2}$**
 
-Energy density: **u = B²/(2μ₀)** (J/m³)
+Energy density: **$u = B^{2}/(2\\mu _{0})$** (J/m³)
 
 ## 2.2 Magnetic Circuits
 
@@ -9542,13 +9542,13 @@ Analogous to electric circuits:
 | EMF (V) | MMF = N·I (ampere-turns) |
 | Current I | Flux Φ |
 | Resistance R | Reluctance ℜ = ℓ/(μA) |
-| Ohm's law: V = IR | **Φ = MMF/ℜ = NI·μA/ℓ** |
+| Ohm's law: V = IR | **$\\Phi = MMF/ℜ = NI\\cdot \\mu A/\\ell$** |
 
 ## 2.3 Force on Current-Carrying Conductors
 
-- **Force on wire**: **F = I·L × B** (magnitude F = BIL·sin(θ))
-- **Force between parallel wires**: **F/ℓ = μ₀I₁I₂ / (2πd)** — attractive for same-direction currents, repulsive for opposite
-- **Torque on loop**: **τ = N·I·A·B·sin(α) = m × B** where m = NIA is magnetic moment`,
+- **Force on wire**: **$F = I\\cdot L \\times B$** (magnitude F = BIL·sin(θ))
+- **Force between parallel wires**: **$F/\\ell = \\mu _{0}I_{1}I_{2} / (2\\pi d)$** — attractive for same-direction currents, repulsive for opposite
+- **Torque on loop**: **$\\tau = N\\cdot I\\cdot A\\cdot B\\cdot \\sin (\\alpha) = m \\times B$** where m = NIA is magnetic moment`,
       examTip: 'Inductors in series ADD (like resistors): L_eq = L₁ + L₂. Inductors in parallel combine like resistors in parallel: 1/L_eq = 1/L₁ + 1/L₂. This is the SAME rule as resistors (unlike capacitors which are opposite). Think of inductance as "magnetic resistance" — it follows resistor rules.',
       importantNote: 'Two parallel wires carrying current in the SAME direction attract each other. This is counterintuitive but follows from the Lorentz force. This fact defines the SI ampere: 1 A is the current that produces 2×10⁻⁷ N/m of force per meter between two wires 1 m apart.',
     },
@@ -9575,10 +9575,10 @@ Analogous to electric circuits:
 
 | Name | Differential Form | Integral Form | Physical Meaning |
 |---|---|---|---|
-| **Gauss's law (E)** | ∇·E = ρ/ε₀ | ∮E·dA = Q_enc/ε₀ | Charges create electric flux |
-| **Gauss's law (B)** | ∇·B = 0 | ∮B·dA = 0 | No magnetic monopoles |
-| **Faraday's law** | ∇×E = −∂B/∂t | ∮E·dl = −dΦ_B/dt | Changing B induces E |
-| **Ampere-Maxwell** | ∇×B = μ₀J + μ₀ε₀∂E/∂t | ∮B·dl = μ₀I_enc + μ₀ε₀dΦ_E/dt | Currents and changing E create B |
+| **Gauss's law (E)** | $\\nabla \\cdot E = \\rho /\\varepsilon _{0}$ | $\\oint E\\cdot dA = Q_{enc}/\\varepsilon _{0}$ | Charges create electric flux |
+| **Gauss's law (B)** | $\\nabla \\cdot B = 0$ | $\\oint B\\cdot dA = 0$ | No magnetic monopoles |
+| **Faraday's law** | $\\nabla \\times E = -\\partial B/\\partial t$ | $\\oint E\\cdot dl = -d\\Phi _B/dt$ | Changing B induces E |
+| **Ampere-Maxwell** | $\\nabla \\times B = \\mu _{0}J + \\mu _{0}\\varepsilon _{0}\\partial E/\\partial t$ | $\\oint B\\cdot dl = \\mu _{0}I_{enc} + \\mu _{0}\\varepsilon _{0}d\\Phi _E/dt$ | Currents and changing E create B |
 
 ## 1.2 Key Physical Insights
 
@@ -9589,7 +9589,7 @@ Analogous to electric circuits:
 
 ### Displacement Current
 
-Maxwell's crucial addition: **J_d = ε₀·∂E/∂t** (displacement current density)
+Maxwell's crucial addition: **$J_d = \\varepsilon _{0}\\cdot \\partial E/\\partial t$** (displacement current density)
 
 Without it, Ampere's law fails for capacitors (current flows in but charge builds on plates, creating a changing E between them). Displacement current completes the circuit and enables electromagnetic wave propagation.`,
       examTip: "On the FE exam, you are most likely to be tested on recognizing which equation applies to a scenario. Faraday's law = anything involving induced voltage from changing magnetic flux. Ampere's law = anything involving magnetic field from current. Gauss = relating charge to electric field flux.",
@@ -9601,13 +9601,13 @@ Without it, Ampere's law fails for capacitors (current flows in but charge build
 
 In **free space** (no charges, no currents: ρ = 0, J = 0), combining Faraday and Ampere-Maxwell gives:
 
-**∇²E = μ₀ε₀ · ∂²E/∂t²**
+**$\\nabla ^{2}E = \\mu _{0}\\varepsilon _{0} \\cdot \\partial ^{2}E/\\partial t^{2}$**
 
-**∇²B = μ₀ε₀ · ∂²B/∂t²**
+**$\\nabla ^{2}B = \\mu _{0}\\varepsilon _{0} \\cdot \\partial ^{2}B/\\partial t^{2}$**
 
 These are **wave equations** with propagation velocity:
 
-**v = 1/√(μ₀ε₀) = c ≈ 3 × 10⁸ m/s**
+**$v = 1/\\sqrt{\\mu _{0}\\varepsilon _{0}} = c \\approx 3 \\times 10^{8} m/s$**
 
 Maxwell's prediction: light is an electromagnetic wave.
 
@@ -9615,17 +9615,17 @@ Maxwell's prediction: light is an electromagnetic wave.
 
 In a medium with μ_r and ε_r:
 
-**v = c / √(μ_r · ε_r) = 1 / √(μ · ε)**
+**$v = c / \\sqrt{\\mu _r \\cdot \\varepsilon _r} = 1 / \\sqrt{\\mu \\cdot \\varepsilon}$**
 
-**Index of refraction**: **n = c/v = √(μ_r · ε_r)** (for non-magnetic materials, n ≈ √ε_r)
+**Index of refraction**: **$n = c/v = \\sqrt{\\mu _r \\cdot \\varepsilon _r}$** (for non-magnetic materials, n ≈ √ε_r)
 
 ## 2.3 Intrinsic Impedance
 
 **η = √(μ/ε)**
 
-- Free space: **η₀ = √(μ₀/ε₀) ≈ 377 Ω** (≈ 120π Ω)
+- Free space: **$\\eta _{0} = \\sqrt{\\mu _{0}/\\varepsilon _{0}} \\approx 377\\ \\Omega$** (≈ 120π Ω)
 - In a medium: η = η₀ · √(μ_r/ε_r)
-- Relates E and H in a plane wave: **E = η · H**
+- Relates E and H in a plane wave: **$E = \\eta \\cdot H$**
 
 ## 2.4 Boundary Conditions
 
@@ -9661,25 +9661,25 @@ At interface between two media:
 
 A plane wave propagating in the +z direction:
 
-- **E(z,t) = E₀·cos(ωt − kz) x̂** (electric field in x-direction)
-- **H(z,t) = (E₀/η)·cos(ωt − kz) ŷ** (magnetic field in y-direction)
+- **$E(z,t) = E_{0}\\cdot \\cos (\\omega t - kz) x$** (electric field in x-direction)
+- **$H(z,t) = (E_{0}/\\eta)\\cdot \\cos (\\omega t - kz) \\hat{y}$** (magnetic field in y-direction)
 
 Key relationships:
 
 | Quantity | Formula | Unit |
 |---|---|---|
-| Wave number | **k = 2π/λ = ω/v** | rad/m |
-| Wavelength | **λ = v/f** | m |
-| Frequency | **f = v/λ** | Hz |
-| Angular frequency | **ω = 2πf** | rad/s |
-| Phase velocity | **v = ω/k = fλ** | m/s |
+| Wave number | **$k = 2\\pi /\\lambda = \\omega /v$** | rad/m |
+| Wavelength | **$\\lambda = v/f$** | m |
+| Frequency | **$f = v/\\lambda$** | Hz |
+| Angular frequency | **$\\omega = 2\\pi f$** | rad/s |
+| Phase velocity | **$v = \\omega /k = f\\lambda$** | m/s |
 
-In vacuum: **λ₀ = c/f** where c ≈ 3 × 10⁸ m/s.
+In vacuum: **$\\lambda _{0} = c/f$** where c ≈ 3 × $10^{8}$ m/s.
 
 ## 1.2 Properties of Plane Waves
 
 - **E, H, and propagation direction** are mutually perpendicular (TEM wave)
-- **|E|/|H| = η** (intrinsic impedance of the medium)
+- **$|E|/|H| = \\eta$** (intrinsic impedance of the medium)
 - **E and H are in phase** in lossless media
 - **Polarization**: direction of E-field oscillation (linear, circular, or elliptical)
 
@@ -9700,43 +9700,43 @@ In vacuum: **λ₀ = c/f** where c ≈ 3 × 10⁸ m/s.
 
 In a **good conductor** (σ >> ωε), electromagnetic fields decay exponentially:
 
-**δ = 1 / √(πfμσ)**
+**$\\delta = 1 / \\sqrt{\\pi f\\mu \\sigma}$**
 
-At depth z = δ, amplitude drops to **e⁻¹ ≈ 37%** of surface value.
+At depth z = δ, amplitude drops to **$e^{-1} \\approx 37\\%$** of surface value.
 
-| Material | σ (S/m) | δ at 60 Hz | δ at 1 GHz |
+| Material | $\\sigma (S/m)$ | $\\delta at 60\\ \\mathrm{Hz}$ | $\\delta at 1\\ \\mathrm{GHz}$ |
 |---|---|---|---|
-| Copper | 5.8 × 10⁷ | 8.5 mm | 2.1 μm |
-| Aluminum | 3.5 × 10⁷ | 11 mm | 2.7 μm |
+| Copper | $5.8 \\times 10^{7}$ | 8.5 mm | $2.1 \\mu m$ |
+| Aluminum | $3.5 \\times 10^{7}$ | 11 mm | $2.7 \\mu m$ |
 | Seawater | 4 | 26 m | 0.25 m |
 
 ### Practical Implications
 
 - At high frequencies, current flows only in a thin skin on conductor surface
-- Effective resistance increases with frequency: **R_ac = R_dc · (a/(2δ))** for wire radius a >> δ
+- Effective resistance increases with frequency: **$R_{ac} = R_{dc} \\cdot (a/(2\\delta))$** for wire radius a >> δ
 - Electromagnetic shielding: a few skin depths of conductor blocks most of the field
 
 ## 2.2 Poynting Vector
 
-**S = E × H** (instantaneous power flow per unit area, W/m²)
+**$S = E \\times H$** (instantaneous power flow per unit area, W/m²)
 
 **Direction**: S points in the propagation direction
 
 ### Time-Average Power
 
-**S_avg = ½·Re(E × H*) = |E₀|² / (2η)** (for plane wave in lossless medium)
+**S_avg = ½·Re(E × H*) = |$E_{0}$|² / (2η)** (for plane wave in lossless medium)
 
-Equivalently: **S_avg = ½|E₀||H₀|·cos(φ)** where φ is phase angle between E and H.
+Equivalently: **$S_{avg} = \\tfrac{1}{2} |E_{0}||H_{0}|\\cdot \\cos (\\phi)$** where φ is phase angle between E and H.
 
 ### Loss Tangent
 
-**tan(δ_loss) = σ/(ωε)**
+**$\\tan (\\delta _{loss}) = \\sigma /(\\omega \\varepsilon)$**
 
-| tan(δ_loss) | Classification |
+| $\\tan (\\delta _{loss})$ | Classification |
 |---|---|
-| << 1 | Low-loss dielectric (wave propagates) |
+| $<< 1$ | Low-loss dielectric (wave propagates) |
 | >> 1 | Good conductor (wave attenuates rapidly) |
-| ≈ 1 | Lossy dielectric (moderate attenuation) |`,
+| $\\approx 1$ | Lossy dielectric (moderate attenuation) |`,
       examTip: 'Skin depth δ = 1/√(πfμσ) decreases with increasing frequency. This means higher-frequency signals penetrate LESS into conductors. At microwave frequencies, skin depth is just a few micrometers — this is why thin copper plating on PCB traces is sufficient for RF.',
       importantNote: 'Do not confuse the loss tangent angle δ_loss with skin depth δ — they use the same Greek letter but are completely different quantities. Skin depth has units of meters; loss tangent is dimensionless.',
     },
@@ -9761,37 +9761,37 @@ Equivalently: **S_avg = ½|E₀||H₀|·cos(φ)** where φ is phase angle betwee
       title: '1. Characteristic Impedance and Reflection Coefficient',
       content: `## 1.1 Characteristic Impedance
 
-**Z₀ = √(L/C)** (for lossless line)
+**$Z_{0} = \\sqrt{L/C}$** (for lossless line)
 
 where L and C are inductance and capacitance **per unit length**.
 
-For a lossy line: **Z₀ = √((R + jωL)/(G + jωC))**
+For a lossy line: **$Z_{0} = \\sqrt{(R + j\\omega L)/(G + j\\omega C)}$**
 
 | Line Type | Typical Z₀ |
 |---|---|
 | Coaxial cable (50 Ω) | RF measurement, instruments |
 | Coaxial cable (75 Ω) | TV, video |
 | Microstrip (PCB) | 50–100 Ω (depends on geometry) |
-| Twin-lead (open wire) | 300 Ω |
+| Twin-lead (open wire) | $300\\ \\Omega$ |
 
 ### Propagation Velocity
 
-**v_p = 1/√(LC) = c/√(ε_r · μ_r)**
+**$v_p = 1/\\sqrt{LC} = c/\\sqrt{\\varepsilon _r \\cdot \\mu _r}$**
 
-In most practical cables with dielectric filling: **v_p ≈ 0.66c to 0.85c**
+In most practical cables with dielectric filling: **$v_p \\approx 0.66c to 0.85c$**
 
 ## 1.2 Reflection Coefficient
 
 At load impedance Z_L:
 
-**Γ = (Z_L − Z₀) / (Z_L + Z₀)**
+**$\\Gamma = (Z_L - Z_{0}) / (Z_L + Z_{0})$**
 
 | Load Condition | Z_L | Γ | Physical Meaning |
 |---|---|---|---|
-| **Matched** | Z₀ | **0** | No reflection, maximum power transfer |
+| **Matched** | $Z_{0}$ | **0** | No reflection, maximum power transfer |
 | **Open circuit** | ∞ | **+1** | Total reflection, voltage doubles |
-| **Short circuit** | 0 | **−1** | Total reflection, voltage cancels |
-| Purely reactive | jX | **|Γ| = 1** | Total reflection with phase shift |
+| **Short circuit** | 0 | **$-1$** | Total reflection, voltage cancels |
+| Purely reactive | jX | **|Γ| $= 1$ | Total reflection with phase shift |
 
 ### Reflected and Transmitted Power
 
@@ -9812,7 +9812,7 @@ When Γ ≠ 0, incident and reflected waves superpose to create **standing waves
 
 ## 2.2 Voltage Standing Wave Ratio (VSWR)
 
-**VSWR = V_max / V_min = (1 + |Γ|) / (1 − |Γ|)**
+**$VSWR = V_{\\max} / V_{\\min} = (1 + |\\Gamma |) / (1 - |\\Gamma |)$**
 
 | VSWR | |Γ| | Reflected Power | Match Quality |
 |---|---|---|---|
@@ -9822,13 +9822,13 @@ When Γ ≠ 0, incident and reflected waves superpose to create **standing waves
 | 3.0 | 0.5 | 25% | Poor |
 | **∞** | 1.0 | 100% | Open or short |
 
-Inverse: **|Γ| = (VSWR − 1) / (VSWR + 1)**
+Inverse: **$|\\Gamma | = (VSWR - 1) / (VSWR + 1)$**
 
 ## 2.3 Input Impedance
 
 At distance d from the load:
 
-**Z_in = Z₀ · (Z_L + jZ₀·tan(βd)) / (Z₀ + jZ_L·tan(βd))**
+**$Z_{in} = Z_{0} \\cdot (Z_L + jZ_{0}\\cdot \\tan (\\beta d)) / (Z_{0} + jZ_L\\cdot \\tan (\\beta d))$**
 
 where β = 2π/λ.
 
@@ -9843,7 +9843,7 @@ where β = 2π/λ.
 
 To match Z_L to a source Z_S, insert a **quarter-wave transformer** with:
 
-**Z₀(match) = √(Z_S · Z_L)**`,
+**$Z_{0}$(match) = √(Z_S · Z_L)**`,
       examTip: 'The quarter-wave transformer formula Z₀ = √(Z_S·Z_L) is a classic FE exam question. A quarter-wave section transforms impedance by Z_in = Z₀²/Z_L. At half-wave, the impedance repeats (Z_in = Z_L). These two special cases cover most FE exam transmission line problems.',
     },
   ],
@@ -9874,16 +9874,16 @@ To match Z_L to a source Z_S, insert a **quarter-wave transformer** with:
 
 | Configuration | Rule | Formula |
 |---|---|---|
-| **Series** (cascade) | Multiply | **G_total = G₁ · G₂** |
-| **Parallel** | Add | **G_total = G₁ + G₂** |
-| **Negative feedback** | Feedback formula | **T(s) = G(s) / (1 + G(s)·H(s))** |
-| **Positive feedback** | Sign change | **T(s) = G(s) / (1 − G(s)·H(s))** |
+| **Series** (cascade) | Multiply | **$G_{total} = G_{1} \\cdot G_{2}$** |
+| **Parallel** | Add | **$G_{total} = G_{1} + G_{2}$** |
+| **Negative feedback** | Feedback formula | **$T(s) = G(s) / (1 + G(s)\\cdot H(s))$** |
+| **Positive feedback** | Sign change | **$T(s) = G(s) / (1 - G(s)\\cdot H(s))$** |
 
 where G(s) is the forward path and H(s) is the feedback path.
 
 ### Unity Feedback (H = 1)
 
-**T(s) = G(s) / (1 + G(s))**
+**$T(s) = G(s) / (1 + G(s))$**
 
 ## 1.2 Block Diagram Manipulation
 
@@ -9903,7 +9903,7 @@ When blocks cannot be directly combined, use these moves:
 
 ## 1.3 Transfer Function Fundamentals
 
-**G(s) = Y(s)/R(s)** (output over input in Laplace domain)
+**$G(s) = Y(s)/R(s)$** (output over input in Laplace domain)
 
 - **Poles**: values of s where denominator = 0 (determine stability and transient behavior)
 - **Zeros**: values of s where numerator = 0 (affect transient shape and steady-state)
@@ -9917,17 +9917,17 @@ When blocks cannot be directly combined, use these moves:
 
 For complex multi-loop systems where sequential reduction is tedious:
 
-**T(s) = Σ(P_k · Δ_k) / Δ**
+**$T(s) = \\Sigma (P_k \\cdot \\Delta _k) / \\Delta$**
 
 where:
 - **P_k** = gain of the k-th forward path
 - **Δ** = 1 − (sum of all loop gains) + (sum of products of non-touching loop pairs) − ...
-- **Δ_k** = Δ evaluated with all loops touching path k removed
+- **$\\Delta _k$** = Δ evaluated with all loops touching path k removed
 
 ### Practical Steps
 
 1. Identify all **forward paths** from input to output → compute P_k
-2. Identify all **individual loop gains** → L₁, L₂, ...
+2. Identify all **individual loop gains** → $L_{1}$, $L_{2}$, ...
 3. Find **non-touching loop pairs** (no shared nodes)
 4. Compute Δ = 1 − ΣL_i + ΣL_iL_j (non-touching pairs) − ...
 5. Compute Δ_k for each forward path
@@ -9972,7 +9972,7 @@ where:
 
 The closed-loop transfer function denominator:
 
-**D(s) = a_n·s^n + a_(n-1)·s^(n-1) + ... + a₁·s + a₀**
+**$D(s) = a_n\\cdot s^n + a_(n-1)\\cdot s^{n-1} + ... + a_{1}\\cdot s + a_{0}$**
 
 **Necessary condition** for stability: all coefficients a_i must be **positive** (same sign). If any coefficient is zero or negative, the system is **definitely unstable** (no need to build the array).
 
@@ -9980,18 +9980,18 @@ The closed-loop transfer function denominator:
 
 | Row | Entries |
 |---|---|
-| **s^n** | a_n, a_(n-2), a_(n-4), ... |
-| **s^(n-1)** | a_(n-1), a_(n-3), a_(n-5), ... |
-| **s^(n-2)** | b₁, b₂, b₃, ... |
-| **s^(n-3)** | c₁, c₂, c₃, ... |
+| **$s^n$** | a_n, a_(n-2), a_(n-4), ... |
+| **$s^{n-1}$** | a_(n-1), a_(n-3), a_(n-5), ... |
+| **$s^{n-2}$** | $b_{1}, b_{2}, b_{3}, ...$ |
+| **$s^{n-3}$** | $c_{1}, c_{2}, c_{3}, ...$ |
 | ... | ... |
-| **s⁰** | last entry |
+| **$s^{0}$** | last entry |
 
 ### Computing Entries
 
-**b₁ = (a_(n-1)·a_(n-2) − a_n·a_(n-3)) / a_(n-1)**
+**$b_{1} = (a_(n-1)\\cdot a_(n-2) - a_n\\cdot a_(n-3)) / a_(n-1)$**
 
-**b₂ = (a_(n-1)·a_(n-4) − a_n·a_(n-5)) / a_(n-1)**
+**$b_{2} = (a_(n-1)\\cdot a_(n-4) - a_n\\cdot a_(n-5)) / a_(n-1)$**
 
 General pattern: **negative determinant** of 2×2 matrix from previous two rows, divided by first element of previous row.
 
@@ -10007,9 +10007,9 @@ General pattern: **negative determinant** of 2×2 matrix from previous two rows,
 
 | Order | Stability Condition |
 |---|---|
-| 1st: as + b | a, b > 0 |
-| 2nd: as² + bs + c | a, b, c > 0 (all positive) |
-| 3rd: as³ + bs² + cs + d | a, b, c, d > 0 AND **bc > ad** |`,
+| 1st: as + b | $a, b > 0$ |
+| $2nd: as^{2} + bs + c$ | a, b, c > 0 (all positive) |
+| $3rd: as^{3} + bs^{2} + cs + d$ | $a, b, c, d > 0 AND bc > ad$ |`,
       examTip: 'For 2nd-order systems, just check that all three coefficients are positive — no array needed. For 3rd-order, check all four coefficients positive AND bc > ad. These shortcuts save significant time on the FE exam.',
       importantNote: 'If ANY coefficient in the characteristic polynomial is missing (zero) or negative, the system is unstable — period. You do not need to construct the Routh array. This quick check eliminates many answer choices immediately.',
     },
@@ -10022,7 +10022,7 @@ If a first-column entry is zero but the rest of the row is not all zeros:
 
 1. Replace the zero with a small positive number **ε**
 2. Continue building the array in terms of ε
-3. Take the limit as ε → 0⁺
+3. Take the limit as ε → $0^{+}$
 4. Examine sign changes in the first column
 
 ## 2.2 Special Case: Entire Row of Zeros
@@ -10052,7 +10052,7 @@ Find the range of a parameter K that keeps the system stable:
 
 Routh array first column: [1, 3, (6-K)/3, K]
 
-For stability: **(6-K)/3 > 0** → K < 6, and **K > 0**
+For stability: **$(6-K)/3 > 0$** → K < 6, and **$K > 0$**
 
 **Range: 0 < K < 6**`,
       examTip: 'The FE exam frequently asks "find the range of K for stability." Build the Routh array with K as a variable, then set each first-column entry > 0 and solve the inequalities. The intersection of all conditions gives the valid range.',
@@ -10062,7 +10062,7 @@ For stability: **(6-K)/3 > 0** → K < 6, and **K > 0**
       title: '3. Routh-Hurwitz Worked Examples',
       content: `## 3.1 Example 1: Stable System
 
-**Characteristic polynomial**: D(s) = s⁴ + 3s³ + 5s² + 4s + 2
+**Characteristic polynomial**: D(s) = $s^{4}$ + 3s³ + 5s² + 4s + 2
 
 **Step 1 — Check necessary condition**: All coefficients are positive (1, 3, 5, 4, 2). Proceed to Routh array.
 
@@ -10070,11 +10070,11 @@ For stability: **(6-K)/3 > 0** → K < 6, and **K > 0**
 
 | Row | Col 1 | Col 2 | Col 3 |
 |---|---|---|---|
-| s⁴ | 1 | 5 | 2 |
-| s³ | 3 | 4 | 0 |
-| s² | (3×5 − 1×4)/3 = **11/3** | (3×2 − 1×0)/3 = **2** | 0 |
-| s¹ | (11/3 × 4 − 3 × 2)/(11/3) = **(44/3 − 6)/(11/3)** = **(26/3)/(11/3)** = **26/11** | 0 | 0 |
-| s⁰ | **2** | 0 | 0 |
+| $s^{4}$ | 1 | 5 | 2 |
+| $s^{3}$ | 3 | 4 | 0 |
+| $s^{2}$ | $(3\\times 5 - 1\\times 4)/3 = 11/3$ | $(3\\times 2 - 1\\times 0)/3 = 2$ | 0 |
+| $s^{1}$ | $(11/3 \\times 4 - 3 \\times 2)/(11/3) = (44/3 - 6)/(11/3) = (26/3)/(11/3) = 26/11$ | 0 | 0 |
+| $s^{0}$ | **2** | 0 | 0 |
 
 **Step 3 — Read first column**: 1, 3, 11/3, 26/11, 2 → **all positive, zero sign changes**
 
@@ -10082,7 +10082,7 @@ For stability: **(6-K)/3 > 0** → K < 6, and **K > 0**
 
 ## 3.2 Example 2: System with RHP Poles
 
-**Characteristic polynomial**: D(s) = s⁴ + 2s³ + s² + 4s + 2
+**Characteristic polynomial**: D(s) = $s^{4}$ + 2s³ + s² + 4s + 2
 
 **Step 1 — All coefficients positive** (1, 2, 1, 4, 2). Must build array.
 
@@ -10090,13 +10090,13 @@ For stability: **(6-K)/3 > 0** → K < 6, and **K > 0**
 
 | Row | Col 1 | Col 2 | Col 3 |
 |---|---|---|---|
-| s⁴ | 1 | 1 | 2 |
-| s³ | 2 | 4 | 0 |
-| s² | (2×1 − 1×4)/2 = **−1** | (2×2 − 1×0)/2 = **2** | 0 |
-| s¹ | (−1×4 − 2×2)/(−1) = **8** | 0 | 0 |
-| s⁰ | **2** | 0 | 0 |
+| $s^{4}$ | 1 | 1 | 2 |
+| $s^{3}$ | 2 | 4 | 0 |
+| $s^{2}$ | $(2\\times 1 - 1\\times 4)/2 = -1$ | $(2\\times 2 - 1\\times 0)/2 = 2$ | 0 |
+| $s^{1}$ | $(-1\\times 4 - 2\\times 2)/(-1) = 8$ | 0 | 0 |
+| $s^{0}$ | **2** | 0 | 0 |
 
-**Step 3 — Read first column**: 1, 2, **−1**, 8, 2
+**Step 3 — Read first column**: 1, 2, **$-1$**, 8, 2
 
 Sign changes: +2 to −1 (one change), −1 to +8 (second change) = **2 sign changes**
 
@@ -10108,22 +10108,22 @@ Sign changes: +2 to −1 (one change), −1 to +8 (second change) = **2 sign cha
 
 | Row | Col 1 | Col 2 |
 |---|---|---|
-| s³ | 1 | 2 |
-| s² | 1 | 2 |
-| s¹ | (1×2 − 1×2)/1 = **0** | 0 |
+| $s^{3}$ | 1 | 2 |
+| $s^{2}$ | 1 | 2 |
+| $s^{1}$ | $(1\\times 2 - 1\\times 2)/1 = 0$ | 0 |
 
 The s¹ row has a zero in the first column. **Replace 0 with ε (small positive number)**:
 
 | Row | Col 1 | Col 2 |
 |---|---|---|
-| s¹ | ε | 0 |
-| s⁰ | 2 | 0 |
+| $s^{1}$ | ε | 0 |
+| $s^{0}$ | 2 | 0 |
 
-First column: 1, 1, ε, 2. As ε → 0⁺, all entries remain positive → **no sign changes**.
+First column: 1, 1, ε, 2. As ε → $0^{+}$, all entries remain positive → **no sign changes**.
 
 But wait — the entire s¹ row was zeros before we used ε, indicating **symmetric roots**. Form the auxiliary polynomial from the s² row:
 
-**P(s) = s² + 2 = 0** → s = ±j√2
+**$P(s) = s^{2} + 2 = 0$** → s = ±j√2
 
 These are **poles on the imaginary axis** → system is **marginally stable** (sustained oscillations at ω = √2 rad/s).
 
@@ -10162,11 +10162,11 @@ These are **poles on the imaginary axis** → system is **marginally stable** (s
 
 For a system with open-loop transfer function:
 
-**G(s)H(s) = K · N(s)/D(s)**
+**$G(s)H(s) = K \\cdot N(s)/D(s)$**
 
 where N(s) has m zeros and D(s) has n poles (n ≥ m).
 
-The characteristic equation is: **1 + K·N(s)/D(s) = 0** → **D(s) + K·N(s) = 0**
+The characteristic equation is: **$1 + K\\cdot N(s)/D(s) = 0$** → **$D(s) + K\\cdot N(s) = 0$**
 
 ## 1.2 The Eight Root Locus Rules
 
@@ -10183,10 +10183,10 @@ The characteristic equation is: **1 + K·N(s)/D(s) = 0** → **D(s) + K·N(s) = 
 
 ## 1.3 Angle and Magnitude Conditions
 
-A point s₀ is on the root locus if:
+A point $s_{0}$ is on the root locus if:
 
-- **Angle condition**: ∠G(s₀)H(s₀) = (2k + 1)·180° (odd multiple of 180°)
-- **Magnitude condition**: K = 1/|G(s₀)H(s₀)| (gives the gain at that point)`,
+- **Angle condition**: ∠G($s_{0}$)H($s_{0}$) = (2k + 1)·180° (odd multiple of 180°)
+- **Magnitude condition**: K = 1/|G($s_{0}$)H($s_{0}$)| (gives the gain at that point)`,
       examTip: 'The real-axis rule (Rule 3) is the fastest way to sketch the rough shape: count poles + zeros to the RIGHT of a test point on the real axis. If the count is odd, the locus passes through that point. This eliminates most of the real axis immediately.',
     },
     {
@@ -10194,13 +10194,13 @@ A point s₀ is on the root locus if:
       title: '2. Design Using Root Locus',
       content: `## 2.1 Relating Pole Locations to Performance
 
-For a second-order dominant pair of closed-loop poles at **s = −σ ± jω_d**:
+For a second-order dominant pair of closed-loop poles at **$s = -\\sigma \\pm j\\omega _d$**:
 
 | Parameter | Formula | Effect |
 |---|---|---|
-| **Natural frequency** | ω_n = √(σ² + ω_d²) | Distance from origin |
-| **Damping ratio** | ζ = σ/ω_n = cos(θ) | Angle from negative real axis |
-| **Damped frequency** | ω_d = ω_n√(1 − ζ²) | Imaginary part |
+| **Natural frequency** | $\\omega _n = \\sqrt{\\sigma ^{2} + \\omega _d^{2}}$ | Distance from origin |
+| **Damping ratio** | $\\zeta = \\sigma /\\omega _n = \\cos (\\theta)$ | Angle from negative real axis |
+| **Damped frequency** | $\\omega _d = \\omega _n\\sqrt{1 - \\zeta ^{2}}$ | Imaginary part |
 
 - **Constant ζ lines** are radial lines from origin (angle θ = arccos(ζ))
 - **Constant ω_n lines** are circles centered at origin
@@ -10209,7 +10209,7 @@ For a second-order dominant pair of closed-loop poles at **s = −σ ± jω_d**:
 
 1. Identify the desired pole location (from ζ and ω_n specs)
 2. Verify the point lies on the root locus (angle condition)
-3. Compute **K = 1/|G(s₀)H(s₀)|** (magnitude condition)
+3. Compute **$K = 1/|G(s_{0})H(s_{0})|$** (magnitude condition)
 
 ## 2.3 Compensator Design
 
@@ -10217,9 +10217,9 @@ When gain adjustment alone cannot meet specs, add compensators:
 
 | Compensator | Transfer Function | Effect on Root Locus |
 |---|---|---|
-| **Lead** | (s + z)/(s + p), p > z | Adds a zero closer to origin; pulls locus LEFT (more stable, faster) |
-| **Lag** | (s + z)/(s + p), z > p | Adds a pole-zero pair near origin; increases gain without moving dominant poles much |
-| **PID** | K_p + K_i/s + K_d·s | Combines lead and lag effects |
+| **Lead** | $(s + z)/(s + p), p > z$ | Adds a zero closer to origin; pulls locus LEFT (more stable, faster) |
+| **Lag** | $(s + z)/(s + p), z > p$ | Adds a pole-zero pair near origin; increases gain without moving dominant poles much |
+| **PID** | $K_p + K_i/s + K_d\\cdot s$ | Combines lead and lag effects |
 
 ### Lead Compensator Design Steps
 
@@ -10253,33 +10253,33 @@ When gain adjustment alone cannot meet specs, add compensators:
       content: `## 1.1 Bode Plot Basics
 
 Two semi-log plots:
-- **Magnitude**: 20·log₁₀|G(jω)| (dB) vs. log(ω)
+- **Magnitude**: 20·$\\log _{10}$|G(jω)| (dB) vs. log(ω)
 - **Phase**: ∠G(jω) (degrees) vs. log(ω)
 
 ## 1.2 Building Blocks — Straight-Line Approximations
 
 | Factor | Magnitude Contribution | Phase Contribution |
 |---|---|---|
-| **Constant K** | 20·log₁₀(K) dB (flat line) | 0° (if K > 0) or −180° (if K < 0) |
+| **Constant K** | 20·log₁₀(K) dB (flat line) | $0^\\circ (if K > 0) or -180^\\circ (if K < 0)$ |
 | **s (zero at origin)** | +20 dB/decade through 0 dB at ω = 1 | +90° at all frequencies |
 | **1/s (pole at origin)** | −20 dB/decade through 0 dB at ω = 1 | −90° at all frequencies |
-| **1 + s/a (real zero)** | 0 for ω < a; +20 dB/decade for ω > a | 0° → +45° at ω = a → +90° |
-| **1/(1 + s/a) (real pole)** | 0 for ω < a; −20 dB/decade for ω > a | 0° → −45° at ω = a → −90° |
-| **Quadratic pair** (ζ, ω_n) | 0 for ω < ω_n; −40 dB/decade for ω > ω_n | 0° → −90° at ω = ω_n → −180° |
+| **1 + s/a (real zero)** | 0 for ω < a; +20 dB/decade for ω > a | $0^\\circ \\to +45^\\circ at \\omega = a \\to +90^\\circ$ |
+| **1/(1 + s/a) (real pole)** | 0 for ω < a; −20 dB/decade for ω > a | $0^\\circ \\to -45^\\circ at \\omega = a \\to -90^\\circ$ |
+| **Quadratic pair** (ζ, ω_n) | 0 for ω < ω_n; −40 dB/decade for ω > ω_n | $0^\\circ \\to -90^\\circ at \\omega = \\omega _n \\to -180^\\circ$ |
 
 **Corner frequency** = pole or zero location on the real axis.
 
 ## 1.3 Composite Bode Plot
 
-To plot G(s) = K·(s + z₁)/[(s)(s + p₁)(s + p₂)]:
+To plot G(s) = K·(s + $z_{1}$)/[(s)(s + $p_{1}$)(s + $p_{2}$)]:
 
-1. Factor out constants; compute 20·log₁₀(K·z₁/(p₁·p₂)) for the DC gain
+1. Factor out constants; compute 20·$\\log _{10}$(K·$z_{1}$/($p_{1}$·$p_{2}$)) for the DC gain
 2. Add contributions of each pole and zero at each frequency decade
 3. Phase: sum individual phase contributions at each frequency
 
 ### Magnitude in dB
 
-**|G(jω)|_dB = 20·log₁₀(K) + Σ(zero contributions) − Σ(pole contributions)**`,
+**|G(jω)|_dB = 20·$\\log _{10}$(K) + Σ(zero contributions) − Σ(pole contributions)**`,
       examTip: 'Each real pole contributes −20 dB/decade and −90° of phase; each real zero contributes +20 dB/decade and +90°. An integrator (1/s) contributes −20 dB/decade starting from ω = 0 with a constant −90° phase. These building blocks let you sketch any Bode plot quickly.',
     },
     {
@@ -10290,11 +10290,11 @@ To plot G(s) = K·(s + z₁)/[(s)(s + p₁)(s + p₂)]:
 | Margin | Definition | Measured At |
 |---|---|---|
 | **Gain Margin (GM)** | How much gain can increase before instability | **Phase-crossover frequency** ω_pc (where ∠G = −180°) |
-| **Phase Margin (PM)** | How much additional phase lag before instability | **Gain-crossover frequency** ω_gc (where |G| = 0 dB) |
+| **Phase Margin (PM)** | How much additional phase lag before instability | **Gain-crossover frequency** ω_gc (where |G| $= 0\\ \\mathrm{dB})$ |
 
-**GM = −20·log₁₀|G(jω_pc)|** (in dB)
+**$GM = -20\\cdot \\log _{10}|G(j\\omega _{pc})|$** (in dB)
 
-**PM = 180° + ∠G(jω_gc)**
+**$PM = 180^\\circ + \\angle G(j\\omega _{gc})$**
 
 ### Stability Requirement
 
@@ -10302,12 +10302,12 @@ To plot G(s) = K·(s + z₁)/[(s)(s + p₁)(s + p₂)]:
 
 | PM | System Behavior |
 |---|---|
-| > 60° | Well-damped, sluggish |
-| 40–60° | Good compromise |
-| 20–40° | Responsive but oscillatory |
-| < 0° | **Unstable** |
+| $> 60^\\circ$ | Well-damped, sluggish |
+| $40-60^\\circ$ | Good compromise |
+| $20-40^\\circ$ | Responsive but oscillatory |
+| $< 0^\\circ$ | **Unstable** |
 
-Approximate relationship: **PM ≈ 100·ζ** (for ζ < 0.7, in degrees)
+Approximate relationship: **$PM \\approx 100\\cdot \\zeta$** (for ζ < 0.7, in degrees)
 
 ## 2.2 Nyquist Criterion
 
@@ -10315,14 +10315,14 @@ Plot G(jω) in the complex plane as ω goes from 0 to ∞ (and its mirror for �
 
 **Nyquist stability criterion**:
 
-**Z = N + P**
+**$Z = N + P$**
 
 where:
 - **Z** = number of closed-loop RHP poles (unstable)
 - **N** = number of **clockwise** encirclements of the point **(-1, 0)**
 - **P** = number of open-loop RHP poles
 
-For a stable closed-loop system: **Z = 0** → **N = −P**
+For a stable closed-loop system: **$Z = 0$** → **$N = -P$**
 
 If the open-loop system is stable (P = 0), the Nyquist plot must **not encircle (-1, 0)** at all.
 
@@ -10347,12 +10347,12 @@ Draw the magnitude and phase Bode plots. Find the gain margin (GM) and phase mar
 
 Factor out constants so each term has the form (1 + s/a):
 
-G(s) = 100 / [s · 10 · (1 + s/10)] = **10 / [s · (1 + s/10)]**
+$$G(s) = 100 / [s \\cdot 10 \\cdot (1 + s/10)] = 10 / [s \\cdot (1 + s/10)]$$
 
 **Components to plot:**
-- Constant gain: K = 10 → 20·log₁₀(10) = **20 dB**
+- Constant gain: K = 10 → 20·$\\log _{10}$(10) = **20 dB**
 - Integrator: 1/s → **−20 dB/decade**, passes through 0 dB at ω = 1
-- Real pole: 1/(1 + s/10) → corner at **ω = 10 rad/s**, then −20 dB/decade
+- Real pole: 1/(1 + s/10) → corner at **$\\omega = 10\\ \\mathrm{rad/s}$**, then −20 dB/decade
 
 ## 3.3 Step 2 — Magnitude Plot
 
@@ -10360,7 +10360,7 @@ G(s) = 100 / [s · 10 · (1 + s/10)] = **10 / [s · (1 + s/10)]**
 
 |G(jω)| ≈ 10/ω → slope = −20 dB/decade (integrator dominates)
 
-At ω = 1: |G| = 10/1 = 10 → **20 dB**
+$$At \\omega = 1: |G| = 10/1 = 10 \\to 20\\ \\mathrm{dB}$$
 At ω = 10: |G| = 10/10 = 1 → **0 dB** (before the pole kicks in)
 
 **High frequencies (ω >> 10):**
@@ -10372,21 +10372,21 @@ At ω = 10: |G| = 10/10 = 1 → **0 dB** (before the pole kicks in)
 | 0.1 | 40 dB | −20 dB/dec |
 | 1 | 20 dB | −20 dB/dec |
 | 10 | 0 dB | Transition to −40 dB/dec |
-| 100 | −20 dB | −40 dB/dec |
+| 100 | $-20\\ \\mathrm{dB}$ | −40 dB/dec |
 
 ## 3.4 Step 3 — Phase Plot
 
-- Integrator 1/s: constant **−90°** at all frequencies
+- Integrator 1/s: constant **$-90^\\circ$** at all frequencies
 - Pole at ω = 10: contributes 0° for ω << 10, −45° at ω = 10, −90° for ω >> 10
 
 **Total phase:**
 
 | Frequency | Integrator | Pole at 10 | Total Phase |
 |---|---|---|---|
-| ω = 1 | −90° | ≈ −6° | **−96°** |
-| ω = 10 | −90° | −45° | **−135°** |
-| ω = 100 | −90° | ≈ −84° | **−174°** |
-| ω → ∞ | −90° | −90° | **−180°** |
+| $\\omega = 1$ | $-90^\\circ$ | $\\approx -6^\\circ$ | **$-96^\\circ$** |
+| $\\omega = 10$ | $-90^\\circ$ | $-45^\\circ$ | **$-135^\\circ$** |
+| $\\omega = 100$ | $-90^\\circ$ | $\\approx -84^\\circ$ | **$-174^\\circ$** |
+| ω → ∞ | $-90^\\circ$ | $-90^\\circ$ | **$-180^\\circ$** |
 
 ## 3.5 Step 4 — Find GM and PM
 
@@ -10398,18 +10398,18 @@ At ω = 10: |G| = 10/(10 · √2) = 0.707 → −3 dB (close to 0 dB)
 
 Solving exactly: ω_gc ≈ **9.05 rad/s**
 
-**Phase margin**: PM = 180° + ∠G(jω_gc) = 180° + (−90° − arctan(9.05/10)) = 180° − 90° − 42.1° = **47.9°**
+**Phase margin**: PM = 180° + ∠G(jω_gc) = 180° + (−90° − arctan(9.05/10)) = 180° − 90° − 42.1° = **$47.9^\\circ$**
 
 **Phase crossover frequency ω_pc** (where ∠G = −180°):
 
 Total phase reaches −180° as ω → ∞ (asymptotically). Strictly, ω_pc = **∞**.
 
-**Gain margin**: GM = −20·log₁₀|G(j∞)| = **∞ dB** (magnitude is zero at infinite frequency)
+**Gain margin**: GM = −20·$\\log _{10}$|G(j∞)| = **$\\infty dB$** (magnitude is zero at infinite frequency)
 
 ## 3.6 Step 5 — Stability Conclusion
 
-- **PM = 47.9° > 0°** → Stable
-- **GM = ∞ dB > 0 dB** → Stable
+- **$PM = 47.9^\\circ > 0^\\circ$** → Stable
+- **$GM = \\infty dB > 0\\ \\mathrm{dB}$** → Stable
 - The system is **closed-loop stable** with good phase margin (near the 45–60° design target)
 - Expected damping ratio: ζ ≈ PM/100 ≈ 0.48 → moderate overshoot (~18%)`,
       examTip: 'On the FE exam, for systems with an integrator (1/s), the low-frequency slope starts at −20 dB/decade. Each additional pole adds another −20 dB/decade at its corner frequency. The magnitude at ω = 1 equals 20·log₁₀(K), which gives you the starting point for the entire plot.',
@@ -10437,9 +10437,9 @@ Total phase reaches −180° as ω → ∞ (asymptotically). Strictly, ω_pc = *
       title: '1. PID Controller Actions',
       content: `## 1.1 The PID Control Law
 
-**Time domain**: **u(t) = K_p·e(t) + K_i·∫e(τ)dτ + K_d·de(t)/dt**
+**Time domain**: **$u(t) = K_p\\cdot e(t) + K_i\\cdot \\int e(\\tau)d\\tau + K_d\\cdot de(t)/dt$**
 
-**Laplace domain**: **C(s) = K_p + K_i/s + K_d·s**
+**Laplace domain**: **$C(s) = K_p + K_i/s + K_d\\cdot s$**
 
 where e(t) = r(t) − y(t) is the error signal (setpoint minus output).
 
@@ -10449,7 +10449,7 @@ where e(t) = r(t) − y(t) is the error signal (setpoint minus output).
 |---|---|---|---|
 | **Proportional (P)** | K_p | Reduces error proportionally; faster response | Steady-state error remains (for Type 0 systems) |
 | **Integral (I)** | K_i/s | **Eliminates steady-state error** (adds integrator → increases system type) | Adds phase lag; can cause oscillation/instability |
-| **Derivative (D)** | K_d·s | **Reduces overshoot** and oscillation; adds phase lead | Amplifies high-frequency noise; never used alone |
+| **Derivative (D)** | $K_d\\cdot s$ | **Reduces overshoot** and oscillation; adds phase lead | Amplifies high-frequency noise; never used alone |
 
 ### How Each Term Affects the Response
 
@@ -10463,8 +10463,8 @@ where e(t) = r(t) − y(t) is the error signal (setpoint minus output).
 |---|---|---|
 | **P** only | K_p | Simple, fast; acceptable steady-state error |
 | **PI** | K_p + K_i/s | Most common; zero steady-state error needed |
-| **PD** | K_p + K_d·s | Need stability improvement; error acceptable |
-| **PID** | K_p + K_i/s + K_d·s | Full control; zero error + good transient |
+| **PD** | $K_p + K_d\\cdot s$ | Need stability improvement; error acceptable |
+| **PID** | $K_p + K_i/s + K_d\\cdot s$ | Full control; zero error + good transient |
 
 ### Anti-Windup
 
@@ -10481,11 +10481,11 @@ Apply a step input to the open-loop plant and measure:
 - **θ** = apparent dead time (delay before response begins)
 - **τ** = time constant (time to reach 63% of final value)
 
-| Controller | K_p | T_i = K_p/K_i | T_d = K_d/K_p |
+| Controller | K_p | $T_i = K_p/K_i$ | $T_d = K_d/K_p$ |
 |---|---|---|---|
-| **P** | τ/(K·θ) | — | — |
-| **PI** | 0.9·τ/(K·θ) | 3.3·θ | — |
-| **PID** | 1.2·τ/(K·θ) | 2·θ | 0.5·θ |
+| **P** | $\\tau /(K\\cdot \\theta)$ | — | — |
+| **PI** | $0.9\\cdot \\tau /(K\\cdot \\theta)$ | $3.3\\cdot \\theta$ | — |
+| **PID** | $1.2\\cdot \\tau /(K\\cdot \\theta)$ | $2\\cdot \\theta$ | $0.5\\cdot \\theta$ |
 
 ## 2.2 Ziegler-Nichols Ultimate Gain Method
 
@@ -10495,9 +10495,9 @@ Apply a step input to the open-loop plant and measure:
 
 | Controller | K_p | T_i | T_d |
 |---|---|---|---|
-| **P** | 0.5·K_u | — | — |
-| **PI** | 0.45·K_u | P_u/1.2 | — |
-| **PID** | 0.6·K_u | P_u/2 | P_u/8 |
+| **P** | $0.5\\cdot K_u$ | — | — |
+| **PI** | $0.45\\cdot K_u$ | P_u/1.2 | — |
+| **PID** | $0.6\\cdot K_u$ | P_u/2 | P_u/8 |
 
 ## 2.3 Practical Tuning Guidelines
 
@@ -10526,15 +10526,15 @@ Design a PID controller using the **Ziegler-Nichols ultimate gain method**. Find
 
 With P-only control, the closed-loop characteristic equation is:
 
-**1 + K_p · G(s) = 0** → s(s + 2) + K_p = 0 → **s² + 2s + K_p = 0**
+**$1 + K_p \\cdot G(s) = 0$** → s(s + 2) + K_p = 0 → **$s^{2} + 2s + K_p = 0$**
 
 Use **Routh-Hurwitz** to find K_p that causes sustained oscillation:
 
 | Row | Col 1 | Col 2 |
 |---|---|---|
-| s² | 1 | K_p |
-| s¹ | 2 | 0 |
-| s⁰ | K_p | 0 |
+| $s^{2}$ | 1 | K_p |
+| $s^{1}$ | 2 | 0 |
+| $s^{0}$ | K_p | 0 |
 
 For stability: all first-column entries > 0 → K_p > 0 AND 2 > 0. The system is stable for **all K_p > 0**.
 
@@ -10548,11 +10548,11 @@ Since the pure plant G(s) = 1/[s(s+2)] has infinite gain margin, we design for a
 
 **Step 1 — Evaluate the plant at ω = 5 rad/s:**
 
-G(j5) = 1/[j5 · (j5 + 2)] = 1/[j5 · (2 + j5)] = 1/(−25 + j10)
+$$G(j5) = 1/[j5 \\cdot (j5 + 2)] = 1/[j5 \\cdot (2 + j5)] = 1/(-25 + j10)$$
 
 |G(j5)| = 1/√(625 + 100) = 1/√725 = **0.0371** (−28.6 dB)
 
-∠G(j5) = −90° − arctan(5/2) = −90° − 68.2° = **−158.2°**
+$$\\angle G(j5) = -90^\\circ - \\arctan (5/2) = -90^\\circ - 68.2^\\circ = -158.2^\\circ$$
 
 **Step 2 — Required controller phase at ω = 5:**
 
@@ -10564,13 +10564,13 @@ Controller must add: −130° − (−158.2°) = **+28.2° of phase lead**
 
 Using the PID transfer function: C(s) = K_p(1 + 1/(T_i·s) + T_d·s)
 
-Choose **T_d = 0.15 s** (provides phase lead near ω = 5):
+Choose **$T_d = 0.15\\ \\mathrm{s}$** (provides phase lead near ω = 5):
 - Phase from D term at ω = 5: arctan(T_d·ω) = arctan(0.75) = +36.9°
 
-Choose **T_i = 2 s** (integral time, slow enough not to destabilize):
+Choose **$T_i = 2\\ \\mathrm{s}$** (integral time, slow enough not to destabilize):
 - Phase from I term at ω = 5: −arctan(1/(T_i·ω)) = −arctan(0.1) = −5.7°
 
-Net controller phase: +36.9° − 5.7° = **+31.2°** (close to target of +28.2°, with margin)
+Net controller phase: +36.9° − 5.7° = **$+31.2^\\circ$** (close to target of +28.2°, with margin)
 
 **Step 4 — Set K_p for 0 dB gain crossover at ω = 5:**
 
@@ -10578,15 +10578,15 @@ Net controller phase: +36.9° − 5.7° = **+31.2°** (close to target of +28.2�
 
 |C(j5)| = |K_p| · |1 + 1/(j10) + j0.75| = K_p · |1.75 + j0.65| = K_p · 1.867
 
-K_p = 1/(1.867 × 0.0371) = **14.4**
+$$K_p = 1/(1.867 \\times 0.0371) = 14.4$$
 
 ## 3.4 Final PID Parameters
 
 | Parameter | Value | Derived Values |
 |---|---|---|
 | **K_p** | 14.4 | Proportional gain |
-| **T_i** | 2.0 s | K_i = K_p/T_i = **7.2** |
-| **T_d** | 0.15 s | K_d = K_p·T_d = **2.16** |
+| **T_i** | 2.0 s | $K_i = K_p/T_i = 7.2$ |
+| **T_d** | 0.15 s | $K_d = K_p\\cdot T_d = 2.16$ |
 
 **Controller**: C(s) = 14.4 + 7.2/s + 2.16s
 
@@ -10594,7 +10594,7 @@ K_p = 1/(1.867 × 0.0371) = **14.4**
 
 Open-loop transfer function: L(s) = C(s)·G(s) = (14.4 + 7.2/s + 2.16s) · 1/[s(s+2)]
 
-At ω = 5 rad/s: |L(j5)| ≈ 1 (0 dB) and ∠L(j5) ≈ −130° → **PM ≈ 50°**
+At ω = 5 rad/s: |L(j5)| ≈ 1 (0 dB) and ∠L(j5) ≈ −130° → **$PM \\approx 50^\\circ$**
 
 The closed-loop system is stable with good damping (ζ ≈ 0.5, ~16% overshoot).
 
@@ -10606,11 +10606,11 @@ When the ultimate gain method IS applicable (3rd order or higher):
 2. Measure oscillation period → **P_u**
 3. Apply the table:
 
-| Controller | K_p | K_i = K_p/T_i | K_d = K_p·T_d |
+| Controller | K_p | $K_i = K_p/T_i$ | $K_d = K_p\\cdot T_d$ |
 |---|---|---|---|
-| **P** | 0.5·K_u | — | — |
-| **PI** | 0.45·K_u | 0.45·K_u/(P_u/1.2) | — |
-| **PID** | 0.6·K_u | 0.6·K_u/(P_u/2) = **1.2·K_u/P_u** | 0.6·K_u·P_u/8 = **0.075·K_u·P_u** |`,
+| **P** | $0.5\\cdot K_u$ | — | — |
+| **PI** | $0.45\\cdot K_u$ | $0.45\\cdot K_u/(P_u/1.2)$ | — |
+| **PID** | $0.6\\cdot K_u$ | $0.6\\cdot K_u/(P_u/2) = 1.2\\cdot K_u/P_u$ | $0.6\\cdot K_u\\cdot P_u/8 = 0.075\\cdot K_u\\cdot P_u$ |`,
       examTip: 'If the FE exam gives a 2nd-order plant with no delay, the Ziegler-Nichols ultimate gain method may not apply directly (the system may be stable for all gains). In that case, use the frequency response approach or recognize that the exam expects you to apply the table formulas with given K_u and P_u values.',
       importantNote: 'Ziegler-Nichols tuning is a starting point, not a final design. It typically produces about 25% overshoot. For tighter specifications, reduce K_p by 20-30% from the Z-N value and increase T_i. The FE exam usually tests the Z-N table lookup, not iterative refinement.',
     },
@@ -10635,31 +10635,31 @@ When the ultimate gain method IS applicable (3rd order or higher):
       title: '1. Transient Response Specifications',
       content: `## 1.1 Second-Order System Standard Form
 
-**G(s) = ω_n² / (s² + 2ζω_n·s + ω_n²)**
+**$G(s) = \\omega _n^{2} / (s^{2} + 2\\zeta \\omega _n\\cdot s + \\omega _n^{2})$**
 
 where:
-- **ω_n** = natural frequency (rad/s) — controls speed of response
+- **$\\omega _n$** = natural frequency (rad/s) — controls speed of response
 - **ζ** = damping ratio (dimensionless) — controls oscillation
-- **ω_d = ω_n·√(1 − ζ²)** = damped natural frequency
+- **$\\omega _d = \\omega _n\\cdot \\sqrt{1 - \\zeta ^{2}}$** = damped natural frequency
 
 ### System Classification by ζ
 
 | ζ Value | Response Type | Poles |
 |---|---|---|
-| ζ = 0 | Undamped (sustained oscillation) | Purely imaginary: ±jω_n |
-| 0 < ζ < 1 | **Underdamped** (oscillatory) | Complex conjugate: −ζω_n ± jω_d |
-| ζ = 1 | Critically damped (fastest non-oscillatory) | Repeated real: −ω_n |
-| ζ > 1 | Overdamped (sluggish) | Two distinct real negatives |
+| $\\zeta = 0$ | Undamped (sustained oscillation) | Purely imaginary: ±jω_n |
+| $0 < \\zeta < 1$ | **Underdamped** (oscillatory) | Complex conjugate: −ζω_n ± jω_d |
+| $\\zeta = 1$ | Critically damped (fastest non-oscillatory) | Repeated real: −ω_n |
+| $\\zeta > 1$ | Overdamped (sluggish) | Two distinct real negatives |
 
 ## 1.2 Key Transient Specifications (Underdamped, 0 < ζ < 1)
 
 | Specification | Formula | Description |
 |---|---|---|
-| **Percent Overshoot** | **OS% = e^(−πζ/√(1−ζ²)) × 100%** | Max peak above final value |
-| **Peak Time** | **t_p = π/ω_d** | Time to first peak |
-| **Rise Time (0→100%)** | **t_r ≈ (π − arccos(ζ))/ω_d** | Time from 0% to 100% of final value |
-| **Settling Time (2%)** | **t_s ≈ 4/(ζ·ω_n)** | Time to stay within 2% band |
-| **Settling Time (5%)** | **t_s ≈ 3/(ζ·ω_n)** | Time to stay within 5% band |
+| **Percent Overshoot** | **$OS\\% = e^{-\\pi \\zeta /\\sqrt{1-\\zeta ^{2}}} \\times 100\\%$** | Max peak above final value |
+| **Peak Time** | **$t_p = \\pi /\\omega _d$** | Time to first peak |
+| **Rise Time (0→100%)** | **$t_r \\approx (\\pi - \\arccos (\\zeta))/\\omega _d$** | Time from 0% to 100% of final value |
+| **Settling Time (2%)** | **$t_s \\approx 4/(\\zeta \\cdot \\omega _n)$** | Time to stay within 2% band |
+| **Settling Time (5%)** | **$t_s \\approx 3/(\\zeta \\cdot \\omega _n)$** | Time to stay within 5% band |
 
 ## 1.3 Common ζ Values Worth Memorizing
 
@@ -10692,18 +10692,18 @@ For unity-feedback system with open-loop G(s):
 
 | Constant | Formula | Used For |
 |---|---|---|
-| **Position constant K_p** | lim(s→0) G(s) | Step input error |
-| **Velocity constant K_v** | lim(s→0) s·G(s) | Ramp input error |
-| **Acceleration constant K_a** | lim(s→0) s²·G(s) | Parabolic input error |
+| **Position constant K_p** | $\\lim (s\\to 0) G(s)$ | Step input error |
+| **Velocity constant K_v** | $\\lim (s\\to 0) s\\cdot G(s)$ | Ramp input error |
+| **Acceleration constant K_a** | $\\lim (s\\to 0) s^{2}\\cdot G(s)$ | Parabolic input error |
 
 ### Steady-State Error Formula
 
-**e_ss = lim(s→0) s · R(s) / (1 + G(s))**
+**$e_{ss} = \\lim (s\\to 0) s \\cdot R(s) / (1 + G(s))$**
 
 For standard inputs:
-- **Step** (R(s) = 1/s): **e_ss = 1/(1 + K_p)**
-- **Ramp** (R(s) = 1/s²): **e_ss = 1/K_v**
-- **Parabola** (R(s) = 1/s³): **e_ss = 1/K_a**
+- **Step** (R(s) = 1/s): **$e_{ss} = 1/(1 + K_p)$**
+- **Ramp** (R(s) = 1/s²): **$e_{ss} = 1/K_v$**
+- **Parabola** (R(s) = 1/s³): **$e_{ss} = 1/K_a$**
 
 ## 2.3 Design Implications
 
@@ -10744,16 +10744,16 @@ fee_am_fm: { topicId: 'fee_am_fm', title: 'Analog Modulation: AM & FM', domainWe
 
 where A_c is carrier amplitude, m(t) is the normalized message (|m(t)| <= 1), and m_a is the **modulation index**.
 
-- **m_a > 1** causes **overmodulation** -- envelope crosses zero, distorting the recovered signal.
+- **$m_a > 1$** causes **overmodulation** -- envelope crosses zero, distorting the recovered signal.
 
 ## 1.2 AM Bandwidth and Power
 
 | Parameter | Formula | Notes |
 |---|---|---|
-| Bandwidth | **BW = 2 f_m** | f_m = highest message frequency |
-| Carrier power | **P_c = A_c^2 / (2R)** | No information in carrier |
-| Sideband power | **P_s = P_c * m_a^2 / 2** | Contains all information |
-| Total power | **P_total = P_c (1 + m_a^2 / 2)** | Carrier + sidebands |
+| Bandwidth | **$BW = 2 f_m$** | f_m = highest message frequency |
+| Carrier power | **$P_c = A_c^2 / (2R)$** | No information in carrier |
+| Sideband power | **$P_s = P_c * m_a^2 / 2$** | Contains all information |
+| Total power | **$P_{total} = P_c (1 + m_a^2 / 2)$** | Carrier + sidebands |
 | Efficiency | **eta = m_a^2 / (2 + m_a^2)** | Max ~33% at m_a = 1 |
 
 ### AM Variants
@@ -10789,7 +10789,7 @@ where A_c is carrier amplitude, m(t) is the normalized message (|m(t)| <= 1), an
 
 ## 2.3 Phase Modulation (PM)
 
-**s(t) = A_c cos(2 pi f_c t + k_p m(t))**. FM and PM are closely related -- FM of m(t) is equivalent to PM of its integral. Digital PSK is fundamentally phase modulation.`,
+**$s(t) = A_c \\cos (2 pi f_c t + k_p m(t))$**. FM and PM are closely related -- FM of m(t) is equivalent to PM of its integral. Digital PSK is fundamentally phase modulation.`,
       examTip: 'Carson\'s rule BW = 2(Delta_f + f_m) is the most-tested FM formula. For narrowband FM (beta << 1) it simplifies to 2 f_m. For wideband FM (beta >> 1) it becomes ~2 Delta_f. Always compute beta first.',
     },
     { id: 'am-fm-receivers', title: '3. Superheterodyne Receivers and Tradeoffs',
@@ -10847,9 +10847,9 @@ Since beta = 5 >> 1, this is wideband FM with excellent noise immunity.
 
 | Scheme | Bandwidth | Efficiency | Detection |
 |---|---|---|---|
-| Standard AM | 2 f_m = 10 kHz | 24.2% (m=0.8) | Envelope (simple) |
-| DSB-SC | 2 f_m = 10 kHz | 100% | Coherent (complex) |
-| SSB | f_m = 5 kHz | 100% | Coherent (complex) |
+| Standard AM | $2 f_m = 10\\ \\mathrm{kHz}$ | $24.2\\% (m=0.8)$ | Envelope (simple) |
+| DSB-SC | $2 f_m = 10\\ \\mathrm{kHz}$ | 100% | Coherent (complex) |
+| SSB | $f_m = 5\\ \\mathrm{kHz}$ | 100% | Coherent (complex) |
 
 **SSB saves 50% bandwidth** vs standard AM or DSB-SC while achieving 100% power efficiency. The tradeoff is receiver complexity — SSB requires a synchronous detector or Weaver method.
 
@@ -10896,7 +10896,7 @@ QAM varies **both amplitude and phase**:
 
 | Scheme | Points | Bits/Symbol | Spectral Efficiency |
 |---|---|---|---|
-| **4-QAM (= QPSK)** | 4 | 2 | 2 bits/s/Hz |
+| **$4-QAM (= QPSK)$** | 4 | 2 | 2 bits/s/Hz |
 | **16-QAM** | 16 | 4 | 4 bits/s/Hz |
 | **64-QAM** | 64 | 6 | 6 bits/s/Hz |
 | **256-QAM** | 256 | 8 | 8 bits/s/Hz |
@@ -10911,8 +10911,8 @@ QAM varies **both amplitude and phase**:
 
 | Scheme | BER Formula | Notes |
 |---|---|---|
-| BPSK | **Q(sqrt(2 E_b/N_0))** | Best BER per E_b/N_0 |
-| QPSK | **Q(sqrt(2 E_b/N_0))** | Same as BPSK (independent I/Q) |
+| BPSK | **$Q(\\sqrt{2 E_b/N_0})$** | Best BER per E_b/N_0 |
+| QPSK | **$Q(\\sqrt{2 E_b/N_0})$** | Same as BPSK (independent I/Q) |
 | 16-QAM | ~4 dB more than QPSK | Higher constellation penalty |
 
 **E_b/N_0 = (S/N) * (B/R_b)** -- universal digital link quality metric.
@@ -10952,7 +10952,7 @@ QAM varies **both amplitude and phase**:
 
 **Step 2**: BER = Q(sqrt(2 * 10)) = Q(sqrt(20)) = Q(4.47)
 
-**Step 3**: From Q-function table: Q(4.47) ≈ **3.9 x 10^-6**
+**Step 3**: From Q-function table: Q(4.47) ≈ **$3.9 x 10^-6$**
 
 At E_b/N_0 = 10 dB, BPSK and QPSK both achieve BER near 10^-6 — excellent for most applications.
 
@@ -10999,7 +10999,7 @@ fee_noise_snr: { topicId: 'fee_noise_snr', title: 'Noise and Signal-to-Noise Rat
 
 ## 1.2 Thermal Noise Power
 
-**P_n = k T B**
+**$P_n = k T B$**
 
 - k = 1.38 x 10^-23 J/K (Boltzmann constant)
 - T = temperature in Kelvin (standard: 290 K)
@@ -11011,7 +11011,7 @@ For bandwidth B: **P_n(dBm) = -174 + 10 log_10(B)**
 
 ## 1.3 Signal-to-Noise Ratio
 
-**SNR = P_signal / P_noise** (linear)
+**$SNR = P_{signal} / P_{noise}$** (linear)
 
 **SNR(dB) = 10 log_10(P_signal / P_noise) = P_signal(dBm) - P_noise(dBm)**`,
       examTip: 'Memorize -174 dBm/Hz as thermal noise floor at room temperature. For noise in 1 MHz bandwidth: P_n = -174 + 60 = -114 dBm. This is the fastest way to solve FE noise problems.',
@@ -11020,12 +11020,12 @@ For bandwidth B: **P_n(dBm) = -174 + 10 log_10(B)**
     { id: 'noise-cascade', title: '2. Noise Figure and Friis Cascade Formula',
       content: `## 2.1 Noise Figure
 
-**F = SNR_in / SNR_out** (linear, >= 1)
+**$F = SNR_{in} / SNR_{out}$** (linear, >= 1)
 
-**NF = 10 log_10(F)** (dB, >= 0)
+**$NF = 10 \\log _10(F)$** (dB, >= 0)
 
 - Ideal amplifier: F = 1 (NF = 0 dB)
-- Passive attenuator with loss L: **F = L** (noise figure equals attenuation)
+- Passive attenuator with loss L: **$F = L$** (noise figure equals attenuation)
 - Typical LNA: NF = 0.5-2 dB; typical mixer: NF = 6-10 dB
 
 ## 2.2 Noise Temperature
@@ -11059,27 +11059,27 @@ Each stage's noise contribution is **divided by cumulative gain** of preceding s
 
 | Parameter | dB | Linear |
 |---|---|---|
-| F_1 | 2 dB | 10^(2/10) = **1.585** |
-| G_1 | 20 dB | 10^(20/10) = **100** |
-| F_2 | 6 dB | 10^(6/10) = **3.981** |
-| G_2 | 10 dB | 10^(10/10) = **10** |
-| F_3 | 10 dB | 10^(10/10) = **10** |
+| F_1 | 2 dB | $10^{2/10} = 1.585$ |
+| G_1 | 20 dB | $10^{20/10} = 100$ |
+| F_2 | 6 dB | $10^{6/10} = 3.981$ |
+| G_2 | 10 dB | $10^{10/10} = 10$ |
+| F_3 | 10 dB | $10^{10/10} = 10$ |
 
 **Step 2 — Friis cascade formula**:
 
-F_total = F_1 + (F_2 - 1)/G_1 + (F_3 - 1)/(G_1 * G_2)
+$$F_{total} = F_1 + (F_2 - 1)/G_1 + (F_3 - 1)/(G_1 * G_2)$$
 
-F_total = 1.585 + (3.981 - 1)/100 + (10 - 1)/(100 * 10)
+$$F_{total} = 1.585 + (3.981 - 1)/100 + (10 - 1)/(100 * 10)$$
 
-F_total = 1.585 + 0.0298 + 0.009 = **1.624**
+$$F_{total} = 1.585 + 0.0298 + 0.009 = 1.624$$
 
-**NF_total = 10 log_10(1.624) = 2.11 dB**
+**$NF_{total} = 10 \\log _10(1.624) = 2.11\\ \\mathrm{dB}$**
 
 The first stage dominates: 1.585 of 1.624 total. Stages 2 and 3 contribute only 0.039 combined.
 
 ## 3.2 Thermal Noise Power for B = 1 MHz at T = 290 K
 
-**Method 1 — Direct**: P_n = kTB = 1.38e-23 * 290 * 1e6 = **4.0 x 10^-15 W**
+**Method 1 — Direct**: P_n = kTB = 1.38e-23 * 290 * 1e6 = **$4.0 x 10^-15\\ \\mathrm{W}$**
 
 **Method 2 — dBm shortcut** (faster on exam):
 
@@ -11153,7 +11153,7 @@ E_b/N_0 is the **universal figure of merit** for digital communication.
 
 ## 2.2 Shannon Limit for E_b/N_0
 
-At capacity: **E_b/N_0 >= ln(2) = -1.59 dB** (theoretical minimum)
+At capacity: **$E_b/N_0 >= \\ln (2) = -1.59\\ \\mathrm{dB}$** (theoretical minimum)
 
 | Modulation | Required E_b/N_0 for BER = 10^-5 |
 |---|---|
@@ -11181,7 +11181,7 @@ C = B * log_2(1 + S/N) = 4000 * log_2(1 + 31) = 4000 * log_2(32) = 4000 * 5 = **
 
 ## 3.2 Minimum E_b/N_0 for Reliable Communication
 
-At Shannon limit: **E_b/N_0 >= ln(2) = 0.693 = -1.59 dB**
+At Shannon limit: **$E_b/N_0 >= \\ln (2) = 0.693 = -1.59\\ \\mathrm{dB}$**
 
 No system can communicate reliably below this threshold, regardless of coding or modulation.
 
@@ -11265,7 +11265,7 @@ All users transmit **simultaneously on same frequency** using unique orthogonal 
 2. Data multiplied by code, spreading BW by factor L
 3. Receiver correlates with desired code to extract data
 
-**Spreading gain**: **G_p = BW_spread / BW_data = L**
+**Spreading gain**: **$G_p = BW_{spread} / BW_{data} = L$**
 
 ### CDMA Properties
 
@@ -11325,7 +11325,7 @@ Wider guard bands improve adjacent-channel rejection but waste spectrum. Narrowe
 
 **Given**: Chip rate = 1.2288 Mcps (IS-95 standard), data rate = 9.6 kbps.
 
-**Processing gain**: G_p = chip_rate / data_rate = 1,228,800 / 9,600 = **128 = 21.1 dB**
+**Processing gain**: G_p = chip_rate / data_rate = 1,228,800 / 9,600 = **$128 = 21.1\\ \\mathrm{dB}$**
 
 This means the signal is spread across 128x the minimum bandwidth, providing 21 dB of interference rejection.
 
@@ -11411,7 +11411,7 @@ Data moves UP at receiver: each layer strips its header.
 
 | Port | Protocol | Service |
 |---|---|---|
-| **20/21** | FTP | File transfer |
+| **$20/21$** | FTP | File transfer |
 | **22** | SSH | Secure shell |
 | **25** | SMTP | Email sending |
 | **53** | DNS | Name resolution |
@@ -11454,12 +11454,12 @@ At the receiver, headers are stripped in **reverse order** (L1 -> L7).
 
 | Port | Protocol | Transport | Category |
 |---|---|---|---|
-| 20/21 | FTP | TCP | File transfer |
+| $20/21$ | FTP | TCP | File transfer |
 | 22 | SSH/SFTP | TCP | Secure remote |
 | 23 | Telnet | TCP | Insecure remote |
 | 25 | SMTP | TCP | Email send |
 | 53 | DNS | UDP/TCP | Name resolution |
-| 67/68 | DHCP | UDP | IP assignment |
+| $67/68$ | DHCP | UDP | IP assignment |
 | 80 | HTTP | TCP | Web |
 | 110 | POP3 | TCP | Email retrieve |
 | 143 | IMAP | TCP | Email retrieve |
@@ -11575,10 +11575,10 @@ Block size = 2^(32-26) = 2^6 = **64 addresses per subnet**.
 
 | Department | Hosts Needed | Prefix | Block | Network | Range |
 |---|---|---|---|---|---|
-| Dept A (100) | 128 = 2^7 | **/25** | 128 | 192.168.10.0/25 | .1-.126 |
-| Dept B (50) | 64 = 2^6 | **/26** | 64 | 192.168.10.128/26 | .129-.190 |
-| Dept C (25) | 32 = 2^5 | **/27** | 32 | 192.168.10.192/27 | .193-.222 |
-| Dept D (10) | 16 = 2^4 | **/28** | 16 | 192.168.10.224/28 | .225-.238 |
+| Dept A (100) | $128 = 2^7$ | **/25** | 128 | 192.168.10.0/25 | .1-.126 |
+| Dept B (50) | $64 = 2^6$ | **/26** | 64 | 192.168.10.128/26 | .129-.190 |
+| Dept C (25) | $32 = 2^5$ | **/27** | 32 | 192.168.10.192/27 | .193-.222 |
+| Dept D (10) | $16 = 2^4$ | **/28** | 16 | 192.168.10.224/28 | .225-.238 |
 
 **VLSM key**: allocate largest subnet first, then fill remaining space with smaller subnets. Each subnet starts at the next available address after the previous broadcast.
 
@@ -11665,7 +11665,7 @@ For N = 8: Links = 8 * 7 / 2 = **28 links**
 | 16 | 120 | 15 | 8x |
 | 32 | 496 | 31 | 16x |
 
-Full mesh grows as **O(N^2)** while star grows as **O(N)**. This is why full mesh is impractical beyond ~10 nodes in practice.
+Full mesh grows as **$O(N^2)$** while star grows as **O(N)**. This is why full mesh is impractical beyond ~10 nodes in practice.
 
 ## 3.2 Star vs Mesh Reliability Comparison
 
@@ -11722,7 +11722,7 @@ Same key for encrypt/decrypt:
 
 | Algorithm | Key Size | Status |
 |---|---|---|
-| **AES** | 128/192/256 | Current standard |
+| **AES** | $128/192/256$ | Current standard |
 | **DES** | 56 | Obsolete |
 | **3DES** | 168 | Legacy |
 
@@ -11912,7 +11912,7 @@ d_trans = packet_size / bandwidth = (1500 * 8) / (100 * 10^6) = 12000 / 10^8 = *
 d_prop = distance / speed = 200,000 / (2 * 10^8) = **1.0 ms**
 
 **Step 3 — Total** (ignoring queuing and processing):
-d_total = 0.12 + 1.0 = **1.12 ms**
+$$d_{total} = 0.12 + 1.0 = 1.12\\ \\mathrm{ms}$$
 
 Propagation dominates here (89%). On a 1 Gbps link, d_trans drops to 0.012 ms and propagation dominates even more.
 
@@ -12044,7 +12044,7 @@ fee_number_sys: { topicId: 'fee_number_sys', title: 'Number Systems and Boolean 
 | 4 | -8 to +7 | 1000 | 0111 |
 | 8 | **-128 to +127** | 10000000 | 01111111 |
 | 16 | -32768 to +32767 | — | — |
-| 32 | -2^31 to +2^31-1 | — | — |
+| 32 | $-2^31 to +2^31-1$ | — | — |
 
 **Negate -45 in 8-bit two's complement:**
 - +45 = 00101101
@@ -12059,12 +12059,12 @@ fee_number_sys: { topicId: 'fee_number_sys', title: 'Number Systems and Boolean 
 
 **4x4 K-map** (Gray code order AB vs CD):
 
-|  | CD=00 | CD=01 | CD=11 | CD=10 |
+|  | $CD=00$ | $CD=01$ | $CD=11$ | $CD=10$ |
 |---|---|---|---|---|
-| AB=00 | **1** | **1** | 0 | **1** |
-| AB=01 | 0 | **1** | 0 | 0 |
-| AB=11 | 0 | 0 | 0 | 0 |
-| AB=10 | **1** | **1** | 0 | **1** |
+| $AB=00$ | **1** | **1** | 0 | **1** |
+| $AB=01$ | 0 | **1** | 0 | 0 |
+| $AB=11$ | 0 | 0 | 0 | 0 |
+| $AB=10$ | **1** | **1** | 0 | **1** |
 
 **Groups**: (1) cells 0,1,8,9 = group of 4 -> **B'D'** wait — let me group properly:
 - Group 1: m(0,2,8,10) -> corners wrap: **B'D'**
@@ -12143,7 +12143,7 @@ Multiple active inputs -> encodes highest-priority one. Used in interrupt system
 
 ## 2.4 Subtraction
 
-**A - B = A + (~B) + 1** (2's complement). Same adder with invert path.`,
+**$A - B = A + (~B) + 1$** (2's complement). Same adder with invert path.`,
       examTip: 'Full-adder: Sum = A XOR B XOR Cin, Cout = AB + Cin(A XOR B). Most tested combinational equations. A - B = A + NOT(B) + 1.',
     },
     { id: 'comblog-exam', title: '3. Combinational Circuit Design',
@@ -12222,10 +12222,10 @@ fee_seq_logic: { topicId: 'fee_seq_logic', title: 'Sequential Logic: Flip-Flops 
 
 | Type | Equation | Key Property |
 |---|---|---|
-| **SR** | Q+ = S+R'Q (S*R=0) | S=R=1 **forbidden** |
-| **D** | **Q+ = D** | Captures input on edge |
-| **JK** | Q+ = JQ'+K'Q | J=K=1 toggles; universal |
-| **T** | Q+ = T XOR Q | T=1 toggles, T=0 holds |
+| **SR** | $Q+ = S+R'Q (S*R=0)$ | S=R=1 **forbidden** |
+| **D** | **$Q+ = D$** | Captures input on edge |
+| **JK** | $Q+ = JQ'+K'Q$ | J=K=1 toggles; universal |
+| **T** | $Q+ = T XOR Q$ | T=1 toggles, T=0 holds |
 
 ## 1.2 Timing Constraints
 
@@ -12237,7 +12237,7 @@ fee_seq_logic: { topicId: 'fee_seq_logic', title: 'Sequential Logic: Flip-Flops 
 
 Violations cause **metastability** (unpredictable state).
 
-**Max frequency**: **f_max = 1 / (t_cq + t_comb + t_su)**`,
+**Max frequency**: **$f_{\\max} = 1 / (t_{cq} + t_{comb} + t_{su})$**`,
       examTip: 'D FF: Q+ = D (most common and most tested). f_max = 1/(t_cq + t_comb + t_su). Setup/hold violations cause metastability.',
       importantNote: 'SR with S=R=1 is forbidden (indeterminate). JK solves this: J=K=1 = toggle. This is why JK is called "universal."',
     },
@@ -12304,11 +12304,11 @@ States 6 and 7 are **don't-cares** (never reached in normal operation). Use D fl
 
 | Clock | Q3 | Q2 | Q1 | Q0 | Feedback (Q3 XOR Q2) |
 |---|---|---|---|---|---|
-| 0 | 1 | 0 | 0 | 0 | 1 XOR 0 = 1 |
-| 1 | 1 | 1 | 0 | 0 | 1 XOR 1 = 0 |
-| 2 | 0 | 1 | 1 | 0 | 0 XOR 1 = 1 |
-| 3 | 1 | 0 | 1 | 1 | 1 XOR 0 = 1 |
-| 4 | 1 | 1 | 0 | 1 | 1 XOR 1 = 0 |
+| 0 | 1 | 0 | 0 | 0 | $1 XOR 0 = 1$ |
+| 1 | 1 | 1 | 0 | 0 | $1 XOR 1 = 0$ |
+| 2 | 0 | 1 | 1 | 0 | $0 XOR 1 = 1$ |
+| 3 | 1 | 0 | 1 | 1 | $1 XOR 0 = 1$ |
+| 4 | 1 | 1 | 0 | 1 | $1 XOR 1 = 0$ |
 
 The LFSR cycles through a **pseudo-random sequence**. With proper tap selection, a maximal-length LFSR of n bits produces 2^n - 1 states before repeating (all states except all-zeros).
 
@@ -12464,7 +12464,7 @@ fee_memory: { topicId: 'fee_memory', title: 'Memory Systems: ROM, RAM, Cache, FP
 
 | Level | Size | Access |
 |---|---|---|
-| Registers | < 1 KB | ~0.5 ns |
+| Registers | $< 1 KB$ | ~0.5 ns |
 | L1 Cache | 32-64 KB | ~1-4 ns |
 | L2 Cache | 256 KB-1 MB | ~4-10 ns |
 | RAM | 4-64 GB | ~50-100 ns |
@@ -12518,11 +12518,11 @@ Each level: ~10x larger, ~10x slower, ~10x cheaper.`,
 
 | Memory Size | Bytes | Address Lines |
 |---|---|---|
-| 1 KB | 2^10 | 10 |
-| 64 KB | 2^16 | 16 |
-| **256 KB** | **2^18** | **18** |
-| 1 MB | 2^20 | 20 |
-| 4 GB | 2^32 | 32 |
+| 1 KB | $2^10$ | 10 |
+| 64 KB | $2^16$ | 16 |
+| **256 KB** | **$2^18$** | **18** |
+| 1 MB | $2^20$ | 20 |
+| 4 GB | $2^32$ | 32 |
 
 If each location stores W bits (word width), total bits = 2^n * W. Data bus width = W bits; address bus = n bits.
 
@@ -12530,12 +12530,12 @@ If each location stores W bits (word width), total bits = 2^n * W. Data bus widt
 
 **Effective Memory Access Time**: t_avg = h * t_cache + (1-h) * t_memory
 
-| Hit Rate (h) | t_cache = 5 ns | t_memory = 100 ns | **t_avg** |
+| Hit Rate (h) | $t_{cache} = 5\\ \\mathrm{ns}$ | $t_{memory} = 100\\ \\mathrm{ns}$ | **t_avg** |
 |---|---|---|---|
-| 80% | 0.80 * 5 = 4.0 | 0.20 * 100 = 20.0 | **24.0 ns** |
-| 90% | 0.90 * 5 = 4.5 | 0.10 * 100 = 10.0 | **14.5 ns** |
-| 95% | 0.95 * 5 = 4.75 | 0.05 * 100 = 5.0 | **9.75 ns** |
-| 99% | 0.99 * 5 = 4.95 | 0.01 * 100 = 1.0 | **5.95 ns** |
+| 80% | $0.80 * 5 = 4.0$ | $0.20 * 100 = 20.0$ | **24.0 ns** |
+| 90% | $0.90 * 5 = 4.5$ | $0.10 * 100 = 10.0$ | **14.5 ns** |
+| 95% | $0.95 * 5 = 4.75$ | $0.05 * 100 = 5.0$ | **9.75 ns** |
+| 99% | $0.99 * 5 = 4.95$ | $0.01 * 100 = 1.0$ | **5.95 ns** |
 
 Going from 90% to 95% hit rate improves EMAT by 33%. Going from 95% to 99% improves by another 39%. **Every percentage point matters more at higher hit rates.**
 
@@ -12634,10 +12634,10 @@ Multiple instructions overlap in different stages simultaneously.
 **Problem**: Execute 1000 instructions. RISC: 5-stage pipeline, 1 GHz clock, CPI = 1.2 (with stalls). CISC: multi-cycle, 2 GHz clock, CPI = 3.5.
 
 **RISC execution time**:
-T_RISC = IC * CPI / f = 1000 * 1.2 / 10^9 = **1.2 us**
+$$T_{RISC} = IC * CPI / f = 1000 * 1.2 / 10^9 = 1.2\\ \\mathrm{us}$$
 
 **CISC execution time**:
-T_CISC = IC * CPI / f = 1000 * 3.5 / (2 * 10^9) = **1.75 us**
+$$T_{CISC} = IC * CPI / f = 1000 * 3.5 / (2 * 10^9) = 1.75\\ \\mathrm{us}$$
 
 | Metric | RISC (1 GHz) | CISC (2 GHz) |
 |---|---|---|
@@ -12653,7 +12653,7 @@ RISC wins despite lower clock speed because its pipeline achieves much lower CPI
 
 **Effective CPI**:
 CPI = 1 + (branch_fraction * mispredict_rate * penalty)
-CPI = 1 + (0.20 * 0.30 * 2) = 1 + 0.12 = **1.12**
+$$CPI = 1 + (0.20 * 0.30 * 2) = 1 + 0.12 = 1.12$$
 
 **Speedup vs non-pipelined** (5 cycles/instr):
 Speedup = 5 / 1.12 = **4.46x** (vs ideal 5x)
@@ -12704,7 +12704,7 @@ fee_mem_hierarchy: { topicId: 'fee_mem_hierarchy', title: 'Memory Hierarchy and 
 
 | Level | Size | Access |
 |---|---|---|
-| Registers | < 1 KB | ~0.5 ns |
+| Registers | $< 1 KB$ | ~0.5 ns |
 | L1 Cache | 32-64 KB | ~1-4 ns |
 | L2 Cache | 256 KB-1 MB | ~10 ns |
 | RAM | GBs | ~100 ns |
@@ -12755,9 +12755,9 @@ Replacement: LRU (good), FIFO (simple), Optimal (theoretical best).`,
 
 **EMAT = h1*t_L1 + (1-h1)*h2*t_L2 + (1-h1)*(1-h2)*t_mem**
 
-EMAT = 0.95 * 1 + 0.05 * 0.80 * 10 + 0.05 * 0.20 * 100
+$$EMAT = 0.95 * 1 + 0.05 * 0.80 * 10 + 0.05 * 0.20 * 100$$
 
-EMAT = 0.95 + 0.40 + 1.00 = **2.35 ns**
+$$EMAT = 0.95 + 0.40 + 1.00 = 2.35\\ \\mathrm{ns}$$
 
 | Component | Probability | Time | Contribution |
 |---|---|---|---|
@@ -12777,8 +12777,8 @@ Only 1% of accesses reach main memory, yet that 1% contributes 43% of the averag
 - **2-level walk**: 2 memory accesses * 100 ns = **200 ns per TLB miss**
 
 **Effective translation time**:
-t_translate = h_TLB * t_TLB + (1 - h_TLB) * t_walk
-t_translate = 0.95 * 1 + 0.05 * 200 = 0.95 + 10 = **10.95 ns**
+$$t_{translate} = h_{TLB} * t_{TLB} + (1 - h_{TLB}) * t_{walk}$$
+$$t_{translate} = 0.95 * 1 + 0.05 * 200 = 0.95 + 10 = 10.95\\ \\mathrm{ns}$$
 
 Without TLB: every access costs 200 ns extra. The TLB reduces average translation overhead by **95%**.
 
@@ -12786,10 +12786,10 @@ Without TLB: every access costs 200 ns extra. The TLB reduces average translatio
 
 | TLB Hit Rate | Translation Time | Impact on Memory Access |
 |---|---|---|
-| 99% | 0.99 + 2.0 = 2.99 ns | Negligible overhead |
-| 95% | 0.95 + 10.0 = **10.95 ns** | Moderate |
-| 90% | 0.90 + 20.0 = 20.90 ns | Significant |
-| 80% | 0.80 + 40.0 = 40.80 ns | Severe — redesign needed |
+| 99% | $0.99 + 2.0 = 2.99\\ \\mathrm{ns}$ | Negligible overhead |
+| 95% | $0.95 + 10.0 = 10.95\\ \\mathrm{ns}$ | Moderate |
+| 90% | $0.90 + 20.0 = 20.90\\ \\mathrm{ns}$ | Significant |
+| 80% | $0.80 + 40.0 = 40.80\\ \\mathrm{ns}$ | Severe — redesign needed |
 
 **Working set**: if a program's actively-used pages fit in the TLB, hit rate stays > 99%. Large, scattered data structures (e.g., pointer-chasing) cause TLB thrashing.
 
@@ -12895,7 +12895,7 @@ DMA controller transfers data directly between device and memory. CPU only handl
 | Clock speed | 400 kHz | 10 MHz |
 | Data lines | 1 (SDA) | 2 (MOSI + MISO) |
 | Overhead per byte | ~9 bits (8 data + ACK) | 8 bits (pure data) |
-| **Effective throughput** | 400k/9 = **44.4 kB/s** | 10M * 2 / 8 = **2.5 MB/s** |
+| **Effective throughput** | $400k/9 = 44.4 kB/s$ | $10M * 2 / 8 = 2.5 MB/s$ |
 | Duplex | Half | **Full** |
 
 SPI is **~56x faster** than I2C Fast Mode. But I2C uses only 2 wires and supports multi-master with built-in addressing — better for low-speed sensor networks.
@@ -12933,11 +12933,11 @@ fee_performance: { topicId: 'fee_performance', title: 'Performance Metrics: CPI,
 **CPI_avg = SUM(CPI_i * fraction_i)**
 
 Example: ALU (CPI=1, 40%), Load (CPI=3, 30%), Branch (CPI=2, 30%):
-CPI = 0.4 + 0.9 + 0.6 = **1.9**
+$$CPI = 0.4 + 0.9 + 0.6 = 1.9$$
 
 ## 1.3 MIPS
 
-**MIPS = f(MHz) / CPI**
+**$MIPS = f(MHz) / CPI$**
 
 Execution time is the ONLY reliable metric. MIPS can be misleading (ignores instruction complexity).`,
       examTip: 'Time = IC*CPI/f. CPI is often weighted. MIPS = f(MHz)/CPI. Lower execution time = better. When comparing CPUs, use execution time on the SAME program.',
@@ -12997,8 +12997,8 @@ Going from 8 to 16 cores gains only 0.06x — diminishing returns. The 60% seque
 
 **CPI_avg = SUM(fraction_i * CPI_i)**
 
-CPI = 0.40*1 + 0.30*3 + 0.20*2 + 0.10*4
-CPI = 0.40 + 0.90 + 0.40 + 0.40 = **2.10**
+$$CPI = 0.40*1 + 0.30*3 + 0.20*2 + 0.10*4$$
+$$CPI = 0.40 + 0.90 + 0.40 + 0.40 = 2.10$$
 
 | Instruction | Fraction | CPI | Contribution |
 |---|---|---|---|
@@ -13014,10 +13014,10 @@ CPI = 0.40 + 0.90 + 0.40 + 0.40 = **2.10**
 
 **Given**: Clock frequency = 2 GHz, CPI = 2.10.
 
-**MIPS = f(MHz) / CPI = 2000 / 2.10 = 952.4 MIPS**
+**$MIPS = f(MHz) / CPI = 2000 / 2.10 = 952.4 MIPS$**
 
 **Execution time for 10^6 instructions**:
-T = IC * CPI / f = 10^6 * 2.10 / (2 * 10^9) = **1.05 ms**
+$$T = IC * CPI / f = 10^6 * 2.10 / (2 * 10^9) = 1.05\\ \\mathrm{ms}$$
 
 **Caution**: MIPS is misleading for cross-architecture comparison. A CISC processor might accomplish in 1 instruction what RISC needs 3 for. Always compare **execution time for the same task**.
 
@@ -13058,8 +13058,8 @@ fee_algorithms: { topicId: 'fee_algorithms', title: 'Algorithms and Complexity',
 | **O(log n)** | Logarithmic | Binary search |
 | **O(n)** | Linear | Linear search |
 | **O(n log n)** | Linearithmic | Merge sort |
-| **O(n^2)** | Quadratic | Bubble sort |
-| **O(2^n)** | Exponential | Brute-force subsets |
+| **$O(n^2)$** | Quadratic | Bubble sort |
+| **$O(2^n)$** | Exponential | Brute-force subsets |
 
 ## 1.2 Rules
 
@@ -13074,10 +13074,10 @@ fee_algorithms: { topicId: 'fee_algorithms', title: 'Algorithms and Complexity',
 
 | Algorithm | Average | Worst | Space | Stable |
 |---|---|---|---|---|
-| **Bubble** | O(n^2) | O(n^2) | O(1) | Yes |
-| **Insertion** | O(n^2) | O(n^2) | O(1) | Yes |
+| **Bubble** | $O(n^2)$ | $O(n^2)$ | O(1) | Yes |
+| **Insertion** | $O(n^2)$ | $O(n^2)$ | O(1) | Yes |
 | **Merge** | O(n log n) | O(n log n) | O(n) | Yes |
-| **Quick** | O(n log n) | O(n^2) | O(log n) | No |
+| **Quick** | O(n log n) | $O(n^2)$ | O(log n) | No |
 | **Heap** | O(n log n) | O(n log n) | O(1) | No |
 
 ## 2.2 Searching
@@ -13104,15 +13104,15 @@ Fibonacci: naive O(2^n); DP O(n).`,
 
 Here: a = 4, b = 2, d = 2. Compare **log_b(a)** with **d**:
 
-log_2(4) = 2 = d
+$$\\log _2(4) = 2 = d$$
 
-**Case 2** (log_b(a) = d): T(n) = O(n^d * log n) = **O(n^2 log n)**
+**Case 2** (log_b(a) = d): T(n) = O(n^d * log n) = **$O(n^2 \\log  n)$**
 
 | Case | Condition | Result |
 |---|---|---|
-| 1 | log_b(a) > d | O(n^(log_b(a))) |
-| **2** | **log_b(a) = d** | **O(n^d log n)** |
-| 3 | log_b(a) < d | O(n^d) |
+| 1 | $\\log _b(a) > d$ | $O(n^{\\log _b(a)})$ |
+| **2** | **$\\log _b(a) = d$** | **$O(n^d \\log  n)$** |
+| 3 | $\\log _b(a) < d$ | $O(n^d)$ |
 
 **Quick check**: T(n) = 2T(n/2) + n -> a=2, b=2, d=1 -> log_2(2)=1=d -> Case 2: **O(n log n)** (merge sort!).
 
@@ -13143,7 +13143,7 @@ For **nearly-sorted data**, quick sort with naive pivot (first/last element) deg
 | 100 | 7 |
 | 1,000 | 10 |
 | 1,000,000 | 20 |
-| 10^9 | 30 |
+| $10^9$ | 30 |
 
 **Common off-by-one errors**:
 - Loop condition: use **low <= high** (not low < high) to check single-element range
@@ -13814,7 +13814,7 @@ Most exam mistakes are unit errors. Common traps:
 - **Power in kW vs MW** — power-systems problems often give MW or MVA; circuits problems use W or mW
 - **Time in seconds vs hours** — engineering economics uses years, control systems uses seconds, power systems often hours
 - **Voltage RMS vs peak** — AC problems default to RMS for power, peak for waveform descriptions. Check which the question gives.
-- **Decibels** — dB = 10·log₁₀(P/P_ref) for power, 20·log₁₀(V/V_ref) for voltage. dBm is referenced to 1 mW.
+- **Decibels** — dB = 10·$\\log _{10}$(P/P_ref) for power, 20·$\\log _{10}$(V/V_ref) for voltage. dBm is referenced to 1 mW.
 - **Frequency Hz vs rad/s** — Bode plots use rad/s convention; some problems give Hz. ω = 2πf.
 - **Imperial vs SI** — most FE problems are SI but occasional imperial sneaks in (especially horsepower in power problems; 1 HP = 746 W).
 
@@ -14037,7 +14037,7 @@ fee_signal_nyquist: {
 
 A bandlimited continuous-time signal x(t) with no frequency components above f_max can be PERFECTLY RECONSTRUCTED from its samples if the sampling rate satisfies:
 
-  f_s > 2 · f_max
+  $$f_s > 2 \\cdot f_{\\max}$$
 
 The minimum sampling rate 2·f_max is called the NYQUIST RATE. The corresponding maximum signal frequency f_s/2 is called the NYQUIST FREQUENCY.
 
@@ -14063,7 +14063,7 @@ If a signal at frequency f > f_s/2 is sampled, it APPEARS at a DIFFERENT frequen
 
 The aliased frequency is:
 
-  f_alias = |f - n · f_s|
+  $$f_{alias} = |f - n \\cdot f_s|$$
 
 where n is the integer that makes the result fall in [0, f_s/2].
 
@@ -14342,7 +14342,7 @@ The log-log nature of the magnitude plot makes asymptotic approximation possible
 
 For a transfer function H(s):
 
-  |H(jω)|_dB = 20 · log₁₀ |H(jω)|
+  |H(jω)|_dB = 20 · $\\log _{10}$ |H(jω)|
 
 Examples:
 - |H| = 1 → 0 dB
@@ -14360,7 +14360,7 @@ A transfer function is decomposed into FACTORS, each contributing to the total B
 
 | Factor in H(s) | Magnitude slope | Phase contribution |
 |---|---|---|
-| Constant K | 20·log₁₀(K) dB everywhere | 0° if K > 0, ±180° if K < 0 |
+| Constant K | 20·log₁₀(K) dB everywhere | $0^\\circ if K > 0, \\pm 180^\\circ if K < 0$ |
 | Pole at origin: 1/s | -20 dB/decade | -90° everywhere |
 | Zero at origin: s | +20 dB/decade | +90° everywhere |
 | Real pole 1/(s/p + 1) | 0 below p, -20 dB/decade above p | 0° below p/10, -90° above p·10, -45° at p |
@@ -14374,8 +14374,8 @@ Each factor contributes ADDITIVELY (because log of a product = sum of logs).
 
 Bode plots use TIME-CONSTANT form, not pole-zero form. Convert:
 
-  Pole-zero form: H(s) = K' · (s - z₁) / (s - p₁)
-  Time-constant form: H(s) = K · (s/z₁ + 1) / (s/p₁ + 1)   (assuming p₁, z₁ are not at origin)
+  Pole-zero form: H(s) = K' · (s - $z_{1}$) / (s - $p_{1}$)
+  Time-constant form: H(s) = K · (s/$z_{1}$ + 1) / (s/$p_{1}$ + 1)   (assuming $p_{1}$, $z_{1}$ are not at origin)
 
 In time-constant form, the breakpoint of each factor is the "1" — i.e., the corner frequency for a factor (s/p + 1) is ω = p.
 
@@ -14398,8 +14398,8 @@ The DC gain K in time-constant form is the magnitude at ω → 0.
 ## 1.6 Example: H(s) = 10 · (s + 100) / (s · (s + 10))
 
 Step 1: time-constant form:
-  H(s) = 10 · (s/100 + 1) · 100 / (s · ((s/10 + 1) · 10))
-       = 100 · (s/100 + 1) / (s · (s/10 + 1))
+  $$H(s) = 10 \\cdot (s/100 + 1) \\cdot 100 / (s \\cdot ((s/10 + 1) \\cdot 10))$$
+       $$= 100 \\cdot (s/100 + 1) / (s \\cdot (s/10 + 1))$$
 
 DC gain (as s → 0): the (s/100 + 1) → 1, the (s/10 + 1) → 1, so |H| → 100/s as s → 0. There's a pole at origin (s), so DC gain is undefined; the magnitude goes to infinity as ω → 0.
 
@@ -14422,7 +14422,7 @@ Step 6: phase:
 - Pole at ω = 10: 0° below 1, -45° at 10, -90° above 100 (transition centered at 10)
 - Zero at ω = 100: 0° below 10, +45° at 100, +90° above 1000 (transition centered at 100)
 
-Total phase: start at -90° (just from origin pole), transition to -180° (origin pole + p₁ pole) around ω = 10, transition back up by 90° (zero) around ω = 100, ending at -90° at high frequency.`,
+Total phase: start at -90° (just from origin pole), transition to -180° (origin pole + $p_{1}$ pole) around ω = 10, transition back up by 90° (zero) around ω = 100, ending at -90° at high frequency.`,
       examTip: `Always start in time-constant form. Identify corner frequencies. Start with low-frequency asymptote. Change slope at each corner. Use ±20 dB/decade per pole/zero of multiplicity.`,
     },
     {
@@ -14497,9 +14497,9 @@ This is useful for design: choose ω_gc to match the desired closed-loop bandwid
       title: `3. Common Transfer Function Patterns the Exam Tests`,
       content: `## 3.1 First-order low-pass
 
-  H(s) = K / (s/p + 1)
+  $$H(s) = K / (s/p + 1)$$
 
-- DC gain: K (= 20·log₁₀ K dB)
+- DC gain: K (= 20·$\\log _{10}$ K dB)
 - Corner frequency: ω = p
 - Magnitude slope: 0 below p, -20 dB/decade above
 - Phase: 0° below p/10, -45° at p, -90° above p·10
@@ -14518,7 +14518,7 @@ Used for: simple RC low-pass filters, first-order systems.
 
 ## 3.3 Second-order low-pass
 
-  H(s) = ωₙ² / (s² + 2ζωₙs + ωₙ²)
+  $$H(s) = \\omega _{n}^{2} / (s^{2} + 2\\zeta \\omega _{n}s + \\omega _{n}^{2})$$
 
 - DC gain: 1 (0 dB)
 - Natural frequency: ωₙ
@@ -14531,7 +14531,7 @@ For ζ = 0.5: 1.25 dB resonant peak. For ζ = 0.1: 14 dB peak. For ζ ≥ 0.707:
 
 ## 3.4 Pole at origin (integrator)
 
-  H(s) = 1/s
+  $$H(s) = 1/s$$
 
 - Magnitude: -20 dB/decade everywhere; passes through 0 dB at ω = 1
 - Phase: -90° everywhere
@@ -14557,10 +14557,10 @@ Used as: integrator in op-amp circuits, type-1 control system.
 
 ## 3.7 PID controller
 
-  H(s) = K_p + K_i/s + K_d·s
+  $$H(s) = K_p + K_i/s + K_d\\cdot s$$
 
 In transfer function form often written:
-  H(s) = K_p · (1 + 1/(T_i·s) + T_d·s)
+  $$H(s) = K_p \\cdot (1 + 1/(T_i\\cdot s) + T_d\\cdot s)$$
 
 - The integral term (K_i/s) provides infinite DC gain — eliminates steady-state error to step input
 - The derivative term (K_d·s) adds phase lead and improves transient response
@@ -14633,7 +14633,7 @@ Poles are typically plotted as ×, zeros as ○.
 
 For a single real pole at s = -a (a > 0):
 
-  H(s) = K / (s + a)
+  $$H(s) = K / (s + a)$$
   h(t) = K · e^(-at)   (impulse response)
 
 The time constant is τ = 1/a. The response decays to ~37% in τ seconds, ~5% in 3τ, ~1% in 5τ.
@@ -14663,11 +14663,11 @@ The damped frequency ω_d = ωₙ · √(1 - ζ²).
 
 | ζ | Behavior |
 |---|---|
-| ζ > 1 | Overdamped — two real poles, slow but no oscillation |
-| ζ = 1 | Critically damped — repeated real pole, fastest non-oscillatory |
-| 0 < ζ < 1 | Underdamped — complex poles, oscillation present |
-| ζ = 0 | Undamped — purely imaginary poles, pure oscillation forever |
-| ζ < 0 | Negative damping — RHP poles, growing oscillation |
+| $\\zeta > 1$ | Overdamped — two real poles, slow but no oscillation |
+| $\\zeta = 1$ | Critically damped — repeated real pole, fastest non-oscillatory |
+| $0 < \\zeta < 1$ | Underdamped — complex poles, oscillation present |
+| $\\zeta = 0$ | Undamped — purely imaginary poles, pure oscillation forever |
+| $\\zeta < 0$ | Negative damping — RHP poles, growing oscillation |
 
 ## 1.5 Pole locations and step response characteristics
 
@@ -14749,7 +14749,7 @@ This is sometimes used in control design — a controller adds a zero to cancel 
 
 When you put a controller K·G(s) in a feedback loop with plant H(s), the closed-loop transfer function is:
 
-  T(s) = K·G(s)·H(s) / (1 + K·G(s)·H(s))
+  $$T(s) = K\\cdot G(s)\\cdot H(s) / (1 + K\\cdot G(s)\\cdot H(s))$$
 
 The closed-loop POLES are the roots of the characteristic equation 1 + K·G(s)·H(s) = 0. As K varies, the pole locations TRACE OUT the ROOT LOCUS.
 
@@ -14807,8 +14807,8 @@ For purely real pole/zero combinations:
 
 An alternative to transfer functions, using vector-matrix form:
 
-  ẋ = Ax + Bu
-  y = Cx + Du
+  $$\\dot{x} = Ax + Bu$$
+  $$y = Cx + Du$$
 
 Where x is the state vector, u is input, y is output. The system POLES are the EIGENVALUES of A — the roots of det(sI - A) = 0.
 
@@ -14846,7 +14846,7 @@ s^0     | (final coefficient)
 \`\`\`
 
 Where: b_1 = (a_(n-1)·a_(n-2) - a_n·a_(n-3)) / a_(n-1)
-       b_2 = (a_(n-1)·a_(n-4) - a_n·a_(n-5)) / a_(n-1)
+       $$b_2 = (a_(n-1)\\cdot a_(n-4) - a_n\\cdot a_(n-5)) / a_(n-1)$$
 ... and similarly for subsequent rows.
 
 The system is stable if and only if all entries in the FIRST COLUMN have the SAME SIGN.
@@ -14886,7 +14886,7 @@ First column: 1, 1, -5, 6 — two sign changes (+ → - and - → +). Two RHP ro
 
 For autonomous system ẋ = Ax with initial state x(0), the solution is:
 
-  x(t) = e^(At) · x(0)
+  $$x(t) = e^{At} \\cdot x(0)$$
 
 Where e^(At) is the matrix exponential, computable as:
 - e^(At) = L⁻¹{(sI - A)⁻¹}   (inverse Laplace of resolvent matrix)
@@ -14932,8 +14932,8 @@ Power system faults are classified by which phases and ground are involved:
 
 | Fault type | Symbol | Phases involved | Approximate frequency |
 |---|---|---|---|
-| Three-phase fault (balanced) | 3φ or LLL | All three phases short-circuited | ~5% |
-| Three-phase to ground | 3φG | All three phases to ground | ~5% |
+| Three-phase fault (balanced) | $3\\phi or LLL$ | All three phases short-circuited | ~5% |
+| Three-phase to ground | $3\\phi G$ | All three phases to ground | ~5% |
 | Single-line-to-ground | SLG or LG | One phase to ground | ~70% |
 | Line-to-line | LL | Two phases short-circuited | ~15% |
 | Double-line-to-ground | LLG or DLG | Two phases to ground | ~5% |
@@ -14988,19 +14988,19 @@ Any set of three phasors V_a, V_b, V_c can be written as the SUM of three balanc
 Where a = 1∠120° = -0.5 + j0.866 (the cube root of unity).
 
 So:
-  V_a = V_a0 + V_a1 + V_a2
-  V_b = V_a0 + a²·V_a1 + a·V_a2
-  V_c = V_a0 + a·V_a1 + a²·V_a2
+  $$V_a = V_a0 + V_a1 + V_a2$$
+  $$V_b = V_a0 + a^{2}\\cdot V_a1 + a\\cdot V_a2$$
+  $$V_c = V_a0 + a\\cdot V_a1 + a^{2}\\cdot V_a2$$
 
 In matrix form:
   [V_a]   [1  1   1 ]   [V_a0]
-  [V_b] = [1  a²  a ] × [V_a1]
-  [V_c]   [1  a   a²]   [V_a2]
+  $$[V_b] = [1 a^{2} a] \\times [V_a1]$$
+  $$[V_c] [1 a a^{2}] [V_a2]$$
 
 The inverse (decompose phase quantities into sequence quantities):
   [V_a0]       [1  1   1 ]   [V_a]
-  [V_a1] = ⅓ × [1  a   a²] × [V_b]
-  [V_a2]       [1  a²  a ]   [V_c]
+  $$[V_a1] = \\tfrac{1}{3} \\times [1 a a^{2}] \\times [V_b]$$
+  $$[V_a2] [1 a^{2} a] [V_c]$$
 
 ## 2.3 Physical interpretation
 
@@ -15083,10 +15083,10 @@ For a three-phase fault at a bus with Thevenin equivalent impedance Z_th (per-un
 
 For pre-fault voltage of 1.0 p.u. (rated voltage):
 
-  I_fault (p.u.) = 1.0 / Z_th
+  $$I_{fault} (p.u.) = 1.0 / Z_{th}$$
 
 To convert to amperes:
-  I_fault (A) = I_fault (p.u.) × I_base = 1.0 / Z_th × (S_base / (√3 · V_base))
+  $$I_{fault} (A) = I_{fault} (p.u.) \\times I_{base} = 1.0 / Z_{th} \\times (S_{base} / (\\sqrt{3} \\cdot V_{base}))$$
 
 ## 3.3 Worked example
 
@@ -15096,7 +15096,7 @@ Three-phase fault at bus B in a system:
 
 Per-unit fault current: I_f (p.u.) = 1.0 / 0.10 = 10 p.u.
 
-I_base = 100 × 10⁶ / (√3 · 138 × 10³) = 418 A
+$$I_{base} = 100 \\times 10^{6} / (\\sqrt{3} \\cdot 138 \\times 10^{3}) = 418\\ \\mathrm{A}$$
 
 I_fault (actual) = 10 × 418 = 4,180 A
 
@@ -15147,10 +15147,10 @@ For typical FE fault problems:
 
 For 3φ faults (most common exam type):
   I_fault (p.u.) = 1.0 / Z_1 (Thevenin per unit)
-  I_fault (kA) = I_p.u. × I_base
+  $$I_{fault} (kA) = I_p.u. \\times I_{base}$$
 
 For SLG faults:
-  I_fault (p.u.) = 3 / (Z_1 + Z_2 + Z_0)
+  $$I_{fault} (p.u.) = 3 / (Z_1 + Z_2 + Z_0)$$
   (assuming bolted fault, pre-fault voltage 1.0 p.u.)
 
 ## 3.8 Protective relay coordination
@@ -15202,7 +15202,7 @@ fee_comms_shannon: {
 
 For a channel with bandwidth B (Hz) and signal-to-noise ratio S/N (linear, not dB), the maximum achievable error-free data rate (channel capacity) C in bits per second is:
 
-  C = B · log₂(1 + S/N)
+  $$C = B \\cdot \\log _{2}(1 + S/N)$$
 
 This is the absolute upper bound — no coding scheme can exceed it without errors. Approaching it requires sophisticated coding (LDPC, turbo codes, polar codes), latency, and computation.
 
@@ -15217,21 +15217,21 @@ This is the absolute upper bound — no coding scheme can exceed it without erro
 **Example 1**: Telephone channel, B = 3 kHz, SNR = 30 dB
 
 - SNR linear = 10^(30/10) = 1000
-- C = 3000 · log₂(1 + 1000) = 3000 · log₂(1001) ≈ 3000 · 9.97 ≈ 29.9 kbps
+- C = 3000 · $\\log _{2}$(1 + 1000) = 3000 · $\\log _{2}$(1001) ≈ 3000 · 9.97 ≈ 29.9 kbps
 
 This is why analog modems plateaued at ~33-56 kbps over telephone lines.
 
 **Example 2**: Wi-Fi 20 MHz channel at SNR = 20 dB
 
 - SNR linear = 100
-- C = 20 × 10⁶ · log₂(101) ≈ 20 × 10⁶ · 6.66 ≈ 133 Mbps
+- C = 20 × $10^{6}$ · $\\log _{2}$(101) ≈ 20 × $10^{6}$ · 6.66 ≈ 133 Mbps
 
 Actual Wi-Fi at this SNR achieves ~70-100 Mbps (accounting for protocol overhead, real-world coding gaps).
 
 **Example 3**: To increase capacity from 1 Mbps to 2 Mbps with fixed B = 1 MHz:
 
 - C / B goes from 1 to 2 bits/sec/Hz
-- log₂(1 + SNR) goes from 1 to 2
+- $\\log _{2}$(1 + SNR) goes from 1 to 2
 - (1 + SNR) goes from 2 to 4
 - SNR goes from 1 (0 dB) to 3 (4.8 dB)
 - Just 4.8 dB more SNR doubled capacity
@@ -15249,13 +15249,13 @@ Diminishing returns: each extra bit costs ~3 dB more SNR at high SNR.
 
 For very low SNR (SNR << 1), Shannon's formula approaches:
 
-  C ≈ (B / ln 2) · (S/N) = 1.44 · B · (S/N)
+  $$C \\approx (B / \\ln  2) \\cdot (S/N) = 1.44 \\cdot B \\cdot (S/N)$$
 
 This is the LINEAR regime. Most modern systems operate at SNR around 10-30 dB, well into the logarithmic regime.
 
 The fundamental SNR-per-bit limit is:
 
-  E_b / N_0 = ln 2 ≈ 0.693 = -1.59 dB
+  $$E_b / N_0 = \\ln  2 \\approx 0.693 = -1.59\\ \\mathrm{dB}$$
 
 This is the SHANNON LIMIT — no system can transmit information with E_b/N_0 below -1.59 dB without errors, regardless of bandwidth.
 
@@ -15267,10 +15267,10 @@ Two related quantities:
 - **Eb/N0**: energy per BIT to noise power spectral density
 
 The relationship:
-  S/N = (E_b · R) / (N_0 · B)
+  $$S/N = (E_b \\cdot R) / (N_0 \\cdot B)$$
 
 Where R is data rate (bits/sec) and B is bandwidth (Hz). So:
-  E_b/N_0 = (S/N) · (B/R) = (S/N) / (R/B)
+  $$E_b/N_0 = (S/N) \\cdot (B/R) = (S/N) / (R/B)$$
 
 For BANDLIMITED systems (R/B ≈ 1), SNR ≈ Eb/N0. For SPECTRALLY EFFICIENT modulation (R/B > 1 bit/Hz), SNR > Eb/N0.
 
@@ -15296,7 +15296,7 @@ Channel capacity defines a frontier on the (spectral efficiency, power efficienc
 - Spectral efficiency η = R/B (bits/sec/Hz)
 - Power efficiency = Eb/N0 (lower is better)
 
-Shannon curve: η = log₂(1 + (R/B) · (E_b/N_0))
+Shannon curve: η = $\\log _{2}$(1 + (R/B) · (E_b/N_0))
 
 Modern coding pushes you closer to the Shannon limit but never exceeds it.`,
       examTip: `Shannon: C = B · log₂(1 + S/N). Use linear SNR, not dB. Doubling SNR linearly adds about 1 bit/Hz to capacity. Shannon limit Eb/N0 ≥ -1.59 dB is the fundamental floor.`,
@@ -15320,7 +15320,7 @@ Where:
 ## 2.2 dB review
 
 Decibels for power:
-  X dB = 10 · log₁₀(P / P_ref)
+  $$X dB = 10 \\cdot \\log _{10}(P / P_{ref})$$
 
 Common references:
 - **dBm**: reference = 1 mW. 0 dBm = 1 mW. 30 dBm = 1 W. -30 dBm = 1 μW.
@@ -15341,19 +15341,19 @@ Half-power = -3 dB. Double the power = +3 dB. 10× power = +10 dB. 100× = +20 d
 
 The most-tested loss in FE:
 
-  FSPL (dB) = 20·log₁₀(d) + 20·log₁₀(f) + 20·log₁₀(4π/c)
+  $$FSPL (dB) = 20\\cdot \\log _{10}(d) + 20\\cdot \\log _{10}(f) + 20\\cdot \\log _{10}(4\\pi /c)$$
 
 Where d is distance (m), f is frequency (Hz), c is speed of light. Combining constants:
 
-  FSPL (dB) = 20·log₁₀(d/m) + 20·log₁₀(f/MHz) + 32.4
+  $$FSPL (dB) = 20\\cdot \\log _{10}(d/m) + 20\\cdot \\log _{10}(f/MHz) + 32.4$$
 
 Or using miles and MHz:
 
-  FSPL (dB) = 20·log₁₀(d/miles) + 20·log₁₀(f/MHz) + 36.6
+  FSPL (dB) = 20·$\\log _{10}$(d/miles) + 20·$\\log _{10}$(f/MHz) + 36.6
 
 Or distance in km and GHz:
 
-  FSPL (dB) = 20·log₁₀(d/km) + 20·log₁₀(f/GHz) + 92.4
+  $$FSPL (dB) = 20\\cdot \\log _{10}(d/km) + 20\\cdot \\log _{10}(f/GHz) + 92.4$$
 
 Memorize ONE form and convert as needed.
 
@@ -15362,65 +15362,65 @@ Memorize ONE form and convert as needed.
 A 2.4 GHz Wi-Fi link, 100 m distance, with 10 dBi antennas on both ends, 20 dBm TX power, 2 dB cable loss each side.
 
 Path loss:
-  FSPL = 20·log₁₀(100) + 20·log₁₀(2400) + 32.4
-       = 20·2 + 20·3.38 + 32.4
-       = 40 + 67.6 + 32.4
-       = 140 dB
+  $$FSPL = 20\\cdot \\log _{10}(100) + 20\\cdot \\log _{10}(2400) + 32.4$$
+       $$= 20\\cdot 2 + 20\\cdot 3.38 + 32.4$$
+       $$= 40 + 67.6 + 32.4$$
+       $$= 140\\ \\mathrm{dB}$$
 
 Wait, let me redo:
-  d = 100 m → 20·log₁₀(100) = 40
-  f = 2400 MHz → 20·log₁₀(2400) = 20·3.38 = 67.6
+  $$d = 100 m \\to 20\\cdot \\log _{10}(100) = 40$$
+  $$f = 2400\\ \\mathrm{MHz} \\to 20\\cdot \\log _{10}(2400) = 20\\cdot 3.38 = 67.6$$
   Constant: 32.4
   Total FSPL = 40 + 67.6 + 32.4 = 140 dB
 
 Hmm that's too high — let me reconsider. For 2.4 GHz at 100 m:
   Actually FSPL ≈ 80 dB (typical Wi-Fi).
 
-Recompute: 20·log₁₀(100·2400) + 32.4
-  = 20·log₁₀(240000) + 32.4
+Recompute: 20·$\\log _{10}$(100·2400) + 32.4
+  $$= 20\\cdot \\log _{10}(240000) + 32.4$$
   Wait that's not right either. The formula in metric:
 
-FSPL = 20·log₁₀(4πd/λ) where λ = c/f
-     = 20·log₁₀(4π·d·f/c)
+FSPL = 20·$\\log _{10}$(4πd/λ) where λ = c/f
+     $$= 20\\cdot \\log _{10}(4\\pi \\cdot d\\cdot f/c)$$
 
-c = 3×10⁸ m/s, 4π/c = 4π / (3×10⁸) = 4.19 × 10⁻⁸
+$$c = 3\\times 10^{8} m/s, 4\\pi /c = 4\\pi / (3\\times 10^{8}) = 4.19 \\times 10^{-8}$$
 
-FSPL = 20·log₁₀(d·f·4.19×10⁻⁸)
-     = 20·log₁₀(d·f) + 20·log₁₀(4.19×10⁻⁸)
-     = 20·log₁₀(d·f) + 20·(-7.378)
-     = 20·log₁₀(d·f) - 147.6
+$$FSPL = 20\\cdot \\log _{10}(d\\cdot f\\cdot 4.19\\times 10^{-8})$$
+     $$= 20\\cdot \\log _{10}(d\\cdot f) + 20\\cdot \\log _{10}(4.19\\times 10^{-8})$$
+     $$= 20\\cdot \\log _{10}(d\\cdot f) + 20\\cdot (-7.378)$$
+     $$= 20\\cdot \\log _{10}(d\\cdot f) - 147.6$$
 
-For d=100 m, f=2.4×10⁹ Hz:
-  20·log₁₀(100 · 2.4×10⁹) = 20·log₁₀(2.4×10¹¹) = 20·11.38 = 227.6
+For d=100 m, f=2.4×$10^{9}$ Hz:
+  $$20\\cdot \\log _{10}(100 \\cdot 2.4\\times 10^{9}) = 20\\cdot \\log _{10}(2.4\\times 10^{11}) = 20\\cdot 11.38 = 227.6$$
   FSPL = 227.6 - 147.6 = 80 dB ✓
 
 So the formula I gave earlier mixed up the unit conversions. Use these clean reference formulas:
 
-  FSPL(dB) = 20·log₁₀(d/m) + 20·log₁₀(f/Hz) - 147.6
-  FSPL(dB) = 20·log₁₀(d/m) + 20·log₁₀(f/MHz) + 32.4  [where the constant absorbs the unit conversion]
+  $$FSPL(dB) = 20\\cdot \\log _{10}(d/m) + 20\\cdot \\log _{10}(f/Hz) - 147.6$$
+  FSPL(dB) = 20·$\\log _{10}$(d/m) + 20·$\\log _{10}$(f/MHz) + 32.4  [where the constant absorbs the unit conversion]
 
 I'll use the second form. For our example:
-  20·log₁₀(100) + 20·log₁₀(2400) + 32.4 = 40 + 67.6 + 32.4 = 140 dB
+  $$20\\cdot \\log _{10}(100) + 20\\cdot \\log _{10}(2400) + 32.4 = 40 + 67.6 + 32.4 = 140\\ \\mathrm{dB}$$
 
 But empirically Wi-Fi at 100 m is ~80 dB FSPL. Let me re-derive the constant.
 
-20·log₁₀(MHz) = 20·log₁₀(2400) = 67.6 — wait, that's the issue. Let me check:
+20·$\\log _{10}$(MHz) = 20·$\\log _{10}$(2400) = 67.6 — wait, that's the issue. Let me check:
 
-  20·log₁₀(4π·d/λ) with d=100m, λ = c/f = 3e8/2.4e9 = 0.125 m
-  4π·100/0.125 = 4π·800 = 10053
-  20·log₁₀(10053) = 80 dB ✓
+  20·$\\log _{10}$(4π·d/λ) with d=100m, λ = c/f = 3e8/2.4e9 = 0.125 m
+  $$4\\pi \\cdot 100/0.125 = 4\\pi \\cdot 800 = 10053$$
+  20·$\\log _{10}$(10053) = 80 dB ✓
 
-So formula 20·log₁₀(d/m) + 20·log₁₀(f/MHz) + 32.4 gives 140 dB — wrong.
+So formula 20·$\\log _{10}$(d/m) + 20·$\\log _{10}$(f/MHz) + 32.4 gives 140 dB — wrong.
 
 Let me re-derive: FSPL = 20·log(4π) + 20·log(d) + 20·log(f) - 20·log(c)
-              = 22 + 20·log(d) + 20·log(f) - 169.5
-              = 20·log(d/m) + 20·log(f/Hz) - 147.6
+              $$= 22 + 20\\cdot \\log (d) + 20\\cdot \\log (f) - 169.5$$
+              $$= 20\\cdot \\log (d/m) + 20\\cdot \\log (f/Hz) - 147.6$$
 
-Or:  20·log(d/m) + 20·log(f/MHz) + 20·log(10⁶) - 147.6
-   = 20·log(d/m) + 20·log(f/MHz) + 120 - 147.6
-   = 20·log(d/m) + 20·log(f/MHz) - 27.6
+$$Or: 20\\cdot \\log (d/m) + 20\\cdot \\log (f/MHz) + 20\\cdot \\log (10^{6}) - 147.6$$
+   $$= 20\\cdot \\log (d/m) + 20\\cdot \\log (f/MHz) + 120 - 147.6$$
+   $$= 20\\cdot \\log (d/m) + 20\\cdot \\log (f/MHz) - 27.6$$
 
-So:  FSPL = 20·log(d/m) + 20·log(f/MHz) - 27.6
+$$So: FSPL = 20\\cdot \\log (d/m) + 20\\cdot \\log (f/MHz) - 27.6$$
 Verify: 100m, 2400 MHz: 40 + 67.6 - 27.6 = 80 dB ✓
 
 Use FSPL = 20·log(d/m) + 20·log(f/MHz) - 27.6  [metric+MHz form]
@@ -15442,7 +15442,7 @@ That's a strong Wi-Fi signal (typical Wi-Fi receiver sensitivity is -70 to -85 d
 
 The receiver has a NOISE FLOOR — the thermal noise power that limits the smallest detectable signal:
 
-  Noise floor (dBm) = -174 + 10·log₁₀(B) + NF
+  Noise floor (dBm) = -174 + 10·$\\log _{10}$(B) + NF
 
 Where:
 - -174 dBm/Hz is the thermal noise power spectral density at room temperature
@@ -15450,7 +15450,7 @@ Where:
 - NF is noise figure of receiver (typical 5-10 dB)
 
 For 20 MHz bandwidth, NF = 6 dB:
-  Noise floor = -174 + 10·log₁₀(20×10⁶) + 6 = -174 + 73 + 6 = -95 dBm
+  Noise floor = -174 + 10·$\\log _{10}$(20×$10^{6}$) + 6 = -174 + 73 + 6 = -95 dBm
 
 For the link to work with 20 dB SNR margin:
   Required RX power = -95 + 20 = -75 dBm
@@ -15496,14 +15496,14 @@ Modern wireless uses ADAPTIVE MODULATION — selects the highest modulation that
 
 For multiple amplifier stages cascaded, the overall noise figure depends mostly on the FIRST stage:
 
-  F_total = F_1 + (F_2 - 1)/G_1 + (F_3 - 1)/(G_1·G_2) + ...
+  $$F_{total} = F_1 + (F_2 - 1)/G_1 + (F_3 - 1)/(G_1\\cdot G_2) +$$...
 
 Where F is noise factor (linear, not dB) and G is gain (linear).
 
 Lesson: the FIRST amplifier (LNA — low-noise amplifier) dominates the system noise figure if its gain is high enough. This is why receivers always start with an LNA close to the antenna.
 
 Example: LNA with F=1.5 (NF=1.76 dB), G=20 dB (linear 100), followed by mixer with F=10 (NF=10 dB):
-  F_total = 1.5 + (10-1)/100 = 1.5 + 0.09 = 1.59 → NF_total = 2.0 dB
+  $$F_{total} = 1.5 + (10-1)/100 = 1.5 + 0.09 = 1.59 \\to NF_{total} = 2.0\\ \\mathrm{dB}$$
 
 The mixer's poor noise figure has minimal effect because the LNA's 20 dB gain SUPPRESSES the mixer noise contribution.
 

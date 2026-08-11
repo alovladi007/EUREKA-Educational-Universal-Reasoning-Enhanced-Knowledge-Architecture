@@ -88,6 +88,27 @@ def load() -> list[Topic]:
     return out
 
 
+#: A dollar sign followed by a digit is money. remark-math reads it as a maths
+#: delimiter, silently swallows everything up to the next $, and sets the prose
+#: between them as an equation - so "$10,000 depreciation at 30% tax rate →
+#: $3,000 tax savings" renders as one italic formula. It has to be written \$.
+#: Balanced maths spans, removed before looking for a stray dollar. Checking
+#: for "$ followed by a digit" directly flags every legitimate equation that
+#: starts with a number, which is most of them.
+MATHSPAN = re.compile(r"(?<!\\)\$\$[^$]*?\$\$|(?<!\\)\$[^$\n]*?\$")
+CURRENCY = re.compile(r"(?<!\\)\$")
+
+
+def bad_dollars(topics_src: str) -> list[str]:
+    out = []
+    for m in CONTENT.finditer(topics_src):
+        for line in m.group(1).split("\n"):
+            rest = MATHSPAN.sub("", line)
+            if CURRENCY.search(rest):
+                out.append("stray or unescaped $: " + line.strip()[:84])
+    return out
+
+
 def missing_figures(topics: list[Topic]) -> list[str]:
     """Every referenced figure must exist on disk in BOTH themes. A missing
     dark sibling is invisible in the light theme and a broken image in the
@@ -142,13 +163,21 @@ def main() -> int:
             print(f"  {flag}{t.words:5d}w  fig={len(t.figures)} tbl={t.tables:2d}  "
                   f"{t.id:24s} {t.title[:40]}")
 
+    rc = 0
     bad = missing_figures(topics)
     if bad:
         print(f"\nBROKEN FIGURE REFERENCES ({len(bad)}):")
         for b in bad:
             print("  ", b)
-        return 1
-    return 0
+        rc = 1
+
+    dollars = bad_dollars(DATA.read_text(encoding="utf-8"))
+    if dollars:
+        print(f"\nMATH DELIMITER PROBLEMS ({len(dollars)}):")
+        for d in dollars[:20]:
+            print("  ", d)
+        rc = 1
+    return rc
 
 
 if __name__ == "__main__":
