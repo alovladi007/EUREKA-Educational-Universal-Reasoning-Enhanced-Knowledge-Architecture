@@ -325,6 +325,329 @@ def _(mode):
     return fig
 
 
+# ---------------------------------------------------------------------------
+# Mathematics - 11-17 questions, the largest single knowledge area
+# ---------------------------------------------------------------------------
+
+
+@figure("math-unit-circle")
+def _(mode):
+    """The unit circle with the angles the exam actually uses.
+
+    Every value here is computed from cos/sin, not typed in, so the plotted
+    point and the printed exact value cannot disagree.
+    """
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots(figsize=(6.4, 6.0))
+    th = np.linspace(0, 2 * np.pi, 400)
+    ax.plot(np.cos(th), np.sin(th), color=S.GUIDE[mode], lw=1.6)
+    ax.axhline(0, color=S.GRID[mode], lw=1.0)
+    ax.axvline(0, color=S.GRID[mode], lw=1.0)
+
+    exact = {0: ("1", "0"), 30: (r"$\frac{\sqrt{3}}{2}$", r"$\frac{1}{2}$"),
+             45: (r"$\frac{\sqrt{2}}{2}$", r"$\frac{\sqrt{2}}{2}$"),
+             60: (r"$\frac{1}{2}$", r"$\frac{\sqrt{3}}{2}$"), 90: ("0", "1")}
+    for deg, (cx, sy) in exact.items():
+        r = np.radians(deg)
+        x, y = np.cos(r), np.sin(r)
+        ax.plot([0, x], [0, y], color=c[0], lw=1.8)
+        ax.plot([x], [y], "o", color=c[0], ms=7)
+        # Label radius is STAGGERED, not constant. 30, 45 and 60 degrees are
+        # only 15 degrees apart, so at any single radius their two-line labels
+        # overlap; pushing the middle one further out puts 30 and 60 a full 30
+        # degrees apart on the inner ring and 45 clear on its own.
+        rad = 1.62 if deg == 45 else 1.24
+        ax.text(rad * np.cos(r), rad * np.sin(r),
+                f"{deg}°\n({cx}, {sy})", ha="center", va="center",
+                fontsize=9, color=S.INK[mode])
+    # the reflections, which is where sign errors come from
+    for deg in (120, 135, 150, 210, 225, 240, 300, 315, 330):
+        r = np.radians(deg)
+        ax.plot([np.cos(r)], [np.sin(r)], "o", color=c[1], ms=5)
+
+    for qx, qy, s in [(-1.45, 1.45, "II\nsin +"),
+                      (-1.45, -1.45, "III\ntan +"),
+                      (1.45, -1.45, "IV\ncos +"),
+                      (2.05, 1.45, "I\nall +")]:
+        ax.text(qx, qy, s, ha="center", va="center", fontsize=9,
+                color=S.GUIDE[mode])
+    ax.set_title("First-quadrant exact values; the rest are reflections")
+    ax.set_xlim(-1.95, 2.35)
+    ax.set_ylim(-1.75, 1.85)
+    ax.set_aspect("equal")
+    S.strip(ax)
+    return fig
+
+
+@figure("math-conic-sections")
+def _(mode):
+    """The four conics, each drawn from the standard form the exam quotes."""
+    c = S.SERIES[mode]
+    fig, ax = plt.subplots()
+    th = np.linspace(0, 2 * np.pi, 400)
+    # The palette carries three series hues. The circle is the degenerate
+    # reference case rather than a fourth peer, so it takes the guide colour;
+    # inventing a fourth hue is how a validated palette stops being one.
+    ax.plot(2 * np.cos(th), 2 * np.sin(th), color=S.GUIDE[mode], lw=1.6)  # circle r=2
+    ax.plot(3 * np.cos(th), 2 * np.sin(th), color=c[0], lw=2.2)           # ellipse
+    x = np.linspace(-3.2, 3.2, 300)
+    ax.plot(x, x ** 2 / 4 - 3, color=c[1], lw=2.2)                        # parabola
+    t = np.linspace(-1.35, 1.35, 200)
+    for sign in (1, -1):
+        ax.plot(sign * 2 * np.cosh(t), 2 * np.sinh(t), color=c[2], lw=2.2)
+
+    # Labels go in the empty margin on the right, each on its own line, rather
+    # than beside its curve - four conics drawn concentrically leave no gap
+    # beside any of them, so in-place labels land on a neighbouring curve.
+    for k, (txt, col) in enumerate([
+            (r"circle  $x^2+y^2=4$", S.GUIDE[mode]),
+            (r"ellipse  $\frac{x^2}{9}+\frac{y^2}{4}=1$", c[0]),
+            (r"parabola  $y=\frac{x^2}{4}-3$", c[1]),
+            (r"hyperbola  $\frac{x^2}{4}-\frac{y^2}{4}=1$", c[2])]):
+        ax.text(4.6, 3.1 - 1.5 * k, txt, ha="left", va="center",
+                fontsize=10, color=col)
+    ax.set_title("One equation family; the signs decide which curve you get")
+    ax.set_xlabel("x")
+    ax.set_ylabel("y")
+    ax.set_xlim(-5.2, 12.0)
+    ax.set_ylim(-4.4, 4.4)
+    ax.set_aspect("equal")
+    S.strip(ax)
+    return fig
+
+
+@figure("math-derivative-extrema")
+def _(mode):
+    """f, f' and f'' for one cubic, stacked so the tests line up vertically.
+
+    f(x) = x^3 - 3x has f' = 3x^2 - 3 (zeros at -1 and +1) and f'' = 6x (zero
+    at 0). Reading down the column is the whole first- and second-derivative
+    test, which is otherwise three separate rules to remember.
+    """
+    c = S.SERIES[mode]
+    x = np.linspace(-2.3, 2.3, 500)
+    f, d1, d2 = x ** 3 - 3 * x, 3 * x ** 2 - 3, 6 * x
+
+    fig, axes = plt.subplots(3, 1, sharex=True, figsize=(7.2, 6.4))
+    for ax, y, col, lab in ((axes[0], f, c[0], r"$f(x)=x^3-3x$"),
+                            (axes[1], d1, c[1], r"$f'(x)=3x^2-3$"),
+                            (axes[2], d2, c[2], r"$f''(x)=6x$")):
+        ax.plot(x, y, color=col, lw=2.2)
+        ax.axhline(0, color=S.GRID[mode], lw=1.0)
+        ax.set_ylabel(lab)
+        for v in (-1, 0, 1):
+            ax.axvline(v, color=S.GUIDE[mode], lw=0.9, ls=":")
+        S.strip(ax)
+    axes[0].plot([-1, 1], [2, -2], "o", color=c[0], ms=7)
+    S.note(axes[0], -1, 2.3, "local max", mode, ha="center")
+    S.note(axes[0], 1, -3.4, "local min", mode, ha="center")
+    S.note(axes[1], 0, 4.2, "f' = 0 at both extrema", mode, ha="center")
+    S.note(axes[2], 0, 6.5, "f'' changes sign: inflection at x = 0", mode, ha="center")
+    axes[0].set_title("Read down the column: f' locates, f'' classifies")
+    axes[2].set_xlabel("x")
+    fig.tight_layout()
+    return fig
+
+
+@figure("math-integral-area")
+def _(mode):
+    """Signed area, which is the point candidates most often miss.
+
+    Integrating sin over 0 to 2*pi gives 0 because the two lobes cancel;
+    integrating |sin| gives 4. Same curve, different question.
+    """
+    c = S.SERIES[mode]
+    x = np.linspace(0, 2 * np.pi, 500)
+    y = np.sin(x)
+    fig, ax = plt.subplots()
+    ax.plot(x, y, color=c[0], lw=2.2)
+    ax.fill_between(x, 0, y, where=(y >= 0), color=c[0], alpha=0.25)
+    ax.fill_between(x, 0, y, where=(y < 0), color=c[1], alpha=0.25)
+    ax.axhline(0, color=S.GRID[mode], lw=1.0)
+    S.note(ax, np.pi / 2, 0.42, "+2", mode, ha="center")
+    S.note(ax, 3 * np.pi / 2, -0.55, "-2", mode, ha="center")
+    ax.set_title(r"$\int_0^{2\pi}\sin x\,dx = 0$, but the area is 4")
+    ax.set_xlabel("x")
+    ax.set_ylabel(r"$\sin x$")
+    ax.set_xticks([0, np.pi / 2, np.pi, 3 * np.pi / 2, 2 * np.pi])
+    ax.set_xticklabels(["0", r"$\pi/2$", r"$\pi$", r"$3\pi/2$", r"$2\pi$"])
+    ax.set_ylim(-1.35, 1.35)
+    S.strip(ax)
+    return fig
+
+
+@figure("math-eigen-action")
+def _(mode):
+    """What a matrix does to vectors, and why eigenvectors are special.
+
+    A = [[2,1],[1,2]] has eigenvalues 3 and 1 with eigenvectors [1,1] and
+    [1,-1]. Every other vector is rotated by A; those two are only scaled.
+    Eigenvalues and vectors are computed here, not asserted.
+    """
+    c = S.SERIES[mode]
+    A = np.array([[2.0, 1.0], [1.0, 2.0]])
+    vals, vecs = np.linalg.eig(A)
+    fig, ax = plt.subplots(figsize=(6.4, 5.6))
+
+    for k, ang in enumerate(np.radians([20, 70, 110, 160])):
+        v = np.array([np.cos(ang), np.sin(ang)])
+        Av = A @ v
+        ax.arrow(0, 0, v[0], v[1], color=S.GUIDE[mode], lw=1.2,
+                 head_width=0.07, length_includes_head=True)
+        ax.arrow(0, 0, Av[0], Av[1], color=c[2], lw=1.4, alpha=0.75,
+                 head_width=0.09, length_includes_head=True)
+    for i in range(2):
+        v = vecs[:, i] / np.linalg.norm(vecs[:, i])
+        ax.arrow(0, 0, v[0], v[1], color=c[i], lw=2.6,
+                 head_width=0.1, length_includes_head=True)
+        Av = A @ v
+        ax.arrow(0, 0, Av[0], Av[1], color=c[i], lw=2.6, ls=":",
+                 head_width=0.1, length_includes_head=True)
+        # Push the label past the arrow head along the same direction, so it
+        # never sits on top of the vector it names.
+        u = Av / np.linalg.norm(Av)
+        S.note(ax, Av[0] + 0.34 * u[0], Av[1] + 0.34 * u[1],
+               f"lambda = {vals[i]:.0f}", mode,
+               ha="left" if u[0] >= 0 else "right")
+    S.note(ax, -2.85, 2.9, "grey  v\ngreen  Av for a general v\ncolour  the two eigen-directions",
+           mode)
+    ax.set_title("A = [[2,1],[1,2]]: only the eigenvectors keep their direction")
+    ax.axhline(0, color=S.GRID[mode], lw=1.0)
+    ax.axvline(0, color=S.GRID[mode], lw=1.0)
+    ax.set_xlim(-3.0, 3.4)
+    ax.set_ylim(-1.6, 3.4)
+    ax.set_aspect("equal")
+    S.strip(ax)
+    return fig
+
+
+@figure("math-laplace-splane")
+def _(mode):
+    """Pole position in the s-plane against the time response it produces.
+
+    Two panels with a shared A-D key rather than time curves floated on top of
+    the plane. Insets over the plane cannot avoid colliding: the pole at the
+    origin and the pole at -2 are close enough that any inset wide enough to
+    read overlaps its neighbour's label. A key costs one glance and never
+    collides. Each curve is the actual inverse transform for its pole pair.
+    """
+    c = S.SERIES[mode]
+    fig, (ax, bx) = plt.subplots(
+        1, 2, figsize=(8.4, 4.6), gridspec_kw={"width_ratios": [1.05, 1]})
+
+    # Colour carries meaning rather than mere identity: the two stable cases
+    # take series hues, the marginal case the guide grey, the unstable case
+    # the warm hue. Four categories from a three-hue palette, no invented one.
+    poles = [("A", -2.0, 2.0, "decaying oscillation", c[0]),
+             ("B", -2.0, 0.0, "pure decay", c[2]),
+             ("C",  0.0, 2.0, "sustained oscillation", S.GUIDE[mode]),
+             ("D",  1.4, 2.0, "growing oscillation", c[1])]
+
+    ax.axhline(0, color=S.GRID[mode], lw=1.2)
+    ax.axvline(0, color=S.INK[mode], lw=1.6)
+    for key, sx, sy, _lab, col in poles:
+        for s in ({sy, -sy} if sy else {0.0}):
+            ax.plot([sx], [s], "x", color=col, ms=12, mew=2.6)
+        ax.text(sx + 0.22, (sy if sy else 0.0) + 0.22, key,
+                fontsize=11, color=col, fontweight="bold")
+    S.note(ax, -3.4, 3.1, "stable half", mode)
+    S.note(ax, 0.25, 3.1, "unstable half", mode)
+    ax.set_xlabel(r"real part $\sigma$   (decay rate)")
+    ax.set_ylabel(r"imaginary part $\omega$   (oscillation)")
+    ax.set_title("Where the poles sit")
+    ax.set_xlim(-3.8, 3.0)
+    ax.set_ylim(-3.2, 3.6)
+    S.strip(ax)
+
+    t = np.linspace(0, 3.2, 300)
+    for k, (key, sx, sy, lab, col) in enumerate(poles):
+        y = np.exp(sx * t) * (np.cos(sy * 4 * t) if sy else 1.0)
+        y = y / max(1e-9, np.abs(y).max())
+        off = -2.4 * k
+        bx.plot(t, y + off, color=col, lw=1.8)
+        bx.axhline(off, color=S.GRID[mode], lw=0.8)
+        bx.text(-0.28, off, key, fontsize=11, color=col,
+                fontweight="bold", va="center", ha="right")
+        S.note(bx, 3.3, off + 0.35, lab, mode, ha="right")
+    bx.set_xlabel("time")
+    bx.set_title("What each one does in time")
+    bx.set_xlim(-0.5, 3.4)
+    bx.set_ylim(-8.9, 1.9)
+    bx.set_yticks([])
+    S.strip(bx)
+    fig.tight_layout()
+    return fig
+
+
+@figure("math-pascal-triangle")
+def _(mode):
+    """Pascal's triangle, every entry computed as C(n,k) from the factorials.
+
+    Two facts the exam leans on are visible rather than stated: each entry is
+    the sum of the two above it, and row n sums to 2^n - which is why the
+    number of subsets of an n-set is 2^n.
+    """
+    from math import comb
+    c = S.SERIES[mode]
+    rows = 8
+    fig, ax = plt.subplots(figsize=(7.2, 4.6))
+    for n in range(rows):
+        for k in range(n + 1):
+            x = k - n / 2.0
+            y = -n
+            v = comb(n, k)
+            edge = (k in (0, n))
+            ax.text(x, y, str(v), ha="center", va="center", fontsize=11,
+                    color=S.GUIDE[mode] if edge else c[0],
+                    fontweight="normal" if edge else "bold")
+        ax.text(rows / 2.0 + 0.6, -n, f"sum $=2^{{{n}}}={2**n}$",
+                ha="left", va="center", fontsize=9, color=S.INK[mode])
+    # the addition rule, drawn once so it reads as a rule and not decoration
+    ax.annotate("", xy=(-0.5, -5), xytext=(-1.0, -4),
+                arrowprops=dict(arrowstyle="->", color=c[1], lw=1.6))
+    ax.annotate("", xy=(-0.5, -5), xytext=(0.0, -4),
+                arrowprops=dict(arrowstyle="->", color=c[1], lw=1.6))
+    # The note sits in the left margin, right-aligned, so it ends before the
+    # widest row begins. Left-aligned in the same place it ran across row 5.
+    ax.text(-3.3, -4.6, "each entry is the\nsum of the two above",
+            ha="right", va="center", fontsize=9, color=S.GUIDE[mode])
+    ax.set_title(r"Pascal's triangle: entry $(n,k)$ is $\binom{n}{k}$")
+    ax.set_xlim(-7.4, 7.6)
+    ax.set_ylim(-rows - 0.4, 0.9)
+    ax.set_xticks([])
+    ax.set_yticks([])
+    S.strip(ax)
+    for s in ax.spines.values():
+        s.set_visible(False)
+    return fig
+
+
+@figure("math-div-curl")
+def _(mode):
+    """Two fields chosen so one has divergence and no curl, the other the
+    reverse - both computed on the same grid from their own definitions."""
+    c = S.SERIES[mode]
+    g = np.linspace(-1.6, 1.6, 11)
+    X, Y = np.meshgrid(g, g)
+    fig, axes = plt.subplots(1, 2, figsize=(7.6, 4.0))
+
+    # F = (x, y): div = 2, curl = 0
+    axes[0].quiver(X, Y, X, Y, color=c[0], width=0.006)
+    axes[0].set_title(r"$\vec F=(x,\,y)$    div $=2$,  curl $=0$")
+    # G = (-y, x): div = 0, curl = 2
+    axes[1].quiver(X, Y, -Y, X, color=c[1], width=0.006)
+    axes[1].set_title(r"$\vec G=(-y,\,x)$    div $=0$,  curl $=2$")
+    for ax, lab in zip(axes, ("flows outward from every point",
+                              "circulates, but nothing accumulates")):
+        ax.set_aspect("equal")
+        ax.set_xlim(-2.0, 2.0)
+        ax.set_ylim(-2.2, 2.0)
+        S.note(ax, 0, -2.15, lab, mode, ha="center")
+        S.strip(ax)
+    fig.tight_layout()
+    return fig
+
+
 def render(name: str, fn) -> None:
     OUT.mkdir(parents=True, exist_ok=True)
     for mode, suffix in (("light", ".svg"), ("dark", ".dark.svg")):

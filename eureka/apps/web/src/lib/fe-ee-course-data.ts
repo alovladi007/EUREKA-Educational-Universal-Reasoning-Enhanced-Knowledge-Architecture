@@ -185,7 +185,158 @@ Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 
         },
       ],
     },
-  ],
+  {
+    id: 'at-depth',
+    title: '4. The Unit Circle as a Working Tool',
+    content: `## 4.1 Why this one picture carries the section
+  
+  Trigonometry on the FE exam is almost never asked for its own sake. It arrives
+  inside a phasor, a power factor, a three-phase angle or a Fourier coefficient,
+  and in every one of those the same small set of values does the work.
+  
+  ![The unit circle with the exam's five first-quadrant angles, each labelled with its exact cosine and sine. The remaining marked points are reflections of those five into the other three quadrants.](/courses/fe-ee/figures/math-unit-circle.svg)
+  
+  The circle is worth reading as a definition rather than a mnemonic. A point on
+  it at angle theta has coordinates **(cos theta, sin theta)** — that *is* what
+  the two functions mean. Everything else follows:
+  
+  - **sin² + cos² = 1** is the Pythagorean theorem applied to that point.
+  - **tan theta = sin/cos** is the slope of the ray, which is why it blows up at
+    90° where the ray is vertical.
+  - The sign of each function in each quadrant is the sign of the corresponding
+    coordinate. There is nothing to memorise beyond which coordinate is which.
+  
+  ## 4.2 The five angles, and the rest by reflection
+  
+  Only five first-quadrant angles have exact values worth carrying, and every
+  other angle the exam uses is one of them reflected:
+  
+  | theta | cos | sin | tan | Where it shows up |
+  |---|---|---|---|---|
+  | 0° | 1 | 0 | 0 | purely resistive, unity power factor |
+  | 30° | √3/2 ≈ 0.866 | 1/2 | 1/√3 ≈ 0.577 | pf = 0.866 lagging |
+  | 45° | √2/2 ≈ 0.707 | √2/2 | 1 | equal R and X; half-power point |
+  | 60° | 1/2 | √3/2 ≈ 0.866 | √3 ≈ 1.732 | 120° three-phase geometry |
+  | 90° | 0 | 1 | undefined | purely reactive, zero real power |
+  
+  Note that **0.707 and 0.866 are the two decimals to recognise on sight**. A
+  power factor of 0.707 means a 45° angle and equal real and reactive power; 0.866
+  means 30° and Q = P/√3. Recognising the decimal saves an inverse-cosine keypress
+  on a calculator you are already using too much.
+  
+  ## 4.3 Rectangular to polar, with the quadrant discipline
+  
+  This conversion appears in every phasor problem, and the single most common
+  error is trusting the calculator's arctangent.
+  
+  **Convert 3 − j4.** The magnitude is √(3² + 4²) = √25 = **5**. The angle is
+  arctan(−4/3) = **−53.13°**. Both x and y checks agree: x = 3 > 0 and y = −4 < 0
+  put the point in quadrant IV, and −53.13° is in quadrant IV. Accept it.
+  
+  **Convert −3 + j4.** The magnitude is again 5. But arctan(4/−3) = arctan(−1.333)
+  = **−53.13°**, which is wrong. The point has x < 0 and y > 0, so it is in
+  quadrant II, and the answer is −53.13° + 180° = **126.87°**.
+  
+  | Signs of (x, y) | Quadrant | Correction to arctan(y/x) |
+  |---|---|---|
+  | (+, +) | I | none |
+  | (−, +) | II | **add 180°** |
+  | (−, −) | III | **subtract 180°** (or add 180°) |
+  | (+, −) | IV | none |
+  
+  The rule in one line: **arctan only knows the ratio, so it cannot tell (−3, 4)
+  from (3, −4).** Look at the signs before you accept the angle. Every calculator
+  has this behaviour and no calculator warns you about it.
+  
+  ## 4.4 Going the other way, and the identities that matter
+  
+  Polar to rectangular has no such trap: x = r cos theta, y = r sin theta,
+  directly. **5∠126.87°** gives x = 5(−0.6) = −3 and y = 5(0.8) = 4, recovering
+  the number we started from — which is the check to run whenever a conversion
+  matters.
+  
+  Three identity groups earn their place in an electrical context:
+  
+  **Angle addition** — sin(A ± B) = sinA cosB ± cosA sinB and
+  cos(A ± B) = cosA cosB ∓ sinA sinB. These are what makes phasor addition legal:
+  two sinusoids at the same frequency add to another sinusoid at that frequency,
+  and nothing else does.
+  
+  **Power reduction** — sin²theta = (1 − cos 2theta)/2. This is the algebra behind
+  average power. Instantaneous power in a resistor is i²R, and squaring a sinusoid
+  produces a DC term plus a term at *twice* the frequency. The DC term is the
+  average power; the 2ω term averages to zero. That is why real power involves a
+  factor of 1/2 with peak values, or no factor at all with RMS values.
+  
+  **Double angle** — sin 2A = 2 sinA cosA, which is why the 2ω ripple in
+  single-phase instantaneous power exists at all, and why three-phase power is
+  constant while single-phase power pulsates.
+  
+  ## 4.5 Logarithms, because decibels are everywhere
+  
+  The exam uses logarithms almost exclusively for gain in decibels, and mixes two
+  definitions that differ by a factor of two:
+  
+  | Quantity | Decibel formula | 2× becomes | 10× becomes |
+  |---|---|---|---|
+  | Power ratio | 10 log₁₀(P₂/P₁) | +3.01 dB | +10 dB |
+  | Voltage or current ratio | 20 log₁₀(V₂/V₁) | +6.02 dB | +20 dB |
+  
+  The factor of 20 for voltage is not a different rule — it is the same rule,
+  because power goes as V², and 10 log(V²) = 20 log(V). A common trap gives a
+  voltage ratio and asks for dB, offering both 6 dB and 3 dB as choices.
+  
+  Two anchors make most dB questions mental arithmetic: **3 dB is a factor of 2 in
+  power**, and **6 dB is a factor of 2 in voltage**. A 40 dB voltage gain is
+  therefore 10², or 100; a −3 dB point is where power has halved and voltage has
+  fallen to 0.707 of its peak — the same 0.707 that appeared in the unit circle
+  table above, and for the same reason.`,
+    examTip: 'Before accepting any arctangent, look at the signs of x and y. The calculator returns an angle in (-90, 90) only, so quadrants II and III always need a 180 degree correction. This single check prevents more lost marks in AC circuit analysis than any other habit.',
+    importantNote: '0.707 and 0.866 should be recognised instantly. 0.707 is cos 45 and also 1/sqrt(2): equal resistance and reactance, the half-power point, and the RMS-to-peak ratio of a sinusoid. 0.866 is cos 30 and sqrt(3)/2, which is where the sqrt(3) in three-phase relationships comes from.',
+  },
+{
+  id: 'at-set',
+  title: '5. Problem Set: Angles and Ratios',
+  content: `## 5.1 Convert 8∠−150° to rectangular
+
+x = 8 cos(−150°) = 8(−0.866) = **−6.93**
+y = 8 sin(−150°) = 8(−0.5) = **−4.00**
+
+So 8∠−150° = −6.93 − j4.00. Both components negative puts it in quadrant III,
+which agrees with −150° being between −90° and −180°. Recognising 0.866 as
+cos 30° avoids the calculator entirely.
+
+## 5.2 A 5 kW load draws 25 A at 240 V. Find the power factor angle
+
+Apparent power S = VI = 240 × 25 = 6000 VA. Then
+
+pf = P/S = 5000/6000 = 0.833, so θ = arccos(0.833) = **33.6°**
+
+Reactive power follows: Q = S sin θ = 6000(0.553) = 3320 VAR, and the check
+S² = P² + Q² gives 5000² + 3320² = 25.0×10⁶ + 11.0×10⁶ = 36.0×10⁶ = 6000² ✓.
+
+## 5.3 Express a voltage gain of 250 in decibels
+
+This is a **voltage** ratio, so the factor is 20:
+
+20 log₁₀(250) = 20(2.398) = **47.96 dB**
+
+Sanity-check it against the anchors: 250 is between 100 (40 dB) and 1000
+(60 dB), and closer to the bottom, so a number just below 48 dB is right. Using
+10 log would have given 24 dB — half the correct answer, and always one of the
+choices.
+
+## 5.4 Two identities under time pressure
+
+Simplify (sin 2θ)/(2 sin θ). Using sin 2θ = 2 sin θ cos θ, the expression is
+2 sin θ cos θ/(2 sin θ) = **cos θ**.
+
+Simplify 1 − 2sin²θ. Using sin²θ = (1 − cos 2θ)/2, this is
+1 − (1 − cos 2θ) = **cos 2θ**, which is the double-angle identity read
+backwards. Both appear inside power calculations, which is why they are worth
+recognising rather than deriving each time.`,
+},
+],
   keyTakeaways: [
     'Quadratic formula solves ax²+bx+c=0; discriminant b²-4ac determines real vs. complex roots.',
     'sin²θ + cos²θ = 1 is the most frequently used trigonometric identity on the FE exam.',
@@ -339,7 +490,173 @@ Useful constants: j^2 = -1, 1/j = -j, and j = 1 at 90 degrees. Multiplying by j 
         },
       ],
     },
-  ],
+  {
+    id: 'cx-depth',
+    title: '4. Choosing a Form, and Paying for the Wrong One',
+    content: `## 4.1 The same number, four ways
+  
+  A complex number has one value and several spellings, and picking the wrong
+  spelling turns a ten-second operation into a two-minute one.
+  
+  | Form | Written | Best for |
+  |---|---|---|
+  | Rectangular | a + jb | addition, subtraction |
+  | Polar | r∠theta | multiplication, division |
+  | Trigonometric | r(cos theta + j sin theta) | seeing the connection |
+  | Exponential | r·e^(j·theta) | calculus, derivations |
+  
+  ![Four complex numbers of equal magnitude 5, one in each quadrant, with the angle each one carries. The magnitude alone cannot distinguish them.](/courses/fe-ee/figures/math-complex-quadrants.svg)
+  
+  ## 4.2 The rule, and why it is a rule
+  
+  **Add in rectangular. Multiply in polar.** This is not a stylistic preference —
+  it follows from what the operations do.
+  
+  Addition acts on the components independently: (a + jb) + (c + jd) = (a+c) +
+  j(b+d). In polar form there is no comparable shortcut; you would convert to
+  rectangular, add, and convert back, which is the long way round with two extra
+  chances to lose a quadrant.
+  
+  Multiplication acts on magnitude and angle independently:
+  r₁∠θ₁ × r₂∠θ₂ = r₁r₂∠(θ₁+θ₂). **Magnitudes multiply, angles add.** In
+  rectangular form the same operation needs four products and the j² = −1
+  substitution.
+  
+  ## 4.3 One number pair, both ways, checked against each other
+  
+  Take z₁ = 3 + j4 and z₂ = 5 − j2.
+  
+  **Sum, in rectangular.** (3+5) + j(4−2) = **8 + j2**. Done in one line.
+  
+  **Product, in polar.** First convert:
+  z₁ = √(9+16) ∠ arctan(4/3) = 5∠53.13°, and
+  z₂ = √(25+4) ∠ arctan(−2/5) = 5.385∠−21.80°.
+  Then z₁z₂ = (5)(5.385) ∠ (53.13 − 21.80) = **26.93∠31.33°**.
+  
+  **The same product, in rectangular, as a check.**
+  (3+j4)(5−j2) = 15 − j6 + j20 − j²8 = 15 + j14 + 8 = **23 + j14**.
+  Its magnitude is √(529 + 196) = √725 = 26.93, and its angle is
+  arctan(14/23) = 31.33°. The two routes agree exactly, which is the point:
+  when a phasor answer matters, converting back and comparing costs fifteen
+  seconds and catches sign errors that nothing else will.
+  
+  ## 4.4 Where this lands in circuits
+  
+  Impedances in **series** add, so keep them rectangular:
+  Z = R + j(X_L − X_C), and the real and imaginary parts stay separately
+  meaningful — R dissipates, X stores.
+  
+  Impedances in **parallel** combine through products and quotients, so polar
+  pays. For two branches, Z = Z₁Z₂/(Z₁+Z₂) needs one product (polar), one sum
+  (rectangular), and one quotient (polar) — so a realistic problem uses both
+  forms, converting once at each junction rather than committing to one.
+  
+  | Operation on impedances | Form to use | Why |
+  |---|---|---|
+  | Series combination | rectangular | components add independently |
+  | Parallel product Z₁Z₂ | polar | magnitudes multiply, angles add |
+  | Parallel sum Z₁+Z₂ | rectangular | addition has no polar shortcut |
+  | Dividing V by Z for current | polar | magnitudes divide, angles subtract |
+  | Real power from V and I | polar | the angle *between* them is what you need |
+  
+  ## 4.5 Euler, and why j is a rotation
+  
+  e^(jθ) = cos θ + j sin θ turns the whole subject into one statement:
+  **multiplying by e^(jθ) rotates by θ without changing magnitude.**
+  
+  The special case θ = 90° gives e^(j90°) = j. So multiplying by j is a 90°
+  counter-clockwise rotation, and that is the entire content of the reactance
+  sign convention:
+  
+  - An inductor's impedance is jωL — the voltage leads the current by 90°.
+  - A capacitor's is 1/(jωC) = −j/(ωC) — the voltage lags by 90°.
+  
+  The j is not bookkeeping; it is the phase relationship written as arithmetic.
+  Reactances of opposite sign subtract in series for the same reason two rotations
+  in opposite directions cancel, and when they cancel exactly you have resonance.
+  
+  ## 4.6 Conjugates and the two places they appear
+  
+  The conjugate of a + jb is a − jb: same magnitude, opposite angle. Two uses
+  recur.
+  
+  **Dividing.** Multiply top and bottom by the denominator's conjugate to make the
+  denominator real: (1)/(3+j4) = (3−j4)/((3+j4)(3−j4)) = (3−j4)/25 =
+  0.12 − j0.16. The denominator became 3² + 4² = 25, which is |z|², always real.
+  
+  **Maximum power transfer in AC.** The load that draws the most power from a
+  source of impedance Z_s = R_s + jX_s is Z_L = **Z_s\\***, the conjugate:
+  R_L = R_s and X_L = −X_s. The reactance is cancelled, not matched — the load
+  must be as inductive as the source is capacitive, or vice versa, so that the
+  combination is purely resistive. Matching the reactance in sign, rather than
+  cancelling it, is a common distractor.`,
+    examTip: 'Add in rectangular, multiply in polar. If a problem forces both, convert at the junction rather than committing to one form: converting is cheap, and doing a four-term rectangular multiplication under time pressure is where sign errors come from.',
+    importantNote: 'For AC maximum power transfer the load must be the complex CONJUGATE of the source impedance, Z_L = R_s - jX_s. The reactance is cancelled, not copied. An answer choice offering Z_L = Z_s exactly is there for candidates who remember the DC rule and stop thinking.',
+  },
+{
+  id: 'cx-set',
+  title: '5. Problem Set: Phasor Arithmetic',
+  content: `## 5.1 Series impedance at a stated frequency
+
+A 10 Ω resistor, a 50 mH inductor and a 100 µF capacitor are in series at
+60 Hz. Find the total impedance.
+
+ω = 2π(60) = **377 rad/s**
+X_L = ωL = 377(0.05) = **18.85 Ω**
+X_C = 1/(ωC) = 1/(377 × 100×10⁻⁶) = **26.53 Ω**
+
+Series impedances add in rectangular form:
+
+Z = 10 + j18.85 − j26.53 = **10 − j7.68 Ω**
+
+In polar form, |Z| = √(100 + 59.0) = 12.61 Ω and θ = arctan(−7.68/10) =
+**−37.5°**. The negative angle means the circuit is net **capacitive**, so
+current leads voltage — which follows from X_C exceeding X_L, and is worth
+stating as a check rather than discovering later.
+
+## 5.2 Current from that impedance
+
+With 120 V rms applied at 0°:
+
+**I** = 120∠0° / 12.61∠−37.5° = **9.52∠+37.5° A**
+
+Division in polar form: magnitudes divide, angles subtract. The current leads by
+37.5°, consistent with a capacitive circuit.
+
+Real power: P = VI cos θ = 120(9.52)(cos 37.5°) = 120(9.52)(0.793) = **906 W**.
+Check against I²R = (9.52)²(10) = 906 W ✓. Two routes, same answer — and the
+second one is a reminder that only the resistance dissipates.
+
+## 5.3 A parallel pair, using both forms
+
+Z₁ = 6 + j8 and Z₂ = 10∠−30° are in parallel.
+
+Product, in polar: Z₁ = 10∠53.13°, so Z₁Z₂ = 100∠23.13°.
+Sum, in rectangular: Z₂ = 8.66 − j5.00, so Z₁ + Z₂ = 14.66 + j3.00 =
+14.96∠11.57°.
+Quotient, in polar: Z = 100∠23.13° / 14.96∠11.57° = **6.68∠11.56° Ω**
+
+Each operation used the form that suits it, with one conversion at each
+junction — which is faster and safer than forcing everything into one form.`,
+},
+{
+  id: 'cx-errors',
+  title: '6. Where Marks Are Lost',
+  content: `## 6.1 Four recurring errors
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Trusting arctan | quadrant II reported as quadrant IV | check the signs of the real and imaginary parts before accepting the angle |
+| Adding in polar | magnitudes added directly | convert to rectangular; only multiplication and division work on magnitudes and angles |
+| Matching instead of conjugating | Z_L = Z_s for maximum power | the load must be the conjugate, so the reactances cancel |
+| Losing j² = −1 | a sign error in the real part | expand carefully, then verify the magnitude against the polar route |
+
+The last one is worth a habit rather than care. After any rectangular
+multiplication, compute the magnitude of your answer and compare it against the
+product of the two input magnitudes — they must agree exactly, and if they do
+not the error is in the expansion.`,
+},
+],
   keyTakeaways: [
     'Euler formula e^(jθ) = cosθ + j·sinθ connects exponential, rectangular, and polar forms.',
     'Magnitude |z| = sqrt(a² + b²); angle θ = arctan(b/a) with quadrant correction.',
@@ -475,7 +792,183 @@ For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so ther
         },
       ],
     },
-  ],
+  {
+    id: 'dm-depth',
+    title: '4. Counting Without Guessing',
+    content: `## 4.1 Four questions that pick the formula
+  
+  Counting problems are easy to get wrong by picking a formula that feels right.
+  Two yes/no questions settle it every time: **does order matter**, and **may
+  items repeat**.
+  
+  | Order matters? | Repetition? | Formula | Count for n=5, k=2 |
+  |---|---|---|---|
+  | yes | yes | n^k | 25 |
+  | yes | no | P(n,k) = n!/(n−k)! | 20 |
+  | no | no | C(n,k) = n!/(k!(n−k)!) | 10 |
+  | no | yes | C(n+k−1, k) | 15 |
+  
+  Read the four counts for the same n and k: they differ by more than a factor of
+  two across the table, so the formula choice matters more than the arithmetic.
+  
+  The relationship between the middle two is worth holding: **P(n,k) = C(n,k)·k!**
+  Permutations are combinations that have then been arranged. For n=8, k=3:
+  C(8,3) = 56 and P(8,3) = 336, and 336/56 = 6 = 3!, exactly as the identity
+  requires.
+  
+  ## 4.2 Binomial coefficients, and the structure behind them
+  
+  ![Pascal's triangle to row seven, with every entry computed as the binomial coefficient C(n,k). Each entry equals the sum of the two entries above it, and row n sums to 2 to the power n.](/courses/fe-ee/figures/math-pascal-triangle.svg)
+  
+  Two facts in that picture answer a surprising number of exam questions.
+  
+  **Each entry is the sum of the two above it**: C(n,k) = C(n−1,k−1) + C(n−1,k).
+  The reason is a case split — either a particular item is in your selection (then
+  choose k−1 from the remaining n−1) or it is not (choose k from n−1). Being able
+  to reconstruct C(6,3) = 10 + 10 = 20 from the row above is faster than the
+  factorials when the numbers are small.
+  
+  **Row n sums to 2ⁿ.** Summing C(n,k) over all k counts every possible subset of
+  an n-element set, and each element is independently in or out, giving 2ⁿ. For a
+  digital-systems flavoured question: an 8-bit word has 2⁸ = 256 possible values,
+  and the number of those with exactly three bits set is C(8,3) = **56**.
+  
+  ## 4.3 Worked: the same set of items, four questions
+  
+  Eight components are on a bench, all distinguishable.
+  
+  **Choose 3 for a test fixture, order irrelevant.**
+  C(8,3) = (8·7·6)/(3·2·1) = 336/6 = **56**.
+  
+  **Arrange 3 of them in a row, order matters.**
+  P(8,3) = 8·7·6 = **336**.
+  
+  **Assign 3 labelled roles, reuse allowed.**
+  8³ = **512**.
+  
+  **How many subsets of any size?**
+  2⁸ = **256**.
+  
+  Notice 512 > 336: allowing repetition adds more possibilities than requiring
+  distinct items removes. And note 256 < 336, which is a useful sanity check on
+  intuition — "all subsets" sounds larger than "ordered triples" but is not.
+  
+  ## 4.4 Set identities, and the inclusion-exclusion trap
+  
+  For two sets, **|A ∪ B| = |A| + |B| − |A ∩ B|**. The subtraction is there
+  because elements in both were counted twice. In a survey-style question — 60
+  students take circuits, 45 take electronics, 20 take both — the number taking at
+  least one is 60 + 45 − 20 = **85**, not 105.
+  
+  De Morgan's laws connect this to digital logic directly, and appear on the exam
+  in both notations:
+  
+  | Set form | Boolean form | Plain statement |
+  |---|---|---|
+  | (A ∪ B)' = A' ∩ B' | (A + B)' = A'·B' | NOR is AND of the complements |
+  | (A ∩ B)' = A' ∪ B' | (A·B)' = A' + B' | NAND is OR of the complements |
+  
+  They are the same theorem. A question in Digital Systems asking you to convert
+  a NAND network to OR gates and a question in Mathematics asking for the
+  complement of an intersection are testing one fact.
+  
+  ## 4.5 Logic, briefly but precisely
+  
+  Three statements built from "if P then Q" are constantly confused:
+  
+  | Name | Form | Equivalent to the original? |
+  |---|---|---|
+  | Converse | if Q then P | **no** |
+  | Inverse | if not P then not Q | **no** |
+  | Contrapositive | if not Q then not P | **yes** |
+  
+  Only the contrapositive is logically equivalent, and this is what proof by
+  contradiction rests on. "If the circuit is shorted, the fuse blows" is
+  equivalent to "if the fuse did not blow, the circuit is not shorted" — and is
+  *not* equivalent to "if the fuse blew, the circuit is shorted," since the fuse
+  may have blown for another reason. The exam tests exactly that distinction.`,
+    examTip: 'Ask two questions before writing any counting formula: does order matter, and can items repeat. The four answers give four different formulas, and for n=5, k=2 they give 25, 20, 15 and 10 - so choosing wrongly is not a small error.',
+    importantNote: 'P(n,k) = C(n,k) x k!. If you can only remember one, remember the combination formula and multiply by k! when order matters. Checking that P is larger than C by exactly k! catches an inverted formula instantly.',
+  },
+{
+  id: 'dm-set',
+  title: '5. Problem Set: Counting and Logic',
+  content: `## 5.1 Codes with a constraint
+
+How many 4-digit PINs use digits 0-9 with no repeats?
+
+Order matters and repetition is barred, so this is a permutation:
+P(10,4) = 10 × 9 × 8 × 7 = **5040**.
+
+With repeats allowed it would be 10⁴ = 10 000. The constraint removes almost
+half the space, which is the practical point of the distinction.
+
+## 5.2 Committee selection
+
+From 12 engineers, choose a team of 4 with no roles assigned.
+
+C(12,4) = (12 × 11 × 10 × 9)/(4 × 3 × 2 × 1) = 11880/24 = **495**
+
+If instead the four roles are distinct — lead, reviewer, tester, scribe — then
+order matters and the count is P(12,4) = 11880. The ratio is 4! = 24, exactly as
+P = C × k! requires.
+
+## 5.3 Parity and error detection
+
+An 8-bit byte carries one parity bit. How many 8-bit patterns have even parity
+(an even number of ones)?
+
+Even counts of ones are 0, 2, 4, 6, 8:
+C(8,0) + C(8,2) + C(8,4) + C(8,6) + C(8,8) = 1 + 28 + 70 + 28 + 1 = **128**
+
+That is exactly half of 2⁸ = 256, and it is half for every n ≥ 1 — which is why
+a single parity bit detects any odd number of bit errors and misses every even
+number of them.
+
+## 5.4 Inclusion-exclusion with three sets
+
+Of 100 components, 45 fail a thermal test, 35 an electrical test, and 20 fail
+both. How many pass both?
+
+Failing at least one: 45 + 35 − 20 = 60. Passing both: 100 − 60 = **40**.
+
+Forgetting to subtract the overlap gives 80 failures and 20 passes — a wrong
+answer that is always on the list.
+
+## 5.5 A contrapositive in engineering language
+
+"If the supply is regulated, the output ripple is under 50 mV."
+
+The **contrapositive** — and the only equivalent restatement — is: *if the
+output ripple is 50 mV or more, the supply is not regulated.*
+
+The converse ("if ripple is under 50 mV then the supply is regulated") does not
+follow: a lightly loaded unregulated supply might also show low ripple. Test
+questions phrase this as a troubleshooting scenario, and the converse is always
+offered.`,
+},
+{
+  id: 'dm-errors',
+  title: '6. Where Marks Are Lost',
+  content: `## 6.1 Four recurring errors
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Using C when order matters | 56 instead of 336 for arranging 3 of 8 | ask "would a different order be a different answer?" |
+| Forgetting the overlap | 105 instead of 85 for a union | subtract the intersection once |
+| Confusing converse with contrapositive | "the fuse blew, so it was shorted" | only "not Q implies not P" is equivalent |
+| Counting repetition wrongly | using n! where nᵏ applies | decide independently whether repetition is allowed |
+
+The permutation and combination check is free: **P(n,k) must exceed C(n,k) by
+exactly k!**. If your two answers do not stand in that ratio, one of them uses
+the wrong formula, and you know it before looking at the choices.
+
+When a counting problem resists all four formulas, it is usually two problems
+multiplied together: choose the group, then arrange within it. Splitting it in
+two and multiplying the counts is legitimate and is often faster than hunting
+for a single formula that covers the whole thing at once.`,
+},
+],
   keyTakeaways: [
     'Permutations P(n,r) count ordered arrangements; combinations C(n,r) count unordered selections.',
     'De Morgan laws for sets mirror Boolean algebra: (A ∪ B)\' = A\' ∩ B\'.',
@@ -616,7 +1109,179 @@ That normal-vector idea is the same one used for surface integrals in the electr
         },
       ],
     },
-  ],
+  {
+    id: 'ag-depth',
+    title: '4. Recognising a Conic From Its Equation',
+    content: `## 4.1 One family, four curves
+  
+  The general second-degree equation Ax² + Cy² + Dx + Ey + F = 0 (with no xy
+  term) produces every conic the exam uses. Which one you get is decided entirely
+  by A and C:
+  
+  | Condition on A and C | Curve | Standard form |
+  |---|---|---|
+  | A = C, same sign | circle | (x−h)² + (y−k)² = r² |
+  | A ≠ C, same sign | ellipse | (x−h)²/a² + (y−k)²/b² = 1 |
+  | A or C is zero | parabola | (x−h)² = 4p(y−k) |
+  | A and C opposite signs | hyperbola | (x−h)²/a² − (y−k)²/b² = 1 |
+  
+  ![The four conic sections drawn together from their standard forms: a circle of radius 2, an ellipse, a parabola and a hyperbola. Only the signs and the relative coefficients differ between them.](/courses/fe-ee/figures/math-conic-sections.svg)
+  
+  The one-line test: **look at the signs first, the coefficients second.**
+  Opposite signs mean a hyperbola no matter what else is true; a missing squared
+  term means a parabola; equal coefficients with the same sign mean a circle.
+  
+  ## 4.2 Completing the square, done once carefully
+  
+  Almost every conic question requires converting the general form to the standard
+  form, and completing the square is the only tool needed.
+  
+  **Identify the curve of x² + y² − 6x + 4y − 12 = 0.**
+  
+  A = C = 1, same sign, so it is a circle. Group and complete:
+  
+  x² − 6x + y² + 4y = 12
+  
+  For x: half of −6 is −3, squared is 9. For y: half of 4 is 2, squared is 4. Add
+  both to *each* side:
+  
+  (x² − 6x + 9) + (y² + 4y + 4) = 12 + 9 + 4
+  
+  (x − 3)² + (y + 2)² = **25**
+  
+  So the centre is **(3, −2)** and the radius is **5**. Note the sign flip: the
+  equation reads (y + 2)², so k = −2, not +2. That flip is the single most common
+  error in this topic, and it costs the whole question because the centre is
+  usually what is asked for.
+  
+  **Check it.** The point (3, 3) should be on the circle, since it is 5 above the
+  centre. Substituting into the original: 9 + 9 − 18 + 12 − 12 = 0. It is.
+  
+  ## 4.3 The straight-line toolkit
+  
+  Lines carry more exam weight than conics, mostly inside other topics — load
+  lines, linear regression, small-signal approximations.
+  
+  | Quantity | Formula |
+  |---|---|
+  | Slope through two points | m = (y₂ − y₁)/(x₂ − x₁) |
+  | Point-slope form | y − y₁ = m(x − x₁) |
+  | Slope-intercept form | y = mx + b |
+  | Distance between points | d = √((x₂−x₁)² + (y₂−y₁)²) |
+  | Midpoint | ((x₁+x₂)/2, (y₁+y₂)/2) |
+  | Distance from point to line Ax+By+C=0 | \\|Ax₀+By₀+C\\|/√(A²+B²) |
+  
+  Two relationships between lines are asked directly:
+  
+  - **Parallel** lines have equal slopes: m₁ = m₂.
+  - **Perpendicular** lines have slopes whose product is −1: m₁m₂ = −1, so
+    m₂ = −1/m₁.
+  
+  A line of slope 2 is perpendicular to one of slope −1/2, not −2. The negative
+  *reciprocal*, not the negative, is the rule, and the distractor is always there.
+  
+  ## 4.4 Worked: a load line, which is this topic in disguise
+  
+  A 12 V source with 4 kΩ series resistance drives a nonlinear device. The load
+  line is the I-V relation the *circuit* imposes: by KVL, 12 = 4000·I + V, so
+  
+  I = (12 − V)/4000
+  
+  Two points fix the line. At V = 0, I = 12/4000 = **3 mA** (the short-circuit
+  current). At I = 0, V = **12 V** (the open-circuit voltage). The slope is
+  −1/4000 A/V, i.e. **−0.25 mA/V** — negative, and its magnitude is the reciprocal
+  of the resistance.
+  
+  That is a straight line through (0 V, 3 mA) and (12 V, 0 mA), and the operating
+  point is where it crosses the device's own curve. The mathematics is
+  point-slope; the physics is Thevenin. Recognising that a "graphical analysis"
+  question is really an intercepts question is what makes it quick.
+  
+  ## 4.5 Three-dimensional distance, and where it appears
+  
+  Extending the distance formula to three dimensions adds one term:
+  d = √((Δx)² + (Δy)² + (Δz)²). This appears in electromagnetics for the
+  separation between charges in Coulomb's law, and in vector analysis as the
+  magnitude of a vector — |**A**| = √(Aₓ² + A_y² + A_z²) is the distance formula
+  from the origin, not a separate rule to learn.`,
+    examTip: 'Completing the square flips the sign: (y + 2)^2 means the centre coordinate is MINUS 2. Write the standard form as (x - h)^2 + (y - k)^2 and read h and k off it directly rather than reading the numbers you see in the equation.',
+    importantNote: 'Perpendicular slopes are negative RECIPROCALS, m2 = -1/m1, not negatives. A line of slope 2 is perpendicular to one of slope -0.5. Every FE question on this offers -2 as a distractor.',
+  },
+{
+  id: 'ag-set',
+  title: '5. Problem Set: Lines, Circles and Intercepts',
+  content: `## 5.1 Identify the conic
+
+4x² + 9y² − 16x + 18y − 11 = 0
+
+A = 4 and C = 9 are unequal but the same sign, so this is an **ellipse**.
+Completing the square in both variables:
+
+4(x² − 4x) + 9(y² + 2y) = 11
+4(x² − 4x + 4) + 9(y² + 2y + 1) = 11 + 16 + 9
+
+Note what was added to the right: 4 × 4 = 16 and 9 × 1 = 9, because the
+completed terms sit inside the coefficients. Dropping the multiplier here is the
+usual error.
+
+4(x − 2)² + 9(y + 1)² = 36    →    (x−2)²/9 + (y+1)²/4 = 1
+
+Centre **(2, −1)**, semi-axes a = 3 along x and b = 2 along y.
+
+## 5.2 Perpendicular through a point
+
+Find the line perpendicular to 3x + 4y = 12 passing through (6, 1).
+
+Rearranging: y = −(3/4)x + 3, so m = −3/4. The perpendicular slope is the
+negative reciprocal, **+4/3**. Point-slope:
+
+y − 1 = (4/3)(x − 6)    →    **y = (4/3)x − 7**
+
+Check perpendicularity: (−3/4)(4/3) = −1 ✓.
+
+## 5.3 Distance from a point to a line
+
+How far is (6, 1) from 3x + 4y − 12 = 0?
+
+d = |3(6) + 4(1) − 12| / √(3² + 4²) = |18 + 4 − 12|/5 = 10/5 = **2.0**
+
+The absolute value matters: distance is never negative, and omitting it on a
+point below the line yields −2, which is offered as a choice.
+
+## 5.4 Two intercepts, one load line
+
+A source with V_oc = 20 V and R_th = 500 Ω drives a load. Sketch the load line.
+
+Current intercept (V = 0): I = 20/500 = **40 mA**
+Voltage intercept (I = 0): V = **20 V**
+Slope: −1/500 A/V = −2 mA/V
+
+Any operating point must lie on the segment between those intercepts. If a
+device curve crosses at 12 V, the current there is (20 − 12)/500 = 16 mA, and
+the power delivered to the device is 12 × 0.016 = **192 mW**.`,
+},
+{
+  id: 'ag-errors',
+  title: '6. Where Marks Are Lost',
+  content: `## 6.1 Four recurring errors
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Reading the centre off the raw equation | (y + 2)² reported as k = +2 | the standard form is (y − k)², so the sign flips |
+| Forgetting the coefficient when completing the square | adding 4 rather than 4×4 | whatever you add inside the bracket is multiplied by the coefficient outside |
+| Negating instead of taking the negative reciprocal | slope 2 paired with −2 | perpendicular slopes multiply to −1 |
+| Dropping the absolute value in the distance formula | a negative distance | distance is a magnitude |
+
+Identifying the conic **before** any algebra also prevents wasted effort: the
+signs of A and C settle it in one glance, and knowing you are looking at a
+hyperbola stops you completing the square toward a circle that was never there.
+
+Finally, sketch before solving. A rough sketch of the curve and the point takes
+ten seconds and immediately rules out answers of the wrong sign or magnitude -
+particularly for distance questions, where the eye is a perfectly good check on
+whether an answer of 2 or 20 is plausible.`,
+},
+],
   keyTakeaways: [
     'Distance formula d = sqrt[(Δx)² + (Δy)²] extends to 3D with (Δz)² term.',
     'Parallel lines: equal slopes; perpendicular lines: m₁·m₂ = -1.',
@@ -783,7 +1448,183 @@ The second-derivative test in one line: negative means a peak, positive means a 
         },
       ],
     },
-  ],
+  {
+    id: 'dc-depth',
+    title: '4. Derivatives as an Engineering Instrument',
+    content: `## 4.1 Reading a function through its derivatives
+  
+  Optimisation questions on the FE exam are mechanical once the structure is
+  clear, and the structure is best seen with all three curves stacked:
+  
+  ![A cubic, its first derivative and its second derivative drawn one above another on a shared x axis. The zeros of the first derivative line up with the turning points of the function, and the sign change of the second derivative locates the inflection.](/courses/fe-ee/figures/math-derivative-extrema.svg)
+  
+  The procedure the picture encodes:
+  
+  1. **f′ = 0 locates** candidate extrema. For f = x³ − 3x, f′ = 3x² − 3 = 0 gives
+     x = ±1.
+  2. **f″ classifies** them. f″ = 6x, so f″(−1) = −6 < 0 (**maximum**) and
+     f″(+1) = +6 > 0 (**minimum**).
+  3. **f″ = 0 with a sign change** is an inflection: here x = 0.
+  
+  | f″ at a critical point | Meaning | Shape |
+  |---|---|---|
+  | negative | local maximum | concave down |
+  | positive | local minimum | concave up |
+  | zero | test is inconclusive | check f′ signs either side |
+  
+  The mnemonic that survives exam pressure: **a positive second derivative holds
+  water.** Concave up is a minimum.
+  
+  ## 4.2 The rules, compactly
+  
+  | Rule | Statement |
+  |---|---|
+  | Power | d/dx xⁿ = n xⁿ⁻¹ |
+  | Product | (uv)′ = u′v + uv′ |
+  | Quotient | (u/v)′ = (u′v − uv′)/v² |
+  | Chain | d/dx f(g(x)) = f′(g(x))·g′(x) |
+  | Exponential | d/dx e^(kx) = k e^(kx) |
+  | Logarithm | d/dx ln x = 1/x |
+  | Sine, cosine | d/dx sin x = cos x; d/dx cos x = −sin x |
+  
+  The quotient rule's numerator order matters: **u′v − uv′**, and reversing it
+  flips the sign of every answer. If it is easier to remember, write u/v as u·v⁻¹
+  and use the product and chain rules instead — the result is identical and the
+  sign takes care of itself.
+  
+  ## 4.3 Worked: maximum power transfer, derived rather than recalled
+  
+  A source of open-circuit voltage V and internal resistance R_s drives a load
+  R_L. The current is I = V/(R_s + R_L), so the load power is
+  
+  P = I²R_L = V²R_L / (R_s + R_L)²
+  
+  Differentiate with respect to R_L using the quotient rule, with u = V²R_L and
+  v = (R_s + R_L)²:
+  
+  dP/dR_L = [V²(R_s + R_L)² − V²R_L·2(R_s + R_L)] / (R_s + R_L)⁴
+  
+  Cancel one factor of (R_s + R_L) from every term:
+  
+  dP/dR_L = V²[(R_s + R_L) − 2R_L] / (R_s + R_L)³ = V²(R_s − R_L)/(R_s + R_L)³
+  
+  Setting the numerator to zero gives **R_L = R_s**, and substituting back gives
+  P_max = V²R_s/(2R_s)² = **V²/(4R_s)**.
+  
+  This is the same result the Network Theorems topic states as a rule. Deriving it
+  takes about ninety seconds and, more usefully, shows *why* the peak is broad:
+  the numerator is linear in (R_s − R_L) while the denominator is cubic, so P
+  falls away from the peak gently rather than sharply.
+  
+  ## 4.4 Related rates, and the one setup step that matters
+  
+  Related-rate questions read as physical but are pure chain rule. The step that
+  decides the outcome is writing the geometric relationship **before**
+  differentiating, not after.
+  
+  A circular oil slick spreads so its radius grows at 0.5 m/s. How fast is the
+  area growing when r = 20 m?
+  
+  Relationship first: A = πr². Differentiate with respect to time:
+  
+  dA/dt = 2πr · dr/dt = 2π(20)(0.5) = 20π ≈ **62.8 m²/s**
+  
+  The rate depends on r, so "how fast is the area growing" has no single answer —
+  it grows faster as the slick gets bigger. A question that omits the radius is
+  testing whether you noticed that.
+  
+  ## 4.5 L'Hopital, and when it does not apply
+  
+  For limits of the indeterminate forms **0/0** or **∞/∞**, differentiate
+  numerator and denominator separately and re-evaluate:
+  
+  lim(x→0) sin x / x = lim(x→0) cos x / 1 = **1**
+  
+  The restriction is strict. The form must be indeterminate before you may apply
+  the rule. lim(x→0) (x + 1)/x is 1/0, which is not indeterminate — it diverges,
+  and differentiating top and bottom would give the wrong answer of 1. Checking
+  that you actually have 0/0 or ∞/∞ before differentiating is the whole discipline
+  of this technique.`,
+    examTip: 'A positive second derivative holds water: concave up, so a minimum. If the second derivative is zero the test tells you nothing and you must check the sign of f-prime on either side of the point.',
+    importantNote: 'L Hopital applies ONLY to 0/0 and infinity/infinity. Substitute first and confirm you have an indeterminate form. Applying it to 1/0 or 0/1 produces a confident wrong answer, which is exactly what the distractors are built from.',
+  },
+{
+  id: 'dc-set',
+  title: '5. Problem Set: Rates and Optima',
+  content: `## 5.1 Chain rule inside a circuit expression
+
+Differentiate v(t) = 10 e^(−t/0.02) sin(377t) at t = 0.
+
+This is a product, and the first factor needs the chain rule:
+
+v′ = 10[(−1/0.02)e^(−t/0.02) sin(377t) + e^(−t/0.02)(377)cos(377t)]
+
+At t = 0 the exponential is 1, sin(0) = 0 and cos(0) = 1, so
+
+v′(0) = 10[0 + 377] = **3770 V/s**
+
+The decaying envelope contributes nothing at t = 0 because the sine is zero
+there — the whole initial slope comes from the oscillation.
+
+## 5.2 Optimising a rectangular enclosure
+
+An enclosure of fixed volume 8000 cm³ has a square base of side x and height h.
+Minimise the surface area.
+
+Volume fixes h: h = 8000/x². Surface area (closed box):
+
+A = 2x² + 4xh = 2x² + 32000/x
+
+dA/dx = 4x − 32000/x² = 0    →    4x³ = 32000    →    x³ = 8000    →    x = **20 cm**
+
+Then h = 8000/400 = **20 cm**, so the optimum is a cube — the answer for any
+closed box of fixed volume. Confirm it is a minimum: A″ = 4 + 64000/x³ > 0
+for all positive x, so concave up. ✓
+
+## 5.3 Maximum of a power curve
+
+For P(θ) = 1000 sin θ cos θ, find the maximum.
+
+Rewrite with the double-angle identity: P = 500 sin 2θ, whose maximum is
+**500 W at 2θ = 90°**, i.e. **θ = 45°**. Differentiating directly gives
+P′ = 1000 cos 2θ = 0 at the same place, but the identity makes the peak value
+immediate.
+
+## 5.4 An indeterminate limit
+
+Evaluate lim(x→0) (e^(2x) − 1)/x.
+
+Substituting gives 0/0, so L'Hopital applies:
+
+lim(x→0) 2e^(2x)/1 = **2**
+
+This is the small-signal linearisation of an exponential, and it is why a diode
+equation is often approximated as linear near the origin.`,
+},
+{
+  id: 'dc-errors',
+  title: '6. Where Marks Are Lost',
+  content: `## 6.1 Four recurring errors
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Reversing the quotient rule | sign flipped on every answer | numerator is u′v − uv′; or write u·v⁻¹ and use product plus chain |
+| Skipping the inner derivative | d/dx sin(3x) given as cos(3x) | the chain rule multiplies by 3 |
+| Applying L'Hopital to a determinate form | differentiating 1/0 | substitute first and confirm 0/0 or ∞/∞ |
+| Stopping at f′ = 0 | reporting a minimum as a maximum | check the sign of f″ before naming it |
+
+Optimisation answers also deserve a physical check. A box of minimum surface
+area for a fixed volume should come out roughly cube-shaped; a maximum-power
+load resistance should equal the source resistance. If the algebra produces a
+dimension ten times the others, the derivative was taken with respect to the
+wrong variable.
+
+And check the endpoints. Many optimisation questions on a closed interval have
+their extreme value at an endpoint rather than at a critical point, so a
+derivative that never vanishes inside the interval is not a contradiction - it
+means the answer sits at one end, and you should evaluate both.`,
+},
+],
   keyTakeaways: [
     'Derivative df/dx represents instantaneous rate of change; essential for i_C = C·dv/dt and v_L = L·di/dt.',
     'Product rule: (uv)\' = u\'v + uv\'; chain rule: dy/dx = (dy/du)·(du/dx).',
@@ -933,7 +1774,189 @@ Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value i
         },
       ],
     },
-  ],
+  {
+    id: 'ic-depth',
+    title: '4. Integration Where Electrical Problems Need It',
+    content: `## 4.1 Signed area, and the question actually being asked
+  
+  Integration means signed area, and forgetting the sign produces answers that are
+  not merely inaccurate but qualitatively wrong:
+  
+  ![One period of a sine wave with the positive and negative lobes shaded separately. The two areas are equal and opposite, so the integral over the period is zero even though the total area is four.](/courses/fe-ee/figures/math-integral-area.svg)
+  
+  Over a full period, ∫sin x dx = 0 — the lobes cancel. The *area* is 4. These are
+  different questions and the exam asks both. A DC-blocking capacitor works
+  precisely because the average of a symmetric AC waveform is zero; a rectifier
+  exists precisely because the area is not.
+  
+  ## 4.2 The techniques worth carrying
+  
+  | Integral | Result |
+  |---|---|
+  | ∫xⁿ dx (n ≠ −1) | xⁿ⁺¹/(n+1) + C |
+  | ∫(1/x) dx | ln\\|x\\| + C |
+  | ∫e^(kx) dx | (1/k)e^(kx) + C |
+  | ∫sin(kx) dx | −(1/k)cos(kx) + C |
+  | ∫cos(kx) dx | (1/k)sin(kx) + C |
+  | ∫sin²(kx) dx | x/2 − sin(2kx)/(4k) + C |
+  
+  The last one is not a separate fact: apply the power-reduction identity
+  sin² = (1 − cos 2θ)/2 first, and it becomes two integrals you already know. Any
+  integral of a squared sinusoid is done this way, and that is the route to RMS.
+  
+  **Substitution** handles composites: for ∫2x·e^(x²) dx, let u = x², so du = 2x dx
+  and the integral is ∫e^u du = e^u + C = **e^(x²) + C**. The signal that
+  substitution will work is seeing a function *and its derivative* both present.
+  
+  **Integration by parts**, ∫u dv = uv − ∫v du, handles products of unlike things —
+  a polynomial times an exponential, or a polynomial times a trigonometric
+  function. Choose u to be the factor that gets simpler when differentiated.
+  
+  ## 4.3 Worked: RMS from first principles
+  
+  RMS is defined by its name read backwards — root of the mean of the square:
+  
+  V_rms = √( (1/T) ∫₀^T v(t)² dt )
+  
+  **For a sinusoid v = V_m sin(ωt).** Square it and use power reduction:
+  
+  v² = V_m² sin²(ωt) = V_m²(1 − cos 2ωt)/2
+  
+  Over a whole period the cos 2ωt term integrates to zero, leaving the mean square
+  as V_m²/2. Taking the root:
+  
+  V_rms = V_m/√2 = **0.707 V_m**
+  
+  **For a square wave** of amplitude ±V_m, the square is V_m² at every instant, so
+  the mean square is V_m² and V_rms = **V_m**. No factor at all.
+  
+  **For a symmetric triangle wave** of peak V_m, the same integral gives
+  V_rms = **V_m/√3 ≈ 0.577 V_m**.
+  
+  | Waveform | V_rms | V_avg (full-wave rectified) | Form factor |
+  |---|---|---|---|
+  | Sine | 0.707 V_m | 0.637 V_m | 1.11 |
+  | Square | 1.000 V_m | 1.000 V_m | 1.00 |
+  | Triangle | 0.577 V_m | 0.500 V_m | 1.15 |
+  | Half-wave rectified sine | 0.500 V_m | 0.318 V_m | 1.57 |
+  
+  **The 0.707 factor is not universal**, and this is the trap. A question that
+  gives a square-wave source and asks for RMS is checking whether you divided by
+  √2 out of habit. The number depends on the shape, and the table above is the
+  whole answer set the exam draws from.
+  
+  ## 4.4 Average value, and why 0.637 appears
+  
+  The average of a full-wave rectified sine is
+  
+  V_avg = (1/π)∫₀^π V_m sin θ dθ = (V_m/π)[−cos θ]₀^π = (V_m/π)(1 + 1) = 2V_m/π
+  
+  which is **0.637 V_m**. This is what a moving-coil DC meter responds to, while a
+  true-RMS meter responds to 0.707 V_m. The ratio of the two, 0.707/0.637 = 1.11,
+  is the **form factor**, and it is why an averaging meter calibrated for sine
+  waves reads incorrectly on any other waveform. A question describing a
+  "rectifier-type meter" reading a triangle wave is testing exactly this.
+  
+  ## 4.5 Where integrals appear as circuit elements
+  
+  Integration is not an abstract operation in this exam; two element laws are
+  integrals:
+  
+  - **Capacitor**: v(t) = (1/C)∫i dt. Voltage is the accumulated charge, which is
+    why capacitor voltage cannot jump — an integral of a finite quantity is
+    continuous.
+  - **Inductor**: i(t) = (1/L)∫v dt. Current is the accumulated flux linkage, for
+    the same reason.
+  
+  Both continuity rules that transient analysis depends on are consequences of
+  these being integrals, rather than separate facts to memorise. Energy is an
+  integral too: W = ∫p dt, giving ½CV² and ½LI² for the two storage elements.`,
+    examTip: 'The 0.707 RMS factor applies to SINE waves only. Square wave RMS equals the peak; triangle is peak over root three. A question that specifies a non-sinusoidal source and offers 0.707 times peak as a choice is testing whether you read the waveform.',
+    importantNote: 'Capacitor voltage and inductor current are integrals of finite quantities, which is exactly why neither can change instantaneously. The two continuity rules used throughout transient analysis are one calculus fact, not two circuit rules.',
+  },
+{
+  id: 'ic-set',
+  title: '5. Problem Set: Areas, Averages and RMS',
+  content: `## 5.1 RMS of a waveform that is not a sine
+
+A current is a 10 A square pulse present for 3 ms of every 10 ms period, and
+zero otherwise. Find the RMS value.
+
+Mean square = (1/T)∫i² dt = (1/0.010)(10² × 0.003) = (100 × 0.003)/0.010 = 30
+
+I_rms = √30 = **5.48 A**
+
+The duty cycle is 0.3, and 10√0.3 = 5.48 confirms the general result
+**I_rms = I_peak√D** for a rectangular pulse train. The *average* current is
+10 × 0.3 = 3 A, well below the RMS — the gap between them is what makes a
+heating calculation different from a charge calculation.
+
+## 5.2 Charge delivered by a ramp
+
+A current rises linearly from 0 to 4 A over 5 s. What charge flows?
+
+Q = ∫i dt = area under the line = ½(5)(4) = **10 C**
+
+No integration technique is needed; a triangle's area is the integral. Half the
+exam's integration questions are geometry in disguise.
+
+## 5.3 Energy stored in a capacitor, from the definition
+
+W = ∫p dt = ∫vi dt, and for a capacitor i = C dv/dt, so
+
+W = ∫v · C(dv/dt) dt = C∫v dv = **½CV²**
+
+Substituting C = 100 µF charged to 50 V: W = ½(100×10⁻⁶)(2500) = **0.125 J**.
+Deriving it takes three lines and removes any doubt about whether the factor is
+½ or 2.
+
+## 5.4 Average of a half-wave rectified sine
+
+Only the positive half survives, and the average is taken over the **full**
+period:
+
+V_avg = (1/2π)∫₀^π V_m sin θ dθ = (V_m/2π)(2) = V_m/π = **0.318 V_m**
+
+Dividing by π instead of 2π gives 0.637 V_m, which is the *full*-wave answer.
+The distinction is which rectifier is in the circuit, and both numbers always
+appear among the choices.
+
+## 5.5 Substitution in practice
+
+Evaluate ∫₀^1 x·e^(x²) dx.
+
+Let u = x², du = 2x dx, so x dx = du/2. Limits become u: 0 → 1.
+
+∫₀^1 (1/2)e^u du = ½(e¹ − e⁰) = ½(2.718 − 1) = **0.859**
+
+Changing the limits with the variable avoids converting back at the end, which
+is where sign and bound errors creep in.`,
+},
+{
+  id: 'ic-errors',
+  title: '6. Where Marks Are Lost',
+  content: `## 6.1 Five recurring errors
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Applying 0.707 to everything | square-wave RMS given as 0.707 V_m | the factor depends on the waveform; square is 1.000, triangle 0.577 |
+| Confusing average with RMS | using 0.637 in a heating calculation | RMS for power, average for charge and for DC meters |
+| Half-wave against full-wave | 0.637 where 0.318 belongs | check whether the average is over half the period or all of it |
+| Forgetting the constant of integration | an indefinite integral with no + C | only definite integrals may drop it |
+| Not changing limits after substitution | integrating u over the x limits | either change the limits or convert back before evaluating |
+
+A dimensional check catches several of these at once. An integral of current
+over time is a **charge** in coulombs; an integral of power over time is an
+**energy** in joules. If the units of your answer do not match what was asked
+for, the integrand was wrong, not the arithmetic.
+
+One more habit is worth the seconds it costs: when a question gives a
+waveform by description rather than by equation, sketch one period before
+integrating. Half the errors above are not calculus at all - they are
+integrating the wrong interval, or over half a period when the definition
+asks for a whole one.`,
+},
+],
   keyTakeaways: [
     'Common integrals: ∫x^n dx = x^(n+1)/(n+1) + C, ∫e^x dx = e^x + C.',
     'Integration by parts: ∫u dv = uv - ∫v du; use LIATE to choose u.',
@@ -1110,7 +2133,176 @@ For a sinusoidal drive, the forced response is a sinusoid at the driving frequen
         },
       ],
     },
-  ],
+  {
+    id: 'de-depth',
+    title: '4. From Characteristic Roots to Circuit Behaviour',
+    content: `## 4.1 The characteristic equation decides everything
+  
+  A second-order linear ODE with constant coefficients,
+  a·y″ + b·y′ + c·y = 0, is solved by assuming y = e^(st). Substituting gives
+  (as² + bs + c)e^(st) = 0, and since the exponential is never zero:
+  
+  **as² + bs + c = 0**
+  
+  The roots of that quadratic are the entire behaviour of the system. The
+  discriminant b² − 4ac decides which of three cases you are in:
+  
+  | Discriminant | Roots | Response | Circuit name |
+  |---|---|---|---|
+  | > 0 | two distinct real | C₁e^(s₁t) + C₂e^(s₂t) | overdamped |
+  | = 0 | one repeated real | (C₁ + C₂t)e^(st) | critically damped |
+  | < 0 | complex conjugate pair | e^(αt)(C₁cos ω_d t + C₂sin ω_d t) | underdamped |
+  
+  ![Three second-order responses from the same natural frequency with different damping: overdamped approaches the final value slowly without overshoot, critically damped is the fastest without overshoot, and underdamped overshoots and rings before settling.](/courses/fe-ee/figures/math-damping-regimes.svg)
+  
+  The repeated-root case needs that extra factor of t, and it is the one people
+  forget. Without it you have only one independent solution for a second-order
+  equation, which cannot satisfy two initial conditions.
+  
+  ## 4.2 Series RLC, all the way through
+  
+  For a series RLC circuit the loop equation is
+  L·di/dt + Ri + (1/C)∫i dt = 0. Differentiating once to clear the integral:
+  
+  L·i″ + R·i′ + i/C = 0    →    s² + (R/L)s + 1/(LC) = 0
+  
+  Comparing with the standard form s² + 2αs + ω₀² = 0 gives the two parameters
+  that name everything:
+  
+  - **α = R/(2L)**, the neper frequency — how fast the envelope decays
+  - **ω₀ = 1/√(LC)**, the resonant frequency — how fast it would oscillate undamped
+  
+  | Comparison | Regime | What you see |
+  |---|---|---|
+  | α > ω₀ | overdamped | slow approach, no overshoot |
+  | α = ω₀ | critically damped | fastest approach with no overshoot |
+  | α < ω₀ | underdamped | overshoot and ringing at ω_d = √(ω₀² − α²) |
+  
+  **Worked.** Take L = 20 mH, C = 50 µF, and R = 20 Ω.
+  
+  ω₀ = 1/√(0.02 × 50×10⁻⁶) = 1/√(10⁻⁶) = **1000 rad/s**
+  α = R/(2L) = 20/(2 × 0.02) = **500 s⁻¹**
+  
+  Since α = 500 < ω₀ = 1000, the circuit is **underdamped**, and it rings at
+  
+  ω_d = √(1000² − 500²) = √750000 = **866 rad/s**
+  
+  Note that the ringing frequency is *below* ω₀, always — damping slows the
+  oscillation as well as shrinking it. To make this same circuit critically
+  damped you would need α = ω₀, i.e. R = 2Lω₀ = 2(0.02)(1000) = **40 Ω**.
+  
+  ## 4.3 First order, and the shortcut that avoids the algebra
+  
+  First-order equations, τ·y′ + y = K, do not need this machinery. Every one of
+  them has the same solution shape, and reading three numbers off the circuit is
+  faster than solving anything:
+  
+  **y(t) = y(∞) + [y(0) − y(∞)]·e^(−t/τ)**
+  
+  - **y(0)** from continuity: capacitor voltage and inductor current cannot jump.
+  - **y(∞)** from DC steady state: capacitor is an open circuit, inductor a short.
+  - **τ** = RC or L/R, with R being the **Thevenin resistance seen by the storage
+    element**, not necessarily any single resistor in the diagram.
+  
+  That last point is where first-order problems are lost. If the capacitor sees a
+  network, reduce that network to its Thevenin resistance first, with sources
+  deactivated, and use that R in τ = RC.
+  
+  ## 4.4 Non-homogeneous equations, and superposition again
+  
+  With a forcing function, y = y_homogeneous + y_particular. The homogeneous part
+  is the natural response computed above; the particular part is the forced
+  response, which has the same form as the forcing function:
+  
+  | Forcing function | Try a particular solution of the form |
+  |---|---|
+  | constant K | constant A |
+  | e^(kt) | A·e^(kt) |
+  | sin ωt or cos ωt | A cos ωt + B sin ωt (**both terms**) |
+  | polynomial of degree n | general polynomial of degree n |
+  
+  For a sinusoidal forcing function you must include **both** sine and cosine even
+  if only one appears in the input, because the system shifts the phase. This is
+  the time-domain version of the fact that impedance is complex, and it is why
+  phasor analysis — which handles the magnitude and phase together — replaces this
+  procedure entirely for AC steady state.
+  
+  The natural response decays to nothing whenever the roots have negative real
+  parts, which is what leaves the forced response as the steady state. Stability
+  in control systems is this same statement about root locations.`,
+    examTip: 'Compute alpha = R/2L and omega-zero = 1/sqrt(LC) and compare them. That single comparison names the regime, and the ringing frequency omega-d = sqrt(omega-zero squared minus alpha squared) is always LOWER than omega-zero. An answer where the damped frequency exceeds the undamped one is arithmetically impossible.',
+    importantNote: 'For a repeated root the second solution carries a factor of t: (C1 + C2 t) e^(st). Omitting it leaves a second-order equation with only one independent solution, which cannot satisfy two initial conditions.',
+  },
+{
+  id: 'de-set',
+  title: '5. Problem Set: Transients by Inspection',
+  content: `## 5.1 First order, with a Thevenin time constant
+
+A 10 µF capacitor sits between node A and ground. Looking back from the
+capacitor with sources deactivated, the network reduces to 40 kΩ in parallel
+with 60 kΩ. Find the time constant.
+
+R_th = (40 × 60)/(40 + 60) = 2400/100 = **24 kΩ**
+τ = R_th·C = 24×10³ × 10×10⁻⁶ = **0.24 s**
+
+Using either resistor alone gives 0.4 s or 0.6 s, both of which are offered.
+The time constant uses the resistance the *element* sees, not any single
+component.
+
+## 5.2 Classify a second-order circuit
+
+Series RLC with R = 100 Ω, L = 10 mH, C = 1 µF.
+
+ω₀ = 1/√(0.01 × 10⁻⁶) = 1/√(10⁻⁸) = **10 000 rad/s**
+α = R/(2L) = 100/(2 × 0.01) = **5000 s⁻¹**
+
+α < ω₀, so **underdamped**, ringing at
+
+ω_d = √(10⁴² − 5000²) = √(10⁸ − 2.5×10⁷) = √(7.5×10⁷) = **8660 rad/s**
+
+The damping ratio ζ = α/ω₀ = 0.5, which is the value control-systems questions
+use for a well-damped step response with about 16 % overshoot.
+
+## 5.3 The resistance for critical damping
+
+For that same L and C, critical damping needs α = ω₀:
+
+R/(2L) = ω₀    →    R = 2Lω₀ = 2(0.01)(10 000) = **200 Ω**
+
+Doubling R from 100 Ω to 200 Ω moves the circuit from underdamped to critically
+damped. Any larger R is overdamped — slower, but with no overshoot at all.
+
+## 5.4 Solving a forced first-order equation
+
+Solve i′ + 4i = 12 with i(0) = 0.
+
+Natural part: root of s + 4 = 0 is s = −4, giving i_n = Ae^(−4t).
+Forced part: a constant input gives a constant output, i_p = 12/4 = 3.
+So i = 3 + Ae^(−4t), and i(0) = 0 gives A = −3:
+
+i(t) = **3(1 − e^(−4t))**
+
+which is the universal first-order form with i(0) = 0, i(∞) = 3 and τ = 1/4 s —
+confirming that the three-number shortcut and the full solution agree.`,
+},
+{
+  id: 'de-errors',
+  title: '6. Where Marks Are Lost',
+  content: `## 6.1 Four recurring errors
+
+| Error | What it looks like | The fix |
+|---|---|---|
+| Using a single resistor for τ | 0.4 s instead of 0.24 s | τ uses the Thevenin resistance the element sees |
+| Omitting the t factor for a repeated root | one exponential where two solutions are needed | the second solution is t·e^(st) |
+| Reporting ω_d above ω₀ | a damped frequency larger than the undamped one | damping always lowers the ringing frequency |
+| Using only sine for a sinusoidal forcing term | no phase shift in the particular solution | include both sine and cosine |
+
+The fastest structural check is the comparison **α against ω₀**. It names the
+regime in one line, and it also tells you what the answer should look like
+before you compute it: no overshoot means the response cannot cross its final
+value, so a solution that does is wrong regardless of the algebra behind it.`,
+},
+],
   keyTakeaways: [
     'First-order: x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ); τ = RC or L/R.',
     'Time constant τ: 63.2% change at t = τ; 99.3% at t = 5τ.',
@@ -1269,7 +2461,177 @@ Worked: A = [[0, 1],[-6, -5]]. Characteristic equation: lambda^2 - (trace)lambda
         },
       ],
     },
-  ],
+  {
+    id: 'la-depth',
+    title: '4. What a Matrix Does, and What Eigenvalues Report',
+    content: `## 4.1 A matrix is an operation, not a table
+  
+  Treating a matrix as a grid of numbers makes eigenvalues arbitrary. Treating it
+  as something that *acts on vectors* makes them inevitable:
+  
+  ![The matrix with rows two-one and one-two acting on several vectors. Most vectors are rotated as well as stretched, but two directions are only stretched, by factors of three and one.](/courses/fe-ee/figures/math-eigen-action.svg)
+  
+  Multiplying a vector by A generally changes both its length and its direction.
+  For almost every vector shown, A**v** points somewhere new. But two directions
+  survive unturned — A only scales them. Those are the **eigenvectors**, and the
+  scale factors are the **eigenvalues**.
+  
+  ## 4.2 Finding them, and checking them for free
+  
+  The defining equation A**v** = λ**v** rearranges to (A − λI)**v** = 0. A
+  non-zero **v** can only satisfy this if the matrix is singular, so:
+  
+  **det(A − λI) = 0**
+  
+  For A = [[2, 1], [1, 2]]:
+  
+  det([[2−λ, 1], [1, 2−λ]]) = (2−λ)² − 1 = λ² − 4λ + 3 = 0
+  
+  giving λ = **3 and 1**, exactly the factors in the figure.
+  
+  Two checks come free and cost no work:
+  
+  | Check | Statement | Here |
+  |---|---|---|
+  | Trace | sum of eigenvalues = sum of diagonal | 3 + 1 = 4 = 2 + 2 ✓ |
+  | Determinant | product of eigenvalues = det A | 3 × 1 = 3 = 4 − 1 ✓ |
+  
+  **Use both, every time.** They take five seconds and catch nearly every sign
+  error in the characteristic polynomial. If your eigenvalues do not sum to the
+  trace, you do not need to look for the mistake — you already know there is one.
+  
+  To get an eigenvector, substitute a λ back. For λ = 3: (2−3)v₁ + v₂ = 0, so
+  v₂ = v₁ and the eigenvector is any multiple of **[1, 1]**. For λ = 1:
+  (2−1)v₁ + v₂ = 0, so v₂ = −v₁ and the eigenvector is any multiple of **[1, −1]**.
+  Eigenvectors are directions, so any non-zero scaling is equally correct — an
+  answer choice differing from yours by a factor is not necessarily wrong.
+  
+  ## 4.3 Determinants, and what they mean
+  
+  | Size | Method |
+  |---|---|
+  | 2×2 | ad − bc |
+  | 3×3 | expansion along any row or column with alternating signs |
+  | any | product of the eigenvalues |
+  
+  Geometrically the determinant is the **area (or volume) scaling factor** of the
+  transformation. That gives an immediate reading of the singular case: a
+  determinant of zero means the transformation collapses space onto a line or a
+  point, information is destroyed, and no inverse can exist. In circuit terms, a
+  zero determinant in a nodal or mesh system means the equations are not
+  independent — usually because a loop was counted twice or a floating section has
+  no reference.
+  
+  ## 4.4 Cramer's rule, sized for the exam
+  
+  For small systems Cramer's rule beats elimination because it needs no
+  bookkeeping. Solving A**x** = **b**, each unknown is
+  
+  xᵢ = det(Aᵢ)/det(A)
+  
+  where Aᵢ is A with column i replaced by **b**.
+  
+  **Worked, from a mesh problem.** Two mesh equations:
+  
+  3I₁ − I₂ = 10
+  −I₁ + 2I₂ = 4
+  
+  det(A) = (3)(2) − (−1)(−1) = 6 − 1 = **5**
+  
+  det(A₁) = det([[10, −1], [4, 2]]) = 20 + 4 = 24 → I₁ = 24/5 = **4.8 A**
+  det(A₂) = det([[3, 10], [−1, 4]]) = 12 + 10 = 22 → I₂ = 22/5 = **4.4 A**
+  
+  **Check by substitution**, which is the habit worth keeping: 3(4.8) − 4.4 =
+  14.4 − 4.4 = 10 ✓, and −4.8 + 2(4.4) = −4.8 + 8.8 = 4 ✓. Both original equations
+  hold, so the answer is right regardless of how the determinants were computed.
+  
+  ## 4.5 Matrix operations, and the one that is not commutative
+  
+  | Operation | Rule | Note |
+  |---|---|---|
+  | Addition | element by element | same dimensions required |
+  | Scalar multiply | every element | — |
+  | Matrix product | rows × columns | **AB ≠ BA** in general |
+  | Transpose | rows become columns | (AB)ᵀ = BᵀAᵀ, order reverses |
+  | Inverse | A⁻¹A = I | exists only if det A ≠ 0 |
+  
+  For the product to exist, the inner dimensions must match: an m×n times an n×p
+  gives an m×p. **Matrix multiplication does not commute**, and both the transpose
+  and the inverse of a product reverse the order: (AB)⁻¹ = B⁻¹A⁻¹. Questions
+  testing this offer the un-reversed form as the distractor.
+  
+  ## 4.6 Where eigenvalues become engineering
+  
+  Eigenvalues are not confined to this topic — they are the same quantity that
+  appears under other names throughout the exam:
+  
+  - In **state-space control**, the eigenvalues of the system matrix A *are* the
+    poles of the transfer function. Negative real parts mean stability, exactly as
+    in the differential-equations topic.
+  - In **coupled circuits and mechanical systems**, they are the natural
+    frequencies, and the eigenvectors are the mode shapes.
+  - In **power systems**, they carry the small-signal stability of a machine.
+  
+  The characteristic equation det(A − λI) = 0 and the characteristic equation
+  as² + bs + c = 0 from the ODE topic are the same object. Recognising that means
+  one technique covers both.`,
+    examTip: 'Always check eigenvalues against the trace and the determinant: they must sum to the trace and multiply to the determinant. Five seconds of checking catches almost every sign error in the characteristic polynomial, and you get both checks without extra work.',
+    importantNote: 'Matrix multiplication is not commutative, and both the inverse and the transpose of a product reverse the order: (AB) inverse = B inverse times A inverse. The un-reversed version is the standard distractor on this question type.',
+  },
+{
+  id: 'la-set',
+  title: '5. Problem Set: Systems and Spectra',
+  content: `## 5.1 A 3×3 determinant
+
+Find det of [[2, 0, 1], [3, −1, 2], [1, 4, 0]].
+
+Expanding along the first row, with the alternating sign pattern + − +:
+
+2·det([[−1,2],[4,0]]) − 0·det(...) + 1·det([[3,−1],[1,4]])
+= 2(0 − 8) − 0 + 1(12 + 1)
+= −16 + 13 = **−3**
+
+Expanding along the second row (which contains a zero) would have been quicker.
+**Choose the row or column with the most zeros** — the answer is the same and
+the arithmetic is shorter.
+
+## 5.2 Eigenvalues of a non-symmetric matrix
+
+A = [[4, 1], [2, 3]].
+
+Characteristic equation: (4−λ)(3−λ) − 2 = λ² − 7λ + 10 = 0, so λ = **5 and 2**.
+
+Checks: trace = 4 + 3 = 7 = 5 + 2 ✓, and det = 12 − 2 = 10 = 5 × 2 ✓.
+
+Eigenvector for λ = 5: (4−5)v₁ + v₂ = 0 gives v₂ = v₁, so **[1, 1]**.
+Eigenvector for λ = 2: (4−2)v₁ + v₂ = 0 gives v₂ = −2v₁, so **[1, −2]**.
+
+## 5.3 A singular system, and what it means
+
+Solve 2x + 4y = 10 and 3x + 6y = 15.
+
+det = (2)(6) − (4)(3) = 12 − 12 = **0**, so Cramer's rule fails. The second
+equation is 1.5 times the first, so they carry the same information: there are
+infinitely many solutions along the line x + 2y = 5.
+
+In a mesh or nodal context a zero determinant is a modelling error, not an
+arithmetic one — typically a dependent loop equation or a network with no
+reference node.
+
+## 5.4 Three equations by Cramer
+
+x + y + z = 6, 2x − y + z = 3, x + 2y − z = 2.
+
+det(A) = 1(1−2) − 1(−2−1) + 1(4+1) = −1 + 3 + 5 = **7**
+
+Replacing the first column with the constants gives det(A₁) = 7, so x = 7/7 =
+**1**. Similarly y = **2** and z = **3**.
+
+Check all three originals: 1+2+3 = 6 ✓, 2−2+3 = 3 ✓, 1+4−3 = 2 ✓. For a 3×3
+system Cramer's rule needs four determinants, which is about the break-even
+point against elimination — beyond 3×3, eliminate.`,
+},
+],
   keyTakeaways: [
     'Matrix form Ax = b solves n equations with n unknowns; use Gaussian elimination or Cramer\'s rule.',
     'Determinant for 2×2: det = ad - bc; non-zero means invertible.',
@@ -1413,7 +2775,171 @@ Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 
         },
       ],
     },
-  ],
+  {
+    id: 'va-depth',
+    title: '4. Fields, Operators, and the s-Plane',
+    content: `## 4.1 Divergence and curl, seen rather than defined
+  
+  Two operators describe what a vector field does, and they are independent — a
+  field can have either, both, or neither:
+  
+  ![Two vector fields on the same grid. The first points radially outward everywhere and has divergence two with zero curl. The second circulates and has zero divergence with curl two.](/courses/fe-ee/figures/math-div-curl.svg)
+  
+  **Divergence** measures whether the field is a source or a sink — whether more
+  flows out of a small region than in. For **F** = (x, y), every arrow points away
+  from the origin and div **F** = ∂x/∂x + ∂y/∂y = 2 everywhere.
+  
+  **Curl** measures circulation — whether the field would spin a paddle wheel
+  placed in it. For **G** = (−y, x), the arrows circulate and curl **G** =
+  ∂(x)/∂x − ∂(−y)/∂y... more carefully, the z-component is
+  ∂G_y/∂x − ∂G_x/∂y = 1 − (−1) = 2, while its divergence is 0.
+  
+  These are exactly the operators Maxwell's equations are written in, which is why
+  this topic sits under Mathematics but is examined through Electromagnetics:
+  
+  | Equation | Statement in words |
+  |---|---|
+  | div **D** = ρ | electric field diverges from charge |
+  | div **B** = 0 | no magnetic monopoles; **B** only circulates |
+  | curl **E** = −∂**B**/∂t | a changing magnetic field curls an electric one |
+  | curl **H** = **J** + ∂**D**/∂t | current and changing **D** curl a magnetic field |
+  
+  The gradient is the third operator: **grad f** points in the direction of
+  steepest increase of a scalar field, and **E** = −grad V is the relationship
+  between potential and field. The minus sign says the field points *downhill* in
+  potential.
+  
+  ## 4.2 Dot and cross products, and which one a question needs
+  
+  | Product | Result | Formula | Zero when |
+  |---|---|---|---|
+  | Dot **A**·**B** | scalar | \\|A\\|\\|B\\|cos θ | perpendicular |
+  | Cross **A**×**B** | vector | \\|A\\|\\|B\\|sin θ, ⊥ to both | parallel |
+  
+  The distinction is physical. Work and real power are **dot** products — only the
+  component along the direction of motion (or in phase with the current) counts,
+  which is why P = VI cos θ has a cosine. Force on a moving charge and torque are
+  **cross** products — **F** = q**v** × **B** is maximal when velocity is
+  perpendicular to the field and zero when they are parallel.
+  
+  The cross product is **anticommutative**: **A** × **B** = −(**B** × **A**).
+  Order matters, and the right-hand rule fixes the sign.
+  
+  ## 4.3 The Laplace transform, as an algebra machine
+  
+  The Laplace transform replaces calculus with algebra: differentiation becomes
+  multiplication by s, integration becomes division by s.
+  
+  | f(t) | F(s) |
+  |---|---|
+  | δ(t) impulse | 1 |
+  | u(t) unit step | 1/s |
+  | t | 1/s² |
+  | e^(−at) | 1/(s+a) |
+  | sin ωt | ω/(s² + ω²) |
+  | cos ωt | s/(s² + ω²) |
+  | e^(−at)sin ωt | ω/((s+a)² + ω²) |
+  | f′(t) | sF(s) − f(0) |
+  | ∫f dt | F(s)/s |
+  
+  The derivative rule is the one that does the work, and note that it **carries the
+  initial condition**: sF(s) − f(0). Transforming a differential equation with
+  this rule builds the initial conditions in automatically, which is why Laplace
+  handles initial-condition problems that phasors cannot.
+  
+  ## 4.4 Reading the s-plane
+  
+  Where the poles of F(s) sit is where the time-domain behaviour comes from:
+  
+  ![Four pole locations in the complex s-plane keyed to the time responses they produce: a decaying oscillation, a pure decay, a sustained oscillation on the imaginary axis, and a growing oscillation in the right half-plane.](/courses/fe-ee/figures/math-laplace-splane.svg)
+  
+  | Pole location | Time behaviour | Stability |
+  |---|---|---|
+  | left half-plane, real | pure exponential decay | stable |
+  | left half-plane, complex pair | decaying oscillation | stable |
+  | on the imaginary axis | sustained oscillation | marginally stable |
+  | right half-plane | growing exponential | **unstable** |
+  
+  The reading is direct: the **real part sets the decay rate** and the
+  **imaginary part sets the oscillation frequency**. A pole at −2 ± j5 gives
+  e^(−2t)cos(5t) — ringing at 5 rad/s inside an envelope with a 0.5 s time
+  constant.
+  
+  That single rule is the whole of stability analysis. Routh-Hurwitz, root locus
+  and Nyquist in the Control Systems topics are three different ways of answering
+  one question: **is any pole in the right half-plane?**
+  
+  ## 4.5 Worked: an initial-condition problem, done by transform
+  
+  Solve y′ + 3y = 0 with y(0) = 5.
+  
+  Transform both terms, using the derivative rule:
+  
+  sY(s) − 5 + 3Y(s) = 0    →    Y(s)(s + 3) = 5    →    Y(s) = 5/(s + 3)
+  
+  Inverting with the table entry for e^(−at):
+  
+  y(t) = **5e^(−3t)**
+  
+  Check it: y(0) = 5 ✓, and y′ = −15e^(−3t) = −3y ✓. The pole at s = −3 sits in
+  the left half-plane, so the response decays — and its time constant is
+  1/3 ≈ 0.33 s, read straight off the pole location without solving anything.`,
+    examTip: 'Real part decides stability, imaginary part decides ringing. Any pole with a positive real part means an unstable system, and no amount of favourable behaviour elsewhere changes that. Read the pole locations before doing any other control-systems work.',
+    importantNote: 'Work and real power are dot products, which is why P = VI cos theta. Force on a moving charge and torque are cross products, which is why they vanish when the vectors are parallel. Choosing the wrong product gives an answer with the wrong trigonometric function, and both appear among the choices.',
+  },
+{
+  id: 'va-set',
+  title: '5. Problem Set: Products and Transforms',
+  content: `## 5.1 Dot and cross on the same pair
+
+**A** = 3**i** + 4**j** and **B** = 2**i** − **j**.
+
+Dot: **A**·**B** = (3)(2) + (4)(−1) = 6 − 4 = **2**
+
+Cross (z-component only, since both lie in the xy-plane):
+**A**×**B** = (AₓB_y − A_yBₓ)**k** = (3(−1) − 4(2))**k** = **−11k**
+
+The angle between them follows from either: |A| = 5, |B| = √5 = 2.236, so
+cos θ = 2/(5 × 2.236) = 0.179, giving θ = **79.7°**. Cross-checking with the
+cross product: sin θ = 11/(5 × 2.236) = 0.984, θ = 79.7° ✓. Two independent
+routes to the same angle.
+
+## 5.2 Divergence and curl of a stated field
+
+**F** = x²**i** + y z**j** + z**k**.
+
+div **F** = ∂(x²)/∂x + ∂(yz)/∂y + ∂(z)/∂z = 2x + z + 1
+
+At the point (1, 2, 3): div **F** = 2 + 3 + 1 = **6**.
+
+The x-component of the curl is ∂F_z/∂y − ∂F_y/∂z = 0 − y = −y, which at that
+point is **−2**. A field can have both a divergence and a curl; they are
+independent measurements, not alternatives.
+
+## 5.3 Inverse transform by partial fractions
+
+Find the inverse transform of F(s) = 10/(s(s + 5)).
+
+Split it: 10/(s(s+5)) = A/s + B/(s+5). Multiplying through, 10 = A(s+5) + Bs.
+Setting s = 0 gives A = 2; setting s = −5 gives 10 = −5B, so B = −2.
+
+F(s) = 2/s − 2/(s+5)    →    f(t) = **2 − 2e^(−5t)**
+
+Check the endpoints: f(0) = 0 and f(∞) = 2, matching the initial- and
+final-value theorems applied to F(s) directly — lim(s→∞) sF(s) = 0 and
+lim(s→0) sF(s) = 10/5 = 2 ✓.
+
+## 5.4 Reading a time constant off a pole
+
+A system has poles at s = −4 ± j3.
+
+The envelope decays as e^(−4t), so τ = 1/4 = **0.25 s** and the response settles
+in roughly 5τ = 1.25 s. It rings at 3 rad/s, i.e. 3/(2π) = **0.477 Hz**. Both
+numbers come straight from the pole coordinates with no inverse transform
+required — which is the practical reason control engineers work in the s-plane
+at all.`,
+},
+],
   keyTakeaways: [
     'Laplace transform converts ODEs to algebraic equations; key pair: e^(-at) → 1/(s+a).',
     'Final Value Theorem: lim(t→∞)f(t) = lim(s→0)sF(s) — finds steady-state without inverse transform.',
@@ -12501,7 +14027,7 @@ If you can score 65+ on full practice exams under timed conditions, you are READ
 fee_signal_nyquist: {
   topicId: 'fee_signal_nyquist',
   title: `Nyquist Criterion & Aliasing Pitfalls`,
-  domainWeight: '6%',
+  domainWeight: 'Signal Processing · 4–6%',
   overview: `The sampling theorem is one of the most-tested concepts in FE Signal Processing because it underlies all digital signal acquisition. Beyond the basic statement, the exam tests numerical aliasing problems (given a sample rate and an input frequency, where does the alias appear?), anti-aliasing filter design (what cutoff?), and reconstruction error analysis. This topic provides the depth NCEES expects.`,
   sections: [
     {
@@ -12797,7 +14323,7 @@ Overlap = aliasing.
 fee_bode_sketching: {
   topicId: 'fee_bode_sketching',
   title: `Bode Plot Sketching Techniques`,
-  domainWeight: '5%',
+  domainWeight: 'Linear Systems · 4–6%',
   overview: `Bode plots are the workhorse graphical tool of control engineers. The FE exam tests both reading Bode plots (given a plot, identify the transfer function) and sketching them (given a transfer function, draw the asymptotic magnitude and phase). Mastering the rules lets you sketch in <30 seconds vs minutes of detailed calculation. This topic covers the asymptotic rules, corner frequency identification, gain/phase margin reading, and the common transfer function patterns the exam loves.`,
   sections: [
     {
@@ -13085,7 +14611,7 @@ Or if the magnitude shows a peak near 5 rad/s, the answer is a complex pair:
 fee_pzmap_analysis: {
   topicId: 'fee_pzmap_analysis',
   title: `Pole-Zero Maps & Dynamic Response`,
-  domainWeight: '6%',
+  domainWeight: 'Control Systems · 4–6%',
   overview: `Pole-zero plots in the complex s-plane are the most compact representation of a linear system. Their locations directly determine the time-domain response — stability, damping, oscillation frequency, decay rate. The FE exam tests both directions: given pole locations, predict response; given a desired response, place poles appropriately. This topic covers pole-zero plot interpretation, the relationship between pole locations and time response, and the special role of complex pole pairs.`,
   sections: [
     {
@@ -13394,7 +14920,7 @@ Given a problem:
 fee_power_faults: {
   topicId: 'fee_power_faults',
   title: `Fault Analysis & Symmetrical Components`,
-  domainWeight: '6%',
+  domainWeight: 'Power Systems · 4–6%',
   overview: `Fault analysis is essential to power system design — sizing circuit breakers, selecting protective relays, evaluating equipment damage. The FE exam tests recognition and basic calculation of three-phase faults, single-line-to-ground faults, line-to-line faults, and double-line-to-ground faults. Symmetrical components (positive, negative, zero sequence) provide the mathematical framework to handle unbalanced faults systematically. This topic was identified as a gap in the platform's existing power systems coverage.`,
   sections: [
     {
@@ -13666,7 +15192,7 @@ FE may test recognition that:
 fee_comms_shannon: {
   topicId: 'fee_comms_shannon',
   title: `Shannon-Hartley Capacity & Link Budgets`,
-  domainWeight: '6%',
+  domainWeight: 'Communications · 4–6%',
   overview: `Shannon's channel capacity theorem and the link budget are the two foundational quantitative tools in communications. The FE exam tests both: given bandwidth and SNR, compute capacity; given a link path (transmitter, antenna, free-space loss, receiver), determine the received signal-to-noise ratio. This topic provides the formulas, decibel conversions, and practical examples NCEES expects.`,
   sections: [
     {
