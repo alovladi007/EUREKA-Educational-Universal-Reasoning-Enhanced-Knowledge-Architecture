@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Check, Flag, X } from 'lucide-react';
 import { ApiError } from '@/lib/api';
 import {
+  type MechanismStepOption,
   PracticeItem,
   PracticeReview,
   PracticeReviewItem,
@@ -120,6 +121,49 @@ function parseRetroAnswer(
   }
 }
 
+// A mechanism item is answered with an ordered list of steps, each a chosen
+// elementary step and the SMILES it produces, travelling as JSON through the
+// plain-text answer field, the same shape grader 8 parses.
+type MechanismRow = { step: string; intermediate: string };
+
+function mechanismSteps(
+  item: PracticeItem | undefined,
+): MechanismStepOption[] | null {
+  const list = item?.meta.steps;
+  return Array.isArray(list) && list.length > 0 ? list : null;
+}
+
+function buildMechanismAnswer(rows: MechanismRow[]): string {
+  const clean = rows.filter((r) => r.step && r.intermediate.trim());
+  if (clean.length === 0 || clean.length !== rows.length) {
+    return '';
+  }
+  return JSON.stringify({
+    path: clean.map((r) => ({ step: r.step, intermediate: r.intermediate.trim() })),
+  });
+}
+
+function parseMechanismAnswer(answer: string | undefined): MechanismRow[] | null {
+  if (!answer) {
+    return null;
+  }
+  try {
+    const record = JSON.parse(answer) as { path?: unknown };
+    if (!Array.isArray(record.path) || record.path.length === 0) {
+      return null;
+    }
+    return record.path.map((r) => ({
+      step: typeof (r as MechanismRow).step === 'string' ? (r as MechanismRow).step : '',
+      intermediate:
+        typeof (r as MechanismRow).intermediate === 'string'
+          ? (r as MechanismRow).intermediate
+          : '',
+    }));
+  } catch {
+    return null;
+  }
+}
+
 export default function PracticeSessionPage() {
   const params = useParams<{ id: string }>();
   const raw = params?.id;
@@ -135,6 +179,11 @@ export default function PracticeSessionPage() {
   // at their defaults and the plain draft string is the answer.
   const [retroDisc, setRetroDisc] = useState('');
   const [retroPrecursors, setRetroPrecursors] = useState<string[]>(['', '']);
+  // Mechanism items carry their own drafting state: ordered step rows. For
+  // every other grader these stay untouched.
+  const [mechRows, setMechRows] = useState<MechanismRow[]>([
+    { step: '', intermediate: '' },
+  ]);
   const [flagged, setFlagged] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -248,6 +297,10 @@ export default function PracticeSessionPage() {
     // Seed the retro fields: from the recorded answer on an already answered
     // item, or empty (one disconnection unchosen, two blank precursors) on a
     // fresh one. Harmless for non-retro items, which ignore this state.
+    if (item.grader === 'mechanism') {
+      const parsedMech = done ? parseMechanismAnswer(done.answer) : null;
+      setMechRows(parsedMech ?? [{ step: '', intermediate: '' }]);
+    }
     if (item.grader === 'retro') {
       const parsed = done ? parseRetroAnswer(done.answer) : null;
       setRetroDisc(parsed?.disconnection ?? '');
@@ -305,7 +358,9 @@ export default function PracticeSessionPage() {
     const value =
       item.grader === 'retro' && retroDisconnections(item)
         ? buildRetroAnswer(retroDisc, retroPrecursors)
-        : draft.trim();
+        : item.grader === 'mechanism' && mechanismSteps(item)
+          ? buildMechanismAnswer(mechRows)
+          : draft.trim();
     if (!value) {
       return;
     }
@@ -340,7 +395,7 @@ export default function PracticeSessionPage() {
     } finally {
       setSubmitting(false);
     }
-  }, [stored, submitting, index, draft, flagged, retroDisc, retroPrecursors]);
+  }, [stored, submitting, index, draft, flagged, retroDisc, retroPrecursors, mechRows]);
 
   const runFinish = useCallback(async () => {
     if (!stored || finishing) {
@@ -508,9 +563,13 @@ export default function PracticeSessionPage() {
   // the same way submit() does, so the button disables until there is one.
   const retroOptions =
     currentItem.grader === 'retro' ? retroDisconnections(currentItem) : null;
+  const mechOptions =
+    currentItem.grader === 'mechanism' ? mechanismSteps(currentItem) : null;
   const pendingValue = retroOptions
     ? buildRetroAnswer(retroDisc, retroPrecursors)
-    : draft.trim();
+    : mechOptions
+      ? buildMechanismAnswer(mechRows)
+      : draft.trim();
 
   return (
     <Page>
@@ -736,8 +795,150 @@ export default function PracticeSessionPage() {
                 </p>
               </div>
             </div>
+          ) : mechOptions ? (
+            <div className="space-y-4">
+              <p className="text-xs text-muted-foreground">
+                Build the mechanism one step at a time. Pick the elementary
+                step that fires, then give the species it produces as SMILES.
+              </p>
+              <div className="space-y-3">
+                {mechRows.map((row, i) => (
+                  <div
+                    key={i}
+                    className="rounded-lg border border-border p-3"
+                  >
+                    <div className="mb-2 flex items-center justify-between">
+                      <span className="text-sm font-medium text-card-foreground">
+                        Step {i + 1}
+                      </span>
+                      {i > 0 && !currentDone && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setMechRows((prev) => prev.filter((_, j) => j !== i))
+                          }
+                          disabled={submitting}
+                          aria-label={`Remove step ${i + 1}`}
+                          className="rounded-lg border border-border px-2.5 py-1 text-xs font-medium text-muted-foreground transition-colors hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                        >
+                          Remove
+                        </button>
+                      )}
+                    </div>
+                    <label className="mb-1 block text-xs text-muted-foreground" htmlFor={`mech-step-${i}`}>
+                      Elementary step
+                    </label>
+                    <select
+                      id={`mech-step-${i}`}
+                      value={row.step}
+                      disabled={Boolean(currentDone) || submitting}
+                      onChange={(e) =>
+                        setMechRows((prev) =>
+                          prev.map((r, j) =>
+                            j === i ? { ...r, step: e.target.value } : r,
+                          ),
+                        )
+                      }
+                      className="mb-2 w-full rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    >
+                      <option value="">Choose a step</option>
+                      {mechOptions.map((s) => (
+                        <option key={s.name} value={s.name}>
+                          {s.name}: {s.moves}
+                        </option>
+                      ))}
+                    </select>
+                    <label className="mb-1 block text-xs text-muted-foreground" htmlFor={`mech-smiles-${i}`}>
+                      Species produced (SMILES)
+                    </label>
+                    <input
+                      id={`mech-smiles-${i}`}
+                      type="text"
+                      value={row.intermediate}
+                      disabled={Boolean(currentDone) || submitting}
+                      onChange={(e) =>
+                        setMechRows((prev) =>
+                          prev.map((r, j) =>
+                            j === i
+                              ? { ...r, intermediate: e.target.value }
+                              : r,
+                          ),
+                        )
+                      }
+                      autoComplete="off"
+                      className="w-full rounded-lg border border-border bg-background px-3 py-2 font-mono text-sm text-foreground disabled:cursor-not-allowed disabled:opacity-60 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                    />
+                  </div>
+                ))}
+              </div>
+              {!currentDone && mechRows.length < 6 && (
+                <button
+                  type="button"
+                  onClick={() =>
+                    setMechRows((prev) => [
+                      ...prev,
+                      { step: '', intermediate: '' },
+                    ])
+                  }
+                  disabled={submitting}
+                  className="inline-flex items-center justify-center rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-brand-500 disabled:cursor-not-allowed disabled:opacity-50 focus:outline-none focus:ring-2 focus:ring-brand-500"
+                >
+                  Add step
+                </button>
+              )}
+              <p className="text-xs text-muted-foreground">
+                Every step is graded by running its chemistry forward: the
+                step must fire on the current species and produce the
+                structure you wrote.
+              </p>
+            </div>
           ) : (
             <div>
+              {currentItem.grader === 'labdata' &&
+                Array.isArray(currentItem.meta.data) &&
+                currentItem.meta.data.length > 0 && (
+                  <div className="mb-4 overflow-x-auto">
+                    <table className="w-full border-collapse text-sm">
+                      <caption className="sr-only">
+                        The measured dataset for this item
+                      </caption>
+                      <thead>
+                        <tr>
+                          {Object.keys(currentItem.meta.data[0]).map((k) => (
+                            <th
+                              key={k}
+                              scope="col"
+                              className="border border-border px-3 py-1.5 text-left font-medium text-card-foreground"
+                            >
+                              {k}
+                            </th>
+                          ))}
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {currentItem.meta.data.map((row, ri) => (
+                          <tr key={ri}>
+                            {Object.keys(currentItem.meta.data![0]).map(
+                              (k) => (
+                                <td
+                                  key={k}
+                                  className="border border-border px-3 py-1.5 font-mono tabular-nums text-card-foreground"
+                                >
+                                  {String(row[k])}
+                                </td>
+                              ),
+                            )}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {typeof currentItem.meta.data_note === 'string' && (
+                      <p className="mt-1 text-xs text-muted-foreground">
+                        {currentItem.meta.data_note}
+                      </p>
+                    )}
+                  </div>
+                )}
               <label
                 htmlFor="practice-answer"
                 className="mb-2 block text-sm font-medium text-card-foreground"

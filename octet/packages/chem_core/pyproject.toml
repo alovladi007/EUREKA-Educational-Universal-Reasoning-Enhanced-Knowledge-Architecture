@@ -19,3 +19,5 @@ where = ["src"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# Pins the pytest-asyncio fixture loop scope so standalone runs stay quiet.
+asyncio_default_fixture_loop_scope = "function"

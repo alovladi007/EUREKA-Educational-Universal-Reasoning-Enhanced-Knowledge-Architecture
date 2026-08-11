@@ -462,6 +462,14 @@ def _self_answer(v):
             "disconnection": v.meta["key_disconnection"],
             "precursors": v.meta["key_precursors"],
         }
+    if v.grader == "mechanism":
+        return {
+            "path": [
+                {"step": s, "intermediate": i} for s, i in v.meta["key_path"]
+            ]
+        }
+    if v.grader == "labdata":
+        return f'{v.meta["value"]} {v.meta.get("unit", "")}'.strip()
     return v.key
 
 
@@ -488,7 +496,12 @@ def test_grade_dispatch_refuses_graders_from_later_phases():
     # nothing would ever call. It passed, and would have kept passing had
     # spectrum gone live with no verifier at all. A boundary test that guards
     # the wrong string is worse than none, because it reads as coverage.
-    for later in ("lewis", "mechanism", "lab_data"):
+    # Phase 7 moved mechanism and lab data out of this list because they were
+    # built, each with its independent verifier. "lab_data" stays: the live
+    # grader is registered as "labdata", so the underscored spelling is
+    # exactly the wrong-string trap this test exists for and must still
+    # refuse.
+    for later in ("lewis", "lab_data"):
         with pytest.raises(KeyError):
             cc.grade(later, {"key": "x", "meta": {}}, "anything")
 
@@ -500,11 +513,12 @@ def test_unbuilt_grader_names_are_not_secretly_live_under_another_spelling():
     no supported grader may lack the verifier the house rule requires. This
     catches a rename that quietly widens the live set.
     """
-    unbuilt = {"lewis", "mechanism", "lab_data", "retro_step"}
+    unbuilt = {"lewis", "lab_data", "retro_step"}
     assert unbuilt.isdisjoint(cc.SUPPORTED_GRADERS)
     assert set(cc.SUPPORTED_GRADERS) == {
         "formula", "balance", "stoich", "mc", "equilibrium",
         "numeric", "structure", "prediction", "spectrum", "retro",
+        "mechanism", "labdata",
     }
 
 

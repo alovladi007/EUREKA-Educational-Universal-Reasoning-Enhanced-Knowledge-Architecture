@@ -91,6 +91,8 @@ from .simulate import (
     verify_equilibrium_shift,
     verify_titration,
 )
+from .labdata import grade_labdata  # noqa: E402
+from .mechanism import grade_mechanism  # noqa: E402
 from .retro import (  # noqa: E402
     Disconnection,
     RetroItem,
@@ -181,6 +183,8 @@ __all__ = [
     "SpectrumItem",
     "Signal",
     "grade_retro",
+    "grade_mechanism",
+    "grade_labdata",
     "verify_retro_item",
     "RetroItem",
     "Disconnection",
@@ -216,6 +220,8 @@ SUPPORTED_GRADERS = (
     "prediction",
     "spectrum",
     "retro",
+    "mechanism",
+    "labdata",
 )
 
 
@@ -319,6 +325,33 @@ def grade(grader: str, variant, student_answer, **kwargs) -> GradeResult:
             source=meta.get("source", ""),
         )
         return grade_spectrum(item, student_answer)
+    if grader == "mechanism":
+        # The step menu and key path travel in meta so the sandboxed child
+        # rebuilds the item without importing the application. student_answer
+        # carries the ordered step list; it may arrive as JSON text through
+        # the practice endpoint's plain answer field.
+        from .templates_mech import build_mechanism_item
+
+        m_item = build_mechanism_item(meta, str(key))
+        m_answer = student_answer
+        if isinstance(m_answer, str):
+            import json
+
+            try:
+                m_answer = json.loads(m_answer)
+            except (ValueError, TypeError):
+                m_answer = []
+        if isinstance(m_answer, dict):
+            m_answer = m_answer.get("path", [])
+        return grade_mechanism(m_item, m_answer if isinstance(m_answer, list) else [])
+    if grader == "labdata":
+        return grade_labdata(
+            float(meta["value"]),
+            meta.get("unit", ""),
+            student_answer,
+            expected_sig_figs=meta.get("sig_figs"),
+            wrong_paths=[w for w in meta.get("wrong_paths", []) if w.get("value") is not None],
+        )
     if grader == "retro":
         # The disconnections and key travel in meta so the sandboxed child
         # rebuilds the item without importing the application. student_answer

@@ -3,7 +3,7 @@
 Honest phase by phase register. A line says done only when it is verified, and
 what is not built says so plainly.
 
-Last updated: 2026-07-25 (Phase 6: ORG2 authored, grader 11 retrosynthesis, ORG2 practiceable).
+Last updated: 2026-08-10 (Phase 7: graders 8 and 9, the study planner; register note below on the sessions between).
 
 ## Phase 0: foundation. Gate: contract confirmed. Status: DONE with 3 open items
 
@@ -469,11 +469,96 @@ sulfur side chain outranks the carboxyl), maleic anhydride is 4 degrees of
 unsaturation not 5, cyclohexene is 2 not 1, and the Diels-Alder adduct of the
 cis dienophile is the meso diester while the trans gives the chiral pair.
 
-## Phase 7 and later: NOT STARTED
+## Register note: sessions between Phase 6 and Phase 7
 
-Phase 7
-with the retrosynthesis trainer, Phase 7 AN/P1/P2 tiers and the guardrailed
-tutor.
+This register fell behind the repository between 2026-07-25 and 2026-08-10,
+and the honest fix is to say so rather than backfill invented phase entries.
+What the intervening commits delivered, verified against the running system
+on 2026-08-10: the full curriculum is authored (312 of 312 nodes, GEN1 91,
+GEN2 75, ORG1 70, ORG2 76 - compliance reports it, and the coverage rules
+gate on it), every unit is practisable, the exam catalogue assembles 40 unit
+exams, practice sessions persist with node-mastery EWMA, an exam key leak
+found in a deep review was closed, and the suite stood at 924 tests green
+before Phase 7 started. The "Known gaps" list below predates some of this
+and is corrected where it was wrong.
+
+## Phase 7: graders 8 and 9, and the study planner. Gate: verifier per grader, suite green. Status: DONE
+
+| Deliverable | Status |
+|---|---|
+| Grader 8 mechanism | DONE. Stepwise arrow-pushing graded by running each elementary step as an RDKit forward reaction. |
+| Grader 9 lab data | DONE. Kinetics runs and titration curves; the extracted quantity grades numerically. |
+| Study planner | DONE. Target-date plan over the path planner's route. Schedule arithmetic, stated as such. |
+| Grader 10 spectra | Already live since Phase 5 (chem_core/spectra.py, served template on ORG1). Listed here because the build plan asked for it; nothing new was needed. |
+
+Grader 8 refuses judgement the way retro does: every elementary step in an
+item's menu is backed by a forward reaction, a claimed intermediate is
+correct at a step exactly when running the step produces it, and the first
+failing step is localized in the milestones. Regiochemistry is graded by
+consequence rather than by fiat: protonating the wrong alkene carbon is a
+real step and is accepted at that step, but the coherent path it starts ends
+at the minor product, where MARKOVNIKOV-INVERTED (or MECH-NO-SHIFT for a
+missed hydride shift) is diagnosed. The verifier walks the item's own key
+path twice: once through the grading machinery, once independently through
+InChIKey agreement and heavy-atom conservation by direct counting.
+
+The verifier earned its keep before the grader ever served an item: RDKit
+carries a reactant atom's charge into the product unless the product
+template resets it, so the first draft of the halide-attack step produced
+only sanitize-rejected products and never fired. The verifier refused the
+item; the step library now writes every changed charge explicitly, and the
+hydride shift enumerates its hydrogen counts because reaction SMARTS cannot
+say "one less H than before".
+
+Grader 9's verifier is aimed at the author, the way the spectra verifier is.
+The generator computes the key from hidden parameters (the chosen k, the
+acid's Ka); the verifier never touches them, recovering the quantity FROM
+THE SERVED DATA by an independent route - least-squares regression on the
+linearized kinetics data, interpolation at half-equivalence on the curve -
+and refusing any seed whose data does not determine its own answer. For
+kinetics it additionally requires the data to discriminate the stated order
+against both wrong orders, so an ambiguous dataset is refused as a coin flip
+rather than served. The characteristic slips are precomputed as named wrong
+paths: the wrong-order regression slope diagnoses ORDER-FROM-COEFFICIENT or
+ORDER-READ-AS-ONE, the pH at equivalence diagnoses PKA-READ-AT-EQUIVALENCE.
+
+The datasets are exact simulation output rounded to instrument-realistic
+figures, with the rounding stated in the prompt. No synthetic noise: an
+error model nobody measured is a fabricated number wearing a lab coat.
+
+The study planner divides the route the path planner recommends (review
+weakest-first, then in progress, then the authored frontier in course
+order) evenly across the days to a learner-chosen date. The response states
+plainly that this is schedule arithmetic: it counts nodes and not minutes,
+because no per-node time has been measured on anyone; it attaches no
+completion probability and predicts no score. A test walks the payload and
+fails if any of those numbers ever appears. A date in the past is refused
+with 422, because a plan for a date that has passed is not a plan.
+
+Serving stays fail-closed: the whitelist serves a mechanism item's step menu
+as names and prose only - never the reaction SMARTS, key path, product or
+wrong-product table - and a lab-data item's dataset and rounding note, never
+its value or wrong paths. Verified against the live serve payload for every
+fixture.
+
+Evidence:
+
+- 12 seed sweep across the four new templates: 48 of 48 keys independently
+  verified. All-template sweep re-run after registration.
+- 47 new chem_core tests (grading, both verifiers refusing broken keys, the
+  recovery routes against ground truth, a 10-case adversarial battery per
+  grader, p95 latency inside the 500 ms budget) and 4 planner API tests.
+- Three new misconceptions, review="pending", instructor observation,
+  routed to real nodes.
+- The practice player renders both item types: ordered step rows with a
+  step selector and SMILES field for mechanism, the dataset as a table for
+  lab data. tsc clean.
+
+Still deliberately absent: graders 5 (Lewis structures, needs a drawing
+surface with electron placement the current sketcher does not expose) and
+the AN/P1/P2 analytical tiers; the guardrailed tutor remains gated on
+contract item 2.3 and a red-team suite. Cohort statistics and item
+difficulty still wait for real learners.
 
 ## Known gaps and honest caveats
 
@@ -494,11 +579,11 @@ tutor.
 4. `packages/chem_core/src/chem_core/_fixtures.py` is a grader fixture set, not
    the content library. The curated 200 entry library is installed over it at
    startup.
-5. No database migrations yet. Mastery is still not persisted across sessions
-   and the path planner says so in its response. Predict, observe, explain
-   attempts are not persisted either: the ticket carries an attempt safely
-   through one sitting, and a learner's history of attempts is not stored.
-   Persistence is genuinely outstanding rather than partially done.
+5. CORRECTED 2026-08-10: this entry predated Phase 4 and 5b. Migrations
+   0001-0005 exist, mastery persists in node_mastery, and practice sessions
+   and SRS state persist. What remains unpersisted is the predict, observe,
+   explain attempt history: the HMAC ticket carries one sitting safely, and
+   a learner's history of POE attempts is still not stored.
 6. Molecules have no 3D coordinates. The library stores SMILES, which records
    connectivity and not geometry, so `has_3d` is false for all 200 and the
    viewer states that the layout it draws is illustrative rather than measured.

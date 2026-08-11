@@ -54,12 +54,29 @@ export interface RetroDisconnectionOption {
   abstracts?: string;
 }
 
+// One elementary step offered by a "mechanism" item. name is what the
+// learner selects; moves says, in words, what the electrons do; abstracts
+// names what the teaching model leaves out. The reaction SMARTS and the key
+// path never travel in this list.
+export interface MechanismStepOption {
+  name: string;
+  moves: string;
+  abstracts?: string;
+}
+
 // Answer-free metadata on a served item. choices is present for the "mc"
-// grader; disconnections is present for the "retro" grader; other graders
-// carry their own fields, left unknown rather than pretended to be typed.
+// grader; disconnections is present for the "retro" grader; steps and start
+// are present for the "mechanism" grader; data/kind/data_note for the
+// "labdata" grader; other graders carry their own fields, left unknown
+// rather than pretended to be typed.
 export interface PracticeItemMeta {
   choices?: PracticeChoice[];
   disconnections?: RetroDisconnectionOption[];
+  steps?: MechanismStepOption[];
+  start?: string;
+  kind?: string;
+  data?: Array<Record<string, number>>;
+  data_note?: string;
   [key: string]: unknown;
 }
 

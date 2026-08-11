@@ -36,6 +36,14 @@ What is allowed and why:
   retro       the disconnection menu (names, what bond each forms, the
               simplification note). Never key_disconnection or key_precursors.
   balance     the skeleton equation being balanced.
+  mechanism   the starting material and the step menu as names and prose
+              (what each step's electrons do, what it abstracts). Never the
+              reaction SMARTS, the key path, its intermediates, the product,
+              or the wrong-product diagnosis table: the intermediates ARE the
+              answer, and the SMARTS would let a client compute them.
+  labdata     the dataset itself, its rounding note, unit, sig figs and the
+              scenario name and stated order. Never value or wrong_paths,
+              which are the answer and its diagnosis.
 """
 
 from __future__ import annotations
@@ -57,11 +65,25 @@ _SAFE_KEYS: dict[str, tuple[str, ...]] = {
     "retro": ("disconnections", "name"),
     "balance": ("skeleton",),
     "prediction": ("options", "scenario", "node"),
+    "labdata": ("kind", "data", "unit", "sig_figs", "name", "order", "data_note"),
 }
 
 
 def public_meta(grader: str, meta: dict) -> dict:
     """The learner-visible slice of an item's meta. Fails closed."""
+    if grader == "mechanism":
+        return {
+            "start": meta.get("start", ""),
+            "name": meta.get("name", ""),
+            "steps": [
+                {
+                    "name": s.get("name", ""),
+                    "moves": s.get("moves", ""),
+                    "abstracts": s.get("abstracts", ""),
+                }
+                for s in meta.get("steps", [])
+            ],
+        }
     if grader == "mc":
         return {
             "choices": [

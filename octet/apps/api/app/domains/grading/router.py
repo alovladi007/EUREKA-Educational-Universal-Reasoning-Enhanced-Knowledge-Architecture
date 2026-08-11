@@ -10,7 +10,7 @@ router returns a worked solution.
 
 from __future__ import annotations
 
-from datetime import datetime
+from datetime import datetime, timezone
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from pydantic import BaseModel, Field
@@ -263,6 +263,162 @@ def _has_triangle_view(node_code: str) -> bool:
     return triangle_views.for_node(node_code) is not None
 
 
+async def _mastery_snapshot(principal: Principal, session: AsyncSession):
+    """Topological order plus this learner's recorded mastery, shared by the
+    path and the planner so the two can never disagree about the route."""
+    from sqlalchemy import select
+
+    from app.data.curriculum import NODES_BY_CODE, topological_order
+    from app.domains.practice.models import NodeMastery, mastery_state
+
+    order = topological_order()
+    if order is None:
+        raise ValueError("curriculum graph has a cycle")
+
+    rows = (
+        await session.execute(
+            select(NodeMastery).where(NodeMastery.user_id == principal.user_id)
+        )
+    ).scalars().all()
+    by_code = {r.node_code: r for r in rows if r.node_code in NODES_BY_CODE}
+    states = {c: mastery_state(r.attempts, r.ewma) for c, r in by_code.items()}
+    attempted = {c for c, r in by_code.items() if r.attempts > 0}
+    return order, by_code, states, attempted
+
+
+@router.get("/planner")
+async def study_planner(
+    target_date: str = Query(..., description="ISO date, e.g. 2026-09-15"),
+    principal: Principal = Depends(get_current_principal),
+    session: AsyncSession = Depends(get_session),
+) -> dict:
+    """A target-date plan over the path planner's route. Honest arithmetic.
+
+    The route is the same one /path recommends - review first (weakest
+    recorded accuracy), then nodes in progress, then the authored frontier
+    in course order - divided evenly across the days remaining.
+
+    What this deliberately is NOT, stated in the response so the page cannot
+    soften it: it is not a prediction. Dividing a node list by a day count
+    is schedule arithmetic. This platform has no measured per-node study
+    time, so the plan counts nodes rather than minutes, and it attaches no
+    completion probability, because inventing either number is the kind of
+    theater this platform refuses.
+    """
+    from datetime import date as date_type
+
+    from app.data.coverage import is_authored
+    from app.data.curriculum import NODES_BY_CODE, prerequisites_of
+
+    try:
+        target = date_type.fromisoformat(target_date)
+    except ValueError:
+        raise HTTPException(422, "target_date must be an ISO date, like 2026-09-15")
+    today = datetime.now(timezone.utc).date()
+    days_remaining = (target - today).days
+    if days_remaining < 1:
+        raise HTTPException(
+            422, "The target date has to be at least tomorrow: a plan for a "
+                 "date that has passed is not a plan.",
+        )
+
+    order, by_code, states, attempted = await _mastery_snapshot(principal, session)
+
+    def node_out(code: str, group: str) -> dict:
+        node = NODES_BY_CODE[code]
+        out = {
+            "node": code, "title": node.title, "course": node.course,
+            "unit": node.unit, "group": group,
+        }
+        row = by_code.get(code)
+        if row is not None and row.attempts:
+            out["accuracy"] = round(row.ewma, 3)
+        return out
+
+    review = [
+        node_out(c, "review")
+        for c in sorted(
+            (c for c, s in states.items() if s == "needs_review"),
+            key=lambda c: by_code[c].ewma,
+        )
+    ]
+    in_progress = [
+        node_out(c, "continue")
+        for c in sorted(
+            (c for c, s in states.items() if s == "in_progress"),
+            key=lambda c: (
+                by_code[c].last_attempt_at is not None,
+                by_code[c].last_attempt_at or datetime.min,
+            ),
+            reverse=True,
+        )
+    ]
+
+    # The frontier here is the WHOLE remaining authored route in topological
+    # order, not just what is unlocked today: a plan to a date schedules the
+    # route, and working the route in this order satisfies each node's
+    # prerequisites before it comes up. (/path's "next" list answers a
+    # different question - what could you open right now - which is why it
+    # gates on attempted prerequisites and this does not.)
+    frontier = [
+        node_out(c, "frontier")
+        for c in order
+        if is_authored(c)
+        and c not in attempted
+        and states.get(c) not in ("needs_review", "in_progress")
+    ]
+
+    work = review + in_progress + frontier
+    total = len(work)
+    if total == 0:
+        return {
+            "target_date": target.isoformat(),
+            "days_remaining": days_remaining,
+            "total_nodes": 0,
+            "days": [],
+            "note": (
+                "Nothing is on the route right now: nothing needs review, "
+                "nothing is in progress, and no authored node is unlocked "
+                "and unattempted. Practice something and the plan will have "
+                "material to schedule."
+            ),
+        }
+
+    per_day = -(-total // days_remaining)  # ceiling division
+    days = []
+    from datetime import timedelta as td
+    for i in range(days_remaining):
+        chunk = work[i * per_day : (i + 1) * per_day]
+        if not chunk:
+            break
+        days.append({
+            "date": (today + td(days=i + 1)).isoformat(),
+            "nodes": chunk,
+        })
+
+    finishes_early = len(days) < days_remaining
+    return {
+        "target_date": target.isoformat(),
+        "days_remaining": days_remaining,
+        "total_nodes": total,
+        "review_count": len(review),
+        "continue_count": len(in_progress),
+        "frontier_count": len(frontier),
+        "per_day": per_day,
+        "finishes_early": finishes_early,
+        "days": days,
+        "note": (
+            "This is schedule arithmetic: the route /path recommends "
+            "(review first, then what you started, then the authored "
+            "frontier in course order), divided evenly across the days to "
+            "your date. It counts nodes, not minutes, because this platform "
+            "has not measured how long a node takes anyone. It attaches no "
+            "probability of finishing and predicts no score. Your daily "
+            "flashcard reviews come on top of it."
+        ),
+    }
+
+
 @router.get("/path")
 async def learning_path(
     principal: Principal = Depends(get_current_principal),
@@ -285,24 +441,9 @@ async def learning_path(
     weighted average of graded attempts). That is stated in the note, along
     with what it is not: an IRT ability estimate.
     """
-    from sqlalchemy import select
-
+    order, by_code, states, attempted = await _mastery_snapshot(principal, session)
     from app.data.coverage import is_authored
-    from app.data.curriculum import NODES_BY_CODE, prerequisites_of, topological_order
-    from app.domains.practice.models import NodeMastery, mastery_state
-
-    order = topological_order()
-    if order is None:
-        raise ValueError("curriculum graph has a cycle")
-
-    rows = (
-        await session.execute(
-            select(NodeMastery).where(NodeMastery.user_id == principal.user_id)
-        )
-    ).scalars().all()
-    by_code = {r.node_code: r for r in rows if r.node_code in NODES_BY_CODE}
-    states = {c: mastery_state(r.attempts, r.ewma) for c, r in by_code.items()}
-    attempted = {c for c, r in by_code.items() if r.attempts > 0}
+    from app.data.curriculum import NODES_BY_CODE, prerequisites_of
 
     def entry(code: str, state: str, reason: str) -> dict:
         node = NODES_BY_CODE[code]

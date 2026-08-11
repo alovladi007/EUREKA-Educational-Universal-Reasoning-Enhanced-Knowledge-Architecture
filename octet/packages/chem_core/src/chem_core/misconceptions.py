@@ -581,6 +581,74 @@ MISCONCEPTIONS.update(
 )
 
 
+# Grader 8 (mechanism) and grader 9 (lab data) diagnoses. Added with the
+# mechanism and lab-data modules. Same honest provenance: instructor
+# observation, review="pending" until a named expert signs off.
+MISCONCEPTIONS.update(
+    {
+        "MARKOVNIKOV-INVERTED": Misconception(
+            code="MARKOVNIKOV-INVERTED",
+            name="Protonation at the wrong alkene carbon",
+            description=(
+                "The learner protonates the more substituted alkene carbon, "
+                "placing the positive charge on the less substituted one. "
+                "Every arrow in the resulting path is coherent, but the path "
+                "runs through the less stable carbocation and ends at the "
+                "minor product."
+            ),
+            counterexample=(
+                "Protonating 2-methylpropene at the central carbon leaves the "
+                "charge on a primary CH2, stabilized by one carbon group; "
+                "protonating the CH2 end leaves a tertiary cation stabilized "
+                "by three. The tertiary path is lower in energy at its "
+                "highest point, and the product ratio follows it."
+            ),
+            routes_to="ORG1.HXADDITION",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+        "MECH-NO-SHIFT": Misconception(
+            code="MECH-NO-SHIFT",
+            name="Missed rearrangement",
+            description=(
+                "The learner traps the first-formed carbocation directly, "
+                "missing that a 1,2-hydride or alkyl shift to a more stable "
+                "cation happens faster than capture. The path is coherent "
+                "and ends at the unrearranged, minor product."
+            ),
+            counterexample=(
+                "Adding HBr to 3-methyl-1-butene gives mostly "
+                "2-bromo-2-methylbutane, not the 2-bromo-3-methylbutane the "
+                "unrearranged secondary cation would give: the hydride shift "
+                "to the tertiary cation outruns bromide capture."
+            ),
+            routes_to="ORG1.HXADDITION",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+        "PKA-READ-AT-EQUIVALENCE": Misconception(
+            code="PKA-READ-AT-EQUIVALENCE",
+            name="pKa read at the equivalence point",
+            description=(
+                "The learner reads the acid's pKa off the titration curve at "
+                "the equivalence point, where the pH is set by the conjugate "
+                "base, instead of at half-equivalence, where equal acid and "
+                "base concentrations make pH equal pKa."
+            ),
+            counterexample=(
+                "For 0.1 M acetic acid titrated with 0.1 M NaOH the "
+                "equivalence pH is about 8.7 while the pKa is 4.76; the two "
+                "differ by nearly four units, so the equivalence reading is "
+                "not even close."
+            ),
+            routes_to="GEN2.TITRATIONWEAK",
+            source="Instructor observation; not traced to a published study",
+            review="pending",
+        ),
+    }
+)
+
+
 # Kinetics and gas-law misconceptions, added with the predict-observe-explain
 # scenarios that key them. Each one is a belief the simulation can be made to
 # contradict in front of the learner, which is the only reason to name it.
