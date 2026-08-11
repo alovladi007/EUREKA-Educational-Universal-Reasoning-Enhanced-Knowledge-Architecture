@@ -147,9 +147,13 @@ async def get_comprehensive_analytics(
                 'expected': analytics_data.predictions.exam_score.expected,
                 'confidence': analytics_data.predictions.exam_score.confidence,
                 'range': analytics_data.predictions.exam_score.range,
-                'percentile_projection': analytics_data.predictions.exam_score.percentile_projection
+                'percentile_projection': analytics_data.predictions.exam_score.percentile_projection,
+                'basis': analytics_data.predictions.exam_score.basis
             },
-            'readiness_date': analytics_data.predictions.readiness_date.isoformat(),
+            'readiness_date': (
+                analytics_data.predictions.readiness_date.isoformat()
+                if analytics_data.predictions.readiness_date else None
+            ),
             'probability_of_target': analytics_data.predictions.probability_of_target,
             'critical_topics': analytics_data.predictions.critical_topics,
             'risk_factors': [
@@ -315,9 +319,13 @@ async def get_predictions(
             'expected': predictions.exam_score.expected,
             'confidence': predictions.exam_score.confidence,
             'range': predictions.exam_score.range,
-            'percentile_projection': predictions.exam_score.percentile_projection
+            'percentile_projection': predictions.exam_score.percentile_projection,
+            'basis': predictions.exam_score.basis
         },
-        'readiness_date': predictions.readiness_date.isoformat(),
+        'readiness_date': (
+            predictions.readiness_date.isoformat()
+            if predictions.readiness_date else None
+        ),
         'probability_of_target': predictions.probability_of_target,
         'critical_topics': predictions.critical_topics,
         'risk_factors': [

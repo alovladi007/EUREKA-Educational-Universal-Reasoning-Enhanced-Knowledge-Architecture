@@ -59,7 +59,7 @@ from app.services.irt import calibrate
 from app.services.mock_exam import (
     score_submitted, start_attempt as start_mock_attempt, submit_answer,
 )
-from app.utils.dependencies import get_current_user
+from app.utils.dependencies import get_current_user, require_admin
 
 
 router = APIRouter()
@@ -131,11 +131,20 @@ async def list_my_attempts(
 async def run_calibration(
     min_attempts: int = Query(3, ge=1, le=50),
     db: AsyncSession = Depends(get_db),
-    _: User = Depends(get_current_user),
+    _: User = Depends(require_admin),
 ) -> CalibrateResponse:
     """
-    Re-fit 2-PL parameters on every item with ≥ min_attempts. Writes back
-    to items.irt_*. Admin-ish operation; auth-gate it role-wise in Phase 9.
+    Re-fit 2-PL parameters on every item with >= min_attempts. Writes back
+    to items.irt_*.
+
+    ADMIN ONLY (C6). This was previously gated on any authenticated user
+    with a floor of 1 attempt, so any learner could have rewritten every
+    item parameter on the platform from three responses.
+
+    min_attempts here is a knob, not a standard: the MCAT path never uses
+    it, and calls POST /mcat/irt/calibrate instead, which applies the
+    documented threshold in docs/mcat/IRT_CALIBRATION.md and refuses below
+    it.
     """
     result = await calibrate(db, min_attempts_per_item=min_attempts)
     await db.commit()

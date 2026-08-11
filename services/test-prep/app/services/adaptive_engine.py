@@ -399,38 +399,26 @@ class AdaptiveEngine:
 
         return coefficient * math.exp(exponent)
 
-    def theta_to_score(self, theta: float, exam: str) -> int:
+    # Theta -> scaled score requires an equating study against the real
+    # exam: a table of seven hand-written anchor points is not one. The
+    # previous version shipped four such tables (GRE/GMAT/LSAT/MCAT), with
+    # no source recorded for any of them, and silently fell back to the GRE
+    # table for every other exam - so a Security+ learner was scored on a
+    # GRE scale. Registering a mapping here requires a documented equating
+    # source; until one exists this stays empty and no score is produced
+    # (C7; see docs/mcat/IRT_CALIBRATION.md for the same rule on the MCAT
+    # side).
+    CALIBRATED_SCORE_MAPS: Dict[str, Dict[float, int]] = {}
+
+    def theta_to_score(self, theta: float, exam: str) -> Optional[int]:
         """
-        Convert theta (ability) to scaled score for specific exam
-
-        Args:
-            theta: Ability estimate
-            exam: Exam type (GRE, GMAT, etc.)
-
-        Returns:
-            Scaled score
+        Convert theta (ability) to a scaled score, IF this exam has a
+        calibrated mapping. Returns None when it does not - which is every
+        exam today. Callers must render the absence, not a placeholder.
         """
-        # Score mapping tables
-        score_maps = {
-            'GRE': {
-                -3: 130, -2: 135, -1: 145, 0: 152,
-                1: 162, 2: 168, 3: 170
-            },
-            'GMAT': {
-                -3: 200, -2: 300, -1: 450, 0: 550,
-                1: 650, 2: 750, 3: 800
-            },
-            'LSAT': {
-                -3: 120, -2: 135, -1: 150, 0: 155,
-                1: 165, 2: 172, 3: 180
-            },
-            'MCAT': {
-                -3: 118, -2: 122, -1: 126, 0: 128,
-                1: 130, 2: 131, 3: 132
-            }
-        }
-
-        score_map = score_maps.get(exam, score_maps['GRE'])
+        score_map = self.CALIBRATED_SCORE_MAPS.get(exam)
+        if not score_map:
+            return None
 
         # Linear interpolation
         keys = sorted(score_map.keys())
@@ -452,7 +440,7 @@ class AdaptiveEngine:
 
                 return int(round(score))
 
-        return score_map[0]  # Fallback
+        return score_map.get(0)
 
     def create_initial_state(self) -> AdaptiveState:
         """

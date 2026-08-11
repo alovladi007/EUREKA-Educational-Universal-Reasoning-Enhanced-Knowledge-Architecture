@@ -1,5 +1,23 @@
-# Default `docker compose up -d` starts: db, redis, minio, api-core, web, admin.
-# Optional services (Kafka, OpenSearch, Neo4j, tiers, etc.): docker compose --profile full up -d
+# Default `docker compose up -d` starts these 12 services (everything below
+# without a `profiles:` key), NOT the six this header used to claim:
+#
+#   db, redis, minio                      infrastructure
+#   api-core, web, admin                  the core app
+#   file-storage, analytics, notebook     supporting services
+#   medical-school, test-prep,            verticals
+#   test-prep-videos
+#
+# The old header listed six and was wrong for the other six, which mattered:
+# test-prep (:8200) was serving analytics on every default `up` while being
+# documented as opt-in (docs/mcat/AUDIT.md MC-3). Corrected 2026-08-11; if
+# you add a service, either give it a `profiles:` key or add it to this list.
+#
+# Opt-in sets:
+#   --profile full     24 more: Kafka, OpenSearch, Neo4j, Qdrant, the tier
+#                      and pro- services, tutor-llm, the test-prep worker
+#                      and beat, jaeger
+#   --profile dev      web-dev
+#   --profile dev-obs  jaeger only
 
 services:
   # ==========================================

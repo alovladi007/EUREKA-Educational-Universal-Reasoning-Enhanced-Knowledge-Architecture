@@ -409,6 +409,165 @@ class ApiClient {
     return response.data;
   }
 
+  // ==================== MCAT QBank (server item bank, C1) ====================
+  // Items are served WITHOUT keys or explanations; those exist only in the
+  // grading response, and every graded answer is logged server-side.
+
+  async getMcatQbankOverview(): Promise<{
+    sections: Array<{
+      topic_id: number; section: string; items: number;
+      subtopics: Array<{ subtopic: string; items: number }>;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/mcat/qbank/overview');
+    return response.data;
+  }
+
+  async getMcatQbankItems(params: {
+    topic_id?: number; subtopic?: string; count?: number;
+  }): Promise<{
+    items: Array<{
+      item_id: string; stem: string; options: string[]; option_count: number;
+      // Author-assigned label, not a measured statistic.
+      difficulty_nominal: string; section: string | null;
+      subtopic: string | null; review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/mcat/qbank/items', { params });
+    return response.data;
+  }
+
+  async getMcatQbankPassages(): Promise<{
+    passages: Array<{
+      passage_id: string; title: string; topic_id: number; section: string;
+      question_count: number; review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/mcat/qbank/passages');
+    return response.data;
+  }
+
+  async getMcatQbankPassageSet(passageId: string): Promise<{
+    passage: {
+      passage_id: string; title: string; body: string; topic_id: number;
+      section: string; review_status: string;
+    };
+    items: Array<{
+      item_id: string; stem: string; options: string[]; option_count: number;
+      // Author-assigned label, not a measured statistic.
+      difficulty_nominal: string; section: string | null;
+      subtopic: string | null; review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get(`/mcat/qbank/passage-set/${passageId}`);
+    return response.data;
+  }
+
+  async submitMcatQbank(payload: {
+    item_id: string; choice_index: number; seconds?: number;
+  }): Promise<{
+    is_correct: boolean; correct_index: number; correct_text: string;
+    chosen_index: number; explanation: string | null;
+    section: string | null; subtopic: string | null;
+    review_status: string; disclaimer: string;
+  }> {
+    const response = await this.client.post('/mcat/qbank/submit', payload);
+    return response.data;
+  }
+
+  // ==================== MCAT mock simulator (server-graded, C3) ====================
+  // Raw and per-section results only: no scaled score exists without
+  // equating data, and the server refuses to invent one.
+
+  async startMcatMock(form: 'mini' | 'full'): Promise<{
+    attempt_id: string; form: string; time_limit_min: number;
+    deadline_at: string;
+    items: Array<{
+      position: number; item_id: string; stem: string; options: string[];
+      option_count: number; topic_id: number; section: string | null;
+      subtopic: string | null;
+    }>;
+    note: string; disclaimer: string;
+  }> {
+    const response = await this.client.post('/mcat/mock/start', { form });
+    return response.data;
+  }
+
+  async submitMcatMock(attemptId: string, answers: Array<{
+    position: number; choice_index: number | null;
+  }>): Promise<{
+    attempt_id: string;
+    raw: { correct: number; answered: number; total: number };
+    by_section: Record<string, {
+      section: string | null; correct: number; answered: number; total: number;
+    }>;
+    review: Array<{
+      position: number; stem: string; options: string[];
+      chosen_index: number | null; correct_index: number; is_correct: boolean;
+      explanation: string | null; section: string | null; subtopic: string | null;
+    }>;
+    note: string; disclaimer: string;
+  }> {
+    const response = await this.client.post(
+      `/mcat/mock/${attemptId}/submit`, { answers },
+    );
+    return response.data;
+  }
+
+  async getMcatMockHistory(): Promise<{
+    attempts: Array<{
+      attempt_id: string; form: string; status: string; started_at: string;
+      submitted_at: string | null; correct: number | null;
+      answered: number | null; total: number;
+      by_section: Record<string, {
+        section: string | null; correct: number; answered: number; total: number;
+      }> | null;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/mock/history');
+    return response.data;
+  }
+
+  // ==================== MCAT review center (C4) ====================
+  // Fed by attempt_logs - recorded responses only, counts beside every
+  // figure, no percentile.
+
+  async getMcatReviewSummary(): Promise<{
+    by_section: Array<{
+      section: string | null; attempts: number; correct: number;
+      accuracy: number | null;
+    }>;
+    weakest_subtopics: Array<{
+      subtopic: string | null; section: string | null; attempts: number;
+      correct: number; accuracy: number | null;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/review/summary');
+    return response.data;
+  }
+
+  async getMcatReviewMissed(limit = 20): Promise<{
+    missed: Array<{
+      item_id: string; stem: string; options: string[];
+      chosen_index: number | null; correct_index: number;
+      explanation: string | null; section: string | null;
+      subtopic: string | null; times_attempted: number;
+      last_missed_at: string; source: string;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/review/missed', {
+      params: { limit },
+    });
+    return response.data;
+  }
+
   // ==================== SRS (Spaced-Repetition flashcards, P1-4) ====================
   // Backed by the api-core srs_cards table + SM-2 algorithm. Each card
   // carries its own ease_factor / interval / repetitions / next_review
