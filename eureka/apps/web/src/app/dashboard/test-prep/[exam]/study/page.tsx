@@ -40,6 +40,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
+import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { MCAT_SUBJECTS, assertSubjectCoverage, type McatSubject } from '@/lib/mcat-subjects';
 import { getCurriculum } from '@/lib/exam-curriculum';
 import { loadExamCourse, type CoursePack } from '@/lib/exam-course-loader';
@@ -404,6 +405,16 @@ export default function McatStudyPage() {
                           {s.importantNote}
                         </div>
                       )}
+                      {/* The companion column counts these; they have to be
+                          here for that count to be true. */}
+                      {s.quiz && s.quiz.length > 0 && (
+                        <div className="mt-5">
+                          <LessonQuiz
+                            questions={s.quiz}
+                            title={`Check your understanding \u2014 ${s.title}`}
+                          />
+                        </div>
+                      )}
                     </section>
                   ))}
                 </div>
@@ -506,8 +517,10 @@ export default function McatStudyPage() {
                   <div className="space-y-1.5">
                     {quizCount > 0 && (
                       <p className="text-xs text-muted-foreground">
-                        {quizCount} check-your-understanding questions are
-                        embedded in the sections above.
+                        {quizCount} check-your-understanding{' '}
+                        {quizCount === 1 ? 'question sits' : 'questions sit'} at
+                        the end of the section{quizCount === 1 ? '' : 's'} that
+                        cover them.
                       </p>
                     )}
                     <Link
