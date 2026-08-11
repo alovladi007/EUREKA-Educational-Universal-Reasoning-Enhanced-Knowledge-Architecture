@@ -138,6 +138,27 @@ exception). Fix: C4, fed by C1's response log.
 - `eureka/apps/web/playwright.config.ts` + `tests/e2e/` (new in Phase B) -
   live-stack e2e harness to extend in C8.
 
+## Status as of 2026-08-11 (end of Phase C)
+
+CLOSED: MC-1, MC-2, MC-3, MC-4, MC-5, MC-6, MC-7, MC-8, MC-9, MC-10,
+MC-11 (both halves), MC-12. Every gap in this register has been addressed;
+see octet/docs/STATUS.md Phase 9 for what each fix actually was, and
+docs/mcat/IRT_CALIBRATION.md for the calibration threshold.
+
+Two defects found during the work that were NOT in this register, recorded
+so the count is honest:
+- POST /irt/calibrate (platform-wide) was gated on any authenticated user
+  with a min_attempts floor of 1. Now admin-only.
+- The adaptive engine's theta-to-scale tables silently fell back to the GRE
+  table for any exam not among the four listed, so e.g. a Security+ learner
+  was scored on a GRE scale. The tables now require a documented equating
+  source and the registry is empty.
+
+What remains open is content and data, not code: the bank is entirely
+AI-generated pending SME review (so the approved-only paid pool is empty by
+design), no item is near the calibration threshold, and scaled scoring
+stays absent until equating data exists.
+
 ## Order of work
 
 C1 server bank + response log (closes MC-1, MC-4 for new flow, MC-5, MC-6,

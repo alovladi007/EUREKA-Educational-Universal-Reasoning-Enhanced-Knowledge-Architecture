@@ -610,6 +610,68 @@ secret when the env var was absent - the exact silent-secret trap the local
 stack notes warned about. Compose now accepts either OCTET_JWT_SECRET or
 JWT_SECRET before falling back, matching .env.example.
 
+## Phase 9: MCAT test-prep infrastructure (EUREKA side). Gate: GATE C. Status: DONE
+
+2026-08-11. This phase is recorded here because it was driven from the
+OCTET programme, but almost all of it landed in EUREKA (branch
+omu/phase-c-mcat). It began with an audit rather than a build:
+docs/mcat/AUDIT.md lists twelve gaps with file:line evidence, and the four
+P0s were things the product was telling learners that were not true.
+
+What was closed:
+
+- MC-1. The 580-item MCAT bank was compiled into the browser bundle with
+  every answer key and explanation, graded by a client-side comparison. The
+  bank moved into the server item infrastructure (bank mcat-qbank-v1, all
+  580 rows DRAFT + AI_GENERATED, because the source file said "AI-generated.
+  Requires SME review." and nothing here launders that), and the client file
+  was deleted. Items now serve without keys; grading is server-side.
+- MC-2 / MC-9. The full-length simulation graded in the browser and showed
+  an "estimated scaled score" of 472 + percent x 0.56 - a linear map with no
+  equating data behind it. The simulation is now server-drawn and
+  server-graded on the existing MockAttempt models, and reports raw and
+  per-section results only. theta, scaled_score and pass_probability stay
+  NULL by design.
+- MC-4 / MC-5. The server used to record whatever score the client claimed.
+  Every graded response now writes an attempt_logs row, and the aggregates
+  derive from those rows.
+- MC-8. Passages exist, with the same review and provenance standing as
+  items, and their attached items are excluded from the discrete draw.
+- MC-12. A review centre fed by the response log: accuracy by section and
+  weakest subtopics with counts beside every figure, and a self-maintaining
+  missed list.
+- MC-7. SME review became a gate rather than a comment. Flagged and retired
+  content never serves; DRAFT serves only free surfaces with its standing
+  disclosed; the paid pool is approved-only and refuses rather than padding
+  from unreviewed content.
+- MC-3 / MC-10. The test-prep service stopped inventing numbers: a predicted
+  score from questions_answered * 0.01 + 50, an np.random.normal
+  "distribution", the raw score returned as a percentile, a hardcoded
+  percentile of 50.0, and a synthetic peer at 0.5 when no cohort existed.
+  All removed or floored behind a stated minimum cohort. The adaptive
+  engine's four hand-written theta-to-scale tables went too - they had no
+  equating source, and silently scored every unlisted exam on the GRE scale.
+
+Found while working, not in the original register: POST /irt/calibrate was
+gated on any authenticated user with a floor of one attempt, so a learner
+could have rewritten every item parameter on the platform. Now admin-only.
+
+The calibration threshold is written down before the data exists
+(docs/mcat/IRT_CALIBRATION.md): 300 responses from 100 distinct learners,
+per item, both. Today the honest report is 588 items, 36 responses, zero
+eligible - and GET /mcat/irt/status says exactly that.
+
+GATE C: 9 Playwright tests against the live stack, nothing stubbed, five
+consecutive clean runs. The one flake found along the way was a strict-mode
+locator matching two elements that legitimately carry the same
+no-scaled-score wording, fixed by scoping rather than by loosening the
+assertion. 31 api-core integration tests across the four MCAT suites.
+
+Still open and deliberately so: the bank is entirely AI-generated and
+awaiting SME review, so the paid simulator pool is currently empty by
+design; scaled scoring stays absent until equating data exists, which
+calibration alone will never supply.
+
 ## Known gaps and honest caveats
 
 1. The misconception library (26 entries, 7 added in Phase 3) carries
