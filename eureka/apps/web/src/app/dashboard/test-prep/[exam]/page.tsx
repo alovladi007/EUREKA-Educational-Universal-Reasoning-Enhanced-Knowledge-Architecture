@@ -62,6 +62,7 @@ import { LsatFrequencyHeatmap } from '@/components/test-prep/LsatFrequencyHeatma
 import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatmap';
 import { McatServerQbank } from '@/components/test-prep/McatServerQbank';
 import { McatMockExam } from '@/components/test-prep/McatMockExam';
+import { McatReviewCenter } from '@/components/test-prep/McatReviewCenter';
 import { SecurityPlusPBQTab } from '@/components/test-prep/SecurityPlusPBQ';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
 import { VideoLessonTabs } from '@/components/test-prep/VideoLessonTabs';
@@ -4310,7 +4311,6 @@ function PEEEAnalyticsTab() {
 // MCAT FULL EXAM SIMULATOR + ANALYTICS
 // ═══════════════════════════════════════════════════════════════
 
-const MCAT_SECTION_NAMES = ['Chemical & Physical Foundations','Critical Analysis & Reasoning (CARS)','Biological & Biochemical Foundations','Psychological, Social & Biological Foundations'];
 function MCATExamTab() {
   // The server-graded simulator (C3): the server draws the form, holds the
   // clock, and grades; results are raw and per-section only - no scaled
@@ -4319,9 +4319,8 @@ function MCATExamTab() {
 }
 
 function MCATAnalyticsTab() {
-  const [history, setHistory] = useState<any[]>([]); React.useEffect(() => { const stored = JSON.parse(localStorage.getItem('mcat_exam_history') || '[]'); setHistory(stored); getExamAttempts('MCAT').then((remote) => { if (remote.length) setHistory(mergeExamHistory(stored, remote)); }); }, []);
-  const latestByTopic: Record<number, {correct:number;total:number}> = {}; if (history.length > 0) { const latest = history[history.length-1]; if (latest.byTopic) Object.entries(latest.byTopic).forEach(([tid,data]:[string,any]) => { latestByTopic[Number(tid)] = data; }); }
-  const totalAttempts = history.length; const avgScore = totalAttempts > 0 ? Math.round(history.reduce((s:number,h:any)=>s+h.score,0)/totalAttempts) : 0; const bestScore = totalAttempts > 0 ? Math.max(...history.map((h:any)=>h.score)) : 0; const passCount = history.filter((h:any)=>h.passed).length;
-  const weakTopics = Object.entries(latestByTopic).map(([tid,d])=>({id:Number(tid),name:MCAT_SECTION_NAMES[Number(tid)],pct:Math.round((d.correct/d.total)*100),correct:d.correct,total:d.total})).sort((a,b)=>a.pct-b.pct);
-  return (<div className="space-y-6"><div className="bg-gradient-to-r from-teal-600 to-cyan-600 rounded-xl p-6 text-white"><h2 className="text-2xl font-bold mb-1">MCAT Performance Analytics</h2><p className="text-teal-100 text-sm">Track your MCAT preparation across all 4 sections</p></div>{totalAttempts===0?(<Card className="p-8 text-center"><BarChart3 className="h-12 w-12 mx-auto text-muted-foreground mb-4"/><h3 className="text-lg font-semibold mb-2">No exam attempts yet</h3><p className="text-muted-foreground text-sm">Take a Full Exam to see analytics.</p></Card>):(<><div className="grid grid-cols-2 md:grid-cols-4 gap-4"><Card className="p-4 text-center"><p className="text-3xl font-bold text-blue-600">{totalAttempts}</p><p className="text-xs text-muted-foreground">Exams</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-purple-600">{avgScore}%</p><p className="text-xs text-muted-foreground">Average</p></Card><Card className="p-4 text-center"><p className="text-3xl font-bold text-green-600">{bestScore}%</p><p className="text-xs text-muted-foreground">Best</p></Card></div><Card className="p-6"><h3 className="font-bold text-lg mb-4">Exam History</h3><div className="space-y-2">{[...history].reverse().map((h:any,i:number)=>(<div key={i} className="flex justify-between items-center p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"><span className="text-sm text-muted-foreground">{new Date(h.date).toLocaleDateString()}</span><span className="font-bold">{h.score}%</span><Badge className={h.passed?'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200':'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'}>{h.passed?'STRONG':'REVIEW'}</Badge></div>))}</div></Card>{weakTopics.length>0&&(<Card className="p-6"><h3 className="font-bold text-lg mb-4">Latest — By Section</h3><div className="space-y-3">{weakTopics.map(t=>(<div key={t.id}><div className="flex justify-between text-sm mb-1"><span className="font-medium">{t.name}</span><span className={t.pct>=70?'text-green-600 font-semibold':'text-red-600 font-semibold'}>{t.correct}/{t.total} ({t.pct}%)</span></div><div className="w-full bg-gray-200 dark:bg-gray-800 rounded-full h-2.5"><div className={`h-2.5 rounded-full ${t.pct>=70?'bg-green-500':t.pct>=50?'bg-amber-500':'bg-red-500'}`} style={{width:`${t.pct}%`}}/></div></div>))}</div></Card>)}<div className="text-center"><button onClick={()=>{if(confirm('Clear history?')){localStorage.removeItem('mcat_exam_history');setHistory([]);}}} className="text-xs text-muted-foreground hover:text-red-500 transition">Clear history</button></div></>)}</div>);
+  // The review center (C4): server-recorded responses only - the old
+  // localStorage-fed analytics (client-claimed scores) are gone.
+  return <McatReviewCenter />;
 }
+

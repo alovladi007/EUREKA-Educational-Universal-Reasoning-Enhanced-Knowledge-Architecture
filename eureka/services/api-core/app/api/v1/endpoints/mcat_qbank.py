@@ -30,7 +30,7 @@ import uuid as uuid_mod
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel, Field
-from sqlalchemy import func, select
+from sqlalchemy import Integer, and_, func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.database import get_db
@@ -292,4 +292,167 @@ async def qbank_submit(
         "subtopic": item.extra_metadata.get("subtopic"),
         "review_status": item.review_status.value,
         "disclaimer": DISCLAIMER,
+    }
+
+
+# -- Review center (C4, AUDIT MC-12) ----------------------------------------
+#
+# Fed entirely by attempt_logs - the response-level record the qbank and the
+# simulator write. Nothing here is client-claimed, nothing is a percentile:
+# it is this account's recorded answers, with the counts beside every figure.
+# Keys and explanations appear here because every listed item was already
+# graded - review is the one place they belong.
+
+REVIEW_SOURCES = ("mcat_qbank", "mcat_mock")
+
+
+@router.get("/mcat/review/summary")
+async def review_summary(
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Accuracy by section and by subtopic (worst first), from recorded
+    responses only."""
+    bank = await _bank(db)
+    rows = (
+        await db.execute(
+            select(
+                Item.extra_metadata["section"].as_string().label("section"),
+                Item.extra_metadata["subtopic"].as_string().label("subtopic"),
+                func.count().label("attempts"),
+                func.sum(func.cast(AttemptLog.is_correct, Integer)).label("correct"),
+            )
+            .join(Item, Item.id == AttemptLog.item_id)
+            .where(
+                AttemptLog.user_id == current_user.id,
+                AttemptLog.source.in_(REVIEW_SOURCES),
+                Item.bank_id == bank.id,
+            )
+            .group_by("section", "subtopic")
+        )
+    ).all()
+
+    by_section: dict[str, dict] = {}
+    by_subtopic = []
+    for section, subtopic, attempts, correct in rows:
+        correct = int(correct or 0)
+        attempts = int(attempts)
+        s = by_section.setdefault(
+            section, {"section": section, "attempts": 0, "correct": 0}
+        )
+        s["attempts"] += attempts
+        s["correct"] += correct
+        by_subtopic.append(
+            {
+                "subtopic": subtopic,
+                "section": section,
+                "attempts": attempts,
+                "correct": correct,
+                "accuracy": round(correct / attempts, 3) if attempts else None,
+            }
+        )
+    for s in by_section.values():
+        s["accuracy"] = (
+            round(s["correct"] / s["attempts"], 3) if s["attempts"] else None
+        )
+    by_subtopic.sort(key=lambda x: (x["accuracy"] is None, x["accuracy"], -x["attempts"]))
+    return {
+        "by_section": sorted(by_section.values(), key=lambda s: s["section"] or ""),
+        "weakest_subtopics": by_subtopic[:12],
+        "note": (
+            "This account's recorded responses only (practice and simulator), "
+            "with attempt counts beside every figure. No percentile: there is "
+            "no cohort to compare against."
+        ),
+    }
+
+
+@router.get("/mcat/review/missed")
+async def review_missed(
+    limit: int = 20,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Items whose LATEST recorded response is wrong, most recent first.
+    Answering one correctly (in practice or a sitting) drops it off."""
+    if not 1 <= limit <= 50:
+        raise HTTPException(422, "limit must be between 1 and 50")
+    bank = await _bank(db)
+    latest = (
+        select(
+            AttemptLog.item_id.label("item_id"),
+            func.max(AttemptLog.created_at).label("mx"),
+        )
+        .where(
+            AttemptLog.user_id == current_user.id,
+            AttemptLog.source.in_(REVIEW_SOURCES),
+        )
+        .group_by(AttemptLog.item_id)
+        .subquery()
+    )
+    rows = (
+        await db.execute(
+            select(AttemptLog, Item)
+            .join(
+                latest,
+                and_(
+                    AttemptLog.item_id == latest.c.item_id,
+                    AttemptLog.created_at == latest.c.mx,
+                ),
+            )
+            .join(Item, Item.id == AttemptLog.item_id)
+            .where(
+                AttemptLog.user_id == current_user.id,
+                AttemptLog.source.in_(REVIEW_SOURCES),
+                AttemptLog.is_correct.is_(False),
+                Item.bank_id == bank.id,
+                Item.deleted_at.is_(None),
+            )
+            .order_by(AttemptLog.created_at.desc())
+            .limit(limit * 2)  # headroom for same-timestamp duplicates
+        )
+    ).all()
+
+    counts = dict(
+        (
+            await db.execute(
+                select(AttemptLog.item_id, func.count())
+                .where(
+                    AttemptLog.user_id == current_user.id,
+                    AttemptLog.source.in_(REVIEW_SOURCES),
+                )
+                .group_by(AttemptLog.item_id)
+            )
+        ).all()
+    )
+
+    seen: set = set()
+    missed = []
+    for log, item in rows:
+        if item.id in seen or len(missed) >= limit:
+            continue
+        seen.add(item.id)
+        options = list(item.content.get("options", []))
+        missed.append(
+            {
+                "item_id": str(item.id),
+                "stem": item.content.get("stem"),
+                "options": options,
+                "chosen_index": log.answer_index,
+                "correct_index": int(item.content["correct_index"]),
+                "explanation": item.explanation,
+                "section": item.extra_metadata.get("section"),
+                "subtopic": item.extra_metadata.get("subtopic"),
+                "times_attempted": int(counts.get(item.id, 0)),
+                "last_missed_at": log.created_at.isoformat() + "Z",
+                "source": log.source,
+            }
+        )
+    return {
+        "missed": missed,
+        "note": (
+            "Each entry is the latest recorded response for that question. "
+            "Answer it correctly anywhere - practice or a sitting - and it "
+            "leaves this list."
+        ),
     }

@@ -531,6 +531,41 @@ class ApiClient {
     return response.data;
   }
 
+  // ==================== MCAT review center (C4) ====================
+  // Fed by attempt_logs - recorded responses only, counts beside every
+  // figure, no percentile.
+
+  async getMcatReviewSummary(): Promise<{
+    by_section: Array<{
+      section: string | null; attempts: number; correct: number;
+      accuracy: number | null;
+    }>;
+    weakest_subtopics: Array<{
+      subtopic: string | null; section: string | null; attempts: number;
+      correct: number; accuracy: number | null;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/review/summary');
+    return response.data;
+  }
+
+  async getMcatReviewMissed(limit = 20): Promise<{
+    missed: Array<{
+      item_id: string; stem: string; options: string[];
+      chosen_index: number | null; correct_index: number;
+      explanation: string | null; section: string | null;
+      subtopic: string | null; times_attempted: number;
+      last_missed_at: string; source: string;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/review/missed', {
+      params: { limit },
+    });
+    return response.data;
+  }
+
   // ==================== SRS (Spaced-Repetition flashcards, P1-4) ====================
   // Backed by the api-core srs_cards table + SM-2 algorithm. Each card
   // carries its own ease_factor / interval / repetitions / next_review

@@ -348,3 +348,75 @@ async def test_discrete_draw_excludes_passage_items(
     served_ids = {i["item_id"] for i in res.json()["items"]}
     assert str(passage_item.id) not in served_ids
     assert len(served_ids) == 2  # only the discrete items
+
+
+# -- Review center (C4, AUDIT MC-12) ----------------------------------------
+
+
+async def test_review_summary_and_missed_track_latest_response(
+    async_client, async_session, seeded_user
+):
+    _, item_a, item_b = await _seed_bank(async_session)
+    hdrs = _auth_headers(seeded_user)
+
+    # a: missed once. b: missed once, then corrected.
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(item_a.id), "choice_index": 3},
+        headers=hdrs,
+    )
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(item_b.id), "choice_index": 0},
+        headers=hdrs,
+    )
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(item_b.id), "choice_index": 1},
+        headers=hdrs,
+    )
+
+    summary = (
+        await async_client.get("/api/v1/mcat/review/summary", headers=hdrs)
+    ).json()
+    total = sum(s["attempts"] for s in summary["by_section"])
+    correct = sum(s["correct"] for s in summary["by_section"])
+    assert (total, correct) == (3, 1)
+    assert summary["weakest_subtopics"][0]["accuracy"] == 0.0
+    assert "percentile" in summary["note"]
+
+    missed = (
+        await async_client.get("/api/v1/mcat/review/missed", headers=hdrs)
+    ).json()["missed"]
+    # b's latest response is correct, so only a remains.
+    assert [m["item_id"] for m in missed] == [str(item_a.id)]
+    assert missed[0]["chosen_index"] == 3
+    assert missed[0]["correct_index"] == 0
+    assert missed[0]["times_attempted"] == 1
+    assert missed[0]["explanation"]
+
+
+async def test_review_is_scoped_to_the_caller(
+    async_client, async_session, seeded_user
+):
+    _, item_a, _ = await _seed_bank(async_session)
+    await async_client.post(
+        f"{API}/submit", json={"item_id": str(item_a.id), "choice_index": 3},
+        headers=_auth_headers(seeded_user),
+    )
+    org = Organization(
+        id=uuid4(), name="Org C", slug="test-mcat-qbank-c",
+        tier="professional_law", country="US", settings={}, tier_config={},
+        is_active=True,
+    )
+    other = User(
+        id=uuid4(), email="mcat-qbank-other@example.com", first_name="Other",
+        last_name="Tester", hashed_password=hash_password("not-used"),
+        org_id=org.id, role="student", is_active=True, is_email_verified=True,
+    )
+    async_session.add_all([org, other])
+    await async_session.commit()
+
+    missed = (
+        await async_client.get(
+            "/api/v1/mcat/review/missed", headers=_auth_headers(other)
+        )
+    ).json()["missed"]
+    assert missed == []
