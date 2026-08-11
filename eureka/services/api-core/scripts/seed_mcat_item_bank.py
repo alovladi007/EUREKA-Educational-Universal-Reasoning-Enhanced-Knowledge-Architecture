@@ -48,12 +48,17 @@ if DB_URL.startswith("postgresql://"):
 BANK_SLUG = "mcat-qbank-v1"
 SOURCE_URI = "eureka/apps/web/src/lib/mcat-qbank-data.ts"
 
-# topicId in the client file -> section label (from the file's own structure).
+# topicId -> section label. VERIFIED against the items themselves (topic 1's
+# subtopics are Humanities/CARS skills, topic 2's are Biochem, topic 3's are
+# Behavioral Sciences) and against the client's own section->topic map
+# (page.tsx sectionToTopic: chem_phys 0, cars 1, bio_biochem 2, psych_soc 3).
+# The first version of this script guessed these labels and got 1-3 wrong;
+# the fix updated the seeded rows in place.
 TOPICS = {
     0: "Chemical and Physical Foundations",
-    1: "Biological and Biochemical Foundations",
-    2: "Psychological, Social, and Biological Foundations",
-    3: "Critical Analysis and Reasoning Skills",
+    1: "Critical Analysis and Reasoning Skills",
+    2: "Biological and Biochemical Foundations",
+    3: "Psychological, Social, and Biological Foundations",
 }
 
 DIFFICULTY = {1: "easy", 2: "medium", 3: "hard"}

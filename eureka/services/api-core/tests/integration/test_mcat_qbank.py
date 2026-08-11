@@ -143,7 +143,7 @@ async def _seed_bank(session: AsyncSession) -> tuple[ItemBank, Item, Item]:
                  "correct_index": 1},
         explanation="Variable-ratio schedules are most resistant to extinction.",
         difficulty_nominal="medium", review_status=ItemReviewStatus.DRAFT,
-        extra_metadata={"source_id": "mcat_t2_001", "topic_id": 2,
+        extra_metadata={"source_id": "mcat_t3_001", "topic_id": 3,
                         "section": "Psychological, Social, and Biological Foundations",
                         "subtopic": "Psych - Learning"},
     )
@@ -198,7 +198,7 @@ async def test_serving_carries_no_key_and_discloses_review(
 async def test_topic_filter(async_client, async_session, seeded_user):
     await _seed_bank(async_session)
     res = await async_client.get(
-        f"{API}/items?topic_id=2&count=10", headers=_auth_headers(seeded_user)
+        f"{API}/items?topic_id=3&count=10", headers=_auth_headers(seeded_user)
     )
     assert res.status_code == 200
     items = res.json()["items"]
@@ -216,7 +216,7 @@ async def test_overview_counts_come_from_the_bank(
     assert res.status_code == 200
     sections = {s["topic_id"]: s for s in res.json()["sections"]}
     assert sections[0]["items"] == 1
-    assert sections[2]["items"] == 1
+    assert sections[3]["items"] == 1
 
 
 async def test_submit_grades_logs_and_reveals_after(
