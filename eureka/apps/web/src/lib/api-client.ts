@@ -409,6 +409,47 @@ class ApiClient {
     return response.data;
   }
 
+  // ==================== MCAT QBank (server item bank, C1) ====================
+  // Items are served WITHOUT keys or explanations; those exist only in the
+  // grading response, and every graded answer is logged server-side.
+
+  async getMcatQbankOverview(): Promise<{
+    sections: Array<{
+      topic_id: number; section: string; items: number;
+      subtopics: Array<{ subtopic: string; items: number }>;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/mcat/qbank/overview');
+    return response.data;
+  }
+
+  async getMcatQbankItems(params: {
+    topic_id?: number; subtopic?: string; count?: number;
+  }): Promise<{
+    items: Array<{
+      item_id: string; stem: string; options: string[]; option_count: number;
+      difficulty: string; section: string | null; subtopic: string | null;
+      review_status: string;
+    }>;
+    disclaimer: string;
+  }> {
+    const response = await this.client.get('/mcat/qbank/items', { params });
+    return response.data;
+  }
+
+  async submitMcatQbank(payload: {
+    item_id: string; choice_index: number; seconds?: number;
+  }): Promise<{
+    is_correct: boolean; correct_index: number; correct_text: string;
+    chosen_index: number; explanation: string | null;
+    section: string | null; subtopic: string | null;
+    review_status: string; disclaimer: string;
+  }> {
+    const response = await this.client.post('/mcat/qbank/submit', payload);
+    return response.data;
+  }
+
   // ==================== SRS (Spaced-Repetition flashcards, P1-4) ====================
   // Backed by the api-core srs_cards table + SM-2 algorithm. Each card
   // carries its own ease_factor / interval / repetitions / next_review
