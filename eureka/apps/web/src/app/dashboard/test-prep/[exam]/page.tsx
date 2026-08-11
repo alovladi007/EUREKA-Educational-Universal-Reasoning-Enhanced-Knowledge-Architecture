@@ -167,6 +167,26 @@ export default function ExamPage() {
       {isPatentBar && <PatentBarCohortPanel />}
 
       {isMCAT && (
+        <Card className="p-4 bg-indigo-50/70 dark:bg-indigo-950/30 border-indigo-200 dark:border-indigo-900">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold text-sm">MCAT course &mdash; by subject</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                All 29 chapters organised into the seven subjects you actually
+                study, with a persistent syllabus, the full written chapter,
+                and its key takeaways and exam tips beside it.
+              </p>
+            </div>
+            <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/study`}>
+              <Button size="sm" variant="default" className="gap-1.5" data-testid="mcat-study-link">
+                <BookOpen className="h-3.5 w-3.5" /> Open the course
+              </Button>
+            </Link>
+          </div>
+        </Card>
+      )}
+
+      {isMCAT && (
         <Card className="p-4 bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
