@@ -41,7 +41,7 @@ const EXAM_ICONS: Record<string, string> = {
   FE_EE: 'from-blue-500 to-blue-600', FE_ME: 'from-orange-500 to-red-600',
   PE_EE: 'from-amber-500 to-yellow-600', SECURITY_PLUS: 'from-red-500 to-rose-600',
   PATENT_BAR: 'from-indigo-500 to-indigo-600', SAT: 'from-pink-500 to-pink-600',
-  GRE: 'from-green-500 to-emerald-600', GMAT: 'from-cyan-500 to-sky-600',
+  GRE: 'from-green-500 to-emerald-600',
   LSAT: 'from-violet-500 to-purple-600',
 };
 

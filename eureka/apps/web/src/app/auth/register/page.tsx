@@ -27,7 +27,7 @@ function RegisterForm() {
     targetExams: [] as string[]
   });
 
-  const examOptions = ['GRE', 'GMAT', 'SAT', 'MCAT', 'LSAT', 'ACT'];
+  const examOptions = ['Physics GRE', 'SAT', 'MCAT', 'LSAT', 'Patent Bar', 'CISSP'];
   const educationLevels = [
     { value: 'high_school', label: 'High School' },
     { value: 'undergraduate', label: 'Undergraduate' },

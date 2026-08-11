@@ -150,7 +150,7 @@ def get_pricing_plans(exam_category: str) -> List[PricingPlan]:
 
 @router.get("/plans", response_model=dict)
 async def get_plans(
-    exam_category: str = Query("GRE", description="Exam category (GRE, GMAT, SAT, MCAT, LSAT, etc.)")
+    exam_category: str = Query("MCAT", description="Exam category (MCAT, LSAT, PATENT_BAR, GRE, SAT, etc.)")
 ):
     """
     Get available pricing plans for a specific exam category.

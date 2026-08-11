@@ -722,6 +722,65 @@ test was rewritten to navigate the way a learner now does - by following
 the dashboard's own links - rather than by clicking tabs that no longer
 render.
 
+## Phase 11: the same treatment for every exam. Gate: live + suite green. Status: DONE
+
+2026-08-11. Phase 10 rebuilt the MCAT front door; this phase generalised it,
+removed GMAT, and replaced the GRE General Test with the Physics Subject
+Test. The catalogue is now ten exams.
+
+- The course, generalised. `lib/exam-study-axis.ts` gives every exam the
+  spine its rail is built from. For nine of the ten that spine is the
+  curriculum's own sections, because the section IS the study unit and
+  inventing a second layer over it would be decoration. MCAT keeps its
+  seven-subject regrouping, which is the one case where the axis genuinely
+  differs from how the exam is administered. `study/page.tsx` stopped being
+  MCAT-only: one three-pane reader now serves all ten, 500 chapters in
+  total, and a unit test asserts every chapter on every axis has written
+  material behind it.
+- CISSP's video is wired. Its 21 recorded animations are indexed by domain
+  rather than by chapter, so they attach to the unit and the companion
+  column says exactly that: "recorded for Security & Risk Management, not
+  for this chapter specifically - video 1 of 5 in this unit." That is the
+  honest granularity; claiming a chapter-level video for a domain-level
+  file would misdescribe what plays. Every other exam's slot still says
+  nothing is recorded, because nothing is.
+- `components/test-prep/ExamDashboard.tsx` replaced McatDashboard and serves
+  all ten. Two data paths, because the exams differ: MCAT reads the
+  server-side review log from Phase 9; the rest read user_progress through
+  /me/progress/summary, which every static bank has been writing to since
+  P0-5. `lib/exam-surfaces.ts` states what each exam actually has, so a tile
+  only renders when the thing behind it exists - no simulator tile for an
+  exam without a simulator.
+- GMAT removed. Three data files deleted, the curriculum and config
+  entries dropped, the loader branch and the QBank branch removed, and the
+  ExamTypeKind enum member deleted after checking the database held no GMAT
+  rows to orphan.
+- GRE became the Physics GRE. The nine ETS content areas replaced the three
+  General Test sections, and all 50 chapters were authored from scratch:
+  Classical Mechanics through Laboratory Methods, with worked examples
+  whose arithmetic can be checked. The 87 General Test questions were
+  replaced by 53 physics questions with worked explanations, and the 85
+  vocabulary and essay flashcards by 100 physics cards. None of the old
+  content was relabelled - a verbal-reasoning item renamed as physics
+  would misrepresent what a learner is practising, so it was deleted. The
+  exam id stays GRE because it keys every URL, user_progress row and
+  billing product.
+
+Two dead surfaces went with it. The Patent Bar and LSAT "command center"
+cards listed the same four routes the dashboard now carries as tiles one
+row above them; the tiles won because they also say what each route is
+for. The cohort panel stayed, because it is data rather than navigation.
+
+Verified live at :4040 across all ten. 22 Playwright tests against the live
+stack (13 of them new: every exam's home, its resume button, its course and
+its first chapter), 197 vitest including 19 new catalogue invariants, tsc
+clean.
+
+Honest caveat carried forward: 53 questions is a small bank next to Patent
+Bar's 1,634, and `exam-surfaces.ts` states the real number rather than
+rounding it up. The Physics GRE lessons are original authored content and
+have had no subject-matter-expert review.
+
 ## Known gaps and honest caveats
 
 1. The misconception library (26 entries, 7 added in Phase 3) carries

@@ -84,12 +84,12 @@ export const PROGRAMS: Program[] = [
     family: 'test-prep',
     levels: ['HS', 'UG', 'PRO'],
     tagline: 'Eleven exams, one preparation engine.',
-    blurb: 'LSAT, MCAT, GRE, SAT, GMAT, Patent Bar, Security+, CISSP, FE, PE and more — diagnostics, graded drills, spaced review and timed mocks.',
+    blurb: 'MCAT, LSAT, Patent Bar, Security+, CISSP, FE, PE, SAT and Physics GRE — diagnostics, graded drills, spaced review and timed mocks.',
     href: '/dashboard/test-prep',
     featured: true,
     detail: {
       summary:
-        'One preparation engine serves eleven exams: LSAT, MCAT, GRE, SAT, GMAT, Patent Bar, Security+, CISSP, FE (Electrical), PE (Electrical) and FME. Each exam gets real question banks, exam-specific timing and section structure, analytics broken down the way that exam is actually scored, and a study plan keyed to your date. Underneath, one set of machinery — auto-grading, SM-2 spaced repetition, per-section mastery tracking — so improvements land everywhere at once.',
+        'One preparation engine serves ten exams: MCAT, LSAT, Patent Bar, Security+, CISSP, FE (Electrical), FE (Mechanical), PE (Electrical), SAT and the Physics GRE. Each exam gets a full course, a real question bank, exam-specific timing and section structure, analytics broken down the way that exam is actually scored, and a study plan keyed to your date. Underneath, one set of machinery — auto-grading, SM-2 spaced repetition, per-section mastery tracking — so improvements land everywhere at once.',
       inside: [
         { title: 'Exam-true structure', desc: 'Sections, timing and question formats match each exam — including performance-based questions for Security+.' },
         { title: 'Diagnostics and study plans', desc: 'A placement diagnostic per exam, then a plan with milestones keyed to your test date.' },
@@ -277,11 +277,11 @@ export const PROGRAMS: Program[] = [
   {
     slug: 'gre-gmat',
     code: 'TP-GRE',
-    title: 'GRE & GMAT',
+    title: 'Physics GRE',
     family: 'test-prep',
     levels: ['UG', 'GR'],
     tagline: 'Graduate entrance, quantitative and verbal.',
-    blurb: 'GRE and GMAT programs with authored course lessons, drills and spaced review.',
+    blurb: 'The GRE Physics Subject Test: 50 authored chapters across the nine ETS content areas, with drills and spaced review.',
     href: '/dashboard/test-prep?exam=gre',
   },
   {

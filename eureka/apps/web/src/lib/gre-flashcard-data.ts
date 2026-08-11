@@ -1,8 +1,13 @@
 /**
- * GRE Flashcard deck — covering Quantitative Reasoning, Verbal Reasoning,
- * high-frequency vocabulary, Analytical Writing, and general test strategy.
+ * Physics GRE flashcard deck.
  *
- * All content is original wording. Math is written as plain text (x^2, sqrt(2)).
+ * Formulas, constants and the facts this test asks for by recall rather than
+ * derivation. Written for this course; maths is plain text (x^2, sqrt(2),
+ * hbar) so it renders in a card without a maths engine.
+ *
+ * This replaced the GRE General Test deck (quant rules, vocabulary, essay
+ * strategy). None of that content applies to a physics subject test, so it
+ * was deleted rather than relabelled.
  */
 
 export interface GREFlashcard {
@@ -11,130 +16,161 @@ export interface GREFlashcard {
   back: string;
   domain: string;      // one of the domain ids below
   domainName: string;  // the matching domain name
-  category: string;    // 'definition' | 'concept' | 'formula' | 'strategy' | 'vocabulary' | 'mnemonic'
-  topics: string[];    // e.g. ['GRE']
+  category: string;    // 'definition' | 'concept' | 'formula' | 'strategy' | 'constant' | 'mnemonic'
+  topics: string[];
 }
 
 export const GRE_FLASHCARD_DOMAINS = [
-  { id: 'quant',    label: 'Quant',    name: 'Quantitative Reasoning',    count: 28 },
-  { id: 'verbal',   label: 'Verbal',   name: 'Verbal Reasoning',          count: 18 },
-  { id: 'vocab',    label: 'Vocab',    name: 'High-Frequency Vocabulary', count: 22 },
-  { id: 'writing',  label: 'Writing',  name: 'Analytical Writing',        count: 10 },
-  { id: 'strategy', label: 'Strategy', name: 'Test Strategy',             count: 7 },
+  { id: 'mechanics',  label: 'Mechanics',  name: 'Classical Mechanics',                   count: 14 },
+  { id: 'em',         label: 'E&M',        name: 'Electromagnetism',                      count: 14 },
+  { id: 'quantum',    label: 'Quantum',    name: 'Quantum Mechanics',                     count: 12 },
+  { id: 'thermo',     label: 'Thermo',     name: 'Thermodynamics & Statistical Mechanics', count: 11 },
+  { id: 'atomic',     label: 'Atomic',     name: 'Atomic Physics',                        count: 8 },
+  { id: 'optics',     label: 'Optics',     name: 'Optics & Wave Phenomena',               count: 9 },
+  { id: 'relativity', label: 'Relativity', name: 'Special Relativity',                    count: 7 },
+  { id: 'special',    label: 'Specialized', name: 'Specialized Topics',                   count: 9 },
+  { id: 'lab',        label: 'Lab',        name: 'Laboratory Methods',                    count: 8 },
+  { id: 'constants',  label: 'Constants',  name: 'Constants & Numbers',                   count: 8 },
 ];
 
-export const GRE_FLASHCARD_CATEGORIES = ['definition','concept','formula','strategy','vocabulary','mnemonic'] as const;
+export const GRE_FLASHCARD_CATEGORIES = ['definition','concept','formula','strategy','constant','mnemonic'] as const;
+
+const C = (
+  id: number, domain: string, domainName: string, category: string,
+  front: string, back: string,
+): GREFlashcard => ({ id, front, back, domain, domainName, category, topics: ['PHYSICS_GRE'] });
+
+const M = (id: number, cat: string, f: string, b: string) => C(id, 'mechanics', 'Classical Mechanics', cat, f, b);
+const E = (id: number, cat: string, f: string, b: string) => C(id, 'em', 'Electromagnetism', cat, f, b);
+const Q = (id: number, cat: string, f: string, b: string) => C(id, 'quantum', 'Quantum Mechanics', cat, f, b);
+const T = (id: number, cat: string, f: string, b: string) => C(id, 'thermo', 'Thermodynamics & Statistical Mechanics', cat, f, b);
+const A = (id: number, cat: string, f: string, b: string) => C(id, 'atomic', 'Atomic Physics', cat, f, b);
+const O = (id: number, cat: string, f: string, b: string) => C(id, 'optics', 'Optics & Wave Phenomena', cat, f, b);
+const R = (id: number, cat: string, f: string, b: string) => C(id, 'relativity', 'Special Relativity', cat, f, b);
+const S = (id: number, cat: string, f: string, b: string) => C(id, 'special', 'Specialized Topics', cat, f, b);
+const L = (id: number, cat: string, f: string, b: string) => C(id, 'lab', 'Laboratory Methods', cat, f, b);
+const K = (id: number, cat: string, f: string, b: string) => C(id, 'constants', 'Constants & Numbers', cat, f, b);
 
 export const GRE_FLASHCARDS: GREFlashcard[] = [
-  // ============================================================
-  // DOMAIN: quant (28 cards, ids 1–28)
-  // ============================================================
+  // ── Classical Mechanics ─────────────────────────────────────
+  M(1, 'formula', 'Range of a projectile launched and landing at the same height', 'R = v0^2 sin(2 theta)/g. Maximal at 45 degrees; complementary angles give equal range.'),
+  M(2, 'formula', 'Moment of inertia about the symmetry axis: hoop, disc, solid sphere, spherical shell', 'Hoop MR^2, disc (1/2)MR^2, solid sphere (2/5)MR^2, shell (2/3)MR^2. Mass further out means a bigger coefficient.'),
+  M(3, 'formula', 'Moment of inertia of a rod about its centre and about its end', 'Centre (1/12)ML^2, end (1/3)ML^2. The second follows from the first by the parallel-axis theorem with d = L/2.'),
+  M(4, 'formula', 'Parallel-axis theorem', 'I = I_cm + M d^2. It runs only FROM the centre-of-mass axis; going between two arbitrary parallel axes means stepping through the centre of mass.'),
+  M(5, 'formula', 'Speed of a body rolling without slipping from height h', 'v = sqrt(2gh/(1 + I_cm/MR^2)). Depends on shape only: sphere beats disc beats hoop, whatever the mass or radius.'),
+  M(6, 'formula', 'Small oscillations about a potential minimum', 'omega = sqrt(U\'\'(x0)/m). Differentiate twice, evaluate at equilibrium, divide by m, take the root.'),
+  M(7, 'concept', 'When is mechanical energy conserved?', 'Only when the non-conservative work is zero. With friction present use KE_i + U_i + W_nc = KE_f + U_f.'),
+  M(8, 'formula', 'Reduced mass and the energy lost in a perfectly inelastic collision', 'mu = m1 m2/(m1+m2); energy lost = (1/2) mu (u1-u2)^2, depending only on the relative velocity.'),
+  M(9, 'concept', 'Elastic collision, equal masses, target at rest', 'The velocities exchange: the incoming body stops dead and the target leaves at the incoming speed.'),
+  M(10, 'formula', 'Orbital energy and the vis-viva equation', 'E = -GMm/(2a) for any bound orbit; v^2 = GM(2/r - 1/a) gives the speed anywhere on it.'),
+  M(11, 'concept', 'Effective potential for a central force', 'U_eff = U(r) + L^2/(2 m r^2). The added centrifugal barrier keeps a particle with L != 0 away from the origin, and E on the curve classifies the orbit.'),
+  M(12, 'concept', 'Cyclic coordinate in a Lagrangian', 'A coordinate absent from L (only its derivative appears) has a conserved conjugate momentum p = dL/d(q_dot). This is Noether\'s theorem in practice.'),
+  M(13, 'formula', 'Gyroscopic precession rate', 'Omega_p = M g r/(I omega). Faster spin means slower precession.'),
+  M(14, 'concept', 'Coriolis force', '-2m(omega x v\'): depends on velocity, is perpendicular to it, and therefore does no work. Deflects to the right in the northern hemisphere.'),
 
-  { id: 1, front: 'Difference of squares', back: 'a^2 - b^2 = (a + b)(a - b). Recognizing this factoring on the GRE lets you simplify expressions and Quantitative Comparison quantities quickly. Example: 51^2 - 49^2 = (51 + 49)(51 - 49) = 100 * 2 = 200.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 2, front: 'Perfect-square trinomials', back: '(a + b)^2 = a^2 + 2ab + b^2 and (a - b)^2 = a^2 - 2ab + b^2. Memorize both. If you see a^2 + 2ab + b^2 in a problem, rewrite it as (a + b)^2 to collapse it into a single term.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 3, front: 'Exponent rules: multiplication and division', back: 'When multiplying like bases, add exponents: x^a * x^b = x^(a+b). When dividing, subtract: x^a / x^b = x^(a-b). A power raised to a power multiplies: (x^a)^b = x^(a*b).', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 4, front: 'Negative and zero exponents', back: 'Any nonzero base to the zero power equals 1: x^0 = 1. A negative exponent is a reciprocal: x^(-n) = 1 / x^n. So 2^(-3) = 1/8. These show up constantly in Quantitative Comparison.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 5, front: 'Fractional exponents', back: 'A fractional exponent is a root: x^(1/n) = the nth root of x, and x^(m/n) = the nth root of (x^m). For example, 27^(2/3) = (cube root of 27)^2 = 3^2 = 9.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 6, front: 'Average (arithmetic mean)', back: 'Average = (sum of terms) / (number of terms). Rearranged: sum = average * count. On the GRE it is often faster to work with the total sum than with individual values, especially in weighted-average problems.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 7, front: 'Median, mode, and range', back: 'Median = the middle value of an ordered list (average the two middle values if the count is even). Mode = the most frequently occurring value. Range = largest value minus smallest value. The median is resistant to outliers; the mean is not.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'definition', topics: ['GRE'] },
-  { id: 8, front: 'Distance, rate, and time', back: 'distance = rate * time, so rate = distance / time and time = distance / rate. For an average speed over a whole trip, use total distance / total time, NOT the simple average of the two speeds.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 9, front: 'Percent change', back: 'Percent change = (new value - old value) / (old value) * 100. A rise from 40 to 50 is (50 - 40)/40 = 25% increase. Note a 25% increase followed by a 25% decrease does NOT return to the original value.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 10, front: 'Percent of a number', back: 'To find P percent of N, compute (P/100) * N. "What percent" translates to x/100. Translate word problems literally: "is" means equals, "of" means multiply, "what" means the unknown variable.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 11, front: 'Simple vs. compound interest', back: 'Simple interest: A = P(1 + rt). Compound interest: A = P(1 + r/n)^(nt), where n is the number of compounding periods per year. Compound growth exceeds simple growth for the same rate over more than one period.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 12, front: 'Probability of a single event', back: 'Probability = (number of favorable outcomes) / (total number of equally likely outcomes). It is always between 0 and 1. The probability of an event NOT happening is 1 minus the probability that it does.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 13, front: 'Probability: AND vs. OR', back: 'For independent events, P(A and B) = P(A) * P(B). For mutually exclusive events, P(A or B) = P(A) + P(B). If events can overlap, use P(A or B) = P(A) + P(B) - P(A and B).', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 14, front: 'Combinations vs. permutations', back: 'Use a combination when order does NOT matter: C(n, k) = n! / (k!(n-k)!). Use a permutation when order DOES matter: P(n, k) = n! / (n-k)!. "Committee" signals combinations; "ranking" or "arrangement" signals permutations.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 15, front: 'Area and circumference of a circle', back: 'Area = pi * r^2. Circumference = 2 * pi * r = pi * d, where d is the diameter. A sector or arc is a fraction of the whole based on its central angle over 360 degrees.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 16, front: 'Area formulas for common shapes', back: 'Triangle: (1/2) * base * height. Rectangle: length * width. Parallelogram: base * height. Trapezoid: (1/2)(b1 + b2) * height. The height must be perpendicular to the base you use.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 17, front: 'Pythagorean theorem', back: 'For a right triangle with legs a and b and hypotenuse c: a^2 + b^2 = c^2. Common integer triples worth memorizing: 3-4-5, 5-12-13, 8-15-17, and their multiples like 6-8-10.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 18, front: 'Special right triangles', back: 'A 45-45-90 triangle has side ratio 1 : 1 : sqrt(2) (legs equal, hypotenuse = leg * sqrt(2)). A 30-60-90 triangle has side ratio 1 : sqrt(3) : 2 (short leg : long leg : hypotenuse). These appear in squares and equilateral triangles.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 19, front: 'Sum of interior angles of a polygon', back: 'The interior angles of an n-sided polygon sum to (n - 2) * 180 degrees. A triangle sums to 180, a quadrilateral to 360, a pentagon to 540. Each interior angle of a regular polygon is that sum divided by n.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 20, front: 'Volume of common solids', back: 'Rectangular box: length * width * height. Cylinder: pi * r^2 * h. Cube: s^3. Surface area of a box is the sum of the areas of all six faces. Match the formula to whether the problem asks for volume or surface area.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 21, front: 'Slope of a line', back: 'Slope = rise / run = (y2 - y1) / (x2 - x1). Slope-intercept form is y = mx + b, where m is the slope and b is the y-intercept. Parallel lines share a slope; perpendicular slopes are negative reciprocals.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'formula', topics: ['GRE'] },
-  { id: 22, front: 'Divisibility rules', back: 'A number is divisible by 3 if its digit sum is divisible by 3; by 9 if the digit sum is divisible by 9; by 4 if its last two digits form a multiple of 4; by 6 if it is divisible by both 2 and 3.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 23, front: 'Prime numbers and prime factorization', back: 'A prime has exactly two factors: 1 and itself. 2 is the only even prime; 1 is NOT prime. Prime factorization breaks a number into a product of primes, which is the key to finding GCF and LCM.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'definition', topics: ['GRE'] },
-  { id: 24, front: 'GCF and LCM', back: 'The greatest common factor is the product of the shared prime factors (lowest powers). The least common multiple uses every prime factor at its highest power. For any two integers, GCF(a,b) * LCM(a,b) = a * b.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 25, front: 'Even and odd properties', back: 'even + even = even, odd + odd = even, even + odd = odd. even * anything = even; odd * odd = odd. These parity rules let you eliminate answer choices without full computation.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 26, front: 'Ratios and proportions', back: 'A ratio a:b can be scaled by any common factor, so a:b = ka:kb. Solve proportions by cross-multiplication: if a/b = c/d, then a*d = b*c. Keep units consistent when setting up the proportion.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 27, front: 'Standard deviation (conceptual)', back: 'Standard deviation measures how spread out data are around the mean. A larger spread means a larger standard deviation. The GRE rarely asks you to compute it by hand but often tests which of two data sets has the greater spread.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 28, front: 'Quantitative Comparison: the four answer choices', back: 'Every QC question has the same choices: (A) Quantity A is greater, (B) Quantity B is greater, (C) the two are equal, (D) the relationship cannot be determined. Choose D whenever the answer changes as you test different valid values.', domain: 'quant', domainName: 'Quantitative Reasoning', category: 'strategy', topics: ['GRE'] },
+  // ── Electromagnetism ────────────────────────────────────────
+  E(15, 'formula', 'Field of an infinite line, an infinite plane, and a dipole', 'Line lambda/(2 pi epsilon_0 r); plane sigma/(2 epsilon_0), uniform; dipole ~1/r^3. One power of r is traded per dimension the source extends along.'),
+  E(16, 'concept', 'Field inside and outside a uniformly charged solid sphere', 'Inside E = kQr/R^3 (linear in r); outside E = kQ/r^2 as a point charge. Maximum at r = R.'),
+  E(17, 'concept', 'Conductor in electrostatic equilibrium', 'Zero field inside, all excess charge on the surface, field just outside is sigma/epsilon_0 and perpendicular, cavity with no charge has zero field.'),
+  E(18, 'formula', 'Capacitance combination rules', 'Parallel adds (C1 + C2); series adds reciprocals. Exactly the reverse of resistors.'),
+  E(19, 'concept', 'Dielectric inserted: battery connected versus disconnected', 'Connected fixes V, so C, Q and U all rise. Disconnected fixes Q, so C rises while V, E and U all fall. Read which case the question describes.'),
+  E(20, 'formula', 'Energy density of electric and magnetic fields', 'u_E = (1/2) epsilon_0 E^2 and u_B = B^2/(2 mu_0). Equal in an electromagnetic wave.'),
+  E(21, 'concept', 'Boundary conditions at an interface', 'Tangential E continuous, normal D jumps by the free surface charge. Magnetically: tangential H and normal B.'),
+  E(22, 'formula', 'Image charge above a grounded plane', 'Image -q at equal depth. Force kq^2/4d^2 attractive; energy -kq^2/4d, HALF the naive two-charge value.'),
+  E(23, 'concept', 'Force between parallel currents', 'Parallel currents ATTRACT, antiparallel repel — the opposite sense to like charges.'),
+  E(24, 'formula', 'Cyclotron radius and frequency', 'r = mv/(qB), omega_c = qB/m. The frequency is independent of speed until relativistic corrections matter.'),
+  E(25, 'concept', 'Magnetic dipole in a field', 'Uniform field: torque m x B, energy -m.B, no net force. Non-uniform field: net force grad(m.B) — the Stern-Gerlach deflection.'),
+  E(26, 'concept', 'Inductor and capacitor at t = 0 and t = infinity', 'Inductor: open circuit at t=0, plain wire at steady state. Capacitor: short at t=0, open at steady state. Sketching both limits eliminates most wrong answers.'),
+  E(27, 'formula', 'Series RLC resonance', 'omega_0 = 1/sqrt(LC). Impedance is purely R and minimal; reactive voltages reach Q times the source and cancel.'),
+  E(28, 'formula', 'Radiation pressure', 'I/c on a perfect absorber, 2I/c on a perfect reflector. Reflection reverses momentum rather than absorbing it.'),
 
-  // ============================================================
-  // DOMAIN: verbal (18 cards, ids 29–46)
-  // ============================================================
+  // ── Quantum Mechanics ───────────────────────────────────────
+  Q(29, 'formula', 'Infinite square well energies and nodes', 'E_n = n^2 pi^2 hbar^2/(2mL^2); psi_n has n-1 interior nodes. For an electron, E_n ≈ 0.376 n^2/L^2 eV with L in nm.'),
+  Q(30, 'formula', 'Harmonic oscillator spectrum', 'E_n = (n + 1/2) hbar omega. Equally spaced, with a nonzero zero-point energy; psi_n has n nodes.'),
+  Q(31, 'formula', 'Tunnelling through a thick barrier', 'T ≈ exp(-2 kappa a) with kappa = sqrt(2m(V0-E))/hbar. Exponential in width and in sqrt(mass).'),
+  Q(32, 'formula', 'Angular momentum eigenvalues', 'L^2 gives l(l+1) hbar^2 (NOT l^2 hbar^2) and L_z gives m hbar with 2l+1 values. |L| always exceeds max L_z.'),
+  Q(33, 'concept', 'Pauli matrices', 'Each squares to the identity, they anticommute, they are traceless, eigenvalues ±1, and S_i = (hbar/2) sigma_i.'),
+  Q(34, 'concept', 'Adding two angular momenta', 'j runs from |j1-j2| to j1+j2 in integer steps. Check by counting: multiplicities must sum to (2j1+1)(2j2+1).'),
+  Q(35, 'formula', 'Hydrogen energies and degeneracy', 'E_n = -13.6 Z^2/n^2 eV, depending on n alone. Degeneracy n^2, or 2n^2 including spin — the periodic-table shell sizes.'),
+  Q(36, 'formula', 'Radial nodes in a hydrogen orbital', 'n - l - 1 radial nodes, n - 1 total. Only l = 0 states are nonzero at the nucleus.'),
+  Q(37, 'formula', 'First-order perturbation shift', "E^(1) = <psi^(0)|H'|psi^(0)>: the expectation of the perturbation in the UNPERTURBED state."),
+  Q(38, 'concept', 'Variational principle', 'Any normalised trial function gives <H> >= E_ground. The bound is one-sided: an estimate can only be too high.'),
+  Q(39, 'concept', 'Compatible observables', 'Two observables are simultaneously measurable exactly when their operators commute. [L^2, L_z] = 0 but the components do not commute among themselves.'),
+  Q(40, 'concept', 'Conserved observable in quantum mechanics', 'Anything that commutes with H and has no explicit time dependence. Momentum is conserved iff H is translation-invariant.'),
 
-  { id: 29, front: 'Text Completion: predict before you peek', back: 'Read the whole sentence first and predict a word for the blank in your own terms before looking at the choices. This anchors you to the intended meaning and protects you from tempting words that fit the tone but not the logic.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 30, front: 'Text Completion: use signal words', back: 'Contrast words (but, although, however, despite, yet) reverse direction; continuation words (moreover, indeed, because, thus) keep it. Identifying these transition cues tells you whether the blank agrees with or opposes the surrounding clause.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 31, front: 'Text Completion: multi-blank strategy', back: 'For two- and three-blank questions, fill the blank you are most confident about first, then use it to constrain the others. Each blank is scored independently with no partial credit, so all blanks must be correct.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 32, front: 'Sentence Equivalence: pick two synonyms', back: 'You must select TWO of six choices that both complete the sentence AND produce sentences with the same meaning. First predict the meaning, then look for a matched synonym pair. A word with no partner cannot be correct.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 33, front: 'Sentence Equivalence trap: lone tempting word', back: 'A choice may fit the blank perfectly yet lack a synonym among the other options. Because the answer requires two words that yield equivalent sentences, a strong word without a partner is a trap. Always confirm the pair.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 34, front: 'Reading Comprehension: map the passage', back: 'As you read, track the author main point, the purpose of each paragraph, and any shift in tone or viewpoint. A quick mental map lets you locate support fast without rereading the whole passage for each question.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 35, front: 'Reading Comprehension: answer from the text', back: 'Correct RC answers are always supported by the passage, not by outside knowledge or plausible real-world reasoning. If a choice sounds true but has no textual basis, eliminate it. Point to the exact lines that justify your answer.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 36, front: 'Reading Comprehension: question types', back: 'Common types include main idea, detail, inference, author purpose, function of a sentence, and vocabulary-in-context. Identify the type first, because each demands a different scope: some want the big picture, others a single line.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 37, front: 'Inference questions on Reading Comprehension', back: 'An inference must follow logically from the passage without going beyond it. The right answer is the one that MUST be true given the text, not merely one that could be true. Avoid choices that are too strong or too broad.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 38, front: 'Reading Comprehension: extreme-language trap', back: 'Choices containing absolute words like always, never, all, none, or only are often wrong because passages rarely support such sweeping claims. Prefer measured answers using words like some, may, tends to, or often.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 39, front: 'Critical Reasoning: identify the conclusion', back: 'Before evaluating any argument-based question, separate the conclusion (the claim being argued for) from the premises (the support). Conclusion indicators include therefore, thus, and hence. Misreading the conclusion derails every later step.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 40, front: 'Critical Reasoning: strengthen vs. weaken', back: 'To strengthen an argument, add a fact that makes the conclusion more likely or closes a logical gap. To weaken it, introduce a fact that undermines the link between premise and conclusion, such as an alternative explanation.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 41, front: 'Critical Reasoning: assumption questions', back: 'An assumption is an unstated premise the argument depends on. Test a candidate by negating it: if the negation destroys the argument, it is a required assumption. Correct assumptions are usually modest, not sweeping.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 42, front: 'Vocabulary-in-context questions', back: 'When a passage asks what a word means in context, the answer is often a secondary or less common definition, not the everyday one. Substitute each choice back into the sentence and keep the one that preserves the intended meaning.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 43, front: 'Eliminate to two, then decide', back: 'On tough verbal questions you can usually rule out three choices quickly. When two remain, return to the exact wording of the sentence or passage and pick the one with direct textual support rather than the one that merely feels right.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 44, front: 'Positive or negative charge of the blank', back: 'Even when you do not know a vocabulary word, you can often tell whether a blank needs a positive or negative word from the sentence tone. Assigning a plus or minus charge to each choice can eliminate half the options at once.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
-  { id: 45, front: 'Beware answers that are half right', back: 'A common verbal trap pairs an accurate phrase with one inaccurate detail: a swapped subject, a missing qualifier, or a reversed relationship. One wrong word invalidates the entire choice, so read every word before committing.', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'concept', topics: ['GRE'] },
-  { id: 46, front: 'Do not overthink the main idea', back: 'The main idea of a passage is usually stated or strongly implied near the start or end, and it should account for the whole passage, not just one paragraph. Reject choices that are too narrow (a single detail) or too broad (beyond the passage).', domain: 'verbal', domainName: 'Verbal Reasoning', category: 'strategy', topics: ['GRE'] },
+  // ── Thermodynamics & Statistical Mechanics ──────────────────
+  T(41, 'formula', 'Adiabatic relations and gamma', 'pV^gamma and TV^(gamma-1) constant. gamma = (f+2)/f: 5/3 monatomic, 7/5 diatomic at room temperature.'),
+  T(42, 'formula', 'Carnot efficiency', 'eta = 1 - T_C/T_H, absolute temperatures. No engine between the same reservoirs beats it.'),
+  T(43, 'concept', 'Entropy of a free expansion', 'Q = 0 and W = 0, so T is unchanged for an ideal gas — but Delta S = nR ln(V2/V1) > 0. Compute along any reversible path.'),
+  T(44, 'formula', 'Boltzmann population ratio', 'N_2/N_1 = (g_2/g_1) exp(-Delta E/k_B T). Always below 1 at positive temperature, which is why lasers need pumping.'),
+  T(45, 'formula', 'Everything from the partition function', 'F = -k_B T ln Z, <E> = -d(ln Z)/d beta, S = -(dF/dT)_V.'),
+  T(46, 'concept', 'Which thermodynamic potential', 'Pick the one whose natural variables are held fixed: U(S,V), H(S,p), F(T,V), G(T,p).'),
+  T(47, 'formula', 'Characteristic molecular speeds', 'v_p = sqrt(2kT/m) < <v> = sqrt(8kT/pi m) < v_rms = sqrt(3kT/m). All scale as sqrt(T/m).'),
+  T(48, 'concept', 'Fermi-Dirac versus Bose-Einstein', 'Denominator +1 for fermions (occupation never above 1), -1 for bosons (unbounded). Both reduce to Maxwell-Boltzmann when occupation is small.'),
+  T(49, 'concept', 'Low-temperature heat capacity signatures', 'C ∝ T means a degenerate electron gas; C ∝ T^3 means phonons or photons; exponential suppression means an energy gap.'),
+  T(50, 'formula', 'Stefan-Boltzmann and Wien', 'Power per area = sigma T^4; lambda_max T = 2.898e-3 m K. Double T and the power rises 16-fold while the peak wavelength halves.'),
+  T(51, 'formula', 'Clausius-Clapeyron', 'dp/dT = L/(T Delta V). Water\'s solid-liquid slope is negative because ice is less dense than water.'),
 
-  // ============================================================
-  // DOMAIN: vocab (22 cards, ids 47–68)
-  // ============================================================
+  // ── Atomic Physics ──────────────────────────────────────────
+  A(52, 'concept', 'What the Bohr model gets right and wrong', 'Right: hydrogen energies and the r ∝ n^2/Z scaling. Wrong: the mechanism, and its ground-state L = hbar (the true 1s state has L = 0).'),
+  A(53, 'formula', 'Hydrogen-like scaling', 'Energies scale as Z^2, radii as 1/Z. Reduced mass matters: positronium binds at 6.8 eV, half of hydrogen.'),
+  A(54, 'concept', 'Electric-dipole selection rules', 'Delta l = ±1 and Delta m = 0, ±1. A Delta l = 0 transition is forbidden and gives a long-lived metastable state.'),
+  A(55, 'concept', "Hund's rules", 'Maximise S, then L, then J = |L-S| below half filling and L+S above. Carbon 2p^2 is ^3P_0; oxygen 2p^4 is ^3P_2.'),
+  A(56, 'concept', 'Relative sizes of atomic corrections', 'Gross 13.6 eV; fine structure ~alpha^2 of it (7e-4 eV); hyperfine smaller again by roughly m_e/m_p. Fine structure scales as Z^4.'),
+  A(57, 'formula', 'Zeeman splitting and the Lande factor', 'Delta E = g_J mu_B B m_J with g_J = 1 + (J(J+1)+S(S+1)-L(L+1))/(2J(J+1)). S = 0 gives g_J = 1 and the normal three-line pattern.'),
+  A(58, 'concept', 'X-ray tube spectrum', 'Bremsstrahlung cutoff lambda_min = hc/eV depends on VOLTAGE only. Characteristic lines depend on the TARGET only.'),
+  A(59, 'concept', 'Why a two-level laser is impossible', 'B_12 = B_21, so the pump stimulates emission as strongly as absorption. The best steady state is equal populations and zero gain.'),
 
-  { id: 47, front: 'Ubiquitous', back: 'Seeming to be present everywhere at the same time; extremely widespread or common. Example use: smartphones have become ubiquitous in modern life. Related idea: omnipresent.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 48, front: 'Ephemeral', back: 'Lasting for only a very short time; fleeting and transitory. Often used of things that pass quickly, such as an ephemeral trend or an ephemeral bloom. Opposite: enduring, permanent.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 49, front: 'Laconic', back: 'Using very few words; terse to the point of seeming blunt or reserved. A laconic reply gives minimal information. Contrast with verbose or loquacious, which mean wordy.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 50, front: 'Prodigal', back: 'Recklessly wasteful, especially with money or resources; spending lavishly. Note it does NOT mean "returning" despite the phrase prodigal son. Opposite: frugal, thrifty.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 51, front: 'Capricious', back: 'Given to sudden, unpredictable changes of mood or behavior; impulsive and whimsical. A capricious ruler makes decisions on a whim. Related: fickle, mercurial, volatile.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 52, front: 'Pragmatic', back: 'Dealing with problems in a practical, realistic way rather than through theory or ideals. A pragmatic solution focuses on what actually works. Contrast with idealistic or dogmatic.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 53, front: 'Esoteric', back: 'Understood by or intended for only a small group with specialized knowledge; obscure to outsiders. Esoteric jargon confuses the uninitiated. Opposite: accessible, exoteric.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 54, front: 'Gregarious', back: 'Fond of the company of others; sociable and outgoing. A gregarious person thrives at parties. Also used in biology for animals that live in groups. Opposite: solitary, reclusive.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 55, front: 'Obfuscate', back: 'To deliberately make something unclear, confusing, or hard to understand. Vague language can obfuscate the real meaning. Opposite: clarify, elucidate, illuminate.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 56, front: 'Meticulous', back: 'Showing great attention to detail; very careful and precise. A meticulous editor catches every error. Related: scrupulous, painstaking. Opposite: careless, slapdash.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 57, front: 'Ameliorate', back: 'To make a bad or unsatisfactory situation better; to improve or relieve. New policies aimed to ameliorate poverty. Opposite: aggravate, worsen, exacerbate.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 58, front: 'Cogent', back: 'Clear, logical, and convincing; forcefully persuasive. A cogent argument leaves little room for doubt. Related: compelling, sound. Opposite: unconvincing, weak.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 59, front: 'Disparate', back: 'Fundamentally different in kind; distinct and not comparable. The report combined disparate sources of data. Do not confuse with desperate. Related: dissimilar, divergent.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 60, front: 'Enervate', back: 'To weaken or drain of energy and vitality. The oppressive heat enervated the hikers. Note it means to weaken, NOT to energize, despite how it sounds. Opposite: invigorate, energize.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 61, front: 'Tacit', back: 'Understood or implied without being stated outright; unspoken. A tacit agreement needs no formal words. Related: implicit, unstated. Opposite: explicit, express.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 62, front: 'Venerate', back: 'To regard with deep respect and reverence; to honor as sacred or admirable. Many cultures venerate their ancestors. Related: revere, esteem. Opposite: despise, scorn.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 63, front: 'Superfluous', back: 'More than is needed or useful; excessive and unnecessary. Editing removes superfluous words. Related: redundant, surplus. Opposite: essential, necessary.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 64, front: 'Intransigent', back: 'Refusing to change one point of view or demands; stubbornly uncompromising. The intransigent negotiator rejected every offer. Related: obdurate, inflexible. Opposite: flexible, accommodating.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 65, front: 'Sanguine', back: 'Cheerfully optimistic or confident, especially in a difficult situation. She remained sanguine about the project despite delays. Related: hopeful, buoyant. Opposite: pessimistic, gloomy.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 66, front: 'Pejorative', back: 'Expressing disapproval or contempt; belittling in tone. A pejorative label carries a negative connotation. Related: derogatory, disparaging. Opposite: complimentary, laudatory.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 67, front: 'Assuage', back: 'To make an unpleasant feeling less intense; to soothe, ease, or relieve. Kind words assuaged her grief. Related: alleviate, mollify, appease. Opposite: intensify, aggravate.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
-  { id: 68, front: 'Nascent', back: 'Just coming into existence and beginning to develop; in an early stage. The nascent industry showed rapid growth. Related: emerging, incipient, budding. Opposite: mature, established.', domain: 'vocab', domainName: 'High-Frequency Vocabulary', category: 'vocabulary', topics: ['GRE'] },
+  // ── Optics & Wave Phenomena ─────────────────────────────────
+  O(60, 'concept', 'What changes on refraction', 'Frequency is unchanged; speed becomes c/n and wavelength becomes lambda_0/n.'),
+  O(61, 'formula', 'Critical angle and Brewster angle', 'theta_c = arcsin(n_2/n_1) for total internal reflection; theta_B = arctan(n_2/n_1) for fully polarised reflection.'),
+  O(62, 'concept', 'Thin-lens sign conventions', 'Positive d_i is a real image; negative is virtual and on the object side. A single lens forming a real image always inverts it.'),
+  O(63, 'formula', 'Double-slit fringe spacing', 'Delta y = lambda L/d. Wider slit separation gives NARROWER fringes; peaks reach 4 I_0 because amplitudes add before squaring.'),
+  O(64, 'concept', 'Thin-film pi shift rule', 'Reflection off a higher-index medium adds a pi phase shift; off a lower-index one it does not. Count the shifts before writing the interference condition.'),
+  O(65, 'formula', 'Single slit versus grating', 'Single-slit MINIMA at a sin(theta) = m lambda; grating MAXIMA at d sin(theta) = m lambda. Same form, opposite meaning.'),
+  O(66, 'formula', 'Rayleigh criterion', 'theta_min = 1.22 lambda/D for a circular aperture. Limits telescopes, microscopes and eyes alike.'),
+  O(67, 'concept', 'Polarisers', 'Unpolarised light always loses exactly half through the first polariser; Malus I = I_0 cos^2(theta) applies from the second onward. Three polarisers can pass I_0/8 where two pass nothing.'),
+  O(68, 'concept', 'Sound speed and Doppler', 'Sound speed depends on temperature, not pressure. Sound Doppler is asymmetric between source and observer; light Doppler depends only on relative velocity.'),
 
-  // ============================================================
-  // DOMAIN: writing (10 cards, ids 69–78)
-  // ============================================================
+  // ── Special Relativity ──────────────────────────────────────
+  R(69, 'formula', 'gamma at useful speeds', 'gamma = 1.15 at 0.5c, 2 at 0.866c, 7.1 at 0.99c. gamma = 3 means beta = 0.943.'),
+  R(70, 'concept', 'Proper time and proper length', 'Proper time is measured by a clock present at both events; proper length in the object\'s rest frame. Delta t = gamma Delta tau and L = L_0/gamma.'),
+  R(71, 'formula', 'Relativistic velocity addition', "u' = (u - v)/(1 - uv/c^2). Never exceeds c, and returns exactly c whenever either input is c."),
+  R(72, 'formula', 'Energy-momentum relation', 'E^2 = (pc)^2 + (mc^2)^2, and v/c = pc/E. Massless particles have E = pc exactly.'),
+  R(73, 'strategy', 'Invariant-mass trick', 'Evaluate (sum E)^2 - (sum pc)^2 in whichever frame is easiest — usually the centre of momentum — and equate to its value in the lab frame.'),
+  R(74, 'formula', 'Compton shift', 'Delta lambda = (h/m_e c)(1 - cos theta), with h/m_e c = 2.43 pm. Depends only on the angle, not on the incident wavelength.'),
+  R(75, 'concept', 'Transverse Doppler effect', 'f_obs = f_src/gamma for motion purely across the line of sight: a pure time-dilation redshift with no classical analogue.'),
 
-  { id: 69, front: 'The Analytical Writing task on the current GRE', back: 'The current GRE has a single 30-minute Analytical Writing task: Analyze an Issue. You take a position on a general claim and support it with reasons and examples. The older Analyze an Argument task was retired in the shortened GRE format.', domain: 'writing', domainName: 'Analytical Writing', category: 'concept', topics: ['GRE'] },
-  { id: 70, front: 'Issue essay: structure', back: 'Use a clear structure: an introduction that states your position, two or three body paragraphs each developing one reason with a concrete example, and a conclusion that reinforces your stance. A visible structure signals organization to the scorer.', domain: 'writing', domainName: 'Analytical Writing', category: 'strategy', topics: ['GRE'] },
-  { id: 71, front: 'Issue essay: take a clear position', back: 'Commit to a defensible thesis early rather than sitting on the fence. You can still acknowledge the other side, but your essay must argue for one position. A wishy-washy stance weakens the essay and lowers the score.', domain: 'writing', domainName: 'Analytical Writing', category: 'strategy', topics: ['GRE'] },
-  { id: 72, front: 'Address the specific instructions', back: 'Each Issue prompt comes with specific instructions, such as "discuss the extent to which you agree" or "address the most compelling counterarguments." Responding to those exact instructions is part of the scoring, so read them carefully.', domain: 'writing', domainName: 'Analytical Writing', category: 'strategy', topics: ['GRE'] },
-  { id: 73, front: 'Use concrete, specific examples', back: 'Support each reason with a concrete example: a historical event, a scientific finding, a hypothetical scenario, or personal experience. Specific evidence is far more persuasive than vague generalities and is a hallmark of high-scoring essays.', domain: 'writing', domainName: 'Analytical Writing', category: 'strategy', topics: ['GRE'] },
-  { id: 74, front: 'Acknowledge and rebut a counterargument', back: 'A strong Issue essay considers an opposing view and then explains why your position still holds. Showing you understand complexity and can defend against objections demonstrates the critical thinking the graders reward.', domain: 'writing', domainName: 'Analytical Writing', category: 'strategy', topics: ['GRE'] },
-  { id: 75, front: 'Analytical Writing scoring scale', back: 'The essay is scored from 0 to 6 in half-point increments. Two independent raters (one human and one automated scoring engine) evaluate it; if they disagree substantially, a second human resolves the difference. The final score is their average.', domain: 'writing', domainName: 'Analytical Writing', category: 'concept', topics: ['GRE'] },
-  { id: 76, front: 'What a 6 essay demonstrates', back: 'A top-scoring essay presents a cogent, well-articulated position, develops it with compelling and relevant reasons and examples, sustains a clear focus, and uses varied, precise language with strong control of grammar and mechanics.', domain: 'writing', domainName: 'Analytical Writing', category: 'concept', topics: ['GRE'] },
-  { id: 77, front: 'Budget your 30 minutes', back: 'A workable split: about 5 minutes to plan and outline, roughly 20 minutes to write, and 5 minutes to proofread. Planning first prevents rambling and helps you finish a complete essay, which matters more than a polished but unfinished one.', domain: 'writing', domainName: 'Analytical Writing', category: 'strategy', topics: ['GRE'] },
-  { id: 78, front: 'Clarity and variety in writing', back: 'Graders reward clear organization, logical transitions, and sentence variety over ornate vocabulary. Use transition words to link ideas, vary sentence length, and leave a few minutes to fix obvious grammar and spelling errors.', domain: 'writing', domainName: 'Analytical Writing', category: 'strategy', topics: ['GRE'] },
+  // ── Specialized Topics ──────────────────────────────────────
+  S(76, 'concept', 'Binding-energy curve', 'Peaks near iron-56 at about 8.8 MeV per nucleon. Fusion below and fission above both move toward the peak and release energy.'),
+  S(77, 'formula', 'Decay relations', 't_(1/2) = ln2/lambda = 0.693/lambda; mean lifetime tau = 1/lambda, LONGER than the half-life.'),
+  S(78, 'concept', 'Beta decay and the neutrino', 'Beta-minus emits an ANTI-neutrino; beta-plus and electron capture emit a neutrino. The continuous energy spectrum is what required a third body.'),
+  S(79, 'concept', 'Decay lifetime identifies the interaction', 'About 1e-23 s strong, 1e-16 s electromagnetic, 1e-10 s or longer weak. A strangeness change forces the weak interaction.'),
+  S(80, 'formula', "Bragg's law", '2 d sin(theta) = n lambda, with theta measured from the PLANES (not the normal). Detector sits at 2 theta.'),
+  S(81, 'concept', 'Temperature coefficient of conductivity', 'Metals conduct WORSE when heated (phonon scattering); semiconductors conduct BETTER (exponentially more carriers).'),
+  S(82, 'concept', 'What defines a superconductor', 'The Meissner effect — complete flux expulsion — not merely zero resistance. Gap is about 3.5 k_B T_c.'),
+  S(83, 'formula', 'Magnitude scale', 'm_1 - m_2 = -2.5 log10(F_1/F_2). Inverted and logarithmic: 5 magnitudes is exactly a factor of 100, and larger means fainter.'),
+  S(84, 'concept', 'Stellar endpoints', 'Below the 1.4 solar-mass Chandrasekhar limit a white dwarf (electron degeneracy); above it a neutron star; above that a black hole with r_s = 2GM/c^2.'),
 
-  // ============================================================
-  // DOMAIN: strategy (7 cards, ids 79–85)
-  // ============================================================
+  // ── Laboratory Methods ──────────────────────────────────────
+  L(85, 'formula', 'Error propagation rules', 'Sums: absolute errors in quadrature. Products: RELATIVE errors in quadrature. Powers: relative error times |n|.'),
+  L(86, 'concept', 'Statistical versus systematic error', 'Statistical falls as 1/sqrt(N) with repetition; systematic does not fall at all. Averaging a miscalibrated instrument gives a precise wrong answer.'),
+  L(87, 'formula', 'Counting statistics', 'Poisson: uncertainty on N counts is sqrt(N), so relative uncertainty is 1/sqrt(N). 1% needs 10,000 counts.'),
+  L(88, 'concept', 'Meter loading', 'Voltmeters need HIGH input impedance (parallel), ammeters LOW (series). Equal source and meter impedance halves the reading.'),
+  L(89, 'formula', 'RC corner frequency and scope bandwidth', 'f_c = 1/(2 pi RC), -3 dB point with 45 degrees of phase. Scope rise time ≈ 0.35/bandwidth.'),
+  L(90, 'formula', 'Johnson noise', 'V_rms = sqrt(4 k_B T R B). Reduce by cooling, lowering resistance, or narrowing bandwidth — the last is usually cheapest.'),
+  L(91, 'concept', 'Which detector for what', 'Germanium for energy resolution, NaI for efficiency and cost, Geiger for counting only (no energy information), photomultiplier for single photons and timing.'),
+  L(92, 'concept', 'Shielding by radiation type', 'Alpha: paper. Beta: LOW-Z (high-Z makes bremsstrahlung). Gamma: high-Z and dense. Neutrons: hydrogenous moderator then an absorber — lead is nearly useless.'),
 
-  { id: 79, front: 'Section-level adaptive format', back: 'The GRE is section-adaptive: your performance on the first scored section of a measure (Verbal or Quant) determines the difficulty of the second section. Because scoring accounts for difficulty, a harder second section can yield a higher score.', domain: 'strategy', domainName: 'Test Strategy', category: 'concept', topics: ['GRE'] },
-  { id: 80, front: 'No penalty for wrong answers', back: 'The GRE does not deduct points for incorrect answers, so never leave a question blank. If you are unsure or running low on time, eliminate what you can and make an educated guess. A blank guarantees zero; a guess has a chance.', domain: 'strategy', domainName: 'Test Strategy', category: 'strategy', topics: ['GRE'] },
-  { id: 81, front: 'Mark and review within a section', back: 'You can move freely within a section: skip a hard question, use Mark to flag it, and return before time runs out via the Review screen. Answer the easy questions first to lock in points, then circle back to the tough ones.', domain: 'strategy', domainName: 'Test Strategy', category: 'strategy', topics: ['GRE'] },
-  { id: 82, front: 'Score ranges and structure', back: 'Verbal and Quantitative are each scored from 130 to 170 in one-point increments; Analytical Writing is scored from 0 to 6 in half-point steps. The shortened GRE runs under two hours with no scheduled break.', domain: 'strategy', domainName: 'Test Strategy', category: 'concept', topics: ['GRE'] },
-  { id: 83, front: 'Pacing: spend time where it pays', back: 'Every question in a section is worth the same, so do not sink several minutes into one hard problem while easy points go unanswered. Aim for a steady pace, guess and flag when stuck, and use leftover time to revisit flagged items.', domain: 'strategy', domainName: 'Test Strategy', category: 'strategy', topics: ['GRE'] },
-  { id: 84, front: 'Use the on-screen calculator wisely', back: 'The Quant section includes a basic on-screen calculator. Use it for tedious arithmetic, but rely on estimation and number sense for most problems, since many questions are designed to be solved faster by reasoning than by calculation.', domain: 'strategy', domainName: 'Test Strategy', category: 'strategy', topics: ['GRE'] },
-  { id: 85, front: 'ScoreSelect: choose which scores to send', back: 'The ScoreSelect option lets you decide which test dates to report to schools: your most recent, all scores, or any specific administrations. This means one weaker attempt need not follow you if a later attempt goes better.', domain: 'strategy', domainName: 'Test Strategy', category: 'concept', topics: ['GRE'] },
+  // ── Constants & Numbers ─────────────────────────────────────
+  K(93, 'constant', 'Reduced Planck constant and hc', 'hbar = 1.055e-34 J s = 6.58e-16 eV s. hc = 1240 eV nm — the single most useful conversion on this test.'),
+  K(94, 'constant', 'Electron, proton and neutron rest energies', 'Electron 0.511 MeV, proton 938.3 MeV, neutron 939.6 MeV.'),
+  K(95, 'constant', 'Fine-structure constant', 'alpha = e^2/(4 pi epsilon_0 hbar c) ≈ 1/137. Sets v/c for the hydrogen ground state, so fine structure is order alpha^2.'),
+  K(96, 'constant', 'Bohr radius and hydrogen ground state', 'a_0 = 0.529 Å; E_1 = -13.6 eV; ionisation energy 13.6 eV.'),
+  K(97, 'constant', 'Thermal energy at room temperature', 'k_B T ≈ 0.0259 eV ≈ 1/40 eV at 300 K. Compare it to a level spacing to decide whether a degree of freedom is active.'),
+  K(98, 'constant', 'Boltzmann and gas constants', 'k_B = 1.38e-23 J/K; R = 8.314 J/mol K; 1 mol = 6.022e23.'),
+  K(99, 'constant', 'Atomic mass unit in energy', '1 u = 931.5 MeV/c^2. The conversion behind every mass-defect calculation.'),
+  K(100, 'constant', 'Compton wavelength and electron radius', 'h/m_e c = 2.43 pm (Compton); classical electron radius 2.82 fm.'),
 ];
 
 export function getGREFlashcards(domain?: string): GREFlashcard[] {

@@ -214,12 +214,12 @@ test('the browser surfaces render the server data', async ({ page }) => {
     (r) => r.url().includes('/mcat/review/summary'),
   );
   await page.goto('/dashboard/test-prep/mcat');
-  await expect(page.getByTestId('mcat-dashboard')).toBeVisible();
+  await expect(page.getByTestId('exam-dashboard')).toBeVisible();
   expect((await summaryOnHome).status()).toBe(200);
   // Resume points at the course, and the figures on this page come from the
   // 16 answers recorded above rather than from a placeholder.
-  await expect(page.getByTestId('mcat-resume')).toBeVisible();
-  await expect(page.getByTestId('mcat-dashboard')).toContainText('16');
+  await expect(page.getByTestId('exam-resume')).toBeVisible();
+  await expect(page.getByTestId('exam-dashboard')).toContainText('16');
 
   await page.goto('/dashboard/test-prep/mcat/qbank');
   await expect(page.getByTestId('mcat-qbank-picker')).toBeVisible();
@@ -251,7 +251,7 @@ test('the browser surfaces render the server data', async ({ page }) => {
   // Flashcards and notes did not disappear with the tab strip - the
   // dashboard links to them by query param, and that still opens the tab UI.
   await page.goto('/dashboard/test-prep/mcat?tab=flashcards');
-  await expect(page.getByTestId('mcat-dashboard')).toHaveCount(0);
+  await expect(page.getByTestId('exam-dashboard')).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: 'Read Lessons', exact: true }),
   ).toBeVisible();

@@ -32,7 +32,7 @@ type Group = {
 };
 
 const EXAMS = [
-  "", "PATENT_BAR", "USMLE", "LSAT", "MCAT", "SAT", "GRE", "GMAT",
+  "", "PATENT_BAR", "USMLE", "LSAT", "MCAT", "SAT", "GRE",
   "FE_EE", "PE_EE", "FME", "SECURITY_PLUS", "CISSP",
 ];
 

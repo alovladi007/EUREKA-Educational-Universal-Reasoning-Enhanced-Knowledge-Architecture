@@ -37,33 +37,38 @@ export const EXAM_CONFIGS: Record<string, ExamTypeConfig> = {
     ],
     scoreRange: { min: 400, max: 1600, label: '400–1600' },
   },
+  /**
+   * GRE Physics Subject Test.
+   *
+   * The id stays `GRE` deliberately. It is the key in every URL
+   * (/dashboard/test-prep/gre), in user_progress rows, in QBank session
+   * rows and in the billing products; renaming a key to match a label
+   * would orphan all of them for no gain. The name is what learners see.
+   *
+   * Section weights are the ETS-published content distribution for this
+   * test, which sums to 100%. questionCount is that percentage of the 100
+   * delivered questions, which is what the percentage means - not an
+   * estimate of our own.
+   */
   GRE: {
     id: 'GRE',
-    name: 'GRE General Test',
-    shortName: 'GRE',
-    description: 'Graduate Record Examinations',
-    totalDuration: 180,
-    totalQuestions: 80,
+    name: 'Physics GRE (Subject Test)',
+    shortName: 'Physics GRE',
+    description: 'GRE Physics Subject Test',
+    totalDuration: 170,
+    totalQuestions: 100,
     sections: [
-      { id: 'quantitative', name: 'Quantitative Reasoning', questionCount: 27, timeMinutes: 47 },
-      { id: 'verbal', name: 'Verbal Reasoning', questionCount: 27, timeMinutes: 41 },
-      { id: 'writing', name: 'Analytical Writing', questionCount: 2, timeMinutes: 60 },
+      { id: 'classical_mechanics', name: 'Classical Mechanics', questionCount: 20 },
+      { id: 'electromagnetism', name: 'Electromagnetism', questionCount: 18 },
+      { id: 'quantum_mechanics', name: 'Quantum Mechanics', questionCount: 12 },
+      { id: 'thermo_stat_mech', name: 'Thermodynamics & Statistical Mechanics', questionCount: 10 },
+      { id: 'atomic_physics', name: 'Atomic Physics', questionCount: 10 },
+      { id: 'optics_waves', name: 'Optics & Wave Phenomena', questionCount: 9 },
+      { id: 'specialized', name: 'Specialized Topics', questionCount: 9 },
+      { id: 'special_relativity', name: 'Special Relativity', questionCount: 6 },
+      { id: 'lab_methods', name: 'Laboratory Methods', questionCount: 6 },
     ],
-    scoreRange: { min: 260, max: 340, label: '260–340' },
-  },
-  GMAT: {
-    id: 'GMAT',
-    name: 'GMAT Focus Edition',
-    shortName: 'GMAT',
-    description: 'Graduate Management Admission Test',
-    totalDuration: 135,
-    totalQuestions: 64,
-    sections: [
-      { id: 'quantitative', name: 'Quantitative Reasoning', questionCount: 21, timeMinutes: 45 },
-      { id: 'verbal', name: 'Verbal Reasoning', questionCount: 23, timeMinutes: 45 },
-      { id: 'data_insights', name: 'Data Insights', questionCount: 20, timeMinutes: 45 },
-    ],
-    scoreRange: { min: 205, max: 805, label: '205–805' },
+    scoreRange: { min: 200, max: 990, label: '200–990 (10-point increments)' },
   },
   LSAT: {
     id: 'LSAT',

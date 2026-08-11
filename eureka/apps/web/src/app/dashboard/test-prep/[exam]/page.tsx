@@ -51,7 +51,6 @@ import { getPatentBarFlashcards, PATENT_BAR_FLASHCARD_DOMAINS, PATENT_BAR_FLASHC
 import { getFEEEFlashcards, FEEE_FLASHCARD_DOMAINS, FEEE_FLASHCARD_COUNT } from '@/lib/fe-ee-flashcard-data';
 import { getGREFlashcards, GRE_FLASHCARD_DOMAINS, GRE_FLASHCARD_COUNT } from '@/lib/gre-flashcard-data';
 import { getSATFlashcards, SAT_FLASHCARD_DOMAINS, SAT_FLASHCARD_COUNT } from '@/lib/sat-flashcard-data';
-import { getGMATFlashcards, GMAT_FLASHCARD_DOMAINS, GMAT_FLASHCARD_COUNT } from '@/lib/gmat-flashcard-data';
 // FE_EE_QUESTIONS lazy-loaded in QBankTab + FEEEExamTab (P3-9 stage 3).
 // Type-only import keeps Question typing without runtime cost.
 import type { FEEEQuestion } from '@/lib/fe-ee-qbank-data';
@@ -63,7 +62,7 @@ import { McatFrequencyHeatmap } from '@/components/test-prep/McatFrequencyHeatma
 import { McatServerQbank } from '@/components/test-prep/McatServerQbank';
 import { McatMockExam } from '@/components/test-prep/McatMockExam';
 import { McatReviewCenter } from '@/components/test-prep/McatReviewCenter';
-import { McatDashboard } from '@/components/test-prep/McatDashboard';
+import { ExamDashboard } from '@/components/test-prep/ExamDashboard';
 import { SecurityPlusPBQTab } from '@/components/test-prep/SecurityPlusPBQ';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
 import { VideoLessonTabs } from '@/components/test-prep/VideoLessonTabs';
@@ -99,14 +98,14 @@ export default function ExamPage() {
   const isLSAT = examId === 'LSAT';
   const isSecPlus = examId === 'SECURITY_PLUS';
   const searchParams = useSearchParams();
-  // MCAT shows its own dashboard by default; ?tab= opens the shared tab UI
-  // for the surfaces the dashboard links to but does not replace.
+  // Every exam now shows its dashboard by default. ?tab= opens the shared
+  // tab UI for the surfaces the dashboard links to but does not replace -
+  // flashcards, notes, the static QBank, the simulator.
   const tabParam = searchParams.get('tab');
   const [activeTab, setActiveTab] = useState<Tab>(
     (tabParam as Tab) || 'read',
   );
-  // Non-MCAT exams keep the tab UI exactly as before.
-  const showMcatTabs = !isMCAT || Boolean(tabParam);
+  const showTabs = Boolean(tabParam);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'read', label: 'Read Lessons', icon: <BookOpen className="h-4 w-4" /> },
@@ -133,95 +132,19 @@ export default function ExamPage() {
         </p>
       </div>
 
-      {isPatentBar && (
-        <Card className="p-4 bg-amber-50/80 dark:bg-amber-950/30 border-amber-200 dark:border-amber-900">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="font-semibold text-sm">Patent Bar command center</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                MPEP weakness analytics, time vs accuracy, and an exam-style MPEP workbench (tabs, bookmarks, eMPEP reader).
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/live`}>
-                <Button size="sm" variant="default" className="gap-1.5">
-                  <Video className="h-3.5 w-3.5" /> Live instruction
-                </Button>
-              </Link>
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/patent-program`}>
-                <Button size="sm" variant="secondary" className="gap-1.5">
-                  <BookOpen className="h-3.5 w-3.5" /> Full program
-                </Button>
-              </Link>
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/command-center`}>
-                <Button size="sm" variant="secondary" className="gap-1.5">
-                  <BarChart3 className="h-3.5 w-3.5" /> Analytics &amp; SRS
-                </Button>
-              </Link>
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/mpep-workbench`}>
-                <Button size="sm" variant="outline" className="gap-1.5">
-                  <Library className="h-3.5 w-3.5" /> MPEP workbench
-                </Button>
-              </Link>
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/review-queue`}>
-                <Button size="sm" variant="outline" className="gap-1.5">
-                  <ShieldCheck className="h-3.5 w-3.5" /> SME review queue
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </Card>
-      )}
+      {/* The Patent Bar and LSAT "command center" cards that used to sit
+          here listed the same four routes the dashboard now carries as
+          tiles, one row above them. Two lists of the same links is how a
+          page starts feeling like a directory; the tiles won because they
+          also say what each route is for. The cohort panel below is real
+          data rather than navigation, so it stays. */}
 
-      {isPatentBar && <PatentBarCohortPanel />}
+      {!showTabs && <ExamDashboard examSlug={String(params.exam).toLowerCase()} />}
+      {!showTabs && isPatentBar && <PatentBarCohortPanel />}
+      {!showTabs && isLSAT && <LsatFrequencyHeatmap />}
+      {!showTabs && isMCAT && <McatFrequencyHeatmap />}
 
-      {isLSAT && (
-        <Card className="p-4 bg-purple-50/70 dark:bg-purple-950/30 border-purple-200 dark:border-purple-900">
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div>
-              <p className="font-semibold text-sm">LSAT command center</p>
-              <p className="text-xs text-muted-foreground mt-0.5">
-                Question-type weakness analytics, LR vs RC pacing, and a LawHub-style workbench (TOC,
-                bookmarks, question-type heatmap, official LSAC reference).
-              </p>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lsat-live`}>
-                <Button size="sm" variant="default" className="gap-1.5">
-                  <Video className="h-3.5 w-3.5" /> Live instruction
-                </Button>
-              </Link>
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lsat-program`}>
-                <Button size="sm" variant="secondary" className="gap-1.5">
-                  <BookOpen className="h-3.5 w-3.5" /> Full program
-                </Button>
-              </Link>
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lsat-analytics`}>
-                <Button size="sm" variant="secondary" className="gap-1.5">
-                  <BarChart3 className="h-3.5 w-3.5" /> Analytics &amp; SRS
-                </Button>
-              </Link>
-              <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/lawhub-workbench`}>
-                <Button size="sm" variant="outline" className="gap-1.5">
-                  <Library className="h-3.5 w-3.5" /> LawHub workbench
-                </Button>
-              </Link>
-            </div>
-          </div>
-        </Card>
-      )}
-
-      {/* Exam-specific frequency heatmaps with official-site deep links.
-          Same pattern as the MPEP workbench heatmap but for non-Patent-Bar
-          exams: shows what's most-tested + clicks open the official content
-          reference (LSAC LawHub for LSAT, AAMC store for MCAT). */}
-      {isLSAT && <LsatFrequencyHeatmap />}
-      {isMCAT && !showMcatTabs && (
-        <McatDashboard examSlug={String(params.exam).toLowerCase()} />
-      )}
-      {isMCAT && !showMcatTabs && <McatFrequencyHeatmap />}
-
-      {showMcatTabs && (
+      {showTabs && (
         <>
       {/* Tabs — scroll horizontally on mobile (Patent Bar has 9 tabs;
           flex-wrap wraps awkwardly on narrow screens). overflow-x-auto
@@ -1701,8 +1624,7 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const isLSAT = examType === 'LSAT';
   const isGRE = examType === 'GRE';
   const isSAT = examType === 'SAT';
-  const isGMAT = examType === 'GMAT';
-  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT || isLSAT || isGRE || isSAT || isGMAT;
+  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT || isLSAT || isGRE || isSAT;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1737,9 +1659,7 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                     ? getGREFlashcards(activeDomain || undefined)
                     : isSAT
                       ? getSATFlashcards(activeDomain || undefined)
-                      : isGMAT
-                        ? getGMATFlashcards(activeDomain || undefined)
-                        : [];
+                      : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1769,9 +1689,7 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                     ? GRE_FLASHCARD_DOMAINS
                     : isSAT
                       ? SAT_FLASHCARD_DOMAINS
-                      : isGMAT
-                        ? GMAT_FLASHCARD_DOMAINS
-                        : [];
+                      : [];
   const flashcardCount = isCISSP
     ? CISSP_FLASHCARD_COUNT
     : isSecPlus
@@ -1792,9 +1710,7 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                     ? GRE_FLASHCARD_COUNT
                     : isSAT
                       ? SAT_FLASHCARD_COUNT
-                      : isGMAT
-                        ? GMAT_FLASHCARD_COUNT
-                        : 0;
+                      : 0;
   const flashcardTitle = isCISSP
     ? 'CISSP Flashcard Deck'
     : isSecPlus
@@ -1812,12 +1728,10 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                 : isLSAT
                   ? 'LSAT Flashcard Deck'
                   : isGRE
-                    ? 'GRE Flashcard Deck'
+                    ? 'Physics GRE Flashcard Deck'
                     : isSAT
                       ? 'SAT Flashcard Deck'
-                      : isGMAT
-                        ? 'GMAT Flashcard Deck'
-                        : 'Flashcard Deck';
+                      : 'Flashcard Deck';
   const flashcardSubtitle = isCISSP
     ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
     : isSecPlus
@@ -1833,12 +1747,10 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
               : isMCAT
                 ? `${MCAT_FLASHCARD_COUNT.toLocaleString()} cards across all 4 MCAT sections + formulas`
                 : isGRE
-                  ? `${GRE_FLASHCARD_COUNT.toLocaleString()} cards across Quant, Verbal, Vocab & Writing`
+                  ? `${GRE_FLASHCARD_COUNT.toLocaleString()} cards across the nine ETS content areas + constants`
                   : isSAT
                     ? `${SAT_FLASHCARD_COUNT.toLocaleString()} cards across Reading & Writing and Math`
-                    : isGMAT
-                      ? `${GMAT_FLASHCARD_COUNT.toLocaleString()} cards across Quant, Verbal & Data Insights`
-                      : '';
+                    : '';
 
   const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
@@ -2320,7 +2232,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     // (Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Oct 2002: 49 AM; Apr 2002: 49 AM +
     // 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000:
     // 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM) = 1634. The gap-fill blueprint floors still hold.
-    PATENT_BAR: 1634, SECURITY_PLUS: 472, SAT: 139, GRE: 87, GMAT: 75, LSAT: 200,
+    PATENT_BAR: 1634, SECURITY_PLUS: 472, SAT: 139, LSAT: 200, GRE: 53,
   };
   const OFFICIAL_USPTO_COUNT = 828; // Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Oct 2002: 49 AM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM
   const qbankMax =
@@ -2365,7 +2277,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
       }
       const data = await apiClient.createQBankSession(payload);
       // The test-prep microservice returns 404 ("no questions") for exams whose
-      // banks live client-side (SAT/GRE/GMAT and the other static exams), and
+      // banks live client-side (SAT and the other static exams), and
       // the graceful-degrade interceptor can resolve a null/empty body when the
       // service is offline or can't auth. In either case there's no usable
       // question — throw so we fall through to the static bank below instead of
@@ -2661,55 +2573,29 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { toast.error('No SAT questions available for the selected sections.'); }
       } else if (examType === 'GRE') {
-        // GRE QBank: original audited questions, topicId 0=Quantitative, 1=Verbal.
+        // Physics GRE: questions carry their ETS content-area id directly,
+        // so the section picker filters without a translation table.
         const { GRE_QUESTIONS } = await import('@/lib/gre-qbank-data');
         let greQuestions = [...GRE_QUESTIONS];
         if (selectedSections.length > 0) {
-          const sectionToTopic: Record<string, number> = { quantitative: 0, verbal: 1 };
-          const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
-          if (topicIds.length > 0) greQuestions = greQuestions.filter((q) => topicIds.includes(q.topicId));
+          greQuestions = greQuestions.filter((q) => selectedSections.includes(q.section));
         }
         greQuestions = shuffle(greQuestions).slice(0, questionCount);
         if (greQuestions.length > 0) {
           const normalized = greQuestions.map((q: any, i: number) => ({
             ...q,
-            question_text: q.passage ? `${q.passage}\n\n${q.question}` : q.question,
+            question_text: q.question,
             options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
             correct_index: q.correct,
             explanation_text: q.explanation,
-            section_id: q.topicId === 0 ? 'quantitative' : 'verbal',
+            section_id: q.section,
             _idx: i,
           }));
           const fakeSessionId = `static-${Date.now()}`;
           setSessionId(fakeSessionId);
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
-        } else { toast.error('No GRE questions available for the selected sections.'); }
-      } else if (examType === 'GMAT') {
-        // GMAT Focus QBank: topicId 0=Quantitative, 1=Verbal, 2=Data Insights.
-        const { GMAT_QUESTIONS } = await import('@/lib/gmat-qbank-data');
-        let gmatQuestions = [...GMAT_QUESTIONS];
-        if (selectedSections.length > 0) {
-          const sectionToTopic: Record<string, number> = { quantitative: 0, verbal: 1, data_insights: 2 };
-          const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
-          if (topicIds.length > 0) gmatQuestions = gmatQuestions.filter((q) => topicIds.includes(q.topicId));
-        }
-        gmatQuestions = shuffle(gmatQuestions).slice(0, questionCount);
-        if (gmatQuestions.length > 0) {
-          const normalized = gmatQuestions.map((q: any, i: number) => ({
-            ...q,
-            question_text: q.passage ? `${q.passage}\n\n${q.question}` : q.question,
-            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
-            correct_index: q.correct,
-            explanation_text: q.explanation,
-            section_id: q.topicId === 0 ? 'quantitative' : q.topicId === 1 ? 'verbal' : 'data_insights',
-            _idx: i,
-          }));
-          const fakeSessionId = `static-${Date.now()}`;
-          setSessionId(fakeSessionId);
-          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
-          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
-        } else { toast.error('No GMAT questions available for the selected sections.'); }
+        } else { toast.error('No Physics GRE questions available for the selected sections.'); }
       } else {
         toast('No questions available for this exam yet. Questions are being added.', { icon: 'ℹ️' });
       }
@@ -2806,7 +2692,7 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
   // services/api-core/app/models/user_progress.py:ExamTypeKind.
   const PROGRESS_SUPPORTED_EXAMS = new Set([
     'PATENT_BAR', 'MCAT', 'LSAT', 'CISSP', 'SECURITY_PLUS',
-    'FE_EE', 'FE_ME', 'PE_EE', 'SAT', 'GRE', 'GMAT',
+    'FE_EE', 'FE_ME', 'PE_EE', 'SAT', 'GRE',
   ]);
 
   const recordCurrentAttempt = async (isCorrect: boolean): Promise<void> => {

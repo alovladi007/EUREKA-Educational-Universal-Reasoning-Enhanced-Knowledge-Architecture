@@ -93,10 +93,6 @@ export async function loadExamCourse(examType: string): Promise<CoursePack> {
       const m = await import('@/lib/sat-course-data');
       return { get: m.getSATCourseContent, has: m.hasSATCourseContent };
     }
-    case 'GMAT': {
-      const m = await import('@/lib/gmat-course-data');
-      return { get: m.getGMATCourseContent, has: m.hasGMATCourseContent };
-    }
     default:
       return EMPTY_PACK;
   }

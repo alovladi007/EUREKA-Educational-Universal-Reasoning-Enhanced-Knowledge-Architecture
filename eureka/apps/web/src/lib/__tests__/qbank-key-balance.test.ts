@@ -11,7 +11,7 @@
  *   1. every `correct` index is in range for its options array, and
  *   2. no single option position holds more than MAX_SHARE of the keys.
  *
- * GRE/GMAT (already near-balanced but small) join this list when they go
+ * The Physics GRE bank (53 questions) joins this list when it goes
  * through the same pipeline. LSAT (5 options) and CISSP ({index,text} shape,
  * `correct_index`) were de-biased with letter-remapping of explanations and
  * are normalized into the same {options, correct} view below.

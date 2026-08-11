@@ -112,7 +112,7 @@ const FAQ = [
   },
   {
     q: 'What can I learn here?',
-    a: 'High-school through graduate coursework, a full mathematics ladder, engineering courses at textbook depth, medical education, and preparation for eleven exams including the Patent Bar, LSAT, MCAT, GRE and SAT.',
+    a: 'High-school through graduate coursework, a full mathematics ladder, engineering courses at textbook depth, medical education, and preparation for ten exams including the Patent Bar, LSAT, MCAT, Physics GRE and SAT.',
   },
   {
     q: 'Do I get a certificate?',

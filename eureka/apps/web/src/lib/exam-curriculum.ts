@@ -59,76 +59,115 @@ const SAT: ExamCurriculum = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
-// GRE
+// Physics GRE (GRE Physics Subject Test) — exam id stays GRE
 // ═══════════════════════════════════════════════════════════════
+//
+// The nine sections and their order follow the ETS-published content
+// distribution for this test, heaviest first. This is a subject test in
+// undergraduate physics, so the syllabus is the physics, not test tactics:
+// the only section that is about the exam rather than about the subject is
+// Laboratory Methods, and that is because ETS tests laboratory practice as
+// content in its own right.
+//
+// Note for anyone comparing against git history: this replaced the GRE
+// General Test syllabus (Verbal / Quantitative / Analytical Writing). None
+// of that content carried over — a general-test lesson relabelled as a
+// physics lesson would be a lie about what a learner is reading.
 
 const GRE: ExamCurriculum = [
   {
-    sectionId: 'quantitative', sectionName: 'Quantitative Reasoning',
+    sectionId: 'classical_mechanics', sectionName: 'Classical Mechanics',
     topics: [
-      t('quant_arithmetic', 'Arithmetic & Number Properties', 'Integers, fractions, decimals, primes, divisibility, and remainders.'),
-      t('quant_algebra', 'Algebra & Equations', 'Linear and quadratic equations, inequalities, absolute value, and functions.'),
-      t('quant_word', 'Word Problems & Translations', 'Translate word problems into equations; rates, work, mixture, and age problems.'),
-      t('quant_geometry', 'Geometry', 'Lines, angles, triangles, quadrilaterals, circles, area, perimeter, and volume.'),
-      t('quant_coordinate', 'Coordinate Geometry', 'Slope, distance, midpoint, and graphing equations in the xy-plane.'),
-      t('quant_data', 'Data Analysis & Statistics', 'Mean, median, mode, range, standard deviation, percentiles, and distributions.'),
-      t('quant_probability', 'Counting & Probability', 'Permutations, combinations, probability rules, and expected value.'),
-      t('quant_comparison', 'Quantitative Comparison Strategies', 'Techniques for comparing quantities: plugging in, estimation, and algebraic simplification.'),
+      t('pgre_cm_kinematics', 'Kinematics', 'Position, velocity and acceleration in one, two and three dimensions; projectile and circular motion.', 14),
+      t('pgre_cm_newton', "Newton's Laws & Dynamics", 'Forces, free-body diagrams, friction, constraints, and the equations of motion they produce.', 16),
+      t('pgre_cm_energy', 'Work, Energy & Conservation Laws', 'Work-energy theorem, conservative forces, potential energy curves, and when energy is and is not conserved.', 15),
+      t('pgre_cm_momentum', 'Momentum, Collisions & Systems of Particles', 'Impulse, elastic and inelastic collisions, centre of mass, and variable-mass problems.', 14),
+      t('pgre_cm_rotation', 'Rigid-Body Rotation & Angular Momentum', 'Moment of inertia, torque, rolling, the parallel-axis theorem, and gyroscopic precession.', 16),
+      t('pgre_cm_oscillations', 'Oscillations', 'Simple, damped and driven harmonic motion; resonance and the small-angle pendulum.', 15),
+      t('pgre_cm_gravitation', 'Gravitation & Central Forces', 'Kepler orbits, effective potential, escape velocity, and the two-body reduction.', 14),
+      t('pgre_cm_lagrangian', 'Lagrangian & Hamiltonian Mechanics', 'Generalised coordinates, the Euler-Lagrange equation, cyclic coordinates, and the Hamiltonian.', 18),
+      t('pgre_cm_noninertial', 'Non-Inertial Frames', 'Centrifugal and Coriolis terms, and how to recognise a rotating-frame problem on sight.', 12),
     ],
   },
   {
-    sectionId: 'verbal', sectionName: 'Verbal Reasoning',
+    sectionId: 'electromagnetism', sectionName: 'Electromagnetism',
     topics: [
-      t('verb_text_completion', 'Text Completion', 'Fill in blanks using context clues, structural signals, and vocabulary knowledge.'),
-      t('verb_sentence_equiv', 'Sentence Equivalence', 'Identify pairs of words that complete sentences with equivalent meaning.'),
-      t('verb_reading_comp', 'Reading Comprehension', 'Analyze passages: main idea, inference, function, author tone and perspective.'),
-      t('verb_critical_reasoning', 'Critical Reasoning', 'Strengthen/weaken arguments, identify assumptions, and evaluate conclusions.'),
-      t('verb_vocabulary', 'High-Frequency Vocabulary', 'Master the most tested GRE vocabulary words organized by difficulty.'),
-      t('verb_passage_types', 'Passage Types & Strategies', 'Approach science, humanities, and social science passages efficiently.'),
+      t('pgre_em_electrostatics', 'Electrostatics', "Coulomb's law, the electric field, Gauss's law, and the three standard symmetries.", 16),
+      t('pgre_em_potential', 'Electric Potential & Conductors', 'Potential, capacitance, energy stored in a field, and the boundary conditions at a conductor.', 15),
+      t('pgre_em_dielectrics', 'Dielectrics & Boundary-Value Problems', 'Polarisation, bound charge, the method of images, and separation of variables.', 16),
+      t('pgre_em_magnetostatics', 'Magnetostatics', "Biot-Savart, Ampere's law, the vector potential, and forces on currents.", 16),
+      t('pgre_em_induction', 'Faraday Induction & Inductance', 'Motional EMF, Lenz’s law, self and mutual inductance, and magnetic energy.', 15),
+      t('pgre_em_circuits', 'Circuits', 'RC, RL and RLC transients, AC steady state, impedance, resonance and power factor.', 15),
+      t('pgre_em_maxwell', "Maxwell's Equations & Electromagnetic Waves", 'The displacement current, the wave equation, polarisation, and the Poynting vector.', 18),
+      t('pgre_em_radiation', 'Radiation & Moving Charges', 'The Larmor formula, dipole radiation, and the fields of a uniformly moving charge.', 14),
     ],
   },
   {
-    sectionId: 'writing', sectionName: 'Analytical Writing',
+    sectionId: 'quantum_mechanics', sectionName: 'Quantum Mechanics',
     topics: [
-      t('aw_issue', 'Analyze an Issue', 'Develop a position on a given topic with reasoning and examples.'),
-      t('aw_argument', 'Analyze an Argument', 'Evaluate the logic of an argument and identify logical fallacies.'),
-      t('aw_structure', 'Essay Structure & Templates', 'Organize essays with thesis, body paragraphs, and conclusion templates.'),
-      t('aw_scoring', 'Scoring Rubric & Sample Essays', 'Understand what graders look for and study scored sample essays.'),
-    ],
-  },
-];
-
-// ═══════════════════════════════════════════════════════════════
-// GMAT
-// ═══════════════════════════════════════════════════════════════
-
-const GMAT: ExamCurriculum = [
-  {
-    sectionId: 'quantitative', sectionName: 'Quantitative Reasoning',
-    topics: [
-      t('gq_problem_solving', 'Problem Solving', 'Arithmetic, algebra, and geometry problem-solving strategies.'),
-      t('gq_number_props', 'Number Properties', 'Primes, factors, multiples, remainders, and divisibility rules.'),
-      t('gq_algebra', 'Algebra & Inequalities', 'Linear and quadratic equations, systems, and inequality manipulation.'),
-      t('gq_word_problems', 'Word Problems', 'Rates, work, mixtures, overlapping sets, and profit/loss.'),
-      t('gq_geometry', 'Geometry', 'Triangles, circles, coordinate geometry, and 3D shapes.'),
-      t('gq_data_sufficiency', 'Data Sufficiency', 'Evaluate whether given data is sufficient to answer a question.'),
+      t('pgre_qm_foundations', 'Wave Functions & the Schrodinger Equation', 'The postulates, probability current, normalisation, and stationary states.', 16),
+      t('pgre_qm_wells', 'One-Dimensional Potentials', 'Infinite and finite wells, the step, the barrier and tunnelling, and the delta-function potential.', 16),
+      t('pgre_qm_oscillator', 'The Harmonic Oscillator', 'Ladder operators, the spectrum, and why this problem appears everywhere else.', 14),
+      t('pgre_qm_formalism', 'Operators, Measurement & Uncertainty', 'Hermitian operators, commutators, expectation values, and the generalised uncertainty relation.', 15),
+      t('pgre_qm_angular', 'Angular Momentum & Spin', 'The algebra of L and S, spherical harmonics, addition of angular momenta, and the Pauli matrices.', 17),
+      t('pgre_qm_hydrogen', 'The Hydrogen Atom', 'The radial equation, quantum numbers, degeneracy, and the energy scale.', 15),
+      t('pgre_qm_perturbation', 'Perturbation Theory & Approximations', 'Time-independent perturbation theory, the variational principle, and the WKB approximation.', 16),
     ],
   },
   {
-    sectionId: 'verbal', sectionName: 'Verbal Reasoning',
+    sectionId: 'thermo_stat_mech', sectionName: 'Thermodynamics & Statistical Mechanics',
     topics: [
-      t('gv_reading_comp', 'Reading Comprehension', 'Main idea, inference, detail, structure, and tone questions.'),
-      t('gv_critical_reasoning', 'Critical Reasoning', 'Strengthen, weaken, assumption, inference, and evaluate arguments.'),
-      t('gv_sentence_correction', 'Sentence Correction', 'Grammar rules: subject-verb agreement, parallelism, modifiers, idioms.'),
+      t('pgre_th_laws', 'The Laws of Thermodynamics', 'State functions, the first law, entropy, and what the second and third laws forbid.', 15),
+      t('pgre_th_processes', 'Processes, Engines & Cycles', 'Isothermal, adiabatic and isobaric processes; Carnot efficiency and refrigerators.', 15),
+      t('pgre_th_kinetic', 'Kinetic Theory', 'The ideal gas from molecular motion, equipartition, mean free path, and transport.', 14),
+      t('pgre_th_ensembles', 'Statistical Ensembles', 'Microstates, the Boltzmann factor, the partition function, and free energies.', 17),
+      t('pgre_th_quantum_stats', 'Quantum Statistics', 'Fermi-Dirac and Bose-Einstein distributions, the Fermi gas, blackbody radiation and the Bose condensate.', 17),
+      t('pgre_th_phase', 'Phase Transitions & Real Gases', 'Latent heat, the Clausius-Clapeyron relation, and the van der Waals gas.', 13),
     ],
   },
   {
-    sectionId: 'data_insights', sectionName: 'Data Insights',
+    sectionId: 'atomic_physics', sectionName: 'Atomic Physics',
     topics: [
-      t('gd_graphs_tables', 'Graphs & Table Interpretation', 'Read and analyze bar charts, line graphs, scatter plots, and tables.'),
-      t('gd_multi_source', 'Multi-Source Reasoning', 'Synthesize data from multiple sources to answer questions.'),
-      t('gd_two_part', 'Two-Part Analysis', 'Solve problems requiring two related answers simultaneously.'),
-      t('gd_data_sufficiency_di', 'Data Sufficiency (DI)', 'Combined quantitative and verbal data sufficiency.'),
+      t('pgre_at_structure', 'Atomic Structure & Spectra', 'The Bohr model, hydrogenic energies, selection rules, and the spectral series.', 15),
+      t('pgre_at_multielectron', 'Multi-Electron Atoms', 'The Pauli principle, shell filling, screening, and term symbols under LS coupling.', 16),
+      t('pgre_at_finestructure', 'Fine & Hyperfine Structure', 'Spin-orbit coupling, relativistic corrections, and the Lamb and hyperfine splittings.', 15),
+      t('pgre_at_fields', 'Atoms in External Fields', 'The Zeeman and Stark effects, weak and strong field limits.', 14),
+      t('pgre_at_xray_lasers', 'X-Rays, Lasers & Transitions', "Characteristic X-rays and Moseley's law, stimulated emission, population inversion, and laser operation.", 14),
+    ],
+  },
+  {
+    sectionId: 'optics_waves', sectionName: 'Optics & Wave Phenomena',
+    topics: [
+      t('pgre_ow_waves', 'Wave Motion', 'The wave equation, superposition, standing waves, beats, and the Doppler effect.', 14),
+      t('pgre_ow_geometric', 'Geometric Optics', 'Reflection, refraction, thin lenses and mirrors, and sign conventions that decide the answer.', 13),
+      t('pgre_ow_interference', 'Interference', 'Double slit, thin films, the Michelson interferometer, and coherence.', 14),
+      t('pgre_ow_diffraction', 'Diffraction & Polarisation', 'Single slit, gratings, the Rayleigh criterion, Brewster’s angle and Malus’s law.', 15),
+    ],
+  },
+  {
+    sectionId: 'specialized', sectionName: 'Specialized Topics',
+    topics: [
+      t('pgre_sp_nuclear', 'Nuclear Physics', 'Binding energy, radioactive decay, decay chains, fission and fusion, and cross sections.', 15),
+      t('pgre_sp_particle', 'Particle Physics', 'The Standard Model inventory, conservation laws, and which reactions are allowed.', 14),
+      t('pgre_sp_condensed', 'Condensed Matter', 'Crystal structure, Bragg diffraction, band theory, semiconductors and superconductivity.', 16),
+      t('pgre_sp_astro', 'Astrophysics & Cosmology', 'Stellar structure and evolution, the magnitude scale, the Hubble law and the cosmic microwave background.', 14),
+      t('pgre_sp_math', 'Mathematical Methods', 'Vector calculus, series, complex analysis, Fourier methods and the differential equations physics keeps reusing.', 16),
+    ],
+  },
+  {
+    sectionId: 'special_relativity', sectionName: 'Special Relativity',
+    topics: [
+      t('pgre_sr_kinematics', 'Relativistic Kinematics', 'The postulates, time dilation, length contraction, the Lorentz transformation and simultaneity.', 15),
+      t('pgre_sr_dynamics', 'Relativistic Dynamics', 'Four-vectors, invariant mass, energy-momentum conservation and collisions.', 16),
+      t('pgre_sr_applications', 'Applications & Common Traps', 'Velocity addition, the relativistic Doppler effect, and the paradoxes that catch people out.', 13),
+    ],
+  },
+  {
+    sectionId: 'lab_methods', sectionName: 'Laboratory Methods',
+    topics: [
+      t('pgre_lab_uncertainty', 'Measurement & Uncertainty', 'Significant figures, propagation of error, statistical against systematic uncertainty, and fitting.', 13),
+      t('pgre_lab_electronics', 'Instrumentation & Electronics', 'Oscilloscopes, meters, amplifiers, filters, loading, and signal-to-noise.', 13),
+      t('pgre_lab_detectors', 'Detectors & Radiation Safety', 'Photomultipliers, scintillators, semiconductor detectors, counting statistics and shielding.', 12),
     ],
   },
 ];
@@ -866,7 +905,7 @@ const FE_EE: ExamCurriculum = [
 // ═══════════════════════════════════════════════════════════════
 
 export const EXAM_CURRICULA: Record<string, ExamCurriculum> = {
-  SAT, GRE, GMAT, LSAT, PATENT_BAR, MCAT, FE_ME, FE_EE, PE_EE, SECURITY_PLUS, CISSP,
+  SAT, GRE, LSAT, PATENT_BAR, MCAT, FE_ME, FE_EE, PE_EE, SECURITY_PLUS, CISSP,
 };
 
 export function getCurriculum(examType: string): ExamCurriculum {

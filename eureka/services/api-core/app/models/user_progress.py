@@ -54,8 +54,9 @@ class ExamTypeKind(str, enum.Enum):
     FE_ME = "FE_ME"
     PE_EE = "PE_EE"
     SAT = "SAT"
+    # GRE is the Physics Subject Test; the key stays GRE because it is
+    # what every existing row, URL and billing product uses.
     GRE = "GRE"
-    GMAT = "GMAT"
     OCTET_CHEM = "OCTET_CHEM"
 
 

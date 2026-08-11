@@ -1,33 +1,36 @@
 'use client';
 
 /**
- * MCAT study environment - subject syllabus, book, and media side by side.
+ * The course page, for every exam.
  *
- * The old "Read Lessons" tab was a list of four AAMC sections you clicked
- * into one at a time, which is how the exam is ADMINISTERED but not how
- * anyone studies. This page is organised the way a prep course is: seven
- * subjects, each with its chapters, and a persistent syllabus rail so you
- * always know where you are in the whole course.
+ * The "Read Lessons" tab was a list of sections you clicked into one at a
+ * time. That is how an exam is ADMINISTERED, not how anyone studies a
+ * course. This page is organised the way a prep course is: units down the
+ * side, the chapter's text in the middle, and the things you want in view
+ * while you read on the right.
  *
  * Three zones on a wide screen:
- *   rail      the seven subjects and their chapters, always visible
- *   book      the chapter's long-form content - the widest zone, because
- *             it is the actual material
+ *   rail      the unit's chapters, always visible, with what you have read
+ *   book      the chapter's long-form content - the widest zone, because it
+ *             is the actual material
  *   companion sticky beside the book: the media slot, then this chapter's
- *             key takeaways and exam tips, so they stay in view while you
- *             read rather than sitting at the bottom
+ *             key takeaways and exam tips, so they stay in view rather than
+ *             sitting at the bottom where nobody scrolls to them
  *
- * On the media slot, stated plainly because it matters: MCAT has no video
- * lessons yet - not one file exists. The slot is built (it renders the
- * real player the moment a chapter carries a URL, the same player the
- * CISSP lessons use) but today it says so instead of showing a dead player
- * or a stock clip. The reading is the content; the panel points at what is
- * actually there.
+ * The unit axis comes from `exam-study-axis.ts`. For nine of the ten exams
+ * the units are the curriculum's own sections; for MCAT they are the seven
+ * subjects students actually study on. Either way every chapter in the rail
+ * is a chapter that exists.
+ *
+ * On the media slot, stated plainly because it matters: only CISSP has
+ * recorded video today. The slot renders the real player the moment a
+ * chapter carries a URL, and says so when none does, rather than showing a
+ * dead player or a stock clip.
  */
 
 import React from 'react';
 import Link from 'next/link';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import {
@@ -41,13 +44,15 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
-import { MCAT_SUBJECTS, assertSubjectCoverage, type McatSubject } from '@/lib/mcat-subjects';
+import {
+  getStudyAxis, countChapters, axisNoun, readChaptersKey,
+  assertAxisCoverage, type StudyUnit,
+} from '@/lib/exam-study-axis';
 import { getCurriculum } from '@/lib/exam-curriculum';
+import { getExamConfig } from '@/lib/exam-config';
+import { getExamSurfaces } from '@/lib/exam-surfaces';
 import { loadExamCourse, type CoursePack } from '@/lib/exam-course-loader';
-import type { TopicLesson } from '@/lib/mcat-course-data';
-
-const EXAM = 'MCAT';
-const STORAGE_KEY = 'mcat_study_read_chapters';
+import type { TopicLesson } from '@/lib/cissp-course-data';
 
 /** Accent classes, written out so Tailwind's scanner keeps them. */
 const ACCENT: Record<string, { dot: string; soft: string; text: string }> = {
@@ -60,6 +65,7 @@ const ACCENT: Record<string, { dot: string; soft: string; text: string }> = {
   rose: { dot: 'bg-rose-500', soft: 'bg-rose-500/10', text: 'text-rose-600 dark:text-rose-400' },
   slate: { dot: 'bg-slate-500', soft: 'bg-slate-500/10', text: 'text-slate-600 dark:text-slate-400' },
 };
+const accentOf = (key: string) => ACCENT[key] ?? ACCENT.slate;
 
 /** Markdown renderers - the lesson bodies use GFM tables and blockquotes
  *  heavily, and unstyled tables are unreadable. */
@@ -99,27 +105,62 @@ interface Chapter {
   readTimeMin?: number;
 }
 
-export default function McatStudyPage() {
-  const params = useParams();
-  const router = useRouter();
-  const exam = ((params.exam as string) || '').toUpperCase();
+interface UnitVideo {
+  id: string;
+  title: string;
+  description: string;
+  video_url: string;
+  duration_seconds: number;
+  section: string;
+}
 
-  React.useEffect(() => {
-    if (exam && exam !== EXAM) {
-      router.replace(`/dashboard/test-prep/${params.exam}`);
-    }
-  }, [exam, params.exam, router]);
+/**
+ * Videos that belong to a unit.
+ *
+ * CISSP is the only exam with recorded video today - 21 rendered
+ * animations - and they are indexed by domain rather than by chapter, so
+ * they attach to the unit rather than to a single chapter. That is the
+ * honest granularity: claiming a chapter-level video when the file covers
+ * a whole domain would misdescribe what plays.
+ */
+async function loadUnitVideos(exam: string, unitName: string): Promise<UnitVideo[]> {
+  if (exam !== 'CISSP') return [];
+  try {
+    const m = await import('@/lib/cissp-video-lessons');
+    return m.CISSP_VIDEO_LESSONS.filter((v) => v.section === unitName);
+  } catch {
+    return [];
+  }
+}
+
+function mmss(seconds: number): string {
+  const m = Math.floor(seconds / 60);
+  const s = seconds % 60;
+  return `${m}:${String(s).padStart(2, '0')}`;
+}
+
+export default function ExamStudyPage() {
+  const params = useParams();
+  const slug = String(params.exam ?? '').toLowerCase();
+  const exam = slug.toUpperCase();
+
+  const config = getExamConfig(exam);
+  const surfaces = getExamSurfaces(exam);
+  const axis = React.useMemo(() => getStudyAxis(exam), [exam]);
+  const storageKey = readChaptersKey(exam);
 
   const [pack, setPack] = React.useState<CoursePack | null>(null);
-  const [subjectId, setSubjectId] = React.useState<string>(MCAT_SUBJECTS[0].id);
+  const [unitId, setUnitId] = React.useState<string | null>(null);
   const [topicId, setTopicId] = React.useState<string | null>(null);
   const [read, setRead] = React.useState<Set<string>>(new Set());
+  const [videos, setVideos] = React.useState<UnitVideo[]>([]);
+  const [videoIdx, setVideoIdx] = React.useState(0);
 
   // Chapter metadata comes from the curriculum, so titles and read times
   // never drift from the syllabus the rest of the app shows.
   const chapters = React.useMemo(() => {
     const flat = new Map<string, Chapter>();
-    for (const section of getCurriculum(EXAM)) {
+    for (const section of getCurriculum(exam)) {
       for (const t of section.topics) {
         flat.set(t.id, {
           id: t.id, title: t.title, summary: t.summary, readTimeMin: t.readTimeMin,
@@ -127,35 +168,50 @@ export default function McatStudyPage() {
       }
     }
     return flat;
-  }, []);
+  }, [exam]);
 
+  // Switching exams resets what is open: a chapter id from another exam
+  // would render an empty book.
   React.useEffect(() => {
-    void loadExamCourse(EXAM).then(setPack);
+    setPack(null);
+    setUnitId(null);
+    setTopicId(null);
+    void loadExamCourse(exam).then(setPack);
     try {
-      const saved = window.localStorage.getItem(STORAGE_KEY);
-      if (saved) setRead(new Set(JSON.parse(saved)));
+      const saved = window.localStorage.getItem(readChaptersKey(exam));
+      setRead(saved ? new Set(JSON.parse(saved)) : new Set());
     } catch {
-      /* first visit, or storage unavailable */
+      setRead(new Set());
     }
     if (process.env.NODE_ENV !== 'production') {
-      const gaps = assertSubjectCoverage();
+      const gaps = assertAxisCoverage(exam);
       if (gaps.missing.length || gaps.duplicated.length || gaps.unknown.length) {
         // A content bug, not a crash: say it loudly in dev, carry on.
-        console.warn('[mcat-subjects] coverage problem', gaps);
+        console.warn(`[study-axis:${exam}] coverage problem`, gaps);
       }
     }
-  }, []);
+  }, [exam]);
 
-  const subject = MCAT_SUBJECTS.find((s) => s.id === subjectId) ?? MCAT_SUBJECTS[0];
+  const unit: StudyUnit | undefined =
+    axis.find((u) => u.id === unitId) ?? axis[0];
   const lesson: TopicLesson | null = topicId && pack ? pack.get(topicId) : null;
   const chapter = topicId ? chapters.get(topicId) : undefined;
+
+  const unitName = unit?.name ?? '';
+  React.useEffect(() => {
+    setVideoIdx(0);
+    if (!unitName) return;
+    let live = true;
+    void loadUnitVideos(exam, unitName).then((v) => { if (live) setVideos(v); });
+    return () => { live = false; };
+  }, [exam, unitName]);
 
   const markRead = (id: string) => {
     setRead((prev) => {
       const next = new Set(prev);
       next.has(id) ? next.delete(id) : next.add(id);
       try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify([...next]));
+        window.localStorage.setItem(storageKey, JSON.stringify([...next]));
       } catch {
         /* non-fatal */
       }
@@ -163,19 +219,40 @@ export default function McatStudyPage() {
     });
   };
 
-  const subjectProgress = (s: McatSubject) => {
-    const done = s.topicIds.filter((t) => read.has(t)).length;
-    return { done, total: s.topicIds.length };
-  };
+  const unitProgress = (u: StudyUnit) => ({
+    done: u.topicIds.filter((t) => read.has(t)).length,
+    total: u.topicIds.length,
+  });
   const overall = React.useMemo(() => {
-    const total = MCAT_SUBJECTS.reduce((n, s) => n + s.topicIds.length, 0);
-    const done = MCAT_SUBJECTS.reduce(
-      (n, s) => n + s.topicIds.filter((t) => read.has(t)).length, 0,
+    const total = countChapters(axis);
+    const done = axis.reduce(
+      (n, u) => n + u.topicIds.filter((t) => read.has(t)).length, 0,
     );
     return { done, total, pct: total ? Math.round((done / total) * 100) : 0 };
-  }, [read]);
+  }, [axis, read]);
 
-  if (exam !== EXAM) return null;
+  // No curriculum for this exam: say that, rather than rendering an empty
+  // rail that looks broken.
+  if (!unit || axis.length === 0) {
+    return (
+      <div className="p-4 sm:p-6" data-testid="exam-study">
+        <Card className="p-8 text-center max-w-lg mx-auto">
+          <BookOpen className="h-8 w-8 mx-auto text-muted-foreground/40 mb-3" />
+          <h1 className="text-lg font-bold">No course for {config.shortName} yet</h1>
+          <p className="text-sm text-muted-foreground mt-1.5">
+            This exam has no syllabus in the curriculum, so there is nothing
+            to read here. Its question bank and flashcards, where they exist,
+            are on the exam home page.
+          </p>
+          <Link href={`/dashboard/test-prep/${slug}`} className="inline-block mt-4">
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <ArrowLeft className="h-3.5 w-3.5" /> {config.shortName} home
+            </Button>
+          </Link>
+        </Card>
+      </div>
+    );
+  }
 
   // Aids shown in the companion column - real fields off the lesson.
   const examTips = (lesson?.sections ?? [])
@@ -184,19 +261,24 @@ export default function McatStudyPage() {
   const quizCount = (lesson?.sections ?? []).reduce(
     (n, s) => n + (s.quiz?.length ?? 0), 0,
   );
+  const chemistryUnit =
+    exam === 'MCAT' &&
+    (unit.id === 'general_chemistry' || unit.id === 'organic_chemistry');
 
   return (
-    <div className="p-4 sm:p-6 space-y-4" data-testid="mcat-study">
+    <div className="p-4 sm:p-6 space-y-4" data-testid="exam-study">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2">
             <GraduationCap className="h-5 w-5 text-primary" />
-            <h1 className="text-2xl font-bold">MCAT course</h1>
+            <h1 className="text-2xl font-bold">{config.shortName} course</h1>
           </div>
           <p className="text-sm text-muted-foreground mt-0.5">
-            Seven subjects, {overall.total} chapters. Organised the way you
-            study, not the way the exam is administered.
+            {axisNoun(exam, axis)}, {overall.total} chapters.{' '}
+            {exam === 'MCAT'
+              ? 'Organised the way you study, not the way the exam is administered.'
+              : 'Every chapter in the rail has its written material behind it.'}
           </p>
         </div>
         <div className="flex items-center gap-4">
@@ -209,30 +291,30 @@ export default function McatStudyPage() {
           <div className="w-28">
             <Progress value={overall.pct} className="h-2" />
           </div>
-          <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}`}>
+          <Link href={`/dashboard/test-prep/${slug}`}>
             <Button variant="outline" size="sm" className="gap-1.5">
-              <ArrowLeft className="h-3.5 w-3.5" /> Dashboard
+              <ArrowLeft className="h-3.5 w-3.5" /> {config.shortName} home
             </Button>
           </Link>
         </div>
       </div>
 
-      {/* Subject pills - the only nav on narrow screens, a quick switch on wide */}
-      <div className="flex gap-2 overflow-x-auto pb-1" data-testid="mcat-subject-pills">
-        {MCAT_SUBJECTS.map((s) => {
-          const { done, total } = subjectProgress(s);
-          const on = s.id === subject.id;
+      {/* Unit pills - the only nav on narrow screens, a quick switch on wide */}
+      <div className="flex gap-2 overflow-x-auto pb-1" data-testid="study-unit-pills">
+        {axis.map((u) => {
+          const { done, total } = unitProgress(u);
+          const on = u.id === unit.id;
           return (
             <button
-              key={s.id}
+              key={u.id}
               type="button"
-              onClick={() => { setSubjectId(s.id); setTopicId(null); }}
+              onClick={() => { setUnitId(u.id); setTopicId(null); }}
               className={`shrink-0 rounded-full border px-3 py-1.5 text-sm transition flex items-center gap-2 ${
                 on ? 'border-primary bg-primary/10 font-medium' : 'hover:border-primary/50'
               }`}
             >
-              <span className={`h-2 w-2 rounded-full ${ACCENT[s.accent].dot}`} />
-              {s.name}
+              <span className={`h-2 w-2 rounded-full ${accentOf(u.accent).dot}`} />
+              {u.name}
               <span className="text-[11px] text-muted-foreground">
                 {done}/{total}
               </span>
@@ -242,28 +324,32 @@ export default function McatStudyPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-[250px_1fr]">
-        {/* ── Rail: this subject's chapters ─────────────────────── */}
+        {/* ── Rail: this unit's chapters ────────────────────────── */}
         <aside className="hidden lg:block">
           <div className="sticky top-4 space-y-3">
             <Card className="p-3">
               <div className="flex items-center gap-2 mb-1">
-                <span className={`h-2.5 w-2.5 rounded-full ${ACCENT[subject.accent].dot}`} />
-                <h2 className="font-semibold text-sm">{subject.name}</h2>
-                {subject.kind === 'skill' && (
+                <span className={`h-2.5 w-2.5 rounded-full ${accentOf(unit.accent).dot}`} />
+                <h2 className="font-semibold text-sm">{unit.name}</h2>
+                {unit.kind === 'skill' && (
                   <Badge variant="outline" className="text-[10px]">skill</Badge>
                 )}
               </div>
-              <p className="text-[11px] text-muted-foreground leading-relaxed">
-                {subject.blurb}
-              </p>
-              <p className="text-[11px] text-muted-foreground mt-1.5">
-                {subject.examShare}
-              </p>
+              {unit.blurb && (
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                  {unit.blurb}
+                </p>
+              )}
+              {unit.examShare && (
+                <p className="text-[11px] text-muted-foreground mt-1.5">
+                  {unit.examShare}
+                </p>
+              )}
             </Card>
 
             <Card className="p-2 max-h-[62vh] overflow-y-auto">
               <ul className="space-y-0.5">
-                {subject.topicIds.map((id, i) => {
+                {unit.topicIds.map((id, i) => {
                   const c = chapters.get(id);
                   const on = id === topicId;
                   const done = read.has(id);
@@ -272,7 +358,7 @@ export default function McatStudyPage() {
                       <button
                         type="button"
                         onClick={() => setTopicId(id)}
-                        data-testid={`mcat-chapter-${id}`}
+                        data-testid={`study-chapter-${id}`}
                         className={`w-full text-left rounded-lg px-2.5 py-2 text-sm transition flex gap-2 items-start ${
                           on ? 'bg-primary/10 border border-primary/40' : 'hover:bg-muted'
                         }`}
@@ -303,18 +389,23 @@ export default function McatStudyPage() {
 
         {/* ── Main: chapter list, or book + companion ───────────── */}
         {!topicId ? (
-          <Card className="p-5" data-testid="mcat-subject-overview">
+          <Card className="p-5" data-testid="study-unit-overview">
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
-                <h2 className="text-lg font-bold">{subject.name}</h2>
-                <p className="text-sm text-muted-foreground mt-0.5">{subject.blurb}</p>
+                <h2 className="text-lg font-bold">{unit.name}</h2>
+                {unit.blurb && (
+                  <p className="text-sm text-muted-foreground mt-0.5">{unit.blurb}</p>
+                )}
+                {!unit.blurb && unit.examShare && (
+                  <p className="text-sm text-muted-foreground mt-0.5">{unit.examShare}</p>
+                )}
               </div>
               <Badge variant="secondary" className="shrink-0">
-                {subject.topicIds.length} chapters
+                {unit.topicIds.length} chapters
               </Badge>
             </div>
             <div className="grid gap-2 sm:grid-cols-2">
-              {subject.topicIds.map((id, i) => {
+              {unit.topicIds.map((id, i) => {
                 const c = chapters.get(id);
                 const has = pack?.has(id);
                 return (
@@ -325,7 +416,7 @@ export default function McatStudyPage() {
                     className="text-left rounded-xl border p-3 hover:border-primary hover:bg-primary/5 transition"
                   >
                     <div className="flex items-center gap-2 mb-1">
-                      <span className={`text-xs font-bold ${ACCENT[subject.accent].text}`}>
+                      <span className={`text-xs font-bold ${accentOf(unit.accent).text}`}>
                         {String(i + 1).padStart(2, '0')}
                       </span>
                       <span className="font-medium text-sm">{c?.title ?? id}</span>
@@ -353,14 +444,14 @@ export default function McatStudyPage() {
         ) : (
           <div className="grid gap-4 2xl:grid-cols-[minmax(0,1fr)_320px] min-w-0">
             {/* Book */}
-            <Card className="p-5 sm:p-7 min-w-0" data-testid="mcat-book">
+            <Card className="p-5 sm:p-7 min-w-0" data-testid="study-book">
               <div className="flex flex-wrap items-center gap-2 mb-2">
-                <Badge className={`${ACCENT[subject.accent].soft} ${ACCENT[subject.accent].text} border-0`}>
-                  {subject.name}
+                <Badge className={`${accentOf(unit.accent).soft} ${accentOf(unit.accent).text} border-0`}>
+                  {unit.name}
                 </Badge>
                 {lesson?.domainWeight && (
                   <Badge variant="outline" className="text-[11px]">
-                    {lesson.domainWeight} of section
+                    {lesson.domainWeight}
                   </Badge>
                 )}
                 {chapter?.readTimeMin && (
@@ -412,7 +503,7 @@ export default function McatStudyPage() {
                           <LessonQuiz
                             variant="book"
                             questions={s.quiz}
-                            title={`Check your understanding \u2014 ${s.title}`}
+                            title={`Check your understanding — ${s.title}`}
                           />
                         </div>
                       )}
@@ -427,14 +518,14 @@ export default function McatStudyPage() {
                   variant={read.has(topicId) ? 'secondary' : 'default'}
                   onClick={() => markRead(topicId)}
                   className="gap-1.5"
-                  data-testid="mcat-mark-read"
+                  data-testid="study-mark-read"
                 >
                   <Check className="h-3.5 w-3.5" />
                   {read.has(topicId) ? 'Marked as read' : 'Mark chapter read'}
                 </Button>
                 {(() => {
-                  const idx = subject.topicIds.indexOf(topicId);
-                  const next = subject.topicIds[idx + 1];
+                  const idx = unit.topicIds.indexOf(topicId);
+                  const next = unit.topicIds[idx + 1];
                   return next ? (
                     <Button size="sm" variant="outline" className="gap-1.5"
                       onClick={() => { setTopicId(next); window.scrollTo({ top: 0 }); }}>
@@ -443,7 +534,7 @@ export default function McatStudyPage() {
                   ) : null;
                 })()}
                 <Button size="sm" variant="ghost" onClick={() => setTopicId(null)}>
-                  All {subject.name} chapters
+                  All {unit.name} chapters
                 </Button>
               </div>
             </Card>
@@ -451,14 +542,53 @@ export default function McatStudyPage() {
             {/* Companion: media slot + what's actually in this chapter */}
             <div className="min-w-0">
               <div className="2xl:sticky 2xl:top-4 grid gap-3 sm:grid-cols-2 2xl:grid-cols-1">
-                <Card className="overflow-hidden" data-testid="mcat-media">
-                  {/* The player is wired and real; it renders the moment a
-                      chapter carries a video_url. None do yet. */}
+                <Card className="overflow-hidden" data-testid="study-media">
+                  {/* Three cases, in order of how specific the video is:
+                      a video attached to this chapter, videos recorded for
+                      this unit, or nothing - and nothing says so. */}
                   {(lesson as unknown as { video_url?: string })?.video_url ? (
                     <LessonVideoPlayer
                       videoUrl={(lesson as unknown as { video_url?: string }).video_url}
                       title={lesson?.title ?? ''}
                     />
+                  ) : videos.length > 0 ? (
+                    <div>
+                      <LessonVideoPlayer
+                        videoUrl={videos[videoIdx].video_url}
+                        title={videos[videoIdx].title}
+                      />
+                      <div className="p-3 border-t">
+                        <p className="text-[11px] text-muted-foreground leading-relaxed">
+                          {videos[videoIdx].description}
+                        </p>
+                        <p className="text-[11px] text-muted-foreground mt-2">
+                          Recorded for {unit.name}, not for this chapter
+                          specifically &mdash;{' '}
+                          {videos.length === 1
+                            ? 'the one video in this unit.'
+                            : `video ${videoIdx + 1} of ${videos.length} in this unit.`}
+                        </p>
+                        {videos.length > 1 && (
+                          <div className="flex flex-wrap gap-1 mt-2">
+                            {videos.map((v, i) => (
+                              <button
+                                key={v.id}
+                                type="button"
+                                onClick={() => setVideoIdx(i)}
+                                title={v.title}
+                                className={`rounded border px-1.5 py-0.5 text-[10px] font-mono transition ${
+                                  i === videoIdx
+                                    ? 'border-primary bg-primary/10'
+                                    : 'hover:border-primary/50 text-muted-foreground'
+                                }`}
+                              >
+                                {i + 1} &middot; {mmss(v.duration_seconds)}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   ) : (
                     <div className="p-4">
                       <div className="flex items-center gap-2 mb-2">
@@ -469,9 +599,10 @@ export default function McatStudyPage() {
                         <PlayCircle className="h-7 w-7 mx-auto text-muted-foreground/40 mb-1.5" />
                         <p className="text-xs font-medium">Not recorded yet</p>
                         <p className="text-[11px] text-muted-foreground mt-1 leading-relaxed">
-                          No MCAT chapter has a video yet. The player is wired
-                          and will appear here the moment one does &mdash; we
-                          would rather show this than a stock clip.
+                          No {config.shortName} video covers this material yet.
+                          The player is wired and will appear here the moment
+                          one is recorded &mdash; we would rather show this
+                          than a stock clip.
                         </p>
                       </div>
                     </div>
@@ -479,7 +610,7 @@ export default function McatStudyPage() {
                 </Card>
 
                 {lesson?.keyTakeaways && lesson.keyTakeaways.length > 0 && (
-                  <Card className="p-4" data-testid="mcat-takeaways">
+                  <Card className="p-4" data-testid="study-takeaways">
                     <div className="flex items-center gap-2 mb-2">
                       <ListChecks className="h-4 w-4 text-primary" />
                       <p className="text-sm font-semibold">Key takeaways</p>
@@ -496,7 +627,7 @@ export default function McatStudyPage() {
                 )}
 
                 {examTips.length > 0 && (
-                  <Card className="p-4" data-testid="mcat-exam-tips">
+                  <Card className="p-4" data-testid="study-exam-tips">
                     <div className="flex items-center gap-2 mb-2">
                       <Lightbulb className="h-4 w-4 text-amber-500" />
                       <p className="text-sm font-semibold">
@@ -524,20 +655,22 @@ export default function McatStudyPage() {
                         cover them.
                       </p>
                     )}
-                    <Link
-                      href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}`}
-                      className="block"
-                    >
-                      <Button size="sm" variant="outline" className="w-full gap-1.5">
-                        <BookOpen className="h-3.5 w-3.5" /> QBank
-                      </Button>
-                    </Link>
-                    {(subject.id === 'general_chemistry' ||
-                      subject.id === 'organic_chemistry') && (
+                    {surfaces.qbankSize > 0 && (
                       <Link
-                        href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/chemistry`}
+                        href={
+                          exam === 'MCAT'
+                            ? `/dashboard/test-prep/${slug}/qbank`
+                            : `/dashboard/test-prep/${slug}?tab=qbank`
+                        }
                         className="block"
                       >
+                        <Button size="sm" variant="outline" className="w-full gap-1.5">
+                          <BookOpen className="h-3.5 w-3.5" /> Question bank
+                        </Button>
+                      </Link>
+                    )}
+                    {chemistryUnit && (
+                      <Link href={`/dashboard/test-prep/${slug}/chemistry`} className="block">
                         <Button size="sm" variant="secondary" className="w-full gap-1.5">
                           <FlaskConical className="h-3.5 w-3.5" /> Generated chemistry
                         </Button>

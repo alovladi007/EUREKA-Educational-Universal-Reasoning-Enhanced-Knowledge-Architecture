@@ -27,7 +27,7 @@ export default function LandingPage() {
     {
       icon: AcademicCapIcon,
       title: 'Multiple Exam Types',
-      description: 'Prepare for GRE, GMAT, SAT, MCAT, LSAT and more'
+      description: 'Prepare for MCAT, LSAT, Patent Bar, Physics GRE, SAT and more'
     },
     {
       icon: UserGroupIcon,
