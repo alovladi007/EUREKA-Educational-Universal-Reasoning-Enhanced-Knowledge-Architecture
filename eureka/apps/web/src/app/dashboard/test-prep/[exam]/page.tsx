@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import Link from 'next/link';
-import { useParams, useSearchParams } from 'next/navigation';
+import { useParams, usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -15,7 +15,7 @@ import {
   Library, ExternalLink, Search as SearchIcon, Hash, Sparkles, XCircle,
   Puzzle, ShieldCheck, FlaskRound,
 } from 'lucide-react';
-import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
+import { examSummaryLine, getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
 import { PATENT_TOPIC_ANCHORS } from '@/lib/patent-topic-anchors';
 import { apiClient } from '@/lib/api-client';
@@ -91,6 +91,7 @@ export default function ExamPage() {
   const config = getExamConfig(examId);
   const sections = getSectionsForExam(examId);
   const isPatentBar = examId === 'PATENT_BAR';
+  const isCISSP = examId === 'CISSP';
   const isFEEE = examId === 'FE_EE';
   const isFEME = examId === 'FE_ME';
   const isPEEE = examId === 'PE_EE';
@@ -98,18 +99,44 @@ export default function ExamPage() {
   const isLSAT = examId === 'LSAT';
   const isSecPlus = examId === 'SECURITY_PLUS';
   const searchParams = useSearchParams();
-  // Every exam now shows its dashboard by default. ?tab= opens the shared
-  // tab UI for the surfaces the dashboard links to but does not replace -
-  // flashcards, notes, the static QBank, the simulator.
+  const router = useRouter();
+  const pathname = usePathname();
+  const slug = String(params.exam ?? '').toLowerCase();
+
+  // Every exam shows its dashboard by default. ?tab= opens the shared tab
+  // UI for the surfaces the dashboard links to but does not replace -
+  // flashcards, notes, the QBank, the simulator.
+  //
+  // The URL is the source of truth for which tab is open, not component
+  // state. It used to be `useState(tabParam || 'read')`, which reads the
+  // param exactly once: arriving from the dashboard by client-side
+  // navigation changed the param but never the state, so clicking
+  // "Question bank" landed on ?tab=qbank and rendered the Read Lessons
+  // body. Deriving it makes that impossible, and makes tabs linkable and
+  // back-button-friendly as a side effect.
   const tabParam = searchParams.get('tab');
-  const [activeTab, setActiveTab] = useState<Tab>(
-    (tabParam as Tab) || 'read',
-  );
+  const activeTab = (tabParam as Tab) ?? 'qbank';
   const showTabs = Boolean(tabParam);
+  const setActiveTab = (tab: Tab) => {
+    router.replace(`${pathname}?tab=${tab}`, { scroll: false });
+  };
+
+  // `read` and `lessons` used to be tabs here. The reading list they showed
+  // is the SAME 9 sections and 67 lessons the course at /study now renders,
+  // with a syllabus rail and the media slot beside the text - so keeping
+  // both meant two places to read the same chapters, which is the
+  // duplication this route was rebuilt to remove. Old links still work:
+  // they redirect to the course rather than 404.
+  useEffect(() => {
+    if (tabParam === 'read' || (tabParam === 'lessons' && !isCISSP)) {
+      router.replace(`/dashboard/test-prep/${slug}/study`);
+    }
+  }, [tabParam, isCISSP, router, slug]);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    { id: 'read', label: 'Read Lessons', icon: <BookOpen className="h-4 w-4" /> },
-    { id: 'lessons', label: 'Video Lessons', icon: <Video className="h-4 w-4" /> },
+    // CISSP is the only exam with recorded video, and its index tracks
+    // per-video completion, which the course companion does not.
+    ...(isCISSP ? [{ id: 'lessons' as Tab, label: 'Video Lessons', icon: <Video className="h-4 w-4" /> }] : []),
     { id: 'flashcards', label: 'Flashcards', icon: <Layers className="h-4 w-4" /> },
     { id: 'notes', label: 'My Notes', icon: <StickyNote className="h-4 w-4" /> },
     { id: 'qbank', label: 'QBank', icon: <BrainCircuit className="h-4 w-4" /> },
@@ -128,7 +155,7 @@ export default function ExamPage() {
       <div>
         <h1 className="text-3xl font-bold">{config.name}</h1>
         <p className="text-muted-foreground mt-1">
-          {config.description} &middot; {config.sections.length} sections &middot; Score range: {config.scoreRange.label}
+          {config.description} &middot; {examSummaryLine(examId)}
         </p>
       </div>
 
@@ -170,15 +197,8 @@ export default function ExamPage() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'read' && (
-        <PbContentGate examType={examId} feature="All Patent Bar lessons">
-          <ReadLessonsTab examType={examId} />
-        </PbContentGate>
-      )}
-      {activeTab === 'lessons' && (
-        <PbContentGate examType={examId} feature="The full Patent Bar curriculum">
-          <LessonsTab examType={examId} sections={sections} />
-        </PbContentGate>
+      {activeTab === 'lessons' && isCISSP && (
+        <LessonsTab examType={examId} sections={sections} />
       )}
       {activeTab === 'flashcards' && (
         <PbContentGate examType={examId} feature="All Patent Bar flashcards">
@@ -705,538 +725,12 @@ function PbContentGate({
   );
 }
 
-function ReadLessonsTab({ examType }: { examType: string }) {
-  const curriculum = getCurriculum(examType);
-  const totalTopics = getTotalTopics(examType);
-  const [expandedSection, setExpandedSection] = useState<string | null>(curriculum[0]?.sectionId || null);
-  const [activeTopic, setActiveTopic] = useState<any>(null);
-  const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());
-  const [expandedLessonSections, setExpandedLessonSections] = useState<Set<string>>(new Set());
-  const [readSections, setReadSections] = useState<Set<string>>(new Set());
-
-  // Lazy-loaded course content for the active exam (P3-C / task #62).
-  // Until the dynamic import resolves the pack returns nulls so the
-  // lesson reader shows the generic placeholder; once loaded the
-  // syllabus badge ("has content") and the rich lesson body switch on.
-  const [coursePack, setCoursePack] = useState<CoursePack>({
-    get: () => null,
-    has: () => false,
-  });
-  useEffect(() => {
-    let cancelled = false;
-    loadExamCourse(examType).then((pack) => {
-      if (!cancelled) setCoursePack(pack);
-    });
-    return () => { cancelled = true; };
-  }, [examType]);
-
-  const toggleLessonSection = (sectionId: string) => {
-    setExpandedLessonSections(prev => {
-      const next = new Set(prev);
-      if (next.has(sectionId)) next.delete(sectionId); else next.add(sectionId);
-      return next;
-    });
-    // Mark as read when expanded
-    setReadSections(prev => new Set(prev).add(sectionId));
-  };
-
-  const expandAllSections = (sectionIds: string[]) => {
-    setExpandedLessonSections(new Set(sectionIds));
-    setReadSections(prev => {
-      const next = new Set(prev);
-      sectionIds.forEach(id => next.add(id));
-      return next;
-    });
-  };
-
-  const collapseAllSections = () => setExpandedLessonSections(new Set());
-
-  const toggleComplete = (topicId: string) => {
-    setCompletedTopics((prev) => {
-      const next = new Set(prev);
-      if (next.has(topicId)) next.delete(topicId); else next.add(topicId);
-      return next;
-    });
-  };
-
-  const completedCount = completedTopics.size;
-
-  if (activeTopic) {
-    const section = curriculum.find((s) => s.topics.some((t) => t.id === activeTopic.id));
-    return (
-      <div className="space-y-4">
-        <Button variant="ghost" size="sm" onClick={() => setActiveTopic(null)} className="gap-2">
-          <ArrowLeft className="h-4 w-4" /> Back to syllabus
-        </Button>
-
-        <div className="rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950 shadow-sm overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 px-8 py-6">
-            <div className="flex items-center gap-2 mb-3">
-              <Badge className="bg-white/20 text-white border-0 text-xs backdrop-blur-sm">{section?.sectionName}</Badge>
-              <Badge className="bg-white/20 text-white border-0 text-xs backdrop-blur-sm flex items-center gap-1">
-                <Clock className="h-3 w-3" /> {activeTopic.readTimeMin} min read
-              </Badge>
-            </div>
-            <h2 className="text-2xl font-black text-white mb-2">{activeTopic.title}</h2>
-            <p className="text-white/80 text-sm leading-relaxed">{activeTopic.summary}</p>
-          </div>
-          <div className="p-6 sm:p-8">
-
-          {examType === 'PATENT_BAR' && PATENT_TOPIC_ANCHORS[activeTopic.id] && (
-            <Card className="p-4 mb-6 bg-amber-50/60 dark:bg-amber-950/25 border-amber-200 dark:border-amber-900">
-              <p className="text-xs font-semibold text-amber-900 dark:text-amber-100 mb-2">Topic map → MPEP &amp; statutes</p>
-              <div className="flex flex-wrap gap-2 mb-2">
-                {PATENT_TOPIC_ANCHORS[activeTopic.id].mpepChapters.map((ch) => (
-                  <Badge key={ch} variant="secondary" className="font-mono text-[10px]">MPEP Ch. {ch}</Badge>
-                ))}
-              </div>
-              <p className="text-xs text-muted-foreground mb-1">
-                <span className="font-medium text-foreground">Statutes / rules: </span>
-                {PATENT_TOPIC_ANCHORS[activeTopic.id].statutes.join(' · ')}
-              </p>
-              <p className="text-xs text-amber-800 dark:text-amber-200">
-                <span className="font-medium">Drill focus: </span>
-                {PATENT_TOPIC_ANCHORS[activeTopic.id].drillHint}
-              </p>
-            </Card>
-          )}
-
-          {(() => {
-              // Rich course data via the lazy per-exam pack. The page
-              // renders one exam at a time so a single .get() suffices —
-              // no need to walk all 8 modules like the old eager chain.
-              const courseData = coursePack.get(activeTopic.id);
-
-              // Custom ReactMarkdown components for beautiful table + content rendering
-              const mdComponents = {
-                table: ({ children, ...props }: any) => (
-                  <div className="my-5 overflow-x-auto rounded-xl border-2 border-indigo-100 dark:border-indigo-900/60 shadow-sm">
-                    <table className="w-full text-sm border-collapse" {...props}>{children}</table>
-                  </div>
-                ),
-                thead: ({ children, ...props }: any) => (
-                  <thead className="bg-gradient-to-r from-indigo-50 to-purple-50 dark:from-indigo-950/60 dark:to-purple-950/60" {...props}>{children}</thead>
-                ),
-                th: ({ children, ...props }: any) => (
-                  <th className="px-4 py-3 text-left text-xs font-bold text-indigo-900 dark:text-indigo-200 uppercase tracking-wider border-b-2 border-indigo-200 dark:border-indigo-800" {...props}>{children}</th>
-                ),
-                td: ({ children, ...props }: any) => (
-                  <td className="px-4 py-3 text-sm border-b border-gray-100 dark:border-gray-800" {...props}>{children}</td>
-                ),
-                tr: ({ children, ...props }: any) => (
-                  <tr className="hover:bg-indigo-50/40 dark:hover:bg-indigo-950/30 transition-colors" {...props}>{children}</tr>
-                ),
-                h2: ({ children, ...props }: any) => (
-                  <h2 className="text-xl font-bold mt-8 mb-4 pb-2 border-b-2 border-indigo-200 dark:border-indigo-800 text-indigo-900 dark:text-indigo-100" {...props}>{children}</h2>
-                ),
-                h3: ({ children, ...props }: any) => (
-                  <h3 className="text-lg font-semibold mt-6 mb-3 text-gray-900 dark:text-gray-100 flex items-center gap-2" {...props}>
-                    <span className="w-1.5 h-5 rounded-full bg-gradient-to-b from-indigo-500 to-purple-500 flex-shrink-0" />
-                    {children}
-                  </h3>
-                ),
-                h4: ({ children, ...props }: any) => (
-                  <h4 className="text-base font-semibold mt-5 mb-2 text-gray-800 dark:text-gray-200" {...props}>{children}</h4>
-                ),
-                ul: ({ children, ...props }: any) => (
-                  <ul className="my-3 space-y-1.5 list-none pl-0" {...props}>{children}</ul>
-                ),
-                li: ({ children, ...props }: any) => (
-                  <li className="flex items-start gap-2.5 text-sm leading-relaxed" {...props}>
-                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-indigo-400 dark:bg-indigo-500 flex-shrink-0" />
-                    <span className="flex-1">{children}</span>
-                  </li>
-                ),
-                strong: ({ children, ...props }: any) => (
-                  <strong className="font-semibold text-gray-900 dark:text-gray-100" {...props}>{children}</strong>
-                ),
-                p: ({ children, ...props }: any) => (
-                  <p className="my-3 text-sm leading-relaxed text-gray-700 dark:text-gray-300" {...props}>{children}</p>
-                ),
-                hr: (props: any) => (
-                  <hr className="my-6 border-none h-px bg-gradient-to-r from-transparent via-indigo-200 dark:via-indigo-800 to-transparent" {...props} />
-                ),
-              };
-
-              if (courseData) {
-                const allSectionIds = courseData.sections.map(s => s.id);
-                const readCount = courseData.sections.filter(s => readSections.has(s.id)).length;
-                const sectionProgress = courseData.sections.length > 0 ? Math.round((readCount / courseData.sections.length) * 100) : 0;
-
-                return (
-                  <div className="space-y-6">
-                    {/* Topic Overview Card */}
-                    <div className="relative overflow-hidden rounded-2xl border-2 border-indigo-100 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 dark:from-indigo-950/40 dark:via-gray-950 dark:to-purple-950/40 p-6 shadow-sm">
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-bl from-indigo-200/30 to-transparent dark:from-indigo-800/20 rounded-bl-full" />
-                      <div className="flex items-start gap-4">
-                        <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
-                          <BookOpen className="h-6 w-6 text-white" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-3 mb-2">
-                            <Badge className="bg-indigo-100 text-indigo-700 dark:bg-indigo-900 dark:text-indigo-300 border-0 text-xs">
-                              {courseData.domainWeight} Exam Weight
-                            </Badge>
-                            <span className="text-xs text-muted-foreground">{courseData.sections.length} sections</span>
-                          </div>
-                          <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">{courseData.overview}</p>
-                        </div>
-                      </div>
-                      {/* Section Progress */}
-                      <div className="mt-4 flex items-center gap-3">
-                        <div className="flex-1 h-2 bg-indigo-100 dark:bg-indigo-900/50 rounded-full overflow-hidden">
-                          <div className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-700" style={{ width: `${sectionProgress}%` }} />
-                        </div>
-                        <span className="text-xs font-medium text-indigo-600 dark:text-indigo-400">{readCount}/{courseData.sections.length} read</span>
-                      </div>
-                    </div>
-
-                    {/* Expand/Collapse Controls */}
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => expandAllSections(allSectionIds)}
-                        className="text-xs px-3 py-1.5 rounded-lg bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors font-medium"
-                      >
-                        Expand All
-                      </button>
-                      <button
-                        onClick={collapseAllSections}
-                        className="text-xs px-3 py-1.5 rounded-lg bg-gray-50 dark:bg-gray-900/50 text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800/50 transition-colors font-medium"
-                      >
-                        Collapse All
-                      </button>
-                    </div>
-
-                    {/* Sections - Collapsible Accordion */}
-                    <div className="space-y-3">
-                    {courseData.sections.map((section, sIdx) => {
-                      const isOpen = expandedLessonSections.has(section.id);
-                      const isRead = readSections.has(section.id);
-                      const hasQuiz = section.quiz && section.quiz.length > 0;
-                      const hasExamTip = !!section.examTip;
-
-                      return (
-                        <div
-                          key={section.id}
-                          className={`rounded-2xl border-2 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md ${
-                            isOpen
-                              ? 'border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-950'
-                              : isRead
-                              ? 'border-green-200/60 dark:border-green-900/40 bg-green-50/30 dark:bg-green-950/10'
-                              : 'border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-950/80'
-                          }`}
-                        >
-                          {/* Section Header (clickable) */}
-                          <button
-                            onClick={() => toggleLessonSection(section.id)}
-                            className="w-full flex items-center gap-4 p-4 sm:p-5 text-left hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all duration-200"
-                          >
-                            <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold shadow-sm transition-all duration-300 ${
-                              isRead
-                                ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white'
-                                : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white'
-                            }`}>
-                              {isRead ? <CheckCircle2 className="h-4 w-4" /> : sIdx + 1}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                              <h3 className="text-base font-bold text-gray-900 dark:text-gray-100 truncate">{section.title}</h3>
-                              <div className="flex items-center gap-2 mt-1">
-                                {hasExamTip && (
-                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-300">
-                                    <Lightbulb className="h-2.5 w-2.5" /> Exam Tip
-                                  </span>
-                                )}
-                                {hasQuiz && (
-                                  <span className="inline-flex items-center gap-1 text-[10px] font-medium px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/50 dark:text-purple-300">
-                                    <BrainCircuit className="h-2.5 w-2.5" /> Quiz
-                                  </span>
-                                )}
-                              </div>
-                            </div>
-                            <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-transform duration-300 ${
-                              isOpen ? 'rotate-90 bg-indigo-100 dark:bg-indigo-900' : 'bg-gray-100 dark:bg-gray-800'
-                            }`}>
-                              <ChevronRight className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                            </div>
-                          </button>
-
-                          {/* Section Content (collapsible) */}
-                          {isOpen && (
-                            <div className="px-5 pb-6 pt-1 border-t border-gray-100 dark:border-gray-800">
-                              <div className="prose prose-sm dark:prose-invert max-w-none">
-                                <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                                  {section.content}
-                                </ReactMarkdown>
-                              </div>
-
-                              {/* Exam Tip */}
-                              {section.examTip && (
-                                <div className="mt-6 rounded-xl border-2 border-amber-200 dark:border-amber-800/60 bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/30 p-5 shadow-sm">
-                                  <div className="flex items-center gap-3 mb-3">
-                                    <div className="flex-shrink-0 h-9 w-9 rounded-xl bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-sm">
-                                      <Lightbulb className="h-4 w-4 text-white" />
-                                    </div>
-                                    <h4 className="font-bold text-amber-900 dark:text-amber-100 text-sm uppercase tracking-wide">Exam Tip</h4>
-                                  </div>
-                                  <p className="text-sm text-amber-800 dark:text-amber-200 leading-relaxed pl-12">{section.examTip}</p>
-                                </div>
-                              )}
-
-                              {/* Important Note */}
-                              {section.importantNote && (
-                                <div className="mt-5 rounded-xl border-2 border-blue-200 dark:border-blue-800/60 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/40 dark:to-cyan-950/30 p-5 shadow-sm">
-                                  <div className="flex items-center gap-3 mb-3">
-                                    <div className="flex-shrink-0 h-9 w-9 rounded-xl bg-gradient-to-br from-blue-400 to-cyan-500 flex items-center justify-center shadow-sm">
-                                      <AlertCircle className="h-4 w-4 text-white" />
-                                    </div>
-                                    <h4 className="font-bold text-blue-900 dark:text-blue-100 text-sm uppercase tracking-wide">Important</h4>
-                                  </div>
-                                  <p className="text-sm text-blue-800 dark:text-blue-200 leading-relaxed pl-12">{section.importantNote}</p>
-                                </div>
-                              )}
-
-                              {/* Inline Quiz */}
-                              {section.quiz && section.quiz.length > 0 && (
-                                <div className="mt-6">
-                                  <LessonQuiz questions={section.quiz} title={`${section.title} — Quick Check`} />
-                                </div>
-                              )}
-                            </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                    </div>
-
-                    {/* Key Takeaways */}
-                    {courseData.keyTakeaways && courseData.keyTakeaways.length > 0 && (
-                      <div className="rounded-2xl border-2 border-green-200 dark:border-green-800/60 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/40 dark:to-emerald-950/30 p-6 shadow-sm">
-                        <div className="flex items-center gap-3 mb-4">
-                          <div className="flex-shrink-0 h-10 w-10 rounded-xl bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-md">
-                            <Trophy className="h-5 w-5 text-white" />
-                          </div>
-                          <h3 className="font-bold text-green-900 dark:text-green-100 text-base">Key Takeaways</h3>
-                        </div>
-                        <ul className="space-y-3 pl-1">
-                          {courseData.keyTakeaways.map((takeaway, i) => (
-                            <li key={i} className="flex items-start gap-3 text-sm text-green-800 dark:text-green-200">
-                              <div className="flex-shrink-0 mt-0.5 h-5 w-5 rounded-full bg-green-500/20 dark:bg-green-500/30 flex items-center justify-center">
-                                <CheckCircle2 className="h-3 w-3 text-green-600 dark:text-green-400" />
-                              </div>
-                              <span className="leading-relaxed">{takeaway}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-
-                    {/* Supplementary SY0-701 deep-dive notes (Security+ only; */}
-                    {/* renders beneath the structured course-data lesson).    */}
-                    {(() => {
-                      const deep = getSecurityPlusLessonContent(activeTopic.id);
-                      if (!deep) return null;
-                      return (
-                        <details className="mt-6 rounded-2xl border-2 border-indigo-200 dark:border-indigo-900 bg-indigo-50/40 dark:bg-indigo-950/20 overflow-hidden">
-                          <summary className="cursor-pointer select-none px-5 py-4 font-semibold text-indigo-900 dark:text-indigo-200 flex items-center gap-2">
-                            <BookOpen className="h-4 w-4" /> In-Depth Notes — SY0-701 deep dive
-                          </summary>
-                          <div className="px-5 pb-5 prose prose-sm dark:prose-invert max-w-none">
-                            <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                              {deep}
-                            </ReactMarkdown>
-                          </div>
-                        </details>
-                      );
-                    })()}
-                  </div>
-                );
-              }
-
-              // Fall back to markdown lesson content
-              const lessonContent = getCISSPLessonContent(activeTopic.id);
-              if (lessonContent) {
-                return (
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <ReactMarkdown remarkPlugins={[remarkGfm]} components={mdComponents}>
-                      {lessonContent}
-                    </ReactMarkdown>
-                  </div>
-                );
-              }
-
-              // Final fallback: generic placeholder
-              return (
-                <div className="relative overflow-hidden rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-8 text-center">
-                  <BookOpen className="h-12 w-12 text-gray-300 dark:text-gray-700 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">{activeTopic.title}</h3>
-                  <p className="text-sm text-muted-foreground mb-2">{activeTopic.summary}</p>
-                  <p className="text-xs text-muted-foreground">Content is being prepared for this topic.</p>
-                </div>
-              );
-            })()}
-
-          <div className="flex items-center justify-between mt-8 pt-6 border-t border-gray-200 dark:border-gray-800">
-            <Button
-              variant={completedTopics.has(activeTopic.id) ? "default" : "outline"}
-              onClick={() => toggleComplete(activeTopic.id)}
-              className={`gap-2 rounded-xl ${completedTopics.has(activeTopic.id) ? 'bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 border-0 text-white' : ''}`}
-            >
-              <CheckCircle2 className="h-4 w-4" />
-              {completedTopics.has(activeTopic.id) ? 'Completed' : 'Mark as Complete'}
-            </Button>
-
-            {/* Next topic */}
-            {(() => {
-              const allTopics = curriculum.flatMap((s) => s.topics);
-              const idx = allTopics.findIndex((t) => t.id === activeTopic.id);
-              const next = idx >= 0 && idx < allTopics.length - 1 ? allTopics[idx + 1] : null;
-              return next ? (
-                <Button variant="outline" onClick={() => { setActiveTopic(next); window.scrollTo(0, 0); }} className="gap-2 rounded-xl">
-                  Next: {next.title} <ArrowRight className="h-4 w-4" />
-                </Button>
-              ) : null;
-            })()}
-          </div>
-          </div>{/* close p-6 sm:p-8 */}
-        </div>{/* close outer card */}
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-6">
-      {/* Progress Card */}
-      <div className="rounded-2xl border-2 border-indigo-100 dark:border-indigo-900/60 bg-gradient-to-br from-indigo-50/80 via-white to-purple-50/80 dark:from-indigo-950/40 dark:via-gray-950 dark:to-purple-950/40 p-6 shadow-sm">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="flex-shrink-0 h-12 w-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center shadow-md">
-            <BookMarked className="h-6 w-6 text-white" />
-          </div>
-          <div className="flex-1">
-            <div className="flex items-center justify-between mb-1">
-              <span className="text-sm font-bold text-gray-900 dark:text-gray-100">Reading Progress</span>
-              <span className="text-sm font-medium text-indigo-600 dark:text-indigo-400">{completedCount}/{totalTopics} lessons</span>
-            </div>
-            <div className="w-full h-2.5 bg-indigo-100 dark:bg-indigo-900/50 rounded-full overflow-hidden">
-              <div className="h-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-full transition-all duration-700" style={{ width: `${totalTopics > 0 ? (completedCount / totalTopics) * 100 : 0}%` }} />
-            </div>
-          </div>
-        </div>
-        {completedCount === totalTopics && totalTopics > 0 && (
-          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400 font-medium">
-            <Trophy className="h-4 w-4" /> All lessons complete!
-          </div>
-        )}
-      </div>
-
-      {/* Curriculum */}
-      {curriculum.length === 0 ? (
-        <div className="rounded-2xl border-2 border-gray-200 dark:border-gray-800 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-950 dark:to-gray-900 p-12 text-center">
-          <BookOpen className="h-16 w-16 mx-auto mb-4 text-gray-300 dark:text-gray-700" />
-          <h3 className="text-lg font-semibold mb-2">Curriculum coming soon</h3>
-          <p className="text-muted-foreground">Reading lessons for {examType} are being prepared.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {curriculum.map((section, secIdx) => {
-            const isExpanded = expandedSection === section.sectionId;
-            const sectionCompleted = section.topics.filter((t) => completedTopics.has(t.id)).length;
-            const sectionProgress = section.topics.length > 0 ? Math.round((sectionCompleted / section.topics.length) * 100) : 0;
-            const isDone = sectionCompleted === section.topics.length && section.topics.length > 0;
-
-            return (
-              <div key={section.sectionId} className={`rounded-2xl border-2 overflow-hidden transition-all duration-300 shadow-sm hover:shadow-md ${
-                isDone
-                  ? 'border-green-200 dark:border-green-900/50 bg-green-50/30 dark:bg-green-950/10'
-                  : isExpanded
-                  ? 'border-indigo-200 dark:border-indigo-800 bg-white dark:bg-gray-950'
-                  : 'border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-950'
-              }`}>
-                <button
-                  onClick={() => setExpandedSection(isExpanded ? null : section.sectionId)}
-                  className="w-full p-5 flex items-center justify-between hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all duration-200 text-left"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className={`flex-shrink-0 h-11 w-11 rounded-xl flex items-center justify-center text-sm font-bold shadow-sm transition-all ${
-                      isDone
-                        ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white'
-                        : 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white'
-                    }`}>
-                      {isDone ? <CheckCircle2 className="h-5 w-5" /> : secIdx + 1}
-                    </div>
-                    <div>
-                      <p className="font-bold text-sm text-gray-900 dark:text-gray-100">{section.sectionName}</p>
-                      <div className="flex items-center gap-3 mt-1">
-                        <span className="text-xs text-muted-foreground">{section.topics.length} lessons</span>
-                        <div className="w-16 h-1.5 bg-gray-200 dark:bg-gray-800 rounded-full overflow-hidden">
-                          <div className={`h-full rounded-full transition-all duration-500 ${isDone ? 'bg-green-500' : 'bg-indigo-500'}`} style={{ width: `${sectionProgress}%` }} />
-                        </div>
-                        <span className="text-xs font-medium text-muted-foreground">{sectionCompleted}/{section.topics.length}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    {isDone && (
-                      <Badge className="bg-green-100 text-green-700 dark:bg-green-900/50 dark:text-green-300 border-0 text-xs">Complete</Badge>
-                    )}
-                    <div className={`h-8 w-8 rounded-lg flex items-center justify-center transition-transform duration-300 ${
-                      isExpanded ? 'rotate-90 bg-indigo-100 dark:bg-indigo-900' : 'bg-gray-100 dark:bg-gray-800'
-                    }`}>
-                      <ChevronRight className="h-4 w-4 text-gray-600 dark:text-gray-400" />
-                    </div>
-                  </div>
-                </button>
-
-                {isExpanded && (
-                  <div className="border-t border-gray-100 dark:border-gray-800">
-                    {section.topics.map((topic, i) => {
-                      const done = completedTopics.has(topic.id);
-                      const hasContent = coursePack.has(topic.id);
-                      return (
-                        <div
-                          key={topic.id}
-                          className="flex items-center gap-4 px-5 py-4 hover:bg-indigo-50/50 dark:hover:bg-indigo-950/20 transition-all duration-200 cursor-pointer border-b border-gray-50 dark:border-gray-900 last:border-b-0"
-                          onClick={() => setActiveTopic(topic)}
-                        >
-                          <button
-                            onClick={(e) => { e.stopPropagation(); toggleComplete(topic.id); }}
-                            aria-label={done ? `Mark ${topic.title} as incomplete` : `Mark ${topic.title} as complete`}
-                            className={`flex-shrink-0 h-8 w-8 rounded-xl flex items-center justify-center transition-all duration-300 ${
-                              done
-                                ? 'bg-gradient-to-br from-green-400 to-emerald-500 text-white shadow-sm'
-                                : 'border-2 border-gray-300 dark:border-gray-600 hover:border-indigo-400 dark:hover:border-indigo-500'
-                            }`}
-                          >
-                            {done && <CheckCircle2 className="h-4 w-4" aria-hidden="true" />}
-                            {!done && <span className="text-xs font-bold text-gray-400 dark:text-gray-500">{i + 1}</span>}
-                          </button>
-                          <div className="flex-1 min-w-0">
-                            <p className={`text-sm font-semibold ${done ? 'text-gray-400 dark:text-gray-600 line-through' : 'text-gray-900 dark:text-gray-100'}`}>{topic.title}</p>
-                            <p className="text-xs text-muted-foreground truncate mt-0.5">{topic.summary}</p>
-                          </div>
-                          <div className="flex items-center gap-3 flex-shrink-0">
-                            {hasContent && (
-                              <span className="text-[10px] px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-400 font-medium">
-                                Full Content
-                              </span>
-                            )}
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Clock className="h-3 w-3" /> {topic.readTimeMin}m
-                            </span>
-                            <ChevronRight className="h-4 w-4 text-gray-300 dark:text-gray-600" />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </div>
-  );
-}
+// ReadLessonsTab was removed here. It rendered the same 9 sections and 67
+// lessons the course at [exam]/study now renders, but as a bare accordion:
+// no syllabus rail, no media slot beside the text, no takeaways or exam
+// tips in view while reading. Two places to read the same chapters is the
+// duplication the exam home was rebuilt to remove, so the weaker one went.
+// ?tab=read redirects to the course.
 
 // ═══════════════════════════════════════════════════════════════
 // LESSONS TAB (Video)
@@ -2778,7 +2272,15 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
         {stats && (
           <div className="grid gap-4 sm:grid-cols-3">
             <Card className="p-4 text-center">
-              <p className="text-2xl font-bold">{stats.total_questions}</p>
+              {/* The server's count covers the exams whose banks live in the
+                  database. For the exams whose bank ships with the client
+                  it returns 0, which read as "this bank is empty" directly
+                  above a coverage table saying "Bank of 1634". qbankMax is
+                  the number the session slider is actually bounded by, so
+                  it is the honest one to show. */}
+              <p className="text-2xl font-bold">
+                {(stats.total_questions || qbankMax).toLocaleString()}
+              </p>
               <p className="text-xs text-muted-foreground">Questions Available</p>
             </Card>
             <Card className="p-4 text-center">

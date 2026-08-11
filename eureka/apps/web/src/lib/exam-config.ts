@@ -265,3 +265,35 @@ export function getExamConfig(examType: string): ExamTypeConfig {
 export function getSectionsForExam(examType: string): ExamSection[] {
   return getExamConfig(examType).sections;
 }
+
+/**
+ * The one-line summary under an exam's title.
+ *
+ * It used to read "{sections.length} sections", which is ambiguous where an
+ * exam's scoring blueprint and its study syllabus are different lists.
+ * Patent Bar is the clearest case: the config carries six estimated
+ * blueprint areas while the course teaches nine sections, so the header
+ * said "6 sections" directly above a nine-section syllabus. Delivered
+ * questions and total time mean the same thing for every exam, so the
+ * header states those instead and the section counts live where they are
+ * unambiguous - the course rail says how many it teaches.
+ */
+export function examSummaryLine(examType: string): string {
+  const c = getExamConfig(examType);
+  const parts: string[] = [];
+
+  if (c.totalQuestions) {
+    parts.push(
+      c.scoredQuestions && c.scoredQuestions !== c.totalQuestions
+        ? `${c.totalQuestions} questions (${c.scoredQuestions} scored)`
+        : `${c.totalQuestions} questions`,
+    );
+  }
+  if (c.totalDuration) {
+    const h = Math.floor(c.totalDuration / 60);
+    const m = c.totalDuration % 60;
+    parts.push(h ? (m ? `${h} h ${m} min` : `${h} h`) : `${m} min`);
+  }
+  parts.push(c.scoreRange.label);
+  return parts.join(' · ');
+}

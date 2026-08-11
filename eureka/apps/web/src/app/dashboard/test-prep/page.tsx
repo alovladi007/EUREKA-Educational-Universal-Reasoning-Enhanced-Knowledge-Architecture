@@ -24,6 +24,7 @@
 import React from 'react';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
 import { ExamDashboard } from '@/components/test-prep/ExamDashboard';
+import { examSummaryLine } from '@/lib/exam-config';
 import { useActiveExam } from '@/hooks/use-active-exam';
 
 export default function TestPrepDashboard() {
@@ -35,8 +36,7 @@ export default function TestPrepDashboard() {
       <div>
         <h1 className="text-3xl font-bold mb-2">{examConfig.shortName}</h1>
         <p className="text-muted-foreground">
-          {examConfig.name} &middot; {examConfig.sections.length} sections
-          &middot; score range {examConfig.scoreRange.label}
+          {examConfig.name} &middot; {examSummaryLine(examType)}
         </p>
       </div>
 

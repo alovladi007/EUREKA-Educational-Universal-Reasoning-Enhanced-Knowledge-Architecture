@@ -100,13 +100,39 @@ test('the shared route and the exam route are the same page', async ({ page }) =
   await expect(page.getByTestId('exam-dashboard')).toContainText('0/36');
 });
 
-test('?tab= still reaches flashcards and notes', async ({ page }) => {
+test('?tab= still reaches flashcards, notes and the QBank', async ({ page }) => {
   await page.addInitScript((tok) => {
     window.localStorage.setItem('access_token', tok);
   }, token);
   await page.goto('/dashboard/test-prep/cissp?tab=flashcards');
   await expect(page.getByTestId('exam-dashboard')).toHaveCount(0);
   await expect(
-    page.getByRole('button', { name: 'Read Lessons', exact: true }),
+    page.getByRole('button', { name: 'QBank', exact: true }),
   ).toBeVisible();
+  // The reading tab is gone: /study is the only place chapters are read.
+  await expect(
+    page.getByRole('button', { name: 'Read Lessons', exact: true }),
+  ).toHaveCount(0);
+});
+
+test('arriving at ?tab=qbank opens the QBank, not the first tab', async ({ page }) => {
+  await page.addInitScript((tok) => {
+    window.localStorage.setItem('access_token', tok);
+  }, token);
+  // The regression this guards: activeTab used to be initialised from the
+  // param exactly once, so following the dashboard's "Question bank" tile
+  // by client-side navigation left the previous tab's body on screen.
+  await page.goto('/dashboard/test-prep/patent_bar');
+  await page.getByRole('link', { name: /^Question bank/ }).click();
+  await page.waitForURL('**/patent_bar?tab=qbank');
+  await expect(page.getByText('Configure QBank Session')).toBeVisible();
+});
+
+test('?tab=read redirects to the course', async ({ page }) => {
+  await page.addInitScript((tok) => {
+    window.localStorage.setItem('access_token', tok);
+  }, token);
+  await page.goto('/dashboard/test-prep/patent_bar?tab=read');
+  await page.waitForURL('**/patent_bar/study');
+  await expect(page.getByTestId('exam-study')).toBeVisible();
 });

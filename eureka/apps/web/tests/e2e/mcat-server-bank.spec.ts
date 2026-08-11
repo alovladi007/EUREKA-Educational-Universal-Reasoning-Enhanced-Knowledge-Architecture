@@ -253,6 +253,6 @@ test('the browser surfaces render the server data', async ({ page }) => {
   await page.goto('/dashboard/test-prep/mcat?tab=flashcards');
   await expect(page.getByTestId('exam-dashboard')).toHaveCount(0);
   await expect(
-    page.getByRole('button', { name: 'Read Lessons', exact: true }),
+    page.getByRole('button', { name: 'QBank', exact: true }),
   ).toBeVisible();
 });

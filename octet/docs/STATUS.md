@@ -781,6 +781,47 @@ Bar's 1,634, and `exam-surfaces.ts` states the real number rather than
 rounding it up. The Physics GRE lessons are original authored content and
 have had no subject-matter-expert review.
 
+## Phase 11b: the tab bug the rebuild introduced, and three Patent Bar defects
+
+2026-08-11. Reported from the product: on Patent Bar, clicking Question
+bank showed the Read Lessons list instead.
+
+The cause was mine, introduced in Phase 11. `activeTab` was
+`useState(tabParam || 'read')`, which reads the search param exactly once.
+Arriving from the dashboard is a client-side navigation: the param changed,
+`showTabs` flipped true, and `activeTab` stayed on its mount-time value. So
+the QBank tile landed on ?tab=qbank and rendered the reading tab. The URL is
+now the source of truth and the state is derived, which makes the failure
+impossible rather than fixed - and makes tabs linkable and back-button-
+friendly as a side effect.
+
+Three more, found while confirming it:
+
+- The Read Lessons tab was a second copy of the course. Same 9 sections and
+  67 lessons the study page renders, but as a bare accordion with no rail,
+  no media slot and no takeaways in view. 532 lines deleted; ?tab=read now
+  redirects to the course. Video Lessons is kept for CISSP alone, which is
+  the only exam with recordings and the only place that tab had content.
+- The paid product's own description said "980 questions incl. 174 official
+  USPTO". Counted from the arrays the QBank loads: 536 authored + 270
+  gap-fill + 828 official = 1,634. Both figures were wrong and both
+  understated, so nobody was oversold - but a product description has to be
+  true in either direction. Migration pb_product_copy_001, verified live
+  and round-tripped through downgrade.
+- "Questions Available" read 0 directly above a coverage table saying "Bank
+  of 1634", because the server count only covers banks that live in the
+  database and Patent Bar's ships with the client. It now shows the number
+  the session slider is actually bounded by: 1,634 entitled, 20 on the free
+  preview. Both verified live against a comp grant.
+
+The header said "6 sections" above a nine-section syllabus, because the
+config carries six estimated blueprint areas while the course teaches nine.
+Delivered questions and total time mean the same thing for every exam, so
+the header states those and section counts stay where they are unambiguous.
+
+24 Playwright green, three of them new: the ?tab=qbank regression itself,
+the ?tab=read redirect, and the absence of the reading tab. 197 vitest.
+
 ## Known gaps and honest caveats
 
 1. The misconception library (26 entries, 7 added in Phase 3) carries
