@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
+  CalendarDays,
   Atom,
   BarChart3,
   BookOpen,
@@ -138,6 +139,7 @@ const NAV = [
   { name: 'Exams', href: '/exams', icon: ClipboardList },
   { name: 'Analytics', href: '/analytics', icon: BarChart3 },
   { name: 'Path', href: '/path', icon: Route },
+  { name: 'Planner', href: '/planner', icon: CalendarDays },
   { name: 'Explore', href: '/explore', icon: Compass },
   { name: 'Simulations', href: '/simulations', icon: FlaskConical },
 ];
