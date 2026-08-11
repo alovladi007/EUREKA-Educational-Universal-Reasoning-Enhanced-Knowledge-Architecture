@@ -560,6 +560,56 @@ the AN/P1/P2 analytical tiers; the guardrailed tutor remains gated on
 contract item 2.3 and a red-team suite. Cohort statistics and item
 difficulty still wait for real learners.
 
+## Phase 8: MCAT-mode serving through EUREKA. Gate: GATE B end to end. Status: DONE
+
+2026-08-10. OCTET now serves the chemistry inside EUREKA's MCAT product,
+with the division of authority the integration contract prescribes:
+chemistry (generation, verification, grading, misconception rationale)
+stays here; commerce (the entitlement gate, the AAMC category mapping, the
+attempt log and weakness analytics) lives in api-core, which forwards the
+learner's own token.
+
+What serves: `/mcat/items`, `/mcat/submit`, `/mcat/eligible-nodes`.
+Stateless items - (template_id, seed) regenerates the variant and its
+option order deterministically, one choice-assembly function shared by
+serve and submit. The pool is mc templates with >= 2 misconception-keyed
+distractors only: items carry 3 or 4 options and say which; nothing is
+padded, numeric and free-response templates are not skinned into MCQs
+because their distractors would have to be invented. Serving carries no
+correct index. A caller-supplied offset (EUREKA sends the learner's
+attempt count) keeps repeat sessions on fresh variants.
+
+The mapping is data under review, not code: 67 nodes placed into AAMC
+4B/4E/5A/5B/5D/5E in api-core's octet_mcat_map, every row with a rationale
+and review='pending'; 5C is empty because OCTET has no separations
+content. Present servability, stated per category in the EUREKA UI before
+any click: 5B 12 nodes, 4E 4, 5E 2, 5A 1, 4B and 5D zero. Growing that
+number is authoring work (keyed distractors), not a serving-time
+transform.
+
+Contract items closed: 2.1 decided and live (EUREKA exposes cross-vertical
+mastery; api-core forwards to AXIOM's mastery API with the caller's token,
+verified against the running stack) and 2.3 decided (tutor routes through
+api-core's reasoning endpoints; implementation stays gated on the red-team
+review). 2.2 was already decided.
+
+Verified: 983 tests green on the rebuilt image (8 new MCAT tests: serve
+determinism, serve==submit option order, payload leak walk, honest option
+counts, offset variation, unservable reporting, out-of-range refusal,
+eligible-nodes honesty); 12 EUREKA-side integration tests (402 gate,
+either-entitlement, server-derived category on the attempt log,
+client-supplied category ignored, offset advance, weakness scoping with no
+invented statistics, servability annotation); and GATE B, a Playwright run
+against the live stack: entitle (comp path; Stripe checkout deliberately
+503s without keys) -> practice -> miss -> rationale -> add to the one SM-2
+review queue -> weakness analytics -> OCTET lesson deep link signed in.
+
+One incident worth recording: the first cross-service call failed signature
+verification because octet's compose fell back to the placeholder JWT
+secret when the env var was absent - the exact silent-secret trap the local
+stack notes warned about. Compose now accepts either OCTET_JWT_SECRET or
+JWT_SECRET before falling back, matching .env.example.
+
 ## Known gaps and honest caveats
 
 1. The misconception library (26 entries, 7 added in Phase 3) carries

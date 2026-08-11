@@ -31,18 +31,27 @@ API, and a request with no token is refused with 403.
 ## 2. Open items (decision required)
 
 ### 2.1 Cross vertical prerequisites
-**Blocks: Phase 7. Stubbed before then.**
+**DECIDED 2026-08-10: EUREKA exposes it, per the recommendation.**
 
 OCTET needs to ask EUREKA "does this learner have AXIOM node X mastered or
 owned", because chemistry depends on mathematics the learner may have studied
 in the other vertical (the build prompt names C110, C201, OD01, PS05).
 
-Decision needed: does the entitlements API answer mastery questions about
-another vertical, or does OCTET query AXIOM directly, or does EUREKA expose a
-cross vertical mastery endpoint that both verticals write to.
+What was decided: api-core serves
+`GET /me/cross-vertical/mastery?vertical=axiom`
+(`app/api/v1/endpoints/cross_vertical.py`), which forwards to the vertical's
+own mastery endpoint with the caller's token and returns the answer verbatim,
+naming its source. The shell holds identity, so the shell holds the crossing
+point; verticals never query each other directly (N squared as verticals are
+added), and no vertical holds a copy of another's mastery state. Adding a
+vertical is one registry line once it exposes a mastery endpoint that accepts
+the shared EUREKA token. Verified live against AXIOM's `/api/v1/mastery/me`
+on the shared network.
 
-Recommendation: EUREKA exposes it. Two verticals querying each other directly
-becomes N squared as verticals are added, and the shell already holds identity.
+What OCTET still owes: calling it from the path planner when a chemistry
+node's prerequisite is mathematical, and deciding per node what "not mastered
+in AXIOM" does (advisory note, not a hard gate, is the working assumption -
+OCTET's own prerequisite graph stays the authority inside chemistry).
 
 ### 2.2 LTI 1.3 termination point
 **DECIDED 2026-07-24: each vertical terminates its own LTI launches.**
@@ -85,11 +94,21 @@ AGS grade passback, with the platform public key pinned for offline and test
 use and JWKS in production.
 
 ### 2.3 Tutor gateway model access and logging
-**Blocks: Phase 7.**
+**DECIDED 2026-08-10: the tutor routes through api-core's reasoning
+endpoints. Implementation stays gated on the red-team review.**
 
-Decision needed: which model the guardrailed tutor calls, whose API budget it
-draws on, where transcripts are stored, and what the sampling rate is for
-guardrail audits.
+What was decided: when the OCTET tutor ships, it calls EUREKA api-core's
+reasoning endpoints (`app/api/v1/endpoints/reasoning.py`) rather than holding
+its own model credentials - so the model choice, the API budget, and the
+transcript store are EUREKA's, configured in one place, and OCTET never
+carries a provider key. Transcripts live where api-core's reasoning layer
+already logs them. Guardrail audit sampling starts at 100% of tutor
+transcripts until the red-team review sets a lower documented rate; it does
+not launch with a sample rate chosen by convenience.
+
+What remains gated: the tutor itself. It does not ship until the red-team
+review of the guardrails passes, and recording this decision is not that
+review.
 
 Constraint that is not negotiable regardless of the answer: the tutor gateway
 sits outside the grading path. Graders stay deterministic and independently

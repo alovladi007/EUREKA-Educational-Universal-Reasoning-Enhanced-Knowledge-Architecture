@@ -348,6 +348,67 @@ class ApiClient {
     return response.data;
   }
 
+  // ==================== MCAT chemistry (OCTET engine, Phase B) ====================
+  // Generated-and-verified chemistry items, served through api-core which
+  // gates on the MCAT (or standalone OCTET) entitlement and proxies the
+  // OCTET engine with this user's own token. Serving never includes the
+  // correct answer; grading is server-side and the AAMC category on each
+  // recorded attempt is derived server-side from the item's node.
+
+  async getMcatChemistryCategories(): Promise<{
+    categories: Record<string, Array<{
+      octet_node: string; title: string; foundational_concept: string;
+      rationale: string; review: string; servable: boolean | null;
+    }>>;
+    summary: Record<string, { mapped_nodes: number; servable_nodes: number | null }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/chemistry/categories');
+    return response.data;
+  }
+
+  async getMcatChemistryItems(category: string, count = 10): Promise<{
+    category: string;
+    items: Array<{
+      template_id: string; seed: number; node: string; prompt: string;
+      options: Array<{ position: number; text: string }>;
+      option_count: number; verified_by: string;
+    }>;
+    unservable_nodes?: string[];
+    note?: string;
+  }> {
+    const response = await this.client.post('/mcat/chemistry/items', { category, count });
+    return response.data;
+  }
+
+  async submitMcatChemistry(payload: {
+    template_id: string; seed: number; choice_index: number; seconds?: number;
+  }): Promise<{
+    is_correct: boolean; correct_position: number; correct_text: string;
+    chosen_position: number; node: string; mcat_category: string;
+    misconception: string | null;
+    rationale: {
+      misconception: string; name: string; description: string;
+      counterexample: string; review_node: string; review: string;
+    } | null;
+    detail: Record<string, unknown>;
+  }> {
+    const response = await this.client.post('/mcat/chemistry/submit', payload);
+    return response.data;
+  }
+
+  async getMcatChemistryWeakness(): Promise<{
+    categories: Array<{
+      category: string; attempts: number; correct: number;
+      accuracy: number | null;
+      review_nodes: Array<{ octet_node: string; title: string }>;
+    }>;
+    note: string;
+  }> {
+    const response = await this.client.get('/mcat/chemistry/weakness');
+    return response.data;
+  }
+
   // ==================== SRS (Spaced-Repetition flashcards, P1-4) ====================
   // Backed by the api-core srs_cards table + SM-2 algorithm. Each card
   // carries its own ease_factor / interval / repetitions / next_review
