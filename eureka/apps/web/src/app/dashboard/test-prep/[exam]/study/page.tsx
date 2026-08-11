@@ -410,6 +410,7 @@ export default function McatStudyPage() {
                       {s.quiz && s.quiz.length > 0 && (
                         <div className="mt-5">
                           <LessonQuiz
+                            variant="book"
                             questions={s.quiz}
                             title={`Check your understanding \u2014 ${s.title}`}
                           />
