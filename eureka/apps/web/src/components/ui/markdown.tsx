@@ -36,8 +36,10 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import "katex/dist/katex.min.css";
 
-/** `/a/b.svg` -> `/a/b.dark.svg`; anything that is not an .svg is left alone. */
-function darkVariant(src: string): string {
+/** `/a/b.svg` -> `/a/b.dark.svg`; anything that is not an .svg is left alone.
+ *  Exported so the course reader can do the same swap with its own typography
+ *  rather than growing a second copy of this rule. */
+export function darkVariant(src: string): string {
   return src.endsWith(".svg") && !src.endsWith(".dark.svg")
     ? `${src.slice(0, -4)}.dark.svg`
     : src;

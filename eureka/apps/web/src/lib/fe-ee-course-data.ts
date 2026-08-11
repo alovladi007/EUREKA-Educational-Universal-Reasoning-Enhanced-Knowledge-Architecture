@@ -118,6 +118,73 @@ Every phasor problem on the FE exam requires converting between forms:
       examTip: 'When converting rectangular to polar, ALWAYS check the quadrant. arctan(y/x) gives the correct angle only in Q1 and Q4. For Q2 and Q3, add 180 degrees. The FE reference handbook has these formulas, but knowing them cold saves critical minutes.',
       importantNote: 'The angle addition formulas are the basis for phasor addition in AC circuits. When you add two sinusoids of the same frequency, you are implicitly using these identities. Converting to phasors first is usually faster than expanding trig identities by hand.',
     },
+    {
+      id: 'at-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Quadratic with a physical root test
+
+A projectile-style RLC characteristic equation gives s^2 + 5s + 6 = 0. Factoring: (s+2)(s+3) = 0, so s = **-2 and -3**. Both roots have negative real parts, so both natural modes decay - the circuit is stable and overdamped.
+
+When factoring is not obvious, the formula: s = [-b ± sqrt(b^2 - 4ac)]/(2a). The discriminant b^2 - 4ac tells you the character before you compute anything:
+
+| Discriminant | Roots | Circuit behaviour |
+|---|---|---|
+| > 0 | two real distinct | overdamped |
+| = 0 | one repeated real | critically damped |
+| < 0 | complex conjugate pair | underdamped, oscillatory |
+
+## 3.2 Solving a two-loop system
+
+Mesh analysis produces 3i1 + 2i2 = 12 and i1 - 4i2 = -2. From the second, i1 = 4i2 - 2. Substitute: 3(4i2 - 2) + 2i2 = 12, so 12i2 - 6 + 2i2 = 12, giving 14i2 = 18 and **i2 = 1.286 A**. Then i1 = 4(1.286) - 2 = **3.14 A**.
+
+Substituting back into the first equation: 3(3.14) + 2(1.286) = 9.43 + 2.57 = 12. Checks.
+
+## 3.3 The identities that actually appear
+
+The three worth having instantly:
+
+- **sin^2 + cos^2 = 1** — converts between the two whenever only one is given
+- **sin(2x) = 2 sin x cos x** — appears in instantaneous power, p(t) = VI cos(theta) - VI cos(2 omega t - theta)
+- **cos(A - B) = cos A cos B + sin A sin B** — the phase-difference expansion behind every power-factor derivation
+
+Example: a load has cos(theta) = 0.6. Then sin(theta) = sqrt(1 - 0.36) = **0.8**, so a 5 kVA load carries P = 3 kW and Q = 4 kVAR. The 3-4-5 triangle turns up constantly in power problems and is worth recognising on sight.
+
+## 3.4 Polar and rectangular
+
+Rectangular to polar: magnitude = sqrt(a^2 + b^2), angle = arctan(b/a) **with attention to quadrant**.
+
+Convert -3 + j4: magnitude = sqrt(9+16) = **5**, and arctan(4/-3) = -53.1 degrees from the calculator — but the point is in the second quadrant, so the true angle is 180 - 53.1 = **126.9 degrees**.
+
+That quadrant correction is the most common arithmetic error in the whole Mathematics section, because a calculator's arctan cannot distinguish the second quadrant from the fourth. Sketch the point before trusting the number.
+
+Polar to rectangular: a = r cos(theta), b = r sin(theta). So 10 at 30 degrees = 10(0.866) + j10(0.5) = **8.66 + j5**.`,
+      examTip: 'Multiply and divide in polar form (magnitudes multiply, angles add); add and subtract in rectangular form (components add). Choosing the wrong form turns a ten-second operation into a page of algebra.',
+      quiz: [
+        {
+          question: 'What is the polar form of the complex number -4 + j3?',
+          options: ['5 at 143.1 degrees', '5 at -36.9 degrees', '5 at 36.9 degrees', '7 at 143.1 degrees'],
+          correctIndex: 0,
+          explanation: 'Magnitude is sqrt(16+9) = 5. The calculator gives arctan(3/-4) = -36.9 degrees, but the point lies in the second quadrant (negative real, positive imaginary), so add 180: the angle is 143.1 degrees. Skipping the quadrant check is the standard error here.',
+        },
+        {
+          question: 'A load has a power factor of 0.6. What is sin(theta)?',
+          options: ['0.8', '0.6', '0.4', '1.67'],
+          correctIndex: 0,
+          explanation: 'From sin^2 + cos^2 = 1: sin(theta) = sqrt(1 - 0.36) = 0.8. This gives the familiar 3-4-5 power triangle, so a 5 kVA load at pf 0.6 carries 3 kW of real power and 4 kVAR of reactive power.',
+        },
+        {
+          question: 'The characteristic equation s^2 + 4s + 13 = 0 describes a circuit. What is its behaviour?',
+          options: [
+            'Underdamped - the roots are a complex conjugate pair',
+            'Overdamped - two distinct real roots',
+            'Critically damped - a repeated real root',
+            'Unstable - a root in the right half plane',
+          ],
+          correctIndex: 0,
+          explanation: 'The discriminant is 16 - 52 = -36, negative, so the roots are complex: s = -2 ± j3. A complex pair means oscillation, and the negative real part (-2) means the oscillation decays - underdamped and stable.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Quadratic formula solves ax²+bx+c=0; discriminant b²-4ac determines real vs. complex roots.',
@@ -206,6 +273,72 @@ Phasors eliminate the time variable by assuming all signals share the same frequ
       examTip: 'When the FE exam gives you impedances to add in series, keep rectangular form (just add R and X components). When multiplying V = I·Z, convert to polar first. Getting this workflow automatic is the single biggest time-saver for circuit problems.',
       importantNote: 'EE convention uses j (not i) for the imaginary unit because i is reserved for current. On the FE exam, all complex numbers use j notation. Remember j² = -1, j³ = -j, j⁴ = 1.',
     },
+    {
+      id: 'cx-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Impedance arithmetic in the right form
+
+Two impedances in series: Z1 = 3 + j4 and Z2 = 6 - j2.
+
+Series means ADD, so use rectangular: Z = (3+6) + j(4-2) = **9 + j2 ohm**, magnitude sqrt(81+4) = 9.22 ohm at arctan(2/9) = 12.5 degrees.
+
+Now put them in parallel instead. Product over sum needs both operations, so convert:
+
+Z1 = 5 at 53.1 degrees, Z2 = 6.32 at -18.4 degrees.
+Product (polar): 5 x 6.32 = 31.6 at (53.1 - 18.4) = **31.6 at 34.7 degrees**.
+Sum (rectangular): 9 + j2 = 9.22 at 12.5 degrees.
+Quotient (polar): 31.6/9.22 = 3.43 at (34.7 - 12.5) = **3.43 at 22.2 degrees**.
+
+Multiply and divide in polar, add and subtract in rectangular. Doing it the other way round is possible but wastes minutes you do not have.
+
+## 3.2 Euler and the phasor
+
+e^(j theta) = cos(theta) + j sin(theta). A sinusoid v(t) = V_m cos(omega t + phi) becomes the phasor V = V_m at phi, and the time dependence e^(j omega t) is carried implicitly because every quantity in the circuit shares it.
+
+That is the whole reason phasors work: a linear circuit driven at one frequency has every voltage and current at that same frequency, so the common factor cancels and differential equations become algebra.
+
+Differentiation becomes multiplication by j omega; integration becomes division by j omega. Hence Z_L = j omega L and Z_C = 1/(j omega C) = -j/(omega C).
+
+## 3.3 Rationalising a quotient
+
+Compute (4 + j3)/(2 - j1). Multiply numerator and denominator by the conjugate of the denominator:
+
+Numerator: (4 + j3)(2 + j1) = 8 + j4 + j6 + j^2 3 = 8 + j10 - 3 = 5 + j10
+Denominator: (2 - j1)(2 + j1) = 4 + 1 = 5
+
+Result: (5 + j10)/5 = **1 + j2**.
+
+Check in polar: (5 at 36.9)/(2.24 at -26.6) = 2.24 at 63.5 degrees, and 1 + j2 = 2.24 at 63.4 degrees. Agrees.
+
+## 3.4 Powers and roots
+
+De Moivre: (r at theta)^n = r^n at n theta. So (2 at 30 degrees)^3 = 8 at 90 degrees = **j8**.
+
+Roots are the same rule with a fractional exponent, and there are n of them spaced 360/n degrees apart. The square roots of 4 at 60 degrees are 2 at 30 degrees and 2 at 210 degrees.
+
+Useful constants: j^2 = -1, 1/j = -j, and j = 1 at 90 degrees. Multiplying by j is a 90-degree rotation, which is exactly why inductive reactance leads and capacitive lags.`,
+      examTip: 'Set your calculator to the angle mode the question uses and check it before you start. Half of all complex-arithmetic errors on this exam are degrees-versus-radians, and the wrong-mode answer is usually still plausible-looking.',
+      quiz: [
+        {
+          question: 'What is (3 at 40 degrees) multiplied by (2 at 20 degrees)?',
+          options: ['6 at 60 degrees', '6 at 20 degrees', '5 at 60 degrees', '1.5 at 20 degrees'],
+          correctIndex: 0,
+          explanation: 'In polar form multiplication multiplies the magnitudes and ADDS the angles: 3 x 2 = 6, and 40 + 20 = 60 degrees. Adding the magnitudes or multiplying the angles produces the distractors.',
+        },
+        {
+          question: 'What is the impedance of a 2 H inductor at omega = 100 rad/s?',
+          options: ['j200 ohm', '-j200 ohm', 'j0.02 ohm', '200 ohm resistive'],
+          correctIndex: 0,
+          explanation: 'Z_L = j omega L = j(100)(2) = j200 ohm. The positive imaginary sign is what makes the voltage lead the current in an inductor. A capacitor gives the opposite sign: Z_C = -j/(omega C).',
+        },
+        {
+          question: 'Simplify (6 + j8)/(3 + j4).',
+          options: ['2', '2 + j2', 'j2', '18 + j32'],
+          correctIndex: 0,
+          explanation: 'Note that 6 + j8 is exactly twice 3 + j4, so the quotient is 2. In polar: (10 at 53.1)/(5 at 53.1) = 2 at 0 degrees. Spotting a common factor is faster than rationalising, and both routes must agree.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Euler formula e^(jθ) = cosθ + j·sinθ connects exponential, rectangular, and polar forms.',
@@ -284,6 +417,63 @@ A **graph** consists of vertices (nodes) connected by edges. Key properties:
 Graph theory models networks — useful for analyzing circuit topologies and computer networks.`,
       examTip: 'De Morgan laws appear in both set theory and Boolean algebra on the FE exam. The pattern is identical: swap the operator (AND/OR or union/intersection) and complement everything. Memorize one form and you know both.',
       importantNote: 'The contrapositive (p→q equivalent to ¬q→¬p) is logically valid, but the converse (q→p) and inverse (¬p→¬q) are NOT equivalent to the original. This distinction appears in logic-based FE questions.',
+    },
+    {
+      id: 'dm-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Counting for reliability and logic
+
+**Permutations** (order matters): P(n,r) = n!/(n-r)!. Arranging 3 of 8 components in a fixed sequence: 8!/5! = 8 x 7 x 6 = **336**.
+
+**Combinations** (order does not): C(n,r) = n!/[r!(n-r)!]. Choosing 3 of 8 spares regardless of order: 336/6 = **56**.
+
+The test for which to use: swap two of your chosen items. If that counts as a different outcome, it is a permutation.
+
+## 3.2 Boolean algebra and De Morgan
+
+The identities that actually reduce circuits:
+
+- **NOT(A AND B) = NOT A OR NOT B**
+- **NOT(A OR B) = NOT A AND NOT B**
+- Absorption: A + AB = A, and A(A + B) = A
+- Consensus: AB + A'C + BC = AB + A'C (the BC term is redundant)
+
+Simplify F = AB + AB' + A'B:
+
+AB + AB' = A(B + B') = A. So F = A + A'B. By absorption's dual, A + A'B = A + B. So **F = A + B**, a two-input OR from what looked like three product terms.
+
+## 3.3 Set relations
+
+|A union B| = |A| + |B| - |A intersect B| (inclusion-exclusion).
+
+Of 50 engineers, 30 know VHDL, 25 know Verilog, and 12 know both. How many know at least one? 30 + 25 - 12 = **43**, so 7 know neither.
+
+## 3.4 Graphs, briefly
+
+A graph with V vertices and E edges is a **tree** when it is connected and E = V - 1, which is exactly the condition circuit theory uses: a tree of a network with V nodes has V - 1 branches, and the remaining B - (V - 1) links define the independent loops for mesh analysis.
+
+For a network with 6 nodes and 9 branches: tree branches = 5, links = 4, so there are **4 independent mesh equations** and 5 independent node equations. That is why you choose mesh analysis here - fewer unknowns.`,
+      examTip: 'The number of independent KVL equations equals branches minus nodes plus one; the number of independent KCL equations equals nodes minus one. Count both before choosing mesh or nodal analysis - picking the smaller system can halve the work.',
+      quiz: [
+        {
+          question: 'How many distinct 3-component subsets can be chosen from a stock of 7 components?',
+          options: ['35', '210', '21', '343'],
+          correctIndex: 0,
+          explanation: 'A subset is unordered, so use combinations: C(7,3) = 7!/(3!4!) = 35. The 210 figure is P(7,3), the permutation count, which would be right only if the order of selection mattered.',
+        },
+        {
+          question: 'Simplify the Boolean expression AB + AB(prime).',
+          options: ['A', 'B', 'A + B', 'AB'],
+          correctIndex: 0,
+          explanation: 'Factor A: AB + AB′ = A(B + B′) = A(1) = A. The value of B becomes irrelevant, which is the whole point of the simplification - the gate reduces to a wire from A.',
+        },
+        {
+          question: 'A network has 8 nodes and 12 branches. How many independent mesh (KVL) equations are needed?',
+          options: ['5', '7', '8', '12'],
+          correctIndex: 0,
+          explanation: 'Independent loops = B - N + 1 = 12 - 8 + 1 = 5. Nodal analysis would need N - 1 = 7 equations here, so mesh analysis is the smaller system and the faster route.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -364,6 +554,67 @@ Conic sections arise from slicing a cone at different angles:
 - Asymptotes: y = ±(b/a)x for centered hyperbola
 - Eccentricity e = c/a where c = sqrt(a²+b²), e > 1`,
       examTip: 'On the FE exam, identify the conic section from its equation: both variables squared with same sign and same coefficient = circle; same sign but different coefficients = ellipse; one variable not squared = parabola; opposite signs = hyperbola.',
+    },
+    {
+      id: 'ag-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Lines and slopes
+
+Through (2, 3) and (6, 11): slope m = (11-3)/(6-2) = 8/4 = **2**. Point-slope: y - 3 = 2(x - 2), so **y = 2x - 1**.
+
+Perpendicular lines have slopes whose product is -1, so a perpendicular through (2,3) has slope **-1/2**: y = -x/2 + 4.
+
+This is not abstract on this exam: a load line on a transistor characteristic is a straight line, and its slope is -1/R_load. Given a 10 V supply and a 2 kilohm load, the load line runs from (10 V, 0 mA) to (0 V, 5 mA) with slope -1/2000 per volt.
+
+## 3.2 Circles and the completing-the-square step
+
+x^2 + y^2 - 6x + 4y - 12 = 0. Group and complete:
+
+(x^2 - 6x + 9) + (y^2 + 4y + 4) = 12 + 9 + 4
+
+(x - 3)^2 + (y + 2)^2 = 25, so centre **(3, -2)** and radius **5**.
+
+The same algebra turns up in Smith-chart work, where constant-resistance and constant-reactance loci are circles.
+
+## 3.3 Conics you should recognise on sight
+
+| Equation form | Conic | Where it appears |
+|---|---|---|
+| (x-h)^2 + (y-k)^2 = r^2 | circle | impedance loci, phasor magnitude |
+| x^2/a^2 + y^2/b^2 = 1 | ellipse | Lissajous figures, elliptical polarisation |
+| y = ax^2 + bx + c | parabola | reflector antennas, power vs load curves |
+| x^2/a^2 - y^2/b^2 = 1 | hyperbola | constant-power curves, hyperbolic navigation |
+
+A power-vs-load-resistance curve is a parabola-like shape whose maximum you found by calculus in the differentiation chapter; recognising the shape tells you a maximum exists before you compute it.
+
+## 3.4 Distance, midpoint, and 3D
+
+Distance between (1, 2, 3) and (4, 6, 3): sqrt(9 + 16 + 0) = **5**. Midpoint: (2.5, 4, 3).
+
+In three dimensions the plane ax + by + cz = d has normal vector (a, b, c). The distance from the origin to 2x + 3y + 6z = 14 is |d|/sqrt(a^2+b^2+c^2) = 14/sqrt(4+9+36) = 14/7 = **2**.
+
+That normal-vector idea is the same one used for surface integrals in the electromagnetics chapters, where flux through a surface depends on the angle between the field and the normal.`,
+      examTip: 'Recognise the conic from the signs of the squared terms before doing any algebra: both positive and equal gives a circle, both positive and unequal an ellipse, opposite signs a hyperbola, and only one squared term a parabola.',
+      quiz: [
+        {
+          question: 'What is the centre of the circle x^2 + y^2 - 8x + 2y + 8 = 0?',
+          options: ['(4, -1)', '(-4, 1)', '(8, -2)', '(-8, 2)'],
+          correctIndex: 0,
+          explanation: 'Complete the square: (x-4)^2 - 16 + (y+1)^2 - 1 + 8 = 0, giving (x-4)^2 + (y+1)^2 = 9. Centre (4, -1), radius 3. The signs flip when moving from the equation to the centre coordinates, which is the usual error.',
+        },
+        {
+          question: 'A line has slope 3. What is the slope of a line perpendicular to it?',
+          options: ['-1/3', '1/3', '-3', '3'],
+          correctIndex: 0,
+          explanation: 'Perpendicular slopes multiply to -1, so m = -1/3. Both the sign change and the reciprocal are needed - taking only the negative (-3) or only the reciprocal (1/3) gives a line that is not perpendicular.',
+        },
+        {
+          question: 'What is the distance between the points (2, -1, 4) and (5, 3, 4)?',
+          options: ['5', '7', '25', '3'],
+          correctIndex: 0,
+          explanation: 'd = sqrt(3^2 + 4^2 + 0^2) = sqrt(25) = 5. The z coordinates are equal so that term vanishes, reducing this to the familiar 3-4-5 right triangle in the xy plane.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -460,6 +711,78 @@ For multivariable functions, **∂f/∂x** treats all other variables as constan
       examTip: 'L\'Hopital\'s rule only works for 0/0 or ∞/∞ forms. If the limit is not indeterminate, do NOT apply L\'Hopital. Taylor series linearization f(x) ≈ f(a) + f\'(a)(x-a) is used for small-signal analysis of nonlinear circuits (like diode linearization around the Q-point).',
       importantNote: 'The maximum power transfer theorem (R_L = R_Th) is derived by differentiating P = V²·R_L/(R_Th+R_L)² and setting dP/dR_L = 0. This is a direct application of optimization using calculus.',
     },
+    {
+      id: 'dc-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Circuit derivatives that appear directly
+
+The two defining relations are derivatives, and the exam asks about them as calculus:
+
+- Capacitor: **i = C dv/dt**. A capacitor charged by a voltage ramping at 500 V/s with C = 20 microfarad passes i = (20e-6)(500) = **10 mA**. A constant voltage gives zero current, which is why a capacitor blocks DC.
+- Inductor: **v = L di/dt**. A 0.5 H inductor whose current changes at 40 A/s develops v = (0.5)(40) = **20 V**. Try to interrupt inductor current instantly and di/dt is enormous - which is what destroys switch contacts and why flyback diodes exist.
+
+## 3.2 Chain and product rules on a real waveform
+
+Differentiate v(t) = 10 e^(-2t) sin(3t).
+
+Product rule with u = 10 e^(-2t) and w = sin(3t):
+
+u' = -20 e^(-2t), w' = 3 cos(3t)
+
+dv/dt = -20 e^(-2t) sin(3t) + 30 e^(-2t) cos(3t) = **10 e^(-2t)[3 cos(3t) - 2 sin(3t)]**
+
+This is the shape of a damped oscillation - exactly the underdamped RLC response - and its derivative is what you set to zero to find the overshoot peak.
+
+## 3.3 Optimisation: maximum power transfer by calculus
+
+A source of V volts with internal resistance R_s drives a load R_L. Load power is
+
+P = V^2 R_L/(R_s + R_L)^2
+
+Differentiate with the quotient rule and set to zero. The numerator of dP/dR_L is
+
+V^2[(R_s + R_L)^2 - R_L x 2(R_s + R_L)] = V^2 (R_s + R_L)[(R_s + R_L) - 2R_L]
+
+Setting the bracket to zero: R_s + R_L - 2R_L = 0, so **R_L = R_s**.
+
+That is the maximum power transfer theorem derived rather than memorised, and the calculus route is what an exam question means when it presents it as an optimisation problem.
+
+## 3.4 Critical points and the second derivative
+
+f(x) = x^3 - 6x^2 + 9x + 2.
+
+f'(x) = 3x^2 - 12x + 9 = 3(x^2 - 4x + 3) = 3(x-1)(x-3), so critical points at **x = 1 and x = 3**.
+
+f''(x) = 6x - 12. At x = 1: f'' = -6 < 0, a **local maximum**, f(1) = 1 - 6 + 9 + 2 = 6. At x = 3: f'' = +6 > 0, a **local minimum**, f(3) = 27 - 54 + 27 + 2 = 2.
+
+The second-derivative test in one line: negative means a peak, positive means a trough, zero is inconclusive and needs the first-derivative sign either side.`,
+      examTip: 'When a question gives you a rate and asks for a current or voltage, it is testing i = C dv/dt or v = L di/dt, not calculus for its own sake. Identify which element you have and the derivative is already written down for you.',
+      quiz: [
+        {
+          question: 'The voltage across a 50 microfarad capacitor increases at a constant 2000 V/s. What current flows?',
+          options: ['0.1 A', '10 A', '0.04 A', '0 A'],
+          correctIndex: 0,
+          explanation: 'i = C dv/dt = (50e-6)(2000) = 0.1 A. Note that the current depends only on the RATE of change, not on the voltage itself - a capacitor at a high but constant voltage passes no current at all.',
+        },
+        {
+          question: 'What is the derivative of f(t) = e^(-3t) cos(2t)?',
+          options: [
+            'e^(-3t)[-3cos(2t) - 2sin(2t)]',
+            'e^(-3t)[-3cos(2t) + 2sin(2t)]',
+            '-3e^(-3t) sin(2t)',
+            '-6 e^(-3t) sin(2t) cos(2t)',
+          ],
+          correctIndex: 0,
+          explanation: 'Product rule: (-3e^(-3t))cos(2t) + e^(-3t)(-2 sin(2t)) = e^(-3t)[-3cos(2t) - 2sin(2t)]. Both terms are negative because the exponential decays and the derivative of cosine is negative sine. Dropping either term is the usual slip.',
+        },
+        {
+          question: 'For f(x) = x^3 - 3x, at x = 1 the function has:',
+          options: ['a local minimum', 'a local maximum', 'an inflection point', 'no critical point'],
+          correctIndex: 0,
+          explanation: "f'(x) = 3x^2 - 3 = 0 gives x = ±1, so x = 1 is critical. f''(x) = 6x, and f''(1) = 6 > 0, so the curve is concave up and x = 1 is a local minimum. The local maximum is at x = -1, where f'' = -6.",
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Derivative df/dx represents instantaneous rate of change; essential for i_C = C·dv/dt and v_L = L·di/dt.',
@@ -541,6 +864,74 @@ The **Laplace transform** uses an improper integral:
 This integral converges when the exponential decay e^(-st) dominates the growth of f(t), defining the **region of convergence**.`,
       examTip: 'The three most important integration results for the FE exam: W = ½CV² (capacitor energy), W = ½LI² (inductor energy), and V_rms = V_peak/sqrt(2). These appear in power calculations, energy balance, and transient analysis.',
       importantNote: 'RMS (root mean square) is NOT the same as average. For a sinusoid, V_avg = 0 (over full cycle) but V_rms = Vm/sqrt(2). RMS is used because it gives the equivalent DC value that delivers the same power to a resistive load.',
+    },
+    {
+      id: 'ic-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 The integral relations in circuits
+
+The mirror images of the derivative relations, and just as directly examinable:
+
+- Capacitor: **v(t) = (1/C) integral i dt + v(0)**. A 100 microfarad capacitor initially at 0 V, fed a constant 5 mA for 2 s, reaches v = (1/100e-6)(5e-3)(2) = **100 V**.
+- Inductor: **i(t) = (1/L) integral v dt + i(0)**. A 2 H inductor across a constant 10 V for 0.4 s reaches i = (1/2)(10)(0.4) = **2 A**.
+
+Charge is the integral of current: Q = integral i dt. A battery delivering 3 A for 20 minutes moves Q = 3 x 1200 = **3600 C**.
+
+## 3.2 Average and rms by integration
+
+Both are defined as integrals over one period T:
+
+- Average: **(1/T) integral v dt**
+- rms: **sqrt[(1/T) integral v^2 dt]**
+
+For a sinusoid the average over a full cycle is zero and the rms is V_peak/sqrt(2). But the exam likes non-sinusoids, where you must actually integrate.
+
+**Square wave**, ±V_m: v^2 = V_m^2 at all times, so the mean square is V_m^2 and V_rms = **V_m**. A square wave's rms equals its peak.
+
+**Triangular wave**, ±V_m: integrating v^2 over the ramp gives a mean square of V_m^2/3, so V_rms = V_m/sqrt(3) = **0.577 V_m**.
+
+**Half-wave rectified sinusoid**: the sinusoid is present for half the period, so the mean square is half that of a full sinusoid, giving V_rms = V_m/2.
+
+## 3.3 Energy as an integral of power
+
+Energy = integral p dt. A resistor carrying i(t) = 2e^(-t) A, with R = 10 ohm:
+
+p(t) = i^2 R = 40 e^(-2t) W
+
+W = integral from 0 to infinity of 40 e^(-2t) dt = 40 x [(-1/2) e^(-2t)] from 0 to infinity = 40 x (1/2) = **20 J**.
+
+Stored energy has closed forms worth knowing without integrating: **(1/2) C V^2** in a capacitor and **(1/2) L I^2** in an inductor.
+
+## 3.4 Integration by parts, once
+
+integral t e^(-2t) dt, which appears in first-moment and settling-time calculations.
+
+Let u = t, dv = e^(-2t) dt. Then du = dt and v = (-1/2) e^(-2t).
+
+integral = uv - integral v du = (-t/2) e^(-2t) + (1/2) integral e^(-2t) dt = (-t/2) e^(-2t) - (1/4) e^(-2t) + C
+
+Evaluated from 0 to infinity: at infinity both terms vanish; at zero the value is -1/4. So the definite integral is **1/4**.`,
+      examTip: 'Learn the rms of the standard waveforms rather than integrating under time pressure: sinusoid V_m/sqrt(2), square V_m, triangle V_m/sqrt(3), half-wave rectified sinusoid V_m/2. One of these appears on almost every sitting.',
+      quiz: [
+        {
+          question: 'A constant 4 mA charges an initially uncharged 200 microfarad capacitor for 5 seconds. What is the final voltage?',
+          options: ['100 V', '40 V', '4 V', '0.1 V'],
+          correctIndex: 0,
+          explanation: 'v = (1/C) integral i dt = (1/200e-6)(4e-3)(5) = (5000)(0.02) = 100 V. Equivalently Q = it = 20 mC and v = Q/C = 0.02/200e-6 = 100 V. Both routes must agree.',
+        },
+        {
+          question: 'A symmetric triangular waveform has a peak value of 12 V. What is its rms value?',
+          options: ['6.93 V', '8.49 V', '12 V', '4.00 V'],
+          correctIndex: 0,
+          explanation: 'For a triangular wave V_rms = V_peak/sqrt(3) = 12/1.732 = 6.93 V. The 8.49 V distractor is V_peak/sqrt(2), which applies to a sinusoid - using the sinusoid factor on a non-sinusoid is the intended trap.',
+        },
+        {
+          question: 'How much energy is stored in a 500 microfarad capacitor charged to 200 V?',
+          options: ['10 J', '20 J', '0.1 J', '100 J'],
+          correctIndex: 0,
+          explanation: 'W = (1/2)CV^2 = 0.5 x 500e-6 x 40000 = 10 J. Forgetting the factor of one half gives 20 J, which is the most common error in energy-storage questions for both capacitors and inductors.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -641,6 +1032,84 @@ This gives **H(s) = Y(s)/U(s) = ωₙ²/(s² + 2ζωₙs + ωₙ²)**`,
       examTip: 'The damping ratio ζ is the MOST important parameter for second-order systems on the FE exam. ζ < 1 oscillates (underdamped), ζ = 1 is critically damped (fastest no-overshoot), ζ > 1 is overdamped (sluggish). For series RLC: ζ = R/(2sqrt(L/C)). Increasing R increases damping.',
       importantNote: 'Critically damped (ζ = 1) is NOT the fastest response — underdamped (ζ < 1) reaches the target faster but overshoots. Critically damped is the fastest WITHOUT overshoot. This distinction is tested on the FE exam.',
     },
+    {
+      id: 'de-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 First order: the RC circuit as an ODE
+
+KVL on a series RC driven by V_s gives RC dv/dt + v = V_s, a first-order linear ODE with tau = RC.
+
+Its solution never needs to be re-derived. Any first-order response is
+
+**x(t) = x(infinity) + [x(0+) - x(infinity)] e^(-t/tau)**
+
+For a 100 V step onto an uncharged capacitor with tau = 0.5 s: x(0+) = 0, x(infinity) = 100, so v(t) = 100(1 - e^(-2t)) V. At t = 0.5 s, v = 63.2 V.
+
+## 3.2 Second order: the characteristic equation
+
+A series RLC gives L d2i/dt2 + R di/dt + i/C = 0, whose characteristic equation is
+
+**s^2 + (R/L) s + 1/(LC) = 0**
+
+Write it as s^2 + 2 alpha s + omega_0^2 = 0 with alpha = R/2L (the damping factor) and omega_0 = 1/sqrt(LC) (the undamped natural frequency). Then:
+
+| Condition | Roots | Name | Response |
+|---|---|---|---|
+| alpha > omega_0 | two real negative | overdamped | no overshoot, slow |
+| alpha = omega_0 | repeated real | critically damped | fastest with no overshoot |
+| alpha < omega_0 | complex pair | underdamped | rings, decaying envelope |
+
+**Worked case:** R = 200 ohm, L = 0.1 H, C = 10 microfarad.
+alpha = 200/(2 x 0.1) = 1000, omega_0 = 1/sqrt(0.1 x 10e-6) = 1000.
+alpha equals omega_0 exactly, so the circuit is **critically damped** - the boundary case, and the one a designer aims for when settling time matters.
+
+Change R to 100 ohm: alpha = 500 < omega_0 = 1000, so underdamped, with damped frequency omega_d = sqrt(omega_0^2 - alpha^2) = sqrt(1e6 - 250000) = **866 rad/s**.
+
+## 3.3 Solving a separable equation
+
+dy/dt = -ky, the decay law behind radioactive decay, capacitor discharge and thermal cooling.
+
+Separate: dy/y = -k dt. Integrate: ln y = -kt + C, so **y = y_0 e^(-kt)**.
+
+A quantity falling to half its value in 5 s gives 0.5 = e^(-5k), so k = ln2/5 = **0.139 per second**, and the time constant 1/k = 7.2 s. Note that the time constant is longer than the half-life by the factor 1/0.693.
+
+## 3.4 Forced response and superposition
+
+The complete solution is **natural response + forced response**. The natural part comes from the characteristic roots and always decays in a stable circuit; the forced part has the same form as the driving function and is what survives at steady state.
+
+For a sinusoidal drive, the forced response is a sinusoid at the driving frequency - which is exactly what phasor analysis computes, and why phasors give you the steady state without ever writing the ODE.`,
+      examTip: 'Compute alpha = R/2L and omega_0 = 1/sqrt(LC) and compare them before anything else. That single comparison names the response - over, critical or underdamped - and most second-order questions are asking only for that name.',
+      quiz: [
+        {
+          question: 'A series RLC circuit has R = 20 ohm, L = 0.02 H and C = 50 microfarad. What is its damping character, and the damped natural frequency?',
+          options: [
+            'Underdamped, omega_d = 866 rad/s',
+            'Overdamped, no oscillation',
+            'Critically damped, omega_d = 0',
+            'Underdamped, omega_d = 1000 rad/s',
+          ],
+          correctIndex: 0,
+          explanation: 'alpha = R/(2L) = 20/0.04 = 500 and omega_0 = 1/sqrt(LC) = 1/sqrt(0.02 x 50e-6) = 1/sqrt(1e-6) = 1000. Since alpha < omega_0 the roots are complex and the response is underdamped. The damped frequency is omega_d = sqrt(omega_0^2 - alpha^2) = sqrt(1e6 - 250000) = 866 rad/s - always BELOW the undamped omega_0, which is why the last option is wrong.',
+        },
+        {
+          question: 'A first-order circuit has an initial value of 20 V, a final value of 5 V and tau = 2 ms. What is v(t)?',
+          options: [
+            'v(t) = 5 + 15 e^(-t/0.002) V',
+            'v(t) = 20 - 15 e^(-t/0.002) V',
+            'v(t) = 5 + 20 e^(-t/0.002) V',
+            'v(t) = 15 + 5 e^(-t/0.002) V',
+          ],
+          correctIndex: 0,
+          explanation: 'Use x(t) = x(inf) + [x(0+) - x(inf)]e^(-t/tau) = 5 + (20-5)e^(-t/0.002). Check the endpoints: at t = 0 it gives 20 V, and as t grows it settles to 5 V. Any candidate answer failing either endpoint check is wrong by inspection.',
+        },
+        {
+          question: 'A quantity decays exponentially with a half-life of 10 s. What is its time constant?',
+          options: ['14.4 s', '10 s', '6.93 s', '20 s'],
+          correctIndex: 0,
+          explanation: 'Half-life = tau ln2, so tau = 10/0.693 = 14.4 s. The time constant is always LONGER than the half-life, by the factor 1/0.693 = 1.44. Swapping them is a frequent error in both decay and transient questions.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'First-order: x(t) = x(∞) + [x(0) - x(∞)]·e^(-t/τ); τ = RC or L/R.',
@@ -729,6 +1198,77 @@ The eigenvalues of the system matrix A are the **poles** of the transfer functio
       examTip: 'The characteristic equation det(A - λI) = 0 gives eigenvalues. For the FE exam, you mostly need 2×2 eigenvalues: solve the quadratic λ² - trace·λ + det = 0. The key insight: eigenvalues with negative real parts mean stability.',
       importantNote: 'Eigenvalues of the system state matrix are identical to the poles of the transfer function. This connection between linear algebra and control theory is fundamental — know it for the FE exam.',
     },
+    {
+      id: 'la-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Cramer's rule on a two-mesh circuit
+
+Mesh analysis gives 5i1 - 2i2 = 10 and -2i1 + 6i2 = 4.
+
+Coefficient determinant: det(A) = (5)(6) - (-2)(-2) = 30 - 4 = **26**.
+
+Replace column 1 with the right-hand side: det(A1) = (10)(6) - (4)(-2) = 60 + 8 = 68, so **i1 = 68/26 = 2.62 A**.
+
+Replace column 2: det(A2) = (5)(4) - (-2)(10) = 20 + 20 = 40, so **i2 = 40/26 = 1.54 A**.
+
+Substitute back: 5(2.62) - 2(1.54) = 13.1 - 3.08 = 10.0. Correct.
+
+For 2x2 and 3x3 systems Cramer's rule is the fastest route on this exam. Beyond that the factorial growth makes Gaussian elimination faster.
+
+## 3.2 Matrix inverse, and when det = 0 matters
+
+For [[4, 2],[3, 1]]: det = (4)(1) - (2)(3) = 4 - 6 = **-2**, nonzero, so the inverse exists:
+
+A inverse = (1/-2)[[1, -2],[-3, 4]] = [[-0.5, 1],[1.5, -2]]
+
+If the determinant had been zero the system would be singular - meaning either no solution or infinitely many. In circuit terms a singular coefficient matrix usually signals a modelling error: a floating node with no reference, or two ideal voltage sources fighting in parallel.
+
+## 3.3 Eigenvalues and stability
+
+For A = [[-2, 1],[0, -3]], the characteristic equation is det(A - lambda I) = 0:
+
+(-2 - lambda)(-3 - lambda) - 0 = 0, so lambda = **-2 and -3**.
+
+Both have negative real parts, so both natural modes decay and the system is **stable**.
+
+Two shortcuts that let you check without expanding:
+- **Sum of eigenvalues = trace** = -2 + (-3) = -5, and indeed -2 - 3 = -5.
+- **Product of eigenvalues = determinant** = 6, and (-2)(-3) = 6.
+
+Use them as a check on every eigenvalue answer; they catch sign errors instantly.
+
+## 3.4 Eigenvalues as transfer-function poles
+
+For a state-space system dx/dt = Ax + Bu, the eigenvalues of A are exactly the **poles of the transfer function H(s)**. Stability therefore requires every eigenvalue in the left half plane, which is the same condition Routh-Hurwitz tests on the characteristic polynomial.
+
+Worked: A = [[0, 1],[-6, -5]]. Characteristic equation: lambda^2 - (trace)lambda + det = lambda^2 + 5 lambda + 6 = 0, giving lambda = **-2, -3**. Same poles as a transfer function with denominator s^2 + 5s + 6 - because they are the same system written two ways.`,
+      examTip: 'For a 2x2 matrix write the characteristic equation straight from trace and determinant: lambda^2 - (trace)lambda + det = 0. It is faster than expanding det(A - lambda I) and gives you a built-in check on the answer.',
+      quiz: [
+        {
+          question: 'What is the determinant of [[3, 5],[2, 4]]?',
+          options: ['2', '22', '-2', '12'],
+          correctIndex: 0,
+          explanation: 'det = ad - bc = (3)(4) - (5)(2) = 12 - 10 = 2. Adding the products instead of subtracting gives 22. A nonzero determinant means the matrix is invertible and the system has a unique solution.',
+        },
+        {
+          question: 'A 2x2 system matrix has trace = -7 and determinant = 12. What are its eigenvalues?',
+          options: ['-3 and -4', '3 and 4', '-7 and 12', '-1 and -12'],
+          correctIndex: 0,
+          explanation: 'The characteristic equation is lambda^2 - (trace)lambda + det = lambda^2 + 7 lambda + 12 = 0, factoring to (lambda+3)(lambda+4). Check: the eigenvalues sum to -7 and multiply to 12. Both negative, so the system is stable.',
+        },
+        {
+          question: 'A state matrix A has eigenvalues -1 and +2. What can you conclude about the system?',
+          options: [
+            'Unstable - one mode grows without bound',
+            'Stable - the average of the eigenvalues is positive',
+            'Marginally stable - the eigenvalues have opposite signs',
+            'Nothing without the input matrix B',
+          ],
+          correctIndex: 0,
+          explanation: 'Stability requires EVERY eigenvalue to have a negative real part. A single eigenvalue at +2 gives a mode growing as e^(2t), which dominates everything else. Averaging eigenvalues is meaningless, and B affects controllability, not stability.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Matrix form Ax = b solves n equations with n unknowns; use Gaussian elimination or Cramer\'s rule.',
@@ -814,6 +1354,64 @@ The cross product finds the area of the parallelogram and the normal direction.
 - **Divergence theorem**: ∮F·dA = ∫∫∫(∇·F)dV (surface flux = volume divergence)
 - **Stokes' theorem**: ∮F·dl = ∫∫(∇×F)·dA (line circulation = surface curl)`,
       examTip: 'For the FE exam: gradient points toward increasing potential, divergence measures source strength (charge density in E-fields), curl measures circulation (current density in B-fields). Know that ∇·B = 0 always (no magnetic monopoles) and ∇×E = 0 for electrostatics (conservative field).',
+    },
+    {
+      id: 'va-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Dot and cross, and what each is for
+
+A = 3i + 4j and B = 2i - j.
+
+**Dot** (scalar, measures alignment): A.B = (3)(2) + (4)(-1) = 6 - 4 = **2**. Since A.B = |A||B|cos(theta), and |A| = 5, |B| = 2.24, cos(theta) = 2/11.2 = 0.179, so theta = **79.7 degrees**.
+
+**Cross** (vector, measures perpendicularity, right-hand rule): A x B = (3)(-1) - (4)(2) in the k component = **-11k**. The magnitude 11 equals |A||B|sin(theta) = 5(2.24)(0.983) = 11. Consistent.
+
+Which to use, in physical terms: **work and power are dot products** (W = F.d, P = V.I in the phasor sense), while **forces and torques are cross products** (F = qv x B, tau = r x F). If the answer should be a number, use dot; if it should be a direction, use cross.
+
+## 3.2 The three operators
+
+- **grad f** turns a scalar into a vector pointing uphill. For f = x^2 + 3yz: grad f = 2x i + 3z j + 3y k. Electric field is E = -grad V, and the minus sign is why the field points from high to low potential.
+- **div F** turns a vector into a scalar measuring net outflow. For F = x i + y^2 j: div F = 1 + 2y. Gauss's law in differential form is div D = rho.
+- **curl F** turns a vector into a vector measuring circulation. Faraday is curl E = -dB/dt.
+
+Two identities that answer questions on their own: **curl(grad f) = 0** always, and **div(curl F) = 0** always. The first is why a conservative field has a potential; the second is why div B = 0 follows from B = curl A.
+
+## 3.3 Line integral for work
+
+Move along the straight path from (0,0) to (2,4) in the field F = y i + x j. Parametrise x = 2t, y = 4t for t from 0 to 1. Then dx = 2 dt, dy = 4 dt, and
+
+F.dr = y dx + x dy = (4t)(2 dt) + (2t)(4 dt) = 16t dt
+
+Integral from 0 to 1: 16(1/2) = **8**.
+
+Note that curl F = (d/dx)(x) - (d/dy)(y) = 1 - 1 = 0, so this field is conservative and the answer must be path-independent. Check with a potential: f = xy gives f(2,4) - f(0,0) = 8. Agrees, which is the point of checking curl first.
+
+## 3.4 Flux through a surface
+
+Flux = integral of F.n dA. For a uniform field F = 5k passing through a flat 2 m x 3 m plate lying in the xy plane, n = k and F.n = 5, so flux = 5 x 6 = **30**.
+
+Tilt the plate 60 degrees from the xy plane and the normal tilts with it: F.n = 5 cos(60) = 2.5, so flux = **15**. The cosine factor is the whole of Gauss's-law geometry, and it is why a Gaussian surface is chosen so the field is either parallel or perpendicular to it everywhere.`,
+      examTip: 'Test whether a field is conservative by taking its curl BEFORE computing a line integral. If curl F = 0 the integral depends only on the endpoints, and finding the potential function is far quicker than parametrising the path.',
+      quiz: [
+        {
+          question: 'For A = 2i + 3j and B = 4i - j, what is A.B?',
+          options: ['5', '11', '-5', '14'],
+          correctIndex: 0,
+          explanation: 'A.B = (2)(4) + (3)(-1) = 8 - 3 = 5. The dot product multiplies matching components and sums them; the result is a scalar, never a vector. A positive value means the vectors point generally the same way.',
+        },
+        {
+          question: 'Which identity is always true for any well-behaved scalar field f?',
+          options: ['curl(grad f) = 0', 'div(grad f) = 0', 'grad(div f) = 0', 'curl(grad f) = grad f'],
+          correctIndex: 0,
+          explanation: 'The curl of any gradient vanishes identically. This is exactly why an electrostatic field E = -grad V has zero curl, and hence why electrostatic work is path-independent. div(grad f) is the Laplacian, which is generally nonzero.',
+        },
+        {
+          question: 'A uniform field of magnitude 8 passes through a 4 m^2 flat surface whose normal makes 60 degrees with the field. What is the flux?',
+          options: ['16', '32', '27.7', '8'],
+          correctIndex: 0,
+          explanation: 'Flux = F A cos(theta) = 8 x 4 x cos(60) = 8 x 4 x 0.5 = 16. Using sin instead of cos gives 27.7 - the cosine applies because flux depends on the component of the field ALONG the normal.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -2369,6 +2967,136 @@ Note: current goes preferentially through the SMALLER resistance (path of least 
 | Parallel | Voltage | Currents | 1/R_eq = Σ(1/R) |`,
       examTip: 'The current divider formula is backwards from what you might expect: I through R₁ uses R₂ in the numerator. Think of it as: more resistance in YOUR branch means LESS current goes through it, so the OTHER resistance goes on top.',
     },
+    {
+      id: 'dcf-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Ladder reduction and a divider
+
+A 12 V source drives R1 = 4 ohm in series with the parallel pair R2 = 6 ohm and R3 = 12 ohm. Find the current from the source and the voltage across the parallel pair.
+
+The parallel pair: R23 = (6)(12)/(6+12) = 72/18 = **4 ohm**. Total: R = 4 + 4 = **8 ohm**. Source current: I = 12/8 = **1.5 A**.
+
+Voltage across the pair, by the divider: V23 = 12 x 4/8 = **6 V**. Check with Ohm's law: (1.5 A)(4 ohm) = 6 V. Agrees.
+
+Branch currents: I2 = 6/6 = 1 A, I3 = 6/12 = 0.5 A, and 1 + 0.5 = 1.5 A, which is KCL at the node. Two independent checks on one answer is what makes this reliable under time pressure.
+
+## 3.2 Current divider, and why it looks backwards
+
+The same 1.5 A splits between 6 ohm and 12 ohm. The divider gives
+
+I2 = I x R3/(R2+R3) = 1.5 x 12/18 = **1.0 A**
+
+The 6 ohm branch — the smaller resistance — takes the larger share, and the formula gets there by putting the OTHER resistance on top. If your answer gives more current to the larger resistor, you have the fraction upside down.
+
+## 3.3 Node analysis when reduction stalls
+
+Two sources, 10 V and 4 V, feed a common node through 2 ohm and 4 ohm respectively; a 4 ohm resistor runs from that node to ground. Series-parallel reduction cannot touch this, so use one node equation with node voltage V:
+
+(V - 10)/2 + (V - 4)/4 + V/4 = 0
+
+Multiply by 4: 2(V - 10) + (V - 4) + V = 0, so 2V - 20 + V - 4 + V = 0, giving 4V = 24 and **V = 6 V**.
+
+Currents: (6-10)/2 = -2 A (so 2 A flows INTO the node from the 10 V source), (6-4)/4 = 0.5 A out, 6/4 = 1.5 A out. Out equals 0.5 + 1.5 = 2 A in. KCL balances.
+
+## 3.4 Power accounting
+
+In 3.1, the source delivers P = VI = 12 x 1.5 = **18 W**. The 4 ohm series resistor dissipates I squared R = (1.5)(1.5)(4) = 9 W; the 6 ohm takes (1)(1)(6) = 6 W; the 12 ohm takes (0.5)(0.5)(12) = 3 W. Total dissipated = 9 + 6 + 3 = **18 W**. Delivered equals dissipated, as it must.`,
+      examTip: 'Finish every circuit problem with one check you did not use to get the answer - KCL at a node, or a power balance. It costs ten seconds and catches the sign and factor errors that account for most lost marks on this section.',
+      quiz: [
+        {
+          question: 'A 24 V source drives 3 ohm in series with the parallel combination of 12 ohm and 6 ohm. What current does the source deliver?',
+          options: ['3.43 A', '2.00 A', '4.00 A', '8.00 A'],
+          correctIndex: 0,
+          explanation: 'The parallel pair is (12)(6)/(12+6) = 72/18 = 4 ohm. Total resistance is 3 + 4 = 7 ohm, so I = 24/7 = 3.43 A. Choosing 4.00 A means dividing 24 by the parallel pair alone and forgetting the series 3 ohm.',
+        },
+        {
+          question: 'A 2 A source feeds two parallel resistors, 8 ohm and 2 ohm. How much current flows through the 8 ohm resistor?',
+          options: ['0.4 A', '1.6 A', '1.0 A', '0.25 A'],
+          correctIndex: 0,
+          explanation: 'The current divider puts the OTHER resistance on top: I_8 = 2 x 2/(8+2) = 0.4 A. Current prefers the lower-resistance path, so the 2 ohm branch takes the remaining 1.6 A. Answering 1.6 A is the classic inverted-fraction error.',
+        },
+        {
+          question: 'Solving a node equation gives a branch current of -3 A relative to your assumed direction. What should you do?',
+          options: [
+            'Accept it: the magnitude is 3 A and the true direction is opposite to your assumption',
+            'Redo the analysis with the arrow reversed',
+            'Take the absolute value and keep the assumed direction',
+            'The circuit is unsolvable as drawn',
+          ],
+          correctIndex: 0,
+          explanation: 'Assumed current directions are arbitrary and self-correcting. A negative result means the current flows the other way with magnitude 3 A. Redoing the problem wastes time and reversing the arrow without changing the sign gives a wrong answer downstream.',
+        },
+      ],
+    },
+    {
+      id: 'dcf-depth',
+      title: '4. Reading a Divider, and Choosing Your Method',
+      content: `## 4.1 What the divider fractions actually do
+
+The two divider rules look similar and behave oppositely, which is why they
+are the most-confused pair in DC analysis. Fix the total resistance and sweep
+how it is split:
+
+![Voltage and current fractions for R1 in a two-resistor pair with R1 + R2 fixed at 100 ohm. Raising R1 gives it more of the voltage and less of the current, and the two curves cross where the resistances are equal.](/courses/fe-ee/figures/circuits-divider-split.svg)
+
+Everything you need is in the crossing. Below the midpoint R1 is the smaller
+resistor, so it carries most of the current and drops least of the voltage;
+above it, the reverse. The curves are mirror images because the two fractions
+sum to one: R1/(R1+R2) + R2/(R1+R2) = 1.
+
+That is the sanity check to apply every time. If your two branch currents do
+not sum to the total, or your two voltage drops do not sum to the source, you
+have made an arithmetic error - not a conceptual one - and it will take ten
+seconds to find.
+
+## 4.2 Choosing between reduction, nodal and mesh
+
+Three methods, and picking the wrong one costs minutes:
+
+| Situation | Use | Why |
+|---|---|---|
+| Pure ladder of series/parallel groups | reduction | no simultaneous equations at all |
+| Several current sources, few nodes | nodal | current sources enter directly |
+| Several voltage sources, few loops | mesh | voltage sources enter directly |
+| Bridge or delta that will not reduce | nodal or mesh | reduction is impossible |
+
+The equation counts decide it when both are viable. For a network with N nodes
+and B branches, nodal needs **N - 1** equations and mesh needs **B - N + 1**.
+Count both, take the smaller.
+
+**Worked:** a bridge with 4 nodes and 6 branches. Nodal: 4 - 1 = 3 equations.
+Mesh: 6 - 4 + 1 = 3 equations. A tie, so pick by source type - if the bridge
+is driven by one voltage source, mesh is marginally cleaner.
+
+## 4.3 A source that is not ideal
+
+Real sources have internal resistance, and the exam tests what that does. A
+battery of EMF 12 V with r = 0.5 ohm driving a 5.5 ohm load:
+
+I = 12/(0.5 + 5.5) = **2 A**
+Terminal voltage = 12 - (2)(0.5) = **11 V**, not 12
+
+The terminal voltage droops under load, and the droop is I times r. At short
+circuit the current is limited only by r: 12/0.5 = 24 A, and the terminal
+voltage is zero. That short-circuit current is exactly the Norton current of
+the source, which is the bridge to the next chapter.
+
+**Load regulation** = (V_noload - V_fullload)/V_fullload = (12 - 11)/11 =
+**9.1%**. A stiff source is one with small r and therefore small regulation.
+
+## 4.4 Where the power goes
+
+For that same battery: the source produces P = EMF x I = 12 x 2 = **24 W**, of
+which the internal resistance eats I^2 r = (4)(0.5) = **2 W** and the load
+receives (4)(5.5) = **22 W**. Efficiency 22/24 = **91.7%**.
+
+Note what happens as the load resistance falls toward r: the load power rises
+to a maximum at R = r and then falls again, while efficiency falls
+monotonically. Those two curves peak in different places, which is the point
+the maximum-power-transfer question always turns on.`,
+      examTip: 'Count the nodes and the loops before you start writing equations. Nodal needs N-1, mesh needs B-N+1, and on an exam where every question is worth the same, spending two minutes on the wrong method is the most expensive mistake available.',
+      importantNote: 'Terminal voltage equals EMF only at zero current. Every question that mentions internal resistance, battery droop, or a source that "sags under load" is testing V_terminal = EMF - I r, and the answer is never simply the EMF.',
+    },
   ],
   keyTakeaways: [
     'V = IR (Ohm\'s law); P = VI = I²R = V²/R (power).',
@@ -2462,6 +3190,154 @@ The maximum power delivered:
 Maximum power transfer and maximum efficiency are **opposite goals**.`,
       examTip: 'Maximum power transfer delivers P_max = V_Th²/(4R_Th) at 50% efficiency. This matters in communications (match impedances for signal power). In power systems, efficiency matters more, so loads are NOT matched to source impedance.',
       importantNote: 'For AC circuits with complex impedances, maximum power transfer requires the CONJUGATE match: Z_L = Z_Th*. If Z_Th = R + jX, then Z_L should be R - jX. The reactive parts cancel, and resistive parts match.',
+    },
+    {
+      id: 'nt-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Thevenin equivalent, step by step
+
+A 12 V source feeds R1 = 6 ohm; from the R1-node a 3 ohm resistor goes to ground, and the load terminals sit across that 3 ohm. Find the Thevenin equivalent seen by the load.
+
+**V_th** — open-circuit voltage, load removed. The 6 ohm and 3 ohm form a divider: V_th = 12 x 3/(6+3) = **4 V**.
+
+**R_th** — kill the independent source (voltage source becomes a short) and look back in. The 6 ohm and 3 ohm are then in parallel: R_th = (6)(3)/9 = **2 ohm**.
+
+So the load sees 4 V behind 2 ohm. Attach a 2 ohm load and the current is 4/(2+2) = 1 A, with 2 V across the load.
+
+## 3.2 The same circuit by Norton
+
+I_N is the short-circuit current at the terminals. Shorting them puts the 3 ohm out of play, so I_N = 12/6 = **2 A**, and R_N = R_th = **2 ohm**.
+
+Check the source transformation: V_th = I_N x R_th = 2 x 2 = 4 V. Consistent with 3.1, as it must be — Thevenin and Norton are the same circuit written two ways.
+
+## 3.3 Superposition with two sources
+
+A 10 V source through 5 ohm and a 2 A source both feed a 5 ohm load to ground.
+
+**Voltage source alone** (current source opened): the 10 V divides across 5 + 5, giving V_L = **5 V**.
+
+**Current source alone** (voltage source shorted): 2 A sees two 5 ohm paths in parallel, so 1 A goes through the load, giving V_L = 1 x 5 = **5 V**.
+
+Superpose: V_L = 5 + 5 = **10 V**, and the load current is 2 A.
+
+Note what you may NOT superpose: power. Computing (5 V)^2/5 + (5 V)^2/5 = 10 W is wrong; the real load power is (10)^2/5 = **20 W**. Power is quadratic in the response, so it must be computed from the total.
+
+## 3.4 Maximum power transfer
+
+With the 4 V / 2 ohm Thevenin source of 3.1, maximum load power occurs at R_L = R_th = 2 ohm. Then V_L = 2 V and P_L = (2)^2/2 = **2 W**.
+
+Efficiency at that point is only 50% — half the power is burned in R_th. Maximum power and maximum efficiency are different design targets, and the exam tests that they are not the same thing.`,
+      examTip: 'To find R_th, kill INDEPENDENT sources only: short voltage sources, open current sources. A dependent source stays in the circuit - for those, apply a 1 V test source at the terminals and compute R_th = 1/I_test.',
+      quiz: [
+        {
+          question: 'A network has V_th = 20 V and R_th = 5 ohm. What is the Norton equivalent?',
+          options: ['4 A in parallel with 5 ohm', '4 A in series with 5 ohm', '100 A in parallel with 5 ohm', '20 A in parallel with 5 ohm'],
+          correctIndex: 0,
+          explanation: 'I_N = V_th/R_th = 20/5 = 4 A, and R_N = R_th = 5 ohm, with the resistance in PARALLEL for a Norton source. A Norton current source in series with its resistance would be meaningless, since the series element cannot change the source current.',
+        },
+        {
+          question: 'Superposition gives a load voltage of 6 V from one source and 4 V from another, acting alone. The load is 2 ohm. What is the actual power dissipated in it?',
+          options: ['50 W', '26 W', '18 W', '10 W'],
+          correctIndex: 0,
+          explanation: 'Superpose the VOLTAGE first: 6 + 4 = 10 V. Then P = V^2/R = 100/2 = 50 W. Adding the individual powers (36/2 + 16/2 = 26 W) is the trap: power is quadratic in the response and does not superpose.',
+        },
+        {
+          question: 'For maximum power transfer to a load from a source with 8 ohm internal resistance, what load resistance is required, and what efficiency results?',
+          options: ['8 ohm, 50% efficient', '8 ohm, 100% efficient', '0 ohm, 100% efficient', '16 ohm, 67% efficient'],
+          correctIndex: 0,
+          explanation: 'Maximum power transfer needs R_L = R_th = 8 ohm. With equal resistances the source dissipates as much as the load, so efficiency is exactly 50%. Power systems are designed for efficiency instead, which is why R_L >> R_th there.',
+        },
+      ],
+    },
+    {
+      id: 'nt-depth',
+      title: '4. Dependent Sources, Delta-Wye and Method Selection',
+      content: `## 4.1 Thevenin resistance when a dependent source is present
+
+The kill-the-sources shortcut applies to INDEPENDENT sources only. A dependent
+source is part of the circuit's behaviour, not an external excitation, so it
+must stay. Two routes:
+
+**Test-source method.** Remove independent sources, apply a 1 V test source at
+the terminals, compute the current it delivers, and R_th = 1 V / I_test.
+
+**Open-circuit / short-circuit method.** Compute V_oc and I_sc with everything
+present, and R_th = V_oc / I_sc. Usually the faster of the two, and it works
+whatever is inside.
+
+**Worked:** a network has V_oc = 6 V and I_sc = 1.5 A. Then R_th = 6/1.5 =
+**4 ohm**, whether or not it contains dependent sources - the ratio does not
+care what produced the two numbers.
+
+A dependent source can also make R_th **negative**, which is not an error: it
+is what an oscillator or a negative-impedance converter does, and it is how
+sustained oscillation is possible at all.
+
+## 4.2 Delta-wye conversion
+
+Some networks - the bridge in particular - have no series or parallel pair
+anywhere. Converting one delta to a wye usually unlocks the whole reduction.
+
+**Delta to wye:** each wye resistor is the product of its two adjacent delta
+resistors over the sum of all three.
+
+R_1 = R_a R_b/(R_a + R_b + R_c), and cyclically.
+
+**Wye to delta:** each delta resistor is the sum of the pairwise products over
+the opposite wye resistor.
+
+For the **balanced** case the whole thing collapses to two facts worth
+memorising: **R_wye = R_delta/3**, and **R_delta = 3 R_wye**.
+
+**Worked:** a delta of three 90 ohm resistors converts to a wye of 30 ohm
+each. A bridge whose upper delta is 90/90/90 becomes a wye of 30/30/30, after
+which the remaining network is a plain series-parallel reduction.
+
+## 4.3 Superposition: what it may and may not be used for
+
+Superposition applies to any **linear** response - voltage and current - and
+never to power, because power is quadratic. It also fails outright on any
+non-linear element: a diode, a transistor in a non-linear region, or a
+saturating core.
+
+The procedure is mechanical: one independent source active at a time, all
+others killed (voltage sources shorted, current sources opened), and the
+individual responses summed. **Dependent sources are never killed** - they
+remain active in every sub-analysis.
+
+Its cost is real. Superposition needs one full analysis per source, so with
+three sources it is three times the work of a single nodal analysis. It earns
+its place when the sources are at different frequencies, where nodal analysis
+cannot combine them in one set of phasors and superposition is the only route.
+
+## 4.4 Choosing the theorem
+
+| Question asks for | Reach for |
+|---|---|
+| Behaviour of one varying load | Thevenin - compute the equivalent once, then sweep |
+| A single branch current in a fixed network | mesh or nodal directly |
+| Response with sources at different frequencies | superposition, one frequency at a time |
+| Maximum power into a load | Thevenin, then R_L = R_th |
+| A bridge that will not reduce | delta-wye, then reduction |
+
+The Thevenin case is the one people under-use. If a question asks what happens
+for three different load resistances, computing the equivalent once and
+reusing it is three times faster than three full analyses.`,
+      examTip: 'Never kill a dependent source. If R_th cannot be found by inspection because one is present, use R_th = V_oc / I_sc - it needs two calculations you can already do and never requires a test source.',
+      quiz: [
+        {
+          question: 'A network containing a dependent source has V_oc = 10 V and I_sc = 2.5 A at its terminals. What is R_th?',
+          options: ['4 ohm', '25 ohm', '0.25 ohm', 'It cannot be determined with a dependent source present'],
+          correctIndex: 0,
+          explanation: 'R_th = V_oc/I_sc = 10/2.5 = 4 ohm. This ratio works regardless of what the network contains, which is exactly why it is the method of choice when killing sources is not permitted.',
+        },
+        {
+          question: 'A balanced delta of three 60 ohm resistors is converted to a wye. What is each wye resistance?',
+          options: ['20 ohm', '180 ohm', '60 ohm', '30 ohm'],
+          correctIndex: 0,
+          explanation: 'For the balanced case R_wye = R_delta/3 = 60/3 = 20 ohm. The wye is always the smaller of the pair; getting the direction backwards gives 180 ohm and a nine-fold error in any subsequent power calculation.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -2559,6 +3435,175 @@ To add two sinusoids at the same frequency:
 3. Convert back to polar for magnitude and phase`,
       examTip: 'At DC: inductors are short circuits (wire), capacitors are open circuits (break). At very high frequency: inductors are open, capacitors are short. This is the most important frequency-behavior fact for the FE exam.',
     },
+    {
+      id: 'acp-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Building an impedance
+
+A series RL branch has R = 30 ohm and L = 80 mH, driven at 60 Hz.
+
+omega = 2 pi f = 2 pi (60) = **377 rad/s**. Then X_L = omega L = 377 x 0.080 = **30.2 ohm**.
+
+Z = 30 + j30.2, magnitude sqrt(30^2 + 30.2^2) = sqrt(900 + 912) = **42.6 ohm**, angle arctan(30.2/30) = **45.2 degrees**.
+
+With a 120 V rms source, I = 120/42.6 = **2.82 A rms**, lagging the voltage by 45.2 degrees. In an inductive branch the current lags — ELI: in an inductor (L), E leads I.
+
+## 3.2 Series RLC at a chosen frequency
+
+R = 20 ohm, L = 50 mH, C = 100 microfarad, driven at 60 Hz.
+
+X_L = 377 x 0.050 = 18.85 ohm. X_C = 1/(omega C) = 1/(377 x 100e-6) = 1/0.0377 = **26.5 ohm**.
+
+Net reactance: X = X_L - X_C = 18.85 - 26.5 = **-7.7 ohm**, so the branch is net CAPACITIVE at this frequency and the current LEADS.
+
+|Z| = sqrt(20^2 + 7.7^2) = sqrt(400 + 59) = **21.4 ohm**, angle = arctan(-7.7/20) = **-21.1 degrees**.
+
+## 3.3 Parallel branches: add admittances
+
+A 10 ohm resistor sits in parallel with a j20 ohm inductive reactance. Working in admittance is faster than the product-over-sum:
+
+Y = 1/10 + 1/(j20) = 0.1 - j0.05 siemens.
+
+|Y| = sqrt(0.01 + 0.0025) = 0.1118 S, so |Z| = 1/0.1118 = **8.94 ohm**, at angle +26.6 degrees (the sign flips when you invert).
+
+## 3.4 rms, average and peak
+
+A sinusoid of 170 V peak has V_rms = 170/sqrt(2) = **120 V** — the familiar mains figure. Its full-cycle average is **zero**; the average of its magnitude is 2 V_peak/pi = 108 V, which is what a rectifier-type meter responds to.
+
+Only rms belongs in a power calculation. Using peak or average in P = V^2/R is a common and expensive slip.`,
+      examTip: 'Convert to omega = 2 pi f first and write it down. Most phasor errors on this exam are not conceptual - they are using f where omega belongs, which puts every reactance out by a factor of 6.28.',
+      quiz: [
+        {
+          question: 'A 100 microfarad capacitor is driven at 60 Hz. What is its reactance magnitude?',
+          options: ['26.5 ohm', '37.7 ohm', '0.0377 ohm', '16.7 ohm'],
+          correctIndex: 0,
+          explanation: 'X_C = 1/(omega C) with omega = 2 pi (60) = 377 rad/s, so X_C = 1/(377 x 100e-6) = 1/0.0377 = 26.5 ohm. Using f = 60 instead of omega gives 166 ohm; inverting the expression gives 0.0377.',
+        },
+        {
+          question: 'In a series circuit at a given frequency, X_L = 40 ohm and X_C = 55 ohm. The current relative to the applied voltage is:',
+          options: ['leading, because the branch is net capacitive', 'lagging, because the branch is net inductive', 'in phase, because the reactances are similar', 'leading, because X_L is smaller in magnitude than R'],
+          correctIndex: 0,
+          explanation: 'Net reactance is X_L - X_C = -15 ohm, so the branch is capacitive and the current leads the voltage. ICE: in a capacitor (C), I leads E. The value of R affects the size of the phase angle but never its sign.',
+        },
+        {
+          question: 'A sinusoidal voltage has a peak value of 340 V. What is its rms value?',
+          options: ['240 V', '340 V', '480 V', '216 V'],
+          correctIndex: 0,
+          explanation: 'For a sinusoid, V_rms = V_peak/sqrt(2) = 340/1.414 = 240 V. The 216 V distractor is the rectified average (2 V_peak/pi), which meters may display but which must never be used in a power calculation.',
+        },
+      ],
+    },
+    {
+      id: 'acp-depth',
+      title: '4. Reactance Across Frequency, and Non-Sinusoidal Waveforms',
+      content: `## 4.1 Why the two reactances cancel at exactly one frequency
+
+Inductive and capacitive reactance move in opposite directions with frequency,
+and on log axes that is unmistakable:
+
+![Inductive reactance rises in proportion to frequency while capacitive reactance falls as its inverse. The two are equal at one frequency only, where the net reactance passes through zero rather than merely becoming small.](/courses/fe-ee/figures/circuits-impedance-vs-frequency.svg)
+
+X_L = omega L is a straight line of slope +1 on log-log; X_C = 1/(omega C) has
+slope -1. Two straight lines of different slope cross exactly once, which is
+why a series LC has exactly one resonant frequency rather than a band of them.
+
+Below the crossing the capacitor dominates and the branch is capacitive, so
+current leads. Above it, the inductor dominates and current lags. At the
+crossing the net reactance is zero and the branch looks purely resistive.
+
+## 4.2 Impedance is not the sum of magnitudes
+
+A frequent and expensive error: for R = 30 ohm in series with X_L = 40 ohm,
+the impedance magnitude is **not** 70 ohm. Reactance is at right angles to
+resistance, so
+
+|Z| = sqrt(30^2 + 40^2) = sqrt(900 + 1600) = **50 ohm**
+
+Adding them arithmetically overstates the impedance by 40%, and would make the
+current 40% too small. The right triangle is not decoration - it is the whole
+relationship.
+
+## 4.3 Admittance, conductance and susceptance
+
+For parallel circuits, invert everything:
+
+**Y = 1/Z = G + jB**, where G is conductance and B is susceptance.
+
+The trap is that G is **not** 1/R when reactance is present. For Z = R + jX,
+
+Y = 1/(R + jX) = (R - jX)/(R^2 + X^2)
+
+so G = R/(R^2 + X^2) and B = -X/(R^2 + X^2). Only when X = 0 does G reduce to
+1/R.
+
+**Worked:** Z = 6 + j8 ohm. |Z| = 10, so |Y| = 0.1 S. Then G = 6/100 = 0.06 S
+and B = -8/100 = -0.08 S. Check: sqrt(0.06^2 + 0.08^2) = sqrt(0.0036+0.0064)
+= 0.1 S. Consistent.
+
+## 4.4 rms of the waveforms the exam actually uses
+
+Phasors assume a sinusoid. When the waveform is not sinusoidal the phasor
+machinery does not apply, but the rms definition still does, and these four
+values cover almost every non-sinusoidal question:
+
+| Waveform | rms | Relative to peak |
+|---|---|---|
+| Sinusoid | V_p/sqrt(2) | 0.707 |
+| Square (bipolar) | V_p | 1.000 |
+| Triangle / sawtooth | V_p/sqrt(3) | 0.577 |
+| Half-wave rectified sinusoid | V_p/2 | 0.500 |
+| Full-wave rectified sinusoid | V_p/sqrt(2) | 0.707 |
+
+The last row surprises people: full-wave rectification does not change the rms
+at all, because rms squares the signal and squaring removes the sign. It
+changes the AVERAGE, from zero to 2V_p/pi, which is what a DC meter reads.
+
+**Worked:** a 100 V peak square wave into 25 ohm dissipates V_rms^2/R =
+100^2/25 = **400 W**. The same peak as a sinusoid gives (70.7)^2/25 =
+**200 W** - exactly half, because the square wave sits at full amplitude all
+the time and the sinusoid does not.
+
+## 4.5 Phase measurement in practice
+
+An oscilloscope measures phase as a time offset, not an angle, so the
+conversion has to be done by hand:
+
+**phase (degrees) = 360 x (delta t / T)**
+
+where T is the period of one full cycle.
+
+**Worked:** at 60 Hz the period is 16.67 ms. A current zero-crossing lagging
+the voltage crossing by 1.85 ms is
+
+360 x (1.85/16.67) = **40 degrees** lagging, so pf = cos(40) = **0.766**.
+
+Two practical checks on that reading. The offset must be less than half a
+period, or you have measured to the wrong crossing and the true angle is the
+supplement. And the sign is set by which trace crosses first - current after
+voltage is lagging and inductive, current before voltage is leading and
+capacitive. An oscilloscope will happily show you a plausible number for the
+wrong pair of crossings, so identify the direction before trusting the value.`,
+      examTip: 'If a question gives a waveform sketch rather than the word "sinusoidal", stop before reaching for V_p/sqrt(2). Identify the shape first and use its own rms factor - this is the single most reliable trap in the AC section.',
+      quiz: [
+        {
+          question: 'A resistance of 8 ohm is in series with a capacitive reactance of 6 ohm. What is the impedance magnitude?',
+          options: ['10 ohm', '14 ohm', '2 ohm', '48 ohm'],
+          correctIndex: 0,
+          explanation: 'Resistance and reactance are perpendicular, so |Z| = sqrt(8^2 + 6^2) = sqrt(100) = 10 ohm. Adding them arithmetically to 14 ohm ignores the right angle and overstates the impedance by 40 percent.',
+        },
+        {
+          question: 'A 100 V peak bipolar square wave and a 100 V peak sinusoid each drive the same resistor. How do their dissipated powers compare?',
+          options: [
+            'The square wave dissipates twice as much',
+            'They dissipate the same power',
+            'The sinusoid dissipates twice as much',
+            'The square wave dissipates 1.41 times as much',
+          ],
+          correctIndex: 0,
+          explanation: 'Square-wave rms equals its peak (100 V); sinusoid rms is 70.7 V. Power goes as rms squared, so the ratio is (100/70.7)^2 = 2. The square wave sits at full amplitude continuously while the sinusoid spends most of its time below peak.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Phasor: v(t) = Vm·cos(ωt+φ) → V = Vm∠φ; all DC tools apply.',
@@ -2652,6 +3697,148 @@ The capacitor bank must supply 42.1 kVAR of reactive power.`,
       examTip: 'Power factor correction adds capacitors in PARALLEL with the inductive load (not in series). The capacitor supplies reactive power locally, reducing the reactive power drawn from the source. This lowers apparent power and current without changing the real power consumed.',
       importantNote: 'Over-correcting power factor (making it leading) can cause voltage rise and potential resonance problems. Utilities typically require PF between 0.90 and 1.00 lagging — not leading.',
     },
+    {
+      id: 'acpw-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 The power triangle from a load
+
+A single-phase load draws 20 A rms at 240 V rms with a lagging power factor of 0.80.
+
+S = V I = 240 x 20 = **4800 VA**
+P = S cos(theta) = 4800 x 0.80 = **3840 W**
+Q = S sin(theta), and sin(theta) = sqrt(1 - 0.64) = 0.60, so Q = 4800 x 0.60 = **2880 VAR** (lagging, so inductive and positive by convention)
+
+Check the triangle: sqrt(3840^2 + 2880^2) = sqrt(14.75e6 + 8.29e6) = sqrt(23.04e6) = 4800 VA. Consistent.
+
+The phase angle is arccos(0.80) = **36.9 degrees**, current lagging.
+
+## 3.2 Power factor correction
+
+Correct the load above to unity power factor at 60 Hz. The capacitor must supply the whole 2880 VAR:
+
+Q_C = V^2/X_C, so X_C = V^2/Q_C = 240^2/2880 = 57600/2880 = **20 ohm**.
+
+C = 1/(omega X_C) = 1/(377 x 20) = 1/7540 = **133 microfarad**.
+
+What changes: P stays at 3840 W — the capacitor supplies no real power. But S falls from 4800 VA to 3840 VA, so the line current falls from 20 A to 3840/240 = **16 A**, a 20% reduction. That current reduction is the whole economic point: smaller conductors and lower I squared R losses in the feeder.
+
+## 3.3 Correcting to 0.95 rather than unity
+
+Full correction is rarely economic. At pf = 0.95, theta = 18.2 degrees and the load may retain Q = P tan(theta) = 3840 x 0.329 = **1264 VAR**.
+
+The capacitor supplies only the difference: 2880 - 1264 = **1616 VAR**, needing X_C = 57600/1616 = 35.6 ohm and C = 1/(377 x 35.6) = **74.5 microfarad** — barely more than half the capacitance for most of the benefit. Diminishing returns near unity is why utilities set a target rather than demanding unity.
+
+## 3.4 Reading the sign of Q
+
+A load with leading power factor (capacitive) has negative Q by the usual convention: it SUPPLIES reactive power rather than absorbing it. Synchronous motors run overexcited do exactly this, which is why they are used as power-factor correctors in industrial plants.`,
+      examTip: 'Write S, P and Q as a right triangle before computing anything. Given any two of {S, P, Q, pf, theta} the rest follow by trigonometry, and the triangle keeps you from mixing watts with volt-amperes - which is the single most common error in this section.',
+      quiz: [
+        {
+          question: 'A load draws 10 kW at a lagging power factor of 0.70. What is its apparent power?',
+          options: ['14.3 kVA', '7.0 kVA', '10.0 kVA', '20.4 kVA'],
+          correctIndex: 0,
+          explanation: 'S = P/cos(theta) = 10/0.70 = 14.3 kVA. Multiplying instead of dividing gives 7.0 kVA, which would put apparent power below real power - impossible, since S is the hypotenuse of the power triangle and can never be smaller than P.',
+        },
+        {
+          question: 'A capacitor is added in parallel with an inductive load to correct the power factor. What happens to the real power drawn from the source?',
+          options: ['It is unchanged', 'It decreases in proportion to the correction', 'It increases', 'It falls to zero at unity power factor'],
+          correctIndex: 0,
+          explanation: 'An ideal capacitor absorbs no real power, so P is untouched. What changes is Q and therefore S and the line current. The benefit of correction is smaller conductors and lower I^2R feeder losses, not less real power delivered to the load.',
+        },
+        {
+          question: 'A 240 V, 60 Hz load needs 1200 VAR of capacitive correction. What capacitance is required?',
+          options: ['55.3 microfarad', '20.8 microfarad', '133 microfarad', '8.8 microfarad'],
+          correctIndex: 0,
+          explanation: 'X_C = V^2/Q = 57600/1200 = 48 ohm, then C = 1/(omega X_C) = 1/(377 x 48) = 55.3 microfarad. Forgetting to convert X_C to capacitance, or using f instead of omega, produces the other options.',
+        },
+      ],
+    },
+    {
+      id: 'acpw-depth',
+      title: '4. What a Poor Power Factor Actually Costs',
+      content: `## 4.1 The cost curve
+
+Hold the real power fixed at 1 kW and sweep the power factor. Apparent power
+and reactive power both climb steeply as the factor falls:
+
+![With real power held at 1 kW, apparent power S = P/pf and reactive power Q = P tan(arccos pf) both rise sharply as the power factor falls, while the real power that does the work stays flat.](/courses/fe-ee/figures/circuits-power-triangle.svg)
+
+Read the shape rather than the numbers. At pf = 1 the apparent power equals
+the real power and there is no reactive component at all. At pf = 0.7 the
+apparent power is already 43% higher than the real power. By pf = 0.4 it has
+more than doubled, and the reactive power exceeds the real power.
+
+Since line current is S/V, that curve **is** the current the utility must
+deliver and the conductors must carry - for exactly the same 1 kW of useful
+work throughout.
+
+## 4.2 Instantaneous power and where the negative part goes
+
+For v = V_m cos(omega t) and i = I_m cos(omega t - theta), the instantaneous
+power is
+
+p(t) = V I cos(theta) + V I cos(2 omega t - theta)
+
+using rms V and I. Two terms, and they behave completely differently:
+
+- The first is **constant**, equal to P. This is the energy that leaves the
+  source and does not come back.
+- The second **oscillates at twice the line frequency** with zero average.
+  This is energy sloshing into the reactance and back out again, twice per
+  cycle.
+
+When theta is nonzero, p(t) dips **negative** for part of each cycle: the load
+is returning energy to the source. That returned energy still had to travel
+down the conductors to get there, and it still caused I^2 R loss on the way.
+That is the physical reason reactive power costs money without doing work.
+
+At theta = 90 degrees (pure reactance) the constant term vanishes entirely,
+the waveform is symmetric about zero, and the average power is exactly zero -
+while the current is at full amplitude.
+
+## 4.3 Complex power, and the sign convention that matters
+
+**S = V I\\*** (voltage phasor times the CONJUGATE of the current phasor)
+= P + jQ.
+
+The conjugate is not optional. Using V I instead of V I* flips the sign of Q
+and turns a lagging load into a leading one.
+
+**Worked:** V = 240 at 0 degrees, I = 12 at -30 degrees (lagging).
+S = (240)(12 at +30) = 2880 at 30 degrees = 2880cos30 + j2880sin30
+= **2494 + j1440**, so P = 2494 W and Q = +1440 VAR.
+
+Positive Q means the load absorbs reactive power, i.e. it is inductive. A
+leading load returns negative Q.
+
+## 4.4 The three quantities on a bill
+
+| Quantity | Unit | Metered? | What it costs you |
+|---|---|---|---|
+| Real power P | kW / kWh | yes, always | the energy charge |
+| Apparent power S | kVA | often, as demand | the demand charge, sized by peak |
+| Reactive power Q | kVAR | sometimes | a power-factor penalty below target |
+
+A plant that halves its reactive power does not reduce its kWh at all. It
+reduces the kVA demand and removes the penalty, and it frees transformer and
+cable capacity that was being spent carrying current that did no work. Those
+are the three benefits an exam answer should name.`,
+      examTip: 'S = V I* with the conjugate. Write the star every time - the sign of Q is the whole answer to "is this load leading or lagging", and dropping the conjugate reverses it silently.',
+      quiz: [
+        {
+          question: 'A purely reactive load draws 10 A rms at 240 V rms. What is the average real power delivered to it?',
+          options: ['0 W', '2400 W', '1200 W', '1697 W'],
+          correctIndex: 0,
+          explanation: 'A purely reactive load has theta = 90 degrees, so P = VI cos(90) = 0. Energy flows into the reactance and back out twice per cycle with zero net transfer - yet the full 10 A still flows in the conductors and still causes I^2R loss there.',
+        },
+        {
+          question: 'V = 120 at 0 degrees and I = 5 at -60 degrees. What is the complex power S?',
+          options: ['300 + j520 VA', '300 - j520 VA', '600 at -60 degrees VA', '520 + j300 VA'],
+          correctIndex: 0,
+          explanation: 'S = V I* = (120)(5 at +60) = 600 at 60 degrees = 600cos60 + j600sin60 = 300 + j520. The conjugate flips the current angle from -60 to +60, and the positive Q confirms an inductive, lagging load.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'P = VI·cosφ (real, watts); Q = VI·sinφ (reactive, VAR); S = VI (apparent, VA).',
@@ -2738,6 +3925,182 @@ At the -3 dB points:
 | Q < 1 | Very wide | Damped systems |`,
       examTip: 'BW = f₀/Q tells you everything: higher Q = narrower bandwidth = more selective. On the FE exam, if asked about bandwidth, find Q first. Remember: Q = ω₀L/R, so increasing R decreases Q and widens bandwidth.',
       importantNote: 'The -3 dB points are where power drops to HALF (-3 dB ≈ 10·log(0.5)) — not where voltage drops to half. Voltage at -3 dB is 1/sqrt(2) ≈ 0.707 of peak. This is a common source of confusion.',
+    },
+    {
+      id: 'res-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Series resonance: the full set of numbers
+
+R = 10 ohm, L = 100 mH, C = 10 microfarad in series across a 50 V rms source.
+
+omega_0 = 1/sqrt(LC) = 1/sqrt(0.1 x 10e-6) = 1/sqrt(1e-6) = **1000 rad/s**, i.e. f_0 = 1000/(2 pi) = **159 Hz**.
+
+At resonance X_L = 1000 x 0.1 = 100 ohm and X_C = 1/(1000 x 10e-6) = 100 ohm — equal, as they must be. They cancel, so Z = R = **10 ohm** and the current is maximal: I = 50/10 = **5 A**.
+
+Q = omega_0 L/R = (1000)(0.1)/10 = **10**. Equivalently Q = (1/R)sqrt(L/C) = (1/10)sqrt(0.1/10e-6) = (1/10)(100) = 10. Bandwidth: BW = omega_0/Q = 1000/10 = **100 rad/s**.
+
+## 3.2 Voltage magnification
+
+The reactive voltages at resonance are NOT zero — they are large and opposite:
+
+V_L = I X_L = 5 x 100 = **500 V**, and V_C = 500 V, 180 degrees out of phase.
+
+That is Q times the 50 V source. A component rated for the supply voltage will fail here. Voltage magnification by Q is real, is the basis of tuned circuits, and is a favourite exam question precisely because the answer looks impossible.
+
+## 3.3 Half-power points
+
+The half-power frequencies sit approximately omega_0 ± BW/2 for high Q: 1000 ± 50, so **950 and 1050 rad/s**. At those points |Z| = R sqrt(2) = 14.1 ohm, the current has fallen to 5/sqrt(2) = 3.54 A, and the power to half its peak — which is what "half-power" names.
+
+## 3.4 Parallel resonance is the mirror image
+
+Take the same L and C in parallel with R. The resonant frequency is the same 1000 rad/s, but at resonance the parallel LC presents a very HIGH impedance, so the line current is MINIMAL rather than maximal, and the circuit acts as a band-stop rather than a band-pass.
+
+| | Series resonance | Parallel resonance |
+|---|---|---|
+| Impedance at omega_0 | minimum, = R | maximum |
+| Current at omega_0 | maximum | minimum |
+| Magnified quantity | voltage across L and C | current circulating in L and C |
+| Behaves as | band-pass / acceptor | band-stop / rejector |`,
+      examTip: 'Compute omega_0 = 1/sqrt(LC) first and check that X_L and X_C really are equal there. If they are not, you have a unit slip - almost always microfarads left as whole numbers instead of converted to farads.',
+      quiz: [
+        {
+          question: 'A series RLC circuit has L = 40 mH and C = 25 microfarad. What is its resonant frequency in rad/s?',
+          options: ['1000 rad/s', '159 rad/s', '6283 rad/s', '100 rad/s'],
+          correctIndex: 0,
+          explanation: 'omega_0 = 1/sqrt(LC) = 1/sqrt(0.040 x 25e-6) = 1/sqrt(1e-6) = 1000 rad/s. The 159 distractor is that answer converted to hertz - read whether the question asks for omega or f.',
+        },
+        {
+          question: 'At series resonance with Q = 20 and a 10 V source, what is the magnitude of the voltage across the inductor?',
+          options: ['200 V', '10 V', '0 V', '0.5 V'],
+          correctIndex: 0,
+          explanation: 'Voltage magnification at resonance is Q times the source: 20 x 10 = 200 V. The inductor and capacitor voltages are equal and opposite so they cancel in the loop, but each is individually large - which is why component voltage ratings matter in tuned circuits.',
+        },
+        {
+          question: 'How does a parallel RLC circuit behave at its resonant frequency?',
+          options: [
+            'Impedance is maximum and line current is minimum',
+            'Impedance is minimum and line current is maximum',
+            'Impedance is zero',
+            'It has no resonant frequency',
+          ],
+          correctIndex: 0,
+          explanation: 'Parallel resonance is the dual of series: the tank presents maximum impedance, so the current drawn from the line is minimum. This makes it a band-stop (rejector) circuit, whereas series resonance is band-pass (acceptor).',
+        },
+      ],
+    },
+    {
+      id: 'res-depth',
+      title: '4. Selectivity, Bandwidth and the Q Trade-off',
+      content: `## 4.1 What Q buys and what it costs
+
+Fix L and C so the resonant frequency does not move, and vary only R:
+
+![Series RLC current against frequency for Q = 2, 5 and 10, each normalised to its own peak. All three peak at the same frequency; higher Q gives a narrower band, which is the relationship BW = omega_0 / Q made visible.](/courses/fe-ee/figures/circuits-series-resonance.svg)
+
+Three facts the figure makes obvious and a sentence does not:
+
+- **The centre does not move.** omega_0 = 1/sqrt(LC) has no R in it, so
+  changing damping changes the shape and never the tuning.
+- **Higher Q is narrower.** BW = omega_0/Q exactly, so doubling Q halves the
+  bandwidth.
+- **The half-power line is where the band is measured.** The 0.707 line cuts
+  each curve at two points, and the gap between them is the bandwidth.
+
+The trade is unavoidable: a highly selective circuit rejects neighbouring
+frequencies well but responds slowly to changes, because a narrow bandwidth in
+frequency is a long settling time in the time domain. A radio front end wants
+high Q to separate stations; a power filter wants low Q so it does not ring.
+
+## 4.2 Bandwidth from the half-power frequencies
+
+The exact half-power frequencies are
+
+omega_1,2 = omega_0[sqrt(1 + 1/(4Q^2)) -/+ 1/(2Q)]
+
+which for Q above about 5 collapses to the approximation omega_0 ± BW/2 that
+the worked examples used.
+
+Two relations worth carrying:
+
+- **omega_0 = sqrt(omega_1 omega_2)** - the resonant frequency is the
+  GEOMETRIC mean of the half-power points, not the arithmetic mean. For low Q
+  the two differ noticeably.
+- **BW = omega_2 - omega_1 = R/L** for a series circuit, which is a route to
+  bandwidth that never needs Q at all.
+
+**Worked:** a circuit has half-power points at 900 and 1100 rad/s. The
+geometric mean is sqrt(900 x 1100) = sqrt(990000) = **995 rad/s**, not the
+1000 the arithmetic mean would suggest. BW = 200 rad/s, so Q = 995/200 =
+**4.98**.
+
+## 4.3 Parallel resonance with a real inductor
+
+An ideal parallel LC has infinite impedance at resonance. A real one does not,
+because the inductor carries winding resistance R_L in series with it. The
+tank's impedance at resonance becomes finite:
+
+**Z_tank = L/(R_L C)**
+
+which is often written as Q^2 R_L. This is the dynamic resistance, and it is
+what a real tank circuit presents to the source.
+
+**Worked:** L = 100 microhenry, C = 100 picofarad, R_L = 5 ohm.
+Z_tank = 100e-6/(5 x 100e-12) = 100e-6/500e-12 = **200 kilohm**.
+
+High but finite, and it is the number that sets the gain of a tuned amplifier
+stage.
+
+## 4.4 Energy view of Q
+
+Q has a definition independent of any circuit topology:
+
+**Q = 2 pi x (energy stored)/(energy dissipated per cycle)**
+
+A Q of 50 means the circuit stores about 50/(2 pi) = 8 times the energy it
+loses each cycle, so oscillation persists for roughly Q radians - about
+Q/(2 pi) = 8 full cycles - before decaying appreciably. That is why a high-Q
+resonator rings and a low-Q one does not, and why Q appears identically in
+mechanical resonators, quartz crystals and RLC circuits.
+
+## 4.5 Designing a filter to a specification
+
+A tuned circuit is to pass 455 kHz with a 10 kHz bandwidth, using a 100
+microhenry inductor. Find C, Q and the required R.
+
+**Capacitance from the centre frequency.** omega_0 = 2 pi (455e3) = 2.859e6
+rad/s. From omega_0 = 1/sqrt(LC),
+
+C = 1/(omega_0^2 L) = 1/((2.859e6)^2 x 100e-6) = 1/(8.174e12 x 1e-4)
+= 1/8.174e8 = **1.22 nanofarad**
+
+**Q from the bandwidth.** Q = f_0/BW = 455/10 = **45.5**.
+
+**R from Q.** For a series circuit Q = omega_0 L/R, so
+
+R = omega_0 L/Q = (2.859e6)(100e-6)/45.5 = 285.9/45.5 = **6.28 ohm**
+
+That total includes the inductor's own winding resistance, which at these
+frequencies is often the dominant term - meaning the achievable Q is set by
+the inductor you can build, not by a resistor you choose. If the winding alone
+measures 10 ohm, the bandwidth cannot be narrower than omega_0 L/10 = 28.6,
+i.e. BW = 455/28.6 = **15.9 kHz**, and the specification is unachievable with
+that component. Recognising that constraint is the difference between a
+calculation and a design.`,
+      examTip: 'Resonant frequency is the GEOMETRIC mean of the half-power frequencies, sqrt(f1 f2), not their average. At high Q the two agree closely enough to hide the error, which is exactly why the exam sets low-Q numbers where they do not.',
+      quiz: [
+        {
+          question: 'A resonant circuit has half-power frequencies of 400 and 900 rad/s. What is its resonant frequency?',
+          options: ['600 rad/s', '650 rad/s', '500 rad/s', '1300 rad/s'],
+          correctIndex: 0,
+          explanation: 'omega_0 is the GEOMETRIC mean: sqrt(400 x 900) = sqrt(360000) = 600 rad/s. The arithmetic mean gives 650, which is wrong - and the gap between the two answers grows as Q falls, which is why the exam chooses widely separated half-power points.',
+        },
+        {
+          question: 'A series RLC circuit has R = 4 ohm and L = 20 mH. What is its bandwidth?',
+          options: ['200 rad/s', '80 rad/s', '5000 rad/s', 'It cannot be found without C'],
+          correctIndex: 0,
+          explanation: 'BW = R/L = 4/0.020 = 200 rad/s. Bandwidth depends only on R and L - the capacitance sets where the band is centred but not how wide it is, which is why C is genuinely not needed here.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -2828,6 +4191,169 @@ When loads are unbalanced:
 - Use **symmetrical components** (positive, negative, zero sequence) for analysis`,
       examTip: 'Per-phase analysis is the key to solving three-phase problems quickly. Convert everything to wye, solve one phase, multiply power by 3. The FE exam typically gives balanced systems, so per-phase analysis works for most problems.',
       importantNote: 'Three-phase power P = sqrt(3)·V_L·I_L·cosφ uses LINE values (not phase values). This is the standard formula because line values are what meters measure at terminals. Make sure you identify whether given values are line or phase before applying formulas.',
+    },
+    {
+      id: '3ph-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Balanced wye load
+
+A balanced wye load of 10 ohm per phase is fed from a 208 V line-to-line, 60 Hz supply.
+
+In wye, V_line = sqrt(3) V_phase, so V_phase = 208/1.732 = **120 V**.
+In wye, I_line = I_phase = 120/10 = **12 A**.
+
+Total real power (purely resistive load, pf = 1):
+
+P = sqrt(3) V_L I_L cos(theta) = 1.732 x 208 x 12 x 1 = **4324 W**
+
+Cross-check per phase: 3 x V_phase x I_phase = 3 x 120 x 12 = 4320 W. The small difference is rounding in sqrt(3); either route is acceptable.
+
+## 3.2 The same load connected in delta
+
+Reconnect those 10 ohm elements in delta on the same 208 V line.
+
+In delta, V_phase = V_line = **208 V**, so I_phase = 208/10 = **20.8 A**.
+In delta, I_line = sqrt(3) I_phase = 1.732 x 20.8 = **36 A**.
+
+P = sqrt(3) x 208 x 36 = **12,970 W** — three times the wye figure.
+
+**That factor of three is the point.** The same three resistors draw three times the power in delta as in wye on the same line voltage, because each element sees sqrt(3) times the voltage and hence 3 times the power. It is why motor starters use wye for starting and switch to delta for running.
+
+## 3.3 A load with power factor
+
+A balanced delta load draws 30 A of line current at 480 V line-to-line with pf = 0.85 lagging.
+
+S = sqrt(3) V_L I_L = 1.732 x 480 x 30 = **24,940 VA**
+P = S x 0.85 = **21,200 W**
+Q = S x sin(arccos 0.85) = 24,940 x 0.527 = **13,140 VAR**
+
+Note that the sqrt(3) V_L I_L formula uses LINE quantities for both, whichever way the load is connected — that is why it is the one worth memorising.
+
+## 3.4 Delta-to-wye conversion for analysis
+
+A balanced delta of Z_delta converts to a wye of **Z_wye = Z_delta/3**. Converting a delta load to its wye equivalent lets you analyse one phase against neutral and multiply by three, which is almost always faster than working the delta directly.
+
+Applying it to 3.2: Z_wye = 10/3 = 3.33 ohm per phase, V_phase = 120 V, I_line = 120/3.33 = 36 A. Matches the delta answer exactly.`,
+      examTip: 'Write down which connection you have before touching sqrt(3). Wye: line voltage is sqrt(3) larger, currents equal. Delta: line current is sqrt(3) larger, voltages equal. Getting this backwards is the single biggest source of lost marks in three-phase problems.',
+      quiz: [
+        {
+          question: 'A balanced wye load is supplied at 480 V line-to-line. What is the phase voltage?',
+          options: ['277 V', '480 V', '831 V', '240 V'],
+          correctIndex: 0,
+          explanation: 'In wye, V_phase = V_line/sqrt(3) = 480/1.732 = 277 V. This is the standard 480/277 V commercial system, where 277 V is what lighting circuits use line-to-neutral.',
+        },
+        {
+          question: 'Three identical resistors draw 6 kW when connected in wye across a given line voltage. What power do they draw reconnected in delta on the same line?',
+          options: ['18 kW', '2 kW', '6 kW', '10.4 kW'],
+          correctIndex: 0,
+          explanation: 'Delta draws three times the wye power for the same line voltage, because each element sees sqrt(3) times the voltage and power goes as voltage squared. This is exactly why wye-delta starting reduces motor inrush - starting in wye draws a third of the delta current.',
+        },
+        {
+          question: 'A balanced three-phase load draws 25 A of line current at 208 V line-to-line with a power factor of 0.9. What is the real power?',
+          options: ['8.1 kW', '4.7 kW', '14.0 kW', '5.2 kW'],
+          correctIndex: 0,
+          explanation: 'P = sqrt(3) V_L I_L cos(theta) = 1.732 x 208 x 25 x 0.9 = 8106 W. The sqrt(3) formula takes LINE voltage and LINE current whatever the connection, which is what makes it the one to remember.',
+        },
+      ],
+    },
+    {
+      id: '3ph-depth',
+      title: '4. Why Three Phase, and What Unbalance Does',
+      content: `## 4.1 The factor of three, across the whole range
+
+The same three resistors, on the same line voltage, in the two connections:
+
+![Total real power against line voltage for three 10 ohm resistors connected in wye and in delta. The delta connection draws exactly three times the wye power at every voltage, not merely near one operating point.](/courses/fe-ee/figures/circuits-three-phase-wye-delta.svg)
+
+The ratio is exactly three everywhere, because each delta element sees
+sqrt(3) times the voltage a wye element sees, and power goes as voltage
+squared: (sqrt(3))^2 = 3.
+
+This is the whole basis of **wye-delta starting**. Start a motor in wye and it
+draws a third of the current and produces a third of the torque; switch to
+delta once it is up to speed. The trade is explicit - you cannot have the
+reduced inrush and the full starting torque at the same time.
+
+## 4.2 Why three phases rather than one or six
+
+Three reasons the exam expects:
+
+- **Constant instantaneous power.** For a balanced three-phase load the three
+  phase powers sum to a constant, with no 120 Hz pulsation. A single-phase
+  motor pulses at twice line frequency and needs extra mass or a starting
+  winding to run smoothly.
+- **No neutral current when balanced.** The three phase currents sum to zero,
+  so the neutral carries nothing and can be sized smaller - or omitted in a
+  three-wire delta.
+- **Less conductor for the same power.** Three-phase transmission moves a
+  given power with roughly 75% of the copper a comparable single-phase system
+  needs.
+
+Six phases would improve the first two only marginally while doubling the
+apparatus, which is why three is the settled compromise.
+
+## 4.3 Unbalance, and the neutral
+
+The zero-neutral-current result holds ONLY when the load is balanced. With
+unequal phase loads the neutral carries the phasor sum, and it is not
+generally the arithmetic difference.
+
+**Worked:** phase currents of 10 A, 10 A and 4 A, at the usual 120-degree
+spacing. Taking the first along the reference axis:
+
+I_a = 10 at 0, I_b = 10 at -120, I_c = 4 at +120
+
+Real parts: 10 + 10(-0.5) + 4(-0.5) = 10 - 5 - 2 = **3**
+Imag parts: 0 + 10(-0.866) + 4(+0.866) = -8.66 + 3.46 = **-5.2**
+
+I_n = sqrt(9 + 27) = **6.0 A**
+
+Note it is not 10 - 4 = 6 by coincidence of these numbers; change the angles
+and the arithmetic-difference shortcut fails. Always sum as phasors.
+
+A further trap in modern buildings: non-linear single-phase loads inject third
+harmonics, which are in phase across all three phases and therefore ADD in the
+neutral rather than cancelling. A neutral can carry more current than any
+phase, which is why codes require full-sized or oversized neutrals on
+harmonic-rich circuits.
+
+## 4.4 Two-wattmeter method
+
+Three-phase power can be measured with two wattmeters regardless of balance,
+provided there is no neutral connection:
+
+**P_total = W1 + W2**
+
+and for a balanced load the power factor follows from the ratio:
+
+**tan(theta) = sqrt(3)(W1 - W2)/(W1 + W2)**
+
+**Worked:** W1 = 8 kW, W2 = 2 kW. Total = **10 kW**.
+tan(theta) = 1.732(6)/10 = 1.039, so theta = 46.1 degrees and
+pf = cos(46.1) = **0.693**.
+
+When one wattmeter reads negative, the power factor is below 0.5 - a useful
+diagnostic that needs no calculation at all.`,
+      examTip: 'The two-wattmeter total is the SUM of the readings even when one is negative. A negative reading is not an error to be corrected by taking a magnitude; it is the instrument telling you the power factor is under 0.5.',
+      quiz: [
+        {
+          question: 'Two wattmeters measuring a balanced three-phase load read 6 kW and -1 kW. What is the total power?',
+          options: ['5 kW', '7 kW', '6 kW', '1 kW'],
+          correctIndex: 0,
+          explanation: 'P_total = W1 + W2 = 6 + (-1) = 5 kW. The negative reading is added, not subtracted or discarded - and its presence tells you immediately that the power factor is below 0.5.',
+        },
+        {
+          question: 'Why does the neutral of a balanced three-phase wye load carry no current?',
+          options: [
+            'The three phase currents are equal and 120 degrees apart, so they sum to zero as phasors',
+            'The neutral is not connected in a balanced system',
+            'The currents cancel in pairs, leaving one phase',
+            'Neutral current is blocked by the transformer',
+          ],
+          correctIndex: 0,
+          explanation: 'Three equal phasors spaced 120 degrees apart sum to zero, so nothing returns through the neutral. This fails as soon as the load is unbalanced, and fails badly with third-harmonic loads whose components are in phase across all three lines and therefore ADD in the neutral.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -2927,6 +4453,166 @@ Where **ωd = ω₀·sqrt(1-ζ²)** is the damped natural frequency.
 - **Capacitor switching**: closing a switch to charge a capacitor causes current spikes
 - **Solution**: series resistance to limit inrush current`,
       examTip: 'The damping ratio ζ = R/(2sqrt(L/C)) is your go-to parameter. Increasing R increases ζ (more damping). ζ < 1 means oscillation; ζ = 1 is the critical boundary. On the FE exam, you will often need to identify which case applies from given R, L, C values.',
+    },
+    {
+      id: 'tr-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 RC charging
+
+A 10 microfarad capacitor, initially uncharged, charges through 50 kilohm from a 100 V source.
+
+tau = RC = (50e3)(10e-6) = **0.5 s**.
+
+v_C(t) = 100(1 - e^(-t/0.5)) volts.
+
+At t = tau: v = 100(1 - 0.368) = **63.2 V** — the defining 63.2% of the final value.
+At t = 3 tau = 1.5 s: v = 100(1 - 0.0498) = **95.0 V**.
+At t = 5 tau = 2.5 s: v = **99.3 V**, conventionally "fully charged".
+
+The current runs the other way: i(t) = (100/50e3) e^(-t/0.5) = 2 e^(-t/0.5) mA, starting at **2 mA** and decaying to zero.
+
+## 3.2 The two limiting circuits
+
+Almost every transient multiple-choice question yields to sketching two circuits rather than solving anything:
+
+| Element | t = 0+ (just after switching) | t = infinity (steady state) |
+|---|---|---|
+| Capacitor, initially uncharged | short circuit | open circuit |
+| Capacitor, initially charged to V0 | voltage source V0 | open circuit |
+| Inductor, initially unenergised | open circuit | short circuit |
+| Inductor, carrying I0 | current source I0 | short circuit |
+
+The reason is the continuity rules: **capacitor voltage cannot change instantaneously, and inductor current cannot change instantaneously.** Everything else in a first-order circuit follows.
+
+## 3.3 RL energising with a series resistance
+
+A 2 H inductor with 100 ohm in series is switched onto 50 V.
+
+tau = L/R = 2/100 = **0.02 s** = 20 ms. Final current = 50/100 = **0.5 A**.
+
+i(t) = 0.5(1 - e^(-t/0.02)) A.
+
+At t = 0+ the inductor is an open circuit, so i = 0 and the full 50 V appears across the inductor. At steady state the inductor is a plain wire, so the whole 50 V sits across the resistor and the inductor voltage is zero.
+
+Stored energy at steady state: W = (1/2) L I^2 = 0.5 x 2 x 0.25 = **0.25 J**.
+
+## 3.4 The general first-order formula
+
+Any first-order transient can be written without solving a differential equation:
+
+**x(t) = x(infinity) + [x(0+) - x(infinity)] e^(-t/tau)**
+
+Find the final value from the steady-state circuit, the initial value from the continuity rule, and tau from the resistance seen by the reactive element with sources killed. Three quantities, no calculus.
+
+Example: the capacitor of 3.1 already charged to 40 V when the switch closes. Then x(0+) = 40, x(infinity) = 100, tau = 0.5 s, so v_C(t) = 100 - 60 e^(-2t) volts.`,
+      examTip: 'For tau, use the resistance the reactive element SEES with independent sources killed - which is the Thevenin resistance at its terminals, not necessarily the resistor drawn next to it. In a circuit with several resistors this is where most tau errors come from.',
+      quiz: [
+        {
+          question: 'A 100 microfarad capacitor discharges through 20 kilohm. How long is one time constant?',
+          options: ['2 s', '0.2 s', '20 s', '0.05 s'],
+          correctIndex: 0,
+          explanation: 'tau = RC = (20e3)(100e-6) = 2 s. After 2 s the voltage has fallen to 36.8% of its initial value, and after roughly 5 tau = 10 s it is conventionally considered fully discharged.',
+        },
+        {
+          question: 'An uncharged capacitor is in a circuit at the instant a switch closes. How does it behave at t = 0+?',
+          options: ['As a short circuit', 'As an open circuit', 'As a resistor equal to 1/(omega C)', 'As a voltage source equal to the supply'],
+          correctIndex: 0,
+          explanation: 'Capacitor voltage cannot change instantaneously, so an uncharged capacitor holds 0 V at t = 0+, which is exactly what a short circuit does. It becomes an open circuit only at steady state. An inductor is the mirror image: open at t = 0+, short at steady state.',
+        },
+        {
+          question: 'An RL circuit has L = 0.5 H and a Thevenin resistance of 250 ohm at the inductor terminals. What fraction of the final current is reached after 5 ms?',
+          options: ['91.8%', '63.2%', '36.8%', '99.3%'],
+          correctIndex: 0,
+          explanation: 'tau = L/R = 0.5/250 = 2 ms, so 5 ms is 2.5 time constants. The rising response gives 1 - e^(-2.5) = 1 - 0.082 = 91.8%. The 63.2% figure applies at exactly one time constant and 99.3% at five.',
+        },
+      ],
+    },
+    {
+      id: 'tr-depth',
+      title: '4. The Universal Curve, Switching and Second-Order Circuits',
+      content: `## 4.1 One pair of curves for every first-order circuit
+
+Every RC and RL transient in the syllabus is one of these two shapes, plotted
+in units of tau so the same picture serves every component value:
+
+![Charging and discharging exponentials against time in units of the time constant. The markers give the values the exam asks for: 63.2 percent of the change after one time constant, 95.0 percent after three, 99.3 percent after five.](/courses/fe-ee/figures/circuits-rc-rl-transient.svg)
+
+Memorise three points on it and you can answer most transient questions
+without the exponential at all:
+
+| Elapsed | Change completed | Remaining |
+|---|---|---|
+| 1 tau | 63.2% | 36.8% |
+| 2 tau | 86.5% | 13.5% |
+| 3 tau | 95.0% | 5.0% |
+| 5 tau | 99.3% | 0.7% |
+
+The curve never actually reaches its final value, which is why "fully charged"
+is a convention (five tau) rather than a fact.
+
+## 4.2 Finding tau when the circuit is not just R and C
+
+tau uses the resistance the reactive element **sees**, which is the Thevenin
+resistance at its terminals with independent sources killed - not whichever
+resistor is drawn nearest.
+
+**Worked:** a capacitor sits between a node and ground. From that node, 6 ohm
+goes to a voltage source and 12 ohm goes to ground. Kill the source (short it)
+and the capacitor sees 6 in parallel with 12 = **4 ohm**. With C = 250
+microfarad, tau = (4)(250e-6) = **1 ms** - not 1.5 ms from the 6 ohm alone,
+and not 3 ms from the 12 ohm alone.
+
+Getting this wrong scales every subsequent time by the same factor, so it is
+worth the extra ten seconds of drawing the killed-source circuit.
+
+## 4.3 Switching energy, and why inductors are dangerous
+
+Opening a switch in an inductive circuit forces di/dt toward infinity, and
+v = L di/dt follows it. A 0.5 H relay coil carrying 2 A, interrupted in 1
+microsecond, would in principle generate
+
+v = 0.5 x (2/1e-6) = **1 MV**
+
+In practice the switch contacts arc and clamp it far below that, which is
+exactly the damage mechanism. A flyback diode across the coil gives the
+current a path so it decays through the diode rather than through an arc,
+dissipating the stored (1/2)L I^2 = 1 J harmlessly.
+
+Capacitors have the mirror hazard: closing a switch onto a discharged
+capacitor asks for infinite di/dt from the source, which is why inrush current
+limiting exists.
+
+## 4.4 When the circuit is second order
+
+Put both L and C in the same loop and the response stops being a single
+exponential. The characteristic equation s^2 + (R/L)s + 1/(LC) = 0 gives
+alpha = R/2L and omega_0 = 1/sqrt(LC), and their comparison names the
+response - the same alpha-versus-omega_0 test the differential-equations
+chapter derives.
+
+**Worked:** R = 100 ohm, L = 10 mH, C = 1 microfarad.
+alpha = 100/0.020 = 5000, omega_0 = 1/sqrt(10e-3 x 1e-6) = 1/sqrt(1e-8) =
+10,000. Since alpha < omega_0, **underdamped**, with
+omega_d = sqrt(1e8 - 2.5e7) = **8660 rad/s**.
+
+The envelope decays as e^(-5000t), so the 1/e time is 200 microseconds and the
+ringing is at 8660/(2 pi) = 1378 Hz. Both numbers come straight from alpha and
+omega_d, with no differential equation solved.`,
+      examTip: 'Draw the killed-source circuit before computing tau. Independent voltage sources become shorts and current sources become opens, and the resistance the reactive element then sees is the only one that matters.',
+      quiz: [
+        {
+          question: 'A capacitor sees 12 ohm to ground and 4 ohm to an ideal voltage source. What resistance sets its time constant?',
+          options: ['3 ohm', '16 ohm', '12 ohm', '4 ohm'],
+          correctIndex: 0,
+          explanation: 'Kill the source by shorting it, and the capacitor sees 12 in parallel with 4 = 48/16 = 3 ohm. Using either resistor alone, or adding them in series, gives a time constant that is wrong by a factor of four or more.',
+        },
+        {
+          question: 'A 2 H inductor carrying 3 A has its circuit opened. How much energy must be dissipated somewhere?',
+          options: ['9 J', '6 J', '3 J', '18 J'],
+          correctIndex: 0,
+          explanation: 'W = (1/2)L I^2 = 0.5 x 2 x 9 = 9 J. That energy cannot vanish instantaneously, so without a flyback path it goes into an arc across the opening contacts - which is the mechanism that destroys switches in inductive circuits.',
+        },
+      ],
     },
   ],
   keyTakeaways: [
@@ -5186,6 +6872,67 @@ For a three-phase fault at a bus:
 Convert to actual: **I_fault = I_fault(pu) × I_base** where **I_base = S_base / (√3 · V_base)**`,
       examTip: 'On multi-zone power system problems, draw the per-unit circuit first. All transformers become wires (1:1 ratio). Then solve using simple series/parallel impedance combinations. This avoids the messy turns-ratio algebra that causes errors under exam time pressure.',
     },
+    {
+      id: 'pu-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Building a per-unit base
+
+Choose S_base = 100 MVA and V_base = 138 kV on a transmission section.
+
+Z_base = V_base^2/S_base = (138e3)^2/100e6 = 19.044e9/100e6 = **190.4 ohm**
+I_base = S_base/(sqrt(3) V_base) = 100e6/(1.732 x 138e3) = **418.4 A**
+
+A line of actual impedance 38 ohm is then Z_pu = 38/190.4 = **0.200 pu**.
+
+## 3.2 Why per unit exists: transformers disappear
+
+A transformer's per-unit impedance is the SAME referred to either side, so once everything is on a common base the turns ratios vanish from the calculation. That is the whole reason power engineers work this way - a network with six voltage levels becomes one flat circuit.
+
+Per-unit values also cluster in narrow, recognisable bands, which makes an error visible: transformer impedances land near 0.05-0.10 pu, generator subtransient reactances near 0.15-0.25 pu. A per-unit impedance of 8 is a mistake, not a component.
+
+## 3.3 Changing base
+
+Equipment is rated on its own base; the system uses another. Convert with
+
+**Z_new = Z_old x (S_new/S_old) x (V_old/V_new)^2**
+
+A 50 MVA transformer with 8% impedance on its own 13.8 kV base, moved to a 100 MVA, 13.8 kV system base:
+
+Z_new = 0.08 x (100/50) x (13.8/13.8)^2 = 0.08 x 2 = **0.16 pu**
+
+The voltage ratio is 1 here, but note it is SQUARED when it is not - that exponent is the most common slip in base conversion.
+
+## 3.4 Fault current straight from per unit
+
+Per-unit makes symmetrical fault current almost trivial. A three-phase bolted fault at a bus with total 0.16 pu reactance behind it, on a 100 MVA / 13.8 kV base:
+
+I_fault(pu) = 1.0/0.16 = **6.25 pu**
+I_base = 100e6/(1.732 x 13.8e3) = **4184 A**
+I_fault = 6.25 x 4184 = **26.2 kA**
+
+Equivalently the fault MVA is S_base/Z_pu = 100/0.16 = **625 MVA**, which is the number a switchgear rating is chosen against.`,
+      examTip: 'Per-unit impedance is unchanged across a transformer, but per-unit CURRENT and VOLTAGE bases are not - they scale with the turns ratio. Fix S_base once for the whole system and let V_base follow the transformer ratios.',
+      quiz: [
+        {
+          question: 'A system uses S_base = 100 MVA and V_base = 20 kV. What is Z_base?',
+          options: ['4 ohm', '5 ohm', '0.25 ohm', '2000 ohm'],
+          correctIndex: 0,
+          explanation: 'Z_base = V_base^2/S_base = (20e3)^2/100e6 = 400e6/100e6 = 4 ohm. Note it is the SQUARE of the voltage over the apparent power; using V rather than V^2 gives 0.0002 and a nonsense result.',
+        },
+        {
+          question: 'A generator rated 8% reactance on a 25 MVA base is placed on a 100 MVA system base at the same voltage. What is its per-unit reactance now?',
+          options: ['0.32 pu', '0.02 pu', '0.08 pu', '0.16 pu'],
+          correctIndex: 0,
+          explanation: 'Z_new = Z_old x (S_new/S_old) = 0.08 x (100/25) = 0.32 pu. Moving to a LARGER MVA base makes the per-unit impedance larger. Dividing instead of multiplying gives 0.02, which would understate fault current fourfold.',
+        },
+        {
+          question: 'A bus has 0.20 pu total reactance on a 100 MVA base. What is the three-phase fault MVA?',
+          options: ['500 MVA', '20 MVA', '100 MVA', '2000 MVA'],
+          correctIndex: 0,
+          explanation: 'Fault MVA = S_base/Z_pu = 100/0.20 = 500 MVA. Lower impedance means a stiffer bus and higher fault duty, which is what switchgear interrupting ratings must be selected against.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Choose S_base and V_base at one zone; derive Z_base = V_base²/S_base.',
@@ -5272,6 +7019,77 @@ No-load charging current: **I_c = V · ω · C · ℓ**
 Charging reactive power: **Q_c = V² · ω · C · ℓ** (can be hundreds of MVAR on long HV lines)`,
       examTip: 'SIL = V²/Z₀ is the "sweet spot" where the line generates exactly as much reactive power as it absorbs. Below SIL, voltage rises (Ferranti); above SIL, voltage drops. The FE exam may ask you to identify the Ferranti effect scenario — it always involves a lightly loaded or open-ended long line.',
     },
+    {
+      id: 'txl-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 Voltage drop and regulation
+
+A feeder carries 200 A at 0.9 lagging power factor over a line of R = 0.5 ohm and X = 1.2 ohm per phase, delivering 7.2 kV per phase at the load.
+
+The approximate drop (accurate for small angles, and what the FE expects):
+
+**V_drop = I(R cos(theta) + X sin(theta))** = 200(0.5 x 0.9 + 1.2 x 0.436) = 200(0.45 + 0.523) = 200(0.973) = **195 V**
+
+Sending-end phase voltage = 7200 + 195 = **7395 V**.
+
+Voltage regulation = (V_no-load - V_full-load)/V_full-load = 195/7200 = **2.7%**.
+
+Note what the reactive term did: at 0.9 pf the X sin(theta) term contributes MORE drop than the resistive term, even though X is only 2.4 times R. Improving power factor reduces sin(theta) and hence the drop - a second reason to correct power factor beyond current reduction.
+
+## 3.2 Line losses
+
+Real loss is I^2 R per phase, times three:
+
+P_loss = 3 x (200)^2 x 0.5 = 3 x 40000 x 0.5 = **60 kW**
+
+Delivered power = 3 x V_phase x I x cos(theta) = 3 x 7200 x 200 x 0.9 = **3.89 MW**.
+
+Efficiency = 3.89/(3.89 + 0.06) = **98.5%**.
+
+Halve the current by correcting the power factor to unity (same real power) and the loss falls by a factor of four, not two - I^2 R is quadratic, which is the entire economic argument for transmitting at high voltage and low current.
+
+## 3.3 Short, medium, long
+
+| Length | Model | What is included |
+|---|---|---|
+| Under ~80 km | short | series R and X only |
+| 80-250 km | medium (nominal pi) | series R+jX, shunt capacitance split at both ends |
+| Over 250 km | long | distributed parameters, hyperbolic functions |
+
+Shunt capacitance is why a lightly loaded long line can show a HIGHER receiving-end voltage than sending-end - the Ferranti effect. It is a capacitive charging current flowing through the line inductance, and it is the reason shunt reactors exist on long lines.
+
+## 3.4 Surge impedance loading
+
+A line's characteristic impedance Z_0 = sqrt(L/C) is typically 300-400 ohm for overhead lines. Loading at exactly Z_0 makes the reactive production of the shunt capacitance equal the reactive consumption of the series inductance, so the line neither absorbs nor supplies VARs and the voltage profile is flat.
+
+For a 345 kV line with Z_0 = 300 ohm: SIL = V^2/Z_0 = (345e3)^2/300 = **397 MW**. Below SIL the line supplies VARs and voltage rises; above it, the line absorbs VARs and voltage falls.`,
+      examTip: 'Use V_drop = I(R cos theta + X sin theta) for FE problems. It is the approximation that ignores the angle between sending and receiving voltage, and at the power factors these questions use it is accurate to well under a percent.',
+      quiz: [
+        {
+          question: 'A feeder carries 100 A at unity power factor through R = 0.4 ohm and X = 1.0 ohm per phase. What is the approximate voltage drop per phase?',
+          options: ['40 V', '100 V', '140 V', '108 V'],
+          correctIndex: 0,
+          explanation: 'V_drop = I(R cos theta + X sin theta) = 100(0.4 x 1 + 1.0 x 0) = 40 V. At unity power factor sin(theta) = 0, so the reactance contributes nothing to the drop - which is exactly why power factor correction reduces voltage drop as well as current.',
+        },
+        {
+          question: 'Line current is halved while delivering the same real power. What happens to the I^2R losses?',
+          options: ['They fall to one quarter', 'They halve', 'They are unchanged', 'They fall to one eighth'],
+          correctIndex: 0,
+          explanation: 'Loss goes as the square of current, so halving I gives (1/2)^2 = one quarter of the loss. This quadratic relationship is the reason transmission uses the highest practical voltage: for fixed power, higher voltage means lower current means far lower loss.',
+        },
+        {
+          question: 'A long transmission line is very lightly loaded. What does the Ferranti effect predict?',
+          options: [
+            'Receiving-end voltage exceeds sending-end voltage',
+            'Receiving-end voltage collapses to zero',
+            'The line draws maximum reactive power',
+            'Losses reach their maximum'
+          ],
+          correctIndex: 0,
+          explanation: 'On a lightly loaded long line the shunt capacitance charging current flows through the series inductance and raises the receiving-end voltage above the sending end. Shunt reactors are installed specifically to absorb that excess and hold the voltage down.',
+        },
+      ],
+    },
   ],
   keyTakeaways: [
     'Distributed parameters: Z = R + jωL per km (series), Y = G + jωC per km (shunt).',
@@ -5357,6 +7175,71 @@ For three-phase: **Q_c(3φ) = 3 · V_ph² · ω · C** or **Q_c(3φ) = V_LL² ·
 - Utility may also penalize leading PF`,
       examTip: 'The capacitor sizing formula Q_c = P·(tan(θ_old) − tan(θ_new)) is the single most tested power factor correction equation. P stays the same (capacitors do not change real power); only Q changes. Make sure to use the ANGLE (arccos of PF), not the PF directly, in the tangent.',
       importantNote: 'Capacitors do NOT change real power P. They only reduce the reactive power Q drawn from the source. The load still consumes the same Q internally — the capacitor supplies it locally so the source does not have to.',
+    },
+    {
+      id: 'pfc-worked',
+      title: '3. Worked Examples',
+      content: `## 3.1 The correction calculation, end to end
+
+A plant draws 500 kW at 0.75 lagging from a 4160 V, 60 Hz supply. Correct it to 0.95 lagging.
+
+**Before:** theta_1 = arccos(0.75) = 41.4 degrees, tan(theta_1) = 0.882, so Q_1 = 500 x 0.882 = **441 kVAR**. S_1 = 500/0.75 = **667 kVA**.
+
+**After:** theta_2 = arccos(0.95) = 18.2 degrees, tan(theta_2) = 0.329, so Q_2 = 500 x 0.329 = **164 kVAR**. S_2 = 500/0.95 = **526 kVA**.
+
+**Capacitor rating:** Q_C = Q_1 - Q_2 = 441 - 164 = **277 kVAR**.
+
+The general formula is worth carrying: **Q_C = P[tan(theta_1) - tan(theta_2)]**.
+
+## 3.2 What it buys
+
+Line current before: I = S/(sqrt(3) V) = 667e3/(1.732 x 4160) = **92.6 A**
+Line current after: 526e3/(1.732 x 4160) = **73.0 A**
+
+A 21% current reduction. Feeder losses go as I^2, so they fall by 1 - (73/92.6)^2 = **38%**. On a feeder of 0.3 ohm per phase that is 3(92.6^2 - 73^2)(0.3) = 3(8575 - 5329)(0.3) = **2.9 kW** saved continuously, plus released transformer and cable capacity.
+
+## 3.3 Sizing the capacitor bank
+
+At 4160 V, delta-connected: Q_C per phase = 277/3 = 92.3 kVAR, and each capacitor sees the full line voltage.
+
+X_C = V^2/Q_phase = (4160)^2/92.3e3 = 17.3e6/92.3e3 = **187 ohm**
+C = 1/(omega X_C) = 1/(377 x 187) = **14.2 microfarad per phase**
+
+## 3.4 Why not correct to unity
+
+Three reasons the exam expects you to know:
+
+- **Diminishing returns.** Going 0.75 to 0.95 needed 277 kVAR; going 0.95 to 1.00 needs a further 164 kVAR for a much smaller current saving.
+- **Overcorrection risk.** A fixed bank sized for full load leaves the plant leading at light load, which can raise voltage above limits and cause resonance with system inductance.
+- **Tariffs stop at a target.** Utilities typically penalise below about 0.90-0.95 and pay nothing extra above it, so unity buys no billing benefit.
+
+Automatic switched banks with contactors staged in steps solve the light-load problem, at higher capital cost.`,
+      examTip: 'Q_C = P[tan(theta_1) - tan(theta_2)] is the one formula to memorise here. Compute both tangents from the power factors first, and note that real power P is the SAME before and after - the capacitor changes only the reactive component.',
+      quiz: [
+        {
+          question: 'A 200 kW load at 0.8 lagging is to be corrected to unity. What capacitor rating is required?',
+          options: ['150 kVAR', '250 kVAR', '160 kVAR', '200 kVAR'],
+          correctIndex: 0,
+          explanation: 'tan(arccos 0.8) = 0.75, so Q = 200 x 0.75 = 150 kVAR. Correcting to unity means the capacitor supplies all of it. The 250 figure is the apparent power S = 200/0.8, a different quantity entirely.',
+        },
+        {
+          question: 'After power factor correction, what happens to the real power drawn by the load?',
+          options: ['Unchanged', 'Reduced in proportion to the improvement', 'Increased slightly', 'Reduced to zero at unity'],
+          correctIndex: 0,
+          explanation: 'Capacitors supply reactive power only, so P is untouched. What falls is S and therefore the line current, which is where the saving comes from - lower I^2R feeder losses and released capacity, not less real power.',
+        },
+        {
+          question: 'Why is a plant usually corrected to about 0.95 rather than to unity?',
+          options: [
+            'Diminishing returns and the risk of overcorrection at light load',
+            'Unity power factor is physically impossible',
+            'Capacitors cannot supply that much reactive power',
+            'Utilities charge more at unity power factor'
+          ],
+          correctIndex: 0,
+          explanation: 'The last increment to unity costs disproportionate kVAR for little current saving, and a fixed bank sized for full load leaves the plant leading at light load, raising voltage and risking resonance. Tariffs also stop rewarding improvement around 0.90-0.95.',
+        },
+      ],
     },
   ],
   keyTakeaways: [

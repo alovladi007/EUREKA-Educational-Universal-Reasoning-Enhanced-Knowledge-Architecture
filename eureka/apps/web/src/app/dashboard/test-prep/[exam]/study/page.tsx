@@ -33,6 +33,10 @@ import Link from 'next/link';
 import { useParams } from 'next/navigation';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
+import { useTheme } from 'next-themes';
+import 'katex/dist/katex.min.css';
 import {
   ArrowLeft, BookOpen, Check, ChevronRight, Circle, Clock, FlaskConical,
   GraduationCap, Lightbulb, ListChecks, PlayCircle, Video,
@@ -44,6 +48,7 @@ import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
+import { darkVariant } from '@/components/ui/markdown';
 import {
   getStudyAxis, countChapters, axisNoun, readChaptersKey,
   assertAxisCoverage, type StudyUnit,
@@ -67,9 +72,20 @@ const ACCENT: Record<string, { dot: string; soft: string; text: string }> = {
 };
 const accentOf = (key: string) => ACCENT[key] ?? ACCENT.slate;
 
-/** Markdown renderers - the lesson bodies use GFM tables and blockquotes
- *  heavily, and unstyled tables are unreadable. */
-const md = {
+/**
+ * Markdown renderers for the book column.
+ *
+ * The lesson bodies use GFM tables and blockquotes heavily, and unstyled
+ * tables are unreadable, so this keeps the reader's own typography rather
+ * than borrowing the generic `prose` styling.
+ *
+ * Figures follow the same convention the Electronic Devices course
+ * established: an ordinary markdown image whose ALT TEXT IS THE CAPTION,
+ * with a matched `.dark.svg` sibling. An <img> cannot inherit page CSS, so
+ * the swap happens here, using the same darkVariant rule the shared
+ * renderer uses rather than a second copy of it.
+ */
+const mdBase = {
   h2: (p: any) => <h2 className="text-xl font-bold mt-8 mb-3 first:mt-0" {...p} />,
   h3: (p: any) => <h3 className="text-base font-semibold mt-6 mb-2" {...p} />,
   h4: (p: any) => <h4 className="text-sm font-semibold mt-4 mb-1.5" {...p} />,
@@ -97,6 +113,35 @@ const md = {
     <code className="rounded bg-muted px-1.5 py-0.5 text-[13px] font-mono" {...p} />
   ),
 };
+
+/** The renderer map, with figures resolved for the active theme. */
+function makeMd(isDark: boolean) {
+  return {
+    ...mdBase,
+    img: ({ node, src, alt, ...props }: any) => {
+      const resolved = typeof src === 'string' && isDark ? darkVariant(src) : src;
+      return (
+        // <span>, not <figure>: react-markdown puts images inside a <p>, and
+        // a <figure> there is invalid HTML that React re-parents at
+        // hydration - which shows up as a hydration mismatch.
+        <span className="my-6 block">
+          <img
+            {...props}
+            src={resolved}
+            alt={alt ?? ''}
+            loading="lazy"
+            className="mx-auto block h-auto max-w-full rounded-lg border bg-background"
+          />
+          {alt ? (
+            <span className="mt-2 block text-center text-xs text-muted-foreground">
+              {alt}
+            </span>
+          ) : null}
+        </span>
+      );
+    },
+  };
+}
 
 interface Chapter {
   id: string;
@@ -155,6 +200,16 @@ export default function ExamStudyPage() {
   const [read, setRead] = React.useState<Set<string>>(new Set());
   const [videos, setVideos] = React.useState<UnitVideo[]>([]);
   const [videoIdx, setVideoIdx] = React.useState(0);
+
+  // next-themes resolves on the client only. Render the light figure on the
+  // server pass and swap after mount, so SSR and first client render agree.
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const md = React.useMemo(
+    () => makeMd(mounted && resolvedTheme === 'dark'),
+    [mounted, resolvedTheme],
+  );
 
   // Chapter metadata comes from the curriculum, so titles and read times
   // never drift from the syllabus the rest of the app shows.
@@ -494,7 +549,11 @@ export default function ExamStudyPage() {
                         </span>
                         <h3 className="text-lg font-bold">{s.title}</h3>
                       </div>
-                      <ReactMarkdown remarkPlugins={[remarkGfm]} components={md}>
+                      <ReactMarkdown
+                        remarkPlugins={[remarkGfm, remarkMath]}
+                        rehypePlugins={[rehypeKatex]}
+                        components={md}
+                      >
                         {s.content}
                       </ReactMarkdown>
                       {s.importantNote && (
