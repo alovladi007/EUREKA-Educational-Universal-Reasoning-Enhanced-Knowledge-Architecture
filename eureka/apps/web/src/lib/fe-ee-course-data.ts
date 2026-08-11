@@ -2894,13 +2894,43 @@ fee_dc_fundamentals: {
     {
       id: 'dcf-ohm-kirchhoff',
       title: '1. Ohm\'s Law and Kirchhoff\'s Laws',
-      content: `## 1.1 Ohm's Law
+      content: `## 1.1 Reading the schematic before you analyse it
+
+Every FE Electrical question that shows a circuit expects you to identify the
+components from their symbols alone, without a legend. Misreading one symbol
+does not cost you part of a question; it changes which equation you write, and
+the answer is then wrong by a mechanism no amount of careful arithmetic can
+recover. Spend the time here once.
+
+![The component symbols the FE Electrical and Computer exam draws without labelling. Sources are shown upright so the polarity marks read correctly; the two-terminal passives are shown horizontally as they appear in a ladder.](/courses/fe-ee/figures/sch-symbols-reference.svg)
+
+Four pairs account for most misreadings on the exam:
+
+| Confused pair | The distinguishing mark | Consequence of misreading |
+|---|---|---|
+| DC source vs current source | + / − inside the circle vs a single arrow | You constrain the wrong quantity in KCL/KVL |
+| Capacitor vs battery cell | equal-length plates vs one long and one short | Wrong element law: i = C dv/dt vs a fixed V |
+| Diode vs Zener | straight cathode bar vs bent bar | Reverse-bias behaviour flips entirely |
+| Ground vs negative rail | three tapering bars vs a single bar | Node reference moves, so every node voltage shifts |
+
+The rule underneath all four: a **source** fixes one quantity and lets the
+circuit choose the other. A voltage source fixes V and the circuit sets I; a
+current source fixes I and the circuit sets V. Everything else in DC analysis
+follows from that and from Ohm's law.
+
+## 1.2 Ohm's Law
 
 **V = I·R** relates voltage, current, and resistance.
 
 Three equivalent forms for power: **P = V·I = I²R = V²/R**
 
-## 1.2 Kirchhoff's Current Law (KCL)
+Pick the power form by what you already know, not by habit. If you have solved
+for a branch current, I²R needs no further division; if you have a node
+voltage, V²/R does. Both are algebraically the same statement, and choosing
+the one that matches your known quantity removes a step where sign errors get
+introduced.
+
+## 1.3 Kirchhoff's Current Law (KCL)
 
 **The sum of currents entering a node equals the sum leaving:**
 
@@ -2908,7 +2938,7 @@ Three equivalent forms for power: **P = V·I = I²R = V²/R**
 
 KCL is conservation of charge — charge cannot accumulate at a node.
 
-## 1.3 Kirchhoff's Voltage Law (KVL)
+## 1.4 Kirchhoff's Voltage Law (KVL)
 
 **The sum of voltage rises around any closed loop equals zero:**
 
@@ -2923,7 +2953,47 @@ For any DC circuit:
 2. **Apply KCL** at each node (n-1 independent equations for n nodes)
 3. **Apply KVL** around each independent loop
 4. **Apply Ohm's law** (V = IR) to relate voltages and currents
-5. **Solve** the system of equations`,
+5. **Solve** the system of equations
+
+## 1.5 The three laws on one circuit
+
+Description in words is where circuit problems go wrong. "A 12 V source drives
+4 Ω in series with 6 Ω in parallel with 12 Ω" has to be held entirely in your
+head; the same statement drawn is read in a second:
+
+![A 12 V source feeding R1 = 4 ohm in series with the parallel pair R2 = 6 ohm and R3 = 12 ohm. Node A is the junction the two parallel branches share.](/courses/fe-ee/figures/sch-dc-ladder.svg)
+
+Work it in the order the laws come in.
+
+**Reduce.** R2 and R3 share both of their nodes, so they are in parallel:
+R2‖R3 = (6 × 12)/(6 + 12) = 72/18 = **4 Ω**. That sits in series with R1, so
+the source sees R_eq = 4 + 4 = **8 Ω**.
+
+**Ohm's law for the source current.** I = 12/8 = **1.5 A**.
+
+**KVL around the outer loop.** The drop across R1 is 1.5 × 4 = 6 V, so node A
+sits at 12 − 6 = **6 V** above the reference. The two drops sum to the source:
+6 + 6 = 12 V. If they had not summed, you would stop here rather than carry the
+error forward.
+
+**KCL at node A.** Each parallel branch sees the same 6 V:
+
+| Branch | Voltage | Resistance | Current | Power |
+|---|---|---|---|---|
+| R1 | 6 V | 4 Ω | 1.500 A | 9.0 W |
+| R2 | 6 V | 6 Ω | 1.000 A | 6.0 W |
+| R3 | 6 V | 12 Ω | 0.500 A | 3.0 W |
+| **Source** | 12 V | 8 Ω (eq.) | **1.500 A** | **18.0 W** |
+
+The branch currents sum to 1.000 + 0.500 = 1.500 A, which is the source
+current — that is KCL closing. The dissipated powers sum to 9 + 6 + 3 = 18 W,
+which is 12 V × 1.5 A — that is conservation of energy closing. Two independent
+checks, both arithmetic, both taking about five seconds.
+
+Notice which branch carries more. R2 is the *smaller* resistor and takes twice
+the current of R3, while both drop the same voltage. That is the whole content
+of the current-divider rule, and seeing it once on a drawn circuit is worth
+more than memorising which resistance goes in the numerator.`,
       examTip: 'If your calculated current is negative, the actual direction is opposite to your assumed direction — the magnitude is still correct. Do NOT redo the problem. This is the beauty of the systematic approach: arbitrary assumptions are self-correcting.',
       importantNote: 'KCL applies at every node, and KVL applies around every loop — these laws are ALWAYS valid in lumped-element circuits. When other techniques (Thevenin, superposition) seem unclear, fall back to KCL/KVL. They never fail.',
     },
@@ -3121,6 +3191,15 @@ fee_network_theorems: {
 Any linear two-terminal network can be replaced by:
 - **V_Th** (Thevenin voltage) in series with **R_Th** (Thevenin resistance)
 
+The claim is stronger than it first sounds. It is not that the two circuits
+behave similarly, or behave the same for one load — it is that **no measurement
+made at terminals a-b can distinguish them, for any load whatsoever**. That is
+what makes the theorem worth the effort: you do the reduction once, then sweep
+the load as many times as the question asks without touching the original
+network again.
+
+![The same one-port drawn as a Thevenin source (4 V behind 2 ohm, in series) and as its Norton equivalent (2 A across 2 ohm, in parallel). Terminals a-b are the port; nothing measured there can tell the two apart.](/courses/fe-ee/figures/sch-thevenin-pair.svg)
+
 ### Finding V_Th and R_Th
 
 1. **Remove the load** from terminals A-B
@@ -3146,7 +3225,73 @@ Any linear network = **I_N** (current source) in parallel with **R_N**
 | Analyzing varying loads | Thevenin or Norton |
 | Voltage-source-heavy circuit | Thevenin more intuitive |
 | Current-source-heavy circuit | Norton more intuitive |
-| Need current through one element | Thevenin often fastest |`,
+| Need current through one element | Thevenin often fastest |
+
+## 1.3 Reducing a real network, and checking it two ways
+
+Take a 6 V source in series with R₁ = 3 Ω, with R₂ = 6 Ω across the output
+terminals. Reduce it to the pair drawn above.
+
+**V_Th, by open circuit.** With nothing across a-b, no current flows out of the
+port, so R₁ and R₂ form a plain divider:
+V_Th = 6 × 6/(3 + 6) = 36/9 = **4 V**.
+
+**R_Th, by source deactivation.** Kill the 6 V source — replace it with a wire,
+because a voltage source holds zero volts when off, and a wire is the element
+that holds zero volts. R₁ and R₂ are then both connected between the a node and
+the reference, i.e. in parallel:
+R_Th = (3 × 6)/(3 + 6) = 18/9 = **2 Ω**.
+
+**I_N, by short circuit — the independent check.** Now short a-b directly. The
+short puts 0 V across R₂, so R₂ carries no current at all and the entire source
+current goes through R₁ into the short:
+I_N = 6/3 = **2 A**.
+
+Those three numbers must satisfy V_Th = I_N · R_N. Here 2 A × 2 Ω = 4 V, which
+matches the open-circuit voltage computed by a completely different route. This
+is the verification worth building the habit around: **compute two of the three
+and predict the third**. If the prediction fails, the error is in the reduction,
+not in whatever you do next.
+
+| Quantity | How it is found | Load present? | Value here |
+|---|---|---|---|
+| V_Th | open-circuit voltage at a-b | none (open) | 4 V |
+| I_N | short-circuit current at a-b | short | 2 A |
+| R_Th = R_N | sources deactivated, look in | none | 2 Ω |
+| Consistency | V_Th = I_N · R_N | — | 2 × 2 = 4 ✓ |
+
+## 1.4 What the equivalent is for: sweeping the load
+
+With the equivalent in hand, every load question is one division:
+I_L = 4/(2 + R_L), and P_L = I_L²R_L.
+
+| R_L | I_L = 4/(2+R_L) | V_L = I_L·R_L | P_L = I_L²R_L | Efficiency P_L/P_total |
+|---|---|---|---|---|
+| 0 Ω (short) | 2.000 A | 0.00 V | 0.00 W | 0 % |
+| 1 Ω | 1.333 A | 1.33 V | 1.78 W | 33 % |
+| **2 Ω (matched)** | **1.000 A** | **2.00 V** | **2.00 W** | **50 %** |
+| 4 Ω | 0.667 A | 2.67 V | 1.78 W | 67 % |
+| 8 Ω | 0.400 A | 3.20 V | 1.28 W | 80 % |
+| ∞ (open) | 0 A | 4.00 V | 0.00 W | — |
+
+Three things in that table are worth carrying into the exam.
+
+First, **power peaks at R_L = R_Th**, at P_max = V_Th²/(4R_Th) = 16/8 = 2 W.
+That is the maximum power transfer result, and here it arrives as an observation
+about a table rather than a formula to recall.
+
+Second, the peak is **flat**. Moving from 2 Ω to either 1 Ω or 4 Ω — a factor of
+two in either direction — costs only 11 % of the delivered power, 1.78 W against
+2.00 W. Matching is worth doing, but a question that claims a small mismatch is
+catastrophic is describing something other than a resistive load.
+
+Third, **matched does not mean efficient**. At R_L = R_Th exactly half the power
+drawn from the source is burned inside R_Th, so efficiency is 50 %. Maximum
+power transfer and maximum efficiency are different design goals that point in
+opposite directions: signal circuits match to get the most signal out, power
+systems deliberately keep R_Th ≪ R_L so that efficiency rises toward 100 % and
+the delivered power, though below the theoretical peak, costs far less to
+supply.`,
       examTip: 'To find R_Th: deactivate sources (voltage → short, current → open) and calculate resistance looking into the terminals. A common FE exam mistake is deactivating sources incorrectly — voltage sources become SHORT circuits (zero voltage), current sources become OPEN circuits (zero current).',
       importantNote: 'Dependent sources are NEVER deactivated in Thevenin/Norton analysis. Only independent sources are turned off. If the circuit has dependent sources, use the test source method: apply a test voltage V_test, find resulting I_test, then R_Th = V_test/I_test.',
     },
@@ -3884,7 +4029,83 @@ At resonance:
 | At resonance | Z minimum | Z maximum |
 | Current | Maximum | Minimum |
 | Impedance | Z = R | Z = R (or Q²R for practical) |
-| Application | Band-pass filter | Band-reject filter |`,
+| Application | Band-pass filter | Band-reject filter |
+
+## 1.4 One circuit, numbers all the way through
+
+Resonance questions are quick once the circuit is on paper, because every
+quantity comes from the same three components:
+
+![A series RLC circuit driven by a sinusoidal source: R = 10 ohm, L = 100 mH and C = 10 microfarad in one loop. Series resonance is the condition that makes this loop look purely resistive.](/courses/fe-ee/figures/sch-rlc-series.svg)
+
+**Resonant frequency.** ω₀ = 1/√(LC) = 1/√(0.1 × 10×10⁻⁶) = 1/√(10⁻⁶) =
+**1000 rad/s**, which is f₀ = 1000/2π = **159.2 Hz**.
+
+**The reactances at that frequency.** X_L = ω₀L = 1000 × 0.1 = 100 Ω, and
+X_C = 1/(ω₀C) = 1/(1000 × 10×10⁻⁶) = 100 Ω. Equal, as they must be — that
+equality *is* the definition of resonance, and computing both is the fastest
+check that you inverted LC correctly.
+
+**Quality factor, two ways.** Q = ω₀L/R = 1000 × 0.1/10 = 10. Independently,
+Q = (1/R)√(L/C) = (1/10)√(0.1/10⁻⁵) = (1/10)√(10⁴) = (1/10)(100) = 10. Same
+answer by a different route.
+
+**Bandwidth.** BW = ω₀/Q = 1000/10 = **100 rad/s**, i.e. 15.92 Hz. The
+half-power frequencies are not simply ω₀ ± BW/2; they are
+
+ω = ∓R/(2L) + √((R/2L)² + 1/(LC)) = ∓50 + √(2500 + 10⁶) = ∓50 + 1001.25
+
+giving **951.25 and 1051.25 rad/s**. Their difference is exactly 100 rad/s, so
+the bandwidth formula holds precisely, while their *geometric* mean —
+√(951.25 × 1051.25) = 1000.0 — is ω₀. The band is symmetric on a logarithmic
+axis, not a linear one, which is why the arithmetic midpoint 1001.25 is slightly
+above ω₀ rather than equal to it.
+
+## 1.5 Voltage magnification, and why it surprises people
+
+Drive the loop above with a 10 V rms source at resonance. The impedance is
+purely R = 10 Ω, so I = 10/10 = 1 A rms. Then:
+
+| Element | Impedance at ω₀ | Voltage across it | Relative to source |
+|---|---|---|---|
+| R | 10 Ω | 10.0 V | 1× |
+| L | j100 Ω | 100.0 V | **10×** |
+| C | −j100 Ω | 100.0 V | **10×** |
+| L and C together | j100 − j100 = 0 | 0.0 V | 0× |
+
+A 10 V source produces 100 V across the inductor. Nothing is violated: the
+inductor and capacitor voltages are 180° out of phase and cancel exactly, so
+KVL around the loop closes on 10 V. But the *individual* element voltages are
+Q times the source, and Q = 10 here. This is why a component rated for the
+supply voltage can fail in a resonant circuit, and it is a favourite exam trap:
+the question gives a source voltage and asks for V_C, and the answer is not the
+source voltage.
+
+Move off resonance and the effect collapses quickly. At ω = 2000 rad/s,
+X_L = 200 Ω and X_C = 50 Ω, so the net reactance is 150 Ω and
+|Z| = √(10² + 150²) = 150.3 Ω — fifteen times the resonant impedance, with the
+current down by the same factor. High Q buys sharp selectivity; it does not buy
+a broad response.
+
+## 1.6 The parallel case, using the same components
+
+Rearrange those same three elements in parallel across a source and every
+statement inverts. ω₀ is unchanged at 1/√(LC) = 1000 rad/s, because it depends
+only on L and C. But now:
+
+- The L and C branches carry equal and opposite currents that **circulate
+  between them** rather than returning to the source, so the current drawn from
+  the supply is a *minimum* at resonance.
+- The impedance seen by the source is a *maximum*, not a minimum.
+- **Current** magnification replaces voltage magnification: the tank branches
+  carry Q times the source current.
+
+A useful way to keep the pair straight is to ask what the resonant element
+*shares* with the source. In series, all elements share the current, so the
+dramatic quantity is voltage. In parallel, all elements share the voltage, so
+the dramatic quantity is current. Everything else — the factor of Q, the
+BW = ω₀/Q relation, the flat-topped selectivity trade-off — carries over
+unchanged.`,
       examTip: 'Series resonance: impedance MINIMUM, current MAXIMUM. Parallel resonance: impedance MAXIMUM, current MINIMUM. This is the most important distinction. The resonant frequency formula ω₀ = 1/sqrt(LC) is the same for both.',
     },
     {
@@ -4152,7 +4373,97 @@ Phase windings form a closed triangle.
 
 ### Delta-Wye Conversion
 
-For balanced impedances: **Z_Δ = 3 · Z_Y** (or Z_Y = Z_Δ/3)`,
+For balanced impedances: **Z_Δ = 3 · Z_Y** (or Z_Y = Z_Δ/3)
+
+## 1.4 The two loads, drawn
+
+Every three-phase question begins with deciding which of these two you are
+looking at, because the √3 goes in a different place for each:
+
+![Three equal impedances connected in wye, sharing a neutral point N, and the same three connected in delta as a closed triangle. Terminals A, B and C are the three line conductors in both cases.](/courses/fe-ee/figures/sch-wye-delta.svg)
+
+The distinction to hold on to is *which quantity the phase element sees*:
+
+- In **wye**, each element sits between a line and the neutral, so it sees the
+  **phase voltage** V_L/√3, and whatever current flows through it is also the
+  line current — there is nowhere else for that current to go.
+- In **delta**, each element sits between two lines, so it sees the **full line
+  voltage**. But each line conductor feeds two elements, so the line current is
+  √3 times the current in any one element.
+
+Exactly one √3 appears in each connection, and it is on the quantity the
+element does *not* share with the line. Getting this backwards is the single
+most common three-phase error, and it is worth re-deriving from the picture
+rather than memorising four rows.
+
+## 1.5 The same three impedances, both ways
+
+Take a balanced 208 V (line-to-line) supply and three 10 Ω resistive elements.
+Connect them first in wye, then in delta, and compute everything.
+
+| Quantity | Wye connection | Delta connection |
+|---|---|---|
+| Voltage across each element | 208/√3 = 120.1 V | 208 V |
+| Current in each element | 120.1/10 = 12.01 A | 208/10 = 20.80 A |
+| Line current | 12.01 A | √3 × 20.80 = 36.03 A |
+| Power per element | 12.01² × 10 = 1442 W | 20.80² × 10 = 4326 W |
+| **Total real power** | **4.33 kW** | **12.98 kW** |
+
+The delta connection draws **exactly three times** the power of the wye from the
+same supply, and the ratio is not approximate: algebraically
+P_Y = 3(V_L/√3)²/Z = V_L²/Z, while P_Δ = 3V_L²/Z. Nothing about the elements
+changed — only how they are wired — which is the whole basis of wye-delta
+motor starting, where a motor is brought up to speed in wye at one third of the
+inrush and then switched to delta for full torque.
+
+Check the total power the other way as well:
+P = √3 · V_L · I_L · cos φ. For the wye case that is
+1.732 × 208 × 12.01 × 1 = 4327 W, and for delta
+1.732 × 208 × 36.03 × 1 = 12,980 W. Both agree with the per-element column to
+within rounding. **This formula uses line quantities and works for either
+connection** — that is precisely why it is the one to reach for when a problem
+gives you a nameplate rather than a diagram. The √3 is already built in, so
+applying it to phase quantities double-counts.
+
+## 1.6 Per-phase analysis, and when it is legal
+
+For a balanced system, all three phases carry the same magnitudes displaced by
+120°, so you may solve **one phase** and rotate the answer. The standard
+procedure is:
+
+1. Convert any delta load to its wye equivalent with Z_Y = Z_Δ/3.
+2. Draw the single-phase circuit: one source of V_L/√3 at 0°, one Z_Y, neutral
+   as the reference.
+3. Solve it as an ordinary AC circuit.
+4. Multiply the resulting power by three; rotate voltages and currents by
+   ∓120° for the other two phases.
+
+Two conditions make this legal, and the exam does test them. The source must be
+balanced, and the load must be balanced. When either fails — one blown fuse, one
+oversized single-phase load — the phases no longer differ by a simple rotation,
+the neutral carries current, and per-phase analysis gives the wrong answer
+rather than an approximate one. Unbalanced systems need node analysis, or
+symmetrical components at the professional level.
+
+For a balanced wye load the neutral current is
+I_a + I_b + I_c = I(1∠0° + 1∠−120° + 1∠120°) = 0. That is why a balanced
+four-wire system can run with a thin neutral, and why removing the neutral
+entirely changes nothing until the load goes out of balance.
+
+## 1.7 Measuring the power that actually flows
+
+A three-phase load needs only **two** wattmeters, not three, whether or not the
+load is balanced and whether it is wye or delta — Blondel's theorem, which says
+an n-wire system needs n − 1 meters. Connect each meter's current coil in a
+different line and both voltage coils to the third line; total power is the
+algebraic sum of the two readings.
+
+The sum is *algebraic*, and one reading goes negative when the power factor
+falls below 0.5. That is not a fault and not a wiring error, and a question that
+reports one negative wattmeter is testing whether you subtract rather than
+ignore it. The two readings also give the power factor directly, since
+tan φ = √3 (P₂ − P₁)/(P₂ + P₁) — which is why the two-wattmeter method survives
+in practice long after digital meters could have replaced it.`,
       examTip: 'The sqrt(3) factor appears in EVERY three-phase problem. For wye: multiply phase voltage by sqrt(3) to get line voltage. For delta: multiply phase current by sqrt(3) to get line current. Draw the phasor diagram if you forget which one.',
     },
     {
@@ -4410,7 +4721,75 @@ This single formula solves ANY first-order transient. Find three things:
 
 At the instant of switching (t = 0⁺):
 - **Capacitor voltage cannot change instantly**: v_C(0⁺) = v_C(0⁻)
-- **Inductor current cannot change instantly**: i_L(0⁺) = i_L(0⁻)`,
+- **Inductor current cannot change instantly**: i_L(0⁺) = i_L(0⁻)
+
+## 1.5 A charging circuit, end to end
+
+The universal formula needs three numbers, and all three are read off the
+circuit rather than derived:
+
+![A 100 V source, a switch that closes at t = 0, a 50 kilohm resistor and a 10 microfarad capacitor in series. The capacitor charges through the resistor once the switch closes.](/courses/fe-ee/figures/sch-rc-transient.svg)
+
+**τ = RC** = 50×10³ × 10×10⁻⁶ = **0.5 s**. Get the exponents right by grouping:
+kΩ × µF = 10³ × 10⁻⁶ = 10⁻³, so kΩ × µF gives milliseconds directly. Here
+50 × 10 = 500 ms. That shortcut removes the most common arithmetic slip in the
+whole topic.
+
+**x(0⁺) = 0 V.** The capacitor was uncharged before the switch closed, and
+capacitor voltage is continuous, so it is still 0 V immediately after.
+
+**x(∞) = 100 V.** After a long time the capacitor current falls to zero, so
+there is no drop across R and the capacitor holds the full source voltage.
+
+Therefore v_C(t) = 100(1 − e^(−t/0.5)) volts.
+
+The current follows from the *resistor*, not the capacitor: at t = 0⁺ the
+capacitor is at 0 V so the entire 100 V appears across R, giving
+i(0⁺) = 100/50 kΩ = **2 mA**. This is the counter-intuitive half of the problem
+worth stating plainly: **the capacitor voltage starts at its minimum while the
+current starts at its maximum.** The element that cannot change is the voltage;
+the current is free to jump, and it does.
+
+| Time | t/τ | v_C | Fraction of final | i(t) |
+|---|---|---|---|---|
+| 0 s | 0 | 0.00 V | 0.0 % | 2.000 mA |
+| 0.5 s | 1τ | 63.21 V | 63.2 % | 0.736 mA |
+| 1.0 s | 2τ | 86.47 V | 86.5 % | 0.271 mA |
+| 1.5 s | 3τ | 95.02 V | 95.0 % | 0.100 mA |
+| 2.0 s | 4τ | 98.17 V | 98.2 % | 0.037 mA |
+| 2.5 s | 5τ | 99.33 V | 99.3 % | 0.013 mA |
+
+The percentages in the middle column are worth memorising, because FE questions
+ask for them far more often than they ask for a general time: **63.2 % after one
+time constant, 86.5 % after two, 95 % after three, 99.3 % after five.** Note also
+that every row satisfies v_C + i·R = 100 V, which is KVL and is the check to run
+if a computed value looks wrong.
+
+## 1.6 Solving for time rather than voltage
+
+The other common form asks *when* rather than *how much*. Invert the exponential:
+
+t = −τ · ln[(x(∞) − x(t))/(x(∞) − x(0))]
+
+For this circuit to reach 90 V:
+t = −0.5 · ln[(100 − 90)/(100 − 0)] = −0.5 · ln(0.1) = 0.5 × 2.303 = **1.15 s**.
+
+Sanity-check it against the table: 90 V sits between the 86.47 V at 2τ = 1.0 s
+and the 95.02 V at 3τ = 1.5 s, and 1.15 s lands between them. Any answer outside
+that bracket is arithmetic, not physics.
+
+## 1.7 Where the energy goes
+
+Charging this capacitor stores E = ½CV² = ½ × 10×10⁻⁶ × 100² = **0.05 J**. But
+the source delivers charge Q = CV at a constant 100 V, so it supplies
+E = QV = CV² = **0.1 J**. The missing half — another 0.05 J — is dissipated in
+R as heat, and this is true **regardless of the value of R**.
+
+Making R smaller charges the capacitor faster but does not improve the
+efficiency, which is fixed at 50 % for charging a capacitor from a constant
+voltage source through any resistance. It is a result that appears in FE
+questions as a distractor set where three of the options depend on R and the
+correct one does not.`,
       examTip: 'The universal formula x(t) = x(∞) + [x(0)-x(∞)]·e^(-t/τ) is the MOST important transient formula. Step 1: find initial value. Step 2: find final value (replace C with open, L with short for DC steady state). Step 3: find τ. Plug in and you are done.',
       importantNote: 'At t = 0⁺, capacitors act as voltage sources (maintaining their voltage) and inductors act as current sources (maintaining their current). At t = ∞, capacitors act as open circuits and inductors act as short circuits (DC steady state). These two limiting cases give you x(0) and x(∞).',
     },
@@ -6198,6 +6577,112 @@ These two rules are sufficient to analyze **any** ideal op-amp circuit.
 - Feedback from output to (−) through Rf
 - Input impedance = Rin (not infinite)
 - **180° phase inversion**
+
+![An inverting amplifier: the source drives Rin into the inverting terminal, Rf feeds the output back to that same node, and the non-inverting terminal is tied to ground. With Rin = 1 kilohm and Rf = 10 kilohm the closed-loop gain is minus ten.](/courses/fe-ee/figures/sch-opamp-inverting.svg)
+
+Derive the gain from the two rules rather than recalling it, because the same
+three lines handle every variation the exam throws at this topology.
+
+The non-inverting terminal is grounded, so rule 1 (V⁺ = V⁻) puts the inverting
+node at **0 V** — a *virtual ground*: held at ground potential by feedback, but
+not connected to ground. Rule 2 says no current enters the op-amp input, so all
+the current arriving through Rin must continue through Rf.
+
+- Current in: i = (v_in − 0)/R_in = v_in/R_in
+- Same current out: v_out = 0 − i·R_f = −v_in·R_f/R_in
+- Therefore **A = −R_f/R_in**
+
+With the values drawn, A = −10 kΩ/1 kΩ = **−10**. A 0.5 V input gives −5.0 V
+out, via 0.5 mA flowing through both resistors and dropping 5 V across Rf.
+
+Two consequences of the virtual ground are tested more often than the gain
+itself:
+
+**Input impedance is R_in, not infinite.** The source looks into the virtual
+ground through R_in and sees exactly 1 kΩ here. That is the price of the
+inverting topology, and it is why you cannot simply raise R_f/R_in without
+thinking — pushing gain up by shrinking R_in loads the source harder.
+
+**The gain depends only on the ratio.** 10 kΩ/1 kΩ and 100 kΩ/10 kΩ give
+identical gain, which is why resistor *matching* matters far more than absolute
+accuracy in these circuits.
+
+| Configuration (R_in = 1 kΩ, R_f = 10 kΩ) | Gain | Z_in | Phase | v_out for v_in = 0.5 V |
+|---|---|---|---|---|
+| Inverting | −10 | 1 kΩ | 180° | −5.00 V |
+| Non-inverting | 1 + 10 = +11 | ≈ ∞ | 0° | +5.50 V |
+| Unity buffer | +1 | ≈ ∞ | 0° | +0.50 V |
+
+The non-inverting gain is **11, not 10** — the "1 +" is not decoration. It comes
+from the input appearing directly at the output through the feedback divider,
+and dropping it is one of the most reliably punished slips in this section.
+
+### Where the ideal model stops
+
+Two real limits appear in FE questions even though the analysis above assumes
+neither.
+
+**Output swing.** The output cannot exceed the supply rails. On ±12 V supplies,
+the −10 gain stage clips for any input beyond 1.2 V in magnitude, so a 2 V input
+gives roughly −12 V and not −20 V. If a computed output exceeds the supply, the
+answer is the rail.
+
+**Gain-bandwidth product.** For a typical 1 MHz GBW part, closed-loop bandwidth
+is GBW divided by the closed-loop gain: 1 MHz/10 = **100 kHz**. Gain is traded
+against bandwidth one-for-one, so the same amplifier at a gain of 100 works only
+to 10 kHz. This is why the ideal assumption of infinite bandwidth has to be
+abandoned as soon as a question mentions frequency at all.
+
+### The virtual ground generalises
+
+Everything above used one fact — the inverting node sits at 0 V and swallows no
+current — and that one fact carries the rest of the topic.
+
+**Summing amplifier.** Feed several sources into the same virtual ground through
+their own resistors. Because the node is held at 0 V, no source can see any
+other: each contributes i = v/R independently, and the currents simply add in
+R_f. With R_f = 10 kΩ and inputs of 0.1 V through 1 kΩ, 0.2 V through 2 kΩ and
+0.5 V through 5 kΩ:
+
+v_out = −(10×0.1 + 5×0.2 + 2×0.5) = −(1 + 1 + 1) = **−3.0 V**
+
+Each branch contributes exactly 1 V despite its different source voltage,
+because gain is set per-input by R_f/R_n. That independence is the reason this
+circuit is an audio mixer and a DAC summing node, and it is why the *inverting*
+form is used for summing while the non-inverting form is not.
+
+**Integrator.** Replace R_f with a capacitor. The current v_in/R_in still has
+nowhere to go but the feedback element, and forcing that current through a
+capacitor gives dv_out/dt = −v_in/(R_in C). With R_in = 10 kΩ and C = 0.1 µF,
+R_in C = 1 ms, so a steady 1 V input ramps the output at −1000 V/s. After 5 ms
+the output is at −5 V, and on ±12 V supplies it reaches the rail at 12 ms and
+stops. A real integrator needs a large resistor across C to stop DC offset from
+driving it into the rail on its own; the ideal analysis does not predict that,
+and it is the most common practical failure of this circuit.
+
+| Feedback element | Relationship | Circuit |
+|---|---|---|
+| Resistor R_f | v_out = −v_in R_f/R_in | inverting amplifier |
+| Capacitor C | v_out = −(1/R_in C)∫v_in dt | integrator |
+| Resistor, with C at the input | v_out = −R_f C dv_in/dt | differentiator |
+
+Read that table as one idea rather than three formulas: **the input branch sets
+the current, the feedback element decides what that current does.**
+
+### When the virtual short does not apply
+
+Both rules depend on **negative feedback** being present. Remove the feedback
+path, or route it to the non-inverting terminal instead, and V⁺ no longer equals
+V⁻ — the open-loop gain of 10⁵ or more drives the output straight to whichever
+rail the input difference points at. That circuit is a **comparator**, not an
+amplifier, and its output is one of two voltages rather than a scaled copy.
+
+So before applying V⁺ = V⁻ to anything, check where the feedback goes. If it
+returns to the inverting input, the virtual short holds and the closed-loop
+formulas apply. If there is no feedback at all, or it returns to the
+non-inverting input, expect saturation or latch-up and analyse it as a switching
+element. Applying the amplifier formulas to a comparator produces a confident
+numerical answer that is not on the answer sheet.
 
 ### Non-Inverting Amplifier
 

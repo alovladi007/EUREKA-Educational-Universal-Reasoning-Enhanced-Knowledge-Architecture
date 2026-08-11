@@ -128,15 +128,19 @@ export default function ExamPage() {
   // duplication this route was rebuilt to remove. Old links still work:
   // they redirect to the course rather than 404.
   useEffect(() => {
-    if (tabParam === 'read' || (tabParam === 'lessons' && !isCISSP)) {
+    if (tabParam === 'read') {
       router.replace(`/dashboard/test-prep/${slug}/study`);
     }
-  }, [tabParam, isCISSP, router, slug]);
+  }, [tabParam, router, slug]);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
-    // CISSP is the only exam with recorded video, and its index tracks
-    // per-video completion, which the course companion does not.
-    ...(isCISSP ? [{ id: 'lessons' as Tab, label: 'Video Lessons', icon: <Video className="h-4 w-4" /> }] : []),
+    // The video index stays for EVERY exam. I narrowed it to CISSP on the
+    // assumption that no other exam has video, having checked only the
+    // static CISSP file - not the server endpoint this tab actually reads.
+    // That was an assumption presented as a fact, and narrowing a surface on
+    // one is how content goes missing. If the server has nothing for an
+    // exam the tab shows its own empty state, which costs nothing.
+    { id: 'lessons', label: 'Video Lessons', icon: <Video className="h-4 w-4" /> },
     { id: 'flashcards', label: 'Flashcards', icon: <Layers className="h-4 w-4" /> },
     { id: 'notes', label: 'My Notes', icon: <StickyNote className="h-4 w-4" /> },
     { id: 'qbank', label: 'QBank', icon: <BrainCircuit className="h-4 w-4" /> },
@@ -197,8 +201,10 @@ export default function ExamPage() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'lessons' && isCISSP && (
-        <LessonsTab examType={examId} sections={sections} />
+      {activeTab === 'lessons' && (
+        <PbContentGate examType={examId} feature="The full Patent Bar curriculum">
+          <LessonsTab examType={examId} sections={sections} />
+        </PbContentGate>
       )}
       {activeTab === 'flashcards' && (
         <PbContentGate examType={examId} feature="All Patent Bar flashcards">
