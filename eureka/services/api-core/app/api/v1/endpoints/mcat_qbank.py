@@ -36,7 +36,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.database import get_db
 from app.models import User
 from app.models.exam import AttemptLog
-from app.models.item_bank import Item, ItemBank
+from app.models.item_bank import Item, ItemBank, Passage
 from app.utils.dependencies import get_current_active_user
 
 router = APIRouter()
@@ -117,7 +117,14 @@ async def qbank_items(
     if not 1 <= count <= 40:
         raise HTTPException(422, "count must be between 1 and 40")
     bank = await _bank(db)
-    q = select(Item).where(Item.bank_id == bank.id, Item.deleted_at.is_(None))
+    # Passage-attached items are excluded from the discrete draw: an item
+    # written against a passage is unanswerable without it (serve those via
+    # /passage-set).
+    q = select(Item).where(
+        Item.bank_id == bank.id,
+        Item.deleted_at.is_(None),
+        Item.passage_id.is_(None),
+    )
     if topic_id is not None:
         q = q.where(Item.extra_metadata["topic_id"].as_integer() == topic_id)
     if subtopic:
@@ -126,6 +133,95 @@ async def qbank_items(
         (await db.execute(q.order_by(func.random()).limit(count))).scalars().all()
     )
     return {
+        "items": [
+            {
+                "item_id": str(i.id),
+                "stem": i.content.get("stem"),
+                "options": list(i.content.get("options", [])),
+                "option_count": len(i.content.get("options", [])),
+                "difficulty": i.difficulty_nominal,
+                "section": i.extra_metadata.get("section"),
+                "subtopic": i.extra_metadata.get("subtopic"),
+                "review_status": i.review_status.value,
+            }
+            for i in items
+        ],
+        "disclaimer": DISCLAIMER,
+    }
+
+
+@router.get("/mcat/qbank/passages")
+async def qbank_passages(
+    _user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """The available passage sets, with counts and review standing."""
+    bank = await _bank(db)
+    rows = (
+        await db.execute(
+            select(Passage, func.count(Item.id))
+            .join(Item, Item.passage_id == Passage.id, isouter=True)
+            .where(Passage.bank_id == bank.id, Passage.deleted_at.is_(None))
+            .group_by(Passage.id)
+            .order_by(Passage.topic_id, Passage.title)
+        )
+    ).all()
+    return {
+        "passages": [
+            {
+                "passage_id": str(p.id),
+                "title": p.title,
+                "topic_id": p.topic_id,
+                "section": p.section,
+                "question_count": int(n),
+                "review_status": p.review_status.value,
+            }
+            for p, n in rows
+        ],
+        "disclaimer": DISCLAIMER,
+    }
+
+
+@router.get("/mcat/qbank/passage-set/{passage_id}")
+async def qbank_passage_set(
+    passage_id: uuid_mod.UUID,
+    _user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """One passage with its attached items - the passage text travels, the
+    keys and explanations do not (grading stays per-item via /submit)."""
+    bank = await _bank(db)
+    passage = (
+        await db.execute(
+            select(Passage).where(
+                Passage.id == passage_id,
+                Passage.bank_id == bank.id,
+                Passage.deleted_at.is_(None),
+            )
+        )
+    ).scalar_one_or_none()
+    if passage is None:
+        raise HTTPException(404, "unknown passage")
+    items = (
+        (
+            await db.execute(
+                select(Item)
+                .where(Item.passage_id == passage.id, Item.deleted_at.is_(None))
+                .order_by(Item.created_at)
+            )
+        )
+        .scalars()
+        .all()
+    )
+    return {
+        "passage": {
+            "passage_id": str(passage.id),
+            "title": passage.title,
+            "body": passage.body,
+            "topic_id": passage.topic_id,
+            "section": passage.section,
+            "review_status": passage.review_status.value,
+        },
         "items": [
             {
                 "item_id": str(i.id),

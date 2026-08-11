@@ -95,6 +95,9 @@ class Item(Base):
     estimated_time_sec = Column(Integer, nullable=True)
     tags = Column(ARRAY(String), nullable=False, default=list)
 
+    # Items may attach to a reading passage (C2); discrete items leave it NULL.
+    passage_id = Column(UUID(as_uuid=True), ForeignKey("passages.id", ondelete="SET NULL"), nullable=True, index=True)
+
     review_status = Column(
         Enum(ItemReviewStatus, name="item_review_status", values_callable=_vals(ItemReviewStatus)),
         nullable=False, default=ItemReviewStatus.DRAFT,
@@ -166,3 +169,40 @@ __all__ = [
     "ItemBank", "Item", "ItemVariant", "ItemSource", "ItemEmbedding",
     "ItemKind", "ItemReviewStatus", "ItemSourceKind",
 ]
+
+
+class Passage(Base):
+    """A reading passage that a set of items attaches to (C2, AUDIT MC-8).
+
+    The real MCAT is predominantly passage-based; discrete items alone
+    cannot rehearse it. A passage carries the same review and provenance
+    standing as an item - review_status starts DRAFT and the serving layer
+    decides what DRAFT passages may be used for - because a passage is
+    content making claims, exactly like a stem.
+    """
+
+    __tablename__ = "passages"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    bank_id = Column(UUID(as_uuid=True), ForeignKey("item_banks.id", ondelete="CASCADE"), nullable=False, index=True)
+    title = Column(String(200), nullable=False)
+    body = Column(Text, nullable=False)
+    # Same topic scheme as the bank's items (0 Chem/Phys, 1 CARS, 2 Bio, 3 Psych).
+    topic_id = Column(Integer, nullable=False, index=True)
+    section = Column(String(120), nullable=False)
+
+    review_status = Column(
+        Enum(ItemReviewStatus, name="item_review_status", values_callable=_vals(ItemReviewStatus), create_type=False),
+        nullable=False, default=ItemReviewStatus.DRAFT,
+    )
+    reviewed_at = Column(DateTime, nullable=True)
+    reviewed_by = Column(UUID(as_uuid=True), ForeignKey("users.id"), nullable=True)
+    source_kind = Column(
+        Enum(ItemSourceKind, name="item_source_kind", values_callable=_vals(ItemSourceKind), create_type=False),
+        nullable=False, default=ItemSourceKind.AI_GENERATED,
+    )
+    attribution = Column(Text, nullable=True)
+
+    deleted_at = Column(DateTime, nullable=True)
+    created_at = Column(DateTime, nullable=False, default=datetime.utcnow)
+    extra_metadata = Column("metadata", JSONB, nullable=False, default=dict)
