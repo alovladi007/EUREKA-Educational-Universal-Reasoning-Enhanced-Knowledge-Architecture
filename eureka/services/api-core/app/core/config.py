@@ -42,6 +42,13 @@ class Settings(BaseSettings):
     STRIPE_SECRET_KEY: str | None = Field(default=None, env="STRIPE_SECRET_KEY")
     STRIPE_WEBHOOK_SECRET: str | None = Field(default=None, env="STRIPE_WEBHOOK_SECRET")
 
+    # OCTET chemistry engine (MCAT-mode item serving is proxied there with
+    # the caller's own token; default is the compose-network address).
+    OCTET_API_URL: str = Field(default="http://octet-api:8500", env="OCTET_API_URL")
+
+    # AXIOM mathematics engine (cross-vertical mastery queries, contract 2.1).
+    AXIOM_API_URL: str = Field(default="http://axiom-api-1:8400", env="AXIOM_API_URL")
+
     # Security
     JWT_SECRET: str = Field(default_factory=lambda: secrets.token_urlsafe(32), env="JWT_SECRET")
     JWT_ALGORITHM: str = Field(default="HS256", env="JWT_ALGORITHM")

@@ -48,7 +48,9 @@ services:
       OCTET_EUREKA_API_URL: http://api-core:8000
       OCTET_IDENTITY_PROVIDER: hmac
       # Must match EUREKA's JWT secret for the SSO bridge to verify tokens.
-      OCTET_JWT_SECRET: ${JWT_SECRET:-dev-secret-change-me}
+      # Accepts either variable name (.env.example uses OCTET_JWT_SECRET; the
+      # bare fallback broke cross-service auth silently when neither was set).
+      OCTET_JWT_SECRET: ${OCTET_JWT_SECRET:-${JWT_SECRET:-dev-secret-change-me}}
       OCTET_GRADING_SANDBOX: "true"
     ports:
       - "8500:8500"

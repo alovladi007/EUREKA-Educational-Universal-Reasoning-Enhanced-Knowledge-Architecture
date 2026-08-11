@@ -13,7 +13,7 @@ import {
   BookMarked, Video, StickyNote, BrainCircuit, Trophy, AlertCircle,
   RotateCcw, Eye, EyeOff, Layers, Zap, ThumbsUp, ThumbsDown,
   Library, ExternalLink, Search as SearchIcon, Hash, Sparkles, XCircle,
-  Puzzle, ShieldCheck,
+  Puzzle, ShieldCheck, FlaskRound,
 } from 'lucide-react';
 import { getExamConfig, getSectionsForExam } from '@/lib/exam-config';
 import { getCurriculum, getTotalTopics } from '@/lib/exam-curriculum';
@@ -162,6 +162,26 @@ export default function ExamPage() {
       )}
 
       {isPatentBar && <PatentBarCohortPanel />}
+
+      {isMCAT && (
+        <Card className="p-4 bg-emerald-50/70 dark:bg-emerald-950/30 border-emerald-200 dark:border-emerald-900">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="font-semibold text-sm">Generated chemistry practice</p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                Items generated per session by the OCTET chemistry engine, every
+                answer key machine-verified before serving. Misses diagnose the
+                misconception and deep-link into the full OCTET course.
+              </p>
+            </div>
+            <Link href={`/dashboard/test-prep/${String(params.exam).toLowerCase()}/chemistry`}>
+              <Button size="sm" variant="default" className="gap-1.5" data-testid="mcat-chemistry-link">
+                <FlaskRound className="h-3.5 w-3.5" /> Chemistry practice
+              </Button>
+            </Link>
+          </div>
+        </Card>
+      )}
 
       {isLSAT && (
         <Card className="p-4 bg-purple-50/70 dark:bg-purple-950/30 border-purple-200 dark:border-purple-900">
