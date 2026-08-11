@@ -12,7 +12,7 @@ from app.core.database import get_db
 from app.models import User, Course, Organization
 from app.utils.dependencies import require_admin
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing, mcat_chemistry, cross_vertical, study_groups, research_collab
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing, mcat_chemistry, mcat_qbank, cross_vertical, study_groups, research_collab
 
 api_router = APIRouter()
 
@@ -54,6 +54,7 @@ api_router.include_router(resume_notifications.router, tags=["notifications"])
 api_router.include_router(user_progress.router, tags=["progress"])
 api_router.include_router(test_prep_billing.router, tags=["test-prep-billing"])
 api_router.include_router(mcat_chemistry.router, tags=["mcat-chemistry"])
+api_router.include_router(mcat_qbank.router, tags=["mcat-qbank"])
 api_router.include_router(cross_vertical.router, tags=["cross-vertical"])
 api_router.include_router(patent_bar.router, tags=["patent-bar-analytics"])
 api_router.include_router(srs.router, tags=["srs"])
