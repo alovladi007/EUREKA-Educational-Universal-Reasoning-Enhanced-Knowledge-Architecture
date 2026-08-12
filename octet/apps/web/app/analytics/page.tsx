@@ -1,5 +1,11 @@
 'use client';
 
+import {
+  BarChart3,
+  CheckCircle2,
+  ListChecks,
+} from 'lucide-react';
+
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
@@ -18,8 +24,10 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
   SectionTitle,
+  Stat,
   errorMessage,
 } from '@/app/_ui/shell';
 
@@ -66,11 +74,10 @@ export default function AnalyticsPage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Analytics</h1>
-      <p className="mb-8 max-w-2xl text-sm text-muted-foreground">
-        Your own recorded attempts, rolled up by course, unit and node. Nothing
-        here is estimated or compared against anyone else.
-      </p>
+      <PageHeader
+        title="Analytics"
+        lead="Your own recorded attempts, rolled up by course, unit and node. Nothing here is estimated or compared against anyone else: there is no cohort, so there are no percentiles."
+      />
 
       {loading && <LoadingPanel label="Loading your record." />}
       {!loading && error && <ErrorPanel message={error} />}
@@ -98,31 +105,23 @@ export default function AnalyticsPage() {
             <>
               <section>
                 <SectionTitle>Totals</SectionTitle>
-                <div className="grid gap-4 sm:grid-cols-3">
-                  <Card>
-                    <p className="text-3xl font-bold tabular-nums">
-                      {overview.totals.attempts}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Graded attempts
-                    </p>
-                  </Card>
-                  <Card>
-                    <p className="text-3xl font-bold tabular-nums">
-                      {overview.totals.correct}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Correct
-                    </p>
-                  </Card>
-                  <Card>
-                    <p className="text-3xl font-bold tabular-nums">
-                      {percentOf(overview.totals.accuracy)}
-                    </p>
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      Accuracy
-                    </p>
-                  </Card>
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+                  <Stat
+                    icon={<ListChecks className="h-3.5 w-3.5" />}
+                    label="Graded attempts"
+                    value={String(overview.totals.attempts)}
+                  />
+                  <Stat
+                    icon={<CheckCircle2 className="h-3.5 w-3.5" />}
+                    label="Correct"
+                    value={String(overview.totals.correct)}
+                  />
+                  <Stat
+                    icon={<BarChart3 className="h-3.5 w-3.5" />}
+                    label="Accuracy"
+                    value={percentOf(overview.totals.accuracy)}
+                    hint={`${overview.totals.correct} of ${overview.totals.attempts}`}
+                  />
                 </div>
               </section>
 

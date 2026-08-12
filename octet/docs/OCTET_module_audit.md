@@ -198,29 +198,39 @@ ran: a learner saw a black rectangle with working-looking controls over a 404.
 different questions and only the first is answerable from props. The media
 element's own error event answers the second.
 
-## 6. Surfaces still on the old design
+## 6. Surface conversion — COMPLETE 2026-08-12
 
-The dashboard is rebuilt. These are not, and they are the rest of the job:
+All ten surfaces now carry the module language (PageHeader, Stat, Entry, Band
+from app/_ui/shell.tsx): Dashboard and Learn rebuilt in full, the chapter
+reader rebuilt to the prep test /study layout, and Practice, Review, Exams,
+Analytics, Path, Planner, Explore and Simulations converted - headers, stat
+tiles on Analytics, Entry cards on Explore. Verified live across all eight in
+one sweep, no console errors.
 
-    Learn index      chapter cards, reading time, depth badges
-    Practice         session setup and the item runner
-    Review           the SRS queue
-    Exams            the catalogue, and the line that overstates (section 2)
-    Analytics        rollups by course, unit and node
-    Path             the topological order
-    Planner          target-date arithmetic
-    Explore          molecules, periodic table, triangle
-    Simulations      the POE benches
+On the shell: kept as sidebar routes, deliberately. The prep test module
+itself has 17 real routes and its tab bar is secondary (tabs only render once
+one is chosen; content was moved OUT of tabs into /study to remove
+duplication), so OCTET's routes are already the shape that module arrived at.
 
-And the shell itself: the Patent Bar module is one page with a tab bar. OCTET
-is ten sidebar routes. Converting the shell is the change that makes the module
-read as the same product rather than as a set of pages with matching cards.
+## 7. Request timeouts (added 2026-08-12)
+
+Every API call from the web app now carries a 30 second deadline. Found the
+hard way: a learner pressed "Start session" while a container was restarting
+under the page, the fetch hung, and the button stayed on "Starting" forever
+with no error - fetch has no default timeout. The deadline turns a hang into
+an error message the page renders. The start flow is verified end to end by
+driving the real UI: select three units, press start, land in the player with
+an item on screen.
 
 ## Order of work
 
 1. ~~Templates for the 30 nodes in the seven blocked chapters~~ **DONE.**
    46 of 46 units can supply practice again.
-2. The exams line, so it stops claiming assembly it cannot do. **STILL OPEN.**
+2. ~~The exams line~~ **RESOLVED, verified 2026-08-12.** The server computes
+   `available` per exam from actual item coverage and the page marks
+   unassemblable exams unavailable rather than hiding them. With practice
+   supply repaired, the live endpoint reports 46 listed / 46 available, so
+   the number is currently honest by measurement rather than by wording.
 3. ~~Learn sub-part rendering~~ **DONE**, see section 3 above.
 4. Templates for the remaining untemplated nodes, as a standing programme
    rather than a task: 200 nodes is many sessions of work.

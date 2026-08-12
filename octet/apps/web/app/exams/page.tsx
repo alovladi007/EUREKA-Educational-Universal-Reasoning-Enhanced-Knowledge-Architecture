@@ -14,6 +14,7 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
   errorMessage,
 } from '@/app/_ui/shell';
@@ -101,12 +102,10 @@ export default function ExamsPage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Exams</h1>
-      <p className="mb-4 text-sm text-muted-foreground">
-        An exam is timed, it gives no hints, and it marks nothing right or
-        wrong until you submit it. Your score is reported as raw counts, with
-        no grade or pass mark attached.
-      </p>
+      <PageHeader
+        title="Exams"
+        lead="An exam is timed, it gives no hints, and it marks nothing right or wrong until you submit it. Your score is reported as raw counts, with no grade or pass mark attached."
+      />
 
       {note && (
         <p className="mb-8 rounded-lg border border-border bg-muted/40 p-4 text-sm text-muted-foreground">

@@ -9,6 +9,7 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
   SectionTitle,
   errorMessage,
@@ -54,11 +55,10 @@ export default function SimulationsPage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Simulations</h1>
-      <p className="mb-8 text-sm text-muted-foreground">
-        Predict, observe, explain. You commit to a prediction, then the result
-        appears, then you account for it.
-      </p>
+      <PageHeader
+        title="Simulations"
+        lead="Predict, observe, explain. You commit to a prediction, then the result appears, then you account for it — because a prediction made after seeing the answer teaches nothing."
+      />
 
       {loading && <LoadingPanel label="Loading the simulation catalogue." />}
       {!loading && error && <ErrorPanel message={error} />}

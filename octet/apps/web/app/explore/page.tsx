@@ -1,80 +1,62 @@
 'use client';
 
-import Link from 'next/link';
-import { Page, SectionTitle } from '@/app/_ui/shell';
+import { Atom, FlaskConical, Grid3x3, Triangle } from 'lucide-react';
+import { Band, Entry, Page, PageHeader } from '@/app/_ui/shell';
 
 // The explore index. Three surfaces sit under it, and each one is a way of
 // looking at chemistry rather than a way of being tested on it.
 //
-// This page fetches nothing. It is a set of links, and it does not claim any
-// counts or coverage numbers, because the surfaces themselves report those from
-// the live API.
-
-const SURFACES: Array<{ href: string; title: string; detail: string }> = [
-  {
-    href: '/explore/periodic',
-    title: 'Periodic table',
-    detail:
-      'Every element, with one periodic property drawn as a colour layer. The coverage of each layer is stated, and an element with no value is left as a visible gap.',
-  },
-  {
-    href: '/explore/molecules',
-    title: 'Molecule library',
-    detail:
-      'The curated molecule set, searchable by name or formula and filterable by category. Each entry carries its formula, molar mass, InChIKey and a note on where it turns up in the world.',
-  },
-  {
-    href: '/explore/triangle',
-    title: 'Chemistry triangle',
-    detail:
-      'One concept shown three ways at once: what you see, what the particles do, and what chemists write. The connector names the one thing that is identical across all three.',
-  },
-];
+// This page fetches nothing. It is a set of doors, and it claims no counts or
+// coverage numbers, because the surfaces themselves report those from the
+// live API - a number repeated here would be a second source for one fact.
 
 export default function ExplorePage() {
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Explore</h1>
-      <p className="mb-8 text-sm text-muted-foreground">
-        Three ways to look at the same subject. Nothing here is graded.
-      </p>
+      <PageHeader
+        title="Explore"
+        lead="Three ways to look at the same subject. Nothing here is graded, and nothing here records an attempt."
+      />
 
-      <section>
-        <SectionTitle>Surfaces</SectionTitle>
-        <div className="grid gap-4 sm:grid-cols-3">
-          {SURFACES.map((surface) => (
-            <Link
-              key={surface.href}
-              href={surface.href}
-              className="rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
-            >
-              <p className="text-base font-semibold text-card-foreground">
-                {surface.title}
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                {surface.detail}
-              </p>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <div className="space-y-6">
+        <Band title="Surfaces">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Entry
+              href="/explore/periodic"
+              icon={<Grid3x3 className="h-4 w-4" />}
+              title="Periodic table"
+              body="Every element, with one periodic property drawn as a colour layer. Each layer states its coverage, and an element with no value stays a visible gap."
+              foot="open"
+            />
+            <Entry
+              href="/explore/molecules"
+              icon={<Atom className="h-4 w-4" />}
+              title="Molecule library"
+              body="The curated set, searchable by name or formula. Each entry carries its formula, molar mass, InChIKey and a note on where it turns up in the world."
+              foot="open"
+            />
+            <Entry
+              href="/explore/triangle"
+              icon={<Triangle className="h-4 w-4" />}
+              title="Chemistry triangle"
+              body="One concept three ways at once: what you see, what the particles do, and what chemists write. The connector names what is identical across all three."
+              foot="open"
+            />
+          </div>
+        </Band>
 
-      <section className="mt-8">
-        <SectionTitle>Simulations</SectionTitle>
-        <Link
-          href="/simulations"
-          className="block rounded-xl border border-border bg-card p-5 shadow-sm transition-colors hover:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500"
-        >
-          <p className="text-base font-semibold text-card-foreground">
-            Predict, observe, explain
-          </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Titration and equilibrium activities. The result is withheld until a
-            prediction is recorded, because a prediction made after seeing the
-            answer teaches nothing.
-          </p>
-        </Link>
-      </section>
+        <Band title="Simulations">
+          <div className="grid gap-3 sm:grid-cols-3">
+            <Entry
+              href="/simulations"
+              icon={<FlaskConical className="h-4 w-4" />}
+              title="Predict, observe, explain"
+              body="Titration and equilibrium benches. The result is withheld until a prediction is recorded, because a prediction made after seeing the answer teaches nothing."
+              foot="open"
+            />
+          </div>
+        </Band>
+      </div>
     </Page>
   );
 }

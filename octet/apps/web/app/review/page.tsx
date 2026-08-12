@@ -15,6 +15,7 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
   SectionTitle,
   errorMessage,
@@ -174,12 +175,10 @@ export default function ReviewPage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Review</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Spaced repetition drawn from the lessons. Each card asks you to recall
-        a lesson&apos;s try-it answer or its pitfall, with that lesson&apos;s
-        own words on the back, and links back to it.
-      </p>
+      <PageHeader
+        title="Review"
+        lead="Spaced repetition drawn from the lessons. Each card asks you to recall a lesson's try-it answer or its pitfall, with that lesson's own words on the back, and links back to it."
+      />
 
       {view.kind === 'loading' && <LoadingPanel label="Loading your review queue." />}
 

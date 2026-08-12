@@ -18,6 +18,7 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
   SectionTitle,
   errorMessage,
@@ -219,12 +220,10 @@ export default function PracticePage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Practice</h1>
-      <p className="mb-8 text-sm text-muted-foreground">
-        Build a session from the units you choose. Every item is generated and
-        its answer key is verified before it is served, and every answer you
-        submit is final.
-      </p>
+      <PageHeader
+        title="Practice"
+        lead="Build a session from the units you choose. Every item is generated per learner, its answer key is verified through a second computational path before it is served, and every answer you submit is final."
+      />
 
       <section className="mb-10">
         <SectionTitle>Build a session</SectionTitle>

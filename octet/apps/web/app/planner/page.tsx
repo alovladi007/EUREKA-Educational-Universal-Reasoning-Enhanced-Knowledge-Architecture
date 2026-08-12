@@ -9,6 +9,7 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
   errorMessage,
 } from '@/app/_ui/shell';
@@ -111,12 +112,10 @@ export default function PlannerPage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Planner</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        Pick a date and the route is divided across the days until it: what
-        needs review first, then what you started, then new material in
-        course order.
-      </p>
+      <PageHeader
+        title="Planner"
+        lead="Pick a date and the route is divided across the days until it: what needs review first, then what you started, then new material in course order. Arithmetic, not a prediction."
+      />
 
       <Card className="mb-6">
         <form

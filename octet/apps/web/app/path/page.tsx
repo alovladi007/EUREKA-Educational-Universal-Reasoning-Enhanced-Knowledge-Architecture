@@ -9,6 +9,7 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
   errorMessage,
 } from '@/app/_ui/shell';
@@ -56,10 +57,10 @@ export default function PathPage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Path</h1>
-      <p className="mb-6 text-sm text-muted-foreground">
-        What to do next, with the reason behind each recommendation.
-      </p>
+      <PageHeader
+        title="Path"
+        lead="What to do next, with the reason behind each recommendation. The order comes from the prerequisite graph and your recorded attempts, not from a guess."
+      />
 
       {loading && <LoadingPanel label="Planning your route." />}
       {!loading && error && <ErrorPanel message={error} />}

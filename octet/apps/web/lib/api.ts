@@ -113,17 +113,43 @@ export function hasToken(): boolean {
 
 // Attach the bearer token and disable caching. A 401 clears the stored token
 // so the next render falls through to the sign-in prompt rather than looping.
+//
+// Every request carries a 30 second deadline. Without one, a request that
+// hangs - an API container restarting under the page is enough - never
+// resolves, and whatever button issued it stays in its in-flight state
+// forever with no error shown. "Start session" stuck on "Starting" was
+// exactly this. A deadline turns the hang into an ApiError the page renders.
+const REQUEST_TIMEOUT_MS = 30_000;
+
 async function authedFetch(url: string, init: RequestInit): Promise<Response> {
   const headers = new Headers(init.headers as HeadersInit | undefined);
   const token = getToken();
   if (token) {
     headers.set('Authorization', `Bearer ${token}`);
   }
-  const res = await fetch(url, { ...init, headers, cache: 'no-store' });
-  if (res.status === 401) {
-    clearToken();
+  const controller = new AbortController();
+  const deadline = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    const res = await fetch(url, {
+      ...init,
+      headers,
+      cache: 'no-store',
+      signal: controller.signal,
+    });
+    if (res.status === 401) {
+      clearToken();
+    }
+    return res;
+  } catch (err) {
+    if (err instanceof DOMException && err.name === 'AbortError') {
+      throw new Error(
+        'The request timed out after 30 seconds. The server may be restarting - try again in a moment.',
+      );
+    }
+    throw err;
+  } finally {
+    clearTimeout(deadline);
   }
-  return res;
 }
 
 async function readBody(res: Response): Promise<string> {
