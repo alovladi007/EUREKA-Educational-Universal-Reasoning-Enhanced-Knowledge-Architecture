@@ -359,9 +359,13 @@ export interface LessonSection {
 }
 
 export interface LessonVideo {
-  // Names an animated scene in components/chem-scenes.tsx, not a media file.
-  scene: string;
+  // Resolves to /videos/octet/{slug}.mp4 in the web app's public directory.
+  // Declared before the file exists: the slot is reserved, and the player
+  // renders its "not uploaded yet" poster until an mp4 lands there.
+  slug: string;
   title: string;
+  // Runtime once known; 0 before the file is in hand. The player reads the
+  // real duration off the media element.
   seconds: number;
   summary: string;
 }

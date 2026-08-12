@@ -19,9 +19,10 @@ WHAT IT FAILS ON
   1. A figure referenced by a section with no SVG on disk, in EITHER theme.
      A missing dark file is invisible to a light-mode author and renders as a
      broken image for half the readers.
-  2. A video referencing a scene id that does not exist in the frontend scene
-     registry. The player degrades honestly, but the learner still loses the
-     animation, and the reference is a typo not a decision.
+  2. Two nodes declaring the same video slug, which would have one upload
+     serve two chapters. Whether the file itself is present is deliberately NOT
+     a failure here - the videos are uploaded separately and a missing one is a
+     normal state. scripts/check_octet_videos.py counts those.
   3. A table with a row whose length does not match its column count. The
      renderer will happily draw a ragged row.
   4. A table of measured quantities with no source. The house rule is no
@@ -46,27 +47,11 @@ sys.path.insert(0, str(ROOT / "apps" / "api"))
 from app.data.lesson_extras_registry import EXTRAS  # noqa: E402
 
 FIGURES = ROOT / "apps" / "web" / "public" / "figures" / "octet"
-SCENES_TS = ROOT / "apps" / "web" / "components" / "chem-scenes.tsx"
 
 # The standard a chapter is being written to. Not a hard failure: a chapter
 # below it is under construction rather than broken, and the gate reports the
 # shortfall so the programme has a number to work against.
 TARGET_WORDS = 1200
-
-
-def scene_ids() -> set[str]:
-    """The scene ids the frontend actually registers.
-
-    Read out of the SCENES map rather than a duplicated list, so a scene added
-    to the registry is known here without a second edit.
-    """
-    src = SCENES_TS.read_text()
-    block = re.search(
-        r"export const SCENES[^=]*=\s*\{(.*?)\n\};", src, re.DOTALL
-    )
-    if not block:
-        return set()
-    return set(re.findall(r"'([a-z0-9-]+)':", block.group(1)))
 
 
 def unbalanced_dollars(body: str) -> bool:
@@ -83,7 +68,7 @@ def unbalanced_dollars(body: str) -> bool:
 
 def main() -> int:
     problems: list[str] = []
-    ids = scene_ids()
+    slugs: dict[str, str] = {}
     total_words = 0
     below: list[tuple[str, int]] = []
 
@@ -131,11 +116,13 @@ def main() -> int:
                     )
 
         vid = extras.video
-        if vid is not None and vid.scene not in ids:
-            problems.append(
-                f"{node}: video names scene '{vid.scene}', which is not in "
-                f"the SCENES registry"
-            )
+        if vid is not None:
+            if vid.slug in slugs:
+                problems.append(
+                    f"{node}: video slug '{vid.slug}' is already claimed by "
+                    f"{slugs[vid.slug]}; one upload cannot serve two chapters"
+                )
+            slugs[vid.slug] = node
 
     figures = sum(len(e.figures()) for e in EXTRAS.values())
     tables = sum(len(e.tables()) for e in EXTRAS.values())
@@ -147,7 +134,8 @@ def main() -> int:
     print(f"prose               : {total_words:,} words")
     print(f"figures             : {figures} ({figures * 2} files, two themes)")
     print(f"tables              : {tables}")
-    print(f"animated explainers : {videos} of {len(ids)} scenes registered")
+    print(f"video slots         : {videos} declared "
+          f"(run check_octet_videos.py for uploads)")
 
     if below:
         print(f"\nbelow the {TARGET_WORDS} word standard, still being written:")
@@ -159,8 +147,8 @@ def main() -> int:
         for p in problems:
             print("  -", p)
         return 1
-    print("\nOK: every figure exists in both themes, every scene resolves, "
-          "every table is rectangular and sourced, every $ is paired.")
+    print("\nOK: every figure exists in both themes, every video slug is "
+          "unique, every table is rectangular and sourced, every $ is paired.")
     return 0
 
 

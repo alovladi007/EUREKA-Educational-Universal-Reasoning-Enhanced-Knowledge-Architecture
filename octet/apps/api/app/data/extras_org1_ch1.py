@@ -279,7 +279,7 @@ _add(LessonExtras(
         "bonds are pi.",
     ),
     video=VideoLesson(
-        scene="sigma-pi-overlap",
+        slug="org1-sigma-pi-overlap",
         title="Sigma and pi overlap, built from p orbitals",
         seconds=34,
         summary=(
@@ -534,7 +534,7 @@ _add(LessonExtras(
         "delocalised into the carbonyl.",
     ),
     video=VideoLesson(
-        scene="hybridisation-morph",
+        slug="org1-hybridisation",
         title="One s and three p, mixed three ways",
         seconds=40,
         summary=(
@@ -1167,7 +1167,7 @@ _add(LessonExtras(
         "benzyl cations are the recurring cast.",
     ),
     video=VideoLesson(
-        scene="resonance-delocalisation",
+        slug="org1-resonance",
         title="Acetate: two structures, one ion",
         seconds=30,
         summary=(

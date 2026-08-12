@@ -91,27 +91,29 @@ class ReadingSection:
 
 @dataclass(frozen=True)
 class VideoLesson:
-    """An animated explainer.
+    """The video lesson for a node.
 
-    `scene` names a keyframed chemistry animation that the client renders as
-    SVG rather than a video file it streams. That is a deliberate choice and
-    the UI says what it is showing.
+    `slug` resolves to /videos/octet/{slug}.mp4 in the web app's public
+    directory, which is the same convention the prep test videos use. The
+    videos are produced separately and uploaded; declaring the slug here is
+    what reserves the slot, and the player renders its full chrome over a
+    "not uploaded yet" poster until the file exists.
 
-    The reason is that the thing worth animating in organic chemistry is
-    geometry and electron flow - a nucleophile arriving on the face opposite
-    the leaving group, a ring inverting, a lone pair becoming a bond. Those are
-    exactly reproducible from coordinates, so drawing them from coordinates
-    gives a figure that is correct by construction, scales to any screen,
-    follows the theme, and can be scrubbed frame by frame. A recording of the
-    same thing would be none of those and would be about 300x the bytes.
+    That ordering is deliberate. The alternative - only declaring a video once
+    its file lands - means the reader's layout changes shape on upload day and
+    nobody can count what is outstanding. Declaring first makes the gap a
+    number: scripts/check_octet_videos.py reports declared against present.
     """
 
-    scene: str
+    slug: str
     title: str
-    seconds: int
-    # What the animation actually shows, for the caption track and for anyone
-    # who cannot see it. Not decoration: this is the alt text.
-    summary: str
+    # Runtime in seconds, once known. 0 until the file is in hand; the player
+    # reads the real duration off the media element anyway, so this is for
+    # planning rather than display.
+    seconds: int = 0
+    # What the video covers. Shown beside the player, and the description for
+    # anyone who cannot watch it.
+    summary: str = ""
 
 
 @dataclass(frozen=True)
@@ -207,7 +209,7 @@ def as_payload(extras: LessonExtras | None) -> dict | None:
             None
             if extras.video is None
             else {
-                "scene": extras.video.scene,
+                "slug": extras.video.slug,
                 "title": extras.video.title,
                 "seconds": extras.video.seconds,
                 "summary": extras.video.summary,

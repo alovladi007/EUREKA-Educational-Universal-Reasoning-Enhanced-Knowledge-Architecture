@@ -523,7 +523,7 @@ _add(LessonExtras(
         "pairs. Check whether a carbonyl is present.",
     ),
     video=VideoLesson(
-        scene="oxidation-ladder",
+        slug="org1-oxidation-ladder",
         title="The oxidation ladder, one bond at a time",
         seconds=36,
         summary=(

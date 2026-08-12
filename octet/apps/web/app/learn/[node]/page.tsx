@@ -22,7 +22,7 @@ import {
   getLesson,
   getTriangle,
 } from '@/lib/api';
-import ChemVideoPlayer from '@/components/ChemVideoPlayer';
+import LessonVideoPlayer from '@/components/LessonVideoPlayer';
 import LessonProse from '@/components/LessonProse';
 import TriangleView from '@/components/TriangleView';
 import {
@@ -253,20 +253,21 @@ export default function LessonPage() {
                   <Video className="h-4 w-4 text-muted-foreground" />
                   <h2 className="text-sm font-semibold">Video lesson</h2>
                 </div>
-                <ChemVideoPlayer
-                  scene={extras.video.scene}
+                {/* The file is served straight out of public/. When it is
+                    not there yet the player shows its own poster state, so
+                    the panel keeps its shape either way. */}
+                <LessonVideoPlayer
+                  src={`/videos/octet/${extras.video.slug}.mp4`}
                   title={extras.video.title}
-                  seconds={extras.video.seconds}
-                  summary={extras.video.summary}
                 />
                 <p className="mt-2 text-[13px] font-medium text-card-foreground">
                   {extras.video.title}
                 </p>
-                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                  Drawn from the geometry, in your browser, every frame — not a
-                  recording. Scrub it to stop on the frame that carries the
-                  idea.
-                </p>
+                {extras.video.summary && (
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    {extras.video.summary}
+                  </p>
+                )}
               </section>
             )}
 
