@@ -25,6 +25,9 @@ import {
   type TeacherAssistResult,
 } from '@/lib/api';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { RichMath } from '@/components/Math';
 
@@ -426,15 +429,14 @@ export default function StudioPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Content Studio</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Author and edit items. The prompt renders math live, and Test grade
-          runs the real grader on a sample answer before you save.
-        </p>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Content Studio"
+          lead="Author and edit items. The prompt renders math live, and Test grade runs the real grader on a sample answer before you save."
+        />
 
         {gate === 'unauthorized' && (
-          <div className="mt-8 rounded-lg border border-border bg-card p-6">
+          <div className="mt-8 rounded-xl border border-border bg-card shadow-sm p-6">
             <h2 className="text-base font-semibold text-card-foreground">
               Authoring is for teachers and authors
             </h2>
@@ -457,7 +459,7 @@ export default function StudioPage() {
             {/* Generate items + review queue */}
             <section
               aria-label="Generate items"
-              className="rounded-lg border border-border bg-card p-5"
+              className="rounded-xl border border-border bg-card shadow-sm p-5"
             >
               <h2 className="text-base font-semibold text-card-foreground">
                 Generate items (AI-assisted)
@@ -567,7 +569,7 @@ export default function StudioPage() {
             {/* Teacher assistant */}
             <section
               aria-label="Teacher assistant"
-              className="rounded-lg border border-border bg-card p-5"
+              className="rounded-xl border border-border bg-card shadow-sm p-5"
             >
               <h2 className="text-base font-semibold text-card-foreground">
                 Teacher assistant
@@ -647,7 +649,7 @@ export default function StudioPage() {
             {/* Item list */}
             <section aria-label="Items">
               <div className="mb-3 flex items-center justify-between gap-3">
-                <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                <h2 className="text-sm font-semibold text-foreground">
                   Items
                 </h2>
                 <button
@@ -692,7 +694,7 @@ export default function StudioPage() {
                   {items.map((item) => (
                     <li
                       key={item.id}
-                      className="rounded-lg border border-border bg-card p-3"
+                      className="rounded-xl border border-border bg-card shadow-sm p-3"
                     >
                       <div className="flex items-start justify-between gap-2">
                         <div className="min-w-0">
@@ -742,7 +744,7 @@ export default function StudioPage() {
                   </p>
                 </div>
               ) : (
-                <div className="space-y-4 rounded-lg border border-border bg-card p-5">
+                <div className="space-y-4 rounded-xl border border-border bg-card shadow-sm p-5">
                   <h2 className="text-base font-semibold text-card-foreground">
                     {draft.id ? 'Edit item' : 'New item'}
                   </h2>

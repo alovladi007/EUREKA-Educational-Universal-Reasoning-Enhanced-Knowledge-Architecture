@@ -223,3 +223,61 @@ nothing regressed.
 uploaded yet" poster until a file is there. 0 of 203 uploaded. The slot is
 declared before the file exists on purpose, so the panel does not change shape
 on upload day - drop the mp4 in and rebuild the web image.
+
+## The remaining nineteen surfaces, same treatment (2026-08-12)
+
+Learn was converted first because it was the one shown to be wrong. The other
+nineteen routes still wore the old chrome, so they now carry the same module
+vocabulary and the two modules read as one product.
+
+**Mechanical, all nineteen.** The header was one idiom repeated everywhere -
+`h1.text-xl` plus a muted `p` - and it is now `PageHeading` (text-3xl, lead,
+optional right slot), so every surface opens the way the prep test exam pages
+do. Container padding went to `px-4 py-8 sm:px-6` (the old `px-6 py-10` had no
+mobile step), and the flat `rounded-lg` card became the module's
+`rounded-xl … shadow-sm`. Seventeen pages took this verbatim; `dashboard` and
+`notifications` had JSX inside the header and were done by hand - the health
+pill and the Mark-all-read button became the header's `right` slot rather than
+a sibling flex child.
+
+**The dashboard was rebuilt, not restyled.** It was thirteen identical cards,
+every one stamped "Available" and captioned "Open X". Thirteen equal-weight
+tiles is a phone book: nothing says where to go next, and a badge reading
+Available on every card carries no information. It is now the prep test's own
+shape - resume hero, four stat tiles, banded entry grid, evidence panels:
+
+| Piece | Source |
+|---|---|
+| Resume hero | `learning-path/me` recommended node, **with the planner's own reason** |
+| Chapters | curriculum graph node count |
+| Skills practised | `mastery/me` states |
+| Due for review | `reviews/due` |
+| Streak | `gamification/me` |
+| What to fix next | `practice/mistakes` |
+
+Each figure is fetched independently and allowed to fail alone - a `Promise.all`
+would blank the whole page over one 404, which is exactly what a fresh account
+provokes, since gamification has no row until there is activity. The Teaching
+band renders only for a teacher/admin role.
+
+Achievements' three hand-rolled tiles became four real `Stat`s (mono tabular,
+icon, hint), and eight section `h2`s dropped the uppercase-muted treatment for
+the Band idiom. Field labels inside cards kept it - that is what `Stat` uses for
+its own label, and a field label is not a section heading.
+
+**One honesty correction found by looking at the render.** Three tiles showed an
+em dash with a reason and "Due for review" showed `0`, because only that one
+tested for null rather than for null-or-zero. Zero and "never measured" are
+different claims and the page was making both at once. All four now read the
+same way, matching OCTET.
+
+Verified live at :4100 across all twenty routes in three passes - desktop light,
+desktop dark, and 390px mobile - asserting on each: a text-3xl heading, a lead
+paragraph, no horizontal page overflow, and no surviving `h1.text-xl`. 20/20 in
+every pass, no console errors. The 403s on teacher, analytics and grading-review
+are the role gate doing its job; each renders an honest "Teacher role required"
+panel rather than an error.
+
+Deliberately not changed: the sidebar still lists the Teaching routes to a
+learner. The pages gate correctly and say why, and hiding navigation by role is
+a behaviour change rather than a styling one.

@@ -10,6 +10,9 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { RichMath } from '@/components/Math';
 import { MathField } from '@/components/MathField';
 
@@ -155,15 +158,14 @@ export default function CatPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-2xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Adaptive test</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          A short test that adapts to your answers. Each item is chosen to learn
-          the most about your ability. Your estimate updates as you go.
-        </p>
+      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Adaptive test"
+          lead="A short test that adapts to your answers. Each item is chosen to learn the most about your ability. Your estimate updates as you go."
+        />
 
         {phase === 'idle' && (
-          <div className="mt-8 rounded-lg border border-border bg-card p-8 text-center">
+          <div className="mt-8 rounded-xl border border-border bg-card shadow-sm p-8 text-center">
             <h2 className="text-lg font-semibold text-card-foreground">
               Ready when you are
             </h2>
@@ -195,7 +197,7 @@ export default function CatPage() {
             <button
               type="button"
               onClick={() => void start()}
-              className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="inline-flex items-center justify-center rounded-xl border border-border bg-card shadow-sm px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               Start again
             </button>
@@ -203,7 +205,7 @@ export default function CatPage() {
         )}
 
         {phase === 'done' && (
-          <div className="mt-8 rounded-lg border border-border bg-card p-8 text-center">
+          <div className="mt-8 rounded-xl border border-border bg-card shadow-sm p-8 text-center">
             <h2 className="text-lg font-semibold text-card-foreground">
               Test complete
             </h2>
@@ -251,7 +253,7 @@ export default function CatPage() {
         )}
 
         {(phase === 'question' || phase === 'submitting') && item && (
-          <section className="mt-8 rounded-lg border border-border bg-card p-6">
+          <section className="mt-8 rounded-xl border border-border bg-card shadow-sm p-6">
             <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-muted-foreground">
               <span>Item {itemCount + 1}</span>
               {theta !== null && standardError !== null && (

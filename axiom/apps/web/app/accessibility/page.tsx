@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { getToken } from '@/lib/api';
 import { useAccommodations } from '@/lib/useAccommodations';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { SignInScreen } from '@/components/PageShell';
 
 // Self-service accessibility accommodations (Build prompt Section 13). Toggles
@@ -58,11 +61,11 @@ export default function AccessibilityPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-2xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Accessibility</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          These accommodations apply everywhere, including during an assessment.
-        </p>
+      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Accessibility"
+          lead="These accommodations apply everywhere, including during an assessment."
+        />
 
         <section className="mt-8 space-y-3">
           {rows.map((row) => {
@@ -70,7 +73,7 @@ export default function AccessibilityPage() {
             return (
               <div
                 key={row.key}
-                className="flex items-center justify-between gap-4 rounded-lg border border-border bg-card p-4"
+                className="flex items-center justify-between gap-4 rounded-xl border border-border bg-card shadow-sm p-4"
               >
                 <div>
                   <p className="text-sm font-medium text-card-foreground">{row.label}</p>
@@ -98,7 +101,7 @@ export default function AccessibilityPage() {
           })}
         </section>
 
-        <section className="mt-6 rounded-lg border border-border bg-card p-4">
+        <section className="mt-6 rounded-xl border border-border bg-card shadow-sm p-4">
           <label
             htmlFor="extra-time"
             className="block text-sm font-medium text-card-foreground"

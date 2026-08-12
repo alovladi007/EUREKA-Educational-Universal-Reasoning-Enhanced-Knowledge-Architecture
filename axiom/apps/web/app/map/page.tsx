@@ -26,6 +26,9 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 
 type LoadState = 'checking' | 'signed-out' | 'loading' | 'ready' | 'error';
 
@@ -194,13 +197,11 @@ export default function CurriculumMapPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Curriculum map</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          The whole skill graph, laid out by prerequisite depth. Colors show
-          your mastery; gray nodes you haven&apos;t practiced yet. Scroll to
-          zoom, drag to pan, click a node for details.
-        </p>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Curriculum map"
+          lead="The whole skill graph, laid out by prerequisite depth. Colors show your mastery; gray nodes you haven&apos;t practiced yet. Scroll to zoom, drag to pan, click a node for details."
+        />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">Loading the graph.</p>
@@ -238,7 +239,7 @@ export default function CurriculumMapPage() {
 
             <div className="grid gap-4 lg:grid-cols-[1fr_280px]">
               <div
-                className="overflow-hidden rounded-lg border border-border bg-card"
+                className="overflow-hidden rounded-xl border border-border bg-card shadow-sm"
                 style={{ height: 520 }}
               >
                 <svg
@@ -324,7 +325,7 @@ export default function CurriculumMapPage() {
                 </svg>
               </div>
 
-              <aside className="rounded-lg border border-border bg-card p-4">
+              <aside className="rounded-xl border border-border bg-card shadow-sm p-4">
                 {selected ? (
                   <div className="space-y-3">
                     <div>

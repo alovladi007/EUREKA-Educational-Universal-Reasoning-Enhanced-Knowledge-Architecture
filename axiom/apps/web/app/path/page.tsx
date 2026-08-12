@@ -12,6 +12,9 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { ProgressBar, toPercent } from '@/components/ProgressBar';
 import { StatusBadge } from '@/components/StatusBadge';
 
@@ -158,16 +161,11 @@ export default function PathPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-3xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">
-          Your learning path
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Skills run from pre-algebra through the proof-based core, grouped by
-          tier with prerequisites first. Locked skills open up as you master what
-          they depend on. Proof techniques and theorems are called out with a
-          badge.
-        </p>
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Your learning path"
+          lead="Skills run from pre-algebra through the proof-based core, grouped by tier with prerequisites first. Locked skills open up as you master what they depend on. Proof techniques and theorems are called out with a badge."
+        />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">

@@ -12,6 +12,7 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import { PageHeading } from '@/components/ui';
 
 // The in-app notifications inbox. It lists every notification with a small
 // kind badge, the title, the body, and a timestamp. Unread rows are visually
@@ -147,26 +148,28 @@ export default function NotificationsPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-3xl px-6 py-10">
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">
-              Notifications
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              unread: {unreadCount}
-            </p>
-          </div>
-          {state === 'ready' && items.length > 0 && unreadCount > 0 && (
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Notifications"
+          lead={
+            unreadCount > 0
+              ? `${unreadCount} unread. Assignments, grades and badges land here.`
+              : 'Nothing unread. Assignments, grades and badges land here.'
+          }
+          right={
+            <>
+              {state === 'ready' && items.length > 0 && unreadCount > 0 && (
             <button
               type="button"
               onClick={handleMarkAll}
               className="rounded-lg border border-border px-3 py-1.5 text-sm font-medium text-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
-              Mark all read
-            </button>
-          )}
-        </div>
+                  Mark all read
+                </button>
+              )}
+            </>
+          }
+        />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">

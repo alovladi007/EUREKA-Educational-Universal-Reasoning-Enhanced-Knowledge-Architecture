@@ -1,255 +1,168 @@
 'use client';
 
+import {
+  Activity,
+  BookOpen,
+  Brain,
+  ClipboardList,
+  Compass,
+  FlaskConical,
+  GraduationCap,
+  LineChart,
+  ListChecks,
+  Map as MapIcon,
+  MessageSquare,
+  Radio,
+  RotateCcw,
+  ShieldCheck,
+  Sparkles,
+  Trophy,
+} from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import {
-  EUREKA_LOGIN_URL,
-  fetchDashboardSummary,
+  fetchDueReviews,
+  fetchGamification,
+  fetchGraph,
   fetchHealth,
+  fetchLearningPath,
+  fetchMastery,
   fetchMe,
+  fetchMistakes,
   fetchUnreadCount,
   getToken,
-  type DashboardSummary,
   type Me,
+  type PathNode,
 } from '@/lib/api';
-import Link from 'next/link';
-import { ModuleCard } from '@/components/ModuleCard';
 import { StatusPill, type ApiHealthState } from '@/components/StatusPill';
 import { AppShell } from '@/components/AppShell';
+import { SignInScreen } from '@/components/PageShell';
+import {
+  Band,
+  Card,
+  Entry,
+  LoadingPanel,
+  PageHeading,
+  Stat,
+  Tag,
+} from '@/components/ui';
 
-// Static tiles for the Phase 2 pages that are not part of the API module list.
-// Each links directly to its route, matching the ModuleCard visual style.
-const EXPLORE_TILES: { href: string; name: string; description: string }[] = [
-  {
-    href: '/assessments',
-    name: 'Assessments',
-    description:
-      'The assessments assigned to you. Start one while it is open and take it here.',
-  },
-  {
-    href: '/review',
-    name: 'Review mistakes',
-    description:
-      'Revisit your recent incorrect answers with the correct answer and an explanation.',
-  },
-  {
-    href: '/copilot',
-    name: 'Copilot',
-    description:
-      'An AI-assisted tutor grounded in your lessons. Every reply shows its sources.',
-  },
-  {
-    href: '/achievements',
-    name: 'Achievements',
-    description:
-      'Your XP, level, streak, earned badges, and the leaderboard.',
-  },
-  {
-    href: '/cat',
-    name: 'Adaptive test',
-    description:
-      'A short test that adapts to your answers to estimate your ability.',
-  },
-  {
-    href: '/grading-review',
-    name: 'Grading review',
-    description:
-      'Review AI-graded free responses and override the grade. For teachers and admins.',
-  },
-];
+// The dashboard, built to the prep test module's own shape
+// (eureka/apps/web/src/components/test-prep/ExamDashboard.tsx):
+//
+//   resume hero  -> where to pick up, and why that one
+//   stat tiles   -> four figures, mono and tabular
+//   entry grid   -> the surfaces, saying what each is FOR
+//   evidence     -> what the recorded attempts actually say
+//
+// WHAT THIS REPLACED
+//
+// A flat directory of thirteen identical cards, every one stamped "Available"
+// and captioned "Open X". Thirteen equal-weight tiles is a phone book, not a
+// dashboard: nothing says where to go next, and a badge that reads Available
+// on every card carries no information at all - an accent on everything
+// accents nothing.
+//
+// EVERY FIGURE HERE IS MEASURED.
+//
+// There are no percentiles, no predicted scores and no cohort comparisons,
+// because there is no cohort. Where a figure has no data behind it the tile
+// shows an em dash and says why, rather than a zero - a zero claims a
+// measurement was taken and came back empty, which is a different and usually
+// false statement.
 
-// A dedicated tile for the notifications inbox. It renders like an ExploreTile
-// but shows the live unread count as a badge when there is one to show.
-function NotificationsTile({ unreadCount }: { unreadCount: number }) {
-  return (
-    <Link
-      href="/notifications"
-      className="flex flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-    >
-      <div className="mb-2 flex items-center gap-2">
-        <h3 className="text-base font-semibold text-card-foreground">
-          Notifications
-        </h3>
-        {unreadCount > 0 && (
-          <span className="inline-flex min-w-[1.25rem] items-center justify-center rounded-full bg-brand-600 px-1.5 py-0.5 text-xs font-medium text-white">
-            {unreadCount}
-          </span>
-        )}
-      </div>
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        Assignments, grades, badges, and system messages. Your unread inbox.
-      </p>
-      <span className="mt-3 text-sm font-medium text-brand-600 dark:text-brand-300">
-        {unreadCount > 0
-          ? `Open Notifications (${unreadCount} unread)`
-          : 'Open Notifications'}
-      </span>
-    </Link>
-  );
+type LoadState = 'checking' | 'signed-out' | 'loading' | 'ready';
+
+interface Snapshot {
+  chapters: number | null;
+  next: PathNode | null;
+  practised: number | null;
+  due: number | null;
+  streak: number | null;
+  mistakes: number | null;
+  unread: number;
 }
 
-function ExploreTile({
-  href,
-  name,
-  description,
-}: {
-  href: string;
-  name: string;
-  description: string;
-}) {
-  return (
-    <Link
-      href={href}
-      className="flex flex-col rounded-lg border border-border bg-card p-5 transition-shadow hover:shadow-md focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-    >
-      <h3 className="mb-2 text-base font-semibold text-card-foreground">
-        {name}
-      </h3>
-      <p className="text-sm leading-relaxed text-muted-foreground">
-        {description}
-      </p>
-      <span className="mt-3 text-sm font-medium text-brand-600 dark:text-brand-300">
-        Open {name}
-      </span>
-    </Link>
-  );
-}
-
-// The dashboard is the whole app for Phase 0. It:
-//   1. checks for the EUREKA token in localStorage
-//   2. if absent, shows a "Sign in through EUREKA" screen
-//   3. if present, loads /me and /dashboard/summary and renders the modules
-//   4. polls /health for a live API status pill
-
-type LoadState = 'checking' | 'signed-out' | 'loading' | 'ready' | 'error';
-
-function Wordmark() {
-  return (
-    <div className="flex flex-col">
-      <span className="text-2xl font-bold tracking-tight text-foreground">
-        AXIOM
-      </span>
-      <span className="text-xs text-muted-foreground">
-        Adaptive eXpert Instruction and Outcome Measurement
-      </span>
-    </div>
-  );
-}
-
-function SignInScreen() {
-  return (
-    <main className="flex min-h-screen items-center justify-center px-6">
-      <div className="w-full max-w-md rounded-xl border border-border bg-card p-8 text-center shadow-sm">
-        <div className="mb-6 flex justify-center">
-          <Wordmark />
-        </div>
-        <h1 className="mb-2 text-lg font-semibold text-card-foreground">
-          Sign in through EUREKA to continue
-        </h1>
-        <p className="mb-6 text-sm text-muted-foreground">
-          AXIOM uses your EUREKA account. Sign in on EUREKA and you will be
-          returned here with access to the mathematics workspace.
-        </p>
-        <a
-          href={EUREKA_LOGIN_URL}
-          className="inline-flex w-full items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700"
-        >
-          Sign in with EUREKA
-        </a>
-      </div>
-    </main>
-  );
-}
+const EMPTY: Snapshot = {
+  chapters: null,
+  next: null,
+  practised: null,
+  due: null,
+  streak: null,
+  mistakes: null,
+  unread: 0,
+};
 
 export default function DashboardPage() {
   const [state, setState] = useState<LoadState>('checking');
-  const [health, setHealth] = useState<ApiHealthState>('checking');
   const [me, setMe] = useState<Me | null>(null);
-  const [summary, setSummary] = useState<DashboardSummary | null>(null);
-  const [unreadCount, setUnreadCount] = useState(0);
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [health, setHealth] = useState<ApiHealthState>('checking');
+  const [snap, setSnap] = useState<Snapshot>(EMPTY);
 
-  // Load /me and /dashboard/summary once we know a token exists.
   useEffect(() => {
-    const token = getToken();
-    if (!token) {
+    if (!getToken()) {
       setState('signed-out');
       return;
     }
-
     setState('loading');
     let cancelled = false;
 
     (async () => {
-      try {
-        const [meResult, summaryResult] = await Promise.all([
-          fetchMe(),
-          fetchDashboardSummary(),
-        ]);
-        if (cancelled) {
-          return;
+      // Each figure is fetched independently and allowed to fail on its own.
+      // One endpoint being down should cost that one tile, not the dashboard:
+      // a Promise.all here would blank the whole page over a single 404.
+      const settle = async <T,>(p: Promise<T>): Promise<T | null> => {
+        try {
+          return await p;
+        } catch {
+          return null;
         }
-        setMe(meResult);
-        setSummary(summaryResult);
-        setState('ready');
-      } catch (err) {
-        if (cancelled) {
-          return;
-        }
-        const message =
-          err instanceof Error ? err.message : 'Failed to load dashboard.';
-        setErrorMessage(message);
-        setState('error');
-      }
-    })();
+      };
 
-    // Load the unread notification count for the Notifications tile. This is
-    // best-effort: a failure here must not affect the dashboard, so it is kept
-    // separate and its errors are swallowed.
-    (async () => {
-      try {
-        const result = await fetchUnreadCount();
-        if (!cancelled) {
-          setUnreadCount(result.count);
-        }
-      } catch {
-        // Ignore; the tile just shows no badge.
+      const [meRes, healthRes, graph, path, mastery, due, mistakes, unread] =
+        await Promise.all([
+          settle(fetchMe()),
+          settle(fetchHealth()),
+          settle(fetchGraph()),
+          settle(fetchLearningPath()),
+          settle(fetchMastery()),
+          settle(fetchDueReviews()),
+          settle(fetchMistakes()),
+          settle(fetchUnreadCount()),
+        ]);
+      if (cancelled) {
+        return;
       }
+
+      setMe(meRes);
+      setHealth(healthRes ? 'healthy' : 'unreachable');
+
+      const recommended =
+        path && path.recommended_node_id
+          ? (path.plan.find((n) => n.node_id === path.recommended_node_id) ??
+            null)
+          : (path?.plan.find((n) => n.status === 'available') ?? null);
+
+      // Gamification is fetched separately because a brand-new account has no
+      // profile row and the endpoint is allowed to 404 for that.
+      const game = await settle(fetchGamification());
+
+      setSnap({
+        chapters: graph ? graph.nodes.length : null,
+        next: recommended,
+        practised: mastery ? mastery.states.length : null,
+        due: due ? due.reviews.length : null,
+        streak: game ? game.streak_days : null,
+        mistakes: mistakes ? mistakes.items.length : null,
+        unread: unread ? unread.count : 0,
+      });
+      setState('ready');
     })();
 
     return () => {
       cancelled = true;
     };
   }, []);
-
-  // Poll /health for the live status pill. Runs only when signed in.
-  useEffect(() => {
-    if (state === 'checking' || state === 'signed-out') {
-      return;
-    }
-
-    let cancelled = false;
-
-    const probe = async () => {
-      try {
-        const result = await fetchHealth();
-        if (!cancelled) {
-          setHealth(result.status === 'ok' ? 'healthy' : 'unreachable');
-        }
-      } catch {
-        if (!cancelled) {
-          setHealth('unreachable');
-        }
-      }
-    };
-
-    probe();
-    const interval = setInterval(probe, 15000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [state]);
 
   if (state === 'checking') {
     return (
@@ -263,84 +176,370 @@ export default function DashboardPage() {
     return <SignInScreen />;
   }
 
-  const greetingName = me?.display_name || summary?.user.display_name || '';
+  const greeting = me?.display_name?.split(' ')[0] ?? '';
+  const isTeacher = (me?.roles ?? []).some((r) =>
+    ['teacher', 'admin', 'org_admin'].includes(r),
+  );
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-6xl px-6 py-10">
-        <div className="mb-8 flex flex-wrap items-start justify-between gap-4">
-          <div>
-            <h1 className="text-xl font-semibold text-foreground">
-              {greetingName
-                ? `Welcome back, ${greetingName}.`
-                : 'Welcome back.'}
-            </h1>
-            <p className="mt-1 text-sm text-muted-foreground">
-              This is your AXIOM workspace. Modules will light up as they become
-              available.
-            </p>
-          </div>
-          <StatusPill state={health} />
-        </div>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title={greeting ? `Welcome back, ${greeting}.` : 'Welcome back.'}
+          lead="Your AXIOM workspace: the mathematics ladder, practice that is graded on the server, and what the recorded attempts actually say you know."
+          right={<StatusPill state={health} />}
+        />
 
-        {state === 'loading' && (
-          <p className="text-sm text-muted-foreground">
-            Loading your dashboard.
-          </p>
-        )}
+        {state === 'loading' && <LoadingPanel label="Loading your workspace." />}
 
-        {state === 'error' && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-6 dark:border-red-900 dark:bg-red-950">
-            <h2 className="mb-1 text-base font-semibold text-red-800 dark:text-red-200">
-              We could not load your dashboard
-            </h2>
-            <p className="text-sm text-red-700 dark:text-red-300">
-              {errorMessage}
-            </p>
-            <p className="mt-3 text-sm text-red-700 dark:text-red-300">
-              Check that the AXIOM API is running, then reload this page.
-            </p>
-          </div>
-        )}
+        {state === 'ready' && (
+          <div className="space-y-6">
+            <ResumeHero next={snap.next} />
 
-        {state === 'ready' && summary && (
-          <>
-            <section>
-              <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Modules
-              </h2>
-              {summary.modules.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No modules yet. Check back soon.
-                </p>
-              ) : (
-                <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                  {summary.modules.map((module) => (
-                    <ModuleCard key={module.key} module={module} />
-                  ))}
-                </div>
-              )}
-            </section>
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <Stat
+                icon={<BookOpen className="h-3.5 w-3.5" />}
+                label="Chapters"
+                value={snap.chapters === null ? '—' : String(snap.chapters)}
+                hint={
+                  snap.chapters === null
+                    ? 'The curriculum did not answer.'
+                    : 'Every one carries a full written course.'
+                }
+              />
+              <Stat
+                icon={<Brain className="h-3.5 w-3.5" />}
+                label="Skills practised"
+                value={
+                  snap.practised === null || snap.practised === 0
+                    ? '—'
+                    : String(snap.practised)
+                }
+                hint={
+                  snap.practised
+                    ? 'Skills with at least one graded attempt.'
+                    : 'No graded attempts recorded yet.'
+                }
+              />
+              <Stat
+                icon={<RotateCcw className="h-3.5 w-3.5" />}
+                label="Due for review"
+                // Em dash rather than 0, matching the other activity figures
+                // here and the OCTET dashboard: a zero reads as a measured
+                // quantity, and "no reviews have ever been scheduled" is a
+                // different statement from "the queue ran and is empty today".
+                value={snap.due === null || snap.due === 0 ? '—' : String(snap.due)}
+                hint={
+                  snap.due
+                    ? 'Scheduled by SM-2, not by how long ago you saw it.'
+                    : 'Nothing is scheduled. Review fills as you practise.'
+                }
+              />
+              <Stat
+                icon={<Activity className="h-3.5 w-3.5" />}
+                label="Streak"
+                value={
+                  snap.streak === null || snap.streak === 0
+                    ? '—'
+                    : `${snap.streak}d`
+                }
+                hint={
+                  snap.streak
+                    ? 'Consecutive days with recorded activity.'
+                    : 'No activity recorded yet.'
+                }
+              />
+            </div>
 
-            <section className="mt-10">
-              <h2 className="mb-4 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Explore
-              </h2>
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                <NotificationsTile unreadCount={unreadCount} />
-                {EXPLORE_TILES.map((tile) => (
-                  <ExploreTile
-                    key={tile.href}
-                    href={tile.href}
-                    name={tile.name}
-                    description={tile.description}
-                  />
-                ))}
+            <Band title="Study">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <Entry
+                  href="/learn"
+                  icon={<BookOpen className="h-4 w-4" />}
+                  title="Learn"
+                  body="Every chapter as a full written course: numbered sections with the mathematics set inline, worked examples, the misconceptions this topic really produces, and a self-test."
+                  foot={
+                    <Tag tone="brand">
+                      {snap.chapters === null
+                        ? 'chapters'
+                        : `${snap.chapters} chapters`}
+                    </Tag>
+                  }
+                  accent
+                />
+                <Entry
+                  href="/practice"
+                  icon={<FlaskConical className="h-4 w-4" />}
+                  title="Practice"
+                  body="One question at a time, generated per learner and graded on the server by CAS, with a hint ladder that runs before the answer rather than instead of it."
+                  foot={
+                    <Tag>
+                      {snap.practised
+                        ? `${snap.practised} skills touched`
+                        : 'not started'}
+                    </Tag>
+                  }
+                />
+                <Entry
+                  href="/review"
+                  icon={<RotateCcw className="h-4 w-4" />}
+                  title="Review"
+                  body="Spaced repetition over what you actually got wrong, scheduled by SM-2 rather than by when you last felt like it."
+                  foot={
+                    <Tag>{snap.due ? `${snap.due} due` : 'nothing due'}</Tag>
+                  }
+                />
+                <Entry
+                  href="/mastery"
+                  icon={<Brain className="h-4 w-4" />}
+                  title="Mastery"
+                  body="An estimate per skill with the evidence behind every change, so a number you disagree with can be argued with rather than just read."
+                  foot={
+                    <Tag>
+                      {snap.practised ? 'has evidence' : 'needs attempts'}
+                    </Tag>
+                  }
+                />
+                <Entry
+                  href="/map"
+                  icon={<MapIcon className="h-4 w-4" />}
+                  title="Curriculum map"
+                  body="The whole skill graph laid out by prerequisite depth, so you can see what a topic stands on before you start it."
+                  foot={<Tag>open</Tag>}
+                />
+                <Entry
+                  href="/path"
+                  icon={<Compass className="h-4 w-4" />}
+                  title="Path"
+                  body="Pre-algebra through the proof-based core in prerequisite order. Locked skills open as you master what they depend on."
+                  foot={
+                    <Tag>
+                      {snap.next ? `next: ${snap.next.code}` : 'open'}
+                    </Tag>
+                  }
+                />
               </div>
-            </section>
-          </>
+            </Band>
+
+            <Band title="Assess and engage">
+              <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                <Entry
+                  href="/cat"
+                  icon={<Radio className="h-4 w-4" />}
+                  title="Adaptive test"
+                  body="A short test that picks each item from your current estimate, so it converges on your level instead of walking a fixed list."
+                  foot={<Tag>open</Tag>}
+                />
+                <Entry
+                  href="/assessments"
+                  icon={<ClipboardList className="h-4 w-4" />}
+                  title="Assessments"
+                  body="Teacher-authored papers assigned to you. Start one while its window is open and take it here."
+                  foot={<Tag>assigned to you</Tag>}
+                />
+                <Entry
+                  href="/copilot"
+                  icon={<MessageSquare className="h-4 w-4" />}
+                  title="Copilot"
+                  body="A tutor grounded in your own lessons. Every reply carries its sources, and it will not hand over a proof you are being asked to write."
+                  foot={<Tag>open</Tag>}
+                />
+                <Entry
+                  href="/tutor"
+                  icon={<Sparkles className="h-4 w-4" />}
+                  title="Live tutoring"
+                  body="A shared whiteboard, chat and pushed problems in real time. Text and drawing are live; there is no video."
+                  foot={<Tag>open</Tag>}
+                />
+                <Entry
+                  href="/achievements"
+                  icon={<Trophy className="h-4 w-4" />}
+                  title="Achievements"
+                  body="XP, level, streak and badges, plus an opt-in leaderboard shown under an alias rather than your name."
+                  foot={
+                    <Tag>{snap.streak ? `${snap.streak}d streak` : 'no streak yet'}</Tag>
+                  }
+                />
+                <Entry
+                  href="/notifications"
+                  icon={<ListChecks className="h-4 w-4" />}
+                  title="Notifications"
+                  body="Assignments, grades, badges and system messages, newest first."
+                  foot={
+                    snap.unread > 0 ? (
+                      <Tag tone="brand">{snap.unread} unread</Tag>
+                    ) : (
+                      <Tag>nothing unread</Tag>
+                    )
+                  }
+                />
+              </div>
+            </Band>
+
+            {isTeacher && (
+              <Band title="Teaching">
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  <Entry
+                    href="/teacher"
+                    icon={<GraduationCap className="h-4 w-4" />}
+                    title="Teacher console"
+                    body="Build assessments from the skill graph, assign them, and read the results per learner and per item."
+                    foot={<Tag>teacher</Tag>}
+                  />
+                  <Entry
+                    href="/studio"
+                    icon={<FlaskConical className="h-4 w-4" />}
+                    title="Content Studio"
+                    body="Author and edit items. The prompt renders its mathematics live and Test runs the real grader before anything is served."
+                    foot={<Tag>teacher</Tag>}
+                  />
+                  <Entry
+                    href="/analytics"
+                    icon={<LineChart className="h-4 w-4" />}
+                    title="Analytics"
+                    body="Item analysis, standards mastery and growth, from graded attempts only. No percentiles: there is no cohort."
+                    foot={<Tag>teacher</Tag>}
+                  />
+                  <Entry
+                    href="/grading-review"
+                    icon={<ListChecks className="h-4 w-4" />}
+                    title="Grading review"
+                    body="AI-scored free responses queued for a human. The AI score is a suggestion and the override is the grade of record."
+                    foot={<Tag>teacher</Tag>}
+                  />
+                  <Entry
+                    href="/proctoring"
+                    icon={<ShieldCheck className="h-4 w-4" />}
+                    title="Proctoring review"
+                    body="Flagged sessions, highest anomaly first. The score routes attention; it is not an accusation."
+                    foot={<Tag>teacher</Tag>}
+                  />
+                  <Entry
+                    href="/integrations"
+                    icon={<Compass className="h-4 w-4" />}
+                    title="Integrations"
+                    body="LTI 1.3 to an LMS and OneRoster to an SIS, with the keys and endpoints this deployment actually exposes."
+                    foot={<Tag>admin</Tag>}
+                  />
+                </div>
+              </Band>
+            )}
+
+            <div className="grid gap-3 lg:grid-cols-2">
+              <Card className="p-4">
+                <h2 className="text-sm font-semibold text-foreground">
+                  What to fix next
+                </h2>
+                {snap.mistakes ? (
+                  <>
+                    <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                      {snap.mistakes} recorded incorrect answer
+                      {snap.mistakes === 1 ? '' : 's'}, each with the correct
+                      answer and why it is correct.
+                    </p>
+                    <Link
+                      href="/review"
+                      className="mt-2.5 inline-flex items-center justify-center rounded-lg bg-brand-600 px-3.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+                    >
+                      Open review
+                    </Link>
+                  </>
+                ) : (
+                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                    Nothing recorded yet. Answer a few questions and this fills
+                    with the skills you actually missed, rather than a guess
+                    about which ones are hard.
+                  </p>
+                )}
+              </Card>
+
+              <Card className="p-4">
+                <h2 className="text-sm font-semibold text-foreground">
+                  How these numbers are made
+                </h2>
+                <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                  Every figure on this page is this account&apos;s own recorded
+                  attempts. There are no percentiles, because there is no cohort
+                  to compare against, and none will be shown until there is. A
+                  figure with nothing behind it reads as an em dash rather than
+                  a zero.
+                </p>
+              </Card>
+            </div>
+          </div>
         )}
       </main>
     </AppShell>
+  );
+}
+
+/**
+ * Where to pick up, and why that one.
+ *
+ * The reason string comes from the path planner ("recommended next --
+ * available: no prerequisites"), so the hero explains its own choice instead
+ * of asserting one. With no plan it says so rather than inventing a start.
+ */
+function ResumeHero({ next }: { next: PathNode | null }) {
+  if (!next) {
+    return (
+      <Card className="p-5">
+        <div className="flex items-center gap-2 text-brand-600 dark:text-brand-400">
+          <GraduationCap className="h-4 w-4" />
+          <span className="text-[11px] font-semibold uppercase tracking-wide">
+            Start here
+          </span>
+        </div>
+        <p className="mt-1.5 text-lg font-semibold text-foreground">
+          The path planner has not returned a next skill.
+        </p>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Browse the chapters and pick one — the recommendation appears once
+          the planner can reach the graph.
+        </p>
+        <Link
+          href="/learn"
+          className="mt-3 inline-flex items-center justify-center rounded-lg border border-border px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        >
+          All chapters
+        </Link>
+      </Card>
+    );
+  }
+
+  return (
+    <Card className="p-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex items-center gap-2 text-brand-600 dark:text-brand-400">
+            <GraduationCap className="h-4 w-4" />
+            <span className="text-[11px] font-semibold uppercase tracking-wide">
+              Start here
+            </span>
+          </div>
+          <p className="mt-1.5 text-lg font-semibold text-foreground">
+            {next.title}
+          </p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            <span className="font-mono text-xs">{next.code}</span>
+            {next.reason ? ` · ${next.reason}` : ''}
+          </p>
+        </div>
+        <div className="flex shrink-0 gap-2">
+          <Link
+            href={`/learn/${encodeURIComponent(next.code)}`}
+            className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          >
+            Read the chapter
+          </Link>
+          <Link
+            href={`/practice?node=${encodeURIComponent(next.code)}`}
+            className="inline-flex items-center justify-center rounded-lg border border-border px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+          >
+            Practise it
+          </Link>
+        </div>
+      </div>
+    </Card>
   );
 }

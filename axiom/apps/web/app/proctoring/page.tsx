@@ -10,6 +10,9 @@ import {
   type ProctoringSummary,
 } from '@/lib/api';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 
 // Teacher review of flagged proctoring sessions. Each row shows the anomaly
@@ -109,16 +112,14 @@ export default function ProctoringPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Proctoring review</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Flagged exam sessions, highest anomaly first. The score routes your
-          attention; it is not an accusation. Open a session to see its integrity
-          timeline, then decide.
-        </p>
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Proctoring review"
+          lead="Flagged exam sessions, highest anomaly first. The score routes your attention; it is not an accusation. Open a session to see its integrity timeline, then decide."
+        />
 
         {gate === 'unauthorized' && (
-          <div className="mt-8 rounded-lg border border-border bg-card p-6">
+          <div className="mt-8 rounded-xl border border-border bg-card shadow-sm p-6">
             <p className="text-sm text-muted-foreground">
               Proctoring review is for teachers and administrators.
             </p>
@@ -142,7 +143,7 @@ export default function ProctoringPage() {
             ) : (
               <ul className="space-y-3">
                 {sessions.map((s) => (
-                  <li key={s.session_id} className="rounded-lg border border-border bg-card">
+                  <li key={s.session_id} className="rounded-xl border border-border bg-card shadow-sm">
                     <button
                       type="button"
                       onClick={() => void toggle(s.session_id)}

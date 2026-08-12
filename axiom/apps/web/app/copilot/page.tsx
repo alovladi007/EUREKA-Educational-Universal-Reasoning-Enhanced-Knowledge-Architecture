@@ -11,6 +11,9 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { RichMath } from '@/components/Math';
 
 // The AI Copilot: an AI-assisted tutor chat grounded in the learner's lessons.
@@ -194,12 +197,11 @@ export default function CopilotPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-2xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Copilot</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Ask questions about what you are learning and get worked-through
-          guidance.
-        </p>
+      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Copilot"
+          lead="Ask questions about what you are learning and get worked-through guidance."
+        />
 
         <div
           className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900 dark:bg-amber-950"
@@ -272,7 +274,7 @@ export default function CopilotPage() {
                 ) : (
                   <div
                     key={index}
-                    className="rounded-lg border border-border bg-card p-4"
+                    className="rounded-xl border border-border bg-card shadow-sm p-4"
                   >
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="inline-flex items-center rounded-full bg-brand-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-brand-700 dark:bg-brand-950 dark:text-brand-300">
@@ -299,7 +301,7 @@ export default function CopilotPage() {
               )}
 
               {sending && (
-                <div className="rounded-lg border border-border bg-card p-4">
+                <div className="rounded-xl border border-border bg-card shadow-sm p-4">
                   <p className="text-sm text-muted-foreground">
                     The copilot is thinking.
                   </p>

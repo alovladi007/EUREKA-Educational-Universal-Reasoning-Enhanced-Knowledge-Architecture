@@ -15,6 +15,9 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { ProgressBar, toPercent } from '@/components/ProgressBar';
 import {
   GrowthLineChart,
@@ -134,11 +137,11 @@ export default function AnalyticsPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Analytics</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Item analysis, standards mastery, and growth over time.
-        </p>
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Analytics"
+          lead="Item analysis, standards mastery, and growth over time."
+        />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">
@@ -168,7 +171,7 @@ export default function AnalyticsPage() {
           <div className="mt-8 space-y-10">
             <section aria-label="Item analysis">
               <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
-                <h2 className="text-sm font-medium uppercase tracking-wide text-muted-foreground">
+                <h2 className="text-sm font-semibold text-foreground">
                   Item analysis
                 </h2>
                 <div className="flex flex-wrap items-center gap-2">
@@ -227,7 +230,7 @@ export default function AnalyticsPage() {
               ) : (
                 <>
                   {items.some((i) => i.discrimination !== null) && (
-                    <div className="mb-4 rounded-lg border border-border bg-card p-4">
+                    <div className="mb-4 rounded-xl border border-border bg-card shadow-sm p-4">
                       <ItemScatterChart
                         items={items
                           .filter((i) => i.discrimination !== null)
@@ -240,7 +243,7 @@ export default function AnalyticsPage() {
                       />
                     </div>
                   )}
-                <div className="overflow-x-auto rounded-lg border border-border bg-card">
+                <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
                   <table className="w-full text-left text-sm">
                     <thead>
                       <tr className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">
@@ -313,7 +316,7 @@ export default function AnalyticsPage() {
             </section>
 
             <section aria-label="Standards mastery">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <h2 className="mb-3 text-sm font-semibold text-foreground">
                 Standards mastery
               </h2>
               {nodes.length === 0 ? (
@@ -329,7 +332,7 @@ export default function AnalyticsPage() {
                   {nodes.map((node) => (
                     <li
                       key={node.code}
-                      className="rounded-lg border border-border bg-card p-4"
+                      className="rounded-xl border border-border bg-card shadow-sm p-4"
                     >
                       <div className="flex flex-wrap items-baseline justify-between gap-3">
                         <span className="text-sm font-semibold text-card-foreground">
@@ -367,11 +370,11 @@ export default function AnalyticsPage() {
             </section>
 
             <section aria-label="Your growth">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <h2 className="mb-3 text-sm font-semibold text-foreground">
                 Your growth
               </h2>
               {growth && growth.n_events > 0 ? (
-                <div className="rounded-lg border border-border bg-card p-5">
+                <div className="rounded-xl border border-border bg-card shadow-sm p-5">
                   <p className="text-sm text-card-foreground">
                     Average mastery now:{' '}
                     <span className="font-semibold">

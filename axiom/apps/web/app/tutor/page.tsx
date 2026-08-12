@@ -9,6 +9,9 @@ import {
   type TutoringSession,
 } from '@/lib/api';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { SignInScreen } from '@/components/PageShell';
 import { RichMath } from '@/components/Math';
 
@@ -220,16 +223,15 @@ export default function TutorPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Live tutoring</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          A shared whiteboard, chat, and pushed problems in real time. Video and
-          audio need a media server and are not enabled here.
-        </p>
+      <main className="mx-auto max-w-5xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Live tutoring"
+          lead="A shared whiteboard, chat, and pushed problems in real time. Video and audio need a media server and are not enabled here."
+        />
 
         {phase === 'lobby' && (
           <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-            <section className="rounded-lg border border-border bg-card p-5">
+            <section className="rounded-xl border border-border bg-card shadow-sm p-5">
               <h2 className="text-base font-semibold text-card-foreground">Open a session</h2>
               <input
                 type="text"
@@ -246,7 +248,7 @@ export default function TutorPage() {
                 Open and get a code
               </button>
             </section>
-            <section className="rounded-lg border border-border bg-card p-5">
+            <section className="rounded-xl border border-border bg-card shadow-sm p-5">
               <h2 className="text-base font-semibold text-card-foreground">Join a session</h2>
               <input
                 type="text"
@@ -286,7 +288,7 @@ export default function TutorPage() {
               <button
                 type="button"
                 onClick={leave}
-                className="rounded-lg border border-border bg-card px-3 py-1.5 text-sm font-medium text-card-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
+                className="rounded-xl border border-border bg-card shadow-sm px-3 py-1.5 text-sm font-medium text-card-foreground hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
               >
                 Leave
               </button>
@@ -357,7 +359,7 @@ export default function TutorPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col rounded-lg border border-border bg-card">
+              <div className="flex flex-col rounded-xl border border-border bg-card shadow-sm">
                 <p className="border-b border-border px-3 py-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                   Chat
                 </p>

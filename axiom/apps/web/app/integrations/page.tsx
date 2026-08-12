@@ -10,6 +10,9 @@ import {
   type LtiPlatformInput,
 } from '@/lib/api';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 
 // Admin surface for the LTI 1.3 and OneRoster integrations. It shows the tool's
@@ -153,14 +156,14 @@ export default function IntegrationsPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Integrations</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Connect AXIOM to an LMS with LTI 1.3 and to an SIS with OneRoster.
-        </p>
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Integrations"
+          lead="Connect AXIOM to an LMS with LTI 1.3 and to an SIS with OneRoster."
+        />
 
         {gate === 'unauthorized' && (
-          <div className="mt-8 rounded-lg border border-border bg-card p-6">
+          <div className="mt-8 rounded-xl border border-border bg-card shadow-sm p-6">
             <p className="text-sm text-muted-foreground">
               Integrations are configured by administrators.
             </p>
@@ -174,7 +177,7 @@ export default function IntegrationsPage() {
 
         {gate === 'ready' && (
           <div className="mt-8 space-y-8">
-            <section className="rounded-lg border border-border bg-card p-5">
+            <section className="rounded-xl border border-border bg-card shadow-sm p-5">
               <h2 className="text-base font-semibold text-card-foreground">
                 LTI 1.3 tool endpoints
               </h2>
@@ -188,7 +191,7 @@ export default function IntegrationsPage() {
               </div>
             </section>
 
-            <section className="rounded-lg border border-border bg-card p-5">
+            <section className="rounded-xl border border-border bg-card shadow-sm p-5">
               <h2 className="text-base font-semibold text-card-foreground">
                 Register a platform (LMS)
               </h2>
@@ -226,7 +229,7 @@ export default function IntegrationsPage() {
               </div>
             </section>
 
-            <section className="rounded-lg border border-border bg-card p-5">
+            <section className="rounded-xl border border-border bg-card shadow-sm p-5">
               <h2 className="text-base font-semibold text-card-foreground">
                 OneRoster sync
               </h2>

@@ -15,6 +15,9 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 
 // The teacher console. Every teacher-only call can return 403 for a student;
 // when that happens we show a clear "Teacher role required" message rather than
@@ -213,14 +216,11 @@ export default function TeacherPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-4xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">
-          Teacher console
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Create assessments from the skill graph, assign them, and review
-          results.
-        </p>
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Teacher console"
+          lead="Create assessments from the skill graph, assign them, and review results."
+        />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">
@@ -249,12 +249,12 @@ export default function TeacherPage() {
         {state === 'ready' && (
           <div className="mt-8 space-y-10">
             <section aria-label="Create an assessment">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <h2 className="mb-3 text-sm font-semibold text-foreground">
                 New assessment
               </h2>
               <form
                 onSubmit={submitCreate}
-                className="rounded-lg border border-border bg-card p-5"
+                className="rounded-xl border border-border bg-card shadow-sm p-5"
               >
                 <div className="mb-4">
                   <label
@@ -381,7 +381,7 @@ export default function TeacherPage() {
             </section>
 
             <section aria-label="My assessments">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <h2 className="mb-3 text-sm font-semibold text-foreground">
                 My assessments
               </h2>
               {assessments.length === 0 ? (
@@ -398,7 +398,7 @@ export default function TeacherPage() {
                     return (
                       <li
                         key={assessment.id}
-                        className="rounded-lg border border-border bg-card p-5"
+                        className="rounded-xl border border-border bg-card shadow-sm p-5"
                       >
                         <div className="flex flex-wrap items-start justify-between gap-3">
                           <div>

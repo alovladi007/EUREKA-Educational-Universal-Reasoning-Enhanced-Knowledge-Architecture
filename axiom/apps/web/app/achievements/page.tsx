@@ -11,6 +11,8 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import { Award, Flame, Sparkles, TrendingUp } from 'lucide-react';
+import { PageHeading, Stat } from '@/components/ui';
 import { ProgressBar } from '@/components/ProgressBar';
 
 // The achievements view. It shows the learner's XP total, level, and current
@@ -94,12 +96,11 @@ export default function AchievementsPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-3xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Achievements</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Your experience points, level, streak, and the badges you have
-          earned. See how you compare on the leaderboard.
-        </p>
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Achievements"
+          lead="Your experience points, level, streak, and the badges you have earned. See how you compare on the leaderboard."
+        />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">
@@ -116,37 +117,52 @@ export default function AchievementsPage() {
         {state === 'ready' && profile && (
           <div className="mt-8 space-y-10">
             <section aria-label="Your progress">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                <div className="rounded-lg border border-border bg-card p-5">
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Total XP
-                  </p>
-                  <p className="mt-1 text-2xl font-bold text-card-foreground">
-                    {xpTotal}
-                  </p>
-                </div>
-                <div className="rounded-lg border border-border bg-card p-5">
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Level
-                  </p>
-                  <p className="mt-1 text-2xl font-bold text-card-foreground">
-                    {level}
-                  </p>
-                </div>
-                <div className="rounded-lg border border-border bg-card p-5">
-                  <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                    Streak
-                  </p>
-                  <p className="mt-1 text-2xl font-bold text-card-foreground">
-                    {profile.streak_days}{' '}
-                    <span className="text-sm font-medium text-muted-foreground">
-                      {profile.streak_days === 1 ? 'day' : 'days'}
-                    </span>
-                  </p>
-                </div>
+              <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                <Stat
+                  icon={<Sparkles className="h-3.5 w-3.5" />}
+                  label="Total XP"
+                  value={xpTotal > 0 ? String(xpTotal) : '\u2014'}
+                  hint={
+                    xpTotal > 0
+                      ? 'Earned from graded attempts.'
+                      : 'No XP recorded yet.'
+                  }
+                />
+                <Stat
+                  icon={<TrendingUp className="h-3.5 w-3.5" />}
+                  label="Level"
+                  value={String(level)}
+                  hint={`${withinLevel}/100 XP toward level ${level + 1}.`}
+                />
+                <Stat
+                  icon={<Flame className="h-3.5 w-3.5" />}
+                  label="Streak"
+                  value={
+                    profile.streak_days > 0 ? `${profile.streak_days}d` : '\u2014'
+                  }
+                  hint={
+                    profile.streak_days > 0
+                      ? 'Consecutive days with recorded activity.'
+                      : 'No activity recorded yet.'
+                  }
+                />
+                <Stat
+                  icon={<Award className="h-3.5 w-3.5" />}
+                  label="Badges"
+                  value={
+                    profile.badges.length > 0
+                      ? String(profile.badges.length)
+                      : '\u2014'
+                  }
+                  hint={
+                    profile.badges.length > 0
+                      ? 'Earned, not purchased or granted.'
+                      : 'None earned yet.'
+                  }
+                />
               </div>
 
-              <div className="mt-4 rounded-lg border border-border bg-card p-5">
+              <div className="mt-4 rounded-xl border border-border bg-card shadow-sm p-5">
                 <div className="flex items-baseline justify-between gap-3">
                   <span className="text-sm font-medium text-card-foreground">
                     Progress to level {level + 1}
@@ -168,7 +184,7 @@ export default function AchievementsPage() {
             </section>
 
             <section aria-label="Your badges">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <h2 className="mb-3 text-sm font-semibold text-foreground">
                 Badges
               </h2>
               {badges.length === 0 ? (
@@ -186,7 +202,7 @@ export default function AchievementsPage() {
                   {badges.map((badge) => (
                     <div
                       key={badge.code}
-                      className="rounded-lg border border-border bg-card p-5"
+                      className="rounded-xl border border-border bg-card shadow-sm p-5"
                     >
                       <div className="flex items-start justify-between gap-3">
                         <h3 className="text-sm font-semibold text-card-foreground">
@@ -209,7 +225,7 @@ export default function AchievementsPage() {
             </section>
 
             <section aria-label="Leaderboard">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
+              <h2 className="mb-3 text-sm font-semibold text-foreground">
                 Leaderboard
               </h2>
               {topTen.length === 0 ? (
@@ -217,7 +233,7 @@ export default function AchievementsPage() {
                   The leaderboard is empty. Be the first to earn XP.
                 </p>
               ) : (
-                <div className="overflow-x-auto rounded-lg border border-border bg-card">
+                <div className="overflow-x-auto rounded-xl border border-border bg-card shadow-sm">
                   <table className="w-full text-left text-sm">
                     <thead>
                       <tr className="border-b border-border text-xs uppercase tracking-wide text-muted-foreground">

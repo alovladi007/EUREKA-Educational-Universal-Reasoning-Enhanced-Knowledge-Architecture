@@ -10,6 +10,9 @@ import {
 } from '@/lib/api';
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { ProgressBar, toPercent } from '@/components/ProgressBar';
 
 // The explainable-mastery view. It lists each mastered node as a labeled
@@ -105,12 +108,11 @@ export default function MasteryPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-3xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Mastery</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Your estimated command of each skill. Select a skill to see the
-          evidence behind the estimate.
-        </p>
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Mastery"
+          lead="Your estimated command of each skill. Select a skill to see the evidence behind the estimate."
+        />
 
         {state === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">
@@ -142,7 +144,7 @@ export default function MasteryPage() {
                   return (
                     <li
                       key={row.node_id}
-                      className="rounded-lg border border-border bg-card"
+                      className="rounded-xl border border-border bg-card shadow-sm"
                     >
                       <button
                         type="button"

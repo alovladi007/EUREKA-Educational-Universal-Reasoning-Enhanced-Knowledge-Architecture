@@ -4,6 +4,9 @@ import { useEffect, useState } from 'react';
 import { fetchMistakes, getToken, type MistakeItem, apiGet, apiPost, practiceAnswer } from '@/lib/api';
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { RichMath } from '@/components/Math';
 
 // The "Review your mistakes" view. It lists the learner's recent incorrect
@@ -22,7 +25,7 @@ function formatWhen(value: string): string {
 
 function MistakeCard({ item }: { item: MistakeItem }) {
   return (
-    <li className="rounded-lg border border-border bg-card p-5">
+    <li className="rounded-xl border border-border bg-card shadow-sm p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <h2 className="text-sm font-semibold text-card-foreground">
@@ -211,14 +214,11 @@ export default function ReviewPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-3xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">
-          Review your mistakes
-        </h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Your recent incorrect answers, most recent first. Revisit each one to
-          see the correct answer and why.
-        </p>
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Review your mistakes"
+          lead="Your recent incorrect answers, most recent first. Revisit each one to see the correct answer and why."
+        />
 
         <MissedSection />
 

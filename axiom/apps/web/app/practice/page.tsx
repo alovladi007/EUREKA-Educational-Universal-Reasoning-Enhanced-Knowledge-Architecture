@@ -22,6 +22,9 @@ import {
 import Link from 'next/link';
 import { ErrorPanel, HeaderLink, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
+import {
+  PageHeading,
+} from '@/components/ui';
 import { toPercent } from '@/components/ProgressBar';
 import dynamic from 'next/dynamic';
 import { RichMath } from '@/components/Math';
@@ -476,11 +479,11 @@ function PracticeInner() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-2xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Practice</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Answer one question at a time. Your mastery updates after each answer.
-        </p>
+      <main className="mx-auto max-w-2xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Practice"
+          lead="Answer one question at a time. Your mastery updates after each answer."
+        />
 
         {phase === 'loading' && (
           <p className="mt-8 text-sm text-muted-foreground">
@@ -494,7 +497,7 @@ function PracticeInner() {
             <button
               type="button"
               onClick={() => void loadNext()}
-              className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="inline-flex items-center justify-center rounded-xl border border-border bg-card shadow-sm px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               Try again
             </button>
@@ -502,7 +505,7 @@ function PracticeInner() {
         )}
 
         {phase === 'done' && (
-          <div className="mt-8 rounded-lg border border-border bg-card p-8 text-center">
+          <div className="mt-8 rounded-xl border border-border bg-card shadow-sm p-8 text-center">
             <h2 className="text-lg font-semibold text-card-foreground">
               You are all caught up
             </h2>
@@ -520,7 +523,7 @@ function PracticeInner() {
           phase === 'grading' ||
           phase === 'answered') &&
           question && (
-          <section className="mt-8 rounded-lg border border-border bg-card p-6">
+          <section className="mt-8 rounded-xl border border-border bg-card shadow-sm p-6">
             <div className="flex flex-wrap items-center gap-2">
               <p className="text-xs font-medium uppercase tracking-wide text-brand-600 dark:text-brand-300">
                 {question.node_title}
@@ -1266,7 +1269,7 @@ function PracticeInner() {
                 {(question.presentation?.items ?? []).map((item) => (
                   <div
                     key={item}
-                    className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-2"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card shadow-sm p-2"
                   >
                     <span className="text-sm font-medium text-card-foreground">{item}</span>
                     <select
@@ -1293,7 +1296,7 @@ function PracticeInner() {
                 <label className="block text-sm font-medium text-card-foreground">
                   Tap tokens in order to build the expression
                 </label>
-                <div className="min-h-[2.5rem] rounded-lg border border-border bg-card p-2 font-mono text-sm text-foreground">
+                <div className="min-h-[2.5rem] rounded-xl border border-border bg-card shadow-sm p-2 font-mono text-sm text-foreground">
                   {tokenOrder.length === 0 ? (
                     <span className="text-muted-foreground">Your expression appears here</span>
                   ) : (
@@ -1495,7 +1498,7 @@ function PracticeInner() {
                     <button
                       type="button"
                       onClick={() => void loadNext()}
-                      className="inline-flex items-center justify-center rounded-lg border border-border bg-card px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
+                      className="inline-flex items-center justify-center rounded-xl border border-border bg-card shadow-sm px-4 py-2 text-sm font-medium text-card-foreground transition-colors hover:bg-muted focus:outline-none focus:ring-2 focus:ring-brand-500"
                     >
                       Next question
                     </button>
