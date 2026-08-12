@@ -285,6 +285,22 @@ async def readyz(
         checks["jobs"] = {"ok": False, "error": str(exc)}
         overall_ok = False
 
+    # Erasure requests that came due and were never carried out. This is the
+    # signal that `api-core-worker` is not running - and it is the exact state
+    # the platform sat in silently for months, so it gets surfaced rather than
+    # inferred from queue depth.
+    #
+    # Deliberately does NOT flip readiness to 503: the API itself is healthy,
+    # and pulling it out of the load balancer over a stalled background worker
+    # would turn a compliance problem into an outage. It is here to be alerted
+    # on, not to fail closed.
+    try:
+        from app.services import erasure as erasure_svc
+        overdue = await erasure_svc.due_deletions(db, limit=1000)
+        checks["erasures_overdue"] = len(overdue)
+    except Exception as exc:
+        checks["erasures_overdue"] = {"ok": False, "error": str(exc)}
+
     body = {"status": "ok" if overall_ok else "degraded", "checks": checks}
     status_code = 200 if overall_ok else 503
     return Response(

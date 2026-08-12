@@ -55,7 +55,25 @@ log = logging.getLogger("worker")
 POLL_INTERVAL_SECONDS = float(os.getenv("WORKER_POLL_INTERVAL", "5"))
 SWEEP_INTERVAL_SECONDS = float(os.getenv("WORKER_SWEEP_INTERVAL", "300"))
 
+# Touched once per loop. The container healthcheck reads its mtime, so a loop
+# that hangs (rather than exits) is still caught - which matters here, because
+# a silently stalled worker is exactly the failure this whole module exists to
+# prevent. This image's inherited HEALTHCHECK probes the HTTP port api-core
+# serves; the worker has no HTTP surface, so compose overrides it with a check
+# against this file instead.
+HEARTBEAT_PATH = os.getenv("WORKER_HEARTBEAT_PATH", "/tmp/worker-heartbeat")
+
 _stop = asyncio.Event()
+
+
+def _beat() -> None:
+    try:
+        with open(HEARTBEAT_PATH, "w") as fh:
+            fh.write("alive\n")
+    except OSError:
+        # A missing heartbeat degrades the healthcheck; it must never take the
+        # worker itself down.
+        log.warning("could not write heartbeat to %s", HEARTBEAT_PATH)
 
 
 def _request_stop(signum, _frame) -> None:
@@ -110,6 +128,7 @@ async def main() -> int:
     next_sweep = 0.0
 
     while not _stop.is_set():
+        _beat()
         now = loop.time()
         if now >= next_sweep:
             try:

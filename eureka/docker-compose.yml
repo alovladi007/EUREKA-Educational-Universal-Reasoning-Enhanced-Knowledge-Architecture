@@ -271,6 +271,17 @@ services:
     volumes:
       - ./services/api-core:/app
     command: python worker.py
+    # The shared image carries api-core's HEALTHCHECK, which probes the HTTP
+    # port this process does not serve — so without an override the worker is
+    # permanently "unhealthy" and the signal is worthless. Replaced with the
+    # heartbeat worker.py touches each loop, which also catches a loop that
+    # hangs rather than exits.
+    healthcheck:
+      test: ["CMD", "python", "-c", "import os,sys,time; sys.exit(0 if time.time()-os.path.getmtime('/tmp/worker-heartbeat') < 60 else 1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 20s
+      retries: 3
 
   # P0.6: file-storage was a real service (FE uploads/downloads target
   # NEXT_PUBLIC_FILE_STORAGE_URL = :8300) but had no container — so every
