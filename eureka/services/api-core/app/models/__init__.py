@@ -14,6 +14,7 @@ from app.models.submission import Submission
 from app.models.grade import Grade
 from app.models.refresh_token import RefreshToken
 from app.models.audit_log import AuditLog
+from app.models.help_request import HelpRequest
 from app.models.file_upload import FileUpload
 from app.models.notification import Notification
 from app.models.resume import Resume, ResumeVersion
@@ -245,6 +246,7 @@ __all__ = [
     "Grade",
     "RefreshToken",
     "AuditLog",
+    "HelpRequest",
     "FileUpload",
     "Notification",
     "Resume",

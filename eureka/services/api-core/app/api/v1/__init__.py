@@ -12,7 +12,7 @@ from app.core.database import get_db
 from app.models import User, Course, Organization
 from app.utils.dependencies import require_admin
 
-from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing, mcat_chemistry, mcat_qbank, mcat_mock, mcat_sme, mcat_irt, cross_vertical, study_groups, research_collab
+from app.api.v1.endpoints import auth, mfa, learner, skill, transcript, recommend, item_bank, agent, exam, institutional, marketplace, gtm, engagement, integrations, ops, workforce, graduate, research, user_content, community, users, organizations, courses, resumes, resume_ai, resume_exports, resume_import, resume_billing, resume_notifications, help, user_progress, patent_bar, srs, xr, exam_attempts, reasoning, public, passport, test_prep_billing, mcat_chemistry, mcat_qbank, mcat_mock, mcat_sme, mcat_irt, cross_vertical, study_groups, research_collab
 
 api_router = APIRouter()
 
@@ -20,6 +20,7 @@ api_router = APIRouter()
 api_router.include_router(public.router, tags=["public"])
 api_router.include_router(auth.router, prefix="/auth", tags=["auth"])
 api_router.include_router(reasoning.router, tags=["reasoning"])
+api_router.include_router(help.router, tags=["help"])
 api_router.include_router(mfa.router, prefix="/auth/mfa", tags=["mfa"])
 api_router.include_router(learner.router, tags=["learner-spine"])
 api_router.include_router(skill.router, tags=["skill-graph"])

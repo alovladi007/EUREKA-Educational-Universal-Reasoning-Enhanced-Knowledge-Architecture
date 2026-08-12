@@ -4,6 +4,7 @@ import { Sidebar } from "@/components/dashboard/sidebar"
 import { Header } from "@/components/dashboard/header"
 import ProtectedRoute from "@/components/auth/ProtectedRoute"
 import ServiceHealthBanner from "@/components/ServiceHealthBanner"
+import HelpWidget from "@/components/help/HelpWidget"
 import { useEffect } from "react"
 import { useAuthStore } from "@/stores/auth"
 
@@ -49,6 +50,10 @@ export default function DashboardLayout({
           <main className="flex-1 overflow-y-auto bg-secondary/20 p-6 pb-28">
             {children}
           </main>
+          {/* The helper, on every dashboard page. Mounted in the layout rather
+              than per-page so there is no surface where someone is stuck with
+              no way to ask - which is the entire point of it. */}
+          <HelpWidget />
         </div>
       </div>
     </ProtectedRoute>
