@@ -22,7 +22,8 @@ as no match.
 | The registry: 18 modules, their routes, and what people do in them | `services/api-core/app/services/help_registry.py` |
 | Matching and the refusal rules | `services/api-core/app/services/help_service.py` |
 | Endpoints | `services/api-core/app/api/v1/endpoints/help.py` |
-| Escalation storage | `help_requests` (`ops/db/26_help_requests.sql`, migration `help_requests_001`) |
+| Escalation | **the existing `support_tickets` queue** (gtm.py) — no new storage |
+| Answer content | **the published KB** (`kb_articles`) + the module registry |
 | The widget | `apps/web/src/components/help/HelpWidget.tsx`, mounted in `app/dashboard/layout.tsx` |
 | Registry tests | `services/api-core/tests/test_help_registry.py` |
 
@@ -44,17 +45,31 @@ as no match.
    "Assembled from this platform's own help material, not written by AI" unless
    a model actually wrote it.
 
-## Escalation goes somewhere real
+## It owns no storage and no queue
 
-A row in `help_requests`, with a short reference the person can quote, the page
-they were on, and which topics the helper matched before giving up. An
-administrator sees the queue and resolves it; a learner asking for the queue
-gets a 403.
+The first version of this created a `help_requests` table and its own admin
+endpoints. That was a duplicate, and it was caught before it shipped: EUREKA
+already has support tickets (`/me/tickets`, `/tickets/{id}/reply`,
+`/admin/tickets/{id}`, with status, priority, category, assignment and a
+threaded conversation) and a published knowledge base (`/kb`).
 
-The unanswered questions are the product feedback. `topic_keys` records what
-was matched, so a cluster that all matched the same topic means that topic's
-help text is **wrong**, while a cluster matching nothing means it is
-**missing**.
+Two queues means half the questions land where nobody is looking, and the "we
+answer within one business day" promise on the Help Center only covers one of
+them. So the helper is a front door, not a system:
+
+- **answers** come from the KB articles the team writes, plus the module
+  registry for "where is X" questions the KB does not cover
+- **escalation** opens a real `SupportTicket` in the existing queue, with the
+  page they were on and what the helper tried before giving up attached, so
+  triage does not start from a bare sentence
+
+The table, its migration and its SQL were reverted; the migration was
+downgraded on the live database.
+
+**How the failure was made:** I grepped `app/api/v1/__init__.py` for "support"
+and "ticket", found nothing, and concluded no ticket system existed. It is all
+inside the `gtm` router, so neither word ever appeared. Listing the routes
+would have found it in one command; searching for a word I expected did not.
 
 ## Keeping it honest
 
