@@ -234,7 +234,7 @@ export default function LessonVideoPlayer({
           )}
         </video>
       ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 text-center">
+        <div className="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-br from-slate-800 to-slate-950 pb-16 text-center">
           <div
             className="pointer-events-none absolute inset-0 opacity-20"
             style={{
@@ -242,13 +242,13 @@ export default function LessonVideoPlayer({
                 'radial-gradient(circle at 30% 30%, #0ea5e9 0, transparent 45%)',
             }}
           />
-          <div className="relative flex h-16 w-16 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20">
-            <Play className="ml-1 h-7 w-7 text-white/80" fill="currentColor" />
+          <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-white/10 ring-1 ring-white/20">
+            <Play className="ml-0.5 h-5 w-5 text-white/80" fill="currentColor" />
           </div>
-          <p className="relative mt-4 max-w-md px-6 text-lg font-medium text-white">
+          <p className="relative mt-3 line-clamp-2 max-w-md px-5 text-sm font-medium leading-snug text-white">
             {title}
           </p>
-          <p className="relative mt-1 text-sm text-white/50">
+          <p className="relative mt-1 text-xs text-white/50">
             Video not uploaded yet
           </p>
         </div>
