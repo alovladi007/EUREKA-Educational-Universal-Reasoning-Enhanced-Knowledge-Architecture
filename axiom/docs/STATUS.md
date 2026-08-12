@@ -148,3 +148,78 @@ item generation (pgvector store is wired, the model is a hook), live LMS/SIS
 round-trips against a real Canvas/Moodle, the live game-show mode, hotspot /
 image-labeling renderers (need authored image content), full FERPA/COPPA +
 per-tenant-isolation enforcement, tutoring video, and handwritten grading.
+
+## The Learn module, rebuilt to the prep test course reader (2026-08-12)
+
+The mathematics content was never the problem. Measured across twelve lessons
+spanning every track: 20 steps and roughly 5,000 words each, 203 lessons, all
+authored. The problem was that the page rendered the teaching apparatus as the
+typography.
+
+Learn was a split pane - skill tree on the left, the selected lesson inline on
+the right as an `<ol>` of steps, each headed by its step KIND. A learner opening
+a chapter read "1. reading / 2. reading / 5. example / 12. pitfall / 19. check"
+down the page, with the author's real section titles demoted underneath in small
+grey type, and 5,000 words of it in a column beside a scrolling tree.
+
+Rebuilt to the same shape as the Patent Bar course reader
+(eureka .../dashboard/test-prep/[exam]/study):
+
+| Piece | Where it comes from |
+|---|---|
+| `/learn` | the index: stat tiles, search, subject bands of chapter cards |
+| `/learn/[node]` | rail (250px), book, companion (320px) |
+| Numbered sections | `reading` steps; the step title IS the heading |
+| Callouts | `example` / `pitfall` / `check`, attached where the author put them |
+| Video slot | a real `<video>` at `/videos/axiom/{code}.mp4` |
+| Read state | localStorage, marked by the learner, not guessed by a scroll listener |
+
+The step kinds still do all their work - they are what orders the lesson and
+what the authoring gate checks. They now do STRUCTURAL work rather than
+typographic work: no heading anywhere reads "reading".
+
+`components/LessonProse.tsx` is the prose renderer, written against the dialect
+the content actually uses rather than an assumed one. Sampled over 60,935 words:
+572 plain paragraphs, 457 run-in CAPS leads ("NORMALITY IS NOT AUTOMATIC — ..."),
+115 numbered items, 13 bullet blocks, `$...$` throughout, and no markdown
+emphasis, headings or code spans at all. The run-in lead was the dominant device
+and the single reason the old rendering read as a wall: it was the author's
+subheading, set in the same weight and colour as the sentence after it.
+
+Three defects found by rendering the page and reading it, none of which
+typechecking or the source could have shown:
+
+1. **Every stat tile and card was padded wrong, in both modules.** `Card` baked
+   in `p-5`, and `Stat`'s `p-3.5` / `Entry`'s `p-4` did not override it -
+   same-specificity utilities resolve by stylesheet order, and Tailwind emits
+   `p-5` later. Measured at 20px where the prep test uses 14/16px. Fixed in
+   AXIOM's `components/ui.tsx` and OCTET's `app/_ui/shell.tsx`; Card now drops
+   its default when the caller supplies a padding.
+2. **`kind === 'overview'` matched nothing.** The API's kind taxonomy is
+   concept / computational_skill / proof_technique - there is no "overview"
+   value. Course entry points are claimed by CODE in `lib/curriculum-groups.ts`.
+   The page reported 0 course overviews while listing 26.
+3. **Nothing scrolled.** `AppShell` puts `overflow-y-auto` on `#main-content`,
+   so `window.scrollTo` after "Next chapter" was a no-op and each chapter opened
+   at the previous one's scroll position.
+
+Also fixed, both reported by the user: the sign-in button now carries
+`?next=/launch/axiom`, so signing back in returns to AXIOM instead of falling
+through to EUREKA's role default (the institution console for an org_admin);
+and the wordmark is AXIOM's own mark - the therefore sign drawn as a derivation,
+two premises and a conclusion - rather than the shared EUREKA sparkle, which
+said nothing about the subject and made every vertical identical in a tab strip.
+
+Verified live at :4100 against the running API, light and dark: 11 numbered
+sections and 366 KaTeX expressions on DM03, callouts labelled, no kind used as a
+heading, real multi-paragraph numbered lists preserved (3 and 4 items on ALG.2)
+while a paragraph carrying an inline enumeration stays prose, stat padding 14px,
+card padding 16px, next-chapter scrollTop 0, no console errors. OCTET
+re-verified after the shared padding fix: dashboard and Learn tiles at 14px,
+nothing regressed.
+
+**The videos are not built and are not faked.** Every chapter declares a slot at
+`/videos/axiom/{code}.mp4` and renders the full player chrome over a "Video not
+uploaded yet" poster until a file is there. 0 of 203 uploaded. The slot is
+declared before the file exists on purpose, so the panel does not change shape
+on upload day - drop the mp4 in and rebuild the web image.

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { EUREKA_LOGIN_URL, fetchUnreadCount, getToken } from '@/lib/api';
-import { EurekaMark } from '@/components/eureka-mark';
+import { AxiomMark } from '@/components/axiom-mark';
 
 // Shared chrome for the Phase 1 pages. It renders the AXIOM wordmark, a link
 // back to the dashboard, and a slot for the page content. It does not fetch
@@ -12,7 +12,7 @@ import { EurekaMark } from '@/components/eureka-mark';
 export function Wordmark() {
   return (
     <div className="flex items-center gap-2">
-      <EurekaMark className="h-8 w-8 shrink-0" />
+      <AxiomMark className="h-8 w-8 shrink-0" />
       <div className="flex flex-col leading-none">
         <span className="text-2xl font-bold tracking-tight text-foreground">AXIOM</span>
         <span className="mt-1 text-[9px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
@@ -39,7 +39,13 @@ export function SignInScreen() {
           returned here with access to the mathematics workspace.
         </p>
         <a
-          href={EUREKA_LOGIN_URL}
+          // ?next= is the whole fix for "I signed out of AXIOM, signed back
+          // in, and landed somewhere else". Without it EUREKA authenticates
+          // and then falls through to its ROLE default - the institution
+          // console for an org_admin - because nothing told it where the
+          // learner came from. /launch/axiom is the SSO handoff route: it
+          // forwards to this app with the token in the URL hash.
+          href={`${EUREKA_LOGIN_URL}?next=${encodeURIComponent('/launch/axiom')}`}
           className="inline-flex w-full items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
         >
           Sign in with EUREKA

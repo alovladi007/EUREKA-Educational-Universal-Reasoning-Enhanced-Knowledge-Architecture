@@ -1,38 +1,62 @@
 'use client';
 
-import Link from 'next/link';
-import { useEffect, useMemo, useState } from 'react';
 import {
-  fetchGraph,
-  fetchLesson,
-  getToken,
-  type GraphNode,
-  type Lesson,
-} from '@/lib/api';
+  BookOpen,
+  ChevronRight,
+  GraduationCap,
+  Layers,
+  Search,
+} from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { fetchGraph, getToken, type GraphNode } from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
-import { RichMath } from '@/components/Math';
+import {
+  Card,
+  EmptyState,
+  Entry,
+  LoadingPanel,
+  PageHeading,
+  Stat,
+  Tag,
+} from '@/components/ui';
 import { groupCurriculum } from '@/lib/curriculum-groups';
 
-// The Learn page lists the skill-graph nodes in the order the API returns
-// them. Selecting a node loads its lesson and shows the ordered steps, plus a
-// button to practice the skill.
+// The chapter index.
+//
+// This page used to be half of a split pane: skill tree on the left, the
+// selected lesson rendered inline on the right. That put a 5,000-word chapter
+// into a column beside a scrolling tree, which is why the reading was
+// unreadable regardless of how it was styled. The chapter now has its own
+// route (/learn/[node]) with a rail, a book column and a companion, matching
+// the prep test course reader, and this page is what it always should have
+// been: a way to find one.
+//
+// Every count on this page is measured from the graph the API returns. There
+// are no coverage percentages here, because a percentage needs a denominator
+// that means something and "chapters we intend to write" is not one.
 
 type LoadState = 'checking' | 'signed-out' | 'loading' | 'ready' | 'error';
+
+const READ_KEY = 'axiom:chapters-read';
 
 export default function LearnPage() {
   const [state, setState] = useState<LoadState>('checking');
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [errorMessage, setErrorMessage] = useState('');
-
-  const [selectedCode, setSelectedCode] = useState<string | null>(null);
-  const [lesson, setLesson] = useState<Lesson | null>(null);
-  const [lessonState, setLessonState] = useState<
-    'idle' | 'loading' | 'ready' | 'error'
-  >('idle');
-  const [lessonError, setLessonError] = useState('');
+  const [read, setRead] = useState<Set<string>>(new Set());
+  const [query, setQuery] = useState('');
 
   useEffect(() => {
+    try {
+      const rawRead = window.localStorage.getItem(READ_KEY);
+      if (rawRead) {
+        setRead(new Set(JSON.parse(rawRead) as string[]));
+      }
+    } catch {
+      // No read state. The page works without it.
+    }
+
     if (!getToken()) {
       setState('signed-out');
       return;
@@ -62,63 +86,32 @@ export default function LearnPage() {
     };
   }, []);
 
-  async function openLesson(code: string) {
-    setSelectedCode(code);
-    setLesson(null);
-    setLessonState('loading');
-    setLessonError('');
-    try {
-      const result = await fetchLesson(code);
-      setLesson(result);
-      setLessonState('ready');
-    } catch (err) {
-      setLessonError(
-        err instanceof Error ? err.message : 'Failed to load this lesson.',
-      );
-      setLessonState('error');
-    }
-  }
-
   const sections = useMemo(() => groupCurriculum(nodes), [nodes]);
 
-  function renderNodeButton(node: GraphNode, isOverview: boolean) {
-    const active = node.code === selectedCode;
-    return (
-      <li key={node.id}>
-        <button
-          type="button"
-          onClick={() => openLesson(node.code)}
-          aria-current={active ? 'true' : undefined}
-          className={`w-full rounded-lg border p-3 text-left transition-colors focus:outline-none focus:ring-2 focus:ring-brand-500 ${
-            active
-              ? 'border-brand-500 bg-brand-50 dark:bg-brand-950'
-              : isOverview
-                ? 'border-brand-200 bg-brand-50/40 hover:border-brand-400 dark:border-brand-900 dark:bg-brand-950/40'
-                : 'border-border bg-card hover:border-brand-300'
-          }`}
-        >
-          <span className="flex items-baseline justify-between gap-2">
-            <span className="block text-sm font-semibold text-card-foreground">
-              {node.title}
-            </span>
-            {isOverview && (
-              <span className="shrink-0 rounded bg-brand-100 px-1.5 py-0.5 text-[10px] font-medium uppercase tracking-wide text-brand-700 dark:bg-brand-900 dark:text-brand-200">
-                Course
-              </span>
-            )}
-          </span>
-          <span className="mt-0.5 block font-mono text-xs text-muted-foreground">
-            {node.code}
-          </span>
-          {node.description && (
-            <span className="mt-1 block text-xs leading-relaxed text-muted-foreground">
-              {node.description}
-            </span>
-          )}
-        </button>
-      </li>
+  const needle = query.trim().toLowerCase();
+  const matches = useMemo(() => {
+    if (!needle) {
+      return [] as GraphNode[];
+    }
+    return nodes.filter(
+      (n) =>
+        n.title.toLowerCase().includes(needle) ||
+        n.code.toLowerCase().includes(needle) ||
+        (n.description ?? '').toLowerCase().includes(needle),
     );
-  }
+  }, [nodes, needle]);
+
+  // Which nodes are whole-course entry points is decided by
+  // lib/curriculum-groups.ts, which claims them by CODE. It is NOT the API's
+  // `kind` field - that is the pedagogy taxonomy (concept /
+  // computational_skill / proof_technique) and has no "overview" value at all,
+  // so testing kind === 'overview' reported 0 courses on a page listing 11.
+  const overviewCodes = useMemo(
+    () => new Set(sections.flatMap((s) => s.overviews.map((n) => n.code))),
+    [sections],
+  );
+  const courseCount = overviewCodes.size;
+  const readCount = nodes.filter((n) => read.has(n.code)).length;
 
   if (state === 'checking') {
     return (
@@ -134,153 +127,193 @@ export default function LearnPage() {
 
   return (
     <AppShell>
-      <main className="mx-auto max-w-5xl px-6 py-10">
-        <h1 className="text-xl font-semibold text-foreground">Learn</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Browse the curriculum by subject. Expand a section, then select a
-          course or skill to read its full lesson and practice it.
-        </p>
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+        <PageHeading
+          title="Learn"
+          lead="Every chapter in the mathematics ladder, grouped by subject. Each one opens as a full written course with worked examples, pitfalls and a self-test."
+        />
 
-        {state === 'loading' && (
-          <p className="mt-8 text-sm text-muted-foreground">
-            Loading the curriculum.
-          </p>
-        )}
-
-        {state === 'error' && (
-          <div className="mt-8">
-            <ErrorPanel message={errorMessage} />
-          </div>
-        )}
+        {state === 'loading' && <LoadingPanel label="Loading the curriculum." />}
+        {state === 'error' && <ErrorPanel message={errorMessage} />}
 
         {state === 'ready' && (
-          <div className="mt-8 grid grid-cols-1 gap-8 lg:grid-cols-[21rem_1fr]">
-            <section aria-label="Skills">
-              <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-muted-foreground">
-                Skills
-              </h2>
-              {nodes.length === 0 ? (
-                <p className="text-sm text-muted-foreground">
-                  No skills have been published yet.
-                </p>
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <Stat
+                icon={<Layers className="h-3.5 w-3.5" />}
+                label="Subjects"
+                value={String(sections.length)}
+                hint="Foundations through graduate topics."
+              />
+              <Stat
+                icon={<BookOpen className="h-3.5 w-3.5" />}
+                label="Chapters"
+                value={String(nodes.length)}
+                hint="Every node carries a written chapter."
+              />
+              <Stat
+                icon={<GraduationCap className="h-3.5 w-3.5" />}
+                label="Course overviews"
+                value={String(courseCount)}
+                hint="The whole-course entry points."
+              />
+              <Stat
+                icon={<ChevronRight className="h-3.5 w-3.5" />}
+                label="Marked read"
+                value={readCount > 0 ? String(readCount) : '—'}
+                hint={
+                  readCount > 0
+                    ? 'Kept in this browser, not on the server.'
+                    : 'Nothing marked read in this browser yet.'
+                }
+              />
+            </div>
+
+            <label className="relative block">
+              <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <span className="sr-only">Search chapters</span>
+              <input
+                type="search"
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search chapters by title, code or description"
+                className="w-full rounded-xl border border-border bg-card py-2.5 pl-9 pr-3 text-sm text-foreground placeholder:text-muted-foreground focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/30"
+              />
+            </label>
+
+            {needle ? (
+              matches.length === 0 ? (
+                <EmptyState
+                  title="No chapter matches that"
+                  detail={`Nothing in the ${nodes.length} chapters has "${query.trim()}" in its title, code or description.`}
+                />
               ) : (
-                <div className="space-y-3">
-                  {sections.map(({ group, overviews, skills }) => {
-                    const count = overviews.length + skills.length;
-                    const containsActive =
-                      selectedCode !== null &&
-                      [...overviews, ...skills].some((n) => n.code === selectedCode);
-                    return (
-                      <details
-                        key={group.key}
-                        open={containsActive}
-                        className="group rounded-lg border border-border bg-card/40"
-                      >
-                        <summary className="flex cursor-pointer items-center justify-between gap-2 rounded-lg px-3 py-2.5 text-left hover:bg-muted/40 focus:outline-none focus:ring-2 focus:ring-brand-500">
-                          <span>
-                            <span className="block text-sm font-semibold text-card-foreground">
+                <section>
+                  <h2 className="mb-2.5 text-sm font-semibold text-foreground">
+                    {matches.length} match{matches.length === 1 ? '' : 'es'}
+                  </h2>
+                  <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                    {matches.map((n) => (
+                      <ChapterCard
+                        key={n.id}
+                        node={n}
+                        read={read.has(n.code)}
+                        isCourse={overviewCodes.has(n.code)}
+                      />
+                    ))}
+                  </div>
+                </section>
+              )
+            ) : (
+              <div className="space-y-3">
+                {sections.map(({ group, overviews, skills }) => {
+                  const all = [...overviews, ...skills];
+                  const doneHere = all.filter((n) => read.has(n.code)).length;
+                  return (
+                    <details
+                      key={group.key}
+                      className="group rounded-xl border border-border bg-card/40"
+                    >
+                      <summary className="flex cursor-pointer list-none items-center justify-between gap-3 rounded-xl px-4 py-3 text-left transition-colors hover:bg-muted/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 [&::-webkit-details-marker]:hidden">
+                        <span className="flex min-w-0 items-start gap-2.5">
+                          <ChevronRight className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground transition-transform group-open:rotate-90" />
+                          <span className="min-w-0">
+                            <span className="block text-sm font-semibold text-foreground">
                               {group.label}
                             </span>
                             <span className="mt-0.5 block text-xs leading-relaxed text-muted-foreground">
                               {group.blurb}
                             </span>
                           </span>
-                          <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 font-mono text-xs text-muted-foreground">
-                            {count}
-                          </span>
-                        </summary>
-                        <div className="space-y-3 px-3 pb-3">
-                          {overviews.length > 0 && (
-                            <ul className="space-y-2">
-                              {overviews.map((node) =>
-                                renderNodeButton(node, true),
-                              )}
-                            </ul>
-                          )}
-                          {skills.length > 0 && (
-                            <ul className="space-y-2">
-                              {skills.map((node) => renderNodeButton(node, false))}
-                            </ul>
-                          )}
-                        </div>
-                      </details>
-                    );
-                  })}
-                </div>
-              )}
-            </section>
-
-            <section aria-label="Lesson" aria-live="polite">
-              {selectedCode === null && (
-                <div className="rounded-lg border border-dashed border-border p-8 text-center">
-                  <p className="text-sm text-muted-foreground">
-                    Select a skill on the left to read its lesson.
-                  </p>
-                </div>
-              )}
-
-              {lessonState === 'loading' && (
-                <p className="text-sm text-muted-foreground">
-                  Loading the lesson.
-                </p>
-              )}
-
-              {lessonState === 'error' && <ErrorPanel message={lessonError} />}
-
-              {lessonState === 'ready' && lesson && (
-                <article className="rounded-lg border border-border bg-card p-6">
-                  <h2 className="text-lg font-semibold text-card-foreground">
-                    {lesson.title}
-                  </h2>
-                  {lesson.summary && (
-                    <p className="mt-1 text-sm text-muted-foreground">
-                      {lesson.summary}
-                    </p>
-                  )}
-
-                  {lesson.steps.length === 0 ? (
-                    <p className="mt-6 text-sm text-muted-foreground">
-                      This lesson has no steps yet.
-                    </p>
-                  ) : (
-                    <ol className="mt-6 space-y-5">
-                      {lesson.steps.map((step) => (
-                        <li
-                          key={step.position}
-                          className="border-l-2 border-brand-200 pl-4 dark:border-brand-800"
-                        >
-                          <div className="flex items-baseline gap-2">
-                            <span className="text-xs font-medium uppercase tracking-wide text-brand-600 dark:text-brand-300">
-                              {step.kind}
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2">
+                          {doneHere > 0 && (
+                            <span className="font-mono text-[11px] tabular-nums text-emerald-600 dark:text-emerald-400">
+                              {doneHere} read
                             </span>
+                          )}
+                          <span className="rounded-full bg-muted px-2 py-0.5 font-mono text-xs tabular-nums text-muted-foreground">
+                            {all.length}
+                          </span>
+                        </span>
+                      </summary>
+                      <div className="border-t border-border px-4 py-4">
+                        {all.length === 0 ? (
+                          <p className="text-sm text-muted-foreground">
+                            No chapters have been published in this subject yet.
+                          </p>
+                        ) : (
+                          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                            {all.map((n) => (
+                              <ChapterCard
+                                key={n.id}
+                                node={n}
+                                read={read.has(n.code)}
+                                isCourse={overviewCodes.has(n.code)}
+                              />
+                            ))}
                           </div>
-                          <h3 className="mt-1 text-sm font-semibold text-card-foreground">
-                            {step.title}
-                          </h3>
-                          <div className="mt-1 text-sm leading-relaxed text-muted-foreground">
-                            <RichMath text={step.body} />
-                          </div>
-                        </li>
-                      ))}
-                    </ol>
-                  )}
+                        )}
+                      </div>
+                    </details>
+                  );
+                })}
+              </div>
+            )}
 
-                  {selectedCode && (
-                    <div className="mt-6">
-                      <Link
-                        href={`/practice?node=${encodeURIComponent(selectedCode)}`}
-                        className="inline-flex items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
-                      >
-                        Practice this skill
-                      </Link>
-                    </div>
-                  )}
-                </article>
-              )}
-            </section>
+            <Card className="p-4">
+              <h2 className="text-sm font-semibold text-foreground">
+                What a chapter contains
+              </h2>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                Numbered sections of prose with the mathematics set inline,
+                worked examples, the misconceptions this topic actually
+                produces, and a self-test with solutions. Graded questions are
+                not on the page: they are served and marked on the server
+                through Practice, so the answer key never reaches the browser
+                before you submit.
+              </p>
+            </Card>
           </div>
         )}
       </main>
     </AppShell>
+  );
+}
+
+function ChapterCard({
+  node,
+  read,
+  isCourse,
+}: {
+  node: GraphNode;
+  read: boolean;
+  isCourse: boolean;
+}) {
+  return (
+    <Entry
+      href={`/learn/${encodeURIComponent(node.code)}`}
+      icon={
+        isCourse ? (
+          <GraduationCap className="h-4 w-4" />
+        ) : (
+          <BookOpen className="h-4 w-4" />
+        )
+      }
+      title={node.title}
+      body={node.description ?? 'No description was written for this chapter.'}
+      accent={isCourse}
+      foot={
+        <>
+          <Tag>{node.code}</Tag>
+          {isCourse && <Tag tone="brand">course</Tag>}
+          {read && (
+            <span className="rounded bg-emerald-500/12 px-1.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300">
+              read
+            </span>
+          )}
+        </>
+      }
+    />
   );
 }

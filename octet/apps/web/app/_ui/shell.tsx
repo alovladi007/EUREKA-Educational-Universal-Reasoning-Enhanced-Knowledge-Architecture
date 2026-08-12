@@ -294,6 +294,18 @@ export function Page({ children }: { children: React.ReactNode }) {
   );
 }
 
+/**
+ * A padding class in the caller's className, if there is one.
+ *
+ * "p-5 ... p-4" in one class attribute does NOT resolve to p-4: both
+ * utilities have the same specificity, so the winner is whichever Tailwind
+ * emitted later in the stylesheet, which is p-5. Every Stat tile and Entry
+ * card was therefore rendering at 20px rather than the 14/16px the prep test
+ * module uses. Found by measuring it in the browser; the source reads as
+ * though the override works.
+ */
+const HAS_PADDING = /(^|\s)p-[\d.]+(\s|$)/;
+
 export function Card({
   children,
   className = '',
@@ -301,9 +313,10 @@ export function Card({
   children: React.ReactNode;
   className?: string;
 }) {
+  const pad = HAS_PADDING.test(className) ? '' : 'p-5 ';
   return (
     <div
-      className={`rounded-xl border border-border bg-card p-5 shadow-sm ${className}`}
+      className={`rounded-xl border border-border bg-card ${pad}shadow-sm ${className}`}
     >
       {children}
     </div>
