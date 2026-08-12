@@ -26,6 +26,20 @@ try:
 except ImportError:  # pragma: no cover
     pass
 
+try:
+    from app.data.extras_gen1_u4 import EXTRAS_GEN1_U4 as _G1U4
+
+    EXTRAS.update(_G1U4)
+except ImportError:  # pragma: no cover
+    pass
+
+try:
+    from app.data.extras_gen1_u4b import EXTRAS_GEN1_U4B as _G1U4B
+
+    EXTRAS.update(_G1U4B)
+except ImportError:  # pragma: no cover
+    pass
+
 
 def extras_for(node_code: str) -> LessonExtras | None:
     return EXTRAS.get(node_code)

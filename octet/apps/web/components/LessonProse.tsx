@@ -8,10 +8,16 @@
  * The chapter bodies are authored in this repository, in
  * app/data/extras_*.py, so the markdown dialect in them is not arbitrary
  * input - it is a dialect we define and a depth gate enforces. It is exactly
- * five things: blank-line-separated paragraphs, **bold**, `code`, $inline
- * math$ and $$display math$$. Tables and figures never appear in the prose;
- * they arrive as structured data on the section, so there is no table parser
- * here and no image handling.
+ * seven things: blank-line-separated paragraphs, `### 1.1 Subheading` lines,
+ * blocks of `- ` bullet items, **bold**, `code`, $inline math$ and
+ * $$display math$$. Tables and figures never appear in the prose; they arrive
+ * as structured data on the section, so there is no table parser here and no
+ * image handling.
+ *
+ * Subheadings and bullets exist because the prep test chapters this reader is
+ * matched to are written with 1.1/1.2 subsections and example lists, and a
+ * chapter that cannot be structured that way flattens into undifferentiated
+ * paragraphs.
  *
  * Pulling in react-markdown, remark-gfm, remark-math and rehype-katex to
  * render five constructs would add four dependencies and a markdown AST to an
@@ -146,7 +152,52 @@ function Inline({ text }: { text: string }) {
 }
 
 function Block({ src }: { src: string }) {
+  // A block whose every line starts with "- " is a bullet list. Detected
+  // before math splitting so a "-" inside an item is never misread.
+  const isList = useMemo(
+    () => src.split('\n').every((l) => l.trim().startsWith('- ')),
+    [src],
+  );
+  // A "### " block is a subheading: the 1.1 / 1.2 layer inside a numbered
+  // section, matching the prep test chapter typography.
+  const isSubhead = src.startsWith('### ');
+
   const pieces = useMemo(() => splitMath(src), [src]);
+
+  if (isSubhead) {
+    return (
+      <h4 className="mb-1 mt-5 text-[15px] font-semibold text-foreground">
+        <Inline text={src.slice(4)} />
+      </h4>
+    );
+  }
+
+  if (isList) {
+    const items = src
+      .split('\n')
+      .map((l) => l.trim().replace(/^- /, ''))
+      .filter(Boolean);
+    return (
+      <ul className="my-3 list-disc space-y-1.5 pl-5">
+        {items.map((item, i) => (
+          <li key={i} className="text-[15px] leading-7 text-card-foreground">
+            {splitMath(item).map((p, j) =>
+              p.kind === 'text' ? (
+                <Inline key={j} text={p.value} />
+              ) : (
+                <span
+                  key={j}
+                  dangerouslySetInnerHTML={{
+                    __html: renderMath(p.value, false),
+                  }}
+                />
+              ),
+            )}
+          </li>
+        ))}
+      </ul>
+    );
+  }
 
   // A paragraph that is nothing but one display equation is set as its own
   // centred block rather than wrapped in body text, because a displayed

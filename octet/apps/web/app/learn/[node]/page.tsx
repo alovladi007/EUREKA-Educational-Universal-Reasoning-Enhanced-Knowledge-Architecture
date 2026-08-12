@@ -299,7 +299,7 @@ export default function LessonPage() {
                 <span className="rounded-md bg-brand-500/10 px-2 py-0.5 text-xs font-medium text-brand-600 dark:text-brand-400">
                   {here?.unit_title ?? here?.unit ?? ''}
                 </span>
-                {extras && (
+                {extras ? (
                   <>
                     <span className="flex items-center gap-1 text-xs text-muted-foreground">
                       <Clock className="h-3 w-3" /> {extras.reading_minutes} min
@@ -309,6 +309,13 @@ export default function LessonPage() {
                       {sectionCount === 1 ? '' : 's'}
                     </span>
                   </>
+                ) : (
+                  <span
+                    className="rounded-md bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground"
+                    title="The full written chapter for this node is still being authored."
+                  >
+                    summary only
+                  </span>
                 )}
               </div>
               <h1 className="text-2xl font-bold tracking-tight">
@@ -318,6 +325,11 @@ export default function LessonPage() {
                 <div className="mt-2 text-muted-foreground [&_p]:text-[15px] [&_p]:leading-7">
                   <LessonProse body={extras.lead} />
                 </div>
+              )}
+              {!extras && (
+                <p className="mt-2 whitespace-pre-wrap text-[15px] leading-7 text-muted-foreground">
+                  {lesson.objective}
+                </p>
               )}
 
               {extras ? (
@@ -370,33 +382,47 @@ export default function LessonPage() {
                   </details>
                 </div>
               ) : (
-                /* No written chapter yet: the arc is the content. */
-                <div className="mt-6 space-y-8">
-                  <div className="rounded-xl border border-dashed border-border p-4 text-center">
-                    <p className="text-sm font-medium">
-                      This chapter has its lesson arc, not its long-form
-                      reading yet
+                /* No written chapter yet: the arc is the content, read as
+                    prose. The objective is the lead, the build-on and core
+                    idea are the body with no apparatus labels over them, and
+                    the triangle sits behind the same disclosure a chapter
+                    node uses. */
+                <div className="mt-6 space-y-6">
+                  <div className="space-y-4">
+                    <p className="whitespace-pre-wrap text-[15px] leading-7 text-foreground/90">
+                      {lesson.build_on}
                     </p>
-                    <p className="mx-auto mt-1 max-w-md text-xs text-muted-foreground">
-                      The six parts below are the teaching. The written
-                      chapter — sections, figures, tables — is being authored
-                      chapter by chapter.
+                    <p className="whitespace-pre-wrap text-[15px] leading-7 text-foreground/90">
+                      {lesson.core_idea}
                     </p>
                   </div>
-                  <ArcSection index={1} title="Objective" body={lesson.objective} />
-                  <ArcSection index={2} title="Build on" body={lesson.build_on} />
-                  <ArcSection index={3} title="Core idea" body={lesson.core_idea} />
-                  {triangle && <Triangle view={triangle} />}
-                  <ArcSection
-                    index={4}
-                    title="Worked example"
-                    body={lesson.worked_example}
-                  />
+
+                  <section className="scroll-mt-4">
+                    <div className="mb-1 border-b border-border pb-2">
+                      <h3 className="text-lg font-bold">Worked example</h3>
+                    </div>
+                    <p className="my-3 whitespace-pre-wrap text-[15px] leading-7 text-foreground/90">
+                      {lesson.worked_example}
+                    </p>
+                  </section>
+
                   <TryIt
                     prompt={lesson.try_it.prompt}
                     answer={lesson.try_it.answer}
                   />
                   <Note text={lesson.pitfall} label="Pitfall" />
+
+                  {triangle && (
+                    <details className="group rounded-xl border border-border">
+                      <summary className="cursor-pointer select-none rounded-xl px-4 py-3 text-sm font-semibold text-muted-foreground transition-colors hover:text-foreground [&::-webkit-details-marker]:hidden">
+                        <ChevronRight className="mr-1.5 inline h-3.5 w-3.5 transition-transform group-open:rotate-90" />
+                        The same idea at three levels
+                      </summary>
+                      <div className="border-t border-border px-4 py-4">
+                        <Triangle view={triangle} />
+                      </div>
+                    </details>
+                  )}
                 </div>
               )}
 
@@ -590,26 +616,6 @@ function Note({ text, label = 'Note' }: { text: string; label?: string }) {
       <span className="font-semibold">{label}. </span>
       {text}
     </div>
-  );
-}
-
-/** One arc part as a full numbered section, for nodes without a chapter. */
-function ArcSection({
-  index,
-  title,
-  body,
-}: {
-  index: number;
-  title: string;
-  body: string;
-}) {
-  return (
-    <section className="scroll-mt-4">
-      <SectionHeader index={index} title={title} />
-      <p className="my-3 whitespace-pre-wrap text-[15px] leading-7 text-foreground/90">
-        {body}
-      </p>
-    </section>
   );
 }
 
