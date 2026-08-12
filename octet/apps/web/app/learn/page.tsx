@@ -7,7 +7,10 @@ import {
   Calculator,
   ChevronDown,
   ChevronRight,
+  FileText,
   FlaskConical,
+  GraduationCap,
+  Layers,
 } from 'lucide-react';
 import {
   CurriculumCourse,
@@ -26,7 +29,9 @@ import {
   ErrorPanel,
   LoadingPanel,
   Page,
+  PageHeader,
   Pill,
+  Stat,
   errorMessage,
 } from '@/app/_ui/shell';
 import { MasteryRing } from '@/app/_ui/mastery-ring';
@@ -390,6 +395,20 @@ export default function LearnPage() {
   // known: a failed fetch is not the same fact as an account with no
   // attempts, and neither is a recorded count.
   const masteryEmpty = Object.keys(mastery).length === 0;
+
+  // Program shape, before any search or filter. These are properties of the
+  // curriculum rather than of what is currently on screen, so a filtered view
+  // still reports the whole program - a stat row that moved with the search
+  // box would be reporting the search box.
+  const totalCourses = data?.courses.length ?? 0;
+  const totalUnits = useMemo(
+    () => (data?.courses ?? []).reduce((n, c) => n + c.units.length, 0),
+    [data],
+  );
+  const totalChapters = useMemo(
+    () => (data?.nodes ?? []).filter((n) => n.has_chapter).length,
+    [data],
+  );
   const masteryNote = masteryFailed
     ? 'The mastery record could not be loaded, so nothing is counted and every authored node reads Ready.'
     : masteryEmpty
@@ -435,11 +454,47 @@ export default function LearnPage() {
 
   return (
     <Page>
-      <h1 className="mb-1 text-2xl font-bold tracking-tight">Learn</h1>
-      <p className="mb-6 max-w-2xl text-sm text-muted-foreground">
-        The whole program, by course and unit. Open a node to read its lesson.
-        This page is a map: it does not teach and it does not grade.
-      </p>
+      <PageHeader
+        title="Learn"
+        lead={
+          totalNodes
+            ? `${totalCourses} courses, ${totalUnits} chapters, ${totalNodes} nodes. Open a chapter to read it.`
+            : 'The whole program, by course and chapter.'
+        }
+      />
+
+      {/* The record for this surface. `authored` and `has_chapter` are
+          different numbers and are shown as such: every node carries the six
+          part arc, far fewer carry the reading around it, and reporting only
+          the larger one would overstate the course by a factor of forty. */}
+      {!loading && !error && totalNodes > 0 && (
+        <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <Stat
+            icon={<BookOpen className="h-3.5 w-3.5" />}
+            label="Full chapters"
+            value={`${totalChapters}/${totalNodes}`}
+            hint="the rest carry the six part arc"
+          />
+          <Stat
+            icon={<Layers className="h-3.5 w-3.5" />}
+            label="Chapters"
+            value={String(totalUnits)}
+            hint={`across ${totalCourses} courses`}
+          />
+          <Stat
+            icon={<FileText className="h-3.5 w-3.5" />}
+            label="Lessons written"
+            value={`${totalAuthored}/${totalNodes}`}
+            hint={totalAuthored === totalNodes ? 'every node' : 'the map is larger than the content'}
+          />
+          <Stat
+            icon={<GraduationCap className="h-3.5 w-3.5" />}
+            label="Mastered"
+            value={masteryEmpty ? '\u2014' : `${totalMastered}/${totalNodes}`}
+            hint={masteryEmpty ? 'no graded attempts yet' : 'from graded attempts'}
+          />
+        </div>
+      )}
 
       {loading && <LoadingPanel label="Loading the curriculum." />}
       {!loading && error && <ErrorPanel message={error} />}
@@ -766,7 +821,13 @@ function CourseSection({
             This course has no units.
           </p>
         ) : (
-          <div className="divide-y divide-border">
+          <div
+            className={
+              filterActive
+                ? 'space-y-3 pt-4'
+                : 'grid gap-3 pt-4 md:grid-cols-2 xl:grid-cols-3'
+            }
+          >
             {view.units.map((unitView, unitIndex) => (
               <UnitSection
                 key={unitView.unit.id}
@@ -811,53 +872,108 @@ function UnitSection({
   const buttonId = domId('unit-button', unit.id);
   const panelId = domId('unit-panel', unit.id);
 
+  // How much of this chapter is written, which is the fact a learner most
+  // wants before opening it. `withChapter` counts nodes carrying the reading -
+  // sections, figures, tables - and is a much smaller number than the nodes
+  // carrying a lesson. They are reported separately rather than summed.
+  const withChapter = view.nodes.filter((n) => n.node.has_chapter).length;
+  const parts = unit.parts ?? [];
+
+  // Opening a chapter means opening its first enterable node. A node with no
+  // lesson behind it must never be the landing target, so the fallback walks
+  // to the first authored one and only then to the first node at all.
+  const landing =
+    view.nodes.find((n) => n.node.has_chapter) ??
+    view.nodes.find((n) => n.node.authored) ??
+    view.nodes[0];
+  const openHref = landing
+    ? `/learn/${encodeURIComponent(landing.node.code)}`
+    : '/learn';
+
   return (
-    <div className="py-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <h3 className="min-w-0 flex-1 text-base font-semibold">
-          <button
-            type="button"
-            id={buttonId}
-            aria-expanded={open}
-            aria-controls={panelId}
-            onClick={onToggle}
-            className="flex w-full items-center gap-2 rounded-md py-1 text-left text-card-foreground focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-          >
-            {open ? (
-              <ChevronDown aria-hidden="true" className="h-4 w-4 shrink-0" />
-            ) : (
-              <ChevronRight aria-hidden="true" className="h-4 w-4 shrink-0" />
-            )}
-            <span className="tabular-nums text-muted-foreground">
+    <div
+      className={`flex flex-col rounded-xl border bg-card p-4 shadow-sm transition-colors ${
+        withChapter > 0
+          ? 'border-brand-500/60 hover:border-brand-500'
+          : 'border-border hover:border-border/80'
+      }`}
+    >
+      {filterActive ? (
+        <button
+          type="button"
+          id={buttonId}
+          aria-expanded={open}
+          aria-controls={panelId}
+          onClick={onToggle}
+          className="flex w-full items-start gap-2 rounded-md text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        >
+          {open ? (
+            <ChevronDown aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+          ) : (
+            <ChevronRight aria-hidden="true" className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" />
+          )}
+          <h3 className="min-w-0 flex-1 text-sm font-semibold leading-snug text-card-foreground">
+            <span className="mr-1.5 tabular-nums text-muted-foreground">
               {unit.index}.
             </span>
-            <span className="min-w-0">{unit.title}</span>
-          </button>
-        </h3>
+            {unit.title}
+          </h3>
+          <MasteryRing mastered={view.mastered} total={view.total} size={20} />
+        </button>
+      ) : (
+        <Link
+          href={openHref}
+          className="flex w-full items-start gap-2 rounded-md text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        >
+          <h3 className="min-w-0 flex-1 text-sm font-semibold leading-snug text-card-foreground">
+            <span className="mr-1.5 tabular-nums text-muted-foreground">
+              {unit.index}.
+            </span>
+            {unit.title}
+          </h3>
+          <MasteryRing mastered={view.mastered} total={view.total} size={20} />
+        </Link>
+      )}
 
-        <div className="flex shrink-0 items-center gap-3 pl-6 text-sm text-muted-foreground">
-          {/* The chapter mapping is what makes syllabus alignment possible in
-              an adoption conversation, and noise for a student. It is shown in
-              the instructor view only. */}
-          {instructorView && unit.chapters && (
-            <Pill tone="neutral">{unit.chapters}</Pill>
-          )}
-          <span className="tabular-nums">
-            {filterActive
-              ? `${view.nodes.length} of ${view.total} ${plural(view.total, 'node', 'nodes')}`
-              : `${view.total} ${plural(view.total, 'node', 'nodes')}`}
+      <div className="mt-2.5 flex flex-wrap items-center gap-1.5">
+        {withChapter > 0 && (
+          <span className="rounded bg-brand-500/12 px-1.5 py-0.5 text-[11px] font-medium text-brand-700 dark:text-brand-300">
+            {withChapter} full {plural(withChapter, 'chapter', 'chapters')}
           </span>
-          <MasteryRing mastered={view.mastered} total={view.total} size={22} />
-        </div>
+        )}
+        {/* The lettered sub-parts, where the chapter has them. Summarised as a
+            range on the card and listed in full when it is opened. */}
+        {parts.length > 0 && (
+          <span className="rounded bg-muted px-1.5 py-0.5 text-[11px] font-medium text-muted-foreground">
+            parts {parts[0].part}&ndash;{parts[parts.length - 1].part}
+          </span>
+        )}
+        <span className="font-mono text-[11px] text-muted-foreground">
+          {filterActive
+            ? `${view.nodes.length}/${view.total} nodes`
+            : `${view.total} ${plural(view.total, 'node', 'nodes')}`}
+        </span>
+        {/* The textbook chapter mapping is what makes a syllabus conversation
+            possible in an adoption call, and noise for a student. Instructor
+            view only. */}
+        {instructorView && unit.chapters && (
+          <Pill tone="neutral">{unit.chapters}</Pill>
+        )}
       </div>
 
-      <div id={panelId} role="region" aria-labelledby={buttonId} hidden={!open}>
+      <div
+        id={panelId}
+        role="region"
+        aria-labelledby={buttonId}
+        hidden={!filterActive || !open}
+        className="mt-3 border-t border-border pt-3"
+      >
         {view.nodes.length === 0 ? (
-          <p className="py-3 pl-6 text-sm text-muted-foreground">
-            This unit has no nodes to show.
+          <p className="text-sm text-muted-foreground">
+            This chapter has no nodes to show.
           </p>
         ) : (
-          <div className="mt-2 space-y-4 pl-6">
+          <div className="space-y-3">
             {groupByPart(view.nodes).map((group, gi) => (
               <div key={gi}>
                 {/* The lettered sub-parts of a chapter. These were requested
