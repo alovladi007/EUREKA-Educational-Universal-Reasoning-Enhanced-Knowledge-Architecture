@@ -5,7 +5,6 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
   CalendarDays,
-  Atom,
   BarChart3,
   BookOpen,
   ClipboardList,
@@ -30,14 +29,46 @@ import {
 // This lives under app/_ui rather than components/ because components/ holds
 // the Phase 3 visualization work, which is authored separately.
 
+// The octet mark: a nucleus holding eight electrons in four Lewis pairs.
+// Drawn inline rather than shipped as an asset so it inherits the tile's
+// currentColor and needs no extra request. This is the platform's name as a
+// picture - the octet rule is the first thing the course teaches.
+export function OctetMark({ className = 'h-5 w-5' }: { className?: string }) {
+  const pairs: Array<[number, number]> = [
+    [12.4, 5.2], [19.6, 5.2],   // top pair
+    [26.8, 12.4], [26.8, 19.6], // right pair
+    [19.6, 26.8], [12.4, 26.8], // bottom pair
+    [5.2, 19.6], [5.2, 12.4],   // left pair
+  ];
+  return (
+    <svg
+      viewBox="0 0 32 32"
+      className={className}
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle
+        cx="16"
+        cy="16"
+        r="5.4"
+        stroke="currentColor"
+        strokeWidth="2.4"
+      />
+      {pairs.map(([x, y], i) => (
+        <circle key={i} cx={x} cy={y} r="2.1" fill="currentColor" />
+      ))}
+    </svg>
+  );
+}
+
 export function Wordmark() {
   return (
     <div className="flex items-center gap-2">
       <span
         aria-hidden="true"
-        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-500 text-white"
+        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-brand-600 text-white"
       >
-        <Atom className="h-5 w-5" />
+        <OctetMark className="h-6 w-6" />
       </span>
       <span className="flex flex-col leading-none">
         <span className="text-xl font-bold tracking-tight text-foreground">
@@ -69,7 +100,7 @@ export function SignInScreen() {
           returned here with access to the chemistry workspace.
         </p>
         <a
-          href={EUREKA_LOGIN_URL}
+          href={`${EUREKA_LOGIN_URL}?next=${encodeURIComponent('/launch/octet')}`}
           className="inline-flex w-full items-center justify-center rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:ring-offset-2"
         >
           Sign in with EUREKA
