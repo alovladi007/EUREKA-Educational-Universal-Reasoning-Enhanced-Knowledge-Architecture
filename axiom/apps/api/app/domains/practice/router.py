@@ -7,11 +7,12 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from shared_schemas.identity import UserOut
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
 from app.core.security import get_current_user
+from app.domains.assessment.models import Item, ItemTemplate
 from app.domains.curriculum.models import KnowledgeNode
 from app.domains.practice.service import answer as answer_service
 from app.domains.practice.service import (
@@ -56,6 +57,45 @@ async def practice_next(
     result = await serve_next(session, uuid.UUID(user.id), node_id)
     await session.commit()
     return result
+
+
+@router.get("/practice/coverage", summary="Which nodes can serve a practice item")
+async def practice_coverage(
+    session: AsyncSession = Depends(get_session),
+    user: UserOut = Depends(get_current_user),
+) -> dict:
+    """The node codes practice can actually serve, and the two totals.
+
+    WHY THIS EXISTS
+
+    The curriculum is deliberately larger than the item bank: every node
+    carries a written chapter, and only some carry a template or an authored
+    item. Without this, a client has no way to know which is which, so the
+    chapter reader offered "Practise this node" on all 203 nodes and 104 of
+    them answered "No items available for this node yet" - the API being
+    honest about a promise the UI had already made.
+
+    THE RULE HERE IS THE SAME ONE serve_next USES
+
+    A node can serve when it has an ItemTemplate **or** an Item. Both, not
+    just templates: 85 nodes are reachable through authored items alone, so a
+    template-only test would under-report coverage by most of it. If
+    serve_next's condition changes, this must change with it - that is the
+    point of stating it once, in the same words, right here.
+    """
+    template_nodes = select(ItemTemplate.node_id).where(ItemTemplate.node_id.is_not(None))
+    item_nodes = select(Item.node_id).where(Item.node_id.is_not(None))
+    rows = (
+        await session.execute(
+            select(KnowledgeNode.code)
+            .where(KnowledgeNode.id.in_(template_nodes.union(item_nodes)))
+            .order_by(KnowledgeNode.code)
+        )
+    ).scalars().all()
+    total = (
+        await session.execute(select(func.count()).select_from(KnowledgeNode))
+    ).scalar_one()
+    return {"codes": list(rows), "servable": len(rows), "total": total}
 
 
 @router.post("/practice/answer", summary="Grade a practice answer and update mastery")

@@ -3,12 +3,18 @@
 import {
   BookOpen,
   ChevronRight,
+  FlaskConical,
   GraduationCap,
   Layers,
   Search,
 } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
-import { fetchGraph, getToken, type GraphNode } from '@/lib/api';
+import {
+  fetchGraph,
+  fetchPracticeCoverage,
+  getToken,
+  type GraphNode,
+} from '@/lib/api';
 import { ErrorPanel, SignInScreen } from '@/components/PageShell';
 import { AppShell } from '@/components/AppShell';
 import {
@@ -46,6 +52,11 @@ export default function LearnPage() {
   const [errorMessage, setErrorMessage] = useState('');
   const [read, setRead] = useState<Set<string>>(new Set());
   const [query, setQuery] = useState('');
+  const [coverage, setCoverage] = useState<{
+    codes: Set<string>;
+    servable: number;
+    total: number;
+  } | null>(null);
 
   useEffect(() => {
     try {
@@ -71,6 +82,18 @@ export default function LearnPage() {
         }
         setNodes(graph.nodes);
         setState('ready');
+        try {
+          const cov = await fetchPracticeCoverage();
+          if (!cancelled) {
+            setCoverage({
+              codes: new Set(cov.codes),
+              servable: cov.servable,
+              total: cov.total,
+            });
+          }
+        } catch {
+          // Coverage unknown; the tile says so and no card claims practice.
+        }
       } catch (err) {
         if (cancelled) {
           return;
@@ -152,10 +175,14 @@ export default function LearnPage() {
                 hint="Every node carries a written chapter."
               />
               <Stat
-                icon={<GraduationCap className="h-3.5 w-3.5" />}
-                label="Course overviews"
-                value={String(courseCount)}
-                hint="The whole-course entry points."
+                icon={<FlaskConical className="h-3.5 w-3.5" />}
+                label="With practice"
+                value={coverage ? String(coverage.servable) : '—'}
+                hint={
+                  coverage
+                    ? `Of ${coverage.total} chapters. The rest are reading only, for now.`
+                    : 'Coverage could not be read from the server.'
+                }
               />
               <Stat
                 icon={<ChevronRight className="h-3.5 w-3.5" />}
@@ -199,6 +226,7 @@ export default function LearnPage() {
                         node={n}
                         read={read.has(n.code)}
                         isCourse={overviewCodes.has(n.code)}
+                        hasPractice={coverage ? coverage.codes.has(n.code) : null}
                       />
                     ))}
                   </div>
@@ -250,6 +278,9 @@ export default function LearnPage() {
                                 node={n}
                                 read={read.has(n.code)}
                                 isCourse={overviewCodes.has(n.code)}
+                                hasPractice={
+                                  coverage ? coverage.codes.has(n.code) : null
+                                }
                               />
                             ))}
                           </div>
@@ -285,10 +316,13 @@ function ChapterCard({
   node,
   read,
   isCourse,
+  hasPractice,
 }: {
   node: GraphNode;
   read: boolean;
   isCourse: boolean;
+  // null while coverage is unknown - no tag is shown, rather than a wrong one.
+  hasPractice: boolean | null;
 }) {
   return (
     <Entry
@@ -307,6 +341,8 @@ function ChapterCard({
         <>
           <Tag>{node.code}</Tag>
           {isCourse && <Tag tone="brand">course</Tag>}
+          {hasPractice === true && <Tag tone="brand">practice</Tag>}
+          {hasPractice === false && <Tag>reading only</Tag>}
           {read && (
             <span className="rounded bg-emerald-500/12 px-1.5 py-0.5 text-[11px] font-medium text-emerald-700 dark:text-emerald-300">
               read

@@ -16,6 +16,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   fetchGraph,
   fetchLesson,
+  fetchPracticeCoverage,
   getToken,
   type GraphNode,
   type Lesson,
@@ -134,6 +135,10 @@ export default function ChapterPage() {
   const [nodes, setNodes] = useState<GraphNode[]>([]);
   const [lesson, setLesson] = useState<Lesson | null>(null);
   const [read, setRead] = useState<Set<string>>(new Set());
+  // null until the coverage call answers; a Set once it has. Kept distinct so
+  // the panel can say "checking" rather than claim there is no practice while
+  // the request is still in flight.
+  const [servable, setServable] = useState<Set<string> | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(true);
 
@@ -187,6 +192,15 @@ export default function ChapterPage() {
       } catch {
         // The rail stays empty and the title falls back to the code. The
         // chapter itself does not depend on the graph.
+      }
+      try {
+        const cov = await fetchPracticeCoverage();
+        if (!cancelled) {
+          setServable(new Set(cov.codes));
+        }
+      } catch {
+        // Coverage unknown. The practice panel says so rather than guessing
+        // in either direction.
       }
     })();
     return () => {
@@ -503,21 +517,10 @@ export default function ChapterPage() {
                   </Card>
                 )}
 
-                <Card className="p-4">
-                  <h2 className="text-sm font-semibold text-foreground">
-                    Now practise it
-                  </h2>
-                  <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                    Questions on this node are served and graded on the server,
-                    so the answer key never reaches this page.
-                  </p>
-                  <Link
-                    href={`/practice?node=${encodeURIComponent(nodeCode)}`}
-                    className="mt-2.5 inline-flex items-center justify-center rounded-lg bg-brand-600 px-3.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-                  >
-                    Practise this node
-                  </Link>
-                </Card>
+                <PracticePanel
+                  nodeCode={nodeCode}
+                  servable={servable}
+                />
 
                 {here && (
                   <Card className="p-4">
@@ -606,5 +609,70 @@ function Callout({ step }: { step: LessonStep }) {
       </h3>
       <LessonProse body={step.body} />
     </div>
+  );
+}
+
+/**
+ * Practice for this chapter, or an honest statement that there is none.
+ *
+ * WHY THIS IS NOT JUST A LINK
+ *
+ * Every one of the 203 nodes has a written chapter; 99 have an item or a
+ * template behind them. The button used to appear on all 203, so on 104
+ * chapters a learner pressed "Practise this node" and landed on "No items
+ * available for this node yet" - the API being honest about a promise this
+ * panel had already made. Offering it only where it works moves that
+ * information to before the click, which is the only place it is any use.
+ *
+ * Coverage unknown (the request failed) is a third state and says so. It does
+ * not fall back to hiding the button, because that would silently under-report
+ * practice that exists.
+ */
+function PracticePanel({
+  nodeCode,
+  servable,
+}: {
+  nodeCode: string;
+  servable: Set<string> | null;
+}) {
+  const has = servable === null ? null : servable.has(nodeCode);
+
+  return (
+    <Card className="p-4">
+      <h2 className="text-sm font-semibold text-foreground">
+        {has === false ? 'No practice for this chapter yet' : 'Now practise it'}
+      </h2>
+      {has === false ? (
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          This chapter has no item or template behind it yet, so Practice cannot
+          serve a question on it. The reading above is complete; the item bank
+          is the part still being written.
+        </p>
+      ) : (
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          Questions on this node are served and graded on the server, so the
+          answer key never reaches this page.
+        </p>
+      )}
+
+      {has !== false && (
+        <Link
+          href={`/practice?node=${encodeURIComponent(nodeCode)}`}
+          aria-disabled={has === null}
+          className="mt-2.5 inline-flex items-center justify-center rounded-lg bg-brand-600 px-3.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-brand-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        >
+          Practise this node
+        </Link>
+      )}
+
+      {has === false && (
+        <Link
+          href="/practice"
+          className="mt-2.5 inline-flex items-center justify-center rounded-lg border border-border px-3.5 py-1.5 text-sm font-medium text-foreground transition-colors hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+        >
+          Practise what is ready
+        </Link>
+      )}
+    </Card>
   );
 }

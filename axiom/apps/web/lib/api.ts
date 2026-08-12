@@ -1303,6 +1303,23 @@ export interface MistakeItem {
 }
 
 // Fetch the signed-in learner's recent incorrect answers, most recent first.
+// Which nodes practice can actually serve, from GET /api/v1/practice/coverage.
+//
+// The curriculum is deliberately larger than the item bank - every node has a
+// written chapter, 99 of 203 have an item or a template - so a client that
+// offers "practise this" everywhere is writing a cheque the API cannot cash.
+// `codes` is the servable set; `servable`/`total` are the two figures a page
+// should quote rather than deriving a percentage from them.
+export interface PracticeCoverage {
+  codes: string[];
+  servable: number;
+  total: number;
+}
+
+export function fetchPracticeCoverage(): Promise<PracticeCoverage> {
+  return apiGet<PracticeCoverage>('/api/v1/practice/coverage');
+}
+
 export function fetchMistakes(): Promise<{ items: MistakeItem[] }> {
   return apiGet<{ items: MistakeItem[] }>('/api/v1/practice/mistakes');
 }

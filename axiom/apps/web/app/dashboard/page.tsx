@@ -29,6 +29,7 @@ import {
   fetchMastery,
   fetchMe,
   fetchMistakes,
+  fetchPracticeCoverage,
   fetchUnreadCount,
   getToken,
   type Me,
@@ -81,6 +82,10 @@ interface Snapshot {
   streak: number | null;
   mistakes: number | null;
   unread: number;
+  // Whether the recommended node can actually serve a practice item, and how
+  // many chapters can. null when coverage could not be read.
+  nextServable: boolean | null;
+  servable: number | null;
 }
 
 const EMPTY: Snapshot = {
@@ -91,6 +96,8 @@ const EMPTY: Snapshot = {
   streak: null,
   mistakes: null,
   unread: 0,
+  nextServable: null,
+  servable: null,
 };
 
 export default function DashboardPage() {
@@ -146,6 +153,7 @@ export default function DashboardPage() {
       // Gamification is fetched separately because a brand-new account has no
       // profile row and the endpoint is allowed to 404 for that.
       const game = await settle(fetchGamification());
+      const coverage = await settle(fetchPracticeCoverage());
 
       setSnap({
         chapters: graph ? graph.nodes.length : null,
@@ -155,6 +163,11 @@ export default function DashboardPage() {
         streak: game ? game.streak_days : null,
         mistakes: mistakes ? mistakes.items.length : null,
         unread: unread ? unread.count : 0,
+        nextServable:
+          coverage && recommended
+            ? coverage.codes.includes(recommended.code)
+            : null,
+        servable: coverage ? coverage.servable : null,
       });
       setState('ready');
     })();
@@ -194,7 +207,7 @@ export default function DashboardPage() {
 
         {state === 'ready' && (
           <div className="space-y-6">
-            <ResumeHero next={snap.next} />
+            <ResumeHero next={snap.next} servable={snap.nextServable} />
 
             <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
               <Stat
@@ -204,7 +217,9 @@ export default function DashboardPage() {
                 hint={
                   snap.chapters === null
                     ? 'The curriculum did not answer.'
-                    : 'Every one carries a full written course.'
+                    : snap.servable === null
+                      ? 'Every one carries a full written course.'
+                      : `All with a written course; ${snap.servable} also have practice.`
                 }
               />
               <Stat
@@ -480,7 +495,15 @@ export default function DashboardPage() {
  * available: no prerequisites"), so the hero explains its own choice instead
  * of asserting one. With no plan it says so rather than inventing a start.
  */
-function ResumeHero({ next }: { next: PathNode | null }) {
+function ResumeHero({
+  next,
+  servable,
+}: {
+  next: PathNode | null;
+  // null while coverage is unknown; the button is kept in that case rather
+  // than hidden, because hiding it would under-report practice that exists.
+  servable: boolean | null;
+}) {
   if (!next) {
     return (
       <Card className="p-5">
@@ -524,6 +547,12 @@ function ResumeHero({ next }: { next: PathNode | null }) {
             <span className="font-mono text-xs">{next.code}</span>
             {next.reason ? ` · ${next.reason}` : ''}
           </p>
+          {servable === false && (
+            <p className="mt-1 text-xs text-muted-foreground">
+              Reading only for now — this node has no practice item behind it
+              yet.
+            </p>
+          )}
         </div>
         <div className="flex shrink-0 gap-2">
           <Link
@@ -532,12 +561,14 @@ function ResumeHero({ next }: { next: PathNode | null }) {
           >
             Read the chapter
           </Link>
-          <Link
-            href={`/practice?node=${encodeURIComponent(next.code)}`}
-            className="inline-flex items-center justify-center rounded-lg border border-border px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
-          >
-            Practise it
-          </Link>
+          {servable !== false && (
+            <Link
+              href={`/practice?node=${encodeURIComponent(next.code)}`}
+              className="inline-flex items-center justify-center rounded-lg border border-border px-3.5 py-2 text-sm font-medium text-foreground transition-colors hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500"
+            >
+              Practise it
+            </Link>
+          )}
         </div>
       </div>
     </Card>

@@ -281,3 +281,54 @@ panel rather than an error.
 Deliberately not changed: the sidebar still lists the Teaching routes to a
 learner. The pages gate correctly and say why, and hiding navigation by role is
 a behaviour change rather than a styling one.
+
+## Practice coverage made visible (2026-08-12)
+
+Reported from the running app: opening Practice from a chapter gave "You are
+all caught up / No items available for this node yet."
+
+Nothing was broken. **99 of the 203 nodes can serve a practice item; 104
+cannot.** The API said so correctly. The fault was upstream of it: the chapter
+reader offered "Practise this node" on all 203, so on 104 chapters a learner
+pressed a button that could only fail. The API was being honest about a promise
+the UI had already made.
+
+Two things worth recording about finding it.
+
+First, the obvious hypothesis was wrong. The reader links `?node=CODE` and the
+page passes that straight through as `node_id`, so a code-where-a-UUID-belongs
+looked like the answer. It is not: `practice_next` resolves a code *or* a UUID,
+and `curl` with both returned an item. Checking cost one command and would have
+cost a wrong fix.
+
+Second, the first coverage number was wrong. Counting `item_templates` gave 24
+of 203 - but `serve_next` accepts a template **or** an authored `Item`, and 85
+nodes are reachable through items alone. Reading the service rather than
+guessing its rule changed the figure by a factor of four.
+
+    GET /api/v1/practice/coverage  ->  { codes, servable: 99, total: 203 }
+
+It uses the same template-or-item condition as `serve_next`, stated in the
+docstring next to it so the two move together. Cross-checked against the SQL
+directly: both say 99.
+
+Wired to the three places that were overstating:
+
+- **Chapter reader** offers practice only where it exists, and otherwise says
+  "No practice for this chapter yet - the reading above is complete; the item
+  bank is the part still being written", with a link to what *is* ready.
+- **Learn index** carries a `With practice 99 / of 203` tile, and every chapter
+  card is tagged `practice` or `reading only`.
+- **Dashboard** hero drops "Practise it" when the recommended node cannot serve,
+  and the Chapters tile reads "All with a written course; 99 also have practice."
+
+Coverage-unknown is a third state everywhere and renders as such: a failed
+coverage call never silently hides practice that exists.
+
+Verified live: DM03 (unservable) shows the honest panel and no dead button,
+ALG.2 (servable) offers it and the click lands on a real served item, the index
+tags both kinds, no console errors.
+
+**The gap itself is content, not code.** 104 chapters need an item or a template
+before Practice can reach them. That is a standing programme, and the number is
+now on the page instead of behind a failing button.
