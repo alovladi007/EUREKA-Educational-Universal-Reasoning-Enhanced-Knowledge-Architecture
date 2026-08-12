@@ -36,9 +36,12 @@ type ComplianceDeletion = {
 type AuditEvent = {
   id?: string;
   actor_user_id?: string | null;
-  action?: string | null;
-  // The audit API returns `occurred_at`; `created_at` was always undefined
-  // here so the timestamp column rendered blank.
+  // The audit API returns `occurred_at` and `event_name`. Both columns were
+  // once read under different names (`created_at`, `action`) and both rendered
+  // blank for it — the timestamp was fixed at the time, the action was not, so
+  // every row showed "—" while the events themselves were fine. `action` is
+  // deliberately absent from this type so the wrong name cannot come back.
+  event_name?: string | null;
   occurred_at?: string | null;
 };
 type AuditResp = { events: AuditEvent[] } | AuditEvent[] | null | undefined;
@@ -46,7 +49,11 @@ type AuditResp = { events: AuditEvent[] } | AuditEvent[] | null | undefined;
 type ComplianceItem = {
   id?: string;
   requirement_id?: string | null;
+  // `name` and `code` are denormalised onto the row by the API. Before that
+  // the response carried only `requirement_id`, so this list rendered a bare
+  // UUID where the requirement's name belongs.
   name?: string | null;
+  code?: string | null;
   title?: string | null;
   status?: string | null;
   due_at?: string | null;
@@ -216,6 +223,11 @@ export default function EthicsSecurityPage() {
                   <span className="font-medium">
                     {c.name ?? c.title ?? c.requirement_id ?? "Requirement"}
                   </span>
+                  {c.code && (
+                    <span className="font-mono text-xs text-muted-foreground">
+                      {c.code}
+                    </span>
+                  )}
                   {c.status && <Badge variant="outline">{c.status}</Badge>}
                   {c.due_at && (
                     <span className="ml-auto text-xs text-muted-foreground">
@@ -335,7 +347,7 @@ export default function EthicsSecurityPage() {
                     {e.actor_user_id ? e.actor_user_id.slice(0, 8) : "—"}
                   </span>
                   <span>·</span>
-                  <span>{e.action ?? "—"}</span>
+                  <span>{e.event_name ?? "—"}</span>
                   <span>·</span>
                   <span className="text-xs text-muted-foreground ml-auto">
                     {e.occurred_at ? new Date(e.occurred_at).toLocaleString() : ""}

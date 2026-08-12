@@ -289,3 +289,59 @@ async def _rank_recompute(db: AsyncSession, payload: dict) -> dict:
     from app.services import marketplace_ranking as rank_svc
     n = await rank_svc.recompute_all_published(db)
     return {"listings_updated": n}
+
+
+@register("compliance.delete.execute")
+async def _compliance_delete_execute(db: AsyncSession, payload: dict) -> dict:
+    """Carry out one GDPR/FERPA erasure. See services/erasure.py for the policy.
+
+    Deliberately NOT retried into oblivion: `erase_user` refuses a cancelled or
+    not-yet-due request by raising, which walks the job up the retry ladder and
+    finally to `dead`, where an admin sees it. Silently succeeding on a
+    cancelled erasure would be far worse than a visible dead job."""
+    from uuid import UUID as _UUID
+    from app.services import erasure as erasure_svc
+    deletion_id = payload.get("deletion_id")
+    if not deletion_id:
+        raise ValueError("deletion_id is required")
+    result = await erasure_svc.erase_user(db, deletion_id=_UUID(deletion_id))
+
+    # Audit the erasure itself. No PII in the record - that would defeat it.
+    from app.services import integrations as ig_svc
+    await ig_svc.log_audit(
+        db,
+        event_name="compliance.delete.execute",
+        severity="warn",
+        subject_user_id=_UUID(result["user_id"]) if result.get("user_id") else None,
+        metadata={
+            "deletion_id": str(deletion_id),
+            "rows_purged": result.get("rows_purged", 0),
+            "already_executed": result.get("already_executed", False),
+        },
+    )
+    return result
+
+
+@register("compliance.delete.sweep")
+async def _compliance_delete_sweep(db: AsyncSession, payload: dict) -> dict:
+    """Find erasure requests that have come due and enqueue one job each.
+
+    A sweep rather than enqueue-at-request-time so the executor is self-healing:
+    rows created before this existed, rows created directly by an admin, and
+    rows whose job was lost all get picked up on the next pass. `dedupe_key`
+    keeps a repeated sweep from queueing the same erasure twice."""
+    from app.services import erasure as erasure_svc
+    limit = int(payload.get("limit") or 100)
+    due = await erasure_svc.due_deletions(db, limit=limit)
+    queued = 0
+    for deletion_id in due:
+        job = await enqueue(
+            db,
+            kind="compliance.delete.execute",
+            payload={"deletion_id": str(deletion_id)},
+            dedupe_key=f"compliance.delete.execute:{deletion_id}",
+            priority=50,
+        )
+        if job is not None:
+            queued += 1
+    return {"due": len(due), "queued": queued}

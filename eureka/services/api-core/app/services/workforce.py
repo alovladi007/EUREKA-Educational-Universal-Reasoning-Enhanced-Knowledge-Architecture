@@ -241,6 +241,19 @@ async def evaluate_compliance(
     await db.commit()
     for row in rows:
         await db.refresh(row)
+
+    # Carry the requirement's name and code out with the row. Without these the
+    # only identifier the response has is `requirement_id`, so the Ethics &
+    # Security page had nothing to render but a bare UUID where the name of the
+    # requirement belongs. The requirements are already loaded above; this just
+    # stops throwing them away.
+    #
+    # Set after `refresh` on purpose - refreshing re-reads the mapped columns
+    # and would drop attributes assigned before it.
+    for row in rows:
+        req = reqs.get(row.requirement_id)
+        row.name = req.name if req else None
+        row.code = req.code if req else None
     return rows
 
 

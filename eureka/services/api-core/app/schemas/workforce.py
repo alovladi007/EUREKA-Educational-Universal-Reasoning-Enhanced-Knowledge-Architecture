@@ -205,6 +205,11 @@ class ComplianceDueDateResponse(BaseModel):
     status: str
     last_attestation_id: Optional[UUID]
     last_evaluated_at: datetime
+    # Denormalised from `compliance_requirements` by evaluate_compliance so a
+    # client can name the requirement it is showing. Optional because a row
+    # whose requirement was deleted still has to serialise.
+    name: Optional[str] = None
+    code: Optional[str] = None
 
 
 class AttestRequest(BaseModel):

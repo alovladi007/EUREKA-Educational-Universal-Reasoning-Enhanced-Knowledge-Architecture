@@ -230,6 +230,48 @@ services:
       start_period: 40s
       retries: 5
 
+  # The daemon that drains api-core's `background_jobs` queue.
+  #
+  # jobs.py always assumed this process existed ("the real worker process is a
+  # daemon that calls run_once() in a loop") but nothing ever ran it, so the
+  # only thing draining the queue was an admin endpoint marked "for tests".
+  # Jobs enqueued in normal operation simply accumulated.
+  #
+  # It became load-bearing with the erasure executor: this container is what
+  # notices a GDPR deletion has come due and carries it out. If it is not
+  # running, erasure requests silently pile up in `compliance_deletions` —
+  # which is precisely the bug it was added to fix. It shares api-core's image
+  # and source mount, so it needs no separate build.
+  api-core-worker:
+    restart: unless-stopped
+    build:
+      context: ./services/api-core
+      dockerfile: Dockerfile
+    container_name: eureka-api-core-worker
+    environment:
+      DATABASE_URL: postgresql://eureka:eureka_dev_password@db:5432/eureka
+      REDIS_URL: redis://redis:6379/0
+      S3_ENDPOINT: http://minio:9000
+      S3_ACCESS_KEY: eureka
+      S3_SECRET_KEY: eureka_minio_password
+      JWT_SECRET: eureka_dev_secret_key_change_in_production
+      ENVIRONMENT: development
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:4040}
+      OTEL_EXPORTER_OTLP_ENDPOINT: ${OTEL_EXPORTER_OTLP_ENDPOINT:-}
+      OTEL_SERVICE_NAME: api-core-worker
+      # Poll cheaply; erasures are scheduled days ahead, so sweep latency of a
+      # few minutes is irrelevant.
+      WORKER_POLL_INTERVAL: "5"
+      WORKER_SWEEP_INTERVAL: "300"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./services/api-core:/app
+    command: python worker.py
+
   # P0.6: file-storage was a real service (FE uploads/downloads target
   # NEXT_PUBLIC_FILE_STORAGE_URL = :8300) but had no container — so every
   # upload silently failed. Added here with a Dockerfile + requirements
