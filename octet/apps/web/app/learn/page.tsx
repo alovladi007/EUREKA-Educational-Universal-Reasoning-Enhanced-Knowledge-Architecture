@@ -2,7 +2,13 @@
 
 import Link from 'next/link';
 import { useEffect, useMemo, useState } from 'react';
-import { Calculator, ChevronDown, ChevronRight, FlaskConical } from 'lucide-react';
+import {
+  BookOpen,
+  Calculator,
+  ChevronDown,
+  ChevronRight,
+  FlaskConical,
+} from 'lucide-react';
 import {
   CurriculumCourse,
   CurriculumNode,
@@ -851,23 +857,61 @@ function UnitSection({
             This unit has no nodes to show.
           </p>
         ) : (
-          <ul className="mt-2 space-y-2 pl-6">
-            {view.nodes.map((nodeView) => (
-              <li key={nodeView.node.code}>
-                <NodeRow
-                  node={nodeView.node}
-                  state={nodeView.state}
-                  byCode={byCode}
-                  mastery={mastery}
-                  instructorView={instructorView}
-                />
-              </li>
+          <div className="mt-2 space-y-4 pl-6">
+            {groupByPart(view.nodes).map((group, gi) => (
+              <div key={gi}>
+                {/* The lettered sub-parts of a chapter. These were requested
+                    when the organic courses were rechaptered, they have been
+                    in curriculum.json ever since, and until now nothing
+                    rendered them - so a chapter with six parts looked exactly
+                    like a chapter with none. */}
+                {group.part && (
+                  <h4 className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-400">
+                    Part {group.part}
+                  </h4>
+                )}
+                <ul className="space-y-2">
+                  {group.nodes.map((nodeView) => (
+                    <li key={nodeView.node.code}>
+                      <NodeRow
+                        node={nodeView.node}
+                        state={nodeView.state}
+                        byCode={byCode}
+                        mastery={mastery}
+                        instructorView={instructorView}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
       </div>
     </div>
   );
+}
+
+/**
+ * Split a unit's nodes into runs of consecutive nodes sharing a sub-part.
+ *
+ * Runs, not a keyed group-by, because curriculum order is the teaching order
+ * and a group-by would silently reorder a chapter whose parts were not
+ * contiguous. If a part ever appears twice it will render twice, which is
+ * visible and therefore fixable, rather than being merged into one block that
+ * hides the error.
+ */
+function groupByPart(
+  nodes: NodeView[],
+): { part: string | null; nodes: NodeView[] }[] {
+  const out: { part: string | null; nodes: NodeView[] }[] = [];
+  for (const nv of nodes) {
+    const part = nv.node.part ?? null;
+    const last = out[out.length - 1];
+    if (last && last.part === part) last.nodes.push(nv);
+    else out.push({ part, nodes: [nv] });
+  }
+  return out;
 }
 
 // -------------------------------------------------------------------------
@@ -905,6 +949,17 @@ function NodeRow({
           </span>
           {node.title}
         </span>
+        {/* A node with lecture-note depth around its arc. Distinct from
+            "authored", which every node is: this says the chapter - sections,
+            figures, tables, an explainer - has been written. 7 of 325 so far,
+            so the badge marks the exception rather than the rule, which is the
+            honest way round. */}
+        {node.has_chapter && (
+          <Pill tone="brand">
+            <BookOpen aria-hidden="true" className="mr-1 inline h-3 w-3" />
+            full chapter
+          </Pill>
+        )}
         <Pill tone={STATE_TONE[state]}>{STATE_LABEL[state]}</Pill>
         <NodeIcons node={node} />
       </div>

@@ -242,14 +242,23 @@ export interface CurriculumNode {
   number: string;
   // "concept" or "computational".
   kind: string;
-  // Owning course id and unit id.
+  // Owning course id and unit id, plus the unit's own title so a page showing
+  // one node can name its chapter without walking the tree.
   course: string;
   unit: string;
+  unit_title: string;
+  // The lettered sub-part of the chapter, where the chapter has them: "A",
+  // "B", ... Null for chapters without parts, which is most of them.
+  part: string | null;
   // Node codes, not titles. Resolve them against the tree before display.
   prerequisites: string[];
   lab_adjacent: boolean;
   triangle_eligible: boolean;
   authored: boolean;
+  // Whether lecture-note depth exists around this node's arc: numbered
+  // sections, figures, tables, an animated explainer. A much smaller number
+  // than `authored`, and reported separately so the two are never conflated.
+  has_chapter: boolean;
 }
 
 // One unit within a course. chapters is the textbook chapter mapping, for
@@ -261,6 +270,9 @@ export interface CurriculumUnit {
   chapters: string;
   index: number;
   nodes: CurriculumNode[];
+  // Lettered sub-parts and how many nodes each holds, in order. Empty for a
+  // chapter without parts.
+  parts: { part: string; count: number }[];
 }
 
 export interface CurriculumCourse {
@@ -312,6 +324,64 @@ export interface Lesson {
   // the node's triangle_eligible flag, which records that a view would be
   // worth authoring rather than that one is there.
   has_triangle_view: boolean;
+  // Lecture-note depth, when this node has a chapter authored. Null otherwise,
+  // and the reader falls back to the six part arc and says so.
+  extras: LessonExtras | null;
+}
+
+export interface LessonFigure {
+  // Filename stem under /figures/octet/. The reader appends -light.svg or
+  // -dark.svg for the active theme.
+  stem: string;
+  caption: string;
+  alt: string;
+}
+
+export interface LessonTable {
+  caption: string;
+  columns: string[];
+  rows: string[][];
+  // Where measured numbers come from. Empty for a table that classifies rather
+  // than measures.
+  source: string;
+  note: string;
+}
+
+export interface LessonSection {
+  id: string;
+  heading: string;
+  // Markdown restricted to paragraphs, **bold**, `code` and $KaTeX$.
+  // See components/LessonProse.tsx for why the dialect is deliberately small.
+  body: string;
+  figure: LessonFigure | null;
+  table: LessonTable | null;
+  important: string;
+}
+
+export interface LessonVideo {
+  // Names an animated scene in components/chem-scenes.tsx, not a media file.
+  scene: string;
+  title: string;
+  seconds: number;
+  summary: string;
+}
+
+// The chapter around a lesson: numbered sections of prose with figures and
+// tables, takeaways, exam tips and an animated explainer.
+//
+// Deliberately no quiz field. Check-your-understanding questions come from the
+// item templates through /practice/next and are graded on the server, because
+// the teaching contract forbids an answer key reaching the client before
+// submission.
+export interface LessonExtras {
+  lead: string;
+  sections: LessonSection[];
+  key_takeaways: string[];
+  exam_tips: string[];
+  video: LessonVideo | null;
+  further: { label: string; href: string }[];
+  reading_minutes: number;
+  word_count: number;
 }
 
 // GET /curriculum/nodes. Pass a course id to fetch one course.

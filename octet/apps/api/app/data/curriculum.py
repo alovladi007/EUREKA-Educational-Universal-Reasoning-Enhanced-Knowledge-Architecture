@@ -58,6 +58,12 @@ class Node:
     node_index: int
     lab_adjacent: bool = False
     triangle_eligible: bool = False
+    # The lettered sub-part of the chapter this node sits in, where the chapter
+    # has them: "A", "B", ... None for the chapters that do not.
+    #
+    # This was in curriculum.json and dropped on the floor here, so the parts
+    # existed in the data and were invisible everywhere downstream.
+    part: str | None = None
 
 
 @dataclass(frozen=True)
@@ -68,6 +74,9 @@ class Unit:
     course: str
     index: int
     node_codes: tuple[str, ...]
+    # ({"part": "A", "count": 1}, ...) for a chapter with lettered parts, in
+    # order. Empty for a chapter without.
+    parts: tuple[dict, ...] = ()
 
 
 @dataclass(frozen=True)
@@ -106,6 +115,7 @@ def _load() -> tuple[
                         node_index=n_index,
                         lab_adjacent=bool(node.get("lab_adjacent")),
                         triangle_eligible=bool(node.get("triangle_eligible")),
+                        part=node.get("part"),
                     )
                 )
                 node_codes.append(node["id"])
@@ -117,6 +127,7 @@ def _load() -> tuple[
                     course=course["id"],
                     index=u_index,
                     node_codes=tuple(node_codes),
+                    parts=tuple(unit.get("parts") or ()),
                 )
             )
             unit_ids.append(unit["id"])

@@ -171,6 +171,7 @@ async def curriculum_nodes(
     the program it is looking at.
     """
     from app.data.coverage import is_authored
+    from app.data.lesson_extras_registry import EXTRAS
     from app.data.curriculum import (
         COURSES,
         NODES_BY_CODE,
@@ -189,6 +190,13 @@ async def curriculum_nodes(
             "kind": n.kind,
             "course": n.course,
             "unit": n.unit,
+            # The chapter's own title, so a client rendering one node does not
+            # have to walk the whole tree to name the chapter it is in.
+            "unit_title": UNITS_BY_ID[n.unit].title,
+            # The lettered sub-part, where this chapter has them. Emitted
+            # because the chapters were requested with parts and a part that
+            # never reaches the client is a part that does not exist.
+            "part": n.part,
             "prerequisites": prerequisites_of(n.code),
             "lab_adjacent": n.lab_adjacent,
             "triangle_eligible": n.triangle_eligible,
@@ -196,6 +204,11 @@ async def curriculum_nodes(
             # told which nodes are enterable rather than left to guess from a
             # 404 on the lesson route.
             "authored": is_authored(n.code),
+            # Whether this node has lecture-note depth around its arc, which is
+            # a different and much smaller number than `authored`. Reported
+            # separately rather than folded in, because a client that treats
+            # "has a lesson" as "has a chapter" overstates the course.
+            "has_chapter": n.code in EXTRAS,
         }
 
     selected = [c for c in COURSES if not course or c.id == course]
@@ -211,6 +224,7 @@ async def curriculum_nodes(
                         "title": u.title,
                         "chapters": u.chapters,
                         "index": u.index,
+                        "parts": [dict(p) for p in u.parts],
                         "nodes": [node_row(code) for code in u.node_codes],
                     }
                     for u in (UNITS_BY_ID[uid] for uid in c.unit_ids)
@@ -230,6 +244,8 @@ async def lesson(node_code: str, _p: Principal = Depends(get_current_principal))
     The teaching model requires the learner to answer before revealing, which
     is a client side interaction, and no item key is exposed here.
     """
+    from app.data.lesson_extras import as_payload
+    from app.data.lesson_extras_registry import extras_for
     from app.data.lessons import lesson_for
 
     found = lesson_for(node_code)
@@ -254,6 +270,15 @@ async def lesson(node_code: str, _p: Principal = Depends(get_current_principal))
         # reading eligibility as availability requests a view for every lesson
         # and takes a 404 on most of them, which is what happened.
         "has_triangle_view": _has_triangle_view(node_code),
+        # Lecture-note depth, when this node has a chapter authored. None
+        # otherwise, and the reader renders the arc alone and says so rather
+        # than showing empty section headings.
+        #
+        # Deliberately no quiz field. Check-your-understanding questions come
+        # from the item templates through /practice/next, which grades on the
+        # server. Putting graded questions in the lesson payload would put
+        # their answer keys in the client, which the teaching contract forbids.
+        "extras": as_payload(extras_for(node_code)),
     }
 
 

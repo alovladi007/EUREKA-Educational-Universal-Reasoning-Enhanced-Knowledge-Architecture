@@ -78,9 +78,47 @@ separately how many can actually be assembled.
 
 ## 3. Learn sub-parts are in the data and not on the page
 
-Chapters 4 and 5 of ORG1 and chapter 3 of ORG2 carry the requested lettered
-parts. The curriculum emits `part` on each node and `parts` on the unit. The
-Learn page does not read either, so the parts are invisible.
+**FIXED 2026-08-11.** Chapters 4 and 5 of ORG1 and chapter 3 of ORG2 carry the
+requested lettered parts.
+
+The diagnosis in the original entry was wrong in one detail and it matters,
+because it pointed at the wrong file. `part` and `parts` were in
+curriculum.json, but they were never loaded: `Node` and `Unit` in
+app/data/curriculum.py had no such fields, so `_load()` read the JSON and threw
+those two keys away. The Learn page could not render what the API never sent.
+
+Fixed at the loader (`Node.part`, `Unit.parts`), emitted by `node_row` and the
+unit serialiser, and rendered by `groupByPart` in the Learn page and by the
+chapter rail in the reader. The grouping is by consecutive run rather than a
+keyed group-by, so a chapter whose parts were somehow non-contiguous renders
+them twice and visibly, rather than being silently reordered into one block.
+
+## 3b. The chapter reader (added 2026-08-11)
+
+The Learn surface was a map with no reading behind it: opening a node gave the
+six part arc, about 400 words, and nothing else. That is the teaching, and it
+is deliberately short, but it is not a chapter.
+
+Built to the same shape as the prep test readers:
+
+| Piece | Where it comes from |
+|---|---|
+| Numbered sections of prose | `app/data/extras_*.py`, KaTeX inline |
+| Figures | generated in both themes by `scripts/gen_org1_ch1_figures.py` |
+| Data tables | structured rows, every measured table carrying a source |
+| Animated explainer + player | `components/chem-scenes.tsx`, computed per frame |
+| Key takeaways, exam tips | authored per node |
+| Chapter rail with sub-parts | curriculum, via the fix above |
+
+Two constraints held. There is **no quiz on the page**: graded questions come
+from the item templates through Practice, which grades server-side, and
+rendering one here would ship its answer key to the browser. And the coverage
+is reported as what it is - `has_chapter` is a separate field from `authored`,
+because 7 nodes of 325 carry a chapter and 325 carry a lesson, and conflating
+those two numbers would overstate the course by a factor of forty.
+
+A node without a chapter says so, in those words, rather than rendering empty
+section headings.
 
 ## 4. What is genuinely solid
 
@@ -102,9 +140,28 @@ Worth recording, because an audit that only lists faults misleads.
 
 ## Order of work
 
-1. Templates for the 30 nodes in the seven blocked chapters, so every unit can
-   supply practice again. This is the regression and it goes first.
-2. The exams line, so it stops claiming assembly it cannot do.
-3. Learn sub-part rendering.
+1. ~~Templates for the 30 nodes in the seven blocked chapters~~ **DONE.**
+   46 of 46 units can supply practice again.
+2. The exams line, so it stops claiming assembly it cannot do. **STILL OPEN.**
+3. ~~Learn sub-part rendering~~ **DONE**, see section 3 above.
 4. Templates for the remaining untemplated nodes, as a standing programme
    rather than a task: 200 nodes is many sessions of work.
+5. Chapters for the remaining 318 nodes, likewise a programme. 7 are written.
+   `scripts/check_octet_depth.py` is the gate and the progress number; it
+   counts prose only, and it fails the build on a figure missing in either
+   theme, a video naming a scene that does not exist, a ragged table, an
+   unsourced table of numbers, or an unbalanced `$`.
+
+## Measuring the chapter programme
+
+    python3 scripts/check_octet_depth.py
+
+Reports chapters, sections, prose words, figures, tables and explainers, and
+lists every chapter still under the 1,200 word standard with the shortfall.
+
+The word count deliberately excludes headings, captions, table cells and
+takeaways. Those are real content, but they are cheap to produce in bulk, and a
+progress number that includes them can be moved without writing anything. This
+one measures only the expensive thing, which is the reason to trust it - and it
+exists because the equivalent FE EE number was overstated once by counting
+whole source blocks instead of prose.
