@@ -37,7 +37,7 @@ async def test_catalogue_marks_supply_honestly(client, auth):
     res = await client.get("/api/v1/practice/catalogue", headers=auth("student"))
     assert res.status_code == 200
     units = res.json()["units"]
-    assert len(units) == 40, "every unit is listed, practiceable or not"
+    assert len(units) == 46, "every unit is listed, practiceable or not"
 
     for u in units:
         assert u["available"] == (u["templates"] > 0), (
