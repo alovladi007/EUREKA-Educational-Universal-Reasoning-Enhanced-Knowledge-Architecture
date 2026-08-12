@@ -93,6 +93,41 @@ chapter rail in the reader. The grouping is by consecutive run rather than a
 keyed group-by, so a chapter whose parts were somehow non-contiguous renders
 them twice and visibly, rather than being silently reordered into one block.
 
+## 0. The design target, corrected twice
+
+Recording this because the same mistake was made twice and the cost was real.
+
+The instruction was to rebuild OCTET's surfaces to look like **the Patent Bar
+prep test**. Both earlier attempts worked from an assumption about what that
+meant instead of opening the module and reading it.
+
+What the Patent Bar module actually is, having now read it:
+
+    eureka/apps/web/src/components/test-prep/ExamDashboard.tsx
+        resume hero -> four stat tiles -> entry grid -> evidence panels
+        Card p-3.5, mono tabular values, group-hover:border-primary,
+        em dash and a reason where there is no data
+
+    eureka/apps/web/src/app/dashboard/test-prep/[exam]/page.tsx
+        ONE page, a tab bar rather than a sidebar
+        bg-muted p-1 rounded-lg, active tab bg-background shadow-sm
+        Video Lessons | Flashcards | My Notes | QBank | MPEP | Full Exam |
+        Analytics, with per-exam tabs appended
+
+    .../[exam]/study
+        the course reader: syllabus rail beside the text, media slot in the rail
+
+Two specific corrections:
+
+1. **The video slot takes uploaded files.** The videos are produced separately.
+   An earlier version drove the panel with a computed SVG animation, which is a
+   different product decision made without being asked for. Now a real <video>,
+   see section 5.
+2. **It is the whole module, not one page.** The dashboard is rebuilt. The nine
+   other surfaces are not, and the sidebar is still a sidebar - matching the
+   Patent Bar properly means collapsing it into a tab bar, which is an
+   architecture change to every route.
+
 ## 3b. The chapter reader (added 2026-08-11)
 
 The Learn surface was a map with no reading behind it: opening a node gave the
@@ -137,6 +172,49 @@ Worth recording, because an audit that only lists faults misleads.
   than a padded number.
 - The review queue, SRS stats, path, planner, molecules, periodic table and
   triangle endpoints all return real data.
+
+## 5. Video slots (added 2026-08-11)
+
+Declared in the lesson data as a slug, resolved to
+`/videos/octet/{slug}.mp4`, and served straight out of the web app's public
+directory - the same convention the prep test videos use.
+
+Slots are declared BEFORE the file exists, deliberately. The player renders its
+full chrome over a "Video not uploaded yet" poster and disables rather than
+hides the controls, so the panel does not change shape on upload day, and the
+outstanding work stays a number instead of a feeling.
+
+    python3 scripts/check_octet_videos.py
+
+lists declared against present and prints the exact filenames wanted. It exits
+0 with files missing, because a missing video is a normal state; it fails only
+on two nodes claiming one slug, or a file in the directory that no lesson
+references - which means a filename typo.
+
+One bug worth recording, because the shape of it recurs. A slug always produces
+a URL string, so `Boolean(src)` was always true and the poster branch never
+ran: a learner saw a black rectangle with working-looking controls over a 404.
+"Does this node declare a video" and "is there a file at that URL" are
+different questions and only the first is answerable from props. The media
+element's own error event answers the second.
+
+## 6. Surfaces still on the old design
+
+The dashboard is rebuilt. These are not, and they are the rest of the job:
+
+    Learn index      chapter cards, reading time, depth badges
+    Practice         session setup and the item runner
+    Review           the SRS queue
+    Exams            the catalogue, and the line that overstates (section 2)
+    Analytics        rollups by course, unit and node
+    Path             the topological order
+    Planner          target-date arithmetic
+    Explore          molecules, periodic table, triangle
+    Simulations      the POE benches
+
+And the shell itself: the Patent Bar module is one page with a tab bar. OCTET
+is ten sidebar routes. Converting the shell is the change that makes the module
+read as the same product rather than as a set of pages with matching cards.
 
 ## Order of work
 

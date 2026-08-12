@@ -109,7 +109,22 @@ export default function LessonVideoPlayer({
   const [speed, setSpeed] = useState(1);
   const [speedOpen, setSpeedOpen] = useState(false);
   const [captions, setCaptions] = useState(false);
-  const hasVideo = Boolean(src);
+  // Whether the source failed to load.
+  //
+  // A slug always produces a URL string, so "does this node declare a video"
+  // and "is there a file at that URL" are different questions and only the
+  // first can be answered from props. Trusting the URL rendered a <video> that
+  // 404s - a black rectangle with working-looking controls - instead of the
+  // poster. The media element's own error event answers the second question
+  // without an extra probe request.
+  const [failed, setFailed] = useState(false);
+  const hasVideo = Boolean(src) && !failed;
+
+  // A new src is a new question. Without this, navigating from a node whose
+  // video is missing to one whose video exists keeps showing the poster.
+  useEffect(() => {
+    setFailed(false);
+  }, [src]);
 
   const togglePlay = useCallback(() => {
     const v = videoRef.current;
@@ -206,6 +221,7 @@ export default function LessonVideoPlayer({
           onClick={togglePlay}
           playsInline
           crossOrigin="anonymous"
+          onError={() => setFailed(true)}
         >
           {captionsSrc && (
             <track
