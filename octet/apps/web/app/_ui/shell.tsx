@@ -1,6 +1,7 @@
 'use client';
 
 import Link from 'next/link';
+import HelpWidget from '@/components/HelpWidget';
 import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import {
@@ -290,6 +291,11 @@ export function Page({ children }: { children: React.ReactNode }) {
           <div className="mx-auto max-w-5xl px-4 py-6 sm:px-6 sm:py-8">{children}</div>
         </main>
       </div>
+
+      {/* The platform helper. In the shell rather than per-page, so there is
+          no surface inside OCTET where someone is stuck with no way to ask -
+          which is how it shipped the first time, mounted only in EUREKA. */}
+      <HelpWidget />
     </div>
   );
 }

@@ -6,6 +6,7 @@ import { useEffect, useState } from 'react';
 import { fetchUnreadCount, getToken } from '@/lib/api';
 import { useAccommodations } from '@/lib/useAccommodations';
 import { Wordmark } from '@/components/PageShell';
+import HelpWidget from '@/components/HelpWidget';
 
 // The persistent application shell: a fixed left sidebar listing every module,
 // with the page content rendered on the right. It replaces the old per-page
@@ -243,6 +244,11 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           {children}
         </div>
       </div>
+
+      {/* The platform helper. In the shell rather than per-page, so there is
+          no surface inside AXIOM where someone is stuck with no way to ask -
+          which is how it shipped the first time, mounted only in EUREKA. */}
+      <HelpWidget />
 
       {/* Mobile drawer overlay (below md). */}
       {open && (
