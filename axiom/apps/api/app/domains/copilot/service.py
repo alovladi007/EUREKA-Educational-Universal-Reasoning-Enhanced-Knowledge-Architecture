@@ -18,6 +18,7 @@ import uuid
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.domains.adaptive.models import MasteryState
 from app.domains.assessment.models import Item, ItemVariant
 from app.domains.attempts.models import ReasoningTrace, Response
 from app.domains.copilot.models import CopilotMessage, CopilotSession
@@ -28,6 +29,7 @@ from app.domains.copilot.reasoning import (
 )
 from app.domains.copilot.retrieval import retrieve
 from app.domains.curriculum.models import KnowledgeNode
+from app.domains.practice.service import review_mistakes
 
 # How many prior turns of a chat to give the provider as context.
 _HISTORY_TURNS = 6
@@ -183,7 +185,7 @@ async def hint(
     )
     await session.commit()
     return {
-        "ai_generated": True,
+        "ai_generated": result.model_backed,
         "provider": result.provider,
         "grounded": result.grounded,
         "hint": result.text,
@@ -294,7 +296,7 @@ async def proof_tutor(
     )
     await session.commit()
     return {
-        "ai_generated": True,
+        "ai_generated": result.model_backed,
         "provider": result.provider,
         "grounded": result.grounded,
         "level": level,
@@ -331,13 +333,115 @@ async def explain(
     )
     await session.commit()
     return {
-        "ai_generated": True,
+        "ai_generated": result.model_backed,
         "provider": result.provider,
         "grounded": result.grounded,
         "explanation": result.text,
         "node_code": node.code,
         "sources": _sources_payload(passages),
     }
+
+
+# The learner's own record, as grounding passages.
+#
+# WHY PASSAGES RATHER THAN A NEW FIELD
+#
+# The copilot already grounds on passages, cites them as sources, and shows
+# them to the learner. Feeding the learner's own state through the same channel
+# means it is cited like everything else - a reply that leans on "you have
+# missed this twice" says so in its sources rather than appearing to know it by
+# magic - and it needs no change to the provider contract.
+#
+# WHAT IS DELIBERATELY LEFT OUT
+#
+# The correct answers to past mistakes. The learner has already seen them in
+# Review, so including them is not a leak in the strict sense, but a tutor
+# holding the key to a question the learner may be about to retry is one
+# accident away from handing it over. The node, the misconception and the
+# learner's own wrong answer are enough to teach from.
+#
+# Only this user's rows are ever read. There is no path here to another
+# learner's data.
+_WEAK_SKILLS = 3
+_RECENT_MISTAKES = 3
+
+
+async def _learner_passages(
+    session: AsyncSession, user_id: uuid.UUID
+) -> list[Passage]:
+    out: list[Passage] = []
+
+    weak = (
+        (
+            await session.execute(
+                select(MasteryState, KnowledgeNode)
+                .join(KnowledgeNode, KnowledgeNode.id == MasteryState.node_id)
+                .where(MasteryState.user_id == user_id)
+                .order_by(MasteryState.p_known.asc())
+                .limit(_WEAK_SKILLS)
+            )
+        )
+        .all()
+    )
+    if weak:
+        lines = [
+            f"{node.title} ({node.code}): {round(state.p_known * 100)}% estimated"
+            for state, node in weak
+        ]
+        out.append(
+            Passage(
+                source="Your mastery record",
+                kind="learner",
+                text=(
+                    "This learner's weakest skills by estimated mastery, from "
+                    "their own graded attempts: " + "; ".join(lines) + "."
+                ),
+            )
+        )
+
+    missed = await review_mistakes(session, user_id)
+    if missed:
+        lines = [
+            f"{m['node_title']}: answered {m['your_answer']!r}"
+            for m in missed[:_RECENT_MISTAKES]
+        ]
+        out.append(
+            Passage(
+                source="Your recent mistakes",
+                kind="learner",
+                text=(
+                    "Questions this learner recently got wrong, and what they "
+                    "answered (the correct answers are deliberately withheld "
+                    "from you): " + "; ".join(lines) + "."
+                ),
+            )
+        )
+
+    return out
+
+
+# How many of the learner's own previous turns join the retrieval query. Two
+# is enough to carry a subject through a follow-up without letting an older,
+# abandoned topic outvote the current one.
+_QUERY_CONTEXT_TURNS = 2
+
+
+def _retrieval_query(message: str, history: list[dict]) -> str:
+    """Build the search text for a chat turn from its conversational context.
+
+    A short follow-up gets the learner's recent turns prepended; a long, self
+    contained question does not need them and is used as-is, so a fully stated
+    question is never diluted by an unrelated earlier one.
+    """
+    text = (message or "").strip()
+    if len(text.split()) >= 8:
+        return text
+    recent = [
+        (h.get("content") or "").strip()
+        for h in history
+        if h.get("role") == "user" and (h.get("content") or "").strip() != text
+    ][-_QUERY_CONTEXT_TURNS:]
+    return " ".join([*recent, text]).strip() or text
 
 
 async def chat(
@@ -393,9 +497,22 @@ async def chat(
     )
     history = [{"role": m.role, "content": m.content} for m in reversed(prior)]
 
+    # Retrieve on the CONVERSATION, not just the latest utterance.
+    #
+    # A follow-up is usually a fragment - "why does it need one?" - and
+    # retrieving on those five words alone returned uniqueness proofs and
+    # antiderivatives in a conversation that was about induction. The learner's
+    # own recent turns carry the subject; the assistant's do not (they are
+    # mostly quoted passages, and feeding them back re-retrieves whatever was
+    # already found, which narrows onto the first answer instead of the topic).
+    retrieval_query = _retrieval_query(message, history)
     passages = await retrieve(
-        session, message, node_id=convo.node_id, limit=4, include_items=True
+        session, retrieval_query, node_id=convo.node_id, limit=4, include_items=True
     )
+    # The learner's own record goes last, so a curriculum passage is never
+    # displaced by it: the tutor should still be grounded in the mathematics
+    # first and personalised second.
+    passages = [*passages, *await _learner_passages(session, user_id)]
     provider = get_reasoning_provider()
     result = await provider.generate(
         ReasoningRequest(
@@ -416,7 +533,7 @@ async def chat(
     await session.commit()
     return {
         "session_id": str(convo.id),
-        "ai_generated": True,
+        "ai_generated": result.model_backed,
         "provider": result.provider,
         "grounded": result.grounded,
         "reply": result.text,
@@ -491,7 +608,7 @@ async def teacher_assist(
     )
     await session.commit()
     return {
-        "ai_generated": True,
+        "ai_generated": result.model_backed,
         "task": task,
         "provider": result.provider,
         "grounded": result.grounded,

@@ -159,6 +159,12 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
+      # The reasoning core AXIOM's tutor calls. With this set, /api/v1/reasoning
+      # /generate answers with the model and reports model_backed:true; without
+      # it the endpoint composes replies from the passages it was sent and says
+      # so, and AXIOM's copilot reports ai_generated:false. Both states are
+      # honest; only one of them can teach.
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       # P0.4: use the in-network `db` hostname (port 5432) instead of
       # host.docker.internal:5434. The host-loopback form was Mac-only
       # and broke on Linux/CI; every other service already uses db:5432.

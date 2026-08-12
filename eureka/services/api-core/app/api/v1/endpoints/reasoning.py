@@ -51,6 +51,10 @@ class GenerateRequest(BaseModel):
 class GenerateResponse(BaseModel):
     text: str
     provider: str
+    # True only when a language model wrote the text. Sent explicitly rather
+    # than left for the caller to infer from the provider string, so AXIOM
+    # never has to guess whether "some-model-id" is a model.
+    model_backed: bool = False
 
 
 class Criterion(BaseModel):
@@ -99,6 +103,25 @@ def _anthropic():
         return None
 
 
+def _clip(text: str, limit: int) -> str:
+    """Trim to a sentence or word boundary, and say that it was trimmed.
+
+    A bare text[:limit] cut passages mid-word - "the step hands P(k+1) only
+    the single pre" was on screen. Prefer the last sentence end, fall back to
+    the last space, and always mark the cut so a learner can tell the
+    difference between a trimmed quote and a garbled one.
+    """
+    text = (text or "").strip()
+    if len(text) <= limit:
+        return text
+    window = text[:limit]
+    cut = max(window.rfind(". "), window.rfind("? "), window.rfind("! "))
+    if cut >= limit // 2:
+        return window[: cut + 1]
+    cut = window.rfind(" ")
+    return (window[:cut] if cut > 0 else window).rstrip(",;: ") + " ..."
+
+
 def _grounded_fallback(req: GenerateRequest) -> str:
     """Deterministic, passage-grounded composition. No model, no pretense."""
     lines: list[str] = []
@@ -109,7 +132,7 @@ def _grounded_fallback(req: GenerateRequest) -> str:
         text = (p.text or "").strip()
         if text:
             label = p.source or p.kind or "course material"
-            lines.append(f"From {label}: {text[:400]}")
+            lines.append(f"From {label}: {_clip(text, 400)}")
     if not req.passages:
         lines.append(
             "No grounding passages were provided; review the lesson for this "
@@ -144,19 +167,35 @@ async def generate(req: GenerateRequest) -> GenerateResponse:
                     "platform. Ground every reply in the provided course "
                     f"passages; do not invent facts. {guard}"
                 ),
-                messages=[{
-                    "role": "user",
-                    "content": (
-                        f"Task: {req.task}\nQuestion: {req.question}\n\n"
-                        f"Course passages:\n{grounding or '(none provided)'}"
+                # The conversation so far, then this turn. AXIOM has always
+                # sent `history`; it was declared and never read, so every
+                # follow-up was answered as if it were the first thing the
+                # learner had ever said. Roles are constrained to the two the
+                # API accepts and the text is capped so a long session cannot
+                # push the grounding passages out of the window.
+                messages=[
+                    *(
+                        {
+                            "role": "assistant" if h.get("role") == "assistant" else "user",
+                            "content": str(h.get("content") or "")[:2000],
+                        }
+                        for h in req.history[-8:]
+                        if str(h.get("content") or "").strip()
                     ),
-                }],
+                    {
+                        "role": "user",
+                        "content": (
+                            f"Task: {req.task}\nQuestion: {req.question}\n\n"
+                            f"Course passages:\n{grounding or '(none provided)'}"
+                        ),
+                    },
+                ],
             )
             text = "".join(
                 b.text for b in msg.content if getattr(b, "type", "") == "text"
             ).strip()
             if text:
-                return GenerateResponse(text=text, provider=_MODEL)
+                return GenerateResponse(text=text, provider=_MODEL, model_backed=True)
         except Exception:
             pass  # fall through to the deterministic grounded reply
     return GenerateResponse(text=_grounded_fallback(req), provider="grounded-deterministic")

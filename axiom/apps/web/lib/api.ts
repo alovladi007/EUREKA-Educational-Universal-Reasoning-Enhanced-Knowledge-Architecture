@@ -1082,7 +1082,9 @@ export async function downloadAuthed(
 // Phase 3 types (AI Copilot).
 //
 // The copilot is AI-assisted, not authoritative. Every reply is tagged
-// ai_generated:true, names the provider that produced it, and carries the
+// ai_generated says whether a language model actually wrote the text (it is
+// false when the reasoning service composed the reply from passages), names
+// the provider that produced it, and carries the
 // sources it was grounded in. When grounded is false the reply was produced
 // without matching lesson context and the UI should say so. The consuming UI
 // must always present these results as AI-assisted and teacher-overridable.
@@ -1098,7 +1100,7 @@ export interface CopilotSource {
 // The result of POST /api/v1/copilot/chat.
 export interface CopilotChatResult {
   session_id: string;
-  ai_generated: true;
+  ai_generated: boolean;
   provider: string;
   grounded: boolean;
   reply: string;
@@ -1107,7 +1109,7 @@ export interface CopilotChatResult {
 
 // The result of POST /api/v1/copilot/hint.
 export interface CopilotHintResult {
-  ai_generated: true;
+  ai_generated: boolean;
   provider: string;
   grounded: boolean;
   hint: string;
@@ -1117,7 +1119,7 @@ export interface CopilotHintResult {
 
 // The result of POST /api/v1/copilot/explain.
 export interface CopilotExplainResult {
-  ai_generated: true;
+  ai_generated: boolean;
   provider: string;
   grounded: boolean;
   explanation: string;

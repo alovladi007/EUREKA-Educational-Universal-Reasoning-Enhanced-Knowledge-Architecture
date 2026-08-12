@@ -1,7 +1,14 @@
 """Copilot routes: hints, explanations, and grounded tutoring chat.
 
-Every response is explicitly AI-assisted (ai_generated is true) and carries the
-curriculum sources it was grounded in, so a teacher can audit and override it.
+Every response carries the curriculum sources it was grounded in, so a teacher
+can audit and override it, and an `ai_generated` flag that says whether a
+language model actually wrote the text. That flag used to be hardcoded true;
+it is now reported by the provider, because with no model key configured the
+reasoning service composes replies from passages and calling that AI
+generation tells a learner something untrue.
+
+Every model-spending endpoint is rate limited per user - see limits.py for why
+the cap ships before the key does.
 """
 
 from __future__ import annotations
@@ -16,12 +23,31 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.core.db import get_session
 from app.core.security import get_current_user, require_roles
 from app.domains.copilot import generation as gen
+from app.domains.copilot import limits
 from app.domains.copilot import service as svc
 from app.domains.copilot.service import _resolve_node
 
 router = APIRouter(prefix="/copilot", tags=["copilot"])
 
 author_only = require_roles("teacher", "org_admin", "super_admin", "author")
+
+
+async def _enforce(bucket: str, user: UserOut) -> None:
+    """Count this call against the user's budget, or refuse with a 429.
+
+    The refusal names the window and when it resets, because "try again later"
+    without a number is not actionable.
+    """
+    decision = await limits.check(bucket, str(user.id))
+    if not decision.allowed:
+        raise HTTPException(
+            status_code=429,
+            detail=(
+                f"Copilot limit reached: {decision.limit} {bucket} requests per "
+                f"{limits.get_window_minutes()} minutes. Resets in "
+                f"{decision.reset_seconds // 60 + 1} minute(s)."
+            ),
+        )
 
 
 class HintRequest(BaseModel):
@@ -54,6 +80,7 @@ async def hint(
     session: AsyncSession = Depends(get_session),
     user: UserOut = Depends(get_current_user),
 ) -> dict:
+    await _enforce("tutor", user)
     result = await svc.hint(
         session,
         uuid.UUID(user.id),
@@ -72,6 +99,7 @@ async def proof_tutor(
     session: AsyncSession = Depends(get_session),
     user: UserOut = Depends(get_current_user),
 ) -> dict:
+    await _enforce("tutor", user)
     result = await svc.proof_tutor(
         session,
         uuid.UUID(user.id),
@@ -91,6 +119,7 @@ async def explain(
     session: AsyncSession = Depends(get_session),
     user: UserOut = Depends(get_current_user),
 ) -> dict:
+    await _enforce("tutor", user)
     result = await svc.explain(
         session, uuid.UUID(user.id), node_ref=body.node, question=body.question
     )
@@ -105,6 +134,7 @@ async def chat(
     session: AsyncSession = Depends(get_session),
     user: UserOut = Depends(get_current_user),
 ) -> dict:
+    await _enforce("tutor", user)
     if not body.message.strip():
         raise HTTPException(status_code=400, detail="message is empty")
     result = await svc.chat(
@@ -156,6 +186,7 @@ async def generate_items(
     session: AsyncSession = Depends(get_session),
     author: UserOut = Depends(author_only),
 ) -> dict:
+    await _enforce("authoring", user)
     node = await _resolve_node(session, body.node)
     if node is None:
         raise HTTPException(status_code=404, detail="node not found")
@@ -237,6 +268,7 @@ async def teacher_assist(
     session: AsyncSession = Depends(get_session),
     author: UserOut = Depends(author_only),
 ) -> dict:
+    await _enforce("authoring", user)
     result = await svc.teacher_assist(
         session, uuid.UUID(author.id), task=body.task, node_ref=body.node, notes=body.notes
     )
@@ -258,6 +290,7 @@ async def counterexample_search(
 ) -> dict:
     """Validate that a suspected-false claim really is false, before it becomes a
     find-the-error or counterexample item. Deterministic, CAS-backed."""
+    await _enforce("authoring", user)
     from app.domains.copilot.proof_tools import search_counterexample
 
     return search_counterexample(body.predicate, body.candidates, body.var)
@@ -271,6 +304,7 @@ async def proof_practice(
 ) -> dict:
     """Emit a provable statement with a known reference proof, verified by the
     formal kernel where formalizable and otherwise flagged for human review."""
+    await _enforce("authoring", user)
     from app.domains.copilot.proof_tools import generate_proof_practice
 
     return await generate_proof_practice(difficulty, salt)

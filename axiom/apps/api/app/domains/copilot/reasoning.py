@@ -55,6 +55,14 @@ class ReasoningResult:
     text: str
     provider: str
     grounded: bool  # True when at least one passage informed the reply
+    # True only when a language model actually wrote this text.
+    #
+    # It is set by the provider that produced the reply rather than inferred
+    # from which provider object was constructed. Those are different things:
+    # the EUREKA provider is configured and reachable in dev, but with no model
+    # key it answers by concatenating passages, and reporting that as AI
+    # generation tells a learner a model wrote something no model touched.
+    model_backed: bool = False
 
 
 @dataclass
@@ -87,6 +95,12 @@ class RubricScoreResult:
     total_possible: float
     confidence: float
     provider: str
+
+
+# Backend names that are known NOT to be language models. Used only as the
+# fallback when a reasoning service does not send an explicit model_backed
+# flag, so an older service cannot accidentally claim AI generation.
+_NON_MODEL_BACKENDS = frozenset({"mock", "grounded-deterministic", "eureka"})
 
 
 class ReasoningProvider(Protocol):
@@ -125,8 +139,11 @@ class MockReasoningProvider:
     """Deterministic, curriculum-grounded reasoning for local dev and tests.
 
     It is extractive: replies are built from the retrieved passages, so the
-    copilot is useful without a live model and cannot hallucinate. It is clearly
-    AI-assisted and every reply is auditable through its sources.
+    copilot is useful without a live model and cannot hallucinate. Every reply
+    is auditable through its sources.
+
+    Nothing it returns is model_backed, because nothing it returns came from a
+    model. Callers surface that distinction to the learner.
     """
 
     async def generate(self, request: ReasoningRequest) -> ReasoningResult:
@@ -258,8 +275,20 @@ class EurekaReasoningProvider:
                 text = data.get("text")
                 if not text:
                     raise ValueError("reasoning response missing text")
+                # EUREKA reports which backend answered: a model id when a key
+                # is configured, or "grounded-deterministic" when it composed
+                # the reply from passages. That string is passed through
+                # unchanged - overwriting it with "eureka" hid the difference
+                # and was the reason the UI badged extractive replies as AI.
+                backend = str(data.get("provider") or "eureka")
+                model_backed = bool(
+                    data.get("model_backed", backend not in _NON_MODEL_BACKENDS)
+                )
                 return ReasoningResult(
-                    text=str(text), provider="eureka", grounded=bool(request.passages)
+                    text=str(text),
+                    provider=backend,
+                    grounded=bool(request.passages),
+                    model_backed=model_backed,
                 )
         except Exception:
             # Fail soft to the deterministic mock. The reply is still grounded

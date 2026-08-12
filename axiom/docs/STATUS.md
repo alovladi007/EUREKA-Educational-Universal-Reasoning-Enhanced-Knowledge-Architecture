@@ -388,3 +388,65 @@ lands on a served question.
 Probability & Statistics 11, Advanced 10, Differential Equations 9, Linear
 Algebra 8, Fourier/PDE 7, Proof & Logic 7, Foundations 4, plus one Discrete
 overview. Course overviews are excluded by design and will never reach 203.
+
+## AI Tutor: honesty, spend cap, memory, and learner state (2026-08-12)
+
+Steps 1-3 of the review in `docs/AI_TUTOR_REVIEW.md`. The one item not done
+here is the model key itself, which is a credential and belongs to the operator.
+
+**1. It no longer claims to be AI when it is not.** `ai_generated` was
+hardcoded `true` in five places and the TypeScript type was the literal `true`,
+so the UI badged extractive replies as model output. It is now reported by the
+provider that produced the reply: `ReasoningResult.model_backed`, set by EUREKA
+(`model_backed: true` only on the Anthropic path) and passed through unchanged.
+The provider string is passed through too - AXIOM used to overwrite EUREKA's
+`grounded-deterministic` with its own `eureka`, which is what hid the
+difference. Live, with no key configured:
+
+    before   ai_generated=True   provider='eureka'
+    after    ai_generated=False  provider='grounded-deterministic'
+
+**2. The spend cap ships before the key.** `copilot/limits.py` counts calls per
+user per window in two buckets (tutor 60/h, authoring 20/h), Redis-backed so it
+holds across workers, falling back to an in-process counter that reports itself
+as `per-process` rather than pretending to be shared. It counts CALLS, not
+tokens, because AXIOM cannot observe token counts and a limit computed from a
+number this process never sees would be a guess dressed as a control. All eight
+model-spending endpoints enforce it; over the limit is a 429 naming the window
+and the reset. Verified: with the limit at 3, calls 1-3 pass and 4-5 are
+refused, `scope: shared`.
+
+**3. It remembers the conversation.** The history chain existed and was inert -
+stored, loaded, passed, declared in EUREKA's request model, and never read.
+Fixed at both ends: EUREKA now sends the last 8 turns into the model's
+`messages` array, and retrieval builds its query from the learner's recent
+turns rather than the latest utterance alone (a long, self-contained question
+is still used as-is, so a fully stated question is never diluted). Live, the
+follow-up that used to fail:
+
+    "Let us talk about induction."  ->  "why does it need one?"
+    before   uniqueness proofs, no-elementary-antiderivative, cryptography
+    after    Going deeper: foundations of induction; Lesson: Induction;
+             induction as the backbone of computing; strong induction
+
+**4. It knows who it is talking to.** The learner's three weakest skills by
+estimated mastery and three most recent mistakes are added as grounding
+passages with `kind: "learner"`, so they are cited like any other source -
+a reply that leans on "you have missed this twice" says so rather than
+appearing to know it by magic. Correct answers to past mistakes are
+deliberately withheld from the tutor: the learner has already seen them in
+Review, but a tutor holding the key to a question they may be about to retry is
+one accident away from handing it over. Only this user's rows are ever read.
+Live: both `Your mastery record` and `Your recent mistakes` appear in sources.
+
+Also fixed: EUREKA's passage composition cut mid-word (`text[:400]`), which put
+"the step hands P(k+1) only the single pre" on screen. It now trims to a
+sentence or word boundary and marks the cut.
+
+**What is left for the operator.** `ANTHROPIC_API_KEY` is now passed to
+api-core in compose (it was already passed to five other services but not to
+the reasoning core, which is why the tutor could never have been model-backed).
+It is absent from `.env`. Set it and the tutor becomes model-backed, every
+surface starts reporting `ai_generated: true` truthfully, and the caps above
+start doing real work. Leave it and everything still runs and still says
+honestly that no model wrote the text.

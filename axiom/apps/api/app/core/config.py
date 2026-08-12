@@ -79,6 +79,16 @@ class Settings(BaseSettings):
     eureka_reasoning_base_url: str = "http://localhost:8000"
     reasoning_timeout_seconds: float = 8.0
 
+    # Copilot rate limits. These bound CALLS per user per window, not tokens:
+    # AXIOM cannot observe token counts (the reasoning service can), and a
+    # limit computed from a number this process never sees would be a guess
+    # dressed as a control. Set a bucket to 0 to disable counting entirely,
+    # which is the right setting when no model key is configured and the
+    # copilot therefore costs nothing to call.
+    copilot_rate_window_seconds: int = 3600
+    copilot_rate_limit_tutor: int = 60
+    copilot_rate_limit_authoring: int = 20
+
     # How the copilot ranks grounding passages (ADR 0006):
     #   "lexical"  - exact token overlap (the original ranker).
     #   "semantic" - cosine over deterministic local embeddings (offline).
