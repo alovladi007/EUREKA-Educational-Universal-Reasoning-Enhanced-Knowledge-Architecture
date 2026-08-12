@@ -332,3 +332,59 @@ tags both kinds, no console errors.
 **The gap itself is content, not code.** 104 chapters need an item or a template
 before Practice can reach them. That is a standing programme, and the number is
 now on the page instead of behind a failing button.
+
+## Practice templates: Discrete Mathematics tranche (2026-08-12)
+
+Coverage 99 -> 109 of 203. All ten Discrete Mathematics topics can now serve a
+practice item; DISC, the course overview, deliberately cannot.
+
+| Node | Question | Closed form | Independent second path |
+|---|---|---|---|
+| DM01 | truth-table rows | `2**n` | enumerate `product([F,T], repeat=n)` |
+| DM03 | verify n^3-n divisible by 6 | `(a**3-a)/6` | count sixes by repeated addition |
+| DM04 | sum 1..n | `n*(n+1)/2` | `sum(range(1, n+1))` |
+| DM05 | inclusion-exclusion | `a+b-c` | build real sets, union them |
+| DM06 | injections k into n | `n!/(n-k)!` | list `permutations(range(n), k)` |
+| DM07 | product rule | `a*b*c` | enumerate the tuples |
+| DM09 | pigeonhole bound | `ceiling(n/k)` | round-robin fill, take the max |
+| DM12 | handshake lemma | `n*d/2` | sum degrees, count pairs |
+| DM13 | spanning trees of K_n | Cayley `n**(n-2)` | Kirchhoff matrix-tree determinant |
+| DM14 | binary-search probes | `floor(log2 n)+1` | halve in a loop, count |
+
+**The two paths are different on purpose.** A formula agreeing with itself
+proves nothing, so where the obvious check was the same expression retyped, the
+item was rewritten until it was not. DM13 is the clearest case: Cayley's
+formula against Kirchhoff's theorem is two different pieces of mathematics
+reaching one number.
+
+**The verifier earned its place on the first run.** DM13 failed at seed 1 -
+answer 16, verifier 50. Cayley was right and the *verifier* was wrong: I wrote
+the reduced Laplacian of K_n with `n` on the diagonal when each vertex has
+degree `n-1`, which is the Laplacian of a graph with a self-loop everywhere.
+Worth recording that the disagreement was in the check rather than the content:
+an independent path is only worth having if it is allowed to be the thing that
+is wrong.
+
+**Where the gate lives.** `app/verify_templates.py` sweeps every template over
+many seeds, comparing exact rationals, and also rejects unsatisfiable
+constraints, unrendered `{placeholders}`, variables sampled but never shown,
+non-integer answers to counting questions, and non-determinism in the seed.
+`app/seed_authored_templates.py` runs that sweep and inserts **nothing at all**
+if any row fails - the refusal is on the only path the data can take into the
+database, because a check that can be skipped is not a check.
+`tests/test_template_sweep.py` runs the same sweep in CI.
+
+Verified live, not just in the sweep: 10/10 templates pass at 200 seeds each;
+the seeder is idempotent (second run inserts 0, reports 10 already present); a
+deliberately-broken template was injected and the seeder refused the whole
+tranche with the row count unchanged; `/practice/coverage` reports 109/203 and
+holds across a rebuilt image; DM03 serves a real item; submitting the correct
+answer scores 1.0 and a wrong one 0.0; and the served payload carries no answer
+key (`done, kind, node_id, node_title, options, policy, prompt, reason,
+response_token`). In the UI, DM03 now offers "Practise this node" and the click
+lands on a served question.
+
+**Remaining: 94 nodes.** Calculus I 14, Calculus III 12, Calculus II 11,
+Probability & Statistics 11, Advanced 10, Differential Equations 9, Linear
+Algebra 8, Fourier/PDE 7, Proof & Logic 7, Foundations 4, plus one Discrete
+overview. Course overviews are excluded by design and will never reach 203.

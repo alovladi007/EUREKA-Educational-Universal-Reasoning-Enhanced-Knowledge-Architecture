@@ -2365,6 +2365,13 @@ async def seed(session: AsyncSession) -> bool:
     from app.seed_foundations import seed_foundations
 
     await seed_foundations(session)
+    # Authored practice templates (app/seed_discrete.py and later tranches).
+    # Runs after the foundations seed so every node it targets exists, and
+    # refuses to insert anything unless every template's answer key survives
+    # its independent verifier - see app/verify_templates.py.
+    from app.seed_authored_templates import seed_authored_templates
+
+    await seed_authored_templates(session)
     # Ensure every node in the full ladder has a lesson so the Learn view never
     # 404s (idempotent; skips nodes that already have one). Runs before the
     # first-run early-return below so it also covers existing databases.
