@@ -57,6 +57,11 @@ class ExamTypeKind(str, enum.Enum):
     # GRE is the Physics Subject Test; the key stays GRE because it is
     # what every existing row, URL and billing product uses.
     GRE = "GRE"
+    # Eleventh exam (2026-08). Its absence here 422'd every
+    # /me/progress*?exam_type=NCLEX_RN call while the rest of the exam
+    # shipped — the registries lived in the frontend, but this enum is the
+    # backend's own whitelist and needs the member too.
+    NCLEX_RN = "NCLEX_RN"
     OCTET_CHEM = "OCTET_CHEM"
 
 
