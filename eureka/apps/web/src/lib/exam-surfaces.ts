@@ -146,7 +146,20 @@ export const EXAM_SURFACES: Record<string, ExamSurfaces> = {
   // independent computation paths, gated in CI by nclex-dosage-verify.test.ts)
   // + 90 authored clinical items pending SME review, split across
   // nclex-qbank-data.ts and nclex-qbank-clinical2-data.ts.
-  NCLEX_RN: { qbankSize: 131, fullExam: false, analytics: false, flashcards: 90, extras: [] },
+  NCLEX_RN: {
+    qbankSize: 131,
+    fullExam: false,
+    analytics: false,
+    flashcards: 90,
+    extras: [
+      {
+        path: '/dosage',
+        label: 'Dosage Mastery',
+        blurb:
+          'Fresh med-math items from the server engine, every answer key machine-verified, misses diagnosed by the exact error that produced them.',
+      },
+    ],
+  },
 };
 
 const NONE: ExamSurfaces = {

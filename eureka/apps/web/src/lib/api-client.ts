@@ -479,6 +479,50 @@ class ApiClient {
     return response.data;
   }
 
+  // ── NCLEX Dosage Mastery (server-generated, server-graded; api-core) ──
+  // Serving carries no key; grading returns the verdict, worked explanation,
+  // and — when the entered number matches a classic error's value — the
+  // named misconception with coaching.
+
+  async getNclexDosageOverview(): Promise<{
+    families: { key: string; label: string; answered: number; correct: number }[];
+    key_note: string;
+    template_note: string;
+  }> {
+    const response = await this.client.get('/nclex/dosage/overview');
+    return response.data;
+  }
+
+  async nextNclexDosage(family?: string | null): Promise<{
+    item_id: string; family: string; family_label: string;
+    stem: string; unit: string; round_decimals: number;
+    key_note: string; template_note: string;
+  }> {
+    const response = await this.client.post('/nclex/dosage/next', { family: family ?? null });
+    return response.data;
+  }
+
+  async submitNclexDosage(payload: {
+    item_id: string; answer: number; seconds?: number;
+  }): Promise<{
+    is_correct: boolean; expected: number; expected_display: string;
+    unit: string; round_decimals: number; explanation: string;
+    misconception: { key: string; label: string; coaching: string } | null;
+    key_note: string; template_note: string;
+  }> {
+    const response = await this.client.post('/nclex/dosage/submit', payload);
+    return response.data;
+  }
+
+  async getNclexDosageStats(): Promise<{
+    families: { key: string; label: string; answered: number; correct: number }[];
+    answered: number;
+    correct: number;
+  }> {
+    const response = await this.client.get('/nclex/dosage/stats');
+    return response.data;
+  }
+
   // ==================== MCAT mock simulator (server-graded, C3) ====================
   // Raw and per-section results only: no scaled score exists without
   // equating data, and the server refuses to invent one.

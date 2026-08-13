@@ -33,6 +33,7 @@ import { LSAT_QUESTIONS } from '../lsat-qbank-data';
 import { CISSP_QUESTIONS } from '../cissp-qbank-data';
 import { NCLEX_QUESTIONS } from '../nclex-qbank-data';
 import { NCLEX_CLINICAL_QUESTIONS_2 } from '../nclex-qbank-clinical2-data';
+import { NCLEX_DOSAGE_BANK2 } from '../nclex-dosage-bank2-data';
 
 const MAX_SHARE = 0.35;
 
@@ -68,6 +69,7 @@ const BANKS: [string, AnyQuestion[], number?][] = [
   // part 2 = clinical topics 4-7 (declared floor: 44 items, 37 keyed MCQ).
   ['NCLEX_RN', NCLEX_QUESTIONS as AnyQuestion[]],
   ['NCLEX_RN_CLINICAL2', NCLEX_CLINICAL_QUESTIONS_2 as AnyQuestion[], 36],
+  ['NCLEX_DOSAGE_BANK2', NCLEX_DOSAGE_BANK2 as AnyQuestion[], 199],
 ];
 
 describe.each(BANKS)('%s qbank answer keys', (_name, questions, minCount) => {

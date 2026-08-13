@@ -22,6 +22,7 @@
 import { describe, expect, it } from 'vitest';
 
 import { NCLEX_DOSAGE_QUESTIONS, type NclexQuestion } from '../nclex-qbank-data';
+import { NCLEX_DOSAGE_BANK2 } from '../nclex-dosage-bank2-data';
 
 /** Independent recomputation — formulas written fresh, not imported. */
 function recompute(q: NclexQuestion): number {
@@ -65,8 +66,15 @@ function recompute(q: NclexQuestion): number {
 }
 
 function roundTo(v: number, nd: number): number {
+  // Half-UP with float noise quantized away first — the same rule as the
+  // server engine's _r(). The dual-path gate caught why this matters:
+  // nitroprusside 1 mcg/kg/min at 85 kg is exactly 25.5 mL/hr, and raw
+  // float arithmetic lands one path at 25.499999999999996 and the other at
+  // 25.500000000000004. Pre-rounding to 9 decimals collapses both onto the
+  // true 25.5 before the half-up decision (nursing convention: .5 rounds up).
+  const q = Math.round(v * 1e9) / 1e9;
   const f = 10 ** nd;
-  return Math.round(v * f) / f;
+  return Math.floor(Math.round(q * f * 1e6) / 1e6 + 0.5) / f;
 }
 
 /** Leading numeric value of an option string like "3.3 mL" or "150 gtt/min". */
@@ -76,25 +84,33 @@ function optionValue(opt: string): number {
   return parseFloat(m![0]);
 }
 
-describe('NCLEX dosage bank — dual-path key verification', () => {
-  it('has a non-trivial dosage bank', () => {
-    expect(NCLEX_DOSAGE_QUESTIONS.length).toBeGreaterThanOrEqual(40);
+// Part 1 (41 items shipped with the exam) and part 2 (200 items emitted from
+// the server engine by scripts/emit_nclex_static_bank.py) both submit to the
+// identical per-item verification. One rule, every bank.
+const BANKS: [string, NclexQuestion[], number][] = [
+  ['part1', NCLEX_DOSAGE_QUESTIONS, 40],
+  ['bank2', NCLEX_DOSAGE_BANK2, 200],
+];
+
+describe.each(BANKS)('NCLEX dosage %s — dual-path key verification', (name, bank, minCount) => {
+  it('has the expected bank size', () => {
+    expect(bank.length).toBeGreaterThanOrEqual(minCount);
   });
 
   it('every dosage item carries a calc block and the calc-verified label', () => {
-    for (const q of NCLEX_DOSAGE_QUESTIONS) {
+    for (const q of bank) {
       expect(q.calc, q.id).toBeDefined();
       expect(q.verification, q.id).toBe('calc-verified');
       expect(typeof q.correct, q.id).toBe('number');
     }
   });
 
-  it('ids are unique across the dosage bank', () => {
-    const ids = NCLEX_DOSAGE_QUESTIONS.map((q) => q.id);
+  it('ids are unique across the bank', () => {
+    const ids = bank.map((q) => q.id);
     expect(new Set(ids).size).toBe(ids.length);
   });
 
-  for (const q of NCLEX_DOSAGE_QUESTIONS) {
+  for (const q of bank) {
     it(`${q.id} [${q.calc?.kind}] key recomputes independently`, () => {
       const c = q.calc!;
       const independent = roundTo(recompute(q), c.round);
@@ -116,4 +132,18 @@ describe('NCLEX dosage bank — dual-path key verification', () => {
       });
     });
   }
+});
+
+describe('bank2 offline coaching payload', () => {
+  it('aligns misconceptionByOption to the options and never marks the key', () => {
+    for (const q of NCLEX_DOSAGE_BANK2) {
+      expect(q.misconceptionByOption.length, q.id).toBe(q.options.length);
+      expect(q.misconceptionByOption[q.correct!], q.id).toBeNull();
+      for (const key of q.misconceptionByOption) {
+        if (key !== null) {
+          expect(q.coaching[key], `${q.id}: coaching missing for ${key}`).toBeTruthy();
+        }
+      }
+    }
+  });
 });
