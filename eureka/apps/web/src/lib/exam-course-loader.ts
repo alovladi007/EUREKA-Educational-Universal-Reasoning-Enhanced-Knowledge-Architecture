@@ -93,6 +93,10 @@ export async function loadExamCourse(examType: string): Promise<CoursePack> {
       const m = await import('@/lib/sat-course-data');
       return { get: m.getSATCourseContent, has: m.hasSATCourseContent };
     }
+    case 'NCLEX_RN': {
+      const m = await import('@/lib/nclex-course-data');
+      return { get: m.getNCLEXCourseContent, has: m.hasNCLEXCourseContent };
+    }
     default:
       return EMPTY_PACK;
   }

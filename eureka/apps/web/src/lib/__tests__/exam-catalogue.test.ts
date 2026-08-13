@@ -2,7 +2,8 @@
  * Invariants of the exam catalogue.
  *
  * Three things must stay true no matter who edits the data files next:
- *   1. There are ten exams, and GMAT is not one of them.
+ *   1. There are eleven exams (NCLEX-RN joined 2026-08), and GMAT is not
+ *      one of them.
  *   2. Every exam's study axis covers its curriculum exactly once, so the
  *      course rail can never silently drop or duplicate a chapter.
  *   3. Every chapter on the axis has written material behind it, so a rail
@@ -23,9 +24,10 @@ import { loadExamCourse } from '@/lib/exam-course-loader';
 const EXAM_IDS = Object.keys(EXAM_CONFIGS);
 
 describe('the catalogue', () => {
-  it('has exactly ten exams', () => {
-    expect(EXAM_IDS).toHaveLength(10);
-    expect(EXAM_TYPE_LIST).toHaveLength(10);
+  it('has exactly eleven exams', () => {
+    expect(EXAM_IDS).toHaveLength(11);
+    expect(EXAM_TYPE_LIST).toHaveLength(11);
+    expect(EXAM_IDS).toContain('NCLEX_RN');
   });
 
   it('does not include GMAT', () => {

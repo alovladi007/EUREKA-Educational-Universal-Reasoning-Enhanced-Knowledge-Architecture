@@ -142,6 +142,11 @@ export const EXAM_SURFACES: Record<string, ExamSurfaces> = {
   // stated rather than rounded up because a learner deciding where to spend
   // an evening deserves the real number.
   GRE: { qbankSize: 53, fullExam: false, analytics: false, flashcards: 100, extras: [] },
+  // NCLEX_RN = 41 dosage-calculation items with machine-verified keys (two
+  // independent computation paths, gated in CI by nclex-dosage-verify.test.ts)
+  // + 90 authored clinical items pending SME review, split across
+  // nclex-qbank-data.ts and nclex-qbank-clinical2-data.ts.
+  NCLEX_RN: { qbankSize: 131, fullExam: false, analytics: false, flashcards: 90, extras: [] },
 };
 
 const NONE: ExamSurfaces = {

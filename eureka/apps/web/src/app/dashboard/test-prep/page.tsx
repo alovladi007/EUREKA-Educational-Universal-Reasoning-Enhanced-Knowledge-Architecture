@@ -23,6 +23,7 @@
 
 import React from 'react';
 import { PatentBarCohortPanel } from '@/components/test-prep/patent/PatentBarCohortPanel';
+import { NclexExamFactsPanel } from '@/components/test-prep/nclex/NclexExamFactsPanel';
 import { ExamDashboard } from '@/components/test-prep/ExamDashboard';
 import { examSummaryLine } from '@/lib/exam-config';
 import { useActiveExam } from '@/hooks/use-active-exam';
@@ -44,6 +45,10 @@ export default function TestPrepDashboard() {
 
       {/* Real cohort data rather than navigation, so it stays. */}
       {examType === 'PATENT_BAR' && <PatentBarCohortPanel />}
+
+      {/* NCSBN-published pass rates + the frozen 2026-2029 test-plan
+          blueprint. Sourced statistics, not platform-invented metrics. */}
+      {examType === 'NCLEX_RN' && <NclexExamFactsPanel />}
     </div>
   );
 }

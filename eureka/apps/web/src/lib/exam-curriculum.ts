@@ -904,11 +904,80 @@ const FE_EE: ExamCurriculum = [
 ];
 
 // ═══════════════════════════════════════════════════════════════
+// NCLEX-RN (2026 test plan, frozen through 2029-03-31)
+// ═══════════════════════════════════════════════════════════════
+
+const NCLEX_RN: ExamCurriculum = [
+  {
+    sectionId: 'foundations', sectionName: 'How the NCLEX Works',
+    topics: [
+      t('nx_ngn_exam', 'The NGN Exam & CAT Strategy', 'Variable-length CAT (85-150 items, 5 hours), the six NGN item types, partial-credit scoring, and how the 0.00-logit standard decides pass/fail.', 14),
+      t('nx_clinical_judgment', 'The Clinical Judgment Model', 'The six NCJMM steps behind every case study: recognize cues, analyze cues, prioritize hypotheses, generate solutions, take action, evaluate outcomes.', 15),
+    ],
+  },
+  {
+    sectionId: 'mgmt_of_care', sectionName: 'Management of Care',
+    topics: [
+      t('nx_prioritization', 'Prioritization, Delegation & Assignment', 'Who to see first, what an RN can delegate to an LPN or AP, and the frameworks (ABC, Maslow, acute-vs-chronic, stable-vs-unstable) the exam expects.', 16),
+      t('nx_legal_ethical', 'Legal & Ethical Practice', 'Informed consent, advance directives, confidentiality and HIPAA, incident reporting, and refusing an unsafe assignment.', 13),
+    ],
+  },
+  {
+    sectionId: 'safety_infection', sectionName: 'Safety & Infection Control',
+    topics: [
+      t('nx_infection_control', 'Infection Control & Precautions', 'Standard, contact, droplet, and airborne precautions; which diseases go with which; PPE donning and doffing order.', 14),
+      t('nx_client_safety', 'Client Safety & Error Prevention', 'Falls, restraints and the orders they require, fire response (RACE/PASS), and the systems view of medication-error prevention.', 13),
+    ],
+  },
+  {
+    sectionId: 'health_promotion', sectionName: 'Health Promotion & Maintenance',
+    topics: [
+      t('nx_lifespan', 'Growth & Development Across the Lifespan', 'Milestones, developmental stages, immunization schedules, and age-appropriate screening the exam actually tests.', 14),
+      t('nx_maternal_newborn', 'Maternal & Newborn Care', 'Antepartum through postpartum: fetal monitoring basics, labor stages, postpartum assessment, and normal newborn findings.', 16),
+    ],
+  },
+  {
+    sectionId: 'psychosocial', sectionName: 'Psychosocial Integrity',
+    topics: [
+      t('nx_therapeutic_comm', 'Therapeutic Communication & Mental Health', 'What a therapeutic response looks like, crisis intervention, suicide risk, abuse and neglect reporting, and substance withdrawal.', 15),
+    ],
+  },
+  {
+    sectionId: 'basic_care', sectionName: 'Basic Care & Comfort',
+    topics: [
+      t('nx_basic_care', 'Mobility, Nutrition & Elimination', 'Positioning, assistive devices, pressure-injury staging and prevention, therapeutic diets, tube feeding, and elimination care.', 14),
+    ],
+  },
+  {
+    sectionId: 'pharm_parenteral', sectionName: 'Pharmacological & Parenteral Therapies',
+    topics: [
+      t('nx_dosage_calc', 'Dosage Calculation & Med Math', 'Every calculation family on the exam: tablets and liquids, weight-based dosing, IV mL/hr and gtt/min, reconstitution, safe-dose ranges, and infusion time. Fully worked methods, not shortcuts.', 18),
+      t('nx_pharm_principles', 'Pharmacology Principles & High-Alert Meds', 'Rights of administration, drug-class prototypes, therapeutic levels, antidotes, and the high-alert medications that end careers when they go wrong.', 16),
+      t('nx_iv_therapy', 'IV Therapy, Blood Products & Parenteral Nutrition', 'Peripheral and central lines, complication recognition, transfusion reactions and the response sequence, and TPN rules.', 14),
+    ],
+  },
+  {
+    sectionId: 'reduction_risk', sectionName: 'Reduction of Risk Potential',
+    topics: [
+      t('nx_lab_values', 'Laboratory Values & Diagnostics', 'The reference ranges worth memorizing, what deviations mean, and nursing actions for critical values.', 15),
+      t('nx_periop', 'Perioperative & Procedure Care', 'Pre-op checklists and consent, post-op complication windows, and monitoring after common procedures.', 13),
+    ],
+  },
+  {
+    sectionId: 'physio_adaptation', sectionName: 'Physiological Adaptation',
+    topics: [
+      t('nx_fluid_electrolyte', 'Fluids, Electrolytes & Acid-Base', 'The big six electrolytes with causes and ECG changes, ABG interpretation with a reliable method, and IV fluid tonicity.', 16),
+      t('nx_emergencies', 'Medical Emergencies & Unexpected Responses', 'Recognition-and-first-action for the emergencies the exam loves: anaphylaxis, compartment syndrome, autonomic dysreflexia, malignant hyperthermia, and more.', 15),
+    ],
+  },
+];
+
+// ═══════════════════════════════════════════════════════════════
 // Export
 // ═══════════════════════════════════════════════════════════════
 
 export const EXAM_CURRICULA: Record<string, ExamCurriculum> = {
-  SAT, GRE, LSAT, PATENT_BAR, MCAT, FE_ME, FE_EE, PE_EE, SECURITY_PLUS, CISSP,
+  SAT, GRE, LSAT, PATENT_BAR, MCAT, FE_ME, FE_EE, PE_EE, SECURITY_PLUS, CISSP, NCLEX_RN,
 };
 
 export function getCurriculum(examType: string): ExamCurriculum {

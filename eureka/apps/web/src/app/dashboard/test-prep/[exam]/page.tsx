@@ -51,6 +51,7 @@ import { getPatentBarFlashcards, PATENT_BAR_FLASHCARD_DOMAINS, PATENT_BAR_FLASHC
 import { getFEEEFlashcards, FEEE_FLASHCARD_DOMAINS, FEEE_FLASHCARD_COUNT } from '@/lib/fe-ee-flashcard-data';
 import { getGREFlashcards, GRE_FLASHCARD_DOMAINS, GRE_FLASHCARD_COUNT } from '@/lib/gre-flashcard-data';
 import { getSATFlashcards, SAT_FLASHCARD_DOMAINS, SAT_FLASHCARD_COUNT } from '@/lib/sat-flashcard-data';
+import { getNCLEXFlashcards, NCLEX_FLASHCARD_DOMAINS, NCLEX_FLASHCARD_COUNT } from '@/lib/nclex-flashcard-data';
 // FE_EE_QUESTIONS lazy-loaded in QBankTab + FEEEExamTab (P3-9 stage 3).
 // Type-only import keeps Question typing without runtime cost.
 import type { FEEEQuestion } from '@/lib/fe-ee-qbank-data';
@@ -1124,7 +1125,8 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
   const isLSAT = examType === 'LSAT';
   const isGRE = examType === 'GRE';
   const isSAT = examType === 'SAT';
-  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT || isLSAT || isGRE || isSAT;
+  const isNCLEX = examType === 'NCLEX_RN';
+  const hasFlashcards = isCISSP || isSecPlus || isPatentBar || isFEEE || isFEME || isPEEE || isMCAT || isLSAT || isGRE || isSAT || isNCLEX;
   const [view, setView] = useState<'home' | 'study' | 'create'>('home');
   const [activeDomain, setActiveDomain] = useState<string | null>(null);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
@@ -1159,7 +1161,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                     ? getGREFlashcards(activeDomain || undefined)
                     : isSAT
                       ? getSATFlashcards(activeDomain || undefined)
-                      : [];
+                      : isNCLEX
+                        ? getNCLEXFlashcards(activeDomain || undefined)
+                        : [];
   const filteredCards = allCards.filter(c => {
     if (activeCategory && c.category !== activeCategory) return false;
     if (searchQuery) {
@@ -1189,7 +1193,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                     ? GRE_FLASHCARD_DOMAINS
                     : isSAT
                       ? SAT_FLASHCARD_DOMAINS
-                      : [];
+                      : isNCLEX
+                        ? NCLEX_FLASHCARD_DOMAINS
+                        : [];
   const flashcardCount = isCISSP
     ? CISSP_FLASHCARD_COUNT
     : isSecPlus
@@ -1210,7 +1216,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                     ? GRE_FLASHCARD_COUNT
                     : isSAT
                       ? SAT_FLASHCARD_COUNT
-                      : 0;
+                      : isNCLEX
+                        ? NCLEX_FLASHCARD_COUNT
+                        : 0;
   const flashcardTitle = isCISSP
     ? 'CISSP Flashcard Deck'
     : isSecPlus
@@ -1231,7 +1239,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                     ? 'Physics GRE Flashcard Deck'
                     : isSAT
                       ? 'SAT Flashcard Deck'
-                      : 'Flashcard Deck';
+                      : isNCLEX
+                        ? 'NCLEX-RN Flashcard Deck'
+                        : 'Flashcard Deck';
   const flashcardSubtitle = isCISSP
     ? `${CISSP_FLASHCARD_COUNT.toLocaleString()} cards across all 8 domains + extras`
     : isSecPlus
@@ -1250,7 +1260,9 @@ function FlashcardsTab({ examType, sections }: { examType: string; sections: any
                   ? `${GRE_FLASHCARD_COUNT.toLocaleString()} cards across the nine ETS content areas + constants`
                   : isSAT
                     ? `${SAT_FLASHCARD_COUNT.toLocaleString()} cards across Reading & Writing and Math`
-                    : '';
+                    : isNCLEX
+                      ? `${NCLEX_FLASHCARD_COUNT.toLocaleString()} cards: pharmacology, labs, safety, and OB/peds anchors`
+                      : '';
 
   const startStudy = (cards: any[]) => {
     if (cards.length === 0) return;
@@ -1733,6 +1745,11 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
     // 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000:
     // 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM) = 1634. The gap-fill blueprint floors still hold.
     PATENT_BAR: 1634, SECURITY_PLUS: 472, SAT: 139, LSAT: 200, GRE: 53,
+    // NCLEX_RN = 41 dosage-calculation items (keys computed + dual-path
+    // verified by lib/__tests__/nclex-dosage-verify.test.ts) + 90 authored
+    // clinical items (unverified pending SME review) across the 8 Client
+    // Needs categories, split over two data modules like the Patent Bar.
+    NCLEX_RN: 131,
   };
   const OFFICIAL_USPTO_COUNT = 828; // Oct 2003: 48 AM + 49 PM; Apr 2003: 49 AM + 49 PM; Oct 2002: 49 AM; Apr 2002: 49 AM + 49 PM; Oct 2001: 48 AM + 50 PM; Apr 2001: 49 AM + 46 PM; Oct 2000: 47 AM + 50 PM; Apr 2000: 49 AM + 50 PM; Nov 1999: 48 AM + 49 PM
   const qbankMax =
@@ -2042,6 +2059,44 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
           setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
           setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
         } else { alert('No LSAT questions available for the selected sections.'); }
+      } else if (examType === 'NCLEX_RN') {
+        // NCLEX-RN: dosage items (calc-verified, dual-path keys) + authored
+        // clinical items (unverified), split across two modules like the
+        // Patent Bar tranches. SATA items carry type 'multi' and flow through
+        // the same multi-select session UI Security+ uses.
+        const { NCLEX_QUESTIONS } = await import('@/lib/nclex-qbank-data');
+        const { NCLEX_CLINICAL_QUESTIONS_2 } = await import('@/lib/nclex-qbank-clinical2-data');
+        let nxQuestions = [...NCLEX_QUESTIONS, ...NCLEX_CLINICAL_QUESTIONS_2];
+        if (selectedSections.length > 0) {
+          const sectionToTopic: Record<string, number> = {
+            mgmt_of_care: 0, safety_infection: 1, health_promotion: 2,
+            psychosocial: 3, basic_care: 4, pharm_parenteral: 5,
+            reduction_risk: 6, physio_adaptation: 7,
+          };
+          const topicIds = selectedSections.map((s) => sectionToTopic[s]).filter((n) => n !== undefined);
+          if (topicIds.length > 0) {
+            nxQuestions = nxQuestions.filter((q) => topicIds.includes(q.topicId));
+          }
+        }
+        nxQuestions = shuffle(nxQuestions).slice(0, questionCount);
+        if (nxQuestions.length > 0) {
+          const normalized = nxQuestions.map((q: any, i: number) => ({
+            ...q,
+            question_text: q.question,
+            options: q.options.map((opt: string, idx: number) => ({ text: opt, index: idx })),
+            correct_index: q.correct,
+            explanation_text: q.explanation,
+            section_id: `nx_topic${q.topicId}`,
+            _idx: i,
+            // Provenance badge: 'calc-verified' (dosage, dual-path computed
+            // key) or 'unverified' (authored clinical, pending SME review).
+            verification: q.verification,
+          }));
+          const fakeSessionId = `static-${Date.now()}`;
+          setSessionId(fakeSessionId);
+          setSessionData({ session_id: fakeSessionId, question_count: normalized.length, _staticQuestions: normalized });
+          setCurrentQ(normalized[0]); setCurrentIndex(0); setTimer(0); setView('session');
+        } else { toast.error('No NCLEX questions available for the selected sections.'); }
       } else if (examType === 'SAT') {
         // Digital SAT QBank: original audited questions, topicId 0=Reading&Writing, 1=Math.
         const { SAT_QUESTIONS } = await import('@/lib/sat-qbank-data');
@@ -2535,6 +2590,23 @@ function QBankTab({ examType, config, sections }: { examType: string; config: an
               );
               return (
                 <Badge variant="outline" className="border-amber-500 text-amber-600 dark:text-amber-400 text-[10px]" title="AI-authored practice item — not yet reviewed by a subject-matter expert. Official USPTO items carry the USPTO's own model answers.">
+                  Unverified
+                </Badge>
+              );
+            })()}
+            {/* NCLEX provenance — same honest-labeling rule as the Patent
+                Bar: dosage items carry machine-verified keys (two independent
+                computation paths must agree), clinical items are authored and
+                await SME review. */}
+            {examType === 'NCLEX_RN' && (() => {
+              const v = currentQ.verification ?? 'unverified';
+              if (v === 'calc-verified') return (
+                <Badge className="bg-emerald-600 text-white text-[10px]" title="Dosage-calculation item: the answer key was computed and verified through two independent computation paths (generation script + CI test), not typed by hand.">
+                  Calc-verified key
+                </Badge>
+              );
+              return (
+                <Badge variant="outline" className="border-amber-500 text-amber-600 dark:text-amber-400 text-[10px]" title="AI-authored clinical practice item — not yet reviewed by a nursing subject-matter expert.">
                   Unverified
                 </Badge>
               );
