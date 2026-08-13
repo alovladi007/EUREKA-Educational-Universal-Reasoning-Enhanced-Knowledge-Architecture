@@ -151,6 +151,38 @@ export const EXAM_CONFIGS: Record<string, ExamTypeConfig> = {
     ],
     scoreRange: { min: 472, max: 528, label: '472–528' },
   },
+  NCLEX_RN: {
+    id: 'NCLEX_RN',
+    name: 'NCLEX-RN',
+    shortName: 'NCLEX',
+    description: 'NCLEX-RN (2026 test plan, effective 2026-04-01 through 2029-03-31)',
+    // Variable-length CAT: 85-150 items in up to 5 hours. We model the
+    // minimum-length test (85 delivered, 70 scored + 15 unscored pretest);
+    // the CAT ends anywhere between 85 and 150 depending on ability estimate.
+    totalDuration: 300,
+    totalQuestions: 85,
+    scoredQuestions: 70,
+    // NCSBN publishes each Client Needs category as a PERCENTAGE range of
+    // scored items, not a fixed count (Management of Care 15-21%, etc.).
+    // questionRange is that range applied to the 70 scored items of a
+    // minimum-length test; questionCount is the midpoint so per-section
+    // arithmetic still sums to 70. Same treatment as the FE ranges above -
+    // flattening a published range to one number is how FE Mathematics
+    // once ended up below its real minimum.
+    sections: [
+      { id: 'mgmt_of_care', name: 'Management of Care', questionCount: 13, questionRange: [11, 15] },
+      { id: 'safety_infection', name: 'Safety & Infection Control', questionCount: 9, questionRange: [7, 11] },
+      { id: 'health_promotion', name: 'Health Promotion & Maintenance', questionCount: 6, questionRange: [4, 8] },
+      { id: 'psychosocial', name: 'Psychosocial Integrity', questionCount: 6, questionRange: [4, 8] },
+      { id: 'basic_care', name: 'Basic Care & Comfort', questionCount: 6, questionRange: [4, 8] },
+      { id: 'pharm_parenteral', name: 'Pharmacological & Parenteral Therapies', questionCount: 11, questionRange: [9, 13] },
+      { id: 'reduction_risk', name: 'Reduction of Risk Potential', questionCount: 9, questionRange: [7, 11] },
+      { id: 'physio_adaptation', name: 'Physiological Adaptation', questionCount: 10, questionRange: [8, 12] },
+    ],
+    scoreRange: { min: 0, max: 100, label: 'Pass / Fail (logit-based CAT, standard 0.00)' },
+    passingInfo:
+      'Pass/fail decided by the CAT ability estimate against the 0.00-logit passing standard - there is no percentage score. The 2026 test plan holds the standard, item types, and category weights through 2029-03-31.',
+  },
   FE_ME: {
     id: 'FE_ME',
     name: 'FE Mechanical Engineering',
@@ -281,38 +313,6 @@ export const EXAM_CONFIGS: Record<string, ExamTypeConfig> = {
     ],
     scoreRange: { min: 0, max: 1000, label: '0–1000 (700 to pass)' },
     passingInfo: 'Passing score is 700 out of 1000',
-  },
-  NCLEX_RN: {
-    id: 'NCLEX_RN',
-    name: 'NCLEX-RN',
-    shortName: 'NCLEX',
-    description: 'NCLEX-RN (2026 test plan, effective 2026-04-01 through 2029-03-31)',
-    // Variable-length CAT: 85-150 items in up to 5 hours. We model the
-    // minimum-length test (85 delivered, 70 scored + 15 unscored pretest);
-    // the CAT ends anywhere between 85 and 150 depending on ability estimate.
-    totalDuration: 300,
-    totalQuestions: 85,
-    scoredQuestions: 70,
-    // NCSBN publishes each Client Needs category as a PERCENTAGE range of
-    // scored items, not a fixed count (Management of Care 15-21%, etc.).
-    // questionRange is that range applied to the 70 scored items of a
-    // minimum-length test; questionCount is the midpoint so per-section
-    // arithmetic still sums to 70. Same treatment as the FE ranges above -
-    // flattening a published range to one number is how FE Mathematics
-    // once ended up below its real minimum.
-    sections: [
-      { id: 'mgmt_of_care', name: 'Management of Care', questionCount: 13, questionRange: [11, 15] },
-      { id: 'safety_infection', name: 'Safety & Infection Control', questionCount: 9, questionRange: [7, 11] },
-      { id: 'health_promotion', name: 'Health Promotion & Maintenance', questionCount: 6, questionRange: [4, 8] },
-      { id: 'psychosocial', name: 'Psychosocial Integrity', questionCount: 6, questionRange: [4, 8] },
-      { id: 'basic_care', name: 'Basic Care & Comfort', questionCount: 6, questionRange: [4, 8] },
-      { id: 'pharm_parenteral', name: 'Pharmacological & Parenteral Therapies', questionCount: 11, questionRange: [9, 13] },
-      { id: 'reduction_risk', name: 'Reduction of Risk Potential', questionCount: 9, questionRange: [7, 11] },
-      { id: 'physio_adaptation', name: 'Physiological Adaptation', questionCount: 10, questionRange: [8, 12] },
-    ],
-    scoreRange: { min: 0, max: 100, label: 'Pass / Fail (logit-based CAT, standard 0.00)' },
-    passingInfo:
-      'Pass/fail decided by the CAT ability estimate against the 0.00-logit passing standard - there is no percentage score. The 2026 test plan holds the standard, item types, and category weights through 2029-03-31.',
   },
 };
 
