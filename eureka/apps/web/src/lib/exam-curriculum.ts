@@ -351,7 +351,15 @@ const MCAT: ExamCurriculum = [
       t('cp_physics', 'Physics', 'Kinematics, forces, energy, fluids, electrostatics, circuits, waves, and optics.', 20),
       t('cp_kinematics_full', 'Kinematics: Projectile, Circular & Relative Motion', '2-D projectile motion, circular motion (centripetal force, banked curves), reference-frame transformations, terminal velocity. AAMC high-yield gap fill.', 14),
       t('cp_electrostatics_circuits', "Electrostatics, Ohm's Law & RC Circuits", "Coulomb's law, electric fields, capacitors in series/parallel, Ohm's law, Kirchhoff's rules, RC time constants. AAMC high-yield gap fill.", 14),
-      t('cp_biochem_1', 'Biochemistry I', 'Amino acids, protein structure, enzymes, and metabolism overview.', 15),
+      // Biochemistry I chapters I.1–I.7 (docs/mcat/BIOCHEM_CHAPTERS.md);
+      // I.8–I.11 land in later authoring waves.
+      t('cpb1_water', 'Water, pH, and the Chemistry of Life', 'Water as solvent, noncovalent forces, pH and pKa, physiological buffers, and Henderson-Hasselbalch in one variable.', 8),
+      t('cpb1_amino_acids', 'Amino Acids and the Peptide Bond', 'The twenty side chains grouped by chemistry, ionization states and pI, the planar peptide bond, and primary structure.', 8),
+      t('cpb1_protein_structure', 'Protein Architecture', 'Secondary motifs, tertiary folds, quaternary assemblies, the folding funnel, chaperones, and misfolding disease.', 8),
+      t('cpb1_protein_binding', 'Proteins at Work: Binding', 'Myoglobin vs hemoglobin, cooperativity and the sigmoidal curve, Bohr effect, 2,3-BPG, fetal hemoglobin, and allostery.', 8),
+      t('cpb1_enzymes', 'Enzymes: How Catalysis Happens', 'Activation energy and transition states, active-site catalytic strategies, and cofactors and vitamins as coenzyme precursors.', 8),
+      t('cpb1_kinetics', 'Enzyme Kinetics and Inhibition', 'What Km and Vmax mean, double-reciprocal reading, the four reversible inhibition patterns, and irreversible inactivation.', 8),
+      t('cpb1_enzyme_control', 'Enzyme Control', 'Allosteric regulation, covalent modification led by phosphorylation, zymogens, feedback in pathways, and isozymes.', 8),
     ],
   },
   {

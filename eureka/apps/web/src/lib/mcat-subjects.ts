@@ -8,7 +8,7 @@
  * course is organised by subject, and the section only reappears on test
  * day.
  *
- * So this file is a second view over the SAME 29 topics - not new content,
+ * So this file is a second view over the SAME 35 topics - not new content,
  * not a copy. Every id below is a real topic id in `exam-curriculum.ts`
  * with real long-form content behind it in `mcat-course-data.ts`. If a
  * topic were listed here twice, or missed, `assertSubjectCoverage()` would
@@ -70,7 +70,17 @@ export const MCAT_SUBJECTS: McatSubject[] = [
       'Biological & Biochemical Foundations',
       'Chemical & Physical Foundations',
     ],
-    topicIds: ['cp_biochem_1', 'bb_enzyme_kinetics', 'bb_biochem_2'],
+    topicIds: [
+      'cpb1_water',
+      'cpb1_amino_acids',
+      'cpb1_protein_structure',
+      'cpb1_protein_binding',
+      'cpb1_enzymes',
+      'cpb1_kinetics',
+      'cpb1_enzyme_control',
+      'bb_enzyme_kinetics',
+      'bb_biochem_2',
+    ],
   },
   {
     id: 'general_chemistry',

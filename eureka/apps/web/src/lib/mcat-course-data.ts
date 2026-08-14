@@ -1,5 +1,5 @@
 /**
- * MCAT course content — 19 topics with deep lesson content.
+ * MCAT course content — 35 topics with deep lesson content.
  * AI-generated. Requires SME review.
  */
 
@@ -821,171 +821,145 @@ Radio → Microwave → Infrared → Visible → Ultraviolet → X-ray → Gamma
     ],
   },
 
-  // ── Topic 4: Biochemistry I ─────────────────────────────────────────────
-  cp_biochem_1: {
-    topicId: 'cp_biochem_1',
-    title: 'Biochemistry I — Amino Acids, Proteins & Enzymes',
+  // ── Biochemistry I.1: Water, pH, and the chemistry of life ──────────────
+  cpb1_water: {
+    topicId: 'cpb1_water',
+    title: 'Water, pH, and the Chemistry of Life',
     domainWeight: '25%',
     overview:
-      'Biochemistry I covers the molecular building blocks of life: amino acids, protein structure, and enzyme kinetics. The MCAT requires you to recognize all 20 standard amino acids by structure and properties, understand the four levels of protein structure, and apply Michaelis-Menten kinetics to analyze enzyme behavior. These concepts connect directly to Bio/Biochem topics on metabolism and molecular biology.',
+      'Every biochemistry passage takes place in water, and the MCAT assumes you can reason about pH, pKa, and buffering without being prompted. This chapter builds that base: why water\'s polarity organizes biomolecules, what a pKa actually tells you, and how the bicarbonate and phosphate systems hold physiological pH. One relationship — Henderson-Hasselbalch — does most of the work, and you should be able to run it in one variable in your head.',
     sections: [
       {
-        id: 'cp_bc1_amino',
-        title: 'Amino Acids — The 20 Standard Residues',
-        content: `## Amino Acid Structure
+        id: 'cpb1_w_solvent',
+        title: 'Water and the Noncovalent Forces',
+        content: `## Why Water Organizes Everything
 
-All amino acids share a common backbone: an **α-carbon** bonded to an **amino group (−NH₃⁺)**, a **carboxyl group (−COO⁻)**, a **hydrogen**, and a variable **R group** (side chain). At physiological pH (~7.4), the amino group is protonated and the carboxyl group is deprotonated (zwitterion form).
+Water is bent and strongly polar: oxygen pulls electron density off both hydrogens, leaving a partial negative charge on O and partial positives on the H atoms. Each molecule can hydrogen-bond with up to four neighbors, and that network explains water's unusually high heat capacity, its high boiling point, and its power as a solvent — ions and polar molecules dissolve because water surrounds them with oriented **hydration shells**.
 
-## Classification by R Group
+## The Noncovalent Toolkit
 
-### Nonpolar (Hydrophobic) — 8 amino acids
-**G**lycine, **A**lanine, **V**aline, **L**eucine, **I**soleucine, **P**roline, **M**ethionine, **W** (Tryptophan), **F** (Phenylalanine)
+Biomolecules are held in shape by interactions far weaker than covalent bonds, and that weakness is the point: structures can form, break, and reform at body temperature.
 
-> **Mnemonic:** "**GAV LIP MW F**lat" — Gly, Ala, Val, Leu, Ile, Pro, Met, Trp, Phe
+| Interaction | Basis | Where it matters |
+|-------------|-------|------------------|
+| Hydrogen bond | Shared H between donor and acceptor | Base pairing, protein secondary structure |
+| Ionic (salt bridge) | Attraction of full + and − charges | Lys⁺···⁻Glu contacts in proteins |
+| Van der Waals | Transient induced dipoles | Close packing in protein cores |
+| Hydrophobic effect | Entropy of released water | Membranes, protein folding |
 
-### Polar Uncharged — 5 amino acids
-**S**erine, **T**hreonine, **C**ysteine, **A**sparagine (N), **G**lutamine (Q)
-
-- Serine and Threonine have hydroxyl (−OH) groups → sites of phosphorylation
-- Cysteine has a thiol (−SH) → forms disulfide bonds (S−S)
-
-### Positively Charged (Basic) — 3 amino acids (at pH 7.4)
-- **Lysine (K):** pKa ~10.5 (ε-amino group)
-- **Arginine (R):** pKa ~12.5 (guanidinium group) — almost always protonated
-- **Histidine (H):** pKa ~6.0 (imidazole) — only amino acid with pKa near physiological pH; important in enzyme active sites
-
-### Negatively Charged (Acidic) — 2 amino acids (at pH 7.4)
-- **Aspartate (D):** pKa ~3.65
-- **Glutamate (E):** pKa ~4.25
-
-> **Mnemonic for charged amino acids:** "**Positive** charges need a **LicKeR** at the **H**otel" (Lys, Arg, His); "**Negative** people are **DE**sperate" (Asp, Glu).
-
-### Special Amino Acids
-- **Glycine:** Smallest R group (H); most conformational flexibility
-- **Proline:** Cyclic, rigid; introduces kinks in α-helices
-- **Cysteine:** Forms disulfide bonds (covalent cross-links)
-- **Tryptophan:** Largest R group; absorbs UV at 280 nm`,
+The **hydrophobic effect** deserves special care because it is not an attraction at all. Water forced to line a nonpolar surface becomes ordered, which costs entropy. When nonpolar groups cluster, that ordered water is released, entropy rises, and the clustering is favored. This entropy-driven effect assembles membranes and drives protein folding.`,
         examTip:
-          'The MCAT expects you to know every amino acid\'s one-letter code, charge at pH 7.4, and general polarity. Histidine\'s near-neutral pKa (~6) makes it a favorite MCAT topic — it can act as both a proton donor and acceptor in enzyme catalysis.',
+          'When a question asks what drives nonpolar molecules together in water, the credited answer is the entropy gain of released water — not an attraction between the nonpolar groups themselves.',
       },
       {
-        id: 'cp_bc1_protein',
-        title: 'Protein Structure',
-        content: `## Four Levels of Protein Structure
+        id: 'cpb1_w_ph',
+        title: 'pH, pKa, and Henderson-Hasselbalch',
+        content: `## Ionization of Water
 
-### Primary Structure
-The **linear sequence** of amino acids linked by **peptide bonds** (amide bonds between the α-carboxyl of one amino acid and the α-amino of the next). The peptide bond has partial double-bond character (resonance), making it **planar** and restricting rotation.
+Water ionizes slightly: H₂O ⇌ H⁺ + OH⁻, with Kw = [H⁺][OH⁻] = 1.0 × 10⁻¹⁴ at 25 °C (the standard tabulated value). Since **pH = −log[H⁺]**, each pH unit is a tenfold change in [H⁺]. Neutral water is pH 7; arterial blood is held near pH 7.4.
 
-### Secondary Structure
-Local folding patterns stabilized by **backbone hydrogen bonds** (C=O···H−N):
+## Weak Acids and pKa
 
-- **α-Helix:** Right-handed coil; H-bonds between residue i and i+4. Stabilized by alanine, leucine. Disrupted by proline (helix breaker) and glycine (too flexible).
-- **β-Sheet:** Extended strands connected by H-bonds. Can be parallel or antiparallel. Antiparallel β-sheets have stronger, more linear H-bonds.
+A weak acid only partially dissociates: HA ⇌ H⁺ + A⁻. Its acid dissociation constant Ka measures how far, and **pKa = −log Ka**. Two readings to internalize:
 
-### Tertiary Structure
-The overall **3D shape** of a single polypeptide chain, stabilized by:
+- **Lower pKa = stronger acid** (more willing to give up its proton)
+- **pKa is the pH at which the acid is half dissociated** — [HA] = [A⁻]
 
-| Interaction | Type | Example |
-|------------|------|---------|
-| Hydrophobic interactions | Nonpolar | Leu, Val buried in core |
-| Hydrogen bonds | Polar | Ser−OH···O=C−Asp |
-| Ionic bonds (salt bridges) | Charged | Lys⁺···⁻Glu |
-| Disulfide bonds | Covalent | Cys−S−S−Cys |
-| Van der Waals forces | Weak/universal | Close-packed atoms |
+Acetic acid's tabulated pKa is 4.76: at pH 4.76 it is half acetate, and by pH 6.76 it is ~99% acetate.
 
-The **hydrophobic effect** is the primary driving force for protein folding — nonpolar residues are buried in the interior, away from water.
+## Henderson-Hasselbalch in One Variable
 
-### Quaternary Structure
-The arrangement of **multiple polypeptide subunits** (e.g., hemoglobin has 4 subunits: 2α + 2β). Not all proteins have quaternary structure — only multimeric ones.
+**pH = pKa + log([A⁻]/[HA])**
 
-## Denaturation
+The MCAT rarely asks you to grind through this equation — it asks you to anchor on three cases:
 
-Loss of secondary, tertiary, and quaternary structure (primary structure remains intact). Caused by heat, extreme pH, urea, or detergents. Denaturation may be reversible (if conditions are restored) or irreversible (e.g., cooking an egg).`,
+- Ratio 1:1 → pH = pKa
+- Ratio 10:1 (base:acid) → pH = pKa + 1
+- Ratio 1:10 → pH = pKa − 1
+
+From these, the master rule: **when pH is above the pKa, the deprotonated form dominates; below it, the protonated form dominates.** Comparing pH to pKa answers most ionization questions with no arithmetic at all.`,
         importantNote:
-          'The peptide bond is planar due to resonance, but rotation occurs around the N−Cα (φ) and Cα−C (ψ) bonds. This is why Ramachandran plots exist — they map allowed φ/ψ angles.',
+          'This same comparison decides the charge on every ionizable amino acid side chain in the next chapter — learn it here once and reuse it everywhere.',
       },
       {
-        id: 'cp_bc1_enzymes',
-        title: 'Enzymes & Michaelis-Menten Kinetics',
-        content: `## Enzyme Basics
+        id: 'cpb1_w_buffers',
+        title: 'Buffers in Physiology',
+        content: `## What a Buffer Is
 
-Enzymes are biological catalysts that **lower the activation energy (Ea)** of reactions without changing ΔG. They increase the rate of reaction but do NOT change the equilibrium position.
+A buffer is a weak acid paired with its conjugate base in comparable amounts. Added H⁺ is absorbed by the base; added OH⁻ is neutralized by the acid; the ratio — and therefore the pH — barely moves. Buffering is strongest when pH = pKa and remains useful within about one pH unit on either side.
 
-### Key Terms
-- **Active site:** Region where substrate binds; complementary in shape and charge
-- **Induced fit model:** Enzyme changes shape slightly upon substrate binding (more accurate than rigid lock-and-key model)
-- **Cofactors:** Inorganic ions (Mg²⁺, Zn²⁺) or organic molecules (coenzymes like NAD⁺, FAD, coenzyme A)
+![Titration of a weak acid with pKa 4.76 (acetic acid's tabulated constant), computed from the Henderson-Hasselbalch equation. pH equals pKa at the half-equivalence point, the middle of the flat buffering region.](/courses/mcat/biochem/bc1-titration-curve.svg)
 
-## Michaelis-Menten Kinetics
+The flat plateau in the titration curve IS the buffer zone: near the half-equivalence point, large additions of base produce small changes in pH.
 
-**v = Vmax[S] / (Km + [S])**
+## The Bicarbonate System
 
-- **Vmax:** Maximum reaction velocity (all enzyme molecules are saturated)
-- **Km:** Substrate concentration at which v = Vmax/2. A **low Km** indicates high substrate affinity.
-- **kcat:** Turnover number (molecules of substrate converted per enzyme per second)
-- **Catalytic efficiency:** kcat/Km (measure of how efficiently an enzyme converts substrate)
+Blood pH is defended mainly by:
 
-### Lineweaver-Burk Plot (Double Reciprocal)
+CO₂ + H₂O ⇌ H₂CO₃ ⇌ H⁺ + HCO₃⁻
 
-**1/v = (Km/Vmax)(1/[S]) + 1/Vmax**
+Its effective pKa is about 6.1 — more than a unit below blood pH, which looks like a poorly placed buffer. It works anyway because it is an **open system**: the lungs exhale CO₂ (adjusting the acid side in minutes) and the kidneys excrete or reclaim HCO₃⁻ (adjusting the base side over days). Hyperventilation blows off CO₂ and raises pH; hypoventilation does the opposite.
 
-- y-intercept = 1/Vmax
-- x-intercept = −1/Km
-- slope = Km/Vmax
+## The Phosphate System
 
-## Types of Inhibition
-
-| Type | Binds To | Effect on Vmax | Effect on Km | Lineweaver-Burk Change |
-|------|----------|---------------|-------------|----------------------|
-| Competitive | Active site | Unchanged | Increased (apparent) | Same y-intercept, different x-intercept |
-| Uncompetitive | ES complex only | Decreased | Decreased | Parallel lines (same slope) |
-| Noncompetitive | Enzyme or ES (not active site) | Decreased | Unchanged | Same x-intercept, different y-intercept |
-
-> **Mnemonic for competitive inhibition:** "Competitive inhibitors **compete** for the active site — can be overcome by adding more substrate (Vmax unchanged)."
-
-## Allosteric Regulation
-
-- **Positive effectors:** Stabilize the active (R) form → increase activity
-- **Negative effectors:** Stabilize the inactive (T) form → decrease activity
-- Allosteric enzymes show **sigmoidal** kinetics (not hyperbolic like Michaelis-Menten)
-- **Cooperative binding** (e.g., hemoglobin with O₂) produces a sigmoidal curve`,
+H₂PO₄⁻ ⇌ H⁺ + HPO₄²⁻ has a pKa near 7.2 (tabulated), close to intracellular pH — so phosphate is the main small-molecule buffer inside cells and in urine, where concentrations are high enough for it to matter.`,
         examTip:
-          'The MCAT distinguishes competitive, uncompetitive, and noncompetitive inhibition by their effects on Km and Vmax. Memorize the table — it shows up almost every exam.',
+          'If a passage manipulates respiration rate, translate it to CO₂ first: more ventilation → less CO₂ → less H⁺ → higher pH (respiratory alkalosis), and the reverse for hypoventilation.',
         quiz: [
           {
             question:
-              'An enzyme has a Km of 2 mM for substrate A and 0.2 mM for substrate B. Which statement is correct?',
-            options: [
-              'The enzyme has higher affinity for substrate A',
-              'The enzyme has higher affinity for substrate B',
-              'Both substrates bind equally well',
-              'Km does not indicate affinity',
-            ],
-            correctIndex: 1,
+              'A weak acid has pKa 4.8. At pH 6.8, what is the approximate ratio of conjugate base to acid?',
+            options: ['1:1', '10:1', '100:1', '2:1'],
+            correctIndex: 2,
             explanation:
-              'Km is inversely related to substrate affinity — a lower Km means the enzyme reaches half-maximal velocity at a lower substrate concentration, indicating tighter binding. 0.2 mM < 2 mM, so the enzyme has higher affinity for substrate B.',
+              'pH − pKa = 2, and by Henderson-Hasselbalch, log([A⁻]/[HA]) = 2, so the ratio is 10² = 100:1 in favor of the conjugate base. Each pH unit above the pKa multiplies the base:acid ratio by 10.',
           },
-          {
-            question:
-              'A competitive inhibitor is added to an enzyme reaction. What effect is observed?',
-            options: [
-              'Vmax decreases, Km unchanged',
-              'Vmax unchanged, Km increases',
-              'Both Vmax and Km decrease',
-              'Vmax unchanged, Km unchanged',
-            ],
-            correctIndex: 1,
-            explanation:
-              'Competitive inhibitors compete with substrate for the active site. They can be overcome by adding excess substrate (so Vmax is unchanged), but they increase the apparent Km because more substrate is needed to reach half-maximal velocity.',
-          },
-          {
-            question:
-              'Which level of protein structure is maintained after denaturation?',
-            options: ['Secondary', 'Tertiary', 'Quaternary', 'Primary'],
-            correctIndex: 3,
-            explanation:
-              'Denaturation disrupts secondary (α-helices, β-sheets), tertiary (3D folding), and quaternary (subunit association) structure. The primary structure (amino acid sequence held by covalent peptide bonds) remains intact because peptide bonds require hydrolysis to break.',
-          },
+        ],
+      },
+    ],
+    keyTakeaways: [
+      'The hydrophobic effect is entropy-driven: released water, not attraction between nonpolar groups, drives membranes and protein folding.',
+      'pKa is the pH of half-dissociation; lower pKa means stronger acid.',
+      'pH above pKa → deprotonated form dominates; below → protonated. This one comparison answers most ionization questions.',
+      'Buffers work best at pH = pKa, within roughly ±1 unit.',
+      'Bicarbonate (effective pKa ≈ 6.1) buffers blood because it is open — lungs control CO₂, kidneys control HCO₃⁻. Phosphate (pKa ≈ 7.2) buffers the cytosol and urine.',
+    ],
+  },
+
+  // ── Biochemistry I.2: Amino acids and the peptide bond ──────────────────
+  cpb1_amino_acids: {
+    topicId: 'cpb1_amino_acids',
+    title: 'Amino Acids and the Peptide Bond',
+    domainWeight: '25%',
+    overview:
+      'Twenty side chains generate all of protein chemistry, and the MCAT expects you to know each one\'s class, charge at pH 7.4, and letter codes on sight. This chapter organizes the twenty by chemistry rather than by rote list, puts numbers on ionization — pKa and pI — and closes with the peptide bond, whose planar geometry constrains everything a protein can do.',
+    sections: [
+      {
+        id: 'cpb1_aa_families',
+        title: 'Twenty Side Chains, Five Families',
+        content: `## The Shared Backbone
+
+Every standard amino acid is an α-carbon carrying four groups: an amino group, a carboxyl group, a hydrogen, and the variable side chain (R). At pH 7.4 the backbone exists as a **zwitterion** — amino group protonated (−NH₃⁺), carboxyl deprotonated (−COO⁻) — so a free amino acid carries both charges at once. The α-carbon is a stereocenter in all except glycine, and ribosomes build proteins exclusively from the **L** configuration.
+
+## Grouping by Chemistry
+
+| Family | Members | Chemical handle |
+|--------|---------|-----------------|
+| Nonpolar aliphatic | Gly, Ala, Val, Leu, Ile, Pro, Met | Pack the hydrophobic core |
+| Aromatic | Phe, Trp, Tyr | Trp and Tyr absorb UV at 280 nm |
+| Polar uncharged | Ser, Thr, Cys, Asn, Gln | −OH phosphorylation sites; −SH disulfides; amide H-bonding |
+| Positive at pH 7.4 | Lys, Arg, His | Side-chain pKa ≈ 10.5, 12.5, 6.0 |
+| Negative at pH 7.4 | Asp, Glu | Side-chain pKa ≈ 3.7, 4.3 |
+
+## Four Residues Worth Singling Out
+
+- **Glycine** — side chain is just H; the most flexible backbone, common in tight turns.
+- **Proline** — its side chain loops back to the backbone nitrogen, locking rotation; it kinks helices.
+- **Cysteine** — the thiol pairs with another cysteine to form a covalent **disulfide bond**.
+- **Histidine** — the only side chain with a pKa (≈ 6.0) near physiological pH, so it can donate or accept a proton on demand; it appears in active sites constantly.`,
+        examTip:
+          'Know both the three-letter and one-letter codes cold — passages switch between them without warning, and the odd ones (K = lysine, R = arginine, W = tryptophan, Q = glutamine) are the usual traps.',
+        quiz: [
           {
             question:
               'At physiological pH (7.4), the side chain of histidine (pKa ~6.0) is:',
@@ -1001,14 +975,566 @@ Enzymes are biological catalysts that **lower the activation energy (Ea)** of re
           },
         ],
       },
+      {
+        id: 'cpb1_aa_ionization',
+        title: 'Ionization States and pI',
+        content: `## Titrating an Amino Acid
+
+Each ionizable group has its own pKa and lets go of its proton as pH climbs past it. For the backbone, the tabulated values for glycine are 2.34 (α-carboxyl) and 9.60 (α-amino): below pH 2.34 the molecule is net positive, between the two pKa values the zwitterion dominates, and above 9.60 it is net negative. An ionizable side chain adds a third titration on top of the backbone pair — glutamate is the classic case, its side-chain carboxyl (pKa 4.25) releasing its proton between the two backbone events.
+
+![Fraction protonated versus pH for each ionizable group of free glutamate, computed from its tabulated pKa values: 2.19 (α-carboxyl), 4.25 (side-chain carboxyl), and 9.67 (α-amino). Each curve crosses its halfway point exactly at that group's pKa, and the pI (3.22) sits midway between the two acidic pKa values.](/courses/mcat/biochem/bc1-amino-acid-ionization.svg)
+
+## The Isoelectric Point
+
+The **pI** is the pH at which net charge is zero. It is the average of the two pKa values that flank the neutral (zwitterionic) species:
+
+- Glycine: pI = (2.34 + 9.60)/2 ≈ 5.97
+- **Acidic** amino acids (Asp, Glu): average the two LOWEST pKa values → pI ≈ 3
+- **Basic** amino acids (Lys, Arg, His): average the two HIGHEST pKa values → pI ≈ 8–11
+
+The payoff rule: **at pH below its pI a molecule is net positive; above its pI, net negative.** Electrophoresis and ion-exchange questions are all applications of this single line.`,
+        importantNote:
+          'For amino acids with an ionizable side chain, never average all three pKa values — identify which two pKa values bracket the neutral species and average only those.',
+      },
+      {
+        id: 'cpb1_aa_peptide',
+        title: 'The Peptide Bond and Primary Structure',
+        content: `## Forming the Bond
+
+Two amino acids join by condensation: the α-carboxyl of one and the α-amino of the next form an amide — the **peptide bond** — releasing water. In the cell this costs energy and is driven by ATP-dependent chemistry on the ribosome; hydrolysis back to free amino acids is thermodynamically favorable but extremely slow without a protease.
+
+## Why the Bond Is Planar
+
+Resonance delocalizes the nitrogen's lone pair into the carbonyl, giving the C−N bond roughly 40% double-bond character. The consequences the MCAT tests:
+
+- The six atoms around the bond are locked in a **plane** — no rotation about C−N.
+- The **trans** arrangement is strongly preferred (side chains on opposite sides avoid clashing); proline is the notable partial exception.
+- Backbone flexibility comes only from the two single bonds flanking each α-carbon (the φ and ψ angles).
+
+## Primary Structure and Sequencing Logic
+
+Primary structure is the sequence, written and synthesized **from the N-terminus to the C-terminus**, plus the positions of any disulfide bonds. Sequence determines fold, so a single substitution can be pathogenic.
+
+Classic sequencing logic still appears in passages: cleave the protein with proteases of known specificity (trypsin, for instance, cuts after lysine and arginine), sequence the fragments, and reconstruct the original order from overlaps between two different digests — the same reasoning genome assembly uses.`,
+        examTip:
+          'If a question shows a peptide, find the N-terminus first — by convention it is written on the left, and residue numbering starts there.',
+      },
     ],
     keyTakeaways: [
-      'Know all 20 amino acids by name, one-letter code, side chain polarity, and charge at pH 7.4.',
-      'Histidine (pKa ~6) is uniquely important — its imidazole side chain can donate or accept protons near physiological pH.',
-      'The four levels of protein structure: primary (sequence), secondary (α-helix, β-sheet), tertiary (3D fold), quaternary (subunit assembly).',
-      'Hydrophobic interactions are the primary driving force for tertiary structure (protein folding).',
-      'Michaelis-Menten: v = Vmax[S]/(Km + [S]). Low Km = high affinity. Competitive inhibitors increase apparent Km but do not change Vmax.',
-      'Allosteric enzymes show sigmoidal kinetics, not hyperbolic — they are regulated by effectors binding at sites other than the active site.',
+      'Group the twenty amino acids by chemistry: nonpolar, aromatic, polar uncharged, positive (Lys, Arg, His), negative (Asp, Glu).',
+      'Histidine\'s side-chain pKa ≈ 6.0 sits near physiological pH — the reason it dominates acid-base catalysis questions.',
+      'pI averages the two pKa values flanking the neutral species; pH < pI means net positive charge.',
+      'The peptide bond is planar from resonance and prefers trans; rotation happens only at φ and ψ.',
+      'Sequences run N → C, and overlapping protease digests reconstruct an unknown sequence.',
+    ],
+  },
+
+  // ── Biochemistry I.3: Protein architecture ──────────────────────────────
+  cpb1_protein_structure: {
+    topicId: 'cpb1_protein_structure',
+    title: 'Protein Architecture',
+    domainWeight: '25%',
+    overview:
+      'Protein structure is a hierarchy: a sequence folds into local motifs, motifs pack into a three-dimensional fold, and folded chains can assemble into larger complexes. The MCAT tests which interactions stabilize each level, what denaturation does and does not destroy, and what happens when folding goes wrong — chaperones, aggregates, and prions.',
+    sections: [
+      {
+        id: 'cpb1_ps_hierarchy',
+        title: 'The Four Levels',
+        content: `## From Sequence to Assembly
+
+![The four levels of protein structure, from amino acid sequence to assembled multi-subunit complex. Schematic — the shapes are illustrative, not a real protein's coordinates.](/courses/mcat/biochem/bc1-structure-hierarchy.svg)
+
+- **Primary** — the covalent sequence itself: peptide bonds, plus any disulfide bonds.
+- **Secondary** — local, repeating backbone patterns (α-helix, β-sheet, turns) held by **backbone** hydrogen bonds only. Side chains are bystanders at this level.
+- **Tertiary** — the complete 3-D fold of one chain, stabilized by **side-chain** interactions.
+- **Quaternary** — the arrangement of two or more folded chains into one functional unit. Only multimeric proteins have it.
+
+The deepest idea here: **sequence encodes structure**. Many small denatured proteins refold spontaneously in vitro once denaturant is removed, showing that the information for the native fold lives in the primary structure — no external template needed.`,
+        importantNote:
+          'Keep the hydrogen-bond bookkeeping straight: secondary structure uses backbone C=O···H−N bonds; tertiary structure recruits the side chains.',
+      },
+      {
+        id: 'cpb1_ps_secondary',
+        title: 'Secondary Structure',
+        content: `## The α-Helix
+
+A right-handed coil in which each backbone carbonyl hydrogen-bonds to the backbone N−H four residues ahead (i → i+4), with about 3.6 residues per turn. Side chains point outward, so a helix can be hydrophobic on one face and polar on the other — an **amphipathic** helix, ideal for membrane surfaces. Two residues sabotage helices: **proline** (no backbone N−H to donate, and its ring blocks the required geometry) and **glycine** (so flexible it prefers other conformations).
+
+## The β-Sheet
+
+Strands of nearly extended backbone lie side by side, hydrogen-bonded strand-to-strand into a pleated sheet. Strands running the same direction form a **parallel** sheet; opposite directions form an **antiparallel** sheet, whose straighter hydrogen bonds make it slightly sturdier. Sheets are built from strands far apart in sequence as often as neighbors — secondary structure is local along each strand, but the sheet organizes the whole chain.
+
+## Turns
+
+Tight reversals of chain direction, typically four residues with glycine or proline featured, let strands and helices pack into a compact body. Without turns there is no globular protein — just a long fiber.`,
+        examTip:
+          'Proline the helix-breaker is one of the highest-yield single facts in this chapter: expect a mutation-based passage where inserting a proline destroys a helix, or a transmembrane segment question hinging on helix formation.',
+      },
+      {
+        id: 'cpb1_ps_tertiary',
+        title: 'Tertiary and Quaternary Structure',
+        content: `## What Holds a Fold Together
+
+| Interaction | Nature | Typical partners |
+|-------------|--------|------------------|
+| Hydrophobic packing | Entropy-driven | Val, Leu, Ile, Phe buried in the core |
+| Hydrogen bonds | Polar | Ser, Thr, Asn, Gln networks |
+| Salt bridges | Ionic | Lys⁺ or Arg⁺ with Asp⁻ or Glu⁻ |
+| Disulfide bonds | Covalent | Cys−S−S−Cys cross-links |
+| Van der Waals | Weak, everywhere | Any tightly packed atoms |
+
+The dominant driver is the **hydrophobic effect**: nonpolar side chains bury themselves away from water, and the polar surface faces the solvent. Disulfides are the only covalent entry in the table, and because the cytosol is a reducing environment, they are found mostly in secreted and extracellular proteins.
+
+## Quaternary Structure
+
+Separate chains (subunits) associate through the same noncovalent interactions. Hemoglobin — two α and two β chains — is the canonical example, and its subunit interfaces are exactly what make cooperative oxygen binding possible in the next chapter. Multimeric design also buys efficiency: one gene, many copies, assembled into a large machine.`,
+        quiz: [
+          {
+            question:
+              'Which level of protein structure is maintained after denaturation?',
+            options: ['Secondary', 'Tertiary', 'Quaternary', 'Primary'],
+            correctIndex: 3,
+            explanation:
+              'Denaturation disrupts secondary (α-helices, β-sheets), tertiary (3D folding), and quaternary (subunit association) structure. The primary structure (amino acid sequence held by covalent peptide bonds) remains intact because peptide bonds require hydrolysis to break.',
+          },
+        ],
+      },
+      {
+        id: 'cpb1_ps_folding',
+        title: 'Folding, Chaperones, and Misfolding',
+        content: `## The Folding Funnel
+
+A chain cannot find its native fold by trying conformations at random — there are too many. Instead, folding is pictured as a **funnel**: from many high-energy unfolded states, local structure forms early, and each step narrows the options while lowering free energy, sliding the chain toward the single low-energy native state. Folding is fast because it is downhill and guided, not exhaustive.
+
+## Chaperones
+
+The crowded cell threatens folding proteins with aggregation — exposed hydrophobic patches on unfinished chains stick to each other. **Chaperones** (many are heat-shock proteins, induced by thermal stress) bind those hydrophobic patches, hold chains apart, and give misfolded proteins repeated chances to refold; some form enclosed chambers where a single protein folds in isolation.
+
+## When Folding Fails
+
+- **Denaturation** — heat, pH extremes, urea, or detergents strip away secondary through quaternary structure while leaving the primary sequence intact.
+- **Amyloid** — misfolded proteins can stack into insoluble β-sheet-rich fibrils; such deposits are the shared signature of several neurodegenerative diseases, including Alzheimer disease.
+- **Prions** — a misfolded protein conformation that converts the normally folded version into copies of itself: infectious conformation, with no nucleic acid required.`,
+        examTip:
+          'Chaperones do not carry folding instructions — the sequence does. Chaperones only prevent aggregation and allow refolding attempts; an answer choice giving them a template role is wrong.',
+      },
+    ],
+    keyTakeaways: [
+      'Secondary structure = backbone hydrogen bonds; tertiary = side-chain interactions; only multimeric proteins have quaternary structure.',
+      'α-helix hydrogen-bonds i → i+4 with ~3.6 residues per turn; proline and glycine disrupt it.',
+      'Antiparallel β-sheets have straighter hydrogen bonds than parallel ones.',
+      'The hydrophobic effect drives folding; disulfides, the only covalent stabilizer, mark extracellular proteins.',
+      'Denaturation spares primary structure. Chaperones prevent aggregation rather than dictating the fold.',
+      'Amyloid fibrils and prions are the two misfolding motifs the MCAT tests.',
+    ],
+  },
+
+  // ── Biochemistry I.4: Proteins at work: binding ─────────────────────────
+  cpb1_protein_binding: {
+    topicId: 'cpb1_protein_binding',
+    title: 'Proteins at Work: Binding',
+    domainWeight: '25%',
+    overview:
+      'Myoglobin and hemoglobin bind the same ligand with the same heme chemistry, yet their binding curves look nothing alike — and that contrast is the MCAT\'s favorite way to test cooperativity. This chapter reads the sigmoidal curve, explains it with the T-to-R transition, and then shifts it with H⁺, CO₂, 2,3-BPG, and the fetal γ subunit.',
+    sections: [
+      {
+        id: 'cpb1_pb_curves',
+        title: 'One Heme vs Four: The Two Curves',
+        content: `## Same Chemistry, Different Job
+
+Both proteins carry O₂ on a **heme** group — a porphyrin ring holding Fe²⁺. **Myoglobin** is a single chain in muscle whose job is storage and delivery within the cell; it binds O₂ with a simple **hyperbolic** curve that half-saturates at a very low oxygen pressure. **Hemoglobin** is the α₂β₂ tetramer of red blood cells whose job is transport, and its curve is **sigmoidal**, half-saturating at a P50 of about 26 torr (the standard textbook value for adult blood).
+
+![Oxygen saturation curves: hemoglobin's sigmoidal curve computed from the Hill equation with n = 2.8 and P50 = 26 torr, beside a hyperbolic, myoglobin-style curve with n = 1. The steep middle of the sigmoid spans exactly the pO₂ range between tissues and lungs.](/courses/mcat/biochem/bc1-oxygen-binding.svg)
+
+## Why the Shape Matters
+
+A transporter must do two opposite things: grab O₂ hard in the lungs (pO₂ ≈ 100 torr) and let a useful fraction go in tissues (pO₂ ≈ 40 torr). The sigmoid puts its steepest slope in exactly that window, so a modest drop in pO₂ releases a large fraction of the load. A hyperbolic protein cannot switch that sharply — which is why myoglobin, with its avid low-pressure binding, would be a terrible courier and is instead the tissue-side reservoir.
+
+The steepness is quantified by the **Hill coefficient**: n ≈ 2.8 for hemoglobin (positive cooperativity among its four sites), n = 1 for myoglobin (one site, no cooperativity).`,
+        examTip:
+          'Given any saturation curve, extract two numbers first: the P50 (affinity — lower P50 means higher affinity) and the shape (sigmoidal means cooperative, hyperbolic means independent sites).',
+      },
+      {
+        id: 'cpb1_pb_cooperativity',
+        title: 'Cooperativity: T and R States',
+        content: `## The Mechanical Story
+
+Deoxygenated hemoglobin sits in the **T (tense) state** — low affinity. When the first O₂ binds, the iron, previously pulled slightly out of the heme plane, moves into it; the attached histidine and its helix move with it, and the strain propagates across the subunit interfaces. The tetramer snaps toward the **R (relaxed) state** — high affinity. Each binding event therefore makes the remaining empty sites better binders, and each release makes the remaining ones worse: the origin of the sigmoid in both directions.
+
+## Two Textbook Models
+
+The **concerted** model says all four subunits flip T → R together; the **sequential** model lets subunits change one at a time, each nudging its neighbors. Real hemoglobin borrows from both — the MCAT only asks that you recognize the vocabulary and that both explain cooperativity through subunit communication.
+
+Because cooperativity requires that communication, it is strictly a **quaternary-structure phenomenon**: a lone myoglobin chain has nobody to talk to, and no sigmoid.`,
+        importantNote:
+          'Cooperativity does not change WHAT binds — it changes the affinity of the remaining sites after each event. Binding curves report the population average over all four sites.',
+      },
+      {
+        id: 'cpb1_pb_shifts',
+        title: 'Shifting the Curve',
+        content: `## Right Shift = Easier Unloading
+
+Anything that stabilizes the T state lowers affinity, raises P50, and moves the curve right — which in a working tissue is the useful direction, because it means more O₂ released at the same pO₂:
+
+- **H⁺ (lower pH)** — the **Bohr effect**: protons produced by working tissue protonate specific residues that form T-state salt bridges.
+- **CO₂** — acts twice: it forms carbonic acid (more H⁺), and it binds hemoglobin's N-termini directly as carbamate, stabilizing T.
+- **2,3-BPG** — a small anion that wedges into the central cavity of the T state; without it, hemoglobin would hold O₂ too tightly to release in tissues.
+- **Temperature** — warm, active muscle right-shifts further.
+
+All four signals — acid, CO₂, heat — are exactly what exercising tissue emits, so the curve shifts right precisely where unloading is needed.
+
+## Left Shifts
+
+The opposites (low H⁺, low CO₂, low 2,3-BPG, cold) raise affinity. **Fetal hemoglobin (HbF, α₂γ₂)** is the built-in left shift: its γ subunits bind 2,3-BPG poorly, so HbF holds O₂ more tightly than maternal HbA — and oxygen flows across the placenta from mother to fetus. Carbon monoxide also left-shifts the curve of the remaining sites while blocking bound ones, a doubly harmful combination.`,
+        quiz: [
+          {
+            question:
+              'During strenuous exercise, skeletal muscle becomes warmer, more acidic, and richer in CO₂. What happens to hemoglobin\'s oxygen saturation curve locally?',
+            options: [
+              'It shifts left, increasing O₂ affinity',
+              'It shifts right, promoting O₂ unloading',
+              'It becomes hyperbolic',
+              'It is unchanged — only 2,3-BPG shifts the curve',
+            ],
+            correctIndex: 1,
+            explanation:
+              'Heat, H⁺, and CO₂ all stabilize the T state, lowering affinity and shifting the curve right (the Bohr effect for H⁺/CO₂). Lower affinity at tissue pO₂ means more O₂ is released exactly where metabolism demands it. The curve remains sigmoidal — cooperativity is not abolished.',
+          },
+        ],
+      },
+      {
+        id: 'cpb1_pb_allostery',
+        title: 'Allostery as a General Principle',
+        content: `## Beyond Hemoglobin
+
+Hemoglobin is the model system for a universal idea: **binding at one site can change affinity or activity at a distant site**, transmitted through conformational change. H⁺, CO₂, and 2,3-BPG are **allosteric effectors** — none resembles O₂, and none touches the heme; they act by choosing between the T and R conformations.
+
+Carry three transferable rules into the enzyme chapters. First, allostery requires conformational communication, which is why it is typically the province of multi-subunit proteins. Second, effectors that stabilize the active conformation activate; those that stabilize the inactive conformation inhibit. Third, an allosteric protein's response is switch-like rather than proportional — the sigmoid is a sensitivity amplifier. Chapter I.7 applies all three to the enzymes that run metabolism.`,
+      },
+    ],
+    keyTakeaways: [
+      'Myoglobin: monomer, storage, hyperbolic. Hemoglobin: α₂β₂, transport, sigmoidal with P50 ≈ 26 torr and Hill n ≈ 2.8.',
+      'Cooperativity is the T ⇌ R transition communicated across subunit interfaces — impossible without quaternary structure.',
+      'Right-shifters (↑H⁺, ↑CO₂, ↑2,3-BPG, ↑temperature) are the signals of working tissue; the Bohr effect is the H⁺/CO₂ part.',
+      '2,3-BPG binds the T-state central cavity; fetal hemoglobin\'s γ subunits bind it poorly, left-shifting HbF for placental O₂ transfer.',
+      'Allostery generalizes: effectors act by choosing conformations, and sigmoidal responses make sensitive switches.',
+    ],
+  },
+
+  // ── Biochemistry I.5: Enzymes: how catalysis happens ────────────────────
+  cpb1_enzymes: {
+    topicId: 'cpb1_enzymes',
+    title: 'Enzymes: How Catalysis Happens',
+    domainWeight: '25%',
+    overview:
+      'Enzymes accelerate reactions enormously without being consumed and without moving the equilibrium. The MCAT tests that distinction relentlessly: thermodynamics (ΔG) says whether a reaction can go, kinetics (the activation barrier) says how fast it will, and an enzyme touches only the second. This chapter covers where the rate acceleration comes from and which cofactors the chemistry borrows.',
+    sections: [
+      {
+        id: 'cpb1_en_energy',
+        title: 'Activation Energy and the Transition State',
+        content: `## The Barrier, Not the Destination
+
+Follow a reaction along its coordinate: substrate climbs to the **transition state** — the fleeting, highest-energy arrangement with bonds half-made and half-broken — then descends to product. Two energies control everything:
+
+- **ΔG** (substrate vs product) — sets spontaneity and the equilibrium constant.
+- **ΔG‡** (substrate vs transition state) — the activation barrier, which sets the **rate**.
+
+An enzyme binds the **transition state more tightly than the substrate**, stabilizing the top of the hill. That lowers ΔG‡ — and nothing else.
+
+![Free-energy diagram of one reaction with and without an enzyme. Schematic — energies not to scale. The enzyme lowers the transition-state barrier ΔG‡; the overall ΔG between substrate and product is identical on both paths.](/courses/mcat/biochem/bc1-energy-diagram.svg)
+
+## What Follows
+
+Because ΔG is untouched, the equilibrium position and Keq are untouched; the enzyme accelerates the forward and reverse reactions by the same factor, so equilibrium is reached sooner, not relocated. A thermodynamically unfavorable reaction stays unfavorable with the world's best enzyme — the cell makes such reactions go by **coupling** them to ATP hydrolysis, not by catalysis alone.`,
+        examTip:
+          'Any answer choice saying an enzyme changes ΔG, shifts Keq, or makes an unfavorable reaction favorable is wrong, every time. Enzymes are kinetics, not thermodynamics.',
+        quiz: [
+          {
+            question:
+              'An enzyme increases the rate of a reaction by which mechanism?',
+            options: [
+              'Raising the free energy of the substrate\'s ground state relative to product',
+              'Lowering the activation energy by stabilizing the transition state',
+              'Making ΔG more negative',
+              'Increasing the equilibrium constant',
+            ],
+            correctIndex: 1,
+            explanation:
+              'Enzymes bind and stabilize the transition state, lowering ΔG‡ (the activation barrier). ΔG and Keq are thermodynamic properties of substrate and product and are unchanged by any catalyst — the reaction simply reaches its unchanged equilibrium faster.',
+          },
+        ],
+      },
+      {
+        id: 'cpb1_en_strategies',
+        title: 'Active-Site Strategies',
+        content: `## The Active Site
+
+Catalysis happens in a small pocket whose shape and charge complement the substrate — and, more importantly, the transition state. The modern picture is **induced fit**: binding is a mutual adjustment in which the enzyme closes around the substrate, rather than a rigid lock accepting a key.
+
+## Four Ways to Lower the Barrier
+
+1. **Proximity and orientation** — the site holds two substrates next to each other, aligned for reaction. Converting a chance collision into a held, aimed encounter is worth an enormous rate factor by itself.
+2. **Strain and distortion** — the site binds the substrate slightly wrong for the ground state and right for the transition state, using binding energy to bend the substrate toward reaction.
+3. **General acid-base catalysis** — side chains donate or accept protons at exactly the right moment; histidine, with its pKa near 7, is the workhorse because it can do either.
+4. **Covalent catalysis** — a nucleophilic side chain (classically the active-site serine of serine proteases) attacks the substrate to form a transient covalent intermediate, splitting one hard step into two easier ones. The enzyme is restored by the end of the cycle.
+
+Real active sites stack several strategies at once; passage questions usually ask you to name the strategy from a mechanistic description.`,
+        importantNote:
+          'Catalytic residues are conserved: mutate the active-site serine or histidine of a protease and activity collapses even though the protein still folds — a favorite experimental setup in passages.',
+      },
+      {
+        id: 'cpb1_en_cofactors',
+        title: 'Cofactors, Coenzymes, and Vitamins',
+        content: `## The Nonprotein Help
+
+Twenty side chains cannot do all of chemistry — redox in particular needs help. An enzyme requiring a helper is inactive as the bare **apoenzyme** and functional as the **holoenzyme** (protein + cofactor).
+
+- **Metal ion cofactors** — Mg²⁺ accompanies ATP in virtually every kinase reaction (it shields the phosphates' charge); Zn²⁺ polarizes water in carbonic anhydrase.
+- **Coenzymes** — organic helpers, mostly vitamin-derived. **Cosubstrates** bind and leave each cycle like substrates (NAD⁺); **prosthetic groups** stay put, some covalently attached (biotin, heme).
+
+## The Vitamin Table
+
+| Vitamin | Coenzyme | Chemistry carried |
+|---------|----------|-------------------|
+| B1 (thiamine) | TPP | Decarboxylation of α-keto acids |
+| B2 (riboflavin) | FAD | Redox (2 e⁻) |
+| B3 (niacin) | NAD⁺ | Redox (2 e⁻ as hydride) |
+| B5 (pantothenate) | Coenzyme A | Acyl-group carrier |
+| B6 (pyridoxine) | PLP | Transamination |
+| B7 (biotin) | Biotin | CO₂ carrier (carboxylations) |
+
+These pairings pay off across the metabolism chapters: pyruvate dehydrogenase alone uses TPP, FAD, NAD⁺, and CoA in a single complex, and every transaminase in nitrogen metabolism runs on PLP.`,
+        examTip:
+          'Vitamin-to-coenzyme matching is free points: B1-TPP, B2-FAD, B3-NAD⁺, B5-CoA, B6-PLP, biotin-carboxylation. Learn the six as a block.',
+      },
+    ],
+    keyTakeaways: [
+      'ΔG‡ sets rate; ΔG sets equilibrium. Enzymes lower only ΔG‡, accelerating forward and reverse reactions equally.',
+      'Rate acceleration comes from transition-state stabilization — the site fits the transition state even better than the substrate.',
+      'Four strategies: proximity/orientation, strain toward the transition state, acid-base chemistry (histidine), covalent intermediates (active-site serine).',
+      'Apoenzyme + cofactor = holoenzyme; Mg²⁺ partners ATP, Zn²⁺ activates water.',
+      'Coenzymes are vitamin-derived: TPP, FAD, NAD⁺, CoA, PLP, biotin — know the pairings cold.',
+    ],
+  },
+
+  // ── Biochemistry I.6: Enzyme kinetics and inhibition ────────────────────
+  cpb1_kinetics: {
+    topicId: 'cpb1_kinetics',
+    title: 'Enzyme Kinetics and Inhibition',
+    domainWeight: '25%',
+    overview:
+      'Michaelis-Menten kinetics compresses enzyme behavior into two numbers — Km and Vmax — and the MCAT tests whether you know what each means, where each lives on a graph, and how the four reversible inhibition patterns move them. Expect a passage that hands you kinetic data and asks you to classify the inhibitor from the changes alone.',
+    sections: [
+      {
+        id: 'cpb1_kin_mm',
+        title: 'Km and Vmax',
+        content: `## The Saturation Curve
+
+The minimal scheme — E + S ⇌ ES → E + P — under the steady-state assumption gives:
+
+**v = Vmax·[S] / (Km + [S])**
+
+Plotted as initial velocity against [S], this is a **hyperbola** with three landmarks:
+
+- At low [S], velocity rises almost linearly — enzyme is waiting for substrate.
+- At **[S] = Km, v = Vmax/2** — the operational definition of Km.
+- At high [S], velocity flattens toward **Vmax** — every enzyme molecule is occupied, and only more enzyme (not more substrate) can raise the ceiling.
+
+![A Michaelis-Menten saturation curve computed from v = Vmax·[S]/(Km + [S]), axes in arbitrary illustrative units. Velocity reaches half of Vmax exactly where [S] = Km and approaches Vmax asymptotically at saturating substrate.](/courses/mcat/biochem/bc1-michaelis-menten.svg)
+
+## Reading the Constants
+
+**Km** behaves as an inverse affinity gauge: a low Km means the enzyme reaches half-speed at little substrate (tight binding); a high Km means it needs a flood. Km is a property of the enzyme-substrate pair and does not depend on enzyme concentration. **Vmax** scales directly with total enzyme; per molecule, the intrinsic speed is **kcat**, the turnover number. The ratio **kcat/Km** measures efficiency when substrate is scarce — the condition that usually matters in a cell.`,
+        quiz: [
+          {
+            question:
+              'An enzyme has a Km of 2 mM for substrate A and 0.2 mM for substrate B. Which statement is correct?',
+            options: [
+              'The enzyme has higher affinity for substrate A',
+              'The enzyme has higher affinity for substrate B',
+              'Both substrates bind equally well',
+              'Km does not indicate affinity',
+            ],
+            correctIndex: 1,
+            explanation:
+              'Km is inversely related to substrate affinity — a lower Km means the enzyme reaches half-maximal velocity at a lower substrate concentration, indicating tighter binding. 0.2 mM < 2 mM, so the enzyme has higher affinity for substrate B.',
+          },
+        ],
+      },
+      {
+        id: 'cpb1_kin_lb',
+        title: 'The Double-Reciprocal Reading',
+        content: `## Why Invert a Perfectly Good Curve
+
+Reading Vmax off a hyperbola is guesswork — the curve only approaches it. Taking reciprocals of both sides straightens the data into the **Lineweaver-Burk** form:
+
+**1/v = (Km/Vmax)·(1/[S]) + 1/Vmax**
+
+A plot of 1/v against 1/[S] is a line whose intercepts hand you both constants:
+
+- **y-intercept = 1/Vmax** (note the reciprocal: a HIGHER y-intercept means a LOWER Vmax)
+- **x-intercept = −1/Km** (an x-intercept closer to zero means a HIGHER Km)
+- slope = Km/Vmax
+
+That reciprocal logic is the trap the MCAT sets: train yourself to translate every intercept change back into what happened to the underlying constant before answering. The next section gives each inhibitor class its signature in these terms, and the figure in Chapter I.7 draws all the line patterns side by side.`,
+        examTip:
+          'Fast test-day check: on a Lineweaver-Burk plot, lines pivoting around the y-intercept share Vmax (competitive); parallel lines share slope (uncompetitive); lines pivoting on the x-intercept share Km (pure noncompetitive).',
+      },
+      {
+        id: 'cpb1_kin_inhibition',
+        title: 'Four Reversible Inhibition Patterns',
+        content: `## The Classification Table
+
+| Type | Binds to | Vmax | Km (apparent) | Signature |
+|------|----------|------|---------------|-----------|
+| Competitive | Free enzyme, at the active site | Unchanged | Increases | Overcome by excess substrate |
+| Uncompetitive | ES complex only | Decreases | Decreases | Parallel Lineweaver-Burk lines |
+| Noncompetitive (pure) | E and ES equally, away from the active site | Decreases | Unchanged | Cannot be outcompeted |
+| Mixed | E and ES unequally | Decreases | Increases or decreases | The general case |
+
+## The Logic Behind Each Row
+
+A **competitive** inhibitor is a substrate mimic occupying the active site; flooding with substrate wins the competition, so Vmax survives but apparent Km rises. An **uncompetitive** inhibitor binds only after substrate does, trapping the ES complex — both constants fall by the same factor, which is why the double-reciprocal lines run parallel. A **pure noncompetitive** inhibitor binds an entirely different site with equal affinity whether substrate is present or not: it effectively removes working enzyme, cutting Vmax while leaving Km alone. **Mixed** inhibition is noncompetitive without the "equal affinity" coincidence.
+
+Methanol poisoning is the classic applied example: ethanol is given as a competing substrate for alcohol dehydrogenase, a competitive strategy that lets methanol be excreted before it is oxidized to toxic products.`,
+        quiz: [
+          {
+            question:
+              'A competitive inhibitor is added to an enzyme reaction. What effect is observed?',
+            options: [
+              'Vmax decreases, Km unchanged',
+              'Vmax unchanged, Km increases',
+              'Both Vmax and Km decrease',
+              'Vmax unchanged, Km unchanged',
+            ],
+            correctIndex: 1,
+            explanation:
+              'Competitive inhibitors compete with substrate for the active site. They can be overcome by adding excess substrate (so Vmax is unchanged), but they increase the apparent Km because more substrate is needed to reach half-maximal velocity.',
+          },
+        ],
+      },
+      {
+        id: 'cpb1_kin_irreversible',
+        title: 'Irreversible Inactivation',
+        content: `## Burning the Bridge
+
+An **irreversible inhibitor** bonds covalently to the enzyme, usually to a catalytic residue, and no amount of dilution, dialysis, or added substrate restores activity — recovery requires synthesizing new enzyme. Kinetically the sample simply contains less working enzyme, so Vmax falls while the Km of the survivors is unchanged (the same fingerprint as noncompetitive inhibition; the difference is that it does not reverse).
+
+Three standard pharmacology examples:
+
+- **Aspirin** acetylates a serine in cyclooxygenase — one reason its antiplatelet effect lasts the life of the platelet.
+- **Penicillin** presents its β-lactam ring to the bacterial cell-wall transpeptidase, which attacks it and stays covalently trapped.
+- **Organophosphates** (nerve agents, some insecticides) phosphorylate the active-site serine of acetylcholinesterase.
+
+The penicillin case illustrates the elite subtype: a **mechanism-based (suicide) inhibitor** is unreactive until the target enzyme begins processing it, whereupon its own catalytic machinery springs the trap — maximum specificity, because only the intended enzyme can arm the inhibitor.`,
+        importantNote:
+          'Distinguish "noncompetitive" from "irreversible" even though both lower Vmax: the noncompetitive inhibitor is in reversible equilibrium and washes out; the irreversible one is covalent and permanent.',
+      },
+    ],
+    keyTakeaways: [
+      'v = Vmax·[S]/(Km + [S]); Km is the [S] giving Vmax/2, and lower Km means higher affinity.',
+      'Vmax scales with enzyme amount; kcat is per-molecule speed; kcat/Km is efficiency at low substrate.',
+      'Lineweaver-Burk: y-intercept 1/Vmax, x-intercept −1/Km — always convert intercept changes back to the constants.',
+      'Competitive: Km up, Vmax same. Uncompetitive: both down, parallel lines. Noncompetitive: Vmax down, Km same. Mixed: Vmax down, Km either way.',
+      'Irreversible inhibitors bind covalently (aspirin, penicillin, organophosphates); suicide inhibitors are activated by the target enzyme itself.',
+    ],
+  },
+
+  // ── Biochemistry I.7: Enzyme control ────────────────────────────────────
+  cpb1_enzyme_control: {
+    topicId: 'cpb1_enzyme_control',
+    title: 'Enzyme Control',
+    domainWeight: '25%',
+    overview:
+      'A cell cannot afford enzymes that run whenever substrate happens to be present — catalysis has to answer to conditions. This chapter covers the control toolkit: allosteric effectors, phosphorylation and other covalent marks, zymogen activation, feedback inhibition, and isozymes, finishing with how each mechanism announces itself on a kinetics plot.',
+    sections: [
+      {
+        id: 'cpb1_ec_allosteric',
+        title: 'Allosteric Regulation',
+        content: `## Sigmoids Again
+
+Regulatory enzymes are typically multi-subunit proteins that toggle, like hemoglobin, between a low-activity **T state** and a high-activity **R state** — and their velocity-vs-[S] curves are **sigmoidal**, not Michaelis-Menten hyperbolas. **Allosteric effectors** bind regulatory sites away from the active site and tip the T ⇌ R balance: activators stabilize R, shifting the curve left and steepening the response; inhibitors stabilize T, shifting it right.
+
+Effectors can be **homotropic** (the substrate itself, cooperating across sites — that is what makes the curve sigmoidal) or **heterotropic** (a different molecule reporting on cell conditions).
+
+## The Canonical Example
+
+**Phosphofructokinase-1**, catalyzing the committed step of glycolysis, is inhibited by ATP — its pathway's ultimate product — and activated by AMP. The elegance: ATP is also PFK-1's substrate, but the inhibitory allosteric site reads high ATP as "energy plentiful, slow down," while AMP signals "energy spent, speed up." One enzyme, reading the cell's energy charge directly.
+
+Because allosteric enzymes sit on sigmoids, a small effector-induced shift near the curve's steep middle produces a large change in flux — the same switch-like sensitivity that made hemoglobin a good transporter makes these enzymes good control valves.`,
+        examTip:
+          'A sigmoidal v vs [S] curve on the MCAT means allosteric/cooperative enzyme, and Michaelis-Menten constants no longer strictly apply — watch for questions that bait you into reading a Km off a sigmoid.',
+      },
+      {
+        id: 'cpb1_ec_covalent',
+        title: 'Covalent Modification',
+        content: `## Phosphorylation Foremost
+
+The dominant reversible covalent switch: a **kinase** transfers the γ-phosphate of ATP onto a serine, threonine, or tyrosine hydroxyl; a **phosphatase** removes it. The bulky, doubly negative phosphate reorganizes local structure and can either activate or inhibit — direction depends on the enzyme, so learn cases rather than assuming.
+
+The classic reciprocal pair from glycogen metabolism: phosphorylation turns glycogen **phosphorylase** ON (breakdown) while turning glycogen **synthase** OFF. One hormonal signal — epinephrine or glucagon acting through a kinase cascade — thus flips both pathways in opposite, complementary directions, with each kinase in the cascade activating many copies of the next for amplification.
+
+## Other Marks
+
+Acetylation, methylation, and glycosylation each modulate protein behavior, and **ubiquitination** tags proteins for destruction by the proteasome — regulation by scheduled disposal. For the MCAT, phosphorylation carries most of the weight; recognize the others by name and general role.`,
+        importantNote:
+          'Kinase adds phosphate, phosphatase removes it — and phosphorylation is not inherently activating. Glycogen phosphorylase (activated) and glycogen synthase (inhibited) by the same modification is the pairing to memorize.',
+      },
+      {
+        id: 'cpb1_ec_zymogens',
+        title: 'Zymogens and Proteolytic Activation',
+        content: `## One-Way Switches
+
+Some enzymes are synthesized as inactive precursors — **zymogens** (often flagged by the suffix -ogen or prefix pro-) — and switched on by proteolytic cleavage that removes or repositions an inhibitory segment. Cleavage cannot be undone, so this is the control of choice where activation must be decisive and the active enzyme would be dangerous at its birthplace:
+
+- **Digestion** — the pancreas secretes trypsinogen, chymotrypsinogen, and procarboxypeptidase; intestinal enteropeptidase converts trypsinogen to trypsin, and trypsin then activates the rest. The cascade confines ferocious proteases to the gut lumen rather than the pancreas itself.
+- **Clotting** — circulating zymogen factors activate one another in sequence, ending in thrombin converting fibrinogen to fibrin; a tiny trigger amplifies into a rapid, localized clot.
+- **Apoptosis** — procaspases are activated by cleavage, committing the cell only on a definitive signal.
+
+The shared logic: make the enzyme where it is unsafe, park it as a zymogen, and activate it only at the right time and place — accepting that the only "off switch" afterward is dedicated inhibitor proteins or degradation.`,
+        quiz: [
+          {
+            question:
+              'Which regulatory mechanism is irreversible for the individual enzyme molecule?',
+            options: [
+              'Allosteric inhibition',
+              'Phosphorylation',
+              'Zymogen cleavage',
+              'Competitive inhibition',
+            ],
+            correctIndex: 2,
+            explanation:
+              'Proteolytic activation removes part of the polypeptide chain — peptide-bond cleavage cannot be reversed by the cell, so an activated zymogen stays active until it is inhibited by a dedicated inhibitor protein or degraded. Allosteric effectors and competitive inhibitors bind reversibly, and phosphorylation is undone by phosphatases.',
+          },
+        ],
+      },
+      {
+        id: 'cpb1_ec_feedback',
+        title: 'Feedback, Isozymes, and What the Plots Show',
+        content: `## Feedback Inhibition
+
+In a multi-step pathway the end product allosterically inhibits the enzyme at the **committed step** — the first reaction whose product has no fate but the pathway's end. Product accumulates, flux shuts off at the entrance, and no intermediates pile up: supply follows demand with no genetic response needed. PFK-1 inhibited by ATP is this pattern applied to energy itself.
+
+## Isozymes
+
+**Isozymes** catalyze the same reaction as distinct gene products with different kinetics and regulation, letting tissues tune one chemistry to different jobs. The textbook pair: **hexokinase** (most tissues; low Km, so it works at low glucose, and it is inhibited by its own product) versus **glucokinase** (liver and pancreas; high Km, so its rate tracks blood glucose across the physiological range — a glucose sensor that stores fuel only in times of plenty).
+
+## Reading Regulation Off a Plot
+
+![Double-reciprocal (Lineweaver-Burk) lines for an uninhibited enzyme and the classic competitive, uncompetitive, and noncompetitive patterns, computed from the reciprocal Michaelis-Menten equation with illustrative constants. Competitive lines pivot at the shared y-intercept, uncompetitive lines run parallel, and pure noncompetitive lines pivot on the shared x-intercept.](/courses/mcat/biochem/bc1-lineweaver-inhibition.svg)
+
+These baseline signatures let you diagnose a mystery regulator from data. A treatment that lowers Vmax with Km intact behaves like removing enzyme — consistent with covalent inactivation, dephosphorylation of an activated enzyme, or a noncompetitive inhibitor. A raised Km with intact Vmax points to competition at the active site. And if the double-reciprocal data refuse to form a straight line at all, suspect an allosteric enzyme — sigmoidal kinetics never obeyed Michaelis-Menten in the first place.`,
+        examTip:
+          'Passages love to describe a regulator\'s effect on Km and Vmax without naming the mechanism — memorize the signatures here and translate data to mechanism directly.',
+      },
+    ],
+    keyTakeaways: [
+      'Allosteric enzymes give sigmoidal kinetics; activators stabilize R, inhibitors stabilize T. PFK-1 (ATP inhibits, AMP activates) is the canonical case.',
+      'Kinases phosphorylate Ser/Thr/Tyr, phosphatases reverse it; glycogen phosphorylase (on) vs glycogen synthase (off) shows one signal flipping two pathways.',
+      'Zymogens are one-way switches: digestive proteases, clotting, and caspases are all activated by irreversible cleavage.',
+      'Feedback inhibition targets the committed step, so end product throttles the pathway entrance.',
+      'Isozymes tune one reaction to different tissues: low-Km hexokinase vs high-Km glucokinase (the liver\'s glucose sensor).',
+      'Diagnose regulators kinetically: Vmax down + Km same → enzyme removal or noncompetitive; Km up + Vmax same → competitive; no straight double-reciprocal line → allosteric.',
     ],
   },
 
