@@ -163,3 +163,126 @@ async def progress_summary(
         average_seconds_per_question=avg_seconds,
         weakest_topics=[ProgressRow.model_validate(r) for r in weakest],
     )
+
+
+# ---------------------------------------------------------------------------
+# Chapter reads — server-side course reading progress (2026-08).
+#
+# Until now "N/17 read" lived only in localStorage, so course progress
+# evaporated on a new device and institutional reporting had nothing to
+# read. These endpoints make study_chapter_reads the truth; the frontend
+# keeps localStorage as an offline cache and merges it up through /sync
+# on first load so nobody's existing progress is lost.
+#
+# Deliberately separate from the /me/progress rows above: a read is a
+# membership fact with no correctness, and mixing it into the attempt
+# table would pollute every accuracy aggregate.
+# ---------------------------------------------------------------------------
+
+from pydantic import BaseModel, Field  # noqa: E402  (section-local imports)
+from sqlalchemy import delete as sa_delete  # noqa: E402
+from sqlalchemy.dialects.postgresql import insert as pg_insert  # noqa: E402
+
+from app.models import StudyChapterRead  # noqa: E402
+
+
+class ChapterReadIn(BaseModel):
+    exam_type: ExamTypeKind
+    topic_id: str = Field(..., min_length=1, max_length=80)
+
+
+class ChapterReadSyncIn(BaseModel):
+    exam_type: ExamTypeKind
+    # Bounded well above any curriculum's chapter count (largest today: 93).
+    topic_ids: list[str] = Field(..., max_length=500)
+
+
+class ChapterReadsOut(BaseModel):
+    exam_type: str
+    topic_ids: list[str]
+
+
+@router.get("/me/chapter-reads", response_model=ChapterReadsOut)
+async def list_chapter_reads(
+    exam_type: ExamTypeKind,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Every chapter the current user has marked read for one exam."""
+    result = await db.execute(
+        select(StudyChapterRead.topic_id)
+        .where(StudyChapterRead.user_id == current_user.id)
+        .where(StudyChapterRead.exam_type == exam_type.value)
+        .order_by(StudyChapterRead.topic_id.asc())
+    )
+    return ChapterReadsOut(
+        exam_type=exam_type.value,
+        topic_ids=[r[0] for r in result.all()],
+    )
+
+
+@router.put("/me/chapter-reads", response_model=ChapterReadsOut)
+async def mark_chapter_read(
+    body: ChapterReadIn,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Mark one chapter read. Idempotent — marking twice is a no-op."""
+    await db.execute(
+        pg_insert(StudyChapterRead)
+        .values(
+            user_id=current_user.id,
+            exam_type=body.exam_type.value,
+            topic_id=body.topic_id,
+        )
+        .on_conflict_do_nothing(constraint="uq_chapter_read_user_exam_topic")
+    )
+    await db.commit()
+    return await list_chapter_reads(body.exam_type, current_user, db)
+
+
+@router.delete("/me/chapter-reads", response_model=ChapterReadsOut)
+async def unmark_chapter_read(
+    body: ChapterReadIn,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Unmark one chapter (the study page's toggle)."""
+    await db.execute(
+        sa_delete(StudyChapterRead)
+        .where(StudyChapterRead.user_id == current_user.id)
+        .where(StudyChapterRead.exam_type == body.exam_type.value)
+        .where(StudyChapterRead.topic_id == body.topic_id)
+    )
+    await db.commit()
+    return await list_chapter_reads(body.exam_type, current_user, db)
+
+
+@router.post("/me/chapter-reads/sync", response_model=ChapterReadsOut)
+async def sync_chapter_reads(
+    body: ChapterReadSyncIn,
+    current_user: User = Depends(get_current_active_user),
+    db: AsyncSession = Depends(get_db),
+):
+    """Merge a client-side read list INTO the server set (union, never
+    replace). This is the one-time localStorage migration path: a device
+    that accumulated reads before the server store existed uploads them on
+    first load. Deleting server rows is only ever done one chapter at a
+    time through DELETE — a stale device syncing an old list must not be
+    able to erase progress made elsewhere."""
+    ids = [t.strip() for t in body.topic_ids if t and t.strip()][:500]
+    if ids:
+        await db.execute(
+            pg_insert(StudyChapterRead)
+            .values([
+                {
+                    "user_id": current_user.id,
+                    "exam_type": body.exam_type.value,
+                    "topic_id": t,
+                }
+                for t in ids
+            ])
+            .on_conflict_do_nothing(constraint="uq_chapter_read_user_exam_topic")
+        )
+        await db.commit()
+    return await list_chapter_reads(body.exam_type, current_user, db)

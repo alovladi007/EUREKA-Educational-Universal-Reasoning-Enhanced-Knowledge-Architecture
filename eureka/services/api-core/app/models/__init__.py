@@ -117,7 +117,7 @@ from app.models.user_content import (
     CollectionKind,
     CollectionItemKind,
 )
-from app.models.user_progress import UserProgress, ExamTypeKind
+from app.models.user_progress import UserProgress, ExamTypeKind, StudyChapterRead
 from app.models.srs_card import SrsCard
 from app.models.billing import Product, Entitlement
 from app.models.mock_result import MockResult
@@ -427,5 +427,6 @@ __all__ = [
     "CollectionKind",
     "CollectionItemKind",
     "UserProgress",
+    "StudyChapterRead",
     "ExamTypeKind",
 ]

@@ -348,6 +348,38 @@ class ApiClient {
     return response.data;
   }
 
+  // ── Chapter reads (server-side course reading progress, 2026-08) ──
+  // The truth behind "N/17 read"; localStorage is only the offline cache.
+  // See lib/chapter-reads.ts for the load/merge/write-through contract.
+
+  async getChapterReads(examType: string): Promise<{ exam_type: string; topic_ids: string[] }> {
+    const response = await this.client.get('/me/chapter-reads', {
+      params: { exam_type: examType },
+    });
+    return response.data;
+  }
+
+  async markChapterRead(examType: string, topicId: string): Promise<{ topic_ids: string[] }> {
+    const response = await this.client.put('/me/chapter-reads', {
+      exam_type: examType, topic_id: topicId,
+    });
+    return response.data;
+  }
+
+  async unmarkChapterRead(examType: string, topicId: string): Promise<{ topic_ids: string[] }> {
+    const response = await this.client.delete('/me/chapter-reads', {
+      data: { exam_type: examType, topic_id: topicId },
+    });
+    return response.data;
+  }
+
+  async syncChapterReads(examType: string, topicIds: string[]): Promise<{ topic_ids: string[] }> {
+    const response = await this.client.post('/me/chapter-reads/sync', {
+      exam_type: examType, topic_ids: topicIds,
+    });
+    return response.data;
+  }
+
   // ==================== MCAT chemistry (OCTET engine, Phase B) ====================
   // Generated-and-verified chemistry items, served through api-core which
   // gates on the MCAT (or standalone OCTET) entitlement and proxies the

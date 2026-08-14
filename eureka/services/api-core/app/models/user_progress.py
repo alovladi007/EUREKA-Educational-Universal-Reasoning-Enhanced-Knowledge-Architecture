@@ -142,3 +142,52 @@ class UserProgress(Base):
         if n == 0:
             return 0.0
         return max(0.0, min(1.0, c / n))
+
+
+class StudyChapterRead(Base):
+    """One row per chapter a user has marked read in an exam's course.
+
+    Why this is NOT a user_progress row: that table's rows are ATTEMPT
+    evidence (attempts, correct, mastery) and its summaries divide by them.
+    Reading a chapter is a different signal - a deliberate act with no
+    correctness - and storing it there would put zero-attempt rows into
+    every accuracy aggregate. A read is a membership fact, so it gets a
+    membership table.
+
+    Until 2026-08 this state lived only in localStorage
+    (`<exam>_study_read_chapters`), which meant course progress evaporated
+    on a new device or a cleared browser - and an institutional cohort
+    report cannot read students' browsers. The frontend keeps localStorage
+    as an offline cache and write-through mirror; this table is the truth.
+
+    topic_id values come from exam-curriculum.ts (e.g. `nx_ngn_exam`);
+    exam_type is validated against ExamTypeKind at the endpoint layer,
+    exactly like user_progress.
+    """
+
+    __tablename__ = "study_chapter_reads"
+
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4,
+        server_default=func.gen_random_uuid(),
+    )
+    user_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey("users.id", ondelete="CASCADE"),
+        nullable=False,
+    )
+    exam_type: Mapped[str] = mapped_column(String(32), nullable=False)
+    topic_id: Mapped[str] = mapped_column(String(80), nullable=False)
+    read_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now(), nullable=False,
+    )
+
+    __table_args__ = (
+        # Marking twice is idempotent; the unique key is what upserts hang on.
+        UniqueConstraint(
+            "user_id", "exam_type", "topic_id",
+            name="uq_chapter_read_user_exam_topic",
+        ),
+        # The one real query: "which chapters has this user read for exam X".
+        Index("ix_chapter_reads_user_exam", "user_id", "exam_type"),
+    )

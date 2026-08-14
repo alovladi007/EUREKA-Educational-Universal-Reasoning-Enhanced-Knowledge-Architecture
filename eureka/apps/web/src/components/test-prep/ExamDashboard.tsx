@@ -41,8 +41,9 @@ import { getCurriculum } from '@/lib/exam-curriculum';
 import { getExamConfig } from '@/lib/exam-config';
 import { getExamSurfaces } from '@/lib/exam-surfaces';
 import {
-  getStudyAxis, countChapters, readChaptersKey,
+  getStudyAxis, countChapters,
 } from '@/lib/exam-study-axis';
+import { loadReadChapters } from '@/lib/chapter-reads';
 
 type McatSummary = Awaited<ReturnType<typeof apiClient.getMcatReviewSummary>>;
 type McatMissed = Awaited<ReturnType<typeof apiClient.getMcatReviewMissed>>;
@@ -87,15 +88,12 @@ export function ExamDashboard({ examSlug }: { examSlug: string }) {
   }, [exam]);
 
   React.useEffect(() => {
-    try {
-      const saved = window.localStorage.getItem(readChaptersKey(exam));
-      setRead(saved ? new Set(JSON.parse(saved)) : new Set());
-    } catch {
-      setRead(new Set());
-    }
     setFigures(EMPTY);
 
     let live = true;
+    // Server-backed (2026-08): the read set follows the account across
+    // devices; localStorage is only the offline fallback inside the helper.
+    void loadReadChapters(exam).then(({ ids }) => { if (live) setRead(ids); });
     void (async () => {
       const next = { ...EMPTY };
       if (exam === 'MCAT') {

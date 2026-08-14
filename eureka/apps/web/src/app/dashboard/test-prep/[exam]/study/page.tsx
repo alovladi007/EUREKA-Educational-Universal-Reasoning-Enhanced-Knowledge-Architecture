@@ -50,13 +50,14 @@ import { LessonVideoPlayer } from '@/components/test-prep/LessonVideoPlayer';
 import { LessonQuiz } from '@/components/test-prep/cissp/LessonQuiz';
 import { darkVariant } from '@/components/ui/markdown';
 import {
-  getStudyAxis, countChapters, axisNoun, readChaptersKey,
+  getStudyAxis, countChapters, axisNoun,
   assertAxisCoverage, type StudyUnit,
 } from '@/lib/exam-study-axis';
 import { getCurriculum } from '@/lib/exam-curriculum';
 import { getExamConfig } from '@/lib/exam-config';
 import { getExamSurfaces } from '@/lib/exam-surfaces';
 import { loadExamCourse, type CoursePack } from '@/lib/exam-course-loader';
+import { loadReadChapters, toggleChapterRead } from '@/lib/chapter-reads';
 import type { TopicLesson } from '@/lib/cissp-course-data';
 
 /** Accent classes, written out so Tailwind's scanner keeps them. */
@@ -192,7 +193,6 @@ export default function ExamStudyPage() {
   const config = getExamConfig(exam);
   const surfaces = getExamSurfaces(exam);
   const axis = React.useMemo(() => getStudyAxis(exam), [exam]);
-  const storageKey = readChaptersKey(exam);
 
   const [pack, setPack] = React.useState<CoursePack | null>(null);
   const [unitId, setUnitId] = React.useState<string | null>(null);
@@ -232,12 +232,12 @@ export default function ExamStudyPage() {
     setUnitId(null);
     setTopicId(null);
     void loadExamCourse(exam).then(setPack);
-    try {
-      const saved = window.localStorage.getItem(readChaptersKey(exam));
-      setRead(saved ? new Set(JSON.parse(saved)) : new Set());
-    } catch {
-      setRead(new Set());
-    }
+    // Server-backed (2026-08): loadReadChapters returns the server set,
+    // merging any local-only ids up first, and falls back to localStorage
+    // when api-core is unreachable. Course progress follows the account,
+    // not the browser.
+    let live = true;
+    void loadReadChapters(exam).then(({ ids }) => { if (live) setRead(ids); });
     if (process.env.NODE_ENV !== 'production') {
       const gaps = assertAxisCoverage(exam);
       if (gaps.missing.length || gaps.duplicated.length || gaps.unknown.length) {
@@ -245,6 +245,7 @@ export default function ExamStudyPage() {
         console.warn(`[study-axis:${exam}] coverage problem`, gaps);
       }
     }
+    return () => { live = false; };
   }, [exam]);
 
   const unit: StudyUnit | undefined =
@@ -263,14 +264,10 @@ export default function ExamStudyPage() {
 
   const markRead = (id: string) => {
     setRead((prev) => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      try {
-        window.localStorage.setItem(storageKey, JSON.stringify([...next]));
-      } catch {
-        /* non-fatal */
-      }
-      return next;
+      const nowRead = !prev.has(id);
+      // Optimistic localStorage write + server write-through; the helper
+      // owns both. Server truth heals any missed write on the next load.
+      return toggleChapterRead(exam, id, nowRead);
     });
   };
 
